@@ -18,10 +18,23 @@ from xml.etree import ElementTree as ET
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SKILL_ROOT = REPO_ROOT / "KMFA" / "fund-weekly-analysis-skill"
 TEMPLATE = SKILL_ROOT / "templates" / "资金与税费管理母版_真实数据预览_v2.xlsx"
+XLSX_NS = {"x": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
 
 
 def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def xlsx_cell_text(workbook: zipfile.ZipFile, sheet_path: str, ref: str) -> str:
+    sheet = ET.fromstring(workbook.read(sheet_path))
+    cell = sheet.find(f".//x:c[@r='{ref}']", XLSX_NS)
+    if cell is None:
+        return ""
+    inline_text = cell.find("x:is/x:t", XLSX_NS)
+    if inline_text is not None:
+        return inline_text.text or ""
+    value = cell.find("x:v", XLSX_NS)
+    return value.text or "" if value is not None else ""
 
 
 class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
@@ -462,10 +475,49 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual([row["risk_type"] for row in risk_rows], ["tax_payable", "deposit_release"])
             self.assertEqual([row["amount"] for row in risk_rows], ["800.00", "500.00"])
 
+            with (run_dir / "evidence_index.csv").open(encoding="utf-8-sig", newline="") as f:
+                evidence_rows = list(csv.DictReader(f))
+            self.assertEqual(evidence_rows[0]["review_status"], "structured_csv_extracted_pending_review")
+
             cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
             self.assertFalse(cross_review["management_conclusion_allowed"])
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertEqual(cross_review["structured_financial_fact_count"], 4)
+
+            workbook_path = run_dir / "资金与税费管理母版_structured_csv_test.xlsx"
+            with zipfile.ZipFile(workbook_path) as workbook:
+                self.assertIn("xl/drawings/drawing1.xml", workbook.namelist(), "homepage charts must remain attached")
+                self.assertIn("可用现金占比", xlsx_cell_text(workbook, "xl/worksheets/sheet1.xml", "B4"))
+                self.assertIn("100.00%", xlsx_cell_text(workbook, "xl/worksheets/sheet1.xml", "B4"))
+                self.assertIn("银行存款", xlsx_cell_text(workbook, "xl/worksheets/sheet1.xml", "E4"))
+                self.assertIn("¥11,700.00", xlsx_cell_text(workbook, "xl/worksheets/sheet1.xml", "E4"))
+                self.assertIn("期末总资金", xlsx_cell_text(workbook, "xl/worksheets/sheet1.xml", "K4"))
+                self.assertIn("¥11,700.00", xlsx_cell_text(workbook, "xl/worksheets/sheet1.xml", "K4"))
+                self.assertIn("保证金可释放", xlsx_cell_text(workbook, "xl/worksheets/sheet1.xml", "B8"))
+                self.assertIn("¥500.00", xlsx_cell_text(workbook, "xl/worksheets/sheet1.xml", "B8"))
+                self.assertIn("外部净流出", xlsx_cell_text(workbook, "xl/worksheets/sheet1.xml", "E8"))
+                self.assertIn("¥-1,300.00", xlsx_cell_text(workbook, "xl/worksheets/sheet1.xml", "E8"))
+                self.assertIn("内部调拨净额", xlsx_cell_text(workbook, "xl/worksheets/sheet1.xml", "H8"))
+                self.assertIn("¥3,000.00", xlsx_cell_text(workbook, "xl/worksheets/sheet1.xml", "H8"))
+
+                self.assertEqual(
+                    xlsx_cell_text(workbook, "xl/worksheets/sheet7.xml", "A2"),
+                    "FL-structured_csv_test-00001",
+                )
+                self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet7.xml", "B2"), "2026-07-08")
+                self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet7.xml", "C2"), "开明一公司")
+                self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet7.xml", "G2"), "-1000.00")
+                self.assertTrue(
+                    xlsx_cell_text(workbook, "xl/worksheets/sheet9.xml", "A4").startswith("FWstructured_csv_test")
+                )
+                self.assertIn(
+                    "资金日报.csv",
+                    xlsx_cell_text(workbook, "xl/worksheets/sheet9.xml", "B4"),
+                )
+                self.assertEqual(
+                    xlsx_cell_text(workbook, "xl/worksheets/sheet9.xml", "K4"),
+                    "structured_csv_extracted_pending_review",
+                )
 
     def test_runner_fails_closed_when_input_file_is_unreadable(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

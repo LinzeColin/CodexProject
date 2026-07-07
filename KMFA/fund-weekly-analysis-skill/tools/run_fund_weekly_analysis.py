@@ -19,13 +19,20 @@ import os
 import shutil
 import subprocess
 import sys
+import zipfile
 from pathlib import Path
 from typing import Iterable
+from xml.etree import ElementTree as ET
 from zoneinfo import ZoneInfo
 
 DISALLOWED_PRODUCTION_MARKERS = ("sample", "demo", "fake", "synthetic", "模拟", "测试数据")
 PRIVATE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".xlsx", ".xls", ".csv", ".pdf", ".doc", ".docx", ".zip"}
 TEMPLATE_NAME = "资金与税费管理母版_真实数据预览_v2.xlsx"
+XLSX_MAIN_NS = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+XLSX_REL_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+XML_NS = "http://www.w3.org/XML/1998/namespace"
+ET.register_namespace("", XLSX_MAIN_NS)
+ET.register_namespace("r", XLSX_REL_NS)
 STRUCTURED_CSV_REQUIRED_FIELDS = {
     "date",
     "company",
@@ -284,8 +291,453 @@ def money_text(value: Decimal) -> str:
     return f"{value.quantize(Decimal('0.01')):.2f}"
 
 
+def currency_text(value: Decimal) -> str:
+    amount = value.quantize(Decimal("0.01"))
+    sign = "-" if amount < 0 else ""
+    return f"¥{sign}{abs(amount):,.2f}"
+
+
+def percent_text(value: Decimal) -> str:
+    return f"{value.quantize(Decimal('0.01')):.2f}%"
+
+
+def xlsx_tag(name: str) -> str:
+    return f"{{{XLSX_MAIN_NS}}}{name}"
+
+
+def split_cell_ref(ref: str) -> tuple[str, int]:
+    letters = "".join(ch for ch in ref if ch.isalpha())
+    row_text = "".join(ch for ch in ref if ch.isdigit())
+    return letters, int(row_text)
+
+
+def column_index(letters: str) -> int:
+    index = 0
+    for char in letters:
+        index = index * 26 + ord(char.upper()) - ord("A") + 1
+    return index
+
+
+def column_letter(index: int) -> str:
+    letters = ""
+    while index:
+        index, remainder = divmod(index - 1, 26)
+        letters = chr(ord("A") + remainder) + letters
+    return letters
+
+
+def cell_ref(row_number: int, col_number: int) -> str:
+    return f"{column_letter(col_number)}{row_number}"
+
+
+def sheet_data(sheet_root: ET.Element) -> ET.Element:
+    data = sheet_root.find(xlsx_tag("sheetData"))
+    if data is None:
+        data = ET.SubElement(sheet_root, xlsx_tag("sheetData"))
+    return data
+
+
+def get_or_create_row(data: ET.Element, row_number: int) -> ET.Element:
+    for position, row in enumerate(list(data)):
+        if row.tag != xlsx_tag("row"):
+            continue
+        current = int(row.attrib.get("r", "0"))
+        if current == row_number:
+            return row
+        if current > row_number:
+            new_row = ET.Element(xlsx_tag("row"), {"r": str(row_number)})
+            data.insert(position, new_row)
+            return new_row
+    new_row = ET.SubElement(data, xlsx_tag("row"), {"r": str(row_number)})
+    return new_row
+
+
+def get_or_create_cell(row: ET.Element, ref: str) -> ET.Element:
+    target_col, _ = split_cell_ref(ref)
+    target_index = column_index(target_col)
+    for position, cell in enumerate(list(row)):
+        if cell.tag != xlsx_tag("c"):
+            continue
+        current_ref = cell.attrib.get("r", "")
+        current_col, _ = split_cell_ref(current_ref) if current_ref else ("", 0)
+        if current_ref == ref:
+            return cell
+        if current_col and column_index(current_col) > target_index:
+            new_cell = ET.Element(xlsx_tag("c"), {"r": ref})
+            row.insert(position, new_cell)
+            return new_cell
+    return ET.SubElement(row, xlsx_tag("c"), {"r": ref})
+
+
+def clear_cell(cell: ET.Element) -> None:
+    for attr in ("t", "cm", "vm", "ph"):
+        cell.attrib.pop(attr, None)
+    for child in list(cell):
+        cell.remove(child)
+
+
+def set_text_cell(sheet_root: ET.Element, ref: str, text: str) -> None:
+    _, row_number = split_cell_ref(ref)
+    row = get_or_create_row(sheet_data(sheet_root), row_number)
+    cell = get_or_create_cell(row, ref)
+    clear_cell(cell)
+    cell.attrib["t"] = "inlineStr"
+    inline = ET.SubElement(cell, xlsx_tag("is"))
+    node = ET.SubElement(inline, xlsx_tag("t"))
+    if text != text.strip() or "\n" in text:
+        node.attrib[f"{{{XML_NS}}}space"] = "preserve"
+    node.text = text
+
+
+def set_number_cell(sheet_root: ET.Element, ref: str, value: Decimal | int | str) -> None:
+    _, row_number = split_cell_ref(ref)
+    row = get_or_create_row(sheet_data(sheet_root), row_number)
+    cell = get_or_create_cell(row, ref)
+    clear_cell(cell)
+    node = ET.SubElement(cell, xlsx_tag("v"))
+    node.text = str(value)
+
+
+def clear_rows_from(sheet_root: ET.Element, start_row: int) -> None:
+    data = sheet_data(sheet_root)
+    for row in list(data):
+        if row.tag == xlsx_tag("row") and int(row.attrib.get("r", "0")) >= start_row:
+            data.remove(row)
+
+
+def write_table_rows(sheet_root: ET.Element, start_row: int, rows: list[list[tuple[str, object]]]) -> None:
+    for row_offset, values in enumerate(rows):
+        row_number = start_row + row_offset
+        for col_number, (kind, value) in enumerate(values, 1):
+            if kind == "number":
+                set_number_cell(sheet_root, cell_ref(row_number, col_number), value)
+            else:
+                set_text_cell(sheet_root, cell_ref(row_number, col_number), str(value))
+
+
+def serialize_sheet(sheet_root: ET.Element) -> bytes:
+    return ET.tostring(sheet_root, encoding="utf-8", xml_declaration=True)
+
+
+def replace_xlsx_entries(workbook_path: Path, replacements: dict[str, bytes]) -> None:
+    temp_path = workbook_path.with_suffix(".tmp.xlsx")
+    with zipfile.ZipFile(workbook_path, "r") as source, zipfile.ZipFile(temp_path, "w", zipfile.ZIP_DEFLATED) as target:
+        for info in source.infolist():
+            payload = replacements.get(info.filename)
+            target.writestr(info, payload if payload is not None else source.read(info.filename))
+    temp_path.replace(workbook_path)
+
+
+def balance_summary_from_fund_rows(fund_rows: list[dict], date: str | None = None) -> dict[str, Decimal]:
+    latest_by_account: dict[tuple[str, str, str, str], dict] = {}
+    for row in fund_rows:
+        if date is not None and row["date"] != date:
+            continue
+        key = (row["company"], row["bank"], row["account_alias"], row["liquidity_tier"])
+        current = latest_by_account.get(key)
+        if current is None or (row["date"], row["source_row_number"]) >= (current["date"], current["source_row_number"]):
+            latest_by_account[key] = row
+
+    bank_cash = Decimal("0.00")
+    bills = Decimal("0.00")
+    total = Decimal("0.00")
+    for row in latest_by_account.values():
+        ending_balance = money(row["ending_balance"])
+        tier = row["liquidity_tier"].upper()
+        total += ending_balance
+        if "T0" in tier or "BANK" in tier or "银行" in row["bank"]:
+            bank_cash += ending_balance
+        if "BILL" in tier or "票据" in tier or "汇票" in tier or "承兑" in tier:
+            bills += ending_balance
+    ratio = (bank_cash / total * Decimal("100")) if total else Decimal("0.00")
+    return {
+        "total_funds": total,
+        "bank_cash": bank_cash,
+        "bills": bills,
+        "available_cash_ratio": ratio,
+    }
+
+
+def structured_workbook_summary(structured: dict) -> dict[str, Decimal]:
+    balance = balance_summary_from_fund_rows(structured["fund_rows"])
+    deposit_release = Decimal("0.00")
+    due_pressure = Decimal("0.00")
+    for row in structured["risk_rows"]:
+        risk_type = row["risk_type"].lower()
+        amount = money(row["amount"])
+        if "deposit" in risk_type or "保证金" in row["risk_type"]:
+            deposit_release += amount
+        else:
+            due_pressure += amount
+
+    external_net = Decimal("0.00")
+    internal_net = Decimal("0.00")
+    for row in structured["net_flow_rows"]:
+        external_net += money(row["external_inflow"]) - money(row["external_outflow"])
+        internal_net += money(row["internal_transfer_net"])
+
+    funding_gap = due_pressure - balance["bank_cash"] - deposit_release
+    if funding_gap < Decimal("0.00"):
+        funding_gap = Decimal("0.00")
+    return {
+        **balance,
+        "deposit_release": deposit_release,
+        "external_net": external_net,
+        "internal_transfer_net": internal_net,
+        "funding_gap": funding_gap,
+        "due_pressure": due_pressure,
+    }
+
+
+def workbook_display_matrix_rows(fund_rows: list[dict]) -> list[dict]:
+    grouped: dict[tuple[str, str, str, str], dict[str, object]] = {}
+    for row in fund_rows:
+        key = (row["company"], row["bank"], row["account_alias"], row["liquidity_tier"])
+        bucket = grouped.setdefault(key, {
+            "company": row["company"],
+            "bank": row["bank"],
+            "account_alias": row["account_alias"],
+            "liquidity_tier": row["liquidity_tier"],
+            "count": 0,
+            "inflow_count": 0,
+            "outflow_count": 0,
+            "inflow": Decimal("0.00"),
+            "outflow": Decimal("0.00"),
+            "tax": Decimal("0.00"),
+            "deposit_net": Decimal("0.00"),
+            "loan_outflow": Decimal("0.00"),
+            "last_date": row["date"],
+            "evidence_ids": set(),
+        })
+        inflow = money(row["inflow"])
+        outflow = money(row["outflow"])
+        bucket["count"] = int(bucket["count"]) + 1
+        bucket["inflow_count"] = int(bucket["inflow_count"]) + (1 if inflow else 0)
+        bucket["outflow_count"] = int(bucket["outflow_count"]) + (1 if outflow else 0)
+        bucket["inflow"] = bucket["inflow"] + inflow
+        bucket["outflow"] = bucket["outflow"] + outflow
+        bucket["last_date"] = max(str(bucket["last_date"]), row["date"])
+        bucket["evidence_ids"].add(row["source_evidence_id"])
+        if row["flow_type"] == "tax":
+            bucket["tax"] = bucket["tax"] + outflow
+        if row["flow_type"] == "deposit":
+            bucket["deposit_net"] = bucket["deposit_net"] + inflow - outflow
+        if row["flow_type"] == "loan":
+            bucket["loan_outflow"] = bucket["loan_outflow"] + outflow
+    return [dict(row) for row in sorted(grouped.values(), key=lambda item: (item["company"], item["bank"], item["account_alias"]))]
+
+
+def write_structured_facts_to_workbook(workbook_path: Path, structured: dict, evidence: list[dict], input_dir: Path) -> None:
+    if not structured["fund_rows"]:
+        return
+
+    summary = structured_workbook_summary(structured)
+    evidence_by_id = {row["evidence_id"]: row for row in evidence}
+    ledger_ids_by_evidence: dict[str, list[str]] = {}
+    dates_by_evidence: dict[str, set[str]] = {}
+    signed_amount_by_evidence: dict[str, Decimal] = {}
+    for row in structured["fund_rows"]:
+        evidence_id = row["source_evidence_id"]
+        ledger_ids_by_evidence.setdefault(evidence_id, []).append(row["ledger_id"])
+        dates_by_evidence.setdefault(evidence_id, set()).add(row["date"])
+        signed_amount_by_evidence[evidence_id] = signed_amount_by_evidence.get(evidence_id, Decimal("0.00")) + money(row["inflow"]) - money(row["outflow"])
+
+    replacements: dict[str, bytes] = {}
+    with zipfile.ZipFile(workbook_path, "r") as workbook:
+        sheet1 = ET.fromstring(workbook.read("xl/worksheets/sheet1.xml"))
+        set_text_cell(sheet1, "B4", f"可用现金占比\n{percent_text(summary['available_cash_ratio'])}\nT0银行存款/期末总资金｜结构化CSV待复核")
+        set_text_cell(sheet1, "E4", f"银行存款\n{currency_text(summary['bank_cash'])}\nT0可用现金｜结构化CSV待复核")
+        set_text_cell(sheet1, "H4", f"票据/电子汇票\n{currency_text(summary['bills'])}\n准现金/结算工具｜结构化CSV待复核")
+        set_text_cell(sheet1, "K4", f"期末总资金\n{currency_text(summary['total_funds'])}\n来自结构化CSV最新余额｜待复核")
+        set_text_cell(sheet1, "B8", f"保证金可释放\n{currency_text(summary['deposit_release'])}\ndeposit风险行｜待复核")
+        set_text_cell(sheet1, "E8", f"外部净流出\n{currency_text(summary['external_net'])}\n外部流入-外部流出｜待复核")
+        set_text_cell(sheet1, "H8", f"内部调拨净额\n{currency_text(summary['internal_transfer_net'])}\n内部调拨行净额｜待复核")
+        set_text_cell(sheet1, "K8", f"资金缺口\n{currency_text(summary['funding_gap'])}\n税费/借款压力-可用现金｜待复核")
+        replacements["xl/worksheets/sheet1.xml"] = serialize_sheet(sheet1)
+
+        sheet3 = ET.fromstring(workbook.read("xl/worksheets/sheet3.xml"))
+        clear_rows_from(sheet3, 5)
+        flow_rows: list[list[tuple[str, object]]] = []
+        for row in structured["net_flow_rows"]:
+            day_balance = balance_summary_from_fund_rows(structured["fund_rows"], row["date"])
+            external_inflow = money(row["external_inflow"])
+            external_outflow = money(row["external_outflow"])
+            internal_in = money(row["internal_transfer_in"])
+            internal_out = money(row["internal_transfer_out"])
+            account_in = external_inflow + internal_in
+            account_out = external_outflow + internal_out
+            external_net = external_inflow - external_outflow
+            flow_rows.append([
+                ("text", row["date"]),
+                ("text", "structured_csv"),
+                ("text", ""),
+                ("number", money_text(account_in)),
+                ("number", money_text(account_out)),
+                ("number", money_text(account_in - account_out)),
+                ("number", money_text(day_balance["total_funds"])),
+                ("number", money_text(day_balance["bank_cash"])),
+                ("number", money_text(day_balance["bills"])),
+                ("number", money_text(day_balance["available_cash_ratio"] / Decimal("100"))),
+                ("number", money_text(external_inflow)),
+                ("number", money_text(external_outflow)),
+                ("number", money_text(external_net)),
+                ("number", row["internal_transfer_net"]),
+                ("text", ""),
+                ("text", "待复核"),
+                ("text", "结构化CSV已写入，管理结论仍需交叉复审"),
+            ])
+        write_table_rows(sheet3, 5, flow_rows)
+        replacements["xl/worksheets/sheet3.xml"] = serialize_sheet(sheet3)
+
+        sheet4 = ET.fromstring(workbook.read("xl/worksheets/sheet4.xml"))
+        set_text_cell(sheet4, "A4", f"税费截图金额\n{currency_text(summary['due_pressure'])}\n结构化CSV风险行｜待复核")
+        set_text_cell(sheet4, "D4", f"税费版本差异\n待复核\n未生成管理结论")
+        set_text_cell(sheet4, "G4", f"借款/还款应付\n{currency_text(summary['due_pressure'])}\n税费/借款压力合计｜待复核")
+        set_text_cell(sheet4, "J4", f"余额不足缺口\n{currency_text(summary['funding_gap'])}\n按当前结构化事实计算｜待复核")
+        clear_rows_from(sheet4, 10)
+        risk_rows = []
+        for row in structured["risk_rows"]:
+            risk_rows.append([
+                ("text", ""),
+                ("number", row["amount"]),
+                ("text", ""),
+                ("text", row["risk_type"]),
+                ("number", row["amount"]),
+                ("text", ""),
+                ("text", row["risk_id"]),
+                ("text", ""),
+                ("text", row["due_date"]),
+                ("text", row["risk_type"]),
+                ("number", row["amount"]),
+                ("text", ""),
+                ("text", ""),
+                ("text", row["source_evidence_id"]),
+                ("text", "结构化CSV待复核"),
+            ])
+        write_table_rows(sheet4, 10, risk_rows)
+        replacements["xl/worksheets/sheet4.xml"] = serialize_sheet(sheet4)
+
+        sheet5 = ET.fromstring(workbook.read("xl/worksheets/sheet5.xml"))
+        clear_rows_from(sheet5, 5)
+        matrix_rows = []
+        for row in workbook_display_matrix_rows(structured["fund_rows"]):
+            inflow = row["inflow"]
+            outflow = row["outflow"]
+            matrix_rows.append([
+                ("text", row["company"]),
+                ("text", row["bank"]),
+                ("text", row["account_alias"]),
+                ("text", row["liquidity_tier"]),
+                ("text", "待复核"),
+                ("number", row["count"]),
+                ("number", row["inflow_count"]),
+                ("number", row["outflow_count"]),
+                ("number", money_text(inflow)),
+                ("number", money_text(outflow)),
+                ("number", money_text(inflow - outflow)),
+                ("text", ""),
+                ("number", money_text(row["tax"])),
+                ("number", money_text(row["deposit_net"])),
+                ("number", money_text(row["loan_outflow"])),
+                ("text", row["last_date"]),
+                ("number", len(row["evidence_ids"])),
+                ("number", row["count"]),
+                ("text", "待复核"),
+                ("text", "结构化CSV已写入，需交叉复审后才能形成结论"),
+            ])
+        write_table_rows(sheet5, 5, matrix_rows)
+        replacements["xl/worksheets/sheet5.xml"] = serialize_sheet(sheet5)
+
+        sheet7 = ET.fromstring(workbook.read("xl/worksheets/sheet7.xml"))
+        clear_rows_from(sheet7, 2)
+        h01_rows = []
+        for row in structured["fund_rows"]:
+            inflow = money(row["inflow"])
+            outflow = money(row["outflow"])
+            signed = inflow - outflow
+            direction = "收入" if signed > 0 else "支出" if signed < 0 else "零变动"
+            amount = inflow if inflow else outflow
+            evidence_row = evidence_by_id.get(row["source_evidence_id"], {})
+            h01_rows.append([
+                ("text", row["ledger_id"]),
+                ("text", row["date"]),
+                ("text", row["company"]),
+                ("text", row["account_alias"]),
+                ("text", direction),
+                ("number", money_text(amount)),
+                ("number", money_text(signed)),
+                ("text", ""),
+                ("text", ""),
+                ("text", ""),
+                ("text", row["flow_type"]),
+                ("text", row["liquidity_tier"]),
+                ("text", "是" if row["flow_type"] == "internal_transfer" else "否"),
+                ("text", "structured_csv"),
+                ("text", evidence_row.get("relative_path", "")),
+                ("text", row["source_row_number"]),
+                ("text", row["source_evidence_id"]),
+                ("text", row["extraction_status"]),
+                ("text", ""),
+                ("text", f"bank={row['bank']}; ending_balance={row['ending_balance']}"),
+            ])
+        write_table_rows(sheet7, 2, h01_rows)
+        replacements["xl/worksheets/sheet7.xml"] = serialize_sheet(sheet7)
+
+        sheet8 = ET.fromstring(workbook.read("xl/worksheets/sheet8.xml"))
+        clear_rows_from(sheet8, 4)
+        h02_rows = []
+        for index, row in enumerate(structured["risk_rows"], 1):
+            h02_rows.append([
+                ("text", f"TASK-{row['risk_id']}"),
+                ("text", row["risk_type"]),
+                ("text", "待复核"),
+                ("number", row["amount"]),
+                ("text", ""),
+                ("text", row["due_date"]),
+                ("text", "财务负责人"),
+                ("text", "structured_csv"),
+                ("text", row["source_evidence_id"]),
+                ("text", "复核税费/融资/保证金风险事实后再进入管理结论"),
+                ("text", "pending_review"),
+                ("text", f"risk_row={index}"),
+            ])
+        write_table_rows(sheet8, 4, h02_rows)
+        replacements["xl/worksheets/sheet8.xml"] = serialize_sheet(sheet8)
+
+        sheet9 = ET.fromstring(workbook.read("xl/worksheets/sheet9.xml"))
+        clear_rows_from(sheet9, 4)
+        h03_rows = []
+        for row in evidence:
+            evidence_id = row["evidence_id"]
+            linked_ids = ledger_ids_by_evidence.get(evidence_id, [])
+            extraction_status = row["review_status"]
+            h03_rows.append([
+                ("text", evidence_id),
+                ("text", row["relative_path"]),
+                ("text", str(input_dir / row["relative_path"])),
+                ("text", row["sha256"]),
+                ("text", ""),
+                ("text", ""),
+                ("text", ""),
+                ("text", row["kind"]),
+                ("text", "D"),
+                ("text", "private"),
+                ("text", extraction_status),
+                ("text", ",".join(linked_ids)),
+                ("text", ",".join(sorted(dates_by_evidence.get(evidence_id, set())))),
+                ("number", money_text(signed_amount_by_evidence.get(evidence_id, Decimal("0.00")))),
+                ("text", extraction_status),
+                ("text", "structured facts pending review" if linked_ids else "indexed only pending extraction"),
+            ])
+        write_table_rows(sheet9, 4, h03_rows)
+        replacements["xl/worksheets/sheet9.xml"] = serialize_sheet(sheet9)
+
+    replace_xlsx_entries(workbook_path, replacements)
+
+
 def extract_structured_csv_facts(manifest: dict, input_dir: Path, evidence: list[dict]) -> dict:
     evidence_by_path = {row["relative_path"]: row["evidence_id"] for row in evidence}
+    evidence_by_id = {row["evidence_id"]: row for row in evidence}
     fund_rows: list[dict] = []
     risk_rows: list[dict] = []
     source_errors: list[dict] = []
@@ -306,6 +758,7 @@ def extract_structured_csv_facts(manifest: dict, input_dir: Path, evidence: list
                     ending_balance = money(row.get("ending_balance"))
                     ledger_id = f"FL-{manifest['run_id']}-{len(fund_rows) + 1:05d}"
                     evidence_id = evidence_by_path[item["relative_path"]]
+                    evidence_by_id[evidence_id]["review_status"] = "structured_csv_extracted_pending_review"
                     flow_type = (row.get("flow_type") or "unclassified").strip() or "unclassified"
                     fund_rows.append({
                         "ledger_id": ledger_id,
@@ -420,10 +873,16 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
             "observed_at": manifest["generated_at"],
             "action": "Structured CSV facts were extracted from real source files; human/cross review is still required before management conclusion.",
         }]
+    write_csv(
+        run_dir / "evidence_index.csv",
+        ["evidence_id", "relative_path", "kind", "sha256", "size_bytes", "review_status"],
+        evidence,
+    )
     skill_root = Path(__file__).resolve().parents[1]
     template = skill_root / "templates" / TEMPLATE_NAME
     workbook_path = run_dir / f"资金与税费管理母版_{manifest['run_id']}.xlsx"
     shutil.copyfile(template, workbook_path)
+    write_structured_facts_to_workbook(workbook_path, structured, evidence, input_dir)
 
     write_csv(run_dir / "fund_ledger.csv", [
         "ledger_id",
