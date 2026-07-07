@@ -53,6 +53,7 @@
     "validate:v1.1.6-stage10-phase1": "node scripts/validate_memory_atlas_v1_1_6_stage10_phase1.cjs",
     "validate:v1.1.6-stage10": "node scripts/validate_memory_atlas_v1_1_6_stage10.cjs",
     "validate:v1.1.7-pre-stage0": "node scripts/validate_memory_atlas_v1_1_7_pre_stage0.cjs",
+    "validate:v1.2-s01-p1": "node scripts/validate_memory_atlas_v1_2_s01_p1.cjs",
     "validate:v1.1.7-stage0-phase1": "node scripts/validate_memory_atlas_v1_1_7_stage0_phase1.cjs",
     "validate:v1.1.7-stage0-phase2": "node scripts/validate_memory_atlas_v1_1_7_stage0_phase2.cjs",
     "validate:v1.1.7-stage0-phase3": "node scripts/validate_memory_atlas_v1_1_7_stage0_phase3.cjs",

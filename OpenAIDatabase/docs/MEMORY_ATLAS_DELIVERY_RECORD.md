@@ -1,3 +1,41 @@
+## v1.2 S01 P1 Current State Audit
+
+状态：`phase_s01_p1_current_state_audited_pending_s01_p2`。
+
+任务 ID：`MA-V12-S01P1`。
+
+验收 ID：`ACC-MA-V12-S01P1`。
+
+S01 P1 完成 v1.2 正式执行前的现状核验：确认 TaskPack/Roadmap 输入、canonical
+repo、三件套、Memory Atlas package、现有治理和运行目录位置、双平面缺口，以及
+v1.1.x raw/private 边界中需要被 v1.2 替换或桥接的规则。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_2_s01_p1_current_state_audit.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_p1.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s01-p1`
+- `ACC-MA-V12-S01P1`
+- S01 P1
+- TaskPack/Roadmap hashes recorded
+- old boundary replacement needs listed
+- No GitHub main upload in this phase
+
+边界：
+
+- No S01 P2.
+- No S01 P3.
+- No GitHub main upload in this phase.
+- No apps/scripts/tests/config move.
+- No AGENTS taskpack dump.
+- No raw archive change.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S01 P1 Current State Audit; MA-V12-S01P1; ACC-MA-V12-S01P1; phase_s01_p1_current_state_audited_pending_s01_p2; validate:v1.2-s01-p1; memory_atlas_v1_2_s01_p1_current_state_audit.md; S01 P1; No GitHub main upload in this phase; No S01 P2; No S01 P3; No apps/scripts/tests/config move; No AGENTS taskpack dump; No raw archive change.
+
 ## v1.1.7 Final GitHub Main Upload
 
 状态：`final_github_main_upload_completed`。
