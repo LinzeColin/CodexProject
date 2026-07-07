@@ -1,0 +1,75 @@
+{
+  "check_count": 15,
+  "check_fail_count": 0,
+  "check_pass_count": 15,
+  "checks": [
+    {
+      "check_code": "source_intake_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_go_no_go_preserved",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_matrix_clean",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_template_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_pending_queue_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "readiness_recheck_performed",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_ready_diagnostic_response",
+      "status": "PASS"
+    },
+    {
+      "check_code": "all_diagnostic_responses_blocked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_valid_diagnostic_response",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_actionable_resolution",
+      "status": "PASS"
+    },
+    {
+      "check_code": "diagnostic_kind_counts_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_binding_or_retry_ready_after_recheck",
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_readiness_outputs_ignored",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_gates_closed",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-08T00:00:00+10:00",
+  "phase_id": "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_DIAGNOSTIC_READINESS_RECHECK_AFTER_INTAKE",
+  "project_id": "KMFA",
+  "record_type": "v014_authorized_resolution_owner_or_agent_diagnostic_readiness_recheck_after_intake_matrix_public_safe",
+  "schema_version": "kmfa.v014_authorized_resolution_owner_or_agent_diagnostic_readiness_recheck_after_intake_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-DIAGNOSTIC-READINESS-RECHECK-AFTER-INTAKE-20260708",
+  "version": "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-diagnostic-readiness-recheck-after-intake"
+}
