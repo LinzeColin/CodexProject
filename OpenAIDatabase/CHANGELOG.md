@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 10 Phase 10.1 Final Hardening Upload Readiness
+
+- Added `docs/product/memory_atlas_v1_1_7_final_hardening_upload_readiness_contract.md`.
+- Added `docs/acceptance/memory_atlas_v1_1_7_stage10_phase1_final_hardening_upload_readiness_acceptance.md`.
+- Added `validate:v1.1.7-stage10-phase1` for `MA-V117-S10P01` / `ACC-MA-V117-S10P01`.
+- Registered `memory_atlas_v1_1_7_final_hardening_upload_readiness_contract` with status
+  `phase_10_1_final_hardening_upload_readiness_contract_created_pending_stage10_review`.
+- The readiness contract covers `performance_safety_accessibility_matrix`,
+  `release_rollback_matrix`, `final_validation_matrix`,
+  `github_main_upload_matrix`, `governance_sync_matrix` and
+  `new_machine_recovery_matrix`, including desktop target 45-60 FPS and
+  reduced-motion fallback proof requirements.
+
+Stage 10 Phase 10.1 only. No intermediate GitHub upload, No GitHub main upload in this phase,
+No production runtime change, No raw/private data read, No
+direct active-memory writeback, No proposal queue write, No agent apply, No
+local app install and No deploy was added; pending Stage 10 review.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 9 Review
 
 - Added `docs/reviews/memory_atlas_v1_1_7_stage9_review.md` to pin the

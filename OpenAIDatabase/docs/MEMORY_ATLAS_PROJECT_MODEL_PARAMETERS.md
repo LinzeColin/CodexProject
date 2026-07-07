@@ -1,3 +1,40 @@
+## 102. Memory Atlas v1.1.7 Stage 10 Phase 10.1 Final Hardening Upload Readiness
+
+状态：`phase_10_1_final_hardening_upload_readiness_contract_created_pending_stage10_review`。
+
+验收 ID：`ACC-MA-V117-S10P01`。
+
+合同 ID：`memory_atlas_v1_1_7_final_hardening_upload_readiness_contract`。
+
+模型参数：
+
+- `validate:v1.1.7-stage10-phase1` 是本 phase 必跑 validator。
+- Product contract 固定为 `docs/product/memory_atlas_v1_1_7_final_hardening_upload_readiness_contract.md`。
+- Acceptance 固定为 `docs/acceptance/memory_atlas_v1_1_7_stage10_phase1_final_hardening_upload_readiness_acceptance.md`。
+- Stage 10 Phase 10.1 覆盖 `performance_safety_accessibility_matrix`、`release_rollback_matrix`、`final_validation_matrix`、`github_main_upload_matrix`、`governance_sync_matrix` 和 `new_machine_recovery_matrix`。
+- Performance target 固定为 desktop target 45-60 FPS 和 reduced-motion fallback 后续证明。
+- Stage 9 review must be complete。
+- Stage 10 Phase 10.1 完成后 pending Stage 10 review。
+- No intermediate GitHub upload。
+- No GitHub main upload in this phase。
+
+参数记录：
+
+- `PARAM-MA-V117-S10P01-001 stage10_phase1_contract_id = memory_atlas_v1_1_7_final_hardening_upload_readiness_contract`
+- `PARAM-MA-V117-S10P01-002 stage10_phase1_status = phase_10_1_final_hardening_upload_readiness_contract_created_pending_stage10_review`
+- `PARAM-MA-V117-S10P01-003 stage10_phase1_required_validator = validate:v1.1.7-stage10-phase1`
+- `PARAM-MA-V117-S10P01-004 stage10_phase1_hardening_matrices = performance_safety_accessibility_matrix;release_rollback_matrix;final_validation_matrix;github_main_upload_matrix;governance_sync_matrix;new_machine_recovery_matrix`
+- `PARAM-MA-V117-S10P01-005 stage10_phase1_performance_target = desktop target 45-60 FPS;reduced-motion fallback`
+- `PARAM-MA-V117-S10P01-006 stage10_phase1_entry_condition = Stage 9 review must be complete`
+- `PARAM-MA-V117-S10P01-007 stage10_phase1_next_gate = pending Stage 10 review`
+- `PARAM-MA-V117-S10P01-008 upload_boundary = No intermediate GitHub upload;No GitHub main upload in this phase`
+
+验收信号：
+
+- `validate:v1.1.7-stage10-phase1` checks Stage 9 continuity, contracts, records, changed_scope, runtime_boundary, canonical local branch and no remote development branch.
+
+Machine-readable boundary summary: Stage 10 Phase 10.1; MA-V117-S10P01; ACC-MA-V117-S10P01; phase_10_1_final_hardening_upload_readiness_contract_created_pending_stage10_review; memory_atlas_v1_1_7_final_hardening_upload_readiness_contract; validate:v1.1.7-stage10-phase1; performance_safety_accessibility_matrix; release_rollback_matrix; final_validation_matrix; github_main_upload_matrix; governance_sync_matrix; new_machine_recovery_matrix; desktop target 45-60 FPS; reduced-motion fallback; Stage 9 review must be complete; pending Stage 10 review; No intermediate GitHub upload; No GitHub main upload in this phase; No raw/private read; No direct active-memory writeback; No proposal queue write; No agent apply.
+
 ## 101. Memory Atlas v1.1.7 Stage 9 Review
 
 状态：`stage_9_review_passed_pending_stage10_no_github_main_upload`。

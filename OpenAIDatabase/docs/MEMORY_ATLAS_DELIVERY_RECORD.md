@@ -1,3 +1,52 @@
+## v1.1.7 Stage 10 Phase 10.1：Final Hardening Upload Readiness
+
+状态：`phase_10_1_final_hardening_upload_readiness_contract_created_pending_stage10_review`。
+
+任务 ID：`MA-V117-S10P01`。
+
+验收 ID：`ACC-MA-V117-S10P01`。
+
+合同 ID：`memory_atlas_v1_1_7_final_hardening_upload_readiness_contract`。
+
+本 phase 建立 Stage 10 final hardening/upload readiness 合同，固定后续
+Stage 10 review 必须证明的六类矩阵：
+
+- `performance_safety_accessibility_matrix`
+- `release_rollback_matrix`
+- `final_validation_matrix`
+- `github_main_upload_matrix`
+- `governance_sync_matrix`
+- `new_machine_recovery_matrix`
+
+涉及文件：
+
+- `docs/product/memory_atlas_v1_1_7_final_hardening_upload_readiness_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage10_phase1_final_hardening_upload_readiness_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage10_phase1.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-stage10-phase1`
+- `ACC-MA-V117-S10P01`
+- Stage 10 Phase 10.1
+- desktop target 45-60 FPS
+- reduced-motion fallback
+- Stage 9 review must be complete
+- pending Stage 10 review
+
+边界：
+
+- No intermediate GitHub upload.
+- No GitHub main upload in this phase.
+- No raw/private/cookie/session/secret data access.
+- No direct active-memory writeback.
+- No proposal queue write.
+- No agent apply.
+- No Cloudflare deploy.
+
+Machine-readable boundary summary: Stage 10 Phase 10.1; MA-V117-S10P01; ACC-MA-V117-S10P01; phase_10_1_final_hardening_upload_readiness_contract_created_pending_stage10_review; memory_atlas_v1_1_7_final_hardening_upload_readiness_contract; validate:v1.1.7-stage10-phase1; performance_safety_accessibility_matrix; release_rollback_matrix; final_validation_matrix; github_main_upload_matrix; governance_sync_matrix; new_machine_recovery_matrix; desktop target 45-60 FPS; reduced-motion fallback; Stage 9 review must be complete; pending Stage 10 review; No intermediate GitHub upload; No GitHub main upload in this phase; No raw/private data read; No direct active-memory writeback; No proposal queue write; No agent apply.
+
 ## v1.1.7 Stage 9 Review：Cross-board Shared State Gate
 
 状态：`stage_9_review_passed_pending_stage10_no_github_main_upload`。
