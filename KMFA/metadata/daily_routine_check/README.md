@@ -9,6 +9,9 @@ This metadata controls a local skill that reads existing DWS output from OneDriv
 ```
 
 It does not create the upstream DWS archive automation.
+If only `DWS_Outputs.zip` or `DWS_Archive/` exists, healthcheck reports
+`SOURCE_INPUT_FOLDER_MISSING`; the checker requires direct group folders with
+`chat_records/chat_records.csv` and `_manifest/manifest.csv`.
 
 Scheduler contract:
 

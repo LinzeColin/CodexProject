@@ -37,7 +37,14 @@
   ],
   "source_quality_events": [
     "SOURCE_MISSING",
-    "SOURCE_STALE"
+    "SOURCE_STALE",
+    "SOURCE_INPUT_FOLDER_MISSING"
+  ],
+  "direct_input_required_files": [
+    "DWS_Outputs/付款请示群/chat_records/chat_records.csv",
+    "DWS_Outputs/付款请示群/_manifest/manifest.csv",
+    "DWS_Outputs/生产管理群/chat_records/chat_records.csv",
+    "DWS_Outputs/生产管理群/_manifest/manifest.csv"
   ],
   "private_runtime_policy": "Do not commit notification targets, SQLite, raw DWS output, OCR raw bodies, webhook URLs, tokens, resolved DingTalk IDs, screenshots, or notification receipts."
 }

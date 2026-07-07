@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import unittest
 from datetime import date, datetime
+from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from KMFA.tools.daily_routine_check.archive_reader import DwsArchiveReader
+from KMFA.tools.daily_routine_check.healthcheck import build_source_readiness
 from KMFA.tools.daily_routine_check.ledger import connect, write_run_payload
 from KMFA.tools.daily_routine_check.main import (
     build_notification_events,
@@ -374,6 +376,22 @@ class TriggerWindowTests(unittest.TestCase):
             )
             stale = reader.inspect_group_sources("生产管理群", date(2026, 7, 7))
             self.assertEqual(stale[0]["issue_type"], "SOURCE_STALE")
+
+    def test_healthcheck_reports_zip_placeholder_as_not_direct_input_ready(self) -> None:
+        with TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            (base / "DWS_Outputs.zip").write_text("placeholder", encoding="utf-8")
+            (base / "DWS_Archive" / "付款请示群" / "files" / "0707").mkdir(parents=True)
+            readiness = build_source_readiness(base / "DWS_Outputs")
+
+        self.assertFalse(readiness["direct_input_ready"])
+        self.assertTrue(readiness["zip_present"])
+        self.assertTrue(readiness["archive_present"])
+        self.assertEqual(readiness["status"], "SOURCE_INPUT_FOLDER_MISSING")
+        self.assertTrue(any(
+            item.endswith("DWS_Outputs/付款请示群/chat_records/chat_records.csv")
+            for item in readiness["next_enable_conditions"]
+        ))
 
 
 if __name__ == "__main__":
