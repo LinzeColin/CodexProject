@@ -1522,3 +1522,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: preparation_item_count=72, owner_authorized_anchor_confirmation_item_count=72, owner_authorized_anchor_confirmation_count=72 and anchor_confirmation_blocker_item_count=0 confirm private anchor handles; unresolved_difference_count=72 and full_raw_to_processed_value_comparison_complete=false keep value consistency unverified until a later formal comparison precheck.
 - gate: `NO_GO`; raw-to-processed comparison is allowed only for the next phase, while reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private confirmation diagnostic, queue and report stay under ignored runtime and raw inbox remains untouched.
+
+## V014 Residual Difference Raw-To-Processed Comparison Precheck After Owner Anchor Confirmation
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-COMPARISON-PRECHECK-AFTER-OWNER-ANCHOR-CONFIRMATION-001`
+- parameter_ids: `PARAM-KMFA-1480`, `PARAM-KMFA-1481`, `PARAM-KMFA-1482`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION`
+- version: `0.1.4-residual-difference-raw-to-processed-comparison-precheck-after-owner-anchor-confirmation`
+- rule: source_owner_authorized_anchor_confirmation_count=72, source_anchor_confirmation_blocker_item_count=0, comparison_precheck_item_count=72, comparison_precheck_ready_record_count=72 and comparison_precheck_blocker_record_count=0 mark confirmed private anchor handles ready for a later formal comparison; unresolved_difference_count=72 and raw_to_processed_value_comparison_performed_by_this_phase=false keep value consistency unverified.
+- gate: `NO_GO`; formal comparison is allowed only for the next phase, while this phase keeps comparison execution, reconciliation, formal report, GitHub upload, app reinstall and business execution blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private precheck diagnostic, ready queue, blocker queue and report stay under ignored runtime and raw inbox remains untouched.

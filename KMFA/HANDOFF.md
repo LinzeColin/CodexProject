@@ -1041,3 +1041,44 @@ Next allowed step:
 - Single phase only: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION`.
 - Do not run Stage review, GitHub upload, app reinstall, formal report, reconciliation, lineage full check, live connector or business execution from this state.
 - Later cross-validation must reconcile processed outputs to raw source truth; if repeated verification still diverges, goal closeout must include the private/public-safe discrepancy report boundary.
+
+## 2026-07-07 Latest Handoff - V014 Raw-To-Processed Comparison Precheck After Owner Anchor Confirmation
+
+Current phase completed locally: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION`.
+
+Current state:
+- `source_owner_authorized_anchor_confirmation_count=72`
+- `source_anchor_confirmation_blocker_item_count=0`
+- `comparison_precheck_item_count=72`
+- `comparison_precheck_ready_record_count=72`
+- `comparison_precheck_blocker_record_count=0`
+- `raw_to_processed_value_comparison_precheck_after_owner_anchor_confirmation_performed_by_this_phase=true`
+- `raw_to_processed_value_comparison_ready=true`
+- `formal_raw_to_processed_comparison_allowed_next_phase=true`
+- `formal_raw_to_processed_comparison_allowed_by_this_phase=false`
+- `raw_to_processed_value_comparison_performed_by_this_phase=false`
+- `full_raw_to_processed_value_comparison_complete=false`
+- `business_value_consistency_verified=false`
+- `unresolved_difference_count=72`
+- `go_no_go=NO_GO`
+- `github_upload_performed=false`
+- `app_reinstall_performed=false`
+- raw inbox was not read, listed, parsed, fingerprinted, copied, moved, renamed, deleted, overwritten, normalized or written by this phase.
+
+Private output:
+- Private precheck diagnostic, ready queue, blocker queue and report are under the project ignored private runtime directory for this phase.
+- These private outputs must not be committed to GitHub.
+
+Evidence:
+- `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION/machine/residual_difference_raw_to_processed_comparison_precheck_after_owner_anchor_confirmation_manifest.json`
+- `KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_precheck_after_owner_anchor_confirmation.py`
+- `KMFA/tests/test_v014_residual_difference_raw_to_processed_comparison_precheck_after_owner_anchor_confirmation.py`
+
+Verified:
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_precheck_after_owner_anchor_confirmation.py --require-private-precheck`
+- `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_v014_residual_difference_raw_to_processed_comparison_precheck_after_owner_anchor_confirmation.py`
+
+Next allowed step:
+- Single phase only: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_AFTER_OWNER_ANCHOR_CONFIRMATION`.
+- Do not run Stage review, GitHub upload, app reinstall, formal report, reconciliation, lineage full check, live connector or business execution from this state.
+- Later cross-validation must reconcile processed outputs to raw source truth; if repeated verification still diverges, goal closeout must include the private/public-safe discrepancy report boundary.
