@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 5 Phase 5.2
+
+- Upgraded the isolated Memory River C3 spike to
+  `memory_river_c3_spike.v1_1_7_stage5_phase2`.
+- Added year, month, week and day time scale levels with D3 UTC ticks.
+- Added brush-driven selected range themes, selected range events and selected
+  Black Hole / Proto-Star signal output.
+- Added trend lanes for `rising`, `declining`, `stable` and `conflict`.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage5_phase2_c3_river_spike_acceptance.md`.
+- Added `validate:v1.1.7-stage5-phase2` and
+  `validate:memory-river-spike-browser`.
+- Registered `MA-V117-S5P02` / `ACC-MA-V117-S5P02` with status
+  `phase_5_2_c3_river_spike_completed_pending_stage5_review`.
+
+Phase 5.2 C3 River Spike only. No production Timeline replacement, production
+route, navigation change, feature flag default switch, raw/private data read,
+direct active-memory writeback, agent apply, Stage 5.3, deploy or GitHub main
+upload was added.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 5 Phase 5.1
 
 - Added the v1.1.7 Stage 5 Phase 5.1 Interaction Contract addendum to

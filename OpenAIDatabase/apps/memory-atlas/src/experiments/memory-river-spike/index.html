@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:," />
     <title>Memory River Spike</title>
     <style>
       :root {
@@ -89,6 +90,10 @@
         font-size: 13px;
       }
 
+      .brush-metric {
+        margin-top: 6px;
+      }
+
       .controls {
         position: fixed;
         right: 18px;
@@ -147,6 +152,42 @@
         color: #c4d6e8;
         font-size: 13px;
         line-height: 1.5;
+      }
+
+      .selection-summary {
+        position: fixed;
+        left: 18px;
+        top: auto;
+        bottom: 18px;
+        z-index: 4;
+        width: min(560px, calc(100vw - 36px));
+        padding: 12px 14px;
+      }
+
+      .selection-summary h2 {
+        margin: 0 0 7px;
+        font-size: 13px;
+      }
+
+      .selection-summary dl {
+        display: grid;
+        grid-template-columns: 78px minmax(0, 1fr);
+        gap: 5px 10px;
+        margin: 0;
+        font-size: 12px;
+      }
+
+      .selection-summary dt {
+        color: #8fd3ff;
+        font-weight: 700;
+      }
+
+      .selection-summary dd {
+        margin: 0;
+        overflow: hidden;
+        color: #c4d6e8;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       .status-line {
@@ -220,6 +261,10 @@
           display: none;
         }
 
+        .selection-summary {
+          display: none;
+        }
+
         .metrics {
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
@@ -229,17 +274,27 @@
   <body data-reduced-motion="false">
     <main id="app" aria-label="Memory River Spike"></main>
     <section class="panel" aria-label="Memory River status">
-      <p class="eyebrow">Memory Atlas v1.1.5 · isolated C3 spike</p>
+      <p class="eyebrow">Memory Atlas v1.1.7 · Stage 5.2 isolated C3 spike</p>
       <h1>记忆时间河 D3 交互原型</h1>
       <div class="metrics">
         <div class="metric"><span>Lanes</span><strong id="laneCount">0</strong></div>
         <div class="metric"><span>Events</span><strong id="eventCount">0</strong></div>
         <div class="metric"><span>Zoom</span><strong id="zoomReadout">1.00x</strong></div>
-        <div class="metric"><span>Brush</span><strong id="brushReadout">none</strong></div>
+        <div class="metric"><span>Level</span><strong id="timeLevelReadout">month</strong></div>
       </div>
+      <div class="metric brush-metric"><span>Brush</span><strong id="brushReadout">none</strong></div>
       <div class="status-line" id="statusLine">滚轮或触控板缩放；拖动河道下方选择时间段。</div>
     </section>
     <section class="controls" aria-label="River controls">
+      <label>
+        Time scale level
+        <select id="timeLevelControl">
+          <option value="year">Year</option>
+          <option value="month" selected>Month</option>
+          <option value="week">Week</option>
+          <option value="day">Day</option>
+        </select>
+      </label>
       <label>
         View mode
         <select id="modeControl">
@@ -252,6 +307,17 @@
         <input id="reducedMotionControl" type="checkbox" />
       </label>
       <button id="resetButton" type="button">Reset zoom / brush</button>
+    </section>
+    <section class="selection-summary panel" aria-label="Selected range summary">
+      <h2>Selected range summary</h2>
+      <dl>
+        <dt>Themes</dt>
+        <dd id="selectedRangeThemes">No selected themes</dd>
+        <dt>Events</dt>
+        <dd id="selectedRangeEvents">No selected events</dd>
+        <dt>Signals</dt>
+        <dd id="selectedRangeSignals">No selected Black Hole / Proto-Star signals</dd>
+      </dl>
     </section>
     <aside class="hover-card" id="hoverCard" data-empty="true" aria-live="polite">
       <h2>Hover river element</h2>

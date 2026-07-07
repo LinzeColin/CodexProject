@@ -1,3 +1,36 @@
+## v1.1.7 Stage 5 Phase 5.2：C3 River Spike
+
+状态：`phase_5_2_c3_river_spike_completed_pending_stage5_review`。
+
+任务 ID：`MA-V117-S5P02`。
+
+验收 ID：`ACC-MA-V117-S5P02`。
+
+本 phase 将 isolated `memory-river-spike` 升级为
+`memory_river_c3_spike.v1_1_7_stage5_phase2`。交付面覆盖 year/month/week/day
+time scale、zoom、brush selected range summary、theme trend lanes、Black Hole /
+Proto-Star date positioning、reduced motion 和浏览器截图验收。
+
+涉及文件：
+
+- `apps/memory-atlas/src/experiments/memory-river-spike/README.md`
+- `apps/memory-atlas/src/experiments/memory-river-spike/fixture.ts`
+- `apps/memory-atlas/src/experiments/memory-river-spike/index.html`
+- `apps/memory-atlas/src/experiments/memory-river-spike/main.ts`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage5_phase2.cjs`
+- `apps/memory-atlas/scripts/validate_memory_river_spike_browser.cjs`
+- `docs/product/memory_river_c3_spike_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage5_phase2_c3_river_spike_acceptance.md`
+
+验收：
+
+- `validate:v1.1.7-stage5-phase2`
+- `validate:memory-river-spike-browser`
+- `ACC-MA-V117-S5P02`
+- Browser gate 覆盖 time levels、zoom、brush selected range、trend lanes、Black Hole / Proto-Star positioning、reduced motion 和 screenshot。
+
+Machine-readable boundary summary: Stage 5 Phase 5.2 C3 River Spike; MA-V117-S5P02; ACC-MA-V117-S5P02; phase_5_2_c3_river_spike_completed_pending_stage5_review; validate:v1.1.7-stage5-phase2; validate:memory-river-spike-browser; memory_river_c3_spike.v1_1_7_stage5_phase2; Phase 5.2; No production Timeline replacement; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
 ## v1.1.7 Stage 5 Phase 5.1：Memory River Interaction Contract
 
 状态：`phase_5_1_interaction_contract_completed_pending_stage5_review`。

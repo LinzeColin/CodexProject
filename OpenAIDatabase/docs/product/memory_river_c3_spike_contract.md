@@ -1,5 +1,76 @@
 # Memory Atlas 记忆时间河 C3 隔离原型合同
 
+## v1.1.7 Stage 5 Phase 5.2 C3 River Spike
+
+- Version: v1.1.7 Stage 5 Phase 5.2
+- Contract ID: `memory_river_c3_spike.v1_1_7_stage5_phase2`
+- Task ID: `MA-V117-S5P02`
+- Acceptance ID: `ACC-MA-V117-S5P02`
+- Status: `phase_5_2_c3_river_spike_completed_pending_stage5_review`
+- Validators: `validate:v1.1.7-stage5-phase2`,
+  `validate:memory-river-spike-browser`
+
+### Goal
+
+Stage 5 Phase 5.2 upgrades the isolated C3 Memory River spike so the v1.1.7
+roadmap can validate the interaction model before production Timeline
+replacement. The output is still a standalone experiment under
+`apps/memory-atlas/src/experiments/memory-river-spike/`.
+
+This phase implements the roadmap tasks:
+
+1. Time Scale + Zoom: support year, month, week and day levels through D3 UTC
+   scale ticks and zoom-linked level changes.
+2. Brush Selection: selecting a time interval updates a selected range summary
+   with themes, events and status signals.
+3. Theme Lanes: lanes show rising, declining, stable and conflict trends.
+4. Black Hole / Proto-Star Bands: status bands and opportunity markers remain
+   date-positioned and explainable in hover cards and smoke metrics.
+
+### Required Prototype Features
+
+The spike must expose:
+
+- `memory_river_c3_spike.v1_1_7_stage5_phase2`
+- `year_level`, `month_level`, `week_level`, `day_level`
+- `selected_range_summary`
+- `trend: rising`
+- `trend: declining`
+- `trend: stable`
+- `trend: conflict`
+- `Black Hole` date-positioned band evidence
+- `Proto-Star` date-positioned marker evidence
+- reduced-motion control
+- hidden smoke metrics through `window.__memoryRiverSpike`
+
+### Acceptance Evidence
+
+Required validation:
+
+```bash
+pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:v1.1.7-stage5-phase2
+python /Users/linzezhang/.codex/skills/webapp-testing/scripts/with_server.py --server "pnpm --dir OpenAIDatabase/apps/memory-atlas exec vite --host 127.0.0.1 --port 5196" --port 5196 -- node OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_river_spike_browser.cjs --url http://127.0.0.1:5196/src/experiments/memory-river-spike/index.html?smoke=1 --output-dir /tmp/memory-river-stage5-phase2
+```
+
+### Safety Boundary
+
+- No production Timeline replacement.
+- No production route or navigation change.
+- No feature flag default switch.
+- No raw/private/cookie/session/secret data read.
+- No direct active-memory writeback.
+- No proposal write.
+- No agent apply.
+- No Stage 5.3.
+- No GitHub main upload before the whole Stage 0-10 project is complete.
+
+Machine-readable boundary summary: v1.1.7 Stage 5 Phase 5.2; MA-V117-S5P02;
+ACC-MA-V117-S5P02;
+phase_5_2_c3_river_spike_completed_pending_stage5_review;
+memory_river_c3_spike.v1_1_7_stage5_phase2; Time Scale + Zoom; Brush
+Selection; Theme Lanes; Black Hole / Proto-Star Bands; No production Timeline
+replacement; No GitHub main upload.
+
 - Version: v1.1.6 Stage 9 Phase 2
 - Contract ID: `memory_river_c3_spike_contract`
 - Task ID: `MA-V116-S9P02`
