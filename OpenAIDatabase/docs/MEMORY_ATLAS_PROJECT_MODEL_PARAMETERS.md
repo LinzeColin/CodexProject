@@ -1,3 +1,44 @@
+## 96. Memory Atlas v1.1.7 Stage 7 Phase 7.2 Review / Summary / Iteration Runtime
+
+状态：`phase_7_2_review_summary_iteration_runtime_completed_pending_stage7_review`。
+
+验收 ID：`ACC-MA-V117-S7P02`。
+
+模型参数：
+
+- Runtime version 固定为 `review_summary_iteration_runtime.v1_1_7_stage7_phase2`。
+- Review schema version 固定为 `memory_atlas_review_summary.v1_1_7_stage7_phase2`。
+- `validate:v1.1.7-stage7-phase2` 是本 phase 必跑 validator。
+- `validate:review-summary-iteration-browser` 是本 phase 浏览器 validator。
+- Review / Summary / Iteration 输出必须显示 `proposal_candidate`、`evidence_refs` 和 `iteration_backlog`。
+- Runtime 必须回答八个复盘问题，并显示 review period、proposal-only 决策和 iteration backlog。
+- No Stage 8 summary closure。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage7_phase2.cjs`
+- `apps/memory-atlas/scripts/validate_review_summary_iteration_browser.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S7P02-001 stage7_phase2_status = phase_7_2_review_summary_iteration_runtime_completed_pending_stage7_review`
+- `PARAM-MA-V117-S7P02-002 stage7_phase2_required_validator = validate:v1.1.7-stage7-phase2`
+- `PARAM-MA-V117-S7P02-003 stage7_phase2_browser_validator = validate:review-summary-iteration-browser`
+- `PARAM-MA-V117-S7P02-004 review_summary_iteration_runtime_version = review_summary_iteration_runtime.v1_1_7_stage7_phase2`
+- `PARAM-MA-V117-S7P02-005 review_summary_iteration_schema_version = memory_atlas_review_summary.v1_1_7_stage7_phase2`
+- `PARAM-MA-V117-S7P02-006 output_fields = proposal_candidate;evidence_refs;iteration_backlog`
+- `PARAM-MA-V117-S7P02-007 boundary = No Stage 8 summary closure;No GitHub main upload;No raw/private read;No direct active-memory writeback`
+
+验收信号：
+
+- `window.__memoryAtlasStage7Phase2` reports runtime version, schema version, question count, panel ids, evidence refs, iteration item count and safety flags.
+- Browser screenshot validates the production `summary` view.
+
+Machine-readable boundary summary: Phase 7.2; Review / Summary / Iteration; MA-V117-S7P02; ACC-MA-V117-S7P02; phase_7_2_review_summary_iteration_runtime_completed_pending_stage7_review; validate:v1.1.7-stage7-phase2; validate:review-summary-iteration-browser; review_summary_iteration_runtime.v1_1_7_stage7_phase2; memory_atlas_review_summary.v1_1_7_stage7_phase2; proposal_candidate; evidence_refs; iteration_backlog; No Stage 8 summary closure; No GitHub main upload; No raw/private read; No direct active-memory writeback; No agent apply.
+
 ## 95. Memory Atlas v1.1.7 Stage 7 Phase 7.1 Search 2.0 Runtime
 
 状态：`phase_7_1_search_2_0_runtime_completed_pending_stage7_review`。

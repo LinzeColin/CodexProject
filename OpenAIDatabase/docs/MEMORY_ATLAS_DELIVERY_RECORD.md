@@ -1,3 +1,34 @@
+## v1.1.7 Stage 7 Phase 7.2：Review / Summary / Iteration Runtime
+
+状态：`phase_7_2_review_summary_iteration_runtime_completed_pending_stage7_review`。
+
+任务 ID：`MA-V117-S7P02`。
+
+验收 ID：`ACC-MA-V117-S7P02`。
+
+本 phase 将 Review / Summary / Iteration 接入 production `summary` view。
+Runtime version 为 `review_summary_iteration_runtime.v1_1_7_stage7_phase2`，
+schema version 为 `memory_atlas_review_summary.v1_1_7_stage7_phase2`。运行时回答八个复盘问题，并显示
+`proposal_candidate`、`evidence_refs` 和 `iteration_backlog`。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage7_phase2.cjs`
+- `apps/memory-atlas/scripts/validate_review_summary_iteration_browser.cjs`
+- `docs/product/review_summary_iteration_workflow_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage7_phase2_review_summary_iteration_runtime_acceptance.md`
+
+验收：
+
+- `validate:v1.1.7-stage7-phase2`
+- `validate:review-summary-iteration-browser`
+- `ACC-MA-V117-S7P02`
+- Browser gate 覆盖 runtime root、八问、schema output、debug signal、screenshot 和 console safety。
+
+Machine-readable boundary summary: Phase 7.2; Review / Summary / Iteration; MA-V117-S7P02; ACC-MA-V117-S7P02; phase_7_2_review_summary_iteration_runtime_completed_pending_stage7_review; validate:v1.1.7-stage7-phase2; validate:review-summary-iteration-browser; review_summary_iteration_runtime.v1_1_7_stage7_phase2; memory_atlas_review_summary.v1_1_7_stage7_phase2; proposal_candidate; evidence_refs; iteration_backlog; No Stage 8 summary closure; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
 ## v1.1.7 Stage 7 Phase 7.1：Search 2.0 Runtime
 
 状态：`phase_7_1_search_2_0_runtime_completed_pending_stage7_review`。

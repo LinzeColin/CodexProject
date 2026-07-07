@@ -133,3 +133,18 @@ Stage 4 Phase 2 通过条件：
 ## 11. 回滚
 
 删除本合同、对应验收文件、validator、package script 和记录增量即可回滚。本 phase 不生成 runtime review data 或长期数据，因此不需要数据回滚。
+
+## Memory Atlas v1.1.7 Stage 7 Phase 7.2 Runtime Addendum
+
+- task_id: `MA-V117-S7P02`
+- acceptance_id: `ACC-MA-V117-S7P02`
+- status: `phase_7_2_review_summary_iteration_runtime_completed_pending_stage7_review`
+- runtime_version: `review_summary_iteration_runtime.v1_1_7_stage7_phase2`
+- review_schema_version: `memory_atlas_review_summary.v1_1_7_stage7_phase2`
+- validators: `validate:v1.1.7-stage7-phase2`; `validate:review-summary-iteration-browser`
+
+Stage 7 Phase 7.2 将本合同从 v1.1.6 合同层推进到 production `summary` view runtime。运行时必须在同一页提供 `review_period_selector`、`theme_change_panel`、`opportunity_panel`、`low_value_loop_panel`、`decision_change_panel`、`next_action_panel`、`proposal_decision_panel` 和 `iteration_backlog`。
+
+本 runtime 必须回答八个问题：本期主导主题是什么、哪些主题增强、哪些主题衰退、哪些新机会出现、哪些低价值循环出现、哪些决策变化、下一步动作是什么、是否需要生成 proposal。输出必须包含 `proposal_candidate`、`evidence_refs` 和 `iteration_backlog`，且 proposal handoff 仍为 proposal-only。
+
+Boundaries: No Stage 8 summary closure; No direct active-memory writeback; No raw/private/cookie/session/secret data access; No GitHub main upload. 本 phase 不写 proposal queue，不执行 agent apply，不上传 GitHub main。

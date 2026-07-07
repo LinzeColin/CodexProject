@@ -115,6 +115,51 @@ stage7_phase1_search_2_0_runtime:
     - no_agent_apply
     - no_deploy
     - no_github_main_upload
+stage7_phase2_review_summary_iteration_runtime:
+  task_id: MA-V117-S7P02
+  phase_label: Phase 7.2
+  feature_label: Review / Summary / Iteration
+  acceptance_id: ACC-MA-V117-S7P02
+  status: phase_7_2_review_summary_iteration_runtime_completed_pending_stage7_review
+  runtime_version: review_summary_iteration_runtime.v1_1_7_stage7_phase2
+  review_schema_version: memory_atlas_review_summary.v1_1_7_stage7_phase2
+  required_validator: validate:v1.1.7-stage7-phase2
+  browser_validator: validate:review-summary-iteration-browser
+  runtime_hook: window.__memoryAtlasStage7Phase2
+  required_panels:
+    - review_period_selector
+    - theme_change_panel
+    - opportunity_panel
+    - low_value_loop_panel
+    - decision_change_panel
+    - next_action_panel
+    - proposal_decision_panel
+    - iteration_backlog
+  output_fields:
+    - proposal_candidate
+    - evidence_refs
+    - iteration_backlog
+  browser_checks:
+    - runtime_root
+    - eight_questions
+    - schema_output
+    - debug_signal
+    - screenshot
+    - console_safety
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundary_label: "No Stage 8 summary closure; No GitHub main upload"
+  boundaries:
+    - no_stage8_summary_closure
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_agent_apply
+    - no_deploy
+    - no_github_main_upload
 stage6_phase1_data_map_structure:
   task_id: MA-V117-S6P01
   phase_label: Phase 6.1
