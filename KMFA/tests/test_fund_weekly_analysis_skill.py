@@ -396,6 +396,77 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertFalse(cross_review["management_conclusion_allowed"])
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
 
+    def test_runner_extracts_real_structured_csv_facts_without_management_conclusion(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+            source_day = input_dir / "files" / "0708"
+            source_day.mkdir(parents=True)
+            structured_csv = source_day / "20260708113000_吴云霞_资金日报.csv"
+            structured_csv.write_text(
+                "\n".join([
+                    "date,company,bank,account_alias,liquidity_tier,inflow,outflow,ending_balance,flow_type,due_date,risk_type",
+                    "2026-07-08,开明一公司,招商银行,基本户,T0_BANK_CASH,0,1000.00,9000.00,operating,,",
+                    "2026-07-08,开明一公司,招商银行,基本户,T0_BANK_CASH,3000.00,0,12000.00,internal_transfer,,",
+                    "2026-07-08,开明一公司,招商银行,基本户,T0_BANK_CASH,0,800.00,11200.00,tax,2026-07-15,tax_payable",
+                    "2026-07-08,开明一公司,招商银行,基本户,T0_BANK_CASH,500.00,0,11700.00,deposit,2026-07-20,deposit_release",
+                ]),
+                encoding="utf-8",
+            )
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "run_fund_weekly_analysis.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--input-dir",
+                    str(input_dir),
+                    "--run-id",
+                    "structured_csv_test",
+                    "--timezone",
+                    "Australia/Sydney",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/structured_csv_test"
+            manifest = json.loads((run_dir / "run_manifest.json").read_text(encoding="utf-8"))
+            self.assertEqual(manifest["status"], "STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW")
+            self.assertEqual(manifest["structured_fact_count"], 4)
+
+            with (run_dir / "fund_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
+                fund_rows = list(csv.DictReader(f))
+            self.assertEqual(len(fund_rows), 4)
+            self.assertEqual(fund_rows[0]["outflow"], "1000.00")
+            self.assertTrue(all(row["extraction_status"] == "structured_csv_extracted_pending_review" for row in fund_rows))
+
+            with (run_dir / "net_flow_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
+                net_rows = list(csv.DictReader(f))
+            self.assertEqual(net_rows[0]["external_inflow"], "500.00")
+            self.assertEqual(net_rows[0]["external_outflow"], "1800.00")
+            self.assertEqual(net_rows[0]["internal_transfer_in"], "3000.00")
+            self.assertEqual(net_rows[0]["internal_transfer_net"], "3000.00")
+
+            with (run_dir / "company_bank_matrix.csv").open(encoding="utf-8-sig", newline="") as f:
+                matrix_rows = list(csv.DictReader(f))
+            self.assertEqual(len(matrix_rows), 1)
+            self.assertEqual(matrix_rows[0]["ending_balance"], "11700.00")
+            self.assertEqual(matrix_rows[0]["evidence_count"], "4")
+
+            with (run_dir / "tax_loan_risk.csv").open(encoding="utf-8-sig", newline="") as f:
+                risk_rows = list(csv.DictReader(f))
+            self.assertEqual([row["risk_type"] for row in risk_rows], ["tax_payable", "deposit_release"])
+            self.assertEqual([row["amount"] for row in risk_rows], ["800.00", "500.00"])
+
+            cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
+            self.assertFalse(cross_review["management_conclusion_allowed"])
+            self.assertEqual(cross_review["generated_financial_amount_count"], 0)
+            self.assertEqual(cross_review["structured_financial_fact_count"], 4)
+
     def test_runner_fails_closed_when_input_file_is_unreadable(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             repo_root = Path(temp_dir) / "repo"

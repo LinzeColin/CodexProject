@@ -12,6 +12,7 @@ import argparse
 from collections import Counter
 import csv
 import datetime as dt
+from decimal import Decimal, InvalidOperation
 import hashlib
 import json
 import os
@@ -25,6 +26,17 @@ from zoneinfo import ZoneInfo
 DISALLOWED_PRODUCTION_MARKERS = ("sample", "demo", "fake", "synthetic", "模拟", "测试数据")
 PRIVATE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".xlsx", ".xls", ".csv", ".pdf", ".doc", ".docx", ".zip"}
 TEMPLATE_NAME = "资金与税费管理母版_真实数据预览_v2.xlsx"
+STRUCTURED_CSV_REQUIRED_FIELDS = {
+    "date",
+    "company",
+    "bank",
+    "account_alias",
+    "liquidity_tier",
+    "inflow",
+    "outflow",
+    "ending_balance",
+    "flow_type",
+}
 
 
 def sha256_file(path: Path, chunk_size: int = 1024 * 1024) -> str:
@@ -258,8 +270,156 @@ def write_csv(path: Path, fieldnames: list[str], rows: list[dict] | None = None)
             writer.writerows(rows)
 
 
-def write_no_hallucination_outputs(manifest: dict, run_dir: Path) -> None:
+def money(value: str | None) -> Decimal:
+    cleaned = (value or "").strip().replace(",", "")
+    if cleaned == "":
+        return Decimal("0.00")
+    try:
+        return Decimal(cleaned).quantize(Decimal("0.01"))
+    except InvalidOperation as exc:
+        raise ValueError(f"invalid money value: {value!r}") from exc
+
+
+def money_text(value: Decimal) -> str:
+    return f"{value.quantize(Decimal('0.01')):.2f}"
+
+
+def extract_structured_csv_facts(manifest: dict, input_dir: Path, evidence: list[dict]) -> dict:
+    evidence_by_path = {row["relative_path"]: row["evidence_id"] for row in evidence}
+    fund_rows: list[dict] = []
+    risk_rows: list[dict] = []
+    source_errors: list[dict] = []
+
+    for item in manifest["files"]:
+        if item["suffix"] != ".csv":
+            continue
+        csv_path = input_dir / item["relative_path"]
+        try:
+            with csv_path.open(encoding="utf-8-sig", newline="") as f:
+                reader = csv.DictReader(f)
+                fields = set(reader.fieldnames or [])
+                if not STRUCTURED_CSV_REQUIRED_FIELDS.issubset(fields):
+                    continue
+                for row_number, row in enumerate(reader, 2):
+                    inflow = money(row.get("inflow"))
+                    outflow = money(row.get("outflow"))
+                    ending_balance = money(row.get("ending_balance"))
+                    ledger_id = f"FL-{manifest['run_id']}-{len(fund_rows) + 1:05d}"
+                    evidence_id = evidence_by_path[item["relative_path"]]
+                    flow_type = (row.get("flow_type") or "unclassified").strip() or "unclassified"
+                    fund_rows.append({
+                        "ledger_id": ledger_id,
+                        "date": (row.get("date") or "").strip(),
+                        "company": (row.get("company") or "").strip(),
+                        "bank": (row.get("bank") or "").strip(),
+                        "account_alias": (row.get("account_alias") or "").strip(),
+                        "liquidity_tier": (row.get("liquidity_tier") or "").strip(),
+                        "inflow": money_text(inflow),
+                        "outflow": money_text(outflow),
+                        "ending_balance": money_text(ending_balance),
+                        "flow_type": flow_type,
+                        "source_evidence_id": evidence_id,
+                        "source_row_number": str(row_number),
+                        "extraction_status": "structured_csv_extracted_pending_review",
+                    })
+                    if flow_type in {"tax", "loan", "deposit"}:
+                        amount = outflow if outflow != Decimal("0.00") else inflow
+                        risk_rows.append({
+                            "risk_id": f"RISK-{manifest['run_id']}-{len(risk_rows) + 1:05d}",
+                            "risk_type": (row.get("risk_type") or flow_type).strip() or flow_type,
+                            "due_date": (row.get("due_date") or "").strip(),
+                            "amount": money_text(amount),
+                            "source_evidence_id": evidence_id,
+                            "review_status": "structured_csv_extracted_pending_review",
+                        })
+        except (OSError, ValueError) as exc:
+            source_errors.append({
+                "relative_path": item["relative_path"],
+                "issue_type": "STRUCTURED_CSV_PARSE_ERROR",
+                "severity": "blocking_for_this_file",
+                "error": str(exc),
+            })
+
+    return {
+        "fund_rows": fund_rows,
+        "net_flow_rows": build_net_flow_rows(fund_rows),
+        "matrix_rows": build_company_bank_matrix_rows(fund_rows),
+        "risk_rows": risk_rows,
+        "source_errors": source_errors,
+    }
+
+
+def build_net_flow_rows(fund_rows: list[dict]) -> list[dict]:
+    grouped: dict[str, dict[str, Decimal]] = {}
+    for row in fund_rows:
+        date = row["date"]
+        bucket = grouped.setdefault(date, {
+            "external_inflow": Decimal("0.00"),
+            "external_outflow": Decimal("0.00"),
+            "internal_transfer_in": Decimal("0.00"),
+            "internal_transfer_out": Decimal("0.00"),
+            "unclassified_net": Decimal("0.00"),
+        })
+        inflow = money(row["inflow"])
+        outflow = money(row["outflow"])
+        if row["flow_type"] == "internal_transfer":
+            bucket["internal_transfer_in"] += inflow
+            bucket["internal_transfer_out"] += outflow
+        else:
+            bucket["external_inflow"] += inflow
+            bucket["external_outflow"] += outflow
+            if row["flow_type"] == "unclassified":
+                bucket["unclassified_net"] += inflow - outflow
+    result = []
+    for date, bucket in sorted(grouped.items()):
+        result.append({
+            "date": date,
+            "external_inflow": money_text(bucket["external_inflow"]),
+            "external_outflow": money_text(bucket["external_outflow"]),
+            "internal_transfer_in": money_text(bucket["internal_transfer_in"]),
+            "internal_transfer_out": money_text(bucket["internal_transfer_out"]),
+            "internal_transfer_net": money_text(bucket["internal_transfer_in"] - bucket["internal_transfer_out"]),
+            "unclassified_net": money_text(bucket["unclassified_net"]),
+            "review_status": "structured_csv_extracted_pending_review",
+        })
+    return result
+
+
+def build_company_bank_matrix_rows(fund_rows: list[dict]) -> list[dict]:
+    grouped: dict[tuple[str, str, str, str], dict] = {}
+    for row in fund_rows:
+        key = (row["company"], row["bank"], row["account_alias"], row["liquidity_tier"])
+        current = grouped.get(key)
+        if current is None or (row["date"], row["source_row_number"]) >= (current["date"], current["source_row_number"]):
+            grouped[key] = {**row, "evidence_count": (current or {}).get("evidence_count", 0) + 1}
+        else:
+            current["evidence_count"] += 1
+    return [
+        {
+            "company": row["company"],
+            "bank": row["bank"],
+            "account_alias": row["account_alias"],
+            "liquidity_tier": row["liquidity_tier"],
+            "ending_balance": row["ending_balance"],
+            "evidence_count": str(row["evidence_count"]),
+            "review_status": "structured_csv_extracted_pending_review",
+        }
+        for row in sorted(grouped.values(), key=lambda item: (item["company"], item["bank"], item["account_alias"], item["liquidity_tier"]))
+    ]
+
+
+def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Path) -> None:
     evidence = write_evidence_index_stub(manifest, run_dir)
+    structured = extract_structured_csv_facts(manifest, input_dir, evidence)
+    if structured["fund_rows"]:
+        manifest["status"] = "STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW"
+        manifest["structured_fact_count"] = len(structured["fund_rows"])
+        manifest["data_quality_issues"] = [{
+            "issue_type": "STRUCTURED_FACTS_PENDING_REVIEW",
+            "severity": "blocking_for_management_conclusion",
+            "observed_at": manifest["generated_at"],
+            "action": "Structured CSV facts were extracted from real source files; human/cross review is still required before management conclusion.",
+        }]
     skill_root = Path(__file__).resolve().parents[1]
     template = skill_root / "templates" / TEMPLATE_NAME
     workbook_path = run_dir / f"资金与税费管理母版_{manifest['run_id']}.xlsx"
@@ -275,9 +435,11 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path) -> None:
         "inflow",
         "outflow",
         "ending_balance",
+        "flow_type",
         "source_evidence_id",
+        "source_row_number",
         "extraction_status",
-    ])
+    ], structured["fund_rows"])
     write_csv(run_dir / "net_flow_ledger.csv", [
         "date",
         "external_inflow",
@@ -287,7 +449,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path) -> None:
         "internal_transfer_net",
         "unclassified_net",
         "review_status",
-    ])
+    ], structured["net_flow_rows"])
     write_csv(run_dir / "company_bank_matrix.csv", [
         "company",
         "bank",
@@ -296,7 +458,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path) -> None:
         "ending_balance",
         "evidence_count",
         "review_status",
-    ])
+    ], structured["matrix_rows"])
     write_csv(run_dir / "tax_loan_risk.csv", [
         "risk_id",
         "risk_type",
@@ -304,7 +466,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path) -> None:
         "amount",
         "source_evidence_id",
         "review_status",
-    ])
+    ], structured["risk_rows"])
     write_csv(
         run_dir / "exception_tasks.csv",
         ["task_id", "evidence_id", "task_type", "severity", "reason", "relative_path", "review_status"],
@@ -326,6 +488,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path) -> None:
         "run_id": manifest["run_id"],
         "management_conclusion_allowed": False,
         "generated_financial_amount_count": 0,
+        "structured_financial_fact_count": len(structured["fund_rows"]),
         "excel_workbook_generated": True,
         "workbook": workbook_path.name,
         "source_file_count": manifest["file_count"],
@@ -344,6 +507,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path) -> None:
             {
                 "event": "no_hallucination_outputs_written",
                 "generated_financial_amount_count": 0,
+                "structured_financial_fact_count": len(structured["fund_rows"]),
                 "management_conclusion_allowed": False,
             },
         ], ensure_ascii=False, indent=2),
@@ -438,12 +602,13 @@ def main() -> int:
         write_source_unreadable_artifacts(manifest, run_dir)
         print(json.dumps({"run_id": run_id, "run_dir": str(run_dir), "status": "SOURCE_UNREADABLE", "unreadable_count": manifest["unreadable_count"]}, ensure_ascii=False))
         return 5
+    write_no_hallucination_outputs(manifest, run_dir, input_dir)
     (run_dir / "run_manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
-    write_no_hallucination_outputs(manifest, run_dir)
     (run_dir / "run_summary.md").write_text(
         f"# Fund weekly analysis run {run_id}\n\n"
-        f"Status: INDEXED_PENDING_EXTRACTION\n\n"
+        f"Status: {manifest['status']}\n\n"
         f"Indexed {manifest['file_count']} real source files and generated a native editable Excel workbook from the current mother template.\n\n"
+        f"Structured financial fact count: {manifest.get('structured_fact_count', 0)}\n\n"
         "No financial amount, management conclusion, or forecast was generated from unreviewed OCR/table extraction. "
         "Next step: perform OCR/table extraction, internal-transfer netting, cross-review, then promote reviewed facts only.\n",
         encoding="utf-8",
