@@ -11043,3 +11043,24 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private threshold recheck diagnostic, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-outside-scope-candidate-review-intake-blocker-threshold-recheck"
     completed_version: "0.1.4-outside-scope-candidate-review-intake-blocker-threshold-recheck"
+
+  - task_id: "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-OWNER-AUTHORIZED-DISCREPANCY-REPORT-20260707"
+    phase_id: "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_OWNER_AUTHORIZED_DISCREPANCY_REPORT"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-OWNER-AUTHORIZED-DISCREPANCY-REPORT"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_outside_scope_candidate_review_owner_authorized_discrepancy_report.py --generated-at 2026-07-07T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_candidate_review_owner_authorized_discrepancy_report.py --require-private-discrepancy"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_candidate_review_owner_authorized_discrepancy_report"
+    test_results:
+      - "PASS: owner-authorized discrepancy report validator and focused unit test passed; 72 unresolved review items were classified into an ignored private discrepancy queue while raw inbox, source-map correction, raw comparison and downstream gates stay closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_OWNER_AUTHORIZED_DISCREPANCY_REPORT/human/outside_scope_candidate_review_owner_authorized_discrepancy_report.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_OWNER_AUTHORIZED_DISCREPANCY_REPORT/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_OWNER_AUTHORIZED_DISCREPANCY_REPORT/machine/outside_scope_candidate_review_owner_authorized_discrepancy_report_manifest.json"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_OWNER_AUTHORIZED_DISCREPANCY_REPORT/machine/outside_scope_candidate_review_owner_authorized_discrepancy_report_matrix_public_safe.json"
+    risk: "The private discrepancy report can be mistaken for completed raw-to-processed consistency; this phase only records unresolved differences and does not assert value consistency."
+    rollback: "Remove current phase artifacts, metadata copies, private discrepancy report/queue, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-outside-scope-candidate-review-owner-authorized-discrepancy-report"
+    completed_version: "0.1.4-outside-scope-candidate-review-owner-authorized-discrepancy-report"

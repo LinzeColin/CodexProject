@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Outside-Scope Candidate Review Owner-Authorized Discrepancy Report
+
+## 0.1.4-outside-scope-candidate-review-owner-authorized-discrepancy-report - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_OWNER_AUTHORIZED_DISCREPANCY_REPORT` 本地单 phase。
+- 基于用户最新授权，Codex 在不读取、不修改 raw inbox 的前提下消费既有 ignored private review/alignment diagnostics，尝试自动保守决策。
+- 当前 aggregate 结果：review items=72、safe auto resolution=0、discrepancy queue=72、ambiguous tied candidates=24、no-candidate items=40、non-numeric/calculation items=8、direct exact private match=0、Go/No-Go=`NO_GO`。
+- 本 phase 未选择私有候选、未修正 source map、未运行正式 raw-to-processed comparison、未做 full reconciliation、未验证 business value consistency、未上传 GitHub、未重装 app、未执行业务动作。
+- private discrepancy report/queue 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、候选明文或私有 fingerprint/hash。
+
 # KMFA v0.1.4 Outside-Scope Candidate Review Intake Blocker Threshold Recheck
 
 ## 0.1.4-outside-scope-candidate-review-intake-blocker-threshold-recheck - 2026-07-07

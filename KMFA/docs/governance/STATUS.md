@@ -5,12 +5,12 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-outside-scope-candidate-review-intake-blocker-threshold-recheck`
+- version: `0.1.4-outside-scope-candidate-review-owner-authorized-discrepancy-report`
 - current_stage: `value-consistency`
-- current_phase: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_BLOCKER_THRESHOLD_RECHECK`
-- status: `completed_validated_local_only_outside_scope_candidate_review_intake_blocker_threshold_met_goal_blocked`
-- current_blocker: `outside_scope_candidate_review_intake_blocker_threshold_met_keep_pending_no_actionable_source_map_response`
-- next_required_input: `strong_owner_or_authorized_delegate_candidate_selection_or_source_map_reference_before_correction`
+- current_phase: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_OWNER_AUTHORIZED_DISCREPANCY_REPORT`
+- status: `completed_validated_local_only_owner_authorized_discrepancy_report_no_go`
+- current_blocker: `outside_scope_candidate_review_no_safe_exact_match_private_discrepancy_queue_available`
+- next_required_input: `none_owner_authorized_auto_closure_can_continue_private_runtime_only`
 - blocked_next_steps: `raw-to-processed comparison; processed-data reconciliation; business value consistency; lineage full check; formal report; GitHub upload; app reinstall; business execution`
 - production_ready: `false`
 - github_upload_ready: `false_blocked_by_value_consistency_lineage_and_release`
@@ -18,6 +18,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 outside-scope candidate review owner-authorized discrepancy report completed local-only: source_review_item_count=72，direct_exact_private_match_count=0，safe_auto_resolution_count=0，discrepancy_queue_item_count=72，ambiguous_tied_candidate_item_count=24，auto_unmatched_item_count=40，non_numeric_or_calculation_item_count=8，selected_private_candidate_count=0，corrected_source_map_reference_count=0，authoritative_non_numeric_or_calculation_mapping_count=0，source_map_correction_ready=false，raw_to_processed_value_comparison_performed=false，full_raw_to_processed_value_comparison_complete=false，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase reads only prior ignored private review/alignment diagnostics；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/parse/write/delete/move/rename/copy/normalize/mutation=false；private discrepancy report/queue stays in ignored runtime；source-map correction=false；full comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`none_owner_authorized_auto_closure_can_continue_private_runtime_only`。
 
 - v0.1.4 outside-scope candidate review intake blocker threshold recheck completed local-only: delegated_decision_record_count=72，delegated_keep_pending_response_count=72，selected_private_candidate_count=0，corrected_source_map_reference_count=0，authoritative_non_numeric_or_calculation_mapping_count=0，source_map_actionable_response_count=0，prior_review_intake_blocker_observation_count=2，review_intake_blocker_observation_count=3，review_intake_blocked_audit_threshold_met=true，goal_status_recommendation=blocked，source_map_correction_ready=false，source_map_correction_feasible_after_intake=false，raw_to_processed_value_comparison_performed=false，full_raw_to_processed_value_comparison_complete=false，business_value_consistency_verified=false，current Go/No-Go=NO_GO。This phase reads only the prior public-safe blocker audit summary/manifest and ignored private blocker audit diagnostic；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/parse/write/delete/move/rename/copy/normalize/mutation=false；private threshold recheck diagnostic stays in ignored runtime；candidate selection=false；source-map correction=false；full comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`strong_owner_or_authorized_delegate_candidate_selection_or_source_map_reference_before_correction`。
 
