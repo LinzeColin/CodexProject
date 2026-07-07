@@ -1,3 +1,32 @@
+## 99. Memory Atlas v1.1.7 Stage 8 Review
+
+状态：`stage_8_review_passed_pending_stage9_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V117-S8-REVIEW`。
+
+模型参数：
+
+- `validate:v1.1.7-stage8` 是本 review 必跑 validator。
+- Review artifact 固定为 `docs/reviews/memory_atlas_v1_1_7_stage8_review.md`。
+- Stage 8 覆盖 Phase 8.1 Summary and iteration closure。
+- Stage 8 review 通过后 pending Stage 9。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+参数记录：
+
+- `PARAM-MA-V117-S8-REVIEW-001 stage8_review_status = stage_8_review_passed_pending_stage9_no_github_main_upload`
+- `PARAM-MA-V117-S8-REVIEW-002 stage8_review_required_validator = validate:v1.1.7-stage8`
+- `PARAM-MA-V117-S8-REVIEW-003 stage8_review_artifact = docs/reviews/memory_atlas_v1_1_7_stage8_review.md`
+- `PARAM-MA-V117-S8-REVIEW-004 stage8_review_phase_coverage = Phase 8.1;Summary and iteration closure`
+- `PARAM-MA-V117-S8-REVIEW-005 stage8_review_next_gate = pending Stage 9`
+- `PARAM-MA-V117-S8-REVIEW-006 upload_boundary = No GitHub main upload before whole Stage 0-10 completion`
+
+验收信号：
+
+- `validate:v1.1.7-stage8` checks Phase 8.1, records, canonical remote, local branch and no-upload boundary.
+
+Machine-readable boundary summary: Stage 8 Review; MA-V117-S8-REVIEW; ACC-MA-V117-S8-REVIEW; stage_8_review_passed_pending_stage9_no_github_main_upload; validate:v1.1.7-stage8; Phase 8.1; Summary and iteration closure; pending Stage 9; No Stage 9 work; No GitHub main upload; No raw/private read; No direct active-memory writeback; No proposal queue write; No agent apply.
+
 ## 98. Memory Atlas v1.1.7 Stage 8 Phase 8.1 Summary Iteration Closure
 
 状态：`phase_8_1_summary_iteration_closure_runtime_completed_pending_stage8_review`。

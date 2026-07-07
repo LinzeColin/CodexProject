@@ -1,3 +1,41 @@
+## v1.1.7 Stage 8 Review：Summary Closure Gate
+
+状态：`stage_8_review_passed_pending_stage9_no_github_main_upload`。
+
+任务 ID：`MA-V117-S8-REVIEW`。
+
+验收 ID：`ACC-MA-V117-S8-REVIEW`。
+
+Stage 8 is review-passed and pending Stage 9. 本 review 固定一个已完成
+phase gate：Phase 8.1 Summary and iteration closure。它只补 Stage 8 review
+artifact、stage-level validator 和治理记录。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage8_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage8.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-stage8`
+- `ACC-MA-V117-S8-REVIEW`
+- Phase 8.1
+- Summary and iteration closure
+- pending Stage 9
+
+边界：
+
+- No Stage 9 work.
+- No raw/private/cookie/session/secret data access.
+- No direct active-memory writeback.
+- No proposal queue write.
+- No agent apply.
+- No Cloudflare deploy.
+- No GitHub main upload before the whole Stage 0-10 project is complete.
+
+Machine-readable boundary summary: Stage 8 Review; MA-V117-S8-REVIEW; ACC-MA-V117-S8-REVIEW; stage_8_review_passed_pending_stage9_no_github_main_upload; validate:v1.1.7-stage8; Phase 8.1; Summary and iteration closure; summary_iteration_closure_runtime.v1_1_7_stage8_phase1; memory_atlas_summary_closure.v1_1_7_stage8_phase1; change_comparison; stale_conflict_signals; proposal_candidates; pending Stage 9; No Stage 9 work; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No proposal queue write; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
 ## v1.1.7 Stage 8 Phase 8.1：Summary and Iteration Closure Runtime
 
 状态：`phase_8_1_summary_iteration_closure_runtime_completed_pending_stage8_review`。

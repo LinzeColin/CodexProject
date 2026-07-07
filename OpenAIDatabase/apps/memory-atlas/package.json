@@ -83,6 +83,7 @@
     "validate:v1.1.7-stage7-phase2": "node scripts/validate_memory_atlas_v1_1_7_stage7_phase2.cjs",
     "validate:v1.1.7-stage7": "node scripts/validate_memory_atlas_v1_1_7_stage7.cjs",
     "validate:v1.1.7-stage8-phase1": "node scripts/validate_memory_atlas_v1_1_7_stage8_phase1.cjs",
+    "validate:v1.1.7-stage8": "node scripts/validate_memory_atlas_v1_1_7_stage8.cjs",
     "validate:memory-starfield-spike-browser": "node scripts/validate_memory_starfield_spike_browser.cjs",
     "validate:memory-starfield-integration-browser": "node scripts/validate_memory_starfield_integration_browser.cjs",
     "validate:memory-river-spike-browser": "node scripts/validate_memory_river_spike_browser.cjs",
