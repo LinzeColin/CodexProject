@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 4 Review
+
+- Added `docs/reviews/memory_atlas_v1_1_7_stage4_review.md` to pin the
+  completed Stage 4 review gate.
+- Added `validate:v1.1.7-stage4` to validate Stage 3 continuity, Phase 4.1
+  Visual Contract Update, Phase 4.2 C3 Starfield Spike, Phase 4.3 Integration,
+  records, package script and no-upload boundary.
+- Registered `MA-V117-S4-REVIEW` / `ACC-MA-V117-S4-REVIEW` with status
+  `stage_4_review_passed_pending_stage5_no_github_main_upload`.
+- Marked Stage 4 as review-passed and pending Stage 5 while preserving
+  `No GitHub main upload` before the whole Stage 0-10 project is complete.
+
+No Stage 5 work, Memory River work, raw/private data read, direct active-memory
+writeback, agent apply, local app install, deploy or GitHub main upload was
+added.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 4 Phase 4.3 Integration
 
 - Integrated production Galaxy with

@@ -1,3 +1,36 @@
+## 87. Memory Atlas v1.1.7 Stage 4 Review Gate
+
+状态：`stage_4_review_passed_pending_stage5_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V117-S4-REVIEW`。
+
+模型参数：
+
+- Stage 4 Review 覆盖 Phase 4.1 / Phase 4.2 / Phase 4.3，不进入 Stage 5。
+- `validate:v1.1.7-stage4` 是整阶段必跑 validator。
+- Phase 4.1 Visual Contract Update、Phase 4.2 C3 Starfield Spike 和 Phase 4.3 Integration 是本 gate 的完整覆盖范围。
+- Stage 4 review status 固定为 `stage_4_review_passed_pending_stage5_no_github_main_upload`，pending Stage 5。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage4_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage4.cjs`
+- `apps/memory-atlas/package.json`
+
+参数记录：
+
+- `PARAM-MA-V117-S4-REVIEW-001 stage4_review_status = stage_4_review_passed_pending_stage5_no_github_main_upload`
+- `PARAM-MA-V117-S4-REVIEW-002 stage4_review_required_validator = validate:v1.1.7-stage4`
+- `PARAM-MA-V117-S4-REVIEW-003 stage4_review_phase_scope = Phase 4.1;Phase 4.2;Phase 4.3`
+- `PARAM-MA-V117-S4-REVIEW-004 stage4_review_deferred_work = pending Stage 5;Memory River refactor;Stage 6+ hardening;local app packaging;Cloudflare deploy;GitHub main upload`
+
+验收信号：
+
+- Stage 4 review artifact。
+- `validate:v1.1.7-stage4` 检查 Stage 3 continuity、Phase 4.1 / Phase 4.2 / Phase 4.3 validators、records、package script 和 no-upload boundary。
+- Boundary includes No GitHub main upload, No Stage 5 work, No raw/private read, No direct active-memory writeback, No agent apply and No build/deploy/app install。
+
 ## 86. Memory Atlas v1.1.7 Stage 4 Phase 4.3 Integration
 
 状态：`phase_4_3_integration_completed_pending_stage4_review`。
