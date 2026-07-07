@@ -11704,3 +11704,23 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private readiness outputs, tool, validator, focused test and governance entries; do not modify raw inbox or prior authorization-intake outputs."
     target_version: "0.1.4-residual-difference-owner-authorized-anchor-confirmation-authorization-readiness"
     completed_version: "0.1.4-residual-difference-owner-authorized-anchor-confirmation-authorization-readiness"
+  - task_id: "KMFA-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-PREPARATION-20260707"
+    phase_id: "V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_PREPARATION"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-PREPARATION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_residual_difference_owner_authorized_anchor_confirmation_preparation.py --generated-at 2026-07-07T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation_preparation.py --require-private-preparation"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tests/test_v014_residual_difference_owner_authorized_anchor_confirmation_preparation.py"
+    test_results:
+      - "PASS: owner-authorized anchor confirmation preparation validator and focused unit test passed; 72 private preparation items are ready for a later confirmation phase, no anchors were confirmed, and raw inbox, raw comparison and downstream gates stay closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_PREPARATION/human/residual_difference_owner_authorized_anchor_confirmation_preparation.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_PREPARATION/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_PREPARATION/machine/residual_difference_owner_authorized_anchor_confirmation_preparation_manifest.json"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_PREPARATION/machine/residual_difference_owner_authorized_anchor_confirmation_preparation_matrix_public_safe.json"
+    risk: "Preparation can be mistaken for owner-authorized anchor confirmation; this phase prepares private confirmation inputs only and keeps all comparison and downstream gates closed."
+    rollback: "Remove current phase artifacts, metadata copies, private preparation outputs, tool, validator, focused test and governance entries; do not modify raw inbox or prior authorization-readiness outputs."
+    target_version: "0.1.4-residual-difference-owner-authorized-anchor-confirmation-preparation"
+    completed_version: "0.1.4-residual-difference-owner-authorized-anchor-confirmation-preparation"
