@@ -105,6 +105,35 @@ def write_archive_run(month_dir: Path, *, run_id: str, work_date: str, manifest_
     (month_dir / f"{run_id}.manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
+def write_seed_record_only_raw(month_dir: Path, *, run_id: str, work_date: str) -> None:
+    month_dir.mkdir(parents=True, exist_ok=True)
+    rows = [
+        {"type": "metadata", "run_plan": {"run_id": run_id, "run_type": "seed"}},
+        {
+            "type": "employee_attendance",
+            "member": {"name": "员工甲", "userId": "u-secret-1"},
+            "work_date": work_date,
+            "record_list": [
+                {"checkTypeDesc": "上班", "userCheckTime": f"{work_date} 08:31:00", "locationText": "private"},
+                {"checkTypeDesc": "下班", "userCheckTime": f"{work_date} 18:31:00"},
+            ],
+        },
+        {
+            "type": "employee_attendance",
+            "member": {"name": "员工乙", "userId": "u-secret-2"},
+            "work_date": work_date,
+            "record_list": [
+                {"checkTypeDesc": "上班", "userCheckTime": f"{work_date} 08:29:00"},
+                {"checkTypeDesc": "下班", "userCheckTime": f"{work_date} 18:34:00", "locationText": "private"},
+            ],
+        },
+    ]
+    raw_path = month_dir / f"{run_id}.raw.jsonl.gz"
+    with gzip.open(raw_path, "wt", encoding="utf-8") as f:
+        for row in rows:
+            f.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+
+
 def test_raw_archive_month_replay_manifest_is_public_safe_and_stable():
     with tempfile.TemporaryDirectory() as td:
         archive_root = Path(td) / "private_onedrive"
@@ -174,7 +203,57 @@ def test_raw_archive_month_replay_manifest_fails_on_manifest_count_mismatch():
         assert data["live_dws_performed"] is False
 
 
+def test_raw_archive_month_replay_can_index_seed_raw_separately_and_enforce_location_gate():
+    with tempfile.TemporaryDirectory() as td:
+        archive_root = Path(td) / "private_onedrive"
+        month_dir = archive_root / "202607"
+        write_archive_run(month_dir, run_id="s19_evening_20260701_181500", work_date="2026-07-01")
+        write_seed_record_only_raw(month_dir, run_id="s19_seed_20260702_000000", work_date="2026-07-02")
+
+        base_cmd = [
+            sys.executable,
+            str(SCRIPT_DIR / "inspect_raw_archive_month.py"),
+            "--archive-root",
+            str(archive_root),
+            "--target-month",
+            "202607",
+            "--print-json",
+        ]
+        blocked = run(base_cmd, check=False)
+        assert blocked.returncode == 1
+        blocked_data = json.loads(blocked.stdout)
+        assert "raw_without_manifest:s19_seed_20260702_000000" in blocked_data["failures"]
+        assert blocked_data["seed_raw_without_manifest_count"] == 1
+
+        allowed = json.loads(run(base_cmd + ["--allow-seed-raw-without-manifest"]).stdout)
+        assert allowed["status"] == "pass"
+        assert allowed["raw_without_manifest_count"] == 1
+        assert allowed["seed_raw_without_manifest_count"] == 1
+        assert allowed["formal_raw_without_manifest_count"] == 0
+        assert allowed["checks"]["raw_manifest_pairs_complete"] is True
+        assert allowed["checks"]["seed_raw_without_manifest_indexed"] is True
+        assert allowed["seed_raw_stats_totals"]["member_count"] == 2
+        assert allowed["seed_raw_stats_totals"]["record_success_count"] == 2
+        assert allowed["seed_location_coverage"]["punch_count"] == 4
+        assert allowed["seed_location_coverage"]["punches_with_location_evidence"] == 2
+        assert allowed["seed_replay_hash"].startswith("sha256:")
+        payload = json.dumps(allowed, ensure_ascii=False)
+        assert "员工甲" not in payload
+        assert "u-secret" not in payload
+        assert str(archive_root) not in payload
+
+        location_blocked = run(base_cmd + ["--allow-seed-raw-without-manifest", "--min-location-coverage-ratio", "0.6"], check=False)
+        assert location_blocked.returncode == 1
+        location_data = json.loads(location_blocked.stdout)
+        assert "location_coverage_below_threshold:0.5<0.6" in location_data["failures"]
+        assert location_data["checks"]["location_coverage_threshold_met"] is False
+        assert location_data["postgres_connection_used"] is False
+        assert location_data["database_mutation_performed"] is False
+        assert location_data["live_dws_performed"] is False
+
+
 if __name__ == "__main__":
     test_raw_archive_month_replay_manifest_is_public_safe_and_stable()
     test_raw_archive_month_replay_manifest_fails_on_manifest_count_mismatch()
+    test_raw_archive_month_replay_can_index_seed_raw_separately_and_enforce_location_gate()
     print("raw archive replay tests passed")
