@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Outside-Scope Candidate Review Residual Difference Source-Map Correction Authorization Intake
+
+## 0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-authorization-intake - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_AUTHORIZATION_INTAKE` 本地单 phase。
+- 基于上一 final threshold public-safe artifacts 和 ignored private final threshold queue，记录 owner current-thread authorization，生成 private source-map correction / authoritative value resolution authorization active record 和 queue；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：authorization items=72、owner authorization intaken=true、private resolution preparation allowed next phase=true、source-map correction application readiness allowed next phase=true、source-map correction blockers=72、open residual differences=72、closed discrepancies=0、Go/No-Go=`NO_GO`。
+- 本 phase 不应用 source-map correction、不写 authoritative value resolution、不关闭差异、不运行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private authorization record、queue、diagnostic 和 report 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
 # KMFA v0.1.4 Outside-Scope Candidate Review Residual Difference Source-Map Correction Blocker Final Threshold Recheck
 
 ## 0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-blocker-final-threshold-recheck - 2026-07-07
