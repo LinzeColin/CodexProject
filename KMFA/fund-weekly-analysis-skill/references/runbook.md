@@ -15,8 +15,8 @@ The local scheduler uses Sydney local time. 11:30 Australia/Sydney is the operat
 9. If the configured folder exists but contains unreadable/cloud-only files, write `SOURCE_UNREADABLE`; do not generate a partial Excel package.
 10. If a private candidate is verified and the operator intends to populate the configured folder, run `tools/materialize_fund_source.py` first without `--apply`, inspect the manifest, then rerun with `--apply`.
 11. Build evidence index for screenshots and finance files.
-12. Write the `INDEXED_PENDING_EXTRACTION` no-hallucination output package first: current native Excel template copy, empty fact ledgers, exception tasks, cross-review JSON, audit log, and run summary.
-13. Extract only real values with source trace.
+12. Write the `INDEXED_PENDING_EXTRACTION` no-hallucination output package first: current native Excel template copy, fact ledgers, exception tasks, cross-review JSON, audit log, and run summary.
+13. Extract only real values with source trace. CSV files may be auto-extracted only when they contain the exact structured columns `date, company, bank, account_alias, liquidity_tier, inflow, outflow, ending_balance, flow_type`; those rows become `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW`, not management conclusions.
 14. Put low-confidence OCR/vision rows into review queue.
 15. Build funds ledger and net-flow ledger.
 16. Apply internal-transfer pairing before management rollups.
