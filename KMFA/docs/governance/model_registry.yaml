@@ -1,3 +1,18 @@
+kmfa_v014_outside_scope_candidate_review_residual_difference_source_map_correction_application:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-application"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-SOURCE-MAP-CORRECTION-APPLICATION-001
+  parameter_refs:
+    - PARAM-KMFA-1429
+    - PARAM-KMFA-1430
+    - PARAM-KMFA-1431
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_APPLICATION
+  validator: KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_source_map_correction_application.py
+  scope: Outside-scope candidate review residual-difference source-map correction application only; writes private application records and private materialization input while keeping materialization replay, raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution closed.
+
 kmfa_v014_outside_scope_candidate_review_residual_difference_source_map_correction_application_readiness:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-application-readiness"

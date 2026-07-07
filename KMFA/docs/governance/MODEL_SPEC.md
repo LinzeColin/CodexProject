@@ -1,3 +1,13 @@
+## FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-SOURCE-MAP-CORRECTION-APPLICATION-001
+
+- version: `0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-application`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: Apply residual-difference private source-map correction / authoritative value resolution records without reading raw inbox, running materialization replay, comparing values, uploading, reinstalling or executing business steps.
+- rule: application is valid only when source ready queue count=72, source blocker queue count=0, private application records applied=72, application blockers=0, private materialization input records=72, materialization replay ready=true, and materialization/raw-comparison/reconciliation/release/execution gates remain false.
+- public_safety: public artifacts contain aggregate counts, status flags and evidence refs only; private application outputs remain ignored and untracked.
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_source_map_correction_application.py --require-private-application`
+- evidence: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_APPLICATION/machine/outside_scope_candidate_review_residual_difference_source_map_correction_application_manifest.json`
+
 ## FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-SOURCE-MAP-CORRECTION-APPLICATION-READINESS-001
 
 - version: `0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-application-readiness`

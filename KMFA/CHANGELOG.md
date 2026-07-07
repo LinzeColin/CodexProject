@@ -1,3 +1,11 @@
+## 0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-application - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_APPLICATION` 本地单 phase。
+- 基于上一 application readiness public-safe artifacts 和 ignored private ready queue，将 72 条 residual-difference private source-map correction / authoritative value resolution application records 写入 ignored runtime；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：source ready queue=72、source blockers=0、private application records applied=72、application blockers=0、private materialization input records=72、materialization replay ready=true、open residual differences=72、closed discrepancies=0、Go/No-Go=`NO_GO`。
+- 本 phase 不执行 materialization replay、不运行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private diagnostic/result/application records/resolution overlay/materialization input/report 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
 ## 0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-application-readiness - 2026-07-07
 
 - 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_APPLICATION_READINESS` 本地单 phase。
