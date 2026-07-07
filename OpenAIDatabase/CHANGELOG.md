@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Final GitHub Main Upload
+
+- Added `docs/reviews/memory_atlas_v1_1_7_final_github_main_upload.md`.
+- Added `validate:v1.1.7-final-upload` for `MA-V117-FINAL-UPLOAD` /
+  `ACC-MA-V117-FINAL-GITHUB-MAIN`.
+- Registered status `final_github_main_upload_completed`.
+- Recorded that GitHub main points at the final upload commit for Memory Atlas
+  v1.1.7 Stage 0-10 and that `LinzeColin/CodexProject/OpenAIDatabase` is the
+  recovery source for future agents.
+- Preserved No remote development branch, No open pull request, No Cloudflare
+  live deploy, No raw/private/cookie/session/secret data access, No direct
+  active-memory writeback and No proposal queue write boundaries.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 10 Review
 
 - Added `docs/reviews/memory_atlas_v1_1_7_stage10_review.md` to pin the

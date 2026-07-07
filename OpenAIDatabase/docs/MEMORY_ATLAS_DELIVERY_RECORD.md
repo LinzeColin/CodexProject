@@ -1,3 +1,42 @@
+## v1.1.7 Final GitHub Main Upload
+
+状态：`final_github_main_upload_completed`。
+
+任务 ID：`MA-V117-FINAL-UPLOAD`。
+
+验收 ID：`ACC-MA-V117-FINAL-GITHUB-MAIN`。
+
+本 final upload 将 Memory Atlas v1.1.7 Stage 0-10 的完整开发、验收、
+治理记录和恢复资料同步到 GitHub main。GitHub main points at the final
+upload commit，并作为后续 agent 的恢复源。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_final_github_main_upload.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_final_upload.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-final-upload`
+- `validate:v1.1.7-stage10`
+- `ACC-MA-V117-FINAL-GITHUB-MAIN`
+- GitHub main points at the final upload commit
+- No remote development branch
+- No open pull request
+
+边界：
+
+- No remote development branch.
+- No open pull request.
+- No Cloudflare live deploy.
+- No raw/private/cookie/session/secret data access.
+- No direct active-memory writeback.
+- No proposal queue write.
+- No agent apply.
+
+Machine-readable boundary summary: Final GitHub Main Upload; MA-V117-FINAL-UPLOAD; ACC-MA-V117-FINAL-GITHUB-MAIN; final_github_main_upload_completed; validate:v1.1.7-final-upload; validate:v1.1.7-stage10; GitHub main points at the final upload commit; No remote development branch; No open pull request; No Cloudflare live deploy; No raw/private data read; No direct active-memory writeback; No proposal queue write.
+
 ## v1.1.7 Stage 10 Review：Final Hardening Gate
 
 状态：`stage_10_review_passed_pending_final_github_main_upload`。
