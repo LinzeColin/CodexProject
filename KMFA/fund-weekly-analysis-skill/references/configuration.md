@@ -1,0 +1,61 @@
+# Configuration
+
+Canonical input directory:
+
+```text
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群
+```
+
+Canonical repo target:
+
+```text
+KMFA/fund-weekly-analysis-skill/
+KMFA/metadata/fund_weekly_analysis/
+```
+
+Public-safe tracked metadata:
+
+```text
+KMFA/metadata/fund_weekly_analysis/README.md
+KMFA/metadata/fund_weekly_analysis/schema/*.yaml
+KMFA/metadata/fund_weekly_analysis/manifests/redacted_*.json
+KMFA/metadata/fund_weekly_analysis/.gitignore
+```
+
+Private runtime, gitignored:
+
+```text
+KMFA/metadata/fund_weekly_analysis/private_runtime/
+```
+
+Output run directory:
+
+```text
+KMFA/metadata/fund_weekly_analysis/private_runtime/runs/YYYYMMDDTHHMMSS+1000/
+```
+
+Scheduler timezone:
+
+```text
+Australia/Sydney
+```
+
+Scheduler local time:
+
+```text
+11:30
+```
+
+Reference only:
+
+```text
+11:30 Australia/Sydney == 09:30 Asia/Shanghai during the current UTC+10 offset
+```
+
+Default chart limit:
+
+```text
+max_chart_width_px: 1728
+max_chart_height_px: 864
+chart_type: line
+```

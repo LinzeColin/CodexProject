@@ -1,0 +1,69 @@
+workbook_name_pattern: "资金与税费管理母版_<run_id>.xlsx"
+compatibility: ["Microsoft Excel", "WPS"]
+native_elements_only: true
+no_images_as_report_elements: true
+font:
+  primary: "Microsoft YaHei"
+  fallback: "system sans-serif"
+colors:
+  title_fill: "#0F172A"
+  title_font: "#FFFFFF"
+  header_blue: "#1D4ED8"
+  header_teal: "#0F766E"
+  ok_fill: "#DCFCE7"
+  ok_font: "#15803D"
+  warning_fill: "#FEF3C7"
+  warning_font: "#D97706"
+  risk_fill: "#FEE2E2"
+  risk_font: "#DC2626"
+  border: "#CBD5E1"
+charts:
+  default_type: line
+  max_width_px: 1728
+  max_height_px: 864
+  homepage:
+    type: line
+    title: "资金余额走向：总资金 vs T0现金 vs 票据/电子汇票"
+    max_width_px: 1728
+    max_height_px: 864
+  trend:
+    type: line
+    max_width_px: 1728
+    max_height_px: 864
+sheets:
+  - name: "01_首页总览"
+    visible: true
+    purpose: "C-level/board weekly/monthly narrative dashboard"
+  - name: "02_资金趋势预测"
+    visible: true
+    purpose: "Weekly/monthly trend, line charts, future known risk/opportunity"
+  - name: "03_三层净流余额"
+    visible: true
+    purpose: "净化层+定位层+预测层 core ledger"
+    formulas:
+      account_net_change: "账户流入-账户流出"
+      available_cash_ratio: "T0银行存款/期末总资金"
+      external_net: "已识别外部流入-已识别外部流出"
+      internal_or_unclassified_net: "账户净变动-已识别外部净流"
+      continuity_diff: "期末总资金-(昨日总资金+账户净变动)"
+  - name: "04_税费融资风险"
+    visible: true
+    purpose: "Tax/loan/wealth-management/deposit pressure; visualized"
+  - name: "05_公司银行矩阵"
+    visible: true
+    purpose: "Every company x bank/account alias risk and flow matrix"
+  - name: "06_CodexSkill流程"
+    visible: true
+    purpose: "Agent run contract and automation flow"
+  - name: "H01_资金事实主表"
+    visible: false
+  - name: "H02_异常任务池"
+    visible: false
+  - name: "H03_钉钉证据索引"
+    visible: false
+  - name: "H04_客户合同辅助"
+    visible: false
+  - name: "H05_复审检查"
+    visible: false
+  - name: "H06_配置规则"
+    visible: false
