@@ -208,8 +208,125 @@ def test_postgres_load_plan_static_validator_checks_schema_and_conflicts():
         assert "conflict_target_not_backed_by_schema:stage2_shadow_run:target_month" in bad_data["failures"]
 
 
+def test_postgres_load_plan_execution_guard_requires_nonproduction_approval():
+    with tempfile.TemporaryDirectory() as td:
+        runtime = Path(td) / "private_runtime"
+        stage2_root = write_accepted_stage2(runtime)
+        out_dir = runtime / "db_landing" / "202607"
+        run([
+            sys.executable,
+            str(SCRIPT_DIR / "prepare_database_landing_bundle.py"),
+            "--stage2-root",
+            str(stage2_root),
+            "--target-month",
+            "202607",
+            "--out-dir",
+            str(out_dir),
+        ])
+        run([
+            sys.executable,
+            str(SCRIPT_DIR / "prepare_postgres_landing_loader.py"),
+            "--bundle-dir",
+            str(out_dir),
+        ])
+        guard_cmd = [
+            sys.executable,
+            str(SCRIPT_DIR / "execute_postgres_load_plan.py"),
+            "--schema",
+            str(ROOT / "database" / "postgres_schema.sql"),
+            "--views",
+            str(ROOT / "database" / "views_payroll_baseline.sql"),
+            "--bundle-dir",
+            str(out_dir),
+            "--print-json",
+        ]
+        dry = run(guard_cmd)
+        dry_data = json.loads(dry.stdout)
+        assert dry_data["status"] == "pass"
+        assert dry_data["mode"] == "postgres_load_plan_execution_guard"
+        assert dry_data["execute_requested"] is False
+        assert dry_data["psql_invoked"] is False
+        assert dry_data["postgres_connection_used"] is False
+        assert dry_data["database_mutation_performed"] is False
+        assert dry_data["live_dws_performed"] is False
+        assert dry_data["checks"]["static_validation_passed"] is True
+
+        blocked = run(
+            guard_cmd
+            + [
+                "--execute",
+                "--acknowledge-nonprod-mutation",
+                "--database-url",
+                "postgresql://localhost/kmfa_attendance_local",
+                "--target-env",
+                "local",
+            ],
+            check=False,
+        )
+        assert blocked.returncode == 1
+        blocked_data = json.loads(blocked.stdout)
+        assert "nonprod_execution_not_allowed" in blocked_data["failures"]
+        assert blocked_data["psql_invoked"] is False
+        assert blocked_data["database_mutation_performed"] is False
+
+        prod_env = os.environ.copy()
+        prod_env["KMFA_ALLOW_NONPROD_POSTGRES_EXECUTION"] = "1"
+        prod = run(
+            guard_cmd
+            + [
+                "--execute",
+                "--acknowledge-nonprod-mutation",
+                "--database-url",
+                "postgresql://db.prod.example/kmfa_attendance_prod",
+                "--target-env",
+                "production",
+            ],
+            env=prod_env,
+            check=False,
+        )
+        assert prod.returncode == 1
+        prod_data = json.loads(prod.stdout)
+        assert "target_env_not_nonproduction:production" in prod_data["failures"]
+        assert prod_data["psql_invoked"] is False
+
+        fake_psql = Path(td) / "fake_psql.sh"
+        fake_log = Path(td) / "fake_psql_args.txt"
+        fake_psql.write_text("#!/bin/sh\nprintf '%s\\n' \"$@\" > \"$KMFA_FAKE_PSQL_LOG\"\n", encoding="utf-8")
+        fake_psql.chmod(0o755)
+        env = os.environ.copy()
+        env.update({
+            "KMFA_ALLOW_NONPROD_POSTGRES_EXECUTION": "1",
+            "KMFA_ATTENDANCE_POSTGRES_DSN": "postgresql://localhost/kmfa_attendance_local",
+            "KMFA_POSTGRES_TARGET_ENV": "local",
+            "KMFA_FAKE_PSQL_LOG": str(fake_log),
+        })
+        executed = run(
+            guard_cmd
+            + [
+                "--execute",
+                "--acknowledge-nonprod-mutation",
+                "--psql-bin",
+                str(fake_psql),
+            ],
+            env=env,
+        )
+        executed_data = json.loads(executed.stdout)
+        assert executed_data["status"] == "pass"
+        assert executed_data["psql_invoked"] is True
+        assert executed_data["postgres_connection_used"] is True
+        assert executed_data["database_mutation_attempted"] is True
+        assert executed_data["database_mutation_performed"] is True
+        assert executed_data["live_dws_performed"] is False
+        fake_args = fake_log.read_text(encoding="utf-8")
+        assert "postgresql://localhost/kmfa_attendance_local" in fake_args
+        assert str(ROOT / "database" / "postgres_schema.sql") in fake_args
+        assert str(ROOT / "database" / "views_payroll_baseline.sql") in fake_args
+        assert str(out_dir / "postgres_load_plan.sql") in fake_args
+
+
 if __name__ == "__main__":
     test_database_landing_bundle_materializes_accepted_stage2_without_db_mutation()
     test_postgres_landing_load_plan_is_generated_without_database_connection()
     test_postgres_load_plan_static_validator_checks_schema_and_conflicts()
+    test_postgres_load_plan_execution_guard_requires_nonproduction_approval()
     print("database landing bundle tests passed")

@@ -104,6 +104,11 @@ Current status:
 - `scripts/validate_postgres_load_plan.py` statically validates the generated
   plan against `database/postgres_schema.sql` for table order, inserted
   columns, payload presence, and schema-backed conflict targets.
+- `scripts/execute_postgres_load_plan.py` is the fail-closed executor guard:
+  it performs static validation by default and invokes `psql` only when
+  `--execute`, `--acknowledge-nonprod-mutation`,
+  `KMFA_ALLOW_NONPROD_POSTGRES_EXECUTION=1`, a non-production target env, and a
+  database URL are all present.
 - The dry-run uses no PostgreSQL connection, no database mutation, no private
   raw data, and no live DWS.
 
@@ -113,7 +118,7 @@ Remaining work:
 2. Add idempotent import batch logic.
 3. Add raw result/detail ingestion.
 4. Add derived fact insertion.
-5. Review and statically validate the generated PostgreSQL JSONB/COPY loader SQL.
+5. Review, statically validate, and pass the fail-closed execution guard for the generated PostgreSQL JSONB/COPY loader SQL.
 6. Run against an explicitly configured non-production PostgreSQL target.
 
 ### Task 4 - Enforce location and trajectory evidence
