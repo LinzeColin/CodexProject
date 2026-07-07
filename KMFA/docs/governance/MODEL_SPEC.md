@@ -1657,3 +1657,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: source_application_blocker_threshold_recheck_item_count=48, source_application_blocker_observation_count=2, source_application_blocked_audit_threshold_met=false, source_private_application_blocker_threshold_record_count=48, prior_application_blocker_observation_count=2 and application_blocker_observation_count=3 prove this phase records the third blocker observation and strict threshold.
 - gate: `NO_GO`; application_blocked_audit_threshold_met=true, goal_status_recommendation=blocked, binding_ready_after_final_threshold_recheck_count=0, comparison_retry_ready_after_final_threshold_recheck_count=0, raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private final threshold diagnostic, records and report stay under ignored runtime and raw inbox remains untouched by this phase.
+
+## V014 Residual Difference Authorized Source Reference Or Exclusion Application Resolution Attempt After Final Threshold
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-RESOLUTION-ATTEMPT-AFTER-FINAL-THRESHOLD-001`
+- parameter_ids: `PARAM-KMFA-1519`, `PARAM-KMFA-1520`, `PARAM-KMFA-1521`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_RESOLUTION_ATTEMPT_AFTER_FINAL_THRESHOLD`
+- version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-resolution-attempt-after-final-threshold`
+- rule: source_application_blocker_final_threshold_recheck_item_count=48, source_application_blocker_observation_count=3, source_application_blocked_audit_threshold_met=true and source_private_application_blocker_final_threshold_record_count=48 prove this phase starts from final blocked threshold evidence; resolution_attempt_item_count=48, active_authoritative_resolution_application_count=0, auto_applied_authorized_resolution_count=0 and still_blocked_authorized_resolution_application_count=48 prove no authorized resolution can be applied from current private evidence.
+- gate: `NO_GO`; binding_ready_after_resolution_attempt_count=0, comparison_retry_ready_after_resolution_attempt_count=0, raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private resolution diagnostic, records and report stay under ignored runtime and raw inbox remains untouched by this phase.

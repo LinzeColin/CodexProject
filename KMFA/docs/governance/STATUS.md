@@ -668,3 +668,15 @@
 - result: observation 3 is recorded for all 48 private application blockers; strict blocked threshold is met, goal status recommendation is blocked, and no binding or comparison retry records are ready.
 - boundary: raw inbox access/mutation, authoritative binding, raw-to-processed value comparison, reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain false.
 - next: blocked until authorized source reference, owner exclusion, formula mapping or non-numeric mapping is applied; no Stage review or upload from this phase.
+
+## 2026-07-08 Latest - V014 Authorized Source Reference Or Exclusion Application Resolution Attempt After Final Threshold
+
+- phase: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_RESOLUTION_ATTEMPT_AFTER_FINAL_THRESHOLD`
+- product_version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-resolution-attempt-after-final-threshold`
+- status: `completed_validated_local_only_authorized_source_reference_or_exclusion_application_resolution_attempt_after_final_threshold_still_blocked_no_go`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_RESOLUTION_ATTEMPT_AFTER_FINAL_THRESHOLD/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_resolution_attempt_after_final_threshold.py --require-private-resolution`
+- locked counts: `source_application_blocker_final_threshold_recheck_item_count=48`, `source_application_blocker_observation_count=3`, `source_application_blocked_audit_threshold_met=true`, `source_private_application_blocker_final_threshold_record_count=48`, `resolution_attempt_item_count=48`, `active_authoritative_resolution_application_count=0`, `auto_applied_authorized_resolution_count=0`, `still_blocked_authorized_resolution_application_count=48`, `source_reference_or_owner_exclusion_application_blocker_count=40`, `formula_or_non_numeric_mapping_application_blocker_count=8`, `binding_ready_after_resolution_attempt_count=0`, `comparison_retry_ready_after_resolution_attempt_count=0`, `unresolved_difference_count=72`
+- result: current ignored private evidence contains zero active authoritative resolution applications, so no binding or comparison retry records are ready.
+- boundary: raw inbox access/mutation, authoritative binding, raw-to-processed value comparison, reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain false.
+- next: blocked until owner or authorized delegate supplies applicable source reference, owner exclusion, formula mapping or non-numeric mapping; no Stage review or upload from this phase.
