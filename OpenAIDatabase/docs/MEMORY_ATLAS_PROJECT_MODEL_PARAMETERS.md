@@ -1,3 +1,36 @@
+## 83. v1.1.7 Stage 3 Review Gate
+
+状态：`stage_3_review_passed_pending_stage4_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V117-S3-REVIEW`。
+
+模型参数：
+
+- Stage 3 Review 只复审 Phase 3.1 / Phase 3.2，不进入 Stage 4。
+- `validate:v1.1.7-stage3` 是整阶段必跑 validator。
+- Phase 3.1 Default Home Structure 和 Phase 3.2 Home Detail Operations 是本 gate 的完整覆盖范围。
+- Stage 3 review status 固定为 `stage_3_review_passed_pending_stage4_no_github_main_upload`，pending Stage 4。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage3_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage3.cjs`
+- `apps/memory-atlas/package.json`
+
+参数记录：
+
+- `PARAM-MA-V117-S3-REVIEW-001 stage3_review_status = stage_3_review_passed_pending_stage4_no_github_main_upload`
+- `PARAM-MA-V117-S3-REVIEW-002 stage3_review_required_validator = validate:v1.1.7-stage3`
+- `PARAM-MA-V117-S3-REVIEW-003 stage3_review_phase_scope = Phase 3.1;Phase 3.2`
+- `PARAM-MA-V117-S3-REVIEW-004 stage3_review_deferred_work = pending Stage 4;Memory Starfield refactor;Search 2.0;Review workflow;Data Map 2.0;browser screenshot;final app reinstall;GitHub main upload`
+
+验收信号：
+
+- Stage 3 review artifact。
+- `validate:v1.1.7-stage3` 检查 Stage 2 continuity、Phase 3.1 / Phase 3.2 validators、records、package script 和 no-upload boundary。
+- Boundary includes No GitHub main upload, No Stage 4 work, No raw/private read, No direct active-memory writeback, No agent apply and No build/deploy/app install。
+
 ## 82. v1.1.7 Stage 3 Phase 3.2 Home Detail Operations
 
 状态：`phase_3_2_home_detail_operations_completed_pending_stage3_review`。
