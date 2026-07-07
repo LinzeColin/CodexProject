@@ -1746,3 +1746,15 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_candidate_review_residual_difference_report`
 - boundary: this phase reports 72 private residual differences in ignored runtime; it does not read raw inbox, close discrepancies, correct source maps, compare raw to processed values, reconcile values, upload GitHub, reinstall app or execute business steps.
 - next_required_input: `private_residual_difference_report_available_for_diagnosis_no_raw_mutation`
+
+## 2026-07-07 - V014 Outside-Scope Candidate Review Residual Difference Diagnostic Handoff
+
+- task_id: `KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-DIAGNOSTIC-HANDOFF-20260707`
+- phase_id: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_DIAGNOSTIC_HANDOFF`
+- product_version: `0.1.4-outside-scope-candidate-review-residual-difference-diagnostic-handoff`
+- status: `completed_validated_local_only_residual_difference_diagnostic_handoff_no_go`
+- evidence_dir: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_DIAGNOSTIC_HANDOFF/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_diagnostic_handoff.py --require-private-handoff`
+- focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_candidate_review_residual_difference_diagnostic_handoff`
+- boundary: this phase packages 72 private residual differences into ignored private diagnostic handoff artifacts; it does not read raw inbox, close discrepancies, correct source maps, compare raw to processed values, reconcile values, upload GitHub, reinstall app or execute business steps.
+- next_required_input: `owner_or_authorized_delegate_resolution_required_for_72_private_residual_differences`

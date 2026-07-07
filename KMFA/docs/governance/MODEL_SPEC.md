@@ -1246,3 +1246,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: source_private_residual_queue_item_count=72 and residual_difference_report_item_count=72 produce an ignored private residual difference report; closed_discrepancy_count remains 0 and all downstream gates remain closed.
 - gate: `NO_GO`; discrepancy closure, source-map correction, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private residual difference diagnostic, queue and report stay under git-ignored runtime.
+
+## V014 Outside-Scope Candidate Review Residual Difference Diagnostic Handoff
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-DIAGNOSTIC-HANDOFF-001`
+- parameter_ids: `PARAM-KMFA-1393`, `PARAM-KMFA-1394`, `PARAM-KMFA-1395`
+- phase_id: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_DIAGNOSTIC_HANDOFF`
+- version: `0.1.4-outside-scope-candidate-review-residual-difference-diagnostic-handoff`
+- rule: source_private_residual_difference_queue_item_count=72 and diagnostic_handoff_item_count=72 package all unresolved residual differences into ignored private diagnostic handoff artifacts; closed_discrepancy_count remains 0 and safe_auto_resolution_count remains 0.
+- gate: `NO_GO`; discrepancy closure, source-map correction, raw-to-processed comparison, full reconciliation, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private diagnostic handoff packet, queue and report stay under git-ignored runtime.
