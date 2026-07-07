@@ -3,6 +3,8 @@
 Blocking checks:
 
 * Required files and input directory exist.
+* Missing configured input folder returns `SOURCE_MISSING` and does not read alternate private sources unless a separate explicit materialization step is run.
+* `INDEXED_PENDING_EXTRACTION` outputs do not contain generated financial amounts, forecasts, or management conclusions.
 * No production table contains `sample`, `demo`, `fake`, `synthetic`, or `模拟` data markers.
 * Workbook sheets exactly match the required visible/hidden order.
 * Hidden sheets are hidden.
