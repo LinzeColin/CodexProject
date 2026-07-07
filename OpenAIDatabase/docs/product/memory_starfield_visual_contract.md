@@ -1,5 +1,61 @@
 # Memory Starfield Visual Contract
 
+## v1.1.7 Stage 4 Phase 4.1 Visual Contract Update
+
+- Contract version: `memory_starfield_visual_contract.v1_1_7_stage4_phase1`
+- Terrain contract version: `memory_terrain_layer.v1_1_7_stage4_phase1`
+- Task ID: `MA-V117-S4P01`
+- Acceptance ID: `ACC-MA-V117-S4P01`
+- Status: `phase_4_1_visual_contract_update_completed_pending_stage4_review`
+- Validator: `validate:v1.1.7-stage4-phase1`
+
+Stage 4 starts the v1.1.7 memory galaxy refactor by turning the visual target
+into hard acceptance language. The future starfield must satisfy
+video-grade visual acceptance and must be not a plain node-link chart, not an
+Obsidian-like graph, not dots-only, and not a generic network visualization.
+
+Required v1.1.7 visual primitives:
+
+| Primitive | Chinese acceptance term | Required visual meaning |
+|---|---|---|
+| `nebula_field` | 星云 | Theme density, semantic proximity and evidence coverage must form visible cloud mass. |
+| `flow_field` | 流场 | Attention movement and project/theme momentum must have directional field motion or static vector fallback. |
+| `particle_trails` | 粒子轨迹 | Memory movement, migrations and history must leave readable trails instead of isolated points. |
+| `gravity_sources` | 引力源 | Dominant themes must visibly pull nearby memory objects and change their orbit/cluster relationship. |
+| `black_hole_core` | 黑洞 | Low-value loop, stale risk or collapse zones must have distinct distortion and Inspector handoff. |
+| `proto_star_cloud` | 新生星云 | Emerging opportunities must appear as uncertain growth clouds, not promoted mature clusters. |
+| `memory_terrain_layer` | 地形层 | Long-term theme, growth, migration, relic, black-hole and opportunity terrain must be available in analysis mode. |
+
+Measurable acceptance hooks for future implementation:
+
+1. Every primitive above must have a named renderer layer, a data-derived input
+   field and a DOM/canvas debug marker or screenshot annotation.
+2. Presentation Mode may simplify labels, but it may not hide `nebula_field`,
+   `flow_field`, `particle_trails`, `gravity_sources`, `black_hole_core` or
+   `proto_star_cloud`.
+3. Analysis Mode must expose `memory_terrain_layer` with the linked
+   `memory_terrain_layer.v1_1_7_stage4_phase1` terrain semantic registry.
+4. Reduced-motion fallback may freeze or simplify movement, but it must preserve
+   nebula, trail, gravity, black-hole, proto-star and terrain semantics.
+5. Blank canvas, only dots, only node-link edges, static scatterplot, generic
+   Obsidian-like graph and chart-like network are explicit failure states.
+
+The isolated C3 Starfield Spike is the required implementation proving ground
+before the production Galaxy renderer can be replaced. The rollback path is:
+keep the current production Galaxy renderer as the default until the isolated
+spike passes visual primitives, terrain semantics, reduced-motion and privacy
+checks; if any primitive fails, revert the spike or keep the legacy renderer
+without changing production navigation.
+
+Boundary for this phase: Visual Contract Update only; No Phase 4.2, No runtime
+renderer replacement, No browser screenshot, No production build, No raw/private
+data read, No direct active-memory writeback, No agent apply, and No GitHub main
+upload before the whole Stage 0-10 project is complete.
+
+Machine-readable boundary tokens: No Phase 4.2; No runtime renderer replacement; No GitHub main upload before the whole Stage 0-10 project is complete.
+
+Machine-readable visual anti-regression tokens: not a plain node-link chart; not an Obsidian-like graph.
+
 - Product target: Memory Atlas v1.1.5
 - Stage: 0 合同与边界冻结
 - Current phase contribution: 0.2.2 记忆星系 Visual Contract

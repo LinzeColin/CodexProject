@@ -1,3 +1,33 @@
+## v1.1.7 Stage 4 Phase 4.1：Visual Contract Update
+
+状态：`phase_4_1_visual_contract_update_completed_pending_stage4_review`。
+
+任务 ID：`MA-V117-S4P01`。
+
+验收 ID：`ACC-MA-V117-S4P01`。
+
+本 phase 固定 `memory_starfield_visual_contract.v1_1_7_stage4_phase1` 和
+`memory_terrain_layer.v1_1_7_stage4_phase1`。Visual Contract Update 把
+Memory Starfield 从主观视觉方向升级为可测验收，要求星云、流场、粒子轨迹、
+引力源、黑洞、新生星云和地形层，并定义长期主题、成长带、迁移流、遗迹、
+黑洞和机会六类地形语义。
+
+涉及文件：
+
+- `docs/product/memory_starfield_visual_contract.md`
+- `docs/architecture/memory_terrain_layer.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage4_phase1_visual_contract_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage4_phase1.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-stage4-phase1`
+- `ACC-MA-V117-S4P01`
+- Stage 3 continuity、visual contract、terrain layer、acceptance、records、package script 和 no-runtime/no-upload boundary 均需通过。
+
+Machine-readable boundary summary: Visual Contract Update; memory_starfield_visual_contract.v1_1_7_stage4_phase1; memory_terrain_layer.v1_1_7_stage4_phase1; No Phase 4.2; No runtime renderer replacement; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; No build/deploy/app install; no GitHub main upload before whole Stage 0-10 completion.
+
 ## v1.1.7 Stage 3 Review：Default Home Gate
 
 状态：`stage_3_review_passed_pending_stage4_no_github_main_upload`。
