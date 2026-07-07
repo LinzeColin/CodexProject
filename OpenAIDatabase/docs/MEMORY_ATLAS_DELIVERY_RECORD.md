@@ -1,3 +1,36 @@
+## v1.1.7 Stage 6 Phase 6.2：Details & Editing
+
+状态：`phase_6_2_data_map_detail_proposal_completed_pending_stage6_review`。
+
+任务 ID：`MA-V117-S6P02`。
+
+验收 ID：`ACC-MA-V117-S6P02`。
+
+本 phase 在 production Data Guide 中加入 `数据导图详情面板` 和
+`数据导图 proposal 入口`。详情面板版本为
+`data_map_detail_panel.v1_1_7_stage6_phase2`，proposal 入口版本为
+`data_map_proposal_entry.v1_1_7_stage6_phase2`。点击节点后可见 asset、
+theme、suggested action、importance、priority；proposal 入口保持
+proposal-only，只导出 proposal JSON，不直接写 active memory。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage6_phase2.cjs`
+- `apps/memory-atlas/scripts/validate_data_map_detail_proposal_browser.cjs`
+- `docs/product/data_map_iteration_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage6_phase2_data_map_detail_proposal_acceptance.md`
+
+验收：
+
+- `validate:v1.1.7-stage6-phase2`
+- `validate:data-map-detail-proposal-browser`
+- `ACC-MA-V117-S6P02`
+- Browser gate 覆盖节点点击、详情字段、proposal export、debug signal、screenshot 和 console safety。
+
+Machine-readable boundary summary: Phase 6.2; Details & Editing; MA-V117-S6P02; ACC-MA-V117-S6P02; phase_6_2_data_map_detail_proposal_completed_pending_stage6_review; validate:v1.1.7-stage6-phase2; validate:data-map-detail-proposal-browser; data_map_detail_panel.v1_1_7_stage6_phase2; data_map_proposal_entry.v1_1_7_stage6_phase2; 数据导图详情面板; 数据导图 proposal 入口; proposal-only; No Stage 6 review; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
 ## v1.1.7 Stage 6 Phase 6.1：Data Map Structure Model
 
 状态：`phase_6_1_data_map_structure_model_completed_pending_stage6_review`。
