@@ -1,3 +1,32 @@
+## v1.1.7 Stage 4 Review：Memory Starfield Gate
+
+状态：`stage_4_review_passed_pending_stage5_no_github_main_upload`。
+
+任务 ID：`MA-V117-S4-REVIEW`。
+
+验收 ID：`ACC-MA-V117-S4-REVIEW`。
+
+Stage 4 is review-passed and pending Stage 5. 本 review 固定三个已完成 phase：
+
+1. Phase 4.1：Visual Contract Update。
+2. Phase 4.2：C3 Starfield Spike。
+3. Phase 4.3：Integration。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage4_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage4.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-stage4`
+- `ACC-MA-V117-S4-REVIEW`
+- Stage 3 review continuity、Phase 4.1 / Phase 4.2 / Phase 4.3 validators、records、package script 和 no-upload boundary 均需通过。
+- Browser evidence validators remain `validate:memory-starfield-spike-browser` and `validate:memory-starfield-integration-browser`.
+
+Machine-readable boundary summary: Stage 4 Review; Phase 4.1; Phase 4.2; Phase 4.3; pending Stage 5; No GitHub main upload; No Stage 5 work; No raw/private data read; No direct active-memory writeback; No agent apply; No build/deploy/app install; no GitHub main upload before whole Stage 0-10 completion.
+
 ## Memory Atlas v1.1.7 Stage 4 Phase 4.3 Integration
 
 状态：`phase_4_3_integration_completed_pending_stage4_review`。
