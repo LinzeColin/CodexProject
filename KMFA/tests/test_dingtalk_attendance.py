@@ -753,17 +753,42 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             known_no_record_names=[],
             consecutive_anomaly_summary=[],
             pending_hr_actions=[],
+            member_count=41,
         )
 
         self.assertEqual(
             message,
-            "# 开明考勤提醒｜2026-07-07｜晨报\n\n截止 08:35\n\n今天一切良好\n",
+            "# 开明考勤提醒｜2026-07-07｜晨报\n\n截止 08:35\n\n本次41人全部考勤正常，今天一切良好\n",
         )
         self.assertNotIn("morning", message)
         self.assertNotIn("evening", message)
         self.assertNotIn("今日异常人员", message)
         self.assertNotIn("连续异常人员", message)
         self.assertNotIn("待审批/待补卡/待核查", message)
+
+    def test_notification_context_all_clear_uses_member_count_phrase(self) -> None:
+        context = notification_context_from_output_status(
+            {
+                "run_id": "s19_morning_20260707_083500",
+                "run_type": "morning",
+                "work_date": "2026-07-07",
+                "current_time": "08:35",
+                "stats": {
+                    "member_count": 41,
+                    "record_success_count": 41,
+                    "summary_success_count": 41,
+                    "record_failure_count": 0,
+                    "summary_failure_count": 0,
+                    "command_failure_count": 0,
+                    "attendance_anomaly_names": [],
+                    "rest_required_people": [],
+                },
+            }
+        )
+        body = build_notification_message(**context, markdown=False)
+
+        self.assertIn("本次41人全部考勤正常，今天一切良好", body)
+        self.assertNotIn("\n今天一切良好\n", body)
 
     def test_notification_template_uses_chinese_fallback_for_unknown_run_type(self) -> None:
         message = build_notification_message(
