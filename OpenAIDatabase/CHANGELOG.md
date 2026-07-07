@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 8 Phase 8.1 Summary Iteration Closure
+
+- Implemented the production Summary and iteration closure runtime slice with
+  `summary_iteration_closure_runtime.v1_1_7_stage8_phase1`.
+- Added `memory_atlas_summary_closure.v1_1_7_stage8_phase1` for
+  `change_comparison`, `stale_conflict_signals` and `proposal_candidates`.
+- Added closure UI panels in the production `summary` view, reusing the
+  Stage 7.2 redacted review output as the source review schema.
+- Added `validate:v1.1.7-stage8-phase1` and
+  `validate:summary-iteration-closure-browser`.
+- Registered `MA-V117-S8P01` / `ACC-MA-V117-S8P01` with status
+  `phase_8_1_summary_iteration_closure_runtime_completed_pending_stage8_review`.
+
+Stage 8 Phase 8.1 Summary and iteration closure only. No Stage 8 review,
+No raw/private data read, No direct active-memory writeback, No proposal queue
+write, No agent apply, No deploy or No GitHub main upload was added.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 7 Review
 
 - Added `docs/reviews/memory_atlas_v1_1_7_stage7_review.md` to pin the

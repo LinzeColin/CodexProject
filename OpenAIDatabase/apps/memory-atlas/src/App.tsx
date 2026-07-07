@@ -92,6 +92,8 @@ const SEARCH_2_0_RUNTIME_VERSION = "search_2_0_runtime.v1_1_7_stage7_phase1" as 
 const SEARCH_2_0_SESSION_SUMMARY_VERSION = "search_2_0_session_summary.v1_1_7_stage7_phase1" as const;
 const REVIEW_SUMMARY_ITERATION_RUNTIME_VERSION = "review_summary_iteration_runtime.v1_1_7_stage7_phase2" as const;
 const REVIEW_SUMMARY_ITERATION_SCHEMA_VERSION = "memory_atlas_review_summary.v1_1_7_stage7_phase2" as const;
+const SUMMARY_ITERATION_CLOSURE_RUNTIME_VERSION = "summary_iteration_closure_runtime.v1_1_7_stage8_phase1" as const;
+const SUMMARY_ITERATION_CLOSURE_SCHEMA_VERSION = "memory_atlas_summary_closure.v1_1_7_stage8_phase1" as const;
 
 declare global {
   interface Window {
@@ -174,6 +176,19 @@ declare global {
       hasEvidenceRefs: boolean;
       directActiveMemoryWriteback: false;
       rawPrivateDataIncluded: false;
+    };
+    __memoryAtlasStage8Phase1?: () => {
+      runtimeVersion: typeof SUMMARY_ITERATION_CLOSURE_RUNTIME_VERSION;
+      closureSchemaVersion: typeof SUMMARY_ITERATION_CLOSURE_SCHEMA_VERSION;
+      sourceReviewSchemaVersion: typeof REVIEW_SUMMARY_ITERATION_SCHEMA_VERSION;
+      panelIds: SummaryClosurePanelId[];
+      changeComparisonCount: number;
+      staleConflictSignalCount: number;
+      proposalCandidateCount: number;
+      proposalOnly: true;
+      directActiveMemoryWriteback: false;
+      rawPrivateDataIncluded: false;
+      proposalWrite: false;
     };
   }
 }
@@ -506,6 +521,59 @@ interface ReviewSummaryIterationOutput {
   };
   questions: ReviewQuestionAnswer[];
   panelIds: ReviewPanelId[];
+}
+
+type SummaryClosurePanelId = "change_comparison" | "stale_conflict_signals" | "proposal_candidates";
+
+interface SummaryClosureChangeRow {
+  signal_id: string;
+  title: string;
+  summary: string;
+  current_count: number;
+  previous_count: number;
+  delta: number;
+  evidence_refs: string[];
+}
+
+interface SummaryClosureSignal {
+  signal_id: string;
+  signal_type: "stale" | "conflict";
+  severity: "high" | "medium" | "low";
+  title: string;
+  summary: string;
+  evidence_refs: string[];
+  proposal_hint: string;
+  rollback_hint: string;
+}
+
+interface SummaryClosureProposalCandidate {
+  proposal_id: string;
+  title: string;
+  target_type: "memory_update_candidate" | "review_only_note";
+  reason: string;
+  evidence_refs: string[];
+  rollback_hint: string;
+  requires_conflict_check: true;
+  requires_agent_or_human_apply: true;
+  proposal_only: true;
+}
+
+interface SummaryIterationClosureOutput {
+  closure_id: string;
+  closure_schema_version: typeof SUMMARY_ITERATION_CLOSURE_SCHEMA_VERSION;
+  source_review_schema_version: typeof REVIEW_SUMMARY_ITERATION_SCHEMA_VERSION;
+  source_scope: "redacted_atlas_snapshot";
+  change_comparison: SummaryClosureChangeRow[];
+  stale_conflict_signals: SummaryClosureSignal[];
+  proposal_candidates: SummaryClosureProposalCandidate[];
+  closure_summary: string;
+  safety: {
+    proposal_only: true;
+    directActiveMemoryWriteback: false;
+    rawPrivateDataIncluded: false;
+    proposalWrite: false;
+  };
+  panelIds: SummaryClosurePanelId[];
 }
 
 interface SourceOption {
@@ -4244,6 +4312,91 @@ function buildReviewSummaryIteration(
   return output;
 }
 
+function buildSummaryIterationClosure(review: ReviewSummaryIterationOutput): SummaryIterationClosureOutput {
+  const change_comparison: SummaryClosureChangeRow[] = [
+    ...review.strengthening_topics.slice(0, 3).map((row, index) =>
+      summaryClosureChangeRow(row, `strengthening:${index}`, Math.max(row.count, 0), 0),
+    ),
+    ...review.declining_topics.slice(0, 3).map((row, index) =>
+      summaryClosureChangeRow(row, `declining:${index}`, 0, Math.max(row.count, 0)),
+    ),
+  ];
+  if (change_comparison.length < 3) {
+    review.dominant_topics.slice(0, 3 - change_comparison.length).forEach((row, index) => {
+      change_comparison.push(summaryClosureChangeRow(row, `dominant:${index}`, Math.max(row.count, 0), Math.max(row.count, 0)));
+    });
+  }
+
+  const staleSignals = review.low_value_loops.slice(0, 2).map<SummaryClosureSignal>((row, index) => ({
+    signal_id: `stale:${index}`,
+    signal_type: "stale",
+    severity: row.count > 0 ? "high" : "low",
+    title: row.title,
+    summary: row.summary,
+    evidence_refs: row.evidence_refs.length ? row.evidence_refs : review.evidence_refs.slice(0, 2),
+    proposal_hint: row.count > 0 ? "生成 proposal-only cleanup candidate，人工确认后再降权、合并或删除。" : "保留观察，不生成直接写回。",
+    rollback_hint: "如果复核发现 stale 判断不成立，丢弃 candidate；active memory 不会被前端修改。",
+  }));
+  const conflictSignals = review.decision_changes.slice(0, 2).map<SummaryClosureSignal>((row, index) => ({
+    signal_id: `conflict:${index}`,
+    signal_type: "conflict",
+    severity: row.count > 0 ? "medium" : "low",
+    title: row.title,
+    summary: row.summary,
+    evidence_refs: row.evidence_refs.length ? row.evidence_refs : review.evidence_refs.slice(0, 2),
+    proposal_hint: "进入人工 conflict check；只有确认新决策覆盖旧背景后才生成长期记忆修改。",
+    rollback_hint: "若冲突未确认，保留 review-only note，不写 proposal queue 或 active memory。",
+  }));
+  const stale_conflict_signals = [...staleSignals, ...conflictSignals].slice(0, 4);
+
+  const proposal_candidates = review.next_actions.slice(0, 3).map<SummaryClosureProposalCandidate>((action, index) => ({
+    proposal_id: `summary_closure_candidate:${index + 1}`,
+    title: action.title,
+    target_type: review.proposal_candidate.target_type,
+    reason: action.reason,
+    evidence_refs: action.evidence_refs.length ? action.evidence_refs : review.evidence_refs.slice(0, 2),
+    rollback_hint: "proposal-only candidate；人工或 agent 复核前不写 active memory，回滚方式是丢弃候选。",
+    requires_conflict_check: true,
+    requires_agent_or_human_apply: true,
+    proposal_only: true,
+  }));
+
+  return {
+    closure_id: `summary_closure_${review.time_window.period_id}_${review.time_window.range_end}`,
+    closure_schema_version: SUMMARY_ITERATION_CLOSURE_SCHEMA_VERSION,
+    source_review_schema_version: REVIEW_SUMMARY_ITERATION_SCHEMA_VERSION,
+    source_scope: "redacted_atlas_snapshot",
+    change_comparison,
+    stale_conflict_signals,
+    proposal_candidates,
+    closure_summary: `change_comparison=${change_comparison.length}; stale_conflict_signals=${stale_conflict_signals.length}; proposal_candidates=${proposal_candidates.length}; all outputs remain proposal-only.`,
+    safety: {
+      proposal_only: true,
+      directActiveMemoryWriteback: false,
+      rawPrivateDataIncluded: false,
+      proposalWrite: false,
+    },
+    panelIds: ["change_comparison", "stale_conflict_signals", "proposal_candidates"],
+  };
+}
+
+function summaryClosureChangeRow(
+  row: ReviewSignalRow,
+  signalId: string,
+  currentCount: number,
+  previousCount: number,
+): SummaryClosureChangeRow {
+  return {
+    signal_id: signalId,
+    title: row.title,
+    summary: row.summary,
+    current_count: currentCount,
+    previous_count: previousCount,
+    delta: currentCount - previousCount,
+    evidence_refs: row.evidence_refs,
+  };
+}
+
 function reviewQuestionAnswerById(output: ReviewSummaryIterationOutput, questionId: ReviewQuestionId): ReviewQuestionAnswer {
   return output.questions.find((item) => item.question_id === questionId) ?? {
     question_id: questionId,
@@ -4543,6 +4696,7 @@ function SummaryIterationView({
     () => buildReviewSummaryIteration(atlas, nodes, deltaStats, reviewPeriod),
     [atlas, nodes, deltaStats, reviewPeriod],
   );
+  const summaryClosure = useMemo(() => buildSummaryIterationClosure(reviewSummary), [reviewSummary]);
   const dominantAnswer = reviewQuestionAnswerById(reviewSummary, "dominant_topics");
   const strengtheningAnswer = reviewQuestionAnswerById(reviewSummary, "strengthening_topics");
   const decliningAnswer = reviewQuestionAnswerById(reviewSummary, "declining_topics");
@@ -4569,6 +4723,25 @@ function SummaryIterationView({
       delete window.__memoryAtlasStage7Phase2;
     };
   }, [reviewSummary]);
+
+  useEffect(() => {
+    window.__memoryAtlasStage8Phase1 = () => ({
+      runtimeVersion: SUMMARY_ITERATION_CLOSURE_RUNTIME_VERSION,
+      closureSchemaVersion: SUMMARY_ITERATION_CLOSURE_SCHEMA_VERSION,
+      sourceReviewSchemaVersion: REVIEW_SUMMARY_ITERATION_SCHEMA_VERSION,
+      panelIds: summaryClosure.panelIds,
+      changeComparisonCount: summaryClosure.change_comparison.length,
+      staleConflictSignalCount: summaryClosure.stale_conflict_signals.length,
+      proposalCandidateCount: summaryClosure.proposal_candidates.length,
+      proposalOnly: true,
+      directActiveMemoryWriteback: false,
+      rawPrivateDataIncluded: false,
+      proposalWrite: false,
+    });
+    return () => {
+      delete window.__memoryAtlasStage8Phase1;
+    };
+  }, [summaryClosure]);
 
   return (
     <div
@@ -4691,6 +4864,78 @@ function SummaryIterationView({
             ))}
           </ol>
         </article>
+      </section>
+      <section
+        className="summary-closure-runtime"
+        data-summary-iteration-closure-runtime={SUMMARY_ITERATION_CLOSURE_RUNTIME_VERSION}
+        data-summary-closure-schema-version={SUMMARY_ITERATION_CLOSURE_SCHEMA_VERSION}
+        data-source-review-schema-version={REVIEW_SUMMARY_ITERATION_SCHEMA_VERSION}
+      >
+        <div className="panel-title-row">
+          <h3>Summary and iteration closure</h3>
+          <span>proposal-only</span>
+        </div>
+        <p className="summary-closure-schema-line">
+          closure_schema_version={summaryClosure.closure_schema_version}; source_review_schema_version={summaryClosure.source_review_schema_version};
+          change_comparison; stale_conflict_signals; proposal_candidates; requires_conflict_check; requires_agent_or_human_apply.
+          {summaryClosure.closure_summary}
+        </p>
+        <div className="summary-closure-grid">
+          <article className="summary-closure-card" data-summary-closure-panel="change_comparison">
+            <div className="panel-title-row">
+              <h4>change_comparison</h4>
+              <span>{summaryClosure.change_comparison.length} signals</span>
+            </div>
+            <ol>
+              {summaryClosure.change_comparison.map((item) => (
+                <li key={item.signal_id}>
+                  <strong>{item.title}</strong>
+                  <p>{formatSigned(item.delta)} · current {item.current_count} / previous {item.previous_count}</p>
+                  <small>{item.summary} · evidence_refs：{item.evidence_refs.join(" / ")}</small>
+                </li>
+              ))}
+            </ol>
+          </article>
+          <article className="summary-closure-card" data-summary-closure-panel="stale_conflict_signals">
+            <div className="panel-title-row">
+              <h4>stale_conflict_signals</h4>
+              <span>{summaryClosure.stale_conflict_signals.length} checks</span>
+            </div>
+            <ol>
+              {summaryClosure.stale_conflict_signals.map((item) => (
+                <li key={item.signal_id} data-summary-signal-type={item.signal_type}>
+                  <strong>{item.signal_type}:{item.severity} · {item.title}</strong>
+                  <p>{item.summary}</p>
+                  <small>{item.proposal_hint} · {item.rollback_hint}</small>
+                </li>
+              ))}
+            </ol>
+          </article>
+        </div>
+        <article className="summary-closure-proposals" data-summary-closure-panel="proposal_candidates">
+          <div className="panel-title-row">
+            <h4>proposal_candidates</h4>
+            <span>{summaryClosure.proposal_candidates.length} candidates</span>
+          </div>
+          <div>
+            {summaryClosure.proposal_candidates.map((item) => (
+              <section key={item.proposal_id}>
+                <strong>{item.title}</strong>
+                <p>{item.reason}</p>
+                <small>
+                  {item.proposal_id}; target_type={item.target_type}; requires_conflict_check={String(item.requires_conflict_check)};
+                  requires_agent_or_human_apply={String(item.requires_agent_or_human_apply)}; evidence_refs={item.evidence_refs.join(" / ")}
+                </small>
+              </section>
+            ))}
+          </div>
+        </article>
+        <div className="summary-closure-safety">
+          <span>proposal_only: true</span>
+          <span>directActiveMemoryWriteback: false</span>
+          <span>rawPrivateDataIncluded: false</span>
+          <span>proposalWrite: false</span>
+        </div>
       </section>
       <HumanOverviewPanel nodes={nodes} deltaStats={deltaStats} />
       <section className="iteration-panels" aria-label="给 ChatGPT 和 Codex 使用的更新建议">

@@ -1,3 +1,45 @@
+## 98. Memory Atlas v1.1.7 Stage 8 Phase 8.1 Summary Iteration Closure
+
+状态：`phase_8_1_summary_iteration_closure_runtime_completed_pending_stage8_review`。
+
+验收 ID：`ACC-MA-V117-S8P01`。
+
+模型参数：
+
+- Runtime version 固定为 `summary_iteration_closure_runtime.v1_1_7_stage8_phase1`。
+- Closure schema version 固定为 `memory_atlas_summary_closure.v1_1_7_stage8_phase1`。
+- Source review schema version 固定为 `memory_atlas_review_summary.v1_1_7_stage7_phase2`。
+- `validate:v1.1.7-stage8-phase1` 是本 phase 必跑 validator。
+- `validate:summary-iteration-closure-browser` 是本 phase 浏览器 validator。
+- Summary and iteration closure 输出必须显示 `change_comparison`、`stale_conflict_signals` 和 `proposal_candidates`。
+- Runtime 必须显示 conflict check、human/agent apply gate、rollback hint 和 proposal-only safety。
+- No Stage 8 review。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage8_phase1.cjs`
+- `apps/memory-atlas/scripts/validate_summary_iteration_closure_browser.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S8P01-001 stage8_phase1_status = phase_8_1_summary_iteration_closure_runtime_completed_pending_stage8_review`
+- `PARAM-MA-V117-S8P01-002 stage8_phase1_required_validator = validate:v1.1.7-stage8-phase1`
+- `PARAM-MA-V117-S8P01-003 stage8_phase1_browser_validator = validate:summary-iteration-closure-browser`
+- `PARAM-MA-V117-S8P01-004 summary_iteration_closure_runtime_version = summary_iteration_closure_runtime.v1_1_7_stage8_phase1`
+- `PARAM-MA-V117-S8P01-005 summary_iteration_closure_schema_version = memory_atlas_summary_closure.v1_1_7_stage8_phase1`
+- `PARAM-MA-V117-S8P01-006 output_fields = change_comparison;stale_conflict_signals;proposal_candidates`
+- `PARAM-MA-V117-S8P01-007 boundary = No Stage 8 review;No GitHub main upload;No raw/private read;No direct active-memory writeback;No proposal queue write`
+
+验收信号：
+
+- `window.__memoryAtlasStage8Phase1` reports runtime version, closure schema version, source review schema version, panel ids, closure counts and safety flags.
+- Browser screenshot validates the production `summary` view.
+
+Machine-readable boundary summary: Phase 8.1; Summary and iteration closure; MA-V117-S8P01; ACC-MA-V117-S8P01; phase_8_1_summary_iteration_closure_runtime_completed_pending_stage8_review; validate:v1.1.7-stage8-phase1; validate:summary-iteration-closure-browser; summary_iteration_closure_runtime.v1_1_7_stage8_phase1; memory_atlas_summary_closure.v1_1_7_stage8_phase1; change_comparison; stale_conflict_signals; proposal_candidates; No Stage 8 review; No GitHub main upload; No raw/private read; No direct active-memory writeback; No agent apply.
+
 ## 97. Memory Atlas v1.1.7 Stage 7 Review
 
 状态：`stage_7_review_passed_pending_stage8_no_github_main_upload`。

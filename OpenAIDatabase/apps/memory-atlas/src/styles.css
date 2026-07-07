@@ -1276,6 +1276,112 @@ h3 {
   padding-left: 2px;
 }
 
+.summary-closure-runtime {
+  display: grid;
+  gap: 10px;
+  margin: 0 16px 10px;
+  border: 1px solid rgba(244, 208, 125, 0.22);
+  border-radius: 8px;
+  background: rgba(244, 208, 125, 0.055);
+  padding: 12px;
+}
+
+.summary-closure-schema-line {
+  margin: 0;
+  color: #d9d4ca;
+  font-family: "SFMono-Regular", "Cascadia Code", "Roboto Mono", monospace;
+  font-size: 11px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.summary-closure-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.summary-closure-card,
+.summary-closure-proposals {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  border: 1px solid rgba(244, 241, 232, 0.12);
+  border-radius: 8px;
+  background: rgba(16, 16, 20, 0.34);
+  padding: 10px;
+}
+
+.summary-closure-card ol {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.summary-closure-card li {
+  color: #d9d4ca;
+  min-width: 0;
+  padding-left: 2px;
+}
+
+.summary-closure-card strong,
+.summary-closure-proposals strong {
+  color: #ffffff;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.summary-closure-card p,
+.summary-closure-proposals p {
+  margin: 0;
+  color: #d9d4ca;
+  font-size: 12px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.summary-closure-card small,
+.summary-closure-proposals small {
+  color: #b6b1a6;
+  font-size: 11px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.summary-closure-proposals > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.summary-closure-proposals section {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  border: 1px solid rgba(143, 211, 255, 0.16);
+  border-radius: 8px;
+  background: rgba(143, 211, 255, 0.055);
+  padding: 10px;
+}
+
+.summary-closure-safety {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.summary-closure-safety span {
+  border: 1px solid rgba(126, 232, 212, 0.18);
+  border-radius: 999px;
+  background: rgba(126, 232, 212, 0.06);
+  color: #cdeee8;
+  font-family: "SFMono-Regular", "Cascadia Code", "Roboto Mono", monospace;
+  font-size: 11px;
+  line-height: 1.35;
+  padding: 5px 8px;
+}
+
 .iteration-panels,
 .config-memory-panel {
   display: grid;
@@ -6984,6 +7090,15 @@ h3 {
   .review-question-grid,
   .review-runtime-panels {
     margin-inline: 6px;
+  }
+
+  .summary-closure-runtime {
+    margin-inline: 6px;
+  }
+
+  .summary-closure-grid,
+  .summary-closure-proposals > div {
+    grid-template-columns: 1fr;
   }
 
   .timeline-map .timeline-canvas {
