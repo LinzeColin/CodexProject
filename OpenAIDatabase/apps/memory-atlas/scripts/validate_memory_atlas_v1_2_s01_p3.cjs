@@ -288,11 +288,20 @@ function validateHumanAndReadmeBridge() {
       "下一步只允许进入 S02 P1",
       "No GitHub main upload in this review",
   ]);
+  const s02p1QuickEntry = hasAll(quickEntry, [
+      "当前阶段是 S02 P1：数据源模型已定义",
+      "S01 Review 已通过",
+      "旧隐私边界已被 v1.2 替换",
+      "用户授权后，ChatGPT、Codex、后续其他 agent 的 transcript 可以明文公开进 GitHub",
+      "凭证不是 transcript",
+      "下一步只允许进入 S02 P2",
+      "No GitHub main upload in this phase",
+  ]);
   assertCondition(
-    p3QuickEntry || reviewQuickEntry,
+    p3QuickEntry || reviewQuickEntry || s02p1QuickEntry,
     "s01p3_human_quick_entry",
-    "Human quick entry explains S01 P3 completion or later S01 review pass state, raw authorization and next gate",
-    "Human quick entry is missing S01 P3 freeze or S01 review status boundaries",
+    "Human quick entry explains S01 P3 completion, S01 review pass state, or S02 P1 state with raw authorization and next gate",
+    "Human quick entry is missing S01 P3 freeze, S01 review or S02 P1 status boundaries",
   );
 
   const p3Overview = hasAll(overview, [
@@ -312,11 +321,21 @@ function validateHumanAndReadmeBridge() {
       "下一步是 S02 P1",
       "整体完成后才上传 GitHub main",
   ]);
+  const s02p1Overview = hasAll(overview, [
+      "S01 整体复审已通过",
+      "S02 P1 已完成",
+      "数据源模型",
+      "需求冻结清单",
+      "旧隐私边界替换为用户授权后的 raw/transcript 公开",
+      "凭证排除",
+      "下一步是 S02 P2",
+      "整体完成后才上传 GitHub main",
+  ]);
   assertCondition(
-    p3Overview || reviewOverview,
+    p3Overview || reviewOverview || s02p1Overview,
     "s01p3_human_overview",
-    "Human overview records S01 P3 completion or later S01 review pass state",
-    "Human overview is missing S01 P3 completion or S01 review boundary",
+    "Human overview records S01 P3 completion, S01 review pass state, or S02 P1 state",
+    "Human overview is missing S01 P3 completion, S01 review or S02 P1 boundary",
   );
 }
 
@@ -344,11 +363,21 @@ function validateMachineBridge() {
       "后续其他 agent 数据源扩展规则",
       "不替代 apps/scripts/tests/config/data/docs/governance",
   ]);
+  const s02p1MachineReadme = hasAll(machineReadme, [
+      "当前为 S02 P1",
+      "数据源模型已定义",
+      "v1.2需求冻结清单",
+      "四线范围",
+      "raw 公开授权",
+      "凭证排除",
+      "后续其他 agent 数据源扩展规则",
+      "不替代 apps/scripts/tests/config/data/docs/governance",
+  ]);
   assertCondition(
-    p3MachineReadme || reviewMachineReadme,
+    p3MachineReadme || reviewMachineReadme || s02p1MachineReadme,
     "s01p3_machine_readme",
-    "Machine governance README records S01 P3 freeze contents or later S01 review pass state and non-replacement boundary",
-    "Machine governance README is missing S01 P3 freeze or S01 review bridge",
+    "Machine governance README records S01 P3 freeze contents, S01 review pass state, or S02 P1 state and non-replacement boundary",
+    "Machine governance README is missing S01 P3 freeze, S01 review or S02 P1 bridge",
   );
 
   const p3RunGateReadme = hasAll(runGateReadme, [
@@ -368,11 +397,19 @@ function validateMachineBridge() {
       "下一步是 S02 P1",
       "No GitHub main upload in this review",
   ]);
+  const s02p1RunGateReadme = hasAll(runGateReadme, [
+      "当前阶段是 S02 P1",
+      "v1.2需求冻结清单",
+      "MA-V12-S02P1",
+      "ACC-MA-V12-S02P1",
+      "下一步是 S02 P2",
+      "No GitHub main upload in this phase",
+  ]);
   assertCondition(
-    p3RunGateReadme || reviewRunGateReadme,
+    p3RunGateReadme || reviewRunGateReadme || s02p1RunGateReadme,
     "s01p3_machine_run_gate_readme",
-    "Run gate README records freeze config status and next review or S02 P1 boundary",
-    "Run gate README is missing S01 P3 or S01 review gate status",
+    "Run gate README records freeze config status and next review, S02 P1, or S02 P2 boundary",
+    "Run gate README is missing S01 P3, S01 review or S02 P1 gate status",
   );
 }
 

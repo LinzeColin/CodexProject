@@ -1,3 +1,38 @@
+## 109. Memory Atlas v1.2 S02 P1 Source Data Model Parameters
+
+状态：`phase_s02_p1_source_data_model_completed_pending_s02_p2`。
+
+验收 ID：`ACC-MA-V12-S02P1`。
+
+S02 P1 固定以下参数：
+
+- `MA-V12-S02P1`
+- `validate:v1.2-s02-p1`
+- `memory_atlas_v1_2_s02_p1_source_data_model.md`
+- `source_data_model.v1_2_s02_p1.json`
+- 必填字段：source_id、source_type、agent_name、raw_root、sync_mode、public_backup_mode、connector_capability。
+- source_type：chatgpt、codex、other_agent。
+- transcript 与 credential 必须区分。
+- S02 P1 完成后下一步为 pending S02 P2。
+- No GitHub main upload in this phase。
+- No source registry file in this phase、No human sync page in this phase、No connector implementation、No raw archive change。
+
+参数记录：
+
+- `PARAM-MA-V12-S02P1-001 phase_status = phase_s02_p1_source_data_model_completed_pending_s02_p2`
+- `PARAM-MA-V12-S02P1-002 validator = validate:v1.2-s02-p1`
+- `PARAM-MA-V12-S02P1-003 model_file = source_data_model.v1_2_s02_p1.json`
+- `PARAM-MA-V12-S02P1-004 required_fields = source_id;source_type;agent_name;raw_root;sync_mode;public_backup_mode;connector_capability`
+- `PARAM-MA-V12-S02P1-005 source_types = chatgpt;codex;other_agent`
+- `PARAM-MA-V12-S02P1-006 next_gate = pending S02 P2`
+- `PARAM-MA-V12-S02P1-007 upload_boundary = No GitHub main upload in this phase`
+
+验收信号：
+
+- `validate:v1.2-s02-p1` checks S01 Review continuity, source data model fields, three source types, transcript/credential boundary, records, canonical remote and no-upload/no-registry/no-human-sync/no-raw boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S02 P1 Source Data Model; MA-V12-S02P1; ACC-MA-V12-S02P1; phase_s02_p1_source_data_model_completed_pending_s02_p2; validate:v1.2-s02-p1; memory_atlas_v1_2_s02_p1_source_data_model.md; source_data_model.v1_2_s02_p1.json; S02 P1; pending S02 P2; No GitHub main upload in this phase; No source registry file in this phase; No human sync page in this phase; No connector implementation; No raw archive change.
+
 ## 108. Memory Atlas v1.2 S01 Review Parameters
 
 状态：`stage_s01_review_passed_pending_s02_no_github_main_upload`。

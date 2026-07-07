@@ -1,3 +1,42 @@
+## v1.2 S02 P1 Source Data Model
+
+状态：`phase_s02_p1_source_data_model_completed_pending_s02_p2`。
+
+任务 ID：`MA-V12-S02P1`。
+
+验收 ID：`ACC-MA-V12-S02P1`。
+
+S02 P1 定义 ChatGPT、Codex、后续其他 agent 的统一 source data model。该 phase
+只定义模型，不建立 source registry，不创建人类同步说明页，不实现 connector。
+
+涉及文件：
+
+- `机器治理/数据契约/source_data_model.v1_2_s02_p1.json`
+- `docs/reviews/memory_atlas_v1_2_s02_p1_source_data_model.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s02_p1.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s02-p1`
+- `ACC-MA-V12-S02P1`
+- S02 P1
+- `source_data_model.v1_2_s02_p1.json`
+- `memory_atlas_v1_2_s02_p1_source_data_model.md`
+- pending S02 P2
+- No GitHub main upload in this phase
+
+边界：
+
+- No source registry file in this phase.
+- No human sync page in this phase.
+- No connector implementation.
+- No GitHub main upload in this phase.
+- No app reinstall.
+- No raw archive change.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S02 P1 Source Data Model; MA-V12-S02P1; ACC-MA-V12-S02P1; phase_s02_p1_source_data_model_completed_pending_s02_p2; validate:v1.2-s02-p1; memory_atlas_v1_2_s02_p1_source_data_model.md; source_data_model.v1_2_s02_p1.json; S02 P1; pending S02 P2; No GitHub main upload in this phase; No source registry file in this phase; No human sync page in this phase; No connector implementation; No raw archive change.
+
 ## v1.2 S01 Review
 
 状态：`stage_s01_review_passed_pending_s02_no_github_main_upload`。
