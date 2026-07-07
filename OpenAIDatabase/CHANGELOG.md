@@ -1,5 +1,32 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 2 Phase 2.1
+
+- Added `docs/architecture/proposal_edit_model.md` with the
+  `proposal_edit_model_v1_1_7_stage2_phase1` contract for Editable Draft Model.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage2_phase1_editable_draft_acceptance.md`.
+- Added `apps/memory-atlas/src/state/proposalDraftStore.ts` with the
+  `memory_atlas_proposal_draft.v1` schema, `memory-atlas.proposal-drafts.v1`
+  local draft store key, refresh warning helper, undo draft change helper and
+  proposal-only safety metadata.
+- Updated `config/visualization/model_parameters.universe_state.yaml` to
+  register `MA-V117-S2P01` / `ACC-MA-V117-S2P01`, the editable whitelist
+  `importance`, `priority`, `status`, `theme_override`, `action_state`, `note`,
+  draft target types and draft statuses.
+- Added `validate:v1.1.7-stage2-phase1` to verify the Editable Draft Model,
+  Draft State Store, records, package script and changed-path boundary.
+- Registered status
+  `phase_2_1_editable_draft_model_completed_pending_stage2_review`.
+
+No Proposal UI, Proposal Diff Preview, proposal JSON export, Search 2.0
+runtime, Review workflow runtime, Data Map 2.0 runtime, raw/private data read,
+direct writeback, agent apply, production build, local app install, browser
+screenshot, deploy or GitHub main upload was added.
+
+Machine-readable boundary summary: Editable Draft Model; Draft State Store; No
+Proposal UI; No GitHub main upload before whole Stage 0-10 completion.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 1 Review
 
 - Added `docs/reviews/memory_atlas_v1_1_7_stage1_review.md` to pin the

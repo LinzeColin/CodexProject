@@ -1,3 +1,33 @@
+## v1.1.7 Stage 2 Phase 2.1：Editable Draft Model
+
+状态：`phase_2_1_editable_draft_model_completed_pending_stage2_review`。
+
+任务 ID：`MA-V117-S2P01`。
+
+验收 ID：`ACC-MA-V117-S2P01`。
+
+本 phase 建立 proposal 编辑层的 Editable Draft Model。它定义字段白名单
+`importance`、`priority`、`status`、`theme_override`、`action_state`、`note`，
+并新增 Draft State Store，用 `memory_atlas_proposal_draft.v1` schema 和
+`memory-atlas.proposal-drafts.v1` store key 保存本地未提交调整。
+
+涉及文件：
+
+- `docs/architecture/proposal_edit_model.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage2_phase1_editable_draft_acceptance.md`
+- `apps/memory-atlas/src/state/proposalDraftStore.ts`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage2_phase1.cjs`
+- `config/visualization/model_parameters.universe_state.yaml`
+
+验收：
+
+- `validate:v1.1.7-stage2-phase1`
+- `ACC-MA-V117-S2P01`
+- Draft Store 必须支持 refresh warning、undo draft change、serialize、parse、load、save、clear。
+- 所有 draft change 必须包含 `proposal_only`、`requires_conflict_check`、`requires_agent_or_human_apply` 和 `rollback_hint`。
+
+Machine-readable boundary summary: Editable Draft Model; Draft State Store; No Proposal UI; No GitHub main upload; No raw/private data read; No direct writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
 ## v1.1.7 Stage 1 Review：Shared State and Detail Layer Gate
 
 状态：`stage_1_review_passed_pending_stage2_no_github_main_upload`。
