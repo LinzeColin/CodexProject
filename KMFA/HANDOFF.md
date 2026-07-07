@@ -1,3 +1,14 @@
+## 2026-07-07｜v0.1.4 outside-scope candidate review residual difference source-map correction blocker final threshold recheck
+
+- phase: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_FINAL_THRESHOLD_RECHECK`
+- task: `KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-SOURCE-MAP-CORRECTION-BLOCKER-FINAL-THRESHOLD-RECHECK-20260707`
+- 已完成：新增 final threshold recheck generator、validator、focused unit test、public-safe evidence packet、metadata copies、git-ignored private final threshold diagnostic/queue/report 和治理记录。
+- 当前结论：`valid_diagnostic_response_count=72`、`missing_response_blocker_cleared=true`、`non_actionable_diagnostic_response_count=72`、`source_map_correction_blocker_count=72`、`prior_source_map_correction_blocker_observation_count=2`、`source_map_correction_blocker_observation_count=3`、`source_map_correction_blocked_audit_threshold_met=true`、`goal_status_recommendation=blocked`、`go_no_go=NO_GO`。
+- 原始数据边界：本 phase 不读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；只读取上一 phase public-safe threshold recheck artifacts 和 ignored private threshold queue。
+- 未执行：discrepancy closure、source-map correction、formal raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+- 验证入口：`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_source_map_correction_blocker_final_threshold_recheck.py --require-private-final-threshold`
+- 下一步建议：当前 value-consistency 目标 blocked，必须先取得 source-map correction 或 authoritative value resolution；不得做 Stage review 或 GitHub upload。
+
 ## 2026-07-07｜v0.1.4 outside-scope candidate review residual difference source-map correction blocker threshold recheck
 
 - phase: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_THRESHOLD_RECHECK`

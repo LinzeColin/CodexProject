@@ -1,4 +1,12 @@
-# KMFA v0.1.4 Outside-Scope Candidate Review Residual Difference Source-Map Correction Blocker Threshold Recheck
+# KMFA v0.1.4 Outside-Scope Candidate Review Residual Difference Source-Map Correction Blocker Final Threshold Recheck
+
+## 0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-blocker-final-threshold-recheck - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_FINAL_THRESHOLD_RECHECK` 本地单 phase。
+- 基于上一 phase public-safe source-map correction blocker threshold recheck artifacts 和 ignored private source-map correction blocker threshold queue，记录第三次 source-map correction blocker observation；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：valid diagnostic responses=72、missing-response blocker cleared=true、pending diagnostic responses=0、diagnostic response blockers=0、non-actionable diagnostic responses=72、source-map correction blockers=72、prior source-map correction blocker observation=2、current observation=3、blocked audit threshold met=true、goal status recommendation=blocked、open residual differences=72、closed discrepancies=0、source-map actionable responses=0、Go/No-Go=`NO_GO`。
+- 本 phase 不关闭任何差异、不修正 source map、不运行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private source-map correction final threshold diagnostic、queue 和 report 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
 
 ## 0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-blocker-threshold-recheck - 2026-07-07
 

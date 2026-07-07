@@ -1,3 +1,18 @@
+kmfa_v014_outside_scope_candidate_review_residual_difference_source_map_correction_blocker_final_threshold_recheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-blocker-final-threshold-recheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-SOURCE-MAP-CORRECTION-BLOCKER-FINAL-THRESHOLD-RECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1420
+    - PARAM-KMFA-1421
+    - PARAM-KMFA-1422
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_FINAL_THRESHOLD_RECHECK
+  validator: KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_source_map_correction_blocker_final_threshold_recheck.py
+  scope: Outside-scope candidate review residual-difference source-map correction blocker final threshold recheck only; records the third source-map correction blocker observation after threshold recheck, marks the strict blocked threshold met, and keeps all downstream gates closed; public evidence aggregate-only; no raw inbox access, discrepancy closure, source-map correction, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
 kmfa_v014_outside_scope_candidate_review_residual_difference_source_map_correction_blocker_threshold_recheck:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-blocker-threshold-recheck"
