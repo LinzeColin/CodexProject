@@ -1,0 +1,75 @@
+{
+  "check_count": 15,
+  "check_fail_count": 0,
+  "check_pass_count": 15,
+  "checks": [
+    {
+      "check_code": "source_pair_completion_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_pair_completion_partial_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_completion_records_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_blocker_records_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "blocker_count_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "blocker_status_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "missing_raw_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "missing_processed_clear",
+      "status": "PASS"
+    },
+    {
+      "check_code": "blocker_track_distribution_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_retry_ready_pairs_in_blockers",
+      "status": "PASS"
+    },
+    {
+      "check_code": "audit_outputs_ignored",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_value_comparison_claimed",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "status": "PASS"
+    },
+    {
+      "check_code": "public_safe_aggregate_only",
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_gates_closed",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "phase_id": "V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_AUDIT_AFTER_OWNER_ANCHOR_CONFIRMATION",
+  "project_id": "KMFA",
+  "record_type": "v014_fingerprint_pair_completion_blocker_audit_after_owner_anchor_confirmation_matrix_public_safe",
+  "schema_version": "kmfa.v014_fingerprint_pair_completion_blocker_audit_after_owner_anchor_confirmation_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-RESIDUAL-DIFFERENCE-RAW-TO-PROCESSED-COMPARISON-FINGERPRINT-PAIR-COMPLETION-BLOCKER-AUDIT-AFTER-OWNER-ANCHOR-CONFIRMATION-20260707",
+  "version": "0.1.4-residual-difference-raw-to-processed-comparison-fingerprint-pair-completion-blocker-audit-after-owner-anchor-confirmation"
+}
