@@ -67,6 +67,42 @@ validation_hints:
     - no generator implementation in Stage 0
     - no raw transcript access
     - no writeback
+stage10_phase1_final_hardening_upload_readiness:
+  task_id: MA-V117-S10P01
+  acceptance_id: ACC-MA-V117-S10P01
+  status: phase_10_1_final_hardening_upload_readiness_contract_created_pending_stage10_review
+  contract_id: memory_atlas_v1_1_7_final_hardening_upload_readiness_contract
+  required_validator: validate:v1.1.7-stage10-phase1
+  phase_label: Stage 10 Phase 10.1
+  next_gate: pending Stage 10 review
+  entry_condition: Stage 9 review must be complete
+  hardening_matrices:
+    - performance_safety_accessibility_matrix
+    - release_rollback_matrix
+    - final_validation_matrix
+    - github_main_upload_matrix
+    - governance_sync_matrix
+    - new_machine_recovery_matrix
+  performance_target:
+    desktop: desktop target 45-60 FPS
+    reduced_motion: reduced-motion fallback
+  upload_boundary:
+    - No intermediate GitHub upload
+    - No GitHub main upload in this phase
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundaries:
+    - no_intermediate_github_upload
+    - no_github_main_upload_in_this_phase
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_proposal_queue_write
+    - no_agent_apply
+    - no_deploy
 stage9_review:
   task_id: MA-V117-S9-REVIEW
   acceptance_id: ACC-MA-V117-S9-REVIEW
