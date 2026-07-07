@@ -1701,3 +1701,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: source_diagnostic_packet_item_count=48 and source_external_agent_private_packet_item_count=48 prove this phase starts from the prior private diagnostic packet; private_response_template_item_count=48 and private_pending_queue_item_count=48 prove every item has an ignored private response template entry.
 - gate: `NO_GO`; pending_diagnostic_response_count=48, valid_diagnostic_response_count=0, actionable_resolution_count=0, binding_ready_after_intake_count=0, comparison_retry_ready_after_intake_count=0, raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private response template, pending queue, diagnostic and report stay under ignored runtime and raw inbox remains untouched by this phase.
+
+## V014 Residual Difference Authorized Source Reference Or Exclusion Application Owner Or Agent Diagnostic Readiness Recheck After Intake
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-DIAGNOSTIC-READINESS-RECHECK-AFTER-INTAKE-001`
+- parameter_ids: `PARAM-KMFA-1531`, `PARAM-KMFA-1532`, `PARAM-KMFA-1533`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_DIAGNOSTIC_READINESS_RECHECK_AFTER_INTAKE`
+- version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-diagnostic-readiness-recheck-after-intake`
+- rule: source_private_response_template_item_count=48, source_private_pending_queue_item_count=48 and source_pending_diagnostic_response_count=48 prove this phase starts from pending intake evidence; diagnostic_response_ready_count=0 and diagnostic_response_blocker_count=48 prove no valid owner/agent response can be imported.
+- gate: `NO_GO`; valid_diagnostic_response_count=0, actionable_resolution_count=0, binding_ready_after_readiness_recheck_count=0, comparison_retry_ready_after_readiness_recheck_count=0, raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private readiness diagnostic, blocker queue and report stay under ignored runtime and raw inbox remains untouched by this phase.

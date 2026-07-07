@@ -2760,3 +2760,18 @@ kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_applicati
   evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_DIAGNOSTIC_INTAKE_AFTER_PACKET
   validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_diagnostic_intake_after_packet.py
   scope: Authorized source reference or owner exclusion application owner/agent diagnostic intake after packet only; prepares ignored private response template and pending queue for 48 diagnostic-packet items and keeps valid response import, binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_diagnostic_readiness_recheck_after_intake:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-diagnostic-readiness-recheck-after-intake"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-DIAGNOSTIC-READINESS-RECHECK-AFTER-INTAKE-001
+  parameter_refs:
+    - PARAM-KMFA-1531
+    - PARAM-KMFA-1532
+    - PARAM-KMFA-1533
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_DIAGNOSTIC_READINESS_RECHECK_AFTER_INTAKE
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_diagnostic_readiness_recheck_after_intake.py
+  scope: Authorized source reference or owner exclusion application owner/agent diagnostic readiness recheck after intake only; proves all 48 pending diagnostic responses remain blocked and keeps valid response import, binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
