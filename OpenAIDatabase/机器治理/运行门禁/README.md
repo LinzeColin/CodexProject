@@ -2,8 +2,8 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S02 Review。任务 ID 为 `MA-V12-S02-REVIEW`，验收 ID 为
-`ACC-MA-V12-S02-REVIEW`，validator 为 `validate:v1.2-s02-review`。
+当前阶段是 S03 P1。任务 ID 为 `MA-V12-S03P1`，验收 ID 为
+`ACC-MA-V12-S03P1`，validator 为 `validate:v1.2-s03-p1`。
 
 前置 S01 Review 已通过：`MA-V12-S01-REVIEW` / `ACC-MA-V12-S01-REVIEW` /
 `validate:v1.2-s01-review`。
@@ -23,6 +23,9 @@ S02 P3 产物：
 
 前置 S02 P3 已通过：`MA-V12-S02P3` / `ACC-MA-V12-S02P3` /
 `validate:v1.2-s02-p3`。
+
+前置 S02 Review 已通过：`MA-V12-S02-REVIEW` / `ACC-MA-V12-S02-REVIEW` /
+`validate:v1.2-s02-review`。
 
 S02 Review 产物：
 
@@ -44,8 +47,21 @@ source registry 必须包含：
 - 凭证排除边界。
 - 后续其他 agent 的 source registry 扩展规则。
 
-No GitHub main upload in this review。
-不实现 connector，不修改 raw archive。
-不进入 S03；S03 P1 是下一轮。
+S03 P1 产物：
 
-下一步是 S03 P1；本 review 不重装 app。
+- `机器治理/同步与备份/raw_public_archive_policy.v1_2_s03_p1.json`
+- `data/public_raw/README.md`
+- `人类可读/06_Raw明文公开与只读归档说明.md`
+- `docs/reviews/memory_atlas_v1_2_s03_p1_public_raw_path.md`
+
+S03 P1 gate：
+
+- public raw path 已定义。
+- manifest/hash 文件合同已定义。
+- append-only 规则已定义。
+- hash drift fail 规则已定义。
+
+No GitHub main upload in this phase。
+不实现 connector，不导入真实 transcript，不实现 S03 P2 credential gate，不生成 S03 P3 manifest ledger。
+
+下一步是 S03 P2；本 phase 不重装 app。

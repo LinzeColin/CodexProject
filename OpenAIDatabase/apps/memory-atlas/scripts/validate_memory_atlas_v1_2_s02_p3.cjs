@@ -345,11 +345,21 @@ function validateHumanAndMachineState() {
       "不实现 connector",
       "不修改 raw archive",
   ]);
+  const s03p1QuickEntry = hasAll(quickEntry, [
+      "当前阶段是 S03 P1",
+      humanPagePath,
+      "ChatGPT、Codex、后续其他 agent 的 transcript 可以明文公开进 GitHub",
+      "已完成：S02 Review",
+      "已完成：S02 P3 人类同步说明",
+      "MA-V12-S03P1",
+      "下一步只允许进入 S03 P2",
+      "No GitHub main upload in this phase",
+  ]);
   assertCondition(
-    s02p3QuickEntry || s02ReviewQuickEntry,
+    s02p3QuickEntry || s02ReviewQuickEntry || s03p1QuickEntry,
     "s02p3_human_quick_entry",
-    "Human quick entry records S02 P3 completion or later S02 Review pass state",
-    "Human quick entry is missing S02 P3 or S02 Review state or boundaries",
+    "Human quick entry records S02 P3 completion or later S02 Review/S03 P1 state",
+    "Human quick entry is missing S02 P3, S02 Review or S03 P1 state or boundaries",
   );
 
   const s02p3Overview = hasAll(overview, [
@@ -371,11 +381,19 @@ function validateHumanAndMachineState() {
       "credentials_not_transcript",
       "下一步是 S03 P1",
   ]);
+  const s03p1Overview = hasAll(overview, [
+      "S02 Review 已通过",
+      "S03 P1 已完成",
+      humanPagePath,
+      "future_agent_template",
+      "transcript/credential",
+      "下一步是 S03 P2",
+  ]);
   assertCondition(
-    s02p3Overview || s02ReviewOverview,
+    s02p3Overview || s02ReviewOverview || s03p1Overview,
     "s02p3_human_overview",
-    "Human overview records S02 P3 human explanation or later S02 Review pass state",
-    "Human overview is missing S02 P3 or S02 Review details",
+    "Human overview records S02 P3 human explanation or later S02 Review/S03 P1 state",
+    "Human overview is missing S02 P3, S02 Review or S03 P1 details",
   );
 
   const s02p3MachineReadme = hasAll(machineReadme, [
@@ -391,11 +409,18 @@ function validateHumanAndMachineState() {
       "下一步是 S03 P1",
       "不替代 apps/scripts/tests/config/data/docs/governance",
   ]);
+  const s03p1MachineReadme = hasAll(machineReadme, [
+      "当前为 S03 P1",
+      "S02 整体复审已通过",
+      "raw_public_archive_policy.v1_2_s03_p1.json",
+      "下一步是 S03 P2",
+      "不替代 apps/scripts/tests/config/data/docs/governance",
+  ]);
   assertCondition(
-    s02p3MachineReadme || s02ReviewMachineReadme,
+    s02p3MachineReadme || s02ReviewMachineReadme || s03p1MachineReadme,
     "s02p3_machine_readme",
-    "Machine README records S02 P3 state or later S02 Review pass state",
-    "Machine README is missing S02 P3 or S02 Review state",
+    "Machine README records S02 P3 state or later S02 Review/S03 P1 state",
+    "Machine README is missing S02 P3, S02 Review or S03 P1 state",
   );
 
   const s02p3SyncReadme = hasAll(syncReadme, [
@@ -412,11 +437,18 @@ function validateHumanAndMachineState() {
       "ChatGPT、Codex、后续其他 agent 数据备份进 GitHub",
       "下一步是 S03 P1",
   ]);
+  const s03p1SyncReadme = hasAll(syncReadme, [
+      "当前 S03 P1 已完成",
+      "sync_source_registry.json",
+      humanPagePath,
+      "raw_public_archive_policy.v1_2_s03_p1.json",
+      "下一步是 S03 P2",
+  ]);
   assertCondition(
-    s02p3SyncReadme || s02ReviewSyncReadme,
+    s02p3SyncReadme || s02ReviewSyncReadme || s03p1SyncReadme,
     "s02p3_sync_readme",
-    "Sync README points to the S02 P3 human page or later S02 Review state",
-    "Sync README is missing S02 P3 or S02 Review human sync page reference",
+    "Sync README points to the S02 P3 human page or later S02 Review/S03 P1 state",
+    "Sync README is missing S02 P3, S02 Review or S03 P1 human sync page reference",
   );
 
   const s02p3RunGateReadme = hasAll(runGateReadme, [
@@ -445,11 +477,20 @@ function validateHumanAndMachineState() {
       "不实现 connector",
       "不修改 raw archive",
   ]);
+  const s03p1RunGateReadme = hasAll(runGateReadme, [
+      "当前阶段是 S03 P1",
+      "MA-V12-S03P1",
+      "ACC-MA-V12-S03P1",
+      "validate:v1.2-s03-p1",
+      "前置 S02 Review 已通过",
+      "下一步是 S03 P2",
+      "No GitHub main upload in this phase",
+  ]);
   assertCondition(
-    s02p3RunGateReadme || s02ReviewRunGateReadme,
+    s02p3RunGateReadme || s02ReviewRunGateReadme || s03p1RunGateReadme,
     "s02p3_run_gate_readme",
-    "Run gate README records S02 P3 validator or later S02 Review gate",
-    "Run gate README is missing S02 P3 or S02 Review status",
+    "Run gate README records S02 P3 validator or later S02 Review/S03 P1 gate",
+    "Run gate README is missing S02 P3, S02 Review or S03 P1 status",
   );
 }
 

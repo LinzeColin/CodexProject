@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S03 P1 Public Raw Path
+
+- Added `机器治理/同步与备份/raw_public_archive_policy.v1_2_s03_p1.json`.
+- Added `data/public_raw/README.md`.
+- Added `人类可读/06_Raw明文公开与只读归档说明.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s03_p1_public_raw_path.md`.
+- Added `validate:v1.2-s03-p1` for `MA-V12-S03P1` /
+  `ACC-MA-V12-S03P1`.
+- Registered status `phase_s03_p1_public_raw_path_defined_pending_s03_p2`.
+- Defined public raw archive paths, raw manifest/hash file contract,
+  append-only rule and hash drift fail rule.
+- Marked the next gate as pending S03 P2.
+- Preserved S03 P1 boundaries: No GitHub main upload in this phase,
+  No S03 P2 credential gate, No S03 P3 manifest generation,
+  No connector implementation and No transcript ingestion in this phase.
+
 ## Unreleased - Memory Atlas v1.2 S02 Review
 
 - Added `docs/reviews/memory_atlas_v1_2_s02_review.md`.

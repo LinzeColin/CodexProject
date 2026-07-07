@@ -1,0 +1,53 @@
+{
+  "policy_id": "memory_atlas_raw_public_archive_policy_v1_2_s03_p1",
+  "task_id": "MA-V12-S03P1",
+  "acceptance_id": "ACC-MA-V12-S03P1",
+  "status": "phase_s03_p1_public_raw_path_defined_pending_s03_p2",
+  "purpose": "Define the public raw archive path, raw manifest/hash file contract, append-only rule and hash drift fail rule for Memory Atlas v1.2 S03 P1 without ingesting transcripts in this phase.",
+  "public_raw_root": "data/public_raw",
+  "source_registry_ref": "机器治理/同步与备份/sync_source_registry.json",
+  "source_raw_roots": {
+    "chatgpt": "data/public_raw/chatgpt",
+    "codex": "data/public_raw/codex",
+    "future_agents": "data/public_raw/agents/{agent_id}"
+  },
+  "manifest_contract": {
+    "manifest_root": "机器治理/证据与日志/raw_archive_manifests",
+    "manifest_file_pattern": "raw_manifest.{run_id}.jsonl",
+    "hash_ledger_file": "raw_hash_ledger.jsonl",
+    "minimum_manifest_fields": [
+      "source_id",
+      "relative_path",
+      "sha256",
+      "imported_at"
+    ],
+    "machine_only": true,
+    "not_primary_human_page": true
+  },
+  "append_only_rule": {
+    "allow_new_raw_files": true,
+    "forbid_modify_existing_raw": true,
+    "forbid_delete_existing_raw": true,
+    "forbid_overwrite_existing_raw": true,
+    "raw_files_are_not_apply_targets": true
+  },
+  "hash_drift_fail_rule": {
+    "enabled": true,
+    "same_relative_path_requires_same_sha256": true,
+    "deleted_manifest_entry_fails": true,
+    "changed_sha256_fails": true,
+    "new_relative_path_is_append_only": true
+  },
+  "validation_contract": {
+    "planned_atlasctl_check": "python scripts/atlasctl.py audit --check raw-append-only",
+    "current_phase_validator": "validate:v1.2-s03-p1",
+    "git_diff_check": "git diff -- OpenAIDatabase/data/public_raw"
+  },
+  "phase_boundary": {
+    "credential_pattern_gate_deferred_to": "S03 P2",
+    "manifest_generation_deferred_to": "S03 P3",
+    "connector_implementation_deferred_to": "S04",
+    "does_not_ingest_transcripts_in_this_phase": true,
+    "no_github_main_upload_in_this_phase": true
+  }
+}

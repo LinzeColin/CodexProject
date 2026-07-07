@@ -1,3 +1,40 @@
+## 113. Memory Atlas v1.2 S03 P1 Public Raw Path Parameters
+
+状态：`phase_s03_p1_public_raw_path_defined_pending_s03_p2`。
+
+验收 ID：`ACC-MA-V12-S03P1`。
+
+S03 P1 固定以下参数：
+
+- `MA-V12-S03P1`
+- `validate:v1.2-s03-p1`
+- `memory_atlas_v1_2_s03_p1_public_raw_path.md`
+- `raw_public_archive_policy.v1_2_s03_p1.json`
+- `data/public_raw/README.md`
+- public raw paths：`data/public_raw/chatgpt`、`data/public_raw/codex`、`data/public_raw/agents/{agent_id}`。
+- manifest/hash：`raw_manifest.{run_id}.jsonl`、`raw_hash_ledger.jsonl`。
+- integrity：append-only、hash drift fail。
+- S03 P1 完成后下一步为 pending S03 P2。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S03P1-001 phase_status = phase_s03_p1_public_raw_path_defined_pending_s03_p2`
+- `PARAM-MA-V12-S03P1-002 validator = validate:v1.2-s03-p1`
+- `PARAM-MA-V12-S03P1-003 raw_policy = raw_public_archive_policy.v1_2_s03_p1.json`
+- `PARAM-MA-V12-S03P1-004 public_raw_root = data/public_raw`
+- `PARAM-MA-V12-S03P1-005 integrity_rule = append-only;hash drift fail`
+- `PARAM-MA-V12-S03P1-006 next_gate = pending S03 P2`
+- `PARAM-MA-V12-S03P1-007 upload_boundary = No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s03-p1` checks S02 Review continuity, raw policy, public raw README,
+  human raw page, review artifact, records, canonical remote, no-upload/no-credential-gate/
+  no-manifest-generation/no-connector boundaries and open diff raw safety.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S03 P1 Public Raw Path; MA-V12-S03P1; ACC-MA-V12-S03P1; phase_s03_p1_public_raw_path_defined_pending_s03_p2; validate:v1.2-s03-p1; memory_atlas_v1_2_s03_p1_public_raw_path.md; raw_public_archive_policy.v1_2_s03_p1.json; data/public_raw/README.md; S03 P1; pending S03 P2; No GitHub main upload in this phase; No S03 P2 credential gate; No S03 P3 manifest generation; No connector implementation; No transcript ingestion in this phase.
+
 ## 112. Memory Atlas v1.2 S02 Review Parameters
 
 状态：`stage_s02_review_passed_pending_s03_no_github_main_upload`。
