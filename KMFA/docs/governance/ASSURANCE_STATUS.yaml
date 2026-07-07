@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260707-V014-FINGERPRINT-PAIR-COMPLETION-BLOCKER-THRESHOLD-RECHECK-AFTER-OWNER-ANCHOR-CONFIRMATION"
+as_of_event_id: "DEV-KMFA-20260707-V014-FINGERPRINT-PAIR-COMPLETION-BLOCKER-FINAL-THRESHOLD-RECHECK-AFTER-OWNER-ANCHOR-CONFIRMATION"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "4c39d6d8b19b85205ef24c4b4cea42d9a9d6b53b"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
 snapshot_event_time: "2026-07-07T00:00:00+10:00"
-generator_version: "manual-0.1.4-residual-difference-raw-to-processed-comparison-fingerprint-pair-completion-blocker-threshold-recheck-after-owner-anchor-confirmation"
+generator_version: "manual-0.1.4-residual-difference-raw-to-processed-comparison-fingerprint-pair-completion-blocker-final-threshold-recheck-after-owner-anchor-confirmation"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1112
-    total_active_formulas: 211
+    total_active_parameters: 1115
+    total_active_formulas: 212
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -1514,6 +1514,56 @@ kmfa_v014_residual_difference_raw_comparison_fingerprint_pair_completion_blocker
     processed_consistency_verified: false
     business_value_consistency_verified: false
     goal_status_recommendation: continue_to_fingerprint_pair_completion_blocker_final_threshold_recheck
+  forbidden_scope:
+    raw_inbox_read: false
+    raw_inbox_write: false
+    raw_inbox_delete: false
+    raw_inbox_move: false
+    raw_inbox_copy: false
+    raw_inbox_normalize: false
+    raw_inbox_mutation: false
+    processed_data_reconciliation: false
+    lineage_full_check: false
+    formal_report: false
+    github_upload: false
+    app_reinstall: false
+    business_execution: false
+
+kmfa_v014_residual_difference_raw_comparison_fingerprint_pair_completion_blocker_final_threshold_recheck_after_owner_anchor_confirmation:
+  status: completed_validated_local_only_raw_comparison_fingerprint_pair_completion_blocker_final_threshold_met_after_owner_anchor_confirmation_no_go
+  phase: V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_FINAL_THRESHOLD_RECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_FINAL_THRESHOLD_RECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION
+  validator: KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_fingerprint_pair_completion_blocker_final_threshold_recheck_after_owner_anchor_confirmation.py
+  focused_test: KMFA/tests/test_v014_residual_difference_raw_to_processed_comparison_fingerprint_pair_completion_blocker_final_threshold_recheck_after_owner_anchor_confirmation.py
+  github_upload: blocked_no_go_upload_deferred
+  counts:
+    source_fingerprint_pair_completion_blocker_count: 48
+    source_fingerprint_pair_completion_blocker_observation_count: 2
+    source_fingerprint_pair_completion_blocked_audit_threshold_met: false
+    source_missing_raw_candidate_fingerprint_blocker_count: 48
+    source_missing_raw_candidate_record_ref_hash_blocker_count: 48
+    source_missing_processed_fingerprint_blocker_count: 0
+    source_private_blocker_threshold_record_count: 48
+    prior_fingerprint_pair_completion_blocker_observation_count: 2
+    fingerprint_pair_completion_blocker_observation_count: 3
+    fingerprint_pair_completion_blocked_audit_threshold_met: true
+    fingerprint_pair_completion_blocker_count: 48
+    missing_raw_candidate_fingerprint_blocker_count: 48
+    missing_raw_candidate_record_ref_hash_blocker_count: 48
+    missing_processed_fingerprint_blocker_count: 0
+    comparison_retry_ready_after_final_threshold_recheck_count: 0
+    owner_select_one_authoritative_candidate_blocker_count: 0
+    provide_authoritative_source_reference_or_owner_exclusion_blocker_count: 40
+    provide_formula_or_non_numeric_mapping_blocker_count: 8
+    unresolved_difference_count: 72
+  gates:
+    fingerprint_pair_completion_blocker_final_threshold_recheck_performed_by_this_phase: true
+    pair_completion_blockers_remain_blocked_by_missing_raw_candidate_fingerprints: true
+    goal_status_recommendation: blocked
+    raw_to_processed_value_comparison_performed_by_this_phase: false
+    full_raw_to_processed_value_comparison_complete: false
+    processed_consistency_verified: false
+    business_value_consistency_verified: false
   forbidden_scope:
     raw_inbox_read: false
     raw_inbox_write: false
