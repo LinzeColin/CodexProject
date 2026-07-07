@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 3 Review
+
+- Added `docs/reviews/memory_atlas_v1_1_7_stage3_review.md` to pin the
+  completed Stage 3 review gate.
+- Added `validate:v1.1.7-stage3` to validate Stage 2 continuity, Phase 3.1
+  Default Home Structure, Phase 3.2 Home Detail Operations, records, package
+  script and no-upload boundary.
+- Registered `MA-V117-S3-REVIEW` / `ACC-MA-V117-S3-REVIEW` with status
+  `stage_3_review_passed_pending_stage4_no_github_main_upload`.
+- Marked Stage 3 as review-passed and pending Stage 4 while preserving
+  `No GitHub main upload` before the whole Stage 0-10 project is complete.
+
+No Stage 4 work, Search 2.0 runtime, Review workflow runtime, Data Map 2.0
+runtime, raw/private data read, direct active-memory writeback, agent apply,
+production build, local app install, browser screenshot, deploy or GitHub main
+upload was added.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 3 Phase 3.2
 
 - Added the versioned Home Detail Operations contract

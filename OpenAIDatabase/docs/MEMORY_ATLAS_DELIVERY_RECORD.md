@@ -1,3 +1,30 @@
+## v1.1.7 Stage 3 Review：Default Home Gate
+
+状态：`stage_3_review_passed_pending_stage4_no_github_main_upload`。
+
+任务 ID：`MA-V117-S3-REVIEW`。
+
+验收 ID：`ACC-MA-V117-S3-REVIEW`。
+
+Stage 3 is review-passed and pending Stage 4. 本 review 固定两个已完成 phase：
+
+1. Phase 3.1：Default Home Structure。
+2. Phase 3.2：Home Detail Operations。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage3_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage3.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.1.7-stage3`
+- `ACC-MA-V117-S3-REVIEW`
+- Stage 2 review continuity、Phase 3.1 / Phase 3.2 validators、records、package script 和 no-upload boundary 均需通过。
+
+Machine-readable boundary summary: Stage 3 Review; Phase 3.1; Phase 3.2; pending Stage 4; No GitHub main upload; No Stage 4 work; No raw/private data read; No direct active-memory writeback; No agent apply; No build/deploy/app install; no GitHub main upload before whole Stage 0-10 completion.
+
 ## v1.1.7 Stage 3 Phase 3.2：Home Detail Operations
 
 状态：`phase_3_2_home_detail_operations_completed_pending_stage3_review`。
