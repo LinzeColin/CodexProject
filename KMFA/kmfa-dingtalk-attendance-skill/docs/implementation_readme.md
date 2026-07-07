@@ -76,6 +76,15 @@ python3 scripts/prepare_postgres_landing_loader.py \
 Review `postgres_load_plan.sql` and run it only against an explicitly approved
 non-production PostgreSQL target.
 
+Validate the load plan offline before any database mutation:
+
+```bash
+python3 scripts/validate_postgres_load_plan.py \
+  --schema database/postgres_schema.sql \
+  --bundle-dir "$KMFA_PRIVATE_RUNTIME/db_landing/202607" \
+  --print-json
+```
+
 ## Automation
 
 Use `automation/morning_prompt.md` for the morning automation and `automation/evening_prompt.md` for the evening automation. The evening prompt explicitly invokes `$kmfa-dingtalk-attendance-skill` and runs stage-2 only when eligible.

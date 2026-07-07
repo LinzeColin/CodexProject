@@ -28,6 +28,7 @@
 - [ ] Stage-2 tables exist.
 - [ ] Payroll baseline table/view exists.
 - [ ] Private DB landing bundle includes policy_version, accepted stage-2 certificate, day facts, payroll baseline rows, and a generated load plan before any database mutation.
+- [ ] Generated PostgreSQL load plan passes static validation before any non-production execution.
 
 ## Stage-2 acceptance
 

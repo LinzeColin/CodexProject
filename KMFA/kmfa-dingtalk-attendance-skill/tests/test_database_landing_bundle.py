@@ -142,7 +142,74 @@ def test_postgres_landing_load_plan_is_generated_without_database_connection():
         assert "psql" not in data
 
 
+def test_postgres_load_plan_static_validator_checks_schema_and_conflicts():
+    with tempfile.TemporaryDirectory() as td:
+        runtime = Path(td) / "private_runtime"
+        stage2_root = write_accepted_stage2(runtime)
+        out_dir = runtime / "db_landing" / "202607"
+        run([
+            sys.executable,
+            str(SCRIPT_DIR / "prepare_database_landing_bundle.py"),
+            "--stage2-root",
+            str(stage2_root),
+            "--target-month",
+            "202607",
+            "--out-dir",
+            str(out_dir),
+        ])
+        run([
+            sys.executable,
+            str(SCRIPT_DIR / "prepare_postgres_landing_loader.py"),
+            "--bundle-dir",
+            str(out_dir),
+        ])
+        p = run([
+            sys.executable,
+            str(SCRIPT_DIR / "validate_postgres_load_plan.py"),
+            "--schema",
+            str(ROOT / "database" / "postgres_schema.sql"),
+            "--bundle-dir",
+            str(out_dir),
+            "--print-json",
+        ])
+        data = json.loads(p.stdout)
+        assert data["status"] == "pass"
+        assert data["mode"] == "offline_postgres_load_plan_static_validation"
+        assert data["postgres_connection_used"] is False
+        assert data["database_mutation_performed"] is False
+        assert data["live_dws_performed"] is False
+        assert data["failures"] == []
+        assert data["tables_checked"] == [
+            "policy_version",
+            "canonical_month_snapshot",
+            "stage2_shadow_run",
+            "stage2_consensus_certificate",
+            "attendance_day_fact",
+            "payroll_baseline_attendance",
+        ]
+        assert data["checks"]["conflict_targets_backed_by_schema"] is True
+
+        bad_sql = out_dir / "postgres_load_plan_bad.sql"
+        sql = (out_dir / "postgres_load_plan.sql").read_text(encoding="utf-8")
+        bad_sql.write_text(sql.replace("ON CONFLICT (target_month, run_index)", "ON CONFLICT (target_month)", 1), encoding="utf-8")
+        bad = run([
+            sys.executable,
+            str(SCRIPT_DIR / "validate_postgres_load_plan.py"),
+            "--schema",
+            str(ROOT / "database" / "postgres_schema.sql"),
+            "--bundle-dir",
+            str(out_dir),
+            "--sql",
+            str(bad_sql),
+            "--print-json",
+        ], check=False)
+        assert bad.returncode == 1
+        bad_data = json.loads(bad.stdout)
+        assert "conflict_target_not_backed_by_schema:stage2_shadow_run:target_month" in bad_data["failures"]
+
+
 if __name__ == "__main__":
     test_database_landing_bundle_materializes_accepted_stage2_without_db_mutation()
     test_postgres_landing_load_plan_is_generated_without_database_connection()
+    test_postgres_load_plan_static_validator_checks_schema_and_conflicts()
     print("database landing bundle tests passed")
