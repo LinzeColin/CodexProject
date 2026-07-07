@@ -15,6 +15,16 @@ fi
 
 git fetch origin main
 git merge --ff-only origin/main
+
+set +e
+python3 "$SKILL_DIR/tools/check_source_readiness.py" --target-dir "$INPUT_DIR" --repo-root "$REPO_ROOT" --timezone Australia/Sydney
+READINESS_EXIT=$?
+set -e
+if [[ "$READINESS_EXIT" -ne 0 ]]; then
+  echo "ERROR: source readiness gate failed; run_fund_weekly_analysis.py was not started" >&2
+  exit "$READINESS_EXIT"
+fi
+
 python3 "$SKILL_DIR/tools/run_fund_weekly_analysis.py" --input-dir "$INPUT_DIR" --repo-root "$REPO_ROOT" --timezone Australia/Sydney
 
 if command -v codex >/dev/null 2>&1; then
