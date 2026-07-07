@@ -2745,3 +2745,18 @@ kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_applicati
   evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_DIAGNOSTIC_PACKET_AFTER_BLOCKED_HANDOFF
   validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_diagnostic_packet_after_blocked_handoff.py
   scope: Authorized source reference or owner exclusion application diagnostic packet after blocked handoff only; prepares ignored private diagnostic packet and queue for 48 unresolved blockers and keeps authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_diagnostic_intake_after_packet:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-diagnostic-intake-after-packet"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-DIAGNOSTIC-INTAKE-AFTER-PACKET-001
+  parameter_refs:
+    - PARAM-KMFA-1528
+    - PARAM-KMFA-1529
+    - PARAM-KMFA-1530
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_DIAGNOSTIC_INTAKE_AFTER_PACKET
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_diagnostic_intake_after_packet.py
+  scope: Authorized source reference or owner exclusion application owner/agent diagnostic intake after packet only; prepares ignored private response template and pending queue for 48 diagnostic-packet items and keeps valid response import, binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
