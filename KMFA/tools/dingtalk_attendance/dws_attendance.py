@@ -19,6 +19,7 @@ from KMFA.tools.dingtalk_attendance.report_renderer import render_hr_report, ren
 
 ROOT_DEPT_ID = 1
 MAX_DEPTS_PER_CALL = 30
+DEFAULT_DWS_TIMEOUT_SECONDS = 120
 KNOWN_NO_RECORD_NAMES = frozenset({"张霖泽", "林全意"})
 USER_VISIBLE_HIDDEN_NAMES = frozenset()
 SUMMARY_TODAY_ANOMALY_TOKENS = frozenset(
@@ -35,6 +36,7 @@ SUMMARY_TODAY_ANOMALY_TOKENS = frozenset(
     }
 )
 RETRYABLE_SERVER_CODES = frozenset({"PAT_AUTH_CALL_FAILED", "TOKEN_VERIFIED_FAILED", "ERROR"})
+RETRYABLE_DWS_ERROR_CODES = frozenset({"6", "ERROR", "request_timeout", "timed_out", "timeout"})
 PAT_AUTH_REQUIRED_CODES = frozenset(
     {
         "PAT_SCOPE_AUTH_REQUIRED",
@@ -60,12 +62,13 @@ def run_dws_json(args: list[str], *, timeout: int = 30, verbose: bool = False) -
     command = [dws_bin, *args]
     if verbose:
         command.append("--verbose")
-    command.extend(["--format", "json"])
+    effective_timeout = max(int(os.environ.get("KMFA_S19_DWS_TIMEOUT_SECONDS", str(timeout))), timeout)
+    command.extend(["--timeout", str(effective_timeout), "--format", "json"])
     proc = subprocess.run(
         command,
         text=True,
         capture_output=True,
-        timeout=timeout,
+        timeout=effective_timeout + 5,
         check=False,
         env=dws_subprocess_env(),
     )
@@ -81,7 +84,13 @@ def _parse_json_payload(payload_text: str) -> dict[str, Any]:
     try:
         return json.loads(payload_text[start:])
     except json.JSONDecodeError as exc:
-        return {"parse_error": str(exc), "raw": payload_text[:2000]}
+        tail = payload_text[start:]
+        decoder = json.JSONDecoder()
+        try:
+            payload, _ = decoder.raw_decode(tail)
+            return payload
+        except json.JSONDecodeError:
+            return {"parse_error": str(exc), "raw": payload_text[:2000]}
 
 
 def _call_runner(
@@ -105,7 +114,7 @@ def _server_error_code(result: dict[str, Any]) -> str:
         return ""
     error = payload.get("error", {})
     if isinstance(error, dict):
-        return str(error.get("server_error_code") or "")
+        return str(error.get("server_error_code") or error.get("code") or "")
     return ""
 
 
@@ -117,7 +126,15 @@ def _should_retry(result: dict[str, Any]) -> bool:
     payload = result.get("payload", {})
     error = payload.get("error", {}) if isinstance(payload, dict) else {}
     retryable = bool(error.get("retryable")) if isinstance(error, dict) else False
-    return retryable or _server_error_code(result) in RETRYABLE_SERVER_CODES
+    code = _server_error_code(result)
+    reason = str(payload.get("reason") or "") if isinstance(payload, dict) else ""
+    return (
+        retryable
+        or code in RETRYABLE_SERVER_CODES
+        or code in RETRYABLE_DWS_ERROR_CODES
+        or reason.lower() in RETRYABLE_DWS_ERROR_CODES
+        or _contains_timeout(payload)
+    )
 
 
 def _run_with_retry(
@@ -125,12 +142,17 @@ def _run_with_retry(
     args: list[str],
     *,
     timeout: int = 30,
+    max_attempts: int = 3,
 ) -> dict[str, Any]:
     first = _call_runner(runner, args, timeout=timeout, verbose=False)
     _raise_if_pat_auth_required(first, args=args)
     attempts = [first]
     final = first
-    if _should_retry(first):
+    if max_attempts < 1:
+        return {"final": final, "attempts": attempts}
+    attempt = 1
+    while _should_retry(final) and attempt < max_attempts:
+        attempt += 1
         final = _call_runner(runner, args, timeout=timeout, verbose=True)
         _raise_if_pat_auth_required(final, args=args)
         attempts.append(final)
@@ -151,11 +173,11 @@ def discover_department_ids(
             continue
         seen.add(dept_id)
         ordered.append(dept_id)
-        result = _call_runner(
+        result = _run_with_retry(
             runner,
             ["contact", "dept", "list-children", "--dept", str(dept_id)],
-            timeout=30,
-        )
+            timeout=DEFAULT_DWS_TIMEOUT_SECONDS,
+        )["final"]
         _raise_if_pat_auth_required(result, args=["contact", "dept", "list-children"])
         if not _is_success(result):
             raise DwsAttendanceError(f"department discovery failed for dept {dept_id}: {_server_error_code(result)}")
@@ -175,11 +197,11 @@ def list_org_members(
     members: dict[str, dict[str, str]] = {}
     for index in range(0, len(dept_ids), MAX_DEPTS_PER_CALL):
         batch = dept_ids[index : index + MAX_DEPTS_PER_CALL]
-        result = _call_runner(
+        result = _run_with_retry(
             runner,
             ["contact", "dept", "list-members", "--depts", ",".join(str(value) for value in batch)],
-            timeout=45,
-        )
+            timeout=DEFAULT_DWS_TIMEOUT_SECONDS,
+        )["final"]
         _raise_if_pat_auth_required(result, args=["contact", "dept", "list-members"])
         if not _is_success(result):
             raise DwsAttendanceError(f"member listing failed: {_server_error_code(result)}")
@@ -602,6 +624,17 @@ def _contains_open_browser_marker(value: Any) -> bool:
         return any(_contains_open_browser_marker(child) for child in value)
     if isinstance(value, str):
         return '"openBrowser":true' in value.replace(" ", "") or '"open_browser":true' in value.replace(" ", "")
+    return False
+
+
+def _contains_timeout(value: Any) -> bool:
+    if isinstance(value, Mapping):
+        return any(_contains_timeout(child) for child in value.values())
+    if isinstance(value, list):
+        return any(_contains_timeout(child) for child in value)
+    if isinstance(value, str):
+        lowered = value.lower()
+        return "timeout" in lowered or "timed out" in lowered
     return False
 
 
