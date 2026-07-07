@@ -22,6 +22,8 @@ behavior:
   write_jsonl_logs: true
   notify_missing: true
   notify_late: true
+  notify_wrong: true
+  notify_merged: true
   notify_low_confidence: true
   idempotent_notifications: true
   allow_same_message_to_satisfy_multiple_independent_rules: false
@@ -48,7 +50,7 @@ rules:
     independent_required_artifact: true
     keywords:
       positive: [资金账户明细表, 资金账户明细, 账户明细表]
-      negative: [资金流水明细, 流水明细]
+      negative: [资金流水明细, 资金明细, 流水明细]
     ocr_feature_profile_ref: cash_account_statement
     notify_on_missing: true
 
