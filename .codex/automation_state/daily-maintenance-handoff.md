@@ -43,3 +43,8 @@
 
 ## 回滚方式
 - 回滚：还原 `OpenAIDatabase/config/context_sources/resource_routes.json` 里新增 `maintenance` intent 块，并移除本次新增 `.codex/automation_state/*` 两文件。
+
+## 推送结果补充
+- 远端推送尝试：`git push origin HEAD:codex/memory-atlas-v117-stage0-10-local`
+- 现象：多次在 `Writing objects` 阶段长期停留（约从 50%% 起），最终手动中断，未建立远端分支。
+- 当前动作：保留本地两次提交，等待网络/远端策略恢复后重试。

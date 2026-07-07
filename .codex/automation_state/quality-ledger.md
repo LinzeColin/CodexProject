@@ -35,3 +35,8 @@
 ## 风险与后续
 - 技术债：全局 lean governance 校验脚本在此主 checkout 不存在，需在后续批次补齐或更新 automation 命令路径。
 - 运行风险：.codex 状态目录新增后首次运行需保持 commit+push，不得依赖本机未提交临时文件。
+
+## 备注：推送链路
+- 本次本地 `git push origin HEAD:codex/memory-atlas-v117-stage0-10-local` 多次触发对象上传卡在中段（`Writing objects: 50%...`），未完成。
+- 远端 branch 尚不存在，当前状态：`REMOTE_BRANCH_MISSING`。
+- 建议后续在可观测网络窗口执行一次单独推送，再补齐验证记录。
