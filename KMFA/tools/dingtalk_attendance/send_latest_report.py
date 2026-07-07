@@ -29,6 +29,7 @@ from KMFA.tools.dingtalk_attendance.notification_targets import (
     probe_notification_targets,
 )
 from KMFA.tools.dingtalk_attendance.notification_template import run_type_from_run_id, work_date_from_run_id
+from KMFA.tools.dingtalk_attendance.run_attendance import build_stats_with_rest_required_people
 from KMFA.tools.dingtalk_attendance.secrets_loader import merged_runtime_env
 
 
@@ -89,12 +90,17 @@ def send_latest_report(
         }
 
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    work_date = manifest.get("work_date") or work_date_from_run_id(str(manifest["run_id"]))
     output_status = {
         "run_id": manifest["run_id"],
         "run_type": manifest.get("run_type") or run_type_from_run_id(str(manifest["run_id"])),
-        "work_date": manifest.get("work_date") or work_date_from_run_id(str(manifest["run_id"])),
+        "work_date": work_date,
         "current_time": datetime.now(ZoneInfo(TIMEZONE)).strftime("%Y-%m-%d %H:%M:%S"),
-        "stats": manifest.get("stats", {}),
+        "stats": build_stats_with_rest_required_people(
+            manifest.get("stats", {}),
+            month_dir=manifest_path.parent,
+            work_date=work_date,
+        ),
         "management_report": manifest["management_report"],
         "hr_report": manifest["hr_report"],
         "dispatch_receipt": manifest["dispatch_receipt"],

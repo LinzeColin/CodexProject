@@ -37,6 +37,7 @@ def initialize_ledger(db_path: Path = DEFAULT_LEDGER_PATH) -> dict[str, Any]:
     with closing(sqlite3.connect(db_path)) as conn:
         conn.execute("pragma foreign_keys=on")
         _create_schema(conn)
+        _ensure_schema_migrations(conn)
         conn.commit()
     return {"status": "READY", "db_path": str(db_path), "schema_version": SCHEMA_VERSION}
 
@@ -258,6 +259,7 @@ def _create_schema(conn: sqlite3.Connection) -> None:
             failure_reason text,
             trace_id_present integer not null default 0,
             notification_status text,
+            notification_template_text text,
             primary key (run_id, target_label, target_type),
             foreign key (run_id) references runs(run_id) on delete cascade
         );
@@ -272,6 +274,15 @@ def _create_schema(conn: sqlite3.Connection) -> None:
         );
         """
     )
+
+
+def _ensure_schema_migrations(conn: sqlite3.Connection) -> None:
+    dispatch_columns = {
+        row[1]
+        for row in conn.execute("pragma table_info(dispatch_receipts)").fetchall()
+    }
+    if "notification_template_text" not in dispatch_columns:
+        conn.execute("alter table dispatch_receipts add column notification_template_text text")
 
 
 def _sync_one_manifest(conn: sqlite3.Connection, manifest_path: Path) -> dict[str, Any]:
@@ -622,6 +633,7 @@ def _insert_dispatch_receipts(conn: sqlite3.Connection, *, run_id: str, dispatch
     target_results = payload.get("target_results", [])
     if not isinstance(target_results, list):
         target_results = []
+    notification_template_text = _str_or_none(payload.get("notification_template_text"))
     for target in target_results:
         if not isinstance(target, Mapping):
             continue
@@ -629,9 +641,9 @@ def _insert_dispatch_receipts(conn: sqlite3.Connection, *, run_id: str, dispatch
             """
             insert or replace into dispatch_receipts (
                 run_id, target_label, target_type, channel, management_status, hr_status,
-                failure_reason, trace_id_present, notification_status
+                failure_reason, trace_id_present, notification_status, notification_template_text
             )
-            values (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 run_id,
@@ -643,6 +655,7 @@ def _insert_dispatch_receipts(conn: sqlite3.Connection, *, run_id: str, dispatch
                 _str_or_none(target.get("failure_reason")),
                 int(bool(target.get("trace_id_present"))),
                 _str_or_none(payload.get("notification_status")),
+                notification_template_text,
             ),
         )
 

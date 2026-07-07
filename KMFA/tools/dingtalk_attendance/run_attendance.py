@@ -9,7 +9,7 @@ import json
 import os
 import sys
 from collections.abc import Callable, Mapping
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
@@ -34,6 +34,7 @@ from KMFA.tools.dingtalk_attendance.notification_template import (
     REST_REQUIRED_THRESHOLD_DAYS,
     build_notification_message,
     build_personal_notification_message,
+    coerce_message_lines,
     notification_context_from_output_status,
     work_date_from_run_id,
 )
@@ -100,6 +101,8 @@ def dispatch_reports_to_robot(
             "messages": messages,
             "management_report": str(output_status.get("management_report", "")),
             "hr_report": str(output_status.get("hr_report", "")),
+            "notification_template_text": "",
+            "notification_delivery_table": "| 发送对象 | 是否成功 |\n|---|---|\n| 钉钉群机器人 | 否 |",
         }
         receipt_path.write_text(json.dumps(receipt, ensure_ascii=False, indent=2), encoding="utf-8")
         return receipt
@@ -125,38 +128,14 @@ def dispatch_reports_to_robot(
         "messages": messages,
         "management_report": str(output_status.get("management_report", "")),
         "hr_report": str(output_status.get("hr_report", "")),
+        "notification_template_text": markdown_text,
+        "notification_delivery_table": (
+            "| 发送对象 | 是否成功 |\n|---|---|\n"
+            f"| 钉钉群机器人 | {'是' if notification_status == 'SENT' else '否'} |"
+        ),
     }
     receipt_path.write_text(json.dumps(receipt, ensure_ascii=False, indent=2), encoding="utf-8")
     return receipt
-
-
-def build_monthly_rest_required_people(
-    records: list[Mapping[str, Any]],
-    *,
-    threshold_days: int = REST_REQUIRED_THRESHOLD_DAYS,
-) -> list[dict[str, Any]]:
-    effective_dates_by_user: dict[str, set[str]] = {}
-    names_by_user: dict[str, str] = {}
-    for record in records:
-        member = record.get("member", {})
-        if not isinstance(member, Mapping):
-            continue
-        name = str(member.get("name") or "").strip()
-        user_id = str(member.get("userId") or name).strip()
-        work_date = str(record.get("work_date") or "").strip()
-        if not name or not user_id or not work_date:
-            continue
-        if not _record_list_has_morning_and_evening(_record_list_from_attendance_record(record)):
-            continue
-        names_by_user[user_id] = name
-        effective_dates_by_user.setdefault(user_id, set()).add(work_date)
-
-    people = [
-        {"name": names_by_user[user_id], "effective_attendance_days": len(work_dates)}
-        for user_id, work_dates in effective_dates_by_user.items()
-        if len(work_dates) >= threshold_days
-    ]
-    return sorted(people, key=lambda item: (-int(item["effective_attendance_days"]), str(item["name"])))
 
 
 def build_stats_with_rest_required_people(
@@ -164,13 +143,218 @@ def build_stats_with_rest_required_people(
     *,
     month_dir: Path,
     threshold_days: int = REST_REQUIRED_THRESHOLD_DAYS,
+    work_date: str | None = None,
 ) -> dict[str, Any]:
     enriched = dict(stats)
-    enriched["rest_required_people"] = build_monthly_rest_required_people(
-        _monthly_attendance_records(month_dir),
-        threshold_days=threshold_days,
+    enriched.update(
+        build_monthly_notification_rollups(
+            _monthly_attendance_records(month_dir),
+            current_stats=stats,
+            work_date=work_date,
+            threshold_days=threshold_days,
+        )
     )
     return enriched
+
+
+def build_monthly_notification_rollups(
+    records: list[Mapping[str, Any]],
+    *,
+    current_stats: Mapping[str, Any],
+    work_date: str | None,
+    threshold_days: int = REST_REQUIRED_THRESHOLD_DAYS,
+) -> dict[str, Any]:
+    current_work_date = work_date or _max_work_date(records)
+    current_month = current_work_date[:7] if current_work_date else ""
+    names_by_user: dict[str, str] = {}
+    users_by_name: dict[str, str] = {}
+    effective_dates_by_user: dict[str, set[str]] = {}
+    anomaly_dates_by_user: dict[str, set[str]] = {}
+    pending_counts_by_user: dict[str, int] = {}
+    pending_latest_by_user: dict[str, str] = {}
+    current_pending_users: set[str] = set()
+
+    for record in records:
+        member = record.get("member", {})
+        if not isinstance(member, Mapping):
+            continue
+        name = str(member.get("name") or "").strip()
+        user_id = str(member.get("userId") or name).strip()
+        record_work_date = str(record.get("work_date") or "").strip()
+        if not name or not user_id or not _date_in_current_month(record_work_date, current_month):
+            continue
+        if current_work_date and record_work_date > current_work_date:
+            continue
+        names_by_user[user_id] = name
+        users_by_name[name] = user_id
+        if _attendance_record_success(record) and _record_list_has_morning_and_evening(_record_list_from_attendance_record(record)):
+            effective_dates_by_user.setdefault(user_id, set()).add(record_work_date)
+        summary_issues = _summary_today_issues_from_attendance_record(record)
+        if _attendance_record_has_anomaly(record) or summary_issues:
+            anomaly_dates_by_user.setdefault(user_id, set()).add(record_work_date)
+        if summary_issues:
+            pending_counts_by_user[user_id] = pending_counts_by_user.get(user_id, 0) + len(summary_issues)
+            pending_latest_by_user[user_id] = max(pending_latest_by_user.get(user_id, ""), record_work_date)
+            if record_work_date == current_work_date:
+                current_pending_users.add(user_id)
+
+    current_anomaly_names = _coerce_name_list(
+        current_stats.get("attendance_anomaly_names")
+        or [
+            *coerce_message_lines(current_stats.get("unexpected_empty_record_names")),
+            *coerce_message_lines(current_stats.get("incomplete_record_names")),
+        ]
+    )
+    monthly_attendance_anomalies: list[dict[str, Any]] = []
+    for name in current_anomaly_names:
+        user_id = users_by_name.get(name, name)
+        dates = anomaly_dates_by_user.get(user_id, set())
+        monthly_attendance_anomalies.append(
+            {
+                "name": name,
+                "monthly_count": max(len(dates), 1),
+                "latest_date": max(dates) if dates else (current_work_date or ""),
+            }
+        )
+
+    monthly_consecutive_anomalies: list[dict[str, Any]] = []
+    for user_id, dates in anomaly_dates_by_user.items():
+        if not current_work_date or current_work_date not in dates:
+            continue
+        streak = _current_consecutive_day_count(dates, current_work_date)
+        if streak >= 2:
+            monthly_consecutive_anomalies.append(
+                {
+                    "name": names_by_user[user_id],
+                    "monthly_count": len(dates),
+                    "consecutive_days": streak,
+                    "latest_date": current_work_date,
+                }
+            )
+
+    monthly_pending_actions = [
+        {
+            "name": names_by_user[user_id],
+            "monthly_count": pending_counts_by_user[user_id],
+            "latest_date": pending_latest_by_user.get(user_id, ""),
+        }
+        for user_id in current_pending_users
+        if user_id in names_by_user
+    ]
+    rest_required_people = [
+        {
+            "name": names_by_user[user_id],
+            "effective_attendance_days": len(work_dates),
+            "latest_date": max(work_dates),
+        }
+        for user_id, work_dates in effective_dates_by_user.items()
+        if len(work_dates) >= threshold_days
+    ]
+    return {
+        "monthly_attendance_anomalies": _sort_monthly_people(monthly_attendance_anomalies, metric_key="monthly_count"),
+        "monthly_consecutive_anomalies": _sort_monthly_people(monthly_consecutive_anomalies, metric_key="monthly_count"),
+        "monthly_pending_actions": _sort_monthly_people(monthly_pending_actions, metric_key="monthly_count"),
+        "rest_required_people": _sort_monthly_people(
+            rest_required_people,
+            metric_key="effective_attendance_days",
+        ),
+    }
+
+
+def build_monthly_rest_required_people(
+    records: list[Mapping[str, Any]],
+    *,
+    threshold_days: int = REST_REQUIRED_THRESHOLD_DAYS,
+) -> list[dict[str, Any]]:
+    return build_monthly_notification_rollups(
+        records,
+        current_stats={},
+        work_date=_max_work_date(records),
+        threshold_days=threshold_days,
+    )["rest_required_people"]
+
+
+def _coerce_name_list(value: Any) -> list[str]:
+    return coerce_message_lines(value)
+
+
+def _date_in_current_month(work_date: str, current_month: str) -> bool:
+    return bool(work_date) and (not current_month or work_date.startswith(current_month))
+
+
+def _max_work_date(records: list[Mapping[str, Any]]) -> str | None:
+    dates = sorted(str(record.get("work_date") or "") for record in records if str(record.get("work_date") or ""))
+    return dates[-1] if dates else None
+
+
+def _attendance_record_success(record: Mapping[str, Any]) -> bool:
+    derived = record.get("derived", {})
+    if isinstance(derived, Mapping) and "record_success" in derived:
+        return bool(derived["record_success"])
+    record_payload = record.get("record", {})
+    if not isinstance(record_payload, Mapping):
+        return True
+    final = record_payload.get("final", record_payload)
+    if not isinstance(final, Mapping):
+        return True
+    payload = final.get("payload", {})
+    return int(final.get("returncode", 0)) == 0 and (not isinstance(payload, Mapping) or payload.get("success", True) is not False)
+
+
+def _attendance_record_has_anomaly(record: Mapping[str, Any]) -> bool:
+    derived = record.get("derived", {})
+    if not isinstance(derived, Mapping):
+        return False
+    return bool(derived.get("record_anomaly") or derived.get("summary_today_anomaly"))
+
+
+def _summary_today_issues_from_attendance_record(record: Mapping[str, Any]) -> list[str]:
+    derived = record.get("derived", {})
+    if isinstance(derived, Mapping):
+        issues = coerce_message_lines(derived.get("summary_today_issues"))
+        if issues:
+            return issues
+        if derived.get("summary_today_anomaly"):
+            return ["summary_today_anomaly"]
+    return []
+
+
+def _current_consecutive_day_count(dates: set[str], current_work_date: str) -> int:
+    try:
+        cursor = datetime.fromisoformat(current_work_date).date()
+    except ValueError:
+        return 0
+    count = 0
+    while cursor.isoformat() in dates:
+        count += 1
+        cursor -= timedelta(days=1)
+    return count
+
+
+def _sort_monthly_people(people: list[dict[str, Any]], *, metric_key: str) -> list[dict[str, Any]]:
+    return sorted(
+        people,
+        key=lambda item: (
+            -_coerce_nonnegative_int(item.get(metric_key)),
+            -_date_ordinal(str(item.get("latest_date") or "")),
+            str(item.get("name") or ""),
+        ),
+    )
+
+
+def _coerce_nonnegative_int(value: Any) -> int:
+    try:
+        result = int(value)
+    except (TypeError, ValueError):
+        return 0
+    return max(result, 0)
+
+
+def _date_ordinal(value: str) -> int:
+    try:
+        return datetime.fromisoformat(value[:10]).date().toordinal()
+    except ValueError:
+        return 0
 
 
 def _monthly_attendance_records(month_dir: Path) -> list[dict[str, Any]]:
@@ -321,6 +505,7 @@ def run_attendance(
     notification_stats = build_stats_with_rest_required_people(
         collection["stats"],
         month_dir=Path(str(output_status["month_dir"])),
+        work_date=work_date,
     )
     output_status.update(
         {
@@ -401,6 +586,7 @@ def send_latest_report_only(run_type: str, timezone: str) -> dict[str, Any]:
         "stats": build_stats_with_rest_required_people(
             manifest.get("stats", {}),
             month_dir=manifest_path.parent,
+            work_date=work_date_from_run_id(str(manifest["run_id"])),
         ),
         "management_report": manifest["management_report"],
         "hr_report": manifest["hr_report"],
