@@ -117,13 +117,17 @@ Inspect a private OneDrive-style raw archive month before replay/import:
 python3 scripts/inspect_raw_archive_month.py \
   --archive-root /Users/linzezhang/OneDrive/dingtalk_attendance \
   --target-month 202607 \
+  --allow-seed-raw-without-manifest \
+  --min-location-coverage-ratio 0.01 \
   --out "$KMFA_PRIVATE_RUNTIME/raw_replay/202607/readiness_manifest.json" \
   --print-json
 ```
 
 The output is public-safe by design: it includes counts, coverage ratios, and
 hashes, but not employee names, DingTalk IDs, raw row bodies, or local raw file
-paths.
+paths. Use `--allow-seed-raw-without-manifest` only for record-only
+`s19_seed_*` monthly accumulation seed files; it must not mask missing manifests
+for formal full-flow runs.
 
 ## Automation
 

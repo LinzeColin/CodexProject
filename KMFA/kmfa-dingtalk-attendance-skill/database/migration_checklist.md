@@ -37,6 +37,7 @@
 ## Phase 1 - Replay from OneDrive raw
 
 - [x] Provide a public-safe private raw archive month inspector for manifest/raw count parity, hash parity, location coverage, and stable replay hashes.
+- [x] Isolate record-only `s19_seed_*` raw files as supplemental seed evidence without treating missing formal run manifests as acceptable.
 - [ ] Load one completed historical month from OneDrive raw archive.
 - [ ] Verify raw counts match manifest.
 - [ ] Verify detail/location coverage.

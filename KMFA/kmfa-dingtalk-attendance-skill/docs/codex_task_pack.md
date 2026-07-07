@@ -112,7 +112,9 @@ Current status:
 - `scripts/inspect_raw_archive_month.py` inspects a private OneDrive-style
   monthly raw archive without printing names, DingTalk IDs, raw rows, or local
   paths. It checks manifest/raw count parity, raw sha256 parity, punch location
-  coverage, and stable replay hashes before any database import.
+  coverage, and stable replay hashes before any database import. Record-only
+  `s19_seed_*` raw files are isolated as supplemental seed evidence only when
+  `--allow-seed-raw-without-manifest` is explicitly set.
 - The dry-run uses no PostgreSQL connection, no database mutation, no private
   raw data, and no live DWS.
 
@@ -125,6 +127,7 @@ Remaining work:
 5. Review, statically validate, and pass the fail-closed execution guard for the generated PostgreSQL JSONB/COPY loader SQL.
 6. Run against an explicitly configured non-production PostgreSQL target.
 7. Run private raw archive inspection against one completed historical month,
+   including seed-raw isolation and an explicit location coverage threshold,
    then keep only the public-safe readiness manifest in review evidence.
 
 ### Task 4 - Enforce location and trajectory evidence
