@@ -1,3 +1,34 @@
+## v1.1.7 Stage 2 Phase 2.2：Proposal UI
+
+状态：`phase_2_2_proposal_ui_completed_pending_stage2_review`。
+
+任务 ID：`MA-V117-S2P02`。
+
+验收 ID：`ACC-MA-V117-S2P02`。
+
+本 phase 在现有 Inspector writeback panel 中接入 Proposal UI。用户可以调整
+`importance` 和 `priority`，看到 `original_value`、`proposed_value`、
+`impact_summary` 和 `rollback_metadata`，并导出
+`memory_atlas_proposal_export.v1` JSON 供后续 human/agent review。
+
+涉及文件：
+
+- `apps/memory-atlas/src/components/ProposalEditor.tsx`
+- `apps/memory-atlas/src/components/ProposalDiffPreview.tsx`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/acceptance/memory_atlas_v1_1_7_stage2_phase2_proposal_ui_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage2_phase2.cjs`
+
+验收：
+
+- `validate:v1.1.7-stage2-phase2`
+- `ACC-MA-V117-S2P02`
+- UI 必须显示原值、新值、影响说明和 rollback metadata。
+- Export / Rollback Contract 必须保留 proposal-only、conflict check 和 agent/human apply gate。
+
+Machine-readable boundary summary: Proposal UI; ProposalEditor; ProposalDiffPreview; Export / Rollback Contract; No GitHub main upload; No raw/private data read; No direct writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
 ## v1.1.7 Stage 2 Phase 2.1：Editable Draft Model
 
 状态：`phase_2_1_editable_draft_model_completed_pending_stage2_review`。

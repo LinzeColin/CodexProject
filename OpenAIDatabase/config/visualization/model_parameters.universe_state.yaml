@@ -311,3 +311,42 @@ v1_1_7_stage2_phase1:
     - browser_screenshot_acceptance
     - final_app_reinstall
     - github_main_upload
+v1_1_7_stage2_phase2:
+  task_id: MA-V117-S2P02
+  acceptance_id: ACC-MA-V117-S2P02
+  status: phase_2_2_proposal_ui_completed_pending_stage2_review
+  required_validator: validate:v1.1.7-stage2-phase2
+  draft_schema_version: memory_atlas_proposal_draft.v1
+  export_schema_version: memory_atlas_proposal_export.v1
+  draft_store_key: memory-atlas.proposal-drafts.v1
+  proposal_ui_required_components:
+    - ProposalEditor
+    - ProposalDiffPreview
+  proposal_ui_fields:
+    - importance
+    - priority
+  export_required_fields:
+    - draft_id
+    - parent_snapshot_id
+    - source_surface
+    - target_ref
+    - original_value
+    - proposed_value
+    - changes
+    - rollback_metadata
+    - proposal_only
+    - requires_conflict_check
+    - requires_agent_or_human_apply
+  export_rollback_required: true
+  proposal_only_required: true
+  no_direct_writeback: true
+  no_agent_apply_in_phase: true
+  no_search_review_data_map_in_phase: true
+  deferred_to_later_phases:
+    - stage2_review
+    - search_2_0_runtime
+    - review_workflow_runtime
+    - data_map_2_0_runtime
+    - browser_screenshot_acceptance
+    - final_app_reinstall
+    - github_main_upload

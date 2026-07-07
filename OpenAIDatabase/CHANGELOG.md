@@ -1,5 +1,30 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 2 Phase 2.2
+
+- Added `apps/memory-atlas/src/components/ProposalEditor.tsx` to expose the
+  first proposal UI controls for `importance` and `priority`.
+- Added `apps/memory-atlas/src/components/ProposalDiffPreview.tsx` to show
+  `original_value`, `proposed_value`, `impact_summary` and `rollback_metadata`.
+- Integrated `ProposalEditor` into the existing Inspector writeback panel while
+  preserving `proposal_only`, no direct writeback and human/agent apply gates.
+- Updated `docs/architecture/proposal_edit_model.md` with
+  `proposal_ui_v1_1_7_stage2_phase2`, `memory_atlas_proposal_export.v1` and the
+  Export / Rollback Contract.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage2_phase2_proposal_ui_acceptance.md`.
+- Added `validate:v1.1.7-stage2-phase2` and registered
+  `MA-V117-S2P02` / `ACC-MA-V117-S2P02` with status
+  `phase_2_2_proposal_ui_completed_pending_stage2_review`.
+
+No Search 2.0 runtime, Review workflow runtime, Data Map 2.0 runtime,
+raw/private data read, direct writeback, agent apply, production build, local
+app install, browser screenshot, deploy or GitHub main upload was added.
+
+Machine-readable boundary summary: Proposal UI; ProposalEditor;
+ProposalDiffPreview; Export / Rollback Contract; No GitHub main upload before
+whole Stage 0-10 completion.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 2 Phase 2.1
 
 - Added `docs/architecture/proposal_edit_model.md` with the

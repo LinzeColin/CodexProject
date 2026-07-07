@@ -1,3 +1,42 @@
+## 79. v1.1.7 Stage 2 Phase 2.2 Proposal UI
+
+状态：`phase_2_2_proposal_ui_completed_pending_stage2_review`。
+
+验收 ID：`ACC-MA-V117-S2P02`。
+
+模型参数：
+
+- Stage 2 Phase 2.2 只实现 Proposal UI 初始能力，不进入 Search 2.0、Review workflow 或 Data Map 2.0。
+- Proposal UI 初始字段为 `importance` 和 `priority`。
+- Proposal export schema 固定为 `memory_atlas_proposal_export.v1`。
+- Diff preview 必须显示 `original_value`、`proposed_value`、`impact_summary` 和 `rollback_metadata`。
+- Export / Rollback Contract 必须保留 `proposal_only`、`requires_conflict_check` 和 `requires_agent_or_human_apply`。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/components/ProposalEditor.tsx`
+- `apps/memory-atlas/src/components/ProposalDiffPreview.tsx`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage2_phase2.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S2P02-001 stage2_phase2_status = phase_2_2_proposal_ui_completed_pending_stage2_review`
+- `PARAM-MA-V117-S2P02-002 stage2_phase2_required_validator = validate:v1.1.7-stage2-phase2`
+- `PARAM-MA-V117-S2P02-003 proposal_ui_fields = importance;priority`
+- `PARAM-MA-V117-S2P02-004 proposal_ui_components = ProposalEditor;ProposalDiffPreview`
+- `PARAM-MA-V117-S2P02-005 export_schema_version = memory_atlas_proposal_export.v1`
+- `PARAM-MA-V117-S2P02-006 stage2_phase2_deferred_work = Stage 2 review;Search 2.0;Review workflow;Data Map 2.0;browser screenshot;final app reinstall;GitHub main upload`
+
+验收信号：
+
+- ProposalEditor runtime component。
+- ProposalDiffPreview runtime component。
+- `validate:v1.1.7-stage2-phase2` 检查 UI、合同、参数、记录和改动范围。
+- Boundary includes No GitHub main upload, No raw/private read, No direct writeback, No agent apply and No build/deploy/app install。
+
 ## 78. v1.1.7 Stage 2 Phase 2.1 Editable Draft Model
 
 状态：`phase_2_1_editable_draft_model_completed_pending_stage2_review`。
