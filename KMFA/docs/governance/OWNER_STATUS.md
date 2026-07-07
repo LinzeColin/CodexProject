@@ -454,3 +454,13 @@ KMFA 当前版本 `0.1.4-residual-difference-owner-authorized-anchor-confirmatio
 - private output: ignored precheck diagnostic, ready queue, blocker queue and report are available under project private runtime; they are not committed to GitHub.
 - Codex did not read, list, parse, fingerprint, modify, move, delete, overwrite, normalize or copy raw source files in this phase.
 - next allowed run is a single formal raw-to-processed comparison after owner anchor confirmation; no GitHub upload, app reinstall, formal report, reconciliation or business execution is allowed from this state.
+## 2026-07-07 Latest - V014 Raw-To-Processed Comparison After Owner Anchor Confirmation
+
+- phase: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_AFTER_OWNER_ANCHOR_CONFIRMATION`
+- status: `completed_validated_local_only_raw_comparison_after_owner_anchor_confirmation_blocked_no_go`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_AFTER_OWNER_ANCHOR_CONFIRMATION/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_after_owner_anchor_confirmation.py --require-private-comparison`
+- locked counts: `source_comparison_precheck_ready_record_count=72`, `source_comparison_precheck_blocker_record_count=0`, `formal_comparison_item_count=72`, `formal_comparison_exact_match_count=0`, `formal_comparison_mismatch_count=0`, `formal_comparison_blocker_count=72`, `missing_private_fingerprint_pair_count=72`, `unresolved_difference_count=72`
+- result: formal comparison was attempted, but all 72 items are blocked because complete private fingerprint pairs are missing; no raw-to-processed value consistency is claimed.
+- boundary: raw inbox access/mutation, reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain false.
+- next: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_AFTER_OWNER_ANCHOR_CONFIRMATION`, one phase only; no Stage review or upload.

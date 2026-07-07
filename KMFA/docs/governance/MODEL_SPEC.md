@@ -1533,3 +1533,12 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: source_owner_authorized_anchor_confirmation_count=72, source_anchor_confirmation_blocker_item_count=0, comparison_precheck_item_count=72, comparison_precheck_ready_record_count=72 and comparison_precheck_blocker_record_count=0 mark confirmed private anchor handles ready for a later formal comparison; unresolved_difference_count=72 and raw_to_processed_value_comparison_performed_by_this_phase=false keep value consistency unverified.
 - gate: `NO_GO`; formal comparison is allowed only for the next phase, while this phase keeps comparison execution, reconciliation, formal report, GitHub upload, app reinstall and business execution blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private precheck diagnostic, ready queue, blocker queue and report stay under ignored runtime and raw inbox remains untouched.
+## V014 Residual Difference Raw-To-Processed Comparison After Owner Anchor Confirmation
+
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-COMPARISON-AFTER-OWNER-ANCHOR-CONFIRMATION-001`
+- parameter_ids: `PARAM-KMFA-1483`, `PARAM-KMFA-1484`, `PARAM-KMFA-1485`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_AFTER_OWNER_ANCHOR_CONFIRMATION`
+- version: `0.1.4-residual-difference-raw-to-processed-comparison-after-owner-anchor-confirmation`
+- rule: source_comparison_precheck_ready_record_count=72 and source_comparison_precheck_blocker_record_count=0 allow a formal attempt; the attempt locks formal_comparison_item_count=72, formal_comparison_exact_match_count=0, formal_comparison_mismatch_count=0, formal_comparison_blocker_count=72 and missing_private_fingerprint_pair_count=72.
+- gate: `NO_GO`; raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private comparison diagnostic, records, blocker records and report stay under ignored runtime and raw inbox remains untouched.

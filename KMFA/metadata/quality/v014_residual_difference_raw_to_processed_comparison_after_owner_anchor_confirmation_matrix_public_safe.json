@@ -1,0 +1,75 @@
+{
+  "check_count": 15,
+  "check_fail_count": 0,
+  "check_pass_count": 15,
+  "checks": [
+    {
+      "check_code": "source_precheck_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_precheck_valid",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_ready_count_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_blockers_clear",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_private_ready_queue_ignored",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_anchor_draft_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_anchor_draft_count_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "formal_attempt_recorded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "formal_items_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "comparison_blockers_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "missing_pairs_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_value_comparison_claimed",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "status": "PASS"
+    },
+    {
+      "check_code": "public_safe_aggregate_only",
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_gates_closed",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "phase_id": "V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_AFTER_OWNER_ANCHOR_CONFIRMATION",
+  "project_id": "KMFA",
+  "record_type": "v014_raw_comparison_after_owner_anchor_confirmation_matrix_public_safe",
+  "schema_version": "kmfa.v014_raw_comparison_after_owner_anchor_confirmation_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-RESIDUAL-DIFFERENCE-RAW-TO-PROCESSED-COMPARISON-AFTER-OWNER-ANCHOR-CONFIRMATION-20260707",
+  "version": "0.1.4-residual-difference-raw-to-processed-comparison-after-owner-anchor-confirmation"
+}

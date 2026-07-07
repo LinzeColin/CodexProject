@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260707-V014-RAW-COMPARISON-PRECHECK-AFTER-OWNER-ANCHOR-CONFIRMATION"
+as_of_event_id: "DEV-KMFA-20260707-V014-RAW-COMPARISON-AFTER-OWNER-ANCHOR-CONFIRMATION"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "1abdf3e8db9c72973bdb298b7152e3b494f4302d"
+source_base_commit: "4c53a22e38fef5914d7f3ed3a463eeff31fbc201"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
 snapshot_event_time: "2026-07-07T00:00:00+10:00"
-generator_version: "manual-0.1.4-residual-difference-raw-to-processed-comparison-precheck-after-owner-anchor-confirmation"
+generator_version: "manual-0.1.4-residual-difference-raw-to-processed-comparison-after-owner-anchor-confirmation"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1100
-    total_active_formulas: 207
+    total_active_parameters: 1103
+    total_active_formulas: 208
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -43,6 +43,9 @@ dimensions:
       - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION/human/test_results.md"
       - "KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_precheck_after_owner_anchor_confirmation.py"
       - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION/machine/residual_difference_raw_to_processed_comparison_precheck_after_owner_anchor_confirmation_manifest.json"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_AFTER_OWNER_ANCHOR_CONFIRMATION/human/test_results.md"
+      - "KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_after_owner_anchor_confirmation.py"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_AFTER_OWNER_ANCHOR_CONFIRMATION/machine/residual_difference_raw_to_processed_comparison_after_owner_anchor_confirmation_manifest.json"
       - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_PREPARATION/human/test_results.md"
       - "KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation_preparation.py"
       - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_PREPARATION/machine/residual_difference_owner_authorized_anchor_confirmation_preparation_manifest.json"
@@ -1323,6 +1326,48 @@ v014_residual_difference_raw_comparison_precheck_after_owner_anchor_confirmation
     formal_raw_to_processed_comparison_allowed_by_this_phase: false
     raw_to_processed_value_comparison_performed_by_this_phase: false
     full_raw_to_processed_value_comparison_complete: false
+    business_value_consistency_verified: false
+  forbidden_scope:
+    raw_inbox_read: false
+    raw_inbox_write: false
+    raw_inbox_delete: false
+    raw_inbox_move: false
+    raw_inbox_copy: false
+    raw_inbox_normalize: false
+    raw_inbox_mutation: false
+    processed_data_reconciliation: false
+    lineage_full_check: false
+    formal_report: false
+    github_upload: false
+    app_reinstall: false
+    business_execution: false
+
+kmfa_v014_residual_difference_raw_comparison_after_owner_anchor_confirmation:
+  status: completed_validated_local_only_raw_comparison_after_owner_anchor_confirmation_blocked_no_go
+  phase: V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_AFTER_OWNER_ANCHOR_CONFIRMATION
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_AFTER_OWNER_ANCHOR_CONFIRMATION
+  validator: KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_after_owner_anchor_confirmation.py
+  focused_test: KMFA/tests/test_v014_residual_difference_raw_to_processed_comparison_after_owner_anchor_confirmation.py
+  github_upload: blocked_no_go_upload_deferred
+  counts:
+    source_comparison_precheck_ready_record_count: 72
+    source_comparison_precheck_blocker_record_count: 0
+    formal_comparison_item_count: 72
+    formal_comparison_result_record_count: 0
+    formal_comparison_exact_match_count: 0
+    formal_comparison_mismatch_count: 0
+    formal_comparison_blocker_count: 72
+    missing_private_fingerprint_pair_count: 72
+    unresolved_difference_count: 72
+    owner_select_one_authoritative_candidate_count: 24
+    provide_authoritative_source_reference_or_owner_exclusion_count: 40
+    provide_formula_or_non_numeric_mapping_count: 8
+  gates:
+    formal_raw_to_processed_comparison_attempted_by_this_phase: true
+    raw_to_processed_value_comparison_blocked_by_missing_private_fingerprint_pairs: true
+    raw_to_processed_value_comparison_performed_by_this_phase: false
+    full_raw_to_processed_value_comparison_complete: false
+    processed_consistency_verified: false
     business_value_consistency_verified: false
   forbidden_scope:
     raw_inbox_read: false
