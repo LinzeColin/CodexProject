@@ -31,7 +31,12 @@ from KMFA.tools.dingtalk_attendance.report_renderer import (
     MANAGEMENT_REPORT_SECTIONS,
     HR_REPORT_SECTIONS,
 )
-from KMFA.tools.dingtalk_attendance.dws_attendance import DwsAttendanceError, collect_org_attendance, write_private_outputs
+from KMFA.tools.dingtalk_attendance.dws_attendance import (
+    DwsAttendanceError,
+    collect_org_attendance,
+    run_dws_json,
+    write_private_outputs,
+)
 from KMFA.tools.dingtalk_attendance.run_attendance import (
     build_monthly_rest_required_people,
     build_notification_message,
@@ -217,11 +222,13 @@ def _fixture_has_full_day(punches: list[object]) -> bool:
 class FakeDwsRunner:
     def __init__(self, *, fail_first_record_for: str | None = None) -> None:
         self.calls: list[tuple[tuple[str, ...], bool]] = []
+        self.timeouts: list[tuple[tuple[str, ...], int]] = []
         self.fail_first_record_for = fail_first_record_for
         self.failed_once = False
 
     def __call__(self, args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict:
         self.calls.append((tuple(args), verbose))
+        self.timeouts.append((tuple(args), timeout))
         if args == ["contact", "dept", "list-children", "--dept", "1"]:
             return {"returncode": 0, "payload": {"success": True, "result": [{"deptId": 100, "deptName": "生产部"}]}}
         if args == ["contact", "dept", "list-children", "--dept", "100"]:
@@ -657,6 +664,107 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(result["stats"]["known_no_record_count"], 2)
         self.assertEqual(result["stats"]["unexpected_empty_record_count"], 0)
         self.assertNotIn("--mock", json.dumps(runner.calls, ensure_ascii=False))
+
+    def test_dws_department_and_member_listing_use_extended_timeout(self) -> None:
+        runner = FakeDwsRunner()
+
+        collect_org_attendance(
+            work_date="2026-07-07",
+            summary_datetime="2026-07-07 18:15:00",
+            runner=runner,
+        )
+
+        timeout_by_call = dict(runner.timeouts)
+        self.assertEqual(timeout_by_call[("contact", "dept", "list-children", "--dept", "1")], 120)
+        self.assertEqual(timeout_by_call[("contact", "dept", "list-children", "--dept", "100")], 120)
+        self.assertEqual(timeout_by_call[("contact", "dept", "list-members", "--depts", "1,100")], 120)
+        self.assertEqual(
+            timeout_by_call[("attendance", "record", "get", "--user", "li-dws-id", "--date", "2026-07-07")],
+            60,
+        )
+
+    def test_run_dws_json_passes_effective_timeout_to_dws_cli(self) -> None:
+        captured: dict[str, object] = {}
+
+        class Proc:
+            returncode = 0
+            stdout = '{"success": true}'
+            stderr = ""
+
+        def fake_run(command: list[str], **kwargs: object) -> Proc:
+            captured["command"] = command
+            captured["timeout"] = kwargs["timeout"]
+            return Proc()
+
+        with (
+            patch("KMFA.tools.dingtalk_attendance.dws_attendance.dws_command_safety_status", return_value={"status": "READY"}),
+            patch("KMFA.tools.dingtalk_attendance.dws_attendance.subprocess.run", side_effect=fake_run),
+            patch.dict("os.environ", {"DWS_BIN": "/tmp/fake-dws", "KMFA_S19_DWS_TIMEOUT_SECONDS": "120"}),
+        ):
+            result = run_dws_json(["contact", "dept", "list-members"], timeout=45)
+
+        self.assertEqual(result["payload"], {"success": True})
+        self.assertEqual(
+            captured["command"],
+            ["/tmp/fake-dws", "contact", "dept", "list-members", "--timeout", "120", "--format", "json"],
+        )
+        self.assertEqual(captured["timeout"], 125)
+
+    def test_run_dws_json_env_timeout_cannot_shrink_call_timeout(self) -> None:
+        captured: dict[str, object] = {}
+
+        class Proc:
+            returncode = 0
+            stdout = '{"success": true}'
+            stderr = ""
+
+        def fake_run(command: list[str], **kwargs: object) -> Proc:
+            captured["command"] = command
+            captured["timeout"] = kwargs["timeout"]
+            return Proc()
+
+        with (
+            patch("KMFA.tools.dingtalk_attendance.dws_attendance.dws_command_safety_status", return_value={"status": "READY"}),
+            patch("KMFA.tools.dingtalk_attendance.dws_attendance.subprocess.run", side_effect=fake_run),
+            patch.dict("os.environ", {"DWS_BIN": "/tmp/fake-dws", "KMFA_S19_DWS_TIMEOUT_SECONDS": "20"}),
+        ):
+            run_dws_json(["attendance", "record", "get"], timeout=60)
+
+        self.assertIn("--timeout", captured["command"])
+        self.assertEqual(captured["command"][captured["command"].index("--timeout") + 1], "60")
+        self.assertEqual(captured["timeout"], 65)
+
+    def test_department_discovery_retries_timeout_error_once(self) -> None:
+        calls: list[tuple[tuple[str, ...], int, bool]] = []
+        failed_once = False
+
+        def runner(args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict:
+            nonlocal failed_once
+            calls.append((tuple(args), timeout, verbose))
+            if args == ["contact", "dept", "list-children", "--dept", "1"]:
+                if not failed_once:
+                    failed_once = True
+                    return {
+                        "returncode": 1,
+                        "payload": {"error": {"code": "6"}, "reason": "timed out while listing departments"},
+                    }
+                return {"returncode": 0, "payload": {"success": True, "result": []}}
+            if args == ["contact", "dept", "list-members", "--depts", "1"]:
+                return {"returncode": 0, "payload": {"success": True, "deptUserList": []}}
+            raise AssertionError(f"unexpected dws args: {args}")
+
+        result = collect_org_attendance(
+            work_date="2026-07-07",
+            summary_datetime="2026-07-07 18:15:00",
+            runner=runner,
+        )
+
+        department_calls = [call for call in calls if call[0] == ("contact", "dept", "list-children", "--dept", "1")]
+        self.assertEqual(len(department_calls), 2)
+        self.assertEqual(department_calls[0][1], 120)
+        self.assertFalse(department_calls[0][2])
+        self.assertTrue(department_calls[1][2])
+        self.assertEqual(result["stats"]["member_count"], 0)
 
     def test_complete_collection_with_exempt_people_and_two_empty_records_notifies_two_real_anomalies(self) -> None:
         members = [
