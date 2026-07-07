@@ -11,9 +11,12 @@ Hard requirements:
 
 1. Work on GitHub `main` only. No branch, no PR, no worktree.
 2. Read `KMFA/fund-weekly-analysis-skill/SKILL.md` and all referenced files before acting.
-3. Do not use simulated/test/fake/estimated financial data.
-4. Build evidence index first, then fund ledger, then internal transfer netting, then balance continuity, then tax/loan risk, then company-bank matrix, then Excel.
-5. Generate the Excel workbook with exact sheet order:
+3. Run source readiness first:
+   `python3 KMFA/fund-weekly-analysis-skill/tools/check_source_readiness.py --repo-root /Users/linzezhang/CodexProject --timezone Australia/Sydney`
+4. Continue to extraction only if readiness is `READY`; otherwise fail closed with the readiness report.
+5. Do not use simulated/test/fake/estimated financial data.
+6. Build evidence index first, then fund ledger, then internal transfer netting, then balance continuity, then tax/loan risk, then company-bank matrix, then Excel.
+7. Generate the Excel workbook with exact sheet order:
    - 01_首页总览
    - 02_资金趋势预测
    - 03_三层净流余额
@@ -21,8 +24,8 @@ Hard requirements:
    - 05_公司银行矩阵
    - 06_CodexSkill流程
    - hidden H01-H06 audit/review/config sheets
-6. 首页 and trend charts must be native line charts and each chart must be <= 1728x864 px.
-7. Perform cross-review checks: formula errors, hidden sheets, no simulation data, internal transfer netting, balance continuity tolerance 0.01, sensitive fields not visible, tax version conflict detection, company-bank mapping coverage.
-8. Write all outputs to the private runtime run directory.
-9. Mirror any prompt/skill/template/governance changes under `KMFA/fund-weekly-analysis-skill/automation/` or relevant tracked folders, validate, commit and push to GitHub main if and only if validation passes.
-10. If a value cannot be confidently extracted from real evidence, leave it blank or mark `待识别/待复核` and create an exception task. Do not guess.
+8. 首页 and trend charts must be native line charts and each chart must be <= 1728x864 px.
+9. Perform cross-review checks: formula errors, hidden sheets, no simulation data, internal transfer netting, balance continuity tolerance 0.01, sensitive fields not visible, tax version conflict detection, company-bank mapping coverage.
+10. Write all outputs to the private runtime run directory.
+11. Mirror any prompt/skill/template/governance changes under `KMFA/fund-weekly-analysis-skill/automation/` or relevant tracked folders, validate, commit and push to GitHub main if and only if validation passes.
+12. If a value cannot be confidently extracted from real evidence, leave it blank or mark `待识别/待复核` and create an exception task. Do not guess.

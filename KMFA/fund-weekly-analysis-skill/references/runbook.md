@@ -7,24 +7,26 @@ The local scheduler uses Sydney local time. 11:30 Australia/Sydney is the operat
 1. Confirm local repo is on `main` and clean enough to run.
 2. Pull latest `origin/main` with fast-forward only.
 3. Read `SKILL.md` and all references/templates.
-4. Scan input directory recursively.
-5. Build file manifest with SHA256 and size.
-6. If the configured folder is missing, write `SOURCE_MISSING` plus private source candidates; do not silently fall back to zip/archive sources.
-7. If the configured folder exists but contains unreadable/cloud-only files, write `SOURCE_UNREADABLE`; do not generate a partial Excel package.
-8. If a private candidate is verified and the operator intends to populate the configured folder, run `tools/materialize_fund_source.py` first without `--apply`, inspect the manifest, then rerun with `--apply`.
-9. Build evidence index for screenshots and finance files.
-10. Write the `INDEXED_PENDING_EXTRACTION` no-hallucination output package first: current native Excel template copy, empty fact ledgers, exception tasks, cross-review JSON, audit log, and run summary.
-11. Extract only real values with source trace.
-12. Put low-confidence OCR/vision rows into review queue.
-13. Build funds ledger and net-flow ledger.
-14. Apply internal-transfer pairing before management rollups.
-15. Build daily balance continuity and company-bank matrix.
-16. Build tax/loan/wealth-management/deposit risk tables.
-17. Promote reviewed facts into Excel with exact sheet order and style spec.
-18. Hide audit/review sheets.
-19. Run validation checks.
-20. Write run summary.
-21. Commit/push skill or automation changes to GitHub main only after validation passes.
+4. Run `tools/check_source_readiness.py` as a fast preflight.
+5. Continue only when readiness is `READY`.
+6. Scan input directory recursively.
+7. Build file manifest with SHA256 and size.
+8. If the configured folder is missing, write `SOURCE_MISSING` plus private source candidates; do not silently fall back to zip/archive sources.
+9. If the configured folder exists but contains unreadable/cloud-only files, write `SOURCE_UNREADABLE`; do not generate a partial Excel package.
+10. If a private candidate is verified and the operator intends to populate the configured folder, run `tools/materialize_fund_source.py` first without `--apply`, inspect the manifest, then rerun with `--apply`.
+11. Build evidence index for screenshots and finance files.
+12. Write the `INDEXED_PENDING_EXTRACTION` no-hallucination output package first: current native Excel template copy, empty fact ledgers, exception tasks, cross-review JSON, audit log, and run summary.
+13. Extract only real values with source trace.
+14. Put low-confidence OCR/vision rows into review queue.
+15. Build funds ledger and net-flow ledger.
+16. Apply internal-transfer pairing before management rollups.
+17. Build daily balance continuity and company-bank matrix.
+18. Build tax/loan/wealth-management/deposit risk tables.
+19. Promote reviewed facts into Excel with exact sheet order and style spec.
+20. Hide audit/review sheets.
+21. Run validation checks.
+22. Write run summary.
+23. Commit/push skill or automation changes to GitHub main only after validation passes.
 
 ## Source materialization command
 

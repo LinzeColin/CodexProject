@@ -450,6 +450,112 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(manifest["status"], "SOURCE_UNREADABLE")
             self.assertEqual(manifest["unreadable_count"], 1)
 
+    def test_source_readiness_reports_missing_target_and_private_candidates(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            one_drive = Path(temp_dir) / "OneDrive-Personal"
+            target = one_drive / "DWS_Outputs" / "付款请示群"
+            archive = one_drive / "DWS_Archive" / "付款请示群"
+            archive_file = archive / "files" / "0708" / "real.png"
+            archive_file.parent.mkdir(parents=True)
+            archive_file.write_bytes(b"real-source")
+            (one_drive / "DWS_Outputs.zip").write_bytes(b"zip-placeholder")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "check_source_readiness.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--target-dir",
+                    str(target),
+                    "--run-id",
+                    "readiness_missing",
+                    "--timezone",
+                    "Australia/Sydney",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 2, result.stderr)
+            report = json.loads(
+                (repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/readiness_missing/source_readiness.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(report["status"], "SOURCE_MISSING")
+            candidates = {item["kind"]: item for item in report["source_candidates"]}
+            self.assertTrue(candidates["dws_archive_group"]["exists"])
+            self.assertEqual(candidates["dws_archive_group"]["file_count"], 1)
+            self.assertTrue(candidates["dws_outputs_zip"]["exists"])
+
+    def test_source_readiness_ready_when_target_files_are_local_and_readable(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            target = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+            file_path = target / "files" / "0708" / "real.png"
+            file_path.parent.mkdir(parents=True)
+            file_path.write_bytes(b"real-source")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "check_source_readiness.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--target-dir",
+                    str(target),
+                    "--run-id",
+                    "readiness_ready",
+                    "--timezone",
+                    "Australia/Sydney",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            report = json.loads(
+                (repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/readiness_ready/source_readiness.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(report["status"], "READY")
+            self.assertEqual(report["target"]["file_count"], 1)
+            self.assertEqual(report["target"]["unreadable_count"], 0)
+
+    def test_source_readiness_fails_closed_when_target_has_unreadable_file(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            target = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+            unreadable_file = target / "files" / "0708" / "unreadable.png"
+            unreadable_file.parent.mkdir(parents=True)
+            unreadable_file.write_bytes(b"not-readable")
+            unreadable_file.chmod(0)
+            try:
+                result = subprocess.run(
+                    [
+                        sys.executable,
+                        str(SKILL_ROOT / "tools" / "check_source_readiness.py"),
+                        "--repo-root",
+                        str(repo_root),
+                        "--target-dir",
+                        str(target),
+                        "--run-id",
+                        "readiness_unreadable",
+                        "--timezone",
+                        "Australia/Sydney",
+                    ],
+                    text=True,
+                    capture_output=True,
+                    check=False,
+                )
+            finally:
+                unreadable_file.chmod(0o600)
+            self.assertEqual(result.returncode, 5)
+            report = json.loads(
+                (repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/readiness_unreadable/source_readiness.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(report["status"], "SOURCE_UNREADABLE")
+            self.assertEqual(report["target"]["unreadable_count"], 1)
+
 
 if __name__ == "__main__":
     unittest.main()
