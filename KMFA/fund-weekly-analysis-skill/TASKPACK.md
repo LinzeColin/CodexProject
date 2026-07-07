@@ -6,7 +6,7 @@ Deliverables:
 2. Skill instructions: `SKILL.md`
 3. Automation prompt: `automation/daily_1130_sydney.prompt.md`
 4. macOS launchd template: `automation/launchd/com.kmfa.fund-weekly-analysis.plist`
-5. Deterministic runner and validators under `tools/`
+5. Deterministic runner, source materializer, and validators under `tools/`
 6. Governance references under `references/`
 
 Install:

@@ -147,6 +147,13 @@ Current deterministic runner status contract:
 * Existing configured folder returns `INDEXED_PENDING_EXTRACTION`, hashes real files, copies the current native Excel mother template into the private run folder, writes the required CSV/JSON package, and creates exception tasks for every evidence item that still needs OCR/table extraction or human review.
 * `INDEXED_PENDING_EXTRACTION` is not a management conclusion. It means no amount was generated, inferred, forecast, or promoted into facts yet.
 
+Explicit source materialization:
+
+* Use `tools/materialize_fund_source.py` when the configured `DWS_Outputs/付款请示群` folder is missing but a verified private candidate such as `DWS_Archive/付款请示群` exists.
+* Dry-run is default. `--apply` is required before any files are copied.
+* The tool copies only missing files, skips identical files, fails on target hash conflicts, detects OneDrive/macOS `dataless` source files as `SOURCE_UNREADABLE`, and writes `source_materialization_manifest.json` plus `source_materialization_files.csv` under ignored private runtime.
+* Do not materialize from unverified zip/archive contents silently during daily runner execution.
+
 The shipped editable workbook template is:
 
       templates/资金与税费管理母版_真实数据预览_v2.xlsx

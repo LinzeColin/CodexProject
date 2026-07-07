@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import re
 import csv
+import hashlib
 import json
 import subprocess
 import sys
@@ -15,6 +16,10 @@ from xml.etree import ElementTree as ET
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SKILL_ROOT = REPO_ROOT / "KMFA" / "fund-weekly-analysis-skill"
 TEMPLATE = SKILL_ROOT / "templates" / "资金与税费管理母版_真实数据预览_v2.xlsx"
+
+
+def sha256_bytes(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
 
 
 class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
@@ -243,6 +248,169 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
             self.assertFalse(cross_review["management_conclusion_allowed"])
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
+
+    def test_materialize_archive_candidate_is_explicit_idempotent_and_no_overwrite(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            one_drive = Path(temp_dir) / "OneDrive-Personal"
+            source = one_drive / "DWS_Archive" / "付款请示群"
+            source_file = source / "files" / "0708" / "20260708113000_杨婷_real_image.png"
+            source_file.parent.mkdir(parents=True)
+            source_payload = b"real-source-bytes"
+            source_file.write_bytes(source_payload)
+            target = one_drive / "DWS_Outputs" / "付款请示群"
+
+            dry_run = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "materialize_fund_source.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--source-dir",
+                    str(source),
+                    "--target-dir",
+                    str(target),
+                    "--run-id",
+                    "materialize_dry_run",
+                    "--timezone",
+                    "Australia/Sydney",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(dry_run.returncode, 0, dry_run.stderr)
+            self.assertFalse(target.exists(), "dry-run must not create the target DWS_Outputs folder")
+            dry_manifest = json.loads(
+                (repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/materialize_dry_run/source_materialization_manifest.json").read_text(encoding="utf-8")
+            )
+            self.assertFalse(dry_manifest["applied"])
+            self.assertEqual(dry_manifest["planned_copy_count"], 1)
+
+            apply_run = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "materialize_fund_source.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--source-dir",
+                    str(source),
+                    "--target-dir",
+                    str(target),
+                    "--run-id",
+                    "materialize_apply",
+                    "--timezone",
+                    "Australia/Sydney",
+                    "--apply",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(apply_run.returncode, 0, apply_run.stderr)
+            copied_file = target / "files" / "0708" / "20260708113000_杨婷_real_image.png"
+            self.assertEqual(copied_file.read_bytes(), source_payload)
+            apply_manifest = json.loads(
+                (repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/materialize_apply/source_materialization_manifest.json").read_text(encoding="utf-8")
+            )
+            self.assertTrue(apply_manifest["applied"])
+            self.assertEqual(apply_manifest["copied_count"], 1)
+            self.assertEqual(apply_manifest["skipped_identical_count"], 0)
+            self.assertEqual(apply_manifest["files"][0]["sha256"], sha256_bytes(source_payload))
+
+            second_apply = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "materialize_fund_source.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--source-dir",
+                    str(source),
+                    "--target-dir",
+                    str(target),
+                    "--run-id",
+                    "materialize_second_apply",
+                    "--timezone",
+                    "Australia/Sydney",
+                    "--apply",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(second_apply.returncode, 0, second_apply.stderr)
+            second_manifest = json.loads(
+                (repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/materialize_second_apply/source_materialization_manifest.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(second_manifest["copied_count"], 0)
+            self.assertEqual(second_manifest["skipped_identical_count"], 1)
+
+            copied_file.write_bytes(b"different-target-bytes")
+            conflict_run = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "materialize_fund_source.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--source-dir",
+                    str(source),
+                    "--target-dir",
+                    str(target),
+                    "--run-id",
+                    "materialize_conflict",
+                    "--timezone",
+                    "Australia/Sydney",
+                    "--apply",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(conflict_run.returncode, 3)
+            conflict_manifest = json.loads(
+                (repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/materialize_conflict/source_materialization_manifest.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(conflict_manifest["status"], "TARGET_CONFLICT")
+            self.assertEqual(len(conflict_manifest["conflicts"]), 1)
+
+    def test_materialize_fails_closed_when_source_file_is_unreadable(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            source = Path(temp_dir) / "DWS_Archive" / "付款请示群"
+            target = Path(temp_dir) / "DWS_Outputs" / "付款请示群"
+            unreadable_file = source / "files" / "0708" / "unreadable.png"
+            unreadable_file.parent.mkdir(parents=True)
+            unreadable_file.write_bytes(b"not-readable")
+            unreadable_file.chmod(0)
+            try:
+                result = subprocess.run(
+                    [
+                        sys.executable,
+                        str(SKILL_ROOT / "tools" / "materialize_fund_source.py"),
+                        "--repo-root",
+                        str(repo_root),
+                        "--source-dir",
+                        str(source),
+                        "--target-dir",
+                        str(target),
+                        "--run-id",
+                        "materialize_unreadable",
+                        "--timezone",
+                        "Australia/Sydney",
+                    ],
+                    text=True,
+                    capture_output=True,
+                    check=False,
+                )
+            finally:
+                unreadable_file.chmod(0o600)
+            self.assertEqual(result.returncode, 5)
+            self.assertFalse(target.exists())
+            manifest = json.loads(
+                (repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/materialize_unreadable/source_materialization_manifest.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(manifest["status"], "SOURCE_UNREADABLE")
+            self.assertEqual(manifest["unreadable_count"], 1)
 
 
 if __name__ == "__main__":
