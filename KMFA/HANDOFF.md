@@ -14,6 +14,16 @@
 - S19 通知发送已统一到唯一“考勤通知模板”：`send_latest_report.py --channel auto --targets all` 不重新取考勤，通过多目标路由发送一条 `attendance_notification`，钉钉正文只包含考勤摘要、连续异常、待处理事项和需要休息人员；run_id、北京时间和 OneDrive 报告路径只保留在 dispatch receipt / manifest，不进入钉钉正文；automation JSON 输出 `notification_template_text` 和 `notification_delivery_table`。
 - S19 需要休息口径：自然月第 23 个有效考勤日开始提醒；丁春法、李永占只从“需要休息人员”和私有 ledger `rest_required_snapshots` 中排除，其他状态仍照常统计。
 
+## S20 当前状态｜钉钉工作检查 daily routine check
+
+- `Dingtalk-routine-check / 钉钉工作检查` 是唯一 S20 automation，时间统一 `Asia/Shanghai`，窗口为 `11:35 -> morning_1135` 和 `17:05 -> evening_1705`。
+- 公开代码/规则/测试位于 `KMFA/daily_routine_check_skill/`、`KMFA/metadata/daily_routine_check/`、`KMFA/tools/daily_routine_check/`、`KMFA/tests/test_daily_routine_check.py`。
+- 运行输入只读 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群` 和 `.../生产管理群`；缺失或过期降级为 `SOURCE_MISSING` / `SOURCE_STALE`，不崩溃、不删除源数据。
+- 例行异常类型固定为 `missing/late/review/wrong/merged`，提醒等级固定为 `P0/P1/P2`，通知事件包含 `abnormal_type`、`reminder_level`、matched message、confidence 和 reason。
+- `morning_1135` 生成杨婷现金 `cash_risk_result`；当前 public-safe 离线实现只从 DWS 消息文本按 `cash_monitor.public.yaml` 配置化金额锚点提取 `total_available_cash`，图片/附件候选无结构化金额时输出 `CASH_NEEDS_REVIEW`，不伪造 OCR。
+- SQLite 私有 ledger 写入 `run_log`、`routine_check_results`、`cash_risk_results`、`cash_account_snapshots`、`notification_events`、`data_quality_issues`；`--cleanup --apply` 执行 WAL checkpoint、VACUUM 并写 `cleanup_events`。
+- 真实钉钉发送仍需 ignored private runtime 通知配置；缺配置时必须返回 `CONFIG_MISSING`，不得伪造已发送。
+
 ## 当前目标
 
 v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。Stage 1-18 均已完成本地实现、验证、整体复审和 GitHub main 上传；Post-S18 Part 1-6 已在 canonical worktree 本地通过并生成 validator/evidence/local-governance 记录。Post-S18 第二阶段全项目本地复审已完成：新增 task pack zero-delta synthetic fixture、lineage completeness 阻断 validator、whole-project final review validator 和当前全项目 Go/No-Go。当前 `STAGE18_GITHUB_UPLOAD_PENDING` 已从最新全项目 Go/No-Go blocker 中移除并记录为 resolved，但项目仍为 `NO_GO`，`delivery_allowed=false`。随后已独立完成 KMFA worktree cleanup：只保留 canonical `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa`，确认无遗留 `kmfa-s*` worktree，删除空旧目录 `/Users/linzezhang/Documents/KMFA v0.1`。Lineage / Report Gate 已独立锁定：0 条 actual lineage rows、2 条 D 级 report runtime、12 条 pending reconciliation 继续阻断正式报告、经营决策依据、release claim 和 delivery claim。Final GitHub backup evidence 已按 `NO_GO governance backup only` 生成并基于最新 `origin/main` rebase；本轮仍未执行 lineage full check completion、正式报告、live connector、OpMe 深度耦合、生产恢复或业务动作。

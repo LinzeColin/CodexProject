@@ -21,6 +21,8 @@ daily 17:05 -> trigger_window=evening_1705
 
 Every run log must include `run_at_beijing`, `check_date`, `trigger_window`, `rules_evaluated`, and `rules_skipped`. Missing or stale upstream DWS output is recorded as `SOURCE_MISSING` or `SOURCE_STALE`. Routine abnormalities use `abnormal_type=late|review|wrong|merged|missing` plus `reminder_level=P0|P1|P2`.
 
+Morning runs also produce `cash_risk_result` for 杨婷资金账户监控. The public-safe offline implementation extracts `total_available_cash` from DWS message text using configured markers in `cash_monitor.public.yaml`; image/file candidates without a structured amount become `CASH_NEEDS_REVIEW`.
+
 Private runtime data belongs under:
 
 ```text

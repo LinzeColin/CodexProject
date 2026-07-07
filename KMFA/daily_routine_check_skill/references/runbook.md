@@ -56,6 +56,11 @@ The automation performs:
 9. Append logs and update SQLite ledger.
 10. Notify 张霖泽 for missing, late, P0, P1, and review-needed events.
 
+Current offline implementation does not call an external OCR provider. It uses
+DWS message text plus configured amount markers first; image/file-only cash
+candidates become `NEEDS_REVIEW` until private OCR credentials and targets are
+explicitly configured.
+
 ## 3. First Files To Read
 
 ```text

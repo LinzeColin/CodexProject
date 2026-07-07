@@ -13,6 +13,12 @@ thresholds:
   hard_threshold: 500000
   soft_threshold: 1000000
 
+extraction:
+  total_available_cash_markers:
+    - 可用资金合计
+    - 总可用现金
+    - 可用资金
+
 risk_levels:
   P0_RED:
     condition: total_available_cash < hard_threshold
