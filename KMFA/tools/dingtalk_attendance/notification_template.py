@@ -33,6 +33,7 @@ def build_notification_message(
     beijing_time: str | None = None,
     report_paths: Mapping[str, Any] | None = None,
     markdown: bool = True,
+    member_count: int | None = None,
 ) -> str:
     title = f"开明考勤提醒｜{work_date}｜{display_run_type(run_type)}"
     lines = [f"# {title}" if markdown else title, "", f"截止 {current_time}", ""]
@@ -50,7 +51,7 @@ def build_notification_message(
     if rest_required_lines:
         lines.extend(["需要休息的人员：", *rest_required_lines, ""])
     if not abnormal_names and not consecutive_lines and not pending_lines and not rest_required_lines:
-        lines.extend(["今天一切良好", ""])
+        lines.extend([f"本次{_coerce_nonnegative_int(member_count)}人全部考勤正常，今天一切良好", ""])
 
     return "\n".join(lines).rstrip() + "\n"
 
@@ -83,6 +84,7 @@ def notification_context_from_output_status(output_status: Mapping[str, Any]) ->
         "consecutive_anomaly_summary": coerce_message_lines(output_status.get("consecutive_anomaly_summary")),
         "pending_hr_actions": pending_actions,
         "rest_required_people": coerce_rest_required_people(stats.get("rest_required_people")),
+        "member_count": _coerce_nonnegative_int(stats.get("member_count")),
         "run_id": run_id or None,
         "beijing_time": str(output_status.get("beijing_time") or current_time),
         "report_paths": {
