@@ -1,16 +1,16 @@
 # KMFA Status
 
-更新时间: 2026-07-07
+更新时间: 2026-07-08
 
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-residual-difference-raw-to-processed-comparison-fingerprint-pair-completion-blocker-final-threshold-recheck-after-owner-anchor-confirmation`
+- version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-intake-after-raw-refresh`
 - current_stage: `value-consistency`
-- current_phase: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_FINAL_THRESHOLD_RECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION`
-- status: `completed_validated_local_only_raw_comparison_fingerprint_pair_completion_blocker_final_threshold_met_after_owner_anchor_confirmation_no_go`
-- current_blocker: `48_private_pair_completion_blockers_observation_3_strict_threshold_met_still_missing_raw_candidate_fingerprints`
-- next_required_input: `resolve_or_authorize_raw_candidate_fingerprints_for_48_pair_completion_blockers`
+- current_phase: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_INTAKE_AFTER_RAW_REFRESH`
+- status: `completed_validated_local_only_authorized_source_reference_or_exclusion_intake_after_raw_refresh_no_go`
+- current_blocker: `48_remaining_blockers_require_authorized_source_reference_owner_exclusion_or_formula_mapping_before_binding`
+- next_required_input: `apply_owner_authorized_source_reference_exclusion_or_formula_mapping_before_comparison_retry`
 - blocked_next_steps: `formal raw-to-processed comparison; processed-data reconciliation; business value consistency; lineage full check; formal report; GitHub upload; app reinstall; business execution`
 - production_ready: `false`
 - github_upload_ready: `false_blocked_by_value_consistency_lineage_and_release`
