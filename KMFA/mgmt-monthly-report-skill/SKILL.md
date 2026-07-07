@@ -41,8 +41,9 @@ This skill turns each monthly经营管理报表 run into a repeatable governed p
 - map seven user-facing input slots to the v6 task-pack business groups;
 - rebuild or refresh the v6-aligned Excel workbook;
 - create the board PDF only after the Excel passes validation;
-- register hashes, lineage, validation, logs, database export, and backup status
-  under `KMFA/metadata/mgmt-monthly-report-skill/`;
+- register hashes, lineage, validation, logs, database export, backup status, and
+  any owner-authorized plaintext GitHub upload status under
+  `KMFA/metadata/mgmt-monthly-report-skill/`;
 - leave only final report files in the local report output directory after
   cleanup.
 
@@ -69,10 +70,15 @@ logs
 
 ## Hard Boundaries
 
-- Do not commit raw sensitive Excel, contracts, bank/tax/payroll data, real
-  report bodies, SQLite runtime databases, or local caches to GitHub.
-- Do commit public-safe structures, hash indexes, manifests, validation summaries,
-  SQL schemas/exports, and backup registration.
+- Owner-authorized raw sensitive Excel, contracts, bank/tax/payroll data, real
+  report bodies, and SQLite/database exports may be committed to GitHub only
+  under `KMFA/metadata/` after explicit owner authorization, secret scan, and an
+  upload manifest record.
+- Do not commit credentials, tokens, API keys, webhook secrets, signing keys, or
+  private keys to GitHub.
+- Do commit governance structures, hash indexes, manifests, validation summaries,
+  SQL schemas/exports, backup registration, and authorized plaintext upload
+  manifests.
 - Do not use directory-wide auto-discovery as business truth. Every source must be
   mapped through the input manifest.
 - Do not treat a copied v6 baseline workbook as a completed monthly refresh.
@@ -131,4 +137,3 @@ python3 KMFA/mgmt-monthly-report-skill/scripts/validate_deliverables.py \
   --report "KMFA/metadata/mgmt-monthly-report-skill/validation/自动验收报告 YYYYMM.json" \
   --strict
 ```
-

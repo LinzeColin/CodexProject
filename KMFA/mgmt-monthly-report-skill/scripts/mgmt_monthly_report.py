@@ -350,7 +350,8 @@ def write_artifacts(manifest: dict, metadata_root: Path) -> None:
     raw_index = {
         "period": period,
         "run_id": manifest["run_id"],
-        "public_safe_only": True,
+        "metadata_mode": "governed_index_owner_authorized_plaintext_upload_supported",
+        "owner_authorized_plaintext_upload_registered": False,
         "input_slots": manifest["input_slots"],
     }
     report_index = {
@@ -371,7 +372,10 @@ def write_artifacts(manifest: dict, metadata_root: Path) -> None:
             f"KMFA/metadata/mgmt-monthly-report-skill/database/{period}_registry_export.sql",
         ],
         "raw_sensitive_plaintext_uploaded": False,
-        "reason": "KMFA AGENTS.md permits public-safe hashes/manifests only for sensitive经营数据.",
+        "reason": (
+            "KMFA AGENTS.md permits owner-authorized plaintext GitHub upload under KMFA/metadata; "
+            "this register command records metadata only and does not copy raw files."
+        ),
         "status": manifest["status"],
     }
     log_entry = {
@@ -424,7 +428,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Register and govern KMFA management monthly report runs.")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    register = sub.add_parser("register", help="Create public-safe run metadata without copying raw data.")
+    register = sub.add_parser(
+        "register",
+        help="Create governed run metadata; this command does not copy raw data.",
+    )
     register.add_argument("--period", required=True)
     register.add_argument("--input-dir", required=True, type=Path)
     register.add_argument("--output-dir", required=True, type=Path)
