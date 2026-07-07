@@ -1,3 +1,14 @@
+## 2026-07-07｜v0.1.4 residual difference raw-to-processed comparison precheck
+
+- phase: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK`
+- task: `KMFA-V014-RESIDUAL-DIFFERENCE-RAW-TO-PROCESSED-COMPARISON-PRECHECK-20260707`
+- 已完成：新增 residual-difference raw-to-processed comparison precheck generator、validator、focused unit test、public-safe evidence packet、metadata copies、git-ignored private precheck/diagnostic/ready records/blocker records/report 和治理记录。
+- 当前结论：`source_private_materialized_record_count=72`、`source_raw_comparison_input_record_count=72`、`raw_to_processed_value_comparison_precheck_performed_by_this_phase=true`、`raw_to_processed_value_comparison_precheck_passed=false`、`comparison_ready_record_count=0`、`comparison_blocker_record_count=72`、`missing_private_comparison_anchor_count=72`、`open_residual_difference_count=72`、`closed_discrepancy_count=0`、`go_no_go=NO_GO`。
+- 原始数据边界：本 phase 不读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；只读取上一 materialization replay public-safe artifacts 和 ignored private materialization/raw-comparison input；不修改源 private materialization outputs。
+- 未执行：formal raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+- 验证入口：`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_precheck.py --require-private-precheck`
+- 下一步建议：单 phase 继续 `V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_ALIGNMENT_AFTER_PRECHECK`，在只读授权 raw inbox 下补 private raw candidate anchors；不得做 Stage review 或 GitHub upload。
+
 ## 2026-07-07｜v0.1.4 residual difference private resolution materialization replay
 
 - phase: `V014_RESIDUAL_DIFFERENCE_PRIVATE_RESOLUTION_MATERIALIZATION_REPLAY`

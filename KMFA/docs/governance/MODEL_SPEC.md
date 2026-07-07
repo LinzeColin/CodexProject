@@ -1,3 +1,13 @@
+## FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-TO-PROCESSED-COMPARISON-PRECHECK-001
+
+- version: `0.1.4-residual-difference-raw-to-processed-comparison-precheck`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: Precheck residual-difference raw-to-processed comparison readiness without reading raw inbox, running formal raw-to-processed comparison, reconciling values, uploading, reinstalling or executing business steps.
+- rule: precheck is valid only when source materialized records=72, source raw-comparison input records=72, comparison-ready records=0, comparison blockers=72, missing private comparison anchors=72, and raw-comparison/reconciliation/release/execution gates remain false.
+- public_safety: public artifacts contain aggregate counts, status flags and evidence refs only; private precheck outputs remain ignored and untracked.
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_precheck.py --require-private-precheck`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK/machine/residual_difference_raw_to_processed_comparison_precheck_manifest.json`
+
 ## FORM-KMFA-V014-RESIDUAL-DIFFERENCE-PRIVATE-RESOLUTION-MATERIALIZATION-REPLAY-001
 
 - version: `0.1.4-residual-difference-private-resolution-materialization-replay`
