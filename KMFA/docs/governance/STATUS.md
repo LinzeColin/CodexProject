@@ -426,6 +426,16 @@
 
 ## 2026-07-06 Latest - V014 Corrected Source Or Owner Exclusion Resolution Input Retry
 
+## 2026-07-07 Latest - V014 Residual Difference Raw-To-Processed Comparison Precheck After Alignment
+
+- phase: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_ALIGNMENT`
+- status: `completed_validated_local_only_residual_difference_raw_comparison_after_alignment_blocked_no_go`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_ALIGNMENT/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_precheck_after_alignment.py --require-private-precheck`
+- locked counts: `source_alignment_item_count=72`, `source_raw_candidate_anchor_draft_item_count=72`, `owner_authorized_comparison_anchor_count=0`, `alignment_authorization_anchor_required_count=72`, `comparison_ready_record_count=0`, `comparison_blocker_record_count=72`
+- boundary: raw inbox access/mutation, owner anchor authorization, formal raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution remain false.
+- next: owner/authorized-delegate private raw candidate anchor confirmation or public-safe difference report, one phase only.
+
 - phase: `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT_RETRY`
 - status: `completed_validated_local_only_corrected_source_or_owner_exclusion_resolution_input_retry_ready_for_readiness_check`
 - evidence: `KMFA/stage_artifacts/V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT_RETRY/`

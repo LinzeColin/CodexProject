@@ -11516,3 +11516,23 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private authorization outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-authorization-intake"
     completed_version: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-authorization-intake"
+  - task_id: "KMFA-V014-RESIDUAL-DIFFERENCE-RAW-TO-PROCESSED-COMPARISON-PRECHECK-AFTER-ALIGNMENT-20260707"
+    phase_id: "V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_ALIGNMENT"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-RESIDUAL-DIFFERENCE-RAW-TO-PROCESSED-COMPARISON-PRECHECK-AFTER-ALIGNMENT"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_residual_difference_raw_to_processed_comparison_precheck_after_alignment.py --generated-at 2026-07-07T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_precheck_after_alignment.py --require-private-precheck"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_raw_to_processed_comparison_precheck_after_alignment"
+    test_results:
+      - "PASS: residual difference raw comparison after alignment validator and focused unit test passed; 72 post-alignment residual differences remain blocked because owner-authorized anchors are missing, and raw inbox, formal comparison, reconciliation and downstream gates stay closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_ALIGNMENT/human/residual_difference_raw_to_processed_comparison_precheck_after_alignment.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_ALIGNMENT/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_ALIGNMENT/machine/residual_difference_raw_to_processed_comparison_precheck_after_alignment_manifest.json"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_ALIGNMENT/machine/residual_difference_raw_to_processed_comparison_precheck_after_alignment_matrix_public_safe.json"
+    risk: "Candidate anchor drafts can be mistaken for owner-authorized comparison anchors; this phase blocks formal comparison until owner authorization exists."
+    rollback: "Remove current phase artifacts, metadata copies, private after-alignment precheck outputs, tool, validator, focused test and governance entries; do not modify raw inbox or source alignment outputs."
+    target_version: "0.1.4-residual-difference-raw-to-processed-comparison-precheck-after-alignment"
+    completed_version: "0.1.4-residual-difference-raw-to-processed-comparison-precheck-after-alignment"

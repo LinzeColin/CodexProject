@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260707-V014-RESIDUAL-DIFFERENCE-RAW-CANDIDATE-ALIGNMENT"
+as_of_event_id: "DEV-KMFA-20260707-V014-RESIDUAL-DIFFERENCE-RAW-COMPARISON-PRECHECK-AFTER-ALIGNMENT"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "b99e42f754c25133317acea93bc739f79636fc47"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
 snapshot_event_time: "2026-07-07T00:00:00+10:00"
-generator_version: "manual-0.1.4-residual-difference-raw-candidate-alignment-after-precheck"
+generator_version: "manual-0.1.4-residual-difference-raw-to-processed-comparison-precheck-after-alignment"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1067
-    total_active_formulas: 196
+    total_active_parameters: 1070
+    total_active_formulas: 197
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -43,6 +43,9 @@ dimensions:
       - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_ALIGNMENT_AFTER_PRECHECK/human/test_results.md"
       - "KMFA/tools/check_v014_residual_difference_raw_candidate_alignment_after_precheck.py"
       - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_ALIGNMENT_AFTER_PRECHECK/machine/residual_difference_raw_candidate_alignment_after_precheck_manifest.json"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_ALIGNMENT/human/test_results.md"
+      - "KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_precheck_after_alignment.py"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_ALIGNMENT/machine/residual_difference_raw_to_processed_comparison_precheck_after_alignment_manifest.json"
       - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_PRIVATE_RESOLUTION_MATERIALIZATION_REPLAY/human/test_results.md"
       - "KMFA/tools/check_v014_residual_difference_private_resolution_materialization_replay.py"
       - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_PRIVATE_RESOLUTION_MATERIALIZATION_REPLAY/machine/residual_difference_private_resolution_materialization_replay_manifest.json"
@@ -1075,6 +1078,41 @@ v014_private_processed_value_staging:
     raw_inbox_normalize: false
     raw_inbox_mutation: false
     processed_value_materialization: false
+    processed_data_reconciliation: false
+    lineage_full_check: false
+    formal_report: false
+    github_upload: false
+    app_reinstall: false
+    business_execution: false
+v014_residual_difference_raw_comparison_after_alignment_precheck:
+  status: completed_validated_local_only_no_go_owner_anchors_missing
+  phase: V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_ALIGNMENT
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_ALIGNMENT
+  validator: KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_precheck_after_alignment.py
+  focused_test: KMFA/tests/test_v014_residual_difference_raw_to_processed_comparison_precheck_after_alignment.py
+  github_upload: blocked_no_go_upload_deferred
+  counts:
+    source_alignment_item_count: 72
+    source_raw_candidate_anchor_draft_item_count: 72
+    owner_authorized_comparison_anchor_count: 0
+    alignment_authorization_anchor_required_count: 72
+    comparison_ready_record_count: 0
+    comparison_blocker_record_count: 72
+  gates:
+    after_alignment_precheck_performed: true
+    raw_to_processed_value_comparison_ready: false
+    raw_to_processed_value_comparison_performed: false
+    full_raw_to_processed_value_comparison_complete: false
+    processed_consistency_verified: false
+    business_value_consistency_verified: false
+  forbidden_scope:
+    raw_inbox_read: false
+    raw_inbox_write: false
+    raw_inbox_delete: false
+    raw_inbox_move: false
+    raw_inbox_copy: false
+    raw_inbox_normalize: false
+    raw_inbox_mutation: false
     processed_data_reconciliation: false
     lineage_full_check: false
     formal_report: false
