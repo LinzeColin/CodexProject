@@ -2,10 +2,16 @@ import gzip
 import json
 import tempfile
 import unittest
+from datetime import datetime
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 from KMFA.tools.dingtalk_attendance.healthcheck import build_config_status
+from KMFA.tools.dingtalk_attendance.notification_probe import probe_notification_channels
+from KMFA.tools.dingtalk_attendance.notifier_dws_personal_chat import (
+    dispatch_reports_with_resolved_channel,
+    send_dws_chat_message,
+)
 from KMFA.tools.dingtalk_attendance.notifier_dingtalk import (
     build_signed_robot_url,
     send_group_robot_markdown,
@@ -23,6 +29,7 @@ from KMFA.tools.dingtalk_attendance.run_attendance import (
     build_stats_with_rest_required_people,
     dispatch_reports_to_robot,
 )
+from KMFA.tools.dingtalk_attendance.send_latest_report import send_latest_report
 from KMFA.tools.dingtalk_attendance.check_s19_dingtalk_attendance import validate_s19_files
 from KMFA.tools.dingtalk_attendance.validate_no_sensitive_git import scan_payload_for_sensitive_text
 
@@ -458,6 +465,187 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             stats = build_stats_with_rest_required_people({}, month_dir=month_dir, threshold_days=2)
 
             self.assertEqual(stats["rest_required_people"], [{"name": "张三", "effective_attendance_days": 2}])
+
+    def test_dws_user_chat_sender_uses_text_flag_and_records_business_error(self) -> None:
+        calls: list[list[str]] = []
+
+        def fake_runner(args: list[str], timeout: int = 30) -> dict:
+            calls.append(args)
+            return {
+                "returncode": 1,
+                "payload": {
+                    "error": {
+                        "server_key": "chat",
+                        "reason": "business_error",
+                        "message": "系统错误",
+                        "trace_id": "trace-1",
+                    }
+                },
+            }
+
+        result = send_dws_chat_message(
+            recipient_flag="--user",
+            recipient_value="1iv-1t2oesv2yd",
+            title="开明考勤个人通知验证",
+            text="开明考勤个人通知验证",
+            help_text="Flags:\n      --user string\n      --text string\n",
+            runner=fake_runner,
+        )
+
+        self.assertEqual(calls[0][:7], ["dws", "chat", "message", "send", "--user", "1iv-1t2oesv2yd", "--title"])
+        self.assertIn("--text", calls[0])
+        self.assertEqual(result["status"], "FAILED")
+        self.assertEqual(result["channel"], "dws_userid_chat")
+        self.assertEqual(result["failure_reason"], "business_error")
+        self.assertEqual(result["server_key"], "chat")
+        self.assertEqual(result["trace_id"], "trace-1")
+
+    def test_notification_probe_falls_back_to_open_dingtalk_id_and_writes_manifests(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            runtime_dir = Path(tmpdir) / "private_runtime"
+            manifest_path = Path(tmpdir) / "notification_channel_manifest.json"
+            calls: list[list[str]] = []
+
+            def fake_runner(args: list[str], timeout: int = 30) -> dict:
+                calls.append(args)
+                if args[:5] == ["dws", "chat", "message", "send", "--user"]:
+                    return {"returncode": 1, "payload": {"error": {"server_key": "chat", "reason": "business_error", "message": "系统错误"}}}
+                if args[:5] == ["dws", "contact", "user", "get", "--ids"]:
+                    return {"returncode": 0, "payload": {"success": True, "result": [{"name": "张霖泽", "userId": "1iv-1t2oesv2yd"}]}}
+                if args[:5] == ["dws", "contact", "user", "search", "--query"]:
+                    return {
+                        "returncode": 0,
+                        "payload": {
+                            "success": True,
+                            "result": [{"name": "张霖泽", "userId": "1iv-1t2oesv2yd", "openDingTalkId": "open-ding-id"}],
+                        },
+                    }
+                if args[:5] == ["dws", "chat", "message", "send", "--open-dingtalk-id"]:
+                    return {"returncode": 0, "payload": {"success": True, "openTaskId": "task-1"}}
+                raise AssertionError(f"unexpected args: {args}")
+
+            result = probe_notification_channels(
+                recipient="1iv-1t2oesv2yd",
+                recipient_name="张霖泽",
+                runtime_dir=runtime_dir,
+                public_manifest_path=manifest_path,
+                now=datetime(2026, 7, 7, 18, 15),
+                env={},
+                dws_runner=fake_runner,
+                help_provider=lambda command: "Flags:\n      --user string\n      --open-dingtalk-id string\n      --text string\n",
+                robot_sender=lambda **kwargs: {"status": "NOTIFIER_CONFIG_MISSING", "channel": "dingtalk_group_robot"},
+            )
+
+            resolved = json.loads((runtime_dir / "notification_channel_resolved.json").read_text(encoding="utf-8"))
+            public_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            self.assertEqual(result["status"], "SENT")
+            self.assertEqual(result["successful_channel"], "dws_open_dingtalk_id_chat")
+            self.assertEqual(resolved["channel"], "dws_open_dingtalk_id_chat")
+            self.assertEqual(resolved["channel_type"], "personal")
+            self.assertNotIn("open-ding-id", json.dumps(public_manifest, ensure_ascii=False))
+            self.assertEqual(public_manifest["last_success_channel"], "dws_open_dingtalk_id_chat")
+
+    def test_dispatch_reports_with_resolved_channel_sends_management_then_hr_summary_for_long_hr(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            management = root / "run.management.md"
+            hr = root / "run.hr.md"
+            receipt = root / "run.dispatch.json"
+            resolved = root / "notification_channel_resolved.json"
+            management.write_text("# 开明考勤管理报告\n\n## 一、总体情况\n完成。", encoding="utf-8")
+            hr.write_text("# 开明考勤 HR 报告\n\n" + "长" * 5000, encoding="utf-8")
+            resolved.write_text(
+                json.dumps(
+                    {
+                        "status": "SENT",
+                        "channel": "dws_userid_chat",
+                        "channel_type": "personal",
+                        "recipient_user_id": "1iv-1t2oesv2yd",
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            sent: list[tuple[str, str]] = []
+
+            def fake_sender(*, channel: dict, title: str, text: str, env: dict[str, str]) -> dict:
+                sent.append((title, text))
+                return {"status": "SENT", "channel": channel["channel"]}
+
+            result = dispatch_reports_with_resolved_channel(
+                output_status={
+                    "run_id": "s19_evening_20260707_181500",
+                    "current_time": "18:15",
+                    "management_report": str(management),
+                    "hr_report": str(hr),
+                    "dispatch_receipt": str(receipt),
+                },
+                resolved_path=resolved,
+                env={},
+                sender=fake_sender,
+            )
+
+            self.assertEqual(result["notification_status"], "SENT")
+            self.assertEqual([title for title, _ in sent], ["开明考勤管理报告", "开明考勤 HR 报告"])
+            self.assertIn("run_id：s19_evening_20260707_181500", sent[0][1])
+            self.assertIn(str(management), sent[0][1])
+            self.assertIn("HR 报告超过 4800 字", sent[1][1])
+            self.assertIn(str(hr), sent[1][1])
+            self.assertNotIn("长" * 100, sent[1][1])
+            receipt_payload = json.loads(receipt.read_text(encoding="utf-8"))
+            self.assertEqual([message["report"] for message in receipt_payload["messages"]], ["management_report", "hr_report"])
+
+    def test_send_latest_report_uses_latest_manifest_without_collection(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            month_dir = root / "202607"
+            runtime_dir = root / "private_runtime"
+            month_dir.mkdir()
+            runtime_dir.mkdir()
+            management = month_dir / "s19_evening_20260707_181500.management.md"
+            hr = month_dir / "s19_evening_20260707_181500.hr.md"
+            receipt = month_dir / "s19_evening_20260707_181500.dispatch.json"
+            manifest = month_dir / "s19_evening_20260707_181500.manifest.json"
+            management.write_text("# 开明考勤管理报告\n完成。", encoding="utf-8")
+            hr.write_text("# 开明考勤 HR 报告\n无。", encoding="utf-8")
+            manifest.write_text(
+                json.dumps(
+                    {
+                        "run_id": "s19_evening_20260707_181500",
+                        "management_report": str(management),
+                        "hr_report": str(hr),
+                        "dispatch_receipt": str(receipt),
+                        "cleanup_audit": str(month_dir / "s19_evening_20260707_181500.cleanup.json"),
+                        "stats": {},
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            (runtime_dir / "notification_channel_resolved.json").write_text(
+                json.dumps(
+                    {
+                        "status": "SENT",
+                        "channel": "dws_userid_chat",
+                        "channel_type": "personal",
+                        "recipient_user_id": "1iv-1t2oesv2yd",
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+
+            result = send_latest_report(
+                channel="auto",
+                onedrive_root=root,
+                resolved_path=runtime_dir / "notification_channel_resolved.json",
+                env={},
+                sender=lambda **kwargs: {"status": "SENT", "channel": kwargs["channel"]["channel"]},
+            )
+
+            self.assertEqual(result["status"], "SENT")
+            self.assertEqual(result["manifest"], str(manifest))
+            self.assertTrue(receipt.exists())
 
 
 if __name__ == "__main__":

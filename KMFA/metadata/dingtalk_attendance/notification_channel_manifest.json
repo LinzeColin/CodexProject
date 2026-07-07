@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "automation_name": "每日早晚钉钉考勤检查",
+  "updated_at": "2026-07-07T11:12:21.364144+08:00",
+  "last_probe_status": "SENT",
+  "last_success_channel": "dws_open_dingtalk_id_chat",
+  "resolved_channel_private_path": "metadata/dingtalk_attendance/private_runtime/notification_channel_resolved.json",
+  "resolved_channel_committed": false,
+  "sensitive_values_committed": false,
+  "attempts": [
+    {
+      "channel": "dws_userid_chat",
+      "status": "FAILED",
+      "failure_reason": "business_error",
+      "server_key": "chat",
+      "trace_id_present": true,
+      "identifier_present": false
+    },
+    {
+      "channel": "dws_open_dingtalk_id_chat",
+      "status": "SENT",
+      "failure_reason": null,
+      "server_key": null,
+      "trace_id_present": false,
+      "identifier_present": true
+    }
+  ]
+}

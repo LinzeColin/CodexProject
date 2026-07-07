@@ -1,0 +1,329 @@
+#!/usr/bin/env python3
+"""Resolved DingTalk notification channels for KMFA S19."""
+
+from __future__ import annotations
+
+import json
+import subprocess
+from collections.abc import Callable, Mapping
+from datetime import datetime
+from pathlib import Path
+from typing import Any
+from zoneinfo import ZoneInfo
+
+from KMFA.tools.dingtalk_attendance import TIMEZONE
+from KMFA.tools.dingtalk_attendance.notifier_dingtalk import send_group_robot_markdown
+from KMFA.tools.dingtalk_attendance.secrets_loader import merged_runtime_env
+
+
+ROOT = Path(__file__).resolve().parents[2]
+PRIVATE_RUNTIME_DIR = ROOT / "metadata" / "dingtalk_attendance" / "private_runtime"
+RESOLVED_CHANNEL_PATH = PRIVATE_RUNTIME_DIR / "notification_channel_resolved.json"
+REPORT_MESSAGES = (
+    ("management_report", "开明考勤管理报告"),
+    ("hr_report", "开明考勤 HR 报告"),
+)
+MAX_HR_REPORT_TEXT_CHARS = 4800
+
+
+def run_dws_command(args: list[str], *, timeout: int = 45) -> dict[str, Any]:
+    proc = subprocess.run(args, text=True, capture_output=True, timeout=timeout, check=False)
+    payload_text = proc.stdout.strip() or proc.stderr.strip() or "{}"
+    return {
+        "returncode": proc.returncode,
+        "payload": _parse_json_payload(payload_text),
+    }
+
+
+def get_dws_help(command: list[str]) -> str:
+    proc = subprocess.run([*command, "--help"], text=True, capture_output=True, timeout=30, check=False)
+    return proc.stdout or proc.stderr or ""
+
+
+def send_dws_chat_message(
+    *,
+    recipient_flag: str,
+    recipient_value: str,
+    title: str,
+    text: str,
+    help_text: str | None = None,
+    runner: Callable[..., dict[str, Any]] = run_dws_command,
+    timeout: int = 45,
+) -> dict[str, Any]:
+    channel = "dws_open_dingtalk_id_chat" if recipient_flag == "--open-dingtalk-id" else "dws_userid_chat"
+    command = ["dws", "chat", "message", "send", recipient_flag, recipient_value, "--title", title]
+    if help_text is None:
+        help_text = get_dws_help(["dws", "chat", "message", "send"])
+    if "--text" in help_text:
+        command.extend(["--text", text])
+    else:
+        command.append(text)
+    command.extend(["--format", "json"])
+    result = runner(command, timeout=timeout)
+    return _dws_result_to_status(result, channel=channel)
+
+
+def send_dws_ding_message(
+    *,
+    recipient_user_id: str,
+    title: str,
+    text: str,
+    env: Mapping[str, str],
+    runner: Callable[..., dict[str, Any]] = run_dws_command,
+    timeout: int = 45,
+) -> dict[str, Any]:
+    robot_code = env.get("DINGTALK_DING_ROBOT_CODE")
+    if not robot_code:
+        return {
+            "status": "NOTIFIER_CONFIG_MISSING",
+            "channel": "dws_ding_personal",
+            "failure_reason": "DINGTALK_DING_ROBOT_CODE missing",
+        }
+    result = runner(
+        [
+            "dws",
+            "ding",
+            "message",
+            "send",
+            "--robot-code",
+            robot_code,
+            "--type",
+            "app",
+            "--users",
+            recipient_user_id,
+            "--content",
+            f"{title}\n\n{text}",
+            "--format",
+            "json",
+        ],
+        timeout=timeout,
+    )
+    return _dws_result_to_status(result, channel="dws_ding_personal")
+
+
+def send_text_with_resolved_channel(
+    *,
+    channel: Mapping[str, Any],
+    title: str,
+    text: str,
+    env: Mapping[str, str] | None = None,
+    runner: Callable[..., dict[str, Any]] = run_dws_command,
+    help_provider: Callable[[list[str]], str] = get_dws_help,
+    robot_sender: Callable[..., dict[str, Any]] = send_group_robot_markdown,
+) -> dict[str, Any]:
+    values = merged_runtime_env() if env is None else dict(env)
+    channel_name = str(channel.get("channel") or "")
+    if channel_name == "dws_userid_chat":
+        return send_dws_chat_message(
+            recipient_flag="--user",
+            recipient_value=str(channel.get("recipient_user_id") or ""),
+            title=title,
+            text=text,
+            help_text=help_provider(["dws", "chat", "message", "send"]),
+            runner=runner,
+        )
+    if channel_name == "dws_open_dingtalk_id_chat":
+        return send_dws_chat_message(
+            recipient_flag="--open-dingtalk-id",
+            recipient_value=str(channel.get("open_dingtalk_id") or ""),
+            title=title,
+            text=text,
+            help_text=help_provider(["dws", "chat", "message", "send"]),
+            runner=runner,
+        )
+    if channel_name == "dws_ding_personal":
+        return send_dws_ding_message(
+            recipient_user_id=str(channel.get("recipient_user_id") or ""),
+            title=title,
+            text=text,
+            env=values,
+            runner=runner,
+        )
+    if channel_name == "dingtalk_group_robot":
+        return robot_sender(title=title, markdown_text=text, env=values)
+    return {
+        "status": "NOTIFIER_CONFIG_MISSING",
+        "channel": channel_name or "unknown",
+        "failure_reason": "resolved channel unsupported or missing",
+    }
+
+
+def dispatch_reports_with_resolved_channel(
+    *,
+    output_status: Mapping[str, Any],
+    resolved_path: Path = RESOLVED_CHANNEL_PATH,
+    env: Mapping[str, str] | None = None,
+    sender: Callable[..., dict[str, Any]] = send_text_with_resolved_channel,
+) -> dict[str, Any]:
+    receipt_path = Path(str(output_status["dispatch_receipt"]))
+    if not resolved_path.exists():
+        receipt = _receipt(
+            status="NOTIFIER_CONFIG_MISSING",
+            channel="unresolved",
+            output_status=output_status,
+            messages=[],
+            failure_reason=f"missing resolved channel file: {resolved_path}",
+        )
+        _write_receipt(receipt_path, receipt)
+        return receipt
+
+    channel = json.loads(resolved_path.read_text(encoding="utf-8"))
+    messages: list[dict[str, Any]] = []
+    for report_key, title in REPORT_MESSAGES:
+        report_path = Path(str(output_status[report_key]))
+        try:
+            report_text = report_path.read_text(encoding="utf-8")
+            body = _build_report_message_body(
+                title=title,
+                report_key=report_key,
+                report_path=report_path,
+                report_text=report_text,
+                output_status=output_status,
+            )
+            send_result = sender(channel=channel, title=title, text=body, env=dict(env or {}))
+        except OSError as exc:
+            send_result = {
+                "status": "FAILED",
+                "channel": str(channel.get("channel") or "unknown"),
+                "failure_reason": exc.__class__.__name__,
+            }
+        messages.append(
+            {
+                "report": report_key,
+                "report_path": str(report_path),
+                "status": send_result.get("status", "FAILED"),
+                "channel": send_result.get("channel", channel.get("channel")),
+                "failure_reason": send_result.get("failure_reason"),
+                "server_key": send_result.get("server_key"),
+                "trace_id": send_result.get("trace_id"),
+                "errcode": send_result.get("errcode"),
+                "errmsg": send_result.get("errmsg"),
+            }
+        )
+
+    notification_status = _summarize_status([str(message["status"]) for message in messages])
+    receipt = _receipt(
+        status=notification_status,
+        channel=str(channel.get("channel") or "unknown"),
+        output_status=output_status,
+        messages=messages,
+    )
+    _write_receipt(receipt_path, receipt)
+    return receipt
+
+
+def _build_report_message_body(
+    *,
+    title: str,
+    report_key: str,
+    report_path: Path,
+    report_text: str,
+    output_status: Mapping[str, Any],
+) -> str:
+    beijing_time = str(output_status.get("current_time") or datetime.now(ZoneInfo(TIMEZONE)).strftime("%Y-%m-%d %H:%M:%S"))
+    lines = [
+        title,
+        "",
+        f"run_id：{output_status.get('run_id', 'UNKNOWN_RUN')}",
+        f"北京时间：{beijing_time}",
+        f"OneDrive 报告路径：{report_path}",
+        "",
+    ]
+    if report_key == "hr_report" and len(report_text) > MAX_HR_REPORT_TEXT_CHARS:
+        lines.extend(
+            [
+                "HR 报告超过 4800 字，本次发送摘要和 OneDrive 路径。",
+                "OneDrive 原始 HR 报告未截断，仍保留完整文件。",
+            ]
+        )
+    else:
+        lines.append(report_text)
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def _receipt(
+    *,
+    status: str,
+    channel: str,
+    output_status: Mapping[str, Any],
+    messages: list[dict[str, Any]],
+    failure_reason: str | None = None,
+) -> dict[str, Any]:
+    receipt = {
+        "notification_status": status,
+        "channel": channel,
+        "messages": messages,
+        "management_report": str(output_status.get("management_report", "")),
+        "hr_report": str(output_status.get("hr_report", "")),
+    }
+    if failure_reason:
+        receipt["failure_reason"] = failure_reason
+    return receipt
+
+
+def _write_receipt(receipt_path: Path, receipt: Mapping[str, Any]) -> None:
+    receipt_path.parent.mkdir(parents=True, exist_ok=True)
+    receipt_path.write_text(json.dumps(receipt, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def _summarize_status(statuses: list[str]) -> str:
+    if statuses and all(status == "SENT" for status in statuses):
+        return "SENT"
+    if statuses and all(status == "NOTIFIER_CONFIG_MISSING" for status in statuses):
+        return "NOTIFIER_CONFIG_MISSING"
+    if statuses and any(status == "DINGTALK_ROBOT_ERROR" for status in statuses):
+        return "DINGTALK_ROBOT_ERROR"
+    return "FAILED"
+
+
+def _dws_result_to_status(result: Mapping[str, Any], *, channel: str) -> dict[str, Any]:
+    payload = result.get("payload", {})
+    error_payload = _find_error_payload(payload)
+    if result.get("returncode") == 0 and not error_payload:
+        return {"status": "SENT", "channel": channel}
+    return {
+        "status": "FAILED",
+        "channel": channel,
+        "failure_reason": _first_nonempty(error_payload, ("reason", "message", "code")) or "dws_command_failed",
+        "server_key": _first_nonempty(error_payload, ("server_key", "serverKey")),
+        "trace_id": _first_nonempty(error_payload, ("trace_id", "traceId", "request_id", "requestId")),
+        "errcode": _first_nonempty(error_payload, ("errcode", "errorCode", "code")),
+        "errmsg": _first_nonempty(error_payload, ("errmsg", "message")),
+    }
+
+
+def _find_error_payload(value: Any) -> Mapping[str, Any]:
+    if isinstance(value, Mapping):
+        if isinstance(value.get("error"), Mapping):
+            return value["error"]
+        if any(key in value for key in ("errcode", "errmsg", "server_key", "reason", "message")) and value.get("success") is not True:
+            return value
+        for child in value.values():
+            found = _find_error_payload(child)
+            if found:
+                return found
+    if isinstance(value, list):
+        for child in value:
+            found = _find_error_payload(child)
+            if found:
+                return found
+    return {}
+
+
+def _first_nonempty(payload: Mapping[str, Any], keys: tuple[str, ...]) -> str | None:
+    for key in keys:
+        value = payload.get(key)
+        if value not in (None, ""):
+            return str(value)
+    return None
+
+
+def _parse_json_payload(payload_text: str) -> dict[str, Any]:
+    start = payload_text.find("{")
+    if start == -1:
+        return {"raw": payload_text[:1000]}
+    try:
+        payload = json.loads(payload_text[start:])
+    except json.JSONDecodeError as exc:
+        return {"parse_error": str(exc), "raw": payload_text[:1000]}
+    return payload if isinstance(payload, dict) else {"payload": payload}
