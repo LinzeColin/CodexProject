@@ -1843,6 +1843,18 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 
 ## 2026-07-06 - V014 Outside-Scope Authorized Source-Map Extension
 
+## 2026-07-07 - V014 Residual Difference Raw-To-Processed Comparison Precheck After Alignment
+
+- task_id: `KMFA-V014-RESIDUAL-DIFFERENCE-RAW-TO-PROCESSED-COMPARISON-PRECHECK-AFTER-ALIGNMENT-20260707`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_ALIGNMENT`
+- product_version: `0.1.4-residual-difference-raw-to-processed-comparison-precheck-after-alignment`
+- status: `completed_validated_local_only_residual_difference_raw_comparison_after_alignment_blocked_no_go`
+- evidence_dir: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_ALIGNMENT/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_precheck_after_alignment.py --require-private-precheck`
+- focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_raw_to_processed_comparison_precheck_after_alignment`
+- boundary: this phase reads previous raw candidate alignment outputs only and records that 72 residual differences remain blocked because owner-authorized anchors are missing; it does not read raw inbox, authorize anchors, run raw-to-processed comparison, reconcile values, upload GitHub, reinstall app or execute business steps.
+- next_required_input: `owner_or_authorized_delegate_confirms_private_raw_candidate_anchors_before_formal_comparison`
+
 - task_id: `KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-20260706`
 - phase_id: `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION`
 - product_version: `0.1.4-outside-scope-authorized-source-map-extension`

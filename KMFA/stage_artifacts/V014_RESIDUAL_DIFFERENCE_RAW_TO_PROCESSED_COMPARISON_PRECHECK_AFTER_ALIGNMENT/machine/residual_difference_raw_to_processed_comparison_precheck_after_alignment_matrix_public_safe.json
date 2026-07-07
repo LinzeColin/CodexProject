@@ -1,0 +1,79 @@
+{
+  "alignment_authorization_anchor_required_count": 72,
+  "business_value_consistency_verified": false,
+  "check_count": 8,
+  "checks": [
+    {
+      "check_code": "source_alignment_items_available",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_anchor_draft_items_available",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "diagnostic_track_counts_locked",
+      "observed_public_safe": {
+        "owner_select_one_authoritative_candidate": 24,
+        "provide_authoritative_source_reference_or_owner_exclusion": 40,
+        "provide_formula_or_non_numeric_mapping": 8
+      },
+      "required": {
+        "owner_select_one_authoritative_candidate": 24,
+        "provide_authoritative_source_reference_or_owner_exclusion": 40,
+        "provide_formula_or_non_numeric_mapping": 8
+      },
+      "status": "PASS"
+    },
+    {
+      "check_code": "owner_authorized_anchor_coverage_unblocked",
+      "observed_public_safe": 0,
+      "required": 72,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "comparison_ready_record_count_unblocked",
+      "observed_public_safe": 0,
+      "required": 72,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "formal_comparison_not_claimed",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_not_accessed_after_alignment",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_no_go_preserved",
+      "observed_public_safe": "NO_GO",
+      "required": "NO_GO",
+      "status": "PASS"
+    }
+  ],
+  "comparison_blocker_record_count": 72,
+  "comparison_ready_record_count": 0,
+  "decision": "NO_GO",
+  "fail_count": 2,
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "owner_authorized_comparison_anchor_count": 0,
+  "pass_count": 6,
+  "phase_id": "V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_ALIGNMENT",
+  "project_id": "KMFA",
+  "raw_to_processed_value_comparison_performed_by_this_phase": false,
+  "raw_to_processed_value_comparison_ready": false,
+  "record_type": "v014_residual_difference_raw_comparison_after_alignment_matrix_public_safe",
+  "schema_version": "kmfa.v014_residual_difference_raw_comparison_after_alignment_matrix_public_safe.v1",
+  "source_alignment_item_count": 72,
+  "task_id": "KMFA-V014-RESIDUAL-DIFFERENCE-RAW-TO-PROCESSED-COMPARISON-PRECHECK-AFTER-ALIGNMENT-20260707",
+  "version": "0.1.4-residual-difference-raw-to-processed-comparison-precheck-after-alignment"
+}

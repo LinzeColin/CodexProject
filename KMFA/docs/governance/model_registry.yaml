@@ -1,3 +1,18 @@
+kmfa_v014_residual_difference_raw_comparison_after_alignment_precheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-raw-to-processed-comparison-precheck-after-alignment"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-COMPARISON-AFTER-ALIGNMENT-PRECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1450
+    - PARAM-KMFA-1451
+    - PARAM-KMFA-1452
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_ALIGNMENT
+  validator: KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_precheck_after_alignment.py
+  scope: Residual-difference raw comparison precheck after alignment only; confirms 72 post-alignment residual records still lack owner-authorized comparison anchors; public evidence aggregate-only; no raw inbox access, formal raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
 kmfa_v014_residual_difference_raw_candidate_alignment_after_precheck:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-residual-difference-raw-candidate-alignment-after-precheck"

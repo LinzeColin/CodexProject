@@ -344,6 +344,14 @@ KMFA 当前版本 `0.1.4-residual-difference-raw-candidate-alignment-after-prech
 - Codex prepared a private template for the 36 remaining unlinked blockers that require either corrected-source input or explicit owner exclusion.
 - public-safe result: `private_resolution_item_count=36`, `owner_resolution_input_present=false`, `all_36_unlinked_blockers_resolved=false`.
 - Codex did not apply source-map records, did not write partial authorization, did not touch raw source files, did not perform raw-to-processed comparison, and did not claim business consistency.
+## 2026-07-07 Latest Owner Boundary - V014 Residual Difference Raw-To-Processed Comparison Precheck After Alignment
+
+- active phase completed locally: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_ALIGNMENT`
+- public-safe result: 72 post-alignment residual records were checked, but owner-authorized comparison anchors remain 0 and all 72 records remain blocked.
+- private output: ignored after-alignment comparison precheck, diagnostic, ready records, blocker records and report are available under project private runtime; they are not committed to GitHub.
+- Codex did not read, list, parse, fingerprint, modify, move, delete, overwrite, normalize or copy raw source files in this phase.
+- next allowed run is a single owner/authorized-delegate private raw candidate anchor confirmation or public-safe difference report phase; no GitHub upload, app reinstall, formal report, raw comparison, reconciliation or business execution is allowed from this state.
+
 - next allowed run is a single owner resolution application-readiness phase after the 36 private inputs are supplied; no GitHub upload, app reinstall, formal report, raw comparison or business execution is allowed from this state.
 
 ## 2026-07-06 Latest Owner Boundary - V014 Corrected Source Or Owner Exclusion Resolution Application Readiness

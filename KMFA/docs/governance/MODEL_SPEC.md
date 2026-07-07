@@ -1334,6 +1334,17 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 
 - model_id: `MOD-KMFA-GOV-001`
 - formula_id: `FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-DIAGNOSTIC-HANDOFF-001`
+## V014 Residual Difference Raw-To-Processed Comparison Precheck After Alignment
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-COMPARISON-AFTER-ALIGNMENT-PRECHECK-001`
+- parameter_ids: `PARAM-KMFA-1450`, `PARAM-KMFA-1451`, `PARAM-KMFA-1452`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_ALIGNMENT`
+- version: `0.1.4-residual-difference-raw-to-processed-comparison-precheck-after-alignment`
+- rule: source_alignment_item_count=72 and source_raw_candidate_anchor_draft_item_count=72 prove the prior raw candidate alignment output is available; owner_authorized_comparison_anchor_count=0, comparison_ready_record_count=0 and comparison_blocker_record_count=72 keep formal raw-to-processed comparison blocked.
+- gate: `NO_GO`; owner-authorized anchor selection, formal raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private after-alignment precheck, diagnostic, ready records, blocker records and report stay under ignored runtime and raw inbox remains untouched.
+
 - parameter_ids: `PARAM-KMFA-1393`, `PARAM-KMFA-1394`, `PARAM-KMFA-1395`
 - phase_id: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_DIAGNOSTIC_HANDOFF`
 - version: `0.1.4-outside-scope-candidate-review-residual-difference-diagnostic-handoff`
