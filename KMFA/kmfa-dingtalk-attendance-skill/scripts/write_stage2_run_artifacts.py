@@ -80,6 +80,20 @@ def quality_grade(location_count: int, trajectory_count: int, unresolved: dict[s
     return "Q4"
 
 
+def quality_gates(snapshot: dict[str, Any], location_count: int) -> dict[str, bool]:
+    source = snapshot.get("quality_gates") if isinstance(snapshot.get("quality_gates"), dict) else {}
+    return {
+        "location_evidence_thresholds_passed": bool(
+            source.get("location_evidence_thresholds_passed")
+            if "location_evidence_thresholds_passed" in source
+            else location_count > 0
+        ),
+        "raw_to_derived_reconciliation_passed": bool(source.get("raw_to_derived_reconciliation_passed")),
+        "database_transaction_committed": bool(source.get("database_transaction_committed")),
+        "database_transaction_verified": bool(source.get("database_transaction_verified")),
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Write one offline stage-2 run artifact set.")
     parser.add_argument("--source-json", required=True)
@@ -104,6 +118,7 @@ def main() -> int:
     location_count, trajectory_count = evidence_counts(snapshot)
     unresolved = unresolved_exceptions(snapshot)
     grade = quality_grade(location_count, trajectory_count, unresolved)
+    gates = quality_gates(snapshot, location_count)
     source_hash = "sha256:" + hashlib.sha256(source.read_bytes()).hexdigest()
     marker = args.database_transaction_marker or f"offline-replay:{digest.removeprefix('sha256:')[:16]}"
 
@@ -119,6 +134,7 @@ def main() -> int:
         "canonical_snapshot_hash": digest,
         "quality_grade": grade,
         "unresolved_exceptions": unresolved,
+        "quality_gates": gates,
         "stage2_status": "pending",
         "artifact_written_at": datetime.utcnow().replace(microsecond=0).isoformat() + "Z",
         "artifact_mode": "offline_replay",
@@ -133,6 +149,7 @@ def main() -> int:
             "location_evidence_count": location_count,
             "trajectory_evidence_count": trajectory_count,
             "canonical_snapshot_hash": digest,
+            "quality_gates": gates,
         },
     )
     write_json(

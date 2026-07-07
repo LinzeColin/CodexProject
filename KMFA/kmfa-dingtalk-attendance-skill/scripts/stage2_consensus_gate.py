@@ -26,11 +26,18 @@ class RunCheck:
     quality_grade: str | None
     p0: int | None
     p1: int | None
+    quality_gates: dict[str, bool] | None
     stage2_status: str | None
     failures: list[str]
 
 
 QUALITY_ORDER = {"Q0": 0, "Q1": 1, "Q2": 2, "Q3": 3, "Q4": 4, "Q5": 5}
+REQUIRED_QUALITY_GATES = {
+    "location_evidence_thresholds_passed": "location_evidence_threshold_failed",
+    "raw_to_derived_reconciliation_passed": "raw_to_derived_reconciliation_failed",
+    "database_transaction_committed": "database_transaction_not_committed",
+    "database_transaction_verified": "database_transaction_not_verified",
+}
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -44,7 +51,7 @@ def check_run(root: Path, run_index: int, min_quality: str) -> RunCheck:
     sha_path = folder / "canonical_snapshot.sha256"
     manifest_path = folder / "run_manifest.json"
     if not folder.is_dir():
-        return RunCheck(run_index, str(folder), False, None, None, None, None, None, ["run_folder_missing"])
+        return RunCheck(run_index, str(folder), False, None, None, None, None, None, None, ["run_folder_missing"])
     digest = None
     if sha_path.is_file():
         digest = sha_path.read_text(encoding="utf-8").strip()
@@ -67,8 +74,27 @@ def check_run(root: Path, run_index: int, min_quality: str) -> RunCheck:
         failures.append(f"P0_unresolved:{p0}")
     if p1 != 0:
         failures.append(f"P1_unresolved:{p1}")
+    raw_gates = manifest.get("quality_gates")
+    quality_gates = raw_gates if isinstance(raw_gates, dict) else {}
+    for gate_key, failure_name in REQUIRED_QUALITY_GATES.items():
+        if quality_gates.get(gate_key) is not True:
+            failures.append(failure_name)
+    marker = str(manifest.get("database_transaction_marker") or "").strip()
+    if quality_gates.get("database_transaction_committed") is True and not marker:
+        failures.append("database_transaction_marker_missing")
     stage2_status = manifest.get("stage2_status")
-    return RunCheck(run_index, str(folder), True, digest, grade, p0, p1, stage2_status, failures)
+    return RunCheck(
+        run_index,
+        str(folder),
+        True,
+        digest,
+        grade,
+        p0,
+        p1,
+        {key: bool(quality_gates.get(key) is True) for key in REQUIRED_QUALITY_GATES},
+        stage2_status,
+        failures,
+    )
 
 
 def write_hash_matrix(path: Path, checks: list[RunCheck]) -> None:

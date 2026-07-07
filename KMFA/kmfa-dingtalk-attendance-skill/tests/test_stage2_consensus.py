@@ -33,7 +33,15 @@ def canonicalize(src: Path, out: Path):
     ])
 
 
-def write_manifest(folder: Path, run_index: int, target_month="202607", quality="Q4", p0=0, p1=0):
+def write_manifest(
+    folder: Path,
+    run_index: int,
+    target_month="202607",
+    quality="Q4",
+    p0=0,
+    p1=0,
+    quality_gates: dict | None = None,
+):
     digest = (folder / "canonical_snapshot.sha256").read_text().strip()
     manifest = {
         "run_id": f"run_{run_index}",
@@ -47,6 +55,13 @@ def write_manifest(folder: Path, run_index: int, target_month="202607", quality=
         "canonical_snapshot_hash": digest,
         "quality_grade": quality,
         "unresolved_exceptions": {"P0": p0, "P1": p1, "P2": 0, "P3": 0},
+        "quality_gates": quality_gates
+        or {
+            "location_evidence_thresholds_passed": True,
+            "raw_to_derived_reconciliation_passed": True,
+            "database_transaction_committed": True,
+            "database_transaction_verified": True,
+        },
         "stage2_status": "pending",
     }
     (folder / "run_manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
@@ -80,7 +95,33 @@ def test_rejects_divergent():
         assert data["accepted"] is False
 
 
-def test_evening_replay_adapter_writes_five_run_artifacts_and_accepts_consensus():
+def test_rejects_identical_hashes_without_required_quality_gates():
+    with tempfile.TemporaryDirectory() as td:
+        stage2 = Path(td) / "stage2" / "202607"
+        for i in range(1, 6):
+            folder = stage2 / f"run_{i:02d}"
+            folder.mkdir(parents=True)
+            canonicalize(FIX / "minimal_snapshot_a.json", folder)
+            write_manifest(
+                folder,
+                i,
+                quality_gates={
+                    "location_evidence_thresholds_passed": True,
+                    "raw_to_derived_reconciliation_passed": False,
+                    "database_transaction_committed": False,
+                    "database_transaction_verified": False,
+                },
+            )
+        p = run([sys.executable, str(SCRIPT_DIR / "stage2_consensus_gate.py"), "--stage2-root", str(stage2), "--target-month", "202607"], check=False)
+        assert p.returncode == 2
+        data = json.loads(p.stdout)
+        assert data["accepted"] is False
+        assert "run_01:raw_to_derived_reconciliation_failed" in data["failures"]
+        assert "run_01:database_transaction_not_committed" in data["failures"]
+        assert "run_01:database_transaction_not_verified" in data["failures"]
+
+
+def test_evening_replay_adapter_writes_five_run_artifacts_and_fails_without_database_commit():
     with tempfile.TemporaryDirectory() as td:
         runtime = Path(td) / "private_runtime"
         source = FIX / "minimal_snapshot_a.json"
@@ -100,7 +141,8 @@ def test_evening_replay_adapter_writes_five_run_artifacts_and_accepts_consensus(
                 text=True,
                 env=env,
             )
-            if p.returncode != 0:
+            expected_code = 2 if day == 5 else 0
+            if p.returncode != expected_code:
                 print(p.stdout)
                 print(p.stderr, file=sys.stderr)
                 raise SystemExit(p.returncode)
@@ -114,9 +156,14 @@ def test_evening_replay_adapter_writes_five_run_artifacts_and_accepts_consensus(
                 "payroll_baseline_candidate.json",
             ]:
                 assert (run_dir / rel).is_file(), f"missing {run_dir / rel}"
+            manifest = json.loads((run_dir / "run_manifest.json").read_text(encoding="utf-8"))
+            assert manifest["quality_gates"]["database_transaction_committed"] is False
+            assert manifest["quality_gates"]["database_transaction_verified"] is False
         cert = json.loads((runtime / "stage2" / "202607" / "stage2_consensus_certificate.json").read_text())
-        assert cert["accepted"] is True
-        assert cert["stage2_status"] == "accepted"
+        assert cert["accepted"] is False
+        assert cert["stage2_status"] == "failed"
+        assert "run_01:database_transaction_not_committed" in cert["failures"]
+        assert (runtime / "stage2" / "202607" / "stage2_divergence_report.md").is_file()
 
 
 def test_evening_live_source_adapter_fails_closed_without_dws_authorization():
@@ -155,6 +202,7 @@ def test_evening_live_source_adapter_fails_closed_without_dws_authorization():
 if __name__ == "__main__":
     test_accepts_identical()
     test_rejects_divergent()
-    test_evening_replay_adapter_writes_five_run_artifacts_and_accepts_consensus()
+    test_rejects_identical_hashes_without_required_quality_gates()
+    test_evening_replay_adapter_writes_five_run_artifacts_and_fails_without_database_commit()
     test_evening_live_source_adapter_fails_closed_without_dws_authorization()
     print("stage2 consensus tests passed")

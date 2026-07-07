@@ -51,4 +51,5 @@
 - [ ] Confirm each run writes canonical snapshot and hash.
 - [ ] Confirm day-5 consensus gate compares all five runs.
 - [ ] Confirm accepted certificate appears only when all five hashes match exactly.
+- [x] Confirm accepted certificate also requires per-run location, raw-to-derived, and database transaction commit/verification gates.
 - [ ] Confirm payroll baseline rows appear only after accepted certificate.

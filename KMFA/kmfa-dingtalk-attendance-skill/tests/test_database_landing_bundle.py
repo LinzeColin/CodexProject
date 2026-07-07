@@ -24,12 +24,22 @@ def run(cmd: list[str], env: dict[str, str] | None = None, check: bool = True) -
 
 
 def write_accepted_stage2(runtime: Path) -> Path:
+    source = runtime / "fixtures" / "accepted_snapshot_with_quality_gates.json"
+    source.parent.mkdir(parents=True, exist_ok=True)
+    snapshot = json.loads((FIX / "minimal_snapshot_a.json").read_text(encoding="utf-8"))
+    snapshot["quality_gates"] = {
+        "location_evidence_thresholds_passed": True,
+        "raw_to_derived_reconciliation_passed": True,
+        "database_transaction_committed": True,
+        "database_transaction_verified": True,
+    }
+    source.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")
     env = os.environ.copy()
     env.update({
         "KMFA_REPO_ROOT": str(ROOT.parent),
         "KMFA_PRIVATE_RUNTIME": str(runtime),
         "KMFA_RUN_SLOT": "evening",
-        "KMFA_STAGE2_SOURCE_JSON": str(FIX / "minimal_snapshot_a.json"),
+        "KMFA_STAGE2_SOURCE_JSON": str(source),
     })
     for day in range(1, 6):
         env["KMFA_TODAY_OVERRIDE"] = f"2026-08-{day:02d}"
