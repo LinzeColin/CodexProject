@@ -158,6 +158,39 @@ stage6_phase2_data_map_detail_proposal:
     - no_agent_apply
     - no_deploy
     - no_github_main_upload
+stage6_review_data_map_gate:
+  task_id: MA-V117-S6-REVIEW
+  acceptance_id: ACC-MA-V117-S6-REVIEW
+  status: stage_6_review_passed_pending_stage7_no_github_main_upload
+  required_validator: validate:v1.1.7-stage6
+  phase_label: Stage 6 Review
+  covered_phases:
+    - Phase 6.1
+    - Phase 6.2
+  next_gate_label: pending Stage 7
+  phase_validators:
+    - validate:v1.1.7-stage6-phase1
+    - validate:v1.1.7-stage6-phase2
+  browser_validators:
+    - validate:data-map-structure-browser
+    - validate:data-map-detail-proposal-browser
+  review_artifact: docs/reviews/memory_atlas_v1_1_7_stage6_review.md
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundary_label: "No GitHub main upload"
+  boundaries:
+    - no_stage_7_work
+    - no_search_2_0_work
+    - no_review_summary_iteration_runtime_work
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_agent_apply
+    - no_deploy
+    - no_github_main_upload
 stage4_phase3_integration:
   task_id: MA-V117-S4P03
   acceptance_id: ACC-MA-V117-S4P03

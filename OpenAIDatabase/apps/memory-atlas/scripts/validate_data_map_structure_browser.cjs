@@ -127,7 +127,18 @@ async function main() {
       "First Data Guide relation has a measurable browser layout box",
       "First Data Guide relation has no browser layout box",
     );
-    await page.mouse.click(relationBox.x + relationBox.width / 2, relationBox.y + relationBox.height / 2);
+    const relationClickPoint = await firstRelation.evaluate((element) => {
+      if (!(element instanceof SVGGeometryElement)) {
+        throw new Error("relation hitbox is not an SVG geometry element");
+      }
+      const length = element.getTotalLength();
+      const point = element.getPointAtLength(length / 2);
+      const matrix = element.getScreenCTM();
+      if (!matrix) throw new Error("relation hitbox has no screen transform");
+      const screenPoint = new DOMPoint(point.x, point.y).matrixTransform(matrix);
+      return { x: screenPoint.x, y: screenPoint.y, length };
+    });
+    await page.mouse.click(relationClickPoint.x, relationClickPoint.y);
     await page.waitForSelector(".data-map-relation-panel[data-selected-relation-id]", { timeout: 10_000 });
     const relationPanel = await page.evaluate(() => {
       const panel = document.querySelector(".data-map-relation-panel");
@@ -157,7 +168,7 @@ async function main() {
       "stage6_phase1_browser_relation_click",
       "Clicking a Data Guide relation shows source, strength, evidence and time explanation",
       "Relation click did not expose the required explanation fields",
-      relationPanel,
+      { relationClickPoint, relationPanel },
     );
 
     const debugSignal = await page.evaluate(() => window.__memoryAtlasStage6Phase1?.() ?? null);

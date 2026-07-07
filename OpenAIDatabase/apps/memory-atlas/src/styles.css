@@ -4195,6 +4195,11 @@ h3 {
   grid-template-rows: auto auto auto minmax(0, 1fr);
 }
 
+.data-guide-map {
+  grid-template-rows: auto auto auto auto minmax(420px, 58vh) auto auto auto;
+  overflow: auto;
+}
+
 .data-guide-canvas {
   background:
     linear-gradient(90deg, rgba(244, 241, 232, 0.032) 1px, transparent 1px),
@@ -4203,6 +4208,7 @@ h3 {
     radial-gradient(circle at 82% 18%, rgba(126, 232, 212, 0.065), transparent 30%),
     #090a0d;
   background-size: 40px 40px, 40px 40px, auto, auto, auto;
+  height: clamp(420px, 58vh, 620px);
 }
 
 .timeline-control-bar {
