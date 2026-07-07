@@ -67,6 +67,55 @@ validation_hints:
     - no generator implementation in Stage 0
     - no raw transcript access
     - no writeback
+stage6_phase1_data_map_structure:
+  task_id: MA-V117-S6P01
+  phase_label: Phase 6.1
+  acceptance_id: ACC-MA-V117-S6P01
+  status: phase_6_1_data_map_structure_model_completed_pending_stage6_review
+  structure_model_version: data_map_structure_model.v1_1_7_stage6_phase1
+  relation_explanation_version: data_map_relation_explanation.v1_1_7_stage6_phase1
+  required_validator: validate:v1.1.7-stage6-phase1
+  browser_validator: validate:data-map-structure-browser
+  feature_label: Structure Model
+  relation_label: Relation Explanation
+  structure_layers:
+    - source_layer
+    - profile_layer
+    - project_decision_layer
+    - action_opportunity_layer
+  relation_fields:
+    - source
+    - strength
+    - evidence
+    - time
+  layer_requirements:
+    - node_types
+    - fields
+    - interaction
+    - detail_entry
+  runtime_hook: window.__memoryAtlasStage6Phase1
+  browser_checks:
+    - four_layers
+    - relation_click
+    - debug_signal
+    - screenshot
+    - console_safety
+  fallback: default_collapsed_available_explanation
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundary_label: "No Phase 6.2; No GitHub main upload"
+  boundaries:
+    - no_phase_6_2
+    - no_proposal_editing
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_agent_apply
+    - no_deploy
+    - no_github_main_upload
 stage4_phase3_integration:
   task_id: MA-V117-S4P03
   acceptance_id: ACC-MA-V117-S4P03
