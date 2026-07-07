@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260707-V014-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-AUTHORIZATION-INTAKE"
+as_of_event_id: "DEV-KMFA-20260707-V014-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-AUTHORIZATION-READINESS"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "f72d59585fc9f7cbc7ce752b3a4257ba07237d3f"
+source_base_commit: "4423a9ac88f63e99c6a74bd7e6a1fc2631d99a69"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
 snapshot_event_time: "2026-07-07T00:00:00+10:00"
-generator_version: "manual-0.1.4-residual-difference-owner-authorized-anchor-confirmation-authorization-intake"
+generator_version: "manual-0.1.4-residual-difference-owner-authorized-anchor-confirmation-authorization-readiness"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1088
-    total_active_formulas: 203
+    total_active_parameters: 1091
+    total_active_formulas: 204
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -37,6 +37,9 @@ dimensions:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_AUTHORIZATION_READINESS/human/test_results.md"
+      - "KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation_authorization_readiness.py"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_AUTHORIZATION_READINESS/machine/residual_difference_owner_authorized_anchor_confirmation_authorization_readiness_manifest.json"
       - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_AUTHORIZATION_INTAKE/human/test_results.md"
       - "KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation_authorization_intake.py"
       - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_AUTHORIZATION_INTAKE/machine/residual_difference_owner_authorized_anchor_confirmation_authorization_intake_manifest.json"
@@ -987,6 +990,44 @@ v014_value_consistency_scope_gate:
   forbidden_scope:
     raw_value_matching: false
     processed_data_reconciliation: false
+    formal_report: false
+    github_upload: false
+    app_reinstall: false
+    business_execution: false
+v014_residual_difference_owner_authorized_anchor_confirmation_authorization_readiness:
+  status: completed_validated_local_only_owner_authorized_anchor_confirmation_authorization_readiness_no_go
+  phase: V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_AUTHORIZATION_READINESS
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_AUTHORIZATION_READINESS
+  validator: KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation_authorization_readiness.py
+  focused_test: KMFA/tests/test_v014_residual_difference_owner_authorized_anchor_confirmation_authorization_readiness.py
+  github_upload: blocked_no_go_upload_deferred
+  counts:
+    authorization_item_count: 72
+    authorization_readiness_item_count: 72
+    readiness_ready_item_count: 72
+    readiness_blocker_item_count: 0
+    owner_authorized_anchor_confirmation_count: 0
+    unresolved_difference_count: 72
+    owner_select_one_authoritative_candidate_count: 24
+    provide_authoritative_source_reference_or_owner_exclusion_count: 40
+    provide_formula_or_non_numeric_mapping_count: 8
+  gates:
+    owner_authorization_readiness_confirmed: true
+    owner_authorized_anchor_confirmation_preparation_ready_next_phase: true
+    anchor_confirmation_allowed_by_this_phase: false
+    owner_authorized_anchor_confirmation_performed_by_this_phase: false
+    raw_to_processed_value_comparison_performed: false
+    business_value_consistency_verified: false
+  forbidden_scope:
+    raw_inbox_read: false
+    raw_inbox_write: false
+    raw_inbox_delete: false
+    raw_inbox_move: false
+    raw_inbox_copy: false
+    raw_inbox_normalize: false
+    raw_inbox_mutation: false
+    processed_data_reconciliation: false
+    lineage_full_check: false
     formal_report: false
     github_upload: false
     app_reinstall: false
