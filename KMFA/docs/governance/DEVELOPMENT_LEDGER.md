@@ -1,3 +1,13 @@
+# KMFA v0.1.4 Outside-Scope Candidate Review Discrepancy Closure Readiness
+
+- Product version: `0.1.4-outside-scope-candidate-review-discrepancy-closure-readiness`.
+- Scope: `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_READINESS` only; classify prior ignored private discrepancy queue items into closure blockers and write a private closure workpack without closing differences or mutating raw data.
+- Evidence: `KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_READINESS/`.
+- Verification: `KMFA/tools/check_v014_outside_scope_candidate_review_discrepancy_closure_readiness.py`; `KMFA/tests/test_v014_outside_scope_candidate_review_discrepancy_closure_readiness.py`.
+- gate_state: source_discrepancy_queue_items=72, closure_plan_items=72, closure_ready_items=0, closure_blocked_items=72, safe_auto_closure=0, ambiguous_tie_blockers=24, no_context_candidate_blockers=40, non_numeric_or_calculation_blockers=8, source_map_correction_ready=false, full_raw_to_processed_comparison_ready=false, full_raw_to_processed_comparison_complete=false, business_value_consistency_verified=false, raw_inbox_access=false, raw_inbox_mutation=false, github_upload=false, app_reinstall=false, lineage_full_check=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-outside-scope-candidate-review-discrepancy-closure-readiness
+version_matrix_product_version_reference: 0.1.4-outside-scope-candidate-review-discrepancy-closure-readiness
+
 # KMFA v0.1.4 Outside-Scope Candidate Review Owner-Authorized Discrepancy Report
 
 - Product version: `0.1.4-outside-scope-candidate-review-owner-authorized-discrepancy-report`.
