@@ -11085,3 +11085,24 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private closure readiness outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-outside-scope-candidate-review-discrepancy-closure-readiness"
     completed_version: "0.1.4-outside-scope-candidate-review-discrepancy-closure-readiness"
+
+  - task_id: "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-DISCREPANCY-CLOSURE-BLOCKER-AUDIT-20260707"
+    phase_id: "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_BLOCKER_AUDIT"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-DISCREPANCY-CLOSURE-BLOCKER-AUDIT"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_outside_scope_candidate_review_discrepancy_closure_blocker_audit.py --generated-at 2026-07-07T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_candidate_review_discrepancy_closure_blocker_audit.py --require-private-audit"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_candidate_review_discrepancy_closure_blocker_audit"
+    test_results:
+      - "PASS: discrepancy closure blocker audit validator and focused unit test passed; 72 unresolved discrepancy closure blockers remain open while raw inbox, discrepancy closure, source-map correction, raw comparison and downstream gates stay closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_BLOCKER_AUDIT/human/outside_scope_candidate_review_discrepancy_closure_blocker_audit_report.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_BLOCKER_AUDIT/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_BLOCKER_AUDIT/machine/outside_scope_candidate_review_discrepancy_closure_blocker_audit_manifest.json"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_BLOCKER_AUDIT/machine/outside_scope_candidate_review_discrepancy_closure_blocker_audit_matrix_public_safe.json"
+    risk: "The private residual blocker queue can be mistaken for discrepancy closure; this phase only audits blockers and does not assert value consistency."
+    rollback: "Remove current phase artifacts, metadata copies, private residual blocker outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-outside-scope-candidate-review-discrepancy-closure-blocker-audit"
+    completed_version: "0.1.4-outside-scope-candidate-review-discrepancy-closure-blocker-audit"
