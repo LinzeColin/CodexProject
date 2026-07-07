@@ -501,3 +501,13 @@ KMFA 当前版本 `0.1.4-residual-difference-raw-to-processed-comparison-fingerp
 - result: strict blocked threshold is met for all 48 private pair-completion blockers; no comparison retry records are ready and no raw-to-processed value consistency is claimed.
 - boundary: raw inbox access/mutation, raw-to-processed value comparison, reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain false.
 - next: blocked until raw candidate fingerprints are resolved or owner-authorized; no Stage review or upload from this phase.
+
+## 2026-07-07 Latest - V014 Raw Candidate Fingerprint Resolution Attempt After Final Threshold
+
+- phase: `V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_FINGERPRINT_RESOLUTION_ATTEMPT_AFTER_FINAL_THRESHOLD`
+- status: `completed_validated_local_only_raw_candidate_fingerprint_resolution_attempt_still_blocked_no_go`
+- owner-visible decision: `NO_GO`
+- owner-visible blocker: 48 missing raw candidate fingerprints could not be recovered from current ignored private evidence.
+- aggregate result: `resolution_attempt_item_count=48`, `auto_resolved_raw_candidate_fingerprint_count=0`, `still_blocked_raw_candidate_fingerprint_count=48`, `provide_authoritative_source_reference_or_owner_exclusion_count=40`, `provide_formula_or_non_numeric_mapping_count=8`, `unresolved_difference_count=72`.
+- boundary: no raw inbox mutation, no raw-to-processed value consistency claim, no formal report, no GitHub upload and no app reinstall.
+- next owner action: provide authoritative raw candidate fingerprints/source references/exclusions or authorize a separate private evidence refresh phase.
