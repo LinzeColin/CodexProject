@@ -26,6 +26,7 @@ REQUIRED_FILES = [
     ROOT / "scripts" / "month_gate.py",
     ROOT / "scripts" / "stage2_consensus_gate.py",
     ROOT / "scripts" / "write_stage2_run_artifacts.py",
+    ROOT / "scripts" / "run_stage2_accepted_rehearsal.py",
     ROOT / "scripts" / "validate_database_contract.py",
     ROOT / "scripts" / "resolve_stage2_source.py",
     ROOT / "scripts" / "prepare_database_landing_bundle.py",

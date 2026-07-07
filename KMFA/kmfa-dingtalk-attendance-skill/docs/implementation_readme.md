@@ -239,6 +239,22 @@ The state verification proof is read-only and must show database row counts
 matching the private landing bundle before `database_transaction_verified` may
 be true.
 
+Run a private five-run accepted rehearsal and generate the accepted DB landing
+bundle without opening PostgreSQL:
+
+```bash
+python3 scripts/run_stage2_accepted_rehearsal.py \
+  --source-json "$KMFA_PRIVATE_RUNTIME/stage2_source/202607/source_snapshot.db_verified.json" \
+  --target-month 202607 \
+  --out-root "$KMFA_PRIVATE_RUNTIME" \
+  --print-json
+```
+
+This writes `stage2/202607/run_01` through `run_05`, the accepted consensus
+certificate, `db_landing/202607`, `postgres_load_plan.sql`, and
+`postgres_load_plan_manifest.json`. The summary is public-safe and reports no
+private runtime paths.
+
 The command writes private `attendance_day_fact.jsonl`,
 `raw_detail_linkage.jsonl`, a canonical replay snapshot, and a public-safe
 summary manifest. The summary must show every derived day fact links to raw

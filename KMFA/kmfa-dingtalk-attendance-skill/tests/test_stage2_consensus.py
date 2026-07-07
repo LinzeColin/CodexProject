@@ -166,6 +166,85 @@ def test_evening_replay_adapter_writes_five_run_artifacts_and_fails_without_data
         assert (runtime / "stage2" / "202607" / "stage2_divergence_report.md").is_file()
 
 
+def test_stage2_accepted_rehearsal_requires_db_verified_source_and_materializes_landing_bundle():
+    with tempfile.TemporaryDirectory() as td:
+        runtime = Path(td) / "private_runtime"
+        source = runtime / "source.db_verified.json"
+        source.parent.mkdir(parents=True, exist_ok=True)
+        snapshot = json.loads((FIX / "minimal_snapshot_a.json").read_text(encoding="utf-8"))
+        snapshot["quality_gates"] = {
+            "location_evidence_thresholds_passed": True,
+            "raw_to_derived_reconciliation_passed": True,
+            "database_transaction_committed": True,
+            "database_transaction_verified": True,
+        }
+        snapshot["database_transaction_marker"] = "postgres-nonprod:test-marker"
+        snapshot["database_execution_proof"] = {
+            "proof_hash": "sha256:execution",
+            "state_verification_hash": "sha256:state",
+            "state_counts_verified": True,
+            "database_mutation_performed": True,
+            "postgres_connection_used": True,
+            "live_dws_performed": False,
+        }
+        source.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")
+
+        p = run([
+            sys.executable,
+            str(SCRIPT_DIR / "run_stage2_accepted_rehearsal.py"),
+            "--source-json",
+            str(source),
+            "--target-month",
+            "202607",
+            "--out-root",
+            str(runtime),
+            "--print-json",
+        ])
+        data = json.loads(p.stdout)
+        assert data["status"] == "READY"
+        assert data["accepted"] is True
+        assert data["stage2_run_count"] == 5
+        assert data["db_landing_status"] == "READY"
+        assert data["payroll_baseline_rows"] == 1
+        assert data["postgres_load_plan_validation_status"] == "pass"
+        assert data["postgres_connection_used"] is False
+        assert data["database_mutation_performed"] is False
+        assert "/private_runtime/" not in p.stdout
+        assert str(runtime) not in p.stdout
+        assert (runtime / "stage2" / "202607" / "stage2_consensus_certificate.json").is_file()
+        assert (runtime / "db_landing" / "202607" / "payroll_baseline_attendance.jsonl").is_file()
+        assert (runtime / "db_landing" / "202607" / "postgres_load_plan_manifest.json").is_file()
+
+
+def test_stage2_accepted_rehearsal_rejects_unverified_database_source():
+    with tempfile.TemporaryDirectory() as td:
+        runtime = Path(td) / "private_runtime"
+        source = runtime / "source.unverified.json"
+        source.parent.mkdir(parents=True, exist_ok=True)
+        snapshot = json.loads((FIX / "minimal_snapshot_a.json").read_text(encoding="utf-8"))
+        snapshot["quality_gates"] = {
+            "location_evidence_thresholds_passed": True,
+            "raw_to_derived_reconciliation_passed": True,
+            "database_transaction_committed": True,
+            "database_transaction_verified": True,
+        }
+        snapshot["database_transaction_marker"] = "postgres-nonprod:test-marker"
+        source.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")
+        p = run([
+            sys.executable,
+            str(SCRIPT_DIR / "run_stage2_accepted_rehearsal.py"),
+            "--source-json",
+            str(source),
+            "--target-month",
+            "202607",
+            "--out-root",
+            str(runtime),
+            "--print-json",
+        ], check=False)
+        assert p.returncode != 0
+        assert "database_execution_proof_state_counts_not_verified" in p.stderr
+
+
 def test_evening_live_source_adapter_fails_closed_without_dws_authorization():
     with tempfile.TemporaryDirectory() as td:
         runtime = Path(td) / "private_runtime"
@@ -204,5 +283,7 @@ if __name__ == "__main__":
     test_rejects_divergent()
     test_rejects_identical_hashes_without_required_quality_gates()
     test_evening_replay_adapter_writes_five_run_artifacts_and_fails_without_database_commit()
+    test_stage2_accepted_rehearsal_requires_db_verified_source_and_materializes_landing_bundle()
+    test_stage2_accepted_rehearsal_rejects_unverified_database_source()
     test_evening_live_source_adapter_fails_closed_without_dws_authorization()
     print("stage2 consensus tests passed")

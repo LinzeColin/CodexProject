@@ -47,6 +47,7 @@ scripts/prepare_raw_replay_day_fact_bundle.py
 scripts/prepare_stage2_source_from_raw_replay.py
 scripts/render_stage2_certificate.py
 scripts/resolve_stage2_source.py
+scripts/run_stage2_accepted_rehearsal.py
 scripts/run_stage2_evening.sh
 scripts/stage2_consensus_gate.py
 scripts/validate_database_contract.py
