@@ -1,0 +1,67 @@
+version: 0.2.0
+timezone: Asia/Shanghai
+notification_owner_label: 张霖泽
+
+channels:
+  primary: dingtalk_robot_or_dws_direct_message
+  fallback: local_log_only
+
+notify_events:
+  - MISSING_ROUTINE_ITEM
+  - LATE_ROUTINE_ITEM
+  - LOW_CONFIDENCE_ROUTINE_MATCH
+  - CASH_P0_RED
+  - CASH_P1_YELLOW
+  - CASH_NO_DATA
+  - CASH_NEEDS_REVIEW
+  - SOURCE_DATA_MISSING
+  - SOURCE_MISSING
+  - SOURCE_STALE
+
+silent_events:
+  - CASH_P2_GREEN
+  - ROUTINE_ITEM_OK
+  - DUPLICATE_MESSAGE_REUSED
+
+idempotency:
+  enabled: true
+  window_hours: 24
+  key_fields:
+    - event_type
+    - check_date
+    - rule_id
+    - target_label
+
+message_templates:
+  missing_routine_item: |
+    [钉钉工作检查][缺报]
+    张霖泽，{group_name} 到 {due_time} 未检测到：{sender_requirement} - {artifact_name}
+    检查日期：{check_date}
+    规则ID：{rule_id}
+    建议：确认是否漏发、发错群、表名不符合规则，或图片OCR未识别。
+
+  cash_p0_red: |
+    [现金流风险][P0红色]
+    张霖泽，检测到杨婷资金账户明细表总可用现金低于硬阈值。
+    识别金额：{total_available_cash} 元
+    硬阈值：{hard_threshold} 元
+    发送时间：{message_time}
+    证据：{evidence_ref}
+    校验状态：{quality_status}
+
+  cash_p1_yellow: |
+    [现金流预警][P1黄色]
+    张霖泽，检测到杨婷资金账户明细表总可用现金低于软阈值。
+    识别金额：{total_available_cash} 元
+    软阈值：{soft_threshold} 元
+    硬阈值：{hard_threshold} 元
+    发送时间：{message_time}
+    证据：{evidence_ref}
+
+  cash_review: |
+    [现金监控][需复核]
+    张霖泽，杨婷资金表OCR/LLM解析结果不够可靠。
+    类型：{document_type}
+    原因：{review_reason}
+    发送时间：{message_time}
+    证据：{evidence_ref}

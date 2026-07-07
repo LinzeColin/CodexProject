@@ -1,0 +1,101 @@
+version: 0.2.0
+timezone: Asia/Shanghai
+cash_monitor_name: yang_ting_cash_monitor
+
+scope:
+  group_name: 付款请示群
+  sender_name: 杨婷
+  account_statement_document_family: cash_account_statement
+  flow_detail_document_family: cash_flow_detail
+
+thresholds:
+  currency: CNY
+  hard_threshold: 500000
+  soft_threshold: 1000000
+
+risk_levels:
+  P0_RED:
+    condition: total_available_cash < hard_threshold
+    notify: true
+    label: P0红色硬阈值风险
+  P1_YELLOW:
+    condition: hard_threshold <= total_available_cash < soft_threshold
+    notify: true
+    label: P1黄色软阈值预警
+  P2_GREEN:
+    condition: total_available_cash >= soft_threshold
+    notify: false
+    label: P2绿色正常
+  NO_DATA:
+    condition: no_valid_cash_account_statement_by_due_time
+    notify: true
+    label: 未收到资金账户明细表
+  NEEDS_REVIEW:
+    condition: ocr_or_parser_low_confidence_or_conflict
+    notify: true
+    label: OCR/LLM结果需人工复核
+
+ocr_and_llm:
+  cloud_ocr_allowed: true
+  llm_allowed: true
+  agent_allowed: true
+  min_ocr_confidence: 0.78
+  min_parser_confidence: 0.80
+  require_structured_json: true
+  do_not_hardcode_keywords_in_python: true
+
+cash_account_extraction_schema:
+  required_fields:
+    - report_date
+    - sender_name
+    - group_name
+    - document_type
+    - total_available_cash
+    - currency
+    - source_message_id
+    - source_file_sha256
+    - parser_confidence
+  optional_fields:
+    - companies
+    - accounts
+    - yesterday_balance
+    - today_income
+    - today_outflow
+    - today_balance
+    - bills_available
+    - cash_available
+    - bank_available
+    - notes
+
+cash_flow_extraction_schema:
+  required_fields:
+    - flow_date
+    - sender_name
+    - group_name
+    - document_type
+    - source_message_id
+    - source_file_sha256
+    - parser_confidence
+    - entries
+  entry_fields:
+    - row_index
+    - transaction_date
+    - subject
+    - counterparty
+    - category
+    - income_amount
+    - outflow_amount
+    - bank_account
+    - notes
+
+validation:
+  account_statement:
+    report_date_should_match_message_date: warn
+    total_should_be_numeric: required
+    total_should_not_be_negative: warn
+    duplicate_sha256_policy: reuse_prior_extraction
+    conflict_between_multiple_versions_same_day: choose_latest_and_flag_review
+  cash_flow:
+    flow_date_should_match_message_date: warn
+    entries_should_have_date_or_subject: warn
+    empty_entries: needs_review
