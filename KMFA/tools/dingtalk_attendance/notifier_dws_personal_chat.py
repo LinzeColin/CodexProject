@@ -127,6 +127,14 @@ def send_text_with_resolved_channel(
             help_text=help_provider(["dws", "chat", "message", "send"]),
             runner=runner,
         )
+    if channel_name == "dws_group_chat":
+        return send_dws_group_message(
+            group_conversation_id=str(channel.get("group_conversation_id") or ""),
+            title=title,
+            text=text,
+            help_text=help_provider(["dws", "chat", "message", "send"]),
+            runner=runner,
+        )
     if channel_name == "dws_ding_personal":
         return send_dws_ding_message(
             recipient_user_id=str(channel.get("recipient_user_id") or ""),
@@ -137,11 +145,73 @@ def send_text_with_resolved_channel(
         )
     if channel_name == "dingtalk_group_robot":
         return robot_sender(title=title, markdown_text=text, env=values)
+    if channel_name == "dingtalk_group_robot_env":
+        webhook_env_key = str(channel.get("webhook_env_key") or "")
+        secret_env_key = str(channel.get("secret_env_key") or "")
+        webhook_value = values.get(webhook_env_key)
+        signing_key = values.get(secret_env_key)
+        if not webhook_value:
+            return {
+                "status": "NOTIFIER_CONFIG_MISSING",
+                "channel": channel_name,
+                "failure_reason": "group robot env keys missing",
+            }
+        if not str(webhook_value).startswith("http"):
+            webhook_result = runner(
+                [
+                    "dws",
+                    "chat",
+                    "message",
+                    "send-by-webhook",
+                    "--token",
+                    str(webhook_value),
+                    "--title",
+                    title,
+                    "--text",
+                    text,
+                    "--format",
+                    "json",
+                ],
+                timeout=45,
+            )
+            return _dws_result_to_status(webhook_result, channel=channel_name)
+        if not signing_key:
+            return {
+                "status": "NOTIFIER_CONFIG_MISSING",
+                "channel": channel_name,
+                "failure_reason": "group robot signing key env missing",
+            }
+        return robot_sender(
+            title=title,
+            markdown_text=text,
+            env={"DINGTALK_ROBOT_URL": webhook_value, "DINGTALK_ROBOT_SIGNING_KEY": signing_key},
+        )
     return {
         "status": "NOTIFIER_CONFIG_MISSING",
         "channel": channel_name or "unknown",
         "failure_reason": "resolved channel unsupported or missing",
     }
+
+
+def send_dws_group_message(
+    *,
+    group_conversation_id: str,
+    title: str,
+    text: str,
+    help_text: str | None = None,
+    runner: Callable[..., dict[str, Any]] = run_dws_command,
+    timeout: int = 45,
+) -> dict[str, Any]:
+    command = ["dws", "chat", "message", "send", "--group", group_conversation_id, "--title", title]
+    if help_text is None:
+        help_text = get_dws_help(["dws", "chat", "message", "send"])
+    if "--text" in help_text:
+        command.extend(["--text", text])
+    else:
+        command.append(text)
+    command.extend(["--format", "json"])
+    result = runner(command, timeout=timeout)
+    return _dws_result_to_status(result, channel="dws_group_chat")
 
 
 def dispatch_reports_with_resolved_channel(

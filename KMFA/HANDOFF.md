@@ -9,8 +9,9 @@
 - 张霖泽、林全意为已知无考勤记录，record 成功返回空列表，不作为异常。
 - 私有归档目录为 `/Users/linzezhang/OneDrive/dingtalk_attendance/202607/`，本轮 raw 文件为 `s19_evening_20260707_095119.raw.jsonl.gz`，SHA256 为 `aabfb6415d95f55d76890d74ef60d3430785f404210679631be470eb47f3a811`。
 - Git 只保存 DWS backend 代码、报告模板、路径/统计证据和安全扫描；不保存真实员工考勤明文、raw JSONL、SQLite、机器人地址、应用密钥或访问凭证。
-- S19 钉钉通知当前 resolved 优先通道为 `dws_open_dingtalk_id_chat` 个人单聊：`notification_probe.py --recipient 1iv-1t2oesv2yd` 已验证张霖泽个人通知 `SENT`；DWS userId 单聊仍返回 `chat/business_error/系统错误`，自动 fallback 生效。
-- S19 通知发送已统一到“考勤通知模板”：`send_latest_report.py --channel auto` 不重新取考勤，只用 resolved 个人通道发送一条 `attendance_notification`，正文包含考勤摘要、run_id、北京时间和 OneDrive 管理/HR 报告路径，不发送报告正文；群机器人仍作为 fallback READY。
+- S19 钉钉通知已升级为多目标路由表：`notification_targets.local.json` / `notification_targets_resolved.json` 仅保存在 ignored private runtime，公开 `notification_targets_manifest.json` 只保留脱敏状态；旧 `notification_channel_resolved.json` 仍兼容迁移。
+- 张霖泽目标已迁移并验证为 `dws_open_dingtalk_id_chat` 个人单聊：`notification_probe.py --all-targets` 已发送验证消息 `SENT`；DWS userId 单聊历史失败为 `chat/business_error/系统错误`，openDingTalkId fallback 保持生效。
+- S19 通知发送已统一到唯一“考勤通知模板”：`send_latest_report.py --channel auto --targets all` 不重新取考勤，通过多目标路由发送一条 `attendance_notification`，正文包含考勤摘要、需要休息人员、run_id、北京时间和 OneDrive 报告路径，不发送报告正文；内部 `management/hr` 仅作报告选择与 receipt 兼容字段。
 
 ## 当前目标
 

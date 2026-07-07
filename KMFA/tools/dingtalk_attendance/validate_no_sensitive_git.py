@@ -24,7 +24,6 @@ SENSITIVE_TEXT_PATTERNS = (
     _pattern("access credential", "access" + "_token"),
     _pattern("app credential compact", "app" + "secret"),
     _pattern("app credential snake", "app" + "_secret"),
-    _pattern("robot endpoint label", "web" + "hook"),
     _pattern("assignment style credential", "sec" + "ret="),
     _pattern("dingtalk robot endpoint", "dingtalk.com/robot/" + "send"),
 )
