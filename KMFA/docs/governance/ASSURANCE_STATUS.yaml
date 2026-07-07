@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260707-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-OWNER-OR-AGENT-DIAGNOSTIC-INTAKE"
+as_of_event_id: "DEV-KMFA-20260707-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-OWNER-OR-AGENT-DIAGNOSTIC-READINESS-RECHECK"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "b99e42f754c25133317acea93bc739f79636fc47"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
 snapshot_event_time: "2026-07-07T00:00:00+10:00"
-generator_version: "manual-0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-intake"
+generator_version: "manual-0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-readiness-recheck"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1025
-    total_active_formulas: 182
+    total_active_parameters: 1028
+    total_active_formulas: 183
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -37,6 +37,9 @@ dimensions:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     evidence_refs:
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_READINESS_RECHECK/human/test_results.md"
+      - "KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_readiness_recheck.py"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_READINESS_RECHECK/machine/outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_readiness_recheck_manifest.json"
       - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_INTAKE/human/test_results.md"
       - "KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_intake.py"
       - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_INTAKE/machine/outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_intake_manifest.json"
