@@ -1,3 +1,35 @@
+## v1.1.7 Stage 3 Phase 3.2：Home Detail Operations
+
+状态：`phase_3_2_home_detail_operations_completed_pending_stage3_review`。
+
+任务 ID：`MA-V117-S3P02`。
+
+验收 ID：`ACC-MA-V117-S3P02`。
+
+本 phase 固定 `memory_overview_detail_operations.v1_1_7_stage3_phase2`。
+Memory Overview 首页继续以 `home` 为默认入口，并把 Top Actions Section、
+Level Assets Section、Theme Categories Section 升级为可见、可点击、可解释的
+Home Detail Operations。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/product/memory_overview_product_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage3_phase2_home_detail_operations_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage3_phase2.cjs`
+- `config/visualization/model_parameters.universe_state.yaml`
+
+验收：
+
+- `validate:v1.1.7-stage3-phase2`
+- `ACC-MA-V117-S3P02`
+- Top Actions Section 必须显示 suggestion、reason、priority、status，并通过 `ActionDetailDrawer` 打开 clickable detail entry。
+- Level Assets Section 必须显示 `core_profile`、`project`、`decision`、`temporary`、`stale`，并通过 `AssetDetailPanel` 打开 clickable detail entry。
+- Theme Categories Section 必须显示 `rising`、`declining`、`conflict`、`opportunity`、`stable`，并通过 `ThemeDetailPanel` 打开 clickable detail entry。
+
+Machine-readable boundary summary: Home Detail Operations; memory_overview_detail_operations.v1_1_7_stage3_phase2; Top Actions Section; Level Assets Section; Theme Categories Section; No Stage 3 Review; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
 ## v1.1.7 Stage 3 Phase 3.1：Default Home Structure
 
 状态：`phase_3_1_default_home_structure_completed_pending_stage3_review`。

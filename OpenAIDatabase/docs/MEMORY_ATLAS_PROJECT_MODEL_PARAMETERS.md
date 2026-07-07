@@ -1,3 +1,43 @@
+## 82. v1.1.7 Stage 3 Phase 3.2 Home Detail Operations
+
+状态：`phase_3_2_home_detail_operations_completed_pending_stage3_review`。
+
+验收 ID：`ACC-MA-V117-S3P02`。
+
+模型参数：
+
+- Stage 3 Phase 3.2 固定 Home Detail Operations，不进入 No Stage 3 Review。
+- `validate:v1.1.7-stage3-phase2` 是本 phase 必跑 validator。
+- Operation version 固定为 `memory_overview_detail_operations.v1_1_7_stage3_phase2`。
+- Operation sections: `top_actions`, `level_assets`, `theme_categories`。
+- Section versions: `top_actions_section.v1_1_7_stage3_phase2`, `level_assets_section.v1_1_7_stage3_phase2`, `theme_categories_section.v1_1_7_stage3_phase2`。
+- Asset groups: `core_profile`, `project`, `decision`, `temporary`, `stale`。
+- Theme category states: `rising`, `declining`, `conflict`, `opportunity`, `stable`。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/product/memory_overview_product_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage3_phase2_home_detail_operations_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage3_phase2.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S3P02-001 stage3_phase2_status = phase_3_2_home_detail_operations_completed_pending_stage3_review`
+- `PARAM-MA-V117-S3P02-002 stage3_phase2_required_validator = validate:v1.1.7-stage3-phase2`
+- `PARAM-MA-V117-S3P02-003 home_detail_operations = memory_overview_detail_operations.v1_1_7_stage3_phase2`
+- `PARAM-MA-V117-S3P02-004 operation_sections = top_actions;level_assets;theme_categories`
+- `PARAM-MA-V117-S3P02-005 asset_groups = core_profile;project;decision;temporary;stale`
+- `PARAM-MA-V117-S3P02-006 theme_category_states = rising;declining;conflict;opportunity;stable`
+
+验收信号：
+
+- Home Detail Operations product contract。
+- `validate:v1.1.7-stage3-phase2` 检查三类首页明细区、records、package script 和 no-upload boundary。
+- Boundary includes No Stage 3 Review, No GitHub main upload, No raw/private read, No direct active-memory writeback, No agent apply and No build/deploy/app install。
+
 ## 81. v1.1.7 Stage 3 Phase 3.1 Default Home Structure
 
 状态：`phase_3_1_default_home_structure_completed_pending_stage3_review`。

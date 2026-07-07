@@ -383,3 +383,54 @@ v1_1_7_stage3_phase1:
     - browser_screenshot_acceptance
     - final_app_reinstall
     - github_main_upload
+v1_1_7_stage3_phase2:
+  task_id: MA-V117-S3P02
+  acceptance_id: ACC-MA-V117-S3P02
+  status: phase_3_2_home_detail_operations_completed_pending_stage3_review
+  required_validator: validate:v1.1.7-stage3-phase2
+  home_detail_operations: memory_overview_detail_operations.v1_1_7_stage3_phase2
+  operation_sections:
+    - top_actions
+    - level_assets
+    - theme_categories
+  section_versions:
+    top_actions: top_actions_section.v1_1_7_stage3_phase2
+    level_assets: level_assets_section.v1_1_7_stage3_phase2
+    theme_categories: theme_categories_section.v1_1_7_stage3_phase2
+  top_actions_required_fields:
+    - suggestion
+    - reason
+    - priority
+    - status
+    - roi_score
+    - urgency
+    - evidence_count
+    - next_step
+  asset_groups:
+    - core_profile
+    - project
+    - decision
+    - temporary
+    - stale
+  theme_category_states:
+    - rising
+    - declining
+    - conflict
+    - opportunity
+    - stable
+  detail_entries:
+    - ActionDetailDrawer
+    - AssetDetailPanel
+    - ThemeDetailPanel
+  proposal_only_required: true
+  no_stage3_review_in_phase: true
+  no_direct_writeback: true
+  no_agent_apply_in_phase: true
+  deferred_to_later_phases:
+    - Stage 3 Review
+    - search_2_0_runtime
+    - review_workflow_runtime
+    - data_map_2_0_runtime
+    - browser_screenshot_acceptance
+    - final_app_reinstall
+    - github_main_upload

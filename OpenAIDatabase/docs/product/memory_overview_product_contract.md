@@ -1,5 +1,68 @@
 # Memory Overview Product Contract
 
+Contract ID: `memory_overview_detail_operations.v1_1_7_stage3_phase2`
+
+Task ID: `MA-V117-S3P02`
+
+Acceptance ID: `ACC-MA-V117-S3P02`
+
+Status: `phase_3_2_home_detail_operations_completed_pending_stage3_review`
+
+Validator: `validate:v1.1.7-stage3-phase2`
+
+## Home Detail Operations
+
+Stage 3 Phase 3.2 turns the Stage 3.1 default home from a structural entry
+page into a usable operations surface. The home page keeps the same default
+route and guided layout, then adds versioned `proposal-only` operation sections
+with a clickable detail entry for each action, asset and theme card.
+
+Operation version: `memory_overview_detail_operations.v1_1_7_stage3_phase2`.
+
+Section versions:
+
+| Section | Version | Required detail entry |
+|---|---|---|
+| Top Actions Section | `top_actions_section.v1_1_7_stage3_phase2` | `ActionDetailDrawer` |
+| Level Assets Section | `level_assets_section.v1_1_7_stage3_phase2` | `AssetDetailPanel` |
+| Theme Categories Section | `theme_categories_section.v1_1_7_stage3_phase2` | `ThemeDetailPanel` |
+
+### Top Actions Section
+
+Each top action must show a suggestion, reason, priority and status before the
+user opens the drawer. The card remains a `clickable detail entry`; clicking it
+opens `ActionDetailDrawer`, not a direct writeback flow. Sorting stays based on
+ROI, urgency, confidence and effort penalty.
+
+Required fields: `suggestion`, `reason`, `priority`, `status`, `roi_score`,
+`urgency`, `evidence_count`, `next_step`, `proposal-only`.
+
+### Level Assets Section
+
+The Level Assets Section must show the expected asset grouping rail and then
+the concrete asset cards. Required group markers: `core_profile`, `project`,
+`decision`, `temporary`, `stale`. Existing underlying asset tiers may remain
+more detailed; this home-level grouping is a scan layer for the default page.
+Each card is a `clickable detail entry` into `AssetDetailPanel`.
+
+### Theme Categories Section
+
+The Theme Categories Section must show theme state buckets before the cards.
+Required categories: `rising`, `declining`, `conflict`, `opportunity`,
+`stable`. These buckets summarize the derived topic states and keep the detail
+cards connected to `ThemeDetailPanel`.
+
+## Stage 3 Phase 3.2 Boundaries
+
+- No Stage 3 Review.
+- No Search 2.0 runtime.
+- No Review workflow runtime.
+- No Data Map 2.0 runtime.
+- No raw/private/cookie/session/secret data read.
+- No direct active-memory writeback.
+- No agent apply.
+- No GitHub main upload before whole Stage 0-10 completion.
+
 Contract ID: `memory_overview_default_home.v1_1_7_stage3_phase1`
 
 Task ID: `MA-V117-S3P01`
