@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 7 Review
+
+- Added `docs/reviews/memory_atlas_v1_1_7_stage7_review.md` to pin the
+  completed Stage 7 review gate.
+- Added `validate:v1.1.7-stage7` to validate Stage 6 continuity, Phase 7.1
+  Search 2.0, Phase 7.2 Review / Summary / Iteration, records, package script
+  and no-upload boundary.
+- Registered `MA-V117-S7-REVIEW` / `ACC-MA-V117-S7-REVIEW` with status
+  `stage_7_review_passed_pending_stage8_no_github_main_upload`.
+- Marked Stage 7 as review-passed and pending Stage 8 while preserving
+  `No GitHub main upload` before the whole Stage 0-10 project is complete.
+
+Phase 7.1 and Phase 7.2 only. No Stage 8 work, raw/private data read, direct
+active-memory writeback, agent apply, local app install, deploy or GitHub main
+upload was added.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 7 Phase 7.2 Review Summary Iteration Runtime
 
 - Implemented the production Review / Summary / Iteration runtime slice with
