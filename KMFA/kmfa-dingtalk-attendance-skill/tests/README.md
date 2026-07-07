@@ -26,3 +26,4 @@ The test suite verifies:
 11. Private raw archive replay can materialize day facts with raw detail linkage and a stable canonical replay hash without exposing names, DingTalk IDs, raw rows, or local paths in summary output.
 12. A private raw replay day-fact/linkage bundle can materialize a Stage-2 source snapshot and resolver source adapter without live DWS, database mutation, employee plaintext, or raw DingTalk IDs.
 13. Pre-consensus Stage-2 sources can generate a PostgreSQL landing bundle before payroll acceptance, and fail-closed non-production execution plus read-only state verification proofs can promote only the database gates used by Stage-2 consensus.
+14. A DB-verified source can drive a private five-run accepted rehearsal that writes accepted consensus artifacts, an accepted DB landing bundle, and a statically validated PostgreSQL load plan without live DWS or database mutation.

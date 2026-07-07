@@ -14,7 +14,7 @@ failures=[]
 warnings=[]
 checked=[]
 
-for rel in ["SKILL.md", "references/stage2_shadow_payroll_acceptance.md", "scripts/month_gate.py", "scripts/stage2_consensus_gate.py", "scripts/write_stage2_run_artifacts.py", "scripts/validate_database_contract.py", "scripts/resolve_stage2_source.py", "scripts/prepare_database_landing_bundle.py", "scripts/prepare_preconsensus_postgres_landing_bundle.py", "scripts/prepare_postgres_landing_loader.py", "scripts/validate_postgres_load_plan.py", "scripts/execute_postgres_load_plan.py", "scripts/verify_postgres_landing_state.py", "scripts/apply_stage2_database_proof.py", "scripts/inspect_raw_archive_month.py", "scripts/prepare_raw_replay_day_fact_bundle.py", "scripts/prepare_stage2_source_from_raw_replay.py"]:
+for rel in ["SKILL.md", "references/stage2_shadow_payroll_acceptance.md", "scripts/month_gate.py", "scripts/stage2_consensus_gate.py", "scripts/write_stage2_run_artifacts.py", "scripts/run_stage2_accepted_rehearsal.py", "scripts/validate_database_contract.py", "scripts/resolve_stage2_source.py", "scripts/prepare_database_landing_bundle.py", "scripts/prepare_preconsensus_postgres_landing_bundle.py", "scripts/prepare_postgres_landing_loader.py", "scripts/validate_postgres_load_plan.py", "scripts/execute_postgres_load_plan.py", "scripts/verify_postgres_landing_state.py", "scripts/apply_stage2_database_proof.py", "scripts/inspect_raw_archive_month.py", "scripts/prepare_raw_replay_day_fact_bundle.py", "scripts/prepare_stage2_source_from_raw_replay.py"]:
     path = os.path.join(skill_dir, rel)
     checked.append(rel)
     if not os.path.exists(path):

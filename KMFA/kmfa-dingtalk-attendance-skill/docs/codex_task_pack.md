@@ -141,6 +141,10 @@ Current status:
   verification proof before writing a DB-verified Stage-2 source where
   `database_transaction_committed` and `database_transaction_verified` are
   true. It does not itself connect to PostgreSQL or mutate a database.
+- `scripts/run_stage2_accepted_rehearsal.py` consumes a DB-verified Stage-2
+  source, writes five private run artifact folders, runs exact-hash consensus,
+  and materializes an accepted DB landing bundle plus statically validated
+  PostgreSQL load plan without live DWS or database mutation.
 - Real private 202606 replay has produced an ignored private day-fact/linkage
   bundle with raw count/hash parity, location threshold pass, every day fact
   linked to raw detail IDs, and matching canonical replay hashes across two
@@ -181,12 +185,25 @@ Remaining work:
 
 ### Task 6 - Implement stage-2 consensus
 
-1. Ensure evening automation writes `run_01` to `run_05` on next month days 1-5.
-2. Ensure morning automation never writes stage-2 artifacts.
-3. On day 5, call `stage2_consensus_gate.py`.
-4. If accepted, create DB landing bundle, then DB certificate and payroll
+Current status:
+
+- `scripts/run_stage2_evening.sh` writes `run_01` through `run_05` on eligible
+  evening days from approved replay/raw-replay sources and fails closed without
+  DB proof.
+- `scripts/run_stage2_accepted_rehearsal.py` proves the accepted path from a
+  DB-verified source through five identical runs, accepted certificate, DB
+  landing bundle, PostgreSQL load plan generation, and static load-plan
+  validation.
+- Morning automation is still configured as non-stage-2; no morning path writes
+  stage-2 artifacts.
+
+Remaining work:
+
+1. Run accepted rehearsal on a real DB-verified private month after approved
+   non-production PostgreSQL proof exists.
+2. If accepted, create DB landing bundle, then DB certificate and payroll
    baseline table rows only through the approved loader.
-5. If failed, create divergence report.
+3. If failed, create divergence report.
 
 ### Task 7 - Tests
 
