@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-authorization-intake"
-product_version_status: "outside_scope_candidate_review_residual_difference_source_map_correction_authorization_intake_no_go"
-version_file_value: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-authorization-intake"
+product_version: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-application-readiness"
+product_version_status: "outside_scope_candidate_review_residual_difference_source_map_correction_application_readiness_ready_no_go"
+version_file_value: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-application-readiness"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-authorization-intake"
+  MOD-KMFA-GOV-001: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-application-readiness"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_outside_scope_candidate_review_residual_difference_source_map_correction_application_readiness: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-application-readiness"
   kmfa_v014_outside_scope_candidate_review_residual_difference_source_map_correction_authorization_intake: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-authorization-intake"
   kmfa_v014_outside_scope_candidate_review_residual_difference_source_map_correction_blocker_final_threshold_recheck: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-blocker-final-threshold-recheck"
   kmfa_v014_outside_scope_candidate_review_residual_difference_source_map_correction_blocker_threshold_recheck: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-blocker-threshold-recheck"
