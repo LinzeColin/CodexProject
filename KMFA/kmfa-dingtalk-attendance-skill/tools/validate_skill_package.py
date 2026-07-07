@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import re
+import hashlib
 import sys
 from pathlib import Path
 
@@ -157,6 +158,43 @@ def main() -> int:
         missing_needles = [needle for needle in needles if needle not in text]
         if missing_needles:
             fail(f"{rel} missing required text: {', '.join(missing_needles)}")
+
+    manifest_path = ROOT / "source_manifest.txt"
+    checksum_path = ROOT / "source_checksums.sha256"
+    manifest_files = [line.strip() for line in manifest_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    current_files = sorted(path.relative_to(ROOT).as_posix() for path in ROOT.rglob("*") if path.is_file())
+    if manifest_files != current_files:
+        missing = sorted(set(current_files) - set(manifest_files))
+        extra = sorted(set(manifest_files) - set(current_files))
+        fail(
+            "source_manifest.txt is not current"
+            + (f"; missing={missing}" if missing else "")
+            + (f"; extra={extra}" if extra else "")
+        )
+
+    checksum_entries: dict[str, str] = {}
+    for lineno, line in enumerate(checksum_path.read_text(encoding="utf-8").splitlines(), start=1):
+        if not line.strip():
+            continue
+        parts = line.split(maxsplit=1)
+        if len(parts) != 2:
+            fail(f"source_checksums.sha256 line {lineno} is malformed")
+        digest, rel = parts[0], parts[1].strip()
+        checksum_entries[rel] = digest
+
+    expected_checksum_files = [rel for rel in manifest_files if rel != "source_checksums.sha256"]
+    missing_checksums = sorted(set(expected_checksum_files) - set(checksum_entries))
+    extra_checksums = sorted(set(checksum_entries) - set(expected_checksum_files))
+    if missing_checksums or extra_checksums:
+        fail(
+            "source_checksums.sha256 file list mismatch"
+            + (f"; missing={missing_checksums}" if missing_checksums else "")
+            + (f"; extra={extra_checksums}" if extra_checksums else "")
+        )
+    for rel in expected_checksum_files:
+        actual = hashlib.sha256((ROOT / rel).read_bytes()).hexdigest()
+        if checksum_entries[rel] != actual:
+            fail(f"source_checksums.sha256 mismatch for {rel}")
 
     print("PASS: KMFA DingTalk attendance skill package is public-safe and complete")
     return 0
