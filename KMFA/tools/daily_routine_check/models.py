@@ -56,6 +56,8 @@ class RoutineCheckResult:
     matched_sender_name: str | None = None
     matched_file_sha256: str | None = None
     confidence: float = 0.0
+    abnormal_type: str = ""
+    reminder_level: str = "P2"
     reason: str = ""
     evidence: dict[str, Any] = field(default_factory=dict)
 

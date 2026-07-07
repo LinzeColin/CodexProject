@@ -10,7 +10,7 @@ from zoneinfo import ZoneInfo
 from .archive_reader import DwsArchiveReader
 from .config_loader import load_yaml
 from .ledger import connect, write_run_log
-from .models import RoutineRule
+from .models import RoutineCheckResult, RoutineRule
 from .rule_engine import evaluate_rule
 from .schedule_rules import TRIGGER_WINDOWS, infer_trigger_window, rules_for_trigger_window
 
@@ -72,6 +72,24 @@ def build_run_summary(
     }
 
 
+def flag_merged_results(results: list[RoutineCheckResult]) -> list[RoutineCheckResult]:
+    by_message_id: dict[str, list[RoutineCheckResult]] = {}
+    for result in results:
+        if result.matched_message_id and result.status in {"OK", "LATE", "NEEDS_OCR_REVIEW", "NEEDS_REVIEW"}:
+            by_message_id.setdefault(result.matched_message_id, []).append(result)
+
+    for matched_results in by_message_id.values():
+        if len({result.rule_id for result in matched_results}) < 2:
+            continue
+        for result in matched_results:
+            result.status = "MERGED_REVIEW"
+            result.abnormal_type = "merged"
+            result.reminder_level = "P1"
+            result.reason = "same message matched multiple independent routine rules"
+            result.evidence["merged_rule_ids"] = sorted({item.rule_id for item in matched_results})
+    return results
+
+
 def build_notification_events(results: list[Any], data_quality_issues: list[dict[str, Any]], target_label: str) -> list[dict[str, Any]]:
     events: list[dict[str, Any]] = []
     for issue in data_quality_issues:
@@ -87,6 +105,12 @@ def build_notification_events(results: list[Any], data_quality_issues: list[dict
     for result in results:
         if result.status == "MISSING":
             event_type = "MISSING_ROUTINE_ITEM"
+        elif result.status == "LATE":
+            event_type = "LATE_ROUTINE_ITEM"
+        elif result.status == "WRONG":
+            event_type = "WRONG_ROUTINE_ITEM"
+        elif result.status == "MERGED_REVIEW":
+            event_type = "MERGED_ROUTINE_ITEM"
         elif result.status in {"NEEDS_OCR_REVIEW", "NEEDS_REVIEW"}:
             event_type = "LOW_CONFIDENCE_ROUTINE_MATCH"
         else:
@@ -98,6 +122,17 @@ def build_notification_events(results: list[Any], data_quality_issues: list[dict
             "rule_id": result.rule_id,
             "artifact_name": result.artifact_name,
             "idempotency_key": f"{event_type}:{result.check_date.isoformat()}:{result.rule_id}:{target_label}",
+            "payload": {
+                "check_date": result.check_date.isoformat(),
+                "status": result.status,
+                "abnormal_type": result.abnormal_type,
+                "reminder_level": result.reminder_level,
+                "matched_message_id": result.matched_message_id,
+                "matched_sender_name": result.matched_sender_name,
+                "confidence": result.confidence,
+                "reason": result.reason,
+                "evidence": result.evidence,
+            },
         })
     return events
 
@@ -175,6 +210,7 @@ def main() -> int:
         result = evaluate_rule(rule, messages, check_date, now)
         if result is not None:
             results.append(result)
+    results = flag_merged_results(results)
     notification_events = build_notification_events(results, data_quality_issues, raw_rules.get("notify_target_label", "张霖泽"))
 
     run_summary = build_run_summary(

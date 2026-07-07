@@ -5,7 +5,7 @@ from datetime import date, datetime
 from tempfile import TemporaryDirectory
 
 from KMFA.tools.daily_routine_check.archive_reader import DwsArchiveReader
-from KMFA.tools.daily_routine_check.main import build_run_summary, load_rules
+from KMFA.tools.daily_routine_check.main import build_notification_events, build_run_summary, flag_merged_results, load_rules
 from KMFA.tools.daily_routine_check.models import RoutineRule, SourceMessage
 from KMFA.tools.daily_routine_check.rule_engine import evaluate_rule
 from KMFA.tools.daily_routine_check.schedule_rules import rules_for_trigger_window
@@ -82,6 +82,153 @@ class TriggerWindowTests(unittest.TestCase):
         )
         result = evaluate_rule(rule, [msg], date(2026, 7, 9), datetime(2026, 7, 9, 17, 5))
         self.assertEqual(result.status, "OK")
+
+    def test_late_delivery_keeps_match_and_sets_p1_reminder(self) -> None:
+        rule = RoutineRule(
+            rule_id="PAY_DAILY_CASH_ACCOUNT",
+            group_name="付款请示群",
+            frequency="daily",
+            due_time="10:30",
+            required_senders=("杨婷",),
+            artifact_name="资金账户明细表",
+            document_family="cash_account_statement",
+            keywords_positive=("资金账户明细表",),
+            trigger_window="morning_1135",
+        )
+        msg = SourceMessage(
+            group_name="付款请示群",
+            message_id="late-account",
+            message_time=datetime(2026, 7, 7, 11, 0),
+            sender_name="杨婷",
+            content="资金账户明细表",
+        )
+        result = evaluate_rule(rule, [msg], date(2026, 7, 7), datetime(2026, 7, 7, 11, 35))
+        self.assertEqual(result.status, "LATE")
+        self.assertEqual(result.abnormal_type, "late")
+        self.assertEqual(result.reminder_level, "P1")
+
+    def test_wrong_document_family_sets_review_reminder(self) -> None:
+        rule = RoutineRule(
+            rule_id="PAY_DAILY_CASH_ACCOUNT",
+            group_name="付款请示群",
+            frequency="daily",
+            due_time="10:30",
+            required_senders=("杨婷",),
+            artifact_name="资金账户明细表",
+            document_family="cash_account_statement",
+            keywords_positive=("资金账户明细表",),
+            keywords_negative=("资金流水明细", "资金明细"),
+            trigger_window="morning_1135",
+        )
+        msg = SourceMessage(
+            group_name="付款请示群",
+            message_id="wrong-flow",
+            message_time=datetime(2026, 7, 7, 10, 0),
+            sender_name="杨婷",
+            content="资金流水明细",
+        )
+        result = evaluate_rule(rule, [msg], date(2026, 7, 7), datetime(2026, 7, 7, 11, 35))
+        self.assertEqual(result.status, "WRONG")
+        self.assertEqual(result.abnormal_type, "wrong")
+        self.assertEqual(result.reminder_level, "P1")
+
+    def test_valid_delivery_after_wrong_family_is_not_marked_wrong(self) -> None:
+        rule = RoutineRule(
+            rule_id="PAY_DAILY_CASH_ACCOUNT",
+            group_name="付款请示群",
+            frequency="daily",
+            due_time="10:30",
+            required_senders=("杨婷",),
+            artifact_name="资金账户明细表",
+            document_family="cash_account_statement",
+            keywords_positive=("资金账户明细表",),
+            keywords_negative=("资金流水明细", "资金明细"),
+            trigger_window="morning_1135",
+        )
+        messages = [
+            SourceMessage(
+                group_name="付款请示群",
+                message_id="wrong-flow",
+                message_time=datetime(2026, 7, 7, 10, 0),
+                sender_name="杨婷",
+                content="资金流水明细",
+            ),
+            SourceMessage(
+                group_name="付款请示群",
+                message_id="correct-account",
+                message_time=datetime(2026, 7, 7, 10, 5),
+                sender_name="杨婷",
+                content="资金账户明细表",
+            ),
+        ]
+        result = evaluate_rule(rule, messages, date(2026, 7, 7), datetime(2026, 7, 7, 11, 35))
+        self.assertEqual(result.status, "OK")
+        self.assertEqual(result.matched_message_id, "correct-account")
+
+    def test_merged_message_sets_review_reminder_for_independent_artifacts(self) -> None:
+        account = RoutineRule(
+            rule_id="PAY_DAILY_CASH_ACCOUNT",
+            group_name="付款请示群",
+            frequency="daily",
+            due_time="10:30",
+            required_senders=("杨婷",),
+            artifact_name="资金账户明细表",
+            document_family="cash_account_statement",
+            keywords_positive=("资金账户明细表",),
+            trigger_window="morning_1135",
+        )
+        flow = RoutineRule(
+            rule_id="PAY_DAILY_CASH_FLOW",
+            group_name="付款请示群",
+            frequency="daily",
+            due_time="10:30",
+            required_senders=("杨婷",),
+            artifact_name="资金流水明细",
+            document_family="cash_flow_detail",
+            keywords_positive=("资金流水明细",),
+            trigger_window="morning_1135",
+        )
+        msg = SourceMessage(
+            group_name="付款请示群",
+            message_id="merged-one-message",
+            message_time=datetime(2026, 7, 7, 10, 0),
+            sender_name="杨婷",
+            content="资金账户明细表 资金流水明细",
+        )
+        results = [
+            evaluate_rule(account, [msg], date(2026, 7, 7), datetime(2026, 7, 7, 11, 35)),
+            evaluate_rule(flow, [msg], date(2026, 7, 7), datetime(2026, 7, 7, 11, 35)),
+        ]
+        flagged = flag_merged_results(results)
+        self.assertEqual({result.status for result in flagged}, {"MERGED_REVIEW"})
+        self.assertEqual({result.abnormal_type for result in flagged}, {"merged"})
+        self.assertEqual({result.reminder_level for result in flagged}, {"P1"})
+
+    def test_notification_events_include_abnormal_type_and_reminder_level(self) -> None:
+        rule = RoutineRule(
+            rule_id="PAY_DAILY_CASH_ACCOUNT",
+            group_name="付款请示群",
+            frequency="daily",
+            due_time="10:30",
+            required_senders=("杨婷",),
+            artifact_name="资金账户明细表",
+            document_family="cash_account_statement",
+            keywords_positive=("资金账户明细表",),
+            trigger_window="morning_1135",
+        )
+        msg = SourceMessage(
+            group_name="付款请示群",
+            message_id="late-account",
+            message_time=datetime(2026, 7, 7, 11, 0),
+            sender_name="杨婷",
+            content="资金账户明细表",
+        )
+        result = evaluate_rule(rule, [msg], date(2026, 7, 7), datetime(2026, 7, 7, 11, 35))
+        events = build_notification_events([result], [], "张霖泽")
+
+        self.assertEqual(events[0]["event_type"], "LATE_ROUTINE_ITEM")
+        self.assertEqual(events[0]["payload"]["abnormal_type"], "late")
+        self.assertEqual(events[0]["payload"]["reminder_level"], "P1")
 
     def test_reader_reports_missing_and_stale_sources(self) -> None:
         with TemporaryDirectory() as tmp:

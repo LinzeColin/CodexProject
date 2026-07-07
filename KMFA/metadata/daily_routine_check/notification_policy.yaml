@@ -9,6 +9,8 @@ channels:
 notify_events:
   - MISSING_ROUTINE_ITEM
   - LATE_ROUTINE_ITEM
+  - WRONG_ROUTINE_ITEM
+  - MERGED_ROUTINE_ITEM
   - LOW_CONFIDENCE_ROUTINE_MATCH
   - CASH_P0_RED
   - CASH_P1_YELLOW
@@ -39,6 +41,27 @@ message_templates:
     检查日期：{check_date}
     规则ID：{rule_id}
     建议：确认是否漏发、发错群、表名不符合规则，或图片OCR未识别。
+
+  late_routine_item: |
+    [钉钉工作检查][迟发]
+    张霖泽，{group_name} 已检测到迟发：{sender_requirement} - {artifact_name}
+    检查日期：{check_date}
+    规则ID：{rule_id}
+    提醒等级：{reminder_level}
+
+  wrong_routine_item: |
+    [钉钉工作检查][错表]
+    张霖泽，{group_name} 检测到疑似发错表：{sender_requirement} - {artifact_name}
+    检查日期：{check_date}
+    规则ID：{rule_id}
+    提醒等级：{reminder_level}
+
+  merged_routine_item: |
+    [钉钉工作检查][合并复核]
+    张霖泽，同一条消息疑似合并满足多个必须独立的交付项。
+    检查日期：{check_date}
+    规则ID：{rule_id}
+    提醒等级：{reminder_level}
 
   cash_p0_red: |
     [现金流风险][P0红色]

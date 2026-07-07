@@ -61,6 +61,17 @@ KMFA/metadata/daily_routine_check/private_runtime/daily_routine_check.sqlite
 - 通知张霖泽。
 - 采用 idempotency key，避免同一个缺报事件反复刷屏。
 
+异常类型固定为：
+
+| abnormal_type | status | reminder_level | 含义 |
+|---|---|---|---|
+| `missing` | `MISSING` | `P0` | 到检查窗口仍未发现应发交付物 |
+| `late` | `LATE` | `P1` | 已发现交付物，但消息时间晚于规则 `due_time` |
+| `review` | `NEEDS_OCR_REVIEW` / `NEEDS_REVIEW` | `P1` | 图片、文件、OCR 或文本匹配置信度不足，需要人工确认 |
+| `wrong` | `WRONG` | `P1` | 指定发送人发了互斥文档家族，例如把资金流水明细当成资金账户明细表 |
+| `merged` | `MERGED_REVIEW` | `P1` | 同一条消息疑似同时满足多个必须独立的交付项，需要拆分或人工确认 |
+| 空字符串 | `OK` | `P2` | 已按规则检测到交付物，只记录不提醒 |
+
 ### B3. 现金 OCR 监控
 
 - 只监控付款请示群里杨婷发送的相关图片/文件。
