@@ -1,5 +1,56 @@
 # Memory Overview Product Contract
 
+Contract ID: `memory_overview_default_home.v1_1_7_stage3_phase1`
+
+Task ID: `MA-V117-S3P01`
+
+Acceptance ID: `ACC-MA-V117-S3P01`
+
+Status: `phase_3_1_default_home_structure_completed_pending_stage3_review`
+
+Validator: `validate:v1.1.7-stage3-phase1`
+
+## Default Home Structure
+
+The Memory Atlas app opens to Memory Overview by default. The default route is
+`home`, not Galaxy, Search, Review or Data Map. This phase makes the system
+entry tell the user what to see and do now, while keeping all existing boards
+reachable through the sidebar.
+
+The default-home structure is:
+
+| Section ID | Human label | Purpose |
+|---|---|---|
+| `status_summary` | 状态摘要 | Show current selected focus, snapshot count and Universe State revision. |
+| `suggested_actions` | 行动建议 | Show top proposal-only next actions and their detail drawer entry. |
+| `weather` | 记忆天气 | Show Memory Weather v2 status, risk and opportunity signals. |
+| `black_holes` | 风险黑洞 | Surface repeating risk loops without direct writeback. |
+| `proto_stars` | 新生机会 | Surface rising opportunity signals without agent apply. |
+| `assets` | 层级资产 | Link Level Asset cards to read-only asset detail. |
+| `themes` | 主题结构 | Link Topic Classification cards and theme trend summaries. |
+| `entry_points` | 探索入口 | Provide paths to Galaxy, Memory River, Inspector/Search and adjacent views. |
+
+The UI must read as a guided work surface, not a pile of cards. The compact rail
+at the top declares the information architecture first, then the page uses the
+existing home sections for real content.
+
+Machine-readable section labels: status summary; suggested actions; weather;
+black holes; proto-stars; assets; themes; entry points.
+
+Rollback keeps the core 4 sections only: `status_summary`, `suggested_actions`,
+`weather`, `entry_points`.
+
+## Boundaries
+
+- No Stage 3 Phase 3.2 details or operation expansion.
+- No Search 2.0 runtime.
+- No Review workflow runtime.
+- No Data Map 2.0 runtime.
+- No raw/private/cookie/session/secret data read.
+- No direct active-memory writeback.
+- No agent apply.
+- No GitHub main upload before whole Stage 0-10 completion.
+
 - Product target: Memory Atlas v1.1.5
 - Stage: 0 合同与边界冻结
 - Current phase contribution: 0.2.1 记忆总览 Product Contract

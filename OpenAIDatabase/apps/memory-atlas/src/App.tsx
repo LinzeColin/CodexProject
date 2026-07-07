@@ -67,6 +67,19 @@ const GalaxyScene = lazy(() => import("./components/GalaxyScene").then((module) 
 const ObsidianGraphScene = lazy(() => import("./components/ObsidianGraphScene").then((module) => ({ default: module.ObsidianGraphScene })));
 
 const uiCopy = zhCNCopy;
+const DEFAULT_MEMORY_ATLAS_VIEW: ViewKey = "home";
+const MEMORY_OVERVIEW_STRUCTURE_VERSION = "memory_overview_default_home.v1_1_7_stage3_phase1" as const;
+
+const MEMORY_OVERVIEW_SECTION_ORDER = [
+  { id: "status_summary", label: "状态摘要" },
+  { id: "suggested_actions", label: "行动建议" },
+  { id: "weather", label: "记忆天气" },
+  { id: "black_holes", label: "风险黑洞" },
+  { id: "proto_stars", label: "新生机会" },
+  { id: "assets", label: "层级资产" },
+  { id: "themes", label: "主题结构" },
+  { id: "entry_points", label: "探索入口" },
+] as const;
 
 const views: Array<{ key: ViewKey; label: string; icon: ComponentType<{ size?: number }> }> = [
   { key: "home", label: uiCopy.navigation.views.home, icon: Home },
@@ -609,7 +622,7 @@ export function App() {
   const [sharedState, dispatchSharedState] = useReducer(
     sharedAtlasReducer,
     undefined,
-    () => createSharedAtlasState({ activeView: "home", filters: defaultFilters }),
+    () => createSharedAtlasState({ activeView: DEFAULT_MEMORY_ATLAS_VIEW, filters: defaultFilters }),
   );
   const activeView = sharedState.mode.activeView;
   const filters = useMemo(() => atlasFiltersFromSharedState(sharedState), [sharedState]);
@@ -845,7 +858,11 @@ export function App() {
   const showSideInspector = activeView === "contribution" || !wideView;
 
   return (
-    <div className="app-shell">
+    <div
+      className="app-shell"
+      data-default-route-view={DEFAULT_MEMORY_ATLAS_VIEW}
+      data-memory-overview-default-route="true"
+    >
       <aside className="sidebar" aria-label={uiCopy.app.navigationAria}>
         <div className="brand">
           <GitBranch size={22} />
@@ -1261,6 +1278,7 @@ function HomeOverviewView({
   return (
     <div
       className="home-overview-view visual-workspace"
+      data-memory-overview-structure={MEMORY_OVERVIEW_STRUCTURE_VERSION}
       data-shared-state={sharedState.schema_version}
       data-shared-focus-node={sharedState.focus.home.nodeId ?? ""}
       data-shared-cluster={sharedState.focus.home.clusterId ?? ""}
@@ -1273,7 +1291,12 @@ function HomeOverviewView({
         </div>
         <span>{timelineRangeSummary(timelineTimeRange) ?? `${nodes.length.toLocaleString()} 条筛选记忆 · ${uiCopy.overview.defaultEntry}`}</span>
       </div>
-      <section className="home-shared-focus-strip" aria-label="共享焦点">
+      <nav className="home-structure-rail" aria-label="记忆总览默认页结构">
+        {MEMORY_OVERVIEW_SECTION_ORDER.map((section) => (
+          <span data-home-section-anchor={section.id} key={section.id}>{section.label}</span>
+        ))}
+      </nav>
+      <section className="home-shared-focus-strip" aria-label="共享焦点" data-home-section="status_summary">
         <span>Universe State</span>
         <strong>{selectedNode ? humanNodeDisplayTitle(selectedNode) : uiCopy.overview.defaultFocus}</strong>
         <small>{sharedState.focus.home.clusterId ?? uiCopy.overview.noTopic} · r{sharedState.sync.revision}</small>
@@ -1281,6 +1304,7 @@ function HomeOverviewView({
       <section className="home-primary-band" aria-label="当前认知状态">
         <article
           className={`home-weather-panel ${model.weatherV2.tone}`}
+          data-home-section="weather"
           data-memory-weather-v2="true"
           data-weather-confidence={model.weatherV2.confidenceScore.toFixed(2)}
           data-weather-risk={model.weatherV2.riskScore.toFixed(2)}
@@ -1301,10 +1325,10 @@ function HomeOverviewView({
           </ul>
         </article>
         <div className="home-weather-metrics">
-          <Metric label="主导主题" value={model.topicRows[0]?.count ?? 0} />
-          <Metric label="上升机会" value={model.protoStarCount} />
-          <Metric label="风险循环" value={model.blackHoleCount} />
-          <Metric label="近期增量" value={deltaStats.recentCount} />
+          <div data-home-section="themes"><Metric label="主导主题" value={model.topicRows[0]?.count ?? 0} /></div>
+          <div data-home-section="proto_stars"><Metric label="上升机会" value={model.protoStarCount} /></div>
+          <div data-home-section="black_holes"><Metric label="风险循环" value={model.blackHoleCount} /></div>
+          <div data-home-section="status_summary"><Metric label="近期增量" value={deltaStats.recentCount} /></div>
         </div>
       </section>
       <section className="home-status-grid" aria-label="Universe State 状态卡片">
@@ -1316,7 +1340,7 @@ function HomeOverviewView({
           </article>
         ))}
       </section>
-      <section className="home-preview-grid" aria-label={uiCopy.overview.previewAria}>
+      <section className="home-preview-grid" aria-label={uiCopy.overview.previewAria} data-home-section="entry_points">
         <button
           className="home-preview-card mini-starfield-preview"
           onClick={() => jumpToPreview(model.miniStarfieldFocus, "galaxy")}
@@ -1367,7 +1391,7 @@ function HomeOverviewView({
           <small>{uiCopy.overview.riverPulseNote}</small>
         </button>
       </section>
-      <section className="home-action-panel" aria-label="下一步行动建议">
+      <section className="home-action-panel" aria-label="下一步行动建议" data-home-section="suggested_actions">
         <div className="panel-title-row">
           <h3>{uiCopy.overview.nextBestActionsTitle}</h3>
           <span>{uiCopy.overview.proposalOnlyLabel}</span>
@@ -1399,7 +1423,7 @@ function HomeOverviewView({
           <ActionDetailDrawer action={selectedActionDetail} onClose={closeActionDetail} onOpenTarget={openActionTarget} />
         </div>
       </section>
-      <section className="home-inspector-panel" aria-label="Inspector Deep Link">
+      <section className="home-inspector-panel" aria-label="Inspector Deep Link" data-home-section="entry_points">
         <div className="panel-title-row">
           <h3>{uiCopy.overview.inspectorTitle}</h3>
           <span>{uiCopy.overview.inspectorHint}</span>
@@ -1413,7 +1437,7 @@ function HomeOverviewView({
           ))}
         </div>
       </section>
-      <section className="home-tier-asset-panel" aria-label="层级资产明细">
+      <section className="home-tier-asset-panel" aria-label="层级资产明细" data-home-section="assets">
         <div className="panel-title-row">
           <h3>层级资产明细</h3>
           <span>proposal-only</span>
@@ -1450,7 +1474,7 @@ function HomeOverviewView({
           <AssetDetailPanel asset={selectedTierAsset} onClose={closeTierAsset} onOpenTarget={openTierAssetTarget} />
         </div>
       </section>
-      <section className="home-topic-detail-panel" aria-label="主题分类明细">
+      <section className="home-topic-detail-panel" aria-label="主题分类明细" data-home-section="themes">
         <div className="panel-title-row">
           <h3>主题分类明细</h3>
           <span>proposal-only</span>

@@ -1,3 +1,35 @@
+## v1.1.7 Stage 3 Phase 3.1：Default Home Structure
+
+状态：`phase_3_1_default_home_structure_completed_pending_stage3_review`。
+
+任务 ID：`MA-V117-S3P01`。
+
+验收 ID：`ACC-MA-V117-S3P01`。
+
+本 phase 固定 `memory_overview_default_home.v1_1_7_stage3_phase1`。默认入口为
+`home`，Memory Overview 首屏通过结构 rail 和 section markers 呈现 status
+summary、suggested actions、weather、black holes、proto-stars、assets、themes
+和 entry points。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/product/memory_overview_product_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage3_phase1_default_home_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage3_phase1.cjs`
+- `config/visualization/model_parameters.universe_state.yaml`
+
+验收：
+
+- `validate:v1.1.7-stage3-phase1`
+- `ACC-MA-V117-S3P01`
+- 默认 route 必须是 `home`。
+- Default Home Structure 必须包含 8 个结构 section。
+- 页面必须是 guided work surface，not a pile of cards。
+
+Machine-readable boundary summary: Default Home Structure; memory_overview_default_home.v1_1_7_stage3_phase1; No Stage 3 Phase 3.2; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
 ## v1.1.7 Stage 2 Review：Proposal Layer Gate
 
 状态：`stage_2_review_passed_pending_stage3_no_github_main_upload`。
