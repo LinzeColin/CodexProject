@@ -1,0 +1,31 @@
+{
+  "target_month": "202607",
+  "policy_version": "policy_v1",
+  "identity_version": "identity_v1",
+  "generated_at": "volatile_different",
+  "source_batch_hashes": ["sha256:rawbatch"],
+  "employees": [
+    {
+      "employee_internal_id": "E001",
+      "dingtalk_userid": "u001",
+      "days": [
+        {
+          "work_date": "2026-07-01",
+          "actual_attendance_state": "present",
+          "first_in_time": "2026-07-01T09:01:00+08:00",
+          "last_out_time": "2026-07-01T18:00:00+08:00",
+          "location_evidence_count": 2,
+          "trajectory_evidence_count": 2
+        }
+      ]
+    }
+  ],
+  "payroll_baseline_candidate": [
+    {
+      "employee_internal_id": "E001",
+      "work_date": "2026-07-01",
+      "late_minutes": 1,
+      "early_leave_minutes": 0
+    }
+  ]
+}

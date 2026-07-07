@@ -14,9 +14,16 @@ REPO_ROOT = ROOT.parent
 REQUIRED_FILES = [
     ROOT / "SKILL.md",
     ROOT / "README.md",
+    ROOT / "automation" / "morning_prompt.md",
+    ROOT / "automation" / "evening_prompt.md",
+    ROOT / "automation" / "codex_automation_manifest.md",
     ROOT / "references" / "runbook.md",
     ROOT / "references" / "configuration.md",
     ROOT / "references" / "decision-impact.md",
+    ROOT / "references" / "operating_contract.md",
+    ROOT / "references" / "source_of_truth_contract.md",
+    ROOT / "scripts" / "month_gate.py",
+    ROOT / "scripts" / "stage2_consensus_gate.py",
     ROOT / "templates" / "env.local.example",
     ROOT / "templates" / "notification_targets.local.example.json",
     ROOT / "templates" / "codex-startup-prompt.md",
@@ -48,6 +55,24 @@ REQUIRED_TEXT = {
         "Data Quality",
         "Salary",
     ],
+    "automation/morning_prompt.md": [
+        "$kmfa-dingtalk-attendance-skill",
+        "Asia/Shanghai",
+        "automation prompt file",
+        "REST",
+    ],
+    "automation/evening_prompt.md": [
+        "$kmfa-dingtalk-attendance-skill",
+        "Asia/Shanghai",
+        "stage-2",
+        "payroll baseline",
+    ],
+    "automation/codex_automation_manifest.md": [
+        "automation-3",
+        "automation-4",
+        "Beijing",
+        "GitHub",
+    ],
 }
 
 FORBIDDEN_FILE_PATTERNS = [
@@ -71,6 +96,12 @@ FORBIDDEN_CONTENT_PATTERNS = [
     re.compile(r"cid[A-Za-z0-9+/=]{10,}"),
     re.compile(r"(?:secret|token|password|credential)\s*=\s*(?!<)[A-Za-z0-9_./+=-]{12,}", re.IGNORECASE),
 ]
+
+ALLOWED_BINARY_FILES = {
+    "task_pack_report.pdf",
+}
+
+OLD_PACKAGE_PATH = ".agents/skills/" + "kmfa-dingtalk-attendance"
 
 
 def fail(message: str) -> None:
@@ -102,10 +133,21 @@ def main() -> int:
         try:
             text = path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
-            fail(f"non-UTF-8 file is not allowed in skill package: {rel}")
+            if rel not in ALLOWED_BINARY_FILES:
+                fail(f"non-UTF-8 file is not allowed in skill package: {rel}")
+            if path.stat().st_size > 200_000:
+                fail(f"allowed binary file is unexpectedly large: {rel}")
+            continue
         for pattern in FORBIDDEN_CONTENT_PATTERNS:
             if pattern.search(text):
                 fail(f"forbidden sensitive-looking content in {rel}: {pattern.pattern}")
+        if OLD_PACKAGE_PATH in text and rel not in {
+            "source_manifest.txt",
+            "source_checksums.sha256",
+        }:
+            fail(f"old package path leaked into active file: {rel}")
+        if "$kmfa-dingtalk-attendance" in text and "$kmfa-dingtalk-attendance-skill" not in text:
+            fail(f"old skill invocation leaked into active file: {rel}")
 
     for rel, needles in REQUIRED_TEXT.items():
         text = (ROOT / rel).read_text(encoding="utf-8")
