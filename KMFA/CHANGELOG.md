@@ -3,10 +3,12 @@
 ## 0.1.4-s19-dingtalk-attendance - 2026-07-07
 
 - 新增 `S19｜每日早晚钉钉考勤检查` public-safe 自动化结构，固定每日北京时间 08:35 晨报和 18:15 晚报。
-- 新增 `KMFA/tools/dingtalk_attendance/` 与 `KMFA/metadata/dingtalk_attendance/`，覆盖 live-only 运行、缺配置 `CONFIG_MISSING`、管理报告/HR 报告模板、OneDrive 月度私有归档和三天 operational cache 清理。
+- 新增 `KMFA/tools/dingtalk_attendance/` 与 `KMFA/metadata/dingtalk_attendance/`，覆盖 DWS live-only 运行、管理报告/HR 报告模板、OneDrive 月度私有归档和三天 operational cache 清理。
+- 新增 DWS 考勤后端：递归枚举组织部门成员，逐人调用 `dws attendance record get` 和 `dws attendance summary`，遇到 transient attendance error 仅 verbose 重试一次。
+- 已完成 2026-07-07 live 验证：当前可见组织 44 人，record 成功 44 人，summary 成功 44 人，42 人当天有打卡记录；张霖泽、林全意为已知无考勤记录且 record 为空。
 - OneDrive 私有归档固定为 `/Users/linzezhang/OneDrive/dingtalk_attendance/YYYYMM/`，当月目录下直接保存运行文件，不再展开深层目录。
 - 新增 `KMFA/tests/test_dingtalk_attendance.py`、`check_s19_dingtalk_attendance.py` 和 `validate_no_sensitive_git.py`，验证 S19 文件合同、配置缺失失败、报告章节边界和 tracked 文件安全扫描。
-- 未提交真实员工考勤明文、SQLite、raw API response、报告正文或凭据材料；未创建 PR、issue、branch 或 worktree。
+- 未提交真实员工考勤明文、SQLite、raw API response、报告正文或凭据材料；真实 raw JSONL gzip 和管理/HR 报告只写入私有 OneDrive；未创建 PR、issue、branch 或 worktree。
 
 ## 0.1.3-stage1-10-github-upload - 2026-07-03
 

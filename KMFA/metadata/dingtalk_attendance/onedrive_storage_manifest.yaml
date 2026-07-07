@@ -11,6 +11,5 @@ file_patterns:
   archive_manifest: "{run_id}.manifest.json"
   dispatch_receipt: "{run_id}.dispatch.json"
   cleanup_audit: "{run_id}.cleanup.json"
-  archive_database: dingtalk_attendance_archive.sqlite
 github_manifest_public_link_allowed: false
 github_records_local_path_ref_only: true

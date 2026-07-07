@@ -1,6 +1,15 @@
 # KMFA Handoff
 
-更新时间: 2026-07-03
+更新时间: 2026-07-07
+
+## S19 当前状态
+
+- `每日早晚钉钉考勤检查` 已切换为 DWS live backend，并完成 2026-07-07 live 验证。
+- 当前可见组织 44 人；record 成功 44 人，summary 成功 44 人；42 人当天有打卡记录。
+- 张霖泽、林全意为已知无考勤记录，record 成功返回空列表，不作为异常。
+- 私有归档目录为 `/Users/linzezhang/OneDrive/dingtalk_attendance/202607/`，本轮 raw 文件为 `s19_evening_20260707_095119.raw.jsonl.gz`，SHA256 为 `aabfb6415d95f55d76890d74ef60d3430785f404210679631be470eb47f3a811`。
+- Git 只保存 DWS backend 代码、报告模板、路径/统计证据和安全扫描；不保存真实员工考勤明文、raw JSONL、SQLite、机器人地址、应用密钥或访问凭证。
+- 本轮仍未发送 DingTalk/WeCom 通知；通知配置保持缺失/未启用状态。
 
 ## 当前目标
 
