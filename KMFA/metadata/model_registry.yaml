@@ -841,3 +841,18 @@ kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_applicati
   evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_READINESS_AFTER_RAW_REFRESH
   validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_readiness_after_raw_refresh.py
   scope: Authorized source reference or owner exclusion application readiness after raw refresh only; checks 48 ignored private intake items, finds zero application-ready records and 48 blockers, and keeps authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_blocker_audit_after_raw_refresh:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-blocker-audit-after-raw-refresh"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-BLOCKER-AUDIT-AFTER-RAW-REFRESH-001
+  parameter_refs:
+    - PARAM-KMFA-1510
+    - PARAM-KMFA-1511
+    - PARAM-KMFA-1512
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_BLOCKER_AUDIT_AFTER_RAW_REFRESH
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_blocker_audit_after_raw_refresh.py
+  scope: Authorized source reference or owner exclusion application blocker audit after raw refresh only; audits 48 ignored private application blockers, finds zero application-ready or binding-ready records, and keeps authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
