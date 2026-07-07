@@ -12238,3 +12238,24 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private actionability threshold outputs, tool, validator, focused test and governance entries; do not modify raw inbox or source actionability blocker audit outputs."
     target_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-actionability-blocker-threshold-recheck"
     completed_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-actionability-blocker-threshold-recheck"
+
+  - task_id: "KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-GENERATED-DIAGNOSTIC-RESPONSE-ACTIONABILITY-BLOCKER-FINAL-THRESHOLD-RECHECK-20260708"
+    phase_id: "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_ACTIONABILITY_BLOCKER_FINAL_THRESHOLD_RECHECK"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-GENERATED-DIAGNOSTIC-RESPONSE-ACTIONABILITY-BLOCKER-FINAL-THRESHOLD-RECHECK"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_actionability_blocker_final_threshold_recheck.py --generated-at 2026-07-08T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_actionability_blocker_final_threshold_recheck.py --require-private-final-threshold"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_actionability_blocker_final_threshold_recheck"
+    test_results:
+      - "PASS: generated owner/agent diagnostic response actionability blocker final threshold recheck validator and focused unit test passed; third blocker observation was recorded for all 48 non-actionable generated responses, threshold is met, and binding/comparison/downstream gates stay closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_ACTIONABILITY_BLOCKER_FINAL_THRESHOLD_RECHECK/human/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_actionability_blocker_final_threshold_recheck.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_ACTIONABILITY_BLOCKER_FINAL_THRESHOLD_RECHECK/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_ACTIONABILITY_BLOCKER_FINAL_THRESHOLD_RECHECK/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_actionability_blocker_final_threshold_recheck_manifest.json"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_ACTIONABILITY_BLOCKER_FINAL_THRESHOLD_RECHECK/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_actionability_blocker_final_threshold_recheck_matrix_public_safe.json"
+    risk: "Generated diagnostic response blocker final threshold can be mistaken for actionable binding evidence; this phase records only third blocker observation and keeps binding, value comparison, reconciliation, report, upload, reinstall and business execution closed."
+    rollback: "Remove current phase artifacts, metadata copies, private actionability final threshold outputs, tool, validator, focused test and governance entries; do not modify raw inbox or source actionability threshold outputs."
+    target_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-actionability-blocker-final-threshold-recheck"
+    completed_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-actionability-blocker-final-threshold-recheck"
