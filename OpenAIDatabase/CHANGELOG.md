@@ -1,5 +1,27 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 5 Phase 5.3 Timeline Integration
+
+- Integrated the production Timeline board with
+  `memory_river_integration.v1_1_7_stage5_phase3`.
+- Kept `memory-river` as the default memory-river renderer and preserved
+  legacy rollback through the in-app toggle, `timelineRenderer=legacy`,
+  `timeline=legacy`, localStorage and env override.
+- Added runtime integration metadata through
+  `window.__memoryAtlasStage5Phase3()`.
+- Added DOM hooks for the active renderer, Stage 5.3 integration version,
+  old Timeline rollback and Memory River evidence layers.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage5_phase3_timeline_integration_acceptance.md`.
+- Added `validate:v1.1.7-stage5-phase3` and
+  `validate:memory-river-integration-browser`.
+- Registered `MA-V117-S5P03` / `ACC-MA-V117-S5P03` with status
+  `phase_5_3_timeline_integration_completed_pending_stage5_review`.
+
+Phase 5.3 Timeline Integration only. No Stage 5 review, No Stage 6, No
+raw/private data read, No direct active-memory writeback, No agent apply, No
+deploy or No GitHub main upload was added.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 5 Phase 5.2
 
 - Upgraded the isolated Memory River C3 spike to

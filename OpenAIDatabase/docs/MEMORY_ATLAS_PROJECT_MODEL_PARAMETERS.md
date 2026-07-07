@@ -1,3 +1,42 @@
+## 90. Memory Atlas v1.1.7 Stage 5 Phase 5.3 Timeline Integration
+
+状态：`phase_5_3_timeline_integration_completed_pending_stage5_review`。
+
+验收 ID：`ACC-MA-V117-S5P03`。
+
+模型参数：
+
+- Integration version 固定为 `memory_river_integration.v1_1_7_stage5_phase3`。
+- `validate:v1.1.7-stage5-phase3` 是本 phase 必跑 validator。
+- `validate:memory-river-integration-browser` 是本 phase 浏览器 validator。
+- Timeline 默认 renderer 为 default memory-river。
+- Legacy renderer 保留为 `legacy`，legacy rollback 路径为 in-app toggle、`timelineRenderer=legacy`、`timeline=legacy`、localStorage 和 env override。
+- Required browser checks: default Memory River, legacy rollback, URL rollback, brush interaction, selected range metadata, evidence layers, screenshot, console safety。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/config/visualFlags.ts`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage5_phase3.cjs`
+- `apps/memory-atlas/scripts/validate_memory_river_integration_browser.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S5P03-001 stage5_phase3_status = phase_5_3_timeline_integration_completed_pending_stage5_review`
+- `PARAM-MA-V117-S5P03-002 stage5_phase3_required_validator = validate:v1.1.7-stage5-phase3`
+- `PARAM-MA-V117-S5P03-003 stage5_phase3_browser_validator = validate:memory-river-integration-browser`
+- `PARAM-MA-V117-S5P03-004 integration_version = memory_river_integration.v1_1_7_stage5_phase3`
+- `PARAM-MA-V117-S5P03-005 timeline_renderer_default = default memory-river`
+- `PARAM-MA-V117-S5P03-006 rollback_mode = legacy rollback`
+
+验收信号：
+
+- Static validator checks Stage 5 Phase 5.2 continuity, feature flag version, runtime hook, plan/acceptance docs, records, canonical remote and no-upload boundary。
+- Browser validator checks default Memory River, legacy rollback, URL rollback, brush interaction, selected range metadata, evidence layers, console cleanliness and screenshot。
+
+Machine-readable boundary summary: Phase 5.3; MA-V117-S5P03; ACC-MA-V117-S5P03; phase_5_3_timeline_integration_completed_pending_stage5_review; validate:v1.1.7-stage5-phase3; validate:memory-river-integration-browser; memory_river_integration.v1_1_7_stage5_phase3; default memory-river; legacy rollback; No GitHub main upload; No Stage 5 review; No Stage 6.
+
 ## 89. Memory Atlas v1.1.7 Stage 5 Phase 5.2 C3 River Spike
 
 状态：`phase_5_2_c3_river_spike_completed_pending_stage5_review`。

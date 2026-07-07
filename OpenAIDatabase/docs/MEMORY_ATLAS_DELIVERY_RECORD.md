@@ -1,3 +1,36 @@
+## v1.1.7 Stage 5 Phase 5.3：Timeline Integration
+
+状态：`phase_5_3_timeline_integration_completed_pending_stage5_review`。
+
+任务 ID：`MA-V117-S5P03`。
+
+验收 ID：`ACC-MA-V117-S5P03`。
+
+本 phase 将 production Timeline 默认接入
+`memory_river_integration.v1_1_7_stage5_phase3`，保持 default memory-river，
+并保留 legacy rollback。回滚路径包括 in-app `Legacy` toggle、
+`timelineRenderer=legacy`、`timeline=legacy`、localStorage 和 env override。
+Browser gate 覆盖 default Memory River、legacy rollback、URL rollback、brush
+interaction、selected range、evidence layers、screenshot 和 console safety。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/config/visualFlags.ts`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage5_phase3.cjs`
+- `apps/memory-atlas/scripts/validate_memory_river_integration_browser.cjs`
+- `docs/product/memory_atlas_timeline_replacement_plan.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage5_phase3_timeline_integration_acceptance.md`
+
+验收：
+
+- `validate:v1.1.7-stage5-phase3`
+- `validate:memory-river-integration-browser`
+- `ACC-MA-V117-S5P03`
+- old Timeline rollback available；new page default enabled。
+
+Machine-readable boundary summary: Phase 5.3; MA-V117-S5P03; ACC-MA-V117-S5P03; phase_5_3_timeline_integration_completed_pending_stage5_review; validate:v1.1.7-stage5-phase3; validate:memory-river-integration-browser; memory_river_integration.v1_1_7_stage5_phase3; default memory-river; legacy rollback; timelineRenderer=legacy; brush interaction; No Stage 5 review; No Stage 6; No raw/private data read; No direct active-memory writeback; No agent apply; No deploy; No GitHub main upload; no GitHub main upload before whole Stage 0-10 completion.
+
 ## v1.1.7 Stage 5 Phase 5.2：C3 River Spike
 
 状态：`phase_5_2_c3_river_spike_completed_pending_stage5_review`。

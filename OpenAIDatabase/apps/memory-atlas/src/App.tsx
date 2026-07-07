@@ -38,10 +38,12 @@ import {
   visibleGraphFor,
 } from "./data/atlas";
 import {
+  DEFAULT_TIMELINE_RENDERER_MODE,
   getInitialGalaxyRendererMode,
   getInitialTimelineRendererMode,
   persistGalaxyRendererMode,
   persistTimelineRendererMode,
+  TIMELINE_RENDERER_FEATURE_FLAG_VERSION,
   type GalaxyRendererMode,
   type TimelineRendererMode,
 } from "./config/visualFlags";
@@ -95,6 +97,28 @@ declare global {
       fallbackCount: number;
       safety: StarfieldMappingResult["safety"];
       formulas: StarfieldMappingResult["formulas"];
+    };
+    __memoryAtlasStage5Phase3?: () => {
+      integrationVersion: typeof TIMELINE_RENDERER_FEATURE_FLAG_VERSION;
+      rendererMode: TimelineRendererMode;
+      defaultRendererMode: typeof DEFAULT_TIMELINE_RENDERER_MODE;
+      legacyRollbackEnabled: true;
+      visibleEventCount: number;
+      totalEventCount: number;
+      selectedRangeActive: boolean;
+      selectedRange: TimelineTimeRangeSelection | null;
+      evidenceLayers: string[];
+      levelCounts: Record<string, number>;
+      feedback: {
+        reducedMotion: boolean;
+        pseudoHaptic: boolean;
+        audio: boolean;
+      };
+      safety: {
+        rawPrivateDataIncluded: false;
+        directActiveMemoryWriteback: false;
+        proposalWrite: false;
+      };
     };
   }
 }
@@ -1994,6 +2018,44 @@ function TimelineView({
   const activeRiverEvent = lockedEvent ?? hoveredRiverEvent;
 
   useEffect(() => {
+    window.__memoryAtlasStage5Phase3 = () => ({
+      integrationVersion: TIMELINE_RENDERER_FEATURE_FLAG_VERSION,
+      rendererMode: timelineRendererMode,
+      defaultRendererMode: DEFAULT_TIMELINE_RENDERER_MODE,
+      legacyRollbackEnabled: true,
+      visibleEventCount: display.visibleCount,
+      totalEventCount: display.totalCount,
+      selectedRangeActive: Boolean(selectedTimelineRange),
+      selectedRange: selectedTimelineRange,
+      evidenceLayers: [...riverDisplay.evidenceLayers.map((layer) => layer.kind), "roi-gradient"],
+      levelCounts: riverDisplay.levelCounts,
+      feedback: {
+        reducedMotion: feedbackSettings.reducedMotion,
+        pseudoHaptic: feedbackSettings.pseudoHaptic,
+        audio: feedbackSettings.audio,
+      },
+      safety: {
+        rawPrivateDataIncluded: false,
+        directActiveMemoryWriteback: false,
+        proposalWrite: false,
+      },
+    });
+    return () => {
+      delete window.__memoryAtlasStage5Phase3;
+    };
+  }, [
+    display.totalCount,
+    display.visibleCount,
+    feedbackSettings.audio,
+    feedbackSettings.pseudoHaptic,
+    feedbackSettings.reducedMotion,
+    riverDisplay.evidenceLayers,
+    riverDisplay.levelCounts,
+    selectedTimelineRange,
+    timelineRendererMode,
+  ]);
+
+  useEffect(() => {
     setTimelinePlaying(false);
     setTimelineCursor(1);
   }, [timeline.length]);
@@ -2116,6 +2178,8 @@ function TimelineView({
     <div
       className="visual-workspace timeline-map"
       data-timeline-renderer={timelineRendererMode}
+      data-default-timeline-renderer={DEFAULT_TIMELINE_RENDERER_MODE}
+      data-stage5-phase3-integration={TIMELINE_RENDERER_FEATURE_FLAG_VERSION}
       data-shared-state={sharedState.schema_version}
       data-shared-focus-node={sharedState.focus.timeline.nodeId ?? ""}
       data-shared-time-range={sharedState.focus.timeline.timeRangeId ?? ""}
@@ -2242,6 +2306,8 @@ function TimelineView({
       {timelineRendererMode === "memory-river" ? (
         <svg
           className="memory-river-canvas timeline-canvas"
+          data-stage5-phase3-memory-river={TIMELINE_RENDERER_FEATURE_FLAG_VERSION}
+          data-legacy-rollback="timelineRenderer=legacy"
           data-utc-time-scale="true"
           data-interaction-mode={interactionMode}
           data-selected-time-range={selectedTimelineRange ? "true" : "false"}
