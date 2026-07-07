@@ -19,6 +19,7 @@
 - [x] Provide a fail-closed PostgreSQL execution guard that refuses `psql` unless the target is explicitly marked non-production.
 - [x] Provide a pre-consensus DB landing bundle so database proof can be generated before accepted Stage-2 payroll baseline.
 - [x] Provide a DB proof application step that can set Stage-2 database gates true only from a non-production execution proof.
+- [x] Provide a read-only post-load state verification step so database verification requires row counts that match the landing bundle.
 - [ ] Execute the loader only against an explicitly configured non-production PostgreSQL target.
 
 ## Phase 0 - Local verification
@@ -55,5 +56,5 @@
 - [ ] Confirm day-5 consensus gate compares all five runs.
 - [ ] Confirm accepted certificate appears only when all five hashes match exactly.
 - [x] Confirm accepted certificate also requires per-run location, raw-to-derived, and database transaction commit/verification gates.
-- [x] Confirm pre-consensus DB proof can propagate database transaction commit/verification gates into Stage-2 run manifests without payroll acceptance.
+- [x] Confirm pre-consensus DB proof can propagate database transaction commit/verification gates into Stage-2 run manifests without payroll acceptance only after execution proof and state verification proof both pass.
 - [ ] Confirm payroll baseline rows appear only after accepted certificate.

@@ -25,9 +25,9 @@ Required steps:
 11. Run `KMFA/kmfa-dingtalk-attendance-skill/scripts/month_gate.py --run-slot evening --print-json`.
 12. If day 1-5 of the following month, run `KMFA/kmfa-dingtalk-attendance-skill/scripts/run_stage2_evening.sh`.
 13. `run_stage2_evening.sh` must write stage-2 artifacts only from an approved source adapter, explicit `KMFA_STAGE2_SOURCE_JSON` replay snapshot, or `KMFA_STAGE2_SOURCE_MODE=raw_replay_day_fact` with `KMFA_STAGE2_RAW_REPLAY_DAY_FACT_DIR` pointing to a private raw replay day-fact/linkage bundle.
-14. Raw replay day-fact sources may prove raw-to-derived reconciliation and location evidence, but must keep database commit/verification gates false until an approved non-production PostgreSQL execution proof exists.
-15. If an approved non-production DB target is configured, generate a pre-consensus DB landing bundle, guard-execute the PostgreSQL load plan, and apply the execution proof with `apply_stage2_database_proof.py` before writing Stage-2 run artifacts.
-16. If no DB execution proof is available, keep DB gates false; day-5 consensus must fail closed rather than fabricate database proof.
+14. Raw replay day-fact sources may prove raw-to-derived reconciliation and location evidence, but must keep database commit/verification gates false until approved non-production PostgreSQL execution and state verification proofs exist.
+15. If an approved non-production DB target is configured, generate a pre-consensus DB landing bundle, guard-execute the PostgreSQL load plan, run read-only post-load row-count verification with `verify_postgres_landing_state.py`, and apply both proofs with `apply_stage2_database_proof.py` before writing Stage-2 run artifacts.
+16. If no DB execution proof or state verification proof is available, keep DB gates false; day-5 consensus must fail closed rather than fabricate database proof.
 17. If no approved source is configured, treat `STAGE2_ADAPTER_SOURCE_MISSING` as a fail-closed blocker; do not fabricate data.
 18. If this is day 5, `run_stage2_evening.sh` must run `KMFA/kmfa-dingtalk-attendance-skill/scripts/stage2_consensus_gate.py`.
 19. If five canonical hashes match exactly and P0/P1 unresolved counts are zero, generate stage-2 consensus certificate and payroll baseline candidate.

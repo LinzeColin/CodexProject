@@ -31,7 +31,13 @@ def require(condition: bool, message: str) -> None:
         raise SystemExit(message)
 
 
-def validate_proof(source: dict[str, Any], bundle_manifest: dict[str, Any], load_plan_manifest: dict[str, Any], proof: dict[str, Any]) -> tuple[str, str]:
+def validate_proof(
+    source: dict[str, Any],
+    bundle_manifest: dict[str, Any],
+    load_plan_manifest: dict[str, Any],
+    proof: dict[str, Any],
+    state_proof: dict[str, Any],
+) -> tuple[str, str, str]:
     source_snapshot_hash = stable_hash(source)
     require(bundle_manifest.get("status") == "READY", "db landing bundle is not READY")
     require(bundle_manifest.get("mode") == "offline_preconsensus_db_landing_bundle", "db landing bundle is not pre-consensus")
@@ -54,26 +60,42 @@ def validate_proof(source: dict[str, Any], bundle_manifest: dict[str, Any], load
     require(checks.get("target_env_nonproduction") is True, "target environment was not non-production")
     require(checks.get("database_url_not_production_like") is True, "database URL looked production-like")
     require(checks.get("execution_guard_satisfied") is True, "execution guard was not satisfied")
+    require(state_proof.get("status") == "pass", "state verification proof status is not pass")
+    require(state_proof.get("mode") == "postgres_landing_state_verification", "state verification proof mode mismatch")
+    require(state_proof.get("bundle_source_hash") == bundle_manifest.get("source_snapshot_hash"), "state verification source hash mismatch")
+    require(state_proof.get("psql_invoked") is True, "state verification did not invoke psql")
+    require(state_proof.get("postgres_connection_used") is True, "state verification did not use PostgreSQL")
+    require(state_proof.get("database_mutation_attempted") is False, "state verification must be read-only")
+    require(state_proof.get("database_mutation_performed") is False, "state verification must not mutate database")
+    require(state_proof.get("live_dws_performed") is False, "state verification unexpectedly used live DWS")
+    state_checks = state_proof.get("checks") if isinstance(state_proof.get("checks"), dict) else {}
+    require(state_checks.get("target_env_nonproduction") is True, "state verification target environment was not non-production")
+    require(state_checks.get("database_url_not_production_like") is True, "state verification database URL looked production-like")
+    require(state_checks.get("counts_match") is True, "state verification counts did not match bundle")
+    require(state_proof.get("tables_checked") == load_plan_manifest.get("tables"), "state verification table list mismatch")
     marker = "postgres-nonprod:" + proof_hash({
         "bundle_source_hash": bundle_manifest.get("source_snapshot_hash"),
         "load_plan_tables": load_plan_manifest.get("tables"),
         "payloads": load_plan_manifest.get("payloads"),
         "target_env": proof.get("target_env"),
         "psql_returncode": proof.get("psql_returncode"),
+        "state_verification_hash": proof_hash(state_proof),
     }).removeprefix("sha256:")[:32]
-    return marker, proof_hash(proof)
+    return marker, proof_hash(proof), proof_hash(state_proof)
 
 
-def materialize(source_json: Path, bundle_dir: Path, execution_proof_json: Path, out_json: Path) -> dict[str, Any]:
+def materialize(source_json: Path, bundle_dir: Path, execution_proof_json: Path, state_verification_json: Path, out_json: Path) -> dict[str, Any]:
     source = load_json(source_json)
     bundle_manifest = load_json(bundle_dir / "db_landing_manifest.json")
     load_plan_manifest = load_json(bundle_dir / "postgres_load_plan_manifest.json")
     proof = load_json(execution_proof_json)
+    state_proof = load_json(state_verification_json)
     require(isinstance(source, dict), "source snapshot must be an object")
     require(isinstance(bundle_manifest, dict), "bundle manifest must be an object")
     require(isinstance(load_plan_manifest, dict), "load plan manifest must be an object")
     require(isinstance(proof, dict), "execution proof must be an object")
-    marker, execution_proof_hash = validate_proof(source, bundle_manifest, load_plan_manifest, proof)
+    require(isinstance(state_proof, dict), "state verification proof must be an object")
+    marker, execution_proof_hash, state_verification_hash = validate_proof(source, bundle_manifest, load_plan_manifest, proof, state_proof)
     source = dict(source)
     gates = dict(source.get("quality_gates") if isinstance(source.get("quality_gates"), dict) else {})
     require(gates.get("raw_to_derived_reconciliation_passed") is True, "raw_to_derived gate must already be true")
@@ -89,6 +111,8 @@ def materialize(source_json: Path, bundle_dir: Path, execution_proof_json: Path,
         "psql_invoked": True,
         "postgres_connection_used": True,
         "database_mutation_performed": True,
+        "state_verification_hash": state_verification_hash,
+        "state_counts_verified": True,
         "live_dws_performed": False,
     }
     write_json(out_json, source)
@@ -98,6 +122,7 @@ def materialize(source_json: Path, bundle_dir: Path, execution_proof_json: Path,
         "target_month": source.get("target_month"),
         "database_transaction_marker": marker,
         "execution_proof_hash": execution_proof_hash,
+        "state_verification_hash": state_verification_hash,
         "quality_gates": gates,
         "postgres_connection_used": False,
         "database_mutation_performed": False,
@@ -111,10 +136,19 @@ def main() -> int:
     parser.add_argument("--source-json", required=True)
     parser.add_argument("--bundle-dir", required=True)
     parser.add_argument("--execution-proof-json", required=True)
+    parser.add_argument("--state-verification-json", default="")
     parser.add_argument("--out-json", required=True)
     parser.add_argument("--print-json", action="store_true")
     args = parser.parse_args()
-    result = materialize(Path(args.source_json), Path(args.bundle_dir), Path(args.execution_proof_json), Path(args.out_json))
+    if not args.state_verification_json:
+        raise SystemExit("state verification proof missing: pass --state-verification-json")
+    result = materialize(
+        Path(args.source_json),
+        Path(args.bundle_dir),
+        Path(args.execution_proof_json),
+        Path(args.state_verification_json),
+        Path(args.out_json),
+    )
     if args.print_json:
         print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
     return 0
