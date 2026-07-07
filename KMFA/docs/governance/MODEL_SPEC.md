@@ -1552,3 +1552,13 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: source_formal_comparison_blocker_count=72 and source_missing_private_fingerprint_pair_count=72 preserve the prior blocker base; fingerprint_pair_completion_item_count=72, processed_fingerprint_available_count=72, raw_candidate_fingerprint_available_count=24, fingerprint_pair_completed_count=24, fingerprint_pair_completion_blocker_count=48, missing_raw_candidate_fingerprint_count=48 and missing_processed_fingerprint_count=0 prove partial private pair completion only.
 - gate: `NO_GO`; raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private pair completion diagnostic, records, blocker records and report stay under ignored runtime and raw inbox remains untouched.
+
+## V014 Residual Difference Raw-To-Processed Comparison Fingerprint Pair Completion Blocker Audit After Owner Anchor Confirmation
+
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-COMPARISON-FINGERPRINT-PAIR-COMPLETION-BLOCKER-AUDIT-AFTER-OWNER-ANCHOR-CONFIRMATION-001`
+- parameter_ids: `PARAM-KMFA-1489`, `PARAM-KMFA-1490`, `PARAM-KMFA-1491`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_AUDIT_AFTER_OWNER_ANCHOR_CONFIRMATION`
+- version: `0.1.4-residual-difference-raw-to-processed-comparison-fingerprint-pair-completion-blocker-audit-after-owner-anchor-confirmation`
+- rule: source_fingerprint_pair_completion_item_count=72, source_fingerprint_pair_completed_count=24 and source_fingerprint_pair_completion_blocker_count=48 preserve the prior pair-completion base; blocker_audit_item_count=48, missing_raw_candidate_fingerprint_blocker_count=48, missing_raw_candidate_record_ref_hash_blocker_count=48, missing_processed_fingerprint_blocker_count=0, actionable_private_pair_completion_ready_count=0 and comparison_retry_ready_after_blocker_audit_count=0 prove all remaining blockers still lack raw candidate fingerprints.
+- gate: `NO_GO`; raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private blocker audit diagnostic, records and report stay under ignored runtime and raw inbox remains untouched.

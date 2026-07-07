@@ -736,3 +736,18 @@ kmfa_v014_residual_difference_raw_comparison_fingerprint_pair_completion_after_o
   evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_AFTER_OWNER_ANCHOR_CONFIRMATION
   validator: KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_fingerprint_pair_completion_after_owner_anchor_confirmation.py
   scope: Residual difference raw-to-processed comparison fingerprint pair completion after owner anchor confirmation only; completes 24 evidence-supported private fingerprint pairs and leaves 48 blocked by missing raw candidate fingerprints while value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution remain closed.
+
+kmfa_v014_residual_difference_raw_comparison_fingerprint_pair_completion_blocker_audit_after_owner_anchor_confirmation:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-raw-to-processed-comparison-fingerprint-pair-completion-blocker-audit-after-owner-anchor-confirmation"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-COMPARISON-FINGERPRINT-PAIR-COMPLETION-BLOCKER-AUDIT-AFTER-OWNER-ANCHOR-CONFIRMATION-001
+  parameter_refs:
+    - PARAM-KMFA-1489
+    - PARAM-KMFA-1490
+    - PARAM-KMFA-1491
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_AUDIT_AFTER_OWNER_ANCHOR_CONFIRMATION
+  validator: KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_fingerprint_pair_completion_blocker_audit_after_owner_anchor_confirmation.py
+  scope: Residual difference raw-to-processed comparison fingerprint pair completion blocker audit after owner anchor confirmation only; confirms all 48 remaining pair-completion blockers are missing raw candidate fingerprints while value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution remain closed.
