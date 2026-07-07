@@ -119,8 +119,42 @@ def test_evening_replay_adapter_writes_five_run_artifacts_and_accepts_consensus(
         assert cert["stage2_status"] == "accepted"
 
 
+def test_evening_live_source_adapter_fails_closed_without_dws_authorization():
+    with tempfile.TemporaryDirectory() as td:
+        runtime = Path(td) / "private_runtime"
+        env = os.environ.copy()
+        env.update({
+            "KMFA_REPO_ROOT": str(ROOT.parent),
+            "KMFA_PRIVATE_RUNTIME": str(runtime),
+            "KMFA_RUN_SLOT": "evening",
+            "KMFA_TODAY_OVERRIDE": "2026-08-01",
+            "KMFA_STAGE2_SOURCE_MODE": "dws_live",
+            "KMFA_S19_ALLOW_DWS_COMMANDS": "0",
+        })
+        env.pop("KMFA_STAGE2_SOURCE_JSON", None)
+        p = subprocess.run(
+            [str(SCRIPT_DIR / "run_stage2_evening.sh")],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            env=env,
+        )
+        assert p.returncode == 2
+        assert "STAGE2_ADAPTER_SOURCE_MISSING" in p.stderr
+        run_dir = runtime / "stage2" / "202607" / "run_01"
+        status_path = run_dir / "source_adapter_status.json"
+        assert status_path.is_file()
+        status = json.loads(status_path.read_text(encoding="utf-8"))
+        assert status["status"] == "STAGE2_ADAPTER_SOURCE_MISSING"
+        assert status["source_mode"] == "dws_live"
+        assert status["live_dws_performed"] is False
+        assert status["dws_commands_allowed"] is False
+        assert not (run_dir / "run_manifest.json").exists()
+
+
 if __name__ == "__main__":
     test_accepts_identical()
     test_rejects_divergent()
     test_evening_replay_adapter_writes_five_run_artifacts_and_accepts_consensus()
+    test_evening_live_source_adapter_fails_closed_without_dws_authorization()
     print("stage2 consensus tests passed")

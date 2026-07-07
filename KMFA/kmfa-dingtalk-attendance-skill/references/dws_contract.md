@@ -40,3 +40,8 @@ The live acquisition adapter must collect:
 ## Fail behavior
 
 If API response indicates delay, pagination uncertainty, partial response, or permission failure, the run must mark data quality below Q4 until a later run proves completeness.
+
+For stage-2 automation, live DWS source resolution must fail closed before any
+command unless `KMFA_S19_ALLOW_DWS_COMMANDS=1` and the browser policy status is
+READY. The resolver must write `source_adapter_status.json` with
+`live_dws_performed=false` when blocked.

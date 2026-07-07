@@ -53,10 +53,16 @@ The current portable stage-2 runner is fail-closed:
 
 - If `KMFA_STAGE2_SOURCE_JSON` points to an approved replay snapshot, it writes
   deterministic run artifacts without live DWS or database credentials.
+- `scripts/resolve_stage2_source.py` records `source_adapter_status.json` for
+  each eligible run, including fail-closed DWS safety status.
+- If `KMFA_STAGE2_SOURCE_MODE=dws_live` is set but `KMFA_S19_ALLOW_DWS_COMMANDS`
+  and browser policy are not READY, the run exits with
+  `STAGE2_ADAPTER_SOURCE_MISSING` before any live call.
 - If no approved source adapter is configured, it exits with
   `STAGE2_ADAPTER_SOURCE_MISSING` and must be reported as a blocker.
-- A future live-safe adapter may replace the replay source only after explicit
-  authorization and validation.
+- A future live materializer may replace the replay source only after explicit
+  authorization, validated raw/result/detail coverage, and private archive
+  write proof.
 
 ## Required explicit skill invocation
 

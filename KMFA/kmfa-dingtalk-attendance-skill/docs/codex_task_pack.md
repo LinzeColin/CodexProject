@@ -58,12 +58,16 @@ current tests for S19 attendance logic
 Current status:
 
 - `scripts/run_stage2_evening.sh` has a portable offline replay path.
+- `scripts/resolve_stage2_source.py` now records per-run source adapter status.
 - Set `KMFA_STAGE2_SOURCE_JSON` to an approved snapshot to write deterministic
   stage-2 artifacts.
+- Set `KMFA_STAGE2_SOURCE_MODE=dws_live` only after explicit DWS authorization;
+  without authorization it fails closed and writes `source_adapter_status.json`.
 - If no approved source is configured, the runner fails closed with
   `STAGE2_ADAPTER_SOURCE_MISSING`.
-- The future live-safe repo adapter still needs explicit authorization and
-  validation before it may replace replay input.
+- The future live materializer still needs explicit authorization, result/detail
+  coverage validation, private archive writes, and no-secret proof before it may
+  replace replay input.
 
 The live-safe adapter must eventually connect:
 
@@ -80,6 +84,7 @@ to the repo-specific command that:
 - writes run manifest
 - writes quality/exception reports
 - writes payroll baseline candidate JSON
+- writes `source_adapter_status.json` on every eligible day
 
 ### Task 3 - Add PostgreSQL schema
 
