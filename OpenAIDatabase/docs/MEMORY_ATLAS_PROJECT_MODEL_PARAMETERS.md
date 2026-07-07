@@ -1,3 +1,37 @@
+## 104. Memory Atlas v1.1.7 Final GitHub Main Upload
+
+状态：`final_github_main_upload_completed`。
+
+验收 ID：`ACC-MA-V117-FINAL-GITHUB-MAIN`。
+
+模型参数：
+
+- `validate:v1.1.7-final-upload` 是 final upload 必跑 validator。
+- `validate:v1.1.7-stage10` 是 final upload 前置 validator。
+- Final artifact 固定为 `docs/reviews/memory_atlas_v1_1_7_final_github_main_upload.md`。
+- GitHub main points at the final upload commit。
+- Canonical repository 固定为 `LinzeColin/CodexProject`。
+- Canonical project tree 固定为 `OpenAIDatabase`。
+- No remote development branch。
+- No open pull request。
+
+参数记录：
+
+- `PARAM-MA-V117-FINAL-UPLOAD-001 final_upload_status = final_github_main_upload_completed`
+- `PARAM-MA-V117-FINAL-UPLOAD-002 final_upload_validator = validate:v1.1.7-final-upload`
+- `PARAM-MA-V117-FINAL-UPLOAD-003 final_upload_stage10_validator = validate:v1.1.7-stage10`
+- `PARAM-MA-V117-FINAL-UPLOAD-004 final_upload_artifact = docs/reviews/memory_atlas_v1_1_7_final_github_main_upload.md`
+- `PARAM-MA-V117-FINAL-UPLOAD-005 final_upload_remote = LinzeColin/CodexProject`
+- `PARAM-MA-V117-FINAL-UPLOAD-006 final_upload_project_tree = OpenAIDatabase`
+- `PARAM-MA-V117-FINAL-UPLOAD-007 final_upload_proof = GitHub main points at the final upload commit`
+- `PARAM-MA-V117-FINAL-UPLOAD-008 final_upload_boundary = No remote development branch;No open pull request`
+
+验收信号：
+
+- `MEMORY_ATLAS_REQUIRE_REMOTE_MAIN=1 validate:v1.1.7-final-upload` checks that GitHub main points at the final upload commit and no remote development branch exists.
+
+Machine-readable boundary summary: Final GitHub Main Upload; MA-V117-FINAL-UPLOAD; ACC-MA-V117-FINAL-GITHUB-MAIN; final_github_main_upload_completed; validate:v1.1.7-final-upload; validate:v1.1.7-stage10; GitHub main points at the final upload commit; No remote development branch; No open pull request; No raw/private read; No direct active-memory writeback; No proposal queue write; No agent apply.
+
 ## 103. Memory Atlas v1.1.7 Stage 10 Review
 
 状态：`stage_10_review_passed_pending_final_github_main_upload`。

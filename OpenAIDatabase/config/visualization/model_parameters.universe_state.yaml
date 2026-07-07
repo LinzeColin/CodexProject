@@ -67,6 +67,33 @@ validation_hints:
     - no generator implementation in Stage 0
     - no raw transcript access
     - no writeback
+final_github_main_upload:
+  task_id: MA-V117-FINAL-UPLOAD
+  acceptance_id: ACC-MA-V117-FINAL-GITHUB-MAIN
+  status: final_github_main_upload_completed
+  required_validator: validate:v1.1.7-final-upload
+  prerequisite_validator: validate:v1.1.7-stage10
+  artifact: docs/reviews/memory_atlas_v1_1_7_final_github_main_upload.md
+  remote: LinzeColin/CodexProject
+  project_tree: OpenAIDatabase
+  proof: GitHub main points at the final upload commit
+  upload_boundary:
+    - No remote development branch
+    - No open pull request
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundaries:
+    - no_remote_development_branch
+    - no_open_pull_request
+    - no_cloudflare_live_deploy
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_proposal_queue_write
+    - no_agent_apply
 stage10_review:
   task_id: MA-V117-S10-REVIEW
   acceptance_id: ACC-MA-V117-S10-REVIEW
