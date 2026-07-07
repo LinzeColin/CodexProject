@@ -1,6 +1,39 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "RDSMCAR01"
+    phase: "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_APPLICATION_READINESS"
+    objective: "Verify private residual-difference source-map correction application readiness."
+    scope:
+      - "public-safe readiness evidence"
+      - "ignored private readiness queues"
+      - "validator and focused unit test"
+    non_scope:
+      - "raw inbox reads or mutation"
+      - "source-map correction application"
+      - "authoritative value resolution application"
+      - "GitHub upload or app reinstall"
+    status: "completed"
+    dependencies:
+      - "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_AUTHORIZATION_INTAKE"
+    required_files:
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_APPLICATION_READINESS/machine/outside_scope_candidate_review_residual_difference_source_map_correction_application_readiness_manifest.json"
+      - "KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_source_map_correction_application_readiness.py"
+    acceptance_ids:
+      - "ACC-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-SOURCE-MAP-CORRECTION-APPLICATION-READINESS"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_source_map_correction_application_readiness.py --require-private-readiness"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_candidate_review_residual_difference_source_map_correction_application_readiness"
+    test_results:
+      - "PASS: residual-difference source-map correction application readiness validator"
+      - "PASS: focused readiness unit test"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_APPLICATION_READINESS/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_APPLICATION_READINESS/machine/outside_scope_candidate_review_residual_difference_source_map_correction_application_readiness_manifest.json"
+    risk: "Readiness can be misread as actual correction; downstream write and comparison gates remain false."
+    rollback: "Remove this phase public artifacts and ignored private readiness outputs; keep prior authorization intake intact."
+    target_version: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-application-readiness"
+    completed_version: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-application-readiness"
   - task_id: "S1PAT01"
     phase: "S1PA"
     objective: "读取根 AGENTS、项目治理文件和本 TaskPack。"
