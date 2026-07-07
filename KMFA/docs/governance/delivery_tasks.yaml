@@ -11267,3 +11267,23 @@ tasks:
     rollback: "Remove current phase artifacts, metadata copies, private readiness outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
     target_version: "0.1.4-outside-scope-candidate-review-residual-difference-response-import-readiness-recheck"
     completed_version: "0.1.4-outside-scope-candidate-review-residual-difference-response-import-readiness-recheck"
+  - task_id: "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-SOURCE-MAP-CORRECTION-BLOCKER-AUDIT-20260707"
+    phase_id: "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_AUDIT"
+    status: "completed"
+    acceptance_ids:
+      - "ACC-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-SOURCE-MAP-CORRECTION-BLOCKER-AUDIT"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_outside_scope_candidate_review_residual_difference_source_map_correction_blocker_audit.py --generated-at 2026-07-07T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_source_map_correction_blocker_audit.py --require-private-audit"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_outside_scope_candidate_review_residual_difference_source_map_correction_blocker_audit"
+    test_results:
+      - "PASS: residual difference source-map correction blocker audit validator and focused unit test passed; 72 valid responses remain non-actionable and source-map correction blocked while raw inbox, discrepancy closure, raw comparison and downstream gates stay closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_AUDIT/human/outside_scope_candidate_review_residual_difference_source_map_correction_blocker_audit.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_AUDIT/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_AUDIT/machine/outside_scope_candidate_review_residual_difference_source_map_correction_blocker_audit_manifest.json"
+      - "KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_AUDIT/machine/outside_scope_candidate_review_residual_difference_source_map_correction_blocker_audit_matrix_public_safe.json"
+    risk: "A cleared missing-response blocker can be mistaken for source-map correction authority; this phase only records correction blockers and does not assert value consistency."
+    rollback: "Remove current phase artifacts, metadata copies, private audit outputs, tool, validator, focused test and governance entries; do not modify raw inbox."
+    target_version: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-blocker-audit"
+    completed_version: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-blocker-audit"
