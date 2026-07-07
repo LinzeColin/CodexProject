@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "targets": [
+    {
+      "label": "张霖泽",
+      "type": "dingtalk_direct_or_robot",
+      "preferred_channel": "dingtalk_robot_env",
+      "webhook_env_key": "DINGTALK_ROUTINE_ROBOT_URL",
+      "secret_env_key": "DINGTALK_ROUTINE_ROBOT_SIGNING_KEY",
+      "user_id_env_key": "DINGTALK_BOSS_USER_ID"
+    }
+  ]
+}

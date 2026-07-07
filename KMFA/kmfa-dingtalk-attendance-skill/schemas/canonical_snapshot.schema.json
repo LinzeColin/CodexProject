@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kmfa.local/schemas/canonical_snapshot.schema.json",
+  "title": "Canonical Monthly Attendance Snapshot",
+  "type": "object",
+  "required": ["target_month", "policy_version", "identity_version", "source_batch_hashes", "employees", "payroll_baseline_candidate"],
+  "properties": {
+    "target_month": {"type": "string", "pattern": "^[0-9]{6}$"},
+    "policy_version": {"type": "string"},
+    "identity_version": {"type": "string"},
+    "source_batch_hashes": {"type": "array", "items": {"type": "string", "pattern": "^sha256:"}},
+    "employees": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["employee_internal_id", "days"],
+        "properties": {
+          "employee_internal_id": {"type": "string"},
+          "dingtalk_userid": {"type": "string"},
+          "days": {"type": "array"}
+        }
+      }
+    },
+    "location_evidence_summary": {"type": "object"},
+    "trajectory_evidence_summary": {"type": "object"},
+    "unresolved_exceptions": {"type": "object"},
+    "payroll_baseline_candidate": {"type": "array"}
+  },
+  "additionalProperties": true
+}

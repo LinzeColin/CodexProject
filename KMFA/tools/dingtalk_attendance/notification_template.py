@@ -11,7 +11,8 @@ from zoneinfo import ZoneInfo
 from KMFA.tools.dingtalk_attendance import TIMEZONE
 
 
-REST_REQUIRED_THRESHOLD_DAYS = 25
+REST_REQUIRED_THRESHOLD_DAYS = 23
+REST_REQUIRED_EXCLUDED_NAMES = frozenset({"丁春法", "李永占"})
 NOTIFICATION_HIDDEN_NAMES = frozenset()
 RUN_TYPE_DISPLAY_LABELS = {
     "morning": "晨报",
@@ -188,7 +189,7 @@ def coerce_rest_required_people(value: Any) -> list[dict[str, Any]]:
             days = int(item.get("effective_attendance_days"))
         except (TypeError, ValueError):
             continue
-        if name and days >= REST_REQUIRED_THRESHOLD_DAYS:
+        if name and name not in REST_REQUIRED_EXCLUDED_NAMES and days >= REST_REQUIRED_THRESHOLD_DAYS:
             person = {"name": name, "effective_attendance_days": days}
             latest_date = str(item.get("latest_date") or item.get("last_date") or "").strip()
             if latest_date:

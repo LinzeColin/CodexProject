@@ -22,3 +22,6 @@ data/raw/
 metadata/dingtalk_attendance/private_runtime/*
 !metadata/dingtalk_attendance/private_runtime/README.md
 !metadata/dingtalk_attendance/private_runtime/.gitkeep
+metadata/daily_routine_check/private_runtime/*
+!metadata/daily_routine_check/private_runtime/README.md
+!metadata/daily_routine_check/private_runtime/.gitkeep

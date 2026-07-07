@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "targets": [
+    {
+      "label": "personal-recipient",
+      "type": "personal",
+      "enabled": true,
+      "reports": ["management", "hr"],
+      "user_id": "<DINGTALK_USER_ID>",
+      "preferred_channel": "dws_open_dingtalk_id_chat"
+    },
+    {
+      "label": "attendance-group",
+      "type": "group",
+      "enabled": true,
+      "reports": ["management", "hr"],
+      "preferred_channel": "dingtalk_group_robot_env",
+      "webhook_env_key": "DINGTALK_ROBOT_URL",
+      "secret_env_key": "DINGTALK_ROBOT_SIGNING_KEY"
+    }
+  ]
+}
