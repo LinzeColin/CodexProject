@@ -1,3 +1,31 @@
+## v1.1.7 Stage 1 Phase 1.4：Topic Classification Detail
+
+状态：`phase_1_4_topic_classification_detail_completed_pending_stage1_review`。
+
+任务 ID：`MA-V117-S1P04`。
+
+验收 ID：`ACC-MA-V117-S1P04`。
+
+本 phase 把主题分类从统计条升级为可排序、可解释、可点击的 Topic Classification 明细。
+首页显示 Topic Classification cards；点击后打开 ThemeDetailPanel，展示主题状态、主题强度、趋势、ROI、冲突、置信度、记录数、近期记录数、代表记录、证据、关联资产/行动、Starfield handoff、River handoff 和 proposal-only 边界。
+
+涉及文件：
+
+- `docs/architecture/theme_category_model.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage1_phase4_topic_classification_acceptance.md`
+- `apps/memory-atlas/src/components/ThemeDetailPanel.tsx`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage1_phase4.cjs`
+- `config/visualization/model_parameters.universe_state.yaml`
+
+验收：
+
+- `validate:v1.1.7-stage1-phase4`
+- `ACC-MA-V117-S1P04`
+- 每条 Topic Classification 必须包含 `topic_state`、`topic_strength`、`trend`、`confidence`、`record_count`、`evidence_refs`、`matched_reason`、`linked_asset_ids`、`linked_action_ids`、`starfield_handoff`、`river_handoff` 和 `proposal_only`。
+- ThemeDetailPanel 只读展示主题分类明细，不写 proposal JSON，不直接修改 active memory。
+
+Machine-readable boundary summary: Topic Classification; ThemeDetailPanel; topic_strength; matched_reason; proposal_only; No raw/private data read; No direct writeback; No proposal write; No GitHub main upload before whole Stage 0-8 completion.
+
 # Memory Atlas Delivery Record
 
 更新时间：2026-07-01

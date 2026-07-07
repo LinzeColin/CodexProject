@@ -21,6 +21,37 @@ No Cloudflare live deploy, Access policy mutation, memoryatlas.linzezhang.com pu
 - Restored proM2 MacData Chinese report artifacts to Markdown `.md` files for latest, draft, and final reports per owner instruction.
 
 No API key, token, password, cookie, session, Keychain item, shell history, full environment dump, `.env` raw content, Time Machine data, or iCloud data is collected.
+## Unreleased - Memory Atlas v1.1.7 Stage 1 Phase 1.4
+
+- Added `docs/architecture/theme_category_model.md` with the
+  `theme_category_model_v1_1_7_stage1_phase4` model contract for concrete
+  Topic Classification details.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage1_phase4_topic_classification_acceptance.md`.
+- Added `apps/memory-atlas/src/components/ThemeDetailPanel.tsx` and updated
+  `App.tsx` / `styles.css` so Home Overview renders Topic Classification cards
+  and a `ThemeDetailPanel` with `topic_strength`, `trend`, `roi_score`,
+  `conflict_score`, `matched_reason`, representative records, evidence,
+  linked assets/actions, Starfield handoff, River handoff and `proposal_only`
+  safety hints.
+- Updated `config/visualization/model_parameters.universe_state.yaml` to
+  register `MA-V117-S1P04` / `ACC-MA-V117-S1P04`, required topic fields,
+  `topic_classification_sort_weights`, `top_topic_limit: 10` and proposal-only
+  gates.
+- Added `validate:v1.1.7-stage1-phase4` to verify the model contract,
+  runtime implementation, panel, styles, records and changed-path boundary.
+- Registered status
+  `phase_1_4_topic_classification_detail_completed_pending_stage1_review`.
+
+No Stage 1 review, Stage 2 proposal editor, Search 2.0 runtime, Review
+workflow runtime, Data Map 2.0 runtime, raw/private data read, direct
+writeback, proposal write, agent apply, production build, local app install,
+browser screenshot, deploy or GitHub main upload was added.
+
+Machine-readable boundary summary: Topic Classification runtime detail only;
+ThemeDetailPanel is proposal_only; No direct writeback; No GitHub main upload
+before whole Stage 0-8 completion.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 1 Phase 1.3
 
 - Added `docs/architecture/level_asset_model.md` with the

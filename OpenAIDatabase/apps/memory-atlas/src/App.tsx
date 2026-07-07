@@ -58,6 +58,7 @@ import { EmptyState } from "./components/EmptyState";
 import { ErrorState } from "./components/ErrorState";
 import { ActionDetailDrawer, type HomeActionDetail } from "./components/ActionDetailDrawer";
 import { AssetDetailPanel, type TierAssetDetail } from "./components/AssetDetailPanel";
+import { ThemeDetailPanel, type TopicClassificationDetail } from "./components/ThemeDetailPanel";
 import { MemoryAtlasHelpPanel } from "./components/help/MemoryAtlasHelpPanel";
 import { zhCNCopy } from "./i18n/zh-CN";
 
@@ -333,6 +334,13 @@ interface HomeTierAsset extends TierAssetDetail {
   node: AtlasNode | null;
 }
 
+interface HomeTopicDetail extends TopicClassificationDetail {
+  id: string;
+  targetView: ViewKey;
+  node: AtlasNode | null;
+  nodes: AtlasNode[];
+}
+
 interface MemoryWeatherV2 {
   label: string;
   summary: string;
@@ -511,6 +519,22 @@ const TIER_ASSET_SORT_WEIGHTS = {
   importance_weight: 0.25,
   confidence_weight: 0.25,
   staleness_penalty_weight: 0.15,
+};
+const TOPIC_CLASSIFICATION_TOP_LIMIT = 10;
+const TOPIC_CLASSIFICATION_STATES: TopicClassificationDetail["topic_state"][] = [
+  "dominant",
+  "rising",
+  "declining",
+  "emerging",
+  "conflict",
+  "black_hole",
+  "stale",
+];
+const TOPIC_CLASSIFICATION_SORT_WEIGHTS = {
+  strength_weight: 0.38,
+  trend_weight: 0.24,
+  confidence_weight: 0.22,
+  conflict_penalty_weight: 0.16,
 };
 const MEMORY_RIVER_MIN_X = 80;
 const MEMORY_RIVER_MAX_X = 960;
@@ -1173,6 +1197,7 @@ function HomeOverviewView({
 }) {
   const [selectedActionDetail, setSelectedActionDetail] = useState<HomeActionDetail | null>(null);
   const [selectedTierAsset, setSelectedTierAsset] = useState<TierAssetDetail | null>(null);
+  const [selectedTopicDetail, setSelectedTopicDetail] = useState<TopicClassificationDetail | null>(null);
   const model = useMemo(
     () => buildHomeOverviewModel(nodes, graphEdges, deltaStats),
     [deltaStats, graphEdges, nodes],
@@ -1210,6 +1235,21 @@ function HomeOverviewView({
 
   function closeTierAsset() {
     setSelectedTierAsset(null);
+  }
+
+  function openTopicDetail(topic: HomeTopicDetail) {
+    setSelectedTopicDetail(topic);
+  }
+
+  function openTopicTarget(topic: TopicClassificationDetail) {
+    const runtimeTopic = model.topicDetails.find((item) => item.topic_id === topic.topic_id);
+    if (!runtimeTopic) return;
+    if (runtimeTopic.node) onSelectNode(runtimeTopic.node);
+    onSwitchView(runtimeTopic.targetView);
+  }
+
+  function closeTopicDetail() {
+    setSelectedTopicDetail(null);
   }
 
   function jumpToPreview(node: AtlasNode | null, targetView: ViewKey) {
@@ -1407,6 +1447,43 @@ function HomeOverviewView({
         )}
         <div data-asset-detail-panel-host="true">
           <AssetDetailPanel asset={selectedTierAsset} onClose={closeTierAsset} onOpenTarget={openTierAssetTarget} />
+        </div>
+      </section>
+      <section className="home-topic-detail-panel" aria-label="主题分类明细">
+        <div className="panel-title-row">
+          <h3>主题分类明细</h3>
+          <span>proposal-only</span>
+        </div>
+        {model.topicDetails.length ? (
+          <div className="home-topic-detail-grid">
+            {model.topicDetails.map((topic) => (
+              <button
+                className="home-topic-detail-card"
+                data-topic-detail-card={topic.topic_id}
+                data-topic-state={topic.topic_state}
+                data-topic-strength={topic.topic_strength.toFixed(2)}
+                key={topic.id}
+                onClick={() => openTopicDetail(topic)}
+                type="button"
+              >
+                <span>{topic.topic_state}</span>
+                <strong>{topic.topic_label}</strong>
+                <div className="topic-detail-meta-grid" aria-label="主题分类排序信号">
+                  <i>{topic.category}</i>
+                  <i>Strength {formatScore(topic.topic_strength)}</i>
+                  <i>{topic.trend}</i>
+                  <i>{topic.record_count} records</i>
+                </div>
+                <small>{topic.matched_reason}</small>
+                <em>{topic.evidence_refs.length} 证据 · {topic.starfield_handoff}</em>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="home-tier-asset-empty">当前筛选下没有足够的主题分类明细；请放宽筛选或等待新的 redacted snapshot。</div>
+        )}
+        <div data-theme-detail-panel-host="true">
+          <ThemeDetailPanel topic={selectedTopicDetail} onClose={closeTopicDetail} onOpenTarget={openTopicTarget} />
         </div>
       </section>
       <section className="home-topic-strip" aria-label="主导主题趋势">
@@ -4122,6 +4199,7 @@ function buildHomeOverviewModel(
   signals: HomeSignalCard[];
   actions: HomeAction[];
   tierAssets: HomeTierAsset[];
+  topicDetails: HomeTopicDetail[];
   miniStarfieldPoints: MiniStarfieldPoint[];
   miniStarfieldFocus: AtlasNode | null;
   miniStarfieldSummary: string;
@@ -4168,6 +4246,15 @@ function buildHomeOverviewModel(
     protoStarNode,
     protoStarNodes,
     recentNodes,
+    staleNodes,
+    topTopic,
+  });
+  const tierAssets = buildTierAssetDetails({
+    actions,
+    graphEdges,
+    latest,
+    memoryNodes,
+    protoStarNodes,
     staleNodes,
     topTopic,
   });
@@ -4233,14 +4320,16 @@ function buildHomeOverviewModel(
       },
     ],
     actions,
-    tierAssets: buildTierAssetDetails({
+    tierAssets,
+    topicDetails: buildTopicClassificationDetails({
       actions,
       graphEdges,
-      latest,
       memoryNodes,
       protoStarNodes,
+      recentNodes,
+      olderComparableNodes,
       staleNodes,
-      topTopic,
+      tierAssets,
     }),
     miniStarfieldPoints,
     miniStarfieldFocus: miniStarfieldPoints[0]?.node ?? highLeverageNode,
@@ -4462,6 +4551,179 @@ function recommendedAssetActionFor(
   if (confidence < 0.5) return "review";
   if (valueScore < 0.35) return "defer";
   return "keep";
+}
+
+function buildTopicClassificationDetails({
+  actions,
+  graphEdges,
+  memoryNodes,
+  protoStarNodes,
+  recentNodes,
+  olderComparableNodes,
+  staleNodes,
+  tierAssets,
+}: {
+  actions: HomeAction[];
+  graphEdges: AtlasEdge[];
+  memoryNodes: AtlasNode[];
+  protoStarNodes: AtlasNode[];
+  recentNodes: AtlasNode[];
+  olderComparableNodes: AtlasNode[];
+  staleNodes: AtlasNode[];
+  tierAssets: HomeTierAsset[];
+}): HomeTopicDetail[] {
+  const groups = new Map<string, AtlasNode[]>();
+  memoryNodes.forEach((node) => {
+    const topic_label = compactThemeLabel(humanThemeLabel(node)) || "未归类主题";
+    groups.set(topic_label, [...(groups.get(topic_label) ?? []), node]);
+  });
+  const topCount = Math.max(1, ...Array.from(groups.values()).map((nodes) => nodes.length));
+
+  return Array.from(groups.entries())
+    .map(([topic_label, nodes]) =>
+      createTopicClassificationDetail(
+        topic_label,
+        nodes,
+        topCount,
+        actions,
+        graphEdges,
+        protoStarNodes,
+        recentNodes,
+        olderComparableNodes,
+        staleNodes,
+        tierAssets,
+      ),
+    )
+    .sort((left, right) => topicClassificationSortScore(right) - topicClassificationSortScore(left))
+    .slice(0, TOPIC_CLASSIFICATION_TOP_LIMIT);
+}
+
+function createTopicClassificationDetail(
+  topic_label: string,
+  nodes: AtlasNode[],
+  topCount: number,
+  actions: HomeAction[],
+  graphEdges: AtlasEdge[],
+  protoStarNodes: AtlasNode[],
+  recentNodes: AtlasNode[],
+  olderComparableNodes: AtlasNode[],
+  staleNodes: AtlasNode[],
+  tierAssets: HomeTierAsset[],
+): HomeTopicDetail {
+  const topic_id = `topic:${topic_label}`;
+  const representative = selectRepresentativeNode(nodes);
+  const recent_count = nodes.filter((node) => recentNodes.some((recent) => recent.id === node.id)).length;
+  const previous_count = nodes.filter((node) => olderComparableNodes.some((older) => older.id === node.id)).length;
+  const stale_count = nodes.filter((node) => staleNodes.some((stale) => stale.id === node.id)).length;
+  const proto_count = nodes.filter((node) => protoStarNodes.some((proto) => proto.id === node.id)).length;
+  const topic_state = topicStateForTopic(topic_label, nodes.length, topCount, recent_count, previous_count, stale_count, proto_count);
+  const trend = trendForTopic(recent_count, previous_count, proto_count, stale_count);
+  const roi_score = averageNodeScore(nodes, (node) => roiScoreForNode(node, 0.45));
+  const confidence = averageNodeScore(nodes, (node) => confidenceForAction(node, 0.58));
+  const conflict_score = topic_state === "conflict" ? 0.72 : clampActionScore(stale_count / Math.max(1, nodes.length));
+  const topic_strength = clampActionScore((nodes.length / topCount) * 0.5 + roi_score * 0.3 + recent_count / Math.max(1, nodes.length) * 0.2);
+  const linked_action_ids = actions
+    .filter((action) => action.linked_topic_ids.includes(topic_id) || action.reason.includes(topic_label))
+    .map((action) => action.action_id);
+  const linked_asset_ids = tierAssets
+    .filter((asset) => asset.linked_topic_ids.includes(topic_id) || asset.theme === topic_label)
+    .map((asset) => asset.asset_id);
+  const evidence_refs = evidenceRefsForNode(representative, graphEdges, `topic-classification:${topic_label}`).concat(
+    `record_count:${nodes.length}`,
+    `recent_count:${recent_count}`,
+  );
+
+  return {
+    category: topCategoryForNodes(nodes),
+    confidence,
+    conflict_score,
+    evidence_refs,
+    id: topic_id,
+    linked_action_ids,
+    linked_asset_ids,
+    matched_reason: `${topic_label} has ${nodes.length.toLocaleString()} redacted records, ${recent_count.toLocaleString()} recent records, ROI ${formatScore(roi_score)} and state ${topic_state}.`,
+    node: representative,
+    nodes,
+    parent_topic: parentTopicForTopic(topic_label),
+    proposal_hint: topic_state === "dominant" && confidence >= 0.7 ? "proposal_not_needed" : "proposal_recommended",
+    proposal_only: true,
+    recent_count,
+    record_count: nodes.length,
+    representative_record_ids: nodes.slice(0, 5).map((node) => node.id),
+    river_handoff: `memory_river:theme_lane:${topic_label}:recent_count:${recent_count}`,
+    rollback_hint: "若主题判断不成立，只关闭面板或撤销后续 proposal 草稿；Phase 1.4 不写 active memory。",
+    roi_score,
+    starfield_handoff: `memory_starfield:focus_topic:${topic_label}`,
+    targetView: topic_state === "declining" || topic_state === "stale" || topic_state === "black_hole" ? "timeline" : "galaxy",
+    topic_id,
+    topic_label,
+    topic_state,
+    topic_strength,
+    trend,
+  };
+}
+
+function topicClassificationSortScore(topic: TopicClassificationDetail): number {
+  return (
+    topic.topic_strength * TOPIC_CLASSIFICATION_SORT_WEIGHTS.strength_weight +
+    trendScore(topic.trend) * TOPIC_CLASSIFICATION_SORT_WEIGHTS.trend_weight +
+    topic.confidence * TOPIC_CLASSIFICATION_SORT_WEIGHTS.confidence_weight -
+    topic.conflict_score * TOPIC_CLASSIFICATION_SORT_WEIGHTS.conflict_penalty_weight
+  );
+}
+
+function topicStateForTopic(
+  topicLabel: string,
+  recordCount: number,
+  topCount: number,
+  recentCount: number,
+  previousCount: number,
+  staleCount: number,
+  protoCount: number,
+): TopicClassificationDetail["topic_state"] {
+  const lower = topicLabel.toLowerCase();
+  if (lower.includes("conflict") || lower.includes("冲突")) return "conflict";
+  if (staleCount >= Math.max(2, recordCount * 0.5)) return "black_hole";
+  if (recordCount === topCount) return "dominant";
+  if (recentCount > previousCount + 1) return "rising";
+  if (protoCount > 0 || (recordCount <= 2 && recentCount > 0)) return "emerging";
+  if (previousCount > recentCount + 1) return "declining";
+  if (staleCount > 0) return "stale";
+  return TOPIC_CLASSIFICATION_STATES.includes("dominant") ? "dominant" : "emerging";
+}
+
+function trendForTopic(
+  recentCount: number,
+  previousCount: number,
+  protoCount: number,
+  staleCount: number,
+): TopicClassificationDetail["trend"] {
+  if (recentCount > previousCount + 1 || protoCount > 0) return "up";
+  if (previousCount > recentCount + 1 || staleCount > recentCount) return "down";
+  return "stable";
+}
+
+function trendScore(trend: TopicClassificationDetail["trend"]): number {
+  if (trend === "up") return 1;
+  if (trend === "stable") return 0.62;
+  return 0.35;
+}
+
+function topCategoryForNodes(nodes: AtlasNode[]): string {
+  return topRows(countBy(nodes, (node) => humanCategoryLabel(node.category)), 1)[0]?.label ?? "未分类";
+}
+
+function parentTopicForTopic(topicLabel: string): string {
+  const lower = topicLabel.toLowerCase();
+  if (lower.includes("memory") || topicLabel.includes("记忆")) return "Memory Atlas";
+  if (lower.includes("codex") || lower.includes("workflow") || topicLabel.includes("工作流")) return "Delivery System";
+  if (lower.includes("visual") || topicLabel.includes("可视化")) return "Visual System";
+  return "General";
+}
+
+function averageNodeScore(nodes: AtlasNode[], score: (node: AtlasNode) => number): number {
+  if (!nodes.length) return 0;
+  return clampActionScore(nodes.reduce((sum, node) => sum + score(node), 0) / nodes.length);
 }
 
 function buildNextActionDetails({

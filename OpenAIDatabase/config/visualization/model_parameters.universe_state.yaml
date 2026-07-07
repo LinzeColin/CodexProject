@@ -198,3 +198,56 @@ v1_1_7_stage1_phase3:
     - browser_screenshot_acceptance
     - final_app_reinstall
     - github_main_upload
+v1_1_7_stage1_phase4:
+  task_id: MA-V117-S1P04
+  acceptance_id: ACC-MA-V117-S1P04
+  status: phase_1_4_topic_classification_detail_completed_pending_stage1_review
+  required_validator: validate:v1.1.7-stage1-phase4
+  top_topic_limit: 10
+  topic_state_values:
+    - dominant
+    - rising
+    - declining
+    - emerging
+    - conflict
+    - black_hole
+    - stale
+  topic_classification_sort_weights:
+    strength_weight: 0.38
+    trend_weight: 0.24
+    confidence_weight: 0.22
+    conflict_penalty_weight: 0.16
+  required_topic_fields:
+    - topic_id
+    - topic_label
+    - parent_topic
+    - category
+    - topic_state
+    - topic_strength
+    - trend
+    - roi_score
+    - conflict_score
+    - confidence
+    - record_count
+    - recent_count
+    - representative_record_ids
+    - evidence_refs
+    - matched_reason
+    - linked_asset_ids
+    - linked_action_ids
+    - starfield_handoff
+    - river_handoff
+    - proposal_hint
+    - rollback_hint
+    - proposal_only
+  proposal_only_required: true
+  no_direct_writeback: true
+  no_proposal_write_in_phase: true
+  deferred_to_later_phases:
+    - proposal_editor
+    - search_2_0_runtime
+    - review_workflow_runtime
+    - data_map_2_0_runtime
+    - browser_screenshot_acceptance
+    - final_app_reinstall
+    - github_main_upload
