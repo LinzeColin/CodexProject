@@ -25,6 +25,7 @@ from KMFA.tools.dingtalk_attendance.notifier_dws_personal_chat import (
     send_dws_chat_message,
     send_dws_ding_message,
 )
+from KMFA.tools.dingtalk_attendance.notification_targets import probe_notification_targets
 from KMFA.tools.dingtalk_attendance.secrets_loader import merged_runtime_env
 
 
@@ -365,7 +366,13 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Probe KMFA S19 DingTalk notification channels.")
     parser.add_argument("--recipient", default=ZHANG_LINZE_USER_ID)
     parser.add_argument("--recipient-name", default=RECIPIENT_NAME)
+    parser.add_argument("--all-targets", action="store_true", help="Probe every enabled target in notification_targets.local.json.")
     args = parser.parse_args(argv)
+
+    if args.all_targets:
+        result = probe_notification_targets()
+        print(json.dumps(_sanitize_cli_result(result), ensure_ascii=False, indent=2, sort_keys=True))
+        return 0 if result["status"] in {"SENT", "PARTIAL"} else 2
 
     result = probe_notification_channels(recipient=args.recipient, recipient_name=args.recipient_name)
     print(json.dumps(_sanitize_cli_result(result), ensure_ascii=False, indent=2, sort_keys=True))

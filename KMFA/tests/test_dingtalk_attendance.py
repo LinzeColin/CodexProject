@@ -8,6 +8,11 @@ from urllib.parse import parse_qs, urlparse
 
 from KMFA.tools.dingtalk_attendance.healthcheck import build_config_status
 from KMFA.tools.dingtalk_attendance.notification_probe import probe_notification_channels
+from KMFA.tools.dingtalk_attendance.notification_targets import (
+    dispatch_reports_to_targets,
+    migrate_legacy_resolved_channel,
+    probe_notification_targets,
+)
 from KMFA.tools.dingtalk_attendance.notifier_dws_personal_chat import (
     dispatch_reports_with_resolved_channel,
     send_dws_chat_message,
@@ -160,7 +165,6 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         bad_payloads = [
             "access" + "_token=abc",
             "app" + "_sec" + "ret=abc",
-            "web" + "hook=https://example.invalid",
             "https://oapi.dingtalk.com/robot/" + "send?access" + "_token=abc",
         ]
 
@@ -168,6 +172,8 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             with self.subTest(payload=payload):
                 findings = scan_payload_for_sensitive_text(payload)
                 self.assertGreaterEqual(len(findings), 1)
+        allowed_schema_payload = "web" + "hook_env_key=DINGTALK_GROUP_ENDPOINT_ENV"
+        self.assertEqual(scan_payload_for_sensitive_text(allowed_schema_payload), [])
 
     def test_s19_file_contract_is_complete_and_private_runtime_is_placeholder_only(self) -> None:
         result = validate_s19_files(ROOT)
@@ -673,6 +679,323 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             self.assertNotIn("# 开明考勤管理报告", str(sent[0]["text"]))
             self.assertNotIn("# 开明考勤 HR 报告", str(sent[0]["text"]))
             self.assertTrue(receipt.exists())
+
+    def test_legacy_resolved_channel_migrates_to_multitarget_registry(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            runtime_dir = Path(tmpdir) / "private_runtime"
+            runtime_dir.mkdir()
+            legacy_resolved = runtime_dir / "notification_channel_resolved.json"
+            targets_config = runtime_dir / "notification_targets.local.json"
+            targets_resolved = runtime_dir / "notification_targets_resolved.json"
+            public_manifest = Path(tmpdir) / "notification_targets_manifest.json"
+            legacy_resolved.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "status": "SENT",
+                        "resolved_at": "2026-07-07T18:15:00+08:00",
+                        "recipient_name": "张霖泽",
+                        "channel": "dws_open_dingtalk_id_chat",
+                        "channel_type": "personal",
+                        "recipient_user_id": "1iv-1t2oesv2yd",
+                        "open_dingtalk_id": "open-secret-id",
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+
+            result = migrate_legacy_resolved_channel(
+                legacy_path=legacy_resolved,
+                targets_config_path=targets_config,
+                targets_resolved_path=targets_resolved,
+                public_manifest_path=public_manifest,
+            )
+
+            resolved = json.loads(targets_resolved.read_text(encoding="utf-8"))
+            manifest = json.loads(public_manifest.read_text(encoding="utf-8"))
+            self.assertTrue(result["migrated"])
+            self.assertEqual(resolved["targets"][0]["label"], "张霖泽")
+            self.assertEqual(resolved["targets"][0]["resolved_channel"], "dws_open_dingtalk_id_chat")
+            self.assertEqual(resolved["targets"][0]["open_dingtalk_id"], "open-secret-id")
+            self.assertEqual(manifest["targets"][0]["resolved_channel"], "dws_open_dingtalk_id_chat")
+            self.assertFalse(manifest["sensitive_values_committed"])
+            self.assertNotIn("open-secret-id", json.dumps(manifest, ensure_ascii=False))
+
+    def test_dispatch_reports_to_targets_sends_one_unique_template_per_target(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            management = root / "run.management.md"
+            hr = root / "run.hr.md"
+            receipt = root / "run.dispatch.json"
+            targets_resolved = root / "notification_targets_resolved.json"
+            management.write_text("# 开明考勤管理报告\n\n## 一、总体情况\n完成。", encoding="utf-8")
+            hr.write_text("# 开明考勤 HR 报告\n\n## 一、异常明细\n无。", encoding="utf-8")
+            targets_resolved.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "targets": [
+                            {
+                                "label": "张霖泽",
+                                "type": "personal",
+                                "enabled": True,
+                                "reports": ["management"],
+                                "resolved_channel": "dws_userid_chat",
+                                "user_id": "1iv-1t2oesv2yd",
+                                "last_probe_status": "SENT",
+                            },
+                            {
+                                "label": "考勤小群",
+                                "type": "group",
+                                "enabled": True,
+                                "reports": ["hr"],
+                                "resolved_channel": "dws_group_chat",
+                                "group_conversation_id": "cid-secret",
+                                "last_probe_status": "SENT",
+                            },
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            sent: list[tuple[str, str, str]] = []
+
+            def fake_sender(*, channel: dict, title: str, text: str, env: dict[str, str]) -> dict:
+                sent.append((channel["channel"], title, text))
+                return {"status": "SENT", "channel": channel["channel"]}
+
+            result = dispatch_reports_to_targets(
+                output_status={
+                    "run_id": "s19_evening_20260707_181500",
+                    "run_type": "evening",
+                    "work_date": "2026-07-07",
+                    "current_time": "18:15",
+                    "stats": {},
+                    "management_report": str(management),
+                    "hr_report": str(hr),
+                    "dispatch_receipt": str(receipt),
+                },
+                targets_resolved_path=targets_resolved,
+                env={},
+                sender=fake_sender,
+            )
+
+            self.assertEqual(result["notification_status"], "SENT")
+            self.assertEqual([item[1] for item in sent], ["开明考勤提醒", "开明考勤提醒"])
+            self.assertEqual([item[0] for item in sent], ["dws_userid_chat", "dws_group_chat"])
+            for _, _, body in sent:
+                self.assertIn("开明考勤提醒｜2026-07-07｜evening", body)
+                self.assertNotIn("# 开明考勤管理报告", body)
+                self.assertNotIn("# 开明考勤 HR 报告", body)
+                self.assertNotIn("## 一、总体情况", body)
+                self.assertNotIn("## 一、异常明细", body)
+            self.assertIn(f"管理报告：{management}", sent[0][2])
+            self.assertNotIn(f"HR 报告：{hr}", sent[0][2])
+            self.assertIn(f"HR 报告：{hr}", sent[1][2])
+            receipt_payload = json.loads(receipt.read_text(encoding="utf-8"))
+            self.assertEqual(receipt_payload["target_results"][0]["management_status"], "SENT")
+            self.assertEqual(receipt_payload["target_results"][0]["hr_status"], "SKIPPED")
+            self.assertEqual(receipt_payload["target_results"][1]["management_status"], "SKIPPED")
+            self.assertEqual(receipt_payload["target_results"][1]["hr_status"], "SENT")
+            self.assertFalse(receipt_payload["target_results"][1]["trace_id_present"])
+
+    def test_probe_notification_targets_resolves_personal_target_and_redacts_public_manifest(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            runtime_dir = root / "private_runtime"
+            runtime_dir.mkdir()
+            targets_config = runtime_dir / "notification_targets.local.json"
+            targets_resolved = runtime_dir / "notification_targets_resolved.json"
+            public_manifest = root / "notification_targets_manifest.json"
+            targets_config.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "targets": [
+                            {
+                                "label": "张霖泽",
+                                "type": "personal",
+                                "enabled": True,
+                                "reports": ["management", "hr"],
+                                "user_id": "1iv-1t2oesv2yd",
+                            }
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            calls: list[list[str]] = []
+
+            def fake_runner(args: list[str], timeout: int = 30) -> dict:
+                calls.append(args)
+                if args[:5] == ["dws", "contact", "user", "get", "--ids"]:
+                    return {
+                        "returncode": 0,
+                        "payload": {
+                            "success": True,
+                            "result": [{"name": "张霖泽", "userId": "1iv-1t2oesv2yd", "openDingTalkId": "open-secret-id"}],
+                        },
+                    }
+                if args[:5] == ["dws", "chat", "message", "send", "--open-dingtalk-id"]:
+                    return {"returncode": 0, "payload": {"success": True, "openTaskId": "task-1"}}
+                raise AssertionError(f"unexpected args: {args}")
+
+            result = probe_notification_targets(
+                targets_config_path=targets_config,
+                targets_resolved_path=targets_resolved,
+                public_manifest_path=public_manifest,
+                now=datetime(2026, 7, 7, 18, 15),
+                env={},
+                dws_runner=fake_runner,
+                help_provider=lambda command: "Flags:\n      --user string\n      --open-dingtalk-id string\n      --text string\n",
+            )
+
+            resolved = json.loads(targets_resolved.read_text(encoding="utf-8"))
+            manifest = json.loads(public_manifest.read_text(encoding="utf-8"))
+            self.assertEqual(result["status"], "SENT")
+            self.assertEqual(resolved["targets"][0]["resolved_channel"], "dws_open_dingtalk_id_chat")
+            self.assertEqual(resolved["targets"][0]["open_dingtalk_id"], "open-secret-id")
+            self.assertEqual(manifest["targets"][0]["resolved_channel"], "dws_open_dingtalk_id_chat")
+            self.assertFalse(manifest["sensitive_values_committed"])
+            self.assertNotIn("open-secret-id", json.dumps(manifest, ensure_ascii=False))
+            self.assertTrue(any(call[:5] == ["dws", "chat", "message", "send", "--open-dingtalk-id"] for call in calls))
+
+    def test_probe_notification_targets_searches_open_id_when_user_get_lacks_it(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            runtime_dir = root / "private_runtime"
+            runtime_dir.mkdir()
+            targets_config = runtime_dir / "notification_targets.local.json"
+            targets_config.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "targets": [
+                            {
+                                "label": "张霖泽",
+                                "type": "personal",
+                                "enabled": True,
+                                "reports": ["management", "hr"],
+                                "user_id": "1iv-1t2oesv2yd",
+                            }
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            calls: list[list[str]] = []
+
+            def fake_runner(args: list[str], timeout: int = 30) -> dict:
+                calls.append(args)
+                if args[:5] == ["dws", "contact", "user", "get", "--ids"]:
+                    return {"returncode": 0, "payload": {"success": True, "result": [{"name": "张霖泽", "userId": "1iv-1t2oesv2yd"}]}}
+                if args[:5] == ["dws", "contact", "user", "search", "--query"]:
+                    return {
+                        "returncode": 0,
+                        "payload": {
+                            "success": True,
+                            "result": [{"name": "张霖泽", "userId": "1iv-1t2oesv2yd", "openDingTalkId": "open-secret-id"}],
+                        },
+                    }
+                if args[:5] == ["dws", "chat", "message", "send", "--open-dingtalk-id"]:
+                    return {"returncode": 0, "payload": {"success": True, "openTaskId": "task-1"}}
+                raise AssertionError(f"unexpected args: {args}")
+
+            result = probe_notification_targets(
+                targets_config_path=targets_config,
+                targets_resolved_path=runtime_dir / "notification_targets_resolved.json",
+                public_manifest_path=root / "notification_targets_manifest.json",
+                now=datetime(2026, 7, 7, 18, 15),
+                env={},
+                dws_runner=fake_runner,
+                help_provider=lambda command: "Flags:\n      --user string\n      --open-dingtalk-id string\n      --text string\n",
+            )
+
+            self.assertEqual(result["status"], "SENT")
+            self.assertTrue(any(call[:5] == ["dws", "contact", "user", "search", "--query"] for call in calls))
+            self.assertTrue(any(call[:5] == ["dws", "chat", "message", "send", "--open-dingtalk-id"] for call in calls))
+
+    def test_probe_notification_targets_merges_single_target_result(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            runtime_dir = root / "private_runtime"
+            runtime_dir.mkdir()
+            targets_config = runtime_dir / "notification_targets.local.json"
+            targets_resolved = runtime_dir / "notification_targets_resolved.json"
+            public_manifest = root / "notification_targets_manifest.json"
+            targets_config.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "targets": [
+                            {
+                                "label": "张霖泽",
+                                "type": "personal",
+                                "enabled": True,
+                                "reports": ["management", "hr"],
+                                "user_id": "1iv-1t2oesv2yd",
+                            },
+                            {
+                                "label": "考勤小群",
+                                "type": "group",
+                                "enabled": True,
+                                "reports": ["management", "hr"],
+                                "conversation_id": "cid-secret",
+                            },
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            targets_resolved.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "targets": [
+                            {
+                                "label": "张霖泽",
+                                "type": "personal",
+                                "enabled": True,
+                                "reports": ["management", "hr"],
+                                "resolved_channel": "dws_open_dingtalk_id_chat",
+                                "user_id": "1iv-1t2oesv2yd",
+                                "open_dingtalk_id": "open-secret-id",
+                                "last_probe_status": "SENT",
+                            }
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+
+            def fake_runner(args: list[str], timeout: int = 30) -> dict:
+                if args[:5] == ["dws", "chat", "message", "send", "--group"]:
+                    return {"returncode": 0, "payload": {"success": True}}
+                raise AssertionError(f"unexpected args: {args}")
+
+            result = probe_notification_targets(
+                targets_config_path=targets_config,
+                targets_resolved_path=targets_resolved,
+                public_manifest_path=public_manifest,
+                label_filter="考勤小群",
+                now=datetime(2026, 7, 7, 18, 15),
+                env={},
+                dws_runner=fake_runner,
+                help_provider=lambda command: "Flags:\n      --group string\n      --text string\n",
+            )
+
+            resolved = json.loads(targets_resolved.read_text(encoding="utf-8"))
+            manifest = json.loads(public_manifest.read_text(encoding="utf-8"))
+            self.assertEqual(result["status"], "SENT")
+            self.assertEqual([target["label"] for target in resolved["targets"]], ["张霖泽", "考勤小群"])
+            self.assertEqual(resolved["targets"][1]["resolved_channel"], "dws_group_chat")
+            self.assertNotIn("open-secret-id", json.dumps(manifest, ensure_ascii=False))
 
 
 if __name__ == "__main__":

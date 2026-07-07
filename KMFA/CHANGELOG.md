@@ -3,13 +3,14 @@
 ## 0.1.4-s19-dingtalk-attendance - 2026-07-07
 
 - 新增 `S19｜每日早晚钉钉考勤检查` public-safe 自动化结构，固定每日北京时间 08:35 晨报和 18:15 晚报。
+- 新增 S19 多目标通知路由表：ignored `notification_targets.local.json` / `notification_targets_resolved.json` 保存个人和群聊目标，public `notification_targets_manifest.json` 只保存脱敏状态；张霖泽目标已从旧单通道 resolved 兼容迁移到 `dws_open_dingtalk_id_chat`。
 - 新增 S19 钉钉个人通知通道探针：按 DWS userId 单聊、openDingTalkId 单聊、DING、工作通知、群机器人顺序自动 fallback；当前 userId 单聊失败原因记录为 `chat/business_error/系统错误`，openDingTalkId 单聊已验证 `SENT`。
-- 新增 `send_latest_report.py --channel auto`：不重新取考勤，读取最新 OneDrive manifest，用 ignored `notification_channel_resolved.json` 中的成功通道发送统一“考勤通知模板”；通知正文只包含考勤摘要、run_id、北京时间和 OneDrive 管理/HR 报告路径，不发送报告正文。
+- 新增 `send_latest_report.py --channel auto --targets all|personal|group`：不重新取考勤，读取最新 OneDrive manifest，用多目标 resolved 路由发送唯一“考勤通知模板”；内部 `management/hr` 仅作为报告选择和 receipt 兼容字段，不作为两套通知模板。
 - 新增 `KMFA/tools/dingtalk_attendance/` 与 `KMFA/metadata/dingtalk_attendance/`，覆盖 DWS live-only 运行、管理报告/HR 报告模板、OneDrive 月度私有归档和三天 operational cache 清理。
 - 新增 DWS 考勤后端：递归枚举组织部门成员，逐人调用 `dws attendance record get` 和 `dws attendance summary`，遇到 transient attendance error 仅 verbose 重试一次。
 - 启用本地钉钉小群机器人通知补丁：从 ignored `private_runtime/.env.local` 读取通知配置，按 HmacSHA256 + Base64 + URL encode 加签发送 markdown；报告写入 OneDrive 后发送统一“考勤通知模板”，dispatch receipt 写真实发送状态。
 - 新增 `--send-latest-report-only`，可只重发最新 OneDrive 私有报告路径通知、不重新调用 DWS；2026-07-07 已验证 latest evening 统一考勤通知发送成功，cleanup 随后执行。
-- 修复 S19 resolved-channel/latest resend 通知模板回归：抽出 `notification_template.py` 作为群通知、个人通知、正常 run 和 latest resend 的唯一正文模板；通知里新增“需要休息的人员”板块和 OneDrive 报告路径，但不发送管理/HR 报告正文。
+- 修复 S19 resolved-channel/latest resend 通知模板回归：抽出 `notification_template.py` 作为群通知、个人通知、正常 run 和 latest resend 的唯一正文模板；通知里新增“需要休息的人员”板块和 OneDrive 报告路径，但不发送报告正文。
 - 已完成 2026-07-07 live 验证：当前可见组织 44 人，record 成功 44 人，summary 成功 44 人，42 人当天有打卡记录；张霖泽、林全意为已知无考勤记录且 record 为空。
 - OneDrive 私有归档固定为 `/Users/linzezhang/OneDrive/dingtalk_attendance/YYYYMM/`，当月目录下直接保存运行文件，不再展开深层目录。
 - 新增 `KMFA/tests/test_dingtalk_attendance.py`、`check_s19_dingtalk_attendance.py` 和 `validate_no_sensitive_git.py`，验证 S19 文件合同、配置缺失失败、报告章节边界和 tracked 文件安全扫描。

@@ -22,6 +22,7 @@ REQUIRED_METADATA_FILES = (
     "report_policy.yaml",
     "notification_policy.yaml",
     "notification_channel_manifest.json",
+    "notification_targets_manifest.json",
     "onedrive_storage_manifest.yaml",
     "secrets_policy.md",
     "codex_automation/morning_0835.prompt.md",
@@ -45,10 +46,12 @@ REQUIRED_TOOL_FILES = (
     "notifier_dingtalk_work_notification.py",
     "notifier_wecom_optional.py",
     "notification_template.py",
+    "notification_targets.py",
     "onedrive_archive.py",
     "cleanup_runtime.py",
     "healthcheck.py",
     "notification_probe.py",
+    "manage_notification_targets.py",
     "send_latest_report.py",
     "secrets_loader.py",
     "validate_no_sensitive_git.py",
@@ -60,6 +63,8 @@ ALLOWED_PRIVATE_RUNTIME_FILES = {
     ".env.local",
     "notification_channel_resolved.json",
     "notification_probe_diagnostic.json",
+    "notification_targets.local.json",
+    "notification_targets_resolved.json",
 }
 TRACKED_PRIVATE_RUNTIME_FILES = [".gitkeep", "README.md"]
 
