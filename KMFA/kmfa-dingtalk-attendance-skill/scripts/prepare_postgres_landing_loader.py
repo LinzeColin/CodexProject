@@ -74,6 +74,17 @@ def json_array_uuid_expr(payload_key: str) -> str:
     )
 
 
+def timestamptz_expr(payload_key: str) -> str:
+    return (
+        "CASE "
+        f"WHEN NULLIF(payload->>'{payload_key}', '') IS NULL THEN NULL "
+        f"WHEN payload->>'{payload_key}' ~ '^[0-9]{{13}}$' THEN to_timestamp((payload->>'{payload_key}')::double precision / 1000.0) "
+        f"WHEN payload->>'{payload_key}' ~ '^[0-9]{{10}}$' THEN to_timestamp((payload->>'{payload_key}')::double precision) "
+        f"ELSE (payload->>'{payload_key}')::timestamptz "
+        "END"
+    )
+
+
 def insert_sql(table: str) -> str:
     temp = temp_name(table)
     if table == "policy_version":
@@ -151,8 +162,8 @@ SELECT
   (payload->>'policy_version_id')::uuid,
   payload->>'required_attendance_state',
   payload->>'actual_attendance_state',
-  NULLIF(payload->>'first_in_time', '')::timestamptz,
-  NULLIF(payload->>'last_out_time', '')::timestamptz,
+  {timestamptz_expr("first_in_time")},
+  {timestamptz_expr("last_out_time")},
   (payload->>'late_minutes')::integer,
   (payload->>'early_leave_minutes')::integer,
   (payload->>'absent_flag')::boolean,
@@ -181,8 +192,8 @@ SELECT
   (payload->>'work_date')::date,
   payload->>'required_attendance_state',
   payload->>'actual_attendance_state',
-  NULLIF(payload->>'first_in_time', '')::timestamptz,
-  NULLIF(payload->>'last_out_time', '')::timestamptz,
+  {timestamptz_expr("first_in_time")},
+  {timestamptz_expr("last_out_time")},
   (payload->>'late_minutes')::integer,
   (payload->>'early_leave_minutes')::integer,
   (payload->>'absent_flag')::boolean,

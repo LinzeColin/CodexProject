@@ -20,22 +20,24 @@
 - [x] Provide a pre-consensus DB landing bundle so database proof can be generated before accepted Stage-2 payroll baseline.
 - [x] Provide a DB proof application step that can set Stage-2 database gates true only from a non-production execution proof.
 - [x] Provide a read-only post-load state verification step so database verification requires row counts that match the landing bundle.
-- [ ] Execute the loader only against an explicitly configured non-production PostgreSQL target.
+- [x] Execute the loader only against an explicitly configured non-production PostgreSQL target.
 
 ## Phase 0 - Local verification
 
-- [ ] Create database `kmfa_attendance`.
-- [ ] Apply `database/postgres_schema.sql`.
-- [ ] Apply `database/views_payroll_baseline.sql`.
-- [ ] Review and execute `postgres_load_plan.sql` only after confirming the target is non-production.
-- [ ] Confirm schema exists: `select schema_name from information_schema.schemata where schema_name='kmfa_attendance';`
+- [x] Create database `kmfa_attendance_local` on local non-production PostgreSQL 16.14.
+- [x] Apply `database/postgres_schema.sql`.
+- [x] Apply `database/views_payroll_baseline.sql`.
+- [x] Review and execute `postgres_load_plan.sql` only after confirming the target is non-production.
+- [x] Confirm schema exists through successful state verification under `kmfa_attendance` search path.
 - [ ] Insert one synthetic import batch.
 - [ ] Insert one synthetic raw result and detail record with location fields.
 - [ ] Generate one synthetic day fact and canonical snapshot.
-- [ ] Insert five synthetic stage-2 runs with identical hash.
-- [ ] Insert accepted stage-2 certificate.
-- [ ] Insert payroll baseline rows.
-- [ ] Query `v_payroll_baseline_active`.
+- [x] Insert five stage-2 runs with identical hash from DB-verified private 202606 source.
+- [x] Insert accepted stage-2 certificate.
+- [x] Insert payroll baseline rows.
+- [x] Query active payroll baseline through row-count/state verification.
+
+Verification note: the checked Phase 0 items above were executed only against a disposable local non-production database. They are not production migration, live DWS execution, DingTalk notification, or salary payment authorization.
 
 ## Phase 1 - Replay from OneDrive raw
 
