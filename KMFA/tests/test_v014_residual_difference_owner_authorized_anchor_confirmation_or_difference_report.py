@@ -1,0 +1,138 @@
+from __future__ import annotations
+
+import unittest
+from pathlib import Path
+
+from KMFA.tools import v014_residual_difference_owner_authorized_anchor_confirmation_or_difference_report as generator
+from KMFA.tools.check_v014_residual_difference_owner_authorized_anchor_confirmation_or_difference_report import validate
+
+
+ARTIFACT_PATHS = [
+    generator.SUMMARY_PATH,
+    generator.MANIFEST_PATH,
+    generator.GO_NO_GO_PATH,
+    generator.MATRIX_PATH,
+    generator.REPORT_PATH,
+    generator.GO_NO_GO_RECORD_PATH,
+    generator.TEST_RESULTS_PATH,
+    generator.RISK_REGISTER_PATH,
+    generator.ROLLBACK_PATH,
+    generator.METADATA_SUMMARY_PATH,
+    generator.METADATA_MANIFEST_PATH,
+    generator.METADATA_GO_NO_GO_PATH,
+    generator.METADATA_MATRIX_PATH,
+    generator.PRIVATE_DIFFERENCE_REPORT_PATH,
+    generator.PRIVATE_DIAGNOSTIC_PATH,
+    generator.PRIVATE_UNRESOLVED_QUEUE_PATH,
+    generator.PRIVATE_CONFIRMATION_READY_QUEUE_PATH,
+    generator.PRIVATE_REPORT_PATH,
+    generator.DEVELOPMENT_EVENTS_PATH,
+    generator.STAGE_STATUS_PATH,
+    generator.TASK_STATUS_PATH,
+]
+SOURCE_PATHS = [
+    generator.SOURCE_READINESS_SUMMARY_PATH,
+    generator.SOURCE_READINESS_MANIFEST_PATH,
+    generator.SOURCE_READINESS_MATRIX_PATH,
+    generator.SOURCE_PRIVATE_READINESS_PATH,
+    generator.SOURCE_PRIVATE_READY_QUEUE_PATH,
+    generator.SOURCE_PRIVATE_BLOCKER_QUEUE_PATH,
+]
+
+
+class ResidualDifferenceOwnerAuthorizedAnchorConfirmationOrDifferenceReportTest(unittest.TestCase):
+    def setUp(self) -> None:
+        snapshot = self._snapshot_artifacts()
+        self.addCleanup(self._restore_artifacts, snapshot)
+        self.result = generator.generate(
+            generated_at="2026-07-07T00:00:00+10:00",
+            write_governance_event=False,
+        )
+
+    @staticmethod
+    def _snapshot_artifacts() -> dict[Path, bytes | None]:
+        snapshot: dict[Path, bytes | None] = {}
+        for path in ARTIFACT_PATHS + SOURCE_PATHS:
+            snapshot[path] = path.read_bytes() if path.exists() else None
+        return snapshot
+
+    @staticmethod
+    def _restore_artifacts(snapshot: dict[Path, bytes | None]) -> None:
+        for path, data in snapshot.items():
+            if data is None:
+                if path.exists():
+                    path.unlink()
+                continue
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+
+    def test_difference_report_locks_no_go_when_owner_authorized_anchors_are_not_confirmable(self) -> None:
+        summary = self.result["summary"]
+        self.assertEqual(summary["decision"], "NO_GO")
+        self.assertEqual(summary["source_readiness_blocker_count"], 72)
+        self.assertEqual(summary["source_anchor_draft_item_count"], 72)
+        self.assertEqual(summary["owner_authorized_anchor_ready_count"], 0)
+        self.assertEqual(summary["owner_authorized_anchor_blocker_count"], 72)
+        self.assertEqual(summary["difference_report_item_count"], 72)
+        self.assertEqual(summary["unresolved_difference_count"], 72)
+        self.assertEqual(summary["owner_authorized_anchor_confirmation_count"], 0)
+        self.assertFalse(summary["anchor_confirmation_ready"])
+
+    def test_missing_anchor_inputs_and_track_counts_are_preserved(self) -> None:
+        summary = self.result["summary"]
+        self.assertEqual(summary["missing_owner_authorized_anchor_count"], 72)
+        self.assertEqual(summary["missing_processed_value_fingerprint_count"], 72)
+        self.assertEqual(summary["missing_raw_candidate_anchor_count"], 72)
+        self.assertEqual(summary["private_candidate_sample_item_count"], 24)
+        self.assertEqual(summary["private_candidate_missing_sample_item_count"], 48)
+        self.assertEqual(summary["owner_select_one_authoritative_candidate_count"], 24)
+        self.assertEqual(summary["provide_authoritative_source_reference_or_owner_exclusion_count"], 40)
+        self.assertEqual(summary["provide_formula_or_non_numeric_mapping_count"], 8)
+        self.assertEqual(summary["diagnostic_track_counts"], generator.EXPECTED_TRACK_COUNTS)
+
+    def test_downstream_gates_remain_closed(self) -> None:
+        summary = self.result["summary"]
+        self.assertFalse(summary["owner_authorized_anchor_confirmation_performed_by_this_phase"])
+        self.assertFalse(summary["raw_to_processed_value_comparison_ready"])
+        self.assertFalse(summary["raw_to_processed_value_comparison_performed_by_this_phase"])
+        self.assertFalse(summary["full_raw_to_processed_value_comparison_complete"])
+        self.assertFalse(summary["full_reconciliation_allowed"])
+        self.assertFalse(summary["processed_consistency_verified"])
+        self.assertFalse(summary["business_value_consistency_verified"])
+        self.assertFalse(summary["lineage_full_check_complete"])
+        self.assertFalse(summary["formal_report_allowed"])
+        self.assertFalse(summary["github_upload_performed"])
+        self.assertFalse(summary["app_reinstall_performed"])
+        self.assertFalse(summary["business_execution_performed"])
+
+    def test_raw_boundary_excludes_raw_inbox_access_and_source_mutation(self) -> None:
+        boundary = self.result["summary"]["raw_boundary"]
+        self.assertTrue(boundary["source_public_readiness_summary_read_by_this_phase"])
+        self.assertTrue(boundary["source_private_readiness_read_by_this_phase"])
+        self.assertTrue(boundary["source_private_blocker_queue_read_by_this_phase"])
+        self.assertTrue(boundary["private_difference_report_written_by_this_phase"])
+        self.assertFalse(boundary["source_private_readiness_mutated_by_this_phase"])
+        self.assertFalse(boundary["source_private_blocker_queue_mutated_by_this_phase"])
+        self.assertFalse(boundary["raw_inbox_read_performed_by_this_phase"])
+        self.assertFalse(boundary["raw_inbox_list_performed_by_this_phase"])
+        self.assertFalse(boundary["raw_inbox_stat_performed_by_this_phase"])
+        self.assertFalse(boundary["raw_inbox_parse_performed_by_this_phase"])
+        self.assertFalse(boundary["raw_inbox_value_extraction_performed_by_this_phase"])
+        self.assertFalse(boundary["raw_inbox_mutated_by_this_phase"])
+
+    def test_source_private_readiness_inputs_are_not_mutated(self) -> None:
+        before = {path: path.read_bytes() for path in SOURCE_PATHS}
+        generator.generate(generated_at="2026-07-07T00:00:00+10:00", write_governance_event=False)
+        after = {path: path.read_bytes() for path in SOURCE_PATHS}
+        self.assertEqual(after, before)
+
+    def test_validator_accepts_private_difference_report(self) -> None:
+        manifest = validate(require_private_report=True)
+        summary = manifest["summary"]
+        self.assertEqual(summary["difference_report_item_count"], 72)
+        self.assertEqual(summary["unresolved_difference_count"], 72)
+        self.assertFalse(summary["raw_to_processed_value_comparison_performed_by_this_phase"])
+
+
+if __name__ == "__main__":
+    unittest.main()

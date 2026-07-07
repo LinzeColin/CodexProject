@@ -5,11 +5,11 @@
 ## 当前状态
 
 - project_id: `KMFA`
-- version: `0.1.4-residual-difference-owner-authorized-anchor-confirmation-readiness`
+- version: `0.1.4-residual-difference-owner-authorized-anchor-confirmation-or-difference-report`
 - current_stage: `value-consistency`
-- current_phase: `V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_READINESS`
-- status: `completed_validated_local_only_owner_authorized_anchor_confirmation_readiness_no_go`
-- current_blocker: `owner_authorized_private_raw_candidate_anchors_required_before_anchor_confirmation_and_formal_comparison`
+- current_phase: `V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_OR_DIFFERENCE_REPORT`
+- status: `completed_validated_local_only_owner_authorized_anchor_difference_report_no_go`
+- current_blocker: `owner_authorized_private_raw_candidate_anchors_still_missing_difference_report_written`
 - next_required_input: `owner_or_authorized_delegate_confirms_private_raw_candidate_anchors_before_formal_comparison`
 - blocked_next_steps: `formal raw-to-processed comparison; processed-data reconciliation; business value consistency; lineage full check; formal report; GitHub upload; app reinstall; business execution`
 - production_ready: `false`
@@ -18,6 +18,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 residual difference owner-authorized anchor difference report completed local-only: source_readiness_blocker_count=72，source_readiness_ready_count=0，source_anchor_draft_item_count=72，owner_authorized_anchor_confirmation_count=0，difference_report_item_count=72，unresolved_difference_count=72，missing_owner_authorized_anchor_count=72，missing_processed_value_fingerprint_count=72，missing_raw_candidate_anchor_count=72，private_candidate_sample_item_count=24，private_candidate_missing_sample_item_count=48，owner_select_one_authoritative_candidate_count=24，provide_authoritative_source_reference_or_owner_exclusion_count=40，provide_formula_or_non_numeric_mapping_count=8，current Go/No-Go=NO_GO。This phase reads only prior public-safe readiness artifacts and ignored private readiness/blocker queues；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/parse/write/delete/move/rename/copy/normalize/mutation=false；private difference report/diagnostic/unresolved queue/ready queue/report stay in ignored runtime；owner-authorized anchor confirmation=false；formal raw-to-processed comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`owner_or_authorized_delegate_confirms_private_raw_candidate_anchors_before_formal_comparison`。
 
 - v0.1.4 residual difference owner-authorized anchor confirmation readiness completed local-only: source_after_alignment_blocker_count=72，source_anchor_draft_item_count=72，owner_authorized_anchor_ready_count=0，owner_authorized_anchor_blocker_count=72，missing_owner_authorized_anchor_count=72，missing_processed_value_fingerprint_count=72，missing_raw_candidate_anchor_count=72，private_candidate_sample_item_count=24，private_candidate_missing_sample_item_count=48，owner_select_one_authoritative_candidate_count=24，provide_authoritative_source_reference_or_owner_exclusion_count=40，provide_formula_or_non_numeric_mapping_count=8，current Go/No-Go=NO_GO。This phase reads only prior public-safe after-alignment artifacts and ignored private anchor draft/blocker queue；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/parse/write/delete/move/rename/copy/normalize/mutation=false；private readiness/diagnostic/ready queue/blocker queue/report stay in ignored runtime；owner-authorized anchor confirmation=false；formal raw-to-processed comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`owner_or_authorized_delegate_confirms_private_raw_candidate_anchors_before_formal_comparison`。
 
