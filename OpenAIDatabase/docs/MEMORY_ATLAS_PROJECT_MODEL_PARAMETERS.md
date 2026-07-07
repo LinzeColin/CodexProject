@@ -1,3 +1,34 @@
+## 108. Memory Atlas v1.2 S01 Review Parameters
+
+状态：`stage_s01_review_passed_pending_s02_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S01-REVIEW`。
+
+S01 Review 固定以下参数：
+
+- `MA-V12-S01-REVIEW`
+- `validate:v1.2-s01-review`
+- `memory_atlas_v1_2_s01_review.md`
+- S01 Review 覆盖 S01 P1、S01 P2、S01 P3。
+- S01 Review 通过后下一步为 pending S02 P1。
+- No GitHub main upload in this review。
+- No S02 work、No app reinstall、No raw archive change、No runtime directory move。
+
+参数记录：
+
+- `PARAM-MA-V12-S01-REVIEW-001 stage_status = stage_s01_review_passed_pending_s02_no_github_main_upload`
+- `PARAM-MA-V12-S01-REVIEW-002 validator = validate:v1.2-s01-review`
+- `PARAM-MA-V12-S01-REVIEW-003 review_artifact = memory_atlas_v1_2_s01_review.md`
+- `PARAM-MA-V12-S01-REVIEW-004 phase_coverage = S01 P1;S01 P2;S01 P3`
+- `PARAM-MA-V12-S01-REVIEW-005 next_gate = pending S02 P1`
+- `PARAM-MA-V12-S01-REVIEW-006 upload_boundary = No GitHub main upload in this review`
+
+验收信号：
+
+- `validate:v1.2-s01-review` checks S01 P1/P2/P3 validators, double plane, requirements freeze, human entry, machine run gate, records, canonical remote and no-upload/no-runtime/no-raw boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S01 Review; MA-V12-S01-REVIEW; ACC-MA-V12-S01-REVIEW; stage_s01_review_passed_pending_s02_no_github_main_upload; validate:v1.2-s01-review; memory_atlas_v1_2_s01_review.md; S01 Review; pending S02 P1; No GitHub main upload in this review; No S02 work; No app reinstall; No raw archive change; No runtime directory move.
+
 ## 107. Memory Atlas v1.2 S01 P3 Requirements Freeze Parameters
 
 状态：`phase_s01_p3_requirements_freeze_completed_pending_s01_review`。

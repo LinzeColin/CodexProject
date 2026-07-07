@@ -18,7 +18,8 @@
 
 ## 当前阶段
 
-当前为 S01 P3。`运行门禁/v1.2需求冻结清单.json` 已写入，用于冻结：
+当前为 S01 Review。S01 整体复审已通过，`运行门禁/v1.2需求冻结清单.json`
+仍是本阶段的机器冻结源，用于冻结：
 
 - 四线范围。
 - 14 Stage 与每次 run 最多一个 phase 的执行规则。
@@ -26,4 +27,4 @@
 - 凭证排除。
 - 后续其他 agent 数据源扩展规则。
 
-下一步是 S01 整体复审；本目录仍不替代 apps/scripts/tests/config/data/docs/governance。
+下一步是 S02 P1；本目录仍不替代 apps/scripts/tests/config/data/docs/governance。

@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S01 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s01_review.md`.
+- Added `validate:v1.2-s01-review` for `MA-V12-S01-REVIEW` /
+  `ACC-MA-V12-S01-REVIEW`.
+- Registered status `stage_s01_review_passed_pending_s02_no_github_main_upload`.
+- Marked S01 Review as passed after covering S01 P1, S01 P2 and S01 P3.
+- Updated human entry and machine run gate to show pending S02 P1 while
+  preserving the one-phase-per-run rule and final-only GitHub main upload.
+- Preserved S01 Review boundaries: No S02 work, No GitHub main upload in this
+  review, No app reinstall, No raw archive change and No runtime directory move.
+
 ## Unreleased - Memory Atlas v1.2 S01 P3 Requirements Freeze
 
 - Added `机器治理/运行门禁/v1.2需求冻结清单.json` for the v1.2 four-line /
