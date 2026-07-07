@@ -4,6 +4,7 @@ import re
 import csv
 import hashlib
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -23,6 +24,72 @@ def sha256_bytes(data: bytes) -> str:
 
 
 class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
+    def run_daily_with_stubbed_tools(self, readiness_exit: int) -> tuple[subprocess.CompletedProcess[str], Path]:
+        temp_dir = tempfile.TemporaryDirectory()
+        self.addCleanup(temp_dir.cleanup)
+        temp_root = Path(temp_dir.name)
+        repo_root = temp_root / "repo"
+        repo_root.mkdir()
+        bin_dir = temp_root / "bin"
+        bin_dir.mkdir()
+        call_log = temp_root / "calls.log"
+
+        git_stub = bin_dir / "git"
+        git_stub.write_text(
+            "#!/usr/bin/env bash\n"
+            "set -euo pipefail\n"
+            f"echo git:$* >> {call_log}\n"
+            "if [[ \"$1 $2\" == \"branch --show-current\" ]]; then echo main; exit 0; fi\n"
+            "if [[ \"$1\" == \"fetch\" || \"$1\" == \"merge\" ]]; then exit 0; fi\n"
+            "exit 9\n",
+            encoding="utf-8",
+        )
+        git_stub.chmod(0o755)
+
+        python_stub = bin_dir / "python3"
+        python_stub.write_text(
+            "#!/usr/bin/env bash\n"
+            "set -euo pipefail\n"
+            f"echo python:$1 >> {call_log}\n"
+            "case \"$1\" in\n"
+            f"  *check_source_readiness.py) exit {readiness_exit} ;;\n"
+            "  *run_fund_weekly_analysis.py) exit 0 ;;\n"
+            "  *) exit 8 ;;\n"
+            "esac\n",
+            encoding="utf-8",
+        )
+        python_stub.chmod(0o755)
+
+        env = os.environ.copy()
+        env["KMFA_REPO_ROOT"] = str(repo_root)
+        env["KMFA_FUND_INPUT_DIR"] = str(temp_root / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群")
+        env["PATH"] = f"{bin_dir}:/usr/bin:/bin"
+        result = subprocess.run(
+            [str(SKILL_ROOT / "tools" / "run_daily_local.sh")],
+            text=True,
+            capture_output=True,
+            check=False,
+            env=env,
+        )
+        return result, call_log
+
+    def test_daily_entrypoint_stops_before_runner_when_readiness_is_not_ready(self) -> None:
+        result, call_log = self.run_daily_with_stubbed_tools(readiness_exit=2)
+        calls = call_log.read_text(encoding="utf-8").splitlines()
+
+        self.assertEqual(result.returncode, 2)
+        self.assertTrue(any("check_source_readiness.py" in call for call in calls), calls)
+        self.assertFalse(any("run_fund_weekly_analysis.py" in call for call in calls), calls)
+
+    def test_daily_entrypoint_runs_readiness_before_runner_when_ready(self) -> None:
+        result, call_log = self.run_daily_with_stubbed_tools(readiness_exit=0)
+        calls = call_log.read_text(encoding="utf-8").splitlines()
+        readiness_index = next(i for i, call in enumerate(calls) if "check_source_readiness.py" in call)
+        runner_index = next(i for i, call in enumerate(calls) if "run_fund_weekly_analysis.py" in call)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertLess(readiness_index, runner_index)
+
     def test_skill_package_uses_sydney_1130_local_schedule_and_real_input(self) -> None:
         self.assertTrue(SKILL_ROOT.exists(), "fund-weekly-analysis-skill package must exist under KMFA")
         skill = (SKILL_ROOT / "SKILL.md").read_text(encoding="utf-8")
@@ -42,6 +109,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
         self.assertRegex(config, r'timezone:\s*Australia/Sydney')
         self.assertRegex(plist, r"<key>Hour</key>\s*<integer>11</integer>")
         self.assertRegex(plist, r"<key>Minute</key>\s*<integer>30</integer>")
+
+    def test_taskpack_validator_requires_daily_shell_entrypoint(self) -> None:
+        validator = (SKILL_ROOT / "tools" / "validate_taskpack.py").read_text(encoding="utf-8")
+        self.assertIn('"tools/run_daily_local.sh"', validator)
 
     def test_latest_template_has_homepage_cards_two_line_charts_and_hidden_audit_sheets(self) -> None:
         self.assertTrue(TEMPLATE.exists(), "latest editable native Excel template must be present")
