@@ -7,6 +7,7 @@ import json
 import os
 import subprocess
 import sys
+import tomllib
 import tempfile
 import unittest
 import zipfile
@@ -113,6 +114,81 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
     def test_taskpack_validator_requires_daily_shell_entrypoint(self) -> None:
         validator = (SKILL_ROOT / "tools" / "validate_taskpack.py").read_text(encoding="utf-8")
         self.assertIn('"tools/run_daily_local.sh"', validator)
+
+    def test_codex_app_automation_contract_mirrors_daily_1130_local_cron(self) -> None:
+        contract_path = SKILL_ROOT / "automation" / "codex_app_automation.contract.toml"
+        self.assertTrue(contract_path.exists(), "public-safe Codex App automation contract must be tracked")
+        contract = tomllib.loads(contract_path.read_text(encoding="utf-8"))
+
+        self.assertEqual(contract["id"], "kmfa")
+        self.assertEqual(contract["name"], "KMFA资金周报日报自动化")
+        self.assertEqual(contract["kind"], "cron")
+        self.assertEqual(contract["status"], "ACTIVE")
+        self.assertEqual(contract["rrule"], "FREQ=DAILY;BYHOUR=11;BYMINUTE=30")
+        self.assertEqual(contract["timezone"], "Australia/Sydney")
+        self.assertEqual(contract["execution_environment"], "local")
+        self.assertEqual(contract["cwds"], ["/Users/linzezhang/CodexProject"])
+        self.assertEqual(contract["prompt_file"], "automation/daily_1130_sydney.prompt.md")
+        self.assertEqual(contract["source_readiness_gate"], "tools/check_source_readiness.py")
+        self.assertEqual(
+            contract["input_dir"],
+            "/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群",
+        )
+
+    def test_codex_app_automation_check_passes_when_local_state_matches_contract(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_root = Path(temp_dir)
+            repo_root = temp_root / "repo"
+            contract_dir = repo_root / "KMFA/fund-weekly-analysis-skill/automation"
+            contract_dir.mkdir(parents=True)
+            contract = (SKILL_ROOT / "automation" / "codex_app_automation.contract.toml").read_text(encoding="utf-8")
+            (contract_dir / "codex_app_automation.contract.toml").write_text(contract, encoding="utf-8")
+            automation_dir = temp_root / "automations" / "kmfa"
+            automation_dir.mkdir(parents=True)
+            (automation_dir / "automation.toml").write_text(contract, encoding="utf-8")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "check_codex_app_automation.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--automation-root",
+                    str(temp_root / "automations"),
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(json.loads(result.stdout)["status"], "CODEX_AUTOMATION_READY")
+
+    def test_codex_app_automation_check_fails_closed_when_local_state_is_missing(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_root = Path(temp_dir)
+            repo_root = temp_root / "repo"
+            contract_dir = repo_root / "KMFA/fund-weekly-analysis-skill/automation"
+            contract_dir.mkdir(parents=True)
+            contract = (SKILL_ROOT / "automation" / "codex_app_automation.contract.toml").read_text(encoding="utf-8")
+            (contract_dir / "codex_app_automation.contract.toml").write_text(contract, encoding="utf-8")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "check_codex_app_automation.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--automation-root",
+                    str(temp_root / "automations"),
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 2)
+            self.assertEqual(json.loads(result.stdout)["status"], "CODEX_AUTOMATION_MISSING")
 
     def test_latest_template_has_homepage_cards_two_line_charts_and_hidden_audit_sheets(self) -> None:
         self.assertTrue(TEMPLATE.exists(), "latest editable native Excel template must be present")

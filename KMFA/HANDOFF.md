@@ -453,4 +453,5 @@ git diff --check -- README.md governance/projects.yaml KMFA
 - 后续 runner 增强：即使目标 `DWS_Outputs/付款请示群` 未来存在，只要其中有不可读或 `dataless` 文件，runner 也会返回 `SOURCE_UNREADABLE`，不生成 Excel 包，避免部分数据被误当作完整真实输入。
 - 后续 readiness 增强：`KMFA/fund-weekly-analysis-skill/tools/check_source_readiness.py` 是 11:30 daily run 的快速前置门禁；它不 hash/不读取文件内容，只检查目标目录、候选源、zip、dataless/unreadable 状态，输出 `READY`/`SOURCE_MISSING`/`SOURCE_UNREADABLE`。
 - 2026-07-08 09:20 AEST 更新：`tools/run_daily_local.sh` 已在 `run_fund_weekly_analysis.py` 前强制调用 `check_source_readiness.py`；非 `READY` 时保持 readiness 原退出码并停止，不生成 Excel 包，也不进入 Codex prompt。
-- 下一步：先把 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群` 或候选 `DWS_Archive/付款请示群` 文件离线化到本机，再运行 readiness；只有 `READY` 后才运行真实数据生成包并安装/加载 launchd 定时任务。
+- 2026-07-08 09:30 AEST 更新：Codex App automation `kmfa` / `KMFA资金周报日报自动化` 已创建为 ACTIVE 本地 cron，rrule=`FREQ=DAILY;BYHOUR=11;BYMINUTE=30`，cwd=`/Users/linzezhang/CodexProject`；repo 新增 `automation/codex_app_automation.contract.toml` 和 `tools/check_codex_app_automation.py`，真实检查返回 `CODEX_AUTOMATION_READY`。
+- 下一步：先把 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群` 或候选 `DWS_Archive/付款请示群` 文件离线化到本机，再运行 readiness；只有 `READY` 后才运行真实数据生成包。launchd plist 可作为备用入口，但当前主调度已是 Codex App automation。
