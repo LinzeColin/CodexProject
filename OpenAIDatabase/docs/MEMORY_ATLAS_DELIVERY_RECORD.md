@@ -1,3 +1,37 @@
+## v1.1.7 Stage 7 Phase 7.1：Search 2.0 Runtime
+
+状态：`phase_7_1_search_2_0_runtime_completed_pending_stage7_review`。
+
+任务 ID：`MA-V117-S7P01`。
+
+验收 ID：`ACC-MA-V117-S7P01`。
+
+本 phase 将 Search 2.0 接入 production Search view。Runtime version 为
+`search_2_0_runtime.v1_1_7_stage7_phase1`，session summary version 为
+`search_2_0_session_summary.v1_1_7_stage7_phase1`。搜索结果显示
+`matched_reason`、`evidence_refs`、`proposal_candidate`，并提供
+`jump_to_starfield`、`jump_to_river`、`open_inspector` 三类动作。空结果
+显示 `zero_result_recovery`，只给 later review hint，不执行 Review /
+Summary / Iteration runtime。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage7_phase1.cjs`
+- `apps/memory-atlas/scripts/validate_search_2_0_browser.cjs`
+- `docs/product/search_2_0_workflow_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage7_phase1_search_2_0_runtime_acceptance.md`
+
+验收：
+
+- `validate:v1.1.7-stage7-phase1`
+- `validate:search-2-0-browser`
+- `ACC-MA-V117-S7P01`
+- Browser gate 覆盖 result fields、debug signal、zero recovery、Starfield/River/Inspector jumps、screenshot 和 console safety。
+
+Machine-readable boundary summary: Phase 7.1; Search 2.0; MA-V117-S7P01; ACC-MA-V117-S7P01; phase_7_1_search_2_0_runtime_completed_pending_stage7_review; validate:v1.1.7-stage7-phase1; validate:search-2-0-browser; search_2_0_runtime.v1_1_7_stage7_phase1; search_2_0_session_summary.v1_1_7_stage7_phase1; matched_reason; evidence_refs; No Review / Summary / Iteration runtime; No GitHub main upload; No raw/private data read; No direct active-memory writeback; No agent apply; no GitHub main upload before whole Stage 0-10 completion.
+
 ## v1.1.7 Stage 6 Review：Data Map Gate
 
 状态：`stage_6_review_passed_pending_stage7_no_github_main_upload`。

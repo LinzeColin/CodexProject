@@ -1,8 +1,8 @@
 # Memory Atlas Search 2.0 工作流合同
 
-适用版本：Memory Atlas v1.1.6 Stage 4 Phase 1
+适用版本：Memory Atlas v1.1.6 Stage 4 Phase 1；Memory Atlas v1.1.7 Stage 7 Phase 7.1 Runtime Addendum
 
-状态：contract-only。本 phase 不修改运行时 UI、CSS、路由、索引器、数据生成、写回逻辑、Review / Summary / Iteration、Data Map 2.0 或长期记忆。
+状态：v1.1.6 baseline 为 contract-only；v1.1.7 Stage 7 Phase 7.1 在同一合同下补运行时 addendum。v1.1.6 phase 不修改运行时 UI、CSS、路由、索引器、数据生成、写回逻辑、Review / Summary / Iteration、Data Map 2.0 或长期记忆。
 
 Machine-readable boundary summary: No runtime UI; No raw/private data read; No direct writeback; No GitHub main upload.
 
@@ -152,3 +152,53 @@ Stage 4 Phase 1 通过条件：
 ## 12. 回滚
 
 删除本合同、对应验收文件、validator、package script 和记录增量即可回滚。本 phase 不生成 runtime search index 或长期数据，因此不需要数据回滚。
+
+## 13. Memory Atlas v1.1.7 Stage 7 Phase 7.1 Runtime Addendum
+
+Task ID: `MA-V117-S7P01`
+
+Acceptance ID: `ACC-MA-V117-S7P01`
+
+Status: `phase_7_1_search_2_0_runtime_completed_pending_stage7_review`
+
+Runtime version: `search_2_0_runtime.v1_1_7_stage7_phase1`
+
+Session summary version: `search_2_0_session_summary.v1_1_7_stage7_phase1`
+
+Validator: `validate:v1.1.7-stage7-phase1`
+
+Browser validator: `validate:search-2-0-browser`
+
+This addendum implements the production Search 2.0 runtime slice for v1.1.7
+Stage 7 Phase 7.1. It turns the previous contract-only `search_2_0_workflow`
+into a safe frontend workbench over the existing redacted derived atlas
+snapshot.
+
+The runtime covers:
+
+1. `query_input` with query, tier, topic, recency, importance and evidence-only
+   filters.
+2. `filter_state` with active filter explanation and result count.
+3. `result_list` with title, summary, source, tier, topic, recency, importance,
+   `matched_reason`, `evidence_refs` and `proposal_candidate`.
+4. `result_action_bar` with `jump_to_starfield`, `jump_to_river` and
+   `open_inspector`.
+5. `search_session_summary` with dominant topics, high-importance hits,
+   stale/archive hits, missing evidence, next step and proposal candidate
+   judgment.
+6. `zero_result_recovery` with broaden query, remove filter, related topic,
+   stale/archive search and later review hint.
+
+Safety boundaries:
+
+- No Review / Summary / Iteration runtime in this phase.
+- No direct active-memory writeback.
+- No raw/private/cookie/session/secret data access.
+- No proposal queue write from Search 2.0.
+- No agent apply.
+- No deploy.
+- No GitHub main upload before the whole Stage 0-10 project is complete.
+
+Rollback: revert the Stage 7 Phase 7.1 commit. This removes the runtime
+Search 2.0 workbench, scoped CSS, validators, acceptance and records without
+changing the redacted source snapshot or long-term memory data.
