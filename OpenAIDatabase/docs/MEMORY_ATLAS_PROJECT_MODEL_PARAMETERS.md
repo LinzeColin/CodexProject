@@ -1,3 +1,39 @@
+## 110. Memory Atlas v1.2 S02 P2 Source Registry Parameters
+
+状态：`phase_s02_p2_source_registry_completed_pending_s02_p3`。
+
+验收 ID：`ACC-MA-V12-S02P2`。
+
+S02 P2 固定以下参数：
+
+- `MA-V12-S02P2`
+- `validate:v1.2-s02-p2`
+- `memory_atlas_v1_2_s02_p2_source_registry.md`
+- `sync_source_registry.json`
+- source IDs：chatgpt、codex、future_agent_template。
+- ChatGPT connector：browser_readonly + official_export_fallback。
+- Codex connector：local_session_sync。
+- future agent：other_agent + future_agent_adapter。
+- S02 P2 完成后下一步为 pending S02 P3。
+- No GitHub main upload in this phase。
+- No human sync page in this phase、No connector implementation、No raw archive change。
+
+参数记录：
+
+- `PARAM-MA-V12-S02P2-001 phase_status = phase_s02_p2_source_registry_completed_pending_s02_p3`
+- `PARAM-MA-V12-S02P2-002 validator = validate:v1.2-s02-p2`
+- `PARAM-MA-V12-S02P2-003 registry_file = sync_source_registry.json`
+- `PARAM-MA-V12-S02P2-004 source_ids = chatgpt;codex;future_agent_template`
+- `PARAM-MA-V12-S02P2-005 future_agent_support = other_agent;future_agent_adapter`
+- `PARAM-MA-V12-S02P2-006 next_gate = pending S02 P3`
+- `PARAM-MA-V12-S02P2-007 upload_boundary = No GitHub main upload in this phase`
+
+验收信号：
+
+- `validate:v1.2-s02-p2` checks S02 P1 continuity, sync_source_registry.json, source IDs, other_agent coverage, ChatGPT browser/export fallback, Codex local sync, future_agent_template, transcript/credential boundary, records, canonical remote and no-upload/no-human-sync/no-raw boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S02 P2 Source Registry; MA-V12-S02P2; ACC-MA-V12-S02P2; phase_s02_p2_source_registry_completed_pending_s02_p3; validate:v1.2-s02-p2; memory_atlas_v1_2_s02_p2_source_registry.md; sync_source_registry.json; S02 P2; pending S02 P3; No GitHub main upload in this phase; No human sync page in this phase; No connector implementation; No raw archive change.
+
 ## 109. Memory Atlas v1.2 S02 P1 Source Data Model Parameters
 
 状态：`phase_s02_p1_source_data_model_completed_pending_s02_p2`。

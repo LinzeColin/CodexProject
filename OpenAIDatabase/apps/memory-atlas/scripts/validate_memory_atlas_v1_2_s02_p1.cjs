@@ -35,8 +35,11 @@ const allowedOpenDiffPaths = [
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_p3.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_review.cjs",
   `OpenAIDatabase/apps/memory-atlas/scripts/${scriptName}`,
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s02_p2.cjs",
   `OpenAIDatabase/${artifactPath}`,
   `OpenAIDatabase/${modelPath}`,
+  "OpenAIDatabase/机器治理/同步与备份/sync_source_registry.json",
+  "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s02_p2_source_registry.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_DELIVERY_RECORD.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md",
   "OpenAIDatabase/功能清单.md",
@@ -289,8 +292,7 @@ function validateHumanAndMachineState() {
   const syncReadme = readRepoFile("机器治理/同步与备份/README.md");
   const runGateReadme = readRepoFile("机器治理/运行门禁/README.md");
 
-  assertCondition(
-    hasAll(quickEntry, [
+  const s02p1QuickEntry = hasAll(quickEntry, [
       "当前阶段是 S02 P1：数据源模型已定义",
       "S01 Review 已通过",
       "ChatGPT、Codex、后续其他 agent",
@@ -298,14 +300,24 @@ function validateHumanAndMachineState() {
       "不建立 source registry",
       "下一步只允许进入 S02 P2",
       "No GitHub main upload in this phase",
-    ]),
+  ]);
+  const s02p2QuickEntry = hasAll(quickEntry, [
+      "当前阶段是 S02 P2：source registry 已建立",
+      "S02 P1 数据源模型已完成",
+      "ChatGPT、Codex、后续其他 agent",
+      "transcript 与 credential 区分",
+      "future_agent_template",
+      "下一步只允许进入 S02 P3",
+      "No GitHub main upload in this phase",
+  ]);
+  assertCondition(
+    s02p1QuickEntry || s02p2QuickEntry,
     "s02p1_human_quick_entry",
-    "Human quick entry records S02 P1 model completion and next S02 P2 gate",
-    "Human quick entry is missing S02 P1 state or boundaries",
+    "Human quick entry records S02 P1 model completion or later S02 P2 registry state",
+    "Human quick entry is missing S02 P1 or S02 P2 state",
   );
 
-  assertCondition(
-    hasAll(overview, [
+  const s02p1Overview = hasAll(overview, [
       "S02 P1 已完成",
       "数据源模型",
       "source_id",
@@ -317,22 +329,41 @@ function validateHumanAndMachineState() {
       "connector_capability",
       "chatgpt、codex、other_agent",
       "S02 P2",
-    ]),
+  ]);
+  const s02p2Overview = hasAll(overview, [
+      "S02 P1 已完成",
+      "S02 P2 已完成",
+      "数据源模型",
+      "sync_source_registry.json",
+      "chatgpt、codex、other_agent",
+      "future_agent_template",
+      "下一步是 S02 P3",
+  ]);
+  assertCondition(
+    s02p1Overview || s02p2Overview,
     "s02p1_human_overview",
-    "Human overview records S02 P1 fields, source types and pending S02 P2",
-    "Human overview is missing S02 P1 model details",
+    "Human overview records S02 P1 model details or later S02 P2 registry state",
+    "Human overview is missing S02 P1 model or S02 P2 registry details",
   );
 
-  assertCondition(
-    hasAll(machineReadme, [
+  const s02p1MachineReadme = hasAll(machineReadme, [
       "当前为 S02 P1",
       "数据源模型已定义",
       "下一步是 S02 P2",
       "不替代 apps/scripts/tests/config/data/docs/governance",
-    ]),
+  ]);
+  const s02p2MachineReadme = hasAll(machineReadme, [
+      "当前为 S02 P2",
+      "数据源模型已定义",
+      "source registry 已建立",
+      "下一步是 S02 P3",
+      "不替代 apps/scripts/tests/config/data/docs/governance",
+  ]);
+  assertCondition(
+    s02p1MachineReadme || s02p2MachineReadme,
     "s02p1_machine_readme",
-    "Machine README records S02 P1 state and next S02 P2 boundary",
-    "Machine README is missing S02 P1 state",
+    "Machine README records S02 P1 state or later S02 P2 state",
+    "Machine README is missing S02 P1 or S02 P2 state",
   );
 
   assertCondition(
@@ -348,20 +379,27 @@ function validateHumanAndMachineState() {
     "Data contract README is missing S02 P1 model reference",
   );
 
-  assertCondition(
-    hasAll(syncReadme, [
+  const s02p1SyncReadme = hasAll(syncReadme, [
       "当前 S02 P1",
       "只定义数据源模型",
       "source registry 属于 S02 P2",
       "ChatGPT、Codex、后续其他 agent",
-    ]),
+  ]);
+  const s02p2SyncReadme = hasAll(syncReadme, [
+      "当前 S02 P2",
+      "sync_source_registry.json",
+      "source data model",
+      "ChatGPT、Codex、后续其他 agent",
+      "S02 P3",
+  ]);
+  assertCondition(
+    s02p1SyncReadme || s02p2SyncReadme,
     "s02p1_sync_readme",
-    "Sync README records that S02 P1 defines the model but defers registry creation",
-    "Sync README is missing S02 P1 registry deferral",
+    "Sync README records S02 P1 model deferral or later S02 P2 registry state",
+    "Sync README is missing S02 P1 or S02 P2 state",
   );
 
-  assertCondition(
-    hasAll(runGateReadme, [
+  const s02p1RunGate = hasAll(runGateReadme, [
       "当前阶段是 S02 P1",
       taskId,
       acceptanceId,
@@ -370,10 +408,22 @@ function validateHumanAndMachineState() {
       "下一步是 S02 P2",
       "No GitHub main upload in this phase",
       "不建立 source registry",
-    ]),
+  ]);
+  const s02p2RunGate = hasAll(runGateReadme, [
+      "当前阶段是 S02 P2",
+      taskId,
+      acceptanceId,
+      validatorName,
+      "MA-V12-S02P2",
+      "sync_source_registry.json",
+      "下一步是 S02 P3",
+      "No GitHub main upload in this phase",
+  ]);
+  assertCondition(
+    s02p1RunGate || s02p2RunGate,
     "s02p1_run_gate_readme",
-    "Run gate README records S02 P1 validator, data model and next gate",
-    "Run gate README is missing S02 P1 status",
+    "Run gate README records S02 P1 validator and later gate state",
+    "Run gate README is missing S02 P1 or S02 P2 status",
   );
 }
 
@@ -470,7 +520,6 @@ function validateOpenDiffBoundary() {
   const changed = getOpenChangedPaths();
   const outside = changed.filter((file) => !allowedOpenDiffPaths.includes(file));
   const forbiddenExact = [
-    "OpenAIDatabase/机器治理/同步与备份/sync_source_registry.json",
     "OpenAIDatabase/人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md",
   ];
   const forbiddenPrefixes = [
@@ -488,6 +537,7 @@ function validateOpenDiffBoundary() {
     if (file === "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_p3.cjs") return false;
     if (file === "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_review.cjs") return false;
     if (file === `OpenAIDatabase/apps/memory-atlas/scripts/${scriptName}`) return false;
+    if (file === "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s02_p2.cjs") return false;
     if (forbiddenExact.includes(file)) return true;
     return forbiddenPrefixes.some((prefix) => file.startsWith(prefix));
   });

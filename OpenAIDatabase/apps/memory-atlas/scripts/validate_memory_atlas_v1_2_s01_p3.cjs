@@ -297,11 +297,20 @@ function validateHumanAndReadmeBridge() {
       "下一步只允许进入 S02 P2",
       "No GitHub main upload in this phase",
   ]);
+  const s02p2QuickEntry = hasAll(quickEntry, [
+      "当前阶段是 S02 P2：source registry 已建立",
+      "S01 Review 已通过",
+      "旧隐私边界已被 v1.2 替换",
+      "用户授权后，ChatGPT、Codex、后续其他 agent 的 transcript 可以明文公开进 GitHub",
+      "凭证不是 transcript",
+      "下一步只允许进入 S02 P3",
+      "No GitHub main upload in this phase",
+  ]);
   assertCondition(
-    p3QuickEntry || reviewQuickEntry || s02p1QuickEntry,
+    p3QuickEntry || reviewQuickEntry || s02p1QuickEntry || s02p2QuickEntry,
     "s01p3_human_quick_entry",
-    "Human quick entry explains S01 P3 completion, S01 review pass state, or S02 P1 state with raw authorization and next gate",
-    "Human quick entry is missing S01 P3 freeze, S01 review or S02 P1 status boundaries",
+    "Human quick entry explains S01 P3 completion, S01 review pass state, S02 P1 state, or S02 P2 state with raw authorization and next gate",
+    "Human quick entry is missing S01 P3 freeze, S01 review, S02 P1 or S02 P2 status boundaries",
   );
 
   const p3Overview = hasAll(overview, [
@@ -331,11 +340,21 @@ function validateHumanAndReadmeBridge() {
       "下一步是 S02 P2",
       "整体完成后才上传 GitHub main",
   ]);
+  const s02p2Overview = hasAll(overview, [
+      "S01 整体复审已通过",
+      "S02 P1 已完成",
+      "S02 P2 已完成",
+      "需求冻结清单",
+      "旧隐私边界替换为用户授权后的 raw/transcript 公开",
+      "凭证排除",
+      "下一步是 S02 P3",
+      "整体完成后才上传 GitHub main",
+  ]);
   assertCondition(
-    p3Overview || reviewOverview || s02p1Overview,
+    p3Overview || reviewOverview || s02p1Overview || s02p2Overview,
     "s01p3_human_overview",
-    "Human overview records S01 P3 completion, S01 review pass state, or S02 P1 state",
-    "Human overview is missing S01 P3 completion, S01 review or S02 P1 boundary",
+    "Human overview records S01 P3 completion, S01 review pass state, S02 P1 state, or S02 P2 state",
+    "Human overview is missing S01 P3 completion, S01 review, S02 P1 or S02 P2 boundary",
   );
 }
 
@@ -373,11 +392,21 @@ function validateMachineBridge() {
       "后续其他 agent 数据源扩展规则",
       "不替代 apps/scripts/tests/config/data/docs/governance",
   ]);
+  const s02p2MachineReadme = hasAll(machineReadme, [
+      "当前为 S02 P2",
+      "source registry 已建立",
+      "v1.2需求冻结清单",
+      "四线范围",
+      "raw 公开授权",
+      "凭证排除",
+      "后续其他 agent 数据源扩展规则",
+      "不替代 apps/scripts/tests/config/data/docs/governance",
+  ]);
   assertCondition(
-    p3MachineReadme || reviewMachineReadme || s02p1MachineReadme,
+    p3MachineReadme || reviewMachineReadme || s02p1MachineReadme || s02p2MachineReadme,
     "s01p3_machine_readme",
-    "Machine governance README records S01 P3 freeze contents, S01 review pass state, or S02 P1 state and non-replacement boundary",
-    "Machine governance README is missing S01 P3 freeze, S01 review or S02 P1 bridge",
+    "Machine governance README records S01 P3 freeze contents, S01 review pass state, S02 P1 state, or S02 P2 state and non-replacement boundary",
+    "Machine governance README is missing S01 P3 freeze, S01 review, S02 P1 or S02 P2 bridge",
   );
 
   const p3RunGateReadme = hasAll(runGateReadme, [
@@ -405,11 +434,19 @@ function validateMachineBridge() {
       "下一步是 S02 P2",
       "No GitHub main upload in this phase",
   ]);
+  const s02p2RunGateReadme = hasAll(runGateReadme, [
+      "当前阶段是 S02 P2",
+      "v1.2需求冻结清单",
+      "MA-V12-S02P2",
+      "ACC-MA-V12-S02P2",
+      "下一步是 S02 P3",
+      "No GitHub main upload in this phase",
+  ]);
   assertCondition(
-    p3RunGateReadme || reviewRunGateReadme || s02p1RunGateReadme,
+    p3RunGateReadme || reviewRunGateReadme || s02p1RunGateReadme || s02p2RunGateReadme,
     "s01p3_machine_run_gate_readme",
-    "Run gate README records freeze config status and next review, S02 P1, or S02 P2 boundary",
-    "Run gate README is missing S01 P3, S01 review or S02 P1 gate status",
+    "Run gate README records freeze config status and next review, S02 P1, S02 P2, or S02 P3 boundary",
+    "Run gate README is missing S01 P3, S01 review, S02 P1 or S02 P2 gate status",
   );
 }
 
