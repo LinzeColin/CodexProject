@@ -1,0 +1,17 @@
+{
+  "project_id": "KMFA",
+  "skill_name": "fund-weekly-analysis-skill",
+  "run_id": "YYYYMMDDTHHMMSS+1000",
+  "timezone": "Australia/Sydney",
+  "input_dir": "/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群",
+  "files": [],
+  "outputs": [],
+  "validation": {
+    "no_simulation_data": null,
+    "formula_error_count": null,
+    "hidden_sheets_ok": null,
+    "chart_size_ok": null,
+    "internal_transfer_netting_applied": null,
+    "sensitive_visible_fields_ok": null
+  }
+}

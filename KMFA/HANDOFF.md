@@ -436,3 +436,15 @@ git diff --check -- README.md governance/projects.yaml KMFA
 - S19 考勤异常判定规则：张霖泽、林全意是已知无需考勤人员，仅豁免自身；真实异常不得因豁免名单被隐藏。`recordList=[]`、缺少上下班打卡、summary 当天缺卡/未打卡/旷工/迟到/早退均进入用户可见异常名单；2026-07-07 live 验证应考勤 41 人、当天缺卡异常 2 人。
 - 关键文件：`KMFA/tools/dingtalk_attendance/`、`KMFA/metadata/dingtalk_attendance/`、`KMFA/tests/test_dingtalk_attendance.py`、`KMFA/stage_artifacts/S19_DINGTALK_ATTENDANCE/`。
 - 下一步：若本轮全部验证、泄密扫描、open PR/open issue、branch/status/worktree 检查通过，才允许一次性 commit 并 push GitHub main；不得留下 PR、issue、branch 或 worktree。
+
+## S21 更新 - 2026-07-08 08:40:56 AEST
+
+- 当前目标新增为 `S21｜fund-weekly-analysis-skill 每日资金与税费 Excel 原生包`。
+- 输入源固定为 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群`；未找到该目录时必须 fail closed 为 `SOURCE_MISSING`，不得读取旧目录、生成样例数据或伪造付款/回款事实。
+- 本轮已把用户确认后的 Excel 首页修订版固化为技能模板：Sheet `01` 的 4-7 行卡片为 `可用现金占比`、`银行存款`、`票据/电子汇票`、`期末总资金`，8-11 行卡片为 `保证金可释放`、`外部净流出`、`内部调拨净额`、`资金缺口`；首页保留最近 15 天和最近 30 天两张原生折线图，且 01-06 可见页第 2 行为空。
+- 定时语义固定为本机 Sydney 时间每天 `11:30`；北京时间 `09:30` 仅作为业务参照，不再作为本机 launchd 调度时区。
+- GitHub public-safe 范围仅提交技能代码、模板、规则、测试、prompt、manifest schema 和治理文档；真实 OneDrive 原始文件、运行输出、明细 Excel 包、凭据和私有审计证据必须留在 `KMFA/metadata/fund_weekly_analysis/private_runtime/` 并被 `.gitignore` 排除。
+- 关键文件：`KMFA/fund-weekly-analysis-skill/`、`KMFA/tests/test_fund_weekly_analysis_skill.py`、`KMFA/metadata/fund_weekly_analysis/`、`KMFA/功能清单.md`、`KMFA/开发记录.md`、`KMFA/模型参数文件.md`。
+- 已验证：`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_fund_weekly_analysis_skill -q`、`python3 KMFA/fund-weekly-analysis-skill/tools/validate_taskpack.py`、`python3 -m py_compile KMFA/fund-weekly-analysis-skill/tools/*.py`、`git diff --cached --check`、staged secret token scan。
+- 真实数据 smoke 已执行：`run_fund_weekly_analysis.py --repo-root /Users/linzezhang/CodexProject --run-id validator_smoke_20260708 --timezone Australia/Sydney` 返回 `SOURCE_MISSING`，因为目标 OneDrive 输入目录当前不存在；这是正确阻断状态。
+- 下一步：先补齐或确认 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群` 的真实数据目录，然后运行一次真实数据生成包；通过后再安装/加载 launchd 定时任务。
