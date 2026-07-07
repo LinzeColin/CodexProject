@@ -545,7 +545,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             self.assertNotIn("open-ding-id", json.dumps(public_manifest, ensure_ascii=False))
             self.assertEqual(public_manifest["last_success_channel"], "dws_open_dingtalk_id_chat")
 
-    def test_dispatch_reports_with_resolved_channel_sends_management_then_hr_summary_for_long_hr(self) -> None:
+    def test_dispatch_reports_with_resolved_channel_sends_unified_attendance_notification(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             management = root / "run.management.md"
@@ -575,7 +575,14 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             result = dispatch_reports_with_resolved_channel(
                 output_status={
                     "run_id": "s19_evening_20260707_181500",
+                    "run_type": "evening",
+                    "work_date": "2026-07-07",
                     "current_time": "18:15",
+                    "stats": {
+                        "unexpected_empty_record_names": ["张三"],
+                        "known_no_record_names": ["张霖泽"],
+                        "rest_required_people": [{"name": "李四", "effective_attendance_days": 27}],
+                    },
                     "management_report": str(management),
                     "hr_report": str(hr),
                     "dispatch_receipt": str(receipt),
@@ -586,14 +593,22 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             )
 
             self.assertEqual(result["notification_status"], "SENT")
-            self.assertEqual([title for title, _ in sent], ["开明考勤管理报告", "开明考勤 HR 报告"])
+            self.assertEqual([title for title, _ in sent], ["开明考勤提醒"])
             self.assertIn("run_id：s19_evening_20260707_181500", sent[0][1])
+            self.assertIn("北京时间：18:15", sent[0][1])
+            self.assertIn("开明考勤提醒｜2026-07-07｜evening", sent[0][1])
+            self.assertIn("今日异常人员 / 无考勤人员：张三、张霖泽。", sent[0][1])
+            self.assertIn("需要休息的人员：\n李四（已考勤27天）", sent[0][1])
+            self.assertIn("OneDrive 报告路径：", sent[0][1])
+            self.assertIn(f"管理报告：{management}", sent[0][1])
+            self.assertIn(f"HR 报告：{hr}", sent[0][1])
             self.assertIn(str(management), sent[0][1])
-            self.assertIn("HR 报告超过 4800 字", sent[1][1])
-            self.assertIn(str(hr), sent[1][1])
-            self.assertNotIn("长" * 100, sent[1][1])
+            self.assertNotIn("# 开明考勤管理报告", sent[0][1])
+            self.assertNotIn("# 开明考勤 HR 报告", sent[0][1])
+            self.assertNotIn("## 一、总体情况", sent[0][1])
+            self.assertNotIn("长" * 100, sent[0][1])
             receipt_payload = json.loads(receipt.read_text(encoding="utf-8"))
-            self.assertEqual([message["report"] for message in receipt_payload["messages"]], ["management_report", "hr_report"])
+            self.assertEqual([message["report"] for message in receipt_payload["messages"]], ["attendance_notification"])
 
     def test_send_latest_report_uses_latest_manifest_without_collection(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -635,16 +650,28 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 encoding="utf-8",
             )
 
+            sent: list[dict[str, object]] = []
+
+            def fake_sender(**kwargs: object) -> dict[str, object]:
+                sent.append(dict(kwargs))
+                channel_payload = kwargs["channel"]
+                assert isinstance(channel_payload, dict)
+                return {"status": "SENT", "channel": channel_payload["channel"]}
+
             result = send_latest_report(
                 channel="auto",
                 onedrive_root=root,
                 resolved_path=runtime_dir / "notification_channel_resolved.json",
                 env={},
-                sender=lambda **kwargs: {"status": "SENT", "channel": kwargs["channel"]["channel"]},
+                sender=fake_sender,
             )
 
             self.assertEqual(result["status"], "SENT")
             self.assertEqual(result["manifest"], str(manifest))
+            self.assertEqual([item["title"] for item in sent], ["开明考勤提醒"])
+            self.assertIn("OneDrive 报告路径：", str(sent[0]["text"]))
+            self.assertNotIn("# 开明考勤管理报告", str(sent[0]["text"]))
+            self.assertNotIn("# 开明考勤 HR 报告", str(sent[0]["text"]))
             self.assertTrue(receipt.exists())
 
 

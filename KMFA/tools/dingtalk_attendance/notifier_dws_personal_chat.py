@@ -6,24 +6,20 @@ from __future__ import annotations
 import json
 import subprocess
 from collections.abc import Callable, Mapping
-from datetime import datetime
 from pathlib import Path
 from typing import Any
-from zoneinfo import ZoneInfo
 
-from KMFA.tools.dingtalk_attendance import TIMEZONE
 from KMFA.tools.dingtalk_attendance.notifier_dingtalk import send_group_robot_markdown
+from KMFA.tools.dingtalk_attendance.notification_template import (
+    build_notification_message,
+    notification_context_from_output_status,
+)
 from KMFA.tools.dingtalk_attendance.secrets_loader import merged_runtime_env
 
 
 ROOT = Path(__file__).resolve().parents[2]
 PRIVATE_RUNTIME_DIR = ROOT / "metadata" / "dingtalk_attendance" / "private_runtime"
 RESOLVED_CHANNEL_PATH = PRIVATE_RUNTIME_DIR / "notification_channel_resolved.json"
-REPORT_MESSAGES = (
-    ("management_report", "开明考勤管理报告"),
-    ("hr_report", "开明考勤 HR 报告"),
-)
-MAX_HR_REPORT_TEXT_CHARS = 4800
 
 
 def run_dws_command(args: list[str], *, timeout: int = 45) -> dict[str, Any]:
@@ -168,77 +164,51 @@ def dispatch_reports_with_resolved_channel(
         return receipt
 
     channel = json.loads(resolved_path.read_text(encoding="utf-8"))
+    channel_name = str(channel.get("channel") or "unknown")
     messages: list[dict[str, Any]] = []
-    for report_key, title in REPORT_MESSAGES:
-        report_path = Path(str(output_status[report_key]))
-        try:
-            report_text = report_path.read_text(encoding="utf-8")
-            body = _build_report_message_body(
-                title=title,
-                report_key=report_key,
-                report_path=report_path,
-                report_text=report_text,
-                output_status=output_status,
-            )
-            send_result = sender(channel=channel, title=title, text=body, env=dict(env or {}))
-        except OSError as exc:
-            send_result = {
-                "status": "FAILED",
-                "channel": str(channel.get("channel") or "unknown"),
-                "failure_reason": exc.__class__.__name__,
-            }
-        messages.append(
-            {
-                "report": report_key,
-                "report_path": str(report_path),
-                "status": send_result.get("status", "FAILED"),
-                "channel": send_result.get("channel", channel.get("channel")),
-                "failure_reason": send_result.get("failure_reason"),
-                "server_key": send_result.get("server_key"),
-                "trace_id": send_result.get("trace_id"),
-                "errcode": send_result.get("errcode"),
-                "errmsg": send_result.get("errmsg"),
-            }
+    try:
+        management_report = Path(str(output_status["management_report"]))
+        hr_report = Path(str(output_status["hr_report"]))
+        for report_path in (management_report, hr_report):
+            if not report_path.exists():
+                raise FileNotFoundError(str(report_path))
+        notification_context = notification_context_from_output_status(output_status)
+        text = build_notification_message(
+            **notification_context,
+            markdown=channel_name == "dingtalk_group_robot",
         )
+        send_result = sender(channel=channel, title="开明考勤提醒", text=text, env=dict(env or {}))
+    except (KeyError, OSError) as exc:
+        send_result = {
+            "status": "FAILED",
+            "channel": channel_name,
+            "failure_reason": exc.__class__.__name__,
+        }
+
+    messages.append(
+        {
+            "report": "attendance_notification",
+            "management_report": str(output_status.get("management_report", "")),
+            "hr_report": str(output_status.get("hr_report", "")),
+            "status": send_result.get("status", "FAILED"),
+            "channel": send_result.get("channel", channel_name),
+            "failure_reason": send_result.get("failure_reason"),
+            "server_key": send_result.get("server_key"),
+            "trace_id": send_result.get("trace_id"),
+            "errcode": send_result.get("errcode"),
+            "errmsg": send_result.get("errmsg"),
+        }
+    )
 
     notification_status = _summarize_status([str(message["status"]) for message in messages])
     receipt = _receipt(
         status=notification_status,
-        channel=str(channel.get("channel") or "unknown"),
+        channel=channel_name,
         output_status=output_status,
         messages=messages,
     )
     _write_receipt(receipt_path, receipt)
     return receipt
-
-
-def _build_report_message_body(
-    *,
-    title: str,
-    report_key: str,
-    report_path: Path,
-    report_text: str,
-    output_status: Mapping[str, Any],
-) -> str:
-    beijing_time = str(output_status.get("current_time") or datetime.now(ZoneInfo(TIMEZONE)).strftime("%Y-%m-%d %H:%M:%S"))
-    lines = [
-        title,
-        "",
-        f"run_id：{output_status.get('run_id', 'UNKNOWN_RUN')}",
-        f"北京时间：{beijing_time}",
-        f"OneDrive 报告路径：{report_path}",
-        "",
-    ]
-    if report_key == "hr_report" and len(report_text) > MAX_HR_REPORT_TEXT_CHARS:
-        lines.extend(
-            [
-                "HR 报告超过 4800 字，本次发送摘要和 OneDrive 路径。",
-                "OneDrive 原始 HR 报告未截断，仍保留完整文件。",
-            ]
-        )
-    else:
-        lines.append(report_text)
-    return "\n".join(lines).rstrip() + "\n"
 
 
 def _receipt(
