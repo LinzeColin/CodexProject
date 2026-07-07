@@ -1,3 +1,47 @@
+## v1.2 S03 P2 Credential Exclusion
+
+状态：`phase_s03_p2_credential_exclusion_completed_pending_s03_p3`。
+
+任务 ID：`MA-V12-S03P2`。
+
+验收 ID：`ACC-MA-V12-S03P2`。
+
+S03 P2 实现 Memory Atlas v1.2 的 credential is not memory 轻量门禁。
+普通 transcript 仍然是 memory；cookie、session token、password、api key、
+private key、oauth token 和 browser credential store 不能进入 GitHub。
+
+涉及文件：
+
+- `机器治理/同步与备份/credential_exclusion_policy.v1_2_s03_p2.json`
+- `scripts/privacy_guard.py`
+- `scripts/sync_codex_memory_data.py`
+- `人类可读/07_凭证排除说明.md`
+- `docs/reviews/memory_atlas_v1_2_s03_p2_credential_exclusion.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s03_p2.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s03-p2`
+- `ACC-MA-V12-S03P2`
+- S03 P2
+- `memory_atlas_v1_2_s03_p2_credential_exclusion.md`
+- `credential_exclusion_policy.v1_2_s03_p2.json`
+- credential is not memory
+- pending S03 P3
+- No GitHub main upload in this phase
+
+边界：
+
+- No S03 P3 manifest generation.
+- No connector implementation.
+- No complex UI.
+- No real transcript ingestion.
+- No public raw file mutation.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S03 P2 Credential Exclusion; MA-V12-S03P2; ACC-MA-V12-S03P2; phase_s03_p2_credential_exclusion_completed_pending_s03_p3; validate:v1.2-s03-p2; memory_atlas_v1_2_s03_p2_credential_exclusion.md; credential_exclusion_policy.v1_2_s03_p2.json; credential is not memory; S03 P2; pending S03 P3; No GitHub main upload in this phase; No S03 P3 manifest generation; No connector implementation; No complex UI; No real transcript ingestion; No public raw file mutation.
+
 ## v1.2 S03 P1 Public Raw Path
 
 状态：`phase_s03_p1_public_raw_path_defined_pending_s03_p2`。

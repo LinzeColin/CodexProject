@@ -21,6 +21,8 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
+from privacy_guard import credential_exclusion_hits, redact_credentials_in_text
+
 
 DEFAULT_CODEX_HOME = Path.home() / ".codex"
 UTC = timezone.utc
@@ -139,6 +141,8 @@ def day_key(value: datetime | None) -> str:
 
 def redact_text(value: str, limit: int = 160) -> str:
     text = value
+    credential_exclusion_hits(text, source="sync_codex_memory_data.redact_text")
+    text, _credential_counts = redact_credentials_in_text(text)
     for pattern in SECRET_PATTERNS:
         text = pattern.sub("[REDACTED_SECRET]", text)
     text = ABSOLUTE_PATH_RE.sub("[REDACTED_PATH]", text)
@@ -375,6 +379,7 @@ def parse_session_file(path: Path, codex_home: Path, index: dict[str, dict[str, 
         "preference_signals": signal_labels,
         "activity_score": int(activity_score),
         "backup_policy": "redacted_summary_only_no_raw_transcript_no_plaintext_secret",
+        "credential_boundary": "credentials_not_transcript",
     }
 
 

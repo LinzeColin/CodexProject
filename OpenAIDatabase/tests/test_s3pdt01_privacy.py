@@ -96,6 +96,48 @@ class S3PDT01PrivacyTests(unittest.TestCase):
         self.assertEqual(scan["tracked_raw_private_file_count"], 0)
         self.assertEqual(scan["high_risk_secret_hit_count"], 0)
 
+    def test_credential_exclusion_blocks_credentials_without_blocking_transcript(self) -> None:
+        module = load_module()
+        credential_text = "\n".join(
+            [
+                "cookie: sessionid=" + "abcdef1234567890abcdef",
+                "session_token = " + "sess_" + "abcdef1234567890",
+                "password = " + "StrongPass1234",
+                "api_key = " + "sk-" + "s03p2testsecret1234567890",
+                "refresh_token = " + "rt_" + "abcdef1234567890abcdef",
+                "private_key = "
+                + "-----BEGIN "
+                + "PRIVATE KEY-----\n"
+                + "abcdef1234567890"
+                + "\n-----END "
+                + "PRIVATE KEY-----",
+            ]
+        )
+        ordinary_transcript = (
+            "User: token budget is high and the API key policy should be documented. "
+            "Assistant: credentials are excluded while ordinary transcript remains memory."
+        )
+
+        hits = module.credential_exclusion_hits(credential_text, source="synthetic_s03p2")
+        categories = {hit["category"] for hit in hits}
+        self.assertTrue(
+            {"api_keys", "cookies", "oauth_tokens", "passwords", "private_keys", "session_tokens"}.issubset(categories),
+            categories,
+        )
+        self.assertEqual(module.credential_exclusion_hits(ordinary_transcript, source="ordinary_transcript"), [])
+        with self.assertRaises(module.PrivacyViolation):
+            module.assert_no_credentials(credential_text, source="synthetic_s03p2")
+
+    def test_credential_redaction_is_shared_for_sync_outputs(self) -> None:
+        module = load_module()
+        text = "api_key = " + "sk-" + "s03p2testredact1234567890"
+
+        redacted, counts = module.redact_credentials_in_text(text)
+
+        self.assertNotIn("s03p2testredact1234567890", redacted)
+        self.assertIn("[REDACTED_CREDENTIAL]", redacted)
+        self.assertGreaterEqual(counts.get("api_keys", 0), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

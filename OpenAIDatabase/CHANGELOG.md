@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S03 P2 Credential Exclusion
+
+- Added `机器治理/同步与备份/credential_exclusion_policy.v1_2_s03_p2.json`.
+- Added `人类可读/07_凭证排除说明.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s03_p2_credential_exclusion.md`.
+- Added `validate:v1.2-s03-p2` for `MA-V12-S03P2` /
+  `ACC-MA-V12-S03P2`.
+- Registered status `phase_s03_p2_credential_exclusion_completed_pending_s03_p3`.
+- Implemented credential is not memory through shared `privacy_guard.py`
+  scanner, assertion, redaction and repo audit integration.
+- Integrated Codex sync redaction with the shared credential exclusion entry
+  while preserving ordinary transcript as memory through `credentials_not_transcript`.
+- Marked the next gate as pending S03 P3.
+- Preserved S03 P2 boundaries: No GitHub main upload in this phase,
+  No S03 P3 manifest generation, No connector implementation, No complex UI,
+  No real transcript ingestion and No public raw file mutation.
+
 ## Unreleased - Memory Atlas v1.2 S03 P1 Public Raw Path
 
 - Added `机器治理/同步与备份/raw_public_archive_policy.v1_2_s03_p1.json`.

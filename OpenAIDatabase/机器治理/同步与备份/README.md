@@ -25,5 +25,16 @@ S02 整体复审已通过，复审证据为 `docs/reviews/memory_atlas_v1_2_s02_
 - `docs/reviews/memory_atlas_v1_2_s03_p1_public_raw_path.md`
 
 S03 P1 定义 `data/public_raw/`、manifest/hash 文件合同、append-only 规则和
-hash drift fail 规则。下一步是 S03 P2。当前阶段不实现 connector，不导入真实
-transcript，不生成 manifest ledger，不上传 GitHub main。
+hash drift fail 规则。
+
+当前 S03 P2 已完成，并新增：
+
+- `机器治理/同步与备份/credential_exclusion_policy.v1_2_s03_p2.json`
+- `scripts/privacy_guard.py`
+- `scripts/sync_codex_memory_data.py`
+- `人类可读/07_凭证排除说明.md`
+- `docs/reviews/memory_atlas_v1_2_s03_p2_credential_exclusion.md`
+
+S03 P2 固定 credential is not memory 和 `credentials_not_transcript`：普通 transcript
+可以进入公开 raw；凭证 pattern 导致 gate fail。下一步是 S03 P3。当前阶段不实现
+connector，不导入真实 transcript，不生成 manifest ledger，不上传 GitHub main。
