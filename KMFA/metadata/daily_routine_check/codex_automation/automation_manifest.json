@@ -13,12 +13,12 @@
     {
       "trigger_window": "morning_1135",
       "run_time_beijing": "11:35",
-      "command": "python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window morning_1135 --send"
+      "command": "python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window morning_1135 --send --cleanup --apply"
     },
     {
       "trigger_window": "evening_1705",
       "run_time_beijing": "17:05",
-      "command": "python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window evening_1705 --send"
+      "command": "python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window evening_1705 --send --cleanup --apply"
     }
   ],
   "single_automation_only": true,
@@ -29,6 +29,11 @@
     "trigger_window",
     "rules_evaluated",
     "rules_skipped"
+  ],
+  "cash_monitor_fields": [
+    "cash_risk_result",
+    "risk_level",
+    "total_available_cash"
   ],
   "source_quality_events": [
     "SOURCE_MISSING",

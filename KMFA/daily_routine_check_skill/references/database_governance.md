@@ -93,12 +93,10 @@ python3 -m KMFA.tools.daily_routine_check.main --cleanup --apply
 
 Cleanup should:
 
-- delete expired OCR raw cache after structured extraction exists
 - checkpoint SQLite WAL
-- vacuum old SQLite when safe
-- compress older JSONL logs
-- rotate local logs
-- write a cleanup report to OneDrive
+- vacuum SQLite when safe
+- write a `cleanup_events` ledger row
+- keep future hooks for expired OCR raw cache deletion, JSONL compression, local log rotation, and OneDrive cleanup reports
 - never delete the source DWS output folder
 
 ## Accuracy And Auditability
