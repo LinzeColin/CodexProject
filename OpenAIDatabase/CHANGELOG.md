@@ -1,5 +1,32 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 10 Review
+
+- Added `docs/reviews/memory_atlas_v1_1_7_stage10_review.md` to pin the
+  completed Stage 10 review gate.
+- Added `validate:v1.1.7-stage10` for `MA-V117-S10-REVIEW` /
+  `ACC-MA-V117-S10-REVIEW`.
+- Registered status
+  `stage_10_review_passed_pending_final_github_main_upload`.
+- The Stage 10 Review covers Stage 10 Phase 10.1 Final hardening upload readiness,
+  `validate:v1.1.7-stage10-phase1`, `validate:whole-project`,
+  `validate:part2-stage1`, schema compatibility hardening,
+  legacy whole-project validator hardening, Chinese-first copy hardening,
+  `memory_starfield_spike_fixture.v1_1_7_stage4_phase2` and
+  `memory_river_spike_fixture.v1_1_7_stage5_phase2`.
+- Hardened legacy final validators so Part 3/4 accept the current
+  `DEFAULT_MEMORY_ATLAS_VIEW` default-home marker and Part 9 defers local app
+  reinstall unless `MEMORY_ATLAS_PART9_REINSTALL_LOCAL_APP=1` is set.
+- Review evidence preserves `No intermediate GitHub upload`,
+  `No GitHub main upload in this review`, `No remote development branch` and
+  `pending final one-time GitHub main upload`.
+
+Stage 10 Review only. App runtime change is limited to Chinese-first copy
+hardening. No production runtime logic/CSS change, No raw/private data read,
+No direct active-memory writeback, No proposal queue write, No agent apply, No
+deploy, No intermediate GitHub upload and No GitHub main upload in this review
+was added.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 10 Phase 10.1 Final Hardening Upload Readiness
 
 - Added `docs/product/memory_atlas_v1_1_7_final_hardening_upload_readiness_contract.md`.

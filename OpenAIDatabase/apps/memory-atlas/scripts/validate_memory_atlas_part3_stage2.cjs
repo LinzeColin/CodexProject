@@ -187,11 +187,14 @@ function validateCurrentRuntimeIsLaterStage() {
   const app = readRepoFile("apps/memory-atlas/src/App.tsx");
   const i18nPath = path.join(repoRoot, "apps/memory-atlas/src/i18n/zh-CN.ts");
   const i18n = fs.existsSync(i18nPath) ? fs.readFileSync(i18nPath, "utf8") : "";
+  const defaultHomeStateReady = app.includes("createSharedAtlasState({ activeView: \"home\"")
+    || (app.includes("const DEFAULT_MEMORY_ATLAS_VIEW: ViewKey = \"home\"")
+      && app.includes("createSharedAtlasState({ activeView: DEFAULT_MEMORY_ATLAS_VIEW"));
   assertCondition(
-    (app.includes("{ key: \"home\", label: \"记忆总览\"")
+    defaultHomeStateReady
+    && (app.includes("{ key: \"home\", label: \"记忆总览\"")
       || (app.includes("{ key: \"home\", label: uiCopy.navigation.views.home") && i18n.includes("home: \"记忆总览\"")))
     && hasAll(app, [
-      "createSharedAtlasState({ activeView: \"home\"",
       "function GalaxyView",
       "GalaxyRendererMode",
       "memory-starfield",
@@ -203,6 +206,7 @@ function validateCurrentRuntimeIsLaterStage() {
     "part3_current_runtime_advanced_beyond_stage2",
     "Current App.tsx has later-stage home, Galaxy renderer toggle and Memory River runtime markers, so Stage 2 runtime notes must be treated as historical",
     "Current runtime markers do not match expected later-stage state",
+    { defaultHomeStateReady },
   );
 }
 

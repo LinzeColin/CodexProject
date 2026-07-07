@@ -3992,7 +3992,7 @@ function SearchReview({
       </section>
       <div className="writeback-banner">
         <strong>写回策略</strong>
-        <span>Search 2.0 只产生 proposal_candidate 判断和 Inspector 跳转；任何改动仍必须走 proposal-only handoff，不直接写 active memory。</span>
+        <span>Search 2.0 只产生 proposal_candidate 判断和 Inspector 跳转；任何改动仍必须走 proposal-only handoff，不直接写长期记忆。</span>
       </div>
       {visibleResults.length ? (
         <section className="search-2-result-list" aria-label="Search 2.0 result_list">
@@ -4378,7 +4378,7 @@ function buildReviewSummaryIteration(
       proposal_decision: shouldGenerateProposal ? "generate_proposal" : "review_only",
       target_type: shouldGenerateProposal ? "memory_update_candidate" : "review_only_note",
       reason: proposalReason,
-      rollback_hint: "proposal-only 交接；若人工复核不成立，丢弃 proposal 草稿即可，不会修改 active memory。",
+      rollback_hint: "proposal-only 交接；若人工复核不成立，丢弃 proposal 草稿即可，不会修改长期记忆。",
       requires_conflict_check: true,
       requires_agent_or_human_apply: true,
     },
@@ -4421,7 +4421,7 @@ function buildSummaryIterationClosure(review: ReviewSummaryIterationOutput): Sum
     summary: row.summary,
     evidence_refs: row.evidence_refs.length ? row.evidence_refs : review.evidence_refs.slice(0, 2),
     proposal_hint: row.count > 0 ? "生成 proposal-only cleanup candidate，人工确认后再降权、合并或删除。" : "保留观察，不生成直接写回。",
-    rollback_hint: "如果复核发现 stale 判断不成立，丢弃 candidate；active memory 不会被前端修改。",
+    rollback_hint: "如果复核发现 stale 判断不成立，丢弃 candidate；长期记忆不会被前端修改。",
   }));
   const conflictSignals = review.decision_changes.slice(0, 2).map<SummaryClosureSignal>((row, index) => ({
     signal_id: `conflict:${index}`,
@@ -4431,7 +4431,7 @@ function buildSummaryIterationClosure(review: ReviewSummaryIterationOutput): Sum
     summary: row.summary,
     evidence_refs: row.evidence_refs.length ? row.evidence_refs : review.evidence_refs.slice(0, 2),
     proposal_hint: "进入人工 conflict check；只有确认新决策覆盖旧背景后才生成长期记忆修改。",
-    rollback_hint: "若冲突未确认，保留 review-only note，不写 proposal queue 或 active memory。",
+    rollback_hint: "若冲突未确认，保留 review-only note，不写 proposal queue 或长期记忆。",
   }));
   const stale_conflict_signals = [...staleSignals, ...conflictSignals].slice(0, 4);
 
@@ -4441,7 +4441,7 @@ function buildSummaryIterationClosure(review: ReviewSummaryIterationOutput): Sum
     target_type: review.proposal_candidate.target_type,
     reason: action.reason,
     evidence_refs: action.evidence_refs.length ? action.evidence_refs : review.evidence_refs.slice(0, 2),
-    rollback_hint: "proposal-only candidate；人工或 agent 复核前不写 active memory，回滚方式是丢弃候选。",
+    rollback_hint: "proposal-only candidate；人工或 agent 复核前不写长期记忆，回滚方式是丢弃候选。",
     requires_conflict_check: true,
     requires_agent_or_human_apply: true,
     proposal_only: true,
@@ -4673,7 +4673,7 @@ function reviewNextActions(atlas: MemoryAtlas, nodes: AtlasNode[], evidenceRefs:
     priority: item.importance === "high" ? "high" : "medium",
     source_scope: "agent_recommendations_redacted",
     evidence_refs: item.source ? [`recommendation:${item.source}`] : evidenceRefs.slice(0, 2),
-    acceptance_hint: "人工确认后进入 proposal-only handoff，不由前端直接写 active memory。",
+    acceptance_hint: "人工确认后进入 proposal-only handoff，不由前端直接写长期记忆。",
   }));
   if (recommendationActions.length) return recommendationActions;
 
@@ -4703,7 +4703,7 @@ function reviewIterationBacklog(
       title: "Proposal triage",
       why_it_matters: nextActions[0]?.reason || "需要把本期结论转成可审查、可回滚的候选更新。",
       next_step: nextActions[0]?.title || "选择最高价值 review action",
-      acceptance_hint: "生成 proposal-only 候选，不直接写 active memory。",
+      acceptance_hint: "生成 proposal-only 候选，不直接写长期记忆。",
       priority: nextActions[0]?.priority || "medium",
     },
     {
@@ -6575,7 +6575,7 @@ function createTierAssetDetail(
     proposal_hint: recommended_asset_action === "keep" && confidence >= 0.7 ? "proposal_not_needed" : "proposal_recommended",
     proposal_only: true,
     recommended_asset_action,
-    rollback_hint: "若资产判断不成立，只关闭面板或撤销后续 proposal 草稿；Phase 1.3 不写 active memory。",
+    rollback_hint: "若资产判断不成立，只关闭面板或撤销后续 proposal 草稿；Phase 1.3 不写长期记忆。",
     source_scope: "redacted_atlas_snapshot",
     staleness_status,
     summary: `${title} 属于 ${asset_tier} 层级资产；主题 ${theme}，当前仅使用 redacted label、层级、分类、日期、ROI 与连接数生成说明。`,
@@ -6767,7 +6767,7 @@ function createTopicClassificationDetail(
     record_count: nodes.length,
     representative_record_ids: nodes.slice(0, 5).map((node) => node.id),
     river_handoff: `memory_river:theme_lane:${topic_label}:recent_count:${recent_count}`,
-    rollback_hint: "若主题判断不成立，只关闭面板或撤销后续 proposal 草稿；Phase 1.4 不写 active memory。",
+    rollback_hint: "若主题判断不成立，只关闭面板或撤销后续 proposal 草稿；Phase 1.4 不写长期记忆。",
     roi_score,
     starfield_handoff: `memory_starfield:focus_topic:${topic_label}`,
     targetView: topic_state === "declining" || topic_state === "stale" || topic_state === "black_hole" ? "timeline" : "galaxy",
@@ -6971,7 +6971,7 @@ function buildNextActionDetails({
         ? `${staleNodes.length.toLocaleString()} 条历史、临时或过时信号需要降权或补证。`
         : "当前没有明显 Black Hole；保留这一步作为定期检查。",
       recommended_time_window: staleNodes.length ? "this_week" : "later",
-      rollback_hint: "任何降权、隐藏或 stale override 都只能生成 proposal JSON，不直接修改 active memory。",
+      rollback_hint: "任何降权、隐藏或 stale override 都只能生成 proposal JSON，不直接修改长期记忆。",
       roi_score: staleNodes.length ? clampActionScore(0.52 + Math.min(0.3, staleNodes.length / 60)) : 0.28,
       source: "home_overview.black_hole_candidates",
       status: staleNodes.length ? "proposed" : "review",

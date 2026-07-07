@@ -67,6 +67,47 @@ validation_hints:
     - no generator implementation in Stage 0
     - no raw transcript access
     - no writeback
+stage10_review:
+  task_id: MA-V117-S10-REVIEW
+  acceptance_id: ACC-MA-V117-S10-REVIEW
+  status: stage_10_review_passed_pending_final_github_main_upload
+  required_validator: validate:v1.1.7-stage10
+  review_artifact: docs/reviews/memory_atlas_v1_1_7_stage10_review.md
+  phase_label: Stage 10 Review
+  phase_coverage:
+    - Stage 10 Phase 10.1
+    - Final hardening upload readiness
+  clean_tree_validators:
+    - validate:v1.1.7-stage10-phase1
+    - validate:whole-project
+  regression_validators:
+    - validate:part2-stage1
+  schema_compatibility_hardening:
+    - schema compatibility hardening
+    - legacy whole-project validator hardening
+    - Chinese-first copy hardening
+    - memory_starfield_spike_fixture.v1_1_7_stage4_phase2
+    - memory_river_spike_fixture.v1_1_7_stage5_phase2
+  next_gate: pending final one-time GitHub main upload
+  upload_boundary:
+    - No intermediate GitHub upload
+    - No GitHub main upload in this review
+    - No remote development branch
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundaries:
+    - no_intermediate_github_upload
+    - no_github_main_upload_in_this_review
+    - no_remote_development_branch
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_proposal_queue_write
+    - no_agent_apply
+    - no_deploy
 stage10_phase1_final_hardening_upload_readiness:
   task_id: MA-V117-S10P01
   acceptance_id: ACC-MA-V117-S10P01
