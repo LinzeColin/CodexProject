@@ -1646,3 +1646,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: source_application_blocker_audit_item_count=48, source_application_blocker_audit_ready_item_count=0, source_private_application_blocker_audit_record_count=48, prior_application_blocker_observation_count=1 and application_blocker_observation_count=2 prove this phase records the second blocker observation only.
 - gate: `NO_GO`; application_blocked_audit_threshold_met=false, binding_ready_after_threshold_recheck_count=0, comparison_retry_ready_after_threshold_recheck_count=0, raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private threshold diagnostic, records and report stay under ignored runtime and raw inbox remains untouched by this phase.
+
+## V014 Residual Difference Authorized Source Reference Or Exclusion Application Blocker Final Threshold Recheck After Raw Refresh
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-BLOCKER-FINAL-THRESHOLD-RECHECK-AFTER-RAW-REFRESH-001`
+- parameter_ids: `PARAM-KMFA-1516`, `PARAM-KMFA-1517`, `PARAM-KMFA-1518`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_BLOCKER_FINAL_THRESHOLD_RECHECK_AFTER_RAW_REFRESH`
+- version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-blocker-final-threshold-recheck-after-raw-refresh`
+- rule: source_application_blocker_threshold_recheck_item_count=48, source_application_blocker_observation_count=2, source_application_blocked_audit_threshold_met=false, source_private_application_blocker_threshold_record_count=48, prior_application_blocker_observation_count=2 and application_blocker_observation_count=3 prove this phase records the third blocker observation and strict threshold.
+- gate: `NO_GO`; application_blocked_audit_threshold_met=true, goal_status_recommendation=blocked, binding_ready_after_final_threshold_recheck_count=0, comparison_retry_ready_after_final_threshold_recheck_count=0, raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private final threshold diagnostic, records and report stay under ignored runtime and raw inbox remains untouched by this phase.
