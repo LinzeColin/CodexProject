@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.1.7 Stage 2 Review
+
+- Added `docs/reviews/memory_atlas_v1_1_7_stage2_review.md` to pin the
+  completed Stage 2 review gate.
+- Added `validate:v1.1.7-stage2` to validate Stage 1 continuity, Phase 2.1
+  Editable Draft Model, Phase 2.2 Proposal UI, records, package script and
+  no-upload boundary.
+- Registered `MA-V117-S2-REVIEW` / `ACC-MA-V117-S2-REVIEW` with status
+  `stage_2_review_passed_pending_stage3_no_github_main_upload`.
+- Marked Stage 2 as review-passed and pending Stage 3 while preserving
+  `No GitHub main upload` before the whole Stage 0-10 project is complete.
+
+No Stage 3 work, Search 2.0 runtime, Review workflow runtime, Data Map 2.0
+runtime, raw/private data read, direct active-memory writeback, agent apply,
+production build, local app install, browser screenshot, deploy or GitHub main
+upload was added.
+
 ## Unreleased - Memory Atlas v1.1.7 Stage 2 Phase 2.2
 
 - Added `apps/memory-atlas/src/components/ProposalEditor.tsx` to expose the

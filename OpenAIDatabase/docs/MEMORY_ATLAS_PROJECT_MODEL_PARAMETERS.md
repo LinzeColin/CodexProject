@@ -1,3 +1,36 @@
+## 80. v1.1.7 Stage 2 Review Gate
+
+状态：`stage_2_review_passed_pending_stage3_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V117-S2-REVIEW`。
+
+模型参数：
+
+- Stage 2 Review 只复审 Phase 2.1 / Phase 2.2，不进入 Stage 3。
+- `validate:v1.1.7-stage2` 是整阶段必跑 validator。
+- Phase 2.1 Editable Draft Model 和 Phase 2.2 Proposal UI 是本 gate 的完整覆盖范围。
+- Stage 2 review status 固定为 `stage_2_review_passed_pending_stage3_no_github_main_upload`，pending Stage 3。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage2_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage2.cjs`
+- `apps/memory-atlas/package.json`
+
+参数记录：
+
+- `PARAM-MA-V117-S2-REVIEW-001 stage2_review_status = stage_2_review_passed_pending_stage3_no_github_main_upload`
+- `PARAM-MA-V117-S2-REVIEW-002 stage2_review_required_validator = validate:v1.1.7-stage2`
+- `PARAM-MA-V117-S2-REVIEW-003 stage2_review_phase_scope = Phase 2.1;Phase 2.2`
+- `PARAM-MA-V117-S2-REVIEW-004 stage2_review_deferred_work = pending Stage 3;Default Home Structure;Search 2.0;Review workflow;Data Map 2.0;browser screenshot;final app reinstall;GitHub main upload`
+
+验收信号：
+
+- Stage 2 review artifact。
+- `validate:v1.1.7-stage2` 检查 Stage 1 continuity、Phase 2.1 / Phase 2.2 validators、records、package script 和 no-upload boundary。
+- Boundary includes No GitHub main upload, No Stage 3 work, No raw/private read, No direct active-memory writeback, No agent apply and No build/deploy/app install。
+
 ## 79. v1.1.7 Stage 2 Phase 2.2 Proposal UI
 
 状态：`phase_2_2_proposal_ui_completed_pending_stage2_review`。
