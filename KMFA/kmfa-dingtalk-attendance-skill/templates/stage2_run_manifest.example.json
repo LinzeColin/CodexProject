@@ -10,6 +10,12 @@
   "canonical_snapshot_hash": "sha256:example",
   "quality_grade": "Q4",
   "unresolved_exceptions": {"P0": 0, "P1": 0, "P2": 0, "P3": 0},
+  "quality_gates": {
+    "location_evidence_thresholds_passed": true,
+    "raw_to_derived_reconciliation_passed": true,
+    "database_transaction_committed": true,
+    "database_transaction_verified": true
+  },
   "stage2_status": "pending",
   "next_action": "wait_for_day_5_consensus_or_generate_certificate"
 }

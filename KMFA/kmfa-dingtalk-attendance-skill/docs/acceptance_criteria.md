@@ -43,7 +43,7 @@
 - [ ] Day 4 evening writes run_04.
 - [ ] Day 5 evening writes run_05.
 - [ ] Day 5 compares all five canonical hashes.
-- [ ] Q5 is assigned only if all five hashes match exactly and P0/P1 are zero.
+- [ ] Q5 is assigned only if all five hashes match exactly, P0/P1 are zero, location thresholds pass, raw-to-derived reconciliation passes, and database transaction commit/verification gates pass.
 
 ## Payroll baseline acceptance
 

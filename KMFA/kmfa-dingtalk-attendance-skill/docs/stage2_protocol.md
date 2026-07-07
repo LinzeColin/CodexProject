@@ -70,6 +70,9 @@ stage2_divergence_report.md
 | unresolved P1 | 0 |
 | location evidence | pass |
 | trajectory evidence | pass |
+| raw-to-derived reconciliation | pass |
+| database transaction committed | true |
+| database transaction verified | true |
 | rule drift | none |
 
 ## Failure cases
@@ -83,3 +86,4 @@ stage2_divergence_report.md
 | canonical hash mismatch | stage2 failed |
 | location evidence below threshold | stage2 failed |
 | raw-to-derived count mismatch | stage2 failed |
+| database transaction not committed or not verified | stage2 failed |

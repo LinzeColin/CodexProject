@@ -15,6 +15,7 @@
     "canonical_snapshot_hash",
     "quality_grade",
     "unresolved_exceptions",
+    "quality_gates",
     "stage2_status"
   ],
   "properties": {
@@ -36,6 +37,21 @@
         "P1": {"const": 0},
         "P2": {"type": "integer", "minimum": 0},
         "P3": {"type": "integer", "minimum": 0}
+      }
+    },
+    "quality_gates": {
+      "type": "object",
+      "required": [
+        "location_evidence_thresholds_passed",
+        "raw_to_derived_reconciliation_passed",
+        "database_transaction_committed",
+        "database_transaction_verified"
+      ],
+      "properties": {
+        "location_evidence_thresholds_passed": {"type": "boolean"},
+        "raw_to_derived_reconciliation_passed": {"type": "boolean"},
+        "database_transaction_committed": {"type": "boolean"},
+        "database_transaction_verified": {"type": "boolean"}
       }
     },
     "stage2_status": {"enum": ["pending", "accepted", "failed"]}
