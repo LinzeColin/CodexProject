@@ -18,6 +18,7 @@ REQUIRED = [
     "templates/fund_weekly_analysis_config.yaml",
     "automation/daily_1130_sydney.prompt.md",
     "tools/run_fund_weekly_analysis.py",
+    "tools/materialize_fund_source.py",
     "tools/install_to_kmfa_main.sh",
     "templates/资金与税费管理母版_真实数据预览_v2.xlsx",
 ]
