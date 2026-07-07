@@ -35,7 +35,16 @@
     "manifest.json",
     "cleanup.json"
   ],
-  "private_runtime_sqlite": false,
+  "ledger_index": {
+    "enabled": true,
+    "private_sqlite_path": "KMFA/metadata/dingtalk_attendance/private_runtime/attendance_ledger.sqlite",
+    "rebuild_command": "python tools/dingtalk_attendance/sync_attendance_ledger.py --all",
+    "salary_basis_allowed": false,
+    "source_of_truth": "OneDrive raw/manifest/dispatch/cleanup archives",
+    "tracked_in_git": false,
+    "validate_command": "python tools/dingtalk_attendance/sync_attendance_ledger.py --validate"
+  },
+  "private_runtime_sqlite": true,
   "project_id": "KMFA",
   "public_repo_safety": {
     "credential_committed": false,

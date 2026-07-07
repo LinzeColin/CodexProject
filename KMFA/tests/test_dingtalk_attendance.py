@@ -2,6 +2,7 @@ import gzip
 import json
 import tempfile
 import unittest
+from contextlib import closing
 from datetime import datetime
 from pathlib import Path
 from unittest.mock import patch
@@ -41,11 +42,176 @@ from KMFA.tools.dingtalk_attendance.run_attendance import (
     run_attendance,
 )
 from KMFA.tools.dingtalk_attendance.send_latest_report import send_latest_report
+from KMFA.tools.dingtalk_attendance.sync_attendance_ledger import (
+    DEFAULT_LEDGER_PATH,
+    initialize_ledger,
+    sync_archives_to_ledger,
+    validate_ledger,
+)
+from KMFA.tools.dingtalk_attendance.query_attendance_ledger import (
+    get_employee_month_effective_days,
+    get_month_anomalies,
+    get_month_rest_required_people,
+    get_month_summary,
+    get_run_sync_status,
+)
 from KMFA.tools.dingtalk_attendance.check_s19_dingtalk_attendance import validate_s19_files
 from KMFA.tools.dingtalk_attendance.validate_no_sensitive_git import scan_payload_for_sensitive_text
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def _write_ledger_fixture_run(
+    root: Path,
+    *,
+    run_id: str,
+    work_date: str,
+    employees: list[dict[str, object]],
+    stats_override: dict[str, object] | None = None,
+    dispatch_payload: dict[str, object] | None = None,
+) -> dict[str, Path]:
+    month_dir = root / work_date[:7].replace("-", "")
+    month_dir.mkdir(parents=True, exist_ok=True)
+    raw_path = month_dir / f"{run_id}.raw.jsonl.gz"
+    stats = {
+        "member_count": len(employees),
+        "record_success_count": sum(1 for item in employees if item.get("record_success", True)),
+        "summary_success_count": sum(1 for item in employees if item.get("summary_success", True)),
+        "record_failure_count": sum(1 for item in employees if not item.get("record_success", True)),
+        "summary_failure_count": sum(1 for item in employees if not item.get("summary_success", True)),
+        "command_failure_count": sum(1 for item in employees if not item.get("record_success", True))
+        + sum(1 for item in employees if not item.get("summary_success", True)),
+        "attendance_anomaly_count": 0,
+        "attendance_anomaly_names": [],
+    }
+    if stats_override:
+        stats.update(stats_override)
+    with gzip.open(raw_path, "wt", encoding="utf-8") as handle:
+        handle.write(
+            json.dumps(
+                {
+                    "type": "metadata",
+                    "run_plan": {"run_id": run_id, "run_type": "evening"},
+                    "stats": stats,
+                },
+                ensure_ascii=False,
+            )
+            + "\n"
+        )
+        for item in employees:
+            punches = item.get("punches", [])
+            assert isinstance(punches, list)
+            record_success = bool(item.get("record_success", True))
+            summary_success = bool(item.get("summary_success", True))
+            member = {"name": item["name"], "userId": item["user_id"]}
+            handle.write(
+                json.dumps(
+                    {
+                        "type": "employee_attendance",
+                        "member": member,
+                        "work_date": work_date,
+                        "record": {
+                            "final": {
+                                "returncode": 0 if record_success else 1,
+                                "payload": {
+                                    "success": record_success,
+                                    "result": {
+                                        "recordList": punches,
+                                        "isHasSchedule": True,
+                                        "isRest": False,
+                                    },
+                                    "error": {} if record_success else {"server_error_code": "TOKEN_VERIFIED_FAILED"},
+                                },
+                            }
+                        },
+                        "summary": {
+                            "final": {
+                                "returncode": 0 if summary_success else 1,
+                                "payload": {
+                                    "success": summary_success,
+                                    "result": {
+                                        "abnormalCount": 0,
+                                        "items": item.get("summary_items", []),
+                                    },
+                                    "error": {} if summary_success else {"server_error_code": "SUMMARY_FAILED"},
+                                },
+                            }
+                        },
+                        "derived": {
+                            "record_success": record_success,
+                            "summary_success": summary_success,
+                            "record_count": len(punches),
+                            "record_has_full_day": _fixture_has_full_day(punches),
+                            "record_anomaly": bool(item.get("record_anomaly", False)),
+                            "summary_today_anomaly": bool(item.get("summary_today_anomaly", False)),
+                            "summary_today_issues": item.get("summary_today_issues", []),
+                            "known_no_record": bool(item.get("known_no_record", False)),
+                        },
+                    },
+                    ensure_ascii=False,
+                )
+                + "\n"
+            )
+    manifest_path = month_dir / f"{run_id}.manifest.json"
+    raw_hash = __import__("hashlib").sha256(raw_path.read_bytes()).hexdigest()
+    manifest_path.write_text(
+        json.dumps(
+            {
+                "run_id": run_id,
+                "backend": "dws",
+                "raw_jsonl_gz": str(raw_path),
+                "raw_jsonl_gz_sha256": raw_hash,
+                "management_report": str(month_dir / f"{run_id}.management.md"),
+                "hr_report": str(month_dir / f"{run_id}.hr.md"),
+                "dispatch_receipt": str(month_dir / f"{run_id}.dispatch.json"),
+                "cleanup_audit": str(month_dir / f"{run_id}.cleanup.json"),
+                "stats": stats,
+            },
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    dispatch_path = month_dir / f"{run_id}.dispatch.json"
+    dispatch_path.write_text(
+        json.dumps(
+            dispatch_payload
+            or {
+                "notification_status": "SENT",
+                "target_results": [
+                    {
+                        "label": "张霖泽",
+                        "type": "personal",
+                        "channel": "dws_open_dingtalk_id_chat",
+                        "management_status": "SENT",
+                        "hr_status": "SENT",
+                        "trace_id_present": False,
+                    }
+                ],
+            },
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    cleanup_path = month_dir / f"{run_id}.cleanup.json"
+    cleanup_path.write_text(json.dumps({"status": "OK"}, ensure_ascii=False), encoding="utf-8")
+    return {"raw": raw_path, "manifest": manifest_path, "dispatch": dispatch_path, "cleanup": cleanup_path}
+
+
+def _fixture_punches(*, morning: bool = True, evening: bool = True) -> list[dict[str, str]]:
+    punches: list[dict[str, str]] = []
+    if morning:
+        punches.append({"checkTypeDesc": "上班", "userCheckTime": "2026-06-01 08:31:00"})
+    if evening:
+        punches.append({"checkTypeDesc": "下班", "userCheckTime": "2026-06-01 18:19:00"})
+    return punches
+
+
+def _fixture_has_full_day(punches: list[object]) -> bool:
+    text = json.dumps(punches, ensure_ascii=False)
+    return "上班" in text and "下班" in text
 
 
 class FakeDwsRunner:
@@ -114,6 +280,161 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertFalse(plan["public_repo_safety"]["sqlite_committed"])
         self.assertFalse(plan["public_repo_safety"]["credential_committed"])
         self.assertTrue(plan["live_only"])
+
+    def test_attendance_ledger_initializes_required_private_schema(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            db_path = Path(tmpdir) / "attendance_ledger.sqlite"
+
+            result = initialize_ledger(db_path)
+
+            self.assertEqual(result["status"], "READY")
+            import sqlite3
+
+            with closing(sqlite3.connect(db_path)) as conn:
+                tables = {
+                    row[0]
+                    for row in conn.execute(
+                        "select name from sqlite_master where type='table' and name not like 'sqlite_%'"
+                    )
+                }
+            self.assertTrue(
+                {
+                    "runs",
+                    "employees",
+                    "daily_attendance",
+                    "punch_records",
+                    "summary_items",
+                    "anomalies",
+                    "rest_required_snapshots",
+                    "dispatch_receipts",
+                    "sync_audit",
+                }.issubset(tables)
+            )
+
+    def test_attendance_ledger_sync_is_idempotent_and_preserves_run_stats(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / "onedrive"
+            db_path = Path(tmpdir) / "attendance_ledger.sqlite"
+            _write_ledger_fixture_run(
+                root,
+                run_id="s19_evening_20260601_181500",
+                work_date="2026-06-01",
+                employees=[
+                    {"name": "测试甲", "user_id": "u1", "punches": _fixture_punches()},
+                    {"name": "测试乙", "user_id": "u2", "punches": _fixture_punches(morning=True, evening=False)},
+                ],
+                stats_override={"member_count": 2, "record_success_count": 2, "summary_success_count": 2},
+            )
+
+            first = sync_archives_to_ledger(onedrive_root=root, db_path=db_path, all_months=True)
+            second = sync_archives_to_ledger(onedrive_root=root, db_path=db_path, all_months=True)
+
+            self.assertEqual(first["synced_runs"], 1)
+            self.assertEqual(second["synced_runs"], 1)
+            summary = get_month_summary(db_path=db_path, month="202606")
+            self.assertEqual(summary["run_count"], 1)
+            self.assertEqual(summary["employee_count"], 2)
+            self.assertEqual(summary["member_count_total"], 2)
+            self.assertEqual(summary["record_success_count_total"], 2)
+            self.assertEqual(summary["summary_success_count_total"], 2)
+            import sqlite3
+
+            with closing(sqlite3.connect(db_path)) as conn:
+                sync_run_audits = conn.execute(
+                    "select count(*) from sync_audit where event_type='SYNC_RUN' and run_id='s19_evening_20260601_181500'"
+                ).fetchone()[0]
+            self.assertEqual(sync_run_audits, 1)
+
+    def test_attendance_ledger_rest_required_starts_from_27th_effective_day(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / "onedrive"
+            db_path = Path(tmpdir) / "attendance_ledger.sqlite"
+            for day in range(1, 28):
+                work_date = f"2026-06-{day:02d}"
+                _write_ledger_fixture_run(
+                    root,
+                    run_id=f"s19_evening_202606{day:02d}_181500",
+                    work_date=work_date,
+                    employees=[{"name": "测试甲", "user_id": "u1", "punches": _fixture_punches()}],
+                )
+
+            sync_archives_to_ledger(onedrive_root=root, db_path=db_path, all_months=True)
+
+            self.assertEqual(get_employee_month_effective_days(db_path=db_path, month="202606", employee="测试甲"), 27)
+            rest_people = get_month_rest_required_people(db_path=db_path, month="202606")
+            self.assertEqual(rest_people, [{"name": "测试甲", "user_id": "u1", "first_work_date": "2026-06-27", "effective_attendance_days": 27}])
+
+    def test_attendance_ledger_requires_both_morning_and_evening_punches_for_effective_day(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / "onedrive"
+            db_path = Path(tmpdir) / "attendance_ledger.sqlite"
+            _write_ledger_fixture_run(
+                root,
+                run_id="s19_evening_20260601_181500",
+                work_date="2026-06-01",
+                employees=[{"name": "测试甲", "user_id": "u1", "punches": _fixture_punches(morning=True, evening=False)}],
+            )
+            _write_ledger_fixture_run(
+                root,
+                run_id="s19_evening_20260602_181500",
+                work_date="2026-06-02",
+                employees=[{"name": "测试甲", "user_id": "u1", "punches": _fixture_punches(morning=False, evening=True)}],
+            )
+            _write_ledger_fixture_run(
+                root,
+                run_id="s19_evening_20260603_181500",
+                work_date="2026-06-03",
+                employees=[{"name": "测试甲", "user_id": "u1", "punches": _fixture_punches()}],
+            )
+
+            sync_archives_to_ledger(onedrive_root=root, db_path=db_path, all_months=True)
+
+            self.assertEqual(get_employee_month_effective_days(db_path=db_path, month="202606", employee="测试甲"), 1)
+
+    def test_attendance_ledger_preserves_record_failure_as_system_anomaly(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / "onedrive"
+            db_path = Path(tmpdir) / "attendance_ledger.sqlite"
+            _write_ledger_fixture_run(
+                root,
+                run_id="s19_evening_20260601_181500",
+                work_date="2026-06-01",
+                employees=[{"name": "测试甲", "user_id": "u1", "punches": [], "record_success": False}],
+            )
+
+            sync_archives_to_ledger(onedrive_root=root, db_path=db_path, all_months=True)
+
+            anomalies = get_month_anomalies(db_path=db_path, month="202606")
+            self.assertEqual(anomalies[0]["name"], "测试甲")
+            self.assertEqual(anomalies[0]["anomaly_type"], "SYSTEM_RECORD_FAILURE")
+            self.assertEqual(get_employee_month_effective_days(db_path=db_path, month="202606", employee="测试甲"), 0)
+
+    def test_attendance_ledger_default_database_path_is_git_ignored_private_runtime(self) -> None:
+        self.assertEqual(DEFAULT_LEDGER_PATH.name, "attendance_ledger.sqlite")
+        self.assertIn("metadata/dingtalk_attendance/private_runtime", DEFAULT_LEDGER_PATH.as_posix())
+        result = __import__("subprocess").run(
+            ["git", "check-ignore", "-q", str(DEFAULT_LEDGER_PATH.relative_to(ROOT))],
+            cwd=ROOT,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0)
+
+    def test_attendance_ledger_validate_reports_ready_after_sync(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / "onedrive"
+            db_path = Path(tmpdir) / "attendance_ledger.sqlite"
+            paths = _write_ledger_fixture_run(
+                root,
+                run_id="s19_evening_20260601_181500",
+                work_date="2026-06-01",
+                employees=[{"name": "测试甲", "user_id": "u1", "punches": _fixture_punches()}],
+            )
+
+            sync_archives_to_ledger(onedrive_root=root, db_path=db_path, all_months=True)
+
+            validation = validate_ledger(db_path=db_path)
+            self.assertEqual(validation["status"], "PASS")
+            self.assertEqual(get_run_sync_status(db_path=db_path, run_id="s19_evening_20260601_181500")["raw_path"], str(paths["raw"]))
 
     def test_run_attendance_fails_closed_before_dws_without_explicit_auth_allow(self) -> None:
         def blocked_collector(**kwargs: object) -> dict:
