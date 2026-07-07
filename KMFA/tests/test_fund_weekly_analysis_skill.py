@@ -249,6 +249,44 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertFalse(cross_review["management_conclusion_allowed"])
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
 
+    def test_runner_fails_closed_when_input_file_is_unreadable(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+            unreadable_file = input_dir / "files" / "0708" / "unreadable.png"
+            unreadable_file.parent.mkdir(parents=True)
+            unreadable_file.write_bytes(b"not-readable")
+            unreadable_file.chmod(0)
+            try:
+                result = subprocess.run(
+                    [
+                        sys.executable,
+                        str(SKILL_ROOT / "tools" / "run_fund_weekly_analysis.py"),
+                        "--repo-root",
+                        str(repo_root),
+                        "--input-dir",
+                        str(input_dir),
+                        "--run-id",
+                        "runner_unreadable_source",
+                        "--timezone",
+                        "Australia/Sydney",
+                    ],
+                    text=True,
+                    capture_output=True,
+                    check=False,
+                )
+            finally:
+                unreadable_file.chmod(0o600)
+
+            self.assertEqual(result.returncode, 5)
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/runner_unreadable_source"
+            manifest = json.loads((run_dir / "run_manifest.json").read_text(encoding="utf-8"))
+            issues = json.loads((run_dir / "data_quality_issues.json").read_text(encoding="utf-8"))
+            self.assertEqual(manifest["status"], "SOURCE_UNREADABLE")
+            self.assertEqual(manifest["unreadable_count"], 1)
+            self.assertEqual(issues[0]["issue_type"], "SOURCE_UNREADABLE")
+            self.assertFalse((run_dir / "资金与税费管理母版_runner_unreadable_source.xlsx").exists())
+
     def test_materialize_archive_candidate_is_explicit_idempotent_and_no_overwrite(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             repo_root = Path(temp_dir) / "repo"
