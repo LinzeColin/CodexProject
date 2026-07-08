@@ -1281,6 +1281,43 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertNotIn("#", plain)
         self.assertIn("今日异常 / 无考勤\n共 11 人，本月累计 Top10:", plain)
 
+    def test_notification_template_does_not_render_historical_monthly_anomalies_as_today(self) -> None:
+        message = build_notification_message(
+            work_date="2026-07-08",
+            run_type="morning",
+            current_time="08:50",
+            unexpected_empty_record_names=[],
+            known_no_record_names=[],
+            monthly_attendance_anomalies=[
+                {"name": "历史异常甲", "monthly_count": 3, "latest_date": "2026-07-03"},
+                {"name": "历史异常乙", "monthly_count": 1, "latest_date": "2026-07-01"},
+            ],
+            member_count=44,
+            markdown=True,
+        )
+
+        self.assertIn("本次44人全部考勤正常，今天一切良好", message)
+        self.assertNotIn("历史异常甲", message)
+        self.assertNotIn("## 今日异常 / 无考勤", message)
+
+    def test_notification_template_omits_empty_sections_when_other_sections_have_content(self) -> None:
+        message = build_notification_message(
+            work_date="2026-07-08",
+            run_type="morning",
+            current_time="08:50",
+            unexpected_empty_record_names=[],
+            known_no_record_names=[],
+            consecutive_anomaly_summary=[],
+            pending_hr_actions=["DWS record 取数失败 1 人，需核查 attendance.record:get 权限。"],
+            rest_required_people=[],
+            markdown=True,
+        )
+
+        self.assertIn("## 待审批 / 待补卡 / 待核查\nDWS record 取数失败 1 人", message)
+        self.assertNotIn("## 今日异常 / 无考勤", message)
+        self.assertNotIn("## 连续异常", message)
+        self.assertNotIn("## 需要休息", message)
+
     def test_monthly_rollups_count_current_month_and_rest_from_23rd_effective_day(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             month_dir = Path(tmpdir)
@@ -1380,7 +1417,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             work_date="2026-07-23",
             run_type="evening",
             current_time="18:15",
-            unexpected_empty_record_names=[],
+            unexpected_empty_record_names=["丁春法", "李永占"],
             known_no_record_names=[],
             monthly_attendance_anomalies=[
                 {"name": "丁春法", "monthly_count": 1, "latest_date": "2026-07-23"},
