@@ -489,6 +489,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "workbook_quality_checks.csv",
                 "kmfa_metadata_signals.csv",
                 "goal_completion_audit.csv",
+                "fact_promotion_review_packet.csv",
                 "exception_tasks.csv",
                 "cross_review.json",
                 "audit_log.json",
@@ -924,6 +925,16 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_review_authorization_preview_blocked_count"], 3)
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertFalse(cross_review["management_conclusion_allowed"])
+
+            with (run_dir / "fact_promotion_review_packet.csv").open(encoding="utf-8-sig", newline="") as f:
+                review_packet_rows = list(csv.DictReader(f))
+            packet_by_area = {row["review_area"]: row for row in review_packet_rows}
+            self.assertEqual(packet_by_area["ocr_fact_ledger_staging"]["candidate_count"], "3")
+            self.assertEqual(packet_by_area["ocr_fact_ledger_staging"]["ready_count"], "0")
+            self.assertEqual(packet_by_area["ocr_fact_ledger_staging"]["blocked_count"], "3")
+            self.assertEqual(packet_by_area["ocr_fact_ledger_staging"]["review_status"], "blocked_missing_operator_authorization")
+            self.assertEqual(packet_by_area["ocr_fact_ledger_staging"]["fund_ledger_write_allowed"], "false")
+            self.assertEqual(packet_by_area["ocr_fact_ledger_staging"]["financial_fact_promoted"], "false")
 
     def test_runner_validates_private_ocr_fact_review_authorization_without_ledger_promotion(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

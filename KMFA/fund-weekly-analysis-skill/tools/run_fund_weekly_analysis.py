@@ -1896,6 +1896,123 @@ def build_goal_completion_audit_rows(cross_review: dict) -> list[dict]:
     ]
 
 
+def fact_promotion_review_packet_row(
+    packet_id: str,
+    review_area: str,
+    candidate_count: int,
+    ready_count: int,
+    blocked_count: int,
+    review_status: str,
+    source_artifact: str,
+    authorization_required: bool,
+    next_action: str,
+) -> dict:
+    return {
+        "review_packet_id": packet_id,
+        "review_area": review_area,
+        "candidate_count": str(candidate_count),
+        "ready_count": str(ready_count),
+        "blocked_count": str(blocked_count),
+        "review_status": review_status,
+        "source_artifact": source_artifact,
+        "authorization_required": bool_text(authorization_required),
+        "fund_ledger_write_allowed": "false",
+        "financial_fact_promoted": "false",
+        "next_action": next_action,
+    }
+
+
+def build_fact_promotion_review_packet_rows(
+    manifest: dict,
+    structured: dict,
+    ocr_fact_ledger_staging_preview_rows: list[dict],
+    chat_value_candidates: list[dict],
+    attachment_reconciliation_rows: list[dict],
+    workbook_quality_rows: list[dict],
+    goal_completion_audit_rows: list[dict],
+) -> list[dict]:
+    run_id = manifest["run_id"]
+    structured_count = len(structured["fund_rows"])
+    ocr_ready = sum(
+        1 for row in ocr_fact_ledger_staging_preview_rows
+        if row["staging_preview_status"] == "ready_for_ledger_staging_review_no_write"
+    )
+    ocr_blocked = len(ocr_fact_ledger_staging_preview_rows) - ocr_ready
+    chat_count = len(chat_value_candidates)
+    attachment_blocked = sum(1 for row in attachment_reconciliation_rows if row["reconciliation_status"].endswith("_blocking"))
+    workbook_blocked = sum(1 for row in workbook_quality_rows if row["management_blocking"] == "true")
+    goal_blocked = sum(1 for row in goal_completion_audit_rows if row["blocking"] == "true")
+
+    return [
+        fact_promotion_review_packet_row(
+            f"FPRP-{run_id}-00001",
+            "structured_csv_facts",
+            structured_count,
+            structured_count,
+            0,
+            "pending_cross_review" if structured_count else "no_structured_rows",
+            "fund_ledger.csv",
+            structured_count > 0,
+            "Review structured CSV source rows before formal fact promotion" if structured_count else "Provide reviewed structured CSV rows",
+        ),
+        fact_promotion_review_packet_row(
+            f"FPRP-{run_id}-00002",
+            "ocr_fact_ledger_staging",
+            len(ocr_fact_ledger_staging_preview_rows),
+            ocr_ready,
+            ocr_blocked,
+            "blocked_missing_operator_authorization" if ocr_blocked else ("ready_for_human_ledger_staging_review_no_write" if ocr_ready else "no_ocr_fact_candidates"),
+            "ocr_fact_ledger_staging_preview.csv",
+            len(ocr_fact_ledger_staging_preview_rows) > 0,
+            "Review OCR ledger staging rows and provide explicit owner authorization" if ocr_fact_ledger_staging_preview_rows else "Generate OCR fact candidates first",
+        ),
+        fact_promotion_review_packet_row(
+            f"FPRP-{run_id}-00003",
+            "chat_value_candidates",
+            chat_count,
+            0,
+            chat_count,
+            "pending_human_review" if chat_count else "no_chat_value_candidates",
+            "chat_value_candidates.csv",
+            chat_count > 0,
+            "Review chat value candidates and link to source evidence" if chat_count else "No chat value candidate review required",
+        ),
+        fact_promotion_review_packet_row(
+            f"FPRP-{run_id}-00004",
+            "attachment_evidence_integrity",
+            len(attachment_reconciliation_rows),
+            len(attachment_reconciliation_rows) - attachment_blocked,
+            attachment_blocked,
+            "blocked_evidence_integrity" if attachment_blocked else ("pass" if attachment_reconciliation_rows else "no_attachment_reconciliation_rows"),
+            "attachment_evidence_reconciliation.csv",
+            attachment_blocked > 0,
+            "Resolve attachment evidence blockers before fact promotion" if attachment_blocked else "Keep attachment reconciliation evidence with review packet",
+        ),
+        fact_promotion_review_packet_row(
+            f"FPRP-{run_id}-00005",
+            "workbook_quality",
+            len(workbook_quality_rows),
+            len(workbook_quality_rows) - workbook_blocked,
+            workbook_blocked,
+            "blocked_workbook_quality" if workbook_blocked else "pass",
+            "workbook_quality_checks.csv",
+            workbook_blocked > 0,
+            "Fix workbook quality gates before management conclusion" if workbook_blocked else "Keep workbook quality evidence with review packet",
+        ),
+        fact_promotion_review_packet_row(
+            f"FPRP-{run_id}-00006",
+            "goal_completion_audit",
+            len(goal_completion_audit_rows),
+            len(goal_completion_audit_rows) - goal_blocked,
+            goal_blocked,
+            "blocked_goal_requirements" if goal_blocked else "pass",
+            "goal_completion_audit.csv",
+            goal_blocked > 0,
+            "Resolve blocking goal audit rows before completion claim" if goal_blocked else "Goal audit has no blocking rows",
+        ),
+    ]
+
+
 def collect_workbook_quality_checks(workbook_path: Path) -> list[dict]:
     rows: list[dict] = []
     ns_sheet = {"x": XLSX_MAIN_NS}
@@ -3457,6 +3574,33 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "blocking",
         "next_action",
     ], goal_completion_audit_rows)
+    fact_promotion_review_packet_rows = build_fact_promotion_review_packet_rows(
+        manifest,
+        structured,
+        ocr_fact_ledger_staging_preview_rows,
+        chat_value_candidates,
+        attachment_reconciliation_rows,
+        workbook_quality_rows,
+        goal_completion_audit_rows,
+    )
+    fact_promotion_review_blocking_count = sum(1 for row in fact_promotion_review_packet_rows if row["blocked_count"] != "0")
+    manifest["fact_promotion_review_packet_count"] = len(fact_promotion_review_packet_rows)
+    manifest["fact_promotion_review_blocking_count"] = fact_promotion_review_blocking_count
+    cross_review["fact_promotion_review_packet_count"] = len(fact_promotion_review_packet_rows)
+    cross_review["fact_promotion_review_blocking_count"] = fact_promotion_review_blocking_count
+    write_csv(run_dir / "fact_promotion_review_packet.csv", [
+        "review_packet_id",
+        "review_area",
+        "candidate_count",
+        "ready_count",
+        "blocked_count",
+        "review_status",
+        "source_artifact",
+        "authorization_required",
+        "fund_ledger_write_allowed",
+        "financial_fact_promoted",
+        "next_action",
+    ], fact_promotion_review_packet_rows)
     (run_dir / "cross_review.json").write_text(json.dumps(cross_review, ensure_ascii=False, indent=2), encoding="utf-8")
     (run_dir / "audit_log.json").write_text(
         json.dumps([
@@ -3519,6 +3663,8 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "workbook_quality_blocking_count": workbook_quality_blocking_count,
                 "goal_completion_audit_check_count": len(goal_completion_audit_rows),
                 "goal_completion_blocking_count": goal_completion_blocking_count,
+                "fact_promotion_review_packet_count": len(fact_promotion_review_packet_rows),
+                "fact_promotion_review_blocking_count": fact_promotion_review_blocking_count,
                 "management_conclusion_allowed": False,
             },
         ], ensure_ascii=False, indent=2),
@@ -3653,6 +3799,8 @@ def main() -> int:
         f"Workbook quality blocking count: {manifest.get('workbook_quality_blocking_count', 0)}\n\n"
         f"Goal completion audit check count: {manifest.get('goal_completion_audit_check_count', 0)}\n\n"
         f"Goal completion blocking count: {manifest.get('goal_completion_blocking_count', 0)}\n\n"
+        f"Fact promotion review packet count: {manifest.get('fact_promotion_review_packet_count', 0)}\n\n"
+        f"Fact promotion review blocking count: {manifest.get('fact_promotion_review_blocking_count', 0)}\n\n"
         "No financial amount, management conclusion, or evidence-free forecast was generated from unreviewed OCR/table extraction. "
         "Known due-date projections remain pending review. Next step: perform OCR/table extraction, internal-transfer netting, "
         "cross-review, then promote reviewed facts only.\n",

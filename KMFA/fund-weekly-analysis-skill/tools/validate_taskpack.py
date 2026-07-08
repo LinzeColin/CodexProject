@@ -67,6 +67,7 @@ REQUIRED_SKILL_STRINGS = [
     "attachment_repair_authorization_template.json",
     "attachment_repair_authorization_preview.csv",
     "goal_completion_audit.csv",
+    "fact_promotion_review_packet.csv",
     "attachment_repair_authorizations",
     "authorization_scope=attachment_repair_plan_validation_only",
     "authorized=false",
