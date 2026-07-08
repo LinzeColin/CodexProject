@@ -72,6 +72,8 @@ REQUIRED_SKILL_STRINGS = [
     "ocr_fact_owner_decision_correction_chat_neighbor_context.csv",
     "ready_neighbor_context_no_write",
     "neighbor_context_radius=2",
+    "ocr_fact_owner_decision_correction_owner_review_packet.csv",
+    "ready_for_owner_field_decision_no_write",
     "owner_field_autofill_allowed=false",
     "ocr_fact_owner_decision_correction_roundtrip_audit.csv",
     "owner_correction_resolved_apply_gate_ready_no_write",
