@@ -909,6 +909,61 @@ def build_ocr_fact_review_authorization_preview(manifest: dict, review_gate_rows
     return rows
 
 
+def build_ocr_fact_cross_review_summary(
+    manifest: dict,
+    fact_candidates: list[dict],
+    review_gate_rows: list[dict],
+) -> list[dict]:
+    gate_by_fact_id = {row["fact_candidate_id"]: row for row in review_gate_rows}
+    groups: dict[str, dict] = {}
+    for row in fact_candidates:
+        metric = row["candidate_metric"]
+        group = groups.setdefault(metric, {
+            "candidate_metric": metric,
+            "candidate_count": 0,
+            "candidate_amount_total": Decimal("0.00"),
+            "evidence_ids": set(),
+            "company_present_count": 0,
+            "bank_present_count": 0,
+            "operator_authorized_count": 0,
+            "authorization_blocked_count": 0,
+        })
+        group["candidate_count"] += 1
+        group["candidate_amount_total"] += Decimal(row["amount"])
+        group["evidence_ids"].add(row["evidence_id"])
+        if row["company"]:
+            group["company_present_count"] += 1
+        if row["bank"]:
+            group["bank_present_count"] += 1
+        gate = gate_by_fact_id.get(row["fact_candidate_id"])
+        if gate and gate["authorization_validation_status"] == "valid_manifest_validation_only":
+            group["operator_authorized_count"] += 1
+        else:
+            group["authorization_blocked_count"] += 1
+
+    rows: list[dict] = []
+    for metric in sorted(groups):
+        group = groups[metric]
+        candidate_count = group["candidate_count"]
+        rows.append({
+            "cross_review_group_id": f"OCRXREV-{manifest['run_id']}-{len(rows) + 1:05d}",
+            "candidate_metric": metric,
+            "candidate_count": str(candidate_count),
+            "candidate_amount_total": f"{group['candidate_amount_total']:.2f}",
+            "evidence_count": str(len(group["evidence_ids"])),
+            "company_present_count": str(group["company_present_count"]),
+            "company_missing_count": str(candidate_count - group["company_present_count"]),
+            "bank_present_count": str(group["bank_present_count"]),
+            "bank_missing_count": str(candidate_count - group["bank_present_count"]),
+            "operator_authorized_count": str(group["operator_authorized_count"]),
+            "authorization_blocked_count": str(group["authorization_blocked_count"]),
+            "fund_ledger_write_allowed": "false",
+            "financial_fact_promoted": "false",
+            "review_status": "pending_human_cross_review",
+        })
+    return rows
+
+
 def chat_record_source_paths(manifest: dict) -> list[str]:
     return [
         item["relative_path"]
@@ -2548,6 +2603,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     ocr_fact_review_gate_rows = build_ocr_fact_review_apply_gate(manifest, repo_root, ocr_financial_fact_candidates)
     ocr_fact_review_authorization_template = build_ocr_fact_review_authorization_template(manifest, ocr_fact_review_gate_rows)
     ocr_fact_review_authorization_preview_rows = build_ocr_fact_review_authorization_preview(manifest, ocr_fact_review_gate_rows)
+    ocr_fact_cross_review_rows = build_ocr_fact_cross_review_summary(manifest, ocr_financial_fact_candidates, ocr_fact_review_gate_rows)
     chat_text_candidates = collect_chat_text_candidates(manifest, input_dir, evidence)
     chat_value_candidates = extract_chat_value_candidates(manifest, chat_text_candidates)
     chat_evidence_links = collect_chat_evidence_links(manifest, input_dir, evidence, chat_text_candidates, chat_value_candidates)
@@ -2570,6 +2626,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     manifest["ocr_text_candidate_count"] = len(ocr_text_candidates)
     manifest["ocr_value_candidate_count"] = len(ocr_value_candidates)
     manifest["ocr_financial_fact_candidate_count"] = len(ocr_financial_fact_candidates)
+    manifest["ocr_fact_cross_review_group_count"] = len(ocr_fact_cross_review_rows)
     manifest["ocr_fact_review_apply_gate_count"] = len(ocr_fact_review_gate_rows)
     manifest["ocr_fact_review_authorization_present_count"] = sum(1 for row in ocr_fact_review_gate_rows if row["operator_authorization_present"] == "true")
     manifest["ocr_fact_review_authorization_valid_count"] = sum(1 for row in ocr_fact_review_gate_rows if row["authorization_validation_status"] == "valid_manifest_validation_only")
@@ -2763,6 +2820,22 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "financial_fact_promoted",
         "promotion_blocker",
     ], ocr_financial_fact_candidates)
+    write_csv(run_dir / "ocr_fact_cross_review.csv", [
+        "cross_review_group_id",
+        "candidate_metric",
+        "candidate_count",
+        "candidate_amount_total",
+        "evidence_count",
+        "company_present_count",
+        "company_missing_count",
+        "bank_present_count",
+        "bank_missing_count",
+        "operator_authorized_count",
+        "authorization_blocked_count",
+        "fund_ledger_write_allowed",
+        "financial_fact_promoted",
+        "review_status",
+    ], ocr_fact_cross_review_rows)
     write_csv(run_dir / "ocr_fact_review_apply_gate.csv", [
         "review_gate_id",
         "fact_candidate_id",
@@ -3116,6 +3189,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "ocr_text_candidate_count": len(ocr_text_candidates),
         "ocr_value_candidate_count": len(ocr_value_candidates),
         "ocr_financial_fact_candidate_count": len(ocr_financial_fact_candidates),
+        "ocr_fact_cross_review_group_count": manifest["ocr_fact_cross_review_group_count"],
         "ocr_fact_review_apply_gate_count": manifest["ocr_fact_review_apply_gate_count"],
         "ocr_fact_review_authorization_present_count": manifest["ocr_fact_review_authorization_present_count"],
         "ocr_fact_review_authorization_valid_count": manifest["ocr_fact_review_authorization_valid_count"],
@@ -3179,6 +3253,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "ocr_text_candidate_count": len(ocr_text_candidates),
                 "ocr_value_candidate_count": len(ocr_value_candidates),
                 "ocr_financial_fact_candidate_count": len(ocr_financial_fact_candidates),
+                "ocr_fact_cross_review_group_count": manifest["ocr_fact_cross_review_group_count"],
                 "ocr_fact_review_apply_gate_count": manifest["ocr_fact_review_apply_gate_count"],
                 "ocr_fact_review_authorization_present_count": manifest["ocr_fact_review_authorization_present_count"],
                 "ocr_fact_review_authorization_valid_count": manifest["ocr_fact_review_authorization_valid_count"],
@@ -3325,6 +3400,7 @@ def main() -> int:
         f"OCR text candidate count: {manifest.get('ocr_text_candidate_count', 0)}\n\n"
         f"OCR value candidate count: {manifest.get('ocr_value_candidate_count', 0)}\n\n"
         f"OCR financial fact candidate count: {manifest.get('ocr_financial_fact_candidate_count', 0)}\n\n"
+        f"OCR fact cross-review group count: {manifest.get('ocr_fact_cross_review_group_count', 0)}\n\n"
         f"OCR fact review authorization valid count: {manifest.get('ocr_fact_review_authorization_valid_count', 0)}\n\n"
         f"OCR fact review authorization preview ready count: {manifest.get('ocr_fact_review_authorization_preview_ready_count', 0)}\n\n"
         f"OCR fact review authorization preview blocked count: {manifest.get('ocr_fact_review_authorization_preview_blocked_count', 0)}\n\n"
