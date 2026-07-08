@@ -12,7 +12,7 @@
 
 source registry 属于 S02 P2；本阶段不创建 registry 文件，不修改 raw archive。
 
-当前 S08 Review 已完成。S05 Review 已通过，并新增：
+当前 S09 P1 已完成。S05 Review 已通过，并新增：
 
 - `机器治理/数据契约/facet_event_schema.v1_2_s05_p1.json`
 - `人类可读/12_Facet字段与事件语义说明.md`
@@ -73,12 +73,24 @@ source registry 属于 S02 P2；本阶段不创建 registry 文件，不修改 r
 - `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s08_p3.cjs`
 - `docs/reviews/memory_atlas_v1_2_s08_review.md`
 - `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s08_review.cjs`
+- `机器治理/行为智能模型/latent_signals.v1_2_s09_p1.json`
+- `scripts/build_memory_atlas_latent_signals.py`
+- `data/derived/behavior_intelligence/latent_signals.json`
+- `人类可读/21_潜性信号说明.md`
+- `docs/reviews/memory_atlas_v1_2_s09_p1_latent_signals.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s09_p1.cjs`
 
 当前 S08 Review 已完成，复审覆盖 `data/derived/agent_collaboration/agent_collaboration_quality_report.json`、
 `data/derived/agent_collaboration/agent_authorization_boundary_report.json` 和
 `data/derived/agent_collaboration/stage_flight_recorder.json`。S08 Review 确认协作质量、
 授权边界和 stage flight recorder 满足 S08 stage gate，不修改 raw、不执行 proposal apply、
 不上传 GitHub main。下一步是 S09 P1。
+
+当前 S09 P1 已完成，`data/derived/behavior_intelligence/latent_signals.json` 包含
+claim、supporting evidence、contradicting evidence、alternative explanation、
+confidence、Evidence Strength Badge 和 next validation。S09 P1 不修改 raw、不输出
+心理诊断或人格标签、不创建 self-iteration suggestions、不创建 decision debt ledger。
+下一步是 S09 P2。
 
 S05 P1 定义 facet/canonical event schema：`source`、`topic`、`intent`、
 `task_type`、`project`、`output_type`、`language`、`tool`、`turn_count`、

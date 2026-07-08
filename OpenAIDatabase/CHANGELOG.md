@@ -1,5 +1,26 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S09 P1 Latent Signals
+
+- Added `机器治理/行为智能模型/latent_signals.v1_2_s09_p1.json`.
+- Added `scripts/build_memory_atlas_latent_signals.py` and
+  `data/derived/behavior_intelligence/latent_signals.json`.
+- Extended `scripts/atlasctl.py` with `analyze --stage latent` and
+  `audit --check latent-safety`.
+- Added `docs/reviews/memory_atlas_v1_2_s09_p1_latent_signals.md`.
+- Added `人类可读/21_潜性信号说明.md`.
+- Added `validate:v1.2-s09-p1` for `MA-V12-S09P1` /
+  `ACC-MA-V12-S09P1`.
+- Registered status `phase_s09_p1_latent_signals_completed_pending_s09_p2`.
+- Generated 5 evidence-backed latent signal candidates with claim,
+  supporting evidence, contradicting evidence, alternative explanation,
+  confidence, Evidence Strength Badge and next validation.
+- Preserved S09 P1 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, no psychological diagnosis
+  output, no personality label output, no self-iteration suggestions and no
+  decision debt ledger.
+- Marked the next gate as pending S09 P2.
+
 ## Unreleased - Memory Atlas v1.2 S08 Review
 
 - Added `docs/reviews/memory_atlas_v1_2_s08_review.md`.

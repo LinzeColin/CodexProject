@@ -1,3 +1,51 @@
+## v1.2 S09 P1 Latent Signals
+
+状态：`phase_s09_p1_latent_signals_completed_pending_s09_p2`。
+
+任务 ID：`MA-V12-S09P1`。
+
+验收 ID：`ACC-MA-V12-S09P1`。
+
+Validator：`validate:v1.2-s09-p1`。
+
+S09 P1 生成 evidence-backed latent signals。每条 signal 必须包含 claim、supporting
+evidence、contradicting evidence、alternative explanation、confidence、Evidence
+Strength Badge 和 next validation。当前输出 5 条候选信号，最高置信度为 0.63。
+
+涉及文件：
+
+- `机器治理/行为智能模型/latent_signals.v1_2_s09_p1.json`
+- `scripts/build_memory_atlas_latent_signals.py`
+- `scripts/atlasctl.py`
+- `data/derived/behavior_intelligence/latent_signals.json`
+- `docs/reviews/memory_atlas_v1_2_s09_p1_latent_signals.md`
+- `人类可读/21_潜性信号说明.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s09_p1.cjs`
+- `tests/test_s09p1_latent_signals.py`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s09-p1`
+- `ACC-MA-V12-S09P1`
+- `MA-V12-S09P1`
+- S09 P1
+- `phase_s09_p1_latent_signals_completed_pending_s09_p2`
+- `latent_signals.json`
+- pending S09 P2
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No psychological diagnosis output。
+- No personality label output。
+- No self-iteration suggestions。
+- No decision debt ledger。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S09 P1 Latent Signals; MA-V12-S09P1; ACC-MA-V12-S09P1; phase_s09_p1_latent_signals_completed_pending_s09_p2; validate:v1.2-s09-p1; S09 P1; latent_signals.json; signal_count=5; pending S09 P2; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No psychological diagnosis output; No personality label output; No self-iteration suggestions; No decision debt ledger.
+
 ## v1.2 S08 Review
 
 状态：`stage_s08_review_passed_pending_s09_no_github_main_upload`。

@@ -405,40 +405,40 @@ function validateDocsAndRecords() {
     "S08 Review artifact is incomplete",
   );
   assertCondition(
-    hasAll(quick, [taskId, acceptanceId, status, "当前阶段是 S08 Review", "下一步只允许进入 S09 P1"]),
+    hasAll(quick, ["当前阶段是 S09 P1", "MA-V12-S09P1", "ACC-MA-V12-S09P1", "下一步只允许进入 S09 P2"]),
     "s08_review_quick_entry",
-    "Quick entry records S08 Review state and next S09 P1 gate",
-    "Quick entry is missing S08 Review state",
+    "Quick entry has advanced to S09 P1 while preserving S08 Review records",
+    "Quick entry is missing S09 P1 current state",
   );
   assertCondition(
-    hasAll(overview, ["S08 Review 已完成", "Codex/Agent 协作质量", "stage flight recorder", "下一步是 S09 P1"]),
+    hasAll(overview, ["S09 P1 已完成", "latent_signals.json", "下一步是 S09 P2"]),
     "s08_review_overview",
-    "Overview records S08 Review state and next S09 P1 gate",
-    "Overview is missing S08 Review state",
+    "Overview has advanced to S09 P1 while preserving S08 Review records",
+    "Overview is missing S09 P1 current state",
   );
   assertCondition(
-    hasAll(machine, ["当前为 S08 Review", taskId, acceptanceId, validatorName, "下一步是 S09 P1"]),
+    hasAll(machine, ["当前为 S09 P1", "MA-V12-S09P1", "ACC-MA-V12-S09P1", "validate:v1.2-s09-p1", "下一步是 S09 P2"]),
     "s08_review_machine_readme",
-    "Machine README records S08 Review identity and next gate",
-    "Machine README is missing S08 Review state",
+    "Machine README has advanced to S09 P1 while preserving S08 Review records",
+    "Machine README is missing S09 P1 current state",
   );
   assertCondition(
-    hasAll(dataContract, ["当前 S08 Review 已完成", collaborationOutputPath, authorizationOutputPath, stageFlightOutputPath, "下一步是 S09 P1"]),
+    hasAll(dataContract, ["当前 S09 P1 已完成", "latent_signals.json", "下一步是 S09 P2"]),
     "s08_review_data_contract",
-    "Data contract README records all S08 derived outputs",
-    "Data contract README is missing S08 Review state",
+    "Data contract README has advanced to S09 P1 while preserving S08 Review records",
+    "Data contract README is missing S09 P1 current state",
   );
   assertCondition(
-    hasAll(behavior, ["当前 S08 Review 已完成", "Codex/Agent 协作质量", "授权边界", "stage flight recorder", "下一步是 S09 P1"]),
+    hasAll(behavior, ["当前 S09 P1 已完成", "latent_signals.v1_2_s09_p1.json", "latent_signals.json", "下一步是 S09 P2"]),
     "s08_review_behavior_readme",
-    "Behavior model README records S08 Review collaboration and authorization boundaries",
-    "Behavior model README is missing S08 Review state",
+    "Behavior model README has advanced to S09 P1 while preserving S08 Review records",
+    "Behavior model README is missing S09 P1 current state",
   );
   assertCondition(
-    hasAll(runGate, ["当前阶段是 S08 Review", taskId, acceptanceId, validatorName, reviewPath, "下一步是 S09 P1"]),
+    hasAll(runGate, ["当前阶段是 S09 P1", "MA-V12-S09P1", "ACC-MA-V12-S09P1", "validate:v1.2-s09-p1"]),
     "s08_review_run_gate",
-    "Run gate README records S08 Review validator and next gate",
-    "Run gate README is missing S08 Review state",
+    "Run gate README has advanced to S09 P1 while preserving S08 Review records",
+    "Run gate README is missing S09 P1 current state",
   );
   for (const name of recordFiles) {
     const source = readRepoFile(name);

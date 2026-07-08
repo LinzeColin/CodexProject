@@ -2,8 +2,32 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S08 Review。任务 ID 为 `MA-V12-S08-REVIEW`，验收 ID 为
-`ACC-MA-V12-S08-REVIEW`，validator 为 `validate:v1.2-s08-review`。
+当前阶段是 S09 P1。任务 ID 为 `MA-V12-S09P1`，验收 ID 为
+`ACC-MA-V12-S09P1`，validator 为 `validate:v1.2-s09-p1`。
+
+S09 P1 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s09_p1_latent_signals.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s09_p1.cjs`
+- `scripts/build_memory_atlas_latent_signals.py`
+- `scripts/atlasctl.py`
+- `机器治理/行为智能模型/latent_signals.v1_2_s09_p1.json`
+- `data/derived/behavior_intelligence/latent_signals.json`
+- `人类可读/21_潜性信号说明.md`
+
+S09 P1 gate：
+
+- `validate:v1.2-s09-p1` 可验证 latent signals。
+- `python scripts/atlasctl.py analyze --stage latent --dry-run` 返回 no-write payload。
+- `python scripts/atlasctl.py audit --check latent-safety` 返回 PASS。
+- 每条 latent signal 有 claim、supporting evidence、contradicting evidence、alternative explanation、confidence、Evidence Strength Badge 和 next validation。
+- 不输出心理诊断或人格标签。
+- 不创建 self-iteration suggestions；S09 P2 再处理。
+- 不创建 decision debt ledger；S09 P3 再处理。
+- 不修改 raw。
+
+No GitHub main upload in this phase。
+下一步是 S09 P2。
 
 S08 Review 产物：
 
