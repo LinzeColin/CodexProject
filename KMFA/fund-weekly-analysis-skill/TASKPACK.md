@@ -4,7 +4,7 @@ Deliverables:
 
 1. Optimized Excel template: `templates/资金与税费管理母版_真实数据预览_v2.xlsx`
 2. Skill instructions: `SKILL.md`
-3. Automation prompt: `automation/weekly_1100_sydney.prompt.md`
+3. Automation prompt: `automation/daily_1130_sydney.prompt.md`
 4. macOS launchd template: `automation/launchd/com.kmfa.fund-weekly-analysis.plist`
 5. Deterministic runner, source readiness gate, source materializer, and validators under `tools/`
 6. Governance references under `references/`

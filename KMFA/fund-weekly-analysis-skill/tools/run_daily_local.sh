@@ -5,7 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILL_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 REPO_ROOT="${KMFA_REPO_ROOT:-$(cd "$SKILL_DIR/../.." && pwd)}"
 INPUT_DIR="${KMFA_FUND_INPUT_DIR:-/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群}"
-PROMPT_FILE="$SKILL_DIR/automation/weekly_1100_sydney.prompt.md"
+PROMPT_FILE="$SKILL_DIR/automation/daily_1130_sydney.prompt.md"
 RUN_ID_OVERRIDE="${KMFA_FUND_RUN_ID:-}"
 
 cd "$REPO_ROOT"
@@ -56,5 +56,5 @@ elif command -v codex >/dev/null 2>&1; then
   # The exact Codex CLI may differ by local installation. Stdin keeps the prompt portable.
   codex exec < "$PROMPT_FILE"
 else
-  echo "WARN: codex CLI not found. Manifest created; run Codex with automation/weekly_1100_sydney.prompt.md manually." >&2
+  echo "WARN: codex CLI not found. Manifest created; run Codex with automation/daily_1130_sydney.prompt.md manually." >&2
 fi
