@@ -1985,6 +1985,75 @@ def build_management_conclusion_gate_rows(cross_review: dict) -> list[dict]:
     ]
 
 
+OWNER_ACTION_BY_GATE = {
+    "source_readiness": (
+        "RESTORE_OR_MATERIALIZE_VERIFIED_SOURCE",
+        "P0",
+        True,
+    ),
+    "native_workbook_quality": (
+        "FIX_NATIVE_WORKBOOK_QUALITY_BLOCKERS",
+        "P0",
+        True,
+    ),
+    "formal_fact_promotion_execution": (
+        "APPROVE_CONTROLLED_FACT_PROMOTION_EXECUTION",
+        "P0",
+        True,
+    ),
+    "formal_ledger_population": (
+        "POPULATE_FORMAL_REVIEWED_LEDGER_FACTS",
+        "P0",
+        True,
+    ),
+    "cashflow_validation": (
+        "VALIDATE_CASHFLOW_AND_BALANCE_CONTINUITY",
+        "P1",
+        True,
+    ),
+    "evidence_cross_review": (
+        "RESOLVE_EVIDENCE_CROSS_REVIEW_BLOCKERS",
+        "P0",
+        True,
+    ),
+    "automation_schedule": (
+        "VERIFY_CODEX_AUTOMATION_SCHEDULE",
+        "P1",
+        False,
+    ),
+}
+
+
+def build_owner_action_queue_rows(management_conclusion_gate_rows: list[dict]) -> list[dict]:
+    rows = []
+    for gate_row in management_conclusion_gate_rows:
+        if gate_row.get("blocking") != "true":
+            continue
+        gate_area = gate_row["gate_area"]
+        action_type, priority, requires_owner_authorization = OWNER_ACTION_BY_GATE.get(
+            gate_area,
+            (f"RESOLVE_{gate_area.upper()}_GATE", "P1", True),
+        )
+        rows.append({
+            "owner_action_id": f"OWNER-ACTION-{len(rows) + 1:03d}",
+            "source_gate": gate_area,
+            "source_gate_status": gate_row["gate_status"],
+            "action_type": action_type,
+            "priority": priority,
+            "action_status": "external_check_required" if gate_area == "automation_schedule" else "pending_owner_action",
+            "blocking": gate_row["blocking"],
+            "automation_safe": "false",
+            "requires_owner_authorization": bool_text(requires_owner_authorization),
+            "source_mutation_allowed": "false",
+            "fact_promotion_allowed": "false",
+            "fund_ledger_write_allowed": "false",
+            "management_conclusion_allowed": "false",
+            "evidence": gate_row["evidence"],
+            "recommended_next_step": gate_row["next_action"],
+        })
+    return rows
+
+
 def fact_promotion_review_packet_row(
     packet_id: str,
     review_area: str,
@@ -3983,12 +4052,21 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     cross_review["fact_promotion_execution_allowed_count"] = manifest["fact_promotion_execution_allowed_count"]
     management_conclusion_gate_rows = build_management_conclusion_gate_rows(cross_review)
     management_conclusion_gate_ready_count = sum(1 for row in management_conclusion_gate_rows if row["gate_status"] == "ready")
+    owner_action_queue_rows = build_owner_action_queue_rows(management_conclusion_gate_rows)
+    owner_action_queue_blocking_count = sum(1 for row in owner_action_queue_rows if row["blocking"] == "true")
+    owner_action_queue_automation_safe_count = sum(1 for row in owner_action_queue_rows if row["automation_safe"] == "true")
     manifest["management_conclusion_gate_count"] = len(management_conclusion_gate_rows)
     manifest["management_conclusion_gate_ready_count"] = management_conclusion_gate_ready_count
     manifest["management_conclusion_gate_blocked_count"] = len(management_conclusion_gate_rows) - management_conclusion_gate_ready_count
+    manifest["owner_action_queue_count"] = len(owner_action_queue_rows)
+    manifest["owner_action_queue_blocking_count"] = owner_action_queue_blocking_count
+    manifest["owner_action_queue_automation_safe_count"] = owner_action_queue_automation_safe_count
     cross_review["management_conclusion_gate_count"] = len(management_conclusion_gate_rows)
     cross_review["management_conclusion_gate_ready_count"] = management_conclusion_gate_ready_count
     cross_review["management_conclusion_gate_blocked_count"] = manifest["management_conclusion_gate_blocked_count"]
+    cross_review["owner_action_queue_count"] = len(owner_action_queue_rows)
+    cross_review["owner_action_queue_blocking_count"] = owner_action_queue_blocking_count
+    cross_review["owner_action_queue_automation_safe_count"] = owner_action_queue_automation_safe_count
     write_csv(run_dir / "fact_promotion_review_packet.csv", [
         "review_packet_id",
         "review_area",
@@ -4057,6 +4135,23 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "management_conclusion_allowed",
         "next_action",
     ], management_conclusion_gate_rows)
+    write_csv(run_dir / "owner_action_queue.csv", [
+        "owner_action_id",
+        "source_gate",
+        "source_gate_status",
+        "action_type",
+        "priority",
+        "action_status",
+        "blocking",
+        "automation_safe",
+        "requires_owner_authorization",
+        "source_mutation_allowed",
+        "fact_promotion_allowed",
+        "fund_ledger_write_allowed",
+        "management_conclusion_allowed",
+        "evidence",
+        "recommended_next_step",
+    ], owner_action_queue_rows)
     (run_dir / "cross_review.json").write_text(json.dumps(cross_review, ensure_ascii=False, indent=2), encoding="utf-8")
     (run_dir / "audit_log.json").write_text(
         json.dumps([
@@ -4135,6 +4230,9 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "management_conclusion_gate_count": len(management_conclusion_gate_rows),
                 "management_conclusion_gate_ready_count": management_conclusion_gate_ready_count,
                 "management_conclusion_gate_blocked_count": manifest["management_conclusion_gate_blocked_count"],
+                "owner_action_queue_count": len(owner_action_queue_rows),
+                "owner_action_queue_blocking_count": owner_action_queue_blocking_count,
+                "owner_action_queue_automation_safe_count": owner_action_queue_automation_safe_count,
                 "management_conclusion_allowed": False,
             },
         ], ensure_ascii=False, indent=2),
@@ -4281,6 +4379,9 @@ def main() -> int:
         f"Fact promotion execution allowed count: {manifest.get('fact_promotion_execution_allowed_count', 0)}\n\n"
         f"Management conclusion gate ready count: {manifest.get('management_conclusion_gate_ready_count', 0)}\n\n"
         f"Management conclusion gate blocked count: {manifest.get('management_conclusion_gate_blocked_count', 0)}\n\n"
+        f"Owner action queue count: {manifest.get('owner_action_queue_count', 0)}\n\n"
+        f"Owner action queue blocking count: {manifest.get('owner_action_queue_blocking_count', 0)}\n\n"
+        f"Owner action queue automation-safe count: {manifest.get('owner_action_queue_automation_safe_count', 0)}\n\n"
         "No financial amount, management conclusion, or evidence-free forecast was generated from unreviewed OCR/table extraction. "
         "Known due-date projections remain pending review. Next step: perform OCR/table extraction, internal-transfer netting, "
         "cross-review, then promote reviewed facts only.\n",

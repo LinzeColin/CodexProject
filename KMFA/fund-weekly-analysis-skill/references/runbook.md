@@ -32,17 +32,18 @@ The local scheduler uses Sydney local time. Monday and Saturday 11:00 Australia/
 26. Build `workbook_quality_checks.csv`: verify generated workbook sheet order, hidden sheets, visible row 2 cleanup, native chart size limits, formula error markers, and visible sensitive-value patterns.
 27. Build `goal_completion_audit.csv`: record final-objective requirement status and evidence without granting formal promotion or conclusion authority.
 28. Build `management_conclusion_gate.csv`: combine source readiness, workbook quality, formal fact promotion execution, formal ledger population, cashflow validation, evidence cross-review, and automation external check status; keep `management_conclusion_allowed=false` until all gates pass.
-29. Build `fact_promotion_review_packet.csv`: summarize structured facts, OCR staging, chat value candidates, attachment evidence integrity, workbook quality, and goal audit rows for owner review; keep all rows no-write/no-promote.
-30. Build `fact_promotion_authorization_template.json`: derive one draft row per fact promotion review packet row, default every `authorized=false`, and keep `authorization_scope=fact_promotion_review_packet_validation_only`, `financial_fact_promotion_allowed=false`, `fund_ledger_write_allowed=false`, and `management_conclusion_allowed=false`.
-31. Build `fact_promotion_authorization_preview.csv`: validate private `fact_promotion_authorizations/<run_id>.json` coverage only, mark valid rows as `ready_for_owner_review_no_fact_promotion`, and keep no-write/no-promote/no-conclusion flags false.
-32. Build `fact_promotion_execution_gate.csv`: combine authorization coverage and unresolved review blockers into a fail-closed execution gate. Ready rows may reach `ready_for_controlled_fact_promotion_execution`, but `fact_promotion_execution_allowed=false` must remain until a separate approved execution path is introduced.
-33. Build daily balance continuity and company-bank matrix.
-34. Build tax/loan/project-cost/wealth-management/deposit risk tables.
-35. Promote reviewed facts into Excel with exact sheet order and style spec.
-36. Hide audit/review sheets.
-37. Run validation checks.
-38. Write run summary.
-39. Commit/push skill or automation changes to GitHub main only after validation passes.
+29. Build `owner_action_queue.csv`: derive owner-facing next actions only from blocking or external-check management gates; every row must keep `automation_safe=false`, `source_mutation_allowed=false`, `fact_promotion_allowed=false`, `fund_ledger_write_allowed=false`, and `management_conclusion_allowed=false`.
+30. Build `fact_promotion_review_packet.csv`: summarize structured facts, OCR staging, chat value candidates, attachment evidence integrity, workbook quality, and goal audit rows for owner review; keep all rows no-write/no-promote.
+31. Build `fact_promotion_authorization_template.json`: derive one draft row per fact promotion review packet row, default every `authorized=false`, and keep `authorization_scope=fact_promotion_review_packet_validation_only`, `financial_fact_promotion_allowed=false`, `fund_ledger_write_allowed=false`, and `management_conclusion_allowed=false`.
+32. Build `fact_promotion_authorization_preview.csv`: validate private `fact_promotion_authorizations/<run_id>.json` coverage only, mark valid rows as `ready_for_owner_review_no_fact_promotion`, and keep no-write/no-promote/no-conclusion flags false.
+33. Build `fact_promotion_execution_gate.csv`: combine authorization coverage and unresolved review blockers into a fail-closed execution gate. Ready rows may reach `ready_for_controlled_fact_promotion_execution`, but `fact_promotion_execution_allowed=false` must remain until a separate approved execution path is introduced.
+34. Build daily balance continuity and company-bank matrix.
+35. Build tax/loan/project-cost/wealth-management/deposit risk tables.
+36. Promote reviewed facts into Excel with exact sheet order and style spec.
+37. Hide audit/review sheets.
+38. Run validation checks.
+39. Write run summary.
+40. Commit/push skill or automation changes to GitHub main only after validation passes.
 
 ## Source materialization command
 
