@@ -1714,6 +1714,59 @@ def build_ocr_fact_owner_decision_correction_apply_preview_rows(
     return rows
 
 
+def build_ocr_fact_owner_decision_correction_roundtrip_audit_rows(
+    manifest: dict,
+    apply_gate_rows: list[dict],
+) -> list[dict]:
+    rows: list[dict] = []
+    for row in apply_gate_rows:
+        correction_applied = row["owner_correction_applied"] == "true"
+        apply_ready = row["apply_gate_status"] == "ready_for_controlled_ledger_apply_no_write"
+        if correction_applied and apply_ready:
+            roundtrip_status = "owner_correction_resolved_apply_gate_ready_no_write"
+            next_step = "Owner correction has resolved required ledger fields; keep this as no-write evidence until a separate controlled ledger execution is authorized."
+        elif correction_applied:
+            roundtrip_status = "owner_correction_present_apply_gate_still_blocked"
+            next_step = "Owner correction is present but the controlled ledger apply gate is still blocked; resolve remaining required ledger fields before any execution authorization."
+        elif apply_ready:
+            roundtrip_status = "no_owner_correction_required_apply_gate_ready_no_write"
+            next_step = "No owner correction was required for this row; keep this as no-write controlled ledger readiness evidence."
+        else:
+            roundtrip_status = "blocked_owner_correction_required"
+            next_step = "Provide missing owner-corrected fields in the private owner decision manifest, then rerun validation."
+        rows.append({
+            "correction_roundtrip_audit_id": f"OCROWNERFIXROUNDTRIP-{manifest['run_id']}-{len(rows) + 1:05d}",
+            "controlled_ledger_apply_gate_id": row["controlled_ledger_apply_gate_id"],
+            "controlled_ledger_preview_id": row["controlled_ledger_preview_id"],
+            "fact_candidate_id": row["fact_candidate_id"],
+            "candidate_metric": row["candidate_metric"],
+            "date": row["date"],
+            "company": row["company"],
+            "bank": row["bank"],
+            "account_alias": row["account_alias"],
+            "liquidity_tier": row["liquidity_tier"],
+            "amount": row["amount"],
+            "currency": row["currency"],
+            "flow_type": row["flow_type"],
+            "owner_decision_preview_id": row["owner_decision_preview_id"],
+            "owner_decision_preview_status": row["owner_decision_preview_status"],
+            "owner_correction_applied": row["owner_correction_applied"],
+            "company_source": row["company_source"],
+            "bank_source": row["bank_source"],
+            "apply_gate_status": row["apply_gate_status"],
+            "planned_apply_count": row["planned_apply_count"],
+            "correction_roundtrip_status": roundtrip_status,
+            "owner_decision_manifest_write_allowed": "false",
+            "source_mutation_allowed": "false",
+            "fund_ledger_write_allowed": "false",
+            "formal_fund_ledger_write_allowed": "false",
+            "financial_fact_promoted": "false",
+            "management_conclusion_allowed": "false",
+            "recommended_next_step": next_step,
+        })
+    return rows
+
+
 def chat_record_source_paths(manifest: dict) -> list[str]:
     return [
         item["relative_path"]
@@ -5238,6 +5291,12 @@ def write_no_hallucination_outputs(
             ocr_fact_owner_decision_correction_draft,
         )
     )
+    ocr_fact_owner_decision_correction_roundtrip_audit_rows = (
+        build_ocr_fact_owner_decision_correction_roundtrip_audit_rows(
+            manifest,
+            ocr_fact_controlled_ledger_apply_gate_rows,
+        )
+    )
     ocr_fact_candidate_owner_authorization_update_draft = build_ocr_fact_candidate_owner_authorization_update_draft(
         manifest,
         ocr_fact_candidate_owner_decision_preview_rows,
@@ -5367,6 +5426,26 @@ def write_no_hallucination_outputs(
     manifest["ocr_fact_owner_decision_correction_apply_preview_write_allowed_count"] = sum(
         1 for row in ocr_fact_owner_decision_correction_apply_preview_rows
         if row["owner_decision_manifest_write_allowed"] == "true"
+    )
+    manifest["ocr_fact_owner_decision_correction_roundtrip_audit_count"] = len(
+        ocr_fact_owner_decision_correction_roundtrip_audit_rows
+    )
+    manifest["ocr_fact_owner_decision_correction_roundtrip_audit_ready_count"] = sum(
+        1 for row in ocr_fact_owner_decision_correction_roundtrip_audit_rows
+        if row["correction_roundtrip_status"] in {
+            "owner_correction_resolved_apply_gate_ready_no_write",
+            "no_owner_correction_required_apply_gate_ready_no_write",
+        }
+    )
+    manifest["ocr_fact_owner_decision_correction_roundtrip_audit_blocking_count"] = (
+        len(ocr_fact_owner_decision_correction_roundtrip_audit_rows)
+        - manifest["ocr_fact_owner_decision_correction_roundtrip_audit_ready_count"]
+    )
+    manifest["ocr_fact_owner_decision_correction_roundtrip_audit_write_allowed_count"] = sum(
+        1 for row in ocr_fact_owner_decision_correction_roundtrip_audit_rows
+        if row["owner_decision_manifest_write_allowed"] == "true"
+        or row["fund_ledger_write_allowed"] == "true"
+        or row["formal_fund_ledger_write_allowed"] == "true"
     )
     manifest["ocr_fact_review_apply_gate_count"] = len(ocr_fact_review_gate_rows)
     manifest["ocr_fact_review_authorization_present_count"] = sum(1 for row in ocr_fact_review_gate_rows if row["operator_authorization_present"] == "true")
@@ -5854,6 +5933,36 @@ def write_no_hallucination_outputs(
         "management_conclusion_allowed",
         "recommended_next_step",
     ], ocr_fact_owner_decision_correction_apply_preview_rows)
+    write_csv(run_dir / "ocr_fact_owner_decision_correction_roundtrip_audit.csv", [
+        "correction_roundtrip_audit_id",
+        "controlled_ledger_apply_gate_id",
+        "controlled_ledger_preview_id",
+        "fact_candidate_id",
+        "candidate_metric",
+        "date",
+        "company",
+        "bank",
+        "account_alias",
+        "liquidity_tier",
+        "amount",
+        "currency",
+        "flow_type",
+        "owner_decision_preview_id",
+        "owner_decision_preview_status",
+        "owner_correction_applied",
+        "company_source",
+        "bank_source",
+        "apply_gate_status",
+        "planned_apply_count",
+        "correction_roundtrip_status",
+        "owner_decision_manifest_write_allowed",
+        "source_mutation_allowed",
+        "fund_ledger_write_allowed",
+        "formal_fund_ledger_write_allowed",
+        "financial_fact_promoted",
+        "management_conclusion_allowed",
+        "recommended_next_step",
+    ], ocr_fact_owner_decision_correction_roundtrip_audit_rows)
     write_csv(run_dir / "ocr_fact_review_apply_gate.csv", [
         "review_gate_id",
         "fact_candidate_id",
@@ -6274,6 +6383,10 @@ def write_no_hallucination_outputs(
         "ocr_fact_owner_decision_correction_apply_preview_ready_count": manifest["ocr_fact_owner_decision_correction_apply_preview_ready_count"],
         "ocr_fact_owner_decision_correction_apply_preview_blocking_count": manifest["ocr_fact_owner_decision_correction_apply_preview_blocking_count"],
         "ocr_fact_owner_decision_correction_apply_preview_write_allowed_count": manifest["ocr_fact_owner_decision_correction_apply_preview_write_allowed_count"],
+        "ocr_fact_owner_decision_correction_roundtrip_audit_count": manifest["ocr_fact_owner_decision_correction_roundtrip_audit_count"],
+        "ocr_fact_owner_decision_correction_roundtrip_audit_ready_count": manifest["ocr_fact_owner_decision_correction_roundtrip_audit_ready_count"],
+        "ocr_fact_owner_decision_correction_roundtrip_audit_blocking_count": manifest["ocr_fact_owner_decision_correction_roundtrip_audit_blocking_count"],
+        "ocr_fact_owner_decision_correction_roundtrip_audit_write_allowed_count": manifest["ocr_fact_owner_decision_correction_roundtrip_audit_write_allowed_count"],
         "ocr_fact_review_apply_gate_count": manifest["ocr_fact_review_apply_gate_count"],
         "ocr_fact_review_authorization_present_count": manifest["ocr_fact_review_authorization_present_count"],
         "ocr_fact_review_authorization_valid_count": manifest["ocr_fact_review_authorization_valid_count"],
@@ -7057,6 +7170,10 @@ def write_no_hallucination_outputs(
                 "ocr_fact_owner_decision_correction_apply_preview_ready_count": manifest["ocr_fact_owner_decision_correction_apply_preview_ready_count"],
                 "ocr_fact_owner_decision_correction_apply_preview_blocking_count": manifest["ocr_fact_owner_decision_correction_apply_preview_blocking_count"],
                 "ocr_fact_owner_decision_correction_apply_preview_write_allowed_count": manifest["ocr_fact_owner_decision_correction_apply_preview_write_allowed_count"],
+                "ocr_fact_owner_decision_correction_roundtrip_audit_count": manifest["ocr_fact_owner_decision_correction_roundtrip_audit_count"],
+                "ocr_fact_owner_decision_correction_roundtrip_audit_ready_count": manifest["ocr_fact_owner_decision_correction_roundtrip_audit_ready_count"],
+                "ocr_fact_owner_decision_correction_roundtrip_audit_blocking_count": manifest["ocr_fact_owner_decision_correction_roundtrip_audit_blocking_count"],
+                "ocr_fact_owner_decision_correction_roundtrip_audit_write_allowed_count": manifest["ocr_fact_owner_decision_correction_roundtrip_audit_write_allowed_count"],
                 "ocr_fact_review_apply_gate_count": manifest["ocr_fact_review_apply_gate_count"],
                 "ocr_fact_review_authorization_present_count": manifest["ocr_fact_review_authorization_present_count"],
                 "ocr_fact_review_authorization_valid_count": manifest["ocr_fact_review_authorization_valid_count"],
@@ -7302,6 +7419,9 @@ def main() -> int:
         f"OCR fact owner decision correction apply preview ready count: {manifest.get('ocr_fact_owner_decision_correction_apply_preview_ready_count', 0)}\n\n"
         f"OCR fact owner decision correction apply preview blocking count: {manifest.get('ocr_fact_owner_decision_correction_apply_preview_blocking_count', 0)}\n\n"
         f"OCR fact owner decision correction apply preview write-allowed count: {manifest.get('ocr_fact_owner_decision_correction_apply_preview_write_allowed_count', 0)}\n\n"
+        f"OCR fact owner decision correction roundtrip audit ready count: {manifest.get('ocr_fact_owner_decision_correction_roundtrip_audit_ready_count', 0)}\n\n"
+        f"OCR fact owner decision correction roundtrip audit blocking count: {manifest.get('ocr_fact_owner_decision_correction_roundtrip_audit_blocking_count', 0)}\n\n"
+        f"OCR fact owner decision correction roundtrip audit write-allowed count: {manifest.get('ocr_fact_owner_decision_correction_roundtrip_audit_write_allowed_count', 0)}\n\n"
         f"OCR fact review authorization valid count: {manifest.get('ocr_fact_review_authorization_valid_count', 0)}\n\n"
         f"OCR fact review authorization preview ready count: {manifest.get('ocr_fact_review_authorization_preview_ready_count', 0)}\n\n"
         f"OCR fact review authorization preview blocked count: {manifest.get('ocr_fact_review_authorization_preview_blocked_count', 0)}\n\n"
