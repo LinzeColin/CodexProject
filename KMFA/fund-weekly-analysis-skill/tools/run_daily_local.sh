@@ -35,7 +35,11 @@ echo "$RUNNER_OUTPUT"
 RUN_ID="$(printf '%s\n' "$RUNNER_OUTPUT" | sed -n 's/.*"run_id"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | tail -1)"
 RUN_DIR="$(printf '%s\n' "$RUNNER_OUTPUT" | sed -n 's/.*"run_dir"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | tail -1)"
 if [[ -n "$RUN_DIR" ]]; then
-  OCR_OUTPUT="$(python3 "$SKILL_DIR/tools/generate_screenshot_ocr_sidecars.py" --input-dir "$INPUT_DIR" --repo-root "$REPO_ROOT" --run-dir "$RUN_DIR" --engine "${KMFA_FUND_OCR_ENGINE:-vision}" --apply --retry-timeout-seconds "${KMFA_FUND_VISION_RETRY_TIMEOUT_SECONDS:-30}" --retry-batch-size "${KMFA_FUND_VISION_RETRY_BATCH_SIZE:-1}")"
+  OCR_CMD=(python3 "$SKILL_DIR/tools/generate_screenshot_ocr_sidecars.py" --input-dir "$INPUT_DIR" --repo-root "$REPO_ROOT" --run-dir "$RUN_DIR" --engine "${KMFA_FUND_OCR_ENGINE:-vision}" --apply --retry-timeout-seconds "${KMFA_FUND_VISION_RETRY_TIMEOUT_SECONDS:-30}" --retry-batch-size "${KMFA_FUND_VISION_RETRY_BATCH_SIZE:-1}")
+  if [[ -n "${KMFA_FUND_VISION_LIMIT:-}" ]]; then
+    OCR_CMD+=(--limit "$KMFA_FUND_VISION_LIMIT")
+  fi
+  OCR_OUTPUT="$("${OCR_CMD[@]}")"
   echo "$OCR_OUTPUT"
   GENERATED_SIDECAR_COUNT="$(printf '%s\n' "$OCR_OUTPUT" | sed -n 's/.*"generated_sidecar_count"[[:space:]]*:[[:space:]]*\([0-9][0-9]*\).*/\1/p' | tail -1)"
   if [[ -n "$RUN_ID" && "${GENERATED_SIDECAR_COUNT:-0}" -gt 0 ]]; then
