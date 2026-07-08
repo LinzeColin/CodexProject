@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S10 P2 Global Chinese UX
+
+- Added `global_chinese_ux.v1_2_s10_p2` runtime contract to the Memory Atlas app shell.
+- Converted core homepage titles and insight headers to Chinese-first labels:
+  记忆天气、轻量星图、时间脉冲、下一步行动 and 证据入口.
+- Replaced known English-first visible homepage fragments such as Stable,
+  Momentum, Risk, Opportunity, top actions, assets, themes, Value, Strength,
+  records and day half-life with Chinese labels.
+- Enhanced `scripts/atlasctl.py audit --check chinese-ux` into the S10 P2
+  Chinese UX linter while preserving S10 P1 arrival briefing checks.
+- Added `validate:v1.2-s10-p2` for `MA-V12-S10P2` /
+  `ACC-MA-V12-S10P2`.
+- Registered status `phase_s10_p2_global_chinese_ux_completed_pending_s10_p3`.
+- Preserved S10 P2 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, No proposal apply execution,
+  No S10 P3 work and No S10 Review work.
+- Marked the next gate as pending S10 P3.
+
 ## Unreleased - Memory Atlas v1.2 S10 P1 Home Arrival Briefing
 
 - Added `home_arrival_briefing.v1_2_s10_p1` to the Memory Atlas home screen.

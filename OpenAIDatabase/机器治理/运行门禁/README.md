@@ -2,8 +2,36 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S10 P1。任务 ID 为 `MA-V12-S10P1`，验收 ID 为
-`ACC-MA-V12-S10P1`，validator 为 `validate:v1.2-s10-p1`。
+当前阶段是 S10 P2。任务 ID 为 `MA-V12-S10P2`，验收 ID 为
+`ACC-MA-V12-S10P2`，validator 为 `validate:v1.2-s10-p2`。状态为
+`phase_s10_p2_global_chinese_ux_completed_pending_s10_p3`。
+
+S10 P2 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s10_p2_global_chinese_ux.md`
+- `人类可读/25_全局中文说明.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p2.cjs`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/i18n/zh-CN.ts`
+- `scripts/atlasctl.py`
+
+S10 P2 gate：
+
+- `validate:v1.2-s10-p2` 可验证全局中文。
+- `global_chinese_ux.v1_2_s10_p2` runtime contract 存在。
+- 核心导航、标题、空状态、错误、图表 insight header 默认中文。
+- 机器术语保留英文时必须有中文解释。
+- `python scripts/atlasctl.py audit --check chinese-ux` 返回 S10 P2 PASS。
+- 不执行 proposal apply。
+- 不修改 raw。
+- S10 P3 下一轮再处理机器字段默认折叠和高级详情入口。
+
+No GitHub main upload in this phase。
+下一步是 S10 P3。
+
+历史复验兼容记录：S10 P1 完成时当前阶段是 S10 P1，任务 ID 为 `MA-V12-S10P1`，
+验收 ID 为 `ACC-MA-V12-S10P1`，validator 为 `validate:v1.2-s10-p1`；
+此句只用于保留已完成 phase 的复验语义，不代表当前阶段。
 
 S10 P1 产物：
 

@@ -1,3 +1,49 @@
+## v1.2 S10 P2 Global Chinese UX
+
+状态：`phase_s10_p2_global_chinese_ux_completed_pending_s10_p3`。
+
+任务 ID：`MA-V12-S10P2`。
+
+验收 ID：`ACC-MA-V12-S10P2`。
+
+Validator：`validate:v1.2-s10-p2`。
+
+S10 P2 建立 `global_chinese_ux.v1_2_s10_p2`。核心 UI 默认中文；代码、API、
+字段名、schema 和 `data-*` 可保留英文，但用户可见层必须提供中文解释。
+Chinese UX linter 已升级为 S10 P2。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/i18n/zh-CN.ts`
+- `scripts/atlasctl.py`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p2.cjs`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p1.cjs`
+- `docs/reviews/memory_atlas_v1_2_s10_p2_global_chinese_ux.md`
+- `人类可读/25_全局中文说明.md`
+
+验收：
+
+- `validate:v1.2-s10-p2`
+- `ACC-MA-V12-S10P2`
+- `MA-V12-S10P2`
+- `global_chinese_ux.v1_2_s10_p2`
+- `Chinese UX linter`
+- `phase_s10_p2_global_chinese_ux_completed_pending_s10_p3`
+- pending S10 P3
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No proposal apply execution。
+- No S10 P3 work。
+- No S10 Review work。
+- No S13 apply state machine work。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S10 P2; MA-V12-S10P2; ACC-MA-V12-S10P2; phase_s10_p2_global_chinese_ux_completed_pending_s10_p3; validate:v1.2-s10-p2; global_chinese_ux.v1_2_s10_p2; Chinese UX linter; pending S10 P3; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No proposal apply execution.
+
 ## v1.2 S10 P1 Home Arrival Briefing
 
 状态：`phase_s10_p1_home_arrival_briefing_completed_pending_s10_p2`。

@@ -1759,8 +1759,8 @@ def run_chinese_ux_audit(args: argparse.Namespace) -> int:
             "status": "FAIL",
             "command": "audit",
             "check": "chinese-ux",
-            "task_id": "MA-V12-S10P1",
-            "acceptance_id": "ACC-MA-V12-S10P1",
+            "task_id": "MA-V12-S10P2",
+            "acceptance_id": "ACC-MA-V12-S10P2",
             "reason": "Chinese UX source files missing",
             "missing_files": missing_files,
         }, ensure_ascii=False, indent=2, sort_keys=True))
@@ -1778,6 +1778,34 @@ def run_chinese_ux_audit(args: argparse.Namespace) -> int:
         "同步失败",
         "下一步",
     ]
+    required_global_chinese_copy = [
+        "记忆天气",
+        "轻量星图",
+        "时间脉冲",
+        "下一步行动",
+        "仅生成提案",
+        "证据入口",
+        "稳定度",
+        "动量",
+        "宇宙状态",
+        "来自 Universe State 派生数据",
+    ]
+    english_first_fragments = [
+        "<dt>Stable</dt>",
+        "<dt>Momentum</dt>",
+        "<dt>Risk</dt>",
+        "<dt>Opportunity</dt>",
+        "top actions</small>",
+        "top actions=",
+        "<small>Universe State derived</small>",
+        "<span>proposal-only</span>",
+        " assets</small>",
+        " themes</small>",
+        "<i>Value ",
+        "<i>Strength ",
+        " records</i>",
+        "day half-life",
+    ]
     bad_items: list[str] = []
     if "data-home-section=\"arrival_briefing\"" not in app_source:
         bad_items.append("home_arrival_briefing_missing")
@@ -1790,6 +1818,22 @@ def run_chinese_ux_audit(args: argparse.Namespace) -> int:
     for label in required_copy:
         if label not in app_source and label not in copy_source:
             bad_items.append(f"copy_missing:{label}")
+    for label in required_global_chinese_copy:
+        if label not in app_source and label not in copy_source:
+            bad_items.append(f"global_chinese_copy_missing:{label}")
+    if "data-s10-p2-global-chinese-ux" not in app_source:
+        bad_items.append("s10p2_global_chinese_contract_missing")
+    if "GLOBAL_CHINESE_UX_VERSION" not in app_source or "__memoryAtlasS10Phase2" not in app_source:
+        bad_items.append("s10p2_runtime_proof_missing")
+    for fragment in english_first_fragments:
+        if fragment in app_source:
+            bad_items.append(f"english_first_fragment:{fragment}")
+    if "记忆天气 v2（Memory Weather）" not in copy_source:
+        bad_items.append("machine_term_explanation_missing:Memory Weather")
+    if "来自 Universe State 派生数据" not in app_source:
+        bad_items.append("machine_term_explanation_missing:Universe State")
+    if "仅生成提案，不直接写长期记忆" not in copy_source:
+        bad_items.append("machine_term_explanation_missing:proposal-only")
     if ".home-arrival-briefing" not in style_source or ".arrival-briefing-next-step" not in style_source:
         bad_items.append("arrival_briefing_styles_missing")
     if "proposal apply" in app_source.lower() and "No proposal apply execution" not in app_source:
@@ -1800,12 +1844,15 @@ def run_chinese_ux_audit(args: argparse.Namespace) -> int:
         "status": status,
         "command": "audit",
         "check": "chinese-ux",
-        "task_id": "MA-V12-S10P1",
-        "acceptance_id": "ACC-MA-V12-S10P1",
+        "task_id": "MA-V12-S10P2",
+        "acceptance_id": "ACC-MA-V12-S10P2",
         "details": {
             "home_arrival_briefing": "home_arrival_briefing_missing" not in bad_items,
             "arrival_before_weather": "arrival_briefing_not_before_weather" not in bad_items,
             "machine_details_default_folded": "machine_details_not_folded" not in bad_items,
+            "s10_p2_global_chinese": "s10p2_global_chinese_contract_missing" not in bad_items and "s10p2_runtime_proof_missing" not in bad_items,
+            "core_ui_default_chinese": not any(item.startswith("english_first_fragment:") or item.startswith("global_chinese_copy_missing:") for item in bad_items),
+            "machine_terms_with_chinese_explanation": not any(item.startswith("machine_term_explanation_missing:") for item in bad_items),
             "bad_items": bad_items,
         },
     }

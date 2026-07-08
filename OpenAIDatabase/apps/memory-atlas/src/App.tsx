@@ -81,6 +81,7 @@ const DEFAULT_MEMORY_ATLAS_VIEW: ViewKey = "home";
 const MEMORY_OVERVIEW_STRUCTURE_VERSION = "memory_overview_default_home.v1_1_7_stage3_phase1" as const;
 const MEMORY_OVERVIEW_OPERATION_VERSION = "memory_overview_detail_operations.v1_1_7_stage3_phase2" as const;
 const HOME_ARRIVAL_BRIEFING_VERSION = "home_arrival_briefing.v1_2_s10_p1" as const;
+const GLOBAL_CHINESE_UX_VERSION = "global_chinese_ux.v1_2_s10_p2" as const;
 const HOME_ACTION_SECTION_VERSION = "top_actions_section.v1_1_7_stage3_phase2" as const;
 const HOME_LEVEL_ASSET_SECTION_VERSION = "level_assets_section.v1_1_7_stage3_phase2" as const;
 const HOME_THEME_CATEGORY_SECTION_VERSION = "theme_categories_section.v1_1_7_stage3_phase2" as const;
@@ -228,6 +229,17 @@ declare global {
         safetyNoteCount: number;
         source: "redacted_derived_snapshot";
       };
+      safety: {
+        rawPrivateDataIncluded: false;
+        directActiveMemoryWriteback: false;
+        proposalWrite: false;
+      };
+    };
+    __memoryAtlasS10Phase2?: () => {
+      globalChineseUxVersion: typeof GLOBAL_CHINESE_UX_VERSION;
+      coreUiDefaultChinese: true;
+      machineTermsRequireChineseExplanation: true;
+      chineseUxAudit: "atlasctl audit --check chinese-ux";
       safety: {
         rawPrivateDataIncluded: false;
         directActiveMemoryWriteback: false;
@@ -1302,11 +1314,29 @@ export function App() {
     };
   }, [activeView, selectedNode?.id, sharedState, slice.memoryNodes.length, stage9InspectorExplanation]);
 
+  useEffect(() => {
+    window.__memoryAtlasS10Phase2 = () => ({
+      globalChineseUxVersion: GLOBAL_CHINESE_UX_VERSION,
+      coreUiDefaultChinese: true,
+      machineTermsRequireChineseExplanation: true,
+      chineseUxAudit: "atlasctl audit --check chinese-ux",
+      safety: {
+        rawPrivateDataIncluded: false,
+        directActiveMemoryWriteback: false,
+        proposalWrite: false,
+      },
+    });
+    return () => {
+      delete window.__memoryAtlasS10Phase2;
+    };
+  }, []);
+
   return (
     <div
       className="app-shell"
       data-default-route-view={DEFAULT_MEMORY_ATLAS_VIEW}
       data-memory-overview-default-route="true"
+      data-s10-p2-global-chinese-ux={GLOBAL_CHINESE_UX_VERSION}
       data-stage9-phase1-shared-state={CROSS_BOARD_SHARED_STATE_RUNTIME_VERSION}
       data-stage9-inspector-explanation={INSPECTOR_EXPLANATION_LAYER_VERSION}
       data-stage9-synchronized-filters="shared_state_filters synchronized_filters inspector_explanation_layer"
@@ -1700,7 +1730,7 @@ function BehaviorIntelligencePanel({ summary }: { summary: MemoryAtlas["behavior
             <div className="home-behavior-item" key={cluster.cluster_id}>
               <strong>{cluster.label_zh || cluster.cluster_id}</strong>
               <p>{cluster.summary_zh}</p>
-              <small>{cluster.evidence_refs.length} evidence refs · {cluster.event_count.toLocaleString()} events</small>
+              <small>{cluster.evidence_refs.length} 条证据引用 · {cluster.event_count.toLocaleString()} 条事件</small>
             </div>
           ))}
         </article>
@@ -1710,7 +1740,7 @@ function BehaviorIntelligencePanel({ summary }: { summary: MemoryAtlas["behavior
             <div className="home-behavior-item" key={loop.loop_id}>
               <strong>{loop.label_zh || loop.loop_type}</strong>
               <p>{loop.summary_zh}</p>
-              <small>{loop.decision_debt?.suggested_closure_question || `${loop.action_half_life_days ?? 0} day half-life`}</small>
+              <small>{loop.decision_debt?.suggested_closure_question || `${loop.action_half_life_days ?? 0} 天行动半衰期`}</small>
             </div>
           ))}
         </article>
@@ -1895,7 +1925,7 @@ function HomeOverviewView({
         ))}
       </nav>
       <section className="home-shared-focus-strip" aria-label="共享焦点" data-home-section="status_summary">
-        <span>Universe State</span>
+        <span>宇宙状态（Universe State）</span>
         <strong>{selectedNode ? humanNodeDisplayTitle(selectedNode) : uiCopy.overview.defaultFocus}</strong>
         <small>{sharedState.focus.home.clusterId ?? uiCopy.overview.noTopic} · r{sharedState.sync.revision}</small>
       </section>
@@ -1910,11 +1940,11 @@ function HomeOverviewView({
           <span>{uiCopy.overview.weatherTitle}</span>
           <strong>{model.weatherV2.label}</strong>
           <p>{model.weatherV2.summary}</p>
-          <dl className="home-weather-v2-scores" aria-label="Memory Weather v2 scoring signals">
-            <div><dt>Stable</dt><dd>{formatScore(model.weatherV2.stabilityScore)}</dd></div>
-            <div><dt>Momentum</dt><dd>{formatScore(model.weatherV2.momentumScore)}</dd></div>
-            <div><dt>Risk</dt><dd>{formatScore(model.weatherV2.riskScore)}</dd></div>
-            <div><dt>Opportunity</dt><dd>{formatScore(model.weatherV2.opportunityScore)}</dd></div>
+          <dl className="home-weather-v2-scores" aria-label="记忆天气 v2 评分信号">
+            <div><dt>稳定度</dt><dd>{formatScore(model.weatherV2.stabilityScore)}</dd></div>
+            <div><dt>动量</dt><dd>{formatScore(model.weatherV2.momentumScore)}</dd></div>
+            <div><dt>风险</dt><dd>{formatScore(model.weatherV2.riskScore)}</dd></div>
+            <div><dt>机会</dt><dd>{formatScore(model.weatherV2.opportunityScore)}</dd></div>
           </dl>
           <ul className="home-weather-v2-signals">
             {model.weatherV2.signals.map((signal) => (
@@ -1929,7 +1959,7 @@ function HomeOverviewView({
           <div data-home-section="status_summary"><Metric label="近期增量" value={deltaStats.recentCount} /></div>
         </div>
       </section>
-      <section className="home-status-grid" aria-label="Universe State 状态卡片">
+      <section className="home-status-grid" aria-label="宇宙状态（Universe State）状态卡片">
         {model.signals.map((signal) => (
           <article className={`home-status-card ${signal.tone}`} key={signal.id}>
             <span>{signal.title}</span>
@@ -2005,11 +2035,11 @@ function HomeOverviewView({
         <div className="home-section-summary-row" aria-label="Top Actions Section fields">
           <span className="home-operation-chip" data-top-actions-field="suggestion">
             <strong>suggestion</strong>
-            <small>{model.actions.length.toLocaleString()} top actions</small>
+            <small>{model.actions.length.toLocaleString()} 条行动建议</small>
           </span>
           <span className="home-operation-chip" data-top-actions-field="reason">
             <strong>reason</strong>
-            <small>Universe State derived</small>
+            <small>来自 Universe State 派生数据</small>
           </span>
           <span className="home-operation-chip" data-top-actions-field="priority">
             <strong>priority</strong>
@@ -2050,7 +2080,7 @@ function HomeOverviewView({
           <ActionDetailDrawer action={selectedActionDetail} onClose={closeActionDetail} onOpenTarget={openActionTarget} />
         </div>
       </section>
-      <section className="home-inspector-panel" aria-label="Inspector Deep Link" data-home-section="entry_points">
+      <section className="home-inspector-panel" aria-label={uiCopy.overview.inspectorTitle} data-home-section="entry_points">
         <div className="panel-title-row">
           <h3>{uiCopy.overview.inspectorTitle}</h3>
           <span>{uiCopy.overview.inspectorHint}</span>
@@ -2074,7 +2104,7 @@ function HomeOverviewView({
       >
         <div className="panel-title-row">
           <h3>层级资产明细</h3>
-          <span>proposal-only</span>
+          <span>仅生成提案</span>
         </div>
         <div className="home-operation-chip-grid" aria-label="Level Assets Section groups">
           {levelAssetGroupChips.map((group) => (
@@ -2085,7 +2115,7 @@ function HomeOverviewView({
               key={group.id}
             >
               <strong>{group.label}</strong>
-              <small>{group.count.toLocaleString()} assets</small>
+              <small>{group.count.toLocaleString()} 项资产</small>
             </span>
           ))}
         </div>
@@ -2106,7 +2136,7 @@ function HomeOverviewView({
                 <strong>{asset.title}</strong>
                 <div className="tier-asset-meta-grid" aria-label="层级资产排序信号">
                   <i>{asset.theme}</i>
-                  <i>Value {formatScore(asset.value_score)}</i>
+                  <i>价值 {formatScore(asset.value_score)}</i>
                   <i>{asset.importance}</i>
                   <i>{asset.staleness_status}</i>
                 </div>
@@ -2132,7 +2162,7 @@ function HomeOverviewView({
       >
         <div className="panel-title-row">
           <h3>主题分类明细</h3>
-          <span>proposal-only</span>
+          <span>仅生成提案</span>
         </div>
         <div className="home-operation-chip-grid" aria-label="Theme Categories Section states">
           {themeCategoryChips.map((state) => (
@@ -2143,7 +2173,7 @@ function HomeOverviewView({
               key={state.id}
             >
               <strong>{state.label}</strong>
-              <small>{state.count.toLocaleString()} themes</small>
+              <small>{state.count.toLocaleString()} 个主题</small>
             </span>
           ))}
         </div>
@@ -2164,9 +2194,9 @@ function HomeOverviewView({
                 <strong>{topic.topic_label}</strong>
                 <div className="topic-detail-meta-grid" aria-label="主题分类排序信号">
                   <i>{topic.category}</i>
-                  <i>Strength {formatScore(topic.topic_strength)}</i>
+                  <i>强度 {formatScore(topic.topic_strength)}</i>
                   <i>{topic.trend}</i>
-                  <i>{topic.record_count} records</i>
+                  <i>{topic.record_count} 条记录</i>
                 </div>
                 <small>{topic.matched_reason}</small>
                 <em>{topic.evidence_refs.length} 证据 · {topic.starfield_handoff}</em>
@@ -2599,9 +2629,9 @@ function DataMapNodeDetailPanel({
             </ul>
           </section>
           <div className="data-map-detail-safety-strip" aria-label="Data Map Phase 6.2 safety">
-            <span>proposal-only</span>
-            <span>No direct active-memory writeback</span>
-            <span>No Stage 6 review</span>
+            <span>仅生成提案</span>
+            <span>不直接写长期记忆</span>
+            <span>不执行 Stage 6 review</span>
           </div>
           <div
             className="data-map-proposal-entry"
@@ -3754,10 +3784,10 @@ function InteractionLens({
           <span>重置筛选</span>
         </button>
       </div>
-      <div className="lens-state-strip" aria-label="Universe State Snapshot">
-        <span>Universe State</span>
-        <strong>{sharedState.selection.signal}</strong>
-        <em>{sharedState.sync.updatedBy} · r{sharedState.sync.revision}</em>
+      <div className="lens-state-strip" aria-label="宇宙状态（Universe State）快照">
+        <span>宇宙状态（Universe State）</span>
+        <strong>信号 {sharedState.selection.signal}</strong>
+        <em>来源 {sharedState.sync.updatedBy} · r{sharedState.sync.revision}</em>
       </div>
       <div className="filter-chip-row" aria-label="活跃筛选">
         {chips.length || timelineTimeRange ? (
@@ -5108,8 +5138,8 @@ function SummaryIterationView({
         data-source-review-schema-version={REVIEW_SUMMARY_ITERATION_SCHEMA_VERSION}
       >
         <div className="panel-title-row">
-          <h3>Summary and iteration closure</h3>
-          <span>proposal-only</span>
+          <h3>总结与迭代闭环</h3>
+          <span>仅生成提案</span>
         </div>
         <p className="summary-closure-schema-line">
           closure_schema_version={summaryClosure.closure_schema_version}; source_review_schema_version={summaryClosure.source_review_schema_version};
@@ -6687,7 +6717,7 @@ function buildHomeArrivalBriefing(
       summary: pendingProposalCount
         ? "有 recommendation 或下一步行动可转成 proposal-only 候选，仍需人工授权。"
         : "当前没有待授权 proposal；前端继续保持 proposal-only，不执行 apply。",
-      evidence: `agent recommendations=${recommendationCount}; top actions=${proposedActionCount}`,
+      evidence: `agent recommendations=${recommendationCount}; 行动建议=${proposedActionCount}`,
       nextStep: pendingProposalCount ? "进入总结与迭代做人工 triage" : "保留 proposal-only 边界",
       targetView: "summary",
       node: topAction?.node ?? null,
