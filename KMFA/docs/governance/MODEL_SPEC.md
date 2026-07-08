@@ -1986,3 +1986,7 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_formal_report.py --require-private-formal-report-requirement`
 - evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_FORMAL_REPORT/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_formal_report_manifest.json`
 - constraints: no raw inbox access/mutation; no authoritative binding; no raw-to-processed value comparison; no processed-data reconciliation; no business consistency; no lineage full check; no formal report; no GitHub upload; no app reinstall; no business execution.
+
+## V014 GitHub Upload Requirement Gate
+
+`FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-GITHUB-UPLOAD-001` locks owner/authorized-agent external action as a required precondition before GitHub upload. The model reads prior public-safe formal report requirement evidence and an ignored private requirement queue only, emits aggregate public counts, keeps detailed rows private, and leaves GitHub upload/app reinstall/business execution closed with `decision=NO_GO`.

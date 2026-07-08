@@ -2904,3 +2904,10 @@ version_matrix_product_version_reference: 0.1.4-s18-stage-review
 - Added public-safe formal report requirement summary, manifest, matrix, Go/No-Go record, validator and focused unit test.
 - Converted 48 lineage full check requirement blockers into 48 private formal report requirement items; all formal report, upload, reinstall and execution gates remain closed.
 - Raw inbox was not read or mutated; private formal report diagnostic/queue/report stay in ignored runtime.
+
+## 2026-07-08 - v0.1.4 GitHub upload 前置 owner/授权代理动作锁定
+
+- Version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-github-upload`
+- Added `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_GITHUB_UPLOAD` public-safe evidence, validator and focused test.
+- Kept decision `NO_GO`; GitHub upload, app reinstall and business execution remain blocked.
+- Raw inbox was not read or modified; private requirement queue remains ignored.
