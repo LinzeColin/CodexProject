@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S12 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s12_review.md`.
+- Added `validate:v1.2-s12-review` for `MA-V12-S12-REVIEW` /
+  `ACC-MA-V12-S12-REVIEW`.
+- Registered status
+  `stage_s12_review_passed_pending_s13_no_github_main_upload`.
+- Confirmed S12 P1 Command Palette, S12 P2 Personalization Prompt and S12 P3
+  ChatGPT 深度探索 pass as a stage chain.
+- Confirmed accepted command ids remain `sync_chatgpt`, `sync_codex`,
+  `generate_weekly_report`, `view_pending_proposals`,
+  `generate_personalization_prompt` and `chatgpt_deep_explore`.
+- Confirmed `prefill_only` remains no-send and `auto_submit` defaults to
+  FAIL_CLOSED with Chinese failure explanation.
+- Preserved S12 Review boundaries: No silent send,
+  No cookie/token/secret export, No GitHub main upload, No remote push,
+  No raw mutation, No proposal apply execution, No app reinstall and
+  no local deep clean.
+- Marked the next gate as pending S13 P1.
+
 ## Unreleased - Memory Atlas v1.2 S12 P3 ChatGPT Deep Exploration
 
 - Added `chatgpt_deep_explore.v1_2_s12_p3` for `MA-V12-S12P3` /
