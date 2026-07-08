@@ -405,6 +405,8 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "cashflow_validation.csv",
                 "ocr_text_candidates.csv",
                 "ocr_value_candidates.csv",
+                "chat_text_candidates.csv",
+                "chat_value_candidates.csv",
                 "workbook_quality_checks.csv",
                 "kmfa_metadata_signals.csv",
                 "exception_tasks.csv",
@@ -546,6 +548,100 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertFalse(cross_review["management_conclusion_allowed"])
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertEqual(cross_review["ocr_value_candidate_count"], 4)
+            self.assertEqual(cross_review["structured_financial_fact_count"], 0)
+
+    def test_runner_extracts_pending_values_from_real_chat_records_without_promoting_facts(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+            chat_dir = input_dir / "chat_records"
+            chat_dir.mkdir(parents=True)
+            chat_text = "2026-07-08 付款请示 招商银行 可用余额 ￥12,345.67 税费待缴 800.00"
+            chat_csv = chat_dir / "chat_records.csv"
+            with chat_csv.open("w", encoding="utf-8", newline="") as f:
+                writer = csv.writer(f)
+                writer.writerow([
+                    "group_name",
+                    "open_conversation_id",
+                    "open_message_id",
+                    "message_time",
+                    "sender_name",
+                    "sender_id",
+                    "content",
+                    "quoted_message_id",
+                    "quoted_sender",
+                    "quoted_content",
+                    "resource_count",
+                    "resource_types",
+                ])
+                writer.writerow([
+                    "付款请示群",
+                    "conv-1",
+                    "msg-1",
+                    "2026-07-08T11:30:00+10:00",
+                    "杨婷",
+                    "sender-1",
+                    chat_text,
+                    "",
+                    "",
+                    "",
+                    "0",
+                    "",
+                ])
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "run_fund_weekly_analysis.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--input-dir",
+                    str(input_dir),
+                    "--run-id",
+                    "chat_value_test",
+                    "--timezone",
+                    "Australia/Sydney",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/chat_value_test"
+            with (run_dir / "chat_text_candidates.csv").open(encoding="utf-8-sig", newline="") as f:
+                chat_rows = list(csv.DictReader(f))
+            self.assertEqual(len(chat_rows), 1)
+            self.assertEqual(chat_rows[0]["source_csv_relative_path"], "chat_records/chat_records.csv")
+            self.assertEqual(chat_rows[0]["source_row_number"], "2")
+            self.assertEqual(chat_rows[0]["open_message_id"], "msg-1")
+            self.assertEqual(chat_rows[0]["text_role"], "content")
+            self.assertEqual(chat_rows[0]["text_sha256"], sha256_bytes(chat_text.encode("utf-8")))
+            self.assertIn("付款请示", chat_rows[0]["text_excerpt"])
+            self.assertEqual(chat_rows[0]["financial_fact_promoted"], "false")
+
+            with (run_dir / "chat_value_candidates.csv").open(encoding="utf-8-sig", newline="") as f:
+                value_rows = list(csv.DictReader(f))
+            self.assertEqual([row["candidate_type"] for row in value_rows], ["date", "amount", "amount"])
+            self.assertEqual(value_rows[0]["normalized_value"], "2026-07-08")
+            self.assertEqual([row["normalized_value"] for row in value_rows[1:]], ["12345.67", "800.00"])
+            self.assertTrue(all(row["extraction_status"] == "chat_value_candidate_pending_review" for row in value_rows))
+            self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in value_rows))
+
+            with (run_dir / "fund_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
+                fund_rows = list(csv.DictReader(f))
+            self.assertEqual(fund_rows, [])
+
+            with (run_dir / "exception_tasks.csv").open(encoding="utf-8-sig", newline="") as f:
+                task_rows = list(csv.DictReader(f))
+            self.assertTrue(any(row["task_type"] == "CHAT_TEXT_PENDING_REVIEW" for row in task_rows))
+            self.assertTrue(any(row["task_type"] == "CHAT_VALUE_PENDING_REVIEW" for row in task_rows))
+
+            cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
+            self.assertFalse(cross_review["management_conclusion_allowed"])
+            self.assertEqual(cross_review["generated_financial_amount_count"], 0)
+            self.assertEqual(cross_review["chat_text_candidate_count"], 1)
+            self.assertEqual(cross_review["chat_value_candidate_count"], 3)
             self.assertEqual(cross_review["structured_financial_fact_count"], 0)
 
     def test_runner_extracts_real_structured_csv_facts_without_management_conclusion(self) -> None:

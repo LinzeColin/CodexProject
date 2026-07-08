@@ -13,6 +13,8 @@ Blocking checks:
 * `kmfa_metadata_signals.csv` may carry only public-safe KMFA metadata signals and must keep all formal action / management conclusion gates false.
 * `ocr_text_candidates.csv` may carry only adjacent real OCR text sidecars linked to screenshot evidence; all rows must stay pending review with `financial_fact_promoted=false`.
 * `ocr_value_candidates.csv` may carry only date/amount candidates parsed from `ocr_text_candidates.csv`; all rows must stay pending review with `financial_fact_promoted=false` and must not populate `fund_ledger.csv`.
+* `chat_text_candidates.csv` may carry only real DingTalk `chat_records.csv` content/quoted_content rows with finance signals; all rows must stay pending review with `financial_fact_promoted=false`.
+* `chat_value_candidates.csv` may carry only date/amount candidates parsed from `chat_text_candidates.csv`; all rows must stay pending review with `financial_fact_promoted=false` and must not populate `fund_ledger.csv`.
 * `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW` outputs contain only amounts parsed from real structured CSV rows with the required column contract and still keep `management_conclusion_allowed=false`.
 * `funding_forecast.csv` may contain only known due-date projections from real structured CSV risk/opportunity rows and must keep `management_conclusion_allowed=false`.
 * `cashflow_validation.csv` must validate balance continuity, operating cashflow effect, and internal-transfer exclusion; continuity failures must create exception tasks and keep `management_conclusion_allowed=false`.

@@ -91,6 +91,21 @@ OCR_AMOUNT_CONTEXT_WORDS = (
     "费用",
     "缴",
 )
+CHAT_TEXT_CONTEXT_WORDS = OCR_AMOUNT_CONTEXT_WORDS + (
+    "付款请示",
+    "付款",
+    "收款",
+    "银行",
+    "账户",
+    "现金",
+    "票据",
+    "电子汇票",
+    "汇票",
+    "开票",
+    "税费",
+    "调拨",
+    "转账",
+)
 
 
 def sha256_file(path: Path, chunk_size: int = 1024 * 1024) -> str:
@@ -343,6 +358,10 @@ def read_text_excerpt(path: Path, limit: int = 180) -> tuple[str, int]:
     return normalized[:limit], len(text)
 
 
+def text_excerpt(text: str, limit: int = 180) -> str:
+    return " ".join(text.split())[:limit]
+
+
 def normalize_ocr_date(value: str) -> str:
     digits = re.findall(r"\d+", value)
     if len(digits) < 3:
@@ -354,6 +373,14 @@ def normalize_ocr_date(value: str) -> str:
 def normalize_ocr_amount(value: str) -> str:
     cleaned = value.replace("￥", "").replace("¥", "").replace(",", "").strip()
     return money_text(money(cleaned))
+
+
+def text_sha256(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def text_has_finance_signal(text: str) -> bool:
+    return any(word in text for word in CHAT_TEXT_CONTEXT_WORDS) or bool(OCR_DATE_PATTERN.search(text))
 
 
 def collect_ocr_text_candidates(manifest: dict, input_dir: Path, evidence: list[dict]) -> list[dict]:
@@ -441,6 +468,102 @@ def extract_ocr_value_candidates(manifest: dict, input_dir: Path, ocr_text_candi
                     "review_status": "pending_human_review",
                     "financial_fact_promoted": "false",
                 })
+    return rows
+
+
+def chat_record_source_paths(manifest: dict) -> list[str]:
+    return [
+        item["relative_path"]
+        for item in manifest["files"]
+        if item["relative_path"].replace("\\", "/").endswith("chat_records/chat_records.csv")
+    ]
+
+
+def collect_chat_text_candidates(manifest: dict, input_dir: Path, evidence: list[dict]) -> list[dict]:
+    evidence_by_path = {row["relative_path"]: row for row in evidence}
+    rows: list[dict] = []
+    for relative_path in chat_record_source_paths(manifest):
+        evidence_row = evidence_by_path.get(relative_path)
+        if evidence_row is None:
+            continue
+        csv_path = input_dir / relative_path
+        with csv_path.open(encoding="utf-8-sig", newline="", errors="replace") as f:
+            reader = csv.DictReader(f)
+            for row_index, row in enumerate(reader, 2):
+                for text_role in ("content", "quoted_content"):
+                    raw_text = (row.get(text_role) or "").strip()
+                    if not raw_text or not text_has_finance_signal(raw_text):
+                        continue
+                    evidence_row["review_status"] = "chat_text_candidate_pending_review"
+                    rows.append({
+                        "chat_text_candidate_id": f"CHAT-{manifest['run_id']}-{len(rows) + 1:05d}",
+                        "evidence_id": evidence_row["evidence_id"],
+                        "source_csv_relative_path": relative_path,
+                        "source_row_number": str(row_index),
+                        "open_message_id": row.get("open_message_id") or row.get("message_id") or "",
+                        "message_time": row.get("message_time") or "",
+                        "sender_name": row.get("sender_name") or "",
+                        "text_role": text_role,
+                        "text_sha256": text_sha256(raw_text),
+                        "text_length": str(len(raw_text)),
+                        "text_excerpt": text_excerpt(raw_text),
+                        "extraction_status": "chat_text_indexed_pending_review",
+                        "review_status": "pending_human_review",
+                        "financial_fact_promoted": "false",
+                        "_raw_text": raw_text,
+                    })
+    return rows
+
+
+def extract_chat_value_candidates(manifest: dict, chat_text_candidates: list[dict]) -> list[dict]:
+    rows: list[dict] = []
+    for candidate in chat_text_candidates:
+        text = candidate.get("_raw_text", "")
+        if not text:
+            continue
+        date_spans: list[tuple[int, int]] = []
+        for match in OCR_DATE_PATTERN.finditer(text):
+            date_spans.append(match.span())
+            rows.append({
+                "value_candidate_id": f"CHATV-{manifest['run_id']}-{len(rows) + 1:05d}",
+                "chat_text_candidate_id": candidate["chat_text_candidate_id"],
+                "evidence_id": candidate["evidence_id"],
+                "source_csv_relative_path": candidate["source_csv_relative_path"],
+                "source_row_number": candidate["source_row_number"],
+                "candidate_type": "date",
+                "raw_value": match.group(0),
+                "normalized_value": normalize_ocr_date(match.group(0)),
+                "currency": "",
+                "text_role": candidate["text_role"],
+                "line_text": text_excerpt(text),
+                "extraction_status": "chat_value_candidate_pending_review",
+                "review_status": "pending_human_review",
+                "financial_fact_promoted": "false",
+            })
+        if not any(word in text for word in OCR_AMOUNT_CONTEXT_WORDS):
+            continue
+        for match in OCR_AMOUNT_PATTERN.finditer(text):
+            if any(start <= match.start() < end for start, end in date_spans):
+                continue
+            raw_value = match.group(0)
+            if "." not in raw_value and "￥" not in raw_value and "¥" not in raw_value and "," not in raw_value:
+                continue
+            rows.append({
+                "value_candidate_id": f"CHATV-{manifest['run_id']}-{len(rows) + 1:05d}",
+                "chat_text_candidate_id": candidate["chat_text_candidate_id"],
+                "evidence_id": candidate["evidence_id"],
+                "source_csv_relative_path": candidate["source_csv_relative_path"],
+                "source_row_number": candidate["source_row_number"],
+                "candidate_type": "amount",
+                "raw_value": raw_value,
+                "normalized_value": normalize_ocr_amount(raw_value),
+                "currency": "CNY",
+                "text_role": candidate["text_role"],
+                "line_text": text_excerpt(text),
+                "extraction_status": "chat_value_candidate_pending_review",
+                "review_status": "pending_human_review",
+                "financial_fact_promoted": "false",
+            })
     return rows
 
 
@@ -1520,6 +1643,8 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     evidence = write_evidence_index_stub(manifest, run_dir)
     ocr_text_candidates = collect_ocr_text_candidates(manifest, input_dir, evidence)
     ocr_value_candidates = extract_ocr_value_candidates(manifest, input_dir, ocr_text_candidates)
+    chat_text_candidates = collect_chat_text_candidates(manifest, input_dir, evidence)
+    chat_value_candidates = extract_chat_value_candidates(manifest, chat_text_candidates)
     structured = extract_structured_csv_facts(manifest, input_dir, evidence)
     funding_forecast_rows = build_funding_forecast_rows(structured)
     cashflow_validation_rows = build_cashflow_validation_rows(structured, manifest["run_id"])
@@ -1528,6 +1653,8 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     internal_transfer_excluded_count = sum(1 for row in cashflow_validation_rows if row["internal_transfer_excluded"] == "true")
     manifest["ocr_text_candidate_count"] = len(ocr_text_candidates)
     manifest["ocr_value_candidate_count"] = len(ocr_value_candidates)
+    manifest["chat_text_candidate_count"] = len(chat_text_candidates)
+    manifest["chat_value_candidate_count"] = len(chat_value_candidates)
     manifest["metadata_signal_count"] = len(metadata_signals)
     manifest["forecast_row_count"] = len(funding_forecast_rows)
     manifest["cashflow_validation_row_count"] = len(cashflow_validation_rows)
@@ -1659,6 +1786,41 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "review_status",
         "financial_fact_promoted",
     ], ocr_value_candidates)
+    write_csv(run_dir / "chat_text_candidates.csv", [
+        "chat_text_candidate_id",
+        "evidence_id",
+        "source_csv_relative_path",
+        "source_row_number",
+        "open_message_id",
+        "message_time",
+        "sender_name",
+        "text_role",
+        "text_sha256",
+        "text_length",
+        "text_excerpt",
+        "extraction_status",
+        "review_status",
+        "financial_fact_promoted",
+    ], [
+        {key: value for key, value in row.items() if not key.startswith("_")}
+        for row in chat_text_candidates
+    ])
+    write_csv(run_dir / "chat_value_candidates.csv", [
+        "value_candidate_id",
+        "chat_text_candidate_id",
+        "evidence_id",
+        "source_csv_relative_path",
+        "source_row_number",
+        "candidate_type",
+        "raw_value",
+        "normalized_value",
+        "currency",
+        "text_role",
+        "line_text",
+        "extraction_status",
+        "review_status",
+        "financial_fact_promoted",
+    ], chat_value_candidates)
     write_csv(run_dir / "workbook_quality_checks.csv", [
         "check_id",
         "check_name",
@@ -1711,6 +1873,26 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
             "relative_path": row["ocr_text_relative_path"],
             "review_status": "pending",
         })
+    for row in chat_text_candidates:
+        exception_tasks.append({
+            "task_id": f"EX-{manifest['run_id']}-{len(exception_tasks) + 1:05d}",
+            "evidence_id": row["evidence_id"],
+            "task_type": "CHAT_TEXT_PENDING_REVIEW",
+            "severity": "blocking_for_financial_fact",
+            "reason": f"{row['chat_text_candidate_id']} chat text is indexed; human review is required before promoting any amount.",
+            "relative_path": f"{row['source_csv_relative_path']}:{row['source_row_number']}",
+            "review_status": "pending",
+        })
+    for row in chat_value_candidates:
+        exception_tasks.append({
+            "task_id": f"EX-{manifest['run_id']}-{len(exception_tasks) + 1:05d}",
+            "evidence_id": row["evidence_id"],
+            "task_type": "CHAT_VALUE_PENDING_REVIEW",
+            "severity": "blocking_for_financial_fact",
+            "reason": f"{row['value_candidate_id']} {row['candidate_type']} candidate requires review before fact promotion.",
+            "relative_path": f"{row['source_csv_relative_path']}:{row['source_row_number']}",
+            "review_status": "pending",
+        })
     for row in cashflow_validation_rows:
         if row["validation_status"] != "FAIL":
             continue
@@ -1747,6 +1929,8 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "generated_financial_amount_count": 0,
         "ocr_text_candidate_count": len(ocr_text_candidates),
         "ocr_value_candidate_count": len(ocr_value_candidates),
+        "chat_text_candidate_count": len(chat_text_candidates),
+        "chat_value_candidate_count": len(chat_value_candidates),
         "structured_financial_fact_count": len(structured["fund_rows"]),
         "metadata_signal_count": len(metadata_signals),
         "forecast_row_count": len(funding_forecast_rows),
@@ -1775,6 +1959,8 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "generated_financial_amount_count": 0,
                 "ocr_text_candidate_count": len(ocr_text_candidates),
                 "ocr_value_candidate_count": len(ocr_value_candidates),
+                "chat_text_candidate_count": len(chat_text_candidates),
+                "chat_value_candidate_count": len(chat_value_candidates),
                 "structured_financial_fact_count": len(structured["fund_rows"]),
                 "metadata_signal_count": len(metadata_signals),
                 "forecast_row_count": len(funding_forecast_rows),
@@ -1886,6 +2072,8 @@ def main() -> int:
         f"Structured financial fact count: {manifest.get('structured_fact_count', 0)}\n\n"
         f"OCR text candidate count: {manifest.get('ocr_text_candidate_count', 0)}\n\n"
         f"OCR value candidate count: {manifest.get('ocr_value_candidate_count', 0)}\n\n"
+        f"Chat text candidate count: {manifest.get('chat_text_candidate_count', 0)}\n\n"
+        f"Chat value candidate count: {manifest.get('chat_value_candidate_count', 0)}\n\n"
         f"KMFA metadata signal count: {manifest.get('metadata_signal_count', 0)}\n\n"
         f"Known due-date funding forecast row count: {manifest.get('forecast_row_count', 0)}\n\n"
         f"Cashflow validation row count: {manifest.get('cashflow_validation_row_count', 0)}\n\n"

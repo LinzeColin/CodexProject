@@ -39,6 +39,8 @@ REQUIRED_SKILL_STRINGS = [
     "--source-zip",
     "ocr_text_candidates.csv",
     "ocr_value_candidates.csv",
+    "chat_text_candidates.csv",
+    "chat_value_candidates.csv",
 ]
 EXPECTED_SHEETS = [
     "01_首页总览",
