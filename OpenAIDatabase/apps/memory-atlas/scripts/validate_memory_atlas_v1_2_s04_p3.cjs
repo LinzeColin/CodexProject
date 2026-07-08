@@ -38,6 +38,7 @@ const recordFiles = [
 const allowedOpenDiffPaths = [
   "OpenAIDatabase/CHANGELOG.md",
   "OpenAIDatabase/apps/memory-atlas/package.json",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_p1.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_p2.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_p3.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_review.cjs",
@@ -108,6 +109,30 @@ function run(command, args, options = {}) {
     throw error;
   }
   return result;
+}
+
+const githubHttpsRemote = "https://github.com/LinzeColin/CodexProject.git";
+
+function queryRemoteDevBranch() {
+  try {
+    return {
+      method: "origin",
+      output: run("git", ["ls-remote", "--heads", "origin", branchName], {
+        cwd: worktreeRoot,
+        timeout: 60000,
+      }).stdout.trim(),
+    };
+  } catch (originError) {
+    return {
+      method: "https_fallback",
+      originError: originError.message,
+      originStderr: originError.stderr?.slice(-1000),
+      output: run("git", ["ls-remote", "--heads", githubHttpsRemote, branchName], {
+        cwd: worktreeRoot,
+        timeout: 60000,
+      }).stdout.trim(),
+    };
+  }
 }
 
 function parseJsonFromStdout(result) {
@@ -383,13 +408,14 @@ function validateRepoBoundaries() {
     { branch, branchName },
   );
 
-  const remoteDev = run("git", ["ls-remote", "--heads", "origin", branchName], { cwd: worktreeRoot, timeout: 60000 }).stdout.trim();
+  const remoteDevQuery = queryRemoteDevBranch();
+  const remoteDev = remoteDevQuery.output;
   assertCondition(
     remoteDev === "",
     "s04p3_no_remote_development_branch",
     "No remote v1.2 development branch exists",
     "Remote v1.2 development branch exists unexpectedly",
-    { branchName, remoteDev },
+    { branchName, remoteDev, remote_query_method: remoteDevQuery.method, origin_error: remoteDevQuery.originError, origin_stderr: remoteDevQuery.originStderr },
   );
 
   const changed = getOpenChangedPaths();
