@@ -168,6 +168,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
         self.assertIn("--apply", ocr_call)
         self.assertIn("--retry-timeout-seconds 30", ocr_call)
         self.assertIn("--retry-batch-size 1", ocr_call)
+        self.assertIn("--retry-max-rows 24", ocr_call)
         self.assertNotIn("--limit", ocr_call)
 
     def test_daily_entrypoint_supports_vision_limit_for_validation_runs(self) -> None:
@@ -2320,6 +2321,116 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(summary["timeout_retry_attempt_count"], 2)
             self.assertEqual(summary["timeout_retry_generated_count"], 2)
             self.assertEqual(summary["generated_sidecar_count"], 2)
+
+    def test_vision_ocr_retry_budget_defers_excess_timeout_rows_and_writes_progress(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/vision_ocr_retry_budget_test"
+            image_dir = input_dir / "files" / "0708"
+            image_dir.mkdir(parents=True)
+            run_dir.mkdir(parents=True)
+            call_log = Path(temp_dir) / "vision_retry_budget_calls.jsonl"
+            fake_vision = Path(temp_dir) / "retry_budget_vision.py"
+            fake_vision.write_text(
+                "import json, os, sys, time\n"
+                "paths = sys.argv[1:]\n"
+                "with open(os.environ['VISION_CALL_LOG'], 'a', encoding='utf-8') as f:\n"
+                "    f.write(json.dumps({'count': len(paths)}) + '\\n')\n"
+                "if len(paths) > 1:\n"
+                "    time.sleep(2)\n"
+                "for path in paths:\n"
+                "    print(json.dumps({'path': path, 'status': 'ocr_text_available', 'text': 'retry text 123.45', 'reason': ''}))\n",
+                encoding="utf-8",
+            )
+
+            with (run_dir / "screenshot_ocr_coverage.csv").open("w", encoding="utf-8", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=[
+                    "ocr_coverage_id",
+                    "evidence_id",
+                    "source_image_relative_path",
+                    "ocr_sidecar_candidates",
+                    "ocr_text_relative_path",
+                    "ocr_coverage_status",
+                    "next_action",
+                    "review_status",
+                    "financial_fact_promoted",
+                ])
+                writer.writeheader()
+                for index in range(3):
+                    image = image_dir / f"image_{index}.png"
+                    image.write_bytes(b"real-image-bytes")
+                    writer.writerow({
+                        "ocr_coverage_id": f"OCRCOV-vision_ocr_retry_budget_test-{index:05d}",
+                        "evidence_id": f"FW-{index:05d}",
+                        "source_image_relative_path": f"files/0708/image_{index}.png",
+                        "ocr_sidecar_candidates": f"files/0708/image_{index}.png.ocr.txt",
+                        "ocr_text_relative_path": "",
+                        "ocr_coverage_status": "ocr_text_sidecar_missing",
+                        "next_action": "run_ocr_or_attach_real_ocr_sidecar",
+                        "review_status": "pending_ocr_extraction",
+                        "financial_fact_promoted": "false",
+                    })
+
+            env = os.environ.copy()
+            env["KMFA_FUND_VISION_OCR_COMMAND"] = f"{sys.executable} {fake_vision}"
+            env["VISION_CALL_LOG"] = str(call_log)
+            started = time.monotonic()
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "generate_screenshot_ocr_sidecars.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--input-dir",
+                    str(input_dir),
+                    "--run-dir",
+                    str(run_dir),
+                    "--engine",
+                    "vision",
+                    "--apply",
+                    "--timeout-seconds",
+                    "1",
+                    "--vision-batch-size",
+                    "3",
+                    "--retry-timeout-seconds",
+                    "3",
+                    "--retry-batch-size",
+                    "1",
+                    "--retry-max-rows",
+                    "1",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+                env=env,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertLess(time.monotonic() - started, 5)
+            calls = [json.loads(line)["count"] for line in call_log.read_text(encoding="utf-8").splitlines()]
+            self.assertEqual(calls, [3, 1])
+            with (run_dir / "screenshot_ocr_sidecar_generation_plan.csv").open(encoding="utf-8-sig", newline="") as f:
+                plan_rows = list(csv.DictReader(f))
+            self.assertEqual([row["generation_status"] for row in plan_rows], [
+                "ocr_text_generated_pending_review",
+                "ocr_retry_deferred_due_retry_budget",
+                "ocr_retry_deferred_due_retry_budget",
+            ])
+            self.assertTrue((repo_root / plan_rows[0]["ocr_text_private_relative_path"]).exists())
+            self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in plan_rows))
+
+            progress_path = run_dir / "screenshot_ocr_sidecar_generation_progress.jsonl"
+            self.assertTrue(progress_path.exists())
+            progress_text = progress_path.read_text(encoding="utf-8")
+            self.assertIn("retry_deferred_due_retry_budget", progress_text)
+            self.assertNotIn("retry text 123.45", progress_text)
+
+            summary = json.loads((run_dir / "screenshot_ocr_sidecar_generation_summary.json").read_text(encoding="utf-8"))
+            self.assertEqual(summary["retry_max_rows"], 1)
+            self.assertEqual(summary["timeout_retry_attempt_count"], 1)
+            self.assertEqual(summary["timeout_retry_deferred_count"], 2)
+            self.assertEqual(summary["generated_sidecar_count"], 1)
 
     def test_runner_links_chat_candidates_to_real_manifest_evidence_without_promoting_facts(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
