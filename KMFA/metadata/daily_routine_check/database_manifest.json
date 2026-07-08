@@ -1,7 +1,7 @@
 {
   "version": "0.2.0",
   "database_name": "daily_routine_check.sqlite",
-  "active_local_path": "KMFA/metadata/daily_routine_check/private_runtime/daily_routine_check.sqlite",
+  "active_private_path": "/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime/daily_routine_check.sqlite",
   "salary_basis_allowed": false,
   "excel_summary_required": false,
   "tables": [
@@ -59,7 +59,7 @@
     },
     {
       "name": "run_log",
-      "purpose": "runtime logs including run_at_beijing, check_date, trigger_window, rules_evaluated, rules_skipped"
+      "purpose": "runtime logs including run_at_beijing, check_date, trigger_window, rules_evaluated, rules_blocked_by_source, rules_skipped"
     },
     {
       "name": "git_sync_events",

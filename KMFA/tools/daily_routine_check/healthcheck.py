@@ -11,7 +11,7 @@ except ImportError:  # pragma: no cover - direct script execution
     from KMFA.tools.daily_routine_check.archive_reader import DwsArchiveReader
 
 DEFAULT_INPUT = Path("/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs")
-DEFAULT_RUNTIME = Path("KMFA/metadata/daily_routine_check/private_runtime")
+DEFAULT_RUNTIME = Path("/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime")
 REQUIRED_GROUPS = ("付款请示群", "生产管理群")
 
 

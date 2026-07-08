@@ -16,6 +16,8 @@ Triggers: daily 11:35 and daily 17:05 Beijing time
 
 Do not create one automation per rule. Use this single automation with the two trigger windows below.
 
+The saved scheduler must use two independent Beijing-time trigger rules, not a combined `BYHOUR=...;BYMINUTE=...` product that also fires at 11:05 or 17:35.
+
 11:35 command:
 
 ```bash
@@ -36,6 +38,7 @@ Responsibilities:
 4. Use configured DWS text extraction first for 杨婷 `资金账户明细表`; image/file-only cash candidates without structured amount become `CASH_NEEDS_REVIEW` unless private OCR is explicitly configured.
 5. Separately process `资金账户明细表` and `资金流水明细/资金明细`.
 6. Log `run_at_beijing`, `check_date`, `trigger_window`, `rules_evaluated`, and `rules_skipped`.
+6a. If a group source is `SOURCE_MISSING` or `SOURCE_STALE`, list its rules in `rules_blocked_by_source` and do not convert the source problem into routine `MISSING` or `CASH_NO_DATA` false positives.
 7. Include `cash_risk_result` for `morning_1135`.
 8. Record `SOURCE_MISSING` or `SOURCE_STALE` if upstream OneDrive DWS output is missing or stale.
 8a. If healthcheck reports `ZIP_INPUT_UNREADABLE`, report that the OneDrive zip must be hydrated/replaced with a readable `DWS_Outputs.zip`; do not unzip large packages into local scratch.
@@ -47,5 +50,5 @@ Responsibilities:
 Before live notification, verify private target config exists:
 
 ```text
-KMFA/metadata/daily_routine_check/private_runtime/notification_targets.local.json
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime/notification_targets.local.json
 ```
