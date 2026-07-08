@@ -11,7 +11,7 @@
 - Git 只保存 DWS backend 代码、报告模板、路径/统计证据和安全扫描；不保存真实员工考勤明文、raw JSONL、SQLite、机器人地址、应用密钥或访问凭证。
 - S19 钉钉通知已升级为多目标路由表：`notification_targets.local.json` / `notification_targets_resolved.json` 仅保存在 ignored private runtime，公开 `notification_targets_manifest.json` 只保留脱敏状态；旧 `notification_channel_resolved.json` 仍兼容迁移。
 - 张霖泽目标已迁移并验证为 `dws_open_dingtalk_id_chat` 个人单聊：`notification_probe.py --all-targets` 已发送验证消息 `SENT`；DWS userId 单聊历史失败为 `chat/business_error/系统错误`，openDingTalkId fallback 保持生效。
-- S19 通知发送已统一到唯一“考勤通知模板”：`send_latest_report.py --channel auto --targets all` 不重新取考勤，通过多目标路由发送一条 `attendance_notification`，钉钉正文只包含考勤摘要、连续异常、待处理事项和需要休息人员；run_id、北京时间和 OneDrive 报告路径只保留在 dispatch receipt / manifest，不进入钉钉正文；automation JSON 输出 `notification_template_text` 和 `notification_delivery_table`。
+- S19 通知发送已统一到唯一“考勤通知模板”：`send_latest_report.py --channel auto --targets all` 不重新取考勤，通过多目标路由发送一条 `attendance_notification`，钉钉正文只包含考勤摘要、连续异常、待处理事项和需要休息人员；run_id、北京时间、OneDrive 报告路径和后台取数/权限诊断只保留在 dispatch receipt / manifest / automation JSON，不进入钉钉正文或用户面向管理/HR 报告；automation JSON 输出 `notification_template_text` 和 `notification_delivery_table`。
 - S19 需要休息口径：自然月第 23 个有效考勤日开始提醒；丁春法、李永占只从“需要休息人员”和私有 ledger `rest_required_snapshots` 中排除，其他状态仍照常统计。
 
 ## S20 当前状态｜钉钉工作检查 daily routine check
