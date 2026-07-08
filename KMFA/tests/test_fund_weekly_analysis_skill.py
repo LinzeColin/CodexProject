@@ -5635,6 +5635,217 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(manifest["status"], "SOURCE_UNREADABLE")
             self.assertEqual(manifest["unreadable_count"], 1)
 
+    def test_owner_decision_manifest_install_blocks_missing_required_values(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            run_id = "owner_manifest_missing_values"
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs" / run_id
+            run_dir.mkdir(parents=True)
+            draft = {
+                "decision_manifest_version": "1",
+                "run_id": run_id,
+                "decision_scope": "ocr_fact_candidate_owner_worklist_validation_only",
+                "draft_status": "owner_decision_correction_manifest_draft",
+                "generated_from": "ocr_fact_owner_decision_correction_queue.csv",
+                "source_artifact": "ocr_fact_candidate_owner_worklist.csv",
+                "output_decision_manifest_relative_path": (
+                    f"KMFA/metadata/fund_weekly_analysis/private_runtime/"
+                    f"ocr_fact_candidate_owner_decisions/{run_id}.json"
+                ),
+                "financial_fact_promotion_allowed": False,
+                "fund_ledger_write_allowed": False,
+                "management_conclusion_allowed": False,
+                "owner_decisions": [
+                    {
+                        "fact_candidate_id": f"OCRFACT-{run_id}-00001",
+                        "candidate_metric": "deposit_release",
+                        "owner_authorization_decision": "approve_for_review_authorization",
+                        "owner_corrected_company": "",
+                        "owner_corrected_bank": "",
+                        "required_owner_fields": "owner_corrected_company,owner_corrected_bank",
+                        "owner_note": "owner values intentionally missing",
+                    }
+                ],
+            }
+            (run_dir / "ocr_fact_owner_decision_correction_draft.json").write_text(
+                json.dumps(draft, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "install_owner_decision_manifest.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--run-id",
+                    run_id,
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 3)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["status"], "BLOCKED_OWNER_VALUES_MISSING")
+            self.assertEqual(payload["missing_owner_values"], ["owner_corrected_company", "owner_corrected_bank"])
+            self.assertFalse(
+                (
+                    repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/"
+                    f"ocr_fact_candidate_owner_decisions/{run_id}.json"
+                ).exists()
+            )
+
+    def test_owner_decision_manifest_install_dry_run_does_not_write(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            run_id = "owner_manifest_dry_run"
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs" / run_id
+            run_dir.mkdir(parents=True)
+            draft = {
+                "decision_manifest_version": "1",
+                "run_id": run_id,
+                "decision_scope": "ocr_fact_candidate_owner_worklist_validation_only",
+                "draft_status": "owner_decision_correction_manifest_draft",
+                "generated_from": "ocr_fact_owner_decision_correction_queue.csv",
+                "source_artifact": "ocr_fact_candidate_owner_worklist.csv",
+                "output_decision_manifest_relative_path": (
+                    f"KMFA/metadata/fund_weekly_analysis/private_runtime/"
+                    f"ocr_fact_candidate_owner_decisions/{run_id}.json"
+                ),
+                "financial_fact_promotion_allowed": False,
+                "fund_ledger_write_allowed": False,
+                "management_conclusion_allowed": False,
+                "owner_decisions": [
+                    {
+                        "fact_candidate_id": f"OCRFACT-{run_id}-00001",
+                        "candidate_metric": "deposit_release",
+                        "owner_authorization_decision": "approve_for_review_authorization",
+                        "owner_corrected_company": "武汉开明",
+                        "owner_corrected_bank": "湖北中行",
+                        "required_owner_fields": "owner_corrected_company,owner_corrected_bank",
+                        "owner_note": "owner reviewed values",
+                    }
+                ],
+            }
+            (run_dir / "ocr_fact_owner_decision_correction_draft.json").write_text(
+                json.dumps(draft, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "install_owner_decision_manifest.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--run-id",
+                    run_id,
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["status"], "READY_DRY_RUN")
+            self.assertFalse(payload["apply_performed"])
+            self.assertEqual(payload["owner_decision_count"], 1)
+            self.assertFalse(
+                (
+                    repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/"
+                    f"ocr_fact_candidate_owner_decisions/{run_id}.json"
+                ).exists()
+            )
+
+    def test_owner_decision_manifest_install_apply_requires_ack_and_writes_validation_only_manifest(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            run_id = "owner_manifest_apply"
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs" / run_id
+            run_dir.mkdir(parents=True)
+            draft = {
+                "decision_manifest_version": "1",
+                "run_id": run_id,
+                "decision_scope": "ocr_fact_candidate_owner_worklist_validation_only",
+                "draft_status": "owner_decision_correction_manifest_draft",
+                "generated_from": "ocr_fact_owner_decision_correction_queue.csv",
+                "source_artifact": "ocr_fact_candidate_owner_worklist.csv",
+                "output_decision_manifest_relative_path": (
+                    f"KMFA/metadata/fund_weekly_analysis/private_runtime/"
+                    f"ocr_fact_candidate_owner_decisions/{run_id}.json"
+                ),
+                "financial_fact_promotion_allowed": False,
+                "fund_ledger_write_allowed": False,
+                "management_conclusion_allowed": False,
+                "owner_decisions": [
+                    {
+                        "fact_candidate_id": f"OCRFACT-{run_id}-00001",
+                        "candidate_metric": "deposit_release",
+                        "owner_authorization_decision": "approve_for_review_authorization",
+                        "owner_corrected_company": "武汉开明",
+                        "owner_corrected_bank": "湖北中行",
+                        "required_owner_fields": "owner_corrected_company,owner_corrected_bank",
+                        "owner_note": "owner reviewed values",
+                    }
+                ],
+            }
+            (run_dir / "ocr_fact_owner_decision_correction_draft.json").write_text(
+                json.dumps(draft, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+
+            missing_ack = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "install_owner_decision_manifest.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--run-id",
+                    run_id,
+                    "--apply",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(missing_ack.returncode, 2)
+            self.assertEqual(json.loads(missing_ack.stdout)["status"], "ACK_REQUIRED")
+
+            apply_run = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "install_owner_decision_manifest.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--run-id",
+                    run_id,
+                    "--apply",
+                    "--acknowledge-owner-reviewed-values",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(apply_run.returncode, 0, apply_run.stderr)
+            payload = json.loads(apply_run.stdout)
+            self.assertEqual(payload["status"], "APPLIED")
+            self.assertTrue(payload["apply_performed"])
+            manifest_path = (
+                repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/"
+                f"ocr_fact_candidate_owner_decisions/{run_id}.json"
+            )
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            self.assertEqual(manifest["decision_manifest_version"], "1")
+            self.assertEqual(manifest["run_id"], run_id)
+            self.assertEqual(manifest["decision_scope"], "ocr_fact_candidate_owner_worklist_validation_only")
+            self.assertEqual(manifest["source_artifact"], "ocr_fact_candidate_owner_worklist.csv")
+            self.assertFalse(manifest["financial_fact_promotion_allowed"])
+            self.assertFalse(manifest["fund_ledger_write_allowed"])
+            self.assertFalse(manifest["management_conclusion_allowed"])
+            self.assertEqual(manifest["owner_decisions"][0]["owner_corrected_company"], "武汉开明")
+            self.assertEqual(manifest["owner_decisions"][0]["owner_corrected_bank"], "湖北中行")
+
     def test_source_readiness_reports_missing_target_and_private_candidates(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             repo_root = Path(temp_dir) / "repo"
