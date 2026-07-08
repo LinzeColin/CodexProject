@@ -582,6 +582,17 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
 
             with zipfile.ZipFile(run_dir / "资金与税费管理母版_indexed_package_test.xlsx") as workbook:
                 self.assertIn("xl/workbook.xml", workbook.namelist())
+                self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "A2"), "run_id")
+                self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "B2"), "indexed_package_test")
+                self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "A5"), "schedule_rrule")
+                self.assertEqual(
+                    xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "B5"),
+                    "FREQ=WEEKLY;BYHOUR=11;BYMINUTE=0;BYDAY=MO,SA",
+                )
+                self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "A8"), "fact_promotion_execution_allowed")
+                self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "B8"), "false")
+                self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "A9"), "management_conclusion_allowed")
+                self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "B9"), "false")
 
             with (run_dir / "exception_tasks.csv").open(encoding="utf-8-sig", newline="") as f:
                 rows = list(csv.DictReader(f))

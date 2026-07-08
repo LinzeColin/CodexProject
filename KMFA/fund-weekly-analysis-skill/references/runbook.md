@@ -30,23 +30,24 @@ For controlled validation only, `KMFA_FUND_RUN_ID=<run_id>` pins the runner outp
 23. Build funds ledger and net-flow ledger.
 24. Apply internal-transfer pairing before management rollups.
 25. Build `cashflow_validation.csv`: validate balance continuity at 0.01 tolerance, compute operating cashflow effect, and confirm internal transfers are excluded from operating cashflow. Any continuity failure enters exception tasks and blocks management conclusions.
-26. Build `workbook_quality_checks.csv`: verify generated workbook sheet order, hidden sheets, visible row 2 cleanup, native chart size limits, formula error markers, and visible sensitive-value patterns.
-27. Build `automation_readiness.csv`: compare the tracked Codex automation contract with the local automation TOML; require `Australia/Sydney` and `FREQ=WEEKLY;BYHOUR=11;BYMINUTE=0;BYDAY=MO,SA` for `schedule_ready=true`; keep `management_conclusion_allowed=false`.
-28. Build `goal_completion_audit.csv`: record final-objective requirement status and evidence without granting formal promotion or conclusion authority.
-29. Build `management_conclusion_gate.csv`: combine source readiness, workbook quality, formal fact promotion execution, formal ledger population, cashflow validation, evidence cross-review, and automation readiness status; keep `management_conclusion_allowed=false` until all gates pass.
-30. Build `owner_action_queue.csv`: derive owner-facing next actions only from blocking or external-check management gates; every row must keep `automation_safe=false`, `source_mutation_allowed=false`, `fact_promotion_allowed=false`, `fund_ledger_write_allowed=false`, and `management_conclusion_allowed=false`.
-31. Build `fact_promotion_review_packet.csv`: summarize structured facts, OCR staging, chat value candidates, attachment evidence integrity, workbook quality, and goal audit rows for owner review; keep all rows no-write/no-promote.
-32. Build `fact_promotion_owner_review_batch.csv`: derive one row per review packet area, record candidate/ready/blocker counts, `owner_review_status`, `priority`, and recommended owner action; keep `financial_fact_promotion_allowed=false`, `fund_ledger_write_allowed=false`, `financial_fact_promoted=false`, and `management_conclusion_allowed=false`.
-33. Build `fact_promotion_authorization_template.json`: derive one draft row per fact promotion review packet row, default every `authorized=false`, and keep `authorization_scope=fact_promotion_review_packet_validation_only`, `financial_fact_promotion_allowed=false`, `fund_ledger_write_allowed=false`, and `management_conclusion_allowed=false`.
-34. Build `fact_promotion_authorization_preview.csv`: validate private `fact_promotion_authorizations/<run_id>.json` coverage only, mark valid rows as `ready_for_owner_review_no_fact_promotion`, and keep no-write/no-promote/no-conclusion flags false.
-35. Build `fact_promotion_execution_gate.csv`: combine authorization coverage and unresolved review blockers into a fail-closed execution gate. Review areas with `authorization_required=false` become explicit `not_required_*` no-op rows and do not count as blocked. Ready rows may reach `ready_for_controlled_fact_promotion_execution`, but `fact_promotion_execution_allowed=false` must remain until a separate approved execution path is introduced.
-36. Build daily balance continuity and company-bank matrix.
-37. Build tax/loan/project-cost/wealth-management/deposit risk tables.
-38. Promote reviewed facts into Excel with exact sheet order and style spec.
-39. Hide audit/review sheets.
-40. Run validation checks.
-41. Write run summary.
-42. Commit/push skill or automation changes to GitHub main only after validation passes.
+26. Build `automation_readiness.csv`: compare the tracked Codex automation contract with the local automation TOML; require `Australia/Sydney` and `FREQ=WEEKLY;BYHOUR=11;BYMINUTE=0;BYDAY=MO,SA` for `schedule_ready=true`; keep `management_conclusion_allowed=false`.
+27. Patch hidden `H06_配置规则`: write the runtime rules table with `run_id`, `source_input_dir`, local timezone, `schedule_rrule`, no-hallucination policy, fact-promotion/ledger/management fail-closed flags, and private-runtime governance.
+28. Build `workbook_quality_checks.csv`: verify generated workbook sheet order, hidden sheets, visible row 2 cleanup, native chart size limits, formula error markers, and visible sensitive-value patterns after the H06 patch.
+29. Build `goal_completion_audit.csv`: record final-objective requirement status and evidence without granting formal promotion or conclusion authority.
+30. Build `management_conclusion_gate.csv`: combine source readiness, workbook quality, formal fact promotion execution, formal ledger population, cashflow validation, evidence cross-review, and automation readiness status; keep `management_conclusion_allowed=false` until all gates pass.
+31. Build `owner_action_queue.csv`: derive owner-facing next actions only from blocking or external-check management gates; every row must keep `automation_safe=false`, `source_mutation_allowed=false`, `fact_promotion_allowed=false`, `fund_ledger_write_allowed=false`, and `management_conclusion_allowed=false`.
+32. Build `fact_promotion_review_packet.csv`: summarize structured facts, OCR staging, chat value candidates, attachment evidence integrity, workbook quality, and goal audit rows for owner review; keep all rows no-write/no-promote.
+33. Build `fact_promotion_owner_review_batch.csv`: derive one row per review packet area, record candidate/ready/blocker counts, `owner_review_status`, `priority`, and recommended owner action; keep `financial_fact_promotion_allowed=false`, `fund_ledger_write_allowed=false`, `financial_fact_promoted=false`, and `management_conclusion_allowed=false`.
+34. Build `fact_promotion_authorization_template.json`: derive one draft row per fact promotion review packet row, default every `authorized=false`, and keep `authorization_scope=fact_promotion_review_packet_validation_only`, `financial_fact_promotion_allowed=false`, `fund_ledger_write_allowed=false`, and `management_conclusion_allowed=false`.
+35. Build `fact_promotion_authorization_preview.csv`: validate private `fact_promotion_authorizations/<run_id>.json` coverage only, mark valid rows as `ready_for_owner_review_no_fact_promotion`, and keep no-write/no-promote/no-conclusion flags false.
+36. Build `fact_promotion_execution_gate.csv`: combine authorization coverage and unresolved review blockers into a fail-closed execution gate. Review areas with `authorization_required=false` become explicit `not_required_*` no-op rows and do not count as blocked. Ready rows may reach `ready_for_controlled_fact_promotion_execution`, but `fact_promotion_execution_allowed=false` must remain until a separate approved execution path is introduced.
+37. Build daily balance continuity and company-bank matrix.
+38. Build tax/loan/project-cost/wealth-management/deposit risk tables.
+39. Promote reviewed facts into Excel with exact sheet order and style spec.
+40. Hide audit/review sheets.
+41. Run validation checks.
+42. Write run summary.
+43. Commit/push skill or automation changes to GitHub main only after validation passes.
 
 ## Source materialization command
 

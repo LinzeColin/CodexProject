@@ -2632,6 +2632,37 @@ def build_fact_promotion_execution_gate(
     return rows
 
 
+def write_runtime_rules_to_workbook(
+    workbook_path: Path,
+    manifest: dict,
+    input_dir: Path,
+    automation_readiness_rows: list[dict],
+) -> None:
+    automation = automation_readiness_rows[0] if automation_readiness_rows else {}
+    schedule_ready = automation.get("schedule_ready", "false")
+    schedule_rrule = automation.get("rrule", "CODEX_AUTOMATION_UNKNOWN")
+    schedule_timezone = automation.get("expected_timezone", manifest.get("timezone", ""))
+    rows = [
+        [("A", "run_id"), ("B", manifest["run_id"]), ("C", "runtime"), ("D", "private package trace id")],
+        [("A", "source_input_dir"), ("B", str(input_dir)), ("C", "source"), ("D", "read-only OneDrive input")],
+        [("A", "timezone"), ("B", manifest.get("timezone", "")), ("C", "runtime"), ("D", "local scheduler timezone")],
+        [("A", "schedule_rrule"), ("B", schedule_rrule), ("C", "automation"), ("D", "expected Monday/Saturday 11:00 Sydney")],
+        [("A", "schedule_ready"), ("B", schedule_ready), ("C", "automation"), ("D", "read-only drift evidence")],
+        [("A", "no_hallucinated_data_policy"), ("B", "true"), ("C", "data_policy"), ("D", "no generated financial facts without evidence")],
+        [("A", "fact_promotion_execution_allowed"), ("B", "false"), ("C", "fact_promotion"), ("D", "separate owner authorization required")],
+        [("A", "management_conclusion_allowed"), ("B", "false"), ("C", "management_gate"), ("D", "all rows fail closed until gates pass")],
+        [("A", "fund_ledger_write_allowed"), ("B", "false"), ("C", "ledger_gate"), ("D", "no formal ledger write in this runner")],
+        [("A", "private_runtime_policy"), ("B", "ignored_private_runtime_only"), ("C", "governance"), ("D", "raw files and run outputs stay out of Git")],
+        [("A", "expected_schedule_timezone"), ("B", schedule_timezone), ("C", "automation"), ("D", "tracked contract comparison value")],
+    ]
+
+    with zipfile.ZipFile(workbook_path, "r") as workbook:
+        sheet12 = ET.fromstring(workbook.read("xl/worksheets/sheet12.xml"))
+    clear_rows_from(sheet12, 2)
+    write_table_rows(sheet12, 2, rows)
+    replace_xlsx_entries(workbook_path, {"xl/worksheets/sheet12.xml": serialize_sheet(sheet12)})
+
+
 def collect_workbook_quality_checks(workbook_path: Path) -> list[dict]:
     rows: list[dict] = []
     ns_sheet = {"x": XLSX_MAIN_NS}
@@ -3607,9 +3638,10 @@ def write_no_hallucination_outputs(
     shutil.copyfile(template, workbook_path)
     write_structured_facts_to_workbook(workbook_path, structured, evidence, input_dir, manifest["run_id"])
     write_metadata_signals_to_workbook(workbook_path, metadata_signals, len(structured["risk_rows"]))
+    automation_readiness_rows = build_automation_readiness_rows(repo_root, automation_root)
+    write_runtime_rules_to_workbook(workbook_path, manifest, input_dir, automation_readiness_rows)
     workbook_quality_rows = collect_workbook_quality_checks(workbook_path)
     workbook_quality_blocking_count = sum(1 for row in workbook_quality_rows if row["management_blocking"] == "true")
-    automation_readiness_rows = build_automation_readiness_rows(repo_root, automation_root)
     automation_readiness_ready_count = sum(1 for row in automation_readiness_rows if row["schedule_ready"] == "true")
     automation_readiness_blocking_count = len(automation_readiness_rows) - automation_readiness_ready_count
     manifest["workbook_quality_check_count"] = len(workbook_quality_rows)
