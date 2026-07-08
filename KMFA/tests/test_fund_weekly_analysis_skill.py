@@ -6390,6 +6390,11 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                         "candidate_metric": "bank_deposit",
                         "source_evidence_id": f"FW{run_id}-00001",
                         "source_ocr_text_relative_path": "private/OCRGEN-00001.ocr.txt",
+                        "source_ocr_text_excerpt": "武汉开明 | 招商银行 | 银行存款 123.45",
+                        "source_ocr_excerpt_focus_status": "focused_amount",
+                        "source_ocr_excerpt_line_range": "10-12",
+                        "source_ocr_excerpt_focus_line_number": "12",
+                        "source_ocr_excerpt_match_value": "123.45",
                         "business_date": "2026-07-08",
                         "company": "",
                         "bank": "",
@@ -6461,6 +6466,11 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                         "candidate_metric": "bank_deposit",
                         "source_evidence_id": f"FW{run_id}-00001",
                         "source_ocr_text_relative_path": "private/OCRGEN-00001.ocr.txt",
+                        "source_ocr_text_excerpt": "武汉开明 | 招商银行 | 银行存款 123.45",
+                        "source_ocr_excerpt_focus_status": "focused_amount",
+                        "source_ocr_excerpt_line_range": "10-12",
+                        "source_ocr_excerpt_focus_line_number": "12",
+                        "source_ocr_excerpt_match_value": "123.45",
                         "business_date": "2026-07-08",
                         "company": "",
                         "bank": "",
@@ -6512,6 +6522,11 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(rows[0]["decision_validation_status"], "blocked_missing_owner_values")
             self.assertEqual(rows[0]["source_evidence_id"], f"FW{run_id}-00001")
             self.assertEqual(rows[0]["source_ocr_text_relative_path"], "private/OCRGEN-00001.ocr.txt")
+            self.assertEqual(rows[0]["source_ocr_text_excerpt"], "武汉开明 | 招商银行 | 银行存款 123.45")
+            self.assertEqual(rows[0]["source_ocr_excerpt_focus_status"], "focused_amount")
+            self.assertEqual(rows[0]["source_ocr_excerpt_line_range"], "10-12")
+            self.assertEqual(rows[0]["source_ocr_excerpt_focus_line_number"], "12")
+            self.assertEqual(rows[0]["source_ocr_excerpt_match_value"], "123.45")
             self.assertEqual(rows[0]["business_date"], "2026-07-08")
             self.assertEqual(rows[0]["amount"], "123.45")
             self.assertEqual(rows[0]["currency"], "CNY")
