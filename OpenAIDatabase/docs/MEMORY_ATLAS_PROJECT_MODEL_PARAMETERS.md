@@ -1,3 +1,41 @@
+## 129. Memory Atlas v1.2 S07 P1 Personal Economic Proxy Parameters
+
+状态：`phase_s07_p1_economic_proxy_completed_pending_s07_p2`。
+
+验收 ID：`ACC-MA-V12-S07P1`。
+
+S07 P1 固定以下参数：
+
+- `MA-V12-S07P1`
+- `validate:v1.2-s07-p1`
+- `机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json`
+- `scripts/build_memory_atlas_economic_proxy.py`
+- `atlasctl.py analyze --stage economic-proxy`
+- `atlasctl.py audit --check formulas`
+- `data/derived/economic_proxy/personal_economic_proxy.json`
+- S07 P1 完成后下一步为 pending S07 P2。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S07P1-001 phase_status = phase_s07_p1_economic_proxy_completed_pending_s07_p2`
+- `PARAM-MA-V12-S07P1-002 validator = validate:v1.2-s07-p1`
+- `PARAM-MA-V12-S07P1-003 formula_config = 机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json`
+- `PARAM-MA-V12-S07P1-004 builder = build_memory_atlas_economic_proxy.py`
+- `PARAM-MA-V12-S07P1-005 output = data/derived/economic_proxy/personal_economic_proxy.json`
+- `PARAM-MA-V12-S07P1-006 score_count = 6 score cards`
+- `PARAM-MA-V12-S07P1-007 next_gate = pending S07 P2`
+- `PARAM-MA-V12-S07P1-008 phase_boundary = No raw mutation; No external economic database; No precise income prediction; No S07 P2 information ROI gate; No S07 P3 what-if UI; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s07-p1` checks S06 Review predecessor, formula config, builder,
+  persisted `personal_economic_proxy.json`, `atlasctl analyze --stage
+  economic-proxy --dry-run`, `atlasctl audit --check formulas`, human/machine
+  records, canonical remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S07 P1 Personal Economic Proxy; MA-V12-S07P1; ACC-MA-V12-S07P1; phase_s07_p1_economic_proxy_completed_pending_s07_p2; validate:v1.2-s07-p1; Personal Economic Proxy; pending S07 P2; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No external economic database; No precise income prediction; No S07 P2 information ROI gate; No S07 P3 what-if UI.
+
 ## 128. Memory Atlas v1.2 S06 Review Parameters
 
 状态：`stage_s06_review_passed_pending_s07_no_github_main_upload`。

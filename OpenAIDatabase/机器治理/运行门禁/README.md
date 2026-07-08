@@ -2,8 +2,33 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S06 Review。任务 ID 为 `MA-V12-S06-REVIEW`，验收 ID 为
-`ACC-MA-V12-S06-REVIEW`，validator 为 `validate:v1.2-s06-review`。
+当前阶段是 S07 P1。任务 ID 为 `MA-V12-S07P1`，验收 ID 为
+`ACC-MA-V12-S07P1`，validator 为 `validate:v1.2-s07-p1`。
+
+S07 P1 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s07_p1_economic_proxy.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s07_p1.cjs`
+- `scripts/build_memory_atlas_economic_proxy.py`
+- `scripts/atlasctl.py`
+- `机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json`
+- `data/derived/economic_proxy/personal_economic_proxy.json`
+- `人类可读/16_PersonalEconomicProxy公式说明.md`
+
+S07 P1 gate：
+
+- `validate:v1.2-s07-p1` 可验证 Personal Economic Proxy。
+- `python scripts/atlasctl.py analyze --stage economic-proxy --dry-run` 返回 no-write payload。
+- `python scripts/atlasctl.py audit --check formulas` 返回 PASS。
+- 每个 score card 有中文解释、公式来源、参数引用和证据引用。
+- 不接入外部经济数据库；外部经济数据库只作为 v2 interface 预留。
+- 不是精确收入预测，不是财务建议。
+- 不实现 S07 P2 information ROI gate。
+- 不实现 S07 P3 what-if UI。
+- 不修改 raw。
+
+No GitHub main upload in this phase。
+下一步是 S07 P2。
 
 S06 Review 产物：
 

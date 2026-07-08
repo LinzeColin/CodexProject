@@ -1,0 +1,636 @@
+{
+  "acceptance_id": "ACC-MA-V12-S07P1",
+  "dry_run": false,
+  "external_economic_database": {
+    "allowed_future_scope": "only after explicit future-stage requirement and separate validation",
+    "current_dependency": false,
+    "v2_interface": "reserved_not_implemented"
+  },
+  "formula_config_path": "机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json",
+  "formula_registry": [
+    {
+      "expression_zh": "时间节省分 = min(100, (automation_count*hours_per_automation_candidate + template_count*hours_per_template_candidate + productization_count*hours_per_productization_candidate + low_value_loop_count*rework_avoidance_hours_per_loop) * score_per_proxy_hour)",
+      "formula_id": "FORM-MA-V12-S07P1-001",
+      "interpretation_zh": "估算内部 AI 工作流候选可以节省多少重复操作时间；它只用于排序，不代表真实工时结算。",
+      "name_zh": "时间节省 proxy",
+      "parameter_refs": [
+        "hours_per_automation_candidate",
+        "hours_per_template_candidate",
+        "hours_per_productization_candidate",
+        "rework_avoidance_hours_per_loop",
+        "score_per_proxy_hour"
+      ],
+      "score_key": "time_saved_proxy"
+    },
+    {
+      "expression_zh": "复用价值分 = min(100, high_evidence_cluster_count*reuse_event_weight + reusable_opportunity_count*reuse_opportunity_weight)",
+      "formula_id": "FORM-MA-V12-S07P1-002",
+      "interpretation_zh": "衡量哪些行为簇和机会更适合沉淀成模板、脚本、validator 或产品化入口。",
+      "name_zh": "复用价值 proxy",
+      "parameter_refs": [
+        "reuse_event_weight",
+        "reuse_opportunity_weight"
+      ],
+      "score_key": "reuse_value_proxy"
+    },
+    {
+      "expression_zh": "返工成本分 = min(100, average_loop_score*rework_loop_score_weight + average_action_half_life_days*rework_half_life_penalty_weight)",
+      "formula_id": "FORM-MA-V12-S07P1-003",
+      "interpretation_zh": "识别重复返工、讨论未落地、过度优化和 scope creep 对行动价值的消耗。",
+      "name_zh": "返工成本 proxy",
+      "parameter_refs": [
+        "rework_loop_score_weight",
+        "rework_half_life_penalty_weight"
+      ],
+      "score_key": "rework_cost_proxy"
+    },
+    {
+      "expression_zh": "机会分 = min(100, average_opportunity_score*opportunity_score_weight + average_evidence_ref_count*opportunity_evidence_weight)",
+      "formula_id": "FORM-MA-V12-S07P1-004",
+      "interpretation_zh": "用 S06 opportunity candidates 的分数和证据密度评估候选机会的可行动程度。",
+      "name_zh": "机会分 proxy",
+      "parameter_refs": [
+        "opportunity_score_weight",
+        "opportunity_evidence_weight"
+      ],
+      "score_key": "opportunity_score_proxy"
+    },
+    {
+      "expression_zh": "技能复利分 = min(100, compounding_opportunity_count*skill_compounding_opportunity_weight + observed_month_count*skill_compounding_month_weight)",
+      "formula_id": "FORM-MA-V12-S07P1-005",
+      "interpretation_zh": "衡量跨时间重复出现的能力、项目或工作流是否值得固化为可复用资产。",
+      "name_zh": "技能复利 proxy",
+      "parameter_refs": [
+        "skill_compounding_opportunity_weight",
+        "skill_compounding_month_weight"
+      ],
+      "score_key": "skill_compounding_proxy"
+    },
+    {
+      "expression_zh": "自动化/增强比例分 = automation_ratio*automation_ratio_weight；automation_ratio = automation_count / max(1, automation_count + productization_count + template_count + compounding_count)；enhancement_ratio = 1 - automation_ratio",
+      "formula_id": "FORM-MA-V12-S07P1-006",
+      "interpretation_zh": "区分更适合自动化的候选与更适合增强、模板化或产品化的候选，避免把所有机会都误写成自动化任务。",
+      "name_zh": "自动化/增强比例 proxy",
+      "parameter_refs": [
+        "automation_ratio_weight"
+      ],
+      "score_key": "automation_enhancement_ratio_proxy"
+    }
+  ],
+  "generated_at": "2026-07-08T05:12:33Z",
+  "input_paths": [
+    "data/derived/behavior_intelligence/clusters.json",
+    "data/derived/behavior_intelligence/low_value_loops.json",
+    "data/derived/behavior_intelligence/opportunities.json"
+  ],
+  "output_path": "data/derived/economic_proxy/personal_economic_proxy.json",
+  "parameters": {
+    "automation_ratio_weight": 100.0,
+    "hours_per_automation_candidate": 2.0,
+    "hours_per_productization_candidate": 1.5,
+    "hours_per_template_candidate": 1.2,
+    "opportunity_evidence_weight": 1.4,
+    "opportunity_score_weight": 0.72,
+    "reuse_event_weight": 1.8,
+    "reuse_opportunity_weight": 9.0,
+    "rework_avoidance_hours_per_loop": 0.75,
+    "rework_half_life_penalty_weight": 0.35,
+    "rework_loop_score_weight": 0.42,
+    "score_per_proxy_hour": 4.0,
+    "skill_compounding_month_weight": 5.0,
+    "skill_compounding_opportunity_weight": 12.0
+  },
+  "phase_boundary": {
+    "does_not_claim_precise_income_prediction": true,
+    "does_not_generate_information_roi_gate": true,
+    "does_not_generate_what_if_ui": true,
+    "does_not_modify_raw": true,
+    "does_not_use_external_economic_database": true,
+    "next_phase": "S07 P2"
+  },
+  "proxy_summary": {
+    "automation_ratio": 0.2727,
+    "enhancement_ratio": 0.7273,
+    "explanation_zh": "该指数是内部 proxy，用于帮助判断 AI 工作流的时间节省、复用、返工、机会和复利方向。",
+    "limitation_zh": "它不是精确收入预测，不是财务建议，不接入外部经济数据库；后续 v2 可预留外部接口但本阶段不实现。",
+    "personal_ai_economic_index_score": 74
+  },
+  "schema_version": "memory_atlas_personal_economic_proxy.v1_2_s07_p1",
+  "score_cards": [
+    {
+      "evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+          "ref_id": "chatgpt_b6d16505b9e84d04_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+          "ref_id": "chatgpt_b6d16505b9e84d04_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6a231495-9044-83ec-8b6d-9f89e7f483c2",
+          "ref_id": "chatgpt_5feb6d1472e79a92_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "6a231495-9044-83ec-8b6d-9f89e7f483c2",
+          "ref_id": "chatgpt_5feb6d1472e79a92_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        }
+      ],
+      "explanation_zh": "该分数估算自动化、模板化、产品化和减少返工可能节省的重复工作时间；它不是精确工时或收入预测。",
+      "formula_expression_zh": "时间节省分 = min(100, (automation_count*hours_per_automation_candidate + template_count*hours_per_template_candidate + productization_count*hours_per_productization_candidate + low_value_loop_count*rework_avoidance_hours_per_loop) * score_per_proxy_hour)",
+      "formula_id": "FORM-MA-V12-S07P1-001",
+      "formula_source": "机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json",
+      "name_zh": "时间节省 proxy",
+      "parameter_refs": [
+        "hours_per_automation_candidate",
+        "hours_per_template_candidate",
+        "hours_per_productization_candidate",
+        "rework_avoidance_hours_per_loop",
+        "score_per_proxy_hour"
+      ],
+      "raw_value": {
+        "automation_count": 3,
+        "low_value_loop_count": 23,
+        "productization_count": 1,
+        "proxy_hours": 25.95,
+        "template_count": 1
+      },
+      "score": 100,
+      "score_key": "time_saved_proxy"
+    },
+    {
+      "evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+          "ref_id": "chatgpt_f5ed037fa8432ef8_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+          "ref_id": "chatgpt_f5ed037fa8432ef8_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        }
+      ],
+      "explanation_zh": "该分数衡量哪些主题簇和机会更适合变成复用资产，例如模板、脚本、validator 或稳定产品入口。",
+      "formula_expression_zh": "复用价值分 = min(100, high_evidence_cluster_count*reuse_event_weight + reusable_opportunity_count*reuse_opportunity_weight)",
+      "formula_id": "FORM-MA-V12-S07P1-002",
+      "formula_source": "机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json",
+      "name_zh": "复用价值 proxy",
+      "parameter_refs": [
+        "reuse_event_weight",
+        "reuse_opportunity_weight"
+      ],
+      "raw_value": {
+        "high_evidence_cluster_count": 9,
+        "reusable_opportunity_count": 8
+      },
+      "score": 88,
+      "score_key": "reuse_value_proxy"
+    },
+    {
+      "evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+          "ref_id": "chatgpt_f5ed037fa8432ef8_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+          "ref_id": "chatgpt_f5ed037fa8432ef8_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        }
+      ],
+      "explanation_zh": "该分数表示低价值循环和行动半衰期带来的返工成本信号；分数高代表更需要收口边界和完成标准。",
+      "formula_expression_zh": "返工成本分 = min(100, average_loop_score*rework_loop_score_weight + average_action_half_life_days*rework_half_life_penalty_weight)",
+      "formula_id": "FORM-MA-V12-S07P1-003",
+      "formula_source": "机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json",
+      "name_zh": "返工成本 proxy",
+      "parameter_refs": [
+        "rework_loop_score_weight",
+        "rework_half_life_penalty_weight"
+      ],
+      "raw_value": {
+        "average_action_half_life_days": 30.35,
+        "average_loop_score": 80.78,
+        "loop_count": 23
+      },
+      "score": 45,
+      "score_key": "rework_cost_proxy"
+    },
+    {
+      "evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+          "ref_id": "chatgpt_b6d16505b9e84d04_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+          "ref_id": "chatgpt_b6d16505b9e84d04_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6a231495-9044-83ec-8b6d-9f89e7f483c2",
+          "ref_id": "chatgpt_5feb6d1472e79a92_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "6a231495-9044-83ec-8b6d-9f89e7f483c2",
+          "ref_id": "chatgpt_5feb6d1472e79a92_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        }
+      ],
+      "explanation_zh": "该分数把 S06 的候选机会分和证据密度合成，用于判断哪些线索更值得进入后续 ROI gate。",
+      "formula_expression_zh": "机会分 = min(100, average_opportunity_score*opportunity_score_weight + average_evidence_ref_count*opportunity_evidence_weight)",
+      "formula_id": "FORM-MA-V12-S07P1-004",
+      "formula_source": "机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json",
+      "name_zh": "机会分 proxy",
+      "parameter_refs": [
+        "opportunity_score_weight",
+        "opportunity_evidence_weight"
+      ],
+      "raw_value": {
+        "average_evidence_ref_count": 10.0,
+        "average_opportunity_score": 100.0,
+        "opportunity_count": 12
+      },
+      "score": 86,
+      "score_key": "opportunity_score_proxy"
+    },
+    {
+      "evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+          "ref_id": "chatgpt_f5ed037fa8432ef8_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+          "ref_id": "chatgpt_f5ed037fa8432ef8_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        }
+      ],
+      "explanation_zh": "该分数衡量跨时间重复出现的能力或工作流是否值得固化为长期复利资产。",
+      "formula_expression_zh": "技能复利分 = min(100, compounding_opportunity_count*skill_compounding_opportunity_weight + observed_month_count*skill_compounding_month_weight)",
+      "formula_id": "FORM-MA-V12-S07P1-005",
+      "formula_source": "机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json",
+      "name_zh": "技能复利 proxy",
+      "parameter_refs": [
+        "skill_compounding_opportunity_weight",
+        "skill_compounding_month_weight"
+      ],
+      "raw_value": {
+        "compounding_opportunity_count": 6,
+        "observed_month_count": 9
+      },
+      "score": 100,
+      "score_key": "skill_compounding_proxy"
+    },
+    {
+      "evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+          "ref_id": "chatgpt_b6d16505b9e84d04_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+          "ref_id": "chatgpt_b6d16505b9e84d04_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6a231495-9044-83ec-8b6d-9f89e7f483c2",
+          "ref_id": "chatgpt_5feb6d1472e79a92_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "6a231495-9044-83ec-8b6d-9f89e7f483c2",
+          "ref_id": "chatgpt_5feb6d1472e79a92_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        }
+      ],
+      "explanation_zh": "该比例区分自动化候选和增强候选，避免把产品化、模板化、技能复利都误判成自动化。",
+      "formula_expression_zh": "自动化/增强比例分 = automation_ratio*automation_ratio_weight；automation_ratio = automation_count / max(1, automation_count + productization_count + template_count + compounding_count)；enhancement_ratio = 1 - automation_ratio",
+      "formula_id": "FORM-MA-V12-S07P1-006",
+      "formula_source": "机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json",
+      "name_zh": "自动化/增强比例 proxy",
+      "parameter_refs": [
+        "automation_ratio_weight"
+      ],
+      "raw_value": {
+        "augmentation_candidate_count": 8,
+        "automation_count": 3,
+        "automation_ratio": 0.2727,
+        "enhancement_ratio": 0.7273
+      },
+      "score": 27,
+      "score_key": "automation_enhancement_ratio_proxy"
+    }
+  ],
+  "source_task_ids": {
+    "clusters": "MA-V12-S06P1",
+    "low_value_loops": "MA-V12-S06P2",
+    "opportunities": "MA-V12-S06P3"
+  },
+  "status": "phase_s07_p1_economic_proxy_completed_pending_s07_p2",
+  "task_id": "MA-V12-S07P1",
+  "writes_files": true
+}

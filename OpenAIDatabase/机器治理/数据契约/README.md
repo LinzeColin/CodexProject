@@ -12,7 +12,7 @@
 
 source registry 属于 S02 P2；本阶段不创建 registry 文件，不修改 raw archive。
 
-当前 S06 Review 已完成。S05 Review 已通过，并新增：
+当前 S07 P1 已完成。S05 Review 已通过，并新增：
 
 - `机器治理/数据契约/facet_event_schema.v1_2_s05_p1.json`
 - `人类可读/12_Facet字段与事件语义说明.md`
@@ -36,6 +36,11 @@ source registry 属于 S02 P2；本阶段不创建 registry 文件，不修改 r
 - `docs/reviews/memory_atlas_v1_2_s06_p3_opportunity_discovery.md`
 - `data/derived/visualization/memory_atlas.json`
 - `docs/reviews/memory_atlas_v1_2_s06_review.md`
+- `机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json`
+- `scripts/build_memory_atlas_economic_proxy.py`
+- `data/derived/economic_proxy/personal_economic_proxy.json`
+- `人类可读/16_PersonalEconomicProxy公式说明.md`
+- `docs/reviews/memory_atlas_v1_2_s07_p1_economic_proxy.md`
 
 S05 P1 定义 facet/canonical event schema：`source`、`topic`、`intent`、
 `task_type`、`project`、`output_type`、`language`、`tool`、`turn_count`、
@@ -78,3 +83,9 @@ S06 Review 将 S06 P1/P2/P3 的派生结果汇总进
 `data/derived/visualization/memory_atlas.json` 的 `behavior_intelligence`。该展示合同只保留
 计数、中文摘要、有限证据引用、代表事件、下一步和 why-not-now 摘要，不修改 raw，也不把完整
 行为智能输出复制到前端。下一步是 S07 P1。
+
+S07 P1 生成 `data/derived/economic_proxy/personal_economic_proxy.json`。该输出包含
+`score_cards`、`formula_registry`、`parameters` 和 `external_economic_database`
+占位字段。每个 score card 必须包含中文解释、公式来源、参数引用和证据引用。
+本阶段不接入外部经济数据库，不做精确收入预测，不实现 S07 P2 信息 ROI gate，也不实现
+S07 P3 what-if UI。下一步是 S07 P2。

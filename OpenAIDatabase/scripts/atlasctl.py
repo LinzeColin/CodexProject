@@ -20,6 +20,7 @@ FACET_EXTRACTOR = ROOT / "scripts" / "extract_memory_atlas_facets.py"
 CLUSTER_BUILDER = ROOT / "scripts" / "build_memory_atlas_clusters.py"
 LOW_VALUE_LOOP_BUILDER = ROOT / "scripts" / "build_memory_atlas_low_value_loops.py"
 OPPORTUNITY_BUILDER = ROOT / "scripts" / "build_memory_atlas_opportunities.py"
+ECONOMIC_PROXY_BUILDER = ROOT / "scripts" / "build_memory_atlas_economic_proxy.py"
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -264,13 +265,41 @@ def opportunity_analyze_contract() -> dict[str, object]:
     }
 
 
+def economic_proxy_analyze_contract() -> dict[str, object]:
+    return {
+        "status": "PASS",
+        "command": "analyze",
+        "stage": "economic-proxy",
+        "dry_run": True,
+        "writes_files": False,
+        "builder": "scripts/build_memory_atlas_economic_proxy.py",
+        "formula_config": "机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json",
+        "input": [
+            "data/derived/behavior_intelligence/clusters.json",
+            "data/derived/behavior_intelligence/low_value_loops.json",
+            "data/derived/behavior_intelligence/opportunities.json",
+        ],
+        "output": "data/derived/economic_proxy/personal_economic_proxy.json",
+        "raw_mutation": False,
+        "task_id": "MA-V12-S07P1",
+        "acceptance_id": "ACC-MA-V12-S07P1",
+        "phase_boundary": {
+            "does_not_use_external_economic_database": True,
+            "does_not_claim_precise_income_prediction": True,
+            "does_not_generate_information_roi_gate": True,
+            "does_not_generate_what_if_ui": True,
+            "next_phase": "S07 P2",
+        },
+    }
+
+
 def run_analyze(args: argparse.Namespace) -> int:
-    if args.stage not in {"facets", "clusters", "low-value-loops", "opportunities"}:
+    if args.stage not in {"facets", "clusters", "low-value-loops", "opportunities", "economic-proxy"}:
         print(json.dumps({
             "status": "NOT_IMPLEMENTED",
             "command": "analyze",
             "stage": args.stage,
-            "reason": "Unknown analyze stage. Supported stages: facets, clusters, low-value-loops, opportunities.",
+            "reason": "Unknown analyze stage. Supported stages: facets, clusters, low-value-loops, opportunities, economic-proxy.",
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 2
 
@@ -301,6 +330,10 @@ def run_analyze(args: argparse.Namespace) -> int:
         command = [sys.executable, str(OPPORTUNITY_BUILDER), "--database-dir", str(args.database_dir)]
         if args.dry_run:
             command.append("--dry-run")
+    elif args.stage == "economic-proxy":
+        command = [sys.executable, str(ECONOMIC_PROXY_BUILDER), "--database-dir", str(args.database_dir)]
+        if args.dry_run:
+            command.append("--dry-run")
     result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
     if result.stdout:
         print(result.stdout, end="")
@@ -326,13 +359,100 @@ def audit_evidence_collection(
     return bad_items
 
 
+def run_formula_audit(args: argparse.Namespace) -> int:
+    config_path = args.database_dir / "机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json"
+    output_path = args.database_dir / "data/derived/economic_proxy/personal_economic_proxy.json"
+    bad_items: list[str] = []
+    config: dict[str, object] = {}
+    output: dict[str, object] = {}
+    if not config_path.exists():
+        bad_items.append("formula_config:missing")
+    else:
+        config = json.loads(config_path.read_text(encoding="utf-8"))
+        if config.get("task_id") != "MA-V12-S07P1" or config.get("acceptance_id") != "ACC-MA-V12-S07P1":
+            bad_items.append("formula_config:identity_mismatch")
+        boundary = config.get("scope_boundary") or {}
+        if not isinstance(boundary, dict) or boundary.get("external_economic_database_dependency") is not False:
+            bad_items.append("formula_config:external_database_dependency_not_false")
+        if not isinstance(boundary, dict) or boundary.get("precise_income_prediction") is not False:
+            bad_items.append("formula_config:precise_income_prediction_not_false")
+        parameters = config.get("parameters") if isinstance(config.get("parameters"), dict) else {}
+        required_score_keys = {
+            "time_saved_proxy",
+            "reuse_value_proxy",
+            "rework_cost_proxy",
+            "opportunity_score_proxy",
+            "skill_compounding_proxy",
+            "automation_enhancement_ratio_proxy",
+        }
+        formulas = config.get("formulas") if isinstance(config.get("formulas"), list) else []
+        score_keys = {str(item.get("score_key")) for item in formulas if isinstance(item, dict)}
+        for key in sorted(required_score_keys - score_keys):
+            bad_items.append(f"formula_config:missing_score_key:{key}")
+        for item in formulas:
+            if not isinstance(item, dict):
+                bad_items.append("formula_config:invalid_formula_item")
+                continue
+            formula_id = item.get("formula_id")
+            if not formula_id or not item.get("expression_zh") or not item.get("interpretation_zh"):
+                bad_items.append(f"formula_config:{formula_id}:missing_expression_or_interpretation")
+            for param_ref in item.get("parameter_refs") or []:
+                if param_ref not in parameters:
+                    bad_items.append(f"formula_config:{formula_id}:unknown_parameter:{param_ref}")
+    if output_path.exists():
+        output = json.loads(output_path.read_text(encoding="utf-8"))
+        if output.get("task_id") != "MA-V12-S07P1" or output.get("acceptance_id") != "ACC-MA-V12-S07P1":
+            bad_items.append("economic_proxy_output:identity_mismatch")
+        external_database = output.get("external_economic_database")
+        if not isinstance(external_database, dict) or external_database.get("current_dependency") is not False:
+            bad_items.append("economic_proxy_output:external_database_dependency_not_false")
+        boundary = output.get("phase_boundary") or {}
+        if boundary.get("does_not_use_external_economic_database") is not True:
+            bad_items.append("economic_proxy_output:external_database_boundary_missing")
+        if boundary.get("does_not_claim_precise_income_prediction") is not True:
+            bad_items.append("economic_proxy_output:precise_income_boundary_missing")
+        for card in output.get("score_cards") or []:
+            card_id = card.get("score_key")
+            if not card.get("formula_id") or not card.get("formula_source"):
+                bad_items.append(f"score_card:{card_id}:missing_formula_source")
+            if not card.get("explanation_zh") or not card.get("formula_expression_zh"):
+                bad_items.append(f"score_card:{card_id}:missing_chinese_explanation_or_expression")
+            if not card.get("parameter_refs"):
+                bad_items.append(f"score_card:{card_id}:missing_parameter_refs")
+            if not card.get("evidence_refs"):
+                bad_items.append(f"score_card:{card_id}:missing_evidence_refs")
+            if int(card.get("score") or -1) < 0 or int(card.get("score") or -1) > 100:
+                bad_items.append(f"score_card:{card_id}:score_out_of_range")
+    else:
+        bad_items.append("economic_proxy_output:missing")
+    status = "PASS" if not bad_items else "FAIL"
+    result = {
+        "status": status,
+        "command": "audit",
+        "check": "formulas",
+        "task_id": config.get("task_id") or output.get("task_id"),
+        "acceptance_id": config.get("acceptance_id") or output.get("acceptance_id"),
+        "formula_config": "机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json",
+        "economic_proxy_output": "data/derived/economic_proxy/personal_economic_proxy.json" if output_path.exists() else "",
+        "formula_count": len(config.get("formulas") or []) if isinstance(config.get("formulas"), list) else 0,
+        "score_card_count": len(output.get("score_cards") or []) if isinstance(output.get("score_cards"), list) else 0,
+        "external_economic_database_dependency": False,
+        "bad_items": bad_items,
+        "raw_mutation": False,
+    }
+    print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0 if status == "PASS" else 2
+
+
 def run_audit(args: argparse.Namespace) -> int:
+    if args.check == "formulas":
+        return run_formula_audit(args)
     if args.check != "insight-evidence":
         print(json.dumps({
             "status": "NOT_IMPLEMENTED",
             "command": "audit",
             "check": args.check,
-            "reason": "Unknown audit check. Supported checks: insight-evidence.",
+            "reason": "Unknown audit check. Supported checks: insight-evidence, formulas.",
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 2
 

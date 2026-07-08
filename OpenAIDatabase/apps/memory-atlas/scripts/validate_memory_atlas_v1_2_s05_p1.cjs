@@ -273,7 +273,25 @@ function currentStateIsS06P3() {
   );
 }
 
+function currentStateIsS07P1() {
+  const quick = readRepoFile("人类可读/00_快速入口.md");
+  const overview = readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md");
+  const machine = readRepoFile("机器治理/README.md");
+  const dataContract = readRepoFile("机器治理/数据契约/README.md");
+  const formula = readRepoFile("机器治理/参数与公式/README.md");
+  const runGate = readRepoFile("机器治理/运行门禁/README.md");
+  return (
+    hasAll(quick, ["当前阶段是 S07 P1", "MA-V12-S07P1", "ACC-MA-V12-S07P1", "下一步只允许进入 S07 P2"]) &&
+    hasAll(overview, ["S07 P1 已完成", "Personal Economic Proxy", "下一步是 S07 P2"]) &&
+    hasAll(machine, ["当前为 S07 P1", "MA-V12-S07P1", "validate:v1.2-s07-p1", "下一步是 S07 P2"]) &&
+    hasAll(dataContract, ["当前 S07 P1 已完成", "personal_economic_proxy.json", "下一步是 S07 P2"]) &&
+    hasAll(formula, ["当前 S07 P1 已完成", "personal_economic_proxy.v1_2_s07_p1.json", "Personal Economic Proxy"]) &&
+    hasAll(runGate, ["当前阶段是 S07 P1", "MA-V12-S07P1", "ACC-MA-V12-S07P1", "validate:v1.2-s07-p1"])
+  );
+}
+
 function currentStateIsS06Review() {
+  if (currentStateIsS07P1()) return true;
   const quick = readRepoFile("人类可读/00_快速入口.md");
   const overview = readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md");
   const machine = readRepoFile("机器治理/README.md");
