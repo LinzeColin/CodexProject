@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S06 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s06_review.md`.
+- Added `validate:v1.2-s06-review` for `MA-V12-S06-REVIEW` /
+  `ACC-MA-V12-S06-REVIEW`.
+- Registered status `stage_s06_review_passed_pending_s07_no_github_main_upload`.
+- Added S06 `behavior_intelligence` display summary to
+  `data/derived/visualization/memory_atlas.json`.
+- Added the Memory Atlas home display section for behavior clusters, low-value
+  loops and opportunity clues.
+- Confirmed S06 outputs cover 160 clusters, 23 low-value loops and 12
+  opportunities with evidence-backed Chinese summaries.
+- Preserved S06 Review boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No app reinstall, No raw mutation, No
+  psychological diagnosis, No external economic database and No infinite
+  pressure list.
+- Marked the next gate as pending S07 P1.
+
 ## Unreleased - Memory Atlas v1.2 S06 P3 Opportunity Discovery
 
 - Added `scripts/build_memory_atlas_opportunities.py` for deterministic

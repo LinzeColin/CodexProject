@@ -77,6 +77,86 @@ export interface AtlasMetric {
   values: Record<string, number>;
 }
 
+export interface BehaviorEvidenceRef {
+  ref_id: string;
+  ref_type?: string;
+  source_id?: string;
+  evidence_level?: string;
+  path?: string;
+  reason?: string;
+}
+
+export interface BehaviorClusterSummary {
+  cluster_id: string;
+  cluster_type: string;
+  label_zh: string;
+  summary_zh: string;
+  event_count: number;
+  evidence_refs: BehaviorEvidenceRef[];
+  representative_event_ids?: string[];
+  filter_dimensions?: Record<string, unknown>;
+}
+
+export interface LowValueLoopSummary {
+  loop_id: string;
+  loop_type: string;
+  label_zh: string;
+  summary_zh: string;
+  score: number;
+  event_count: number;
+  evidence_refs: BehaviorEvidenceRef[];
+  decision_debt?: {
+    debt_id?: string;
+    decision_area?: string;
+    suggested_closure_question?: string;
+    status?: string;
+  };
+  action_half_life_days?: number;
+  action_half_life_note?: string;
+}
+
+export interface OpportunitySummary {
+  opportunity_id: string;
+  opportunity_type: string;
+  label_zh: string;
+  summary_zh: string;
+  score: number;
+  confidence?: string;
+  next_step_zh: string;
+  opportunity_half_life_days?: number;
+  defer_reason_zh?: string;
+  evidence_refs: BehaviorEvidenceRef[];
+  why_not_now_card?: {
+    card_id?: string;
+    reason_zh?: string;
+    defer_until_signal_zh?: string;
+    not_pressure_list?: boolean;
+  };
+}
+
+export interface BehaviorIntelligenceSummary {
+  schema_version: string;
+  stage: "S06" | string;
+  status: string;
+  task_ids: string[];
+  acceptance_ids: string[];
+  source_files?: Record<string, string>;
+  counts: {
+    topic_clusters: number;
+    hierarchy_clusters: number;
+    clusters: number;
+    low_value_loops: number;
+    decision_debt: number;
+    action_half_life: number;
+    opportunities: number;
+    defer_cards: number;
+  };
+  clusters: BehaviorClusterSummary[];
+  low_value_loops: LowValueLoopSummary[];
+  opportunities: OpportunitySummary[];
+  phase_boundary?: Record<string, unknown>;
+}
+
 export interface MemoryAtlas {
   schema_version: string;
   overview: {
@@ -150,6 +230,7 @@ export interface MemoryAtlas {
   };
   metrics: AtlasMetric[];
   data_sources?: DataSourceSummary[];
+  behavior_intelligence?: BehaviorIntelligenceSummary;
   agent_recommendations?: AgentRecommendations;
 }
 

@@ -29,6 +29,7 @@ const loopsPath = "data/derived/behavior_intelligence/low_value_loops.json";
 const opportunitiesPath = "data/derived/behavior_intelligence/opportunities.json";
 const reviewPath = "docs/reviews/memory_atlas_v1_2_s06_p3_opportunity_discovery.md";
 const humanDocPath = "人类可读/15_机会发现与为什么不是现在卡片.md";
+const s06ReviewPath = "docs/reviews/memory_atlas_v1_2_s06_review.md";
 
 const recordFiles = [
   "CHANGELOG.md",
@@ -42,20 +43,27 @@ const recordFiles = [
 const allowedOpenDiffPaths = [
   "OpenAIDatabase/CHANGELOG.md",
   "OpenAIDatabase/apps/memory-atlas/package.json",
+  "OpenAIDatabase/apps/memory-atlas/src/App.tsx",
+  "OpenAIDatabase/apps/memory-atlas/src/styles.css",
+  "OpenAIDatabase/apps/memory-atlas/src/types.ts",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p1.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p2.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p3.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_review.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_p1.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_p2.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_review.cjs",
   `OpenAIDatabase/apps/memory-atlas/scripts/${scriptName}`,
+  "OpenAIDatabase/scripts/build_memory_atlas_data.py",
   "OpenAIDatabase/scripts/build_memory_atlas_opportunities.py",
   "OpenAIDatabase/scripts/build_memory_atlas_low_value_loops.py",
   `OpenAIDatabase/${atlasctlPath}`,
   "OpenAIDatabase/tests/test_s06p3_opportunity_discovery.py",
   "OpenAIDatabase/tests/test_s06p2_low_value_loops.py",
   `OpenAIDatabase/${opportunitiesPath}`,
+  "OpenAIDatabase/data/derived/visualization/memory_atlas.json",
   `OpenAIDatabase/${reviewPath}`,
+  `OpenAIDatabase/${s06ReviewPath}`,
   `OpenAIDatabase/${humanDocPath}`,
   "OpenAIDatabase/docs/MEMORY_ATLAS_DELIVERY_RECORD.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md",
@@ -284,6 +292,23 @@ function validateOpportunityBuilder() {
   );
 }
 
+function currentStateIsS06Review() {
+  const quick = readRepoFile("人类可读/00_快速入口.md");
+  const overview = readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md");
+  const machine = readRepoFile("机器治理/README.md");
+  const dataContract = readRepoFile("机器治理/数据契约/README.md");
+  const behavior = readRepoFile("机器治理/行为智能模型/README.md");
+  const runGate = readRepoFile("机器治理/运行门禁/README.md");
+  return (
+    hasAll(quick, ["当前阶段是 S06 Review", "MA-V12-S06-REVIEW", "ACC-MA-V12-S06-REVIEW", "下一步只允许进入 S07 P1"]) &&
+    hasAll(overview, ["S06 Review 已完成", "behavior_intelligence", "下一步是 S07 P1"]) &&
+    hasAll(machine, ["当前为 S06 Review", "MA-V12-S06-REVIEW", "validate:v1.2-s06-review", "下一步是 S07 P1"]) &&
+    hasAll(dataContract, ["当前 S06 Review 已完成", "behavior_intelligence", "下一步是 S07 P1"]) &&
+    hasAll(behavior, ["当前 S06 Review 已完成", "主题簇", "低价值循环", "机会线索"]) &&
+    hasAll(runGate, ["当前阶段是 S06 Review", "MA-V12-S06-REVIEW", "ACC-MA-V12-S06-REVIEW", "validate:v1.2-s06-review"])
+  );
+}
+
 function validateDocsAndRecords() {
   [
     reviewPath,
@@ -305,6 +330,7 @@ function validateDocsAndRecords() {
   const dataContract = readRepoFile("机器治理/数据契约/README.md");
   const behavior = readRepoFile("机器治理/行为智能模型/README.md");
   const runGate = readRepoFile("机器治理/运行门禁/README.md");
+  const s06ReviewState = currentStateIsS06Review();
 
   assertCondition(
     hasAll(review, [
@@ -332,37 +358,37 @@ function validateDocsAndRecords() {
     "Human opportunity doc is incomplete",
   );
   assertCondition(
-    hasAll(quick, [taskId, acceptanceId, status, "当前阶段是 S06 P3", "机会发现", "下一步只允许进入 S06 Review"]),
+    s06ReviewState || hasAll(quick, [taskId, acceptanceId, status, "当前阶段是 S06 P3", "机会发现", "下一步只允许进入 S06 Review"]),
     "s06p3_quick_entry",
     "Quick entry records S06 P3 state and next S06 Review gate",
     "Quick entry is missing S06 P3 state",
   );
   assertCondition(
-    hasAll(overview, ["S06 P3 已完成", "为什么不是现在", opportunitiesPath, "下一步是 S06 Review"]),
+    s06ReviewState || hasAll(overview, ["S06 P3 已完成", "为什么不是现在", opportunitiesPath, "下一步是 S06 Review"]),
     "s06p3_overview",
     "Overview records S06 P3 state and next S06 Review gate",
     "Overview is missing S06 P3 state",
   );
   assertCondition(
-    hasAll(machine, ["当前为 S06 P3", taskId, acceptanceId, validatorName, "下一步是 S06 Review"]),
+    s06ReviewState || hasAll(machine, ["当前为 S06 P3", taskId, acceptanceId, validatorName, "下一步是 S06 Review"]),
     "s06p3_machine_readme",
     "Machine README records S06 P3 identity and next gate",
     "Machine README is missing S06 P3 state",
   );
   assertCondition(
-    hasAll(dataContract, ["当前 S06 P3 已完成", opportunitiesPath, "为什么不是现在", "下一步是 S06 Review"]),
+    s06ReviewState || hasAll(dataContract, ["当前 S06 P3 已完成", opportunitiesPath, "为什么不是现在", "下一步是 S06 Review"]),
     "s06p3_data_contract",
     "Data contract README records S06 P3 opportunities output and contracts",
     "Data contract README is missing S06 P3 state",
   );
   assertCondition(
-    hasAll(behavior, ["当前 S06 P3 已完成", "机会发现", "why-not-now", "下一步是 S06 Review"]),
+    s06ReviewState || hasAll(behavior, ["当前 S06 P3 已完成", "机会发现", "why-not-now", "下一步是 S06 Review"]),
     "s06p3_behavior_readme",
     "Behavior model README records S06 P3 opportunity model",
     "Behavior model README is missing S06 P3 state",
   );
   assertCondition(
-    hasAll(runGate, ["当前阶段是 S06 P3", taskId, acceptanceId, validatorName, reviewPath, "下一步是 S06 Review"]),
+    s06ReviewState || hasAll(runGate, ["当前阶段是 S06 P3", taskId, acceptanceId, validatorName, reviewPath, "下一步是 S06 Review"]),
     "s06p3_run_gate",
     "Run gate README records S06 P3 validator and next review gate",
     "Run gate README is missing S06 P3 state",

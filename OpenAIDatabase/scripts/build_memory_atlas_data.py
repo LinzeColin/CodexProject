@@ -27,6 +27,9 @@ DATA_SOURCE_REGISTRY_SOURCE = "config/data_sources/source_registry.json"
 CODEX_SESSION_SOURCE = "data/processed/codex/codex_session_manifest.jsonl"
 CODEX_DAILY_SOURCE = "data/processed/codex/codex_daily_activity.jsonl"
 CODEX_RECOMMENDATION_SOURCE = "data/derived/codex/codex_agent_recommendations.json"
+BEHAVIOR_CLUSTER_SOURCE = "data/derived/behavior_intelligence/clusters.json"
+LOW_VALUE_LOOP_SOURCE = "data/derived/behavior_intelligence/low_value_loops.json"
+OPPORTUNITY_SOURCE = "data/derived/behavior_intelligence/opportunities.json"
 PROPOSAL_SCHEMA_VERSION = "memory_change_proposal.v1"
 EDITABLE_MEMORY_FIELDS = [
     "statement",
@@ -151,6 +154,147 @@ def read_json(path: Path) -> dict[str, Any]:
     except json.JSONDecodeError:
         return {}
     return payload if isinstance(payload, dict) else {}
+
+
+def as_list(value: Any) -> list[Any]:
+    return value if isinstance(value, list) else []
+
+
+def limited_evidence_refs(item: dict[str, Any], limit: int = 3) -> list[dict[str, Any]]:
+    refs: list[dict[str, Any]] = []
+    for ref in as_list(item.get("evidence_refs"))[:limit]:
+        if not isinstance(ref, dict):
+            continue
+        refs.append(
+            {
+                "ref_id": str(ref.get("ref_id") or ""),
+                "ref_type": str(ref.get("ref_type") or ""),
+                "source_id": str(ref.get("source_id") or ""),
+                "evidence_level": str(ref.get("evidence_level") or ""),
+                "path": str(ref.get("path") or ""),
+                "reason": str(ref.get("reason") or ""),
+            }
+        )
+    return refs
+
+
+def summarize_behavior_cluster(item: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "cluster_id": str(item.get("cluster_id") or ""),
+        "cluster_type": str(item.get("cluster_type") or ""),
+        "label_zh": str(item.get("label_zh") or ""),
+        "summary_zh": str(item.get("summary_zh") or ""),
+        "event_count": int(item.get("event_count") or 0),
+        "evidence_refs": limited_evidence_refs(item),
+        "representative_event_ids": [str(event_id) for event_id in as_list(item.get("representative_event_ids"))[:5]],
+        "filter_dimensions": item.get("filter_dimensions") if isinstance(item.get("filter_dimensions"), dict) else {},
+    }
+
+
+def summarize_low_value_loop(item: dict[str, Any], debt_by_loop: dict[str, dict[str, Any]], half_life_by_loop: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    loop_id = str(item.get("loop_id") or "")
+    debt = debt_by_loop.get(loop_id, {})
+    half_life = half_life_by_loop.get(loop_id, {})
+    return {
+        "loop_id": loop_id,
+        "loop_type": str(item.get("loop_type") or ""),
+        "label_zh": str(item.get("label_zh") or ""),
+        "summary_zh": str(item.get("summary_zh") or ""),
+        "score": int(item.get("score") or 0),
+        "event_count": int(item.get("event_count") or 0),
+        "evidence_refs": limited_evidence_refs(item),
+        "decision_debt": {
+            "debt_id": str(debt.get("debt_id") or ""),
+            "decision_area": str(debt.get("decision_area") or ""),
+            "suggested_closure_question": str(debt.get("suggested_closure_question") or ""),
+            "status": str(debt.get("status") or ""),
+        },
+        "action_half_life_days": int(half_life.get("action_half_life_days") or 0),
+        "action_half_life_note": str(half_life.get("interpretation_zh") or ""),
+    }
+
+
+def summarize_opportunity(item: dict[str, Any]) -> dict[str, Any]:
+    why_not_now = item.get("why_not_now_card") if isinstance(item.get("why_not_now_card"), dict) else {}
+    return {
+        "opportunity_id": str(item.get("opportunity_id") or ""),
+        "opportunity_type": str(item.get("opportunity_type") or ""),
+        "label_zh": str(item.get("label_zh") or ""),
+        "summary_zh": str(item.get("summary_zh") or ""),
+        "score": int(item.get("score") or 0),
+        "confidence": str(item.get("confidence") or ""),
+        "next_step_zh": str(item.get("next_step_zh") or ""),
+        "opportunity_half_life_days": int(item.get("opportunity_half_life_days") or 0),
+        "defer_reason_zh": str(item.get("defer_reason_zh") or ""),
+        "evidence_refs": limited_evidence_refs(item),
+        "why_not_now_card": {
+            "card_id": str(why_not_now.get("card_id") or ""),
+            "reason_zh": str(why_not_now.get("reason_zh") or ""),
+            "defer_until_signal_zh": str(why_not_now.get("defer_until_signal_zh") or ""),
+            "not_pressure_list": why_not_now.get("not_pressure_list") is True,
+        },
+    }
+
+
+def build_behavior_intelligence_summary(database_dir: Path) -> dict[str, Any]:
+    clusters_payload = read_json(database_dir / BEHAVIOR_CLUSTER_SOURCE)
+    loops_payload = read_json(database_dir / LOW_VALUE_LOOP_SOURCE)
+    opportunities_payload = read_json(database_dir / OPPORTUNITY_SOURCE)
+    topic_clusters = [item for item in as_list(clusters_payload.get("topic_clusters")) if isinstance(item, dict)]
+    hierarchy_clusters = [item for item in as_list(clusters_payload.get("hierarchy_clusters")) if isinstance(item, dict)]
+    loop_clusters = [item for item in as_list(loops_payload.get("loop_clusters")) if isinstance(item, dict)]
+    debts = [item for item in as_list(loops_payload.get("decision_debt_ledger")) if isinstance(item, dict)]
+    half_lives = [item for item in as_list(loops_payload.get("action_half_life")) if isinstance(item, dict)]
+    opportunities = [item for item in as_list(opportunities_payload.get("opportunity_clusters")) if isinstance(item, dict)]
+    debt_by_loop = {str(item.get("loop_id") or ""): item for item in debts}
+    half_life_by_loop = {str(item.get("loop_id") or ""): item for item in half_lives}
+
+    clusters = sorted(topic_clusters + hierarchy_clusters, key=lambda item: int(item.get("event_count") or 0), reverse=True)
+    loop_clusters_sorted = sorted(loop_clusters, key=lambda item: int(item.get("score") or 0), reverse=True)
+    opportunities_sorted = sorted(opportunities, key=lambda item: int(item.get("score") or 0), reverse=True)
+
+    return {
+        "schema_version": "memory_atlas_behavior_intelligence_display.v1_2_s06_review",
+        "stage": "S06",
+        "status": "stage_s06_review_passed_pending_s07_no_github_main_upload",
+        "task_ids": [
+            str(clusters_payload.get("task_id") or ""),
+            str(loops_payload.get("task_id") or ""),
+            str(opportunities_payload.get("task_id") or ""),
+        ],
+        "acceptance_ids": [
+            str(clusters_payload.get("acceptance_id") or ""),
+            str(loops_payload.get("acceptance_id") or ""),
+            str(opportunities_payload.get("acceptance_id") or ""),
+        ],
+        "source_files": {
+            "clusters": BEHAVIOR_CLUSTER_SOURCE,
+            "low_value_loops": LOW_VALUE_LOOP_SOURCE,
+            "opportunities": OPPORTUNITY_SOURCE,
+        },
+        "counts": {
+            "topic_clusters": int(clusters_payload.get("topic_cluster_count") or len(topic_clusters)),
+            "hierarchy_clusters": int(clusters_payload.get("hierarchy_cluster_count") or len(hierarchy_clusters)),
+            "clusters": int(clusters_payload.get("cluster_count") or len(topic_clusters) + len(hierarchy_clusters)),
+            "low_value_loops": int(loops_payload.get("loop_cluster_count") or len(loop_clusters)),
+            "decision_debt": int(loops_payload.get("decision_debt_count") or len(debts)),
+            "action_half_life": int(loops_payload.get("action_half_life_count") or len(half_lives)),
+            "opportunities": int(opportunities_payload.get("opportunity_count") or len(opportunities)),
+            "defer_cards": int(opportunities_payload.get("defer_card_count") or 0),
+        },
+        "clusters": [summarize_behavior_cluster(item) for item in clusters[:8]],
+        "low_value_loops": [
+            summarize_low_value_loop(item, debt_by_loop, half_life_by_loop) for item in loop_clusters_sorted[:6]
+        ],
+        "opportunities": [summarize_opportunity(item) for item in opportunities_sorted[:6]],
+        "phase_boundary": {
+            "does_not_modify_raw": True,
+            "does_not_output_psychological_diagnosis": True,
+            "does_not_create_infinite_pressure_list": True,
+            "does_not_use_external_economic_database": True,
+            "next_phase": "S07 P1",
+        },
+    }
 
 
 def load_data_source_registry(database_dir: Path) -> dict[str, Any]:
@@ -1092,6 +1236,7 @@ def build_memory_atlas(database_dir: Path) -> dict[str, Any]:
     codex_session_path = database_dir / CODEX_SESSION_SOURCE
     codex_daily_path = database_dir / CODEX_DAILY_SOURCE
     codex_recommendation_path = database_dir / CODEX_RECOMMENDATION_SOURCE
+    behavior_intelligence = build_behavior_intelligence_summary(database_dir)
 
     active_rows = [normalize_memory_row(row) for row in read_jsonl(active_path)]
     candidate_rows = [normalize_memory_row(row) for row in load_latest_candidates(database_dir)]
@@ -1208,6 +1353,9 @@ def build_memory_atlas(database_dir: Path) -> dict[str, Any]:
                 "codex_session_manifest": str(codex_session_path.relative_to(database_dir)),
                 "codex_daily_activity": str(codex_daily_path.relative_to(database_dir)),
                 "codex_agent_recommendations": str(codex_recommendation_path.relative_to(database_dir)),
+                "behavior_clusters": BEHAVIOR_CLUSTER_SOURCE,
+                "behavior_low_value_loops": LOW_VALUE_LOOP_SOURCE,
+                "behavior_opportunities": OPPORTUNITY_SOURCE,
             },
             "data_source_registry": {
                 "schema_version": data_source_registry.get("schema_version", ""),
@@ -1255,6 +1403,7 @@ def build_memory_atlas(database_dir: Path) -> dict[str, Any]:
         "timeline": memory_timeline,
         "contribution": contribution,
         "data_sources": data_sources,
+        "behavior_intelligence": behavior_intelligence,
         "agent_recommendations": codex_recommendations
         or {
             "schema_version": "codex_agent_recommendations.empty",

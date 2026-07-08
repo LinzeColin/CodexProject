@@ -1,3 +1,50 @@
+## v1.2 S06 Review
+
+状态：`stage_s06_review_passed_pending_s07_no_github_main_upload`。
+
+任务 ID：`MA-V12-S06-REVIEW`。
+
+验收 ID：`ACC-MA-V12-S06-REVIEW`。
+
+S06 Review 复审 Memory Atlas v1.2 S06 P1/P2/P3，并补齐展示门禁。它确认
+`data/derived/behavior_intelligence/clusters.json`、`low_value_loops.json` 和
+`opportunities.json` 均保留证据引用，并将显示摘要写入
+`data/derived/visualization/memory_atlas.json` 的 `behavior_intelligence`。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_2_s06_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_review.cjs`
+- `scripts/build_memory_atlas_data.py`
+- `data/derived/visualization/memory_atlas.json`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/types.ts`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s06-review`
+- `ACC-MA-V12-S06-REVIEW`
+- `MA-V12-S06-REVIEW`
+- S06 Review
+- `behavior_intelligence`
+- `data-s06-review-display`
+- pending S07 P1
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase.
+- No raw mutation in this phase.
+- No psychological diagnosis in this phase.
+- No external economic database in this phase.
+- No infinite pressure list in this phase.
+- No app reinstall in this phase.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S06 Review; MA-V12-S06-REVIEW; ACC-MA-V12-S06-REVIEW; stage_s06_review_passed_pending_s07_no_github_main_upload; validate:v1.2-s06-review; memory_atlas_v1_2_s06_review.md; behavior_intelligence; S06 Review; pending S07 P1; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No psychological diagnosis; No external economic database; No infinite pressure list.
+
 ## v1.2 S06 P3 Opportunity Discovery
 
 状态：`phase_s06_p3_opportunity_discovery_completed_pending_s06_review`。

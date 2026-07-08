@@ -2,28 +2,35 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S06 P3。任务 ID 为 `MA-V12-S06P3`，验收 ID 为
-`ACC-MA-V12-S06P3`，validator 为 `validate:v1.2-s06-p3`。
+当前阶段是 S06 Review。任务 ID 为 `MA-V12-S06-REVIEW`，验收 ID 为
+`ACC-MA-V12-S06-REVIEW`，validator 为 `validate:v1.2-s06-review`。
 
-S06 P3 产物：
+S06 Review 产物：
 
+- `docs/reviews/memory_atlas_v1_2_s06_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_review.cjs`
+- `scripts/build_memory_atlas_data.py`
+- `data/derived/visualization/memory_atlas.json`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/types.ts`
+- `apps/memory-atlas/src/styles.css`
 - `scripts/build_memory_atlas_opportunities.py`
 - `scripts/atlasctl.py`
+- `data/derived/behavior_intelligence/clusters.json`
+- `data/derived/behavior_intelligence/low_value_loops.json`
 - `data/derived/behavior_intelligence/opportunities.json`
-- `人类可读/15_机会发现与为什么不是现在卡片.md`
-- `docs/reviews/memory_atlas_v1_2_s06_p3_opportunity_discovery.md`
-- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_p3.cjs`
 
-S06 P3 gate：
+S06 Review gate：
 
-- `python scripts/atlasctl.py analyze --stage opportunities --dry-run` 可运行且不写文件。
-- 输出包含 automation、productization、template、compounding、defer 五类候选机会。
-- 每条机会有 evidence_refs、next_step_zh、半衰期或暂缓理由和 为什么不是现在 卡片。
+- `validate:v1.2-s06-review` 可验证 S06 P1/P2/P3 输出和显示接入。
+- `data/derived/visualization/memory_atlas.json` 包含 `behavior_intelligence`。
+- Memory Atlas 首页通过 `data-s06-review-display` 显示主题簇、低价值循环和机会线索。
+- 输出包含 160 个 clusters、23 个低价值循环和 12 条候选机会。
 - `python scripts/atlasctl.py audit --check insight-evidence` 返回 PASS 且 `bad_items` 为空。
 - 不接外部经济数据库，不做心理诊断，不生成无穷压力清单，不修改 raw。
 
 No GitHub main upload in this phase。
-下一步是 S06 Review。
+下一步是 S07 P1。
 
 前置 S01 Review 已通过：`MA-V12-S01-REVIEW` / `ACC-MA-V12-S01-REVIEW` /
 `validate:v1.2-s01-review`。
