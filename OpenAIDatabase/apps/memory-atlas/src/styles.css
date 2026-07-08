@@ -726,6 +726,10 @@ h3 {
   font-size: 11px;
 }
 
+.visual-focus-workspace:not(.home-workspace) .command-palette {
+  display: none;
+}
+
 .content-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 320px);
