@@ -175,6 +175,30 @@ def validate_s19_files(root: Path) -> dict[str, Any]:
         errors.append("exempt no-attendance names rendered as user-visible anomalies")
     if "morning" in exemption_probe or "evening" in exemption_probe:
         errors.append("English run type rendered in user-visible notification template")
+    backend_probe_context = notification_context_from_output_status(
+        {
+            "run_id": "s19_morning_20260707_083500",
+            "run_type": "morning",
+            "work_date": "2026-07-07",
+            "current_time": "08:35",
+            "stats": {
+                "member_count": 44,
+                "record_success_count": 43,
+                "summary_success_count": 44,
+                "record_failure_count": 1,
+                "summary_failure_count": 0,
+                "command_failure_count": 1,
+                "unexpected_empty_record_names": [],
+                "summary_today_anomaly_names": [],
+                "incomplete_record_names": [],
+                "attendance_anomaly_names": [],
+            },
+        }
+    )
+    backend_probe = build_notification_message(**backend_probe_context, markdown=False)
+    backend_terms = ("DWS", "record", "summary", "attendance.record:get", "权限", "取数失败", "未覆盖")
+    if any(term in backend_probe for term in backend_terms):
+        errors.append("backend diagnostics rendered in user-visible notification template")
 
     return {
         "status": "PASS" if not errors else "FAIL",

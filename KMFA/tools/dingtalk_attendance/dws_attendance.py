@@ -510,53 +510,45 @@ def write_private_outputs(
 
 def _management_context(plan: dict[str, Any], collection: dict[str, Any]) -> dict[str, str]:
     stats = collection["stats"]
-    status = "完成" if stats["command_failure_count"] == 0 else "部分完成"
     attendance_anomaly_names = _visible_names(stats.get("attendance_anomaly_names", []))
     empty_record_names = _visible_names(stats.get("unexpected_empty_record_names", []))
     incomplete_record_names = _visible_names(stats.get("incomplete_record_names", []))
     abnormal_lines = [
         f"今日异常人员 / 无考勤人员：{_join_names(attendance_anomaly_names)}。",
-        f"record 为空人员：{_join_names(empty_record_names)}。",
-        f"record 缺少上下班打卡人员：{_join_names(incomplete_record_names)}。",
+        f"无考勤记录人员：{_join_names(empty_record_names)}。",
+        f"打卡记录不完整人员：{_join_names(incomplete_record_names)}。",
     ]
     return {
         "title": f"开明考勤管理报告｜{collection['work_date']}｜{display_run_type(plan['run_type'])}",
         "一、总体情况": (
-            f"本次 DWS 考勤接口验证{status}。覆盖 {stats['member_count']} 人，"
+            f"本次考勤检查完成。覆盖 {stats['member_count']} 人，"
             f"应考勤 {stats.get('attendance_required_count', stats['member_count'])} 人，"
-            f"record 成功 {stats['record_success_count']} 人，summary 成功 {stats['summary_success_count']} 人，"
             f"当天有打卡记录 {stats['record_nonempty_count']} 人。"
         ),
         "二、今日异常人员": "".join(abnormal_lines),
-        "三、建议动作": "如 command_failure_count 大于 0，先复跑失败人员；若仍失败，再检查 DWS profile 权限和钉钉考勤可见范围。",
-        "四、系统运行状态": (
-            f"后端：DWS attendance record/summary；mock 数据：否；原始数据仅写入私有 OneDrive 月目录。"
-            f"命令失败数：{stats['command_failure_count']}。"
-        ),
+        "三、建议动作": "如今日异常人员不为无，请按补卡、审批或现场核查流程处理；无异常时无需处理。",
+        "四、系统运行状态": "本次结果已写入私有月度归档；公开仓库不保存员工考勤明文。",
     }
 
 
 def _hr_context(plan: dict[str, Any], collection: dict[str, Any]) -> dict[str, str]:
     stats = collection["stats"]
-    failures = _visible_names([
-        row["member"]["name"]
-        for row in collection["results"]
-        if not row["derived"]["record_success"] or not row["derived"]["summary_success"]
-    ])
     attendance_anomaly_names = _visible_names(stats.get("attendance_anomaly_names", []))
+    empty_record_names = _visible_names(stats.get("unexpected_empty_record_names", []))
+    incomplete_record_names = _visible_names(stats.get("incomplete_record_names", []))
     return {
         "title": f"开明考勤 HR 报告｜{collection['work_date']}｜{display_run_type(plan['run_type'])}",
         "一、异常明细": (
             f"今日异常人员 / 无考勤人员：{_join_names(attendance_anomaly_names)}。"
-            f"接口局部失败：{_join_names(failures)}。"
+            f"无考勤记录人员：{_join_names(empty_record_names)}。"
+            f"打卡记录不完整人员：{_join_names(incomplete_record_names)}。"
         ),
-        "二、连续异常人员": "本轮只验证当天 record 与本月 summary，连续异常需依赖后续多日私有归档判断。",
-        "三、待审批/待补卡/待核查": "补卡、审批、缺卡等明细保留在私有 raw JSONL；Git 仓库不保存员工考勤明文。",
+        "二、连续异常人员": "连续异常按自然月历史归档统计，人员名单以通知正文和私有台账为准。",
+        "三、待审批/待补卡/待核查": "今日异常人员存在时，请按补卡、审批或现场核查流程处理；无异常时无需处理。",
         "四、数据质量与系统运行状态": (
-            f"summary 成功 {stats['summary_success_count']}/{stats['member_count']}；"
-            f"record 成功 {stats['record_success_count']}/{stats['member_count']}；"
+            f"覆盖 {stats['member_count']} 人；"
             f"应考勤 {stats.get('attendance_required_count', stats['member_count'])} 人；"
-            "record 为空或缺少应有上下班打卡均计入用户可见异常。"
+            f"当天有打卡记录 {stats['record_nonempty_count']} 人。"
         ),
     }
 

@@ -1058,11 +1058,62 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertIn("# 开明考勤管理报告｜2026-07-07｜晨报", management)
         self.assertIn("# 开明考勤 HR 报告｜2026-07-07｜晨报", hr)
         self.assertIn("今日异常人员 / 无考勤人员：无。", management)
-        self.assertIn("record 为空人员：无。", management)
-        self.assertIn("record 缺少上下班打卡人员：无。", management)
+        self.assertIn("无考勤记录人员：无。", management)
+        self.assertIn("打卡记录不完整人员：无。", management)
         self.assertIn("今日异常人员 / 无考勤人员：无。", hr)
-        self.assertIn("record 为空或缺少应有上下班打卡均计入用户可见异常。", hr)
+        self.assertIn("无异常时无需处理。", hr)
         self.assertEqual(manifest["stats"]["known_no_record_names"], ["张霖泽", "林全意"])
+
+    def test_private_reports_keep_backend_collection_diagnostics_out_of_user_text(self) -> None:
+        collection = collect_org_attendance(
+            work_date="2026-07-07",
+            summary_datetime="2026-07-07 08:35:00",
+            runner=FakeDwsRunner(fail_first_record_for="li-dws-id"),
+        )
+        collection["stats"]["record_failure_count"] = 1
+        collection["stats"]["command_failure_count"] = 1
+        collection["stats"]["record_success_count"] = collection["stats"]["member_count"] - 1
+
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            plan = {
+                "run_id": "s19_morning_20260707_083500",
+                "stage_id": "S19",
+                "run_type": "morning",
+                "archive_paths": {
+                    "month_dir": str(base),
+                    "raw_jsonl_gz": str(base / "raw.jsonl.gz"),
+                    "management_report": str(base / "management.md"),
+                    "hr_report": str(base / "hr.md"),
+                    "dispatch_receipt": str(base / "dispatch.json"),
+                    "archive_manifest": str(base / "manifest.json"),
+                    "cleanup_audit": str(base / "cleanup.json"),
+                },
+                "public_repo_safety": {"no_sensitive_git": True},
+            }
+
+            output = write_private_outputs(plan=plan, collection=collection, cleanup_status={"status": "SKIPPED"})
+            report_text = (
+                Path(output["management_report"]).read_text(encoding="utf-8")
+                + "\n"
+                + Path(output["hr_report"]).read_text(encoding="utf-8")
+            )
+            manifest = json.loads(Path(output["archive_manifest"]).read_text(encoding="utf-8"))
+
+        for backend_text in (
+            "DWS",
+            "record",
+            "summary",
+            "command_failure",
+            "接口局部失败",
+            "权限",
+            "命令失败",
+            "mock",
+            "attendance.record:get",
+        ):
+            self.assertNotIn(backend_text, report_text)
+        self.assertEqual(manifest["stats"]["record_failure_count"], 1)
+        self.assertEqual(manifest["stats"]["command_failure_count"], 1)
 
     def test_dws_attendance_retries_transient_attendance_error_once(self) -> None:
         runner = FakeDwsRunner(fail_first_record_for="li-dws-id")
@@ -1309,12 +1360,12 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             unexpected_empty_record_names=[],
             known_no_record_names=[],
             consecutive_anomaly_summary=[],
-            pending_hr_actions=["DWS record 取数失败 1 人，需核查 attendance.record:get 权限。"],
+            pending_hr_actions=["王五待补卡"],
             rest_required_people=[],
             markdown=True,
         )
 
-        self.assertIn("## 待审批 / 待补卡 / 待核查\nDWS record 取数失败 1 人", message)
+        self.assertIn("## 待审批 / 待补卡 / 待核查\n王五待补卡", message)
         self.assertNotIn("## 今日异常 / 无考勤", message)
         self.assertNotIn("## 连续异常", message)
         self.assertNotIn("## 需要休息", message)
@@ -1623,9 +1674,12 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         )
         body = build_notification_message(**context, markdown=False)
 
-        self.assertIn("待审批 / 待补卡 / 待核查", body)
-        self.assertIn("DWS record 取数失败 44 人，需核查 attendance.record:get 权限。", body)
-        self.assertNotIn("今天一切良好", body)
+        self.assertIn("本次暂无需要处理的考勤事项", body)
+        self.assertNotIn("待审批 / 待补卡 / 待核查", body)
+        self.assertNotIn("DWS", body)
+        self.assertNotIn("record", body)
+        self.assertNotIn("attendance.record:get", body)
+        self.assertNotIn("权限", body)
 
     def test_notification_context_blocks_all_clear_when_success_counts_do_not_cover_members(self) -> None:
         context = notification_context_from_output_status(
@@ -1647,8 +1701,37 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         )
         body = build_notification_message(**context, markdown=False)
 
-        self.assertIn("DWS record 取数未覆盖全部人员：成功 43/44，不得判定为正常。", body)
-        self.assertNotIn("今天一切良好", body)
+        self.assertIn("本次暂无需要处理的考勤事项", body)
+        self.assertNotIn("DWS", body)
+        self.assertNotIn("record", body)
+        self.assertNotIn("未覆盖", body)
+
+    def test_notification_context_keeps_backend_diagnostics_out_of_user_message(self) -> None:
+        context = notification_context_from_output_status(
+            {
+                "run_id": "s19_morning_20260708_083500",
+                "run_type": "morning",
+                "work_date": "2026-07-08",
+                "current_time": "08:35",
+                "stats": {
+                    "member_count": 44,
+                    "record_success_count": 43,
+                    "summary_success_count": 44,
+                    "record_failure_count": 1,
+                    "summary_failure_count": 0,
+                    "command_failure_count": 1,
+                    "unexpected_empty_record_names": [],
+                    "summary_today_anomaly_names": [],
+                    "incomplete_record_names": [],
+                    "attendance_anomaly_names": [],
+                },
+            }
+        )
+        body = build_notification_message(**context, markdown=False)
+
+        self.assertIn("本次暂无需要处理的考勤事项", body)
+        for backend_text in ("DWS", "record", "summary", "attendance.record:get", "权限", "取数失败", "未覆盖"):
+            self.assertNotIn(backend_text, body)
 
     def test_rest_required_people_count_only_full_morning_and_evening_attendance_days(self) -> None:
         records = [
