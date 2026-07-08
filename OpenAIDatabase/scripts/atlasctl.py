@@ -12,6 +12,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CHATGPT_SYNC = ROOT / "scripts" / "sync_chatgpt_memory_data.py"
+CODEX_SYNC = ROOT / "scripts" / "sync_codex_memory_data.py"
+FUTURE_AGENT_SYNC = ROOT / "scripts" / "sync_future_agent_data.py"
+BUILD_ATLAS = ROOT / "scripts" / "build_memory_atlas_data.py"
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -22,6 +25,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     sync.add_argument("--source", required=True)
     sync.add_argument("--dry-run", action="store_true")
     sync.add_argument("--official-export", type=Path)
+    sync.add_argument("--codex-home", type=Path)
+    sync.add_argument("--agent-id", default="future-agent")
+    sync.add_argument("--input", type=Path)
+
+    build_atlas = subparsers.add_parser("build-atlas", help="Build derived Memory Atlas visualization data.")
+    build_atlas.add_argument("--dry-run", action="store_true")
     return parser.parse_args(argv)
 
 
@@ -33,29 +42,103 @@ def chatgpt_contract() -> dict[str, object]:
         "browser_connector": "readonly_contract",
         "fallback": "official_export",
         "writes_files": False,
+        "raw_root": "data/public_raw/chatgpt",
+        "derived_summary": "data/derived/chatgpt/chatgpt_sync_summary.json",
+        "run_log_dir": "data/run_logs/sync_runs",
         "input_required_for_apply": True,
         "no_browser_mutation": True,
     }
 
 
-def run_sync(args: argparse.Namespace) -> int:
-    if args.source != "chatgpt":
-        print(json.dumps({
-            "status": "NOT_IMPLEMENTED",
-            "source_id": args.source,
-            "reason": "S04 P1 only implements ChatGPT sync; S04 P2 covers Codex and future-agent adapters.",
-        }, ensure_ascii=False, indent=2, sort_keys=True))
-        return 2
+def codex_contract() -> dict[str, object]:
+    return {
+        "status": "PASS",
+        "source_id": "codex",
+        "dry_run": True,
+        "sync_mode": "codex_local_sync",
+        "writes_files": False,
+        "raw_root": "data/public_raw/codex",
+        "derived_summary": "data/derived/codex/codex_activity_snapshot.json",
+        "run_log_dir": "data/run_logs/sync_runs",
+        "append_only": True,
+    }
 
-    if args.dry_run and not args.official_export:
+
+def future_agent_contract(agent_id: str) -> dict[str, object]:
+    return {
+        "status": "PASS",
+        "source_id": "future-agent",
+        "agent_id": agent_id,
+        "dry_run": True,
+        "adapter_mode": "minimal_adapter",
+        "writes_files": False,
+        "raw_root": f"data/public_raw/agents/{agent_id}",
+        "derived_summary": f"data/derived/agents/{agent_id}/agent_sync_summary.json",
+        "run_log_dir": "data/run_logs/sync_runs",
+        "input_required_for_apply": True,
+        "append_only": True,
+    }
+
+
+def run_sync(args: argparse.Namespace) -> int:
+    if args.source == "chatgpt" and args.dry_run and not args.official_export:
         print(json.dumps(chatgpt_contract(), ensure_ascii=False, indent=2, sort_keys=True))
         return 0
 
-    command = [sys.executable, str(CHATGPT_SYNC), "--database-dir", str(ROOT)]
-    if args.official_export:
-        command.extend(["--official-export", str(args.official_export)])
+    if args.source == "codex" and args.dry_run and not args.codex_home:
+        print(json.dumps(codex_contract(), ensure_ascii=False, indent=2, sort_keys=True))
+        return 0
+
+    if args.source == "future-agent" and args.dry_run and not args.input:
+        print(json.dumps(future_agent_contract(args.agent_id), ensure_ascii=False, indent=2, sort_keys=True))
+        return 0
+
+    if args.source == "chatgpt":
+        command = [sys.executable, str(CHATGPT_SYNC), "--database-dir", str(ROOT)]
+        if args.official_export:
+            command.extend(["--official-export", str(args.official_export)])
+        if args.dry_run:
+            command.append("--dry-run")
+    elif args.source == "codex":
+        command = [sys.executable, str(CODEX_SYNC), "--database-dir", str(ROOT)]
+        if args.codex_home:
+            command.extend(["--codex-home", str(args.codex_home)])
+        if args.dry_run:
+            command.append("--dry-run")
+    elif args.source == "future-agent":
+        command = [sys.executable, str(FUTURE_AGENT_SYNC), "--database-dir", str(ROOT), "--agent-id", args.agent_id]
+        if args.input:
+            command.extend(["--input", str(args.input)])
+        if args.dry_run:
+            command.append("--dry-run")
+    else:
+        print(json.dumps({
+            "status": "NOT_IMPLEMENTED",
+            "source_id": args.source,
+            "reason": "Unknown sync source. Supported sources: chatgpt, codex, future-agent.",
+        }, ensure_ascii=False, indent=2, sort_keys=True))
+        return 2
+
+    result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
+    if result.stdout:
+        print(result.stdout, end="")
+    if result.stderr:
+        print(result.stderr, file=sys.stderr, end="")
+    return result.returncode
+
+
+def run_build_atlas(args: argparse.Namespace) -> int:
+    output = "data/derived/visualization/memory_atlas.json"
     if args.dry_run:
-        command.append("--dry-run")
+        print(json.dumps({
+            "status": "PASS",
+            "command": "build-atlas",
+            "dry_run": True,
+            "writes_files": False,
+            "output": output,
+        }, ensure_ascii=False, indent=2, sort_keys=True))
+        return 0
+    command = [sys.executable, str(BUILD_ATLAS), "--database-dir", str(ROOT), "--output", output]
     result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
     if result.stdout:
         print(result.stdout, end="")
@@ -68,6 +151,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     if args.command == "sync":
         return run_sync(args)
+    if args.command == "build-atlas":
+        return run_build_atlas(args)
     raise AssertionError(f"unhandled command: {args.command}")
 
 

@@ -70,3 +70,20 @@ S04 P1 固定 ChatGPT 只读同步和 official export fallback。浏览器 conne
 conversation/title/metadata；遇到密码/验证码立即停止；不得发送消息、删除、归档或重命名会话。
 下一步是 S04 P2。当前阶段不实现 Codex local sync，不实现后续 agent adapter，
 不实现 GitHub backup apply，不上传 GitHub main。
+
+当前 S04 P2 已完成，并新增：
+
+- `机器治理/同步与备份/codex_agent_sync_policy.v1_2_s04_p2.json`
+- `scripts/sync_codex_memory_data.py`
+- `scripts/sync_future_agent_data.py`
+- `scripts/atlasctl.py`
+- `人类可读/10_Codex与FutureAgent同步.md`
+- `docs/reviews/memory_atlas_v1_2_s04_p2_codex_agent_sync.md`
+
+S04 P2 固定 Codex local sync 和 future-agent minimal adapter。Codex 输出
+`data/public_raw/codex`、`data/derived/codex/codex_activity_snapshot.json` 和
+`data/run_logs/sync_runs`；future-agent 输出 `data/public_raw/agents/{agent_id}`、
+`data/derived/agents/{agent_id}/agent_sync_summary.json` 和 `data/run_logs/sync_runs`。
+dry-run 不写文件；apply 缺少输入时不能生成伪数据。
+
+下一步是 S04 P3。当前阶段不实现 GitHub backup dry-run/apply，不上传 GitHub main。

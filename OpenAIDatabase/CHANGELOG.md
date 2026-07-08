@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S04 P2 Codex/Future Agent Sync
+
+- Added `机器治理/同步与备份/codex_agent_sync_policy.v1_2_s04_p2.json`.
+- Added `scripts/sync_future_agent_data.py`.
+- Extended `scripts/sync_codex_memory_data.py` with S04 P2 dry-run and
+  append-only public raw snapshot output.
+- Extended `scripts/atlasctl.py` with `sync --source codex --dry-run`,
+  `sync --source future-agent --dry-run` and `build-atlas --dry-run`.
+- Added `人类可读/10_Codex与FutureAgent同步.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s04_p2_codex_agent_sync.md`.
+- Added `validate:v1.2-s04-p2` for `MA-V12-S04P2` /
+  `ACC-MA-V12-S04P2`.
+- Registered status `phase_s04_p2_codex_agent_sync_completed_pending_s04_p3`.
+- Marked the next gate as pending S04 P3.
+- Preserved S04 P2 boundaries: No GitHub main upload in this phase,
+  No GitHub backup apply, No browser mutation and No credential storage.
+
 ## Unreleased - Memory Atlas v1.2 S04 P1 ChatGPT Sync
 
 - Added `机器治理/同步与备份/chatgpt_readonly_sync_policy.v1_2_s04_p1.json`.

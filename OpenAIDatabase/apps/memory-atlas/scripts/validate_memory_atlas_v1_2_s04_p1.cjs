@@ -5,6 +5,10 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
 
+process.env.GIT_TERMINAL_PROMPT = process.env.GIT_TERMINAL_PROMPT || "0";
+process.env.GIT_SSH_COMMAND =
+  process.env.GIT_SSH_COMMAND || "ssh -o BatchMode=yes -o ConnectTimeout=15 -o ServerAliveInterval=5 -o ServerAliveCountMax=1";
+
 const appRoot = path.resolve(__dirname, "..");
 const repoRoot = path.resolve(appRoot, "../..");
 const worktreeRoot = path.resolve(repoRoot, "..");
@@ -339,6 +343,34 @@ function validateHumanAndMachineState() {
   const syncReadme = readRepoFile("机器治理/同步与备份/README.md");
   const runGateReadme = readRepoFile("机器治理/运行门禁/README.md");
 
+  const currentStateIsS04P2 =
+    hasAll(quickEntry, [
+      "当前阶段是 S04 P2",
+      "MA-V12-S04P2",
+      "ACC-MA-V12-S04P2",
+      "下一步只允许进入 S04 P3",
+    ]) &&
+    hasAll(overview, [
+      "S04 P2 已完成",
+      "Codex local sync",
+      "下一步是 S04 P3",
+    ]) &&
+    hasAll(machineReadme, [
+      "当前为 S04 P2",
+      "codex_agent_sync_policy.v1_2_s04_p2.json",
+      "下一步是 S04 P3",
+    ]) &&
+    hasAll(syncReadme, [
+      "当前 S04 P2 已完成",
+      "Codex local sync",
+      "future-agent minimal adapter",
+    ]) &&
+    hasAll(runGateReadme, [
+      "当前阶段是 S04 P2",
+      "validate:v1.2-s04-p2",
+      "下一步是 S04 P3",
+    ]);
+
   assertCondition(
     hasAll(humanPage, [
       "ChatGPT只读同步与官方导出Fallback",
@@ -356,6 +388,14 @@ function validateHumanAndMachineState() {
     "Human S04 P1 page explains read-only ChatGPT sync, fallback and boundaries",
     "Human S04 P1 page is incomplete",
   );
+
+  if (currentStateIsS04P2) {
+    pass(
+      "s04p1_human_machine_later_s04p2_state",
+      "Current human and machine state has advanced from S04 P1 into S04 P2",
+    );
+    return;
+  }
 
   assertCondition(
     hasAll(quickEntry, [
