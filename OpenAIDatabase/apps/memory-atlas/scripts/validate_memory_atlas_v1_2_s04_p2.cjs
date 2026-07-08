@@ -113,6 +113,30 @@ function run(command, args, options = {}) {
   return result;
 }
 
+const githubHttpsRemote = "https://github.com/LinzeColin/CodexProject.git";
+
+function queryRemoteDevBranch() {
+  try {
+    return {
+      method: "origin",
+      output: run("git", ["ls-remote", "--heads", "origin", branchName], {
+        cwd: worktreeRoot,
+        timeout: 60000,
+      }).stdout.trim(),
+    };
+  } catch (originError) {
+    return {
+      method: "https_fallback",
+      originError: originError.message,
+      originStderr: originError.stderr?.slice(-1000),
+      output: run("git", ["ls-remote", "--heads", githubHttpsRemote, branchName], {
+        cwd: worktreeRoot,
+        timeout: 60000,
+      }).stdout.trim(),
+    };
+  }
+}
+
 function parseJsonFromStdout(result) {
   const stdout = result.stdout.trim();
   return JSON.parse(stdout.slice(stdout.indexOf("{")));
@@ -472,13 +496,14 @@ function validateRepoBoundaries() {
     { branch, branchName },
   );
 
-  const remoteDev = run("git", ["ls-remote", "--heads", "origin", branchName], { cwd: worktreeRoot, timeout: 60000 }).stdout.trim();
+  const remoteDevQuery = queryRemoteDevBranch();
+  const remoteDev = remoteDevQuery.output;
   assertCondition(
     remoteDev === "",
     "s04p2_no_remote_development_branch",
     "No remote v1.2 development branch exists",
     "Remote v1.2 development branch exists unexpectedly",
-    { branchName, remoteDev },
+    { branchName, remoteDev, remote_query_method: remoteDevQuery.method, origin_error: remoteDevQuery.originError, origin_stderr: remoteDevQuery.originStderr },
   );
 
   const changed = getOpenChangedPaths();
