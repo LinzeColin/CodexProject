@@ -3364,7 +3364,16 @@ def build_goal_completion_audit_rows(cross_review: dict) -> list[dict]:
     source_ready = int(cross_review.get("source_file_count") or 0) > 0
     workbook_ready = bool(cross_review.get("excel_workbook_generated"))
     workbook_quality_clean = int(cross_review.get("workbook_quality_blocking_count") or 0) == 0
+    homepage_chart_size_status = str(cross_review.get("homepage_chart_size_status") or "UNKNOWN")
+    homepage_chart_semantics_status = str(cross_review.get("homepage_chart_semantics_status") or "UNKNOWN")
+    visible_sensitive_text_status = str(cross_review.get("visible_sensitive_text_status") or "UNKNOWN")
+    c_level_visuals_ready = (
+        workbook_ready
+        and homepage_chart_size_status == "PASS"
+        and homepage_chart_semantics_status == "PASS"
+    )
     structured_fact_count = int(cross_review.get("structured_financial_fact_count") or 0)
+    metadata_signal_count = int(cross_review.get("metadata_signal_count") or 0)
     forecast_row_count = int(cross_review.get("forecast_row_count") or 0)
     cashflow_row_count = int(cross_review.get("cashflow_validation_row_count") or 0)
     internal_transfer_count = int(cross_review.get("internal_transfer_excluded_count") or 0)
@@ -3391,6 +3400,26 @@ def build_goal_completion_audit_rows(cross_review: dict) -> list[dict]:
             f"workbook={cross_review.get('workbook', '')}; workbook_quality_blocking_count={cross_review.get('workbook_quality_blocking_count', 0)}",
             not (workbook_ready and workbook_quality_clean),
             "Fix workbook quality gates before any conclusion" if not workbook_quality_clean else "Keep native workbook validation enabled",
+        ),
+        goal_completion_audit_row(
+            "c_level_visuals",
+            "Keep C-level homepage visuals native and within the 18x9 inch chart limit",
+            "pass" if c_level_visuals_ready else "blocked",
+            (
+                f"homepage_chart_size_status={homepage_chart_size_status}; "
+                f"homepage_chart_semantics_status={homepage_chart_semantics_status}; "
+                f"workbook_quality_blocking_count={cross_review.get('workbook_quality_blocking_count', 0)}"
+            ),
+            not c_level_visuals_ready,
+            "Fix homepage chart size or 15/30-day semantics" if not c_level_visuals_ready else "Keep chart quality gates enabled",
+        ),
+        goal_completion_audit_row(
+            "kmfa_metadata_transform",
+            "Carry KMFA metadata signals into the workbook and review sidecars without creating financial facts",
+            "pass" if metadata_signal_count > 0 else "no_metadata_signals",
+            f"metadata_signal_count={metadata_signal_count}; generated_financial_amount_count={generated_amount_count}",
+            False,
+            "Keep metadata signals as review-only context" if metadata_signal_count > 0 else "No KMFA metadata signal rows were available in this run",
         ),
         goal_completion_audit_row(
             "company_bank_matrix",
@@ -3441,6 +3470,17 @@ def build_goal_completion_audit_rows(cross_review: dict) -> list[dict]:
             "Stop and remove generated/inferred amounts" if generated_amount_count != 0 else "Keep no-hallucination gate enforced",
         ),
         goal_completion_audit_row(
+            "raw_sensitive_runtime_boundary",
+            "Keep raw sensitive runtime data private and out of visible management workbook surfaces",
+            "pass" if visible_sensitive_text_status == "PASS" else "blocked",
+            (
+                "private_runtime_policy=ignored_private_runtime_only; "
+                f"visible_sensitive_text_status={visible_sensitive_text_status}"
+            ),
+            visible_sensitive_text_status != "PASS",
+            "Remove visible sensitive text before management use" if visible_sensitive_text_status != "PASS" else "Keep raw evidence in private runtime only",
+        ),
+        goal_completion_audit_row(
             "formal_financial_fact_promotion",
             "Promote only reviewed facts into formal financial fact layer",
             "blocked",
@@ -3463,6 +3503,17 @@ def build_goal_completion_audit_rows(cross_review: dict) -> list[dict]:
             f"automation_readiness_status={automation_status}; automation_readiness_ready_count={cross_review.get('automation_readiness_ready_count', 0)}",
             not automation_ready,
             "Keep Codex automation drift check green" if automation_ready else "Run check_codex_app_automation.py after code or prompt changes",
+        ),
+        goal_completion_audit_row(
+            "github_main_runtime_contract",
+            "Run through the main-only/no-branch/no-PR automation contract for skill and automation changes",
+            "pass" if automation_ready else "external_check_required",
+            (
+                f"automation_readiness_status={automation_status}; "
+                "branch_policy=main_only_no_branch_no_pr_no_worktree"
+            ),
+            not automation_ready,
+            "Keep committing validated skill/automation changes directly to GitHub main" if automation_ready else "Restore automation readiness before claiming main sync",
         ),
     ]
 
@@ -7298,6 +7349,7 @@ def write_no_hallucination_outputs(
         exception_tasks,
     )
 
+    workbook_quality_by_id = {row["check_id"]: row for row in workbook_quality_rows}
     cross_review = {
         "run_id": manifest["run_id"],
         "management_conclusion_allowed": False,
@@ -7419,6 +7471,9 @@ def write_no_hallucination_outputs(
         "internal_transfer_excluded_count": internal_transfer_excluded_count,
         "workbook_quality_check_count": len(workbook_quality_rows),
         "workbook_quality_blocking_count": workbook_quality_blocking_count,
+        "homepage_chart_size_status": workbook_quality_by_id.get("WQ-HOMEPAGE-CHART-SIZE", {}).get("status", ""),
+        "homepage_chart_semantics_status": workbook_quality_by_id.get("WQ-HOMEPAGE-CHART-SEMANTICS", {}).get("status", ""),
+        "visible_sensitive_text_status": workbook_quality_by_id.get("WQ-VISIBLE-SENSITIVE-TEXT", {}).get("status", ""),
         "automation_readiness_count": len(automation_readiness_rows),
         "automation_readiness_ready_count": automation_readiness_ready_count,
         "automation_readiness_blocking_count": automation_readiness_blocking_count,
