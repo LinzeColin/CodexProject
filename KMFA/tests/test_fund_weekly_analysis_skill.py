@@ -391,6 +391,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "tax_loan_risk.csv",
                 "funding_forecast.csv",
                 "cashflow_validation.csv",
+                "workbook_quality_checks.csv",
                 "kmfa_metadata_signals.csv",
                 "exception_tasks.csv",
                 "cross_review.json",
@@ -657,6 +658,60 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet11.xml", "D13"), "PASS")
                 self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet11.xml", "D15"), "FAIL")
                 self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet11.xml", "F15"), "是")
+
+    def test_runner_emits_workbook_quality_checks_for_generated_package(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+            source_day = input_dir / "files" / "0708"
+            source_day.mkdir(parents=True)
+            structured_csv = source_day / "20260708113000_吴云霞_质量门禁.csv"
+            structured_csv.write_text(
+                "\n".join([
+                    "date,company,bank,account_alias,liquidity_tier,inflow,outflow,ending_balance,flow_type,due_date,risk_type",
+                    "2026-07-08,开明一公司,招商银行,基本户,T0_BANK_CASH,0,0,1000.00,operating,,",
+                    "2026-07-09,开明一公司,招商银行,基本户,T0_BANK_CASH,100.00,0,1100.00,operating,,",
+                ]),
+                encoding="utf-8",
+            )
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "run_fund_weekly_analysis.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--input-dir",
+                    str(input_dir),
+                    "--run-id",
+                    "workbook_quality_test",
+                    "--timezone",
+                    "Australia/Sydney",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/workbook_quality_test"
+            with (run_dir / "workbook_quality_checks.csv").open(encoding="utf-8-sig", newline="") as f:
+                quality_rows = list(csv.DictReader(f))
+            checks = {row["check_id"]: row for row in quality_rows}
+            for check_id in (
+                "WQ-SHEET-ORDER",
+                "WQ-HIDDEN-SHEETS",
+                "WQ-HOMEPAGE-CHART-SIZE",
+                "WQ-FORMULA-ERRORS",
+                "WQ-VISIBLE-SENSITIVE-TEXT",
+            ):
+                self.assertEqual(checks[check_id]["status"], "PASS", check_id)
+            self.assertTrue(all(row["management_blocking"] == "false" for row in quality_rows))
+
+            cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
+            self.assertFalse(cross_review["management_conclusion_allowed"])
+            self.assertEqual(cross_review["workbook_quality_check_count"], len(quality_rows))
+            self.assertEqual(cross_review["workbook_quality_blocking_count"], 0)
 
     def test_runner_carries_kmfa_metadata_signals_without_management_conclusion(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

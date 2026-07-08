@@ -32,6 +32,7 @@
 - 当存在结构化事实时，runner 以 OOXML cell patch 写入原生 `.xlsx`：`01_首页总览` 4+4 卡片、`02_资金趋势预测` 已知到期项 projection、`03_三层净流余额`、`04_税费融资风险`、`05_公司银行矩阵`、隐藏 `H01/H02/H03/H05`；不重写图表包，保留首页最近 15 天/30 天两张原生折线图。
 - runner 现在从真实结构化 CSV 的 `due_date` 税费/保证金/借款风险/机会行生成 `funding_forecast.csv`，并写入 `02_资金趋势预测`；这些 projection 只按 `known_due_date_structured_csv` 进入待复核，不生成无证据预测或管理结论。
 - runner 现在生成 `cashflow_validation.csv`，逐资金行校验余额连续性、经营现金流影响和内部调拨排除；连续性失败追加 `BALANCE_CONTINUITY_GAP` 异常任务，并写入隐藏 `H05_复审检查`。
+- runner 现在生成 `workbook_quality_checks.csv`，对生成后的原生 Excel 检查 sheet 顺序、隐藏审计页、可见 row 2 清理、图表尺寸、公式错误标记和可见敏感值形态；失败会写异常任务并阻断管理结论。
 - runner 现在承接 public-safe KMFA metadata 信号：资金压力、项目成本事实层、报告等级、scope reconciliation，输出 `kmfa_metadata_signals.csv` 并写入 `04_税费融资风险` / `H02_异常任务池`；这些只用于待复核路由，不生成金额、预测或正式动作。
 - 所有结构化 CSV 金额仍是待复核事实，`management_conclusion_allowed=false`；不得把 workbook 首页卡片解释为最终 C-level 管理结论。
 - 当前真实 OneDrive 源仍需达到 `READY`。若目标目录缺失或 OneDrive cloud-only/dataless，保持 `SOURCE_MISSING` / `SOURCE_UNREADABLE` fail-closed，不生成局部生产包。

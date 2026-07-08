@@ -138,6 +138,7 @@ Required files:
 * `tax_loan_risk.csv`
 * `funding_forecast.csv`
 * `cashflow_validation.csv`
+* `workbook_quality_checks.csv`
 * `kmfa_metadata_signals.csv`
 * `exception_tasks.csv`
 * `cross_review.json`
@@ -154,6 +155,7 @@ Current deterministic runner status contract:
 * CSV files with the exact structured columns `date, company, bank, account_alias, liquidity_tier, inflow, outflow, ending_balance, flow_type` are extracted into `fund_ledger.csv`, `net_flow_ledger.csv`, `company_bank_matrix.csv`, and `tax_loan_risk.csv` as `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW`.
 * When structured CSV rows include real `due_date` risk/opportunity lines, the runner writes `funding_forecast.csv` and `02_资金趋势预测` with known due-date projections only. These remain `structured_csv_forecast_pending_review`, and they are not a management conclusion.
 * When structured CSV facts exist, the runner writes `cashflow_validation.csv`: balance continuity, operating cashflow effect, and internal-transfer exclusion are checked per ledger row. Continuity failures create exception tasks and block management conclusions.
+* Every generated workbook is inspected into `workbook_quality_checks.csv`: sheet order, hidden audit sheets, visible row 2 cleanup, native chart dimensions, formula error markers, and visible sensitive-value patterns. Any failing workbook quality check blocks management conclusions.
 * When structured CSV facts exist, the runner patches the native `.xlsx` workbook directly: `01_首页总览` 4+4 cards, `02_资金趋势预测`, `03_三层净流余额`, `04_税费融资风险`, `05_公司银行矩阵`, and hidden `H01/H02/H03/H05` receive the same traced pending-review facts while preserving the existing native chart parts.
 * `INDEXED_PENDING_EXTRACTION` is not a management conclusion. It means no amount was generated, inferred, forecast, or promoted into facts yet.
 * `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW` is also not a management conclusion. The amounts came from real structured CSV rows, but they remain pending cross-review and must not become final C-level KPIs until gates pass.

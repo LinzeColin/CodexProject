@@ -16,6 +16,7 @@ from decimal import Decimal, InvalidOperation
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -44,6 +45,35 @@ STRUCTURED_CSV_REQUIRED_FIELDS = {
     "ending_balance",
     "flow_type",
 }
+EXPECTED_WORKBOOK_SHEETS = [
+    "01_首页总览",
+    "02_资金趋势预测",
+    "03_三层净流余额",
+    "04_税费融资风险",
+    "05_公司银行矩阵",
+    "06_CodexSkill流程",
+    "H01_资金事实主表",
+    "H02_异常任务池",
+    "H03_钉钉证据索引",
+    "H04_客户合同辅助",
+    "H05_复审检查",
+    "H06_配置规则",
+]
+FORMULA_ERROR_MARKERS = ("#REF!", "#DIV/0!", "#VALUE!", "#NAME?", "#N/A")
+VISIBLE_SENSITIVE_PATTERNS = [
+    r"(?<![\d.])\d{12,}(?![\d.])",
+    "A" "KIA",
+    "BEGIN [A-Z ]*" "PRIVATE",
+    r"api[_-]?" "key" r"\s*[:=]",
+    r"access[_-]?" "to" "ken" r"\s*[:=]",
+    "pass" "word" r"\s*[:=]",
+    "passwd" r"\s*[:=]",
+    "密码[:：=]",
+    "web" "hook" r"\s*(url)?\s*[:=]",
+    "身份证[:：=]",
+    "手机号[:：=]",
+]
+VISIBLE_SENSITIVE_PATTERN = re.compile("(" + "|".join(VISIBLE_SENSITIVE_PATTERNS) + ")", re.IGNORECASE)
 
 
 def sha256_file(path: Path, chunk_size: int = 1024 * 1024) -> str:
@@ -456,6 +486,110 @@ def replace_xlsx_entries(workbook_path: Path, replacements: dict[str, bytes]) ->
             payload = replacements.get(info.filename)
             target.writestr(info, payload if payload is not None else source.read(info.filename))
     temp_path.replace(workbook_path)
+
+
+def xml_text_values(root: ET.Element) -> list[str]:
+    return [node.text or "" for node in root.iter() if node.text]
+
+
+def workbook_quality_row(check_id: str, check_name: str, passed: bool, details: str) -> dict:
+    return {
+        "check_id": check_id,
+        "check_name": check_name,
+        "status": "PASS" if passed else "FAIL",
+        "management_blocking": bool_text(not passed),
+        "details": details,
+    }
+
+
+def collect_workbook_quality_checks(workbook_path: Path) -> list[dict]:
+    rows: list[dict] = []
+    ns_sheet = {"x": XLSX_MAIN_NS}
+    ns_draw = {"xdr": "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"}
+
+    with zipfile.ZipFile(workbook_path, "r") as workbook:
+        workbook_xml = ET.fromstring(workbook.read("xl/workbook.xml"))
+        sheets = workbook_xml.findall(".//x:sheet", ns_sheet)
+        sheet_names = [sheet.attrib["name"] for sheet in sheets]
+        rows.append(workbook_quality_row(
+            "WQ-SHEET-ORDER",
+            "Workbook sheet order",
+            sheet_names == EXPECTED_WORKBOOK_SHEETS,
+            "names=" + "|".join(sheet_names),
+        ))
+
+        hidden_states = [sheet.attrib.get("state", "visible") for sheet in sheets[6:]]
+        rows.append(workbook_quality_row(
+            "WQ-HIDDEN-SHEETS",
+            "Hidden audit and review sheets",
+            len(hidden_states) == 6 and all(state == "hidden" for state in hidden_states),
+            "states=" + "|".join(hidden_states),
+        ))
+
+        row2_not_blank = []
+        for sheet_number in range(1, 7):
+            sheet = ET.fromstring(workbook.read(f"xl/worksheets/sheet{sheet_number}.xml"))
+            row = sheet.find(".//x:row[@r='2']", ns_sheet)
+            values = xml_text_values(row) if row is not None else []
+            if any(value.strip() for value in values):
+                row2_not_blank.append(f"sheet{sheet_number}")
+        rows.append(workbook_quality_row(
+            "WQ-VISIBLE-ROW2-CLEARED",
+            "Visible sheet row 2 cleared",
+            not row2_not_blank,
+            "nonblank=" + ",".join(row2_not_blank),
+        ))
+
+        chart_dimensions = []
+        for name in workbook.namelist():
+            if not name.startswith("xl/drawings/drawing") or not name.endswith(".xml"):
+                continue
+            drawing = ET.fromstring(workbook.read(name))
+            for ext in drawing.findall(".//xdr:ext", ns_draw):
+                width_in = int(ext.attrib.get("cx", "0")) / 914400
+                height_in = int(ext.attrib.get("cy", "0")) / 914400
+                chart_dimensions.append((name, width_in, height_in))
+        oversized = [
+            f"{name}:{width_in:.2f}x{height_in:.2f}"
+            for name, width_in, height_in in chart_dimensions
+            if width_in > 18 or height_in > 9
+        ]
+        rows.append(workbook_quality_row(
+            "WQ-HOMEPAGE-CHART-SIZE",
+            "Native chart size limit",
+            bool(chart_dimensions) and not oversized,
+            "oversized=" + ",".join(oversized) + f"; chart_extent_count={len(chart_dimensions)}",
+        ))
+
+        formula_errors = []
+        visible_sensitive_hits = []
+        for sheet_number in range(1, 13):
+            sheet_path = f"xl/worksheets/sheet{sheet_number}.xml"
+            if sheet_path not in workbook.namelist():
+                continue
+            payload = workbook.read(sheet_path).decode("utf-8", errors="replace")
+            for marker in FORMULA_ERROR_MARKERS:
+                if marker in payload:
+                    formula_errors.append(f"sheet{sheet_number}:{marker}")
+            if sheet_number <= 6:
+                sheet = ET.fromstring(payload)
+                for text in xml_text_values(sheet):
+                    if VISIBLE_SENSITIVE_PATTERN.search(text):
+                        visible_sensitive_hits.append(f"sheet{sheet_number}:{text[:32]}")
+        rows.append(workbook_quality_row(
+            "WQ-FORMULA-ERRORS",
+            "Formula error marker scan",
+            not formula_errors,
+            "hits=" + ",".join(formula_errors),
+        ))
+        rows.append(workbook_quality_row(
+            "WQ-VISIBLE-SENSITIVE-TEXT",
+            "Visible management sheet sensitive text scan",
+            not visible_sensitive_hits,
+            "hits=" + ",".join(visible_sensitive_hits[:10]),
+        ))
+
+    return rows
 
 
 def metadata_formal_action_allowed(row: dict) -> bool:
@@ -1277,6 +1411,10 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     shutil.copyfile(template, workbook_path)
     write_structured_facts_to_workbook(workbook_path, structured, evidence, input_dir, manifest["run_id"])
     write_metadata_signals_to_workbook(workbook_path, metadata_signals, len(structured["risk_rows"]))
+    workbook_quality_rows = collect_workbook_quality_checks(workbook_path)
+    workbook_quality_blocking_count = sum(1 for row in workbook_quality_rows if row["management_blocking"] == "true")
+    manifest["workbook_quality_check_count"] = len(workbook_quality_rows)
+    manifest["workbook_quality_blocking_count"] = workbook_quality_blocking_count
 
     write_csv(run_dir / "fund_ledger.csv", [
         "ledger_id",
@@ -1352,6 +1490,13 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "review_status",
         "source_evidence_id",
     ], cashflow_validation_rows)
+    write_csv(run_dir / "workbook_quality_checks.csv", [
+        "check_id",
+        "check_name",
+        "status",
+        "management_blocking",
+        "details",
+    ], workbook_quality_rows)
     write_csv(run_dir / "kmfa_metadata_signals.csv", [
         "signal_id",
         "signal_type",
@@ -1389,6 +1534,18 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
             "relative_path": row["ledger_id"],
             "review_status": "pending",
         })
+    for row in workbook_quality_rows:
+        if row["management_blocking"] != "true":
+            continue
+        exception_tasks.append({
+            "task_id": f"EX-{manifest['run_id']}-{len(exception_tasks) + 1:05d}",
+            "evidence_id": "",
+            "task_type": "WORKBOOK_QUALITY_GATE_FAIL",
+            "severity": "blocking_for_management_conclusion",
+            "reason": f"{row['check_id']} failed: {row['details']}",
+            "relative_path": workbook_path.name,
+            "review_status": "pending",
+        })
     write_csv(
         run_dir / "exception_tasks.csv",
         ["task_id", "evidence_id", "task_type", "severity", "reason", "relative_path", "review_status"],
@@ -1405,6 +1562,8 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "cashflow_validation_row_count": len(cashflow_validation_rows),
         "balance_continuity_fail_count": balance_continuity_fail_count,
         "internal_transfer_excluded_count": internal_transfer_excluded_count,
+        "workbook_quality_check_count": len(workbook_quality_rows),
+        "workbook_quality_blocking_count": workbook_quality_blocking_count,
         "excel_workbook_generated": True,
         "workbook": workbook_path.name,
         "source_file_count": manifest["file_count"],
@@ -1429,6 +1588,8 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "cashflow_validation_row_count": len(cashflow_validation_rows),
                 "balance_continuity_fail_count": balance_continuity_fail_count,
                 "internal_transfer_excluded_count": internal_transfer_excluded_count,
+                "workbook_quality_check_count": len(workbook_quality_rows),
+                "workbook_quality_blocking_count": workbook_quality_blocking_count,
                 "management_conclusion_allowed": False,
             },
         ], ensure_ascii=False, indent=2),
@@ -1534,6 +1695,7 @@ def main() -> int:
         f"Known due-date funding forecast row count: {manifest.get('forecast_row_count', 0)}\n\n"
         f"Cashflow validation row count: {manifest.get('cashflow_validation_row_count', 0)}\n\n"
         f"Balance continuity fail count: {manifest.get('balance_continuity_fail_count', 0)}\n\n"
+        f"Workbook quality blocking count: {manifest.get('workbook_quality_blocking_count', 0)}\n\n"
         "No financial amount, management conclusion, or evidence-free forecast was generated from unreviewed OCR/table extraction. "
         "Known due-date projections remain pending review. Next step: perform OCR/table extraction, internal-transfer netting, "
         "cross-review, then promote reviewed facts only.\n",
