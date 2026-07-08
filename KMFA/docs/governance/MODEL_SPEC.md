@@ -1908,3 +1908,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - public-safe rule: consume prior external-action final-threshold blocked handoff evidence and ignored owner-action queue read-only; if no executable owner/authorized-agent source reference, owner exclusion, formula mapping or non-numeric mapping exists, keep 48 readiness blockers and close binding/comparison/downstream gates.
 - raw boundary: raw inbox read/list/stat/hash/parse/write/delete/move/copy/normalize/mutation all false.
 - evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_FINAL_THRESHOLD_BLOCKED_HANDOFF_ACTION_READINESS_AFTER_FINAL_THRESHOLD_HANDOFF/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_final_threshold_blocked_handoff_action_readiness_after_final_threshold_handoff_manifest.json`
+
+## 2026-07-08｜V014 external action readiness final blocked handoff follow-up after final-threshold handoff
+
+- model_key: `kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_readiness_final_blocked_handoff_follow_up_after_final_threshold_handoff`
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-READINESS-FINAL-BLOCKED-HANDOFF-FOLLOW-UP-AFTER-FINAL-THRESHOLD-HANDOFF-001`
+- parameter_ids: `PARAM-KMFA-1591;PARAM-KMFA-1592;PARAM-KMFA-1593`
+- decision: `NO_GO`
+- public-safe rule: consume prior external-action readiness public evidence and ignored readiness blocker records read-only; convert 48 source blockers into a private follow-up queue while keeping binding/comparison/downstream gates closed.
+- raw boundary: raw inbox read/list/stat/hash/parse/write/delete/move/copy/normalize/mutation all false.
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_READINESS_FINAL_BLOCKED_HANDOFF_FOLLOW_UP_AFTER_FINAL_THRESHOLD_HANDOFF/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_readiness_final_blocked_handoff_follow_up_after_final_threshold_handoff_manifest.json`
