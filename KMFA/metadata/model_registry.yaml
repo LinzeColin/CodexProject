@@ -1426,3 +1426,19 @@ kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_applicati
   evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTIONABLE_RESOLUTION_FINAL_BLOCKER_RECHECK_BEFORE_BUSINESS_EXECUTION
   validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_final_blocker_recheck_before_business_execution.py
   scope: Owner or authorized-agent actionable resolution final blocker recheck before business execution only; consumes 48 source actionable-resolution blocker audit items, records 0 actionable owner resolutions and 48 final recheck blockers, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.
+
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_readiness_gate_after_actionable_resolution_final_blocker_recheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-readiness-gate-after-actionable-resolution-final-blocker-recheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-READINESS-GATE-AFTER-ACTIONABLE-RESOLUTION-FINAL-BLOCKER-RECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1630
+    - PARAM-KMFA-1631
+    - PARAM-KMFA-1632
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_READINESS_GATE_AFTER_ACTIONABLE_RESOLUTION_FINAL_BLOCKER_RECHECK
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_readiness_gate_after_actionable_resolution_final_blocker_recheck.py
+  scope: Business execution readiness gate after actionable resolution final blocker recheck only; consumes 48 source final blocker recheck items, records 0 business-execution-ready items and 48 readiness gate blockers, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.

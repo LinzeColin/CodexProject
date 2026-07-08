@@ -13033,3 +13033,38 @@ tasks:
     risk: "Actionable resolution final blocker recheck evidence can be misread as permission to execute business workflows; it is explicitly NO_GO and keeps execution closed."
     rollback: "Remove this phase public artifacts and ignored private final recheck outputs; keep source actionable resolution blocker audit evidence intact."
     target_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-actionable-resolution-final-blocker-recheck-before-business-execution"
+
+
+  - task_id: "KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-READINESS-GATE-AFTER-ACTIONABLE-RESOLUTION-FINAL-BLOCKER-RECHECK-20260708"
+    phase_id: "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_READINESS_GATE_AFTER_ACTIONABLE_RESOLUTION_FINAL_BLOCKER_RECHECK"
+    objective: "Lock owner or authorized-agent business execution readiness after actionable resolution final blocker recheck and keep NO_GO / blocked gates closed."
+    scope:
+      - "public-safe aggregate business execution readiness gate evidence"
+      - "ignored private business execution readiness gate queue and report"
+      - "validator and focused unit test"
+    non_scope:
+      - "raw inbox access or mutation"
+      - "authoritative binding, value comparison, reconciliation, business consistency, lineage full check, formal report generation, GitHub upload, app reinstall or business execution"
+      - "Stage review or GitHub upload"
+    status: "completed"
+    completed_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-readiness-gate-after-actionable-resolution-final-blocker-recheck"
+    dependencies:
+      - "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTIONABLE_RESOLUTION_FINAL_BLOCKER_RECHECK_BEFORE_BUSINESS_EXECUTION"
+    required_files:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_READINESS_GATE_AFTER_ACTIONABLE_RESOLUTION_FINAL_BLOCKER_RECHECK/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_readiness_gate_after_actionable_resolution_final_blocker_recheck_manifest.json"
+      - "KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_readiness_gate_after_actionable_resolution_final_blocker_recheck.py"
+    acceptance_ids:
+      - "ACC-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-READINESS-GATE-AFTER-ACTIONABLE-RESOLUTION-FINAL-BLOCKER-RECHECK"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_readiness_gate_after_actionable_resolution_final_blocker_recheck.py --generated-at 2026-07-08T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_readiness_gate_after_actionable_resolution_final_blocker_recheck.py --require-private-business-execution-readiness-gate"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_readiness_gate_after_actionable_resolution_final_blocker_recheck"
+    test_results:
+      - "PASS: business execution readiness gate validator"
+      - "PASS: focused business execution readiness gate unit test"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_READINESS_GATE_AFTER_ACTIONABLE_RESOLUTION_FINAL_BLOCKER_RECHECK/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_READINESS_GATE_AFTER_ACTIONABLE_RESOLUTION_FINAL_BLOCKER_RECHECK/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_readiness_gate_after_actionable_resolution_final_blocker_recheck_manifest.json"
+    risk: "Business execution readiness gate evidence can be misread as permission to execute business workflows; it is explicitly NO_GO and keeps execution closed."
+    rollback: "Remove this phase public artifacts and ignored private readiness gate outputs; keep source actionable resolution final blocker recheck evidence intact."
+    target_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-readiness-gate-after-actionable-resolution-final-blocker-recheck"
