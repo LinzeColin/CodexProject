@@ -1,3 +1,47 @@
+## v1.2 S14 P1 Unified CLI
+
+状态：`phase_s14_p1_unified_cli_completed_pending_s14_p2`。
+
+任务 ID：`MA-V12-S14P1`。
+
+验收 ID：`ACC-MA-V12-S14P1`。
+
+Validator：`validate:v1.2-s14-p1`。
+
+S14 P1 已完成。`atlasctl_unified_cli.v1_2_s14_p1` 通过
+`python3 scripts/atlasctl.py run --profile owner-daily --dry-run` 提供统一低负担
+命令面。`owner-daily` profile 覆盖 `sync`、`analyze`、`build-atlas`、`audit`、
+`push`、`proposals`、`generate-personalization-prompt` 和 `deep-explore`，所有入口均
+以 dry-run 方式验收。`audit --dry-run` 只返回可用检查列表和 S14 P1 边界，final audit
+gate 留给 pending S14 P2。
+
+产物：
+
+- `scripts/atlasctl.py`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s14_p1.cjs`
+- `apps/memory-atlas/package.json`
+
+验收关键词：
+
+- `validate:v1.2-s14-p1`
+- `ACC-MA-V12-S14P1`
+- `MA-V12-S14P1`
+- `phase_s14_p1_unified_cli_completed_pending_s14_p2`
+- `atlasctl_unified_cli.v1_2_s14_p1`
+- `owner-daily`
+- `deep-explore`
+- pending S14 P2
+
+边界：
+
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+- No app reinstall。
+- No local deep clean。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S14 P1; MA-V12-S14P1; ACC-MA-V12-S14P1; phase_s14_p1_unified_cli_completed_pending_s14_p2; validate:v1.2-s14-p1; atlasctl_unified_cli.v1_2_s14_p1; owner-daily; sync; analyze; build-atlas; audit; push; proposals; generate-personalization-prompt; deep-explore; No GitHub main upload; No remote push; No raw mutation; pending S14 P2.
+
 ## v1.2 S13 Review
 
 状态：`stage_s13_review_passed_pending_s14_no_github_main_upload`。

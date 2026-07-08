@@ -1,3 +1,47 @@
+## 158. Memory Atlas v1.2 S14 P1 Unified CLI Parameters
+
+状态：`phase_s14_p1_unified_cli_completed_pending_s14_p2`。
+
+验收 ID：`ACC-MA-V12-S14P1`。
+
+S14 P1 固定以下参数：
+
+- `MA-V12-S14P1`
+- `validate:v1.2-s14-p1`
+- `atlasctl_unified_cli.v1_2_s14_p1`
+- `owner-daily`
+- `sync`
+- `analyze`
+- `build-atlas`
+- `audit`
+- `push`
+- `proposals`
+- `generate-personalization-prompt`
+- `deep-explore`
+- S14 P1 完成后下一步为 pending S14 P2。
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+
+参数：
+
+- `PARAM-MA-V12-S14P1-001 phase_status = phase_s14_p1_unified_cli_completed_pending_s14_p2`
+- `PARAM-MA-V12-S14P1-002 validator = validate:v1.2-s14-p1`
+- `PARAM-MA-V12-S14P1-003 contract_version = atlasctl_unified_cli.v1_2_s14_p1`
+- `PARAM-MA-V12-S14P1-004 owner_daily_profile = owner-daily`
+- `PARAM-MA-V12-S14P1-005 core_command_ids = sync; analyze; build-atlas; audit; push; proposals; generate-personalization-prompt; deep-explore`
+- `PARAM-MA-V12-S14P1-006 final_audit_boundary = deferred to S14 P2`
+- `PARAM-MA-V12-S14P1-007 next_phase = S14 P2`
+- `PARAM-MA-V12-S14P1-008 phase_boundary = No GitHub main upload; No remote push; No raw mutation`
+
+验证逻辑：
+
+- `validate:v1.2-s14-p1` checks `owner-daily` profile dry-run, all eight
+  command dry-run paths, `audit --dry-run`, `deep-explore` alias, governance
+  records, no raw mutation and no remote upload.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S14 P1; MA-V12-S14P1; ACC-MA-V12-S14P1; phase_s14_p1_unified_cli_completed_pending_s14_p2; validate:v1.2-s14-p1; atlasctl_unified_cli.v1_2_s14_p1; owner-daily; sync; analyze; build-atlas; audit; push; proposals; generate-personalization-prompt; deep-explore; No GitHub main upload; No remote push; No raw mutation; pending S14 P2.
+
 ## 157. Memory Atlas v1.2 S13 Review Parameters
 
 状态：`stage_s13_review_passed_pending_s14_no_github_main_upload`。

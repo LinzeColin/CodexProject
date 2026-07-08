@@ -52,6 +52,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Memory Atlas control CLI.")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
+    run = subparsers.add_parser("run", help="Run a named low-burden Memory Atlas profile.")
+    run.add_argument("--profile", choices=["owner-daily"], required=True)
+    run.add_argument("--dry-run", action="store_true")
+
     sync = subparsers.add_parser("sync", help="Run source sync.")
     sync.add_argument("--source", required=True)
     sync.add_argument("--dry-run", action="store_true")
@@ -75,7 +79,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     analyze.add_argument("--language")
 
     audit = subparsers.add_parser("audit", help="Run Memory Atlas derived evidence audits.")
-    audit.add_argument("--check", required=True)
+    audit.add_argument("--check")
+    audit.add_argument("--dry-run", action="store_true")
     audit.add_argument("--database-dir", type=Path, default=ROOT)
 
     push = subparsers.add_parser("push", help="Prepare local GitHub backup scope.")
@@ -97,6 +102,13 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     deep_explore.add_argument("--open", action="store_true")
     deep_explore.add_argument("--confirm-auto-submit", action="store_true")
 
+    deep_explore_alias = subparsers.add_parser("deep-explore", help="Unified alias for the ChatGPT deep exploration dry-run flow.")
+    deep_explore_alias.add_argument("--dry-run", action="store_true")
+    deep_explore_alias.add_argument("--database-dir", type=Path, default=ROOT)
+    deep_explore_alias.add_argument("--mode", choices=["prefill_only", "auto_submit"], default="prefill_only")
+    deep_explore_alias.add_argument("--open", action="store_true")
+    deep_explore_alias.add_argument("--confirm-auto-submit", action="store_true")
+
     proposals = subparsers.add_parser("proposals", help="Inspect proposal authorization and review views.")
     proposals.add_argument("--dry-run", action="store_true")
     proposals.add_argument("--database-dir", type=Path, default=ROOT)
@@ -108,6 +120,110 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     apply.add_argument("--database-dir", type=Path, default=ROOT)
     apply.add_argument("--simulate-validation-failure", action="store_true")
     return parser.parse_args(argv)
+
+
+def owner_daily_profile_contract() -> dict[str, object]:
+    commands = [
+        {
+            "command_id": "sync",
+            "dry_run": True,
+            "invocation": ["python3", "scripts/atlasctl.py", "sync", "--source", "chatgpt", "--dry-run"],
+            "purpose_zh": "检查 ChatGPT 同步入口合同，不写文件。",
+        },
+        {
+            "command_id": "analyze",
+            "dry_run": True,
+            "invocation": ["python3", "scripts/atlasctl.py", "analyze", "--stage", "facets", "--dry-run"],
+            "purpose_zh": "检查行为智能 facet 分析 dry-run。",
+        },
+        {
+            "command_id": "build-atlas",
+            "dry_run": True,
+            "invocation": ["python3", "scripts/atlasctl.py", "build-atlas", "--dry-run"],
+            "purpose_zh": "检查可视化 atlas 构建计划，不写派生文件。",
+        },
+        {
+            "command_id": "audit",
+            "dry_run": True,
+            "invocation": ["python3", "scripts/atlasctl.py", "audit", "--dry-run"],
+            "purpose_zh": "检查轻量 audit 命令面，不执行 S14 P2 总门禁。",
+        },
+        {
+            "command_id": "push",
+            "dry_run": True,
+            "invocation": ["python3", "scripts/atlasctl.py", "push", "--dry-run"],
+            "purpose_zh": "检查本地 GitHub 备份范围，不上传远端 main。",
+        },
+        {
+            "command_id": "proposals",
+            "dry_run": True,
+            "invocation": ["python3", "scripts/atlasctl.py", "proposals", "--dry-run"],
+            "purpose_zh": "检查 proposal 状态机，不执行 apply。",
+        },
+        {
+            "command_id": "generate-personalization-prompt",
+            "dry_run": True,
+            "invocation": ["python3", "scripts/atlasctl.py", "generate-personalization-prompt", "--dry-run"],
+            "purpose_zh": "检查 personalization prompt 生成合同，不发送到 ChatGPT。",
+        },
+        {
+            "command_id": "deep-explore",
+            "dry_run": True,
+            "invocation": ["python3", "scripts/atlasctl.py", "deep-explore", "--dry-run"],
+            "purpose_zh": "检查深度探索提示合同，不打开浏览器、不自动提交。",
+        },
+    ]
+    return {
+        "status": "PASS",
+        "command": "run",
+        "profile": "owner-daily",
+        "task_id": "MA-V12-S14P1",
+        "acceptance_id": "ACC-MA-V12-S14P1",
+        "contract_version": "atlasctl_unified_cli.v1_2_s14_p1",
+        "phase_status": "phase_s14_p1_unified_cli_completed_pending_s14_p2",
+        "dry_run": True,
+        "writes_files": False,
+        "remote_push": False,
+        "github_main_upload": False,
+        "app_reinstall": False,
+        "local_deep_clean": False,
+        "commands": commands,
+        "phase_boundary": {
+            "does_not_run_final_audit": True,
+            "does_not_upload_github_main": True,
+            "does_not_reinstall_app": True,
+            "does_not_clean_local_computer": True,
+            "stage_review_deferred_to": "S14 Review",
+            "next_phase": "S14 P2",
+        },
+        "中文说明": "owner-daily 只返回低负担 dry-run 计划；每个子命令的 dry-run 可由 validator 单独执行确认。",
+    }
+
+
+def run_profile(args: argparse.Namespace) -> int:
+    if args.profile != "owner-daily":
+        print(json.dumps({
+            "status": "NOT_IMPLEMENTED",
+            "command": "run",
+            "profile": args.profile,
+            "中文原因": "当前只支持 owner-daily profile。",
+        }, ensure_ascii=False, indent=2, sort_keys=True))
+        return 2
+    if args.dry_run:
+        print(json.dumps(owner_daily_profile_contract(), ensure_ascii=False, indent=2, sort_keys=True))
+        return 0
+    print(json.dumps({
+        "status": "FAIL_CLOSED",
+        "command": "run",
+        "profile": "owner-daily",
+        "dry_run": False,
+        "writes_files": False,
+        "remote_push": False,
+        "github_main_upload": False,
+        "中文原因": "S14 P1 只交付 owner-daily dry-run；真实串行执行留给后续验收门禁和人工确认。",
+        "next_safe_command": "python3 scripts/atlasctl.py run --profile owner-daily --dry-run",
+    }, ensure_ascii=False, indent=2, sort_keys=True))
+    return 2
 
 
 def chatgpt_contract() -> dict[str, object]:
@@ -1945,6 +2061,48 @@ def run_chinese_ux_audit(args: argparse.Namespace) -> int:
 
 
 def run_audit(args: argparse.Namespace) -> int:
+    if args.dry_run and not args.check:
+        print(json.dumps({
+            "status": "PASS",
+            "command": "audit",
+            "task_id": "MA-V12-S14P1",
+            "acceptance_id": "ACC-MA-V12-S14P1",
+            "contract_version": "atlasctl_unified_cli.v1_2_s14_p1",
+            "dry_run": True,
+            "writes_files": False,
+            "remote_push": False,
+            "github_main_upload": False,
+            "checks_available": [
+                "insight-evidence",
+                "formulas",
+                "visual-roi",
+                "formula-what-if",
+                "agent-collaboration",
+                "agent-authorization",
+                "stage-flight",
+                "latent-safety",
+                "self-iteration-safety",
+                "decision-debt-safety",
+                "chinese-ux",
+            ],
+            "phase_boundary": {
+                "does_not_run_final_audit": True,
+                "final_audit_deferred_to": "S14 P2",
+                "next_phase": "S14 P2",
+            },
+            "中文说明": "S14 P1 只提供 audit dry-run 命令面；四线总门禁整合属于 S14 P2。",
+        }, ensure_ascii=False, indent=2, sort_keys=True))
+        return 0
+    if not args.check:
+        print(json.dumps({
+            "status": "FAIL_CLOSED",
+            "command": "audit",
+            "dry_run": False,
+            "writes_files": False,
+            "中文原因": "请指定 --check，或使用 --dry-run 查看可用检查；S14 P2 前不默认运行总门禁。",
+            "next_safe_command": "python3 scripts/atlasctl.py audit --dry-run",
+        }, ensure_ascii=False, indent=2, sort_keys=True))
+        return 2
     if args.check == "chinese-ux":
         return run_chinese_ux_audit(args)
     if args.check == "decision-debt-safety":
@@ -2138,7 +2296,7 @@ def run_generate_personalization_prompt(args: argparse.Namespace) -> int:
 def chatgpt_deep_explore_contract(args: argparse.Namespace) -> dict[str, object]:
     return {
         "status": "PASS",
-        "command": "chatgpt-deep-explore",
+        "command": args.command,
         "task_id": "MA-V12-S12P3",
         "acceptance_id": "ACC-MA-V12-S12P3",
         "contract_version": "chatgpt_deep_explore.v1_2_s12_p3",
@@ -2213,6 +2371,10 @@ def run_proposals(args: argparse.Namespace) -> int:
     result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
     if args.dry_run and result.returncode == 0 and result.stdout:
         payload = json.loads(result.stdout)
+        payload["command"] = "proposals"
+        payload["dry_run"] = True
+        payload.setdefault("writes_files", False)
+        payload.setdefault("raw_mutation", False)
         payload["phase_status"] = payload.get("status")
         payload["status"] = "PASS"
         print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
@@ -2246,6 +2408,8 @@ def run_apply(args: argparse.Namespace) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
+    if args.command == "run":
+        return run_profile(args)
     if args.command == "sync":
         return run_sync(args)
     if args.command == "build-atlas":
@@ -2258,7 +2422,7 @@ def main(argv: list[str] | None = None) -> int:
         return run_push(args)
     if args.command == "generate-personalization-prompt":
         return run_generate_personalization_prompt(args)
-    if args.command == "chatgpt-deep-explore":
+    if args.command in {"chatgpt-deep-explore", "deep-explore"}:
         return run_chatgpt_deep_explore(args)
     if args.command == "proposals":
         return run_proposals(args)

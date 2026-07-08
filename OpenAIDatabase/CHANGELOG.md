@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S14 P1 Unified CLI
+
+- Added `validate:v1.2-s14-p1` for `MA-V12-S14P1` /
+  `ACC-MA-V12-S14P1`.
+- Registered status
+  `phase_s14_p1_unified_cli_completed_pending_s14_p2`.
+- Added `atlasctl_unified_cli.v1_2_s14_p1` dry-run profile support through
+  `python3 scripts/atlasctl.py run --profile owner-daily --dry-run`.
+- Unified the owner-daily dry-run command set: `sync`, `analyze`,
+  `build-atlas`, `audit`, `push`, `proposals`,
+  `generate-personalization-prompt` and `deep-explore`.
+- Added `atlasctl.py audit --dry-run` as a lightweight command-surface check;
+  S14 P2 remains responsible for the final audit gate integration.
+- Added `deep-explore` as the unified alias for the existing
+  `chatgpt-deep-explore` dry-run contract.
+- Preserved S14 P1 boundaries: No GitHub main upload, No remote push,
+  No raw mutation, no app reinstall and no local deep clean.
+- Marked the next gate as pending S14 P2.
+
 ## Unreleased - Memory Atlas v1.2 S13 Review
 
 - Added `docs/reviews/memory_atlas_v1_2_s13_review.md`.
