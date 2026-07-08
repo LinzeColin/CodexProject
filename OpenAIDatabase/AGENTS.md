@@ -50,11 +50,44 @@ pattern information must:
 If the update target is unclear, log it as `UNKNOWN` with a follow-up task.
 Do not silently drop memory-affecting changes.
 
+## Raw Archives Requirement
+
+Canonical complete-source archive root:
+`data/raw_archives/`
+
+GitHub URL:
+`https://github.com/LinzeColin/CodexProject/tree/main/OpenAIDatabase/data/raw_archives`
+
+All ChatGPT, Codex, future-agent, other-agent, and LLM raw/source exports that
+the user asks to preserve must have a GitHub-recoverable archive under
+`data/raw_archives/{source_id}/{archive_date_or_run_id}/`. Do not leave the
+only complete copy on a temporary local machine.
+
+Each archive directory must include:
+
+1. `manifest.json` with original filename, byte size, SHA256, source id,
+   archive timestamp, visibility/user-authorization note, and ordered part
+   checksums when split.
+2. `README.md` with restore location and verification command.
+3. `restore.sh` or an equivalent deterministic restore instruction when the
+   archive is split or otherwise reconstructed.
+4. Split parts under `parts/` when a file is too large for normal GitHub file
+   limits. Keep each part below GitHub hard limits.
+
+`data/public_raw/`, `data/derived/`, and `data/run_logs/` may remain processing
+and derived layers, but they do not replace `data/raw_archives/` for complete
+original agent/LLM backup. Credentials, cookies, browser state, private keys,
+session tokens, API keys, OAuth tokens, and plaintext secrets are still not
+agent memory; exclude or encrypt them unless the user explicitly authorizes a
+specific public raw archive action.
+
 ## Hard Boundaries
 
-- Do not commit raw OpenAI exports, full transcripts, cookies, browser state,
-  `.local_keys/`, `.env`, plaintext secrets, private keys, or local absolute
-  paths.
+- Do not commit cookies, browser state, `.local_keys/`, `.env`, plaintext
+  secrets, private keys, or local absolute paths. User-authorized raw/source
+  agent and LLM archives may enter GitHub only through
+  `data/raw_archives/{source_id}/{archive_date_or_run_id}/` with manifest,
+  restore instructions, and SHA256 verification.
 - Do not automate ChatGPT login, UI scraping, export download, or saved-memory
   writes.
 - Generated memory candidates remain pending until reviewed.
@@ -73,8 +106,10 @@ Do not silently drop memory-affecting changes.
 - `context/` and `config/context_sources/` hold routing and source-context
   contracts; default startup must use route-specific reads instead of broad
   data scans.
-- Private exports are external-first: raw exports and private imports stay
-  outside git, or under ignored/encrypted local paths such as `data/raw/`,
+- Private exports are external-first unless the user explicitly requests a
+  GitHub-recoverable complete raw archive. Authorized complete archives go
+  under `data/raw_archives/`; other raw exports and private imports stay outside
+  git, or under ignored/encrypted local paths such as `data/raw/`,
   `data/raw_encrypted/`, `data/private_imports/`, `private_exports/`,
   `exports/private/`, and `data/private/`.
 - Default entries must be repository-relative (`AGENTS.md`, route scripts, and
