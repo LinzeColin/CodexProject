@@ -13,7 +13,7 @@ Current evidence snapshot from the latest mother workbook:
 | Sheet 01 top card band | Rows 4-7 are the first KPI band, with labels anchored at `B4`, `E4`, `H4`, `K4` |
 | Sheet 01 second card band | Rows 8-11 are the second KPI band, with labels anchored at `B8`, `E8`, `H8`, `K8` |
 | Sheet 01 charts | Exactly two native line charts: latest 15 days and latest 30 days |
-| Schedule | Current owner-approved schedule is Monday and Saturday 11:00 `Australia/Sydney`; any older 11:30 wording is stale unless explicitly re-approved |
+| Schedule | Current owner-approved schedule is every Monday and Saturday at 11:00 `Australia/Sydney` |
 
 ## Rule Checklist
 
@@ -25,14 +25,14 @@ Current evidence snapshot from the latest mother workbook:
 | Hidden audit sheets | `H01` through `H06` stay hidden | Template validator and workbook quality gate |
 | Sheet 01 rows 4-7 cards | Rows 4-7 form the first KPI band; labels are `可用现金占比`, `银行存款`, `票据/电子汇票`, `期末总资金` anchored at row 4 | Template validator |
 | Sheet 01 rows 8-11 cards | Rows 8-11 form the second KPI band; labels are `保证金可释放`, `外部净流出`, `内部调拨净额`, `资金缺口` anchored at row 8 | Template validator |
-| Homepage charts | `01_首页总览` has exactly two native line charts: latest 15 days and latest 30 days | Template validator checks chart titles, series, and point counts |
-| Chart size | Each native chart is at most 18 in x 9 in | Workbook quality gate |
+| Homepage charts | `01_首页总览` has exactly two native line charts: latest 15 days and latest 30 days | Template validator and `WQ-HOMEPAGE-CHART-SEMANTICS` check chart titles, series, and point counts |
+| Chart size | Each native chart is at most 18 in x 9 in | `WQ-HOMEPAGE-CHART-SIZE` workbook quality gate |
 | Native Excel only | Report elements remain editable cells, tables, formulas, and native charts, not pasted screenshots | Skill contract and template validation |
 | Real data only | No simulated amount, forecast, or management conclusion is generated | Runner cross-review and audit log |
 | OCR and chat values | OCR/chat extracted amounts remain candidates until human review | Candidate sidecars keep `financial_fact_promoted=false` |
 | Ledger writes | OCR fact previews do not write `fund_ledger.csv` | `fund_ledger_write_allowed=false` gates |
-| Automation schedule | Local Codex automation runs Monday and Saturday at 11:00 in `Australia/Sydney` | `check_codex_app_automation.py` |
-| Stale schedule conflict | Older goal text that says daily 11:30 or Sydney 11:30 is not authoritative after the owner changed the schedule to Monday/Saturday 11:00 | Current repo contract and local automation drift check |
+| Automation schedule | Local Codex automation runs every Monday and Saturday at 11:00 in `Australia/Sydney` | `check_codex_app_automation.py` |
+| Stale schedule conflict | Any daily 11:30 wording is stale unless explicitly re-approved in a later owner instruction | Current repo contract and local automation drift check |
 | GitHub sync | Skill, automation prompt, validators, and public-safe governance changes are committed to GitHub `main` | Post-push parity check |
 
 ## Function Checklist
@@ -58,9 +58,10 @@ Current evidence snapshot from the latest mother workbook:
 | Funding forecast | Active | Known due-date tax/deposit/loan/project-cost items only; no evidence-free forecast |
 | Company-bank matrix | Active | Company, bank, account alias, liquidity tier, and risk matrix |
 | Workbook generation | Active | Native Excel copy patched without rewriting chart packages |
-| Workbook quality gates | Active | Sheet order, hidden sheets, row 2, charts, formulas, sensitive visible values |
+| Workbook quality gates | Active | Sheet order, hidden sheets, row 2, homepage 15-day/30-day line chart semantics, chart dimensions, formulas, sensitive visible values |
 | Goal completion audit | Active | `goal_completion_audit.csv` records requirement-level status and remaining blockers |
 | Management conclusion gate | Active | `management_conclusion_gate.csv` blocks C-level conclusions until formal facts and all review gates pass |
+| Final management conclusion authorization | Active | `management_conclusion_final_authorization` stays blocked until a separate release approval exists, even when `formal_fund_ledger.csv` has rows |
 | Owner action queue | Active | `owner_action_queue.csv` lists pending owner/external-check actions while keeping automation/source/fact/ledger/conclusion execution disabled |
 | Fact promotion review packet | Active | `fact_promotion_review_packet.csv` summarizes owner-review areas while keeping no-write/no-promote |
 | Fact promotion authorization template | Active | `fact_promotion_authorization_template.json` drafts one default-deny authorization row per review packet row |
