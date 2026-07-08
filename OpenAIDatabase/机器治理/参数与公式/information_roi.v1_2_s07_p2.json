@@ -1,0 +1,87 @@
+{
+  "schema_version": "memory_atlas_information_roi_formula.v1_2_s07_p2",
+  "task_id": "MA-V12-S07P2",
+  "acceptance_id": "ACC-MA-V12-S07P2",
+  "status": "phase_s07_p2_formula_config_active_pending_s07_p3",
+  "purpose_zh": "为 insight、card 和 chart 定义信息 ROI，帮助判断哪些内容值得进入 P0 决策视图。",
+  "formula_source_pack": "Memory_Atlas_v1.2_四线14Stage升级_TaskPack/machine/formula_parameter_registry.json",
+  "scope_boundary": {
+    "uses_internal_proxy_only": true,
+    "external_economic_database_dependency": false,
+    "external_economic_database_v2_interface": "reserved_not_implemented",
+    "precise_income_prediction": false,
+    "financial_advice": false,
+    "raw_mutation": false,
+    "what_if_ui": false
+  },
+  "input_sources": [
+    "data/derived/visualization/memory_atlas.json",
+    "data/derived/economic_proxy/personal_economic_proxy.json",
+    "机器治理/可视化配置/visual_roi_gate.v1_2_s07_p2.json"
+  ],
+  "output_path": "data/derived/information_roi/information_roi_gate.json",
+  "parameters": {
+    "epsilon": 0.05,
+    "p0_min_information_roi_score": 15.0,
+    "p0_min_decision_value": 0.55,
+    "p0_min_actionability": 0.55,
+    "p0_min_evidence_strength": 0.55,
+    "p0_min_freshness": 0.45,
+    "reading_cost_default": 1.0,
+    "navigation_cost_default": 1.0,
+    "misleading_risk_default": 1.0,
+    "maintenance_cost_default": 1.0
+  },
+  "evidence_strength_scale": {
+    "A": {
+      "score": 1.0,
+      "meaning_zh": "多来源多时间点一致"
+    },
+    "B": {
+      "score": 0.82,
+      "meaning_zh": "单来源多次出现"
+    },
+    "C": {
+      "score": 0.65,
+      "meaning_zh": "新兴信号"
+    },
+    "D": {
+      "score": 0.45,
+      "meaning_zh": "假设需验证"
+    },
+    "X": {
+      "score": 0.2,
+      "meaning_zh": "冲突或反证强"
+    }
+  },
+  "formulas": [
+    {
+      "formula_id": "FORM-MA-V12-S07P2-001",
+      "score_key": "information_roi_score",
+      "name_zh": "信息 ROI 分",
+      "expression_zh": "信息 ROI = decision_value * actionability * evidence_strength * freshness * reuse_value / max(reading_cost * navigation_cost * misleading_risk * maintenance_cost, epsilon)",
+      "parameter_refs": [
+        "epsilon",
+        "reading_cost_default",
+        "navigation_cost_default",
+        "misleading_risk_default",
+        "maintenance_cost_default"
+      ],
+      "interpretation_zh": "分数衡量一个 insight、card 或 chart 是否能支撑真实决策和下一步行动；它不是收入预测，也不等于必须执行。"
+    },
+    {
+      "formula_id": "FORM-MA-V12-S07P2-002",
+      "score_key": "visual_roi_gate",
+      "name_zh": "Visual ROI Gate",
+      "expression_zh": "P0 可视化必须同时满足 information_roi_score >= p0_min_information_roi_score、decision_value >= p0_min_decision_value、actionability >= p0_min_actionability、evidence_strength >= p0_min_evidence_strength，并且有 human_question 和 action。",
+      "parameter_refs": [
+        "p0_min_information_roi_score",
+        "p0_min_decision_value",
+        "p0_min_actionability",
+        "p0_min_evidence_strength",
+        "p0_min_freshness"
+      ],
+      "interpretation_zh": "没有明确决策价值、人类问题、行动用途或证据来源的图表不能进入 P0。"
+    }
+  ]
+}

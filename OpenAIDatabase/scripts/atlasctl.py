@@ -21,6 +21,7 @@ CLUSTER_BUILDER = ROOT / "scripts" / "build_memory_atlas_clusters.py"
 LOW_VALUE_LOOP_BUILDER = ROOT / "scripts" / "build_memory_atlas_low_value_loops.py"
 OPPORTUNITY_BUILDER = ROOT / "scripts" / "build_memory_atlas_opportunities.py"
 ECONOMIC_PROXY_BUILDER = ROOT / "scripts" / "build_memory_atlas_economic_proxy.py"
+INFORMATION_ROI_BUILDER = ROOT / "scripts" / "build_memory_atlas_information_roi.py"
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -293,13 +294,40 @@ def economic_proxy_analyze_contract() -> dict[str, object]:
     }
 
 
+def information_roi_analyze_contract() -> dict[str, object]:
+    return {
+        "status": "PASS",
+        "command": "analyze",
+        "stage": "information-roi",
+        "dry_run": True,
+        "writes_files": False,
+        "builder": "scripts/build_memory_atlas_information_roi.py",
+        "formula_config": "机器治理/参数与公式/information_roi.v1_2_s07_p2.json",
+        "visual_gate_config": "机器治理/可视化配置/visual_roi_gate.v1_2_s07_p2.json",
+        "input": [
+            "data/derived/visualization/memory_atlas.json",
+            "data/derived/economic_proxy/personal_economic_proxy.json",
+        ],
+        "output": "data/derived/information_roi/information_roi_gate.json",
+        "raw_mutation": False,
+        "task_id": "MA-V12-S07P2",
+        "acceptance_id": "ACC-MA-V12-S07P2",
+        "phase_boundary": {
+            "does_not_use_external_economic_database": True,
+            "does_not_claim_precise_income_prediction": True,
+            "does_not_generate_what_if_ui": True,
+            "next_phase": "S07 P3",
+        },
+    }
+
+
 def run_analyze(args: argparse.Namespace) -> int:
-    if args.stage not in {"facets", "clusters", "low-value-loops", "opportunities", "economic-proxy"}:
+    if args.stage not in {"facets", "clusters", "low-value-loops", "opportunities", "economic-proxy", "information-roi"}:
         print(json.dumps({
             "status": "NOT_IMPLEMENTED",
             "command": "analyze",
             "stage": args.stage,
-            "reason": "Unknown analyze stage. Supported stages: facets, clusters, low-value-loops, opportunities, economic-proxy.",
+            "reason": "Unknown analyze stage. Supported stages: facets, clusters, low-value-loops, opportunities, economic-proxy, information-roi.",
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 2
 
@@ -332,6 +360,10 @@ def run_analyze(args: argparse.Namespace) -> int:
             command.append("--dry-run")
     elif args.stage == "economic-proxy":
         command = [sys.executable, str(ECONOMIC_PROXY_BUILDER), "--database-dir", str(args.database_dir)]
+        if args.dry_run:
+            command.append("--dry-run")
+    elif args.stage == "information-roi":
+        command = [sys.executable, str(INFORMATION_ROI_BUILDER), "--database-dir", str(args.database_dir)]
         if args.dry_run:
             command.append("--dry-run")
     result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
@@ -444,7 +476,106 @@ def run_formula_audit(args: argparse.Namespace) -> int:
     return 0 if status == "PASS" else 2
 
 
+def run_visual_roi_audit(args: argparse.Namespace) -> int:
+    config_path = args.database_dir / "机器治理/参数与公式/information_roi.v1_2_s07_p2.json"
+    visual_config_path = args.database_dir / "机器治理/可视化配置/visual_roi_gate.v1_2_s07_p2.json"
+    output_path = args.database_dir / "data/derived/information_roi/information_roi_gate.json"
+    bad_items: list[str] = []
+    config: dict[str, object] = {}
+    output: dict[str, object] = {}
+    visual_config: dict[str, object] = {}
+    if not config_path.exists():
+        bad_items.append("information_roi_formula_config:missing")
+    else:
+        config = json.loads(config_path.read_text(encoding="utf-8"))
+        if config.get("task_id") != "MA-V12-S07P2" or config.get("acceptance_id") != "ACC-MA-V12-S07P2":
+            bad_items.append("information_roi_formula_config:identity_mismatch")
+        boundary = config.get("scope_boundary") or {}
+        if not isinstance(boundary, dict) or boundary.get("external_economic_database_dependency") is not False:
+            bad_items.append("information_roi_formula_config:external_database_dependency_not_false")
+        parameters = config.get("parameters") if isinstance(config.get("parameters"), dict) else {}
+        formulas = config.get("formulas") if isinstance(config.get("formulas"), list) else []
+        score_keys = {str(item.get("score_key")) for item in formulas if isinstance(item, dict)}
+        for key in sorted({"information_roi_score", "visual_roi_gate"} - score_keys):
+            bad_items.append(f"information_roi_formula_config:missing_score_key:{key}")
+        for item in formulas:
+            if not isinstance(item, dict):
+                bad_items.append("information_roi_formula_config:invalid_formula_item")
+                continue
+            formula_id = item.get("formula_id")
+            if not formula_id or not item.get("expression_zh") or not item.get("interpretation_zh"):
+                bad_items.append(f"information_roi_formula_config:{formula_id}:missing_expression_or_interpretation")
+            for param_ref in item.get("parameter_refs") or []:
+                if param_ref not in parameters:
+                    bad_items.append(f"information_roi_formula_config:{formula_id}:unknown_parameter:{param_ref}")
+    if not visual_config_path.exists():
+        bad_items.append("visual_roi_gate_config:missing")
+    else:
+        visual_config = json.loads(visual_config_path.read_text(encoding="utf-8"))
+        if visual_config.get("task_id") != "MA-V12-S07P2" or visual_config.get("acceptance_id") != "ACC-MA-V12-S07P2":
+            bad_items.append("visual_roi_gate_config:identity_mismatch")
+        for item in visual_config.get("p0_visuals") or []:
+            if not item.get("id") or not item.get("human_question") or not item.get("action"):
+                bad_items.append(f"visual_roi_gate_config:{item.get('id')}:missing_human_question_or_action")
+    if not output_path.exists():
+        bad_items.append("information_roi_output:missing")
+    else:
+        output = json.loads(output_path.read_text(encoding="utf-8"))
+        if output.get("task_id") != "MA-V12-S07P2" or output.get("acceptance_id") != "ACC-MA-V12-S07P2":
+            bad_items.append("information_roi_output:identity_mismatch")
+        boundary = output.get("phase_boundary") or {}
+        if boundary.get("does_not_use_external_economic_database") is not True:
+            bad_items.append("information_roi_output:external_database_boundary_missing")
+        if boundary.get("does_not_claim_precise_income_prediction") is not True:
+            bad_items.append("information_roi_output:precise_income_boundary_missing")
+        if boundary.get("does_not_generate_what_if_ui") is not True:
+            bad_items.append("information_roi_output:what_if_boundary_missing")
+        roi_items = output.get("roi_items") if isinstance(output.get("roi_items"), list) else []
+        item_types = {item.get("item_type") for item in roi_items if isinstance(item, dict)}
+        for required_type in {"insight", "card", "chart"} - item_types:
+            bad_items.append(f"information_roi_output:missing_item_type:{required_type}")
+        for item in roi_items:
+            item_id = item.get("item_id")
+            if not item.get("formula_id") or not item.get("formula_source"):
+                bad_items.append(f"roi_item:{item_id}:missing_formula_source")
+            if not item.get("decision_summary_zh"):
+                bad_items.append(f"roi_item:{item_id}:missing_decision_summary")
+            if not item.get("evidence_refs"):
+                bad_items.append(f"roi_item:{item_id}:missing_evidence_refs")
+            if int(item.get("information_roi_score") or -1) < 0 or int(item.get("information_roi_score") or -1) > 100:
+                bad_items.append(f"roi_item:{item_id}:score_out_of_range")
+            if item.get("item_type") == "chart" and item.get("p0_candidate") is True:
+                if not item.get("human_question") or not item.get("action_zh") or item.get("visual_roi_gate_pass") is not True:
+                    bad_items.append(f"roi_item:{item_id}:invalid_p0_visual_gate")
+        gate = output.get("visual_roi_gate") if isinstance(output.get("visual_roi_gate"), dict) else {}
+        if gate.get("failed_p0_count") != 0:
+            bad_items.append("visual_roi_gate:failed_p0_count_not_zero")
+        if not gate.get("excluded_from_p0"):
+            bad_items.append("visual_roi_gate:missing_excluded_from_p0_examples")
+    status = "PASS" if not bad_items else "FAIL"
+    result = {
+        "status": status,
+        "command": "audit",
+        "check": "visual-roi",
+        "task_id": config.get("task_id") or output.get("task_id"),
+        "acceptance_id": config.get("acceptance_id") or output.get("acceptance_id"),
+        "formula_config": "机器治理/参数与公式/information_roi.v1_2_s07_p2.json",
+        "visual_gate_config": "机器治理/可视化配置/visual_roi_gate.v1_2_s07_p2.json",
+        "information_roi_output": "data/derived/information_roi/information_roi_gate.json" if output_path.exists() else "",
+        "roi_item_count": len(output.get("roi_items") or []) if isinstance(output.get("roi_items"), list) else 0,
+        "p0_visual_count": len((output.get("visual_roi_gate") or {}).get("p0_visuals") or []) if isinstance(output.get("visual_roi_gate"), dict) else 0,
+        "failed_p0_count": (output.get("visual_roi_gate") or {}).get("failed_p0_count") if isinstance(output.get("visual_roi_gate"), dict) else None,
+        "external_economic_database_dependency": False,
+        "bad_items": bad_items,
+        "raw_mutation": False,
+    }
+    print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0 if status == "PASS" else 2
+
+
 def run_audit(args: argparse.Namespace) -> int:
+    if args.check == "visual-roi":
+        return run_visual_roi_audit(args)
     if args.check == "formulas":
         return run_formula_audit(args)
     if args.check != "insight-evidence":
@@ -452,7 +583,7 @@ def run_audit(args: argparse.Namespace) -> int:
             "status": "NOT_IMPLEMENTED",
             "command": "audit",
             "check": args.check,
-            "reason": "Unknown audit check. Supported checks: insight-evidence, formulas.",
+            "reason": "Unknown audit check. Supported checks: insight-evidence, formulas, visual-roi.",
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 2
 

@@ -2,8 +2,36 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S07 P1。任务 ID 为 `MA-V12-S07P1`，验收 ID 为
-`ACC-MA-V12-S07P1`，validator 为 `validate:v1.2-s07-p1`。
+当前阶段是 S07 P2。任务 ID 为 `MA-V12-S07P2`，验收 ID 为
+`ACC-MA-V12-S07P2`，validator 为 `validate:v1.2-s07-p2`。
+
+S07 P2 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s07_p2_information_roi.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s07_p2.cjs`
+- `scripts/build_memory_atlas_information_roi.py`
+- `scripts/atlasctl.py`
+- `机器治理/参数与公式/information_roi.v1_2_s07_p2.json`
+- `机器治理/可视化配置/visual_roi_gate.v1_2_s07_p2.json`
+- `data/derived/information_roi/information_roi_gate.json`
+- `人类可读/17_InformationROI与VisualROIGate说明.md`
+
+S07 P2 gate：
+
+- `validate:v1.2-s07-p2` 可验证 Information ROI 与 Visual ROI Gate。
+- `python scripts/atlasctl.py analyze --stage information-roi --dry-run` 返回 no-write payload。
+- `python scripts/atlasctl.py audit --check visual-roi` 返回 PASS。
+- 每个 ROI item 有公式来源、参数引用和证据引用。
+- P0 visual 必须有 human question、action 和 gate pass。
+- 没有决策价值的图表不进 P0。
+- 不接入外部经济数据库。
+- 不是精确收入预测，不是财务建议。
+- 不实现 S07 P3 what-if UI。
+- 不修改运行时 UI。
+- 不修改 raw。
+
+No GitHub main upload in this phase。
+下一步是 S07 P3。
 
 S07 P1 产物：
 

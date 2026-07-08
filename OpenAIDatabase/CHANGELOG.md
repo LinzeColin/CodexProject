@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S07 P2 Information ROI
+
+- Added `机器治理/参数与公式/information_roi.v1_2_s07_p2.json` for Information ROI formulas.
+- Added `机器治理/可视化配置/visual_roi_gate.v1_2_s07_p2.json` for Visual ROI Gate.
+- Added `scripts/build_memory_atlas_information_roi.py` and
+  `data/derived/information_roi/information_roi_gate.json` for insight/card/chart ROI evaluation.
+- Added `docs/reviews/memory_atlas_v1_2_s07_p2_information_roi.md`.
+- Added `人类可读/17_InformationROI与VisualROIGate说明.md`.
+- Added `validate:v1.2-s07-p2` for `MA-V12-S07P2` /
+  `ACC-MA-V12-S07P2`.
+- Registered status `phase_s07_p2_information_roi_completed_pending_s07_p3`.
+- Preserved S07 P2 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation in this phase, No external
+  economic database, No precise income prediction and No S07 P3 what-if UI.
+- Marked the next gate as pending S07 P3.
+
 ## Unreleased - Memory Atlas v1.2 S07 P1 Personal Economic Proxy
 
 - Added `机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json`.
