@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import re
+import contextlib
 import csv
 import hashlib
+import importlib.util
+import io
 import json
 import os
 import subprocess
@@ -23,6 +26,15 @@ XLSX_NS = {"x": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
 
 def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def load_materialize_module():
+    module_path = SKILL_ROOT / "tools" / "materialize_fund_source.py"
+    spec = importlib.util.spec_from_file_location("materialize_fund_source_for_test", module_path)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
 
 
 def xlsx_cell_text(workbook: zipfile.ZipFile, sheet_path: str, ref: str) -> str:
@@ -1003,6 +1015,108 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             )
             self.assertEqual(conflict_manifest["status"], "TARGET_CONFLICT")
             self.assertEqual(len(conflict_manifest["conflicts"]), 1)
+
+    def test_materialize_zip_candidate_is_explicit_and_group_scoped(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            one_drive = Path(temp_dir) / "OneDrive-Personal"
+            source_zip = one_drive / "DWS_Outputs.zip"
+            source_zip.parent.mkdir(parents=True)
+            target = one_drive / "DWS_Outputs" / "付款请示群"
+            group_payload = b"real-zipped-finance-evidence"
+            with zipfile.ZipFile(source_zip, "w") as archive:
+                archive.writestr("付款请示群/files/0708/20260708113000_杨婷_real_image.png", group_payload)
+                archive.writestr("生产管理群/files/0708/ignore.png", b"other-group")
+                archive.writestr("/付款请示群/files/0708/absolute.png", b"unsafe-absolute")
+                archive.writestr("付款请示群/files/../unsafe.png", b"unsafe-parent")
+
+            dry_run = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "materialize_fund_source.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--source-zip",
+                    str(source_zip),
+                    "--zip-prefix",
+                    "付款请示群",
+                    "--target-dir",
+                    str(target),
+                    "--run-id",
+                    "materialize_zip_dry_run",
+                    "--timezone",
+                    "Australia/Sydney",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(dry_run.returncode, 0, dry_run.stderr)
+            self.assertFalse(target.exists(), "zip dry-run must not create the target folder")
+            dry_manifest = json.loads(
+                (repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/materialize_zip_dry_run/source_materialization_manifest.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(dry_manifest["source_kind"], "zip")
+            self.assertEqual(dry_manifest["zip_prefix"], "付款请示群")
+            self.assertEqual(dry_manifest["planned_copy_count"], 1)
+            self.assertEqual(dry_manifest["files"][0]["relative_path"], "files/0708/20260708113000_杨婷_real_image.png")
+            self.assertEqual(dry_manifest["files"][0]["sha256"], sha256_bytes(group_payload))
+
+            apply_run = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "materialize_fund_source.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--source-zip",
+                    str(source_zip),
+                    "--zip-prefix",
+                    "付款请示群",
+                    "--target-dir",
+                    str(target),
+                    "--run-id",
+                    "materialize_zip_apply",
+                    "--timezone",
+                    "Australia/Sydney",
+                    "--apply",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(apply_run.returncode, 0, apply_run.stderr)
+            copied_file = target / "files" / "0708" / "20260708113000_杨婷_real_image.png"
+            self.assertEqual(copied_file.read_bytes(), group_payload)
+            self.assertFalse((target.parent / "生产管理群").exists())
+
+    def test_materialize_zip_fails_fast_when_source_zip_is_dataless(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            materialize_module = load_materialize_module()
+            materialize_module.macos_file_flags = lambda _path: "compressed,dataless"
+            run_dir = Path(temp_dir) / "repo" / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/dataless_zip"
+            source_zip = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs.zip"
+            source_zip.parent.mkdir(parents=True)
+            with zipfile.ZipFile(source_zip, "w") as archive:
+                archive.writestr("付款请示群/files/0708/real.png", b"real-source")
+            target = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+
+            with contextlib.redirect_stdout(io.StringIO()):
+                exit_code = materialize_module.materialize_zip(
+                    source_zip,
+                    "付款请示群",
+                    target,
+                    run_dir,
+                    "Australia/Sydney",
+                    False,
+                )
+
+            self.assertEqual(exit_code, 5)
+            self.assertFalse(target.exists())
+            manifest = json.loads((run_dir / "source_materialization_manifest.json").read_text(encoding="utf-8"))
+            self.assertEqual(manifest["status"], "SOURCE_UNREADABLE")
+            self.assertEqual(manifest["source_kind"], "zip")
+            self.assertEqual(manifest["unreadable_count"], 1)
+            self.assertEqual(manifest["unreadable"][0]["error_type"], "DatalessFile")
 
     def test_materialize_fails_closed_when_source_file_is_unreadable(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

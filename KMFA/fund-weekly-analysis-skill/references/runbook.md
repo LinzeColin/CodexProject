@@ -13,7 +13,7 @@ The local scheduler uses Sydney local time. 11:30 Australia/Sydney is the operat
 7. Build file manifest with SHA256 and size.
 8. If the configured folder is missing, write `SOURCE_MISSING` plus private source candidates; do not silently fall back to zip/archive sources.
 9. If the configured folder exists but contains unreadable/cloud-only files, write `SOURCE_UNREADABLE`; do not generate a partial Excel package.
-10. If a private candidate is verified and the operator intends to populate the configured folder, run `tools/materialize_fund_source.py` first without `--apply`, inspect the manifest, then rerun with `--apply`.
+10. If a private directory or zip candidate is verified and the operator intends to populate the configured folder, run `tools/materialize_fund_source.py` first without `--apply`, inspect the manifest, then rerun with `--apply`.
 11. Build evidence index for screenshots and finance files.
 12. Write the `INDEXED_PENDING_EXTRACTION` no-hallucination output package first: current native Excel template copy, fact ledgers, funding forecast sidecar, cashflow validation sidecar, workbook quality checks, metadata signals, exception tasks, cross-review JSON, audit log, and run summary.
 13. Carry public-safe KMFA metadata signals from fund pressure, project-cost fact layer, report grade, and scope reconciliation metadata into `kmfa_metadata_signals.csv` plus workbook pending-review cells. These signals support review routing only; they do not create amounts, forecasts, or conclusions.
@@ -57,6 +57,30 @@ python3 KMFA/fund-weekly-analysis-skill/tools/materialize_fund_source.py \
 If dry-run returns `SOURCE_UNREADABLE`, do not apply. First make the OneDrive
 source files available offline, then rerun dry-run and confirm
 `unreadable_count=0`.
+
+ZIP dry-run:
+
+```bash
+python3 KMFA/fund-weekly-analysis-skill/tools/materialize_fund_source.py \
+  --repo-root /Users/linzezhang/CodexProject \
+  --source-zip /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip \
+  --zip-prefix 付款请示群 \
+  --target-dir /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群
+```
+
+ZIP apply after checking the dry-run manifest:
+
+```bash
+python3 KMFA/fund-weekly-analysis-skill/tools/materialize_fund_source.py \
+  --repo-root /Users/linzezhang/CodexProject \
+  --source-zip /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip \
+  --zip-prefix 付款请示群 \
+  --target-dir /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群 \
+  --apply
+```
+
+ZIP materialization is explicit only. The daily runner still must not silently
+read or extract `DWS_Outputs.zip` when the configured hot folder is missing.
 
 ## Manual work expected from user
 

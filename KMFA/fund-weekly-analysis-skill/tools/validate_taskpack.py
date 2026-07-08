@@ -36,6 +36,7 @@ REQUIRED_SKILL_STRINGS = [
     "05_公司银行矩阵",
     "hidden",
     "1728",
+    "--source-zip",
 ]
 EXPECTED_SHEETS = [
     "01_首页总览",
