@@ -1,3 +1,52 @@
+## v1.2 S11 P3 Workflow/latent/governance Visuals
+
+状态：`phase_s11_p3_workflow_latent_governance_visuals_completed_pending_s11_p4`。
+
+任务 ID：`MA-V12-S11P3`。
+
+验收 ID：`ACC-MA-V12-S11P3`。
+
+Validator：`validate:v1.2-s11-p3`。
+
+S11 P3 已完成。首页新增 Workflow/latent/governance 多维图谱，包含
+`agent_decision_sankey`、`friction_heatmap`、`latent_radar`、`evidence_timeline`
+和 `formula_explorer`。每个图都有中文 insight header、human question 和 action value，
+并跟随 `source/time/project/task` 过滤。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `机器治理/可视化配置/workflow_latent_governance_visuals.v1_2_s11_p3.json`
+- `docs/reviews/memory_atlas_v1_2_s11_p3_workflow_latent_governance_visuals.md`
+- `人类可读/29_WorkflowLatentGovernance可视化说明.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s11_p3.cjs`
+
+验收：
+
+- `validate:v1.2-s11-p3`
+- `ACC-MA-V12-S11P3`
+- `MA-V12-S11P3`
+- `workflow_latent_governance_visuals.v1_2_s11_p3`
+- `agent_decision_sankey`
+- `friction_heatmap`
+- `latent_radar`
+- `evidence_timeline`
+- `formula_explorer`
+- `source/time/project/task`
+- pending S11 P4
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No proposal apply execution。
+- No S11 P4 Human Question Map completion。
+- No app reinstall。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S11 P3; MA-V12-S11P3; ACC-MA-V12-S11P3; phase_s11_p3_workflow_latent_governance_visuals_completed_pending_s11_p4; validate:v1.2-s11-p3; workflow_latent_governance_visuals.v1_2_s11_p3; agent_decision_sankey; friction_heatmap; latent_radar; evidence_timeline; formula_explorer; source/time/project/task; pending S11 P4; No GitHub main upload in this phase; No raw mutation; No proposal apply execution.
+
 ## v1.2 S11 P2 Economic-like Visuals
 
 状态：`phase_s11_p2_economic_like_visuals_completed_pending_s11_p3`。

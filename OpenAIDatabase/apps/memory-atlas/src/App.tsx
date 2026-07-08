@@ -85,6 +85,7 @@ const GLOBAL_CHINESE_UX_VERSION = "global_chinese_ux.v1_2_s10_p2" as const;
 const MACHINE_DETAIL_FOLDING_VERSION = "machine_detail_folding.v1_2_s10_p3" as const;
 const CLIO_LIKE_VISUALS_VERSION = "clio_like_visuals.v1_2_s11_p1" as const;
 const ECONOMIC_LIKE_VISUALS_VERSION = "economic_like_visuals.v1_2_s11_p2" as const;
+const WORKFLOW_LATENT_GOVERNANCE_VISUALS_VERSION = "workflow_latent_governance_visuals.v1_2_s11_p3" as const;
 const HOME_ACTION_SECTION_VERSION = "top_actions_section.v1_1_7_stage3_phase2" as const;
 const HOME_LEVEL_ASSET_SECTION_VERSION = "level_assets_section.v1_1_7_stage3_phase2" as const;
 const HOME_THEME_CATEGORY_SECTION_VERSION = "theme_categories_section.v1_1_7_stage3_phase2" as const;
@@ -303,6 +304,31 @@ declare global {
         proposalWrite: false;
       };
     };
+    __memoryAtlasS11Phase3?: () => {
+      workflowLatentGovernanceVisualsVersion: typeof WORKFLOW_LATENT_GOVERNANCE_VISUALS_VERSION;
+      visualIds: WorkflowLatentGovernanceVisualId[];
+      visualCount: number;
+      sankeyLinkCount: number;
+      frictionCellCount: number;
+      latentAxisCount: number;
+      evidenceEventCount: number;
+      formulaParameterCount: number;
+      supportsFilters: ["source", "time", "project", "task"];
+      activeFilters: {
+        source: string;
+        time: string;
+        project: string;
+        task: string;
+      };
+      chartsAreStaticDecoration: false;
+      humanQuestionMapPartial: true;
+      pendingLaterVisuals: ["S11 P4"];
+      safety: {
+        rawPrivateDataIncluded: false;
+        directActiveMemoryWriteback: false;
+        proposalWrite: false;
+      };
+    };
   }
 }
 
@@ -313,6 +339,7 @@ const MEMORY_OVERVIEW_SECTION_ORDER = [
   { id: "behavior_intelligence", label: "行为智能" },
   { id: "clio_like_visuals", label: "多维图谱" },
   { id: "economic_like_visuals", label: "经济图谱" },
+  { id: "workflow_latent_governance_visuals", label: "治理图谱" },
   { id: "weather", label: "记忆天气" },
   { id: "black_holes", label: "风险黑洞" },
   { id: "proto_stars", label: "新生机会" },
@@ -900,6 +927,87 @@ interface EconomicLikeVisualModel {
   summary: string;
 }
 
+type WorkflowLatentGovernanceVisualId =
+  | "agent_decision_sankey"
+  | "friction_heatmap"
+  | "latent_radar"
+  | "evidence_timeline"
+  | "formula_explorer";
+
+interface WorkflowLatentGovernanceVisualCopy {
+  id: WorkflowLatentGovernanceVisualId;
+  title: string;
+  insightHeader: string;
+  humanQuestion: string;
+  actionValue: string;
+}
+
+interface WorkflowSankeyLinkDatum {
+  id: string;
+  sourceLabel: string;
+  targetLabel: string;
+  value: number;
+  width: number;
+  y: number;
+  color: string;
+  node: AtlasNode | null;
+}
+
+interface FrictionHeatmapCellDatum {
+  id: string;
+  rowLabel: string;
+  columnLabel: string;
+  count: number;
+  intensity: number;
+  action: string;
+  node: AtlasNode | null;
+}
+
+interface LatentRadarDatum {
+  id: string;
+  label: string;
+  value: number;
+  confidenceLabel: string;
+  evidenceBadge: string;
+  node: AtlasNode | null;
+}
+
+interface EvidenceTimelineDatum {
+  id: string;
+  label: string;
+  dateLabel: string;
+  x: number;
+  evidenceCount: number;
+  sourceLabel: string;
+  node: AtlasNode | null;
+}
+
+interface FormulaInspectorDatum {
+  id: string;
+  label: string;
+  value: string;
+  description: string;
+  sourcePath: string;
+  node: AtlasNode | null;
+}
+
+interface WorkflowLatentGovernanceVisualModel {
+  schemaVersion: typeof WORKFLOW_LATENT_GOVERNANCE_VISUALS_VERSION;
+  activeFilters: {
+    source: string;
+    time: string;
+    project: string;
+    task: string;
+  };
+  visualCopy: WorkflowLatentGovernanceVisualCopy[];
+  sankeyLinks: WorkflowSankeyLinkDatum[];
+  frictionCells: FrictionHeatmapCellDatum[];
+  latentAxes: LatentRadarDatum[];
+  evidenceEvents: EvidenceTimelineDatum[];
+  formulaRows: FormulaInspectorDatum[];
+  summary: string;
+}
+
 interface MemoryWeatherV2 {
   label: string;
   summary: string;
@@ -1365,6 +1473,10 @@ export function App() {
     () => buildEconomicLikeVisualModel(slice.memoryNodes, filters, sharedState, slice.deltaStats),
     [filters, sharedState, slice.deltaStats, slice.memoryNodes],
   );
+  const workflowLatentGovernanceVisualModel = useMemo(
+    () => buildWorkflowLatentGovernanceVisualModel(slice.memoryNodes, slice.graphEdges, filters, sharedState, slice.deltaStats),
+    [filters, sharedState, slice.deltaStats, slice.graphEdges, slice.memoryNodes],
+  );
 
   const handleSelectNode = useCallback((node: AtlasNode) => {
     setSelectedContributionPeriod(null);
@@ -1568,6 +1680,32 @@ export function App() {
     };
   }, [economicLikeVisualModel]);
 
+  useEffect(() => {
+    window.__memoryAtlasS11Phase3 = () => ({
+      workflowLatentGovernanceVisualsVersion: WORKFLOW_LATENT_GOVERNANCE_VISUALS_VERSION,
+      visualIds: ["agent_decision_sankey", "friction_heatmap", "latent_radar", "evidence_timeline", "formula_explorer"],
+      visualCount: workflowLatentGovernanceVisualModel.visualCopy.length,
+      sankeyLinkCount: workflowLatentGovernanceVisualModel.sankeyLinks.length,
+      frictionCellCount: workflowLatentGovernanceVisualModel.frictionCells.length,
+      latentAxisCount: workflowLatentGovernanceVisualModel.latentAxes.length,
+      evidenceEventCount: workflowLatentGovernanceVisualModel.evidenceEvents.length,
+      formulaParameterCount: workflowLatentGovernanceVisualModel.formulaRows.length,
+      supportsFilters: ["source", "time", "project", "task"],
+      activeFilters: workflowLatentGovernanceVisualModel.activeFilters,
+      chartsAreStaticDecoration: false,
+      humanQuestionMapPartial: true,
+      pendingLaterVisuals: ["S11 P4"],
+      safety: {
+        rawPrivateDataIncluded: false,
+        directActiveMemoryWriteback: false,
+        proposalWrite: false,
+      },
+    });
+    return () => {
+      delete window.__memoryAtlasS11Phase3;
+    };
+  }, [workflowLatentGovernanceVisualModel]);
+
   return (
     <div
       className="app-shell"
@@ -1727,6 +1865,7 @@ export function App() {
               filters={filters}
               clioLikeVisualModel={clioLikeVisualModel}
               economicLikeVisualModel={economicLikeVisualModel}
+              workflowLatentGovernanceVisualModel={workflowLatentGovernanceVisualModel}
               sharedState={sharedState}
               slice={slice}
               nodeMap={nodeMap}
@@ -1763,6 +1902,7 @@ function ViewRouter({
   filters,
   clioLikeVisualModel,
   economicLikeVisualModel,
+  workflowLatentGovernanceVisualModel,
   sharedState,
   slice,
   nodeMap,
@@ -1783,6 +1923,7 @@ function ViewRouter({
   filters: AtlasFilters;
   clioLikeVisualModel: ClioLikeVisualModel;
   economicLikeVisualModel: EconomicLikeVisualModel;
+  workflowLatentGovernanceVisualModel: WorkflowLatentGovernanceVisualModel;
   sharedState: SharedAtlasState;
   slice: FilteredAtlasSlice;
   nodeMap: Map<string, AtlasNode>;
@@ -1846,6 +1987,7 @@ function ViewRouter({
         graphEdges={slice.graphEdges}
         clioLikeVisualModel={clioLikeVisualModel}
         economicLikeVisualModel={economicLikeVisualModel}
+        workflowLatentGovernanceVisualModel={workflowLatentGovernanceVisualModel}
         deltaStats={slice.deltaStats}
         selectedNode={selectedNode}
         sharedState={sharedState}
@@ -2390,12 +2532,257 @@ function EconomicLikeVisualPanel({
   );
 }
 
+function WorkflowLatentGovernanceVisualPanel({
+  model,
+  onSelectNode,
+  onSwitchView,
+}: {
+  model: WorkflowLatentGovernanceVisualModel;
+  onSelectNode: (node: AtlasNode) => void;
+  onSwitchView: (view: ViewKey) => void;
+}) {
+  const [selectedAxisId, setSelectedAxisId] = useState(model.latentAxes[0]?.id ?? "");
+  const selectedAxis = model.latentAxes.find((axis) => axis.id === selectedAxisId) ?? model.latentAxes[0] ?? null;
+  const visualCopyById = new Map(model.visualCopy.map((visual) => [visual.id, visual]));
+  const sankeyCopy = visualCopyById.get("agent_decision_sankey");
+  const heatmapCopy = visualCopyById.get("friction_heatmap");
+  const radarCopy = visualCopyById.get("latent_radar");
+  const timelineCopy = visualCopyById.get("evidence_timeline");
+  const formulaCopy = visualCopyById.get("formula_explorer");
+  const radarPoints = model.latentAxes
+    .map((axis, index) => {
+      const angle = -Math.PI / 2 + (index / Math.max(1, model.latentAxes.length)) * Math.PI * 2;
+      const radius = 28 + axis.value * 78;
+      return `${150 + Math.cos(angle) * radius},${126 + Math.sin(angle) * radius}`;
+    })
+    .join(" ");
+
+  function openNode(node: AtlasNode | null, targetView: ViewKey) {
+    if (node) onSelectNode(node);
+    onSwitchView(targetView);
+  }
+
+  return (
+    <section
+      className="workflow-governance-visual-panel"
+      aria-label="S11 P3 Workflow/latent/governance 多维可视化"
+      data-home-section="workflow_latent_governance_visuals"
+      data-s11-p3-workflow-latent-governance-visuals={WORKFLOW_LATENT_GOVERNANCE_VISUALS_VERSION}
+      data-s11-p3-filter-source={model.activeFilters.source}
+      data-s11-p3-filter-time={model.activeFilters.time}
+      data-s11-p3-filter-project={model.activeFilters.project}
+      data-s11-p3-filter-task={model.activeFilters.task}
+    >
+      <div className="panel-title-row">
+        <div>
+          <h3>Workflow / Latent / Governance 治理图谱</h3>
+          <p>{model.summary}</p>
+        </div>
+        <span>{model.visualCopy.length.toLocaleString()} 张 P3 决策图</span>
+      </div>
+      <div className="workflow-governance-filter-strip" aria-label="S11 P3 图谱过滤维度">
+        <span><strong>source</strong>{model.activeFilters.source}</span>
+        <span><strong>time</strong>{model.activeFilters.time}</span>
+        <span><strong>project</strong>{model.activeFilters.project}</span>
+        <span><strong>task</strong>{model.activeFilters.task}</span>
+      </div>
+      <div className="workflow-governance-visual-grid">
+        <article
+          className="workflow-governance-visual-card sankey-card"
+          data-s11-p3-action-value={sankeyCopy?.actionValue}
+          data-s11-p3-human-question={sankeyCopy?.humanQuestion}
+          data-s11-p3-interactive="true"
+          data-s11-p3-visual-id="agent_decision_sankey"
+        >
+          <div className="workflow-governance-visual-heading">
+            <span>{sankeyCopy?.title}</span>
+            <strong data-s11-p3-insight-header={sankeyCopy?.insightHeader}>{sankeyCopy?.insightHeader}</strong>
+            <p>{sankeyCopy?.humanQuestion}</p>
+            <em>{sankeyCopy?.actionValue}</em>
+          </div>
+          <svg className="workflow-sankey-svg" viewBox="0 0 520 250" role="img" aria-label="Codex/Agent Decision Sankey">
+            <text x="24" y="36">人类目标</text>
+            <text x="160" y="36">Codex 执行</text>
+            <text x="300" y="36">验证复审</text>
+            <text x="426" y="36">治理/授权</text>
+            {model.sankeyLinks.map((link, index) => {
+              const y = link.y;
+              const startX = 48 + index * 78;
+              const endX = startX + 124;
+              return (
+                <g
+                  className="workflow-sankey-link"
+                  key={link.id}
+                  onClick={() => openNode(link.node, "summary")}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") openNode(link.node, "summary");
+                  }}
+                  role="button"
+                  tabIndex={0}
+                >
+                  <title>{`${link.sourceLabel} 到 ${link.targetLabel}：${link.value} 条证据`}</title>
+                  <path
+                    d={`M ${startX} ${y} C ${startX + 48} ${y - 34}, ${endX - 48} ${y + 34}, ${endX} ${y}`}
+                    stroke={link.color}
+                    strokeWidth={link.width}
+                  />
+                  <circle cx={startX} cy={y} r="7" />
+                  <circle cx={endX} cy={y} r="7" />
+                  <text x={startX - 16} y={y + 31}>{link.sourceLabel}</text>
+                  <text x={endX - 18} y={y - 22}>{link.targetLabel}</text>
+                </g>
+              );
+            })}
+          </svg>
+        </article>
+
+        <article
+          className="workflow-governance-visual-card"
+          data-s11-p3-action-value={heatmapCopy?.actionValue}
+          data-s11-p3-human-question={heatmapCopy?.humanQuestion}
+          data-s11-p3-interactive="true"
+          data-s11-p3-visual-id="friction_heatmap"
+        >
+          <div className="workflow-governance-visual-heading">
+            <span>{heatmapCopy?.title}</span>
+            <strong data-s11-p3-insight-header={heatmapCopy?.insightHeader}>{heatmapCopy?.insightHeader}</strong>
+            <p>{heatmapCopy?.humanQuestion}</p>
+            <em>{heatmapCopy?.actionValue}</em>
+          </div>
+          <div className="friction-heatmap-grid" aria-label="Friction Heatmap">
+            {model.frictionCells.map((cell) => (
+              <button
+                key={cell.id}
+                onClick={() => openNode(cell.node, "search")}
+                style={{ "--heat": cell.intensity, "--cell-color": workflowHeatColor(cell.intensity) } as CSSProperties}
+                type="button"
+              >
+                <strong>{cell.rowLabel}</strong>
+                <span>{cell.columnLabel}</span>
+                <small>{cell.count} 条 · {cell.action}</small>
+              </button>
+            ))}
+          </div>
+        </article>
+
+        <article
+          className="workflow-governance-visual-card latent-radar-card"
+          data-s11-p3-action-value={radarCopy?.actionValue}
+          data-s11-p3-human-question={radarCopy?.humanQuestion}
+          data-s11-p3-interactive="true"
+          data-s11-p3-visual-id="latent_radar"
+        >
+          <div className="workflow-governance-visual-heading">
+            <span>{radarCopy?.title}</span>
+            <strong data-s11-p3-insight-header={radarCopy?.insightHeader}>{radarCopy?.insightHeader}</strong>
+            <p>{radarCopy?.humanQuestion}</p>
+            <em>{radarCopy?.actionValue}</em>
+          </div>
+          <svg className="latent-radar-svg" viewBox="0 0 300 260" role="img" aria-label="Latent Radar">
+            <circle cx="150" cy="126" r="106" />
+            <circle cx="150" cy="126" r="66" />
+            <polygon points={radarPoints} />
+            {model.latentAxes.map((axis, index) => {
+              const angle = -Math.PI / 2 + (index / Math.max(1, model.latentAxes.length)) * Math.PI * 2;
+              const x = 150 + Math.cos(angle) * 118;
+              const y = 126 + Math.sin(angle) * 118;
+              return (
+                <g
+                  className={axis.id === selectedAxis?.id ? "latent-radar-axis active" : "latent-radar-axis"}
+                  key={axis.id}
+                  onClick={() => {
+                    setSelectedAxisId(axis.id);
+                    openNode(axis.node, "summary");
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      setSelectedAxisId(axis.id);
+                      openNode(axis.node, "summary");
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                >
+                  <line x1="150" y1="126" x2={x} y2={y} />
+                  <text x={x} y={y}>{axis.label}</text>
+                </g>
+              );
+            })}
+          </svg>
+          {selectedAxis ? (
+            <button className="latent-radar-selected" onClick={() => openNode(selectedAxis.node, "summary")} type="button">
+              <span>{selectedAxis.label}</span>
+              <strong>{formatScore(selectedAxis.value)} · {selectedAxis.confidenceLabel} · 证据 {selectedAxis.evidenceBadge}</strong>
+              <small>打开总结闭环，验证或降权这条潜性信号。</small>
+            </button>
+          ) : null}
+        </article>
+
+        <article
+          className="workflow-governance-visual-card"
+          data-s11-p3-action-value={timelineCopy?.actionValue}
+          data-s11-p3-human-question={timelineCopy?.humanQuestion}
+          data-s11-p3-interactive="true"
+          data-s11-p3-visual-id="evidence_timeline"
+        >
+          <div className="workflow-governance-visual-heading">
+            <span>{timelineCopy?.title}</span>
+            <strong data-s11-p3-insight-header={timelineCopy?.insightHeader}>{timelineCopy?.insightHeader}</strong>
+            <p>{timelineCopy?.humanQuestion}</p>
+            <em>{timelineCopy?.actionValue}</em>
+          </div>
+          <div className="evidence-timeline-track" aria-label="Evidence Timeline">
+            {model.evidenceEvents.map((event) => (
+              <button
+                key={event.id}
+                onClick={() => openNode(event.node, "timeline")}
+                style={{ left: `${event.x}%` }}
+                type="button"
+              >
+                <strong>{event.dateLabel}</strong>
+                <span>{event.label}</span>
+                <small>{event.sourceLabel} · 证据 {event.evidenceCount}</small>
+              </button>
+            ))}
+          </div>
+        </article>
+
+        <article
+          className="workflow-governance-visual-card"
+          data-s11-p3-action-value={formulaCopy?.actionValue}
+          data-s11-p3-human-question={formulaCopy?.humanQuestion}
+          data-s11-p3-interactive="true"
+          data-s11-p3-visual-id="formula_explorer"
+        >
+          <div className="workflow-governance-visual-heading">
+            <span>{formulaCopy?.title}</span>
+            <strong data-s11-p3-insight-header={formulaCopy?.insightHeader}>{formulaCopy?.insightHeader}</strong>
+            <p>{formulaCopy?.humanQuestion}</p>
+            <em>{formulaCopy?.actionValue}</em>
+          </div>
+          <div className="formula-explorer-list" aria-label="Formula Explorer/Parameter Inspector">
+            {model.formulaRows.map((row) => (
+              <button key={row.id} onClick={() => openNode(row.node, "roi")} type="button">
+                <span>{row.label}</span>
+                <strong>{row.value}</strong>
+                <small>{row.description}</small>
+                <em>{row.sourcePath}</em>
+              </button>
+            ))}
+          </div>
+        </article>
+      </div>
+    </section>
+  );
+}
+
 function HomeOverviewView({
   atlas,
   nodes,
   graphEdges,
   clioLikeVisualModel,
   economicLikeVisualModel,
+  workflowLatentGovernanceVisualModel,
   deltaStats,
   selectedNode,
   sharedState,
@@ -2408,6 +2795,7 @@ function HomeOverviewView({
   graphEdges: AtlasEdge[];
   clioLikeVisualModel: ClioLikeVisualModel;
   economicLikeVisualModel: EconomicLikeVisualModel;
+  workflowLatentGovernanceVisualModel: WorkflowLatentGovernanceVisualModel;
   deltaStats: DeltaStats;
   selectedNode: AtlasNode | null;
   sharedState: SharedAtlasState;
@@ -2606,6 +2994,7 @@ function HomeOverviewView({
       <BehaviorIntelligencePanel summary={behaviorIntelligence} />
       <ClioLikeVisualPanel model={clioLikeVisualModel} onSelectNode={onSelectNode} onSwitchView={onSwitchView} />
       <EconomicLikeVisualPanel model={economicLikeVisualModel} onSelectNode={onSelectNode} onSwitchView={onSwitchView} />
+      <WorkflowLatentGovernanceVisualPanel model={workflowLatentGovernanceVisualModel} onSelectNode={onSelectNode} onSwitchView={onSwitchView} />
       <section className="home-preview-grid" aria-label={uiCopy.overview.previewAria} data-home-section="entry_points">
         <button
           className="home-preview-card mini-starfield-preview"
@@ -7488,6 +7877,265 @@ function economicOpportunityScore(node: AtlasNode, recentStart: Date, latest: Da
     ? 0.18
     : 0;
   return clamp(roi * 0.64 + recentBoost + opportunityText, 0, 1);
+}
+
+function buildWorkflowLatentGovernanceVisualModel(
+  nodes: AtlasNode[],
+  graphEdges: AtlasEdge[],
+  filters: AtlasFilters,
+  sharedState: SharedAtlasState,
+  deltaStats: DeltaStats,
+): WorkflowLatentGovernanceVisualModel {
+  const visualCopy: WorkflowLatentGovernanceVisualCopy[] = [
+    {
+      id: "agent_decision_sankey",
+      title: "Codex/Agent Decision Sankey",
+      insightHeader: "Agent 路径要看入口、验收和回滚是否连起来",
+      humanQuestion: "Codex/Agent 执行路径哪里失真？",
+      actionValue: "把断点转成下一轮 run contract、validator 或人工授权判断。",
+    },
+    {
+      id: "friction_heatmap",
+      title: "Friction Heatmap",
+      insightHeader: "返工热区优先处理证据缺口和 scope creep",
+      humanQuestion: "我在哪些地方反复浪费时间？",
+      actionValue: "把高热区转成停止条件、验收门禁或降噪规则。",
+    },
+    {
+      id: "latent_radar",
+      title: "Latent Radar",
+      insightHeader: "潜在信号必须能被证据验证或降权",
+      humanQuestion: "哪些潜在信号正在增强？",
+      actionValue: "只继续验证可反驳、有证据 badge、有下一步的问题。",
+    },
+    {
+      id: "evidence_timeline",
+      title: "Evidence Timeline",
+      insightHeader: "结论要能沿时间线追到证据来源",
+      humanQuestion: "这个结论从哪些记录来？",
+      actionValue: "打开时间线复核证据新鲜度，避免旧结论继续驱动行动。",
+    },
+    {
+      id: "formula_explorer",
+      title: "Formula Explorer/Parameter Inspector",
+      insightHeader: "公式权重只解释 proxy，不直接代表真实收益",
+      humanQuestion: "这个分数为什么这样算？",
+      actionValue: "检查参数、边界和 proposal-only 规则，再决定是否进入 S12/S13。",
+    },
+  ];
+  const memoryNodes = nodes.filter((node) => node.kind === "memory");
+  const latest = parseDay(deltaStats.latestDate) ?? maxNodeDate(memoryNodes) ?? new Date();
+  const recentStart = addDays(latest, -29);
+  const edgeCountByNode = graphEdges.reduce<Map<string, number>>((acc, edge) => {
+    acc.set(edge.source, (acc.get(edge.source) ?? 0) + 1);
+    acc.set(edge.target, (acc.get(edge.target) ?? 0) + 1);
+    return acc;
+  }, new Map<string, number>());
+
+  const sankeyDefinitions = [
+    {
+      id: "human_to_codex",
+      sourceLabel: "人类目标",
+      targetLabel: "Codex 执行",
+      patterns: ["goal", "task", "stage", "phase", "roadmap", "目标", "任务", "计划"],
+      color: "#72d9d0",
+    },
+    {
+      id: "codex_to_review",
+      sourceLabel: "Codex 执行",
+      targetLabel: "验证复审",
+      patterns: ["validator", "validate", "test", "build", "audit", "验收", "测试", "复审"],
+      color: "#8fd3ff",
+    },
+    {
+      id: "review_to_rework",
+      sourceLabel: "验证复审",
+      targetLabel: "返工降噪",
+      patterns: ["rework", "loop", "scope", "debt", "返工", "循环", "范围", "债"],
+      color: "#f08fa3",
+    },
+    {
+      id: "review_to_governance",
+      sourceLabel: "验证复审",
+      targetLabel: "治理记录",
+      patterns: ["governance", "handoff", "record", "evidence", "机器治理", "记录", "证据"],
+      color: "#f6c56f",
+    },
+    {
+      id: "governance_to_authorization",
+      sourceLabel: "治理记录",
+      targetLabel: "授权下一步",
+      patterns: ["proposal", "apply", "authorization", "next", "授权", "下一步", "门禁"],
+      color: "#b6a2ff",
+    },
+  ];
+  const sankeyLinks = sankeyDefinitions.map((definition, index): WorkflowSankeyLinkDatum => {
+    const matching = memoryNodes.filter((node) => nodeTextMatches(node, definition.patterns));
+    const value = Math.max(1, matching.length || Math.round(memoryNodes.length / Math.max(5, sankeyDefinitions.length + index)));
+    return {
+      id: definition.id,
+      sourceLabel: definition.sourceLabel,
+      targetLabel: definition.targetLabel,
+      value,
+      width: clamp(6 + Math.sqrt(value) * 4, 8, 30),
+      y: 72 + index * 34,
+      color: definition.color,
+      node: selectRepresentativeNode(matching.length ? matching : memoryNodes),
+    };
+  });
+
+  const frictionRows = [
+    { id: "scope", label: "范围漂移", patterns: ["scope", "范围", "越界", "drift"], action: "先收口 run contract" },
+    { id: "evidence", label: "证据缺口", patterns: ["evidence", "missing", "gap", "证据", "核验"], action: "补证据或降权" },
+    { id: "rework", label: "返工循环", patterns: ["rework", "loop", "debt", "返工", "循环", "债"], action: "建立停止条件" },
+    { id: "auth", label: "授权边界", patterns: ["auth", "apply", "raw", "credential", "授权", "凭证"], action: "保持 proposal-only" },
+    { id: "formula", label: "公式维护", patterns: ["formula", "parameter", "weight", "公式", "参数", "权重"], action: "检查参数解释" },
+  ];
+  const frictionColumns = [
+    { id: "planning", label: "规划", patterns: ["plan", "roadmap", "goal", "stage", "phase", "计划", "目标"] },
+    { id: "execution", label: "执行", patterns: ["run", "build", "implement", "script", "执行", "开发"] },
+    { id: "review", label: "复审", patterns: ["review", "audit", "validate", "test", "复审", "测试", "验收"] },
+    { id: "governance", label: "治理", patterns: ["governance", "record", "handoff", "policy", "机器治理", "记录"] },
+  ];
+  const rawFrictionCells = frictionRows.flatMap((row) =>
+    frictionColumns.map((column) => {
+      const matching = memoryNodes.filter((node) => nodeTextMatches(node, row.patterns) && nodeTextMatches(node, column.patterns));
+      const fallback = matching.length ? matching : memoryNodes.filter((node) => nodeTextMatches(node, row.patterns));
+      return {
+        id: `${row.id}_${column.id}`,
+        rowLabel: row.label,
+        columnLabel: column.label,
+        count: matching.length,
+        intensity: 0,
+        action: row.action,
+        node: selectRepresentativeNode(fallback.length ? fallback : memoryNodes),
+      };
+    }),
+  );
+  const maxFriction = Math.max(1, ...rawFrictionCells.map((cell) => cell.count));
+  const frictionCells = rawFrictionCells.map((cell) => ({
+    ...cell,
+    intensity: clamp(cell.count / maxFriction, 0, 1),
+  }));
+
+  const latentAxisDefinitions = [
+    { id: "asset_compounding", label: "资产复利", patterns: ["asset", "reuse", "handoff", "github", "恢复", "资产", "复用"] },
+    { id: "automation_potential", label: "自动化势能", patterns: ["automation", "script", "validator", "sync", "自动化", "脚本"] },
+    { id: "evidence_strength", label: "证据强度", patterns: ["evidence", "manifest", "audit", "证据", "核验"] },
+    { id: "collaboration_clarity", label: "协作清晰", patterns: ["codex", "agent", "run contract", "协作", "任务包"] },
+    { id: "governance_safety", label: "治理安全", patterns: ["governance", "raw", "credential", "proposal", "治理", "凭证", "授权"] },
+  ];
+  const latentAxes = latentAxisDefinitions.map((axis): LatentRadarDatum => {
+    const matching = memoryNodes.filter((node) => nodeTextMatches(node, axis.patterns));
+    const recentShare = matching.length
+      ? matching.filter((node) => isNodeBetween(node, recentStart, latest)).length / Math.max(1, matching.length)
+      : 0;
+    const roi = matching.length ? average(matching.map((node) => normalizedNodeRoi(node))) : average(memoryNodes.map((node) => normalizedNodeRoi(node))) * 0.55;
+    const density = matching.length / Math.max(1, Math.min(memoryNodes.length, 24));
+    const value = clamp(density * 0.52 + roi * 0.3 + recentShare * 0.18, 0.12, 1);
+    return {
+      id: axis.id,
+      label: axis.label,
+      value,
+      confidenceLabel: value >= 0.66 ? "高置信" : value >= 0.42 ? "中置信" : "待验证",
+      evidenceBadge: value >= 0.66 ? "A" : value >= 0.34 ? "B" : "C",
+      node: selectRepresentativeNode(matching.length ? matching : memoryNodes),
+    };
+  });
+
+  const datedNodes = memoryNodes
+    .filter((node) => parseDay(node.date))
+    .sort((a, b) => (a.date ?? "").localeCompare(b.date ?? ""))
+    .slice(-6);
+  const firstDate = parseDay(datedNodes[0]?.date) ?? recentStart;
+  const lastDate = parseDay(datedNodes[datedNodes.length - 1]?.date) ?? latest;
+  const dateSpan = Math.max(1, lastDate.getTime() - firstDate.getTime());
+  const evidenceEvents = (datedNodes.length ? datedNodes : memoryNodes.slice(0, 6)).map((node, index): EvidenceTimelineDatum => {
+    const day = parseDay(node.date);
+    const x = day ? 8 + ((day.getTime() - firstDate.getTime()) / dateSpan) * 84 : 10 + index * 15;
+    const evidenceCount = Math.max(1, edgeCountByNode.get(node.id) ?? edgeCountHintForNode(node));
+    return {
+      id: node.id,
+      label: compactThemeLabel(humanNodeDisplayTitle(node)).slice(0, 28),
+      dateLabel: day ? formatChineseDate(day) : "无日期",
+      x: clamp(x, 6, 92),
+      evidenceCount,
+      sourceLabel: sourceDisplayLabel(node.data_source ?? "memory_atlas", node.source_label ?? "memory_atlas"),
+      node,
+    };
+  });
+
+  const formulaNode = selectRepresentativeNode(memoryNodes.filter((node) => nodeTextMatches(node, ["formula", "parameter", "roi", "公式", "参数", "权重"]))) ?? selectRepresentativeNode(memoryNodes);
+  const formulaRows: FormulaInspectorDatum[] = [
+    {
+      id: "time_saved_weight",
+      label: "time_saved_weight",
+      value: `${Math.round(average(memoryNodes.map((node) => normalizedNodeRoi(node))) * 100)}% proxy`,
+      description: "时间节省权重来自内部信息 ROI proxy，不是精确收入预测。",
+      sourcePath: "机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json",
+      node: formulaNode,
+    },
+    {
+      id: "reuse_value_weight",
+      label: "reuse_value_weight",
+      value: `${latentAxes.find((axis) => axis.id === "asset_compounding")?.evidenceBadge ?? "B"} badge`,
+      description: "复用价值要能被 GitHub 可恢复资产或 handoff 证据支撑。",
+      sourcePath: "data/derived/economic_proxy/formula_what_if_preview.json",
+      node: formulaNode,
+    },
+    {
+      id: "rework_cost_weight",
+      label: "rework_cost_weight",
+      value: `${frictionCells.filter((cell) => cell.rowLabel === "返工循环").reduce((sum, cell) => sum + cell.count, 0)} hits`,
+      description: "返工成本用于扣减 proxy 分，帮助识别需要降噪的工作流。",
+      sourcePath: "data/derived/behavior_intelligence/decision_debt_ledger.json",
+      node: formulaNode,
+    },
+    {
+      id: "proposal_required_before_apply",
+      label: "proposal_required_before_apply",
+      value: "true",
+      description: "参数变化只进入 proposal，不直接写 active config 或 raw。",
+      sourcePath: "data/derived/agent_collaboration/agent_authorization_boundary_report.json",
+      node: formulaNode,
+    },
+  ];
+
+  const activeFilters = {
+    source: filters.source === "all" ? "全部来源" : sourceDisplayLabel(filters.source, filters.source),
+    time: sharedState.filters.timeRange?.label ?? "全部时间",
+    project: filters.theme === "all" ? "全部项目/主题" : filters.theme,
+    task: filters.category === "all" ? "全部任务类别" : humanCategoryLabel(filters.category),
+  };
+  const hottestCell = [...frictionCells].sort((a, b) => b.count - a.count)[0];
+  const strongestAxis = [...latentAxes].sort((a, b) => b.value - a.value)[0];
+  const summary = memoryNodes.length
+    ? `当前筛选下，${hottestCell?.rowLabel ?? "摩擦"} 在${hottestCell?.columnLabel ?? "流程"}最需要降噪，${strongestAxis?.label ?? "潜在信号"}是最强潜性轴；P3 图谱已按 source/time/project/task 过滤。`
+    : "当前筛选下没有可计算的工作流/潜性/治理信号；请放宽过滤条件后再查看。";
+
+  return {
+    schemaVersion: WORKFLOW_LATENT_GOVERNANCE_VISUALS_VERSION,
+    activeFilters,
+    visualCopy,
+    sankeyLinks,
+    frictionCells,
+    latentAxes,
+    evidenceEvents,
+    formulaRows,
+    summary,
+  };
+}
+
+function nodeTextMatches(node: AtlasNode, patterns: string[]): boolean {
+  const haystack = `${node.label} ${node.statement ?? ""} ${node.category ?? ""} ${node.memory_tier ?? ""} ${node.metrics?.roi?.recommended_action ?? ""}`.toLowerCase();
+  return patterns.some((pattern) => haystack.includes(pattern.toLowerCase()));
+}
+
+function workflowHeatColor(intensity: number): string {
+  if (intensity >= 0.72) return "#f08fa3";
+  if (intensity >= 0.42) return "#f6c56f";
+  if (intensity > 0) return "#8fd3ff";
+  return "#2c3440";
 }
 
 function buildHomeOverviewModel(
