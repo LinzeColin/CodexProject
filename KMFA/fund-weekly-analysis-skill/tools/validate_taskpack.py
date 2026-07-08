@@ -14,6 +14,7 @@ REQUIRED = [
     "references/operating_contract.md",
     "references/source_of_truth_contract.md",
     "references/validation_checks.md",
+    "references/excel_master_review_checklist.md",
     "templates/excel_sheet_spec.yaml",
     "templates/fund_weekly_analysis_config.yaml",
     "automation/codex_app_automation.contract.toml",
