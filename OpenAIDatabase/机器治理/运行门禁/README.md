@@ -2,7 +2,34 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S13 P3。任务 ID 为 `MA-V12-S13P3`，验收 ID 为
+当前阶段是 S13 Review。任务 ID 为 `MA-V12-S13-REVIEW`，验收 ID 为
+`ACC-MA-V12-S13-REVIEW`，validator 为 `validate:v1.2-s13-review`。状态为
+`stage_s13_review_passed_pending_s14_no_github_main_upload`。
+
+S13 Review 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s13_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s13_review.cjs`
+- `docs/reviews/memory_atlas_v1_2_s13_p1_proposal_state_machine.md`
+- `docs/reviews/memory_atlas_v1_2_s13_p2_diff_narrator.md`
+- `docs/reviews/memory_atlas_v1_2_s13_p3_apply_rollback.md`
+
+S13 Review gate：
+
+- `validate:v1.2-s13-review` 可验证 S13 P1/P2/P3 阶段链。
+- Proposal 状态机要求 human approval before apply。
+- Diff narrator 覆盖改了什么、为什么改、影响什么、如何验证、如何回滚。
+- `sample_unauthorized` 未授权 `FAIL_CLOSED`。
+- `sample` 授权 dry-run 有 `validation_after_apply` 和 rollback point。
+- 真实 pending proposal 未获人类授权前不 apply。
+- 不修改 raw。
+- 不上传 GitHub main。
+- 不执行远端 push。
+
+No GitHub main upload。No remote push。No raw mutation。
+下一步是 S14 P1。
+
+历史复验兼容记录：S13 P3 完成时当前阶段是 S13 P3。任务 ID 为 `MA-V12-S13P3`，验收 ID 为
 `ACC-MA-V12-S13P3`，validator 为 `validate:v1.2-s13-p3`。状态为
 `phase_s13_p3_apply_rollback_completed_pending_s13_review`。
 
@@ -29,7 +56,7 @@ S13 P3 gate：
 - 不执行远端 push。
 
 No GitHub main upload。No remote push。No raw mutation。
-下一步是 S13 Review。
+当时下一步是 S13 Review。S13 Review 已完成，下一步是 S14 P1。
 
 历史复验兼容记录：S13 P2 完成时当前阶段是 S13 P2。任务 ID 为 `MA-V12-S13P2`，验收 ID 为
 `ACC-MA-V12-S13P2`，validator 为 `validate:v1.2-s13-p2`。状态为

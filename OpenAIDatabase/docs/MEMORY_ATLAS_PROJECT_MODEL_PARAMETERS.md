@@ -1,3 +1,51 @@
+## 157. Memory Atlas v1.2 S13 Review Parameters
+
+状态：`stage_s13_review_passed_pending_s14_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S13-REVIEW`。
+
+S13 Review 固定以下参数：
+
+- `MA-V12-S13-REVIEW`
+- `validate:v1.2-s13-review`
+- S13 Review
+- S13 P1
+- S13 P2
+- S13 P3
+- `proposal_state_machine.v1_2_s13_p1`
+- `diff_narrator.v1_2_s13_p2`
+- `proposal_apply.v1_2_s13_p3`
+- Proposal 状态机
+- Diff narrator
+- Apply 与回滚
+- `sample_unauthorized`
+- `sample`
+- `FAIL_CLOSED`
+- S13 Review 完成后下一步为 S14 P1。
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+
+参数：
+
+- `PARAM-MA-V12-S13-REVIEW-001 stage_status = stage_s13_review_passed_pending_s14_no_github_main_upload`
+- `PARAM-MA-V12-S13-REVIEW-002 validator = validate:v1.2-s13-review`
+- `PARAM-MA-V12-S13-REVIEW-003 phase_chain = S13 P1; S13 P2; S13 P3`
+- `PARAM-MA-V12-S13-REVIEW-004 state_machine_contract = proposal_state_machine.v1_2_s13_p1`
+- `PARAM-MA-V12-S13-REVIEW-005 diff_narrator_contract = diff_narrator.v1_2_s13_p2`
+- `PARAM-MA-V12-S13-REVIEW-006 apply_contract = proposal_apply.v1_2_s13_p3`
+- `PARAM-MA-V12-S13-REVIEW-007 next_phase = S14 P1`
+- `PARAM-MA-V12-S13-REVIEW-008 phase_boundary = No GitHub main upload; No remote push; No raw mutation`
+
+验证逻辑：
+
+- `validate:v1.2-s13-review` checks S13 P1/P2/P3 validators, Proposal 状态机,
+  Diff narrator, `atlasctl` proposal/diff/apply dry-runs, unauthorized
+  fail-closed behavior, authorized validation and rollback point evidence,
+  governance records, no raw mutation and no remote upload.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S13 Review; MA-V12-S13-REVIEW; ACC-MA-V12-S13-REVIEW; stage_s13_review_passed_pending_s14_no_github_main_upload; validate:v1.2-s13-review; S13 Review; S13 P1; S13 P2; S13 P3; proposal_state_machine.v1_2_s13_p1; diff_narrator.v1_2_s13_p2; proposal_apply.v1_2_s13_p3; Proposal 状态机; Diff narrator; Apply 与回滚; sample_unauthorized; sample; FAIL_CLOSED; No GitHub main upload; No remote push; No raw mutation; pending S14 P1.
+
 ## 156. Memory Atlas v1.2 S13 P3 Apply 与回滚 Parameters
 
 状态：`phase_s13_p3_apply_rollback_completed_pending_s13_review`。
