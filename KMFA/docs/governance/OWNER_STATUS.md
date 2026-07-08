@@ -966,3 +966,11 @@ KMFA 当前版本 `0.1.4-residual-difference-authorized-source-reference-or-excl
 - decision: `NO_GO`; business execution, GitHub upload and app reinstall remain closed.
 
 - v0.1.4 business execution blocked follow-up continuation recheck follow-up final check 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：source blockers=48、final-check blockers=48、business execution ready=0、unresolved differences=72、Go/No-Go=NO_GO。该 phase 只读取上一 public-safe follow-up evidence 和 ignored private follow-up queue，不读取或修改 raw inbox，不公开 raw 文件名、字段/表头、金额、明细、私有 hash、target slot 明细或业务值，不证明 authoritative binding、raw-to-processed value comparison、full reconciliation、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
+
+
+## 2026-07-08｜owner/authorized-agent final-check closure
+
+- task: `KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-BLOCKED-FOLLOW-UP-CONTINUATION-RECHECK-FOLLOW-UP-FINAL-CHECK-CLOSURE-20260708`
+- owner/authorized-agent completion: `0/48`; all 48 closure items remain blocked pending authorized source reference, owner exclusion, formula mapping or non-numeric mapping resolution.
+- decision: `NO_GO`; business execution is not allowed.
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK_FOLLOW_UP_FINAL_CHECK_CLOSURE/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_final_check_closure_manifest.json`
