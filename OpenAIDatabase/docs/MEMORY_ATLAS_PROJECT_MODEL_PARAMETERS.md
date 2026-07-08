@@ -1,3 +1,39 @@
+## 142. Memory Atlas v1.2 S10 P2 Global Chinese UX Parameters
+
+状态：`phase_s10_p2_global_chinese_ux_completed_pending_s10_p3`。
+
+验收 ID：`ACC-MA-V12-S10P2`。
+
+S10 P2 固定以下参数：
+
+- `MA-V12-S10P2`
+- `validate:v1.2-s10-p2`
+- `global_chinese_ux.v1_2_s10_p2`
+- `atlasctl.py audit --check chinese-ux`
+- `Chinese UX linter`
+- 核心 UI 默认中文。
+- 机器术语必须有中文解释。
+- S10 P2 完成后下一步为 pending S10 P3。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S10P2-001 phase_status = phase_s10_p2_global_chinese_ux_completed_pending_s10_p3`
+- `PARAM-MA-V12-S10P2-002 validator = validate:v1.2-s10-p2`
+- `PARAM-MA-V12-S10P2-003 global_chinese_version = global_chinese_ux.v1_2_s10_p2`
+- `PARAM-MA-V12-S10P2-004 core_ui_default_chinese = true`
+- `PARAM-MA-V12-S10P2-005 machine_terms_with_chinese_explanation = true`
+- `PARAM-MA-V12-S10P2-006 next_gate = pending S10 P3`
+- `PARAM-MA-V12-S10P2-007 phase_boundary = No raw mutation; No proposal apply execution; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s10-p2` checks frontend runtime contract, Chinese copy,
+  English-first homepage fragment removal, `atlasctl audit --check chinese-ux`,
+  records and raw no-change boundary.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S10 P2; MA-V12-S10P2; ACC-MA-V12-S10P2; phase_s10_p2_global_chinese_ux_completed_pending_s10_p3; validate:v1.2-s10-p2; global_chinese_ux.v1_2_s10_p2; Chinese UX linter; pending S10 P3; No GitHub main upload in this phase; No raw mutation; No proposal apply execution.
+
 ## 141. Memory Atlas v1.2 S10 P1 Home Arrival Briefing Parameters
 
 状态：`phase_s10_p1_home_arrival_briefing_completed_pending_s10_p2`。

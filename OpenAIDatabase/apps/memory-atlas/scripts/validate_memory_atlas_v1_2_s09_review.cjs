@@ -377,10 +377,11 @@ function validateDocsAndRecords() {
     "S09 Review artifact is incomplete",
   );
   assertCondition(
-    hasAll(quick, ["当前阶段是 S09 Review", taskId, acceptanceId, status, "下一步只允许进入 S10 P1"]),
+    hasAll(quick, ["当前阶段是 S09 Review", taskId, acceptanceId, status, "下一步只允许进入 S10 P1"]) ||
+      hasAll(quick, ["S09 Review 已完成", "S10 P1 已完成", "S10 P2 已完成"]),
     "s09_review_quick_entry",
-    "Quick entry has advanced to S09 Review and pending S10 P1",
-    "Quick entry is missing S09 Review current state",
+    "Quick entry records S09 Review either as current state or historical review gate after later S10 phases",
+    "Quick entry is missing S09 Review current or historical state",
   );
   assertCondition(
     hasAll(overview, ["S09 Review 已完成", "latent_signals.json", "self_iteration_suggestions.json", "decision_debt_ledger.json"]) &&
@@ -390,10 +391,11 @@ function validateDocsAndRecords() {
     "Overview is missing S09 Review historical state",
   );
   assertCondition(
-    hasAll(machine, ["当前为 S09 Review", taskId, acceptanceId, validatorName, "下一步是 S10 P1"]),
+    hasAll(machine, ["当前为 S09 Review", taskId, acceptanceId, validatorName, "下一步是 S10 P1"]) ||
+      hasAll(machine, ["S09 Review 已完成", "S10 P1 已完成", "S10 P2 已完成", validatorName]),
     "s09_review_machine_readme",
-    "Machine README records S09 Review current state",
-    "Machine README is missing S09 Review current state",
+    "Machine README records S09 Review either as current state or historical review gate after later S10 phases",
+    "Machine README is missing S09 Review current or historical state",
   );
   assertCondition(
     hasAll(dataContract, ["当前 S09 Review 已完成", latentOutputPath, selfIterationOutputPath, decisionDebtOutputPath, "下一步是 S10 P1"]),
@@ -411,10 +413,11 @@ function validateDocsAndRecords() {
     hasAll(runGate, [taskId, acceptanceId, validatorName]) &&
       (
         hasAll(runGate, ["当前阶段是 S09 Review", "下一步是 S10 P1"]) ||
-        hasAll(runGate, ["当前阶段是 S10 P1", "MA-V12-S10P1", "下一步是 S10 P2", "历史复验兼容记录：S09 Review"])
+        hasAll(runGate, ["当前阶段是 S10 P1", "MA-V12-S10P1", "下一步是 S10 P2", "历史复验兼容记录：S09 Review"]) ||
+        hasAll(runGate, ["当前阶段是 S10 P2", "MA-V12-S10P2", "下一步是 S10 P3", "历史复验兼容记录：S09 Review"])
       ),
     "s09_review_run_gate",
-    "Run gate README records S09 Review validator either as current gate or historical review gate after S10 P1",
+    "Run gate README records S09 Review validator either as current gate or historical review gate after later S10 phases",
     "Run gate README is missing S09 Review historical gate",
   );
   for (const name of recordFiles) {

@@ -89,11 +89,11 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and 'if (activeView === "home")' in app_source
         and "function HomeOverviewView" in app_source
         and "function buildHomeOverviewModel" in app_source
-        and "Memory Weather" in ui_source
-        and "Next Best Actions" in ui_source
+        and ("Memory Weather" in ui_source or "记忆天气" in ui_source)
+        and ("Next Best Actions" in ui_source or "下一步行动" in ui_source)
         and "Black Hole 风险" in app_source
         and "Proto-Star 机会" in app_source
-        and "proposal-only，不直接写长期记忆" in ui_source
+        and ("proposal-only，不直接写长期记忆" in ui_source or "仅生成提案，不直接写长期记忆" in ui_source)
         and ".home-overview-view" in css_source
         and ".home-status-grid" in css_source
         and ".home-action-list" in css_source
@@ -105,9 +105,9 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
 
     require(
         checks,
-        "Mini Starfield" in ui_source
-        and "River Pulse" in ui_source
-        and "Inspector Deep Link" in app_source
+        ("Mini Starfield" in ui_source or "轻量星图" in ui_source)
+        and ("River Pulse" in ui_source or "时间脉冲" in ui_source)
+        and ("Inspector Deep Link" in app_source or "证据入口" in ui_source)
         and "function buildMiniStarfieldPreview" in app_source
         and "function buildRiverPulsePreview" in app_source
         and "function buildHomeInspectorLinks" in app_source
@@ -1163,7 +1163,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     require(
         checks,
         '"validate:stage9-visual-semantics": "node scripts/validate_stage9_visual_semantics.cjs"' in read_text(repo_root / "apps/memory-atlas/package.json")
-        and "Memory Weather v2" in app_source
+        and ("Memory Weather v2" in app_source or "记忆天气 v2" in ui_source)
         and "data-memory-weather-v2" in app_source
         and "buildMemoryWeatherV2" in app_source
         and "memory-river-roi-gradient" in app_source
