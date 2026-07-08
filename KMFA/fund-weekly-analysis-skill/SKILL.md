@@ -162,9 +162,10 @@ Current deterministic runner status contract:
 
 Explicit source materialization:
 
-* Use `tools/materialize_fund_source.py` when the configured `DWS_Outputs/付款请示群` folder is missing but a verified private candidate such as `DWS_Archive/付款请示群` exists.
+* Use `tools/materialize_fund_source.py` when the configured `DWS_Outputs/付款请示群` folder is missing but a verified private candidate such as `DWS_Archive/付款请示群` or `DWS_Outputs.zip` exists.
 * Dry-run is default. `--apply` is required before any files are copied.
-* The tool copies only missing files, skips identical files, fails on target hash conflicts, detects OneDrive/macOS `dataless` source files as `SOURCE_UNREADABLE`, and writes `source_materialization_manifest.json` plus `source_materialization_files.csv` under ignored private runtime.
+* For directory candidates, pass `--source-dir`. For zip candidates, pass `--source-zip` and `--zip-prefix 付款请示群`; only files under that group prefix are eligible.
+* The tool copies only missing files, skips identical files, fails on target hash conflicts, detects OneDrive/macOS `dataless` source files as `SOURCE_UNREADABLE`, treats unreadable/bad zip files as `SOURCE_UNREADABLE`, and writes `source_materialization_manifest.json` plus `source_materialization_files.csv` under ignored private runtime.
 * Do not materialize from unverified zip/archive contents silently during daily runner execution.
 
 The shipped editable workbook template is:
