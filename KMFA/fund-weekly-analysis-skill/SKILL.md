@@ -18,10 +18,11 @@ Before acting, read these files in order:
 3. `references/operating_contract.md`
 4. `references/source_of_truth_contract.md`
 5. `references/validation_checks.md`
-6. `templates/excel_sheet_spec.yaml`
-7. `templates/fund_weekly_analysis_config.yaml`
-8. `KMFA/HANDOFF.md` if present
-9. The exact source files you will touch or process
+6. `references/owner_review_handoff.md` when exporting, validating, or handing off OCR owner review workbooks
+7. `templates/excel_sheet_spec.yaml`
+8. `templates/fund_weekly_analysis_config.yaml`
+9. `KMFA/HANDOFF.md` if present
+10. The exact source files you will touch or process
 
 ## No simulation / no synthetic financial data
 
@@ -45,8 +46,8 @@ No simulation: production reports must be generated only from real source files,
 
 * Automation name: `KMFA资金周报自动化`.
 * Timezone: `Australia/Sydney`.
-* Scheduled run time: daily at 11:30 local Sydney time.
-* `Australia/Sydney` local time is the scheduler source of truth. Beijing 09:30 is reference wording only for the current UTC+10 offset and must not be used as the scheduler timezone.
+* Scheduled run time: Monday and Saturday at 11:00 local Sydney time.
+* `Australia/Sydney` local time is the scheduler source of truth. Beijing 09:00 is reference wording only for the current UTC+10 offset and must not be used as the scheduler timezone.
 * Input directory:
 
       /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群
@@ -213,8 +214,8 @@ Current deterministic runner status contract:
 * When structured CSV facts exist, the runner writes `cashflow_validation.csv`: balance continuity, operating cashflow effect, and internal-transfer exclusion are checked per ledger row. Continuity failures create exception tasks and block management conclusions.
 * Every generated workbook is inspected into `workbook_quality_checks.csv`: sheet order, hidden audit sheets, visible row 2 cleanup, homepage 15-day/30-day native line chart semantics, native chart dimensions, formula error markers, and visible sensitive-value patterns. Any failing workbook quality check blocks management conclusions.
 * Every generated workbook writes a hidden `H06_配置规则` runtime rules table before workbook quality inspection. The table must include `run_id`, `source_input_dir`, local timezone, `schedule_rrule`, `schedule_ready`, `no_hallucinated_data_policy`, `fact_promotion_execution_allowed=false`, `fund_ledger_write_allowed=false`, `management_conclusion_allowed=false`, and the private-runtime governance policy.
-* Every successful output package emits `automation_readiness.csv`: a read-only Codex automation readiness sidecar comparing the tracked contract and local automation state. It must verify `Australia/Sydney` plus the current daily 11:30 local schedule, set `schedule_ready=true` only when the local schedule matches, keep `management_conclusion_allowed=false`, and mark schedule readiness as evidence only, not as financial fact promotion.
-* `tools/check_codex_app_automation.py` must also validate the tracked contract itself. If the contract drifts from daily 11:30 `Australia/Sydney`, the daily 11:30 prompt, the governed OneDrive input path, the source readiness gate, or `main_only_no_branch_no_pr_no_worktree`, it must return `CODEX_AUTOMATION_CONTRACT_INVALID` even when the live local automation matches the bad contract.
+* Every successful output package emits `automation_readiness.csv`: a read-only Codex automation readiness sidecar comparing the tracked contract and local automation state. It must verify `Australia/Sydney` plus the current Monday/Saturday 11:00 local schedule, set `schedule_ready=true` only when the local schedule matches, keep `management_conclusion_allowed=false`, and mark schedule readiness as evidence only, not as financial fact promotion.
+* `tools/check_codex_app_automation.py` must also validate the tracked contract itself. If the contract drifts from Monday/Saturday 11:00 `Australia/Sydney`, the Monday/Saturday 11:00 prompt, the governed OneDrive input path, the source readiness gate, or `main_only_no_branch_no_pr_no_worktree`, it must return `CODEX_AUTOMATION_CONTRACT_INVALID` even when the live local automation matches the bad contract.
 * Every successful output package emits `goal_completion_audit.csv`: requirement-level evidence for source readiness, native workbook, C-level native chart size/15-day/30-day semantics, KMFA metadata signal transform, company-bank matrix, internal-transfer netting, cashflow validation, known due-date forecasting, cross-checks, no-hallucination, raw/private runtime boundary, formal fact promotion, management conclusions, automation schedule external verification, and the main-only runtime contract. This audit does not grant promotion or conclusion authority.
 * Every successful output package emits `management_conclusion_gate.csv`: a fail-closed C-level conclusion gate that combines source readiness, workbook quality, formal fact promotion execution, formal ledger population, cashflow validation, evidence cross-review, automation external check status, and final management-conclusion release authorization. `formal_fund_ledger.csv` rows may move the formal execution and ledger population gates to ready, but the final authorization gate still keeps `management_conclusion_allowed=false` until a separate release approval exists.
 * Every successful output package emits `owner_action_queue.csv`: a fail-closed owner-facing queue derived only from blocking or external-check management gates. Rows are `pending_owner_action` or external checks only. Every row keeps `automation_safe=false`, `source_mutation_allowed=false`, `fact_promotion_allowed=false`, `fund_ledger_write_allowed=false`, and `management_conclusion_allowed=false`; it describes next actions but does not authorize or execute them.
