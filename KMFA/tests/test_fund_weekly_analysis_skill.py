@@ -471,6 +471,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "ocr_text_candidates.csv",
                 "ocr_value_candidates.csv",
                 "ocr_financial_fact_candidates.csv",
+                "ocr_fact_cross_review.csv",
                 "ocr_fact_review_apply_gate.csv",
                 "ocr_fact_review_authorization_template.json",
                 "ocr_fact_review_authorization_preview.csv",
@@ -877,6 +878,25 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertTrue(all(row["staging_allowed"] == "false" for row in preview_rows))
             self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in preview_rows))
 
+            with (run_dir / "ocr_fact_cross_review.csv").open(encoding="utf-8-sig", newline="") as f:
+                cross_rows = list(csv.DictReader(f))
+            self.assertEqual([row["candidate_metric"] for row in cross_rows], [
+                "bank_deposit",
+                "electronic_bill",
+                "payment_outflow",
+            ])
+            cross_by_metric = {row["candidate_metric"]: row for row in cross_rows}
+            self.assertEqual(cross_by_metric["bank_deposit"]["candidate_count"], "1")
+            self.assertEqual(cross_by_metric["bank_deposit"]["candidate_amount_total"], "12345.67")
+            self.assertEqual(cross_by_metric["bank_deposit"]["company_present_count"], "1")
+            self.assertEqual(cross_by_metric["bank_deposit"]["bank_present_count"], "1")
+            self.assertEqual(cross_by_metric["electronic_bill"]["candidate_amount_total"], "8000.00")
+            self.assertEqual(cross_by_metric["payment_outflow"]["candidate_amount_total"], "500.00")
+            self.assertTrue(all(row["operator_authorized_count"] == "0" for row in cross_rows))
+            self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in cross_rows))
+            self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in cross_rows))
+            self.assertTrue(all(row["review_status"] == "pending_human_cross_review" for row in cross_rows))
+
             with (run_dir / "fund_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
                 fund_rows = list(csv.DictReader(f))
             self.assertEqual(fund_rows, [])
@@ -887,6 +907,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
 
             cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
             self.assertEqual(cross_review["ocr_financial_fact_candidate_count"], 3)
+            self.assertEqual(cross_review["ocr_fact_cross_review_group_count"], 3)
             self.assertEqual(cross_review["ocr_fact_review_apply_gate_count"], 3)
             self.assertEqual(cross_review["ocr_fact_review_authorization_present_count"], 0)
             self.assertEqual(cross_review["ocr_fact_review_authorization_template_count"], 3)
