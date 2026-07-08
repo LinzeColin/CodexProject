@@ -11,7 +11,8 @@ Blocking checks:
 * `kmfa_metadata_signals.csv` may carry only public-safe KMFA metadata signals and must keep all formal action / management conclusion gates false.
 * `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW` outputs contain only amounts parsed from real structured CSV rows with the required column contract and still keep `management_conclusion_allowed=false`.
 * `funding_forecast.csv` may contain only known due-date projections from real structured CSV risk/opportunity rows and must keep `management_conclusion_allowed=false`.
-* `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW` workbooks contain the same parsed facts in hidden `H01/H03`, homepage KPI cards, `02_资金趋势预测`, and visible flow/risk/matrix sheets; native chart files remain present.
+* `cashflow_validation.csv` must validate balance continuity, operating cashflow effect, and internal-transfer exclusion; continuity failures must create exception tasks and keep `management_conclusion_allowed=false`.
+* `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW` workbooks contain the same parsed facts in hidden `H01/H03/H05`, homepage KPI cards, `02_资金趋势预测`, and visible flow/risk/matrix sheets; native chart files remain present.
 * No production table contains `sample`, `demo`, `fake`, `synthetic`, or `模拟` data markers.
 * Workbook sheets exactly match the required visible/hidden order.
 * Hidden sheets are hidden.
