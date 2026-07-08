@@ -2013,6 +2013,46 @@ def build_fact_promotion_review_packet_rows(
     ]
 
 
+def fact_promotion_authorization_relative_path(run_id: str) -> str:
+    return f"KMFA/metadata/fund_weekly_analysis/private_runtime/fact_promotion_authorizations/{run_id}.json"
+
+
+def build_fact_promotion_authorization_template(manifest: dict, review_packet_rows: list[dict]) -> dict:
+    return {
+        "authorization_manifest_version": "1",
+        "run_id": manifest["run_id"],
+        "authorization_scope": "fact_promotion_review_packet_validation_only",
+        "template_status": "operator_review_required",
+        "template_generated_from": "fact_promotion_review_packet.csv",
+        "output_authorization_manifest_relative_path": fact_promotion_authorization_relative_path(manifest["run_id"]),
+        "authorized_by": "",
+        "authorized_at": "",
+        "authorization_ticket": "",
+        "financial_fact_promotion_allowed": False,
+        "fund_ledger_write_allowed": False,
+        "management_conclusion_allowed": False,
+        "operator_instruction": "Review each fact promotion packet row, edit authorized=true only where approved, then save a confirmed copy to output_authorization_manifest_relative_path. This template itself does not authorize, promote financial facts, write fund_ledger.csv, or unlock management conclusions.",
+        "review_packet_authorizations": [
+            {
+                "review_packet_id": row["review_packet_id"],
+                "review_area": row["review_area"],
+                "candidate_count": row["candidate_count"],
+                "ready_count": row["ready_count"],
+                "blocked_count": row["blocked_count"],
+                "review_status": row["review_status"],
+                "source_artifact": row["source_artifact"],
+                "authorization_required": row["authorization_required"],
+                "fund_ledger_write_allowed": row["fund_ledger_write_allowed"],
+                "financial_fact_promoted": row["financial_fact_promoted"],
+                "next_action": row["next_action"],
+                "authorized": False,
+                "authorization_note": "",
+            }
+            for row in review_packet_rows
+        ],
+    }
+
+
 def collect_workbook_quality_checks(workbook_path: Path) -> list[dict]:
     rows: list[dict] = []
     ns_sheet = {"x": XLSX_MAIN_NS}
@@ -3584,10 +3624,24 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         goal_completion_audit_rows,
     )
     fact_promotion_review_blocking_count = sum(1 for row in fact_promotion_review_packet_rows if row["blocked_count"] != "0")
+    fact_promotion_authorization_template = build_fact_promotion_authorization_template(
+        manifest,
+        fact_promotion_review_packet_rows,
+    )
+    fact_promotion_authorization_template_authorized_count = sum(
+        1 for row in fact_promotion_authorization_template["review_packet_authorizations"]
+        if row["authorized"] is True
+    )
     manifest["fact_promotion_review_packet_count"] = len(fact_promotion_review_packet_rows)
     manifest["fact_promotion_review_blocking_count"] = fact_promotion_review_blocking_count
+    manifest["fact_promotion_authorization_template_count"] = len(
+        fact_promotion_authorization_template["review_packet_authorizations"]
+    )
+    manifest["fact_promotion_authorization_template_authorized_count"] = fact_promotion_authorization_template_authorized_count
     cross_review["fact_promotion_review_packet_count"] = len(fact_promotion_review_packet_rows)
     cross_review["fact_promotion_review_blocking_count"] = fact_promotion_review_blocking_count
+    cross_review["fact_promotion_authorization_template_count"] = manifest["fact_promotion_authorization_template_count"]
+    cross_review["fact_promotion_authorization_template_authorized_count"] = fact_promotion_authorization_template_authorized_count
     write_csv(run_dir / "fact_promotion_review_packet.csv", [
         "review_packet_id",
         "review_area",
@@ -3601,6 +3655,10 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "financial_fact_promoted",
         "next_action",
     ], fact_promotion_review_packet_rows)
+    (run_dir / "fact_promotion_authorization_template.json").write_text(
+        json.dumps(fact_promotion_authorization_template, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
     (run_dir / "cross_review.json").write_text(json.dumps(cross_review, ensure_ascii=False, indent=2), encoding="utf-8")
     (run_dir / "audit_log.json").write_text(
         json.dumps([
@@ -3665,6 +3723,8 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "goal_completion_blocking_count": goal_completion_blocking_count,
                 "fact_promotion_review_packet_count": len(fact_promotion_review_packet_rows),
                 "fact_promotion_review_blocking_count": fact_promotion_review_blocking_count,
+                "fact_promotion_authorization_template_count": manifest["fact_promotion_authorization_template_count"],
+                "fact_promotion_authorization_template_authorized_count": fact_promotion_authorization_template_authorized_count,
                 "management_conclusion_allowed": False,
             },
         ], ensure_ascii=False, indent=2),
@@ -3801,6 +3861,8 @@ def main() -> int:
         f"Goal completion blocking count: {manifest.get('goal_completion_blocking_count', 0)}\n\n"
         f"Fact promotion review packet count: {manifest.get('fact_promotion_review_packet_count', 0)}\n\n"
         f"Fact promotion review blocking count: {manifest.get('fact_promotion_review_blocking_count', 0)}\n\n"
+        f"Fact promotion authorization template count: {manifest.get('fact_promotion_authorization_template_count', 0)}\n\n"
+        f"Fact promotion authorization template authorized count: {manifest.get('fact_promotion_authorization_template_authorized_count', 0)}\n\n"
         "No financial amount, management conclusion, or evidence-free forecast was generated from unreviewed OCR/table extraction. "
         "Known due-date projections remain pending review. Next step: perform OCR/table extraction, internal-transfer netting, "
         "cross-review, then promote reviewed facts only.\n",

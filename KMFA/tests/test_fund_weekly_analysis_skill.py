@@ -490,6 +490,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "kmfa_metadata_signals.csv",
                 "goal_completion_audit.csv",
                 "fact_promotion_review_packet.csv",
+                "fact_promotion_authorization_template.json",
                 "exception_tasks.csv",
                 "cross_review.json",
                 "audit_log.json",
@@ -935,6 +936,24 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(packet_by_area["ocr_fact_ledger_staging"]["review_status"], "blocked_missing_operator_authorization")
             self.assertEqual(packet_by_area["ocr_fact_ledger_staging"]["fund_ledger_write_allowed"], "false")
             self.assertEqual(packet_by_area["ocr_fact_ledger_staging"]["financial_fact_promoted"], "false")
+
+            template = json.loads((run_dir / "fact_promotion_authorization_template.json").read_text(encoding="utf-8"))
+            self.assertEqual(template["authorization_manifest_version"], "1")
+            self.assertEqual(template["run_id"], run_id)
+            self.assertEqual(template["authorization_scope"], "fact_promotion_review_packet_validation_only")
+            self.assertFalse(template["financial_fact_promotion_allowed"])
+            self.assertFalse(template["fund_ledger_write_allowed"])
+            self.assertFalse(template["management_conclusion_allowed"])
+            self.assertEqual(
+                template["output_authorization_manifest_relative_path"],
+                f"KMFA/metadata/fund_weekly_analysis/private_runtime/fact_promotion_authorizations/{run_id}.json",
+            )
+            self.assertEqual(len(template["review_packet_authorizations"]), 6)
+            auth_by_area = {row["review_area"]: row for row in template["review_packet_authorizations"]}
+            self.assertEqual(auth_by_area["ocr_fact_ledger_staging"]["candidate_count"], "3")
+            self.assertEqual(auth_by_area["ocr_fact_ledger_staging"]["blocked_count"], "3")
+            self.assertFalse(auth_by_area["ocr_fact_ledger_staging"]["authorized"])
+            self.assertEqual(auth_by_area["ocr_fact_ledger_staging"]["authorization_note"], "")
 
     def test_runner_validates_private_ocr_fact_review_authorization_without_ledger_promotion(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
