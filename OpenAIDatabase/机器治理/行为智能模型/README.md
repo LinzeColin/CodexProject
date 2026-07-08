@@ -3,7 +3,7 @@
 用于放置 facets、semantic clusters、latent signals、collaboration quality、自我迭代和
 低价值循环识别的模型配置。
 
-当前 S07 Review 已完成。facet/canonical events 的数据契约已定义在
+当前 S08 P1 已完成。facet/canonical events 的数据契约已定义在
 `机器治理/数据契约/facet_event_schema.v1_2_s05_p1.json`，中文解释位于
 `人类可读/12_Facet字段与事件语义说明.md`，facet extractor 已实现为
 `scripts/extract_memory_atlas_facets.py`，并为 events 输出补齐
@@ -50,6 +50,15 @@ Information ROI 与 Visual ROI Gate 输出
 是否有足够决策价值；没有决策价值的图表不进 P0。S07 P3 已完成 Formula What-if
 配置预览，继续使用 Personal Economic Proxy 与 Information ROI 输出生成
 `data/derived/economic_proxy/formula_what_if_preview.json`，用于查看不同权重假设下的
-内部 proxy 分变化，不修改 active formula config。当前 S07 Review 已完成，确认
+内部 proxy 分变化，不修改 active formula config。S07 Review 已完成，确认
 Personal Economic Proxy、Information ROI 和 Formula What-if 均可由行为智能派生输入解释，
-且不接入外部经济数据库。下一步是 S08 P1。
+且不接入外部经济数据库。
+
+当前 S08 P1 已完成：`机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json`
+定义 Codex/Agent 协作质量指标，`scripts/build_memory_atlas_agent_collaboration.py` 生成
+`data/derived/agent_collaboration/agent_collaboration_quality_report.json`。指标覆盖
+`planning_clarity`、`execution_clarity`、`review_burden`、`rework_count`、
+`scope_clarity`、`testability` 和 `rollbackability`，并用 evidence refs 支撑中文解释。
+source summary 支持 `chatgpt`、`codex` 和 `other_agent` 通用字段；future agent 没有真实
+证据时只保留缺失原因，不生成 fake events 或 fake scores。S08 P1 不创建复杂 Delegation
+Contract UI，不创建多 agent 系统，不修改 raw。下一步是 S08 P2。

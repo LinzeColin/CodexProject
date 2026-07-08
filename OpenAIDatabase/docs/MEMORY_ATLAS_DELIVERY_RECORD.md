@@ -1,3 +1,54 @@
+## v1.2 S08 P1 Agent Collaboration Metrics
+
+状态：`phase_s08_p1_collaboration_metrics_completed_pending_s08_p2`。
+
+任务 ID：`MA-V12-S08P1`。
+
+验收 ID：`ACC-MA-V12-S08P1`。
+
+Validator：`validate:v1.2-s08-p1`。
+
+S08 P1 定义并生成 Codex/Agent 协作质量报告。配置位于
+`机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json`，builder 位于
+`scripts/build_memory_atlas_agent_collaboration.py`，输出位于
+`data/derived/agent_collaboration/agent_collaboration_quality_report.json`。报告覆盖
+planning clarity、execution clarity、review burden、rework count、scope clarity、
+testability 和 rollbackability，并保留 chatgpt、codex、other_agent 通用字段。
+
+涉及文件：
+
+- `机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json`
+- `scripts/build_memory_atlas_agent_collaboration.py`
+- `scripts/atlasctl.py`
+- `data/derived/agent_collaboration/agent_collaboration_quality_report.json`
+- `人类可读/19_Agent协作质量指标说明.md`
+- `docs/reviews/memory_atlas_v1_2_s08_p1_agent_collaboration.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s08_p1.cjs`
+- `tests/test_s08p1_agent_collaboration.py`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s08-p1`
+- `ACC-MA-V12-S08P1`
+- `MA-V12-S08P1`
+- S08 P1
+- `phase_s08_p1_collaboration_metrics_completed_pending_s08_p2`
+- `agent_collaboration_quality_report.json`
+- pending S08 P2
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No complex Delegation Contract UI。
+- No multi-agent system。
+- No authorization apply boundary。
+- No stage flight recorder。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S08 P1 Agent Collaboration Metrics; MA-V12-S08P1; ACC-MA-V12-S08P1; phase_s08_p1_collaboration_metrics_completed_pending_s08_p2; validate:v1.2-s08-p1; S08 P1; agent_collaboration_quality_report.json; planning_clarity; execution_clarity; review_burden; rework_count; scope_clarity; testability; rollbackability; pending S08 P2; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No complex Delegation Contract UI; No multi-agent system; No authorization apply boundary; No stage flight recorder.
+
 ## v1.2 S07 Review
 
 状态：`stage_s07_review_passed_pending_s08_no_github_main_upload`。

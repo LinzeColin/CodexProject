@@ -1,0 +1,151 @@
+{
+  "schema_version": "memory_atlas_agent_collaboration_metrics.v1_2_s08_p1",
+  "task_id": "MA-V12-S08P1",
+  "acceptance_id": "ACC-MA-V12-S08P1",
+  "status": "phase_s08_p1_collaboration_metrics_config",
+  "source_field_contract": {
+    "required_fields": [
+      "source_id",
+      "source_type",
+      "agent_name",
+      "record_count",
+      "observed",
+      "metric_scores",
+      "evidence_refs"
+    ],
+    "supported_source_types": [
+      "chatgpt",
+      "codex",
+      "other_agent"
+    ],
+    "future_agent_policy_zh": "后续 agent 使用同一字段合同；没有注册或没有证据时只记录 missing source，不生成无证据质量判断。"
+  },
+  "metrics": [
+    {
+      "metric_key": "planning_clarity",
+      "name_zh": "规划清晰度",
+      "formula_id": "FORM-MA-V12-S08P1-001",
+      "expression_zh": "规划清晰度 = 100 * (project_labeled_ratio*project_label_weight + task_labeled_ratio*task_label_weight + opportunity_next_step_ratio*next_step_weight + evidence_coverage_ratio*evidence_weight)",
+      "interpretation_zh": "衡量协作输入是否有项目、任务、下一步和证据锚点，适合判断人是否把目标和边界交代清楚。",
+      "parameter_refs": [
+        "project_label_weight",
+        "task_label_weight",
+        "next_step_weight",
+        "evidence_weight"
+      ],
+      "direction": "higher_is_better"
+    },
+    {
+      "metric_key": "execution_clarity",
+      "name_zh": "执行清晰度",
+      "formula_id": "FORM-MA-V12-S08P1-002",
+      "expression_zh": "执行清晰度 = 100 * (known_output_ratio*output_weight + opportunity_action_ratio*action_weight + roi_action_ratio*roi_action_weight)",
+      "interpretation_zh": "衡量输出类型、可执行下一步和 ROI action 是否足够明确，适合判断 agent 能否低返工执行。",
+      "parameter_refs": [
+        "output_weight",
+        "action_weight",
+        "roi_action_weight"
+      ],
+      "direction": "higher_is_better"
+    },
+    {
+      "metric_key": "review_burden",
+      "name_zh": "复审负担健康度",
+      "formula_id": "FORM-MA-V12-S08P1-003",
+      "expression_zh": "复审负担健康度 = max(0, 100 - min(review_burden_penalty_cap, loop_count*loop_penalty + decision_debt_count*decision_debt_penalty + evidence_gap_ratio*evidence_gap_penalty))",
+      "interpretation_zh": "高分表示复审负担较低；原始 loop 与 decision debt 会保留，避免把负担计数误读成正向指标。",
+      "parameter_refs": [
+        "loop_penalty",
+        "decision_debt_penalty",
+        "evidence_gap_penalty",
+        "review_burden_penalty_cap"
+      ],
+      "direction": "higher_is_better"
+    },
+    {
+      "metric_key": "rework_count",
+      "name_zh": "返工控制健康度",
+      "formula_id": "FORM-MA-V12-S08P1-004",
+      "expression_zh": "返工控制健康度 = max(0, 100 - min(rework_penalty_cap, repeated_rework_loop_count*rework_loop_penalty + avg_action_half_life_days*half_life_penalty))",
+      "interpretation_zh": "高分表示返工压力较可控；同时输出 repeated_rework_loop_count 和 avg_action_half_life_days 作为原始证据。",
+      "parameter_refs": [
+        "rework_loop_penalty",
+        "half_life_penalty",
+        "rework_penalty_cap"
+      ],
+      "direction": "higher_is_better"
+    },
+    {
+      "metric_key": "scope_clarity",
+      "name_zh": "范围清晰度",
+      "formula_id": "FORM-MA-V12-S08P1-005",
+      "expression_zh": "范围清晰度 = max(0, 100 * (project_labeled_ratio*project_label_weight + task_labeled_ratio*task_label_weight) - scope_creep_loop_count*scope_creep_penalty)",
+      "interpretation_zh": "衡量项目/任务标签与 scope creep 信号之间的平衡，用于提醒哪些协作需要先收口范围。",
+      "parameter_refs": [
+        "project_label_weight",
+        "task_label_weight",
+        "scope_creep_penalty"
+      ],
+      "direction": "higher_is_better"
+    },
+    {
+      "metric_key": "testability",
+      "name_zh": "可测试性",
+      "formula_id": "FORM-MA-V12-S08P1-006",
+      "expression_zh": "可测试性 = 100 * (validator_signal_ratio*validator_signal_weight + roi_gate_ratio*roi_gate_weight + opportunity_next_step_ratio*next_step_weight)",
+      "interpretation_zh": "衡量输出是否容易落到 validator、ROI gate 或清晰下一步；这是测试可落地性的 proxy，不代表已经完成全部测试。",
+      "parameter_refs": [
+        "validator_signal_weight",
+        "roi_gate_weight",
+        "next_step_weight"
+      ],
+      "direction": "higher_is_better"
+    },
+    {
+      "metric_key": "rollbackability",
+      "name_zh": "可回滚性",
+      "formula_id": "FORM-MA-V12-S08P1-007",
+      "expression_zh": "可回滚性 = 100 * (run_gate_contract_ratio*run_gate_weight + proposal_only_ratio*proposal_weight + raw_no_mutation_ratio*raw_boundary_weight)",
+      "interpretation_zh": "衡量协作输出是否保留运行门禁、proposal-only 与 raw 不修改边界；本阶段只做指标解释，不执行 apply。",
+      "parameter_refs": [
+        "run_gate_weight",
+        "proposal_weight",
+        "raw_boundary_weight"
+      ],
+      "direction": "higher_is_better"
+    }
+  ],
+  "parameters": {
+    "project_label_weight": 0.28,
+    "task_label_weight": 0.24,
+    "next_step_weight": 0.24,
+    "evidence_weight": 0.24,
+    "output_weight": 0.34,
+    "action_weight": 0.33,
+    "roi_action_weight": 0.33,
+    "loop_penalty": 1.8,
+    "decision_debt_penalty": 2.2,
+    "evidence_gap_penalty": 18.0,
+    "review_burden_penalty_cap": 82.0,
+    "rework_loop_penalty": 5.0,
+    "half_life_penalty": 0.35,
+    "rework_penalty_cap": 88.0,
+    "scope_creep_penalty": 8.0,
+    "validator_signal_weight": 0.45,
+    "roi_gate_weight": 0.25,
+    "run_gate_weight": 0.36,
+    "proposal_weight": 0.34,
+    "raw_boundary_weight": 0.3,
+    "minimum_evidence_refs_per_metric": 1,
+    "evidence_refs_per_metric": 8
+  },
+  "scope_boundary": {
+    "raw_mutation": false,
+    "multi_agent_system_implementation": false,
+    "complex_delegation_contract_ui": false,
+    "authorization_apply_boundary": "deferred_to_s08_p2",
+    "stage_flight_recorder": "deferred_to_s08_p3",
+    "proposal_apply": false,
+    "next_phase": "S08 P2"
+  }
+}

@@ -18,8 +18,8 @@
 
 ## 当前阶段
 
-当前为 S07 Review。任务 ID 为 `MA-V12-S07-REVIEW`，验收 ID 为
-`ACC-MA-V12-S07-REVIEW`，validator 为 `validate:v1.2-s07-review`。
+当前为 S08 P1。任务 ID 为 `MA-V12-S08P1`，验收 ID 为
+`ACC-MA-V12-S08P1`，validator 为 `validate:v1.2-s08-p1`。
 S01 整体复审已通过，S02 整体复审已通过，S03 P1/P2/P3
 整体复审已通过。S04 P1 已建立 ChatGPT 只读同步和 official export fallback。
 S04 P2 已建立 Codex local sync、future-agent minimal adapter、raw + derived + run log
@@ -49,7 +49,12 @@ What-if 配置预览，配置为
 `机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`，输出为
 `data/derived/economic_proxy/formula_what_if_preview.json`。S07 Review 已完成，确认
 Personal Economic Proxy、Information ROI、Visual ROI Gate 和 Formula What-if 均满足
-S07 stage gate，且没有外部经济数据库依赖、没有精确收入预测、没有财务建议。下一步是 S08 P1。
+S07 stage gate，且没有外部经济数据库依赖、没有精确收入预测、没有财务建议。S08 P1
+已完成 Codex/Agent 协作质量指标，配置为
+`机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json`，输出为
+`data/derived/agent_collaboration/agent_collaboration_quality_report.json`，用于解释
+planning、execution、review、rework、scope clarity、testability 和 rollbackability。
+S08 P1 不创建复杂 Delegation Contract UI，不创建多 agent 系统，不修改 raw。下一步是 S08 P2。
 
 当前机器产物：
 
@@ -63,10 +68,12 @@ S07 stage gate，且没有外部经济数据库依赖、没有精确收入预测
 - `../data/derived/economic_proxy/personal_economic_proxy.json`
 - `../data/derived/economic_proxy/formula_what_if_preview.json`
 - `../data/derived/information_roi/information_roi_gate.json`
+- `../data/derived/agent_collaboration/agent_collaboration_quality_report.json`
 - `参数与公式/personal_economic_proxy.v1_2_s07_p1.json`
 - `参数与公式/information_roi.v1_2_s07_p2.json`
 - `参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`
 - `可视化配置/visual_roi_gate.v1_2_s07_p2.json`
+- `行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json`
 - `同步与备份/sync_source_registry.json`
 - `同步与备份/raw_public_archive_policy.v1_2_s03_p1.json`
 - `同步与备份/credential_exclusion_policy.v1_2_s03_p2.json`
@@ -96,6 +103,7 @@ S07 stage gate，且没有外部经济数据库依赖、没有精确收入预测
 - `../人类可读/16_PersonalEconomicProxy公式说明.md`
 - `../人类可读/17_InformationROI与VisualROIGate说明.md`
 - `../人类可读/18_FormulaWhatIf配置预览说明.md`
+- `../人类可读/19_Agent协作质量指标说明.md`
 - `../data/public_raw/README.md`
 - `人类可读/06_Raw明文公开与只读归档说明.md`
 - `data/public_raw/README.md`
@@ -118,6 +126,7 @@ S07 stage gate，且没有外部经济数据库依赖、没有精确收入预测
 - `../docs/reviews/memory_atlas_v1_2_s06_review.md`
 - `../docs/reviews/memory_atlas_v1_2_s07_p1_economic_proxy.md`
 - `../docs/reviews/memory_atlas_v1_2_s07_p2_information_roi.md`
+- `../docs/reviews/memory_atlas_v1_2_s08_p1_agent_collaboration.md`
 - `../docs/reviews/memory_atlas_v1_2_s07_p3_formula_what_if.md`
 - `../docs/reviews/memory_atlas_v1_2_s07_review.md`
 - `scripts/privacy_guard.py`
