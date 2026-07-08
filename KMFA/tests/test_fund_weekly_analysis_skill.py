@@ -137,40 +137,45 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertLess(runner_index, ocr_index)
 
-    def test_skill_package_uses_sydney_1130_local_schedule_and_real_input(self) -> None:
+    def test_skill_package_uses_sydney_monday_saturday_1100_local_schedule_and_real_input(self) -> None:
         self.assertTrue(SKILL_ROOT.exists(), "fund-weekly-analysis-skill package must exist under KMFA")
         skill = (SKILL_ROOT / "SKILL.md").read_text(encoding="utf-8")
         config = (SKILL_ROOT / "templates" / "fund_weekly_analysis_config.yaml").read_text(encoding="utf-8")
         plist = (SKILL_ROOT / "automation" / "launchd" / "com.kmfa.fund-weekly-analysis.plist").read_text(
             encoding="utf-8"
         )
-        prompt = (SKILL_ROOT / "automation" / "daily_1130_sydney.prompt.md").read_text(encoding="utf-8")
+        prompt = (SKILL_ROOT / "automation" / "weekly_1100_sydney.prompt.md").read_text(encoding="utf-8")
 
         for text in (skill, config, prompt):
             self.assertIn("Australia/Sydney", text)
+            self.assertIn("11:00", text)
             self.assertIn("/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群", text)
+        self.assertIn("Monday", prompt)
+        self.assertIn("Saturday", prompt)
         self.assertIn("No simulation", skill)
         self.assertIn("Do not use simulated", prompt)
 
-        self.assertRegex(config, r'schedule_local:\s*"11:30"')
+        self.assertRegex(config, r'schedule_local:\s*"11:00"')
         self.assertRegex(config, r'timezone:\s*Australia/Sydney')
         self.assertRegex(plist, r"<key>Hour</key>\s*<integer>11</integer>")
-        self.assertRegex(plist, r"<key>Minute</key>\s*<integer>30</integer>")
+        self.assertRegex(plist, r"<key>Minute</key>\s*<integer>0</integer>")
+        self.assertRegex(plist, r"<key>Weekday</key>\s*<integer>1</integer>")
+        self.assertRegex(plist, r"<key>Weekday</key>\s*<integer>6</integer>")
 
     def test_taskpack_validator_requires_daily_shell_entrypoint(self) -> None:
         validator = (SKILL_ROOT / "tools" / "validate_taskpack.py").read_text(encoding="utf-8")
         self.assertIn('"tools/run_daily_local.sh"', validator)
 
-    def test_codex_app_automation_contract_mirrors_daily_1130_local_cron(self) -> None:
+    def test_codex_app_automation_contract_mirrors_monday_saturday_1100_local_cron(self) -> None:
         contract_path = SKILL_ROOT / "automation" / "codex_app_automation.contract.toml"
         self.assertTrue(contract_path.exists(), "public-safe Codex App automation contract must be tracked")
         contract = tomllib.loads(contract_path.read_text(encoding="utf-8"))
 
         self.assertEqual(contract["id"], "kmfa")
-        self.assertEqual(contract["name"], "KMFA资金周报日报自动化")
+        self.assertEqual(contract["name"], "KMFA资金周报自动化")
         self.assertEqual(contract["kind"], "cron")
         self.assertEqual(contract["status"], "ACTIVE")
-        self.assertEqual(contract["rrule"], "FREQ=DAILY;BYHOUR=11;BYMINUTE=30")
+        self.assertEqual(contract["rrule"], "FREQ=WEEKLY;BYHOUR=11;BYMINUTE=0;BYDAY=MO,SA")
         self.assertEqual(contract["timezone"], "Australia/Sydney")
         self.assertEqual(contract["execution_environment"], "local")
         self.assertEqual(
@@ -180,7 +185,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "/Users/linzezhang/CodexProject",
             ],
         )
-        self.assertEqual(contract["prompt_file"], "automation/daily_1130_sydney.prompt.md")
+        self.assertEqual(contract["prompt_file"], "automation/weekly_1100_sydney.prompt.md")
         self.assertEqual(contract["source_readiness_gate"], "tools/check_source_readiness.py")
         self.assertEqual(
             contract["input_dir"],
