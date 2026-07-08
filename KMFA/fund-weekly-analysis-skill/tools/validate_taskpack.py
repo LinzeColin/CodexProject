@@ -37,6 +37,7 @@ REQUIRED_SKILL_STRINGS = [
     "hidden",
     "1728",
     "--source-zip",
+    "ocr_text_candidates.csv",
 ]
 EXPECTED_SHEETS = [
     "01_首页总览",

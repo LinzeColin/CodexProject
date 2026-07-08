@@ -307,6 +307,59 @@ def write_csv(path: Path, fieldnames: list[str], rows: list[dict] | None = None)
             writer.writerows(rows)
 
 
+def ocr_sidecar_candidates(relative_path: str) -> list[Path]:
+    path = Path(relative_path)
+    candidates = [
+        Path(str(path) + ".ocr.txt"),
+        path.with_suffix(".ocr.txt"),
+    ]
+    unique: list[Path] = []
+    for candidate in candidates:
+        if candidate not in unique:
+            unique.append(candidate)
+    return unique
+
+
+def read_text_excerpt(path: Path, limit: int = 180) -> tuple[str, int]:
+    text = path.read_text(encoding="utf-8-sig", errors="replace")
+    normalized = " ".join(text.split())
+    return normalized[:limit], len(text)
+
+
+def collect_ocr_text_candidates(manifest: dict, input_dir: Path, evidence: list[dict]) -> list[dict]:
+    evidence_by_path = {row["relative_path"]: row for row in evidence}
+    manifest_paths = {item["relative_path"]: item for item in manifest["files"]}
+    rows: list[dict] = []
+    for item in manifest["files"]:
+        if item["kind"] != "screenshot":
+            continue
+        evidence_row = evidence_by_path.get(item["relative_path"])
+        if evidence_row is None:
+            continue
+        for relative_sidecar in ocr_sidecar_candidates(item["relative_path"]):
+            sidecar_key = str(relative_sidecar)
+            sidecar_item = manifest_paths.get(sidecar_key)
+            sidecar_path = input_dir / relative_sidecar
+            if sidecar_item is None or not sidecar_path.exists():
+                continue
+            excerpt, text_length = read_text_excerpt(sidecar_path)
+            evidence_row["review_status"] = "ocr_text_candidate_pending_review"
+            rows.append({
+                "ocr_candidate_id": f"OCR-{manifest['run_id']}-{len(rows) + 1:05d}",
+                "evidence_id": evidence_row["evidence_id"],
+                "source_image_relative_path": item["relative_path"],
+                "ocr_text_relative_path": sidecar_key,
+                "ocr_text_sha256": sidecar_item["sha256"],
+                "text_length": str(text_length),
+                "text_excerpt": excerpt,
+                "extraction_status": "ocr_text_sidecar_indexed_pending_review",
+                "review_status": "pending_human_review",
+                "financial_fact_promoted": "false",
+            })
+            break
+    return rows
+
+
 def read_jsonl(path: Path) -> list[dict]:
     if not path.exists():
         return []
@@ -1381,12 +1434,14 @@ def build_company_bank_matrix_rows(fund_rows: list[dict]) -> list[dict]:
 
 def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Path, repo_root: Path) -> None:
     evidence = write_evidence_index_stub(manifest, run_dir)
+    ocr_text_candidates = collect_ocr_text_candidates(manifest, input_dir, evidence)
     structured = extract_structured_csv_facts(manifest, input_dir, evidence)
     funding_forecast_rows = build_funding_forecast_rows(structured)
     cashflow_validation_rows = build_cashflow_validation_rows(structured, manifest["run_id"])
     metadata_signals = collect_kmfa_metadata_signals(repo_root, manifest["run_id"])
     balance_continuity_fail_count = sum(1 for row in cashflow_validation_rows if row["validation_status"] == "FAIL")
     internal_transfer_excluded_count = sum(1 for row in cashflow_validation_rows if row["internal_transfer_excluded"] == "true")
+    manifest["ocr_text_candidate_count"] = len(ocr_text_candidates)
     manifest["metadata_signal_count"] = len(metadata_signals)
     manifest["forecast_row_count"] = len(funding_forecast_rows)
     manifest["cashflow_validation_row_count"] = len(cashflow_validation_rows)
@@ -1490,6 +1545,18 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "review_status",
         "source_evidence_id",
     ], cashflow_validation_rows)
+    write_csv(run_dir / "ocr_text_candidates.csv", [
+        "ocr_candidate_id",
+        "evidence_id",
+        "source_image_relative_path",
+        "ocr_text_relative_path",
+        "ocr_text_sha256",
+        "text_length",
+        "text_excerpt",
+        "extraction_status",
+        "review_status",
+        "financial_fact_promoted",
+    ], ocr_text_candidates)
     write_csv(run_dir / "workbook_quality_checks.csv", [
         "check_id",
         "check_name",
@@ -1522,6 +1589,16 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         }
         for index, row in enumerate(evidence, 1)
     ]
+    for row in ocr_text_candidates:
+        exception_tasks.append({
+            "task_id": f"EX-{manifest['run_id']}-{len(exception_tasks) + 1:05d}",
+            "evidence_id": row["evidence_id"],
+            "task_type": "OCR_TEXT_PENDING_REVIEW",
+            "severity": "blocking_for_financial_fact",
+            "reason": f"{row['ocr_candidate_id']} OCR text sidecar is indexed; human review is required before promoting any amount.",
+            "relative_path": row["ocr_text_relative_path"],
+            "review_status": "pending",
+        })
     for row in cashflow_validation_rows:
         if row["validation_status"] != "FAIL":
             continue
@@ -1556,6 +1633,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "run_id": manifest["run_id"],
         "management_conclusion_allowed": False,
         "generated_financial_amount_count": 0,
+        "ocr_text_candidate_count": len(ocr_text_candidates),
         "structured_financial_fact_count": len(structured["fund_rows"]),
         "metadata_signal_count": len(metadata_signals),
         "forecast_row_count": len(funding_forecast_rows),
@@ -1582,6 +1660,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
             {
                 "event": "no_hallucination_outputs_written",
                 "generated_financial_amount_count": 0,
+                "ocr_text_candidate_count": len(ocr_text_candidates),
                 "structured_financial_fact_count": len(structured["fund_rows"]),
                 "metadata_signal_count": len(metadata_signals),
                 "forecast_row_count": len(funding_forecast_rows),
@@ -1691,6 +1770,7 @@ def main() -> int:
         f"Status: {manifest['status']}\n\n"
         f"Indexed {manifest['file_count']} real source files and generated a native editable Excel workbook from the current mother template.\n\n"
         f"Structured financial fact count: {manifest.get('structured_fact_count', 0)}\n\n"
+        f"OCR text candidate count: {manifest.get('ocr_text_candidate_count', 0)}\n\n"
         f"KMFA metadata signal count: {manifest.get('metadata_signal_count', 0)}\n\n"
         f"Known due-date funding forecast row count: {manifest.get('forecast_row_count', 0)}\n\n"
         f"Cashflow validation row count: {manifest.get('cashflow_validation_row_count', 0)}\n\n"
