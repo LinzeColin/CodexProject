@@ -708,6 +708,207 @@ def extract_ocr_financial_fact_candidates(
     return rows
 
 
+def ocr_fact_review_authorization_relative_path(run_id: str) -> str:
+    return f"KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_fact_review_authorizations/{run_id}.json"
+
+
+def load_ocr_fact_review_authorization(repo_root: Path, run_id: str) -> dict:
+    relative_path = ocr_fact_review_authorization_relative_path(run_id)
+    path = repo_root / relative_path
+    missing = {
+        "relative_path": relative_path,
+        "status": "missing_authorization_manifest",
+        "entries": {},
+        "metadata": {},
+    }
+    if not path.exists():
+        return missing
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {**missing, "status": "invalid_authorization_json"}
+    if not isinstance(payload, dict):
+        return {**missing, "status": "invalid_authorization_schema"}
+    required = {
+        "authorization_manifest_version": "1",
+        "run_id": run_id,
+        "authorization_scope": "ocr_financial_fact_review_validation_only",
+        "financial_fact_promotion_allowed": False,
+        "fund_ledger_write_allowed": False,
+    }
+    if any(payload.get(key) != value for key, value in required.items()):
+        return {**missing, "status": "invalid_authorization_schema"}
+    raw_entries = payload.get("fact_candidate_authorizations")
+    if not isinstance(raw_entries, list):
+        return {**missing, "status": "invalid_authorization_schema"}
+    entries = {}
+    for entry in raw_entries:
+        if not isinstance(entry, dict):
+            return {**missing, "status": "invalid_authorization_schema"}
+        fact_candidate_id = entry.get("fact_candidate_id")
+        candidate_metric = entry.get("candidate_metric")
+        if not isinstance(fact_candidate_id, str) or not fact_candidate_id:
+            return {**missing, "status": "invalid_authorization_schema"}
+        if not isinstance(candidate_metric, str) or not candidate_metric:
+            return {**missing, "status": "invalid_authorization_schema"}
+        entries[fact_candidate_id] = {
+            "candidate_metric": candidate_metric,
+            "authorized": entry.get("authorized") is True,
+        }
+    return {
+        "relative_path": relative_path,
+        "status": "valid_authorization_manifest",
+        "entries": entries,
+        "metadata": {
+            "authorization_ticket": str(payload.get("authorization_ticket", "")),
+            "authorized_by": str(payload.get("authorized_by", "")),
+            "authorized_at": str(payload.get("authorized_at", "")),
+            "authorization_scope": str(payload.get("authorization_scope", "")),
+        },
+    }
+
+
+def ocr_fact_review_gate_status(row: dict, authorization: dict) -> tuple[str, str, str, str]:
+    auth_status = authorization["status"]
+    if auth_status == "missing_authorization_manifest":
+        return (
+            "false",
+            "missing_authorization_manifest",
+            "blocked_missing_operator_authorization",
+            "OCR fact review is blocked until a private operator authorization manifest exists.",
+        )
+    if auth_status != "valid_authorization_manifest":
+        return (
+            "false",
+            auth_status,
+            "blocked_invalid_operator_authorization",
+            "OCR fact review is blocked because the operator authorization manifest is invalid.",
+        )
+    entry = authorization["entries"].get(row["fact_candidate_id"])
+    if entry is None:
+        return (
+            "false",
+            "fact_candidate_not_authorized",
+            "blocked_missing_fact_candidate_authorization",
+            "OCR fact review is blocked because this candidate is not covered by the operator authorization manifest.",
+        )
+    if entry["candidate_metric"] != row["candidate_metric"]:
+        return (
+            "true",
+            "authorization_candidate_metric_mismatch",
+            "blocked_authorization_metric_mismatch",
+            "OCR fact review is blocked because the authorization metric does not match the candidate.",
+        )
+    if not entry["authorized"]:
+        return (
+            "true",
+            "fact_candidate_authorization_not_true",
+            "blocked_fact_candidate_not_authorized",
+            "OCR fact review is blocked because this candidate is not explicitly authorized.",
+        )
+    return (
+        "true",
+        "valid_manifest_validation_only",
+        "ready_for_review_staging_no_ledger_promotion",
+        "Operator authorization manifest is valid for this row, but this runner only stages review evidence and does not write fund_ledger.csv.",
+    )
+
+
+def build_ocr_fact_review_apply_gate(manifest: dict, repo_root: Path, fact_candidates: list[dict]) -> list[dict]:
+    rows: list[dict] = []
+    authorization = load_ocr_fact_review_authorization(repo_root, manifest["run_id"])
+    metadata = authorization["metadata"]
+    for row in fact_candidates:
+        authorization_present, validation_status, gate_status, gate_reason = ocr_fact_review_gate_status(row, authorization)
+        rows.append({
+            "review_gate_id": f"OCRGATE-{manifest['run_id']}-{len(rows) + 1:05d}",
+            "fact_candidate_id": row["fact_candidate_id"],
+            "candidate_metric": row["candidate_metric"],
+            "evidence_id": row["evidence_id"],
+            "amount": row["amount"],
+            "currency": row["currency"],
+            "operator_authorization_required": "true",
+            "authorization_manifest_relative_path": authorization["relative_path"],
+            "operator_authorization_present": authorization_present,
+            "authorization_validation_status": validation_status,
+            "authorization_ticket": metadata.get("authorization_ticket", ""),
+            "authorized_by": metadata.get("authorized_by", ""),
+            "authorized_at": metadata.get("authorized_at", ""),
+            "authorization_scope": metadata.get("authorization_scope", ""),
+            "review_gate_status": gate_status,
+            "staging_allowed": "false",
+            "fund_ledger_write_allowed": "false",
+            "financial_fact_promoted": "false",
+            "gate_reason": gate_reason,
+            "relative_path": row["ocr_text_relative_path"],
+            "review_status": "pending_operator_authorization",
+        })
+    return rows
+
+
+def build_ocr_fact_review_authorization_template(manifest: dict, review_gate_rows: list[dict]) -> dict:
+    return {
+        "authorization_manifest_version": "1",
+        "run_id": manifest["run_id"],
+        "authorization_scope": "ocr_financial_fact_review_validation_only",
+        "template_status": "operator_review_required",
+        "template_generated_from": "ocr_fact_review_apply_gate.csv",
+        "output_authorization_manifest_relative_path": ocr_fact_review_authorization_relative_path(manifest["run_id"]),
+        "authorized_by": "",
+        "authorized_at": "",
+        "authorization_ticket": "",
+        "financial_fact_promotion_allowed": False,
+        "fund_ledger_write_allowed": False,
+        "operator_instruction": "Review each OCR fact candidate, edit authorized=true only where approved, then save a confirmed copy to output_authorization_manifest_relative_path. This template itself does not authorize, promote, or write fund_ledger.csv.",
+        "fact_candidate_authorizations": [
+            {
+                "fact_candidate_id": row["fact_candidate_id"],
+                "candidate_metric": row["candidate_metric"],
+                "amount": row["amount"],
+                "currency": row["currency"],
+                "evidence_id": row["evidence_id"],
+                "relative_path": row["relative_path"],
+                "authorized": False,
+                "operator_note": "",
+            }
+            for row in review_gate_rows
+        ],
+    }
+
+
+def ocr_fact_review_preview_status(validation_status: str) -> tuple[str, str]:
+    if validation_status == "valid_manifest_validation_only":
+        return "ready_for_operator_review_no_ledger_promotion", "pending_operator_impact_review"
+    if validation_status == "missing_authorization_manifest":
+        return "blocked_missing_operator_authorization", "pending_operator_authorization"
+    if validation_status in {"fact_candidate_not_authorized", "fact_candidate_authorization_not_true"}:
+        return "blocked_fact_candidate_not_authorized", "pending_operator_authorization"
+    if validation_status == "authorization_candidate_metric_mismatch":
+        return "blocked_authorization_metric_mismatch", "pending_operator_authorization"
+    return "blocked_invalid_operator_authorization", "pending_operator_authorization"
+
+
+def build_ocr_fact_review_authorization_preview(manifest: dict, review_gate_rows: list[dict]) -> list[dict]:
+    rows: list[dict] = []
+    for row in review_gate_rows:
+        preview_status, review_status = ocr_fact_review_preview_status(row["authorization_validation_status"])
+        rows.append({
+            "review_preview_id": f"OCRPREVIEW-{manifest['run_id']}-{len(rows) + 1:05d}",
+            "review_gate_id": row["review_gate_id"],
+            "fact_candidate_id": row["fact_candidate_id"],
+            "candidate_metric": row["candidate_metric"],
+            "authorization_validation_status": row["authorization_validation_status"],
+            "preview_status": preview_status,
+            "impact_scope": "ocr_financial_fact_candidate_review_only",
+            "staging_allowed": "false",
+            "fund_ledger_write_allowed": "false",
+            "financial_fact_promoted": "false",
+            "relative_path": row["relative_path"],
+            "review_status": review_status,
+        })
+    return rows
+
+
 def chat_record_source_paths(manifest: dict) -> list[str]:
     return [
         item["relative_path"]
@@ -2344,6 +2545,9 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     ocr_text_candidates = collect_ocr_text_candidates(manifest, input_dir, repo_root, run_dir, evidence)
     ocr_value_candidates = extract_ocr_value_candidates(manifest, input_dir, repo_root, ocr_text_candidates)
     ocr_financial_fact_candidates = extract_ocr_financial_fact_candidates(manifest, input_dir, repo_root, ocr_text_candidates)
+    ocr_fact_review_gate_rows = build_ocr_fact_review_apply_gate(manifest, repo_root, ocr_financial_fact_candidates)
+    ocr_fact_review_authorization_template = build_ocr_fact_review_authorization_template(manifest, ocr_fact_review_gate_rows)
+    ocr_fact_review_authorization_preview_rows = build_ocr_fact_review_authorization_preview(manifest, ocr_fact_review_gate_rows)
     chat_text_candidates = collect_chat_text_candidates(manifest, input_dir, evidence)
     chat_value_candidates = extract_chat_value_candidates(manifest, chat_text_candidates)
     chat_evidence_links = collect_chat_evidence_links(manifest, input_dir, evidence, chat_text_candidates, chat_value_candidates)
@@ -2366,6 +2570,14 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     manifest["ocr_text_candidate_count"] = len(ocr_text_candidates)
     manifest["ocr_value_candidate_count"] = len(ocr_value_candidates)
     manifest["ocr_financial_fact_candidate_count"] = len(ocr_financial_fact_candidates)
+    manifest["ocr_fact_review_apply_gate_count"] = len(ocr_fact_review_gate_rows)
+    manifest["ocr_fact_review_authorization_present_count"] = sum(1 for row in ocr_fact_review_gate_rows if row["operator_authorization_present"] == "true")
+    manifest["ocr_fact_review_authorization_valid_count"] = sum(1 for row in ocr_fact_review_gate_rows if row["authorization_validation_status"] == "valid_manifest_validation_only")
+    manifest["ocr_fact_review_authorization_template_count"] = len(ocr_fact_review_authorization_template["fact_candidate_authorizations"])
+    manifest["ocr_fact_review_authorization_template_authorized_count"] = sum(1 for row in ocr_fact_review_authorization_template["fact_candidate_authorizations"] if row["authorized"] is True)
+    manifest["ocr_fact_review_authorization_preview_count"] = len(ocr_fact_review_authorization_preview_rows)
+    manifest["ocr_fact_review_authorization_preview_ready_count"] = sum(1 for row in ocr_fact_review_authorization_preview_rows if row["preview_status"] == "ready_for_operator_review_no_ledger_promotion")
+    manifest["ocr_fact_review_authorization_preview_blocked_count"] = len(ocr_fact_review_authorization_preview_rows) - manifest["ocr_fact_review_authorization_preview_ready_count"]
     manifest["chat_text_candidate_count"] = len(chat_text_candidates)
     manifest["chat_value_candidate_count"] = len(chat_value_candidates)
     manifest["chat_evidence_link_count"] = len(chat_evidence_links)
@@ -2551,6 +2763,47 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "financial_fact_promoted",
         "promotion_blocker",
     ], ocr_financial_fact_candidates)
+    write_csv(run_dir / "ocr_fact_review_apply_gate.csv", [
+        "review_gate_id",
+        "fact_candidate_id",
+        "candidate_metric",
+        "evidence_id",
+        "amount",
+        "currency",
+        "operator_authorization_required",
+        "authorization_manifest_relative_path",
+        "operator_authorization_present",
+        "authorization_validation_status",
+        "authorization_ticket",
+        "authorized_by",
+        "authorized_at",
+        "authorization_scope",
+        "review_gate_status",
+        "staging_allowed",
+        "fund_ledger_write_allowed",
+        "financial_fact_promoted",
+        "gate_reason",
+        "relative_path",
+        "review_status",
+    ], ocr_fact_review_gate_rows)
+    (run_dir / "ocr_fact_review_authorization_template.json").write_text(
+        json.dumps(ocr_fact_review_authorization_template, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    write_csv(run_dir / "ocr_fact_review_authorization_preview.csv", [
+        "review_preview_id",
+        "review_gate_id",
+        "fact_candidate_id",
+        "candidate_metric",
+        "authorization_validation_status",
+        "preview_status",
+        "impact_scope",
+        "staging_allowed",
+        "fund_ledger_write_allowed",
+        "financial_fact_promoted",
+        "relative_path",
+        "review_status",
+    ], ocr_fact_review_authorization_preview_rows)
     write_csv(run_dir / "chat_text_candidates.csv", [
         "chat_text_candidate_id",
         "evidence_id",
@@ -2863,6 +3116,14 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "ocr_text_candidate_count": len(ocr_text_candidates),
         "ocr_value_candidate_count": len(ocr_value_candidates),
         "ocr_financial_fact_candidate_count": len(ocr_financial_fact_candidates),
+        "ocr_fact_review_apply_gate_count": manifest["ocr_fact_review_apply_gate_count"],
+        "ocr_fact_review_authorization_present_count": manifest["ocr_fact_review_authorization_present_count"],
+        "ocr_fact_review_authorization_valid_count": manifest["ocr_fact_review_authorization_valid_count"],
+        "ocr_fact_review_authorization_template_count": manifest["ocr_fact_review_authorization_template_count"],
+        "ocr_fact_review_authorization_template_authorized_count": manifest["ocr_fact_review_authorization_template_authorized_count"],
+        "ocr_fact_review_authorization_preview_count": manifest["ocr_fact_review_authorization_preview_count"],
+        "ocr_fact_review_authorization_preview_ready_count": manifest["ocr_fact_review_authorization_preview_ready_count"],
+        "ocr_fact_review_authorization_preview_blocked_count": manifest["ocr_fact_review_authorization_preview_blocked_count"],
         "chat_text_candidate_count": len(chat_text_candidates),
         "chat_value_candidate_count": len(chat_value_candidates),
         "chat_evidence_link_count": len(chat_evidence_links),
@@ -2918,6 +3179,14 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "ocr_text_candidate_count": len(ocr_text_candidates),
                 "ocr_value_candidate_count": len(ocr_value_candidates),
                 "ocr_financial_fact_candidate_count": len(ocr_financial_fact_candidates),
+                "ocr_fact_review_apply_gate_count": manifest["ocr_fact_review_apply_gate_count"],
+                "ocr_fact_review_authorization_present_count": manifest["ocr_fact_review_authorization_present_count"],
+                "ocr_fact_review_authorization_valid_count": manifest["ocr_fact_review_authorization_valid_count"],
+                "ocr_fact_review_authorization_template_count": manifest["ocr_fact_review_authorization_template_count"],
+                "ocr_fact_review_authorization_template_authorized_count": manifest["ocr_fact_review_authorization_template_authorized_count"],
+                "ocr_fact_review_authorization_preview_count": manifest["ocr_fact_review_authorization_preview_count"],
+                "ocr_fact_review_authorization_preview_ready_count": manifest["ocr_fact_review_authorization_preview_ready_count"],
+                "ocr_fact_review_authorization_preview_blocked_count": manifest["ocr_fact_review_authorization_preview_blocked_count"],
                 "chat_text_candidate_count": len(chat_text_candidates),
                 "chat_value_candidate_count": len(chat_value_candidates),
                 "chat_evidence_link_count": len(chat_evidence_links),
@@ -3056,6 +3325,9 @@ def main() -> int:
         f"OCR text candidate count: {manifest.get('ocr_text_candidate_count', 0)}\n\n"
         f"OCR value candidate count: {manifest.get('ocr_value_candidate_count', 0)}\n\n"
         f"OCR financial fact candidate count: {manifest.get('ocr_financial_fact_candidate_count', 0)}\n\n"
+        f"OCR fact review authorization valid count: {manifest.get('ocr_fact_review_authorization_valid_count', 0)}\n\n"
+        f"OCR fact review authorization preview ready count: {manifest.get('ocr_fact_review_authorization_preview_ready_count', 0)}\n\n"
+        f"OCR fact review authorization preview blocked count: {manifest.get('ocr_fact_review_authorization_preview_blocked_count', 0)}\n\n"
         f"Chat text candidate count: {manifest.get('chat_text_candidate_count', 0)}\n\n"
         f"Chat value candidate count: {manifest.get('chat_value_candidate_count', 0)}\n\n"
         f"Chat evidence link count: {manifest.get('chat_evidence_link_count', 0)}\n\n"
