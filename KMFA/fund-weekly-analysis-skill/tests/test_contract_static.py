@@ -6,7 +6,8 @@ def test_required_files_exist():
     for rel in [
         "README.md", "SKILL.md", "references/runbook.md", "references/configuration.md",
         "references/operating_contract.md", "references/source_of_truth_contract.md",
-        "references/validation_checks.md", "templates/excel_sheet_spec.yaml",
+        "references/validation_checks.md", "references/excel_master_review_checklist.md",
+        "templates/excel_sheet_spec.yaml",
         "automation/weekly_1100_sydney.prompt.md",
         "templates/资金与税费管理母版_真实数据预览_v2.xlsx",
     ]:

@@ -8,6 +8,7 @@ Deliverables:
 4. macOS launchd template: `automation/launchd/com.kmfa.fund-weekly-analysis.plist`
 5. Deterministic runner, source readiness gate, source materializer, and validators under `tools/`
 6. Governance references under `references/`
+7. Owner review checklist: `references/excel_master_review_checklist.md`
 
 Install:
 
