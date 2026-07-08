@@ -19,6 +19,7 @@ Blocking checks:
 * `attachment_evidence_reconciliation.csv` must reconcile real `_manifest/manifest.csv` resource rows against evidence index rows; missing output paths, missing evidence, and SHA mismatches must create blocking exception tasks and must not populate `fund_ledger.csv`.
 * `attachment_reconciliation_remediation.csv` must contain only operator actions derived from blocking attachment reconciliation rows; all rows must keep `automation_safe=false` and `formal_fact_allowed=false`.
 * `attachment_remediation_dry_run.csv` must contain only dry-run assessments of attachment remediation rows; all rows must keep `safe_to_apply=false`, `apply_performed=false`, and `formal_fact_allowed=false`.
+* `attachment_repair_plan.csv` must contain only plan-only steps derived from dry-run rows; all rows must keep `operator_confirmation_required=true`, `source_mutation_allowed=false`, `apply_performed=false`, and `formal_fact_allowed=false`.
 * `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW` outputs contain only amounts parsed from real structured CSV rows with the required column contract and still keep `management_conclusion_allowed=false`.
 * `funding_forecast.csv` may contain only known due-date projections from real structured CSV risk/opportunity rows and must keep `management_conclusion_allowed=false`.
 * `cashflow_validation.csv` must validate balance continuity, operating cashflow effect, and internal-transfer exclusion; continuity failures must create exception tasks and keep `management_conclusion_allowed=false`.

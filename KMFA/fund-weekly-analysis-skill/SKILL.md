@@ -146,6 +146,7 @@ Required files:
 * `attachment_evidence_reconciliation.csv`
 * `attachment_reconciliation_remediation.csv`
 * `attachment_remediation_dry_run.csv`
+* `attachment_repair_plan.csv`
 * `workbook_quality_checks.csv`
 * `kmfa_metadata_signals.csv`
 * `exception_tasks.csv`
@@ -166,6 +167,7 @@ Current deterministic runner status contract:
 * Every real DingTalk `_manifest/manifest.csv` resource row is reconciled against the evidence index in `attachment_evidence_reconciliation.csv`. Missing output paths, missing evidence files, or SHA mismatches create blocking exception tasks and never create ledger amounts or management conclusions.
 * Attachment reconciliation blockers are converted into `attachment_reconciliation_remediation.csv` operator actions. These rows are not automation-safe, do not modify source files, and never create ledger amounts or management conclusions.
 * Attachment remediation rows are assessed into `attachment_remediation_dry_run.csv` as dry-run-only actions. `safe_to_apply=false` and `apply_performed=false` must remain true until an explicit future controlled repair run is approved.
+* Attachment dry-run rows are converted into `attachment_repair_plan.csv` plan-only steps. `operator_confirmation_required=true`, `source_mutation_allowed=false`, and `apply_performed=false` must remain true until a separate approved repair run.
 * CSV files with the exact structured columns `date, company, bank, account_alias, liquidity_tier, inflow, outflow, ending_balance, flow_type` are extracted into `fund_ledger.csv`, `net_flow_ledger.csv`, `company_bank_matrix.csv`, and `tax_loan_risk.csv` as `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW`.
 * When structured CSV rows include real `due_date` risk/opportunity lines, the runner writes `funding_forecast.csv` and `02_资金趋势预测` with known due-date projections only. These remain `structured_csv_forecast_pending_review`, and they are not a management conclusion.
 * When structured CSV facts exist, the runner writes `cashflow_validation.csv`: balance continuity, operating cashflow effect, and internal-transfer exclusion are checked per ledger row. Continuity failures create exception tasks and block management conclusions.
