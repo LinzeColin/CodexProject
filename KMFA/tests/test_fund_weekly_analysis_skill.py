@@ -412,6 +412,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "attachment_reconciliation_remediation.csv",
                 "attachment_remediation_dry_run.csv",
                 "attachment_repair_plan.csv",
+                "attachment_repair_apply_gate.csv",
                 "workbook_quality_checks.csv",
                 "kmfa_metadata_signals.csv",
                 "exception_tasks.csv",
@@ -1292,10 +1293,24 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertTrue(all(row["apply_performed"] == "false" for row in plan_rows))
             self.assertTrue(all(row["formal_fact_allowed"] == "false" for row in plan_rows))
 
+            with (run_dir / "attachment_repair_apply_gate.csv").open(encoding="utf-8-sig", newline="") as f:
+                gate_rows = list(csv.DictReader(f))
+            self.assertEqual(len(gate_rows), 3)
+            self.assertTrue(all(row["operator_authorization_required"] == "true" for row in gate_rows))
+            self.assertTrue(all(row["operator_authorization_present"] == "false" for row in gate_rows))
+            self.assertTrue(all(row["apply_gate_status"] == "blocked_missing_operator_authorization" for row in gate_rows))
+            self.assertTrue(all(row["apply_allowed"] == "false" for row in gate_rows))
+            self.assertTrue(all(row["source_mutation_allowed"] == "false" for row in gate_rows))
+            self.assertTrue(all(row["apply_performed"] == "false" for row in gate_rows))
+            self.assertTrue(all(row["formal_fact_allowed"] == "false" for row in gate_rows))
+
             cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
             self.assertEqual(cross_review["attachment_repair_plan_count"], 3)
             self.assertEqual(cross_review["attachment_repair_plan_open_count"], 3)
             self.assertEqual(cross_review["attachment_repair_apply_allowed_count"], 0)
+            self.assertEqual(cross_review["attachment_repair_apply_gate_count"], 3)
+            self.assertEqual(cross_review["attachment_repair_apply_blocked_count"], 3)
+            self.assertEqual(cross_review["attachment_repair_authorization_present_count"], 0)
             self.assertFalse(cross_review["management_conclusion_allowed"])
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
 

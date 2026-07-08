@@ -46,6 +46,7 @@ REQUIRED_SKILL_STRINGS = [
     "attachment_reconciliation_remediation.csv",
     "attachment_remediation_dry_run.csv",
     "attachment_repair_plan.csv",
+    "attachment_repair_apply_gate.csv",
 ]
 EXPECTED_SHEETS = [
     "01_首页总览",

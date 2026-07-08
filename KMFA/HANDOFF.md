@@ -49,6 +49,8 @@
 - S30 已基于最新真实热目录运行 `run_fund_weekly_analysis.py --run-id s30_real_attachment_remediation_dry_run_20260708`，索引 295 个真实源文件，生成 3 条 dry-run，其中 `source_restore_required=1`、`dws_rerun_required=2`；`fund_ledger.csv` / `funding_forecast.csv` 仍为空，`generated_financial_amount_count=0`，`management_conclusion_allowed=false`。
 - runner 现在将附件修复 dry-run 转换为 `attachment_repair_plan.csv` plan-only 步骤，记录 command family 和人工确认要求；所有 plan 行保持 `operator_confirmation_required=true`、`source_mutation_allowed=false`、`apply_performed=false`。
 - S31 已基于最新真实热目录运行 `run_fund_weekly_analysis.py --run-id s31_real_attachment_repair_plan_20260708`，索引 295 个真实源文件，生成 3 条 repair plan，其中 `source_materialization_plan=1`、`dws_archive_controlled_rerun=2`；`fund_ledger.csv` / `funding_forecast.csv` 仍为空，`generated_financial_amount_count=0`，`management_conclusion_allowed=false`。
+- runner 现在将附件修复计划转换为 `attachment_repair_apply_gate.csv` fail-closed 授权闸门；无 private operator authorization manifest 时所有 gate 行保持 `operator_authorization_present=false`、`apply_allowed=false`、`source_mutation_allowed=false`、`apply_performed=false`。
+- S32 已基于最新真实热目录运行 `run_fund_weekly_analysis.py --run-id s32_real_attachment_apply_gate_20260708`，索引 295 个真实源文件，生成 3 条 apply gate，全部 `blocked_missing_operator_authorization`；`attachment_repair_apply_allowed_count=0`，`fund_ledger.csv` / `funding_forecast.csv` 仍为空，`generated_financial_amount_count=0`，`management_conclusion_allowed=false`。
 - runner 现在承接 public-safe KMFA metadata 信号：资金压力、项目成本事实层、报告等级、scope reconciliation，输出 `kmfa_metadata_signals.csv` 并写入 `04_税费融资风险` / `H02_异常任务池`；这些只用于待复核路由，不生成金额、预测或正式动作。
 - 所有结构化 CSV 金额仍是待复核事实，`management_conclusion_allowed=false`；不得把 workbook 首页卡片解释为最终 C-level 管理结论。
 - 当前真实 OneDrive 热目录已 materialized 并达到 `READY`。若后续目标目录再次缺失或 OneDrive cloud-only/dataless，仍保持 `SOURCE_MISSING` / `SOURCE_UNREADABLE` fail-closed，不生成局部生产包。
@@ -457,7 +459,7 @@ git diff --check -- README.md governance/projects.yaml KMFA
 
 - 当前目标新增为 `S19｜每日早晚钉钉考勤检查`。
 - 自动化名称固定：`每日早晚钉钉考勤检查`。
-- 运行时间：每天北京时间 `08:35` 晨报、`18:15` 晚报。
+- 运行时间：每天北京时间 `10:35` 晨报、`20:05` 晚报。
 - 私有归档根目录：`/Users/linzezhang/OneDrive/dingtalk_attendance/YYYYMM/`，只保留年月一级目录，文件直接落在当月目录下。
 - 张霖泽 DingTalk userId：`1iv-1t2oesv2yd`；老板 userId 或小群配置仍需本机私有配置。
 - GitHub 仅保存代码、schema、policy、prompt、manifest、validator 和 public-safe evidence；真实员工考勤明文、SQLite、raw API response、报告正文和凭据材料不得提交。
