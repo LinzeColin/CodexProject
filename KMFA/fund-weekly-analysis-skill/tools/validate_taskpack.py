@@ -43,6 +43,7 @@ REQUIRED_SKILL_STRINGS = [
     "chat_value_candidates.csv",
     "chat_evidence_links.csv",
     "attachment_evidence_reconciliation.csv",
+    "attachment_reconciliation_remediation.csv",
 ]
 EXPECTED_SHEETS = [
     "01_首页总览",
