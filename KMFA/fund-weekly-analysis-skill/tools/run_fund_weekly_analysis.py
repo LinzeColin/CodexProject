@@ -29,6 +29,8 @@ from zoneinfo import ZoneInfo
 DISALLOWED_PRODUCTION_MARKERS = ("sample", "demo", "fake", "synthetic", "模拟", "测试数据")
 PRIVATE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".xlsx", ".xls", ".csv", ".pdf", ".doc", ".docx", ".zip"}
 TEMPLATE_NAME = "资金与税费管理母版_真实数据预览_v2.xlsx"
+PRIVATE_OCR_ROOT = Path("KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_sidecars")
+OCR_GENERATION_PLAN_NAME = "screenshot_ocr_sidecar_generation_plan.csv"
 XLSX_MAIN_NS = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
 XLSX_REL_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 XML_NS = "http://www.w3.org/XML/1998/namespace"
@@ -383,9 +385,70 @@ def text_has_finance_signal(text: str) -> bool:
     return any(word in text for word in CHAT_TEXT_CONTEXT_WORDS) or bool(OCR_DATE_PATTERN.search(text))
 
 
-def collect_ocr_text_candidates(manifest: dict, input_dir: Path, evidence: list[dict]) -> list[dict]:
+def safe_repo_relative_path(value: str) -> Path | None:
+    path = Path(value)
+    if path.is_absolute() or ".." in path.parts:
+        return None
+    return path
+
+
+def is_private_ocr_relative_path(path: Path) -> bool:
+    try:
+        path.relative_to(PRIVATE_OCR_ROOT)
+    except ValueError:
+        return False
+    return True
+
+
+def load_private_ocr_sidecars(repo_root: Path, run_dir: Path) -> dict[str, dict]:
+    plan_path = run_dir / OCR_GENERATION_PLAN_NAME
+    if not plan_path.exists():
+        return {}
+    rows: dict[str, dict] = {}
+    try:
+        with plan_path.open(encoding="utf-8-sig", newline="") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                if row.get("apply_performed") != "true":
+                    continue
+                if row.get("generation_status") != "ocr_text_generated_pending_review":
+                    continue
+                if row.get("financial_fact_promoted") != "false":
+                    continue
+                private_rel = safe_repo_relative_path(row.get("ocr_text_private_relative_path", ""))
+                source_rel = row.get("source_image_relative_path", "")
+                if private_rel is None or not is_private_ocr_relative_path(private_rel) or not source_rel:
+                    continue
+                private_path = repo_root / private_rel
+                if not private_path.exists() or not private_path.is_file():
+                    continue
+                rows.setdefault(source_rel, {
+                    "private_relative_path": str(private_rel),
+                    "text_sha256": row.get("text_sha256", ""),
+                    "engine": row.get("engine", ""),
+                })
+    except OSError:
+        return {}
+    return rows
+
+
+def resolve_ocr_text_path(repo_root: Path, input_dir: Path, relative_path: str) -> Path:
+    path = Path(relative_path)
+    if is_private_ocr_relative_path(path):
+        return repo_root / path
+    return input_dir / path
+
+
+def collect_ocr_text_candidates(
+    manifest: dict,
+    input_dir: Path,
+    repo_root: Path,
+    run_dir: Path,
+    evidence: list[dict],
+) -> list[dict]:
     evidence_by_path = {row["relative_path"]: row for row in evidence}
     manifest_paths = {item["relative_path"]: item for item in manifest["files"]}
+    private_sidecars = load_private_ocr_sidecars(repo_root, run_dir)
     rows: list[dict] = []
     for item in manifest["files"]:
         if item["kind"] != "screenshot":
@@ -414,20 +477,45 @@ def collect_ocr_text_candidates(manifest: dict, input_dir: Path, evidence: list[
                 "financial_fact_promoted": "false",
             })
             break
+        else:
+            private_sidecar = private_sidecars.get(item["relative_path"])
+            if private_sidecar is None:
+                continue
+            sidecar_key = private_sidecar["private_relative_path"]
+            sidecar_path = repo_root / sidecar_key
+            excerpt, text_length = read_text_excerpt(sidecar_path)
+            evidence_row["review_status"] = "ocr_text_candidate_pending_review"
+            rows.append({
+                "ocr_candidate_id": f"OCR-{manifest['run_id']}-{len(rows) + 1:05d}",
+                "evidence_id": evidence_row["evidence_id"],
+                "source_image_relative_path": item["relative_path"],
+                "ocr_text_relative_path": sidecar_key,
+                "ocr_text_sha256": private_sidecar["text_sha256"],
+                "text_length": str(text_length),
+                "text_excerpt": excerpt,
+                "extraction_status": "private_ocr_text_sidecar_indexed_pending_review",
+                "review_status": "pending_human_review",
+                "financial_fact_promoted": "false",
+            })
     return rows
 
 
-def collect_screenshot_ocr_coverage(manifest: dict, evidence: list[dict]) -> list[dict]:
+def collect_screenshot_ocr_coverage(manifest: dict, repo_root: Path, run_dir: Path, evidence: list[dict]) -> list[dict]:
     manifest_paths = {item["relative_path"]: item for item in manifest["files"]}
+    private_sidecars = load_private_ocr_sidecars(repo_root, run_dir)
     rows: list[dict] = []
     for row in evidence:
         if row["kind"] != "screenshot":
             continue
         sidecar_keys = [str(path) for path in ocr_sidecar_candidates(row["relative_path"])]
         present_sidecar = next((key for key in sidecar_keys if key in manifest_paths), "")
+        private_sidecar = private_sidecars.get(row["relative_path"])
+        if private_sidecar and not present_sidecar:
+            present_sidecar = private_sidecar["private_relative_path"]
+            sidecar_keys.append(present_sidecar)
         if present_sidecar:
             coverage_status = "ocr_text_sidecar_present_pending_review"
-            next_action = "review_ocr_text_candidate"
+            next_action = "review_private_ocr_text_candidate" if private_sidecar else "review_ocr_text_candidate"
             review_status = "pending_human_review"
         else:
             coverage_status = "ocr_text_sidecar_missing"
@@ -447,10 +535,15 @@ def collect_screenshot_ocr_coverage(manifest: dict, evidence: list[dict]) -> lis
     return rows
 
 
-def extract_ocr_value_candidates(manifest: dict, input_dir: Path, ocr_text_candidates: list[dict]) -> list[dict]:
+def extract_ocr_value_candidates(
+    manifest: dict,
+    input_dir: Path,
+    repo_root: Path,
+    ocr_text_candidates: list[dict],
+) -> list[dict]:
     rows: list[dict] = []
     for candidate in ocr_text_candidates:
-        text_path = input_dir / candidate["ocr_text_relative_path"]
+        text_path = resolve_ocr_text_path(repo_root, input_dir, candidate["ocr_text_relative_path"])
         text = text_path.read_text(encoding="utf-8-sig", errors="replace")
         for line_number, line in enumerate(text.splitlines(), 1):
             if not line.strip():
@@ -2133,9 +2226,9 @@ def build_company_bank_matrix_rows(fund_rows: list[dict]) -> list[dict]:
 
 def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Path, repo_root: Path) -> None:
     evidence = write_evidence_index_stub(manifest, run_dir)
-    screenshot_ocr_coverage_rows = collect_screenshot_ocr_coverage(manifest, evidence)
-    ocr_text_candidates = collect_ocr_text_candidates(manifest, input_dir, evidence)
-    ocr_value_candidates = extract_ocr_value_candidates(manifest, input_dir, ocr_text_candidates)
+    screenshot_ocr_coverage_rows = collect_screenshot_ocr_coverage(manifest, repo_root, run_dir, evidence)
+    ocr_text_candidates = collect_ocr_text_candidates(manifest, input_dir, repo_root, run_dir, evidence)
+    ocr_value_candidates = extract_ocr_value_candidates(manifest, input_dir, repo_root, ocr_text_candidates)
     chat_text_candidates = collect_chat_text_candidates(manifest, input_dir, evidence)
     chat_value_candidates = extract_chat_value_candidates(manifest, chat_text_candidates)
     chat_evidence_links = collect_chat_evidence_links(manifest, input_dir, evidence, chat_text_candidates, chat_value_candidates)
