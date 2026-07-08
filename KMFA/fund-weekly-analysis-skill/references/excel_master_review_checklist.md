@@ -25,8 +25,8 @@ Current evidence snapshot from the latest mother workbook:
 | Hidden audit sheets | `H01` through `H06` stay hidden | Template validator and workbook quality gate |
 | Sheet 01 rows 4-7 cards | Rows 4-7 form the first KPI band; labels are `可用现金占比`, `银行存款`, `票据/电子汇票`, `期末总资金` anchored at row 4 | Template validator |
 | Sheet 01 rows 8-11 cards | Rows 8-11 form the second KPI band; labels are `保证金可释放`, `外部净流出`, `内部调拨净额`, `资金缺口` anchored at row 8 | Template validator |
-| Homepage charts | `01_首页总览` has exactly two native line charts: latest 15 days and latest 30 days | Template validator checks chart titles, series, and point counts |
-| Chart size | Each native chart is at most 18 in x 9 in | Workbook quality gate |
+| Homepage charts | `01_首页总览` has exactly two native line charts: latest 15 days and latest 30 days | Template validator and `WQ-HOMEPAGE-CHART-SEMANTICS` check chart titles, series, and point counts |
+| Chart size | Each native chart is at most 18 in x 9 in | `WQ-HOMEPAGE-CHART-SIZE` workbook quality gate |
 | Native Excel only | Report elements remain editable cells, tables, formulas, and native charts, not pasted screenshots | Skill contract and template validation |
 | Real data only | No simulated amount, forecast, or management conclusion is generated | Runner cross-review and audit log |
 | OCR and chat values | OCR/chat extracted amounts remain candidates until human review | Candidate sidecars keep `financial_fact_promoted=false` |
@@ -58,7 +58,7 @@ Current evidence snapshot from the latest mother workbook:
 | Funding forecast | Active | Known due-date tax/deposit/loan/project-cost items only; no evidence-free forecast |
 | Company-bank matrix | Active | Company, bank, account alias, liquidity tier, and risk matrix |
 | Workbook generation | Active | Native Excel copy patched without rewriting chart packages |
-| Workbook quality gates | Active | Sheet order, hidden sheets, row 2, charts, formulas, sensitive visible values |
+| Workbook quality gates | Active | Sheet order, hidden sheets, row 2, homepage 15-day/30-day line chart semantics, chart dimensions, formulas, sensitive visible values |
 | Goal completion audit | Active | `goal_completion_audit.csv` records requirement-level status and remaining blockers |
 | Management conclusion gate | Active | `management_conclusion_gate.csv` blocks C-level conclusions until formal facts and all review gates pass |
 | Final management conclusion authorization | Active | `management_conclusion_final_authorization` stays blocked until a separate release approval exists, even when `formal_fund_ledger.csv` has rows |
