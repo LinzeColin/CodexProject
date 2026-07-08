@@ -1,3 +1,40 @@
+## 122. Memory Atlas v1.2 S05 P2 Facet Extractor Parameters
+
+状态：`phase_s05_p2_facet_extractor_completed_pending_s05_p3`。
+
+验收 ID：`ACC-MA-V12-S05P2`。
+
+S05 P2 固定以下参数：
+
+- `MA-V12-S05P2`
+- `validate:v1.2-s05-p2`
+- `extract_memory_atlas_facets.py`
+- `atlasctl.py analyze --stage facets`
+- `data/derived/behavior_intelligence/events.json`
+- event count：217。
+- source_status：ChatGPT 201, Codex 16, future_agent missing reason。
+- S05 P2 完成后下一步为 pending S05 P3。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S05P2-001 phase_status = phase_s05_p2_facet_extractor_completed_pending_s05_p3`
+- `PARAM-MA-V12-S05P2-002 validator = validate:v1.2-s05-p2`
+- `PARAM-MA-V12-S05P2-003 extractor = extract_memory_atlas_facets.py`
+- `PARAM-MA-V12-S05P2-004 output = data/derived/behavior_intelligence/events.json`
+- `PARAM-MA-V12-S05P2-005 event_count = 217`
+- `PARAM-MA-V12-S05P2-006 next_gate = pending S05 P3`
+- `PARAM-MA-V12-S05P2-007 phase_boundary = No raw mutation in this phase; No fake events; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s05-p2` checks extractor runtime, atlasctl dry-run, events.json
+  identity, event field completeness, evidence refs or missing reasons,
+  source_status coverage, human/machine records, canonical remote and no raw/no
+  upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S05 P2 Facet Extractor; MA-V12-S05P2; ACC-MA-V12-S05P2; phase_s05_p2_facet_extractor_completed_pending_s05_p3; validate:v1.2-s05-p2; extract_memory_atlas_facets.py; atlasctl.py analyze --stage facets; events.json; 217 events; S05 P2; pending S05 P3; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No fake events.
+
 ## 121. Memory Atlas v1.2 S05 P1 Facet Schema Parameters
 
 状态：`phase_s05_p1_facet_schema_completed_pending_s05_p2`。

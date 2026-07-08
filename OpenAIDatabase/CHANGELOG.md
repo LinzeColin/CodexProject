@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S05 P2 Facet Extractor
+
+- Added `scripts/extract_memory_atlas_facets.py` for canonical behavior-event extraction.
+- Extended `scripts/atlasctl.py` with `analyze --stage facets`.
+- Added `data/derived/behavior_intelligence/events.json` with 217 extracted events.
+- Added `docs/reviews/memory_atlas_v1_2_s05_p2_facet_extractor.md`.
+- Added `validate:v1.2-s05-p2` for `MA-V12-S05P2` /
+  `ACC-MA-V12-S05P2`.
+- Registered status `phase_s05_p2_facet_extractor_completed_pending_s05_p3`.
+- Preserved S05 P2 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation in this phase and No fake events.
+- Marked the next gate as pending S05 P3.
+
 ## Unreleased - Memory Atlas v1.2 S05 P1 Facet Schema
 
 - Added `机器治理/数据契约/facet_event_schema.v1_2_s05_p1.json`.

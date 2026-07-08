@@ -18,20 +18,23 @@
 
 ## 当前阶段
 
-当前为 S05 P1。任务 ID 为 `MA-V12-S05P1`，验收 ID 为
-`ACC-MA-V12-S05P1`，validator 为 `validate:v1.2-s05-p1`。
+当前为 S05 P2。任务 ID 为 `MA-V12-S05P2`，验收 ID 为
+`ACC-MA-V12-S05P2`，validator 为 `validate:v1.2-s05-p2`。
 S01 整体复审已通过，S02 整体复审已通过，S03 P1/P2/P3
 整体复审已通过。S04 P1 已建立 ChatGPT 只读同步和 official export fallback。
 S04 P2 已建立 Codex local sync、future-agent minimal adapter、raw + derived + run log
 输出合同，以及 `scripts/atlasctl.py` 的 codex/future-agent dry-run 入口。
 S04 P3 已建立 GitHub backup dry-run/apply 本地控制面；apply 只做本地 commit，
 不执行远端 push。S04 整体复审已通过。S05 P1 已定义 facet/canonical event
-schema，下一步是 S05 P2。
+schema。S05 P2 已实现 `scripts/extract_memory_atlas_facets.py`，并通过
+`scripts/atlasctl.py analyze --stage facets` 生成
+`data/derived/behavior_intelligence/events.json`。下一步是 S05 P3。
 
 当前机器产物：
 
 - `数据契约/source_data_model.v1_2_s02_p1.json`
 - `数据契约/facet_event_schema.v1_2_s05_p1.json`
+- `../data/derived/behavior_intelligence/events.json`
 - `同步与备份/sync_source_registry.json`
 - `同步与备份/raw_public_archive_policy.v1_2_s03_p1.json`
 - `同步与备份/credential_exclusion_policy.v1_2_s03_p2.json`
@@ -68,12 +71,14 @@ schema，下一步是 S05 P2。
 - `../docs/reviews/memory_atlas_v1_2_s04_p3_github_backup.md`
 - `../docs/reviews/memory_atlas_v1_2_s04_review.md`
 - `../docs/reviews/memory_atlas_v1_2_s05_p1_facet_schema.md`
+- `../docs/reviews/memory_atlas_v1_2_s05_p2_facet_extractor.md`
 - `scripts/privacy_guard.py`
 - `scripts/sync_codex_memory_data.py`
 - `scripts/raw_archive_manifest.py`
 - `scripts/sync_chatgpt_memory_data.py`
 - `scripts/sync_future_agent_data.py`
 - `scripts/github_backup.py`
+- `scripts/extract_memory_atlas_facets.py`
 - `scripts/atlasctl.py`
 
 `运行门禁/v1.2需求冻结清单.json` 继续固定：

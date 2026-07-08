@@ -16,6 +16,7 @@ CODEX_SYNC = ROOT / "scripts" / "sync_codex_memory_data.py"
 FUTURE_AGENT_SYNC = ROOT / "scripts" / "sync_future_agent_data.py"
 BUILD_ATLAS = ROOT / "scripts" / "build_memory_atlas_data.py"
 GITHUB_BACKUP = ROOT / "scripts" / "github_backup.py"
+FACET_EXTRACTOR = ROOT / "scripts" / "extract_memory_atlas_facets.py"
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -32,6 +33,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
     build_atlas = subparsers.add_parser("build-atlas", help="Build derived Memory Atlas visualization data.")
     build_atlas.add_argument("--dry-run", action="store_true")
+
+    analyze = subparsers.add_parser("analyze", help="Run derived behavior intelligence analysis.")
+    analyze.add_argument("--stage", required=True)
+    analyze.add_argument("--dry-run", action="store_true")
+    analyze.add_argument("--database-dir", type=Path, default=ROOT)
 
     push = subparsers.add_parser("push", help="Prepare local GitHub backup scope.")
     mode = push.add_mutually_exclusive_group(required=True)
@@ -155,6 +161,53 @@ def run_build_atlas(args: argparse.Namespace) -> int:
     return result.returncode
 
 
+def facet_analyze_contract() -> dict[str, object]:
+    return {
+        "status": "PASS",
+        "command": "analyze",
+        "stage": "facets",
+        "dry_run": True,
+        "writes_files": False,
+        "extractor": "scripts/extract_memory_atlas_facets.py",
+        "output": "data/derived/behavior_intelligence/events.json",
+        "input_roots": [
+            "data/public_raw/chatgpt",
+            "data/public_raw/codex",
+            "data/public_raw/agents",
+            "data/processed/conversations/conversation_manifest.jsonl",
+            "data/processed/codex/codex_session_manifest.jsonl",
+            "data/derived/codex",
+            "data/derived/agents",
+        ],
+        "missing_source_policy": "record source_status missing_reason without fake events",
+        "raw_mutation": False,
+        "task_id": "MA-V12-S05P2",
+        "acceptance_id": "ACC-MA-V12-S05P2",
+    }
+
+
+def run_analyze(args: argparse.Namespace) -> int:
+    if args.stage != "facets":
+        print(json.dumps({
+            "status": "NOT_IMPLEMENTED",
+            "command": "analyze",
+            "stage": args.stage,
+            "reason": "Unknown analyze stage. Supported stages: facets.",
+        }, ensure_ascii=False, indent=2, sort_keys=True))
+        return 2
+
+    if args.dry_run:
+        command = [sys.executable, str(FACET_EXTRACTOR), "--database-dir", str(args.database_dir), "--dry-run"]
+    else:
+        command = [sys.executable, str(FACET_EXTRACTOR), "--database-dir", str(args.database_dir)]
+    result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
+    if result.stdout:
+        print(result.stdout, end="")
+    if result.stderr:
+        print(result.stderr, file=sys.stderr, end="")
+    return result.returncode
+
+
 def run_push(args: argparse.Namespace) -> int:
     command = [sys.executable, str(GITHUB_BACKUP), "--database-dir", str(args.database_dir)]
     if args.dry_run:
@@ -175,6 +228,8 @@ def main(argv: list[str] | None = None) -> int:
         return run_sync(args)
     if args.command == "build-atlas":
         return run_build_atlas(args)
+    if args.command == "analyze":
+        return run_analyze(args)
     if args.command == "push":
         return run_push(args)
     raise AssertionError(f"unhandled command: {args.command}")
