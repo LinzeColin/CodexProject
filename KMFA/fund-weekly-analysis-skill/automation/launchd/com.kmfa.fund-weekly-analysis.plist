@@ -10,24 +10,12 @@
     <string>__REPO_ROOT__/KMFA/fund-weekly-analysis-skill/tools/run_daily_local.sh</string>
   </array>
   <key>StartCalendarInterval</key>
-  <array>
-    <dict>
-      <key>Weekday</key>
-      <integer>1</integer>
-      <key>Hour</key>
-      <integer>11</integer>
-      <key>Minute</key>
-      <integer>0</integer>
-    </dict>
-    <dict>
-      <key>Weekday</key>
-      <integer>6</integer>
-      <key>Hour</key>
-      <integer>11</integer>
-      <key>Minute</key>
-      <integer>0</integer>
-    </dict>
-  </array>
+  <dict>
+    <key>Hour</key>
+    <integer>11</integer>
+    <key>Minute</key>
+    <integer>30</integer>
+  </dict>
   <key>StandardOutPath</key>
   <string>__REPO_ROOT__/KMFA/metadata/fund_weekly_analysis/private_runtime/logs/launchd.out.log</string>
   <key>StandardErrorPath</key>
