@@ -929,3 +929,9 @@ KMFA 当前版本 `0.1.4-residual-difference-authorized-source-reference-or-excl
 - owner_status: `blocked_owner_or_authorized_agent_business_execution_final_readiness_recheck_required_after_readiness_gate`
 - required_owner_or_agent_input: source reference, owner exclusion, formula mapping or non-numeric mapping basis before business execution can open.
 - decision: `NO_GO`; business execution, GitHub upload and app reinstall remain closed.
+## 2026-07-08 | Owner / authorized agent business execution blocked handoff after final readiness recheck
+
+- phase: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_HANDOFF_AFTER_FINAL_READINESS_RECHECK`
+- owner_status: `blocked_owner_or_authorized_agent_business_execution_blocked_handoff_after_final_readiness_recheck`
+- required_owner_or_agent_input: source reference, owner exclusion, formula mapping or non-numeric mapping basis before business execution can open.
+- decision: `NO_GO`; business execution, GitHub upload and app reinstall remain closed.

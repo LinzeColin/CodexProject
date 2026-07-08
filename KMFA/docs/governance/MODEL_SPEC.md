@@ -2018,3 +2018,6 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 ### V014 business execution final readiness recheck after readiness gate
 
 `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-FINAL-READINESS-RECHECK-AFTER-READINESS-GATE-001` locks business execution final readiness after the prior readiness gate. The model reads prior public-safe readiness-gate evidence and an ignored private readiness gate queue only, emits aggregate public counts, keeps detailed rows private, and leaves binding/value comparison/reconciliation/business consistency/lineage/GitHub upload/app reinstall/business execution closed with `decision=NO_GO`.
+### V014 business execution blocked handoff after final readiness recheck
+
+`FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-BLOCKED-HANDOFF-AFTER-FINAL-READINESS-RECHECK-001` records the blocked handoff after the prior business execution final readiness recheck. The model reads prior public-safe final-readiness evidence and an ignored private final-readiness queue only, emits aggregate public counts, keeps detailed rows private, and leaves binding/value comparison/reconciliation/business consistency/lineage/GitHub upload/app reinstall/business execution closed with `decision=NO_GO`.
