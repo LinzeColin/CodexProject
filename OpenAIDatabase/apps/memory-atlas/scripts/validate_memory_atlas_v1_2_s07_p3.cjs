@@ -51,12 +51,14 @@ const allowedOpenDiffPaths = [
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s07_p1.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s07_p2.cjs",
   `OpenAIDatabase/apps/memory-atlas/scripts/${scriptName}`,
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s07_review.cjs",
   `OpenAIDatabase/${atlasctlPath}`,
   `OpenAIDatabase/${builderPath}`,
   `OpenAIDatabase/${configPath}`,
   `OpenAIDatabase/${outputPath}`,
   "OpenAIDatabase/tests/test_s07p3_formula_what_if.py",
   `OpenAIDatabase/${reviewPath}`,
+  "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s07_review.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_DELIVERY_RECORD.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md",
   "OpenAIDatabase/功能清单.md",
@@ -313,6 +315,25 @@ function validateConfigAndOutput() {
   );
 }
 
+function currentStateIsS07Review() {
+  const quick = readRepoFile("人类可读/00_快速入口.md");
+  const overview = readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md");
+  const machine = readRepoFile("机器治理/README.md");
+  const dataContract = readRepoFile("机器治理/数据契约/README.md");
+  const formula = readRepoFile("机器治理/参数与公式/README.md");
+  const behavior = readRepoFile("机器治理/行为智能模型/README.md");
+  const runGate = readRepoFile("机器治理/运行门禁/README.md");
+  return (
+    hasAll(quick, ["当前阶段是 S07 Review", "MA-V12-S07-REVIEW", "ACC-MA-V12-S07-REVIEW", "下一步只允许进入 S08 P1"]) &&
+    hasAll(overview, ["S07 Review 已完成", "Personal Economic Proxy", "Formula What-if", "下一步是 S08 P1"]) &&
+    hasAll(machine, ["当前为 S07 Review", "MA-V12-S07-REVIEW", "validate:v1.2-s07-review", "下一步是 S08 P1"]) &&
+    hasAll(dataContract, ["当前 S07 Review 已完成", "personal_economic_proxy.json", "formula_what_if_preview.json", "下一步是 S08 P1"]) &&
+    hasAll(formula, ["当前 S07 Review 已完成", "personal_economic_proxy.v1_2_s07_p1.json", "formula_what_if_defaults.v1_2_s07_p3.json"]) &&
+    hasAll(behavior, ["当前 S07 Review 已完成", "Personal Economic Proxy", "Formula What-if", "下一步是 S08 P1"]) &&
+    hasAll(runGate, ["当前阶段是 S07 Review", "MA-V12-S07-REVIEW", "ACC-MA-V12-S07-REVIEW", "validate:v1.2-s07-review"])
+  );
+}
+
 function validateDocsAndRecords() {
   [
     reviewPath,
@@ -336,6 +357,7 @@ function validateDocsAndRecords() {
   const dataContract = readRepoFile("机器治理/数据契约/README.md");
   const behavior = readRepoFile("机器治理/行为智能模型/README.md");
   const runGate = readRepoFile("机器治理/运行门禁/README.md");
+  const s07ReviewState = currentStateIsS07Review();
   assertCondition(
     hasAll(review, [taskId, acceptanceId, status, "Formula What-if", outputPath, "proposal_required_before_apply", "pending S07 Review", "No GitHub main upload in this phase"]),
     "s07p3_review_artifact",
@@ -349,43 +371,43 @@ function validateDocsAndRecords() {
     "Human formula what-if doc is incomplete",
   );
   assertCondition(
-    hasAll(quick, [taskId, acceptanceId, status, "当前阶段是 S07 P3", "Formula What-if", "下一步只允许进入 S07 Review"]),
+    s07ReviewState || hasAll(quick, [taskId, acceptanceId, status, "当前阶段是 S07 P3", "Formula What-if", "下一步只允许进入 S07 Review"]),
     "s07p3_quick_entry",
     "Quick entry records S07 P3 state and next S07 Review gate",
     "Quick entry is missing S07 P3 state",
   );
   assertCondition(
-    hasAll(overview, ["S07 P3 已完成", "Formula What-if", outputPath, "下一步是 S07 Review"]),
+    s07ReviewState || hasAll(overview, ["S07 P3 已完成", "Formula What-if", outputPath, "下一步是 S07 Review"]),
     "s07p3_overview",
     "Overview records S07 P3 state and output",
     "Overview is missing S07 P3 state",
   );
   assertCondition(
-    hasAll(machine, ["当前为 S07 P3", taskId, acceptanceId, validatorName, "下一步是 S07 Review"]),
+    s07ReviewState || hasAll(machine, ["当前为 S07 P3", taskId, acceptanceId, validatorName, "下一步是 S07 Review"]),
     "s07p3_machine_readme",
     "Machine README records S07 P3 identity and next gate",
     "Machine README is missing S07 P3 state",
   );
   assertCondition(
-    hasAll(formula, ["当前 S07 P3 已完成", "formula_what_if_defaults.v1_2_s07_p3.json", "formula_what_if_proxy_score", "下一步是 S07 Review"]),
+    s07ReviewState || hasAll(formula, ["当前 S07 P3 已完成", "formula_what_if_defaults.v1_2_s07_p3.json", "formula_what_if_proxy_score", "下一步是 S07 Review"]),
     "s07p3_formula_readme",
     "Formula README records S07 P3 what-if formula registry",
     "Formula README is missing S07 P3 state",
   );
   assertCondition(
-    hasAll(dataContract, ["当前 S07 P3 已完成", outputPath, "scenarios", "parameter_change_proposal", "下一步是 S07 Review"]),
+    s07ReviewState || hasAll(dataContract, ["当前 S07 P3 已完成", outputPath, "scenarios", "parameter_change_proposal", "下一步是 S07 Review"]),
     "s07p3_data_contract",
     "Data contract README records S07 P3 formula what-if output",
     "Data contract README is missing S07 P3 state",
   );
   assertCondition(
-    hasAll(behavior, ["当前 S07 P3 已完成", "Formula What-if", "Personal Economic Proxy", "下一步是 S07 Review"]),
+    s07ReviewState || hasAll(behavior, ["当前 S07 P3 已完成", "Formula What-if", "Personal Economic Proxy", "下一步是 S07 Review"]),
     "s07p3_behavior_readme",
     "Behavior model README records S07 P3 usage of economic proxy outputs",
     "Behavior model README is missing S07 P3 state",
   );
   assertCondition(
-    hasAll(runGate, ["当前阶段是 S07 P3", taskId, acceptanceId, validatorName, reviewPath, "下一步是 S07 Review"]),
+    s07ReviewState || hasAll(runGate, ["当前阶段是 S07 P3", taskId, acceptanceId, validatorName, reviewPath, "下一步是 S07 Review"]),
     "s07p3_run_gate",
     "Run gate README records S07 P3 validator and next gate",
     "Run gate README is missing S07 P3 state",

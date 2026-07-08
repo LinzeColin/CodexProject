@@ -3,15 +3,22 @@
 用于放置 Memory Atlas v1.2 的信息 ROI、Personal Economic Proxy、证据强度、
 新鲜度、复用价值、维护成本等公式和参数。
 
-当前 S07 P3 已完成。Formula What-if 配置预览已写入
-`机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`，输出写入
-`data/derived/economic_proxy/formula_what_if_preview.json`。
+当前 S07 Review 已完成。S07 Review 已复审以下公式配置：
+`机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json`、
+`机器治理/参数与公式/information_roi.v1_2_s07_p2.json` 和
+`机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`。
 
-任务 ID：`MA-V12-S07P3`。
+任务 ID：`MA-V12-S07-REVIEW`。
 
-验收 ID：`ACC-MA-V12-S07P3`。
+验收 ID：`ACC-MA-V12-S07-REVIEW`。
 
-Validator：`validate:v1.2-s07-p3`。
+Validator：`validate:v1.2-s07-review`。
+
+## S07 Review 结论
+
+Personal Economic Proxy、Information ROI、Visual ROI Gate 和 Formula What-if 均保留
+中文解释、公式来源、参数引用和 no external economic database 边界。外部经济数据库只保留
+v2 占位；本阶段不声称精确收入预测，也不提供财务建议。
 
 ## S07 P3 公式
 
@@ -56,4 +63,4 @@ S07 P2 同时引用 Visual ROI Gate 配置：
 - 不修改 raw。
 - No GitHub main upload in this phase。
 
-下一步是 S07 Review。
+下一步是 S08 P1。
