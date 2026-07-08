@@ -2,6 +2,18 @@
 
 用于放置 run evidence、audit logs、manifest/hash、stage evidence 和复审证据摘要。
 
+当前 S14 Review 已完成。任务 ID 为 `MA-V12-S14-REVIEW`，验收 ID 为
+`ACC-MA-V12-S14-REVIEW`，状态为
+`stage_s14_review_passed_pending_v1_2_final_review_no_github_main_upload`。Validator 为
+`validate:v1.2-s14-review`。S14 Review 使用以下证据确认 S14 P1/P2/P3 阶段链：
+
+- `机器治理/证据与日志/stage_pass_gates/stage_pass_gate_status.v1_2_s14_p3.json`
+- `人类可读/09_验收标准与运行手册.md`
+- `docs/reviews/memory_atlas_v1_2_s14_review.md`
+
+S14 Review 不上传 GitHub main，不远端 push，不修改 raw。下一步为 pending v1.2 Final Review。
+No GitHub main upload。No remote push。No raw mutation。
+
 当前 S14 P3 已完成开发记录与运行手册。任务 ID 为 `MA-V12-S14P3`，验收 ID 为
 `ACC-MA-V12-S14P3`，状态为
 `phase_s14_p3_development_record_completed_pending_s14_review`。Validator 为

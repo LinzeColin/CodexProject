@@ -18,6 +18,17 @@
 
 ## 当前阶段
 
+当前为 S14 Review。任务 ID 为 `MA-V12-S14-REVIEW`，验收 ID 为
+`ACC-MA-V12-S14-REVIEW`，validator 为 `validate:v1.2-s14-review`。状态为
+`stage_s14_review_passed_pending_v1_2_final_review_no_github_main_upload`。S14 Review 已完成
+S14 P1、S14 P2、S14 P3 的整体复审。`owner-daily`、`atlasctl_unified_cli.v1_2_s14_p1`、
+`atlasctl_final_audit.v1_2_s14_p2` 和 `stage_pass_gate_status.v1_2_s14_p3.json` 共同满足
+S14 stage gate。下一步是 pending v1.2 Final Review。
+
+No GitHub main upload。No remote push。No raw mutation。
+
+历史复验兼容记录：
+
 当前为 S13 Review。任务 ID 为 `MA-V12-S13-REVIEW`，验收 ID 为
 `ACC-MA-V12-S13-REVIEW`，validator 为 `validate:v1.2-s13-review`。状态为
 `stage_s13_review_passed_pending_s14_no_github_main_upload`。S13 Review 已完成

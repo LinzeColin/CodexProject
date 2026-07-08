@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S14 Review
+
+- Added `validate:v1.2-s14-review` for `MA-V12-S14-REVIEW` /
+  `ACC-MA-V12-S14-REVIEW`.
+- Registered status
+  `stage_s14_review_passed_pending_v1_2_final_review_no_github_main_upload`.
+- Added `docs/reviews/memory_atlas_v1_2_s14_review.md`.
+- Reviewed `S14 P1`, `S14 P2` and `S14 P3` together: `owner-daily`,
+  `atlasctl_unified_cli.v1_2_s14_p1`, `atlasctl_final_audit.v1_2_s14_p2`,
+  `stage_pass_gate_status.v1_2_s14_p3.json`.
+- Confirmed 开发记录中文可读, 维护命令少而清晰, 所有 stage pass gate 状态可查.
+- Preserved boundaries: No GitHub main upload, No remote push, No raw mutation,
+  no app reinstall and no local deep clean.
+- Marked the next gate as pending v1.2 Final Review.
+
 ## Unreleased - Memory Atlas v1.2 S14 P3 Development Records
 
 - Added `validate:v1.2-s14-p3` for `MA-V12-S14P3` /
