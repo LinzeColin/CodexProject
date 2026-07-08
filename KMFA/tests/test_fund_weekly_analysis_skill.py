@@ -570,6 +570,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "chat_evidence_links.csv",
                 "attachment_evidence_reconciliation.csv",
                 "attachment_reconciliation_remediation.csv",
+                "attachment_repair_source_locator.csv",
                 "attachment_remediation_dry_run.csv",
                 "attachment_repair_plan.csv",
                 "attachment_repair_apply_gate.csv",
@@ -3185,6 +3186,120 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertFalse(cross_review["management_conclusion_allowed"])
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
 
+    def test_runner_locates_attachment_repair_source_candidates_without_applying(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            one_drive_root = Path(temp_dir) / "OneDrive-Personal"
+            input_dir = one_drive_root / "DWS_Outputs" / "付款请示群"
+            manifest_dir = input_dir / "_manifest"
+            file_dir = input_dir / "files" / "0708"
+            manifest_dir.mkdir(parents=True)
+            file_dir.mkdir(parents=True)
+
+            missing_rel = "files/0708/20260708113200_missing_image.png"
+            zip_path = one_drive_root / "DWS_Outputs.zip"
+            with zipfile.ZipFile(zip_path, "w") as zf:
+                zf.writestr(f"DWS_Outputs/付款请示群/{missing_rel}", b"recoverable-image")
+
+            with (manifest_dir / "manifest.csv").open("w", encoding="utf-8", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=[
+                    "group_name",
+                    "open_conversation_id",
+                    "message_id",
+                    "message_time",
+                    "sender_name",
+                    "sender_id",
+                    "msg_type",
+                    "resource_type",
+                    "resource_id",
+                    "original_filename",
+                    "local_archive_path",
+                    "output_path",
+                    "sha256",
+                    "size_bytes",
+                    "download_method",
+                    "status",
+                ])
+                writer.writeheader()
+                writer.writerow({
+                    "group_name": "付款请示群",
+                    "open_conversation_id": "conv-1",
+                    "message_id": "msg-missing-output",
+                    "message_time": "2026-07-08T11:00:00+10:00",
+                    "sender_name": "杨婷",
+                    "sender_id": "sender-1",
+                    "msg_type": "image",
+                    "resource_type": "image",
+                    "resource_id": "resource-missing-output",
+                    "original_filename": "missing_output.png",
+                    "local_archive_path": "",
+                    "output_path": "",
+                    "sha256": "",
+                    "size_bytes": "",
+                    "download_method": "dws",
+                    "status": "failed",
+                })
+                writer.writerow({
+                    "group_name": "付款请示群",
+                    "open_conversation_id": "conv-1",
+                    "message_id": "msg-missing-file",
+                    "message_time": "2026-07-08T11:01:00+10:00",
+                    "sender_name": "杨婷",
+                    "sender_id": "sender-1",
+                    "msg_type": "image",
+                    "resource_type": "image",
+                    "resource_id": "resource-missing-file",
+                    "original_filename": "missing_file.png",
+                    "local_archive_path": "",
+                    "output_path": missing_rel,
+                    "sha256": "0" * 64,
+                    "size_bytes": "123",
+                    "download_method": "dws",
+                    "status": "downloaded",
+                })
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "run_fund_weekly_analysis.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--input-dir",
+                    str(input_dir),
+                    "--run-id",
+                    "attachment_source_locator_test",
+                    "--timezone",
+                    "Australia/Sydney",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/attachment_source_locator_test"
+            with (run_dir / "attachment_repair_source_locator.csv").open(encoding="utf-8-sig", newline="") as f:
+                locator_rows = list(csv.DictReader(f))
+            self.assertEqual(len(locator_rows), 2)
+            locator_by_message = {row["open_message_id"]: row for row in locator_rows}
+            self.assertEqual(locator_by_message["msg-missing-file"]["locator_status"], "candidate_in_source_zip")
+            self.assertEqual(locator_by_message["msg-missing-file"]["source_zip_member"], f"DWS_Outputs/付款请示群/{missing_rel}")
+            self.assertEqual(locator_by_message["msg-missing-file"]["local_input_exists"], "false")
+            self.assertEqual(locator_by_message["msg-missing-file"]["safe_to_apply"], "false")
+            self.assertEqual(locator_by_message["msg-missing-file"]["apply_performed"], "false")
+            self.assertEqual(locator_by_message["msg-missing-output"]["locator_status"], "requires_dws_attachment_rerun")
+            self.assertEqual(locator_by_message["msg-missing-output"]["source_zip_member"], "")
+            self.assertTrue(all(row["source_mutation_allowed"] == "false" for row in locator_rows))
+            self.assertTrue(all(row["formal_fact_allowed"] == "false" for row in locator_rows))
+
+            self.assertFalse((input_dir / missing_rel).exists())
+            cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
+            self.assertEqual(cross_review["attachment_repair_source_locator_count"], 2)
+            self.assertEqual(cross_review["attachment_repair_source_locator_candidate_count"], 1)
+            self.assertEqual(cross_review["attachment_repair_source_locator_apply_allowed_count"], 0)
+            self.assertFalse(cross_review["management_conclusion_allowed"])
+            self.assertEqual(cross_review["generated_financial_amount_count"], 0)
+
     def test_runner_validates_private_attachment_repair_authorization_manifest_without_applying(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             repo_root = Path(temp_dir) / "repo"
@@ -3808,6 +3923,13 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(evidence_plan_rows, [])
             self.assertEqual(cross_review["evidence_cross_review_resolution_plan_count"], 0)
             self.assertEqual(cross_review["evidence_cross_review_resolution_plan_blocker_count"], 0)
+
+            with (run_dir / "attachment_repair_source_locator.csv").open(encoding="utf-8-sig", newline="") as f:
+                locator_rows = list(csv.DictReader(f))
+            self.assertEqual(locator_rows, [])
+            self.assertEqual(cross_review["attachment_repair_source_locator_count"], 0)
+            self.assertEqual(cross_review["attachment_repair_source_locator_candidate_count"], 0)
+            self.assertEqual(cross_review["attachment_repair_source_locator_apply_allowed_count"], 0)
 
             workbook_path = run_dir / "资金与税费管理母版_structured_csv_test.xlsx"
             with zipfile.ZipFile(workbook_path) as workbook:
