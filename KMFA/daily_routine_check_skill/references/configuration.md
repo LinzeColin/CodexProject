@@ -19,10 +19,10 @@ KMFA/metadata/daily_routine_check/codex_automation/github_sync.prompt.md
 
 ## Private Config
 
-Private config belongs here and must not be committed:
+Private config belongs in OneDrive and must not be committed:
 
 ```text
-KMFA/metadata/daily_routine_check/private_runtime/
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime/
 ```
 
 Use templates from this package:
@@ -67,13 +67,19 @@ The user authorized cloud OCR/LLM/agent for this use case. Sending notifications
 
 ## Canonical Paths
 
-Input root:
+Primary input zip:
+
+```text
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
+```
+
+Fallback input root:
 
 ```text
 /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs
 ```
 
-Input groups:
+Input groups inside either source:
 
 ```text
 付款请示群
@@ -89,18 +95,18 @@ OneDrive routine-check output root:
 Private local runtime:
 
 ```text
-KMFA/metadata/daily_routine_check/private_runtime
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime
 ```
 
 ## Active Database Policy
 
-Active SQLite should stay in local private runtime to avoid OneDrive sync conflicts while writes are active:
+Active SQLite stays in OneDrive private runtime so routine-check runs do not create ignored runtime files inside the Git package:
 
 ```text
-KMFA/metadata/daily_routine_check/private_runtime/daily_routine_check.sqlite
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime/daily_routine_check.sqlite
 ```
 
-Daily durable copies and append-only logs go to OneDrive:
+Append-only logs also go to OneDrive:
 
 ```text
 /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/YYYYMM/

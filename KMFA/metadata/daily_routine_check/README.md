@@ -2,16 +2,16 @@
 
 Public-safe metadata for `Dingtalk-routine-check / 钉钉工作检查`.
 
-This metadata controls a local skill that reads existing DWS output from OneDrive:
+This metadata controls a local skill that reads existing DWS output from OneDrive. The primary input is the zip package:
 
 ```text
-/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
 ```
 
+The checker streams required CSV entries from the zip and does not extract the package to local disk. A direct `DWS_Outputs/` folder with the same group structure remains a compatibility fallback.
+
 It does not create the upstream DWS archive automation.
-If only `DWS_Outputs.zip` or `DWS_Archive/` exists, healthcheck reports
-`SOURCE_INPUT_FOLDER_MISSING`; the checker requires direct group folders with
-`chat_records/chat_records.csv` and `_manifest/manifest.csv`.
+If `DWS_Outputs.zip` is a OneDrive dataless placeholder or a corrupt zip, healthcheck reports `ZIP_INPUT_UNREADABLE` and asks for a readable hydrated zip.
 
 Scheduler contract:
 
@@ -26,13 +26,13 @@ Every run log must include `run_at_beijing`, `check_date`, `trigger_window`, `ru
 
 Morning runs also produce `cash_risk_result` for 杨婷资金账户监控. The public-safe offline implementation extracts `total_available_cash` from DWS message text using configured markers in `cash_monitor.public.yaml`; image/file candidates without a structured amount become `CASH_NEEDS_REVIEW`.
 
-Private runtime data belongs under:
+Private runtime data belongs under OneDrive, not inside the Git package:
 
 ```text
-KMFA/metadata/daily_routine_check/private_runtime/
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime/
 ```
 
-OneDrive durable logs and snapshots belong under:
+Durable logs and snapshots belong under:
 
 ```text
 /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/

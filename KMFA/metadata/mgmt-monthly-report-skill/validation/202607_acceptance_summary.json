@@ -1,0 +1,17 @@
+{
+  "period": "202607",
+  "validation_command": "KMFA/mgmt-monthly-report-skill/scripts/validate_deliverables.py --period 202607 --strict",
+  "validation_status": "passed",
+  "validation_errors": 0,
+  "validation_warnings": 0,
+  "formal_outputs_retained_locally": [
+    "经营管理分析报表 202607.xlsx",
+    "董事会经营分析摘要 202607.pdf"
+  ],
+  "formal_output_plaintext_committed_to_git": false,
+  "raw_input_plaintext_committed_to_git": false,
+  "notes": [
+    "The detailed validator JSON is not committed because it contains source file names. This summary records the public-safe acceptance result.",
+    "Sensitive raw workbooks and report bodies are represented in GitHub metadata by hashes and indexes only."
+  ]
+}

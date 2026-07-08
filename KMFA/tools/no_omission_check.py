@@ -3,8 +3,8 @@
 
 This check is intentionally local and deterministic. It verifies that the
 imported TaskPack requirements bind P0/P1 items to Stage/Phase/Task status,
-acceptance gates, tests, and evidence references without relying on external
-services or raw sensitive business data.
+acceptance gates, tests, and evidence references without requiring raw content
+inspection.
 """
 
 from __future__ import annotations
@@ -20,6 +20,9 @@ ROOT = Path(__file__).resolve().parents[1]
 REQUIREMENTS = ROOT / "metadata" / "traceability" / "requirements.csv"
 STAGE_STATUS = ROOT / "metadata" / "stage_status.jsonl"
 BASELINE_V12 = ROOT / "taskpack" / "v1_2"
+OWNER_AUTHORIZED_PLAINTEXT_UPLOAD_MANIFEST = (
+    ROOT / "metadata" / "security" / "owner_authorized_plaintext_upload_manifest.jsonl"
+)
 
 REQUIRED_REQUIREMENT_COLUMNS = {
     "requirement_id",
@@ -49,6 +52,10 @@ PUBLIC_REPO_FORBIDDEN_SUFFIXES = {
     ".db",
     ".sqlite-shm",
     ".sqlite-wal",
+}
+OWNER_AUTHORIZED_UPLOAD_RECORD_TYPE = "owner_authorized_plaintext_upload_file"
+PUBLIC_REPO_ALLOWED_BINARY_TEMPLATE_PATHS = {
+    "KMFA/fund-weekly-analysis-skill/templates/资金与税费管理母版_真实数据预览_v2.xlsx",
 }
 
 REQUIRED_V12_BASELINE_FILES = [
@@ -192,11 +199,15 @@ def check_requirements(rows: list[dict[str, str]], stage_ids: set[str], task_ids
 
 
 def check_no_raw_sensitive_files() -> None:
+    owner_authorized_paths = load_owner_authorized_plaintext_upload_paths()
     matches = []
     for path in ROOT.rglob("*"):
         if not path.is_file():
             continue
         rel = path.relative_to(ROOT).as_posix()
+        repo_rel = f"KMFA/{rel}"
+        if repo_rel in owner_authorized_paths or repo_rel in PUBLIC_REPO_ALLOWED_BINARY_TEMPLATE_PATHS:
+            continue
         if "90_用户原始上传数据_仅本地私有_禁止提交GitHub/" in rel:
             matches.append(rel)
             continue
@@ -204,6 +215,35 @@ def check_no_raw_sensitive_files() -> None:
             matches.append(rel)
     if matches:
         fail("forbidden raw/sensitive file-like artifacts under KMFA: " + ", ".join(matches[:20]))
+
+
+def load_owner_authorized_plaintext_upload_paths() -> set[str]:
+    if not OWNER_AUTHORIZED_PLAINTEXT_UPLOAD_MANIFEST.exists():
+        return set()
+
+    allowed: set[str] = set()
+    for line_number, line in enumerate(
+        OWNER_AUTHORIZED_PLAINTEXT_UPLOAD_MANIFEST.read_text(encoding="utf-8").splitlines(),
+        start=1,
+    ):
+        if not line.strip():
+            continue
+        record = json.loads(line)
+        if record.get("record_type") != OWNER_AUTHORIZED_UPLOAD_RECORD_TYPE:
+            continue
+        repo_path = str(record.get("repo_path", ""))
+        if not repo_path.startswith("KMFA/metadata/"):
+            fail(f"owner authorized upload record {line_number} must stay under KMFA/metadata/")
+        if record.get("owner_authorized") is not True:
+            fail(f"owner authorized upload record {line_number} missing owner_authorized=true")
+        if record.get("upload_allowed") is not True:
+            fail(f"owner authorized upload record {line_number} missing upload_allowed=true")
+        if record.get("credential_secret_confirmed_absent") is not True:
+            fail(f"owner authorized upload record {line_number} must confirm credential secrets absent")
+        if not record.get("owner_authorization_ref"):
+            fail(f"owner authorized upload record {line_number} missing owner_authorization_ref")
+        allowed.add(repo_path)
+    return allowed
 
 
 def check_v12_baseline() -> None:

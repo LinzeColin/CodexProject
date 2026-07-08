@@ -64,6 +64,11 @@ Source of truth is the current code and tests, but the expected rules are:
 - `NOTIFICATION_HIDDEN_NAMES` should remain empty unless the user explicitly authorizes a display-only hiding rule.
 - All status rollups are natural-month rollups.
 - Effective attendance day means both morning and evening punches exist on the same natural day.
+- Notification `今日异常 / 无考勤` is driven only by same-day status hits. `缺卡`, `未打卡`, `旷工`, `迟到`, and `早退` all count when their summary child row matches the work date.
+- Current-month cumulative counts are annotations for people already shown because they hit today's status. They must never create a today no-record/anomaly row by themselves.
+- Empty notification sections render nothing: no title and no `无`.
+- If collection is complete and there is no same-day anomaly, the notification says `本次 N 人全部考勤正常`.
+- The user-visible `待审批 / 待补卡 / 待核查` section is removed; pending/internal diagnostics stay in manifest, receipt, or machine state only.
 - Notification display rule: 10 or fewer people shows all names; over 10 shows total plus Top 10.
 - Top 10 ordering: monthly count or days descending, latest date descending, then stable name sort.
 - DWS collection logic must not be changed when only notification wording or ledger indexing is requested.

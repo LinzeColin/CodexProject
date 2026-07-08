@@ -1,14 +1,20 @@
 from __future__ import annotations
 
+import json
+import subprocess
+import sys
 import unittest
+import zipfile
 from datetime import date, datetime
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from KMFA.tools.daily_routine_check.archive_reader import DwsArchiveReader
-from KMFA.tools.daily_routine_check.healthcheck import build_source_readiness
+from KMFA.tools.daily_routine_check.healthcheck import DEFAULT_RUNTIME, build_source_readiness
 from KMFA.tools.daily_routine_check.ledger import connect, write_run_payload
 from KMFA.tools.daily_routine_check.main import (
+    DEFAULT_DB,
+    DEFAULT_NOTIFICATION_TARGETS,
     build_notification_events,
     build_run_summary,
     evaluate_cash_risk,
@@ -19,6 +25,21 @@ from KMFA.tools.daily_routine_check.main import (
 from KMFA.tools.daily_routine_check.models import RoutineRule, SourceMessage
 from KMFA.tools.daily_routine_check.rule_engine import evaluate_rule
 from KMFA.tools.daily_routine_check.schedule_rules import rules_for_trigger_window
+
+
+def write_dws_zip(path: Path) -> None:
+    with zipfile.ZipFile(path, "w") as zf:
+        for group, sender in (("付款请示群", "杨婷"), ("生产管理群", "黄婷")):
+            zf.writestr(
+                f"DWS_Outputs/{group}/chat_records/chat_records.csv",
+                "group_name,open_message_id,message_time,sender_name,content,resource_count,resource_types\n"
+                f"{group},{group}-m1,2026-07-07 10:00:00,{sender},资金账户明细表 可用资金合计 800000,0,\n",
+            )
+            zf.writestr(
+                f"DWS_Outputs/{group}/_manifest/manifest.csv",
+                "group_name,message_id,message_time,sender_name,resource_type,output_path,sha256,status\n"
+                f"{group},{group}-m1,2026-07-07 10:00:00,{sender},image,files/0707/{group}.png,sha-{group},downloaded\n",
+            )
 
 
 class TriggerWindowTests(unittest.TestCase):
@@ -355,6 +376,118 @@ class TriggerWindowTests(unittest.TestCase):
         self.assertEqual(counts["cleanup_events"], 1)
         self.assertIn("wal_checkpoint", cleanup["actions"])
 
+    def test_source_blocked_run_supersedes_prior_same_day_false_positives(self) -> None:
+        with TemporaryDirectory() as tmp:
+            db_path = f"{tmp}/daily_routine_check.sqlite"
+            conn = connect(db_path)
+            try:
+                write_run_payload(conn, "run-with-stale-false-positives", {
+                    "check_date": "2026-07-08",
+                    "results": [
+                        {
+                            "rule_id": "PAY_DAILY_CASH_ACCOUNT",
+                            "check_date": "2026-07-08",
+                            "status": "MISSING",
+                            "group_name": "付款请示群",
+                            "artifact_name": "资金账户明细表",
+                            "matched_message_id": None,
+                            "confidence": 0.0,
+                        },
+                        {
+                            "rule_id": "PAY_DAILY_CASH_FLOW",
+                            "check_date": "2026-07-08",
+                            "status": "MISSING",
+                            "group_name": "付款请示群",
+                            "artifact_name": "资金流水明细",
+                            "matched_message_id": None,
+                            "confidence": 0.0,
+                        },
+                    ],
+                    "cash_risk_result": {
+                        "report_date": "2026-07-08",
+                        "risk_level": "NO_DATA",
+                        "total_available_cash": None,
+                        "hard_threshold": 500000,
+                        "soft_threshold": 1000000,
+                        "source_message_id": None,
+                        "source_file_sha256": None,
+                        "confidence": 0.0,
+                    },
+                    "notification_events": [
+                        {
+                            "event_type": "MISSING_ROUTINE_ITEM",
+                            "target_label": "张霖泽",
+                            "group_name": "付款请示群",
+                            "rule_id": "PAY_DAILY_CASH_ACCOUNT",
+                            "idempotency_key": "MISSING_ROUTINE_ITEM:2026-07-08:PAY_DAILY_CASH_ACCOUNT:张霖泽",
+                            "payload": {"check_date": "2026-07-08", "status": "MISSING"},
+                        },
+                        {
+                            "event_type": "CASH_NO_DATA",
+                            "target_label": "张霖泽",
+                            "group_name": "付款请示群",
+                            "idempotency_key": "CASH_NO_DATA:2026-07-08:张霖泽:no-source",
+                            "payload": {"report_date": "2026-07-08", "risk_level": "NO_DATA"},
+                        },
+                    ],
+                    "data_quality_issues": [],
+                })
+
+                write_run_payload(conn, "run-source-blocked", {
+                    "check_date": "2026-07-08",
+                    "results": [],
+                    "rules_blocked_by_source": ["PAY_DAILY_CASH_ACCOUNT", "PAY_DAILY_CASH_FLOW"],
+                    "source_blocked_groups": ["付款请示群"],
+                    "cash_risk_result": None,
+                    "notification_events": [{
+                        "event_type": "SOURCE_STALE",
+                        "target_label": "张霖泽",
+                        "group_name": "付款请示群",
+                        "idempotency_key": "SOURCE_STALE:付款请示群:2026-07-08:SOURCE_ZIP_CHAT_RECORDS_STALE",
+                        "payload": {
+                            "issue_type": "SOURCE_STALE",
+                            "issue_code": "SOURCE_ZIP_CHAT_RECORDS_STALE",
+                            "group_name": "付款请示群",
+                            "check_date": "2026-07-08",
+                        },
+                    }],
+                    "data_quality_issues": [{
+                        "issue_type": "SOURCE_STALE",
+                        "issue_code": "SOURCE_ZIP_CHAT_RECORDS_STALE",
+                        "group_name": "付款请示群",
+                        "check_date": "2026-07-08",
+                    }],
+                })
+
+                routine_statuses = [
+                    row[0] for row in conn.execute(
+                        """
+                        SELECT status FROM routine_check_results
+                        WHERE check_date = '2026-07-08'
+                        ORDER BY rule_id
+                        """
+                    ).fetchall()
+                ]
+                cash_statuses = [
+                    row[0] for row in conn.execute(
+                        "SELECT risk_level FROM cash_risk_results WHERE report_date = '2026-07-08'"
+                    ).fetchall()
+                ]
+                notification_statuses = {
+                    row[0]: row[1]
+                    for row in conn.execute(
+                        "SELECT event_type, status FROM notification_events ORDER BY event_type"
+                    ).fetchall()
+                }
+            finally:
+                conn.close()
+
+        self.assertEqual(routine_statuses, ["SUPERSEDED_SOURCE_BLOCKED", "SUPERSEDED_SOURCE_BLOCKED"])
+        self.assertEqual(cash_statuses, ["SUPERSEDED_SOURCE_BLOCKED"])
+        self.assertEqual(notification_statuses["MISSING_ROUTINE_ITEM"], "SUPERSEDED_SOURCE_BLOCKED")
+        self.assertEqual(notification_statuses["CASH_NO_DATA"], "SUPERSEDED_SOURCE_BLOCKED")
+        self.assertEqual(notification_statuses["SOURCE_STALE"], "QUEUED_OR_LOGGED")
+
     def test_reader_reports_missing_and_stale_sources(self) -> None:
         with TemporaryDirectory() as tmp:
             reader = DwsArchiveReader(tmp)
@@ -377,7 +510,36 @@ class TriggerWindowTests(unittest.TestCase):
             stale = reader.inspect_group_sources("生产管理群", date(2026, 7, 7))
             self.assertEqual(stale[0]["issue_type"], "SOURCE_STALE")
 
-    def test_healthcheck_reports_zip_placeholder_as_not_direct_input_ready(self) -> None:
+    def test_reader_streams_messages_and_manifest_from_dws_zip(self) -> None:
+        with TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            zip_path = base / "DWS_Outputs.zip"
+            write_dws_zip(zip_path)
+
+            reader = DwsArchiveReader(base / "DWS_Outputs")
+            issues = reader.inspect_group_sources("付款请示群", date(2026, 7, 7))
+            messages = reader.read_messages("付款请示群")
+            files = reader.read_files("付款请示群")
+
+        self.assertEqual(issues, [])
+        self.assertEqual(messages[0].message_id, "付款请示群-m1")
+        self.assertEqual(files[0].sha256, "sha-付款请示群")
+        self.assertTrue(files[0].absolute_path.startswith("zip://"))
+        self.assertIn("DWS_Outputs.zip!", files[0].absolute_path)
+
+    def test_healthcheck_accepts_readable_zip_as_primary_input(self) -> None:
+        with TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            write_dws_zip(base / "DWS_Outputs.zip")
+            readiness = build_source_readiness(base / "DWS_Outputs")
+
+        self.assertFalse(readiness["direct_input_ready"])
+        self.assertTrue(readiness["zip_present"])
+        self.assertTrue(readiness["zip_input_ready"])
+        self.assertEqual(readiness["status"], "READY")
+        self.assertEqual(readiness["next_enable_conditions"], [])
+
+    def test_healthcheck_reports_unreadable_zip_without_requiring_direct_folder(self) -> None:
         with TemporaryDirectory() as tmp:
             base = Path(tmp)
             (base / "DWS_Outputs.zip").write_text("placeholder", encoding="utf-8")
@@ -386,12 +548,60 @@ class TriggerWindowTests(unittest.TestCase):
 
         self.assertFalse(readiness["direct_input_ready"])
         self.assertTrue(readiness["zip_present"])
+        self.assertFalse(readiness["zip_input_ready"])
         self.assertTrue(readiness["archive_present"])
-        self.assertEqual(readiness["status"], "SOURCE_INPUT_FOLDER_MISSING")
+        self.assertEqual(readiness["status"], "ZIP_INPUT_UNREADABLE")
         self.assertTrue(any(
-            item.endswith("DWS_Outputs/付款请示群/chat_records/chat_records.csv")
+            "DWS_Outputs.zip" in item and "readable" in item
             for item in readiness["next_enable_conditions"]
         ))
+
+    def test_runtime_defaults_keep_sqlite_and_notification_config_out_of_repo_package(self) -> None:
+        repo_private_runtime = Path("KMFA/metadata/daily_routine_check/private_runtime")
+
+        self.assertIn("OneDrive-Personal/KMFA/daily_routine_check/private_runtime", str(DEFAULT_DB))
+        self.assertIn("OneDrive-Personal/KMFA/daily_routine_check/private_runtime", str(DEFAULT_NOTIFICATION_TARGETS))
+        self.assertIn("OneDrive-Personal/KMFA/daily_routine_check/private_runtime", str(DEFAULT_RUNTIME))
+        self.assertFalse(Path(DEFAULT_DB).is_relative_to(repo_private_runtime))
+        self.assertFalse(Path(DEFAULT_NOTIFICATION_TARGETS).is_relative_to(repo_private_runtime))
+        self.assertFalse(Path(DEFAULT_RUNTIME).is_relative_to(repo_private_runtime))
+
+    def test_stale_source_blocks_routine_and_cash_false_positives(self) -> None:
+        with TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            write_dws_zip(base / "DWS_Outputs.zip")
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "KMFA.tools.daily_routine_check.main",
+                    "--date",
+                    "2026-07-08",
+                    "--timezone",
+                    "Asia/Shanghai",
+                    "--trigger-window",
+                    "morning_1135",
+                    "--input-root",
+                    str(base / "DWS_Outputs.zip"),
+                    "--dry-run",
+                ],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+
+        payload = json.loads(result.stdout)
+        self.assertEqual(
+            {issue["issue_type"] for issue in payload["data_quality_issues"]},
+            {"SOURCE_STALE"},
+        )
+        self.assertEqual(payload["results"], [])
+        self.assertEqual(payload["cash_risk_result"], None)
+        self.assertEqual(payload["rules_blocked_by_source"], ["PAY_DAILY_CASH_ACCOUNT", "PAY_DAILY_CASH_FLOW"])
+        self.assertEqual(
+            [event["event_type"] for event in payload["notification_events"]],
+            ["SOURCE_STALE"],
+        )
 
 
 if __name__ == "__main__":

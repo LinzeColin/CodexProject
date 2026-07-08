@@ -7,6 +7,7 @@ from datetime import datetime
 from pathlib import Path
 from unittest.mock import patch
 from urllib.parse import parse_qs, urlparse
+from zoneinfo import ZoneInfo
 
 from KMFA.tools.dingtalk_attendance.healthcheck import build_config_status
 from KMFA.tools.dingtalk_attendance.dws_auth_guard import dws_command_safety_status
@@ -31,7 +32,12 @@ from KMFA.tools.dingtalk_attendance.report_renderer import (
     MANAGEMENT_REPORT_SECTIONS,
     HR_REPORT_SECTIONS,
 )
-from KMFA.tools.dingtalk_attendance.dws_attendance import DwsAttendanceError, collect_org_attendance, write_private_outputs
+from KMFA.tools.dingtalk_attendance.dws_attendance import (
+    DwsAttendanceError,
+    collect_org_attendance,
+    run_dws_json,
+    write_private_outputs,
+)
 from KMFA.tools.dingtalk_attendance.run_attendance import (
     build_monthly_rest_required_people,
     build_notification_message,
@@ -217,11 +223,13 @@ def _fixture_has_full_day(punches: list[object]) -> bool:
 class FakeDwsRunner:
     def __init__(self, *, fail_first_record_for: str | None = None) -> None:
         self.calls: list[tuple[tuple[str, ...], bool]] = []
+        self.timeouts: list[tuple[tuple[str, ...], int]] = []
         self.fail_first_record_for = fail_first_record_for
         self.failed_once = False
 
     def __call__(self, args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict:
         self.calls.append((tuple(args), verbose))
+        self.timeouts.append((tuple(args), timeout))
         if args == ["contact", "dept", "list-children", "--dept", "1"]:
             return {"returncode": 0, "payload": {"success": True, "result": [{"deptId": 100, "deptName": "生产部"}]}}
         if args == ["contact", "dept", "list-children", "--dept", "100"]:
@@ -271,8 +279,8 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(plan["automation_name"], "每日早晚钉钉考勤检查")
         self.assertEqual(plan["run_type"], "morning")
         self.assertEqual(plan["timezone"], "Asia/Shanghai")
-        self.assertEqual(plan["schedule"]["morning"], "08:35")
-        self.assertEqual(plan["schedule"]["evening"], "18:15")
+        self.assertEqual(plan["schedule"]["morning"], "10:35")
+        self.assertEqual(plan["schedule"]["evening"], "20:05")
         self.assertEqual(plan["onedrive_root"], "/Users/linzezhang/OneDrive/dingtalk_attendance")
         self.assertEqual(plan["onedrive_month_folder_pattern"], "YYYYMM")
         self.assertEqual(plan["known_recipients"]["zhang_linze"]["dingtalk_user_id"], "1iv-1t2oesv2yd")
@@ -280,6 +288,16 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertFalse(plan["public_repo_safety"]["sqlite_committed"])
         self.assertFalse(plan["public_repo_safety"]["credential_committed"])
         self.assertTrue(plan["live_only"])
+
+    def test_run_plan_supports_controlled_work_date_rerun_datetime(self) -> None:
+        plan = build_run_plan(
+            run_type="morning",
+            timezone="Asia/Shanghai",
+            run_datetime=datetime(2026, 7, 6, 10, 35, tzinfo=ZoneInfo("Asia/Shanghai")),
+        )
+
+        self.assertEqual(plan["run_id"], "s19_morning_20260706_103500")
+        self.assertIn("/202607/", plan["archive_paths"]["archive_manifest"])
 
     def test_attendance_ledger_initializes_required_private_schema(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -607,7 +625,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         )
         self.assertEqual(
             HR_REPORT_SECTIONS,
-            ("一、异常明细", "二、连续异常人员", "三、待审批/待补卡/待核查", "四、数据质量与系统运行状态"),
+            ("一、异常明细", "二、连续异常人员", "三、数据质量与系统运行状态"),
         )
         self.assertNotIn("关键人员风险", json.dumps(MANAGEMENT_REPORT_SECTIONS, ensure_ascii=False))
 
@@ -657,6 +675,107 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(result["stats"]["known_no_record_count"], 2)
         self.assertEqual(result["stats"]["unexpected_empty_record_count"], 0)
         self.assertNotIn("--mock", json.dumps(runner.calls, ensure_ascii=False))
+
+    def test_dws_department_and_member_listing_use_extended_timeout(self) -> None:
+        runner = FakeDwsRunner()
+
+        collect_org_attendance(
+            work_date="2026-07-07",
+            summary_datetime="2026-07-07 18:15:00",
+            runner=runner,
+        )
+
+        timeout_by_call = dict(runner.timeouts)
+        self.assertEqual(timeout_by_call[("contact", "dept", "list-children", "--dept", "1")], 120)
+        self.assertEqual(timeout_by_call[("contact", "dept", "list-children", "--dept", "100")], 120)
+        self.assertEqual(timeout_by_call[("contact", "dept", "list-members", "--depts", "1,100")], 120)
+        self.assertEqual(
+            timeout_by_call[("attendance", "record", "get", "--user", "li-dws-id", "--date", "2026-07-07")],
+            60,
+        )
+
+    def test_run_dws_json_passes_effective_timeout_to_dws_cli(self) -> None:
+        captured: dict[str, object] = {}
+
+        class Proc:
+            returncode = 0
+            stdout = '{"success": true}'
+            stderr = ""
+
+        def fake_run(command: list[str], **kwargs: object) -> Proc:
+            captured["command"] = command
+            captured["timeout"] = kwargs["timeout"]
+            return Proc()
+
+        with (
+            patch("KMFA.tools.dingtalk_attendance.dws_attendance.dws_command_safety_status", return_value={"status": "READY"}),
+            patch("KMFA.tools.dingtalk_attendance.dws_attendance.subprocess.run", side_effect=fake_run),
+            patch.dict("os.environ", {"DWS_BIN": "/tmp/fake-dws", "KMFA_S19_DWS_TIMEOUT_SECONDS": "120"}),
+        ):
+            result = run_dws_json(["contact", "dept", "list-members"], timeout=45)
+
+        self.assertEqual(result["payload"], {"success": True})
+        self.assertEqual(
+            captured["command"],
+            ["/tmp/fake-dws", "contact", "dept", "list-members", "--timeout", "120", "--format", "json"],
+        )
+        self.assertEqual(captured["timeout"], 125)
+
+    def test_run_dws_json_env_timeout_cannot_shrink_call_timeout(self) -> None:
+        captured: dict[str, object] = {}
+
+        class Proc:
+            returncode = 0
+            stdout = '{"success": true}'
+            stderr = ""
+
+        def fake_run(command: list[str], **kwargs: object) -> Proc:
+            captured["command"] = command
+            captured["timeout"] = kwargs["timeout"]
+            return Proc()
+
+        with (
+            patch("KMFA.tools.dingtalk_attendance.dws_attendance.dws_command_safety_status", return_value={"status": "READY"}),
+            patch("KMFA.tools.dingtalk_attendance.dws_attendance.subprocess.run", side_effect=fake_run),
+            patch.dict("os.environ", {"DWS_BIN": "/tmp/fake-dws", "KMFA_S19_DWS_TIMEOUT_SECONDS": "20"}),
+        ):
+            run_dws_json(["attendance", "record", "get"], timeout=60)
+
+        self.assertIn("--timeout", captured["command"])
+        self.assertEqual(captured["command"][captured["command"].index("--timeout") + 1], "60")
+        self.assertEqual(captured["timeout"], 65)
+
+    def test_department_discovery_retries_timeout_error_once(self) -> None:
+        calls: list[tuple[tuple[str, ...], int, bool]] = []
+        failed_once = False
+
+        def runner(args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict:
+            nonlocal failed_once
+            calls.append((tuple(args), timeout, verbose))
+            if args == ["contact", "dept", "list-children", "--dept", "1"]:
+                if not failed_once:
+                    failed_once = True
+                    return {
+                        "returncode": 1,
+                        "payload": {"error": {"code": "6"}, "reason": "timed out while listing departments"},
+                    }
+                return {"returncode": 0, "payload": {"success": True, "result": []}}
+            if args == ["contact", "dept", "list-members", "--depts", "1"]:
+                return {"returncode": 0, "payload": {"success": True, "deptUserList": []}}
+            raise AssertionError(f"unexpected dws args: {args}")
+
+        result = collect_org_attendance(
+            work_date="2026-07-07",
+            summary_datetime="2026-07-07 18:15:00",
+            runner=runner,
+        )
+
+        department_calls = [call for call in calls if call[0] == ("contact", "dept", "list-children", "--dept", "1")]
+        self.assertEqual(len(department_calls), 2)
+        self.assertEqual(department_calls[0][1], 120)
+        self.assertFalse(department_calls[0][2])
+        self.assertTrue(department_calls[1][2])
+        self.assertEqual(result["stats"]["member_count"], 0)
 
     def test_complete_collection_with_exempt_people_and_two_empty_records_notifies_two_real_anomalies(self) -> None:
         members = [
@@ -805,8 +924,9 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(collection["stats"]["attendance_required_count"], 1)
         self.assertEqual(collection["stats"]["incomplete_record_names"], ["员工A"])
         self.assertEqual(collection["stats"]["attendance_anomaly_names"], ["员工A"])
-        self.assertIn("今日异常 / 无考勤\n员工A（本月累计1次）", body)
-        self.assertNotIn("今天一切良好", body)
+        self.assertIn("本次1人全部考勤正常", body)
+        self.assertNotIn("今日异常 / 无考勤", body)
+        self.assertNotIn("员工A", body)
 
     def test_today_summary_lack_counts_as_anomaly_even_when_record_has_full_day(self) -> None:
         def runner(args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict:
@@ -873,6 +993,71 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(collection["stats"]["attendance_anomaly_names"], ["员工B"])
         self.assertIn("今日异常 / 无考勤\n员工B（本月累计1次）", body)
         self.assertNotIn("今天一切良好", body)
+
+    def test_today_summary_absence_status_tokens_all_count_as_today_anomaly(self) -> None:
+        for status_name in ("缺卡", "未打卡", "旷工", "迟到", "早退"):
+            with self.subTest(status_name=status_name):
+                def runner(args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict:
+                    if args == ["contact", "dept", "list-children", "--dept", "1"]:
+                        return {"returncode": 0, "payload": {"success": True, "result": []}}
+                    if args == ["contact", "dept", "list-members", "--depts", "1"]:
+                        return {
+                            "returncode": 0,
+                            "payload": {
+                                "success": True,
+                                "deptUserList": [{"userInfo": {"name": "员工C", "userId": "u-c"}}],
+                            },
+                        }
+                    if args[:4] == ["attendance", "record", "get", "--user"]:
+                        return {
+                            "returncode": 0,
+                            "payload": {
+                                "success": True,
+                                "code": "0",
+                                "result": {
+                                    "recordList": [{"checkTypeDesc": "上班"}, {"checkTypeDesc": "下班"}],
+                                    "isHasSchedule": True,
+                                },
+                            },
+                        }
+                    if args[:3] == ["attendance", "summary", "--user"]:
+                        return {
+                            "returncode": 0,
+                            "payload": {
+                                "success": True,
+                                "code": "0",
+                                "result": {
+                                    "abnormalCount": 1,
+                                    "items": [
+                                        {
+                                            "id": status_name,
+                                            "name": status_name,
+                                            "children": [{"name": "2026-07-07（星期二）"}],
+                                        }
+                                    ],
+                                },
+                            },
+                        }
+                    raise AssertionError(f"unexpected dws args: {args}")
+
+                collection = collect_org_attendance(
+                    work_date="2026-07-07",
+                    summary_datetime="2026-07-07 10:35:00",
+                    runner=runner,
+                )
+                context = notification_context_from_output_status(
+                    {
+                        "run_id": "s19_morning_20260707_103500",
+                        "run_type": "morning",
+                        "work_date": "2026-07-07",
+                        "current_time": "10:35",
+                        "stats": collection["stats"],
+                    }
+                )
+                body = build_notification_message(**context, markdown=False)
+
+                self.assertEqual(collection["stats"]["summary_today_anomaly_names"], ["员工C"])
+                self.assertIn("今日异常 / 无考勤\n员工C（本月累计1次）", body)
 
     def test_dws_attendance_fails_fast_on_pat_scope_auth_required(self) -> None:
         calls: list[tuple[str, ...]] = []
@@ -949,11 +1134,62 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertIn("# 开明考勤管理报告｜2026-07-07｜晨报", management)
         self.assertIn("# 开明考勤 HR 报告｜2026-07-07｜晨报", hr)
         self.assertIn("今日异常人员 / 无考勤人员：无。", management)
-        self.assertIn("record 为空人员：无。", management)
-        self.assertIn("record 缺少上下班打卡人员：无。", management)
+        self.assertIn("无考勤记录人员：无。", management)
+        self.assertIn("打卡记录不完整人员：无。", management)
         self.assertIn("今日异常人员 / 无考勤人员：无。", hr)
-        self.assertIn("record 为空或缺少应有上下班打卡均计入用户可见异常。", hr)
+        self.assertNotIn("待审批/待补卡/待核查", hr)
         self.assertEqual(manifest["stats"]["known_no_record_names"], ["张霖泽", "林全意"])
+
+    def test_private_reports_keep_backend_collection_diagnostics_out_of_user_text(self) -> None:
+        collection = collect_org_attendance(
+            work_date="2026-07-07",
+            summary_datetime="2026-07-07 08:35:00",
+            runner=FakeDwsRunner(fail_first_record_for="li-dws-id"),
+        )
+        collection["stats"]["record_failure_count"] = 1
+        collection["stats"]["command_failure_count"] = 1
+        collection["stats"]["record_success_count"] = collection["stats"]["member_count"] - 1
+
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            plan = {
+                "run_id": "s19_morning_20260707_083500",
+                "stage_id": "S19",
+                "run_type": "morning",
+                "archive_paths": {
+                    "month_dir": str(base),
+                    "raw_jsonl_gz": str(base / "raw.jsonl.gz"),
+                    "management_report": str(base / "management.md"),
+                    "hr_report": str(base / "hr.md"),
+                    "dispatch_receipt": str(base / "dispatch.json"),
+                    "archive_manifest": str(base / "manifest.json"),
+                    "cleanup_audit": str(base / "cleanup.json"),
+                },
+                "public_repo_safety": {"no_sensitive_git": True},
+            }
+
+            output = write_private_outputs(plan=plan, collection=collection, cleanup_status={"status": "SKIPPED"})
+            report_text = (
+                Path(output["management_report"]).read_text(encoding="utf-8")
+                + "\n"
+                + Path(output["hr_report"]).read_text(encoding="utf-8")
+            )
+            manifest = json.loads(Path(output["archive_manifest"]).read_text(encoding="utf-8"))
+
+        for backend_text in (
+            "DWS",
+            "record",
+            "summary",
+            "command_failure",
+            "接口局部失败",
+            "权限",
+            "命令失败",
+            "mock",
+            "attendance.record:get",
+        ):
+            self.assertNotIn(backend_text, report_text)
+        self.assertEqual(manifest["stats"]["record_failure_count"], 1)
+        self.assertEqual(manifest["stats"]["command_failure_count"], 1)
 
     def test_dws_attendance_retries_transient_attendance_error_once(self) -> None:
         runner = FakeDwsRunner(fail_first_record_for="li-dws-id")
@@ -1092,7 +1328,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
         self.assertEqual(
             message,
-            "# 开明考勤提醒｜2026-07-07｜晨报\n\n截止 08:35\n\n本次41人全部考勤正常，今天一切良好\n",
+            "# 开明考勤提醒｜2026-07-07｜晨报\n\n截止 08:35\n\n本次41人全部考勤正常\n",
         )
         self.assertNotIn("morning", message)
         self.assertNotIn("evening", message)
@@ -1121,8 +1357,8 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         )
         body = build_notification_message(**context, markdown=False)
 
-        self.assertIn("本次41人全部考勤正常，今天一切良好", body)
-        self.assertNotIn("\n今天一切良好\n", body)
+        self.assertIn("本次41人全部考勤正常", body)
+        self.assertNotIn("今天一切良好", body)
 
     def test_notification_template_renders_monthly_cumulative_sections_and_top10(self) -> None:
         names = [f"员工{i:02d}" for i in range(1, 12)]
@@ -1166,12 +1402,52 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertIn("10. 员工02（本月累计2次）", markdown)
         self.assertNotIn("员工01（本月累计1次）", markdown)
         self.assertIn("## 连续异常\n员工11（连续3天，本月累计11次）", markdown)
-        self.assertIn("## 待审批 / 待补卡 / 待核查\n员工10（本月累计4项）", markdown)
+        self.assertNotIn("待审批 / 待补卡 / 待核查", markdown)
+        self.assertNotIn("员工10（本月累计4项）", markdown)
         self.assertIn("## 需要休息\n员工09（本月有效考勤25天）", markdown)
         self.assertNotIn("今日异常人员 / 无考勤人员：", markdown)
         self.assertNotIn("今天一切良好", markdown)
         self.assertNotIn("#", plain)
         self.assertIn("今日异常 / 无考勤\n共 11 人，本月累计 Top10:", plain)
+
+    def test_notification_template_does_not_render_historical_monthly_anomalies_as_today(self) -> None:
+        message = build_notification_message(
+            work_date="2026-07-08",
+            run_type="morning",
+            current_time="08:50",
+            unexpected_empty_record_names=[],
+            known_no_record_names=[],
+            monthly_attendance_anomalies=[
+                {"name": "历史异常甲", "monthly_count": 3, "latest_date": "2026-07-03"},
+                {"name": "历史异常乙", "monthly_count": 1, "latest_date": "2026-07-01"},
+            ],
+            member_count=44,
+            markdown=True,
+        )
+
+        self.assertIn("本次44人全部考勤正常", message)
+        self.assertNotIn("历史异常甲", message)
+        self.assertNotIn("## 今日异常 / 无考勤", message)
+
+    def test_notification_template_ignores_pending_section_and_omits_empty_sections_when_other_sections_have_content(self) -> None:
+        message = build_notification_message(
+            work_date="2026-07-08",
+            run_type="morning",
+            current_time="08:50",
+            unexpected_empty_record_names=[],
+            known_no_record_names=[],
+            consecutive_anomaly_summary=[],
+            pending_hr_actions=["王五待补卡"],
+            monthly_pending_actions=[{"name": "王五", "monthly_count": 3, "latest_date": "2026-07-08"}],
+            rest_required_people=[{"name": "赵六", "effective_attendance_days": 24, "latest_date": "2026-07-08"}],
+            markdown=True,
+        )
+
+        self.assertIn("## 需要休息\n赵六（本月有效考勤24天）", message)
+        self.assertNotIn("待审批 / 待补卡 / 待核查", message)
+        self.assertNotIn("王五", message)
+        self.assertNotIn("## 今日异常 / 无考勤", message)
+        self.assertNotIn("## 连续异常", message)
 
     def test_monthly_rollups_count_current_month_and_rest_from_23rd_effective_day(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -1272,7 +1548,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             work_date="2026-07-23",
             run_type="evening",
             current_time="18:15",
-            unexpected_empty_record_names=[],
+            unexpected_empty_record_names=["丁春法", "李永占"],
             known_no_record_names=[],
             monthly_attendance_anomalies=[
                 {"name": "丁春法", "monthly_count": 1, "latest_date": "2026-07-23"},
@@ -1290,7 +1566,8 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         )
 
         self.assertIn("## 今日异常 / 无考勤\n丁春法（本月累计1次）\n李永占（本月累计1次）", markdown)
-        self.assertIn("## 待审批 / 待补卡 / 待核查\n丁春法（本月累计2项）", markdown)
+        self.assertNotIn("待审批 / 待补卡 / 待核查", markdown)
+        self.assertNotIn("丁春法（本月累计2项）", markdown)
         self.assertIn("## 需要休息\n张三（本月有效考勤23天）", markdown)
         self.assertNotIn("丁春法（本月有效考勤23天）", markdown)
         self.assertNotIn("李永占（本月有效考勤23天）", markdown)
@@ -1333,7 +1610,8 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(markdown.replace("# ", "", 1).replace("## ", ""), plain)
         self.assertIn("今日异常 / 无考勤\n张三（本月累计1次）", plain)
         self.assertIn("连续异常\n李四连续 2 天异常", plain)
-        self.assertIn("待审批 / 待补卡 / 待核查\n王五待补卡", plain)
+        self.assertNotIn("待审批 / 待补卡 / 待核查", plain)
+        self.assertNotIn("王五待补卡", plain)
 
     def test_attendance_notification_template_shows_rest_required_people(self) -> None:
         markdown = build_notification_message(
@@ -1378,6 +1656,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 "current_time": "08:35",
                 "stats": {
                     "attendance_anomaly_names": ["张三", "李四"],
+                    "summary_today_anomaly_names": ["张三", "李四"],
                     "unexpected_empty_record_names": ["张霖泽", "林全意"],
                     "known_no_record_names": ["张霖泽", "林全意"],
                 },
@@ -1388,6 +1667,76 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertIn("今日异常 / 无考勤\n张三（本月累计1次）\n李四（本月累计1次）", body)
         self.assertNotIn("张霖泽", body)
         self.assertNotIn("林全意", body)
+
+    def test_notification_context_excludes_morning_incomplete_records_from_today_sections(self) -> None:
+        context = notification_context_from_output_status(
+            {
+                "run_id": "s19_morning_20260708_083500",
+                "run_type": "morning",
+                "work_date": "2026-07-08",
+                "current_time": "08:35",
+                "stats": {
+                    "member_count": 44,
+                    "record_success_count": 44,
+                    "summary_success_count": 44,
+                    "command_failure_count": 0,
+                    "attendance_anomaly_names": ["员工A"],
+                    "unexpected_empty_record_names": [],
+                    "summary_today_anomaly_names": [],
+                    "incomplete_record_names": ["员工A"],
+                    "monthly_attendance_anomalies": [
+                        {"name": "员工A", "monthly_count": 2, "latest_date": "2026-07-08"}
+                    ],
+                    "monthly_consecutive_anomalies": [
+                        {
+                            "name": "员工A",
+                            "monthly_count": 2,
+                            "consecutive_days": 2,
+                            "latest_date": "2026-07-08",
+                        }
+                    ],
+                },
+            }
+        )
+        body = build_notification_message(**context, markdown=False)
+
+        self.assertIn("本次44人全部考勤正常", body)
+        self.assertNotIn("今日异常 / 无考勤", body)
+        self.assertNotIn("连续异常", body)
+        self.assertNotIn("员工A", body)
+
+    def test_notification_context_keeps_evening_incomplete_records_as_today_anomalies(self) -> None:
+        context = notification_context_from_output_status(
+            {
+                "run_id": "s19_evening_20260708_181500",
+                "run_type": "evening",
+                "work_date": "2026-07-08",
+                "current_time": "18:15",
+                "stats": {
+                    "member_count": 44,
+                    "attendance_anomaly_names": ["员工A"],
+                    "unexpected_empty_record_names": [],
+                    "summary_today_anomaly_names": [],
+                    "incomplete_record_names": ["员工A"],
+                    "monthly_attendance_anomalies": [
+                        {"name": "员工A", "monthly_count": 2, "latest_date": "2026-07-08"}
+                    ],
+                    "monthly_consecutive_anomalies": [
+                        {
+                            "name": "员工A",
+                            "monthly_count": 2,
+                            "consecutive_days": 2,
+                            "latest_date": "2026-07-08",
+                        }
+                    ],
+                },
+            }
+        )
+        body = build_notification_message(**context, markdown=False)
+
+        self.assertIn("今日异常 / 无考勤\n员工A（本月累计2次）", body)
+        self.assertIn("连续异常\n员工A（连续2天，本月累计2次）", body)
+        self.assertNotIn("今天一切良好", body)
 
     def test_notification_context_reports_system_collection_failures(self) -> None:
         context = notification_context_from_output_status(
@@ -1406,9 +1755,12 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         )
         body = build_notification_message(**context, markdown=False)
 
-        self.assertIn("待审批 / 待补卡 / 待核查", body)
-        self.assertIn("DWS record 取数失败 44 人，需核查 attendance.record:get 权限。", body)
-        self.assertNotIn("今天一切良好", body)
+        self.assertIn("本次暂无需要处理的考勤事项", body)
+        self.assertNotIn("待审批 / 待补卡 / 待核查", body)
+        self.assertNotIn("DWS", body)
+        self.assertNotIn("record", body)
+        self.assertNotIn("attendance.record:get", body)
+        self.assertNotIn("权限", body)
 
     def test_notification_context_blocks_all_clear_when_success_counts_do_not_cover_members(self) -> None:
         context = notification_context_from_output_status(
@@ -1430,8 +1782,37 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         )
         body = build_notification_message(**context, markdown=False)
 
-        self.assertIn("DWS record 取数未覆盖全部人员：成功 43/44，不得判定为正常。", body)
-        self.assertNotIn("今天一切良好", body)
+        self.assertIn("本次暂无需要处理的考勤事项", body)
+        self.assertNotIn("DWS", body)
+        self.assertNotIn("record", body)
+        self.assertNotIn("未覆盖", body)
+
+    def test_notification_context_keeps_backend_diagnostics_out_of_user_message(self) -> None:
+        context = notification_context_from_output_status(
+            {
+                "run_id": "s19_morning_20260708_083500",
+                "run_type": "morning",
+                "work_date": "2026-07-08",
+                "current_time": "08:35",
+                "stats": {
+                    "member_count": 44,
+                    "record_success_count": 43,
+                    "summary_success_count": 44,
+                    "record_failure_count": 1,
+                    "summary_failure_count": 0,
+                    "command_failure_count": 1,
+                    "unexpected_empty_record_names": [],
+                    "summary_today_anomaly_names": [],
+                    "incomplete_record_names": [],
+                    "attendance_anomaly_names": [],
+                },
+            }
+        )
+        body = build_notification_message(**context, markdown=False)
+
+        self.assertIn("本次暂无需要处理的考勤事项", body)
+        for backend_text in ("DWS", "record", "summary", "attendance.record:get", "权限", "取数失败", "未覆盖"):
+            self.assertNotIn(backend_text, body)
 
     def test_rest_required_people_count_only_full_morning_and_evening_attendance_days(self) -> None:
         records = [

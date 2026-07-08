@@ -13,6 +13,7 @@
 - github_upload_ready: `true_stage1_10_upload_gate_validated`
 - persistent_raw_data_inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
+- sensitive_plaintext_github_policy: `owner_authorized_plaintext_allowed_under_KMFA_metadata_except_credentials`
 
 ## 已完成
 
@@ -158,7 +159,7 @@
 - Stage 15 整体复审已本地通过：`KMFA/tools/check_s15_stage_review.py`、`KMFA/tests/test_s15_stage_review.py` 和 `KMFA/stage_artifacts/S15_STAGE_REVIEW/` 已生成；复审复跑 S15-P1/P2/P3 validators、全量 207 个 KMFA tests、治理 validator、raw/secret scan 和 parse checks，未执行 GitHub upload、S16、lineage full check、正式报告、工资计算、奖金审批、薪资导出、最终薪酬结论、付款发放或外部接口。
 - Stage 15 final GitHub upload 已完成：`KMFA/stage_artifacts/S15_GITHUB_UPLOAD/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S15_GITHUB_UPLOAD/machine/stage15_upload_manifest.json` 已生成，记录 rebase、validators、安全扫描、dry-run push、push 和 post-push parity。
 - S16-P1 外协采购归集已完成本地验证：`KMFA/tools/subcontract_procurement_aggregation.py`、`KMFA/tools/check_s16_p1_subcontract_procurement.py`、`KMFA/tests/test_subcontract_procurement_aggregation.py`、`KMFA/metadata/reports/subcontract_procurement_aggregation_manifest.json`、`KMFA/metadata/reports/subcontract_procurement_source_lanes.jsonl`、`KMFA/metadata/reports/subcontract_project_matches.jsonl`、`KMFA/metadata/reports/subcontract_unallocated_cost_pool.jsonl`、`KMFA/metadata/reports/subcontract_anomaly_candidates.jsonl` 和 `KMFA/stage_artifacts/S16_P1_subcontract_procurement_aggregation/` 已生成；4 条 source lane、5 条项目匹配、2 条未归集成本池、4 条异常候选均为 public-safe 复核证据，报告等级 D，12 条 pending reconciliation 继续阻断正式报告、经营决策依据、采购执行、付款执行、银行操作、Stage 16 review 和 GitHub upload。
-- S17-P1 权限与安全已完成本地验证：`KMFA/tools/access_security_policy.py`、`KMFA/tools/check_s17_p1_access_security.py`、`KMFA/tests/test_access_security_policy.py`、`KMFA/metadata/security/access_security_policy_manifest.json`、`role_permission_matrix.jsonl`、`public_repo_sensitive_data_policy.jsonl`、`audit_log_policy.jsonl` 和 `KMFA/stage_artifacts/S17_P1_access_security/` 已生成；覆盖 4 类角色、15 类敏感材料公开仓库禁入策略和 5 类审计日志动作；未执行 S17-P2、S17-P3、Stage 17 review 或 GitHub upload。
+- S17-P1 权限与安全已完成本地验证并在 2026-07-08 按 owner 指令调整数据治理规则：`KMFA/tools/access_security_policy.py`、`KMFA/tools/check_s17_p1_access_security.py`、`KMFA/tests/test_access_security_policy.py`、`KMFA/metadata/security/access_security_policy_manifest.json`、`role_permission_matrix.jsonl`、`public_repo_sensitive_data_policy.jsonl`、`owner_authorized_plaintext_upload_manifest.jsonl`、`audit_log_policy.jsonl` 和 `KMFA/stage_artifacts/S17_P1_access_security/` 已生成；覆盖 4 类角色、15 类敏感材料 owner 授权明文 GitHub 上传策略和 5 类审计日志动作；credential/secret 仍禁入，当前未登记具体明文文件。
 - S17-P2 通知提醒已完成本地验证：`KMFA/tools/notification_reminders.py`、`KMFA/tools/check_s17_p2_notifications.py`、`KMFA/tests/test_notification_reminders.py`、`KMFA/metadata/notifications/notification_manifest.json`、`notification_rules.jsonl`、`notification_events.jsonl`、`notification_dispatch_log.jsonl` 和 `KMFA/stage_artifacts/S17_P2_notification/` 已生成；覆盖报告生成完成、重大风险、数据源缺失三类提醒；通知只进入 metadata outbox/log，不发送完整报告正文、附件或真实收件地址。
 - S17-P3 运维与 SOP 已完成本地验证：`KMFA/tools/operations_sop.py`、`KMFA/tools/check_s17_p3_operations_sop.py`、`KMFA/tests/test_operations_sop.py`、`KMFA/metadata/operations/operations_sop_manifest.json`、`operations_runbooks.jsonl`、`finance_sop_knowledge_index.jsonl`、`error_backup_drill_log.jsonl` 和 `KMFA/stage_artifacts/S17_P3_operations_sop/` 已生成；覆盖导入、复核、发布、回滚四类手册，财务 SOP/交接材料知识索引，以及错误处理和备份恢复演练；仅为 metadata/manual SOP，不执行 live connector、生产恢复、业务动作、Stage 17 review 或 GitHub upload。
 - Stage 17 final GitHub upload 已完成：`KMFA/stage_artifacts/S17_GITHUB_UPLOAD/human/github_upload_record.md` 和 `KMFA/stage_artifacts/S17_GITHUB_UPLOAD/machine/stage17_upload_manifest.json` 记录 rebase、validators、安全扫描、dry-run push、push 和 post-push parity。
@@ -179,6 +180,6 @@
 ## 阻塞条件
 
 - 不能把 Stage 1 治理基线当成业务 MVP。
-- 不能上传原始敏感经营数据。
+- 未经 owner 授权、secret 扫描和 `KMFA/metadata/security/owner_authorized_plaintext_upload_manifest.jsonl` 登记，不能上传原始敏感经营数据；credential/secret 永久禁止进入 GitHub。
 - S17-P1/S17-P2/S17-P3、Stage 17 整体复审、Stage 17 final GitHub upload、S18-P1、S18-P2、S18-P3、Stage 18 整体复审和 Stage 18 final GitHub upload 已完成；Stage 18 review-level Go/No-Go 为 `NO_GO`；不能直接进入 lineage full check、正式报告、完整报告邮件、外部邮件连接器、live connector、OpMe 深度耦合、采购执行、付款执行、银行操作、现场施工、签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 后续所有开发必须建立在 v1.2 完整任务包、v0.1.3 修补包 roadmap 和 HTML 样板基线上；每次 run work 最多只推进一个 phase。

@@ -1,6 +1,6 @@
 # KMFA Handoff
 
-更新时间: 2026-07-07
+更新时间: 2026-07-08
 
 ## S19 当前状态
 
@@ -11,18 +11,84 @@
 - Git 只保存 DWS backend 代码、报告模板、路径/统计证据和安全扫描；不保存真实员工考勤明文、raw JSONL、SQLite、机器人地址、应用密钥或访问凭证。
 - S19 钉钉通知已升级为多目标路由表：`notification_targets.local.json` / `notification_targets_resolved.json` 仅保存在 ignored private runtime，公开 `notification_targets_manifest.json` 只保留脱敏状态；旧 `notification_channel_resolved.json` 仍兼容迁移。
 - 张霖泽目标已迁移并验证为 `dws_open_dingtalk_id_chat` 个人单聊：`notification_probe.py --all-targets` 已发送验证消息 `SENT`；DWS userId 单聊历史失败为 `chat/business_error/系统错误`，openDingTalkId fallback 保持生效。
-- S19 通知发送已统一到唯一“考勤通知模板”：`send_latest_report.py --channel auto --targets all` 不重新取考勤，通过多目标路由发送一条 `attendance_notification`，钉钉正文只包含考勤摘要、连续异常、待处理事项和需要休息人员；run_id、北京时间和 OneDrive 报告路径只保留在 dispatch receipt / manifest，不进入钉钉正文；automation JSON 输出 `notification_template_text` 和 `notification_delivery_table`。
+- S19 通知发送已统一到唯一“考勤通知模板”：`send_latest_report.py --channel auto --targets all` 不重新取考勤，通过多目标路由发送一条 `attendance_notification`；钉钉正文只展示当天命中的“今日异常 / 无考勤”、连续异常和需要休息人员，`缺卡/未打卡/旷工/迟到/早退` 只有当天 summary child row 命中 `work_date` 才进入今日异常；当前自然月累计次数只作为今天命中人员注释，不反向制造今天异常；空板块完全不渲染；当天无异常且取数完整时输出 `本次 N 人全部考勤正常`；`待审批 / 待补卡 / 待核查` 用户可见板块已删除。
+- 指定日期个人测试必须使用 `run_attendance.py --work-date YYYY-MM-DD --notification-targets personal`，不得触达生产管理群；默认生产发送目标仍为 `all`。
+- 2026-07-08 指定日期测试结果：`2026-07-06` 晨报用 personal target 发送张霖泽成功，dispatch 只含个人目标，正文无 pending 板块和后台诊断；`2026-07-06` 晚报被 DWS gateway timeout/code 6 阻断在 department discovery，未生成报告、未发送个人或群，recovery event `evt_1783485085139817000` 已 finalize failed。
+- run_id、北京时间、OneDrive 报告路径和后台取数/权限诊断只保留在 dispatch receipt / manifest / automation JSON，不进入钉钉正文或用户面向管理/HR 报告；automation JSON 输出 `notification_template_text` 和 `notification_delivery_table`。
 - S19 需要休息口径：自然月第 23 个有效考勤日开始提醒；丁春法、李永占只从“需要休息人员”和私有 ledger `rest_required_snapshots` 中排除，其他状态仍照常统计。
 
 ## S20 当前状态｜钉钉工作检查 daily routine check
 
 - `Dingtalk-routine-check / 钉钉工作检查` 是唯一 S20 automation，时间统一 `Asia/Shanghai`，窗口为 `11:35 -> morning_1135` 和 `17:05 -> evening_1705`。
 - 公开代码/规则/测试位于 `KMFA/daily_routine_check_skill/`、`KMFA/metadata/daily_routine_check/`、`KMFA/tools/daily_routine_check/`、`KMFA/tests/test_daily_routine_check.py`。
-- 运行输入只读 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群` 和 `.../生产管理群`；缺失或过期降级为 `SOURCE_MISSING` / `SOURCE_STALE`，不崩溃、不删除源数据。若当前 OneDrive 只有 `DWS_Outputs.zip` 或 `DWS_Archive/` 而没有直接 `DWS_Outputs/<群>/chat_records/chat_records.csv` 与 `_manifest/manifest.csv`，healthcheck 输出 `SOURCE_INPUT_FOLDER_MISSING` 和下一轮启用条件。
+- 运行输入主路径为 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip`；reader 流式读取 zip 内 `付款请示群` / `生产管理群` 的 `chat_records/chat_records.csv` 与 `_manifest/manifest.csv`，不解压大包到本机。直接 `DWS_Outputs/` 群目录只作为兼容 fallback；zip 占位或损坏时 healthcheck 输出 `ZIP_INPUT_UNREADABLE`，缺失或过期数据降级为 `SOURCE_MISSING` / `SOURCE_STALE`，不崩溃、不删除源数据。
 - 例行异常类型固定为 `missing/late/review/wrong/merged`，提醒等级固定为 `P0/P1/P2`，通知事件包含 `abnormal_type`、`reminder_level`、matched message、confidence 和 reason。
 - `morning_1135` 生成杨婷现金 `cash_risk_result`；当前 public-safe 离线实现只从 DWS 消息文本按 `cash_monitor.public.yaml` 配置化金额锚点提取 `total_available_cash`，图片/附件候选无结构化金额时输出 `CASH_NEEDS_REVIEW`，不伪造 OCR。
 - SQLite 私有 ledger 写入 `run_log`、`routine_check_results`、`cash_risk_results`、`cash_account_snapshots`、`notification_events`、`data_quality_issues`；`--cleanup --apply` 执行 WAL checkpoint、VACUUM 并写 `cleanup_events`。
 - 真实钉钉发送仍需 ignored private runtime 通知配置；缺配置时必须返回 `CONFIG_MISSING`，不得伪造已发送。
+
+## S21 当前状态｜资金与税费管理周报 Skill
+
+- Codex App automation `kmfa` 当前契约为 `Australia/Sydney` 本地每周一、周六 11:00，repo contract 与本机 automation drift check 已纳入验证。
+- 默认只读输入为 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群`；scheduled shell 先跑 `check_source_readiness.py`，非 `READY` 不启动 runner。
+- `run_daily_local.sh` 支持 validation-only `KMFA_FUND_RUN_ID` 和 `KMFA_SKIP_CODEX_EXEC=1`，用于固定 run id 验收真实 runner/OCR 路径并避免递归 Codex CLI；默认 automation 不设置这些变量。
+- runner 现在生成 `automation_readiness.csv`，只读核对 tracked contract 与本机 Codex automation TOML；`schedule_ready=true` 需要 contract `Australia/Sydney`、周一/周六 11:00 rrule 匹配，且 live TOML 如显式写 timezone 不得漂移。S58 真实复跑 `s55_scheduled_entrypoint_real_run_20260708` 后 `CODEX_AUTOMATION_READY`、mismatch=0，automation schedule audit/gate 已 pass/ready；该证据只解除 automation schedule 外部检查，不放行管理结论。
+- scheduled Vision OCR 对 timeout 行默认执行 `--retry-timeout-seconds 30 --retry-batch-size 1`；可用 `KMFA_FUND_VISION_RETRY_TIMEOUT_SECONDS` / `KMFA_FUND_VISION_RETRY_BATCH_SIZE` 覆盖。retry 仍只写 private runtime OCR sidecar，不改源、不晋升事实。
+- S56 真实 retry 已将 `s55_scheduled_entrypoint_real_run_20260708` 的截图 OCR 覆盖从 216/272 提升到 272/272；二次 runner 输出 272 条 OCR 文本候选、2852 条 OCR 值候选、235 条 OCR 资金事实候选，`fund_ledger.csv` / `funding_forecast.csv` 仍只有表头，`management_conclusion_allowed=false`。
+- S57 基于同一真实 run_id 复跑 runner 后输出 `fact_promotion_owner_review_batch.csv`：batch=6、authorization-required=4、blocking=4；OCR staging 235 blocked、chat value 55 blocked、attachment 293/290 ready/3 blocked、workbook quality 6 ready；`fund_ledger.csv` / `funding_forecast.csv` 仍 0 行，`generated_financial_amount_count=0`、`management_conclusion_allowed=false`。
+- 当前 runner 对真实结构化 CSV 必需列 `date/company/bank/account_alias/liquidity_tier/inflow/outflow/ending_balance/flow_type` 执行 Decimal 抽取，产出 `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW` 的资金事实、净流、公司银行矩阵和税费/保证金/借款/项目成本风险。
+- 当存在结构化事实时，runner 以 OOXML cell patch 写入原生 `.xlsx`：`01_首页总览` 4+4 卡片、`02_资金趋势预测` 已知到期项 projection、`03_三层净流余额`、`04_税费融资风险`、`05_公司银行矩阵`、隐藏 `H01/H02/H03/H05`；不重写图表包，保留首页最近 15 天/30 天两张原生折线图。
+- runner 现在从真实结构化 CSV 的 `due_date` 税费/保证金/借款/项目成本风险/机会行生成 `funding_forecast.csv`，并写入 `02_资金趋势预测`；这些 projection 只按 `known_due_date_structured_csv` 进入待复核，不生成无证据预测、付款动作或管理结论。
+- runner 现在生成 `cashflow_validation.csv`，逐资金行校验余额连续性、经营现金流影响和内部调拨排除；连续性失败追加 `BALANCE_CONTINUITY_GAP` 异常任务，并写入隐藏 `H05_复审检查`。
+- runner 现在生成 `workbook_quality_checks.csv`，对生成后的原生 Excel 检查 sheet 顺序、隐藏审计页、可见 row 2 清理、图表尺寸、公式错误标记和可见敏感值形态；失败会写异常任务并阻断管理结论。
+- runner 现在生成 `goal_completion_audit.csv`，按最终目标逐项记录证据状态和下一步；正式事实晋升、管理结论和 automation 本地状态仍需独立授权/外部检查，不因审计存在而自动放行。
+- runner 现在生成 `fact_promotion_review_packet.csv`，汇总结构化事实、OCR ledger staging、聊天金额候选、附件证据完整性、workbook quality 和目标审计，作为 owner 复核/授权准备包；所有行仍 no-write/no-promote。
+- runner 现在生成 `fact_promotion_owner_review_batch.csv`，从复核包派生六个 owner-review 批次，汇总 candidate/ready/blocker 计数、`owner_review_status` 和 recommended owner action；所有行仍 `financial_fact_promotion_allowed=false`、`fund_ledger_write_allowed=false`、`financial_fact_promoted=false`、`management_conclusion_allowed=false`，不执行授权、不晋升事实、不写正式账本。
+- runner 现在生成 `fact_promotion_authorization_template.json`，从复核包逐行生成默认 `authorized=false` 的 owner-review 授权草稿；scope 为 `fact_promotion_review_packet_validation_only`，仍不允许事实晋升、正式账本写入或管理结论。
+- runner 现在生成 `fact_promotion_authorization_preview.csv`，只验证 private `fact_promotion_authorizations/<run_id>.json` 对复核包行的覆盖情况；有效行最多进入 `ready_for_owner_review_no_fact_promotion`，仍不允许事实晋升、正式账本写入或管理结论。
+- runner 现在生成 `fact_promotion_execution_gate.csv`，合并 owner 授权覆盖和 review blockers；ready 行最多进入 `ready_for_controlled_fact_promotion_execution`，本轮仍不允许执行事实晋升、写正式账本或生成管理结论。
+- runner 现在生成 `management_conclusion_gate.csv`，把源就绪、Workbook 质量、正式事实晋升执行、正式账本、现金流校验、证据复核和 automation 外部检查汇总为 C-level 结论前门禁；所有行仍 `management_conclusion_allowed=false`。
+- runner 现在生成 `owner_action_queue.csv`，从阻断/外部检查门禁派生 owner 下一步动作；所有行仍 `automation_safe=false`、`source_mutation_allowed=false`、`fact_promotion_allowed=false`、`fund_ledger_write_allowed=false`、`management_conclusion_allowed=false`，不执行授权、不改源、不晋升事实、不写正式账本。
+- `tools/materialize_fund_source.py` 现在支持显式 ZIP materialization：目录候选用 `--source-dir`，`DWS_Outputs.zip` 候选用 `--source-zip --zip-prefix 付款请示群`；dry-run 不建目标目录，apply 只复制该群 prefix 下缺失文件，hash 冲突、坏 ZIP 或 unsafe member fail-closed。
+- ZIP materialization 现在兼容真实 `DWS_Outputs.zip` 的 `DWS_Outputs/付款请示群/...` 外层目录布局；S25 已 dry-run 验证 297 个付款请示群文件后显式 apply 到 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群`，`check_source_readiness.py` 返回 `READY`、file_count=297、unreadable_count=0。
+- S25 已基于该真实热目录运行 `run_fund_weekly_analysis.py --run-id s25_real_input_index_20260708`，状态为 `INDEXED_PENDING_EXTRACTION`；输出包索引 297 个真实源文件，生成原生 Excel 母版副本，`management_conclusion_allowed=false`，`fund_ledger.csv` 和 `funding_forecast.csv` 仍为空，未生成虚构金额或管理结论。
+- runner 现在将截图相邻真实 `.ocr.txt` 文本侧车写入 `ocr_text_candidates.csv`，并从该文本抽取日期/金额候选到 `ocr_value_candidates.csv`，关联原截图 evidence 并追加 `OCR_TEXT_PENDING_REVIEW` / `OCR_VALUE_PENDING_REVIEW` 任务；OCR 文本和值候选只进入待复核链路，`financial_fact_promoted=false`，不自动生成金额或管理结论。
+- runner 现在将真实 `chat_records/chat_records.csv` 的 `content` / `quoted_content` 资金相关文本写入 `chat_text_candidates.csv`，并从该文本抽取日期/金额候选到 `chat_value_candidates.csv`，追加 `CHAT_TEXT_PENDING_REVIEW` / `CHAT_VALUE_PENDING_REVIEW` 任务；聊天文本和值候选只进入待复核链路，`financial_fact_promoted=false`，不自动生成金额或管理结论。
+- S26 已基于最新真实热目录运行 `run_fund_weekly_analysis.py --run-id s26_real_chat_candidates_20260708`，索引 295 个真实源文件，生成 `chat_text_candidates.csv` 136 行、`chat_value_candidates.csv` 55 行；其中日期候选 9、金额候选 46，`fund_ledger.csv` / `funding_forecast.csv` 仍为空，`management_conclusion_allowed=false`，workbook quality 6/6 PASS。
+- runner 现在使用真实 `_manifest/manifest.csv` 的 `message_id/output_path` 将聊天文本/值候选关联到附件 evidence，写入 `chat_evidence_links.csv` 和 `CHAT_EVIDENCE_LINK_PENDING_REVIEW` 任务；这些链接只用于 cross-review，`financial_fact_promoted=false`，不写入 `fund_ledger.csv` 或形成管理结论。
+- S27 已基于最新真实热目录运行 `run_fund_weekly_analysis.py --run-id s27_real_chat_evidence_links_20260708`，索引 295 个真实源文件，生成聊天-附件证据链路 36 行，其中 35 行命中 evidence index、1 行 evidence missing 待复核；`fund_ledger.csv` / `funding_forecast.csv` 仍为空，`generated_financial_amount_count=0`，`management_conclusion_allowed=false`，workbook quality 6/6 PASS。
+- runner 现在将真实 `_manifest/manifest.csv` 的每条附件资源行全量核对到 evidence index，写入 `attachment_evidence_reconciliation.csv`；缺 output path、缺 evidence、SHA 不一致会写 `ATTACHMENT_EVIDENCE_RECONCILIATION_FAIL` 阻断任务，不允许事实提升。
+- S28 已基于最新真实热目录运行 `run_fund_weekly_analysis.py --run-id s28_real_attachment_reconciliation_20260708`，索引 295 个真实源文件，核对 293 条 manifest 附件资源行，其中 290 条 evidence 命中待复核、1 条 evidence missing 阻断、2 条 manifest output path missing 阻断；`fund_ledger.csv` / `funding_forecast.csv` 仍为空，`generated_financial_amount_count=0`，`management_conclusion_allowed=false`，workbook quality 6/6 PASS。
+- runner 现在将附件 evidence 阻断行转换为 `attachment_reconciliation_remediation.csv` operator action queue；这些 action 只给人工/受控修复路由使用，`automation_safe=false`、`formal_fact_allowed=false`，不修改源文件、不生成资金事实。
+- S29 已基于最新真实热目录运行 `run_fund_weekly_analysis.py --run-id s29_real_attachment_remediation_20260708`，索引 295 个真实源文件，生成 3 条 remediation，其中 `restore_or_materialize_output_file=1`、`rerun_dws_attachment_download=2`；`fund_ledger.csv` / `funding_forecast.csv` 仍为空，`generated_financial_amount_count=0`，`management_conclusion_allowed=false`。
+- runner 现在为附件修复队列输出 `attachment_remediation_dry_run.csv`，只评估下一步状态；所有 dry-run 行保持 `safe_to_apply=false`、`apply_performed=false`、`formal_fact_allowed=false`。
+- S30 已基于最新真实热目录运行 `run_fund_weekly_analysis.py --run-id s30_real_attachment_remediation_dry_run_20260708`，索引 295 个真实源文件，生成 3 条 dry-run，其中 `source_restore_required=1`、`dws_rerun_required=2`；`fund_ledger.csv` / `funding_forecast.csv` 仍为空，`generated_financial_amount_count=0`，`management_conclusion_allowed=false`。
+- runner 现在将附件修复 dry-run 转换为 `attachment_repair_plan.csv` plan-only 步骤，记录 command family 和人工确认要求；所有 plan 行保持 `operator_confirmation_required=true`、`source_mutation_allowed=false`、`apply_performed=false`。
+- S31 已基于最新真实热目录运行 `run_fund_weekly_analysis.py --run-id s31_real_attachment_repair_plan_20260708`，索引 295 个真实源文件，生成 3 条 repair plan，其中 `source_materialization_plan=1`、`dws_archive_controlled_rerun=2`；`fund_ledger.csv` / `funding_forecast.csv` 仍为空，`generated_financial_amount_count=0`，`management_conclusion_allowed=false`。
+- runner 现在将附件修复计划转换为 `attachment_repair_apply_gate.csv` fail-closed 授权闸门；无 private operator authorization manifest 时所有 gate 行保持 `operator_authorization_present=false`、`apply_allowed=false`、`source_mutation_allowed=false`、`apply_performed=false`。
+- S32 已基于最新真实热目录运行 `run_fund_weekly_analysis.py --run-id s32_real_attachment_apply_gate_20260708`，索引 295 个真实源文件，生成 3 条 apply gate，全部 `blocked_missing_operator_authorization`；`attachment_repair_apply_allowed_count=0`，`fund_ledger.csv` / `funding_forecast.csv` 仍为空，`generated_financial_amount_count=0`，`management_conclusion_allowed=false`。
+- runner 现在支持 private `attachment_repair_authorizations/<run_id>.json` validation-only 授权 manifest schema；只验证 `authorization_manifest_version=1`、匹配 `run_id`、`authorization_scope=attachment_repair_plan_validation_only`、`source_mutation_allowed=false`、`apply_execution_allowed=false` 和 row-level `repair_plan_authorizations`。有效授权行只写 `authorization_validation_status=valid_manifest_validation_only`，仍不执行修复、不允许 source mutation。
+- S33 已基于最新真实热目录运行 `run_fund_weekly_analysis.py --run-id s33_real_authorization_manifest_schema_20260708`，索引 295 个真实源文件，生成 3 条 apply gate，全部 `missing_authorization_manifest` / `blocked_missing_operator_authorization`；`attachment_repair_authorization_valid_count=0`，`attachment_repair_apply_allowed_count=0`，`fund_ledger.csv` / `funding_forecast.csv` 仍为空，`management_conclusion_allowed=false`。
+- runner 现在在每次 run 目录输出 `attachment_repair_authorization_template.json` 草稿，供人工审阅后另存为 private authorization manifest；模板行默认 `authorized=false`，生成模板本身不会改变 apply gate 状态。
+- S34 已基于最新真实热目录运行 `run_fund_weekly_analysis.py --run-id s34_real_authorization_template_20260708`，索引 295 个真实源文件，生成 3 行 authorization template，`authorized=true` 为 0；3 条 apply gate 仍全部阻断，`attachment_repair_apply_allowed_count=0`，`fund_ledger.csv` / `funding_forecast.csv` 仍为空，`management_conclusion_allowed=false`。
+- runner 现在输出 `attachment_repair_authorization_preview.csv`，从 apply gate 派生授权覆盖影响；有效授权最多进入 `ready_for_operator_review_no_apply`，仍不执行修复、不允许 source mutation、不解锁正式事实。
+- S35 已基于最新真实热目录运行 `run_fund_weekly_analysis.py --run-id s35_real_authorization_preview_20260708`，索引 295 个真实源文件，生成 3 条 authorization preview，全部 `missing_authorization_manifest` / `blocked_missing_operator_authorization`；`attachment_repair_authorization_preview_ready_count=0`、`attachment_repair_authorization_preview_blocked_count=3`、`attachment_repair_apply_allowed_count=0`，`fund_ledger.csv` / `funding_forecast.csv` 仍为空，`management_conclusion_allowed=false`。
+- 本地 Codex automation `kmfa` 已重新与 repo mirror 对齐：tracked `weekly_1100_sydney.prompt.md` 和 `codex_app_automation.contract.toml` 反映当前本机 symlink alias cwds、周一/周六 11:00 本地排程与上游 DWS zip 优先级，`check_codex_app_automation.py` 返回 `CODEX_AUTOMATION_READY`。
+- runner 现在输出 `screenshot_ocr_coverage.csv`，逐张 screenshot evidence 审计真实 OCR sidecar 覆盖状态；缺侧车的截图写 `SCREENSHOT_OCR_MISSING` 阻断任务，不调用 OCR、不读取图片内容、不生成金额事实。
+- S36 已基于最新真实热目录运行 `run_fund_weekly_analysis.py --run-id s36_real_screenshot_ocr_coverage_20260708`，索引 295 个真实源文件，生成 272 条 screenshot OCR coverage，全部 `ocr_text_sidecar_missing`；`screenshot_ocr_ready_count=0`、`screenshot_ocr_missing_count=272`、`ocr_text_candidate_count=0`、`ocr_value_candidate_count=0`，`fund_ledger.csv` / `funding_forecast.csv` 仍为空，`management_conclusion_allowed=false`。
+- scheduled shell 现在在 runner 成功后调用 `generate_screenshot_ocr_sidecars.py` 生成私有 OCR sidecar generation plan；默认 dry-run，不修改 OneDrive 源目录，不写空 OCR sidecar，不生成金额事实。
+- S37 已基于最新真实热目录运行 `run_fund_weekly_analysis.py --run-id s37_real_ocr_sidecar_generation_plan_20260708`，随后执行 `generate_screenshot_ocr_sidecars.py --engine mdls` dry-run；计划 272 条截图 OCR sidecar 生成行，全部 `no_text_from_engine`，`generated_sidecar_count=0`、`text_available_count=0`、`financial_fact_promoted=false`，未写入 `private_runtime/ocr_sidecars/` 文件。
+- S38 已按用户最新指令将 live Codex App automation `kmfa`、repo contract、prompt 和 launchd fallback 从旧时间改为每周一/周六 11:00 悉尼本地时间；`check_codex_app_automation.py` 返回 `CODEX_AUTOMATION_READY`。真实运行 `run_fund_weekly_analysis.py --run-id s38_schedule_update_real_run_20260708` 索引 295 个真实源文件，生成 workbook `资金与税费管理母版_s38_schedule_update_real_run_20260708.xlsx`，状态仍为 `INDEXED_PENDING_EXTRACTION`，`generated_financial_amount_count=0`、`management_conclusion_allowed=false`。
+- S39 已将 repo mirror 追平 live automation 的干净显示入口：`/Users/linzezhang/Documents/Codex/workspaces/dws-kmfa-automation/dws-archive` 和 `.../kmfa-codexproject` 均为 symlink alias，分别指向真实 DWS 归档项目与 `/Users/linzezhang/CodexProject`；不是新的 worktree。repo contract、prompt 与 live automation 再次一致。真实运行 `run_fund_weekly_analysis.py --run-id s39_alias_sync_real_run_20260708` 通过 alias cwd 执行，索引 295 个真实源文件，生成 workbook `资金与税费管理母版_s39_alias_sync_real_run_20260708.xlsx`，`workbook_quality_check_count=6`、`workbook_quality_blocking_count=0`、`generated_financial_amount_count=0`、`management_conclusion_allowed=false`。
+- S40 已接入本机 Apple Vision OCR：`generate_screenshot_ocr_sidecars.py` 支持 `--engine vision`、`--vision-batch-size` 和 per-batch `--timeout-seconds`，scheduled shell 默认 `--engine vision --apply` 写入 private runtime OCR sidecars。真实运行 `s40_vision_ocr_sidecars_20260708` 已补齐 272/272 个 screenshot private OCR sidecar；runner 以同一 `run_id` 二次索引后输出 `ocr_text_candidate_count=272`、`ocr_value_candidate_count=2352`、`screenshot_ocr_missing_count=0`，但 `fund_ledger.csv` 仍为空、`generated_financial_amount_count=0`、`management_conclusion_allowed=false`。plan 只含 path/length/hash，不含 OCR 原文，sidecar 与 plan 均被 `private_runtime/` gitignore 排除，`financial_fact_promoted=false`。
+- S41 已修复 private OCR generation plan 的续跑覆盖风险：生成器保留已成功 apply 的 plan 行，新批次追加下一个 generation id；`run_daily_local.sh` 在新增 private sidecar 后用同一 `run_id` 再跑一次 runner，把 private Vision OCR sidecar 纳入待复核候选链路，不写回 OneDrive 源目录、不自动晋升事实。
+- S42 已新增 `ocr_financial_fact_candidates.csv`：runner 从 OCR 文本中按公司、银行、资金类别和金额关键词生成可复核资金事实候选，并写入 `OCR_FACT_CANDIDATE_PENDING_REVIEW` 异常任务。真实运行 `s40_vision_ocr_sidecars_20260708` 生成 273 条 OCR 资金事实候选，其中 `payment_outflow=247`、`bank_deposit=7`、`electronic_bill=4`、`tax_payment=9`、`deposit_release=1`、`loan=5`；所有行 `financial_fact_promoted=false`，`fund_ledger.csv` 仍为空，`generated_financial_amount_count=0`、`management_conclusion_allowed=false`。
+- S43 已新增 OCR fact review 授权门禁：runner 输出 `ocr_fact_review_apply_gate.csv`、`ocr_fact_review_authorization_template.json` 和 `ocr_fact_review_authorization_preview.csv`；private `ocr_fact_review_authorizations/<run_id>.json` 只做 validation-only 覆盖检查。真实运行 `s40_vision_ocr_sidecars_20260708` 生成 273 条 gate rows，全部 `blocked_missing_operator_authorization`；模板 273 行全部 `authorized=false`；preview 273 行全部 blocked；`fund_ledger.csv` 仍为空，`generated_financial_amount_count=0`、`management_conclusion_allowed=false`。
+- S44 已新增 `ocr_fact_cross_review.csv`：runner 按 OCR 资金事实候选 metric 聚合候选数、金额合计、证据数、公司/银行缺失数和授权阻断数，供人工 cross-review 使用。真实运行 `s40_vision_ocr_sidecars_20260708` 生成 6 个 cross-review groups：`bank_deposit=7`、`deposit_release=1`、`electronic_bill=4`、`loan=5`、`payment_outflow=247`、`tax_payment=9`；所有 group `operator_authorized_count=0`、`fund_ledger_write_allowed=false`、`financial_fact_promoted=false`，`fund_ledger.csv` 仍为空，`generated_financial_amount_count=0`、`management_conclusion_allowed=false`。
+- S45 已新增 `ocr_fact_ledger_staging_preview.csv`：runner 将 OCR fact 候选映射为 ledger-like 人工复核行，标注 `proposed_amount_role`、`proposed_liquidity_tier`、`proposed_flow_type` 和授权状态。真实运行 `s40_vision_ocr_sidecars_20260708` 生成 273 条 preview，全部 `blocked_missing_operator_authorization`；role 分布为 `outflow=256`、`balance=11`、`financing_or_balance_review=5`、`inflow=1`；所有行 `fund_ledger_write_allowed=false`、`financial_fact_promoted=false`，`fund_ledger.csv` 仍为空，`generated_financial_amount_count=0`、`management_conclusion_allowed=false`。
+- runner 现在承接 public-safe KMFA metadata 信号：资金压力、项目成本事实层、报告等级、scope reconciliation，输出 `kmfa_metadata_signals.csv` 并写入 `04_税费融资风险` / `H02_异常任务池`；这些只用于待复核路由，不生成金额、预测或正式动作。
+- 所有结构化 CSV 金额仍是待复核事实，`management_conclusion_allowed=false`；不得把 workbook 首页卡片解释为最终 C-level 管理结论。
+- 当前真实 OneDrive 热目录已 materialized 并达到 `READY`。若后续目标目录再次缺失或 OneDrive cloud-only/dataless，仍保持 `SOURCE_MISSING` / `SOURCE_UNREADABLE` fail-closed，不生成局部生产包。
 
 ## 当前目标
 
@@ -59,7 +125,7 @@ v1.2 FULL_HTML_NO_OMISSION 完整任务包已成为 KMFA 后续开发基线。St
 - 用户确认 KMFA 后续本机财务原始数据统一放在 `/Users/linzezhang/Downloads/KMFA_MetaData`。
 - 该目录属于 raw/private business data；Codex 只能在当前 phase 明确需要时只读读取，不得修改、删除、移动、重命名、覆盖或写入生成文件。
 - Codex 生成的私有 inventory、schema/header diagnostic、mapping diagnostic、scratch files 或本地报告只能写入项目受控且 Git 忽略的位置，例如 `KMFA/.codex_private_runtime/`，或另一个明确加入 `.gitignore` 的额外工作目录。
-- 公开 GitHub 只能保存 public-safe 结构、聚合计数、状态、hash/ref、证据索引、validator 结果和治理记录；不得提交 raw 文件、raw 文件名、字段/表头明文、sheet 名、row values、业务金额、credentials、银行流水、合同、薪资或税务材料。
+- 2026-07-08 owner 已改变 KMFA 数据治理规则：非 credential 类原始敏感经营文件、银行流水、合同、工资、税务申报、SQLite/数据库导出、明文报告正文等，可在当前线程或签名 upload manifest 明确授权、secret 扫描通过并登记到 `KMFA/metadata/security/owner_authorized_plaintext_upload_manifest.jsonl` 后，以明文提交到 `KMFA/metadata/`；credential/secret 仍永久禁止进入 GitHub。
 
 ## 当前状态
 
@@ -428,7 +494,7 @@ git diff --check -- README.md governance/projects.yaml KMFA
 
 - 当前目标新增为 `S19｜每日早晚钉钉考勤检查`。
 - 自动化名称固定：`每日早晚钉钉考勤检查`。
-- 运行时间：每天北京时间 `08:35` 晨报、`18:15` 晚报。
+- 运行时间：每天北京时间 `10:35` 晨报、`20:05` 晚报。
 - 私有归档根目录：`/Users/linzezhang/OneDrive/dingtalk_attendance/YYYYMM/`，只保留年月一级目录，文件直接落在当月目录下。
 - 张霖泽 DingTalk userId：`1iv-1t2oesv2yd`；老板 userId 或小群配置仍需本机私有配置。
 - GitHub 仅保存代码、schema、policy、prompt、manifest、validator 和 public-safe evidence；真实员工考勤明文、SQLite、raw API response、报告正文和凭据材料不得提交。
@@ -436,3 +502,23 @@ git diff --check -- README.md governance/projects.yaml KMFA
 - S19 考勤异常判定规则：张霖泽、林全意是已知无需考勤人员，仅豁免自身；真实异常不得因豁免名单被隐藏。`recordList=[]`、缺少上下班打卡、summary 当天缺卡/未打卡/旷工/迟到/早退均进入用户可见异常名单；2026-07-07 live 验证应考勤 41 人、当天缺卡异常 2 人。
 - 关键文件：`KMFA/tools/dingtalk_attendance/`、`KMFA/metadata/dingtalk_attendance/`、`KMFA/tests/test_dingtalk_attendance.py`、`KMFA/stage_artifacts/S19_DINGTALK_ATTENDANCE/`。
 - 下一步：若本轮全部验证、泄密扫描、open PR/open issue、branch/status/worktree 检查通过，才允许一次性 commit 并 push GitHub main；不得留下 PR、issue、branch 或 worktree。
+
+## S21 更新 - 2026-07-08 08:40:56 AEST
+
+- 当前目标新增为 `S21｜fund-weekly-analysis-skill 每日资金与税费 Excel 原生包`。
+- 输入源固定为 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群`；未找到该目录时必须 fail closed 为 `SOURCE_MISSING`，不得读取旧目录、生成样例数据或伪造付款/回款事实。
+- 本轮已把用户确认后的 Excel 首页修订版固化为技能模板：Sheet `01` 的 4-7 行卡片为 `可用现金占比`、`银行存款`、`票据/电子汇票`、`期末总资金`，8-11 行卡片为 `保证金可释放`、`外部净流出`、`内部调拨净额`、`资金缺口`；首页保留最近 15 天和最近 30 天两张原生折线图，且 01-06 可见页第 2 行为空。
+- 定时语义已按用户最新指令改为本机 Sydney 时间每周一和每周六 `11:00`；北京时间 `09:00` 仅作为当前 UTC+10 偏移下的业务参照，不作为本机调度时区。
+- GitHub public-safe 范围仅提交技能代码、模板、规则、测试、prompt、manifest schema 和治理文档；真实 OneDrive 原始文件、运行输出、明细 Excel 包、凭据和私有审计证据必须留在 `KMFA/metadata/fund_weekly_analysis/private_runtime/` 并被 `.gitignore` 排除。
+- 关键文件：`KMFA/fund-weekly-analysis-skill/`、`KMFA/tests/test_fund_weekly_analysis_skill.py`、`KMFA/metadata/fund_weekly_analysis/`、`KMFA/功能清单.md`、`KMFA/开发记录.md`、`KMFA/模型参数文件.md`。
+- 已验证：`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_fund_weekly_analysis_skill -q`、`python3 KMFA/fund-weekly-analysis-skill/tools/validate_taskpack.py`、`python3 -m py_compile KMFA/fund-weekly-analysis-skill/tools/*.py`、`git diff --cached --check`、staged secret token scan。
+- 真实数据 smoke 已执行：`run_fund_weekly_analysis.py --repo-root /Users/linzezhang/CodexProject --run-id validator_smoke_20260708 --timezone Australia/Sydney` 返回 `SOURCE_MISSING`，因为目标 OneDrive 输入目录当前不存在；这是正确阻断状态。
+- 后续 runner 增强：目标输入目录缺失时仍返回 `SOURCE_MISSING`，但 ignored private runtime manifest 会列出同 OneDrive 下的 `DWS_Outputs.zip` 和 `DWS_Archive/付款请示群` 候选状态；目标输入目录存在时先输出 `INDEXED_PENDING_EXTRACTION` 无虚构包，包含当前 Excel 母版副本、证据索引、空事实 CSV、异常任务、cross review 和 audit log，但不生成金额、预测或管理结论。
+- 后续 materializer 增强：`KMFA/fund-weekly-analysis-skill/tools/materialize_fund_source.py` 可从已验证私有候选源显式复制到目标 `DWS_Outputs/付款请示群`；默认 dry-run，`--apply` 才复制，同 hash 跳过，不同 hash 冲突失败，manifest/CSV 写入 ignored private runtime。
+- 当前真实 dry-run 发现 OneDrive 外部阻塞：`DWS_Archive/付款请示群` 共 621 个文件，其中 608 个为 macOS `compressed,dataless` cloud-only 文件；`DWS_Outputs.zip` 也是 `compressed,dataless`。materialize 已正确返回 `SOURCE_UNREADABLE`，因此未执行 apply。
+- 后续 runner 增强：即使目标 `DWS_Outputs/付款请示群` 未来存在，只要其中有不可读或 `dataless` 文件，runner 也会返回 `SOURCE_UNREADABLE`，不生成 Excel 包，避免部分数据被误当作完整真实输入。
+- 后续 readiness 增强：`KMFA/fund-weekly-analysis-skill/tools/check_source_readiness.py` 是 scheduled run 的快速前置门禁；它不 hash/不读取文件内容，只检查目标目录、候选源、zip、dataless/unreadable 状态，输出 `READY`/`SOURCE_MISSING`/`SOURCE_UNREADABLE`。
+- 2026-07-08 09:20 AEST 更新：`tools/run_daily_local.sh` 已在 `run_fund_weekly_analysis.py` 前强制调用 `check_source_readiness.py`；非 `READY` 时保持 readiness 原退出码并停止，不生成 Excel 包，也不进入 Codex prompt。
+- 2026-07-08 S38 更新：Codex App automation `kmfa` / `KMFA资金周报自动化` 已按用户最新指令改为每周一、周六 11:00 悉尼本地时间；repo mirror、prompt 与 launchd fallback 模板同步更新，真实检查返回 `CODEX_AUTOMATION_READY`。
+- 2026-07-08 后续更新：runner 已支持真实结构化 CSV 固定列契约抽取，输出 `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW`，生成 `fund_ledger`、`net_flow_ledger`、`company_bank_matrix` 和 `tax_loan_risk`，但仍保持 `management_conclusion_allowed=false`。
+- 下一步：先把 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群` 或候选 `DWS_Archive/付款请示群` 文件离线化到本机，再运行 readiness；只有 `READY` 后才运行真实数据生成包。launchd plist 可作为备用入口，但当前主调度已是 Codex App automation。

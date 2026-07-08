@@ -3,6 +3,7 @@ project_id: KMFA
 automation_name: Dingtalk-routine-check
 chinese_name: 钉钉工作检查
 timezone: Asia/Shanghai
+input_zip_default: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
 input_root_default: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs
 notify_target_label: 张霖泽
 

@@ -1,0 +1,271 @@
+{
+  "period": "202607",
+  "run_id": "mgmt-monthly-report-202607-20260707T225131Z",
+  "created_at_utc": "2026-07-07T22:51:31Z",
+  "status": "warning",
+  "errors": [],
+  "warnings": [
+    "collection_2026:warning_alternate_candidates_present"
+  ],
+  "input_slot_count": 7,
+  "input_slots": [
+    {
+      "slot_id": "collection_2026",
+      "display_name": "WPS 武汉开明 2026年回款表",
+      "status": "warning_alternate_candidates_present",
+      "selection_reason": "preferred_file_selected",
+      "candidate_count": 2,
+      "selected_count": 1,
+      "alternate_candidate_count": 1,
+      "min_physical_files": 1,
+      "recommended_physical_files": 1,
+      "files": [
+        {
+          "slot_id": "collection_2026",
+          "display_name": "WPS 武汉开明 2026年回款表",
+          "file_name_sha256": "d67973f880fa36d2fa2ab559409cc4d1324790bfb7cd8cfe0ceccfe37f38a61a",
+          "file_sha256": "65da0afaa145557c9d1d67b937e6b23d9ffe74fede9d736f727268a8ae312c1b",
+          "file_size_bytes": 244404,
+          "extension": ".xlsx",
+          "is_symlink": false,
+          "sheet_count": 18,
+          "sheet_names_sha256": "19f460a00759c886d38f72434599b822b0b1c378212b0a5a1c503715eec2852e",
+          "sheet_read_error": null,
+          "matched_pattern": null,
+          "committed_plaintext_to_git": false
+        }
+      ],
+      "sheet_group_checks": []
+    },
+    {
+      "slot_id": "invoice_tax_cash",
+      "display_name": "开票纳税资金汇总表",
+      "status": "passed",
+      "selection_reason": "single_file_selected",
+      "candidate_count": 1,
+      "selected_count": 1,
+      "alternate_candidate_count": 0,
+      "min_physical_files": 1,
+      "recommended_physical_files": 1,
+      "files": [
+        {
+          "slot_id": "invoice_tax_cash",
+          "display_name": "开票纳税资金汇总表",
+          "file_name_sha256": "3bbf96a925344cac5719640249b4d311b2a4e3e8bb1473b2824b0cb3e908357a",
+          "file_sha256": "4e3483595fb0a00db2a170679a679d713eba061d57f947bc4e681e041b251853",
+          "file_size_bytes": 100309,
+          "extension": ".xlsx",
+          "is_symlink": true,
+          "sheet_count": 11,
+          "sheet_names_sha256": "5e4a2613aeb05799573cb81a9ac030dd3bdf677a984cf28e4b94d9659d3adf41",
+          "sheet_read_error": null,
+          "matched_pattern": null,
+          "committed_plaintext_to_git": false
+        }
+      ],
+      "sheet_group_checks": [
+        {
+          "canonical": "开票纳税汇总",
+          "matched_sheet_names_sha256": "54188914d609ba9e17e253b477c1516de0b1595d1bcebe4def431073d70b60b1",
+          "matched_count": 1,
+          "status": "passed"
+        },
+        {
+          "canonical": "2026年销售回款",
+          "matched_sheet_names_sha256": "34d5be299b7ef27f1135c05563e558606eb76a7c064744a8dcc10f621050095e",
+          "matched_count": 1,
+          "status": "passed"
+        },
+        {
+          "canonical": "2026年资金汇总",
+          "matched_sheet_names_sha256": "9ac3aac17ca6bc90a40df322755da9802e5ab33b51137b5d94a6d77084917bdc",
+          "matched_count": 1,
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "slot_id": "receivable_contract",
+      "display_name": "应收账款合同登记",
+      "status": "passed",
+      "selection_reason": "single_file_selected",
+      "candidate_count": 1,
+      "selected_count": 1,
+      "alternate_candidate_count": 0,
+      "min_physical_files": 1,
+      "recommended_physical_files": 1,
+      "files": [
+        {
+          "slot_id": "receivable_contract",
+          "display_name": "应收账款合同登记",
+          "file_name_sha256": "212bc76eae7c0eb2a3688085d0687bde76ab3b64d7a223dd29b03cefefe86474",
+          "file_sha256": "1c497dc29d25996a058926086131554c59664f3caa2c922722e1b7f556312308",
+          "file_size_bytes": 7765246,
+          "extension": ".xlsx",
+          "is_symlink": false,
+          "sheet_count": 5,
+          "sheet_names_sha256": "90c8b9187172b2599bb675ff337be97521739cf7209afdfd0587eb98581e8f2c",
+          "sheet_read_error": null,
+          "matched_pattern": null,
+          "committed_plaintext_to_git": false
+        }
+      ],
+      "sheet_group_checks": []
+    },
+    {
+      "slot_id": "aging",
+      "display_name": "应收账龄表",
+      "status": "passed",
+      "selection_reason": "single_file_selected",
+      "candidate_count": 1,
+      "selected_count": 1,
+      "alternate_candidate_count": 0,
+      "min_physical_files": 1,
+      "recommended_physical_files": 1,
+      "files": [
+        {
+          "slot_id": "aging",
+          "display_name": "应收账龄表",
+          "file_name_sha256": "575ebbc39c859261b9ccd0a70bf7144a517feda2baa4ea241bbbd29986fd8289",
+          "file_sha256": "d45324b4821899646385bd0c422df3de0afbe302398f9d16888a3942e68c6bdb",
+          "file_size_bytes": 10774066,
+          "extension": ".xlsx",
+          "is_symlink": false,
+          "sheet_count": 20,
+          "sheet_names_sha256": "1fd9b5a3da2ac6a4c20c673abe309af3df382d9cf57172e223b9c8321a6efa1c",
+          "sheet_read_error": null,
+          "matched_pattern": null,
+          "committed_plaintext_to_git": false
+        }
+      ],
+      "sheet_group_checks": []
+    },
+    {
+      "slot_id": "deposit",
+      "display_name": "2026年保证金",
+      "status": "passed",
+      "selection_reason": "single_file_selected",
+      "candidate_count": 1,
+      "selected_count": 1,
+      "alternate_candidate_count": 0,
+      "min_physical_files": 1,
+      "recommended_physical_files": 1,
+      "files": [
+        {
+          "slot_id": "deposit",
+          "display_name": "2026年保证金",
+          "file_name_sha256": "587e7f28712ba9aebb33f620c9bb02723b428b98e58a06ddde87edbe266d10eb",
+          "file_sha256": "89a94a46ecf3210c5b7285528a4706913084c6e5fa76c6f6c3fa23883b06196c",
+          "file_size_bytes": 811612,
+          "extension": ".xlsx",
+          "is_symlink": false,
+          "sheet_count": 9,
+          "sheet_names_sha256": "4180bd4c53550bebb3c5f330288381fb168502f66d8adbff4569f227877bedc3",
+          "sheet_read_error": null,
+          "matched_pattern": null,
+          "committed_plaintext_to_git": false
+        }
+      ],
+      "sheet_group_checks": []
+    },
+    {
+      "slot_id": "three_major_projects",
+      "display_name": "三大项目",
+      "status": "passed",
+      "selection_reason": "single_file_selected",
+      "candidate_count": 1,
+      "selected_count": 1,
+      "alternate_candidate_count": 0,
+      "min_physical_files": 1,
+      "recommended_physical_files": 1,
+      "files": [
+        {
+          "slot_id": "three_major_projects",
+          "display_name": "三大项目",
+          "file_name_sha256": "15a9a4ab815b041062d1a38a2070946f1c40fc93ff6895220f6a9048ff97d2c2",
+          "file_sha256": "c730c205ef379ca68f71ab5437afcaeb78fcc9921e11a7688bb03fb197e7684a",
+          "file_size_bytes": 47357,
+          "extension": ".xlsx",
+          "is_symlink": false,
+          "sheet_count": 3,
+          "sheet_names_sha256": "00a80220adee50c7c742f9a315bbc141f1a73700bed816786156c2851d5dacb9",
+          "sheet_read_error": null,
+          "matched_pattern": null,
+          "committed_plaintext_to_git": false
+        }
+      ],
+      "sheet_group_checks": []
+    },
+    {
+      "slot_id": "project_status_contracts",
+      "display_name": "生产项目状态表与红圈主合同",
+      "status": "passed",
+      "selection_reason": "all_matching_files_selected",
+      "candidate_count": 2,
+      "selected_count": 2,
+      "alternate_candidate_count": 0,
+      "min_physical_files": 1,
+      "recommended_physical_files": 2,
+      "files": [
+        {
+          "slot_id": "project_status_contracts",
+          "display_name": "生产项目状态表与红圈主合同",
+          "file_name_sha256": "503fa8a3dfbff8708a79c6af9e6f3e6bba8a26b4aa8de712c927730f4096b970",
+          "file_sha256": "466f4a689a5a2dbaac638a1ae547a53c8915c0a53a46ff2d3fbe1b231f556165",
+          "file_size_bytes": 36607,
+          "extension": ".xlsx",
+          "is_symlink": false,
+          "sheet_count": 2,
+          "sheet_names_sha256": "893eccdd8546e8a6e762524b6b3d658899f1fbf930a3e6d79c277d81774711c5",
+          "sheet_read_error": null,
+          "matched_pattern": null,
+          "committed_plaintext_to_git": false
+        },
+        {
+          "slot_id": "project_status_contracts",
+          "display_name": "生产项目状态表与红圈主合同",
+          "file_name_sha256": "904323b7140463f8a453cb9ac466c05c42b4f8e8b44ee82ea0120f03e18579e1",
+          "file_sha256": "fd9189bf89ba1e6f3a94f67f5356c99cd25d148fc77165bd529d40ce1007443f",
+          "file_size_bytes": 747031,
+          "extension": ".xlsx",
+          "is_symlink": false,
+          "sheet_count": 1,
+          "sheet_names_sha256": "9dbafe97bfe7c63d65f540eee75d349d4f0badfc7878592a43ce13fd4a6c37e3",
+          "sheet_read_error": null,
+          "matched_pattern": null,
+          "committed_plaintext_to_git": false
+        }
+      ],
+      "sheet_group_checks": []
+    }
+  ],
+  "outputs": {
+    "excel": {
+      "output_type": "excel",
+      "expected_file_name": "经营管理分析报表 202607.xlsx",
+      "output_dir_sha256": "84b967ed794543a507b2f85facf2f575f96e25f7615813a5ac6f8ae65f49a382",
+      "exists": true,
+      "file_sha256": "01a9ffb3f59ff9ffa4383ff5ce5b7a1819699eab4a2a95957f4153360f02db82",
+      "file_size_bytes": 102975,
+      "retained_locally": true,
+      "committed_plaintext_to_git": false
+    },
+    "pdf": {
+      "output_type": "pdf",
+      "expected_file_name": "董事会经营分析摘要 202607.pdf",
+      "output_dir_sha256": "84b967ed794543a507b2f85facf2f575f96e25f7615813a5ac6f8ae65f49a382",
+      "exists": true,
+      "file_sha256": "589f47daf7e7365d60741929497a6391bcc5276c1d55e9896562fe97f65bc33b",
+      "file_size_bytes": 340989,
+      "retained_locally": true,
+      "committed_plaintext_to_git": false
+    }
+  },
+  "metadata_root": "KMFA/metadata/mgmt-monthly-report-skill",
+  "metadata_policy": {
+    "public_safe_only": true,
+    "raw_sensitive_plaintext_committed_to_git": false,
+    "report_plaintext_committed_to_git": false,
+    "runtime_sqlite_committed_to_git": false
+  }
+}

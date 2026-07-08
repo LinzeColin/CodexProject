@@ -173,19 +173,26 @@ def validate_stage_review(
     require_true("p1.quality_gate.role_permission_matrix_complete", p1_manifest.get("quality_gate", {}).get("role_permission_matrix_complete"))
     require_true("p1.quality_gate.sensitive_public_repo_policy_enforced", p1_manifest.get("quality_gate", {}).get("sensitive_public_repo_policy_enforced"))
     require_true("p1.quality_gate.audit_log_policy_complete", p1_manifest.get("quality_gate", {}).get("audit_log_policy_complete"))
+    require_true(
+        "p1.quality_gate.raw_sensitive_public_repo_allowed",
+        p1_manifest.get("quality_gate", {}).get("raw_sensitive_public_repo_allowed"),
+    )
+    require_true("p1.quality_gate.github_upload_allowed", p1_manifest.get("quality_gate", {}).get("github_upload_allowed"))
+    require_false(
+        "p1.quality_gate.credential_secret_public_repo_allowed",
+        p1_manifest.get("quality_gate", {}).get("credential_secret_public_repo_allowed"),
+    )
     require_false_flags(
         "p1.quality_gate",
         p1_manifest.get("quality_gate", {}),
         (
             "notification_delivery_allowed",
             "notification_full_report_body_allowed",
-            "raw_sensitive_public_repo_allowed",
             "business_execution_allowed",
             "external_connector_allowed",
             "formal_report_allowed",
             "lineage_full_check_allowed",
             "stage17_review_allowed",
-            "github_upload_allowed",
         ),
     )
     require_public_safety("p1", p1_manifest)

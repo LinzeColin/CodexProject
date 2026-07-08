@@ -1,8 +1,14 @@
 # Daily Routine Check Private Runtime
 
-This directory is for local-only runtime files used by `Dingtalk-routine-check / 钉钉工作检查`.
+This directory is a Git-tracked placeholder only.
 
-Allowed local files include:
+Do not place active runtime files here. Active runtime files live in OneDrive:
+
+```text
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime/
+```
+
+Expected OneDrive private runtime files include:
 
 - `daily_routine_check.sqlite`
 - `daily_routine_check.sqlite-wal`

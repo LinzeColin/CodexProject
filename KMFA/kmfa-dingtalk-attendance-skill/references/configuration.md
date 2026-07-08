@@ -12,8 +12,8 @@ KMFA/metadata/dingtalk_attendance/notification_channel_manifest.json
 KMFA/metadata/dingtalk_attendance/notification_policy.yaml
 KMFA/metadata/dingtalk_attendance/onedrive_storage_manifest.yaml
 KMFA/metadata/dingtalk_attendance/retention_policy.yaml
-KMFA/metadata/dingtalk_attendance/codex_automation/morning_0835.prompt.md
-KMFA/metadata/dingtalk_attendance/codex_automation/evening_1815.prompt.md
+KMFA/metadata/dingtalk_attendance/codex_automation/morning_1035.prompt.md
+KMFA/metadata/dingtalk_attendance/codex_automation/evening_2005.prompt.md
 KMFA/metadata/dingtalk_attendance/codex_automation/manual_rerun.prompt.md
 ```
 
@@ -49,6 +49,8 @@ DINGTALK_AGENT_ID
 DWS_BIN
 KMFA_S19_ALLOW_DWS_COMMANDS
 KMFA_S19_DWS_BROWSER_POLICY_PATH
+KMFA_WORK_DATE_OVERRIDE
+KMFA_TODAY_OVERRIDE
 ```
 
 Default live gate:
