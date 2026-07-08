@@ -18,13 +18,20 @@
 
 ## 当前阶段
 
-当前为 S12 P1。任务 ID 为 `MA-V12-S12P1`，验收 ID 为
+当前为 S12 P2。任务 ID 为 `MA-V12-S12P2`，验收 ID 为
+`ACC-MA-V12-S12P2`，validator 为 `validate:v1.2-s12-p2`。状态为
+`phase_s12_p2_personalization_prompt_completed_pending_s12_p3`。S12 P2 已完成
+`personalization_prompt.v1_2_s12_p2`，生成 ChatGPT、Codex、other agent 三类 prompt，
+并包含中文人类说明和机器可复制文本。下一步只允许进入 S12 P3。
+
+No GitHub main upload。No remote push。No raw mutation。No proposal apply execution。
+
+历史复验兼容记录：S12 P1 完成时当前为 S12 P1。任务 ID 为 `MA-V12-S12P1`，验收 ID 为
 `ACC-MA-V12-S12P1`，validator 为 `validate:v1.2-s12-p1`。状态为
 `phase_s12_p1_command_palette_completed_pending_s12_p2`。S12 P1 已完成
 `command_palette.v1_2_s12_p1` 命令面板，命令只包含同步 ChatGPT、同步 Codex、
-生成本周报告、查看待授权 proposal 和生成 personalization prompt。下一步只允许进入 S12 P2。
-
-No GitHub main upload。No remote push。No raw mutation。No proposal apply execution。
+生成本周报告、查看待授权 proposal 和生成 personalization prompt。当时下一步是 S12 P2。
+此句只用于保留已完成 phase 的复验语义，不代表当前阶段。
 
 历史复验兼容记录：S11 Review 完成时当前为 S11 Review。任务 ID 为 `MA-V12-S11-REVIEW`，
 验收 ID 为 `ACC-MA-V12-S11-REVIEW`，validator 为 `validate:v1.2-s11-review`。状态为

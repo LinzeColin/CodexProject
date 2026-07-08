@@ -1,3 +1,55 @@
+## v1.2 S12 P2 Personalization Prompt
+
+状态：`phase_s12_p2_personalization_prompt_completed_pending_s12_p3`。
+
+任务 ID：`MA-V12-S12P2`。
+
+验收 ID：`ACC-MA-V12-S12P2`。
+
+Validator：`validate:v1.2-s12-p2`。
+
+S12 P2 已完成。Prompt 合同为 `personalization_prompt.v1_2_s12_p2`。已生成
+ChatGPT、Codex、other agent 三类 prompt，均包含中文人类说明和机器可复制文本。来源为
+latest memory、behavior、latent、self_iteration、decision debt 和 agent collaboration
+等脱敏派生报告。
+
+涉及文件：
+
+- `scripts/build_personalization_exports.py`
+- `scripts/atlasctl.py`
+- `data/derived/personalization/personalization_prompt_human_zh.md`
+- `data/derived/personalization/chatgpt_personalization.md`
+- `data/derived/personalization/codex_personalization.md`
+- `data/derived/personalization/other_agent_personalization.md`
+- `data/derived/personalization/personalization_export.json`
+- `机器治理/运行门禁/personalization_prompt.v1_2_s12_p2.json`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s12_p2.cjs`
+
+验收：
+
+- `validate:v1.2-s12-p2`
+- `ACC-MA-V12-S12P2`
+- `MA-V12-S12P2`
+- `phase_s12_p2_personalization_prompt_completed_pending_s12_p3`
+- `personalization_prompt.v1_2_s12_p2`
+- ChatGPT
+- Codex
+- other agent
+- 中文人类说明
+- 机器可复制文本
+- S12 P3
+- No GitHub main upload
+
+边界：
+
+- No remote push。
+- No raw mutation。
+- No proposal apply execution。
+- No automatic send。
+- No S12 P3 ChatGPT deep explore execution。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S12 P2; MA-V12-S12P2; ACC-MA-V12-S12P2; phase_s12_p2_personalization_prompt_completed_pending_s12_p3; validate:v1.2-s12-p2; personalization_prompt.v1_2_s12_p2; ChatGPT; Codex; other agent; 中文人类说明; 机器可复制文本; latest memory; behavior; latent; self_iteration; S12 P3; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution.
+
 ## v1.2 S12 P1 Command Palette
 
 状态：`phase_s12_p1_command_palette_completed_pending_s12_p2`。

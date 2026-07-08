@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S12 P2 Personalization Prompt
+
+- Added `personalization_prompt.v1_2_s12_p2` prompt-generation contract for
+  `MA-V12-S12P2` / `ACC-MA-V12-S12P2`.
+- Generated latest ChatGPT, Codex and other agent personalization prompts from
+  latest memory, behavior, latent and self_iteration derived reports.
+- Added `data/derived/personalization/personalization_prompt_human_zh.md` as
+  中文人类说明 and `data/derived/personalization/other_agent_personalization.md`
+  as the third machine-copyable target.
+- Upgraded `data/derived/personalization/personalization_export.json` to record
+  `source_report_freshness`, target prompts, safety boundaries and 机器可复制文本.
+- Added `机器治理/运行门禁/personalization_prompt.v1_2_s12_p2.json`.
+- Added `validate:v1.2-s12-p2`.
+- Registered status
+  `phase_s12_p2_personalization_prompt_completed_pending_s12_p3`.
+- Preserved S12 P2 boundaries: No automatic send, No GitHub main upload,
+  No remote push, No raw mutation, No proposal apply execution and
+  No S12 P3 ChatGPT deep explore execution.
+- Marked the next gate as pending S12 P3.
+
 ## Unreleased - Memory Atlas v1.2 S12 P1 Command Palette
 
 - Added `command_palette.v1_2_s12_p1` runtime contract to the Memory Atlas

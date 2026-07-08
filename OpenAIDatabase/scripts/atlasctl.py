@@ -2053,11 +2053,13 @@ def personalization_prompt_contract(args: argparse.Namespace) -> dict[str, objec
     return {
         "status": "PASS",
         "command": "generate-personalization-prompt",
-        "task_id": "MA-V12-S12P1",
-        "acceptance_id": "ACC-MA-V12-S12P1",
+        "task_id": "MA-V12-S12P2",
+        "acceptance_id": "ACC-MA-V12-S12P2",
+        "prompt_version": "personalization_prompt.v1_2_s12_p2",
         "dry_run": True,
         "writes_files": False,
         "sends_to_chatgpt": False,
+        "raw_mutation": False,
         "targets": personalization_targets(args.target),
         "source_reports": [
             "data/derived/personalization/personalization_export.json",
@@ -2069,10 +2071,11 @@ def personalization_prompt_contract(args: argparse.Namespace) -> dict[str, objec
             "data/derived/agent_collaboration/agent_collaboration_quality_report.json",
         ],
         "output_contract": {
+            "human_zh": "data/derived/personalization/personalization_prompt_human_zh.md",
             "chatgpt": "data/derived/personalization/chatgpt_personalization.md",
             "codex": "data/derived/personalization/codex_personalization.md",
             "machine": "data/derived/personalization/personalization_export.json",
-            "other_agent": "machine export sections are reusable by future-agent adapters",
+            "other_agent": "data/derived/personalization/other_agent_personalization.md",
         },
         "boundary": {
             "user_trigger_required": True,

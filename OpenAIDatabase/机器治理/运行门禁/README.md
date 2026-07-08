@@ -2,7 +2,41 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S12 P1。任务 ID 为 `MA-V12-S12P1`，验收 ID 为
+当前阶段是 S12 P2。任务 ID 为 `MA-V12-S12P2`，验收 ID 为
+`ACC-MA-V12-S12P2`，validator 为 `validate:v1.2-s12-p2`。状态为
+`phase_s12_p2_personalization_prompt_completed_pending_s12_p3`。
+
+S12 P2 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s12_p2_personalization_prompt.md`
+- `人类可读/32_PersonalizationPrompt说明.md`
+- `机器治理/运行门禁/personalization_prompt.v1_2_s12_p2.json`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s12_p2.cjs`
+- `scripts/build_personalization_exports.py`
+- `scripts/atlasctl.py`
+- `data/derived/personalization/personalization_prompt_human_zh.md`
+- `data/derived/personalization/chatgpt_personalization.md`
+- `data/derived/personalization/codex_personalization.md`
+- `data/derived/personalization/other_agent_personalization.md`
+- `data/derived/personalization/personalization_export.json`
+
+S12 P2 gate：
+
+- `validate:v1.2-s12-p2` 可验证 Personalization Prompt。
+- `personalization_prompt.v1_2_s12_p2` prompt contract 存在。
+- ChatGPT、Codex、other agent prompt 均包含中文人类说明和机器可复制文本。
+- 来源包含 latest memory、behavior、latent、self_iteration、decision debt、agent collaboration。
+- 不自动发送。
+- 不执行 proposal apply。
+- 不修改 raw。
+- 不上传 GitHub main。
+- 不执行远端 push。
+- 不执行 S12 P3 ChatGPT deep explore。
+
+No GitHub main upload。No remote push。No raw mutation。No proposal apply execution。
+下一步是 S12 P3。
+
+历史复验兼容记录：S12 P1 完成时当前阶段是 S12 P1。任务 ID 为 `MA-V12-S12P1`，验收 ID 为
 `ACC-MA-V12-S12P1`，validator 为 `validate:v1.2-s12-p1`。状态为
 `phase_s12_p1_command_palette_completed_pending_s12_p2`。
 
