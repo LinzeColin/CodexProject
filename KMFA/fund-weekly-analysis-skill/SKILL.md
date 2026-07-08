@@ -47,7 +47,7 @@ No simulation: production reports must be generated only from real source files,
 * Automation name: `KMFA资金周报自动化`.
 * Timezone: `Australia/Sydney`.
 * Scheduled run time: every Monday and Saturday at 11:00 local Sydney time.
-* `Australia/Sydney` local time is the scheduler source of truth. Beijing 09:00 is reference wording only for the current UTC+10 offset; during Sydney daylight saving it is Beijing 08:00. Beijing time must not be used as the scheduler timezone.
+* `Australia/Sydney` local time is the scheduler source of truth. Beijing 09:00 is reference wording only for the current UTC+10 offset; during Sydney daylight saving time the Beijing reference is 08:00. Beijing time must not be used as the scheduler timezone.
 * Input directory:
 
       /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群

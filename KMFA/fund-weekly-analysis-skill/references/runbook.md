@@ -2,7 +2,7 @@
 
 ## Monday/Saturday 11:00 Australia/Sydney run
 
-The local scheduler uses Sydney local time. Every Monday and Saturday at 11:00 Australia/Sydney is the operational schedule. Beijing 09:00 is reference wording only for the current UTC+10 offset; during Sydney daylight saving it is Beijing 08:00. Beijing time must not be used as the scheduler timezone.
+The local scheduler uses Sydney local time. Monday/Saturday 11:00 Australia/Sydney is the operational schedule. Beijing 09:00 is reference wording only for the current UTC+10 offset; during Sydney daylight saving time the Beijing reference is 08:00. Beijing time must not be used as the scheduler timezone.
 For controlled validation only, `KMFA_FUND_RUN_ID=<run_id>` pins the runner output directory and `KMFA_SKIP_CODEX_EXEC=1` skips the final Codex CLI handoff. Default automation runs leave both unset.
 
 1. Confirm local repo is on `main` and clean enough to run.
