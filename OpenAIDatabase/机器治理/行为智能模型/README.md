@@ -3,7 +3,7 @@
 用于放置 facets、semantic clusters、latent signals、collaboration quality、自我迭代和
 低价值循环识别的模型配置。
 
-当前 S06 P2 已完成。facet/canonical events 的数据契约已定义在
+当前 S06 P3 已完成。facet/canonical events 的数据契约已定义在
 `机器治理/数据契约/facet_event_schema.v1_2_s05_p1.json`，中文解释位于
 `人类可读/12_Facet字段与事件语义说明.md`，facet extractor 已实现为
 `scripts/extract_memory_atlas_facets.py`，并为 events 输出补齐
@@ -32,4 +32,10 @@ cluster 均保留中文摘要、代表事件、`source/time/project/task/languag
 当前 S06 P2 已完成：`scripts/build_memory_atlas_low_value_loops.py` 从 events 和
 clusters 生成 `data/derived/behavior_intelligence/low_value_loops.json`。输出包含
 低价值循环候选、Decision Debt Ledger 和 Action Half-Life，覆盖重复返工、反复讨论未落地、
-过度优化和 scope creep。S06 P2 不做心理诊断，不生成 opportunity cards。下一步是 S06 P3。
+过度优化和 scope creep。S06 P2 不做心理诊断，不生成 opportunity cards。
+
+当前 S06 P3 已完成：`scripts/build_memory_atlas_opportunities.py` 从 events、clusters
+和 low-value loops 生成 `data/derived/behavior_intelligence/opportunities.json`。输出包含
+机会发现候选和 why-not-now 卡片，覆盖 automation、productization、template、
+compounding 和 defer。S06 P3 不接外部经济数据库，不做心理诊断，不生成无穷压力清单。
+下一步是 S06 Review。

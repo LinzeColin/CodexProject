@@ -1,3 +1,52 @@
+## v1.2 S06 P3 Opportunity Discovery
+
+状态：`phase_s06_p3_opportunity_discovery_completed_pending_s06_review`。
+
+任务 ID：`MA-V12-S06P3`。
+
+验收 ID：`ACC-MA-V12-S06P3`。
+
+S06 P3 实现 Memory Atlas v1.2 的机会发现和 为什么不是现在 卡片。它从 S05
+canonical events、S06 P1 clusters 与 S06 P2 low-value loops 生成
+`data/derived/behavior_intelligence/opportunities.json`，并扩展
+`atlasctl audit --check insight-evidence` 覆盖 S06 P3 派生项。
+
+涉及文件：
+
+- `scripts/build_memory_atlas_opportunities.py`
+- `scripts/atlasctl.py`
+- `data/derived/behavior_intelligence/opportunities.json`
+- `人类可读/15_机会发现与为什么不是现在卡片.md`
+- `docs/reviews/memory_atlas_v1_2_s06_p3_opportunity_discovery.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_p3.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s06-p3`
+- `ACC-MA-V12-S06P3`
+- `MA-V12-S06P3`
+- S06 P3
+- `build_memory_atlas_opportunities.py`
+- `atlasctl.py analyze --stage opportunities`
+- `opportunities.json`
+- 为什么不是现在
+- automation、productization、template、compounding、defer
+- pending S06 Review
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase.
+- No raw mutation in this phase.
+- No external economic database in this phase.
+- No psychological diagnosis in this phase.
+- No infinite pressure list in this phase.
+- No app reinstall in this phase.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S06 P3 Opportunity Discovery; MA-V12-S06P3; ACC-MA-V12-S06P3; phase_s06_p3_opportunity_discovery_completed_pending_s06_review; validate:v1.2-s06-p3; build_memory_atlas_opportunities.py; atlasctl.py analyze --stage opportunities; opportunities.json; S06 P3; pending S06 Review; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No external economic database; No psychological diagnosis; No infinite pressure list.
+
 ## v1.2 S06 P2 Low-Value Loops
 
 状态：`phase_s06_p2_low_value_loops_completed_pending_s06_p3`。

@@ -19,6 +19,7 @@ GITHUB_BACKUP = ROOT / "scripts" / "github_backup.py"
 FACET_EXTRACTOR = ROOT / "scripts" / "extract_memory_atlas_facets.py"
 CLUSTER_BUILDER = ROOT / "scripts" / "build_memory_atlas_clusters.py"
 LOW_VALUE_LOOP_BUILDER = ROOT / "scripts" / "build_memory_atlas_low_value_loops.py"
+OPPORTUNITY_BUILDER = ROOT / "scripts" / "build_memory_atlas_opportunities.py"
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -238,13 +239,38 @@ def low_value_loop_analyze_contract() -> dict[str, object]:
     }
 
 
+def opportunity_analyze_contract() -> dict[str, object]:
+    return {
+        "status": "PASS",
+        "command": "analyze",
+        "stage": "opportunities",
+        "dry_run": True,
+        "writes_files": False,
+        "builder": "scripts/build_memory_atlas_opportunities.py",
+        "input": [
+            "data/derived/behavior_intelligence/events.json",
+            "data/derived/behavior_intelligence/clusters.json",
+            "data/derived/behavior_intelligence/low_value_loops.json",
+        ],
+        "output": "data/derived/behavior_intelligence/opportunities.json",
+        "raw_mutation": False,
+        "task_id": "MA-V12-S06P3",
+        "acceptance_id": "ACC-MA-V12-S06P3",
+        "phase_boundary": {
+            "does_not_use_external_economic_database": True,
+            "does_not_create_infinite_pressure_list": True,
+            "next_phase": "S06 Review",
+        },
+    }
+
+
 def run_analyze(args: argparse.Namespace) -> int:
-    if args.stage not in {"facets", "clusters", "low-value-loops"}:
+    if args.stage not in {"facets", "clusters", "low-value-loops", "opportunities"}:
         print(json.dumps({
             "status": "NOT_IMPLEMENTED",
             "command": "analyze",
             "stage": args.stage,
-            "reason": "Unknown analyze stage. Supported stages: facets, clusters, low-value-loops.",
+            "reason": "Unknown analyze stage. Supported stages: facets, clusters, low-value-loops, opportunities.",
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 2
 
@@ -269,6 +295,10 @@ def run_analyze(args: argparse.Namespace) -> int:
                 command.extend([cli_name, value])
     elif args.stage == "low-value-loops":
         command = [sys.executable, str(LOW_VALUE_LOOP_BUILDER), "--database-dir", str(args.database_dir)]
+        if args.dry_run:
+            command.append("--dry-run")
+    elif args.stage == "opportunities":
+        command = [sys.executable, str(OPPORTUNITY_BUILDER), "--database-dir", str(args.database_dir)]
         if args.dry_run:
             command.append("--dry-run")
     result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
@@ -350,6 +380,22 @@ def run_audit(args: argparse.Namespace) -> int:
         for item in low_value_payload.get("action_half_life") or []:
             if int(item.get("action_half_life_days") or 0) <= 0:
                 bad_items.append(f"action_half_life:{item.get('half_life_id')}:invalid_action_half_life_days")
+    opportunities_path = args.database_dir / "data/derived/behavior_intelligence/opportunities.json"
+    opportunities_payload = {}
+    if opportunities_path.exists():
+        opportunities_payload = json.loads(opportunities_path.read_text(encoding="utf-8"))
+        bad_items.extend(audit_evidence_collection(
+            opportunities_payload.get("opportunity_clusters") or [],
+            "opportunity_clusters",
+            "opportunity_id",
+            ("summary_zh", "next_step_zh"),
+        ))
+        for item in opportunities_payload.get("opportunity_clusters") or []:
+            card = item.get("why_not_now_card") or {}
+            if not card.get("reason_zh") or card.get("not_pressure_list") is not True or not card.get("evidence_refs"):
+                bad_items.append(f"opportunity_clusters:{item.get('opportunity_id')}:invalid_why_not_now_card")
+            if int(item.get("opportunity_half_life_days") or 0) <= 0 and not item.get("defer_reason_zh"):
+                bad_items.append(f"opportunity_clusters:{item.get('opportunity_id')}:missing_half_life_or_defer_reason")
     status = "PASS" if not bad_clusters and not bad_items else "FAIL"
     result = {
         "status": status,
@@ -366,6 +412,10 @@ def run_audit(args: argparse.Namespace) -> int:
         "loop_cluster_count": low_value_payload.get("loop_cluster_count"),
         "decision_debt_count": low_value_payload.get("decision_debt_count"),
         "action_half_life_count": low_value_payload.get("action_half_life_count"),
+        "opportunity_task_id": opportunities_payload.get("task_id"),
+        "opportunity_acceptance_id": opportunities_payload.get("acceptance_id"),
+        "opportunity_count": opportunities_payload.get("opportunity_count"),
+        "defer_card_count": opportunities_payload.get("defer_card_count"),
         "bad_items": bad_items,
         "raw_mutation": False,
     }
