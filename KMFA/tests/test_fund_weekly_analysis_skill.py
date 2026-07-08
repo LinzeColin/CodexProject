@@ -209,35 +209,36 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
         self.assertIn("--run-id s55_validation_run", runner_call)
         self.assertFalse(any(call.startswith("codex:") for call in calls), calls)
 
-    def test_skill_package_uses_sydney_daily_1130_local_schedule_and_real_input(self) -> None:
+    def test_skill_package_uses_sydney_weekly_mon_sat_1100_local_schedule_and_real_input(self) -> None:
         self.assertTrue(SKILL_ROOT.exists(), "fund-weekly-analysis-skill package must exist under KMFA")
         skill = (SKILL_ROOT / "SKILL.md").read_text(encoding="utf-8")
         config = (SKILL_ROOT / "templates" / "fund_weekly_analysis_config.yaml").read_text(encoding="utf-8")
         plist = (SKILL_ROOT / "automation" / "launchd" / "com.kmfa.fund-weekly-analysis.plist").read_text(
             encoding="utf-8"
         )
-        prompt = (SKILL_ROOT / "automation" / "daily_1130_sydney.prompt.md").read_text(encoding="utf-8")
+        prompt = (SKILL_ROOT / "automation" / "weekly_mon_sat_1100_sydney.prompt.md").read_text(encoding="utf-8")
 
         for text in (skill, config, prompt):
             self.assertIn("Australia/Sydney", text)
-            self.assertIn("11:30", text)
+            self.assertIn("11:00", text)
             self.assertIn("/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群", text)
-        self.assertIn("every day", prompt)
+        self.assertIn("every Monday and Saturday", prompt)
         self.assertIn("No simulation", skill)
         self.assertIn("Do not use simulated", prompt)
 
-        self.assertRegex(config, r'schedule_local:\s*"11:30"')
-        self.assertRegex(config, r'schedule_days:\s*\["Daily"\]')
+        self.assertRegex(config, r'schedule_local:\s*"11:00"')
+        self.assertRegex(config, r'schedule_days:\s*\["Monday", "Saturday"\]')
         self.assertRegex(config, r'timezone:\s*Australia/Sydney')
+        self.assertRegex(plist, r"<key>Weekday</key>\s*<integer>1</integer>")
+        self.assertRegex(plist, r"<key>Weekday</key>\s*<integer>6</integer>")
         self.assertRegex(plist, r"<key>Hour</key>\s*<integer>11</integer>")
-        self.assertRegex(plist, r"<key>Minute</key>\s*<integer>30</integer>")
-        self.assertNotIn("<key>Weekday</key>", plist)
+        self.assertRegex(plist, r"<key>Minute</key>\s*<integer>0</integer>")
 
     def test_taskpack_validator_requires_daily_shell_entrypoint(self) -> None:
         validator = (SKILL_ROOT / "tools" / "validate_taskpack.py").read_text(encoding="utf-8")
         self.assertIn('"tools/run_daily_local.sh"', validator)
 
-    def test_codex_app_automation_contract_mirrors_daily_1130_local_cron(self) -> None:
+    def test_codex_app_automation_contract_mirrors_weekly_mon_sat_1100_local_cron(self) -> None:
         contract_path = SKILL_ROOT / "automation" / "codex_app_automation.contract.toml"
         self.assertTrue(contract_path.exists(), "public-safe Codex App automation contract must be tracked")
         contract = tomllib.loads(contract_path.read_text(encoding="utf-8"))
@@ -246,7 +247,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
         self.assertEqual(contract["name"], "KMFA资金周报自动化")
         self.assertEqual(contract["kind"], "cron")
         self.assertEqual(contract["status"], "ACTIVE")
-        self.assertEqual(contract["rrule"], "FREQ=DAILY;BYHOUR=11;BYMINUTE=30")
+        self.assertEqual(contract["rrule"], "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0")
         self.assertEqual(contract["timezone"], "Australia/Sydney")
         self.assertEqual(contract["execution_environment"], "local")
         self.assertEqual(
@@ -256,7 +257,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "/Users/linzezhang/Documents/Codex/workspaces/dws-kmfa-automation/kmfa-codexproject",
             ],
         )
-        self.assertEqual(contract["prompt_file"], "automation/daily_1130_sydney.prompt.md")
+        self.assertEqual(contract["prompt_file"], "automation/weekly_mon_sat_1100_sydney.prompt.md")
         self.assertEqual(contract["source_readiness_gate"], "tools/check_source_readiness.py")
         self.assertEqual(
             contract["input_dir"],
@@ -506,9 +507,9 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             contract_dir = repo_root / "KMFA/fund-weekly-analysis-skill/automation"
             contract_dir.mkdir(parents=True)
             contract = (SKILL_ROOT / "automation" / "codex_app_automation.contract.toml").read_text(encoding="utf-8")
-            prompt = (SKILL_ROOT / "automation" / "daily_1130_sydney.prompt.md").read_text(encoding="utf-8")
+            prompt = (SKILL_ROOT / "automation" / "weekly_mon_sat_1100_sydney.prompt.md").read_text(encoding="utf-8")
             (contract_dir / "codex_app_automation.contract.toml").write_text(contract, encoding="utf-8")
-            (contract_dir / "daily_1130_sydney.prompt.md").write_text(prompt, encoding="utf-8")
+            (contract_dir / "weekly_mon_sat_1100_sydney.prompt.md").write_text(prompt, encoding="utf-8")
             automation_root = Path(temp_dir) / "automations"
             automation_dir = automation_root / "kmfa"
             automation_dir.mkdir(parents=True)
@@ -629,7 +630,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "A5"), "schedule_rrule")
                 self.assertEqual(
                     xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "B5"),
-                    "FREQ=DAILY;BYHOUR=11;BYMINUTE=30",
+                    "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0",
                 )
                 self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "A8"), "fact_promotion_execution_allowed")
                 self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "B8"), "false")
@@ -683,7 +684,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 automation_rows = list(csv.DictReader(f))
             self.assertEqual(len(automation_rows), 1)
             self.assertEqual(automation_rows[0]["status"], "CODEX_AUTOMATION_READY")
-            self.assertEqual(automation_rows[0]["rrule"], "FREQ=DAILY;BYHOUR=11;BYMINUTE=30")
+            self.assertEqual(automation_rows[0]["rrule"], "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0")
             self.assertEqual(automation_rows[0]["expected_timezone"], "Australia/Sydney")
             self.assertEqual(automation_rows[0]["schedule_ready"], "true")
             self.assertEqual(automation_rows[0]["management_conclusion_allowed"], "false")
@@ -4613,9 +4614,9 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             execution_auth_dir.mkdir(parents=True)
             contract_dir.mkdir(parents=True)
             contract = (SKILL_ROOT / "automation" / "codex_app_automation.contract.toml").read_text(encoding="utf-8")
-            prompt = (SKILL_ROOT / "automation" / "daily_1130_sydney.prompt.md").read_text(encoding="utf-8")
+            prompt = (SKILL_ROOT / "automation" / "weekly_mon_sat_1100_sydney.prompt.md").read_text(encoding="utf-8")
             (contract_dir / "codex_app_automation.contract.toml").write_text(contract, encoding="utf-8")
-            (contract_dir / "daily_1130_sydney.prompt.md").write_text(prompt, encoding="utf-8")
+            (contract_dir / "weekly_mon_sat_1100_sydney.prompt.md").write_text(prompt, encoding="utf-8")
             automation_root = Path(temp_dir) / "automations"
             automation_dir = automation_root / "kmfa"
             automation_dir.mkdir(parents=True)
