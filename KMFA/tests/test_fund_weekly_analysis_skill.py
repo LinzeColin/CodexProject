@@ -564,6 +564,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "ocr_fact_candidate_owner_worklist.csv",
                 "ocr_fact_candidate_owner_decision_template.json",
                 "ocr_fact_candidate_owner_decision_preview.csv",
+                "ocr_fact_candidate_owner_decision_progress_summary.csv",
                 "ocr_fact_candidate_owner_authorization_update_draft.json",
                 "ocr_fact_candidate_owner_authorization_update_preview.csv",
                 "ocr_fact_ledger_staging_preview.csv",
@@ -1384,6 +1385,36 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in decision_preview_rows))
             self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in decision_preview_rows))
 
+            with (run_dir / "ocr_fact_candidate_owner_decision_progress_summary.csv").open(
+                encoding="utf-8-sig",
+                newline="",
+            ) as f:
+                decision_progress_rows = list(csv.DictReader(f))
+            self.assertEqual(len(decision_progress_rows), 4)
+            progress_by_scope = {
+                (row["summary_level"], row["candidate_metric"]): row
+                for row in decision_progress_rows
+            }
+            all_progress = progress_by_scope[("all_candidates", "ALL")]
+            self.assertEqual(all_progress["candidate_count"], "3")
+            self.assertEqual(all_progress["ready_count"], "0")
+            self.assertEqual(all_progress["blocking_count"], "3")
+            self.assertEqual(all_progress["missing_owner_decision_manifest_count"], "3")
+            self.assertEqual(all_progress["pending_owner_review_count"], "3")
+            self.assertEqual(all_progress["approved_for_authorization_count"], "0")
+            self.assertEqual(all_progress["needs_correction_count"], "0")
+            self.assertEqual(all_progress["rejected_count"], "0")
+            self.assertEqual(all_progress["missing_company_count"], "3")
+            self.assertEqual(all_progress["missing_bank_count"], "3")
+            self.assertEqual(all_progress["authorization_update_ready_count"], "0")
+            self.assertEqual(all_progress["fund_ledger_write_allowed"], "false")
+            self.assertEqual(all_progress["financial_fact_promoted"], "false")
+            self.assertEqual(all_progress["management_conclusion_allowed"], "false")
+            self.assertIn("owner decision manifest", all_progress["recommended_next_step"])
+            self.assertEqual(progress_by_scope[("candidate_metric", "bank_deposit")]["candidate_count"], "1")
+            self.assertEqual(progress_by_scope[("candidate_metric", "electronic_bill")]["candidate_count"], "1")
+            self.assertEqual(progress_by_scope[("candidate_metric", "payment_outflow")]["candidate_count"], "1")
+
             authorization_update_draft = json.loads(
                 (run_dir / "ocr_fact_candidate_owner_authorization_update_draft.json").read_text(encoding="utf-8")
             )
@@ -1479,6 +1510,11 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_candidate_owner_decision_preview_count"], 3)
             self.assertEqual(cross_review["ocr_fact_candidate_owner_decision_preview_ready_count"], 0)
             self.assertEqual(cross_review["ocr_fact_candidate_owner_decision_preview_blocking_count"], 3)
+            self.assertEqual(cross_review["ocr_fact_candidate_owner_decision_progress_summary_count"], 4)
+            self.assertEqual(cross_review["ocr_fact_candidate_owner_decision_progress_summary_candidate_count"], 3)
+            self.assertEqual(cross_review["ocr_fact_candidate_owner_decision_progress_summary_ready_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_candidate_owner_decision_progress_summary_blocking_count"], 3)
+            self.assertEqual(cross_review["ocr_fact_candidate_owner_decision_progress_summary_missing_manifest_count"], 3)
             self.assertEqual(cross_review["ocr_fact_candidate_owner_authorization_update_draft_count"], 0)
             self.assertEqual(cross_review["ocr_fact_candidate_owner_authorization_update_preview_count"], 3)
             self.assertEqual(cross_review["ocr_fact_candidate_owner_authorization_update_preview_ready_count"], 0)
