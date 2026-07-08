@@ -2103,6 +2103,90 @@ def build_goal_completion_audit_rows(cross_review: dict) -> list[dict]:
     ]
 
 
+def evidence_cross_review_resolution_plan_row(
+    run_id: str,
+    index: int,
+    evidence_area: str,
+    source_artifact: str,
+    blocker_count: int,
+    ready_count: int,
+    resolution_status: str,
+    required_owner_action: str,
+    authorization_manifest_relative_path: str,
+    next_action: str,
+) -> dict:
+    return {
+        "evidence_resolution_plan_id": f"EVIDPLAN-{run_id}-{index:05d}",
+        "evidence_area": evidence_area,
+        "source_artifact": source_artifact,
+        "blocker_count": str(blocker_count),
+        "ready_count": str(ready_count),
+        "resolution_status": resolution_status,
+        "priority": "P0" if blocker_count > 0 else "P2",
+        "required_owner_action": required_owner_action,
+        "authorization_manifest_relative_path": authorization_manifest_relative_path,
+        "automation_safe": "false",
+        "source_mutation_allowed": "false",
+        "fact_promotion_allowed": "false",
+        "fund_ledger_write_allowed": "false",
+        "management_conclusion_allowed": "false",
+        "next_action": next_action,
+    }
+
+
+def build_evidence_cross_review_resolution_plan_rows(manifest: dict, cross_review: dict) -> list[dict]:
+    run_id = manifest["run_id"]
+    candidates = [
+        (
+            "screenshot_ocr_coverage",
+            "screenshot_ocr_coverage.csv",
+            int(cross_review.get("screenshot_ocr_missing_count") or 0),
+            int(cross_review.get("screenshot_ocr_ready_count") or 0),
+            "blocked_missing_ocr_sidecars",
+            "run_or_attach_reviewed_ocr_sidecars",
+            "",
+            "Run bounded OCR sidecar generation or attach reviewed OCR sidecars before fact review.",
+        ),
+        (
+            "ocr_fact_ledger_staging",
+            "ocr_fact_ledger_staging_preview.csv",
+            int(cross_review.get("ocr_fact_ledger_staging_preview_blocked_count") or 0),
+            int(cross_review.get("ocr_fact_ledger_staging_preview_ready_count") or 0),
+            "blocked_ocr_fact_owner_review_required",
+            "review_ocr_fact_candidates_and_authorize_validation_only",
+            ocr_fact_review_authorization_relative_path(run_id),
+            "Review OCR fact candidates by metric and provide validation-only coverage before any future promotion gate.",
+        ),
+        (
+            "chat_value_candidates",
+            "chat_value_candidates.csv",
+            int(cross_review.get("chat_value_candidate_count") or 0),
+            0,
+            "blocked_chat_value_review_required",
+            "review_chat_values_and_link_to_evidence",
+            fact_promotion_authorization_relative_path(run_id),
+            "Review chat value candidates, link them to source evidence, then include only reviewed rows in owner authorization.",
+        ),
+        (
+            "attachment_evidence_integrity",
+            "attachment_evidence_reconciliation.csv",
+            int(cross_review.get("attachment_reconciliation_blocking_count") or 0),
+            int(cross_review.get("attachment_reconciliation_linked_count") or 0),
+            "blocked_attachment_evidence_repair_required",
+            "resolve_attachment_reconciliation_blockers",
+            attachment_repair_authorization_relative_path(run_id),
+            "Resolve missing attachment outputs or evidence links through the attachment repair authorization gate.",
+        ),
+    ]
+    rows: list[dict] = []
+    for candidate in candidates:
+        blocker_count = candidate[2]
+        if blocker_count <= 0:
+            continue
+        rows.append(evidence_cross_review_resolution_plan_row(run_id, len(rows) + 1, *candidate))
+    return rows
+
+
 def management_conclusion_gate_row(
     gate_area: str,
     gate_status: str,
@@ -5105,6 +5189,38 @@ def write_no_hallucination_outputs(
         "status": manifest["status"],
         "reason": "No amount was generated or inferred before OCR/table extraction and review gates.",
     }
+    evidence_cross_review_resolution_plan_rows = build_evidence_cross_review_resolution_plan_rows(
+        manifest,
+        cross_review,
+    )
+    evidence_cross_review_resolution_plan_blocker_count = sum(
+        int(row["blocker_count"]) for row in evidence_cross_review_resolution_plan_rows
+    )
+    manifest["evidence_cross_review_resolution_plan_count"] = len(evidence_cross_review_resolution_plan_rows)
+    manifest["evidence_cross_review_resolution_plan_blocker_count"] = (
+        evidence_cross_review_resolution_plan_blocker_count
+    )
+    cross_review["evidence_cross_review_resolution_plan_count"] = len(evidence_cross_review_resolution_plan_rows)
+    cross_review["evidence_cross_review_resolution_plan_blocker_count"] = (
+        evidence_cross_review_resolution_plan_blocker_count
+    )
+    write_csv(run_dir / "evidence_cross_review_resolution_plan.csv", [
+        "evidence_resolution_plan_id",
+        "evidence_area",
+        "source_artifact",
+        "blocker_count",
+        "ready_count",
+        "resolution_status",
+        "priority",
+        "required_owner_action",
+        "authorization_manifest_relative_path",
+        "automation_safe",
+        "source_mutation_allowed",
+        "fact_promotion_allowed",
+        "fund_ledger_write_allowed",
+        "management_conclusion_allowed",
+        "next_action",
+    ], evidence_cross_review_resolution_plan_rows)
     goal_completion_audit_rows = build_goal_completion_audit_rows(cross_review)
     goal_completion_blocking_count = sum(1 for row in goal_completion_audit_rows if row["blocking"] == "true")
     manifest["goal_completion_audit_check_count"] = len(goal_completion_audit_rows)

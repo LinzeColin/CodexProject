@@ -579,6 +579,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "kmfa_metadata_signals.csv",
                 "automation_readiness.csv",
                 "goal_completion_audit.csv",
+                "evidence_cross_review_resolution_plan.csv",
                 "management_conclusion_gate.csv",
                 "owner_action_queue.csv",
                 "fact_promotion_review_packet.csv",
@@ -627,6 +628,18 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertFalse(cross_review["management_conclusion_allowed"])
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertEqual(cross_review["screenshot_ocr_missing_count"], 1)
+
+            with (run_dir / "evidence_cross_review_resolution_plan.csv").open(encoding="utf-8-sig", newline="") as f:
+                evidence_plan_rows = list(csv.DictReader(f))
+            self.assertEqual(len(evidence_plan_rows), 1)
+            self.assertEqual(evidence_plan_rows[0]["evidence_area"], "screenshot_ocr_coverage")
+            self.assertEqual(evidence_plan_rows[0]["source_artifact"], "screenshot_ocr_coverage.csv")
+            self.assertEqual(evidence_plan_rows[0]["blocker_count"], "1")
+            self.assertEqual(evidence_plan_rows[0]["resolution_status"], "blocked_missing_ocr_sidecars")
+            self.assertEqual(evidence_plan_rows[0]["required_owner_action"], "run_or_attach_reviewed_ocr_sidecars")
+            self.assertEqual(evidence_plan_rows[0]["management_conclusion_allowed"], "false")
+            self.assertEqual(cross_review["evidence_cross_review_resolution_plan_count"], 1)
+            self.assertEqual(cross_review["evidence_cross_review_resolution_plan_blocker_count"], 1)
 
             with (run_dir / "goal_completion_audit.csv").open(encoding="utf-8-sig", newline="") as f:
                 audit_rows = list(csv.DictReader(f))
@@ -3789,6 +3802,12 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["management_conclusion_release_authorization_preview_count"], 1)
             self.assertEqual(cross_review["management_conclusion_release_authorization_preview_ready_count"], 0)
             self.assertEqual(cross_review["management_conclusion_release_authorization_preview_blocked_count"], 1)
+
+            with (run_dir / "evidence_cross_review_resolution_plan.csv").open(encoding="utf-8-sig", newline="") as f:
+                evidence_plan_rows = list(csv.DictReader(f))
+            self.assertEqual(evidence_plan_rows, [])
+            self.assertEqual(cross_review["evidence_cross_review_resolution_plan_count"], 0)
+            self.assertEqual(cross_review["evidence_cross_review_resolution_plan_blocker_count"], 0)
 
             workbook_path = run_dir / "资金与税费管理母版_structured_csv_test.xlsx"
             with zipfile.ZipFile(workbook_path) as workbook:
