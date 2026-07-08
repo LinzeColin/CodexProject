@@ -1,7 +1,7 @@
 Use `$fund-weekly-analysis-skill`.
 
-Run KMFA资金与税费管理周报自动化 at local Sydney time 11:00 every Monday and Saturday.
-Reference only: 11:00 Australia/Sydney equals 09:00 Asia/Shanghai during the current UTC+10 offset.
+Run KMFA资金与税费管理周报自动化 at local Sydney time 11:30 every day.
+Reference only: 11:30 Australia/Sydney equals 09:30 Asia/Shanghai during the current UTC+10 offset.
 
 统一工作区规则：本 automation 与上游每日钉钉DWS归档、考勤检查、钉钉工作检查使用同一组 Codex cwds（干净显示入口）：
 - DWS 归档 alias：`/Users/linzezhang/Documents/Codex/workspaces/dws-kmfa-automation/dws-archive` -> 真实目录 `/Users/linzezhang/Documents/Codex/2026-07-04/392b1a986ba680338068ddc1c2a0fd0e-https-app-notion-com-p`
