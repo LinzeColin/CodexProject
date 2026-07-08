@@ -34,6 +34,8 @@ OUTPUT_FIELDS = [
     "owner_authorization_decision",
     "owner_corrected_company",
     "owner_corrected_bank",
+    "owner_review_completion_status",
+    "missing_owner_fields_current",
     "required_owner_fields",
     "owner_note",
     "fund_ledger_write_allowed",
@@ -90,6 +92,14 @@ def required_owner_fields(row: dict) -> str:
     return ",".join(missing)
 
 
+def review_completion_status(owner_decision: str, missing_fields: str) -> str:
+    if missing_fields:
+        return "blocked_missing_owner_values"
+    if owner_decision != "approve_for_review_authorization":
+        return "blocked_owner_decision_not_approved"
+    return "ready_for_private_owner_decision_manifest_no_write"
+
+
 def select_rows(rows: list[dict], metrics: list[str], limit_per_metric: int) -> list[dict]:
     if not metrics:
         selected = rows
@@ -104,6 +114,8 @@ def select_rows(rows: list[dict], metrics: list[str], limit_per_metric: int) -> 
 def build_review_rows(run_id: str, selected_rows: list[dict]) -> list[dict]:
     output_rows: list[dict] = []
     for row in selected_rows:
+        owner_decision = "pending_owner_review"
+        missing_fields = required_owner_fields(row)
         output_rows.append({
             "review_batch_row_id": f"OCROWNERREVIEWCSV-{run_id}-{len(output_rows) + 1:05d}",
             "owner_worklist_id": row.get("owner_worklist_id", ""),
@@ -121,10 +133,12 @@ def build_review_rows(run_id: str, selected_rows: list[dict]) -> list[dict]:
             "proposed_amount_role": row.get("proposed_amount_role", ""),
             "proposed_liquidity_tier": row.get("proposed_liquidity_tier", ""),
             "proposed_flow_type": row.get("proposed_flow_type", ""),
-            "owner_authorization_decision": "pending_owner_review",
+            "owner_authorization_decision": owner_decision,
             "owner_corrected_company": "",
             "owner_corrected_bank": "",
-            "required_owner_fields": required_owner_fields(row),
+            "owner_review_completion_status": review_completion_status(owner_decision, missing_fields),
+            "missing_owner_fields_current": missing_fields,
+            "required_owner_fields": missing_fields,
             "owner_note": "",
             "fund_ledger_write_allowed": "false",
             "financial_fact_promoted": "false",
