@@ -277,6 +277,36 @@ def write_csv(path: Path, fieldnames: list[str], rows: list[dict] | None = None)
             writer.writerows(rows)
 
 
+def read_jsonl(path: Path) -> list[dict]:
+    if not path.exists():
+        return []
+    rows = []
+    with path.open(encoding="utf-8") as f:
+        for line_number, line in enumerate(f, 1):
+            stripped = line.strip()
+            if not stripped:
+                continue
+            try:
+                item = json.loads(stripped)
+            except json.JSONDecodeError as exc:
+                raise ValueError(f"invalid JSONL at {path}:{line_number}: {exc}") from exc
+            if isinstance(item, dict):
+                rows.append(item)
+    return rows
+
+
+def read_json_object(path: Path) -> dict | None:
+    if not path.exists():
+        return None
+    with path.open(encoding="utf-8") as f:
+        item = json.load(f)
+    return item if isinstance(item, dict) else None
+
+
+def bool_text(value: bool) -> str:
+    return "true" if value else "false"
+
+
 def money(value: str | None) -> Decimal:
     cleaned = (value or "").strip().replace(",", "")
     if cleaned == "":
@@ -426,6 +456,156 @@ def replace_xlsx_entries(workbook_path: Path, replacements: dict[str, bytes]) ->
             payload = replacements.get(info.filename)
             target.writestr(info, payload if payload is not None else source.read(info.filename))
     temp_path.replace(workbook_path)
+
+
+def metadata_formal_action_allowed(row: dict) -> bool:
+    allowed_keys = (
+        "formal_report_allowed",
+        "formal_calculation_allowed",
+        "formal_report_rerun_allowed",
+        "business_decision_basis_allowed",
+        "bank_operation_allowed",
+        "payment_approval_allowed",
+        "loan_management_action_allowed",
+        "action_allowed",
+    )
+    return any(row.get(key) is True for key in allowed_keys)
+
+
+def metadata_signal_row(
+    run_id: str,
+    index: int,
+    signal_type: str,
+    source_path_text: str,
+    source_ref: str,
+    stage_phase: str,
+    status: str,
+    severity: str,
+    report_grade: str,
+    formal_action_allowed: bool,
+    remark: str,
+) -> dict:
+    return {
+        "signal_id": f"META-{run_id}-{index:05d}",
+        "signal_type": signal_type,
+        "source_path": source_path_text,
+        "source_ref": source_ref,
+        "stage_phase": stage_phase,
+        "status": status,
+        "severity": severity,
+        "report_grade": report_grade,
+        "formal_action_allowed": bool_text(formal_action_allowed),
+        "review_status": "kmfa_metadata_pending_review",
+        "remark": remark,
+    }
+
+
+def collect_kmfa_metadata_signals(repo_root: Path, run_id: str) -> list[dict]:
+    signals: list[dict] = []
+
+    def rel(path: Path) -> str:
+        return str(path.relative_to(repo_root))
+
+    def add_signal(
+        signal_type: str,
+        path: Path,
+        source_ref: str,
+        stage_phase: str,
+        status: str,
+        report_grade: str,
+        source_formal_action_allowed: bool,
+        remark: str,
+    ) -> None:
+        formal_action_allowed = False
+        severity = "blocking_for_management_conclusion"
+        if source_formal_action_allowed:
+            remark = f"{remark}; source_formal_action_allowed=true; s21_review_gate=false"
+        signals.append(metadata_signal_row(
+            run_id,
+            len(signals) + 1,
+            signal_type,
+            rel(path),
+            source_ref,
+            stage_phase,
+            status,
+            severity,
+            report_grade,
+            formal_action_allowed,
+            remark,
+        ))
+
+    reports_dir = repo_root / "KMFA" / "metadata" / "reports"
+    lineage_dir = repo_root / "KMFA" / "metadata" / "lineage"
+    quality_dir = repo_root / "KMFA" / "metadata" / "quality"
+
+    cash_path = reports_dir / "fund_cash_pressure_signals.jsonl"
+    for row in read_jsonl(cash_path):
+        add_signal(
+            row.get("record_type", "cash_pressure_signal"),
+            cash_path,
+            f"{rel(cash_path)}#{row.get('pressure_window', '')}",
+            row.get("stage_phase", ""),
+            row.get("pressure_level", ""),
+            row.get("report_grade_visible", ""),
+            metadata_formal_action_allowed(row),
+            row.get("status_label", row.get("visible_window", "")),
+        )
+
+    fact_manifest_path = reports_dir / "project_cost_fact_layer_manifest.json"
+    fact_manifest = read_json_object(fact_manifest_path)
+    if fact_manifest:
+        formal_allowed = bool((fact_manifest.get("quality_gate") or {}).get("formal_report_allowed"))
+        add_signal(
+            fact_manifest.get("record_type", "project_cost_fact_layer_manifest"),
+            fact_manifest_path,
+            rel(fact_manifest_path),
+            fact_manifest.get("stage_phase", ""),
+            fact_manifest.get("fact_layer_status", ""),
+            "",
+            formal_allowed,
+            "required_metrics=" + ",".join(fact_manifest.get("required_fact_metrics", [])),
+        )
+
+    fact_records_path = lineage_dir / "project_cost_fact_records.jsonl"
+    for row in read_jsonl(fact_records_path):
+        add_signal(
+            row.get("record_type", "project_cost_fact_record"),
+            fact_records_path,
+            f"{rel(fact_records_path)}#{row.get('fact_record_id', '')}",
+            row.get("stage_phase", ""),
+            row.get("calculation_status", ""),
+            "",
+            metadata_formal_action_allowed(row),
+            row.get("project_entity_ref", row.get("fact_record_id", "")),
+        )
+
+    report_grade_path = reports_dir / "report_grade_runtime_records.jsonl"
+    for row in read_jsonl(report_grade_path):
+        add_signal(
+            row.get("record_type", "report_grade_runtime_record"),
+            report_grade_path,
+            f"{rel(report_grade_path)}#{row.get('report_record_id', '')}",
+            row.get("stage_phase", ""),
+            row.get("release_permission", ""),
+            row.get("computed_report_grade", ""),
+            metadata_formal_action_allowed(row),
+            row.get("report_record_id", ""),
+        )
+
+    reconciliation_path = quality_dir / "scope_reconciliation_records.jsonl"
+    for row in read_jsonl(reconciliation_path):
+        add_signal(
+            row.get("record_type", "scope_reconciliation_record"),
+            reconciliation_path,
+            f"{rel(reconciliation_path)}#{row.get('difference_id', '')}",
+            row.get("stage_phase", ""),
+            row.get("resolution_status", ""),
+            "",
+            metadata_formal_action_allowed(row),
+            row.get("impact_scope", row.get("difference_id", "")),
+        )
+
+    return signals
 
 
 def balance_summary_from_fund_rows(fund_rows: list[dict], date: str | None = None) -> dict[str, Decimal]:
@@ -735,6 +915,45 @@ def write_structured_facts_to_workbook(workbook_path: Path, structured: dict, ev
     replace_xlsx_entries(workbook_path, replacements)
 
 
+def write_metadata_signals_to_workbook(workbook_path: Path, metadata_signals: list[dict], existing_h02_rows: int) -> None:
+    if not metadata_signals:
+        return
+
+    replacements: dict[str, bytes] = {}
+    with zipfile.ZipFile(workbook_path, "r") as workbook:
+        sheet4 = ET.fromstring(workbook.read("xl/worksheets/sheet4.xml"))
+        if existing_h02_rows == 0:
+            set_text_cell(sheet4, "A4", f"KMFA元数据风险信号\n{len(metadata_signals)}条\npublic-safe metadata｜待复核")
+            set_text_cell(sheet4, "D4", "报告等级\nD/blocked\n不可作为正式经营结论")
+            set_text_cell(sheet4, "G4", "项目成本/资金压力\n待复核\n需结合真实付款请示群证据")
+            set_text_cell(sheet4, "J4", "操作边界\n禁止银行/付款/贷款动作\nmetadata signal only")
+        replacements["xl/worksheets/sheet4.xml"] = serialize_sheet(sheet4)
+
+        sheet8 = ET.fromstring(workbook.read("xl/worksheets/sheet8.xml"))
+        if existing_h02_rows == 0:
+            clear_rows_from(sheet8, 4)
+        h02_rows = []
+        for row in metadata_signals:
+            h02_rows.append([
+                ("text", row["signal_id"]),
+                ("text", row["signal_type"]),
+                ("text", row["severity"]),
+                ("text", ""),
+                ("text", "KMFA metadata"),
+                ("text", ""),
+                ("text", "财务负责人"),
+                ("text", row["source_ref"]),
+                ("text", row["signal_id"]),
+                ("text", "复核 KMFA metadata 信号并绑定真实付款请示群证据后再进入管理结论"),
+                ("text", row["review_status"]),
+                ("text", f"status={row['status']}; grade={row['report_grade']}; {row['remark']}"),
+            ])
+        write_table_rows(sheet8, 4 + existing_h02_rows, h02_rows)
+        replacements["xl/worksheets/sheet8.xml"] = serialize_sheet(sheet8)
+
+    replace_xlsx_entries(workbook_path, replacements)
+
+
 def extract_structured_csv_facts(manifest: dict, input_dir: Path, evidence: list[dict]) -> dict:
     evidence_by_path = {row["relative_path"]: row["evidence_id"] for row in evidence}
     evidence_by_id = {row["evidence_id"]: row for row in evidence}
@@ -861,9 +1080,11 @@ def build_company_bank_matrix_rows(fund_rows: list[dict]) -> list[dict]:
     ]
 
 
-def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Path) -> None:
+def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Path, repo_root: Path) -> None:
     evidence = write_evidence_index_stub(manifest, run_dir)
     structured = extract_structured_csv_facts(manifest, input_dir, evidence)
+    metadata_signals = collect_kmfa_metadata_signals(repo_root, manifest["run_id"])
+    manifest["metadata_signal_count"] = len(metadata_signals)
     if structured["fund_rows"]:
         manifest["status"] = "STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW"
         manifest["structured_fact_count"] = len(structured["fund_rows"])
@@ -883,6 +1104,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     workbook_path = run_dir / f"资金与税费管理母版_{manifest['run_id']}.xlsx"
     shutil.copyfile(template, workbook_path)
     write_structured_facts_to_workbook(workbook_path, structured, evidence, input_dir)
+    write_metadata_signals_to_workbook(workbook_path, metadata_signals, len(structured["risk_rows"]))
 
     write_csv(run_dir / "fund_ledger.csv", [
         "ledger_id",
@@ -926,6 +1148,19 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "source_evidence_id",
         "review_status",
     ], structured["risk_rows"])
+    write_csv(run_dir / "kmfa_metadata_signals.csv", [
+        "signal_id",
+        "signal_type",
+        "source_path",
+        "source_ref",
+        "stage_phase",
+        "status",
+        "severity",
+        "report_grade",
+        "formal_action_allowed",
+        "review_status",
+        "remark",
+    ], metadata_signals)
     write_csv(
         run_dir / "exception_tasks.csv",
         ["task_id", "evidence_id", "task_type", "severity", "reason", "relative_path", "review_status"],
@@ -948,6 +1183,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "management_conclusion_allowed": False,
         "generated_financial_amount_count": 0,
         "structured_financial_fact_count": len(structured["fund_rows"]),
+        "metadata_signal_count": len(metadata_signals),
         "excel_workbook_generated": True,
         "workbook": workbook_path.name,
         "source_file_count": manifest["file_count"],
@@ -967,6 +1203,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "event": "no_hallucination_outputs_written",
                 "generated_financial_amount_count": 0,
                 "structured_financial_fact_count": len(structured["fund_rows"]),
+                "metadata_signal_count": len(metadata_signals),
                 "management_conclusion_allowed": False,
             },
         ], ensure_ascii=False, indent=2),
@@ -1061,13 +1298,14 @@ def main() -> int:
         write_source_unreadable_artifacts(manifest, run_dir)
         print(json.dumps({"run_id": run_id, "run_dir": str(run_dir), "status": "SOURCE_UNREADABLE", "unreadable_count": manifest["unreadable_count"]}, ensure_ascii=False))
         return 5
-    write_no_hallucination_outputs(manifest, run_dir, input_dir)
+    write_no_hallucination_outputs(manifest, run_dir, input_dir, repo_root)
     (run_dir / "run_manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
     (run_dir / "run_summary.md").write_text(
         f"# Fund weekly analysis run {run_id}\n\n"
         f"Status: {manifest['status']}\n\n"
         f"Indexed {manifest['file_count']} real source files and generated a native editable Excel workbook from the current mother template.\n\n"
         f"Structured financial fact count: {manifest.get('structured_fact_count', 0)}\n\n"
+        f"KMFA metadata signal count: {manifest.get('metadata_signal_count', 0)}\n\n"
         "No financial amount, management conclusion, or forecast was generated from unreviewed OCR/table extraction. "
         "Next step: perform OCR/table extraction, internal-transfer netting, cross-review, then promote reviewed facts only.\n",
         encoding="utf-8",

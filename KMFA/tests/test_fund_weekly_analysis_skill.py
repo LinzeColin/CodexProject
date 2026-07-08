@@ -389,6 +389,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "net_flow_ledger.csv",
                 "company_bank_matrix.csv",
                 "tax_loan_risk.csv",
+                "kmfa_metadata_signals.csv",
                 "exception_tasks.csv",
                 "cross_review.json",
                 "audit_log.json",
@@ -517,6 +518,135 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 self.assertEqual(
                     xlsx_cell_text(workbook, "xl/worksheets/sheet9.xml", "K4"),
                     "structured_csv_extracted_pending_review",
+                )
+
+    def test_runner_carries_kmfa_metadata_signals_without_management_conclusion(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+            source_day = input_dir / "files" / "0708"
+            source_day.mkdir(parents=True)
+            (source_day / "20260708113000_杨婷_资金截图.png").write_bytes(b"real-image-bytes")
+
+            reports_dir = repo_root / "KMFA/metadata/reports"
+            lineage_dir = repo_root / "KMFA/metadata/lineage"
+            quality_dir = repo_root / "KMFA/metadata/quality"
+            reports_dir.mkdir(parents=True)
+            lineage_dir.mkdir(parents=True)
+            quality_dir.mkdir(parents=True)
+            (reports_dir / "fund_cash_pressure_signals.jsonl").write_text(
+                json.dumps({
+                    "record_type": "cash_pressure_signal",
+                    "pressure_level": "blocked",
+                    "pressure_window": "twelve_week",
+                    "visible_window": "12周",
+                    "status_label": "缺 lineage full check 时不输出正式资金结论",
+                    "report_grade_visible": "D",
+                    "formal_report_allowed": False,
+                    "bank_operation_allowed": False,
+                    "stage_phase": "S14-P1",
+                    "source_lane_refs": ["account_list", "fund_plan"],
+                }, ensure_ascii=False)
+                + "\n",
+                encoding="utf-8",
+            )
+            (reports_dir / "project_cost_fact_layer_manifest.json").write_text(
+                json.dumps({
+                    "record_type": "project_cost_fact_layer_manifest",
+                    "fact_layer_status": "structural_fact_layer_blocked_for_formal_calculation",
+                    "stage_phase": "S09-P1",
+                    "quality_gate": {"formal_report_allowed": False},
+                    "required_fact_metrics": ["revenue", "cost_total"],
+                }, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            (lineage_dir / "project_cost_fact_records.jsonl").write_text(
+                json.dumps({
+                    "record_type": "project_cost_fact_record",
+                    "fact_record_id": "PCF-S09P1-001",
+                    "calculation_status": "blocked_pending_quality_resolution",
+                    "formal_calculation_allowed": False,
+                    "project_entity_ref": "entity_ref://KMFA/S08-P2/project/001",
+                    "stage_phase": "S09-P1",
+                }, ensure_ascii=False)
+                + "\n",
+                encoding="utf-8",
+            )
+            (reports_dir / "report_grade_runtime_records.jsonl").write_text(
+                json.dumps({
+                    "record_type": "report_grade_runtime_record",
+                    "report_record_id": "S10P2-GRADE-BUSINESS-OVERVIEW-REPORT",
+                    "computed_report_grade": "D",
+                    "release_permission": "blocked_decision_use",
+                    "formal_report_allowed": True,
+                    "business_decision_basis_allowed": True,
+                    "stage_phase": "S10-P2",
+                }, ensure_ascii=False)
+                + "\n",
+                encoding="utf-8",
+            )
+            (quality_dir / "scope_reconciliation_records.jsonl").write_text(
+                json.dumps({
+                    "record_type": "scope_reconciliation_record",
+                    "difference_id": "S09P3-REC-001",
+                    "resolution_status": "pending_owner_or_authorized_review",
+                    "formal_report_rerun_allowed": False,
+                    "impact_scope": "project_margin_formal_report_blocked_until_reconciled",
+                    "stage_phase": "S09-P3",
+                }, ensure_ascii=False)
+                + "\n",
+                encoding="utf-8",
+            )
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "run_fund_weekly_analysis.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--input-dir",
+                    str(input_dir),
+                    "--run-id",
+                    "metadata_signal_test",
+                    "--timezone",
+                    "Australia/Sydney",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/metadata_signal_test"
+            manifest = json.loads((run_dir / "run_manifest.json").read_text(encoding="utf-8"))
+            self.assertEqual(manifest["status"], "INDEXED_PENDING_EXTRACTION")
+            self.assertEqual(manifest["metadata_signal_count"], 5)
+
+            with (run_dir / "kmfa_metadata_signals.csv").open(encoding="utf-8-sig", newline="") as f:
+                metadata_rows = list(csv.DictReader(f))
+            self.assertEqual(len(metadata_rows), 5)
+            self.assertEqual(metadata_rows[0]["signal_type"], "cash_pressure_signal")
+            self.assertEqual(metadata_rows[0]["status"], "blocked")
+            self.assertEqual(metadata_rows[1]["signal_type"], "project_cost_fact_layer_manifest")
+            self.assertTrue(all(row["formal_action_allowed"] == "false" for row in metadata_rows))
+            self.assertTrue(all(row["review_status"] == "kmfa_metadata_pending_review" for row in metadata_rows))
+            self.assertIn("s21_review_gate=false", metadata_rows[3]["remark"])
+
+            cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
+            self.assertFalse(cross_review["management_conclusion_allowed"])
+            self.assertEqual(cross_review["metadata_signal_count"], 5)
+
+            workbook_path = run_dir / "资金与税费管理母版_metadata_signal_test.xlsx"
+            with zipfile.ZipFile(workbook_path) as workbook:
+                self.assertIn("KMFA元数据风险信号", xlsx_cell_text(workbook, "xl/worksheets/sheet4.xml", "A4"))
+                self.assertIn("5条", xlsx_cell_text(workbook, "xl/worksheets/sheet4.xml", "A4"))
+                self.assertEqual(
+                    xlsx_cell_text(workbook, "xl/worksheets/sheet8.xml", "A4"),
+                    "META-metadata_signal_test-00001",
+                )
+                self.assertEqual(
+                    xlsx_cell_text(workbook, "xl/worksheets/sheet8.xml", "K4"),
+                    "kmfa_metadata_pending_review",
                 )
 
     def test_runner_fails_closed_when_input_file_is_unreadable(self) -> None:
