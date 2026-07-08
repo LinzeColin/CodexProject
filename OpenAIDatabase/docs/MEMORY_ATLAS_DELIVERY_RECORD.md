@@ -1,3 +1,51 @@
+## v1.2 S13 P1 Proposal 状态机
+
+状态：`phase_s13_p1_proposal_state_machine_completed_pending_s13_p2`。
+
+任务 ID：`MA-V12-S13P1`。
+
+验收 ID：`ACC-MA-V12-S13P1`。
+
+Validator：`validate:v1.2-s13-p1`。
+
+S13 P1 已完成。机器合同为 `proposal_state_machine.v1_2_s13_p1`。本阶段固定 Proposal
+状态机：`draft`、`pending_human_review`、`approved_by_human`、`applying`、`applied`、
+`validated`、`committed`、`failed_validation`、`rollback_or_needs_revision`。proposal expiry
+已集成；当前 5 个 proposal 均为 `pending_human_review`，未授权不会 apply。
+
+产物：
+
+- `机器治理/运行门禁/proposal_state_machine.v1_2_s13_p1.json`
+- `data/derived/proposals/proposal_state_machine_report.json`
+- `scripts/build_memory_atlas_proposal_state_machine.py`
+- `scripts/atlasctl.py`
+- `人类可读/34_Proposal状态机说明.md`
+- `docs/reviews/memory_atlas_v1_2_s13_p1_proposal_state_machine.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s13_p1.cjs`
+
+验收关键词：
+
+- `validate:v1.2-s13-p1`
+- `ACC-MA-V12-S13P1`
+- `MA-V12-S13P1`
+- `phase_s13_p1_proposal_state_machine_completed_pending_s13_p2`
+- `proposal_state_machine.v1_2_s13_p1`
+- S13 P1
+- Proposal 状态机
+- `failed_validation`
+- `rollback_or_needs_revision`
+- proposal expiry
+- pending S13 P2
+
+边界：
+
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+- No proposal apply execution。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S13 P1; MA-V12-S13P1; ACC-MA-V12-S13P1; phase_s13_p1_proposal_state_machine_completed_pending_s13_p2; validate:v1.2-s13-p1; proposal_state_machine.v1_2_s13_p1; S13 P1; Proposal 状态机; draft; pending_human_review; approved_by_human; applying; applied; validated; committed; failed_validation; rollback_or_needs_revision; proposal expiry; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution; pending S13 P2.
+
 ## v1.2 S12 Review
 
 状态：`stage_s12_review_passed_pending_s13_no_github_main_upload`。

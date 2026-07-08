@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S13 P1 Proposal State Machine
+
+- Added `proposal_state_machine.v1_2_s13_p1` for `MA-V12-S13P1` /
+  `ACC-MA-V12-S13P1`.
+- Registered status
+  `phase_s13_p1_proposal_state_machine_completed_pending_s13_p2`.
+- Added `scripts/build_memory_atlas_proposal_state_machine.py`.
+- Added `data/derived/proposals/proposal_state_machine_report.json`.
+- Added `atlasctl.py proposals --dry-run` as a no-write/no-apply state-machine
+  contract.
+- Added `validate:v1.2-s13-p1`.
+- Confirmed Proposal 状态机 states: `draft`, `pending_human_review`,
+  `approved_by_human`, `applying`, `applied`, `validated`, `committed`,
+  `failed_validation` and `rollback_or_needs_revision`.
+- Integrated proposal expiry while keeping current phase no-apply.
+- Preserved S13 P1 boundaries: No GitHub main upload, No remote push,
+  No raw mutation and No proposal apply execution.
+- Marked the next gate as pending S13 P2.
+
 ## Unreleased - Memory Atlas v1.2 S12 Review
 
 - Added `docs/reviews/memory_atlas_v1_2_s12_review.md`.

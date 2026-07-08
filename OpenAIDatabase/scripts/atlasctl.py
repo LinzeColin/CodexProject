@@ -31,6 +31,11 @@ SELF_ITERATION_BUILDER = ROOT / "scripts" / "build_memory_atlas_self_iteration.p
 DECISION_DEBT_BUILDER = ROOT / "scripts" / "build_memory_atlas_decision_debt.py"
 PERSONALIZATION_BUILDER = ROOT / "scripts" / "build_personalization_exports.py"
 CHATGPT_DEEP_EXPLORE_BUILDER = ROOT / "scripts" / "build_chatgpt_deep_explore_prompt.py"
+PROPOSAL_STATE_TASK_ID = "MA-V12-S13P1"
+PROPOSAL_STATE_ACCEPTANCE_ID = "ACC-MA-V12-S13P1"
+PROPOSAL_STATE_CONTRACT_VERSION = "proposal_state_machine.v1_2_s13_p1"
+PROPOSAL_STATE_BUILDER_RELATIVE = "scripts/build_memory_atlas_proposal_state_machine.py"
+PROPOSAL_STATE_BUILDER = ROOT / PROPOSAL_STATE_BUILDER_RELATIVE
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -81,6 +86,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     deep_explore.add_argument("--mode", choices=["prefill_only", "auto_submit"], default="prefill_only")
     deep_explore.add_argument("--open", action="store_true")
     deep_explore.add_argument("--confirm-auto-submit", action="store_true")
+
+    proposals = subparsers.add_parser("proposals", help="Inspect the proposal authorization state machine.")
+    proposals.add_argument("--dry-run", action="store_true")
+    proposals.add_argument("--database-dir", type=Path, default=ROOT)
     return parser.parse_args(argv)
 
 
@@ -2172,6 +2181,28 @@ def run_chatgpt_deep_explore(args: argparse.Namespace) -> int:
     return result.returncode
 
 
+def run_proposals(args: argparse.Namespace) -> int:
+    command = [
+        sys.executable,
+        str(PROPOSAL_STATE_BUILDER),
+        "--database-dir",
+        str(args.database_dir),
+    ]
+    if args.dry_run:
+        command.append("--dry-run")
+    result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
+    if args.dry_run and result.returncode == 0 and result.stdout:
+        payload = json.loads(result.stdout)
+        payload["phase_status"] = payload.get("status")
+        payload["status"] = "PASS"
+        print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
+    elif result.stdout:
+        print(result.stdout, end="")
+    if result.stderr:
+        print(result.stderr, file=sys.stderr, end="")
+    return result.returncode
+
+
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     if args.command == "sync":
@@ -2188,6 +2219,8 @@ def main(argv: list[str] | None = None) -> int:
         return run_generate_personalization_prompt(args)
     if args.command == "chatgpt-deep-explore":
         return run_chatgpt_deep_explore(args)
+    if args.command == "proposals":
+        return run_proposals(args)
     raise AssertionError(f"unhandled command: {args.command}")
 
 

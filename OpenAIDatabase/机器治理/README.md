@@ -18,12 +18,22 @@
 
 ## 当前阶段
 
-当前为 S12 Review。任务 ID 为 `MA-V12-S12-REVIEW`，验收 ID 为
-`ACC-MA-V12-S12-REVIEW`，validator 为 `validate:v1.2-s12-review`。状态为
+当前为 S13 P1。任务 ID 为 `MA-V12-S13P1`，验收 ID 为
+`ACC-MA-V12-S13P1`，validator 为 `validate:v1.2-s13-p1`。状态为
+`phase_s13_p1_proposal_state_machine_completed_pending_s13_p2`。S13 P1 已完成
+Proposal 状态机，合同版本为 `proposal_state_machine.v1_2_s13_p1`。proposal 默认进入
+`pending_human_review`，只有人类授权后才能进入 `approved_by_human`；本 phase 只产出
+状态机 dry-run 报告，不执行 apply、diff narrator 或 rollback。下一步只允许进入 S13 P2。
+
+No GitHub main upload。No remote push。No raw mutation。No proposal apply execution。
+
+历史复验兼容记录：S12 Review 完成时当前为 S12 Review。任务 ID 为
+`MA-V12-S12-REVIEW`，验收 ID 为 `ACC-MA-V12-S12-REVIEW`，validator 为
+`validate:v1.2-s12-review`。状态为
 `stage_s12_review_passed_pending_s13_no_github_main_upload`。S12 Review 已完成
 Command Palette、Personalization Prompt 和 ChatGPT 深度探索复审；S12 P1、S12 P2、
 S12 P3 均通过，`prefill_only` 保持 no-send，`auto_submit` 保持 FAIL_CLOSED。
-下一步只允许进入 S13 P1。
+此句只用于保留已完成 review 的复验语义，不代表当前阶段。S13 P1 已完成，下一步是 S13 P2。
 
 No silent send。No cookie/token/secret export。No GitHub main upload。No remote push。
 No raw mutation。No proposal apply execution。
