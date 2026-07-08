@@ -828,6 +828,31 @@ def build_attachment_repair_plan(manifest: dict, attachment_dry_run_rows: list[d
     return rows
 
 
+def build_attachment_repair_apply_gate(manifest: dict, attachment_repair_plan_rows: list[dict]) -> list[dict]:
+    rows: list[dict] = []
+    authorization_path = f"KMFA/metadata/fund_weekly_analysis/private_runtime/attachment_repair_authorizations/{manifest['run_id']}.json"
+    for row in attachment_repair_plan_rows:
+        rows.append({
+            "apply_gate_id": f"ATTACHGATE-{manifest['run_id']}-{len(rows) + 1:05d}",
+            "repair_plan_id": row["repair_plan_id"],
+            "remediation_id": row["remediation_id"],
+            "open_message_id": row["open_message_id"],
+            "required_command_family": row["required_command_family"],
+            "operator_authorization_required": "true",
+            "authorization_manifest_relative_path": authorization_path,
+            "operator_authorization_present": "false",
+            "apply_gate_status": "blocked_missing_operator_authorization",
+            "apply_allowed": "false",
+            "source_mutation_allowed": "false",
+            "apply_performed": "false",
+            "formal_fact_allowed": "false",
+            "gate_reason": "Controlled attachment repair apply is blocked until a separate operator authorization manifest and repair run are approved.",
+            "relative_path": row["relative_path"],
+            "review_status": "pending_operator_authorization",
+        })
+    return rows
+
+
 def read_jsonl(path: Path) -> list[dict]:
     if not path.exists():
         return []
@@ -1911,6 +1936,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     attachment_remediation_rows = build_attachment_reconciliation_remediation(manifest, attachment_reconciliation_rows)
     attachment_dry_run_rows = build_attachment_remediation_dry_run(manifest, attachment_remediation_rows)
     attachment_repair_plan_rows = build_attachment_repair_plan(manifest, attachment_dry_run_rows)
+    attachment_apply_gate_rows = build_attachment_repair_apply_gate(manifest, attachment_repair_plan_rows)
     structured = extract_structured_csv_facts(manifest, input_dir, evidence)
     funding_forecast_rows = build_funding_forecast_rows(structured)
     cashflow_validation_rows = build_cashflow_validation_rows(structured, manifest["run_id"])
@@ -1932,7 +1958,10 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     manifest["attachment_remediation_apply_allowed_count"] = sum(1 for row in attachment_dry_run_rows if row["safe_to_apply"] == "true")
     manifest["attachment_repair_plan_count"] = len(attachment_repair_plan_rows)
     manifest["attachment_repair_plan_open_count"] = sum(1 for row in attachment_repair_plan_rows if row["review_status"] == "pending_operator_action")
-    manifest["attachment_repair_apply_allowed_count"] = sum(1 for row in attachment_repair_plan_rows if row["source_mutation_allowed"] == "true")
+    manifest["attachment_repair_apply_gate_count"] = len(attachment_apply_gate_rows)
+    manifest["attachment_repair_apply_blocked_count"] = sum(1 for row in attachment_apply_gate_rows if row["apply_allowed"] == "false")
+    manifest["attachment_repair_authorization_present_count"] = sum(1 for row in attachment_apply_gate_rows if row["operator_authorization_present"] == "true")
+    manifest["attachment_repair_apply_allowed_count"] = sum(1 for row in attachment_apply_gate_rows if row["apply_allowed"] == "true")
     manifest["metadata_signal_count"] = len(metadata_signals)
     manifest["forecast_row_count"] = len(funding_forecast_rows)
     manifest["cashflow_validation_row_count"] = len(cashflow_validation_rows)
@@ -2177,6 +2206,24 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "relative_path",
         "review_status",
     ], attachment_repair_plan_rows)
+    write_csv(run_dir / "attachment_repair_apply_gate.csv", [
+        "apply_gate_id",
+        "repair_plan_id",
+        "remediation_id",
+        "open_message_id",
+        "required_command_family",
+        "operator_authorization_required",
+        "authorization_manifest_relative_path",
+        "operator_authorization_present",
+        "apply_gate_status",
+        "apply_allowed",
+        "source_mutation_allowed",
+        "apply_performed",
+        "formal_fact_allowed",
+        "gate_reason",
+        "relative_path",
+        "review_status",
+    ], attachment_apply_gate_rows)
     write_csv(run_dir / "workbook_quality_checks.csv", [
         "check_id",
         "check_name",
@@ -2320,6 +2367,9 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "attachment_remediation_apply_allowed_count": manifest["attachment_remediation_apply_allowed_count"],
         "attachment_repair_plan_count": len(attachment_repair_plan_rows),
         "attachment_repair_plan_open_count": manifest["attachment_repair_plan_open_count"],
+        "attachment_repair_apply_gate_count": manifest["attachment_repair_apply_gate_count"],
+        "attachment_repair_apply_blocked_count": manifest["attachment_repair_apply_blocked_count"],
+        "attachment_repair_authorization_present_count": manifest["attachment_repair_authorization_present_count"],
         "attachment_repair_apply_allowed_count": manifest["attachment_repair_apply_allowed_count"],
         "structured_financial_fact_count": len(structured["fund_rows"]),
         "metadata_signal_count": len(metadata_signals),
@@ -2362,6 +2412,9 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "attachment_remediation_apply_allowed_count": manifest["attachment_remediation_apply_allowed_count"],
                 "attachment_repair_plan_count": len(attachment_repair_plan_rows),
                 "attachment_repair_plan_open_count": manifest["attachment_repair_plan_open_count"],
+                "attachment_repair_apply_gate_count": manifest["attachment_repair_apply_gate_count"],
+                "attachment_repair_apply_blocked_count": manifest["attachment_repair_apply_blocked_count"],
+                "attachment_repair_authorization_present_count": manifest["attachment_repair_authorization_present_count"],
                 "attachment_repair_apply_allowed_count": manifest["attachment_repair_apply_allowed_count"],
                 "structured_financial_fact_count": len(structured["fund_rows"]),
                 "metadata_signal_count": len(metadata_signals),
@@ -2483,6 +2536,7 @@ def main() -> int:
         f"Attachment remediation open count: {manifest.get('attachment_remediation_open_count', 0)}\n\n"
         f"Attachment remediation dry-run count: {manifest.get('attachment_remediation_dry_run_count', 0)}\n\n"
         f"Attachment repair plan open count: {manifest.get('attachment_repair_plan_open_count', 0)}\n\n"
+        f"Attachment repair apply blocked count: {manifest.get('attachment_repair_apply_blocked_count', 0)}\n\n"
         f"KMFA metadata signal count: {manifest.get('metadata_signal_count', 0)}\n\n"
         f"Known due-date funding forecast row count: {manifest.get('forecast_row_count', 0)}\n\n"
         f"Cashflow validation row count: {manifest.get('cashflow_validation_row_count', 0)}\n\n"
