@@ -15,6 +15,7 @@ CHATGPT_SYNC = ROOT / "scripts" / "sync_chatgpt_memory_data.py"
 CODEX_SYNC = ROOT / "scripts" / "sync_codex_memory_data.py"
 FUTURE_AGENT_SYNC = ROOT / "scripts" / "sync_future_agent_data.py"
 BUILD_ATLAS = ROOT / "scripts" / "build_memory_atlas_data.py"
+GITHUB_BACKUP = ROOT / "scripts" / "github_backup.py"
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -31,6 +32,13 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
     build_atlas = subparsers.add_parser("build-atlas", help="Build derived Memory Atlas visualization data.")
     build_atlas.add_argument("--dry-run", action="store_true")
+
+    push = subparsers.add_parser("push", help="Prepare local GitHub backup scope.")
+    mode = push.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--dry-run", action="store_true")
+    mode.add_argument("--apply", action="store_true")
+    push.add_argument("--database-dir", type=Path, default=ROOT)
+    push.add_argument("--message", default="Memory Atlas GitHub backup snapshot")
     return parser.parse_args(argv)
 
 
@@ -147,12 +155,28 @@ def run_build_atlas(args: argparse.Namespace) -> int:
     return result.returncode
 
 
+def run_push(args: argparse.Namespace) -> int:
+    command = [sys.executable, str(GITHUB_BACKUP), "--database-dir", str(args.database_dir)]
+    if args.dry_run:
+        command.append("--dry-run")
+    if args.apply:
+        command.extend(["--apply", "--message", args.message])
+    result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
+    if result.stdout:
+        print(result.stdout, end="")
+    if result.stderr:
+        print(result.stderr, file=sys.stderr, end="")
+    return result.returncode
+
+
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     if args.command == "sync":
         return run_sync(args)
     if args.command == "build-atlas":
         return run_build_atlas(args)
+    if args.command == "push":
+        return run_push(args)
     raise AssertionError(f"unhandled command: {args.command}")
 
 

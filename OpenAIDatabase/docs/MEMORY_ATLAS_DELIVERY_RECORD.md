@@ -1,3 +1,48 @@
+## v1.2 S04 P3 GitHub Backup
+
+状态：`phase_s04_p3_github_backup_completed_pending_s04_review`。
+
+任务 ID：`MA-V12-S04P3`。
+
+验收 ID：`ACC-MA-V12-S04P3`。
+
+S04 P3 实现 Memory Atlas v1.2 的 GitHub backup 本地控制面。备份范围覆盖
+raw、derived、reports 和 run logs；dry-run 不写文件；apply 只本地 git add/commit，
+不执行远端 push。
+
+涉及文件：
+
+- `机器治理/同步与备份/github_backup_policy.v1_2_s04_p3.json`
+- `scripts/github_backup.py`
+- `scripts/atlasctl.py`
+- `人类可读/11_GitHub备份DryRun与Apply.md`
+- `docs/reviews/memory_atlas_v1_2_s04_p3_github_backup.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s04_p3.cjs`
+- `tests/test_s04p3_github_backup.py`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s04-p3`
+- `ACC-MA-V12-S04P3`
+- `MA-V12-S04P3`
+- S04 P3
+- `memory_atlas_v1_2_s04_p3_github_backup.md`
+- `github_backup_policy.v1_2_s04_p3.json`
+- `github_backup.py`
+- `atlasctl.py`
+- pending S04 Review
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase.
+- No app reinstall.
+- No ChatGPT mutation.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S04 P3 GitHub Backup; MA-V12-S04P3; ACC-MA-V12-S04P3; phase_s04_p3_github_backup_completed_pending_s04_review; validate:v1.2-s04-p3; memory_atlas_v1_2_s04_p3_github_backup.md; github_backup_policy.v1_2_s04_p3.json; github_backup.py; atlasctl.py; S04 P3; pending S04 Review; No GitHub main upload in this phase; No remote push in this phase; No app reinstall; No ChatGPT mutation.
+
 ## v1.2 S04 P2 Codex/Future Agent Sync
 
 状态：`phase_s04_p2_codex_agent_sync_completed_pending_s04_p3`。

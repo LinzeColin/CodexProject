@@ -87,3 +87,18 @@ S04 P2 固定 Codex local sync 和 future-agent minimal adapter。Codex 输出
 dry-run 不写文件；apply 缺少输入时不能生成伪数据。
 
 下一步是 S04 P3。当前阶段不实现 GitHub backup dry-run/apply，不上传 GitHub main。
+
+当前 S04 P3 已完成，并新增：
+
+- `机器治理/同步与备份/github_backup_policy.v1_2_s04_p3.json`
+- `scripts/github_backup.py`
+- `scripts/atlasctl.py`
+- `人类可读/11_GitHub备份DryRun与Apply.md`
+- `docs/reviews/memory_atlas_v1_2_s04_p3_github_backup.md`
+
+S04 P3 固定 GitHub backup dry-run/apply：备份范围覆盖 `data/public_raw`、
+`data/derived`、`data/run_logs`、`docs/reviews` 和 `reports`。dry-run 不写文件；
+apply 只本地 git add/commit，不远端 push。非 Git worktree 和无变更场景必须输出
+中文原因和 fallback 建议。
+
+下一步是 S04 Review。当前阶段不上传 GitHub main，不重装 app。

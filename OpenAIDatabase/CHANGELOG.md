@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S04 P3 GitHub Backup
+
+- Added `scripts/github_backup.py` for S04 P3 local GitHub backup dry-run and apply.
+- Extended `scripts/atlasctl.py` with `push --dry-run` and `push --apply`.
+- Covered `data/public_raw`, `data/derived`, `data/run_logs`, `docs/reviews`
+  and `reports` as the S04 P3 backup target set.
+- Added Chinese failure reason and fallback suggestions for missing Git worktree
+  and no-change backup states.
+- Added `机器治理/同步与备份/github_backup_policy.v1_2_s04_p3.json`.
+- Added `人类可读/11_GitHub备份DryRun与Apply.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s04_p3_github_backup.md`.
+- Added `validate:v1.2-s04-p3` for `MA-V12-S04P3` /
+  `ACC-MA-V12-S04P3`.
+- Registered status `phase_s04_p3_github_backup_completed_pending_s04_review`.
+- Preserved S04 P3 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, no app reinstall and no ChatGPT mutation.
+- Marked the next gate as pending S04 Review.
+
 ## Unreleased - Memory Atlas v1.2 S04 P2 Codex/Future Agent Sync
 
 - Added `机器治理/同步与备份/codex_agent_sync_policy.v1_2_s04_p2.json`.

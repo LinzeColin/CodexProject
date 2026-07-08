@@ -18,10 +18,12 @@
 
 ## 当前阶段
 
-当前为 S04 P2。S01 整体复审已通过，S02 整体复审已通过，S03 P1/P2/P3
+当前为 S04 P3。S01 整体复审已通过，S02 整体复审已通过，S03 P1/P2/P3
 整体复审已通过。S04 P1 已建立 ChatGPT 只读同步和 official export fallback。
 S04 P2 已建立 Codex local sync、future-agent minimal adapter、raw + derived + run log
 输出合同，以及 `scripts/atlasctl.py` 的 codex/future-agent dry-run 入口。
+S04 P3 已建立 GitHub backup dry-run/apply 本地控制面；apply 只做本地 commit，
+不执行远端 push。
 
 当前机器产物：
 
@@ -32,11 +34,13 @@ S04 P2 已建立 Codex local sync、future-agent minimal adapter、raw + derived
 - `同步与备份/raw_manifest_ledger_policy.v1_2_s03_p3.json`
 - `同步与备份/chatgpt_readonly_sync_policy.v1_2_s04_p1.json`
 - `同步与备份/codex_agent_sync_policy.v1_2_s04_p2.json`
+- `同步与备份/github_backup_policy.v1_2_s04_p3.json`
 - `机器治理/同步与备份/raw_public_archive_policy.v1_2_s03_p1.json`
 - `机器治理/同步与备份/credential_exclusion_policy.v1_2_s03_p2.json`
 - `机器治理/同步与备份/raw_manifest_ledger_policy.v1_2_s03_p3.json`
 - `机器治理/同步与备份/chatgpt_readonly_sync_policy.v1_2_s04_p1.json`
 - `机器治理/同步与备份/codex_agent_sync_policy.v1_2_s04_p2.json`
+- `机器治理/同步与备份/github_backup_policy.v1_2_s04_p3.json`
 - `机器治理/证据与日志/raw_archive_manifests/raw_manifest.s03_p3_baseline.jsonl`
 - `机器治理/证据与日志/raw_archive_manifests/raw_hash_ledger.jsonl`
 - `../人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md`
@@ -45,6 +49,7 @@ S04 P2 已建立 Codex local sync、future-agent minimal adapter、raw + derived
 - `../人类可读/08_Raw机器账本说明.md`
 - `../人类可读/09_ChatGPT只读同步与官方导出Fallback.md`
 - `../人类可读/10_Codex与FutureAgent同步.md`
+- `../人类可读/11_GitHub备份DryRun与Apply.md`
 - `../data/public_raw/README.md`
 - `人类可读/06_Raw明文公开与只读归档说明.md`
 - `data/public_raw/README.md`
@@ -55,11 +60,13 @@ S04 P2 已建立 Codex local sync、future-agent minimal adapter、raw + derived
 - `../docs/reviews/memory_atlas_v1_2_s03_review.md`
 - `../docs/reviews/memory_atlas_v1_2_s04_p1_chatgpt_sync.md`
 - `../docs/reviews/memory_atlas_v1_2_s04_p2_codex_agent_sync.md`
+- `../docs/reviews/memory_atlas_v1_2_s04_p3_github_backup.md`
 - `scripts/privacy_guard.py`
 - `scripts/sync_codex_memory_data.py`
 - `scripts/raw_archive_manifest.py`
 - `scripts/sync_chatgpt_memory_data.py`
 - `scripts/sync_future_agent_data.py`
+- `scripts/github_backup.py`
 - `scripts/atlasctl.py`
 
 `运行门禁/v1.2需求冻结清单.json` 继续固定：
@@ -70,4 +77,4 @@ S04 P2 已建立 Codex local sync、future-agent minimal adapter、raw + derived
 - 凭证排除。
 - 后续其他 agent 数据源扩展规则。
 
-下一步是 S04 P3；本目录仍不替代 apps/scripts/tests/config/data/docs/governance。
+下一步是 S04 Review；本目录仍不替代 apps/scripts/tests/config/data/docs/governance。

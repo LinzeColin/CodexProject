@@ -1,3 +1,42 @@
+## 119. Memory Atlas v1.2 S04 P3 GitHub Backup Parameters
+
+状态：`phase_s04_p3_github_backup_completed_pending_s04_review`。
+
+验收 ID：`ACC-MA-V12-S04P3`。
+
+S04 P3 固定以下参数：
+
+- `MA-V12-S04P3`
+- `validate:v1.2-s04-p3`
+- `memory_atlas_v1_2_s04_p3_github_backup.md`
+- `github_backup_policy.v1_2_s04_p3.json`
+- `github_backup.py`
+- `atlasctl.py`
+- backup scope：`data/public_raw`, `data/derived`, `data/run_logs`, `docs/reviews`, `reports`。
+- dry-run 不写文件。
+- apply 只本地 git add/commit，不远端 push。
+- S04 P3 完成后下一步为 pending S04 Review。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S04P3-001 phase_status = phase_s04_p3_github_backup_completed_pending_s04_review`
+- `PARAM-MA-V12-S04P3-002 validator = validate:v1.2-s04-p3`
+- `PARAM-MA-V12-S04P3-003 policy = github_backup_policy.v1_2_s04_p3.json`
+- `PARAM-MA-V12-S04P3-004 backup_script = github_backup.py`
+- `PARAM-MA-V12-S04P3-005 cli = atlasctl.py push --dry-run; atlasctl.py push --apply`
+- `PARAM-MA-V12-S04P3-006 next_gate = pending S04 Review`
+- `PARAM-MA-V12-S04P3-007 upload_boundary = No GitHub main upload in this phase; No remote push in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s04-p3` checks S04 P2 continuity, GitHub backup dry-run/apply,
+  raw/derived/reports/run logs scope, Chinese fallback output, no remote push,
+  human/machine state, records, canonical remote and no-upload/no-app-reinstall
+  boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S04 P3 GitHub Backup; MA-V12-S04P3; ACC-MA-V12-S04P3; phase_s04_p3_github_backup_completed_pending_s04_review; validate:v1.2-s04-p3; memory_atlas_v1_2_s04_p3_github_backup.md; github_backup_policy.v1_2_s04_p3.json; github_backup.py; atlasctl.py; S04 P3; pending S04 Review; No GitHub main upload in this phase; No remote push in this phase; No app reinstall; No ChatGPT mutation.
+
 ## 118. Memory Atlas v1.2 S04 P2 Codex/Future Agent Sync Parameters
 
 状态：`phase_s04_p2_codex_agent_sync_completed_pending_s04_p3`。
