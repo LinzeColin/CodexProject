@@ -376,6 +376,118 @@ class TriggerWindowTests(unittest.TestCase):
         self.assertEqual(counts["cleanup_events"], 1)
         self.assertIn("wal_checkpoint", cleanup["actions"])
 
+    def test_source_blocked_run_supersedes_prior_same_day_false_positives(self) -> None:
+        with TemporaryDirectory() as tmp:
+            db_path = f"{tmp}/daily_routine_check.sqlite"
+            conn = connect(db_path)
+            try:
+                write_run_payload(conn, "run-with-stale-false-positives", {
+                    "check_date": "2026-07-08",
+                    "results": [
+                        {
+                            "rule_id": "PAY_DAILY_CASH_ACCOUNT",
+                            "check_date": "2026-07-08",
+                            "status": "MISSING",
+                            "group_name": "付款请示群",
+                            "artifact_name": "资金账户明细表",
+                            "matched_message_id": None,
+                            "confidence": 0.0,
+                        },
+                        {
+                            "rule_id": "PAY_DAILY_CASH_FLOW",
+                            "check_date": "2026-07-08",
+                            "status": "MISSING",
+                            "group_name": "付款请示群",
+                            "artifact_name": "资金流水明细",
+                            "matched_message_id": None,
+                            "confidence": 0.0,
+                        },
+                    ],
+                    "cash_risk_result": {
+                        "report_date": "2026-07-08",
+                        "risk_level": "NO_DATA",
+                        "total_available_cash": None,
+                        "hard_threshold": 500000,
+                        "soft_threshold": 1000000,
+                        "source_message_id": None,
+                        "source_file_sha256": None,
+                        "confidence": 0.0,
+                    },
+                    "notification_events": [
+                        {
+                            "event_type": "MISSING_ROUTINE_ITEM",
+                            "target_label": "张霖泽",
+                            "group_name": "付款请示群",
+                            "rule_id": "PAY_DAILY_CASH_ACCOUNT",
+                            "idempotency_key": "MISSING_ROUTINE_ITEM:2026-07-08:PAY_DAILY_CASH_ACCOUNT:张霖泽",
+                            "payload": {"check_date": "2026-07-08", "status": "MISSING"},
+                        },
+                        {
+                            "event_type": "CASH_NO_DATA",
+                            "target_label": "张霖泽",
+                            "group_name": "付款请示群",
+                            "idempotency_key": "CASH_NO_DATA:2026-07-08:张霖泽:no-source",
+                            "payload": {"report_date": "2026-07-08", "risk_level": "NO_DATA"},
+                        },
+                    ],
+                    "data_quality_issues": [],
+                })
+
+                write_run_payload(conn, "run-source-blocked", {
+                    "check_date": "2026-07-08",
+                    "results": [],
+                    "rules_blocked_by_source": ["PAY_DAILY_CASH_ACCOUNT", "PAY_DAILY_CASH_FLOW"],
+                    "source_blocked_groups": ["付款请示群"],
+                    "cash_risk_result": None,
+                    "notification_events": [{
+                        "event_type": "SOURCE_STALE",
+                        "target_label": "张霖泽",
+                        "group_name": "付款请示群",
+                        "idempotency_key": "SOURCE_STALE:付款请示群:2026-07-08:SOURCE_ZIP_CHAT_RECORDS_STALE",
+                        "payload": {
+                            "issue_type": "SOURCE_STALE",
+                            "issue_code": "SOURCE_ZIP_CHAT_RECORDS_STALE",
+                            "group_name": "付款请示群",
+                            "check_date": "2026-07-08",
+                        },
+                    }],
+                    "data_quality_issues": [{
+                        "issue_type": "SOURCE_STALE",
+                        "issue_code": "SOURCE_ZIP_CHAT_RECORDS_STALE",
+                        "group_name": "付款请示群",
+                        "check_date": "2026-07-08",
+                    }],
+                })
+
+                routine_statuses = [
+                    row[0] for row in conn.execute(
+                        """
+                        SELECT status FROM routine_check_results
+                        WHERE check_date = '2026-07-08'
+                        ORDER BY rule_id
+                        """
+                    ).fetchall()
+                ]
+                cash_statuses = [
+                    row[0] for row in conn.execute(
+                        "SELECT risk_level FROM cash_risk_results WHERE report_date = '2026-07-08'"
+                    ).fetchall()
+                ]
+                notification_statuses = {
+                    row[0]: row[1]
+                    for row in conn.execute(
+                        "SELECT event_type, status FROM notification_events ORDER BY event_type"
+                    ).fetchall()
+                }
+            finally:
+                conn.close()
+
+        self.assertEqual(routine_statuses, ["SUPERSEDED_SOURCE_BLOCKED", "SUPERSEDED_SOURCE_BLOCKED"])
+        self.assertEqual(cash_statuses, ["SUPERSEDED_SOURCE_BLOCKED"])
+        self.assertEqual(notification_statuses["MISSING_ROUTINE_ITEM"], "SUPERSEDED_SOURCE_BLOCKED")
+        self.assertEqual(notification_statuses["CASH_NO_DATA"], "SUPERSEDED_SOURCE_BLOCKED")
+        self.assertEqual(notification_statuses["SOURCE_STALE"], "QUEUED_OR_LOGGED")
+
     def test_reader_reports_missing_and_stale_sources(self) -> None:
         with TemporaryDirectory() as tmp:
             reader = DwsArchiveReader(tmp)

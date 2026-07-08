@@ -162,9 +162,140 @@ def dump_json(value: dict[str, Any]) -> str:
     return json.dumps(value, ensure_ascii=False, sort_keys=True)
 
 
+def _with_superseded_metadata(payload_json: str, run_id: str, created_at: str) -> str:
+    try:
+        payload = json.loads(payload_json)
+    except Exception:
+        payload = {"original_payload_json": payload_json}
+    if isinstance(payload, dict):
+        payload.setdefault("previous_status", payload.get("status"))
+        payload["status"] = "SUPERSEDED_SOURCE_BLOCKED"
+        payload["superseded_by_run_id"] = run_id
+        payload["superseded_at"] = created_at
+        payload["superseded_reason"] = "later run marked the source group missing or stale"
+    return dump_json(payload)
+
+
+def _supersede_source_blocked_prior_state(
+    conn: sqlite3.Connection,
+    payload: dict[str, Any],
+    run_id: str,
+    created_at: str,
+) -> None:
+    check_date = payload.get("check_date")
+    if not check_date:
+        return
+
+    blocked_rule_ids = set(payload.get("rules_blocked_by_source") or [])
+    blocked_groups = set(payload.get("source_blocked_groups") or [])
+    for issue in payload.get("data_quality_issues") or []:
+        if issue.get("issue_type") in {"SOURCE_MISSING", "SOURCE_STALE"} and issue.get("group_name"):
+            blocked_groups.add(issue["group_name"])
+
+    if blocked_rule_ids:
+        placeholders = ",".join("?" for _ in blocked_rule_ids)
+        rows = conn.execute(
+            f"""
+            SELECT id, payload_json FROM routine_check_results
+            WHERE check_date = ?
+              AND rule_id IN ({placeholders})
+              AND status != 'SUPERSEDED_SOURCE_BLOCKED'
+            """,
+            (check_date, *sorted(blocked_rule_ids)),
+        ).fetchall()
+        for row_id, payload_json in rows:
+            conn.execute(
+                """
+                UPDATE routine_check_results
+                SET status = 'SUPERSEDED_SOURCE_BLOCKED',
+                    payload_json = ?
+                WHERE id = ?
+                """,
+                (_with_superseded_metadata(payload_json, run_id, created_at), row_id),
+            )
+
+        rows = conn.execute(
+            """
+            SELECT id, idempotency_key, payload_json FROM notification_events
+            WHERE status != 'SUPERSEDED_SOURCE_BLOCKED'
+              AND event_type IN (
+                'MISSING_ROUTINE_ITEM',
+                'LATE_ROUTINE_ITEM',
+                'WRONG_ROUTINE_ITEM',
+                'MERGED_ROUTINE_ITEM',
+                'LOW_CONFIDENCE_ROUTINE_MATCH'
+              )
+            """,
+        ).fetchall()
+        for row_id, idempotency_key, payload_json in rows:
+            try:
+                event = json.loads(payload_json)
+            except Exception:
+                event = {}
+            event_rule_id = event.get("rule_id") if isinstance(event, dict) else None
+            matches_key = any(f":{check_date}:{rule_id}:" in (idempotency_key or "") for rule_id in blocked_rule_ids)
+            if event_rule_id not in blocked_rule_ids and not matches_key:
+                continue
+            conn.execute(
+                """
+                UPDATE notification_events
+                SET status = 'SUPERSEDED_SOURCE_BLOCKED',
+                    payload_json = ?
+                WHERE id = ?
+                """,
+                (_with_superseded_metadata(payload_json, run_id, created_at), row_id),
+            )
+
+    if "付款请示群" in blocked_groups:
+        rows = conn.execute(
+            """
+            SELECT id, payload_json FROM cash_risk_results
+            WHERE report_date = ?
+              AND risk_level IN ('NO_DATA', 'NEEDS_REVIEW')
+            """,
+            (check_date,),
+        ).fetchall()
+        for row_id, payload_json in rows:
+            conn.execute(
+                """
+                UPDATE cash_risk_results
+                SET risk_level = 'SUPERSEDED_SOURCE_BLOCKED',
+                    payload_json = ?
+                WHERE id = ?
+                """,
+                (_with_superseded_metadata(payload_json, run_id, created_at), row_id),
+            )
+
+        rows = conn.execute(
+            """
+            SELECT id, payload_json FROM notification_events
+            WHERE status != 'SUPERSEDED_SOURCE_BLOCKED'
+              AND event_type IN ('CASH_NO_DATA', 'CASH_NEEDS_REVIEW')
+            """,
+        ).fetchall()
+        for row_id, payload_json in rows:
+            try:
+                event = json.loads(payload_json)
+            except Exception:
+                event = {}
+            event_payload = event.get("payload") if isinstance(event, dict) else {}
+            if not isinstance(event_payload, dict) or event_payload.get("report_date") != check_date:
+                continue
+            conn.execute(
+                """
+                UPDATE notification_events
+                SET status = 'SUPERSEDED_SOURCE_BLOCKED',
+                    payload_json = ?
+                WHERE id = ?
+                """,
+                (_with_superseded_metadata(payload_json, run_id, created_at), row_id),
+            )
+
+
 def write_run_payload(conn: sqlite3.Connection, run_id: str, payload: dict[str, Any]) -> None:
     created_at = datetime.now().isoformat(timespec="seconds")
     write_run_log(conn, run_id, payload)
+    _supersede_source_blocked_prior_state(conn, payload, run_id, created_at)
     conn.execute(
         "INSERT OR REPLACE INTO source_runs (run_id, created_at, payload_json) VALUES (?, ?, ?)",
         (run_id, created_at, dump_json(payload)),
