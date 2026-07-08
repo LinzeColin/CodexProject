@@ -573,6 +573,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "ocr_fact_owner_decision_correction_queue.csv",
                 "ocr_fact_owner_decision_correction_draft.json",
                 "ocr_fact_owner_decision_correction_apply_preview.csv",
+                "ocr_fact_owner_decision_correction_roundtrip_audit.csv",
                 "ocr_fact_review_apply_gate.csv",
                 "ocr_fact_review_authorization_template.json",
                 "ocr_fact_review_authorization_preview.csv",
@@ -2102,6 +2103,27 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in controlled_apply_gate_rows))
             self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in controlled_apply_gate_rows))
 
+            with (run_dir / "ocr_fact_owner_decision_correction_roundtrip_audit.csv").open(encoding="utf-8-sig", newline="") as f:
+                roundtrip_rows = list(csv.DictReader(f))
+            roundtrip_by_id = {row["fact_candidate_id"]: row for row in roundtrip_rows}
+            self.assertEqual(len(roundtrip_rows), 2)
+            self.assertEqual(
+                roundtrip_by_id[f"OCRFACT-{run_id}-00001"]["correction_roundtrip_status"],
+                "owner_correction_resolved_apply_gate_ready_no_write",
+            )
+            self.assertEqual(roundtrip_by_id[f"OCRFACT-{run_id}-00001"]["owner_correction_applied"], "true")
+            self.assertEqual(roundtrip_by_id[f"OCRFACT-{run_id}-00001"]["company_source"], "owner_decision_preview")
+            self.assertEqual(roundtrip_by_id[f"OCRFACT-{run_id}-00001"]["bank_source"], "owner_decision_preview")
+            self.assertEqual(roundtrip_by_id[f"OCRFACT-{run_id}-00001"]["fund_ledger_write_allowed"], "false")
+            self.assertEqual(roundtrip_by_id[f"OCRFACT-{run_id}-00001"]["formal_fund_ledger_write_allowed"], "false")
+            self.assertEqual(roundtrip_by_id[f"OCRFACT-{run_id}-00001"]["financial_fact_promoted"], "false")
+            self.assertEqual(roundtrip_by_id[f"OCRFACT-{run_id}-00001"]["management_conclusion_allowed"], "false")
+            self.assertTrue(
+                all(row["correction_roundtrip_status"] == "owner_correction_resolved_apply_gate_ready_no_write" for row in roundtrip_rows)
+            )
+            self.assertTrue(all(row["owner_decision_manifest_write_allowed"] == "false" for row in roundtrip_rows))
+            self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in roundtrip_rows))
+
             with (run_dir / "ocr_fact_owner_decision_correction_queue.csv").open(encoding="utf-8-sig", newline="") as f:
                 correction_queue_rows = list(csv.DictReader(f))
             self.assertEqual(correction_queue_rows, [])
@@ -2163,6 +2185,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_apply_preview_ready_count"], 0)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_apply_preview_blocking_count"], 0)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_apply_preview_write_allowed_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_roundtrip_audit_count"], 2)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_roundtrip_audit_ready_count"], 2)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_roundtrip_audit_blocking_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_roundtrip_audit_write_allowed_count"], 0)
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertFalse(cross_review["management_conclusion_allowed"])
 
@@ -2339,6 +2365,22 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(apply_gate_rows[0]["apply_gate_status"], "blocked_missing_required_ledger_fields")
             self.assertEqual(apply_gate_rows[0]["planned_apply_count"], "0")
 
+            with (run_dir / "ocr_fact_owner_decision_correction_roundtrip_audit.csv").open(encoding="utf-8-sig", newline="") as f:
+                roundtrip_rows = list(csv.DictReader(f))
+            self.assertEqual(len(roundtrip_rows), 1)
+            self.assertEqual(roundtrip_rows[0]["fact_candidate_id"], f"OCRFACT-{run_id}-00001")
+            self.assertEqual(
+                roundtrip_rows[0]["correction_roundtrip_status"],
+                "owner_correction_present_apply_gate_still_blocked",
+            )
+            self.assertEqual(roundtrip_rows[0]["owner_correction_applied"], "true")
+            self.assertEqual(roundtrip_rows[0]["company_source"], "owner_decision_preview")
+            self.assertEqual(roundtrip_rows[0]["bank_source"], "ocr_fact_candidate")
+            self.assertEqual(roundtrip_rows[0]["fund_ledger_write_allowed"], "false")
+            self.assertEqual(roundtrip_rows[0]["formal_fund_ledger_write_allowed"], "false")
+            self.assertEqual(roundtrip_rows[0]["financial_fact_promoted"], "false")
+            self.assertEqual(roundtrip_rows[0]["management_conclusion_allowed"], "false")
+
             cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_queue_count"], 1)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_queue_blocking_count"], 1)
@@ -2349,6 +2391,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_apply_preview_ready_count"], 0)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_apply_preview_blocking_count"], 1)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_apply_preview_write_allowed_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_roundtrip_audit_count"], 1)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_roundtrip_audit_ready_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_roundtrip_audit_blocking_count"], 1)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_roundtrip_audit_write_allowed_count"], 0)
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertFalse(cross_review["management_conclusion_allowed"])
 
