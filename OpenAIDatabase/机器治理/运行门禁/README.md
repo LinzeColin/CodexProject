@@ -2,8 +2,37 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S11 P1。任务 ID 为 `MA-V12-S11P1`，验收 ID 为
-`ACC-MA-V12-S11P1`，validator 为 `validate:v1.2-s11-p1`。状态为
+当前阶段是 S11 P2。任务 ID 为 `MA-V12-S11P2`，验收 ID 为
+`ACC-MA-V12-S11P2`，validator 为 `validate:v1.2-s11-p2`。状态为
+`phase_s11_p2_economic_like_visuals_completed_pending_s11_p3`。
+
+S11 P2 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s11_p2_economic_like_visuals.md`
+- `人类可读/28_EconomicLike经济可视化说明.md`
+- `机器治理/可视化配置/economic_like_visuals.v1_2_s11_p2.json`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s11_p2.cjs`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+
+S11 P2 gate：
+
+- `validate:v1.2-s11-p2` 可验证 Economic-like visuals。
+- `economic_like_visuals.v1_2_s11_p2` runtime contract 存在。
+- `task_treemap`、`automation_vs_augmentation`、`roi_scatter` 和 `opportunity_radar` 均可见且可交互。
+- 每个图都有中文 insight header、human question 和 action value。
+- 图谱跟随 `source/time/project/task` 过滤。
+- `python3 scripts/atlasctl.py audit --check visual-roi` 返回 PASS。
+- 不执行 proposal apply。
+- 不修改 raw。
+- 不上传 GitHub main。
+
+No GitHub main upload in this phase。
+下一步是 S11 P3。
+
+历史复验兼容记录：S11 P1 完成时当前阶段是 S11 P1。任务 ID 为
+`MA-V12-S11P1`，验收 ID 为 `ACC-MA-V12-S11P1`，validator 为
+`validate:v1.2-s11-p1`。状态为
 `phase_s11_p1_clio_like_visuals_completed_pending_s11_p2`。
 
 S11 P1 产物：
@@ -22,13 +51,7 @@ S11 P1 gate：
 - `cluster_tree`、`bubble_map` 和 `topic_cluster_explorer` 均可见且可交互。
 - 每个图都有中文 insight header、human question 和 action value。
 - 图谱跟随 `source/time/project/task` 过滤。
-- `python3 scripts/atlasctl.py audit --check visual-roi` 返回 PASS。
-- 不执行 proposal apply。
-- 不修改 raw。
-- 不上传 GitHub main。
-
-No GitHub main upload in this phase。
-下一步是 S11 P2。
+- 下一步是 S11 P2。
 
 历史复验兼容记录：S10 Review 完成时当前阶段是 S10 Review。任务 ID 为
 `MA-V12-S10-REVIEW`，验收 ID 为 `ACC-MA-V12-S10-REVIEW`，validator 为

@@ -2,7 +2,12 @@
 
 用于放置 human question map、visual ROI gate、多维图谱和图表绑定行动价值的配置。
 
-当前 S11 P1 已完成。Clio-like visuals 配置已写入
+当前 S11 P2 已完成。Economic-like visuals 配置已写入
+`机器治理/可视化配置/economic_like_visuals.v1_2_s11_p2.json`，运行时首页已提供
+`task_treemap`、`automation_vs_augmentation`、`roi_scatter` 和 `opportunity_radar`，
+并跟随 `source/time/project/task` 过滤。
+
+历史复验兼容记录：S11 P1 已完成。Clio-like visuals 配置已写入
 `机器治理/可视化配置/clio_like_visuals.v1_2_s11_p1.json`，运行时首页已提供
 `cluster_tree`、`bubble_map` 和 `topic_cluster_explorer`，并跟随
 `source/time/project/task` 过滤。
@@ -19,14 +24,27 @@ Agent 授权边界，输出 `data/derived/agent_collaboration/agent_authorizatio
 但不新增 visual config，不修改运行时 UI，也不创建复杂 Delegation Contract UI。S08 P3 生成
 `data/derived/agent_collaboration/stage_flight_recorder.json`，只记录轻量运行证据，不新增
 visual config，不修改运行时 UI。S08 Review 已复审 S08 P1/P2/P3，不新增 visual config，
-不修改运行时 UI，不创建复杂 Delegation Contract UI。S11 P1 只新增 Clio-like visuals，
-不实现 S11 P2/P3/P4 的后续图谱。
+不修改运行时 UI，不创建复杂 Delegation Contract UI。S11 P2 只新增 Economic-like visuals，
+不实现 S11 P3/P4 的后续图谱。
 
-任务 ID：`MA-V12-S11P1`。
+任务 ID：`MA-V12-S11P2`。
 
-验收 ID：`ACC-MA-V12-S11P1`。
+验收 ID：`ACC-MA-V12-S11P2`。
 
-Validator：`validate:v1.2-s11-p1`。
+Validator：`validate:v1.2-s11-p2`。
+
+## S11 P2 Economic-like Visuals
+
+S11 P2 当前图谱集合：
+
+- `task_treemap`
+- `automation_vs_augmentation`
+- `roi_scatter`
+- `opportunity_radar`
+
+每个图必须有中文 insight header、human question、action value，并声明
+`visual_roi_gate_pass=true` 和 `static_decoration=false`。图谱跟随
+`source/time/project/task` 过滤。
 
 ## S11 P1 Clio-like Visuals
 
@@ -65,4 +83,4 @@ Visual ROI Gate 固定 P0 图表准入规则：没有决策价值的图表不进
 - 不修改 raw。
 - No GitHub main upload in this phase。
 
-下一步是 S11 P2。
+下一步是 S11 P3。

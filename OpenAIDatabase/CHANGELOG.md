@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S11 P2 Economic-like Visuals
+
+- Added `economic_like_visuals.v1_2_s11_p2` runtime contract to the Memory
+  Atlas home screen.
+- Added Economic-like `task_treemap`, `automation_vs_augmentation`,
+  `roi_scatter` and `opportunity_radar` visuals with Chinese insight headers,
+  human questions and action values.
+- Bound the S11 P2 visuals to active `source/time/project/task` filter state
+  through redacted derived runtime nodes.
+- Added `机器治理/可视化配置/economic_like_visuals.v1_2_s11_p2.json`.
+- Added `validate:v1.2-s11-p2` for `MA-V12-S11P2` /
+  `ACC-MA-V12-S11P2`.
+- Registered status
+  `phase_s11_p2_economic_like_visuals_completed_pending_s11_p3`.
+- Preserved S11 P2 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, No proposal apply execution,
+  No S11 P3/P4 work and No app reinstall.
+- Marked the next gate as pending S11 P3.
+
 ## Unreleased - Memory Atlas v1.2 S11 P1 Clio-like Visuals
 
 - Added `clio_like_visuals.v1_2_s11_p1` runtime contract to the Memory Atlas
