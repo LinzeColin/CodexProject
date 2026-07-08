@@ -492,6 +492,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "fact_promotion_review_packet.csv",
                 "fact_promotion_authorization_template.json",
                 "fact_promotion_authorization_preview.csv",
+                "fact_promotion_execution_gate.csv",
                 "exception_tasks.csv",
                 "cross_review.json",
                 "audit_log.json",
@@ -979,6 +980,27 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["fact_promotion_authorization_preview_ready_count"], 0)
             self.assertEqual(cross_review["fact_promotion_authorization_preview_blocked_count"], 6)
 
+            with (run_dir / "fact_promotion_execution_gate.csv").open(encoding="utf-8-sig", newline="") as f:
+                execution_gate_rows = list(csv.DictReader(f))
+            self.assertEqual(len(execution_gate_rows), 6)
+            execution_gate_by_area = {row["review_area"]: row for row in execution_gate_rows}
+            self.assertEqual(
+                execution_gate_by_area["ocr_fact_ledger_staging"]["execution_gate_status"],
+                "blocked_missing_operator_authorization",
+            )
+            self.assertEqual(
+                execution_gate_by_area["ocr_fact_ledger_staging"]["authorization_validation_status"],
+                "missing_authorization_manifest",
+            )
+            self.assertTrue(all(row["fact_promotion_execution_allowed"] == "false" for row in execution_gate_rows))
+            self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in execution_gate_rows))
+            self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in execution_gate_rows))
+            self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in execution_gate_rows))
+            self.assertEqual(cross_review["fact_promotion_execution_gate_count"], 6)
+            self.assertEqual(cross_review["fact_promotion_execution_gate_ready_count"], 0)
+            self.assertEqual(cross_review["fact_promotion_execution_gate_blocked_count"], 6)
+            self.assertEqual(cross_review["fact_promotion_execution_allowed_count"], 0)
+
     def test_runner_validates_private_fact_promotion_authorization_without_promoting_facts(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             repo_root = Path(temp_dir) / "repo"
@@ -1121,6 +1143,30 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["fact_promotion_authorization_preview_blocked_count"], 4)
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertFalse(cross_review["management_conclusion_allowed"])
+
+            with (run_dir / "fact_promotion_execution_gate.csv").open(encoding="utf-8-sig", newline="") as f:
+                execution_rows = list(csv.DictReader(f))
+            execution_by_area = {row["review_area"]: row for row in execution_rows}
+            self.assertEqual(
+                execution_by_area["ocr_fact_ledger_staging"]["authorization_validation_status"],
+                "valid_manifest_validation_only",
+            )
+            self.assertEqual(
+                execution_by_area["ocr_fact_ledger_staging"]["execution_gate_status"],
+                "blocked_unresolved_review_area",
+            )
+            self.assertEqual(
+                execution_by_area["workbook_quality"]["execution_gate_status"],
+                "ready_for_controlled_fact_promotion_execution",
+            )
+            self.assertTrue(all(row["fact_promotion_execution_allowed"] == "false" for row in execution_rows))
+            self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in execution_rows))
+            self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in execution_rows))
+            self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in execution_rows))
+            self.assertEqual(cross_review["fact_promotion_execution_gate_count"], 6)
+            self.assertEqual(cross_review["fact_promotion_execution_gate_ready_count"], 1)
+            self.assertEqual(cross_review["fact_promotion_execution_gate_blocked_count"], 5)
+            self.assertEqual(cross_review["fact_promotion_execution_allowed_count"], 0)
 
     def test_runner_validates_private_ocr_fact_review_authorization_without_ledger_promotion(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

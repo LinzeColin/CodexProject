@@ -49,6 +49,7 @@ Purpose: this checklist is the owner-facing review surface before any future aut
 | Fact promotion review packet | Active | `fact_promotion_review_packet.csv` summarizes owner-review areas while keeping no-write/no-promote |
 | Fact promotion authorization template | Active | `fact_promotion_authorization_template.json` drafts one default-deny authorization row per review packet row |
 | Fact promotion authorization preview | Active | `fact_promotion_authorization_preview.csv` validates owner manifest coverage without promotion, ledger write, or management conclusion |
+| Fact promotion execution gate | Active | `fact_promotion_execution_gate.csv` blocks formal promotion until authorization is valid and review blockers are clear |
 | Automation drift check | Active | Repo contract must match local Codex automation before claiming ready |
 
 ## Authorization Boundary
