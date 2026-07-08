@@ -2990,6 +2990,100 @@ def build_fact_promotion_execution_apply_gate_rows(
     return rows
 
 
+def build_fact_promotion_execution_result_rows(
+    manifest: dict,
+    execution_apply_gate_rows: list[dict],
+    structured: dict,
+) -> list[dict]:
+    rows: list[dict] = []
+    structured_rows = [
+        row for row in structured["fund_rows"]
+        if row.get("extraction_status") == "structured_csv_extracted_pending_review"
+    ]
+    for row in execution_apply_gate_rows:
+        ready_structured_apply = (
+            row["review_area"] == "structured_csv_facts"
+            and row["apply_gate_status"] == "ready_for_controlled_execution_apply_no_write"
+            and int(row["planned_apply_count"]) > 0
+            and bool(structured_rows)
+        )
+        if ready_structured_apply:
+            execution_result_status = "structured_csv_formal_ledger_sidecar_written"
+            formal_ledger_artifact = "formal_fund_ledger.csv"
+            formal_ledger_row_count = str(len(structured_rows))
+            review_status = "formal_ledger_sidecar_written_pending_management_gate"
+            result_reason = (
+                "Structured CSV facts passed review and execution authorization gates; "
+                "a formal ledger sidecar was written without mutating sources or fund_ledger.csv."
+            )
+        elif row["apply_gate_status"].startswith("blocked_"):
+            execution_result_status = "blocked_before_formal_ledger_sidecar"
+            formal_ledger_artifact = ""
+            formal_ledger_row_count = "0"
+            review_status = "pending_execution_result_blocker_resolution"
+            result_reason = "No formal ledger sidecar is written because the execution apply gate is blocked."
+        else:
+            execution_result_status = "not_required_no_formal_ledger_sidecar"
+            formal_ledger_artifact = ""
+            formal_ledger_row_count = "0"
+            review_status = "no_formal_ledger_sidecar_required"
+            result_reason = "No formal ledger sidecar is required for this no-op execution apply row."
+        rows.append({
+            "execution_result_id": f"FPEXECRESULT-{manifest['run_id']}-{len(rows) + 1:05d}",
+            "execution_apply_gate_id": row["execution_apply_gate_id"],
+            "review_area": row["review_area"],
+            "source_artifact": row["source_artifact"],
+            "apply_gate_status": row["apply_gate_status"],
+            "execution_result_status": execution_result_status,
+            "planned_apply_count": row["planned_apply_count"],
+            "formal_ledger_artifact": formal_ledger_artifact,
+            "formal_ledger_row_count": formal_ledger_row_count,
+            "source_mutation_allowed": "false",
+            "fund_ledger_mutation_allowed": "false",
+            "management_conclusion_allowed": "false",
+            "result_reason": result_reason,
+            "review_status": review_status,
+        })
+    return rows
+
+
+def build_formal_fund_ledger_rows(manifest: dict, structured: dict, execution_result_rows: list[dict]) -> list[dict]:
+    structured_formalized = any(
+        row["review_area"] == "structured_csv_facts"
+        and row["execution_result_status"] == "structured_csv_formal_ledger_sidecar_written"
+        for row in execution_result_rows
+    )
+    if not structured_formalized:
+        return []
+
+    rows: list[dict] = []
+    for row in structured["fund_rows"]:
+        if row.get("extraction_status") != "structured_csv_extracted_pending_review":
+            continue
+        rows.append({
+            "formal_ledger_id": f"FFL-{manifest['run_id']}-{len(rows) + 1:05d}",
+            "source_ledger_id": row["ledger_id"],
+            "date": row["date"],
+            "company": row["company"],
+            "bank": row["bank"],
+            "account_alias": row["account_alias"],
+            "liquidity_tier": row["liquidity_tier"],
+            "inflow": row["inflow"],
+            "outflow": row["outflow"],
+            "ending_balance": row["ending_balance"],
+            "flow_type": row["flow_type"],
+            "source_evidence_id": row["source_evidence_id"],
+            "source_row_number": row["source_row_number"],
+            "formal_fact_source": "structured_csv_facts",
+            "formal_write_status": "structured_csv_formal_ledger_sidecar_written",
+            "source_mutation_allowed": "false",
+            "fund_ledger_mutation_allowed": "false",
+            "management_conclusion_allowed": "false",
+            "formal_review_status": "pending_management_conclusion_gate",
+        })
+    return rows
+
+
 def write_runtime_rules_to_workbook(
     workbook_path: Path,
     manifest: dict,
@@ -4739,6 +4833,20 @@ def write_no_hallucination_outputs(
     fact_promotion_execution_apply_gate_planned_apply_count = sum(
         int(row["planned_apply_count"]) for row in fact_promotion_execution_apply_gate_rows
     )
+    fact_promotion_execution_result_rows = build_fact_promotion_execution_result_rows(
+        manifest,
+        fact_promotion_execution_apply_gate_rows,
+        structured,
+    )
+    formal_fund_ledger_rows = build_formal_fund_ledger_rows(
+        manifest,
+        structured,
+        fact_promotion_execution_result_rows,
+    )
+    fact_promotion_execution_result_formalized_area_count = sum(
+        1 for row in fact_promotion_execution_result_rows
+        if row["execution_result_status"] == "structured_csv_formal_ledger_sidecar_written"
+    )
     manifest["fact_promotion_review_packet_count"] = len(fact_promotion_review_packet_rows)
     manifest["fact_promotion_review_blocking_count"] = fact_promotion_review_blocking_count
     manifest["fact_promotion_owner_review_batch_count"] = len(fact_promotion_owner_review_batch_rows)
@@ -4815,6 +4923,11 @@ def write_no_hallucination_outputs(
         1 for row in fact_promotion_execution_apply_gate_rows
         if row["fund_ledger_write_allowed"] == "true"
     )
+    manifest["fact_promotion_execution_result_count"] = len(fact_promotion_execution_result_rows)
+    manifest["fact_promotion_execution_result_formalized_area_count"] = (
+        fact_promotion_execution_result_formalized_area_count
+    )
+    manifest["formal_fund_ledger_row_count"] = len(formal_fund_ledger_rows)
     cross_review["fact_promotion_review_packet_count"] = len(fact_promotion_review_packet_rows)
     cross_review["fact_promotion_review_blocking_count"] = fact_promotion_review_blocking_count
     cross_review["fact_promotion_owner_review_batch_count"] = len(fact_promotion_owner_review_batch_rows)
@@ -4876,6 +4989,11 @@ def write_no_hallucination_outputs(
     cross_review["fact_promotion_execution_apply_gate_write_allowed_count"] = (
         manifest["fact_promotion_execution_apply_gate_write_allowed_count"]
     )
+    cross_review["fact_promotion_execution_result_count"] = manifest["fact_promotion_execution_result_count"]
+    cross_review["fact_promotion_execution_result_formalized_area_count"] = (
+        manifest["fact_promotion_execution_result_formalized_area_count"]
+    )
+    cross_review["formal_fund_ledger_row_count"] = manifest["formal_fund_ledger_row_count"]
     management_conclusion_gate_rows = build_management_conclusion_gate_rows(cross_review)
     management_conclusion_gate_ready_count = sum(1 for row in management_conclusion_gate_rows if row["gate_status"] == "ready")
     owner_action_queue_rows = build_owner_action_queue_rows(management_conclusion_gate_rows)
@@ -5066,6 +5184,43 @@ def write_no_hallucination_outputs(
         "gate_reason",
         "review_status",
     ], fact_promotion_execution_apply_gate_rows)
+    write_csv(run_dir / "fact_promotion_execution_result.csv", [
+        "execution_result_id",
+        "execution_apply_gate_id",
+        "review_area",
+        "source_artifact",
+        "apply_gate_status",
+        "execution_result_status",
+        "planned_apply_count",
+        "formal_ledger_artifact",
+        "formal_ledger_row_count",
+        "source_mutation_allowed",
+        "fund_ledger_mutation_allowed",
+        "management_conclusion_allowed",
+        "result_reason",
+        "review_status",
+    ], fact_promotion_execution_result_rows)
+    write_csv(run_dir / "formal_fund_ledger.csv", [
+        "formal_ledger_id",
+        "source_ledger_id",
+        "date",
+        "company",
+        "bank",
+        "account_alias",
+        "liquidity_tier",
+        "inflow",
+        "outflow",
+        "ending_balance",
+        "flow_type",
+        "source_evidence_id",
+        "source_row_number",
+        "formal_fact_source",
+        "formal_write_status",
+        "source_mutation_allowed",
+        "fund_ledger_mutation_allowed",
+        "management_conclusion_allowed",
+        "formal_review_status",
+    ], formal_fund_ledger_rows)
     write_csv(run_dir / "management_conclusion_gate.csv", [
         "management_gate_id",
         "gate_area",
