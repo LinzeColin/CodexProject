@@ -1384,6 +1384,92 @@ def build_attachment_remediation_dry_run(manifest: dict, attachment_remediation_
     return rows
 
 
+def attachment_source_zip_member(input_dir: Path, relative_path: str) -> str:
+    zip_root = input_dir.parent.parent if input_dir.parent.name == "DWS_Outputs" else input_dir.parent
+    zip_path = zip_root / "DWS_Outputs.zip"
+    if not zip_path.exists() or relative_path.startswith("_manifest/manifest.csv:"):
+        return ""
+    try:
+        with zipfile.ZipFile(zip_path) as zf:
+            names = set(zf.namelist())
+    except zipfile.BadZipFile:
+        return ""
+    for prefix in (f"{input_dir.name}/", f"DWS_Outputs/{input_dir.name}/", ""):
+        candidate = f"{prefix}{relative_path}"
+        if candidate in names:
+            return candidate
+    return ""
+
+
+def attachment_source_locator_status(action_code: str, local_exists: bool, source_zip_member: str) -> tuple[str, str]:
+    if action_code == "rerun_dws_attachment_download":
+        return (
+            "requires_dws_attachment_rerun",
+            "Manifest row has no output_path, so local or ZIP materialization cannot locate a deterministic attachment path.",
+        )
+    if action_code == "restore_or_materialize_output_file":
+        if local_exists:
+            return (
+                "candidate_already_in_input_dir",
+                "The missing attachment path now exists in the configured input folder; rerun reconciliation to verify evidence.",
+            )
+        if source_zip_member:
+            return (
+                "candidate_in_source_zip",
+                "The missing attachment path exists in DWS_Outputs.zip and can be materialized only through an approved source repair flow.",
+            )
+        return (
+            "candidate_not_found",
+            "The missing attachment path was not found in the configured input folder or DWS_Outputs.zip.",
+        )
+    if action_code == "quarantine_and_recollect_hash_mismatch":
+        return (
+            "requires_quarantine_recollect",
+            "A hash mismatch requires quarantine and recollection rather than local materialization.",
+        )
+    return (
+        "requires_manual_review",
+        "Attachment repair locator cannot determine a specific source path for this remediation action.",
+    )
+
+
+def build_attachment_repair_source_locator(
+    manifest: dict,
+    input_dir: Path,
+    attachment_remediation_rows: list[dict],
+) -> list[dict]:
+    rows: list[dict] = []
+    for row in attachment_remediation_rows:
+        relative_path = row["relative_path"]
+        local_exists = False
+        if not relative_path.startswith("_manifest/manifest.csv:"):
+            local_exists = (input_dir / relative_path).exists()
+        source_zip_member = attachment_source_zip_member(input_dir, relative_path)
+        locator_status, locator_reason = attachment_source_locator_status(
+            row["action_code"],
+            local_exists,
+            source_zip_member,
+        )
+        rows.append({
+            "source_locator_id": f"ATTACHLOC-{manifest['run_id']}-{len(rows) + 1:05d}",
+            "remediation_id": row["remediation_id"],
+            "attachment_reconciliation_id": row["attachment_reconciliation_id"],
+            "open_message_id": row["open_message_id"],
+            "action_code": row["action_code"],
+            "relative_path": relative_path,
+            "local_input_exists": bool_text(local_exists),
+            "source_zip_member": source_zip_member,
+            "locator_status": locator_status,
+            "locator_reason": locator_reason,
+            "safe_to_apply": "false",
+            "source_mutation_allowed": "false",
+            "apply_performed": "false",
+            "formal_fact_allowed": "false",
+            "review_status": "pending_operator_action",
+        })
+    return rows
+
+
 def attachment_repair_plan_for_status(dry_run_status: str) -> tuple[str, str, str]:
     if dry_run_status == "dws_rerun_required":
         return (
@@ -4477,6 +4563,7 @@ def write_no_hallucination_outputs(
     chat_evidence_links = collect_chat_evidence_links(manifest, input_dir, evidence, chat_text_candidates, chat_value_candidates)
     attachment_reconciliation_rows = collect_attachment_evidence_reconciliation(manifest, input_dir, evidence)
     attachment_remediation_rows = build_attachment_reconciliation_remediation(manifest, attachment_reconciliation_rows)
+    attachment_source_locator_rows = build_attachment_repair_source_locator(manifest, input_dir, attachment_remediation_rows)
     attachment_dry_run_rows = build_attachment_remediation_dry_run(manifest, attachment_remediation_rows)
     attachment_repair_plan_rows = build_attachment_repair_plan(manifest, attachment_dry_run_rows)
     attachment_apply_gate_rows = build_attachment_repair_apply_gate(manifest, repo_root, attachment_repair_plan_rows)
@@ -4520,6 +4607,14 @@ def write_no_hallucination_outputs(
     manifest["attachment_reconciliation_blocking_count"] = sum(1 for row in attachment_reconciliation_rows if row["reconciliation_status"].endswith("_blocking"))
     manifest["attachment_remediation_count"] = len(attachment_remediation_rows)
     manifest["attachment_remediation_open_count"] = sum(1 for row in attachment_remediation_rows if row["review_status"] == "pending_operator_action")
+    manifest["attachment_repair_source_locator_count"] = len(attachment_source_locator_rows)
+    manifest["attachment_repair_source_locator_candidate_count"] = sum(
+        1 for row in attachment_source_locator_rows
+        if row["locator_status"] in {"candidate_already_in_input_dir", "candidate_in_source_zip"}
+    )
+    manifest["attachment_repair_source_locator_apply_allowed_count"] = sum(
+        1 for row in attachment_source_locator_rows if row["safe_to_apply"] == "true"
+    )
     manifest["attachment_remediation_dry_run_count"] = len(attachment_dry_run_rows)
     manifest["attachment_remediation_apply_allowed_count"] = sum(1 for row in attachment_dry_run_rows if row["safe_to_apply"] == "true")
     manifest["attachment_repair_plan_count"] = len(attachment_repair_plan_rows)
@@ -4890,6 +4985,23 @@ def write_no_hallucination_outputs(
         "relative_path",
         "review_status",
     ], attachment_remediation_rows)
+    write_csv(run_dir / "attachment_repair_source_locator.csv", [
+        "source_locator_id",
+        "remediation_id",
+        "attachment_reconciliation_id",
+        "open_message_id",
+        "action_code",
+        "relative_path",
+        "local_input_exists",
+        "source_zip_member",
+        "locator_status",
+        "locator_reason",
+        "safe_to_apply",
+        "source_mutation_allowed",
+        "apply_performed",
+        "formal_fact_allowed",
+        "review_status",
+    ], attachment_source_locator_rows)
     write_csv(run_dir / "attachment_remediation_dry_run.csv", [
         "dry_run_id",
         "remediation_id",
@@ -5155,6 +5267,9 @@ def write_no_hallucination_outputs(
         "attachment_reconciliation_blocking_count": manifest["attachment_reconciliation_blocking_count"],
         "attachment_remediation_count": len(attachment_remediation_rows),
         "attachment_remediation_open_count": manifest["attachment_remediation_open_count"],
+        "attachment_repair_source_locator_count": manifest["attachment_repair_source_locator_count"],
+        "attachment_repair_source_locator_candidate_count": manifest["attachment_repair_source_locator_candidate_count"],
+        "attachment_repair_source_locator_apply_allowed_count": manifest["attachment_repair_source_locator_apply_allowed_count"],
         "attachment_remediation_dry_run_count": len(attachment_dry_run_rows),
         "attachment_remediation_apply_allowed_count": manifest["attachment_remediation_apply_allowed_count"],
         "attachment_repair_plan_count": len(attachment_repair_plan_rows),
@@ -5905,6 +6020,9 @@ def write_no_hallucination_outputs(
                 "attachment_reconciliation_blocking_count": manifest["attachment_reconciliation_blocking_count"],
                 "attachment_remediation_count": len(attachment_remediation_rows),
                 "attachment_remediation_open_count": manifest["attachment_remediation_open_count"],
+                "attachment_repair_source_locator_count": manifest["attachment_repair_source_locator_count"],
+                "attachment_repair_source_locator_candidate_count": manifest["attachment_repair_source_locator_candidate_count"],
+                "attachment_repair_source_locator_apply_allowed_count": manifest["attachment_repair_source_locator_apply_allowed_count"],
                 "attachment_remediation_dry_run_count": len(attachment_dry_run_rows),
                 "attachment_remediation_apply_allowed_count": manifest["attachment_remediation_apply_allowed_count"],
                 "attachment_repair_plan_count": len(attachment_repair_plan_rows),
@@ -6114,6 +6232,9 @@ def main() -> int:
         f"Attachment evidence reconciliation count: {manifest.get('attachment_reconciliation_count', 0)}\n\n"
         f"Attachment evidence reconciliation blocking count: {manifest.get('attachment_reconciliation_blocking_count', 0)}\n\n"
         f"Attachment remediation open count: {manifest.get('attachment_remediation_open_count', 0)}\n\n"
+        f"Attachment repair source locator count: {manifest.get('attachment_repair_source_locator_count', 0)}\n\n"
+        f"Attachment repair source locator candidate count: {manifest.get('attachment_repair_source_locator_candidate_count', 0)}\n\n"
+        f"Attachment repair source locator apply allowed count: {manifest.get('attachment_repair_source_locator_apply_allowed_count', 0)}\n\n"
         f"Attachment remediation dry-run count: {manifest.get('attachment_remediation_dry_run_count', 0)}\n\n"
         f"Attachment repair plan open count: {manifest.get('attachment_repair_plan_open_count', 0)}\n\n"
         f"Attachment repair apply blocked count: {manifest.get('attachment_repair_apply_blocked_count', 0)}\n\n"
