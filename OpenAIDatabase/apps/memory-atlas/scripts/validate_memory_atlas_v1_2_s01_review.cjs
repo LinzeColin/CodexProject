@@ -138,6 +138,39 @@ function validatePackageScript() {
   );
 }
 
+function currentStateIsS04P3() {
+  return (
+    hasAll(readRepoFile("人类可读/00_快速入口.md"), [
+      "当前阶段是 S04 P3",
+      "MA-V12-S04P3",
+      "ACC-MA-V12-S04P3",
+      "下一步只允许进入 S04 Review",
+    ]) &&
+    hasAll(readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md"), [
+      "S04 P3 已完成",
+      "GitHub backup dry-run/apply",
+      "下一步是 S04 Review",
+    ]) &&
+    hasAll(readRepoFile("机器治理/README.md"), [
+      "当前为 S04 P3",
+      "github_backup_policy.v1_2_s04_p3.json",
+      "下一步是 S04 Review",
+    ]) &&
+    hasAll(readRepoFile("机器治理/同步与备份/README.md"), [
+      "当前 S04 P3 已完成",
+      "github_backup_policy.v1_2_s04_p3.json",
+      "scripts/github_backup.py",
+      "下一步是 S04 Review",
+    ]) &&
+    hasAll(readRepoFile("机器治理/运行门禁/README.md"), [
+      "当前阶段是 S04 P3",
+      "MA-V12-S04P3",
+      "ACC-MA-V12-S04P3",
+      "validate:v1.2-s04-p3",
+    ])
+  );
+}
+
 function validatePhaseValidators() {
   const changed = getOpenChangedPaths();
   const packageJson = JSON.parse(readRepoFile("apps/memory-atlas/package.json"));
@@ -238,11 +271,12 @@ function validateS01PassGate() {
       "下一步只允许进入 S03 P1",
       "No GitHub main upload in this review",
   ]);
+  const s04p3State = currentStateIsS04P3();
   assertCondition(
-    s01ReviewQuickEntry || s02p1QuickEntry || s02p2QuickEntry || s02p3QuickEntry || s02ReviewQuickEntry,
+    s01ReviewQuickEntry || s02p1QuickEntry || s02p2QuickEntry || s02p3QuickEntry || s02ReviewQuickEntry || s04p3State,
     "s01_review_human_quick_entry",
-    "Human quick entry is Chinese, not a jump page, and records S01 review result or later S02 state",
-    "Human quick entry is missing S01 review, S02 P1, S02 P2, S02 P3 or S02 Review status",
+    "Human quick entry is Chinese, not a jump page, and records S01 review result or later accepted state through S04 P3",
+    "Human quick entry is missing S01 review, S02 states, S02 Review or S04 P3 status",
   );
 
   const s01ReviewOverview = hasAll(overview, [
@@ -298,10 +332,10 @@ function validateS01PassGate() {
       "整体完成后才上传 GitHub main",
   ]);
   assertCondition(
-    s01ReviewOverview || s02p1Overview || s02p2Overview || s02p3Overview || s02ReviewOverview,
+    s01ReviewOverview || s02p1Overview || s02p2Overview || s02p3Overview || s02ReviewOverview || s04p3State,
     "s01_review_human_overview",
-    "Human overview records S01 review result, phase coverage and later gate state",
-    "Human overview is missing S01 review result, phase coverage or later S02 state",
+    "Human overview records S01 review result, phase coverage and later accepted state through S04 P3",
+    "Human overview is missing S01 review result, phase coverage, later S02 state or S04 P3 state",
   );
 
   assertCondition(
@@ -398,11 +432,12 @@ function validateMachineGate() {
       "下一步是 S03 P1",
       "不替代 apps/scripts/tests/config/data/docs/governance",
   ]);
+  const s04p3State = currentStateIsS04P3();
   assertCondition(
-    s01ReviewMachineReadme || s02p1MachineReadme || s02p2MachineReadme || s02p3MachineReadme || s02ReviewMachineReadme,
+    s01ReviewMachineReadme || s02p1MachineReadme || s02p2MachineReadme || s02p3MachineReadme || s02ReviewMachineReadme || s04p3State,
     "s01_review_machine_readme",
-    "Machine README records S01 review result or later S02 state",
-    "Machine README is missing S01 review, S02 P1, S02 P2, S02 P3 or S02 Review result",
+    "Machine README records S01 review result or later accepted state through S04 P3",
+    "Machine README is missing S01 review, S02 states, S02 Review or S04 P3 result",
   );
 
   const s01ReviewRunGate = hasAll(runGateReadme, [
@@ -451,10 +486,10 @@ function validateMachineGate() {
       "No GitHub main upload in this review",
   ]);
   assertCondition(
-    s01ReviewRunGate || s02p1RunGate || s02p2RunGate || s02p3RunGate || s02ReviewRunGate,
+    s01ReviewRunGate || s02p1RunGate || s02p2RunGate || s02p3RunGate || s02ReviewRunGate || s04p3State,
     "s01_review_run_gate_readme",
-    "Run gate README records S01 review validator, acceptance and later gate state",
-    "Run gate README is missing S01 review, S02 P1, S02 P2, S02 P3 or S02 Review gate status",
+    "Run gate README records S01 review validator, acceptance and later accepted state through S04 P3",
+    "Run gate README is missing S01 review, S02 states, S02 Review or S04 P3 gate status",
   );
 }
 

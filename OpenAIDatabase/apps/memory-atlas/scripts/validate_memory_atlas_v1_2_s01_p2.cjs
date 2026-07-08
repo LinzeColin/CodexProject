@@ -135,6 +135,39 @@ function validatePackageScript() {
   );
 }
 
+function currentStateIsS04P3() {
+  return (
+    hasAll(readRepoFile("人类可读/00_快速入口.md"), [
+      "当前阶段是 S04 P3",
+      "MA-V12-S04P3",
+      "ACC-MA-V12-S04P3",
+      "下一步只允许进入 S04 Review",
+    ]) &&
+    hasAll(readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md"), [
+      "S04 P3 已完成",
+      "GitHub backup dry-run/apply",
+      "下一步是 S04 Review",
+    ]) &&
+    hasAll(readRepoFile("机器治理/README.md"), [
+      "当前为 S04 P3",
+      "github_backup_policy.v1_2_s04_p3.json",
+      "下一步是 S04 Review",
+    ]) &&
+    hasAll(readRepoFile("机器治理/同步与备份/README.md"), [
+      "当前 S04 P3 已完成",
+      "github_backup_policy.v1_2_s04_p3.json",
+      "scripts/github_backup.py",
+      "下一步是 S04 Review",
+    ]) &&
+    hasAll(readRepoFile("机器治理/运行门禁/README.md"), [
+      "当前阶段是 S04 P3",
+      "MA-V12-S04P3",
+      "ACC-MA-V12-S04P3",
+      "validate:v1.2-s04-p3",
+    ])
+  );
+}
+
 function validateAuditArtifact() {
   validateTextFile(auditPath);
   const source = readRepoFile(auditPath);
@@ -282,11 +315,19 @@ function validateMachinePlane() {
     "下一步是 S03 P1",
     "No GitHub main upload in this review",
   ]);
+  const s04p3Completion = currentStateIsS04P3();
   assertCondition(
-    p2Deferral || p3Completion || reviewCompletion || s02p1Completion || s02p2Completion || s02p3Completion || s02ReviewCompletion,
+    p2Deferral ||
+      p3Completion ||
+      reviewCompletion ||
+      s02p1Completion ||
+      s02p2Completion ||
+      s02p3Completion ||
+      s02ReviewCompletion ||
+      s04p3Completion,
     "s01p2_machine_run_gate_readme",
-    "Run gate README records the original S01 P2 deferral, later S01 P3 freeze completion, S01 review pass state, S02 P1 state, S02 P2 state, S02 P3 state, or S02 Review state",
-    "Run gate README is missing S01 P2 deferral, S01 P3 completion, S01 review, S02 P1, S02 P2, S02 P3 and S02 Review markers",
+    "Run gate README records the original S01 P2 deferral or a later accepted state through S04 P3",
+    "Run gate README is missing S01 P2 deferral, S01 P3 completion, S01 review, S02 states, S02 Review or S04 P3 markers",
   );
 
   const freezeConfig = path.join(repoRoot, "机器治理/运行门禁/v1.2需求冻结清单.json");

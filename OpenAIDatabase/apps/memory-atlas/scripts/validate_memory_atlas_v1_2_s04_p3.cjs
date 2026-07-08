@@ -38,6 +38,19 @@ const recordFiles = [
 const allowedOpenDiffPaths = [
   "OpenAIDatabase/CHANGELOG.md",
   "OpenAIDatabase/apps/memory-atlas/package.json",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_p2.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_p3.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s01_review.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s02_p1.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s02_p2.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s02_p3.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s02_review.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s03_p1.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s03_p2.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s03_p3.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s03_review.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s04_p1.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s04_p2.cjs",
   `OpenAIDatabase/apps/memory-atlas/scripts/${scriptName}`,
   `OpenAIDatabase/${backupScript}`,
   `OpenAIDatabase/${atlasctlScript}`,
@@ -156,11 +169,11 @@ function validatePreviousPhaseGate() {
     assertCondition(
       outside.length === 0,
       "s04p3_previous_phase_deferred_scope",
-      "S04 P2 execution is deferred only because open diff is limited to S04 P3 files",
+      "S04 P2 execution is deferred only because open diff is limited to S04 P3 files and validator-chain compatibility files",
       "S04 P2 execution cannot be deferred with unrelated OpenAIDatabase changes",
       { changed, outside, allowedOpenDiffPaths },
     );
-    pass("s04p3_previous_phase_deferred_until_clean_tree", "S04 P2 validator will run on a clean tree after S04 P3 commit", { changed });
+    pass("s04p3_previous_phase_deferred_until_clean_tree", "S04 P2 validator will run on a clean tree after S04 P3 compatibility commit", { changed });
     return;
   }
 
@@ -384,7 +397,7 @@ function validateRepoBoundaries() {
   assertCondition(
     outside.length === 0,
     "s04p3_open_diff_scope",
-    "Open diff is limited to S04 P3 GitHub backup runtime, policy, validator, tests and records",
+    "Open diff is limited to S04 P3 GitHub backup files and validator-chain compatibility files",
     "Open diff contains files outside S04 P3 allowed scope",
     { changed, outside, allowedOpenDiffPaths },
   );

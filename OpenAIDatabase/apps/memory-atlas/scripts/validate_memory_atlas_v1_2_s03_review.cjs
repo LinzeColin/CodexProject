@@ -215,6 +215,39 @@ function currentStateIsS04P2() {
   );
 }
 
+function currentStateIsS04P3() {
+  return (
+    hasAll(readRepoFile("人类可读/00_快速入口.md"), [
+      "当前阶段是 S04 P3",
+      "MA-V12-S04P3",
+      "ACC-MA-V12-S04P3",
+      "下一步只允许进入 S04 Review",
+    ]) &&
+    hasAll(readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md"), [
+      "S04 P3 已完成",
+      "GitHub backup dry-run/apply",
+      "下一步是 S04 Review",
+    ]) &&
+    hasAll(readRepoFile("机器治理/README.md"), [
+      "当前为 S04 P3",
+      "github_backup_policy.v1_2_s04_p3.json",
+      "下一步是 S04 Review",
+    ]) &&
+    hasAll(readRepoFile("机器治理/同步与备份/README.md"), [
+      "当前 S04 P3 已完成",
+      "github_backup_policy.v1_2_s04_p3.json",
+      "scripts/github_backup.py",
+      "下一步是 S04 Review",
+    ]) &&
+    hasAll(readRepoFile("机器治理/运行门禁/README.md"), [
+      "当前阶段是 S04 P3",
+      "MA-V12-S04P3",
+      "ACC-MA-V12-S04P3",
+      "validate:v1.2-s04-p3",
+    ])
+  );
+}
+
 
 function validatePackageScript() {
   const packageJson = JSON.parse(readRepoFile("apps/memory-atlas/package.json"));
@@ -459,7 +492,7 @@ function validateHumanAndMachineState() {
   const evidenceReadme = readRepoFile("机器治理/证据与日志/README.md");
   const runGateReadme = readRepoFile("机器治理/运行门禁/README.md");
 
-  if (currentStateIsS04P1() || currentStateIsS04P2()) {
+  if (currentStateIsS04P1() || currentStateIsS04P2() || currentStateIsS04P3()) {
     pass(
       "s03_review_human_machine_later_s04p1_state",
       "Current human and machine state has advanced from S03 Review into S04 P1",

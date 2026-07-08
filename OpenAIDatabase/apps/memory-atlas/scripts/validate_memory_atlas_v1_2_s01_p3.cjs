@@ -134,6 +134,39 @@ function validatePackageScript() {
   );
 }
 
+function currentStateIsS04P3() {
+  return (
+    hasAll(readRepoFile("人类可读/00_快速入口.md"), [
+      "当前阶段是 S04 P3",
+      "MA-V12-S04P3",
+      "ACC-MA-V12-S04P3",
+      "下一步只允许进入 S04 Review",
+    ]) &&
+    hasAll(readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md"), [
+      "S04 P3 已完成",
+      "GitHub backup dry-run/apply",
+      "下一步是 S04 Review",
+    ]) &&
+    hasAll(readRepoFile("机器治理/README.md"), [
+      "当前为 S04 P3",
+      "github_backup_policy.v1_2_s04_p3.json",
+      "下一步是 S04 Review",
+    ]) &&
+    hasAll(readRepoFile("机器治理/同步与备份/README.md"), [
+      "当前 S04 P3 已完成",
+      "github_backup_policy.v1_2_s04_p3.json",
+      "scripts/github_backup.py",
+      "下一步是 S04 Review",
+    ]) &&
+    hasAll(readRepoFile("机器治理/运行门禁/README.md"), [
+      "当前阶段是 S04 P3",
+      "MA-V12-S04P3",
+      "ACC-MA-V12-S04P3",
+      "validate:v1.2-s04-p3",
+    ])
+  );
+}
+
 function validateFreezeConfig() {
   validateTextFile(freezePath);
   const freeze = JSON.parse(readRepoFile(freezePath));
@@ -271,6 +304,14 @@ function validateHumanAndReadmeBridge() {
     "AGENTS.md is missing compact v1.2 S01 P3 bridge",
   );
 
+  if (currentStateIsS04P3()) {
+    pass(
+      "s01p3_human_later_s04p3_state",
+      "Current human state has advanced from S01 P3 into S04 P3",
+    );
+    return;
+  }
+
   const p3QuickEntry = hasAll(quickEntry, [
       "当前阶段是 S01 P3：需求冻结已写入",
       "旧隐私边界已被 v1.2 替换",
@@ -400,6 +441,14 @@ function validateMachineBridge() {
   ["机器治理/README.md", "机器治理/运行门禁/README.md"].forEach(validateTextFile);
   const machineReadme = readRepoFile("机器治理/README.md");
   const runGateReadme = readRepoFile("机器治理/运行门禁/README.md");
+
+  if (currentStateIsS04P3()) {
+    pass(
+      "s01p3_machine_later_s04p3_state",
+      "Current machine state has advanced from S01 P3 into S04 P3",
+    );
+    return;
+  }
 
   const p3MachineReadme = hasAll(machineReadme, [
       "当前为 S01 P3",
