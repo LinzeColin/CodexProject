@@ -2021,3 +2021,11 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 ### V014 business execution blocked handoff after final readiness recheck
 
 `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-BLOCKED-HANDOFF-AFTER-FINAL-READINESS-RECHECK-001` records the blocked handoff after the prior business execution final readiness recheck. The model reads prior public-safe final-readiness evidence and an ignored private final-readiness queue only, emits aggregate public counts, keeps detailed rows private, and leaves binding/value comparison/reconciliation/business consistency/lineage/GitHub upload/app reinstall/business execution closed with `decision=NO_GO`.
+
+## v0.1.4 Business Execution Blocked Follow-Up After Blocked Handoff
+
+- formula_ref: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-BLOCKED-FOLLOW-UP-AFTER-BLOCKED-HANDOFF-001`
+- parameters: `PARAM-KMFA-1639;PARAM-KMFA-1640;PARAM-KMFA-1641`
+- source: prior public-safe business execution blocked handoff artifacts plus ignored private blocked handoff queue.
+- invariant: decision remains `NO_GO`; 48 blockers remain; raw inbox access and all downstream execution gates stay closed.
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_AFTER_BLOCKED_HANDOFF/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_after_blocked_handoff_manifest.json`
