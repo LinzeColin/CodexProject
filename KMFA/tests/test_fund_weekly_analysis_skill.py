@@ -389,6 +389,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "net_flow_ledger.csv",
                 "company_bank_matrix.csv",
                 "tax_loan_risk.csv",
+                "funding_forecast.csv",
                 "kmfa_metadata_signals.csv",
                 "exception_tasks.csv",
                 "cross_review.json",
@@ -518,6 +519,71 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 self.assertEqual(
                     xlsx_cell_text(workbook, "xl/worksheets/sheet9.xml", "K4"),
                     "structured_csv_extracted_pending_review",
+                )
+
+    def test_runner_builds_known_due_date_funding_forecast_from_structured_csv(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+            source_day = input_dir / "files" / "0708"
+            source_day.mkdir(parents=True)
+            structured_csv = source_day / "20260708113000_吴云霞_资金预测.csv"
+            structured_csv.write_text(
+                "\n".join([
+                    "date,company,bank,account_alias,liquidity_tier,inflow,outflow,ending_balance,flow_type,due_date,risk_type",
+                    "2026-07-08,开明一公司,招商银行,基本户,T0_BANK_CASH,0,1000.00,9000.00,operating,,",
+                    "2026-07-08,开明一公司,招商银行,基本户,T0_BANK_CASH,3000.00,0,12000.00,internal_transfer,,",
+                    "2026-07-08,开明一公司,招商银行,基本户,T0_BANK_CASH,0,800.00,11200.00,tax,2026-07-10,tax_payable",
+                    "2026-07-08,开明一公司,招商银行,基本户,T0_BANK_CASH,500.00,0,11700.00,deposit,2026-07-09,deposit_release",
+                    "2026-07-08,开明一公司,招商银行,基本户,T0_BANK_CASH,0,13000.00,11700.00,loan,2026-07-11,loan_repayment",
+                ]),
+                encoding="utf-8",
+            )
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "run_fund_weekly_analysis.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--input-dir",
+                    str(input_dir),
+                    "--run-id",
+                    "funding_forecast_test",
+                    "--timezone",
+                    "Australia/Sydney",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/funding_forecast_test"
+            with (run_dir / "funding_forecast.csv").open(encoding="utf-8-sig", newline="") as f:
+                forecast_rows = list(csv.DictReader(f))
+            self.assertEqual([row["period_date"] for row in forecast_rows], ["2026-07-09", "2026-07-10", "2026-07-11"])
+            self.assertEqual([row["known_inflow"] for row in forecast_rows], ["500.00", "0.00", "0.00"])
+            self.assertEqual([row["known_outflow"] for row in forecast_rows], ["0.00", "800.00", "13000.00"])
+            self.assertEqual([row["projected_bank_cash"] for row in forecast_rows], ["12200.00", "11400.00", "-1600.00"])
+            self.assertEqual([row["funding_gap"] for row in forecast_rows], ["0.00", "0.00", "1600.00"])
+            self.assertTrue(all(row["forecast_basis"] == "known_due_date_structured_csv" for row in forecast_rows))
+            self.assertTrue(all(row["review_status"] == "structured_csv_forecast_pending_review" for row in forecast_rows))
+
+            cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
+            self.assertFalse(cross_review["management_conclusion_allowed"])
+            self.assertEqual(cross_review["forecast_row_count"], 3)
+
+            workbook_path = run_dir / "资金与税费管理母版_funding_forecast_test.xlsx"
+            with zipfile.ZipFile(workbook_path) as workbook:
+                self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet2.xml", "A4"), "预测/到期日")
+                self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet2.xml", "A5"), "2026-07-09")
+                self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet2.xml", "B5"), "500.00")
+                self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet2.xml", "D7"), "-1600.00")
+                self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet2.xml", "E7"), "1600.00")
+                self.assertEqual(
+                    xlsx_cell_text(workbook, "xl/worksheets/sheet2.xml", "H7"),
+                    "structured_csv_forecast_pending_review",
                 )
 
     def test_runner_carries_kmfa_metadata_signals_without_management_conclusion(self) -> None:

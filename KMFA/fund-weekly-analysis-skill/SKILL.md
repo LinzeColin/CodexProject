@@ -136,6 +136,7 @@ Required files:
 * `net_flow_ledger.csv`
 * `company_bank_matrix.csv`
 * `tax_loan_risk.csv`
+* `funding_forecast.csv`
 * `kmfa_metadata_signals.csv`
 * `exception_tasks.csv`
 * `cross_review.json`
@@ -150,7 +151,8 @@ Current deterministic runner status contract:
 * Existing configured folder returns `INDEXED_PENDING_EXTRACTION`, hashes real files, copies the current native Excel mother template into the private run folder, writes the required CSV/JSON package, and creates exception tasks for every evidence item that still needs OCR/table extraction or human review.
 * Public-safe KMFA metadata signals from fund pressure, project-cost fact layer, report grade, and scope reconciliation metadata are copied into `kmfa_metadata_signals.csv` and workbook pending-review areas. These signals never create amounts, forecasts, or management conclusions.
 * CSV files with the exact structured columns `date, company, bank, account_alias, liquidity_tier, inflow, outflow, ending_balance, flow_type` are extracted into `fund_ledger.csv`, `net_flow_ledger.csv`, `company_bank_matrix.csv`, and `tax_loan_risk.csv` as `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW`.
-* When structured CSV facts exist, the runner patches the native `.xlsx` workbook directly: `01_首页总览` 4+4 cards, `03_三层净流余额`, `04_税费融资风险`, `05_公司银行矩阵`, and hidden `H01/H02/H03` receive the same traced pending-review facts while preserving the existing native chart parts.
+* When structured CSV rows include real `due_date` risk/opportunity lines, the runner writes `funding_forecast.csv` and `02_资金趋势预测` with known due-date projections only. These remain `structured_csv_forecast_pending_review`, and they are not a management conclusion.
+* When structured CSV facts exist, the runner patches the native `.xlsx` workbook directly: `01_首页总览` 4+4 cards, `02_资金趋势预测`, `03_三层净流余额`, `04_税费融资风险`, `05_公司银行矩阵`, and hidden `H01/H02/H03` receive the same traced pending-review facts while preserving the existing native chart parts.
 * `INDEXED_PENDING_EXTRACTION` is not a management conclusion. It means no amount was generated, inferred, forecast, or promoted into facts yet.
 * `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW` is also not a management conclusion. The amounts came from real structured CSV rows, but they remain pending cross-review and must not become final C-level KPIs until gates pass.
 
