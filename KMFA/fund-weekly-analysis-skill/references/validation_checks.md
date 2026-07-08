@@ -34,6 +34,7 @@ Blocking checks:
 * `funding_forecast.csv` may contain only known due-date projections from real structured CSV risk/opportunity rows, including tax, deposit, loan, and project-cost flows, and must keep `management_conclusion_allowed=false`.
 * `cashflow_validation.csv` must validate balance continuity, operating cashflow effect, and internal-transfer exclusion; continuity failures must create exception tasks and keep `management_conclusion_allowed=false`.
 * `workbook_quality_checks.csv` must be emitted for generated workbooks and must cover sheet order, hidden sheets, visible row 2 cleanup, chart dimensions, formula error markers, and visible sensitive-value patterns.
+* `goal_completion_audit.csv` must be emitted for successful output packages and must show `no_hallucinated_data=pass`, while formal fact promotion and management conclusions remain blocked unless explicit review gates pass.
 * `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW` workbooks contain the same parsed facts in hidden `H01/H03/H05`, homepage KPI cards, `02_资金趋势预测`, and visible flow/risk/matrix sheets; native chart files remain present.
 * No production table contains `sample`, `demo`, `fake`, `synthetic`, or `模拟` data markers.
 * Workbook sheets exactly match the required visible/hidden order.

@@ -1773,6 +1773,129 @@ def workbook_quality_row(check_id: str, check_name: str, passed: bool, details: 
     }
 
 
+def goal_completion_audit_row(
+    requirement_id: str,
+    requirement: str,
+    audit_status: str,
+    evidence: str,
+    blocking: bool,
+    next_action: str,
+) -> dict:
+    return {
+        "requirement_id": requirement_id,
+        "requirement": requirement,
+        "audit_status": audit_status,
+        "evidence": evidence,
+        "blocking": bool_text(blocking),
+        "next_action": next_action,
+    }
+
+
+def build_goal_completion_audit_rows(cross_review: dict) -> list[dict]:
+    source_ready = int(cross_review.get("source_file_count") or 0) > 0
+    workbook_ready = bool(cross_review.get("excel_workbook_generated"))
+    workbook_quality_clean = int(cross_review.get("workbook_quality_blocking_count") or 0) == 0
+    structured_fact_count = int(cross_review.get("structured_financial_fact_count") or 0)
+    forecast_row_count = int(cross_review.get("forecast_row_count") or 0)
+    cashflow_row_count = int(cross_review.get("cashflow_validation_row_count") or 0)
+    internal_transfer_count = int(cross_review.get("internal_transfer_excluded_count") or 0)
+    generated_amount_count = int(cross_review.get("generated_financial_amount_count") or 0)
+    management_allowed = bool(cross_review.get("management_conclusion_allowed"))
+    ocr_blocked = int(cross_review.get("ocr_fact_ledger_staging_preview_blocked_count") or 0)
+    attachment_blocked = int(cross_review.get("attachment_reconciliation_blocking_count") or 0)
+
+    return [
+        goal_completion_audit_row(
+            "source_readiness",
+            "Read real DingTalk finance source folder",
+            "pass" if source_ready else "blocked",
+            f"source_file_count={cross_review.get('source_file_count', 0)}",
+            not source_ready,
+            "Restore or materialize the configured source directory" if not source_ready else "Continue extraction",
+        ),
+        goal_completion_audit_row(
+            "native_editable_workbook",
+            "Generate native editable Excel workbook from latest mother template",
+            "pass" if workbook_ready and workbook_quality_clean else "blocked",
+            f"workbook={cross_review.get('workbook', '')}; workbook_quality_blocking_count={cross_review.get('workbook_quality_blocking_count', 0)}",
+            not (workbook_ready and workbook_quality_clean),
+            "Fix workbook quality gates before any conclusion" if not workbook_quality_clean else "Keep native workbook validation enabled",
+        ),
+        goal_completion_audit_row(
+            "company_bank_matrix",
+            "Produce company-bank matrix from reviewed structured facts",
+            "pass" if structured_fact_count > 0 else "pending_review",
+            f"structured_financial_fact_count={structured_fact_count}",
+            False,
+            "Provide reviewed structured CSV rows or complete fact review" if structured_fact_count == 0 else "Review generated matrix rows",
+        ),
+        goal_completion_audit_row(
+            "internal_transfer_netting",
+            "Exclude internal transfers from operating cash flow",
+            "pass" if internal_transfer_count > 0 else "pending_real_rows",
+            f"internal_transfer_excluded_count={internal_transfer_count}",
+            False,
+            "Needs real internal_transfer rows to evidence netting" if internal_transfer_count == 0 else "Keep internal-transfer exclusion checks",
+        ),
+        goal_completion_audit_row(
+            "operating_cashflow_validation",
+            "Validate balance continuity and operating cashflow effects",
+            "pass" if cashflow_row_count > 0 else "pending_real_rows",
+            f"cashflow_validation_row_count={cashflow_row_count}; balance_continuity_fail_count={cross_review.get('balance_continuity_fail_count', 0)}",
+            False,
+            "Needs real structured ledger rows to validate cashflow" if cashflow_row_count == 0 else "Review cashflow validation rows",
+        ),
+        goal_completion_audit_row(
+            "tax_deposit_loan_project_cost_forecast",
+            "Forecast only known due-date tax/deposit/loan/project-cost items",
+            "pass" if forecast_row_count > 0 else "pending_known_due_dates",
+            f"forecast_row_count={forecast_row_count}",
+            False,
+            "Needs real due_date risk/opportunity rows" if forecast_row_count == 0 else "Review known due-date forecast rows",
+        ),
+        goal_completion_audit_row(
+            "cross_checks",
+            "Emit cross-check sidecars and block unresolved evidence issues",
+            "pass" if attachment_blocked == 0 else "blocked",
+            f"attachment_reconciliation_blocking_count={attachment_blocked}; workbook_quality_blocking_count={cross_review.get('workbook_quality_blocking_count', 0)}",
+            attachment_blocked > 0,
+            "Resolve attachment reconciliation blockers" if attachment_blocked > 0 else "Continue cross-review gates",
+        ),
+        goal_completion_audit_row(
+            "no_hallucinated_data",
+            "Do not generate hallucinated financial amounts or evidence-free forecasts",
+            "pass" if generated_amount_count == 0 else "blocked",
+            f"generated_financial_amount_count={generated_amount_count}",
+            generated_amount_count != 0,
+            "Stop and remove generated/inferred amounts" if generated_amount_count != 0 else "Keep no-hallucination gate enforced",
+        ),
+        goal_completion_audit_row(
+            "formal_financial_fact_promotion",
+            "Promote only reviewed facts into formal financial fact layer",
+            "blocked",
+            f"structured_financial_fact_count={structured_fact_count}; ocr_fact_ledger_staging_preview_blocked_count={ocr_blocked}",
+            True,
+            "Needs explicit human/cross-review authorization before formal promotion",
+        ),
+        goal_completion_audit_row(
+            "management_conclusion",
+            "Allow C-level management conclusions only after all review gates pass",
+            "pass" if management_allowed else "blocked",
+            f"management_conclusion_allowed={bool_text(management_allowed)}",
+            not management_allowed,
+            "Keep conclusions blocked until formal facts and review gates pass" if not management_allowed else "Generate management conclusion package",
+        ),
+        goal_completion_audit_row(
+            "automation_schedule",
+            "Run under the approved local Codex automation schedule",
+            "external_check_required",
+            "runner cannot inspect local Codex automation state",
+            True,
+            "Run check_codex_app_automation.py after code or prompt changes",
+        ),
+    ]
+
+
 def collect_workbook_quality_checks(workbook_path: Path) -> list[dict]:
     rows: list[dict] = []
     ns_sheet = {"x": XLSX_MAIN_NS}
@@ -3320,6 +3443,20 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "status": manifest["status"],
         "reason": "No amount was generated or inferred before OCR/table extraction and review gates.",
     }
+    goal_completion_audit_rows = build_goal_completion_audit_rows(cross_review)
+    goal_completion_blocking_count = sum(1 for row in goal_completion_audit_rows if row["blocking"] == "true")
+    manifest["goal_completion_audit_check_count"] = len(goal_completion_audit_rows)
+    manifest["goal_completion_blocking_count"] = goal_completion_blocking_count
+    cross_review["goal_completion_audit_check_count"] = len(goal_completion_audit_rows)
+    cross_review["goal_completion_blocking_count"] = goal_completion_blocking_count
+    write_csv(run_dir / "goal_completion_audit.csv", [
+        "requirement_id",
+        "requirement",
+        "audit_status",
+        "evidence",
+        "blocking",
+        "next_action",
+    ], goal_completion_audit_rows)
     (run_dir / "cross_review.json").write_text(json.dumps(cross_review, ensure_ascii=False, indent=2), encoding="utf-8")
     (run_dir / "audit_log.json").write_text(
         json.dumps([
@@ -3380,6 +3517,8 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "internal_transfer_excluded_count": internal_transfer_excluded_count,
                 "workbook_quality_check_count": len(workbook_quality_rows),
                 "workbook_quality_blocking_count": workbook_quality_blocking_count,
+                "goal_completion_audit_check_count": len(goal_completion_audit_rows),
+                "goal_completion_blocking_count": goal_completion_blocking_count,
                 "management_conclusion_allowed": False,
             },
         ], ensure_ascii=False, indent=2),
@@ -3512,6 +3651,8 @@ def main() -> int:
         f"Cashflow validation row count: {manifest.get('cashflow_validation_row_count', 0)}\n\n"
         f"Balance continuity fail count: {manifest.get('balance_continuity_fail_count', 0)}\n\n"
         f"Workbook quality blocking count: {manifest.get('workbook_quality_blocking_count', 0)}\n\n"
+        f"Goal completion audit check count: {manifest.get('goal_completion_audit_check_count', 0)}\n\n"
+        f"Goal completion blocking count: {manifest.get('goal_completion_blocking_count', 0)}\n\n"
         "No financial amount, management conclusion, or evidence-free forecast was generated from unreviewed OCR/table extraction. "
         "Known due-date projections remain pending review. Next step: perform OCR/table extraction, internal-transfer netting, "
         "cross-review, then promote reviewed facts only.\n",

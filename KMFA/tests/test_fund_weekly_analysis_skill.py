@@ -488,6 +488,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "attachment_repair_authorization_preview.csv",
                 "workbook_quality_checks.csv",
                 "kmfa_metadata_signals.csv",
+                "goal_completion_audit.csv",
                 "exception_tasks.csv",
                 "cross_review.json",
                 "audit_log.json",
@@ -509,6 +510,14 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertFalse(cross_review["management_conclusion_allowed"])
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertEqual(cross_review["screenshot_ocr_missing_count"], 1)
+
+            with (run_dir / "goal_completion_audit.csv").open(encoding="utf-8-sig", newline="") as f:
+                audit_rows = list(csv.DictReader(f))
+            audit_by_id = {row["requirement_id"]: row for row in audit_rows}
+            self.assertEqual(audit_by_id["no_hallucinated_data"]["audit_status"], "pass")
+            self.assertEqual(audit_by_id["formal_financial_fact_promotion"]["audit_status"], "blocked")
+            self.assertEqual(audit_by_id["management_conclusion"]["audit_status"], "blocked")
+            self.assertEqual(audit_by_id["management_conclusion"]["blocking"], "true")
 
     def test_runner_collects_real_ocr_text_sidecars_without_promoting_amounts(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

@@ -36,6 +36,7 @@
 - runner 现在从真实结构化 CSV 的 `due_date` 税费/保证金/借款/项目成本风险/机会行生成 `funding_forecast.csv`，并写入 `02_资金趋势预测`；这些 projection 只按 `known_due_date_structured_csv` 进入待复核，不生成无证据预测、付款动作或管理结论。
 - runner 现在生成 `cashflow_validation.csv`，逐资金行校验余额连续性、经营现金流影响和内部调拨排除；连续性失败追加 `BALANCE_CONTINUITY_GAP` 异常任务，并写入隐藏 `H05_复审检查`。
 - runner 现在生成 `workbook_quality_checks.csv`，对生成后的原生 Excel 检查 sheet 顺序、隐藏审计页、可见 row 2 清理、图表尺寸、公式错误标记和可见敏感值形态；失败会写异常任务并阻断管理结论。
+- runner 现在生成 `goal_completion_audit.csv`，按最终目标逐项记录证据状态和下一步；正式事实晋升、管理结论和 automation 本地状态仍需独立授权/外部检查，不因审计存在而自动放行。
 - `tools/materialize_fund_source.py` 现在支持显式 ZIP materialization：目录候选用 `--source-dir`，`DWS_Outputs.zip` 候选用 `--source-zip --zip-prefix 付款请示群`；dry-run 不建目标目录，apply 只复制该群 prefix 下缺失文件，hash 冲突、坏 ZIP 或 unsafe member fail-closed。
 - ZIP materialization 现在兼容真实 `DWS_Outputs.zip` 的 `DWS_Outputs/付款请示群/...` 外层目录布局；S25 已 dry-run 验证 297 个付款请示群文件后显式 apply 到 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群`，`check_source_readiness.py` 返回 `READY`、file_count=297、unreadable_count=0。
 - S25 已基于该真实热目录运行 `run_fund_weekly_analysis.py --run-id s25_real_input_index_20260708`，状态为 `INDEXED_PENDING_EXTRACTION`；输出包索引 297 个真实源文件，生成原生 Excel 母版副本，`management_conclusion_allowed=false`，`fund_ledger.csv` 和 `funding_forecast.csv` 仍为空，未生成虚构金额或管理结论。
