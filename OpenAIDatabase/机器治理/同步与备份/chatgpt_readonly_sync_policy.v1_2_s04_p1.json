@@ -1,0 +1,53 @@
+{
+  "policy_id": "memory_atlas_chatgpt_readonly_sync_policy_v1_2_s04_p1",
+  "task_id": "MA-V12-S04P1",
+  "acceptance_id": "ACC-MA-V12-S04P1",
+  "status": "phase_s04_p1_chatgpt_sync_completed_pending_s04_p2",
+  "source_id": "chatgpt",
+  "purpose": "Implement the Memory Atlas v1.2 S04 P1 ChatGPT sync surface with a read-only browser connector contract and an executable official export fallback.",
+  "browser_connector": {
+    "mode": "readonly_contract",
+    "requires_existing_logged_in_browser": true,
+    "stop_on_password_or_verification": true,
+    "allowed_actions": [
+      "read_conversation",
+      "read_title",
+      "read_metadata"
+    ],
+    "forbidden_actions": [
+      "capture_password",
+      "capture_cookie",
+      "capture_session_token",
+      "send_message",
+      "delete_conversation",
+      "archive_conversation",
+      "rename_conversation"
+    ]
+  },
+  "official_export_fallback": {
+    "enabled": true,
+    "accepted_inputs": [
+      "conversations.json",
+      "official_export_zip"
+    ],
+    "parser": "scripts/sync_chatgpt_memory_data.py",
+    "credential_gate": "scripts/privacy_guard.py"
+  },
+  "output_contract": {
+    "raw_root": "data/public_raw/chatgpt",
+    "derived_summary": "data/derived/chatgpt/chatgpt_sync_summary.json",
+    "run_log_dir": "data/run_logs/sync_runs",
+    "dry_run_writes_files": false,
+    "apply_mode_requires_official_export": true,
+    "raw_write_rule": "append-only"
+  },
+  "phase_boundary": {
+    "previous_gate": "S03 Review",
+    "next_gate": "S04 P2",
+    "does_not_implement_codex_or_future_agent_sync": true,
+    "does_not_push_github": true,
+    "does_not_read_or_store_credentials": true,
+    "does_not_modify_browser_state": true,
+    "no_github_main_upload": true
+  }
+}
