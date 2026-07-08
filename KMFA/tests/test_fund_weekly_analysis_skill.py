@@ -6513,7 +6513,9 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(payload["status"], "BLOCKED_OWNER_VALUES_MISSING")
             self.assertEqual(payload["draft_format"], "xlsx")
             report_path = repo_root / payload["validation_report_relative_path"]
+            summary_path = repo_root / payload["validation_summary_relative_path"]
             self.assertTrue(report_path.exists())
+            self.assertTrue(summary_path.exists())
             with report_path.open(encoding="utf-8-sig", newline="") as f:
                 rows = list(csv.DictReader(f))
             self.assertEqual(len(rows), 1)
@@ -6535,6 +6537,21 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(rows[0]["fund_ledger_write_allowed"], "false")
             self.assertEqual(rows[0]["financial_fact_promoted"], "false")
             self.assertEqual(rows[0]["management_conclusion_allowed"], "false")
+            with summary_path.open(encoding="utf-8-sig", newline="") as f:
+                summary_rows = list(csv.DictReader(f))
+            self.assertEqual(len(summary_rows), 2)
+            self.assertEqual(summary_rows[0]["summary_scope"], "all")
+            self.assertEqual(summary_rows[0]["summary_key"], "all")
+            self.assertEqual(summary_rows[0]["candidate_count"], "1")
+            self.assertEqual(summary_rows[0]["blocking_count"], "1")
+            self.assertEqual(summary_rows[0]["ready_count"], "0")
+            self.assertEqual(summary_rows[0]["missing_owner_fields"], "owner_corrected_company,owner_corrected_bank")
+            self.assertEqual(summary_rows[0]["owner_decision_manifest_write_allowed"], "false")
+            self.assertEqual(summary_rows[1]["summary_scope"], "candidate_metric")
+            self.assertEqual(summary_rows[1]["summary_key"], "bank_deposit")
+            self.assertEqual(summary_rows[1]["candidate_count"], "1")
+            self.assertEqual(summary_rows[1]["blocking_count"], "1")
+            self.assertEqual(summary_rows[1]["top_recommended_owner_action"], "Fill required owner fields before dry-run can be ready")
             self.assertFalse(
                 (
                     repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/"
