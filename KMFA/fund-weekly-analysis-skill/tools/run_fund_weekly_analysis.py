@@ -2121,6 +2121,201 @@ def management_conclusion_gate_row(
     }
 
 
+def management_conclusion_release_authorization_relative_path(run_id: str) -> str:
+    return (
+        "KMFA/metadata/fund_weekly_analysis/private_runtime/"
+        f"management_conclusion_release_authorizations/{run_id}.json"
+    )
+
+
+def management_conclusion_release_precondition_summary(cross_review: dict) -> dict:
+    source_ready = int(cross_review.get("source_file_count") or 0) > 0
+    workbook_quality_blocking_count = int(cross_review.get("workbook_quality_blocking_count") or 0)
+    workbook_ready = bool(cross_review.get("excel_workbook_generated")) and workbook_quality_blocking_count == 0
+    fact_execution_allowed_count = int(cross_review.get("fact_promotion_execution_allowed_count") or 0)
+    formalized_area_count = int(cross_review.get("fact_promotion_execution_result_formalized_area_count") or 0)
+    formal_fund_ledger_row_count = int(cross_review.get("formal_fund_ledger_row_count") or 0)
+    generated_amount_count = int(cross_review.get("generated_financial_amount_count") or 0)
+    cashflow_row_count = int(cross_review.get("cashflow_validation_row_count") or 0)
+    balance_fail_count = int(cross_review.get("balance_continuity_fail_count") or 0)
+    evidence_blocking_count = sum([
+        int(cross_review.get("screenshot_ocr_missing_count") or 0),
+        int(cross_review.get("ocr_fact_ledger_staging_preview_blocked_count") or 0),
+        int(cross_review.get("chat_value_candidate_count") or 0),
+        int(cross_review.get("attachment_reconciliation_blocking_count") or 0),
+    ])
+    automation_ready = int(cross_review.get("automation_readiness_ready_count") or 0) > 0
+    checks = {
+        "source_readiness": source_ready,
+        "native_workbook_quality": workbook_ready,
+        "formal_fact_promotion_execution": formalized_area_count > 0 or fact_execution_allowed_count > 0,
+        "formal_ledger_population": formal_fund_ledger_row_count > 0 or generated_amount_count > 0,
+        "cashflow_validation": cashflow_row_count > 0 and balance_fail_count == 0,
+        "evidence_cross_review": evidence_blocking_count == 0,
+        "automation_schedule": automation_ready,
+    }
+    return {
+        "pre_release_gate_count": len(checks),
+        "pre_release_ready_count": sum(1 for ready in checks.values() if ready),
+        "pre_release_blocking_count": sum(1 for ready in checks.values() if not ready),
+        "blocking_gate_ids": [gate_id for gate_id, ready in checks.items() if not ready],
+    }
+
+
+def build_management_conclusion_release_authorization_template(manifest: dict, cross_review: dict) -> dict:
+    summary = management_conclusion_release_precondition_summary(cross_review)
+    release_authorization_id = f"MCONCRELEASE-{manifest['run_id']}-00001"
+    return {
+        "authorization_manifest_version": "1",
+        "run_id": manifest["run_id"],
+        "authorization_scope": "management_conclusion_release_validation_only",
+        "template_status": "operator_review_required",
+        "template_generated_from": "management_conclusion_gate.csv",
+        "output_authorization_manifest_relative_path": management_conclusion_release_authorization_relative_path(
+            manifest["run_id"]
+        ),
+        "authorized_by": "",
+        "authorized_at": "",
+        "authorization_ticket": "",
+        "financial_fact_promotion_allowed": False,
+        "fund_ledger_write_allowed": False,
+        "management_conclusion_allowed": False,
+        "operator_instruction": (
+            "Review every management conclusion pre-release gate, edit authorized=true only after all gates are ready, "
+            "then save a confirmed copy to output_authorization_manifest_relative_path. This template itself does not "
+            "promote facts, write ledgers, mutate sources, or generate a management conclusion."
+        ),
+        "release_authorizations": [
+            {
+                "release_authorization_id": release_authorization_id,
+                "pre_release_gate_count": summary["pre_release_gate_count"],
+                "pre_release_ready_count": summary["pre_release_ready_count"],
+                "pre_release_blocking_count": summary["pre_release_blocking_count"],
+                "blocking_gate_ids": summary["blocking_gate_ids"],
+                "authorization_scope": "management_conclusion_release_validation_only",
+                "authorized": False,
+                "authorization_note": "",
+            }
+        ],
+    }
+
+
+def load_management_conclusion_release_authorization(repo_root: Path, run_id: str) -> dict:
+    relative_path = management_conclusion_release_authorization_relative_path(run_id)
+    path = repo_root / relative_path
+    missing = {
+        "relative_path": relative_path,
+        "status": "missing_release_authorization_manifest",
+        "entries": {},
+        "metadata": {},
+    }
+    if not path.exists():
+        return missing
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {**missing, "status": "invalid_release_authorization_json"}
+    if not isinstance(payload, dict):
+        return {**missing, "status": "invalid_release_authorization_schema"}
+    required = {
+        "authorization_manifest_version": "1",
+        "run_id": run_id,
+        "authorization_scope": "management_conclusion_release_validation_only",
+        "financial_fact_promotion_allowed": False,
+        "fund_ledger_write_allowed": False,
+        "management_conclusion_allowed": False,
+    }
+    if any(payload.get(key) != value for key, value in required.items()):
+        return {**missing, "status": "invalid_release_authorization_schema"}
+    raw_entries = payload.get("release_authorizations")
+    if not isinstance(raw_entries, list):
+        return {**missing, "status": "invalid_release_authorization_schema"}
+    entries = {}
+    for entry in raw_entries:
+        if not isinstance(entry, dict):
+            return {**missing, "status": "invalid_release_authorization_schema"}
+        release_authorization_id = entry.get("release_authorization_id")
+        if not isinstance(release_authorization_id, str) or not release_authorization_id:
+            return {**missing, "status": "invalid_release_authorization_schema"}
+        entries[release_authorization_id] = {
+            "authorized": entry.get("authorized") is True,
+        }
+    return {
+        "relative_path": relative_path,
+        "status": "valid_release_authorization_manifest",
+        "entries": entries,
+        "metadata": {
+            "authorization_ticket": str(payload.get("authorization_ticket", "")),
+            "authorized_by": str(payload.get("authorized_by", "")),
+            "authorized_at": str(payload.get("authorized_at", "")),
+            "authorization_scope": str(payload.get("authorization_scope", "")),
+        },
+    }
+
+
+def build_management_conclusion_release_authorization_preview(
+    manifest: dict,
+    repo_root: Path,
+    cross_review: dict,
+) -> list[dict]:
+    summary = management_conclusion_release_precondition_summary(cross_review)
+    authorization = load_management_conclusion_release_authorization(repo_root, manifest["run_id"])
+    metadata = authorization["metadata"]
+    release_authorization_id = f"MCONCRELEASE-{manifest['run_id']}-00001"
+    operator_authorization_present = "false"
+    validation_status = authorization["status"]
+    if authorization["status"] == "valid_release_authorization_manifest":
+        entry = authorization["entries"].get(release_authorization_id)
+        if entry is None:
+            validation_status = "release_authorization_not_found"
+        elif not entry["authorized"]:
+            validation_status = "release_authorization_not_true"
+            operator_authorization_present = "true"
+        else:
+            validation_status = "valid_release_authorization_manifest"
+            operator_authorization_present = "true"
+
+    if summary["pre_release_blocking_count"] > 0:
+        preview_status = "blocked_release_preconditions_not_ready"
+        review_status = "pending_pre_release_gate_readiness"
+        preview_reason = "Management conclusion release is blocked until all pre-release gates are ready."
+    elif validation_status == "missing_release_authorization_manifest":
+        preview_status = "blocked_missing_release_authorization"
+        review_status = "pending_release_authorization"
+        preview_reason = "Management conclusion release is blocked until a private release authorization manifest exists."
+    elif validation_status != "valid_release_authorization_manifest":
+        preview_status = "blocked_invalid_release_authorization"
+        review_status = "pending_release_authorization"
+        preview_reason = "Management conclusion release authorization is blocked because the manifest is invalid or incomplete."
+    else:
+        preview_status = "ready_for_management_conclusion_release_review_no_auto_conclusion"
+        review_status = "pending_separate_release_run"
+        preview_reason = (
+            "Release authorization coverage is valid, but this runner still does not generate a management conclusion "
+            "or set management_conclusion_allowed=true."
+        )
+
+    return [{
+        "management_conclusion_release_preview_id": f"MCONCPREVIEW-{manifest['run_id']}-00001",
+        "release_authorization_id": release_authorization_id,
+        "pre_release_gate_count": str(summary["pre_release_gate_count"]),
+        "pre_release_ready_count": str(summary["pre_release_ready_count"]),
+        "pre_release_blocking_count": str(summary["pre_release_blocking_count"]),
+        "blocking_gate_ids": "|".join(summary["blocking_gate_ids"]),
+        "authorization_manifest_relative_path": authorization["relative_path"],
+        "operator_authorization_present": operator_authorization_present,
+        "authorization_validation_status": validation_status,
+        "authorization_ticket": metadata.get("authorization_ticket", ""),
+        "authorized_by": metadata.get("authorized_by", ""),
+        "authorized_at": metadata.get("authorized_at", ""),
+        "authorization_scope": metadata.get("authorization_scope", ""),
+        "preview_status": preview_status,
+        "management_conclusion_allowed": "false",
+        "preview_reason": preview_reason,
+        "review_status": review_status,
+    }]
+
+
 def build_management_conclusion_gate_rows(cross_review: dict) -> list[dict]:
     source_ready = int(cross_review.get("source_file_count") or 0) > 0
     workbook_quality_blocking_count = int(cross_review.get("workbook_quality_blocking_count") or 0)
@@ -2141,6 +2336,17 @@ def build_management_conclusion_gate_rows(cross_review: dict) -> list[dict]:
     ])
     automation_ready = int(cross_review.get("automation_readiness_ready_count") or 0) > 0
     automation_status = str(cross_review.get("automation_readiness_status") or "CODEX_AUTOMATION_UNKNOWN")
+    release_validation_status = str(
+        cross_review.get("management_conclusion_release_authorization_validation_status")
+        or "missing_release_authorization_manifest"
+    )
+    release_preview_status = str(
+        cross_review.get("management_conclusion_release_authorization_preview_status")
+        or "blocked_missing_release_authorization"
+    )
+    release_precondition_blocking_count = int(
+        cross_review.get("management_conclusion_release_precondition_blocking_count") or 0
+    )
 
     cashflow_ready = cashflow_row_count > 0 and balance_fail_count == 0
     return [
@@ -2209,7 +2415,12 @@ def build_management_conclusion_gate_rows(cross_review: dict) -> list[dict]:
         management_conclusion_gate_row(
             "management_conclusion_final_authorization",
             "blocked_management_conclusion_release_not_authorized",
-            "management_conclusion_allowed=false; final_owner_release_authorization=false",
+            (
+                "management_conclusion_allowed=false; final_owner_release_authorization=false; "
+                f"release_authorization_validation_status={release_validation_status}; "
+                f"release_authorization_preview_status={release_preview_status}; "
+                f"pre_release_blocking_count={release_precondition_blocking_count}"
+            ),
             True,
             "Approve a separate management conclusion release after all evidence, ledger, cashflow, workbook, and automation gates are ready",
         ),
@@ -5192,6 +5403,76 @@ def write_no_hallucination_outputs(
         manifest["fact_promotion_execution_result_formalized_area_count"]
     )
     cross_review["formal_fund_ledger_row_count"] = manifest["formal_fund_ledger_row_count"]
+    management_conclusion_authorization_template = build_management_conclusion_release_authorization_template(
+        manifest,
+        cross_review,
+    )
+    management_conclusion_authorization_preview_rows = build_management_conclusion_release_authorization_preview(
+        manifest,
+        repo_root,
+        cross_review,
+    )
+    management_conclusion_release_precondition_blocking_count = int(
+        management_conclusion_authorization_preview_rows[0]["pre_release_blocking_count"]
+    )
+    management_conclusion_authorization_preview_ready_count = sum(
+        1 for row in management_conclusion_authorization_preview_rows
+        if row["preview_status"] == "ready_for_management_conclusion_release_review_no_auto_conclusion"
+    )
+    management_conclusion_authorization_preview_blocked_count = (
+        len(management_conclusion_authorization_preview_rows)
+        - management_conclusion_authorization_preview_ready_count
+    )
+    manifest["management_conclusion_release_authorization_template_count"] = len(
+        management_conclusion_authorization_template["release_authorizations"]
+    )
+    manifest["management_conclusion_release_authorization_present_count"] = sum(
+        1 for row in management_conclusion_authorization_preview_rows
+        if row["operator_authorization_present"] == "true"
+    )
+    manifest["management_conclusion_release_authorization_valid_count"] = sum(
+        1 for row in management_conclusion_authorization_preview_rows
+        if row["authorization_validation_status"] == "valid_release_authorization_manifest"
+    )
+    manifest["management_conclusion_release_authorization_preview_count"] = len(
+        management_conclusion_authorization_preview_rows
+    )
+    manifest["management_conclusion_release_authorization_preview_ready_count"] = (
+        management_conclusion_authorization_preview_ready_count
+    )
+    manifest["management_conclusion_release_authorization_preview_blocked_count"] = (
+        management_conclusion_authorization_preview_blocked_count
+    )
+    manifest["management_conclusion_release_precondition_blocking_count"] = (
+        management_conclusion_release_precondition_blocking_count
+    )
+    cross_review["management_conclusion_release_authorization_template_count"] = (
+        manifest["management_conclusion_release_authorization_template_count"]
+    )
+    cross_review["management_conclusion_release_authorization_present_count"] = (
+        manifest["management_conclusion_release_authorization_present_count"]
+    )
+    cross_review["management_conclusion_release_authorization_valid_count"] = (
+        manifest["management_conclusion_release_authorization_valid_count"]
+    )
+    cross_review["management_conclusion_release_authorization_preview_count"] = (
+        manifest["management_conclusion_release_authorization_preview_count"]
+    )
+    cross_review["management_conclusion_release_authorization_preview_ready_count"] = (
+        management_conclusion_authorization_preview_ready_count
+    )
+    cross_review["management_conclusion_release_authorization_preview_blocked_count"] = (
+        management_conclusion_authorization_preview_blocked_count
+    )
+    cross_review["management_conclusion_release_precondition_blocking_count"] = (
+        management_conclusion_release_precondition_blocking_count
+    )
+    cross_review["management_conclusion_release_authorization_validation_status"] = (
+        management_conclusion_authorization_preview_rows[0]["authorization_validation_status"]
+    )
+    cross_review["management_conclusion_release_authorization_preview_status"] = (
+        management_conclusion_authorization_preview_rows[0]["preview_status"]
+    )
     management_conclusion_gate_rows = build_management_conclusion_gate_rows(cross_review)
     management_conclusion_gate_ready_count = sum(1 for row in management_conclusion_gate_rows if row["gate_status"] == "ready")
     owner_action_queue_rows = build_owner_action_queue_rows(management_conclusion_gate_rows)
@@ -5419,6 +5700,29 @@ def write_no_hallucination_outputs(
         "management_conclusion_allowed",
         "formal_review_status",
     ], formal_fund_ledger_rows)
+    (run_dir / "management_conclusion_authorization_template.json").write_text(
+        json.dumps(management_conclusion_authorization_template, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    write_csv(run_dir / "management_conclusion_authorization_preview.csv", [
+        "management_conclusion_release_preview_id",
+        "release_authorization_id",
+        "pre_release_gate_count",
+        "pre_release_ready_count",
+        "pre_release_blocking_count",
+        "blocking_gate_ids",
+        "authorization_manifest_relative_path",
+        "operator_authorization_present",
+        "authorization_validation_status",
+        "authorization_ticket",
+        "authorized_by",
+        "authorized_at",
+        "authorization_scope",
+        "preview_status",
+        "management_conclusion_allowed",
+        "preview_reason",
+        "review_status",
+    ], management_conclusion_authorization_preview_rows)
     write_csv(run_dir / "management_conclusion_gate.csv", [
         "management_gate_id",
         "gate_area",
@@ -5733,6 +6037,9 @@ def main() -> int:
         f"Fact promotion execution apply gate ready count: {manifest.get('fact_promotion_execution_apply_gate_ready_count', 0)}\n\n"
         f"Fact promotion execution apply gate planned apply count: {manifest.get('fact_promotion_execution_apply_gate_planned_apply_count', 0)}\n\n"
         f"Fact promotion execution apply gate write-allowed count: {manifest.get('fact_promotion_execution_apply_gate_write_allowed_count', 0)}\n\n"
+        f"Management conclusion release authorization preview ready count: {manifest.get('management_conclusion_release_authorization_preview_ready_count', 0)}\n\n"
+        f"Management conclusion release authorization preview blocked count: {manifest.get('management_conclusion_release_authorization_preview_blocked_count', 0)}\n\n"
+        f"Management conclusion release precondition blocking count: {manifest.get('management_conclusion_release_precondition_blocking_count', 0)}\n\n"
         f"Management conclusion gate ready count: {manifest.get('management_conclusion_gate_ready_count', 0)}\n\n"
         f"Management conclusion gate blocked count: {manifest.get('management_conclusion_gate_blocked_count', 0)}\n\n"
         f"Owner action queue count: {manifest.get('owner_action_queue_count', 0)}\n\n"
