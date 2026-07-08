@@ -537,6 +537,7 @@ def write_xlsx(path: Path, rows: list[dict]) -> None:
         '<col min="9" max="12" width="28" customWidth="1"/>'
         '</cols>'
         f'<sheetData>{"".join(summary_row_xml)}</sheetData>'
+        '<sheetProtection sheet="1" objects="1" scenarios="1"/>'
         f'<autoFilter ref="A1:{summary_last_col}{summary_max_row}"/>'
         '</worksheet>'
     )
