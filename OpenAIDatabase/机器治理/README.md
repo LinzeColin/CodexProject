@@ -18,8 +18,8 @@
 
 ## 当前阶段
 
-当前为 S07 P3。任务 ID 为 `MA-V12-S07P3`，验收 ID 为
-`ACC-MA-V12-S07P3`，validator 为 `validate:v1.2-s07-p3`。
+当前为 S07 Review。任务 ID 为 `MA-V12-S07-REVIEW`，验收 ID 为
+`ACC-MA-V12-S07-REVIEW`，validator 为 `validate:v1.2-s07-review`。
 S01 整体复审已通过，S02 整体复审已通过，S03 P1/P2/P3
 整体复审已通过。S04 P1 已建立 ChatGPT 只读同步和 official export fallback。
 S04 P2 已建立 Codex local sync、future-agent minimal adapter、raw + derived + run log
@@ -47,7 +47,9 @@ Information ROI 与 Visual ROI Gate，输出
 `机器治理/可视化配置/visual_roi_gate.v1_2_s07_p2.json`。S07 P3 已完成 Formula
 What-if 配置预览，配置为
 `机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`，输出为
-`data/derived/economic_proxy/formula_what_if_preview.json`。下一步是 S07 Review。
+`data/derived/economic_proxy/formula_what_if_preview.json`。S07 Review 已完成，确认
+Personal Economic Proxy、Information ROI、Visual ROI Gate 和 Formula What-if 均满足
+S07 stage gate，且没有外部经济数据库依赖、没有精确收入预测、没有财务建议。下一步是 S08 P1。
 
 当前机器产物：
 
@@ -117,6 +119,7 @@ What-if 配置预览，配置为
 - `../docs/reviews/memory_atlas_v1_2_s07_p1_economic_proxy.md`
 - `../docs/reviews/memory_atlas_v1_2_s07_p2_information_roi.md`
 - `../docs/reviews/memory_atlas_v1_2_s07_p3_formula_what_if.md`
+- `../docs/reviews/memory_atlas_v1_2_s07_review.md`
 - `scripts/privacy_guard.py`
 - `scripts/sync_codex_memory_data.py`
 - `scripts/raw_archive_manifest.py`

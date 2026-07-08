@@ -2,8 +2,36 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S07 P3。任务 ID 为 `MA-V12-S07P3`，验收 ID 为
-`ACC-MA-V12-S07P3`，validator 为 `validate:v1.2-s07-p3`。
+当前阶段是 S07 Review。任务 ID 为 `MA-V12-S07-REVIEW`，验收 ID 为
+`ACC-MA-V12-S07-REVIEW`，validator 为 `validate:v1.2-s07-review`。
+
+S07 Review 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s07_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s07_review.cjs`
+- `scripts/atlasctl.py`
+- `data/derived/economic_proxy/personal_economic_proxy.json`
+- `data/derived/information_roi/information_roi_gate.json`
+- `data/derived/economic_proxy/formula_what_if_preview.json`
+- `机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json`
+- `机器治理/参数与公式/information_roi.v1_2_s07_p2.json`
+- `机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`
+
+S07 Review gate：
+
+- `validate:v1.2-s07-review` 可验证 S07 P1/P2/P3 链路。
+- `validate:v1.2-s07-p3` 在 clean tree 可通过。
+- Personal Economic Proxy 可生成。
+- 每个分数有中文解释、公式来源和参数引用。
+- Information ROI 覆盖 insight、card、chart。
+- Visual ROI Gate 保证没有决策价值的图表不进 P0。
+- Formula What-if 可查看或配置，且 `proposal_required_before_apply=true`。
+- 外部经济数据库只保留 v2 占位，不深做。
+- 不声称精确收入预测，不提供财务建议。
+- 不修改 raw。
+
+No GitHub main upload in this phase。
+下一步是 S08 P1。
 
 S07 P3 产物：
 
