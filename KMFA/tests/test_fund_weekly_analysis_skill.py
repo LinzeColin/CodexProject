@@ -570,6 +570,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "ocr_fact_ledger_staging_preview.csv",
                 "ocr_fact_controlled_ledger_row_preview.csv",
                 "ocr_fact_controlled_ledger_apply_gate.csv",
+                "ocr_fact_owner_decision_correction_queue.csv",
                 "ocr_fact_review_apply_gate.csv",
                 "ocr_fact_review_authorization_template.json",
                 "ocr_fact_review_authorization_preview.csv",
@@ -1408,6 +1409,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 controlled_apply_gate_rows = list(csv.DictReader(f))
             self.assertEqual(controlled_apply_gate_rows, [])
 
+            with (run_dir / "ocr_fact_owner_decision_correction_queue.csv").open(encoding="utf-8-sig", newline="") as f:
+                correction_queue_rows = list(csv.DictReader(f))
+            self.assertEqual(correction_queue_rows, [])
+
             with (run_dir / "fund_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
                 fund_rows = list(csv.DictReader(f))
             self.assertEqual(fund_rows, [])
@@ -1442,6 +1447,9 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_blocking_count"], 0)
             self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_planned_apply_count"], 0)
             self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_write_allowed_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_queue_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_queue_blocking_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_queue_write_allowed_count"], 0)
             self.assertEqual(cross_review["ocr_fact_review_apply_gate_count"], 3)
             self.assertEqual(cross_review["ocr_fact_review_authorization_present_count"], 0)
             self.assertEqual(cross_review["ocr_fact_review_authorization_template_count"], 3)
@@ -2074,6 +2082,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in controlled_apply_gate_rows))
             self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in controlled_apply_gate_rows))
 
+            with (run_dir / "ocr_fact_owner_decision_correction_queue.csv").open(encoding="utf-8-sig", newline="") as f:
+                correction_queue_rows = list(csv.DictReader(f))
+            self.assertEqual(correction_queue_rows, [])
+
             with (run_dir / "fund_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
                 fund_rows = list(csv.DictReader(f))
             self.assertEqual(fund_rows, [])
@@ -2110,6 +2122,152 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_blocking_count"], 0)
             self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_planned_apply_count"], 2)
             self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_write_allowed_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_queue_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_queue_blocking_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_queue_write_allowed_count"], 0)
+            self.assertEqual(cross_review["generated_financial_amount_count"], 0)
+            self.assertFalse(cross_review["management_conclusion_allowed"])
+
+    def test_runner_emits_owner_decision_correction_queue_for_missing_ledger_fields(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+            source_day = input_dir / "files" / "0708"
+            auth_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_fact_review_authorizations"
+            decision_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_fact_candidate_owner_decisions"
+            source_day.mkdir(parents=True)
+            auth_dir.mkdir(parents=True)
+            decision_dir.mkdir(parents=True)
+            (source_day / "20260708113000_杨婷_资金账户截图.png").write_bytes(b"real-image-bytes")
+
+            run_id = "ocr_owner_correction_queue_test"
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs" / run_id
+            run_dir.mkdir(parents=True)
+            private_rel = Path(
+                "KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_sidecars/"
+                "ocr_owner_correction_queue_test/OCRGEN-ocr_owner_correction_queue_test-00001.ocr.txt"
+            )
+            private_sidecar = repo_root / private_rel
+            private_sidecar.parent.mkdir(parents=True)
+            private_text = "2026年07月08日 武汉开明 银行存款 12,345.67"
+            private_sidecar.write_text(private_text + "\n", encoding="utf-8")
+            with (run_dir / "screenshot_ocr_sidecar_generation_plan.csv").open("w", encoding="utf-8", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=[
+                    "ocr_generation_id",
+                    "evidence_id",
+                    "source_image_relative_path",
+                    "engine",
+                    "generation_status",
+                    "ocr_text_private_relative_path",
+                    "text_length",
+                    "text_sha256",
+                    "apply_performed",
+                    "financial_fact_promoted",
+                    "review_status",
+                    "reason",
+                ])
+                writer.writeheader()
+                writer.writerow({
+                    "ocr_generation_id": "OCRGEN-ocr_owner_correction_queue_test-00001",
+                    "evidence_id": "previous-run-evidence-id",
+                    "source_image_relative_path": "files/0708/20260708113000_杨婷_资金账户截图.png",
+                    "engine": "vision",
+                    "generation_status": "ocr_text_generated_pending_review",
+                    "ocr_text_private_relative_path": str(private_rel),
+                    "text_length": str(len(private_text)),
+                    "text_sha256": hashlib.sha256(private_text.encode("utf-8")).hexdigest(),
+                    "apply_performed": "true",
+                    "financial_fact_promoted": "false",
+                    "review_status": "pending_human_review",
+                    "reason": "",
+                })
+            (auth_dir / f"{run_id}.json").write_text(
+                json.dumps({
+                    "authorization_manifest_version": "1",
+                    "run_id": run_id,
+                    "authorization_scope": "ocr_financial_fact_review_validation_only",
+                    "authorized_by": "operator-fixture",
+                    "authorized_at": "2026-07-08T11:33:00+10:00",
+                    "authorization_ticket": "S86-TEST",
+                    "financial_fact_promotion_allowed": False,
+                    "fund_ledger_write_allowed": False,
+                    "fact_candidate_authorizations": [
+                        {
+                            "fact_candidate_id": f"OCRFACT-{run_id}-00001",
+                            "candidate_metric": "bank_deposit",
+                            "authorized": True,
+                        },
+                    ],
+                }, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+            (decision_dir / f"{run_id}.json").write_text(
+                json.dumps({
+                    "decision_manifest_version": "1",
+                    "run_id": run_id,
+                    "decision_scope": "ocr_fact_candidate_owner_worklist_validation_only",
+                    "source_artifact": "ocr_fact_candidate_owner_worklist.csv",
+                    "financial_fact_promotion_allowed": False,
+                    "fund_ledger_write_allowed": False,
+                    "management_conclusion_allowed": False,
+                    "owner_decisions": [
+                        {
+                            "fact_candidate_id": f"OCRFACT-{run_id}-00001",
+                            "candidate_metric": "bank_deposit",
+                            "owner_authorization_decision": "approve_for_review_authorization",
+                            "owner_corrected_company": "武汉开明",
+                            "owner_corrected_bank": "",
+                            "owner_note": "bank still needs owner correction",
+                        },
+                    ],
+                }, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "run_fund_weekly_analysis.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--input-dir",
+                    str(input_dir),
+                    "--run-id",
+                    run_id,
+                    "--timezone",
+                    "Australia/Sydney",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+
+            with (run_dir / "ocr_fact_owner_decision_correction_queue.csv").open(encoding="utf-8-sig", newline="") as f:
+                correction_queue_rows = list(csv.DictReader(f))
+            self.assertEqual(len(correction_queue_rows), 1)
+            row = correction_queue_rows[0]
+            self.assertEqual(row["fact_candidate_id"], f"OCRFACT-{run_id}-00001")
+            self.assertEqual(row["correction_queue_status"], "blocked_owner_correction_required")
+            self.assertIn("bank", row["missing_required_fields"])
+            self.assertIn("owner_corrected_bank", row["required_owner_fields"])
+            self.assertEqual(row["current_company"], "武汉开明")
+            self.assertEqual(row["current_bank"], "")
+            self.assertEqual(row["owner_decision_manifest_relative_path"], f"KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_fact_candidate_owner_decisions/{run_id}.json")
+            self.assertEqual(row["fund_ledger_write_allowed"], "false")
+            self.assertEqual(row["formal_fund_ledger_write_allowed"], "false")
+            self.assertEqual(row["financial_fact_promoted"], "false")
+            self.assertEqual(row["management_conclusion_allowed"], "false")
+
+            with (run_dir / "ocr_fact_controlled_ledger_apply_gate.csv").open(encoding="utf-8-sig", newline="") as f:
+                apply_gate_rows = list(csv.DictReader(f))
+            self.assertEqual(apply_gate_rows[0]["apply_gate_status"], "blocked_missing_required_ledger_fields")
+            self.assertEqual(apply_gate_rows[0]["planned_apply_count"], "0")
+
+            cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_queue_count"], 1)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_queue_blocking_count"], 1)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_queue_write_allowed_count"], 0)
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertFalse(cross_review["management_conclusion_allowed"])
 
