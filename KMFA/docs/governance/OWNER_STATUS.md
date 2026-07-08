@@ -974,3 +974,11 @@ KMFA 当前版本 `0.1.4-residual-difference-authorized-source-reference-or-excl
 - owner/authorized-agent completion: `0/48`; all 48 closure items remain blocked pending authorized source reference, owner exclusion, formula mapping or non-numeric mapping resolution.
 - decision: `NO_GO`; business execution is not allowed.
 - evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK_FOLLOW_UP_FINAL_CHECK_CLOSURE/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_final_check_closure_manifest.json`
+
+
+## 2026-07-08｜owner/authorized-agent resolution intake after final-check closure
+
+- task: `KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-RESOLUTION-INTAKE-AFTER-FINAL-CHECK-CLOSURE-20260708`
+- owner/authorized-agent resolution completion: `0/48`; all 48 intake items remain blocked pending authorized source reference, owner exclusion, formula mapping or non-numeric mapping resolution.
+- decision: `NO_GO`; business execution is not allowed.
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_AFTER_FINAL_CHECK_CLOSURE/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_after_final_check_closure_manifest.json`
