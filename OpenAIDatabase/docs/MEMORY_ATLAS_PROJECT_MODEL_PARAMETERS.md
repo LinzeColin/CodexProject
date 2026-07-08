@@ -1,3 +1,42 @@
+## 123. Memory Atlas v1.2 S05 P3 Evidence Refs Parameters
+
+状态：`phase_s05_p3_evidence_refs_completed_pending_s05_review`。
+
+验收 ID：`ACC-MA-V12-S05P3`。
+
+S05 P3 固定以下参数：
+
+- `MA-V12-S05P3`
+- `validate:v1.2-s05-p3`
+- `extract_memory_atlas_facets.py`
+- `atlasctl.py analyze --stage facets`
+- `data/derived/behavior_intelligence/events.json`
+- evidence mode：`lightweight_evidence_refs`。
+- event count：217。
+- evidence_ref_count：434。
+- S05 P3 完成后下一步为 pending S05 Review。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S05P3-001 phase_status = phase_s05_p3_evidence_refs_completed_pending_s05_review`
+- `PARAM-MA-V12-S05P3-002 validator = validate:v1.2-s05-p3`
+- `PARAM-MA-V12-S05P3-003 extractor = extract_memory_atlas_facets.py`
+- `PARAM-MA-V12-S05P3-004 output = data/derived/behavior_intelligence/events.json`
+- `PARAM-MA-V12-S05P3-005 event_count = 217`
+- `PARAM-MA-V12-S05P3-006 evidence_ref_count = 434`
+- `PARAM-MA-V12-S05P3-007 next_gate = pending S05 Review`
+- `PARAM-MA-V12-S05P3-008 phase_boundary = No raw mutation in this phase; No fake events; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s05-p3` checks extractor runtime, atlasctl dry-run evidence
+  contract, events.json identity, event field completeness, source_id,
+  lightweight evidence_refs, source_status coverage, human/machine records,
+  canonical remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S05 P3 Evidence Refs; MA-V12-S05P3; ACC-MA-V12-S05P3; phase_s05_p3_evidence_refs_completed_pending_s05_review; validate:v1.2-s05-p3; extract_memory_atlas_facets.py; atlasctl.py analyze --stage facets; events.json; 217 events; 434 evidence_refs; S05 P3; pending S05 Review; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No fake events.
+
 ## 122. Memory Atlas v1.2 S05 P2 Facet Extractor Parameters
 
 状态：`phase_s05_p2_facet_extractor_completed_pending_s05_p3`。

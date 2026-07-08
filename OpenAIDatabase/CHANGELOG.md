@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S05 P3 Evidence Refs
+
+- Added lightweight `evidence_refs` to `data/derived/behavior_intelligence/events.json`.
+- Updated `scripts/extract_memory_atlas_facets.py` and
+  `scripts/atlasctl.py analyze --stage facets` for `MA-V12-S05P3` /
+  `ACC-MA-V12-S05P3`.
+- Added `validate:v1.2-s05-p3` and
+  `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p3.cjs`.
+- Added `docs/reviews/memory_atlas_v1_2_s05_p3_evidence_refs.md`.
+- Registered status `phase_s05_p3_evidence_refs_completed_pending_s05_review`.
+- Preserved S05 P3 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation in this phase and No fake events.
+- Marked the next gate as pending S05 Review.
+
 ## Unreleased - Memory Atlas v1.2 S05 P2 Facet Extractor
 
 - Added `scripts/extract_memory_atlas_facets.py` for canonical behavior-event extraction.
