@@ -80,6 +80,7 @@ REQUIRED_SKILL_STRINGS = [
     "ready_for_owner_decision_manifest_validation_no_write",
     "blocked_missing_owner_decision_manifest",
     "install_owner_decision_manifest.py",
+    "--draft-csv-path",
     "--acknowledge-owner-reviewed-values",
     "BLOCKED_OWNER_VALUES_MISSING",
     "ocr_fact_owner_decision_correction_roundtrip_audit.csv",
