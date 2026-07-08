@@ -1,3 +1,40 @@
+## 136. Memory Atlas v1.2 S08 Review Parameters
+
+状态：`stage_s08_review_passed_pending_s09_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S08-REVIEW`。
+
+S08 Review 固定以下参数：
+
+- `MA-V12-S08-REVIEW`
+- `validate:v1.2-s08-review`
+- `docs/reviews/memory_atlas_v1_2_s08_review.md`
+- `data/derived/agent_collaboration/agent_collaboration_quality_report.json`
+- `data/derived/agent_collaboration/agent_authorization_boundary_report.json`
+- `data/derived/agent_collaboration/stage_flight_recorder.json`
+- S08 Review 完成后下一步为 pending S09 P1。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S08-REVIEW-001 stage_status = stage_s08_review_passed_pending_s09_no_github_main_upload`
+- `PARAM-MA-V12-S08-REVIEW-002 validator = validate:v1.2-s08-review`
+- `PARAM-MA-V12-S08-REVIEW-003 collaboration_metric_count = 7 metrics`
+- `PARAM-MA-V12-S08-REVIEW-004 authorization_machine_check_count = 4 checks`
+- `PARAM-MA-V12-S08-REVIEW-005 stage_flight_required_field_count = 10 fields`
+- `PARAM-MA-V12-S08-REVIEW-006 phase_record_count = 3 records`
+- `PARAM-MA-V12-S08-REVIEW-007 next_gate = pending S09 P1`
+- `PARAM-MA-V12-S08-REVIEW-008 stage_boundary = No raw mutation; No multi-agent system; No complex Delegation Contract UI; No proposal apply execution; No S09 work; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s08-review` checks S08 P3 predecessor, S08 P1 collaboration
+  quality output, S08 P2 authorization boundary output, S08 P3 stage flight
+  output, S08 atlasctl dry-runs and audits, human/machine records, canonical
+  remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S08 Review; MA-V12-S08-REVIEW; ACC-MA-V12-S08-REVIEW; stage_s08_review_passed_pending_s09_no_github_main_upload; validate:v1.2-s08-review; S08 Review; pending S09 P1; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No multi-agent system; No complex Delegation Contract UI; No proposal apply execution; No S09 work.
+
 ## 135. Memory Atlas v1.2 S08 P3 Stage Flight Recorder Parameters
 
 状态：`phase_s08_p3_stage_flight_recorder_completed_pending_s08_review`。

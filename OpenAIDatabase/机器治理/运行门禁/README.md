@@ -2,8 +2,34 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S08 P3。任务 ID 为 `MA-V12-S08P3`，验收 ID 为
-`ACC-MA-V12-S08P3`，validator 为 `validate:v1.2-s08-p3`。
+当前阶段是 S08 Review。任务 ID 为 `MA-V12-S08-REVIEW`，验收 ID 为
+`ACC-MA-V12-S08-REVIEW`，validator 为 `validate:v1.2-s08-review`。
+
+S08 Review 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s08_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s08_review.cjs`
+- `data/derived/agent_collaboration/agent_collaboration_quality_report.json`
+- `data/derived/agent_collaboration/agent_authorization_boundary_report.json`
+- `data/derived/agent_collaboration/stage_flight_recorder.json`
+
+S08 Review gate：
+
+- `validate:v1.2-s08-review` 可验证 S08 P1/P2/P3 整体复审。
+- `validate:v1.2-s08-p3` 在 clean tree 可通过。
+- `python scripts/atlasctl.py audit --check agent-collaboration` 返回 PASS。
+- `python scripts/atlasctl.py audit --check agent-authorization` 返回 PASS。
+- `python scripts/atlasctl.py audit --check stage-flight` 返回 PASS。
+- Codex/Agent 协作质量覆盖 planning、execution、review、rework、scope clarity、testability 和 rollbackability。
+- 授权边界保留 raw no-apply 和 `approved_by_human` 门禁。
+- stage flight recorder 保持 10 个轻量字段和 3 条 phase records。
+- 不创建多 agent 系统。
+- 不创建复杂 Delegation Contract UI。
+- 不执行 proposal apply。
+- 不修改 raw。
+
+No GitHub main upload in this phase。
+下一步是 S09 P1。
 
 S08 P3 产物：
 
@@ -28,7 +54,7 @@ S08 P3 gate：
 - 不修改 raw。
 
 No GitHub main upload in this phase。
-下一步是 S08 Review。
+S08 P3 的下一历史 gate 是 S08 Review，当前已完成。
 
 S08 P2 产物：
 

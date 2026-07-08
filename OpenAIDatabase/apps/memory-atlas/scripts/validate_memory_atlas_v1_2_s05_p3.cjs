@@ -204,12 +204,12 @@ function currentStateIsS08P1() {
   const behavior = readRepoFile("机器治理/行为智能模型/README.md");
   const runGate = readRepoFile("机器治理/运行门禁/README.md");
   return (
-    hasAll(quick, ["当前阶段是 S08 P3", "MA-V12-S08P3", "ACC-MA-V12-S08P3", "下一步只允许进入 S08 Review"]) &&
-    hasAll(overview, ["S08 P3 已完成", "stage flight recorder", "stage_flight_recorder.json", "下一步是 S08 Review"]) &&
-    hasAll(machine, ["当前为 S08 P3", "MA-V12-S08P3", "validate:v1.2-s08-p3", "下一步是 S08 Review"]) &&
-    hasAll(dataContract, ["当前 S08 P3 已完成", "stage_flight_recorder.json", "下一步是 S08 Review"]) &&
-    hasAll(behavior, ["当前 S08 P3 已完成", "stage_flight_recorder_fields.v1_2_s08_p3.json", "stage_flight_recorder.json", "下一步是 S08 Review"]) &&
-    hasAll(runGate, ["当前阶段是 S08 P3", "MA-V12-S08P3", "ACC-MA-V12-S08P3", "validate:v1.2-s08-p3"])
+    hasAll(quick, ["当前阶段是 S08 Review", "MA-V12-S08-REVIEW", "ACC-MA-V12-S08-REVIEW", "下一步只允许进入 S09 P1"]) &&
+    hasAll(overview, ["S08 Review 已完成", "Codex/Agent 协作质量", "stage flight recorder", "下一步是 S09 P1"]) &&
+    hasAll(machine, ["当前为 S08 Review", "MA-V12-S08-REVIEW", "validate:v1.2-s08-review", "下一步是 S09 P1"]) &&
+    hasAll(dataContract, ["当前 S08 Review 已完成", "agent_collaboration_quality_report.json", "agent_authorization_boundary_report.json", "stage_flight_recorder.json", "下一步是 S09 P1"]) &&
+    hasAll(behavior, ["当前 S08 Review 已完成", "Codex/Agent 协作质量", "授权边界", "stage flight recorder", "下一步是 S09 P1"]) &&
+    hasAll(runGate, ["当前阶段是 S08 Review", "MA-V12-S08-REVIEW", "ACC-MA-V12-S08-REVIEW", "validate:v1.2-s08-review"])
   );
 }
 
