@@ -41,7 +41,7 @@ v1.2 Final Review 固定以下参数：
 
 - `validate:v1.2-final-review` checks package registration, final review
   artifact, machine final status, atlasctl final audit, governance records,
-  S01-S14 review validators after clean commit and raw/private safety.
+  S01-S14 review script constants, review artifacts and raw/private safety.
 
 Machine-readable boundary summary: Memory Atlas v1.2 Final Review; MA-V12-FINAL-REVIEW; ACC-MA-V12-FINAL-REVIEW; v1_2_final_review_passed_pending_github_main_sync_no_upload_yet; validate:v1.2-final-review; v1.2 Final Review; 四线14Stage; S01-S14 Review; raw append-only; credential audit; Chinese UX; visual ROI; report contract; proposal apply; owner-daily; final audit; No GitHub main upload; No remote push; No raw mutation; pending GitHub main sync.
 
