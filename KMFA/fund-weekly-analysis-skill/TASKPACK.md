@@ -29,4 +29,4 @@ Runtime package rule: `ocr_fact_candidate_owner_decision_progress_summary.csv` i
 
 Owner decision intake rule: `tools/install_owner_decision_manifest.py --draft-csv-path <reviewed.csv>` may validate spreadsheet-edited owner decisions, but it remains dry-run by default and never promotes facts, writes ledgers, mutates source files, or releases management conclusions.
 
-Owner review export rule: `tools/export_owner_decision_review_csv.py` may export a small `ocr_fact_candidate_owner_decision_review_batch.csv` from the private owner worklist for spreadsheet review. It only prepares a pending-review CSV and must keep every write/promotion/conclusion flag false.
+Owner review export rule: `tools/export_owner_decision_review_csv.py` may export a small `ocr_fact_candidate_owner_decision_review_batch.csv` and, with `--xlsx`, a native `ocr_fact_candidate_owner_decision_review_batch.xlsx` from the private owner worklist for spreadsheet review. It only prepares pending-review review files and must keep every write/promotion/conclusion flag false.
