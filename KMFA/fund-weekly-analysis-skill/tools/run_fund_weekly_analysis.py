@@ -828,10 +828,118 @@ def build_attachment_repair_plan(manifest: dict, attachment_dry_run_rows: list[d
     return rows
 
 
-def build_attachment_repair_apply_gate(manifest: dict, attachment_repair_plan_rows: list[dict]) -> list[dict]:
+def attachment_repair_authorization_relative_path(run_id: str) -> str:
+    return f"KMFA/metadata/fund_weekly_analysis/private_runtime/attachment_repair_authorizations/{run_id}.json"
+
+
+def load_attachment_repair_authorization(repo_root: Path, run_id: str) -> dict:
+    relative_path = attachment_repair_authorization_relative_path(run_id)
+    path = repo_root / relative_path
+    missing = {
+        "relative_path": relative_path,
+        "status": "missing_authorization_manifest",
+        "entries": {},
+        "metadata": {},
+    }
+    if not path.exists():
+        return missing
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {**missing, "status": "invalid_authorization_json"}
+    if not isinstance(payload, dict):
+        return {**missing, "status": "invalid_authorization_schema"}
+    required = {
+        "authorization_manifest_version": "1",
+        "run_id": run_id,
+        "authorization_scope": "attachment_repair_plan_validation_only",
+        "source_mutation_allowed": False,
+        "apply_execution_allowed": False,
+    }
+    if any(payload.get(key) != value for key, value in required.items()):
+        return {**missing, "status": "invalid_authorization_schema"}
+    raw_entries = payload.get("repair_plan_authorizations")
+    if not isinstance(raw_entries, list):
+        return {**missing, "status": "invalid_authorization_schema"}
+    entries = {}
+    for entry in raw_entries:
+        if not isinstance(entry, dict):
+            return {**missing, "status": "invalid_authorization_schema"}
+        repair_plan_id = entry.get("repair_plan_id")
+        command_family = entry.get("required_command_family")
+        if not isinstance(repair_plan_id, str) or not repair_plan_id:
+            return {**missing, "status": "invalid_authorization_schema"}
+        if not isinstance(command_family, str) or not command_family:
+            return {**missing, "status": "invalid_authorization_schema"}
+        entries[repair_plan_id] = {
+            "required_command_family": command_family,
+            "authorized": entry.get("authorized") is True,
+        }
+    return {
+        "relative_path": relative_path,
+        "status": "valid_authorization_manifest",
+        "entries": entries,
+        "metadata": {
+            "authorization_ticket": str(payload.get("authorization_ticket", "")),
+            "authorized_by": str(payload.get("authorized_by", "")),
+            "authorized_at": str(payload.get("authorized_at", "")),
+            "authorization_scope": str(payload.get("authorization_scope", "")),
+        },
+    }
+
+
+def attachment_repair_gate_status(row: dict, authorization: dict) -> tuple[str, str, str, str]:
+    auth_status = authorization["status"]
+    if auth_status == "missing_authorization_manifest":
+        return (
+            "false",
+            "missing_authorization_manifest",
+            "blocked_missing_operator_authorization",
+            "Controlled attachment repair apply is blocked until a private operator authorization manifest exists.",
+        )
+    if auth_status != "valid_authorization_manifest":
+        return (
+            "false",
+            auth_status,
+            "blocked_invalid_operator_authorization",
+            "Controlled attachment repair apply is blocked because the operator authorization manifest is invalid.",
+        )
+    entry = authorization["entries"].get(row["repair_plan_id"])
+    if entry is None:
+        return (
+            "false",
+            "repair_plan_not_authorized",
+            "blocked_missing_repair_plan_authorization",
+            "Controlled attachment repair apply is blocked because this repair plan row is not covered by the operator authorization manifest.",
+        )
+    if entry["required_command_family"] != row["required_command_family"]:
+        return (
+            "true",
+            "authorization_command_family_mismatch",
+            "blocked_authorization_command_mismatch",
+            "Controlled attachment repair apply is blocked because the authorization command family does not match the repair plan.",
+        )
+    if not entry["authorized"]:
+        return (
+            "true",
+            "repair_plan_authorization_not_true",
+            "blocked_repair_plan_not_authorized",
+            "Controlled attachment repair apply is blocked because this repair plan row is not explicitly authorized.",
+        )
+    return (
+        "true",
+        "valid_manifest_validation_only",
+        "blocked_apply_engine_not_enabled",
+        "Operator authorization manifest is valid for this row, but this runner only validates authorization and does not execute repairs.",
+    )
+
+
+def build_attachment_repair_apply_gate(manifest: dict, repo_root: Path, attachment_repair_plan_rows: list[dict]) -> list[dict]:
     rows: list[dict] = []
-    authorization_path = f"KMFA/metadata/fund_weekly_analysis/private_runtime/attachment_repair_authorizations/{manifest['run_id']}.json"
+    authorization = load_attachment_repair_authorization(repo_root, manifest["run_id"])
+    metadata = authorization["metadata"]
     for row in attachment_repair_plan_rows:
+        authorization_present, validation_status, apply_gate_status, gate_reason = attachment_repair_gate_status(row, authorization)
         rows.append({
             "apply_gate_id": f"ATTACHGATE-{manifest['run_id']}-{len(rows) + 1:05d}",
             "repair_plan_id": row["repair_plan_id"],
@@ -839,14 +947,19 @@ def build_attachment_repair_apply_gate(manifest: dict, attachment_repair_plan_ro
             "open_message_id": row["open_message_id"],
             "required_command_family": row["required_command_family"],
             "operator_authorization_required": "true",
-            "authorization_manifest_relative_path": authorization_path,
-            "operator_authorization_present": "false",
-            "apply_gate_status": "blocked_missing_operator_authorization",
+            "authorization_manifest_relative_path": authorization["relative_path"],
+            "operator_authorization_present": authorization_present,
+            "authorization_validation_status": validation_status,
+            "authorization_ticket": metadata.get("authorization_ticket", ""),
+            "authorized_by": metadata.get("authorized_by", ""),
+            "authorized_at": metadata.get("authorized_at", ""),
+            "authorization_scope": metadata.get("authorization_scope", ""),
+            "apply_gate_status": apply_gate_status,
             "apply_allowed": "false",
             "source_mutation_allowed": "false",
             "apply_performed": "false",
             "formal_fact_allowed": "false",
-            "gate_reason": "Controlled attachment repair apply is blocked until a separate operator authorization manifest and repair run are approved.",
+            "gate_reason": gate_reason,
             "relative_path": row["relative_path"],
             "review_status": "pending_operator_authorization",
         })
@@ -1936,7 +2049,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     attachment_remediation_rows = build_attachment_reconciliation_remediation(manifest, attachment_reconciliation_rows)
     attachment_dry_run_rows = build_attachment_remediation_dry_run(manifest, attachment_remediation_rows)
     attachment_repair_plan_rows = build_attachment_repair_plan(manifest, attachment_dry_run_rows)
-    attachment_apply_gate_rows = build_attachment_repair_apply_gate(manifest, attachment_repair_plan_rows)
+    attachment_apply_gate_rows = build_attachment_repair_apply_gate(manifest, repo_root, attachment_repair_plan_rows)
     structured = extract_structured_csv_facts(manifest, input_dir, evidence)
     funding_forecast_rows = build_funding_forecast_rows(structured)
     cashflow_validation_rows = build_cashflow_validation_rows(structured, manifest["run_id"])
@@ -1961,6 +2074,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     manifest["attachment_repair_apply_gate_count"] = len(attachment_apply_gate_rows)
     manifest["attachment_repair_apply_blocked_count"] = sum(1 for row in attachment_apply_gate_rows if row["apply_allowed"] == "false")
     manifest["attachment_repair_authorization_present_count"] = sum(1 for row in attachment_apply_gate_rows if row["operator_authorization_present"] == "true")
+    manifest["attachment_repair_authorization_valid_count"] = sum(1 for row in attachment_apply_gate_rows if row["authorization_validation_status"] == "valid_manifest_validation_only")
     manifest["attachment_repair_apply_allowed_count"] = sum(1 for row in attachment_apply_gate_rows if row["apply_allowed"] == "true")
     manifest["metadata_signal_count"] = len(metadata_signals)
     manifest["forecast_row_count"] = len(funding_forecast_rows)
@@ -2215,6 +2329,11 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "operator_authorization_required",
         "authorization_manifest_relative_path",
         "operator_authorization_present",
+        "authorization_validation_status",
+        "authorization_ticket",
+        "authorized_by",
+        "authorized_at",
+        "authorization_scope",
         "apply_gate_status",
         "apply_allowed",
         "source_mutation_allowed",
@@ -2370,6 +2489,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "attachment_repair_apply_gate_count": manifest["attachment_repair_apply_gate_count"],
         "attachment_repair_apply_blocked_count": manifest["attachment_repair_apply_blocked_count"],
         "attachment_repair_authorization_present_count": manifest["attachment_repair_authorization_present_count"],
+        "attachment_repair_authorization_valid_count": manifest["attachment_repair_authorization_valid_count"],
         "attachment_repair_apply_allowed_count": manifest["attachment_repair_apply_allowed_count"],
         "structured_financial_fact_count": len(structured["fund_rows"]),
         "metadata_signal_count": len(metadata_signals),
@@ -2415,6 +2535,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "attachment_repair_apply_gate_count": manifest["attachment_repair_apply_gate_count"],
                 "attachment_repair_apply_blocked_count": manifest["attachment_repair_apply_blocked_count"],
                 "attachment_repair_authorization_present_count": manifest["attachment_repair_authorization_present_count"],
+                "attachment_repair_authorization_valid_count": manifest["attachment_repair_authorization_valid_count"],
                 "attachment_repair_apply_allowed_count": manifest["attachment_repair_apply_allowed_count"],
                 "structured_financial_fact_count": len(structured["fund_rows"]),
                 "metadata_signal_count": len(metadata_signals),
@@ -2537,6 +2658,7 @@ def main() -> int:
         f"Attachment remediation dry-run count: {manifest.get('attachment_remediation_dry_run_count', 0)}\n\n"
         f"Attachment repair plan open count: {manifest.get('attachment_repair_plan_open_count', 0)}\n\n"
         f"Attachment repair apply blocked count: {manifest.get('attachment_repair_apply_blocked_count', 0)}\n\n"
+        f"Attachment repair authorization valid count: {manifest.get('attachment_repair_authorization_valid_count', 0)}\n\n"
         f"KMFA metadata signal count: {manifest.get('metadata_signal_count', 0)}\n\n"
         f"Known due-date funding forecast row count: {manifest.get('forecast_row_count', 0)}\n\n"
         f"Cashflow validation row count: {manifest.get('cashflow_validation_row_count', 0)}\n\n"

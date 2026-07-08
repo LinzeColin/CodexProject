@@ -47,6 +47,9 @@ REQUIRED_SKILL_STRINGS = [
     "attachment_remediation_dry_run.csv",
     "attachment_repair_plan.csv",
     "attachment_repair_apply_gate.csv",
+    "attachment_repair_authorizations",
+    "authorization_scope=attachment_repair_plan_validation_only",
+    "valid_manifest_validation_only",
 ]
 EXPECTED_SHEETS = [
     "01_首页总览",
