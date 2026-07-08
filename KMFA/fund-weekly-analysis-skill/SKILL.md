@@ -149,6 +149,7 @@ Required files:
 * `attachment_repair_plan.csv`
 * `attachment_repair_apply_gate.csv`
 * `attachment_repair_authorization_template.json`
+* `attachment_repair_authorization_preview.csv`
 * `workbook_quality_checks.csv`
 * `kmfa_metadata_signals.csv`
 * `exception_tasks.csv`
@@ -173,6 +174,7 @@ Current deterministic runner status contract:
 * Attachment repair plan rows are gated by `attachment_repair_apply_gate.csv`. Without a separate private operator authorization manifest, every row must keep `operator_authorization_present=false`, `apply_allowed=false`, `source_mutation_allowed=false`, and `apply_performed=false`.
 * Optional private authorization manifests live under `KMFA/metadata/fund_weekly_analysis/private_runtime/attachment_repair_authorizations/<run_id>.json`. The only accepted public-safe schema is `authorization_manifest_version=1`, matching `run_id`, `authorization_scope=attachment_repair_plan_validation_only`, `source_mutation_allowed=false`, `apply_execution_allowed=false`, and row-level `repair_plan_authorizations`. A valid manifest may set `authorization_validation_status=valid_manifest_validation_only`, but this runner still keeps `apply_allowed=false` and performs no repair.
 * The runner emits `attachment_repair_authorization_template.json` in the run directory as a private draft only. All row entries default to `authorized=false`; the template is not read as authorization unless an operator edits and saves a confirmed copy to `attachment_repair_authorizations/<run_id>.json`.
+* The runner emits `attachment_repair_authorization_preview.csv` to show authorization coverage impact from the apply gate. Rows with valid authorization may reach `ready_for_operator_review_no_apply`, but still keep `apply_allowed=false`, `source_mutation_allowed=false`, and `formal_fact_allowed=false`.
 * CSV files with the exact structured columns `date, company, bank, account_alias, liquidity_tier, inflow, outflow, ending_balance, flow_type` are extracted into `fund_ledger.csv`, `net_flow_ledger.csv`, `company_bank_matrix.csv`, and `tax_loan_risk.csv` as `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW`.
 * When structured CSV rows include real `due_date` risk/opportunity lines, the runner writes `funding_forecast.csv` and `02_资金趋势预测` with known due-date projections only. These remain `structured_csv_forecast_pending_review`, and they are not a management conclusion.
 * When structured CSV facts exist, the runner writes `cashflow_validation.csv`: balance continuity, operating cashflow effect, and internal-transfer exclusion are checked per ledger row. Continuity failures create exception tasks and block management conclusions.

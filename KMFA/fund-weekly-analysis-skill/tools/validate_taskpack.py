@@ -48,10 +48,12 @@ REQUIRED_SKILL_STRINGS = [
     "attachment_repair_plan.csv",
     "attachment_repair_apply_gate.csv",
     "attachment_repair_authorization_template.json",
+    "attachment_repair_authorization_preview.csv",
     "attachment_repair_authorizations",
     "authorization_scope=attachment_repair_plan_validation_only",
     "authorized=false",
     "valid_manifest_validation_only",
+    "ready_for_operator_review_no_apply",
 ]
 EXPECTED_SHEETS = [
     "01_首页总览",

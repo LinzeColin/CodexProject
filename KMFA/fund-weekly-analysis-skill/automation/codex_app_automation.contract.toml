@@ -7,7 +7,7 @@ status = "ACTIVE"
 rrule = "FREQ=DAILY;BYHOUR=11;BYMINUTE=30"
 timezone = "Australia/Sydney"
 execution_environment = "local"
-cwds = ["/Users/linzezhang/CodexProject"]
+cwds = ["/Users/linzezhang/Documents/Codex/2026-07-04/392b1a986ba680338068ddc1c2a0fd0e-https-app-notion-com-p", "/Users/linzezhang/CodexProject"]
 model = "gpt-5.3-codex-spark"
 reasoning_effort = "xhigh"
 prompt_file = "automation/daily_1130_sydney.prompt.md"
