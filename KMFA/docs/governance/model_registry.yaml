@@ -3087,3 +3087,19 @@ kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_applicati
   evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_AUTHORITATIVE_BINDING
   validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_authoritative_binding.py
   scope: Authorized source reference or owner exclusion application owner/agent external action required before authoritative binding only; converts 48 source follow-up blockers into an ignored private binding-requirement queue, records 0 ready actions and 48 blockers, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_raw_to_processed_value_comparison:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-raw-to-processed-value-comparison"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-RAW-TO-PROCESSED-VALUE-COMPARISON-001
+  parameter_refs:
+    - PARAM-KMFA-1597
+    - PARAM-KMFA-1598
+    - PARAM-KMFA-1599
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_RAW_TO_PROCESSED_VALUE_COMPARISON
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_raw_to_processed_value_comparison.py
+  scope: Authorized source reference or owner exclusion application owner/agent external action required before raw-to-processed value comparison only; converts 48 source binding-requirement blockers into an ignored private raw-comparison requirement queue, records 0 ready actions and 48 blockers, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
