@@ -417,6 +417,36 @@ def collect_ocr_text_candidates(manifest: dict, input_dir: Path, evidence: list[
     return rows
 
 
+def collect_screenshot_ocr_coverage(manifest: dict, evidence: list[dict]) -> list[dict]:
+    manifest_paths = {item["relative_path"]: item for item in manifest["files"]}
+    rows: list[dict] = []
+    for row in evidence:
+        if row["kind"] != "screenshot":
+            continue
+        sidecar_keys = [str(path) for path in ocr_sidecar_candidates(row["relative_path"])]
+        present_sidecar = next((key for key in sidecar_keys if key in manifest_paths), "")
+        if present_sidecar:
+            coverage_status = "ocr_text_sidecar_present_pending_review"
+            next_action = "review_ocr_text_candidate"
+            review_status = "pending_human_review"
+        else:
+            coverage_status = "ocr_text_sidecar_missing"
+            next_action = "run_ocr_or_attach_real_ocr_sidecar"
+            review_status = "pending_ocr_extraction"
+        rows.append({
+            "ocr_coverage_id": f"OCRCOV-{manifest['run_id']}-{len(rows) + 1:05d}",
+            "evidence_id": row["evidence_id"],
+            "source_image_relative_path": row["relative_path"],
+            "ocr_sidecar_candidates": ";".join(sidecar_keys),
+            "ocr_text_relative_path": present_sidecar,
+            "ocr_coverage_status": coverage_status,
+            "next_action": next_action,
+            "review_status": review_status,
+            "financial_fact_promoted": "false",
+        })
+    return rows
+
+
 def extract_ocr_value_candidates(manifest: dict, input_dir: Path, ocr_text_candidates: list[dict]) -> list[dict]:
     rows: list[dict] = []
     for candidate in ocr_text_candidates:
@@ -2103,6 +2133,7 @@ def build_company_bank_matrix_rows(fund_rows: list[dict]) -> list[dict]:
 
 def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Path, repo_root: Path) -> None:
     evidence = write_evidence_index_stub(manifest, run_dir)
+    screenshot_ocr_coverage_rows = collect_screenshot_ocr_coverage(manifest, evidence)
     ocr_text_candidates = collect_ocr_text_candidates(manifest, input_dir, evidence)
     ocr_value_candidates = extract_ocr_value_candidates(manifest, input_dir, ocr_text_candidates)
     chat_text_candidates = collect_chat_text_candidates(manifest, input_dir, evidence)
@@ -2121,6 +2152,9 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     metadata_signals = collect_kmfa_metadata_signals(repo_root, manifest["run_id"])
     balance_continuity_fail_count = sum(1 for row in cashflow_validation_rows if row["validation_status"] == "FAIL")
     internal_transfer_excluded_count = sum(1 for row in cashflow_validation_rows if row["internal_transfer_excluded"] == "true")
+    manifest["screenshot_ocr_coverage_count"] = len(screenshot_ocr_coverage_rows)
+    manifest["screenshot_ocr_ready_count"] = sum(1 for row in screenshot_ocr_coverage_rows if row["ocr_coverage_status"] == "ocr_text_sidecar_present_pending_review")
+    manifest["screenshot_ocr_missing_count"] = sum(1 for row in screenshot_ocr_coverage_rows if row["ocr_coverage_status"] == "ocr_text_sidecar_missing")
     manifest["ocr_text_candidate_count"] = len(ocr_text_candidates)
     manifest["ocr_value_candidate_count"] = len(ocr_value_candidates)
     manifest["chat_text_candidate_count"] = len(chat_text_candidates)
@@ -2249,6 +2283,17 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "review_status",
         "source_evidence_id",
     ], cashflow_validation_rows)
+    write_csv(run_dir / "screenshot_ocr_coverage.csv", [
+        "ocr_coverage_id",
+        "evidence_id",
+        "source_image_relative_path",
+        "ocr_sidecar_candidates",
+        "ocr_text_relative_path",
+        "ocr_coverage_status",
+        "next_action",
+        "review_status",
+        "financial_fact_promoted",
+    ], screenshot_ocr_coverage_rows)
     write_csv(run_dir / "ocr_text_candidates.csv", [
         "ocr_candidate_id",
         "evidence_id",
@@ -2475,6 +2520,18 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
             "relative_path": row["ocr_text_relative_path"],
             "review_status": "pending",
         })
+    for row in screenshot_ocr_coverage_rows:
+        if row["ocr_coverage_status"] != "ocr_text_sidecar_missing":
+            continue
+        exception_tasks.append({
+            "task_id": f"EX-{manifest['run_id']}-{len(exception_tasks) + 1:05d}",
+            "evidence_id": row["evidence_id"],
+            "task_type": "SCREENSHOT_OCR_MISSING",
+            "severity": "blocking_for_financial_fact",
+            "reason": f"{row['source_image_relative_path']} has no real OCR text sidecar; run OCR or attach a reviewed sidecar before value extraction.",
+            "relative_path": row["source_image_relative_path"],
+            "review_status": "pending",
+        })
     for row in ocr_value_candidates:
         exception_tasks.append({
             "task_id": f"EX-{manifest['run_id']}-{len(exception_tasks) + 1:05d}",
@@ -2561,6 +2618,9 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "run_id": manifest["run_id"],
         "management_conclusion_allowed": False,
         "generated_financial_amount_count": 0,
+        "screenshot_ocr_coverage_count": manifest["screenshot_ocr_coverage_count"],
+        "screenshot_ocr_ready_count": manifest["screenshot_ocr_ready_count"],
+        "screenshot_ocr_missing_count": manifest["screenshot_ocr_missing_count"],
         "ocr_text_candidate_count": len(ocr_text_candidates),
         "ocr_value_candidate_count": len(ocr_value_candidates),
         "chat_text_candidate_count": len(chat_text_candidates),
@@ -2612,6 +2672,9 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
             {
                 "event": "no_hallucination_outputs_written",
                 "generated_financial_amount_count": 0,
+                "screenshot_ocr_coverage_count": manifest["screenshot_ocr_coverage_count"],
+                "screenshot_ocr_ready_count": manifest["screenshot_ocr_ready_count"],
+                "screenshot_ocr_missing_count": manifest["screenshot_ocr_missing_count"],
                 "ocr_text_candidate_count": len(ocr_text_candidates),
                 "ocr_value_candidate_count": len(ocr_value_candidates),
                 "chat_text_candidate_count": len(chat_text_candidates),
@@ -2746,6 +2809,9 @@ def main() -> int:
         f"Status: {manifest['status']}\n\n"
         f"Indexed {manifest['file_count']} real source files and generated a native editable Excel workbook from the current mother template.\n\n"
         f"Structured financial fact count: {manifest.get('structured_fact_count', 0)}\n\n"
+        f"Screenshot OCR coverage count: {manifest.get('screenshot_ocr_coverage_count', 0)}\n\n"
+        f"Screenshot OCR ready count: {manifest.get('screenshot_ocr_ready_count', 0)}\n\n"
+        f"Screenshot OCR missing count: {manifest.get('screenshot_ocr_missing_count', 0)}\n\n"
         f"OCR text candidate count: {manifest.get('ocr_text_candidate_count', 0)}\n\n"
         f"OCR value candidate count: {manifest.get('ocr_value_candidate_count', 0)}\n\n"
         f"Chat text candidate count: {manifest.get('chat_text_candidate_count', 0)}\n\n"

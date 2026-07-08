@@ -409,6 +409,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "tax_loan_risk.csv",
                 "funding_forecast.csv",
                 "cashflow_validation.csv",
+                "screenshot_ocr_coverage.csv",
                 "ocr_text_candidates.csv",
                 "ocr_value_candidates.csv",
                 "chat_text_candidates.csv",
@@ -436,12 +437,14 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
 
             with (run_dir / "exception_tasks.csv").open(encoding="utf-8-sig", newline="") as f:
                 rows = list(csv.DictReader(f))
-            self.assertEqual(len(rows), 2)
-            self.assertTrue(all(row["task_type"] == "PENDING_OCR_OR_REVIEW" for row in rows))
+            task_type_counts = {task_type: sum(row["task_type"] == task_type for row in rows) for task_type in {row["task_type"] for row in rows}}
+            self.assertEqual(task_type_counts["PENDING_OCR_OR_REVIEW"], 2)
+            self.assertEqual(task_type_counts["SCREENSHOT_OCR_MISSING"], 1)
 
             cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
             self.assertFalse(cross_review["management_conclusion_allowed"])
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
+            self.assertEqual(cross_review["screenshot_ocr_missing_count"], 1)
 
     def test_runner_collects_real_ocr_text_sidecars_without_promoting_amounts(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -456,6 +459,8 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "招商银行 基本户 2026-07-08 期末余额 12345.67 可用余额 12000.00",
                 encoding="utf-8",
             )
+            missing_ocr_screenshot = source_day / "20260708113100_杨婷_银行账户截图.png"
+            missing_ocr_screenshot.write_bytes(b"real-image-without-ocr-sidecar")
 
             result = subprocess.run(
                 [
@@ -477,6 +482,28 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, result.stderr)
             run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/ocr_sidecar_test"
+            with (run_dir / "screenshot_ocr_coverage.csv").open(encoding="utf-8-sig", newline="") as f:
+                coverage_rows = list(csv.DictReader(f))
+            self.assertEqual(len(coverage_rows), 2)
+            coverage_by_path = {row["source_image_relative_path"]: row for row in coverage_rows}
+            self.assertEqual(
+                coverage_by_path["files/0708/20260708113000_杨婷_资金账户截图.png"]["ocr_coverage_status"],
+                "ocr_text_sidecar_present_pending_review",
+            )
+            self.assertEqual(
+                coverage_by_path["files/0708/20260708113000_杨婷_资金账户截图.png"]["ocr_text_relative_path"],
+                "files/0708/20260708113000_杨婷_资金账户截图.png.ocr.txt",
+            )
+            self.assertEqual(
+                coverage_by_path["files/0708/20260708113100_杨婷_银行账户截图.png"]["ocr_coverage_status"],
+                "ocr_text_sidecar_missing",
+            )
+            self.assertEqual(
+                coverage_by_path["files/0708/20260708113100_杨婷_银行账户截图.png"]["next_action"],
+                "run_ocr_or_attach_real_ocr_sidecar",
+            )
+            self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in coverage_rows))
+
             with (run_dir / "ocr_text_candidates.csv").open(encoding="utf-8-sig", newline="") as f:
                 ocr_rows = list(csv.DictReader(f))
             self.assertEqual(len(ocr_rows), 1)
@@ -502,6 +529,9 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
             self.assertFalse(cross_review["management_conclusion_allowed"])
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
+            self.assertEqual(cross_review["screenshot_ocr_coverage_count"], 2)
+            self.assertEqual(cross_review["screenshot_ocr_ready_count"], 1)
+            self.assertEqual(cross_review["screenshot_ocr_missing_count"], 1)
             self.assertEqual(cross_review["ocr_text_candidate_count"], 1)
             self.assertEqual(cross_review["structured_financial_fact_count"], 0)
 
