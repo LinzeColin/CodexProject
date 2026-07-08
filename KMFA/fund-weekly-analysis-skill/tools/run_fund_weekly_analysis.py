@@ -1019,6 +1019,67 @@ def build_ocr_fact_owner_review_batch_rows(manifest: dict, cross_review_rows: li
     return rows
 
 
+def build_ocr_fact_evidence_review_queue_rows(manifest: dict, staging_preview_rows: list[dict]) -> list[dict]:
+    groups: dict[tuple[str, str, str], dict] = {}
+    for row in staging_preview_rows:
+        key = (row["candidate_metric"], row["source_evidence_id"], row["source_ocr_text_relative_path"])
+        group = groups.setdefault(key, {
+            "candidate_count": 0,
+            "candidate_amount_total": Decimal("0.00"),
+            "company_missing_count": 0,
+            "bank_missing_count": 0,
+            "operator_authorized_count": 0,
+            "authorization_blocked_count": 0,
+        })
+        group["candidate_count"] += 1
+        group["candidate_amount_total"] += Decimal(row["amount"])
+        if not row["company"]:
+            group["company_missing_count"] += 1
+        if not row["bank"]:
+            group["bank_missing_count"] += 1
+        if row["authorization_validation_status"] == "valid_manifest_validation_only":
+            group["operator_authorized_count"] += 1
+        else:
+            group["authorization_blocked_count"] += 1
+
+    rows: list[dict] = []
+    authorization_relative_path = ocr_fact_review_authorization_relative_path(manifest["run_id"])
+    for candidate_metric, source_evidence_id, source_ocr_text_relative_path in sorted(groups):
+        group = groups[(candidate_metric, source_evidence_id, source_ocr_text_relative_path)]
+        blocked_count = group["authorization_blocked_count"]
+        evidence_review_status = (
+            "blocked_evidence_review_required"
+            if blocked_count > 0
+            else "ready_for_owner_evidence_review_no_ledger_promotion"
+        )
+        rows.append({
+            "ocr_fact_evidence_review_queue_id": f"OCREVIDQUEUE-{manifest['run_id']}-{len(rows) + 1:05d}",
+            "candidate_metric": candidate_metric,
+            "source_evidence_id": source_evidence_id,
+            "source_ocr_text_relative_path": source_ocr_text_relative_path,
+            "candidate_count": str(group["candidate_count"]),
+            "candidate_amount_total": f"{group['candidate_amount_total']:.2f}",
+            "company_missing_count": str(group["company_missing_count"]),
+            "bank_missing_count": str(group["bank_missing_count"]),
+            "operator_authorized_count": str(group["operator_authorized_count"]),
+            "authorization_blocked_count": str(blocked_count),
+            "priority": "P0" if blocked_count > 0 else "P1",
+            "evidence_review_status": evidence_review_status,
+            "owner_authorization_required": "true" if group["candidate_count"] > 0 else "false",
+            "authorization_manifest_relative_path": authorization_relative_path,
+            "authorization_scope": "ocr_financial_fact_review_validation_only",
+            "fund_ledger_write_allowed": "false",
+            "financial_fact_promoted": "false",
+            "management_conclusion_allowed": "false",
+            "recommended_owner_action": (
+                "Review this evidence-level OCR fact group, resolve company/bank/date/amount gaps, then update candidate-level private OCR fact authorization"
+                if blocked_count > 0
+                else "Keep evidence group as reviewed no-write support"
+            ),
+        })
+    return rows
+
+
 def ocr_fact_proposed_ledger_role(candidate_metric: str) -> tuple[str, str, str]:
     mapping = {
         "bank_deposit": ("balance", "bank_deposit", "balance_snapshot_pending_review"),
@@ -4558,6 +4619,10 @@ def write_no_hallucination_outputs(
     ocr_fact_cross_review_rows = build_ocr_fact_cross_review_summary(manifest, ocr_financial_fact_candidates, ocr_fact_review_gate_rows)
     ocr_fact_owner_review_batch_rows = build_ocr_fact_owner_review_batch_rows(manifest, ocr_fact_cross_review_rows)
     ocr_fact_ledger_staging_preview_rows = build_ocr_fact_ledger_staging_preview(manifest, ocr_financial_fact_candidates, ocr_fact_review_gate_rows)
+    ocr_fact_evidence_review_queue_rows = build_ocr_fact_evidence_review_queue_rows(
+        manifest,
+        ocr_fact_ledger_staging_preview_rows,
+    )
     chat_text_candidates = collect_chat_text_candidates(manifest, input_dir, evidence)
     chat_value_candidates = extract_chat_value_candidates(manifest, chat_text_candidates)
     chat_evidence_links = collect_chat_evidence_links(manifest, input_dir, evidence, chat_text_candidates, chat_value_candidates)
@@ -4586,6 +4651,11 @@ def write_no_hallucination_outputs(
     manifest["ocr_fact_owner_review_batch_blocking_count"] = sum(
         1 for row in ocr_fact_owner_review_batch_rows
         if row["owner_review_status"].startswith("blocked_")
+    )
+    manifest["ocr_fact_evidence_review_queue_count"] = len(ocr_fact_evidence_review_queue_rows)
+    manifest["ocr_fact_evidence_review_queue_blocking_count"] = sum(
+        1 for row in ocr_fact_evidence_review_queue_rows
+        if row["evidence_review_status"].startswith("blocked_")
     )
     manifest["ocr_fact_ledger_staging_preview_count"] = len(ocr_fact_ledger_staging_preview_rows)
     manifest["ocr_fact_ledger_staging_preview_ready_count"] = sum(1 for row in ocr_fact_ledger_staging_preview_rows if row["staging_preview_status"] == "ready_for_ledger_staging_review_no_write")
@@ -4839,6 +4909,27 @@ def write_no_hallucination_outputs(
         "management_conclusion_allowed",
         "recommended_owner_action",
     ], ocr_fact_owner_review_batch_rows)
+    write_csv(run_dir / "ocr_fact_evidence_review_queue.csv", [
+        "ocr_fact_evidence_review_queue_id",
+        "candidate_metric",
+        "source_evidence_id",
+        "source_ocr_text_relative_path",
+        "candidate_count",
+        "candidate_amount_total",
+        "company_missing_count",
+        "bank_missing_count",
+        "operator_authorized_count",
+        "authorization_blocked_count",
+        "priority",
+        "evidence_review_status",
+        "owner_authorization_required",
+        "authorization_manifest_relative_path",
+        "authorization_scope",
+        "fund_ledger_write_allowed",
+        "financial_fact_promoted",
+        "management_conclusion_allowed",
+        "recommended_owner_action",
+    ], ocr_fact_evidence_review_queue_rows)
     write_csv(run_dir / "ocr_fact_ledger_staging_preview.csv", [
         "staging_preview_id",
         "fact_candidate_id",
@@ -5247,6 +5338,8 @@ def write_no_hallucination_outputs(
         "ocr_fact_cross_review_group_count": manifest["ocr_fact_cross_review_group_count"],
         "ocr_fact_owner_review_batch_count": manifest["ocr_fact_owner_review_batch_count"],
         "ocr_fact_owner_review_batch_blocking_count": manifest["ocr_fact_owner_review_batch_blocking_count"],
+        "ocr_fact_evidence_review_queue_count": manifest["ocr_fact_evidence_review_queue_count"],
+        "ocr_fact_evidence_review_queue_blocking_count": manifest["ocr_fact_evidence_review_queue_blocking_count"],
         "ocr_fact_ledger_staging_preview_count": manifest["ocr_fact_ledger_staging_preview_count"],
         "ocr_fact_ledger_staging_preview_ready_count": manifest["ocr_fact_ledger_staging_preview_ready_count"],
         "ocr_fact_ledger_staging_preview_blocked_count": manifest["ocr_fact_ledger_staging_preview_blocked_count"],
@@ -6000,6 +6093,8 @@ def write_no_hallucination_outputs(
                 "ocr_fact_cross_review_group_count": manifest["ocr_fact_cross_review_group_count"],
                 "ocr_fact_owner_review_batch_count": manifest["ocr_fact_owner_review_batch_count"],
                 "ocr_fact_owner_review_batch_blocking_count": manifest["ocr_fact_owner_review_batch_blocking_count"],
+                "ocr_fact_evidence_review_queue_count": manifest["ocr_fact_evidence_review_queue_count"],
+                "ocr_fact_evidence_review_queue_blocking_count": manifest["ocr_fact_evidence_review_queue_blocking_count"],
                 "ocr_fact_ledger_staging_preview_count": manifest["ocr_fact_ledger_staging_preview_count"],
                 "ocr_fact_ledger_staging_preview_ready_count": manifest["ocr_fact_ledger_staging_preview_ready_count"],
                 "ocr_fact_ledger_staging_preview_blocked_count": manifest["ocr_fact_ledger_staging_preview_blocked_count"],
@@ -6220,6 +6315,8 @@ def main() -> int:
         f"OCR fact cross-review group count: {manifest.get('ocr_fact_cross_review_group_count', 0)}\n\n"
         f"OCR fact owner review batch count: {manifest.get('ocr_fact_owner_review_batch_count', 0)}\n\n"
         f"OCR fact owner review batch blocking count: {manifest.get('ocr_fact_owner_review_batch_blocking_count', 0)}\n\n"
+        f"OCR fact evidence review queue count: {manifest.get('ocr_fact_evidence_review_queue_count', 0)}\n\n"
+        f"OCR fact evidence review queue blocking count: {manifest.get('ocr_fact_evidence_review_queue_blocking_count', 0)}\n\n"
         f"OCR fact ledger staging preview ready count: {manifest.get('ocr_fact_ledger_staging_preview_ready_count', 0)}\n\n"
         f"OCR fact ledger staging preview blocked count: {manifest.get('ocr_fact_ledger_staging_preview_blocked_count', 0)}\n\n"
         f"OCR fact review authorization valid count: {manifest.get('ocr_fact_review_authorization_valid_count', 0)}\n\n"
