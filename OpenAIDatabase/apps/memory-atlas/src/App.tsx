@@ -360,7 +360,7 @@ declare global {
       commandPaletteVersion: typeof COMMAND_PALETTE_VERSION;
       commandIds: S12P1CommandId[];
       commandCount: number;
-      acceptedCoreCommandIds: S12P1CommandId[];
+      acceptedCoreCommandIds: S12P1CoreCommandId[];
       personalizationCommandId: "generate_personalization_prompt";
       personalizationTargets: ["chatgpt", "codex", "other_agent"];
       userTriggerRequired: true;
@@ -369,6 +369,26 @@ declare global {
       unacceptedCommandCount: 0;
       selectedCommandId: S12P1CommandId;
       pendingLaterWork: ["S12 P2", "S12 P3"];
+      safety: {
+        rawPrivateDataIncluded: false;
+        directActiveMemoryWriteback: false;
+        proposalApplyExecution: false;
+        sendsCookiesTokensSecrets: false;
+      };
+    };
+    __memoryAtlasS12Phase3?: () => {
+      taskId: "MA-V12-S12P3";
+      acceptanceId: "ACC-MA-V12-S12P3";
+      contractVersion: typeof S12_P3_CHATGPT_DEEP_EXPLORE_VERSION;
+      commandId: typeof S12_P3_CHATGPT_DEEP_EXPLORE_COMMAND_ID;
+      commandVisible: boolean;
+      defaultMode: "prefill_only";
+      allowedModes: ["prefill_only", "auto_submit"];
+      dryRunCommand: string;
+      openCommand: string;
+      userTriggerRequired: true;
+      noSilentSend: true;
+      autoSubmitRequiresExplicitConfig: true;
       safety: {
         rawPrivateDataIncluded: false;
         directActiveMemoryWriteback: false;
@@ -427,7 +447,9 @@ const S12_P1_ACCEPTED_CORE_COMMAND_IDS = [
   "view_pending_proposals",
 ] as const;
 const S12_P1_PERSONALIZATION_COMMAND_ID = "generate_personalization_prompt" as const;
-const S12_P1_COMMAND_IDS = [...S12_P1_ACCEPTED_CORE_COMMAND_IDS, S12_P1_PERSONALIZATION_COMMAND_ID] as const;
+const S12_P3_CHATGPT_DEEP_EXPLORE_COMMAND_ID = "chatgpt_deep_explore" as const;
+const S12_P3_CHATGPT_DEEP_EXPLORE_VERSION = "chatgpt_deep_explore.v1_2_s12_p3" as const;
+const S12_P1_COMMAND_IDS = [...S12_P1_ACCEPTED_CORE_COMMAND_IDS, S12_P1_PERSONALIZATION_COMMAND_ID, S12_P3_CHATGPT_DEEP_EXPLORE_COMMAND_ID] as const;
 const S12_P1_PERSONALIZATION_TARGETS = ["chatgpt", "codex", "other_agent"] as const;
 
 type S12P1CoreCommandId = (typeof S12_P1_ACCEPTED_CORE_COMMAND_IDS)[number];
@@ -1455,6 +1477,15 @@ function buildCommandPaletteModel(atlas: MemoryAtlas, slice: FilteredAtlasSlice,
       viewTarget: "summary",
       personalizationTargets: S12_P1_PERSONALIZATION_TARGETS,
     },
+    {
+      id: "chatgpt_deep_explore",
+      label: "打开 ChatGPT 深度探索",
+      description: "把最新记忆分析报告和探索提示转成 ChatGPT 预填充入口。",
+      humanAction: "用户触发后运行 `atlasctl.py chatgpt-deep-explore --mode prefill_only --open`；默认只填入，不静默发送。auto_submit 必须有配置和显式确认。",
+      dryRunCommand: "python3 scripts/atlasctl.py chatgpt-deep-explore --mode prefill_only --dry-run",
+      status: "prefill_only 默认 · auto_submit gated",
+      viewTarget: null,
+    },
   ];
   return {
     version: COMMAND_PALETTE_VERSION,
@@ -1968,8 +1999,29 @@ export function App() {
         sendsCookiesTokensSecrets: false,
       },
     });
+    window.__memoryAtlasS12Phase3 = () => ({
+      taskId: "MA-V12-S12P3",
+      acceptanceId: "ACC-MA-V12-S12P3",
+      contractVersion: S12_P3_CHATGPT_DEEP_EXPLORE_VERSION,
+      commandId: S12_P3_CHATGPT_DEEP_EXPLORE_COMMAND_ID,
+      commandVisible: commandPaletteModel.commandIds.includes(S12_P3_CHATGPT_DEEP_EXPLORE_COMMAND_ID),
+      defaultMode: "prefill_only",
+      allowedModes: ["prefill_only", "auto_submit"],
+      dryRunCommand: "python3 scripts/atlasctl.py chatgpt-deep-explore --mode prefill_only --dry-run",
+      openCommand: "python3 scripts/atlasctl.py chatgpt-deep-explore --mode prefill_only --open",
+      userTriggerRequired: true,
+      noSilentSend: true,
+      autoSubmitRequiresExplicitConfig: true,
+      safety: {
+        rawPrivateDataIncluded: false,
+        directActiveMemoryWriteback: false,
+        proposalApplyExecution: false,
+        sendsCookiesTokensSecrets: false,
+      },
+    });
     return () => {
       delete window.__memoryAtlasS12Phase1;
+      delete window.__memoryAtlasS12Phase3;
     };
   }, [commandPaletteModel, selectedCommandId]);
 
@@ -1986,6 +2038,8 @@ export function App() {
       data-stage9-safety-boundary="No direct active-memory writeback; No proposal queue write"
       data-stage9-surface-count={CROSS_BOARD_SHARED_STATE_SURFACES.length}
       data-s12-p1-command-palette={COMMAND_PALETTE_VERSION}
+      data-s12-p3-chatgpt-deep-explore={S12_P3_CHATGPT_DEEP_EXPLORE_VERSION}
+      data-s12-p3-chatgpt-deep-explore-boundary="prefill_only default; auto_submit gated; No silent send; No cookie/token/secret export"
     >
       <aside className="sidebar" aria-label={uiCopy.app.navigationAria}>
         <div className="brand">
@@ -2189,6 +2243,8 @@ function CommandPalettePanel({
       data-s12-p1-command-count={model.commands.length}
       data-s12-p1-personalization-targets={model.personalizationTargets.join(",")}
       data-s12-p1-safety-boundary="No automatic send; No raw mutation; No proposal apply execution"
+      data-s12-p3-chatgpt-deep-explore={S12_P3_CHATGPT_DEEP_EXPLORE_VERSION}
+      data-s12-p3-chatgpt-deep-explore-command="chatgpt_deep_explore"
     >
       <div className="command-palette-heading">
         <div>
@@ -2226,9 +2282,12 @@ function CommandPalettePanel({
       </div>
       <div className="command-palette-safety">
         <span>No automatic send</span>
+        <span>No silent send</span>
         <span>No raw mutation</span>
         <span>No proposal apply execution</span>
+        <span>No cookie/token/secret export</span>
         <span>ChatGPT / Codex / other agent personalization prompt</span>
+        <span>prefill_only / auto_submit</span>
       </div>
     </section>
   );
@@ -2239,6 +2298,7 @@ function commandPaletteIcon(commandId: S12P1CommandId): ComponentType<{ size?: n
   if (commandId === "sync_codex") return Download;
   if (commandId === "generate_weekly_report") return CalendarDays;
   if (commandId === "view_pending_proposals") return Save;
+  if (commandId === "chatgpt_deep_explore") return Crosshair;
   return Crosshair;
 }
 

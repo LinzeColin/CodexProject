@@ -30,6 +30,7 @@ LATENT_SIGNAL_BUILDER = ROOT / "scripts" / "build_memory_atlas_latent_signals.py
 SELF_ITERATION_BUILDER = ROOT / "scripts" / "build_memory_atlas_self_iteration.py"
 DECISION_DEBT_BUILDER = ROOT / "scripts" / "build_memory_atlas_decision_debt.py"
 PERSONALIZATION_BUILDER = ROOT / "scripts" / "build_personalization_exports.py"
+CHATGPT_DEEP_EXPLORE_BUILDER = ROOT / "scripts" / "build_chatgpt_deep_explore_prompt.py"
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -73,6 +74,13 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     prompt.add_argument("--dry-run", action="store_true")
     prompt.add_argument("--database-dir", type=Path, default=ROOT)
     prompt.add_argument("--target", choices=["all", "chatgpt", "codex", "other-agent"], default="all")
+
+    deep_explore = subparsers.add_parser("chatgpt-deep-explore", help="Prepare a user-triggered ChatGPT deep exploration prompt.")
+    deep_explore.add_argument("--dry-run", action="store_true")
+    deep_explore.add_argument("--database-dir", type=Path, default=ROOT)
+    deep_explore.add_argument("--mode", choices=["prefill_only", "auto_submit"], default="prefill_only")
+    deep_explore.add_argument("--open", action="store_true")
+    deep_explore.add_argument("--confirm-auto-submit", action="store_true")
     return parser.parse_args(argv)
 
 
@@ -2101,6 +2109,69 @@ def run_generate_personalization_prompt(args: argparse.Namespace) -> int:
     return result.returncode
 
 
+def chatgpt_deep_explore_contract(args: argparse.Namespace) -> dict[str, object]:
+    return {
+        "status": "PASS",
+        "command": "chatgpt-deep-explore",
+        "task_id": "MA-V12-S12P3",
+        "acceptance_id": "ACC-MA-V12-S12P3",
+        "contract_version": "chatgpt_deep_explore.v1_2_s12_p3",
+        "dry_run": True,
+        "mode": args.mode,
+        "writes_files": False,
+        "opens_browser": False,
+        "sends_to_chatgpt": False,
+        "source_reports": [
+            "data/derived/personalization/personalization_export.json",
+            "data/derived/personalization/personalization_prompt_human_zh.md",
+            "data/derived/behavior_intelligence/latent_signals.json",
+            "data/derived/behavior_intelligence/self_iteration_suggestions.json",
+            "data/derived/behavior_intelligence/decision_debt_ledger.json",
+            "data/derived/agent_collaboration/agent_collaboration_quality_report.json",
+        ],
+        "output_contract": {
+            "prompt": "data/derived/chatgpt_deep_explore/latest_memory_analysis_prompt.md",
+            "machine": "data/derived/chatgpt_deep_explore/chatgpt_deep_explore_export.json",
+            "chatgpt_launch_url": "https://chatgpt.com/?q=<encoded_prompt>",
+        },
+        "boundary": {
+            "user_trigger_required": True,
+            "default_mode": "prefill_only",
+            "allowed_modes": ["prefill_only", "auto_submit"],
+            "no_silent_send": True,
+            "no_cookie_token_secret_export": True,
+            "raw_mutation": False,
+            "proposal_apply_execution": False,
+            "auto_submit_requires_explicit_config": True,
+        },
+        "builder": "scripts/build_chatgpt_deep_explore_prompt.py",
+    }
+
+
+def run_chatgpt_deep_explore(args: argparse.Namespace) -> int:
+    if args.dry_run:
+        print(json.dumps(chatgpt_deep_explore_contract(args), ensure_ascii=False, indent=2, sort_keys=True))
+        return 0
+    command = [
+        sys.executable,
+        str(CHATGPT_DEEP_EXPLORE_BUILDER),
+        "--database-dir",
+        str(args.database_dir),
+        "--mode",
+        args.mode,
+    ]
+    if args.open:
+        command.append("--open")
+    if args.confirm_auto_submit:
+        command.append("--confirm-auto-submit")
+    result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
+    if result.stdout:
+        print(result.stdout, end="")
+    if result.stderr:
+        print(result.stderr, file=sys.stderr, end="")
+    return result.returncode
+
+
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     if args.command == "sync":
@@ -2115,6 +2186,8 @@ def main(argv: list[str] | None = None) -> int:
         return run_push(args)
     if args.command == "generate-personalization-prompt":
         return run_generate_personalization_prompt(args)
+    if args.command == "chatgpt-deep-explore":
+        return run_chatgpt_deep_explore(args)
     raise AssertionError(f"unhandled command: {args.command}")
 
 

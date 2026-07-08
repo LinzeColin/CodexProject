@@ -1,3 +1,41 @@
+## 152. Memory Atlas v1.2 S12 P3 ChatGPT Deep Exploration Parameters
+
+状态：`phase_s12_p3_chatgpt_deep_explore_completed_pending_s12_review`。
+
+验收 ID：`ACC-MA-V12-S12P3`。
+
+S12 P3 固定以下参数：
+
+- `MA-V12-S12P3`
+- `validate:v1.2-s12-p3`
+- `chatgpt_deep_explore.v1_2_s12_p3`
+- ChatGPT 深度探索
+- `prefill_only`
+- `auto_submit`
+- 用户触发
+- pending S12 Review
+- No silent send。
+- No cookie/token/secret export。
+- No GitHub main upload。
+- No remote push。
+
+参数：
+
+- `PARAM-MA-V12-S12P3-001 phase_status = phase_s12_p3_chatgpt_deep_explore_completed_pending_s12_review`
+- `PARAM-MA-V12-S12P3-002 validator = validate:v1.2-s12-p3`
+- `PARAM-MA-V12-S12P3-003 contract_version = chatgpt_deep_explore.v1_2_s12_p3`
+- `PARAM-MA-V12-S12P3-004 default_mode = prefill_only`
+- `PARAM-MA-V12-S12P3-005 allowed_modes = prefill_only; auto_submit`
+- `PARAM-MA-V12-S12P3-006 command_id = chatgpt_deep_explore`
+- `PARAM-MA-V12-S12P3-007 next_phase = S12 Review`
+- `PARAM-MA-V12-S12P3-008 phase_boundary = No silent send; No cookie/token/secret export; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution`
+
+验证逻辑：
+
+- `validate:v1.2-s12-p3` checks command palette runtime, builder and atlasctl contracts, `prefill_only` generation, `auto_submit` gate, machine export, Chinese docs, governance records, no cookie/token/secret export, no raw mutation and previous S12 P2 compatibility.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S12 P3; MA-V12-S12P3; ACC-MA-V12-S12P3; phase_s12_p3_chatgpt_deep_explore_completed_pending_s12_review; validate:v1.2-s12-p3; chatgpt_deep_explore.v1_2_s12_p3; ChatGPT 深度探索; prefill_only; auto_submit; 用户触发; No silent send; No cookie/token/secret export; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution; pending S12 Review.
+
 ## 151. Memory Atlas v1.2 S12 P2 Personalization Prompt Parameters
 
 状态：`phase_s12_p2_personalization_prompt_completed_pending_s12_p3`。

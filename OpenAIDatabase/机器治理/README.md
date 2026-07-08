@@ -18,7 +18,16 @@
 
 ## 当前阶段
 
-当前为 S12 P2。任务 ID 为 `MA-V12-S12P2`，验收 ID 为
+当前为 S12 P3。任务 ID 为 `MA-V12-S12P3`，验收 ID 为
+`ACC-MA-V12-S12P3`，validator 为 `validate:v1.2-s12-p3`。状态为
+`phase_s12_p3_chatgpt_deep_explore_completed_pending_s12_review`。S12 P3 已完成
+`chatgpt_deep_explore.v1_2_s12_p3`，提供用户触发的 ChatGPT 深度探索入口。默认
+`prefill_only`，`auto_submit` 受配置和显式确认控制。下一步只允许进入 S12 Review。
+
+No silent send。No cookie/token/secret export。No GitHub main upload。No remote push。
+No raw mutation。No proposal apply execution。
+
+历史复验兼容记录：S12 P2 完成时当前为 S12 P2。任务 ID 为 `MA-V12-S12P2`，验收 ID 为
 `ACC-MA-V12-S12P2`，validator 为 `validate:v1.2-s12-p2`。状态为
 `phase_s12_p2_personalization_prompt_completed_pending_s12_p3`。S12 P2 已完成
 `personalization_prompt.v1_2_s12_p2`，生成 ChatGPT、Codex、other agent 三类 prompt，

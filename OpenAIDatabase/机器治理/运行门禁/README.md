@@ -2,7 +2,39 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S12 P2。任务 ID 为 `MA-V12-S12P2`，验收 ID 为
+当前阶段是 S12 P3。任务 ID 为 `MA-V12-S12P3`，验收 ID 为
+`ACC-MA-V12-S12P3`，validator 为 `validate:v1.2-s12-p3`。状态为
+`phase_s12_p3_chatgpt_deep_explore_completed_pending_s12_review`。
+
+S12 P3 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s12_p3_chatgpt_deep_explore.md`
+- `人类可读/33_ChatGPT深度探索说明.md`
+- `机器治理/运行门禁/chatgpt_deep_explore.v1_2_s12_p3.json`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s12_p3.cjs`
+- `apps/memory-atlas/src/App.tsx`
+- `scripts/atlasctl.py`
+- `scripts/build_chatgpt_deep_explore_prompt.py`
+- `data/derived/chatgpt_deep_explore/latest_memory_analysis_prompt.md`
+- `data/derived/chatgpt_deep_explore/chatgpt_deep_explore_export.json`
+
+S12 P3 gate：
+
+- `validate:v1.2-s12-p3` 可验证 ChatGPT 深度探索入口。
+- `chatgpt_deep_explore.v1_2_s12_p3` 机器合同存在。
+- 命令面板有用户触发的 ChatGPT 深度探索入口。
+- 默认 `prefill_only`。
+- `auto_submit` 受配置和显式确认控制。
+- No silent send。
+- No cookie/token/secret export。
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+- No proposal apply execution。
+
+下一步是 S12 Review。
+
+历史复验兼容记录：S12 P2 完成时当前阶段是 S12 P2。任务 ID 为 `MA-V12-S12P2`，验收 ID 为
 `ACC-MA-V12-S12P2`，validator 为 `validate:v1.2-s12-p2`。状态为
 `phase_s12_p2_personalization_prompt_completed_pending_s12_p3`。
 
