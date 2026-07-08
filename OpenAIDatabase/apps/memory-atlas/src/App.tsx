@@ -239,6 +239,7 @@ declare global {
 const MEMORY_OVERVIEW_SECTION_ORDER = [
   { id: "status_summary", label: "状态摘要" },
   { id: "suggested_actions", label: "行动建议" },
+  { id: "behavior_intelligence", label: "行为智能" },
   { id: "weather", label: "记忆天气" },
   { id: "black_holes", label: "风险黑洞" },
   { id: "proto_stars", label: "新生机会" },
@@ -1540,6 +1541,7 @@ function ViewRouter({
   if (activeView === "home") {
     return (
       <HomeOverviewView
+        atlas={atlas}
         nodes={slice.memoryNodes}
         graphEdges={slice.graphEdges}
         deltaStats={slice.deltaStats}
@@ -1639,7 +1641,70 @@ function viewEmptyState(atlas: MemoryAtlas, slice: FilteredAtlasSlice): "empty-a
   return hasSnapshotData ? null : "empty-atlas";
 }
 
+function BehaviorIntelligencePanel({ summary }: { summary: MemoryAtlas["behavior_intelligence"] }) {
+  if (!summary || !summary.counts) return null;
+  const clusters = summary.clusters.slice(0, 3);
+  const loops = summary.low_value_loops.slice(0, 3);
+  const opportunities = summary.opportunities.slice(0, 3);
+  if (clusters.length === 0 && loops.length === 0 && opportunities.length === 0) return null;
+  return (
+    <section
+      className="home-behavior-intelligence-panel"
+      aria-label="S06 行为智能"
+      data-home-section="behavior_intelligence"
+      data-s06-review-display="behavior-clusters-low-value-loops-opportunities"
+      data-s06-review-schema={summary.schema_version}
+      data-s06-cluster-count={summary.counts.clusters}
+      data-s06-loop-count={summary.counts.low_value_loops}
+      data-s06-opportunity-count={summary.counts.opportunities}
+    >
+      <div className="panel-title-row">
+        <h3>S06 行为智能</h3>
+        <span>{summary.status}</span>
+      </div>
+      <div className="home-behavior-count-row" aria-label="S06 行为智能计数">
+        <span><strong>{summary.counts.clusters.toLocaleString()}</strong>主题/层级簇</span>
+        <span><strong>{summary.counts.low_value_loops.toLocaleString()}</strong>低价值循环</span>
+        <span><strong>{summary.counts.opportunities.toLocaleString()}</strong>机会线索</span>
+      </div>
+      <div className="home-behavior-card-grid">
+        <article className="home-behavior-card">
+          <span>主题簇</span>
+          {clusters.map((cluster) => (
+            <div className="home-behavior-item" key={cluster.cluster_id}>
+              <strong>{cluster.label_zh || cluster.cluster_id}</strong>
+              <p>{cluster.summary_zh}</p>
+              <small>{cluster.evidence_refs.length} evidence refs · {cluster.event_count.toLocaleString()} events</small>
+            </div>
+          ))}
+        </article>
+        <article className="home-behavior-card">
+          <span>低价值循环</span>
+          {loops.map((loop) => (
+            <div className="home-behavior-item" key={loop.loop_id}>
+              <strong>{loop.label_zh || loop.loop_type}</strong>
+              <p>{loop.summary_zh}</p>
+              <small>{loop.decision_debt?.suggested_closure_question || `${loop.action_half_life_days ?? 0} day half-life`}</small>
+            </div>
+          ))}
+        </article>
+        <article className="home-behavior-card">
+          <span>机会线索</span>
+          {opportunities.map((opportunity) => (
+            <div className="home-behavior-item" key={opportunity.opportunity_id}>
+              <strong>{opportunity.label_zh || opportunity.opportunity_type}</strong>
+              <p>{opportunity.summary_zh}</p>
+              <small>{opportunity.next_step_zh || opportunity.why_not_now_card?.reason_zh}</small>
+            </div>
+          ))}
+        </article>
+      </div>
+    </section>
+  );
+}
+
 function HomeOverviewView({
+  atlas,
   nodes,
   graphEdges,
   deltaStats,
@@ -1649,6 +1714,7 @@ function HomeOverviewView({
   onSelectNode,
   onSwitchView,
 }: {
+  atlas: MemoryAtlas;
   nodes: AtlasNode[];
   graphEdges: AtlasEdge[];
   deltaStats: DeltaStats;
@@ -1668,6 +1734,7 @@ function HomeOverviewView({
   const actionStatusChips = buildHomeActionStatusChips(model.actions);
   const levelAssetGroupChips = buildLevelAssetGroupChips(model.tierAssets);
   const themeCategoryChips = buildThemeCategoryChips(model.topicDetails);
+  const behaviorIntelligence = atlas.behavior_intelligence;
 
   function runAction(action: HomeActionDetail) {
     const runtimeAction = model.actions.find((item) => item.action_id === action.action_id);
@@ -1789,6 +1856,7 @@ function HomeOverviewView({
           </article>
         ))}
       </section>
+      <BehaviorIntelligencePanel summary={behaviorIntelligence} />
       <section className="home-preview-grid" aria-label={uiCopy.overview.previewAria} data-home-section="entry_points">
         <button
           className="home-preview-card mini-starfield-preview"

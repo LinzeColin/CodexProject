@@ -1,3 +1,39 @@
+## 128. Memory Atlas v1.2 S06 Review Parameters
+
+状态：`stage_s06_review_passed_pending_s07_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S06-REVIEW`。
+
+S06 Review 固定以下参数：
+
+- `MA-V12-S06-REVIEW`
+- `validate:v1.2-s06-review`
+- `memory_atlas_v1_2_s06_review.md`
+- `data/derived/visualization/memory_atlas.json`
+- `behavior_intelligence`
+- display marker：`data-s06-review-display`
+- output counts：160 clusters、23 low-value loops、12 opportunities。
+- S06 Review 完成后下一步为 pending S07 P1。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S06-REVIEW-001 stage_status = stage_s06_review_passed_pending_s07_no_github_main_upload`
+- `PARAM-MA-V12-S06-REVIEW-002 validator = validate:v1.2-s06-review`
+- `PARAM-MA-V12-S06-REVIEW-003 display_payload = data/derived/visualization/memory_atlas.json behavior_intelligence`
+- `PARAM-MA-V12-S06-REVIEW-004 display_marker = data-s06-review-display=behavior-clusters-low-value-loops-opportunities`
+- `PARAM-MA-V12-S06-REVIEW-005 output_counts = 160 clusters; 23 low-value loops; 12 opportunities`
+- `PARAM-MA-V12-S06-REVIEW-006 next_gate = pending S07 P1`
+- `PARAM-MA-V12-S06-REVIEW-007 phase_boundary = No raw mutation; No psychological diagnosis; No external economic database; No infinite pressure list; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s06-review` checks S06 P3 predecessor, S06 P1/P2/P3
+  payloads, `behavior_intelligence` display data, App.tsx display markers,
+  status records, canonical remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S06 Review; MA-V12-S06-REVIEW; ACC-MA-V12-S06-REVIEW; stage_s06_review_passed_pending_s07_no_github_main_upload; validate:v1.2-s06-review; memory_atlas_v1_2_s06_review.md; behavior_intelligence; S06 Review; pending S07 P1; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No psychological diagnosis; No external economic database; No infinite pressure list.
+
 ## 127. Memory Atlas v1.2 S06 P3 Opportunity Discovery Parameters
 
 状态：`phase_s06_p3_opportunity_discovery_completed_pending_s06_review`。

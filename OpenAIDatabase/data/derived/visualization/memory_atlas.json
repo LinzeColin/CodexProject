@@ -180,6 +180,1082 @@
       }
     ]
   },
+  "behavior_intelligence": {
+    "acceptance_ids": [
+      "ACC-MA-V12-S06P1",
+      "ACC-MA-V12-S06P2",
+      "ACC-MA-V12-S06P3"
+    ],
+    "clusters": [
+      {
+        "cluster_id": "hierarchy_0a9e28a9d417",
+        "cluster_type": "hierarchy",
+        "event_count": 104,
+        "evidence_refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "path": "",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          }
+        ],
+        "filter_dimensions": {
+          "language": [
+            "zh"
+          ],
+          "project": [
+            "未标注"
+          ],
+          "source": [
+            "chatgpt"
+          ],
+          "task": [
+            "未标注"
+          ],
+          "time": {
+            "end": "2026-06-13T12:21:34Z",
+            "months": [
+              "2025-11",
+              "2025-12",
+              "2026-01",
+              "2026-02",
+              "2026-03",
+              "2026-04",
+              "2026-05",
+              "2026-06"
+            ],
+            "start": "2025-11-24T12:06:46Z"
+          }
+        },
+        "label_zh": "chatgpt / 未标注项目 / 未标注任务 / zh",
+        "representative_event_ids": [
+          "chatgpt_3ea5c2473a751d9d",
+          "chatgpt_056903f3a6952870",
+          "chatgpt_b48abca69a56afdd",
+          "chatgpt_f5ed037fa8432ef8",
+          "chatgpt_ce5b376766d673d8"
+        ],
+        "summary_zh": "该层级簇把 77 个主题簇汇总到「chatgpt / 未标注项目 / 未标注任务 / zh」下，共覆盖 104 条有证据事件。它用于按 source/project/task/language 交叉探索，不替代后续低价值循环或机会判断。"
+      },
+      {
+        "cluster_id": "hierarchy_94df92cef6e0",
+        "cluster_type": "hierarchy",
+        "event_count": 32,
+        "evidence_refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_2d25fade87b99976_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "path": "",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "ref_id": "chatgpt_2d25fade87b99976_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_b7593aa8f5d13c83_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          }
+        ],
+        "filter_dimensions": {
+          "language": [
+            "mixed"
+          ],
+          "project": [
+            "未标注"
+          ],
+          "source": [
+            "chatgpt"
+          ],
+          "task": [
+            "未标注"
+          ],
+          "time": {
+            "end": "2026-06-13T10:27:43Z",
+            "months": [
+              "2025-12",
+              "2026-01",
+              "2026-03",
+              "2026-05",
+              "2026-06"
+            ],
+            "start": "2025-12-24T22:33:01Z"
+          }
+        },
+        "label_zh": "chatgpt / 未标注项目 / 未标注任务 / mixed",
+        "representative_event_ids": [
+          "chatgpt_2d25fade87b99976",
+          "chatgpt_b7593aa8f5d13c83",
+          "chatgpt_b76f05967f0407e0",
+          "chatgpt_603e9cf27c5cb135",
+          "chatgpt_6861827f6188afa0"
+        ],
+        "summary_zh": "该层级簇把 26 个主题簇汇总到「chatgpt / 未标注项目 / 未标注任务 / mixed」下，共覆盖 32 条有证据事件。它用于按 source/project/task/language 交叉探索，不替代后续低价值循环或机会判断。"
+      },
+      {
+        "cluster_id": "hierarchy_5afcacacd407",
+        "cluster_type": "hierarchy",
+        "event_count": 24,
+        "evidence_refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_0f9128aaecf99ea0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "path": "",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "ref_id": "chatgpt_0f9128aaecf99ea0_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_d73ea998081ec1e0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          }
+        ],
+        "filter_dimensions": {
+          "language": [
+            "en"
+          ],
+          "project": [
+            "未标注"
+          ],
+          "source": [
+            "chatgpt"
+          ],
+          "task": [
+            "未标注"
+          ],
+          "time": {
+            "end": "2026-06-13T02:36:28Z",
+            "months": [
+              "2026-05",
+              "2026-06"
+            ],
+            "start": "2026-05-07T11:17:48Z"
+          }
+        },
+        "label_zh": "chatgpt / 未标注项目 / 未标注任务 / en",
+        "representative_event_ids": [
+          "chatgpt_0f9128aaecf99ea0",
+          "chatgpt_d73ea998081ec1e0",
+          "chatgpt_28a5d5743933ddba",
+          "chatgpt_f28de895957db453",
+          "chatgpt_ee91aa99f907cd7a"
+        ],
+        "summary_zh": "该层级簇把 19 个主题簇汇总到「chatgpt / 未标注项目 / 未标注任务 / en」下，共覆盖 24 条有证据事件。它用于按 source/project/task/language 交叉探索，不替代后续低价值循环或机会判断。"
+      },
+      {
+        "cluster_id": "topic_52e7b1be14e5",
+        "cluster_type": "topic",
+        "event_count": 23,
+        "evidence_refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "path": "",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          }
+        ],
+        "filter_dimensions": {
+          "language": [
+            "zh"
+          ],
+          "project": [
+            "未标注"
+          ],
+          "source": [
+            "chatgpt"
+          ],
+          "task": [
+            "未标注",
+            "design"
+          ],
+          "time": {
+            "end": "2026-03-01T11:14:02Z",
+            "months": [
+              "2025-11",
+              "2025-12",
+              "2026-01",
+              "2026-02",
+              "2026-03"
+            ],
+            "start": "2025-11-24T12:06:46Z"
+          }
+        },
+        "label_zh": "经营与管理决策",
+        "representative_event_ids": [
+          "chatgpt_3ea5c2473a751d9d",
+          "chatgpt_056903f3a6952870",
+          "chatgpt_b48abca69a56afdd",
+          "chatgpt_f5ed037fa8432ef8",
+          "chatgpt_ce5b376766d673d8"
+        ],
+        "summary_zh": "该行为簇基于 23 条带证据引用的事件，主要围绕「经营与管理决策」。来源包含 chatgpt，时间覆盖 2025-11、2025-12、2026-01、2026-02，常见任务类型为 未标注、design，语言以 zh 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。"
+      },
+      {
+        "cluster_id": "topic_0391dd75a8eb",
+        "cluster_type": "topic",
+        "event_count": 18,
+        "evidence_refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "path": "",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          }
+        ],
+        "filter_dimensions": {
+          "language": [
+            "mixed",
+            "en"
+          ],
+          "project": [
+            "未标注"
+          ],
+          "source": [
+            "chatgpt",
+            "codex"
+          ],
+          "task": [
+            "未标注",
+            "engineering",
+            "data",
+            "design"
+          ],
+          "time": {
+            "end": "2026-07-01T02:03:20.404000Z",
+            "months": [
+              "2026-01",
+              "2026-03",
+              "2026-05",
+              "2026-06",
+              "2026-07"
+            ],
+            "start": "2026-01-20T13:12:00Z"
+          }
+        },
+        "label_zh": "AI 记忆与 agent 工作流",
+        "representative_event_ids": [
+          "chatgpt_b76f05967f0407e0",
+          "chatgpt_6861827f6188afa0",
+          "chatgpt_b6d16505b9e84d04",
+          "chatgpt_5feb6d1472e79a92",
+          "chatgpt_3772821c331d1c83"
+        ],
+        "summary_zh": "该行为簇基于 18 条带证据引用的事件，主要围绕「AI 记忆与 agent 工作流」。来源包含 chatgpt、codex，时间覆盖 2026-01、2026-03、2026-05、2026-06，常见任务类型为 未标注、engineering、data，语言以 mixed、en 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。"
+      },
+      {
+        "cluster_id": "topic_e06ca8304c78",
+        "cluster_type": "topic",
+        "event_count": 15,
+        "evidence_refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/codex/codex_session_manifest.jsonl",
+            "reason": "",
+            "ref_id": "codex_4f84738ed29d3edf_manifest_0bda04ac8f8f",
+            "ref_type": "manifest",
+            "source_id": "codex"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "path": "",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "ref_id": "codex_4f84738ed29d3edf_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "codex"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/codex/codex_session_manifest.jsonl",
+            "reason": "",
+            "ref_id": "codex_35f56ee038f59650_manifest_0bda04ac8f8f",
+            "ref_type": "manifest",
+            "source_id": "codex"
+          }
+        ],
+        "filter_dimensions": {
+          "language": [
+            "mixed"
+          ],
+          "project": [
+            "Memory Atlas"
+          ],
+          "source": [
+            "codex"
+          ],
+          "task": [
+            "design",
+            "automation"
+          ],
+          "time": {
+            "end": "2026-07-01T05:50:04.525000Z",
+            "months": [
+              "2026-06",
+              "2026-07"
+            ],
+            "start": "2026-06-29T21:59:39.570000Z"
+          }
+        },
+        "label_zh": "项目：Memory Atlas",
+        "representative_event_ids": [
+          "codex_4f84738ed29d3edf",
+          "codex_35f56ee038f59650",
+          "codex_258379a2d9b8b620",
+          "codex_87c584d16e6d89af",
+          "codex_74c2e79464160025"
+        ],
+        "summary_zh": "该行为簇基于 15 条带证据引用的事件，主要围绕「项目：Memory Atlas」。来源包含 codex，时间覆盖 2026-06、2026-07，常见任务类型为 design、automation，语言以 mixed 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。"
+      },
+      {
+        "cluster_id": "hierarchy_7588b172c22f",
+        "cluster_type": "hierarchy",
+        "event_count": 14,
+        "evidence_refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/codex/codex_session_manifest.jsonl",
+            "reason": "",
+            "ref_id": "codex_35f56ee038f59650_manifest_0bda04ac8f8f",
+            "ref_type": "manifest",
+            "source_id": "codex"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "path": "",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "ref_id": "codex_35f56ee038f59650_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "codex"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/codex/codex_session_manifest.jsonl",
+            "reason": "",
+            "ref_id": "codex_258379a2d9b8b620_manifest_0bda04ac8f8f",
+            "ref_type": "manifest",
+            "source_id": "codex"
+          }
+        ],
+        "filter_dimensions": {
+          "language": [
+            "mixed"
+          ],
+          "project": [
+            "Memory Atlas"
+          ],
+          "source": [
+            "codex"
+          ],
+          "task": [
+            "design"
+          ],
+          "time": {
+            "end": "2026-07-01T05:50:04.525000Z",
+            "months": [
+              "2026-06",
+              "2026-07"
+            ],
+            "start": "2026-06-29T22:01:11.709000Z"
+          }
+        },
+        "label_zh": "codex / Memory Atlas / design / mixed",
+        "representative_event_ids": [
+          "codex_35f56ee038f59650",
+          "codex_258379a2d9b8b620",
+          "codex_87c584d16e6d89af",
+          "codex_74c2e79464160025",
+          "codex_57c949a40da07201"
+        ],
+        "summary_zh": "该层级簇把 1 个主题簇汇总到「codex / Memory Atlas / design / mixed」下，共覆盖 14 条有证据事件。它用于按 source/project/task/language 交叉探索，不替代后续低价值循环或机会判断。"
+      },
+      {
+        "cluster_id": "topic_b2989d339d9e",
+        "cluster_type": "topic",
+        "event_count": 7,
+        "evidence_refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_3403fe006452d850_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "path": "",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "ref_id": "chatgpt_3403fe006452d850_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_101f5a8cf490b84f_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          }
+        ],
+        "filter_dimensions": {
+          "language": [
+            "zh",
+            "mixed"
+          ],
+          "project": [
+            "未标注"
+          ],
+          "source": [
+            "chatgpt"
+          ],
+          "task": [
+            "未标注",
+            "automation",
+            "design"
+          ],
+          "time": {
+            "end": "2026-06-13T10:02:00Z",
+            "months": [
+              "2025-12",
+              "2026-01",
+              "2026-03",
+              "2026-06"
+            ],
+            "start": "2025-12-21T21:02:33Z"
+          }
+        },
+        "label_zh": "自动化与流程治理",
+        "representative_event_ids": [
+          "chatgpt_3403fe006452d850",
+          "chatgpt_101f5a8cf490b84f",
+          "chatgpt_42ae93985b042706",
+          "chatgpt_0f612f66c1913e81",
+          "chatgpt_23efdb08bb709ed6"
+        ],
+        "summary_zh": "该行为簇基于 7 条带证据引用的事件，主要围绕「自动化与流程治理」。来源包含 chatgpt，时间覆盖 2025-12、2026-01、2026-03、2026-06，常见任务类型为 未标注、automation、design，语言以 zh、mixed 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论。"
+      }
+    ],
+    "counts": {
+      "action_half_life": 23,
+      "clusters": 160,
+      "decision_debt": 23,
+      "defer_cards": 12,
+      "hierarchy_clusters": 29,
+      "low_value_loops": 23,
+      "opportunities": 12,
+      "topic_clusters": 131
+    },
+    "low_value_loops": [
+      {
+        "action_half_life_days": 48,
+        "action_half_life_note": "如果 48 天内没有形成明确交付件、owner 或停止条件，该候选循环的行动价值会快速衰减。",
+        "decision_debt": {
+          "debt_id": "debt_d6158171df55",
+          "decision_area": "经营与管理决策",
+          "status": "open_candidate",
+          "suggested_closure_question": "这组工作是否需要一次性定义完成标准、复用入口和停止条件？"
+        },
+        "event_count": 23,
+        "evidence_refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "path": "",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          }
+        ],
+        "label_zh": "经营与管理决策",
+        "loop_id": "loop_repeated_rework_32146548e3b5",
+        "loop_type": "repeated_rework",
+        "score": 95,
+        "summary_zh": "候选低价值循环：经营与管理决策。依据 23 条事件和 10 条证据引用，检测到 多月多次出现，可能存在重复返工候选。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+      },
+      {
+        "action_half_life_days": 7,
+        "action_half_life_note": "如果 7 天内没有形成明确交付件、owner 或停止条件，该候选循环的行动价值会快速衰减。",
+        "decision_debt": {
+          "debt_id": "debt_b2490560069f",
+          "decision_area": "项目：Memory Atlas",
+          "status": "open_candidate",
+          "suggested_closure_question": "这组工作是否需要一次性定义完成标准、复用入口和停止条件？"
+        },
+        "event_count": 15,
+        "evidence_refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/codex/codex_session_manifest.jsonl",
+            "reason": "",
+            "ref_id": "codex_4f84738ed29d3edf_manifest_0bda04ac8f8f",
+            "ref_type": "manifest",
+            "source_id": "codex"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "path": "",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "ref_id": "codex_4f84738ed29d3edf_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "codex"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/codex/codex_session_manifest.jsonl",
+            "reason": "",
+            "ref_id": "codex_35f56ee038f59650_manifest_0bda04ac8f8f",
+            "ref_type": "manifest",
+            "source_id": "codex"
+          }
+        ],
+        "label_zh": "项目：Memory Atlas",
+        "loop_id": "loop_repeated_rework_32551aeac16b",
+        "loop_type": "repeated_rework",
+        "score": 95,
+        "summary_zh": "候选低价值循环：项目：Memory Atlas。依据 15 条事件和 10 条证据引用，检测到 多月多次出现，可能存在重复返工候选。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+      },
+      {
+        "action_half_life_days": 60,
+        "action_half_life_note": "如果 60 天内没有形成明确交付件、owner 或停止条件，该候选循环的行动价值会快速衰减。",
+        "decision_debt": {
+          "debt_id": "debt_acfcf632dcad",
+          "decision_area": "AI 记忆与 agent 工作流",
+          "status": "open_candidate",
+          "suggested_closure_question": "这组工作是否需要一次性定义完成标准、复用入口和停止条件？"
+        },
+        "event_count": 18,
+        "evidence_refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "path": "",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          }
+        ],
+        "label_zh": "AI 记忆与 agent 工作流",
+        "loop_id": "loop_repeated_rework_7db8c8b47630",
+        "loop_type": "repeated_rework",
+        "score": 95,
+        "summary_zh": "候选低价值循环：AI 记忆与 agent 工作流。依据 18 条事件和 10 条证据引用，检测到 多月多次出现，可能存在重复返工候选。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+      },
+      {
+        "action_half_life_days": 60,
+        "action_half_life_note": "如果 60 天内没有形成明确交付件、owner 或停止条件，该候选循环的行动价值会快速衰减。",
+        "decision_debt": {
+          "debt_id": "debt_5805fa3cb715",
+          "decision_area": "自动化与流程治理",
+          "status": "open_candidate",
+          "suggested_closure_question": "这组工作是否需要一次性定义完成标准、复用入口和停止条件？"
+        },
+        "event_count": 7,
+        "evidence_refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_3403fe006452d850_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "path": "",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "ref_id": "chatgpt_3403fe006452d850_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_101f5a8cf490b84f_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          }
+        ],
+        "label_zh": "自动化与流程治理",
+        "loop_id": "loop_repeated_rework_a1c61270a7f2",
+        "loop_type": "repeated_rework",
+        "score": 93,
+        "summary_zh": "候选低价值循环：自动化与流程治理。依据 7 条事件和 10 条证据引用，检测到 多月多次出现，可能存在重复返工候选。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+      },
+      {
+        "action_half_life_days": 11,
+        "action_half_life_note": "如果 11 天内没有形成明确交付件、owner 或停止条件，该候选循环的行动价值会快速衰减。",
+        "decision_debt": {
+          "debt_id": "debt_953bd3fd0c5f",
+          "decision_area": "经营与管理决策",
+          "status": "open_candidate",
+          "suggested_closure_question": "这组讨论是否需要明确 owner、交付件和最小下一步，否则归档为暂不推进？"
+        },
+        "event_count": 23,
+        "evidence_refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "path": "",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          }
+        ],
+        "label_zh": "经营与管理决策",
+        "loop_id": "loop_discussion_without_landing_32146548e3b5",
+        "loop_type": "discussion_without_landing",
+        "score": 90,
+        "summary_zh": "候选低价值循环：经营与管理决策。依据 23 条事件和 10 条证据引用，检测到 多次讨论但缺少代码、测试、报告或数据落地产物。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+      },
+      {
+        "action_half_life_days": 31,
+        "action_half_life_note": "如果 31 天内没有形成明确交付件、owner 或停止条件，该候选循环的行动价值会快速衰减。",
+        "decision_debt": {
+          "debt_id": "debt_3be749ad96bb",
+          "decision_area": "自动化与流程治理",
+          "status": "open_candidate",
+          "suggested_closure_question": "这组讨论是否需要明确 owner、交付件和最小下一步，否则归档为暂不推进？"
+        },
+        "event_count": 7,
+        "evidence_refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_3403fe006452d850_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "path": "",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "ref_id": "chatgpt_3403fe006452d850_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_101f5a8cf490b84f_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          }
+        ],
+        "label_zh": "自动化与流程治理",
+        "loop_id": "loop_discussion_without_landing_a1c61270a7f2",
+        "loop_type": "discussion_without_landing",
+        "score": 90,
+        "summary_zh": "候选低价值循环：自动化与流程治理。依据 7 条事件和 10 条证据引用，检测到 多次讨论但缺少代码、测试、报告或数据落地产物。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+      }
+    ],
+    "opportunities": [
+      {
+        "confidence": "high",
+        "defer_reason_zh": "",
+        "evidence_refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "path": "",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          }
+        ],
+        "label_zh": "AI 记忆与 agent 工作流",
+        "next_step_zh": "选一个最小重复步骤，写成 dry-run 脚本或 validator，不做大范围平台化。",
+        "opportunity_half_life_days": 30,
+        "opportunity_id": "opp_automation_100ae0fe2670",
+        "opportunity_type": "automation",
+        "score": 100,
+        "summary_zh": "候选机会：AI 记忆与 agent 工作流。依据低价值循环 scope_creep、18 条事件和 10 条证据引用，识别为 automation 方向。该线索只用于探索排序，不是必须执行任务。",
+        "why_not_now_card": {
+          "card_id": "why_not_now_c69eb33f9036",
+          "defer_until_signal_zh": "出现明确 owner、最小交付件、验收命令和停止条件后再升级为执行项。",
+          "not_pressure_list": true,
+          "reason_zh": "为什么不是现在：先验证最小下一步是否能形成可复用产物；没有 owner、验收命令或明确收益前不扩大投入。"
+        }
+      },
+      {
+        "confidence": "high",
+        "defer_reason_zh": "",
+        "evidence_refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/codex/codex_session_manifest.jsonl",
+            "reason": "",
+            "ref_id": "codex_4f84738ed29d3edf_manifest_0bda04ac8f8f",
+            "ref_type": "manifest",
+            "source_id": "codex"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "path": "",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "ref_id": "codex_4f84738ed29d3edf_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "codex"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/codex/codex_session_manifest.jsonl",
+            "reason": "",
+            "ref_id": "codex_35f56ee038f59650_manifest_0bda04ac8f8f",
+            "ref_type": "manifest",
+            "source_id": "codex"
+          }
+        ],
+        "label_zh": "项目：Memory Atlas",
+        "next_step_zh": "选一个最小重复步骤，写成 dry-run 脚本或 validator，不做大范围平台化。",
+        "opportunity_half_life_days": 7,
+        "opportunity_id": "opp_automation_9d680b0adc51",
+        "opportunity_type": "automation",
+        "score": 100,
+        "summary_zh": "候选机会：项目：Memory Atlas。依据低价值循环 over_optimization、15 条事件和 10 条证据引用，识别为 automation 方向。该线索只用于探索排序，不是必须执行任务。",
+        "why_not_now_card": {
+          "card_id": "why_not_now_7b9f597f711c",
+          "defer_until_signal_zh": "出现明确 owner、最小交付件、验收命令和停止条件后再升级为执行项。",
+          "not_pressure_list": true,
+          "reason_zh": "为什么不是现在：先验证最小下一步是否能形成可复用产物；没有 owner、验收命令或明确收益前不扩大投入。"
+        }
+      },
+      {
+        "confidence": "high",
+        "defer_reason_zh": "",
+        "evidence_refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/codex/codex_session_manifest.jsonl",
+            "reason": "",
+            "ref_id": "codex_4f84738ed29d3edf_manifest_0bda04ac8f8f",
+            "ref_type": "manifest",
+            "source_id": "codex"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "path": "",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "ref_id": "codex_4f84738ed29d3edf_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "codex"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/codex/codex_session_manifest.jsonl",
+            "reason": "",
+            "ref_id": "codex_35f56ee038f59650_manifest_0bda04ac8f8f",
+            "ref_type": "manifest",
+            "source_id": "codex"
+          }
+        ],
+        "label_zh": "项目：Memory Atlas",
+        "next_step_zh": "选一个最小重复步骤，写成 dry-run 脚本或 validator，不做大范围平台化。",
+        "opportunity_half_life_days": 7,
+        "opportunity_id": "opp_automation_a6420cd1a1b7",
+        "opportunity_type": "automation",
+        "score": 100,
+        "summary_zh": "候选机会：项目：Memory Atlas。依据低价值循环 repeated_rework、15 条事件和 10 条证据引用，识别为 automation 方向。该线索只用于探索排序，不是必须执行任务。",
+        "why_not_now_card": {
+          "card_id": "why_not_now_7a60a555bbb9",
+          "defer_until_signal_zh": "出现明确 owner、最小交付件、验收命令和停止条件后再升级为执行项。",
+          "not_pressure_list": true,
+          "reason_zh": "为什么不是现在：先验证最小下一步是否能形成可复用产物；没有 owner、验收命令或明确收益前不扩大投入。"
+        }
+      },
+      {
+        "confidence": "high",
+        "defer_reason_zh": "",
+        "evidence_refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "path": "",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          }
+        ],
+        "label_zh": "经营与管理决策",
+        "next_step_zh": "把本次产物固化成可复跑的 validator、参数说明或恢复入口，而不是只写一次性总结。",
+        "opportunity_half_life_days": 48,
+        "opportunity_id": "opp_compounding_1fb675770b79",
+        "opportunity_type": "compounding",
+        "score": 100,
+        "summary_zh": "候选机会：经营与管理决策。依据低价值循环 repeated_rework、23 条事件和 10 条证据引用，识别为 compounding 方向。该线索只用于探索排序，不是必须执行任务。",
+        "why_not_now_card": {
+          "card_id": "why_not_now_a113deac2ef8",
+          "defer_until_signal_zh": "出现明确 owner、最小交付件、验收命令和停止条件后再升级为执行项。",
+          "not_pressure_list": true,
+          "reason_zh": "为什么不是现在：先验证最小下一步是否能形成可复用产物；没有 owner、验收命令或明确收益前不扩大投入。"
+        }
+      },
+      {
+        "confidence": "high",
+        "defer_reason_zh": "",
+        "evidence_refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "path": "",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          }
+        ],
+        "label_zh": "AI 记忆与 agent 工作流",
+        "next_step_zh": "把本次产物固化成可复跑的 validator、参数说明或恢复入口，而不是只写一次性总结。",
+        "opportunity_half_life_days": 11,
+        "opportunity_id": "opp_compounding_25c4e70166bb",
+        "opportunity_type": "compounding",
+        "score": 100,
+        "summary_zh": "候选机会：AI 记忆与 agent 工作流。依据低价值循环 over_optimization、18 条事件和 10 条证据引用，识别为 compounding 方向。该线索只用于探索排序，不是必须执行任务。",
+        "why_not_now_card": {
+          "card_id": "why_not_now_00d315b36f38",
+          "defer_until_signal_zh": "出现明确 owner、最小交付件、验收命令和停止条件后再升级为执行项。",
+          "not_pressure_list": true,
+          "reason_zh": "为什么不是现在：先验证最小下一步是否能形成可复用产物；没有 owner、验收命令或明确收益前不扩大投入。"
+        }
+      },
+      {
+        "confidence": "high",
+        "defer_reason_zh": "",
+        "evidence_refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "path": "",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "reason": "",
+            "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          }
+        ],
+        "label_zh": "AI 记忆与 agent 工作流",
+        "next_step_zh": "把本次产物固化成可复跑的 validator、参数说明或恢复入口，而不是只写一次性总结。",
+        "opportunity_half_life_days": 30,
+        "opportunity_id": "opp_compounding_453c3e35489b",
+        "opportunity_type": "compounding",
+        "score": 100,
+        "summary_zh": "候选机会：AI 记忆与 agent 工作流。依据低价值循环 scope_creep、18 条事件和 10 条证据引用，识别为 compounding 方向。该线索只用于探索排序，不是必须执行任务。",
+        "why_not_now_card": {
+          "card_id": "why_not_now_b8df168242e1",
+          "defer_until_signal_zh": "出现明确 owner、最小交付件、验收命令和停止条件后再升级为执行项。",
+          "not_pressure_list": true,
+          "reason_zh": "为什么不是现在：先验证最小下一步是否能形成可复用产物；没有 owner、验收命令或明确收益前不扩大投入。"
+        }
+      }
+    ],
+    "phase_boundary": {
+      "does_not_create_infinite_pressure_list": true,
+      "does_not_modify_raw": true,
+      "does_not_output_psychological_diagnosis": true,
+      "does_not_use_external_economic_database": true,
+      "next_phase": "S07 P1"
+    },
+    "schema_version": "memory_atlas_behavior_intelligence_display.v1_2_s06_review",
+    "source_files": {
+      "clusters": "data/derived/behavior_intelligence/clusters.json",
+      "low_value_loops": "data/derived/behavior_intelligence/low_value_loops.json",
+      "opportunities": "data/derived/behavior_intelligence/opportunities.json"
+    },
+    "stage": "S06",
+    "status": "stage_s06_review_passed_pending_s07_no_github_main_upload",
+    "task_ids": [
+      "MA-V12-S06P1",
+      "MA-V12-S06P2",
+      "MA-V12-S06P3"
+    ]
+  },
   "contribution": {
     "daily": [
       {
@@ -5235,7 +6311,7 @@
       "id": "codex",
       "ingestion_status": "active_real_local_redacted_summary",
       "label": "Codex",
-      "latest_date": "2026-07-01",
+      "latest_date": "2026-07-08",
       "node_count": 23,
       "platform": "codex_local_derived_behavior",
       "record_types": [
@@ -25064,8 +26140,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.086,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.436
       },
@@ -25138,8 +26214,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.03,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.38
       },
@@ -25212,8 +26288,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.03,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.38
       },
@@ -25249,8 +26325,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.086,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.436
       },
@@ -25286,8 +26362,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.03,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.38
       },
@@ -25323,8 +26399,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.03,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.38
       },
@@ -25360,8 +26436,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.03,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.38
       },
@@ -25397,8 +26473,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.086,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.436
       },
@@ -25434,8 +26510,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.086,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.436
       },
@@ -25471,8 +26547,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.086,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.436
       },
@@ -25508,8 +26584,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.086,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.436
       },
@@ -25545,8 +26621,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.03,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.38
       },
@@ -25582,8 +26658,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.086,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.436
       },
@@ -25619,8 +26695,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.03,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.38
       },
@@ -25656,8 +26732,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.086,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.436
       },
@@ -25693,8 +26769,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.086,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.436
       },
@@ -25730,8 +26806,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.03,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.38
       },
@@ -25767,8 +26843,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.03,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.38
       },
@@ -25804,8 +26880,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.03,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.38
       },
@@ -25841,8 +26917,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.086,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.436
       },
@@ -25878,8 +26954,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.086,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.436
       },
@@ -25915,8 +26991,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.086,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.436
       },
@@ -25952,8 +27028,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.03,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.38
       },
@@ -25989,8 +27065,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.03,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.38
       },
@@ -26063,8 +27139,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.086,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.436
       },
@@ -26100,8 +27176,8 @@
       "metrics": {
         "roi": {
           "leverage_score": 0.03,
-          "recommended_action": "keep_as_context",
-          "staleness_status": "current"
+          "recommended_action": "keep_low_weight_or_refresh",
+          "staleness_status": "stale_short_term"
         },
         "weight_score": 0.38
       },
@@ -29002,7 +30078,7 @@
       "category": "codex_personalization",
       "confidence": "high",
       "data_source": "codex",
-      "date": "2026-07-01",
+      "date": "2026-07-08",
       "id": "memory:codex_recommendation_memory_codex_signal_github_as_memory_source",
       "importance": "高",
       "kind": "memory",
@@ -29049,7 +30125,7 @@
       "category": "codex_personalization",
       "confidence": "high",
       "data_source": "codex",
-      "date": "2026-07-01",
+      "date": "2026-07-08",
       "id": "memory:codex_recommendation_memory_codex_signal_agent_personalization",
       "importance": "高",
       "kind": "memory",
@@ -29086,7 +30162,7 @@
       "category": "codex_personalization",
       "confidence": "high",
       "data_source": "codex",
-      "date": "2026-07-01",
+      "date": "2026-07-08",
       "id": "memory:codex_recommendation_memory_codex_signal_prefer_chinese",
       "importance": "高",
       "kind": "memory",
@@ -29123,7 +30199,7 @@
       "category": "codex_personalization",
       "confidence": "high",
       "data_source": "codex",
-      "date": "2026-07-01",
+      "date": "2026-07-08",
       "id": "memory:codex_recommendation_memory_codex_signal_real_data_required",
       "importance": "高",
       "kind": "memory",
@@ -29160,7 +30236,7 @@
       "category": "codex_personalization",
       "confidence": "high",
       "data_source": "codex",
-      "date": "2026-07-01",
+      "date": "2026-07-08",
       "id": "memory:codex_recommendation_memory_codex_signal_human_readable_reports",
       "importance": "高",
       "kind": "memory",
@@ -29197,7 +30273,7 @@
       "category": "codex_agent_metadata",
       "confidence": "high",
       "data_source": "codex",
-      "date": "2026-07-01",
+      "date": "2026-07-08",
       "id": "memory:codex_recommendation_meta_codex_signal_no_plaintext_secrets_in_git",
       "importance": "高",
       "kind": "memory",
@@ -29244,7 +30320,7 @@
       "category": "codex_agent_metadata",
       "confidence": "high",
       "data_source": "codex",
-      "date": "2026-07-01",
+      "date": "2026-07-08",
       "id": "memory:codex_recommendation_meta_codex_signal_authorization_gate",
       "importance": "高",
       "kind": "memory",
@@ -29284,7 +30360,7 @@
     "codex_session_count": 16,
     "conversation_count": 201,
     "edge_count": 1771,
-    "generated_at": "2026-07-01T05:50:07.056Z",
+    "generated_at": "2026-07-08T04:50:24.616Z",
     "memory_node_count": 301,
     "node_count": 340,
     "theme_node_count": 9
@@ -29324,6 +30400,9 @@
     "mode": "public_redacted_read_only_visualization",
     "source_files": {
       "active_memory": "data/memory/active/active_memory.jsonl",
+      "behavior_clusters": "data/derived/behavior_intelligence/clusters.json",
+      "behavior_low_value_loops": "data/derived/behavior_intelligence/low_value_loops.json",
+      "behavior_opportunities": "data/derived/behavior_intelligence/opportunities.json",
       "codex_agent_recommendations": "data/derived/codex/codex_agent_recommendations.json",
       "codex_daily_activity": "data/processed/codex/codex_daily_activity.jsonl",
       "codex_session_manifest": "data/processed/codex/codex_session_manifest.jsonl",
@@ -31996,69 +33075,6 @@
       "node_id": "memory:codex_session_019f19e8-df90-71d0-a1c7-7349549e32bc"
     },
     {
-      "category": "codex_personalization",
-      "date": "2026-07-01",
-      "importance": "高",
-      "label": "核心画像 · 长期记忆库 · 任意 / 所有",
-      "memory_id": "codex_recommendation_memory_codex_signal_agent_personalization",
-      "memory_tier": "核心画像",
-      "node_id": "memory:codex_recommendation_memory_codex_signal_agent_personalization"
-    },
-    {
-      "category": "codex_personalization",
-      "date": "2026-07-01",
-      "importance": "高",
-      "label": "核心画像 · 长期记忆库 · durable / source",
-      "memory_id": "codex_recommendation_memory_codex_signal_github_as_memory_source",
-      "memory_tier": "核心画像",
-      "node_id": "memory:codex_recommendation_memory_codex_signal_github_as_memory_source"
-    },
-    {
-      "category": "codex_personalization",
-      "date": "2026-07-01",
-      "importance": "高",
-      "label": "核心画像 · 长期记忆库 · 报告面向人类 / 和成长",
-      "memory_id": "codex_recommendation_memory_codex_signal_human_readable_reports",
-      "memory_tier": "核心画像",
-      "node_id": "memory:codex_recommendation_memory_codex_signal_human_readable_reports"
-    },
-    {
-      "category": "codex_personalization",
-      "date": "2026-07-01",
-      "importance": "高",
-      "label": "核心画像 · 长期记忆库 · 默认中文输出 / 用户长期偏好中文输出",
-      "memory_id": "codex_recommendation_memory_codex_signal_prefer_chinese",
-      "memory_tier": "核心画像",
-      "node_id": "memory:codex_recommendation_memory_codex_signal_prefer_chinese"
-    },
-    {
-      "category": "codex_personalization",
-      "date": "2026-07-01",
-      "importance": "高",
-      "label": "核心画像 · 长期记忆库 · 真实数据优先 / 用户明确要求使用真实",
-      "memory_id": "codex_recommendation_memory_codex_signal_real_data_required",
-      "memory_tier": "核心画像",
-      "node_id": "memory:codex_recommendation_memory_codex_signal_real_data_required"
-    },
-    {
-      "category": "codex_agent_metadata",
-      "date": "2026-07-01",
-      "importance": "高",
-      "label": "一般 · Codex · Meta / Data",
-      "memory_id": "codex_recommendation_meta_codex_signal_authorization_gate",
-      "memory_tier": "一般",
-      "node_id": "memory:codex_recommendation_meta_codex_signal_authorization_gate"
-    },
-    {
-      "category": "codex_agent_metadata",
-      "date": "2026-07-01",
-      "importance": "高",
-      "label": "一般 · Codex · Meta / Data",
-      "memory_id": "codex_recommendation_meta_codex_signal_no_plaintext_secrets_in_git",
-      "memory_tier": "一般",
-      "node_id": "memory:codex_recommendation_meta_codex_signal_no_plaintext_secrets_in_git"
-    },
-    {
       "category": "codex_development_record",
       "date": "2026-07-01",
       "importance": "高",
@@ -32129,6 +33145,69 @@
       "memory_id": "codex_session_019f1c30-aa3e-7ea2-bdf6-69a4b10fa73a",
       "memory_tier": "一般",
       "node_id": "memory:codex_session_019f1c30-aa3e-7ea2-bdf6-69a4b10fa73a"
+    },
+    {
+      "category": "codex_personalization",
+      "date": "2026-07-08",
+      "importance": "高",
+      "label": "核心画像 · 长期记忆库 · 任意 / 所有",
+      "memory_id": "codex_recommendation_memory_codex_signal_agent_personalization",
+      "memory_tier": "核心画像",
+      "node_id": "memory:codex_recommendation_memory_codex_signal_agent_personalization"
+    },
+    {
+      "category": "codex_personalization",
+      "date": "2026-07-08",
+      "importance": "高",
+      "label": "核心画像 · 长期记忆库 · durable / source",
+      "memory_id": "codex_recommendation_memory_codex_signal_github_as_memory_source",
+      "memory_tier": "核心画像",
+      "node_id": "memory:codex_recommendation_memory_codex_signal_github_as_memory_source"
+    },
+    {
+      "category": "codex_personalization",
+      "date": "2026-07-08",
+      "importance": "高",
+      "label": "核心画像 · 长期记忆库 · 报告面向人类 / 和成长",
+      "memory_id": "codex_recommendation_memory_codex_signal_human_readable_reports",
+      "memory_tier": "核心画像",
+      "node_id": "memory:codex_recommendation_memory_codex_signal_human_readable_reports"
+    },
+    {
+      "category": "codex_personalization",
+      "date": "2026-07-08",
+      "importance": "高",
+      "label": "核心画像 · 长期记忆库 · 默认中文输出 / 用户长期偏好中文输出",
+      "memory_id": "codex_recommendation_memory_codex_signal_prefer_chinese",
+      "memory_tier": "核心画像",
+      "node_id": "memory:codex_recommendation_memory_codex_signal_prefer_chinese"
+    },
+    {
+      "category": "codex_personalization",
+      "date": "2026-07-08",
+      "importance": "高",
+      "label": "核心画像 · 长期记忆库 · 真实数据优先 / 用户明确要求使用真实",
+      "memory_id": "codex_recommendation_memory_codex_signal_real_data_required",
+      "memory_tier": "核心画像",
+      "node_id": "memory:codex_recommendation_memory_codex_signal_real_data_required"
+    },
+    {
+      "category": "codex_agent_metadata",
+      "date": "2026-07-08",
+      "importance": "高",
+      "label": "一般 · Codex · Meta / Data",
+      "memory_id": "codex_recommendation_meta_codex_signal_authorization_gate",
+      "memory_tier": "一般",
+      "node_id": "memory:codex_recommendation_meta_codex_signal_authorization_gate"
+    },
+    {
+      "category": "codex_agent_metadata",
+      "date": "2026-07-08",
+      "importance": "高",
+      "label": "一般 · Codex · Meta / Data",
+      "memory_id": "codex_recommendation_meta_codex_signal_no_plaintext_secrets_in_git",
+      "memory_tier": "一般",
+      "node_id": "memory:codex_recommendation_meta_codex_signal_no_plaintext_secrets_in_git"
     }
   ],
   "visual_layers": {

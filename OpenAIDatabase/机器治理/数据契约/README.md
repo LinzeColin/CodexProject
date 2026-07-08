@@ -12,7 +12,7 @@
 
 source registry 属于 S02 P2；本阶段不创建 registry 文件，不修改 raw archive。
 
-当前 S06 P3 已完成。S05 Review 已通过，并新增：
+当前 S06 Review 已完成。S05 Review 已通过，并新增：
 
 - `机器治理/数据契约/facet_event_schema.v1_2_s05_p1.json`
 - `人类可读/12_Facet字段与事件语义说明.md`
@@ -34,6 +34,8 @@ source registry 属于 S02 P2；本阶段不创建 registry 文件，不修改 r
 - `data/derived/behavior_intelligence/opportunities.json`
 - `人类可读/15_机会发现与为什么不是现在卡片.md`
 - `docs/reviews/memory_atlas_v1_2_s06_p3_opportunity_discovery.md`
+- `data/derived/visualization/memory_atlas.json`
+- `docs/reviews/memory_atlas_v1_2_s06_review.md`
 
 S05 P1 定义 facet/canonical event schema：`source`、`topic`、`intent`、
 `task_type`、`project`、`output_type`、`language`、`tool`、`turn_count`、
@@ -70,4 +72,9 @@ S06 P2 生成 `data/derived/behavior_intelligence/low_value_loops.json`。该输
 S06 P3 生成 `data/derived/behavior_intelligence/opportunities.json`。该输出包含
 候选机会和 为什么不是现在 卡片，覆盖 automation、productization、template、
 compounding 和 defer 五类机会线索。每条机会都必须有 `evidence_refs`、`next_step_zh`、
-半衰期或暂缓理由，并保持 candidate only，不形成无穷压力清单。下一步是 S06 Review。
+半衰期或暂缓理由，并保持 candidate only，不形成无穷压力清单。
+
+S06 Review 将 S06 P1/P2/P3 的派生结果汇总进
+`data/derived/visualization/memory_atlas.json` 的 `behavior_intelligence`。该展示合同只保留
+计数、中文摘要、有限证据引用、代表事件、下一步和 why-not-now 摘要，不修改 raw，也不把完整
+行为智能输出复制到前端。下一步是 S07 P1。

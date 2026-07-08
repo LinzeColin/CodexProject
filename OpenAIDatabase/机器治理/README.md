@@ -18,8 +18,8 @@
 
 ## 当前阶段
 
-当前为 S06 P3。任务 ID 为 `MA-V12-S06P3`，验收 ID 为
-`ACC-MA-V12-S06P3`，validator 为 `validate:v1.2-s06-p3`。
+当前为 S06 Review。任务 ID 为 `MA-V12-S06-REVIEW`，验收 ID 为
+`ACC-MA-V12-S06-REVIEW`，validator 为 `validate:v1.2-s06-review`。
 S01 整体复审已通过，S02 整体复审已通过，S03 P1/P2/P3
 整体复审已通过。S04 P1 已建立 ChatGPT 只读同步和 official export fallback。
 S04 P2 已建立 Codex local sync、future-agent minimal adapter、raw + derived + run log
@@ -36,7 +36,9 @@ visualization 复用。S06 P1 已生成主题簇和层级簇，支持
 S06 P2 已生成低价值循环候选、Decision Debt Ledger 和 Action Half-Life，输出
 `data/derived/behavior_intelligence/low_value_loops.json`。S06 P3 已生成机会发现候选
 和 为什么不是现在 卡片，输出
-`data/derived/behavior_intelligence/opportunities.json`。下一步是 S06 Review。
+`data/derived/behavior_intelligence/opportunities.json`。S06 Review 已完成，确认
+`data/derived/visualization/memory_atlas.json` 的 `behavior_intelligence` 可显示
+主题簇、低价值循环和机会线索。下一步是 S07 P1。
 
 当前机器产物：
 
@@ -46,6 +48,7 @@ S06 P2 已生成低价值循环候选、Decision Debt Ledger 和 Action Half-Lif
 - `../data/derived/behavior_intelligence/clusters.json`
 - `../data/derived/behavior_intelligence/low_value_loops.json`
 - `../data/derived/behavior_intelligence/opportunities.json`
+- `../data/derived/visualization/memory_atlas.json`
 - `同步与备份/sync_source_registry.json`
 - `同步与备份/raw_public_archive_policy.v1_2_s03_p1.json`
 - `同步与备份/credential_exclusion_policy.v1_2_s03_p2.json`
@@ -91,6 +94,7 @@ S06 P2 已生成低价值循环候选、Decision Debt Ledger 和 Action Half-Lif
 - `../docs/reviews/memory_atlas_v1_2_s06_p1_cluster_builder.md`
 - `../docs/reviews/memory_atlas_v1_2_s06_p2_low_value_loops.md`
 - `../docs/reviews/memory_atlas_v1_2_s06_p3_opportunity_discovery.md`
+- `../docs/reviews/memory_atlas_v1_2_s06_review.md`
 - `scripts/privacy_guard.py`
 - `scripts/sync_codex_memory_data.py`
 - `scripts/raw_archive_manifest.py`
@@ -107,6 +111,7 @@ S06 P2 已生成低价值循环候选、Decision Debt Ledger 和 Action Half-Lif
 - `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_p1.cjs`
 - `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_p2.cjs`
 - `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_p3.cjs`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_review.cjs`
 
 `运行门禁/v1.2需求冻结清单.json` 继续固定：
 
@@ -116,4 +121,4 @@ S06 P2 已生成低价值循环候选、Decision Debt Ledger 和 Action Half-Lif
 - 凭证排除。
 - 后续其他 agent 数据源扩展规则。
 
-下一步是 S06 Review；本目录仍不替代 apps/scripts/tests/config/data/docs/governance。
+下一步是 S07 P1；本目录仍不替代 apps/scripts/tests/config/data/docs/governance。
