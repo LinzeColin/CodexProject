@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S14 P3 Development Records
+
+- Added `validate:v1.2-s14-p3` for `MA-V12-S14P3` /
+  `ACC-MA-V12-S14P3`.
+- Registered status
+  `phase_s14_p3_development_record_completed_pending_s14_review`.
+- Added the Chinese runbook `人类可读/09_验收标准与运行手册.md`.
+- Added machine evidence
+  `机器治理/证据与日志/stage_pass_gates/stage_pass_gate_status.v1_2_s14_p3.json`.
+- Preserved the S14 P3 acceptance language: 开发记录中文可读, 维护命令少而清晰,
+  所有 stage pass gate 状态可查.
+- Kept S14 P3 boundaries: No GitHub main upload, No remote push, No raw mutation,
+  no app reinstall and no local deep clean.
+- Marked the next gate as pending S14 Review.
+
 ## Unreleased - Memory Atlas v1.2 S14 P2 Final Audit Gate
 
 - Added `validate:v1.2-s14-p2` for `MA-V12-S14P2` /

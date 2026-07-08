@@ -2,6 +2,17 @@
 
 用于放置 run evidence、audit logs、manifest/hash、stage evidence 和复审证据摘要。
 
+当前 S14 P3 已完成开发记录与运行手册。任务 ID 为 `MA-V12-S14P3`，验收 ID 为
+`ACC-MA-V12-S14P3`，状态为
+`phase_s14_p3_development_record_completed_pending_s14_review`。Validator 为
+`validate:v1.2-s14-p3`。S14 P3 证明开发记录中文可读、维护命令少而清晰、所有 stage pass gate 状态可查；
+人类运行手册为 `人类可读/09_验收标准与运行手册.md`，机器证据为
+`机器治理/证据与日志/stage_pass_gates/stage_pass_gate_status.v1_2_s14_p3.json`。下一步为
+pending S14 Review。
+
+S14 P3 不上传 GitHub main，不远端 push，不修改 raw。No GitHub main upload。No remote push。
+No raw mutation。
+
 当前 S13 Review 已完成。复审确认以下机器证据共同支持 Proposal 状态机、Diff narrator、
 Apply 与回滚的 stage gate，下一步为 S14 P1：
 
