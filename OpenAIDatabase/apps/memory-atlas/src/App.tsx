@@ -47,7 +47,7 @@ import {
   type GalaxyRendererMode,
   type TimelineRendererMode,
 } from "./config/visualFlags";
-import type { ActivityBucket, AtlasEdge, AtlasFilters, AtlasMetric, AtlasNode, MemoryAtlas, ViewKey } from "./types";
+import type { ActivityBucket, AtlasEdge, AtlasFilters, AtlasMetric, AtlasNode, DataSourceSummary, MemoryAtlas, ViewKey } from "./types";
 import {
   atlasFiltersFromSharedState,
   createSharedAtlasState,
@@ -80,6 +80,7 @@ const uiCopy = zhCNCopy;
 const DEFAULT_MEMORY_ATLAS_VIEW: ViewKey = "home";
 const MEMORY_OVERVIEW_STRUCTURE_VERSION = "memory_overview_default_home.v1_1_7_stage3_phase1" as const;
 const MEMORY_OVERVIEW_OPERATION_VERSION = "memory_overview_detail_operations.v1_1_7_stage3_phase2" as const;
+const HOME_ARRIVAL_BRIEFING_VERSION = "home_arrival_briefing.v1_2_s10_p1" as const;
 const HOME_ACTION_SECTION_VERSION = "top_actions_section.v1_1_7_stage3_phase2" as const;
 const HOME_LEVEL_ASSET_SECTION_VERSION = "level_assets_section.v1_1_7_stage3_phase2" as const;
 const HOME_THEME_CATEGORY_SECTION_VERSION = "theme_categories_section.v1_1_7_stage3_phase2" as const;
@@ -237,6 +238,7 @@ declare global {
 }
 
 const MEMORY_OVERVIEW_SECTION_ORDER = [
+  { id: "arrival_briefing", label: "上次来以后发生了什么" },
   { id: "status_summary", label: "状态摘要" },
   { id: "suggested_actions", label: "行动建议" },
   { id: "behavior_intelligence", label: "行为智能" },
@@ -263,6 +265,14 @@ const HOME_THEME_CATEGORY_STATES = [
   { id: "opportunity", label: "机会" },
   { id: "stable", label: "稳定" },
 ] as const;
+
+const HOME_ARRIVAL_CATEGORY_LABELS = {
+  new_material: "新增重要资料",
+  strengthened: "增强结论",
+  weakened: "减弱或过期结论",
+  pending_proposal: "待授权 proposal",
+  sync_failure: "同步失败",
+} as const;
 
 const views: Array<{ key: ViewKey; label: string; icon: ComponentType<{ size?: number }> }> = [
   { key: "home", label: uiCopy.navigation.views.home, icon: Home },
@@ -674,6 +684,22 @@ interface HomeSignalCard {
   value: string;
   note: string;
   tone: "weather" | "dominant" | "rising" | "declining" | "black-hole" | "proto-star";
+}
+
+type HomeArrivalBriefingCardId = keyof typeof HOME_ARRIVAL_CATEGORY_LABELS;
+
+interface HomeArrivalBriefingCard {
+  id: HomeArrivalBriefingCardId;
+  label: string;
+  value: string;
+  summary: string;
+  evidence: string;
+  nextStep: string;
+  targetView: ViewKey;
+  node: AtlasNode | null;
+  icon: ComponentType<{ size?: number }>;
+  tone: "new-material" | "strengthened" | "weakened" | "proposal" | "sync";
+  machineSignal: string;
 }
 
 interface HomeAction extends HomeActionDetail {
@@ -1735,6 +1761,10 @@ function HomeOverviewView({
   const levelAssetGroupChips = buildLevelAssetGroupChips(model.tierAssets);
   const themeCategoryChips = buildThemeCategoryChips(model.topicDetails);
   const behaviorIntelligence = atlas.behavior_intelligence;
+  const arrivalBriefing = useMemo(
+    () => buildHomeArrivalBriefing(atlas, nodes, model, deltaStats),
+    [atlas, deltaStats, model, nodes],
+  );
 
   function runAction(action: HomeActionDetail) {
     const runtimeAction = model.actions.find((item) => item.action_id === action.action_id);
@@ -1807,6 +1837,58 @@ function HomeOverviewView({
         </div>
         <span>{timelineRangeSummary(timelineTimeRange) ?? `${nodes.length.toLocaleString()} 条筛选记忆 · ${uiCopy.overview.defaultEntry}`}</span>
       </div>
+      <section
+        className="home-arrival-briefing"
+        aria-labelledby="home-arrival-briefing-title"
+        data-home-arrival-question={uiCopy.overview.arrivalQuestion}
+        data-home-section="arrival_briefing"
+        data-s10-p1-home-arrival-briefing={HOME_ARRIVAL_BRIEFING_VERSION}
+      >
+        <div className="arrival-briefing-heading">
+          <div>
+            <span>{uiCopy.overview.arrivalQuestion}</span>
+            <h3 id="home-arrival-briefing-title">{uiCopy.overview.arrivalTitle}</h3>
+            <p>{uiCopy.overview.arrivalDescription}</p>
+          </div>
+          <button type="button" onClick={() => onSwitchView("summary")}>
+            <LayoutDashboard size={16} />
+            <span>{uiCopy.overview.arrivalSummaryAction}</span>
+          </button>
+        </div>
+        <div className="arrival-briefing-grid">
+          {arrivalBriefing.map((card) => {
+            const Icon = card.icon;
+            return (
+              <button
+                className={`arrival-briefing-card ${card.tone}`}
+                data-home-arrival-category={card.id}
+                data-home-arrival-machine-signal={card.machineSignal}
+                key={card.id}
+                onClick={() => jumpToPreview(card.node, card.targetView)}
+                type="button"
+              >
+                <span className="arrival-briefing-card-label">
+                  <Icon size={16} />
+                  {card.label}
+                </span>
+                <strong>{card.value}</strong>
+                <p>{card.summary}</p>
+                <small>{card.evidence}</small>
+                <em className="arrival-briefing-next-step">下一步：{card.nextStep}</em>
+              </button>
+            );
+          })}
+        </div>
+        <details className="arrival-briefing-machine-details">
+          <summary>{uiCopy.overview.arrivalMachineDetails}</summary>
+          <dl>
+            <div><dt>contract</dt><dd>{HOME_ARRIVAL_BRIEFING_VERSION}</dd></div>
+            <div><dt>snapshot</dt><dd>{atlas.overview.generated_at || "not_loaded"}</dd></div>
+            <div><dt>rawMutation</dt><dd>false</dd></div>
+            <div><dt>proposalApply</dt><dd>false</dd></div>
+          </dl>
+        </details>
+      </section>
       <nav className="home-structure-rail" aria-label="记忆总览默认页结构">
         {MEMORY_OVERVIEW_SECTION_ORDER.map((section) => (
           <span data-home-section-anchor={section.id} key={section.id}>{section.label}</span>
@@ -6522,6 +6604,139 @@ function buildHomeOverviewModel(
     riverPulseFocus,
     inspectorLinks: buildHomeInspectorLinks([protoStarNode, blackHoleNode, highLeverageNode], memoryNodes, graphEdges),
   };
+}
+
+function buildHomeArrivalBriefing(
+  atlas: MemoryAtlas,
+  nodes: AtlasNode[],
+  model: ReturnType<typeof buildHomeOverviewModel>,
+  deltaStats: DeltaStats,
+): HomeArrivalBriefingCard[] {
+  const latest = parseDay(deltaStats.latestDate) ?? maxNodeDate(nodes) ?? new Date();
+  const recentStart = addDays(latest, -29);
+  const recentNodes = nodes
+    .filter((node) => node.kind === "memory" && isNodeBetween(node, recentStart, latest))
+    .sort((a, b) => (Date.parse(b.date ?? "") || 0) - (Date.parse(a.date ?? "") || 0));
+  const newestImportantNode = recentNodes
+    .slice()
+    .sort((a, b) => (b.metrics?.roi?.leverage_score ?? 0) - (a.metrics?.roi?.leverage_score ?? 0))
+    .at(0) ?? recentNodes.at(0) ?? model.miniStarfieldFocus;
+  const strengtheningSegment = model.riverPulseSegments.find((segment) => segment.delta > 0) ?? model.riverPulseSegments[0];
+  const weakeningSegment = model.riverPulseSegments.find((segment) => segment.delta < 0);
+  const recommendationCount = pendingProposalCandidateCount(atlas.agent_recommendations);
+  const proposedActionCount = model.actions.filter((action) => action.status === "proposed" || action.status === "review").length;
+  const pendingProposalCount = Math.max(recommendationCount, proposedActionCount);
+  const failedSources = syncFailureSources(atlas);
+  const latestSource = latestDataSource(atlas);
+  const topAction = model.actions[0];
+
+  return [
+    {
+      id: "new_material",
+      label: HOME_ARRIVAL_CATEGORY_LABELS.new_material,
+      value: `${deltaStats.recentCount.toLocaleString()} 条`,
+      summary: newestImportantNode
+        ? `最近新增或活跃的高价值线索是「${humanNodeDisplayTitle(newestImportantNode)}」。`
+        : "当前筛选下没有新的高价值资料；先保持观察，不生成伪增量。",
+      evidence: `近 30 天 ${deltaStats.recentCount.toLocaleString()} 条，上一窗口 ${deltaStats.previousCount.toLocaleString()} 条。`,
+      nextStep: newestImportantNode ? "打开星图核对证据和关联主题" : "放宽筛选或等待下一次同步",
+      targetView: "galaxy",
+      node: newestImportantNode,
+      icon: Download,
+      tone: "new-material",
+      machineSignal: `delta=${deltaStats.deltaCount}`,
+    },
+    {
+      id: "strengthened",
+      label: HOME_ARRIVAL_CATEGORY_LABELS.strengthened,
+      value: strengtheningSegment ? strengtheningSegment.label : model.topicRows[0]?.label ?? "暂无",
+      summary: strengtheningSegment
+        ? `这个结论在近期窗口增强 ${formatSigned(strengtheningSegment.delta)} 条。`
+        : "没有稳定增强信号；先看主导主题是否仍有决策价值。",
+      evidence: strengtheningSegment
+        ? `recent=${strengtheningSegment.recentCount} / previous=${strengtheningSegment.previousCount}`
+        : `主导主题 ${model.topicRows[0]?.count ?? 0} 条。`,
+      nextStep: "进入时间轴查看增强发生在哪些记录上",
+      targetView: "timeline",
+      node: strengtheningSegment?.node ?? model.riverPulseFocus,
+      icon: Activity,
+      tone: "strengthened",
+      machineSignal: `strengthened_delta=${strengtheningSegment?.delta ?? 0}`,
+    },
+    {
+      id: "weakened",
+      label: HOME_ARRIVAL_CATEGORY_LABELS.weakened,
+      value: model.blackHoleCount.toLocaleString(),
+      summary: weakeningSegment
+        ? `「${weakeningSegment.label}」近期减弱 ${formatSigned(weakeningSegment.delta)} 条，需要确认是过期还是沉淀完成。`
+        : `${model.blackHoleCount.toLocaleString()} 条风险循环或过期候选需要保留在复盘视野里。`,
+      evidence: weakeningSegment
+        ? `recent=${weakeningSegment.recentCount} / previous=${weakeningSegment.previousCount}`
+        : "来自 staleness 与 low-value loop derived signals。",
+      nextStep: "先复核，不直接降权或删除",
+      targetView: "summary",
+      node: weakeningSegment?.node ?? topAction?.node ?? null,
+      icon: FilterX,
+      tone: "weakened",
+      machineSignal: `black_holes=${model.blackHoleCount}`,
+    },
+    {
+      id: "pending_proposal",
+      label: HOME_ARRIVAL_CATEGORY_LABELS.pending_proposal,
+      value: `${pendingProposalCount.toLocaleString()} 项`,
+      summary: pendingProposalCount
+        ? "有 recommendation 或下一步行动可转成 proposal-only 候选，仍需人工授权。"
+        : "当前没有待授权 proposal；前端继续保持 proposal-only，不执行 apply。",
+      evidence: `agent recommendations=${recommendationCount}; top actions=${proposedActionCount}`,
+      nextStep: pendingProposalCount ? "进入总结与迭代做人工 triage" : "保留 proposal-only 边界",
+      targetView: "summary",
+      node: topAction?.node ?? null,
+      icon: Save,
+      tone: "proposal",
+      machineSignal: `pending_proposals=${pendingProposalCount}`,
+    },
+    {
+      id: "sync_failure",
+      label: HOME_ARRIVAL_CATEGORY_LABELS.sync_failure,
+      value: `${failedSources.length.toLocaleString()} 个`,
+      summary: failedSources.length
+        ? `需要处理的数据源：${failedSources.map((source) => source.label).join("、")}。`
+        : `当前未看到同步失败；最新活跃数据源是 ${latestSource?.label ?? "未知数据源"}。`,
+      evidence: latestSource ? `${latestSource.id}:${latestSource.ingestion_status || latestSource.status || "unknown"}` : "no data_sources",
+      nextStep: failedSources.length ? "先修同步，再相信新增结论" : "继续用当前快照判断",
+      targetView: "search",
+      node: null,
+      icon: Cloud,
+      tone: "sync",
+      machineSignal: `sync_failures=${failedSources.length}`,
+    },
+  ];
+}
+
+function pendingProposalCandidateCount(recommendations: MemoryAtlas["agent_recommendations"]): number {
+  if (!recommendations) return 0;
+  return (
+    recommendations.memory.added.length +
+    recommendations.memory.modified.length +
+    recommendations.meta_data.added.length +
+    recommendations.meta_data.modified.length
+  );
+}
+
+function syncFailureSources(atlas: MemoryAtlas): DataSourceSummary[] {
+  return (atlas.data_sources ?? []).filter((source) => {
+    if (source.id === "all") return false;
+    const status = `${source.status ?? ""} ${source.ingestion_status ?? ""}`.toLowerCase();
+    return /fail|error|stale|blocked|missing|denied|timeout|失败|过期|阻塞/.test(status) || !/active|merged/.test(status);
+  });
+}
+
+function latestDataSource(atlas: MemoryAtlas): DataSourceSummary | null {
+  return (atlas.data_sources ?? [])
+    .filter((source) => source.id !== "all")
+    .slice()
+    .sort((a, b) => (b.latest_date || "").localeCompare(a.latest_date || ""))
+    .at(0) ?? null;
 }
 
 function buildTierAssetDetails({

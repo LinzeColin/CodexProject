@@ -1636,6 +1636,207 @@ h3 {
   overflow: auto;
 }
 
+.home-arrival-briefing {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  border-top: 1px solid rgba(244, 241, 232, 0.08);
+  border-bottom: 1px solid rgba(244, 241, 232, 0.08);
+  background:
+    linear-gradient(135deg, rgba(126, 232, 212, 0.1), rgba(143, 211, 255, 0.045)),
+    rgba(9, 10, 13, 0.42);
+  padding: 14px 16px 16px;
+}
+
+.arrival-briefing-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  min-width: 0;
+}
+
+.arrival-briefing-heading > div {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.arrival-briefing-heading span,
+.arrival-briefing-card-label {
+  color: #8fd3ff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.arrival-briefing-heading h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 23px;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.arrival-briefing-heading p {
+  max-width: 76ch;
+  margin: 0;
+  color: #d9d4ca;
+  font-size: 13px;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.arrival-briefing-heading button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  border: 1px solid rgba(126, 232, 212, 0.34);
+  border-radius: 8px;
+  background: rgba(126, 232, 212, 0.12);
+  color: #f4f1e8;
+  padding: 0 11px;
+}
+
+.arrival-briefing-heading button:hover,
+.arrival-briefing-heading button:focus-visible {
+  border-color: rgba(126, 232, 212, 0.7);
+  background: rgba(126, 232, 212, 0.18);
+  outline: none;
+}
+
+.arrival-briefing-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 0;
+}
+
+.arrival-briefing-card {
+  display: grid;
+  grid-template-rows: auto auto minmax(48px, 1fr) auto auto;
+  gap: 8px;
+  min-width: 0;
+  min-height: 176px;
+  border: 1px solid rgba(244, 241, 232, 0.12);
+  border-radius: 8px;
+  background: rgba(9, 10, 13, 0.46);
+  color: #f4f1e8;
+  padding: 12px;
+  text-align: left;
+}
+
+.arrival-briefing-card:hover,
+.arrival-briefing-card:focus-visible {
+  border-color: rgba(126, 232, 212, 0.68);
+  background: rgba(126, 232, 212, 0.1);
+  outline: none;
+}
+
+.arrival-briefing-card.new-material {
+  border-color: rgba(126, 232, 212, 0.34);
+}
+
+.arrival-briefing-card.strengthened {
+  border-color: rgba(143, 211, 255, 0.34);
+}
+
+.arrival-briefing-card.weakened {
+  border-color: rgba(199, 167, 255, 0.34);
+}
+
+.arrival-briefing-card.proposal {
+  border-color: rgba(255, 218, 128, 0.34);
+}
+
+.arrival-briefing-card.sync {
+  border-color: rgba(244, 143, 177, 0.3);
+}
+
+.arrival-briefing-card-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.arrival-briefing-card strong {
+  overflow-wrap: anywhere;
+  color: #ffffff;
+  font-size: 20px;
+  line-height: 1.15;
+}
+
+.arrival-briefing-card p,
+.arrival-briefing-card small,
+.arrival-briefing-next-step {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.42;
+}
+
+.arrival-briefing-card p {
+  color: #d9d4ca;
+}
+
+.arrival-briefing-card small {
+  color: #aaa49a;
+}
+
+.arrival-briefing-next-step {
+  display: block;
+  color: #f4f1e8;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.arrival-briefing-machine-details {
+  min-width: 0;
+  color: #aaa49a;
+  font-size: 11px;
+}
+
+.arrival-briefing-machine-details summary {
+  width: max-content;
+  max-width: 100%;
+  cursor: pointer;
+  color: #cfc8bd;
+  font-weight: 700;
+}
+
+.arrival-briefing-machine-details dl {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin: 8px 0 0;
+}
+
+.arrival-briefing-machine-details div {
+  min-width: 0;
+  border: 1px solid rgba(244, 241, 232, 0.1);
+  border-radius: 7px;
+  background: rgba(244, 241, 232, 0.045);
+  padding: 7px 8px;
+}
+
+.arrival-briefing-machine-details dt,
+.arrival-briefing-machine-details dd {
+  overflow: hidden;
+  margin: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.arrival-briefing-machine-details dt {
+  color: #8f8a82;
+}
+
+.arrival-briefing-machine-details dd {
+  color: #f4f1e8;
+}
+
 .home-structure-rail {
   display: flex;
   flex-wrap: wrap;
@@ -7128,9 +7329,15 @@ h3 {
   }
 
   .home-primary-band,
+  .arrival-briefing-grid,
+  .arrival-briefing-machine-details dl,
   .home-structure-rail,
   .home-preview-grid {
     grid-template-columns: 1fr;
+  }
+
+  .arrival-briefing-heading {
+    display: grid;
   }
 
   .home-shared-focus-strip {
@@ -7542,6 +7749,7 @@ h3 {
   }
 
   .home-primary-band,
+  .home-arrival-briefing,
   .home-structure-rail,
   .home-status-grid,
   .home-behavior-intelligence-panel,
@@ -7554,6 +7762,8 @@ h3 {
   }
 
   .home-weather-metrics,
+  .arrival-briefing-grid,
+  .arrival-briefing-machine-details dl,
   .home-status-grid,
   .home-behavior-count-row,
   .home-behavior-card-grid,
@@ -7567,6 +7777,7 @@ h3 {
   }
 
   .home-status-card,
+  .arrival-briefing-card,
   .home-preview-card,
   .home-action-list button,
   .home-inspector-link-list button {

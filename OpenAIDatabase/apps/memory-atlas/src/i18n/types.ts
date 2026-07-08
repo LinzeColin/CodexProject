@@ -93,6 +93,18 @@ export interface ChineseUiCopy {
     defaultFocus: string;
     noTopic: string;
     defaultEntry: string;
+    arrivalQuestion: string;
+    arrivalTitle: string;
+    arrivalDescription: string;
+    arrivalSummaryAction: string;
+    arrivalMachineDetails: string;
+    arrivalLabels: {
+      newMaterial: string;
+      strengthened: string;
+      weakened: string;
+      pendingProposal: string;
+      syncFailure: string;
+    };
     weatherTitle: string;
     previewAria: string;
     miniStarfieldTitle: string;

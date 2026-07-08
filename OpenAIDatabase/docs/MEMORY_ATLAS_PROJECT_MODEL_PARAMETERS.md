@@ -1,3 +1,37 @@
+## 141. Memory Atlas v1.2 S10 P1 Home Arrival Briefing Parameters
+
+状态：`phase_s10_p1_home_arrival_briefing_completed_pending_s10_p2`。
+
+验收 ID：`ACC-MA-V12-S10P1`。
+
+S10 P1 固定以下参数：
+
+- `MA-V12-S10P1`
+- `validate:v1.2-s10-p1`
+- `home_arrival_briefing.v1_2_s10_p1`
+- `atlasctl.py audit --check chinese-ux`
+- 首页首屏五类状态：新增重要资料、增强结论、减弱或过期结论、待授权 proposal、同步失败。
+- S10 P1 完成后下一步为 pending S10 P2。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S10P1-001 phase_status = phase_s10_p1_home_arrival_briefing_completed_pending_s10_p2`
+- `PARAM-MA-V12-S10P1-002 validator = validate:v1.2-s10-p1`
+- `PARAM-MA-V12-S10P1-003 arrival_version = home_arrival_briefing.v1_2_s10_p1`
+- `PARAM-MA-V12-S10P1-004 arrival_categories = new_material, strengthened, weakened, pending_proposal, sync_failure`
+- `PARAM-MA-V12-S10P1-005 machine_details = default folded`
+- `PARAM-MA-V12-S10P1-006 next_gate = pending S10 P2`
+- `PARAM-MA-V12-S10P1-007 phase_boundary = No raw mutation; No proposal apply execution; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s10-p1` checks homepage arrival briefing order, Chinese copy,
+  folded machine details, styles, `atlasctl audit --check chinese-ux`, records and
+  raw no-change boundary.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S10 P1; MA-V12-S10P1; ACC-MA-V12-S10P1; phase_s10_p1_home_arrival_briefing_completed_pending_s10_p2; validate:v1.2-s10-p1; home_arrival_briefing.v1_2_s10_p1; pending S10 P2; No GitHub main upload in this phase; No raw mutation; No proposal apply execution.
+
 ## 140. Memory Atlas v1.2 S09 Review Parameters
 
 状态：`stage_s09_review_passed_pending_s10_no_github_main_upload`。

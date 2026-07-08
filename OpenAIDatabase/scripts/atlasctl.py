@@ -1745,7 +1745,77 @@ def run_decision_debt_safety_audit(args: argparse.Namespace) -> int:
     return 0 if status == "PASS" else 2
 
 
+def run_chinese_ux_audit(args: argparse.Namespace) -> int:
+    app_path = args.database_dir / "apps/memory-atlas/src/App.tsx"
+    copy_path = args.database_dir / "apps/memory-atlas/src/i18n/zh-CN.ts"
+    style_path = args.database_dir / "apps/memory-atlas/src/styles.css"
+    missing_files = [
+        str(path.relative_to(args.database_dir))
+        for path in (app_path, copy_path, style_path)
+        if not path.exists()
+    ]
+    if missing_files:
+        print(json.dumps({
+            "status": "FAIL",
+            "command": "audit",
+            "check": "chinese-ux",
+            "task_id": "MA-V12-S10P1",
+            "acceptance_id": "ACC-MA-V12-S10P1",
+            "reason": "Chinese UX source files missing",
+            "missing_files": missing_files,
+        }, ensure_ascii=False, indent=2, sort_keys=True))
+        return 2
+
+    app_source = app_path.read_text(encoding="utf-8")
+    copy_source = copy_path.read_text(encoding="utf-8")
+    style_source = style_path.read_text(encoding="utf-8")
+    required_copy = [
+        "上次来以后发生了什么",
+        "新增重要资料",
+        "增强结论",
+        "减弱或过期结论",
+        "待授权 proposal",
+        "同步失败",
+        "下一步",
+    ]
+    bad_items: list[str] = []
+    if "data-home-section=\"arrival_briefing\"" not in app_source:
+        bad_items.append("home_arrival_briefing_missing")
+    if app_source.find("data-home-section=\"arrival_briefing\"") > app_source.find("data-home-section=\"weather\""):
+        bad_items.append("arrival_briefing_not_before_weather")
+    if "data-s10-p1-home-arrival-briefing" not in app_source:
+        bad_items.append("s10p1_data_contract_missing")
+    if "<details className=\"arrival-briefing-machine-details\"" not in app_source:
+        bad_items.append("machine_details_not_folded")
+    for label in required_copy:
+        if label not in app_source and label not in copy_source:
+            bad_items.append(f"copy_missing:{label}")
+    if ".home-arrival-briefing" not in style_source or ".arrival-briefing-next-step" not in style_source:
+        bad_items.append("arrival_briefing_styles_missing")
+    if "proposal apply" in app_source.lower() and "No proposal apply execution" not in app_source:
+        bad_items.append("possible_apply_language_without_boundary")
+
+    status = "PASS" if not bad_items else "FAIL"
+    result = {
+        "status": status,
+        "command": "audit",
+        "check": "chinese-ux",
+        "task_id": "MA-V12-S10P1",
+        "acceptance_id": "ACC-MA-V12-S10P1",
+        "details": {
+            "home_arrival_briefing": "home_arrival_briefing_missing" not in bad_items,
+            "arrival_before_weather": "arrival_briefing_not_before_weather" not in bad_items,
+            "machine_details_default_folded": "machine_details_not_folded" not in bad_items,
+            "bad_items": bad_items,
+        },
+    }
+    print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0 if status == "PASS" else 2
+
+
 def run_audit(args: argparse.Namespace) -> int:
+    if args.check == "chinese-ux":
+        return run_chinese_ux_audit(args)
     if args.check == "decision-debt-safety":
         return run_decision_debt_safety_audit(args)
     if args.check == "self-iteration-safety":
@@ -1769,7 +1839,7 @@ def run_audit(args: argparse.Namespace) -> int:
             "status": "NOT_IMPLEMENTED",
             "command": "audit",
             "check": args.check,
-            "reason": "Unknown audit check. Supported checks: insight-evidence, formulas, visual-roi, formula-what-if, agent-collaboration, agent-authorization, stage-flight, latent-safety, self-iteration-safety, decision-debt-safety.",
+            "reason": "Unknown audit check. Supported checks: insight-evidence, formulas, visual-roi, formula-what-if, agent-collaboration, agent-authorization, stage-flight, latent-safety, self-iteration-safety, decision-debt-safety, chinese-ux.",
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 2
 

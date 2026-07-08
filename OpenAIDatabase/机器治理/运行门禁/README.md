@@ -2,8 +2,37 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S09 Review。任务 ID 为 `MA-V12-S09-REVIEW`，验收 ID 为
-`ACC-MA-V12-S09-REVIEW`，validator 为 `validate:v1.2-s09-review`。
+当前阶段是 S10 P1。任务 ID 为 `MA-V12-S10P1`，验收 ID 为
+`ACC-MA-V12-S10P1`，validator 为 `validate:v1.2-s10-p1`。
+
+S10 P1 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s10_p1_home_arrival_briefing.md`
+- `人类可读/24_首页上次来以后发生了什么说明.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p1.cjs`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/src/i18n/zh-CN.ts`
+- `scripts/atlasctl.py`
+
+S10 P1 gate：
+
+- `validate:v1.2-s10-p1` 可验证首页 arrival briefing。
+- 首页首屏先回答“上次来以后发生了什么”。
+- 展示新增重要资料、增强结论、减弱或过期结论、待授权 proposal、同步失败。
+- 每类状态有中文下一步。
+- 机器细节默认折叠。
+- `python scripts/atlasctl.py audit --check chinese-ux` 返回 PASS。
+- 不执行 proposal apply。
+- 不修改 raw。
+- S10 P2 下一轮再处理全局中文和 Chinese UX linter 增强。
+
+No GitHub main upload in this phase。
+下一步是 S10 P2。
+
+历史复验兼容记录：S09 Review 完成时当前阶段是 S09 Review，任务 ID 为
+`MA-V12-S09-REVIEW`，验收 ID 为 `ACC-MA-V12-S09-REVIEW`，validator 为
+`validate:v1.2-s09-review`；此句只用于保留已完成 stage review 的复验语义，不代表当前阶段。
 
 历史复验兼容记录：S09 P3 完成时当前阶段是 S09 P3，任务 ID 为 `MA-V12-S09P3`，
 验收 ID 为 `ACC-MA-V12-S09P3`，validator 为 `validate:v1.2-s09-p3`；
