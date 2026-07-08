@@ -61,6 +61,7 @@ Current evidence snapshot from the latest mother workbook:
 | Workbook quality gates | Active | Sheet order, hidden sheets, row 2, charts, formulas, sensitive visible values |
 | Goal completion audit | Active | `goal_completion_audit.csv` records requirement-level status and remaining blockers |
 | Management conclusion gate | Active | `management_conclusion_gate.csv` blocks C-level conclusions until formal facts and all review gates pass |
+| Final management conclusion authorization | Active | `management_conclusion_final_authorization` stays blocked until a separate release approval exists, even when `formal_fund_ledger.csv` has rows |
 | Owner action queue | Active | `owner_action_queue.csv` lists pending owner/external-check actions while keeping automation/source/fact/ledger/conclusion execution disabled |
 | Fact promotion review packet | Active | `fact_promotion_review_packet.csv` summarizes owner-review areas while keeping no-write/no-promote |
 | Fact promotion authorization template | Active | `fact_promotion_authorization_template.json` drafts one default-deny authorization row per review packet row |

@@ -2055,6 +2055,8 @@ def build_management_conclusion_gate_rows(cross_review: dict) -> list[dict]:
     fact_execution_allowed_count = int(cross_review.get("fact_promotion_execution_allowed_count") or 0)
     fact_execution_ready_count = int(cross_review.get("fact_promotion_execution_gate_ready_count") or 0)
     fact_execution_blocked_count = int(cross_review.get("fact_promotion_execution_gate_blocked_count") or 0)
+    formalized_area_count = int(cross_review.get("fact_promotion_execution_result_formalized_area_count") or 0)
+    formal_fund_ledger_row_count = int(cross_review.get("formal_fund_ledger_row_count") or 0)
     generated_amount_count = int(cross_review.get("generated_financial_amount_count") or 0)
     cashflow_row_count = int(cross_review.get("cashflow_validation_row_count") or 0)
     balance_fail_count = int(cross_review.get("balance_continuity_fail_count") or 0)
@@ -2085,16 +2087,29 @@ def build_management_conclusion_gate_rows(cross_review: dict) -> list[dict]:
         ),
         management_conclusion_gate_row(
             "formal_fact_promotion_execution",
-            "ready" if fact_execution_allowed_count > 0 else "blocked_fact_promotion_not_executed",
-            f"fact_promotion_execution_allowed_count={fact_execution_allowed_count}; fact_promotion_execution_gate_ready_count={fact_execution_ready_count}; fact_promotion_execution_gate_blocked_count={fact_execution_blocked_count}",
-            fact_execution_allowed_count == 0,
+            (
+                "ready_formal_ledger_sidecar_written"
+                if formalized_area_count > 0
+                else ("ready" if fact_execution_allowed_count > 0 else "blocked_fact_promotion_not_executed")
+            ),
+            (
+                f"fact_promotion_execution_allowed_count={fact_execution_allowed_count}; "
+                f"fact_promotion_execution_result_formalized_area_count={formalized_area_count}; "
+                f"fact_promotion_execution_gate_ready_count={fact_execution_ready_count}; "
+                f"fact_promotion_execution_gate_blocked_count={fact_execution_blocked_count}"
+            ),
+            formalized_area_count == 0 and fact_execution_allowed_count == 0,
             "Run a separately approved controlled fact-promotion execution before management conclusion",
         ),
         management_conclusion_gate_row(
             "formal_ledger_population",
-            "ready" if generated_amount_count > 0 else "blocked_no_formal_ledger_rows",
-            f"generated_financial_amount_count={generated_amount_count}",
-            generated_amount_count == 0,
+            (
+                "ready_formal_ledger_sidecar"
+                if formal_fund_ledger_row_count > 0
+                else ("ready" if generated_amount_count > 0 else "blocked_no_formal_ledger_rows")
+            ),
+            f"formal_fund_ledger_row_count={formal_fund_ledger_row_count}; generated_financial_amount_count={generated_amount_count}",
+            formal_fund_ledger_row_count == 0 and generated_amount_count == 0,
             "Populate formal reviewed ledger facts before management conclusion",
         ),
         management_conclusion_gate_row(
@@ -2117,6 +2132,13 @@ def build_management_conclusion_gate_rows(cross_review: dict) -> list[dict]:
             f"automation_readiness_status={automation_status}; automation_readiness_ready_count={cross_review.get('automation_readiness_ready_count', 0)}",
             not automation_ready,
             "Keep Codex automation schedule readiness evidence with each run" if automation_ready else "Run check_codex_app_automation.py before claiming scheduled readiness",
+        ),
+        management_conclusion_gate_row(
+            "management_conclusion_final_authorization",
+            "blocked_management_conclusion_release_not_authorized",
+            "management_conclusion_allowed=false; final_owner_release_authorization=false",
+            True,
+            "Approve a separate management conclusion release after all evidence, ledger, cashflow, workbook, and automation gates are ready",
         ),
     ]
 
@@ -2156,6 +2178,11 @@ OWNER_ACTION_BY_GATE = {
         "VERIFY_CODEX_AUTOMATION_SCHEDULE",
         "P1",
         False,
+    ),
+    "management_conclusion_final_authorization": (
+        "APPROVE_MANAGEMENT_CONCLUSION_RELEASE",
+        "P0",
+        True,
     ),
 }
 

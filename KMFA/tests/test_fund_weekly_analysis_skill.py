@@ -636,7 +636,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
 
             with (run_dir / "management_conclusion_gate.csv").open(encoding="utf-8-sig", newline="") as f:
                 management_gate_rows = list(csv.DictReader(f))
-            self.assertEqual(len(management_gate_rows), 7)
+            self.assertEqual(len(management_gate_rows), 8)
             gate_by_area = {row["gate_area"]: row for row in management_gate_rows}
             self.assertEqual(gate_by_area["source_readiness"]["gate_status"], "ready")
             self.assertEqual(gate_by_area["native_workbook_quality"]["gate_status"], "ready")
@@ -644,20 +644,28 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 gate_by_area["formal_fact_promotion_execution"]["gate_status"],
                 "blocked_fact_promotion_not_executed",
             )
+            self.assertEqual(
+                gate_by_area["management_conclusion_final_authorization"]["gate_status"],
+                "blocked_management_conclusion_release_not_authorized",
+            )
             self.assertEqual(gate_by_area["automation_schedule"]["gate_status"], "ready")
             self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in management_gate_rows))
-            self.assertEqual(cross_review["management_conclusion_gate_count"], 7)
+            self.assertEqual(cross_review["management_conclusion_gate_count"], 8)
             self.assertEqual(cross_review["management_conclusion_gate_ready_count"], 3)
-            self.assertEqual(cross_review["management_conclusion_gate_blocked_count"], 4)
+            self.assertEqual(cross_review["management_conclusion_gate_blocked_count"], 5)
             self.assertFalse(cross_review["management_conclusion_allowed"])
 
             with (run_dir / "owner_action_queue.csv").open(encoding="utf-8-sig", newline="") as f:
                 owner_action_rows = list(csv.DictReader(f))
-            self.assertEqual(len(owner_action_rows), 4)
+            self.assertEqual(len(owner_action_rows), 5)
             action_by_gate = {row["source_gate"]: row for row in owner_action_rows}
             self.assertEqual(
                 action_by_gate["formal_fact_promotion_execution"]["action_type"],
                 "APPROVE_CONTROLLED_FACT_PROMOTION_EXECUTION",
+            )
+            self.assertEqual(
+                action_by_gate["management_conclusion_final_authorization"]["action_type"],
+                "APPROVE_MANAGEMENT_CONCLUSION_RELEASE",
             )
             self.assertNotIn("automation_schedule", action_by_gate)
             self.assertTrue(all(row["automation_safe"] == "false" for row in owner_action_rows))
@@ -665,8 +673,8 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertTrue(all(row["fact_promotion_allowed"] == "false" for row in owner_action_rows))
             self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in owner_action_rows))
             self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in owner_action_rows))
-            self.assertEqual(cross_review["owner_action_queue_count"], 4)
-            self.assertEqual(cross_review["owner_action_queue_blocking_count"], 4)
+            self.assertEqual(cross_review["owner_action_queue_count"], 5)
+            self.assertEqual(cross_review["owner_action_queue_blocking_count"], 5)
             self.assertEqual(cross_review["owner_action_queue_automation_safe_count"], 0)
 
             with (run_dir / "fact_promotion_owner_review_batch.csv").open(encoding="utf-8-sig", newline="") as f:
@@ -3483,6 +3491,32 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertTrue(all(row["source_mutation_allowed"] == "false" for row in formal_rows))
             self.assertTrue(all(row["fund_ledger_mutation_allowed"] == "false" for row in formal_rows))
             self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in formal_rows))
+
+            with (run_dir / "management_conclusion_gate.csv").open(encoding="utf-8-sig", newline="") as f:
+                management_gate_rows = list(csv.DictReader(f))
+            self.assertEqual(len(management_gate_rows), 8)
+            management_gate_by_area = {row["gate_area"]: row for row in management_gate_rows}
+            self.assertEqual(
+                management_gate_by_area["formal_fact_promotion_execution"]["gate_status"],
+                "ready_formal_ledger_sidecar_written",
+            )
+            self.assertIn(
+                "fact_promotion_execution_result_formalized_area_count=1",
+                management_gate_by_area["formal_fact_promotion_execution"]["evidence"],
+            )
+            self.assertEqual(
+                management_gate_by_area["formal_ledger_population"]["gate_status"],
+                "ready_formal_ledger_sidecar",
+            )
+            self.assertIn(
+                "formal_fund_ledger_row_count=4",
+                management_gate_by_area["formal_ledger_population"]["evidence"],
+            )
+            self.assertEqual(
+                management_gate_by_area["management_conclusion_final_authorization"]["gate_status"],
+                "blocked_management_conclusion_release_not_authorized",
+            )
+            self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in management_gate_rows))
 
             workbook_path = run_dir / "资金与税费管理母版_structured_csv_test.xlsx"
             with zipfile.ZipFile(workbook_path) as workbook:
