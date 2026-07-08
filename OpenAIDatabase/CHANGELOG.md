@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 Main Reconciliation Validator Compatibility
+
+- Updated S09 P1/P2/P3 validators to accept either the local v1.2 stage branch
+  or `main` for final reconciliation, matching S01-S08 validator behavior.
+- Preserved the no-remote-development-branch gate for
+  `codex/memory-atlas-v12-stage0-14-local`.
+- Scope is governance compatibility only: no S09 Review work, no model output
+  regeneration, no raw mutation and no proposal apply execution.
+
 ## Unreleased - Memory Atlas v1.2 S09 P3 Decision Debt
 
 - Added `机器治理/行为智能模型/decision_debt.v1_2_s09_p3.json`.
