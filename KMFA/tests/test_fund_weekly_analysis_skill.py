@@ -6215,9 +6215,12 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             with csv_path.open(encoding="utf-8-sig", newline="") as f:
                 review_rows = list(csv.DictReader(f))
             self.assertIn("source_ocr_text_excerpt", review_rows[0])
+            self.assertIn("source_ocr_excerpt_focus_status", review_rows[0])
             self.assertIn("真实OCR公司A", review_rows[0]["source_ocr_text_excerpt"])
             self.assertIn("付款金额 1.00", review_rows[0]["source_ocr_text_excerpt"])
             self.assertNotIn("无关页眉0", review_rows[0]["source_ocr_text_excerpt"])
+            self.assertEqual(review_rows[0]["source_ocr_excerpt_focus_status"], "focused_amount")
+            self.assertEqual(review_rows[1]["source_ocr_excerpt_focus_status"], "missing_ocr_sidecar")
 
             xlsx_path = repo_root / payload["xlsx_output_relative_path"]
             self.assertTrue(xlsx_path.exists())
@@ -6237,7 +6240,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 self.assertIn("owner_review_completion_status", shared_xml)
                 self.assertIn("missing_owner_fields_current", shared_xml)
                 self.assertIn("source_ocr_text_excerpt", shared_xml)
+                self.assertIn("source_ocr_excerpt_focus_status", shared_xml)
                 self.assertIn("真实OCR公司A", shared_xml)
+                self.assertIn("focused_amount", shared_xml)
+                self.assertIn("missing_ocr_sidecar", shared_xml)
                 self.assertIn("blocked_missing_owner_values", sheet_xml)
                 self.assertIn("pending_owner_review", shared_xml)
                 self.assertIn("fund_ledger_write_allowed", shared_xml)
@@ -6247,17 +6253,17 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 self.assertIn("frozenSplit", sheet_xml)
                 sheet_root = ET.fromstring(sheet_xml)
                 ns = {"x": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
-                status_formula = sheet_root.find(".//x:c[@r='U2']/x:f", ns)
-                missing_formula = sheet_root.find(".//x:c[@r='V2']/x:f", ns)
+                status_formula = sheet_root.find(".//x:c[@r='V2']/x:f", ns)
+                missing_formula = sheet_root.find(".//x:c[@r='W2']/x:f", ns)
                 self.assertIsNotNone(status_formula)
                 self.assertIsNotNone(missing_formula)
-                self.assertIn("R2", status_formula.text or "")
                 self.assertIn("S2", status_formula.text or "")
                 self.assertIn("T2", status_formula.text or "")
-                self.assertIn("W2", status_formula.text or "")
-                self.assertIn("S2", missing_formula.text or "")
+                self.assertIn("U2", status_formula.text or "")
+                self.assertIn("X2", status_formula.text or "")
                 self.assertIn("T2", missing_formula.text or "")
-                self.assertIn("W2", missing_formula.text or "")
+                self.assertIn("U2", missing_formula.text or "")
+                self.assertIn("X2", missing_formula.text or "")
             self.assertFalse(
                 (
                     repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/"

@@ -24,6 +24,7 @@ OUTPUT_FIELDS = [
     "source_evidence_id",
     "source_ocr_text_relative_path",
     "source_ocr_text_excerpt",
+    "source_ocr_excerpt_focus_status",
     "business_date",
     "amount",
     "currency",
@@ -138,18 +139,22 @@ def date_needles(business_date: str) -> list[str]:
     return [item for item in needles if item]
 
 
-def focused_excerpt(text: str, amount: str, business_date: str, limit: int) -> str:
+def focused_excerpt(text: str, amount: str, business_date: str, limit: int) -> tuple[str, str]:
     lines = [line.strip() for line in text.splitlines() if line.strip()]
     if not lines:
-        return ""
-    needles = amount_needles(amount) + date_needles(business_date)
+        return "", "empty_ocr_sidecar"
+    needle_groups = [
+        ("focused_amount", amount_needles(amount)),
+        ("focused_business_date", date_needles(business_date)),
+    ]
     for index, line in enumerate(lines):
         normalized_line = line.replace(",", "")
-        if any(needle in line or needle.replace(",", "") in normalized_line for needle in needles):
-            start = max(0, index - 2)
-            end = min(len(lines), index + 3)
-            return compact_lines(lines[start:end], limit)
-    return compact_lines(lines, limit)
+        for status, needles in needle_groups:
+            if any(needle in line or needle.replace(",", "") in normalized_line for needle in needles):
+                start = max(0, index - 2)
+                end = min(len(lines), index + 3)
+                return compact_lines(lines[start:end], limit), status
+    return compact_lines(lines, limit), "fallback_file_start"
 
 
 def ocr_excerpt(
@@ -160,9 +165,28 @@ def ocr_excerpt(
     business_date: str = "",
     limit: int = 600,
 ) -> str:
+    excerpt, _status = ocr_excerpt_with_focus_status(
+        repo_root,
+        run_id,
+        relative_path,
+        amount=amount,
+        business_date=business_date,
+        limit=limit,
+    )
+    return excerpt
+
+
+def ocr_excerpt_with_focus_status(
+    repo_root: Path,
+    run_id: str,
+    relative_path: str,
+    amount: str = "",
+    business_date: str = "",
+    limit: int = 600,
+) -> tuple[str, str]:
     raw = str(relative_path or "").strip()
     if not raw:
-        return ""
+        return "", "missing_ocr_path"
     path = Path(raw)
     if path.is_absolute():
         candidates = [path]
@@ -181,9 +205,9 @@ def ocr_excerpt(
         try:
             text = resolved.read_text(encoding="utf-8", errors="ignore")
         except OSError:
-            return ""
+            return "", "unreadable_ocr_sidecar"
         return focused_excerpt(text, amount, business_date, limit)
-    return ""
+    return "", "missing_ocr_sidecar"
 
 
 def review_completion_status(owner_decision: str, missing_fields: str) -> str:
@@ -213,6 +237,13 @@ def build_review_rows(repo_root: Path, run_id: str, selected_rows: list[dict]) -
         source_ocr_text_relative_path = row.get("source_ocr_text_relative_path", "")
         business_date = row.get("business_date", "")
         amount = row.get("amount", "")
+        source_ocr_text_excerpt, source_ocr_excerpt_focus_status = ocr_excerpt_with_focus_status(
+            repo_root,
+            run_id,
+            source_ocr_text_relative_path,
+            amount=amount,
+            business_date=business_date,
+        )
         output_rows.append({
             "review_batch_row_id": f"OCROWNERREVIEWCSV-{run_id}-{len(output_rows) + 1:05d}",
             "owner_worklist_id": row.get("owner_worklist_id", ""),
@@ -221,13 +252,8 @@ def build_review_rows(repo_root: Path, run_id: str, selected_rows: list[dict]) -
             "candidate_metric": row.get("candidate_metric", ""),
             "source_evidence_id": row.get("source_evidence_id", ""),
             "source_ocr_text_relative_path": source_ocr_text_relative_path,
-            "source_ocr_text_excerpt": ocr_excerpt(
-                repo_root,
-                run_id,
-                source_ocr_text_relative_path,
-                amount=amount,
-                business_date=business_date,
-            ),
+            "source_ocr_text_excerpt": source_ocr_text_excerpt,
+            "source_ocr_excerpt_focus_status": source_ocr_excerpt_focus_status,
             "business_date": business_date,
             "amount": amount,
             "currency": row.get("currency", ""),
