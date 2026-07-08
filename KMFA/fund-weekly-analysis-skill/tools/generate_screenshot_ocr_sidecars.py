@@ -59,7 +59,8 @@ def write_csv(path: Path, rows: list[dict]) -> None:
     with path.open("w", encoding="utf-8-sig", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=PLAN_FIELDS)
         writer.writeheader()
-        writer.writerows(rows)
+        for row in rows:
+            writer.writerow({field: row.get(field, "") for field in PLAN_FIELDS})
 
 
 def normalize_engine_text(stdout: str) -> str:
@@ -160,6 +161,36 @@ def private_sidecar_relative_path(run_id: str, generation_id: str) -> Path:
     return PRIVATE_OCR_ROOT / run_id / f"{generation_id}.ocr.txt"
 
 
+def load_existing_generated_rows(repo_root: Path, run_dir: Path) -> list[dict]:
+    plan_path = run_dir / "screenshot_ocr_sidecar_generation_plan.csv"
+    if not plan_path.exists():
+        return []
+    rows: list[dict] = []
+    try:
+        existing_rows = read_csv(plan_path)
+    except OSError:
+        return []
+    for row in existing_rows:
+        if row.get("apply_performed") != "true":
+            continue
+        if row.get("generation_status") != "ocr_text_generated_pending_review":
+            continue
+        if row.get("financial_fact_promoted") != "false":
+            continue
+        try:
+            private_rel = safe_relative_path(row.get("ocr_text_private_relative_path", ""))
+        except ValueError:
+            continue
+        try:
+            private_rel.relative_to(PRIVATE_OCR_ROOT)
+        except ValueError:
+            continue
+        if not (repo_root / private_rel).is_file():
+            continue
+        rows.append({field: row.get(field, "") for field in PLAN_FIELDS})
+    return rows
+
+
 def build_generation_plan(
     *,
     repo_root: Path,
@@ -173,7 +204,14 @@ def build_generation_plan(
 ) -> list[dict]:
     coverage_path = run_dir / "screenshot_ocr_coverage.csv"
     coverage_rows = read_csv(coverage_path)
-    missing_rows = [row for row in coverage_rows if row.get("ocr_coverage_status") == "ocr_text_sidecar_missing"]
+    existing_rows = load_existing_generated_rows(repo_root, run_dir)
+    existing_sources = {row["source_image_relative_path"] for row in existing_rows if row.get("source_image_relative_path")}
+    missing_rows = [
+        row
+        for row in coverage_rows
+        if row.get("ocr_coverage_status") == "ocr_text_sidecar_missing"
+        and row.get("source_image_relative_path") not in existing_sources
+    ]
     if limit is not None:
         missing_rows = missing_rows[:limit]
 
@@ -196,7 +234,7 @@ def build_generation_plan(
     else:
         vision_results = {}
 
-    rows: list[dict] = []
+    rows: list[dict] = list(existing_rows)
     for index, coverage in enumerate(missing_rows):
         generation_id = f"OCRGEN-{run_dir.name}-{len(rows) + 1:05d}"
         reason = ""
@@ -243,8 +281,12 @@ def build_generation_plan(
                 private_path.parent.mkdir(parents=True, exist_ok=True)
                 private_path.write_text(text.rstrip() + "\n", encoding="utf-8")
                 apply_performed = "true"
+                new_sidecar_written = "true"
             else:
                 reason = "dry_run_no_sidecar_written"
+                new_sidecar_written = "false"
+        else:
+            new_sidecar_written = "false"
 
         rows.append({
             "ocr_generation_id": generation_id,
@@ -259,6 +301,7 @@ def build_generation_plan(
             "financial_fact_promoted": "false",
             "review_status": "pending_human_review" if text else "pending_ocr_extraction",
             "reason": reason,
+            "_new_sidecar_written": new_sidecar_written,
         })
     return rows
 
@@ -268,7 +311,7 @@ def summarize(rows: list[dict], engine: str, apply: bool) -> dict:
         "engine": engine,
         "apply": apply,
         "planned_count": len(rows),
-        "generated_sidecar_count": sum(1 for row in rows if row["apply_performed"] == "true"),
+        "generated_sidecar_count": sum(1 for row in rows if row.get("_new_sidecar_written") == "true"),
         "text_available_count": sum(1 for row in rows if row["generation_status"] == "ocr_text_generated_pending_review"),
         "engine_unavailable_count": sum(1 for row in rows if row["generation_status"] == "ocr_engine_unavailable"),
         "no_text_from_engine_count": sum(1 for row in rows if row["generation_status"] == "no_text_from_engine"),

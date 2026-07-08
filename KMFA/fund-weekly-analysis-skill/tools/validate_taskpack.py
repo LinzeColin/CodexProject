@@ -43,6 +43,8 @@ REQUIRED_SKILL_STRINGS = [
     "generate_screenshot_ocr_sidecars.py",
     "ocr_with_vision.swift",
     "vision",
+    "private Vision OCR sidecars",
+    "same `run_id`",
     "ocr_text_candidates.csv",
     "ocr_value_candidates.csv",
     "chat_text_candidates.csv",

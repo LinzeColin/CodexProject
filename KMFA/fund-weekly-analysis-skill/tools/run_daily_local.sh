@@ -27,9 +27,16 @@ fi
 
 RUNNER_OUTPUT="$(python3 "$SKILL_DIR/tools/run_fund_weekly_analysis.py" --input-dir "$INPUT_DIR" --repo-root "$REPO_ROOT" --timezone Australia/Sydney)"
 echo "$RUNNER_OUTPUT"
+RUN_ID="$(printf '%s\n' "$RUNNER_OUTPUT" | sed -n 's/.*"run_id"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | tail -1)"
 RUN_DIR="$(printf '%s\n' "$RUNNER_OUTPUT" | sed -n 's/.*"run_dir"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | tail -1)"
 if [[ -n "$RUN_DIR" ]]; then
-  python3 "$SKILL_DIR/tools/generate_screenshot_ocr_sidecars.py" --input-dir "$INPUT_DIR" --repo-root "$REPO_ROOT" --run-dir "$RUN_DIR" --engine "${KMFA_FUND_OCR_ENGINE:-vision}" --apply
+  OCR_OUTPUT="$(python3 "$SKILL_DIR/tools/generate_screenshot_ocr_sidecars.py" --input-dir "$INPUT_DIR" --repo-root "$REPO_ROOT" --run-dir "$RUN_DIR" --engine "${KMFA_FUND_OCR_ENGINE:-vision}" --apply)"
+  echo "$OCR_OUTPUT"
+  GENERATED_SIDECAR_COUNT="$(printf '%s\n' "$OCR_OUTPUT" | sed -n 's/.*"generated_sidecar_count"[[:space:]]*:[[:space:]]*\([0-9][0-9]*\).*/\1/p' | tail -1)"
+  if [[ -n "$RUN_ID" && "${GENERATED_SIDECAR_COUNT:-0}" -gt 0 ]]; then
+    RERUN_OUTPUT="$(python3 "$SKILL_DIR/tools/run_fund_weekly_analysis.py" --input-dir "$INPUT_DIR" --repo-root "$REPO_ROOT" --timezone Australia/Sydney --run-id "$RUN_ID")"
+    echo "$RERUN_OUTPUT"
+  fi
 else
   echo "WARN: runner output did not include run_dir; OCR sidecar generation plan was skipped." >&2
 fi
