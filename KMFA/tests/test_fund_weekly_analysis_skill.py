@@ -5940,6 +5940,64 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 ).exists()
             )
 
+    def test_owner_decision_manifest_install_accepts_reviewed_csv_dry_run(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            run_id = "owner_manifest_csv_dry_run"
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs" / run_id
+            run_dir.mkdir(parents=True)
+            csv_path = run_dir / "owner_reviewed_decisions.csv"
+            with csv_path.open("w", encoding="utf-8", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=[
+                    "fact_candidate_id",
+                    "candidate_metric",
+                    "owner_authorization_decision",
+                    "owner_corrected_company",
+                    "owner_corrected_bank",
+                    "required_owner_fields",
+                    "owner_note",
+                ])
+                writer.writeheader()
+                writer.writerow({
+                    "fact_candidate_id": f"OCRFACT-{run_id}-00001",
+                    "candidate_metric": "deposit_release",
+                    "owner_authorization_decision": "approve_for_review_authorization",
+                    "owner_corrected_company": "武汉开明",
+                    "owner_corrected_bank": "湖北中行",
+                    "required_owner_fields": "owner_corrected_company,owner_corrected_bank",
+                    "owner_note": "owner reviewed from spreadsheet csv",
+                })
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "install_owner_decision_manifest.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--run-id",
+                    run_id,
+                    "--draft-csv-path",
+                    str(csv_path),
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["status"], "READY_DRY_RUN")
+            self.assertFalse(payload["apply_performed"])
+            self.assertEqual(payload["owner_decision_count"], 1)
+            self.assertEqual(payload["draft_format"], "csv")
+            self.assertFalse(payload["fund_ledger_write_allowed"])
+            self.assertFalse(payload["management_conclusion_allowed"])
+            self.assertFalse(
+                (
+                    repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/"
+                    f"ocr_fact_candidate_owner_decisions/{run_id}.json"
+                ).exists()
+            )
+
     def test_owner_decision_manifest_install_apply_requires_ack_and_writes_validation_only_manifest(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             repo_root = Path(temp_dir) / "repo"

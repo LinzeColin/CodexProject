@@ -8,6 +8,7 @@ and the operator passes an explicit acknowledgement flag.
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import os
 from pathlib import Path
@@ -57,6 +58,44 @@ def load_draft(path: Path) -> dict:
     if not isinstance(payload, dict):
         raise ValueError("draft_invalid_schema")
     return payload
+
+
+def load_csv_draft(path: Path, run_id: str) -> dict:
+    try:
+        with path.open(encoding="utf-8-sig", newline="") as f:
+            rows = list(csv.DictReader(f))
+    except FileNotFoundError as exc:
+        raise ValueError("draft_missing") from exc
+    except csv.Error as exc:
+        raise ValueError("draft_invalid_csv") from exc
+    if not rows:
+        raise ValueError("draft_has_no_owner_decisions")
+    decisions: list[dict] = []
+    for index, row in enumerate(rows, 1):
+        if not isinstance(row, dict):
+            raise ValueError(f"draft_invalid_schema:csv_row[{index}]")
+        decisions.append({
+            "fact_candidate_id": str(row.get("fact_candidate_id", "")),
+            "candidate_metric": str(row.get("candidate_metric", "")),
+            "owner_authorization_decision": str(row.get("owner_authorization_decision", "")),
+            "owner_corrected_company": str(row.get("owner_corrected_company", "")),
+            "owner_corrected_bank": str(row.get("owner_corrected_bank", "")),
+            "required_owner_fields": str(row.get("required_owner_fields", "")),
+            "owner_note": str(row.get("owner_note", "")),
+        })
+    return {
+        "decision_manifest_version": "1",
+        "run_id": run_id,
+        "decision_scope": DECISION_SCOPE,
+        "draft_status": "owner_decision_csv_intake",
+        "generated_from": path.name,
+        "source_artifact": SOURCE_ARTIFACT,
+        "output_decision_manifest_relative_path": default_output_relative_path(run_id),
+        "financial_fact_promotion_allowed": False,
+        "fund_ledger_write_allowed": False,
+        "management_conclusion_allowed": False,
+        "owner_decisions": decisions,
+    }
 
 
 def resolve_default_draft_path(repo_root: Path, run_id: str) -> Path:
@@ -159,18 +198,31 @@ def main() -> int:
     parser.add_argument("--repo-root", default=os.environ.get("KMFA_REPO_ROOT", "."))
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--draft-path", default="")
+    parser.add_argument("--draft-csv-path", default="")
     parser.add_argument("--apply", action="store_true")
     parser.add_argument("--acknowledge-owner-reviewed-values", action="store_true")
     args = parser.parse_args()
 
     repo_root = Path(args.repo_root).expanduser().resolve()
+    if args.draft_path and args.draft_csv_path:
+        emit({
+            "status": "INVALID_ARGUMENTS",
+            "run_id": args.run_id,
+            "reason": "choose only one of --draft-path or --draft-csv-path",
+            "apply_performed": False,
+            "financial_fact_promotion_allowed": False,
+            "fund_ledger_write_allowed": False,
+            "management_conclusion_allowed": False,
+        })
+        return 2
+    draft_format = "csv" if args.draft_csv_path else "json"
     draft_path = (
-        Path(args.draft_path).expanduser().resolve()
-        if args.draft_path
+        Path(args.draft_csv_path or args.draft_path).expanduser().resolve()
+        if args.draft_path or args.draft_csv_path
         else resolve_default_draft_path(repo_root, args.run_id)
     )
     try:
-        draft = load_draft(draft_path)
+        draft = load_csv_draft(draft_path, args.run_id) if args.draft_csv_path else load_draft(draft_path)
         validation, decisions = validate_draft(draft, args.run_id)
     except ValueError as exc:
         reason = str(exc)
@@ -179,6 +231,7 @@ def main() -> int:
             "status": status,
             "run_id": args.run_id,
             "draft_path": str(draft_path),
+            "draft_format": draft_format,
             "reason": reason,
             "apply_performed": False,
             "financial_fact_promotion_allowed": False,
@@ -190,6 +243,7 @@ def main() -> int:
     base_payload = {
         "run_id": args.run_id,
         "draft_path": str(draft_path),
+        "draft_format": draft_format,
         "output_decision_manifest_relative_path": validation["output_relative_path"],
         "output_decision_manifest_path": str(repo_root / validation["output_relative_path"]),
         "owner_decision_count": len(decisions),
