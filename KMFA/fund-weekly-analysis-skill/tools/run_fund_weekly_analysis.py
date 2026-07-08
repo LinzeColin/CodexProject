@@ -16,6 +16,7 @@ from decimal import Decimal, InvalidOperation
 import hashlib
 import json
 import os
+import posixpath
 import re
 import shutil
 import subprocess
@@ -34,6 +35,9 @@ PRIVATE_OCR_ROOT = Path("KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_
 OCR_GENERATION_PLAN_NAME = "screenshot_ocr_sidecar_generation_plan.csv"
 XLSX_MAIN_NS = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
 XLSX_REL_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+PACKAGE_REL_NS = "http://schemas.openxmlformats.org/package/2006/relationships"
+CHART_NS = "http://schemas.openxmlformats.org/drawingml/2006/chart"
+DRAWINGML_MAIN_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
 XML_NS = "http://www.w3.org/XML/1998/namespace"
 ET.register_namespace("", XLSX_MAIN_NS)
 ET.register_namespace("r", XLSX_REL_NS)
@@ -1895,6 +1899,36 @@ def xml_text_values(root: ET.Element) -> list[str]:
     return [node.text or "" for node in root.iter() if node.text]
 
 
+def normalize_xlsx_relationship_target(base_dir: str, target: str) -> str:
+    target = target.strip()
+    if target.startswith("/"):
+        return target.lstrip("/")
+    return posixpath.normpath(posixpath.join(base_dir, target))
+
+
+def chart_title_text(chart_root: ET.Element) -> str:
+    return "".join(
+        node.text or ""
+        for node in chart_root.findall(f".//{{{DRAWINGML_MAIN_NS}}}t")
+    )
+
+
+def chart_series_category_counts(chart_root: ET.Element) -> list[int]:
+    counts: list[int] = []
+    for series in chart_root.findall(f".//{{{CHART_NS}}}lineChart/{{{CHART_NS}}}ser"):
+        point_count = series.find(
+            f"{{{CHART_NS}}}cat/{{{CHART_NS}}}strLit/{{{CHART_NS}}}ptCount"
+        )
+        if point_count is None:
+            counts.append(0)
+            continue
+        try:
+            counts.append(int(point_count.attrib.get("val", "0")))
+        except ValueError:
+            counts.append(0)
+    return counts
+
+
 def workbook_quality_row(check_id: str, check_name: str, passed: bool, details: str) -> dict:
     return {
         "check_id": check_id,
@@ -3199,6 +3233,52 @@ def collect_workbook_quality_checks(workbook_path: Path) -> list[dict]:
             "Native chart size limit",
             bool(chart_dimensions) and not oversized,
             "oversized=" + ",".join(oversized) + f"; chart_extent_count={len(chart_dimensions)}",
+        ))
+
+        homepage_chart_details = []
+        homepage_chart_failures = []
+        expected_homepage_charts = {
+            "最近15天资金余额折线图": 15,
+            "最近30天资金余额折线图": 30,
+        }
+        drawing_rels_path = "xl/drawings/_rels/drawing1.xml.rels"
+        if drawing_rels_path not in workbook.namelist():
+            homepage_chart_failures.append("missing_drawing1_rels")
+        else:
+            rels = ET.fromstring(workbook.read(drawing_rels_path))
+            chart_targets = [
+                normalize_xlsx_relationship_target("xl/drawings", rel.attrib.get("Target", ""))
+                for rel in rels.findall(f"{{{PACKAGE_REL_NS}}}Relationship")
+                if rel.attrib.get("Type", "").endswith("/chart")
+            ]
+            if len(chart_targets) != 2:
+                homepage_chart_failures.append(f"chart_target_count={len(chart_targets)}")
+            seen_titles = set()
+            for chart_path in chart_targets:
+                if chart_path not in workbook.namelist():
+                    homepage_chart_failures.append(f"missing_chart={chart_path}")
+                    continue
+                chart = ET.fromstring(workbook.read(chart_path))
+                title = chart_title_text(chart)
+                counts = chart_series_category_counts(chart)
+                homepage_chart_details.append(f"{title}:{','.join(str(count) for count in counts)}")
+                expected_count = expected_homepage_charts.get(title)
+                if expected_count is None:
+                    homepage_chart_failures.append(f"unexpected_title={title}")
+                    continue
+                seen_titles.add(title)
+                if len(counts) != 3 or any(count != expected_count for count in counts):
+                    homepage_chart_failures.append(
+                        f"{title}_point_counts={','.join(str(count) for count in counts)}"
+                    )
+            missing_titles = set(expected_homepage_charts) - seen_titles
+            if missing_titles:
+                homepage_chart_failures.append("missing_titles=" + "|".join(sorted(missing_titles)))
+        rows.append(workbook_quality_row(
+            "WQ-HOMEPAGE-CHART-SEMANTICS",
+            "Homepage 15-day and 30-day line charts",
+            not homepage_chart_failures,
+            "charts=" + "|".join(homepage_chart_details) + "; failures=" + "|".join(homepage_chart_failures),
         ))
 
         formula_errors = []

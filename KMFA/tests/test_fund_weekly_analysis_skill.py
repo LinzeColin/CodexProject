@@ -3739,10 +3739,13 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "WQ-SHEET-ORDER",
                 "WQ-HIDDEN-SHEETS",
                 "WQ-HOMEPAGE-CHART-SIZE",
+                "WQ-HOMEPAGE-CHART-SEMANTICS",
                 "WQ-FORMULA-ERRORS",
                 "WQ-VISIBLE-SENSITIVE-TEXT",
             ):
                 self.assertEqual(checks[check_id]["status"], "PASS", check_id)
+            self.assertIn("最近15天资金余额折线图:15,15,15", checks["WQ-HOMEPAGE-CHART-SEMANTICS"]["details"])
+            self.assertIn("最近30天资金余额折线图:30,30,30", checks["WQ-HOMEPAGE-CHART-SEMANTICS"]["details"])
             self.assertTrue(all(row["management_blocking"] == "false" for row in quality_rows))
 
             cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
