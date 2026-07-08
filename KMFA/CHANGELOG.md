@@ -2918,3 +2918,12 @@ version_matrix_product_version_reference: 0.1.4-s18-stage-review
 - Added `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_APP_REINSTALL` public-safe evidence, validator and focused test.
 - Kept decision `NO_GO`; GitHub upload, app reinstall and business execution remain blocked.
 - Raw inbox was not read or modified; private app reinstall requirement queue remains ignored.
+
+## 2026-07-08｜v0.1.4 owner/authorized agent external action required before business execution
+
+- Version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-business-execution`
+- Decision: `NO_GO`; 48 business execution precondition blockers remain; business execution is not allowed or performed.
+- Source: public-safe app reinstall requirement evidence plus ignored private app reinstall requirement queue only.
+- Evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_BUSINESS_EXECUTION/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_execution_manifest.json`
+- Validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_execution.py --require-private-business-execution-requirement`
+- Focused test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_execution`
