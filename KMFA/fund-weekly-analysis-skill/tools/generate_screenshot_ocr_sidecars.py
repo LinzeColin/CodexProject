@@ -109,51 +109,67 @@ def read_text_with_vision_batch(
     image_paths: list[Path],
     timeout_seconds: int,
     batch_size: int,
-) -> dict[str, tuple[str, str, str]]:
+    retry_timeout_seconds: int,
+    retry_batch_size: int,
+) -> dict[str, tuple[str, str, str, bool]]:
     command = vision_command(repo_root)
     if command is None:
-        return {str(path): ("", "ocr_engine_unavailable", "Swift Vision OCR command is unavailable") for path in image_paths}
+        return {str(path): ("", "ocr_engine_unavailable", "Swift Vision OCR command is unavailable", False) for path in image_paths}
     if not image_paths:
         return {}
-    batch_size = max(1, batch_size)
-    parsed: dict[str, tuple[str, str, str]] = {}
-    for start in range(0, len(image_paths), batch_size):
-        batch = image_paths[start:start + batch_size]
-        try:
-            result = subprocess.run(
-                [*command, *[str(path) for path in batch]],
-                text=True,
-                capture_output=True,
-                check=False,
-                timeout=timeout_seconds,
-            )
-        except subprocess.TimeoutExpired:
-            for path in batch:
-                parsed[str(path)] = ("", "ocr_engine_timeout", "vision OCR command timed out")
-            continue
-        if result.returncode != 0:
-            reason = (result.stderr or result.stdout or "vision OCR command failed").strip().splitlines()[:1]
-            for path in batch:
-                parsed[str(path)] = ("", "ocr_engine_error", reason[0] if reason else "vision OCR command failed")
-            continue
-        for line in result.stdout.splitlines():
-            if not line.strip():
-                continue
+
+    def run_batches(paths: list[Path], seconds: int, size: int, retried: bool) -> dict[str, tuple[str, str, str, bool]]:
+        size = max(1, size)
+        batch_results: dict[str, tuple[str, str, str, bool]] = {}
+        for start in range(0, len(paths), size):
+            batch = paths[start:start + size]
             try:
-                item = json.loads(line)
-            except json.JSONDecodeError:
+                result = subprocess.run(
+                    [*command, *[str(path) for path in batch]],
+                    text=True,
+                    capture_output=True,
+                    check=False,
+                    timeout=seconds,
+                )
+            except subprocess.TimeoutExpired:
+                reason = "vision OCR command timed out during retry" if retried else "vision OCR command timed out"
+                for path in batch:
+                    batch_results[str(path)] = ("", "ocr_engine_timeout", reason, retried)
                 continue
-            path = str(Path(item.get("path", "")).expanduser())
-            status = item.get("status") or "ocr_engine_error"
-            text = normalize_engine_text(item.get("text", ""))
-            if status == "ocr_text_available" and not text:
-                status = "no_text_from_engine"
-            reason = item.get("reason", "")
-            parsed[path] = (text, status, reason)
-        for path in batch:
-            parsed.setdefault(str(path), ("", "ocr_engine_error", "vision OCR command returned no result"))
+            if result.returncode != 0:
+                reason = (result.stderr or result.stdout or "vision OCR command failed").strip().splitlines()[:1]
+                for path in batch:
+                    batch_results[str(path)] = ("", "ocr_engine_error", reason[0] if reason else "vision OCR command failed", retried)
+                continue
+            for line in result.stdout.splitlines():
+                if not line.strip():
+                    continue
+                try:
+                    item = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                path = str(Path(item.get("path", "")).expanduser())
+                status = item.get("status") or "ocr_engine_error"
+                text = normalize_engine_text(item.get("text", ""))
+                if status == "ocr_text_available" and not text:
+                    status = "no_text_from_engine"
+                reason = item.get("reason", "")
+                batch_results[path] = (text, status, reason, retried)
+            for path in batch:
+                batch_results.setdefault(str(path), ("", "ocr_engine_error", "vision OCR command returned no result", retried))
+        return batch_results
+
+    batch_size = max(1, batch_size)
+    parsed = run_batches(image_paths, timeout_seconds, batch_size, False)
+    retry_paths = [
+        path
+        for path in image_paths
+        if parsed.get(str(path), ("", "", "", False))[1] == "ocr_engine_timeout"
+    ]
+    if retry_paths and retry_timeout_seconds > 0:
+        parsed.update(run_batches(retry_paths, retry_timeout_seconds, retry_batch_size, True))
     for path in image_paths:
-        parsed.setdefault(str(path), ("", "ocr_engine_error", "vision OCR command returned no result"))
+        parsed.setdefault(str(path), ("", "ocr_engine_error", "vision OCR command returned no result", False))
     return parsed
 
 
@@ -200,6 +216,8 @@ def build_generation_plan(
     apply: bool,
     timeout_seconds: int,
     vision_batch_size: int,
+    retry_timeout_seconds: int,
+    retry_batch_size: int,
     limit: int | None = None,
 ) -> list[dict]:
     coverage_path = run_dir / "screenshot_ocr_coverage.csv"
@@ -230,6 +248,8 @@ def build_generation_plan(
             image_paths=list(source_image_by_index.values()),
             timeout_seconds=timeout_seconds,
             batch_size=vision_batch_size,
+            retry_timeout_seconds=retry_timeout_seconds,
+            retry_batch_size=retry_batch_size,
         )
     else:
         vision_results = {}
@@ -240,6 +260,7 @@ def build_generation_plan(
         reason = ""
         text = ""
         private_rel = Path()
+        timeout_retry_attempted = False
         try:
             source_relative = safe_relative_path(coverage["source_image_relative_path"])
         except ValueError as exc:
@@ -260,9 +281,9 @@ def build_generation_plan(
                 if not text:
                     reason = f"{engine} returned no OCR text"
             elif engine == "vision":
-                text, engine_status, engine_reason = vision_results.get(
+                text, engine_status, engine_reason, timeout_retry_attempted = vision_results.get(
                     str(source_image_path),
-                    ("", "ocr_engine_error", "vision OCR result missing"),
+                    ("", "ocr_engine_error", "vision OCR result missing", False),
                 )
                 status = engine_status if not text else "ocr_text_generated_pending_review"
                 if not text:
@@ -302,6 +323,8 @@ def build_generation_plan(
             "review_status": "pending_human_review" if text else "pending_ocr_extraction",
             "reason": reason,
             "_new_sidecar_written": new_sidecar_written,
+            "_timeout_retry_attempted": "true" if timeout_retry_attempted else "false",
+            "_timeout_retry_generated": "true" if timeout_retry_attempted and text else "false",
         })
     return rows
 
@@ -315,6 +338,8 @@ def summarize(rows: list[dict], engine: str, apply: bool) -> dict:
         "text_available_count": sum(1 for row in rows if row["generation_status"] == "ocr_text_generated_pending_review"),
         "engine_unavailable_count": sum(1 for row in rows if row["generation_status"] == "ocr_engine_unavailable"),
         "no_text_from_engine_count": sum(1 for row in rows if row["generation_status"] == "no_text_from_engine"),
+        "timeout_retry_attempt_count": sum(1 for row in rows if row.get("_timeout_retry_attempted") == "true"),
+        "timeout_retry_generated_count": sum(1 for row in rows if row.get("_timeout_retry_generated") == "true"),
         "financial_fact_promoted": False,
     }
 
@@ -328,6 +353,8 @@ def main() -> int:
     parser.add_argument("--apply", action="store_true")
     parser.add_argument("--timeout-seconds", type=int, default=10)
     parser.add_argument("--vision-batch-size", type=int, default=int(os.environ.get("KMFA_FUND_VISION_BATCH_SIZE", "8")))
+    parser.add_argument("--retry-timeout-seconds", type=int, default=int(os.environ.get("KMFA_FUND_VISION_RETRY_TIMEOUT_SECONDS", "0")))
+    parser.add_argument("--retry-batch-size", type=int, default=int(os.environ.get("KMFA_FUND_VISION_RETRY_BATCH_SIZE", "1")))
     parser.add_argument("--limit", type=int, default=None)
     args = parser.parse_args()
 
@@ -351,6 +378,8 @@ def main() -> int:
         apply=args.apply,
         timeout_seconds=args.timeout_seconds,
         vision_batch_size=args.vision_batch_size,
+        retry_timeout_seconds=args.retry_timeout_seconds,
+        retry_batch_size=args.retry_batch_size,
         limit=args.limit,
     )
     plan_path = run_dir / "screenshot_ocr_sidecar_generation_plan.csv"

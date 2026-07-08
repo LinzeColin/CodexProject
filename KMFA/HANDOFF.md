@@ -32,6 +32,8 @@
 - Codex App automation `kmfa` 当前契约为 `Australia/Sydney` 本地每周一、周六 11:00，repo contract 与本机 automation drift check 已纳入验证。
 - 默认只读输入为 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群`；scheduled shell 先跑 `check_source_readiness.py`，非 `READY` 不启动 runner。
 - `run_daily_local.sh` 支持 validation-only `KMFA_FUND_RUN_ID` 和 `KMFA_SKIP_CODEX_EXEC=1`，用于固定 run id 验收真实 runner/OCR 路径并避免递归 Codex CLI；默认 automation 不设置这些变量。
+- scheduled Vision OCR 对 timeout 行默认执行 `--retry-timeout-seconds 30 --retry-batch-size 1`；可用 `KMFA_FUND_VISION_RETRY_TIMEOUT_SECONDS` / `KMFA_FUND_VISION_RETRY_BATCH_SIZE` 覆盖。retry 仍只写 private runtime OCR sidecar，不改源、不晋升事实。
+- S56 真实 retry 已将 `s55_scheduled_entrypoint_real_run_20260708` 的截图 OCR 覆盖从 216/272 提升到 272/272；二次 runner 输出 272 条 OCR 文本候选、2852 条 OCR 值候选、235 条 OCR 资金事实候选，`fund_ledger.csv` / `funding_forecast.csv` 仍只有表头，`management_conclusion_allowed=false`。
 - 当前 runner 对真实结构化 CSV 必需列 `date/company/bank/account_alias/liquidity_tier/inflow/outflow/ending_balance/flow_type` 执行 Decimal 抽取，产出 `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW` 的资金事实、净流、公司银行矩阵和税费/保证金/借款/项目成本风险。
 - 当存在结构化事实时，runner 以 OOXML cell patch 写入原生 `.xlsx`：`01_首页总览` 4+4 卡片、`02_资金趋势预测` 已知到期项 projection、`03_三层净流余额`、`04_税费融资风险`、`05_公司银行矩阵`、隐藏 `H01/H02/H03/H05`；不重写图表包，保留首页最近 15 天/30 天两张原生折线图。
 - runner 现在从真实结构化 CSV 的 `due_date` 税费/保证金/借款/项目成本风险/机会行生成 `funding_forecast.csv`，并写入 `02_资金趋势预测`；这些 projection 只按 `known_due_date_structured_csv` 进入待复核，不生成无证据预测、付款动作或管理结论。
