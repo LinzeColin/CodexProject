@@ -913,8 +913,9 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(collection["stats"]["attendance_required_count"], 1)
         self.assertEqual(collection["stats"]["incomplete_record_names"], ["员工A"])
         self.assertEqual(collection["stats"]["attendance_anomaly_names"], ["员工A"])
-        self.assertIn("今日异常 / 无考勤\n员工A（本月累计1次）", body)
-        self.assertNotIn("今天一切良好", body)
+        self.assertIn("本次1人全部考勤正常，今天一切良好", body)
+        self.assertNotIn("今日异常 / 无考勤", body)
+        self.assertNotIn("员工A", body)
 
     def test_today_summary_lack_counts_as_anomaly_even_when_record_has_full_day(self) -> None:
         def runner(args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict:
@@ -1523,6 +1524,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 "current_time": "08:35",
                 "stats": {
                     "attendance_anomaly_names": ["张三", "李四"],
+                    "summary_today_anomaly_names": ["张三", "李四"],
                     "unexpected_empty_record_names": ["张霖泽", "林全意"],
                     "known_no_record_names": ["张霖泽", "林全意"],
                 },
@@ -1533,6 +1535,76 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertIn("今日异常 / 无考勤\n张三（本月累计1次）\n李四（本月累计1次）", body)
         self.assertNotIn("张霖泽", body)
         self.assertNotIn("林全意", body)
+
+    def test_notification_context_excludes_morning_incomplete_records_from_today_sections(self) -> None:
+        context = notification_context_from_output_status(
+            {
+                "run_id": "s19_morning_20260708_083500",
+                "run_type": "morning",
+                "work_date": "2026-07-08",
+                "current_time": "08:35",
+                "stats": {
+                    "member_count": 44,
+                    "record_success_count": 44,
+                    "summary_success_count": 44,
+                    "command_failure_count": 0,
+                    "attendance_anomaly_names": ["员工A"],
+                    "unexpected_empty_record_names": [],
+                    "summary_today_anomaly_names": [],
+                    "incomplete_record_names": ["员工A"],
+                    "monthly_attendance_anomalies": [
+                        {"name": "员工A", "monthly_count": 2, "latest_date": "2026-07-08"}
+                    ],
+                    "monthly_consecutive_anomalies": [
+                        {
+                            "name": "员工A",
+                            "monthly_count": 2,
+                            "consecutive_days": 2,
+                            "latest_date": "2026-07-08",
+                        }
+                    ],
+                },
+            }
+        )
+        body = build_notification_message(**context, markdown=False)
+
+        self.assertIn("本次44人全部考勤正常，今天一切良好", body)
+        self.assertNotIn("今日异常 / 无考勤", body)
+        self.assertNotIn("连续异常", body)
+        self.assertNotIn("员工A", body)
+
+    def test_notification_context_keeps_evening_incomplete_records_as_today_anomalies(self) -> None:
+        context = notification_context_from_output_status(
+            {
+                "run_id": "s19_evening_20260708_181500",
+                "run_type": "evening",
+                "work_date": "2026-07-08",
+                "current_time": "18:15",
+                "stats": {
+                    "member_count": 44,
+                    "attendance_anomaly_names": ["员工A"],
+                    "unexpected_empty_record_names": [],
+                    "summary_today_anomaly_names": [],
+                    "incomplete_record_names": ["员工A"],
+                    "monthly_attendance_anomalies": [
+                        {"name": "员工A", "monthly_count": 2, "latest_date": "2026-07-08"}
+                    ],
+                    "monthly_consecutive_anomalies": [
+                        {
+                            "name": "员工A",
+                            "monthly_count": 2,
+                            "consecutive_days": 2,
+                            "latest_date": "2026-07-08",
+                        }
+                    ],
+                },
+            }
+        )
+        body = build_notification_message(**context, markdown=False)
+
+        self.assertIn("今日异常 / 无考勤\n员工A（本月累计2次）", body)
+        self.assertIn("连续异常\n员工A（连续2天，本月累计2次）", body)
+        self.assertNotIn("今天一切良好", body)
 
     def test_notification_context_reports_system_collection_failures(self) -> None:
         context = notification_context_from_output_status(

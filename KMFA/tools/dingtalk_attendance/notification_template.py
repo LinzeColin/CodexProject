@@ -117,17 +117,17 @@ def notification_context_from_output_status(output_status: Mapping[str, Any]) ->
         stats = {}
     current_time = str(output_status.get("current_time") or datetime.now(ZoneInfo(TIMEZONE)).strftime("%H:%M"))
     run_id = str(output_status.get("run_id") or "")
+    run_type = str(output_status.get("run_type") or run_type_from_run_id(run_id) or "unknown")
     pending_actions = coerce_message_lines(output_status.get("pending_hr_actions"))
     pending_actions.extend(system_issue_lines_from_stats(stats))
-    anomaly_names = coerce_message_lines(stats.get("attendance_anomaly_names"))
-    if not anomaly_names:
-        anomaly_names = [
-            *coerce_message_lines(stats.get("unexpected_empty_record_names")),
-            *coerce_message_lines(stats.get("incomplete_record_names")),
-        ]
+    anomaly_names = current_notification_anomaly_names(stats, run_type=run_type)
+    monthly_consecutive_anomalies = _filter_monthly_people_by_names(
+        coerce_monthly_status_people(stats.get("monthly_consecutive_anomalies")),
+        anomaly_names,
+    )
     return {
         "work_date": str(output_status.get("work_date") or work_date_from_run_id(run_id) or "UNKNOWN_DATE"),
-        "run_type": str(output_status.get("run_type") or run_type_from_run_id(run_id) or "unknown"),
+        "run_type": run_type,
         "current_time": current_time,
         "unexpected_empty_record_names": _filter_hidden_names(_dedupe_nonempty(anomaly_names)),
         "known_no_record_names": [],
@@ -138,7 +138,7 @@ def notification_context_from_output_status(output_status: Mapping[str, Any]) ->
             stats.get("monthly_attendance_anomalies"),
             fallback_names=anomaly_names,
         ),
-        "monthly_consecutive_anomalies": coerce_monthly_status_people(stats.get("monthly_consecutive_anomalies")),
+        "monthly_consecutive_anomalies": monthly_consecutive_anomalies,
         "monthly_pending_actions": coerce_monthly_status_people(stats.get("monthly_pending_actions")),
         "member_count": _coerce_nonnegative_int(stats.get("member_count")),
         "run_id": run_id or None,
@@ -149,6 +149,21 @@ def notification_context_from_output_status(output_status: Mapping[str, Any]) ->
             if output_status.get(key)
         },
     }
+
+
+def current_notification_anomaly_names(stats: Mapping[str, Any], *, run_type: str) -> list[str]:
+    detail_keys = {"unexpected_empty_record_names", "summary_today_anomaly_names", "incomplete_record_names"}
+    known_no_record_names = set(coerce_message_lines(stats.get("known_no_record_names")))
+    if any(key in stats for key in detail_keys):
+        names = [
+            *coerce_message_lines(stats.get("unexpected_empty_record_names")),
+            *coerce_message_lines(stats.get("summary_today_anomaly_names")),
+        ]
+        if str(run_type) != "morning":
+            names.extend(coerce_message_lines(stats.get("incomplete_record_names")))
+    else:
+        names = coerce_message_lines(stats.get("attendance_anomaly_names"))
+    return _filter_hidden_names(_dedupe_nonempty(name for name in names if name not in known_no_record_names))
 
 
 def system_issue_lines_from_stats(stats: Mapping[str, Any]) -> list[str]:
@@ -345,6 +360,13 @@ def _filter_status_people_by_work_date(people: list[dict[str, Any]], *, work_dat
         for person in people
         if not str(person.get("latest_date") or "").strip() or str(person.get("latest_date") or "").strip()[:10] == work_date
     ]
+
+
+def _filter_monthly_people_by_names(people: list[dict[str, Any]], names: list[str]) -> list[dict[str, Any]]:
+    allowed = set(names)
+    if not allowed:
+        return []
+    return [person for person in people if str(person.get("name") or "") in allowed]
 
 
 def _dedupe_nonempty(values: list[str]) -> list[str]:
