@@ -8,7 +8,7 @@
   "execution_environment": "local",
   "cwd": "/Users/linzezhang/CodexProject",
   "skill_path": "KMFA/daily_routine_check_skill/SKILL.md",
-  "rrule": "DTSTART;TZID=Asia/Shanghai:20260708T113500\nRRULE:FREQ=DAILY;BYHOUR=11,17;BYMINUTE=5,35;BYSETPOS=2,3",
+  "rrule": "DTSTART;TZID=Asia/Shanghai:20260708T113500\nRRULE:FREQ=DAILY\nDTSTART;TZID=Asia/Shanghai:20260708T170500\nRRULE:FREQ=DAILY",
   "trigger_windows": [
     {
       "trigger_window": "morning_1135",
@@ -28,6 +28,7 @@
     "check_date",
     "trigger_window",
     "rules_evaluated",
+    "rules_blocked_by_source",
     "rules_skipped"
   ],
   "cash_monitor_fields": [

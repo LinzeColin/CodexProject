@@ -166,10 +166,10 @@ Private OneDrive routine-check archive:
 Private local runtime:
 
 ```text
-KMFA/metadata/daily_routine_check/private_runtime/
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime/
 ```
 
-Active SQLite ledger is local-private and ignored by Git. Daily snapshots, append-only JSONL logs, OCR cache references, and cleanup reports may be stored in OneDrive.
+Active SQLite ledger, notification target config, append-only JSONL logs, OCR cache references, and cleanup reports stay in OneDrive private runtime/output paths, not inside the Git package.
 
 Every run log must include `run_at_beijing`, `check_date`, `trigger_window`, `rules_evaluated`, and `rules_skipped`. Missing or stale upstream DWS output must be recorded as `SOURCE_MISSING` or `SOURCE_STALE` and surfaced to 张霖泽 through the notification policy.
 

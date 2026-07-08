@@ -45,6 +45,7 @@ REQUIRED_PHRASES = [
     "run_at_beijing",
     "trigger_window",
     "rules_evaluated",
+    "rules_blocked_by_source",
     "rules_skipped",
     "SOURCE_MISSING",
     "SOURCE_STALE",

@@ -31,7 +31,7 @@ zip 内需包含 `付款请示群` 和 `生产管理群` 的 `chat_records/chat_
 输出：
 
 ```text
-KMFA/metadata/daily_routine_check/private_runtime/daily_routine_check.sqlite
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime/daily_routine_check.sqlite
 /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/YYYYMM/*.jsonl
 /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/YYYYMM/*.log
 钉钉机器人/私聊提醒 张霖泽
@@ -104,7 +104,7 @@ KMFA/metadata/daily_routine_check/private_runtime/daily_routine_check.sqlite
 - 通知写入 `notification_events`。
 - 数据质量问题写入 `data_quality_issues`。
 - 每日 JSONL 日志同步到 OneDrive。
-- 活跃 SQLite 定期 checkpoint/vacuum，定期镜像到 OneDrive，防止本机存储膨胀。
+- 活跃 SQLite 在 OneDrive private runtime 定期 checkpoint/vacuum，防止 repo 包被运行态文件污染。
 
 ### B6. GitHub 同步治理
 

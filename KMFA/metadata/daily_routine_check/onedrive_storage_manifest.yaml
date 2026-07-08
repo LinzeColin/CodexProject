@@ -2,7 +2,9 @@ version: 0.2.0
 input_zip: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
 input_root: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs
 private_output_root: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check
-active_sqlite_local_path: KMFA/metadata/daily_routine_check/private_runtime/daily_routine_check.sqlite
+private_runtime_root: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime
+active_sqlite_path: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime/daily_routine_check.sqlite
+notification_targets_path: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime/notification_targets.local.json
 
 monthly_layout:
   root_pattern: "{private_output_root}/{YYYYMM}"
@@ -17,6 +19,7 @@ monthly_layout:
     - notification_events_{YYYYMM}.jsonl
     - data_quality_issues_{YYYYMM}.jsonl
   folders:
+    - private_runtime
     - db_snapshots
     - cleanup
     - ocr_cache
@@ -27,7 +30,8 @@ policy:
   prefer_zip_input: true
   stream_zip_without_extracting: true
   do_not_delete_source_dws_outputs: true
-  active_sqlite_in_onedrive: false
-  mirror_sqlite_to_onedrive: true
+  active_sqlite_in_onedrive: true
+  keep_sqlite_out_of_repo_package: true
+  mirror_sqlite_to_onedrive: false
   compress_old_jsonl: true
   write_cleanup_report: true

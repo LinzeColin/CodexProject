@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import json
+import subprocess
+import sys
 import unittest
 import zipfile
 from datetime import date, datetime
@@ -7,9 +10,11 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from KMFA.tools.daily_routine_check.archive_reader import DwsArchiveReader
-from KMFA.tools.daily_routine_check.healthcheck import build_source_readiness
+from KMFA.tools.daily_routine_check.healthcheck import DEFAULT_RUNTIME, build_source_readiness
 from KMFA.tools.daily_routine_check.ledger import connect, write_run_payload
 from KMFA.tools.daily_routine_check.main import (
+    DEFAULT_DB,
+    DEFAULT_NOTIFICATION_TARGETS,
     build_notification_events,
     build_run_summary,
     evaluate_cash_risk,
@@ -438,6 +443,53 @@ class TriggerWindowTests(unittest.TestCase):
             "DWS_Outputs.zip" in item and "readable" in item
             for item in readiness["next_enable_conditions"]
         ))
+
+    def test_runtime_defaults_keep_sqlite_and_notification_config_out_of_repo_package(self) -> None:
+        repo_private_runtime = Path("KMFA/metadata/daily_routine_check/private_runtime")
+
+        self.assertIn("OneDrive-Personal/KMFA/daily_routine_check/private_runtime", str(DEFAULT_DB))
+        self.assertIn("OneDrive-Personal/KMFA/daily_routine_check/private_runtime", str(DEFAULT_NOTIFICATION_TARGETS))
+        self.assertIn("OneDrive-Personal/KMFA/daily_routine_check/private_runtime", str(DEFAULT_RUNTIME))
+        self.assertFalse(Path(DEFAULT_DB).is_relative_to(repo_private_runtime))
+        self.assertFalse(Path(DEFAULT_NOTIFICATION_TARGETS).is_relative_to(repo_private_runtime))
+        self.assertFalse(Path(DEFAULT_RUNTIME).is_relative_to(repo_private_runtime))
+
+    def test_stale_source_blocks_routine_and_cash_false_positives(self) -> None:
+        with TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            write_dws_zip(base / "DWS_Outputs.zip")
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "KMFA.tools.daily_routine_check.main",
+                    "--date",
+                    "2026-07-08",
+                    "--timezone",
+                    "Asia/Shanghai",
+                    "--trigger-window",
+                    "morning_1135",
+                    "--input-root",
+                    str(base / "DWS_Outputs.zip"),
+                    "--dry-run",
+                ],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+
+        payload = json.loads(result.stdout)
+        self.assertEqual(
+            {issue["issue_type"] for issue in payload["data_quality_issues"]},
+            {"SOURCE_STALE"},
+        )
+        self.assertEqual(payload["results"], [])
+        self.assertEqual(payload["cash_risk_result"], None)
+        self.assertEqual(payload["rules_blocked_by_source"], ["PAY_DAILY_CASH_ACCOUNT", "PAY_DAILY_CASH_FLOW"])
+        self.assertEqual(
+            [event["event_type"] for event in payload["notification_events"]],
+            ["SOURCE_STALE"],
+        )
 
 
 if __name__ == "__main__":

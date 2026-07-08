@@ -142,6 +142,8 @@ The automation has two daily trigger windows only:
 17:05 Asia/Shanghai -> --trigger-window evening_1705
 ```
 
+Save them as two independent Beijing-time scheduler rules. Do not use a combined `BYHOUR=...;BYMINUTE=...` RRULE, because that creates extra Cartesian-product runs.
+
 Do not create one automation per rule. `due_time` remains in YAML as business reference, but rule evaluation is controlled by the trigger window.
 
 Every run log must include:
@@ -155,6 +157,7 @@ rules_skipped
 ```
 
 If upstream OneDrive DWS output is missing or stale, record `SOURCE_MISSING` or `SOURCE_STALE` and notify 张霖泽 according to the notification policy.
+Rules for a source-blocked group must appear in `rules_blocked_by_source` and must not be emitted as routine `MISSING`; stale payment source also suppresses `CASH_NO_DATA` to avoid false cash-risk alerts.
 
 ## 7. GitHub Sync Rule
 

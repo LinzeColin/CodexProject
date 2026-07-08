@@ -26,13 +26,13 @@ Every run log must include `run_at_beijing`, `check_date`, `trigger_window`, `ru
 
 Morning runs also produce `cash_risk_result` for 杨婷资金账户监控. The public-safe offline implementation extracts `total_available_cash` from DWS message text using configured markers in `cash_monitor.public.yaml`; image/file candidates without a structured amount become `CASH_NEEDS_REVIEW`.
 
-Private runtime data belongs under:
+Private runtime data belongs under OneDrive, not inside the Git package:
 
 ```text
-KMFA/metadata/daily_routine_check/private_runtime/
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime/
 ```
 
-OneDrive durable logs and snapshots belong under:
+Durable logs and snapshots belong under:
 
 ```text
 /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/

@@ -19,9 +19,10 @@ from .schedule_rules import TRIGGER_WINDOWS, infer_trigger_window, rules_for_tri
 REPO_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_RULES = REPO_ROOT / "KMFA" / "metadata" / "daily_routine_check" / "routine_rules.public.yaml"
 DEFAULT_CASH = REPO_ROOT / "KMFA" / "metadata" / "daily_routine_check" / "cash_monitor.public.yaml"
-DEFAULT_DB = REPO_ROOT / "KMFA" / "metadata" / "daily_routine_check" / "private_runtime" / "daily_routine_check.sqlite"
+DEFAULT_ONEDRIVE_RUNTIME = Path("/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime")
+DEFAULT_DB = DEFAULT_ONEDRIVE_RUNTIME / "daily_routine_check.sqlite"
 DEFAULT_STORAGE = REPO_ROOT / "KMFA" / "metadata" / "daily_routine_check" / "onedrive_storage_manifest.yaml"
-DEFAULT_NOTIFICATION_TARGETS = REPO_ROOT / "KMFA" / "metadata" / "daily_routine_check" / "private_runtime" / "notification_targets.local.json"
+DEFAULT_NOTIFICATION_TARGETS = DEFAULT_ONEDRIVE_RUNTIME / "notification_targets.local.json"
 
 
 def parse_date(value: str, tz: ZoneInfo) -> date:
@@ -192,6 +193,14 @@ def flag_merged_results(results: list[RoutineCheckResult]) -> list[RoutineCheckR
             result.reason = "same message matched multiple independent routine rules"
             result.evidence["merged_rule_ids"] = sorted({item.rule_id for item in matched_results})
     return results
+
+
+def blocking_source_groups(data_quality_issues: list[dict[str, Any]]) -> set[str]:
+    return {
+        issue.get("group_name", "")
+        for issue in data_quality_issues
+        if issue.get("issue_type") in {"SOURCE_MISSING", "SOURCE_STALE"} and issue.get("group_name")
+    }
 
 
 def build_notification_events(
@@ -379,15 +388,19 @@ def main() -> int:
     for group in group_names:
         data_quality_issues.extend(reader.inspect_group_sources(group, check_date))
         messages.extend(reader.read_messages(group))
+    blocked_groups = blocking_source_groups(data_quality_issues)
+    rules_blocked_by_source = [rule for rule in rules_to_evaluate if rule.group_name in blocked_groups]
+    rules_ready_for_evaluation = [rule for rule in rules_to_evaluate if rule.group_name not in blocked_groups]
 
     results = []
-    for rule in rules_to_evaluate:
+    for rule in rules_ready_for_evaluation:
         result = evaluate_rule(rule, messages, check_date, now)
         if result is not None:
             results.append(result)
     results = flag_merged_results(results)
     cash_risk_result = None
-    if trigger_window == "morning_1135":
+    cash_group_name = (cash_config.get("scope") or {}).get("group_name", "付款请示群")
+    if trigger_window == "morning_1135" and cash_group_name not in blocked_groups:
         cash_risk_result = evaluate_cash_risk(cash_config, raw_rules.get("ocr_feature_profiles", {}), messages, check_date)
     notification_events = build_notification_events(
         results,
@@ -400,7 +413,7 @@ def main() -> int:
         run_at_beijing=now.isoformat(timespec="seconds"),
         check_date=check_date,
         trigger_window=trigger_window,
-        rules_evaluated=[rule.rule_id for rule in rules_to_evaluate],
+        rules_evaluated=[rule.rule_id for rule in rules_ready_for_evaluation],
         rules_skipped=[rule.rule_id for rule in rules_skipped],
         data_quality_issues=data_quality_issues,
     )
@@ -415,6 +428,8 @@ def main() -> int:
         "send": args.send,
         **run_summary,
         "results": [r.__dict__ | {"check_date": r.check_date.isoformat()} for r in results],
+        "rules_blocked_by_source": [rule.rule_id for rule in rules_blocked_by_source],
+        "source_blocked_groups": sorted(blocked_groups),
         "cash_risk_result": cash_result_to_payload(cash_risk_result),
         "notification_target": raw_rules.get("notify_target_label"),
         "notification_events": notification_events,
