@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S10 P1 Home Arrival Briefing
+
+- Added `home_arrival_briefing.v1_2_s10_p1` to the Memory Atlas home screen.
+- Added a Chinese-first “上次来以后发生了什么” section before the older weather
+  and visual entry sections.
+- Covered new important material, strengthened conclusions, weakened/stale
+  conclusions, pending proposal candidates and sync failures.
+- Added folded machine details for the S10 P1 contract, snapshot and no-apply
+  boundary.
+- Extended `scripts/atlasctl.py` with `audit --check chinese-ux`.
+- Added `validate:v1.2-s10-p1` for `MA-V12-S10P1` /
+  `ACC-MA-V12-S10P1`.
+- Registered status `phase_s10_p1_home_arrival_briefing_completed_pending_s10_p2`.
+- Preserved S10 P1 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, No proposal apply execution,
+  No S10 P2/P3 work and No S13 apply state machine work.
+- Marked the next gate as pending S10 P2.
+
 ## Unreleased - Memory Atlas v1.2 S09 Review
 
 - Added `docs/reviews/memory_atlas_v1_2_s09_review.md`.

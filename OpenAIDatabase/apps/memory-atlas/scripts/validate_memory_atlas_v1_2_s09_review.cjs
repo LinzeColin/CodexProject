@@ -383,10 +383,11 @@ function validateDocsAndRecords() {
     "Quick entry is missing S09 Review current state",
   );
   assertCondition(
-    hasAll(overview, ["S09 Review 已完成", "latent_signals.json", "self_iteration_suggestions.json", "decision_debt_ledger.json", "下一步是 S10 P1"]),
+    hasAll(overview, ["S09 Review 已完成", "latent_signals.json", "self_iteration_suggestions.json", "decision_debt_ledger.json"]) &&
+      (overview.includes("下一步是 S10 P1") || hasAll(overview, ["S10 P1 已完成", "下一步是 S10 P2"])),
     "s09_review_overview",
-    "Overview records S09 Review completion and pending S10 P1",
-    "Overview is missing S09 Review current state",
+    "Overview records S09 Review completion and either pending S10 P1 or later S10 P1 progression",
+    "Overview is missing S09 Review historical state",
   );
   assertCondition(
     hasAll(machine, ["当前为 S09 Review", taskId, acceptanceId, validatorName, "下一步是 S10 P1"]),
@@ -407,10 +408,14 @@ function validateDocsAndRecords() {
     "Behavior model README is missing S09 Review model outputs",
   );
   assertCondition(
-    hasAll(runGate, ["当前阶段是 S09 Review", taskId, acceptanceId, validatorName, "下一步是 S10 P1"]),
+    hasAll(runGate, [taskId, acceptanceId, validatorName]) &&
+      (
+        hasAll(runGate, ["当前阶段是 S09 Review", "下一步是 S10 P1"]) ||
+        hasAll(runGate, ["当前阶段是 S10 P1", "MA-V12-S10P1", "下一步是 S10 P2", "历史复验兼容记录：S09 Review"])
+      ),
     "s09_review_run_gate",
-    "Run gate README records S09 Review validator and next gate",
-    "Run gate README is missing S09 Review gate",
+    "Run gate README records S09 Review validator either as current gate or historical review gate after S10 P1",
+    "Run gate README is missing S09 Review historical gate",
   );
   for (const name of recordFiles) {
     const source = readRepoFile(name);
