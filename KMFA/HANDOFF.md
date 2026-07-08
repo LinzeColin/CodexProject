@@ -63,6 +63,8 @@
 - 本地 Codex automation `kmfa` 已重新与 repo mirror 对齐：tracked `daily_1130_sydney.prompt.md` 和 `codex_app_automation.contract.toml` 反映当前本机 cwds 与上游 DWS zip 优先级，`check_codex_app_automation.py` 返回 `CODEX_AUTOMATION_READY`。
 - runner 现在输出 `screenshot_ocr_coverage.csv`，逐张 screenshot evidence 审计真实 OCR sidecar 覆盖状态；缺侧车的截图写 `SCREENSHOT_OCR_MISSING` 阻断任务，不调用 OCR、不读取图片内容、不生成金额事实。
 - S36 已基于最新真实热目录运行 `run_fund_weekly_analysis.py --run-id s36_real_screenshot_ocr_coverage_20260708`，索引 295 个真实源文件，生成 272 条 screenshot OCR coverage，全部 `ocr_text_sidecar_missing`；`screenshot_ocr_ready_count=0`、`screenshot_ocr_missing_count=272`、`ocr_text_candidate_count=0`、`ocr_value_candidate_count=0`，`fund_ledger.csv` / `funding_forecast.csv` 仍为空，`management_conclusion_allowed=false`。
+- daily shell 现在在 runner 成功后调用 `generate_screenshot_ocr_sidecars.py` 生成私有 OCR sidecar generation plan；默认 dry-run，不修改 OneDrive 源目录，不写空 OCR sidecar，不生成金额事实。
+- S37 已基于最新真实热目录运行 `run_fund_weekly_analysis.py --run-id s37_real_ocr_sidecar_generation_plan_20260708`，随后执行 `generate_screenshot_ocr_sidecars.py --engine mdls` dry-run；计划 272 条截图 OCR sidecar 生成行，全部 `no_text_from_engine`，`generated_sidecar_count=0`、`text_available_count=0`、`financial_fact_promoted=false`，未写入 `private_runtime/ocr_sidecars/` 文件。
 - runner 现在承接 public-safe KMFA metadata 信号：资金压力、项目成本事实层、报告等级、scope reconciliation，输出 `kmfa_metadata_signals.csv` 并写入 `04_税费融资风险` / `H02_异常任务池`；这些只用于待复核路由，不生成金额、预测或正式动作。
 - 所有结构化 CSV 金额仍是待复核事实，`management_conclusion_allowed=false`；不得把 workbook 首页卡片解释为最终 C-level 管理结论。
 - 当前真实 OneDrive 热目录已 materialized 并达到 `READY`。若后续目标目录再次缺失或 OneDrive cloud-only/dataless，仍保持 `SOURCE_MISSING` / `SOURCE_UNREADABLE` fail-closed，不生成局部生产包。

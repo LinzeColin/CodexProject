@@ -25,7 +25,14 @@ if [[ "$READINESS_EXIT" -ne 0 ]]; then
   exit "$READINESS_EXIT"
 fi
 
-python3 "$SKILL_DIR/tools/run_fund_weekly_analysis.py" --input-dir "$INPUT_DIR" --repo-root "$REPO_ROOT" --timezone Australia/Sydney
+RUNNER_OUTPUT="$(python3 "$SKILL_DIR/tools/run_fund_weekly_analysis.py" --input-dir "$INPUT_DIR" --repo-root "$REPO_ROOT" --timezone Australia/Sydney)"
+echo "$RUNNER_OUTPUT"
+RUN_DIR="$(printf '%s\n' "$RUNNER_OUTPUT" | sed -n 's/.*"run_dir"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | tail -1)"
+if [[ -n "$RUN_DIR" ]]; then
+  python3 "$SKILL_DIR/tools/generate_screenshot_ocr_sidecars.py" --input-dir "$INPUT_DIR" --repo-root "$REPO_ROOT" --run-dir "$RUN_DIR" --engine "${KMFA_FUND_OCR_ENGINE:-mdls}"
+else
+  echo "WARN: runner output did not include run_dir; OCR sidecar generation plan was skipped." >&2
+fi
 
 if command -v codex >/dev/null 2>&1; then
   # The exact Codex CLI may differ by local installation. Stdin keeps the prompt portable.

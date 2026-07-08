@@ -28,6 +28,12 @@ Private runtime, gitignored:
 KMFA/metadata/fund_weekly_analysis/private_runtime/
 ```
 
+Private OCR sidecars, gitignored:
+
+```text
+KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_sidecars/<run_id>/
+```
+
 Output run directory:
 
 ```text

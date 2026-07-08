@@ -37,6 +37,15 @@ def load_materialize_module():
     return module
 
 
+def load_ocr_sidecar_module():
+    module_path = SKILL_ROOT / "tools" / "generate_screenshot_ocr_sidecars.py"
+    spec = importlib.util.spec_from_file_location("generate_screenshot_ocr_sidecars_for_test", module_path)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
 def xlsx_cell_text(workbook: zipfile.ZipFile, sheet_path: str, ref: str) -> str:
     sheet = ET.fromstring(workbook.read(sheet_path))
     cell = sheet.find(f".//x:c[@r='{ref}']", XLSX_NS)
@@ -79,7 +88,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             f"echo python:$1 >> {call_log}\n"
             "case \"$1\" in\n"
             f"  *check_source_readiness.py) exit {readiness_exit} ;;\n"
-            "  *run_fund_weekly_analysis.py) exit 0 ;;\n"
+            "  *run_fund_weekly_analysis.py) echo '{\"run_id\":\"daily_stub\",\"run_dir\":\""
+            f"{repo_root}/KMFA/metadata/fund_weekly_analysis/private_runtime/runs/daily_stub"
+            "\"}'; exit 0 ;;\n"
+            "  *generate_screenshot_ocr_sidecars.py) exit 0 ;;\n"
             "  *) exit 8 ;;\n"
             "esac\n",
             encoding="utf-8",
@@ -115,6 +127,15 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
 
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertLess(readiness_index, runner_index)
+
+    def test_daily_entrypoint_runs_ocr_sidecar_generation_plan_after_runner_when_ready(self) -> None:
+        result, call_log = self.run_daily_with_stubbed_tools(readiness_exit=0)
+        calls = call_log.read_text(encoding="utf-8").splitlines()
+        runner_index = next(i for i, call in enumerate(calls) if "run_fund_weekly_analysis.py" in call)
+        ocr_index = next(i for i, call in enumerate(calls) if "generate_screenshot_ocr_sidecars.py" in call)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertLess(runner_index, ocr_index)
 
     def test_skill_package_uses_sydney_1130_local_schedule_and_real_input(self) -> None:
         self.assertTrue(SKILL_ROOT.exists(), "fund-weekly-analysis-skill package must exist under KMFA")
@@ -687,6 +708,76 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["chat_text_candidate_count"], 1)
             self.assertEqual(cross_review["chat_value_candidate_count"], 3)
             self.assertEqual(cross_review["structured_financial_fact_count"], 0)
+
+    def test_ocr_sidecar_generation_plan_fails_closed_without_text_engine(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/ocr_generation_plan_test"
+            image_dir = input_dir / "files" / "0708"
+            image_dir.mkdir(parents=True)
+            run_dir.mkdir(parents=True)
+            image = image_dir / "20260708113000_杨婷_资金账户截图.png"
+            image.write_bytes(b"real-image-bytes")
+
+            with (run_dir / "screenshot_ocr_coverage.csv").open("w", encoding="utf-8", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=[
+                    "ocr_coverage_id",
+                    "evidence_id",
+                    "source_image_relative_path",
+                    "ocr_sidecar_candidates",
+                    "ocr_text_relative_path",
+                    "ocr_coverage_status",
+                    "next_action",
+                    "review_status",
+                    "financial_fact_promoted",
+                ])
+                writer.writeheader()
+                writer.writerow({
+                    "ocr_coverage_id": "OCRCOV-ocr_generation_plan_test-00001",
+                    "evidence_id": "FW-00001",
+                    "source_image_relative_path": "files/0708/20260708113000_杨婷_资金账户截图.png",
+                    "ocr_sidecar_candidates": "files/0708/20260708113000_杨婷_资金账户截图.png.ocr.txt",
+                    "ocr_text_relative_path": "",
+                    "ocr_coverage_status": "ocr_text_sidecar_missing",
+                    "next_action": "run_ocr_or_attach_real_ocr_sidecar",
+                    "review_status": "pending_ocr_extraction",
+                    "financial_fact_promoted": "false",
+                })
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "generate_screenshot_ocr_sidecars.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--input-dir",
+                    str(input_dir),
+                    "--run-dir",
+                    str(run_dir),
+                    "--engine",
+                    "none",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            with (run_dir / "screenshot_ocr_sidecar_generation_plan.csv").open(encoding="utf-8-sig", newline="") as f:
+                plan_rows = list(csv.DictReader(f))
+            self.assertEqual(len(plan_rows), 1)
+            self.assertEqual(plan_rows[0]["generation_status"], "ocr_engine_unavailable")
+            self.assertEqual(plan_rows[0]["apply_performed"], "false")
+            self.assertEqual(plan_rows[0]["financial_fact_promoted"], "false")
+            self.assertEqual(plan_rows[0]["ocr_text_private_relative_path"], "")
+            self.assertFalse((repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_sidecars").exists())
+
+            summary = json.loads((run_dir / "screenshot_ocr_sidecar_generation_summary.json").read_text(encoding="utf-8"))
+            self.assertEqual(summary["planned_count"], 1)
+            self.assertEqual(summary["generated_sidecar_count"], 0)
+            self.assertEqual(summary["engine_unavailable_count"], 1)
+            self.assertFalse(summary["financial_fact_promoted"])
 
     def test_runner_links_chat_candidates_to_real_manifest_evidence_without_promoting_facts(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
