@@ -18,6 +18,15 @@
 
 ## 当前阶段
 
+当前 final delivery cleanup 本地部分已完成。GitHub `main`、本地 app bundle 和 runtime
+manifest 已对齐到当前 GitHub `main` HEAD；以 post-push
+`git rev-parse HEAD == git rev-parse origin/main` 和 app install manifest 校验为准。已清理可再生前端
+build/cache 与 Memory Atlas `/private/tmp` 临时证据，保留 app bundle、Application Support
+source/runtime 和 Downloads task pack/roadmap。机器证据：
+`证据与日志/final_delivery/v1_2_final_delivery_cleanup_status.json`。
+
+剩余外部门：Cloudflare live deployment and Access challenge 仍缺 operator/live 证据。
+
 当前为 v1.2 Final Review。任务 ID 为 `MA-V12-FINAL-REVIEW`，验收 ID 为
 `ACC-MA-V12-FINAL-REVIEW`，validator 为 `validate:v1.2-final-review`。状态为
 `v1_2_final_review_passed_pending_github_main_sync_no_upload_yet`。Final Review 已完成

@@ -2,6 +2,14 @@
 
 用于放置 run evidence、audit logs、manifest/hash、stage evidence 和复审证据摘要。
 
+当前 final delivery cleanup 证据文件：
+
+- `final_delivery/v1_2_final_delivery_cleanup_status.json`
+
+该文件记录 GitHub `main`、本地 app 入口、runtime manifest、清理范围、清理前后指标、
+保留对象和剩余 Cloudflare live Access 外部门。当前本地清理已完成；Cloudflare live
+deployment and Access challenge 仍缺 operator/live 证据。
+
 当前 v1.2 Final Review 已完成。任务 ID 为 `MA-V12-FINAL-REVIEW`，验收 ID 为
 `ACC-MA-V12-FINAL-REVIEW`，状态为
 `v1_2_final_review_passed_pending_github_main_sync_no_upload_yet`。Validator 为
