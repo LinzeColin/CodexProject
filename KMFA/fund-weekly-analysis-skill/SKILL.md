@@ -161,6 +161,7 @@ Required files:
 * `kmfa_metadata_signals.csv`
 * `goal_completion_audit.csv`
 * `fact_promotion_review_packet.csv`
+* `fact_promotion_authorization_template.json`
 * `exception_tasks.csv`
 * `cross_review.json`
 * `audit_log.json`
@@ -192,6 +193,7 @@ Current deterministic runner status contract:
 * Every generated workbook is inspected into `workbook_quality_checks.csv`: sheet order, hidden audit sheets, visible row 2 cleanup, native chart dimensions, formula error markers, and visible sensitive-value patterns. Any failing workbook quality check blocks management conclusions.
 * Every successful output package emits `goal_completion_audit.csv`: requirement-level evidence for source readiness, native workbook, company-bank matrix, internal-transfer netting, cashflow validation, known due-date forecasting, cross-checks, no-hallucination, formal fact promotion, management conclusions, and automation schedule external verification. This audit does not grant promotion or conclusion authority.
 * Every successful output package emits `fact_promotion_review_packet.csv`: a public-safe summary of structured facts, OCR ledger staging, chat value candidates, attachment evidence integrity, workbook quality, and goal audit rows for owner review. Every row keeps `fund_ledger_write_allowed=false` and `financial_fact_promoted=false`.
+* Every successful output package emits `fact_promotion_authorization_template.json` as a draft owner-review manifest derived from `fact_promotion_review_packet.csv`. It defaults every review row to `authorized=false`, uses `authorization_scope=fact_promotion_review_packet_validation_only`, and keeps `financial_fact_promotion_allowed=false`, `fund_ledger_write_allowed=false`, and `management_conclusion_allowed=false`; the draft is not consumed as authorization until a separate controlled validation run is approved.
 * When structured CSV facts exist, the runner patches the native `.xlsx` workbook directly: `01_首页总览` 4+4 cards, `02_资金趋势预测`, `03_三层净流余额`, `04_税费融资风险`, `05_公司银行矩阵`, and hidden `H01/H02/H03/H05` receive the same traced pending-review facts while preserving the existing native chart parts.
 * `INDEXED_PENDING_EXTRACTION` is not a management conclusion. It means no amount was generated, inferred, forecast, or promoted into facts yet.
 * `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW` is also not a management conclusion. The amounts came from real structured CSV rows, but they remain pending cross-review and must not become final C-level KPIs until gates pass.

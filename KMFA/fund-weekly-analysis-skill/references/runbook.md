@@ -32,13 +32,14 @@ The local scheduler uses Sydney local time. Monday and Saturday 11:00 Australia/
 26. Build `workbook_quality_checks.csv`: verify generated workbook sheet order, hidden sheets, visible row 2 cleanup, native chart size limits, formula error markers, and visible sensitive-value patterns.
 27. Build `goal_completion_audit.csv`: record final-objective requirement status and evidence without granting formal promotion or conclusion authority.
 28. Build `fact_promotion_review_packet.csv`: summarize structured facts, OCR staging, chat value candidates, attachment evidence integrity, workbook quality, and goal audit rows for owner review; keep all rows no-write/no-promote.
-29. Build daily balance continuity and company-bank matrix.
-30. Build tax/loan/project-cost/wealth-management/deposit risk tables.
-31. Promote reviewed facts into Excel with exact sheet order and style spec.
-32. Hide audit/review sheets.
-33. Run validation checks.
-34. Write run summary.
-35. Commit/push skill or automation changes to GitHub main only after validation passes.
+29. Build `fact_promotion_authorization_template.json`: derive one draft row per fact promotion review packet row, default every `authorized=false`, and keep `authorization_scope=fact_promotion_review_packet_validation_only`, `financial_fact_promotion_allowed=false`, `fund_ledger_write_allowed=false`, and `management_conclusion_allowed=false`.
+30. Build daily balance continuity and company-bank matrix.
+31. Build tax/loan/project-cost/wealth-management/deposit risk tables.
+32. Promote reviewed facts into Excel with exact sheet order and style spec.
+33. Hide audit/review sheets.
+34. Run validation checks.
+35. Write run summary.
+36. Commit/push skill or automation changes to GitHub main only after validation passes.
 
 ## Source materialization command
 

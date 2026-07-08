@@ -36,6 +36,7 @@ Blocking checks:
 * `workbook_quality_checks.csv` must be emitted for generated workbooks and must cover sheet order, hidden sheets, visible row 2 cleanup, chart dimensions, formula error markers, and visible sensitive-value patterns.
 * `goal_completion_audit.csv` must be emitted for successful output packages and must show `no_hallucinated_data=pass`, while formal fact promotion and management conclusions remain blocked unless explicit review gates pass.
 * `fact_promotion_review_packet.csv` must be emitted for successful output packages; every row must keep `fund_ledger_write_allowed=false` and `financial_fact_promoted=false` until explicit owner authorization and review gates pass.
+* `fact_promotion_authorization_template.json` must be emitted for successful output packages as a draft only. It must default every `review_packet_authorizations[].authorized` value to `false`, use `authorization_scope=fact_promotion_review_packet_validation_only`, and keep `financial_fact_promotion_allowed=false`, `fund_ledger_write_allowed=false`, and `management_conclusion_allowed=false`.
 * `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW` workbooks contain the same parsed facts in hidden `H01/H03/H05`, homepage KPI cards, `02_资金趋势预测`, and visible flow/risk/matrix sheets; native chart files remain present.
 * No production table contains `sample`, `demo`, `fake`, `synthetic`, or `模拟` data markers.
 * Workbook sheets exactly match the required visible/hidden order.
