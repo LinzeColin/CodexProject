@@ -1,3 +1,57 @@
+## v1.2 S12 Review
+
+状态：`stage_s12_review_passed_pending_s13_no_github_main_upload`。
+
+任务 ID：`MA-V12-S12-REVIEW`。
+
+验收 ID：`ACC-MA-V12-S12-REVIEW`。
+
+Validator：`validate:v1.2-s12-review`。
+
+S12 Review 已完成。复审确认 S12 P1 Command Palette、S12 P2 Personalization Prompt 和
+S12 P3 ChatGPT 深度探索共同满足 S12 stage gate。命令集合只保留已接受命令和两个明确扩展：
+`generate_personalization_prompt` 与 `chatgpt_deep_explore`。`prefill_only` 不发送，
+`auto_submit` 默认 FAIL_CLOSED，并返回中文失败说明。
+
+产物：
+
+- `docs/reviews/memory_atlas_v1_2_s12_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s12_review.cjs`
+- `CHANGELOG.md`
+- `功能清单.md`
+- `开发记录.md`
+- `模型参数文件.md`
+- `docs/MEMORY_ATLAS_DELIVERY_RECORD.md`
+- `docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md`
+
+验收关键词：
+
+- `validate:v1.2-s12-review`
+- `ACC-MA-V12-S12-REVIEW`
+- `MA-V12-S12-REVIEW`
+- `stage_s12_review_passed_pending_s13_no_github_main_upload`
+- S12 Review
+- S12 P1
+- S12 P2
+- S12 P3
+- Command Palette
+- Personalization Prompt
+- ChatGPT 深度探索
+- `prefill_only`
+- `auto_submit`
+- S13 P1
+
+边界：
+
+- No silent send。
+- No cookie/token/secret export。
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+- No proposal apply execution。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S12 Review; MA-V12-S12-REVIEW; ACC-MA-V12-S12-REVIEW; stage_s12_review_passed_pending_s13_no_github_main_upload; validate:v1.2-s12-review; S12 Review; S12 P1; S12 P2; S12 P3; Command Palette; Personalization Prompt; ChatGPT 深度探索; prefill_only; auto_submit; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution; pending S13 P1.
+
 ## v1.2 S12 P3 ChatGPT Deep Exploration
 
 状态：`phase_s12_p3_chatgpt_deep_explore_completed_pending_s12_review`。

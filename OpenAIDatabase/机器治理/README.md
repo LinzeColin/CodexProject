@@ -18,14 +18,22 @@
 
 ## 当前阶段
 
-当前为 S12 P3。任务 ID 为 `MA-V12-S12P3`，验收 ID 为
-`ACC-MA-V12-S12P3`，validator 为 `validate:v1.2-s12-p3`。状态为
-`phase_s12_p3_chatgpt_deep_explore_completed_pending_s12_review`。S12 P3 已完成
-`chatgpt_deep_explore.v1_2_s12_p3`，提供用户触发的 ChatGPT 深度探索入口。默认
-`prefill_only`，`auto_submit` 受配置和显式确认控制。下一步只允许进入 S12 Review。
+当前为 S12 Review。任务 ID 为 `MA-V12-S12-REVIEW`，验收 ID 为
+`ACC-MA-V12-S12-REVIEW`，validator 为 `validate:v1.2-s12-review`。状态为
+`stage_s12_review_passed_pending_s13_no_github_main_upload`。S12 Review 已完成
+Command Palette、Personalization Prompt 和 ChatGPT 深度探索复审；S12 P1、S12 P2、
+S12 P3 均通过，`prefill_only` 保持 no-send，`auto_submit` 保持 FAIL_CLOSED。
+下一步只允许进入 S13 P1。
 
 No silent send。No cookie/token/secret export。No GitHub main upload。No remote push。
 No raw mutation。No proposal apply execution。
+
+历史复验兼容记录：S12 P3 完成时当前为 S12 P3。任务 ID 为 `MA-V12-S12P3`，验收 ID 为
+`ACC-MA-V12-S12P3`，validator 为 `validate:v1.2-s12-p3`。状态为
+`phase_s12_p3_chatgpt_deep_explore_completed_pending_s12_review`。S12 P3 已完成
+`chatgpt_deep_explore.v1_2_s12_p3`，提供用户触发的 ChatGPT 深度探索入口。默认
+`prefill_only`，`auto_submit` 受配置和显式确认控制。此句只用于保留已完成 phase 的复验语义，
+不代表当前阶段。S12 Review 已完成，下一步是 S13 P1。
 
 历史复验兼容记录：S12 P2 完成时当前为 S12 P2。任务 ID 为 `MA-V12-S12P2`，验收 ID 为
 `ACC-MA-V12-S12P2`，validator 为 `validate:v1.2-s12-p2`。状态为

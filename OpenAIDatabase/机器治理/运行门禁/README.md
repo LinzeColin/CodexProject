@@ -2,7 +2,38 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S12 P3。任务 ID 为 `MA-V12-S12P3`，验收 ID 为
+当前阶段是 S12 Review。任务 ID 为 `MA-V12-S12-REVIEW`，验收 ID 为
+`ACC-MA-V12-S12-REVIEW`，validator 为 `validate:v1.2-s12-review`。状态为
+`stage_s12_review_passed_pending_s13_no_github_main_upload`。
+
+S12 Review 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s12_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s12_review.cjs`
+- `CHANGELOG.md`
+- `功能清单.md`
+- `开发记录.md`
+- `模型参数文件.md`
+- `docs/MEMORY_ATLAS_DELIVERY_RECORD.md`
+- `docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md`
+
+S12 Review gate：
+
+- `validate:v1.2-s12-review` 可验证 S12 P1/P2/P3 阶段链。
+- Command Palette 只暴露已接受命令、Personalization Prompt 和 ChatGPT 深度探索。
+- S12 P1 Command Palette、S12 P2 Personalization Prompt、S12 P3 ChatGPT 深度探索均通过。
+- `prefill_only` 不发送。
+- `auto_submit` 默认 FAIL_CLOSED，并返回中文失败说明。
+- No silent send。
+- No cookie/token/secret export。
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+- No proposal apply execution。
+
+下一步是 S13 P1。
+
+历史复验兼容记录：S12 P3 完成时当前阶段是 S12 P3。任务 ID 为 `MA-V12-S12P3`，验收 ID 为
 `ACC-MA-V12-S12P3`，validator 为 `validate:v1.2-s12-p3`。状态为
 `phase_s12_p3_chatgpt_deep_explore_completed_pending_s12_review`。
 

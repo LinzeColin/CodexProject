@@ -1,3 +1,43 @@
+## 153. Memory Atlas v1.2 S12 Review Parameters
+
+状态：`stage_s12_review_passed_pending_s13_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S12-REVIEW`。
+
+S12 Review 固定以下参数：
+
+- `MA-V12-S12-REVIEW`
+- `validate:v1.2-s12-review`
+- S12 Review
+- S12 P1
+- S12 P2
+- S12 P3
+- Command Palette
+- Personalization Prompt
+- ChatGPT 深度探索
+- `prefill_only`
+- `auto_submit`
+- S12 Review 完成后下一步为 S13 P1。
+- No GitHub main upload。
+- No remote push。
+
+参数：
+
+- `PARAM-MA-V12-S12-REVIEW-001 stage_status = stage_s12_review_passed_pending_s13_no_github_main_upload`
+- `PARAM-MA-V12-S12-REVIEW-002 validator = validate:v1.2-s12-review`
+- `PARAM-MA-V12-S12-REVIEW-003 phase_chain = S12 P1; S12 P2; S12 P3`
+- `PARAM-MA-V12-S12-REVIEW-004 accepted_runtime_command_ids = sync_chatgpt; sync_codex; generate_weekly_report; view_pending_proposals; generate_personalization_prompt; chatgpt_deep_explore`
+- `PARAM-MA-V12-S12-REVIEW-005 prompt_boundary = no-write dry-run; no-send`
+- `PARAM-MA-V12-S12-REVIEW-006 chatgpt_boundary = prefill_only; auto_submit FAIL_CLOSED`
+- `PARAM-MA-V12-S12-REVIEW-007 next_phase = S13 P1`
+- `PARAM-MA-V12-S12-REVIEW-008 review_boundary = No silent send; No cookie/token/secret export; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution`
+
+验证逻辑：
+
+- `validate:v1.2-s12-review` checks the S12 P1/P2/P3 validator chain, accepted runtime command ids, Personalization Prompt dry-run, ChatGPT 深度探索 `prefill_only`, `auto_submit` FAIL_CLOSED, governance records, no cookie/token/secret export, no raw mutation and no proposal apply execution.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S12 Review; MA-V12-S12-REVIEW; ACC-MA-V12-S12-REVIEW; stage_s12_review_passed_pending_s13_no_github_main_upload; validate:v1.2-s12-review; S12 Review; S12 P1; S12 P2; S12 P3; Command Palette; Personalization Prompt; ChatGPT 深度探索; prefill_only; auto_submit; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution; pending S13 P1.
+
 ## 152. Memory Atlas v1.2 S12 P3 ChatGPT Deep Exploration Parameters
 
 状态：`phase_s12_p3_chatgpt_deep_explore_completed_pending_s12_review`。
