@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Extract canonical Memory Atlas behavior events for S05 P2.
+"""Extract canonical Memory Atlas behavior events for S05 P3.
 
 The extractor consumes existing public raw, processed manifests and derived
 summaries. Missing sources are recorded as source_status rows instead of fake
-events. It never writes raw data.
+events. Each event keeps lightweight evidence_refs for traceability. It never
+writes raw data.
 """
 
 from __future__ import annotations
@@ -32,9 +33,9 @@ CODEX_SNAPSHOT_PATHS = [
 FUTURE_AGENT_RAW_ROOT = Path("data/public_raw/agents")
 FUTURE_AGENT_DERIVED_ROOT = Path("data/derived/agents")
 
-TASK_ID = "MA-V12-S05P2"
-ACCEPTANCE_ID = "ACC-MA-V12-S05P2"
-STATUS = "phase_s05_p2_facet_extractor_completed_pending_s05_p3"
+TASK_ID = "MA-V12-S05P3"
+ACCEPTANCE_ID = "ACC-MA-V12-S05P3"
+STATUS = "phase_s05_p3_evidence_refs_completed_pending_s05_review"
 REQUIRED_FIELDS = [
     "source",
     "topic",
@@ -285,6 +286,42 @@ def tools_used(row: dict[str, Any]) -> list[str]:
     return names
 
 
+def evidence_level_for_ref(ref_type: str, evidence_missing_reason: str | None) -> str:
+    if ref_type == "raw":
+        return "raw"
+    if ref_type == "manifest":
+        return "processed_manifest" if evidence_missing_reason else "manifest"
+    if ref_type == "derived":
+        return "derived"
+    return "missing_reason"
+
+
+def build_evidence_refs(event: dict[str, Any], evidence_missing_reason: str | None) -> list[dict[str, Any]]:
+    refs: list[dict[str, Any]] = []
+    for ref_type, field in (("raw", "raw_ref"), ("manifest", "manifest_ref"), ("derived", "derived_ref")):
+        path_value = event.get(field)
+        if not path_value:
+            continue
+        refs.append({
+            "ref_id": f"{event['event_id']}_{ref_type}_{stable_hash(path_value)[:12]}",
+            "source_id": event["source_id"],
+            "record_id": event["record_id"],
+            "ref_type": ref_type,
+            "path": path_value,
+            "evidence_level": evidence_level_for_ref(ref_type, evidence_missing_reason),
+        })
+    if evidence_missing_reason:
+        refs.append({
+            "ref_id": f"{event['event_id']}_missing_{stable_hash(evidence_missing_reason)[:12]}",
+            "source_id": event["source_id"],
+            "record_id": event["record_id"],
+            "ref_type": "missing_reason",
+            "reason": evidence_missing_reason,
+            "evidence_level": "missing_reason",
+        })
+    return refs
+
+
 def build_event(
     *,
     source: str,
@@ -333,6 +370,7 @@ def build_event(
         event["derived_ref"] = derived_ref
     if evidence_missing_reason:
         event["evidence_missing_reason"] = evidence_missing_reason
+    event["evidence_refs"] = build_evidence_refs(event, evidence_missing_reason)
     validate_event(event)
     return event
 
@@ -347,8 +385,22 @@ def validate_event(event: dict[str, Any]) -> None:
         raise FacetExtractionError(f"invalid turn_count for {event.get('event_id')}")
     if not isinstance(event["friction"], list) or not isinstance(event["value_signal"], list):
         raise FacetExtractionError(f"array fields invalid for {event.get('event_id')}")
+    if not event.get("source_id"):
+        raise FacetExtractionError(f"event {event.get('event_id')} lacks source_id")
     if not (event.get("raw_ref") or event.get("manifest_ref") or event.get("derived_ref") or event.get("evidence_missing_reason")):
         raise FacetExtractionError(f"event {event.get('event_id')} lacks evidence reference or missing reason")
+    refs = event.get("evidence_refs")
+    if not isinstance(refs, list) or not refs:
+        raise FacetExtractionError(f"event {event.get('event_id')} lacks evidence_refs")
+    for ref in refs:
+        if not isinstance(ref, dict):
+            raise FacetExtractionError(f"event {event.get('event_id')} has non-object evidence_ref")
+        if ref.get("source_id") != event.get("source_id") or ref.get("record_id") != event.get("record_id"):
+            raise FacetExtractionError(f"event {event.get('event_id')} has mismatched evidence_ref identity")
+        if not ref.get("ref_id") or not ref.get("ref_type") or not ref.get("evidence_level"):
+            raise FacetExtractionError(f"event {event.get('event_id')} has incomplete evidence_ref")
+        if not (ref.get("path") or ref.get("reason")):
+            raise FacetExtractionError(f"event {event.get('event_id')} has evidence_ref without path or reason")
     if event["source"] in {"future_agent", "other_agent"} and not event.get("future_agent_source"):
         raise FacetExtractionError(f"future agent event {event.get('event_id')} lacks future_agent_source")
 
@@ -649,6 +701,7 @@ def extract_facets(
         [*chatgpt_events, *codex_events, *future_events],
         key=lambda event: (event["source"], event.get("occurred_at") or "", event["event_id"]),
     )
+    evidence_ref_count = sum(len(event.get("evidence_refs") or []) for event in events)
     payload: dict[str, Any] = {
         "schema_version": "memory_atlas_behavior_events.v1",
         "task_id": TASK_ID,
@@ -660,7 +713,15 @@ def extract_facets(
         "schema_ref": SCHEMA_PATH.as_posix(),
         "output_path": output_path.as_posix(),
         "event_count": len(events),
+        "evidence_ref_count": evidence_ref_count,
         "required_fields": REQUIRED_FIELDS,
+        "evidence_contract": {
+            "phase": "S05 P3",
+            "mode": "lightweight_evidence_refs",
+            "requires_event_source_id": True,
+            "requires_raw_ref_or_manifest_ref_or_missing_reason": True,
+            "does_not_implement_raw_to_insight_replay_ui": True,
+        },
         "source_status": {
             "chatgpt": chatgpt_status,
             "codex": codex_status,
@@ -670,7 +731,7 @@ def extract_facets(
             "does_not_modify_raw": True,
             "does_not_generate_fake_records_for_missing_data": True,
             "does_not_change_first_screen_ui": True,
-            "next_phase": "S05 P3 evidence refs and review",
+            "next_phase": "S05 Review",
         },
         "events": events,
     }

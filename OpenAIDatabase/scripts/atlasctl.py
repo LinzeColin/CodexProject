@@ -181,8 +181,8 @@ def facet_analyze_contract() -> dict[str, object]:
         ],
         "missing_source_policy": "record source_status missing_reason without fake events",
         "raw_mutation": False,
-        "task_id": "MA-V12-S05P2",
-        "acceptance_id": "ACC-MA-V12-S05P2",
+        "task_id": "MA-V12-S05P3",
+        "acceptance_id": "ACC-MA-V12-S05P3",
     }
 
 

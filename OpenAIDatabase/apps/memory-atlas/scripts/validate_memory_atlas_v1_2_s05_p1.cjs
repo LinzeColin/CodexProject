@@ -67,10 +67,19 @@ const allowedOpenDiffPaths = [
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s04_p2.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s04_p3.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s04_review.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p2.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p3.cjs",
   `OpenAIDatabase/apps/memory-atlas/scripts/${scriptName}`,
+  "OpenAIDatabase/scripts/atlasctl.py",
+  "OpenAIDatabase/scripts/extract_memory_atlas_facets.py",
+  "OpenAIDatabase/tests/test_s05p2_facet_extractor.py",
+  "OpenAIDatabase/tests/test_s05p3_facet_evidence_refs.py",
   `OpenAIDatabase/${schemaPath}`,
   `OpenAIDatabase/${humanPagePath}`,
   `OpenAIDatabase/${reviewPath}`,
+  "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s05_p2_facet_extractor.md",
+  "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s05_p3_evidence_refs.md",
+  "OpenAIDatabase/data/derived/behavior_intelligence/events.json",
   "OpenAIDatabase/docs/MEMORY_ATLAS_DELIVERY_RECORD.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md",
   "OpenAIDatabase/功能清单.md",
@@ -179,6 +188,23 @@ function currentStateIsS05P2() {
   );
 }
 
+function currentStateIsS05P3() {
+  const quick = readRepoFile("人类可读/00_快速入口.md");
+  const overview = readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md");
+  const machine = readRepoFile("机器治理/README.md");
+  const runGate = readRepoFile("机器治理/运行门禁/README.md");
+  return (
+    hasAll(quick, ["当前阶段是 S05 P3", "MA-V12-S05P3", "ACC-MA-V12-S05P3", "下一步只允许进入 S05 Review"]) &&
+    hasAll(overview, ["S05 P3 已完成", "evidence_refs", "下一步是 S05 Review"]) &&
+    hasAll(machine, ["当前为 S05 P3", "evidence_refs", eventsPath, "下一步是 S05 Review"]) &&
+    hasAll(runGate, ["当前阶段是 S05 P3", "MA-V12-S05P3", "ACC-MA-V12-S05P3", "validate:v1.2-s05-p3"])
+  );
+}
+
+function currentStateIsS05P2OrLater() {
+  return currentStateIsS05P2() || currentStateIsS05P3();
+}
+
 function validateTextFile(relativePath) {
   const source = readRepoFile(relativePath);
   assertCondition(
@@ -229,10 +255,10 @@ function validatePreviousPhaseGate() {
     return;
   }
 
-  if (currentStateIsS05P2()) {
+  if (currentStateIsS05P2OrLater()) {
     pass(
       "s05p1_previous_phase_already_validated_before_s05p2",
-      "S05 P1 is accepted as historical because the current state has advanced to S05 P2 with its own validator",
+      "S05 P1 is accepted as historical because the current state has advanced beyond S05 P1 with its own validator",
     );
     return;
   }
@@ -306,12 +332,12 @@ function validateSchema() {
 
 function validateNoPrematureDerivedEvents() {
   const eventsAbsolutePath = path.join(repoRoot, eventsPath);
-  if (currentStateIsS05P2()) {
+  if (currentStateIsS05P2OrLater()) {
     assertCondition(
       fs.existsSync(eventsAbsolutePath),
       "s05p1_events_json_allowed_after_s05p2",
-      "events.json exists only after current state advanced to S05 P2",
-      "Current state says S05 P2 but events.json is missing",
+      "events.json exists only after current state advanced beyond S05 P1",
+      "Current state says S05 P2 or later but events.json is missing",
       { eventsPath },
     );
     return;
@@ -363,7 +389,7 @@ function validateDocsAndRecords() {
   const behavior = readRepoFile("机器治理/行为智能模型/README.md");
   const runGate = readRepoFile("机器治理/运行门禁/README.md");
   const review = readRepoFile(reviewPath);
-  const s05p2State = currentStateIsS05P2();
+  const s05p2State = currentStateIsS05P2OrLater();
 
   assertCondition(
     s05p2State || hasAll(quick, [taskId, acceptanceId, status, "当前阶段是 S05 P1", "Facet schema", "下一步只允许进入 S05 P2"]),
@@ -463,9 +489,10 @@ function validateRepoBoundaries() {
     { changed, outside, allowedOpenDiffPaths },
   );
 
+  const s05p2OrLaterState = currentStateIsS05P2OrLater();
   const forbiddenOpenChanges = changed.filter((file) =>
     file.startsWith("OpenAIDatabase/data/public_raw/") ||
-    file === `OpenAIDatabase/${eventsPath}` ||
+    (!s05p2OrLaterState && file === `OpenAIDatabase/${eventsPath}`) ||
     file.includes(".env") ||
     file.includes("cookies") ||
     file.includes("session_token"),
@@ -473,9 +500,9 @@ function validateRepoBoundaries() {
   assertCondition(
     forbiddenOpenChanges.length === 0,
     "s05p1_no_raw_events_or_secret_open_changes",
-    "S05 P1 open diff does not modify raw, generated events or secret/config files",
+    "S05 P1 open diff does not modify raw or secret/config files; generated events are allowed only after S05 P2",
     "S05 P1 open diff modifies forbidden raw, generated event or secret-like files",
-    { changed, forbiddenOpenChanges },
+    { changed, forbiddenOpenChanges, s05p2OrLaterState },
   );
 }
 

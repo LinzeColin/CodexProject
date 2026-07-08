@@ -1,3 +1,49 @@
+## v1.2 S05 P3 Evidence Refs
+
+状态：`phase_s05_p3_evidence_refs_completed_pending_s05_review`。
+
+任务 ID：`MA-V12-S05P3`。
+
+验收 ID：`ACC-MA-V12-S05P3`。
+
+S05 P3 实现 Memory Atlas v1.2 的轻量 evidence_refs。它不实现 Raw-to-Insight
+Replay UI，只在 canonical behavior events 中保留 source_id、record_id 和指向
+raw、manifest、derived 或 missing reason 的证据引用。
+
+涉及文件：
+
+- `scripts/extract_memory_atlas_facets.py`
+- `scripts/atlasctl.py`
+- `data/derived/behavior_intelligence/events.json`
+- `docs/reviews/memory_atlas_v1_2_s05_p3_evidence_refs.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p3.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s05-p3`
+- `ACC-MA-V12-S05P3`
+- `MA-V12-S05P3`
+- S05 P3
+- `extract_memory_atlas_facets.py`
+- `atlasctl.py analyze --stage facets`
+- `events.json`
+- 217 events
+- 434 evidence_refs
+- pending S05 Review
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase.
+- No raw mutation in this phase.
+- No fake events.
+- No Raw-to-Insight Replay UI in this phase.
+- No app reinstall in this phase.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S05 P3 Evidence Refs; MA-V12-S05P3; ACC-MA-V12-S05P3; phase_s05_p3_evidence_refs_completed_pending_s05_review; validate:v1.2-s05-p3; extract_memory_atlas_facets.py; atlasctl.py analyze --stage facets; events.json; 217 events; 434 evidence_refs; S05 P3; pending S05 Review; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No fake events.
+
 ## v1.2 S05 P2 Facet Extractor
 
 状态：`phase_s05_p2_facet_extractor_completed_pending_s05_p3`。

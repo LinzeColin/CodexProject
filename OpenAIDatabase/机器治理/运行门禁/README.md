@@ -2,8 +2,8 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S05 P2。任务 ID 为 `MA-V12-S05P2`，验收 ID 为
-`ACC-MA-V12-S05P2`，validator 为 `validate:v1.2-s05-p2`。
+当前阶段是 S05 P3。任务 ID 为 `MA-V12-S05P3`，验收 ID 为
+`ACC-MA-V12-S05P3`，validator 为 `validate:v1.2-s05-p3`。
 
 前置 S01 Review 已通过：`MA-V12-S01-REVIEW` / `ACC-MA-V12-S01-REVIEW` /
 `validate:v1.2-s01-review`。
@@ -252,4 +252,24 @@ S05 P2 gate：
 No GitHub main upload in this phase。
 No remote push in this phase。
 No raw mutation in this phase。
-下一步是 S05 P3。
+
+S05 P3 产物：
+
+- `scripts/extract_memory_atlas_facets.py`
+- `scripts/atlasctl.py analyze --stage facets`
+- `data/derived/behavior_intelligence/events.json`
+- `docs/reviews/memory_atlas_v1_2_s05_p3_evidence_refs.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p3.cjs`
+
+S05 P3 gate：
+
+- 每条 event 必须包含 `source_id` 和轻量 `evidence_refs`。
+- `evidence_refs` 必须指向 `raw_ref`、`manifest_ref`、`derived_ref` 或
+  `evidence_missing_reason`。
+- 不实现 Raw-to-Insight Replay UI。
+- 不生成 fake events，不修改 raw，不上传 GitHub main，不远端 push。
+
+No GitHub main upload in this phase。
+No remote push in this phase。
+No raw mutation in this phase。
+下一步是 S05 Review。

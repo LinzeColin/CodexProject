@@ -88,7 +88,7 @@ class S05P2FacetExtractorTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             result = module.extract_facets(root, dry_run=True, generated_at="2026-07-08T00:00:00Z")
-            self.assertEqual(result["status"], "phase_s05_p2_facet_extractor_completed_pending_s05_p3")
+            self.assertEqual(result["status"], "phase_s05_p3_evidence_refs_completed_pending_s05_review")
             self.assertEqual(result["event_count"], 0)
             self.assertEqual(result["events"], [])
             self.assertEqual(result["source_status"]["chatgpt"]["status"], "missing")
@@ -153,7 +153,7 @@ class S05P2FacetExtractorTest(unittest.TestCase):
                 str(root),
                 "--dry-run",
             ])
-            self.assertEqual(dry_run["acceptance_id"], "ACC-MA-V12-S05P2")
+            self.assertEqual(dry_run["acceptance_id"], "ACC-MA-V12-S05P3")
             self.assertTrue(dry_run["dry_run"])
             self.assertFalse(dry_run["writes_files"])
             self.assertFalse((root / "data/derived/behavior_intelligence/events.json").exists())
@@ -171,7 +171,7 @@ class S05P2FacetExtractorTest(unittest.TestCase):
             self.assertEqual(applied["event_count"], 2)
             self.assertTrue(events_path.exists())
             written = json.loads(events_path.read_text(encoding="utf-8"))
-            self.assertEqual(written["task_id"], "MA-V12-S05P2")
+            self.assertEqual(written["task_id"], "MA-V12-S05P3")
             self.assertEqual(written["event_count"], 2)
 
 
