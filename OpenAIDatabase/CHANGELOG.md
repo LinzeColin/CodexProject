@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S06 P3 Opportunity Discovery
+
+- Added `scripts/build_memory_atlas_opportunities.py` for deterministic
+  opportunity discovery from S05 events, S06 P1 clusters and S06 P2 low-value loops.
+- Extended `scripts/atlasctl.py` with `analyze --stage opportunities` and expanded
+  `audit --check insight-evidence` to include opportunities and why-not-now cards.
+- Added `data/derived/behavior_intelligence/opportunities.json` with 12 opportunity
+  candidates and 12 why-not-now cards.
+- Added `人类可读/15_机会发现与为什么不是现在卡片.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s06_p3_opportunity_discovery.md`.
+- Added `validate:v1.2-s06-p3` for `MA-V12-S06P3` /
+  `ACC-MA-V12-S06P3`.
+- Registered status `phase_s06_p3_opportunity_discovery_completed_pending_s06_review`.
+- Preserved S06 P3 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation in this phase, No external
+  economic database in this phase, No psychological diagnosis in this phase and
+  No infinite pressure list in this phase.
+- Marked the next gate as pending S06 Review.
+
 ## Unreleased - Memory Atlas v1.2 S06 P2 Low-Value Loops
 
 - Added `scripts/build_memory_atlas_low_value_loops.py` for deterministic low-value loop candidate generation.

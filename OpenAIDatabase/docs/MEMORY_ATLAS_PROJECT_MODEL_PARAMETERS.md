@@ -1,3 +1,41 @@
+## 127. Memory Atlas v1.2 S06 P3 Opportunity Discovery Parameters
+
+状态：`phase_s06_p3_opportunity_discovery_completed_pending_s06_review`。
+
+验收 ID：`ACC-MA-V12-S06P3`。
+
+S06 P3 固定以下参数：
+
+- `MA-V12-S06P3`
+- `validate:v1.2-s06-p3`
+- `build_memory_atlas_opportunities.py`
+- `atlasctl.py analyze --stage opportunities`
+- `data/derived/behavior_intelligence/opportunities.json`
+- opportunity types：`automation`、`productization`、`template`、`compounding`、`defer`。
+- output counts：12 opportunities、12 why-not-now cards。
+- S06 P3 完成后下一步为 pending S06 Review。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S06P3-001 phase_status = phase_s06_p3_opportunity_discovery_completed_pending_s06_review`
+- `PARAM-MA-V12-S06P3-002 validator = validate:v1.2-s06-p3`
+- `PARAM-MA-V12-S06P3-003 builder = build_memory_atlas_opportunities.py`
+- `PARAM-MA-V12-S06P3-004 output = data/derived/behavior_intelligence/opportunities.json`
+- `PARAM-MA-V12-S06P3-005 opportunity_types = automation; productization; template; compounding; defer`
+- `PARAM-MA-V12-S06P3-006 output_counts = 12 opportunities; 12 why-not-now cards`
+- `PARAM-MA-V12-S06P3-007 next_gate = pending S06 Review`
+- `PARAM-MA-V12-S06P3-008 phase_boundary = No raw mutation; No external economic database; No psychological diagnosis; No infinite pressure list; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s06-p3` checks S06 P2 predecessor, atlasctl opportunities
+  dry-run, persisted `opportunities.json`, all five opportunity types,
+  why-not-now cards, insight-evidence audit, human/machine records, canonical
+  remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S06 P3 Opportunity Discovery; MA-V12-S06P3; ACC-MA-V12-S06P3; phase_s06_p3_opportunity_discovery_completed_pending_s06_review; validate:v1.2-s06-p3; build_memory_atlas_opportunities.py; atlasctl.py analyze --stage opportunities; opportunities.json; S06 P3; pending S06 Review; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No external economic database; No psychological diagnosis; No infinite pressure list.
+
 ## 126. Memory Atlas v1.2 S06 P2 Low-Value Loops Parameters
 
 状态：`phase_s06_p2_low_value_loops_completed_pending_s06_p3`。
