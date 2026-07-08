@@ -59,15 +59,20 @@ const allowedOpenDiffPaths = [
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p1.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p2.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_review.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_p1.cjs",
   `OpenAIDatabase/apps/memory-atlas/scripts/${scriptName}`,
   `OpenAIDatabase/${atlasctlPath}`,
   `OpenAIDatabase/${extractorPath}`,
+  "OpenAIDatabase/scripts/build_memory_atlas_clusters.py",
   "OpenAIDatabase/tests/test_s05p2_facet_extractor.py",
   "OpenAIDatabase/tests/test_s05p3_facet_evidence_refs.py",
+  "OpenAIDatabase/tests/test_s06p1_cluster_builder.py",
   `OpenAIDatabase/${eventsPath}`,
+  "OpenAIDatabase/data/derived/behavior_intelligence/clusters.json",
   `OpenAIDatabase/${humanPagePath}`,
   `OpenAIDatabase/${reviewPath}`,
   "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s05_review.md",
+  "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s06_p1_cluster_builder.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_DELIVERY_RECORD.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md",
   "OpenAIDatabase/功能清单.md",
@@ -75,6 +80,7 @@ const allowedOpenDiffPaths = [
   "OpenAIDatabase/模型参数文件.md",
   "OpenAIDatabase/人类可读/00_快速入口.md",
   "OpenAIDatabase/人类可读/01_v1.2四线14Stage升级总览.md",
+  "OpenAIDatabase/人类可读/13_行为簇与层级簇说明.md",
   "OpenAIDatabase/机器治理/README.md",
   "OpenAIDatabase/机器治理/数据契约/README.md",
   "OpenAIDatabase/机器治理/行为智能模型/README.md",
@@ -148,6 +154,19 @@ function currentStateIsS05Review() {
     hasAll(overview, ["S05 Review 已通过", "S05 整体复审已通过", "下一步是 S06 P1"]) &&
     hasAll(machine, ["当前为 S05 Review", s05ReviewTaskId, "validate:v1.2-s05-review", "下一步是 S06 P1"]) &&
     hasAll(runGate, ["当前阶段是 S05 Review", s05ReviewTaskId, s05ReviewAcceptanceId, "validate:v1.2-s05-review"])
+  );
+}
+
+function currentStateIsS06P1() {
+  const quick = readRepoFile("人类可读/00_快速入口.md");
+  const overview = readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md");
+  const machine = readRepoFile("机器治理/README.md");
+  const runGate = readRepoFile("机器治理/运行门禁/README.md");
+  return (
+    hasAll(quick, ["当前阶段是 S06 P1", "MA-V12-S06P1", "ACC-MA-V12-S06P1", "下一步只允许进入 S06 P2"]) &&
+    hasAll(overview, ["S06 P1 已完成", "Cluster builder", "下一步是 S06 P2"]) &&
+    hasAll(machine, ["当前为 S06 P1", "MA-V12-S06P1", "validate:v1.2-s06-p1", "下一步是 S06 P2"]) &&
+    hasAll(runGate, ["当前阶段是 S06 P1", "MA-V12-S06P1", "ACC-MA-V12-S06P1", "validate:v1.2-s06-p1"])
   );
 }
 
@@ -343,7 +362,7 @@ function validateDocsAndRecords() {
   const behavior = readRepoFile("机器治理/行为智能模型/README.md");
   const runGate = readRepoFile("机器治理/运行门禁/README.md");
   const review = readRepoFile(reviewPath);
-  const s05ReviewState = currentStateIsS05Review();
+  const s05ReviewState = currentStateIsS05Review() || currentStateIsS06P1();
 
   assertCondition(
     hasAll(human, ["S05 P3 已完成", "evidence_refs", eventsPath, "不实现 Raw-to-Insight Replay UI", "下一步只允许进入 S05 Review"]),

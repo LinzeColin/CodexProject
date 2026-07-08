@@ -1,3 +1,40 @@
+## 125. Memory Atlas v1.2 S06 P1 Cluster Builder Parameters
+
+状态：`phase_s06_p1_cluster_builder_completed_pending_s06_p2`。
+
+验收 ID：`ACC-MA-V12-S06P1`。
+
+S06 P1 固定以下参数：
+
+- `MA-V12-S06P1`
+- `validate:v1.2-s06-p1`
+- `build_memory_atlas_clusters.py`
+- `atlasctl.py analyze --stage clusters`
+- `data/derived/behavior_intelligence/clusters.json`
+- filter contract：`source/time/project/task/language`。
+- input event count：217。
+- S06 P1 完成后下一步为 pending S06 P2。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S06P1-001 phase_status = phase_s06_p1_cluster_builder_completed_pending_s06_p2`
+- `PARAM-MA-V12-S06P1-002 validator = validate:v1.2-s06-p1`
+- `PARAM-MA-V12-S06P1-003 builder = build_memory_atlas_clusters.py`
+- `PARAM-MA-V12-S06P1-004 output = data/derived/behavior_intelligence/clusters.json`
+- `PARAM-MA-V12-S06P1-005 input_event_count = 217`
+- `PARAM-MA-V12-S06P1-006 filter_contract = source/time/project/task/language`
+- `PARAM-MA-V12-S06P1-007 next_gate = pending S06 P2`
+- `PARAM-MA-V12-S06P1-008 phase_boundary = No raw mutation; No low-value loop detection; No opportunity cards; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s06-p1` checks S05 Review predecessor, atlasctl clusters
+  dry-run, persisted clusters, source/language filter behavior, insight-evidence
+  audit, human/machine records, canonical remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S06 P1 Cluster Builder; MA-V12-S06P1; ACC-MA-V12-S06P1; phase_s06_p1_cluster_builder_completed_pending_s06_p2; validate:v1.2-s06-p1; build_memory_atlas_clusters.py; atlasctl.py analyze --stage clusters; clusters.json; S06 P1; pending S06 P2; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No low-value loop detection; No opportunity cards.
+
 ## 124. Memory Atlas v1.2 S05 Review Parameters
 
 状态：`stage_s05_review_passed_pending_s06_no_github_main_upload`。

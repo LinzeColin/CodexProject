@@ -17,6 +17,7 @@ FUTURE_AGENT_SYNC = ROOT / "scripts" / "sync_future_agent_data.py"
 BUILD_ATLAS = ROOT / "scripts" / "build_memory_atlas_data.py"
 GITHUB_BACKUP = ROOT / "scripts" / "github_backup.py"
 FACET_EXTRACTOR = ROOT / "scripts" / "extract_memory_atlas_facets.py"
+CLUSTER_BUILDER = ROOT / "scripts" / "build_memory_atlas_clusters.py"
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -38,6 +39,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     analyze.add_argument("--stage", required=True)
     analyze.add_argument("--dry-run", action="store_true")
     analyze.add_argument("--database-dir", type=Path, default=ROOT)
+    analyze.add_argument("--source")
+    analyze.add_argument("--time-from")
+    analyze.add_argument("--time-to")
+    analyze.add_argument("--project")
+    analyze.add_argument("--task")
+    analyze.add_argument("--language")
+
+    audit = subparsers.add_parser("audit", help="Run Memory Atlas derived evidence audits.")
+    audit.add_argument("--check", required=True)
+    audit.add_argument("--database-dir", type=Path, default=ROOT)
 
     push = subparsers.add_parser("push", help="Prepare local GitHub backup scope.")
     mode = push.add_mutually_exclusive_group(required=True)
@@ -186,26 +197,102 @@ def facet_analyze_contract() -> dict[str, object]:
     }
 
 
+def cluster_analyze_contract() -> dict[str, object]:
+    return {
+        "status": "PASS",
+        "command": "analyze",
+        "stage": "clusters",
+        "dry_run": True,
+        "writes_files": False,
+        "builder": "scripts/build_memory_atlas_clusters.py",
+        "input": "data/derived/behavior_intelligence/events.json",
+        "output": "data/derived/behavior_intelligence/clusters.json",
+        "supported_filters": ["source", "time", "project", "task", "language"],
+        "raw_mutation": False,
+        "task_id": "MA-V12-S06P1",
+        "acceptance_id": "ACC-MA-V12-S06P1",
+    }
+
+
 def run_analyze(args: argparse.Namespace) -> int:
-    if args.stage != "facets":
+    if args.stage not in {"facets", "clusters"}:
         print(json.dumps({
             "status": "NOT_IMPLEMENTED",
             "command": "analyze",
             "stage": args.stage,
-            "reason": "Unknown analyze stage. Supported stages: facets.",
+            "reason": "Unknown analyze stage. Supported stages: facets, clusters.",
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 2
 
-    if args.dry_run:
-        command = [sys.executable, str(FACET_EXTRACTOR), "--database-dir", str(args.database_dir), "--dry-run"]
+    if args.stage == "facets":
+        if args.dry_run:
+            command = [sys.executable, str(FACET_EXTRACTOR), "--database-dir", str(args.database_dir), "--dry-run"]
+        else:
+            command = [sys.executable, str(FACET_EXTRACTOR), "--database-dir", str(args.database_dir)]
     else:
-        command = [sys.executable, str(FACET_EXTRACTOR), "--database-dir", str(args.database_dir)]
+        command = [sys.executable, str(CLUSTER_BUILDER), "--database-dir", str(args.database_dir)]
+        if args.dry_run:
+            command.append("--dry-run")
+        for cli_name, value in [
+            ("--source", args.source),
+            ("--time-from", args.time_from),
+            ("--time-to", args.time_to),
+            ("--project", args.project),
+            ("--task", args.task),
+            ("--language", args.language),
+        ]:
+            if value:
+                command.extend([cli_name, value])
     result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
     if result.stdout:
         print(result.stdout, end="")
     if result.stderr:
         print(result.stderr, file=sys.stderr, end="")
     return result.returncode
+
+
+def run_audit(args: argparse.Namespace) -> int:
+    if args.check != "insight-evidence":
+        print(json.dumps({
+            "status": "NOT_IMPLEMENTED",
+            "command": "audit",
+            "check": args.check,
+            "reason": "Unknown audit check. Supported checks: insight-evidence.",
+        }, ensure_ascii=False, indent=2, sort_keys=True))
+        return 2
+
+    clusters_path = args.database_dir / "data/derived/behavior_intelligence/clusters.json"
+    if not clusters_path.exists():
+        print(json.dumps({
+            "status": "FAIL",
+            "command": "audit",
+            "check": "insight-evidence",
+            "reason": "clusters output missing",
+            "path": "data/derived/behavior_intelligence/clusters.json",
+        }, ensure_ascii=False, indent=2, sort_keys=True))
+        return 2
+    payload = json.loads(clusters_path.read_text(encoding="utf-8"))
+    bad_clusters = []
+    for collection_name in ("topic_clusters", "hierarchy_clusters"):
+        for cluster in payload.get(collection_name) or []:
+            if not cluster.get("evidence_refs"):
+                bad_clusters.append(f"{collection_name}:{cluster.get('cluster_id')}:missing_evidence_refs")
+            if not cluster.get("summary_zh"):
+                bad_clusters.append(f"{collection_name}:{cluster.get('cluster_id')}:missing_summary_zh")
+    status = "PASS" if not bad_clusters else "FAIL"
+    print(json.dumps({
+        "status": status,
+        "command": "audit",
+        "check": "insight-evidence",
+        "task_id": payload.get("task_id"),
+        "acceptance_id": payload.get("acceptance_id"),
+        "cluster_count": payload.get("cluster_count"),
+        "topic_cluster_count": payload.get("topic_cluster_count"),
+        "hierarchy_cluster_count": payload.get("hierarchy_cluster_count"),
+        "bad_clusters": bad_clusters,
+        "raw_mutation": False,
+    }, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0 if status == "PASS" else 2
 
 
 def run_push(args: argparse.Namespace) -> int:
@@ -230,6 +317,8 @@ def main(argv: list[str] | None = None) -> int:
         return run_build_atlas(args)
     if args.command == "analyze":
         return run_analyze(args)
+    if args.command == "audit":
+        return run_audit(args)
     if args.command == "push":
         return run_push(args)
     raise AssertionError(f"unhandled command: {args.command}")
