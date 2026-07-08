@@ -2,6 +2,13 @@
 
 用于放置 run evidence、audit logs、manifest/hash、stage evidence 和复审证据摘要。
 
+当前 S13 P2 已完成 Diff narrator。S13 P2 新增机器 diff 证据文件：
+
+- `机器治理/证据与日志/proposal_diffs/diff_narrator_machine_diff.v1_2_s13_p2.json`
+
+该文件保留每个 proposal 的机器 diff、target files、evidence refs、validation commands
+和 rollback plan。人类首页只显示 Diff narrator 摘要，不放完整机器 diff。
+
 当前 S03 Review 已通过。S03 P3 新增机器文件：
 
 - `机器治理/证据与日志/raw_archive_manifests/raw_manifest.s03_p3_baseline.jsonl`

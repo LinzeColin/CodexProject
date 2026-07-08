@@ -2,8 +2,39 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S13 P1。任务 ID 为 `MA-V12-S13P1`，验收 ID 为
-`ACC-MA-V12-S13P1`，validator 为 `validate:v1.2-s13-p1`。状态为
+当前阶段是 S13 P2。任务 ID 为 `MA-V12-S13P2`，验收 ID 为
+`ACC-MA-V12-S13P2`，validator 为 `validate:v1.2-s13-p2`。状态为
+`phase_s13_p2_diff_narrator_completed_pending_s13_p3`。
+
+S13 P2 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s13_p2_diff_narrator.md`
+- `人类可读/35_DiffNarrator说明.md`
+- `机器治理/运行门禁/diff_narrator.v1_2_s13_p2.json`
+- `data/derived/proposals/diff_narrator_report.json`
+- `机器治理/证据与日志/proposal_diffs/diff_narrator_machine_diff.v1_2_s13_p2.json`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s13_p2.cjs`
+- `scripts/build_memory_atlas_diff_narrator.py`
+- `scripts/atlasctl.py`
+
+S13 P2 gate：
+
+- `validate:v1.2-s13-p2` 可验证 Diff narrator。
+- `diff_narrator.v1_2_s13_p2` runtime contract 存在。
+- 每个 proposal narrator 都包含改了什么、为什么改、影响什么、如何验证、如何回滚。
+- 机器 diff 保留在治理证据文件，不进入人类首页。
+- 本 phase 不执行 proposal apply。
+- 本 phase 不执行 rollback。
+- 不修改 raw。
+- 不上传 GitHub main。
+- 不执行远端 push。
+
+No GitHub main upload。No remote push。No raw mutation。No proposal apply execution。
+下一步是 S13 P3。
+
+历史复验兼容记录：S13 P1 完成时当前阶段是 S13 P1。任务 ID 为
+`MA-V12-S13P1`，验收 ID 为 `ACC-MA-V12-S13P1`，validator 为
+`validate:v1.2-s13-p1`。状态为
 `phase_s13_p1_proposal_state_machine_completed_pending_s13_p2`。
 
 S13 P1 产物：

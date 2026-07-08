@@ -1,3 +1,54 @@
+## v1.2 S13 P2 Diff narrator
+
+状态：`phase_s13_p2_diff_narrator_completed_pending_s13_p3`。
+
+任务 ID：`MA-V12-S13P2`。
+
+验收 ID：`ACC-MA-V12-S13P2`。
+
+Validator：`validate:v1.2-s13-p2`。
+
+S13 P2 已完成。机器合同为 `diff_narrator.v1_2_s13_p2`。本阶段把 proposal
+diff 转成中文 Diff narrator，解释改了什么、为什么改、影响什么、如何验证、如何回滚。
+完整机器 diff 不进入人类首页，机器 diff 保留在治理证据文件。下一步为 pending S13 P3。
+
+产物：
+
+- `机器治理/运行门禁/diff_narrator.v1_2_s13_p2.json`
+- `data/derived/proposals/diff_narrator_report.json`
+- `机器治理/证据与日志/proposal_diffs/diff_narrator_machine_diff.v1_2_s13_p2.json`
+- `scripts/build_memory_atlas_diff_narrator.py`
+- `scripts/atlasctl.py`
+- `人类可读/35_DiffNarrator说明.md`
+- `docs/reviews/memory_atlas_v1_2_s13_p2_diff_narrator.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s13_p2.cjs`
+
+验收关键词：
+
+- `validate:v1.2-s13-p2`
+- `ACC-MA-V12-S13P2`
+- `MA-V12-S13P2`
+- `phase_s13_p2_diff_narrator_completed_pending_s13_p3`
+- `diff_narrator.v1_2_s13_p2`
+- S13 P2
+- Diff narrator
+- 改了什么
+- 为什么改
+- 影响什么
+- 如何验证
+- 如何回滚
+- 机器 diff
+- pending S13 P3
+
+边界：
+
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+- No proposal apply execution。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S13 P2; MA-V12-S13P2; ACC-MA-V12-S13P2; phase_s13_p2_diff_narrator_completed_pending_s13_p3; validate:v1.2-s13-p2; diff_narrator.v1_2_s13_p2; S13 P2; Diff narrator; 改了什么; 为什么改; 影响什么; 如何验证; 如何回滚; 机器 diff; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution; pending S13 P3.
+
 ## v1.2 S13 P1 Proposal 状态机
 
 状态：`phase_s13_p1_proposal_state_machine_completed_pending_s13_p2`。

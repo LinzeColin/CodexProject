@@ -1,3 +1,43 @@
+## 155. Memory Atlas v1.2 S13 P2 Diff narrator Parameters
+
+状态：`phase_s13_p2_diff_narrator_completed_pending_s13_p3`。
+
+验收 ID：`ACC-MA-V12-S13P2`。
+
+S13 P2 固定以下参数：
+
+- `MA-V12-S13P2`
+- `validate:v1.2-s13-p2`
+- `diff_narrator.v1_2_s13_p2`
+- S13 P2
+- Diff narrator
+- 改了什么
+- 为什么改
+- 影响什么
+- 如何验证
+- 如何回滚
+- 机器 diff
+- S13 P2 完成后下一步为 S13 P3。
+- No GitHub main upload。
+- No remote push。
+
+参数：
+
+- `PARAM-MA-V12-S13P2-001 phase_status = phase_s13_p2_diff_narrator_completed_pending_s13_p3`
+- `PARAM-MA-V12-S13P2-002 validator = validate:v1.2-s13-p2`
+- `PARAM-MA-V12-S13P2-003 contract_version = diff_narrator.v1_2_s13_p2`
+- `PARAM-MA-V12-S13P2-004 required_human_sections = 改了什么; 为什么改; 影响什么; 如何验证; 如何回滚`
+- `PARAM-MA-V12-S13P2-005 machine_diff_evidence_path = 机器治理/证据与日志/proposal_diffs/diff_narrator_machine_diff.v1_2_s13_p2.json`
+- `PARAM-MA-V12-S13P2-006 human_homepage_policy = no full machine diff`
+- `PARAM-MA-V12-S13P2-007 next_phase = S13 P3`
+- `PARAM-MA-V12-S13P2-008 phase_boundary = No GitHub main upload; No remote push; No raw mutation; No proposal apply execution`
+
+验证逻辑：
+
+- `validate:v1.2-s13-p2` checks the Diff narrator config, builder, `atlasctl proposals --view diff-narrator --dry-run`, Chinese narration report, machine diff evidence, governance records, no raw mutation and no proposal apply execution.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S13 P2; MA-V12-S13P2; ACC-MA-V12-S13P2; phase_s13_p2_diff_narrator_completed_pending_s13_p3; validate:v1.2-s13-p2; diff_narrator.v1_2_s13_p2; S13 P2; Diff narrator; 改了什么; 为什么改; 影响什么; 如何验证; 如何回滚; 机器 diff; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution; pending S13 P3.
+
 ## 154. Memory Atlas v1.2 S13 P1 Proposal 状态机 Parameters
 
 状态：`phase_s13_p1_proposal_state_machine_completed_pending_s13_p2`。

@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S13 P2 Diff narrator
+
+- Added `diff_narrator.v1_2_s13_p2` for `MA-V12-S13P2` /
+  `ACC-MA-V12-S13P2`.
+- Registered status
+  `phase_s13_p2_diff_narrator_completed_pending_s13_p3`.
+- Added `scripts/build_memory_atlas_diff_narrator.py`.
+- Added `data/derived/proposals/diff_narrator_report.json`.
+- Added machine diff evidence at
+  `机器治理/证据与日志/proposal_diffs/diff_narrator_machine_diff.v1_2_s13_p2.json`.
+- Added `atlasctl.py proposals --view diff-narrator --dry-run` as a no-write/no-apply
+  Diff narrator contract.
+- Added `validate:v1.2-s13-p2`.
+- Confirmed every proposal narrator explains 改了什么、为什么改、影响什么、如何验证、如何回滚.
+- Kept full 机器 diff out of the human homepage and inside governance evidence.
+- Preserved S13 P2 boundaries: No GitHub main upload, No remote push,
+  No raw mutation and No proposal apply execution.
+- Marked the next gate as pending S13 P3.
+
 ## Unreleased - Memory Atlas v1.2 S13 P1 Proposal State Machine
 
 - Added `proposal_state_machine.v1_2_s13_p1` for `MA-V12-S13P1` /
