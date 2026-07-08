@@ -6389,6 +6389,84 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 ).exists()
             )
 
+    def test_owner_decision_manifest_xlsx_intake_writes_row_validation_report_no_manifest(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            run_id = "owner_manifest_xlsx_validation_report"
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs" / run_id
+            run_dir.mkdir(parents=True)
+            xlsx_path = run_dir / "reviewed_owner_decisions.xlsx"
+            export_module = load_owner_review_export_module()
+            export_module.write_xlsx(
+                xlsx_path,
+                [
+                    {
+                        "owner_worklist_id": f"OCROWNERWORK-{run_id}-00001",
+                        "ocr_fact_evidence_review_queue_id": f"OCREVIDQUEUE-{run_id}-00001",
+                        "fact_candidate_id": f"OCRFACT-{run_id}-00001",
+                        "candidate_metric": "bank_deposit",
+                        "source_evidence_id": f"FW{run_id}-00001",
+                        "source_ocr_text_relative_path": "private/OCRGEN-00001.ocr.txt",
+                        "business_date": "2026-07-08",
+                        "company": "",
+                        "bank": "",
+                        "account_alias": "",
+                        "amount": "123.45",
+                        "currency": "CNY",
+                        "proposed_amount_role": "ending_balance",
+                        "proposed_liquidity_tier": "T0_BANK_CASH",
+                        "proposed_flow_type": "balance",
+                        "fund_ledger_write_allowed": "false",
+                        "financial_fact_promoted": "false",
+                        "management_conclusion_allowed": "false",
+                        "required_owner_fields": "owner_corrected_company,owner_corrected_bank",
+                        "owner_authorization_decision": "approve_for_review_authorization",
+                        "owner_corrected_company": "",
+                        "owner_corrected_bank": "",
+                        "owner_note": "missing owner values",
+                        "review_packet_status": "pending_owner_review",
+                    }
+                ],
+            )
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "install_owner_decision_manifest.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--run-id",
+                    run_id,
+                    "--draft-xlsx-path",
+                    str(xlsx_path),
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 3, result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["status"], "BLOCKED_OWNER_VALUES_MISSING")
+            self.assertEqual(payload["draft_format"], "xlsx")
+            report_path = repo_root / payload["validation_report_relative_path"]
+            self.assertTrue(report_path.exists())
+            with report_path.open(encoding="utf-8-sig", newline="") as f:
+                rows = list(csv.DictReader(f))
+            self.assertEqual(len(rows), 1)
+            self.assertEqual(rows[0]["fact_candidate_id"], f"OCRFACT-{run_id}-00001")
+            self.assertEqual(rows[0]["decision_validation_status"], "blocked_missing_owner_values")
+            self.assertEqual(rows[0]["missing_owner_fields"], "owner_corrected_company,owner_corrected_bank")
+            self.assertEqual(rows[0]["owner_decision_manifest_write_allowed"], "false")
+            self.assertEqual(rows[0]["fund_ledger_write_allowed"], "false")
+            self.assertEqual(rows[0]["financial_fact_promoted"], "false")
+            self.assertEqual(rows[0]["management_conclusion_allowed"], "false")
+            self.assertFalse(
+                (
+                    repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/"
+                    f"ocr_fact_candidate_owner_decisions/{run_id}.json"
+                ).exists()
+            )
+
     def test_source_readiness_reports_missing_target_and_private_candidates(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             repo_root = Path(temp_dir) / "repo"
