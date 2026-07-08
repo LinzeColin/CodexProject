@@ -87,6 +87,8 @@ REQUIRED_SKILL_STRINGS = [
     "owner_decision_xlsx_intake",
     "ocr_fact_candidate_owner_decision_intake_validation_report.csv",
     "blocked_missing_owner_values",
+    "source_evidence_id",
+    "business_date",
     "export_owner_decision_review_csv.py",
     "ocr_fact_candidate_owner_decision_review_batch.csv",
     "ocr_fact_candidate_owner_decision_review_batch.xlsx",
