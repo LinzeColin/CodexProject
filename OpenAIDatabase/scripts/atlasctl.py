@@ -28,6 +28,7 @@ AGENT_AUTHORIZATION_BUILDER = ROOT / "scripts" / "build_memory_atlas_agent_autho
 STAGE_FLIGHT_BUILDER = ROOT / "scripts" / "build_memory_atlas_stage_flight.py"
 LATENT_SIGNAL_BUILDER = ROOT / "scripts" / "build_memory_atlas_latent_signals.py"
 SELF_ITERATION_BUILDER = ROOT / "scripts" / "build_memory_atlas_self_iteration.py"
+DECISION_DEBT_BUILDER = ROOT / "scripts" / "build_memory_atlas_decision_debt.py"
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -501,6 +502,36 @@ def self_iteration_analyze_contract() -> dict[str, object]:
     }
 
 
+def decision_debt_analyze_contract() -> dict[str, object]:
+    return {
+        "status": "PASS",
+        "command": "analyze",
+        "stage": "decision-debt",
+        "dry_run": True,
+        "writes_files": False,
+        "builder": "scripts/build_memory_atlas_decision_debt.py",
+        "decision_debt_config": "机器治理/行为智能模型/decision_debt.v1_2_s09_p3.json",
+        "input": [
+            "data/derived/behavior_intelligence/low_value_loops.json",
+            "data/derived/behavior_intelligence/self_iteration_suggestions.json",
+            "data/derived/behavior_intelligence/latent_signals.json",
+        ],
+        "output": "data/derived/behavior_intelligence/decision_debt_ledger.json",
+        "raw_mutation": False,
+        "task_id": "MA-V12-S09P3",
+        "acceptance_id": "ACC-MA-V12-S09P3",
+        "phase_boundary": {
+            "does_not_generate_pressure_list": True,
+            "does_not_apply_proposals": True,
+            "requires_human_approval_before_apply": True,
+            "minimal_next_step_required": True,
+            "does_not_modify_raw": True,
+            "stage_review_deferred_to": "S09 Review",
+            "next_phase": "S09 Review",
+        },
+    }
+
+
 def run_analyze(args: argparse.Namespace) -> int:
     if args.stage not in {
         "facets",
@@ -515,12 +546,13 @@ def run_analyze(args: argparse.Namespace) -> int:
         "stage-flight",
         "latent",
         "self-iteration",
+        "decision-debt",
     }:
         print(json.dumps({
             "status": "NOT_IMPLEMENTED",
             "command": "analyze",
             "stage": args.stage,
-            "reason": "Unknown analyze stage. Supported stages: facets, clusters, low-value-loops, opportunities, economic-proxy, information-roi, formula-what-if, agent-collaboration, agent-authorization, stage-flight, latent, self-iteration.",
+            "reason": "Unknown analyze stage. Supported stages: facets, clusters, low-value-loops, opportunities, economic-proxy, information-roi, formula-what-if, agent-collaboration, agent-authorization, stage-flight, latent, self-iteration, decision-debt.",
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 2
 
@@ -581,6 +613,10 @@ def run_analyze(args: argparse.Namespace) -> int:
             command.append("--dry-run")
     elif args.stage == "self-iteration":
         command = [sys.executable, str(SELF_ITERATION_BUILDER), "--database-dir", str(args.database_dir)]
+        if args.dry_run:
+            command.append("--dry-run")
+    elif args.stage == "decision-debt":
+        command = [sys.executable, str(DECISION_DEBT_BUILDER), "--database-dir", str(args.database_dir)]
         if args.dry_run:
             command.append("--dry-run")
     result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
@@ -1556,7 +1592,162 @@ def run_self_iteration_safety_audit(args: argparse.Namespace) -> int:
     return 0 if status == "PASS" else 2
 
 
+def run_decision_debt_safety_audit(args: argparse.Namespace) -> int:
+    config_path = args.database_dir / "机器治理/行为智能模型/decision_debt.v1_2_s09_p3.json"
+    output_path = args.database_dir / "data/derived/behavior_intelligence/decision_debt_ledger.json"
+    bad_items = []
+    config = {}
+    output = {}
+    required_fields = {
+        "decision_debt_id",
+        "source_debt_ids",
+        "debt_type",
+        "decision_area_zh",
+        "repeated_discussion_signal_zh",
+        "evidence_refs",
+        "minimal_next_step",
+        "linked_self_iteration_suggestion_ids",
+        "confidence",
+        "not_pressure_list",
+    }
+    blocked_terms = {"心理诊断", "人格诊断", "人格标签", "抑郁", "焦虑症"}
+
+    if not config_path.exists():
+        bad_items.append("decision_debt_config:missing")
+    else:
+        config = json.loads(config_path.read_text(encoding="utf-8"))
+        if config.get("task_id") != "MA-V12-S09P3" or config.get("acceptance_id") != "ACC-MA-V12-S09P3":
+            bad_items.append("decision_debt_config:identity_mismatch")
+        configured_fields = set(config.get("required_debt_fields") or [])
+        for field in sorted(required_fields - configured_fields):
+            bad_items.append(f"decision_debt_config:missing_required_field:{field}")
+        policy = config.get("ledger_policy") if isinstance(config.get("ledger_policy"), dict) else {}
+        if int(policy.get("min_entries") or 0) <= 0:
+            bad_items.append("decision_debt_config:invalid_min_entries")
+        if policy.get("pressure_list_allowed") is not False:
+            bad_items.append("decision_debt_config:pressure_list_allowed")
+        step_policy = config.get("minimal_next_step_policy") if isinstance(config.get("minimal_next_step_policy"), dict) else {}
+        if int(step_policy.get("effort_minutes_max") or 0) <= 0:
+            bad_items.append("decision_debt_config:invalid_effort_limit")
+        confidence_policy = config.get("confidence_policy") if isinstance(config.get("confidence_policy"), dict) else {}
+        if float(confidence_policy.get("max_confidence") or 0) <= 0:
+            bad_items.append("decision_debt_config:invalid_confidence_cap")
+        boundary = config.get("scope_boundary") if isinstance(config.get("scope_boundary"), dict) else {}
+        if boundary.get("raw_mutation") is not False:
+            bad_items.append("decision_debt_config:raw_mutation_not_false")
+        if boundary.get("proposal_apply_execution") is not False:
+            bad_items.append("decision_debt_config:proposal_apply_not_false")
+        if boundary.get("stage_review") != "deferred_to_s09_review":
+            bad_items.append("decision_debt_config:stage_review_not_deferred")
+        blocked_terms = set(config.get("blocked_output_terms") or blocked_terms)
+
+    all_items_have_minimal_next_step = False
+    pressure_list_created = False
+    proposal_apply_execution = False
+    raw_mutation = False
+    psychological_diagnosis_output = False
+    personality_label_output = False
+    if not output_path.exists():
+        bad_items.append("decision_debt_output:missing")
+    else:
+        output = json.loads(output_path.read_text(encoding="utf-8"))
+        if output.get("task_id") != "MA-V12-S09P3" or output.get("acceptance_id") != "ACC-MA-V12-S09P3":
+            bad_items.append("decision_debt_output:identity_mismatch")
+        if output.get("status") != "phase_s09_p3_decision_debt_completed_pending_s09_review":
+            bad_items.append("decision_debt_output:status_mismatch")
+        ledger = output.get("decision_debt_ledger") if isinstance(output.get("decision_debt_ledger"), list) else []
+        min_entries = int(config.get("ledger_policy", {}).get("min_entries") or 1)
+        if len(ledger) < min_entries:
+            bad_items.append("decision_debt_output:debt_count_too_low")
+        minimal_next_step_ok = []
+        for item in ledger:
+            if not isinstance(item, dict):
+                bad_items.append("decision_debt_output:invalid_debt_item")
+                continue
+            item_id = item.get("decision_debt_id")
+            for field in sorted(required_fields):
+                if item.get(field) in (None, "", []):
+                    bad_items.append(f"decision_debt_output:{item_id}:missing_{field}")
+            if item.get("not_pressure_list") is not True:
+                bad_items.append(f"decision_debt_output:{item_id}:pressure_list_boundary_missing")
+                pressure_list_created = True
+            if item.get("not_applied") is not True:
+                bad_items.append(f"decision_debt_output:{item_id}:applied_in_current_phase")
+                proposal_apply_execution = True
+            if item.get("not_psychological_diagnosis") is not True:
+                bad_items.append(f"decision_debt_output:{item_id}:psychological_boundary_missing")
+                psychological_diagnosis_output = True
+            if item.get("not_personality_label") is not True:
+                bad_items.append(f"decision_debt_output:{item_id}:personality_boundary_missing")
+                personality_label_output = True
+            if float(item.get("confidence") or 0) > float(config.get("confidence_policy", {}).get("max_confidence") or 0.75):
+                bad_items.append(f"decision_debt_output:{item_id}:confidence_too_high")
+            step = item.get("minimal_next_step") if isinstance(item.get("minimal_next_step"), dict) else {}
+            has_step = bool(step.get("step_zh") and step.get("expected_artifact_zh") and step.get("stop_condition_zh"))
+            minimal_next_step_ok.append(has_step)
+            if not has_step:
+                bad_items.append(f"decision_debt_output:{item_id}:minimal_next_step_incomplete")
+            if int(step.get("effort_minutes_max") or 0) <= 0:
+                bad_items.append(f"decision_debt_output:{item_id}:minimal_next_step_invalid_effort")
+            target_text = " ".join(str(value) for value in [
+                item.get("decision_area_zh"),
+                item.get("repeated_discussion_signal_zh"),
+                item.get("evidence_summary_zh"),
+                step.get("step_zh"),
+                step.get("stop_condition_zh"),
+            ])
+            if any(term and term in target_text for term in blocked_terms):
+                bad_items.append(f"decision_debt_output:{item_id}:blocked_term")
+                psychological_diagnosis_output = True
+            for ref in item.get("evidence_refs") or []:
+                path = str(ref.get("path") or "") if isinstance(ref, dict) else ""
+                if "data/public_raw/" in path or "data/raw/" in path:
+                    raw_mutation = True
+        all_items_have_minimal_next_step = bool(minimal_next_step_ok) and all(minimal_next_step_ok)
+        summary = output.get("safety_summary") if isinstance(output.get("safety_summary"), dict) else {}
+        if summary.get("all_items_have_minimal_next_step") is not True:
+            bad_items.append("decision_debt_output:minimal_next_step_summary_not_true")
+        if summary.get("pressure_list_created") is not False:
+            bad_items.append("decision_debt_output:pressure_list_summary_created")
+            pressure_list_created = True
+        boundary = output.get("phase_boundary") if isinstance(output.get("phase_boundary"), dict) else {}
+        if boundary.get("does_not_generate_pressure_list") is not True:
+            bad_items.append("decision_debt_output:pressure_list_boundary_missing")
+            pressure_list_created = True
+        if boundary.get("does_not_apply_proposals") is not True:
+            bad_items.append("decision_debt_output:proposal_apply_boundary_missing")
+            proposal_apply_execution = True
+        if boundary.get("does_not_modify_raw") is not True:
+            bad_items.append("decision_debt_output:raw_boundary_missing")
+            raw_mutation = True
+        if boundary.get("next_phase") != "S09 Review":
+            bad_items.append("decision_debt_output:next_phase_not_s09_review")
+
+    status = "PASS" if not bad_items else "FAIL"
+    result = {
+        "status": status,
+        "command": "audit",
+        "check": "decision-debt-safety",
+        "task_id": config.get("task_id") or output.get("task_id"),
+        "acceptance_id": config.get("acceptance_id") or output.get("acceptance_id"),
+        "decision_debt_config": "机器治理/行为智能模型/decision_debt.v1_2_s09_p3.json",
+        "decision_debt_output": "data/derived/behavior_intelligence/decision_debt_ledger.json" if output_path.exists() else "",
+        "decision_debt_count": len(output.get("decision_debt_ledger") or []) if isinstance(output.get("decision_debt_ledger"), list) else 0,
+        "all_items_have_minimal_next_step": all_items_have_minimal_next_step,
+        "pressure_list_created": pressure_list_created,
+        "proposal_apply_execution": proposal_apply_execution,
+        "raw_mutation": raw_mutation,
+        "psychological_diagnosis_output": psychological_diagnosis_output,
+        "personality_label_output": personality_label_output,
+        "bad_items": bad_items,
+    }
+    print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0 if status == "PASS" else 2
+
+
 def run_audit(args: argparse.Namespace) -> int:
+    if args.check == "decision-debt-safety":
+        return run_decision_debt_safety_audit(args)
     if args.check == "self-iteration-safety":
         return run_self_iteration_safety_audit(args)
     if args.check == "latent-safety":
@@ -1578,7 +1769,7 @@ def run_audit(args: argparse.Namespace) -> int:
             "status": "NOT_IMPLEMENTED",
             "command": "audit",
             "check": args.check,
-            "reason": "Unknown audit check. Supported checks: insight-evidence, formulas, visual-roi, formula-what-if, agent-collaboration, agent-authorization, stage-flight, latent-safety, self-iteration-safety.",
+            "reason": "Unknown audit check. Supported checks: insight-evidence, formulas, visual-roi, formula-what-if, agent-collaboration, agent-authorization, stage-flight, latent-safety, self-iteration-safety, decision-debt-safety.",
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 2
 

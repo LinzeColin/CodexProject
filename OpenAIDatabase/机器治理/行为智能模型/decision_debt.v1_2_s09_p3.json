@@ -1,0 +1,53 @@
+{
+  "acceptance_id": "ACC-MA-V12-S09P3",
+  "blocked_output_terms": [
+    "心理诊断",
+    "人格诊断",
+    "人格标签",
+    "抑郁",
+    "焦虑症"
+  ],
+  "confidence_policy": {
+    "max_confidence": 0.75,
+    "no_high_confidence_without_evidence": true
+  },
+  "input_paths": {
+    "latent_signals": "data/derived/behavior_intelligence/latent_signals.json",
+    "low_value_loops": "data/derived/behavior_intelligence/low_value_loops.json",
+    "self_iteration_suggestions": "data/derived/behavior_intelligence/self_iteration_suggestions.json"
+  },
+  "ledger_policy": {
+    "max_entries": 8,
+    "min_entries": 3,
+    "one_minimal_next_step_per_item": true,
+    "pressure_list_allowed": false,
+    "status": "open_candidate"
+  },
+  "minimal_next_step_policy": {
+    "effort_minutes_max": 30,
+    "requires_expected_artifact": true,
+    "requires_stop_condition": true
+  },
+  "required_debt_fields": [
+    "decision_debt_id",
+    "source_debt_ids",
+    "debt_type",
+    "decision_area_zh",
+    "repeated_discussion_signal_zh",
+    "evidence_refs",
+    "minimal_next_step",
+    "linked_self_iteration_suggestion_ids",
+    "confidence",
+    "not_pressure_list"
+  ],
+  "schema_version": "memory_atlas_decision_debt_config.v1_2_s09_p3",
+  "scope_boundary": {
+    "github_main_upload": false,
+    "personality_label": false,
+    "proposal_apply_execution": false,
+    "psychological_diagnosis": false,
+    "raw_mutation": false,
+    "stage_review": "deferred_to_s09_review"
+  },
+  "task_id": "MA-V12-S09P3"
+}
