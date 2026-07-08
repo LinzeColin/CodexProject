@@ -47,6 +47,8 @@
 - S29 已基于最新真实热目录运行 `run_fund_weekly_analysis.py --run-id s29_real_attachment_remediation_20260708`，索引 295 个真实源文件，生成 3 条 remediation，其中 `restore_or_materialize_output_file=1`、`rerun_dws_attachment_download=2`；`fund_ledger.csv` / `funding_forecast.csv` 仍为空，`generated_financial_amount_count=0`，`management_conclusion_allowed=false`。
 - runner 现在为附件修复队列输出 `attachment_remediation_dry_run.csv`，只评估下一步状态；所有 dry-run 行保持 `safe_to_apply=false`、`apply_performed=false`、`formal_fact_allowed=false`。
 - S30 已基于最新真实热目录运行 `run_fund_weekly_analysis.py --run-id s30_real_attachment_remediation_dry_run_20260708`，索引 295 个真实源文件，生成 3 条 dry-run，其中 `source_restore_required=1`、`dws_rerun_required=2`；`fund_ledger.csv` / `funding_forecast.csv` 仍为空，`generated_financial_amount_count=0`，`management_conclusion_allowed=false`。
+- runner 现在将附件修复 dry-run 转换为 `attachment_repair_plan.csv` plan-only 步骤，记录 command family 和人工确认要求；所有 plan 行保持 `operator_confirmation_required=true`、`source_mutation_allowed=false`、`apply_performed=false`。
+- S31 已基于最新真实热目录运行 `run_fund_weekly_analysis.py --run-id s31_real_attachment_repair_plan_20260708`，索引 295 个真实源文件，生成 3 条 repair plan，其中 `source_materialization_plan=1`、`dws_archive_controlled_rerun=2`；`fund_ledger.csv` / `funding_forecast.csv` 仍为空，`generated_financial_amount_count=0`，`management_conclusion_allowed=false`。
 - runner 现在承接 public-safe KMFA metadata 信号：资金压力、项目成本事实层、报告等级、scope reconciliation，输出 `kmfa_metadata_signals.csv` 并写入 `04_税费融资风险` / `H02_异常任务池`；这些只用于待复核路由，不生成金额、预测或正式动作。
 - 所有结构化 CSV 金额仍是待复核事实，`management_conclusion_allowed=false`；不得把 workbook 首页卡片解释为最终 C-level 管理结论。
 - 当前真实 OneDrive 热目录已 materialized 并达到 `READY`。若后续目标目录再次缺失或 OneDrive cloud-only/dataless，仍保持 `SOURCE_MISSING` / `SOURCE_UNREADABLE` fail-closed，不生成局部生产包。
