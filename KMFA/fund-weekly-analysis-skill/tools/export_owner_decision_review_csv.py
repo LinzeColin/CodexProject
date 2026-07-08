@@ -180,21 +180,54 @@ def write_xlsx(path: Path, rows: list[dict]) -> None:
         return string_index[text]
 
     all_rows = [OUTPUT_FIELDS] + [[row.get(field, "") for field in OUTPUT_FIELDS] for row in rows]
+    decision_col = column_letter(OUTPUT_FIELDS.index("owner_authorization_decision") + 1)
+    company_col = column_letter(OUTPUT_FIELDS.index("owner_corrected_company") + 1)
+    bank_col = column_letter(OUTPUT_FIELDS.index("owner_corrected_bank") + 1)
+    missing_current_col = column_letter(OUTPUT_FIELDS.index("missing_owner_fields_current") + 1)
+    required_col = column_letter(OUTPUT_FIELDS.index("required_owner_fields") + 1)
+    note_col = column_letter(OUTPUT_FIELDS.index("owner_note") + 1)
+    last_col = column_letter(len(OUTPUT_FIELDS))
+
+    def missing_fields_formula(row_number: int) -> str:
+        return (
+            'TEXTJOIN(",",TRUE,'
+            f'IF(AND(ISNUMBER(SEARCH("owner_corrected_company",${required_col}{row_number})),${company_col}{row_number}=""),'
+            '"owner_corrected_company",""),'
+            f'IF(AND(ISNUMBER(SEARCH("owner_corrected_bank",${required_col}{row_number})),${bank_col}{row_number}=""),'
+            '"owner_corrected_bank",""))'
+        )
+
+    def status_formula(row_number: int) -> str:
+        return (
+            f'IF({missing_fields_formula(row_number)}<>"","blocked_missing_owner_values",'
+            f'IF(${decision_col}{row_number}<>"approve_for_review_authorization",'
+            '"blocked_owner_decision_not_approved","ready_for_private_owner_decision_manifest_no_write"))'
+        )
+
+    def formula_for(field: str, row_number: int) -> str:
+        if field == "owner_review_completion_status":
+            return status_formula(row_number)
+        if field == "missing_owner_fields_current":
+            return missing_fields_formula(row_number)
+        return ""
+
     row_xml: list[str] = []
     for row_number, values in enumerate(all_rows, 1):
         cells: list[str] = []
         for column_number, value in enumerate(values, 1):
             cell_ref = f"{column_letter(column_number)}{row_number}"
             style = ' s="1"' if row_number == 1 else ""
+            field = OUTPUT_FIELDS[column_number - 1]
+            formula = formula_for(field, row_number) if row_number > 1 else ""
+            if formula:
+                cells.append(
+                    f'<c r="{cell_ref}" t="str"><f>{escape(formula)}</f><v>{escape(str(value))}</v></c>'
+                )
+                continue
             cells.append(f'<c r="{cell_ref}" t="s"{style}><v>{string_id(value)}</v></c>')
         row_xml.append(f'<row r="{row_number}">{"".join(cells)}</row>')
 
     max_row = max(2, len(all_rows))
-    decision_col = column_letter(OUTPUT_FIELDS.index("owner_authorization_decision") + 1)
-    company_col = column_letter(OUTPUT_FIELDS.index("owner_corrected_company") + 1)
-    bank_col = column_letter(OUTPUT_FIELDS.index("owner_corrected_bank") + 1)
-    note_col = column_letter(OUTPUT_FIELDS.index("owner_note") + 1)
-    last_col = column_letter(len(OUTPUT_FIELDS))
     validations = (
         '<dataValidations count="1">'
         f'<dataValidation type="list" allowBlank="0" showErrorMessage="1" sqref="{decision_col}2:{decision_col}{max_row}">'
