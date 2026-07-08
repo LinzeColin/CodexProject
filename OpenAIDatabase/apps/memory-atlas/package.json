@@ -108,6 +108,7 @@
     "validate:v1.2-s13-review": "node scripts/validate_memory_atlas_v1_2_s13_review.cjs",
     "validate:v1.2-s14-p1": "node scripts/validate_memory_atlas_v1_2_s14_p1.cjs",
     "validate:v1.2-s14-p2": "node scripts/validate_memory_atlas_v1_2_s14_p2.cjs",
+    "validate:v1.2-s14-p3": "node scripts/validate_memory_atlas_v1_2_s14_p3.cjs",
     "validate:v1.1.7-stage0-phase1": "node scripts/validate_memory_atlas_v1_1_7_stage0_phase1.cjs",
     "validate:v1.1.7-stage0-phase2": "node scripts/validate_memory_atlas_v1_1_7_stage0_phase2.cjs",
     "validate:v1.1.7-stage0-phase3": "node scripts/validate_memory_atlas_v1_1_7_stage0_phase3.cjs",
