@@ -18,9 +18,9 @@
 
 ## 当前阶段
 
-当前为 S03 P2。S01 整体复审已通过，S02 整体复审已通过，公开 raw 路径、
-manifest/hash 文件合同、append-only 规则、hash drift fail 规则和 credential is not memory
-门禁已定义。
+当前为 S03 P3。S01 整体复审已通过，S02 整体复审已通过，公开 raw 路径、
+credential is not memory 门禁、raw manifest/hash 机器账本、append-only audit 和
+hash drift fail 规则已定义。
 
 当前机器产物：
 
@@ -28,19 +28,26 @@ manifest/hash 文件合同、append-only 规则、hash drift fail 规则和 cred
 - `同步与备份/sync_source_registry.json`
 - `同步与备份/raw_public_archive_policy.v1_2_s03_p1.json`
 - `同步与备份/credential_exclusion_policy.v1_2_s03_p2.json`
+- `同步与备份/raw_manifest_ledger_policy.v1_2_s03_p3.json`
 - `机器治理/同步与备份/raw_public_archive_policy.v1_2_s03_p1.json`
 - `机器治理/同步与备份/credential_exclusion_policy.v1_2_s03_p2.json`
+- `机器治理/同步与备份/raw_manifest_ledger_policy.v1_2_s03_p3.json`
+- `机器治理/证据与日志/raw_archive_manifests/raw_manifest.s03_p3_baseline.jsonl`
+- `机器治理/证据与日志/raw_archive_manifests/raw_hash_ledger.jsonl`
 - `../人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md`
 - `../人类可读/06_Raw明文公开与只读归档说明.md`
 - `../人类可读/07_凭证排除说明.md`
+- `../人类可读/08_Raw机器账本说明.md`
 - `../data/public_raw/README.md`
 - `人类可读/06_Raw明文公开与只读归档说明.md`
 - `data/public_raw/README.md`
 - `../docs/reviews/memory_atlas_v1_2_s02_review.md`
 - `../docs/reviews/memory_atlas_v1_2_s03_p1_public_raw_path.md`
 - `../docs/reviews/memory_atlas_v1_2_s03_p2_credential_exclusion.md`
+- `../docs/reviews/memory_atlas_v1_2_s03_p3_machine_ledger.md`
 - `scripts/privacy_guard.py`
 - `scripts/sync_codex_memory_data.py`
+- `scripts/raw_archive_manifest.py`
 
 `运行门禁/v1.2需求冻结清单.json` 继续固定：
 
@@ -50,4 +57,4 @@ manifest/hash 文件合同、append-only 规则、hash drift fail 规则和 cred
 - 凭证排除。
 - 后续其他 agent 数据源扩展规则。
 
-下一步是 S03 P3；本目录仍不替代 apps/scripts/tests/config/data/docs/governance。
+下一步是 S03 Review；本目录仍不替代 apps/scripts/tests/config/data/docs/governance。

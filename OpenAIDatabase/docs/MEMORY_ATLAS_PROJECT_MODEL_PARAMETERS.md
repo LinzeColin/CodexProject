@@ -1,3 +1,42 @@
+## 115. Memory Atlas v1.2 S03 P3 Machine Ledger Parameters
+
+状态：`phase_s03_p3_machine_ledger_completed_pending_s03_review`。
+
+验收 ID：`ACC-MA-V12-S03P3`。
+
+S03 P3 固定以下参数：
+
+- `MA-V12-S03P3`
+- `validate:v1.2-s03-p3`
+- `memory_atlas_v1_2_s03_p3_machine_ledger.md`
+- `raw_manifest_ledger_policy.v1_2_s03_p3.json`
+- `raw_archive_manifest.py`
+- `raw_manifest.s03_p3_baseline.jsonl`
+- `raw_hash_ledger.jsonl`
+- raw manifest/hash 机器账本。
+- minimum manifest fields：source_id、relative_path、sha256、imported_at。
+- S03 P3 完成后下一步为 pending S03 Review。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S03P3-001 phase_status = phase_s03_p3_machine_ledger_completed_pending_s03_review`
+- `PARAM-MA-V12-S03P3-002 validator = validate:v1.2-s03-p3`
+- `PARAM-MA-V12-S03P3-003 manifest_policy = raw_manifest_ledger_policy.v1_2_s03_p3.json`
+- `PARAM-MA-V12-S03P3-004 generator = raw_archive_manifest.py`
+- `PARAM-MA-V12-S03P3-005 minimum_fields = source_id;relative_path;sha256;imported_at`
+- `PARAM-MA-V12-S03P3-006 next_gate = pending S03 Review`
+- `PARAM-MA-V12-S03P3-007 upload_boundary = No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s03-p3` checks S03 P2 continuity, raw manifest ledger policy,
+  Python unit tests, repo append-only audit, baseline manifest/hash ledger
+  consistency, human/machine state, records, canonical remote and
+  no-upload/no-connector/no-real-transcript/no-ui/no-public-raw-mutation boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S03 P3 Machine Ledger; MA-V12-S03P3; ACC-MA-V12-S03P3; phase_s03_p3_machine_ledger_completed_pending_s03_review; validate:v1.2-s03-p3; memory_atlas_v1_2_s03_p3_machine_ledger.md; raw_manifest_ledger_policy.v1_2_s03_p3.json; raw_archive_manifest.py; raw_manifest.s03_p3_baseline.jsonl; raw_hash_ledger.jsonl; S03 P3; pending S03 Review; No GitHub main upload in this phase; No connector implementation; No real transcript ingestion; No UI work; No public raw file mutation.
+
 ## 114. Memory Atlas v1.2 S03 P2 Credential Exclusion Parameters
 
 状态：`phase_s03_p2_credential_exclusion_completed_pending_s03_p3`。

@@ -142,6 +142,37 @@ function validateTextFile(relativePath) {
 }
 
 function currentStateIsS03P2() {
+  if (
+    hasAll(readRepoFile("人类可读/00_快速入口.md"), [
+      "当前阶段是 S03 P3",
+      "MA-V12-S03P3",
+      "ACC-MA-V12-S03P3",
+      "下一步只允许进入 S03 Review",
+    ]) &&
+    hasAll(readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md"), [
+      "S03 P3 已完成",
+      "raw manifest/hash 可生成",
+      "下一步是 S03 Review",
+    ]) &&
+    hasAll(readRepoFile("机器治理/README.md"), [
+      "当前为 S03 P3",
+      "raw_manifest_ledger_policy.v1_2_s03_p3.json",
+      "下一步是 S03 Review",
+    ]) &&
+    hasAll(readRepoFile("机器治理/同步与备份/README.md"), [
+      "当前 S03 P3 已完成",
+      "raw_archive_manifest.py",
+      "下一步是 S03 Review",
+    ]) &&
+    hasAll(readRepoFile("机器治理/运行门禁/README.md"), [
+      "当前阶段是 S03 P3",
+      "validate:v1.2-s03-p3",
+      "下一步是 S03 Review",
+    ])
+  ) {
+    return true;
+  }
+
   return (
     hasAll(readRepoFile("人类可读/00_快速入口.md"), [
       "当前阶段是 S03 P2",

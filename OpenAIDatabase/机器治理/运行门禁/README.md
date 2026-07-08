@@ -2,8 +2,8 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S03 P2。任务 ID 为 `MA-V12-S03P2`，验收 ID 为
-`ACC-MA-V12-S03P2`，validator 为 `validate:v1.2-s03-p2`。
+当前阶段是 S03 P3。任务 ID 为 `MA-V12-S03P3`，验收 ID 为
+`ACC-MA-V12-S03P3`，validator 为 `validate:v1.2-s03-p3`。
 
 前置 S01 Review 已通过：`MA-V12-S01-REVIEW` / `ACC-MA-V12-S01-REVIEW` /
 `validate:v1.2-s01-review`。
@@ -82,4 +82,25 @@ S03 P2 gate：
 - 普通 transcript 不被凭证门禁拦截。
 - 凭证 pattern 导致 gate fail。
 
-下一步是 S03 P3；本 phase 不重装 app。
+前置 S03 P2 已通过：`MA-V12-S03P2` / `ACC-MA-V12-S03P2` /
+`validate:v1.2-s03-p2`。
+
+S03 P3 产物：
+
+- `机器治理/同步与备份/raw_manifest_ledger_policy.v1_2_s03_p3.json`
+- `scripts/raw_archive_manifest.py`
+- `机器治理/证据与日志/raw_archive_manifests/raw_manifest.s03_p3_baseline.jsonl`
+- `机器治理/证据与日志/raw_archive_manifests/raw_hash_ledger.jsonl`
+- `人类可读/08_Raw机器账本说明.md`
+- `docs/reviews/memory_atlas_v1_2_s03_p3_machine_ledger.md`
+
+S03 P3 gate：
+
+- raw manifest/hash 可生成。
+- manifest row 可映射 source/file/hash/imported_at。
+- 修改已有 raw 文件导致 validation fail。
+- 删除已登记 manifest entry 导致 validation fail。
+- raw manifest 是机器文件，不是人类主要页面。
+
+No GitHub main upload in this phase。
+下一步是 S03 Review；本 phase 不重装 app。

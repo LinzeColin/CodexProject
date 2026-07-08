@@ -1,3 +1,50 @@
+## v1.2 S03 P3 Machine Ledger
+
+状态：`phase_s03_p3_machine_ledger_completed_pending_s03_review`。
+
+任务 ID：`MA-V12-S03P3`。
+
+验收 ID：`ACC-MA-V12-S03P3`。
+
+S03 P3 实现 Memory Atlas v1.2 的 raw manifest/hash 机器账本。它生成
+`raw_manifest.s03_p3_baseline.jsonl` 和 `raw_hash_ledger.jsonl`，并通过
+`scripts/raw_archive_manifest.py` 提供 append-only audit。当前没有真实 raw transcript，
+因此 baseline ledger 可以为空；后续新增 raw 只能追加。
+
+涉及文件：
+
+- `scripts/raw_archive_manifest.py`
+- `机器治理/同步与备份/raw_manifest_ledger_policy.v1_2_s03_p3.json`
+- `机器治理/证据与日志/raw_archive_manifests/raw_manifest.s03_p3_baseline.jsonl`
+- `机器治理/证据与日志/raw_archive_manifests/raw_hash_ledger.jsonl`
+- `人类可读/08_Raw机器账本说明.md`
+- `docs/reviews/memory_atlas_v1_2_s03_p3_machine_ledger.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s03_p3.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s03-p3`
+- `ACC-MA-V12-S03P3`
+- S03 P3
+- `memory_atlas_v1_2_s03_p3_machine_ledger.md`
+- `raw_manifest_ledger_policy.v1_2_s03_p3.json`
+- `raw_archive_manifest.py`
+- raw manifest/hash can be generated
+- source/file/hash/imported_at
+- pending S03 Review
+- No GitHub main upload in this phase
+
+边界：
+
+- No connector implementation.
+- No real transcript ingestion.
+- No UI work.
+- No public raw file mutation.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S03 P3 Machine Ledger; MA-V12-S03P3; ACC-MA-V12-S03P3; phase_s03_p3_machine_ledger_completed_pending_s03_review; validate:v1.2-s03-p3; memory_atlas_v1_2_s03_p3_machine_ledger.md; raw_manifest_ledger_policy.v1_2_s03_p3.json; raw_archive_manifest.py; raw_manifest.s03_p3_baseline.jsonl; raw_hash_ledger.jsonl; S03 P3; pending S03 Review; No GitHub main upload in this phase; No connector implementation; No real transcript ingestion; No UI work; No public raw file mutation.
+
 ## v1.2 S03 P2 Credential Exclusion
 
 状态：`phase_s03_p2_credential_exclusion_completed_pending_s03_p3`。
