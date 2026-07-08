@@ -1396,3 +1396,18 @@ kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_applicati
   evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTIONABLE_RESOLUTION_REQUIRED_BEFORE_BUSINESS_EXECUTION
   validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_required_before_business_execution.py
   scope: Owner or authorized-agent actionable resolution required before business execution only; consumes 48 source business execution requirement blockers, records 0 actionable owner resolutions and 48 blockers, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_blocker_audit_before_business_execution:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-actionable-resolution-blocker-audit-before-business-execution"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-ACTIONABLE-RESOLUTION-BLOCKER-AUDIT-BEFORE-BUSINESS-EXECUTION-001
+  parameter_refs:
+    - PARAM-KMFA-1624
+    - PARAM-KMFA-1625
+    - PARAM-KMFA-1626
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTIONABLE_RESOLUTION_BLOCKER_AUDIT_BEFORE_BUSINESS_EXECUTION
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_blocker_audit_before_business_execution.py
+  scope: Owner or authorized-agent actionable resolution blocker audit before business execution only; consumes 48 source actionable-resolution requirement blockers, records 0 actionable owner resolutions and 48 blocker audit items, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.
