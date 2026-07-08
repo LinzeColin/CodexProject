@@ -168,6 +168,18 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
         self.assertIn("--apply", ocr_call)
         self.assertIn("--retry-timeout-seconds 30", ocr_call)
         self.assertIn("--retry-batch-size 1", ocr_call)
+        self.assertNotIn("--limit", ocr_call)
+
+    def test_daily_entrypoint_supports_vision_limit_for_validation_runs(self) -> None:
+        result, call_log = self.run_daily_with_stubbed_tools(
+            readiness_exit=0,
+            env_overrides={"KMFA_FUND_VISION_LIMIT": "4"},
+        )
+        calls = call_log.read_text(encoding="utf-8").splitlines()
+        ocr_call = next(call for call in calls if "generate_screenshot_ocr_sidecars.py" in call)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("--limit 4", ocr_call)
 
     def test_daily_entrypoint_reruns_runner_after_new_private_vision_sidecars(self) -> None:
         result, call_log = self.run_daily_with_stubbed_tools(readiness_exit=0, generated_sidecar_count=1)
