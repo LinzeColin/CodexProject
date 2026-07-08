@@ -56,5 +56,17 @@ S03 P3 固定 raw manifest/hash 机器账本：可生成 source/file/hash/import
 - `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s03_review.cjs`
 
 S03 Review 确认 raw 可公开备份、append-only、credential exclusion 和 raw manifest/hash
-均可验证。下一步是 S04 P1。
-当前阶段不实现 connector，不导入真实 transcript，不新增 UI，不上传 GitHub main。
+均可验证。
+
+当前 S04 P1 已完成，并新增：
+
+- `机器治理/同步与备份/chatgpt_readonly_sync_policy.v1_2_s04_p1.json`
+- `scripts/sync_chatgpt_memory_data.py`
+- `scripts/atlasctl.py`
+- `人类可读/09_ChatGPT只读同步与官方导出Fallback.md`
+- `docs/reviews/memory_atlas_v1_2_s04_p1_chatgpt_sync.md`
+
+S04 P1 固定 ChatGPT 只读同步和 official export fallback。浏览器 connector 只允许读取已登录状态下的
+conversation/title/metadata；遇到密码/验证码立即停止；不得发送消息、删除、归档或重命名会话。
+下一步是 S04 P2。当前阶段不实现 Codex local sync，不实现后续 agent adapter，
+不实现 GitHub backup apply，不上传 GitHub main。

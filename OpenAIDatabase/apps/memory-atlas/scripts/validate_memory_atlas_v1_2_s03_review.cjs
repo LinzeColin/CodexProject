@@ -150,6 +150,37 @@ function parseJsonl(relativePath) {
     .map((line) => JSON.parse(line));
 }
 
+function currentStateIsS04P1() {
+  return (
+    hasAll(readRepoFile("人类可读/00_快速入口.md"), [
+      "当前阶段是 S04 P1",
+      "MA-V12-S04P1",
+      "ACC-MA-V12-S04P1",
+      "下一步只允许进入 S04 P2",
+    ]) &&
+    hasAll(readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md"), [
+      "S04 P1 已完成",
+      "ChatGPT 只读同步",
+      "下一步是 S04 P2",
+    ]) &&
+    hasAll(readRepoFile("机器治理/README.md"), [
+      "当前为 S04 P1",
+      "chatgpt_readonly_sync_policy.v1_2_s04_p1.json",
+      "下一步是 S04 P2",
+    ]) &&
+    hasAll(readRepoFile("机器治理/同步与备份/README.md"), [
+      "当前 S04 P1 已完成",
+      "official export fallback",
+      "下一步是 S04 P2",
+    ]) &&
+    hasAll(readRepoFile("机器治理/运行门禁/README.md"), [
+      "当前阶段是 S04 P1",
+      "validate:v1.2-s04-p1",
+      "下一步是 S04 P2",
+    ])
+  );
+}
+
 function validatePackageScript() {
   const packageJson = JSON.parse(readRepoFile("apps/memory-atlas/package.json"));
   assertCondition(
@@ -392,6 +423,14 @@ function validateHumanAndMachineState() {
   const syncReadme = readRepoFile("机器治理/同步与备份/README.md");
   const evidenceReadme = readRepoFile("机器治理/证据与日志/README.md");
   const runGateReadme = readRepoFile("机器治理/运行门禁/README.md");
+
+  if (currentStateIsS04P1()) {
+    pass(
+      "s03_review_human_machine_later_s04p1_state",
+      "Current human and machine state has advanced from S03 Review into S04 P1",
+    );
+    return;
+  }
 
   assertCondition(
     hasAll(quickEntry, [

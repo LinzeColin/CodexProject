@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S04 P1 ChatGPT Sync
+
+- Added `机器治理/同步与备份/chatgpt_readonly_sync_policy.v1_2_s04_p1.json`.
+- Added `scripts/sync_chatgpt_memory_data.py`.
+- Added `scripts/atlasctl.py` with `sync --source chatgpt --dry-run`.
+- Added `人类可读/09_ChatGPT只读同步与官方导出Fallback.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s04_p1_chatgpt_sync.md`.
+- Added `validate:v1.2-s04-p1` for `MA-V12-S04P1` /
+  `ACC-MA-V12-S04P1`.
+- Registered status `phase_s04_p1_chatgpt_sync_completed_pending_s04_p2`.
+- Implemented official export ZIP/conversations.json fallback, credential
+  fail-closed behavior and append-only public raw writes for ChatGPT apply mode.
+- Marked the next gate as pending S04 P2.
+- Preserved S04 P1 boundaries: No GitHub main upload in this phase,
+  No Codex local sync, No future-agent adapter and No GitHub backup apply.
+
 ## Unreleased - Memory Atlas v1.2 S03 Review
 
 - Added `docs/reviews/memory_atlas_v1_2_s03_review.md`.

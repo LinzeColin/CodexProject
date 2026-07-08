@@ -1,3 +1,49 @@
+## v1.2 S04 P1 ChatGPT Sync
+
+状态：`phase_s04_p1_chatgpt_sync_completed_pending_s04_p2`。
+
+任务 ID：`MA-V12-S04P1`。
+
+验收 ID：`ACC-MA-V12-S04P1`。
+
+S04 P1 实现 Memory Atlas v1.2 的 ChatGPT 只读同步入口。浏览器 connector 在本阶段为
+read-only contract；遇到密码/验证码立即停止；不得发送消息、删除、归档或重命名会话。
+可执行路径为 official export ZIP/conversations.json fallback。
+
+涉及文件：
+
+- `机器治理/同步与备份/chatgpt_readonly_sync_policy.v1_2_s04_p1.json`
+- `scripts/sync_chatgpt_memory_data.py`
+- `scripts/atlasctl.py`
+- `人类可读/09_ChatGPT只读同步与官方导出Fallback.md`
+- `docs/reviews/memory_atlas_v1_2_s04_p1_chatgpt_sync.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s04_p1.cjs`
+- `tests/test_s04p1_chatgpt_sync.py`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s04-p1`
+- `ACC-MA-V12-S04P1`
+- `MA-V12-S04P1`
+- S04 P1
+- `memory_atlas_v1_2_s04_p1_chatgpt_sync.md`
+- `chatgpt_readonly_sync_policy.v1_2_s04_p1.json`
+- `sync_chatgpt_memory_data.py`
+- `atlasctl.py`
+- pending S04 P2
+- No GitHub main upload in this phase
+
+边界：
+
+- No Codex local sync.
+- No future-agent adapter.
+- No GitHub backup apply.
+- No browser mutation.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S04 P1 ChatGPT Sync; MA-V12-S04P1; ACC-MA-V12-S04P1; phase_s04_p1_chatgpt_sync_completed_pending_s04_p2; validate:v1.2-s04-p1; memory_atlas_v1_2_s04_p1_chatgpt_sync.md; chatgpt_readonly_sync_policy.v1_2_s04_p1.json; sync_chatgpt_memory_data.py; atlasctl.py; S04 P1; pending S04 P2; No GitHub main upload in this phase; No Codex local sync; No future-agent adapter; No GitHub backup apply; No browser mutation.
+
 ## v1.2 S03 Review
 
 状态：`stage_s03_review_passed_pending_s04_no_github_main_upload`。

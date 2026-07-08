@@ -2,8 +2,8 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S03 Review。任务 ID 为 `MA-V12-S03-REVIEW`，验收 ID 为
-`ACC-MA-V12-S03-REVIEW`，validator 为 `validate:v1.2-s03-review`。
+当前阶段是 S04 P1。任务 ID 为 `MA-V12-S04P1`，验收 ID 为
+`ACC-MA-V12-S04P1`，validator 为 `validate:v1.2-s04-p1`。
 
 前置 S01 Review 已通过：`MA-V12-S01-REVIEW` / `ACC-MA-V12-S01-REVIEW` /
 `validate:v1.2-s01-review`。
@@ -120,4 +120,26 @@ S03 Review gate：
 - human files 不被 raw manifest 明细污染。
 
 No GitHub main upload in this review。
-下一步是 S04 P1；本 review 不重装 app，不实现 connector，不导入真实 transcript。
+前置 S03 Review 已通过：`MA-V12-S03-REVIEW` / `ACC-MA-V12-S03-REVIEW` /
+`validate:v1.2-s03-review`。
+
+S04 P1 产物：
+
+- `机器治理/同步与备份/chatgpt_readonly_sync_policy.v1_2_s04_p1.json`
+- `scripts/sync_chatgpt_memory_data.py`
+- `scripts/atlasctl.py`
+- `人类可读/09_ChatGPT只读同步与官方导出Fallback.md`
+- `docs/reviews/memory_atlas_v1_2_s04_p1_chatgpt_sync.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s04_p1.cjs`
+
+S04 P1 gate：
+
+- ChatGPT browser connector 边界为只读。
+- 密码/验证码立即停止。
+- 不发送消息、不删除、不归档、不重命名会话。
+- official export ZIP/conversations.json fallback 可用。
+- dry-run 不写文件。
+- credential pattern 先失败，不进入 public raw。
+
+No GitHub main upload in this phase。
+下一步是 S04 P2；本 phase 不实现 Codex local sync、后续 agent adapter 或 GitHub backup apply。

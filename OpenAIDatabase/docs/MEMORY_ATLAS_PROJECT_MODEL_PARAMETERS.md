@@ -1,3 +1,41 @@
+## 117. Memory Atlas v1.2 S04 P1 ChatGPT Sync Parameters
+
+状态：`phase_s04_p1_chatgpt_sync_completed_pending_s04_p2`。
+
+验收 ID：`ACC-MA-V12-S04P1`。
+
+S04 P1 固定以下参数：
+
+- `MA-V12-S04P1`
+- `validate:v1.2-s04-p1`
+- `memory_atlas_v1_2_s04_p1_chatgpt_sync.md`
+- `chatgpt_readonly_sync_policy.v1_2_s04_p1.json`
+- `sync_chatgpt_memory_data.py`
+- `atlasctl.py`
+- ChatGPT read-only browser contract。
+- official export ZIP/conversations.json fallback。
+- S04 P1 完成后下一步为 pending S04 P2。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S04P1-001 phase_status = phase_s04_p1_chatgpt_sync_completed_pending_s04_p2`
+- `PARAM-MA-V12-S04P1-002 validator = validate:v1.2-s04-p1`
+- `PARAM-MA-V12-S04P1-003 policy = chatgpt_readonly_sync_policy.v1_2_s04_p1.json`
+- `PARAM-MA-V12-S04P1-004 sync_script = sync_chatgpt_memory_data.py`
+- `PARAM-MA-V12-S04P1-005 cli = atlasctl.py sync --source chatgpt --dry-run`
+- `PARAM-MA-V12-S04P1-006 next_gate = pending S04 P2`
+- `PARAM-MA-V12-S04P1-007 upload_boundary = No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s04-p1` checks S03 Review continuity, ChatGPT read-only
+  browser connector contract, official export fallback, credential fail-closed
+  runtime, append-only public raw apply behavior, atlasctl dry-run, human/machine
+  state, records, canonical remote and no-upload/no-codex/no-future-agent/no-github-backup/no-browser-mutation boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S04 P1 ChatGPT Sync; MA-V12-S04P1; ACC-MA-V12-S04P1; phase_s04_p1_chatgpt_sync_completed_pending_s04_p2; validate:v1.2-s04-p1; memory_atlas_v1_2_s04_p1_chatgpt_sync.md; chatgpt_readonly_sync_policy.v1_2_s04_p1.json; sync_chatgpt_memory_data.py; atlasctl.py; S04 P1; pending S04 P2; No GitHub main upload in this phase; No Codex local sync; No future-agent adapter; No GitHub backup apply; No browser mutation.
+
 ## 116. Memory Atlas v1.2 S03 Review Parameters
 
 状态：`stage_s03_review_passed_pending_s04_no_github_main_upload`。
