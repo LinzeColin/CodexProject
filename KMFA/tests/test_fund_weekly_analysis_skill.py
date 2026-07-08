@@ -6299,6 +6299,77 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 ).exists()
             )
 
+    def test_owner_review_workbook_validator_accepts_protected_no_write_packet(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            export_module = load_owner_review_export_module()
+            workbook_path = Path(temp_dir) / "owner_review.xlsx"
+            rows = []
+            for idx, (metric, focus_status) in enumerate(
+                [("deposit_release", "focused_amount"), ("bank_deposit", "missing_ocr_sidecar")],
+                1,
+            ):
+                row = {field: "" for field in export_module.OUTPUT_FIELDS}
+                row.update({
+                    "review_batch_row_id": f"OCROWNERREVIEWCSV-validator-{idx:05d}",
+                    "owner_worklist_id": f"OCROWNERWORK-validator-{idx:05d}",
+                    "ocr_fact_evidence_review_queue_id": f"OCREVIDQUEUE-validator-{idx:05d}",
+                    "fact_candidate_id": f"OCRFACT-validator-{idx:05d}",
+                    "candidate_metric": metric,
+                    "source_evidence_id": f"FWVALIDATOR-{idx:05d}",
+                    "source_ocr_text_relative_path": f"private/OCRGEN-{idx:05d}.ocr.txt",
+                    "source_ocr_text_excerpt": "真实OCR公司A | 湖北中行 | 付款金额 1.00",
+                    "source_ocr_excerpt_focus_status": focus_status,
+                    "source_ocr_excerpt_line_range": "81-83" if focus_status == "focused_amount" else "",
+                    "source_ocr_excerpt_focus_line_number": "83" if focus_status == "focused_amount" else "",
+                    "source_ocr_excerpt_match_value": "1.00" if focus_status == "focused_amount" else "",
+                    "business_date": f"2026-06-{idx:02d}",
+                    "amount": f"{idx}.00",
+                    "currency": "CNY",
+                    "proposed_amount_role": "amount",
+                    "proposed_liquidity_tier": "T0_BANK_CASH",
+                    "proposed_flow_type": "inflow",
+                    "owner_authorization_decision": "pending_owner_review",
+                    "owner_review_completion_status": "blocked_missing_owner_values",
+                    "missing_owner_fields_current": "owner_corrected_company,owner_corrected_bank",
+                    "required_owner_fields": "owner_corrected_company,owner_corrected_bank",
+                    "fund_ledger_write_allowed": "false",
+                    "financial_fact_promoted": "false",
+                    "management_conclusion_allowed": "false",
+                    "recommended_owner_action": "Fill required owner fields before intake dry-run.",
+                })
+                rows.append(row)
+            export_module.write_xlsx(workbook_path, rows)
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "validate_owner_review_workbook.py"),
+                    "--workbook-path",
+                    str(workbook_path),
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["status"], "OWNER_REVIEW_WORKBOOK_READY")
+            self.assertEqual(payload["owner_review_data_row_count"], 2)
+            self.assertEqual(payload["review_summary_data_row_count"], 5)
+            self.assertTrue(payload["owner_review_sheet_present"])
+            self.assertTrue(payload["review_summary_sheet_present"])
+            self.assertTrue(payload["owner_review_sheet_protected"])
+            self.assertTrue(payload["review_summary_sheet_protected"])
+            self.assertTrue(payload["owner_input_cells_unlocked"])
+            self.assertTrue(payload["evidence_cells_locked"])
+            self.assertTrue(payload["owner_decision_validation_present"])
+            self.assertTrue(payload["write_flags_all_false"])
+            self.assertFalse(payload["apply_performed"])
+            self.assertFalse(payload["fund_ledger_write_allowed"])
+            self.assertFalse(payload["financial_fact_promoted"])
+            self.assertFalse(payload["management_conclusion_allowed"])
+            self.assertEqual(payload["failed_checks"], [])
+
     def test_owner_decision_manifest_install_apply_requires_ack_and_writes_validation_only_manifest(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             repo_root = Path(temp_dir) / "repo"

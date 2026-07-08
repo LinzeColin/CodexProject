@@ -28,6 +28,7 @@ REQUIRED = [
     "tools/materialize_fund_source.py",
     "tools/install_owner_decision_manifest.py",
     "tools/export_owner_decision_review_csv.py",
+    "tools/validate_owner_review_workbook.py",
     "tools/install_to_kmfa_main.sh",
     "templates/资金与税费管理母版_真实数据预览_v2.xlsx",
 ]
@@ -93,6 +94,9 @@ REQUIRED_SKILL_STRINGS = [
     "source_evidence_id",
     "business_date",
     "export_owner_decision_review_csv.py",
+    "validate_owner_review_workbook.py",
+    "OWNER_REVIEW_WORKBOOK_READY",
+    "owner_input_cells_unlocked",
     "ocr_fact_candidate_owner_decision_review_batch.csv",
     "ocr_fact_candidate_owner_decision_review_batch.xlsx",
     "--xlsx",
