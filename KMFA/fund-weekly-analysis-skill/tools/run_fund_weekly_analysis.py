@@ -108,6 +108,40 @@ CHAT_TEXT_CONTEXT_WORDS = OCR_AMOUNT_CONTEXT_WORDS + (
     "调拨",
     "转账",
 )
+OCR_COMPANY_KEYWORDS = (
+    "武汉开明",
+    "武汉彤烨",
+    "湖北开明",
+    "湖北岚丹",
+    "武汉信茂",
+    "湖北曦月",
+    "湖北工会",
+)
+OCR_BANK_KEYWORDS = (
+    "招商银行",
+    "中国银行",
+    "建设银行",
+    "农业银行",
+    "工商银行",
+    "交通银行",
+    "汉口银行",
+    "湖北银行",
+    "中信银行",
+    "民生银行",
+    "平安银行",
+    "光大银行",
+    "浦发银行",
+    "兴业银行",
+    "邮储银行",
+)
+OCR_FACT_METRIC_RULES = (
+    ("electronic_bill", ("电子汇票", "银行承兑", "承兑汇票", "票据")),
+    ("bank_deposit", ("银行存款", "可用余额", "期末余额", "余额")),
+    ("deposit_release", ("保证金",)),
+    ("tax_payment", ("税费", "缴税", "税款")),
+    ("loan", ("借款", "贷款")),
+    ("payment_outflow", ("申请支付金额", "付款审批", "付款", "项目资金支出", "报销", "交易金额", "转账")),
+)
 
 
 def sha256_file(path: Path, chunk_size: int = 1024 * 1024) -> str:
@@ -590,6 +624,86 @@ def extract_ocr_value_candidates(
                     "extraction_status": "ocr_value_candidate_pending_review",
                     "review_status": "pending_human_review",
                     "financial_fact_promoted": "false",
+                })
+    return rows
+
+
+def extract_ocr_company(text: str) -> str:
+    return next((company for company in OCR_COMPANY_KEYWORDS if company in text), "")
+
+
+def extract_ocr_bank(text: str) -> str:
+    return next((bank for bank in OCR_BANK_KEYWORDS if bank in text), "")
+
+
+def classify_ocr_fact_metric(text: str) -> str:
+    for metric, keywords in OCR_FACT_METRIC_RULES:
+        if any(keyword in text for keyword in keywords):
+            return metric
+    return ""
+
+
+def source_path_date(relative_path: str) -> str:
+    match = re.search(r"(20\d{2})(\d{2})(\d{2})", relative_path)
+    if not match:
+        return ""
+    return f"{match.group(1)}-{match.group(2)}-{match.group(3)}"
+
+
+def extract_ocr_business_date(line: str, source_relative_path: str) -> str:
+    match = OCR_DATE_PATTERN.search(line)
+    if match:
+        return normalize_ocr_date(match.group(0))
+    return source_path_date(source_relative_path)
+
+
+def extract_ocr_financial_fact_candidates(
+    manifest: dict,
+    input_dir: Path,
+    repo_root: Path,
+    ocr_text_candidates: list[dict],
+) -> list[dict]:
+    rows: list[dict] = []
+    for candidate in ocr_text_candidates:
+        text_path = resolve_ocr_text_path(repo_root, input_dir, candidate["ocr_text_relative_path"])
+        text = text_path.read_text(encoding="utf-8-sig", errors="replace")
+        for line_number, line in enumerate(text.splitlines(), 1):
+            normalized_line = " ".join(line.split())
+            if not normalized_line:
+                continue
+            metric = classify_ocr_fact_metric(normalized_line)
+            if not metric:
+                continue
+            date_spans = [match.span() for match in OCR_DATE_PATTERN.finditer(normalized_line)]
+            for match in OCR_AMOUNT_PATTERN.finditer(normalized_line):
+                if any(not (match.end() <= start or match.start() >= end) for start, end in date_spans):
+                    continue
+                raw_value = match.group(0)
+                if "." not in raw_value and "￥" not in raw_value and "¥" not in raw_value and "," not in raw_value:
+                    continue
+                try:
+                    amount = normalize_ocr_amount(raw_value)
+                except (InvalidOperation, ValueError):
+                    continue
+                rows.append({
+                    "fact_candidate_id": f"OCRFACT-{manifest['run_id']}-{len(rows) + 1:05d}",
+                    "ocr_candidate_id": candidate["ocr_candidate_id"],
+                    "evidence_id": candidate["evidence_id"],
+                    "source_image_relative_path": candidate["source_image_relative_path"],
+                    "ocr_text_relative_path": candidate["ocr_text_relative_path"],
+                    "business_date": extract_ocr_business_date(normalized_line, candidate["source_image_relative_path"]),
+                    "company": extract_ocr_company(normalized_line),
+                    "bank": extract_ocr_bank(normalized_line),
+                    "account_alias": "",
+                    "candidate_metric": metric,
+                    "amount": amount,
+                    "currency": "CNY",
+                    "line_number": str(line_number),
+                    "line_text_excerpt": normalized_line[:180],
+                    "extraction_status": "ocr_financial_fact_candidate_pending_review",
+                    "review_status": "pending_human_review",
+                    "financial_fact_promoted": "false",
+                    "promotion_blocker": "human_cross_review_required",
                 })
     return rows
 
@@ -2229,6 +2343,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     screenshot_ocr_coverage_rows = collect_screenshot_ocr_coverage(manifest, repo_root, run_dir, evidence)
     ocr_text_candidates = collect_ocr_text_candidates(manifest, input_dir, repo_root, run_dir, evidence)
     ocr_value_candidates = extract_ocr_value_candidates(manifest, input_dir, repo_root, ocr_text_candidates)
+    ocr_financial_fact_candidates = extract_ocr_financial_fact_candidates(manifest, input_dir, repo_root, ocr_text_candidates)
     chat_text_candidates = collect_chat_text_candidates(manifest, input_dir, evidence)
     chat_value_candidates = extract_chat_value_candidates(manifest, chat_text_candidates)
     chat_evidence_links = collect_chat_evidence_links(manifest, input_dir, evidence, chat_text_candidates, chat_value_candidates)
@@ -2250,6 +2365,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     manifest["screenshot_ocr_missing_count"] = sum(1 for row in screenshot_ocr_coverage_rows if row["ocr_coverage_status"] == "ocr_text_sidecar_missing")
     manifest["ocr_text_candidate_count"] = len(ocr_text_candidates)
     manifest["ocr_value_candidate_count"] = len(ocr_value_candidates)
+    manifest["ocr_financial_fact_candidate_count"] = len(ocr_financial_fact_candidates)
     manifest["chat_text_candidate_count"] = len(chat_text_candidates)
     manifest["chat_value_candidate_count"] = len(chat_value_candidates)
     manifest["chat_evidence_link_count"] = len(chat_evidence_links)
@@ -2415,6 +2531,26 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "review_status",
         "financial_fact_promoted",
     ], ocr_value_candidates)
+    write_csv(run_dir / "ocr_financial_fact_candidates.csv", [
+        "fact_candidate_id",
+        "ocr_candidate_id",
+        "evidence_id",
+        "source_image_relative_path",
+        "ocr_text_relative_path",
+        "business_date",
+        "company",
+        "bank",
+        "account_alias",
+        "candidate_metric",
+        "amount",
+        "currency",
+        "line_number",
+        "line_text_excerpt",
+        "extraction_status",
+        "review_status",
+        "financial_fact_promoted",
+        "promotion_blocker",
+    ], ocr_financial_fact_candidates)
     write_csv(run_dir / "chat_text_candidates.csv", [
         "chat_text_candidate_id",
         "evidence_id",
@@ -2635,6 +2771,16 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
             "relative_path": row["ocr_text_relative_path"],
             "review_status": "pending",
         })
+    for row in ocr_financial_fact_candidates:
+        exception_tasks.append({
+            "task_id": f"EX-{manifest['run_id']}-{len(exception_tasks) + 1:05d}",
+            "evidence_id": row["evidence_id"],
+            "task_type": "OCR_FACT_CANDIDATE_PENDING_REVIEW",
+            "severity": "blocking_for_financial_fact",
+            "reason": f"{row['fact_candidate_id']} {row['candidate_metric']} amount candidate requires human/cross review before fact promotion.",
+            "relative_path": row["ocr_text_relative_path"],
+            "review_status": "pending",
+        })
     for row in chat_text_candidates:
         exception_tasks.append({
             "task_id": f"EX-{manifest['run_id']}-{len(exception_tasks) + 1:05d}",
@@ -2716,6 +2862,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "screenshot_ocr_missing_count": manifest["screenshot_ocr_missing_count"],
         "ocr_text_candidate_count": len(ocr_text_candidates),
         "ocr_value_candidate_count": len(ocr_value_candidates),
+        "ocr_financial_fact_candidate_count": len(ocr_financial_fact_candidates),
         "chat_text_candidate_count": len(chat_text_candidates),
         "chat_value_candidate_count": len(chat_value_candidates),
         "chat_evidence_link_count": len(chat_evidence_links),
@@ -2770,6 +2917,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "screenshot_ocr_missing_count": manifest["screenshot_ocr_missing_count"],
                 "ocr_text_candidate_count": len(ocr_text_candidates),
                 "ocr_value_candidate_count": len(ocr_value_candidates),
+                "ocr_financial_fact_candidate_count": len(ocr_financial_fact_candidates),
                 "chat_text_candidate_count": len(chat_text_candidates),
                 "chat_value_candidate_count": len(chat_value_candidates),
                 "chat_evidence_link_count": len(chat_evidence_links),
@@ -2907,6 +3055,7 @@ def main() -> int:
         f"Screenshot OCR missing count: {manifest.get('screenshot_ocr_missing_count', 0)}\n\n"
         f"OCR text candidate count: {manifest.get('ocr_text_candidate_count', 0)}\n\n"
         f"OCR value candidate count: {manifest.get('ocr_value_candidate_count', 0)}\n\n"
+        f"OCR financial fact candidate count: {manifest.get('ocr_financial_fact_candidate_count', 0)}\n\n"
         f"Chat text candidate count: {manifest.get('chat_text_candidate_count', 0)}\n\n"
         f"Chat value candidate count: {manifest.get('chat_value_candidate_count', 0)}\n\n"
         f"Chat evidence link count: {manifest.get('chat_evidence_link_count', 0)}\n\n"

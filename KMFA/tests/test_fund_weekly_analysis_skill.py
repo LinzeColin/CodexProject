@@ -470,6 +470,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "screenshot_ocr_coverage.csv",
                 "ocr_text_candidates.csv",
                 "ocr_value_candidates.csv",
+                "ocr_financial_fact_candidates.csv",
                 "chat_text_candidates.csv",
                 "chat_value_candidates.csv",
                 "chat_evidence_links.csv",
@@ -758,6 +759,108 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["screenshot_ocr_missing_count"], 0)
             self.assertEqual(cross_review["ocr_text_candidate_count"], 1)
             self.assertEqual(cross_review["ocr_value_candidate_count"], 3)
+
+    def test_runner_builds_pending_ocr_financial_fact_candidates_without_promoting(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+            source_day = input_dir / "files" / "0708"
+            source_day.mkdir(parents=True)
+            screenshot = source_day / "20260708113000_杨婷_资金账户截图.png"
+            screenshot.write_bytes(b"real-image-bytes")
+
+            run_id = "ocr_financial_fact_candidate_test"
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs" / run_id
+            run_dir.mkdir(parents=True)
+            private_rel = Path(
+                "KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_sidecars/"
+                "ocr_financial_fact_candidate_test/OCRGEN-ocr_financial_fact_candidate_test-00001.ocr.txt"
+            )
+            private_sidecar = repo_root / private_rel
+            private_sidecar.parent.mkdir(parents=True)
+            private_text = "\n".join([
+                "2026年07月08日 武汉开明 招商银行 银行存款 12,345.67",
+                "武汉彤烨 电子汇票 8,000.00",
+                "申请支付金额 500.00",
+            ])
+            private_sidecar.write_text(private_text + "\n", encoding="utf-8")
+            with (run_dir / "screenshot_ocr_sidecar_generation_plan.csv").open("w", encoding="utf-8", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=[
+                    "ocr_generation_id",
+                    "evidence_id",
+                    "source_image_relative_path",
+                    "engine",
+                    "generation_status",
+                    "ocr_text_private_relative_path",
+                    "text_length",
+                    "text_sha256",
+                    "apply_performed",
+                    "financial_fact_promoted",
+                    "review_status",
+                    "reason",
+                ])
+                writer.writeheader()
+                writer.writerow({
+                    "ocr_generation_id": "OCRGEN-ocr_financial_fact_candidate_test-00001",
+                    "evidence_id": "previous-run-evidence-id",
+                    "source_image_relative_path": "files/0708/20260708113000_杨婷_资金账户截图.png",
+                    "engine": "vision",
+                    "generation_status": "ocr_text_generated_pending_review",
+                    "ocr_text_private_relative_path": str(private_rel),
+                    "text_length": str(len(private_text)),
+                    "text_sha256": hashlib.sha256(private_text.encode("utf-8")).hexdigest(),
+                    "apply_performed": "true",
+                    "financial_fact_promoted": "false",
+                    "review_status": "pending_human_review",
+                    "reason": "",
+                })
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "run_fund_weekly_analysis.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--input-dir",
+                    str(input_dir),
+                    "--run-id",
+                    run_id,
+                    "--timezone",
+                    "Australia/Sydney",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            with (run_dir / "ocr_financial_fact_candidates.csv").open(encoding="utf-8-sig", newline="") as f:
+                fact_rows = list(csv.DictReader(f))
+            self.assertEqual([row["candidate_metric"] for row in fact_rows], [
+                "bank_deposit",
+                "electronic_bill",
+                "payment_outflow",
+            ])
+            self.assertEqual([row["amount"] for row in fact_rows], ["12345.67", "8000.00", "500.00"])
+            self.assertEqual(fact_rows[0]["business_date"], "2026-07-08")
+            self.assertEqual(fact_rows[0]["company"], "武汉开明")
+            self.assertEqual(fact_rows[0]["bank"], "招商银行")
+            self.assertEqual(fact_rows[1]["company"], "武汉彤烨")
+            self.assertTrue(all(row["review_status"] == "pending_human_review" for row in fact_rows))
+            self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in fact_rows))
+
+            with (run_dir / "fund_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
+                fund_rows = list(csv.DictReader(f))
+            self.assertEqual(fund_rows, [])
+
+            with (run_dir / "exception_tasks.csv").open(encoding="utf-8-sig", newline="") as f:
+                task_rows = list(csv.DictReader(f))
+            self.assertTrue(any(row["task_type"] == "OCR_FACT_CANDIDATE_PENDING_REVIEW" for row in task_rows))
+
+            cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
+            self.assertEqual(cross_review["ocr_financial_fact_candidate_count"], 3)
+            self.assertEqual(cross_review["generated_financial_amount_count"], 0)
+            self.assertFalse(cross_review["management_conclusion_allowed"])
 
     def test_runner_extracts_pending_values_from_real_chat_records_without_promoting_facts(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
