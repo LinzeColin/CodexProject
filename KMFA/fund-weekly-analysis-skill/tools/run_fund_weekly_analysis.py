@@ -2632,6 +2632,41 @@ def build_fact_promotion_execution_gate(
     return rows
 
 
+def build_fact_promotion_execution_dry_run_rows(manifest: dict, execution_gate_rows: list[dict]) -> list[dict]:
+    rows: list[dict] = []
+    for row in execution_gate_rows:
+        ready_for_execution = row["execution_gate_status"] == "ready_for_controlled_fact_promotion_execution"
+        dry_run_status = (
+            "ready_for_controlled_execution_preview_no_write"
+            if ready_for_execution
+            else row["execution_gate_status"]
+        )
+        impact_count = int(row["ready_count"]) if ready_for_execution else 0
+        rows.append({
+            "dry_run_id": f"FPDRYRUN-{manifest['run_id']}-{len(rows) + 1:05d}",
+            "execution_gate_id": row["execution_gate_id"],
+            "review_packet_id": row["review_packet_id"],
+            "review_area": row["review_area"],
+            "source_artifact": row["source_artifact"],
+            "candidate_count": row["candidate_count"],
+            "ready_count": row["ready_count"],
+            "blocked_count": row["blocked_count"],
+            "execution_gate_status": row["execution_gate_status"],
+            "dry_run_status": dry_run_status,
+            "dry_run_impact_count": str(impact_count),
+            "fact_promotion_execution_allowed": "false",
+            "fund_ledger_write_allowed": "false",
+            "financial_fact_promoted": "false",
+            "management_conclusion_allowed": "false",
+            "dry_run_reason": (
+                "This row previews impact for a future separately approved controlled execution run; no facts are promoted and no ledger rows are written."
+                if ready_for_execution
+                else "Dry-run impact is zero because this execution gate is not ready for controlled fact promotion."
+            ),
+        })
+    return rows
+
+
 def write_runtime_rules_to_workbook(
     workbook_path: Path,
     manifest: dict,
@@ -4319,6 +4354,17 @@ def write_no_hallucination_outputs(
         1 for row in fact_promotion_execution_gate_rows
         if row["execution_gate_status"].startswith("blocked_")
     )
+    fact_promotion_execution_dry_run_rows = build_fact_promotion_execution_dry_run_rows(
+        manifest,
+        fact_promotion_execution_gate_rows,
+    )
+    fact_promotion_execution_dry_run_ready_count = sum(
+        1 for row in fact_promotion_execution_dry_run_rows
+        if row["dry_run_status"] == "ready_for_controlled_execution_preview_no_write"
+    )
+    fact_promotion_execution_dry_run_impact_count = sum(
+        int(row["dry_run_impact_count"]) for row in fact_promotion_execution_dry_run_rows
+    )
     manifest["fact_promotion_review_packet_count"] = len(fact_promotion_review_packet_rows)
     manifest["fact_promotion_review_blocking_count"] = fact_promotion_review_blocking_count
     manifest["fact_promotion_owner_review_batch_count"] = len(fact_promotion_owner_review_batch_rows)
@@ -4345,6 +4391,13 @@ def write_no_hallucination_outputs(
         1 for row in fact_promotion_execution_gate_rows
         if row["fact_promotion_execution_allowed"] == "true"
     )
+    manifest["fact_promotion_execution_dry_run_count"] = len(fact_promotion_execution_dry_run_rows)
+    manifest["fact_promotion_execution_dry_run_ready_count"] = fact_promotion_execution_dry_run_ready_count
+    manifest["fact_promotion_execution_dry_run_impact_count"] = fact_promotion_execution_dry_run_impact_count
+    manifest["fact_promotion_execution_dry_run_write_allowed_count"] = sum(
+        1 for row in fact_promotion_execution_dry_run_rows
+        if row["fund_ledger_write_allowed"] == "true"
+    )
     cross_review["fact_promotion_review_packet_count"] = len(fact_promotion_review_packet_rows)
     cross_review["fact_promotion_review_blocking_count"] = fact_promotion_review_blocking_count
     cross_review["fact_promotion_owner_review_batch_count"] = len(fact_promotion_owner_review_batch_rows)
@@ -4363,6 +4416,10 @@ def write_no_hallucination_outputs(
     cross_review["fact_promotion_execution_gate_ready_count"] = fact_promotion_execution_gate_ready_count
     cross_review["fact_promotion_execution_gate_blocked_count"] = manifest["fact_promotion_execution_gate_blocked_count"]
     cross_review["fact_promotion_execution_allowed_count"] = manifest["fact_promotion_execution_allowed_count"]
+    cross_review["fact_promotion_execution_dry_run_count"] = manifest["fact_promotion_execution_dry_run_count"]
+    cross_review["fact_promotion_execution_dry_run_ready_count"] = fact_promotion_execution_dry_run_ready_count
+    cross_review["fact_promotion_execution_dry_run_impact_count"] = fact_promotion_execution_dry_run_impact_count
+    cross_review["fact_promotion_execution_dry_run_write_allowed_count"] = manifest["fact_promotion_execution_dry_run_write_allowed_count"]
     management_conclusion_gate_rows = build_management_conclusion_gate_rows(cross_review)
     management_conclusion_gate_ready_count = sum(1 for row in management_conclusion_gate_rows if row["gate_status"] == "ready")
     owner_action_queue_rows = build_owner_action_queue_rows(management_conclusion_gate_rows)
@@ -4459,6 +4516,24 @@ def write_no_hallucination_outputs(
         "source_artifact",
         "review_status",
     ], fact_promotion_execution_gate_rows)
+    write_csv(run_dir / "fact_promotion_execution_dry_run.csv", [
+        "dry_run_id",
+        "execution_gate_id",
+        "review_packet_id",
+        "review_area",
+        "source_artifact",
+        "candidate_count",
+        "ready_count",
+        "blocked_count",
+        "execution_gate_status",
+        "dry_run_status",
+        "dry_run_impact_count",
+        "fact_promotion_execution_allowed",
+        "fund_ledger_write_allowed",
+        "financial_fact_promoted",
+        "management_conclusion_allowed",
+        "dry_run_reason",
+    ], fact_promotion_execution_dry_run_rows)
     write_csv(run_dir / "management_conclusion_gate.csv", [
         "management_gate_id",
         "gate_area",
