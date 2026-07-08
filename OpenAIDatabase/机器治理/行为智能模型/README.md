@@ -3,7 +3,7 @@
 用于放置 facets、semantic clusters、latent signals、collaboration quality、自我迭代和
 低价值循环识别的模型配置。
 
-当前 S08 P2 已完成。facet/canonical events 的数据契约已定义在
+当前 S08 P3 已完成。facet/canonical events 的数据契约已定义在
 `机器治理/数据契约/facet_event_schema.v1_2_s05_p1.json`，中文解释位于
 `人类可读/12_Facet字段与事件语义说明.md`，facet extractor 已实现为
 `scripts/extract_memory_atlas_facets.py`，并为 events 输出补齐
@@ -68,4 +68,11 @@ Contract UI，不创建多 agent 系统，不修改 raw。S08 P1 的下一历史
 `data/derived/agent_collaboration/agent_authorization_boundary_report.json`。S08 P2 明确
 proposal 必须经人类授权并进入 `approved_by_human` 后才能 apply，raw 不可修改，raw
 永远不能成为 apply target。S08 P2 不执行 proposal apply，不实现复杂 Delegation
-Contract UI，不创建多 agent 系统，不生成 stage flight recorder。下一步是 S08 P3。
+Contract UI，不创建多 agent 系统，不生成 stage flight recorder。S08 P2 的下一历史 gate 是
+S08 P3，当前已完成。
+
+当前 S08 P3 已完成：`机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json`
+定义 lightweight stage flight recorder 字段，`scripts/build_memory_atlas_stage_flight.py`
+生成 `data/derived/agent_collaboration/stage_flight_recorder.json`。S08 P3 只保留 10 个轻量字段、
+3 条 phase records、evidence refs 和 validation refs，不携带 raw/transcript 载荷，不生成臃肿
+人类文档，只在开发记录中总结必要信息。下一步是 S08 Review。

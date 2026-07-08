@@ -2,8 +2,33 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S08 P2。任务 ID 为 `MA-V12-S08P2`，验收 ID 为
-`ACC-MA-V12-S08P2`，validator 为 `validate:v1.2-s08-p2`。
+当前阶段是 S08 P3。任务 ID 为 `MA-V12-S08P3`，验收 ID 为
+`ACC-MA-V12-S08P3`，validator 为 `validate:v1.2-s08-p3`。
+
+S08 P3 产物：
+
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s08_p3.cjs`
+- `scripts/build_memory_atlas_stage_flight.py`
+- `scripts/atlasctl.py`
+- `机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json`
+- `data/derived/agent_collaboration/stage_flight_recorder.json`
+
+S08 P3 gate：
+
+- `validate:v1.2-s08-p3` 可验证 lightweight stage flight recorder。
+- `python scripts/atlasctl.py analyze --stage stage-flight --dry-run` 返回 no-write payload。
+- `python scripts/atlasctl.py audit --check stage-flight` 返回 PASS。
+- stage flight recorder 只包含 10 个轻量字段。
+- phase records 覆盖 S08 P1、S08 P2、S08 P3。
+- 不携带 raw 或 transcript payload。
+- 不生成臃肿人类文档。
+- 只在开发记录中总结必要信息。
+- 不创建复杂 Delegation Contract UI。
+- 不创建多 agent 系统。
+- 不修改 raw。
+
+No GitHub main upload in this phase。
+下一步是 S08 Review。
 
 S08 P2 产物：
 
@@ -30,7 +55,7 @@ S08 P2 gate：
 - 不修改 raw。
 
 No GitHub main upload in this phase。
-下一步是 S08 P3。
+S08 P2 的下一历史 gate 是 S08 P3，当前已完成。
 
 S08 P1 产物：
 

@@ -14,20 +14,18 @@ const repoRoot = path.resolve(appRoot, "../..");
 const worktreeRoot = path.resolve(repoRoot, "..");
 const checks = [];
 
-const taskId = "MA-V12-S08P2";
-const acceptanceId = "ACC-MA-V12-S08P2";
-const status = "phase_s08_p2_authorization_boundary_completed_pending_s08_p3";
-const validatorName = "validate:v1.2-s08-p2";
-const scriptName = "validate_memory_atlas_v1_2_s08_p2.cjs";
+const taskId = "MA-V12-S08P3";
+const acceptanceId = "ACC-MA-V12-S08P3";
+const status = "phase_s08_p3_stage_flight_recorder_completed_pending_s08_review";
+const validatorName = "validate:v1.2-s08-p3";
+const scriptName = "validate_memory_atlas_v1_2_s08_p3.cjs";
 const branchName = "codex/memory-atlas-v12-stage0-14-local";
 
 const atlasctlPath = "scripts/atlasctl.py";
-const builderPath = "scripts/build_memory_atlas_agent_authorization.py";
-const configPath = "机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json";
-const outputPath = "data/derived/agent_collaboration/agent_authorization_boundary_report.json";
-const reviewPath = "docs/reviews/memory_atlas_v1_2_s08_p2_authorization_boundary.md";
-const humanDocPath = "人类可读/20_Agent授权边界说明.md";
-const testPath = "tests/test_s08p2_agent_authorization.py";
+const builderPath = "scripts/build_memory_atlas_stage_flight.py";
+const configPath = "机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json";
+const outputPath = "data/derived/agent_collaboration/stage_flight_recorder.json";
+const testPath = "tests/test_s08p3_stage_flight.py";
 
 const recordFiles = [
   "CHANGELOG.md",
@@ -52,6 +50,7 @@ const historicalValidatorPaths = [
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s07_p3.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s07_review.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s08_p1.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s08_p2.cjs",
 ];
 
 const allowedOpenDiffPaths = [
@@ -63,8 +62,6 @@ const allowedOpenDiffPaths = [
   `OpenAIDatabase/${builderPath}`,
   `OpenAIDatabase/${configPath}`,
   `OpenAIDatabase/${outputPath}`,
-  `OpenAIDatabase/${reviewPath}`,
-  `OpenAIDatabase/${humanDocPath}`,
   `OpenAIDatabase/${testPath}`,
   "OpenAIDatabase/docs/MEMORY_ATLAS_DELIVERY_RECORD.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md",
@@ -168,9 +165,9 @@ function validatePackageScript() {
   const packageJson = readJson("apps/memory-atlas/package.json");
   assertCondition(
     packageJson.scripts?.[validatorName] === `node scripts/${scriptName}`,
-    "s08p2_package_script",
-    "package.json exposes the v1.2 S08 P2 validator",
-    "package.json is missing the v1.2 S08 P2 validator",
+    "s08p3_package_script",
+    "package.json exposes the v1.2 S08 P3 validator",
+    "package.json is missing the v1.2 S08 P3 validator",
     { script: packageJson.scripts?.[validatorName] },
   );
 }
@@ -181,108 +178,113 @@ function validatePreviousPhaseGate() {
   if (changed.length > 0) {
     assertCondition(
       outside.length === 0,
-      "s08p2_previous_phase_deferred_scope",
-      "S08 P1 execution is deferred only because open diff is limited to S08 P2 files and compatibility updates",
-      "S08 P1 execution cannot be deferred with unrelated OpenAIDatabase changes",
+      "s08p3_previous_phase_deferred_scope",
+      "S08 P2 execution is deferred only because open diff is limited to S08 P3 files and compatibility updates",
+      "S08 P2 execution cannot be deferred with unrelated OpenAIDatabase changes",
       { changed, outside, allowedOpenDiffPaths },
     );
-    pass("s08p2_previous_phase_deferred_until_clean_tree", "S08 P1 validator will run on a clean tree after S08 P2 commit", { changed });
+    pass("s08p3_previous_phase_deferred_until_clean_tree", "S08 P2 validator will run on a clean tree after S08 P3 commit", { changed });
     return;
   }
-  const parsed = parseJsonFromStdout(run("node", ["scripts/validate_memory_atlas_v1_2_s08_p1.cjs"], {
+  const parsed = parseJsonFromStdout(run("node", ["scripts/validate_memory_atlas_v1_2_s08_p2.cjs"], {
     cwd: appRoot,
     timeout: 300000,
   }));
   assertCondition(
-    parsed.status === "PASS" && parsed.acceptance_id === "ACC-MA-V12-S08P1",
-    "s08p2_previous_s08p1",
-    "S08 P1 validator returns PASS before accepting S08 P2 on a clean tree",
-    "S08 P1 validator did not return PASS",
+    parsed.status === "PASS" && parsed.acceptance_id === "ACC-MA-V12-S08P2",
+    "s08p3_previous_s08p2",
+    "S08 P2 validator returns PASS before accepting S08 P3 on a clean tree",
+    "S08 P2 validator did not return PASS",
     { status: parsed.status, acceptance_id: parsed.acceptance_id },
   );
 }
 
-function validateS08P2Artifacts() {
+function validateS08P3Artifacts() {
   [atlasctlPath, builderPath, configPath, outputPath, testPath].forEach(validateTextFile);
   const atlasctl = readRepoFile(atlasctlPath);
   const builder = readRepoFile(builderPath);
   assertCondition(
-    hasAll(atlasctl, ["agent-authorization", "build_memory_atlas_agent_authorization.py", "run_agent_authorization_audit"]),
-    "s08p2_atlasctl_contract",
-    "atlasctl exposes S08 P2 agent-authorization analyze and audit entry points",
-    "atlasctl is missing S08 P2 agent-authorization contract",
+    hasAll(atlasctl, ["stage-flight", "build_memory_atlas_stage_flight.py", "run_stage_flight_audit"]),
+    "s08p3_atlasctl_contract",
+    "atlasctl exposes S08 P3 stage-flight analyze and audit entry points",
+    "atlasctl is missing S08 P3 stage-flight contract",
   );
   assertCondition(
-    hasAll(builder, [taskId, acceptanceId, "does_not_apply_proposals", "does_not_implement_complex_delegation_contract_ui", "does_not_generate_stage_flight_recorder"]),
-    "s08p2_builder_contract",
-    "Agent authorization builder enforces S08 P2 phase boundaries",
-    "Agent authorization builder is missing S08 P2 boundary markers",
+    hasAll(builder, [taskId, acceptanceId, "lightweight_stage_flight_recorder", "does_not_generate_bulky_human_docs", "records_necessary_info_in_development_records"]),
+    "s08p3_builder_contract",
+    "Stage flight builder enforces S08 P3 lightweight phase boundaries",
+    "Stage flight builder is missing S08 P3 boundary markers",
   );
   const config = readJson(configPath);
   const output = readJson(outputPath);
-  const requiredStates = new Set([
-    "draft",
-    "pending_human_review",
-    "approved_by_human",
-    "applying",
-    "applied",
-    "validated",
-    "committed",
-    "failed_validation",
-    "rollback_or_needs_revision",
-  ]);
-  const states = new Set(config.proposal_state_machine?.states || []);
-  const requiredFields = new Set(["proposal_id", "target_type", "target_files", "approval", "validation_commands", "rollback_plan"]);
-  const configFields = new Set(config.proposal_required_fields || []);
-  const missingStates = [...requiredStates].filter((state) => !states.has(state));
-  const missingFields = [...requiredFields].filter((field) => !configFields.has(field));
+  const requiredFieldIds = new Set(["stage_id", "phase_id", "task_id", "acceptance_id", "status", "summary_zh", "evidence_refs", "validation_refs", "boundary_flags", "next_gate"]);
+  const configFields = new Set((config.required_fields || []).map((item) => item.field_id));
+  const outputFields = new Set((output.required_fields || []).map((item) => item.field_id));
+  const missingConfigFields = [...requiredFieldIds].filter((field) => !configFields.has(field));
+  const missingOutputFields = [...requiredFieldIds].filter((field) => !outputFields.has(field));
+  const phaseIds = new Set((output.phase_records || []).map((item) => item.phase_id));
+  const missingPhases = ["S08 P1", "S08 P2", "S08 P3"].filter((phase) => !phaseIds.has(phase));
   const outputChecks = Array.isArray(output.machine_output_checks) ? output.machine_output_checks : [];
   const checkIds = new Set(outputChecks.map((item) => item.check_id));
-  const missingChecks = ["S08P2-CHECK-001", "S08P2-CHECK-002", "S08P2-CHECK-003", "S08P2-CHECK-004"].filter((item) => !checkIds.has(item));
+  const missingChecks = ["S08P3-CHECK-001", "S08P3-CHECK-002", "S08P3-CHECK-003", "S08P3-CHECK-004"].filter((item) => !checkIds.has(item));
   const badChecks = [];
   for (const item of outputChecks) {
     if (item.status !== "PASS") badChecks.push(`${item.check_id}:not_pass`);
     if (!hasCjk(item.explanation_zh)) badChecks.push(`${item.check_id}:missing_chinese_explanation`);
     if (!Array.isArray(item.evidence_refs) || item.evidence_refs.length === 0) badChecks.push(`${item.check_id}:missing_evidence_refs`);
   }
+  const badRecords = [];
+  for (const item of output.phase_records || []) {
+    if (!hasCjk(item.summary_zh)) badRecords.push(`${item.phase_id}:missing_chinese_summary`);
+    if (!Array.isArray(item.evidence_refs) || item.evidence_refs.length === 0) badRecords.push(`${item.phase_id}:missing_evidence_refs`);
+    if (!Array.isArray(item.validation_refs) || item.validation_refs.length === 0) badRecords.push(`${item.phase_id}:missing_validation_refs`);
+    const flags = item.boundary_flags || {};
+    for (const key of ["raw_mutation", "github_main_upload", "complex_delegation_contract_ui", "multi_agent_system_implementation"]) {
+      if (flags[key] !== false) badRecords.push(`${item.phase_id}:${key}_not_false`);
+    }
+  }
   assertCondition(
     config.task_id === taskId &&
       config.acceptance_id === acceptanceId &&
-      config.boundary_mode === "machine_config_and_output_checks" &&
-      config.delegation_contract_ui?.complex_ui_required === false &&
-      config.proposal_state_machine?.human_approval_required === true &&
-      config.proposal_state_machine?.current_phase_executes_apply === false &&
-      config.proposal_state_machine?.apply_execution_deferred_to === "S13" &&
-      (config.apply_forbidden_targets || []).includes("public_raw") &&
-      (config.apply_forbidden_targets || []).includes("credentials") &&
-      (config.forbidden_path_prefixes || []).includes("data/public_raw/") &&
+      config.recorder_mode === "lightweight_run_evidence_fields" &&
+      config.field_policy?.max_required_fields <= 12 &&
+      config.field_policy?.no_transcript_payloads === true &&
+      config.field_policy?.no_raw_content === true &&
+      config.field_policy?.no_bulky_human_docs === true &&
+      config.field_policy?.development_record_summary_only === true &&
       config.scope_boundary?.raw_mutation === false &&
-      config.scope_boundary?.proposal_apply_execution === false &&
+      config.scope_boundary?.github_main_upload === false &&
+      config.scope_boundary?.bulky_human_documentation === false &&
+      config.scope_boundary?.human_readable_page_required === false &&
+      config.scope_boundary?.development_record_summary_only === true &&
+      config.scope_boundary?.next_phase === "S08 Review" &&
       output.task_id === taskId &&
       output.acceptance_id === acceptanceId &&
       output.status === status &&
-      output.phase_boundary?.authorization_boundary_defined_as_machine_checks === true &&
+      output.recorder_mode === "lightweight_run_evidence_fields" &&
+      output.phase_boundary?.lightweight_stage_flight_recorder === true &&
+      output.phase_boundary?.does_not_include_raw_or_transcript_payloads === true &&
+      output.phase_boundary?.does_not_generate_bulky_human_docs === true &&
+      output.phase_boundary?.records_necessary_info_in_development_records === true &&
       output.phase_boundary?.does_not_modify_raw === true &&
-      output.phase_boundary?.does_not_apply_proposals === true &&
-      output.phase_boundary?.requires_human_approval_before_apply === true &&
-      output.phase_boundary?.raw_is_never_apply_target === true &&
-      output.phase_boundary?.does_not_implement_complex_delegation_contract_ui === true &&
-      output.phase_boundary?.does_not_generate_stage_flight_recorder === true &&
-      output.phase_boundary?.next_phase === "S08 P3" &&
-      missingStates.length === 0 &&
-      missingFields.length === 0 &&
+      output.phase_boundary?.does_not_upload_github_main === true &&
+      output.phase_boundary?.next_phase === "S08 Review" &&
+      missingConfigFields.length === 0 &&
+      missingOutputFields.length === 0 &&
+      missingPhases.length === 0 &&
       missingChecks.length === 0 &&
-      badChecks.length === 0,
-    "s08p2_authorization_report",
-    "Agent authorization boundary report defines machine checks, human approval gate and raw no-apply boundary",
-    "Agent authorization boundary report failed S08 P2 acceptance",
-    { missingStates, missingFields, missingChecks, badChecks },
+      badChecks.length === 0 &&
+      badRecords.length === 0,
+    "s08p3_stage_flight_report",
+    "Stage flight recorder defines lightweight fields, phase records and no-bulky-doc boundary",
+    "Stage flight recorder failed S08 P3 acceptance",
+    { missingConfigFields, missingOutputFields, missingPhases, missingChecks, badChecks, badRecords },
   );
-  const dryRun = parseJsonFromStdout(run("python", [atlasctlPath, "analyze", "--stage", "agent-authorization", "--dry-run"], {
+  const dryRun = parseJsonFromStdout(run("python", [atlasctlPath, "analyze", "--stage", "stage-flight", "--dry-run"], {
     cwd: repoRoot,
     timeout: 300000,
   }));
-  const audit = parseJsonFromStdout(run("python", [atlasctlPath, "audit", "--check", "agent-authorization"], {
+  const audit = parseJsonFromStdout(run("python", [atlasctlPath, "audit", "--check", "stage-flight"], {
     cwd: repoRoot,
     timeout: 300000,
   }));
@@ -295,23 +297,22 @@ function validateS08P2Artifacts() {
       audit.acceptance_id === acceptanceId &&
       Array.isArray(audit.bad_items) &&
       audit.bad_items.length === 0 &&
+      audit.required_field_count === 10 &&
+      audit.phase_record_count === 3 &&
       audit.machine_output_check_count === 4 &&
-      audit.human_approval_required === true &&
-      audit.raw_apply_target_allowed === false &&
-      audit.proposal_apply_execution === false &&
-      audit.complex_delegation_contract_ui === false &&
-      audit.stage_flight_recorder === "deferred_to_s08_p3",
-    "s08p2_atlasctl_gates",
-    "atlasctl analyze --stage agent-authorization dry-run and audit --check agent-authorization pass",
-    "atlasctl S08 P2 gates failed",
+      audit.bulky_human_documentation === false &&
+      audit.raw_mutation === false &&
+      audit.github_main_upload === false &&
+      audit.next_phase === "S08 Review",
+    "s08p3_atlasctl_gates",
+    "atlasctl analyze --stage stage-flight dry-run and audit --check stage-flight pass",
+    "atlasctl S08 P3 gates failed",
     { dryRun: { task_id: dryRun.task_id, writes_files: dryRun.writes_files }, audit },
   );
 }
 
 function validateDocsAndRecords() {
   [
-    reviewPath,
-    humanDocPath,
     "人类可读/00_快速入口.md",
     "人类可读/01_v1.2四线14Stage升级总览.md",
     "机器治理/README.md",
@@ -322,76 +323,61 @@ function validateDocsAndRecords() {
     "机器治理/运行门禁/README.md",
     ...recordFiles,
   ].forEach(validateTextFile);
-  const review = readRepoFile(reviewPath);
-  const human = readRepoFile(humanDocPath);
   const quick = readRepoFile("人类可读/00_快速入口.md");
   const overview = readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md");
   const machine = readRepoFile("机器治理/README.md");
   const dataContract = readRepoFile("机器治理/数据契约/README.md");
   const behavior = readRepoFile("机器治理/行为智能模型/README.md");
   const runGate = readRepoFile("机器治理/运行门禁/README.md");
-  const s08p3State =
-    hasAll(quick, ["当前阶段是 S08 P3", "MA-V12-S08P3", "ACC-MA-V12-S08P3", "下一步只允许进入 S08 Review"]) &&
-    hasAll(overview, ["S08 P3 已完成", "stage flight recorder", "stage_flight_recorder.json", "下一步是 S08 Review"]) &&
-    hasAll(machine, ["当前为 S08 P3", "MA-V12-S08P3", "validate:v1.2-s08-p3", "下一步是 S08 Review"]) &&
-    hasAll(dataContract, ["当前 S08 P3 已完成", "stage_flight_recorder.json", "下一步是 S08 Review"]) &&
-    hasAll(behavior, ["当前 S08 P3 已完成", "stage_flight_recorder_fields.v1_2_s08_p3.json", "stage_flight_recorder.json", "下一步是 S08 Review"]) &&
-    hasAll(runGate, ["当前阶段是 S08 P3", "MA-V12-S08P3", "ACC-MA-V12-S08P3", "validate:v1.2-s08-p3"]);
   assertCondition(
-    hasAll(review, [taskId, acceptanceId, status, "raw 不可修改", "approved_by_human", outputPath, "No GitHub main upload in this phase", "pending S08 P3"]),
-    "s08p2_review_artifact",
-    "S08 P2 review artifact records authorization boundary, output and no-upload boundary",
-    "S08 P2 review artifact is incomplete",
+    !fs.existsSync(path.join(repoRoot, "人类可读/21_StageFlightRecorder说明.md")),
+    "s08p3_no_extra_human_doc",
+    "S08 P3 does not create a bulky extra human-readable stage-flight doc",
+    "S08 P3 created an extra human-readable stage-flight doc",
   );
   assertCondition(
-    hasAll(human, [taskId, acceptanceId, "人类授权后才能 apply", "raw 不可修改", "复杂 Delegation Contract UI", "下一步只允许进入 S08 P3"]),
-    "s08p2_human_doc",
-    "Human doc explains authorization boundary in Chinese",
-    "S08 P2 human doc is incomplete",
+    hasAll(quick, [taskId, acceptanceId, status, "当前阶段是 S08 P3", "下一步只允许进入 S08 Review"]),
+    "s08p3_quick_entry",
+    "Quick entry records S08 P3 state and next S08 Review gate",
+    "Quick entry is missing S08 P3 state",
   );
   assertCondition(
-    s08p3State || hasAll(quick, [taskId, acceptanceId, status, "当前阶段是 S08 P2", "下一步只允许进入 S08 P3"]),
-    "s08p2_quick_entry",
-    "Quick entry records S08 P2 state and next S08 P3 gate",
-    "Quick entry is missing S08 P2 state",
+    hasAll(overview, ["S08 P3 已完成", "stage flight recorder", outputPath, "下一步是 S08 Review"]),
+    "s08p3_overview",
+    "Overview records S08 P3 state and output",
+    "Overview is missing S08 P3 state",
   );
   assertCondition(
-    s08p3State || hasAll(overview, ["S08 P2 已完成", "授权边界", outputPath, "下一步是 S08 P3"]),
-    "s08p2_overview",
-    "Overview records S08 P2 state and output",
-    "Overview is missing S08 P2 state",
+    hasAll(machine, ["当前为 S08 P3", taskId, validatorName, "下一步是 S08 Review"]),
+    "s08p3_machine_readme",
+    "Machine README records S08 P3 identity and next gate",
+    "Machine README is missing S08 P3 state",
   );
   assertCondition(
-    s08p3State || hasAll(machine, ["当前为 S08 P2", taskId, validatorName, "下一步是 S08 P3"]),
-    "s08p2_machine_readme",
-    "Machine README records S08 P2 identity and next gate",
-    "Machine README is missing S08 P2 state",
+    hasAll(dataContract, ["当前 S08 P3 已完成", outputPath, "stage_flight_recorder.json", "下一步是 S08 Review"]),
+    "s08p3_data_contract",
+    "Data contract README records S08 P3 stage flight output",
+    "Data contract README is missing S08 P3 output",
   );
   assertCondition(
-    s08p3State || hasAll(dataContract, ["当前 S08 P2 已完成", outputPath, "agent_authorization_boundary_report.json", "下一步是 S08 P3"]),
-    "s08p2_data_contract",
-    "Data contract README records S08 P2 authorization output",
-    "Data contract README is missing S08 P2 output",
+    hasAll(behavior, ["当前 S08 P3 已完成", configPath, outputPath, "lightweight stage flight recorder", "下一步是 S08 Review"]),
+    "s08p3_behavior_readme",
+    "Behavior model README records S08 P3 lightweight stage flight output",
+    "Behavior model README is missing S08 P3 state",
   );
   assertCondition(
-    s08p3State || hasAll(behavior, ["当前 S08 P2 已完成", configPath, outputPath, "approved_by_human", "raw 不可修改", "下一步是 S08 P3"]),
-    "s08p2_behavior_readme",
-    "Behavior model README records S08 P2 authorization config and output",
-    "Behavior model README is missing S08 P2 state",
-  );
-  assertCondition(
-    s08p3State || hasAll(runGate, ["当前阶段是 S08 P2", taskId, acceptanceId, validatorName, "agent-authorization", "下一步是 S08 P3"]),
-    "s08p2_run_gate",
-    "Run gate README records S08 P2 validator and next gate",
-    "Run gate README is missing S08 P2 gate",
+    hasAll(runGate, ["当前阶段是 S08 P3", taskId, acceptanceId, validatorName, "stage-flight", "下一步是 S08 Review"]),
+    "s08p3_run_gate",
+    "Run gate README records S08 P3 validator and next gate",
+    "Run gate README is missing S08 P3 gate",
   );
   for (const name of recordFiles) {
     const source = readRepoFile(name);
     assertCondition(
-      hasAll(source, [taskId, acceptanceId, status, validatorName, "S08 P2", "pending S08 P3", "No GitHub main upload in this phase"]),
-      `s08p2_records_${name}`,
-      `${name} records S08 P2 status, acceptance, validator and no-upload boundary`,
-      `${name} is missing S08 P2 record fragments`,
+      hasAll(source, [taskId, acceptanceId, status, validatorName, "S08 P3", "pending S08 Review", "No GitHub main upload in this phase"]),
+      `s08p3_records_${name}`,
+      `${name} records S08 P3 status, acceptance, validator and no-upload boundary`,
+      `${name} is missing S08 P3 record fragments`,
     );
   }
 }
@@ -400,7 +386,7 @@ function validateRepoBoundaries() {
   const remote = run("git", ["remote", "get-url", "origin"], { cwd: worktreeRoot }).stdout.trim();
   assertCondition(
     remote === "git@github.com:LinzeColin/CodexProject.git" || remote === "https://github.com/LinzeColin/CodexProject.git",
-    "s08p2_canonical_remote",
+    "s08p3_canonical_remote",
     "origin points at LinzeColin/CodexProject",
     "origin is not LinzeColin/CodexProject",
     { remote },
@@ -408,16 +394,16 @@ function validateRepoBoundaries() {
   const branch = run("git", ["branch", "--show-current"], { cwd: worktreeRoot }).stdout.trim();
   assertCondition(
     branch === branchName || branch === "main",
-    "s08p2_local_branch",
+    "s08p3_local_branch",
     "Current branch is either the local v1.2 work branch or main for final reconciliation",
-    "Current branch is not an approved S08 P2 branch",
+    "Current branch is not an approved S08 P3 branch",
     { branch, branchName },
   );
   const remoteDev = run("git", ["ls-remote", "--heads", "origin", branchName], {
     cwd: worktreeRoot,
     timeout: 60000,
   }).stdout.trim();
-  assertCondition(remoteDev === "", "s08p2_no_remote_development_branch", "No remote v1.2 development branch exists", "Remote v1.2 development branch exists unexpectedly", {
+  assertCondition(remoteDev === "", "s08p3_no_remote_development_branch", "No remote v1.2 development branch exists", "Remote v1.2 development branch exists unexpectedly", {
     branchName,
     remoteDev,
   });
@@ -425,9 +411,9 @@ function validateRepoBoundaries() {
   const outside = changed.filter((file) => !allowedOpenDiffPaths.includes(file));
   assertCondition(
     outside.length === 0,
-    "s08p2_open_diff_scope",
-    "Open diff is limited to S08 P2 files and historical-validator compatibility",
-    "Open diff contains files outside S08 P2 allowed scope",
+    "s08p3_open_diff_scope",
+    "Open diff is limited to S08 P3 files and historical-validator compatibility",
+    "Open diff contains files outside S08 P3 allowed scope",
     { changed, outside, allowedOpenDiffPaths },
   );
   const publicRawDiff = run("git", ["diff", "--name-only", "--", "OpenAIDatabase/data/public_raw"], { cwd: worktreeRoot }).stdout.trim();
@@ -440,9 +426,9 @@ function validateRepoBoundaries() {
   );
   assertCondition(
     forbiddenOpenChanges.length === 0 && publicRawDiff === "",
-    "s08p2_no_raw_or_secret_open_changes",
-    "S08 P2 open diff does not modify raw or secret/config files",
-    "S08 P2 open diff modifies forbidden raw or secret-like files",
+    "s08p3_no_raw_or_secret_open_changes",
+    "S08 P3 open diff does not modify raw or secret/config files",
+    "S08 P3 open diff modifies forbidden raw or secret-like files",
     { changed, forbiddenOpenChanges, publicRawDiff },
   );
 }
@@ -451,14 +437,14 @@ function main() {
   try {
     validatePackageScript();
     validatePreviousPhaseGate();
-    validateS08P2Artifacts();
+    validateS08P3Artifacts();
     validateDocsAndRecords();
     validateRepoBoundaries();
-    console.log(JSON.stringify({ status: "PASS", validator: "validate_memory_atlas_v1_2_s08_p2", task_id: taskId, acceptance_id: acceptanceId, checks }, null, 2));
+    console.log(JSON.stringify({ status: "PASS", validator: "validate_memory_atlas_v1_2_s08_p3", task_id: taskId, acceptance_id: acceptanceId, checks }, null, 2));
   } catch (error) {
     console.log(JSON.stringify({
       status: "FAIL",
-      validator: "validate_memory_atlas_v1_2_s08_p2",
+      validator: "validate_memory_atlas_v1_2_s08_p3",
       task_id: taskId,
       acceptance_id: acceptanceId,
       error: error.message,

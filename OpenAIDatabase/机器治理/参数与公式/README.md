@@ -3,18 +3,18 @@
 用于放置 Memory Atlas v1.2 的信息 ROI、Personal Economic Proxy、证据强度、
 新鲜度、复用价值、维护成本等公式和参数。
 
-当前 S08 P2 已完成。S08 P2 的授权边界属于行为智能模型和运行门禁配置，不新增或修改
+当前 S08 P3 已完成。S08 P3 的 stage flight recorder 属于运行证据配置，不新增或修改
 Personal Economic Proxy、Information ROI、Visual ROI Gate 或 Formula What-if 的 active
 公式配置。S07 Review 已复审以下公式配置：
 `机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json`、
 `机器治理/参数与公式/information_roi.v1_2_s07_p2.json` 和
 `机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`。
 
-任务 ID：`MA-V12-S08P2`。
+任务 ID：`MA-V12-S08P3`。
 
-验收 ID：`ACC-MA-V12-S08P2`。
+验收 ID：`ACC-MA-V12-S08P3`。
 
-Validator：`validate:v1.2-s08-p2`。
+Validator：`validate:v1.2-s08-p3`。
 
 ## S07 Review 结论
 
@@ -65,5 +65,5 @@ S07 P2 同时引用 Visual ROI Gate 配置：
 - 不修改 raw。
 - No GitHub main upload in this phase。
 
-S08 P2 只定义授权边界机器配置和输出检查，不改本目录 active formula config。
-下一步是 S08 P3。
+S08 P3 只定义 lightweight stage flight recorder，不改本目录 active formula config。
+下一步是 S08 Review。

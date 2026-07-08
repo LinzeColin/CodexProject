@@ -25,6 +25,7 @@ INFORMATION_ROI_BUILDER = ROOT / "scripts" / "build_memory_atlas_information_roi
 FORMULA_WHAT_IF_BUILDER = ROOT / "scripts" / "build_memory_atlas_formula_what_if.py"
 AGENT_COLLABORATION_BUILDER = ROOT / "scripts" / "build_memory_atlas_agent_collaboration.py"
 AGENT_AUTHORIZATION_BUILDER = ROOT / "scripts" / "build_memory_atlas_agent_authorization.py"
+STAGE_FLIGHT_BUILDER = ROOT / "scripts" / "build_memory_atlas_stage_flight.py"
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -414,6 +415,33 @@ def agent_authorization_analyze_contract() -> dict[str, object]:
     }
 
 
+def stage_flight_analyze_contract() -> dict[str, object]:
+    return {
+        "status": "PASS",
+        "command": "analyze",
+        "stage": "stage-flight",
+        "dry_run": True,
+        "writes_files": False,
+        "builder": "scripts/build_memory_atlas_stage_flight.py",
+        "stage_flight_config": "机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json",
+        "input": [
+            "data/derived/agent_collaboration/agent_collaboration_quality_report.json",
+            "data/derived/agent_collaboration/agent_authorization_boundary_report.json",
+        ],
+        "output": "data/derived/agent_collaboration/stage_flight_recorder.json",
+        "raw_mutation": False,
+        "task_id": "MA-V12-S08P3",
+        "acceptance_id": "ACC-MA-V12-S08P3",
+        "phase_boundary": {
+            "lightweight_stage_flight_recorder": True,
+            "does_not_include_raw_or_transcript_payloads": True,
+            "does_not_generate_bulky_human_docs": True,
+            "records_necessary_info_in_development_records": True,
+            "next_phase": "S08 Review",
+        },
+    }
+
+
 def run_analyze(args: argparse.Namespace) -> int:
     if args.stage not in {
         "facets",
@@ -425,12 +453,13 @@ def run_analyze(args: argparse.Namespace) -> int:
         "formula-what-if",
         "agent-collaboration",
         "agent-authorization",
+        "stage-flight",
     }:
         print(json.dumps({
             "status": "NOT_IMPLEMENTED",
             "command": "analyze",
             "stage": args.stage,
-            "reason": "Unknown analyze stage. Supported stages: facets, clusters, low-value-loops, opportunities, economic-proxy, information-roi, formula-what-if, agent-collaboration, agent-authorization.",
+            "reason": "Unknown analyze stage. Supported stages: facets, clusters, low-value-loops, opportunities, economic-proxy, information-roi, formula-what-if, agent-collaboration, agent-authorization, stage-flight.",
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 2
 
@@ -479,6 +508,10 @@ def run_analyze(args: argparse.Namespace) -> int:
             command.append("--dry-run")
     elif args.stage == "agent-authorization":
         command = [sys.executable, str(AGENT_AUTHORIZATION_BUILDER), "--database-dir", str(args.database_dir)]
+        if args.dry_run:
+            command.append("--dry-run")
+    elif args.stage == "stage-flight":
+        command = [sys.executable, str(STAGE_FLIGHT_BUILDER), "--database-dir", str(args.database_dir)]
         if args.dry_run:
             command.append("--dry-run")
     result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
@@ -1038,7 +1071,151 @@ def run_agent_authorization_audit(args: argparse.Namespace) -> int:
     return 0 if status == "PASS" else 2
 
 
+def run_stage_flight_audit(args: argparse.Namespace) -> int:
+    config_path = args.database_dir / "机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json"
+    output_path = args.database_dir / "data/derived/agent_collaboration/stage_flight_recorder.json"
+    bad_items: list[str] = []
+    config: dict[str, object] = {}
+    output: dict[str, object] = {}
+    required_field_ids = {
+        "stage_id",
+        "phase_id",
+        "task_id",
+        "acceptance_id",
+        "status",
+        "summary_zh",
+        "evidence_refs",
+        "validation_refs",
+        "boundary_flags",
+        "next_gate",
+    }
+    required_phases = {"S08 P1", "S08 P2", "S08 P3"}
+    if not config_path.exists():
+        bad_items.append("stage_flight_config:missing")
+    else:
+        config = json.loads(config_path.read_text(encoding="utf-8"))
+        if config.get("task_id") != "MA-V12-S08P3" or config.get("acceptance_id") != "ACC-MA-V12-S08P3":
+            bad_items.append("stage_flight_config:identity_mismatch")
+        if config.get("recorder_mode") != "lightweight_run_evidence_fields":
+            bad_items.append("stage_flight_config:not_lightweight_mode")
+        field_policy = config.get("field_policy") if isinstance(config.get("field_policy"), dict) else {}
+        max_fields = int(field_policy.get("max_required_fields") or 0)
+        fields = config.get("required_fields") if isinstance(config.get("required_fields"), list) else []
+        field_ids = {item.get("field_id") for item in fields if isinstance(item, dict)}
+        for field_id in sorted(required_field_ids - field_ids):
+            bad_items.append(f"stage_flight_config:missing_field:{field_id}")
+        if not fields or len(fields) > max_fields or max_fields > 12:
+            bad_items.append("stage_flight_config:field_count_not_lightweight")
+        for key in ["no_transcript_payloads", "no_raw_content", "no_bulky_human_docs", "development_record_summary_only"]:
+            if field_policy.get(key) is not True:
+                bad_items.append(f"stage_flight_config:field_policy_not_true:{key}")
+        boundary = config.get("scope_boundary") if isinstance(config.get("scope_boundary"), dict) else {}
+        for key in [
+            "raw_mutation",
+            "github_main_upload",
+            "complex_delegation_contract_ui",
+            "multi_agent_system_implementation",
+            "bulky_human_documentation",
+            "human_readable_page_required",
+        ]:
+            if boundary.get(key) is not False:
+                bad_items.append(f"stage_flight_config:boundary_not_false:{key}")
+        if boundary.get("development_record_summary_only") is not True:
+            bad_items.append("stage_flight_config:development_record_summary_only_missing")
+        if boundary.get("next_phase") != "S08 Review":
+            bad_items.append("stage_flight_config:next_phase_not_s08_review")
+
+    if not output_path.exists():
+        bad_items.append("stage_flight_output:missing")
+    else:
+        output = json.loads(output_path.read_text(encoding="utf-8"))
+        if output.get("task_id") != "MA-V12-S08P3" or output.get("acceptance_id") != "ACC-MA-V12-S08P3":
+            bad_items.append("stage_flight_output:identity_mismatch")
+        if output.get("status") != "phase_s08_p3_stage_flight_recorder_completed_pending_s08_review":
+            bad_items.append("stage_flight_output:status_mismatch")
+        if output.get("recorder_mode") != "lightweight_run_evidence_fields":
+            bad_items.append("stage_flight_output:not_lightweight_mode")
+        fields = output.get("required_fields") if isinstance(output.get("required_fields"), list) else []
+        if not fields or len(fields) > 12:
+            bad_items.append("stage_flight_output:field_count_not_lightweight")
+        field_ids = {item.get("field_id") for item in fields if isinstance(item, dict)}
+        for field_id in sorted(required_field_ids - field_ids):
+            bad_items.append(f"stage_flight_output:missing_field:{field_id}")
+        phase_records = output.get("phase_records") if isinstance(output.get("phase_records"), list) else []
+        phase_ids = {item.get("phase_id") for item in phase_records if isinstance(item, dict)}
+        for phase_id in sorted(required_phases - phase_ids):
+            bad_items.append(f"stage_flight_output:missing_phase:{phase_id}")
+        for item in phase_records:
+            if not isinstance(item, dict):
+                bad_items.append("stage_flight_output:invalid_phase_record")
+                continue
+            phase_id = item.get("phase_id")
+            if not item.get("summary_zh"):
+                bad_items.append(f"stage_flight_output:{phase_id}:missing_summary")
+            if not item.get("evidence_refs"):
+                bad_items.append(f"stage_flight_output:{phase_id}:missing_evidence_refs")
+            if not item.get("validation_refs"):
+                bad_items.append(f"stage_flight_output:{phase_id}:missing_validation_refs")
+            flags = item.get("boundary_flags") if isinstance(item.get("boundary_flags"), dict) else {}
+            for key in ["raw_mutation", "github_main_upload", "complex_delegation_contract_ui", "multi_agent_system_implementation"]:
+                if flags.get(key) is not False:
+                    bad_items.append(f"stage_flight_output:{phase_id}:boundary_not_false:{key}")
+        checks = output.get("machine_output_checks") if isinstance(output.get("machine_output_checks"), list) else []
+        check_ids = {item.get("check_id") for item in checks if isinstance(item, dict)}
+        for check_id in {"S08P3-CHECK-001", "S08P3-CHECK-002", "S08P3-CHECK-003", "S08P3-CHECK-004"} - check_ids:
+            bad_items.append(f"stage_flight_output:missing_check:{check_id}")
+        for item in checks:
+            if not isinstance(item, dict):
+                bad_items.append("stage_flight_output:invalid_check_item")
+                continue
+            check_id = item.get("check_id")
+            if item.get("status") != "PASS":
+                bad_items.append(f"stage_flight_output:{check_id}:not_pass")
+            if not item.get("explanation_zh"):
+                bad_items.append(f"stage_flight_output:{check_id}:missing_chinese_explanation")
+            if not item.get("evidence_refs"):
+                bad_items.append(f"stage_flight_output:{check_id}:missing_evidence_refs")
+        boundary = output.get("phase_boundary") if isinstance(output.get("phase_boundary"), dict) else {}
+        if boundary.get("lightweight_stage_flight_recorder") is not True:
+            bad_items.append("stage_flight_output:lightweight_boundary_missing")
+        if boundary.get("does_not_include_raw_or_transcript_payloads") is not True:
+            bad_items.append("stage_flight_output:raw_payload_boundary_missing")
+        if boundary.get("does_not_generate_bulky_human_docs") is not True:
+            bad_items.append("stage_flight_output:bulky_human_docs_boundary_missing")
+        if boundary.get("records_necessary_info_in_development_records") is not True:
+            bad_items.append("stage_flight_output:development_record_boundary_missing")
+        if boundary.get("does_not_modify_raw") is not True:
+            bad_items.append("stage_flight_output:raw_mutation_boundary_missing")
+        if boundary.get("does_not_upload_github_main") is not True:
+            bad_items.append("stage_flight_output:github_upload_boundary_missing")
+        if boundary.get("next_phase") != "S08 Review":
+            bad_items.append("stage_flight_output:next_phase_not_s08_review")
+
+    status = "PASS" if not bad_items else "FAIL"
+    result = {
+        "status": status,
+        "command": "audit",
+        "check": "stage-flight",
+        "task_id": config.get("task_id") or output.get("task_id"),
+        "acceptance_id": config.get("acceptance_id") or output.get("acceptance_id"),
+        "stage_flight_config": "机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json",
+        "stage_flight_output": "data/derived/agent_collaboration/stage_flight_recorder.json" if output_path.exists() else "",
+        "required_field_count": len(output.get("required_fields") or []) if isinstance(output.get("required_fields"), list) else 0,
+        "phase_record_count": len(output.get("phase_records") or []) if isinstance(output.get("phase_records"), list) else 0,
+        "machine_output_check_count": len(output.get("machine_output_checks") or []) if isinstance(output.get("machine_output_checks"), list) else 0,
+        "bulky_human_documentation": False,
+        "raw_mutation": False,
+        "github_main_upload": False,
+        "next_phase": "S08 Review",
+        "bad_items": bad_items,
+    }
+    print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0 if status == "PASS" else 2
+
+
 def run_audit(args: argparse.Namespace) -> int:
+    if args.check == "stage-flight":
+        return run_stage_flight_audit(args)
     if args.check == "agent-authorization":
         return run_agent_authorization_audit(args)
     if args.check == "agent-collaboration":
@@ -1054,7 +1231,7 @@ def run_audit(args: argparse.Namespace) -> int:
             "status": "NOT_IMPLEMENTED",
             "command": "audit",
             "check": args.check,
-            "reason": "Unknown audit check. Supported checks: insight-evidence, formulas, visual-roi, formula-what-if, agent-collaboration, agent-authorization.",
+            "reason": "Unknown audit check. Supported checks: insight-evidence, formulas, visual-roi, formula-what-if, agent-collaboration, agent-authorization, stage-flight.",
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 2
 

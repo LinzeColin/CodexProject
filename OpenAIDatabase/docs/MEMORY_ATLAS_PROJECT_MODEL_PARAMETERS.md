@@ -1,3 +1,43 @@
+## 135. Memory Atlas v1.2 S08 P3 Stage Flight Recorder Parameters
+
+状态：`phase_s08_p3_stage_flight_recorder_completed_pending_s08_review`。
+
+验收 ID：`ACC-MA-V12-S08P3`。
+
+S08 P3 固定以下参数：
+
+- `MA-V12-S08P3`
+- `validate:v1.2-s08-p3`
+- `机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json`
+- `scripts/build_memory_atlas_stage_flight.py`
+- `atlasctl.py analyze --stage stage-flight`
+- `atlasctl.py audit --check stage-flight`
+- `data/derived/agent_collaboration/stage_flight_recorder.json`
+- S08 P3 完成后下一步为 pending S08 Review。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S08P3-001 phase_status = phase_s08_p3_stage_flight_recorder_completed_pending_s08_review`
+- `PARAM-MA-V12-S08P3-002 validator = validate:v1.2-s08-p3`
+- `PARAM-MA-V12-S08P3-003 config = 机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json`
+- `PARAM-MA-V12-S08P3-004 builder = build_memory_atlas_stage_flight.py`
+- `PARAM-MA-V12-S08P3-005 output = data/derived/agent_collaboration/stage_flight_recorder.json`
+- `PARAM-MA-V12-S08P3-006 required_field_count = 10 fields`
+- `PARAM-MA-V12-S08P3-007 phase_record_count = 3 records`
+- `PARAM-MA-V12-S08P3-008 bulky_human_documentation = false`
+- `PARAM-MA-V12-S08P3-009 next_gate = pending S08 Review`
+- `PARAM-MA-V12-S08P3-010 phase_boundary = No raw mutation; No raw/transcript payloads; No bulky human documentation; No complex Delegation Contract UI; No multi-agent system; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s08-p3` checks S08 P2 predecessor, stage flight config,
+  persisted `stage_flight_recorder.json`, `atlasctl analyze --stage
+  stage-flight --dry-run`, `atlasctl audit --check stage-flight`,
+  human/machine records, canonical remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S08 P3 Stage Flight Recorder; MA-V12-S08P3; ACC-MA-V12-S08P3; phase_s08_p3_stage_flight_recorder_completed_pending_s08_review; validate:v1.2-s08-p3; S08 P3; stage_flight_recorder.json; required_field_count=10; phase_record_count=3; pending S08 Review; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No raw/transcript payloads; No bulky human documentation; No complex Delegation Contract UI; No multi-agent system.
+
 ## 134. Memory Atlas v1.2 S08 P2 Agent Authorization Boundary Parameters
 
 状态：`phase_s08_p2_authorization_boundary_completed_pending_s08_p3`。

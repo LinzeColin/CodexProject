@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S08 P3 Stage Flight Recorder
+
+- Added `机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json`
+  for lightweight stage flight recorder fields.
+- Added `scripts/build_memory_atlas_stage_flight.py` and
+  `data/derived/agent_collaboration/stage_flight_recorder.json`.
+- Extended `scripts/atlasctl.py` with `analyze --stage stage-flight`
+  and `audit --check stage-flight`.
+- Added `validate:v1.2-s08-p3` for `MA-V12-S08P3` /
+  `ACC-MA-V12-S08P3`.
+- Registered status `phase_s08_p3_stage_flight_recorder_completed_pending_s08_review`.
+- Kept S08 P3 lightweight: 10 required fields, 3 phase records, evidence refs
+  and validation refs only.
+- Preserved S08 P3 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, no raw/transcript payloads,
+  no bulky human documentation, no complex Delegation Contract UI and no
+  multi-agent system implementation.
+- Marked the next gate as pending S08 Review.
+
 ## Unreleased - Memory Atlas v1.2 S08 P2 Agent Authorization Boundary
 
 - Added `机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json`

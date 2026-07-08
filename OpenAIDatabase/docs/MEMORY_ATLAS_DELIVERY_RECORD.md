@@ -1,3 +1,51 @@
+## v1.2 S08 P3 Stage Flight Recorder
+
+状态：`phase_s08_p3_stage_flight_recorder_completed_pending_s08_review`。
+
+任务 ID：`MA-V12-S08P3`。
+
+验收 ID：`ACC-MA-V12-S08P3`。
+
+Validator：`validate:v1.2-s08-p3`。
+
+S08 P3 定义并生成 lightweight stage flight recorder。字段配置位于
+`机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json`，builder 位于
+`scripts/build_memory_atlas_stage_flight.py`，输出位于
+`data/derived/agent_collaboration/stage_flight_recorder.json`。输出使用 10 个轻量字段记录
+S08 P1/P2/P3 phase records，不携带 raw/transcript payload，不生成臃肿人类文档。
+
+涉及文件：
+
+- `机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json`
+- `scripts/build_memory_atlas_stage_flight.py`
+- `scripts/atlasctl.py`
+- `data/derived/agent_collaboration/stage_flight_recorder.json`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s08_p3.cjs`
+- `tests/test_s08p3_stage_flight.py`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s08-p3`
+- `ACC-MA-V12-S08P3`
+- `MA-V12-S08P3`
+- S08 P3
+- `phase_s08_p3_stage_flight_recorder_completed_pending_s08_review`
+- `stage_flight_recorder.json`
+- pending S08 Review
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No raw/transcript payloads。
+- No bulky human documentation。
+- No complex Delegation Contract UI。
+- No multi-agent system。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S08 P3 Stage Flight Recorder; MA-V12-S08P3; ACC-MA-V12-S08P3; phase_s08_p3_stage_flight_recorder_completed_pending_s08_review; validate:v1.2-s08-p3; S08 P3; stage_flight_recorder.json; required_field_count=10; phase_record_count=3; pending S08 Review; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No raw/transcript payloads; No bulky human documentation; No complex Delegation Contract UI; No multi-agent system.
+
 ## v1.2 S08 P2 Agent Authorization Boundary
 
 状态：`phase_s08_p2_authorization_boundary_completed_pending_s08_p3`。
