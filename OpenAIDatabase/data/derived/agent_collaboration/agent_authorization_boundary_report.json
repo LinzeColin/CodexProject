@@ -1,0 +1,235 @@
+{
+  "acceptance_id": "ACC-MA-V12-S08P2",
+  "authorization_boundary_summary": {
+    "agent_role_zh": "Agent 负责生成候选 proposal、检查 target、验证命令和回滚计划；未授权前不得 apply。",
+    "future_apply_zh": "真实 proposal apply、validation、commit/rollback 闭环留给 S13；S08 P2 只定义边界和检查。",
+    "human_role_zh": "人负责批准或拒绝 proposal，确认业务风险、授权范围和是否进入后续 apply。",
+    "raw_boundary_zh": "raw/public_raw/credentials 永远不是 apply target；raw 只允许按 S03 规则追加和审计。",
+    "summary_zh": "S08 P2 将授权边界固定为轻量机器配置和输出检查：raw 不可修改，proposal 必须人类授权后才可 apply，本 phase 不执行 apply。"
+  },
+  "config_path": "机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json",
+  "dry_run": false,
+  "generated_at": "2026-07-08T06:56:26Z",
+  "input_paths": [
+    "data/derived/agent_collaboration/agent_collaboration_quality_report.json",
+    "机器治理/同步与备份/raw_public_archive_policy.v1_2_s03_p1.json",
+    "机器治理/同步与备份/raw_manifest_ledger_policy.v1_2_s03_p3.json",
+    "机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json"
+  ],
+  "machine_output_check_summary": {
+    "check_count": 4,
+    "complex_delegation_contract_ui": false,
+    "current_phase_executes_apply": false,
+    "fail_count": 0,
+    "human_approval_required": true,
+    "pass_count": 4,
+    "raw_apply_target_allowed": false
+  },
+  "machine_output_checks": [
+    {
+      "assertion": "proposal.target_files must not include forbidden_path_prefixes and target_type must not be raw_archive/public_raw/credentials",
+      "check_id": "S08P2-CHECK-001",
+      "evidence_refs": [
+        {
+          "evidence_level": "governance_doc",
+          "path": "机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json",
+          "ref_id": "s08p2_authorization_config",
+          "ref_type": "governance_doc",
+          "source_id": "governance"
+        },
+        {
+          "evidence_level": "governance_doc",
+          "path": "机器治理/同步与备份/raw_public_archive_policy.v1_2_s03_p1.json",
+          "ref_id": "s03p1_raw_public_policy",
+          "ref_type": "governance_doc",
+          "source_id": "governance"
+        },
+        {
+          "evidence_level": "governance_doc",
+          "path": "机器治理/同步与备份/raw_manifest_ledger_policy.v1_2_s03_p3.json",
+          "ref_id": "s03p3_raw_ledger_policy",
+          "ref_type": "governance_doc",
+          "source_id": "governance"
+        }
+      ],
+      "explanation_zh": "raw/public_raw/credentials 被显式列入 forbidden targets；raw policy 和 raw ledger 均声明 raw_files_are_not_apply_targets=true。",
+      "failure_action_zh": "停止 apply，退回 pending_human_review，并要求人工重写 proposal target。",
+      "name_zh": "raw 不可作为 apply target",
+      "status": "PASS"
+    },
+    {
+      "assertion": "proposal.approval.status must be approved_by_human before applying",
+      "check_id": "S08P2-CHECK-002",
+      "evidence_refs": [
+        {
+          "evidence_level": "governance_doc",
+          "path": "机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json",
+          "ref_id": "s08p2_authorization_config",
+          "ref_type": "governance_doc",
+          "source_id": "governance"
+        },
+        {
+          "evidence_level": "governance_doc",
+          "path": "机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json",
+          "ref_id": "s07p3_formula_what_if_config",
+          "ref_type": "governance_doc",
+          "source_id": "governance"
+        },
+        {
+          "evidence_level": "governance_doc",
+          "path": "data/derived/agent_collaboration/agent_collaboration_quality_report.json",
+          "ref_id": "s08p1_collaboration_report",
+          "ref_type": "governance_doc",
+          "source_id": "derived"
+        }
+      ],
+      "explanation_zh": "proposal state machine 要求 approved_by_human 后才可进入 applying；S08 P2 只输出检查，不执行 apply。",
+      "failure_action_zh": "未授权 proposal 保持 draft 或 pending_human_review，不进入 applying。",
+      "name_zh": "人类授权后才能 apply",
+      "status": "PASS"
+    },
+    {
+      "assertion": "proposal must include validation_commands and rollback_plan before any future apply",
+      "check_id": "S08P2-CHECK-003",
+      "evidence_refs": [
+        {
+          "evidence_level": "governance_doc",
+          "path": "机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json",
+          "ref_id": "s08p2_authorization_config",
+          "ref_type": "governance_doc",
+          "source_id": "governance"
+        },
+        {
+          "evidence_level": "governance_doc",
+          "path": "data/derived/agent_collaboration/agent_collaboration_quality_report.json",
+          "ref_id": "s08p1_collaboration_report",
+          "ref_type": "governance_doc",
+          "source_id": "derived"
+        }
+      ],
+      "explanation_zh": "proposal_required_fields 包含 validation_commands 和 rollback_plan，保证后续 S13 apply 前有验证与回滚路径。",
+      "failure_action_zh": "缺少验证或回滚路径时拒绝进入 approved_by_human。",
+      "name_zh": "proposal 必须可验证和可回滚",
+      "status": "PASS"
+    },
+    {
+      "assertion": "current_phase_executes_apply must be false and apply_execution_deferred_to must be S13",
+      "check_id": "S08P2-CHECK-004",
+      "evidence_refs": [
+        {
+          "evidence_level": "governance_doc",
+          "path": "机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json",
+          "ref_id": "s08p2_authorization_config",
+          "ref_type": "governance_doc",
+          "source_id": "governance"
+        },
+        {
+          "evidence_level": "governance_doc",
+          "path": "data/derived/agent_collaboration/agent_collaboration_quality_report.json",
+          "ref_id": "s08p1_collaboration_report",
+          "ref_type": "governance_doc",
+          "source_id": "derived"
+        }
+      ],
+      "explanation_zh": "current_phase_executes_apply=false，真实 proposal apply 明确延后到 S13，避免 S08 P2 变成高负担授权框架。",
+      "failure_action_zh": "如果需要真实 apply，停止本 phase，转入后续 S13。",
+      "name_zh": "本 phase 不执行 apply",
+      "status": "PASS"
+    }
+  ],
+  "output_path": "data/derived/agent_collaboration/agent_authorization_boundary_report.json",
+  "phase_boundary": {
+    "authorization_boundary_defined_as_machine_checks": true,
+    "does_not_apply_proposals": true,
+    "does_not_create_multi_agent_system": true,
+    "does_not_generate_stage_flight_recorder": true,
+    "does_not_implement_complex_delegation_contract_ui": true,
+    "does_not_modify_raw": true,
+    "next_phase": "S08 P3",
+    "raw_is_never_apply_target": true,
+    "requires_human_approval_before_apply": true
+  },
+  "proposal_contract": {
+    "allowed_target_types": [
+      "memory",
+      "agents_rule",
+      "config",
+      "formula",
+      "ui_text",
+      "taxonomy",
+      "report_template"
+    ],
+    "apply_forbidden_targets": [
+      "raw_archive",
+      "public_raw",
+      "credentials"
+    ],
+    "approval_required_fields": [
+      "status",
+      "approved_by",
+      "approved_at"
+    ],
+    "forbidden_path_prefixes": [
+      "data/public_raw/",
+      "data/raw/",
+      "data/raw_encrypted/",
+      "data/private_imports/",
+      "private_exports/",
+      "exports/private/"
+    ],
+    "required_fields": [
+      "proposal_id",
+      "target_type",
+      "target_files",
+      "human_reason_zh",
+      "evidence_refs",
+      "before_after_diff",
+      "risk_level",
+      "rollback_plan",
+      "expires_at",
+      "action_half_life",
+      "approval",
+      "validation_commands"
+    ]
+  },
+  "proposal_state_machine": {
+    "apply_execution_deferred_to": "S13",
+    "current_phase_executes_apply": false,
+    "failure_path": [
+      "applying",
+      "failed_validation",
+      "rollback_or_needs_revision"
+    ],
+    "happy_path": [
+      "draft",
+      "pending_human_review",
+      "approved_by_human",
+      "applying",
+      "applied",
+      "validated",
+      "committed"
+    ],
+    "human_approval_required": true,
+    "states": [
+      "draft",
+      "pending_human_review",
+      "approved_by_human",
+      "applying",
+      "applied",
+      "validated",
+      "committed",
+      "failed_validation",
+      "rollback_or_needs_revision"
+    ]
+  },
+  "schema_version": "memory_atlas_agent_authorization_boundary_report.v1_2_s08_p2",
+  "status": "phase_s08_p2_authorization_boundary_completed_pending_s08_p3",
+  "task_id": "MA-V12-S08P2",
+  "unsupported_scope": {
+    "complex_delegation_contract_ui": false,
+    "multi_agent_system_implementation": false,
+    "proposal_apply_execution": "deferred_to_s13",
+    "stage_flight_recorder": "deferred_to_s08_p3"
+  },
+  "writes_files": true
+}

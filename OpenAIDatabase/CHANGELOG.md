@@ -1,5 +1,26 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S08 P2 Agent Authorization Boundary
+
+- Added `机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json`
+  for lightweight Agent authorization boundary configuration.
+- Added `scripts/build_memory_atlas_agent_authorization.py` and
+  `data/derived/agent_collaboration/agent_authorization_boundary_report.json`.
+- Extended `scripts/atlasctl.py` with `analyze --stage agent-authorization`
+  and `audit --check agent-authorization`.
+- Added `docs/reviews/memory_atlas_v1_2_s08_p2_authorization_boundary.md`.
+- Added `人类可读/20_Agent授权边界说明.md`.
+- Added `validate:v1.2-s08-p2` for `MA-V12-S08P2` /
+  `ACC-MA-V12-S08P2`.
+- Registered status `phase_s08_p2_authorization_boundary_completed_pending_s08_p3`.
+- Fixed the S08 P2 boundary: raw cannot be modified, raw cannot be an apply
+  target, proposal apply requires human approval and `approved_by_human`.
+- Preserved S08 P2 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, no complex Delegation
+  Contract UI, no multi-agent system implementation, no proposal apply
+  execution and no stage flight recorder.
+- Marked the next gate as pending S08 P3.
+
 ## Unreleased - Memory Atlas v1.2 S08 P1 Agent Collaboration Metrics
 
 - Added `机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json`

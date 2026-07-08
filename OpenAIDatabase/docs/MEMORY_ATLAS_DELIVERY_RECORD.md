@@ -1,3 +1,54 @@
+## v1.2 S08 P2 Agent Authorization Boundary
+
+状态：`phase_s08_p2_authorization_boundary_completed_pending_s08_p3`。
+
+任务 ID：`MA-V12-S08P2`。
+
+验收 ID：`ACC-MA-V12-S08P2`。
+
+Validator：`validate:v1.2-s08-p2`。
+
+S08 P2 定义并生成 Agent 授权边界。配置位于
+`机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json`，builder 位于
+`scripts/build_memory_atlas_agent_authorization.py`，输出位于
+`data/derived/agent_collaboration/agent_authorization_boundary_report.json`。报告明确
+raw 不可修改，proposal 需人类授权并进入 `approved_by_human` 后才能 apply，当前 phase
+不执行 proposal apply。
+
+涉及文件：
+
+- `机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json`
+- `scripts/build_memory_atlas_agent_authorization.py`
+- `scripts/atlasctl.py`
+- `data/derived/agent_collaboration/agent_authorization_boundary_report.json`
+- `人类可读/20_Agent授权边界说明.md`
+- `docs/reviews/memory_atlas_v1_2_s08_p2_authorization_boundary.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s08_p2.cjs`
+- `tests/test_s08p2_agent_authorization.py`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s08-p2`
+- `ACC-MA-V12-S08P2`
+- `MA-V12-S08P2`
+- S08 P2
+- `phase_s08_p2_authorization_boundary_completed_pending_s08_p3`
+- `agent_authorization_boundary_report.json`
+- pending S08 P3
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No complex Delegation Contract UI。
+- No multi-agent system。
+- No proposal apply execution。
+- No stage flight recorder。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S08 P2 Agent Authorization Boundary; MA-V12-S08P2; ACC-MA-V12-S08P2; phase_s08_p2_authorization_boundary_completed_pending_s08_p3; validate:v1.2-s08-p2; S08 P2; agent_authorization_boundary_report.json; approved_by_human; raw_apply_target_allowed=false; current_phase_executes_apply=false; pending S08 P3; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No complex Delegation Contract UI; No multi-agent system; No proposal apply execution; No stage flight recorder.
+
 ## v1.2 S08 P1 Agent Collaboration Metrics
 
 状态：`phase_s08_p1_collaboration_metrics_completed_pending_s08_p2`。
