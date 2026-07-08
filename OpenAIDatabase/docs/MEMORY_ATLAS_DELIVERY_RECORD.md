@@ -1,3 +1,50 @@
+## v1.2 S12 P1 Command Palette
+
+状态：`phase_s12_p1_command_palette_completed_pending_s12_p2`。
+
+任务 ID：`MA-V12-S12P1`。
+
+验收 ID：`ACC-MA-V12-S12P1`。
+
+Validator：`validate:v1.2-s12-p1`。
+
+S12 P1 已完成。首页新增命令面板，运行合同为
+`command_palette.v1_2_s12_p1`。命令只包含同步 ChatGPT、同步 Codex、生成本周报告、
+查看待授权 proposal、生成 personalization prompt。`generate_personalization_prompt`
+仅提供 ChatGPT、Codex、other agent 的 dry-run 合同，不写文件，不发送到 ChatGPT。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `scripts/atlasctl.py`
+- `机器治理/运行门禁/command_palette.v1_2_s12_p1.json`
+- `docs/reviews/memory_atlas_v1_2_s12_p1_command_palette.md`
+- `人类可读/31_CommandPalette命令面板说明.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s12_p1.cjs`
+
+验收：
+
+- `validate:v1.2-s12-p1`
+- `ACC-MA-V12-S12P1`
+- `MA-V12-S12P1`
+- `phase_s12_p1_command_palette_completed_pending_s12_p2`
+- `command_palette.v1_2_s12_p1`
+- `generate_personalization_prompt`
+- S12 P2
+- No GitHub main upload
+
+边界：
+
+- No remote push。
+- No raw mutation。
+- No proposal apply execution。
+- No automatic send。
+- No S12 P2 completion。
+- No S12 P3 execution。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S12 P1; MA-V12-S12P1; ACC-MA-V12-S12P1; phase_s12_p1_command_palette_completed_pending_s12_p2; validate:v1.2-s12-p1; command_palette.v1_2_s12_p1; 同步 ChatGPT; 同步 Codex; 生成本周报告; 查看待授权 proposal; generate_personalization_prompt; ChatGPT; Codex; other agent; S12 P2; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution.
+
 ## v1.2 S11 Review
 
 状态：`stage_s11_review_passed_pending_s12_no_github_main_upload`。

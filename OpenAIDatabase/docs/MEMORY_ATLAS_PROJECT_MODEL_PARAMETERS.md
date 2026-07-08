@@ -1,3 +1,43 @@
+## 150. Memory Atlas v1.2 S12 P1 Command Palette Parameters
+
+状态：`phase_s12_p1_command_palette_completed_pending_s12_p2`。
+
+验收 ID：`ACC-MA-V12-S12P1`。
+
+S12 P1 固定以下参数：
+
+- `MA-V12-S12P1`
+- `validate:v1.2-s12-p1`
+- `command_palette.v1_2_s12_p1`
+- `sync_chatgpt`
+- `sync_codex`
+- `generate_weekly_report`
+- `view_pending_proposals`
+- `generate_personalization_prompt`
+- `ChatGPT`
+- `Codex`
+- `other agent`
+- S12 P1 完成后下一步为 S12 P2。
+- No GitHub main upload。
+- No remote push。
+
+参数：
+
+- `PARAM-MA-V12-S12P1-001 phase_status = phase_s12_p1_command_palette_completed_pending_s12_p2`
+- `PARAM-MA-V12-S12P1-002 validator = validate:v1.2-s12-p1`
+- `PARAM-MA-V12-S12P1-003 command_palette_version = command_palette.v1_2_s12_p1`
+- `PARAM-MA-V12-S12P1-004 accepted_core_command_ids = sync_chatgpt; sync_codex; generate_weekly_report; view_pending_proposals`
+- `PARAM-MA-V12-S12P1-005 personalization_command_id = generate_personalization_prompt`
+- `PARAM-MA-V12-S12P1-006 personalization_targets = ChatGPT; Codex; other agent`
+- `PARAM-MA-V12-S12P1-007 next_phase = S12 P2`
+- `PARAM-MA-V12-S12P1-008 phase_boundary = No raw mutation; No proposal apply execution; No GitHub main upload; No remote push; No automatic send; No S12 P2 completion; No S12 P3 execution`
+
+验证逻辑：
+
+- `validate:v1.2-s12-p1` checks the runtime command palette contract, exact command ids, prompt dry-run contract, command config, review artifact, records, no raw or secret changes, and S11 Review clean-tree compatibility.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S12 P1; MA-V12-S12P1; ACC-MA-V12-S12P1; phase_s12_p1_command_palette_completed_pending_s12_p2; validate:v1.2-s12-p1; command_palette.v1_2_s12_p1; 同步 ChatGPT; 同步 Codex; 生成本周报告; 查看待授权 proposal; generate_personalization_prompt; ChatGPT; Codex; other agent; S12 P2; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution.
+
 ## 149. Memory Atlas v1.2 S11 Review Parameters
 
 状态：`stage_s11_review_passed_pending_s12_no_github_main_upload`。

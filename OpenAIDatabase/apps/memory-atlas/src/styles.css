@@ -598,6 +598,134 @@ h3 {
   font-size: 12px;
 }
 
+.command-palette {
+  display: grid;
+  gap: 10px;
+  border: 1px solid rgba(126, 232, 212, 0.18);
+  border-radius: 8px;
+  background: rgba(14, 18, 24, 0.72);
+  padding: 12px;
+}
+
+.command-palette-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.command-palette-heading h2 {
+  margin: 2px 0 0;
+  color: #f4f1e8;
+  font-size: 18px;
+  line-height: 1.15;
+}
+
+.command-palette-heading span {
+  flex: 0 0 auto;
+  color: #8fd3ff;
+  font-size: 12px;
+}
+
+.command-palette-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.command-palette-action {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 7px 8px;
+  min-height: 70px;
+  border: 1px solid rgba(244, 241, 232, 0.12);
+  border-radius: 8px;
+  background: rgba(22, 25, 32, 0.84);
+  color: #f4f1e8;
+  padding: 10px;
+  text-align: left;
+}
+
+.command-palette-action:hover,
+.command-palette-action:focus-visible,
+.command-palette-action.active {
+  border-color: rgba(126, 232, 212, 0.42);
+  background: rgba(35, 48, 59, 0.78);
+  outline: none;
+}
+
+.command-palette-action svg {
+  color: #7ee8d4;
+}
+
+.command-palette-action span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.command-palette-action small {
+  grid-column: 1 / -1;
+  color: #b6b1a6;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.command-palette-detail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.6fr);
+  gap: 10px;
+  border: 1px solid rgba(143, 211, 255, 0.14);
+  border-radius: 8px;
+  background: rgba(8, 10, 14, 0.48);
+  padding: 10px;
+}
+
+.command-palette-detail strong,
+.command-palette-detail code {
+  color: #f4f1e8;
+}
+
+.command-palette-detail p {
+  margin: 5px 0;
+  color: #d9d4ca;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.command-palette-detail small {
+  color: #a8a196;
+  line-height: 1.45;
+}
+
+.command-palette-detail code {
+  align-self: center;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  border: 1px solid rgba(244, 241, 232, 0.12);
+  border-radius: 8px;
+  background: rgba(4, 7, 12, 0.6);
+  padding: 9px;
+  font-size: 11px;
+}
+
+.command-palette-safety {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.command-palette-safety span {
+  border: 1px solid rgba(126, 232, 212, 0.18);
+  border-radius: 999px;
+  color: #cdeff6;
+  background: rgba(126, 232, 212, 0.06);
+  padding: 4px 8px;
+  font-size: 11px;
+}
+
 .content-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 320px);
@@ -8230,6 +8358,14 @@ h3 {
     overflow: hidden;
   }
 
+  .command-palette-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .command-palette-detail {
+    grid-template-columns: 1fr;
+  }
+
   .app-shell {
     grid-template-columns: 74px minmax(0, 1fr);
   }
@@ -8608,6 +8744,19 @@ h3 {
 }
 
 @media (max-width: 720px) {
+  .command-palette-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .command-palette-heading {
+    align-items: start;
+    display: grid;
+  }
+
+  .command-palette-action {
+    min-height: 58px;
+  }
+
   .data-map-layer-strip,
   .data-map-relation-grid,
   .data-map-node-detail-grid {

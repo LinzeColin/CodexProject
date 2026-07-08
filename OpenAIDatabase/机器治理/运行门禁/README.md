@@ -2,8 +2,40 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S11 Review。任务 ID 为 `MA-V12-S11-REVIEW`，验收 ID 为
-`ACC-MA-V12-S11-REVIEW`，validator 为 `validate:v1.2-s11-review`。状态为
+当前阶段是 S12 P1。任务 ID 为 `MA-V12-S12P1`，验收 ID 为
+`ACC-MA-V12-S12P1`，validator 为 `validate:v1.2-s12-p1`。状态为
+`phase_s12_p1_command_palette_completed_pending_s12_p2`。
+
+S12 P1 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s12_p1_command_palette.md`
+- `人类可读/31_CommandPalette命令面板说明.md`
+- `机器治理/运行门禁/command_palette.v1_2_s12_p1.json`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s12_p1.cjs`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `scripts/atlasctl.py`
+
+S12 P1 gate：
+
+- `validate:v1.2-s12-p1` 可验证命令面板。
+- `command_palette.v1_2_s12_p1` runtime contract 存在。
+- 命令只包含同步 ChatGPT、同步 Codex、生成本周报告、查看待授权 proposal、生成 personalization prompt。
+- `generate_personalization_prompt` 只提供 ChatGPT、Codex、other agent 的 dry-run 合同。
+- 不自动发送。
+- 不执行 proposal apply。
+- 不修改 raw。
+- 不上传 GitHub main。
+- 不执行远端 push。
+- 不完成 S12 P2。
+- 不执行 S12 P3 ChatGPT deep explore。
+
+No GitHub main upload。No remote push。No raw mutation。No proposal apply execution。
+下一步是 S12 P2。
+
+历史复验兼容记录：S11 Review 完成时当前阶段是 S11 Review。任务 ID 为
+`MA-V12-S11-REVIEW`，验收 ID 为 `ACC-MA-V12-S11-REVIEW`，validator 为
+`validate:v1.2-s11-review`。状态为
 `stage_s11_review_passed_pending_s12_no_github_main_upload`。
 
 S11 Review 产物：

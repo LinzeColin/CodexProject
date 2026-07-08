@@ -1,5 +1,28 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S12 P1 Command Palette
+
+- Added `command_palette.v1_2_s12_p1` runtime contract to the Memory Atlas
+  home screen.
+- Added a command palette with only the accepted S12 P1 commands:
+  `sync_chatgpt`, `sync_codex`, `generate_weekly_report`,
+  `view_pending_proposals` and `generate_personalization_prompt`.
+- The visible command labels are 同步 ChatGPT, 同步 Codex, 生成本周报告,
+  查看待授权 proposal and 生成 personalization prompt.
+- Added safe `atlasctl.py generate-personalization-prompt --dry-run` support
+  for ChatGPT, Codex and other agent prompt targets without writing files or
+  sending to ChatGPT.
+- Added `机器治理/运行门禁/command_palette.v1_2_s12_p1.json`.
+- Added `validate:v1.2-s12-p1` for `MA-V12-S12P1` /
+  `ACC-MA-V12-S12P1`.
+- Registered status
+  `phase_s12_p1_command_palette_completed_pending_s12_p2`.
+- Preserved S12 P1 boundaries: No automatic send, No GitHub main upload,
+  No remote push, No raw mutation, No proposal apply execution,
+  No S12 P2 Personalization Prompt completion and
+  No S12 P3 ChatGPT deep explore execution.
+- Marked the next gate as pending S12 P2.
+
 ## Unreleased - Memory Atlas v1.2 S11 Review
 
 - Added `docs/reviews/memory_atlas_v1_2_s11_review.md`.

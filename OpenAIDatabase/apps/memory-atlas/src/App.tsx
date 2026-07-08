@@ -87,6 +87,7 @@ const CLIO_LIKE_VISUALS_VERSION = "clio_like_visuals.v1_2_s11_p1" as const;
 const ECONOMIC_LIKE_VISUALS_VERSION = "economic_like_visuals.v1_2_s11_p2" as const;
 const WORKFLOW_LATENT_GOVERNANCE_VISUALS_VERSION = "workflow_latent_governance_visuals.v1_2_s11_p3" as const;
 const HUMAN_QUESTION_MAP_VERSION = "human_question_map.v1_2_s11_p4" as const;
+const COMMAND_PALETTE_VERSION = "command_palette.v1_2_s12_p1" as const;
 const HOME_ACTION_SECTION_VERSION = "top_actions_section.v1_1_7_stage3_phase2" as const;
 const HOME_LEVEL_ASSET_SECTION_VERSION = "level_assets_section.v1_1_7_stage3_phase2" as const;
 const HOME_THEME_CATEGORY_SECTION_VERSION = "theme_categories_section.v1_1_7_stage3_phase2" as const;
@@ -355,6 +356,26 @@ declare global {
         proposalWrite: false;
       };
     };
+    __memoryAtlasS12Phase1?: () => {
+      commandPaletteVersion: typeof COMMAND_PALETTE_VERSION;
+      commandIds: S12P1CommandId[];
+      commandCount: number;
+      acceptedCoreCommandIds: S12P1CommandId[];
+      personalizationCommandId: "generate_personalization_prompt";
+      personalizationTargets: ["chatgpt", "codex", "other_agent"];
+      userTriggerRequired: true;
+      automaticSendEnabled: false;
+      chatgptDeepExploreEnabled: false;
+      unacceptedCommandCount: 0;
+      selectedCommandId: S12P1CommandId;
+      pendingLaterWork: ["S12 P2", "S12 P3"];
+      safety: {
+        rawPrivateDataIncluded: false;
+        directActiveMemoryWriteback: false;
+        proposalApplyExecution: false;
+        sendsCookiesTokensSecrets: false;
+      };
+    };
   }
 }
 
@@ -398,6 +419,41 @@ const HOME_ARRIVAL_CATEGORY_LABELS = {
   pending_proposal: "待授权 proposal",
   sync_failure: "同步失败",
 } as const;
+
+const S12_P1_ACCEPTED_CORE_COMMAND_IDS = [
+  "sync_chatgpt",
+  "sync_codex",
+  "generate_weekly_report",
+  "view_pending_proposals",
+] as const;
+const S12_P1_PERSONALIZATION_COMMAND_ID = "generate_personalization_prompt" as const;
+const S12_P1_COMMAND_IDS = [...S12_P1_ACCEPTED_CORE_COMMAND_IDS, S12_P1_PERSONALIZATION_COMMAND_ID] as const;
+const S12_P1_PERSONALIZATION_TARGETS = ["chatgpt", "codex", "other_agent"] as const;
+
+type S12P1CoreCommandId = (typeof S12_P1_ACCEPTED_CORE_COMMAND_IDS)[number];
+type S12P1CommandId = (typeof S12_P1_COMMAND_IDS)[number];
+
+interface CommandPaletteCommand {
+  id: S12P1CommandId;
+  label: string;
+  description: string;
+  humanAction: string;
+  dryRunCommand: string;
+  status: string;
+  viewTarget: ViewKey | null;
+  personalizationTargets?: typeof S12_P1_PERSONALIZATION_TARGETS;
+}
+
+interface CommandPaletteModel {
+  version: typeof COMMAND_PALETTE_VERSION;
+  commands: CommandPaletteCommand[];
+  commandIds: S12P1CommandId[];
+  acceptedCoreCommandIds: S12P1CoreCommandId[];
+  personalizationTargets: typeof S12_P1_PERSONALIZATION_TARGETS;
+  pendingProposalCount: number;
+  weeklyReportNodeCount: number;
+  latestDateLabel: string;
+}
 
 const views: Array<{ key: ViewKey; label: string; icon: ComponentType<{ size?: number }> }> = [
   { key: "home", label: uiCopy.navigation.views.home, icon: Home },
@@ -1339,6 +1395,79 @@ const writebackActionLabels: Record<WritebackAction, string> = {
   rollback_to_version: uiCopy.proposal.actions.rollback_to_version,
 };
 
+function buildCommandPaletteModel(atlas: MemoryAtlas, slice: FilteredAtlasSlice, runtimeState: RuntimeState): CommandPaletteModel {
+  const pendingProposalCount = slice.memoryNodes.filter((node) => {
+    const text = `${node.label} ${node.statement ?? ""} ${node.category ?? ""}`.toLowerCase();
+    return node.category === "pending_proposal" || /proposal|待授权|提案|pending/.test(text);
+  }).length;
+  const latestDate = parseDay(slice.deltaStats.latestDate);
+  const latestDateLabel = latestDate ? formatChineseDate(latestDate) : formatUpdatedAt(atlas.overview.generated_at);
+  const weeklyReportNodeCount = slice.memoryNodes.filter((node) => {
+    const day = parseDay(node.date);
+    if (!day || !latestDate) return false;
+    return day >= addDays(latestDate, -6) && day <= latestDate;
+  }).length || slice.deltaStats.recentCount;
+  const sourceCount = new Map((atlas.data_sources ?? []).map((source) => [source.id, source.node_count]));
+  const commands: CommandPaletteCommand[] = [
+    {
+      id: "sync_chatgpt",
+      label: "同步 ChatGPT",
+      description: "只读触发 ChatGPT 同步入口，优先走 browser connector 或 official export fallback。",
+      humanAction: "用户触发后再运行 `atlasctl.py sync --source chatgpt --dry-run` 预检，不会自动读取 cookies/tokens。",
+      dryRunCommand: "python3 scripts/atlasctl.py sync --source chatgpt --dry-run",
+      status: `${(sourceCount.get("memory_atlas") ?? 0).toLocaleString()} 条 ChatGPT/Memory Atlas 节点可复核`,
+      viewTarget: null,
+    },
+    {
+      id: "sync_codex",
+      label: "同步 Codex",
+      description: "只读触发 Codex local sync 入口，先看 dry-run 合同和本地 source 状态。",
+      humanAction: "用户触发后再运行 `atlasctl.py sync --source codex --dry-run` 预检，不会写 raw。",
+      dryRunCommand: "python3 scripts/atlasctl.py sync --source codex --dry-run",
+      status: `${(sourceCount.get("codex") ?? 0).toLocaleString()} 条 Codex 节点可复核`,
+      viewTarget: null,
+    },
+    {
+      id: "generate_weekly_report",
+      label: "生成本周报告",
+      description: "从当前 redacted derived 节点进入 Summary & Iteration，生成周报前先看变化和证据。",
+      humanAction: "打开 Summary & Iteration；报告生成仍由用户触发，不在后台静默写入。",
+      dryRunCommand: "python3 scripts/atlasctl.py build-atlas --dry-run",
+      status: `${weeklyReportNodeCount.toLocaleString()} 条近周/近期节点 · 最新 ${latestDateLabel}`,
+      viewTarget: "summary",
+    },
+    {
+      id: "view_pending_proposals",
+      label: "查看待授权 proposal",
+      description: "集中查看待授权 proposal 候选，保持 proposal-only，不执行 apply。",
+      humanAction: "打开 Summary & Iteration 的 proposal 区域；任何 apply 都推迟到 S13 授权闭环。",
+      dryRunCommand: "python3 scripts/atlasctl.py audit --check self-iteration",
+      status: `${pendingProposalCount.toLocaleString()} 条候选线索需要人工判断`,
+      viewTarget: "summary",
+    },
+    {
+      id: "generate_personalization_prompt",
+      label: "生成 personalization prompt",
+      description: "生成给 ChatGPT / Codex / other agent 可用的最新 personalization prompt 入口。",
+      humanAction: "运行 dry-run 先确认来源报告；S12 P2 再生成完整中文说明和机器可复制文本。",
+      dryRunCommand: "python3 scripts/atlasctl.py generate-personalization-prompt --dry-run",
+      status: `覆盖 ${S12_P1_PERSONALIZATION_TARGETS.join(" / ")} · runtime ${runtimeState.lifecycle}`,
+      viewTarget: "summary",
+      personalizationTargets: S12_P1_PERSONALIZATION_TARGETS,
+    },
+  ];
+  return {
+    version: COMMAND_PALETTE_VERSION,
+    commands,
+    commandIds: [...S12_P1_COMMAND_IDS],
+    acceptedCoreCommandIds: [...S12_P1_ACCEPTED_CORE_COMMAND_IDS],
+    personalizationTargets: S12_P1_PERSONALIZATION_TARGETS,
+    pendingProposalCount,
+    weeklyReportNodeCount,
+    latestDateLabel,
+  };
+}
+
 async function clearTransientBrowserState(): Promise<void> {
   try {
     window.sessionStorage.clear();
@@ -1396,6 +1525,7 @@ export function App() {
   const [loadState, setLoadState] = useState<"loading" | "ready" | "error">("loading");
   const [loadError, setLoadError] = useState("");
   const [helpOpen, setHelpOpen] = useState(false);
+  const [selectedCommandId, setSelectedCommandId] = useState<S12P1CommandId>("sync_chatgpt");
   const [runtimeState, setRuntimeState] = useState<RuntimeState>(() => ({
     runStartedAt: new Date(),
     snapshotLoadedAt: null,
@@ -1549,6 +1679,10 @@ export function App() {
     () => buildHumanQuestionMapModel(clioLikeVisualModel, economicLikeVisualModel, workflowLatentGovernanceVisualModel),
     [clioLikeVisualModel, economicLikeVisualModel, workflowLatentGovernanceVisualModel],
   );
+  const commandPaletteModel = useMemo(
+    () => buildCommandPaletteModel(scopedAtlas, slice, runtimeState),
+    [runtimeState, scopedAtlas, slice],
+  );
 
   const handleSelectNode = useCallback((node: AtlasNode) => {
     setSelectedContributionPeriod(null);
@@ -1588,6 +1722,15 @@ export function App() {
     switchView(view);
     setHelpOpen(false);
   }, [switchView]);
+  const handleCommandPaletteAction = useCallback(
+    (command: CommandPaletteCommand) => {
+      setSelectedCommandId(command.id);
+      if (command.viewTarget) {
+        switchView(command.viewTarget);
+      }
+    },
+    [switchView],
+  );
   const focusSelectedTheme = useCallback(() => {
     const theme = selectedNode?.visual?.cluster;
     if (!theme) return;
@@ -1804,6 +1947,32 @@ export function App() {
     };
   }, [humanQuestionMapModel]);
 
+  useEffect(() => {
+    window.__memoryAtlasS12Phase1 = () => ({
+      commandPaletteVersion: COMMAND_PALETTE_VERSION,
+      commandIds: [...commandPaletteModel.commandIds],
+      commandCount: commandPaletteModel.commands.length,
+      acceptedCoreCommandIds: [...commandPaletteModel.acceptedCoreCommandIds],
+      personalizationCommandId: S12_P1_PERSONALIZATION_COMMAND_ID,
+      personalizationTargets: [...S12_P1_PERSONALIZATION_TARGETS],
+      userTriggerRequired: true,
+      automaticSendEnabled: false,
+      chatgptDeepExploreEnabled: false,
+      unacceptedCommandCount: 0,
+      selectedCommandId,
+      pendingLaterWork: ["S12 P2", "S12 P3"],
+      safety: {
+        rawPrivateDataIncluded: false,
+        directActiveMemoryWriteback: false,
+        proposalApplyExecution: false,
+        sendsCookiesTokensSecrets: false,
+      },
+    });
+    return () => {
+      delete window.__memoryAtlasS12Phase1;
+    };
+  }, [commandPaletteModel, selectedCommandId]);
+
   return (
     <div
       className="app-shell"
@@ -1816,6 +1985,7 @@ export function App() {
       data-stage9-synchronized-filters="shared_state_filters synchronized_filters inspector_explanation_layer"
       data-stage9-safety-boundary="No direct active-memory writeback; No proposal queue write"
       data-stage9-surface-count={CROSS_BOARD_SHARED_STATE_SURFACES.length}
+      data-s12-p1-command-palette={COMMAND_PALETTE_VERSION}
     >
       <aside className="sidebar" aria-label={uiCopy.app.navigationAria}>
         <div className="brand">
@@ -1955,6 +2125,12 @@ export function App() {
           onSelectAdjacent={selectAdjacentNode}
         />
 
+        <CommandPalettePanel
+          model={commandPaletteModel}
+          selectedCommandId={selectedCommandId}
+          onSelectCommand={handleCommandPaletteAction}
+        />
+
         <div className={wideView ? "content-grid wide-view" : "content-grid"} data-view={activeView}>
           <section className="view-surface">
             <ViewRouter
@@ -1993,6 +2169,77 @@ export function App() {
       </main>
     </div>
   );
+}
+
+function CommandPalettePanel({
+  model,
+  selectedCommandId,
+  onSelectCommand,
+}: {
+  model: CommandPaletteModel;
+  selectedCommandId: S12P1CommandId;
+  onSelectCommand: (command: CommandPaletteCommand) => void;
+}) {
+  const selectedCommand = model.commands.find((command) => command.id === selectedCommandId) ?? model.commands[0];
+  return (
+    <section
+      className="command-palette"
+      aria-label="Memory Atlas 命令面板"
+      data-s12-p1-command-palette={model.version}
+      data-s12-p1-command-count={model.commands.length}
+      data-s12-p1-personalization-targets={model.personalizationTargets.join(",")}
+      data-s12-p1-safety-boundary="No automatic send; No raw mutation; No proposal apply execution"
+    >
+      <div className="command-palette-heading">
+        <div>
+          <p className="eyebrow">S12 P1</p>
+          <h2>命令面板</h2>
+        </div>
+        <span>{model.commands.length} 个采纳命令</span>
+      </div>
+      <div className="command-palette-grid">
+        {model.commands.map((command) => {
+          const Icon = commandPaletteIcon(command.id);
+          return (
+            <button
+              className={command.id === selectedCommand.id ? "command-palette-action active" : "command-palette-action"}
+              data-s12-p1-command-id={command.id}
+              key={command.id}
+              onClick={() => onSelectCommand(command)}
+              title={command.humanAction}
+              type="button"
+            >
+              <Icon size={18} />
+              <span>{command.label}</span>
+              <small>{command.status}</small>
+            </button>
+          );
+        })}
+      </div>
+      <div className="command-palette-detail">
+        <div>
+          <strong>{selectedCommand.label}</strong>
+          <p>{selectedCommand.description}</p>
+          <small>{selectedCommand.humanAction}</small>
+        </div>
+        <code>{selectedCommand.dryRunCommand}</code>
+      </div>
+      <div className="command-palette-safety">
+        <span>No automatic send</span>
+        <span>No raw mutation</span>
+        <span>No proposal apply execution</span>
+        <span>ChatGPT / Codex / other agent personalization prompt</span>
+      </div>
+    </section>
+  );
+}
+
+function commandPaletteIcon(commandId: S12P1CommandId): ComponentType<{ size?: number }> {
+  if (commandId === "sync_chatgpt") return RefreshCw;
+  if (commandId === "sync_codex") return Download;
+  if (commandId === "generate_weekly_report") return CalendarDays;
+  if (commandId === "view_pending_proposals") return Save;
+  return Crosshair;
 }
 
 function ViewRouter({
