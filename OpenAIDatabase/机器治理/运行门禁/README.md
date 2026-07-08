@@ -2,9 +2,37 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S10 P2。任务 ID 为 `MA-V12-S10P2`，验收 ID 为
-`ACC-MA-V12-S10P2`，validator 为 `validate:v1.2-s10-p2`。状态为
-`phase_s10_p2_global_chinese_ux_completed_pending_s10_p3`。
+当前阶段是 S10 P3。任务 ID 为 `MA-V12-S10P3`，验收 ID 为
+`ACC-MA-V12-S10P3`，validator 为 `validate:v1.2-s10-p3`。状态为
+`phase_s10_p3_machine_detail_folding_completed_pending_s10_review`。
+
+S10 P3 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s10_p3_machine_detail_folding.md`
+- `人类可读/26_机器字段高级详情说明.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p3.cjs`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/i18n/zh-CN.ts`
+- `apps/memory-atlas/src/styles.css`
+- `scripts/atlasctl.py`
+
+S10 P3 gate：
+
+- `validate:v1.2-s10-p3` 可验证机器字段默认折叠。
+- `machine_detail_folding.v1_2_s10_p3` runtime contract 存在。
+- 默认首页、搜索、复盘、总结闭环和 Inspector 的机器字段默认折叠。
+- 中文“高级详情”入口可访问 schema、query、matched_reason、evidence_refs、proposal_candidate、proposal id 和 Agent 字段。
+- `python scripts/atlasctl.py audit --check chinese-ux` 返回 S10 P3 PASS。
+- 不执行 proposal apply。
+- 不修改 raw。
+- S10 Review 下一轮再复审 S10 P1/P2/P3。
+
+No GitHub main upload in this phase。
+下一步是 S10 Review。
+
+历史复验兼容记录：S10 P2 完成时当前阶段是 S10 P2，任务 ID 为 `MA-V12-S10P2`，
+验收 ID 为 `ACC-MA-V12-S10P2`，validator 为 `validate:v1.2-s10-p2`；
+此句只用于保留已完成 phase 的复验语义，不代表当前阶段。
 
 S10 P2 产物：
 
@@ -25,9 +53,6 @@ S10 P2 gate：
 - 不执行 proposal apply。
 - 不修改 raw。
 - S10 P3 下一轮再处理机器字段默认折叠和高级详情入口。
-
-No GitHub main upload in this phase。
-下一步是 S10 P3。
 
 历史复验兼容记录：S10 P1 完成时当前阶段是 S10 P1，任务 ID 为 `MA-V12-S10P1`，
 验收 ID 为 `ACC-MA-V12-S10P1`，validator 为 `validate:v1.2-s10-p1`；

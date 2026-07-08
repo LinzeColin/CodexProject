@@ -1289,8 +1289,7 @@ h3 {
 .summary-closure-schema-line {
   margin: 0;
   color: #d9d4ca;
-  font-family: "SFMono-Regular", "Cascadia Code", "Roboto Mono", monospace;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.45;
   overflow-wrap: anywhere;
 }
@@ -1376,8 +1375,8 @@ h3 {
   border-radius: 999px;
   background: rgba(126, 232, 212, 0.06);
   color: #cdeee8;
-  font-family: "SFMono-Regular", "Cascadia Code", "Roboto Mono", monospace;
   font-size: 11px;
+  font-weight: 700;
   line-height: 1.35;
   padding: 5px 8px;
 }
@@ -1792,18 +1791,53 @@ h3 {
   font-weight: 700;
 }
 
-.arrival-briefing-machine-details {
+.machine-field-details {
   min-width: 0;
   color: #aaa49a;
   font-size: 11px;
 }
 
-.arrival-briefing-machine-details summary {
+.machine-field-details summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   width: max-content;
   max-width: 100%;
   cursor: pointer;
   color: #cfc8bd;
   font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.machine-field-details summary:hover,
+.machine-field-details summary:focus-visible {
+  color: #f4f1e8;
+  outline: none;
+}
+
+.machine-field-help {
+  margin: 8px 0 0;
+  color: #aaa49a;
+  font-size: 11px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.inline-machine-field-details {
+  margin-top: 8px;
+}
+
+.inline-machine-field-details small {
+  display: block;
+  margin-top: 8px;
+  color: #aaa49a;
+  overflow-wrap: anywhere;
+}
+
+.arrival-briefing-machine-details {
+  min-width: 0;
+  color: #aaa49a;
+  font-size: 11px;
 }
 
 .arrival-briefing-machine-details dl {
@@ -6959,7 +6993,7 @@ h3 {
 }
 
 .search-2-session-summary dl,
-.search-2-result-schema {
+.search-2-result-schema dl {
   display: grid;
   gap: 8px;
   margin: 0;
@@ -6970,7 +7004,7 @@ h3 {
 }
 
 .search-2-session-summary dl div,
-.search-2-result-schema div {
+.search-2-result-schema dl div {
   display: grid;
   min-width: 0;
   gap: 3px;

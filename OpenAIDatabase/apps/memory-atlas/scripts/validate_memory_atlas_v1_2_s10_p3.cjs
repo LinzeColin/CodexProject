@@ -12,12 +12,12 @@ const repoRoot = path.resolve(appRoot, "../..");
 const worktreeRoot = path.resolve(repoRoot, "..");
 const checks = [];
 
-const taskId = "MA-V12-S10P1";
-const acceptanceId = "ACC-MA-V12-S10P1";
-const status = "phase_s10_p1_home_arrival_briefing_completed_pending_s10_p2";
-const validatorName = "validate:v1.2-s10-p1";
-const scriptName = "validate_memory_atlas_v1_2_s10_p1.cjs";
-const arrivalVersion = "home_arrival_briefing.v1_2_s10_p1";
+const taskId = "MA-V12-S10P3";
+const acceptanceId = "ACC-MA-V12-S10P3";
+const status = "phase_s10_p3_machine_detail_folding_completed_pending_s10_review";
+const validatorName = "validate:v1.2-s10-p3";
+const scriptName = "validate_memory_atlas_v1_2_s10_p3.cjs";
+const machineDetailVersion = "machine_detail_folding.v1_2_s10_p3";
 
 const allowedOpenDiffPaths = [
   "PRODUCT.md",
@@ -33,16 +33,12 @@ const allowedOpenDiffPaths = [
   "OpenAIDatabase/apps/memory-atlas/src/styles.css",
   "OpenAIDatabase/docs/MEMORY_ATLAS_DELIVERY_RECORD.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md",
-  "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s10_p1_home_arrival_briefing.md",
-  "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s10_p2_global_chinese_ux.md",
   "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s10_p3_machine_detail_folding.md",
   "OpenAIDatabase/功能清单.md",
   "OpenAIDatabase/开发记录.md",
   "OpenAIDatabase/模型参数文件.md",
   "OpenAIDatabase/人类可读/00_快速入口.md",
   "OpenAIDatabase/人类可读/01_v1.2四线14Stage升级总览.md",
-  "OpenAIDatabase/人类可读/24_首页上次来以后发生了什么说明.md",
-  "OpenAIDatabase/人类可读/25_全局中文说明.md",
   "OpenAIDatabase/人类可读/26_机器字段高级详情说明.md",
   "OpenAIDatabase/机器治理/README.md",
   "OpenAIDatabase/机器治理/运行门禁/README.md",
@@ -69,7 +65,7 @@ function run(command, args, options = {}) {
     cwd: options.cwd || repoRoot,
     encoding: "utf8",
     stdio: "pipe",
-    maxBuffer: 64 * 1024 * 1024,
+    maxBuffer: 128 * 1024 * 1024,
     timeout: options.timeout || 0,
   });
   if (result.status !== 0) {
@@ -79,6 +75,11 @@ function run(command, args, options = {}) {
     throw error;
   }
   return result;
+}
+
+function parseJsonFromStdout(result) {
+  const stdout = result.stdout.trim();
+  return JSON.parse(stdout.slice(stdout.indexOf("{")));
 }
 
 function readRepoFile(relativePath) {
@@ -98,9 +99,9 @@ function hasAll(source, fragments) {
 }
 
 function validateTextFile(relativePath) {
-  const source = relativePath.startsWith("OpenAIDatabase/")
+  const source = relativePath.startsWith("OpenAIDatabase/") || relativePath === "PRODUCT.md"
     ? readWorktreeFile(relativePath)
-    : readWorktreeFile(relativePath);
+    : readRepoFile(relativePath);
   assertCondition(source.endsWith("\n"), `${relativePath}:final_newline`, `${relativePath} has final newline`, `${relativePath} is missing final newline`);
   const badLines = [];
   source.split("\n").forEach((line, index) => {
@@ -133,9 +134,9 @@ function validateOpenDiffScope() {
   const outside = changed.filter((file) => !allowedOpenDiffPaths.includes(file));
   assertCondition(
     outside.length === 0,
-    "s10p1_open_diff_scope",
-    "Open diff is limited to S10 P1 homepage, validator, product context and governance records",
-    "S10 P1 has unrelated OpenAIDatabase changes",
+    "s10p3_open_diff_scope",
+    "Open diff is limited to S10 P3 machine detail folding, validator and governance records",
+    "S10 P3 has unrelated OpenAIDatabase changes",
     { changed, outside },
   );
 }
@@ -144,100 +145,112 @@ function validatePackageScript() {
   const packageJson = readJson("apps/memory-atlas/package.json");
   assertCondition(
     packageJson.scripts?.[validatorName] === `node scripts/${scriptName}`,
-    "s10p1_package_script",
-    "package.json exposes the v1.2 S10 P1 validator",
-    "package.json is missing the v1.2 S10 P1 validator",
+    "s10p3_package_script",
+    "package.json exposes the v1.2 S10 P3 validator",
+    "package.json is missing the v1.2 S10 P3 validator",
     { script: packageJson.scripts?.[validatorName] },
   );
 }
 
-function validateHomeArrivalBriefing() {
+function validateMachineDetailContract() {
   const app = readRepoFile("apps/memory-atlas/src/App.tsx");
   const copy = readRepoFile("apps/memory-atlas/src/i18n/zh-CN.ts");
   const styles = readRepoFile("apps/memory-atlas/src/styles.css");
-  const sectionIndex = app.indexOf("data-home-section=\"arrival_briefing\"");
-  const weatherIndex = app.indexOf("data-home-section=\"weather\"");
-  assertCondition(
-    sectionIndex >= 0 && weatherIndex >= 0 && sectionIndex < weatherIndex,
-    "s10p1_arrival_briefing_first",
-    "Arrival briefing is rendered before the older weather/galaxy-oriented sections",
-    "Arrival briefing is missing or not the first home decision section",
-    { sectionIndex, weatherIndex },
-  );
   assertCondition(
     hasAll(app, [
-      `const HOME_ARRIVAL_BRIEFING_VERSION = "${arrivalVersion}" as const;`,
-      "data-s10-p1-home-arrival-briefing={HOME_ARRIVAL_BRIEFING_VERSION}",
-      "data-home-arrival-question={uiCopy.overview.arrivalQuestion}",
-      "buildHomeArrivalBriefing(atlas, nodes, model, deltaStats)",
-      "新增重要资料",
-      "增强结论",
-      "减弱或过期结论",
-      "待授权 proposal",
-      "同步失败",
+      `const MACHINE_DETAIL_FOLDING_VERSION = "${machineDetailVersion}" as const;`,
+      "data-s10-p3-machine-detail-folding={MACHINE_DETAIL_FOLDING_VERSION}",
+      "__memoryAtlasS10Phase3",
+      "machineFieldsDefaultCollapsed: true",
+      "advancedDetailsEntryVisible: true",
+      "defaultHumanReadableFirst: true",
+      "data-s10-p3-machine-fields=\"collapsed-by-default\"",
     ]),
-    "s10p1_app_contract",
-    "App.tsx contains the S10 P1 arrival briefing contract and required categories",
-    "App.tsx is missing S10 P1 arrival briefing contract fragments",
+    "s10p3_runtime_contract",
+    "App.tsx exposes the S10 P3 machine detail folding runtime contract",
+    "App.tsx is missing the S10 P3 runtime contract",
   );
+
   assertCondition(
     hasAll(copy, [
-      "arrivalQuestion: \"上次来以后发生了什么\"",
-      "arrivalTitle: \"上次来以后发生了什么\"",
-      "newMaterial: \"新增重要资料\"",
-      "strengthened: \"增强结论\"",
-      "weakened: \"减弱或过期结论\"",
-      "pendingProposal: \"待授权 proposal\"",
-      "syncFailure: \"同步失败\"",
+      "高级详情：机器字段",
+      "显示高级详情",
+      "隐藏高级详情",
+      "默认折叠，仅用于核验字段",
     ]),
-    "s10p1_chinese_copy",
-    "Chinese copy contains the arrival question and five required status categories",
-    "Chinese copy is missing S10 P1 required labels",
+    "s10p3_chinese_advanced_detail_copy",
+    "Advanced machine detail entry copy is Chinese and explains default folding",
+    "Advanced machine detail copy is missing or not Chinese-first",
   );
+
+  const blockedVisibleMachineFragments = [
+    "<h3>search_session_summary</h3>",
+    "<dt>query</dt>",
+    "<dt>dominant_topics</dt>",
+    "<dt>proposal_candidate</dt>",
+    "<h4>change_comparison</h4>",
+    "<h4>stale_conflict_signals</h4>",
+    "<h4>proposal_candidates</h4>",
+    "<span>{summaryClosure.change_comparison.length} signals</span>",
+    "<span>{summaryClosure.stale_conflict_signals.length} checks</span>",
+    "<span>{summaryClosure.proposal_candidates.length} candidates</span>",
+  ];
+  const blockedPresent = blockedVisibleMachineFragments.filter((fragment) => app.includes(fragment));
+  assertCondition(
+    blockedPresent.length === 0,
+    "s10p3_machine_fields_not_default_visible",
+    "Known machine fields are no longer visible in default review/search/summary layers",
+    "Known machine fields remain default-visible",
+    { blockedPresent },
+  );
+
   assertCondition(
     hasAll(styles, [
-      ".home-arrival-briefing",
-      ".arrival-briefing-grid",
-      ".arrival-briefing-card",
-      ".arrival-briefing-next-step",
-      ".arrival-briefing-machine-details",
+      ".machine-field-details",
+      ".machine-field-help",
+      ".inline-machine-field-details",
     ]),
-    "s10p1_styles",
-    "S10 P1 homepage styles are present with folded machine details support",
-    "S10 P1 homepage styles are missing",
+    "s10p3_machine_detail_styles",
+    "Machine detail folding styles exist for default-collapsed advanced details",
+    "Machine detail folding styles are missing",
   );
 }
 
 function validateChineseUxAudit() {
   const result = run("python3", ["scripts/atlasctl.py", "audit", "--check", "chinese-ux"], { cwd: repoRoot });
-  const payload = JSON.parse(result.stdout.slice(result.stdout.indexOf("{")));
-  const acceptedTaskIds = [taskId, "MA-V12-S10P2", "MA-V12-S10P3"];
-  const acceptedAcceptanceIds = [acceptanceId, "ACC-MA-V12-S10P2", "ACC-MA-V12-S10P3"];
+  const payload = parseJsonFromStdout(result);
   assertCondition(
     payload.status === "PASS" &&
       payload.check === "chinese-ux" &&
-      acceptedTaskIds.includes(payload.task_id) &&
-      acceptedAcceptanceIds.includes(payload.acceptance_id) &&
-      payload.details?.home_arrival_briefing === true,
-    "s10p1_chinese_ux_audit",
-    "atlasctl chinese-ux audit passes for S10 P1 arrival briefing through the current Chinese UX gate",
-    "atlasctl chinese-ux audit did not pass S10 P1",
+      payload.task_id === taskId &&
+      payload.acceptance_id === acceptanceId &&
+      payload.details?.home_arrival_briefing === true &&
+      payload.details?.s10_p2_global_chinese === true &&
+      payload.details?.s10_p3_machine_detail_folding === true &&
+      payload.details?.machine_fields_default_folded === true &&
+      payload.details?.advanced_details_entry_visible === true,
+    "s10p3_chinese_ux_audit",
+    "atlasctl chinese-ux audit passes the S10 P3 machine detail folding gate",
+    "atlasctl chinese-ux audit did not pass S10 P3",
     payload,
   );
 }
 
 function validateRecords() {
-  const reviewPath = "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s10_p1_home_arrival_briefing.md";
+  const reviewPath = "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s10_p3_machine_detail_folding.md";
   [
     "PRODUCT.md",
     reviewPath,
-    "OpenAIDatabase/人类可读/24_首页上次来以后发生了什么说明.md",
+    "OpenAIDatabase/人类可读/26_机器字段高级详情说明.md",
     "OpenAIDatabase/功能清单.md",
     "OpenAIDatabase/开发记录.md",
     "OpenAIDatabase/模型参数文件.md",
     "OpenAIDatabase/docs/MEMORY_ATLAS_DELIVERY_RECORD.md",
     "OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md",
     "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/人类可读/00_快速入口.md",
+    "OpenAIDatabase/人类可读/01_v1.2四线14Stage升级总览.md",
+    "OpenAIDatabase/机器治理/README.md",
     "OpenAIDatabase/机器治理/运行门禁/README.md",
   ].forEach(validateTextFile);
 
@@ -249,6 +262,9 @@ function validateRecords() {
     "OpenAIDatabase/docs/MEMORY_ATLAS_DELIVERY_RECORD.md",
     "OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md",
     "OpenAIDatabase/CHANGELOG.md",
+    "OpenAIDatabase/人类可读/00_快速入口.md",
+    "OpenAIDatabase/人类可读/01_v1.2四线14Stage升级总览.md",
+    "OpenAIDatabase/机器治理/README.md",
     "OpenAIDatabase/机器治理/运行门禁/README.md",
   ]
     .map(readWorktreeFile)
@@ -260,15 +276,17 @@ function validateRecords() {
       acceptanceId,
       status,
       validatorName,
-      arrivalVersion,
-      "pending S10 P2",
+      machineDetailVersion,
+      "pending S10 Review",
+      "机器字段默认折叠",
+      "高级详情入口",
       "No GitHub main upload in this phase",
       "No proposal apply execution",
       "No raw mutation",
     ]),
-    "s10p1_records",
-    "S10 P1 review, feature, development, parameter, delivery and gate records are synchronized",
-    "S10 P1 governance records are incomplete",
+    "s10p3_records",
+    "S10 P3 review, feature, development, parameter, delivery and gate records are synchronized",
+    "S10 P3 governance records are incomplete",
   );
 }
 
@@ -280,9 +298,9 @@ function validateRawUnchanged() {
   });
   assertCondition(
     result.stdout.trim() === "",
-    "s10p1_raw_unchanged",
-    "No raw archive changes are present in S10 P1",
-    "S10 P1 changed raw archive paths",
+    "s10p3_raw_unchanged",
+    "No raw archive changes are present in S10 P3",
+    "S10 P3 changed raw archive paths",
     { stdout: result.stdout.slice(0, 1000), status: result.status },
   );
 }
@@ -290,7 +308,7 @@ function validateRawUnchanged() {
 function main() {
   validateOpenDiffScope();
   validatePackageScript();
-  validateHomeArrivalBriefing();
+  validateMachineDetailContract();
   validateChineseUxAudit();
   validateRecords();
   validateRawUnchanged();

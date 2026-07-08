@@ -1,5 +1,26 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S10 P3 Machine Detail Folding
+
+- Added `machine_detail_folding.v1_2_s10_p3` runtime contract to the Memory
+  Atlas app shell.
+- Folded machine fields behind Chinese “高级详情” entries for home arrival,
+  Search 2.0 session/result details, Review/Summary session output, Summary
+  Closure and Inspector Agent fields.
+- Replaced default-visible machine labels such as `search_session_summary`,
+  `Review session output`, `change_comparison`, `proposal_candidates`,
+  `jump_to_starfield` and `open_inspector` with Chinese-first visible labels.
+- Enhanced `scripts/atlasctl.py audit --check chinese-ux` into the S10 P3
+  machine-detail folding gate while preserving S10 P1/P2 checks.
+- Added `validate:v1.2-s10-p3` for `MA-V12-S10P3` /
+  `ACC-MA-V12-S10P3`.
+- Registered status
+  `phase_s10_p3_machine_detail_folding_completed_pending_s10_review`.
+- Preserved S10 P3 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, No proposal apply execution,
+  No S10 Review work and No S11 work.
+- Marked the next gate as pending S10 Review.
+
 ## Unreleased - Memory Atlas v1.2 S10 P2 Global Chinese UX
 
 - Added `global_chinese_ux.v1_2_s10_p2` runtime contract to the Memory Atlas app shell.

@@ -18,13 +18,17 @@
 
 ## 当前阶段
 
-当前为 S10 P2。任务 ID 为 `MA-V12-S10P2`，验收 ID 为
-`ACC-MA-V12-S10P2`，validator 为 `validate:v1.2-s10-p2`。状态为
-`phase_s10_p2_global_chinese_ux_completed_pending_s10_p3`。S10 P2 已完成
-`global_chinese_ux.v1_2_s10_p2` 和 Chinese UX linter 增强；下一步只允许进入
-pending S10 P3。
+当前为 S10 P3。任务 ID 为 `MA-V12-S10P3`，验收 ID 为
+`ACC-MA-V12-S10P3`，validator 为 `validate:v1.2-s10-p3`。状态为
+`phase_s10_p3_machine_detail_folding_completed_pending_s10_review`。S10 P3 已完成
+`machine_detail_folding.v1_2_s10_p3`，机器字段默认折叠并提供中文高级详情入口；
+下一步只允许进入 pending S10 Review。
 
 No GitHub main upload in this phase。No raw mutation。No proposal apply execution。
+
+历史复验兼容记录：S10 P2 完成时当前为 S10 P2，任务 ID 为 `MA-V12-S10P2`，
+验收 ID 为 `ACC-MA-V12-S10P2`，validator 为 `validate:v1.2-s10-p2`，
+下一步是 S10 P3；此句只用于保留已完成 phase 的复验语义，不代表当前阶段。
 
 历史复验兼容记录：S10 P1 完成时当前为 S10 P1，任务 ID 为 `MA-V12-S10P1`，
 验收 ID 为 `ACC-MA-V12-S10P1`，validator 为 `validate:v1.2-s10-p1`，
@@ -90,7 +94,9 @@ Debt Ledger，配置为 `机器治理/行为智能模型/decision_debt.v1_2_s09_
 `docs/reviews/memory_atlas_v1_2_s10_p1_home_arrival_briefing.md`，validator 为
 `validate:v1.2-s10-p1`。S10 P2 已完成全局中文，输出为
 `docs/reviews/memory_atlas_v1_2_s10_p2_global_chinese_ux.md`，validator 为
-`validate:v1.2-s10-p2`。下一步是 S10 P3。
+`validate:v1.2-s10-p2`。S10 P3 已完成机器字段默认折叠，输出为
+`docs/reviews/memory_atlas_v1_2_s10_p3_machine_detail_folding.md`，validator 为
+`validate:v1.2-s10-p3`。下一步是 S10 Review。
 
 当前机器产物：
 

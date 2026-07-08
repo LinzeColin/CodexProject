@@ -1,3 +1,49 @@
+## v1.2 S10 P3 Machine Detail Folding
+
+状态：`phase_s10_p3_machine_detail_folding_completed_pending_s10_review`。
+
+任务 ID：`MA-V12-S10P3`。
+
+验收 ID：`ACC-MA-V12-S10P3`。
+
+Validator：`validate:v1.2-s10-p3`。
+
+S10 P3 建立 `machine_detail_folding.v1_2_s10_p3`。默认首页、搜索、复盘、
+总结闭环和 Inspector 的机器字段默认折叠，中文“高级详情”入口保留 schema、query、
+matched_reason、evidence_refs、proposal_candidate、proposal id 和 Agent 字段。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/i18n/zh-CN.ts`
+- `apps/memory-atlas/src/styles.css`
+- `scripts/atlasctl.py`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p3.cjs`
+- `docs/reviews/memory_atlas_v1_2_s10_p3_machine_detail_folding.md`
+- `人类可读/26_机器字段高级详情说明.md`
+
+验收：
+
+- `validate:v1.2-s10-p3`
+- `ACC-MA-V12-S10P3`
+- `MA-V12-S10P3`
+- `machine_detail_folding.v1_2_s10_p3`
+- 机器字段默认折叠
+- 高级详情入口
+- `phase_s10_p3_machine_detail_folding_completed_pending_s10_review`
+- pending S10 Review
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No proposal apply execution。
+- No S10 Review work。
+- No S11 work。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S10 P3; MA-V12-S10P3; ACC-MA-V12-S10P3; phase_s10_p3_machine_detail_folding_completed_pending_s10_review; validate:v1.2-s10-p3; machine_detail_folding.v1_2_s10_p3; 机器字段默认折叠; 高级详情入口; pending S10 Review; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No proposal apply execution.
+
 ## v1.2 S10 P2 Global Chinese UX
 
 状态：`phase_s10_p2_global_chinese_ux_completed_pending_s10_p3`。
