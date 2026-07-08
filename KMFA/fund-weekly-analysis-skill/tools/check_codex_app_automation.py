@@ -59,6 +59,8 @@ def main() -> int:
     for field in CHECK_FIELDS:
         if live.get(field) != contract.get(field):
             mismatches.append({"field": field, "expected": contract.get(field), "actual": live.get(field)})
+    if live.get("timezone") is not None and live.get("timezone") != contract.get("timezone"):
+        mismatches.append({"field": "timezone", "expected": contract.get("timezone"), "actual": live.get("timezone")})
 
     prompt_file = skill_root / contract["prompt_file"]
     if live.get("prompt") is not None and prompt_file.exists():

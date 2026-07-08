@@ -72,6 +72,8 @@ REQUIRED_SKILL_STRINGS = [
     "attachment_repair_authorization_template.json",
     "attachment_repair_authorization_preview.csv",
     "goal_completion_audit.csv",
+    "automation_readiness.csv",
+    "schedule_ready",
     "management_conclusion_gate.csv",
     "owner_action_queue.csv",
     "fact_promotion_review_packet.csv",

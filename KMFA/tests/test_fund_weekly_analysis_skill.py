@@ -310,6 +310,38 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(result.returncode, 2)
             self.assertEqual(json.loads(result.stdout)["status"], "CODEX_AUTOMATION_MISSING")
 
+    def test_codex_app_automation_check_fails_closed_on_timezone_drift(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_root = Path(temp_dir)
+            repo_root = temp_root / "repo"
+            contract_dir = repo_root / "KMFA/fund-weekly-analysis-skill/automation"
+            contract_dir.mkdir(parents=True)
+            contract = (SKILL_ROOT / "automation" / "codex_app_automation.contract.toml").read_text(encoding="utf-8")
+            (contract_dir / "codex_app_automation.contract.toml").write_text(contract, encoding="utf-8")
+            automation_dir = temp_root / "automations" / "kmfa"
+            automation_dir.mkdir(parents=True)
+            live = contract.replace('timezone = "Australia/Sydney"', 'timezone = "Asia/Shanghai"')
+            (automation_dir / "automation.toml").write_text(live, encoding="utf-8")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "check_codex_app_automation.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--automation-root",
+                    str(temp_root / "automations"),
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 4)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["status"], "CODEX_AUTOMATION_MISMATCH")
+            self.assertIn("timezone", {row["field"] for row in payload["mismatches"]})
+
     def test_latest_template_has_homepage_cards_two_line_charts_and_hidden_audit_sheets(self) -> None:
         self.assertTrue(TEMPLATE.exists(), "latest editable native Excel template must be present")
         ns_sheet = {"x": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
@@ -459,6 +491,16 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             repo_root = Path(temp_dir) / "repo"
             input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+            contract_dir = repo_root / "KMFA/fund-weekly-analysis-skill/automation"
+            contract_dir.mkdir(parents=True)
+            contract = (SKILL_ROOT / "automation" / "codex_app_automation.contract.toml").read_text(encoding="utf-8")
+            prompt = (SKILL_ROOT / "automation" / "weekly_1100_sydney.prompt.md").read_text(encoding="utf-8")
+            (contract_dir / "codex_app_automation.contract.toml").write_text(contract, encoding="utf-8")
+            (contract_dir / "weekly_1100_sydney.prompt.md").write_text(prompt, encoding="utf-8")
+            automation_root = Path(temp_dir) / "automations"
+            automation_dir = automation_root / "kmfa"
+            automation_dir.mkdir(parents=True)
+            (automation_dir / "automation.toml").write_text(contract + "\nprompt = '''" + prompt + "'''\n", encoding="utf-8")
             source_day = input_dir / "files" / "0708"
             source_day.mkdir(parents=True)
             (source_day / "20260708113000_杨婷_abc_image_real.png").write_bytes(b"real-image-bytes")
@@ -476,6 +518,8 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                     "indexed_package_test",
                     "--timezone",
                     "Australia/Sydney",
+                    "--automation-root",
+                    str(automation_root),
                 ],
                 text=True,
                 capture_output=True,
@@ -519,6 +563,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "attachment_repair_authorization_preview.csv",
                 "workbook_quality_checks.csv",
                 "kmfa_metadata_signals.csv",
+                "automation_readiness.csv",
                 "goal_completion_audit.csv",
                 "management_conclusion_gate.csv",
                 "owner_action_queue.csv",
@@ -553,9 +598,23 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 audit_rows = list(csv.DictReader(f))
             audit_by_id = {row["requirement_id"]: row for row in audit_rows}
             self.assertEqual(audit_by_id["no_hallucinated_data"]["audit_status"], "pass")
+            self.assertEqual(audit_by_id["automation_schedule"]["audit_status"], "pass")
+            self.assertEqual(audit_by_id["automation_schedule"]["blocking"], "false")
             self.assertEqual(audit_by_id["formal_financial_fact_promotion"]["audit_status"], "blocked")
             self.assertEqual(audit_by_id["management_conclusion"]["audit_status"], "blocked")
             self.assertEqual(audit_by_id["management_conclusion"]["blocking"], "true")
+
+            with (run_dir / "automation_readiness.csv").open(encoding="utf-8-sig", newline="") as f:
+                automation_rows = list(csv.DictReader(f))
+            self.assertEqual(len(automation_rows), 1)
+            self.assertEqual(automation_rows[0]["status"], "CODEX_AUTOMATION_READY")
+            self.assertEqual(automation_rows[0]["rrule"], "FREQ=WEEKLY;BYHOUR=11;BYMINUTE=0;BYDAY=MO,SA")
+            self.assertEqual(automation_rows[0]["expected_timezone"], "Australia/Sydney")
+            self.assertEqual(automation_rows[0]["schedule_ready"], "true")
+            self.assertEqual(automation_rows[0]["management_conclusion_allowed"], "false")
+            self.assertEqual(cross_review["automation_readiness_status"], "CODEX_AUTOMATION_READY")
+            self.assertEqual(cross_review["automation_readiness_ready_count"], 1)
+            self.assertEqual(cross_review["automation_readiness_blocking_count"], 0)
 
             with (run_dir / "management_conclusion_gate.csv").open(encoding="utf-8-sig", newline="") as f:
                 management_gate_rows = list(csv.DictReader(f))
@@ -567,29 +626,29 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 gate_by_area["formal_fact_promotion_execution"]["gate_status"],
                 "blocked_fact_promotion_not_executed",
             )
-            self.assertEqual(gate_by_area["automation_schedule"]["gate_status"], "external_check_required")
+            self.assertEqual(gate_by_area["automation_schedule"]["gate_status"], "ready")
             self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in management_gate_rows))
             self.assertEqual(cross_review["management_conclusion_gate_count"], 7)
-            self.assertEqual(cross_review["management_conclusion_gate_ready_count"], 2)
-            self.assertEqual(cross_review["management_conclusion_gate_blocked_count"], 5)
+            self.assertEqual(cross_review["management_conclusion_gate_ready_count"], 3)
+            self.assertEqual(cross_review["management_conclusion_gate_blocked_count"], 4)
             self.assertFalse(cross_review["management_conclusion_allowed"])
 
             with (run_dir / "owner_action_queue.csv").open(encoding="utf-8-sig", newline="") as f:
                 owner_action_rows = list(csv.DictReader(f))
-            self.assertEqual(len(owner_action_rows), 5)
+            self.assertEqual(len(owner_action_rows), 4)
             action_by_gate = {row["source_gate"]: row for row in owner_action_rows}
             self.assertEqual(
                 action_by_gate["formal_fact_promotion_execution"]["action_type"],
                 "APPROVE_CONTROLLED_FACT_PROMOTION_EXECUTION",
             )
-            self.assertEqual(action_by_gate["automation_schedule"]["action_type"], "VERIFY_CODEX_AUTOMATION_SCHEDULE")
+            self.assertNotIn("automation_schedule", action_by_gate)
             self.assertTrue(all(row["automation_safe"] == "false" for row in owner_action_rows))
             self.assertTrue(all(row["source_mutation_allowed"] == "false" for row in owner_action_rows))
             self.assertTrue(all(row["fact_promotion_allowed"] == "false" for row in owner_action_rows))
             self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in owner_action_rows))
             self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in owner_action_rows))
-            self.assertEqual(cross_review["owner_action_queue_count"], 5)
-            self.assertEqual(cross_review["owner_action_queue_blocking_count"], 5)
+            self.assertEqual(cross_review["owner_action_queue_count"], 4)
+            self.assertEqual(cross_review["owner_action_queue_blocking_count"], 4)
             self.assertEqual(cross_review["owner_action_queue_automation_safe_count"], 0)
 
             with (run_dir / "fact_promotion_owner_review_batch.csv").open(encoding="utf-8-sig", newline="") as f:

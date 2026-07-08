@@ -20,6 +20,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tomllib
 import zipfile
 from pathlib import Path
 from typing import Iterable
@@ -78,6 +79,17 @@ VISIBLE_SENSITIVE_PATTERNS = [
 VISIBLE_SENSITIVE_PATTERN = re.compile("(" + "|".join(VISIBLE_SENSITIVE_PATTERNS) + ")", re.IGNORECASE)
 OCR_DATE_PATTERN = re.compile(r"20\d{2}[-/.年]\d{1,2}[-/.月]\d{1,2}日?")
 OCR_AMOUNT_PATTERN = re.compile(r"(?:[￥¥]\s*)?[-+]?\d{1,3}(?:,\d{3})+(?:\.\d{1,2})?|(?:[￥¥]\s*)?[-+]?\d+(?:\.\d{1,2})")
+AUTOMATION_CHECK_FIELDS = [
+    "id",
+    "name",
+    "kind",
+    "status",
+    "rrule",
+    "execution_environment",
+    "cwds",
+    "model",
+    "reasoning_effort",
+]
 OCR_AMOUNT_CONTEXT_WORDS = (
     "余额",
     "金额",
@@ -1608,6 +1620,126 @@ def bool_text(value: bool) -> str:
     return "true" if value else "false"
 
 
+def load_toml_object(path: Path) -> dict:
+    return tomllib.loads(path.read_text(encoding="utf-8"))
+
+
+def automation_readiness_row(
+    status: str,
+    automation_id: str = "",
+    automation_path: str = "",
+    expected_timezone: str = "",
+    rrule: str = "",
+    cwd: str = "",
+    schedule_ready: bool = False,
+    mismatches: list[str] | None = None,
+    next_action: str = "",
+) -> dict:
+    mismatch_fields = sorted(mismatches or [])
+    return {
+        "automation_readiness_id": "AUTOMATION-READINESS-001",
+        "status": status,
+        "automation_id": automation_id,
+        "automation_path": automation_path,
+        "expected_timezone": expected_timezone,
+        "rrule": rrule,
+        "cwd": cwd,
+        "schedule_ready": bool_text(schedule_ready),
+        "mismatch_count": str(len(mismatch_fields)),
+        "mismatch_fields": ";".join(mismatch_fields),
+        "management_conclusion_allowed": "false",
+        "next_action": next_action,
+    }
+
+
+def build_automation_readiness_rows(repo_root: Path, automation_root: Path) -> list[dict]:
+    skill_root = repo_root / "KMFA" / "fund-weekly-analysis-skill"
+    contract_path = skill_root / "automation" / "codex_app_automation.contract.toml"
+    if not contract_path.exists():
+        return [
+            automation_readiness_row(
+                "CODEX_AUTOMATION_CONTRACT_MISSING",
+                automation_path=str(contract_path),
+                next_action="Restore tracked Codex automation contract before claiming scheduled readiness",
+            )
+        ]
+    try:
+        contract = load_toml_object(contract_path)
+    except Exception:
+        return [
+            automation_readiness_row(
+                "CODEX_AUTOMATION_CONTRACT_INVALID",
+                automation_path=str(contract_path),
+                next_action="Fix tracked Codex automation contract TOML before claiming scheduled readiness",
+            )
+        ]
+
+    automation_id = str(contract.get("id", ""))
+    expected_timezone = str(contract.get("timezone", ""))
+    rrule = str(contract.get("rrule", ""))
+    cwds = contract.get("cwds") if isinstance(contract.get("cwds"), list) else []
+    cwd = str(cwds[0]) if cwds else ""
+    automation_path = automation_root.expanduser() / automation_id / "automation.toml"
+    if not automation_path.exists():
+        return [
+            automation_readiness_row(
+                "CODEX_AUTOMATION_MISSING",
+                automation_id=automation_id,
+                automation_path=str(automation_path),
+                expected_timezone=expected_timezone,
+                rrule=rrule,
+                cwd=cwd,
+                next_action="Create or restore local Codex automation before claiming scheduled readiness",
+            )
+        ]
+    try:
+        live = load_toml_object(automation_path)
+    except Exception:
+        return [
+            automation_readiness_row(
+                "CODEX_AUTOMATION_INVALID",
+                automation_id=automation_id,
+                automation_path=str(automation_path),
+                expected_timezone=expected_timezone,
+                rrule=rrule,
+                cwd=cwd,
+                next_action="Fix local Codex automation TOML before claiming scheduled readiness",
+            )
+        ]
+
+    mismatches = [
+        field
+        for field in AUTOMATION_CHECK_FIELDS
+        if live.get(field) != contract.get(field)
+    ]
+    if live.get("timezone") is not None and live.get("timezone") != contract.get("timezone"):
+        mismatches.append("timezone")
+    prompt_file = skill_root / str(contract.get("prompt_file", ""))
+    if live.get("prompt") is not None and prompt_file.exists():
+        expected_prompt = prompt_file.read_text(encoding="utf-8").strip()
+        if str(live["prompt"]).strip() != expected_prompt:
+            mismatches.append("prompt")
+
+    ready = not mismatches and rrule == "FREQ=WEEKLY;BYHOUR=11;BYMINUTE=0;BYDAY=MO,SA" and expected_timezone == "Australia/Sydney"
+    return [
+        automation_readiness_row(
+            "CODEX_AUTOMATION_READY" if ready else "CODEX_AUTOMATION_MISMATCH",
+            automation_id=automation_id,
+            automation_path=str(automation_path),
+            expected_timezone=expected_timezone,
+            rrule=rrule,
+            cwd=cwd,
+            schedule_ready=ready,
+            mismatches=mismatches,
+            next_action=(
+                "Keep local Codex automation schedule aligned with repo contract"
+                if ready
+                else "Sync local Codex automation to the tracked Monday/Saturday 11:00 Australia/Sydney contract"
+            ),
+        )
+    ]
+
+
 def money(value: str | None) -> Decimal:
     cleaned = (value or "").strip().replace(",", "")
     if cleaned == "":
@@ -1801,6 +1933,8 @@ def build_goal_completion_audit_rows(cross_review: dict) -> list[dict]:
     internal_transfer_count = int(cross_review.get("internal_transfer_excluded_count") or 0)
     generated_amount_count = int(cross_review.get("generated_financial_amount_count") or 0)
     management_allowed = bool(cross_review.get("management_conclusion_allowed"))
+    automation_ready = int(cross_review.get("automation_readiness_ready_count") or 0) > 0
+    automation_status = str(cross_review.get("automation_readiness_status") or "CODEX_AUTOMATION_UNKNOWN")
     ocr_blocked = int(cross_review.get("ocr_fact_ledger_staging_preview_blocked_count") or 0)
     attachment_blocked = int(cross_review.get("attachment_reconciliation_blocking_count") or 0)
 
@@ -1888,10 +2022,10 @@ def build_goal_completion_audit_rows(cross_review: dict) -> list[dict]:
         goal_completion_audit_row(
             "automation_schedule",
             "Run under the approved local Codex automation schedule",
-            "external_check_required",
-            "runner cannot inspect local Codex automation state",
-            True,
-            "Run check_codex_app_automation.py after code or prompt changes",
+            "pass" if automation_ready else "external_check_required",
+            f"automation_readiness_status={automation_status}; automation_readiness_ready_count={cross_review.get('automation_readiness_ready_count', 0)}",
+            not automation_ready,
+            "Keep Codex automation drift check green" if automation_ready else "Run check_codex_app_automation.py after code or prompt changes",
         ),
     ]
 
@@ -1930,6 +2064,8 @@ def build_management_conclusion_gate_rows(cross_review: dict) -> list[dict]:
         int(cross_review.get("chat_value_candidate_count") or 0),
         int(cross_review.get("attachment_reconciliation_blocking_count") or 0),
     ])
+    automation_ready = int(cross_review.get("automation_readiness_ready_count") or 0) > 0
+    automation_status = str(cross_review.get("automation_readiness_status") or "CODEX_AUTOMATION_UNKNOWN")
 
     cashflow_ready = cashflow_row_count > 0 and balance_fail_count == 0
     return [
@@ -1977,10 +2113,10 @@ def build_management_conclusion_gate_rows(cross_review: dict) -> list[dict]:
         ),
         management_conclusion_gate_row(
             "automation_schedule",
-            "external_check_required",
-            "runner cannot inspect local Codex automation state",
-            True,
-            "Run check_codex_app_automation.py before claiming scheduled readiness",
+            "ready" if automation_ready else "external_check_required",
+            f"automation_readiness_status={automation_status}; automation_readiness_ready_count={cross_review.get('automation_readiness_ready_count', 0)}",
+            not automation_ready,
+            "Keep Codex automation schedule readiness evidence with each run" if automation_ready else "Run check_codex_app_automation.py before claiming scheduled readiness",
         ),
     ]
 
@@ -3330,7 +3466,13 @@ def build_company_bank_matrix_rows(fund_rows: list[dict]) -> list[dict]:
     ]
 
 
-def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Path, repo_root: Path) -> None:
+def write_no_hallucination_outputs(
+    manifest: dict,
+    run_dir: Path,
+    input_dir: Path,
+    repo_root: Path,
+    automation_root: Path,
+) -> None:
     evidence = write_evidence_index_stub(manifest, run_dir)
     screenshot_ocr_coverage_rows = collect_screenshot_ocr_coverage(manifest, repo_root, run_dir, evidence)
     ocr_text_candidates = collect_ocr_text_candidates(manifest, input_dir, repo_root, run_dir, evidence)
@@ -3424,8 +3566,17 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     write_metadata_signals_to_workbook(workbook_path, metadata_signals, len(structured["risk_rows"]))
     workbook_quality_rows = collect_workbook_quality_checks(workbook_path)
     workbook_quality_blocking_count = sum(1 for row in workbook_quality_rows if row["management_blocking"] == "true")
+    automation_readiness_rows = build_automation_readiness_rows(repo_root, automation_root)
+    automation_readiness_ready_count = sum(1 for row in automation_readiness_rows if row["schedule_ready"] == "true")
+    automation_readiness_blocking_count = len(automation_readiness_rows) - automation_readiness_ready_count
     manifest["workbook_quality_check_count"] = len(workbook_quality_rows)
     manifest["workbook_quality_blocking_count"] = workbook_quality_blocking_count
+    manifest["automation_readiness_count"] = len(automation_readiness_rows)
+    manifest["automation_readiness_ready_count"] = automation_readiness_ready_count
+    manifest["automation_readiness_blocking_count"] = automation_readiness_blocking_count
+    manifest["automation_readiness_status"] = (
+        automation_readiness_rows[0]["status"] if automation_readiness_rows else "CODEX_AUTOMATION_UNKNOWN"
+    )
 
     write_csv(run_dir / "fund_ledger.csv", [
         "ledger_id",
@@ -3814,6 +3965,20 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "review_status",
         "remark",
     ], metadata_signals)
+    write_csv(run_dir / "automation_readiness.csv", [
+        "automation_readiness_id",
+        "status",
+        "automation_id",
+        "automation_path",
+        "expected_timezone",
+        "rrule",
+        "cwd",
+        "schedule_ready",
+        "mismatch_count",
+        "mismatch_fields",
+        "management_conclusion_allowed",
+        "next_action",
+    ], automation_readiness_rows)
     exception_tasks = [
         {
             "task_id": f"EX-{manifest['run_id']}-{index:05d}",
@@ -3993,6 +4158,11 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "internal_transfer_excluded_count": internal_transfer_excluded_count,
         "workbook_quality_check_count": len(workbook_quality_rows),
         "workbook_quality_blocking_count": workbook_quality_blocking_count,
+        "automation_readiness_count": len(automation_readiness_rows),
+        "automation_readiness_ready_count": automation_readiness_ready_count,
+        "automation_readiness_blocking_count": automation_readiness_blocking_count,
+        "automation_readiness_status": automation_readiness_rows[0]["status"] if automation_readiness_rows else "CODEX_AUTOMATION_UNKNOWN",
+        "automation_readiness_rrule": automation_readiness_rows[0]["rrule"] if automation_readiness_rows else "",
         "excel_workbook_generated": True,
         "workbook": workbook_path.name,
         "source_file_count": manifest["file_count"],
@@ -4296,6 +4466,10 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "internal_transfer_excluded_count": internal_transfer_excluded_count,
                 "workbook_quality_check_count": len(workbook_quality_rows),
                 "workbook_quality_blocking_count": workbook_quality_blocking_count,
+                "automation_readiness_count": len(automation_readiness_rows),
+                "automation_readiness_ready_count": automation_readiness_ready_count,
+                "automation_readiness_blocking_count": automation_readiness_blocking_count,
+                "automation_readiness_status": automation_readiness_rows[0]["status"] if automation_readiness_rows else "CODEX_AUTOMATION_UNKNOWN",
                 "goal_completion_audit_check_count": len(goal_completion_audit_rows),
                 "goal_completion_blocking_count": goal_completion_blocking_count,
                 "fact_promotion_review_packet_count": len(fact_promotion_review_packet_rows),
@@ -4395,6 +4569,7 @@ def main() -> int:
     parser.add_argument("--repo-root", default=os.environ.get("KMFA_REPO_ROOT", "."))
     parser.add_argument("--run-id", default=None)
     parser.add_argument("--timezone", default="Australia/Sydney")
+    parser.add_argument("--automation-root", default=str(Path.home() / ".codex" / "automations"))
     args = parser.parse_args()
 
     repo_root = Path(args.repo_root).expanduser().resolve()
@@ -4414,7 +4589,7 @@ def main() -> int:
         write_source_unreadable_artifacts(manifest, run_dir)
         print(json.dumps({"run_id": run_id, "run_dir": str(run_dir), "status": "SOURCE_UNREADABLE", "unreadable_count": manifest["unreadable_count"]}, ensure_ascii=False))
         return 5
-    write_no_hallucination_outputs(manifest, run_dir, input_dir, repo_root)
+    write_no_hallucination_outputs(manifest, run_dir, input_dir, repo_root, Path(args.automation_root))
     (run_dir / "run_manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
     (run_dir / "run_summary.md").write_text(
         f"# Fund weekly analysis run {run_id}\n\n"
@@ -4452,6 +4627,9 @@ def main() -> int:
         f"Cashflow validation row count: {manifest.get('cashflow_validation_row_count', 0)}\n\n"
         f"Balance continuity fail count: {manifest.get('balance_continuity_fail_count', 0)}\n\n"
         f"Workbook quality blocking count: {manifest.get('workbook_quality_blocking_count', 0)}\n\n"
+        f"Automation readiness status: {manifest.get('automation_readiness_status', 'CODEX_AUTOMATION_UNKNOWN')}\n\n"
+        f"Automation readiness ready count: {manifest.get('automation_readiness_ready_count', 0)}\n\n"
+        f"Automation readiness blocking count: {manifest.get('automation_readiness_blocking_count', 0)}\n\n"
         f"Goal completion audit check count: {manifest.get('goal_completion_audit_check_count', 0)}\n\n"
         f"Goal completion blocking count: {manifest.get('goal_completion_blocking_count', 0)}\n\n"
         f"Fact promotion review packet count: {manifest.get('fact_promotion_review_packet_count', 0)}\n\n"
