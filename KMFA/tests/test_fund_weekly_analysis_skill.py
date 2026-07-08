@@ -6113,6 +6113,114 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 ).exists()
             )
 
+    def test_owner_decision_review_export_can_emit_native_xlsx_no_write_packet(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            run_id = "owner_review_xlsx_export"
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs" / run_id
+            run_dir.mkdir(parents=True)
+            worklist_path = run_dir / "ocr_fact_candidate_owner_worklist.csv"
+            with worklist_path.open("w", encoding="utf-8", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=[
+                    "owner_worklist_id",
+                    "ocr_fact_evidence_review_queue_id",
+                    "fact_candidate_id",
+                    "candidate_metric",
+                    "source_evidence_id",
+                    "source_ocr_text_relative_path",
+                    "business_date",
+                    "company",
+                    "bank",
+                    "account_alias",
+                    "amount",
+                    "currency",
+                    "proposed_amount_role",
+                    "proposed_liquidity_tier",
+                    "proposed_flow_type",
+                    "fund_ledger_write_allowed",
+                    "financial_fact_promoted",
+                    "management_conclusion_allowed",
+                    "recommended_owner_action",
+                ])
+                writer.writeheader()
+                for idx, metric in enumerate(["deposit_release", "bank_deposit"], 1):
+                    writer.writerow({
+                        "owner_worklist_id": f"OCROWNERWORK-{run_id}-{idx:05d}",
+                        "ocr_fact_evidence_review_queue_id": f"OCREVIDQUEUE-{run_id}-{idx:05d}",
+                        "fact_candidate_id": f"OCRFACT-{run_id}-{idx:05d}",
+                        "candidate_metric": metric,
+                        "source_evidence_id": f"FW{run_id}-{idx:05d}",
+                        "source_ocr_text_relative_path": f"private/OCRGEN-{idx:05d}.ocr.txt",
+                        "business_date": f"2026-06-{idx:02d}",
+                        "company": "",
+                        "bank": "",
+                        "account_alias": "",
+                        "amount": f"{idx}.00",
+                        "currency": "CNY",
+                        "proposed_amount_role": "amount",
+                        "proposed_liquidity_tier": "T0_BANK_CASH",
+                        "proposed_flow_type": "inflow",
+                        "fund_ledger_write_allowed": "false",
+                        "financial_fact_promoted": "false",
+                        "management_conclusion_allowed": "false",
+                        "recommended_owner_action": "Review candidate",
+                    })
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "export_owner_decision_review_csv.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--run-id",
+                    run_id,
+                    "--metrics",
+                    "deposit_release,bank_deposit",
+                    "--limit-per-metric",
+                    "1",
+                    "--xlsx",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["status"], "READY_REVIEW_CSV")
+            self.assertEqual(payload["selected_count"], 2)
+            self.assertIn("xlsx_output_relative_path", payload)
+            self.assertFalse(payload["fund_ledger_write_allowed"])
+            self.assertFalse(payload["financial_fact_promoted"])
+            self.assertFalse(payload["management_conclusion_allowed"])
+
+            xlsx_path = repo_root / payload["xlsx_output_relative_path"]
+            self.assertTrue(xlsx_path.exists())
+            with zipfile.ZipFile(xlsx_path) as workbook:
+                names = set(workbook.namelist())
+                self.assertIn("xl/workbook.xml", names)
+                self.assertIn("xl/worksheets/sheet1.xml", names)
+                self.assertIn("xl/sharedStrings.xml", names)
+                self.assertIn("xl/styles.xml", names)
+                workbook_xml = workbook.read("xl/workbook.xml").decode("utf-8")
+                sheet_xml = workbook.read("xl/worksheets/sheet1.xml").decode("utf-8")
+                shared_xml = workbook.read("xl/sharedStrings.xml").decode("utf-8")
+                self.assertIn("Owner Review", workbook_xml)
+                self.assertIn("owner_authorization_decision", shared_xml)
+                self.assertIn("owner_corrected_company", shared_xml)
+                self.assertIn("owner_corrected_bank", shared_xml)
+                self.assertIn("pending_owner_review", shared_xml)
+                self.assertIn("fund_ledger_write_allowed", shared_xml)
+                self.assertIn("management_conclusion_allowed", shared_xml)
+                self.assertIn("<dataValidations", sheet_xml)
+                self.assertIn("approve_for_review_authorization", sheet_xml)
+                self.assertIn("frozenSplit", sheet_xml)
+            self.assertFalse(
+                (
+                    repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/"
+                    f"ocr_fact_candidate_owner_decisions/{run_id}.json"
+                ).exists()
+            )
+
     def test_owner_decision_manifest_install_apply_requires_ack_and_writes_validation_only_manifest(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             repo_root = Path(temp_dir) / "repo"
