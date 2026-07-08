@@ -55,7 +55,7 @@ Scheduler local time:
 Reference only:
 
 ```text
-11:00 Australia/Sydney == 09:00 Asia/Shanghai during the current UTC+10 offset
+Australia/Sydney local time is authoritative; do not convert from Beijing time.
 ```
 
 Default chart limit:

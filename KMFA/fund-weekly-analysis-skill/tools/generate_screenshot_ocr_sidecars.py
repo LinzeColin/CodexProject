@@ -16,6 +16,7 @@ import shlex
 import shutil
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -70,6 +71,18 @@ def normalize_engine_text(stdout: str) -> str:
     return text
 
 
+def append_progress(progress_path: Path | None, event: dict) -> None:
+    if progress_path is None:
+        return
+    progress_path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+        **event,
+    }
+    with progress_path.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(payload, ensure_ascii=False, sort_keys=True) + "\n")
+
+
 def read_text_with_mdls(image_path: Path, timeout_seconds: int) -> tuple[str, str]:
     mdls = shutil.which("mdls") or "/usr/bin/mdls"
     if not Path(mdls).exists():
@@ -111,6 +124,8 @@ def read_text_with_vision_batch(
     batch_size: int,
     retry_timeout_seconds: int,
     retry_batch_size: int,
+    retry_max_rows: int = 0,
+    progress_path: Path | None = None,
 ) -> dict[str, tuple[str, str, str, bool]]:
     command = vision_command(repo_root)
     if command is None:
@@ -123,6 +138,15 @@ def read_text_with_vision_batch(
         batch_results: dict[str, tuple[str, str, str, bool]] = {}
         for start in range(0, len(paths), size):
             batch = paths[start:start + size]
+            phase = "retry" if retried else "initial"
+            batch_number = (start // size) + 1
+            append_progress(progress_path, {
+                "event": "vision_batch_started",
+                "phase": phase,
+                "batch_number": batch_number,
+                "batch_size": len(batch),
+                "timeout_seconds": seconds,
+            })
             try:
                 result = subprocess.run(
                     [*command, *[str(path) for path in batch]],
@@ -135,12 +159,27 @@ def read_text_with_vision_batch(
                 reason = "vision OCR command timed out during retry" if retried else "vision OCR command timed out"
                 for path in batch:
                     batch_results[str(path)] = ("", "ocr_engine_timeout", reason, retried)
+                append_progress(progress_path, {
+                    "event": "vision_batch_finished",
+                    "phase": phase,
+                    "batch_number": batch_number,
+                    "batch_size": len(batch),
+                    "status": "ocr_engine_timeout",
+                })
                 continue
             if result.returncode != 0:
                 reason = (result.stderr or result.stdout or "vision OCR command failed").strip().splitlines()[:1]
                 for path in batch:
                     batch_results[str(path)] = ("", "ocr_engine_error", reason[0] if reason else "vision OCR command failed", retried)
+                append_progress(progress_path, {
+                    "event": "vision_batch_finished",
+                    "phase": phase,
+                    "batch_number": batch_number,
+                    "batch_size": len(batch),
+                    "status": "ocr_engine_error",
+                })
                 continue
+            status_counts: dict[str, int] = {}
             for line in result.stdout.splitlines():
                 if not line.strip():
                     continue
@@ -154,9 +193,21 @@ def read_text_with_vision_batch(
                 if status == "ocr_text_available" and not text:
                     status = "no_text_from_engine"
                 reason = item.get("reason", "")
+                status_counts[status] = status_counts.get(status, 0) + 1
                 batch_results[path] = (text, status, reason, retried)
             for path in batch:
                 batch_results.setdefault(str(path), ("", "ocr_engine_error", "vision OCR command returned no result", retried))
+            missing_count = sum(1 for path in batch if str(path) not in batch_results)
+            if missing_count:
+                status_counts["ocr_engine_error"] = status_counts.get("ocr_engine_error", 0) + missing_count
+            append_progress(progress_path, {
+                "event": "vision_batch_finished",
+                "phase": phase,
+                "batch_number": batch_number,
+                "batch_size": len(batch),
+                "status": "completed",
+                "result_status_counts": status_counts,
+            })
         return batch_results
 
     batch_size = max(1, batch_size)
@@ -167,7 +218,23 @@ def read_text_with_vision_batch(
         if parsed.get(str(path), ("", "", "", False))[1] == "ocr_engine_timeout"
     ]
     if retry_paths and retry_timeout_seconds > 0:
-        parsed.update(run_batches(retry_paths, retry_timeout_seconds, retry_batch_size, True))
+        retry_targets = retry_paths
+        if retry_max_rows > 0 and len(retry_paths) > retry_max_rows:
+            retry_targets = retry_paths[:retry_max_rows]
+            deferred_paths = retry_paths[retry_max_rows:]
+            for path in deferred_paths:
+                parsed[str(path)] = (
+                    "",
+                    "ocr_retry_deferred_due_retry_budget",
+                    f"retry budget {retry_max_rows} reached; retry deferred to a future run",
+                    False,
+                )
+            append_progress(progress_path, {
+                "event": "retry_deferred_due_retry_budget",
+                "retry_max_rows": retry_max_rows,
+                "deferred_count": len(deferred_paths),
+            })
+        parsed.update(run_batches(retry_targets, retry_timeout_seconds, retry_batch_size, True))
     for path in image_paths:
         parsed.setdefault(str(path), ("", "ocr_engine_error", "vision OCR command returned no result", False))
     return parsed
@@ -218,6 +285,8 @@ def build_generation_plan(
     vision_batch_size: int,
     retry_timeout_seconds: int,
     retry_batch_size: int,
+    retry_max_rows: int,
+    progress_path: Path | None = None,
     limit: int | None = None,
 ) -> list[dict]:
     coverage_path = run_dir / "screenshot_ocr_coverage.csv"
@@ -250,6 +319,8 @@ def build_generation_plan(
             batch_size=vision_batch_size,
             retry_timeout_seconds=retry_timeout_seconds,
             retry_batch_size=retry_batch_size,
+            retry_max_rows=retry_max_rows,
+            progress_path=progress_path,
         )
     else:
         vision_results = {}
@@ -329,10 +400,11 @@ def build_generation_plan(
     return rows
 
 
-def summarize(rows: list[dict], engine: str, apply: bool) -> dict:
+def summarize(rows: list[dict], engine: str, apply: bool, retry_max_rows: int) -> dict:
     return {
         "engine": engine,
         "apply": apply,
+        "retry_max_rows": retry_max_rows,
         "planned_count": len(rows),
         "generated_sidecar_count": sum(1 for row in rows if row.get("_new_sidecar_written") == "true"),
         "text_available_count": sum(1 for row in rows if row["generation_status"] == "ocr_text_generated_pending_review"),
@@ -340,6 +412,7 @@ def summarize(rows: list[dict], engine: str, apply: bool) -> dict:
         "no_text_from_engine_count": sum(1 for row in rows if row["generation_status"] == "no_text_from_engine"),
         "timeout_retry_attempt_count": sum(1 for row in rows if row.get("_timeout_retry_attempted") == "true"),
         "timeout_retry_generated_count": sum(1 for row in rows if row.get("_timeout_retry_generated") == "true"),
+        "timeout_retry_deferred_count": sum(1 for row in rows if row["generation_status"] == "ocr_retry_deferred_due_retry_budget"),
         "financial_fact_promoted": False,
     }
 
@@ -355,6 +428,7 @@ def main() -> int:
     parser.add_argument("--vision-batch-size", type=int, default=int(os.environ.get("KMFA_FUND_VISION_BATCH_SIZE", "8")))
     parser.add_argument("--retry-timeout-seconds", type=int, default=int(os.environ.get("KMFA_FUND_VISION_RETRY_TIMEOUT_SECONDS", "0")))
     parser.add_argument("--retry-batch-size", type=int, default=int(os.environ.get("KMFA_FUND_VISION_RETRY_BATCH_SIZE", "1")))
+    parser.add_argument("--retry-max-rows", type=int, default=int(os.environ.get("KMFA_FUND_VISION_RETRY_MAX_ROWS", "0")))
     parser.add_argument("--limit", type=int, default=None)
     args = parser.parse_args()
 
@@ -370,6 +444,10 @@ def main() -> int:
         print(json.dumps({"status": "OCR_COVERAGE_MISSING", "coverage_path": str(coverage_path)}, ensure_ascii=False))
         return 2
 
+    progress_path = run_dir / "screenshot_ocr_sidecar_generation_progress.jsonl"
+    if progress_path.exists():
+        progress_path.unlink()
+
     rows = build_generation_plan(
         repo_root=repo_root,
         input_dir=input_dir,
@@ -380,16 +458,19 @@ def main() -> int:
         vision_batch_size=args.vision_batch_size,
         retry_timeout_seconds=args.retry_timeout_seconds,
         retry_batch_size=args.retry_batch_size,
+        retry_max_rows=args.retry_max_rows,
+        progress_path=progress_path,
         limit=args.limit,
     )
     plan_path = run_dir / "screenshot_ocr_sidecar_generation_plan.csv"
     summary_path = run_dir / "screenshot_ocr_sidecar_generation_summary.json"
     write_csv(plan_path, rows)
-    summary = summarize(rows, args.engine, args.apply)
+    summary = summarize(rows, args.engine, args.apply, args.retry_max_rows)
     summary.update({
         "status": "OCR_SIDECAR_GENERATION_PLANNED",
         "run_dir": str(run_dir),
         "plan_path": str(plan_path),
+        "progress_path": str(progress_path),
         "summary_path": str(summary_path),
     })
     summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
