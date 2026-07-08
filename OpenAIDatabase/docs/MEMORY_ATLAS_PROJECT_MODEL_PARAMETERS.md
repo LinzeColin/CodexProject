@@ -1,3 +1,40 @@
+## 140. Memory Atlas v1.2 S09 Review Parameters
+
+状态：`stage_s09_review_passed_pending_s10_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S09-REVIEW`。
+
+S09 Review 固定以下参数：
+
+- `MA-V12-S09-REVIEW`
+- `validate:v1.2-s09-review`
+- `docs/reviews/memory_atlas_v1_2_s09_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s09_review.cjs`
+- `data/derived/behavior_intelligence/latent_signals.json`
+- `data/derived/behavior_intelligence/self_iteration_suggestions.json`
+- `data/derived/behavior_intelligence/decision_debt_ledger.json`
+- S09 Review 完成后下一步为 pending S10 P1。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S09-REVIEW-001 phase_status = stage_s09_review_passed_pending_s10_no_github_main_upload`
+- `PARAM-MA-V12-S09-REVIEW-002 validator = validate:v1.2-s09-review`
+- `PARAM-MA-V12-S09-REVIEW-003 latent_output = data/derived/behavior_intelligence/latent_signals.json`
+- `PARAM-MA-V12-S09-REVIEW-004 self_iteration_output = data/derived/behavior_intelligence/self_iteration_suggestions.json`
+- `PARAM-MA-V12-S09-REVIEW-005 decision_debt_output = data/derived/behavior_intelligence/decision_debt_ledger.json`
+- `PARAM-MA-V12-S09-REVIEW-006 next_gate = pending S10 P1`
+- `PARAM-MA-V12-S09-REVIEW-007 phase_boundary = No raw mutation; No proposal apply execution; No pressure list; No psychological diagnosis output; No personality label output; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s09-review` checks S09 P3 predecessor, latent signal output,
+  self-iteration output, decision debt output, `atlasctl` S09 dry-runs,
+  S09 safety audits, human/machine records, canonical remote and no raw/no upload
+  boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S09 Review; MA-V12-S09-REVIEW; ACC-MA-V12-S09-REVIEW; stage_s09_review_passed_pending_s10_no_github_main_upload; validate:v1.2-s09-review; S09 Review; latent_signals.json; self_iteration_suggestions.json; decision_debt_ledger.json; pending S10 P1; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No proposal apply execution; No pressure list; No psychological diagnosis output; No personality label output; No S10 work.
+
 ## 139. Memory Atlas v1.2 S09 P3 Decision Debt Parameters
 
 状态：`phase_s09_p3_decision_debt_completed_pending_s09_review`。

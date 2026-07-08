@@ -2,8 +2,36 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S09 P3。任务 ID 为 `MA-V12-S09P3`，验收 ID 为
-`ACC-MA-V12-S09P3`，validator 为 `validate:v1.2-s09-p3`。
+当前阶段是 S09 Review。任务 ID 为 `MA-V12-S09-REVIEW`，验收 ID 为
+`ACC-MA-V12-S09-REVIEW`，validator 为 `validate:v1.2-s09-review`。
+
+历史复验兼容记录：S09 P3 完成时当前阶段是 S09 P3，任务 ID 为 `MA-V12-S09P3`，
+验收 ID 为 `ACC-MA-V12-S09P3`，validator 为 `validate:v1.2-s09-p3`；
+此句只用于保留已完成 phase 的复验语义，不代表当前阶段。
+
+S09 Review 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s09_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s09_review.cjs`
+- `data/derived/behavior_intelligence/latent_signals.json`
+- `data/derived/behavior_intelligence/self_iteration_suggestions.json`
+- `data/derived/behavior_intelligence/decision_debt_ledger.json`
+
+S09 Review gate：
+
+- `validate:v1.2-s09-review` 可验证 S09 P1/P2/P3 整体复审。
+- S09 P3 的持久产物、validator 注册和 `decision-debt-safety` audit 会被 S09 Review 复核。
+- `python scripts/atlasctl.py audit --check latent-safety` 返回 PASS。
+- `python scripts/atlasctl.py audit --check self-iteration-safety` 返回 PASS。
+- `python scripts/atlasctl.py audit --check decision-debt-safety` 返回 PASS。
+- latent signals 保留证据、反证、替代解释、Evidence Strength Badge 和 next validation。
+- self-iteration suggestions 保留 proposal expiry、action half-life 和 no-apply boundary。
+- Decision Debt Ledger 保留最小下一步，不生成压力清单。
+- 不执行 proposal apply。
+- 不修改 raw。
+
+No GitHub main upload in this phase。
+下一步是 S10 P1。
 
 S09 P3 产物：
 
