@@ -159,6 +159,7 @@ Required files:
 * `attachment_repair_authorization_preview.csv`
 * `workbook_quality_checks.csv`
 * `kmfa_metadata_signals.csv`
+* `automation_readiness.csv`
 * `goal_completion_audit.csv`
 * `management_conclusion_gate.csv`
 * `owner_action_queue.csv`
@@ -196,6 +197,7 @@ Current deterministic runner status contract:
 * When structured CSV rows include real `due_date` risk/opportunity lines for tax, deposit, loan, or project-cost flows, the runner writes `funding_forecast.csv` and `02_资金趋势预测` with known due-date projections only. These remain `structured_csv_forecast_pending_review`, and they are not a management conclusion.
 * When structured CSV facts exist, the runner writes `cashflow_validation.csv`: balance continuity, operating cashflow effect, and internal-transfer exclusion are checked per ledger row. Continuity failures create exception tasks and block management conclusions.
 * Every generated workbook is inspected into `workbook_quality_checks.csv`: sheet order, hidden audit sheets, visible row 2 cleanup, native chart dimensions, formula error markers, and visible sensitive-value patterns. Any failing workbook quality check blocks management conclusions.
+* Every successful output package emits `automation_readiness.csv`: a read-only Codex automation readiness sidecar comparing the tracked contract and local automation state. It must verify `Australia/Sydney` plus `FREQ=WEEKLY;BYHOUR=11;BYMINUTE=0;BYDAY=MO,SA`, set `schedule_ready=true` only when the local schedule matches, keep `management_conclusion_allowed=false`, and mark schedule readiness as evidence only, not as financial fact promotion.
 * Every successful output package emits `goal_completion_audit.csv`: requirement-level evidence for source readiness, native workbook, company-bank matrix, internal-transfer netting, cashflow validation, known due-date forecasting, cross-checks, no-hallucination, formal fact promotion, management conclusions, and automation schedule external verification. This audit does not grant promotion or conclusion authority.
 * Every successful output package emits `management_conclusion_gate.csv`: a fail-closed C-level conclusion gate that combines source readiness, workbook quality, formal fact promotion execution, formal ledger population, cashflow validation, evidence cross-review, and automation external check status. Every row keeps `management_conclusion_allowed=false` until formal facts and all review gates pass.
 * Every successful output package emits `owner_action_queue.csv`: a fail-closed owner-facing queue derived only from blocking or external-check management gates. Rows are `pending_owner_action` or external checks only. Every row keeps `automation_safe=false`, `source_mutation_allowed=false`, `fact_promotion_allowed=false`, `fund_ledger_write_allowed=false`, and `management_conclusion_allowed=false`; it describes next actions but does not authorize or execute them.
