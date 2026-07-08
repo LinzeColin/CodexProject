@@ -34,13 +34,14 @@ The local scheduler uses Sydney local time. Monday and Saturday 11:00 Australia/
 28. Build `fact_promotion_review_packet.csv`: summarize structured facts, OCR staging, chat value candidates, attachment evidence integrity, workbook quality, and goal audit rows for owner review; keep all rows no-write/no-promote.
 29. Build `fact_promotion_authorization_template.json`: derive one draft row per fact promotion review packet row, default every `authorized=false`, and keep `authorization_scope=fact_promotion_review_packet_validation_only`, `financial_fact_promotion_allowed=false`, `fund_ledger_write_allowed=false`, and `management_conclusion_allowed=false`.
 30. Build `fact_promotion_authorization_preview.csv`: validate private `fact_promotion_authorizations/<run_id>.json` coverage only, mark valid rows as `ready_for_owner_review_no_fact_promotion`, and keep no-write/no-promote/no-conclusion flags false.
-31. Build daily balance continuity and company-bank matrix.
-32. Build tax/loan/project-cost/wealth-management/deposit risk tables.
-33. Promote reviewed facts into Excel with exact sheet order and style spec.
-34. Hide audit/review sheets.
-35. Run validation checks.
-36. Write run summary.
-37. Commit/push skill or automation changes to GitHub main only after validation passes.
+31. Build `fact_promotion_execution_gate.csv`: combine authorization coverage and unresolved review blockers into a fail-closed execution gate. Ready rows may reach `ready_for_controlled_fact_promotion_execution`, but `fact_promotion_execution_allowed=false` must remain until a separate approved execution path is introduced.
+32. Build daily balance continuity and company-bank matrix.
+33. Build tax/loan/project-cost/wealth-management/deposit risk tables.
+34. Promote reviewed facts into Excel with exact sheet order and style spec.
+35. Hide audit/review sheets.
+36. Run validation checks.
+37. Write run summary.
+38. Commit/push skill or automation changes to GitHub main only after validation passes.
 
 ## Source materialization command
 
