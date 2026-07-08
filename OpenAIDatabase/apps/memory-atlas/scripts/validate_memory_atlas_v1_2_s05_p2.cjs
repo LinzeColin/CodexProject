@@ -20,6 +20,8 @@ const status = "phase_s05_p2_facet_extractor_completed_pending_s05_p3";
 const s05p3TaskId = "MA-V12-S05P3";
 const s05p3AcceptanceId = "ACC-MA-V12-S05P3";
 const s05p3Status = "phase_s05_p3_evidence_refs_completed_pending_s05_review";
+const s05ReviewTaskId = "MA-V12-S05-REVIEW";
+const s05ReviewAcceptanceId = "ACC-MA-V12-S05-REVIEW";
 const validatorName = "validate:v1.2-s05-p2";
 const scriptName = "validate_memory_atlas_v1_2_s05_p2.cjs";
 const extractorPath = "scripts/extract_memory_atlas_facets.py";
@@ -59,6 +61,7 @@ const allowedOpenDiffPaths = [
   "OpenAIDatabase/apps/memory-atlas/package.json",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p1.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p3.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_review.cjs",
   `OpenAIDatabase/apps/memory-atlas/scripts/${scriptName}`,
   `OpenAIDatabase/${atlasctlPath}`,
   `OpenAIDatabase/${extractorPath}`,
@@ -68,6 +71,7 @@ const allowedOpenDiffPaths = [
   `OpenAIDatabase/${humanPagePath}`,
   `OpenAIDatabase/${reviewPath}`,
   "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s05_p3_evidence_refs.md",
+  "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s05_review.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_DELIVERY_RECORD.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md",
   "OpenAIDatabase/功能清单.md",
@@ -173,6 +177,23 @@ function currentStateIsS05P3() {
     hasAll(machine, ["当前为 S05 P3", "evidence_refs", eventsPath, "下一步是 S05 Review"]) &&
     hasAll(runGate, ["当前阶段是 S05 P3", s05p3TaskId, s05p3AcceptanceId, "validate:v1.2-s05-p3"])
   );
+}
+
+function currentStateIsS05Review() {
+  const quick = readRepoFile("人类可读/00_快速入口.md");
+  const overview = readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md");
+  const machine = readRepoFile("机器治理/README.md");
+  const runGate = readRepoFile("机器治理/运行门禁/README.md");
+  return (
+    hasAll(quick, ["当前阶段是 S05 Review", s05ReviewTaskId, s05ReviewAcceptanceId, "下一步只允许进入 S06 P1"]) &&
+    hasAll(overview, ["S05 Review 已通过", "S05 整体复审已通过", "下一步是 S06 P1"]) &&
+    hasAll(machine, ["当前为 S05 Review", s05ReviewTaskId, "validate:v1.2-s05-review", "下一步是 S06 P1"]) &&
+    hasAll(runGate, ["当前阶段是 S05 Review", s05ReviewTaskId, s05ReviewAcceptanceId, "validate:v1.2-s05-review"])
+  );
+}
+
+function currentStateIsS05P3OrLater() {
+  return currentStateIsS05P3() || currentStateIsS05Review();
 }
 
 function validateTextFile(relativePath) {
@@ -366,7 +387,7 @@ function validateDocsAndRecords() {
   const behavior = readRepoFile("机器治理/行为智能模型/README.md");
   const runGate = readRepoFile("机器治理/运行门禁/README.md");
   const review = readRepoFile(reviewPath);
-  const s05p3State = currentStateIsS05P3();
+  const s05p3State = currentStateIsS05P3OrLater();
 
   assertCondition(
     s05p3State || hasAll(human, [

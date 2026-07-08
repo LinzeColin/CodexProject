@@ -2,8 +2,8 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S05 P3。任务 ID 为 `MA-V12-S05P3`，验收 ID 为
-`ACC-MA-V12-S05P3`，validator 为 `validate:v1.2-s05-p3`。
+当前阶段是 S05 Review。任务 ID 为 `MA-V12-S05-REVIEW`，验收 ID 为
+`ACC-MA-V12-S05-REVIEW`，validator 为 `validate:v1.2-s05-review`。
 
 前置 S01 Review 已通过：`MA-V12-S01-REVIEW` / `ACC-MA-V12-S01-REVIEW` /
 `validate:v1.2-s01-review`。
@@ -272,4 +272,23 @@ S05 P3 gate：
 No GitHub main upload in this phase。
 No remote push in this phase。
 No raw mutation in this phase。
-下一步是 S05 Review。
+
+S05 Review 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s05_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_review.cjs`
+
+S05 Review gate：
+
+- S05 P1、S05 P2、S05 P3 validator 链路在 clean tree 可复跑。
+- canonical event 可覆盖 ChatGPT/Codex/future agent。
+- 每条 event 有 evidence ref 或缺失原因。
+- 人类文件能解释 facet 含义。
+- 不输出纯机器字段给首屏。
+- 行为事件与 facets 可被后续 cluster、ROI、latent、visualization 复用。
+- 不生成 fake events，不修改 raw，不上传 GitHub main，不远端 push。
+
+No GitHub main upload in this review。
+No remote push in this review。
+No raw mutation in this review。
+下一步是 S06 P1。

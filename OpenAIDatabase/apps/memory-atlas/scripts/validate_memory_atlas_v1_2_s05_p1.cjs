@@ -69,6 +69,7 @@ const allowedOpenDiffPaths = [
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s04_review.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p2.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p3.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_review.cjs",
   `OpenAIDatabase/apps/memory-atlas/scripts/${scriptName}`,
   "OpenAIDatabase/scripts/atlasctl.py",
   "OpenAIDatabase/scripts/extract_memory_atlas_facets.py",
@@ -79,6 +80,7 @@ const allowedOpenDiffPaths = [
   `OpenAIDatabase/${reviewPath}`,
   "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s05_p2_facet_extractor.md",
   "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s05_p3_evidence_refs.md",
+  "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s05_review.md",
   "OpenAIDatabase/data/derived/behavior_intelligence/events.json",
   "OpenAIDatabase/docs/MEMORY_ATLAS_DELIVERY_RECORD.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md",
@@ -202,7 +204,20 @@ function currentStateIsS05P3() {
 }
 
 function currentStateIsS05P2OrLater() {
-  return currentStateIsS05P2() || currentStateIsS05P3();
+  return currentStateIsS05P2() || currentStateIsS05P3() || currentStateIsS05Review();
+}
+
+function currentStateIsS05Review() {
+  const quick = readRepoFile("人类可读/00_快速入口.md");
+  const overview = readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md");
+  const machine = readRepoFile("机器治理/README.md");
+  const runGate = readRepoFile("机器治理/运行门禁/README.md");
+  return (
+    hasAll(quick, ["当前阶段是 S05 Review", "MA-V12-S05-REVIEW", "ACC-MA-V12-S05-REVIEW", "下一步只允许进入 S06 P1"]) &&
+    hasAll(overview, ["S05 Review 已通过", "S05 整体复审已通过", "下一步是 S06 P1"]) &&
+    hasAll(machine, ["当前为 S05 Review", "MA-V12-S05-REVIEW", "validate:v1.2-s05-review", "下一步是 S06 P1"]) &&
+    hasAll(runGate, ["当前阶段是 S05 Review", "MA-V12-S05-REVIEW", "ACC-MA-V12-S05-REVIEW", "validate:v1.2-s05-review"])
+  );
 }
 
 function validateTextFile(relativePath) {

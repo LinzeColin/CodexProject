@@ -1,3 +1,43 @@
+## v1.2 S05 Review
+
+状态：`stage_s05_review_passed_pending_s06_no_github_main_upload`。
+
+任务 ID：`MA-V12-S05-REVIEW`。
+
+验收 ID：`ACC-MA-V12-S05-REVIEW`。
+
+S05 Review 完成 Memory Atlas v1.2 Anthropic 化 Facet 抽取与事件语义层的整体复审。
+复审覆盖 S05 P1 schema、S05 P2 extractor 和 S05 P3 evidence_refs，确认行为事件与
+facets 可进入后续 cluster、ROI、latent、visualization。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_2_s05_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_review.cjs`
+- `data/derived/behavior_intelligence/events.json`
+- `人类可读/12_Facet字段与事件语义说明.md`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s05-review`
+- `ACC-MA-V12-S05-REVIEW`
+- `MA-V12-S05-REVIEW`
+- S05 Review
+- S05 整体复审已通过
+- pending S06 P1
+- No GitHub main upload in this review
+
+边界：
+
+- No remote push in this review.
+- No raw mutation in this review.
+- No fake events.
+- No app reinstall in this review.
+- No GitHub main upload in this review.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S05 Review; MA-V12-S05-REVIEW; ACC-MA-V12-S05-REVIEW; stage_s05_review_passed_pending_s06_no_github_main_upload; validate:v1.2-s05-review; memory_atlas_v1_2_s05_review.md; S05 Review; S05 整体复审已通过; pending S06 P1; No GitHub main upload in this review; No remote push in this review; No raw mutation in this review; No fake events.
+
 ## v1.2 S05 P3 Evidence Refs
 
 状态：`phase_s05_p3_evidence_refs_completed_pending_s05_review`。
