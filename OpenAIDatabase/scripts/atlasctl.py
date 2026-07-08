@@ -1759,8 +1759,8 @@ def run_chinese_ux_audit(args: argparse.Namespace) -> int:
             "status": "FAIL",
             "command": "audit",
             "check": "chinese-ux",
-            "task_id": "MA-V12-S10P2",
-            "acceptance_id": "ACC-MA-V12-S10P2",
+            "task_id": "MA-V12-S10P3",
+            "acceptance_id": "ACC-MA-V12-S10P3",
             "reason": "Chinese UX source files missing",
             "missing_files": missing_files,
         }, ensure_ascii=False, indent=2, sort_keys=True))
@@ -1790,6 +1790,12 @@ def run_chinese_ux_audit(args: argparse.Namespace) -> int:
         "宇宙状态",
         "来自 Universe State 派生数据",
     ]
+    required_machine_detail_copy = [
+        "高级详情：机器字段",
+        "显示高级详情",
+        "隐藏高级详情",
+        "默认折叠，仅用于核验字段",
+    ]
     english_first_fragments = [
         "<dt>Stable</dt>",
         "<dt>Momentum</dt>",
@@ -1806,6 +1812,24 @@ def run_chinese_ux_audit(args: argparse.Namespace) -> int:
         " records</i>",
         "day half-life",
     ]
+    default_visible_machine_fragments = [
+        "<h3>search_session_summary</h3>",
+        "<h3>Review session output</h3>",
+        "<h3>Proposal decision</h3>",
+        "<h3>Iteration backlog</h3>",
+        "<h3>zero_result_recovery</h3>",
+        "<span>jump_to_starfield</span>",
+        "<span>jump_to_river</span>",
+        "<span>open_inspector</span>",
+        "proposal_candidate=true",
+        "proposal_candidate=false",
+        "<h4>change_comparison</h4>",
+        "<h4>stale_conflict_signals</h4>",
+        "<h4>proposal_candidates</h4>",
+        "<span>{summaryClosure.change_comparison.length} signals</span>",
+        "<span>{summaryClosure.stale_conflict_signals.length} checks</span>",
+        "<span>{summaryClosure.proposal_candidates.length} candidates</span>",
+    ]
     bad_items: list[str] = []
     if "data-home-section=\"arrival_briefing\"" not in app_source:
         bad_items.append("home_arrival_briefing_missing")
@@ -1813,7 +1837,7 @@ def run_chinese_ux_audit(args: argparse.Namespace) -> int:
         bad_items.append("arrival_briefing_not_before_weather")
     if "data-s10-p1-home-arrival-briefing" not in app_source:
         bad_items.append("s10p1_data_contract_missing")
-    if "<details className=\"arrival-briefing-machine-details\"" not in app_source:
+    if "arrival-briefing-machine-details" not in app_source or "data-s10-p3-machine-fields=\"collapsed-by-default\"" not in app_source:
         bad_items.append("machine_details_not_folded")
     for label in required_copy:
         if label not in app_source and label not in copy_source:
@@ -1825,9 +1849,23 @@ def run_chinese_ux_audit(args: argparse.Namespace) -> int:
         bad_items.append("s10p2_global_chinese_contract_missing")
     if "GLOBAL_CHINESE_UX_VERSION" not in app_source or "__memoryAtlasS10Phase2" not in app_source:
         bad_items.append("s10p2_runtime_proof_missing")
+    if "data-s10-p3-machine-detail-folding" not in app_source:
+        bad_items.append("s10p3_machine_detail_contract_missing")
+    if "MACHINE_DETAIL_FOLDING_VERSION" not in app_source or "__memoryAtlasS10Phase3" not in app_source:
+        bad_items.append("s10p3_runtime_proof_missing")
+    if "data-s10-p3-machine-fields=\"collapsed-by-default\"" not in app_source:
+        bad_items.append("s10p3_machine_fields_default_folded_missing")
+    if "advancedDetailsEntryVisible: true" not in app_source or "machineFieldsDefaultCollapsed: true" not in app_source:
+        bad_items.append("s10p3_runtime_flags_missing")
     for fragment in english_first_fragments:
         if fragment in app_source:
             bad_items.append(f"english_first_fragment:{fragment}")
+    for fragment in default_visible_machine_fragments:
+        if fragment in app_source:
+            bad_items.append(f"default_visible_machine_fragment:{fragment}")
+    for label in required_machine_detail_copy:
+        if label not in app_source and label not in copy_source:
+            bad_items.append(f"machine_detail_copy_missing:{label}")
     if "记忆天气 v2（Memory Weather）" not in copy_source:
         bad_items.append("machine_term_explanation_missing:Memory Weather")
     if "来自 Universe State 派生数据" not in app_source:
@@ -1836,6 +1874,8 @@ def run_chinese_ux_audit(args: argparse.Namespace) -> int:
         bad_items.append("machine_term_explanation_missing:proposal-only")
     if ".home-arrival-briefing" not in style_source or ".arrival-briefing-next-step" not in style_source:
         bad_items.append("arrival_briefing_styles_missing")
+    if ".machine-field-details" not in style_source or ".inline-machine-field-details" not in style_source:
+        bad_items.append("machine_detail_styles_missing")
     if "proposal apply" in app_source.lower() and "No proposal apply execution" not in app_source:
         bad_items.append("possible_apply_language_without_boundary")
 
@@ -1844,15 +1884,19 @@ def run_chinese_ux_audit(args: argparse.Namespace) -> int:
         "status": status,
         "command": "audit",
         "check": "chinese-ux",
-        "task_id": "MA-V12-S10P2",
-        "acceptance_id": "ACC-MA-V12-S10P2",
+        "task_id": "MA-V12-S10P3",
+        "acceptance_id": "ACC-MA-V12-S10P3",
         "details": {
             "home_arrival_briefing": "home_arrival_briefing_missing" not in bad_items,
             "arrival_before_weather": "arrival_briefing_not_before_weather" not in bad_items,
             "machine_details_default_folded": "machine_details_not_folded" not in bad_items,
             "s10_p2_global_chinese": "s10p2_global_chinese_contract_missing" not in bad_items and "s10p2_runtime_proof_missing" not in bad_items,
+            "s10_p3_machine_detail_folding": "s10p3_machine_detail_contract_missing" not in bad_items and "s10p3_runtime_proof_missing" not in bad_items,
+            "machine_fields_default_folded": "s10p3_machine_fields_default_folded_missing" not in bad_items and "s10p3_runtime_flags_missing" not in bad_items,
+            "advanced_details_entry_visible": not any(item.startswith("machine_detail_copy_missing:") for item in bad_items) and "machine_detail_styles_missing" not in bad_items,
             "core_ui_default_chinese": not any(item.startswith("english_first_fragment:") or item.startswith("global_chinese_copy_missing:") for item in bad_items),
             "machine_terms_with_chinese_explanation": not any(item.startswith("machine_term_explanation_missing:") for item in bad_items),
+            "default_visible_machine_fragments_removed": not any(item.startswith("default_visible_machine_fragment:") for item in bad_items),
             "bad_items": bad_items,
         },
     }

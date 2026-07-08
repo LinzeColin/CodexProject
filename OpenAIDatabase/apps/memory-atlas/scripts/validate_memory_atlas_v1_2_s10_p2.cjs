@@ -26,6 +26,7 @@ const allowedOpenDiffPaths = [
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s09_review.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p1.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p2.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p3.cjs",
   "OpenAIDatabase/apps/memory-atlas/src/App.tsx",
   "OpenAIDatabase/apps/memory-atlas/src/i18n/types.ts",
   "OpenAIDatabase/apps/memory-atlas/src/i18n/zh-CN.ts",
@@ -33,12 +34,14 @@ const allowedOpenDiffPaths = [
   "OpenAIDatabase/docs/MEMORY_ATLAS_DELIVERY_RECORD.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md",
   "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s10_p2_global_chinese_ux.md",
+  "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s10_p3_machine_detail_folding.md",
   "OpenAIDatabase/功能清单.md",
   "OpenAIDatabase/开发记录.md",
   "OpenAIDatabase/模型参数文件.md",
   "OpenAIDatabase/人类可读/00_快速入口.md",
   "OpenAIDatabase/人类可读/01_v1.2四线14Stage升级总览.md",
   "OpenAIDatabase/人类可读/25_全局中文说明.md",
+  "OpenAIDatabase/人类可读/26_机器字段高级详情说明.md",
   "OpenAIDatabase/机器治理/README.md",
   "OpenAIDatabase/机器治理/运行门禁/README.md",
   "OpenAIDatabase/scripts/atlasctl.py",
@@ -247,11 +250,13 @@ function validateGlobalChineseContract() {
 function validateChineseUxAudit() {
   const result = run("python3", ["scripts/atlasctl.py", "audit", "--check", "chinese-ux"], { cwd: repoRoot });
   const payload = parseJsonFromStdout(result);
+  const acceptedTaskIds = [taskId, "MA-V12-S10P3"];
+  const acceptedAcceptanceIds = [acceptanceId, "ACC-MA-V12-S10P3"];
   assertCondition(
     payload.status === "PASS" &&
       payload.check === "chinese-ux" &&
-      payload.task_id === taskId &&
-      payload.acceptance_id === acceptanceId &&
+      acceptedTaskIds.includes(payload.task_id) &&
+      acceptedAcceptanceIds.includes(payload.acceptance_id) &&
       payload.details?.home_arrival_briefing === true &&
       payload.details?.s10_p2_global_chinese === true &&
       payload.details?.core_ui_default_chinese === true &&

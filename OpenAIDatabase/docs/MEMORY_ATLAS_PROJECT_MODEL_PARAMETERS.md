@@ -1,3 +1,40 @@
+## 143. Memory Atlas v1.2 S10 P3 Machine Detail Folding Parameters
+
+状态：`phase_s10_p3_machine_detail_folding_completed_pending_s10_review`。
+
+验收 ID：`ACC-MA-V12-S10P3`。
+
+S10 P3 固定以下参数：
+
+- `MA-V12-S10P3`
+- `validate:v1.2-s10-p3`
+- `machine_detail_folding.v1_2_s10_p3`
+- `atlasctl.py audit --check chinese-ux`
+- 机器字段默认折叠。
+- 高级详情入口可见。
+- 默认先显示人类可读解释。
+- S10 P3 完成后下一步为 pending S10 Review。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S10P3-001 phase_status = phase_s10_p3_machine_detail_folding_completed_pending_s10_review`
+- `PARAM-MA-V12-S10P3-002 validator = validate:v1.2-s10-p3`
+- `PARAM-MA-V12-S10P3-003 machine_detail_version = machine_detail_folding.v1_2_s10_p3`
+- `PARAM-MA-V12-S10P3-004 default_human_readable_first = true`
+- `PARAM-MA-V12-S10P3-005 machine_fields_default_collapsed = true`
+- `PARAM-MA-V12-S10P3-006 advanced_details_entry_visible = true`
+- `PARAM-MA-V12-S10P3-007 next_gate = pending S10 Review`
+- `PARAM-MA-V12-S10P3-008 phase_boundary = No raw mutation; No proposal apply execution; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s10-p3` checks frontend runtime contract, folded machine
+  details, advanced details entry copy, `atlasctl audit --check chinese-ux`,
+  records and raw no-change boundary.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S10 P3; MA-V12-S10P3; ACC-MA-V12-S10P3; phase_s10_p3_machine_detail_folding_completed_pending_s10_review; validate:v1.2-s10-p3; machine_detail_folding.v1_2_s10_p3; 机器字段默认折叠; 高级详情入口; pending S10 Review; No GitHub main upload in this phase; No raw mutation; No proposal apply execution.
+
 ## 142. Memory Atlas v1.2 S10 P2 Global Chinese UX Parameters
 
 状态：`phase_s10_p2_global_chinese_ux_completed_pending_s10_p3`。

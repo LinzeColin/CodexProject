@@ -23,7 +23,7 @@ import {
   ZoomIn,
   ZoomOut,
 } from "lucide-react";
-import type { ComponentType, CSSProperties, KeyboardEvent, PointerEvent, WheelEvent } from "react";
+import type { ComponentType, CSSProperties, KeyboardEvent, PointerEvent, ReactNode, WheelEvent } from "react";
 import { Suspense, lazy, useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import {
   emptyAtlas,
@@ -82,6 +82,7 @@ const MEMORY_OVERVIEW_STRUCTURE_VERSION = "memory_overview_default_home.v1_1_7_s
 const MEMORY_OVERVIEW_OPERATION_VERSION = "memory_overview_detail_operations.v1_1_7_stage3_phase2" as const;
 const HOME_ARRIVAL_BRIEFING_VERSION = "home_arrival_briefing.v1_2_s10_p1" as const;
 const GLOBAL_CHINESE_UX_VERSION = "global_chinese_ux.v1_2_s10_p2" as const;
+const MACHINE_DETAIL_FOLDING_VERSION = "machine_detail_folding.v1_2_s10_p3" as const;
 const HOME_ACTION_SECTION_VERSION = "top_actions_section.v1_1_7_stage3_phase2" as const;
 const HOME_LEVEL_ASSET_SECTION_VERSION = "level_assets_section.v1_1_7_stage3_phase2" as const;
 const HOME_THEME_CATEGORY_SECTION_VERSION = "theme_categories_section.v1_1_7_stage3_phase2" as const;
@@ -240,6 +241,18 @@ declare global {
       coreUiDefaultChinese: true;
       machineTermsRequireChineseExplanation: true;
       chineseUxAudit: "atlasctl audit --check chinese-ux";
+      safety: {
+        rawPrivateDataIncluded: false;
+        directActiveMemoryWriteback: false;
+        proposalWrite: false;
+      };
+    };
+    __memoryAtlasS10Phase3?: () => {
+      machineDetailFoldingVersion: typeof MACHINE_DETAIL_FOLDING_VERSION;
+      defaultHumanReadableFirst: true;
+      machineFieldsDefaultCollapsed: true;
+      advancedDetailsEntryVisible: true;
+      foldedSurfaces: Array<"home_arrival" | "search_session" | "search_result" | "review_session" | "summary_closure" | "inspector">;
       safety: {
         rawPrivateDataIncluded: false;
         directActiveMemoryWriteback: false;
@@ -1331,12 +1344,31 @@ export function App() {
     };
   }, []);
 
+  useEffect(() => {
+    window.__memoryAtlasS10Phase3 = () => ({
+      machineDetailFoldingVersion: MACHINE_DETAIL_FOLDING_VERSION,
+      defaultHumanReadableFirst: true,
+      machineFieldsDefaultCollapsed: true,
+      advancedDetailsEntryVisible: true,
+      foldedSurfaces: ["home_arrival", "search_session", "search_result", "review_session", "summary_closure", "inspector"],
+      safety: {
+        rawPrivateDataIncluded: false,
+        directActiveMemoryWriteback: false,
+        proposalWrite: false,
+      },
+    });
+    return () => {
+      delete window.__memoryAtlasS10Phase3;
+    };
+  }, []);
+
   return (
     <div
       className="app-shell"
       data-default-route-view={DEFAULT_MEMORY_ATLAS_VIEW}
       data-memory-overview-default-route="true"
       data-s10-p2-global-chinese-ux={GLOBAL_CHINESE_UX_VERSION}
+      data-s10-p3-machine-detail-folding={MACHINE_DETAIL_FOLDING_VERSION}
       data-stage9-phase1-shared-state={CROSS_BOARD_SHARED_STATE_RUNTIME_VERSION}
       data-stage9-inspector-explanation={INSPECTOR_EXPLANATION_LAYER_VERSION}
       data-stage9-synchronized-filters="shared_state_filters synchronized_filters inspector_explanation_layer"
@@ -1697,6 +1729,30 @@ function viewEmptyState(atlas: MemoryAtlas, slice: FilteredAtlasSlice): "empty-a
   return hasSnapshotData ? null : "empty-atlas";
 }
 
+function MachineFieldDetails({ title, className = "", children }: { title: string; className?: string; children: ReactNode }) {
+  return (
+    <details
+      className={`machine-field-details${className ? ` ${className}` : ""}`}
+      data-s10-p3-machine-fields="collapsed-by-default"
+    >
+      <summary>
+        <GitBranch size={14} />
+        <span>{title}</span>
+      </summary>
+      {children}
+    </details>
+  );
+}
+
+function EvidenceRefsDetails({ refs }: { refs: string[] }) {
+  return (
+    <MachineFieldDetails title={`高级详情：证据字段（${refs.length.toLocaleString()} 条）`} className="inline-machine-field-details">
+      <p className="machine-field-help">默认折叠。这里仅给 ChatGPT / Codex 核验证据引用，不作为首屏阅读内容。</p>
+      <small>evidence_refs：{refs.join(" / ") || "none"}</small>
+    </MachineFieldDetails>
+  );
+}
+
 function BehaviorIntelligencePanel({ summary }: { summary: MemoryAtlas["behavior_intelligence"] }) {
   if (!summary || !summary.counts) return null;
   const clusters = summary.clusters.slice(0, 3);
@@ -1909,15 +1965,15 @@ function HomeOverviewView({
             );
           })}
         </div>
-        <details className="arrival-briefing-machine-details">
-          <summary>{uiCopy.overview.arrivalMachineDetails}</summary>
+        <MachineFieldDetails title={uiCopy.overview.arrivalMachineDetails} className="arrival-briefing-machine-details">
+          <p className="machine-field-help">默认折叠。这里仅用于核验首页 arrival briefing 合约、快照时间和 no-apply 边界。</p>
           <dl>
-            <div><dt>contract</dt><dd>{HOME_ARRIVAL_BRIEFING_VERSION}</dd></div>
-            <div><dt>snapshot</dt><dd>{atlas.overview.generated_at || "not_loaded"}</dd></div>
-            <div><dt>rawMutation</dt><dd>false</dd></div>
-            <div><dt>proposalApply</dt><dd>false</dd></div>
+            <div><dt>contract / 合约版本</dt><dd>{HOME_ARRIVAL_BRIEFING_VERSION}</dd></div>
+            <div><dt>snapshot / 快照时间</dt><dd>{atlas.overview.generated_at || "not_loaded"}</dd></div>
+            <div><dt>rawMutation / raw 修改</dt><dd>false</dd></div>
+            <div><dt>proposalApply / 提案应用</dt><dd>false</dd></div>
           </dl>
-        </details>
+        </MachineFieldDetails>
       </section>
       <nav className="home-structure-rail" aria-label="记忆总览默认页结构">
         {MEMORY_OVERVIEW_SECTION_ORDER.map((section) => (
@@ -4095,25 +4151,25 @@ function SearchReview({
                 <option key={topic} value={topic}>{topic}</option>
               ))}
             </select>
-          </label>
-          <label>
-            <span>recency</span>
+        </label>
+        <label>
+            <span>时效</span>
             <select value={searchFilters.recency} onChange={(event) => updateSearchFilter({ recency: event.target.value as Search2RecencyFilter })}>
-              <option value="all">all</option>
-              <option value="recent">recent</option>
-              <option value="active">active</option>
-              <option value="stale">stale</option>
-              <option value="archival">archival</option>
+              <option value="all">全部</option>
+              <option value="recent">近期</option>
+              <option value="active">活跃</option>
+              <option value="stale">过期</option>
+              <option value="archival">归档</option>
             </select>
           </label>
           <label>
-            <span>importance</span>
+            <span>重要性</span>
             <select value={searchFilters.importance} onChange={(event) => updateSearchFilter({ importance: event.target.value as Search2ImportanceFilter })}>
-              <option value="all">all</option>
-              <option value="low">low</option>
-              <option value="medium">medium</option>
-              <option value="high">high</option>
-              <option value="critical">critical</option>
+              <option value="all">全部</option>
+              <option value="low">低</option>
+              <option value="medium">中</option>
+              <option value="high">高</option>
+              <option value="critical">关键</option>
             </select>
           </label>
           <label className="search-2-checkbox">
@@ -4122,11 +4178,11 @@ function SearchReview({
               checked={searchFilters.evidenceOnly}
               onChange={(event) => updateSearchFilter({ evidenceOnly: event.target.checked })}
             />
-            <span>evidence only</span>
+            <span>仅看有证据结果</span>
           </label>
           <button className="search-2-reset" onClick={resetSearchFilters} type="button">
             <FilterX size={14} />
-            <span>reset</span>
+            <span>重置</span>
           </button>
         </div>
         <div
@@ -4135,8 +4191,8 @@ function SearchReview({
           data-result-count={searchResults.length}
           data-evidence-only={String(searchFilters.evidenceOnly)}
         >
-          <span>filter_state</span>
-          <b>{searchResults.length.toLocaleString()} results</b>
+          <span>筛选状态</span>
+          <b>{searchResults.length.toLocaleString()} 条结果</b>
           <small>{search2FilterStateLabel(searchFilters)}</small>
         </div>
       </section>
@@ -4157,18 +4213,22 @@ function SearchReview({
         data-proposal-candidate={String(sessionSummary.proposal_candidate)}
       >
         <div className="panel-title-row">
-          <h3>search_session_summary</h3>
-          <span>{sessionSummary.result_count.toLocaleString()} hits</span>
+          <h3>搜索会话摘要</h3>
+          <span>{sessionSummary.result_count.toLocaleString()} 条结果</span>
         </div>
-        <dl>
-          <div><dt>query</dt><dd>{sessionSummary.query || "all redacted memory"}</dd></div>
-          <div><dt>dominant_topics</dt><dd>{sessionSummary.dominant_topics.join(" / ") || "none"}</dd></div>
-          <div><dt>high_importance_hits</dt><dd>{sessionSummary.high_importance_hits.join(" / ") || "none"}</dd></div>
-          <div><dt>stale_or_black_hole_hits</dt><dd>{sessionSummary.stale_or_black_hole_hits.join(" / ") || "none"}</dd></div>
-          <div><dt>missing_evidence</dt><dd>{sessionSummary.missing_evidence.join(" / ") || "none"}</dd></div>
-          <div><dt>next_step</dt><dd>{sessionSummary.next_step}</dd></div>
-          <div><dt>proposal_candidate</dt><dd>{sessionSummary.proposal_candidate ? "true" : "false"}</dd></div>
-        </dl>
+        <p>默认只看结果数量、分布和下一步；会话字段已收进高级详情。</p>
+        <MachineFieldDetails title="高级详情：搜索会话字段" className="search-machine-details">
+          <p className="machine-field-help">默认折叠。这里给 agent 核验 query、dominant topics、missing evidence 和 proposal candidate，不作为默认阅读层。</p>
+          <dl>
+            <div><dt>query / 查询词</dt><dd>{sessionSummary.query || "all redacted memory"}</dd></div>
+            <div><dt>dominant_topics / 主导主题</dt><dd>{sessionSummary.dominant_topics.join(" / ") || "none"}</dd></div>
+            <div><dt>high_importance_hits / 高重要命中</dt><dd>{sessionSummary.high_importance_hits.join(" / ") || "none"}</dd></div>
+            <div><dt>stale_or_black_hole_hits / 过期或低价值命中</dt><dd>{sessionSummary.stale_or_black_hole_hits.join(" / ") || "none"}</dd></div>
+            <div><dt>missing_evidence / 缺证据项</dt><dd>{sessionSummary.missing_evidence.join(" / ") || "none"}</dd></div>
+            <div><dt>next_step / 下一步</dt><dd>{sessionSummary.next_step}</dd></div>
+            <div><dt>proposal_candidate / 提案候选</dt><dd>{sessionSummary.proposal_candidate ? "true" : "false"}</dd></div>
+          </dl>
+        </MachineFieldDetails>
       </section>
       <div className="writeback-banner">
         <strong>写回策略</strong>
@@ -4198,12 +4258,14 @@ function SearchReview({
                 <b>{result.importance}</b>
               </header>
               <p>{result.summary}</p>
-              <dl className="search-2-result-schema">
-                <div><dt>matched_reason</dt><dd>{result.matched_reason}</dd></div>
-                <div><dt>evidence_refs</dt><dd>{result.evidence_refs.join(" / ")}</dd></div>
-                <div><dt>proposal_candidate</dt><dd>{result.proposal_candidate ? "true" : "false"}</dd></div>
-              </dl>
-              <div className="search-2-result-actions" aria-label="result_action_bar">
+              <MachineFieldDetails title="高级详情：结果字段" className="search-2-result-schema inline-machine-field-details">
+                <dl>
+                  <div><dt>matched_reason / 匹配原因</dt><dd>{result.matched_reason}</dd></div>
+                  <div><dt>evidence_refs / 证据引用</dt><dd>{result.evidence_refs.join(" / ")}</dd></div>
+                  <div><dt>proposal_candidate / 提案候选</dt><dd>{result.proposal_candidate ? "true" : "false"}</dd></div>
+                </dl>
+              </MachineFieldDetails>
+              <div className="search-2-result-actions" aria-label="搜索结果操作">
                 <button
                   data-search-jump="starfield"
                   data-starfield-target={result.jump_to_starfield}
@@ -4211,7 +4273,7 @@ function SearchReview({
                   type="button"
                 >
                   <Orbit size={14} />
-                  <span>jump_to_starfield</span>
+                  <span>跳到星图</span>
                 </button>
                 <button
                   data-search-jump="river"
@@ -4220,7 +4282,7 @@ function SearchReview({
                   type="button"
                 >
                   <CalendarDays size={14} />
-                  <span>jump_to_river</span>
+                  <span>跳到时间河</span>
                 </button>
                 <button
                   data-search-jump="inspector"
@@ -4229,7 +4291,7 @@ function SearchReview({
                   type="button"
                 >
                   <Crosshair size={14} />
-                  <span>open_inspector</span>
+                  <span>同步详情</span>
                 </button>
               </div>
             </article>
@@ -4238,15 +4300,15 @@ function SearchReview({
       ) : (
         <section className="search-2-zero-recovery" data-zero-result-recovery="search_2_0">
           <div className="panel-title-row">
-            <h3>zero_result_recovery</h3>
-            <span>0 hits</span>
+            <h3>无结果恢复</h3>
+            <span>0 条</span>
           </div>
           <ul>
-            <li>broaden query：减少关键词或改用主题词。</li>
-            <li>remove filter：放宽 tier、topic、recency、importance 或 evidence only。</li>
-            <li>related topic：回到 all topic 后查看相邻主题。</li>
-            <li>stale/archive：切换 stale/archive 查找过期或归档记忆。</li>
-            <li>later review hint：后续 Review / Summary / Iteration 只作为复盘入口，不在本 phase 运行。</li>
+            <li>扩大查询：减少关键词或改用主题词。</li>
+            <li>移除筛选：放宽层级、主题、时效、重要性或仅证据限制。</li>
+            <li>相关主题：回到全部主题后查看相邻主题。</li>
+            <li>过期/归档：切换过期或归档记忆查找历史线索。</li>
+            <li>后续复盘提示：总结与迭代只作为复盘入口，本 phase 不执行提案应用。</li>
           </ul>
         </section>
       )}
@@ -5024,7 +5086,7 @@ function SummaryIterationView({
       </div>
       <section className="review-period-selector" data-review-period-selector="true" data-review-panel="review_period_selector">
         <label>
-          <span>Review period</span>
+          <span>复盘窗口</span>
           <select value={reviewPeriod} onChange={(event) => setReviewPeriod(event.target.value as ReviewPeriodId)}>
             {REVIEW_PERIOD_OPTIONS.map((option) => (
               <option key={option.id} value={option.id}>
@@ -5042,20 +5104,23 @@ function SummaryIterationView({
         data-evidence-ref={reviewSummary.evidence_refs.join(",")}
       >
         <div className="panel-title-row">
-          <h3>Review session output</h3>
-          <span>{reviewSummary.confidence} confidence</span>
+          <h3>复盘会话输出</h3>
+          <span>置信度：{reviewSummary.confidence}</span>
         </div>
-        <p className="review-schema-line">
-          review_schema_version={reviewSummary.review_schema_version}; dominant_topics; strengthening_topics;
-          declining_topics; new_opportunities; low_value_loops; decision_changes; next_actions; proposal_candidate;
-          evidence_refs; iteration_backlog. Questions: {schemaQuestionLine}
-        </p>
-        <div className="review-output-grid">
-          <span>review_id：{reviewSummary.review_id}</span>
-          <span>source_scope：{reviewSummary.source_scope}</span>
-          <span>proposal_decision：{reviewSummary.proposal_candidate.proposal_decision}</span>
-          <span>panels：{reviewSummary.panelIds.join(", ")}</span>
-        </div>
+        <p>默认层只回答八个复盘问题；schema、panel id 和 evidence refs 已收进高级详情。</p>
+        <MachineFieldDetails title="高级详情：复盘 schema 与字段" className="review-machine-details">
+          <p className="machine-field-help">
+            review_schema_version={reviewSummary.review_schema_version}; dominant_topics; strengthening_topics;
+            declining_topics; new_opportunities; low_value_loops; decision_changes; next_actions; proposal_candidate;
+            evidence_refs; iteration_backlog. Questions: {schemaQuestionLine}
+          </p>
+          <div className="review-output-grid">
+            <span>review_id：{reviewSummary.review_id}</span>
+            <span>source_scope：{reviewSummary.source_scope}</span>
+            <span>proposal_decision：{reviewSummary.proposal_candidate.proposal_decision}</span>
+            <span>panels：{reviewSummary.panelIds.join(", ")}</span>
+          </div>
+        </MachineFieldDetails>
       </section>
       <DeltaStrip stats={deltaStats} compact />
       <div className="summary-signal-grid" aria-label="总结与迭代关键结论">
@@ -5067,57 +5132,57 @@ function SummaryIterationView({
         <article className="review-question-card" data-review-question="dominant_topics" data-review-panel="theme_change_panel">
           <strong>{dominantAnswer.question}</strong>
           <p>{dominantAnswer.answer}</p>
-          <small>evidence_refs：{dominantAnswer.evidence_refs.join(" / ")}</small>
+          <EvidenceRefsDetails refs={dominantAnswer.evidence_refs} />
         </article>
         <article className="review-question-card" data-review-question="strengthening_topics" data-review-panel="theme_change_panel">
           <strong>{strengtheningAnswer.question}</strong>
           <p>{strengtheningAnswer.answer}</p>
-          <small>evidence_refs：{strengtheningAnswer.evidence_refs.join(" / ")}</small>
+          <EvidenceRefsDetails refs={strengtheningAnswer.evidence_refs} />
         </article>
         <article className="review-question-card" data-review-question="declining_topics" data-review-panel="theme_change_panel">
           <strong>{decliningAnswer.question}</strong>
           <p>{decliningAnswer.answer}</p>
-          <small>evidence_refs：{decliningAnswer.evidence_refs.join(" / ")}</small>
+          <EvidenceRefsDetails refs={decliningAnswer.evidence_refs} />
         </article>
         <article className="review-question-card" data-review-question="new_opportunities" data-review-panel="opportunity_panel">
           <strong>{opportunityAnswer.question}</strong>
           <p>{opportunityAnswer.answer}</p>
-          <small>evidence_refs：{opportunityAnswer.evidence_refs.join(" / ")}</small>
+          <EvidenceRefsDetails refs={opportunityAnswer.evidence_refs} />
         </article>
         <article className="review-question-card" data-review-question="low_value_loops" data-review-panel="low_value_loop_panel">
           <strong>{lowValueAnswer.question}</strong>
           <p>{lowValueAnswer.answer}</p>
-          <small>evidence_refs：{lowValueAnswer.evidence_refs.join(" / ")}</small>
+          <EvidenceRefsDetails refs={lowValueAnswer.evidence_refs} />
         </article>
         <article className="review-question-card" data-review-question="decision_changes" data-review-panel="decision_change_panel">
           <strong>{decisionAnswer.question}</strong>
           <p>{decisionAnswer.answer}</p>
-          <small>evidence_refs：{decisionAnswer.evidence_refs.join(" / ")}</small>
+          <EvidenceRefsDetails refs={decisionAnswer.evidence_refs} />
         </article>
         <article className="review-question-card" data-review-question="next_actions" data-review-panel="next_action_panel">
           <strong>{nextActionAnswer.question}</strong>
           <p>{nextActionAnswer.answer}</p>
-          <small>evidence_refs：{nextActionAnswer.evidence_refs.join(" / ")}</small>
+          <EvidenceRefsDetails refs={nextActionAnswer.evidence_refs} />
         </article>
         <article className="review-question-card" data-review-question="proposal_decision" data-review-panel="proposal_decision_panel">
           <strong>{proposalAnswer.question}</strong>
           <p>{proposalAnswer.answer}</p>
-          <small>evidence_refs：{proposalAnswer.evidence_refs.join(" / ")}</small>
+          <EvidenceRefsDetails refs={proposalAnswer.evidence_refs} />
         </article>
       </section>
       <section className="review-runtime-panels" aria-label="Review / Summary / Iteration 运行面板">
         <article className="proposal-decision-panel" data-review-panel="proposal_decision_panel">
           <div className="panel-title-row">
-            <h3>Proposal decision</h3>
+            <h3>提案判断</h3>
             <span>{reviewSummary.proposal_candidate.target_type}</span>
           </div>
-          <strong>{reviewSummary.proposal_candidate.should_generate ? "proposal_candidate=true" : "proposal_candidate=false"}</strong>
+          <strong>{reviewSummary.proposal_candidate.should_generate ? "建议生成提案" : "暂不生成提案"}</strong>
           <p>{reviewSummary.proposal_candidate.reason}</p>
           <small>{reviewSummary.proposal_candidate.rollback_hint}</small>
         </article>
         <article className="iteration-backlog" data-review-panel="iteration_backlog">
           <div className="panel-title-row">
-            <h3>Iteration backlog</h3>
+            <h3>迭代待办</h3>
             <span>{reviewSummary.iteration.review_again_at}</span>
           </div>
           <ol>
@@ -5141,31 +5206,35 @@ function SummaryIterationView({
           <h3>总结与迭代闭环</h3>
           <span>仅生成提案</span>
         </div>
-        <p className="summary-closure-schema-line">
-          closure_schema_version={summaryClosure.closure_schema_version}; source_review_schema_version={summaryClosure.source_review_schema_version};
-          change_comparison; stale_conflict_signals; proposal_candidates; requires_conflict_check; requires_agent_or_human_apply.
-          {summaryClosure.closure_summary}
-        </p>
+        <p className="summary-closure-schema-line">默认显示变化、冲突和提案候选的中文解释；schema 与机器字段在高级详情中核验。</p>
+        <MachineFieldDetails title="高级详情：闭环 schema 与机器字段" className="summary-closure-machine-details">
+          <p className="machine-field-help">
+            closure_schema_version={summaryClosure.closure_schema_version}; source_review_schema_version={summaryClosure.source_review_schema_version};
+            change_comparison; stale_conflict_signals; proposal_candidates; requires_conflict_check; requires_agent_or_human_apply.
+            {summaryClosure.closure_summary}
+          </p>
+        </MachineFieldDetails>
         <div className="summary-closure-grid">
           <article className="summary-closure-card" data-summary-closure-panel="change_comparison">
             <div className="panel-title-row">
-              <h4>change_comparison</h4>
-              <span>{summaryClosure.change_comparison.length} signals</span>
+              <h4>变化对比</h4>
+              <span>{summaryClosure.change_comparison.length} 条信号</span>
             </div>
             <ol>
               {summaryClosure.change_comparison.map((item) => (
                 <li key={item.signal_id}>
                   <strong>{item.title}</strong>
-                  <p>{formatSigned(item.delta)} · current {item.current_count} / previous {item.previous_count}</p>
-                  <small>{item.summary} · evidence_refs：{item.evidence_refs.join(" / ")}</small>
+                  <p>{formatSigned(item.delta)} · 当前 {item.current_count} / 上期 {item.previous_count}</p>
+                  <small>{item.summary}</small>
+                  <EvidenceRefsDetails refs={item.evidence_refs} />
                 </li>
               ))}
             </ol>
           </article>
           <article className="summary-closure-card" data-summary-closure-panel="stale_conflict_signals">
             <div className="panel-title-row">
-              <h4>stale_conflict_signals</h4>
-              <span>{summaryClosure.stale_conflict_signals.length} checks</span>
+              <h4>过期与冲突信号</h4>
+              <span>{summaryClosure.stale_conflict_signals.length} 条检查</span>
             </div>
             <ol>
               {summaryClosure.stale_conflict_signals.map((item) => (
@@ -5180,27 +5249,30 @@ function SummaryIterationView({
         </div>
         <article className="summary-closure-proposals" data-summary-closure-panel="proposal_candidates">
           <div className="panel-title-row">
-            <h4>proposal_candidates</h4>
-            <span>{summaryClosure.proposal_candidates.length} candidates</span>
+            <h4>提案候选</h4>
+            <span>{summaryClosure.proposal_candidates.length} 个候选</span>
           </div>
           <div>
             {summaryClosure.proposal_candidates.map((item) => (
               <section key={item.proposal_id}>
                 <strong>{item.title}</strong>
                 <p>{item.reason}</p>
-                <small>
-                  {item.proposal_id}; target_type={item.target_type}; requires_conflict_check={String(item.requires_conflict_check)};
-                  requires_agent_or_human_apply={String(item.requires_agent_or_human_apply)}; evidence_refs={item.evidence_refs.join(" / ")}
-                </small>
+                <small>需要冲突检查：{item.requires_conflict_check ? "是" : "否"}；应用方式：人工或受控代理；证据引用 {item.evidence_refs.length.toLocaleString()} 条</small>
+                <MachineFieldDetails title="高级详情：提案候选字段" className="inline-machine-field-details">
+                  <p className="machine-field-help">
+                    proposal_id={item.proposal_id}; target_type={item.target_type}; requires_conflict_check={String(item.requires_conflict_check)};
+                    requires_agent_or_human_apply={String(item.requires_agent_or_human_apply)}; evidence_refs={item.evidence_refs.join(" / ")}
+                  </p>
+                </MachineFieldDetails>
               </section>
             ))}
           </div>
         </article>
         <div className="summary-closure-safety">
-          <span>proposal_only: true</span>
-          <span>directActiveMemoryWriteback: false</span>
-          <span>rawPrivateDataIncluded: false</span>
-          <span>proposalWrite: false</span>
+          <span>仅生成提案：是</span>
+          <span>直接写长期记忆：否</span>
+          <span>包含 raw 私有数据：否</span>
+          <span>前端写入 proposal：否</span>
         </div>
       </section>
       <HumanOverviewPanel nodes={nodes} deltaStats={deltaStats} />
@@ -5419,13 +5491,21 @@ function NodeInspector({
         type="button"
         aria-expanded={debugOpen}
         aria-controls="inspector-debug-panel"
+        aria-label="显示或隐藏高级详情机器字段"
+        data-s10-p3-machine-fields="collapsed-by-default"
+        data-s10-p3-advanced-details-entry="inspector"
         onClick={() => setDebugOpen((open) => !open)}
       >
         <Search size={15} />
         {debugOpen ? uiCopy.inspector.debugHide : uiCopy.inspector.debugShow}
       </button>
       {debugOpen ? (
-        <section id="inspector-debug-panel" className="agent-structured-fields inspector-debug-panel" data-debug-panel="true">
+        <section
+          id="inspector-debug-panel"
+          className="agent-structured-fields inspector-debug-panel"
+          data-debug-panel="true"
+          data-s10-p3-machine-fields="advanced-details-open"
+        >
           <div className="panel-title-row">
             <h3>{uiCopy.inspector.debugTitle}</h3>
             <span>{uiCopy.inspector.debugDefaultHidden}</span>
