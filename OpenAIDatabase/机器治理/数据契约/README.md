@@ -12,7 +12,15 @@
 
 source registry 属于 S02 P2；本阶段不创建 registry 文件，不修改 raw archive。
 
-当前 S09 P3 已完成。S05 Review 已通过，并新增：
+当前 S09 Review 已完成。`data/derived/behavior_intelligence/latent_signals.json`、
+`data/derived/behavior_intelligence/self_iteration_suggestions.json` 和
+`data/derived/behavior_intelligence/decision_debt_ledger.json` 均已通过 S09 整体复审。
+下一步是 S10 P1。
+
+历史复验兼容记录：当前 S09 P3 已完成，`decision_debt_ledger.json` 已生成，下一步是
+S09 Review；此句只用于保留已完成 phase 的复验语义，不代表当前阶段。
+
+S05 Review 已通过，并新增：
 
 - `机器治理/数据契约/facet_event_schema.v1_2_s05_p1.json`
 - `人类可读/12_Facet字段与事件语义说明.md`
@@ -93,6 +101,8 @@ source registry 属于 S02 P2；本阶段不创建 registry 文件，不修改 r
 - `docs/reviews/memory_atlas_v1_2_s09_p3_decision_debt.md`
 - `tests/test_s09p3_decision_debt.py`
 - `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s09_p3.cjs`
+- `docs/reviews/memory_atlas_v1_2_s09_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s09_review.cjs`
 
 当前 S08 Review 已完成，复审覆盖 `data/derived/agent_collaboration/agent_collaboration_quality_report.json`、
 `data/derived/agent_collaboration/agent_authorization_boundary_report.json` 和
@@ -115,6 +125,12 @@ S09 P2 不执行 proposal apply、不修改 raw、不创建 decision debt ledger
 包含 8 条决策债候选。每条记录都有 evidence refs、linked self-iteration suggestions、
 最小下一步、预期交付件和停止条件。S09 P3 不生成压力清单、不执行 proposal apply、
 不修改 raw。下一步是 S09 Review。
+
+当前 S09 Review 已完成，复审覆盖 `data/derived/behavior_intelligence/latent_signals.json`、
+`data/derived/behavior_intelligence/self_iteration_suggestions.json` 和
+`data/derived/behavior_intelligence/decision_debt_ledger.json`。S09 Review 确认 S09 stage
+gate 通过，不修改 raw、不执行 proposal apply、不生成压力清单、不上传 GitHub main。
+下一步是 S10 P1。
 
 S05 P1 定义 facet/canonical event schema：`source`、`topic`、`intent`、
 `task_type`、`project`、`output_type`、`language`、`tool`、`turn_count`、
