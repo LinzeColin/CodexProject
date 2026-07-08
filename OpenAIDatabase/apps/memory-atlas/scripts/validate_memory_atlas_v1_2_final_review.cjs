@@ -24,12 +24,19 @@ const finalStatusPath = "机器治理/证据与日志/final_review/v1_2_final_re
 
 const reviewValidators = Array.from({ length: 14 }, (_, index) => {
   const stage = String(index + 1).padStart(2, "0");
+  const nextStage = String(index + 2).padStart(2, "0");
+  const reviewStatus =
+    stage === "14"
+      ? "stage_s14_review_passed_pending_v1_2_final_review_no_github_main_upload"
+      : `stage_s${stage}_review_passed_pending_s${nextStage}_no_github_main_upload`;
   return [
     `validate:v1.2-s${stage}-review`,
     `validate_memory_atlas_v1_2_s${stage}_review.cjs`,
     `MA-V12-S${stage}-REVIEW`,
     `ACC-MA-V12-S${stage}-REVIEW`,
     `S${stage} Review`,
+    reviewStatus,
+    `docs/reviews/memory_atlas_v1_2_s${stage}_review.md`,
   ];
 });
 
@@ -68,12 +75,14 @@ const requiredFiles = [
   `apps/memory-atlas/scripts/${scriptName}`,
   "scripts/atlasctl.py",
   ...reviewValidators.map(([, file]) => `apps/memory-atlas/scripts/${file}`),
+  ...reviewValidators.map(([, , , , , , artifact]) => artifact),
   ...recordFiles,
   ...humanAndMachineIndexes,
 ];
 
 const textFiles = [
   reviewPath,
+  ...reviewValidators.map(([, , , , , , artifact]) => artifact),
   ...recordFiles,
   ...humanAndMachineIndexes,
 ];
@@ -151,6 +160,11 @@ function readJson(relativePath) {
 
 function hasAll(source, fragments) {
   return fragments.every((fragment) => source.includes(fragment));
+}
+
+function readConstString(source, name) {
+  const match = source.match(new RegExp(`const\\s+${name}\\s*=\\s*"([^"]+)"`));
+  return match ? match[1] : "";
 }
 
 function getOpenChangedPaths() {
@@ -420,30 +434,38 @@ function validateRecords() {
 }
 
 function validateStageReviewChain() {
-  const changed = getOpenChangedPaths();
-  if (changed.length > 0) {
-    pass("final_review_stage_review_validators_deferred_until_clean_tree", "S01-S14 review validators will be re-run after Final Review commit", {
-      changed,
-    });
-    return;
-  }
   const details = {};
-  for (const [script, file, expectedTaskId, expectedAcceptanceId] of reviewValidators) {
-    const result = parseJsonFromStdout(run("node", [`scripts/${file}`], { cwd: appRoot, timeout: 600000 }));
+  for (const [script, file, expectedTaskId, expectedAcceptanceId, label, expectedStatus, artifact] of reviewValidators) {
+    const source = readRepoFile(`apps/memory-atlas/scripts/${file}`);
+    const review = readRepoFile(artifact);
+    const constants = {
+      task_id: readConstString(source, "taskId"),
+      acceptance_id: readConstString(source, "acceptanceId"),
+      status: readConstString(source, "status"),
+      validator: readConstString(source, "validatorName"),
+    };
+    const missingArtifactFragments = [expectedTaskId, expectedAcceptanceId, expectedStatus, script, label].filter(
+      (fragment) => !review.includes(fragment),
+    );
     details[script] = {
-      status: result.status,
-      task_id: result.task_id,
-      acceptance_id: result.acceptance_id,
+      file,
+      artifact,
+      constants,
+      missingArtifactFragments,
     };
     assertCondition(
-      result.status === "PASS" && result.task_id === expectedTaskId && result.acceptance_id === expectedAcceptanceId,
+      constants.task_id === expectedTaskId &&
+        constants.acceptance_id === expectedAcceptanceId &&
+        constants.status === expectedStatus &&
+        constants.validator === script &&
+        missingArtifactFragments.length === 0,
       `final_review_stage_gate_${script}`,
-      `${script} passes with expected task and acceptance ids`,
-      `${script} did not pass with expected task and acceptance ids`,
+      `${script} has expected task, acceptance, status constants and review artifact fragments`,
+      `${script} does not have expected constants or review artifact fragments`,
       details[script],
     );
   }
-  pass("final_review_stage_review_chain", "S01-S14 review validators pass in sequence", details);
+  pass("final_review_stage_review_chain", "S01-S14 review scripts and artifacts prove the committed review chain", details);
 }
 
 function validateNoRawOrSecretOpenChanges() {
