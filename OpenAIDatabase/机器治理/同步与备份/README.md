@@ -48,5 +48,13 @@ S03 P2 固定 credential is not memory 和 `credentials_not_transcript`：普通
 - `docs/reviews/memory_atlas_v1_2_s03_p3_machine_ledger.md`
 
 S03 P3 固定 raw manifest/hash 机器账本：可生成 source/file/hash/imported_at 映射，
-并由 audit 检查 append-only、hash drift 和 deleted manifest entry。下一步是 S03 Review。
+并由 audit 检查 append-only、hash drift 和 deleted manifest entry。
+
+当前 S03 Review 已通过，并新增：
+
+- `docs/reviews/memory_atlas_v1_2_s03_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s03_review.cjs`
+
+S03 Review 确认 raw 可公开备份、append-only、credential exclusion 和 raw manifest/hash
+均可验证。下一步是 S04 P1。
 当前阶段不实现 connector，不导入真实 transcript，不新增 UI，不上传 GitHub main。

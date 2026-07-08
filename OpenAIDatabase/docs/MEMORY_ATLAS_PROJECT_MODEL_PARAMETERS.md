@@ -1,3 +1,41 @@
+## 116. Memory Atlas v1.2 S03 Review Parameters
+
+状态：`stage_s03_review_passed_pending_s04_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S03-REVIEW`。
+
+S03 Review 固定以下参数：
+
+- `MA-V12-S03-REVIEW`
+- `validate:v1.2-s03-review`
+- `memory_atlas_v1_2_s03_review.md`
+- S03 Review。
+- raw 可公开备份。
+- append-only。
+- credential exclusion。
+- raw manifest/hash。
+- S03 Review 完成后下一步为 pending S04 P1。
+- No GitHub main upload in this review。
+
+参数：
+
+- `PARAM-MA-V12-S03-REVIEW-001 phase_status = stage_s03_review_passed_pending_s04_no_github_main_upload`
+- `PARAM-MA-V12-S03-REVIEW-002 validator = validate:v1.2-s03-review`
+- `PARAM-MA-V12-S03-REVIEW-003 review_artifact = memory_atlas_v1_2_s03_review.md`
+- `PARAM-MA-V12-S03-REVIEW-004 reviewed_phases = S03 P1;S03 P2;S03 P3`
+- `PARAM-MA-V12-S03-REVIEW-005 next_gate = pending S04 P1`
+- `PARAM-MA-V12-S03-REVIEW-006 upload_boundary = No GitHub main upload in this review`
+
+验证逻辑：
+
+- `validate:v1.2-s03-review` checks S03 P3 continuity, public raw path,
+  append-only audit, credential exclusion scan/runtime, raw manifest/hash
+  ledger, human/machine state, records, canonical remote and
+  no-upload/no-connector/no-real-transcript/no-ui/no-public-raw-mutation
+  boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S03 Review; MA-V12-S03-REVIEW; ACC-MA-V12-S03-REVIEW; stage_s03_review_passed_pending_s04_no_github_main_upload; validate:v1.2-s03-review; memory_atlas_v1_2_s03_review.md; S03 Review; pending S04 P1; No GitHub main upload in this review; No connector implementation; No real transcript ingestion; No UI work; No public raw file mutation.
+
 ## 115. Memory Atlas v1.2 S03 P3 Machine Ledger Parameters
 
 状态：`phase_s03_p3_machine_ledger_completed_pending_s03_review`。

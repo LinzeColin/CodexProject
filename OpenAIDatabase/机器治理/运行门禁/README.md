@@ -2,8 +2,8 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S03 P3。任务 ID 为 `MA-V12-S03P3`，验收 ID 为
-`ACC-MA-V12-S03P3`，validator 为 `validate:v1.2-s03-p3`。
+当前阶段是 S03 Review。任务 ID 为 `MA-V12-S03-REVIEW`，验收 ID 为
+`ACC-MA-V12-S03-REVIEW`，validator 为 `validate:v1.2-s03-review`。
 
 前置 S01 Review 已通过：`MA-V12-S01-REVIEW` / `ACC-MA-V12-S01-REVIEW` /
 `validate:v1.2-s01-review`。
@@ -103,4 +103,21 @@ S03 P3 gate：
 - raw manifest 是机器文件，不是人类主要页面。
 
 No GitHub main upload in this phase。
-下一步是 S03 Review；本 phase 不重装 app。
+前置 S03 P3 已通过：`MA-V12-S03P3` / `ACC-MA-V12-S03P3` /
+`validate:v1.2-s03-p3`。
+
+S03 Review 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s03_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s03_review.cjs`
+
+S03 Review gate：
+
+- raw 可公开备份。
+- append-only 和 hash drift/deleted manifest entry fail 均可验证。
+- credential exclusion 可验证，credential pattern 会失败。
+- raw manifest/hash 可生成并映射 source/file/hash/imported_at。
+- human files 不被 raw manifest 明细污染。
+
+No GitHub main upload in this review。
+下一步是 S04 P1；本 review 不重装 app，不实现 connector，不导入真实 transcript。

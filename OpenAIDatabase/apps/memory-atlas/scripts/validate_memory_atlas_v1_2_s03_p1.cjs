@@ -142,7 +142,40 @@ function validateTextFile(relativePath) {
   );
 }
 
+function currentStateIsS03Review() {
+  return (
+    hasAll(readRepoFile("人类可读/00_快速入口.md"), [
+      "当前阶段是 S03 Review",
+      "MA-V12-S03-REVIEW",
+      "ACC-MA-V12-S03-REVIEW",
+      "下一步只允许进入 S04 P1",
+    ]) &&
+    hasAll(readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md"), [
+      "S03 Review 已通过",
+      "raw 可公开备份",
+      "下一步是 S04 P1",
+    ]) &&
+    hasAll(readRepoFile("机器治理/README.md"), [
+      "当前为 S03 Review",
+      "memory_atlas_v1_2_s03_review.md",
+      "下一步是 S04 P1",
+    ]) &&
+    hasAll(readRepoFile("机器治理/同步与备份/README.md"), [
+      "当前 S03 Review 已通过",
+      "credential exclusion",
+      "下一步是 S04 P1",
+    ]) &&
+    hasAll(readRepoFile("机器治理/运行门禁/README.md"), [
+      "当前阶段是 S03 Review",
+      "validate:v1.2-s03-review",
+      "下一步是 S04 P1",
+    ])
+  );
+}
+
 function currentStateIsS03P2() {
+  if (currentStateIsS03Review()) return true;
+
   if (
     hasAll(readRepoFile("人类可读/00_快速入口.md"), [
       "当前阶段是 S03 P3",

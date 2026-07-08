@@ -18,9 +18,9 @@
 
 ## 当前阶段
 
-当前为 S03 P3。S01 整体复审已通过，S02 整体复审已通过，公开 raw 路径、
-credential is not memory 门禁、raw manifest/hash 机器账本、append-only audit 和
-hash drift fail 规则已定义。
+当前为 S03 Review。S01 整体复审已通过，S02 整体复审已通过，S03 P1/P2/P3
+整体复审已通过。raw 可公开备份、append-only、credential exclusion、
+raw manifest/hash 机器账本、append-only audit 和 hash drift fail 规则均可验证。
 
 当前机器产物：
 
@@ -45,6 +45,7 @@ hash drift fail 规则已定义。
 - `../docs/reviews/memory_atlas_v1_2_s03_p1_public_raw_path.md`
 - `../docs/reviews/memory_atlas_v1_2_s03_p2_credential_exclusion.md`
 - `../docs/reviews/memory_atlas_v1_2_s03_p3_machine_ledger.md`
+- `../docs/reviews/memory_atlas_v1_2_s03_review.md`
 - `scripts/privacy_guard.py`
 - `scripts/sync_codex_memory_data.py`
 - `scripts/raw_archive_manifest.py`
@@ -57,4 +58,4 @@ hash drift fail 规则已定义。
 - 凭证排除。
 - 后续其他 agent 数据源扩展规则。
 
-下一步是 S03 Review；本目录仍不替代 apps/scripts/tests/config/data/docs/governance。
+下一步是 S04 P1；本目录仍不替代 apps/scripts/tests/config/data/docs/governance。

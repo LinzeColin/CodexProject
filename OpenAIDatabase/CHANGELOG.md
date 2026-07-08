@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S03 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s03_review.md`.
+- Added `validate:v1.2-s03-review` for `MA-V12-S03-REVIEW` /
+  `ACC-MA-V12-S03-REVIEW`.
+- Registered status `stage_s03_review_passed_pending_s04_no_github_main_upload`.
+- Marked S03 Review as passed after covering S03 P1, S03 P2 and S03 P3.
+- Confirmed raw 可公开备份, append-only, credential exclusion and
+  raw manifest/hash are verifiable together.
+- Marked the next gate as pending S04 P1.
+- Preserved S03 Review boundaries: No GitHub main upload in this review,
+  No connector implementation, No real transcript ingestion, No UI work and
+  No public raw file mutation.
+
 ## Unreleased - Memory Atlas v1.2 S03 P3 Machine Ledger
 
 - Added `scripts/raw_archive_manifest.py`.
