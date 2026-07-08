@@ -1571,6 +1571,60 @@ def build_ocr_fact_controlled_ledger_apply_gate_rows(
     return rows
 
 
+def build_ocr_fact_owner_decision_correction_queue_rows(
+    manifest: dict,
+    apply_gate_rows: list[dict],
+) -> list[dict]:
+    owner_field_by_missing_field = {
+        "company": "owner_corrected_company",
+        "bank": "owner_corrected_bank",
+    }
+    rows: list[dict] = []
+    owner_decision_manifest_relative_path = ocr_fact_candidate_owner_decision_relative_path(manifest["run_id"])
+    for row in apply_gate_rows:
+        if row["apply_gate_status"] != "blocked_missing_required_ledger_fields":
+            continue
+        missing_required_fields = row["gate_reason"].split(":", 1)[-1].strip()
+        missing_fields = [field.strip() for field in missing_required_fields.split(",") if field.strip()]
+        required_owner_fields = [
+            owner_field_by_missing_field.get(field, f"unsupported_owner_correction_for_{field}")
+            for field in missing_fields
+        ]
+        rows.append({
+            "correction_queue_id": f"OCROWNERFIX-{manifest['run_id']}-{len(rows) + 1:05d}",
+            "controlled_ledger_apply_gate_id": row["controlled_ledger_apply_gate_id"],
+            "controlled_ledger_preview_id": row["controlled_ledger_preview_id"],
+            "staging_preview_id": row["staging_preview_id"],
+            "fact_candidate_id": row["fact_candidate_id"],
+            "candidate_metric": row["candidate_metric"],
+            "missing_required_fields": ",".join(missing_fields),
+            "required_owner_fields": ",".join(required_owner_fields),
+            "current_date": row["date"],
+            "current_company": row["company"],
+            "current_bank": row["bank"],
+            "current_account_alias": row["account_alias"],
+            "liquidity_tier": row["liquidity_tier"],
+            "amount": row["amount"],
+            "currency": row["currency"],
+            "flow_type": row["flow_type"],
+            "source_evidence_id": row["source_evidence_id"],
+            "source_ocr_text_relative_path": row["source_ocr_text_relative_path"],
+            "owner_decision_manifest_relative_path": owner_decision_manifest_relative_path,
+            "owner_decision_preview_status": row["owner_decision_preview_status"],
+            "owner_correction_applied": row["owner_correction_applied"],
+            "correction_queue_status": "blocked_owner_correction_required",
+            "source_mutation_allowed": "false",
+            "fund_ledger_write_allowed": "false",
+            "formal_fund_ledger_write_allowed": "false",
+            "financial_fact_promoted": "false",
+            "management_conclusion_allowed": "false",
+            "recommended_next_step": (
+                "Update the private owner decision manifest with the required owner-corrected fields, then rerun the no-write controlled ledger apply gate."
+            ),
+        })
+    return rows
+
+
 def chat_record_source_paths(manifest: dict) -> list[str]:
     return [
         item["relative_path"]
@@ -5081,6 +5135,10 @@ def write_no_hallucination_outputs(
         manifest,
         ocr_fact_controlled_ledger_row_preview_rows,
     )
+    ocr_fact_owner_decision_correction_queue_rows = build_ocr_fact_owner_decision_correction_queue_rows(
+        manifest,
+        ocr_fact_controlled_ledger_apply_gate_rows,
+    )
     ocr_fact_candidate_owner_authorization_update_draft = build_ocr_fact_candidate_owner_authorization_update_draft(
         manifest,
         ocr_fact_candidate_owner_decision_preview_rows,
@@ -5180,6 +5238,16 @@ def write_no_hallucination_outputs(
     )
     manifest["ocr_fact_controlled_ledger_apply_gate_write_allowed_count"] = sum(
         1 for row in ocr_fact_controlled_ledger_apply_gate_rows
+        if row["fund_ledger_write_allowed"] == "true" or row["formal_fund_ledger_write_allowed"] == "true"
+    )
+    manifest["ocr_fact_owner_decision_correction_queue_count"] = len(
+        ocr_fact_owner_decision_correction_queue_rows
+    )
+    manifest["ocr_fact_owner_decision_correction_queue_blocking_count"] = len(
+        ocr_fact_owner_decision_correction_queue_rows
+    )
+    manifest["ocr_fact_owner_decision_correction_queue_write_allowed_count"] = sum(
+        1 for row in ocr_fact_owner_decision_correction_queue_rows
         if row["fund_ledger_write_allowed"] == "true" or row["formal_fund_ledger_write_allowed"] == "true"
     )
     manifest["ocr_fact_review_apply_gate_count"] = len(ocr_fact_review_gate_rows)
@@ -5613,6 +5681,36 @@ def write_no_hallucination_outputs(
         "gate_reason",
         "review_status",
     ], ocr_fact_controlled_ledger_apply_gate_rows)
+    write_csv(run_dir / "ocr_fact_owner_decision_correction_queue.csv", [
+        "correction_queue_id",
+        "controlled_ledger_apply_gate_id",
+        "controlled_ledger_preview_id",
+        "staging_preview_id",
+        "fact_candidate_id",
+        "candidate_metric",
+        "missing_required_fields",
+        "required_owner_fields",
+        "current_date",
+        "current_company",
+        "current_bank",
+        "current_account_alias",
+        "liquidity_tier",
+        "amount",
+        "currency",
+        "flow_type",
+        "source_evidence_id",
+        "source_ocr_text_relative_path",
+        "owner_decision_manifest_relative_path",
+        "owner_decision_preview_status",
+        "owner_correction_applied",
+        "correction_queue_status",
+        "source_mutation_allowed",
+        "fund_ledger_write_allowed",
+        "formal_fund_ledger_write_allowed",
+        "financial_fact_promoted",
+        "management_conclusion_allowed",
+        "recommended_next_step",
+    ], ocr_fact_owner_decision_correction_queue_rows)
     write_csv(run_dir / "ocr_fact_review_apply_gate.csv", [
         "review_gate_id",
         "fact_candidate_id",
@@ -6024,6 +6122,9 @@ def write_no_hallucination_outputs(
         "ocr_fact_controlled_ledger_apply_gate_blocking_count": manifest["ocr_fact_controlled_ledger_apply_gate_blocking_count"],
         "ocr_fact_controlled_ledger_apply_gate_planned_apply_count": manifest["ocr_fact_controlled_ledger_apply_gate_planned_apply_count"],
         "ocr_fact_controlled_ledger_apply_gate_write_allowed_count": manifest["ocr_fact_controlled_ledger_apply_gate_write_allowed_count"],
+        "ocr_fact_owner_decision_correction_queue_count": manifest["ocr_fact_owner_decision_correction_queue_count"],
+        "ocr_fact_owner_decision_correction_queue_blocking_count": manifest["ocr_fact_owner_decision_correction_queue_blocking_count"],
+        "ocr_fact_owner_decision_correction_queue_write_allowed_count": manifest["ocr_fact_owner_decision_correction_queue_write_allowed_count"],
         "ocr_fact_review_apply_gate_count": manifest["ocr_fact_review_apply_gate_count"],
         "ocr_fact_review_authorization_present_count": manifest["ocr_fact_review_authorization_present_count"],
         "ocr_fact_review_authorization_valid_count": manifest["ocr_fact_review_authorization_valid_count"],
@@ -6798,6 +6899,9 @@ def write_no_hallucination_outputs(
                 "ocr_fact_controlled_ledger_apply_gate_blocking_count": manifest["ocr_fact_controlled_ledger_apply_gate_blocking_count"],
                 "ocr_fact_controlled_ledger_apply_gate_planned_apply_count": manifest["ocr_fact_controlled_ledger_apply_gate_planned_apply_count"],
                 "ocr_fact_controlled_ledger_apply_gate_write_allowed_count": manifest["ocr_fact_controlled_ledger_apply_gate_write_allowed_count"],
+                "ocr_fact_owner_decision_correction_queue_count": manifest["ocr_fact_owner_decision_correction_queue_count"],
+                "ocr_fact_owner_decision_correction_queue_blocking_count": manifest["ocr_fact_owner_decision_correction_queue_blocking_count"],
+                "ocr_fact_owner_decision_correction_queue_write_allowed_count": manifest["ocr_fact_owner_decision_correction_queue_write_allowed_count"],
                 "ocr_fact_review_apply_gate_count": manifest["ocr_fact_review_apply_gate_count"],
                 "ocr_fact_review_authorization_present_count": manifest["ocr_fact_review_authorization_present_count"],
                 "ocr_fact_review_authorization_valid_count": manifest["ocr_fact_review_authorization_valid_count"],
@@ -7035,6 +7139,9 @@ def main() -> int:
         f"OCR fact controlled ledger apply gate blocking count: {manifest.get('ocr_fact_controlled_ledger_apply_gate_blocking_count', 0)}\n\n"
         f"OCR fact controlled ledger apply gate planned apply count: {manifest.get('ocr_fact_controlled_ledger_apply_gate_planned_apply_count', 0)}\n\n"
         f"OCR fact controlled ledger apply gate write-allowed count: {manifest.get('ocr_fact_controlled_ledger_apply_gate_write_allowed_count', 0)}\n\n"
+        f"OCR fact owner decision correction queue count: {manifest.get('ocr_fact_owner_decision_correction_queue_count', 0)}\n\n"
+        f"OCR fact owner decision correction queue blocking count: {manifest.get('ocr_fact_owner_decision_correction_queue_blocking_count', 0)}\n\n"
+        f"OCR fact owner decision correction queue write-allowed count: {manifest.get('ocr_fact_owner_decision_correction_queue_write_allowed_count', 0)}\n\n"
         f"OCR fact review authorization valid count: {manifest.get('ocr_fact_review_authorization_valid_count', 0)}\n\n"
         f"OCR fact review authorization preview ready count: {manifest.get('ocr_fact_review_authorization_preview_ready_count', 0)}\n\n"
         f"OCR fact review authorization preview blocked count: {manifest.get('ocr_fact_review_authorization_preview_blocked_count', 0)}\n\n"
