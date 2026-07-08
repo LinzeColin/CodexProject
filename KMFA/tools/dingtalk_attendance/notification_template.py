@@ -44,9 +44,15 @@ def build_notification_message(
     abnormal_names = _filter_hidden_names(_dedupe_nonempty([*unexpected_empty_record_names, *known_no_record_names]))
     consecutive_lines = _filter_hidden_lines(coerce_message_lines(consecutive_anomaly_summary))
     pending_lines = _filter_hidden_lines(coerce_message_lines(pending_hr_actions))
-    abnormal_items = coerce_monthly_status_people(monthly_attendance_anomalies, fallback_names=abnormal_names)
-    consecutive_items = coerce_monthly_status_people(monthly_consecutive_anomalies)
-    pending_items = coerce_monthly_status_people(monthly_pending_actions)
+    abnormal_items = coerce_current_monthly_status_people(monthly_attendance_anomalies, current_names=abnormal_names)
+    consecutive_items = _filter_status_people_by_work_date(
+        coerce_monthly_status_people(monthly_consecutive_anomalies),
+        work_date=work_date,
+    )
+    pending_items = _filter_status_people_by_work_date(
+        coerce_monthly_status_people(monthly_pending_actions),
+        work_date=work_date,
+    )
     rest_items = coerce_rest_required_people(rest_required_people)
     if not abnormal_items and not consecutive_items and not consecutive_lines and not pending_items and not pending_lines and not rest_items:
         lines.extend([f"本次{_coerce_nonnegative_int(member_count)}人全部考勤正常，今天一切良好", ""])
@@ -224,6 +230,21 @@ def coerce_monthly_status_people(value: Any, *, fallback_names: list[str] | None
     return _sort_people(_filter_hidden_people(people), metric_key="monthly_count")
 
 
+def coerce_current_monthly_status_people(value: Any, *, current_names: list[str]) -> list[dict[str, Any]]:
+    names = _filter_hidden_names(_dedupe_nonempty(current_names))
+    if not names:
+        return []
+    monthly_by_name = {str(item.get("name") or ""): item for item in coerce_monthly_status_people(value)}
+    people: list[dict[str, Any]] = []
+    for name in names:
+        monthly_item = monthly_by_name.get(name)
+        if monthly_item:
+            people.append(monthly_item)
+        else:
+            people.append({"name": name, "monthly_count": 1, "latest_date": ""})
+    return _sort_people(_filter_hidden_people(people), metric_key="monthly_count")
+
+
 def _coerce_nonnegative_int(value: Any) -> int:
     try:
         result = int(value)
@@ -251,8 +272,10 @@ def display_run_type(run_type: str) -> str:
 
 
 def _extend_section(lines: list[str], *, title: str, body_lines: list[str], markdown: bool) -> None:
+    if not body_lines:
+        return
     lines.append(f"## {title}" if markdown else title)
-    lines.extend(body_lines or ["无"])
+    lines.extend(body_lines)
     lines.append("")
 
 
@@ -314,6 +337,14 @@ def _filter_hidden_names(names: list[str]) -> list[str]:
 
 def _filter_hidden_lines(lines: list[str]) -> list[str]:
     return [line for line in lines if not any(name in line for name in NOTIFICATION_HIDDEN_NAMES)]
+
+
+def _filter_status_people_by_work_date(people: list[dict[str, Any]], *, work_date: str) -> list[dict[str, Any]]:
+    return [
+        person
+        for person in people
+        if not str(person.get("latest_date") or "").strip() or str(person.get("latest_date") or "").strip()[:10] == work_date
+    ]
 
 
 def _dedupe_nonempty(values: list[str]) -> list[str]:
