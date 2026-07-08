@@ -41,7 +41,7 @@ Purpose: this checklist is the owner-facing review surface before any future aut
 | Structured CSV fact extraction | Active | Real structured CSV rows can create pending-review ledgers |
 | Internal-transfer netting | Active | Internal transfers are separated from operating cash flow |
 | Cashflow validation | Active | Balance continuity and operating cashflow effects are checked |
-| Funding forecast | Active | Known due-date items only; no evidence-free forecast |
+| Funding forecast | Active | Known due-date tax/deposit/loan/project-cost items only; no evidence-free forecast |
 | Company-bank matrix | Active | Company, bank, account alias, liquidity tier, and risk matrix |
 | Workbook generation | Active | Native Excel copy patched without rewriting chart packages |
 | Workbook quality gates | Active | Sheet order, hidden sheets, row 2, charts, formulas, sensitive visible values |

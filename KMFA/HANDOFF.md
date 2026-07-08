@@ -31,9 +31,9 @@
 
 - Codex App automation `kmfa` 当前契约为 `Australia/Sydney` 本地每周一、周六 11:00，repo contract 与本机 automation drift check 已纳入验证。
 - 默认只读输入为 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群`；scheduled shell 先跑 `check_source_readiness.py`，非 `READY` 不启动 runner。
-- 当前 runner 对真实结构化 CSV 必需列 `date/company/bank/account_alias/liquidity_tier/inflow/outflow/ending_balance/flow_type` 执行 Decimal 抽取，产出 `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW` 的资金事实、净流、公司银行矩阵和税费/保证金/借款风险。
+- 当前 runner 对真实结构化 CSV 必需列 `date/company/bank/account_alias/liquidity_tier/inflow/outflow/ending_balance/flow_type` 执行 Decimal 抽取，产出 `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW` 的资金事实、净流、公司银行矩阵和税费/保证金/借款/项目成本风险。
 - 当存在结构化事实时，runner 以 OOXML cell patch 写入原生 `.xlsx`：`01_首页总览` 4+4 卡片、`02_资金趋势预测` 已知到期项 projection、`03_三层净流余额`、`04_税费融资风险`、`05_公司银行矩阵`、隐藏 `H01/H02/H03/H05`；不重写图表包，保留首页最近 15 天/30 天两张原生折线图。
-- runner 现在从真实结构化 CSV 的 `due_date` 税费/保证金/借款风险/机会行生成 `funding_forecast.csv`，并写入 `02_资金趋势预测`；这些 projection 只按 `known_due_date_structured_csv` 进入待复核，不生成无证据预测或管理结论。
+- runner 现在从真实结构化 CSV 的 `due_date` 税费/保证金/借款/项目成本风险/机会行生成 `funding_forecast.csv`，并写入 `02_资金趋势预测`；这些 projection 只按 `known_due_date_structured_csv` 进入待复核，不生成无证据预测、付款动作或管理结论。
 - runner 现在生成 `cashflow_validation.csv`，逐资金行校验余额连续性、经营现金流影响和内部调拨排除；连续性失败追加 `BALANCE_CONTINUITY_GAP` 异常任务，并写入隐藏 `H05_复审检查`。
 - runner 现在生成 `workbook_quality_checks.csv`，对生成后的原生 Excel 检查 sheet 顺序、隐藏审计页、可见 row 2 清理、图表尺寸、公式错误标记和可见敏感值形态；失败会写异常任务并阻断管理结论。
 - `tools/materialize_fund_source.py` 现在支持显式 ZIP materialization：目录候选用 `--source-dir`，`DWS_Outputs.zip` 候选用 `--source-zip --zip-prefix 付款请示群`；dry-run 不建目标目录，apply 只复制该群 prefix 下缺失文件，hash 冲突、坏 ZIP 或 unsafe member fail-closed。
