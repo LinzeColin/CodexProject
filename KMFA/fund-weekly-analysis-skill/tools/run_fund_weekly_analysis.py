@@ -2280,6 +2280,7 @@ def fact_promotion_review_packet_row(
 def build_fact_promotion_review_packet_rows(
     manifest: dict,
     structured: dict,
+    screenshot_ocr_coverage_rows: list[dict],
     ocr_fact_ledger_staging_preview_rows: list[dict],
     chat_value_candidates: list[dict],
     attachment_reconciliation_rows: list[dict],
@@ -2293,6 +2294,15 @@ def build_fact_promotion_review_packet_rows(
         if row["staging_preview_status"] == "ready_for_ledger_staging_review_no_write"
     )
     ocr_blocked = len(ocr_fact_ledger_staging_preview_rows) - ocr_ready
+    ocr_coverage_count = len(screenshot_ocr_coverage_rows)
+    ocr_coverage_ready = sum(
+        1 for row in screenshot_ocr_coverage_rows
+        if row["ocr_coverage_status"] == "ocr_text_sidecar_present_pending_review"
+    )
+    ocr_coverage_missing = sum(
+        1 for row in screenshot_ocr_coverage_rows
+        if row["ocr_coverage_status"] == "ocr_text_sidecar_missing"
+    )
     chat_count = len(chat_value_candidates)
     attachment_blocked = sum(1 for row in attachment_reconciliation_rows if row["reconciliation_status"].endswith("_blocking"))
     workbook_blocked = sum(1 for row in workbook_quality_rows if row["management_blocking"] == "true")
@@ -2364,6 +2374,17 @@ def build_fact_promotion_review_packet_rows(
             "goal_completion_audit.csv",
             goal_blocked > 0,
             "Resolve blocking goal audit rows before completion claim" if goal_blocked else "Goal audit has no blocking rows",
+        ),
+        fact_promotion_review_packet_row(
+            f"FPRP-{run_id}-00007",
+            "screenshot_ocr_coverage",
+            ocr_coverage_count,
+            ocr_coverage_ready,
+            ocr_coverage_missing,
+            "blocked_ocr_sidecar_missing" if ocr_coverage_missing else ("pass" if ocr_coverage_count else "no_screenshot_rows"),
+            "screenshot_ocr_coverage.csv",
+            False,
+            "Run scheduled OCR sidecar generation or attach reviewed OCR sidecars" if ocr_coverage_missing else "Keep OCR coverage evidence with review packet",
         ),
     ]
 
@@ -4821,6 +4842,7 @@ def write_no_hallucination_outputs(
     fact_promotion_review_packet_rows = build_fact_promotion_review_packet_rows(
         manifest,
         structured,
+        screenshot_ocr_coverage_rows,
         ocr_fact_ledger_staging_preview_rows,
         chat_value_candidates,
         attachment_reconciliation_rows,
