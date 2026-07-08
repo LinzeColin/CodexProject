@@ -34,6 +34,7 @@
 - runner 现在生成 `cashflow_validation.csv`，逐资金行校验余额连续性、经营现金流影响和内部调拨排除；连续性失败追加 `BALANCE_CONTINUITY_GAP` 异常任务，并写入隐藏 `H05_复审检查`。
 - runner 现在生成 `workbook_quality_checks.csv`，对生成后的原生 Excel 检查 sheet 顺序、隐藏审计页、可见 row 2 清理、图表尺寸、公式错误标记和可见敏感值形态；失败会写异常任务并阻断管理结论。
 - `tools/materialize_fund_source.py` 现在支持显式 ZIP materialization：目录候选用 `--source-dir`，`DWS_Outputs.zip` 候选用 `--source-zip --zip-prefix 付款请示群`；dry-run 不建目标目录，apply 只复制该群 prefix 下缺失文件，hash 冲突、坏 ZIP 或 unsafe member fail-closed。
+- runner 现在将截图相邻真实 `.ocr.txt` 文本侧车写入 `ocr_text_candidates.csv`，关联原截图 evidence 并追加 `OCR_TEXT_PENDING_REVIEW` 任务；OCR 文本只进入待复核链路，`financial_fact_promoted=false`，不自动生成金额或管理结论。
 - runner 现在承接 public-safe KMFA metadata 信号：资金压力、项目成本事实层、报告等级、scope reconciliation，输出 `kmfa_metadata_signals.csv` 并写入 `04_税费融资风险` / `H02_异常任务池`；这些只用于待复核路由，不生成金额、预测或正式动作。
 - 所有结构化 CSV 金额仍是待复核事实，`management_conclusion_allowed=false`；不得把 workbook 首页卡片解释为最终 C-level 管理结论。
 - 当前真实 OneDrive 源仍需达到 `READY`。若目标目录缺失或 OneDrive cloud-only/dataless，保持 `SOURCE_MISSING` / `SOURCE_UNREADABLE` fail-closed，不生成局部生产包。

@@ -15,12 +15,12 @@ The local scheduler uses Sydney local time. 11:30 Australia/Sydney is the operat
 9. If the configured folder exists but contains unreadable/cloud-only files, write `SOURCE_UNREADABLE`; do not generate a partial Excel package.
 10. If a private directory or zip candidate is verified and the operator intends to populate the configured folder, run `tools/materialize_fund_source.py` first without `--apply`, inspect the manifest, then rerun with `--apply`.
 11. Build evidence index for screenshots and finance files.
-12. Write the `INDEXED_PENDING_EXTRACTION` no-hallucination output package first: current native Excel template copy, fact ledgers, funding forecast sidecar, cashflow validation sidecar, workbook quality checks, metadata signals, exception tasks, cross-review JSON, audit log, and run summary.
+12. Write the `INDEXED_PENDING_EXTRACTION` no-hallucination output package first: current native Excel template copy, fact ledgers, funding forecast sidecar, cashflow validation sidecar, OCR text candidate sidecar, workbook quality checks, metadata signals, exception tasks, cross-review JSON, audit log, and run summary.
 13. Carry public-safe KMFA metadata signals from fund pressure, project-cost fact layer, report grade, and scope reconciliation metadata into `kmfa_metadata_signals.csv` plus workbook pending-review cells. These signals support review routing only; they do not create amounts, forecasts, or conclusions.
 14. Extract only real values with source trace. CSV files may be auto-extracted only when they contain the exact structured columns `date, company, bank, account_alias, liquidity_tier, inflow, outflow, ending_balance, flow_type`; those rows become `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW`, not management conclusions.
 15. Build known due-date funding projections only from real structured CSV `due_date` risk/opportunity rows; write `funding_forecast.csv` and `02_资金趋势预测` as `structured_csv_forecast_pending_review`.
 16. When structured CSV facts exist, patch the copied native `.xlsx` workbook with the same traced facts in homepage KPI cards, `02_资金趋势预测`, visible flow/risk/matrix sheets, and hidden `H01/H02/H03`; preserve native chart parts and keep all values pending review.
-17. Put low-confidence OCR/vision rows into review queue.
+17. Put adjacent real OCR text sidecars into `ocr_text_candidates.csv` and exception tasks as pending review; do not promote OCR text into ledger amounts until human/cross review passes.
 18. Build funds ledger and net-flow ledger.
 19. Apply internal-transfer pairing before management rollups.
 20. Build `cashflow_validation.csv`: validate balance continuity at 0.01 tolerance, compute operating cashflow effect, and confirm internal transfers are excluded from operating cashflow. Any continuity failure enters exception tasks and blocks management conclusions.

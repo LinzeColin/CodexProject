@@ -403,6 +403,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "tax_loan_risk.csv",
                 "funding_forecast.csv",
                 "cashflow_validation.csv",
+                "ocr_text_candidates.csv",
                 "workbook_quality_checks.csv",
                 "kmfa_metadata_signals.csv",
                 "exception_tasks.csv",
@@ -424,6 +425,68 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
             self.assertFalse(cross_review["management_conclusion_allowed"])
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
+
+    def test_runner_collects_real_ocr_text_sidecars_without_promoting_amounts(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+            source_day = input_dir / "files" / "0708"
+            source_day.mkdir(parents=True)
+            screenshot = source_day / "20260708113000_杨婷_资金账户截图.png"
+            screenshot.write_bytes(b"real-image-bytes")
+            sidecar = source_day / "20260708113000_杨婷_资金账户截图.png.ocr.txt"
+            sidecar.write_text(
+                "招商银行 基本户 2026-07-08 期末余额 12345.67 可用余额 12000.00",
+                encoding="utf-8",
+            )
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "run_fund_weekly_analysis.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--input-dir",
+                    str(input_dir),
+                    "--run-id",
+                    "ocr_sidecar_test",
+                    "--timezone",
+                    "Australia/Sydney",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/ocr_sidecar_test"
+            with (run_dir / "ocr_text_candidates.csv").open(encoding="utf-8-sig", newline="") as f:
+                ocr_rows = list(csv.DictReader(f))
+            self.assertEqual(len(ocr_rows), 1)
+            self.assertEqual(ocr_rows[0]["source_image_relative_path"], "files/0708/20260708113000_杨婷_资金账户截图.png")
+            self.assertEqual(ocr_rows[0]["ocr_text_relative_path"], "files/0708/20260708113000_杨婷_资金账户截图.png.ocr.txt")
+            self.assertEqual(ocr_rows[0]["ocr_text_sha256"], sha256_bytes(sidecar.read_bytes()))
+            self.assertEqual(ocr_rows[0]["extraction_status"], "ocr_text_sidecar_indexed_pending_review")
+            self.assertEqual(ocr_rows[0]["financial_fact_promoted"], "false")
+            self.assertIn("期末余额", ocr_rows[0]["text_excerpt"])
+
+            with (run_dir / "fund_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
+                fund_rows = list(csv.DictReader(f))
+            self.assertEqual(fund_rows, [])
+
+            with (run_dir / "evidence_index.csv").open(encoding="utf-8-sig", newline="") as f:
+                evidence_rows = list(csv.DictReader(f))
+            self.assertEqual(evidence_rows[0]["review_status"], "ocr_text_candidate_pending_review")
+
+            with (run_dir / "exception_tasks.csv").open(encoding="utf-8-sig", newline="") as f:
+                task_rows = list(csv.DictReader(f))
+            self.assertTrue(any(row["task_type"] == "OCR_TEXT_PENDING_REVIEW" for row in task_rows))
+
+            cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
+            self.assertFalse(cross_review["management_conclusion_allowed"])
+            self.assertEqual(cross_review["generated_financial_amount_count"], 0)
+            self.assertEqual(cross_review["ocr_text_candidate_count"], 1)
+            self.assertEqual(cross_review["structured_financial_fact_count"], 0)
 
     def test_runner_extracts_real_structured_csv_facts_without_management_conclusion(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

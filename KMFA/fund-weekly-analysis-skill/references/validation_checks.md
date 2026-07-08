@@ -10,6 +10,7 @@ Blocking checks:
 * ZIP source materialization must be explicit via `--source-zip` and group-scoped via `--zip-prefix 付款请示群`; it must not copy other DingTalk groups or unsafe path members.
 * `INDEXED_PENDING_EXTRACTION` outputs do not contain generated financial amounts, forecasts, or management conclusions.
 * `kmfa_metadata_signals.csv` may carry only public-safe KMFA metadata signals and must keep all formal action / management conclusion gates false.
+* `ocr_text_candidates.csv` may carry only adjacent real OCR text sidecars linked to screenshot evidence; all rows must stay pending review with `financial_fact_promoted=false`.
 * `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW` outputs contain only amounts parsed from real structured CSV rows with the required column contract and still keep `management_conclusion_allowed=false`.
 * `funding_forecast.csv` may contain only known due-date projections from real structured CSV risk/opportunity rows and must keep `management_conclusion_allowed=false`.
 * `cashflow_validation.csv` must validate balance continuity, operating cashflow effect, and internal-transfer exclusion; continuity failures must create exception tasks and keep `management_conclusion_allowed=false`.
