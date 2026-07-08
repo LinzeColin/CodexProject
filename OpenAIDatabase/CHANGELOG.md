@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S11 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s11_review.md`.
+- Added `validate:v1.2-s11-review` for `MA-V12-S11-REVIEW` /
+  `ACC-MA-V12-S11-REVIEW`.
+- Registered status
+  `stage_s11_review_passed_pending_s12_no_github_main_upload`.
+- Confirmed S11 P1, S11 P2, S11 P3 and S11 P4 together provide a P0 图谱集合
+  with Chinese questions, action values and `source/time/project/task` filters.
+- Confirmed the S11 pass gate: multidimensional visuals support behavior, ROI,
+  collaboration, latent signal, evidence and governance decision reading.
+- Preserved S11 Review boundaries: No GitHub main upload, No remote push,
+  No raw mutation, No proposal apply execution, No S12 implementation and
+  No app reinstall.
+- Marked the next gate as pending S12 P1.
+
 ## Unreleased - Memory Atlas v1.2 S11 P4 Human Question Map
 
 - Added `human_question_map.v1_2_s11_p4` runtime contract to the Memory Atlas
