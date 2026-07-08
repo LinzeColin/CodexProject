@@ -45,6 +45,7 @@ Purpose: this checklist is the owner-facing review surface before any future aut
 | Company-bank matrix | Active | Company, bank, account alias, liquidity tier, and risk matrix |
 | Workbook generation | Active | Native Excel copy patched without rewriting chart packages |
 | Workbook quality gates | Active | Sheet order, hidden sheets, row 2, charts, formulas, sensitive visible values |
+| Goal completion audit | Active | `goal_completion_audit.csv` records requirement-level status and remaining blockers |
 | Automation drift check | Active | Repo contract must match local Codex automation before claiming ready |
 
 ## Authorization Boundary
