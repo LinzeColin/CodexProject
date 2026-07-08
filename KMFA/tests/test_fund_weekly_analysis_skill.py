@@ -572,6 +572,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "ocr_fact_controlled_ledger_apply_gate.csv",
                 "ocr_fact_owner_decision_correction_queue.csv",
                 "ocr_fact_owner_decision_correction_draft.json",
+                "ocr_fact_owner_decision_correction_apply_preview.csv",
                 "ocr_fact_review_apply_gate.csv",
                 "ocr_fact_review_authorization_template.json",
                 "ocr_fact_review_authorization_preview.csv",
@@ -1422,6 +1423,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertFalse(correction_draft["fund_ledger_write_allowed"])
             self.assertFalse(correction_draft["management_conclusion_allowed"])
 
+            with (run_dir / "ocr_fact_owner_decision_correction_apply_preview.csv").open(encoding="utf-8-sig", newline="") as f:
+                correction_apply_preview_rows = list(csv.DictReader(f))
+            self.assertEqual(correction_apply_preview_rows, [])
+
             with (run_dir / "fund_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
                 fund_rows = list(csv.DictReader(f))
             self.assertEqual(fund_rows, [])
@@ -1461,6 +1466,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_queue_write_allowed_count"], 0)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_draft_count"], 0)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_draft_write_allowed_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_apply_preview_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_apply_preview_ready_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_apply_preview_blocking_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_apply_preview_write_allowed_count"], 0)
             self.assertEqual(cross_review["ocr_fact_review_apply_gate_count"], 3)
             self.assertEqual(cross_review["ocr_fact_review_authorization_present_count"], 0)
             self.assertEqual(cross_review["ocr_fact_review_authorization_template_count"], 3)
@@ -2105,6 +2114,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertFalse(correction_draft["fund_ledger_write_allowed"])
             self.assertFalse(correction_draft["management_conclusion_allowed"])
 
+            with (run_dir / "ocr_fact_owner_decision_correction_apply_preview.csv").open(encoding="utf-8-sig", newline="") as f:
+                correction_apply_preview_rows = list(csv.DictReader(f))
+            self.assertEqual(correction_apply_preview_rows, [])
+
             with (run_dir / "fund_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
                 fund_rows = list(csv.DictReader(f))
             self.assertEqual(fund_rows, [])
@@ -2146,6 +2159,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_queue_write_allowed_count"], 0)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_draft_count"], 0)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_draft_write_allowed_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_apply_preview_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_apply_preview_ready_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_apply_preview_blocking_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_apply_preview_write_allowed_count"], 0)
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertFalse(cross_review["management_conclusion_allowed"])
 
@@ -2302,6 +2319,21 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertIn("owner_corrected_bank", draft_decision["required_owner_fields"])
             self.assertEqual(draft_decision["source_correction_queue_id"], row["correction_queue_id"])
 
+            with (run_dir / "ocr_fact_owner_decision_correction_apply_preview.csv").open(encoding="utf-8-sig", newline="") as f:
+                correction_apply_preview_rows = list(csv.DictReader(f))
+            self.assertEqual(len(correction_apply_preview_rows), 1)
+            apply_preview = correction_apply_preview_rows[0]
+            self.assertEqual(apply_preview["fact_candidate_id"], f"OCRFACT-{run_id}-00001")
+            self.assertEqual(apply_preview["draft_owner_authorization_decision"], "needs_correction")
+            self.assertEqual(apply_preview["correction_apply_preview_status"], "blocked_draft_still_needs_owner_values")
+            self.assertEqual(apply_preview["manual_save_ready"], "false")
+            self.assertEqual(apply_preview["owner_decision_manifest_write_allowed"], "false")
+            self.assertIn("owner_corrected_bank", apply_preview["missing_owner_values"])
+            self.assertEqual(apply_preview["fund_ledger_write_allowed"], "false")
+            self.assertEqual(apply_preview["formal_fund_ledger_write_allowed"], "false")
+            self.assertEqual(apply_preview["financial_fact_promoted"], "false")
+            self.assertEqual(apply_preview["management_conclusion_allowed"], "false")
+
             with (run_dir / "ocr_fact_controlled_ledger_apply_gate.csv").open(encoding="utf-8-sig", newline="") as f:
                 apply_gate_rows = list(csv.DictReader(f))
             self.assertEqual(apply_gate_rows[0]["apply_gate_status"], "blocked_missing_required_ledger_fields")
@@ -2313,6 +2345,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_queue_write_allowed_count"], 0)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_draft_count"], 1)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_draft_write_allowed_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_apply_preview_count"], 1)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_apply_preview_ready_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_apply_preview_blocking_count"], 1)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_apply_preview_write_allowed_count"], 0)
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertFalse(cross_review["management_conclusion_allowed"])
 
