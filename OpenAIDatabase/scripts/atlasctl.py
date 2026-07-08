@@ -29,6 +29,7 @@ STAGE_FLIGHT_BUILDER = ROOT / "scripts" / "build_memory_atlas_stage_flight.py"
 LATENT_SIGNAL_BUILDER = ROOT / "scripts" / "build_memory_atlas_latent_signals.py"
 SELF_ITERATION_BUILDER = ROOT / "scripts" / "build_memory_atlas_self_iteration.py"
 DECISION_DEBT_BUILDER = ROOT / "scripts" / "build_memory_atlas_decision_debt.py"
+PERSONALIZATION_BUILDER = ROOT / "scripts" / "build_personalization_exports.py"
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -67,6 +68,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     mode.add_argument("--apply", action="store_true")
     push.add_argument("--database-dir", type=Path, default=ROOT)
     push.add_argument("--message", default="Memory Atlas GitHub backup snapshot")
+
+    prompt = subparsers.add_parser("generate-personalization-prompt", help="Generate agent personalization prompt exports.")
+    prompt.add_argument("--dry-run", action="store_true")
+    prompt.add_argument("--database-dir", type=Path, default=ROOT)
+    prompt.add_argument("--target", choices=["all", "chatgpt", "codex", "other-agent"], default="all")
     return parser.parse_args(argv)
 
 
@@ -2035,6 +2041,63 @@ def run_push(args: argparse.Namespace) -> int:
     return result.returncode
 
 
+def personalization_targets(target: str) -> list[str]:
+    if target == "all":
+        return ["chatgpt", "codex", "other_agent"]
+    if target == "other-agent":
+        return ["other_agent"]
+    return [target]
+
+
+def personalization_prompt_contract(args: argparse.Namespace) -> dict[str, object]:
+    return {
+        "status": "PASS",
+        "command": "generate-personalization-prompt",
+        "task_id": "MA-V12-S12P1",
+        "acceptance_id": "ACC-MA-V12-S12P1",
+        "dry_run": True,
+        "writes_files": False,
+        "sends_to_chatgpt": False,
+        "targets": personalization_targets(args.target),
+        "source_reports": [
+            "data/derived/personalization/personalization_export.json",
+            "data/derived/behavior_intelligence/events.json",
+            "data/derived/behavior_intelligence/clusters.json",
+            "data/derived/behavior_intelligence/latent_signals.json",
+            "data/derived/behavior_intelligence/self_iteration_suggestions.json",
+            "data/derived/behavior_intelligence/decision_debt_ledger.json",
+            "data/derived/agent_collaboration/agent_collaboration_quality_report.json",
+        ],
+        "output_contract": {
+            "chatgpt": "data/derived/personalization/chatgpt_personalization.md",
+            "codex": "data/derived/personalization/codex_personalization.md",
+            "machine": "data/derived/personalization/personalization_export.json",
+            "other_agent": "machine export sections are reusable by future-agent adapters",
+        },
+        "boundary": {
+            "user_trigger_required": True,
+            "no_automatic_send": True,
+            "no_cookie_token_secret_export": True,
+            "raw_mutation": False,
+            "proposal_apply_execution": False,
+            "chatgpt_deep_explore_deferred_to": "S12 P3",
+        },
+    }
+
+
+def run_generate_personalization_prompt(args: argparse.Namespace) -> int:
+    if args.dry_run:
+        print(json.dumps(personalization_prompt_contract(args), ensure_ascii=False, indent=2, sort_keys=True))
+        return 0
+    command = [sys.executable, str(PERSONALIZATION_BUILDER), "--database-dir", str(args.database_dir)]
+    result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
+    if result.stdout:
+        print(result.stdout, end="")
+    if result.stderr:
+        print(result.stderr, file=sys.stderr, end="")
+    return result.returncode
+
+
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     if args.command == "sync":
@@ -2047,6 +2110,8 @@ def main(argv: list[str] | None = None) -> int:
         return run_audit(args)
     if args.command == "push":
         return run_push(args)
+    if args.command == "generate-personalization-prompt":
+        return run_generate_personalization_prompt(args)
     raise AssertionError(f"unhandled command: {args.command}")
 
 

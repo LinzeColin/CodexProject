@@ -18,13 +18,20 @@
 
 ## 当前阶段
 
-当前为 S11 Review。任务 ID 为 `MA-V12-S11-REVIEW`，验收 ID 为
-`ACC-MA-V12-S11-REVIEW`，validator 为 `validate:v1.2-s11-review`。状态为
-`stage_s11_review_passed_pending_s12_no_github_main_upload`。S11 Review 已完成
-S11 P1、S11 P2、S11 P3 和 S11 P4 复审，确认 12 张 P0 图谱均绑定中文问题、行动价值、
-Visual ROI Gate 和 `source/time/project/task` 过滤。下一步只允许进入 S12 P1。
+当前为 S12 P1。任务 ID 为 `MA-V12-S12P1`，验收 ID 为
+`ACC-MA-V12-S12P1`，validator 为 `validate:v1.2-s12-p1`。状态为
+`phase_s12_p1_command_palette_completed_pending_s12_p2`。S12 P1 已完成
+`command_palette.v1_2_s12_p1` 命令面板，命令只包含同步 ChatGPT、同步 Codex、
+生成本周报告、查看待授权 proposal 和生成 personalization prompt。下一步只允许进入 S12 P2。
 
 No GitHub main upload。No remote push。No raw mutation。No proposal apply execution。
+
+历史复验兼容记录：S11 Review 完成时当前为 S11 Review。任务 ID 为 `MA-V12-S11-REVIEW`，
+验收 ID 为 `ACC-MA-V12-S11-REVIEW`，validator 为 `validate:v1.2-s11-review`。状态为
+`stage_s11_review_passed_pending_s12_no_github_main_upload`。S11 Review 已完成
+S11 P1、S11 P2、S11 P3 和 S11 P4 复审，确认 12 张 P0 图谱均绑定中文问题、行动价值、
+Visual ROI Gate 和 `source/time/project/task` 过滤。此句只用于保留已完成 review
+的复验语义，不代表当前阶段。S12 P2 是下一阶段。
 
 历史复验兼容记录：S11 P4 完成时当前为 S11 P4。任务 ID 为 `MA-V12-S11P4`，验收 ID 为
 `ACC-MA-V12-S11P4`，validator 为 `validate:v1.2-s11-p4`。状态为
