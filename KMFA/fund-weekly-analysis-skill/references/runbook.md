@@ -21,16 +21,17 @@ The local scheduler uses Sydney local time. 11:30 Australia/Sydney is the operat
 15. Build known due-date funding projections only from real structured CSV `due_date` risk/opportunity rows; write `funding_forecast.csv` and `02_资金趋势预测` as `structured_csv_forecast_pending_review`.
 16. When structured CSV facts exist, patch the copied native `.xlsx` workbook with the same traced facts in homepage KPI cards, `02_资金趋势预测`, visible flow/risk/matrix sheets, and hidden `H01/H02/H03`; preserve native chart parts and keep all values pending review.
 17. Put adjacent real OCR text sidecars into `ocr_text_candidates.csv`, put detected date/amount candidates into `ocr_value_candidates.csv`, index real DingTalk `chat_records.csv` finance text into `chat_text_candidates.csv`, put detected date/amount candidates into `chat_value_candidates.csv`, link chat candidates to `_manifest/manifest.csv` attachment evidence in `chat_evidence_links.csv`, reconcile every manifest attachment row against evidence in `attachment_evidence_reconciliation.csv`, convert blockers into `attachment_reconciliation_remediation.csv`, emit dry-run-only checks in `attachment_remediation_dry_run.csv`, convert dry-run rows into `attachment_repair_plan.csv`, gate every repair plan row in `attachment_repair_apply_gate.csv`, and create pending-review/blocking exception tasks; do not promote OCR/chat text, value candidates, links, attachment reconciliation rows, remediation rows, dry-run rows, repair plan rows, or apply gate rows into ledger amounts until human/cross review passes.
-18. Build funds ledger and net-flow ledger.
-19. Apply internal-transfer pairing before management rollups.
-20. Build `cashflow_validation.csv`: validate balance continuity at 0.01 tolerance, compute operating cashflow effect, and confirm internal transfers are excluded from operating cashflow. Any continuity failure enters exception tasks and blocks management conclusions.
-21. Build `workbook_quality_checks.csv`: verify generated workbook sheet order, hidden sheets, visible row 2 cleanup, native chart size limits, formula error markers, and visible sensitive-value patterns.
-22. Build daily balance continuity and company-bank matrix.
-23. Build tax/loan/wealth-management/deposit risk tables.
-24. Promote reviewed facts into Excel with exact sheet order and style spec.
-25. Hide audit/review sheets.
-26. Run validation checks.
-27. Write run summary.
+18. If a private `attachment_repair_authorizations/<run_id>.json` file exists, validate only the schema and row coverage: `authorization_manifest_version=1`, matching `run_id`, `authorization_scope=attachment_repair_plan_validation_only`, `source_mutation_allowed=false`, `apply_execution_allowed=false`, and explicit row-level `repair_plan_authorizations`. A valid authorization manifest may be counted in cross-review, but this runner still does not execute repairs or allow source mutation.
+19. Build funds ledger and net-flow ledger.
+20. Apply internal-transfer pairing before management rollups.
+21. Build `cashflow_validation.csv`: validate balance continuity at 0.01 tolerance, compute operating cashflow effect, and confirm internal transfers are excluded from operating cashflow. Any continuity failure enters exception tasks and blocks management conclusions.
+22. Build `workbook_quality_checks.csv`: verify generated workbook sheet order, hidden sheets, visible row 2 cleanup, native chart size limits, formula error markers, and visible sensitive-value patterns.
+23. Build daily balance continuity and company-bank matrix.
+24. Build tax/loan/wealth-management/deposit risk tables.
+25. Promote reviewed facts into Excel with exact sheet order and style spec.
+26. Hide audit/review sheets.
+27. Run validation checks.
+28. Write run summary.
 28. Commit/push skill or automation changes to GitHub main only after validation passes.
 
 ## Source materialization command
