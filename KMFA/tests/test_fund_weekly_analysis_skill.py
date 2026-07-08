@@ -2713,6 +2713,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                     "2026-07-08,开明一公司,招商银行,基本户,T0_BANK_CASH,0,800.00,11200.00,tax,2026-07-10,tax_payable",
                     "2026-07-08,开明一公司,招商银行,基本户,T0_BANK_CASH,500.00,0,11700.00,deposit,2026-07-09,deposit_release",
                     "2026-07-08,开明一公司,招商银行,基本户,T0_BANK_CASH,0,13000.00,11700.00,loan,2026-07-11,loan_repayment",
+                    "2026-07-08,开明一公司,招商银行,基本户,T0_BANK_CASH,0,2700.00,9000.00,project_cost,2026-07-12,project_cost_payment",
                 ]),
                 encoding="utf-8",
             )
@@ -2739,25 +2740,31 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/funding_forecast_test"
             with (run_dir / "funding_forecast.csv").open(encoding="utf-8-sig", newline="") as f:
                 forecast_rows = list(csv.DictReader(f))
-            self.assertEqual([row["period_date"] for row in forecast_rows], ["2026-07-09", "2026-07-10", "2026-07-11"])
-            self.assertEqual([row["known_inflow"] for row in forecast_rows], ["500.00", "0.00", "0.00"])
-            self.assertEqual([row["known_outflow"] for row in forecast_rows], ["0.00", "800.00", "13000.00"])
-            self.assertEqual([row["projected_bank_cash"] for row in forecast_rows], ["12200.00", "11400.00", "-1600.00"])
-            self.assertEqual([row["funding_gap"] for row in forecast_rows], ["0.00", "0.00", "1600.00"])
+            self.assertEqual([row["period_date"] for row in forecast_rows], ["2026-07-09", "2026-07-10", "2026-07-11", "2026-07-12"])
+            self.assertEqual([row["known_inflow"] for row in forecast_rows], ["500.00", "0.00", "0.00", "0.00"])
+            self.assertEqual([row["known_outflow"] for row in forecast_rows], ["0.00", "800.00", "13000.00", "2700.00"])
+            self.assertEqual([row["projected_bank_cash"] for row in forecast_rows], ["9500.00", "8700.00", "-4300.00", "-7000.00"])
+            self.assertEqual([row["funding_gap"] for row in forecast_rows], ["0.00", "0.00", "4300.00", "7000.00"])
             self.assertTrue(all(row["forecast_basis"] == "known_due_date_structured_csv" for row in forecast_rows))
             self.assertTrue(all(row["review_status"] == "structured_csv_forecast_pending_review" for row in forecast_rows))
+            self.assertEqual(forecast_rows[3]["risk_types"], "project_cost_payment")
+
+            with (run_dir / "tax_loan_risk.csv").open(encoding="utf-8-sig", newline="") as f:
+                risk_rows = list(csv.DictReader(f))
+            self.assertIn("project_cost_payment", [row["risk_type"] for row in risk_rows])
 
             cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
             self.assertFalse(cross_review["management_conclusion_allowed"])
-            self.assertEqual(cross_review["forecast_row_count"], 3)
+            self.assertEqual(cross_review["forecast_row_count"], 4)
 
             workbook_path = run_dir / "资金与税费管理母版_funding_forecast_test.xlsx"
             with zipfile.ZipFile(workbook_path) as workbook:
                 self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet2.xml", "A4"), "预测/到期日")
                 self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet2.xml", "A5"), "2026-07-09")
                 self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet2.xml", "B5"), "500.00")
-                self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet2.xml", "D7"), "-1600.00")
-                self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet2.xml", "E7"), "1600.00")
+                self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet2.xml", "D7"), "-4300.00")
+                self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet2.xml", "E7"), "4300.00")
+                self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet2.xml", "F8"), "project_cost_payment")
                 self.assertEqual(
                     xlsx_cell_text(workbook, "xl/worksheets/sheet2.xml", "H7"),
                     "structured_csv_forecast_pending_review",

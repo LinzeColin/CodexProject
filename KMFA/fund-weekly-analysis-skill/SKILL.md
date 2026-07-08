@@ -1,5 +1,5 @@
 name: fund-weekly-analysis-skill
-description: Use when operating, reviewing, automating, modifying, or handing off KMFA fund weekly/monthly analysis, DingTalk finance screenshot evidence, cash-flow净化, tax/loan risk analysis, company-bank account matrix, Excel fund dashboard generation, local Codex automation, or GitHub main governance under LinzeColin/CodexProject/KMFA.
+description: Use when operating, reviewing, automating, modifying, or handing off KMFA fund weekly/monthly analysis, DingTalk finance screenshot evidence, cash-flow净化, tax/loan/project-cost risk analysis, company-bank account matrix, Excel fund dashboard generation, local Codex automation, or GitHub main governance under LinzeColin/CodexProject/KMFA.
 
 # KMFA Fund Weekly Analysis Skill
 
@@ -185,7 +185,7 @@ Current deterministic runner status contract:
 * The runner emits `attachment_repair_authorization_template.json` in the run directory as a private draft only. All row entries default to `authorized=false`; the template is not read as authorization unless an operator edits and saves a confirmed copy to `attachment_repair_authorizations/<run_id>.json`.
 * The runner emits `attachment_repair_authorization_preview.csv` to show authorization coverage impact from the apply gate. Rows with valid authorization may reach `ready_for_operator_review_no_apply`, but still keep `apply_allowed=false`, `source_mutation_allowed=false`, and `formal_fact_allowed=false`.
 * CSV files with the exact structured columns `date, company, bank, account_alias, liquidity_tier, inflow, outflow, ending_balance, flow_type` are extracted into `fund_ledger.csv`, `net_flow_ledger.csv`, `company_bank_matrix.csv`, and `tax_loan_risk.csv` as `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW`.
-* When structured CSV rows include real `due_date` risk/opportunity lines, the runner writes `funding_forecast.csv` and `02_资金趋势预测` with known due-date projections only. These remain `structured_csv_forecast_pending_review`, and they are not a management conclusion.
+* When structured CSV rows include real `due_date` risk/opportunity lines for tax, deposit, loan, or project-cost flows, the runner writes `funding_forecast.csv` and `02_资金趋势预测` with known due-date projections only. These remain `structured_csv_forecast_pending_review`, and they are not a management conclusion.
 * When structured CSV facts exist, the runner writes `cashflow_validation.csv`: balance continuity, operating cashflow effect, and internal-transfer exclusion are checked per ledger row. Continuity failures create exception tasks and block management conclusions.
 * Every generated workbook is inspected into `workbook_quality_checks.csv`: sheet order, hidden audit sheets, visible row 2 cleanup, native chart dimensions, formula error markers, and visible sensitive-value patterns. Any failing workbook quality check blocks management conclusions.
 * When structured CSV facts exist, the runner patches the native `.xlsx` workbook directly: `01_首页总览` 4+4 cards, `02_资金趋势预测`, `03_三层净流余额`, `04_税费融资风险`, `05_公司银行矩阵`, and hidden `H01/H02/H03/H05` receive the same traced pending-review facts while preserving the existing native chart parts.

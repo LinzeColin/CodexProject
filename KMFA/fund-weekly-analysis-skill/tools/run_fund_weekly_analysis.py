@@ -2564,7 +2564,7 @@ def extract_structured_csv_facts(manifest: dict, input_dir: Path, evidence: list
                         "source_row_number": str(row_number),
                         "extraction_status": "structured_csv_extracted_pending_review",
                     })
-                    if flow_type in {"tax", "loan", "deposit"}:
+                    if flow_type in {"tax", "loan", "deposit", "project_cost"}:
                         amount = outflow if outflow != Decimal("0.00") else inflow
                         risk_rows.append({
                             "risk_id": f"RISK-{manifest['run_id']}-{len(risk_rows) + 1:05d}",
