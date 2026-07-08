@@ -2939,6 +2939,57 @@ def build_fact_promotion_execution_authorization_preview(
     return rows
 
 
+def build_fact_promotion_execution_apply_gate_rows(
+    manifest: dict,
+    execution_authorization_preview_rows: list[dict],
+) -> list[dict]:
+    rows: list[dict] = []
+    for row in execution_authorization_preview_rows:
+        ready_for_apply = row["preview_status"] == "ready_for_controlled_execution_run_no_write"
+        blocked_before_apply = row["preview_status"].startswith("blocked_")
+        if ready_for_apply:
+            apply_gate_status = "ready_for_controlled_execution_apply_no_write"
+            planned_apply_count = int(row["planned_impact_count"])
+            review_status = "pending_controlled_apply_review"
+            gate_reason = (
+                "Execution authorization is valid and impact is planned, but this runner still performs no "
+                "fact promotion and no fund ledger write."
+            )
+        elif blocked_before_apply:
+            apply_gate_status = "blocked_before_execution_apply"
+            planned_apply_count = 0
+            review_status = "pending_apply_blocker_resolution"
+            gate_reason = "Execution apply is blocked because the execution authorization preview is blocked."
+        else:
+            apply_gate_status = "not_required_no_execution_apply"
+            planned_apply_count = 0
+            review_status = "no_execution_apply_required"
+            gate_reason = "Execution apply is not required for this no-op authorization preview row."
+        rows.append({
+            "execution_apply_gate_id": f"FPEXECAPPLY-{manifest['run_id']}-{len(rows) + 1:05d}",
+            "execution_authorization_preview_id": row["execution_authorization_preview_id"],
+            "execution_plan_id": row["execution_plan_id"],
+            "dry_run_id": row["dry_run_id"],
+            "execution_gate_id": row["execution_gate_id"],
+            "review_packet_id": row["review_packet_id"],
+            "review_area": row["review_area"],
+            "source_artifact": row["source_artifact"],
+            "planned_impact_count": row["planned_impact_count"],
+            "authorization_validation_status": row["authorization_validation_status"],
+            "authorization_preview_status": row["preview_status"],
+            "apply_gate_status": apply_gate_status,
+            "planned_apply_count": str(planned_apply_count),
+            "source_mutation_allowed": "false",
+            "fact_promotion_execution_allowed": "false",
+            "fund_ledger_write_allowed": "false",
+            "financial_fact_promoted": "false",
+            "management_conclusion_allowed": "false",
+            "gate_reason": gate_reason,
+            "review_status": review_status,
+        })
+    return rows
+
+
 def write_runtime_rules_to_workbook(
     workbook_path: Path,
     manifest: dict,
@@ -4673,6 +4724,21 @@ def write_no_hallucination_outputs(
         1 for row in fact_promotion_execution_authorization_preview_rows
         if row["preview_status"].startswith("blocked_")
     )
+    fact_promotion_execution_apply_gate_rows = build_fact_promotion_execution_apply_gate_rows(
+        manifest,
+        fact_promotion_execution_authorization_preview_rows,
+    )
+    fact_promotion_execution_apply_gate_ready_count = sum(
+        1 for row in fact_promotion_execution_apply_gate_rows
+        if row["apply_gate_status"] == "ready_for_controlled_execution_apply_no_write"
+    )
+    fact_promotion_execution_apply_gate_blocked_count = sum(
+        1 for row in fact_promotion_execution_apply_gate_rows
+        if row["apply_gate_status"].startswith("blocked_")
+    )
+    fact_promotion_execution_apply_gate_planned_apply_count = sum(
+        int(row["planned_apply_count"]) for row in fact_promotion_execution_apply_gate_rows
+    )
     manifest["fact_promotion_review_packet_count"] = len(fact_promotion_review_packet_rows)
     manifest["fact_promotion_review_blocking_count"] = fact_promotion_review_blocking_count
     manifest["fact_promotion_owner_review_batch_count"] = len(fact_promotion_owner_review_batch_rows)
@@ -4739,6 +4805,16 @@ def write_no_hallucination_outputs(
         1 for row in fact_promotion_execution_authorization_preview_rows
         if row["fund_ledger_write_allowed"] == "true"
     )
+    manifest["fact_promotion_execution_apply_gate_count"] = len(fact_promotion_execution_apply_gate_rows)
+    manifest["fact_promotion_execution_apply_gate_ready_count"] = fact_promotion_execution_apply_gate_ready_count
+    manifest["fact_promotion_execution_apply_gate_blocked_count"] = fact_promotion_execution_apply_gate_blocked_count
+    manifest["fact_promotion_execution_apply_gate_planned_apply_count"] = (
+        fact_promotion_execution_apply_gate_planned_apply_count
+    )
+    manifest["fact_promotion_execution_apply_gate_write_allowed_count"] = sum(
+        1 for row in fact_promotion_execution_apply_gate_rows
+        if row["fund_ledger_write_allowed"] == "true"
+    )
     cross_review["fact_promotion_review_packet_count"] = len(fact_promotion_review_packet_rows)
     cross_review["fact_promotion_review_blocking_count"] = fact_promotion_review_blocking_count
     cross_review["fact_promotion_owner_review_batch_count"] = len(fact_promotion_owner_review_batch_rows)
@@ -4790,6 +4866,15 @@ def write_no_hallucination_outputs(
     )
     cross_review["fact_promotion_execution_authorization_write_allowed_count"] = (
         manifest["fact_promotion_execution_authorization_write_allowed_count"]
+    )
+    cross_review["fact_promotion_execution_apply_gate_count"] = manifest["fact_promotion_execution_apply_gate_count"]
+    cross_review["fact_promotion_execution_apply_gate_ready_count"] = fact_promotion_execution_apply_gate_ready_count
+    cross_review["fact_promotion_execution_apply_gate_blocked_count"] = fact_promotion_execution_apply_gate_blocked_count
+    cross_review["fact_promotion_execution_apply_gate_planned_apply_count"] = (
+        fact_promotion_execution_apply_gate_planned_apply_count
+    )
+    cross_review["fact_promotion_execution_apply_gate_write_allowed_count"] = (
+        manifest["fact_promotion_execution_apply_gate_write_allowed_count"]
     )
     management_conclusion_gate_rows = build_management_conclusion_gate_rows(cross_review)
     management_conclusion_gate_ready_count = sum(1 for row in management_conclusion_gate_rows if row["gate_status"] == "ready")
@@ -4959,6 +5044,28 @@ def write_no_hallucination_outputs(
         "preview_reason",
         "review_status",
     ], fact_promotion_execution_authorization_preview_rows)
+    write_csv(run_dir / "fact_promotion_execution_apply_gate.csv", [
+        "execution_apply_gate_id",
+        "execution_authorization_preview_id",
+        "execution_plan_id",
+        "dry_run_id",
+        "execution_gate_id",
+        "review_packet_id",
+        "review_area",
+        "source_artifact",
+        "planned_impact_count",
+        "authorization_validation_status",
+        "authorization_preview_status",
+        "apply_gate_status",
+        "planned_apply_count",
+        "source_mutation_allowed",
+        "fact_promotion_execution_allowed",
+        "fund_ledger_write_allowed",
+        "financial_fact_promoted",
+        "management_conclusion_allowed",
+        "gate_reason",
+        "review_status",
+    ], fact_promotion_execution_apply_gate_rows)
     write_csv(run_dir / "management_conclusion_gate.csv", [
         "management_gate_id",
         "gate_area",
@@ -5093,6 +5200,15 @@ def write_no_hallucination_outputs(
                 ),
                 "fact_promotion_execution_authorization_write_allowed_count": (
                     manifest["fact_promotion_execution_authorization_write_allowed_count"]
+                ),
+                "fact_promotion_execution_apply_gate_count": manifest["fact_promotion_execution_apply_gate_count"],
+                "fact_promotion_execution_apply_gate_ready_count": fact_promotion_execution_apply_gate_ready_count,
+                "fact_promotion_execution_apply_gate_blocked_count": fact_promotion_execution_apply_gate_blocked_count,
+                "fact_promotion_execution_apply_gate_planned_apply_count": (
+                    fact_promotion_execution_apply_gate_planned_apply_count
+                ),
+                "fact_promotion_execution_apply_gate_write_allowed_count": (
+                    manifest["fact_promotion_execution_apply_gate_write_allowed_count"]
                 ),
                 "management_conclusion_gate_count": len(management_conclusion_gate_rows),
                 "management_conclusion_gate_ready_count": management_conclusion_gate_ready_count,
@@ -5257,6 +5373,9 @@ def main() -> int:
         f"Fact promotion execution authorization preview ready count: {manifest.get('fact_promotion_execution_authorization_preview_ready_count', 0)}\n\n"
         f"Fact promotion execution authorization preview blocked count: {manifest.get('fact_promotion_execution_authorization_preview_blocked_count', 0)}\n\n"
         f"Fact promotion execution authorization write-allowed count: {manifest.get('fact_promotion_execution_authorization_write_allowed_count', 0)}\n\n"
+        f"Fact promotion execution apply gate ready count: {manifest.get('fact_promotion_execution_apply_gate_ready_count', 0)}\n\n"
+        f"Fact promotion execution apply gate planned apply count: {manifest.get('fact_promotion_execution_apply_gate_planned_apply_count', 0)}\n\n"
+        f"Fact promotion execution apply gate write-allowed count: {manifest.get('fact_promotion_execution_apply_gate_write_allowed_count', 0)}\n\n"
         f"Management conclusion gate ready count: {manifest.get('management_conclusion_gate_ready_count', 0)}\n\n"
         f"Management conclusion gate blocked count: {manifest.get('management_conclusion_gate_blocked_count', 0)}\n\n"
         f"Owner action queue count: {manifest.get('owner_action_queue_count', 0)}\n\n"
