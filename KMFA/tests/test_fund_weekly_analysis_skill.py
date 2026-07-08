@@ -209,34 +209,36 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
         self.assertIn("--run-id s55_validation_run", runner_call)
         self.assertFalse(any(call.startswith("codex:") for call in calls), calls)
 
-    def test_skill_package_uses_sydney_daily_1130_local_schedule_and_real_input(self) -> None:
+    def test_skill_package_uses_sydney_monday_saturday_1100_local_schedule_and_real_input(self) -> None:
         self.assertTrue(SKILL_ROOT.exists(), "fund-weekly-analysis-skill package must exist under KMFA")
         skill = (SKILL_ROOT / "SKILL.md").read_text(encoding="utf-8")
         config = (SKILL_ROOT / "templates" / "fund_weekly_analysis_config.yaml").read_text(encoding="utf-8")
         plist = (SKILL_ROOT / "automation" / "launchd" / "com.kmfa.fund-weekly-analysis.plist").read_text(
             encoding="utf-8"
         )
-        prompt = (SKILL_ROOT / "automation" / "daily_1130_sydney.prompt.md").read_text(encoding="utf-8")
+        prompt = (SKILL_ROOT / "automation" / "weekly_mon_sat_1100_sydney.prompt.md").read_text(encoding="utf-8")
 
         for text in (skill, config, prompt):
             self.assertIn("Australia/Sydney", text)
-            self.assertIn("11:30", text)
+            self.assertIn("11:00", text)
             self.assertIn("/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群", text)
-        self.assertIn("every day", prompt)
+        self.assertIn("every Monday and Saturday", prompt)
         self.assertIn("No simulation", skill)
         self.assertIn("Do not use simulated", prompt)
 
-        self.assertRegex(config, r'schedule_local:\s*"11:30"')
+        self.assertRegex(config, r'schedule_local:\s*"11:00"')
+        self.assertRegex(config, r'schedule_days:\s*\["Monday",\s*"Saturday"\]')
         self.assertRegex(config, r'timezone:\s*Australia/Sydney')
         self.assertRegex(plist, r"<key>Hour</key>\s*<integer>11</integer>")
-        self.assertRegex(plist, r"<key>Minute</key>\s*<integer>30</integer>")
-        self.assertNotIn("<key>Weekday</key>", plist)
+        self.assertRegex(plist, r"<key>Minute</key>\s*<integer>0</integer>")
+        self.assertRegex(plist, r"<key>Weekday</key>\s*<integer>1</integer>")
+        self.assertRegex(plist, r"<key>Weekday</key>\s*<integer>6</integer>")
 
     def test_taskpack_validator_requires_daily_shell_entrypoint(self) -> None:
         validator = (SKILL_ROOT / "tools" / "validate_taskpack.py").read_text(encoding="utf-8")
         self.assertIn('"tools/run_daily_local.sh"', validator)
 
-    def test_codex_app_automation_contract_mirrors_daily_1130_local_cron(self) -> None:
+    def test_codex_app_automation_contract_mirrors_monday_saturday_1100_local_cron(self) -> None:
         contract_path = SKILL_ROOT / "automation" / "codex_app_automation.contract.toml"
         self.assertTrue(contract_path.exists(), "public-safe Codex App automation contract must be tracked")
         contract = tomllib.loads(contract_path.read_text(encoding="utf-8"))
@@ -245,7 +247,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
         self.assertEqual(contract["name"], "KMFA资金周报自动化")
         self.assertEqual(contract["kind"], "cron")
         self.assertEqual(contract["status"], "ACTIVE")
-        self.assertEqual(contract["rrule"], "FREQ=DAILY;BYHOUR=11;BYMINUTE=30")
+        self.assertEqual(contract["rrule"], "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0")
         self.assertEqual(contract["timezone"], "Australia/Sydney")
         self.assertEqual(contract["execution_environment"], "local")
         self.assertEqual(
@@ -255,7 +257,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "/Users/linzezhang/Documents/Codex/workspaces/dws-kmfa-automation/kmfa-codexproject",
             ],
         )
-        self.assertEqual(contract["prompt_file"], "automation/daily_1130_sydney.prompt.md")
+        self.assertEqual(contract["prompt_file"], "automation/weekly_mon_sat_1100_sydney.prompt.md")
         self.assertEqual(contract["source_readiness_gate"], "tools/check_source_readiness.py")
         self.assertEqual(
             contract["input_dir"],
@@ -505,9 +507,9 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             contract_dir = repo_root / "KMFA/fund-weekly-analysis-skill/automation"
             contract_dir.mkdir(parents=True)
             contract = (SKILL_ROOT / "automation" / "codex_app_automation.contract.toml").read_text(encoding="utf-8")
-            prompt = (SKILL_ROOT / "automation" / "daily_1130_sydney.prompt.md").read_text(encoding="utf-8")
+            prompt = (SKILL_ROOT / "automation" / "weekly_mon_sat_1100_sydney.prompt.md").read_text(encoding="utf-8")
             (contract_dir / "codex_app_automation.contract.toml").write_text(contract, encoding="utf-8")
-            (contract_dir / "daily_1130_sydney.prompt.md").write_text(prompt, encoding="utf-8")
+            (contract_dir / "weekly_mon_sat_1100_sydney.prompt.md").write_text(prompt, encoding="utf-8")
             automation_root = Path(temp_dir) / "automations"
             automation_dir = automation_root / "kmfa"
             automation_dir.mkdir(parents=True)
@@ -628,7 +630,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "A5"), "schedule_rrule")
                 self.assertEqual(
                     xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "B5"),
-                    "FREQ=DAILY;BYHOUR=11;BYMINUTE=30",
+                    "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0",
                 )
                 self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "A8"), "fact_promotion_execution_allowed")
                 self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "B8"), "false")
@@ -682,7 +684,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 automation_rows = list(csv.DictReader(f))
             self.assertEqual(len(automation_rows), 1)
             self.assertEqual(automation_rows[0]["status"], "CODEX_AUTOMATION_READY")
-            self.assertEqual(automation_rows[0]["rrule"], "FREQ=DAILY;BYHOUR=11;BYMINUTE=30")
+            self.assertEqual(automation_rows[0]["rrule"], "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0")
             self.assertEqual(automation_rows[0]["expected_timezone"], "Australia/Sydney")
             self.assertEqual(automation_rows[0]["schedule_ready"], "true")
             self.assertEqual(automation_rows[0]["management_conclusion_allowed"], "false")
@@ -4612,9 +4614,9 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             execution_auth_dir.mkdir(parents=True)
             contract_dir.mkdir(parents=True)
             contract = (SKILL_ROOT / "automation" / "codex_app_automation.contract.toml").read_text(encoding="utf-8")
-            prompt = (SKILL_ROOT / "automation" / "daily_1130_sydney.prompt.md").read_text(encoding="utf-8")
+            prompt = (SKILL_ROOT / "automation" / "weekly_mon_sat_1100_sydney.prompt.md").read_text(encoding="utf-8")
             (contract_dir / "codex_app_automation.contract.toml").write_text(contract, encoding="utf-8")
-            (contract_dir / "daily_1130_sydney.prompt.md").write_text(prompt, encoding="utf-8")
+            (contract_dir / "weekly_mon_sat_1100_sydney.prompt.md").write_text(prompt, encoding="utf-8")
             automation_root = Path(temp_dir) / "automations"
             automation_dir = automation_root / "kmfa"
             automation_dir.mkdir(parents=True)
@@ -5693,6 +5695,153 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                     f"ocr_fact_candidate_owner_decisions/{run_id}.json"
                 ).exists()
             )
+
+    def test_owner_decision_manifest_install_accepts_candidate_template_as_pending_review(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            run_id = "owner_manifest_candidate_template"
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs" / run_id
+            run_dir.mkdir(parents=True)
+            template = {
+                "decision_manifest_version": "1",
+                "run_id": run_id,
+                "decision_scope": "ocr_fact_candidate_owner_worklist_validation_only",
+                "template_status": "owner_decision_required",
+                "template_generated_from": "ocr_fact_candidate_owner_worklist.csv",
+                "source_artifact": "ocr_fact_candidate_owner_worklist.csv",
+                "output_decision_manifest_relative_path": (
+                    f"KMFA/metadata/fund_weekly_analysis/private_runtime/"
+                    f"ocr_fact_candidate_owner_decisions/{run_id}.json"
+                ),
+                "allowed_owner_authorization_decisions": [
+                    "pending_owner_review",
+                    "needs_correction",
+                    "reject_candidate",
+                    "approve_for_review_authorization",
+                ],
+                "financial_fact_promotion_allowed": False,
+                "fund_ledger_write_allowed": False,
+                "management_conclusion_allowed": False,
+                "owner_decisions": [
+                    {
+                        "owner_worklist_id": f"OCROWNERWORK-{run_id}-00001",
+                        "ocr_fact_evidence_review_queue_id": f"OCREVIDQUEUE-{run_id}-00001",
+                        "fact_candidate_id": f"OCRFACT-{run_id}-00001",
+                        "candidate_metric": "tax_payment",
+                        "business_date": "2026-05-11",
+                        "company": "",
+                        "bank": "",
+                        "account_alias": "",
+                        "amount": "4381.02",
+                        "currency": "CNY",
+                        "owner_authorization_decision": "pending_owner_review",
+                        "owner_corrected_company": "",
+                        "owner_corrected_bank": "",
+                        "owner_note": "",
+                    }
+                ],
+            }
+            template_path = run_dir / "ocr_fact_candidate_owner_decision_template.json"
+            template_path.write_text(json.dumps(template, ensure_ascii=False, indent=2), encoding="utf-8")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "install_owner_decision_manifest.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--run-id",
+                    run_id,
+                    "--draft-path",
+                    str(template_path),
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 3, result.stdout)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["status"], "BLOCKED_OWNER_DECISION_NOT_APPROVED")
+            self.assertEqual(payload["not_approved_fact_candidate_ids"], [f"OCRFACT-{run_id}-00001"])
+            self.assertFalse(
+                (
+                    repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/"
+                    f"ocr_fact_candidate_owner_decisions/{run_id}.json"
+                ).exists()
+            )
+
+    def test_owner_decision_manifest_install_defaults_to_candidate_template_when_correction_draft_empty(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            run_id = "owner_manifest_default_candidate_template"
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs" / run_id
+            run_dir.mkdir(parents=True)
+            output_relative_path = (
+                f"KMFA/metadata/fund_weekly_analysis/private_runtime/"
+                f"ocr_fact_candidate_owner_decisions/{run_id}.json"
+            )
+            empty_correction_draft = {
+                "decision_manifest_version": "1",
+                "run_id": run_id,
+                "decision_scope": "ocr_fact_candidate_owner_worklist_validation_only",
+                "draft_status": "owner_decision_correction_manifest_draft",
+                "generated_from": "ocr_fact_owner_decision_correction_queue.csv",
+                "source_artifact": "ocr_fact_candidate_owner_worklist.csv",
+                "output_decision_manifest_relative_path": output_relative_path,
+                "financial_fact_promotion_allowed": False,
+                "fund_ledger_write_allowed": False,
+                "management_conclusion_allowed": False,
+                "owner_decisions": [],
+            }
+            candidate_template = {
+                "decision_manifest_version": "1",
+                "run_id": run_id,
+                "decision_scope": "ocr_fact_candidate_owner_worklist_validation_only",
+                "template_status": "owner_decision_required",
+                "template_generated_from": "ocr_fact_candidate_owner_worklist.csv",
+                "source_artifact": "ocr_fact_candidate_owner_worklist.csv",
+                "output_decision_manifest_relative_path": output_relative_path,
+                "financial_fact_promotion_allowed": False,
+                "fund_ledger_write_allowed": False,
+                "management_conclusion_allowed": False,
+                "owner_decisions": [
+                    {
+                        "fact_candidate_id": f"OCRFACT-{run_id}-00001",
+                        "candidate_metric": "tax_payment",
+                        "owner_authorization_decision": "pending_owner_review",
+                        "owner_corrected_company": "",
+                        "owner_corrected_bank": "",
+                        "owner_note": "",
+                    }
+                ],
+            }
+            (run_dir / "ocr_fact_owner_decision_correction_draft.json").write_text(
+                json.dumps(empty_correction_draft, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+            (run_dir / "ocr_fact_candidate_owner_decision_template.json").write_text(
+                json.dumps(candidate_template, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "install_owner_decision_manifest.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--run-id",
+                    run_id,
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 3, result.stdout)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["status"], "BLOCKED_OWNER_DECISION_NOT_APPROVED")
+            self.assertIn("ocr_fact_candidate_owner_decision_template.json", payload["draft_path"])
+            self.assertEqual(payload["owner_decision_count"], 1)
 
     def test_owner_decision_manifest_install_dry_run_does_not_write(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
