@@ -1990,3 +1990,7 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 ## V014 GitHub Upload Requirement Gate
 
 `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-GITHUB-UPLOAD-001` locks owner/authorized-agent external action as a required precondition before GitHub upload. The model reads prior public-safe formal report requirement evidence and an ignored private requirement queue only, emits aggregate public counts, keeps detailed rows private, and leaves GitHub upload/app reinstall/business execution closed with `decision=NO_GO`.
+
+## V014 App Reinstall Requirement Gate
+
+`FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-APP-REINSTALL-001` locks owner/authorized-agent external action as a required precondition before app reinstall. The model reads prior public-safe GitHub upload requirement evidence and an ignored private requirement queue only, emits aggregate public counts, keeps detailed rows private, and leaves GitHub upload/app reinstall/business execution closed with `decision=NO_GO`.
