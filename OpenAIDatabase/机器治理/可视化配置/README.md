@@ -2,7 +2,15 @@
 
 用于放置 human question map、visual ROI gate、多维图谱和图表绑定行动价值的配置。
 
-当前 S11 P3 已完成。Workflow/latent/governance visuals 配置已写入
+当前 S11 P4 已完成。Human Question Map 配置已写入
+`机器治理/可视化配置/human_question_map.v1_2_s11_p4.json`，运行时首页已把
+`cluster_tree`、`bubble_map`、`topic_cluster_explorer`、`task_treemap`、
+`automation_vs_augmentation`、`roi_scatter`、`opportunity_radar`、
+`agent_decision_sankey`、`friction_heatmap`、`latent_radar`、`evidence_timeline`
+和 `formula_explorer` 统一绑定到中文 human question、action value 和 Visual ROI Gate。
+下一步是 S11 Review。
+
+历史复验兼容记录：S11 P3 已完成。Workflow/latent/governance visuals 配置已写入
 `机器治理/可视化配置/workflow_latent_governance_visuals.v1_2_s11_p3.json`，运行时首页已提供
 `agent_decision_sankey`、`friction_heatmap`、`latent_radar`、`evidence_timeline` 和
 `formula_explorer`，并跟随 `source/time/project/task` 过滤。
@@ -29,14 +37,20 @@ Agent 授权边界，输出 `data/derived/agent_collaboration/agent_authorizatio
 但不新增 visual config，不修改运行时 UI，也不创建复杂 Delegation Contract UI。S08 P3 生成
 `data/derived/agent_collaboration/stage_flight_recorder.json`，只记录轻量运行证据，不新增
 visual config，不修改运行时 UI。S08 Review 已复审 S08 P1/P2/P3，不新增 visual config，
-不修改运行时 UI，不创建复杂 Delegation Contract UI。S11 P3 只新增
-Workflow/latent/governance visuals，不实现 S11 P4 的 Human Question Map 完成态。
+不修改运行时 UI，不创建复杂 Delegation Contract UI。S11 P4 只新增
+Human Question Map，不实现 S11 Review 完成态。
 
-任务 ID：`MA-V12-S11P3`。
+任务 ID：`MA-V12-S11P4`。
 
-验收 ID：`ACC-MA-V12-S11P3`。
+验收 ID：`ACC-MA-V12-S11P4`。
 
-Validator：`validate:v1.2-s11-p3`。
+Validator：`validate:v1.2-s11-p4`。
+
+## S11 P4 Human Question Map
+
+S11 P4 当前图谱集合覆盖 S11 P1-P3 的 12 张 P0 图谱。每个图必须有中文 insight
+header、human question、action value，并声明 `visual_roi_gate_pass=true`、
+`p0_included=true` 和 `static_decoration=false`。Visual ROI Gate 不通过的候选不能进入 P0。
 
 ## S11 P3 Workflow/latent/governance Visuals
 

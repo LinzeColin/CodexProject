@@ -1,5 +1,29 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S11 P4 Human Question Map
+
+- Added `human_question_map.v1_2_s11_p4` runtime contract to the Memory Atlas
+  home screen.
+- Added the Human Question Map panel across 12 S11 P0 visuals:
+  `cluster_tree`, `bubble_map`, `topic_cluster_explorer`, `task_treemap`,
+  `automation_vs_augmentation`, `roi_scatter`, `opportunity_radar`,
+  `agent_decision_sankey`, `friction_heatmap`, `latent_radar`,
+  `evidence_timeline` and `formula_explorer`.
+- Bound every mapped visual to Chinese human question, action value, insight
+  header, `source/time/project/task` filters and explicit Visual ROI Gate
+  state.
+- Added `机器治理/可视化配置/human_question_map.v1_2_s11_p4.json`.
+- Added `validate:v1.2-s11-p4` for `MA-V12-S11P4` /
+  `ACC-MA-V12-S11P4`.
+- Hardened the S11 P3 validator phase-boundary check so S11 P4 completion is
+  not mistaken for P3 scope drift.
+- Registered status
+  `phase_s11_p4_human_question_map_completed_pending_s11_review`.
+- Preserved S11 P4 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, No proposal apply execution,
+  No S11 Review completion and No app reinstall.
+- Marked the next gate as pending S11 Review.
+
 ## Unreleased - Memory Atlas v1.2 S11 P3 Workflow/latent/governance Visuals
 
 - Added `workflow_latent_governance_visuals.v1_2_s11_p3` runtime contract to the

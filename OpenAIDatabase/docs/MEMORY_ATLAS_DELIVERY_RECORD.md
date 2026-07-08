@@ -1,3 +1,51 @@
+## v1.2 S11 P4 Human Question Map
+
+状态：`phase_s11_p4_human_question_map_completed_pending_s11_review`。
+
+任务 ID：`MA-V12-S11P4`。
+
+验收 ID：`ACC-MA-V12-S11P4`。
+
+Validator：`validate:v1.2-s11-p4`。
+
+S11 P4 已完成。首页新增 Human Question Map，统一映射 S11 P1-P3 共 12 张 P0 图谱：
+`cluster_tree`、`bubble_map`、`topic_cluster_explorer`、`task_treemap`、
+`automation_vs_augmentation`、`roi_scatter`、`opportunity_radar`、
+`agent_decision_sankey`、`friction_heatmap`、`latent_radar`、`evidence_timeline`
+和 `formula_explorer`。每张图都有中文 insight header、human question、action value、
+Visual ROI Gate 和 `source/time/project/task` 过滤。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `机器治理/可视化配置/human_question_map.v1_2_s11_p4.json`
+- `docs/reviews/memory_atlas_v1_2_s11_p4_human_question_map.md`
+- `人类可读/30_HumanQuestionMap说明.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s11_p4.cjs`
+
+验收：
+
+- `validate:v1.2-s11-p4`
+- `ACC-MA-V12-S11P4`
+- `MA-V12-S11P4`
+- `human_question_map.v1_2_s11_p4`
+- `Human Question Map`
+- `Visual ROI Gate`
+- `source/time/project/task`
+- pending S11 Review
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No proposal apply execution。
+- No S11 Review completion。
+- No app reinstall。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S11 P4; MA-V12-S11P4; ACC-MA-V12-S11P4; phase_s11_p4_human_question_map_completed_pending_s11_review; validate:v1.2-s11-p4; human_question_map.v1_2_s11_p4; Human Question Map; Visual ROI Gate; cluster_tree; bubble_map; topic_cluster_explorer; task_treemap; automation_vs_augmentation; roi_scatter; opportunity_radar; agent_decision_sankey; friction_heatmap; latent_radar; evidence_timeline; formula_explorer; source/time/project/task; pending S11 Review; No GitHub main upload in this phase; No raw mutation; No proposal apply execution.
+
 ## v1.2 S11 P3 Workflow/latent/governance Visuals
 
 状态：`phase_s11_p3_workflow_latent_governance_visuals_completed_pending_s11_p4`。

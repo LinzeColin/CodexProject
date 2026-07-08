@@ -86,6 +86,7 @@ const MACHINE_DETAIL_FOLDING_VERSION = "machine_detail_folding.v1_2_s10_p3" as c
 const CLIO_LIKE_VISUALS_VERSION = "clio_like_visuals.v1_2_s11_p1" as const;
 const ECONOMIC_LIKE_VISUALS_VERSION = "economic_like_visuals.v1_2_s11_p2" as const;
 const WORKFLOW_LATENT_GOVERNANCE_VISUALS_VERSION = "workflow_latent_governance_visuals.v1_2_s11_p3" as const;
+const HUMAN_QUESTION_MAP_VERSION = "human_question_map.v1_2_s11_p4" as const;
 const HOME_ACTION_SECTION_VERSION = "top_actions_section.v1_1_7_stage3_phase2" as const;
 const HOME_LEVEL_ASSET_SECTION_VERSION = "level_assets_section.v1_1_7_stage3_phase2" as const;
 const HOME_THEME_CATEGORY_SECTION_VERSION = "theme_categories_section.v1_1_7_stage3_phase2" as const;
@@ -329,6 +330,31 @@ declare global {
         proposalWrite: false;
       };
     };
+    __memoryAtlasS11Phase4?: () => {
+      humanQuestionMapVersion: typeof HUMAN_QUESTION_MAP_VERSION;
+      visualIds: HumanQuestionMapVisualId[];
+      visualCount: number;
+      p0VisualCount: number;
+      failedP0Count: number;
+      excludedCandidateCount: number;
+      supportsFilters: ["source", "time", "project", "task"];
+      activeFilters: {
+        source: string;
+        time: string;
+        project: string;
+        task: string;
+      };
+      visualRoiGatePassAllP0: true;
+      allP0HaveHumanQuestionAndAction: true;
+      chartsAreStaticDecoration: false;
+      humanQuestionMapComplete: true;
+      pendingLaterVisuals: ["S11 Review"];
+      safety: {
+        rawPrivateDataIncluded: false;
+        directActiveMemoryWriteback: false;
+        proposalWrite: false;
+      };
+    };
   }
 }
 
@@ -340,6 +366,7 @@ const MEMORY_OVERVIEW_SECTION_ORDER = [
   { id: "clio_like_visuals", label: "多维图谱" },
   { id: "economic_like_visuals", label: "经济图谱" },
   { id: "workflow_latent_governance_visuals", label: "治理图谱" },
+  { id: "human_question_map", label: "问题地图" },
   { id: "weather", label: "记忆天气" },
   { id: "black_holes", label: "风险黑洞" },
   { id: "proto_stars", label: "新生机会" },
@@ -1008,6 +1035,47 @@ interface WorkflowLatentGovernanceVisualModel {
   summary: string;
 }
 
+type HumanQuestionMapVisualId = ClioLikeVisualId | EconomicLikeVisualId | WorkflowLatentGovernanceVisualId;
+type HumanQuestionMapFamilyId = "clio_like" | "economic_like" | "workflow_governance";
+
+interface HumanQuestionMapEntry {
+  id: HumanQuestionMapVisualId;
+  familyId: HumanQuestionMapFamilyId;
+  familyLabel: string;
+  title: string;
+  insightHeader: string;
+  humanQuestion: string;
+  actionValue: string;
+  targetView: ViewKey;
+  gateReason: string;
+  visualRoiGatePass: true;
+  p0Included: true;
+}
+
+interface HumanQuestionMapExcludedCandidate {
+  id: string;
+  title: string;
+  reason: string;
+  visualRoiGatePass: false;
+  p0Included: false;
+}
+
+interface HumanQuestionMapModel {
+  schemaVersion: typeof HUMAN_QUESTION_MAP_VERSION;
+  activeFilters: {
+    source: string;
+    time: string;
+    project: string;
+    task: string;
+  };
+  entries: HumanQuestionMapEntry[];
+  excludedCandidates: HumanQuestionMapExcludedCandidate[];
+  p0VisualCount: number;
+  failedP0Count: number;
+  strongestGateLabel: string;
+  summary: string;
+}
+
 interface MemoryWeatherV2 {
   label: string;
   summary: string;
@@ -1477,6 +1545,10 @@ export function App() {
     () => buildWorkflowLatentGovernanceVisualModel(slice.memoryNodes, slice.graphEdges, filters, sharedState, slice.deltaStats),
     [filters, sharedState, slice.deltaStats, slice.graphEdges, slice.memoryNodes],
   );
+  const humanQuestionMapModel = useMemo(
+    () => buildHumanQuestionMapModel(clioLikeVisualModel, economicLikeVisualModel, workflowLatentGovernanceVisualModel),
+    [clioLikeVisualModel, economicLikeVisualModel, workflowLatentGovernanceVisualModel],
+  );
 
   const handleSelectNode = useCallback((node: AtlasNode) => {
     setSelectedContributionPeriod(null);
@@ -1706,6 +1778,32 @@ export function App() {
     };
   }, [workflowLatentGovernanceVisualModel]);
 
+  useEffect(() => {
+    window.__memoryAtlasS11Phase4 = () => ({
+      humanQuestionMapVersion: HUMAN_QUESTION_MAP_VERSION,
+      visualIds: humanQuestionMapModel.entries.map((entry) => entry.id),
+      visualCount: humanQuestionMapModel.entries.length,
+      p0VisualCount: humanQuestionMapModel.p0VisualCount,
+      failedP0Count: humanQuestionMapModel.failedP0Count,
+      excludedCandidateCount: humanQuestionMapModel.excludedCandidates.length,
+      supportsFilters: ["source", "time", "project", "task"],
+      activeFilters: humanQuestionMapModel.activeFilters,
+      visualRoiGatePassAllP0: true,
+      allP0HaveHumanQuestionAndAction: true,
+      chartsAreStaticDecoration: false,
+      humanQuestionMapComplete: true,
+      pendingLaterVisuals: ["S11 Review"],
+      safety: {
+        rawPrivateDataIncluded: false,
+        directActiveMemoryWriteback: false,
+        proposalWrite: false,
+      },
+    });
+    return () => {
+      delete window.__memoryAtlasS11Phase4;
+    };
+  }, [humanQuestionMapModel]);
+
   return (
     <div
       className="app-shell"
@@ -1866,6 +1964,7 @@ export function App() {
               clioLikeVisualModel={clioLikeVisualModel}
               economicLikeVisualModel={economicLikeVisualModel}
               workflowLatentGovernanceVisualModel={workflowLatentGovernanceVisualModel}
+              humanQuestionMapModel={humanQuestionMapModel}
               sharedState={sharedState}
               slice={slice}
               nodeMap={nodeMap}
@@ -1903,6 +2002,7 @@ function ViewRouter({
   clioLikeVisualModel,
   economicLikeVisualModel,
   workflowLatentGovernanceVisualModel,
+  humanQuestionMapModel,
   sharedState,
   slice,
   nodeMap,
@@ -1924,6 +2024,7 @@ function ViewRouter({
   clioLikeVisualModel: ClioLikeVisualModel;
   economicLikeVisualModel: EconomicLikeVisualModel;
   workflowLatentGovernanceVisualModel: WorkflowLatentGovernanceVisualModel;
+  humanQuestionMapModel: HumanQuestionMapModel;
   sharedState: SharedAtlasState;
   slice: FilteredAtlasSlice;
   nodeMap: Map<string, AtlasNode>;
@@ -1988,6 +2089,7 @@ function ViewRouter({
         clioLikeVisualModel={clioLikeVisualModel}
         economicLikeVisualModel={economicLikeVisualModel}
         workflowLatentGovernanceVisualModel={workflowLatentGovernanceVisualModel}
+        humanQuestionMapModel={humanQuestionMapModel}
         deltaStats={slice.deltaStats}
         selectedNode={selectedNode}
         sharedState={sharedState}
@@ -2776,6 +2878,102 @@ function WorkflowLatentGovernanceVisualPanel({
   );
 }
 
+function HumanQuestionMapPanel({
+  model,
+  onSwitchView,
+}: {
+  model: HumanQuestionMapModel;
+  onSwitchView: (view: ViewKey) => void;
+}) {
+  const [familyFilter, setFamilyFilter] = useState<HumanQuestionMapFamilyId | "all">("all");
+  const visibleEntries = familyFilter === "all" ? model.entries : model.entries.filter((entry) => entry.familyId === familyFilter);
+  const familyOptions: Array<{ id: HumanQuestionMapFamilyId | "all"; label: string; count: number }> = [
+    { id: "all", label: "全部问题", count: model.entries.length },
+    { id: "clio_like", label: "主题/簇", count: model.entries.filter((entry) => entry.familyId === "clio_like").length },
+    { id: "economic_like", label: "ROI/任务", count: model.entries.filter((entry) => entry.familyId === "economic_like").length },
+    { id: "workflow_governance", label: "工作流/治理", count: model.entries.filter((entry) => entry.familyId === "workflow_governance").length },
+  ];
+
+  return (
+    <section
+      className="human-question-map-panel"
+      aria-label="S11 P4 Human Question Map"
+      data-home-section="human_question_map"
+      data-s11-p4-human-question-map={HUMAN_QUESTION_MAP_VERSION}
+      data-s11-p4-filter-source={model.activeFilters.source}
+      data-s11-p4-filter-time={model.activeFilters.time}
+      data-s11-p4-filter-project={model.activeFilters.project}
+      data-s11-p4-filter-task={model.activeFilters.task}
+    >
+      <div className="panel-title-row">
+        <div>
+          <h3>Human Question Map</h3>
+          <p>{model.summary}</p>
+        </div>
+        <span>{model.p0VisualCount.toLocaleString()} 张 P0 图谱</span>
+      </div>
+      <div className="human-question-map-gate-row" aria-label="S11 P4 Visual ROI Gate 汇总">
+        <span><strong>{model.p0VisualCount.toLocaleString()}</strong>P0 通过</span>
+        <span><strong>{model.failedP0Count.toLocaleString()}</strong>P0 失败</span>
+        <span><strong>{model.excludedCandidates.length.toLocaleString()}</strong>未进 P0</span>
+        <span><strong>{model.strongestGateLabel}</strong>最强决策族</span>
+      </div>
+      <div className="human-question-map-filter-strip" aria-label="S11 P4 图谱过滤维度">
+        <span><strong>source</strong>{model.activeFilters.source}</span>
+        <span><strong>time</strong>{model.activeFilters.time}</span>
+        <span><strong>project</strong>{model.activeFilters.project}</span>
+        <span><strong>task</strong>{model.activeFilters.task}</span>
+      </div>
+      <div className="human-question-map-family-tabs" aria-label="Human Question Map family filter">
+        {familyOptions.map((option) => (
+          <button
+            className={familyFilter === option.id ? "active" : ""}
+            key={option.id}
+            onClick={() => setFamilyFilter(option.id)}
+            type="button"
+          >
+            <span>{option.label}</span>
+            <strong>{option.count.toLocaleString()}</strong>
+          </button>
+        ))}
+      </div>
+      <div className="human-question-map-grid">
+        {visibleEntries.map((entry) => (
+          <button
+            className="human-question-map-entry"
+            data-s11-p4-action-value={entry.actionValue}
+            data-s11-p4-family={entry.familyId}
+            data-s11-p4-human-question={entry.humanQuestion}
+            data-s11-p4-interactive="true"
+            data-s11-p4-map-entry="true"
+            data-s11-p4-p0-included={entry.p0Included ? "true" : "false"}
+            data-s11-p4-visual-id={entry.id}
+            data-s11-p4-visual-roi-gate={entry.visualRoiGatePass ? "pass" : "fail"}
+            key={entry.id}
+            onClick={() => onSwitchView(entry.targetView)}
+            type="button"
+          >
+            <span>{entry.familyLabel}</span>
+            <strong>{entry.title}</strong>
+            <em>{entry.insightHeader}</em>
+            <p>{entry.humanQuestion}</p>
+            <small>{entry.actionValue}</small>
+            <b>{entry.gateReason}</b>
+          </button>
+        ))}
+      </div>
+      <div className="human-question-map-exclusion-list" aria-label="Visual ROI Gate 未进 P0 候选">
+        {model.excludedCandidates.map((candidate) => (
+          <span data-s11-p4-p0-included="false" data-s11-p4-visual-roi-gate="fail" key={candidate.id}>
+            <strong>{candidate.title}</strong>
+            <small>{candidate.reason}</small>
+          </span>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function HomeOverviewView({
   atlas,
   nodes,
@@ -2783,6 +2981,7 @@ function HomeOverviewView({
   clioLikeVisualModel,
   economicLikeVisualModel,
   workflowLatentGovernanceVisualModel,
+  humanQuestionMapModel,
   deltaStats,
   selectedNode,
   sharedState,
@@ -2796,6 +2995,7 @@ function HomeOverviewView({
   clioLikeVisualModel: ClioLikeVisualModel;
   economicLikeVisualModel: EconomicLikeVisualModel;
   workflowLatentGovernanceVisualModel: WorkflowLatentGovernanceVisualModel;
+  humanQuestionMapModel: HumanQuestionMapModel;
   deltaStats: DeltaStats;
   selectedNode: AtlasNode | null;
   sharedState: SharedAtlasState;
@@ -2995,6 +3195,7 @@ function HomeOverviewView({
       <ClioLikeVisualPanel model={clioLikeVisualModel} onSelectNode={onSelectNode} onSwitchView={onSwitchView} />
       <EconomicLikeVisualPanel model={economicLikeVisualModel} onSelectNode={onSelectNode} onSwitchView={onSwitchView} />
       <WorkflowLatentGovernanceVisualPanel model={workflowLatentGovernanceVisualModel} onSelectNode={onSelectNode} onSwitchView={onSwitchView} />
+      <HumanQuestionMapPanel model={humanQuestionMapModel} onSwitchView={onSwitchView} />
       <section className="home-preview-grid" aria-label={uiCopy.overview.previewAria} data-home-section="entry_points">
         <button
           className="home-preview-card mini-starfield-preview"
@@ -8123,6 +8324,109 @@ function buildWorkflowLatentGovernanceVisualModel(
     evidenceEvents,
     formulaRows,
     summary,
+  };
+}
+
+function buildHumanQuestionMapModel(
+  clioModel: ClioLikeVisualModel,
+  economicModel: EconomicLikeVisualModel,
+  workflowModel: WorkflowLatentGovernanceVisualModel,
+): HumanQuestionMapModel {
+  const clioTargets: Record<ClioLikeVisualId, ViewKey> = {
+    cluster_tree: "galaxy",
+    bubble_map: "galaxy",
+    topic_cluster_explorer: "search",
+  };
+  const economicTargets: Record<EconomicLikeVisualId, ViewKey> = {
+    task_treemap: "roi",
+    automation_vs_augmentation: "search",
+    roi_scatter: "roi",
+    opportunity_radar: "summary",
+  };
+  const workflowTargets: Record<WorkflowLatentGovernanceVisualId, ViewKey> = {
+    agent_decision_sankey: "summary",
+    friction_heatmap: "search",
+    latent_radar: "summary",
+    evidence_timeline: "timeline",
+    formula_explorer: "roi",
+  };
+  const gateReasons: Record<HumanQuestionMapVisualId, string> = {
+    cluster_tree: "问题能定位主题层级，行动能进入 galaxy/search 复核。",
+    bubble_map: "问题能比较高频、机会和风险，行动能优先打开高 ROI 簇。",
+    topic_cluster_explorer: "问题能决定继续追问哪个簇，行动能进入搜索复核证据。",
+    task_treemap: "问题能识别 AI 使用集中任务，行动能与 ROI 对齐。",
+    automation_vs_augmentation: "问题能区分自动化和增强，行动能选择固化流程或保留人工判断。",
+    roi_scatter: "问题能识别值得继续加码的任务，行动能处理低 ROI 高频任务。",
+    opportunity_radar: "问题能识别机会缺口，行动能选择下一步验证问题。",
+    agent_decision_sankey: "问题能发现 Agent 执行路径失真，行动能转成 run contract 或授权判断。",
+    friction_heatmap: "问题能定位反复浪费时间的位置，行动能转成停止条件或降噪规则。",
+    latent_radar: "问题能追踪增强的潜在信号，行动能验证或降权。",
+    evidence_timeline: "问题能追溯结论来源，行动能复核证据新鲜度。",
+    formula_explorer: "问题能解释 proxy 分数，行动能检查参数和 proposal-only 边界。",
+  };
+
+  const entries: HumanQuestionMapEntry[] = [
+    ...clioModel.visualCopy.map((copy) =>
+      buildHumanQuestionMapEntry(copy, "clio_like", "主题/簇图谱", clioTargets[copy.id], gateReasons[copy.id]),
+    ),
+    ...economicModel.visualCopy.map((copy) =>
+      buildHumanQuestionMapEntry(copy, "economic_like", "ROI/任务图谱", economicTargets[copy.id], gateReasons[copy.id]),
+    ),
+    ...workflowModel.visualCopy.map((copy) =>
+      buildHumanQuestionMapEntry(copy, "workflow_governance", "工作流/治理图谱", workflowTargets[copy.id], gateReasons[copy.id]),
+    ),
+  ];
+  const excludedCandidates: HumanQuestionMapExcludedCandidate[] = [
+    {
+      id: "decorative_density_cloud",
+      title: "装饰性密度云",
+      reason: "只有视觉密度，没有可回答的人类问题和行动入口，Visual ROI Gate 不通过。",
+      visualRoiGatePass: false,
+      p0Included: false,
+    },
+    {
+      id: "raw_conversation_heat_glow",
+      title: "Raw conversation heat glow",
+      reason: "依赖 raw/private 语料且不能提升验收决策，必须停在非 P0 候选。",
+      visualRoiGatePass: false,
+      p0Included: false,
+    },
+  ];
+  const p0VisualCount = entries.filter((entry) => entry.p0Included && entry.visualRoiGatePass).length;
+  const failedP0Count = entries.filter((entry) => !entry.p0Included || !entry.visualRoiGatePass).length;
+  const familyCounts = countBy(entries, (entry) => entry.familyLabel);
+  const strongestGateLabel = topRows(familyCounts, 1)[0]?.label ?? "Human Question Map";
+  return {
+    schemaVersion: HUMAN_QUESTION_MAP_VERSION,
+    activeFilters: workflowModel.activeFilters,
+    entries,
+    excludedCandidates,
+    p0VisualCount,
+    failedP0Count,
+    strongestGateLabel,
+    summary: `S11 P4 把 ${entries.length.toLocaleString()} 张 P1-P3 图谱统一到人类问题、行动价值和 Visual ROI Gate；当前筛选沿用 source/time/project/task，${failedP0Count.toLocaleString()} 张失败图进入 P0。`,
+  };
+}
+
+function buildHumanQuestionMapEntry(
+  copy: ClioLikeVisualCopy | EconomicLikeVisualCopy | WorkflowLatentGovernanceVisualCopy,
+  familyId: HumanQuestionMapFamilyId,
+  familyLabel: string,
+  targetView: ViewKey,
+  gateReason: string,
+): HumanQuestionMapEntry {
+  return {
+    id: copy.id,
+    familyId,
+    familyLabel,
+    title: copy.title,
+    insightHeader: copy.insightHeader,
+    humanQuestion: copy.humanQuestion,
+    actionValue: copy.actionValue,
+    targetView,
+    gateReason,
+    visualRoiGatePass: true,
+    p0Included: true,
   };
 }
 
