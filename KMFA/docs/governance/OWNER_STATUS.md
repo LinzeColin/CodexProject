@@ -831,3 +831,13 @@ KMFA 当前版本 `0.1.4-residual-difference-authorized-source-reference-or-excl
 - current gate: 48 source authoritative-binding requirement blockers were converted into a private raw-to-processed value comparison requirement queue; no executable owner/authorized-agent source reference, owner exclusion, formula mapping or non-numeric mapping was detected.
 - counts: `source_authoritative_binding_requirement_ready_count=0`, `source_authoritative_binding_requirement_blocker_count=48`, `source_authoritative_binding_requirement_required_count=48`, `raw_to_processed_value_comparison_requirement_ready_count=0`, `raw_to_processed_value_comparison_requirement_blocker_count=48`, `raw_to_processed_value_comparison_requirement_required_count=48`, `raw_to_processed_value_comparison_ready_count=0`, `unresolved_difference_count=72`。
 - not performed: Stage review, GitHub upload, app reinstall, raw inbox access/mutation, authoritative binding, raw-to-processed value comparison, reconciliation, business consistency, lineage full check, formal report, business execution。
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-processed-data-reconciliation
+
+- owner_action_required: `true`
+- action_required_before: `processed-data reconciliation`
+- blocker_count: `48`
+- ready_count: `0`
+- raw_inbox_touched: `false`
+- github_upload: `deferred_not_performed`
+- next_required_input: `actionable_source_reference_owner_exclusion_formula_mapping_or_non_numeric_mapping_required_before_binding_or_value_comparison`
