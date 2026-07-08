@@ -64,6 +64,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
         self,
         readiness_exit: int,
         generated_sidecar_count: int = 0,
+        env_overrides: dict[str, str] | None = None,
     ) -> tuple[subprocess.CompletedProcess[str], Path]:
         temp_dir = tempfile.TemporaryDirectory()
         self.addCleanup(temp_dir.cleanup)
@@ -105,10 +106,23 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
         )
         python_stub.chmod(0o755)
 
+        codex_stub = bin_dir / "codex"
+        codex_stub.write_text(
+            "#!/usr/bin/env bash\n"
+            "set -euo pipefail\n"
+            f"echo codex:$* >> {call_log}\n"
+            "cat >/dev/null\n"
+            "exit 0\n",
+            encoding="utf-8",
+        )
+        codex_stub.chmod(0o755)
+
         env = os.environ.copy()
         env["KMFA_REPO_ROOT"] = str(repo_root)
         env["KMFA_FUND_INPUT_DIR"] = str(temp_root / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群")
         env["PATH"] = f"{bin_dir}:/usr/bin:/bin"
+        if env_overrides:
+            env.update(env_overrides)
         result = subprocess.run(
             [str(SKILL_ROOT / "tools" / "run_daily_local.sh")],
             text=True,
@@ -164,6 +178,21 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
         self.assertLess(runner_indexes[0], ocr_index)
         self.assertLess(ocr_index, runner_indexes[1])
         self.assertIn("--run-id daily_stub", calls[runner_indexes[1]])
+
+    def test_daily_entrypoint_supports_explicit_run_id_and_skip_codex_for_validation(self) -> None:
+        result, call_log = self.run_daily_with_stubbed_tools(
+            readiness_exit=0,
+            env_overrides={
+                "KMFA_FUND_RUN_ID": "s55_validation_run",
+                "KMFA_SKIP_CODEX_EXEC": "1",
+            },
+        )
+        calls = call_log.read_text(encoding="utf-8").splitlines()
+        runner_call = next(call for call in calls if "run_fund_weekly_analysis.py" in call)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("--run-id s55_validation_run", runner_call)
+        self.assertFalse(any(call.startswith("codex:") for call in calls), calls)
 
     def test_skill_package_uses_sydney_monday_saturday_1100_local_schedule_and_real_input(self) -> None:
         self.assertTrue(SKILL_ROOT.exists(), "fund-weekly-analysis-skill package must exist under KMFA")

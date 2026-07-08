@@ -2,6 +2,7 @@
 
 Blocking checks:
 
+* `run_daily_local.sh` must run source readiness before the runner, support validation-only `KMFA_FUND_RUN_ID` pinning, and support `KMFA_SKIP_CODEX_EXEC=1` so the scheduled runner/OCR path can be tested without recursively launching Codex.
 * `check_source_readiness.py` returns `READY` before extraction or Excel production starts.
 * Required files and input directory exist.
 * Missing configured input folder returns `SOURCE_MISSING` and does not read alternate private sources unless a separate explicit materialization step is run.

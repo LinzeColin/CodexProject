@@ -6,6 +6,7 @@ SKILL_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 REPO_ROOT="${KMFA_REPO_ROOT:-$(cd "$SKILL_DIR/../.." && pwd)}"
 INPUT_DIR="${KMFA_FUND_INPUT_DIR:-/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群}"
 PROMPT_FILE="$SKILL_DIR/automation/weekly_1100_sydney.prompt.md"
+RUN_ID_OVERRIDE="${KMFA_FUND_RUN_ID:-}"
 
 cd "$REPO_ROOT"
 if [[ "$(git branch --show-current)" != "main" ]]; then
@@ -25,7 +26,11 @@ if [[ "$READINESS_EXIT" -ne 0 ]]; then
   exit "$READINESS_EXIT"
 fi
 
-RUNNER_OUTPUT="$(python3 "$SKILL_DIR/tools/run_fund_weekly_analysis.py" --input-dir "$INPUT_DIR" --repo-root "$REPO_ROOT" --timezone Australia/Sydney)"
+RUNNER_CMD=(python3 "$SKILL_DIR/tools/run_fund_weekly_analysis.py" --input-dir "$INPUT_DIR" --repo-root "$REPO_ROOT" --timezone Australia/Sydney)
+if [[ -n "$RUN_ID_OVERRIDE" ]]; then
+  RUNNER_CMD+=(--run-id "$RUN_ID_OVERRIDE")
+fi
+RUNNER_OUTPUT="$("${RUNNER_CMD[@]}")"
 echo "$RUNNER_OUTPUT"
 RUN_ID="$(printf '%s\n' "$RUNNER_OUTPUT" | sed -n 's/.*"run_id"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | tail -1)"
 RUN_DIR="$(printf '%s\n' "$RUNNER_OUTPUT" | sed -n 's/.*"run_dir"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | tail -1)"
@@ -41,7 +46,9 @@ else
   echo "WARN: runner output did not include run_dir; OCR sidecar generation plan was skipped." >&2
 fi
 
-if command -v codex >/dev/null 2>&1; then
+if [[ "${KMFA_SKIP_CODEX_EXEC:-0}" == "1" ]]; then
+  echo "INFO: KMFA_SKIP_CODEX_EXEC=1; skipping codex exec."
+elif command -v codex >/dev/null 2>&1; then
   # The exact Codex CLI may differ by local installation. Stdin keeps the prompt portable.
   codex exec < "$PROMPT_FILE"
 else

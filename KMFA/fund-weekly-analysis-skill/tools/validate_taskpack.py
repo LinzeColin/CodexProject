@@ -46,6 +46,8 @@ REQUIRED_SKILL_STRINGS = [
     "vision",
     "private Vision OCR sidecars",
     "same `run_id`",
+    "KMFA_FUND_RUN_ID",
+    "KMFA_SKIP_CODEX_EXEC=1",
     "ocr_text_candidates.csv",
     "ocr_value_candidates.csv",
     "ocr_financial_fact_candidates.csv",
