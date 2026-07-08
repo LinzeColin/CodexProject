@@ -3,20 +3,30 @@ Use `$fund-weekly-analysis-skill`.
 Run KMFA资金与税费管理日报/周报自动化 at local Sydney time 11:30.
 Reference only: 11:30 Australia/Sydney equals 09:30 Asia/Shanghai during the current UTC+10 offset.
 
-Read the latest files under:
+统一工作区规则：本 automation 与上游每日钉钉DWS归档、考勤检查、钉钉工作检查使用同一组 Codex cwds：
+- DWS 归档项目：`/Users/linzezhang/Documents/Codex/2026-07-04/392b1a986ba680338068ddc1c2a0fd0e-https-app-notion-com-p`
+- KMFA/CodexProject：`/Users/linzezhang/CodexProject`
+本 automation 的实际执行目录必须切到 `/Users/linzezhang/CodexProject` 后再运行 KMFA git、skill、test 或脚本命令；DWS 归档项目只作为上游输出和诊断可见工作区。若发现这些上游/下游 automation 的 cwds 不一致，先修正 automation 配置并报告。
 
-/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群
+Upstream DWS source package priority:
+1. `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip`
+2. `/Users/linzezhang/onedrive/DWS_Outputs.zip`
+Legacy direct-folder source is compatibility fallback only and must not be assumed to exist:
+`/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群`
 
 Hard requirements:
 
 1. Work on GitHub `main` only. No branch, no PR, no worktree.
-2. Read `KMFA/fund-weekly-analysis-skill/SKILL.md` and all referenced files before acting.
+2. Switch to `/Users/linzezhang/CodexProject` before repo commands, then read `KMFA/fund-weekly-analysis-skill/SKILL.md` and all referenced files before acting.
 3. Run source readiness first:
    `python3 KMFA/fund-weekly-analysis-skill/tools/check_source_readiness.py --repo-root /Users/linzezhang/CodexProject --timezone Australia/Sydney`
-4. Continue to extraction only if readiness is `READY`; otherwise fail closed with the readiness report.
-5. Do not use simulated/test/fake/estimated financial data.
-6. Build evidence index first, then fund ledger, then internal transfer netting, then balance continuity, then tax/loan risk, then company-bank matrix, then Excel.
-7. Generate the Excel workbook with exact sheet order:
+4. If readiness is `SOURCE_MISSING` only because the legacy direct folder is absent, inspect the readiness report source candidates. If a DWS_Outputs.zip candidate is `READY`, materialize the 付款请示群 source explicitly and then rerun readiness:
+   `python3 KMFA/fund-weekly-analysis-skill/tools/materialize_fund_source.py --source-zip /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip --zip-prefix 付款请示群 --target-dir /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群 --repo-root /Users/linzezhang/CodexProject --timezone Australia/Sydney --apply`
+   If the CloudStorage zip is unavailable but `/Users/linzezhang/onedrive/DWS_Outputs.zip` is readable, use that path with the same `--zip-prefix` and `--target-dir`. Do not materialize from stale, unreadable, or non-DWS zip sources.
+5. Continue to extraction only if readiness is `READY` after the initial check or after explicit materialization; otherwise fail closed with the readiness report and include which upstream DWS zip/fallback path was checked.
+6. Do not use simulated/test/fake/estimated financial data.
+7. Build evidence index first, then fund ledger, then internal transfer netting, then balance continuity, then tax/loan risk, then company-bank matrix, then Excel.
+8. Generate the Excel workbook with exact sheet order:
    - 01_首页总览
    - 02_资金趋势预测
    - 03_三层净流余额
@@ -24,8 +34,11 @@ Hard requirements:
    - 05_公司银行矩阵
    - 06_CodexSkill流程
    - hidden H01-H06 audit/review/config sheets
-8. 首页 and trend charts must be native line charts and each chart must be <= 1728x864 px.
-9. Perform cross-review checks: formula errors, hidden sheets, no simulation data, internal transfer netting, balance continuity tolerance 0.01, sensitive fields not visible, tax version conflict detection, company-bank mapping coverage.
-10. Write all outputs to the private runtime run directory.
-11. Mirror any prompt/skill/template/governance changes under `KMFA/fund-weekly-analysis-skill/automation/` or relevant tracked folders, validate, commit and push to GitHub main if and only if validation passes.
-12. If a value cannot be confidently extracted from real evidence, leave it blank or mark `待识别/待复核` and create an exception task. Do not guess.
+9. 首页 and trend charts must be native line charts and each chart must be <= 1728x864 px.
+10. Perform cross-review checks: formula errors, hidden sheets, no simulation data, internal transfer netting, balance continuity tolerance 0.01, sensitive fields not visible, tax version conflict detection, company-bank mapping coverage.
+11. Write all outputs to the private runtime run directory.
+12. Mirror any prompt/skill/template/governance changes under `KMFA/fund-weekly-analysis-skill/automation/` or relevant tracked folders, validate, commit and push to GitHub main if and only if validation passes.
+13. If a value cannot be confidently extracted from real evidence, leave it blank or mark `待识别/待复核` and create an exception task. Do not guess.
+14. Do not modify upstream DWS archive outputs; materialization is a downstream private compatibility copy from the current DWS zip into the configured KMFA input folder.
+
+Final response must be Chinese and include source readiness, selected DWS input path, whether materialization was performed, workbook path if generated, validation status, blockers, and next action.

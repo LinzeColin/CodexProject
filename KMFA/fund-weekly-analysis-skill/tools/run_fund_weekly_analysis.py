@@ -994,6 +994,41 @@ def build_attachment_repair_authorization_template(manifest: dict, attachment_ap
     }
 
 
+def attachment_repair_preview_status(validation_status: str) -> tuple[str, str]:
+    if validation_status == "valid_manifest_validation_only":
+        return "ready_for_operator_review_no_apply", "pending_operator_impact_review"
+    if validation_status == "missing_authorization_manifest":
+        return "blocked_missing_operator_authorization", "pending_operator_authorization"
+    if validation_status in {"repair_plan_not_authorized", "repair_plan_authorization_not_true"}:
+        return "blocked_repair_plan_not_authorized", "pending_operator_authorization"
+    if validation_status == "authorization_command_family_mismatch":
+        return "blocked_authorization_command_mismatch", "pending_operator_authorization"
+    return "blocked_invalid_operator_authorization", "pending_operator_authorization"
+
+
+def build_attachment_repair_authorization_preview(manifest: dict, attachment_apply_gate_rows: list[dict]) -> list[dict]:
+    rows: list[dict] = []
+    for row in attachment_apply_gate_rows:
+        preview_status, review_status = attachment_repair_preview_status(row["authorization_validation_status"])
+        rows.append({
+            "authorization_preview_id": f"ATTACHPREVIEW-{manifest['run_id']}-{len(rows) + 1:05d}",
+            "apply_gate_id": row["apply_gate_id"],
+            "repair_plan_id": row["repair_plan_id"],
+            "open_message_id": row["open_message_id"],
+            "required_command_family": row["required_command_family"],
+            "authorization_validation_status": row["authorization_validation_status"],
+            "preview_status": preview_status,
+            "impact_scope": "attachment_evidence_repair_plan_only",
+            "source_mutation_allowed": "false",
+            "apply_allowed": "false",
+            "apply_performed": "false",
+            "formal_fact_allowed": "false",
+            "relative_path": row["relative_path"],
+            "review_status": review_status,
+        })
+    return rows
+
+
 def read_jsonl(path: Path) -> list[dict]:
     if not path.exists():
         return []
@@ -2079,6 +2114,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     attachment_repair_plan_rows = build_attachment_repair_plan(manifest, attachment_dry_run_rows)
     attachment_apply_gate_rows = build_attachment_repair_apply_gate(manifest, repo_root, attachment_repair_plan_rows)
     attachment_authorization_template = build_attachment_repair_authorization_template(manifest, attachment_apply_gate_rows)
+    attachment_authorization_preview_rows = build_attachment_repair_authorization_preview(manifest, attachment_apply_gate_rows)
     structured = extract_structured_csv_facts(manifest, input_dir, evidence)
     funding_forecast_rows = build_funding_forecast_rows(structured)
     cashflow_validation_rows = build_cashflow_validation_rows(structured, manifest["run_id"])
@@ -2106,6 +2142,9 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     manifest["attachment_repair_authorization_valid_count"] = sum(1 for row in attachment_apply_gate_rows if row["authorization_validation_status"] == "valid_manifest_validation_only")
     manifest["attachment_repair_authorization_template_count"] = len(attachment_authorization_template["repair_plan_authorizations"])
     manifest["attachment_repair_authorization_template_authorized_count"] = sum(1 for row in attachment_authorization_template["repair_plan_authorizations"] if row["authorized"] is True)
+    manifest["attachment_repair_authorization_preview_count"] = len(attachment_authorization_preview_rows)
+    manifest["attachment_repair_authorization_preview_ready_count"] = sum(1 for row in attachment_authorization_preview_rows if row["preview_status"] == "ready_for_operator_review_no_apply")
+    manifest["attachment_repair_authorization_preview_blocked_count"] = len(attachment_authorization_preview_rows) - manifest["attachment_repair_authorization_preview_ready_count"]
     manifest["attachment_repair_apply_allowed_count"] = sum(1 for row in attachment_apply_gate_rows if row["apply_allowed"] == "true")
     manifest["metadata_signal_count"] = len(metadata_signals)
     manifest["forecast_row_count"] = len(funding_forecast_rows)
@@ -2378,6 +2417,22 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         json.dumps(attachment_authorization_template, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
+    write_csv(run_dir / "attachment_repair_authorization_preview.csv", [
+        "authorization_preview_id",
+        "apply_gate_id",
+        "repair_plan_id",
+        "open_message_id",
+        "required_command_family",
+        "authorization_validation_status",
+        "preview_status",
+        "impact_scope",
+        "source_mutation_allowed",
+        "apply_allowed",
+        "apply_performed",
+        "formal_fact_allowed",
+        "relative_path",
+        "review_status",
+    ], attachment_authorization_preview_rows)
     write_csv(run_dir / "workbook_quality_checks.csv", [
         "check_id",
         "check_name",
@@ -2527,6 +2582,9 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "attachment_repair_authorization_valid_count": manifest["attachment_repair_authorization_valid_count"],
         "attachment_repair_authorization_template_count": manifest["attachment_repair_authorization_template_count"],
         "attachment_repair_authorization_template_authorized_count": manifest["attachment_repair_authorization_template_authorized_count"],
+        "attachment_repair_authorization_preview_count": manifest["attachment_repair_authorization_preview_count"],
+        "attachment_repair_authorization_preview_ready_count": manifest["attachment_repair_authorization_preview_ready_count"],
+        "attachment_repair_authorization_preview_blocked_count": manifest["attachment_repair_authorization_preview_blocked_count"],
         "attachment_repair_apply_allowed_count": manifest["attachment_repair_apply_allowed_count"],
         "structured_financial_fact_count": len(structured["fund_rows"]),
         "metadata_signal_count": len(metadata_signals),
@@ -2575,6 +2633,9 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "attachment_repair_authorization_valid_count": manifest["attachment_repair_authorization_valid_count"],
                 "attachment_repair_authorization_template_count": manifest["attachment_repair_authorization_template_count"],
                 "attachment_repair_authorization_template_authorized_count": manifest["attachment_repair_authorization_template_authorized_count"],
+                "attachment_repair_authorization_preview_count": manifest["attachment_repair_authorization_preview_count"],
+                "attachment_repair_authorization_preview_ready_count": manifest["attachment_repair_authorization_preview_ready_count"],
+                "attachment_repair_authorization_preview_blocked_count": manifest["attachment_repair_authorization_preview_blocked_count"],
                 "attachment_repair_apply_allowed_count": manifest["attachment_repair_apply_allowed_count"],
                 "structured_financial_fact_count": len(structured["fund_rows"]),
                 "metadata_signal_count": len(metadata_signals),
@@ -2699,6 +2760,8 @@ def main() -> int:
         f"Attachment repair apply blocked count: {manifest.get('attachment_repair_apply_blocked_count', 0)}\n\n"
         f"Attachment repair authorization valid count: {manifest.get('attachment_repair_authorization_valid_count', 0)}\n\n"
         f"Attachment repair authorization template count: {manifest.get('attachment_repair_authorization_template_count', 0)}\n\n"
+        f"Attachment repair authorization preview ready count: {manifest.get('attachment_repair_authorization_preview_ready_count', 0)}\n\n"
+        f"Attachment repair authorization preview blocked count: {manifest.get('attachment_repair_authorization_preview_blocked_count', 0)}\n\n"
         f"KMFA metadata signal count: {manifest.get('metadata_signal_count', 0)}\n\n"
         f"Known due-date funding forecast row count: {manifest.get('forecast_row_count', 0)}\n\n"
         f"Cashflow validation row count: {manifest.get('cashflow_validation_row_count', 0)}\n\n"

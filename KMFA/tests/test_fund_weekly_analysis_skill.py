@@ -152,7 +152,13 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
         self.assertEqual(contract["rrule"], "FREQ=DAILY;BYHOUR=11;BYMINUTE=30")
         self.assertEqual(contract["timezone"], "Australia/Sydney")
         self.assertEqual(contract["execution_environment"], "local")
-        self.assertEqual(contract["cwds"], ["/Users/linzezhang/CodexProject"])
+        self.assertEqual(
+            contract["cwds"],
+            [
+                "/Users/linzezhang/Documents/Codex/2026-07-04/392b1a986ba680338068ddc1c2a0fd0e-https-app-notion-com-p",
+                "/Users/linzezhang/CodexProject",
+            ],
+        )
         self.assertEqual(contract["prompt_file"], "automation/daily_1130_sydney.prompt.md")
         self.assertEqual(contract["source_readiness_gate"], "tools/check_source_readiness.py")
         self.assertEqual(
@@ -414,6 +420,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "attachment_repair_plan.csv",
                 "attachment_repair_apply_gate.csv",
                 "attachment_repair_authorization_template.json",
+                "attachment_repair_authorization_preview.csv",
                 "workbook_quality_checks.csv",
                 "kmfa_metadata_signals.csv",
                 "exception_tasks.csv",
@@ -1468,11 +1475,39 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertTrue(all(row["apply_performed"] == "false" for row in gate_rows))
             self.assertTrue(all(row["formal_fact_allowed"] == "false" for row in gate_rows))
 
+            with (run_dir / "attachment_repair_authorization_preview.csv").open(encoding="utf-8-sig", newline="") as f:
+                preview_rows = list(csv.DictReader(f))
+            self.assertEqual(len(preview_rows), 3)
+            previews_by_plan = {row["repair_plan_id"]: row for row in preview_rows}
+            self.assertEqual(
+                previews_by_plan[f"ATTACHPLAN-{run_id}-00001"]["authorization_validation_status"],
+                "valid_manifest_validation_only",
+            )
+            self.assertEqual(
+                previews_by_plan[f"ATTACHPLAN-{run_id}-00001"]["preview_status"],
+                "ready_for_operator_review_no_apply",
+            )
+            self.assertEqual(
+                previews_by_plan[f"ATTACHPLAN-{run_id}-00002"]["preview_status"],
+                "ready_for_operator_review_no_apply",
+            )
+            self.assertEqual(
+                previews_by_plan[f"ATTACHPLAN-{run_id}-00003"]["preview_status"],
+                "blocked_repair_plan_not_authorized",
+            )
+            self.assertTrue(all(row["apply_allowed"] == "false" for row in preview_rows))
+            self.assertTrue(all(row["source_mutation_allowed"] == "false" for row in preview_rows))
+            self.assertTrue(all(row["apply_performed"] == "false" for row in preview_rows))
+            self.assertTrue(all(row["formal_fact_allowed"] == "false" for row in preview_rows))
+
             cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
             self.assertEqual(cross_review["attachment_repair_apply_gate_count"], 3)
             self.assertEqual(cross_review["attachment_repair_apply_blocked_count"], 3)
             self.assertEqual(cross_review["attachment_repair_authorization_present_count"], 2)
             self.assertEqual(cross_review["attachment_repair_authorization_valid_count"], 2)
+            self.assertEqual(cross_review["attachment_repair_authorization_preview_count"], 3)
+            self.assertEqual(cross_review["attachment_repair_authorization_preview_ready_count"], 2)
+            self.assertEqual(cross_review["attachment_repair_authorization_preview_blocked_count"], 1)
             self.assertEqual(cross_review["attachment_repair_apply_allowed_count"], 0)
             self.assertFalse(cross_review["management_conclusion_allowed"])
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
