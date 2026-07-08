@@ -2,8 +2,33 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S09 P2。任务 ID 为 `MA-V12-S09P2`，验收 ID 为
-`ACC-MA-V12-S09P2`，validator 为 `validate:v1.2-s09-p2`。
+当前阶段是 S09 P3。任务 ID 为 `MA-V12-S09P3`，验收 ID 为
+`ACC-MA-V12-S09P3`，validator 为 `validate:v1.2-s09-p3`。
+
+S09 P3 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s09_p3_decision_debt.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s09_p3.cjs`
+- `scripts/build_memory_atlas_decision_debt.py`
+- `scripts/atlasctl.py`
+- `机器治理/行为智能模型/decision_debt.v1_2_s09_p3.json`
+- `data/derived/behavior_intelligence/decision_debt_ledger.json`
+- `人类可读/23_决策债说明.md`
+
+S09 P3 gate：
+
+- `validate:v1.2-s09-p3` 可验证 Decision Debt Ledger。
+- `python scripts/atlasctl.py analyze --stage decision-debt --dry-run` 返回 no-write payload。
+- `python scripts/atlasctl.py audit --check decision-debt-safety` 返回 PASS。
+- 每条记录有 evidence refs、linked self-iteration suggestions 和最小下一步。
+- 每个最小下一步有预期交付件和停止条件。
+- 不生成压力清单。
+- 不执行 proposal apply。
+- 不修改 raw。
+- S09 Review 下一轮再处理。
+
+No GitHub main upload in this phase。
+下一步是 S09 Review。
 
 S09 P2 产物：
 

@@ -1,3 +1,50 @@
+## v1.2 S09 P3 Decision Debt
+
+状态：`phase_s09_p3_decision_debt_completed_pending_s09_review`。
+
+任务 ID：`MA-V12-S09P3`。
+
+验收 ID：`ACC-MA-V12-S09P3`。
+
+Validator：`validate:v1.2-s09-p3`。
+
+S09 P3 建立独立 Decision Debt Ledger。每条记录必须有 source debt、evidence refs、
+linked self-iteration suggestions、最小下一步、预期交付件和停止条件。当前输出 8 条候选。
+
+涉及文件：
+
+- `机器治理/行为智能模型/decision_debt.v1_2_s09_p3.json`
+- `scripts/build_memory_atlas_decision_debt.py`
+- `scripts/atlasctl.py`
+- `data/derived/behavior_intelligence/decision_debt_ledger.json`
+- `docs/reviews/memory_atlas_v1_2_s09_p3_decision_debt.md`
+- `人类可读/23_决策债说明.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s09_p3.cjs`
+- `tests/test_s09p3_decision_debt.py`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s09-p3`
+- `ACC-MA-V12-S09P3`
+- `MA-V12-S09P3`
+- S09 P3
+- `phase_s09_p3_decision_debt_completed_pending_s09_review`
+- `decision_debt_ledger.json`
+- pending S09 Review
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No proposal apply execution。
+- No pressure list。
+- No psychological diagnosis output。
+- No personality label output。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S09 P3 Decision Debt; MA-V12-S09P3; ACC-MA-V12-S09P3; phase_s09_p3_decision_debt_completed_pending_s09_review; validate:v1.2-s09-p3; S09 P3; decision_debt_ledger.json; decision_debt_count=8; pending S09 Review; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No proposal apply execution; No pressure list; No psychological diagnosis output; No personality label output.
+
 ## v1.2 S09 P2 Self Iteration
 
 状态：`phase_s09_p2_self_iteration_completed_pending_s09_p3`。

@@ -395,12 +395,12 @@ function currentStateIsS08P1() {
   const behavior = readRepoFile("机器治理/行为智能模型/README.md");
   const runGate = readRepoFile("机器治理/运行门禁/README.md");
   return (
-    hasAll(quick, ["当前阶段是 S09 P2", "MA-V12-S09P2", "ACC-MA-V12-S09P2", "下一步只允许进入 S09 P3"]) &&
-    hasAll(overview, ["S09 P2 已完成", "self_iteration_suggestions.json", "下一步是 S09 P3"]) &&
-    hasAll(machine, ["当前为 S09 P2", "MA-V12-S09P2", "validate:v1.2-s09-p2", "下一步是 S09 P3"]) &&
-    hasAll(dataContract, ["当前 S09 P2 已完成", "self_iteration_suggestions.json", "下一步是 S09 P3"]) &&
-    hasAll(behavior, ["当前 S09 P2 已完成", "self_iteration.v1_2_s09_p2.json", "self_iteration_suggestions.json", "下一步是 S09 P3"]) &&
-    hasAll(runGate, ["当前阶段是 S09 P2", "MA-V12-S09P2", "ACC-MA-V12-S09P2", "validate:v1.2-s09-p2"])
+    hasAll(quick, ["当前阶段是 S09 P3", "MA-V12-S09P3", "ACC-MA-V12-S09P3", "下一步只允许进入 S09 Review"]) &&
+    hasAll(overview, ["S09 P3 已完成", "decision_debt_ledger.json", "下一步是 S09 Review"]) &&
+    hasAll(machine, ["当前为 S09 P3", "MA-V12-S09P3", "validate:v1.2-s09-p3", "下一步是 S09 Review"]) &&
+    hasAll(dataContract, ["当前 S09 P3 已完成", "decision_debt_ledger.json", "下一步是 S09 Review"]) &&
+    hasAll(behavior, ["当前 S09 P3 已完成", "decision_debt.v1_2_s09_p3.json", "decision_debt_ledger.json", "下一步是 S09 Review"]) &&
+    hasAll(runGate, ["当前阶段是 S09 P3", "MA-V12-S09P3", "ACC-MA-V12-S09P3", "validate:v1.2-s09-p3"])
   );
 }
 

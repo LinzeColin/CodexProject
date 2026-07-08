@@ -18,8 +18,8 @@
 
 ## 当前阶段
 
-当前为 S09 P2。任务 ID 为 `MA-V12-S09P2`，验收 ID 为
-`ACC-MA-V12-S09P2`，validator 为 `validate:v1.2-s09-p2`。
+当前为 S09 P3。任务 ID 为 `MA-V12-S09P3`，验收 ID 为
+`ACC-MA-V12-S09P3`，validator 为 `validate:v1.2-s09-p3`。
 S01 整体复审已通过，S02 整体复审已通过，S03 P1/P2/P3
 整体复审已通过。S04 P1 已建立 ChatGPT 只读同步和 official export fallback。
 S04 P2 已建立 Codex local sync、future-agent minimal adapter、raw + derived + run log
@@ -69,7 +69,9 @@ stage flight recorder。S08 P3 已完成 lightweight stage flight recorder，字
 `data/derived/behavior_intelligence/latent_signals.json`。S09 P2 已完成
 self-iteration suggestions，配置为
 `机器治理/行为智能模型/self_iteration.v1_2_s09_p2.json`，输出为
-`data/derived/behavior_intelligence/self_iteration_suggestions.json`。下一步是 S09 P3。
+`data/derived/behavior_intelligence/self_iteration_suggestions.json`。S09 P3 已完成 Decision
+Debt Ledger，配置为 `机器治理/行为智能模型/decision_debt.v1_2_s09_p3.json`，输出为
+`data/derived/behavior_intelligence/decision_debt_ledger.json`。下一步是 S09 Review。
 
 当前机器产物：
 
@@ -81,6 +83,7 @@ self-iteration suggestions，配置为
 - `../data/derived/behavior_intelligence/opportunities.json`
 - `../data/derived/behavior_intelligence/latent_signals.json`
 - `../data/derived/behavior_intelligence/self_iteration_suggestions.json`
+- `../data/derived/behavior_intelligence/decision_debt_ledger.json`
 - `../data/derived/visualization/memory_atlas.json`
 - `../data/derived/economic_proxy/personal_economic_proxy.json`
 - `../data/derived/economic_proxy/formula_what_if_preview.json`
@@ -97,6 +100,7 @@ self-iteration suggestions，配置为
 - `行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json`
 - `行为智能模型/latent_signals.v1_2_s09_p1.json`
 - `行为智能模型/self_iteration.v1_2_s09_p2.json`
+- `行为智能模型/decision_debt.v1_2_s09_p3.json`
 - `证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json`
 - `同步与备份/sync_source_registry.json`
 - `同步与备份/raw_public_archive_policy.v1_2_s03_p1.json`

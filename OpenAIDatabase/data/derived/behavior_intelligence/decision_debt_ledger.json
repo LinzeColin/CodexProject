@@ -1,0 +1,879 @@
+{
+  "acceptance_id": "ACC-MA-V12-S09P3",
+  "config_path": "机器治理/行为智能模型/decision_debt.v1_2_s09_p3.json",
+  "decision_debt_count": 8,
+  "decision_debt_ledger": [
+    {
+      "closure_rule_zh": "如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。",
+      "confidence": 0.73,
+      "debt_type": "discussion_without_landing",
+      "decision_area_zh": "项目：Finance",
+      "decision_debt_id": "s09p3_debt_565687d8fce6",
+      "evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69745e55-9df8-8325-bdee-be29f80a3289",
+          "ref_id": "chatgpt_94f4ab9ef304ab95_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69745e55-9df8-8325-bdee-be29f80a3289",
+          "ref_id": "chatgpt_94f4ab9ef304ab95_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6a1e14ca-8280-83ea-bd7d-15585f5addd3",
+          "ref_id": "chatgpt_a9b6b5d3a79021f4_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "6a1e14ca-8280-83ea-bd7d-15585f5addd3",
+          "ref_id": "chatgpt_a9b6b5d3a79021f4_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6a29bec2-5a14-83ec-98e6-ad60c0647806",
+          "ref_id": "chatgpt_b4acfee1959a49bb_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        }
+      ],
+      "evidence_summary_zh": "来自 S06 低价值循环候选和 S09 自我迭代建议的交叉证据；当前只作为候选决策债。",
+      "generated_at": "2026-07-08T08:43:29Z",
+      "linked_proposal_ids": [
+        "proposal_113e7e6167df",
+        "proposal_a751d74b38e1"
+      ],
+      "linked_self_iteration_suggestion_ids": [
+        "self_iter_style_bacfc2ea0ab5",
+        "self_iter_personalization_0ffe0fc24ec9"
+      ],
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一条包含 owner、交付件、验收标准和归档条件的记录。",
+        "owner_role": "human_owner",
+        "step_zh": "为「项目：Finance」写一条最小交付件定义，并决定继续推进或归档。",
+        "stop_condition_zh": "如果 30 分钟内无法写出交付件和验收标准，则标记为暂不推进。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "not_applied": true,
+      "not_personality_label": true,
+      "not_pressure_list": true,
+      "not_psychological_diagnosis": true,
+      "repeated_discussion_signal_zh": "多次讨论但缺少代码、测试、报告或数据落地产物",
+      "source_debt_ids": [
+        "debt_1a1687e6b5a4"
+      ],
+      "source_loop_ids": [
+        "loop_discussion_without_landing_ee94ba69f043"
+      ],
+      "status": "open_candidate",
+      "why_not_pressure_list_zh": "只给一个最小下一步；未被采纳时降级或归档，不扩展成待办压力列表。"
+    },
+    {
+      "closure_rule_zh": "如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。",
+      "confidence": 0.73,
+      "debt_type": "discussion_without_landing",
+      "decision_area_zh": "自动化与流程治理",
+      "decision_debt_id": "s09p3_debt_fb7e2d9bb46c",
+      "evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69486043-ca60-8329-afcb-92cf8bf5a846",
+          "ref_id": "chatgpt_3403fe006452d850_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69486043-ca60-8329-afcb-92cf8bf5a846",
+          "ref_id": "chatgpt_3403fe006452d850_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6975c214-aa48-832d-882c-d47a3783de64",
+          "ref_id": "chatgpt_101f5a8cf490b84f_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "6975c214-aa48-832d-882c-d47a3783de64",
+          "ref_id": "chatgpt_101f5a8cf490b84f_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69a91b6c-f864-832f-bd8e-3dd038af3106",
+          "ref_id": "chatgpt_42ae93985b042706_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        }
+      ],
+      "evidence_summary_zh": "来自 S06 低价值循环候选和 S09 自我迭代建议的交叉证据；当前只作为候选决策债。",
+      "generated_at": "2026-07-08T08:43:29Z",
+      "linked_proposal_ids": [
+        "proposal_113e7e6167df",
+        "proposal_a751d74b38e1"
+      ],
+      "linked_self_iteration_suggestion_ids": [
+        "self_iter_style_bacfc2ea0ab5",
+        "self_iter_personalization_0ffe0fc24ec9"
+      ],
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一条包含 owner、交付件、验收标准和归档条件的记录。",
+        "owner_role": "human_owner",
+        "step_zh": "为「自动化与流程治理」写一条最小交付件定义，并决定继续推进或归档。",
+        "stop_condition_zh": "如果 30 分钟内无法写出交付件和验收标准，则标记为暂不推进。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "not_applied": true,
+      "not_personality_label": true,
+      "not_pressure_list": true,
+      "not_psychological_diagnosis": true,
+      "repeated_discussion_signal_zh": "多次讨论但缺少代码、测试、报告或数据落地产物",
+      "source_debt_ids": [
+        "debt_3be749ad96bb"
+      ],
+      "source_loop_ids": [
+        "loop_discussion_without_landing_a1c61270a7f2"
+      ],
+      "status": "open_candidate",
+      "why_not_pressure_list_zh": "只给一个最小下一步；未被采纳时降级或归档，不扩展成待办压力列表。"
+    },
+    {
+      "closure_rule_zh": "如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。",
+      "confidence": 0.73,
+      "debt_type": "discussion_without_landing",
+      "decision_area_zh": "风险、合规与治理",
+      "decision_debt_id": "s09p3_debt_8cbee88deee3",
+      "evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "692b8aed-86d0-8325-b468-af42d8d5fc9f",
+          "ref_id": "chatgpt_0c2594856149e22f_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "692b8aed-86d0-8325-b468-af42d8d5fc9f",
+          "ref_id": "chatgpt_0c2594856149e22f_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6945ed45-e0a8-8327-b56f-87f1555ba5c1",
+          "ref_id": "chatgpt_36d12a60ac5ad6e3_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "6945ed45-e0a8-8327-b56f-87f1555ba5c1",
+          "ref_id": "chatgpt_36d12a60ac5ad6e3_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69679971-3500-8332-8e0a-1c5a8e66edc1",
+          "ref_id": "chatgpt_d6767a3e81bd4f5a_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        }
+      ],
+      "evidence_summary_zh": "来自 S06 低价值循环候选和 S09 自我迭代建议的交叉证据；当前只作为候选决策债。",
+      "generated_at": "2026-07-08T08:43:29Z",
+      "linked_proposal_ids": [
+        "proposal_113e7e6167df",
+        "proposal_a751d74b38e1"
+      ],
+      "linked_self_iteration_suggestion_ids": [
+        "self_iter_style_bacfc2ea0ab5",
+        "self_iter_personalization_0ffe0fc24ec9"
+      ],
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一条包含 owner、交付件、验收标准和归档条件的记录。",
+        "owner_role": "human_owner",
+        "step_zh": "为「风险、合规与治理」写一条最小交付件定义，并决定继续推进或归档。",
+        "stop_condition_zh": "如果 30 分钟内无法写出交付件和验收标准，则标记为暂不推进。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "not_applied": true,
+      "not_personality_label": true,
+      "not_pressure_list": true,
+      "not_psychological_diagnosis": true,
+      "repeated_discussion_signal_zh": "多次讨论但缺少代码、测试、报告或数据落地产物",
+      "source_debt_ids": [
+        "debt_4b8e2383d3a3"
+      ],
+      "source_loop_ids": [
+        "loop_discussion_without_landing_7c495df12d3f"
+      ],
+      "status": "open_candidate",
+      "why_not_pressure_list_zh": "只给一个最小下一步；未被采纳时降级或归档，不扩展成待办压力列表。"
+    },
+    {
+      "closure_rule_zh": "如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。",
+      "confidence": 0.73,
+      "debt_type": "discussion_without_landing",
+      "decision_area_zh": "项目：Notion",
+      "decision_debt_id": "s09p3_debt_9862822d9e17",
+      "evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6a1ebaf7-79b0-83ea-bc77-bf7d7e10c942",
+          "ref_id": "chatgpt_8c178a7da6de49a3_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "6a1ebaf7-79b0-83ea-bc77-bf7d7e10c942",
+          "ref_id": "chatgpt_8c178a7da6de49a3_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6a285137-a744-83ec-a846-1d8ba3f5ee81",
+          "ref_id": "chatgpt_46419b4f209e1d52_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "6a285137-a744-83ec-a846-1d8ba3f5ee81",
+          "ref_id": "chatgpt_46419b4f209e1d52_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6a291f22-0708-83ec-b140-3d988f140dde",
+          "ref_id": "chatgpt_f8780ff96bfdbc9e_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        }
+      ],
+      "evidence_summary_zh": "来自 S06 低价值循环候选和 S09 自我迭代建议的交叉证据；当前只作为候选决策债。",
+      "generated_at": "2026-07-08T08:43:29Z",
+      "linked_proposal_ids": [
+        "proposal_113e7e6167df",
+        "proposal_a751d74b38e1"
+      ],
+      "linked_self_iteration_suggestion_ids": [
+        "self_iter_style_bacfc2ea0ab5",
+        "self_iter_personalization_0ffe0fc24ec9"
+      ],
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一条包含 owner、交付件、验收标准和归档条件的记录。",
+        "owner_role": "human_owner",
+        "step_zh": "为「项目：Notion」写一条最小交付件定义，并决定继续推进或归档。",
+        "stop_condition_zh": "如果 30 分钟内无法写出交付件和验收标准，则标记为暂不推进。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "not_applied": true,
+      "not_personality_label": true,
+      "not_pressure_list": true,
+      "not_psychological_diagnosis": true,
+      "repeated_discussion_signal_zh": "多次讨论但缺少代码、测试、报告或数据落地产物",
+      "source_debt_ids": [
+        "debt_4e3f9c89ad58"
+      ],
+      "source_loop_ids": [
+        "loop_discussion_without_landing_1a04c374fa3f"
+      ],
+      "status": "open_candidate",
+      "why_not_pressure_list_zh": "只给一个最小下一步；未被采纳时降级或归档，不扩展成待办压力列表。"
+    },
+    {
+      "closure_rule_zh": "如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。",
+      "confidence": 0.73,
+      "debt_type": "discussion_without_landing",
+      "decision_area_zh": "财务与价值分析",
+      "decision_debt_id": "s09p3_debt_d98218e06b5a",
+      "evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6927ad11-5074-832e-b098-e253822b1f3d",
+          "ref_id": "chatgpt_c33aef1eb41f278f_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "6927ad11-5074-832e-b098-e253822b1f3d",
+          "ref_id": "chatgpt_c33aef1eb41f278f_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69576557-e1f4-8327-866a-964348e3cafa",
+          "ref_id": "chatgpt_7e5d86962a2ecf5e_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69576557-e1f4-8327-866a-964348e3cafa",
+          "ref_id": "chatgpt_7e5d86962a2ecf5e_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "695d9ecc-2014-8326-80ee-5578e07b79c3",
+          "ref_id": "chatgpt_8a0a0cbc9fadd953_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        }
+      ],
+      "evidence_summary_zh": "来自 S06 低价值循环候选和 S09 自我迭代建议的交叉证据；当前只作为候选决策债。",
+      "generated_at": "2026-07-08T08:43:29Z",
+      "linked_proposal_ids": [
+        "proposal_113e7e6167df",
+        "proposal_a751d74b38e1"
+      ],
+      "linked_self_iteration_suggestion_ids": [
+        "self_iter_style_bacfc2ea0ab5",
+        "self_iter_personalization_0ffe0fc24ec9"
+      ],
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一条包含 owner、交付件、验收标准和归档条件的记录。",
+        "owner_role": "human_owner",
+        "step_zh": "为「财务与价值分析」写一条最小交付件定义，并决定继续推进或归档。",
+        "stop_condition_zh": "如果 30 分钟内无法写出交付件和验收标准，则标记为暂不推进。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "not_applied": true,
+      "not_personality_label": true,
+      "not_pressure_list": true,
+      "not_psychological_diagnosis": true,
+      "repeated_discussion_signal_zh": "多次讨论但缺少代码、测试、报告或数据落地产物",
+      "source_debt_ids": [
+        "debt_7d3b522e5419"
+      ],
+      "source_loop_ids": [
+        "loop_discussion_without_landing_82538ac34c65"
+      ],
+      "status": "open_candidate",
+      "why_not_pressure_list_zh": "只给一个最小下一步；未被采纳时降级或归档，不扩展成待办压力列表。"
+    },
+    {
+      "closure_rule_zh": "如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。",
+      "confidence": 0.73,
+      "debt_type": "discussion_without_landing",
+      "decision_area_zh": "经营与管理决策",
+      "decision_debt_id": "s09p3_debt_d3c51495b3de",
+      "evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        }
+      ],
+      "evidence_summary_zh": "来自 S06 低价值循环候选和 S09 自我迭代建议的交叉证据；当前只作为候选决策债。",
+      "generated_at": "2026-07-08T08:43:29Z",
+      "linked_proposal_ids": [
+        "proposal_113e7e6167df",
+        "proposal_a751d74b38e1"
+      ],
+      "linked_self_iteration_suggestion_ids": [
+        "self_iter_style_bacfc2ea0ab5",
+        "self_iter_personalization_0ffe0fc24ec9"
+      ],
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一条包含 owner、交付件、验收标准和归档条件的记录。",
+        "owner_role": "human_owner",
+        "step_zh": "为「经营与管理决策」写一条最小交付件定义，并决定继续推进或归档。",
+        "stop_condition_zh": "如果 30 分钟内无法写出交付件和验收标准，则标记为暂不推进。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "not_applied": true,
+      "not_personality_label": true,
+      "not_pressure_list": true,
+      "not_psychological_diagnosis": true,
+      "repeated_discussion_signal_zh": "多次讨论但缺少代码、测试、报告或数据落地产物",
+      "source_debt_ids": [
+        "debt_953bd3fd0c5f"
+      ],
+      "source_loop_ids": [
+        "loop_discussion_without_landing_32146548e3b5"
+      ],
+      "status": "open_candidate",
+      "why_not_pressure_list_zh": "只给一个最小下一步；未被采纳时降级或归档，不扩展成待办压力列表。"
+    },
+    {
+      "closure_rule_zh": "如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。",
+      "confidence": 0.71,
+      "debt_type": "repeated_rework",
+      "decision_area_zh": "产品、设计与可视化",
+      "decision_debt_id": "s09p3_debt_227436b527ca",
+      "evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6982b842-897c-8325-a4a9-ef4151cddb0e",
+          "ref_id": "chatgpt_c71fc80ed6bd697b_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "6982b842-897c-8325-a4a9-ef4151cddb0e",
+          "ref_id": "chatgpt_c71fc80ed6bd697b_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6a25118a-8918-83ec-8886-4558e15e60af",
+          "ref_id": "chatgpt_164f91c9602b07f2_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "6a25118a-8918-83ec-8886-4558e15e60af",
+          "ref_id": "chatgpt_164f91c9602b07f2_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6a29e5f7-c54c-83ec-9682-860a22294aea",
+          "ref_id": "chatgpt_ee392c96eaf4361b_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        }
+      ],
+      "evidence_summary_zh": "来自 S06 低价值循环候选和 S09 自我迭代建议的交叉证据；当前只作为候选决策债。",
+      "generated_at": "2026-07-08T08:43:29Z",
+      "linked_proposal_ids": [
+        "proposal_774984d13e58",
+        "proposal_23b186877463"
+      ],
+      "linked_self_iteration_suggestion_ids": [
+        "self_iter_memory_a39afeb2bc01",
+        "self_iter_config_452697c82264"
+      ],
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一个可复用入口或完成标准片段。",
+        "owner_role": "human_owner",
+        "step_zh": "为「产品、设计与可视化」补一条完成标准和复用入口，避免下一轮重复返工。",
+        "stop_condition_zh": "如果找不到可复用入口，只保留一次性完成标准，不继续扩展。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "not_applied": true,
+      "not_personality_label": true,
+      "not_pressure_list": true,
+      "not_psychological_diagnosis": true,
+      "repeated_discussion_signal_zh": "多月多次出现，可能存在重复返工候选",
+      "source_debt_ids": [
+        "debt_032d5e2bdf1a"
+      ],
+      "source_loop_ids": [
+        "loop_repeated_rework_825783c8116f"
+      ],
+      "status": "open_candidate",
+      "why_not_pressure_list_zh": "只给一个最小下一步；未被采纳时降级或归档，不扩展成待办压力列表。"
+    },
+    {
+      "closure_rule_zh": "如果最小下一步没有产出验收证据，下一轮优先归档而不是继续讨论。",
+      "confidence": 0.71,
+      "debt_type": "repeated_rework",
+      "decision_area_zh": "风险、合规与治理",
+      "decision_debt_id": "s09p3_debt_5c5e3982713e",
+      "evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "692b8aed-86d0-8325-b468-af42d8d5fc9f",
+          "ref_id": "chatgpt_0c2594856149e22f_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "692b8aed-86d0-8325-b468-af42d8d5fc9f",
+          "ref_id": "chatgpt_0c2594856149e22f_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6945ed45-e0a8-8327-b56f-87f1555ba5c1",
+          "ref_id": "chatgpt_36d12a60ac5ad6e3_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "6945ed45-e0a8-8327-b56f-87f1555ba5c1",
+          "ref_id": "chatgpt_36d12a60ac5ad6e3_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69679971-3500-8332-8e0a-1c5a8e66edc1",
+          "ref_id": "chatgpt_d6767a3e81bd4f5a_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        }
+      ],
+      "evidence_summary_zh": "来自 S06 低价值循环候选和 S09 自我迭代建议的交叉证据；当前只作为候选决策债。",
+      "generated_at": "2026-07-08T08:43:29Z",
+      "linked_proposal_ids": [
+        "proposal_774984d13e58",
+        "proposal_23b186877463"
+      ],
+      "linked_self_iteration_suggestion_ids": [
+        "self_iter_memory_a39afeb2bc01",
+        "self_iter_config_452697c82264"
+      ],
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一个可复用入口或完成标准片段。",
+        "owner_role": "human_owner",
+        "step_zh": "为「风险、合规与治理」补一条完成标准和复用入口，避免下一轮重复返工。",
+        "stop_condition_zh": "如果找不到可复用入口，只保留一次性完成标准，不继续扩展。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "not_applied": true,
+      "not_personality_label": true,
+      "not_pressure_list": true,
+      "not_psychological_diagnosis": true,
+      "repeated_discussion_signal_zh": "多月多次出现，可能存在重复返工候选",
+      "source_debt_ids": [
+        "debt_40a2ccb6c477"
+      ],
+      "source_loop_ids": [
+        "loop_repeated_rework_7c495df12d3f"
+      ],
+      "status": "open_candidate",
+      "why_not_pressure_list_zh": "只给一个最小下一步；未被采纳时降级或归档，不扩展成待办压力列表。"
+    }
+  ],
+  "decision_debt_types": [
+    "discussion_without_landing",
+    "repeated_rework"
+  ],
+  "dry_run": false,
+  "generated_at": "2026-07-08T08:43:29Z",
+  "input_paths": [
+    "data/derived/behavior_intelligence/low_value_loops.json",
+    "data/derived/behavior_intelligence/self_iteration_suggestions.json",
+    "data/derived/behavior_intelligence/latent_signals.json"
+  ],
+  "input_task_ids": {
+    "latent_signals": "MA-V12-S09P1",
+    "low_value_loops": "MA-V12-S06P2",
+    "self_iteration_suggestions": "MA-V12-S09P2"
+  },
+  "output_path": "data/derived/behavior_intelligence/decision_debt_ledger.json",
+  "phase_boundary": {
+    "does_not_apply_proposals": true,
+    "does_not_generate_pressure_list": true,
+    "does_not_modify_raw": true,
+    "does_not_output_personality_label": true,
+    "does_not_output_psychological_diagnosis": true,
+    "does_not_upload_github_main": true,
+    "next_phase": "S09 Review",
+    "requires_human_approval_before_apply": true,
+    "stage_review_deferred_to": "S09 Review"
+  },
+  "safety_summary": {
+    "all_items_have_minimal_next_step": true,
+    "personality_label_output": false,
+    "pressure_list_created": false,
+    "proposal_apply_execution": false,
+    "psychological_diagnosis_output": false,
+    "raw_mutation": false
+  },
+  "schema_version": "memory_atlas_decision_debt_ledger.v1_2_s09_p3",
+  "status": "phase_s09_p3_decision_debt_completed_pending_s09_review",
+  "task_id": "MA-V12-S09P3",
+  "writes_files": true
+}

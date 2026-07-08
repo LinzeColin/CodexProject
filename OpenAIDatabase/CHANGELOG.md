@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S09 P3 Decision Debt
+
+- Added `机器治理/行为智能模型/decision_debt.v1_2_s09_p3.json`.
+- Added `scripts/build_memory_atlas_decision_debt.py` and
+  `data/derived/behavior_intelligence/decision_debt_ledger.json`.
+- Extended `scripts/atlasctl.py` with `analyze --stage decision-debt` and
+  `audit --check decision-debt-safety`.
+- Added `docs/reviews/memory_atlas_v1_2_s09_p3_decision_debt.md`.
+- Added `人类可读/23_决策债说明.md`.
+- Added `validate:v1.2-s09-p3` for `MA-V12-S09P3` /
+  `ACC-MA-V12-S09P3`.
+- Registered status `phase_s09_p3_decision_debt_completed_pending_s09_review`.
+- Generated 8 evidence-backed decision debt candidates with minimal next
+  step, expected artifact and stop condition.
+- Preserved S09 P3 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, no proposal apply execution,
+  no pressure list, no psychological diagnosis output and no personality label
+  output.
+- Marked the next gate as pending S09 Review.
+
 ## Unreleased - Memory Atlas v1.2 S09 P2 Self Iteration
 
 - Added `机器治理/行为智能模型/self_iteration.v1_2_s09_p2.json`.

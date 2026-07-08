@@ -3,7 +3,7 @@
 用于放置 facets、semantic clusters、latent signals、collaboration quality、自我迭代和
 低价值循环识别的模型配置。
 
-当前 S09 P2 已完成。facet/canonical events 的数据契约已定义在
+当前 S09 P3 已完成。facet/canonical events 的数据契约已定义在
 `机器治理/数据契约/facet_event_schema.v1_2_s05_p1.json`，中文解释位于
 `人类可读/12_Facet字段与事件语义说明.md`，facet extractor 已实现为
 `scripts/extract_memory_atlas_facets.py`，并为 events 输出补齐
@@ -96,3 +96,11 @@ memory、config、AGENTS、style 和 personalization 五类建议；proposal 保
 `pending_human_review`，包含 `expires_at`、warn/stale/archive 规则、rollback plan 和
 validation commands。S09 P2 不执行 proposal apply，不修改 raw，不创建 decision debt ledger。
 下一步是 S09 P3。
+
+当前 S09 P3 已完成：`机器治理/行为智能模型/decision_debt.v1_2_s09_p3.json`
+定义决策债字段、最小下一步策略和 no-pressure-list 边界，
+`scripts/build_memory_atlas_decision_debt.py` 生成
+`data/derived/behavior_intelligence/decision_debt_ledger.json`。输出包含 8 条候选记录，
+每条都有 evidence refs、linked self-iteration suggestions、一个最小下一步、预期交付件和
+停止条件。S09 P3 不执行 proposal apply，不修改 raw，不输出心理诊断或人格标签。
+下一步是 S09 Review。

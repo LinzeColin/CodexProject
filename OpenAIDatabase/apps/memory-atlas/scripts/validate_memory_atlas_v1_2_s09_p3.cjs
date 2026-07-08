@@ -14,19 +14,19 @@ const repoRoot = path.resolve(appRoot, "../..");
 const worktreeRoot = path.resolve(repoRoot, "..");
 const checks = [];
 
-const taskId = "MA-V12-S09P1";
-const acceptanceId = "ACC-MA-V12-S09P1";
-const status = "phase_s09_p1_latent_signals_completed_pending_s09_p2";
-const validatorName = "validate:v1.2-s09-p1";
-const scriptName = "validate_memory_atlas_v1_2_s09_p1.cjs";
+const taskId = "MA-V12-S09P3";
+const acceptanceId = "ACC-MA-V12-S09P3";
+const status = "phase_s09_p3_decision_debt_completed_pending_s09_review";
+const validatorName = "validate:v1.2-s09-p3";
+const scriptName = "validate_memory_atlas_v1_2_s09_p3.cjs";
 const branchName = "codex/memory-atlas-v12-stage0-14-local";
 
-const configPath = "机器治理/行为智能模型/latent_signals.v1_2_s09_p1.json";
-const builderPath = "scripts/build_memory_atlas_latent_signals.py";
-const outputPath = "data/derived/behavior_intelligence/latent_signals.json";
-const reviewPath = "docs/reviews/memory_atlas_v1_2_s09_p1_latent_signals.md";
-const humanPath = "人类可读/21_潜性信号说明.md";
-const testPath = "tests/test_s09p1_latent_signals.py";
+const configPath = "机器治理/行为智能模型/decision_debt.v1_2_s09_p3.json";
+const builderPath = "scripts/build_memory_atlas_decision_debt.py";
+const outputPath = "data/derived/behavior_intelligence/decision_debt_ledger.json";
+const reviewPath = "docs/reviews/memory_atlas_v1_2_s09_p3_decision_debt.md";
+const humanPath = "人类可读/23_决策债说明.md";
+const testPath = "tests/test_s09p3_decision_debt.py";
 
 const recordFiles = [
   "CHANGELOG.md",
@@ -35,15 +35,6 @@ const recordFiles = [
   "模型参数文件.md",
   "docs/MEMORY_ATLAS_DELIVERY_RECORD.md",
   "docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md",
-];
-
-const currentStateFiles = [
-  "人类可读/00_快速入口.md",
-  "人类可读/01_v1.2四线14Stage升级总览.md",
-  "机器治理/README.md",
-  "机器治理/数据契约/README.md",
-  "机器治理/行为智能模型/README.md",
-  "机器治理/运行门禁/README.md",
 ];
 
 const historicalValidatorPaths = [
@@ -63,6 +54,8 @@ const historicalValidatorPaths = [
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s08_p2.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s08_p3.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s08_review.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s09_p1.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s09_p2.cjs",
 ];
 
 const allowedOpenDiffPaths = [
@@ -173,9 +166,9 @@ function validatePackageScript() {
   const packageJson = readJson("apps/memory-atlas/package.json");
   assertCondition(
     packageJson.scripts?.[validatorName] === `node scripts/${scriptName}`,
-    "s09p1_package_script",
-    "package.json exposes the v1.2 S09 P1 validator",
-    "package.json is missing the v1.2 S09 P1 validator",
+    "s09p3_package_script",
+    "package.json exposes the v1.2 S09 P3 validator",
+    "package.json is missing the v1.2 S09 P3 validator",
     { script: packageJson.scripts?.[validatorName] },
   );
 }
@@ -186,120 +179,121 @@ function validatePreviousPhaseGate() {
   if (changed.length > 0) {
     assertCondition(
       outside.length === 0,
-      "s09p1_previous_phase_deferred_scope",
-      "S08 Review execution is deferred only because open diff is limited to S09 P1 files and compatibility updates",
-      "S08 Review execution cannot be deferred with unrelated OpenAIDatabase changes",
+      "s09p3_previous_phase_deferred_scope",
+      "S09 P2 execution is deferred only because open diff is limited to S09 P3 files and compatibility updates",
+      "S09 P2 execution cannot be deferred with unrelated OpenAIDatabase changes",
       { changed, outside, allowedOpenDiffPaths },
     );
-    pass("s09p1_previous_phase_deferred_until_clean_tree", "S08 Review validator will run on a clean tree after S09 P1 commit", { changed });
+    pass("s09p3_previous_phase_deferred_until_clean_tree", "S09 P2 validator will run on a clean tree after S09 P3 commit", { changed });
     return;
   }
-  const parsed = parseJsonFromStdout(run("node", ["scripts/validate_memory_atlas_v1_2_s08_review.cjs"], {
+  const parsed = parseJsonFromStdout(run("node", ["scripts/validate_memory_atlas_v1_2_s09_p2.cjs"], {
     cwd: appRoot,
     timeout: 300000,
   }));
   assertCondition(
-    parsed.status === "PASS" && parsed.acceptance_id === "ACC-MA-V12-S08-REVIEW",
-    "s09p1_previous_s08_review",
-    "S08 Review validator returns PASS before accepting S09 P1 on a clean tree",
-    "S08 Review validator did not return PASS",
+    parsed.status === "PASS" && parsed.acceptance_id === "ACC-MA-V12-S09P2",
+    "s09p3_previous_s09p2",
+    "S09 P2 validator returns PASS before accepting S09 P3 on a clean tree",
+    "S09 P2 validator did not return PASS",
     { status: parsed.status, acceptance_id: parsed.acceptance_id },
   );
 }
 
-function validateLatentArtifacts() {
+function validateDecisionDebtArtifacts() {
   [configPath, builderPath, outputPath, reviewPath, humanPath, testPath].forEach(validateTextFile);
   const config = readJson(configPath);
   const output = readJson(outputPath);
-  const requiredFields = new Set(["claim_zh", "supporting_evidence_refs", "contradicting_evidence_refs", "alternative_explanation_zh", "confidence", "evidence_strength_badge", "next_validation_zh"]);
-  const configuredFields = new Set(config.required_signal_fields || []);
+  const requiredFields = new Set(["decision_debt_id", "source_debt_ids", "debt_type", "decision_area_zh", "repeated_discussion_signal_zh", "evidence_refs", "minimal_next_step", "linked_self_iteration_suggestion_ids", "confidence", "not_pressure_list"]);
+  const configuredFields = new Set(config.required_debt_fields || []);
   const missingConfigFields = [...requiredFields].filter((field) => !configuredFields.has(field));
-  const badges = new Set((config.evidence_strength_badges || []).map((item) => item.badge));
-  const missingBadges = ["A", "B", "C", "D"].filter((badge) => !badges.has(badge));
-  const blockedTerms = new Set(config.blocked_output_terms || []);
-  const badSignals = [];
-  const signals = Array.isArray(output.latent_signals) ? output.latent_signals : [];
-  for (const signal of signals) {
-    const signalId = signal.signal_id;
+  const ledger = Array.isArray(output.decision_debt_ledger) ? output.decision_debt_ledger : [];
+  const badItems = [];
+  const blockedTerms = config.blocked_output_terms || [];
+  const maxConfidence = Number(config.confidence_policy?.max_confidence || 0.75);
+  for (const item of ledger) {
+    const itemId = item.decision_debt_id;
     for (const field of requiredFields) {
-      if (signal[field] === undefined || signal[field] === null || signal[field] === "" || (Array.isArray(signal[field]) && signal[field].length === 0)) {
-        badSignals.push(`${signalId}:missing_${field}`);
+      if (item[field] === undefined || item[field] === null || item[field] === "" || (Array.isArray(item[field]) && item[field].length === 0)) {
+        badItems.push(`${itemId}:missing_${field}`);
       }
     }
-    if (!["A", "B", "C", "D"].includes(signal.evidence_strength_badge)) badSignals.push(`${signalId}:invalid_badge`);
-    if (!Array.isArray(signal.supporting_evidence_refs) || !Array.isArray(signal.contradicting_evidence_refs)) {
-      badSignals.push(`${signalId}:missing_two_sided_evidence`);
+    if (Number(item.confidence || 0) > maxConfidence) badItems.push(`${itemId}:confidence_too_high`);
+    if (item.not_pressure_list !== true) badItems.push(`${itemId}:pressure_list_boundary_missing`);
+    if (item.not_psychological_diagnosis !== true) badItems.push(`${itemId}:psychological_boundary_missing`);
+    if (item.not_personality_label !== true) badItems.push(`${itemId}:personality_boundary_missing`);
+    if (item.not_applied !== true) badItems.push(`${itemId}:applied_in_current_phase`);
+    const step = item.minimal_next_step || {};
+    for (const field of ["step_zh", "expected_artifact_zh", "stop_condition_zh"]) {
+      if (!String(step[field] || "").trim()) badItems.push(`${itemId}:minimal_next_step_missing_${field}`);
     }
-    const confidence = Number(signal.confidence);
-    if (!Number.isFinite(confidence) || confidence < 0 || confidence > 0.85) badSignals.push(`${signalId}:confidence_out_of_range`);
-    if (confidence >= 0.75 && !["A", "B"].includes(signal.evidence_strength_badge)) {
-      badSignals.push(`${signalId}:high_confidence_without_strong_badge`);
-    }
-    const text = [signal.claim_zh, signal.claim_type, signal.alternative_explanation_zh, signal.next_validation_zh].join(" ");
-    for (const term of blockedTerms) {
-      if (text.includes(term)) badSignals.push(`${signalId}:blocked_term`);
-    }
-    if (signal.not_psychological_diagnosis !== true) badSignals.push(`${signalId}:psychological_boundary_missing`);
-    if (signal.not_personality_label !== true) badSignals.push(`${signalId}:personality_boundary_missing`);
-    if (signal.falsifiable !== true) badSignals.push(`${signalId}:not_falsifiable`);
+    if (Number(step.effort_minutes_max || 0) <= 0) badItems.push(`${itemId}:minimal_next_step_invalid_effort`);
+    const joined = [item.decision_area_zh, item.repeated_discussion_signal_zh, item.evidence_summary_zh, step.step_zh, step.stop_condition_zh].join(" ");
+    if (blockedTerms.some((term) => term && joined.includes(term))) badItems.push(`${itemId}:blocked_term`);
   }
   const boundary = output.phase_boundary || {};
+  const summary = output.safety_summary || {};
   assertCondition(
     config.task_id === taskId &&
       config.acceptance_id === acceptanceId &&
       missingConfigFields.length === 0 &&
-      missingBadges.length === 0 &&
+      config.ledger_policy?.pressure_list_allowed === false &&
       config.scope_boundary?.raw_mutation === false &&
-      config.scope_boundary?.psychological_diagnosis === false &&
-      config.scope_boundary?.personality_label === false &&
-      config.scope_boundary?.self_iteration_suggestions === "deferred_to_s09_p2" &&
-      config.scope_boundary?.decision_debt_ledger === "deferred_to_s09_p3" &&
+      config.scope_boundary?.proposal_apply_execution === false &&
+      config.scope_boundary?.stage_review === "deferred_to_s09_review" &&
       output.task_id === taskId &&
       output.acceptance_id === acceptanceId &&
       output.status === status &&
-      output.signal_count >= 4 &&
-      signals.length === output.signal_count &&
-      output.safety_audit?.bad_items?.length === 0 &&
-      output.safety_audit?.psychological_diagnosis_output_blocked === true &&
-      output.safety_audit?.personality_label_output_blocked === true &&
-      boundary.does_not_create_self_iteration_suggestions === true &&
-      boundary.does_not_create_decision_debt_ledger === true &&
-      boundary.next_phase === "S09 P2" &&
-      badSignals.length === 0,
-    "s09p1_latent_artifacts",
-    "S09 P1 config and output contain evidence-backed falsifiable latent signals with badge, counter-evidence and safety boundaries",
-    "S09 P1 latent signal artifacts are incomplete",
-    { missingConfigFields, missingBadges, signal_count: output.signal_count, badSignals },
+      output.decision_debt_count >= Number(config.ledger_policy?.min_entries || 3) &&
+      ledger.length === output.decision_debt_count &&
+      summary.all_items_have_minimal_next_step === true &&
+      summary.pressure_list_created === false &&
+      summary.proposal_apply_execution === false &&
+      summary.raw_mutation === false &&
+      summary.psychological_diagnosis_output === false &&
+      summary.personality_label_output === false &&
+      boundary.does_not_generate_pressure_list === true &&
+      boundary.does_not_apply_proposals === true &&
+      boundary.does_not_modify_raw === true &&
+      boundary.next_phase === "S09 Review" &&
+      badItems.length === 0,
+    "s09p3_decision_debt_artifacts",
+    "S09 P3 config and output contain minimal next steps, no pressure list and no-apply boundaries",
+    "S09 P3 decision debt artifacts are incomplete",
+    { missingConfigFields, decision_debt_count: output.decision_debt_count, badItems },
   );
 }
 
 function validateAtlasctl() {
   const python = process.env.PYTHON || "python3";
-  const dryRun = parseJsonFromStdout(run(python, ["scripts/atlasctl.py", "analyze", "--stage", "latent", "--dry-run"], {
+  const dryRun = parseJsonFromStdout(run(python, ["scripts/atlasctl.py", "analyze", "--stage", "decision-debt", "--dry-run"], {
     cwd: repoRoot,
     timeout: 300000,
   }));
   assertCondition(
     dryRun.status === status && dryRun.dry_run === true && dryRun.writes_files === false && dryRun.task_id === taskId,
-    "s09p1_atlasctl_latent_dry_run",
-    "atlasctl analyze --stage latent --dry-run returns S09 P1 without writing files",
-    "atlasctl latent dry-run is invalid",
+    "s09p3_atlasctl_decision_debt_dry_run",
+    "atlasctl analyze --stage decision-debt --dry-run returns S09 P3 without writing files",
+    "atlasctl decision-debt dry-run is invalid",
     { status: dryRun.status, writes_files: dryRun.writes_files },
   );
-  const audit = parseJsonFromStdout(run(python, ["scripts/atlasctl.py", "audit", "--check", "latent-safety"], {
+  const audit = parseJsonFromStdout(run(python, ["scripts/atlasctl.py", "audit", "--check", "decision-debt-safety"], {
     cwd: repoRoot,
     timeout: 300000,
   }));
   assertCondition(
     audit.status === "PASS" &&
       audit.bad_items?.length === 0 &&
-      audit.signal_count >= 4 &&
+      audit.decision_debt_count >= 3 &&
+      audit.all_items_have_minimal_next_step === true &&
+      audit.pressure_list_created === false &&
+      audit.proposal_apply_execution === false &&
+      audit.raw_mutation === false &&
       audit.psychological_diagnosis_output === false &&
-      audit.personality_label_output === false &&
-      audit.has_contradicting_evidence === true,
-    "s09p1_atlasctl_latent_safety",
-    "atlasctl audit --check latent-safety returns PASS with no bad items",
-    "atlasctl latent-safety audit failed",
+      audit.personality_label_output === false,
+    "s09p3_atlasctl_decision_debt_safety",
+    "atlasctl audit --check decision-debt-safety returns PASS with no bad items",
+    "atlasctl decision-debt-safety audit failed",
     audit,
   );
 }
@@ -307,28 +301,28 @@ function validateAtlasctl() {
 function validateDocsAndRecords() {
   const review = readRepoFile(reviewPath);
   assertCondition(
-    hasAll(review, [taskId, acceptanceId, status, validatorName, outputPath, "Evidence Strength Badge", "supporting_evidence_refs", "contradicting_evidence_refs", "alternative_explanation_zh", "confidence", "next_validation_zh", "pending S09 P2"]),
-    "s09p1_review_doc",
-    "S09 P1 review doc records acceptance fields and evidence-backed signal structure",
-    "S09 P1 review doc is missing required fragments",
+    hasAll(review, [taskId, acceptanceId, status, validatorName, outputPath, "minimal next step", "no pressure list", "pending S09 Review"]),
+    "s09p3_review_doc",
+    "S09 P3 review doc records acceptance fields, minimal next steps and no pressure list",
+    "S09 P3 review doc is missing required fragments",
   );
   const human = readRepoFile(humanPath);
-  const heavyTermCount = (human.match(/潜性|诊断|人格标签|证据|反证|置信度|验证/g) || []).length;
+  const heavyTermCount = (human.match(/决策债|Decision Debt|压力清单|最小下一步|分析|验证/g) || []).length;
   assertCondition(
-    hasAll(human, [outputPath, "5 条候选", "下一步只允许进入 S09 P2", "整体 S01-S14 全部完成前不上传 GitHub main"]) &&
+    hasAll(human, [outputPath, "8 条", "下一步只允许进入 S09 Review", "整体 S01-S14 全部完成前不上传 GitHub main"]) &&
       heavyTermCount <= 12,
-    "s09p1_human_doc",
-    "Human S09 P1 page is concise and does not overstack analysis terms",
-    "Human S09 P1 page is missing required fragments or overuses analysis terms",
+    "s09p3_human_doc",
+    "Human S09 P3 page is concise and does not overstack analysis terms",
+    "Human S09 P3 page is missing required fragments or overuses analysis terms",
     { heavyTermCount },
   );
   for (const file of recordFiles) {
     const source = readRepoFile(file);
     assertCondition(
-      hasAll(source, [taskId, acceptanceId, status, validatorName, "S09 P1", "pending S09 P2", "No GitHub main upload in this phase"]),
-      `${file}:s09p1_record`,
-      `${file} records S09 P1 status, acceptance, validator and no-upload boundary`,
-      `${file} is missing S09 P1 record fragments`,
+      hasAll(source, [taskId, acceptanceId, status, validatorName, "S09 P3", "pending S09 Review", "No GitHub main upload in this phase"]),
+      `${file}:s09p3_record`,
+      `${file} records S09 P3 status, acceptance, validator and no-upload boundary`,
+      `${file} is missing S09 P3 record fragments`,
     );
   }
 }
@@ -341,31 +335,25 @@ function validateCurrentStateDocs() {
   const behavior = readRepoFile("机器治理/行为智能模型/README.md");
   const runGate = readRepoFile("机器治理/运行门禁/README.md");
   assertCondition(
-    hasAll(quick, ["当前阶段是 S09 P3", "MA-V12-S09P3", "ACC-MA-V12-S09P3", "下一步只允许进入 S09 Review"]) &&
+    hasAll(quick, ["当前阶段是 S09 P3", taskId, acceptanceId, "下一步只允许进入 S09 Review"]) &&
       hasAll(overview, ["S09 P3 已完成", "decision_debt_ledger.json", "下一步是 S09 Review"]) &&
-      hasAll(machine, ["当前为 S09 P3", "MA-V12-S09P3", "validate:v1.2-s09-p3", "下一步是 S09 Review"]) &&
+      hasAll(machine, ["当前为 S09 P3", taskId, validatorName, "下一步是 S09 Review"]) &&
       hasAll(dataContract, ["当前 S09 P3 已完成", "decision_debt_ledger.json", "下一步是 S09 Review"]) &&
       hasAll(behavior, ["当前 S09 P3 已完成", "decision_debt.v1_2_s09_p3.json", "decision_debt_ledger.json", "下一步是 S09 Review"]) &&
-      hasAll(runGate, ["当前阶段是 S09 P3", "MA-V12-S09P3", "ACC-MA-V12-S09P3", "validate:v1.2-s09-p3"]),
-    "s09p1_current_state_docs",
-    "Current human and machine docs now point to S09 P2 and pending S09 P3",
-    "Current state docs do not point to S09 P2",
+      hasAll(runGate, ["当前阶段是 S09 P3", taskId, acceptanceId, validatorName]),
+    "s09p3_current_state_docs",
+    "Current human and machine docs now point to S09 P3 and pending S09 Review",
+    "Current state docs do not point to S09 P3",
   );
 }
 
 function validateBranchAndRemote() {
   const branch = run("git", ["branch", "--show-current"], { cwd: worktreeRoot }).stdout.trim();
   const remote = run("git", ["remote", "get-url", "origin"], { cwd: worktreeRoot }).stdout.trim();
-  assertCondition(
-    branch === branchName,
-    "s09p1_branch",
-    "Current branch remains the local v1.2 stage branch",
-    "Current branch is not the approved S09 P1 branch",
-    { branch },
-  );
+  assertCondition(branch === branchName, "s09p3_branch", "Current branch remains the local v1.2 stage branch", "Current branch is not the approved S09 P3 branch", { branch });
   assertCondition(
     remote === "git@github.com:LinzeColin/CodexProject.git" || remote === "https://github.com/LinzeColin/CodexProject.git",
-    "s09p1_remote",
+    "s09p3_remote",
     "Origin remote is LinzeColin/CodexProject",
     "Origin remote is not LinzeColin/CodexProject",
     { remote },
@@ -378,8 +366,8 @@ function validateBranchAndRemote() {
   });
   assertCondition(
     remoteBranch.status === 0 && remoteBranch.stdout.trim() === "",
-    "s09p1_no_remote_branch",
-    "No remote branch exists for the local S09 P1 work branch",
+    "s09p3_no_remote_branch",
+    "No remote branch exists for the local S09 P3 work branch",
     "Remote branch exists or remote branch check failed",
     { status: remoteBranch.status, stdout: remoteBranch.stdout.trim(), stderr: remoteBranch.stderr.trim() },
   );
@@ -390,9 +378,9 @@ function validateOpenDiffScopeAndSafety() {
   const outside = changed.filter((file) => !allowedOpenDiffPaths.includes(file));
   assertCondition(
     outside.length === 0,
-    "s09p1_open_diff_scope",
-    "Open diff is limited to S09 P1 files and historical-validator compatibility",
-    "Open diff contains files outside S09 P1 allowed scope",
+    "s09p3_open_diff_scope",
+    "Open diff is limited to S09 P3 files and historical-validator compatibility",
+    "Open diff contains files outside S09 P3 allowed scope",
     { changed, outside },
   );
   const forbidden = changed.filter((file) =>
@@ -402,9 +390,9 @@ function validateOpenDiffScopeAndSafety() {
   );
   assertCondition(
     forbidden.length === 0,
-    "s09p1_no_raw_or_secret_diff",
-    "S09 P1 open diff does not modify raw or secret/config files",
-    "S09 P1 open diff modifies forbidden raw or secret-like files",
+    "s09p3_no_raw_or_secret_diff",
+    "S09 P3 open diff does not modify raw or secret/config files",
+    "S09 P3 open diff modifies forbidden raw or secret-like files",
     { forbidden },
   );
 }
@@ -413,7 +401,7 @@ function main() {
   try {
     validatePackageScript();
     validatePreviousPhaseGate();
-    validateLatentArtifacts();
+    validateDecisionDebtArtifacts();
     validateAtlasctl();
     validateDocsAndRecords();
     validateCurrentStateDocs();
