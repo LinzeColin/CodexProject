@@ -417,11 +417,40 @@ function validateDocsAndRecords() {
       "ACC-MA-V12-S04P3",
       "validate:v1.2-s04-p3",
     ]);
+  const currentStateIsS04Review =
+    hasAll(quickEntry, [
+      "当前阶段是 S04 Review",
+      "MA-V12-S04-REVIEW",
+      "ACC-MA-V12-S04-REVIEW",
+      "下一步只允许进入 S05 P1",
+    ]) &&
+    hasAll(overview, [
+      "S04 Review 已通过",
+      "S04 整体复审已通过",
+      "下一步是 S05 P1",
+    ]) &&
+    hasAll(machineReadme, [
+      "当前为 S04 Review",
+      "memory_atlas_v1_2_s04_review.md",
+      "下一步是 S05 P1",
+    ]) &&
+    hasAll(syncReadme, [
+      "当前 S04 Review 已通过",
+      "ChatGPT 只读同步",
+      "GitHub backup dry-run/apply",
+      "下一步是 S05 P1",
+    ]) &&
+    hasAll(runGateReadme, [
+      "当前阶段是 S04 Review",
+      "MA-V12-S04-REVIEW",
+      "ACC-MA-V12-S04-REVIEW",
+      "validate:v1.2-s04-review",
+    ]);
 
-  if (currentStateIsS04P3) {
+  if (currentStateIsS04P3 || currentStateIsS04Review) {
     pass(
       "s04p2_human_machine_later_s04p3_state",
-      "Current human and machine state has advanced from S04 P2 into S04 P3",
+      "Current human and machine state has advanced from S04 P2 into a later S04 state",
     );
   } else {
     assertCondition(

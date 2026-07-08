@@ -2,8 +2,8 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S04 P3。任务 ID 为 `MA-V12-S04P3`，验收 ID 为
-`ACC-MA-V12-S04P3`，validator 为 `validate:v1.2-s04-p3`。
+当前阶段是 S04 Review。任务 ID 为 `MA-V12-S04-REVIEW`，验收 ID 为
+`ACC-MA-V12-S04-REVIEW`，validator 为 `validate:v1.2-s04-review`。
 
 前置 S01 Review 已通过：`MA-V12-S01-REVIEW` / `ACC-MA-V12-S01-REVIEW` /
 `validate:v1.2-s01-review`。
@@ -167,3 +167,43 @@ S04 P2 gate：
 
 No GitHub main upload in this phase。
 下一步是 S04 P3；本 phase 不实现 GitHub backup dry-run/apply。
+
+前置 S04 P3 已通过：`MA-V12-S04P3` / `ACC-MA-V12-S04P3` /
+`validate:v1.2-s04-p3`。
+
+S04 P3 产物：
+
+- `机器治理/同步与备份/github_backup_policy.v1_2_s04_p3.json`
+- `scripts/github_backup.py`
+- `scripts/atlasctl.py`
+- `人类可读/11_GitHub备份DryRun与Apply.md`
+- `docs/reviews/memory_atlas_v1_2_s04_p3_github_backup.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s04_p3.cjs`
+
+S04 P3 gate：
+
+- `python scripts/atlasctl.py push --dry-run` 可运行且不写文件。
+- `python scripts/atlasctl.py push --apply` 只做本地 git add/commit。
+- backup scope 覆盖 `data/public_raw`、`data/derived`、`data/run_logs`、
+  `docs/reviews` 和 `reports`。
+- 失败时输出中文原因和 fallback 建议。
+- 不执行远端 push，不上传 GitHub main，不重装 app。
+
+S04 Review 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s04_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s04_review.cjs`
+
+S04 Review gate：
+
+- S04 P1、S04 P2、S04 P3 validator 链路在 clean tree 可复跑。
+- `python scripts/atlasctl.py sync --source chatgpt --dry-run` 可运行且不写文件。
+- `python scripts/atlasctl.py sync --source codex --dry-run` 可运行且不写文件。
+- `python scripts/atlasctl.py sync --source future-agent --dry-run` 可运行且不写文件。
+- `python scripts/atlasctl.py build-atlas --dry-run` 可运行且不写文件。
+- `python scripts/atlasctl.py push --dry-run` 可运行且不远端 push。
+- S04 整体复审已通过。
+
+No GitHub main upload in this review。
+No remote push in this review。
+下一步是 S05 P1。

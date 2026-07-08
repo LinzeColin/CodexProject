@@ -1,3 +1,38 @@
+## 120. Memory Atlas v1.2 S04 Review Parameters
+
+状态：`stage_s04_review_passed_pending_s05_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S04-REVIEW`。
+
+S04 Review 固定以下参数：
+
+- `MA-V12-S04-REVIEW`
+- `validate:v1.2-s04-review`
+- `memory_atlas_v1_2_s04_review.md`
+- S04 P1/P2/P3 validator chain。
+- ChatGPT/Codex/future-agent sync dry-run。
+- build-atlas dry-run。
+- GitHub backup push dry-run。
+- S04 Review 完成后下一步为 pending S05 P1。
+- No GitHub main upload in this review。
+
+参数：
+
+- `PARAM-MA-V12-S04-REVIEW-001 stage_status = stage_s04_review_passed_pending_s05_no_github_main_upload`
+- `PARAM-MA-V12-S04-REVIEW-002 validator = validate:v1.2-s04-review`
+- `PARAM-MA-V12-S04-REVIEW-003 review_artifact = memory_atlas_v1_2_s04_review.md`
+- `PARAM-MA-V12-S04-REVIEW-004 cli_contract = chatgpt/codex/future-agent sync; build-atlas; push`
+- `PARAM-MA-V12-S04-REVIEW-005 next_gate = pending S05 P1`
+- `PARAM-MA-V12-S04-REVIEW-006 upload_boundary = No GitHub main upload in this review; No remote push in this review`
+
+验证逻辑：
+
+- `validate:v1.2-s04-review` checks S04 P1/P2/P3 continuity, sync dry-runs,
+  build-atlas dry-run, GitHub backup dry-run, human/machine state, records,
+  canonical remote and no-upload/no-remote-push/no-app-reinstall boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S04 Review; MA-V12-S04-REVIEW; ACC-MA-V12-S04-REVIEW; stage_s04_review_passed_pending_s05_no_github_main_upload; validate:v1.2-s04-review; memory_atlas_v1_2_s04_review.md; S04 Review; pending S05 P1; No GitHub main upload in this review; No remote push in this review; No app reinstall; No ChatGPT mutation; No credential capture; No fake sync data.
+
 ## 119. Memory Atlas v1.2 S04 P3 GitHub Backup Parameters
 
 状态：`phase_s04_p3_github_backup_completed_pending_s04_review`。
