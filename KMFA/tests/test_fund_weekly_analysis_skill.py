@@ -490,6 +490,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "kmfa_metadata_signals.csv",
                 "goal_completion_audit.csv",
                 "management_conclusion_gate.csv",
+                "owner_action_queue.csv",
                 "fact_promotion_review_packet.csv",
                 "fact_promotion_authorization_template.json",
                 "fact_promotion_authorization_preview.csv",
@@ -540,6 +541,24 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["management_conclusion_gate_ready_count"], 2)
             self.assertEqual(cross_review["management_conclusion_gate_blocked_count"], 5)
             self.assertFalse(cross_review["management_conclusion_allowed"])
+
+            with (run_dir / "owner_action_queue.csv").open(encoding="utf-8-sig", newline="") as f:
+                owner_action_rows = list(csv.DictReader(f))
+            self.assertEqual(len(owner_action_rows), 5)
+            action_by_gate = {row["source_gate"]: row for row in owner_action_rows}
+            self.assertEqual(
+                action_by_gate["formal_fact_promotion_execution"]["action_type"],
+                "APPROVE_CONTROLLED_FACT_PROMOTION_EXECUTION",
+            )
+            self.assertEqual(action_by_gate["automation_schedule"]["action_type"], "VERIFY_CODEX_AUTOMATION_SCHEDULE")
+            self.assertTrue(all(row["automation_safe"] == "false" for row in owner_action_rows))
+            self.assertTrue(all(row["source_mutation_allowed"] == "false" for row in owner_action_rows))
+            self.assertTrue(all(row["fact_promotion_allowed"] == "false" for row in owner_action_rows))
+            self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in owner_action_rows))
+            self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in owner_action_rows))
+            self.assertEqual(cross_review["owner_action_queue_count"], 5)
+            self.assertEqual(cross_review["owner_action_queue_blocking_count"], 5)
+            self.assertEqual(cross_review["owner_action_queue_automation_safe_count"], 0)
 
     def test_runner_collects_real_ocr_text_sidecars_without_promoting_amounts(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
