@@ -3127,7 +3127,7 @@ def build_automation_readiness_rows(repo_root: Path, automation_root: Path) -> l
         if str(live["prompt"]).strip() != expected_prompt:
             mismatches.append("prompt")
 
-    ready = not mismatches and rrule == "FREQ=DAILY;BYHOUR=11;BYMINUTE=30" and expected_timezone == "Australia/Sydney"
+    ready = not mismatches and rrule == "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0" and expected_timezone == "Australia/Sydney"
     return [
         automation_readiness_row(
             "CODEX_AUTOMATION_READY" if ready else "CODEX_AUTOMATION_MISMATCH",
@@ -3141,7 +3141,7 @@ def build_automation_readiness_rows(repo_root: Path, automation_root: Path) -> l
             next_action=(
                 "Keep local Codex automation schedule aligned with repo contract"
                 if ready
-                else "Sync local Codex automation to the tracked daily 11:30 Australia/Sydney contract"
+                else "Sync local Codex automation to the tracked Monday/Saturday 11:00 Australia/Sydney contract"
             ),
         )
     ]
@@ -4878,7 +4878,7 @@ def write_runtime_rules_to_workbook(
         [("A", "run_id"), ("B", manifest["run_id"]), ("C", "runtime"), ("D", "private package trace id")],
         [("A", "source_input_dir"), ("B", str(input_dir)), ("C", "source"), ("D", "read-only OneDrive input")],
         [("A", "timezone"), ("B", manifest.get("timezone", "")), ("C", "runtime"), ("D", "local scheduler timezone")],
-        [("A", "schedule_rrule"), ("B", schedule_rrule), ("C", "automation"), ("D", "expected daily 11:30 Sydney")],
+        [("A", "schedule_rrule"), ("B", schedule_rrule), ("C", "automation"), ("D", "expected Monday/Saturday 11:00 Sydney")],
         [("A", "schedule_ready"), ("B", schedule_ready), ("C", "automation"), ("D", "read-only drift evidence")],
         [("A", "no_hallucinated_data_policy"), ("B", "true"), ("C", "data_policy"), ("D", "no generated financial facts without evidence")],
         [("A", "fact_promotion_execution_allowed"), ("B", "false"), ("C", "fact_promotion"), ("D", "separate owner authorization required")],

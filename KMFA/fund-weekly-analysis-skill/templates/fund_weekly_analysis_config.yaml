@@ -3,10 +3,10 @@ skill_name: fund-weekly-analysis-skill
 timezone: Australia/Sydney
 automation:
   name: KMFA资金周报自动化
-  schedule_local: "11:30"
-  schedule_days: ["Daily"]
-  schedule_china_reference: "Beijing 09:30 is reference wording only when Sydney is UTC+10"
-  schedule_cron_utc_reference: "30 1 * * *" # 11:30 Australia/Sydney when UTC+10; scheduler must use Australia/Sydney local time
+  schedule_local: "11:00"
+  schedule_days: ["Monday", "Saturday"]
+  schedule_china_reference: "Not scheduler source; China reference changes with Sydney DST offset"
+  schedule_cron_utc_reference: "use local Australia/Sydney RRULE; do not hard-code UTC cron"
 paths:
   input_dir: "/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群"
   repo_skill_dir: "KMFA/fund-weekly-analysis-skill"
