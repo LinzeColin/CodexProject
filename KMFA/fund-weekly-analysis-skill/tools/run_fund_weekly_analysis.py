@@ -669,6 +669,61 @@ def structured_workbook_summary(structured: dict) -> dict[str, Decimal]:
     }
 
 
+def risk_row_known_movement(row: dict) -> tuple[Decimal, Decimal]:
+    risk_type = row["risk_type"].lower()
+    amount = money(row["amount"])
+    inflow_markers = ("release", "refund", "return", "deposit_release", "可释放", "退款", "退回", "回款")
+    if any(marker in risk_type for marker in inflow_markers):
+        return amount, Decimal("0.00")
+    return Decimal("0.00"), amount
+
+
+def build_funding_forecast_rows(structured: dict) -> list[dict]:
+    if not structured["fund_rows"]:
+        return []
+
+    summary = structured_workbook_summary(structured)
+    grouped: dict[str, dict[str, object]] = {}
+    for row in structured["risk_rows"]:
+        due_date = row["due_date"]
+        if not due_date:
+            continue
+        bucket = grouped.setdefault(due_date, {
+            "known_inflow": Decimal("0.00"),
+            "known_outflow": Decimal("0.00"),
+            "risk_types": set(),
+            "source_evidence_ids": set(),
+        })
+        inflow, outflow = risk_row_known_movement(row)
+        bucket["known_inflow"] = bucket["known_inflow"] + inflow
+        bucket["known_outflow"] = bucket["known_outflow"] + outflow
+        bucket["risk_types"].add(row["risk_type"])
+        bucket["source_evidence_ids"].add(row["source_evidence_id"])
+
+    projected_bank_cash = summary["bank_cash"]
+    rows = []
+    for due_date, bucket in sorted(grouped.items()):
+        known_inflow = bucket["known_inflow"]
+        known_outflow = bucket["known_outflow"]
+        projected_bank_cash += known_inflow - known_outflow
+        funding_gap = Decimal("0.00")
+        if projected_bank_cash < Decimal("0.00"):
+            funding_gap = -projected_bank_cash
+        rows.append({
+            "period_date": due_date,
+            "starting_bank_cash": money_text(summary["bank_cash"]),
+            "known_inflow": money_text(known_inflow),
+            "known_outflow": money_text(known_outflow),
+            "projected_bank_cash": money_text(projected_bank_cash),
+            "funding_gap": money_text(funding_gap),
+            "risk_types": ",".join(sorted(bucket["risk_types"])),
+            "source_evidence_ids": ",".join(sorted(bucket["source_evidence_ids"])),
+            "forecast_basis": "known_due_date_structured_csv",
+            "review_status": "structured_csv_forecast_pending_review",
+        })
+    return rows
+
+
 def workbook_display_matrix_rows(fund_rows: list[dict]) -> list[dict]:
     grouped: dict[tuple[str, str, str, str], dict[str, object]] = {}
     for row in fund_rows:
@@ -712,6 +767,7 @@ def write_structured_facts_to_workbook(workbook_path: Path, structured: dict, ev
         return
 
     summary = structured_workbook_summary(structured)
+    funding_forecast_rows = build_funding_forecast_rows(structured)
     evidence_by_id = {row["evidence_id"]: row for row in evidence}
     ledger_ids_by_evidence: dict[str, list[str]] = {}
     dates_by_evidence: dict[str, set[str]] = {}
@@ -734,6 +790,35 @@ def write_structured_facts_to_workbook(workbook_path: Path, structured: dict, ev
         set_text_cell(sheet1, "H8", f"内部调拨净额\n{currency_text(summary['internal_transfer_net'])}\n内部调拨行净额｜待复核")
         set_text_cell(sheet1, "K8", f"资金缺口\n{currency_text(summary['funding_gap'])}\n税费/借款压力-可用现金｜待复核")
         replacements["xl/worksheets/sheet1.xml"] = serialize_sheet(sheet1)
+
+        sheet2 = ET.fromstring(workbook.read("xl/worksheets/sheet2.xml"))
+        clear_rows_from(sheet2, 4)
+        write_table_rows(sheet2, 4, [[
+            ("text", "预测/到期日"),
+            ("text", "已知流入"),
+            ("text", "已知流出"),
+            ("text", "预计T0银行存款"),
+            ("text", "资金缺口"),
+            ("text", "风险/机会类型"),
+            ("text", "来源证据"),
+            ("text", "复核状态"),
+            ("text", "计算依据"),
+        ]])
+        forecast_table_rows = []
+        for row in funding_forecast_rows:
+            forecast_table_rows.append([
+                ("text", row["period_date"]),
+                ("number", row["known_inflow"]),
+                ("number", row["known_outflow"]),
+                ("number", row["projected_bank_cash"]),
+                ("number", row["funding_gap"]),
+                ("text", row["risk_types"]),
+                ("text", row["source_evidence_ids"]),
+                ("text", row["review_status"]),
+                ("text", row["forecast_basis"]),
+            ])
+        write_table_rows(sheet2, 5, forecast_table_rows)
+        replacements["xl/worksheets/sheet2.xml"] = serialize_sheet(sheet2)
 
         sheet3 = ET.fromstring(workbook.read("xl/worksheets/sheet3.xml"))
         clear_rows_from(sheet3, 5)
@@ -1083,8 +1168,10 @@ def build_company_bank_matrix_rows(fund_rows: list[dict]) -> list[dict]:
 def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Path, repo_root: Path) -> None:
     evidence = write_evidence_index_stub(manifest, run_dir)
     structured = extract_structured_csv_facts(manifest, input_dir, evidence)
+    funding_forecast_rows = build_funding_forecast_rows(structured)
     metadata_signals = collect_kmfa_metadata_signals(repo_root, manifest["run_id"])
     manifest["metadata_signal_count"] = len(metadata_signals)
+    manifest["forecast_row_count"] = len(funding_forecast_rows)
     if structured["fund_rows"]:
         manifest["status"] = "STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW"
         manifest["structured_fact_count"] = len(structured["fund_rows"])
@@ -1148,6 +1235,18 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "source_evidence_id",
         "review_status",
     ], structured["risk_rows"])
+    write_csv(run_dir / "funding_forecast.csv", [
+        "period_date",
+        "starting_bank_cash",
+        "known_inflow",
+        "known_outflow",
+        "projected_bank_cash",
+        "funding_gap",
+        "risk_types",
+        "source_evidence_ids",
+        "forecast_basis",
+        "review_status",
+    ], funding_forecast_rows)
     write_csv(run_dir / "kmfa_metadata_signals.csv", [
         "signal_id",
         "signal_type",
@@ -1184,6 +1283,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "generated_financial_amount_count": 0,
         "structured_financial_fact_count": len(structured["fund_rows"]),
         "metadata_signal_count": len(metadata_signals),
+        "forecast_row_count": len(funding_forecast_rows),
         "excel_workbook_generated": True,
         "workbook": workbook_path.name,
         "source_file_count": manifest["file_count"],
@@ -1204,6 +1304,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "generated_financial_amount_count": 0,
                 "structured_financial_fact_count": len(structured["fund_rows"]),
                 "metadata_signal_count": len(metadata_signals),
+                "forecast_row_count": len(funding_forecast_rows),
                 "management_conclusion_allowed": False,
             },
         ], ensure_ascii=False, indent=2),
@@ -1306,8 +1407,10 @@ def main() -> int:
         f"Indexed {manifest['file_count']} real source files and generated a native editable Excel workbook from the current mother template.\n\n"
         f"Structured financial fact count: {manifest.get('structured_fact_count', 0)}\n\n"
         f"KMFA metadata signal count: {manifest.get('metadata_signal_count', 0)}\n\n"
-        "No financial amount, management conclusion, or forecast was generated from unreviewed OCR/table extraction. "
-        "Next step: perform OCR/table extraction, internal-transfer netting, cross-review, then promote reviewed facts only.\n",
+        f"Known due-date funding forecast row count: {manifest.get('forecast_row_count', 0)}\n\n"
+        "No financial amount, management conclusion, or evidence-free forecast was generated from unreviewed OCR/table extraction. "
+        "Known due-date projections remain pending review. Next step: perform OCR/table extraction, internal-transfer netting, "
+        "cross-review, then promote reviewed facts only.\n",
         encoding="utf-8",
     )
     print(json.dumps({"run_id": run_id, "run_dir": str(run_dir), "status": manifest["status"], "file_count": manifest["file_count"]}, ensure_ascii=False))
