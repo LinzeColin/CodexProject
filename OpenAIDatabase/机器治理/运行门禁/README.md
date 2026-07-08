@@ -2,8 +2,37 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S11 P2。任务 ID 为 `MA-V12-S11P2`，验收 ID 为
-`ACC-MA-V12-S11P2`，validator 为 `validate:v1.2-s11-p2`。状态为
+当前阶段是 S11 P3。任务 ID 为 `MA-V12-S11P3`，验收 ID 为
+`ACC-MA-V12-S11P3`，validator 为 `validate:v1.2-s11-p3`。状态为
+`phase_s11_p3_workflow_latent_governance_visuals_completed_pending_s11_p4`。
+
+S11 P3 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s11_p3_workflow_latent_governance_visuals.md`
+- `人类可读/29_WorkflowLatentGovernance可视化说明.md`
+- `机器治理/可视化配置/workflow_latent_governance_visuals.v1_2_s11_p3.json`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s11_p3.cjs`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+
+S11 P3 gate：
+
+- `validate:v1.2-s11-p3` 可验证 Workflow/latent/governance visuals。
+- `workflow_latent_governance_visuals.v1_2_s11_p3` runtime contract 存在。
+- `agent_decision_sankey`、`friction_heatmap`、`latent_radar`、`evidence_timeline` 和 `formula_explorer` 均可见且可交互。
+- 每个图都有中文 insight header、human question 和 action value。
+- 图谱跟随 `source/time/project/task` 过滤。
+- `python3 scripts/atlasctl.py audit --check visual-roi` 返回 PASS。
+- 不执行 proposal apply。
+- 不修改 raw。
+- 不上传 GitHub main。
+
+No GitHub main upload in this phase。
+下一步是 S11 P4。
+
+历史复验兼容记录：S11 P2 完成时当前阶段是 S11 P2。任务 ID 为
+`MA-V12-S11P2`，验收 ID 为 `ACC-MA-V12-S11P2`，validator 为
+`validate:v1.2-s11-p2`。状态为
 `phase_s11_p2_economic_like_visuals_completed_pending_s11_p3`。
 
 S11 P2 产物：

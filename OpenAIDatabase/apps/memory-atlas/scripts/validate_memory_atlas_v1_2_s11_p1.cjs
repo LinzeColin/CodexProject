@@ -186,6 +186,17 @@ function validatePackageScript() {
 function validateRuntimeContract() {
   const app = readRepoFile("apps/memory-atlas/src/App.tsx");
   const styles = readRepoFile("apps/memory-atlas/src/styles.css");
+  const mislabeledLaterVisuals = [
+    "task_treemap",
+    "automation_vs_augmentation",
+    "roi_scatter",
+    "opportunity_radar",
+    "agent_decision_sankey",
+    "friction_heatmap",
+    "latent_radar",
+    "evidence_timeline",
+    "formula_explorer",
+  ].filter((id) => app.includes(`data-s11-p1-visual-id="${id}"`));
   assertCondition(
     hasAll(app, [
       `const CLIO_LIKE_VISUALS_VERSION = "${visualVersion}" as const;`,
@@ -210,10 +221,11 @@ function validateRuntimeContract() {
     "App.tsx is missing the S11 P1 Clio-like visual runtime contract",
   );
   assertCondition(
-    !hasAll(app, ["Task Treemap", "ROI Scatter", "Latent Radar", "Evidence Timeline"]),
+    mislabeledLaterVisuals.length === 0,
     "s11p1_phase_boundary",
-    "S11 P1 runtime does not implement S11 P2/P3 visual families",
-    "S11 P1 appears to include later S11 visual families",
+    "S11 P1 runtime keeps later S11 visuals out of data-s11-p1 visual ids",
+    "S11 P1 appears to mislabel later S11 visual families as P1 visuals",
+    { mislabeledLaterVisuals },
   );
   assertCondition(
     hasAll(styles, [

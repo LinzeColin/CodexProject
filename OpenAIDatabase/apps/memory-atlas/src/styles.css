@@ -2654,6 +2654,288 @@ h3 {
   font-weight: 800;
 }
 
+.workflow-governance-visual-panel {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  border-top: 1px solid rgba(143, 211, 255, 0.18);
+  border-bottom: 1px solid rgba(244, 241, 232, 0.08);
+  background: rgba(143, 211, 255, 0.035);
+  padding: 12px 16px;
+}
+
+.workflow-governance-visual-panel .panel-title-row p {
+  margin: 4px 0 0;
+  color: #d9d4ca;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.workflow-governance-filter-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  min-width: 0;
+}
+
+.workflow-governance-filter-strip span {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  border: 1px solid rgba(244, 241, 232, 0.1);
+  border-radius: 7px;
+  background: rgba(244, 241, 232, 0.045);
+  color: #d9d4ca;
+  font-size: 10px;
+  line-height: 1.25;
+  padding: 7px 8px;
+}
+
+.workflow-governance-filter-strip strong {
+  color: #8fd3ff;
+  font-size: 10px;
+  line-height: 1;
+}
+
+.workflow-governance-visual-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  min-width: 0;
+}
+
+.workflow-governance-visual-card {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-width: 0;
+  border: 1px solid rgba(143, 211, 255, 0.19);
+  border-radius: 8px;
+  background: rgba(9, 10, 13, 0.46);
+  padding: 12px;
+}
+
+.workflow-governance-visual-heading {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.workflow-governance-visual-heading span {
+  color: #8fd3ff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.workflow-governance-visual-heading strong {
+  color: #f4f1e8;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.workflow-governance-visual-heading p,
+.workflow-governance-visual-heading em {
+  margin: 0;
+  color: #d9d4ca;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.workflow-governance-visual-heading em {
+  color: #f6c56f;
+  font-style: normal;
+}
+
+.workflow-sankey-svg,
+.latent-radar-svg {
+  width: 100%;
+  min-height: 198px;
+  border-radius: 8px;
+  background: rgba(244, 241, 232, 0.035);
+}
+
+.workflow-sankey-svg text,
+.latent-radar-svg text {
+  fill: #d9d4ca;
+  font-size: 10px;
+  letter-spacing: 0;
+}
+
+.workflow-sankey-link {
+  cursor: pointer;
+  outline: none;
+}
+
+.workflow-sankey-link path {
+  fill: none;
+  opacity: 0.68;
+  stroke-linecap: round;
+}
+
+.workflow-sankey-link circle {
+  fill: #0d1116;
+  stroke: rgba(244, 241, 232, 0.45);
+  stroke-width: 1.5;
+}
+
+.workflow-sankey-link:hover path,
+.workflow-sankey-link:focus-visible path {
+  opacity: 0.96;
+}
+
+.friction-heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  min-width: 0;
+}
+
+.friction-heatmap-grid button,
+.latent-radar-selected,
+.evidence-timeline-track button,
+.formula-explorer-list button {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  border: 1px solid rgba(244, 241, 232, 0.1);
+  border-radius: 7px;
+  color: inherit;
+  text-align: left;
+  padding: 7px;
+}
+
+.friction-heatmap-grid button {
+  min-height: 82px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--cell-color) calc(var(--heat) * 70%), rgba(244, 241, 232, 0.04)), rgba(9, 10, 13, 0.72));
+}
+
+.friction-heatmap-grid button:hover,
+.friction-heatmap-grid button:focus-visible,
+.latent-radar-selected:hover,
+.latent-radar-selected:focus-visible,
+.evidence-timeline-track button:hover,
+.evidence-timeline-track button:focus-visible,
+.formula-explorer-list button:hover,
+.formula-explorer-list button:focus-visible {
+  border-color: rgba(143, 211, 255, 0.72);
+  background-color: rgba(143, 211, 255, 0.08);
+}
+
+.friction-heatmap-grid strong,
+.latent-radar-selected strong,
+.formula-explorer-list strong {
+  color: #f4f1e8;
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.friction-heatmap-grid span,
+.friction-heatmap-grid small,
+.latent-radar-selected span,
+.latent-radar-selected small,
+.formula-explorer-list span,
+.formula-explorer-list small,
+.formula-explorer-list em,
+.evidence-timeline-track span,
+.evidence-timeline-track small {
+  color: #aaa49a;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.latent-radar-svg circle {
+  fill: none;
+  stroke: rgba(244, 241, 232, 0.16);
+}
+
+.latent-radar-svg polygon {
+  fill: rgba(143, 211, 255, 0.18);
+  stroke: #8fd3ff;
+  stroke-width: 2;
+}
+
+.latent-radar-axis {
+  cursor: pointer;
+  outline: none;
+}
+
+.latent-radar-axis line {
+  stroke: rgba(244, 241, 232, 0.24);
+  stroke-width: 1.5;
+}
+
+.latent-radar-axis.active text,
+.latent-radar-axis:hover text,
+.latent-radar-axis:focus-visible text {
+  fill: #f6c56f;
+}
+
+.latent-radar-selected {
+  background: rgba(244, 241, 232, 0.045);
+}
+
+.latent-radar-selected span {
+  color: #8fd3ff;
+  font-weight: 800;
+}
+
+.evidence-timeline-track {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-height: 220px;
+  min-width: 0;
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(126, 232, 212, 0.14), rgba(246, 197, 111, 0.12));
+  overflow: hidden;
+  padding: 12px 10px 12px 18px;
+}
+
+.evidence-timeline-track::before {
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  left: 10px;
+  width: 2px;
+  background: rgba(244, 241, 232, 0.22);
+  content: "";
+}
+
+.evidence-timeline-track button {
+  position: relative;
+  left: auto !important;
+  width: 100%;
+  transform: none;
+  background: rgba(9, 10, 13, 0.78);
+}
+
+.evidence-timeline-track strong {
+  color: #7ee8d4;
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+.formula-explorer-list {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+
+.formula-explorer-list button {
+  background: rgba(244, 241, 232, 0.045);
+}
+
+.formula-explorer-list span {
+  color: #8fd3ff;
+  font-weight: 800;
+}
+
+.formula-explorer-list em {
+  color: #f6c56f;
+  font-style: normal;
+}
+
 .home-action-panel {
   display: grid;
   gap: 10px;
@@ -7823,6 +8105,8 @@ h3 {
   .clio-visual-grid,
   .economic-filter-strip,
   .economic-visual-grid,
+  .workflow-governance-filter-strip,
+  .workflow-governance-visual-grid,
   .home-preview-grid {
     grid-template-columns: 1fr;
   }
@@ -8246,6 +8530,7 @@ h3 {
   .home-behavior-intelligence-panel,
   .clio-visual-panel,
   .economic-visual-panel,
+  .workflow-governance-visual-panel,
   .home-preview-grid,
   .home-action-panel,
   .home-inspector-panel,
@@ -8264,6 +8549,8 @@ h3 {
   .clio-visual-grid,
   .economic-filter-strip,
   .economic-visual-grid,
+  .workflow-governance-filter-strip,
+  .workflow-governance-visual-grid,
   .home-preview-grid,
   .home-action-list,
   .home-operation-chip-grid,

@@ -1,5 +1,27 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S11 P3 Workflow/latent/governance Visuals
+
+- Added `workflow_latent_governance_visuals.v1_2_s11_p3` runtime contract to the
+  Memory Atlas home screen.
+- Added Workflow/latent/governance `agent_decision_sankey`,
+  `friction_heatmap`, `latent_radar`, `evidence_timeline` and
+  `formula_explorer` visuals with Chinese insight headers, human questions and
+  action values.
+- Bound the S11 P3 visuals to active `source/time/project/task` filter state
+  through redacted derived runtime nodes and existing governance outputs.
+- Added `机器治理/可视化配置/workflow_latent_governance_visuals.v1_2_s11_p3.json`.
+- Added `validate:v1.2-s11-p3` for `MA-V12-S11P3` /
+  `ACC-MA-V12-S11P3`.
+- Hardened S11 P1/P2 validator phase-boundary checks so later completed S11
+  visuals are not mistaken for earlier phase scope drift.
+- Registered status
+  `phase_s11_p3_workflow_latent_governance_visuals_completed_pending_s11_p4`.
+- Preserved S11 P3 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, No proposal apply execution,
+  No S11 P4 Human Question Map completion and No app reinstall.
+- Marked the next gate as pending S11 P4.
+
 ## Unreleased - Memory Atlas v1.2 S11 P2 Economic-like Visuals
 
 - Added `economic_like_visuals.v1_2_s11_p2` runtime contract to the Memory

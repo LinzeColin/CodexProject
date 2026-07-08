@@ -1,3 +1,44 @@
+## 147. Memory Atlas v1.2 S11 P3 Workflow/latent/governance Visuals Parameters
+
+状态：`phase_s11_p3_workflow_latent_governance_visuals_completed_pending_s11_p4`。
+
+验收 ID：`ACC-MA-V12-S11P3`。
+
+S11 P3 固定以下参数：
+
+- `MA-V12-S11P3`
+- `validate:v1.2-s11-p3`
+- `workflow_latent_governance_visuals.v1_2_s11_p3`
+- `agent_decision_sankey`
+- `friction_heatmap`
+- `latent_radar`
+- `evidence_timeline`
+- `formula_explorer`
+- `source/time/project/task`
+- `atlasctl.py audit --check visual-roi`
+- S11 P3 完成后下一步为 pending S11 P4。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S11P3-001 phase_status = phase_s11_p3_workflow_latent_governance_visuals_completed_pending_s11_p4`
+- `PARAM-MA-V12-S11P3-002 validator = validate:v1.2-s11-p3`
+- `PARAM-MA-V12-S11P3-003 workflow_latent_governance_visuals_version = workflow_latent_governance_visuals.v1_2_s11_p3`
+- `PARAM-MA-V12-S11P3-004 visual_ids = agent_decision_sankey; friction_heatmap; latent_radar; evidence_timeline; formula_explorer`
+- `PARAM-MA-V12-S11P3-005 filter_dimensions = source/time/project/task`
+- `PARAM-MA-V12-S11P3-006 visual_roi_gate_pass = true`
+- `PARAM-MA-V12-S11P3-007 next_gate = pending S11 P4`
+- `PARAM-MA-V12-S11P3-008 phase_boundary = No raw mutation; No proposal apply execution; No GitHub main upload in this phase; No S11 P4 Human Question Map completion`
+
+验证逻辑：
+
+- `validate:v1.2-s11-p3` checks the runtime visual contract, five P0 visual ids,
+  Chinese insight headers, human questions, action values, `source/time/project/task`
+  filter binding, visual config, derived input availability, Visual ROI audit and
+  governance records.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S11 P3; MA-V12-S11P3; ACC-MA-V12-S11P3; phase_s11_p3_workflow_latent_governance_visuals_completed_pending_s11_p4; validate:v1.2-s11-p3; workflow_latent_governance_visuals.v1_2_s11_p3; agent_decision_sankey; friction_heatmap; latent_radar; evidence_timeline; formula_explorer; source/time/project/task; pending S11 P4; No GitHub main upload in this phase; No raw mutation; No proposal apply execution.
+
 ## 146. Memory Atlas v1.2 S11 P2 Economic-like Visuals Parameters
 
 状态：`phase_s11_p2_economic_like_visuals_completed_pending_s11_p3`。
