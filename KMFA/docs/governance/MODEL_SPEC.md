@@ -1825,3 +1825,11 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - phase_id: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_BLOCKER_AUDIT_AFTER_BLOCKED_HANDOFF`
 - expression: `action_intake_blocker_audit_valid = source_owner_action_intake_blocker_count == 48 AND source_owner_action_intake_ready_count == 0 AND source_private_action_intake_blocker_records_item_count == 48 AND prior_action_intake_blocker_observation_count == 0 AND action_intake_blocker_observation_count == 1 AND action_intake_blocked_audit_threshold_met == false AND owner_action_intake_ready_count == 0 AND owner_action_intake_blocker_count == 48 AND source_reference_or_owner_exclusion_audit_blocker_count == 40 AND formula_or_non_numeric_mapping_audit_blocker_count == 8 AND binding_ready_after_action_intake_blocker_audit_count == 0 AND comparison_retry_ready_after_action_intake_blocker_audit_count == 0 AND raw_to_processed_value_comparison_performed_by_this_phase == false AND business_value_consistency_verified == false AND unresolved_difference_count == 72 AND decision == NO_GO`
 - boundary: public-safe aggregate only; ignored private audit queue; no raw inbox access/mutation; no binding, value comparison, review upload, app reinstall or business execution.
+## 2026-07-08｜V014 owner/authorized agent action intake blocker threshold recheck after blocked handoff
+
+- model_key: `kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_threshold_recheck_after_blocked_handoff`
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-ACTION-INTAKE-BLOCKER-THRESHOLD-RECHECK-AFTER-BLOCKED-HANDOFF-001`
+- parameter_ids: `PARAM-KMFA-1567`, `PARAM-KMFA-1568`, `PARAM-KMFA-1569`
+- locked counts: `48;0;48;1;2;false;0;48;48;0;40;8;0;0;72;NO_GO`
+- gate flags: action intake blocker threshold recheck checked=true; threshold_met=false; owner/agent action completed=false; binding=false; raw comparison=false; upload=false; business execution=false。
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_threshold_recheck_after_blocked_handoff.py --require-private-threshold`
