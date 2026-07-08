@@ -1919,3 +1919,14 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - public-safe rule: consume prior external-action readiness public evidence and ignored readiness blocker records read-only; convert 48 source blockers into a private follow-up queue while keeping binding/comparison/downstream gates closed.
 - raw boundary: raw inbox read/list/stat/hash/parse/write/delete/move/copy/normalize/mutation all false.
 - evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_READINESS_FINAL_BLOCKED_HANDOFF_FOLLOW_UP_AFTER_FINAL_THRESHOLD_HANDOFF/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_readiness_final_blocked_handoff_follow_up_after_final_threshold_handoff_manifest.json`
+
+
+## V014 Owner/Authorized Agent External Action Required Before Authoritative Binding
+
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-AUTHORITATIVE-BINDING-001`
+- model_id: `MOD-KMFA-GOV-001`
+- expression: source follow-up remains NO_GO with 48 blockers, 0 ready external actions, 48 binding requirements, 0 binding-ready items, 72 unresolved differences, and all downstream gates closed.
+- parameters: `PARAM-KMFA-1594`, `PARAM-KMFA-1595`, `PARAM-KMFA-1596`。
+- validator: `KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_authoritative_binding.py`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_AUTHORITATIVE_BINDING/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_authoritative_binding_manifest.json`
+- constraints: no raw inbox access/mutation; no authoritative binding; no raw-to-processed value comparison; no GitHub upload; no app reinstall; no business execution.
