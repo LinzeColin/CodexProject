@@ -13101,3 +13101,36 @@ tasks:
     risk: "Business execution final readiness recheck evidence can be misread as permission to execute business workflows; it is explicitly NO_GO and keeps execution closed."
     rollback: "Remove this phase public artifacts and ignored private final readiness recheck outputs; keep source business execution readiness gate evidence intact."
     target_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-final-readiness-recheck-after-readiness-gate"
+  - task_id: "KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-BLOCKED-HANDOFF-AFTER-FINAL-READINESS-RECHECK-20260708"
+    phase_id: "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_HANDOFF_AFTER_FINAL_READINESS_RECHECK"
+    objective: "Record owner or authorized-agent business execution blocked handoff after final readiness recheck and keep NO_GO / blocked gates closed."
+    scope:
+      - "public-safe aggregate business execution blocked handoff evidence"
+      - "ignored private business execution blocked handoff queue and report"
+      - "validator and focused unit test"
+    non_scope:
+      - "raw inbox access or mutation"
+      - "authoritative binding, value comparison, reconciliation, business consistency, lineage full check, formal report generation, GitHub upload, app reinstall or business execution"
+      - "Stage review or GitHub upload"
+    status: "completed"
+    completed_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-blocked-handoff-after-final-readiness-recheck"
+    dependencies:
+      - "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_FINAL_READINESS_RECHECK_AFTER_READINESS_GATE"
+    required_files:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_HANDOFF_AFTER_FINAL_READINESS_RECHECK/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_handoff_after_final_readiness_recheck_manifest.json"
+      - "KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_handoff_after_final_readiness_recheck.py"
+    acceptance_ids:
+      - "ACC-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-BLOCKED-HANDOFF-AFTER-FINAL-READINESS-RECHECK"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_handoff_after_final_readiness_recheck.py --generated-at 2026-07-08T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_handoff_after_final_readiness_recheck.py --require-private-business-execution-blocked-handoff"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_handoff_after_final_readiness_recheck"
+    test_results:
+      - "PASS: business execution blocked handoff validator"
+      - "PASS: focused business execution blocked handoff unit test"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_HANDOFF_AFTER_FINAL_READINESS_RECHECK/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_HANDOFF_AFTER_FINAL_READINESS_RECHECK/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_handoff_after_final_readiness_recheck_manifest.json"
+    risk: "Business execution blocked handoff evidence can be misread as permission to execute business workflows; it is explicitly NO_GO and keeps execution closed."
+    rollback: "Remove this phase public artifacts and ignored private blocked handoff outputs; keep source business execution final readiness recheck evidence intact."
+    target_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-blocked-handoff-after-final-readiness-recheck"
