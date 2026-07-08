@@ -49,6 +49,7 @@ REQUIRED_SKILL_STRINGS = [
     "ocr_value_candidates.csv",
     "ocr_financial_fact_candidates.csv",
     "ocr_fact_cross_review.csv",
+    "ocr_fact_ledger_staging_preview.csv",
     "ocr_fact_review_apply_gate.csv",
     "ocr_fact_review_authorization_template.json",
     "ocr_fact_review_authorization_preview.csv",

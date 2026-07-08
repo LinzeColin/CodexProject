@@ -472,6 +472,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "ocr_value_candidates.csv",
                 "ocr_financial_fact_candidates.csv",
                 "ocr_fact_cross_review.csv",
+                "ocr_fact_ledger_staging_preview.csv",
                 "ocr_fact_review_apply_gate.csv",
                 "ocr_fact_review_authorization_template.json",
                 "ocr_fact_review_authorization_preview.csv",
@@ -1050,6 +1051,21 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in preview_rows))
             self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in preview_rows))
 
+            with (run_dir / "ocr_fact_ledger_staging_preview.csv").open(encoding="utf-8-sig", newline="") as f:
+                staging_rows = list(csv.DictReader(f))
+            staging_by_id = {row["fact_candidate_id"]: row for row in staging_rows}
+            self.assertEqual(staging_by_id[f"OCRFACT-{run_id}-00001"]["staging_preview_status"], "ready_for_ledger_staging_review_no_write")
+            self.assertEqual(staging_by_id[f"OCRFACT-{run_id}-00001"]["proposed_amount_role"], "balance")
+            self.assertEqual(staging_by_id[f"OCRFACT-{run_id}-00001"]["proposed_liquidity_tier"], "bank_deposit")
+            self.assertEqual(staging_by_id[f"OCRFACT-{run_id}-00002"]["staging_preview_status"], "ready_for_ledger_staging_review_no_write")
+            self.assertEqual(staging_by_id[f"OCRFACT-{run_id}-00002"]["proposed_amount_role"], "balance")
+            self.assertEqual(staging_by_id[f"OCRFACT-{run_id}-00002"]["proposed_liquidity_tier"], "electronic_bill")
+            self.assertEqual(staging_by_id[f"OCRFACT-{run_id}-00003"]["staging_preview_status"], "blocked_fact_candidate_not_authorized")
+            self.assertEqual(staging_by_id[f"OCRFACT-{run_id}-00003"]["proposed_amount_role"], "outflow")
+            self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in staging_rows))
+            self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in staging_rows))
+            self.assertTrue(all(row["review_status"] == "pending_human_ledger_staging_review" for row in staging_rows))
+
             with (run_dir / "fund_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
                 fund_rows = list(csv.DictReader(f))
             self.assertEqual(fund_rows, [])
@@ -1060,6 +1076,9 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_review_authorization_valid_count"], 2)
             self.assertEqual(cross_review["ocr_fact_review_authorization_preview_ready_count"], 2)
             self.assertEqual(cross_review["ocr_fact_review_authorization_preview_blocked_count"], 1)
+            self.assertEqual(cross_review["ocr_fact_ledger_staging_preview_count"], 3)
+            self.assertEqual(cross_review["ocr_fact_ledger_staging_preview_ready_count"], 2)
+            self.assertEqual(cross_review["ocr_fact_ledger_staging_preview_blocked_count"], 1)
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertFalse(cross_review["management_conclusion_allowed"])
 

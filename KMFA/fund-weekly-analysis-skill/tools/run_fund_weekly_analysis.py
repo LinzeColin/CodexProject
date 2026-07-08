@@ -964,6 +964,62 @@ def build_ocr_fact_cross_review_summary(
     return rows
 
 
+def ocr_fact_proposed_ledger_role(candidate_metric: str) -> tuple[str, str, str]:
+    mapping = {
+        "bank_deposit": ("balance", "bank_deposit", "balance_snapshot_pending_review"),
+        "electronic_bill": ("balance", "electronic_bill", "bill_balance_snapshot_pending_review"),
+        "payment_outflow": ("outflow", "bank_cash", "payment_outflow_pending_review"),
+        "tax_payment": ("outflow", "bank_cash", "tax_payment_pending_review"),
+        "deposit_release": ("inflow", "deposit_release", "deposit_release_pending_review"),
+        "loan": ("financing_or_balance_review", "loan", "loan_fact_pending_review"),
+    }
+    return mapping.get(candidate_metric, ("unclassified_review", "unclassified", "unclassified_pending_review"))
+
+
+def ocr_fact_ledger_staging_status(gate_row: dict | None) -> str:
+    if gate_row and gate_row["authorization_validation_status"] == "valid_manifest_validation_only":
+        return "ready_for_ledger_staging_review_no_write"
+    if not gate_row:
+        return "blocked_missing_review_gate"
+    if gate_row["authorization_validation_status"] in {"fact_candidate_not_authorized", "fact_candidate_authorization_not_true"}:
+        return "blocked_fact_candidate_not_authorized"
+    return gate_row["review_gate_status"]
+
+
+def build_ocr_fact_ledger_staging_preview(
+    manifest: dict,
+    fact_candidates: list[dict],
+    review_gate_rows: list[dict],
+) -> list[dict]:
+    gate_by_fact_id = {row["fact_candidate_id"]: row for row in review_gate_rows}
+    rows: list[dict] = []
+    for row in fact_candidates:
+        gate = gate_by_fact_id.get(row["fact_candidate_id"])
+        amount_role, liquidity_tier, flow_type = ocr_fact_proposed_ledger_role(row["candidate_metric"])
+        rows.append({
+            "staging_preview_id": f"OCRLEDGERPREVIEW-{manifest['run_id']}-{len(rows) + 1:05d}",
+            "fact_candidate_id": row["fact_candidate_id"],
+            "candidate_metric": row["candidate_metric"],
+            "business_date": row["business_date"],
+            "company": row["company"],
+            "bank": row["bank"],
+            "account_alias": row["account_alias"],
+            "amount": row["amount"],
+            "currency": row["currency"],
+            "proposed_amount_role": amount_role,
+            "proposed_liquidity_tier": liquidity_tier,
+            "proposed_flow_type": flow_type,
+            "source_evidence_id": row["evidence_id"],
+            "source_ocr_text_relative_path": row["ocr_text_relative_path"],
+            "authorization_validation_status": gate["authorization_validation_status"] if gate else "missing_review_gate",
+            "staging_preview_status": ocr_fact_ledger_staging_status(gate),
+            "fund_ledger_write_allowed": "false",
+            "financial_fact_promoted": "false",
+            "review_status": "pending_human_ledger_staging_review",
+        })
+    return rows
+
+
 def chat_record_source_paths(manifest: dict) -> list[str]:
     return [
         item["relative_path"]
@@ -2604,6 +2660,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     ocr_fact_review_authorization_template = build_ocr_fact_review_authorization_template(manifest, ocr_fact_review_gate_rows)
     ocr_fact_review_authorization_preview_rows = build_ocr_fact_review_authorization_preview(manifest, ocr_fact_review_gate_rows)
     ocr_fact_cross_review_rows = build_ocr_fact_cross_review_summary(manifest, ocr_financial_fact_candidates, ocr_fact_review_gate_rows)
+    ocr_fact_ledger_staging_preview_rows = build_ocr_fact_ledger_staging_preview(manifest, ocr_financial_fact_candidates, ocr_fact_review_gate_rows)
     chat_text_candidates = collect_chat_text_candidates(manifest, input_dir, evidence)
     chat_value_candidates = extract_chat_value_candidates(manifest, chat_text_candidates)
     chat_evidence_links = collect_chat_evidence_links(manifest, input_dir, evidence, chat_text_candidates, chat_value_candidates)
@@ -2627,6 +2684,9 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     manifest["ocr_value_candidate_count"] = len(ocr_value_candidates)
     manifest["ocr_financial_fact_candidate_count"] = len(ocr_financial_fact_candidates)
     manifest["ocr_fact_cross_review_group_count"] = len(ocr_fact_cross_review_rows)
+    manifest["ocr_fact_ledger_staging_preview_count"] = len(ocr_fact_ledger_staging_preview_rows)
+    manifest["ocr_fact_ledger_staging_preview_ready_count"] = sum(1 for row in ocr_fact_ledger_staging_preview_rows if row["staging_preview_status"] == "ready_for_ledger_staging_review_no_write")
+    manifest["ocr_fact_ledger_staging_preview_blocked_count"] = len(ocr_fact_ledger_staging_preview_rows) - manifest["ocr_fact_ledger_staging_preview_ready_count"]
     manifest["ocr_fact_review_apply_gate_count"] = len(ocr_fact_review_gate_rows)
     manifest["ocr_fact_review_authorization_present_count"] = sum(1 for row in ocr_fact_review_gate_rows if row["operator_authorization_present"] == "true")
     manifest["ocr_fact_review_authorization_valid_count"] = sum(1 for row in ocr_fact_review_gate_rows if row["authorization_validation_status"] == "valid_manifest_validation_only")
@@ -2836,6 +2896,27 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "financial_fact_promoted",
         "review_status",
     ], ocr_fact_cross_review_rows)
+    write_csv(run_dir / "ocr_fact_ledger_staging_preview.csv", [
+        "staging_preview_id",
+        "fact_candidate_id",
+        "candidate_metric",
+        "business_date",
+        "company",
+        "bank",
+        "account_alias",
+        "amount",
+        "currency",
+        "proposed_amount_role",
+        "proposed_liquidity_tier",
+        "proposed_flow_type",
+        "source_evidence_id",
+        "source_ocr_text_relative_path",
+        "authorization_validation_status",
+        "staging_preview_status",
+        "fund_ledger_write_allowed",
+        "financial_fact_promoted",
+        "review_status",
+    ], ocr_fact_ledger_staging_preview_rows)
     write_csv(run_dir / "ocr_fact_review_apply_gate.csv", [
         "review_gate_id",
         "fact_candidate_id",
@@ -3190,6 +3271,9 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "ocr_value_candidate_count": len(ocr_value_candidates),
         "ocr_financial_fact_candidate_count": len(ocr_financial_fact_candidates),
         "ocr_fact_cross_review_group_count": manifest["ocr_fact_cross_review_group_count"],
+        "ocr_fact_ledger_staging_preview_count": manifest["ocr_fact_ledger_staging_preview_count"],
+        "ocr_fact_ledger_staging_preview_ready_count": manifest["ocr_fact_ledger_staging_preview_ready_count"],
+        "ocr_fact_ledger_staging_preview_blocked_count": manifest["ocr_fact_ledger_staging_preview_blocked_count"],
         "ocr_fact_review_apply_gate_count": manifest["ocr_fact_review_apply_gate_count"],
         "ocr_fact_review_authorization_present_count": manifest["ocr_fact_review_authorization_present_count"],
         "ocr_fact_review_authorization_valid_count": manifest["ocr_fact_review_authorization_valid_count"],
@@ -3254,6 +3338,9 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "ocr_value_candidate_count": len(ocr_value_candidates),
                 "ocr_financial_fact_candidate_count": len(ocr_financial_fact_candidates),
                 "ocr_fact_cross_review_group_count": manifest["ocr_fact_cross_review_group_count"],
+                "ocr_fact_ledger_staging_preview_count": manifest["ocr_fact_ledger_staging_preview_count"],
+                "ocr_fact_ledger_staging_preview_ready_count": manifest["ocr_fact_ledger_staging_preview_ready_count"],
+                "ocr_fact_ledger_staging_preview_blocked_count": manifest["ocr_fact_ledger_staging_preview_blocked_count"],
                 "ocr_fact_review_apply_gate_count": manifest["ocr_fact_review_apply_gate_count"],
                 "ocr_fact_review_authorization_present_count": manifest["ocr_fact_review_authorization_present_count"],
                 "ocr_fact_review_authorization_valid_count": manifest["ocr_fact_review_authorization_valid_count"],
@@ -3401,6 +3488,8 @@ def main() -> int:
         f"OCR value candidate count: {manifest.get('ocr_value_candidate_count', 0)}\n\n"
         f"OCR financial fact candidate count: {manifest.get('ocr_financial_fact_candidate_count', 0)}\n\n"
         f"OCR fact cross-review group count: {manifest.get('ocr_fact_cross_review_group_count', 0)}\n\n"
+        f"OCR fact ledger staging preview ready count: {manifest.get('ocr_fact_ledger_staging_preview_ready_count', 0)}\n\n"
+        f"OCR fact ledger staging preview blocked count: {manifest.get('ocr_fact_ledger_staging_preview_blocked_count', 0)}\n\n"
         f"OCR fact review authorization valid count: {manifest.get('ocr_fact_review_authorization_valid_count', 0)}\n\n"
         f"OCR fact review authorization preview ready count: {manifest.get('ocr_fact_review_authorization_preview_ready_count', 0)}\n\n"
         f"OCR fact review authorization preview blocked count: {manifest.get('ocr_fact_review_authorization_preview_blocked_count', 0)}\n\n"
