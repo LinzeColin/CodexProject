@@ -1941,3 +1941,10 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - validator: `KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_raw_to_processed_value_comparison.py`
 - evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_RAW_TO_PROCESSED_VALUE_COMPARISON/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_raw_to_processed_value_comparison_manifest.json`
 - constraints: no raw inbox access/mutation; no authoritative binding; no raw-to-processed value comparison; no GitHub upload; no app reinstall; no business execution.
+
+## FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-PROCESSED-DATA-RECONCILIATION-001
+
+- Purpose: public-safe gate proving owner/authorized-agent external action is still required before processed-data reconciliation.
+- Inputs: previous raw-to-processed comparison requirement public artifacts and ignored private requirement queue, read-only.
+- Output: aggregate NO_GO evidence plus ignored private processed-data reconciliation requirement queue/report.
+- Boundary: no raw inbox access, no authoritative binding, no raw-to-processed comparison, no processed-data reconciliation, no upload, no reinstall, no business execution.
