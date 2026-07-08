@@ -6219,13 +6219,26 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 self.assertIn("owner_corrected_bank", shared_xml)
                 self.assertIn("owner_review_completion_status", shared_xml)
                 self.assertIn("missing_owner_fields_current", shared_xml)
-                self.assertIn("blocked_missing_owner_values", shared_xml)
+                self.assertIn("blocked_missing_owner_values", sheet_xml)
                 self.assertIn("pending_owner_review", shared_xml)
                 self.assertIn("fund_ledger_write_allowed", shared_xml)
                 self.assertIn("management_conclusion_allowed", shared_xml)
                 self.assertIn("<dataValidations", sheet_xml)
                 self.assertIn("approve_for_review_authorization", sheet_xml)
                 self.assertIn("frozenSplit", sheet_xml)
+                sheet_root = ET.fromstring(sheet_xml)
+                ns = {"x": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
+                status_formula = sheet_root.find(".//x:c[@r='T2']/x:f", ns)
+                missing_formula = sheet_root.find(".//x:c[@r='U2']/x:f", ns)
+                self.assertIsNotNone(status_formula)
+                self.assertIsNotNone(missing_formula)
+                self.assertIn("Q2", status_formula.text or "")
+                self.assertIn("R2", status_formula.text or "")
+                self.assertIn("S2", status_formula.text or "")
+                self.assertIn("V2", status_formula.text or "")
+                self.assertIn("R2", missing_formula.text or "")
+                self.assertIn("S2", missing_formula.text or "")
+                self.assertIn("V2", missing_formula.text or "")
             self.assertFalse(
                 (
                     repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/"

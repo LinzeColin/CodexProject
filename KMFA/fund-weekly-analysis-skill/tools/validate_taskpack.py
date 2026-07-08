@@ -96,6 +96,8 @@ REQUIRED_SKILL_STRINGS = [
     "Owner Review",
     "owner_review_completion_status",
     "missing_owner_fields_current",
+    "TEXTJOIN",
+    "ready_for_private_owner_decision_manifest_no_write",
     "--acknowledge-owner-reviewed-values",
     "BLOCKED_OWNER_VALUES_MISSING",
     "ocr_fact_owner_decision_correction_roundtrip_audit.csv",
