@@ -1323,6 +1323,70 @@ def build_ocr_fact_candidate_owner_decision_preview_rows(
     return rows
 
 
+def build_ocr_fact_candidate_owner_decision_progress_summary_rows(
+    manifest: dict,
+    decision_preview_rows: list[dict],
+) -> list[dict]:
+    def summarize(summary_level: str, candidate_metric: str, rows: list[dict]) -> dict:
+        ready_count = sum(
+            1 for row in rows
+            if row["decision_preview_status"] == "ready_for_private_ocr_fact_authorization_update_no_write"
+        )
+        missing_manifest_count = sum(
+            1 for row in rows
+            if row["decision_validation_status"] == "missing_decision_manifest"
+        )
+        pending_count = sum(
+            1 for row in rows
+            if row["owner_authorization_decision"] == "pending_owner_review"
+        )
+        approved_count = sum(
+            1 for row in rows
+            if row["owner_authorization_decision"] == "approve_for_review_authorization"
+        )
+        correction_count = sum(
+            1 for row in rows
+            if row["owner_authorization_decision"] == "needs_correction"
+        )
+        rejected_count = sum(
+            1 for row in rows
+            if row["owner_authorization_decision"] == "reject_candidate"
+        )
+        missing_company_count = sum(1 for row in rows if not row["owner_corrected_company"])
+        missing_bank_count = sum(1 for row in rows if not row["owner_corrected_bank"])
+        next_step = (
+            "Owner decision coverage is ready for private authorization preview; keep this step no-write."
+            if rows and ready_count == len(rows)
+            else "Complete the private owner decision manifest before any OCR fact authorization update."
+        )
+        return {
+            "progress_summary_id": f"OCROWNERDECISIONPROGRESS-{manifest['run_id']}-{summary_level}-{candidate_metric}",
+            "summary_level": summary_level,
+            "candidate_metric": candidate_metric,
+            "candidate_count": str(len(rows)),
+            "ready_count": str(ready_count),
+            "blocking_count": str(len(rows) - ready_count),
+            "missing_owner_decision_manifest_count": str(missing_manifest_count),
+            "pending_owner_review_count": str(pending_count),
+            "approved_for_authorization_count": str(approved_count),
+            "needs_correction_count": str(correction_count),
+            "rejected_count": str(rejected_count),
+            "missing_company_count": str(missing_company_count),
+            "missing_bank_count": str(missing_bank_count),
+            "authorization_update_ready_count": str(ready_count),
+            "fund_ledger_write_allowed": "false",
+            "financial_fact_promoted": "false",
+            "management_conclusion_allowed": "false",
+            "recommended_next_step": next_step,
+        }
+
+    rows = [summarize("all_candidates", "ALL", decision_preview_rows)]
+    for candidate_metric in sorted({row["candidate_metric"] for row in decision_preview_rows}):
+        metric_rows = [row for row in decision_preview_rows if row["candidate_metric"] == candidate_metric]
+        rows.append(summarize("candidate_metric", candidate_metric, metric_rows))
+    return rows
+
+
 def build_ocr_fact_candidate_owner_authorization_update_draft(
     manifest: dict,
     decision_preview_rows: list[dict],
@@ -5790,6 +5854,12 @@ def write_no_hallucination_outputs(
         repo_root,
         ocr_fact_candidate_owner_worklist_rows,
     )
+    ocr_fact_candidate_owner_decision_progress_summary_rows = (
+        build_ocr_fact_candidate_owner_decision_progress_summary_rows(
+            manifest,
+            ocr_fact_candidate_owner_decision_preview_rows,
+        )
+    )
     ocr_fact_controlled_ledger_row_preview_rows = build_ocr_fact_controlled_ledger_row_preview_rows(
         manifest,
         ocr_fact_ledger_staging_preview_rows,
@@ -5929,6 +5999,22 @@ def write_no_hallucination_outputs(
     manifest["ocr_fact_candidate_owner_decision_preview_blocking_count"] = (
         len(ocr_fact_candidate_owner_decision_preview_rows)
         - manifest["ocr_fact_candidate_owner_decision_preview_ready_count"]
+    )
+    manifest["ocr_fact_candidate_owner_decision_progress_summary_count"] = len(
+        ocr_fact_candidate_owner_decision_progress_summary_rows
+    )
+    manifest["ocr_fact_candidate_owner_decision_progress_summary_candidate_count"] = len(
+        ocr_fact_candidate_owner_decision_preview_rows
+    )
+    manifest["ocr_fact_candidate_owner_decision_progress_summary_ready_count"] = (
+        manifest["ocr_fact_candidate_owner_decision_preview_ready_count"]
+    )
+    manifest["ocr_fact_candidate_owner_decision_progress_summary_blocking_count"] = (
+        manifest["ocr_fact_candidate_owner_decision_preview_blocking_count"]
+    )
+    manifest["ocr_fact_candidate_owner_decision_progress_summary_missing_manifest_count"] = sum(
+        1 for row in ocr_fact_candidate_owner_decision_preview_rows
+        if row["decision_validation_status"] == "missing_decision_manifest"
     )
     manifest["ocr_fact_candidate_owner_authorization_update_draft_count"] = len(
         ocr_fact_candidate_owner_authorization_update_draft["fact_candidate_authorizations"]
@@ -6445,6 +6531,26 @@ def write_no_hallucination_outputs(
         "management_conclusion_allowed",
         "recommended_next_step",
     ], ocr_fact_candidate_owner_decision_preview_rows)
+    write_csv(run_dir / "ocr_fact_candidate_owner_decision_progress_summary.csv", [
+        "progress_summary_id",
+        "summary_level",
+        "candidate_metric",
+        "candidate_count",
+        "ready_count",
+        "blocking_count",
+        "missing_owner_decision_manifest_count",
+        "pending_owner_review_count",
+        "approved_for_authorization_count",
+        "needs_correction_count",
+        "rejected_count",
+        "missing_company_count",
+        "missing_bank_count",
+        "authorization_update_ready_count",
+        "fund_ledger_write_allowed",
+        "financial_fact_promoted",
+        "management_conclusion_allowed",
+        "recommended_next_step",
+    ], ocr_fact_candidate_owner_decision_progress_summary_rows)
     (run_dir / "ocr_fact_candidate_owner_authorization_update_draft.json").write_text(
         json.dumps(ocr_fact_candidate_owner_authorization_update_draft, ensure_ascii=False, indent=2),
         encoding="utf-8",
@@ -7214,6 +7320,11 @@ def write_no_hallucination_outputs(
         "ocr_fact_candidate_owner_decision_preview_count": manifest["ocr_fact_candidate_owner_decision_preview_count"],
         "ocr_fact_candidate_owner_decision_preview_ready_count": manifest["ocr_fact_candidate_owner_decision_preview_ready_count"],
         "ocr_fact_candidate_owner_decision_preview_blocking_count": manifest["ocr_fact_candidate_owner_decision_preview_blocking_count"],
+        "ocr_fact_candidate_owner_decision_progress_summary_count": manifest["ocr_fact_candidate_owner_decision_progress_summary_count"],
+        "ocr_fact_candidate_owner_decision_progress_summary_candidate_count": manifest["ocr_fact_candidate_owner_decision_progress_summary_candidate_count"],
+        "ocr_fact_candidate_owner_decision_progress_summary_ready_count": manifest["ocr_fact_candidate_owner_decision_progress_summary_ready_count"],
+        "ocr_fact_candidate_owner_decision_progress_summary_blocking_count": manifest["ocr_fact_candidate_owner_decision_progress_summary_blocking_count"],
+        "ocr_fact_candidate_owner_decision_progress_summary_missing_manifest_count": manifest["ocr_fact_candidate_owner_decision_progress_summary_missing_manifest_count"],
         "ocr_fact_candidate_owner_authorization_update_draft_count": manifest["ocr_fact_candidate_owner_authorization_update_draft_count"],
         "ocr_fact_candidate_owner_authorization_update_preview_count": manifest["ocr_fact_candidate_owner_authorization_update_preview_count"],
         "ocr_fact_candidate_owner_authorization_update_preview_ready_count": manifest["ocr_fact_candidate_owner_authorization_update_preview_ready_count"],
@@ -8025,6 +8136,11 @@ def write_no_hallucination_outputs(
                 "ocr_fact_candidate_owner_decision_preview_count": manifest["ocr_fact_candidate_owner_decision_preview_count"],
                 "ocr_fact_candidate_owner_decision_preview_ready_count": manifest["ocr_fact_candidate_owner_decision_preview_ready_count"],
                 "ocr_fact_candidate_owner_decision_preview_blocking_count": manifest["ocr_fact_candidate_owner_decision_preview_blocking_count"],
+                "ocr_fact_candidate_owner_decision_progress_summary_count": manifest["ocr_fact_candidate_owner_decision_progress_summary_count"],
+                "ocr_fact_candidate_owner_decision_progress_summary_candidate_count": manifest["ocr_fact_candidate_owner_decision_progress_summary_candidate_count"],
+                "ocr_fact_candidate_owner_decision_progress_summary_ready_count": manifest["ocr_fact_candidate_owner_decision_progress_summary_ready_count"],
+                "ocr_fact_candidate_owner_decision_progress_summary_blocking_count": manifest["ocr_fact_candidate_owner_decision_progress_summary_blocking_count"],
+                "ocr_fact_candidate_owner_decision_progress_summary_missing_manifest_count": manifest["ocr_fact_candidate_owner_decision_progress_summary_missing_manifest_count"],
                 "ocr_fact_candidate_owner_authorization_update_draft_count": manifest["ocr_fact_candidate_owner_authorization_update_draft_count"],
                 "ocr_fact_candidate_owner_authorization_update_preview_count": manifest["ocr_fact_candidate_owner_authorization_update_preview_count"],
                 "ocr_fact_candidate_owner_authorization_update_preview_ready_count": manifest["ocr_fact_candidate_owner_authorization_update_preview_ready_count"],
@@ -8302,6 +8418,9 @@ def main() -> int:
         f"OCR fact candidate owner decision template count: {manifest.get('ocr_fact_candidate_owner_decision_template_count', 0)}\n\n"
         f"OCR fact candidate owner decision preview ready count: {manifest.get('ocr_fact_candidate_owner_decision_preview_ready_count', 0)}\n\n"
         f"OCR fact candidate owner decision preview blocking count: {manifest.get('ocr_fact_candidate_owner_decision_preview_blocking_count', 0)}\n\n"
+        f"OCR fact candidate owner decision progress summary count: {manifest.get('ocr_fact_candidate_owner_decision_progress_summary_count', 0)}\n\n"
+        f"OCR fact candidate owner decision progress summary candidate count: {manifest.get('ocr_fact_candidate_owner_decision_progress_summary_candidate_count', 0)}\n\n"
+        f"OCR fact candidate owner decision progress summary blocking count: {manifest.get('ocr_fact_candidate_owner_decision_progress_summary_blocking_count', 0)}\n\n"
         f"OCR fact candidate owner authorization update draft count: {manifest.get('ocr_fact_candidate_owner_authorization_update_draft_count', 0)}\n\n"
         f"OCR fact candidate owner authorization update preview ready count: {manifest.get('ocr_fact_candidate_owner_authorization_update_preview_ready_count', 0)}\n\n"
         f"OCR fact candidate owner authorization update preview blocking count: {manifest.get('ocr_fact_candidate_owner_authorization_update_preview_blocking_count', 0)}\n\n"
