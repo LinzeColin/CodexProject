@@ -11,7 +11,9 @@ import argparse
 import csv
 import json
 import os
+import zipfile
 from pathlib import Path
+from xml.etree import ElementTree as ET
 
 
 DECISION_SCOPE = "ocr_fact_candidate_owner_worklist_validation_only"
@@ -19,6 +21,7 @@ SOURCE_ARTIFACT = "ocr_fact_candidate_owner_worklist.csv"
 PRIVATE_DECISION_PREFIX = Path(
     "KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_fact_candidate_owner_decisions"
 )
+XLSX_NS = {"x": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
 
 
 def emit(payload: dict) -> None:
@@ -88,6 +91,108 @@ def load_csv_draft(path: Path, run_id: str) -> dict:
         "run_id": run_id,
         "decision_scope": DECISION_SCOPE,
         "draft_status": "owner_decision_csv_intake",
+        "generated_from": path.name,
+        "source_artifact": SOURCE_ARTIFACT,
+        "output_decision_manifest_relative_path": default_output_relative_path(run_id),
+        "financial_fact_promotion_allowed": False,
+        "fund_ledger_write_allowed": False,
+        "management_conclusion_allowed": False,
+        "owner_decisions": decisions,
+    }
+
+
+def column_index(cell_ref: str) -> int:
+    letters = "".join(ch for ch in cell_ref if ch.isalpha())
+    if not letters:
+        return 0
+    index = 0
+    for char in letters:
+        index = index * 26 + (ord(char.upper()) - 64)
+    return index - 1
+
+
+def xlsx_shared_strings(workbook: zipfile.ZipFile) -> list[str]:
+    try:
+        root = ET.fromstring(workbook.read("xl/sharedStrings.xml"))
+    except KeyError:
+        return []
+    strings: list[str] = []
+    for item in root.findall("x:si", XLSX_NS):
+        strings.append("".join(node.text or "" for node in item.findall(".//x:t", XLSX_NS)))
+    return strings
+
+
+def xlsx_cell_text(cell: ET.Element, shared_strings: list[str]) -> str:
+    if cell.attrib.get("t") == "inlineStr":
+        return "".join(node.text or "" for node in cell.findall(".//x:t", XLSX_NS))
+    value = cell.find("x:v", XLSX_NS)
+    if value is None or value.text is None:
+        return ""
+    if cell.attrib.get("t") == "s":
+        try:
+            return shared_strings[int(value.text)]
+        except (IndexError, ValueError) as exc:
+            raise ValueError("draft_invalid_xlsx:shared_string_index") from exc
+    return value.text
+
+
+def load_xlsx_rows(path: Path) -> list[dict]:
+    try:
+        with zipfile.ZipFile(path) as workbook:
+            shared_strings = xlsx_shared_strings(workbook)
+            sheet = ET.fromstring(workbook.read("xl/worksheets/sheet1.xml"))
+    except FileNotFoundError as exc:
+        raise ValueError("draft_missing") from exc
+    except (KeyError, zipfile.BadZipFile, ET.ParseError) as exc:
+        raise ValueError("draft_invalid_xlsx") from exc
+
+    table: list[list[str]] = []
+    for row in sheet.findall(".//x:sheetData/x:row", XLSX_NS):
+        values: list[str] = []
+        for cell in row.findall("x:c", XLSX_NS):
+            index = column_index(cell.attrib.get("r", ""))
+            while len(values) <= index:
+                values.append("")
+            values[index] = xlsx_cell_text(cell, shared_strings)
+        if values:
+            table.append(values)
+    if len(table) < 2:
+        raise ValueError("draft_has_no_owner_decisions")
+    header = [value.strip() for value in table[0]]
+    rows: list[dict] = []
+    for raw_row in table[1:]:
+        if not any(value.strip() for value in raw_row):
+            continue
+        rows.append({
+            header[index]: raw_row[index] if index < len(raw_row) else ""
+            for index in range(len(header))
+            if header[index]
+        })
+    if not rows:
+        raise ValueError("draft_has_no_owner_decisions")
+    return rows
+
+
+def load_xlsx_draft(path: Path, run_id: str) -> dict:
+    rows = load_xlsx_rows(path)
+    decisions: list[dict] = []
+    for index, row in enumerate(rows, 1):
+        if not isinstance(row, dict):
+            raise ValueError(f"draft_invalid_schema:xlsx_row[{index}]")
+        decisions.append({
+            "fact_candidate_id": str(row.get("fact_candidate_id", "")),
+            "candidate_metric": str(row.get("candidate_metric", "")),
+            "owner_authorization_decision": str(row.get("owner_authorization_decision", "")),
+            "owner_corrected_company": str(row.get("owner_corrected_company", "")),
+            "owner_corrected_bank": str(row.get("owner_corrected_bank", "")),
+            "required_owner_fields": str(row.get("required_owner_fields", "")),
+            "owner_note": str(row.get("owner_note", "")),
+        })
+    return {
+        "decision_manifest_version": "1",
+        "run_id": run_id,
+        "decision_scope": DECISION_SCOPE,
+        "draft_status": "owner_decision_xlsx_intake",
         "generated_from": path.name,
         "source_artifact": SOURCE_ARTIFACT,
         "output_decision_manifest_relative_path": default_output_relative_path(run_id),
@@ -199,30 +304,37 @@ def main() -> int:
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--draft-path", default="")
     parser.add_argument("--draft-csv-path", default="")
+    parser.add_argument("--draft-xlsx-path", default="")
     parser.add_argument("--apply", action="store_true")
     parser.add_argument("--acknowledge-owner-reviewed-values", action="store_true")
     args = parser.parse_args()
 
     repo_root = Path(args.repo_root).expanduser().resolve()
-    if args.draft_path and args.draft_csv_path:
+    selected_draft_args = [value for value in (args.draft_path, args.draft_csv_path, args.draft_xlsx_path) if value]
+    if len(selected_draft_args) > 1:
         emit({
             "status": "INVALID_ARGUMENTS",
             "run_id": args.run_id,
-            "reason": "choose only one of --draft-path or --draft-csv-path",
+            "reason": "choose only one of --draft-path, --draft-csv-path, or --draft-xlsx-path",
             "apply_performed": False,
             "financial_fact_promotion_allowed": False,
             "fund_ledger_write_allowed": False,
             "management_conclusion_allowed": False,
         })
         return 2
-    draft_format = "csv" if args.draft_csv_path else "json"
+    draft_format = "xlsx" if args.draft_xlsx_path else "csv" if args.draft_csv_path else "json"
     draft_path = (
-        Path(args.draft_csv_path or args.draft_path).expanduser().resolve()
-        if args.draft_path or args.draft_csv_path
+        Path(args.draft_xlsx_path or args.draft_csv_path or args.draft_path).expanduser().resolve()
+        if selected_draft_args
         else resolve_default_draft_path(repo_root, args.run_id)
     )
     try:
-        draft = load_csv_draft(draft_path, args.run_id) if args.draft_csv_path else load_draft(draft_path)
+        if args.draft_xlsx_path:
+            draft = load_xlsx_draft(draft_path, args.run_id)
+        elif args.draft_csv_path:
+            draft = load_csv_draft(draft_path, args.run_id)
+        else:
+            draft = load_draft(draft_path)
         validation, decisions = validate_draft(draft, args.run_id)
     except ValueError as exc:
         reason = str(exc)

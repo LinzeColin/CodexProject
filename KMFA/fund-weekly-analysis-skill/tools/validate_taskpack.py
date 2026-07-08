@@ -83,6 +83,8 @@ REQUIRED_SKILL_STRINGS = [
     "blocked_missing_owner_decision_manifest",
     "install_owner_decision_manifest.py",
     "--draft-csv-path",
+    "--draft-xlsx-path",
+    "owner_decision_xlsx_intake",
     "export_owner_decision_review_csv.py",
     "ocr_fact_candidate_owner_decision_review_batch.csv",
     "ocr_fact_candidate_owner_decision_review_batch.xlsx",
