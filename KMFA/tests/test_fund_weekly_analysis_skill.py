@@ -574,6 +574,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "ocr_fact_owner_decision_correction_draft.json",
                 "ocr_fact_owner_decision_correction_apply_preview.csv",
                 "ocr_fact_owner_decision_correction_roundtrip_audit.csv",
+                "ocr_fact_owner_decision_correction_evidence_packet.csv",
                 "ocr_fact_review_apply_gate.csv",
                 "ocr_fact_review_authorization_template.json",
                 "ocr_fact_review_authorization_preview.csv",
@@ -1416,6 +1417,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 correction_queue_rows = list(csv.DictReader(f))
             self.assertEqual(correction_queue_rows, [])
 
+            with (run_dir / "ocr_fact_owner_decision_correction_evidence_packet.csv").open(encoding="utf-8-sig", newline="") as f:
+                correction_evidence_packet_rows = list(csv.DictReader(f))
+            self.assertEqual(correction_evidence_packet_rows, [])
+
             correction_draft = json.loads(
                 (run_dir / "ocr_fact_owner_decision_correction_draft.json").read_text(encoding="utf-8")
             )
@@ -2189,6 +2194,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_roundtrip_audit_ready_count"], 2)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_roundtrip_audit_blocking_count"], 0)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_roundtrip_audit_write_allowed_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_evidence_packet_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_evidence_packet_ready_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_evidence_packet_blocking_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_evidence_packet_write_allowed_count"], 0)
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertFalse(cross_review["management_conclusion_allowed"])
 
@@ -2323,6 +2332,34 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(row["financial_fact_promoted"], "false")
             self.assertEqual(row["management_conclusion_allowed"], "false")
 
+            with (run_dir / "ocr_fact_owner_decision_correction_evidence_packet.csv").open(encoding="utf-8-sig", newline="") as f:
+                correction_evidence_packet_rows = list(csv.DictReader(f))
+            self.assertEqual(len(correction_evidence_packet_rows), 1)
+            evidence_packet = correction_evidence_packet_rows[0]
+            self.assertEqual(evidence_packet["fact_candidate_id"], f"OCRFACT-{run_id}-00001")
+            self.assertEqual(evidence_packet["candidate_metric"], "bank_deposit")
+            self.assertEqual(evidence_packet["source_correction_queue_id"], row["correction_queue_id"])
+            self.assertEqual(evidence_packet["source_evidence_id"], "FWocr_owner_correction_queue_test-00001")
+            self.assertEqual(evidence_packet["source_image_relative_path"], "files/0708/20260708113000_杨婷_资金账户截图.png")
+            self.assertEqual(evidence_packet["candidate_business_date"], "2026-07-08")
+            self.assertEqual(evidence_packet["candidate_amount"], "12345.67")
+            self.assertIn("武汉开明", evidence_packet["candidate_line_text_excerpt"])
+            self.assertEqual(evidence_packet["current_company"], "武汉开明")
+            self.assertEqual(evidence_packet["current_bank"], "")
+            self.assertEqual(evidence_packet["missing_required_fields"], "bank")
+            self.assertEqual(evidence_packet["required_owner_fields"], "owner_corrected_bank")
+            self.assertEqual(
+                evidence_packet["owner_decision_manifest_relative_path"],
+                f"KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_fact_candidate_owner_decisions/{run_id}.json",
+            )
+            self.assertEqual(evidence_packet["evidence_packet_status"], "ready_for_owner_field_review_no_write")
+            self.assertEqual(evidence_packet["owner_decision_manifest_write_allowed"], "false")
+            self.assertEqual(evidence_packet["fund_ledger_write_allowed"], "false")
+            self.assertEqual(evidence_packet["formal_fund_ledger_write_allowed"], "false")
+            self.assertEqual(evidence_packet["financial_fact_promoted"], "false")
+            self.assertEqual(evidence_packet["management_conclusion_allowed"], "false")
+            self.assertIn('"owner_authorization_decision":"needs_correction"', evidence_packet["owner_decision_json_fragment"])
+
             correction_draft = json.loads(
                 (run_dir / "ocr_fact_owner_decision_correction_draft.json").read_text(encoding="utf-8")
             )
@@ -2395,6 +2432,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_roundtrip_audit_ready_count"], 0)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_roundtrip_audit_blocking_count"], 1)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_roundtrip_audit_write_allowed_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_evidence_packet_count"], 1)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_evidence_packet_ready_count"], 1)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_evidence_packet_blocking_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_evidence_packet_write_allowed_count"], 0)
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertFalse(cross_review["management_conclusion_allowed"])
 
