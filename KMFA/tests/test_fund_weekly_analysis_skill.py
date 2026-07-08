@@ -1103,8 +1103,16 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(len(fact_promotion_preview_rows), 6)
             promotion_preview_by_area = {row["review_area"]: row for row in fact_promotion_preview_rows}
             self.assertEqual(
+                promotion_preview_by_area["structured_csv_facts"]["preview_status"],
+                "authorization_not_required_no_candidate_facts",
+            )
+            self.assertEqual(
                 promotion_preview_by_area["ocr_fact_ledger_staging"]["preview_status"],
                 "blocked_missing_operator_authorization",
+            )
+            self.assertEqual(
+                promotion_preview_by_area["workbook_quality"]["preview_status"],
+                "authorization_not_required_review_area_ready",
             )
             self.assertEqual(
                 promotion_preview_by_area["ocr_fact_ledger_staging"]["authorization_validation_status"],
@@ -1119,7 +1127,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["fact_promotion_authorization_valid_count"], 0)
             self.assertEqual(cross_review["fact_promotion_authorization_preview_count"], 6)
             self.assertEqual(cross_review["fact_promotion_authorization_preview_ready_count"], 0)
-            self.assertEqual(cross_review["fact_promotion_authorization_preview_blocked_count"], 6)
+            self.assertEqual(cross_review["fact_promotion_authorization_preview_blocked_count"], 2)
 
             with (run_dir / "fact_promotion_execution_gate.csv").open(encoding="utf-8-sig", newline="") as f:
                 execution_gate_rows = list(csv.DictReader(f))
@@ -1128,6 +1136,14 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(
                 execution_gate_by_area["ocr_fact_ledger_staging"]["execution_gate_status"],
                 "blocked_missing_operator_authorization",
+            )
+            self.assertEqual(
+                execution_gate_by_area["structured_csv_facts"]["execution_gate_status"],
+                "not_required_no_candidate_facts",
+            )
+            self.assertEqual(
+                execution_gate_by_area["workbook_quality"]["execution_gate_status"],
+                "not_required_review_area_ready",
             )
             self.assertEqual(
                 execution_gate_by_area["ocr_fact_ledger_staging"]["authorization_validation_status"],
@@ -1139,7 +1155,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in execution_gate_rows))
             self.assertEqual(cross_review["fact_promotion_execution_gate_count"], 6)
             self.assertEqual(cross_review["fact_promotion_execution_gate_ready_count"], 0)
-            self.assertEqual(cross_review["fact_promotion_execution_gate_blocked_count"], 6)
+            self.assertEqual(cross_review["fact_promotion_execution_gate_blocked_count"], 2)
             self.assertEqual(cross_review["fact_promotion_execution_allowed_count"], 0)
 
     def test_runner_validates_private_fact_promotion_authorization_without_promoting_facts(self) -> None:
@@ -1261,11 +1277,11 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(preview_by_area["ocr_fact_ledger_staging"]["operator_authorization_present"], "true")
             self.assertEqual(
                 preview_by_area["workbook_quality"]["preview_status"],
-                "ready_for_owner_review_no_fact_promotion",
+                "authorization_not_required_review_area_ready",
             )
             self.assertEqual(
                 preview_by_area["chat_value_candidates"]["preview_status"],
-                "blocked_review_packet_not_authorized",
+                "authorization_not_required_no_candidate_facts",
             )
             self.assertTrue(all(row["financial_fact_promotion_allowed"] == "false" for row in preview_rows))
             self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in preview_rows))
@@ -1277,11 +1293,11 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(fund_rows, [])
 
             cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
-            self.assertEqual(cross_review["fact_promotion_authorization_present_count"], 2)
-            self.assertEqual(cross_review["fact_promotion_authorization_valid_count"], 2)
+            self.assertEqual(cross_review["fact_promotion_authorization_present_count"], 1)
+            self.assertEqual(cross_review["fact_promotion_authorization_valid_count"], 1)
             self.assertEqual(cross_review["fact_promotion_authorization_preview_count"], 6)
-            self.assertEqual(cross_review["fact_promotion_authorization_preview_ready_count"], 2)
-            self.assertEqual(cross_review["fact_promotion_authorization_preview_blocked_count"], 4)
+            self.assertEqual(cross_review["fact_promotion_authorization_preview_ready_count"], 1)
+            self.assertEqual(cross_review["fact_promotion_authorization_preview_blocked_count"], 1)
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertFalse(cross_review["management_conclusion_allowed"])
 
@@ -1298,15 +1314,15 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             )
             self.assertEqual(
                 execution_by_area["workbook_quality"]["execution_gate_status"],
-                "ready_for_controlled_fact_promotion_execution",
+                "not_required_review_area_ready",
             )
             self.assertTrue(all(row["fact_promotion_execution_allowed"] == "false" for row in execution_rows))
             self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in execution_rows))
             self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in execution_rows))
             self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in execution_rows))
             self.assertEqual(cross_review["fact_promotion_execution_gate_count"], 6)
-            self.assertEqual(cross_review["fact_promotion_execution_gate_ready_count"], 1)
-            self.assertEqual(cross_review["fact_promotion_execution_gate_blocked_count"], 5)
+            self.assertEqual(cross_review["fact_promotion_execution_gate_ready_count"], 0)
+            self.assertEqual(cross_review["fact_promotion_execution_gate_blocked_count"], 2)
             self.assertEqual(cross_review["fact_promotion_execution_allowed_count"], 0)
 
     def test_runner_validates_private_ocr_fact_review_authorization_without_ledger_promotion(self) -> None:

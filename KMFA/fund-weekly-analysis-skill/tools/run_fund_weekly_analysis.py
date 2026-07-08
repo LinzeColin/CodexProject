@@ -2447,6 +2447,29 @@ def load_fact_promotion_authorization(repo_root: Path, run_id: str) -> dict:
 
 
 def fact_promotion_authorization_status(row: dict, authorization: dict) -> tuple[str, str, str, str]:
+    if row["authorization_required"] != "true":
+        candidate_count = int(row["candidate_count"])
+        ready_count = int(row["ready_count"])
+        if candidate_count == 0:
+            return (
+                "false",
+                "authorization_not_required",
+                "authorization_not_required_no_candidate_facts",
+                "Owner authorization is not required because this review area has no candidate facts.",
+            )
+        if ready_count > 0:
+            return (
+                "false",
+                "authorization_not_required",
+                "authorization_not_required_review_area_ready",
+                "Owner authorization is not required for this evidence-only review area; no facts are promoted or written.",
+            )
+        return (
+            "false",
+            "authorization_not_required",
+            "authorization_not_required_no_ready_facts",
+            "Owner authorization is not required because this review area has no ready fact rows.",
+        )
     auth_status = authorization["status"]
     if auth_status == "missing_authorization_manifest":
         return (
@@ -2527,6 +2550,26 @@ def build_fact_promotion_authorization_preview(manifest: dict, repo_root: Path, 
 
 def fact_promotion_execution_status(review_packet_row: dict, authorization_preview_row: dict) -> tuple[str, str, str]:
     validation_status = authorization_preview_row["authorization_validation_status"]
+    if validation_status == "authorization_not_required":
+        candidate_count = int(review_packet_row["candidate_count"])
+        ready_count = int(review_packet_row["ready_count"])
+        if candidate_count == 0:
+            return (
+                "not_required_no_candidate_facts",
+                "no_fact_promotion_required",
+                "No fact promotion execution is required because this review area has no candidate facts.",
+            )
+        if ready_count > 0:
+            return (
+                "not_required_review_area_ready",
+                "review_evidence_retained_no_fact_promotion",
+                "This evidence-only review area is retained for audit but does not require fact-promotion execution.",
+            )
+        return (
+            "not_required_no_ready_facts",
+            "no_fact_promotion_required",
+            "No fact promotion execution is required because this review area has no ready fact rows.",
+        )
     if validation_status != "valid_manifest_validation_only":
         return (
             authorization_preview_row["preview_status"],
@@ -4227,6 +4270,10 @@ def write_no_hallucination_outputs(
         1 for row in fact_promotion_authorization_preview_rows
         if row["preview_status"] == "ready_for_owner_review_no_fact_promotion"
     )
+    fact_promotion_authorization_preview_blocked_count = sum(
+        1 for row in fact_promotion_authorization_preview_rows
+        if row["preview_status"].startswith("blocked_")
+    )
     fact_promotion_execution_gate_rows = build_fact_promotion_execution_gate(
         manifest,
         fact_promotion_review_packet_rows,
@@ -4235,6 +4282,10 @@ def write_no_hallucination_outputs(
     fact_promotion_execution_gate_ready_count = sum(
         1 for row in fact_promotion_execution_gate_rows
         if row["execution_gate_status"] == "ready_for_controlled_fact_promotion_execution"
+    )
+    fact_promotion_execution_gate_blocked_count = sum(
+        1 for row in fact_promotion_execution_gate_rows
+        if row["execution_gate_status"].startswith("blocked_")
     )
     manifest["fact_promotion_review_packet_count"] = len(fact_promotion_review_packet_rows)
     manifest["fact_promotion_review_blocking_count"] = fact_promotion_review_blocking_count
@@ -4254,14 +4305,10 @@ def write_no_hallucination_outputs(
     manifest["fact_promotion_authorization_valid_count"] = fact_promotion_authorization_valid_count
     manifest["fact_promotion_authorization_preview_count"] = len(fact_promotion_authorization_preview_rows)
     manifest["fact_promotion_authorization_preview_ready_count"] = fact_promotion_authorization_preview_ready_count
-    manifest["fact_promotion_authorization_preview_blocked_count"] = (
-        len(fact_promotion_authorization_preview_rows) - fact_promotion_authorization_preview_ready_count
-    )
+    manifest["fact_promotion_authorization_preview_blocked_count"] = fact_promotion_authorization_preview_blocked_count
     manifest["fact_promotion_execution_gate_count"] = len(fact_promotion_execution_gate_rows)
     manifest["fact_promotion_execution_gate_ready_count"] = fact_promotion_execution_gate_ready_count
-    manifest["fact_promotion_execution_gate_blocked_count"] = (
-        len(fact_promotion_execution_gate_rows) - fact_promotion_execution_gate_ready_count
-    )
+    manifest["fact_promotion_execution_gate_blocked_count"] = fact_promotion_execution_gate_blocked_count
     manifest["fact_promotion_execution_allowed_count"] = sum(
         1 for row in fact_promotion_execution_gate_rows
         if row["fact_promotion_execution_allowed"] == "true"
