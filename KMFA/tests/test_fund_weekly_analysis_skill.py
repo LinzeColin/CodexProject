@@ -574,6 +574,8 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "fact_promotion_execution_gate.csv",
                 "fact_promotion_execution_dry_run.csv",
                 "fact_promotion_execution_plan.csv",
+                "fact_promotion_execution_authorization_template.json",
+                "fact_promotion_execution_authorization_preview.csv",
                 "exception_tasks.csv",
                 "cross_review.json",
                 "audit_log.json",
@@ -719,6 +721,45 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["fact_promotion_execution_plan_count"], 6)
             self.assertEqual(cross_review["fact_promotion_execution_plan_planned_impact_count"], 0)
             self.assertEqual(cross_review["fact_promotion_execution_plan_write_allowed_count"], 0)
+
+            execution_auth_template = json.loads(
+                (run_dir / "fact_promotion_execution_authorization_template.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(execution_auth_template["authorization_manifest_version"], "1")
+            self.assertEqual(execution_auth_template["run_id"], "indexed_package_test")
+            self.assertEqual(
+                execution_auth_template["authorization_scope"],
+                "controlled_fact_promotion_execution",
+            )
+            self.assertFalse(execution_auth_template["source_mutation_allowed"])
+            self.assertFalse(execution_auth_template["fact_promotion_execution_allowed"])
+            self.assertFalse(execution_auth_template["fund_ledger_write_allowed"])
+            self.assertFalse(execution_auth_template["financial_fact_promoted"])
+            self.assertFalse(execution_auth_template["management_conclusion_allowed"])
+            self.assertEqual(
+                execution_auth_template["output_authorization_manifest_relative_path"],
+                "KMFA/metadata/fund_weekly_analysis/private_runtime/"
+                "fact_promotion_execution_authorizations/indexed_package_test.json",
+            )
+            self.assertEqual(len(execution_auth_template["execution_plan_authorizations"]), 6)
+            self.assertTrue(
+                all(row["authorized"] is False for row in execution_auth_template["execution_plan_authorizations"])
+            )
+
+            with (run_dir / "fact_promotion_execution_authorization_preview.csv").open(
+                encoding="utf-8-sig",
+                newline="",
+            ) as f:
+                execution_auth_preview_rows = list(csv.DictReader(f))
+            self.assertEqual(len(execution_auth_preview_rows), 6)
+            self.assertTrue(all(row["source_mutation_allowed"] == "false" for row in execution_auth_preview_rows))
+            self.assertTrue(all(row["fact_promotion_execution_allowed"] == "false" for row in execution_auth_preview_rows))
+            self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in execution_auth_preview_rows))
+            self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in execution_auth_preview_rows))
+            self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in execution_auth_preview_rows))
+            self.assertEqual(cross_review["fact_promotion_execution_authorization_preview_count"], 6)
+            self.assertEqual(cross_review["fact_promotion_execution_authorization_preview_ready_count"], 0)
+            self.assertEqual(cross_review["fact_promotion_execution_authorization_write_allowed_count"], 0)
 
     def test_runner_collects_real_ocr_text_sidecars_without_promoting_amounts(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -1220,8 +1261,13 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
             source_day = input_dir / "files" / "0708"
             auth_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/fact_promotion_authorizations"
+            execution_auth_dir = (
+                repo_root
+                / "KMFA/metadata/fund_weekly_analysis/private_runtime/fact_promotion_execution_authorizations"
+            )
             source_day.mkdir(parents=True)
             auth_dir.mkdir(parents=True)
+            execution_auth_dir.mkdir(parents=True)
             screenshot = source_day / "20260708113000_杨婷_资金账户截图.png"
             screenshot.write_bytes(b"real-image-bytes")
 
@@ -3155,8 +3201,13 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
             source_day = input_dir / "files" / "0708"
             auth_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/fact_promotion_authorizations"
+            execution_auth_dir = (
+                repo_root
+                / "KMFA/metadata/fund_weekly_analysis/private_runtime/fact_promotion_execution_authorizations"
+            )
             source_day.mkdir(parents=True)
             auth_dir.mkdir(parents=True)
+            execution_auth_dir.mkdir(parents=True)
             structured_csv = source_day / "20260708113000_吴云霞_资金日报.csv"
             structured_csv.write_text(
                 "\n".join([
@@ -3188,6 +3239,30 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             }
             (auth_dir / "structured_csv_test.json").write_text(
                 json.dumps(authorization_manifest, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+            execution_authorization_manifest = {
+                "authorization_manifest_version": "1",
+                "run_id": "structured_csv_test",
+                "authorization_scope": "controlled_fact_promotion_execution",
+                "authorized_by": "operator-fixture",
+                "authorized_at": "2026-07-08T12:00:00+10:00",
+                "authorization_ticket": "S63-TEST",
+                "source_mutation_allowed": False,
+                "fact_promotion_execution_allowed": False,
+                "fund_ledger_write_allowed": False,
+                "financial_fact_promoted": False,
+                "management_conclusion_allowed": False,
+                "execution_plan_authorizations": [
+                    {
+                        "execution_plan_id": "FPEXECPLAN-structured_csv_test-00001",
+                        "review_area": "structured_csv_facts",
+                        "authorized": True,
+                    },
+                ],
+            }
+            (execution_auth_dir / "structured_csv_test.json").write_text(
+                json.dumps(execution_authorization_manifest, ensure_ascii=False, indent=2),
                 encoding="utf-8",
             )
 
@@ -3255,6 +3330,9 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["fact_promotion_execution_plan_ready_count"], 1)
             self.assertEqual(cross_review["fact_promotion_execution_plan_planned_impact_count"], 4)
             self.assertEqual(cross_review["fact_promotion_execution_plan_write_allowed_count"], 0)
+            self.assertEqual(cross_review["fact_promotion_execution_authorization_preview_count"], 6)
+            self.assertEqual(cross_review["fact_promotion_execution_authorization_preview_ready_count"], 1)
+            self.assertEqual(cross_review["fact_promotion_execution_authorization_write_allowed_count"], 0)
 
             with (run_dir / "fact_promotion_execution_dry_run.csv").open(encoding="utf-8-sig", newline="") as f:
                 dry_run_rows = list(csv.DictReader(f))
@@ -3286,6 +3364,36 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in execution_plan_rows))
             self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in execution_plan_rows))
             self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in execution_plan_rows))
+
+            execution_auth_template = json.loads(
+                (run_dir / "fact_promotion_execution_authorization_template.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(len(execution_auth_template["execution_plan_authorizations"]), 6)
+            self.assertFalse(execution_auth_template["fact_promotion_execution_allowed"])
+            self.assertFalse(execution_auth_template["fund_ledger_write_allowed"])
+
+            with (run_dir / "fact_promotion_execution_authorization_preview.csv").open(
+                encoding="utf-8-sig",
+                newline="",
+            ) as f:
+                execution_auth_preview_rows = list(csv.DictReader(f))
+            execution_auth_by_area = {row["review_area"]: row for row in execution_auth_preview_rows}
+            self.assertEqual(
+                execution_auth_by_area["structured_csv_facts"]["authorization_validation_status"],
+                "valid_execution_authorization_manifest",
+            )
+            self.assertEqual(
+                execution_auth_by_area["structured_csv_facts"]["preview_status"],
+                "ready_for_controlled_execution_run_no_write",
+            )
+            self.assertEqual(execution_auth_by_area["structured_csv_facts"]["operator_authorization_present"], "true")
+            self.assertTrue(all(row["source_mutation_allowed"] == "false" for row in execution_auth_preview_rows))
+            self.assertTrue(
+                all(row["fact_promotion_execution_allowed"] == "false" for row in execution_auth_preview_rows)
+            )
+            self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in execution_auth_preview_rows))
+            self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in execution_auth_preview_rows))
+            self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in execution_auth_preview_rows))
 
             workbook_path = run_dir / "资金与税费管理母版_structured_csv_test.xlsx"
             with zipfile.ZipFile(workbook_path) as workbook:

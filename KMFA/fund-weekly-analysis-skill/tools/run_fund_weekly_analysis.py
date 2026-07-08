@@ -2719,6 +2719,226 @@ def build_fact_promotion_execution_plan_rows(manifest: dict, dry_run_rows: list[
     return rows
 
 
+def fact_promotion_execution_authorization_relative_path(run_id: str) -> str:
+    return (
+        "KMFA/metadata/fund_weekly_analysis/private_runtime/"
+        f"fact_promotion_execution_authorizations/{run_id}.json"
+    )
+
+
+def build_fact_promotion_execution_authorization_template(manifest: dict, execution_plan_rows: list[dict]) -> dict:
+    return {
+        "authorization_manifest_version": "1",
+        "run_id": manifest["run_id"],
+        "authorization_scope": "controlled_fact_promotion_execution",
+        "template_status": "operator_review_required",
+        "template_generated_from": "fact_promotion_execution_plan.csv",
+        "output_authorization_manifest_relative_path": fact_promotion_execution_authorization_relative_path(
+            manifest["run_id"]
+        ),
+        "authorized_by": "",
+        "authorized_at": "",
+        "authorization_ticket": "",
+        "source_mutation_allowed": False,
+        "fact_promotion_execution_allowed": False,
+        "fund_ledger_write_allowed": False,
+        "financial_fact_promoted": False,
+        "management_conclusion_allowed": False,
+        "operator_instruction": (
+            "Review each execution plan row, edit authorized=true only where approved, then save a confirmed copy "
+            "to output_authorization_manifest_relative_path. This template itself does not execute fact promotion, "
+            "write fund_ledger.csv, mutate source files, or unlock management conclusions."
+        ),
+        "execution_plan_authorizations": [
+            {
+                "execution_plan_id": row["execution_plan_id"],
+                "review_area": row["review_area"],
+                "execution_plan_status": row["execution_plan_status"],
+                "planned_impact_count": row["planned_impact_count"],
+                "required_authorization_scope": row["required_authorization_scope"],
+                "source_artifact": row["source_artifact"],
+                "source_mutation_allowed": row["source_mutation_allowed"],
+                "fund_ledger_write_allowed": row["fund_ledger_write_allowed"],
+                "financial_fact_promoted": row["financial_fact_promoted"],
+                "authorized": False,
+                "authorization_note": "",
+            }
+            for row in execution_plan_rows
+        ],
+    }
+
+
+def load_fact_promotion_execution_authorization(repo_root: Path, run_id: str) -> dict:
+    relative_path = fact_promotion_execution_authorization_relative_path(run_id)
+    path = repo_root / relative_path
+    missing = {
+        "relative_path": relative_path,
+        "status": "missing_execution_authorization_manifest",
+        "entries": {},
+        "metadata": {},
+    }
+    if not path.exists():
+        return missing
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {**missing, "status": "invalid_execution_authorization_json"}
+    if not isinstance(payload, dict):
+        return {**missing, "status": "invalid_execution_authorization_schema"}
+    required = {
+        "authorization_manifest_version": "1",
+        "run_id": run_id,
+        "authorization_scope": "controlled_fact_promotion_execution",
+        "source_mutation_allowed": False,
+        "fact_promotion_execution_allowed": False,
+        "fund_ledger_write_allowed": False,
+        "financial_fact_promoted": False,
+        "management_conclusion_allowed": False,
+    }
+    if any(payload.get(key) != value for key, value in required.items()):
+        return {**missing, "status": "invalid_execution_authorization_schema"}
+    raw_entries = payload.get("execution_plan_authorizations")
+    if not isinstance(raw_entries, list):
+        return {**missing, "status": "invalid_execution_authorization_schema"}
+    entries = {}
+    for entry in raw_entries:
+        if not isinstance(entry, dict):
+            return {**missing, "status": "invalid_execution_authorization_schema"}
+        execution_plan_id = entry.get("execution_plan_id")
+        review_area = entry.get("review_area")
+        if not isinstance(execution_plan_id, str) or not execution_plan_id:
+            return {**missing, "status": "invalid_execution_authorization_schema"}
+        if not isinstance(review_area, str) or not review_area:
+            return {**missing, "status": "invalid_execution_authorization_schema"}
+        entries[execution_plan_id] = {
+            "review_area": review_area,
+            "authorized": entry.get("authorized") is True,
+        }
+    return {
+        "relative_path": relative_path,
+        "status": "valid_execution_authorization_manifest",
+        "entries": entries,
+        "metadata": {
+            "authorization_ticket": str(payload.get("authorization_ticket", "")),
+            "authorized_by": str(payload.get("authorized_by", "")),
+            "authorized_at": str(payload.get("authorized_at", "")),
+            "authorization_scope": str(payload.get("authorization_scope", "")),
+        },
+    }
+
+
+def fact_promotion_execution_authorization_status(row: dict, authorization: dict) -> tuple[str, str, str, str, str]:
+    if row["execution_plan_status"] != "ready_for_owner_execution_authorization_no_write":
+        if row["execution_plan_status"].startswith("blocked_"):
+            return (
+                "true",
+                "execution_plan_not_ready",
+                "blocked_execution_plan_not_ready",
+                "Execution authorization cannot be accepted until this execution plan row is ready.",
+                "pending_execution_plan_readiness",
+            )
+        return (
+            "false",
+            "authorization_not_required",
+            "not_required_no_execution_authorization",
+            "Execution authorization is not required for this no-op execution plan row.",
+            "no_execution_authorization_required",
+        )
+    auth_status = authorization["status"]
+    if auth_status == "missing_execution_authorization_manifest":
+        return (
+            "false",
+            auth_status,
+            "blocked_missing_execution_authorization",
+            "Controlled fact-promotion execution is blocked until a private execution authorization manifest exists.",
+            "pending_owner_execution_authorization",
+        )
+    if auth_status != "valid_execution_authorization_manifest":
+        return (
+            "false",
+            auth_status,
+            "blocked_invalid_execution_authorization",
+            "Controlled fact-promotion execution is blocked because the execution authorization manifest is invalid.",
+            "pending_owner_execution_authorization",
+        )
+    entry = authorization["entries"].get(row["execution_plan_id"])
+    if entry is None:
+        return (
+            "false",
+            "execution_plan_not_authorized",
+            "blocked_execution_plan_not_authorized",
+            "Controlled fact-promotion execution is blocked because this execution plan row is not authorized.",
+            "pending_owner_execution_authorization",
+        )
+    if entry["review_area"] != row["review_area"]:
+        return (
+            "true",
+            "execution_authorization_review_area_mismatch",
+            "blocked_execution_authorization_area_mismatch",
+            "Controlled fact-promotion execution is blocked because authorization review_area does not match the plan.",
+            "pending_owner_execution_authorization",
+        )
+    if not entry["authorized"]:
+        return (
+            "true",
+            "execution_plan_authorization_not_true",
+            "blocked_execution_plan_not_authorized",
+            "Controlled fact-promotion execution is blocked because this execution plan row is not explicitly authorized.",
+            "pending_owner_execution_authorization",
+        )
+    return (
+        "true",
+        "valid_execution_authorization_manifest",
+        "ready_for_controlled_execution_run_no_write",
+        "Execution authorization coverage is valid for this row, but this runner still performs no promotion or ledger write.",
+        "pending_controlled_execution_impact_review",
+    )
+
+
+def build_fact_promotion_execution_authorization_preview(
+    manifest: dict,
+    repo_root: Path,
+    execution_plan_rows: list[dict],
+) -> list[dict]:
+    rows: list[dict] = []
+    authorization = load_fact_promotion_execution_authorization(repo_root, manifest["run_id"])
+    metadata = authorization["metadata"]
+    for row in execution_plan_rows:
+        required, validation_status, preview_status, preview_reason, review_status = (
+            fact_promotion_execution_authorization_status(row, authorization)
+        )
+        rows.append({
+            "execution_authorization_preview_id": f"FPEXEAUTHPREVIEW-{manifest['run_id']}-{len(rows) + 1:05d}",
+            "execution_plan_id": row["execution_plan_id"],
+            "dry_run_id": row["dry_run_id"],
+            "execution_gate_id": row["execution_gate_id"],
+            "review_packet_id": row["review_packet_id"],
+            "review_area": row["review_area"],
+            "source_artifact": row["source_artifact"],
+            "planned_impact_count": row["planned_impact_count"],
+            "execution_plan_status": row["execution_plan_status"],
+            "execution_authorization_required": required,
+            "authorization_manifest_relative_path": authorization["relative_path"],
+            "operator_authorization_present": (
+                "true" if authorization["status"] == "valid_execution_authorization_manifest" else "false"
+            ),
+            "authorization_validation_status": validation_status,
+            "authorization_ticket": metadata.get("authorization_ticket", ""),
+            "authorized_by": metadata.get("authorized_by", ""),
+            "authorized_at": metadata.get("authorized_at", ""),
+            "authorization_scope": metadata.get("authorization_scope", ""),
+            "preview_status": preview_status,
+            "source_mutation_allowed": "false",
+            "fact_promotion_execution_allowed": "false",
+            "fund_ledger_write_allowed": "false",
+            "financial_fact_promoted": "false",
+            "management_conclusion_allowed": "false",
+            "preview_reason": preview_reason,
+            "review_status": review_status,
+        })
+    return rows
+
+
 def write_runtime_rules_to_workbook(
     workbook_path: Path,
     manifest: dict,
@@ -4432,6 +4652,27 @@ def write_no_hallucination_outputs(
     fact_promotion_execution_plan_planned_impact_count = sum(
         int(row["planned_impact_count"]) for row in fact_promotion_execution_plan_rows
     )
+    fact_promotion_execution_authorization_template = build_fact_promotion_execution_authorization_template(
+        manifest,
+        fact_promotion_execution_plan_rows,
+    )
+    fact_promotion_execution_authorization_template_authorized_count = sum(
+        1 for row in fact_promotion_execution_authorization_template["execution_plan_authorizations"]
+        if row["authorized"] is True
+    )
+    fact_promotion_execution_authorization_preview_rows = build_fact_promotion_execution_authorization_preview(
+        manifest,
+        repo_root,
+        fact_promotion_execution_plan_rows,
+    )
+    fact_promotion_execution_authorization_preview_ready_count = sum(
+        1 for row in fact_promotion_execution_authorization_preview_rows
+        if row["preview_status"] == "ready_for_controlled_execution_run_no_write"
+    )
+    fact_promotion_execution_authorization_preview_blocked_count = sum(
+        1 for row in fact_promotion_execution_authorization_preview_rows
+        if row["preview_status"].startswith("blocked_")
+    )
     manifest["fact_promotion_review_packet_count"] = len(fact_promotion_review_packet_rows)
     manifest["fact_promotion_review_blocking_count"] = fact_promotion_review_blocking_count
     manifest["fact_promotion_owner_review_batch_count"] = len(fact_promotion_owner_review_batch_rows)
@@ -4475,6 +4716,29 @@ def write_no_hallucination_outputs(
         1 for row in fact_promotion_execution_plan_rows
         if row["fund_ledger_write_allowed"] == "true"
     )
+    manifest["fact_promotion_execution_authorization_template_count"] = len(
+        fact_promotion_execution_authorization_template["execution_plan_authorizations"]
+    )
+    manifest["fact_promotion_execution_authorization_template_authorized_count"] = (
+        fact_promotion_execution_authorization_template_authorized_count
+    )
+    manifest["fact_promotion_execution_authorization_present_count"] = sum(
+        1 for row in fact_promotion_execution_authorization_preview_rows
+        if row["operator_authorization_present"] == "true"
+    )
+    manifest["fact_promotion_execution_authorization_preview_count"] = len(
+        fact_promotion_execution_authorization_preview_rows
+    )
+    manifest["fact_promotion_execution_authorization_preview_ready_count"] = (
+        fact_promotion_execution_authorization_preview_ready_count
+    )
+    manifest["fact_promotion_execution_authorization_preview_blocked_count"] = (
+        fact_promotion_execution_authorization_preview_blocked_count
+    )
+    manifest["fact_promotion_execution_authorization_write_allowed_count"] = sum(
+        1 for row in fact_promotion_execution_authorization_preview_rows
+        if row["fund_ledger_write_allowed"] == "true"
+    )
     cross_review["fact_promotion_review_packet_count"] = len(fact_promotion_review_packet_rows)
     cross_review["fact_promotion_review_blocking_count"] = fact_promotion_review_blocking_count
     cross_review["fact_promotion_owner_review_batch_count"] = len(fact_promotion_owner_review_batch_rows)
@@ -4505,6 +4769,27 @@ def write_no_hallucination_outputs(
     )
     cross_review["fact_promotion_execution_plan_write_allowed_count"] = (
         manifest["fact_promotion_execution_plan_write_allowed_count"]
+    )
+    cross_review["fact_promotion_execution_authorization_template_count"] = (
+        manifest["fact_promotion_execution_authorization_template_count"]
+    )
+    cross_review["fact_promotion_execution_authorization_template_authorized_count"] = (
+        fact_promotion_execution_authorization_template_authorized_count
+    )
+    cross_review["fact_promotion_execution_authorization_present_count"] = (
+        manifest["fact_promotion_execution_authorization_present_count"]
+    )
+    cross_review["fact_promotion_execution_authorization_preview_count"] = (
+        manifest["fact_promotion_execution_authorization_preview_count"]
+    )
+    cross_review["fact_promotion_execution_authorization_preview_ready_count"] = (
+        fact_promotion_execution_authorization_preview_ready_count
+    )
+    cross_review["fact_promotion_execution_authorization_preview_blocked_count"] = (
+        fact_promotion_execution_authorization_preview_blocked_count
+    )
+    cross_review["fact_promotion_execution_authorization_write_allowed_count"] = (
+        manifest["fact_promotion_execution_authorization_write_allowed_count"]
     )
     management_conclusion_gate_rows = build_management_conclusion_gate_rows(cross_review)
     management_conclusion_gate_ready_count = sum(1 for row in management_conclusion_gate_rows if row["gate_status"] == "ready")
@@ -4643,6 +4928,37 @@ def write_no_hallucination_outputs(
         "management_conclusion_allowed",
         "plan_reason",
     ], fact_promotion_execution_plan_rows)
+    (run_dir / "fact_promotion_execution_authorization_template.json").write_text(
+        json.dumps(fact_promotion_execution_authorization_template, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    write_csv(run_dir / "fact_promotion_execution_authorization_preview.csv", [
+        "execution_authorization_preview_id",
+        "execution_plan_id",
+        "dry_run_id",
+        "execution_gate_id",
+        "review_packet_id",
+        "review_area",
+        "source_artifact",
+        "planned_impact_count",
+        "execution_plan_status",
+        "execution_authorization_required",
+        "authorization_manifest_relative_path",
+        "operator_authorization_present",
+        "authorization_validation_status",
+        "authorization_ticket",
+        "authorized_by",
+        "authorized_at",
+        "authorization_scope",
+        "preview_status",
+        "source_mutation_allowed",
+        "fact_promotion_execution_allowed",
+        "fund_ledger_write_allowed",
+        "financial_fact_promoted",
+        "management_conclusion_allowed",
+        "preview_reason",
+        "review_status",
+    ], fact_promotion_execution_authorization_preview_rows)
     write_csv(run_dir / "management_conclusion_gate.csv", [
         "management_gate_id",
         "gate_area",
@@ -4759,6 +5075,24 @@ def write_no_hallucination_outputs(
                 ),
                 "fact_promotion_execution_plan_write_allowed_count": (
                     manifest["fact_promotion_execution_plan_write_allowed_count"]
+                ),
+                "fact_promotion_execution_authorization_template_count": (
+                    manifest["fact_promotion_execution_authorization_template_count"]
+                ),
+                "fact_promotion_execution_authorization_template_authorized_count": (
+                    fact_promotion_execution_authorization_template_authorized_count
+                ),
+                "fact_promotion_execution_authorization_preview_count": (
+                    manifest["fact_promotion_execution_authorization_preview_count"]
+                ),
+                "fact_promotion_execution_authorization_preview_ready_count": (
+                    fact_promotion_execution_authorization_preview_ready_count
+                ),
+                "fact_promotion_execution_authorization_preview_blocked_count": (
+                    fact_promotion_execution_authorization_preview_blocked_count
+                ),
+                "fact_promotion_execution_authorization_write_allowed_count": (
+                    manifest["fact_promotion_execution_authorization_write_allowed_count"]
                 ),
                 "management_conclusion_gate_count": len(management_conclusion_gate_rows),
                 "management_conclusion_gate_ready_count": management_conclusion_gate_ready_count,
@@ -4920,6 +5254,9 @@ def main() -> int:
         f"Fact promotion execution plan ready count: {manifest.get('fact_promotion_execution_plan_ready_count', 0)}\n\n"
         f"Fact promotion execution plan planned impact count: {manifest.get('fact_promotion_execution_plan_planned_impact_count', 0)}\n\n"
         f"Fact promotion execution plan write-allowed count: {manifest.get('fact_promotion_execution_plan_write_allowed_count', 0)}\n\n"
+        f"Fact promotion execution authorization preview ready count: {manifest.get('fact_promotion_execution_authorization_preview_ready_count', 0)}\n\n"
+        f"Fact promotion execution authorization preview blocked count: {manifest.get('fact_promotion_execution_authorization_preview_blocked_count', 0)}\n\n"
+        f"Fact promotion execution authorization write-allowed count: {manifest.get('fact_promotion_execution_authorization_write_allowed_count', 0)}\n\n"
         f"Management conclusion gate ready count: {manifest.get('management_conclusion_gate_ready_count', 0)}\n\n"
         f"Management conclusion gate blocked count: {manifest.get('management_conclusion_gate_blocked_count', 0)}\n\n"
         f"Owner action queue count: {manifest.get('owner_action_queue_count', 0)}\n\n"
