@@ -158,6 +158,7 @@ OCR_FACT_METRIC_RULES = (
     ("loan", ("借款", "贷款")),
     ("payment_outflow", ("申请支付金额", "付款审批", "付款", "项目资金支出", "报销", "交易金额", "转账")),
 )
+CHAT_NEIGHBOR_CONTEXT_RADIUS = 2
 
 
 def sha256_file(path: Path, chunk_size: int = 1024 * 1024) -> str:
@@ -1984,18 +1985,36 @@ def collect_chat_record_context_by_message_id(manifest: dict, input_dir: Path) -
                 message_id = row.get("open_message_id") or row.get("message_id") or ""
                 if not message_id or message_id in rows:
                     continue
-                rows[message_id] = {
-                    "chat_record_relative_path": relative_path,
-                    "chat_record_row_number": str(row_index),
-                    "message_time": row.get("message_time") or "",
-                    "sender_name": row.get("sender_name") or "",
-                    "content_excerpt": text_excerpt(row.get("content") or ""),
-                    "quoted_sender": row.get("quoted_sender") or "",
-                    "quoted_content_excerpt": text_excerpt(row.get("quoted_content") or ""),
-                    "resource_count": row.get("resource_count") or "",
-                    "resource_types": row.get("resource_types") or "",
-                }
+                rows[message_id] = normalize_chat_record_context_row(relative_path, row_index, row)
     return rows
+
+
+def normalize_chat_record_context_row(relative_path: str, row_index: int, row: dict) -> dict:
+    return {
+        "chat_record_relative_path": relative_path,
+        "chat_record_row_number": str(row_index),
+        "open_message_id": row.get("open_message_id") or row.get("message_id") or "",
+        "message_time": row.get("message_time") or "",
+        "sender_name": row.get("sender_name") or "",
+        "content_excerpt": text_excerpt(row.get("content") or ""),
+        "quoted_sender": row.get("quoted_sender") or "",
+        "quoted_content_excerpt": text_excerpt(row.get("quoted_content") or ""),
+        "resource_count": row.get("resource_count") or "",
+        "resource_types": row.get("resource_types") or "",
+    }
+
+
+def collect_chat_record_context_rows_by_path(manifest: dict, input_dir: Path) -> dict[str, list[dict]]:
+    rows_by_path: dict[str, list[dict]] = {}
+    for relative_path in chat_record_source_paths(manifest):
+        csv_path = input_dir / relative_path
+        rows: list[dict] = []
+        with csv_path.open(encoding="utf-8-sig", newline="", errors="replace") as f:
+            reader = csv.DictReader(f)
+            for row_index, row in enumerate(reader, 2):
+                rows.append(normalize_chat_record_context_row(relative_path, row_index, row))
+        rows_by_path[relative_path] = rows
+    return rows_by_path
 
 
 def build_ocr_fact_owner_decision_correction_chat_context_rows(
@@ -2058,6 +2077,99 @@ def build_ocr_fact_owner_decision_correction_chat_context_rows(
                 "financial_fact_promoted": "false",
                 "management_conclusion_allowed": "false",
                 "recommended_next_step": next_step,
+            })
+    return rows
+
+
+def build_ocr_fact_owner_decision_correction_chat_neighbor_context_rows(
+    manifest: dict,
+    input_dir: Path,
+    chat_context_rows: list[dict],
+) -> list[dict]:
+    rows_by_path = collect_chat_record_context_rows_by_path(manifest, input_dir)
+    rows: list[dict] = []
+    for chat_context in chat_context_rows:
+        relative_path = chat_context.get("chat_record_relative_path", "")
+        target_row_number = chat_context.get("chat_record_row_number", "")
+        target_row_number_int = int(target_row_number) if target_row_number.isdigit() else 0
+        source_rows = rows_by_path.get(relative_path, [])
+        source_rows_by_number = {
+            int(row["chat_record_row_number"]): row
+            for row in source_rows
+            if row["chat_record_row_number"].isdigit()
+        }
+        if not relative_path or not target_row_number_int or target_row_number_int not in source_rows_by_number:
+            rows.append({
+                "chat_neighbor_context_id": f"OCROWNERFIXNEIGHBOR-{manifest['run_id']}-{len(rows) + 1:05d}",
+                "source_chat_context_id": chat_context.get("chat_context_id", ""),
+                "source_evidence_packet_id": chat_context.get("source_evidence_packet_id", ""),
+                "source_correction_queue_id": chat_context.get("source_correction_queue_id", ""),
+                "fact_candidate_id": chat_context.get("fact_candidate_id", ""),
+                "candidate_metric": chat_context.get("candidate_metric", ""),
+                "source_evidence_id": chat_context.get("source_evidence_id", ""),
+                "source_image_relative_path": chat_context.get("source_image_relative_path", ""),
+                "open_message_id": "",
+                "chat_record_relative_path": relative_path,
+                "target_chat_record_row_number": target_row_number,
+                "neighbor_chat_record_row_number": "",
+                "neighbor_offset": "",
+                "message_time": "",
+                "sender_name": "",
+                "content_excerpt": "",
+                "quoted_sender": "",
+                "quoted_content_excerpt": "",
+                "resource_count": "",
+                "resource_types": "",
+                "neighbor_context_radius": str(CHAT_NEIGHBOR_CONTEXT_RADIUS),
+                "neighbor_context_status": "blocked_missing_target_chat_record_context",
+                "owner_field_autofill_allowed": "false",
+                "owner_decision_manifest_write_allowed": "false",
+                "source_mutation_allowed": "false",
+                "fund_ledger_write_allowed": "false",
+                "formal_fund_ledger_write_allowed": "false",
+                "financial_fact_promoted": "false",
+                "management_conclusion_allowed": "false",
+                "recommended_next_step": "Repair or inspect chat record linkage before owner field review; do not autofill company or bank.",
+            })
+            continue
+        for neighbor_row_number in range(
+            target_row_number_int - CHAT_NEIGHBOR_CONTEXT_RADIUS,
+            target_row_number_int + CHAT_NEIGHBOR_CONTEXT_RADIUS + 1,
+        ):
+            neighbor = source_rows_by_number.get(neighbor_row_number)
+            if not neighbor:
+                continue
+            rows.append({
+                "chat_neighbor_context_id": f"OCROWNERFIXNEIGHBOR-{manifest['run_id']}-{len(rows) + 1:05d}",
+                "source_chat_context_id": chat_context.get("chat_context_id", ""),
+                "source_evidence_packet_id": chat_context.get("source_evidence_packet_id", ""),
+                "source_correction_queue_id": chat_context.get("source_correction_queue_id", ""),
+                "fact_candidate_id": chat_context.get("fact_candidate_id", ""),
+                "candidate_metric": chat_context.get("candidate_metric", ""),
+                "source_evidence_id": chat_context.get("source_evidence_id", ""),
+                "source_image_relative_path": chat_context.get("source_image_relative_path", ""),
+                "open_message_id": neighbor.get("open_message_id", ""),
+                "chat_record_relative_path": relative_path,
+                "target_chat_record_row_number": target_row_number,
+                "neighbor_chat_record_row_number": neighbor.get("chat_record_row_number", ""),
+                "neighbor_offset": str(neighbor_row_number - target_row_number_int),
+                "message_time": neighbor.get("message_time", ""),
+                "sender_name": neighbor.get("sender_name", ""),
+                "content_excerpt": neighbor.get("content_excerpt", ""),
+                "quoted_sender": neighbor.get("quoted_sender", ""),
+                "quoted_content_excerpt": neighbor.get("quoted_content_excerpt", ""),
+                "resource_count": neighbor.get("resource_count", ""),
+                "resource_types": neighbor.get("resource_types", ""),
+                "neighbor_context_radius": str(CHAT_NEIGHBOR_CONTEXT_RADIUS),
+                "neighbor_context_status": "ready_neighbor_context_no_write",
+                "owner_field_autofill_allowed": "false",
+                "owner_decision_manifest_write_allowed": "false",
+                "source_mutation_allowed": "false",
+                "fund_ledger_write_allowed": "false",
+                "formal_fund_ledger_write_allowed": "false",
+                "financial_fact_promoted": "false",
+                "management_conclusion_allowed": "false",
+                "recommended_next_step": "Use neighboring chat messages as owner-review context only; do not autofill company or bank.",
             })
     return rows
 
@@ -5452,6 +5564,13 @@ def write_no_hallucination_outputs(
             ocr_fact_owner_decision_correction_evidence_packet_rows,
         )
     )
+    ocr_fact_owner_decision_correction_chat_neighbor_context_rows = (
+        build_ocr_fact_owner_decision_correction_chat_neighbor_context_rows(
+            manifest,
+            input_dir,
+            ocr_fact_owner_decision_correction_chat_context_rows,
+        )
+    )
     ocr_fact_owner_decision_correction_draft = build_ocr_fact_owner_decision_correction_draft(
         manifest,
         ocr_fact_owner_decision_correction_queue_rows,
@@ -5609,6 +5728,24 @@ def write_no_hallucination_outputs(
     )
     manifest["ocr_fact_owner_decision_correction_chat_context_write_allowed_count"] = sum(
         1 for row in ocr_fact_owner_decision_correction_chat_context_rows
+        if row["owner_field_autofill_allowed"] == "true"
+        or row["owner_decision_manifest_write_allowed"] == "true"
+        or row["fund_ledger_write_allowed"] == "true"
+        or row["formal_fund_ledger_write_allowed"] == "true"
+    )
+    manifest["ocr_fact_owner_decision_correction_chat_neighbor_context_count"] = len(
+        ocr_fact_owner_decision_correction_chat_neighbor_context_rows
+    )
+    manifest["ocr_fact_owner_decision_correction_chat_neighbor_context_ready_count"] = sum(
+        1 for row in ocr_fact_owner_decision_correction_chat_neighbor_context_rows
+        if row["neighbor_context_status"] == "ready_neighbor_context_no_write"
+    )
+    manifest["ocr_fact_owner_decision_correction_chat_neighbor_context_blocking_count"] = (
+        len(ocr_fact_owner_decision_correction_chat_neighbor_context_rows)
+        - manifest["ocr_fact_owner_decision_correction_chat_neighbor_context_ready_count"]
+    )
+    manifest["ocr_fact_owner_decision_correction_chat_neighbor_context_write_allowed_count"] = sum(
+        1 for row in ocr_fact_owner_decision_correction_chat_neighbor_context_rows
         if row["owner_field_autofill_allowed"] == "true"
         or row["owner_decision_manifest_write_allowed"] == "true"
         or row["fund_ledger_write_allowed"] == "true"
@@ -6179,6 +6316,38 @@ def write_no_hallucination_outputs(
         "management_conclusion_allowed",
         "recommended_next_step",
     ], ocr_fact_owner_decision_correction_chat_context_rows)
+    write_csv(run_dir / "ocr_fact_owner_decision_correction_chat_neighbor_context.csv", [
+        "chat_neighbor_context_id",
+        "source_chat_context_id",
+        "source_evidence_packet_id",
+        "source_correction_queue_id",
+        "fact_candidate_id",
+        "candidate_metric",
+        "source_evidence_id",
+        "source_image_relative_path",
+        "open_message_id",
+        "chat_record_relative_path",
+        "target_chat_record_row_number",
+        "neighbor_chat_record_row_number",
+        "neighbor_offset",
+        "message_time",
+        "sender_name",
+        "content_excerpt",
+        "quoted_sender",
+        "quoted_content_excerpt",
+        "resource_count",
+        "resource_types",
+        "neighbor_context_radius",
+        "neighbor_context_status",
+        "owner_field_autofill_allowed",
+        "owner_decision_manifest_write_allowed",
+        "source_mutation_allowed",
+        "fund_ledger_write_allowed",
+        "formal_fund_ledger_write_allowed",
+        "financial_fact_promoted",
+        "management_conclusion_allowed",
+        "recommended_next_step",
+    ], ocr_fact_owner_decision_correction_chat_neighbor_context_rows)
     (run_dir / "ocr_fact_owner_decision_correction_draft.json").write_text(
         json.dumps(ocr_fact_owner_decision_correction_draft, ensure_ascii=False, indent=2),
         encoding="utf-8",
@@ -6656,6 +6825,10 @@ def write_no_hallucination_outputs(
         "ocr_fact_owner_decision_correction_chat_context_ready_count": manifest["ocr_fact_owner_decision_correction_chat_context_ready_count"],
         "ocr_fact_owner_decision_correction_chat_context_blocking_count": manifest["ocr_fact_owner_decision_correction_chat_context_blocking_count"],
         "ocr_fact_owner_decision_correction_chat_context_write_allowed_count": manifest["ocr_fact_owner_decision_correction_chat_context_write_allowed_count"],
+        "ocr_fact_owner_decision_correction_chat_neighbor_context_count": manifest["ocr_fact_owner_decision_correction_chat_neighbor_context_count"],
+        "ocr_fact_owner_decision_correction_chat_neighbor_context_ready_count": manifest["ocr_fact_owner_decision_correction_chat_neighbor_context_ready_count"],
+        "ocr_fact_owner_decision_correction_chat_neighbor_context_blocking_count": manifest["ocr_fact_owner_decision_correction_chat_neighbor_context_blocking_count"],
+        "ocr_fact_owner_decision_correction_chat_neighbor_context_write_allowed_count": manifest["ocr_fact_owner_decision_correction_chat_neighbor_context_write_allowed_count"],
         "ocr_fact_owner_decision_correction_draft_count": manifest["ocr_fact_owner_decision_correction_draft_count"],
         "ocr_fact_owner_decision_correction_draft_write_allowed_count": manifest["ocr_fact_owner_decision_correction_draft_write_allowed_count"],
         "ocr_fact_owner_decision_correction_apply_preview_count": manifest["ocr_fact_owner_decision_correction_apply_preview_count"],
@@ -7451,6 +7624,10 @@ def write_no_hallucination_outputs(
                 "ocr_fact_owner_decision_correction_chat_context_ready_count": manifest["ocr_fact_owner_decision_correction_chat_context_ready_count"],
                 "ocr_fact_owner_decision_correction_chat_context_blocking_count": manifest["ocr_fact_owner_decision_correction_chat_context_blocking_count"],
                 "ocr_fact_owner_decision_correction_chat_context_write_allowed_count": manifest["ocr_fact_owner_decision_correction_chat_context_write_allowed_count"],
+                "ocr_fact_owner_decision_correction_chat_neighbor_context_count": manifest["ocr_fact_owner_decision_correction_chat_neighbor_context_count"],
+                "ocr_fact_owner_decision_correction_chat_neighbor_context_ready_count": manifest["ocr_fact_owner_decision_correction_chat_neighbor_context_ready_count"],
+                "ocr_fact_owner_decision_correction_chat_neighbor_context_blocking_count": manifest["ocr_fact_owner_decision_correction_chat_neighbor_context_blocking_count"],
+                "ocr_fact_owner_decision_correction_chat_neighbor_context_write_allowed_count": manifest["ocr_fact_owner_decision_correction_chat_neighbor_context_write_allowed_count"],
                 "ocr_fact_owner_decision_correction_draft_count": manifest["ocr_fact_owner_decision_correction_draft_count"],
                 "ocr_fact_owner_decision_correction_draft_write_allowed_count": manifest["ocr_fact_owner_decision_correction_draft_write_allowed_count"],
                 "ocr_fact_owner_decision_correction_apply_preview_count": manifest["ocr_fact_owner_decision_correction_apply_preview_count"],
@@ -7707,6 +7884,9 @@ def main() -> int:
         f"OCR fact owner decision correction chat context ready count: {manifest.get('ocr_fact_owner_decision_correction_chat_context_ready_count', 0)}\n\n"
         f"OCR fact owner decision correction chat context blocking count: {manifest.get('ocr_fact_owner_decision_correction_chat_context_blocking_count', 0)}\n\n"
         f"OCR fact owner decision correction chat context write-allowed count: {manifest.get('ocr_fact_owner_decision_correction_chat_context_write_allowed_count', 0)}\n\n"
+        f"OCR fact owner decision correction chat neighbor context ready count: {manifest.get('ocr_fact_owner_decision_correction_chat_neighbor_context_ready_count', 0)}\n\n"
+        f"OCR fact owner decision correction chat neighbor context blocking count: {manifest.get('ocr_fact_owner_decision_correction_chat_neighbor_context_blocking_count', 0)}\n\n"
+        f"OCR fact owner decision correction chat neighbor context write-allowed count: {manifest.get('ocr_fact_owner_decision_correction_chat_neighbor_context_write_allowed_count', 0)}\n\n"
         f"OCR fact owner decision correction draft count: {manifest.get('ocr_fact_owner_decision_correction_draft_count', 0)}\n\n"
         f"OCR fact owner decision correction draft write-allowed count: {manifest.get('ocr_fact_owner_decision_correction_draft_write_allowed_count', 0)}\n\n"
         f"OCR fact owner decision correction apply preview ready count: {manifest.get('ocr_fact_owner_decision_correction_apply_preview_ready_count', 0)}\n\n"
