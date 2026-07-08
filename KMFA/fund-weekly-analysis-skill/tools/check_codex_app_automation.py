@@ -21,6 +21,14 @@ CHECK_FIELDS = [
     "model",
     "reasoning_effort",
 ]
+EXPECTED_CONTRACT_FIELDS = {
+    "rrule": "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0",
+    "timezone": "Australia/Sydney",
+    "prompt_file": "automation/weekly_mon_sat_1100_sydney.prompt.md",
+    "input_dir": "/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群",
+    "source_readiness_gate": "tools/check_source_readiness.py",
+    "branch_policy": "main_only_no_branch_no_pr_no_worktree",
+}
 
 
 def load_toml(path: Path) -> dict:
@@ -45,6 +53,20 @@ def main() -> int:
         return 2
 
     contract = load_toml(contract_path)
+    invalid_contract_fields = []
+    for field, expected in EXPECTED_CONTRACT_FIELDS.items():
+        actual = contract.get(field)
+        if actual != expected:
+            invalid_contract_fields.append({"field": field, "expected": expected, "actual": actual})
+    if invalid_contract_fields:
+        emit({
+            "status": "CODEX_AUTOMATION_CONTRACT_INVALID",
+            "automation_id": contract.get("id"),
+            "contract_path": str(contract_path),
+            "invalid_contract_fields": invalid_contract_fields,
+        })
+        return 3
+
     automation_path = Path(args.automation_root).expanduser() / contract["id"] / "automation.toml"
     if not automation_path.exists():
         emit({

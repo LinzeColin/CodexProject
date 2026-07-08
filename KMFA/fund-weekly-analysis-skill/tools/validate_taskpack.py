@@ -133,6 +133,8 @@ REQUIRED_SKILL_STRINGS = [
     "goal_completion_audit.csv",
     "automation_readiness.csv",
     "schedule_ready",
+    "CODEX_AUTOMATION_CONTRACT_INVALID",
+    "main_only_no_branch_no_pr_no_worktree",
     "management_conclusion_gate.csv",
     "owner_action_queue.csv",
     "fact_promotion_review_packet.csv",
