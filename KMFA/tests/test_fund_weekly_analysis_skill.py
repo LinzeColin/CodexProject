@@ -489,6 +489,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "workbook_quality_checks.csv",
                 "kmfa_metadata_signals.csv",
                 "goal_completion_audit.csv",
+                "management_conclusion_gate.csv",
                 "fact_promotion_review_packet.csv",
                 "fact_promotion_authorization_template.json",
                 "fact_promotion_authorization_preview.csv",
@@ -522,6 +523,23 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(audit_by_id["formal_financial_fact_promotion"]["audit_status"], "blocked")
             self.assertEqual(audit_by_id["management_conclusion"]["audit_status"], "blocked")
             self.assertEqual(audit_by_id["management_conclusion"]["blocking"], "true")
+
+            with (run_dir / "management_conclusion_gate.csv").open(encoding="utf-8-sig", newline="") as f:
+                management_gate_rows = list(csv.DictReader(f))
+            self.assertEqual(len(management_gate_rows), 7)
+            gate_by_area = {row["gate_area"]: row for row in management_gate_rows}
+            self.assertEqual(gate_by_area["source_readiness"]["gate_status"], "ready")
+            self.assertEqual(gate_by_area["native_workbook_quality"]["gate_status"], "ready")
+            self.assertEqual(
+                gate_by_area["formal_fact_promotion_execution"]["gate_status"],
+                "blocked_fact_promotion_not_executed",
+            )
+            self.assertEqual(gate_by_area["automation_schedule"]["gate_status"], "external_check_required")
+            self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in management_gate_rows))
+            self.assertEqual(cross_review["management_conclusion_gate_count"], 7)
+            self.assertEqual(cross_review["management_conclusion_gate_ready_count"], 2)
+            self.assertEqual(cross_review["management_conclusion_gate_blocked_count"], 5)
+            self.assertFalse(cross_review["management_conclusion_allowed"])
 
     def test_runner_collects_real_ocr_text_sidecars_without_promoting_amounts(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

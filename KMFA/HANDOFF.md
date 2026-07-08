@@ -41,6 +41,7 @@
 - runner 现在生成 `fact_promotion_authorization_template.json`，从复核包逐行生成默认 `authorized=false` 的 owner-review 授权草稿；scope 为 `fact_promotion_review_packet_validation_only`，仍不允许事实晋升、正式账本写入或管理结论。
 - runner 现在生成 `fact_promotion_authorization_preview.csv`，只验证 private `fact_promotion_authorizations/<run_id>.json` 对复核包行的覆盖情况；有效行最多进入 `ready_for_owner_review_no_fact_promotion`，仍不允许事实晋升、正式账本写入或管理结论。
 - runner 现在生成 `fact_promotion_execution_gate.csv`，合并 owner 授权覆盖和 review blockers；ready 行最多进入 `ready_for_controlled_fact_promotion_execution`，本轮仍不允许执行事实晋升、写正式账本或生成管理结论。
+- runner 现在生成 `management_conclusion_gate.csv`，把源就绪、Workbook 质量、正式事实晋升执行、正式账本、现金流校验、证据复核和 automation 外部检查汇总为 C-level 结论前门禁；所有行仍 `management_conclusion_allowed=false`。
 - `tools/materialize_fund_source.py` 现在支持显式 ZIP materialization：目录候选用 `--source-dir`，`DWS_Outputs.zip` 候选用 `--source-zip --zip-prefix 付款请示群`；dry-run 不建目标目录，apply 只复制该群 prefix 下缺失文件，hash 冲突、坏 ZIP 或 unsafe member fail-closed。
 - ZIP materialization 现在兼容真实 `DWS_Outputs.zip` 的 `DWS_Outputs/付款请示群/...` 外层目录布局；S25 已 dry-run 验证 297 个付款请示群文件后显式 apply 到 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群`，`check_source_readiness.py` 返回 `READY`、file_count=297、unreadable_count=0。
 - S25 已基于该真实热目录运行 `run_fund_weekly_analysis.py --run-id s25_real_input_index_20260708`，状态为 `INDEXED_PENDING_EXTRACTION`；输出包索引 297 个真实源文件，生成原生 Excel 母版副本，`management_conclusion_allowed=false`，`fund_ledger.csv` 和 `funding_forecast.csv` 仍为空，未生成虚构金额或管理结论。
