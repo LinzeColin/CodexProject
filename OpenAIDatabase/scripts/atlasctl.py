@@ -22,6 +22,7 @@ LOW_VALUE_LOOP_BUILDER = ROOT / "scripts" / "build_memory_atlas_low_value_loops.
 OPPORTUNITY_BUILDER = ROOT / "scripts" / "build_memory_atlas_opportunities.py"
 ECONOMIC_PROXY_BUILDER = ROOT / "scripts" / "build_memory_atlas_economic_proxy.py"
 INFORMATION_ROI_BUILDER = ROOT / "scripts" / "build_memory_atlas_information_roi.py"
+FORMULA_WHAT_IF_BUILDER = ROOT / "scripts" / "build_memory_atlas_formula_what_if.py"
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -321,13 +322,42 @@ def information_roi_analyze_contract() -> dict[str, object]:
     }
 
 
+def formula_what_if_analyze_contract() -> dict[str, object]:
+    return {
+        "status": "PASS",
+        "command": "analyze",
+        "stage": "formula-what-if",
+        "dry_run": True,
+        "writes_files": False,
+        "builder": "scripts/build_memory_atlas_formula_what_if.py",
+        "formula_what_if_config": "机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json",
+        "active_formula_config": "机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json",
+        "input": [
+            "data/derived/economic_proxy/personal_economic_proxy.json",
+            "data/derived/information_roi/information_roi_gate.json",
+        ],
+        "output": "data/derived/economic_proxy/formula_what_if_preview.json",
+        "raw_mutation": False,
+        "task_id": "MA-V12-S07P3",
+        "acceptance_id": "ACC-MA-V12-S07P3",
+        "phase_boundary": {
+            "does_not_use_external_economic_database": True,
+            "does_not_claim_precise_income_prediction": True,
+            "does_not_provide_financial_advice": True,
+            "does_not_mutate_active_formula_config": True,
+            "requires_proposal_before_apply": True,
+            "next_phase": "S07 Review",
+        },
+    }
+
+
 def run_analyze(args: argparse.Namespace) -> int:
-    if args.stage not in {"facets", "clusters", "low-value-loops", "opportunities", "economic-proxy", "information-roi"}:
+    if args.stage not in {"facets", "clusters", "low-value-loops", "opportunities", "economic-proxy", "information-roi", "formula-what-if"}:
         print(json.dumps({
             "status": "NOT_IMPLEMENTED",
             "command": "analyze",
             "stage": args.stage,
-            "reason": "Unknown analyze stage. Supported stages: facets, clusters, low-value-loops, opportunities, economic-proxy, information-roi.",
+            "reason": "Unknown analyze stage. Supported stages: facets, clusters, low-value-loops, opportunities, economic-proxy, information-roi, formula-what-if.",
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 2
 
@@ -364,6 +394,10 @@ def run_analyze(args: argparse.Namespace) -> int:
             command.append("--dry-run")
     elif args.stage == "information-roi":
         command = [sys.executable, str(INFORMATION_ROI_BUILDER), "--database-dir", str(args.database_dir)]
+        if args.dry_run:
+            command.append("--dry-run")
+    elif args.stage == "formula-what-if":
+        command = [sys.executable, str(FORMULA_WHAT_IF_BUILDER), "--database-dir", str(args.database_dir)]
         if args.dry_run:
             command.append("--dry-run")
     result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
@@ -573,7 +607,99 @@ def run_visual_roi_audit(args: argparse.Namespace) -> int:
     return 0 if status == "PASS" else 2
 
 
+def run_formula_what_if_audit(args: argparse.Namespace) -> int:
+    config_path = args.database_dir / "机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json"
+    output_path = args.database_dir / "data/derived/economic_proxy/formula_what_if_preview.json"
+    bad_items: list[str] = []
+    config: dict[str, object] = {}
+    output: dict[str, object] = {}
+    if not config_path.exists():
+        bad_items.append("formula_what_if_config:missing")
+    else:
+        config = json.loads(config_path.read_text(encoding="utf-8"))
+        if config.get("task_id") != "MA-V12-S07P3" or config.get("acceptance_id") != "ACC-MA-V12-S07P3":
+            bad_items.append("formula_what_if_config:identity_mismatch")
+        if config.get("active_config_write") is not False:
+            bad_items.append("formula_what_if_config:active_config_write_not_false")
+        if config.get("proposal_required_before_apply") is not True:
+            bad_items.append("formula_what_if_config:proposal_required_before_apply_not_true")
+        boundary = config.get("scope_boundary") or {}
+        if not isinstance(boundary, dict) or boundary.get("external_economic_database_dependency") is not False:
+            bad_items.append("formula_what_if_config:external_database_dependency_not_false")
+        if not isinstance(boundary, dict) or boundary.get("precise_income_prediction") is not False:
+            bad_items.append("formula_what_if_config:precise_income_prediction_not_false")
+        if not isinstance(boundary, dict) or boundary.get("financial_advice") is not False:
+            bad_items.append("formula_what_if_config:financial_advice_not_false")
+        params = config.get("parameters") if isinstance(config.get("parameters"), dict) else {}
+        weights = (params.get("default_weights") or {}) if isinstance(params.get("default_weights"), dict) else {}
+        bounds = (params.get("adjustable_weight_bounds") or {}) if isinstance(params.get("adjustable_weight_bounds"), dict) else {}
+        for weight_key in ["time_saved_weight", "reuse_value_weight", "skill_compounding_weight", "rework_cost_weight", "low_value_loop_penalty_weight"]:
+            if weight_key not in weights or weight_key not in bounds:
+                bad_items.append(f"formula_what_if_config:missing_adjustable_weight:{weight_key}")
+        formulas = config.get("formulas") if isinstance(config.get("formulas"), list) else []
+        score_keys = {str(item.get("score_key")) for item in formulas if isinstance(item, dict)}
+        for key in sorted({"formula_what_if_proxy_score", "what_if_parameter_proposal"} - score_keys):
+            bad_items.append(f"formula_what_if_config:missing_score_key:{key}")
+    if not output_path.exists():
+        bad_items.append("formula_what_if_output:missing")
+    else:
+        output = json.loads(output_path.read_text(encoding="utf-8"))
+        if output.get("task_id") != "MA-V12-S07P3" or output.get("acceptance_id") != "ACC-MA-V12-S07P3":
+            bad_items.append("formula_what_if_output:identity_mismatch")
+        if output.get("status") != "phase_s07_p3_formula_what_if_completed_pending_s07_review":
+            bad_items.append("formula_what_if_output:status_mismatch")
+        boundary = output.get("phase_boundary") or {}
+        if boundary.get("does_not_use_external_economic_database") is not True:
+            bad_items.append("formula_what_if_output:external_database_boundary_missing")
+        if boundary.get("does_not_claim_precise_income_prediction") is not True:
+            bad_items.append("formula_what_if_output:precise_income_boundary_missing")
+        if boundary.get("does_not_provide_financial_advice") is not True:
+            bad_items.append("formula_what_if_output:financial_advice_boundary_missing")
+        if boundary.get("does_not_mutate_active_formula_config") is not True:
+            bad_items.append("formula_what_if_output:active_config_mutation_boundary_missing")
+        if boundary.get("requires_proposal_before_apply") is not True:
+            bad_items.append("formula_what_if_output:proposal_gate_missing")
+        scenarios = output.get("scenarios") if isinstance(output.get("scenarios"), list) else []
+        if len(scenarios) < 4:
+            bad_items.append("formula_what_if_output:scenario_count_too_low")
+        covered_weights: set[str] = set()
+        for scenario in scenarios:
+            scenario_id = scenario.get("scenario_id")
+            weights = scenario.get("adjustable_weights") if isinstance(scenario.get("adjustable_weights"), dict) else {}
+            covered_weights.update(weights)
+            proposal = scenario.get("parameter_change_proposal") if isinstance(scenario.get("parameter_change_proposal"), dict) else {}
+            if proposal.get("active_config_write") is not False or proposal.get("proposal_required_before_apply") is not True:
+                bad_items.append(f"formula_what_if_output:{scenario_id}:invalid_proposal_gate")
+            if not scenario.get("description_zh") or not scenario.get("formula_id") or not scenario.get("formula_source"):
+                bad_items.append(f"formula_what_if_output:{scenario_id}:missing_description_or_formula")
+            if int(scenario.get("weighted_proxy_score") or -1) < 0 or int(scenario.get("weighted_proxy_score") or -1) > 100:
+                bad_items.append(f"formula_what_if_output:{scenario_id}:score_out_of_range")
+        for weight_key in ["time_saved_weight", "reuse_value_weight", "skill_compounding_weight"]:
+            if weight_key not in covered_weights:
+                bad_items.append(f"formula_what_if_output:missing_required_weight:{weight_key}")
+    status = "PASS" if not bad_items else "FAIL"
+    result = {
+        "status": status,
+        "command": "audit",
+        "check": "formula-what-if",
+        "task_id": config.get("task_id") or output.get("task_id"),
+        "acceptance_id": config.get("acceptance_id") or output.get("acceptance_id"),
+        "formula_what_if_config": "机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json",
+        "formula_what_if_output": "data/derived/economic_proxy/formula_what_if_preview.json" if output_path.exists() else "",
+        "scenario_count": len(output.get("scenarios") or []) if isinstance(output.get("scenarios"), list) else 0,
+        "active_config_write": False,
+        "proposal_required_before_apply": True,
+        "external_economic_database_dependency": False,
+        "bad_items": bad_items,
+        "raw_mutation": False,
+    }
+    print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0 if status == "PASS" else 2
+
+
 def run_audit(args: argparse.Namespace) -> int:
+    if args.check == "formula-what-if":
+        return run_formula_what_if_audit(args)
     if args.check == "visual-roi":
         return run_visual_roi_audit(args)
     if args.check == "formulas":
@@ -583,7 +709,7 @@ def run_audit(args: argparse.Namespace) -> int:
             "status": "NOT_IMPLEMENTED",
             "command": "audit",
             "check": args.check,
-            "reason": "Unknown audit check. Supported checks: insight-evidence, formulas, visual-roi.",
+            "reason": "Unknown audit check. Supported checks: insight-evidence, formulas, visual-roi, formula-what-if.",
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 2
 

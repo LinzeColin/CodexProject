@@ -3,17 +3,27 @@
 用于放置 Memory Atlas v1.2 的信息 ROI、Personal Economic Proxy、证据强度、
 新鲜度、复用价值、维护成本等公式和参数。
 
-当前 S07 P2 已完成。Information ROI 公式配置已写入
-`机器治理/参数与公式/information_roi.v1_2_s07_p2.json`，输出写入
-`data/derived/information_roi/information_roi_gate.json`。
+当前 S07 P3 已完成。Formula What-if 配置预览已写入
+`机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`，输出写入
+`data/derived/economic_proxy/formula_what_if_preview.json`。
 
-任务 ID：`MA-V12-S07P2`。
+任务 ID：`MA-V12-S07P3`。
 
-验收 ID：`ACC-MA-V12-S07P2`。
+验收 ID：`ACC-MA-V12-S07P3`。
 
-Validator：`validate:v1.2-s07-p2`。
+Validator：`validate:v1.2-s07-p3`。
 
-## S07 P2 公式
+## S07 P3 公式
+
+| score_key | 公式 ID | 含义 |
+|---|---|---|
+| `formula_what_if_proxy_score` | `FORM-MA-V12-S07P3-001` | 在不修改 active config 的前提下，用可调权重预览时间节省、复用价值、机会价值、长期复利、自动化增强、返工成本和低价值循环惩罚对 proxy 分的影响。 |
+| `what_if_parameter_proposal` | `FORM-MA-V12-S07P3-002` | 为每个 scenario 生成 proposal-only 参数变更摘要；`proposal_required_before_apply=true`，`active_config_write=false`。 |
+
+S07 P3 是配置预览，不是运行时 UI，不会直接写回
+`personal_economic_proxy.v1_2_s07_p1.json`。
+
+## S07 P2 保留公式
 
 | score_key | 公式 ID | 含义 |
 |---|---|---|
@@ -40,9 +50,10 @@ S07 P2 同时引用 Visual ROI Gate 配置：
 - 不接入外部经济数据库；外部经济数据库只保留 v2 接口占位。
 - 不是精确收入预测。
 - 不是财务建议。
-- 不实现 S07 P3 Formula What-if Simulator UI。
+- 不修改 active formula config。
+- Formula What-if 仅为 config preview。
 - 不修改运行时 UI。
 - 不修改 raw。
 - No GitHub main upload in this phase。
 
-下一步是 S07 P3。
+下一步是 S07 Review。

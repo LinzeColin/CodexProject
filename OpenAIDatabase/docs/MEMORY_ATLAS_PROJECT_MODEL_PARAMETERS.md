@@ -1,3 +1,42 @@
+## 131. Memory Atlas v1.2 S07 P3 Formula What-if Parameters
+
+状态：`phase_s07_p3_formula_what_if_completed_pending_s07_review`。
+
+验收 ID：`ACC-MA-V12-S07P3`。
+
+S07 P3 固定以下参数：
+
+- `MA-V12-S07P3`
+- `validate:v1.2-s07-p3`
+- `机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`
+- `scripts/build_memory_atlas_formula_what_if.py`
+- `atlasctl.py analyze --stage formula-what-if`
+- `atlasctl.py audit --check formula-what-if`
+- `data/derived/economic_proxy/formula_what_if_preview.json`
+- S07 P3 完成后下一步为 pending S07 Review。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S07P3-001 phase_status = phase_s07_p3_formula_what_if_completed_pending_s07_review`
+- `PARAM-MA-V12-S07P3-002 validator = validate:v1.2-s07-p3`
+- `PARAM-MA-V12-S07P3-003 config = 机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`
+- `PARAM-MA-V12-S07P3-004 builder = build_memory_atlas_formula_what_if.py`
+- `PARAM-MA-V12-S07P3-005 output = data/derived/economic_proxy/formula_what_if_preview.json`
+- `PARAM-MA-V12-S07P3-006 scenario_count = 5 scenarios`
+- `PARAM-MA-V12-S07P3-007 proposal_gate = proposal_required_before_apply=true; active_config_write=false`
+- `PARAM-MA-V12-S07P3-008 next_gate = pending S07 Review`
+- `PARAM-MA-V12-S07P3-009 phase_boundary = No raw mutation; No external economic database; No precise income prediction; No financial advice; No active formula config mutation; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s07-p3` checks S07 P2 predecessor, Formula What-if config,
+  persisted `formula_what_if_preview.json`, `atlasctl analyze --stage
+  formula-what-if --dry-run`, `atlasctl audit --check formula-what-if`,
+  human/machine records, canonical remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S07 P3 Formula What-if; MA-V12-S07P3; ACC-MA-V12-S07P3; phase_s07_p3_formula_what_if_completed_pending_s07_review; validate:v1.2-s07-p3; Formula What-if; pending S07 Review; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No external economic database; No precise income prediction; No financial advice; No active formula config mutation.
+
 ## 130. Memory Atlas v1.2 S07 P2 Information ROI Parameters
 
 状态：`phase_s07_p2_information_roi_completed_pending_s07_p3`。
