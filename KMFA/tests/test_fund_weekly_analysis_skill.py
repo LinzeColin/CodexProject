@@ -593,6 +593,8 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "fact_promotion_execution_apply_gate.csv",
                 "fact_promotion_execution_result.csv",
                 "formal_fund_ledger.csv",
+                "management_conclusion_authorization_template.json",
+                "management_conclusion_authorization_preview.csv",
                 "exception_tasks.csv",
                 "cross_review.json",
                 "audit_log.json",
@@ -672,12 +674,38 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 gate_by_area["management_conclusion_final_authorization"]["gate_status"],
                 "blocked_management_conclusion_release_not_authorized",
             )
+            self.assertIn(
+                "release_authorization_preview_status=blocked_release_preconditions_not_ready",
+                gate_by_area["management_conclusion_final_authorization"]["evidence"],
+            )
             self.assertEqual(gate_by_area["automation_schedule"]["gate_status"], "ready")
             self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in management_gate_rows))
             self.assertEqual(cross_review["management_conclusion_gate_count"], 8)
             self.assertEqual(cross_review["management_conclusion_gate_ready_count"], 3)
             self.assertEqual(cross_review["management_conclusion_gate_blocked_count"], 5)
             self.assertFalse(cross_review["management_conclusion_allowed"])
+
+            release_template = json.loads(
+                (run_dir / "management_conclusion_authorization_template.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(release_template["authorization_scope"], "management_conclusion_release_validation_only")
+            self.assertFalse(release_template["management_conclusion_allowed"])
+            self.assertEqual(len(release_template["release_authorizations"]), 1)
+            self.assertEqual(release_template["release_authorizations"][0]["pre_release_blocking_count"], 4)
+
+            with (run_dir / "management_conclusion_authorization_preview.csv").open(
+                encoding="utf-8-sig",
+                newline="",
+            ) as f:
+                release_preview_rows = list(csv.DictReader(f))
+            self.assertEqual(len(release_preview_rows), 1)
+            self.assertEqual(release_preview_rows[0]["authorization_validation_status"], "missing_release_authorization_manifest")
+            self.assertEqual(release_preview_rows[0]["preview_status"], "blocked_release_preconditions_not_ready")
+            self.assertEqual(release_preview_rows[0]["pre_release_blocking_count"], "4")
+            self.assertEqual(release_preview_rows[0]["management_conclusion_allowed"], "false")
+            self.assertEqual(cross_review["management_conclusion_release_authorization_preview_count"], 1)
+            self.assertEqual(cross_review["management_conclusion_release_authorization_preview_ready_count"], 0)
+            self.assertEqual(cross_review["management_conclusion_release_authorization_preview_blocked_count"], 1)
 
             with (run_dir / "owner_action_queue.csv").open(encoding="utf-8-sig", newline="") as f:
                 owner_action_rows = list(csv.DictReader(f))
@@ -3458,9 +3486,19 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 repo_root
                 / "KMFA/metadata/fund_weekly_analysis/private_runtime/fact_promotion_execution_authorizations"
             )
+            contract_dir = repo_root / "KMFA/fund-weekly-analysis-skill/automation"
             source_day.mkdir(parents=True)
             auth_dir.mkdir(parents=True)
             execution_auth_dir.mkdir(parents=True)
+            contract_dir.mkdir(parents=True)
+            contract = (SKILL_ROOT / "automation" / "codex_app_automation.contract.toml").read_text(encoding="utf-8")
+            prompt = (SKILL_ROOT / "automation" / "weekly_1100_sydney.prompt.md").read_text(encoding="utf-8")
+            (contract_dir / "codex_app_automation.contract.toml").write_text(contract, encoding="utf-8")
+            (contract_dir / "weekly_1100_sydney.prompt.md").write_text(prompt, encoding="utf-8")
+            automation_root = Path(temp_dir) / "automations"
+            automation_dir = automation_root / "kmfa"
+            automation_dir.mkdir(parents=True)
+            (automation_dir / "automation.toml").write_text(contract + "\nprompt = '''" + prompt + "'''\n", encoding="utf-8")
             structured_csv = source_day / "20260708113000_吴云霞_资金日报.csv"
             structured_csv.write_text(
                 "\n".join([
@@ -3531,6 +3569,8 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                     "structured_csv_test",
                     "--timezone",
                     "Australia/Sydney",
+                    "--automation-root",
+                    str(automation_root),
                 ],
                 text=True,
                 capture_output=True,
@@ -3723,7 +3763,32 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 management_gate_by_area["management_conclusion_final_authorization"]["gate_status"],
                 "blocked_management_conclusion_release_not_authorized",
             )
+            self.assertIn(
+                "release_authorization_preview_status=blocked_missing_release_authorization",
+                management_gate_by_area["management_conclusion_final_authorization"]["evidence"],
+            )
             self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in management_gate_rows))
+
+            release_template = json.loads(
+                (run_dir / "management_conclusion_authorization_template.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(release_template["authorization_scope"], "management_conclusion_release_validation_only")
+            self.assertFalse(release_template["management_conclusion_allowed"])
+            self.assertEqual(release_template["release_authorizations"][0]["pre_release_blocking_count"], 0)
+
+            with (run_dir / "management_conclusion_authorization_preview.csv").open(
+                encoding="utf-8-sig",
+                newline="",
+            ) as f:
+                release_preview_rows = list(csv.DictReader(f))
+            self.assertEqual(len(release_preview_rows), 1)
+            self.assertEqual(release_preview_rows[0]["authorization_validation_status"], "missing_release_authorization_manifest")
+            self.assertEqual(release_preview_rows[0]["preview_status"], "blocked_missing_release_authorization")
+            self.assertEqual(release_preview_rows[0]["pre_release_blocking_count"], "0")
+            self.assertEqual(release_preview_rows[0]["management_conclusion_allowed"], "false")
+            self.assertEqual(cross_review["management_conclusion_release_authorization_preview_count"], 1)
+            self.assertEqual(cross_review["management_conclusion_release_authorization_preview_ready_count"], 0)
+            self.assertEqual(cross_review["management_conclusion_release_authorization_preview_blocked_count"], 1)
 
             workbook_path = run_dir / "资金与税费管理母版_structured_csv_test.xlsx"
             with zipfile.ZipFile(workbook_path) as workbook:
