@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S12 P3 ChatGPT Deep Exploration
+
+- Added `chatgpt_deep_explore.v1_2_s12_p3` for `MA-V12-S12P3` /
+  `ACC-MA-V12-S12P3`.
+- Registered status
+  `phase_s12_p3_chatgpt_deep_explore_completed_pending_s12_review`.
+- Added the user-triggered `chatgpt_deep_explore` command to the Memory Atlas
+  command palette with visible ChatGPT 深度探索 copy.
+- Added `scripts/build_chatgpt_deep_explore_prompt.py` and
+  `atlasctl.py chatgpt-deep-explore`.
+- Default mode is `prefill_only`; `auto_submit` is present only as a gated
+  configuration mode and fails closed without explicit confirmation.
+- Added `validate:v1.2-s12-p3`.
+- Preserved S12 P3 boundaries: 用户触发, No silent send,
+  No cookie/token/secret export, No GitHub main upload, No remote push,
+  No raw mutation and No proposal apply execution.
+- Marked the next gate as pending S12 Review.
+
 ## Unreleased - Memory Atlas v1.2 S12 P2 Personalization Prompt
 
 - Added `personalization_prompt.v1_2_s12_p2` prompt-generation contract for
