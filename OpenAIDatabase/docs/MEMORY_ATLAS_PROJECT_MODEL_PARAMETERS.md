@@ -1,3 +1,41 @@
+## 145. Memory Atlas v1.2 S11 P1 Clio-like Visuals Parameters
+
+状态：`phase_s11_p1_clio_like_visuals_completed_pending_s11_p2`。
+
+验收 ID：`ACC-MA-V12-S11P1`。
+
+S11 P1 固定以下参数：
+
+- `MA-V12-S11P1`
+- `validate:v1.2-s11-p1`
+- `clio_like_visuals.v1_2_s11_p1`
+- `cluster_tree`
+- `bubble_map`
+- `topic_cluster_explorer`
+- `source/time/project/task`
+- `atlasctl.py audit --check visual-roi`
+- S11 P1 完成后下一步为 pending S11 P2。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S11P1-001 phase_status = phase_s11_p1_clio_like_visuals_completed_pending_s11_p2`
+- `PARAM-MA-V12-S11P1-002 validator = validate:v1.2-s11-p1`
+- `PARAM-MA-V12-S11P1-003 clio_like_visuals_version = clio_like_visuals.v1_2_s11_p1`
+- `PARAM-MA-V12-S11P1-004 visual_ids = cluster_tree; bubble_map; topic_cluster_explorer`
+- `PARAM-MA-V12-S11P1-005 filter_dimensions = source/time/project/task`
+- `PARAM-MA-V12-S11P1-006 visual_roi_gate_pass = true`
+- `PARAM-MA-V12-S11P1-007 next_gate = pending S11 P2`
+- `PARAM-MA-V12-S11P1-008 phase_boundary = No raw mutation; No proposal apply execution; No GitHub main upload in this phase; No S11 P2/P3/P4 work`
+
+验证逻辑：
+
+- `validate:v1.2-s11-p1` checks the runtime visual contract, three P0 visual ids,
+  Chinese insight headers, human questions, action values, `source/time/project/task`
+  filter binding, visual config, Visual ROI audit and governance records.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S11 P1; MA-V12-S11P1; ACC-MA-V12-S11P1; phase_s11_p1_clio_like_visuals_completed_pending_s11_p2; validate:v1.2-s11-p1; clio_like_visuals.v1_2_s11_p1; cluster_tree; bubble_map; topic_cluster_explorer; source/time/project/task; pending S11 P2; No GitHub main upload in this phase; No raw mutation; No proposal apply execution.
+
 ## 144. Memory Atlas v1.2 S10 Review Parameters
 
 状态：`stage_s10_review_passed_pending_s11_no_github_main_upload`。

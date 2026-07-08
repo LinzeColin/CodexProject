@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S11 P1 Clio-like Visuals
+
+- Added `clio_like_visuals.v1_2_s11_p1` runtime contract to the Memory Atlas
+  home screen.
+- Added Clio-like `cluster_tree`, `bubble_map` and `topic_cluster_explorer`
+  visuals with Chinese insight headers, human questions and action values.
+- Bound the S11 P1 visuals to active `source/time/project/task` filter state
+  through redacted derived runtime nodes.
+- Added `机器治理/可视化配置/clio_like_visuals.v1_2_s11_p1.json`.
+- Added `validate:v1.2-s11-p1` for `MA-V12-S11P1` /
+  `ACC-MA-V12-S11P1`.
+- Registered status `phase_s11_p1_clio_like_visuals_completed_pending_s11_p2`.
+- Preserved S11 P1 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, No proposal apply execution,
+  No S11 P2/P3/P4 work and No app reinstall.
+- Marked the next gate as pending S11 P2.
+
 ## Unreleased - Memory Atlas v1.2 S10 Review
 
 - Added `docs/reviews/memory_atlas_v1_2_s10_review.md`.

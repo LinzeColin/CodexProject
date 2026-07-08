@@ -2,32 +2,38 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S10 Review。任务 ID 为 `MA-V12-S10-REVIEW`，验收 ID 为
-`ACC-MA-V12-S10-REVIEW`，validator 为 `validate:v1.2-s10-review`。状态为
-`stage_s10_review_passed_pending_s11_no_github_main_upload`。
+当前阶段是 S11 P1。任务 ID 为 `MA-V12-S11P1`，验收 ID 为
+`ACC-MA-V12-S11P1`，validator 为 `validate:v1.2-s11-p1`。状态为
+`phase_s11_p1_clio_like_visuals_completed_pending_s11_p2`。
 
-S10 Review 产物：
+S11 P1 产物：
 
-- `docs/reviews/memory_atlas_v1_2_s10_review.md`
-- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_review.cjs`
-- `docs/reviews/memory_atlas_v1_2_s10_p1_home_arrival_briefing.md`
-- `docs/reviews/memory_atlas_v1_2_s10_p2_global_chinese_ux.md`
-- `docs/reviews/memory_atlas_v1_2_s10_p3_machine_detail_folding.md`
+- `docs/reviews/memory_atlas_v1_2_s11_p1_clio_like_visuals.md`
+- `人类可读/27_ClioLike多维可视化说明.md`
+- `机器治理/可视化配置/clio_like_visuals.v1_2_s11_p1.json`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s11_p1.cjs`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
 
-S10 Review gate：
+S11 P1 gate：
 
-- `validate:v1.2-s10-review` 可验证 S10 P1/P2/P3 整体复审。
-- 首页能回答上次来以后发生了什么。
-- 核心 UI 默认中文。
-- 机器字段默认折叠。
-- Chinese UX linter 通过。
-- 默认路径呈现结论 / 变化 / 证据 / 行动。
+- `validate:v1.2-s11-p1` 可验证 Clio-like visuals。
+- `clio_like_visuals.v1_2_s11_p1` runtime contract 存在。
+- `cluster_tree`、`bubble_map` 和 `topic_cluster_explorer` 均可见且可交互。
+- 每个图都有中文 insight header、human question 和 action value。
+- 图谱跟随 `source/time/project/task` 过滤。
+- `python3 scripts/atlasctl.py audit --check visual-roi` 返回 PASS。
 - 不执行 proposal apply。
 - 不修改 raw。
 - 不上传 GitHub main。
 
-No GitHub main upload in this review。
-下一步是 S11 P1。
+No GitHub main upload in this phase。
+下一步是 S11 P2。
+
+历史复验兼容记录：S10 Review 完成时当前阶段是 S10 Review。任务 ID 为
+`MA-V12-S10-REVIEW`，验收 ID 为 `ACC-MA-V12-S10-REVIEW`，validator 为
+`validate:v1.2-s10-review`，状态为
+`stage_s10_review_passed_pending_s11_no_github_main_upload`。
 
 历史复验兼容记录：S10 P3 完成时当前阶段是 S10 P3。任务 ID 为 `MA-V12-S10P3`，验收 ID 为
 `ACC-MA-V12-S10P3`，validator 为 `validate:v1.2-s10-p3`。状态为

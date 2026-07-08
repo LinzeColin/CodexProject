@@ -1,3 +1,49 @@
+## v1.2 S11 P1 Clio-like Visuals
+
+状态：`phase_s11_p1_clio_like_visuals_completed_pending_s11_p2`。
+
+任务 ID：`MA-V12-S11P1`。
+
+验收 ID：`ACC-MA-V12-S11P1`。
+
+Validator：`validate:v1.2-s11-p1`。
+
+S11 P1 已完成。首页新增 Clio-like 多维图谱，包含 `cluster_tree`、`bubble_map` 和
+`topic_cluster_explorer`。每个图都有中文 insight header、human question 和 action value，
+并跟随 `source/time/project/task` 过滤。
+
+涉及文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `机器治理/可视化配置/clio_like_visuals.v1_2_s11_p1.json`
+- `docs/reviews/memory_atlas_v1_2_s11_p1_clio_like_visuals.md`
+- `人类可读/27_ClioLike多维可视化说明.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s11_p1.cjs`
+
+验收：
+
+- `validate:v1.2-s11-p1`
+- `ACC-MA-V12-S11P1`
+- `MA-V12-S11P1`
+- `clio_like_visuals.v1_2_s11_p1`
+- `cluster_tree`
+- `bubble_map`
+- `topic_cluster_explorer`
+- `source/time/project/task`
+- pending S11 P2
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No proposal apply execution。
+- No S11 P2/P3/P4 work。
+- No app reinstall。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S11 P1; MA-V12-S11P1; ACC-MA-V12-S11P1; phase_s11_p1_clio_like_visuals_completed_pending_s11_p2; validate:v1.2-s11-p1; clio_like_visuals.v1_2_s11_p1; cluster_tree; bubble_map; topic_cluster_explorer; source/time/project/task; pending S11 P2; No GitHub main upload in this phase; No raw mutation; No proposal apply execution.
+
 ## v1.2 S10 Review
 
 状态：`stage_s10_review_passed_pending_s11_no_github_main_upload`。
