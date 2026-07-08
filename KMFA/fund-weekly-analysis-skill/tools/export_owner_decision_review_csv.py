@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import re
 import zipfile
 from pathlib import Path
 from xml.sax.saxutils import escape
@@ -101,7 +102,64 @@ def is_within(path: Path, root: Path) -> bool:
         return False
 
 
-def ocr_excerpt(repo_root: Path, run_id: str, relative_path: str, limit: int = 600) -> str:
+def compact_lines(lines: list[str], limit: int) -> str:
+    return " | ".join(line.strip() for line in lines if line.strip())[:limit]
+
+
+def amount_needles(amount: str) -> list[str]:
+    raw = str(amount or "").strip()
+    if not raw:
+        return []
+    needles = {raw, raw.replace(",", "")}
+    try:
+        value = float(raw.replace(",", ""))
+    except ValueError:
+        return [item for item in needles if item]
+    needles.add(f"{value:.2f}")
+    needles.add(f"{value:,.2f}")
+    return [item for item in needles if item]
+
+
+def date_needles(business_date: str) -> list[str]:
+    raw = str(business_date or "").strip()
+    if not raw:
+        return []
+    needles = {raw}
+    match = re.fullmatch(r"(\d{4})-(\d{2})-(\d{2})", raw)
+    if match:
+        year, month, day = match.groups()
+        needles.update({
+            f"{month}-{day}",
+            f"{month}/{day}",
+            f"{int(month)}月{int(day)}日",
+            f"{month}月{day}日",
+            f"{year}年{int(month)}月{int(day)}日",
+        })
+    return [item for item in needles if item]
+
+
+def focused_excerpt(text: str, amount: str, business_date: str, limit: int) -> str:
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    if not lines:
+        return ""
+    needles = amount_needles(amount) + date_needles(business_date)
+    for index, line in enumerate(lines):
+        normalized_line = line.replace(",", "")
+        if any(needle in line or needle.replace(",", "") in normalized_line for needle in needles):
+            start = max(0, index - 2)
+            end = min(len(lines), index + 3)
+            return compact_lines(lines[start:end], limit)
+    return compact_lines(lines, limit)
+
+
+def ocr_excerpt(
+    repo_root: Path,
+    run_id: str,
+    relative_path: str,
+    amount: str = "",
+    business_date: str = "",
+    limit: int = 600,
+) -> str:
     raw = str(relative_path or "").strip()
     if not raw:
         return ""
@@ -124,8 +182,7 @@ def ocr_excerpt(repo_root: Path, run_id: str, relative_path: str, limit: int = 6
             text = resolved.read_text(encoding="utf-8", errors="ignore")
         except OSError:
             return ""
-        compact = " | ".join(line.strip() for line in text.splitlines() if line.strip())
-        return compact[:limit]
+        return focused_excerpt(text, amount, business_date, limit)
     return ""
 
 
@@ -154,6 +211,8 @@ def build_review_rows(repo_root: Path, run_id: str, selected_rows: list[dict]) -
         owner_decision = "pending_owner_review"
         missing_fields = required_owner_fields(row)
         source_ocr_text_relative_path = row.get("source_ocr_text_relative_path", "")
+        business_date = row.get("business_date", "")
+        amount = row.get("amount", "")
         output_rows.append({
             "review_batch_row_id": f"OCROWNERREVIEWCSV-{run_id}-{len(output_rows) + 1:05d}",
             "owner_worklist_id": row.get("owner_worklist_id", ""),
@@ -162,9 +221,15 @@ def build_review_rows(repo_root: Path, run_id: str, selected_rows: list[dict]) -
             "candidate_metric": row.get("candidate_metric", ""),
             "source_evidence_id": row.get("source_evidence_id", ""),
             "source_ocr_text_relative_path": source_ocr_text_relative_path,
-            "source_ocr_text_excerpt": ocr_excerpt(repo_root, run_id, source_ocr_text_relative_path),
-            "business_date": row.get("business_date", ""),
-            "amount": row.get("amount", ""),
+            "source_ocr_text_excerpt": ocr_excerpt(
+                repo_root,
+                run_id,
+                source_ocr_text_relative_path,
+                amount=amount,
+                business_date=business_date,
+            ),
+            "business_date": business_date,
+            "amount": amount,
             "currency": row.get("currency", ""),
             "company": row.get("company", ""),
             "bank": row.get("bank", ""),

@@ -95,6 +95,7 @@ REQUIRED_SKILL_STRINGS = [
     "--xlsx",
     "Owner Review",
     "source_ocr_text_excerpt",
+    "candidate amount or business date",
     "owner_review_completion_status",
     "missing_owner_fields_current",
     "TEXTJOIN",
