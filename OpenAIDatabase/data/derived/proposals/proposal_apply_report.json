@@ -1,0 +1,165 @@
+{
+  "acceptance_id": "ACC-MA-V12-S13P3",
+  "applies_real_pending_proposals": false,
+  "as_of": "2026-07-08T08:43:29Z",
+  "config_path": "机器治理/运行门禁/proposal_apply.v1_2_s13_p3.json",
+  "contract_version": "proposal_apply.v1_2_s13_p3",
+  "dry_run": false,
+  "evidence_path": "机器治理/证据与日志/proposal_apply/proposal_apply_evidence.v1_2_s13_p3.json",
+  "output_contract": {
+    "evidence": "机器治理/证据与日志/proposal_apply/proposal_apply_evidence.v1_2_s13_p3.json",
+    "machine_config": "机器治理/运行门禁/proposal_apply.v1_2_s13_p3.json",
+    "next_phase": "S13 Review",
+    "report": "data/derived/proposals/proposal_apply_report.json"
+  },
+  "output_path": "data/derived/proposals/proposal_apply_report.json",
+  "phase_boundary": {
+    "does_not_apply_real_pending_proposals_without_human_approval": true,
+    "does_not_apply_unapproved_proposals": true,
+    "does_not_modify_raw": true,
+    "does_not_push_remote": true,
+    "does_not_upload_github_main": true,
+    "next_phase": "S13 Review"
+  },
+  "raw_mutation": false,
+  "sample_outcomes": {
+    "authorized_apply_dry_run": {
+      "acceptance_id": "ACC-MA-V12-S13P3",
+      "applies_proposal": false,
+      "as_of": "2026-07-08T08:43:29Z",
+      "authorization": {
+        "approved_at": "2026-07-08T08:18:30Z",
+        "approved_by": "human_owner_s13_p3_acceptance_fixture",
+        "status": "approved_by_human"
+      },
+      "contract_version": "proposal_apply.v1_2_s13_p3",
+      "dry_run": true,
+      "failure_explanation_zh": "",
+      "forbidden_target_hits": [],
+      "human_approval_required_before_apply": true,
+      "proposal_id": "sample",
+      "raw_mutation": false,
+      "rollback_available": true,
+      "rollback_or_needs_revision": false,
+      "rollback_plan_zh": "删除或还原 data/derived/proposals/apply_results/sample_authorized_apply_result.json；raw 文件不回滚。",
+      "rollback_point": {
+        "required": true,
+        "type": "git_head",
+        "value": "2247e34872ea9848aa1430fc9e28cb51d9496023"
+      },
+      "rollback_point_created": true,
+      "schema_version": "openai_database.proposal_apply.v1_2_s13_p3",
+      "simulate_validation_failure": false,
+      "status": "PASS",
+      "target_files": [
+        "data/derived/proposals/apply_results/sample_authorized_apply_result.json"
+      ],
+      "target_type": "config",
+      "task_id": "MA-V12-S13P3",
+      "validation_after_apply": true,
+      "validation_commands": [
+        "python3 scripts/atlasctl.py proposals --dry-run"
+      ],
+      "would_apply": true,
+      "writes_files": false
+    },
+    "unauthorized_attempt": {
+      "acceptance_id": "ACC-MA-V12-S13P3",
+      "applies_proposal": false,
+      "as_of": "2026-07-08T08:43:29Z",
+      "authorization": {
+        "approved_at": null,
+        "approved_by": null,
+        "status": "not_approved"
+      },
+      "contract_version": "proposal_apply.v1_2_s13_p3",
+      "dry_run": true,
+      "failure_explanation_zh": "proposal 尚未获得人类授权，必须 fail-closed。",
+      "forbidden_target_hits": [],
+      "human_approval_required_before_apply": true,
+      "proposal_id": "sample_unauthorized",
+      "raw_mutation": false,
+      "rollback_available": false,
+      "rollback_or_needs_revision": false,
+      "rollback_plan_zh": "未授权状态不会写文件，因此 rollback 是 no-op；保留审计记录即可。",
+      "rollback_point": {
+        "required": true,
+        "type": "git_head",
+        "value": "2247e34872ea9848aa1430fc9e28cb51d9496023"
+      },
+      "rollback_point_created": false,
+      "schema_version": "openai_database.proposal_apply.v1_2_s13_p3",
+      "simulate_validation_failure": false,
+      "status": "FAIL_CLOSED",
+      "target_files": [
+        "data/derived/proposals/apply_results/unauthorized_should_not_write.json"
+      ],
+      "target_type": "config",
+      "task_id": "MA-V12-S13P3",
+      "validation_after_apply": false,
+      "validation_commands": [
+        "python3 scripts/atlasctl.py proposals --dry-run"
+      ],
+      "would_apply": false,
+      "writes_files": false
+    },
+    "validation_failure_dry_run": {
+      "acceptance_id": "ACC-MA-V12-S13P3",
+      "applies_proposal": false,
+      "as_of": "2026-07-08T08:43:29Z",
+      "authorization": {
+        "approved_at": "2026-07-08T08:18:30Z",
+        "approved_by": "human_owner_s13_p3_acceptance_fixture",
+        "status": "approved_by_human"
+      },
+      "contract_version": "proposal_apply.v1_2_s13_p3",
+      "dry_run": true,
+      "failure_explanation_zh": "模拟 validation 失败，已生成 rollback_or_needs_revision 路径。",
+      "forbidden_target_hits": [],
+      "human_approval_required_before_apply": true,
+      "proposal_id": "sample",
+      "raw_mutation": false,
+      "rollback_available": true,
+      "rollback_or_needs_revision": true,
+      "rollback_plan_zh": "删除或还原 data/derived/proposals/apply_results/sample_authorized_apply_result.json；raw 文件不回滚。",
+      "rollback_point": {
+        "required": true,
+        "type": "git_head",
+        "value": "2247e34872ea9848aa1430fc9e28cb51d9496023"
+      },
+      "rollback_point_created": false,
+      "schema_version": "openai_database.proposal_apply.v1_2_s13_p3",
+      "simulate_validation_failure": true,
+      "status": "FAIL_CLOSED",
+      "target_files": [
+        "data/derived/proposals/apply_results/sample_authorized_apply_result.json"
+      ],
+      "target_type": "config",
+      "task_id": "MA-V12-S13P3",
+      "validation_after_apply": false,
+      "validation_commands": [
+        "python3 scripts/atlasctl.py proposals --dry-run"
+      ],
+      "would_apply": false,
+      "writes_files": false
+    }
+  },
+  "schema_version": "openai_database.proposal_apply.v1_2_s13_p3",
+  "source_reports": [
+    "data/derived/proposals/proposal_state_machine_report.json",
+    "data/derived/proposals/diff_narrator_report.json"
+  ],
+  "status": "phase_s13_p3_apply_rollback_completed_pending_s13_review",
+  "summary": {
+    "authorized_apply_available": true,
+    "machine_apply_attempt_count": 3,
+    "raw_mutation": false,
+    "real_pending_proposal_count": 5,
+    "real_pending_proposals_applied": 0,
+    "rollback_available": true,
+    "unauthorized_apply_blocked": true,
+    "validation_after_apply": true
+  },
+  "task_id": "MA-V12-S13P3",
+  "writes_files": true
+}

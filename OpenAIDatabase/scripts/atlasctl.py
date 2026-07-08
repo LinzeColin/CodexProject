@@ -41,6 +41,11 @@ DIFF_NARRATOR_ACCEPTANCE_ID = "ACC-MA-V12-S13P2"
 DIFF_NARRATOR_CONTRACT_VERSION = "diff_narrator.v1_2_s13_p2"
 DIFF_NARRATOR_BUILDER_RELATIVE = "scripts/build_memory_atlas_diff_narrator.py"
 DIFF_NARRATOR_BUILDER = ROOT / DIFF_NARRATOR_BUILDER_RELATIVE
+PROPOSAL_APPLY_TASK_ID = "MA-V12-S13P3"
+PROPOSAL_APPLY_ACCEPTANCE_ID = "ACC-MA-V12-S13P3"
+PROPOSAL_APPLY_CONTRACT_VERSION = "proposal_apply.v1_2_s13_p3"
+PROPOSAL_APPLY_BUILDER_RELATIVE = "scripts/build_memory_atlas_proposal_apply.py"
+PROPOSAL_APPLY_BUILDER = ROOT / PROPOSAL_APPLY_BUILDER_RELATIVE
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -96,6 +101,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     proposals.add_argument("--dry-run", action="store_true")
     proposals.add_argument("--database-dir", type=Path, default=ROOT)
     proposals.add_argument("--view", choices=["state-machine", "diff-narrator"], default="state-machine")
+
+    apply = subparsers.add_parser("apply", help="Apply an approved proposal or inspect the fail-closed dry-run.")
+    apply.add_argument("--proposal", required=True)
+    apply.add_argument("--dry-run", action="store_true")
+    apply.add_argument("--database-dir", type=Path, default=ROOT)
+    apply.add_argument("--simulate-validation-failure", action="store_true")
     return parser.parse_args(argv)
 
 
@@ -2212,6 +2223,27 @@ def run_proposals(args: argparse.Namespace) -> int:
     return result.returncode
 
 
+def run_apply(args: argparse.Namespace) -> int:
+    command = [
+        sys.executable,
+        str(PROPOSAL_APPLY_BUILDER),
+        "--database-dir",
+        str(args.database_dir),
+        "--proposal",
+        args.proposal,
+    ]
+    if args.dry_run:
+        command.append("--dry-run")
+    if args.simulate_validation_failure:
+        command.append("--simulate-validation-failure")
+    result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
+    if result.stdout:
+        print(result.stdout, end="")
+    if result.stderr:
+        print(result.stderr, file=sys.stderr, end="")
+    return result.returncode
+
+
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     if args.command == "sync":
@@ -2230,6 +2262,8 @@ def main(argv: list[str] | None = None) -> int:
         return run_chatgpt_deep_explore(args)
     if args.command == "proposals":
         return run_proposals(args)
+    if args.command == "apply":
+        return run_apply(args)
     raise AssertionError(f"unhandled command: {args.command}")
 
 

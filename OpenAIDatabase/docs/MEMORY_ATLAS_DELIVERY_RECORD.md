@@ -1,3 +1,55 @@
+## v1.2 S13 P3 Apply 与回滚
+
+状态：`phase_s13_p3_apply_rollback_completed_pending_s13_review`。
+
+任务 ID：`MA-V12-S13P3`。
+
+验收 ID：`ACC-MA-V12-S13P3`。
+
+Validator：`validate:v1.2-s13-p3`。
+
+S13 P3 已完成。机器合同为 `proposal_apply.v1_2_s13_p3`。本阶段建立授权 apply、
+validation 和 rollback point 的安全闭环。`sample_unauthorized` 未授权时 fail-closed；
+`sample` 授权 dry-run 可进入 apply 路径；模拟 validation failure 会进入
+`rollback_or_needs_revision`。当前真实 pending proposal applied 数为 0。下一步为
+pending S13 Review。
+
+产物：
+
+- `机器治理/运行门禁/proposal_apply.v1_2_s13_p3.json`
+- `data/derived/proposals/proposal_apply_report.json`
+- `机器治理/证据与日志/proposal_apply/proposal_apply_evidence.v1_2_s13_p3.json`
+- `scripts/build_memory_atlas_proposal_apply.py`
+- `scripts/atlasctl.py`
+- `人类可读/36_Apply回滚说明.md`
+- `docs/reviews/memory_atlas_v1_2_s13_p3_apply_rollback.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s13_p3.cjs`
+
+验收关键词：
+
+- `validate:v1.2-s13-p3`
+- `ACC-MA-V12-S13P3`
+- `MA-V12-S13P3`
+- `phase_s13_p3_apply_rollback_completed_pending_s13_review`
+- `proposal_apply.v1_2_s13_p3`
+- S13 P3
+- Apply 与回滚
+- `sample_unauthorized`
+- `sample`
+- authorization required
+- validation_after_apply
+- rollback_or_needs_revision
+- pending S13 Review
+
+边界：
+
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+- 真实 pending proposal 未获人类授权前不 apply。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S13 P3; MA-V12-S13P3; ACC-MA-V12-S13P3; phase_s13_p3_apply_rollback_completed_pending_s13_review; validate:v1.2-s13-p3; proposal_apply.v1_2_s13_p3; S13 P3; Apply 与回滚; sample_unauthorized; sample; authorization required; validation_after_apply; rollback_or_needs_revision; No GitHub main upload; No remote push; No raw mutation; pending S13 Review.
+
 ## v1.2 S13 P2 Diff narrator
 
 状态：`phase_s13_p2_diff_narrator_completed_pending_s13_p3`。
