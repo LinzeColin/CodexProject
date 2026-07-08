@@ -1,3 +1,52 @@
+## 148. Memory Atlas v1.2 S11 P4 Human Question Map Parameters
+
+状态：`phase_s11_p4_human_question_map_completed_pending_s11_review`。
+
+验收 ID：`ACC-MA-V12-S11P4`。
+
+S11 P4 固定以下参数：
+
+- `MA-V12-S11P4`
+- `validate:v1.2-s11-p4`
+- `human_question_map.v1_2_s11_p4`
+- `Human Question Map`
+- `Visual ROI Gate`
+- `cluster_tree`
+- `bubble_map`
+- `topic_cluster_explorer`
+- `task_treemap`
+- `automation_vs_augmentation`
+- `roi_scatter`
+- `opportunity_radar`
+- `agent_decision_sankey`
+- `friction_heatmap`
+- `latent_radar`
+- `evidence_timeline`
+- `formula_explorer`
+- `source/time/project/task`
+- S11 P4 完成后下一步为 pending S11 Review。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S11P4-001 phase_status = phase_s11_p4_human_question_map_completed_pending_s11_review`
+- `PARAM-MA-V12-S11P4-002 validator = validate:v1.2-s11-p4`
+- `PARAM-MA-V12-S11P4-003 human_question_map_version = human_question_map.v1_2_s11_p4`
+- `PARAM-MA-V12-S11P4-004 visual_ids = cluster_tree; bubble_map; topic_cluster_explorer; task_treemap; automation_vs_augmentation; roi_scatter; opportunity_radar; agent_decision_sankey; friction_heatmap; latent_radar; evidence_timeline; formula_explorer`
+- `PARAM-MA-V12-S11P4-005 filter_dimensions = source/time/project/task`
+- `PARAM-MA-V12-S11P4-006 visual_roi_gate_pass = true`
+- `PARAM-MA-V12-S11P4-007 next_gate = pending S11 Review`
+- `PARAM-MA-V12-S11P4-008 phase_boundary = No raw mutation; No proposal apply execution; No GitHub main upload in this phase; No S11 Review completion`
+
+验证逻辑：
+
+- `validate:v1.2-s11-p4` checks the Human Question Map runtime contract, 12 P0
+  visual ids, Chinese insight headers, human questions, action values,
+  `source/time/project/task` filter binding, visual config, Visual ROI Gate
+  state, excluded non-P0 candidates and governance records.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S11 P4; MA-V12-S11P4; ACC-MA-V12-S11P4; phase_s11_p4_human_question_map_completed_pending_s11_review; validate:v1.2-s11-p4; human_question_map.v1_2_s11_p4; Human Question Map; Visual ROI Gate; source/time/project/task; pending S11 Review; No GitHub main upload in this phase; No raw mutation; No proposal apply execution.
+
 ## 147. Memory Atlas v1.2 S11 P3 Workflow/latent/governance Visuals Parameters
 
 状态：`phase_s11_p3_workflow_latent_governance_visuals_completed_pending_s11_p4`。

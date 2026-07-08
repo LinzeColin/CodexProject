@@ -18,15 +18,18 @@
 
 ## 当前阶段
 
-当前为 S11 P3。任务 ID 为 `MA-V12-S11P3`，验收 ID 为
-`ACC-MA-V12-S11P3`，validator 为 `validate:v1.2-s11-p3`。状态为
-`phase_s11_p3_workflow_latent_governance_visuals_completed_pending_s11_p4`。S11 P3 已完成
-Workflow/latent/governance visuals，运行时合同为
-`workflow_latent_governance_visuals.v1_2_s11_p3`；图谱包含
-`agent_decision_sankey`、`friction_heatmap`、`latent_radar`、`evidence_timeline` 和
-`formula_explorer`，并绑定 `source/time/project/task` 过滤。下一步只允许进入 S11 P4。
+当前为 S11 P4。任务 ID 为 `MA-V12-S11P4`，验收 ID 为
+`ACC-MA-V12-S11P4`，validator 为 `validate:v1.2-s11-p4`。状态为
+`phase_s11_p4_human_question_map_completed_pending_s11_review`。S11 P4 已完成
+Human Question Map，运行时合同为 `human_question_map.v1_2_s11_p4`；12 张 P0 图谱均绑定
+中文问题、行动价值、Visual ROI Gate 和 `source/time/project/task` 过滤。下一步只允许进入
+S11 Review。
 
 No GitHub main upload。No raw mutation。No proposal apply execution。
+
+历史复验兼容记录：S11 P3 完成时当前为 S11 P3，任务 ID 为 `MA-V12-S11P3`，
+验收 ID 为 `ACC-MA-V12-S11P3`，validator 为 `validate:v1.2-s11-p3`，
+下一步是 S11 P4；此句只用于保留已完成 phase 的复验语义，不代表当前阶段。
 
 历史复验兼容记录：S11 P2 完成时当前为 S11 P2，任务 ID 为 `MA-V12-S11P2`，
 验收 ID 为 `ACC-MA-V12-S11P2`，validator 为 `validate:v1.2-s11-p2`，
