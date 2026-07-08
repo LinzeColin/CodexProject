@@ -6539,7 +6539,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(rows[0]["management_conclusion_allowed"], "false")
             with summary_path.open(encoding="utf-8-sig", newline="") as f:
                 summary_rows = list(csv.DictReader(f))
-            self.assertEqual(len(summary_rows), 2)
+            self.assertEqual(len(summary_rows), 3)
             self.assertEqual(summary_rows[0]["summary_scope"], "all")
             self.assertEqual(summary_rows[0]["summary_key"], "all")
             self.assertEqual(summary_rows[0]["candidate_count"], "1")
@@ -6552,6 +6552,11 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(summary_rows[1]["candidate_count"], "1")
             self.assertEqual(summary_rows[1]["blocking_count"], "1")
             self.assertEqual(summary_rows[1]["top_recommended_owner_action"], "Fill required owner fields before dry-run can be ready")
+            self.assertEqual(summary_rows[2]["summary_scope"], "source_ocr_excerpt_focus_status")
+            self.assertEqual(summary_rows[2]["summary_key"], "focused_amount")
+            self.assertEqual(summary_rows[2]["candidate_count"], "1")
+            self.assertEqual(summary_rows[2]["blocking_count"], "1")
+            self.assertEqual(summary_rows[2]["missing_owner_fields"], "owner_corrected_company,owner_corrected_bank")
             self.assertFalse(
                 (
                     repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/"
