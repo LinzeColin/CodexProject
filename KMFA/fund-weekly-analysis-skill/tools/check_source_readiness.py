@@ -3,7 +3,7 @@
 
 This preflight intentionally does not hash or read file bodies. It checks
 existence, file counts, macOS/OneDrive cloud-only flags, and basic readability so
-the 11:30 run can fail closed before expensive extraction starts.
+the scheduled run can fail closed before expensive extraction starts.
 """
 from __future__ import annotations
 
@@ -149,7 +149,7 @@ def main() -> int:
             "status": "SOURCE_MISSING",
             "target": target,
             "source_candidates": source_candidates_for(target_dir),
-            "action": "Materialize a verified private candidate into the configured DWS_Outputs/付款请示群 folder before the daily run.",
+            "action": "Materialize a verified private candidate into the configured DWS_Outputs/付款请示群 folder before the scheduled run.",
         }
         write_report(run_dir, report)
         print(json.dumps({"run_id": run_id, "run_dir": str(run_dir), "status": "SOURCE_MISSING"}, ensure_ascii=False))

@@ -43,10 +43,10 @@ No simulation: production reports must be generated only from real source files,
 
 ## Current Automation Rules
 
-* Automation name: `KMFA资金周报日报自动化`.
+* Automation name: `KMFA资金周报自动化`.
 * Timezone: `Australia/Sydney`.
-* Daily run time: 11:30 local Sydney time.
-* Reference only: 11:30 Australia/Sydney equals 09:30 Asia/Shanghai during the current UTC+10 offset. The local scheduler must use Sydney local time, not Beijing time.
+* Scheduled run time: every Monday and Saturday at 11:00 local Sydney time.
+* Reference only: 11:00 Australia/Sydney equals 09:00 Asia/Shanghai during the current UTC+10 offset. The local scheduler must use Sydney local time, not Beijing time.
 * Input directory:
 
       /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群
@@ -160,13 +160,13 @@ Required files:
 
 Current deterministic runner status contract:
 
-* Run `tools/check_source_readiness.py` before the daily extraction. It is a fast preflight that does not hash/read file bodies and returns `READY`, `SOURCE_MISSING`, or `SOURCE_UNREADABLE`.
+* Run `tools/check_source_readiness.py` before each scheduled extraction. It is a fast preflight that does not hash/read file bodies and returns `READY`, `SOURCE_MISSING`, or `SOURCE_UNREADABLE`.
 * Missing configured folder returns `SOURCE_MISSING`, writes fail-closed artifacts, and may list private source candidates such as sibling `DWS_Outputs.zip` or `DWS_Archive/<group>` for explicit materialization. It must not silently switch to those candidates.
 * Existing configured folder with unreadable or macOS/OneDrive `dataless` files returns `SOURCE_UNREADABLE`, writes fail-closed artifacts, and must not generate an Excel package.
 * Existing configured folder returns `INDEXED_PENDING_EXTRACTION`, hashes real files, copies the current native Excel mother template into the private run folder, writes the required CSV/JSON package, and creates exception tasks for every evidence item that still needs OCR/table extraction or human review.
 * Public-safe KMFA metadata signals from fund pressure, project-cost fact layer, report grade, and scope reconciliation metadata are copied into `kmfa_metadata_signals.csv` and workbook pending-review areas. These signals never create amounts, forecasts, or management conclusions.
 * Every screenshot evidence row is audited in `screenshot_ocr_coverage.csv` before OCR value extraction. Missing sidecars stay `ocr_text_sidecar_missing`, create review tasks, and never create ledger amounts or management conclusions.
-* Daily local runs call `tools/generate_screenshot_ocr_sidecars.py` after the runner to produce `screenshot_ocr_sidecar_generation_plan.csv` and `screenshot_ocr_sidecar_generation_summary.json` in the private run directory. Dry-run is default; empty OCR text is never written as a sidecar.
+* Scheduled local runs call `tools/generate_screenshot_ocr_sidecars.py` after the runner to produce `screenshot_ocr_sidecar_generation_plan.csv` and `screenshot_ocr_sidecar_generation_summary.json` in the private run directory. Dry-run is default; empty OCR text is never written as a sidecar.
 * Adjacent real OCR text sidecars for screenshots, such as `<image>.ocr.txt` or `<stem>.ocr.txt`, are indexed into `ocr_text_candidates.csv` and exception tasks as `ocr_text_sidecar_indexed_pending_review`. Date/amount candidates detected in that text are written to `ocr_value_candidates.csv` as `ocr_value_candidate_pending_review`. They never create ledger amounts or management conclusions without human/cross review.
 * Real DingTalk `chat_records/chat_records.csv` content and quoted_content fields are indexed into `chat_text_candidates.csv` when they carry finance signals. Date/amount candidates detected in that text are written to `chat_value_candidates.csv` as `chat_value_candidate_pending_review`. They never create ledger amounts or management conclusions without human/cross review.
 * Real DingTalk `_manifest/manifest.csv` resource rows are used to link chat text/value candidates to attachment evidence in `chat_evidence_links.csv`. Links remain `linked_pending_review` and never create ledger amounts or management conclusions without human/cross review.
@@ -193,7 +193,7 @@ Explicit source materialization:
 * For directory candidates, pass `--source-dir`. For zip candidates, pass `--source-zip` and `--zip-prefix 付款请示群`; only files under that group prefix are eligible.
 * ZIP candidates may contain either `付款请示群/...` directly or `DWS_Outputs/付款请示群/...` under a standard container root; the operator still passes `--zip-prefix 付款请示群`, and other groups remain out of scope.
 * The tool copies only missing files, skips identical files, fails on target hash conflicts, detects OneDrive/macOS `dataless` source files as `SOURCE_UNREADABLE`, treats unreadable/bad zip files as `SOURCE_UNREADABLE`, and writes `source_materialization_manifest.json` plus `source_materialization_files.csv` under ignored private runtime.
-* Do not materialize from unverified zip/archive contents silently during daily runner execution.
+* Do not materialize from unverified zip/archive contents silently during scheduled runner execution.
 
 The shipped editable workbook template is:
 

@@ -1,8 +1,8 @@
 # Runbook
 
-## Daily 11:30 Australia/Sydney run
+## Monday and Saturday 11:00 Australia/Sydney run
 
-The local scheduler uses Sydney local time. 11:30 Australia/Sydney is the operational replacement for the previous Beijing 09:30 wording during the current UTC+10 offset.
+The local scheduler uses Sydney local time. Monday and Saturday 11:00 Australia/Sydney is the operational schedule; during the current UTC+10 offset this is 09:00 Asia/Shanghai as a reference only.
 
 1. Confirm local repo is on `main` and clean enough to run.
 2. Pull latest `origin/main` with fast-forward only.
@@ -21,7 +21,7 @@ The local scheduler uses Sydney local time. 11:30 Australia/Sydney is the operat
 15. Build known due-date funding projections only from real structured CSV `due_date` risk/opportunity rows; write `funding_forecast.csv` and `02_资金趋势预测` as `structured_csv_forecast_pending_review`.
 16. When structured CSV facts exist, patch the copied native `.xlsx` workbook with the same traced facts in homepage KPI cards, `02_资金趋势预测`, visible flow/risk/matrix sheets, and hidden `H01/H02/H03`; preserve native chart parts and keep all values pending review.
 17. Audit every screenshot evidence row in `screenshot_ocr_coverage.csv`, then put adjacent real OCR text sidecars into `ocr_text_candidates.csv`, put detected date/amount candidates into `ocr_value_candidates.csv`, index real DingTalk `chat_records.csv` finance text into `chat_text_candidates.csv`, put detected date/amount candidates into `chat_value_candidates.csv`, link chat candidates to `_manifest/manifest.csv` attachment evidence in `chat_evidence_links.csv`, reconcile every manifest attachment row against evidence in `attachment_evidence_reconciliation.csv`, convert blockers into `attachment_reconciliation_remediation.csv`, emit dry-run-only checks in `attachment_remediation_dry_run.csv`, convert dry-run rows into `attachment_repair_plan.csv`, gate every repair plan row in `attachment_repair_apply_gate.csv`, and create pending-review/blocking exception tasks; do not promote OCR/chat text, value candidates, links, attachment reconciliation rows, remediation rows, dry-run rows, repair plan rows, or apply gate rows into ledger amounts until human/cross review passes.
-18. After a successful daily runner invocation, run `tools/generate_screenshot_ocr_sidecars.py --run-dir <run_dir>` to write `screenshot_ocr_sidecar_generation_plan.csv` and `screenshot_ocr_sidecar_generation_summary.json` under the same private run directory. Dry-run is default; `--apply` is required to write private OCR text sidecars, and empty OCR output must not be written.
+18. After a successful scheduled runner invocation, run `tools/generate_screenshot_ocr_sidecars.py --run-dir <run_dir>` to write `screenshot_ocr_sidecar_generation_plan.csv` and `screenshot_ocr_sidecar_generation_summary.json` under the same private run directory. Dry-run is default; `--apply` is required to write private OCR text sidecars, and empty OCR output must not be written.
 19. Write `attachment_repair_authorization_template.json` in the run directory as a draft only. Every row must default to `authorized=false`; the operator must edit and save a confirmed copy to `attachment_repair_authorizations/<run_id>.json` before it can be validated.
 20. If a private `attachment_repair_authorizations/<run_id>.json` file exists, validate only the schema and row coverage: `authorization_manifest_version=1`, matching `run_id`, `authorization_scope=attachment_repair_plan_validation_only`, `source_mutation_allowed=false`, `apply_execution_allowed=false`, and explicit row-level `repair_plan_authorizations`. A valid authorization manifest may be counted in cross-review, but this runner still does not execute repairs or allow source mutation.
 21. Write `attachment_repair_authorization_preview.csv` from `attachment_repair_apply_gate.csv` to show coverage impact only. Valid rows may be marked `ready_for_operator_review_no_apply`; all rows still keep `apply_allowed=false`, `source_mutation_allowed=false`, `apply_performed=false`, and `formal_fact_allowed=false`.
@@ -83,7 +83,7 @@ python3 KMFA/fund-weekly-analysis-skill/tools/materialize_fund_source.py \
   --apply
 ```
 
-ZIP materialization is explicit only. The daily runner still must not silently
+ZIP materialization is explicit only. The scheduled runner still must not silently
 read or extract `DWS_Outputs.zip` when the configured hot folder is missing.
 If the zip was produced with a top-level `DWS_Outputs/` folder, still pass
 `--zip-prefix 付款请示群`; the materializer strips the standard container root
