@@ -1948,3 +1948,15 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - Inputs: previous raw-to-processed comparison requirement public artifacts and ignored private requirement queue, read-only.
 - Output: aggregate NO_GO evidence plus ignored private processed-data reconciliation requirement queue/report.
 - Boundary: no raw inbox access, no authoritative binding, no raw-to-processed comparison, no processed-data reconciliation, no upload, no reinstall, no business execution.
+
+
+## v0.1.4 owner/authorized agent external action required before business-value consistency
+
+- model_key: `kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_value_consistency`
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-BUSINESS-VALUE-CONSISTENCY-001`
+- parameter_ids: `PARAM-KMFA-1603`, `PARAM-KMFA-1604`, `PARAM-KMFA-1605`
+- active_formula_count: `248`
+- active_parameter_count: `1223`
+- locked counts: `0;48;48;48;0;48;48;0;40;8;0;0;0;0;72;NO_GO`
+- gate flags: external action requirement checked=true; owner/agent external action completed=false; binding=false; raw comparison=false; processed reconciliation=false; business consistency=false; upload=false; business execution=false.
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_value_consistency.py --require-private-business-value-consistency-requirement`
