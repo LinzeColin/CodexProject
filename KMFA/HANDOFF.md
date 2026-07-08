@@ -41,6 +41,7 @@
 - runner 现在从真实结构化 CSV 的 `due_date` 税费/保证金/借款/项目成本风险/机会行生成 `funding_forecast.csv`，并写入 `02_资金趋势预测`；这些 projection 只按 `known_due_date_structured_csv` 进入待复核，不生成无证据预测、付款动作或管理结论。
 - runner 现在生成 `cashflow_validation.csv`，逐资金行校验余额连续性、经营现金流影响和内部调拨排除；连续性失败追加 `BALANCE_CONTINUITY_GAP` 异常任务，并写入隐藏 `H05_复审检查`。
 - runner 现在生成 `workbook_quality_checks.csv`，对生成后的原生 Excel 检查 sheet 顺序、隐藏审计页、可见 row 2 清理、图表尺寸、公式错误标记和可见敏感值形态；失败会写异常任务并阻断管理结论。
+- runner 现在在 workbook quality 检查前写入隐藏 `H06_配置规则` 运行时规则表，记录 `run_id`、`source_input_dir`、Sydney 调度 rrule、no-hallucination policy、事实晋升/账本/管理结论 fail-closed 标志和 private runtime 边界；该表只做审计，不授权事实晋升或管理结论。
 - runner 现在生成 `goal_completion_audit.csv`，按最终目标逐项记录证据状态和下一步；正式事实晋升、管理结论和 automation 本地状态仍需独立授权/外部检查，不因审计存在而自动放行。
 - runner 现在生成 `fact_promotion_review_packet.csv`，汇总结构化事实、OCR ledger staging、聊天金额候选、附件证据完整性、workbook quality 和目标审计，作为 owner 复核/授权准备包；所有行仍 no-write/no-promote。
 - runner 现在生成 `fact_promotion_owner_review_batch.csv`，从复核包派生六个 owner-review 批次，汇总 candidate/ready/blocker 计数、`owner_review_status` 和 recommended owner action；所有行仍 `financial_fact_promotion_allowed=false`、`fund_ledger_write_allowed=false`、`financial_fact_promoted=false`、`management_conclusion_allowed=false`，不执行授权、不晋升事实、不写正式账本。
@@ -522,4 +523,5 @@ git diff --check -- README.md governance/projects.yaml KMFA
 - 2026-07-08 S38 更新：Codex App automation `kmfa` / `KMFA资金周报自动化` 已按用户最新指令改为每周一、周六 11:00 悉尼本地时间；repo mirror、prompt 与 launchd fallback 模板同步更新，真实检查返回 `CODEX_AUTOMATION_READY`。
 - 2026-07-08 后续更新：runner 已支持真实结构化 CSV 固定列契约抽取，输出 `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW`，生成 `fund_ledger`、`net_flow_ledger`、`company_bank_matrix` 和 `tax_loan_risk`，但仍保持 `management_conclusion_allowed=false`。
 - 2026-07-08 S59 更新：fact promotion authorization/execution gate 阻断计数已精确化；`authorization_required=false` 的 review area 输出 `authorization_not_required_*` / `not_required_*` no-op 状态，只做审计，不计 blocked。真实复跑 `s55_scheduled_entrypoint_real_run_20260708` 后 authorization/execution blocked count 均为 4，execution allowed 仍为 0，`fund_ledger.csv` 与 `funding_forecast.csv` 均为 0 行，`management_conclusion_allowed=false`。
-- 下一步：先把 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群` 或候选 `DWS_Archive/付款请示群` 文件离线化到本机，再运行 readiness；只有 `READY` 后才运行真实数据生成包。launchd plist 可作为备用入口，但当前主调度已是 Codex App automation。
+- 2026-07-08 S60 更新：H06 运行时配置规则表已加入原生 Excel 输出，写入 run/source/schedule/no-hallucination/fail-closed/governance 键值行，并由 workbook quality 检查覆盖。
+- 下一步：继续围绕正式 fact promotion 授权/执行 dry-run 或 owner review 影响预览推进；当前 source readiness 和 automation readiness 已通过，但正式账本、fact promotion 和管理结论仍保持 fail-closed。
