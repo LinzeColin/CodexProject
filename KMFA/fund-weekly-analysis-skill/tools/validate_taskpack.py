@@ -47,6 +47,7 @@ REQUIRED_SKILL_STRINGS = [
     "same `run_id`",
     "ocr_text_candidates.csv",
     "ocr_value_candidates.csv",
+    "ocr_financial_fact_candidates.csv",
     "chat_text_candidates.csv",
     "chat_value_candidates.csv",
     "chat_evidence_links.csv",
