@@ -2,8 +2,34 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S07 P2。任务 ID 为 `MA-V12-S07P2`，验收 ID 为
-`ACC-MA-V12-S07P2`，validator 为 `validate:v1.2-s07-p2`。
+当前阶段是 S07 P3。任务 ID 为 `MA-V12-S07P3`，验收 ID 为
+`ACC-MA-V12-S07P3`，validator 为 `validate:v1.2-s07-p3`。
+
+S07 P3 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s07_p3_formula_what_if.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s07_p3.cjs`
+- `scripts/build_memory_atlas_formula_what_if.py`
+- `scripts/atlasctl.py`
+- `机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`
+- `data/derived/economic_proxy/formula_what_if_preview.json`
+- `人类可读/18_FormulaWhatIf配置预览说明.md`
+
+S07 P3 gate：
+
+- `validate:v1.2-s07-p3` 可验证 Formula What-if 配置预览。
+- `python scripts/atlasctl.py analyze --stage formula-what-if --dry-run` 返回 no-write payload。
+- `python scripts/atlasctl.py audit --check formula-what-if` 返回 PASS。
+- 输出包含 `scenarios`、`adjustable_weights`、`parameter_change_proposal`、公式来源和参数引用。
+- `proposal_required_before_apply=true`。
+- `active_config_write=false`。
+- 不接入外部经济数据库。
+- 不是精确收入预测，不是财务建议。
+- 不实现运行时 UI。
+- 不修改 raw。
+
+No GitHub main upload in this phase。
+下一步是 S07 Review。
 
 S07 P2 产物：
 

@@ -3,7 +3,7 @@
 用于放置 facets、semantic clusters、latent signals、collaboration quality、自我迭代和
 低价值循环识别的模型配置。
 
-当前 S07 P2 已完成。facet/canonical events 的数据契约已定义在
+当前 S07 P3 已完成。facet/canonical events 的数据契约已定义在
 `机器治理/数据契约/facet_event_schema.v1_2_s05_p1.json`，中文解释位于
 `人类可读/12_Facet字段与事件语义说明.md`，facet extractor 已实现为
 `scripts/extract_memory_atlas_facets.py`，并为 events 输出补齐
@@ -47,4 +47,7 @@ Personal Economic Proxy，输出 `data/derived/economic_proxy/personal_economic_
 S07 P2 继续使用 S06 behavior outputs 和 S07 P1 Personal Economic Proxy，生成
 Information ROI 与 Visual ROI Gate 输出
 `data/derived/information_roi/information_roi_gate.json`。该输出判断 insight、card、chart
-是否有足够决策价值；没有决策价值的图表不进 P0。下一步是 S07 P3。
+是否有足够决策价值；没有决策价值的图表不进 P0。S07 P3 已完成 Formula What-if
+配置预览，继续使用 Personal Economic Proxy 与 Information ROI 输出生成
+`data/derived/economic_proxy/formula_what_if_preview.json`，用于查看不同权重假设下的
+内部 proxy 分变化，不修改 active formula config。下一步是 S07 Review。

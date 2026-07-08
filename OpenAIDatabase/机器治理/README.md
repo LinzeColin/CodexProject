@@ -18,8 +18,8 @@
 
 ## 当前阶段
 
-当前为 S07 P2。任务 ID 为 `MA-V12-S07P2`，验收 ID 为
-`ACC-MA-V12-S07P2`，validator 为 `validate:v1.2-s07-p2`。
+当前为 S07 P3。任务 ID 为 `MA-V12-S07P3`，验收 ID 为
+`ACC-MA-V12-S07P3`，validator 为 `validate:v1.2-s07-p3`。
 S01 整体复审已通过，S02 整体复审已通过，S03 P1/P2/P3
 整体复审已通过。S04 P1 已建立 ChatGPT 只读同步和 official export fallback。
 S04 P2 已建立 Codex local sync、future-agent minimal adapter、raw + derived + run log
@@ -44,7 +44,10 @@ S06 P2 已生成低价值循环候选、Decision Debt Ledger 和 Action Half-Lif
 Information ROI 与 Visual ROI Gate，输出
 `data/derived/information_roi/information_roi_gate.json`，公式配置为
 `机器治理/参数与公式/information_roi.v1_2_s07_p2.json`，Visual ROI Gate 配置为
-`机器治理/可视化配置/visual_roi_gate.v1_2_s07_p2.json`。下一步是 S07 P3。
+`机器治理/可视化配置/visual_roi_gate.v1_2_s07_p2.json`。S07 P3 已完成 Formula
+What-if 配置预览，配置为
+`机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`，输出为
+`data/derived/economic_proxy/formula_what_if_preview.json`。下一步是 S07 Review。
 
 当前机器产物：
 
@@ -56,9 +59,11 @@ Information ROI 与 Visual ROI Gate，输出
 - `../data/derived/behavior_intelligence/opportunities.json`
 - `../data/derived/visualization/memory_atlas.json`
 - `../data/derived/economic_proxy/personal_economic_proxy.json`
+- `../data/derived/economic_proxy/formula_what_if_preview.json`
 - `../data/derived/information_roi/information_roi_gate.json`
 - `参数与公式/personal_economic_proxy.v1_2_s07_p1.json`
 - `参数与公式/information_roi.v1_2_s07_p2.json`
+- `参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`
 - `可视化配置/visual_roi_gate.v1_2_s07_p2.json`
 - `同步与备份/sync_source_registry.json`
 - `同步与备份/raw_public_archive_policy.v1_2_s03_p1.json`
@@ -88,6 +93,7 @@ Information ROI 与 Visual ROI Gate，输出
 - `../人类可读/15_机会发现与为什么不是现在卡片.md`
 - `../人类可读/16_PersonalEconomicProxy公式说明.md`
 - `../人类可读/17_InformationROI与VisualROIGate说明.md`
+- `../人类可读/18_FormulaWhatIf配置预览说明.md`
 - `../data/public_raw/README.md`
 - `人类可读/06_Raw明文公开与只读归档说明.md`
 - `data/public_raw/README.md`
@@ -109,6 +115,8 @@ Information ROI 与 Visual ROI Gate，输出
 - `../docs/reviews/memory_atlas_v1_2_s06_p3_opportunity_discovery.md`
 - `../docs/reviews/memory_atlas_v1_2_s06_review.md`
 - `../docs/reviews/memory_atlas_v1_2_s07_p1_economic_proxy.md`
+- `../docs/reviews/memory_atlas_v1_2_s07_p2_information_roi.md`
+- `../docs/reviews/memory_atlas_v1_2_s07_p3_formula_what_if.md`
 - `scripts/privacy_guard.py`
 - `scripts/sync_codex_memory_data.py`
 - `scripts/raw_archive_manifest.py`

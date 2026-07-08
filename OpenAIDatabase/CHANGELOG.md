@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S07 P3 Formula What-if
+
+- Added `机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`
+  for Formula What-if configurable proxy preview.
+- Added `scripts/build_memory_atlas_formula_what_if.py` and
+  `data/derived/economic_proxy/formula_what_if_preview.json`.
+- Extended `scripts/atlasctl.py` with `analyze --stage formula-what-if` and
+  `audit --check formula-what-if`.
+- Added `docs/reviews/memory_atlas_v1_2_s07_p3_formula_what_if.md`.
+- Added `人类可读/18_FormulaWhatIf配置预览说明.md`.
+- Added `validate:v1.2-s07-p3` for `MA-V12-S07P3` /
+  `ACC-MA-V12-S07P3`.
+- Registered status `phase_s07_p3_formula_what_if_completed_pending_s07_review`.
+- Preserved S07 P3 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation in this phase, No external
+  economic database, No precise income prediction, No financial advice,
+  no active formula config mutation and no runtime UI implementation.
+- Marked the next gate as pending S07 Review.
+
 ## Unreleased - Memory Atlas v1.2 S07 P2 Information ROI
 
 - Added `机器治理/参数与公式/information_roi.v1_2_s07_p2.json` for Information ROI formulas.

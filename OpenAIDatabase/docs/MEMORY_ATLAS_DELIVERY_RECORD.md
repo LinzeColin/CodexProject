@@ -1,3 +1,51 @@
+## v1.2 S07 P3 Formula What-if
+
+状态：`phase_s07_p3_formula_what_if_completed_pending_s07_review`。
+
+任务 ID：`MA-V12-S07P3`。
+
+验收 ID：`ACC-MA-V12-S07P3`。
+
+Validator：`validate:v1.2-s07-p3`。
+
+S07 P3 定义并生成 Formula What-if 配置预览。配置位于
+`机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`，builder 位于
+`scripts/build_memory_atlas_formula_what_if.py`，输出位于
+`data/derived/economic_proxy/formula_what_if_preview.json`。输出以 proposal-only 方式
+展示不同权重假设，不写回 active formula config。
+
+涉及文件：
+
+- `机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`
+- `scripts/build_memory_atlas_formula_what_if.py`
+- `scripts/atlasctl.py`
+- `data/derived/economic_proxy/formula_what_if_preview.json`
+- `人类可读/18_FormulaWhatIf配置预览说明.md`
+- `docs/reviews/memory_atlas_v1_2_s07_p3_formula_what_if.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s07_p3.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s07-p3`
+- `ACC-MA-V12-S07P3`
+- `MA-V12-S07P3`
+- S07 P3
+- Formula What-if
+- pending S07 Review
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation in this phase。
+- No external economic database。
+- No precise income prediction。
+- No financial advice。
+- No active formula config mutation。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S07 P3 Formula What-if; MA-V12-S07P3; ACC-MA-V12-S07P3; phase_s07_p3_formula_what_if_completed_pending_s07_review; validate:v1.2-s07-p3; Formula What-if; formula_what_if_preview.json; S07 P3; pending S07 Review; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No external economic database; No precise income prediction; No financial advice; No active formula config mutation.
+
 ## v1.2 S07 P2 Information ROI
 
 状态：`phase_s07_p2_information_roi_completed_pending_s07_p3`。
