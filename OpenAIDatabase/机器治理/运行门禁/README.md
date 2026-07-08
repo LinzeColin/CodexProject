@@ -2,8 +2,8 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S05 Review。任务 ID 为 `MA-V12-S05-REVIEW`，验收 ID 为
-`ACC-MA-V12-S05-REVIEW`，validator 为 `validate:v1.2-s05-review`。
+当前阶段是 S06 P1。任务 ID 为 `MA-V12-S06P1`，验收 ID 为
+`ACC-MA-V12-S06P1`，validator 为 `validate:v1.2-s06-p1`。
 
 前置 S01 Review 已通过：`MA-V12-S01-REVIEW` / `ACC-MA-V12-S01-REVIEW` /
 `validate:v1.2-s01-review`。
@@ -292,3 +292,21 @@ No GitHub main upload in this review。
 No remote push in this review。
 No raw mutation in this review。
 下一步是 S06 P1。
+
+S06 P1 产物：
+
+- `scripts/build_memory_atlas_clusters.py`
+- `scripts/atlasctl.py analyze --stage clusters`
+- `scripts/atlasctl.py audit --check insight-evidence`
+- `data/derived/behavior_intelligence/clusters.json`
+- `人类可读/13_行为簇与层级簇说明.md`
+- `docs/reviews/memory_atlas_v1_2_s06_p1_cluster_builder.md`
+
+S06 P1 gate：
+
+- 生成主题簇和层级簇。
+- 支持 `source/time/project/task/language` 过滤合同。
+- 每个 cluster 有中文摘要和 `evidence_refs`。
+- 不识别低价值循环，不生成机会卡片，不修改 raw。
+
+下一步是 S06 P2。

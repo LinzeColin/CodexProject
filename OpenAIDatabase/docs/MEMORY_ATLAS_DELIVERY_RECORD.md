@@ -1,3 +1,48 @@
+## v1.2 S06 P1 Cluster Builder
+
+状态：`phase_s06_p1_cluster_builder_completed_pending_s06_p2`。
+
+任务 ID：`MA-V12-S06P1`。
+
+验收 ID：`ACC-MA-V12-S06P1`。
+
+S06 P1 实现 Memory Atlas v1.2 的 Cluster builder。它从 S05 canonical events 生成
+主题簇和层级簇，并为每个 cluster 保留中文摘要、代表事件、过滤维度和 evidence refs。
+
+涉及文件：
+
+- `scripts/build_memory_atlas_clusters.py`
+- `scripts/atlasctl.py`
+- `data/derived/behavior_intelligence/clusters.json`
+- `人类可读/13_行为簇与层级簇说明.md`
+- `docs/reviews/memory_atlas_v1_2_s06_p1_cluster_builder.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_p1.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s06-p1`
+- `ACC-MA-V12-S06P1`
+- `MA-V12-S06P1`
+- S06 P1
+- `build_memory_atlas_clusters.py`
+- `atlasctl.py analyze --stage clusters`
+- `clusters.json`
+- `source/time/project/task/language`
+- pending S06 P2
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase.
+- No raw mutation in this phase.
+- No low-value loop detection in this phase.
+- No opportunity cards in this phase.
+- No app reinstall in this phase.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S06 P1 Cluster Builder; MA-V12-S06P1; ACC-MA-V12-S06P1; phase_s06_p1_cluster_builder_completed_pending_s06_p2; validate:v1.2-s06-p1; build_memory_atlas_clusters.py; atlasctl.py analyze --stage clusters; clusters.json; S06 P1; pending S06 P2; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No low-value loop detection; No opportunity cards.
+
 ## v1.2 S05 Review
 
 状态：`stage_s05_review_passed_pending_s06_no_github_main_upload`。

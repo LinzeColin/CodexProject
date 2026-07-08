@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S06 P1 Cluster Builder
+
+- Added `scripts/build_memory_atlas_clusters.py` for deterministic behavior cluster generation.
+- Extended `scripts/atlasctl.py` with `analyze --stage clusters` and
+  `audit --check insight-evidence`.
+- Added `data/derived/behavior_intelligence/clusters.json` with topic and
+  hierarchy clusters built from S05 canonical events.
+- Added `人类可读/13_行为簇与层级簇说明.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s06_p1_cluster_builder.md`.
+- Added `validate:v1.2-s06-p1` for `MA-V12-S06P1` /
+  `ACC-MA-V12-S06P1`.
+- Registered status `phase_s06_p1_cluster_builder_completed_pending_s06_p2`.
+- Preserved S06 P1 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation in this phase, No low-value
+  loop detection in this phase and No opportunity cards in this phase.
+- Marked the next gate as pending S06 P2.
+
 ## Unreleased - Memory Atlas v1.2 S05 Review
 
 - Added `docs/reviews/memory_atlas_v1_2_s05_review.md`.
