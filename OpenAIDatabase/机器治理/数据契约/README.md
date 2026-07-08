@@ -12,7 +12,7 @@
 
 source registry 属于 S02 P2；本阶段不创建 registry 文件，不修改 raw archive。
 
-当前 S06 P1 已完成。S05 Review 已通过，并新增：
+当前 S06 P2 已完成。S05 Review 已通过，并新增：
 
 - `机器治理/数据契约/facet_event_schema.v1_2_s05_p1.json`
 - `人类可读/12_Facet字段与事件语义说明.md`
@@ -26,6 +26,10 @@ source registry 属于 S02 P2；本阶段不创建 registry 文件，不修改 r
 - `data/derived/behavior_intelligence/clusters.json`
 - `人类可读/13_行为簇与层级簇说明.md`
 - `docs/reviews/memory_atlas_v1_2_s06_p1_cluster_builder.md`
+- `scripts/build_memory_atlas_low_value_loops.py`
+- `data/derived/behavior_intelligence/low_value_loops.json`
+- `人类可读/14_低价值循环与DecisionDebt说明.md`
+- `docs/reviews/memory_atlas_v1_2_s06_p2_low_value_loops.md`
 
 S05 P1 定义 facet/canonical event schema：`source`、`topic`、`intent`、
 `task_type`、`project`、`output_type`、`language`、`tool`、`turn_count`、
@@ -52,4 +56,9 @@ cluster、ROI、latent、visualization 复用。
 
 S06 P1 生成 `data/derived/behavior_intelligence/clusters.json`。该输出包含主题簇和
 层级簇，固定 `source/time/project/task/language` 过滤合同，并要求每个 cluster
-保留中文摘要、代表事件和 `evidence_refs`。下一步是 S06 P2。
+保留中文摘要、代表事件和 `evidence_refs`。
+
+S06 P2 生成 `data/derived/behavior_intelligence/low_value_loops.json`。该输出包含
+低价值循环候选、Decision Debt Ledger 和 Action Half-Life，覆盖重复返工、反复讨论未落地、
+过度优化和 scope creep 四类候选。每条候选、Decision Debt 和 Action Half-Life 都必须有
+`evidence_refs`，并保持候选语气。下一步是 S06 P3。

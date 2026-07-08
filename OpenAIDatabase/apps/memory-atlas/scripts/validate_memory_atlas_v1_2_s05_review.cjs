@@ -42,13 +42,18 @@ const allowedOpenDiffPaths = [
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p2.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p3.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_p1.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_p2.cjs",
   `OpenAIDatabase/apps/memory-atlas/scripts/${scriptName}`,
   "OpenAIDatabase/scripts/atlasctl.py",
   "OpenAIDatabase/scripts/build_memory_atlas_clusters.py",
+  "OpenAIDatabase/scripts/build_memory_atlas_low_value_loops.py",
   "OpenAIDatabase/tests/test_s06p1_cluster_builder.py",
+  "OpenAIDatabase/tests/test_s06p2_low_value_loops.py",
   "OpenAIDatabase/data/derived/behavior_intelligence/clusters.json",
+  "OpenAIDatabase/data/derived/behavior_intelligence/low_value_loops.json",
   `OpenAIDatabase/${reviewPath}`,
   "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s06_p1_cluster_builder.md",
+  "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s06_p2_low_value_loops.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_DELIVERY_RECORD.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md",
   "OpenAIDatabase/功能清单.md",
@@ -58,6 +63,7 @@ const allowedOpenDiffPaths = [
   "OpenAIDatabase/人类可读/01_v1.2四线14Stage升级总览.md",
   `OpenAIDatabase/${facetDocPath}`,
   "OpenAIDatabase/人类可读/13_行为簇与层级簇说明.md",
+  "OpenAIDatabase/人类可读/14_低价值循环与DecisionDebt说明.md",
   "OpenAIDatabase/机器治理/README.md",
   "OpenAIDatabase/机器治理/数据契约/README.md",
   "OpenAIDatabase/机器治理/行为智能模型/README.md",
@@ -146,6 +152,19 @@ function currentStateIsS06P1() {
     hasAll(overview, ["S06 P1 已完成", "Cluster builder", "下一步是 S06 P2"]) &&
     hasAll(machine, ["当前为 S06 P1", "MA-V12-S06P1", "validate:v1.2-s06-p1", "下一步是 S06 P2"]) &&
     hasAll(runGate, ["当前阶段是 S06 P1", "MA-V12-S06P1", "ACC-MA-V12-S06P1", "validate:v1.2-s06-p1"])
+  );
+}
+
+function currentStateIsS06P2() {
+  const quick = readRepoFile("人类可读/00_快速入口.md");
+  const overview = readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md");
+  const machine = readRepoFile("机器治理/README.md");
+  const runGate = readRepoFile("机器治理/运行门禁/README.md");
+  return (
+    hasAll(quick, ["当前阶段是 S06 P2", "MA-V12-S06P2", "ACC-MA-V12-S06P2", "下一步只允许进入 S06 P3"]) &&
+    hasAll(overview, ["S06 P2 已完成", "Decision Debt Ledger", "下一步是 S06 P3"]) &&
+    hasAll(machine, ["当前为 S06 P2", "MA-V12-S06P2", "validate:v1.2-s06-p2", "下一步是 S06 P3"]) &&
+    hasAll(runGate, ["当前阶段是 S06 P2", "MA-V12-S06P2", "ACC-MA-V12-S06P2", "validate:v1.2-s06-p2"])
   );
 }
 
@@ -342,7 +361,7 @@ function validateDocsAndRecords() {
   const dataContract = readRepoFile("机器治理/数据契约/README.md");
   const behavior = readRepoFile("机器治理/行为智能模型/README.md");
   const runGate = readRepoFile("机器治理/运行门禁/README.md");
-  const s06p1State = currentStateIsS06P1();
+  const s06p1State = currentStateIsS06P1() || currentStateIsS06P2();
 
   assertCondition(
     hasAll(review, [

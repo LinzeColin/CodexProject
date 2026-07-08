@@ -3,7 +3,7 @@
 用于放置 facets、semantic clusters、latent signals、collaboration quality、自我迭代和
 低价值循环识别的模型配置。
 
-当前 S06 P1 已完成。facet/canonical events 的数据契约已定义在
+当前 S06 P2 已完成。facet/canonical events 的数据契约已定义在
 `机器治理/数据契约/facet_event_schema.v1_2_s05_p1.json`，中文解释位于
 `人类可读/12_Facet字段与事件语义说明.md`，facet extractor 已实现为
 `scripts/extract_memory_atlas_facets.py`，并为 events 输出补齐
@@ -23,8 +23,13 @@ S05 P3 仍不生成 fake events，不修改 raw，不改变首屏 UI。
 S05 Review 已通过，确认行为事件与 facets 可被后续 cluster、ROI、latent、visualization
 复用。
 
-当前 S06 P1 已完成：`scripts/build_memory_atlas_clusters.py` 从
+S06 P1 已完成：`scripts/build_memory_atlas_clusters.py` 从
 `data/derived/behavior_intelligence/events.json` 生成
 `data/derived/behavior_intelligence/clusters.json`。输出包含主题簇和层级簇，每个
 cluster 均保留中文摘要、代表事件、`source/time/project/task/language` 过滤维度和
-`evidence_refs`。S06 P1 不识别低价值循环，不生成机会卡片。下一步是 S06 P2。
+`evidence_refs`。S06 P1 不识别低价值循环，不生成机会卡片。
+
+当前 S06 P2 已完成：`scripts/build_memory_atlas_low_value_loops.py` 从 events 和
+clusters 生成 `data/derived/behavior_intelligence/low_value_loops.json`。输出包含
+低价值循环候选、Decision Debt Ledger 和 Action Half-Life，覆盖重复返工、反复讨论未落地、
+过度优化和 scope creep。S06 P2 不做心理诊断，不生成 opportunity cards。下一步是 S06 P3。

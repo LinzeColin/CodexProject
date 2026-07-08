@@ -1,3 +1,41 @@
+## 126. Memory Atlas v1.2 S06 P2 Low-Value Loops Parameters
+
+状态：`phase_s06_p2_low_value_loops_completed_pending_s06_p3`。
+
+验收 ID：`ACC-MA-V12-S06P2`。
+
+S06 P2 固定以下参数：
+
+- `MA-V12-S06P2`
+- `validate:v1.2-s06-p2`
+- `build_memory_atlas_low_value_loops.py`
+- `atlasctl.py analyze --stage low-value-loops`
+- `data/derived/behavior_intelligence/low_value_loops.json`
+- loop types：`repeated_rework`、`discussion_without_landing`、`over_optimization`、`scope_creep`。
+- output counts：23 loops、23 decision debts、23 action half-life records。
+- S06 P2 完成后下一步为 pending S06 P3。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S06P2-001 phase_status = phase_s06_p2_low_value_loops_completed_pending_s06_p3`
+- `PARAM-MA-V12-S06P2-002 validator = validate:v1.2-s06-p2`
+- `PARAM-MA-V12-S06P2-003 builder = build_memory_atlas_low_value_loops.py`
+- `PARAM-MA-V12-S06P2-004 output = data/derived/behavior_intelligence/low_value_loops.json`
+- `PARAM-MA-V12-S06P2-005 loop_types = repeated_rework; discussion_without_landing; over_optimization; scope_creep`
+- `PARAM-MA-V12-S06P2-006 output_counts = 23 loops; 23 decision debts; 23 action half-life records`
+- `PARAM-MA-V12-S06P2-007 next_gate = pending S06 P3`
+- `PARAM-MA-V12-S06P2-008 phase_boundary = No raw mutation; No psychological diagnosis; No opportunity cards; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s06-p2` checks S06 P1 predecessor, atlasctl low-value-loops
+  dry-run, persisted `low_value_loops.json`, all four loop types, Decision Debt
+  Ledger, Action Half-Life, insight-evidence audit, human/machine records,
+  canonical remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S06 P2 Low-Value Loops; MA-V12-S06P2; ACC-MA-V12-S06P2; phase_s06_p2_low_value_loops_completed_pending_s06_p3; validate:v1.2-s06-p2; build_memory_atlas_low_value_loops.py; atlasctl.py analyze --stage low-value-loops; low_value_loops.json; S06 P2; pending S06 P3; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No psychological diagnosis; No opportunity cards.
+
 ## 125. Memory Atlas v1.2 S06 P1 Cluster Builder Parameters
 
 状态：`phase_s06_p1_cluster_builder_completed_pending_s06_p2`。

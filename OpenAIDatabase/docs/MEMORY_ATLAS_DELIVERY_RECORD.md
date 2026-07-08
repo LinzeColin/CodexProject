@@ -1,3 +1,51 @@
+## v1.2 S06 P2 Low-Value Loops
+
+状态：`phase_s06_p2_low_value_loops_completed_pending_s06_p3`。
+
+任务 ID：`MA-V12-S06P2`。
+
+验收 ID：`ACC-MA-V12-S06P2`。
+
+S06 P2 实现 Memory Atlas v1.2 的低价值循环候选、Decision Debt Ledger 和
+Action Half-Life。它从 S05 canonical events 与 S06 P1 clusters 生成
+`data/derived/behavior_intelligence/low_value_loops.json`，并扩展
+`atlasctl audit --check insight-evidence` 覆盖 S06 P2 派生项。
+
+涉及文件：
+
+- `scripts/build_memory_atlas_low_value_loops.py`
+- `scripts/atlasctl.py`
+- `data/derived/behavior_intelligence/low_value_loops.json`
+- `人类可读/14_低价值循环与DecisionDebt说明.md`
+- `docs/reviews/memory_atlas_v1_2_s06_p2_low_value_loops.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_p2.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s06-p2`
+- `ACC-MA-V12-S06P2`
+- `MA-V12-S06P2`
+- S06 P2
+- `build_memory_atlas_low_value_loops.py`
+- `atlasctl.py analyze --stage low-value-loops`
+- `low_value_loops.json`
+- Decision Debt Ledger
+- Action Half-Life
+- pending S06 P3
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase.
+- No raw mutation in this phase.
+- No psychological diagnosis in this phase.
+- No opportunity cards in this phase.
+- No app reinstall in this phase.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S06 P2 Low-Value Loops; MA-V12-S06P2; ACC-MA-V12-S06P2; phase_s06_p2_low_value_loops_completed_pending_s06_p3; validate:v1.2-s06-p2; build_memory_atlas_low_value_loops.py; atlasctl.py analyze --stage low-value-loops; low_value_loops.json; S06 P2; pending S06 P3; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No psychological diagnosis; No opportunity cards.
+
 ## v1.2 S06 P1 Cluster Builder
 
 状态：`phase_s06_p1_cluster_builder_completed_pending_s06_p2`。

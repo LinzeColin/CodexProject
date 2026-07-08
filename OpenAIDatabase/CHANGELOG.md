@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S06 P2 Low-Value Loops
+
+- Added `scripts/build_memory_atlas_low_value_loops.py` for deterministic low-value loop candidate generation.
+- Extended `scripts/atlasctl.py` with `analyze --stage low-value-loops` and expanded
+  `audit --check insight-evidence` to include low-value loops, Decision Debt Ledger and Action Half-Life.
+- Added `data/derived/behavior_intelligence/low_value_loops.json` with loop candidates,
+  decision debt records and action half-life records.
+- Added `人类可读/14_低价值循环与DecisionDebt说明.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s06_p2_low_value_loops.md`.
+- Added `validate:v1.2-s06-p2` for `MA-V12-S06P2` /
+  `ACC-MA-V12-S06P2`.
+- Registered status `phase_s06_p2_low_value_loops_completed_pending_s06_p3`.
+- Preserved S06 P2 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation in this phase, No psychological
+  diagnosis in this phase and No opportunity cards in this phase.
+- Marked the next gate as pending S06 P3.
+
 ## Unreleased - Memory Atlas v1.2 S06 P1 Cluster Builder
 
 - Added `scripts/build_memory_atlas_clusters.py` for deterministic behavior cluster generation.
