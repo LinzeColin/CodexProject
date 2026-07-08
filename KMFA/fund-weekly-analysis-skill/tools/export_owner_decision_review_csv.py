@@ -25,6 +25,9 @@ OUTPUT_FIELDS = [
     "source_ocr_text_relative_path",
     "source_ocr_text_excerpt",
     "source_ocr_excerpt_focus_status",
+    "source_ocr_excerpt_line_range",
+    "source_ocr_excerpt_focus_line_number",
+    "source_ocr_excerpt_match_value",
     "business_date",
     "amount",
     "currency",
@@ -139,22 +142,36 @@ def date_needles(business_date: str) -> list[str]:
     return [item for item in needles if item]
 
 
-def focused_excerpt(text: str, amount: str, business_date: str, limit: int) -> tuple[str, str]:
-    lines = [line.strip() for line in text.splitlines() if line.strip()]
+def focused_excerpt(text: str, amount: str, business_date: str, limit: int) -> tuple[str, str, str, str, str]:
+    lines = [
+        (line_number, line.strip())
+        for line_number, line in enumerate(text.splitlines(), 1)
+        if line.strip()
+    ]
     if not lines:
-        return "", "empty_ocr_sidecar"
+        return "", "empty_ocr_sidecar", "", "", ""
     needle_groups = [
         ("focused_amount", amount_needles(amount)),
         ("focused_business_date", date_needles(business_date)),
     ]
-    for index, line in enumerate(lines):
+    for index, (line_number, line) in enumerate(lines):
         normalized_line = line.replace(",", "")
         for status, needles in needle_groups:
-            if any(needle in line or needle.replace(",", "") in normalized_line for needle in needles):
-                start = max(0, index - 2)
-                end = min(len(lines), index + 3)
-                return compact_lines(lines[start:end], limit), status
-    return compact_lines(lines, limit), "fallback_file_start"
+            for needle in needles:
+                if needle in line or needle.replace(",", "") in normalized_line:
+                    start = max(0, index - 2)
+                    end = min(len(lines), index + 3)
+                    context = lines[start:end]
+                    line_range = f"{context[0][0]}-{context[-1][0]}"
+                    return (
+                        compact_lines([context_line for _line_number, context_line in context], limit),
+                        status,
+                        line_range,
+                        str(line_number),
+                        needle,
+                    )
+    line_range = f"{lines[0][0]}-{lines[-1][0]}"
+    return compact_lines([line for _line_number, line in lines], limit), "fallback_file_start", line_range, "", ""
 
 
 def ocr_excerpt(
@@ -165,7 +182,7 @@ def ocr_excerpt(
     business_date: str = "",
     limit: int = 600,
 ) -> str:
-    excerpt, _status = ocr_excerpt_with_focus_status(
+    excerpt, _status, _line_range, _focus_line_number, _match_value = ocr_excerpt_context(
         repo_root,
         run_id,
         relative_path,
@@ -184,9 +201,28 @@ def ocr_excerpt_with_focus_status(
     business_date: str = "",
     limit: int = 600,
 ) -> tuple[str, str]:
+    excerpt, status, _line_range, _focus_line_number, _match_value = ocr_excerpt_context(
+        repo_root,
+        run_id,
+        relative_path,
+        amount=amount,
+        business_date=business_date,
+        limit=limit,
+    )
+    return excerpt, status
+
+
+def ocr_excerpt_context(
+    repo_root: Path,
+    run_id: str,
+    relative_path: str,
+    amount: str = "",
+    business_date: str = "",
+    limit: int = 600,
+) -> tuple[str, str, str, str, str]:
     raw = str(relative_path or "").strip()
     if not raw:
-        return "", "missing_ocr_path"
+        return "", "missing_ocr_path", "", "", ""
     path = Path(raw)
     if path.is_absolute():
         candidates = [path]
@@ -205,9 +241,9 @@ def ocr_excerpt_with_focus_status(
         try:
             text = resolved.read_text(encoding="utf-8", errors="ignore")
         except OSError:
-            return "", "unreadable_ocr_sidecar"
+            return "", "unreadable_ocr_sidecar", "", "", ""
         return focused_excerpt(text, amount, business_date, limit)
-    return "", "missing_ocr_sidecar"
+    return "", "missing_ocr_sidecar", "", "", ""
 
 
 def review_completion_status(owner_decision: str, missing_fields: str) -> str:
@@ -237,7 +273,13 @@ def build_review_rows(repo_root: Path, run_id: str, selected_rows: list[dict]) -
         source_ocr_text_relative_path = row.get("source_ocr_text_relative_path", "")
         business_date = row.get("business_date", "")
         amount = row.get("amount", "")
-        source_ocr_text_excerpt, source_ocr_excerpt_focus_status = ocr_excerpt_with_focus_status(
+        (
+            source_ocr_text_excerpt,
+            source_ocr_excerpt_focus_status,
+            source_ocr_excerpt_line_range,
+            source_ocr_excerpt_focus_line_number,
+            source_ocr_excerpt_match_value,
+        ) = ocr_excerpt_context(
             repo_root,
             run_id,
             source_ocr_text_relative_path,
@@ -254,6 +296,9 @@ def build_review_rows(repo_root: Path, run_id: str, selected_rows: list[dict]) -
             "source_ocr_text_relative_path": source_ocr_text_relative_path,
             "source_ocr_text_excerpt": source_ocr_text_excerpt,
             "source_ocr_excerpt_focus_status": source_ocr_excerpt_focus_status,
+            "source_ocr_excerpt_line_range": source_ocr_excerpt_line_range,
+            "source_ocr_excerpt_focus_line_number": source_ocr_excerpt_focus_line_number,
+            "source_ocr_excerpt_match_value": source_ocr_excerpt_match_value,
             "business_date": business_date,
             "amount": amount,
             "currency": row.get("currency", ""),
