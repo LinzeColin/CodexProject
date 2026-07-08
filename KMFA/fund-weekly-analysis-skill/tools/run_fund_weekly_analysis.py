@@ -980,6 +980,45 @@ def build_ocr_fact_cross_review_summary(
     return rows
 
 
+def build_ocr_fact_owner_review_batch_rows(manifest: dict, cross_review_rows: list[dict]) -> list[dict]:
+    rows: list[dict] = []
+    authorization_relative_path = ocr_fact_review_authorization_relative_path(manifest["run_id"])
+    for row in cross_review_rows:
+        blocked_count = int(row["authorization_blocked_count"])
+        owner_review_status = (
+            "blocked_metric_review_required"
+            if blocked_count > 0
+            else "ready_for_owner_review_no_ledger_promotion"
+        )
+        rows.append({
+            "ocr_fact_owner_review_batch_id": f"OCROWNERBATCH-{manifest['run_id']}-{len(rows) + 1:05d}",
+            "cross_review_group_id": row["cross_review_group_id"],
+            "candidate_metric": row["candidate_metric"],
+            "source_artifact": "ocr_fact_ledger_staging_preview.csv",
+            "candidate_count": row["candidate_count"],
+            "candidate_amount_total": row["candidate_amount_total"],
+            "evidence_count": row["evidence_count"],
+            "company_missing_count": row["company_missing_count"],
+            "bank_missing_count": row["bank_missing_count"],
+            "operator_authorized_count": row["operator_authorized_count"],
+            "authorization_blocked_count": row["authorization_blocked_count"],
+            "priority": "P0" if blocked_count > 0 else "P1",
+            "owner_review_status": owner_review_status,
+            "owner_authorization_required": "true" if int(row["candidate_count"]) > 0 else "false",
+            "authorization_manifest_relative_path": authorization_relative_path,
+            "authorization_scope": "ocr_financial_fact_review_validation_only",
+            "fund_ledger_write_allowed": "false",
+            "financial_fact_promoted": "false",
+            "management_conclusion_allowed": "false",
+            "recommended_owner_action": (
+                "Review OCR fact candidates by metric, resolve company/bank/evidence gaps, then provide private OCR fact review authorization"
+                if blocked_count > 0
+                else "Keep reviewed metric batch as no-write evidence"
+            ),
+        })
+    return rows
+
+
 def ocr_fact_proposed_ledger_role(candidate_metric: str) -> tuple[str, str, str]:
     mapping = {
         "bank_deposit": ("balance", "bank_deposit", "balance_snapshot_pending_review"),
@@ -4136,6 +4175,7 @@ def write_no_hallucination_outputs(
     ocr_fact_review_authorization_template = build_ocr_fact_review_authorization_template(manifest, ocr_fact_review_gate_rows)
     ocr_fact_review_authorization_preview_rows = build_ocr_fact_review_authorization_preview(manifest, ocr_fact_review_gate_rows)
     ocr_fact_cross_review_rows = build_ocr_fact_cross_review_summary(manifest, ocr_financial_fact_candidates, ocr_fact_review_gate_rows)
+    ocr_fact_owner_review_batch_rows = build_ocr_fact_owner_review_batch_rows(manifest, ocr_fact_cross_review_rows)
     ocr_fact_ledger_staging_preview_rows = build_ocr_fact_ledger_staging_preview(manifest, ocr_financial_fact_candidates, ocr_fact_review_gate_rows)
     chat_text_candidates = collect_chat_text_candidates(manifest, input_dir, evidence)
     chat_value_candidates = extract_chat_value_candidates(manifest, chat_text_candidates)
@@ -4160,6 +4200,11 @@ def write_no_hallucination_outputs(
     manifest["ocr_value_candidate_count"] = len(ocr_value_candidates)
     manifest["ocr_financial_fact_candidate_count"] = len(ocr_financial_fact_candidates)
     manifest["ocr_fact_cross_review_group_count"] = len(ocr_fact_cross_review_rows)
+    manifest["ocr_fact_owner_review_batch_count"] = len(ocr_fact_owner_review_batch_rows)
+    manifest["ocr_fact_owner_review_batch_blocking_count"] = sum(
+        1 for row in ocr_fact_owner_review_batch_rows
+        if row["owner_review_status"].startswith("blocked_")
+    )
     manifest["ocr_fact_ledger_staging_preview_count"] = len(ocr_fact_ledger_staging_preview_rows)
     manifest["ocr_fact_ledger_staging_preview_ready_count"] = sum(1 for row in ocr_fact_ledger_staging_preview_rows if row["staging_preview_status"] == "ready_for_ledger_staging_review_no_write")
     manifest["ocr_fact_ledger_staging_preview_blocked_count"] = len(ocr_fact_ledger_staging_preview_rows) - manifest["ocr_fact_ledger_staging_preview_ready_count"]
@@ -4382,6 +4427,28 @@ def write_no_hallucination_outputs(
         "financial_fact_promoted",
         "review_status",
     ], ocr_fact_cross_review_rows)
+    write_csv(run_dir / "ocr_fact_owner_review_batch.csv", [
+        "ocr_fact_owner_review_batch_id",
+        "cross_review_group_id",
+        "candidate_metric",
+        "source_artifact",
+        "candidate_count",
+        "candidate_amount_total",
+        "evidence_count",
+        "company_missing_count",
+        "bank_missing_count",
+        "operator_authorized_count",
+        "authorization_blocked_count",
+        "priority",
+        "owner_review_status",
+        "owner_authorization_required",
+        "authorization_manifest_relative_path",
+        "authorization_scope",
+        "fund_ledger_write_allowed",
+        "financial_fact_promoted",
+        "management_conclusion_allowed",
+        "recommended_owner_action",
+    ], ocr_fact_owner_review_batch_rows)
     write_csv(run_dir / "ocr_fact_ledger_staging_preview.csv", [
         "staging_preview_id",
         "fact_candidate_id",
@@ -4771,6 +4838,8 @@ def write_no_hallucination_outputs(
         "ocr_value_candidate_count": len(ocr_value_candidates),
         "ocr_financial_fact_candidate_count": len(ocr_financial_fact_candidates),
         "ocr_fact_cross_review_group_count": manifest["ocr_fact_cross_review_group_count"],
+        "ocr_fact_owner_review_batch_count": manifest["ocr_fact_owner_review_batch_count"],
+        "ocr_fact_owner_review_batch_blocking_count": manifest["ocr_fact_owner_review_batch_blocking_count"],
         "ocr_fact_ledger_staging_preview_count": manifest["ocr_fact_ledger_staging_preview_count"],
         "ocr_fact_ledger_staging_preview_ready_count": manifest["ocr_fact_ledger_staging_preview_ready_count"],
         "ocr_fact_ledger_staging_preview_blocked_count": manifest["ocr_fact_ledger_staging_preview_blocked_count"],
@@ -5394,6 +5463,8 @@ def write_no_hallucination_outputs(
                 "ocr_value_candidate_count": len(ocr_value_candidates),
                 "ocr_financial_fact_candidate_count": len(ocr_financial_fact_candidates),
                 "ocr_fact_cross_review_group_count": manifest["ocr_fact_cross_review_group_count"],
+                "ocr_fact_owner_review_batch_count": manifest["ocr_fact_owner_review_batch_count"],
+                "ocr_fact_owner_review_batch_blocking_count": manifest["ocr_fact_owner_review_batch_blocking_count"],
                 "ocr_fact_ledger_staging_preview_count": manifest["ocr_fact_ledger_staging_preview_count"],
                 "ocr_fact_ledger_staging_preview_ready_count": manifest["ocr_fact_ledger_staging_preview_ready_count"],
                 "ocr_fact_ledger_staging_preview_blocked_count": manifest["ocr_fact_ledger_staging_preview_blocked_count"],
@@ -5609,6 +5680,8 @@ def main() -> int:
         f"OCR value candidate count: {manifest.get('ocr_value_candidate_count', 0)}\n\n"
         f"OCR financial fact candidate count: {manifest.get('ocr_financial_fact_candidate_count', 0)}\n\n"
         f"OCR fact cross-review group count: {manifest.get('ocr_fact_cross_review_group_count', 0)}\n\n"
+        f"OCR fact owner review batch count: {manifest.get('ocr_fact_owner_review_batch_count', 0)}\n\n"
+        f"OCR fact owner review batch blocking count: {manifest.get('ocr_fact_owner_review_batch_blocking_count', 0)}\n\n"
         f"OCR fact ledger staging preview ready count: {manifest.get('ocr_fact_ledger_staging_preview_ready_count', 0)}\n\n"
         f"OCR fact ledger staging preview blocked count: {manifest.get('ocr_fact_ledger_staging_preview_blocked_count', 0)}\n\n"
         f"OCR fact review authorization valid count: {manifest.get('ocr_fact_review_authorization_valid_count', 0)}\n\n"
