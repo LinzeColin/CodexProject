@@ -3,16 +3,18 @@
 用于放置 Memory Atlas v1.2 的信息 ROI、Personal Economic Proxy、证据强度、
 新鲜度、复用价值、维护成本等公式和参数。
 
-当前 S07 Review 已完成。S07 Review 已复审以下公式配置：
+当前 S08 P1 已完成。S08 P1 的协作质量指标属于行为智能模型配置，不新增或修改
+Personal Economic Proxy、Information ROI、Visual ROI Gate 或 Formula What-if 的 active
+公式配置。S07 Review 已复审以下公式配置：
 `机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json`、
 `机器治理/参数与公式/information_roi.v1_2_s07_p2.json` 和
 `机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`。
 
-任务 ID：`MA-V12-S07-REVIEW`。
+任务 ID：`MA-V12-S08P1`。
 
-验收 ID：`ACC-MA-V12-S07-REVIEW`。
+验收 ID：`ACC-MA-V12-S08P1`。
 
-Validator：`validate:v1.2-s07-review`。
+Validator：`validate:v1.2-s08-p1`。
 
 ## S07 Review 结论
 
@@ -63,4 +65,5 @@ S07 P2 同时引用 Visual ROI Gate 配置：
 - 不修改 raw。
 - No GitHub main upload in this phase。
 
-下一步是 S08 P1。
+S08 P1 只读取既有 derived 数据生成协作质量报告，不改本目录 active formula config。
+下一步是 S08 P2。

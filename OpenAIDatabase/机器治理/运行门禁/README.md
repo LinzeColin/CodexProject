@@ -2,8 +2,38 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S07 Review。任务 ID 为 `MA-V12-S07-REVIEW`，验收 ID 为
-`ACC-MA-V12-S07-REVIEW`，validator 为 `validate:v1.2-s07-review`。
+当前阶段是 S08 P1。任务 ID 为 `MA-V12-S08P1`，验收 ID 为
+`ACC-MA-V12-S08P1`，validator 为 `validate:v1.2-s08-p1`。
+
+S08 P1 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s08_p1_agent_collaboration.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s08_p1.cjs`
+- `scripts/build_memory_atlas_agent_collaboration.py`
+- `scripts/atlasctl.py`
+- `机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json`
+- `data/derived/agent_collaboration/agent_collaboration_quality_report.json`
+- `人类可读/19_Agent协作质量指标说明.md`
+
+S08 P1 gate：
+
+- `validate:v1.2-s08-p1` 可验证 Codex/Agent 协作质量指标。
+- `python scripts/atlasctl.py analyze --stage agent-collaboration --dry-run` 返回 no-write payload。
+- `python scripts/atlasctl.py audit --check agent-collaboration` 返回 PASS。
+- `agent-collaboration` 输出覆盖 planning clarity、execution clarity、review burden、
+  rework count、scope clarity、testability 和 rollbackability。
+- 每个指标有公式来源、中文解释和 evidence refs。
+- source summary 支持 `chatgpt`、`codex` 和 `other_agent` 通用字段。
+- 人类摘要回答人负责什么、Agent 负责什么、返工来自哪里、哪些任务适合继续交给
+  Codex/agent、哪些必须人工判断。
+- 不创建复杂 Delegation Contract UI。
+- 不创建多 agent 系统。
+- 不定义授权 apply 边界；授权边界留给 S08 P2。
+- 不生成 stage flight recorder；运行证据留给 S08 P3。
+- 不修改 raw。
+
+No GitHub main upload in this phase。
+下一步是 S08 P2。
 
 S07 Review 产物：
 

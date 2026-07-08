@@ -1,5 +1,26 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S08 P1 Agent Collaboration Metrics
+
+- Added `机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json`
+  for Codex/Agent collaboration quality metrics.
+- Added `scripts/build_memory_atlas_agent_collaboration.py` and
+  `data/derived/agent_collaboration/agent_collaboration_quality_report.json`.
+- Extended `scripts/atlasctl.py` with `analyze --stage agent-collaboration`
+  and `audit --check agent-collaboration`.
+- Added `docs/reviews/memory_atlas_v1_2_s08_p1_agent_collaboration.md`.
+- Added `人类可读/19_Agent协作质量指标说明.md`.
+- Added `validate:v1.2-s08-p1` for `MA-V12-S08P1` /
+  `ACC-MA-V12-S08P1`.
+- Registered status `phase_s08_p1_collaboration_metrics_completed_pending_s08_p2`.
+- Covered `planning_clarity`, `execution_clarity`, `review_burden`,
+  `rework_count`, `scope_clarity`, `testability` and `rollbackability`.
+- Preserved S08 P1 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, no complex Delegation
+  Contract UI, no multi-agent system implementation, no authorization apply
+  boundary and no stage flight recorder.
+- Marked the next gate as pending S08 P2.
+
 ## Unreleased - Memory Atlas v1.2 S07 Review
 
 - Added `docs/reviews/memory_atlas_v1_2_s07_review.md`.

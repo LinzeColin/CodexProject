@@ -1,3 +1,44 @@
+## 133. Memory Atlas v1.2 S08 P1 Agent Collaboration Metrics Parameters
+
+状态：`phase_s08_p1_collaboration_metrics_completed_pending_s08_p2`。
+
+验收 ID：`ACC-MA-V12-S08P1`。
+
+S08 P1 固定以下参数：
+
+- `MA-V12-S08P1`
+- `validate:v1.2-s08-p1`
+- `机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json`
+- `scripts/build_memory_atlas_agent_collaboration.py`
+- `atlasctl.py analyze --stage agent-collaboration`
+- `atlasctl.py audit --check agent-collaboration`
+- `data/derived/agent_collaboration/agent_collaboration_quality_report.json`
+- S08 P1 完成后下一步为 pending S08 P2。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S08P1-001 phase_status = phase_s08_p1_collaboration_metrics_completed_pending_s08_p2`
+- `PARAM-MA-V12-S08P1-002 validator = validate:v1.2-s08-p1`
+- `PARAM-MA-V12-S08P1-003 config = 机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json`
+- `PARAM-MA-V12-S08P1-004 builder = build_memory_atlas_agent_collaboration.py`
+- `PARAM-MA-V12-S08P1-005 output = data/derived/agent_collaboration/agent_collaboration_quality_report.json`
+- `PARAM-MA-V12-S08P1-006 metric_count = 7 metrics`
+- `PARAM-MA-V12-S08P1-007 metric_keys = planning_clarity; execution_clarity; review_burden; rework_count; scope_clarity; testability; rollbackability`
+- `PARAM-MA-V12-S08P1-008 source_types = chatgpt; codex; other_agent`
+- `PARAM-MA-V12-S08P1-009 next_gate = pending S08 P2`
+- `PARAM-MA-V12-S08P1-010 phase_boundary = No raw mutation; No complex Delegation Contract UI; No multi-agent system; No authorization apply boundary; No stage flight recorder; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s08-p1` checks S07 Review predecessor, collaboration metrics
+  config, persisted `agent_collaboration_quality_report.json`, `atlasctl
+  analyze --stage agent-collaboration --dry-run`, `atlasctl audit --check
+  agent-collaboration`, human/machine records, canonical remote and no raw/no
+  upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S08 P1 Agent Collaboration Metrics; MA-V12-S08P1; ACC-MA-V12-S08P1; phase_s08_p1_collaboration_metrics_completed_pending_s08_p2; validate:v1.2-s08-p1; S08 P1; agent_collaboration_quality_report.json; planning_clarity; execution_clarity; review_burden; rework_count; scope_clarity; testability; rollbackability; pending S08 P2; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No complex Delegation Contract UI; No multi-agent system; No authorization apply boundary; No stage flight recorder.
+
 ## 132. Memory Atlas v1.2 S07 Review Parameters
 
 状态：`stage_s07_review_passed_pending_s08_no_github_main_upload`。

@@ -1,0 +1,2082 @@
+{
+  "acceptance_id": "ACC-MA-V12-S08P1",
+  "chinese_summary": {
+    "agent_fit_zh": "适合继续交给 Codex/agent 的任务通常具备清晰下一步、可测试输出、可回滚边界和足够证据。",
+    "agent_responsibility_zh": "Agent 负责在已授权边界内执行可验证任务、生成候选报告、运行 validator、保留证据和回滚路径。",
+    "headline_scores": {
+      "execution_clarity": 71,
+      "planning_clarity": 57,
+      "rollbackability": 100,
+      "testability": 32
+    },
+    "human_judgment_zh": "必须人工判断的任务包括授权 apply、修改 active config、解释冲突证据、业务优先级和高风险范围扩张。",
+    "human_responsibility_zh": "人负责定义目标、范围、授权、是否 apply、是否接受商业/产品判断，以及无法由证据自动推出的取舍。",
+    "observed_sources_zh": "已观测来源：ChatGPT、Codex",
+    "rework_sources_zh": "返工主要从 repeated rework、decision debt、scope creep、evidence gap 和 action half-life 中识别。",
+    "strongest_metrics": [
+      {
+        "metric_key": "rollbackability",
+        "name_zh": "可回滚性",
+        "score": 100
+      },
+      {
+        "metric_key": "execution_clarity",
+        "name_zh": "执行清晰度",
+        "score": 71
+      },
+      {
+        "metric_key": "planning_clarity",
+        "name_zh": "规划清晰度",
+        "score": 57
+      }
+    ],
+    "summary_zh": "本报告用 planning、execution、review、rework、scope、testability 和 rollbackability 七类指标解释 ChatGPT/Codex/后续 agent 的协作质量。它只做证据化指标，不创建多 agent 系统，也不实现复杂 Delegation Contract UI。",
+    "title_zh": "Codex/Agent 协作质量摘要",
+    "weakest_metrics": [
+      {
+        "metric_key": "scope_clarity",
+        "name_zh": "范围清晰度",
+        "score": 0
+      },
+      {
+        "metric_key": "review_burden",
+        "name_zh": "复审负担健康度",
+        "score": 18
+      },
+      {
+        "metric_key": "testability",
+        "name_zh": "可测试性",
+        "score": 32
+      }
+    ]
+  },
+  "collaboration_quality_summary": {
+    "average_metric_score": 46,
+    "explanation_zh": "协作质量分数是内部 proxy，用于识别规划、执行、复审、返工、范围、测试和回滚的协作健康度。",
+    "limitation_zh": "该报告不创建多 agent 系统，不实现复杂 Delegation Contract UI，不处理授权 apply，也不修改 raw。",
+    "metric_count": 7,
+    "observed_event_count": 217,
+    "observed_source_counts": {
+      "chatgpt": 201,
+      "codex": 16
+    },
+    "source_summary_count": 3
+  },
+  "config_path": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+  "dry_run": false,
+  "generated_at": "2026-07-08T06:32:23Z",
+  "input_paths": [
+    "data/derived/behavior_intelligence/events.json",
+    "data/derived/behavior_intelligence/clusters.json",
+    "data/derived/behavior_intelligence/low_value_loops.json",
+    "data/derived/behavior_intelligence/opportunities.json",
+    "data/derived/information_roi/information_roi_gate.json"
+  ],
+  "metric_definitions": [
+    {
+      "direction": "higher_is_better",
+      "expression_zh": "规划清晰度 = 100 * (project_labeled_ratio*project_label_weight + task_labeled_ratio*task_label_weight + opportunity_next_step_ratio*next_step_weight + evidence_coverage_ratio*evidence_weight)",
+      "formula_id": "FORM-MA-V12-S08P1-001",
+      "interpretation_zh": "衡量协作输入是否有项目、任务、下一步和证据锚点，适合判断人是否把目标和边界交代清楚。",
+      "metric_key": "planning_clarity",
+      "name_zh": "规划清晰度",
+      "parameter_refs": [
+        "project_label_weight",
+        "task_label_weight",
+        "next_step_weight",
+        "evidence_weight"
+      ]
+    },
+    {
+      "direction": "higher_is_better",
+      "expression_zh": "执行清晰度 = 100 * (known_output_ratio*output_weight + opportunity_action_ratio*action_weight + roi_action_ratio*roi_action_weight)",
+      "formula_id": "FORM-MA-V12-S08P1-002",
+      "interpretation_zh": "衡量输出类型、可执行下一步和 ROI action 是否足够明确，适合判断 agent 能否低返工执行。",
+      "metric_key": "execution_clarity",
+      "name_zh": "执行清晰度",
+      "parameter_refs": [
+        "output_weight",
+        "action_weight",
+        "roi_action_weight"
+      ]
+    },
+    {
+      "direction": "higher_is_better",
+      "expression_zh": "复审负担健康度 = max(0, 100 - min(review_burden_penalty_cap, loop_count*loop_penalty + decision_debt_count*decision_debt_penalty + evidence_gap_ratio*evidence_gap_penalty))",
+      "formula_id": "FORM-MA-V12-S08P1-003",
+      "interpretation_zh": "高分表示复审负担较低；原始 loop 与 decision debt 会保留，避免把负担计数误读成正向指标。",
+      "metric_key": "review_burden",
+      "name_zh": "复审负担健康度",
+      "parameter_refs": [
+        "loop_penalty",
+        "decision_debt_penalty",
+        "evidence_gap_penalty",
+        "review_burden_penalty_cap"
+      ]
+    },
+    {
+      "direction": "higher_is_better",
+      "expression_zh": "返工控制健康度 = max(0, 100 - min(rework_penalty_cap, repeated_rework_loop_count*rework_loop_penalty + avg_action_half_life_days*half_life_penalty))",
+      "formula_id": "FORM-MA-V12-S08P1-004",
+      "interpretation_zh": "高分表示返工压力较可控；同时输出 repeated_rework_loop_count 和 avg_action_half_life_days 作为原始证据。",
+      "metric_key": "rework_count",
+      "name_zh": "返工控制健康度",
+      "parameter_refs": [
+        "rework_loop_penalty",
+        "half_life_penalty",
+        "rework_penalty_cap"
+      ]
+    },
+    {
+      "direction": "higher_is_better",
+      "expression_zh": "范围清晰度 = max(0, 100 * (project_labeled_ratio*project_label_weight + task_labeled_ratio*task_label_weight) - scope_creep_loop_count*scope_creep_penalty)",
+      "formula_id": "FORM-MA-V12-S08P1-005",
+      "interpretation_zh": "衡量项目/任务标签与 scope creep 信号之间的平衡，用于提醒哪些协作需要先收口范围。",
+      "metric_key": "scope_clarity",
+      "name_zh": "范围清晰度",
+      "parameter_refs": [
+        "project_label_weight",
+        "task_label_weight",
+        "scope_creep_penalty"
+      ]
+    },
+    {
+      "direction": "higher_is_better",
+      "expression_zh": "可测试性 = 100 * (validator_signal_ratio*validator_signal_weight + roi_gate_ratio*roi_gate_weight + opportunity_next_step_ratio*next_step_weight)",
+      "formula_id": "FORM-MA-V12-S08P1-006",
+      "interpretation_zh": "衡量输出是否容易落到 validator、ROI gate 或清晰下一步；这是测试可落地性的 proxy，不代表已经完成全部测试。",
+      "metric_key": "testability",
+      "name_zh": "可测试性",
+      "parameter_refs": [
+        "validator_signal_weight",
+        "roi_gate_weight",
+        "next_step_weight"
+      ]
+    },
+    {
+      "direction": "higher_is_better",
+      "expression_zh": "可回滚性 = 100 * (run_gate_contract_ratio*run_gate_weight + proposal_only_ratio*proposal_weight + raw_no_mutation_ratio*raw_boundary_weight)",
+      "formula_id": "FORM-MA-V12-S08P1-007",
+      "interpretation_zh": "衡量协作输出是否保留运行门禁、proposal-only 与 raw 不修改边界；本阶段只做指标解释，不执行 apply。",
+      "metric_key": "rollbackability",
+      "name_zh": "可回滚性",
+      "parameter_refs": [
+        "run_gate_weight",
+        "proposal_weight",
+        "raw_boundary_weight"
+      ]
+    }
+  ],
+  "output_path": "data/derived/agent_collaboration/agent_collaboration_quality_report.json",
+  "overall_metrics": [
+    {
+      "direction": "higher_is_better",
+      "evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+          "ref_id": "chatgpt_f5ed037fa8432ef8_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+          "ref_id": "chatgpt_f5ed037fa8432ef8_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        }
+      ],
+      "explanation_zh": "整体协作样本的规划清晰度来自项目/任务标注、下一步和证据覆盖率；低分表示需要人在交给 agent 前先补目标、范围或证据。",
+      "formula_id": "FORM-MA-V12-S08P1-001",
+      "formula_source": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+      "level": "needs_review",
+      "metric_key": "planning_clarity",
+      "name_zh": "规划清晰度",
+      "raw_value": {
+        "event_count": 217,
+        "evidence_coverage_ratio": 1.0,
+        "opportunity_next_step_ratio": 1.0,
+        "project_labeled_ratio": 0.129,
+        "task_labeled_ratio": 0.212
+      },
+      "score": 57
+    },
+    {
+      "direction": "higher_is_better",
+      "evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+          "ref_id": "chatgpt_f5ed037fa8432ef8_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+          "ref_id": "chatgpt_f5ed037fa8432ef8_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        }
+      ],
+      "explanation_zh": "整体协作样本的执行清晰度由输出类型、机会下一步和 ROI action 支撑；它帮助判断任务是否能直接进入 Codex/agent 执行。",
+      "formula_id": "FORM-MA-V12-S08P1-002",
+      "formula_source": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+      "level": "usable",
+      "metric_key": "execution_clarity",
+      "name_zh": "执行清晰度",
+      "raw_value": {
+        "event_count": 217,
+        "known_output_ratio": 0.1613,
+        "opportunity_action_ratio": 1.0,
+        "roi_action_ratio": 1.0
+      },
+      "score": 71
+    },
+    {
+      "direction": "higher_is_better",
+      "evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+          "ref_id": "chatgpt_f5ed037fa8432ef8_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+          "ref_id": "chatgpt_f5ed037fa8432ef8_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        }
+      ],
+      "explanation_zh": "整体协作样本的复审负担健康度会被低价值循环、decision debt 和 evidence gap 拉低；高分才表示复审压力较低。",
+      "formula_id": "FORM-MA-V12-S08P1-003",
+      "formula_source": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+      "level": "weak",
+      "metric_key": "review_burden",
+      "name_zh": "复审负担健康度",
+      "raw_value": {
+        "decision_debt_count": 23,
+        "evidence_gap_ratio": 1.0,
+        "loop_count": 23
+      },
+      "score": 18
+    },
+    {
+      "direction": "higher_is_better",
+      "evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+          "ref_id": "chatgpt_f5ed037fa8432ef8_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+          "ref_id": "chatgpt_f5ed037fa8432ef8_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        }
+      ],
+      "explanation_zh": "整体协作样本的返工控制健康度保留 repeated rework 和 action half-life 原始计数；低分表示需要先收口完成标准。",
+      "formula_id": "FORM-MA-V12-S08P1-004",
+      "formula_source": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+      "level": "needs_review",
+      "metric_key": "rework_count",
+      "name_zh": "返工控制健康度",
+      "raw_value": {
+        "action_half_life_count": 23,
+        "avg_action_half_life_days": 30.35,
+        "repeated_rework_loop_count": 9
+      },
+      "score": 44
+    },
+    {
+      "direction": "higher_is_better",
+      "evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+          "ref_id": "chatgpt_f5ed037fa8432ef8_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+          "ref_id": "chatgpt_f5ed037fa8432ef8_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        }
+      ],
+      "explanation_zh": "整体协作样本的范围清晰度由项目/任务标注和 scope creep 候选共同决定；它不是任务价值判断，只提示边界是否足够清楚。",
+      "formula_id": "FORM-MA-V12-S08P1-005",
+      "formula_source": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+      "level": "weak",
+      "metric_key": "scope_clarity",
+      "name_zh": "范围清晰度",
+      "raw_value": {
+        "project_labeled_ratio": 0.129,
+        "scope_creep_loop_count": 2,
+        "task_labeled_ratio": 0.212
+      },
+      "score": 0
+    },
+    {
+      "direction": "higher_is_better",
+      "evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+          "ref_id": "chatgpt_f5ed037fa8432ef8_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+          "ref_id": "chatgpt_f5ed037fa8432ef8_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        }
+      ],
+      "explanation_zh": "整体协作样本的可测试性来自 validator/gate 线索、ROI gate 和清晰下一步；它用于判断是否适合继续交给 Codex 执行。",
+      "formula_id": "FORM-MA-V12-S08P1-006",
+      "formula_source": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+      "level": "weak",
+      "metric_key": "testability",
+      "name_zh": "可测试性",
+      "raw_value": {
+        "cluster_count": 160,
+        "opportunity_next_step_ratio": 1.0,
+        "roi_gate_ratio": 0.3226,
+        "validator_signal_ratio": 0.0
+      },
+      "score": 32
+    },
+    {
+      "direction": "higher_is_better",
+      "evidence_refs": [
+        {
+          "evidence_level": "derived_governance_doc",
+          "path": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+          "ref_id": "s08p1_metric_config",
+          "ref_type": "governance_doc",
+          "source_id": "governance"
+        },
+        {
+          "evidence_level": "derived_governance_doc",
+          "path": "机器治理/运行门禁/README.md",
+          "ref_id": "s08p1_run_gate",
+          "ref_type": "governance_doc",
+          "source_id": "governance"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        }
+      ],
+      "explanation_zh": "整体协作样本的可回滚性来自运行门禁、proposal-only 和 raw 不修改边界；S08 P1 只解释协作指标，不执行 apply。",
+      "formula_id": "FORM-MA-V12-S08P1-007",
+      "formula_source": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+      "level": "strong",
+      "metric_key": "rollbackability",
+      "name_zh": "可回滚性",
+      "raw_value": {
+        "proposal_only_ratio": 1.0,
+        "raw_no_mutation_ratio": 1.0,
+        "run_gate_contract_ratio": 1.0
+      },
+      "score": 100
+    }
+  ],
+  "phase_boundary": {
+    "does_not_apply_proposals": true,
+    "does_not_create_multi_agent_system": true,
+    "does_not_define_authorization_apply_boundary": true,
+    "does_not_generate_stage_flight_recorder": true,
+    "does_not_implement_complex_delegation_contract_ui": true,
+    "does_not_modify_raw": true,
+    "next_phase": "S08 P2"
+  },
+  "schema_version": "memory_atlas_agent_collaboration_quality_report.v1_2_s08_p1",
+  "source_summaries": [
+    {
+      "agent_name": "ChatGPT",
+      "cluster_count": 156,
+      "evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+          "ref_id": "chatgpt_f5ed037fa8432ef8_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+          "ref_id": "chatgpt_f5ed037fa8432ef8_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        }
+      ],
+      "future_agent_field_contract_supported": true,
+      "loop_count": 21,
+      "metric_scores": [
+        {
+          "direction": "higher_is_better",
+          "evidence_refs": [
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+              "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+              "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+              "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+              "ref_id": "chatgpt_056903f3a6952870_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+              "ref_id": "chatgpt_b48abca69a56afdd_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+              "ref_id": "chatgpt_b48abca69a56afdd_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+              "ref_id": "chatgpt_f5ed037fa8432ef8_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+              "ref_id": "chatgpt_f5ed037fa8432ef8_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            }
+          ],
+          "explanation_zh": "ChatGPT 样本的规划清晰度来自项目/任务标注、下一步和证据覆盖率；低分表示需要人在交给 agent 前先补目标、范围或证据。",
+          "formula_id": "FORM-MA-V12-S08P1-001",
+          "formula_source": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+          "level": "needs_review",
+          "metric_key": "planning_clarity",
+          "name_zh": "规划清晰度",
+          "raw_value": {
+            "event_count": 201,
+            "evidence_coverage_ratio": 1.0,
+            "opportunity_next_step_ratio": 1.0,
+            "project_labeled_ratio": 0.0647,
+            "task_labeled_ratio": 0.1493
+          },
+          "score": 53
+        },
+        {
+          "direction": "higher_is_better",
+          "evidence_refs": [
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+              "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+              "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+              "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+              "ref_id": "chatgpt_056903f3a6952870_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+              "ref_id": "chatgpt_b48abca69a56afdd_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+              "ref_id": "chatgpt_b48abca69a56afdd_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+              "ref_id": "chatgpt_f5ed037fa8432ef8_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+              "ref_id": "chatgpt_f5ed037fa8432ef8_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            }
+          ],
+          "explanation_zh": "ChatGPT 样本的执行清晰度由输出类型、机会下一步和 ROI action 支撑；它帮助判断任务是否能直接进入 Codex/agent 执行。",
+          "formula_id": "FORM-MA-V12-S08P1-002",
+          "formula_source": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+          "level": "usable",
+          "metric_key": "execution_clarity",
+          "name_zh": "执行清晰度",
+          "raw_value": {
+            "event_count": 201,
+            "known_output_ratio": 0.0945,
+            "opportunity_action_ratio": 1.0,
+            "roi_action_ratio": 1.0
+          },
+          "score": 69
+        },
+        {
+          "direction": "higher_is_better",
+          "evidence_refs": [
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+              "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+              "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+              "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+              "ref_id": "chatgpt_056903f3a6952870_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+              "ref_id": "chatgpt_b48abca69a56afdd_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+              "ref_id": "chatgpt_b48abca69a56afdd_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+              "ref_id": "chatgpt_f5ed037fa8432ef8_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+              "ref_id": "chatgpt_f5ed037fa8432ef8_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            }
+          ],
+          "explanation_zh": "ChatGPT 样本的复审负担健康度会被低价值循环、decision debt 和 evidence gap 拉低；高分才表示复审压力较低。",
+          "formula_id": "FORM-MA-V12-S08P1-003",
+          "formula_source": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+          "level": "weak",
+          "metric_key": "review_burden",
+          "name_zh": "复审负担健康度",
+          "raw_value": {
+            "decision_debt_count": 21,
+            "evidence_gap_ratio": 1.0,
+            "loop_count": 21
+          },
+          "score": 18
+        },
+        {
+          "direction": "higher_is_better",
+          "evidence_refs": [
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+              "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+              "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+              "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+              "ref_id": "chatgpt_056903f3a6952870_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+              "ref_id": "chatgpt_b48abca69a56afdd_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+              "ref_id": "chatgpt_b48abca69a56afdd_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+              "ref_id": "chatgpt_f5ed037fa8432ef8_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+              "ref_id": "chatgpt_f5ed037fa8432ef8_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            }
+          ],
+          "explanation_zh": "ChatGPT 样本的返工控制健康度保留 repeated rework 和 action half-life 原始计数；低分表示需要先收口完成标准。",
+          "formula_id": "FORM-MA-V12-S08P1-004",
+          "formula_source": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+          "level": "needs_review",
+          "metric_key": "rework_count",
+          "name_zh": "返工控制健康度",
+          "raw_value": {
+            "action_half_life_count": 21,
+            "avg_action_half_life_days": 32.76,
+            "repeated_rework_loop_count": 8
+          },
+          "score": 49
+        },
+        {
+          "direction": "higher_is_better",
+          "evidence_refs": [
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+              "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+              "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+              "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+              "ref_id": "chatgpt_056903f3a6952870_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+              "ref_id": "chatgpt_b48abca69a56afdd_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+              "ref_id": "chatgpt_b48abca69a56afdd_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+              "ref_id": "chatgpt_f5ed037fa8432ef8_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+              "ref_id": "chatgpt_f5ed037fa8432ef8_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            }
+          ],
+          "explanation_zh": "ChatGPT 样本的范围清晰度由项目/任务标注和 scope creep 候选共同决定；它不是任务价值判断，只提示边界是否足够清楚。",
+          "formula_id": "FORM-MA-V12-S08P1-005",
+          "formula_source": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+          "level": "weak",
+          "metric_key": "scope_clarity",
+          "name_zh": "范围清晰度",
+          "raw_value": {
+            "project_labeled_ratio": 0.0647,
+            "scope_creep_loop_count": 2,
+            "task_labeled_ratio": 0.1493
+          },
+          "score": 0
+        },
+        {
+          "direction": "higher_is_better",
+          "evidence_refs": [
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+              "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+              "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+              "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+              "ref_id": "chatgpt_056903f3a6952870_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+              "ref_id": "chatgpt_b48abca69a56afdd_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+              "ref_id": "chatgpt_b48abca69a56afdd_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+              "ref_id": "chatgpt_f5ed037fa8432ef8_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+              "ref_id": "chatgpt_f5ed037fa8432ef8_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            }
+          ],
+          "explanation_zh": "ChatGPT 样本的可测试性来自 validator/gate 线索、ROI gate 和清晰下一步；它用于判断是否适合继续交给 Codex 执行。",
+          "formula_id": "FORM-MA-V12-S08P1-006",
+          "formula_source": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+          "level": "weak",
+          "metric_key": "testability",
+          "name_zh": "可测试性",
+          "raw_value": {
+            "cluster_count": 156,
+            "opportunity_next_step_ratio": 1.0,
+            "roi_gate_ratio": 0.3846,
+            "validator_signal_ratio": 0.0
+          },
+          "score": 34
+        },
+        {
+          "direction": "higher_is_better",
+          "evidence_refs": [
+            {
+              "evidence_level": "derived_governance_doc",
+              "path": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+              "ref_id": "s08p1_metric_config",
+              "ref_type": "governance_doc",
+              "source_id": "governance"
+            },
+            {
+              "evidence_level": "derived_governance_doc",
+              "path": "机器治理/运行门禁/README.md",
+              "ref_id": "s08p1_run_gate",
+              "ref_type": "governance_doc",
+              "source_id": "governance"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+              "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+              "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+              "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+              "ref_id": "chatgpt_056903f3a6952870_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/conversations/conversation_manifest.jsonl",
+              "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+              "ref_id": "chatgpt_b48abca69a56afdd_manifest_1fb3c9323b8a",
+              "ref_type": "manifest",
+              "source_id": "chatgpt"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+              "ref_id": "chatgpt_b48abca69a56afdd_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "chatgpt"
+            }
+          ],
+          "explanation_zh": "ChatGPT 样本的可回滚性来自运行门禁、proposal-only 和 raw 不修改边界；S08 P1 只解释协作指标，不执行 apply。",
+          "formula_id": "FORM-MA-V12-S08P1-007",
+          "formula_source": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+          "level": "strong",
+          "metric_key": "rollbackability",
+          "name_zh": "可回滚性",
+          "raw_value": {
+            "proposal_only_ratio": 1.0,
+            "raw_no_mutation_ratio": 1.0,
+            "run_gate_contract_ratio": 1.0
+          },
+          "score": 100
+        }
+      ],
+      "missing_reason": "",
+      "observed": true,
+      "opportunity_count": 9,
+      "record_count": 201,
+      "source_id": "chatgpt",
+      "source_type": "chatgpt"
+    },
+    {
+      "agent_name": "Codex",
+      "cluster_count": 4,
+      "evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/codex/codex_session_manifest.jsonl",
+          "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+          "ref_id": "codex_4f84738ed29d3edf_manifest_0bda04ac8f8f",
+          "ref_type": "manifest",
+          "source_id": "codex"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+          "ref_id": "codex_4f84738ed29d3edf_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "codex"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/codex/codex_session_manifest.jsonl",
+          "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+          "ref_id": "codex_35f56ee038f59650_manifest_0bda04ac8f8f",
+          "ref_type": "manifest",
+          "source_id": "codex"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+          "ref_id": "codex_35f56ee038f59650_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "codex"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/codex/codex_session_manifest.jsonl",
+          "record_id": "019f158f-3123-74f2-ae5e-ea592be583cb",
+          "ref_id": "codex_258379a2d9b8b620_manifest_0bda04ac8f8f",
+          "ref_type": "manifest",
+          "source_id": "codex"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "019f158f-3123-74f2-ae5e-ea592be583cb",
+          "ref_id": "codex_258379a2d9b8b620_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "codex"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/codex/codex_session_manifest.jsonl",
+          "record_id": "019f1327-e289-73b3-903f-dbdf600fb2fd",
+          "ref_id": "codex_87c584d16e6d89af_manifest_0bda04ac8f8f",
+          "ref_type": "manifest",
+          "source_id": "codex"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "019f1327-e289-73b3-903f-dbdf600fb2fd",
+          "ref_id": "codex_87c584d16e6d89af_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "codex"
+        }
+      ],
+      "future_agent_field_contract_supported": true,
+      "loop_count": 2,
+      "metric_scores": [
+        {
+          "direction": "higher_is_better",
+          "evidence_refs": [
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+              "ref_id": "codex_4f84738ed29d3edf_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+              "ref_id": "codex_4f84738ed29d3edf_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+              "ref_id": "codex_35f56ee038f59650_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+              "ref_id": "codex_35f56ee038f59650_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f158f-3123-74f2-ae5e-ea592be583cb",
+              "ref_id": "codex_258379a2d9b8b620_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f158f-3123-74f2-ae5e-ea592be583cb",
+              "ref_id": "codex_258379a2d9b8b620_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f1327-e289-73b3-903f-dbdf600fb2fd",
+              "ref_id": "codex_87c584d16e6d89af_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f1327-e289-73b3-903f-dbdf600fb2fd",
+              "ref_id": "codex_87c584d16e6d89af_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            }
+          ],
+          "explanation_zh": "Codex 样本的规划清晰度来自项目/任务标注、下一步和证据覆盖率；低分表示需要人在交给 agent 前先补目标、范围或证据。",
+          "formula_id": "FORM-MA-V12-S08P1-001",
+          "formula_source": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+          "level": "strong",
+          "metric_key": "planning_clarity",
+          "name_zh": "规划清晰度",
+          "raw_value": {
+            "event_count": 16,
+            "evidence_coverage_ratio": 1.0,
+            "opportunity_next_step_ratio": 1.0,
+            "project_labeled_ratio": 0.9375,
+            "task_labeled_ratio": 1.0
+          },
+          "score": 98
+        },
+        {
+          "direction": "higher_is_better",
+          "evidence_refs": [
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+              "ref_id": "codex_4f84738ed29d3edf_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+              "ref_id": "codex_4f84738ed29d3edf_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+              "ref_id": "codex_35f56ee038f59650_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+              "ref_id": "codex_35f56ee038f59650_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f158f-3123-74f2-ae5e-ea592be583cb",
+              "ref_id": "codex_258379a2d9b8b620_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f158f-3123-74f2-ae5e-ea592be583cb",
+              "ref_id": "codex_258379a2d9b8b620_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f1327-e289-73b3-903f-dbdf600fb2fd",
+              "ref_id": "codex_87c584d16e6d89af_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f1327-e289-73b3-903f-dbdf600fb2fd",
+              "ref_id": "codex_87c584d16e6d89af_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            }
+          ],
+          "explanation_zh": "Codex 样本的执行清晰度由输出类型、机会下一步和 ROI action 支撑；它帮助判断任务是否能直接进入 Codex/agent 执行。",
+          "formula_id": "FORM-MA-V12-S08P1-002",
+          "formula_source": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+          "level": "strong",
+          "metric_key": "execution_clarity",
+          "name_zh": "执行清晰度",
+          "raw_value": {
+            "event_count": 16,
+            "known_output_ratio": 1.0,
+            "opportunity_action_ratio": 1.0,
+            "roi_action_ratio": 1.0
+          },
+          "score": 100
+        },
+        {
+          "direction": "higher_is_better",
+          "evidence_refs": [
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+              "ref_id": "codex_4f84738ed29d3edf_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+              "ref_id": "codex_4f84738ed29d3edf_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+              "ref_id": "codex_35f56ee038f59650_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+              "ref_id": "codex_35f56ee038f59650_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f158f-3123-74f2-ae5e-ea592be583cb",
+              "ref_id": "codex_258379a2d9b8b620_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f158f-3123-74f2-ae5e-ea592be583cb",
+              "ref_id": "codex_258379a2d9b8b620_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f1327-e289-73b3-903f-dbdf600fb2fd",
+              "ref_id": "codex_87c584d16e6d89af_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f1327-e289-73b3-903f-dbdf600fb2fd",
+              "ref_id": "codex_87c584d16e6d89af_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            }
+          ],
+          "explanation_zh": "Codex 样本的复审负担健康度会被低价值循环、decision debt 和 evidence gap 拉低；高分才表示复审压力较低。",
+          "formula_id": "FORM-MA-V12-S08P1-003",
+          "formula_source": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+          "level": "usable",
+          "metric_key": "review_burden",
+          "name_zh": "复审负担健康度",
+          "raw_value": {
+            "decision_debt_count": 2,
+            "evidence_gap_ratio": 1.0,
+            "loop_count": 2
+          },
+          "score": 74
+        },
+        {
+          "direction": "higher_is_better",
+          "evidence_refs": [
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+              "ref_id": "codex_4f84738ed29d3edf_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+              "ref_id": "codex_4f84738ed29d3edf_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+              "ref_id": "codex_35f56ee038f59650_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+              "ref_id": "codex_35f56ee038f59650_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f158f-3123-74f2-ae5e-ea592be583cb",
+              "ref_id": "codex_258379a2d9b8b620_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f158f-3123-74f2-ae5e-ea592be583cb",
+              "ref_id": "codex_258379a2d9b8b620_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f1327-e289-73b3-903f-dbdf600fb2fd",
+              "ref_id": "codex_87c584d16e6d89af_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f1327-e289-73b3-903f-dbdf600fb2fd",
+              "ref_id": "codex_87c584d16e6d89af_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            }
+          ],
+          "explanation_zh": "Codex 样本的返工控制健康度保留 repeated rework 和 action half-life 原始计数；低分表示需要先收口完成标准。",
+          "formula_id": "FORM-MA-V12-S08P1-004",
+          "formula_source": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+          "level": "strong",
+          "metric_key": "rework_count",
+          "name_zh": "返工控制健康度",
+          "raw_value": {
+            "action_half_life_count": 2,
+            "avg_action_half_life_days": 5.0,
+            "repeated_rework_loop_count": 1
+          },
+          "score": 93
+        },
+        {
+          "direction": "higher_is_better",
+          "evidence_refs": [
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+              "ref_id": "codex_4f84738ed29d3edf_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+              "ref_id": "codex_4f84738ed29d3edf_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+              "ref_id": "codex_35f56ee038f59650_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+              "ref_id": "codex_35f56ee038f59650_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f158f-3123-74f2-ae5e-ea592be583cb",
+              "ref_id": "codex_258379a2d9b8b620_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f158f-3123-74f2-ae5e-ea592be583cb",
+              "ref_id": "codex_258379a2d9b8b620_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f1327-e289-73b3-903f-dbdf600fb2fd",
+              "ref_id": "codex_87c584d16e6d89af_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f1327-e289-73b3-903f-dbdf600fb2fd",
+              "ref_id": "codex_87c584d16e6d89af_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            }
+          ],
+          "explanation_zh": "Codex 样本的范围清晰度由项目/任务标注和 scope creep 候选共同决定；它不是任务价值判断，只提示边界是否足够清楚。",
+          "formula_id": "FORM-MA-V12-S08P1-005",
+          "formula_source": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+          "level": "needs_review",
+          "metric_key": "scope_clarity",
+          "name_zh": "范围清晰度",
+          "raw_value": {
+            "project_labeled_ratio": 0.9375,
+            "scope_creep_loop_count": 0,
+            "task_labeled_ratio": 1.0
+          },
+          "score": 50
+        },
+        {
+          "direction": "higher_is_better",
+          "evidence_refs": [
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+              "ref_id": "codex_4f84738ed29d3edf_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+              "ref_id": "codex_4f84738ed29d3edf_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+              "ref_id": "codex_35f56ee038f59650_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+              "ref_id": "codex_35f56ee038f59650_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f158f-3123-74f2-ae5e-ea592be583cb",
+              "ref_id": "codex_258379a2d9b8b620_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f158f-3123-74f2-ae5e-ea592be583cb",
+              "ref_id": "codex_258379a2d9b8b620_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f1327-e289-73b3-903f-dbdf600fb2fd",
+              "ref_id": "codex_87c584d16e6d89af_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f1327-e289-73b3-903f-dbdf600fb2fd",
+              "ref_id": "codex_87c584d16e6d89af_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            }
+          ],
+          "explanation_zh": "Codex 样本的可测试性来自 validator/gate 线索、ROI gate 和清晰下一步；它用于判断是否适合继续交给 Codex 执行。",
+          "formula_id": "FORM-MA-V12-S08P1-006",
+          "formula_source": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+          "level": "weak",
+          "metric_key": "testability",
+          "name_zh": "可测试性",
+          "raw_value": {
+            "cluster_count": 4,
+            "opportunity_next_step_ratio": 1.0,
+            "roi_gate_ratio": 0.0,
+            "validator_signal_ratio": 0.0
+          },
+          "score": 24
+        },
+        {
+          "direction": "higher_is_better",
+          "evidence_refs": [
+            {
+              "evidence_level": "derived_governance_doc",
+              "path": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+              "ref_id": "s08p1_metric_config",
+              "ref_type": "governance_doc",
+              "source_id": "governance"
+            },
+            {
+              "evidence_level": "derived_governance_doc",
+              "path": "机器治理/运行门禁/README.md",
+              "ref_id": "s08p1_run_gate",
+              "ref_type": "governance_doc",
+              "source_id": "governance"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+              "ref_id": "codex_4f84738ed29d3edf_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+              "ref_id": "codex_4f84738ed29d3edf_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+              "ref_id": "codex_35f56ee038f59650_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+              "ref_id": "codex_35f56ee038f59650_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "processed_manifest",
+              "path": "data/processed/codex/codex_session_manifest.jsonl",
+              "record_id": "019f158f-3123-74f2-ae5e-ea592be583cb",
+              "ref_id": "codex_258379a2d9b8b620_manifest_0bda04ac8f8f",
+              "ref_type": "manifest",
+              "source_id": "codex"
+            },
+            {
+              "evidence_level": "missing_reason",
+              "reason": "processed_manifest_without_public_raw_ref",
+              "record_id": "019f158f-3123-74f2-ae5e-ea592be583cb",
+              "ref_id": "codex_258379a2d9b8b620_missing_5dbc47fc3caa",
+              "ref_type": "missing_reason",
+              "source_id": "codex"
+            }
+          ],
+          "explanation_zh": "Codex 样本的可回滚性来自运行门禁、proposal-only 和 raw 不修改边界；S08 P1 只解释协作指标，不执行 apply。",
+          "formula_id": "FORM-MA-V12-S08P1-007",
+          "formula_source": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+          "level": "strong",
+          "metric_key": "rollbackability",
+          "name_zh": "可回滚性",
+          "raw_value": {
+            "proposal_only_ratio": 1.0,
+            "raw_no_mutation_ratio": 1.0,
+            "run_gate_contract_ratio": 1.0
+          },
+          "score": 100
+        }
+      ],
+      "missing_reason": "",
+      "observed": true,
+      "opportunity_count": 3,
+      "record_count": 16,
+      "source_id": "codex",
+      "source_type": "codex"
+    },
+    {
+      "agent_name": "Future agent template",
+      "cluster_count": 0,
+      "evidence_refs": [],
+      "future_agent_field_contract_supported": true,
+      "loop_count": 0,
+      "metric_scores": [],
+      "missing_reason": "no_registered_public_raw_or_derived_collaboration_evidence",
+      "observed": false,
+      "opportunity_count": 0,
+      "record_count": 0,
+      "source_id": "future_agent",
+      "source_type": "other_agent"
+    }
+  ],
+  "source_task_ids": {
+    "clusters": "MA-V12-S06P1",
+    "events": "MA-V12-S05P3",
+    "information_roi": "MA-V12-S07P2",
+    "low_value_loops": "MA-V12-S06P2",
+    "opportunities": "MA-V12-S06P3"
+  },
+  "status": "phase_s08_p1_collaboration_metrics_completed_pending_s08_p2",
+  "task_id": "MA-V12-S08P1",
+  "unsupported_scope": {
+    "authorization_apply_boundary": "deferred_to_s08_p2",
+    "complex_delegation_contract_ui": false,
+    "multi_agent_system_implementation": false,
+    "stage_flight_recorder": "deferred_to_s08_p3"
+  },
+  "writes_files": true
+}

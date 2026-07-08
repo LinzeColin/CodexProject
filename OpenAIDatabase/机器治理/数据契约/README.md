@@ -12,7 +12,7 @@
 
 source registry 属于 S02 P2；本阶段不创建 registry 文件，不修改 raw archive。
 
-当前 S07 Review 已完成。S05 Review 已通过，并新增：
+当前 S08 P1 已完成。S05 Review 已通过，并新增：
 
 - `机器治理/数据契约/facet_event_schema.v1_2_s05_p1.json`
 - `人类可读/12_Facet字段与事件语义说明.md`
@@ -53,6 +53,12 @@ source registry 属于 S02 P2；本阶段不创建 registry 文件，不修改 r
 - `人类可读/18_FormulaWhatIf配置预览说明.md`
 - `docs/reviews/memory_atlas_v1_2_s07_p3_formula_what_if.md`
 - `docs/reviews/memory_atlas_v1_2_s07_review.md`
+- `机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json`
+- `scripts/build_memory_atlas_agent_collaboration.py`
+- `data/derived/agent_collaboration/agent_collaboration_quality_report.json`
+- `人类可读/19_Agent协作质量指标说明.md`
+- `docs/reviews/memory_atlas_v1_2_s08_p1_agent_collaboration.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s08_p1.cjs`
 
 S05 P1 定义 facet/canonical event schema：`source`、`topic`、`intent`、
 `task_type`、`project`、`output_type`、`language`、`tool`、`turn_count`、
@@ -122,4 +128,12 @@ S07 Review 复审 `data/derived/economic_proxy/personal_economic_proxy.json`、
 `data/derived/information_roi/information_roi_gate.json` 和
 `data/derived/economic_proxy/formula_what_if_preview.json`。复审确认 S07 派生输出均保留
 公式来源、参数引用、中文说明和 no external economic database 边界；外部经济数据库只保留
-v2 占位，不做精确收入预测，不提供财务建议。下一步是 S08 P1。
+v2 占位，不做精确收入预测，不提供财务建议。
+
+S08 P1 生成 `data/derived/agent_collaboration/agent_collaboration_quality_report.json`。
+该输出包含 `overall_metrics`、`source_summaries`、`chinese_summary`、
+`phase_boundary` 和证据引用，覆盖 planning clarity、execution clarity、review burden、
+rework count、scope clarity、testability、rollbackability。source 字段支持 `chatgpt`、
+`codex` 和 `other_agent`，其中 future agent 没有真实证据时只能记录 `observed=false`，
+不得生成假指标。本阶段不修改 raw，不定义授权 apply 边界，不生成 stage flight recorder，
+不创建复杂 Delegation Contract UI。下一步是 S08 P2。

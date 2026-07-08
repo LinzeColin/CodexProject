@@ -23,6 +23,7 @@ OPPORTUNITY_BUILDER = ROOT / "scripts" / "build_memory_atlas_opportunities.py"
 ECONOMIC_PROXY_BUILDER = ROOT / "scripts" / "build_memory_atlas_economic_proxy.py"
 INFORMATION_ROI_BUILDER = ROOT / "scripts" / "build_memory_atlas_information_roi.py"
 FORMULA_WHAT_IF_BUILDER = ROOT / "scripts" / "build_memory_atlas_formula_what_if.py"
+AGENT_COLLABORATION_BUILDER = ROOT / "scripts" / "build_memory_atlas_agent_collaboration.py"
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -351,13 +352,43 @@ def formula_what_if_analyze_contract() -> dict[str, object]:
     }
 
 
+def agent_collaboration_analyze_contract() -> dict[str, object]:
+    return {
+        "status": "PASS",
+        "command": "analyze",
+        "stage": "agent-collaboration",
+        "dry_run": True,
+        "writes_files": False,
+        "builder": "scripts/build_memory_atlas_agent_collaboration.py",
+        "metrics_config": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+        "input": [
+            "data/derived/behavior_intelligence/events.json",
+            "data/derived/behavior_intelligence/clusters.json",
+            "data/derived/behavior_intelligence/low_value_loops.json",
+            "data/derived/behavior_intelligence/opportunities.json",
+            "data/derived/information_roi/information_roi_gate.json",
+        ],
+        "output": "data/derived/agent_collaboration/agent_collaboration_quality_report.json",
+        "raw_mutation": False,
+        "task_id": "MA-V12-S08P1",
+        "acceptance_id": "ACC-MA-V12-S08P1",
+        "phase_boundary": {
+            "does_not_create_multi_agent_system": True,
+            "does_not_implement_complex_delegation_contract_ui": True,
+            "does_not_define_authorization_apply_boundary": True,
+            "does_not_generate_stage_flight_recorder": True,
+            "next_phase": "S08 P2",
+        },
+    }
+
+
 def run_analyze(args: argparse.Namespace) -> int:
-    if args.stage not in {"facets", "clusters", "low-value-loops", "opportunities", "economic-proxy", "information-roi", "formula-what-if"}:
+    if args.stage not in {"facets", "clusters", "low-value-loops", "opportunities", "economic-proxy", "information-roi", "formula-what-if", "agent-collaboration"}:
         print(json.dumps({
             "status": "NOT_IMPLEMENTED",
             "command": "analyze",
             "stage": args.stage,
-            "reason": "Unknown analyze stage. Supported stages: facets, clusters, low-value-loops, opportunities, economic-proxy, information-roi, formula-what-if.",
+            "reason": "Unknown analyze stage. Supported stages: facets, clusters, low-value-loops, opportunities, economic-proxy, information-roi, formula-what-if, agent-collaboration.",
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 2
 
@@ -398,6 +429,10 @@ def run_analyze(args: argparse.Namespace) -> int:
             command.append("--dry-run")
     elif args.stage == "formula-what-if":
         command = [sys.executable, str(FORMULA_WHAT_IF_BUILDER), "--database-dir", str(args.database_dir)]
+        if args.dry_run:
+            command.append("--dry-run")
+    elif args.stage == "agent-collaboration":
+        command = [sys.executable, str(AGENT_COLLABORATION_BUILDER), "--database-dir", str(args.database_dir)]
         if args.dry_run:
             command.append("--dry-run")
     result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
@@ -697,7 +732,119 @@ def run_formula_what_if_audit(args: argparse.Namespace) -> int:
     return 0 if status == "PASS" else 2
 
 
+def run_agent_collaboration_audit(args: argparse.Namespace) -> int:
+    config_path = args.database_dir / "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json"
+    output_path = args.database_dir / "data/derived/agent_collaboration/agent_collaboration_quality_report.json"
+    bad_items: list[str] = []
+    config: dict[str, object] = {}
+    output: dict[str, object] = {}
+    required_metrics = {
+        "planning_clarity",
+        "execution_clarity",
+        "review_burden",
+        "rework_count",
+        "scope_clarity",
+        "testability",
+        "rollbackability",
+    }
+    if not config_path.exists():
+        bad_items.append("agent_collaboration_config:missing")
+    else:
+        config = json.loads(config_path.read_text(encoding="utf-8"))
+        if config.get("task_id") != "MA-V12-S08P1" or config.get("acceptance_id") != "ACC-MA-V12-S08P1":
+            bad_items.append("agent_collaboration_config:identity_mismatch")
+        boundary = config.get("scope_boundary") or {}
+        if not isinstance(boundary, dict) or boundary.get("raw_mutation") is not False:
+            bad_items.append("agent_collaboration_config:raw_mutation_not_false")
+        if not isinstance(boundary, dict) or boundary.get("multi_agent_system_implementation") is not False:
+            bad_items.append("agent_collaboration_config:multi_agent_system_not_false")
+        if not isinstance(boundary, dict) or boundary.get("complex_delegation_contract_ui") is not False:
+            bad_items.append("agent_collaboration_config:complex_ui_not_false")
+        metrics = config.get("metrics") if isinstance(config.get("metrics"), list) else []
+        metric_keys = {str(item.get("metric_key")) for item in metrics if isinstance(item, dict)}
+        for key in sorted(required_metrics - metric_keys):
+            bad_items.append(f"agent_collaboration_config:missing_metric:{key}")
+        params = config.get("parameters") if isinstance(config.get("parameters"), dict) else {}
+        for item in metrics:
+            if not isinstance(item, dict):
+                bad_items.append("agent_collaboration_config:invalid_metric_item")
+                continue
+            metric_key = item.get("metric_key")
+            if not item.get("formula_id") or not item.get("expression_zh") or not item.get("interpretation_zh"):
+                bad_items.append(f"agent_collaboration_config:{metric_key}:missing_formula")
+            for param_ref in item.get("parameter_refs") or []:
+                if param_ref not in params:
+                    bad_items.append(f"agent_collaboration_config:{metric_key}:unknown_parameter:{param_ref}")
+    if not output_path.exists():
+        bad_items.append("agent_collaboration_output:missing")
+    else:
+        output = json.loads(output_path.read_text(encoding="utf-8"))
+        if output.get("task_id") != "MA-V12-S08P1" or output.get("acceptance_id") != "ACC-MA-V12-S08P1":
+            bad_items.append("agent_collaboration_output:identity_mismatch")
+        if output.get("status") != "phase_s08_p1_collaboration_metrics_completed_pending_s08_p2":
+            bad_items.append("agent_collaboration_output:status_mismatch")
+        boundary = output.get("phase_boundary") or {}
+        if boundary.get("does_not_create_multi_agent_system") is not True:
+            bad_items.append("agent_collaboration_output:multi_agent_boundary_missing")
+        if boundary.get("does_not_implement_complex_delegation_contract_ui") is not True:
+            bad_items.append("agent_collaboration_output:complex_ui_boundary_missing")
+        if boundary.get("does_not_modify_raw") is not True:
+            bad_items.append("agent_collaboration_output:raw_boundary_missing")
+        if boundary.get("next_phase") != "S08 P2":
+            bad_items.append("agent_collaboration_output:next_phase_not_s08p2")
+        overall_metrics = output.get("overall_metrics") if isinstance(output.get("overall_metrics"), list) else []
+        metric_keys = {str(item.get("metric_key")) for item in overall_metrics if isinstance(item, dict)}
+        for key in sorted(required_metrics - metric_keys):
+            bad_items.append(f"agent_collaboration_output:missing_metric:{key}")
+        for item in overall_metrics:
+            metric_key = item.get("metric_key")
+            score = int(item.get("score") if item.get("score") is not None else -1)
+            if score < 0 or score > 100:
+                bad_items.append(f"agent_collaboration_output:{metric_key}:score_out_of_range")
+            if not item.get("formula_id") or not item.get("formula_source"):
+                bad_items.append(f"agent_collaboration_output:{metric_key}:missing_formula_source")
+            if not item.get("explanation_zh"):
+                bad_items.append(f"agent_collaboration_output:{metric_key}:missing_chinese_explanation")
+            if not item.get("evidence_refs"):
+                bad_items.append(f"agent_collaboration_output:{metric_key}:missing_evidence_refs")
+        source_summaries = output.get("source_summaries") if isinstance(output.get("source_summaries"), list) else []
+        source_types = {item.get("source_type") for item in source_summaries if isinstance(item, dict)}
+        for source_type in {"chatgpt", "codex", "other_agent"} - source_types:
+            bad_items.append(f"agent_collaboration_output:missing_source_type:{source_type}")
+        summary = output.get("chinese_summary") if isinstance(output.get("chinese_summary"), dict) else {}
+        for key in [
+            "summary_zh",
+            "human_responsibility_zh",
+            "agent_responsibility_zh",
+            "rework_sources_zh",
+            "agent_fit_zh",
+            "human_judgment_zh",
+        ]:
+            if not summary.get(key):
+                bad_items.append(f"agent_collaboration_output:missing_{key}")
+    status = "PASS" if not bad_items else "FAIL"
+    result = {
+        "status": status,
+        "command": "audit",
+        "check": "agent-collaboration",
+        "task_id": config.get("task_id") or output.get("task_id"),
+        "acceptance_id": config.get("acceptance_id") or output.get("acceptance_id"),
+        "metrics_config": "机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json",
+        "agent_collaboration_output": "data/derived/agent_collaboration/agent_collaboration_quality_report.json" if output_path.exists() else "",
+        "metric_count": len(output.get("overall_metrics") or []) if isinstance(output.get("overall_metrics"), list) else 0,
+        "source_summary_count": len(output.get("source_summaries") or []) if isinstance(output.get("source_summaries"), list) else 0,
+        "complex_delegation_contract_ui": False,
+        "multi_agent_system_implementation": False,
+        "bad_items": bad_items,
+        "raw_mutation": False,
+    }
+    print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0 if status == "PASS" else 2
+
+
 def run_audit(args: argparse.Namespace) -> int:
+    if args.check == "agent-collaboration":
+        return run_agent_collaboration_audit(args)
     if args.check == "formula-what-if":
         return run_formula_what_if_audit(args)
     if args.check == "visual-roi":
@@ -709,7 +856,7 @@ def run_audit(args: argparse.Namespace) -> int:
             "status": "NOT_IMPLEMENTED",
             "command": "audit",
             "check": args.check,
-            "reason": "Unknown audit check. Supported checks: insight-evidence, formulas, visual-roi, formula-what-if.",
+            "reason": "Unknown audit check. Supported checks: insight-evidence, formulas, visual-roi, formula-what-if, agent-collaboration.",
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 2
 
