@@ -652,6 +652,41 @@ def collect_chat_evidence_links(
     return rows
 
 
+def collect_attachment_evidence_reconciliation(manifest: dict, input_dir: Path, evidence: list[dict]) -> list[dict]:
+    evidence_by_path = {row["relative_path"]: row for row in evidence}
+    rows: list[dict] = []
+    for resource in collect_manifest_resource_rows(manifest, input_dir):
+        linked_relative_path = resource["linked_relative_path"]
+        linked_evidence = evidence_by_path.get(linked_relative_path) if linked_relative_path else None
+        manifest_sha256 = resource["sha256"]
+        evidence_sha256 = linked_evidence["sha256"] if linked_evidence else ""
+        if not linked_relative_path:
+            reconciliation_status = "manifest_output_path_missing_blocking"
+        elif linked_evidence is None:
+            reconciliation_status = "evidence_missing_blocking"
+        elif manifest_sha256 and evidence_sha256 and manifest_sha256 != evidence_sha256:
+            reconciliation_status = "evidence_hash_mismatch_blocking"
+        else:
+            reconciliation_status = "evidence_linked_pending_review"
+        rows.append({
+            "attachment_reconciliation_id": f"ATTACHREC-{manifest['run_id']}-{len(rows) + 1:05d}",
+            "open_message_id": resource["open_message_id"],
+            "manifest_relative_path": resource["manifest_relative_path"],
+            "manifest_row_number": resource["manifest_row_number"],
+            "resource_type": resource["resource_type"],
+            "resource_id": resource["resource_id"],
+            "resource_status": resource["status"],
+            "manifest_output_path": linked_relative_path,
+            "linked_evidence_id": linked_evidence["evidence_id"] if linked_evidence else "",
+            "manifest_sha256": manifest_sha256,
+            "evidence_sha256": evidence_sha256,
+            "reconciliation_status": reconciliation_status,
+            "review_status": "pending_human_review",
+            "financial_fact_promoted": "false",
+        })
+    return rows
+
+
 def read_jsonl(path: Path) -> list[dict]:
     if not path.exists():
         return []
@@ -1731,6 +1766,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     chat_text_candidates = collect_chat_text_candidates(manifest, input_dir, evidence)
     chat_value_candidates = extract_chat_value_candidates(manifest, chat_text_candidates)
     chat_evidence_links = collect_chat_evidence_links(manifest, input_dir, evidence, chat_text_candidates, chat_value_candidates)
+    attachment_reconciliation_rows = collect_attachment_evidence_reconciliation(manifest, input_dir, evidence)
     structured = extract_structured_csv_facts(manifest, input_dir, evidence)
     funding_forecast_rows = build_funding_forecast_rows(structured)
     cashflow_validation_rows = build_cashflow_validation_rows(structured, manifest["run_id"])
@@ -1743,6 +1779,9 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     manifest["chat_value_candidate_count"] = len(chat_value_candidates)
     manifest["chat_evidence_link_count"] = len(chat_evidence_links)
     manifest["chat_evidence_linked_count"] = sum(1 for row in chat_evidence_links if row["link_status"] == "linked_pending_review")
+    manifest["attachment_reconciliation_count"] = len(attachment_reconciliation_rows)
+    manifest["attachment_reconciliation_linked_count"] = sum(1 for row in attachment_reconciliation_rows if row["reconciliation_status"] == "evidence_linked_pending_review")
+    manifest["attachment_reconciliation_blocking_count"] = sum(1 for row in attachment_reconciliation_rows if row["reconciliation_status"].endswith("_blocking"))
     manifest["metadata_signal_count"] = len(metadata_signals)
     manifest["forecast_row_count"] = len(funding_forecast_rows)
     manifest["cashflow_validation_row_count"] = len(cashflow_validation_rows)
@@ -1927,6 +1966,22 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "review_status",
         "financial_fact_promoted",
     ], chat_evidence_links)
+    write_csv(run_dir / "attachment_evidence_reconciliation.csv", [
+        "attachment_reconciliation_id",
+        "open_message_id",
+        "manifest_relative_path",
+        "manifest_row_number",
+        "resource_type",
+        "resource_id",
+        "resource_status",
+        "manifest_output_path",
+        "linked_evidence_id",
+        "manifest_sha256",
+        "evidence_sha256",
+        "reconciliation_status",
+        "review_status",
+        "financial_fact_promoted",
+    ], attachment_reconciliation_rows)
     write_csv(run_dir / "workbook_quality_checks.csv", [
         "check_id",
         "check_name",
@@ -2009,6 +2064,18 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
             "relative_path": row["linked_relative_path"] or f"{row['manifest_relative_path']}:{row['manifest_row_number']}",
             "review_status": "pending",
         })
+    for row in attachment_reconciliation_rows:
+        if not row["reconciliation_status"].endswith("_blocking"):
+            continue
+        exception_tasks.append({
+            "task_id": f"EX-{manifest['run_id']}-{len(exception_tasks) + 1:05d}",
+            "evidence_id": row["linked_evidence_id"],
+            "task_type": "ATTACHMENT_EVIDENCE_RECONCILIATION_FAIL",
+            "severity": "blocking_for_evidence_integrity",
+            "reason": f"{row['attachment_reconciliation_id']} {row['reconciliation_status']} requires source/evidence review before fact promotion.",
+            "relative_path": row["manifest_output_path"] or f"{row['manifest_relative_path']}:{row['manifest_row_number']}",
+            "review_status": "pending",
+        })
     for row in cashflow_validation_rows:
         if row["validation_status"] != "FAIL":
             continue
@@ -2049,6 +2116,9 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "chat_value_candidate_count": len(chat_value_candidates),
         "chat_evidence_link_count": len(chat_evidence_links),
         "chat_evidence_linked_count": manifest["chat_evidence_linked_count"],
+        "attachment_reconciliation_count": len(attachment_reconciliation_rows),
+        "attachment_reconciliation_linked_count": manifest["attachment_reconciliation_linked_count"],
+        "attachment_reconciliation_blocking_count": manifest["attachment_reconciliation_blocking_count"],
         "structured_financial_fact_count": len(structured["fund_rows"]),
         "metadata_signal_count": len(metadata_signals),
         "forecast_row_count": len(funding_forecast_rows),
@@ -2081,6 +2151,9 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "chat_value_candidate_count": len(chat_value_candidates),
                 "chat_evidence_link_count": len(chat_evidence_links),
                 "chat_evidence_linked_count": manifest["chat_evidence_linked_count"],
+                "attachment_reconciliation_count": len(attachment_reconciliation_rows),
+                "attachment_reconciliation_linked_count": manifest["attachment_reconciliation_linked_count"],
+                "attachment_reconciliation_blocking_count": manifest["attachment_reconciliation_blocking_count"],
                 "structured_financial_fact_count": len(structured["fund_rows"]),
                 "metadata_signal_count": len(metadata_signals),
                 "forecast_row_count": len(funding_forecast_rows),
@@ -2196,6 +2269,8 @@ def main() -> int:
         f"Chat value candidate count: {manifest.get('chat_value_candidate_count', 0)}\n\n"
         f"Chat evidence link count: {manifest.get('chat_evidence_link_count', 0)}\n\n"
         f"Chat evidence linked count: {manifest.get('chat_evidence_linked_count', 0)}\n\n"
+        f"Attachment evidence reconciliation count: {manifest.get('attachment_reconciliation_count', 0)}\n\n"
+        f"Attachment evidence reconciliation blocking count: {manifest.get('attachment_reconciliation_blocking_count', 0)}\n\n"
         f"KMFA metadata signal count: {manifest.get('metadata_signal_count', 0)}\n\n"
         f"Known due-date funding forecast row count: {manifest.get('forecast_row_count', 0)}\n\n"
         f"Cashflow validation row count: {manifest.get('cashflow_validation_row_count', 0)}\n\n"

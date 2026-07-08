@@ -408,6 +408,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "chat_text_candidates.csv",
                 "chat_value_candidates.csv",
                 "chat_evidence_links.csv",
+                "attachment_evidence_reconciliation.csv",
                 "workbook_quality_checks.csv",
                 "kmfa_metadata_signals.csv",
                 "exception_tasks.csv",
@@ -780,6 +781,142 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertEqual(cross_review["chat_evidence_link_count"], 1)
             self.assertEqual(cross_review["chat_evidence_linked_count"], 1)
+            self.assertEqual(cross_review["structured_financial_fact_count"], 0)
+
+    def test_runner_reconciles_manifest_attachments_to_evidence_index_without_promoting_facts(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+            manifest_dir = input_dir / "_manifest"
+            file_dir = input_dir / "files" / "0708"
+            manifest_dir.mkdir(parents=True)
+            file_dir.mkdir(parents=True)
+
+            ok_rel = "files/0708/20260708113000_ok_image.png"
+            mismatch_rel = "files/0708/20260708113100_mismatch_image.png"
+            (input_dir / ok_rel).write_bytes(b"real-ok-image")
+            (input_dir / mismatch_rel).write_bytes(b"real-mismatch-image")
+            missing_rel = "files/0708/20260708113200_missing_image.png"
+
+            with (manifest_dir / "manifest.csv").open("w", encoding="utf-8", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=[
+                    "group_name",
+                    "open_conversation_id",
+                    "message_id",
+                    "message_time",
+                    "sender_name",
+                    "sender_id",
+                    "msg_type",
+                    "resource_type",
+                    "resource_id",
+                    "original_filename",
+                    "local_archive_path",
+                    "output_path",
+                    "sha256",
+                    "size_bytes",
+                    "download_method",
+                    "status",
+                ])
+                writer.writeheader()
+                writer.writerow({
+                    "group_name": "付款请示群",
+                    "open_conversation_id": "conv-1",
+                    "message_id": "msg-ok",
+                    "message_time": "2026-07-08T11:30:00+10:00",
+                    "sender_name": "杨婷",
+                    "sender_id": "sender-1",
+                    "msg_type": "image",
+                    "resource_type": "image",
+                    "resource_id": "resource-ok",
+                    "original_filename": "ok_image.png",
+                    "local_archive_path": "",
+                    "output_path": ok_rel,
+                    "sha256": sha256_bytes((input_dir / ok_rel).read_bytes()),
+                    "size_bytes": str((input_dir / ok_rel).stat().st_size),
+                    "download_method": "dws",
+                    "status": "downloaded",
+                })
+                writer.writerow({
+                    "group_name": "付款请示群",
+                    "open_conversation_id": "conv-1",
+                    "message_id": "msg-missing",
+                    "message_time": "2026-07-08T11:31:00+10:00",
+                    "sender_name": "杨婷",
+                    "sender_id": "sender-1",
+                    "msg_type": "image",
+                    "resource_type": "image",
+                    "resource_id": "resource-missing",
+                    "original_filename": "missing_image.png",
+                    "local_archive_path": "",
+                    "output_path": missing_rel,
+                    "sha256": "0" * 64,
+                    "size_bytes": "123",
+                    "download_method": "dws",
+                    "status": "downloaded",
+                })
+                writer.writerow({
+                    "group_name": "付款请示群",
+                    "open_conversation_id": "conv-1",
+                    "message_id": "msg-mismatch",
+                    "message_time": "2026-07-08T11:32:00+10:00",
+                    "sender_name": "杨婷",
+                    "sender_id": "sender-1",
+                    "msg_type": "image",
+                    "resource_type": "image",
+                    "resource_id": "resource-mismatch",
+                    "original_filename": "mismatch_image.png",
+                    "local_archive_path": "",
+                    "output_path": mismatch_rel,
+                    "sha256": "f" * 64,
+                    "size_bytes": str((input_dir / mismatch_rel).stat().st_size),
+                    "download_method": "dws",
+                    "status": "downloaded",
+                })
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "run_fund_weekly_analysis.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--input-dir",
+                    str(input_dir),
+                    "--run-id",
+                    "attachment_reconcile_test",
+                    "--timezone",
+                    "Australia/Sydney",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/attachment_reconcile_test"
+            with (run_dir / "attachment_evidence_reconciliation.csv").open(encoding="utf-8-sig", newline="") as f:
+                rows = list(csv.DictReader(f))
+            self.assertEqual(len(rows), 3)
+            status_by_message = {row["open_message_id"]: row["reconciliation_status"] for row in rows}
+            self.assertEqual(status_by_message["msg-ok"], "evidence_linked_pending_review")
+            self.assertEqual(status_by_message["msg-missing"], "evidence_missing_blocking")
+            self.assertEqual(status_by_message["msg-mismatch"], "evidence_hash_mismatch_blocking")
+            self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in rows))
+
+            with (run_dir / "exception_tasks.csv").open(encoding="utf-8-sig", newline="") as f:
+                task_rows = list(csv.DictReader(f))
+            reconciliation_tasks = [row for row in task_rows if row["task_type"] == "ATTACHMENT_EVIDENCE_RECONCILIATION_FAIL"]
+            self.assertEqual(len(reconciliation_tasks), 2)
+
+            with (run_dir / "fund_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
+                fund_rows = list(csv.DictReader(f))
+            self.assertEqual(fund_rows, [])
+
+            cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
+            self.assertFalse(cross_review["management_conclusion_allowed"])
+            self.assertEqual(cross_review["generated_financial_amount_count"], 0)
+            self.assertEqual(cross_review["attachment_reconciliation_count"], 3)
+            self.assertEqual(cross_review["attachment_reconciliation_blocking_count"], 2)
+            self.assertEqual(cross_review["attachment_reconciliation_linked_count"], 1)
             self.assertEqual(cross_review["structured_financial_fact_count"], 0)
 
     def test_runner_extracts_real_structured_csv_facts_without_management_conclusion(self) -> None:
