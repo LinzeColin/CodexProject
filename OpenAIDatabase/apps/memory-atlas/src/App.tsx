@@ -84,6 +84,7 @@ const HOME_ARRIVAL_BRIEFING_VERSION = "home_arrival_briefing.v1_2_s10_p1" as con
 const GLOBAL_CHINESE_UX_VERSION = "global_chinese_ux.v1_2_s10_p2" as const;
 const MACHINE_DETAIL_FOLDING_VERSION = "machine_detail_folding.v1_2_s10_p3" as const;
 const CLIO_LIKE_VISUALS_VERSION = "clio_like_visuals.v1_2_s11_p1" as const;
+const ECONOMIC_LIKE_VISUALS_VERSION = "economic_like_visuals.v1_2_s11_p2" as const;
 const HOME_ACTION_SECTION_VERSION = "top_actions_section.v1_1_7_stage3_phase2" as const;
 const HOME_LEVEL_ASSET_SECTION_VERSION = "level_assets_section.v1_1_7_stage3_phase2" as const;
 const HOME_THEME_CATEGORY_SECTION_VERSION = "theme_categories_section.v1_1_7_stage3_phase2" as const;
@@ -281,6 +282,27 @@ declare global {
         proposalWrite: false;
       };
     };
+    __memoryAtlasS11Phase2?: () => {
+      economicLikeVisualsVersion: typeof ECONOMIC_LIKE_VISUALS_VERSION;
+      visualIds: EconomicLikeVisualId[];
+      visualCount: number;
+      taskCount: number;
+      supportsFilters: ["source", "time", "project", "task"];
+      activeFilters: {
+        source: string;
+        time: string;
+        project: string;
+        task: string;
+      };
+      chartsAreStaticDecoration: false;
+      humanQuestionMapPartial: true;
+      pendingLaterVisuals: ["S11 P3", "S11 P4"];
+      safety: {
+        rawPrivateDataIncluded: false;
+        directActiveMemoryWriteback: false;
+        proposalWrite: false;
+      };
+    };
   }
 }
 
@@ -290,6 +312,7 @@ const MEMORY_OVERVIEW_SECTION_ORDER = [
   { id: "suggested_actions", label: "行动建议" },
   { id: "behavior_intelligence", label: "行为智能" },
   { id: "clio_like_visuals", label: "多维图谱" },
+  { id: "economic_like_visuals", label: "经济图谱" },
   { id: "weather", label: "记忆天气" },
   { id: "black_holes", label: "风险黑洞" },
   { id: "proto_stars", label: "新生机会" },
@@ -823,6 +846,60 @@ interface ClioLikeVisualModel {
   summary: string;
 }
 
+type EconomicLikeVisualId = "task_treemap" | "automation_vs_augmentation" | "roi_scatter" | "opportunity_radar";
+
+interface EconomicLikeVisualCopy {
+  id: EconomicLikeVisualId;
+  title: string;
+  insightHeader: string;
+  humanQuestion: string;
+  actionValue: string;
+}
+
+interface EconomicTaskDatum {
+  id: string;
+  label: string;
+  count: number;
+  roiScore: number;
+  automationShare: number;
+  augmentationShare: number;
+  opportunityScore: number;
+  riskScore: number;
+  recentCount: number;
+  sourceCount: number;
+  color: string;
+  x: number;
+  y: number;
+  radius: number;
+  width: number;
+  height: number;
+  node: AtlasNode | null;
+  nodes: AtlasNode[];
+}
+
+interface EconomicRadarAxis {
+  id: string;
+  label: string;
+  value: number;
+}
+
+interface EconomicLikeVisualModel {
+  schemaVersion: typeof ECONOMIC_LIKE_VISUALS_VERSION;
+  activeFilters: {
+    source: string;
+    time: string;
+    project: string;
+    task: string;
+  };
+  visualCopy: EconomicLikeVisualCopy[];
+  taskRows: EconomicTaskDatum[];
+  scatterPoints: EconomicTaskDatum[];
+  radarAxes: EconomicRadarAxis[];
+  automationAverage: number;
+  augmentationAverage: number;
+  summary: string;
+}
+
 interface MemoryWeatherV2 {
   label: string;
   summary: string;
@@ -1284,6 +1361,10 @@ export function App() {
     () => buildClioLikeVisualModel(slice.memoryNodes, filters, sharedState, slice.deltaStats),
     [filters, sharedState, slice.deltaStats, slice.memoryNodes],
   );
+  const economicLikeVisualModel = useMemo(
+    () => buildEconomicLikeVisualModel(slice.memoryNodes, filters, sharedState, slice.deltaStats),
+    [filters, sharedState, slice.deltaStats, slice.memoryNodes],
+  );
 
   const handleSelectNode = useCallback((node: AtlasNode) => {
     setSelectedContributionPeriod(null);
@@ -1465,6 +1546,28 @@ export function App() {
     };
   }, [clioLikeVisualModel]);
 
+  useEffect(() => {
+    window.__memoryAtlasS11Phase2 = () => ({
+      economicLikeVisualsVersion: ECONOMIC_LIKE_VISUALS_VERSION,
+      visualIds: ["task_treemap", "automation_vs_augmentation", "roi_scatter", "opportunity_radar"],
+      visualCount: economicLikeVisualModel.visualCopy.length,
+      taskCount: economicLikeVisualModel.taskRows.length,
+      supportsFilters: ["source", "time", "project", "task"],
+      activeFilters: economicLikeVisualModel.activeFilters,
+      chartsAreStaticDecoration: false,
+      humanQuestionMapPartial: true,
+      pendingLaterVisuals: ["S11 P3", "S11 P4"],
+      safety: {
+        rawPrivateDataIncluded: false,
+        directActiveMemoryWriteback: false,
+        proposalWrite: false,
+      },
+    });
+    return () => {
+      delete window.__memoryAtlasS11Phase2;
+    };
+  }, [economicLikeVisualModel]);
+
   return (
     <div
       className="app-shell"
@@ -1623,6 +1726,7 @@ export function App() {
               atlas={scopedAtlas}
               filters={filters}
               clioLikeVisualModel={clioLikeVisualModel}
+              economicLikeVisualModel={economicLikeVisualModel}
               sharedState={sharedState}
               slice={slice}
               nodeMap={nodeMap}
@@ -1658,6 +1762,7 @@ function ViewRouter({
   atlas,
   filters,
   clioLikeVisualModel,
+  economicLikeVisualModel,
   sharedState,
   slice,
   nodeMap,
@@ -1677,6 +1782,7 @@ function ViewRouter({
   atlas: MemoryAtlas;
   filters: AtlasFilters;
   clioLikeVisualModel: ClioLikeVisualModel;
+  economicLikeVisualModel: EconomicLikeVisualModel;
   sharedState: SharedAtlasState;
   slice: FilteredAtlasSlice;
   nodeMap: Map<string, AtlasNode>;
@@ -1739,6 +1845,7 @@ function ViewRouter({
         nodes={slice.memoryNodes}
         graphEdges={slice.graphEdges}
         clioLikeVisualModel={clioLikeVisualModel}
+        economicLikeVisualModel={economicLikeVisualModel}
         deltaStats={slice.deltaStats}
         selectedNode={selectedNode}
         sharedState={sharedState}
@@ -2087,11 +2194,208 @@ function ClioLikeVisualPanel({
   );
 }
 
+function EconomicLikeVisualPanel({
+  model,
+  onSelectNode,
+  onSwitchView,
+}: {
+  model: EconomicLikeVisualModel;
+  onSelectNode: (node: AtlasNode) => void;
+  onSwitchView: (view: ViewKey) => void;
+}) {
+  const [selectedTaskId, setSelectedTaskId] = useState(model.taskRows[0]?.id ?? "");
+  const selectedTask = model.taskRows.find((task) => task.id === selectedTaskId) ?? model.taskRows[0] ?? null;
+  const visualCopyById = new Map(model.visualCopy.map((visual) => [visual.id, visual]));
+  const treemapCopy = visualCopyById.get("task_treemap");
+  const automationCopy = visualCopyById.get("automation_vs_augmentation");
+  const scatterCopy = visualCopyById.get("roi_scatter");
+  const radarCopy = visualCopyById.get("opportunity_radar");
+  const radarPoints = model.radarAxes
+    .map((axis, index) => {
+      const angle = -Math.PI / 2 + (index / Math.max(1, model.radarAxes.length)) * Math.PI * 2;
+      const radius = 24 + axis.value * 76;
+      return `${140 + Math.cos(angle) * radius},${120 + Math.sin(angle) * radius}`;
+    })
+    .join(" ");
+
+  function openTask(task: EconomicTaskDatum | null, targetView: ViewKey) {
+    if (!task) return;
+    setSelectedTaskId(task.id);
+    if (task.node) onSelectNode(task.node);
+    onSwitchView(targetView);
+  }
+
+  return (
+    <section
+      className="economic-visual-panel"
+      aria-label="S11 P2 Economic-like 多维可视化"
+      data-home-section="economic_like_visuals"
+      data-s11-p2-economic-like-visuals={ECONOMIC_LIKE_VISUALS_VERSION}
+      data-s11-p2-filter-source={model.activeFilters.source}
+      data-s11-p2-filter-time={model.activeFilters.time}
+      data-s11-p2-filter-project={model.activeFilters.project}
+      data-s11-p2-filter-task={model.activeFilters.task}
+    >
+      <div className="panel-title-row">
+        <div>
+          <h3>Economic-like 经济图谱</h3>
+          <p>{model.summary}</p>
+        </div>
+        <span>{model.taskRows.length.toLocaleString()} 个筛选后任务面</span>
+      </div>
+      <div className="economic-filter-strip" aria-label="S11 P2 图谱过滤维度">
+        <span><strong>source</strong>{model.activeFilters.source}</span>
+        <span><strong>time</strong>{model.activeFilters.time}</span>
+        <span><strong>project</strong>{model.activeFilters.project}</span>
+        <span><strong>task</strong>{model.activeFilters.task}</span>
+      </div>
+      <div className="economic-visual-grid">
+        <article
+          className="economic-visual-card task-treemap-card"
+          data-s11-p2-action-value={treemapCopy?.actionValue}
+          data-s11-p2-human-question={treemapCopy?.humanQuestion}
+          data-s11-p2-interactive="true"
+          data-s11-p2-visual-id="task_treemap"
+        >
+          <div className="economic-visual-heading">
+            <span>{treemapCopy?.title}</span>
+            <strong data-s11-p2-insight-header={treemapCopy?.insightHeader}>{treemapCopy?.insightHeader}</strong>
+            <p>{treemapCopy?.humanQuestion}</p>
+            <em>{treemapCopy?.actionValue}</em>
+          </div>
+          <div className="task-treemap" role="list" aria-label="Task Treemap">
+            {model.taskRows.map((task) => (
+              <button
+                className={task.id === selectedTask?.id ? "active" : ""}
+                key={task.id}
+                onClick={() => openTask(task, "roi")}
+                style={{ flexBasis: `${task.width}px`, minHeight: `${task.height}px`, borderColor: task.color }}
+                type="button"
+              >
+                <strong>{task.label}</strong>
+                <span>{task.count} 条 · ROI {formatScore(task.roiScore)}</span>
+                <small>{task.sourceCount} 来源 · {task.recentCount} 近期</small>
+              </button>
+            ))}
+          </div>
+        </article>
+
+        <article
+          className="economic-visual-card automation-augmentation-card"
+          data-s11-p2-action-value={automationCopy?.actionValue}
+          data-s11-p2-human-question={automationCopy?.humanQuestion}
+          data-s11-p2-interactive="true"
+          data-s11-p2-visual-id="automation_vs_augmentation"
+        >
+          <div className="economic-visual-heading">
+            <span>{automationCopy?.title}</span>
+            <strong data-s11-p2-insight-header={automationCopy?.insightHeader}>{automationCopy?.insightHeader}</strong>
+            <p>{automationCopy?.humanQuestion}</p>
+            <em>{automationCopy?.actionValue}</em>
+          </div>
+          <div className="automation-augmentation-chart" aria-label="Automation vs Augmentation">
+            {model.taskRows.slice(0, 5).map((task) => (
+              <button
+                className={task.id === selectedTask?.id ? "active" : ""}
+                key={task.id}
+                onClick={() => openTask(task, "search")}
+                type="button"
+              >
+                <strong>{task.label}</strong>
+                <span>
+                  <i style={{ width: `${Math.round(task.automationShare * 100)}%` }} />
+                  <b style={{ width: `${Math.round(task.augmentationShare * 100)}%` }} />
+                </span>
+                <small>自动化 {formatScore(task.automationShare)} · 增强 {formatScore(task.augmentationShare)}</small>
+              </button>
+            ))}
+          </div>
+        </article>
+
+        <article
+          className="economic-visual-card"
+          data-s11-p2-action-value={scatterCopy?.actionValue}
+          data-s11-p2-human-question={scatterCopy?.humanQuestion}
+          data-s11-p2-interactive="true"
+          data-s11-p2-visual-id="roi_scatter"
+        >
+          <div className="economic-visual-heading">
+            <span>{scatterCopy?.title}</span>
+            <strong data-s11-p2-insight-header={scatterCopy?.insightHeader}>{scatterCopy?.insightHeader}</strong>
+            <p>{scatterCopy?.humanQuestion}</p>
+            <em>{scatterCopy?.actionValue}</em>
+          </div>
+          <svg className="roi-scatter-svg" viewBox="0 0 440 260" role="img" aria-label="ROI Scatter">
+            <line className="economic-axis" x1="58" y1="214" x2="398" y2="214" />
+            <line className="economic-axis" x1="58" y1="44" x2="58" y2="214" />
+            <text className="economic-axis-label" x="250" y="240">近期活跃度</text>
+            <text className="economic-axis-label" x="22" y="132" transform="rotate(-90 22 132)">ROI</text>
+            {model.scatterPoints.map((task) => (
+              <g
+                className={task.id === selectedTask?.id ? "roi-scatter-point active" : "roi-scatter-point"}
+                key={task.id}
+                onClick={() => openTask(task, "roi")}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") openTask(task, "roi");
+                }}
+                role="button"
+                tabIndex={0}
+              >
+                <title>{`${task.label}，ROI ${formatScore(task.roiScore)}，机会 ${formatScore(task.opportunityScore)}`}</title>
+                <circle cx={task.x} cy={task.y} fill={task.color} r={task.radius} />
+              </g>
+            ))}
+          </svg>
+        </article>
+
+        <article
+          className="economic-visual-card opportunity-radar-card"
+          data-s11-p2-action-value={radarCopy?.actionValue}
+          data-s11-p2-human-question={radarCopy?.humanQuestion}
+          data-s11-p2-interactive="true"
+          data-s11-p2-visual-id="opportunity_radar"
+        >
+          <div className="economic-visual-heading">
+            <span>{radarCopy?.title}</span>
+            <strong data-s11-p2-insight-header={radarCopy?.insightHeader}>{radarCopy?.insightHeader}</strong>
+            <p>{radarCopy?.humanQuestion}</p>
+            <em>{radarCopy?.actionValue}</em>
+          </div>
+          <svg className="opportunity-radar-svg" viewBox="0 0 280 240" role="img" aria-label="Opportunity Radar">
+            <circle cx="140" cy="120" r="96" />
+            <circle cx="140" cy="120" r="56" />
+            <polygon points={radarPoints} />
+            {model.radarAxes.map((axis, index) => {
+              const angle = -Math.PI / 2 + (index / Math.max(1, model.radarAxes.length)) * Math.PI * 2;
+              const x = 140 + Math.cos(angle) * 108;
+              const y = 120 + Math.sin(angle) * 108;
+              return (
+                <g key={axis.id}>
+                  <line x1="140" y1="120" x2={x} y2={y} />
+                  <text x={x} y={y}>{axis.label}</text>
+                </g>
+              );
+            })}
+          </svg>
+          {selectedTask ? (
+            <button className="economic-selected-task" onClick={() => openTask(selectedTask, "summary")} type="button">
+              <span>{selectedTask.label}</span>
+              <strong>机会 {formatScore(selectedTask.opportunityScore)} · 风险 {formatScore(selectedTask.riskScore)}</strong>
+              <small>打开总结闭环复核是否继续投入。</small>
+            </button>
+          ) : null}
+        </article>
+      </div>
+    </section>
+  );
+}
+
 function HomeOverviewView({
   atlas,
   nodes,
   graphEdges,
   clioLikeVisualModel,
+  economicLikeVisualModel,
   deltaStats,
   selectedNode,
   sharedState,
@@ -2103,6 +2407,7 @@ function HomeOverviewView({
   nodes: AtlasNode[];
   graphEdges: AtlasEdge[];
   clioLikeVisualModel: ClioLikeVisualModel;
+  economicLikeVisualModel: EconomicLikeVisualModel;
   deltaStats: DeltaStats;
   selectedNode: AtlasNode | null;
   sharedState: SharedAtlasState;
@@ -2300,6 +2605,7 @@ function HomeOverviewView({
       </section>
       <BehaviorIntelligencePanel summary={behaviorIntelligence} />
       <ClioLikeVisualPanel model={clioLikeVisualModel} onSelectNode={onSelectNode} onSwitchView={onSwitchView} />
+      <EconomicLikeVisualPanel model={economicLikeVisualModel} onSelectNode={onSelectNode} onSwitchView={onSwitchView} />
       <section className="home-preview-grid" aria-label={uiCopy.overview.previewAria} data-home-section="entry_points">
         <button
           className="home-preview-card mini-starfield-preview"
@@ -6965,6 +7271,160 @@ function buildClioLikeVisualModel(
   };
 }
 
+function buildEconomicLikeVisualModel(
+  nodes: AtlasNode[],
+  filters: AtlasFilters,
+  sharedState: SharedAtlasState,
+  deltaStats: DeltaStats,
+): EconomicLikeVisualModel {
+  const visualCopy: EconomicLikeVisualCopy[] = [
+    {
+      id: "task_treemap",
+      title: "Task Treemap",
+      insightHeader: "任务面积显示 AI 使用最集中的地方",
+      humanQuestion: "我的 AI 使用集中在哪些任务？",
+      actionValue: "把最大面积任务先和 ROI 对齐，避免把时间继续投给低回报任务。",
+    },
+    {
+      id: "automation_vs_augmentation",
+      title: "Automation vs Augmentation",
+      insightHeader: "自动化和增强必须分开决策",
+      humanQuestion: "哪些任务是 AI 自动化，哪些只是增强？",
+      actionValue: "自动化高的任务优先固化流程；增强高的任务保留人工判断和复盘入口。",
+    },
+    {
+      id: "roi_scatter",
+      title: "ROI Scatter",
+      insightHeader: "右上角任务才值得继续加码",
+      humanQuestion: "哪些任务最值得继续？",
+      actionValue: "优先打开高 ROI 且近期活跃的任务；低 ROI 高频任务进入停止或降噪判断。",
+    },
+    {
+      id: "opportunity_radar",
+      title: "Opportunity Radar",
+      insightHeader: "机会不只看数量，还要看新鲜度和复用价值",
+      humanQuestion: "哪些方向有机会但还需要证据？",
+      actionValue: "用雷达缺口选择下一步验证问题，不把机会清单变成压力清单。",
+    },
+  ];
+  const memoryNodes = nodes.filter((node) => node.kind === "memory");
+  const latest = parseDay(deltaStats.latestDate) ?? maxNodeDate(memoryNodes) ?? new Date();
+  const recentStart = addDays(latest, -29);
+  const taskMap = new Map<string, AtlasNode[]>();
+
+  for (const node of memoryNodes) {
+    const taskKey = economicTaskKey(node);
+    const bucket = taskMap.get(taskKey) ?? [];
+    bucket.push(node);
+    taskMap.set(taskKey, bucket);
+  }
+
+  const palette = ["#7ee8d4", "#f6c56f", "#8fd3ff", "#f08fa3", "#93df8f", "#b6a2ff"];
+  const rawRows = Array.from(taskMap.entries())
+    .map(([id, taskNodes], index): EconomicTaskDatum => {
+      const representative = selectRepresentativeNode(taskNodes);
+      const roiScore = average(taskNodes.map((node) => normalizedNodeRoi(node)));
+      const automationShare = average(taskNodes.map((node) => nodeAutomationLikelihood(node)));
+      const augmentationShare = clamp(1 - automationShare * 0.72, 0.12, 1);
+      const recentCount = taskNodes.filter((node) => isNodeBetween(node, recentStart, latest)).length;
+      const opportunityScore = average(taskNodes.map((node) => economicOpportunityScore(node, recentStart, latest)));
+      const riskScore = average(taskNodes.map((node) => (isBlackHoleCandidate(node) ? 1 : node.metrics?.roi?.staleness_status ? 0.62 : 0.22)));
+      const sourceCount = new Set(taskNodes.map((node) => node.data_source ?? "memory_atlas")).size;
+      return {
+        id,
+        label: economicTaskLabel(id, representative),
+        count: taskNodes.length,
+        roiScore,
+        automationShare,
+        augmentationShare,
+        opportunityScore,
+        riskScore,
+        recentCount,
+        sourceCount,
+        color: palette[index % palette.length],
+        x: 72 + clamp(recentCount / Math.max(1, taskNodes.length), 0, 1) * 315,
+        y: 214 - roiScore * 160,
+        radius: clamp(13 + Math.sqrt(taskNodes.length) * 4 + opportunityScore * 10, 18, 46),
+        width: 1,
+        height: 1,
+        node: representative,
+        nodes: taskNodes,
+      };
+    })
+    .sort((a, b) => b.count + b.roiScore * 5 + b.opportunityScore * 4 - (a.count + a.roiScore * 5 + a.opportunityScore * 4))
+    .slice(0, 6);
+
+  const fallbackRow: EconomicTaskDatum = {
+    id: "empty",
+    label: "暂无筛选任务",
+    count: 0,
+    roiScore: 0,
+    automationShare: 0,
+    augmentationShare: 0,
+    opportunityScore: 0,
+    riskScore: 0,
+    recentCount: 0,
+    sourceCount: 0,
+    color: "#8fd3ff",
+    x: 220,
+    y: 132,
+    radius: 20,
+    width: 1,
+    height: 1,
+    node: null,
+    nodes: [],
+  };
+  const taskRows = (rawRows.length ? rawRows : [fallbackRow]).map((row, index, rows) => {
+    const total = rows.reduce((sum, item) => sum + Math.max(1, item.count), 0);
+    const share = Math.max(0.12, Math.max(1, row.count) / Math.max(1, total));
+    const column = index % 3;
+    const rowIndex = Math.floor(index / 3);
+    return {
+      ...row,
+      width: clamp(118 + share * 250, 118, 250),
+      height: clamp(54 + row.roiScore * 44 + share * 68, 64, 136),
+      x: 72 + clamp(row.recentCount / Math.max(1, row.count), 0, 1) * 315,
+      y: 214 - row.roiScore * 160,
+      radius: clamp(row.radius, 18, 46),
+      color: row.color || palette[(column + rowIndex) % palette.length],
+    };
+  });
+
+  const automationAverage = average(taskRows.map((row) => row.automationShare));
+  const augmentationAverage = average(taskRows.map((row) => row.augmentationShare));
+  const radarAxes: EconomicRadarAxis[] = [
+    { id: "roi", label: "ROI", value: average(taskRows.map((row) => row.roiScore)) },
+    { id: "automation", label: "自动化", value: automationAverage },
+    { id: "augmentation", label: "增强", value: augmentationAverage },
+    { id: "opportunity", label: "机会", value: average(taskRows.map((row) => row.opportunityScore)) },
+    { id: "freshness", label: "新鲜度", value: average(taskRows.map((row) => clamp(row.recentCount / Math.max(1, row.count), 0, 1))) },
+    { id: "risk", label: "风险", value: average(taskRows.map((row) => row.riskScore)) },
+  ];
+
+  const activeFilters = {
+    source: filters.source === "all" ? "全部来源" : sourceDisplayLabel(filters.source, filters.source),
+    time: sharedState.filters.timeRange?.label ?? "全部时间",
+    project: filters.theme === "all" ? "全部项目/主题" : filters.theme,
+    task: filters.category === "all" ? "全部任务类别" : humanCategoryLabel(filters.category),
+  };
+  const topTask = taskRows[0];
+  const summary = topTask.count
+    ? `当前筛选下，${topTask.label} 是最大经济任务面，平均 ROI ${formatScore(topTask.roiScore)}；图谱已按 source/time/project/task 过滤。`
+    : "当前筛选下没有可计算的经济任务；请放宽过滤条件后再查看。";
+
+  return {
+    schemaVersion: ECONOMIC_LIKE_VISUALS_VERSION,
+    activeFilters,
+    visualCopy,
+    taskRows,
+    scatterPoints: taskRows,
+    radarAxes,
+    automationAverage,
+    augmentationAverage,
+    summary,
+  };
+}
+
 function average(values: number[]): number {
   const valid = values.filter((value) => Number.isFinite(value));
   if (!valid.length) return 0;
@@ -6994,6 +7454,40 @@ function compactClioClusterLabel(clusterId: string, representative: AtlasNode | 
     .replace(/[-_]+/g, " ")
     .replace(/\b\w/g, (char) => char.toUpperCase())
     .slice(0, 22) || "未归类主题";
+}
+
+function economicTaskKey(node: AtlasNode): string {
+  if (node.category) return node.category;
+  const label = `${node.label} ${node.statement ?? ""}`.toLowerCase();
+  if (/sync|同步|archive|归档|backup|备份|automation|自动化|script|脚本/.test(label)) return "workflow_automation";
+  if (/review|复盘|审核|验证|validator|gate|门禁/.test(label)) return "review_validation";
+  if (/proposal|决策|decision|roadmap|计划|stage|phase/.test(label)) return "decision_planning";
+  if (/visual|ui|图谱|可视化|dashboard/.test(label)) return "visualization";
+  return "knowledge_work";
+}
+
+function economicTaskLabel(taskId: string, representative: AtlasNode | null): string {
+  const categoryLabel = humanCategoryLabel(taskId);
+  if (categoryLabel && categoryLabel !== taskId) return categoryLabel;
+  if (representative) return compactThemeLabel(humanThemeLabel(representative));
+  return taskId.replace(/[-_]+/g, " ").replace(/\b\w/g, (char) => char.toUpperCase()).slice(0, 24) || "未归类任务";
+}
+
+function nodeAutomationLikelihood(node: AtlasNode): number {
+  const text = `${node.label} ${node.statement ?? ""} ${node.category ?? ""} ${node.metrics?.roi?.recommended_action ?? ""}`.toLowerCase();
+  if (/自动化|automation|script|cron|scheduled|cli|validator|sync|同步|backup|备份|archive|归档|apply|pipeline/.test(text)) return 0.82;
+  if (/codex|agent|tool|run|build|test|audit|门禁|验收/.test(text)) return 0.62;
+  if (/review|复盘|判断|decision|决策|proposal|研究|写作|planning|计划/.test(text)) return 0.34;
+  return 0.48;
+}
+
+function economicOpportunityScore(node: AtlasNode, recentStart: Date, latest: Date): number {
+  const roi = normalizedNodeRoi(node);
+  const recentBoost = isNodeBetween(node, recentStart, latest) ? 0.18 : 0;
+  const opportunityText = /机会|opportunity|继续|next|下一步|增长|复用|capability|能力/i.test(`${node.label} ${node.statement ?? ""} ${node.metrics?.roi?.recommended_action ?? ""}`)
+    ? 0.18
+    : 0;
+  return clamp(roi * 0.64 + recentBoost + opportunityText, 0, 1);
 }
 
 function buildHomeOverviewModel(
