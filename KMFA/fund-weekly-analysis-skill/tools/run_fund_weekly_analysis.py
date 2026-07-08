@@ -2171,6 +2171,48 @@ def build_fact_promotion_review_packet_rows(
     ]
 
 
+def fact_promotion_owner_review_status(row: dict) -> tuple[str, str]:
+    candidate_count = int(row["candidate_count"])
+    blocked_count = int(row["blocked_count"])
+    ready_count = int(row["ready_count"])
+    if candidate_count == 0:
+        return "no_candidate_rows", "No candidate rows exist for this review area."
+    if blocked_count > 0:
+        return "blocked_review_required", "Review blockers must be resolved before owner authorization can support any future fact promotion execution."
+    if ready_count > 0:
+        return "ready_for_owner_review_no_promotion", "Rows are ready for owner review, but this batch does not promote facts or write the formal ledger."
+    return "pending_owner_review", "Rows require owner review before any future controlled fact promotion execution."
+
+
+def build_fact_promotion_owner_review_batch_rows(manifest: dict, review_packet_rows: list[dict]) -> list[dict]:
+    authorization_path = fact_promotion_authorization_relative_path(manifest["run_id"])
+    rows = []
+    for row in review_packet_rows:
+        owner_review_status, batch_reason = fact_promotion_owner_review_status(row)
+        priority = "P0" if int(row["blocked_count"]) > 0 else ("P1" if int(row["candidate_count"]) > 0 else "P2")
+        rows.append({
+            "owner_review_batch_id": f"FPOWNERBATCH-{manifest['run_id']}-{len(rows) + 1:05d}",
+            "review_packet_id": row["review_packet_id"],
+            "review_area": row["review_area"],
+            "source_artifact": row["source_artifact"],
+            "candidate_count": row["candidate_count"],
+            "ready_count": row["ready_count"],
+            "blocked_count": row["blocked_count"],
+            "priority": priority,
+            "owner_review_status": owner_review_status,
+            "owner_authorization_required": row["authorization_required"],
+            "authorization_manifest_relative_path": authorization_path,
+            "authorization_scope": "fact_promotion_review_packet_validation_only",
+            "financial_fact_promotion_allowed": "false",
+            "fund_ledger_write_allowed": "false",
+            "financial_fact_promoted": "false",
+            "management_conclusion_allowed": "false",
+            "batch_reason": batch_reason,
+            "recommended_owner_action": row["next_action"],
+        })
+    return rows
+
+
 def fact_promotion_authorization_relative_path(run_id: str) -> str:
     return f"KMFA/metadata/fund_weekly_analysis/private_runtime/fact_promotion_authorizations/{run_id}.json"
 
@@ -3982,6 +4024,18 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         goal_completion_audit_rows,
     )
     fact_promotion_review_blocking_count = sum(1 for row in fact_promotion_review_packet_rows if row["blocked_count"] != "0")
+    fact_promotion_owner_review_batch_rows = build_fact_promotion_owner_review_batch_rows(
+        manifest,
+        fact_promotion_review_packet_rows,
+    )
+    fact_promotion_owner_review_batch_authorization_required_count = sum(
+        1 for row in fact_promotion_owner_review_batch_rows
+        if row["owner_authorization_required"] == "true"
+    )
+    fact_promotion_owner_review_batch_blocking_count = sum(
+        1 for row in fact_promotion_owner_review_batch_rows
+        if row["blocked_count"] != "0"
+    )
     fact_promotion_authorization_template = build_fact_promotion_authorization_template(
         manifest,
         fact_promotion_review_packet_rows,
@@ -4014,6 +4068,11 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     )
     manifest["fact_promotion_review_packet_count"] = len(fact_promotion_review_packet_rows)
     manifest["fact_promotion_review_blocking_count"] = fact_promotion_review_blocking_count
+    manifest["fact_promotion_owner_review_batch_count"] = len(fact_promotion_owner_review_batch_rows)
+    manifest["fact_promotion_owner_review_batch_authorization_required_count"] = (
+        fact_promotion_owner_review_batch_authorization_required_count
+    )
+    manifest["fact_promotion_owner_review_batch_blocking_count"] = fact_promotion_owner_review_batch_blocking_count
     manifest["fact_promotion_authorization_template_count"] = len(
         fact_promotion_authorization_template["review_packet_authorizations"]
     )
@@ -4039,6 +4098,11 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     )
     cross_review["fact_promotion_review_packet_count"] = len(fact_promotion_review_packet_rows)
     cross_review["fact_promotion_review_blocking_count"] = fact_promotion_review_blocking_count
+    cross_review["fact_promotion_owner_review_batch_count"] = len(fact_promotion_owner_review_batch_rows)
+    cross_review["fact_promotion_owner_review_batch_authorization_required_count"] = (
+        fact_promotion_owner_review_batch_authorization_required_count
+    )
+    cross_review["fact_promotion_owner_review_batch_blocking_count"] = fact_promotion_owner_review_batch_blocking_count
     cross_review["fact_promotion_authorization_template_count"] = manifest["fact_promotion_authorization_template_count"]
     cross_review["fact_promotion_authorization_template_authorized_count"] = fact_promotion_authorization_template_authorized_count
     cross_review["fact_promotion_authorization_present_count"] = manifest["fact_promotion_authorization_present_count"]
@@ -4080,6 +4144,26 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "financial_fact_promoted",
         "next_action",
     ], fact_promotion_review_packet_rows)
+    write_csv(run_dir / "fact_promotion_owner_review_batch.csv", [
+        "owner_review_batch_id",
+        "review_packet_id",
+        "review_area",
+        "source_artifact",
+        "candidate_count",
+        "ready_count",
+        "blocked_count",
+        "priority",
+        "owner_review_status",
+        "owner_authorization_required",
+        "authorization_manifest_relative_path",
+        "authorization_scope",
+        "financial_fact_promotion_allowed",
+        "fund_ledger_write_allowed",
+        "financial_fact_promoted",
+        "management_conclusion_allowed",
+        "batch_reason",
+        "recommended_owner_action",
+    ], fact_promotion_owner_review_batch_rows)
     (run_dir / "fact_promotion_authorization_template.json").write_text(
         json.dumps(fact_promotion_authorization_template, ensure_ascii=False, indent=2),
         encoding="utf-8",
@@ -4216,6 +4300,9 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "goal_completion_blocking_count": goal_completion_blocking_count,
                 "fact_promotion_review_packet_count": len(fact_promotion_review_packet_rows),
                 "fact_promotion_review_blocking_count": fact_promotion_review_blocking_count,
+                "fact_promotion_owner_review_batch_count": len(fact_promotion_owner_review_batch_rows),
+                "fact_promotion_owner_review_batch_authorization_required_count": fact_promotion_owner_review_batch_authorization_required_count,
+                "fact_promotion_owner_review_batch_blocking_count": fact_promotion_owner_review_batch_blocking_count,
                 "fact_promotion_authorization_template_count": manifest["fact_promotion_authorization_template_count"],
                 "fact_promotion_authorization_template_authorized_count": fact_promotion_authorization_template_authorized_count,
                 "fact_promotion_authorization_present_count": manifest["fact_promotion_authorization_present_count"],
@@ -4369,6 +4456,9 @@ def main() -> int:
         f"Goal completion blocking count: {manifest.get('goal_completion_blocking_count', 0)}\n\n"
         f"Fact promotion review packet count: {manifest.get('fact_promotion_review_packet_count', 0)}\n\n"
         f"Fact promotion review blocking count: {manifest.get('fact_promotion_review_blocking_count', 0)}\n\n"
+        f"Fact promotion owner review batch count: {manifest.get('fact_promotion_owner_review_batch_count', 0)}\n\n"
+        f"Fact promotion owner review batch authorization-required count: {manifest.get('fact_promotion_owner_review_batch_authorization_required_count', 0)}\n\n"
+        f"Fact promotion owner review batch blocking count: {manifest.get('fact_promotion_owner_review_batch_blocking_count', 0)}\n\n"
         f"Fact promotion authorization template count: {manifest.get('fact_promotion_authorization_template_count', 0)}\n\n"
         f"Fact promotion authorization template authorized count: {manifest.get('fact_promotion_authorization_template_authorized_count', 0)}\n\n"
         f"Fact promotion authorization valid count: {manifest.get('fact_promotion_authorization_valid_count', 0)}\n\n"

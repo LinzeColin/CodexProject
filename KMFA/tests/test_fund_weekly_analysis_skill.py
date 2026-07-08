@@ -523,6 +523,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "management_conclusion_gate.csv",
                 "owner_action_queue.csv",
                 "fact_promotion_review_packet.csv",
+                "fact_promotion_owner_review_batch.csv",
                 "fact_promotion_authorization_template.json",
                 "fact_promotion_authorization_preview.csv",
                 "fact_promotion_execution_gate.csv",
@@ -590,6 +591,19 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["owner_action_queue_count"], 5)
             self.assertEqual(cross_review["owner_action_queue_blocking_count"], 5)
             self.assertEqual(cross_review["owner_action_queue_automation_safe_count"], 0)
+
+            with (run_dir / "fact_promotion_owner_review_batch.csv").open(encoding="utf-8-sig", newline="") as f:
+                owner_review_batch_rows = list(csv.DictReader(f))
+            self.assertEqual(len(owner_review_batch_rows), 6)
+            batch_by_area = {row["review_area"]: row for row in owner_review_batch_rows}
+            self.assertEqual(batch_by_area["ocr_fact_ledger_staging"]["owner_review_status"], "no_candidate_rows")
+            self.assertEqual(batch_by_area["chat_value_candidates"]["source_artifact"], "chat_value_candidates.csv")
+            self.assertTrue(all(row["financial_fact_promotion_allowed"] == "false" for row in owner_review_batch_rows))
+            self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in owner_review_batch_rows))
+            self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in owner_review_batch_rows))
+            self.assertEqual(cross_review["fact_promotion_owner_review_batch_count"], 6)
+            self.assertEqual(cross_review["fact_promotion_owner_review_batch_authorization_required_count"], 1)
+            self.assertEqual(cross_review["fact_promotion_owner_review_batch_blocking_count"], 1)
 
     def test_runner_collects_real_ocr_text_sidecars_without_promoting_amounts(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
