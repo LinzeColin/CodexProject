@@ -333,3 +333,25 @@ Recommended next prompt:
 基于当前 public-safe action-intake blocker threshold recheck evidence 和 ignored private threshold records，只复核 blocked intake 是否仍无可执行 source reference、owner exclusion、formula mapping 或 non-numeric mapping；若没有，记录第三次 observation 并保持 NO_GO/blocked，不得读取或修改 raw inbox，不得做 authoritative binding、raw-to-processed value comparison、Stage review、GitHub upload、app reinstall 或 business execution。
 验收必须包含 focused test、validator、public-safe evidence、治理记录、raw/private scan 和 local commit。
 ```
+## 2026-07-08｜v0.1.4 owner/authorized agent action intake blocker final threshold recheck after blocked handoff
+
+- canonical worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa`
+- branch: `codex/kmfa`
+- phase: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_BLOCKER_FINAL_THRESHOLD_RECHECK_AFTER_BLOCKED_HANDOFF`
+- task: `KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-ACTION-INTAKE-BLOCKER-FINAL-THRESHOLD-RECHECK-AFTER-BLOCKED-HANDOFF-20260708`
+- result: 完成本地 public-safe final threshold recheck 证据、validator、focused unit test 和治理登记；未做 Stage review 或 GitHub upload。
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_BLOCKER_FINAL_THRESHOLD_RECHECK_AFTER_BLOCKED_HANDOFF/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_final_threshold_recheck_after_blocked_handoff_manifest.json`
+- counts: `source_owner_action_intake_blocker_count=48`, `source_owner_action_intake_ready_count=0`, `source_private_action_intake_blocker_threshold_records_item_count=48`, `prior_action_intake_blocker_observation_count=2`, `action_intake_blocker_observation_count=3`, `action_intake_blocked_audit_threshold_met=true`, `goal_status_recommendation=blocked`, `owner_action_intake_blocker_count=48`, `owner_action_intake_ready_count=0`, `source_reference_or_owner_exclusion_threshold_blocker_count=40`, `formula_or_non_numeric_mapping_threshold_blocker_count=8`, `binding_ready_after_action_intake_blocker_final_threshold_recheck_count=0`, `comparison_retry_ready_after_action_intake_blocker_final_threshold_recheck_count=0`, `unresolved_difference_count=72`。
+- boundary: raw inbox access/mutation, authoritative binding, raw-to-processed value comparison, reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain false.
+- next: 只能继续 owner/authorized agent action intake blocker blocked handoff after final threshold；不做整体复审/上传。
+
+## Next
+
+Recommended next prompt:
+
+```text
+继续 KMFA，只执行一个 phase：owner/authorized agent action intake blocker blocked handoff after final threshold。
+先确认 git root、branch、remote、HEAD、status。
+基于当前 public-safe final threshold recheck evidence 和 ignored private final-threshold records，只建立 blocked handoff / owner-action handoff 证据；不得读取或修改 raw inbox，不得做 authoritative binding、raw-to-processed value comparison、Stage review、GitHub upload、app reinstall 或 business execution。
+验收必须包含 focused test、validator、public-safe evidence、治理记录、raw/private scan 和 local commit。
+```

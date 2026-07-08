@@ -1833,3 +1833,13 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - locked counts: `48;0;48;1;2;false;0;48;48;0;40;8;0;0;72;NO_GO`
 - gate flags: action intake blocker threshold recheck checked=true; threshold_met=false; owner/agent action completed=false; binding=false; raw comparison=false; upload=false; business execution=false。
 - validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_threshold_recheck_after_blocked_handoff.py --require-private-threshold`
+## 2026-07-08 Model - V014 Owner Or Authorized Agent Action Intake Blocker Final Threshold Recheck After Blocked Handoff
+
+- model_id: `MOD-KMFA-GOV-001`
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-ACTION-INTAKE-BLOCKER-FINAL-THRESHOLD-RECHECK-AFTER-BLOCKED-HANDOFF-001`
+- parameter_ids: `PARAM-KMFA-1570`, `PARAM-KMFA-1571`, `PARAM-KMFA-1572`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_BLOCKER_FINAL_THRESHOLD_RECHECK_AFTER_BLOCKED_HANDOFF`
+- version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-blocker-final-threshold-recheck-after-blocked-handoff`
+- rule: source_owner_action_intake_blocker_count=48, source_owner_action_intake_ready_count=0 and source_private_action_intake_blocker_threshold_records_item_count=48 prove this phase starts from the prior action-intake threshold state; prior_action_intake_blocker_observation_count=2, action_intake_blocker_observation_count=3, action_intake_blocked_audit_threshold_met=true and goal_status_recommendation=blocked prove this is the final threshold observation.
+- gate: `NO_GO`; owner_action_intake_ready_count=0, owner_action_intake_blocker_count=48, actionable_owner_resolution_count=0, binding_ready_after_action_intake_blocker_final_threshold_recheck_count=0, comparison_retry_ready_after_action_intake_blocker_final_threshold_recheck_count=0, raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
+- privacy: public artifacts contain aggregate counts and gate state only; private final-threshold diagnostic, records and report stay under ignored runtime and raw inbox remains untouched by this phase.
