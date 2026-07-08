@@ -452,6 +452,29 @@ function validateHumanAndMachineState() {
       "ACC-MA-V12-S04-REVIEW",
       "validate:v1.2-s04-review",
     ]);
+  const currentStateIsS05P1 =
+    hasAll(quickEntry, [
+      "当前阶段是 S05 P1",
+      "MA-V12-S05P1",
+      "ACC-MA-V12-S05P1",
+      "下一步只允许进入 S05 P2",
+    ]) &&
+    hasAll(overview, [
+      "S05 P1 已完成",
+      "Facet schema",
+      "下一步是 S05 P2",
+    ]) &&
+    hasAll(machineReadme, [
+      "当前为 S05 P1",
+      "facet_event_schema.v1_2_s05_p1.json",
+      "下一步是 S05 P2",
+    ]) &&
+    hasAll(runGateReadme, [
+      "当前阶段是 S05 P1",
+      "MA-V12-S05P1",
+      "ACC-MA-V12-S05P1",
+      "validate:v1.2-s05-p1",
+    ]);
 
   assertCondition(
     hasAll(humanPage, [
@@ -471,7 +494,7 @@ function validateHumanAndMachineState() {
     "Human S04 P1 page is incomplete",
   );
 
-  if (currentStateIsS04P2 || currentStateIsS04P3 || currentStateIsS04Review) {
+  if (currentStateIsS04P2 || currentStateIsS04P3 || currentStateIsS04Review || currentStateIsS05P1) {
     pass(
       "s04p1_human_machine_later_s04_state",
       "Current human and machine state has advanced from S04 P1 into a later S04 state",

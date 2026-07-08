@@ -296,7 +296,37 @@ function currentStateIsS04P3() {
       "validate:v1.2-s04-review",
     ]);
 
-  return s04p3State || s04ReviewState;
+  const s05p1State =
+    hasAll(quickEntry, [
+      "当前阶段是 S05 P1",
+      "MA-V12-S05P1",
+      "ACC-MA-V12-S05P1",
+      "下一步只允许进入 S05 P2",
+    ]) &&
+    hasAll(overview, [
+      "S05 P1 已完成",
+      "Facet schema",
+      "下一步是 S05 P2",
+    ]) &&
+    hasAll(machineReadme, [
+      "当前为 S05 P1",
+      "facet_event_schema.v1_2_s05_p1.json",
+      "下一步是 S05 P2",
+    ]) &&
+    hasAll(syncReadme, [
+      "当前 S04 Review 已通过",
+      "ChatGPT 只读同步",
+      "GitHub backup dry-run/apply",
+      "下一步是 S05 P1",
+    ]) &&
+    hasAll(runGateReadme, [
+      "当前阶段是 S05 P1",
+      "MA-V12-S05P1",
+      "ACC-MA-V12-S05P1",
+      "validate:v1.2-s05-p1",
+    ]);
+
+  return s04p3State || s04ReviewState || s05p1State;
 }
 
 

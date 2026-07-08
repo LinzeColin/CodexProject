@@ -1,3 +1,38 @@
+## 121. Memory Atlas v1.2 S05 P1 Facet Schema Parameters
+
+状态：`phase_s05_p1_facet_schema_completed_pending_s05_p2`。
+
+验收 ID：`ACC-MA-V12-S05P1`。
+
+S05 P1 固定以下参数：
+
+- `MA-V12-S05P1`
+- `validate:v1.2-s05-p1`
+- `facet_event_schema.v1_2_s05_p1.json`
+- `12_Facet字段与事件语义说明.md`
+- `memory_atlas_v1_2_s05_p1_facet_schema.md`
+- required fields：`source`, `topic`, `intent`, `task_type`, `project`, `output_type`, `language`, `tool`, `turn_count`, `friction`, `value_signal`, `future_agent_source`。
+- S05 P1 完成后下一步为 pending S05 P2。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S05P1-001 phase_status = phase_s05_p1_facet_schema_completed_pending_s05_p2`
+- `PARAM-MA-V12-S05P1-002 validator = validate:v1.2-s05-p1`
+- `PARAM-MA-V12-S05P1-003 schema = facet_event_schema.v1_2_s05_p1.json`
+- `PARAM-MA-V12-S05P1-004 human_doc = 12_Facet字段与事件语义说明.md`
+- `PARAM-MA-V12-S05P1-005 next_gate = pending S05 P2`
+- `PARAM-MA-V12-S05P1-006 phase_boundary = No extractor in this phase; No fake events in this phase; No raw mutation in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s05-p1` checks S04 Review continuity, required facet fields,
+  English field names, Chinese explanations, ChatGPT/Codex/future-agent coverage,
+  no events.json generation, human/machine state, records, canonical remote and
+  no-upload/no-remote-push/no-extractor/no-raw-mutation boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S05 P1 Facet Schema; MA-V12-S05P1; ACC-MA-V12-S05P1; phase_s05_p1_facet_schema_completed_pending_s05_p2; validate:v1.2-s05-p1; facet_event_schema.v1_2_s05_p1.json; 12_Facet字段与事件语义说明.md; memory_atlas_v1_2_s05_p1_facet_schema.md; S05 P1; pending S05 P2; No GitHub main upload in this phase; No remote push in this phase; No extractor in this phase; No fake events in this phase; No raw mutation in this phase.
+
 ## 120. Memory Atlas v1.2 S04 Review Parameters
 
 状态：`stage_s04_review_passed_pending_s05_no_github_main_upload`。

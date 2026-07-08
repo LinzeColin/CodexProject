@@ -11,3 +11,17 @@
 - 每个 source 必须区分 transcript 与 credential
 
 source registry 属于 S02 P2；本阶段不创建 registry 文件，不修改 raw archive。
+
+当前 S05 P1 已完成，并新增：
+
+- `机器治理/数据契约/facet_event_schema.v1_2_s05_p1.json`
+- `人类可读/12_Facet字段与事件语义说明.md`
+- `docs/reviews/memory_atlas_v1_2_s05_p1_facet_schema.md`
+
+S05 P1 定义 facet/canonical event schema：`source`、`topic`、`intent`、
+`task_type`、`project`、`output_type`、`language`、`tool`、`turn_count`、
+`friction`、`value_signal` 和 `future_agent_source`。字段名保持英文，中文解释在
+人类文件中说明。
+
+下一步是 S05 P2：实现 extractor。S05 P1 不生成 fake events，不写
+`data/derived/behavior_intelligence/events.json`，不修改 raw。

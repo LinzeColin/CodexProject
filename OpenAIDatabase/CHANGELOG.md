@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S05 P1 Facet Schema
+
+- Added `机器治理/数据契约/facet_event_schema.v1_2_s05_p1.json`.
+- Added `人类可读/12_Facet字段与事件语义说明.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s05_p1_facet_schema.md`.
+- Added `validate:v1.2-s05-p1` for `MA-V12-S05P1` /
+  `ACC-MA-V12-S05P1`.
+- Registered status `phase_s05_p1_facet_schema_completed_pending_s05_p2`.
+- Defined English facet fields and Chinese human explanations for S05 P1.
+- Covered ChatGPT, Codex and future agent source contracts.
+- Preserved S05 P1 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No extractor in this phase, No fake events
+  in this phase and No raw mutation in this phase.
+- Marked the next gate as pending S05 P2.
+
 ## Unreleased - Memory Atlas v1.2 S04 Review
 
 - Added `docs/reviews/memory_atlas_v1_2_s04_review.md`.

@@ -377,15 +377,39 @@ function validateDocsAndRecords() {
       "ACC-MA-V12-S04-REVIEW",
       "validate:v1.2-s04-review",
     ]);
+  const currentStateIsS05P1 =
+    hasAll(quick, [
+      "当前阶段是 S05 P1",
+      "MA-V12-S05P1",
+      "ACC-MA-V12-S05P1",
+      "下一步只允许进入 S05 P2",
+    ]) &&
+    hasAll(overview, [
+      "S05 P1 已完成",
+      "Facet schema",
+      "下一步是 S05 P2",
+    ]) &&
+    hasAll(machineReadme, [
+      "当前为 S05 P1",
+      "facet_event_schema.v1_2_s05_p1.json",
+      "下一步是 S05 P2",
+    ]) &&
+    hasAll(runGateReadme, [
+      "当前阶段是 S05 P1",
+      "MA-V12-S05P1",
+      "ACC-MA-V12-S05P1",
+      "validate:v1.2-s05-p1",
+    ]);
   assertCondition(
     currentStateIsS04Review ||
+      currentStateIsS05P1 ||
       hasAll(quick, [taskId, acceptanceId, status, "S04 P3 已建立", "下一步只允许进入 S04 Review"]),
     "s04p3_quick_entry",
     "Human quick entry records S04 P3 state or a later S04 Review state",
     "Human quick entry is missing S04 P3 or S04 Review state",
   );
   assertCondition(
-    currentStateIsS04Review || hasAll(overview, ["S04 P3 已完成", "scripts/github_backup.py", "下一步是 S04 Review"]),
+    currentStateIsS04Review || currentStateIsS05P1 || hasAll(overview, ["S04 P3 已完成", "scripts/github_backup.py", "下一步是 S04 Review"]),
     "s04p3_overview",
     "Human overview records S04 P3 state or a later S04 Review state",
     "Human overview is missing S04 P3 or S04 Review state",
