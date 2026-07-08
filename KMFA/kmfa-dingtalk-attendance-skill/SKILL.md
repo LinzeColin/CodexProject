@@ -41,13 +41,17 @@ Before acting, read:
 
 - Automation name: `每日早晚钉钉考勤检查`.
 - Timezone: `Asia/Shanghai`.
-- Morning run: 08:35. Evening run: 18:15.
+- Morning run: 10:35. Evening run: 20:05.
 - DWS backend is live-only; no sample employees or fixture attendance records are allowed as production data.
 - Known no-record people: `张霖泽`, `林全意`; only their own missing records are exempted.
 - Rest reminder rule: `REST_REQUIRED_THRESHOLD_DAYS = 23`.
 - Rest reminder excluded names: `丁春法`, `李永占`; they are excluded only from `需要休息` and private ledger `rest_required_snapshots`, while all other statuses are still counted normally.
 - Effective attendance day: the same natural day has both morning and evening punches.
 - Monthly notification rollups reset by natural month.
+- Notification `今日异常 / 无考勤` is same-day only: `缺卡`, `未打卡`, `旷工`, `迟到`, and `早退` are shown only when the detail child row matches today's work date.
+- Current natural-month counts are annotations for today's displayed names; they must not create a today no-record/anomaly row by themselves.
+- Empty notification sections render nothing. When collection is complete and today's anomaly list is empty, output `本次 N 人全部考勤正常`.
+- Do not render a user-visible `待审批 / 待补卡 / 待核查` section; keep those details only in private/internal machine state if present.
 - For each status section, show everyone when count is 10 or less; otherwise show total count plus Top 10.
 - SQLite ledger is a rebuildable private index, not payroll basis and not a wage calculation source.
 - Private ledger path: `KMFA/metadata/dingtalk_attendance/private_runtime/attendance_ledger.sqlite`; never commit it.
@@ -67,8 +71,8 @@ When the user says "raw/original data is in `KMFA/metadata`", treat tracked `KMF
 
 Existing local Codex automation ids:
 
-- Morning: `automation-3`, daily 08:35 Beijing time.
-- Evening: `automation-4`, daily 18:15 Beijing time.
+- Morning: `automation-3`, daily 10:35 Beijing time.
+- Evening: `automation-4`, daily 20:05 Beijing time.
 
 Both automation prompts must invoke this skill by name:
 

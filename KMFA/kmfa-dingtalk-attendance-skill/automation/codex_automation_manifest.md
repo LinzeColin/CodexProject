@@ -15,8 +15,8 @@ files are the portable source for another agent or computer.
 
 | Local id | Name | Beijing schedule | Prompt mirror |
 | --- | --- | --- | --- |
-| `automation-3` | `每日早晚钉钉考勤检查｜晨报` | Daily 08:35 | `automation/morning_prompt.md` |
-| `automation-4` | `每日早晚钉钉考勤检查｜晚报` | Daily 18:15 | `automation/evening_prompt.md` |
+| `automation-3` | `每日早晚钉钉考勤检查｜晨报` | Daily 10:35 | `automation/morning_prompt.md` |
+| `automation-4` | `每日早晚钉钉考勤检查｜晚报` | Daily 20:05 | `automation/evening_prompt.md` |
 
 ## Sync Rule
 

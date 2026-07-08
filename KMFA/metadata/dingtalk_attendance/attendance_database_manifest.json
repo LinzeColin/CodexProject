@@ -54,8 +54,8 @@
     "sqlite_committed": false
   },
   "schedule": {
-    "evening": "18:15",
-    "morning": "08:35",
+    "evening": "20:05",
+    "morning": "10:35",
     "timezone": "Asia/Shanghai"
   },
   "stage_id": "S19",

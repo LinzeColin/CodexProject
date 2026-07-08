@@ -7,6 +7,7 @@ from datetime import datetime
 from pathlib import Path
 from unittest.mock import patch
 from urllib.parse import parse_qs, urlparse
+from zoneinfo import ZoneInfo
 
 from KMFA.tools.dingtalk_attendance.healthcheck import build_config_status
 from KMFA.tools.dingtalk_attendance.dws_auth_guard import dws_command_safety_status
@@ -278,8 +279,8 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(plan["automation_name"], "每日早晚钉钉考勤检查")
         self.assertEqual(plan["run_type"], "morning")
         self.assertEqual(plan["timezone"], "Asia/Shanghai")
-        self.assertEqual(plan["schedule"]["morning"], "08:35")
-        self.assertEqual(plan["schedule"]["evening"], "18:15")
+        self.assertEqual(plan["schedule"]["morning"], "10:35")
+        self.assertEqual(plan["schedule"]["evening"], "20:05")
         self.assertEqual(plan["onedrive_root"], "/Users/linzezhang/OneDrive/dingtalk_attendance")
         self.assertEqual(plan["onedrive_month_folder_pattern"], "YYYYMM")
         self.assertEqual(plan["known_recipients"]["zhang_linze"]["dingtalk_user_id"], "1iv-1t2oesv2yd")
@@ -287,6 +288,16 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertFalse(plan["public_repo_safety"]["sqlite_committed"])
         self.assertFalse(plan["public_repo_safety"]["credential_committed"])
         self.assertTrue(plan["live_only"])
+
+    def test_run_plan_supports_controlled_work_date_rerun_datetime(self) -> None:
+        plan = build_run_plan(
+            run_type="morning",
+            timezone="Asia/Shanghai",
+            run_datetime=datetime(2026, 7, 6, 10, 35, tzinfo=ZoneInfo("Asia/Shanghai")),
+        )
+
+        self.assertEqual(plan["run_id"], "s19_morning_20260706_103500")
+        self.assertIn("/202607/", plan["archive_paths"]["archive_manifest"])
 
     def test_attendance_ledger_initializes_required_private_schema(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -614,7 +625,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         )
         self.assertEqual(
             HR_REPORT_SECTIONS,
-            ("一、异常明细", "二、连续异常人员", "三、待审批/待补卡/待核查", "四、数据质量与系统运行状态"),
+            ("一、异常明细", "二、连续异常人员", "三、数据质量与系统运行状态"),
         )
         self.assertNotIn("关键人员风险", json.dumps(MANAGEMENT_REPORT_SECTIONS, ensure_ascii=False))
 
@@ -913,7 +924,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(collection["stats"]["attendance_required_count"], 1)
         self.assertEqual(collection["stats"]["incomplete_record_names"], ["员工A"])
         self.assertEqual(collection["stats"]["attendance_anomaly_names"], ["员工A"])
-        self.assertIn("本次1人全部考勤正常，今天一切良好", body)
+        self.assertIn("本次1人全部考勤正常", body)
         self.assertNotIn("今日异常 / 无考勤", body)
         self.assertNotIn("员工A", body)
 
@@ -982,6 +993,71 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(collection["stats"]["attendance_anomaly_names"], ["员工B"])
         self.assertIn("今日异常 / 无考勤\n员工B（本月累计1次）", body)
         self.assertNotIn("今天一切良好", body)
+
+    def test_today_summary_absence_status_tokens_all_count_as_today_anomaly(self) -> None:
+        for status_name in ("缺卡", "未打卡", "旷工", "迟到", "早退"):
+            with self.subTest(status_name=status_name):
+                def runner(args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict:
+                    if args == ["contact", "dept", "list-children", "--dept", "1"]:
+                        return {"returncode": 0, "payload": {"success": True, "result": []}}
+                    if args == ["contact", "dept", "list-members", "--depts", "1"]:
+                        return {
+                            "returncode": 0,
+                            "payload": {
+                                "success": True,
+                                "deptUserList": [{"userInfo": {"name": "员工C", "userId": "u-c"}}],
+                            },
+                        }
+                    if args[:4] == ["attendance", "record", "get", "--user"]:
+                        return {
+                            "returncode": 0,
+                            "payload": {
+                                "success": True,
+                                "code": "0",
+                                "result": {
+                                    "recordList": [{"checkTypeDesc": "上班"}, {"checkTypeDesc": "下班"}],
+                                    "isHasSchedule": True,
+                                },
+                            },
+                        }
+                    if args[:3] == ["attendance", "summary", "--user"]:
+                        return {
+                            "returncode": 0,
+                            "payload": {
+                                "success": True,
+                                "code": "0",
+                                "result": {
+                                    "abnormalCount": 1,
+                                    "items": [
+                                        {
+                                            "id": status_name,
+                                            "name": status_name,
+                                            "children": [{"name": "2026-07-07（星期二）"}],
+                                        }
+                                    ],
+                                },
+                            },
+                        }
+                    raise AssertionError(f"unexpected dws args: {args}")
+
+                collection = collect_org_attendance(
+                    work_date="2026-07-07",
+                    summary_datetime="2026-07-07 10:35:00",
+                    runner=runner,
+                )
+                context = notification_context_from_output_status(
+                    {
+                        "run_id": "s19_morning_20260707_103500",
+                        "run_type": "morning",
+                        "work_date": "2026-07-07",
+                        "current_time": "10:35",
+                        "stats": collection["stats"],
+                    }
+                )
+                body = build_notification_message(**context, markdown=False)
+
+                self.assertEqual(collection["stats"]["summary_today_anomaly_names"], ["员工C"])
+                self.assertIn("今日异常 / 无考勤\n员工C（本月累计1次）", body)
 
     def test_dws_attendance_fails_fast_on_pat_scope_auth_required(self) -> None:
         calls: list[tuple[str, ...]] = []
@@ -1061,7 +1137,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertIn("无考勤记录人员：无。", management)
         self.assertIn("打卡记录不完整人员：无。", management)
         self.assertIn("今日异常人员 / 无考勤人员：无。", hr)
-        self.assertIn("无异常时无需处理。", hr)
+        self.assertNotIn("待审批/待补卡/待核查", hr)
         self.assertEqual(manifest["stats"]["known_no_record_names"], ["张霖泽", "林全意"])
 
     def test_private_reports_keep_backend_collection_diagnostics_out_of_user_text(self) -> None:
@@ -1252,7 +1328,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
         self.assertEqual(
             message,
-            "# 开明考勤提醒｜2026-07-07｜晨报\n\n截止 08:35\n\n本次41人全部考勤正常，今天一切良好\n",
+            "# 开明考勤提醒｜2026-07-07｜晨报\n\n截止 08:35\n\n本次41人全部考勤正常\n",
         )
         self.assertNotIn("morning", message)
         self.assertNotIn("evening", message)
@@ -1281,8 +1357,8 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         )
         body = build_notification_message(**context, markdown=False)
 
-        self.assertIn("本次41人全部考勤正常，今天一切良好", body)
-        self.assertNotIn("\n今天一切良好\n", body)
+        self.assertIn("本次41人全部考勤正常", body)
+        self.assertNotIn("今天一切良好", body)
 
     def test_notification_template_renders_monthly_cumulative_sections_and_top10(self) -> None:
         names = [f"员工{i:02d}" for i in range(1, 12)]
@@ -1326,7 +1402,8 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertIn("10. 员工02（本月累计2次）", markdown)
         self.assertNotIn("员工01（本月累计1次）", markdown)
         self.assertIn("## 连续异常\n员工11（连续3天，本月累计11次）", markdown)
-        self.assertIn("## 待审批 / 待补卡 / 待核查\n员工10（本月累计4项）", markdown)
+        self.assertNotIn("待审批 / 待补卡 / 待核查", markdown)
+        self.assertNotIn("员工10（本月累计4项）", markdown)
         self.assertIn("## 需要休息\n员工09（本月有效考勤25天）", markdown)
         self.assertNotIn("今日异常人员 / 无考勤人员：", markdown)
         self.assertNotIn("今天一切良好", markdown)
@@ -1348,11 +1425,11 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             markdown=True,
         )
 
-        self.assertIn("本次44人全部考勤正常，今天一切良好", message)
+        self.assertIn("本次44人全部考勤正常", message)
         self.assertNotIn("历史异常甲", message)
         self.assertNotIn("## 今日异常 / 无考勤", message)
 
-    def test_notification_template_omits_empty_sections_when_other_sections_have_content(self) -> None:
+    def test_notification_template_ignores_pending_section_and_omits_empty_sections_when_other_sections_have_content(self) -> None:
         message = build_notification_message(
             work_date="2026-07-08",
             run_type="morning",
@@ -1361,14 +1438,16 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             known_no_record_names=[],
             consecutive_anomaly_summary=[],
             pending_hr_actions=["王五待补卡"],
-            rest_required_people=[],
+            monthly_pending_actions=[{"name": "王五", "monthly_count": 3, "latest_date": "2026-07-08"}],
+            rest_required_people=[{"name": "赵六", "effective_attendance_days": 24, "latest_date": "2026-07-08"}],
             markdown=True,
         )
 
-        self.assertIn("## 待审批 / 待补卡 / 待核查\n王五待补卡", message)
+        self.assertIn("## 需要休息\n赵六（本月有效考勤24天）", message)
+        self.assertNotIn("待审批 / 待补卡 / 待核查", message)
+        self.assertNotIn("王五", message)
         self.assertNotIn("## 今日异常 / 无考勤", message)
         self.assertNotIn("## 连续异常", message)
-        self.assertNotIn("## 需要休息", message)
 
     def test_monthly_rollups_count_current_month_and_rest_from_23rd_effective_day(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -1487,7 +1566,8 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         )
 
         self.assertIn("## 今日异常 / 无考勤\n丁春法（本月累计1次）\n李永占（本月累计1次）", markdown)
-        self.assertIn("## 待审批 / 待补卡 / 待核查\n丁春法（本月累计2项）", markdown)
+        self.assertNotIn("待审批 / 待补卡 / 待核查", markdown)
+        self.assertNotIn("丁春法（本月累计2项）", markdown)
         self.assertIn("## 需要休息\n张三（本月有效考勤23天）", markdown)
         self.assertNotIn("丁春法（本月有效考勤23天）", markdown)
         self.assertNotIn("李永占（本月有效考勤23天）", markdown)
@@ -1530,7 +1610,8 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(markdown.replace("# ", "", 1).replace("## ", ""), plain)
         self.assertIn("今日异常 / 无考勤\n张三（本月累计1次）", plain)
         self.assertIn("连续异常\n李四连续 2 天异常", plain)
-        self.assertIn("待审批 / 待补卡 / 待核查\n王五待补卡", plain)
+        self.assertNotIn("待审批 / 待补卡 / 待核查", plain)
+        self.assertNotIn("王五待补卡", plain)
 
     def test_attendance_notification_template_shows_rest_required_people(self) -> None:
         markdown = build_notification_message(
@@ -1619,7 +1700,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         )
         body = build_notification_message(**context, markdown=False)
 
-        self.assertIn("本次44人全部考勤正常，今天一切良好", body)
+        self.assertIn("本次44人全部考勤正常", body)
         self.assertNotIn("今日异常 / 无考勤", body)
         self.assertNotIn("连续异常", body)
         self.assertNotIn("员工A", body)

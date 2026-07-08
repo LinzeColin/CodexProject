@@ -17,8 +17,7 @@ hr_report:
   sections:
     - 一、异常明细
     - 二、连续异常人员
-    - 三、待审批/待补卡/待核查
-    - 四、数据质量与系统运行状态
+    - 三、数据质量与系统运行状态
   private_archive_only: true
 morning_absence_policy: 待确认异常
 public_repo_report_body_allowed: false

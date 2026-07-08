@@ -482,6 +482,8 @@ def write_private_outputs(
     manifest = {
         "run_id": plan["run_id"],
         "stage_id": plan["stage_id"],
+        "run_type": plan["run_type"],
+        "work_date": collection["work_date"],
         "backend": "dws",
         "raw_jsonl_gz": str(raw_path),
         "raw_jsonl_gz_sha256": raw_hash,
@@ -526,7 +528,7 @@ def _management_context(plan: dict[str, Any], collection: dict[str, Any]) -> dic
             f"当天有打卡记录 {stats['record_nonempty_count']} 人。"
         ),
         "二、今日异常人员": "".join(abnormal_lines),
-        "三、建议动作": "如今日异常人员不为无，请按补卡、审批或现场核查流程处理；无异常时无需处理。",
+        "三、建议动作": "如今日异常人员不为无，请按现场考勤复核流程处理；无异常时无需处理。",
         "四、系统运行状态": "本次结果已写入私有月度归档；公开仓库不保存员工考勤明文。",
     }
 
@@ -544,8 +546,7 @@ def _hr_context(plan: dict[str, Any], collection: dict[str, Any]) -> dict[str, s
             f"打卡记录不完整人员：{_join_names(incomplete_record_names)}。"
         ),
         "二、连续异常人员": "连续异常按自然月历史归档统计，人员名单以通知正文和私有台账为准。",
-        "三、待审批/待补卡/待核查": "今日异常人员存在时，请按补卡、审批或现场核查流程处理；无异常时无需处理。",
-        "四、数据质量与系统运行状态": (
+        "三、数据质量与系统运行状态": (
             f"覆盖 {stats['member_count']} 人；"
             f"应考勤 {stats.get('attendance_required_count', stats['member_count'])} 人；"
             f"当天有打卡记录 {stats['record_nonempty_count']} 人。"
