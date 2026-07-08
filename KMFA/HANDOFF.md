@@ -34,6 +34,7 @@
 - `run_daily_local.sh` 支持 validation-only `KMFA_FUND_RUN_ID` 和 `KMFA_SKIP_CODEX_EXEC=1`，用于固定 run id 验收真实 runner/OCR 路径并避免递归 Codex CLI；默认 automation 不设置这些变量。
 - scheduled Vision OCR 对 timeout 行默认执行 `--retry-timeout-seconds 30 --retry-batch-size 1`；可用 `KMFA_FUND_VISION_RETRY_TIMEOUT_SECONDS` / `KMFA_FUND_VISION_RETRY_BATCH_SIZE` 覆盖。retry 仍只写 private runtime OCR sidecar，不改源、不晋升事实。
 - S56 真实 retry 已将 `s55_scheduled_entrypoint_real_run_20260708` 的截图 OCR 覆盖从 216/272 提升到 272/272；二次 runner 输出 272 条 OCR 文本候选、2852 条 OCR 值候选、235 条 OCR 资金事实候选，`fund_ledger.csv` / `funding_forecast.csv` 仍只有表头，`management_conclusion_allowed=false`。
+- S57 基于同一真实 run_id 复跑 runner 后输出 `fact_promotion_owner_review_batch.csv`：batch=6、authorization-required=4、blocking=4；OCR staging 235 blocked、chat value 55 blocked、attachment 293/290 ready/3 blocked、workbook quality 6 ready；`fund_ledger.csv` / `funding_forecast.csv` 仍 0 行，`generated_financial_amount_count=0`、`management_conclusion_allowed=false`。
 - 当前 runner 对真实结构化 CSV 必需列 `date/company/bank/account_alias/liquidity_tier/inflow/outflow/ending_balance/flow_type` 执行 Decimal 抽取，产出 `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW` 的资金事实、净流、公司银行矩阵和税费/保证金/借款/项目成本风险。
 - 当存在结构化事实时，runner 以 OOXML cell patch 写入原生 `.xlsx`：`01_首页总览` 4+4 卡片、`02_资金趋势预测` 已知到期项 projection、`03_三层净流余额`、`04_税费融资风险`、`05_公司银行矩阵`、隐藏 `H01/H02/H03/H05`；不重写图表包，保留首页最近 15 天/30 天两张原生折线图。
 - runner 现在从真实结构化 CSV 的 `due_date` 税费/保证金/借款/项目成本风险/机会行生成 `funding_forecast.csv`，并写入 `02_资金趋势预测`；这些 projection 只按 `known_due_date_structured_csv` 进入待复核，不生成无证据预测、付款动作或管理结论。
@@ -41,6 +42,7 @@
 - runner 现在生成 `workbook_quality_checks.csv`，对生成后的原生 Excel 检查 sheet 顺序、隐藏审计页、可见 row 2 清理、图表尺寸、公式错误标记和可见敏感值形态；失败会写异常任务并阻断管理结论。
 - runner 现在生成 `goal_completion_audit.csv`，按最终目标逐项记录证据状态和下一步；正式事实晋升、管理结论和 automation 本地状态仍需独立授权/外部检查，不因审计存在而自动放行。
 - runner 现在生成 `fact_promotion_review_packet.csv`，汇总结构化事实、OCR ledger staging、聊天金额候选、附件证据完整性、workbook quality 和目标审计，作为 owner 复核/授权准备包；所有行仍 no-write/no-promote。
+- runner 现在生成 `fact_promotion_owner_review_batch.csv`，从复核包派生六个 owner-review 批次，汇总 candidate/ready/blocker 计数、`owner_review_status` 和 recommended owner action；所有行仍 `financial_fact_promotion_allowed=false`、`fund_ledger_write_allowed=false`、`financial_fact_promoted=false`、`management_conclusion_allowed=false`，不执行授权、不晋升事实、不写正式账本。
 - runner 现在生成 `fact_promotion_authorization_template.json`，从复核包逐行生成默认 `authorized=false` 的 owner-review 授权草稿；scope 为 `fact_promotion_review_packet_validation_only`，仍不允许事实晋升、正式账本写入或管理结论。
 - runner 现在生成 `fact_promotion_authorization_preview.csv`，只验证 private `fact_promotion_authorizations/<run_id>.json` 对复核包行的覆盖情况；有效行最多进入 `ready_for_owner_review_no_fact_promotion`，仍不允许事实晋升、正式账本写入或管理结论。
 - runner 现在生成 `fact_promotion_execution_gate.csv`，合并 owner 授权覆盖和 review blockers；ready 行最多进入 `ready_for_controlled_fact_promotion_execution`，本轮仍不允许执行事实晋升、写正式账本或生成管理结论。
