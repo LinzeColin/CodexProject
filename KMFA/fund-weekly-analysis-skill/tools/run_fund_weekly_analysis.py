@@ -2053,6 +2053,142 @@ def build_fact_promotion_authorization_template(manifest: dict, review_packet_ro
     }
 
 
+def load_fact_promotion_authorization(repo_root: Path, run_id: str) -> dict:
+    relative_path = fact_promotion_authorization_relative_path(run_id)
+    path = repo_root / relative_path
+    missing = {
+        "relative_path": relative_path,
+        "status": "missing_authorization_manifest",
+        "entries": {},
+        "metadata": {},
+    }
+    if not path.exists():
+        return missing
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {**missing, "status": "invalid_authorization_json"}
+    if not isinstance(payload, dict):
+        return {**missing, "status": "invalid_authorization_schema"}
+    required = {
+        "authorization_manifest_version": "1",
+        "run_id": run_id,
+        "authorization_scope": "fact_promotion_review_packet_validation_only",
+        "financial_fact_promotion_allowed": False,
+        "fund_ledger_write_allowed": False,
+        "management_conclusion_allowed": False,
+    }
+    if any(payload.get(key) != value for key, value in required.items()):
+        return {**missing, "status": "invalid_authorization_schema"}
+    raw_entries = payload.get("review_packet_authorizations")
+    if not isinstance(raw_entries, list):
+        return {**missing, "status": "invalid_authorization_schema"}
+    entries = {}
+    for entry in raw_entries:
+        if not isinstance(entry, dict):
+            return {**missing, "status": "invalid_authorization_schema"}
+        review_packet_id = entry.get("review_packet_id")
+        review_area = entry.get("review_area")
+        if not isinstance(review_packet_id, str) or not review_packet_id:
+            return {**missing, "status": "invalid_authorization_schema"}
+        if not isinstance(review_area, str) or not review_area:
+            return {**missing, "status": "invalid_authorization_schema"}
+        entries[review_packet_id] = {
+            "review_area": review_area,
+            "authorized": entry.get("authorized") is True,
+        }
+    return {
+        "relative_path": relative_path,
+        "status": "valid_authorization_manifest",
+        "entries": entries,
+        "metadata": {
+            "authorization_ticket": str(payload.get("authorization_ticket", "")),
+            "authorized_by": str(payload.get("authorized_by", "")),
+            "authorized_at": str(payload.get("authorized_at", "")),
+            "authorization_scope": str(payload.get("authorization_scope", "")),
+        },
+    }
+
+
+def fact_promotion_authorization_status(row: dict, authorization: dict) -> tuple[str, str, str, str]:
+    auth_status = authorization["status"]
+    if auth_status == "missing_authorization_manifest":
+        return (
+            "false",
+            "missing_authorization_manifest",
+            "blocked_missing_operator_authorization",
+            "Fact promotion is blocked until a private owner authorization manifest exists.",
+        )
+    if auth_status != "valid_authorization_manifest":
+        return (
+            "false",
+            auth_status,
+            "blocked_invalid_operator_authorization",
+            "Fact promotion authorization is blocked because the owner authorization manifest is invalid.",
+        )
+    entry = authorization["entries"].get(row["review_packet_id"])
+    if entry is None:
+        return (
+            "false",
+            "review_packet_not_authorized",
+            "blocked_review_packet_not_authorized",
+            "Fact promotion authorization is blocked because this review packet row is not covered by the owner authorization manifest.",
+        )
+    if entry["review_area"] != row["review_area"]:
+        return (
+            "true",
+            "authorization_review_area_mismatch",
+            "blocked_authorization_area_mismatch",
+            "Fact promotion authorization is blocked because the authorization review_area does not match the review packet row.",
+        )
+    if not entry["authorized"]:
+        return (
+            "true",
+            "review_packet_authorization_not_true",
+            "blocked_review_packet_not_authorized",
+            "Fact promotion authorization is blocked because this review packet row is not explicitly authorized.",
+        )
+    return (
+        "true",
+        "valid_manifest_validation_only",
+        "ready_for_owner_review_no_fact_promotion",
+        "Owner authorization manifest is valid for this review packet row, but this runner only previews authorization coverage and does not promote facts, write fund_ledger.csv, or unlock management conclusions.",
+    )
+
+
+def build_fact_promotion_authorization_preview(manifest: dict, repo_root: Path, review_packet_rows: list[dict]) -> list[dict]:
+    rows: list[dict] = []
+    authorization = load_fact_promotion_authorization(repo_root, manifest["run_id"])
+    metadata = authorization["metadata"]
+    for row in review_packet_rows:
+        authorization_present, validation_status, preview_status, preview_reason = fact_promotion_authorization_status(row, authorization)
+        rows.append({
+            "authorization_preview_id": f"FPPREVIEW-{manifest['run_id']}-{len(rows) + 1:05d}",
+            "review_packet_id": row["review_packet_id"],
+            "review_area": row["review_area"],
+            "candidate_count": row["candidate_count"],
+            "ready_count": row["ready_count"],
+            "blocked_count": row["blocked_count"],
+            "operator_authorization_required": row["authorization_required"],
+            "authorization_manifest_relative_path": authorization["relative_path"],
+            "operator_authorization_present": authorization_present,
+            "authorization_validation_status": validation_status,
+            "authorization_ticket": metadata.get("authorization_ticket", ""),
+            "authorized_by": metadata.get("authorized_by", ""),
+            "authorized_at": metadata.get("authorized_at", ""),
+            "authorization_scope": metadata.get("authorization_scope", ""),
+            "preview_status": preview_status,
+            "financial_fact_promotion_allowed": "false",
+            "fund_ledger_write_allowed": "false",
+            "financial_fact_promoted": "false",
+            "management_conclusion_allowed": "false",
+            "preview_reason": preview_reason,
+            "source_artifact": row["source_artifact"],
+            "review_status": "pending_owner_authorization" if authorization_present == "false" else "pending_owner_impact_review",
+        })
+    return rows
+
+
 def collect_workbook_quality_checks(workbook_path: Path) -> list[dict]:
     rows: list[dict] = []
     ns_sheet = {"x": XLSX_MAIN_NS}
@@ -3632,16 +3768,44 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         1 for row in fact_promotion_authorization_template["review_packet_authorizations"]
         if row["authorized"] is True
     )
+    fact_promotion_authorization_preview_rows = build_fact_promotion_authorization_preview(
+        manifest,
+        repo_root,
+        fact_promotion_review_packet_rows,
+    )
+    fact_promotion_authorization_valid_count = sum(
+        1 for row in fact_promotion_authorization_preview_rows
+        if row["authorization_validation_status"] == "valid_manifest_validation_only"
+    )
+    fact_promotion_authorization_preview_ready_count = sum(
+        1 for row in fact_promotion_authorization_preview_rows
+        if row["preview_status"] == "ready_for_owner_review_no_fact_promotion"
+    )
     manifest["fact_promotion_review_packet_count"] = len(fact_promotion_review_packet_rows)
     manifest["fact_promotion_review_blocking_count"] = fact_promotion_review_blocking_count
     manifest["fact_promotion_authorization_template_count"] = len(
         fact_promotion_authorization_template["review_packet_authorizations"]
     )
     manifest["fact_promotion_authorization_template_authorized_count"] = fact_promotion_authorization_template_authorized_count
+    manifest["fact_promotion_authorization_present_count"] = sum(
+        1 for row in fact_promotion_authorization_preview_rows
+        if row["operator_authorization_present"] == "true"
+    )
+    manifest["fact_promotion_authorization_valid_count"] = fact_promotion_authorization_valid_count
+    manifest["fact_promotion_authorization_preview_count"] = len(fact_promotion_authorization_preview_rows)
+    manifest["fact_promotion_authorization_preview_ready_count"] = fact_promotion_authorization_preview_ready_count
+    manifest["fact_promotion_authorization_preview_blocked_count"] = (
+        len(fact_promotion_authorization_preview_rows) - fact_promotion_authorization_preview_ready_count
+    )
     cross_review["fact_promotion_review_packet_count"] = len(fact_promotion_review_packet_rows)
     cross_review["fact_promotion_review_blocking_count"] = fact_promotion_review_blocking_count
     cross_review["fact_promotion_authorization_template_count"] = manifest["fact_promotion_authorization_template_count"]
     cross_review["fact_promotion_authorization_template_authorized_count"] = fact_promotion_authorization_template_authorized_count
+    cross_review["fact_promotion_authorization_present_count"] = manifest["fact_promotion_authorization_present_count"]
+    cross_review["fact_promotion_authorization_valid_count"] = fact_promotion_authorization_valid_count
+    cross_review["fact_promotion_authorization_preview_count"] = len(fact_promotion_authorization_preview_rows)
+    cross_review["fact_promotion_authorization_preview_ready_count"] = fact_promotion_authorization_preview_ready_count
+    cross_review["fact_promotion_authorization_preview_blocked_count"] = manifest["fact_promotion_authorization_preview_blocked_count"]
     write_csv(run_dir / "fact_promotion_review_packet.csv", [
         "review_packet_id",
         "review_area",
@@ -3659,6 +3823,30 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         json.dumps(fact_promotion_authorization_template, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
+    write_csv(run_dir / "fact_promotion_authorization_preview.csv", [
+        "authorization_preview_id",
+        "review_packet_id",
+        "review_area",
+        "candidate_count",
+        "ready_count",
+        "blocked_count",
+        "operator_authorization_required",
+        "authorization_manifest_relative_path",
+        "operator_authorization_present",
+        "authorization_validation_status",
+        "authorization_ticket",
+        "authorized_by",
+        "authorized_at",
+        "authorization_scope",
+        "preview_status",
+        "financial_fact_promotion_allowed",
+        "fund_ledger_write_allowed",
+        "financial_fact_promoted",
+        "management_conclusion_allowed",
+        "preview_reason",
+        "source_artifact",
+        "review_status",
+    ], fact_promotion_authorization_preview_rows)
     (run_dir / "cross_review.json").write_text(json.dumps(cross_review, ensure_ascii=False, indent=2), encoding="utf-8")
     (run_dir / "audit_log.json").write_text(
         json.dumps([
@@ -3725,6 +3913,11 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "fact_promotion_review_blocking_count": fact_promotion_review_blocking_count,
                 "fact_promotion_authorization_template_count": manifest["fact_promotion_authorization_template_count"],
                 "fact_promotion_authorization_template_authorized_count": fact_promotion_authorization_template_authorized_count,
+                "fact_promotion_authorization_present_count": manifest["fact_promotion_authorization_present_count"],
+                "fact_promotion_authorization_valid_count": fact_promotion_authorization_valid_count,
+                "fact_promotion_authorization_preview_count": len(fact_promotion_authorization_preview_rows),
+                "fact_promotion_authorization_preview_ready_count": fact_promotion_authorization_preview_ready_count,
+                "fact_promotion_authorization_preview_blocked_count": manifest["fact_promotion_authorization_preview_blocked_count"],
                 "management_conclusion_allowed": False,
             },
         ], ensure_ascii=False, indent=2),
@@ -3863,6 +4056,9 @@ def main() -> int:
         f"Fact promotion review blocking count: {manifest.get('fact_promotion_review_blocking_count', 0)}\n\n"
         f"Fact promotion authorization template count: {manifest.get('fact_promotion_authorization_template_count', 0)}\n\n"
         f"Fact promotion authorization template authorized count: {manifest.get('fact_promotion_authorization_template_authorized_count', 0)}\n\n"
+        f"Fact promotion authorization valid count: {manifest.get('fact_promotion_authorization_valid_count', 0)}\n\n"
+        f"Fact promotion authorization preview ready count: {manifest.get('fact_promotion_authorization_preview_ready_count', 0)}\n\n"
+        f"Fact promotion authorization preview blocked count: {manifest.get('fact_promotion_authorization_preview_blocked_count', 0)}\n\n"
         "No financial amount, management conclusion, or evidence-free forecast was generated from unreviewed OCR/table extraction. "
         "Known due-date projections remain pending review. Next step: perform OCR/table extraction, internal-transfer netting, "
         "cross-review, then promote reviewed facts only.\n",
