@@ -50,6 +50,21 @@ OUTPUT_FIELDS = [
     "recommended_owner_action",
 ]
 
+REVIEW_SUMMARY_FIELDS = [
+    "summary_scope",
+    "summary_key",
+    "candidate_count",
+    "ready_count",
+    "blocking_count",
+    "blocked_missing_owner_values_count",
+    "blocked_owner_decision_not_approved_count",
+    "missing_owner_fields",
+    "top_recommended_owner_action",
+    "fund_ledger_write_allowed",
+    "financial_fact_promoted",
+    "management_conclusion_allowed",
+]
+
 
 def emit(payload: dict) -> None:
     print(json.dumps(payload, ensure_ascii=False))
@@ -254,6 +269,74 @@ def review_completion_status(owner_decision: str, missing_fields: str) -> str:
     return "ready_for_private_owner_decision_manifest_no_write"
 
 
+def missing_field_union(rows: list[dict]) -> str:
+    fields: set[str] = set()
+    for row in rows:
+        for field in str(row.get("missing_owner_fields_current", "")).split(","):
+            field = field.strip()
+            if field:
+                fields.add(field)
+    return ",".join(sorted(fields))
+
+
+def top_recommended_owner_action(rows: list[dict]) -> str:
+    if any(row.get("owner_review_completion_status") == "blocked_missing_owner_values" for row in rows):
+        return "Fill required owner fields before intake dry-run."
+    if any(row.get("owner_review_completion_status") == "blocked_owner_decision_not_approved" for row in rows):
+        return "Set owner_authorization_decision to approve_for_review_authorization or reject the candidate."
+    return "Ready for install_owner_decision_manifest.py dry-run."
+
+
+def build_review_summary_rows(rows: list[dict]) -> list[dict]:
+    def summary_row(scope: str, key: str, group_rows: list[dict]) -> dict:
+        ready_count = sum(
+            1
+            for row in group_rows
+            if row.get("owner_review_completion_status") == "ready_for_private_owner_decision_manifest_no_write"
+        )
+        missing_count = sum(
+            1 for row in group_rows if row.get("owner_review_completion_status") == "blocked_missing_owner_values"
+        )
+        not_approved_count = sum(
+            1 for row in group_rows if row.get("owner_review_completion_status") == "blocked_owner_decision_not_approved"
+        )
+        return {
+            "summary_scope": scope,
+            "summary_key": key,
+            "candidate_count": str(len(group_rows)),
+            "ready_count": str(ready_count),
+            "blocking_count": str(len(group_rows) - ready_count),
+            "blocked_missing_owner_values_count": str(missing_count),
+            "blocked_owner_decision_not_approved_count": str(not_approved_count),
+            "missing_owner_fields": missing_field_union(group_rows),
+            "top_recommended_owner_action": top_recommended_owner_action(group_rows),
+            "fund_ledger_write_allowed": "false",
+            "financial_fact_promoted": "false",
+            "management_conclusion_allowed": "false",
+        }
+
+    summary_rows = [summary_row("all", "all", rows)]
+    metric_keys = sorted({str(row.get("candidate_metric", "")) for row in rows if row.get("candidate_metric")})
+    for metric in metric_keys:
+        summary_rows.append(summary_row(
+            "candidate_metric",
+            metric,
+            [row for row in rows if row.get("candidate_metric") == metric],
+        ))
+    focus_status_keys = sorted({
+        str(row.get("source_ocr_excerpt_focus_status", ""))
+        for row in rows
+        if row.get("source_ocr_excerpt_focus_status")
+    })
+    for focus_status in focus_status_keys:
+        summary_rows.append(summary_row(
+            "source_ocr_excerpt_focus_status",
+            focus_status,
+            [row for row in rows if row.get("source_ocr_excerpt_focus_status") == focus_status],
+        ))
+    return summary_rows
+
+
 def select_rows(rows: list[dict], metrics: list[str], limit_per_metric: int) -> list[dict]:
     if not metrics:
         selected = rows
@@ -402,6 +485,20 @@ def write_xlsx(path: Path, rows: list[dict]) -> None:
             cells.append(f'<c r="{cell_ref}" t="s"{style}><v>{string_id(value)}</v></c>')
         row_xml.append(f'<row r="{row_number}">{"".join(cells)}</row>')
 
+    summary_rows = build_review_summary_rows(rows)
+    summary_all_rows = [REVIEW_SUMMARY_FIELDS] + [
+        [row.get(field, "") for field in REVIEW_SUMMARY_FIELDS]
+        for row in summary_rows
+    ]
+    summary_row_xml: list[str] = []
+    for row_number, values in enumerate(summary_all_rows, 1):
+        cells: list[str] = []
+        for column_number, value in enumerate(values, 1):
+            cell_ref = f"{column_letter(column_number)}{row_number}"
+            style = ' s="1"' if row_number == 1 else ""
+            cells.append(f'<c r="{cell_ref}" t="s"{style}><v>{string_id(value)}</v></c>')
+        summary_row_xml.append(f'<row r="{row_number}">{"".join(cells)}</row>')
+
     max_row = max(2, len(all_rows))
     validations = (
         '<dataValidations count="1">'
@@ -427,6 +524,22 @@ def write_xlsx(path: Path, rows: list[dict]) -> None:
         f'{validations}'
         '</worksheet>'
     )
+    summary_last_col = column_letter(len(REVIEW_SUMMARY_FIELDS))
+    summary_max_row = max(2, len(summary_all_rows))
+    summary_sheet_xml = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" '
+        'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+        '<sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozenSplit"/></sheetView></sheetViews>'
+        '<cols>'
+        '<col min="1" max="2" width="32" customWidth="1"/>'
+        '<col min="3" max="8" width="18" customWidth="1"/>'
+        '<col min="9" max="12" width="28" customWidth="1"/>'
+        '</cols>'
+        f'<sheetData>{"".join(summary_row_xml)}</sheetData>'
+        f'<autoFilter ref="A1:{summary_last_col}{summary_max_row}"/>'
+        '</worksheet>'
+    )
     shared_items = "".join(f'<si><t>{escape(text)}</t></si>' for text in strings)
     shared_xml = (
         '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
@@ -437,7 +550,8 @@ def write_xlsx(path: Path, rows: list[dict]) -> None:
         '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
         '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" '
         'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
-        '<sheets><sheet name="Owner Review" sheetId="1" r:id="rId1"/></sheets>'
+        '<sheets><sheet name="Owner Review" sheetId="1" r:id="rId1"/>'
+        '<sheet name="Review Summary" sheetId="2" r:id="rId2"/></sheets>'
         '</workbook>'
     )
     styles_xml = (
@@ -460,6 +574,7 @@ def write_xlsx(path: Path, rows: list[dict]) -> None:
         '<Default Extension="xml" ContentType="application/xml"/>'
         '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'
         '<Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'
+        '<Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'
         '<Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/>'
         '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'
         '</Types>'
@@ -474,8 +589,9 @@ def write_xlsx(path: Path, rows: list[dict]) -> None:
         '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
         '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
         '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>'
-        '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>'
-        '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/>'
+        '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/>'
+        '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>'
+        '<Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/>'
         '</Relationships>'
     )
     with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as workbook:
@@ -484,6 +600,7 @@ def write_xlsx(path: Path, rows: list[dict]) -> None:
         workbook.writestr("xl/workbook.xml", workbook_xml)
         workbook.writestr("xl/_rels/workbook.xml.rels", workbook_rels)
         workbook.writestr("xl/worksheets/sheet1.xml", sheet_xml)
+        workbook.writestr("xl/worksheets/sheet2.xml", summary_sheet_xml)
         workbook.writestr("xl/sharedStrings.xml", shared_xml)
         workbook.writestr("xl/styles.xml", styles_xml)
 
