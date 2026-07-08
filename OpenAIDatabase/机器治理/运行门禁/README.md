@@ -2,6 +2,34 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
+当前阶段是 S14 Review。任务 ID 为 `MA-V12-S14-REVIEW`，验收 ID 为
+`ACC-MA-V12-S14-REVIEW`，validator 为 `validate:v1.2-s14-review`。状态为
+`stage_s14_review_passed_pending_v1_2_final_review_no_github_main_upload`。
+
+S14 Review 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s14_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s14_review.cjs`
+- `人类可读/09_验收标准与运行手册.md`
+- `机器治理/证据与日志/stage_pass_gates/stage_pass_gate_status.v1_2_s14_p3.json`
+
+S14 Review gate：
+
+- `validate:v1.2-s14-review` 可验证 S14 P1/P2/P3 阶段链。
+- `owner-daily` 可 dry-run，且不写文件。
+- `atlasctl_final_audit.v1_2_s14_p2` 覆盖 unit_tests、frontend_build、Chinese UX、visual ROI、raw append-only、credential audit 和 report contract。
+- `stage_pass_gate_status.v1_2_s14_p3.json` 让所有 stage pass gate 状态可查。
+- 开发记录中文可读。
+- 维护命令少而清晰。
+- 不修改 raw。
+- 不上传 GitHub main。
+- 不执行远端 push。
+
+No GitHub main upload。No remote push。No raw mutation。
+下一步是 pending v1.2 Final Review。
+
+历史复验兼容记录：
+
 当前阶段是 S13 Review。任务 ID 为 `MA-V12-S13-REVIEW`，验收 ID 为
 `ACC-MA-V12-S13-REVIEW`，validator 为 `validate:v1.2-s13-review`。状态为
 `stage_s13_review_passed_pending_s14_no_github_main_upload`。
