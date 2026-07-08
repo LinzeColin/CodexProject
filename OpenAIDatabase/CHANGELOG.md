@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S03 P3 Machine Ledger
+
+- Added `scripts/raw_archive_manifest.py`.
+- Added `机器治理/同步与备份/raw_manifest_ledger_policy.v1_2_s03_p3.json`.
+- Added `机器治理/证据与日志/raw_archive_manifests/raw_manifest.s03_p3_baseline.jsonl`.
+- Added `机器治理/证据与日志/raw_archive_manifests/raw_hash_ledger.jsonl`.
+- Added `人类可读/08_Raw机器账本说明.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s03_p3_machine_ledger.md`.
+- Added `validate:v1.2-s03-p3` for `MA-V12-S03P3` /
+  `ACC-MA-V12-S03P3`.
+- Registered status `phase_s03_p3_machine_ledger_completed_pending_s03_review`.
+- Implemented raw manifest/hash generation and append-only audit for
+  source/file/hash/imported_at machine rows.
+- Marked the next gate as pending S03 Review.
+- Preserved S03 P3 boundaries: No GitHub main upload in this phase,
+  No connector implementation, No real transcript ingestion, No UI work and
+  No public raw file mutation.
+
 ## Unreleased - Memory Atlas v1.2 S03 P2 Credential Exclusion
 
 - Added `机器治理/同步与备份/credential_exclusion_policy.v1_2_s03_p2.json`.

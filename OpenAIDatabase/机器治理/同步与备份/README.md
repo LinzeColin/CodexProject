@@ -36,5 +36,17 @@ hash drift fail 规则。
 - `docs/reviews/memory_atlas_v1_2_s03_p2_credential_exclusion.md`
 
 S03 P2 固定 credential is not memory 和 `credentials_not_transcript`：普通 transcript
-可以进入公开 raw；凭证 pattern 导致 gate fail。下一步是 S03 P3。当前阶段不实现
-connector，不导入真实 transcript，不生成 manifest ledger，不上传 GitHub main。
+可以进入公开 raw；凭证 pattern 导致 gate fail。
+
+当前 S03 P3 已完成，并新增：
+
+- `机器治理/同步与备份/raw_manifest_ledger_policy.v1_2_s03_p3.json`
+- `scripts/raw_archive_manifest.py`
+- `机器治理/证据与日志/raw_archive_manifests/raw_manifest.s03_p3_baseline.jsonl`
+- `机器治理/证据与日志/raw_archive_manifests/raw_hash_ledger.jsonl`
+- `人类可读/08_Raw机器账本说明.md`
+- `docs/reviews/memory_atlas_v1_2_s03_p3_machine_ledger.md`
+
+S03 P3 固定 raw manifest/hash 机器账本：可生成 source/file/hash/imported_at 映射，
+并由 audit 检查 append-only、hash drift 和 deleted manifest entry。下一步是 S03 Review。
+当前阶段不实现 connector，不导入真实 transcript，不新增 UI，不上传 GitHub main。
