@@ -18,8 +18,8 @@
 
 ## 当前阶段
 
-当前为 S05 P3。任务 ID 为 `MA-V12-S05P3`，验收 ID 为
-`ACC-MA-V12-S05P3`，validator 为 `validate:v1.2-s05-p3`。
+当前为 S05 Review。任务 ID 为 `MA-V12-S05-REVIEW`，验收 ID 为
+`ACC-MA-V12-S05-REVIEW`，validator 为 `validate:v1.2-s05-review`。
 S01 整体复审已通过，S02 整体复审已通过，S03 P1/P2/P3
 整体复审已通过。S04 P1 已建立 ChatGPT 只读同步和 official export fallback。
 S04 P2 已建立 Codex local sync、future-agent minimal adapter、raw + derived + run log
@@ -30,7 +30,8 @@ schema。S05 P2 已实现 `scripts/extract_memory_atlas_facets.py`，并通过
 `scripts/atlasctl.py analyze --stage facets` 生成
 `data/derived/behavior_intelligence/events.json`。S05 P3 已为每条 event 补齐
 轻量 `evidence_refs`，用于追溯 raw、manifest、derived 或 missing reason。
-下一步是 S05 Review。
+S05 Review 已通过，确认 S05 events 与 facets 可被后续 cluster、ROI、latent、
+visualization 复用。下一步是 S06 P1。
 
 当前机器产物：
 
@@ -75,6 +76,7 @@ schema。S05 P2 已实现 `scripts/extract_memory_atlas_facets.py`，并通过
 - `../docs/reviews/memory_atlas_v1_2_s05_p1_facet_schema.md`
 - `../docs/reviews/memory_atlas_v1_2_s05_p2_facet_extractor.md`
 - `../docs/reviews/memory_atlas_v1_2_s05_p3_evidence_refs.md`
+- `../docs/reviews/memory_atlas_v1_2_s05_review.md`
 - `scripts/privacy_guard.py`
 - `scripts/sync_codex_memory_data.py`
 - `scripts/raw_archive_manifest.py`
@@ -84,6 +86,7 @@ schema。S05 P2 已实现 `scripts/extract_memory_atlas_facets.py`，并通过
 - `scripts/extract_memory_atlas_facets.py`
 - `scripts/atlasctl.py`
 - `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p3.cjs`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_review.cjs`
 
 `运行门禁/v1.2需求冻结清单.json` 继续固定：
 
@@ -93,4 +96,4 @@ schema。S05 P2 已实现 `scripts/extract_memory_atlas_facets.py`，并通过
 - 凭证排除。
 - 后续其他 agent 数据源扩展规则。
 
-下一步是 S05 Review；本目录仍不替代 apps/scripts/tests/config/data/docs/governance。
+下一步是 S06 P1；本目录仍不替代 apps/scripts/tests/config/data/docs/governance。

@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S05 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s05_review.md`.
+- Added `validate:v1.2-s05-review` for `MA-V12-S05-REVIEW` /
+  `ACC-MA-V12-S05-REVIEW`.
+- Registered status `stage_s05_review_passed_pending_s06_no_github_main_upload`.
+- Marked S05 Review as passed after covering S05 P1, S05 P2 and S05 P3.
+- Confirmed canonical events cover ChatGPT/Codex/future agent, every event has
+  evidence refs or missing reasons, human docs explain facets, and first screen
+  is not a machine-field dump.
+- Marked the next gate as pending S06 P1.
+- Preserved S05 Review boundaries: No GitHub main upload in this review,
+  No remote push in this review, No app reinstall, No raw mutation and No fake events.
+
 ## Unreleased - Memory Atlas v1.2 S05 P3 Evidence Refs
 
 - Added lightweight `evidence_refs` to `data/derived/behavior_intelligence/events.json`.

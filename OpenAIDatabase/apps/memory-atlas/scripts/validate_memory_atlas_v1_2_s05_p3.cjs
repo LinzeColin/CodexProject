@@ -17,6 +17,8 @@ const checks = [];
 const taskId = "MA-V12-S05P3";
 const acceptanceId = "ACC-MA-V12-S05P3";
 const status = "phase_s05_p3_evidence_refs_completed_pending_s05_review";
+const s05ReviewTaskId = "MA-V12-S05-REVIEW";
+const s05ReviewAcceptanceId = "ACC-MA-V12-S05-REVIEW";
 const validatorName = "validate:v1.2-s05-p3";
 const scriptName = "validate_memory_atlas_v1_2_s05_p3.cjs";
 const extractorPath = "scripts/extract_memory_atlas_facets.py";
@@ -56,6 +58,7 @@ const allowedOpenDiffPaths = [
   "OpenAIDatabase/apps/memory-atlas/package.json",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p1.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p2.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_review.cjs",
   `OpenAIDatabase/apps/memory-atlas/scripts/${scriptName}`,
   `OpenAIDatabase/${atlasctlPath}`,
   `OpenAIDatabase/${extractorPath}`,
@@ -64,6 +67,7 @@ const allowedOpenDiffPaths = [
   `OpenAIDatabase/${eventsPath}`,
   `OpenAIDatabase/${humanPagePath}`,
   `OpenAIDatabase/${reviewPath}`,
+  "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s05_review.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_DELIVERY_RECORD.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md",
   "OpenAIDatabase/功能清单.md",
@@ -132,6 +136,19 @@ function getOpenChangedPaths() {
     .map((line) => line.slice(3).trim())
     .filter(Boolean)
     .sort();
+}
+
+function currentStateIsS05Review() {
+  const quick = readRepoFile("人类可读/00_快速入口.md");
+  const overview = readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md");
+  const machine = readRepoFile("机器治理/README.md");
+  const runGate = readRepoFile("机器治理/运行门禁/README.md");
+  return (
+    hasAll(quick, ["当前阶段是 S05 Review", s05ReviewTaskId, s05ReviewAcceptanceId, "下一步只允许进入 S06 P1"]) &&
+    hasAll(overview, ["S05 Review 已通过", "S05 整体复审已通过", "下一步是 S06 P1"]) &&
+    hasAll(machine, ["当前为 S05 Review", s05ReviewTaskId, "validate:v1.2-s05-review", "下一步是 S06 P1"]) &&
+    hasAll(runGate, ["当前阶段是 S05 Review", s05ReviewTaskId, s05ReviewAcceptanceId, "validate:v1.2-s05-review"])
+  );
 }
 
 function validateTextFile(relativePath) {
@@ -326,6 +343,7 @@ function validateDocsAndRecords() {
   const behavior = readRepoFile("机器治理/行为智能模型/README.md");
   const runGate = readRepoFile("机器治理/运行门禁/README.md");
   const review = readRepoFile(reviewPath);
+  const s05ReviewState = currentStateIsS05Review();
 
   assertCondition(
     hasAll(human, ["S05 P3 已完成", "evidence_refs", eventsPath, "不实现 Raw-to-Insight Replay UI", "下一步只允许进入 S05 Review"]),
@@ -334,37 +352,37 @@ function validateDocsAndRecords() {
     "Human facet page is missing S05 P3 evidence fragments",
   );
   assertCondition(
-    hasAll(quick, [taskId, acceptanceId, status, "当前阶段是 S05 P3", "evidence_refs", "下一步只允许进入 S05 Review"]),
+    s05ReviewState || hasAll(quick, [taskId, acceptanceId, status, "当前阶段是 S05 P3", "evidence_refs", "下一步只允许进入 S05 Review"]),
     "s05p3_quick_entry",
     "Human quick entry records S05 P3 state and next S05 Review gate",
     "Human quick entry is missing S05 P3 state",
   );
   assertCondition(
-    hasAll(overview, ["S05 P3 已完成", "evidence_refs", eventsPath, "下一步是 S05 Review"]),
+    s05ReviewState || hasAll(overview, ["S05 P3 已完成", "evidence_refs", eventsPath, "下一步是 S05 Review"]),
     "s05p3_overview",
     "Human overview records S05 P3 state and next S05 Review gate",
     "Human overview is missing S05 P3 state",
   );
   assertCondition(
-    hasAll(machine, ["当前为 S05 P3", taskId, acceptanceId, validatorName, "evidence_refs", eventsPath, "下一步是 S05 Review"]),
+    s05ReviewState || hasAll(machine, ["当前为 S05 P3", taskId, acceptanceId, validatorName, "evidence_refs", eventsPath, "下一步是 S05 Review"]),
     "s05p3_machine_readme",
     "Machine README records S05 P3 identity, evidence refs and next gate",
     "Machine README is missing S05 P3 state",
   );
   assertCondition(
-    hasAll(dataContract, ["当前 S05 P3 已完成", "evidence_refs", "source_id", "manifest_ref", "下一步是 S05 Review"]),
+    s05ReviewState || hasAll(dataContract, ["当前 S05 P3 已完成", "evidence_refs", "source_id", "manifest_ref", "下一步是 S05 Review"]),
     "s05p3_data_contract_readme",
     "Data contract README records S05 P3 evidence ref contract",
     "Data contract README is missing S05 P3 evidence state",
   );
   assertCondition(
-    hasAll(behavior, ["当前 S05 P3 已完成", "lightweight_evidence_refs", "不生成 fake events", "下一步是 S05 Review"]),
+    s05ReviewState || hasAll(behavior, ["当前 S05 P3 已完成", "lightweight_evidence_refs", "不生成 fake events", "下一步是 S05 Review"]),
     "s05p3_behavior_readme",
     "Behavior model README records S05 P3 evidence refs and boundaries",
     "Behavior model README is missing S05 P3 state",
   );
   assertCondition(
-    hasAll(runGate, ["当前阶段是 S05 P3", taskId, acceptanceId, validatorName, reviewPath, "下一步是 S05 Review"]),
+    s05ReviewState || hasAll(runGate, ["当前阶段是 S05 P3", taskId, acceptanceId, validatorName, reviewPath, "下一步是 S05 Review"]),
     "s05p3_run_gate",
     "Run gate README records S05 P3 validator and next review gate",
     "Run gate README is missing S05 P3 state",
