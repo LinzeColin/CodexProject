@@ -59,7 +59,7 @@ Current evidence snapshot from the latest mother workbook:
 | Company-bank matrix | Active | Company, bank, account alias, liquidity tier, and risk matrix |
 | Workbook generation | Active | Native Excel copy patched without rewriting chart packages |
 | Workbook quality gates | Active | Sheet order, hidden sheets, row 2, homepage 15-day/30-day line chart semantics, chart dimensions, formulas, sensitive visible values |
-| Goal completion audit | Active | `goal_completion_audit.csv` records requirement-level status and remaining blockers |
+| Goal completion audit | Active | `goal_completion_audit.csv` records requirement-level status, including C-level chart quality, KMFA metadata transform, private runtime boundary, main-only runtime contract, and remaining blockers |
 | Management conclusion gate | Active | `management_conclusion_gate.csv` blocks C-level conclusions until formal facts and all review gates pass |
 | Final management conclusion authorization | Active | `management_conclusion_final_authorization` stays blocked until a separate release approval exists, even when `formal_fund_ledger.csv` has rows |
 | Owner action queue | Active | `owner_action_queue.csv` lists pending owner/external-check actions while keeping automation/source/fact/ledger/conclusion execution disabled |
