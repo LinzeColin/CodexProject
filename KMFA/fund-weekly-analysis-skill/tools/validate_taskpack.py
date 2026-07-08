@@ -85,6 +85,8 @@ REQUIRED_SKILL_STRINGS = [
     "--draft-csv-path",
     "--draft-xlsx-path",
     "owner_decision_xlsx_intake",
+    "ocr_fact_candidate_owner_decision_intake_validation_report.csv",
+    "blocked_missing_owner_values",
     "export_owner_decision_review_csv.py",
     "ocr_fact_candidate_owner_decision_review_batch.csv",
     "ocr_fact_candidate_owner_decision_review_batch.xlsx",

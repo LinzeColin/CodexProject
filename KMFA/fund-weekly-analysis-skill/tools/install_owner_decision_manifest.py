@@ -22,6 +22,19 @@ PRIVATE_DECISION_PREFIX = Path(
     "KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_fact_candidate_owner_decisions"
 )
 XLSX_NS = {"x": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
+VALIDATION_REPORT_FIELDS = [
+    "fact_candidate_id",
+    "candidate_metric",
+    "owner_authorization_decision",
+    "required_owner_fields",
+    "missing_owner_fields",
+    "decision_validation_status",
+    "recommended_owner_action",
+    "owner_decision_manifest_write_allowed",
+    "fund_ledger_write_allowed",
+    "financial_fact_promoted",
+    "management_conclusion_allowed",
+]
 
 
 def emit(payload: dict) -> None:
@@ -42,6 +55,14 @@ def candidate_template_path(repo_root: Path, run_id: str) -> Path:
 
 def default_output_relative_path(run_id: str) -> str:
     return str(PRIVATE_DECISION_PREFIX / f"{run_id}.json")
+
+
+def default_validation_report_relative_path(run_id: str) -> str:
+    return str(
+        Path("KMFA/metadata/fund_weekly_analysis/private_runtime/runs")
+        / run_id
+        / "ocr_fact_candidate_owner_decision_intake_validation_report.csv"
+    )
 
 
 def safe_relative_path(value: str) -> Path:
@@ -246,6 +267,7 @@ def validate_draft(draft: dict, run_id: str) -> tuple[dict, list[dict]]:
 
     seen_ids: set[str] = set()
     decisions: list[dict] = []
+    validation_rows: list[dict] = []
     missing_values: list[str] = []
     not_approved: list[str] = []
     for index, decision in enumerate(raw_decisions, 1):
@@ -264,9 +286,34 @@ def validate_draft(draft: dict, run_id: str) -> tuple[dict, list[dict]]:
         required_owner_fields = required_fields_from(decision)
         if not required_owner_fields and draft.get("draft_status") == "owner_decision_correction_manifest_draft":
             raise ValueError(f"draft_invalid_schema:required_owner_fields:{fact_candidate_id}")
+        missing_fields: list[str] = []
         for field in required_owner_fields:
-            if not str(decision.get(field, "")).strip() and field not in missing_values:
-                missing_values.append(field)
+            if not str(decision.get(field, "")).strip():
+                missing_fields.append(field)
+                if field not in missing_values:
+                    missing_values.append(field)
+        if missing_fields:
+            validation_status = "blocked_missing_owner_values"
+            recommended_action = "Fill required owner fields before dry-run can be ready"
+        elif owner_decision != "approve_for_review_authorization":
+            validation_status = "blocked_owner_decision_not_approved"
+            recommended_action = "Set owner_authorization_decision to approve_for_review_authorization or remove the row"
+        else:
+            validation_status = "ready_for_private_owner_decision_manifest_no_write"
+            recommended_action = "Ready for validation-only manifest apply if operator explicitly authorizes apply"
+        validation_rows.append({
+            "fact_candidate_id": fact_candidate_id,
+            "candidate_metric": candidate_metric,
+            "owner_authorization_decision": owner_decision,
+            "required_owner_fields": ",".join(required_owner_fields),
+            "missing_owner_fields": ",".join(missing_fields),
+            "decision_validation_status": validation_status,
+            "recommended_owner_action": recommended_action,
+            "owner_decision_manifest_write_allowed": "false",
+            "fund_ledger_write_allowed": "false",
+            "financial_fact_promoted": "false",
+            "management_conclusion_allowed": "false",
+        })
         decisions.append({
             "fact_candidate_id": fact_candidate_id,
             "candidate_metric": candidate_metric,
@@ -278,8 +325,10 @@ def validate_draft(draft: dict, run_id: str) -> tuple[dict, list[dict]]:
     return (
         {
             "output_relative_path": str(output_path),
+            "validation_report_relative_path": default_validation_report_relative_path(run_id),
             "missing_owner_values": missing_values,
             "not_approved_fact_candidate_ids": not_approved,
+            "validation_rows": validation_rows,
         },
         decisions,
     )
@@ -296,6 +345,14 @@ def build_manifest(run_id: str, decisions: list[dict]) -> dict:
         "management_conclusion_allowed": False,
         "owner_decisions": decisions,
     }
+
+
+def write_validation_report(path: Path, rows: list[dict]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8-sig", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=VALIDATION_REPORT_FIELDS)
+        writer.writeheader()
+        writer.writerows(rows)
 
 
 def main() -> int:
@@ -358,11 +415,15 @@ def main() -> int:
         "draft_format": draft_format,
         "output_decision_manifest_relative_path": validation["output_relative_path"],
         "output_decision_manifest_path": str(repo_root / validation["output_relative_path"]),
+        "validation_report_relative_path": validation["validation_report_relative_path"],
+        "validation_report_path": str(repo_root / validation["validation_report_relative_path"]),
+        "validation_report_row_count": len(validation["validation_rows"]),
         "owner_decision_count": len(decisions),
         "financial_fact_promotion_allowed": False,
         "fund_ledger_write_allowed": False,
         "management_conclusion_allowed": False,
     }
+    write_validation_report(repo_root / validation["validation_report_relative_path"], validation["validation_rows"])
     if validation["missing_owner_values"]:
         emit({
             **base_payload,
