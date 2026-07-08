@@ -843,3 +843,11 @@ KMFA 当前版本 `0.1.4-residual-difference-authorized-source-reference-or-excl
 - next_required_input: `actionable_source_reference_owner_exclusion_formula_mapping_or_non_numeric_mapping_required_before_binding_or_value_comparison`
 
 - v0.1.4 business-value consistency 前置外部动作锁定已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：processed-data reconciliation requirement blockers=48、business-value consistency requirement blockers=48、ready=0、source reference/owner exclusion=40、formula/non-numeric mapping=8、unresolved differences=72、Go/No-Go=NO_GO。该 phase 只读取上一 phase public-safe evidence 和 ignored private requirement queue，不读取或修改 raw inbox，不公开 raw 文件名、字段/表头、金额、明细、私有 hash、target slot 明细或业务值，不证明 business-value consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
+
+## 2026-07-08 - lineage full check 前置 owner/authorized-agent external action
+
+- phase: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_LINEAGE_FULL_CHECK`
+- owner decision: `NO_GO`。
+- owner action boundary: 48 个 business-value consistency requirement blockers 已转为 lineage full check 前置 owner/授权代理动作要求；当前仍没有可执行 source reference、owner exclusion、formula mapping 或 non-numeric mapping。
+- counts: `lineage_full_check_requirement_blocker_count=48`, `lineage_full_check_ready_count=0`, `source_reference_or_owner_exclusion_lineage_full_check_requirement_count=40`, `formula_or_non_numeric_mapping_lineage_full_check_requirement_count=8`。
+- not performed: raw inbox access/mutation、lineage full check、GitHub upload、app reinstall、business execution。
