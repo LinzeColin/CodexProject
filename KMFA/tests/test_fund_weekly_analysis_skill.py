@@ -1830,7 +1830,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                         "candidate_metric": "electronic_bill",
                         "owner_authorization_decision": "approve_for_review_authorization",
                         "owner_corrected_company": "武汉彤烨",
-                        "owner_corrected_bank": "",
+                        "owner_corrected_bank": "汉口银行",
                         "owner_note": "fixture approval",
                     },
                 ],
@@ -2041,6 +2041,8 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "ready_for_controlled_ledger_apply_gate_no_write",
             )
             self.assertEqual(controlled_by_id[f"OCRFACT-{run_id}-00002"]["liquidity_tier"], "electronic_bill")
+            self.assertEqual(controlled_by_id[f"OCRFACT-{run_id}-00002"]["company"], "武汉彤烨")
+            self.assertEqual(controlled_by_id[f"OCRFACT-{run_id}-00002"]["bank"], "汉口银行")
             self.assertEqual(controlled_by_id[f"OCRFACT-{run_id}-00002"]["ending_balance"], "8000.00")
             self.assertEqual(controlled_by_id[f"OCRFACT-{run_id}-00002"]["inflow"], "")
             self.assertEqual(controlled_by_id[f"OCRFACT-{run_id}-00002"]["outflow"], "")
@@ -2062,10 +2064,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(controlled_apply_by_id[f"OCRFACT-{run_id}-00001"]["bank"], "招商银行")
             self.assertEqual(
                 controlled_apply_by_id[f"OCRFACT-{run_id}-00002"]["apply_gate_status"],
-                "blocked_missing_required_ledger_fields",
+                "ready_for_controlled_ledger_apply_no_write",
             )
-            self.assertEqual(controlled_apply_by_id[f"OCRFACT-{run_id}-00002"]["planned_apply_count"], "0")
-            self.assertIn("bank", controlled_apply_by_id[f"OCRFACT-{run_id}-00002"]["gate_reason"])
+            self.assertEqual(controlled_apply_by_id[f"OCRFACT-{run_id}-00002"]["planned_apply_count"], "1")
+            self.assertEqual(controlled_apply_by_id[f"OCRFACT-{run_id}-00002"]["bank"], "汉口银行")
             self.assertTrue(all(row["source_mutation_allowed"] == "false" for row in controlled_apply_gate_rows))
             self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in controlled_apply_gate_rows))
             self.assertTrue(all(row["formal_fund_ledger_write_allowed"] == "false" for row in controlled_apply_gate_rows))
@@ -2104,9 +2106,9 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_controlled_ledger_row_preview_ready_count"], 2)
             self.assertEqual(cross_review["ocr_fact_controlled_ledger_row_preview_blocking_count"], 0)
             self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_count"], 2)
-            self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_ready_count"], 1)
-            self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_blocking_count"], 1)
-            self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_planned_apply_count"], 1)
+            self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_ready_count"], 2)
+            self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_blocking_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_planned_apply_count"], 2)
             self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_write_allowed_count"], 0)
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertFalse(cross_review["management_conclusion_allowed"])

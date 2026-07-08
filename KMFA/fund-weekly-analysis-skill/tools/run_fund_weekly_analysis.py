@@ -1449,11 +1449,19 @@ def build_ocr_fact_ledger_staging_preview(
 def build_ocr_fact_controlled_ledger_row_preview_rows(
     manifest: dict,
     staging_preview_rows: list[dict],
+    decision_preview_rows: list[dict],
 ) -> list[dict]:
+    decision_by_fact_id = {row["fact_candidate_id"]: row for row in decision_preview_rows}
     rows: list[dict] = []
     for row in staging_preview_rows:
         if row["staging_preview_status"] != "ready_for_ledger_staging_review_no_write":
             continue
+        decision = decision_by_fact_id.get(row["fact_candidate_id"], {})
+        decision_ready = decision.get("decision_preview_status") == "ready_for_private_ocr_fact_authorization_update_no_write"
+        owner_company = str(decision.get("owner_corrected_company", "")).strip() if decision_ready else ""
+        owner_bank = str(decision.get("owner_corrected_bank", "")).strip() if decision_ready else ""
+        company = owner_company or row["company"]
+        bank = owner_bank or row["bank"]
         amount = row["amount"]
         proposed_amount_role = row["proposed_amount_role"]
         inflow = amount if proposed_amount_role == "inflow" else ""
@@ -1465,8 +1473,8 @@ def build_ocr_fact_controlled_ledger_row_preview_rows(
             "fact_candidate_id": row["fact_candidate_id"],
             "candidate_metric": row["candidate_metric"],
             "date": row["business_date"],
-            "company": row["company"],
-            "bank": row["bank"],
+            "company": company,
+            "bank": bank,
             "account_alias": row["account_alias"],
             "liquidity_tier": row["proposed_liquidity_tier"],
             "inflow": inflow,
@@ -1478,6 +1486,11 @@ def build_ocr_fact_controlled_ledger_row_preview_rows(
             "source_evidence_id": row["source_evidence_id"],
             "source_ocr_text_relative_path": row["source_ocr_text_relative_path"],
             "authorization_validation_status": row["authorization_validation_status"],
+            "owner_decision_preview_id": decision.get("decision_preview_id", ""),
+            "owner_decision_preview_status": decision.get("decision_preview_status", ""),
+            "owner_correction_applied": "true" if owner_company or owner_bank else "false",
+            "company_source": "owner_decision_preview" if owner_company else "ocr_fact_candidate",
+            "bank_source": "owner_decision_preview" if owner_bank else "ocr_fact_candidate",
             "ledger_preview_status": "ready_for_controlled_ledger_apply_gate_no_write",
             "fund_ledger_write_allowed": "false",
             "formal_fund_ledger_write_allowed": "false",
@@ -1539,6 +1552,11 @@ def build_ocr_fact_controlled_ledger_apply_gate_rows(
             "source_evidence_id": row["source_evidence_id"],
             "source_ocr_text_relative_path": row["source_ocr_text_relative_path"],
             "authorization_validation_status": row["authorization_validation_status"],
+            "owner_decision_preview_id": row["owner_decision_preview_id"],
+            "owner_decision_preview_status": row["owner_decision_preview_status"],
+            "owner_correction_applied": row["owner_correction_applied"],
+            "company_source": row["company_source"],
+            "bank_source": row["bank_source"],
             "ledger_preview_status": row["ledger_preview_status"],
             "apply_gate_status": apply_gate_status,
             "planned_apply_count": str(planned_apply_count),
@@ -5036,14 +5054,6 @@ def write_no_hallucination_outputs(
     ocr_fact_cross_review_rows = build_ocr_fact_cross_review_summary(manifest, ocr_financial_fact_candidates, ocr_fact_review_gate_rows)
     ocr_fact_owner_review_batch_rows = build_ocr_fact_owner_review_batch_rows(manifest, ocr_fact_cross_review_rows)
     ocr_fact_ledger_staging_preview_rows = build_ocr_fact_ledger_staging_preview(manifest, ocr_financial_fact_candidates, ocr_fact_review_gate_rows)
-    ocr_fact_controlled_ledger_row_preview_rows = build_ocr_fact_controlled_ledger_row_preview_rows(
-        manifest,
-        ocr_fact_ledger_staging_preview_rows,
-    )
-    ocr_fact_controlled_ledger_apply_gate_rows = build_ocr_fact_controlled_ledger_apply_gate_rows(
-        manifest,
-        ocr_fact_controlled_ledger_row_preview_rows,
-    )
     ocr_fact_evidence_review_queue_rows = build_ocr_fact_evidence_review_queue_rows(
         manifest,
         ocr_fact_ledger_staging_preview_rows,
@@ -5061,6 +5071,15 @@ def write_no_hallucination_outputs(
         manifest,
         repo_root,
         ocr_fact_candidate_owner_worklist_rows,
+    )
+    ocr_fact_controlled_ledger_row_preview_rows = build_ocr_fact_controlled_ledger_row_preview_rows(
+        manifest,
+        ocr_fact_ledger_staging_preview_rows,
+        ocr_fact_candidate_owner_decision_preview_rows,
+    )
+    ocr_fact_controlled_ledger_apply_gate_rows = build_ocr_fact_controlled_ledger_apply_gate_rows(
+        manifest,
+        ocr_fact_controlled_ledger_row_preview_rows,
     )
     ocr_fact_candidate_owner_authorization_update_draft = build_ocr_fact_candidate_owner_authorization_update_draft(
         manifest,
@@ -5546,6 +5565,11 @@ def write_no_hallucination_outputs(
         "source_evidence_id",
         "source_ocr_text_relative_path",
         "authorization_validation_status",
+        "owner_decision_preview_id",
+        "owner_decision_preview_status",
+        "owner_correction_applied",
+        "company_source",
+        "bank_source",
         "ledger_preview_status",
         "fund_ledger_write_allowed",
         "formal_fund_ledger_write_allowed",
@@ -5573,6 +5597,11 @@ def write_no_hallucination_outputs(
         "source_evidence_id",
         "source_ocr_text_relative_path",
         "authorization_validation_status",
+        "owner_decision_preview_id",
+        "owner_decision_preview_status",
+        "owner_correction_applied",
+        "company_source",
+        "bank_source",
         "ledger_preview_status",
         "apply_gate_status",
         "planned_apply_count",
