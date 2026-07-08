@@ -6267,6 +6267,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 self.assertIn("Fill required owner fields before intake dry-run.", shared_xml)
                 self.assertIn("blocked_missing_owner_values", sheet_xml)
                 self.assertIn('<autoFilter ref="A1:L6"', summary_sheet_xml)
+                self.assertIn('<sheetProtection sheet="1" objects="1" scenarios="1"', summary_sheet_xml)
                 self.assertIn("pending_owner_review", shared_xml)
                 self.assertIn("fund_ledger_write_allowed", shared_xml)
                 self.assertIn("management_conclusion_allowed", shared_xml)
