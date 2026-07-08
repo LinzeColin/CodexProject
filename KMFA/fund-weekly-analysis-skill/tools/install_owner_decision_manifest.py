@@ -48,6 +48,21 @@ VALIDATION_REPORT_FIELDS = [
     "financial_fact_promoted",
     "management_conclusion_allowed",
 ]
+VALIDATION_SUMMARY_FIELDS = [
+    "summary_scope",
+    "summary_key",
+    "candidate_count",
+    "ready_count",
+    "blocking_count",
+    "blocked_missing_owner_values_count",
+    "blocked_owner_decision_not_approved_count",
+    "missing_owner_fields",
+    "top_recommended_owner_action",
+    "owner_decision_manifest_write_allowed",
+    "fund_ledger_write_allowed",
+    "financial_fact_promoted",
+    "management_conclusion_allowed",
+]
 OWNER_DECISION_CONTEXT_FIELDS = [
     "source_evidence_id",
     "source_ocr_text_relative_path",
@@ -87,6 +102,14 @@ def default_validation_report_relative_path(run_id: str) -> str:
         Path("KMFA/metadata/fund_weekly_analysis/private_runtime/runs")
         / run_id
         / "ocr_fact_candidate_owner_decision_intake_validation_report.csv"
+    )
+
+
+def default_validation_summary_relative_path(run_id: str) -> str:
+    return str(
+        Path("KMFA/metadata/fund_weekly_analysis/private_runtime/runs")
+        / run_id
+        / "ocr_fact_candidate_owner_decision_intake_summary.csv"
     )
 
 
@@ -372,6 +395,7 @@ def validate_draft(draft: dict, run_id: str) -> tuple[dict, list[dict]]:
         {
             "output_relative_path": str(output_path),
             "validation_report_relative_path": default_validation_report_relative_path(run_id),
+            "validation_summary_relative_path": default_validation_summary_relative_path(run_id),
             "missing_owner_values": missing_values,
             "not_approved_fact_candidate_ids": not_approved,
             "validation_rows": validation_rows,
@@ -397,6 +421,75 @@ def write_validation_report(path: Path, rows: list[dict]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8-sig", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=VALIDATION_REPORT_FIELDS)
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def missing_field_union(rows: list[dict]) -> str:
+    fields: list[str] = []
+    for row in rows:
+        for field in str(row.get("missing_owner_fields", "")).split(","):
+            field = field.strip()
+            if field and field not in fields:
+                fields.append(field)
+    return ",".join(fields)
+
+
+def top_recommended_action(rows: list[dict]) -> str:
+    counts: dict[str, int] = {}
+    for row in rows:
+        action = str(row.get("recommended_owner_action", "")).strip()
+        if action:
+            counts[action] = counts.get(action, 0) + 1
+    if not counts:
+        return ""
+    return sorted(counts.items(), key=lambda item: (-item[1], item[0]))[0][0]
+
+
+def build_validation_summary(rows: list[dict]) -> list[dict]:
+    def summary_row(scope: str, key: str, group_rows: list[dict]) -> dict:
+        ready_count = sum(
+            1
+            for row in group_rows
+            if row.get("decision_validation_status") == "ready_for_private_owner_decision_manifest_no_write"
+        )
+        missing_count = sum(
+            1 for row in group_rows if row.get("decision_validation_status") == "blocked_missing_owner_values"
+        )
+        not_approved_count = sum(
+            1 for row in group_rows if row.get("decision_validation_status") == "blocked_owner_decision_not_approved"
+        )
+        return {
+            "summary_scope": scope,
+            "summary_key": key,
+            "candidate_count": str(len(group_rows)),
+            "ready_count": str(ready_count),
+            "blocking_count": str(len(group_rows) - ready_count),
+            "blocked_missing_owner_values_count": str(missing_count),
+            "blocked_owner_decision_not_approved_count": str(not_approved_count),
+            "missing_owner_fields": missing_field_union(group_rows),
+            "top_recommended_owner_action": top_recommended_action(group_rows),
+            "owner_decision_manifest_write_allowed": "false",
+            "fund_ledger_write_allowed": "false",
+            "financial_fact_promoted": "false",
+            "management_conclusion_allowed": "false",
+        }
+
+    summary_rows = [summary_row("all", "all", rows)]
+    metric_keys = sorted({str(row.get("candidate_metric", "")) for row in rows if row.get("candidate_metric")})
+    for metric in metric_keys:
+        summary_rows.append(summary_row(
+            "candidate_metric",
+            metric,
+            [row for row in rows if row.get("candidate_metric") == metric],
+        ))
+    return summary_rows
+
+
+def write_validation_summary(path: Path, rows: list[dict]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8-sig", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=VALIDATION_SUMMARY_FIELDS)
         writer.writeheader()
         writer.writerows(rows)
 
@@ -463,13 +556,20 @@ def main() -> int:
         "output_decision_manifest_path": str(repo_root / validation["output_relative_path"]),
         "validation_report_relative_path": validation["validation_report_relative_path"],
         "validation_report_path": str(repo_root / validation["validation_report_relative_path"]),
+        "validation_summary_relative_path": validation["validation_summary_relative_path"],
+        "validation_summary_path": str(repo_root / validation["validation_summary_relative_path"]),
         "validation_report_row_count": len(validation["validation_rows"]),
+        "validation_summary_row_count": len(build_validation_summary(validation["validation_rows"])),
         "owner_decision_count": len(decisions),
         "financial_fact_promotion_allowed": False,
         "fund_ledger_write_allowed": False,
         "management_conclusion_allowed": False,
     }
     write_validation_report(repo_root / validation["validation_report_relative_path"], validation["validation_rows"])
+    write_validation_summary(
+        repo_root / validation["validation_summary_relative_path"],
+        build_validation_summary(validation["validation_rows"]),
+    )
     if validation["missing_owner_values"]:
         emit({
             **base_payload,
