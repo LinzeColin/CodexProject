@@ -1,8 +1,8 @@
 # Runbook
 
-## Monday/Saturday 11:00 Australia/Sydney run
+## Daily 11:30 Australia/Sydney run
 
-The local scheduler uses Sydney local time. Monday/Saturday 11:00 Australia/Sydney is the operational schedule; during the current UTC+10 offset this is 09:00 Asia/Shanghai as a reference only.
+The local scheduler uses Sydney local time. Daily 11:30 Australia/Sydney is the operational schedule; during the current UTC+10 offset this is 09:30 Asia/Shanghai as a reference only.
 For controlled validation only, `KMFA_FUND_RUN_ID=<run_id>` pins the runner output directory and `KMFA_SKIP_CODEX_EXEC=1` skips the final Codex CLI handoff. Default automation runs leave both unset.
 
 1. Confirm local repo is on `main` and clean enough to run.
@@ -31,7 +31,7 @@ For controlled validation only, `KMFA_FUND_RUN_ID=<run_id>` pins the runner outp
 23. Build funds ledger and net-flow ledger.
 24. Apply internal-transfer pairing before management rollups.
 25. Build `cashflow_validation.csv`: validate balance continuity at 0.01 tolerance, compute operating cashflow effect, and confirm internal transfers are excluded from operating cashflow. Any continuity failure enters exception tasks and blocks management conclusions.
-26. Build `automation_readiness.csv`: compare the tracked Codex automation contract with the local automation TOML; require `Australia/Sydney` and the current Monday/Saturday 11:00 local schedule for `schedule_ready=true`; keep `management_conclusion_allowed=false`.
+26. Build `automation_readiness.csv`: compare the tracked Codex automation contract with the local automation TOML; require `Australia/Sydney` and the current daily 11:30 local schedule for `schedule_ready=true`; keep `management_conclusion_allowed=false`.
 27. Patch hidden `H06_配置规则`: write the runtime rules table with `run_id`, `source_input_dir`, local timezone, `schedule_rrule`, no-hallucination policy, fact-promotion/ledger/management fail-closed flags, and private-runtime governance.
 28. Build `workbook_quality_checks.csv`: verify generated workbook sheet order, hidden sheets, visible row 2 cleanup, native chart size limits, formula error markers, and visible sensitive-value patterns after the H06 patch.
 29. Build `goal_completion_audit.csv`: record final-objective requirement status and evidence without granting formal promotion or conclusion authority.

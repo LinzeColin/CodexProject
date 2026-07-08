@@ -49,13 +49,13 @@ Australia/Sydney
 Scheduler local time:
 
 ```text
-11:00 every Monday and Saturday
+11:30 every day
 ```
 
 Reference only:
 
 ```text
-11:00 Australia/Sydney == 09:00 Asia/Shanghai during the current UTC+10 offset
+11:30 Australia/Sydney == 09:30 Asia/Shanghai during the current UTC+10 offset
 ```
 
 Default chart limit:
