@@ -1,3 +1,50 @@
+## v1.2 S04 P2 Codex/Future Agent Sync
+
+状态：`phase_s04_p2_codex_agent_sync_completed_pending_s04_p3`。
+
+任务 ID：`MA-V12-S04P2`。
+
+验收 ID：`ACC-MA-V12-S04P2`。
+
+S04 P2 实现 Memory Atlas v1.2 的 Codex local sync 与 future-agent minimal adapter
+同步入口。每个来源均固定 raw + derived + run log 输出合同；dry-run 不写文件，
+apply 缺少输入时不能生成伪数据。
+
+涉及文件：
+
+- `机器治理/同步与备份/codex_agent_sync_policy.v1_2_s04_p2.json`
+- `scripts/sync_codex_memory_data.py`
+- `scripts/sync_future_agent_data.py`
+- `scripts/atlasctl.py`
+- `人类可读/10_Codex与FutureAgent同步.md`
+- `docs/reviews/memory_atlas_v1_2_s04_p2_codex_agent_sync.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s04_p2.cjs`
+- `tests/test_s04p2_codex_agent_sync.py`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s04-p2`
+- `ACC-MA-V12-S04P2`
+- `MA-V12-S04P2`
+- S04 P2
+- `memory_atlas_v1_2_s04_p2_codex_agent_sync.md`
+- `codex_agent_sync_policy.v1_2_s04_p2.json`
+- `sync_codex_memory_data.py`
+- `sync_future_agent_data.py`
+- `atlasctl.py`
+- pending S04 P3
+- No GitHub main upload in this phase
+
+边界：
+
+- No GitHub backup apply.
+- No credential storage.
+- No browser mutation.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S04 P2 Codex/Future Agent Sync; MA-V12-S04P2; ACC-MA-V12-S04P2; phase_s04_p2_codex_agent_sync_completed_pending_s04_p3; validate:v1.2-s04-p2; memory_atlas_v1_2_s04_p2_codex_agent_sync.md; codex_agent_sync_policy.v1_2_s04_p2.json; sync_codex_memory_data.py; sync_future_agent_data.py; atlasctl.py; S04 P2; pending S04 P3; No GitHub main upload in this phase; No GitHub backup apply; No credential storage; No browser mutation.
+
 ## v1.2 S04 P1 ChatGPT Sync
 
 状态：`phase_s04_p1_chatgpt_sync_completed_pending_s04_p2`。

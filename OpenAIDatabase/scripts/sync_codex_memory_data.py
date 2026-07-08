@@ -26,10 +26,13 @@ from privacy_guard import credential_exclusion_hits, redact_credentials_in_text
 
 DEFAULT_CODEX_HOME = Path.home() / ".codex"
 UTC = timezone.utc
+SOURCE_ID = "codex"
+CODEX_PUBLIC_RAW_ROOT = Path("data/public_raw/codex")
 SESSION_INDEX = "session_index.jsonl"
 SESSION_OUTPUT = Path("data/processed/codex/codex_session_manifest.jsonl")
 DAILY_OUTPUT = Path("data/processed/codex/codex_daily_activity.jsonl")
 SNAPSHOT_OUTPUT = Path("data/processed/codex/codex_activity_snapshot.json")
+DERIVED_SNAPSHOT_OUTPUT = Path("data/derived/codex/codex_activity_snapshot.json")
 RECOMMENDATION_OUTPUT = Path("data/derived/codex/codex_agent_recommendations.json")
 REPORT_OUTPUT = Path("data/derived/codex/codex_behavior_report.md")
 SYNC_LOG_DIR = Path("data/run_logs/sync_runs")
@@ -41,6 +44,10 @@ SECRET_PATTERNS = [
     re.compile(r"Bearer\s+[A-Za-z0-9._\-]+", re.I),
     re.compile(r"-----BEGIN [A-Z ]+PRIVATE KEY-----.*?-----END [A-Z ]+PRIVATE KEY-----", re.S),
 ]
+
+
+class AppendOnlyViolation(ValueError):
+    pass
 ABSOLUTE_PATH_RE = re.compile(r"/Users/[^/\s]+(?:/[^\s'\"<>]+)+")
 EMAIL_RE = re.compile(r"([A-Za-z0-9._%+\-])[A-Za-z0-9._%+\-]*@([A-Za-z0-9.\-]+\.[A-Za-z]{2,})")
 
@@ -113,9 +120,31 @@ def write_if_changed(path: Path, payload: str) -> None:
             tmp_path.unlink()
 
 
+def write_json_append_only(path: Path, data: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = json.dumps(data, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    if path.exists():
+        current = path.read_text(encoding="utf-8", errors="ignore")
+        if current == payload:
+            return
+        raise AppendOnlyViolation(f"append-only public raw target already exists with different content: {path}")
+    tmp_path = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+    try:
+        tmp_path.write_text(payload, encoding="utf-8")
+        os.replace(tmp_path, path)
+    finally:
+        if tmp_path.exists():
+            tmp_path.unlink()
+
+
 def stable_hash(value: Any, length: int = 16) -> str:
     payload = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:length]
+
+
+def compact_timestamp(value: str) -> str:
+    text = value.replace("-", "").replace(":", "")
+    return text.replace("+0000", "Z").replace("+00:00", "Z")
 
 
 def parse_time(value: Any) -> datetime | None:
@@ -594,6 +623,39 @@ def build_snapshot(rows: list[dict[str, Any]], daily: list[dict[str, Any]], reco
     }
 
 
+def build_public_raw_snapshot(rows: list[dict[str, Any]], snapshot: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "schema_version": "memory_atlas_public_raw_codex_snapshot.v1",
+        "source_id": SOURCE_ID,
+        "generated_at": snapshot["generated_at"],
+        "session_count": len(rows),
+        "message_count": snapshot["message_count"],
+        "tool_call_count": snapshot["tool_call_count"],
+        "backup_policy": "redacted_summary_only_no_raw_transcript_no_plaintext_secret",
+        "credential_boundary": "credentials_not_transcript",
+        "sync_mode": "codex_local_sync",
+        "sessions": rows,
+    }
+
+
+def public_raw_snapshot_path(snapshot_payload: dict[str, Any]) -> Path:
+    run_id = compact_timestamp(str(snapshot_payload["generated_at"]))
+    digest = stable_hash({
+        "generated_at": snapshot_payload["generated_at"],
+        "session_count": snapshot_payload["session_count"],
+        "message_count": snapshot_payload["message_count"],
+        "sessions": [
+            {
+                "session_id": row.get("session_id"),
+                "content_sha256": row.get("content_sha256"),
+                "source_file_hash": row.get("source_file_hash"),
+            }
+            for row in snapshot_payload.get("sessions", [])
+        ],
+    }, 12)
+    return CODEX_PUBLIC_RAW_ROOT / f"codex_public_raw_snapshot.{run_id}.{digest}.json"
+
+
 def recommendation_lines(items: list[dict[str, Any]]) -> list[str]:
     if not items:
         return ["- 暂无"]
@@ -699,6 +761,7 @@ def append_sync_log(database_dir: Path, result: dict[str, Any]) -> Path:
 
 def git_commit_and_push(repo_root: Path, push: bool) -> dict[str, Any]:
     targets = [
+        "data/public_raw/codex",
         "data/processed/codex",
         "data/derived/codex",
         "data/derived/agent_context",
@@ -741,6 +804,7 @@ def sync_codex_data(
     commit: bool,
     push: bool,
     force_full_scan: bool = False,
+    dry_run: bool = False,
 ) -> dict[str, Any]:
     database_dir = database_dir.resolve()
     codex_home = codex_home.expanduser().resolve()
@@ -764,14 +828,19 @@ def sync_codex_data(
     daily_rows = build_daily(session_rows)
     recommendations = build_recommendations(session_rows, database_dir / RECOMMENDATION_OUTPUT)
     snapshot = build_snapshot(session_rows, daily_rows, recommendations)
+    public_raw = build_public_raw_snapshot(session_rows, snapshot)
+    public_raw_rel = public_raw_snapshot_path(public_raw)
 
-    write_jsonl(database_dir / SESSION_OUTPUT, session_rows)
-    write_jsonl(database_dir / DAILY_OUTPUT, daily_rows)
-    write_json(database_dir / RECOMMENDATION_OUTPUT, recommendations)
-    write_json(database_dir / SNAPSHOT_OUTPUT, snapshot)
-    write_text(database_dir / REPORT_OUTPUT, build_report(snapshot, recommendations))
+    if not dry_run:
+        write_json_append_only(database_dir / public_raw_rel, public_raw)
+        write_jsonl(database_dir / SESSION_OUTPUT, session_rows)
+        write_jsonl(database_dir / DAILY_OUTPUT, daily_rows)
+        write_json(database_dir / RECOMMENDATION_OUTPUT, recommendations)
+        write_json(database_dir / SNAPSHOT_OUTPUT, snapshot)
+        write_json(database_dir / DERIVED_SNAPSHOT_OUTPUT, snapshot)
+        write_text(database_dir / REPORT_OUTPUT, build_report(snapshot, recommendations))
 
-    if build_atlas:
+    if build_atlas and not dry_run:
         run_command(
             [
                 sys.executable,
@@ -804,9 +873,16 @@ def sync_codex_data(
 
     result = {
         "status": "PASS",
+        "source_id": SOURCE_ID,
         "generated_at": snapshot["generated_at"],
         "database_dir": str(database_dir),
         "codex_home": str(codex_home),
+        "dry_run": dry_run,
+        "writes_files": not dry_run,
+        "raw_root": CODEX_PUBLIC_RAW_ROOT.as_posix(),
+        "derived_summary": DERIVED_SNAPSHOT_OUTPUT.as_posix(),
+        "run_log_dir": SYNC_LOG_DIR.as_posix(),
+        "append_only": True,
         "session_count": len(session_rows),
         "day_count": len(daily_rows),
         "range_start": snapshot["range_start"],
@@ -815,9 +891,11 @@ def sync_codex_data(
         "tool_call_count": snapshot["tool_call_count"],
         "cache": cache_stats,
         "outputs": {
+            "public_raw_snapshot": str(public_raw_rel),
             "sessions": str(SESSION_OUTPUT),
             "daily": str(DAILY_OUTPUT),
             "snapshot": str(SNAPSHOT_OUTPUT),
+            "derived_snapshot": str(DERIVED_SNAPSHOT_OUTPUT),
             "recommendations": str(RECOMMENDATION_OUTPUT),
             "report": str(REPORT_OUTPUT),
             "agent_context": "data/derived/agent_context/agent_context_pack.json",
@@ -825,9 +903,11 @@ def sync_codex_data(
         },
         "git": {"committed": False, "pushed": False, "reason": "not_requested"},
     }
-    log_path = append_sync_log(database_dir, result)
-    result["outputs"]["sync_log"] = str(log_path.relative_to(database_dir))
-    if commit:
+    result["outputs"]["sync_log"] = str(SYNC_LOG_DIR / f"{snapshot['generated_at'][:10]}.jsonl")
+    if not dry_run:
+        log_path = append_sync_log(database_dir, result)
+        result["outputs"]["sync_log"] = str(log_path.relative_to(database_dir))
+    if commit and not dry_run:
         result["git"] = git_commit_and_push(database_dir, push)
     return result
 
@@ -840,6 +920,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--commit", action="store_true", help="Commit changed Codex derived data and Memory Atlas snapshot.")
     parser.add_argument("--push", action="store_true", help="Push after committing. Implies --commit.")
     parser.add_argument("--force-full-scan", action="store_true", help="Ignore cached per-session summaries and parse every Codex session file.")
+    parser.add_argument("--dry-run", action="store_true", help="Read local Codex data and report output contracts without writing files.")
     return parser.parse_args(argv)
 
 
@@ -852,6 +933,7 @@ def main(argv: list[str] | None = None) -> int:
         commit=args.commit or args.push,
         push=args.push,
         force_full_scan=args.force_full_scan,
+        dry_run=args.dry_run,
     )
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
     return 0

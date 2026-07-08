@@ -143,3 +143,27 @@ S04 P1 gate：
 
 No GitHub main upload in this phase。
 下一步是 S04 P2；本 phase 不实现 Codex local sync、后续 agent adapter 或 GitHub backup apply。
+
+当前阶段是 S04 P2。任务 ID 为 `MA-V12-S04P2`，验收 ID 为
+`ACC-MA-V12-S04P2`，validator 为 `validate:v1.2-s04-p2`。
+
+S04 P2 产物：
+
+- `机器治理/同步与备份/codex_agent_sync_policy.v1_2_s04_p2.json`
+- `scripts/sync_codex_memory_data.py`
+- `scripts/sync_future_agent_data.py`
+- `scripts/atlasctl.py`
+- `人类可读/10_Codex与FutureAgent同步.md`
+- `docs/reviews/memory_atlas_v1_2_s04_p2_codex_agent_sync.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s04_p2.cjs`
+
+S04 P2 gate：
+
+- `python scripts/atlasctl.py sync --source codex --dry-run` 可运行且不写文件。
+- `python scripts/atlasctl.py sync --source future-agent --dry-run` 可运行且不写文件。
+- Codex local sync 输出 raw + derived + run log 合同。
+- future-agent minimal adapter 输出 raw + derived + run log 合同。
+- future-agent apply 缺少输入时不能生成伪数据。
+
+No GitHub main upload in this phase。
+下一步是 S04 P3；本 phase 不实现 GitHub backup dry-run/apply。

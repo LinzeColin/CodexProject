@@ -1,3 +1,43 @@
+## 118. Memory Atlas v1.2 S04 P2 Codex/Future Agent Sync Parameters
+
+状态：`phase_s04_p2_codex_agent_sync_completed_pending_s04_p3`。
+
+验收 ID：`ACC-MA-V12-S04P2`。
+
+S04 P2 固定以下参数：
+
+- `MA-V12-S04P2`
+- `validate:v1.2-s04-p2`
+- `memory_atlas_v1_2_s04_p2_codex_agent_sync.md`
+- `codex_agent_sync_policy.v1_2_s04_p2.json`
+- `sync_codex_memory_data.py`
+- `sync_future_agent_data.py`
+- `atlasctl.py`
+- Codex local sync。
+- future-agent minimal adapter。
+- raw + derived + run log 输出合同。
+- S04 P2 完成后下一步为 pending S04 P3。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S04P2-001 phase_status = phase_s04_p2_codex_agent_sync_completed_pending_s04_p3`
+- `PARAM-MA-V12-S04P2-002 validator = validate:v1.2-s04-p2`
+- `PARAM-MA-V12-S04P2-003 policy = codex_agent_sync_policy.v1_2_s04_p2.json`
+- `PARAM-MA-V12-S04P2-004 codex_sync = sync_codex_memory_data.py`
+- `PARAM-MA-V12-S04P2-005 future_agent_sync = sync_future_agent_data.py`
+- `PARAM-MA-V12-S04P2-006 next_gate = pending S04 P3`
+- `PARAM-MA-V12-S04P2-007 upload_boundary = No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s04-p2` checks S04 P1 continuity, Codex local sync dry-run/apply,
+  future-agent minimal adapter dry-run/apply, raw + derived + run log output
+  contracts, atlasctl dry-run, human/machine state, records, canonical remote and
+  no-upload/no-github-backup/no-credential/no-browser-mutation boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S04 P2 Codex/Future Agent Sync; MA-V12-S04P2; ACC-MA-V12-S04P2; phase_s04_p2_codex_agent_sync_completed_pending_s04_p3; validate:v1.2-s04-p2; memory_atlas_v1_2_s04_p2_codex_agent_sync.md; codex_agent_sync_policy.v1_2_s04_p2.json; sync_codex_memory_data.py; sync_future_agent_data.py; atlasctl.py; S04 P2; pending S04 P3; No GitHub main upload in this phase; No GitHub backup apply; No credential storage; No browser mutation.
+
 ## 117. Memory Atlas v1.2 S04 P1 ChatGPT Sync Parameters
 
 状态：`phase_s04_p1_chatgpt_sync_completed_pending_s04_p2`。
