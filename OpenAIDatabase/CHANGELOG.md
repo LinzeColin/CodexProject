@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S07 P1 Personal Economic Proxy
+
+- Added `机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json`.
+- Added `scripts/build_memory_atlas_economic_proxy.py` and
+  `data/derived/economic_proxy/personal_economic_proxy.json`.
+- Extended `scripts/atlasctl.py` with `analyze --stage economic-proxy` and
+  `audit --check formulas`.
+- Added `人类可读/16_PersonalEconomicProxy公式说明.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s07_p1_economic_proxy.md`.
+- Added `validate:v1.2-s07-p1` for `MA-V12-S07P1` /
+  `ACC-MA-V12-S07P1`.
+- Registered status `phase_s07_p1_economic_proxy_completed_pending_s07_p2`.
+- Preserved S07 P1 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation in this phase, No external
+  economic database in this phase, No precise income prediction, No financial
+  advice, No S07 P2 information ROI gate and No S07 P3 what-if UI.
+- Marked the next gate as pending S07 P2.
+
 ## Unreleased - Memory Atlas v1.2 S06 Review
 
 - Added `docs/reviews/memory_atlas_v1_2_s06_review.md`.

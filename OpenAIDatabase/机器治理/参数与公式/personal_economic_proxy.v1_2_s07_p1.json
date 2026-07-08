@@ -1,0 +1,107 @@
+{
+  "schema_version": "memory_atlas_personal_economic_proxy_formula.v1_2_s07_p1",
+  "task_id": "MA-V12-S07P1",
+  "acceptance_id": "ACC-MA-V12-S07P1",
+  "status": "phase_s07_p1_formula_config_active_pending_s07_p2",
+  "purpose_zh": "用内部行为派生数据生成个人 AI 经济 proxy，帮助排序时间节省、复用价值、返工成本、机会分、技能复利和自动化/增强比例。",
+  "scope_boundary": {
+    "uses_internal_proxy_only": true,
+    "external_economic_database_dependency": false,
+    "external_economic_database_v2_interface": "reserved_not_implemented",
+    "precise_income_prediction": false,
+    "financial_advice": false,
+    "raw_mutation": false
+  },
+  "input_sources": [
+    "data/derived/behavior_intelligence/clusters.json",
+    "data/derived/behavior_intelligence/low_value_loops.json",
+    "data/derived/behavior_intelligence/opportunities.json"
+  ],
+  "output_path": "data/derived/economic_proxy/personal_economic_proxy.json",
+  "parameters": {
+    "hours_per_automation_candidate": 2.0,
+    "hours_per_template_candidate": 1.2,
+    "hours_per_productization_candidate": 1.5,
+    "rework_avoidance_hours_per_loop": 0.75,
+    "score_per_proxy_hour": 4.0,
+    "reuse_event_weight": 1.8,
+    "reuse_opportunity_weight": 9.0,
+    "rework_loop_score_weight": 0.42,
+    "rework_half_life_penalty_weight": 0.35,
+    "opportunity_score_weight": 0.72,
+    "opportunity_evidence_weight": 1.4,
+    "skill_compounding_month_weight": 5.0,
+    "skill_compounding_opportunity_weight": 12.0,
+    "automation_ratio_weight": 100.0
+  },
+  "formulas": [
+    {
+      "formula_id": "FORM-MA-V12-S07P1-001",
+      "score_key": "time_saved_proxy",
+      "name_zh": "时间节省 proxy",
+      "expression_zh": "时间节省分 = min(100, (automation_count*hours_per_automation_candidate + template_count*hours_per_template_candidate + productization_count*hours_per_productization_candidate + low_value_loop_count*rework_avoidance_hours_per_loop) * score_per_proxy_hour)",
+      "parameter_refs": [
+        "hours_per_automation_candidate",
+        "hours_per_template_candidate",
+        "hours_per_productization_candidate",
+        "rework_avoidance_hours_per_loop",
+        "score_per_proxy_hour"
+      ],
+      "interpretation_zh": "估算内部 AI 工作流候选可以节省多少重复操作时间；它只用于排序，不代表真实工时结算。"
+    },
+    {
+      "formula_id": "FORM-MA-V12-S07P1-002",
+      "score_key": "reuse_value_proxy",
+      "name_zh": "复用价值 proxy",
+      "expression_zh": "复用价值分 = min(100, high_evidence_cluster_count*reuse_event_weight + reusable_opportunity_count*reuse_opportunity_weight)",
+      "parameter_refs": [
+        "reuse_event_weight",
+        "reuse_opportunity_weight"
+      ],
+      "interpretation_zh": "衡量哪些行为簇和机会更适合沉淀成模板、脚本、validator 或产品化入口。"
+    },
+    {
+      "formula_id": "FORM-MA-V12-S07P1-003",
+      "score_key": "rework_cost_proxy",
+      "name_zh": "返工成本 proxy",
+      "expression_zh": "返工成本分 = min(100, average_loop_score*rework_loop_score_weight + average_action_half_life_days*rework_half_life_penalty_weight)",
+      "parameter_refs": [
+        "rework_loop_score_weight",
+        "rework_half_life_penalty_weight"
+      ],
+      "interpretation_zh": "识别重复返工、讨论未落地、过度优化和 scope creep 对行动价值的消耗。"
+    },
+    {
+      "formula_id": "FORM-MA-V12-S07P1-004",
+      "score_key": "opportunity_score_proxy",
+      "name_zh": "机会分 proxy",
+      "expression_zh": "机会分 = min(100, average_opportunity_score*opportunity_score_weight + average_evidence_ref_count*opportunity_evidence_weight)",
+      "parameter_refs": [
+        "opportunity_score_weight",
+        "opportunity_evidence_weight"
+      ],
+      "interpretation_zh": "用 S06 opportunity candidates 的分数和证据密度评估候选机会的可行动程度。"
+    },
+    {
+      "formula_id": "FORM-MA-V12-S07P1-005",
+      "score_key": "skill_compounding_proxy",
+      "name_zh": "技能复利 proxy",
+      "expression_zh": "技能复利分 = min(100, compounding_opportunity_count*skill_compounding_opportunity_weight + observed_month_count*skill_compounding_month_weight)",
+      "parameter_refs": [
+        "skill_compounding_opportunity_weight",
+        "skill_compounding_month_weight"
+      ],
+      "interpretation_zh": "衡量跨时间重复出现的能力、项目或工作流是否值得固化为可复用资产。"
+    },
+    {
+      "formula_id": "FORM-MA-V12-S07P1-006",
+      "score_key": "automation_enhancement_ratio_proxy",
+      "name_zh": "自动化/增强比例 proxy",
+      "expression_zh": "自动化/增强比例分 = automation_ratio*automation_ratio_weight；automation_ratio = automation_count / max(1, automation_count + productization_count + template_count + compounding_count)；enhancement_ratio = 1 - automation_ratio",
+      "parameter_refs": [
+        "automation_ratio_weight"
+      ],
+      "interpretation_zh": "区分更适合自动化的候选与更适合增强、模板化或产品化的候选，避免把所有机会都误写成自动化任务。"
+    }
+  ]
+}

@@ -1,3 +1,52 @@
+## v1.2 S07 P1 Personal Economic Proxy
+
+状态：`phase_s07_p1_economic_proxy_completed_pending_s07_p2`。
+
+任务 ID：`MA-V12-S07P1`。
+
+验收 ID：`ACC-MA-V12-S07P1`。
+
+Validator：`validate:v1.2-s07-p1`。
+
+S07 P1 定义并生成 Personal Economic Proxy。公式配置位于
+`机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json`，builder 位于
+`scripts/build_memory_atlas_economic_proxy.py`，输出位于
+`data/derived/economic_proxy/personal_economic_proxy.json`。每个 score card 均保留
+中文解释、公式来源、参数引用和 evidence_refs。
+
+涉及文件：
+
+- `机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json`
+- `scripts/build_memory_atlas_economic_proxy.py`
+- `scripts/atlasctl.py`
+- `data/derived/economic_proxy/personal_economic_proxy.json`
+- `人类可读/16_PersonalEconomicProxy公式说明.md`
+- `docs/reviews/memory_atlas_v1_2_s07_p1_economic_proxy.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s07_p1.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s07-p1`
+- `ACC-MA-V12-S07P1`
+- `MA-V12-S07P1`
+- S07 P1
+- Personal Economic Proxy
+- pending S07 P2
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase.
+- No raw mutation in this phase.
+- No external economic database in this phase.
+- No precise income prediction in this phase.
+- No S07 P2 information ROI gate in this phase.
+- No S07 P3 what-if UI in this phase.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S07 P1 Personal Economic Proxy; MA-V12-S07P1; ACC-MA-V12-S07P1; phase_s07_p1_economic_proxy_completed_pending_s07_p2; validate:v1.2-s07-p1; Personal Economic Proxy; pending S07 P2; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No external economic database; No precise income prediction; No S07 P2 information ROI gate; No S07 P3 what-if UI.
+
 ## v1.2 S06 Review
 
 状态：`stage_s06_review_passed_pending_s07_no_github_main_upload`。
