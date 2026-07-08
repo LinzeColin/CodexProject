@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 Final Review
+
+- Added `validate:v1.2-final-review` for `MA-V12-FINAL-REVIEW` /
+  `ACC-MA-V12-FINAL-REVIEW`.
+- Registered status
+  `v1_2_final_review_passed_pending_github_main_sync_no_upload_yet`.
+- Added `docs/reviews/memory_atlas_v1_2_final_review.md`.
+- Added machine status
+  `机器治理/证据与日志/final_review/v1_2_final_review_status.json`.
+- Completed the v1.2 Final Review for the 四线14Stage S01-S14 Review chain.
+- Confirmed acceptance themes: raw append-only, credential audit, Chinese UX,
+  visual ROI, report contract, proposal apply, owner-daily and final audit.
+- Preserved boundaries: No GitHub main upload, No remote push, No raw mutation,
+  no app reinstall and no local deep clean.
+- Marked the next gate as pending GitHub main sync, app reinstall and local
+  cleanup after remote branch reconciliation.
+
 ## Unreleased - Memory Atlas v1.2 S14 Review
 
 - Added `validate:v1.2-s14-review` for `MA-V12-S14-REVIEW` /
