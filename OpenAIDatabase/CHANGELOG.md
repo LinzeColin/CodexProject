@@ -1,5 +1,28 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S09 P2 Self Iteration
+
+- Added `机器治理/行为智能模型/self_iteration.v1_2_s09_p2.json`.
+- Added `scripts/build_memory_atlas_self_iteration.py` and
+  `data/derived/behavior_intelligence/self_iteration_suggestions.json`.
+- Extended `scripts/atlasctl.py` with `analyze --stage self-iteration` and
+  `audit --check self-iteration-safety`.
+- Added `docs/reviews/memory_atlas_v1_2_s09_p2_self_iteration.md`.
+- Added `人类可读/22_自我迭代建议说明.md`.
+- Added `validate:v1.2-s09-p2` for `MA-V12-S09P2` /
+  `ACC-MA-V12-S09P2`.
+- Registered status `phase_s09_p2_self_iteration_completed_pending_s09_p3`.
+- Generated 5 evidence-backed self-iteration suggestions across memory,
+  config, AGENTS, style and personalization targets.
+- Added proposal expiry with warn/stale/archive thresholds and explicit
+  `expires_at` values so no proposal can remain permanently pending.
+- Added action half-life fields for every suggestion.
+- Preserved S09 P2 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, no proposal apply execution,
+  no credential target, no psychological diagnosis output and no decision debt
+  ledger.
+- Marked the next gate as pending S09 P3.
+
 ## Unreleased - Memory Atlas v1.2 S09 P1 Latent Signals
 
 - Added `机器治理/行为智能模型/latent_signals.v1_2_s09_p1.json`.

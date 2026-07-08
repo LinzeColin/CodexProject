@@ -1,3 +1,43 @@
+## 138. Memory Atlas v1.2 S09 P2 Self Iteration Parameters
+
+状态：`phase_s09_p2_self_iteration_completed_pending_s09_p3`。
+
+验收 ID：`ACC-MA-V12-S09P2`。
+
+S09 P2 固定以下参数：
+
+- `MA-V12-S09P2`
+- `validate:v1.2-s09-p2`
+- `机器治理/行为智能模型/self_iteration.v1_2_s09_p2.json`
+- `scripts/build_memory_atlas_self_iteration.py`
+- `atlasctl.py analyze --stage self-iteration`
+- `atlasctl.py audit --check self-iteration-safety`
+- `data/derived/behavior_intelligence/self_iteration_suggestions.json`
+- S09 P2 完成后下一步为 pending S09 P3。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S09P2-001 phase_status = phase_s09_p2_self_iteration_completed_pending_s09_p3`
+- `PARAM-MA-V12-S09P2-002 validator = validate:v1.2-s09-p2`
+- `PARAM-MA-V12-S09P2-003 config = 机器治理/行为智能模型/self_iteration.v1_2_s09_p2.json`
+- `PARAM-MA-V12-S09P2-004 builder = build_memory_atlas_self_iteration.py`
+- `PARAM-MA-V12-S09P2-005 output = data/derived/behavior_intelligence/self_iteration_suggestions.json`
+- `PARAM-MA-V12-S09P2-006 target_types = memory, config, AGENTS, style, personalization`
+- `PARAM-MA-V12-S09P2-007 proposal_expiry = warn_after_days 7; stale_after_days 30; archive_after_days 90`
+- `PARAM-MA-V12-S09P2-008 action_half_life_days = 14 to 45 by target type`
+- `PARAM-MA-V12-S09P2-009 next_gate = pending S09 P3`
+- `PARAM-MA-V12-S09P2-010 phase_boundary = No raw mutation; No proposal apply execution; No credential target; No permanent pending proposal; No decision debt ledger; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s09-p2` checks S09 P1 predecessor, self-iteration config,
+  persisted `self_iteration_suggestions.json`, `atlasctl analyze --stage self-iteration --dry-run`,
+  `atlasctl audit --check self-iteration-safety`, human/machine records,
+  canonical remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S09 P2 Self Iteration; MA-V12-S09P2; ACC-MA-V12-S09P2; phase_s09_p2_self_iteration_completed_pending_s09_p3; validate:v1.2-s09-p2; S09 P2; self_iteration_suggestions.json; suggestion_count=5; pending S09 P3; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No proposal apply execution; No credential target; No permanent pending proposal; No decision debt ledger.
+
 ## 137. Memory Atlas v1.2 S09 P1 Latent Signals Parameters
 
 状态：`phase_s09_p1_latent_signals_completed_pending_s09_p2`。

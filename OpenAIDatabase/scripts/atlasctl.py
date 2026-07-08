@@ -27,6 +27,7 @@ AGENT_COLLABORATION_BUILDER = ROOT / "scripts" / "build_memory_atlas_agent_colla
 AGENT_AUTHORIZATION_BUILDER = ROOT / "scripts" / "build_memory_atlas_agent_authorization.py"
 STAGE_FLIGHT_BUILDER = ROOT / "scripts" / "build_memory_atlas_stage_flight.py"
 LATENT_SIGNAL_BUILDER = ROOT / "scripts" / "build_memory_atlas_latent_signals.py"
+SELF_ITERATION_BUILDER = ROOT / "scripts" / "build_memory_atlas_self_iteration.py"
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -474,6 +475,32 @@ def latent_analyze_contract() -> dict[str, object]:
     }
 
 
+def self_iteration_analyze_contract() -> dict[str, object]:
+    return {
+        "status": "PASS",
+        "command": "analyze",
+        "stage": "self-iteration",
+        "dry_run": True,
+        "writes_files": False,
+        "builder": "scripts/build_memory_atlas_self_iteration.py",
+        "self_iteration_config": "机器治理/行为智能模型/self_iteration.v1_2_s09_p2.json",
+        "input": ["data/derived/behavior_intelligence/latent_signals.json"],
+        "output": "data/derived/behavior_intelligence/self_iteration_suggestions.json",
+        "raw_mutation": False,
+        "task_id": "MA-V12-S09P2",
+        "acceptance_id": "ACC-MA-V12-S09P2",
+        "phase_boundary": {
+            "does_not_apply_proposals": True,
+            "requires_human_approval_before_apply": True,
+            "proposal_expiry_required": True,
+            "action_half_life_required": True,
+            "does_not_create_decision_debt_ledger": True,
+            "decision_debt_ledger_deferred_to": "S09 P3",
+            "next_phase": "S09 P3",
+        },
+    }
+
+
 def run_analyze(args: argparse.Namespace) -> int:
     if args.stage not in {
         "facets",
@@ -487,12 +514,13 @@ def run_analyze(args: argparse.Namespace) -> int:
         "agent-authorization",
         "stage-flight",
         "latent",
+        "self-iteration",
     }:
         print(json.dumps({
             "status": "NOT_IMPLEMENTED",
             "command": "analyze",
             "stage": args.stage,
-            "reason": "Unknown analyze stage. Supported stages: facets, clusters, low-value-loops, opportunities, economic-proxy, information-roi, formula-what-if, agent-collaboration, agent-authorization, stage-flight, latent.",
+            "reason": "Unknown analyze stage. Supported stages: facets, clusters, low-value-loops, opportunities, economic-proxy, information-roi, formula-what-if, agent-collaboration, agent-authorization, stage-flight, latent, self-iteration.",
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 2
 
@@ -549,6 +577,10 @@ def run_analyze(args: argparse.Namespace) -> int:
             command.append("--dry-run")
     elif args.stage == "latent":
         command = [sys.executable, str(LATENT_SIGNAL_BUILDER), "--database-dir", str(args.database_dir)]
+        if args.dry_run:
+            command.append("--dry-run")
+    elif args.stage == "self-iteration":
+        command = [sys.executable, str(SELF_ITERATION_BUILDER), "--database-dir", str(args.database_dir)]
         if args.dry_run:
             command.append("--dry-run")
     result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
@@ -1372,7 +1404,161 @@ def run_latent_safety_audit(args: argparse.Namespace) -> int:
     return 0 if status == "PASS" else 2
 
 
+def run_self_iteration_safety_audit(args: argparse.Namespace) -> int:
+    config_path = args.database_dir / "机器治理/行为智能模型/self_iteration.v1_2_s09_p2.json"
+    output_path = args.database_dir / "data/derived/behavior_intelligence/self_iteration_suggestions.json"
+    bad_items: list[str] = []
+    config: dict[str, object] = {}
+    output: dict[str, object] = {}
+    required_fields = {
+        "suggestion_id",
+        "target_type",
+        "target_files",
+        "rationale_zh",
+        "expected_change_zh",
+        "evidence_refs",
+        "proposal",
+        "action_half_life_days",
+    }
+    required_targets = {"memory", "config", "AGENTS", "style", "personalization"}
+    blocked_targets = {"data/public_raw/", "data/raw/", "credentials", "cookies", "tokens"}
+
+    if not config_path.exists():
+        bad_items.append("self_iteration_config:missing")
+    else:
+        config = json.loads(config_path.read_text(encoding="utf-8"))
+        if config.get("task_id") != "MA-V12-S09P2" or config.get("acceptance_id") != "ACC-MA-V12-S09P2":
+            bad_items.append("self_iteration_config:identity_mismatch")
+        configured_fields = set(config.get("required_suggestion_fields") or [])
+        for field in sorted(required_fields - configured_fields):
+            bad_items.append(f"self_iteration_config:missing_required_field:{field}")
+        target_types = {item.get("target_type") for item in config.get("suggestion_targets") or [] if isinstance(item, dict)}
+        for target in sorted(required_targets - target_types):
+            bad_items.append(f"self_iteration_config:missing_target:{target}")
+        expiry = config.get("proposal_expiry") if isinstance(config.get("proposal_expiry"), dict) else {}
+        for field in ["warn_after_days", "stale_after_days", "archive_after_days", "expires_after_days"]:
+            if int(expiry.get(field) or 0) <= 0:
+                bad_items.append(f"self_iteration_config:invalid_expiry:{field}")
+        state = config.get("proposal_state") if isinstance(config.get("proposal_state"), dict) else {}
+        if state.get("apply_execution_allowed") is not False:
+            bad_items.append("self_iteration_config:apply_allowed")
+        if state.get("raw_apply_target_allowed") is not False:
+            bad_items.append("self_iteration_config:raw_apply_allowed")
+        boundary = config.get("scope_boundary") if isinstance(config.get("scope_boundary"), dict) else {}
+        if boundary.get("raw_mutation") is not False:
+            bad_items.append("self_iteration_config:raw_mutation_not_false")
+        if boundary.get("proposal_apply_execution") is not False:
+            bad_items.append("self_iteration_config:proposal_apply_not_false")
+        if boundary.get("decision_debt_ledger") != "deferred_to_s09_p3":
+            bad_items.append("self_iteration_config:decision_debt_not_deferred")
+
+    all_proposals_have_expiry = False
+    all_suggestions_have_action_half_life = False
+    proposal_apply_execution = False
+    decision_debt_ledger_created = False
+    raw_mutation = False
+    if not output_path.exists():
+        bad_items.append("self_iteration_output:missing")
+    else:
+        output = json.loads(output_path.read_text(encoding="utf-8"))
+        if output.get("task_id") != "MA-V12-S09P2" or output.get("acceptance_id") != "ACC-MA-V12-S09P2":
+            bad_items.append("self_iteration_output:identity_mismatch")
+        if output.get("status") != "phase_s09_p2_self_iteration_completed_pending_s09_p3":
+            bad_items.append("self_iteration_output:status_mismatch")
+        suggestions = output.get("self_iteration_suggestions") if isinstance(output.get("self_iteration_suggestions"), list) else []
+        if len(suggestions) < 5:
+            bad_items.append("self_iteration_output:suggestion_count_too_low")
+        seen_targets = {item.get("target_type") for item in suggestions if isinstance(item, dict)}
+        for target in sorted(required_targets - seen_targets):
+            bad_items.append(f"self_iteration_output:missing_target:{target}")
+        expiry_ok = []
+        half_life_ok = []
+        for item in suggestions:
+            if not isinstance(item, dict):
+                bad_items.append("self_iteration_output:invalid_suggestion_item")
+                continue
+            suggestion_id = item.get("suggestion_id")
+            for field in sorted(required_fields):
+                if item.get(field) in (None, "", []):
+                    bad_items.append(f"self_iteration_output:{suggestion_id}:missing_{field}")
+            if int(item.get("action_half_life_days") or 0) <= 0:
+                bad_items.append(f"self_iteration_output:{suggestion_id}:invalid_action_half_life")
+                half_life_ok.append(False)
+            else:
+                half_life_ok.append(True)
+            if item.get("not_pressure_list") is not True:
+                bad_items.append(f"self_iteration_output:{suggestion_id}:pressure_list_boundary_missing")
+            if item.get("not_applied") is not True:
+                bad_items.append(f"self_iteration_output:{suggestion_id}:applied_in_current_phase")
+                proposal_apply_execution = True
+            target_files = [str(file) for file in item.get("target_files") or []]
+            if any(blocked in file for blocked in blocked_targets for file in target_files):
+                bad_items.append(f"self_iteration_output:{suggestion_id}:blocked_target")
+                raw_mutation = True
+            proposal = item.get("proposal") if isinstance(item.get("proposal"), dict) else {}
+            if not proposal.get("expires_at"):
+                bad_items.append(f"self_iteration_output:{suggestion_id}:proposal_missing_expiry")
+                expiry_ok.append(False)
+            else:
+                expiry_ok.append(True)
+            if proposal.get("state") != "pending_human_review":
+                bad_items.append(f"self_iteration_output:{suggestion_id}:proposal_state_not_pending_human_review")
+            if proposal.get("not_permanent_pending") is not True:
+                bad_items.append(f"self_iteration_output:{suggestion_id}:proposal_permanent_pending")
+            if proposal.get("apply_execution_allowed") is not False:
+                bad_items.append(f"self_iteration_output:{suggestion_id}:proposal_apply_allowed")
+                proposal_apply_execution = True
+            if proposal.get("raw_apply_target_allowed") is not False:
+                bad_items.append(f"self_iteration_output:{suggestion_id}:proposal_raw_apply_allowed")
+                raw_mutation = True
+            if not proposal.get("validation_commands") or not proposal.get("rollback_plan_zh"):
+                bad_items.append(f"self_iteration_output:{suggestion_id}:proposal_missing_validation_or_rollback")
+        all_proposals_have_expiry = bool(expiry_ok) and all(expiry_ok)
+        all_suggestions_have_action_half_life = bool(half_life_ok) and all(half_life_ok)
+        summary = output.get("proposal_expiry_summary") if isinstance(output.get("proposal_expiry_summary"), dict) else {}
+        if summary.get("all_proposals_have_expiry") is not True:
+            bad_items.append("self_iteration_output:expiry_summary_not_true")
+        if summary.get("all_suggestions_have_action_half_life") is not True:
+            bad_items.append("self_iteration_output:half_life_summary_not_true")
+        if summary.get("permanent_pending_allowed") is not False:
+            bad_items.append("self_iteration_output:permanent_pending_allowed")
+        boundary = output.get("phase_boundary") if isinstance(output.get("phase_boundary"), dict) else {}
+        if boundary.get("does_not_apply_proposals") is not True:
+            bad_items.append("self_iteration_output:proposal_apply_boundary_missing")
+            proposal_apply_execution = True
+        if boundary.get("does_not_create_decision_debt_ledger") is not True:
+            bad_items.append("self_iteration_output:decision_debt_boundary_missing")
+            decision_debt_ledger_created = True
+        if boundary.get("does_not_modify_raw") is not True:
+            bad_items.append("self_iteration_output:raw_boundary_missing")
+            raw_mutation = True
+        if boundary.get("next_phase") != "S09 P3":
+            bad_items.append("self_iteration_output:next_phase_not_s09p3")
+
+    status = "PASS" if not bad_items else "FAIL"
+    result = {
+        "status": status,
+        "command": "audit",
+        "check": "self-iteration-safety",
+        "task_id": config.get("task_id") or output.get("task_id"),
+        "acceptance_id": config.get("acceptance_id") or output.get("acceptance_id"),
+        "self_iteration_config": "机器治理/行为智能模型/self_iteration.v1_2_s09_p2.json",
+        "self_iteration_output": "data/derived/behavior_intelligence/self_iteration_suggestions.json" if output_path.exists() else "",
+        "suggestion_count": len(output.get("self_iteration_suggestions") or []) if isinstance(output.get("self_iteration_suggestions"), list) else 0,
+        "all_proposals_have_expiry": all_proposals_have_expiry,
+        "all_suggestions_have_action_half_life": all_suggestions_have_action_half_life,
+        "proposal_apply_execution": proposal_apply_execution,
+        "decision_debt_ledger_created": decision_debt_ledger_created,
+        "raw_mutation": raw_mutation,
+        "bad_items": bad_items,
+    }
+    print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0 if status == "PASS" else 2
+
+
 def run_audit(args: argparse.Namespace) -> int:
+    if args.check == "self-iteration-safety":
+        return run_self_iteration_safety_audit(args)
     if args.check == "latent-safety":
         return run_latent_safety_audit(args)
     if args.check == "stage-flight":
@@ -1392,7 +1578,7 @@ def run_audit(args: argparse.Namespace) -> int:
             "status": "NOT_IMPLEMENTED",
             "command": "audit",
             "check": args.check,
-            "reason": "Unknown audit check. Supported checks: insight-evidence, formulas, visual-roi, formula-what-if, agent-collaboration, agent-authorization, stage-flight, latent-safety.",
+            "reason": "Unknown audit check. Supported checks: insight-evidence, formulas, visual-roi, formula-what-if, agent-collaboration, agent-authorization, stage-flight, latent-safety, self-iteration-safety.",
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 2
 
