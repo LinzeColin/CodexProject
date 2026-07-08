@@ -360,32 +360,69 @@ function validateDocsAndRecords() {
   );
 
   const quickEntry = readRepoFile("人类可读/00_快速入口.md");
-  assertCondition(
-    hasAll(quickEntry, ["当前阶段是 S04 P2", "Codex local sync", "future-agent adapter", "下一步只允许进入 S04 P3"]),
-    "s04p2_quick_entry",
-    "Human quick entry records S04 P2 state and next S04 P3 gate",
-    "Human quick entry is missing S04 P2 state",
-  );
-
   const overview = readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md");
-  assertCondition(
-    hasAll(overview, ["S04 P2 已完成", "Codex local sync", "future-agent adapter", "下一步是 S04 P3"]),
-    "s04p2_overview",
-    "Human overview records S04 P2 state and next S04 P3 gate",
-    "Human overview is missing S04 P2 state",
-  );
-
   const machineReadme = readRepoFile("机器治理/README.md");
   const syncReadme = readRepoFile("机器治理/同步与备份/README.md");
   const runGateReadme = readRepoFile("机器治理/运行门禁/README.md");
-  assertCondition(
-    hasAll(machineReadme, ["当前为 S04 P2", policyPath, codexSyncScript, futureAgentScript, "下一步是 S04 P3"]) &&
-      hasAll(syncReadme, ["当前 S04 P2 已完成", policyPath, "Codex local sync", "future-agent minimal adapter"]) &&
-      hasAll(runGateReadme, ["当前阶段是 S04 P2", validatorName, reviewPath, "下一步是 S04 P3"]),
-    "s04p2_machine_readmes",
-    "Machine READMEs record S04 P2 policy, runtime, validator and next gate",
-    "Machine READMEs are missing S04 P2 state",
-  );
+  const currentStateIsS04P3 =
+    hasAll(quickEntry, [
+      "当前阶段是 S04 P3",
+      "MA-V12-S04P3",
+      "ACC-MA-V12-S04P3",
+      "下一步只允许进入 S04 Review",
+    ]) &&
+    hasAll(overview, [
+      "S04 P3 已完成",
+      "GitHub backup dry-run/apply",
+      "下一步是 S04 Review",
+    ]) &&
+    hasAll(machineReadme, [
+      "当前为 S04 P3",
+      "github_backup_policy.v1_2_s04_p3.json",
+      "下一步是 S04 Review",
+    ]) &&
+    hasAll(syncReadme, [
+      "当前 S04 P3 已完成",
+      "github_backup_policy.v1_2_s04_p3.json",
+      "scripts/github_backup.py",
+      "下一步是 S04 Review",
+    ]) &&
+    hasAll(runGateReadme, [
+      "当前阶段是 S04 P3",
+      "MA-V12-S04P3",
+      "ACC-MA-V12-S04P3",
+      "validate:v1.2-s04-p3",
+    ]);
+
+  if (currentStateIsS04P3) {
+    pass(
+      "s04p2_human_machine_later_s04p3_state",
+      "Current human and machine state has advanced from S04 P2 into S04 P3",
+    );
+  } else {
+    assertCondition(
+      hasAll(quickEntry, ["当前阶段是 S04 P2", "Codex local sync", "future-agent adapter", "下一步只允许进入 S04 P3"]),
+      "s04p2_quick_entry",
+      "Human quick entry records S04 P2 state and next S04 P3 gate",
+      "Human quick entry is missing S04 P2 state",
+    );
+
+    assertCondition(
+      hasAll(overview, ["S04 P2 已完成", "Codex local sync", "future-agent adapter", "下一步是 S04 P3"]),
+      "s04p2_overview",
+      "Human overview records S04 P2 state and next S04 P3 gate",
+      "Human overview is missing S04 P2 state",
+    );
+
+    assertCondition(
+      hasAll(machineReadme, ["当前为 S04 P2", policyPath, codexSyncScript, futureAgentScript, "下一步是 S04 P3"]) &&
+        hasAll(syncReadme, ["当前 S04 P2 已完成", policyPath, "Codex local sync", "future-agent minimal adapter"]) &&
+        hasAll(runGateReadme, ["当前阶段是 S04 P2", validatorName, reviewPath, "下一步是 S04 P3"]),
+      "s04p2_machine_readmes",
+      "Machine READMEs record S04 P2 policy, runtime, validator and next gate",
+      "Machine READMEs are missing S04 P2 state",
+    );
+  }
 
   const review = readRepoFile(reviewPath);
   assertCondition(

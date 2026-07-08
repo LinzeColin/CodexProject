@@ -370,6 +370,35 @@ function validateHumanAndMachineState() {
       "validate:v1.2-s04-p2",
       "下一步是 S04 P3",
     ]);
+  const currentStateIsS04P3 =
+    hasAll(quickEntry, [
+      "当前阶段是 S04 P3",
+      "MA-V12-S04P3",
+      "ACC-MA-V12-S04P3",
+      "下一步只允许进入 S04 Review",
+    ]) &&
+    hasAll(overview, [
+      "S04 P3 已完成",
+      "GitHub backup dry-run/apply",
+      "下一步是 S04 Review",
+    ]) &&
+    hasAll(machineReadme, [
+      "当前为 S04 P3",
+      "github_backup_policy.v1_2_s04_p3.json",
+      "下一步是 S04 Review",
+    ]) &&
+    hasAll(syncReadme, [
+      "当前 S04 P3 已完成",
+      "github_backup_policy.v1_2_s04_p3.json",
+      "scripts/github_backup.py",
+      "下一步是 S04 Review",
+    ]) &&
+    hasAll(runGateReadme, [
+      "当前阶段是 S04 P3",
+      "MA-V12-S04P3",
+      "ACC-MA-V12-S04P3",
+      "validate:v1.2-s04-p3",
+    ]);
 
   assertCondition(
     hasAll(humanPage, [
@@ -389,10 +418,10 @@ function validateHumanAndMachineState() {
     "Human S04 P1 page is incomplete",
   );
 
-  if (currentStateIsS04P2) {
+  if (currentStateIsS04P2 || currentStateIsS04P3) {
     pass(
-      "s04p1_human_machine_later_s04p2_state",
-      "Current human and machine state has advanced from S04 P1 into S04 P2",
+      "s04p1_human_machine_later_s04_state",
+      "Current human and machine state has advanced from S04 P1 into S04 P2 or S04 P3",
     );
     return;
   }
