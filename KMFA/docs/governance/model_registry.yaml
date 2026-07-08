@@ -2981,3 +2981,18 @@ kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_applicati
   evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_AFTER_FINAL_THRESHOLD
   validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_after_final_threshold.py
   scope: Authorized source reference or owner exclusion application owner/agent action-intake blocker blocked handoff after final threshold only; prepares 48 blocked handoff items and 48 owner-action items after the final action-intake blocker threshold, keeps goal recommendation blocked, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_external_action_readiness_after_final_threshold:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-blocker-blocked-handoff-external-action-readiness-after-final-threshold"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-ACTION-INTAKE-BLOCKER-BLOCKED-HANDOFF-EXTERNAL-ACTION-READINESS-AFTER-FINAL-THRESHOLD-001
+  parameter_refs:
+    - PARAM-KMFA-1576
+    - PARAM-KMFA-1577
+    - PARAM-KMFA-1578
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_EXTERNAL_ACTION_READINESS_AFTER_FINAL_THRESHOLD
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_external_action_readiness_after_final_threshold.py
+  scope: Authorized source reference or owner exclusion application owner/agent action-intake blocker blocked handoff external action readiness after final threshold only; checks 48 owner-action items from the ignored private queue, records all 48 as still blocked with no executable external owner/authorized-agent action, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.

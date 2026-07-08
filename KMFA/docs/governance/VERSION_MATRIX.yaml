@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-blocker-blocked-handoff-after-final-threshold"
-product_version_status: "authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_after_final_threshold_no_go_blocked"
-version_file_value: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-blocker-blocked-handoff-after-final-threshold"
+product_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-blocker-blocked-handoff-external-action-readiness-after-final-threshold"
+product_version_status: "authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_external_action_readiness_after_final_threshold_no_go_blocked"
+version_file_value: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-blocker-blocked-handoff-external-action-readiness-after-final-threshold"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-blocker-blocked-handoff-after-final-threshold"
+  MOD-KMFA-GOV-001: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-blocker-blocked-handoff-external-action-readiness-after-final-threshold"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -374,8 +374,56 @@ parameter_profile_versions:
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_after_blocked_handoff: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-after-blocked-handoff"
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_audit_after_blocked_handoff: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-blocker-audit-after-blocked-handoff"
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_threshold_recheck_after_blocked_handoff: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-blocker-threshold-recheck-after-blocked-handoff"
+  kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_external_action_readiness_after_final_threshold: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-blocker-blocked-handoff-external-action-readiness-after-final-threshold"
   kmfa_project_cost_mvp: "blocked_no_go_owner_scope_required"
 data_snapshot_version: "not_applicable_no_raw_data_committed"
-current_iteration: "ITER-20260708-KMFA-V014-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-ACTION-INTAKE-BLOCKER-BLOCKED-HANDOFF-AFTER-FINAL-THRESHOLD"
-current_phase: "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_AFTER_FINAL_THRESHOLD"
-current_gate: "NO_GO_OWNER_OR_AUTHORIZED_AGENT_ACTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_AFTER_FINAL_THRESHOLD"
+current_iteration: "ITER-20260708-KMFA-V014-ACTION-INTAKE-BLOCKER-BLOCKED-HANDOFF-EXTERNAL-ACTION-READINESS-AFTER-FINAL-THRESHOLD"
+current_phase: "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_EXTERNAL_ACTION_READINESS_AFTER_FINAL_THRESHOLD"
+current_gate: "NO_GO_OWNER_OR_AUTHORIZED_AGENT_EXTERNAL_ACTION_READINESS_AFTER_FINAL_THRESHOLD"
+
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_external_action_readiness_after_final_threshold:
+  status: completed_validated_local_only_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_external_action_readiness_after_final_threshold_no_go_blocked
+  phase: V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_EXTERNAL_ACTION_READINESS_AFTER_FINAL_THRESHOLD
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_EXTERNAL_ACTION_READINESS_AFTER_FINAL_THRESHOLD
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_external_action_readiness_after_final_threshold.py
+  focused_test: KMFA/tests/test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_external_action_readiness_after_final_threshold.py
+  github_upload: blocked_no_go_upload_deferred
+  counts:
+    source_blocked_handoff_item_count: 48
+    source_owner_action_item_count: 48
+    source_private_blocked_handoff_records_item_count: 48
+    source_private_owner_action_queue_item_count: 48
+    external_owner_action_ready_count: 0
+    external_owner_action_blocker_count: 48
+    actionable_owner_resolution_count: 0
+    source_reference_or_owner_exclusion_external_action_blocker_count: 40
+    formula_or_non_numeric_mapping_external_action_blocker_count: 8
+    binding_ready_after_external_action_readiness_count: 0
+    comparison_retry_ready_after_external_action_readiness_count: 0
+    unresolved_difference_count: 72
+  gates:
+    external_action_readiness_checked_by_this_phase: true
+    owner_or_agent_external_action_completed_by_this_phase: false
+    authoritative_binding_application_ready: false
+    authoritative_binding_applied_by_this_phase: false
+    raw_candidate_fingerprint_bound_by_this_phase: false
+    raw_to_processed_value_comparison_ready: false
+    raw_to_processed_value_comparison_performed_by_this_phase: false
+    full_raw_to_processed_value_comparison_complete: false
+    processed_consistency_verified: false
+    business_value_consistency_verified: false
+  forbidden_scope:
+    raw_inbox_read: false
+    raw_inbox_write: false
+    raw_inbox_delete: false
+    raw_inbox_move: false
+    raw_inbox_copy: false
+    raw_inbox_normalize: false
+    raw_inbox_mutation: false
+    processed_data_reconciliation: false
+    lineage_full_check: false
+    formal_report: false
+    github_upload: false
+    app_reinstall: false
+    business_execution: false
