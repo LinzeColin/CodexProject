@@ -13269,3 +13269,38 @@ tasks:
     risk: "Business execution blocked follow-up continuation recheck follow-up evidence can be misread as permission to execute business workflows; it is explicitly NO_GO and keeps execution closed."
     rollback: "Remove this phase public artifacts and ignored private continuation recheck follow-up outputs; keep source business execution blocked follow-up continuation recheck evidence intact."
     target_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-blocked-follow-up-continuation-recheck-follow-up"
+
+
+  - task_id: "KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-BLOCKED-FOLLOW-UP-CONTINUATION-RECHECK-FOLLOW-UP-FINAL-CHECK-20260708"
+    phase_id: "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK_FOLLOW_UP_FINAL_CHECK"
+    objective: "Record owner or authorized-agent business execution blocked follow-up continuation recheck follow-up final check and keep NO_GO / blocked gates closed."
+    scope:
+      - "public-safe aggregate business execution blocked follow-up continuation recheck follow-up final check evidence"
+      - "ignored private business execution blocked follow-up continuation recheck follow-up final check queue and report"
+      - "validator and focused unit test"
+    non_scope:
+      - "raw inbox access or mutation"
+      - "authoritative binding, value comparison, reconciliation, business consistency, lineage full check, formal report generation, GitHub upload, app reinstall or business execution"
+      - "Stage review or GitHub upload"
+    status: "completed"
+    completed_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-blocked-follow-up-continuation-recheck-follow-up-final-check"
+    dependencies:
+      - "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK_FOLLOW_UP"
+    required_files:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK_FOLLOW_UP_FINAL_CHECK/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_final_check_manifest.json"
+      - "KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_final_check.py"
+    acceptance_ids:
+      - "ACC-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-BLOCKED-FOLLOW-UP-CONTINUATION-RECHECK-FOLLOW-UP-FINAL-CHECK"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_final_check.py --generated-at 2026-07-08T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_final_check.py --require-private-business-execution-blocked-follow-up-continuation-recheck-follow-up-final-check"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_final_check"
+    test_results:
+      - "PASS: business execution blocked follow-up continuation recheck follow-up final check validator"
+      - "PASS: focused business execution blocked follow-up continuation recheck follow-up final check unit test"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK_FOLLOW_UP_FINAL_CHECK/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK_FOLLOW_UP_FINAL_CHECK/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_final_check_manifest.json"
+    risk: "Business execution blocked follow-up continuation recheck follow-up final check evidence can be misread as permission to execute business workflows; it is explicitly NO_GO and keeps execution closed."
+    rollback: "Remove this phase public artifacts and ignored private final-check outputs; keep source business execution blocked follow-up continuation recheck follow-up evidence intact."
+    target_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-blocked-follow-up-continuation-recheck-follow-up-final-check"

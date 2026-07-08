@@ -3360,3 +3360,19 @@ kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_applicati
   evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK_FOLLOW_UP
   validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up.py
   scope: Business execution blocked follow-up continuation recheck follow-up only; consumes 48 source continuation recheck blockers, records 0 business-execution-ready items and 48 continuation recheck follow-up blockers, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.
+
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_final_check:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-blocked-follow-up-continuation-recheck-follow-up-final-check"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-BLOCKED-FOLLOW-UP-CONTINUATION-RECHECK-FOLLOW-UP-FINAL-CHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1651
+    - PARAM-KMFA-1652
+    - PARAM-KMFA-1653
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK_FOLLOW_UP_FINAL_CHECK
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_final_check.py
+  scope: Business execution blocked follow-up continuation recheck follow-up final check only; consumes 48 source follow-up blockers, records 0 business-execution-ready items and 48 final-check blockers, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.
