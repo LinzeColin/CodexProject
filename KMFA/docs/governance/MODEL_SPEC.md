@@ -1960,3 +1960,16 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - locked counts: `0;48;48;48;0;48;48;0;40;8;0;0;0;0;72;NO_GO`
 - gate flags: external action requirement checked=true; owner/agent external action completed=false; binding=false; raw comparison=false; processed reconciliation=false; business consistency=false; upload=false; business execution=false.
 - validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_value_consistency.py --require-private-business-value-consistency-requirement`
+
+## v0.1.4 owner/authorized agent external action required before lineage full check
+
+- model_key: `kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_lineage_full_check`
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-LINEAGE-FULL-CHECK-001`
+- parameter_ids: `PARAM-KMFA-1606;PARAM-KMFA-1607;PARAM-KMFA-1608`
+- active_formula_count: `249`
+- active_parameter_count: `1226`
+- locked counts: `0;48;48;48;0;48;48;0;40;8;0;0;0;0;0;72;NO_GO`
+- gate flags: external action requirement checked=true; owner/agent external action completed=false; binding=false; raw comparison=false; processed reconciliation=false; business consistency=false; lineage full check=false; upload=false; business execution=false.
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_lineage_full_check.py --require-private-lineage-full-check-requirement`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_LINEAGE_FULL_CHECK/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_lineage_full_check_manifest.json`
+- constraints: no raw inbox access/mutation; no authoritative binding; no raw-to-processed value comparison; no processed-data reconciliation; no business consistency; no lineage full check; no GitHub upload; no app reinstall; no business execution.
