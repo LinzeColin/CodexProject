@@ -6128,6 +6128,12 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             run_id = "owner_review_xlsx_export"
             run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs" / run_id
             run_dir.mkdir(parents=True)
+            sidecar_dir = run_dir / "private"
+            sidecar_dir.mkdir(parents=True)
+            (sidecar_dir / "OCRGEN-00001.ocr.txt").write_text(
+                "真实OCR公司A\n湖北中行\n付款金额 1.00\n",
+                encoding="utf-8",
+            )
             worklist_path = run_dir / "ocr_fact_candidate_owner_worklist.csv"
             with worklist_path.open("w", encoding="utf-8", newline="") as f:
                 writer = csv.DictWriter(f, fieldnames=[
@@ -6202,6 +6208,12 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertFalse(payload["financial_fact_promoted"])
             self.assertFalse(payload["management_conclusion_allowed"])
 
+            csv_path = repo_root / payload["output_relative_path"]
+            with csv_path.open(encoding="utf-8-sig", newline="") as f:
+                review_rows = list(csv.DictReader(f))
+            self.assertIn("source_ocr_text_excerpt", review_rows[0])
+            self.assertIn("真实OCR公司A", review_rows[0]["source_ocr_text_excerpt"])
+
             xlsx_path = repo_root / payload["xlsx_output_relative_path"]
             self.assertTrue(xlsx_path.exists())
             with zipfile.ZipFile(xlsx_path) as workbook:
@@ -6219,6 +6231,8 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 self.assertIn("owner_corrected_bank", shared_xml)
                 self.assertIn("owner_review_completion_status", shared_xml)
                 self.assertIn("missing_owner_fields_current", shared_xml)
+                self.assertIn("source_ocr_text_excerpt", shared_xml)
+                self.assertIn("真实OCR公司A", shared_xml)
                 self.assertIn("blocked_missing_owner_values", sheet_xml)
                 self.assertIn("pending_owner_review", shared_xml)
                 self.assertIn("fund_ledger_write_allowed", shared_xml)
@@ -6228,17 +6242,17 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 self.assertIn("frozenSplit", sheet_xml)
                 sheet_root = ET.fromstring(sheet_xml)
                 ns = {"x": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
-                status_formula = sheet_root.find(".//x:c[@r='T2']/x:f", ns)
-                missing_formula = sheet_root.find(".//x:c[@r='U2']/x:f", ns)
+                status_formula = sheet_root.find(".//x:c[@r='U2']/x:f", ns)
+                missing_formula = sheet_root.find(".//x:c[@r='V2']/x:f", ns)
                 self.assertIsNotNone(status_formula)
                 self.assertIsNotNone(missing_formula)
-                self.assertIn("Q2", status_formula.text or "")
                 self.assertIn("R2", status_formula.text or "")
                 self.assertIn("S2", status_formula.text or "")
-                self.assertIn("V2", status_formula.text or "")
-                self.assertIn("R2", missing_formula.text or "")
+                self.assertIn("T2", status_formula.text or "")
+                self.assertIn("W2", status_formula.text or "")
                 self.assertIn("S2", missing_formula.text or "")
-                self.assertIn("V2", missing_formula.text or "")
+                self.assertIn("T2", missing_formula.text or "")
+                self.assertIn("W2", missing_formula.text or "")
             self.assertFalse(
                 (
                     repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/"

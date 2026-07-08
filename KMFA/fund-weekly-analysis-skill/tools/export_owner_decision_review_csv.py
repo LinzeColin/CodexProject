@@ -22,6 +22,7 @@ OUTPUT_FIELDS = [
     "candidate_metric",
     "source_evidence_id",
     "source_ocr_text_relative_path",
+    "source_ocr_text_excerpt",
     "business_date",
     "amount",
     "currency",
@@ -92,6 +93,42 @@ def required_owner_fields(row: dict) -> str:
     return ",".join(missing)
 
 
+def is_within(path: Path, root: Path) -> bool:
+    try:
+        path.resolve().relative_to(root.resolve())
+        return True
+    except ValueError:
+        return False
+
+
+def ocr_excerpt(repo_root: Path, run_id: str, relative_path: str, limit: int = 600) -> str:
+    raw = str(relative_path or "").strip()
+    if not raw:
+        return ""
+    path = Path(raw)
+    if path.is_absolute():
+        candidates = [path]
+    else:
+        run_root = run_dir(repo_root, run_id)
+        candidates = [
+            run_root / path,
+            repo_root / path,
+        ]
+    for candidate in candidates:
+        resolved = candidate.expanduser().resolve()
+        if not is_within(resolved, repo_root):
+            continue
+        if not resolved.is_file():
+            continue
+        try:
+            text = resolved.read_text(encoding="utf-8", errors="ignore")
+        except OSError:
+            return ""
+        compact = " | ".join(line.strip() for line in text.splitlines() if line.strip())
+        return compact[:limit]
+    return ""
+
+
 def review_completion_status(owner_decision: str, missing_fields: str) -> str:
     if missing_fields:
         return "blocked_missing_owner_values"
@@ -111,11 +148,12 @@ def select_rows(rows: list[dict], metrics: list[str], limit_per_metric: int) -> 
     return selected
 
 
-def build_review_rows(run_id: str, selected_rows: list[dict]) -> list[dict]:
+def build_review_rows(repo_root: Path, run_id: str, selected_rows: list[dict]) -> list[dict]:
     output_rows: list[dict] = []
     for row in selected_rows:
         owner_decision = "pending_owner_review"
         missing_fields = required_owner_fields(row)
+        source_ocr_text_relative_path = row.get("source_ocr_text_relative_path", "")
         output_rows.append({
             "review_batch_row_id": f"OCROWNERREVIEWCSV-{run_id}-{len(output_rows) + 1:05d}",
             "owner_worklist_id": row.get("owner_worklist_id", ""),
@@ -123,7 +161,8 @@ def build_review_rows(run_id: str, selected_rows: list[dict]) -> list[dict]:
             "fact_candidate_id": row.get("fact_candidate_id", ""),
             "candidate_metric": row.get("candidate_metric", ""),
             "source_evidence_id": row.get("source_evidence_id", ""),
-            "source_ocr_text_relative_path": row.get("source_ocr_text_relative_path", ""),
+            "source_ocr_text_relative_path": source_ocr_text_relative_path,
+            "source_ocr_text_excerpt": ocr_excerpt(repo_root, run_id, source_ocr_text_relative_path),
             "business_date": row.get("business_date", ""),
             "amount": row.get("amount", ""),
             "currency": row.get("currency", ""),
@@ -343,7 +382,7 @@ def main() -> int:
 
     metrics = parse_metrics(args.metrics)
     selected = select_rows(rows, metrics, args.limit_per_metric)
-    review_rows = build_review_rows(args.run_id, selected)
+    review_rows = build_review_rows(repo_root, args.run_id, selected)
     output_relative_path = (
         Path("KMFA/metadata/fund_weekly_analysis/private_runtime/runs")
         / args.run_id
