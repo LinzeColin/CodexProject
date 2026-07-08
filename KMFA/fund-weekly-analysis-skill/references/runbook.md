@@ -3,6 +3,7 @@
 ## Monday and Saturday 11:00 Australia/Sydney run
 
 The local scheduler uses Sydney local time. Monday and Saturday 11:00 Australia/Sydney is the operational schedule; during the current UTC+10 offset this is 09:00 Asia/Shanghai as a reference only.
+For controlled validation only, `KMFA_FUND_RUN_ID=<run_id>` pins the runner output directory and `KMFA_SKIP_CODEX_EXEC=1` skips the final Codex CLI handoff. Default automation runs leave both unset.
 
 1. Confirm local repo is on `main` and clean enough to run.
 2. Pull latest `origin/main` with fast-forward only.
