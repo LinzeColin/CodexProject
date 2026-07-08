@@ -16,7 +16,7 @@ For controlled validation only, `KMFA_FUND_RUN_ID=<run_id>` pins the runner outp
 9. If the configured folder exists but contains unreadable/cloud-only files, write `SOURCE_UNREADABLE`; do not generate a partial Excel package.
 10. If a private directory or zip candidate is verified and the operator intends to populate the configured folder, run `tools/materialize_fund_source.py` first without `--apply`, inspect the manifest, then rerun with `--apply`.
 11. Build evidence index for screenshots and finance files.
-12. Write the `INDEXED_PENDING_EXTRACTION` no-hallucination output package first: current native Excel template copy, fact ledgers, funding forecast sidecar, cashflow validation sidecar, screenshot OCR coverage sidecar, OCR text/value/financial-fact candidate sidecars, OCR fact cross-review sidecar, OCR fact ledger staging preview sidecar, OCR fact review gate/template/preview sidecars, chat text/value candidate sidecars, chat-evidence link sidecar, attachment-evidence reconciliation sidecar, attachment remediation sidecar, attachment remediation dry-run sidecar, attachment repair plan sidecar, attachment repair apply gate sidecar, attachment repair authorization template, attachment repair authorization preview sidecar, workbook quality checks, metadata signals, automation readiness sidecar, goal completion audit, fact-promotion review packet, fact-promotion owner review batch, fact-promotion authorization/gate/dry-run sidecars, exception tasks, cross-review JSON, audit log, and run summary.
+12. Write the `INDEXED_PENDING_EXTRACTION` no-hallucination output package first: current native Excel template copy, fact ledgers, funding forecast sidecar, cashflow validation sidecar, screenshot OCR coverage sidecar, OCR text/value/financial-fact candidate sidecars, OCR fact cross-review sidecar, OCR fact ledger staging preview sidecar, OCR fact review gate/template/preview sidecars, chat text/value candidate sidecars, chat-evidence link sidecar, attachment-evidence reconciliation sidecar, attachment remediation sidecar, attachment remediation dry-run sidecar, attachment repair plan sidecar, attachment repair apply gate sidecar, attachment repair authorization template, attachment repair authorization preview sidecar, workbook quality checks, metadata signals, automation readiness sidecar, goal completion audit, fact-promotion review packet, fact-promotion owner review batch, fact-promotion authorization/gate/dry-run/plan sidecars, exception tasks, cross-review JSON, audit log, and run summary.
 13. Carry public-safe KMFA metadata signals from fund pressure, project-cost fact layer, report grade, and scope reconciliation metadata into `kmfa_metadata_signals.csv` plus workbook pending-review cells. These signals support review routing only; they do not create amounts, forecasts, or conclusions.
 14. Extract only real values with source trace. CSV files may be auto-extracted only when they contain the exact structured columns `date, company, bank, account_alias, liquidity_tier, inflow, outflow, ending_balance, flow_type`; those rows become `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW`, not management conclusions.
 15. Build known due-date funding projections only from real structured CSV `due_date` risk/opportunity rows, including tax, deposit, loan, and project-cost flows; write `funding_forecast.csv` and `02_资金趋势预测` as `structured_csv_forecast_pending_review`.
@@ -42,13 +42,14 @@ For controlled validation only, `KMFA_FUND_RUN_ID=<run_id>` pins the runner outp
 35. Build `fact_promotion_authorization_preview.csv`: validate private `fact_promotion_authorizations/<run_id>.json` coverage only, mark valid rows as `ready_for_owner_review_no_fact_promotion`, and keep no-write/no-promote/no-conclusion flags false.
 36. Build `fact_promotion_execution_gate.csv`: combine authorization coverage and unresolved review blockers into a fail-closed execution gate. Review areas with `authorization_required=false` become explicit `not_required_*` no-op rows and do not count as blocked. Ready rows may reach `ready_for_controlled_fact_promotion_execution`, but `fact_promotion_execution_allowed=false` must remain until a separate approved execution path is introduced.
 37. Build `fact_promotion_execution_dry_run.csv`: derive a no-write impact preview from `fact_promotion_execution_gate.csv`. Rows may show `ready_for_controlled_execution_preview_no_write` and nonzero `dry_run_impact_count` only when the execution gate is ready, but every row must keep `fact_promotion_execution_allowed=false`, `fund_ledger_write_allowed=false`, `financial_fact_promoted=false`, and `management_conclusion_allowed=false`.
-38. Build daily balance continuity and company-bank matrix.
-39. Build tax/loan/project-cost/wealth-management/deposit risk tables.
-40. Promote reviewed facts into Excel with exact sheet order and style spec.
-41. Hide audit/review sheets.
-42. Run validation checks.
-43. Write run summary.
-44. Commit/push skill or automation changes to GitHub main only after validation passes.
+38. Build `fact_promotion_execution_plan.csv`: derive an owner-facing execution plan from the dry-run rows. Rows may reach `ready_for_owner_execution_authorization_no_write` only when dry-run is ready; record `required_authorization_scope=controlled_fact_promotion_execution`, but keep `source_mutation_allowed=false`, `fact_promotion_execution_allowed=false`, `fund_ledger_write_allowed=false`, `financial_fact_promoted=false`, and `management_conclusion_allowed=false`.
+39. Build daily balance continuity and company-bank matrix.
+40. Build tax/loan/project-cost/wealth-management/deposit risk tables.
+41. Promote reviewed facts into Excel with exact sheet order and style spec.
+42. Hide audit/review sheets.
+43. Run validation checks.
+44. Write run summary.
+45. Commit/push skill or automation changes to GitHub main only after validation passes.
 
 ## Source materialization command
 

@@ -573,6 +573,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "fact_promotion_authorization_preview.csv",
                 "fact_promotion_execution_gate.csv",
                 "fact_promotion_execution_dry_run.csv",
+                "fact_promotion_execution_plan.csv",
                 "exception_tasks.csv",
                 "cross_review.json",
                 "audit_log.json",
@@ -696,6 +697,28 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["fact_promotion_execution_dry_run_count"], 6)
             self.assertEqual(cross_review["fact_promotion_execution_dry_run_impact_count"], 0)
             self.assertEqual(cross_review["fact_promotion_execution_dry_run_write_allowed_count"], 0)
+
+            with (run_dir / "fact_promotion_execution_plan.csv").open(encoding="utf-8-sig", newline="") as f:
+                execution_plan_rows = list(csv.DictReader(f))
+            self.assertEqual(len(execution_plan_rows), 6)
+            plan_by_area = {row["review_area"]: row for row in execution_plan_rows}
+            self.assertEqual(
+                plan_by_area["structured_csv_facts"]["execution_plan_status"],
+                "not_required_no_execution_plan",
+            )
+            self.assertEqual(
+                plan_by_area["ocr_fact_ledger_staging"]["execution_plan_status"],
+                "not_required_no_execution_plan",
+            )
+            self.assertTrue(all(row["planned_impact_count"] == "0" for row in execution_plan_rows))
+            self.assertTrue(all(row["source_mutation_allowed"] == "false" for row in execution_plan_rows))
+            self.assertTrue(all(row["fact_promotion_execution_allowed"] == "false" for row in execution_plan_rows))
+            self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in execution_plan_rows))
+            self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in execution_plan_rows))
+            self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in execution_plan_rows))
+            self.assertEqual(cross_review["fact_promotion_execution_plan_count"], 6)
+            self.assertEqual(cross_review["fact_promotion_execution_plan_planned_impact_count"], 0)
+            self.assertEqual(cross_review["fact_promotion_execution_plan_write_allowed_count"], 0)
 
     def test_runner_collects_real_ocr_text_sidecars_without_promoting_amounts(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -3228,6 +3251,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["fact_promotion_execution_dry_run_ready_count"], 1)
             self.assertEqual(cross_review["fact_promotion_execution_dry_run_impact_count"], 4)
             self.assertEqual(cross_review["fact_promotion_execution_dry_run_write_allowed_count"], 0)
+            self.assertEqual(cross_review["fact_promotion_execution_plan_count"], 6)
+            self.assertEqual(cross_review["fact_promotion_execution_plan_ready_count"], 1)
+            self.assertEqual(cross_review["fact_promotion_execution_plan_planned_impact_count"], 4)
+            self.assertEqual(cross_review["fact_promotion_execution_plan_write_allowed_count"], 0)
 
             with (run_dir / "fact_promotion_execution_dry_run.csv").open(encoding="utf-8-sig", newline="") as f:
                 dry_run_rows = list(csv.DictReader(f))
@@ -3241,6 +3268,24 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in dry_run_rows))
             self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in dry_run_rows))
             self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in dry_run_rows))
+
+            with (run_dir / "fact_promotion_execution_plan.csv").open(encoding="utf-8-sig", newline="") as f:
+                execution_plan_rows = list(csv.DictReader(f))
+            plan_by_area = {row["review_area"]: row for row in execution_plan_rows}
+            self.assertEqual(
+                plan_by_area["structured_csv_facts"]["execution_plan_status"],
+                "ready_for_owner_execution_authorization_no_write",
+            )
+            self.assertEqual(
+                plan_by_area["structured_csv_facts"]["required_authorization_scope"],
+                "controlled_fact_promotion_execution",
+            )
+            self.assertEqual(plan_by_area["structured_csv_facts"]["planned_impact_count"], "4")
+            self.assertTrue(all(row["source_mutation_allowed"] == "false" for row in execution_plan_rows))
+            self.assertTrue(all(row["fact_promotion_execution_allowed"] == "false" for row in execution_plan_rows))
+            self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in execution_plan_rows))
+            self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in execution_plan_rows))
+            self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in execution_plan_rows))
 
             workbook_path = run_dir / "资金与税费管理母版_structured_csv_test.xlsx"
             with zipfile.ZipFile(workbook_path) as workbook:
