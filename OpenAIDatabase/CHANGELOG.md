@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S10 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s10_review.md`.
+- Added `validate:v1.2-s10-review` for `MA-V12-S10-REVIEW` /
+  `ACC-MA-V12-S10-REVIEW`.
+- Registered status `stage_s10_review_passed_pending_s11_no_github_main_upload`.
+- Confirmed S10 P1 homepage arrival briefing, S10 P2 global Chinese UX and
+  S10 P3 machine detail folding satisfy the S10 stage gate together.
+- Confirmed the S10 pass gate: homepage answers what changed since last visit,
+  core UI defaults to Chinese, machine fields default folded and Chinese UX
+  linter passes.
+- Preserved S10 Review boundaries: No GitHub main upload, No remote push,
+  No raw mutation, No proposal apply execution, No S11 implementation and
+  No app reinstall.
+- Marked the next gate as pending S11 P1.
+
 ## Unreleased - Memory Atlas v1.2 S10 P3 Machine Detail Folding
 
 - Added `machine_detail_folding.v1_2_s10_p3` runtime contract to the Memory

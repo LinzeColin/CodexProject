@@ -18,13 +18,17 @@
 
 ## 当前阶段
 
-当前为 S10 P3。任务 ID 为 `MA-V12-S10P3`，验收 ID 为
-`ACC-MA-V12-S10P3`，validator 为 `validate:v1.2-s10-p3`。状态为
-`phase_s10_p3_machine_detail_folding_completed_pending_s10_review`。S10 P3 已完成
-`machine_detail_folding.v1_2_s10_p3`，机器字段默认折叠并提供中文高级详情入口；
-下一步只允许进入 pending S10 Review。
+当前为 S10 Review。任务 ID 为 `MA-V12-S10-REVIEW`，验收 ID 为
+`ACC-MA-V12-S10-REVIEW`，validator 为 `validate:v1.2-s10-review`。状态为
+`stage_s10_review_passed_pending_s11_no_github_main_upload`。S10 Review 已完成，
+复审确认 S10 P1、S10 P2、S10 P3 共同满足全中文信息架构与首页重构 stage gate；
+下一步只允许进入 S11 P1。
 
-No GitHub main upload in this phase。No raw mutation。No proposal apply execution。
+No GitHub main upload。No raw mutation。No proposal apply execution。
+
+历史复验兼容记录：S10 P3 完成时当前为 S10 P3，任务 ID 为 `MA-V12-S10P3`，
+验收 ID 为 `ACC-MA-V12-S10P3`，validator 为 `validate:v1.2-s10-p3`，
+下一步是 S10 Review；此句只用于保留已完成 phase 的复验语义，不代表当前阶段。
 
 历史复验兼容记录：S10 P2 完成时当前为 S10 P2，任务 ID 为 `MA-V12-S10P2`，
 验收 ID 为 `ACC-MA-V12-S10P2`，validator 为 `validate:v1.2-s10-p2`，
