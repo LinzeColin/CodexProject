@@ -17,6 +17,7 @@ Blocking checks:
 * `chat_value_candidates.csv` may carry only date/amount candidates parsed from `chat_text_candidates.csv`; all rows must stay pending review with `financial_fact_promoted=false` and must not populate `fund_ledger.csv`.
 * `chat_evidence_links.csv` may carry only links from chat candidates to real `_manifest/manifest.csv` resource rows and evidence index rows; all links must stay pending review with `financial_fact_promoted=false` and must not populate `fund_ledger.csv`.
 * `attachment_evidence_reconciliation.csv` must reconcile real `_manifest/manifest.csv` resource rows against evidence index rows; missing output paths, missing evidence, and SHA mismatches must create blocking exception tasks and must not populate `fund_ledger.csv`.
+* `attachment_reconciliation_remediation.csv` must contain only operator actions derived from blocking attachment reconciliation rows; all rows must keep `automation_safe=false` and `formal_fact_allowed=false`.
 * `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW` outputs contain only amounts parsed from real structured CSV rows with the required column contract and still keep `management_conclusion_allowed=false`.
 * `funding_forecast.csv` may contain only known due-date projections from real structured CSV risk/opportunity rows and must keep `management_conclusion_allowed=false`.
 * `cashflow_validation.csv` must validate balance continuity, operating cashflow effect, and internal-transfer exclusion; continuity failures must create exception tasks and keep `management_conclusion_allowed=false`.

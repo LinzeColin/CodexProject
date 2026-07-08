@@ -687,6 +687,56 @@ def collect_attachment_evidence_reconciliation(manifest: dict, input_dir: Path, 
     return rows
 
 
+def attachment_remediation_for_status(reconciliation_status: str) -> tuple[str, str, str]:
+    if reconciliation_status == "manifest_output_path_missing_blocking":
+        return (
+            "rerun_dws_attachment_download",
+            "dws_attachment_download_queue",
+            "Manifest resource row has no output_path; rerun or inspect the DWS attachment download for this message/resource.",
+        )
+    if reconciliation_status == "evidence_missing_blocking":
+        return (
+            "restore_or_materialize_output_file",
+            "source_materialization_queue",
+            "Manifest output_path has no evidence file in the indexed source tree; restore, materialize, or rerun the source archive before review.",
+        )
+    if reconciliation_status == "evidence_hash_mismatch_blocking":
+        return (
+            "quarantine_and_recollect_hash_mismatch",
+            "evidence_integrity_queue",
+            "Manifest SHA and indexed evidence SHA differ; quarantine the row and recollect the attachment before any fact promotion.",
+        )
+    return (
+        "manual_attachment_reconciliation_review",
+        "manual_review_queue",
+        "Attachment reconciliation status is blocking and requires operator review before any fact promotion.",
+    )
+
+
+def build_attachment_reconciliation_remediation(manifest: dict, attachment_reconciliation_rows: list[dict]) -> list[dict]:
+    rows: list[dict] = []
+    for row in attachment_reconciliation_rows:
+        if not row["reconciliation_status"].endswith("_blocking"):
+            continue
+        action_code, owner_queue, action_reason = attachment_remediation_for_status(row["reconciliation_status"])
+        rows.append({
+            "remediation_id": f"ATTACHFIX-{manifest['run_id']}-{len(rows) + 1:05d}",
+            "attachment_reconciliation_id": row["attachment_reconciliation_id"],
+            "open_message_id": row["open_message_id"],
+            "blocking_status": row["reconciliation_status"],
+            "resource_status": row["resource_status"],
+            "action_code": action_code,
+            "owner_queue": owner_queue,
+            "action_reason": action_reason,
+            "evidence_required": "true",
+            "automation_safe": "false",
+            "formal_fact_allowed": "false",
+            "relative_path": row["manifest_output_path"] or f"{row['manifest_relative_path']}:{row['manifest_row_number']}",
+            "review_status": "pending_operator_action",
+        })
+    return rows
+
+
 def read_jsonl(path: Path) -> list[dict]:
     if not path.exists():
         return []
@@ -1767,6 +1817,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     chat_value_candidates = extract_chat_value_candidates(manifest, chat_text_candidates)
     chat_evidence_links = collect_chat_evidence_links(manifest, input_dir, evidence, chat_text_candidates, chat_value_candidates)
     attachment_reconciliation_rows = collect_attachment_evidence_reconciliation(manifest, input_dir, evidence)
+    attachment_remediation_rows = build_attachment_reconciliation_remediation(manifest, attachment_reconciliation_rows)
     structured = extract_structured_csv_facts(manifest, input_dir, evidence)
     funding_forecast_rows = build_funding_forecast_rows(structured)
     cashflow_validation_rows = build_cashflow_validation_rows(structured, manifest["run_id"])
@@ -1782,6 +1833,8 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     manifest["attachment_reconciliation_count"] = len(attachment_reconciliation_rows)
     manifest["attachment_reconciliation_linked_count"] = sum(1 for row in attachment_reconciliation_rows if row["reconciliation_status"] == "evidence_linked_pending_review")
     manifest["attachment_reconciliation_blocking_count"] = sum(1 for row in attachment_reconciliation_rows if row["reconciliation_status"].endswith("_blocking"))
+    manifest["attachment_remediation_count"] = len(attachment_remediation_rows)
+    manifest["attachment_remediation_open_count"] = sum(1 for row in attachment_remediation_rows if row["review_status"] == "pending_operator_action")
     manifest["metadata_signal_count"] = len(metadata_signals)
     manifest["forecast_row_count"] = len(funding_forecast_rows)
     manifest["cashflow_validation_row_count"] = len(cashflow_validation_rows)
@@ -1982,6 +2035,21 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "review_status",
         "financial_fact_promoted",
     ], attachment_reconciliation_rows)
+    write_csv(run_dir / "attachment_reconciliation_remediation.csv", [
+        "remediation_id",
+        "attachment_reconciliation_id",
+        "open_message_id",
+        "blocking_status",
+        "resource_status",
+        "action_code",
+        "owner_queue",
+        "action_reason",
+        "evidence_required",
+        "automation_safe",
+        "formal_fact_allowed",
+        "relative_path",
+        "review_status",
+    ], attachment_remediation_rows)
     write_csv(run_dir / "workbook_quality_checks.csv", [
         "check_id",
         "check_name",
@@ -2119,6 +2187,8 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "attachment_reconciliation_count": len(attachment_reconciliation_rows),
         "attachment_reconciliation_linked_count": manifest["attachment_reconciliation_linked_count"],
         "attachment_reconciliation_blocking_count": manifest["attachment_reconciliation_blocking_count"],
+        "attachment_remediation_count": len(attachment_remediation_rows),
+        "attachment_remediation_open_count": manifest["attachment_remediation_open_count"],
         "structured_financial_fact_count": len(structured["fund_rows"]),
         "metadata_signal_count": len(metadata_signals),
         "forecast_row_count": len(funding_forecast_rows),
@@ -2154,6 +2224,8 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "attachment_reconciliation_count": len(attachment_reconciliation_rows),
                 "attachment_reconciliation_linked_count": manifest["attachment_reconciliation_linked_count"],
                 "attachment_reconciliation_blocking_count": manifest["attachment_reconciliation_blocking_count"],
+                "attachment_remediation_count": len(attachment_remediation_rows),
+                "attachment_remediation_open_count": manifest["attachment_remediation_open_count"],
                 "structured_financial_fact_count": len(structured["fund_rows"]),
                 "metadata_signal_count": len(metadata_signals),
                 "forecast_row_count": len(funding_forecast_rows),
@@ -2271,6 +2343,7 @@ def main() -> int:
         f"Chat evidence linked count: {manifest.get('chat_evidence_linked_count', 0)}\n\n"
         f"Attachment evidence reconciliation count: {manifest.get('attachment_reconciliation_count', 0)}\n\n"
         f"Attachment evidence reconciliation blocking count: {manifest.get('attachment_reconciliation_blocking_count', 0)}\n\n"
+        f"Attachment remediation open count: {manifest.get('attachment_remediation_open_count', 0)}\n\n"
         f"KMFA metadata signal count: {manifest.get('metadata_signal_count', 0)}\n\n"
         f"Known due-date funding forecast row count: {manifest.get('forecast_row_count', 0)}\n\n"
         f"Cashflow validation row count: {manifest.get('cashflow_validation_row_count', 0)}\n\n"
