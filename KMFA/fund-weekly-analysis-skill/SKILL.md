@@ -172,6 +172,7 @@ Required files:
 * `fact_promotion_execution_plan.csv`
 * `fact_promotion_execution_authorization_template.json`
 * `fact_promotion_execution_authorization_preview.csv`
+* `fact_promotion_execution_apply_gate.csv`
 * `exception_tasks.csv`
 * `cross_review.json`
 * `audit_log.json`
@@ -214,6 +215,7 @@ Current deterministic runner status contract:
 * Every successful output package emits `fact_promotion_execution_dry_run.csv` as a no-write impact preview derived from `fact_promotion_execution_gate.csv`. Ready rows may show `ready_for_controlled_execution_preview_no_write` and a `dry_run_impact_count`, but every row still keeps `fact_promotion_execution_allowed=false`, `fund_ledger_write_allowed=false`, `financial_fact_promoted=false`, and `management_conclusion_allowed=false`.
 * Every successful output package emits `fact_promotion_execution_plan.csv` as the owner-facing execution plan derived from the dry-run preview. Ready rows may reach `ready_for_owner_execution_authorization_no_write` and declare `required_authorization_scope=controlled_fact_promotion_execution`, but every row still keeps `source_mutation_allowed=false`, `fact_promotion_execution_allowed=false`, `fund_ledger_write_allowed=false`, `financial_fact_promoted=false`, and `management_conclusion_allowed=false`.
 * Every successful output package emits `fact_promotion_execution_authorization_template.json` and `fact_promotion_execution_authorization_preview.csv`. The template defaults every execution plan row to `authorized=false` and points to private `fact_promotion_execution_authorizations/<run_id>.json`; the preview may mark valid rows as `ready_for_controlled_execution_run_no_write`, but still keeps `source_mutation_allowed=false`, `fact_promotion_execution_allowed=false`, `fund_ledger_write_allowed=false`, `financial_fact_promoted=false`, and `management_conclusion_allowed=false`.
+* Every successful output package emits `fact_promotion_execution_apply_gate.csv` as the final no-write gate before any future formal fact-promotion write path. Rows may reach `ready_for_controlled_execution_apply_no_write` and report `planned_apply_count`, but still keep `source_mutation_allowed=false`, `fact_promotion_execution_allowed=false`, `fund_ledger_write_allowed=false`, `financial_fact_promoted=false`, and `management_conclusion_allowed=false`.
 * When structured CSV facts exist, the runner patches the native `.xlsx` workbook directly: `01_首页总览` 4+4 cards, `02_资金趋势预测`, `03_三层净流余额`, `04_税费融资风险`, `05_公司银行矩阵`, and hidden `H01/H02/H03/H05` receive the same traced pending-review facts while preserving the existing native chart parts.
 * `INDEXED_PENDING_EXTRACTION` is not a management conclusion. It means no amount was generated, inferred, forecast, or promoted into facts yet.
 * `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW` is also not a management conclusion. The amounts came from real structured CSV rows, but they remain pending cross-review and must not become final C-level KPIs until gates pass.
