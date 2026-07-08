@@ -37,8 +37,9 @@ Hard requirements:
 9. 首页 and trend charts must be native line charts and each chart must be <= 1728x864 px.
 10. Perform cross-review checks: formula errors, hidden sheets, no simulation data, internal transfer netting, balance continuity tolerance 0.01, sensitive fields not visible, tax version conflict detection, company-bank mapping coverage.
 11. Write all outputs to the private runtime run directory.
-12. Mirror any prompt/skill/template/governance changes under `KMFA/fund-weekly-analysis-skill/automation/` or relevant tracked folders, validate, commit and push to GitHub main if and only if validation passes.
-13. If a value cannot be confidently extracted from real evidence, leave it blank or mark `待识别/待复核` and create an exception task. Do not guess.
-14. Do not modify upstream DWS archive outputs; materialization is a downstream private compatibility copy from the current DWS zip into the configured KMFA input folder.
+12. After the runner writes `screenshot_ocr_coverage.csv`, generate the private OCR sidecar plan with `tools/generate_screenshot_ocr_sidecars.py`; dry-run is default, empty OCR output must not be written, and OCR text remains private runtime only.
+13. Mirror any prompt/skill/template/governance changes under `KMFA/fund-weekly-analysis-skill/automation/` or relevant tracked folders, validate, commit and push to GitHub main if and only if validation passes.
+14. If a value cannot be confidently extracted from real evidence, leave it blank or mark `待识别/待复核` and create an exception task. Do not guess.
+15. Do not modify upstream DWS archive outputs; materialization is a downstream private compatibility copy from the current DWS zip into the configured KMFA input folder.
 
 Final response must be Chinese and include source readiness, selected DWS input path, whether materialization was performed, workbook path if generated, validation status, blockers, and next action.
