@@ -12519,3 +12519,37 @@ tasks:
     risk: "External action final threshold can be misread as permission to bind fields or compare values; it is explicitly NO_GO and keeps all downstream gates closed."
     rollback: "Remove this phase public artifacts and ignored private final-threshold outputs; keep source blocked-handoff evidence intact."
     target_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-final-threshold-recheck-after-reminder"
+
+  - task_id: "KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-FINAL-THRESHOLD-BLOCKED-HANDOFF-AFTER-REMINDER-20260708"
+    phase_id: "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_FINAL_THRESHOLD_BLOCKED_HANDOFF_AFTER_REMINDER"
+    objective: "Prepare public-safe blocked handoff and ignored private owner-action packet after external action final threshold remains blocked."
+    scope:
+      - "public-safe aggregate external action final-threshold blocked handoff evidence"
+      - "ignored private external action blocked-handoff records and owner-action queue"
+      - "validator and focused unit test"
+    non_scope:
+      - "raw inbox access or mutation"
+      - "authoritative binding or raw-to-processed value comparison"
+      - "Stage review, GitHub upload, app reinstall or business execution"
+    status: "completed"
+    completed_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-final-threshold-blocked-handoff-after-reminder"
+    dependencies:
+      - "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_BLOCKED_HANDOFF_FINAL_THRESHOLD_RECHECK_AFTER_REMINDER"
+    required_files:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_FINAL_THRESHOLD_BLOCKED_HANDOFF_AFTER_REMINDER/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_final_threshold_blocked_handoff_after_reminder_manifest.json"
+      - "KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_final_threshold_blocked_handoff_after_reminder.py"
+    acceptance_ids:
+      - "ACC-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-FINAL-THRESHOLD-BLOCKED-HANDOFF-AFTER-REMINDER"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_final_threshold_blocked_handoff_after_reminder.py --generated-at 2026-07-08T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_final_threshold_blocked_handoff_after_reminder.py --require-private-blocked-handoff"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_final_threshold_blocked_handoff_after_reminder"
+    test_results:
+      - "PASS: external action final-threshold blocked handoff validator"
+      - "PASS: focused external action final-threshold blocked handoff unit test"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_FINAL_THRESHOLD_BLOCKED_HANDOFF_AFTER_REMINDER/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_FINAL_THRESHOLD_BLOCKED_HANDOFF_AFTER_REMINDER/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_final_threshold_blocked_handoff_after_reminder_manifest.json"
+    risk: "External action final-threshold blocked handoff can be misread as permission to bind fields or compare values; it is explicitly NO_GO and keeps all downstream gates closed."
+    rollback: "Remove this phase public artifacts and ignored private blocked-handoff/owner-action outputs; keep source final-threshold evidence intact."
+    target_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-final-threshold-blocked-handoff-after-reminder"
