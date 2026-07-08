@@ -74,6 +74,23 @@ VISIBLE_SENSITIVE_PATTERNS = [
     "手机号[:：=]",
 ]
 VISIBLE_SENSITIVE_PATTERN = re.compile("(" + "|".join(VISIBLE_SENSITIVE_PATTERNS) + ")", re.IGNORECASE)
+OCR_DATE_PATTERN = re.compile(r"20\d{2}[-/.年]\d{1,2}[-/.月]\d{1,2}日?")
+OCR_AMOUNT_PATTERN = re.compile(r"(?:[￥¥]\s*)?[-+]?\d{1,3}(?:,\d{3})+(?:\.\d{1,2})?|(?:[￥¥]\s*)?[-+]?\d+(?:\.\d{1,2})")
+OCR_AMOUNT_CONTEXT_WORDS = (
+    "余额",
+    "金额",
+    "可用",
+    "收入",
+    "支出",
+    "付款",
+    "回款",
+    "保证金",
+    "税",
+    "借款",
+    "贷款",
+    "费用",
+    "缴",
+)
 
 
 def sha256_file(path: Path, chunk_size: int = 1024 * 1024) -> str:
@@ -326,6 +343,19 @@ def read_text_excerpt(path: Path, limit: int = 180) -> tuple[str, int]:
     return normalized[:limit], len(text)
 
 
+def normalize_ocr_date(value: str) -> str:
+    digits = re.findall(r"\d+", value)
+    if len(digits) < 3:
+        return value.strip()
+    year, month, day = digits[:3]
+    return f"{int(year):04d}-{int(month):02d}-{int(day):02d}"
+
+
+def normalize_ocr_amount(value: str) -> str:
+    cleaned = value.replace("￥", "").replace("¥", "").replace(",", "").strip()
+    return money_text(money(cleaned))
+
+
 def collect_ocr_text_candidates(manifest: dict, input_dir: Path, evidence: list[dict]) -> list[dict]:
     evidence_by_path = {row["relative_path"]: row for row in evidence}
     manifest_paths = {item["relative_path"]: item for item in manifest["files"]}
@@ -357,6 +387,60 @@ def collect_ocr_text_candidates(manifest: dict, input_dir: Path, evidence: list[
                 "financial_fact_promoted": "false",
             })
             break
+    return rows
+
+
+def extract_ocr_value_candidates(manifest: dict, input_dir: Path, ocr_text_candidates: list[dict]) -> list[dict]:
+    rows: list[dict] = []
+    for candidate in ocr_text_candidates:
+        text_path = input_dir / candidate["ocr_text_relative_path"]
+        text = text_path.read_text(encoding="utf-8-sig", errors="replace")
+        for line_number, line in enumerate(text.splitlines(), 1):
+            if not line.strip():
+                continue
+            date_spans: list[tuple[int, int]] = []
+            for match in OCR_DATE_PATTERN.finditer(line):
+                date_spans.append(match.span())
+                rows.append({
+                    "value_candidate_id": f"OCRV-{manifest['run_id']}-{len(rows) + 1:05d}",
+                    "ocr_candidate_id": candidate["ocr_candidate_id"],
+                    "evidence_id": candidate["evidence_id"],
+                    "source_image_relative_path": candidate["source_image_relative_path"],
+                    "ocr_text_relative_path": candidate["ocr_text_relative_path"],
+                    "candidate_type": "date",
+                    "raw_value": match.group(0),
+                    "normalized_value": normalize_ocr_date(match.group(0)),
+                    "currency": "",
+                    "line_number": str(line_number),
+                    "line_text": line.strip()[:180],
+                    "extraction_status": "ocr_value_candidate_pending_review",
+                    "review_status": "pending_human_review",
+                    "financial_fact_promoted": "false",
+                })
+            if not any(word in line for word in OCR_AMOUNT_CONTEXT_WORDS):
+                continue
+            for match in OCR_AMOUNT_PATTERN.finditer(line):
+                if any(start <= match.start() < end for start, end in date_spans):
+                    continue
+                raw_value = match.group(0)
+                if "." not in raw_value and "￥" not in raw_value and "¥" not in raw_value and "," not in raw_value:
+                    continue
+                rows.append({
+                    "value_candidate_id": f"OCRV-{manifest['run_id']}-{len(rows) + 1:05d}",
+                    "ocr_candidate_id": candidate["ocr_candidate_id"],
+                    "evidence_id": candidate["evidence_id"],
+                    "source_image_relative_path": candidate["source_image_relative_path"],
+                    "ocr_text_relative_path": candidate["ocr_text_relative_path"],
+                    "candidate_type": "amount",
+                    "raw_value": raw_value,
+                    "normalized_value": normalize_ocr_amount(raw_value),
+                    "currency": "CNY",
+                    "line_number": str(line_number),
+                    "line_text": line.strip()[:180],
+                    "extraction_status": "ocr_value_candidate_pending_review",
+                    "review_status": "pending_human_review",
+                    "financial_fact_promoted": "false",
+                })
     return rows
 
 
@@ -1435,6 +1519,7 @@ def build_company_bank_matrix_rows(fund_rows: list[dict]) -> list[dict]:
 def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Path, repo_root: Path) -> None:
     evidence = write_evidence_index_stub(manifest, run_dir)
     ocr_text_candidates = collect_ocr_text_candidates(manifest, input_dir, evidence)
+    ocr_value_candidates = extract_ocr_value_candidates(manifest, input_dir, ocr_text_candidates)
     structured = extract_structured_csv_facts(manifest, input_dir, evidence)
     funding_forecast_rows = build_funding_forecast_rows(structured)
     cashflow_validation_rows = build_cashflow_validation_rows(structured, manifest["run_id"])
@@ -1442,6 +1527,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     balance_continuity_fail_count = sum(1 for row in cashflow_validation_rows if row["validation_status"] == "FAIL")
     internal_transfer_excluded_count = sum(1 for row in cashflow_validation_rows if row["internal_transfer_excluded"] == "true")
     manifest["ocr_text_candidate_count"] = len(ocr_text_candidates)
+    manifest["ocr_value_candidate_count"] = len(ocr_value_candidates)
     manifest["metadata_signal_count"] = len(metadata_signals)
     manifest["forecast_row_count"] = len(funding_forecast_rows)
     manifest["cashflow_validation_row_count"] = len(cashflow_validation_rows)
@@ -1557,6 +1643,22 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "review_status",
         "financial_fact_promoted",
     ], ocr_text_candidates)
+    write_csv(run_dir / "ocr_value_candidates.csv", [
+        "value_candidate_id",
+        "ocr_candidate_id",
+        "evidence_id",
+        "source_image_relative_path",
+        "ocr_text_relative_path",
+        "candidate_type",
+        "raw_value",
+        "normalized_value",
+        "currency",
+        "line_number",
+        "line_text",
+        "extraction_status",
+        "review_status",
+        "financial_fact_promoted",
+    ], ocr_value_candidates)
     write_csv(run_dir / "workbook_quality_checks.csv", [
         "check_id",
         "check_name",
@@ -1599,6 +1701,16 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
             "relative_path": row["ocr_text_relative_path"],
             "review_status": "pending",
         })
+    for row in ocr_value_candidates:
+        exception_tasks.append({
+            "task_id": f"EX-{manifest['run_id']}-{len(exception_tasks) + 1:05d}",
+            "evidence_id": row["evidence_id"],
+            "task_type": "OCR_VALUE_PENDING_REVIEW",
+            "severity": "blocking_for_financial_fact",
+            "reason": f"{row['value_candidate_id']} {row['candidate_type']} candidate requires review before fact promotion.",
+            "relative_path": row["ocr_text_relative_path"],
+            "review_status": "pending",
+        })
     for row in cashflow_validation_rows:
         if row["validation_status"] != "FAIL":
             continue
@@ -1634,6 +1746,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "management_conclusion_allowed": False,
         "generated_financial_amount_count": 0,
         "ocr_text_candidate_count": len(ocr_text_candidates),
+        "ocr_value_candidate_count": len(ocr_value_candidates),
         "structured_financial_fact_count": len(structured["fund_rows"]),
         "metadata_signal_count": len(metadata_signals),
         "forecast_row_count": len(funding_forecast_rows),
@@ -1661,6 +1774,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "event": "no_hallucination_outputs_written",
                 "generated_financial_amount_count": 0,
                 "ocr_text_candidate_count": len(ocr_text_candidates),
+                "ocr_value_candidate_count": len(ocr_value_candidates),
                 "structured_financial_fact_count": len(structured["fund_rows"]),
                 "metadata_signal_count": len(metadata_signals),
                 "forecast_row_count": len(funding_forecast_rows),
@@ -1771,6 +1885,7 @@ def main() -> int:
         f"Indexed {manifest['file_count']} real source files and generated a native editable Excel workbook from the current mother template.\n\n"
         f"Structured financial fact count: {manifest.get('structured_fact_count', 0)}\n\n"
         f"OCR text candidate count: {manifest.get('ocr_text_candidate_count', 0)}\n\n"
+        f"OCR value candidate count: {manifest.get('ocr_value_candidate_count', 0)}\n\n"
         f"KMFA metadata signal count: {manifest.get('metadata_signal_count', 0)}\n\n"
         f"Known due-date funding forecast row count: {manifest.get('forecast_row_count', 0)}\n\n"
         f"Cashflow validation row count: {manifest.get('cashflow_validation_row_count', 0)}\n\n"
