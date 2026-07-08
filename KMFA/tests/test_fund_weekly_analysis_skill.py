@@ -1696,6 +1696,28 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in staging_rows))
             self.assertTrue(all(row["review_status"] == "pending_human_ledger_staging_review" for row in staging_rows))
 
+            with (run_dir / "ocr_fact_owner_review_batch.csv").open(encoding="utf-8-sig", newline="") as f:
+                owner_batch_rows = list(csv.DictReader(f))
+            owner_by_metric = {row["candidate_metric"]: row for row in owner_batch_rows}
+            self.assertEqual(
+                owner_by_metric["bank_deposit"]["owner_review_status"],
+                "ready_for_owner_review_no_ledger_promotion",
+            )
+            self.assertEqual(owner_by_metric["bank_deposit"]["priority"], "P1")
+            self.assertEqual(owner_by_metric["bank_deposit"]["operator_authorized_count"], "1")
+            self.assertEqual(owner_by_metric["bank_deposit"]["authorization_blocked_count"], "0")
+            self.assertEqual(
+                owner_by_metric["electronic_bill"]["owner_review_status"],
+                "ready_for_owner_review_no_ledger_promotion",
+            )
+            self.assertEqual(
+                owner_by_metric["payment_outflow"]["owner_review_status"],
+                "blocked_metric_review_required",
+            )
+            self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in owner_batch_rows))
+            self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in owner_batch_rows))
+            self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in owner_batch_rows))
+
             with (run_dir / "fund_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
                 fund_rows = list(csv.DictReader(f))
             self.assertEqual(fund_rows, [])
@@ -1709,6 +1731,8 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_ledger_staging_preview_count"], 3)
             self.assertEqual(cross_review["ocr_fact_ledger_staging_preview_ready_count"], 2)
             self.assertEqual(cross_review["ocr_fact_ledger_staging_preview_blocked_count"], 1)
+            self.assertEqual(cross_review["ocr_fact_owner_review_batch_count"], 3)
+            self.assertEqual(cross_review["ocr_fact_owner_review_batch_blocking_count"], 1)
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertFalse(cross_review["management_conclusion_allowed"])
 
