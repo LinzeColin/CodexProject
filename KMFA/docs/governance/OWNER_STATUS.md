@@ -851,3 +851,12 @@ KMFA 当前版本 `0.1.4-residual-difference-authorized-source-reference-or-excl
 - owner action boundary: 48 个 business-value consistency requirement blockers 已转为 lineage full check 前置 owner/授权代理动作要求；当前仍没有可执行 source reference、owner exclusion、formula mapping 或 non-numeric mapping。
 - counts: `lineage_full_check_requirement_blocker_count=48`, `lineage_full_check_ready_count=0`, `source_reference_or_owner_exclusion_lineage_full_check_requirement_count=40`, `formula_or_non_numeric_mapping_lineage_full_check_requirement_count=8`。
 - not performed: raw inbox access/mutation、lineage full check、GitHub upload、app reinstall、business execution。
+
+
+## 2026-07-08 - formal report 前置 owner/authorized-agent external action
+
+- phase: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_FORMAL_REPORT`
+- owner decision: `NO_GO`。
+- owner action boundary: 48 个 lineage full check requirement blockers 已转为 formal report 前置 owner/授权代理动作要求；当前仍没有可执行 source reference、owner exclusion、formula mapping 或 non-numeric mapping。
+- counts: `formal_report_requirement_blocker_count=48`, `formal_report_ready_count=0`, `source_reference_or_owner_exclusion_formal_report_requirement_count=40`, `formula_or_non_numeric_mapping_formal_report_requirement_count=8`。
+- not performed: raw inbox access/mutation、lineage full check、formal report、GitHub upload、app reinstall、business execution。

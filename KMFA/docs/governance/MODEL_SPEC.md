@@ -1973,3 +1973,16 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_lineage_full_check.py --require-private-lineage-full-check-requirement`
 - evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_LINEAGE_FULL_CHECK/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_lineage_full_check_manifest.json`
 - constraints: no raw inbox access/mutation; no authoritative binding; no raw-to-processed value comparison; no processed-data reconciliation; no business consistency; no lineage full check; no GitHub upload; no app reinstall; no business execution.
+
+## v0.1.4 owner/authorized agent external action required before formal report
+
+- model_key: `kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_formal_report`
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-FORMAL-REPORT-001`
+- parameter_ids: `PARAM-KMFA-1609`, `PARAM-KMFA-1610`, `PARAM-KMFA-1611`
+- active_formula_count: `250`
+- active_parameter_count: `1229`
+- locked counts: `0;48;48;48;0;48;48;0;40;8;0;0;0;0;0;0;72;NO_GO`
+- gate flags: external action requirement checked=true; owner/agent external action completed=false; binding=false; raw comparison=false; processed reconciliation=false; business consistency=false; lineage full check=false; formal report=false; upload=false; business execution=false.
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_formal_report.py --require-private-formal-report-requirement`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_FORMAL_REPORT/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_formal_report_manifest.json`
+- constraints: no raw inbox access/mutation; no authoritative binding; no raw-to-processed value comparison; no processed-data reconciliation; no business consistency; no lineage full check; no formal report; no GitHub upload; no app reinstall; no business execution.
