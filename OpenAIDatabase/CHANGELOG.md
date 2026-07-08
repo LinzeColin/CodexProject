@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S08 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s08_review.md`.
+- Added `validate:v1.2-s08-review` for `MA-V12-S08-REVIEW` /
+  `ACC-MA-V12-S08-REVIEW`.
+- Registered status `stage_s08_review_passed_pending_s09_no_github_main_upload`.
+- Confirmed S08 P1 Codex/Agent collaboration quality, S08 P2 authorization
+  boundary and S08 P3 lightweight stage flight recorder satisfy the S08 stage
+  gate.
+- Confirmed the system can explain ChatGPT/Codex/other agent collaboration
+  quality and boundaries without a high-burden governance framework.
+- Preserved S08 Review boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, No multi-agent system,
+  No complex Delegation Contract UI, No proposal apply execution and No S09 work.
+- Marked the next gate as pending S09 P1.
+
 ## Unreleased - Memory Atlas v1.2 S08 P3 Stage Flight Recorder
 
 - Added `机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json`

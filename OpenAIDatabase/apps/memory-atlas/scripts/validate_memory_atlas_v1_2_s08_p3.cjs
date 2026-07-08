@@ -329,6 +329,13 @@ function validateDocsAndRecords() {
   const dataContract = readRepoFile("机器治理/数据契约/README.md");
   const behavior = readRepoFile("机器治理/行为智能模型/README.md");
   const runGate = readRepoFile("机器治理/运行门禁/README.md");
+  const s08ReviewState =
+    hasAll(quick, ["当前阶段是 S08 Review", "MA-V12-S08-REVIEW", "ACC-MA-V12-S08-REVIEW", "下一步只允许进入 S09 P1"]) &&
+    hasAll(overview, ["S08 Review 已完成", "Codex/Agent 协作质量", "stage flight recorder", "下一步是 S09 P1"]) &&
+    hasAll(machine, ["当前为 S08 Review", "MA-V12-S08-REVIEW", "validate:v1.2-s08-review", "下一步是 S09 P1"]) &&
+    hasAll(dataContract, ["当前 S08 Review 已完成", "agent_collaboration_quality_report.json", "agent_authorization_boundary_report.json", "stage_flight_recorder.json", "下一步是 S09 P1"]) &&
+    hasAll(behavior, ["当前 S08 Review 已完成", "Codex/Agent 协作质量", "授权边界", "stage flight recorder", "下一步是 S09 P1"]) &&
+    hasAll(runGate, ["当前阶段是 S08 Review", "MA-V12-S08-REVIEW", "ACC-MA-V12-S08-REVIEW", "validate:v1.2-s08-review"]);
   assertCondition(
     !fs.existsSync(path.join(repoRoot, "人类可读/21_StageFlightRecorder说明.md")),
     "s08p3_no_extra_human_doc",
@@ -336,37 +343,37 @@ function validateDocsAndRecords() {
     "S08 P3 created an extra human-readable stage-flight doc",
   );
   assertCondition(
-    hasAll(quick, [taskId, acceptanceId, status, "当前阶段是 S08 P3", "下一步只允许进入 S08 Review"]),
+    s08ReviewState || hasAll(quick, [taskId, acceptanceId, status, "当前阶段是 S08 P3", "下一步只允许进入 S08 Review"]),
     "s08p3_quick_entry",
     "Quick entry records S08 P3 state and next S08 Review gate",
     "Quick entry is missing S08 P3 state",
   );
   assertCondition(
-    hasAll(overview, ["S08 P3 已完成", "stage flight recorder", outputPath, "下一步是 S08 Review"]),
+    s08ReviewState || hasAll(overview, ["S08 P3 已完成", "stage flight recorder", outputPath, "下一步是 S08 Review"]),
     "s08p3_overview",
     "Overview records S08 P3 state and output",
     "Overview is missing S08 P3 state",
   );
   assertCondition(
-    hasAll(machine, ["当前为 S08 P3", taskId, validatorName, "下一步是 S08 Review"]),
+    s08ReviewState || hasAll(machine, ["当前为 S08 P3", taskId, validatorName, "下一步是 S08 Review"]),
     "s08p3_machine_readme",
     "Machine README records S08 P3 identity and next gate",
     "Machine README is missing S08 P3 state",
   );
   assertCondition(
-    hasAll(dataContract, ["当前 S08 P3 已完成", outputPath, "stage_flight_recorder.json", "下一步是 S08 Review"]),
+    s08ReviewState || hasAll(dataContract, ["当前 S08 P3 已完成", outputPath, "stage_flight_recorder.json", "下一步是 S08 Review"]),
     "s08p3_data_contract",
     "Data contract README records S08 P3 stage flight output",
     "Data contract README is missing S08 P3 output",
   );
   assertCondition(
-    hasAll(behavior, ["当前 S08 P3 已完成", configPath, outputPath, "lightweight stage flight recorder", "下一步是 S08 Review"]),
+    s08ReviewState || hasAll(behavior, ["当前 S08 P3 已完成", configPath, outputPath, "lightweight stage flight recorder", "下一步是 S08 Review"]),
     "s08p3_behavior_readme",
     "Behavior model README records S08 P3 lightweight stage flight output",
     "Behavior model README is missing S08 P3 state",
   );
   assertCondition(
-    hasAll(runGate, ["当前阶段是 S08 P3", taskId, acceptanceId, validatorName, "stage-flight", "下一步是 S08 Review"]),
+    s08ReviewState || hasAll(runGate, ["当前阶段是 S08 P3", taskId, acceptanceId, validatorName, "stage-flight", "下一步是 S08 Review"]),
     "s08p3_run_gate",
     "Run gate README records S08 P3 validator and next gate",
     "Run gate README is missing S08 P3 gate",
