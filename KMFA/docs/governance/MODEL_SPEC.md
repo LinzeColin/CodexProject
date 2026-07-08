@@ -1843,3 +1843,12 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: source_owner_action_intake_blocker_count=48, source_owner_action_intake_ready_count=0 and source_private_action_intake_blocker_threshold_records_item_count=48 prove this phase starts from the prior action-intake threshold state; prior_action_intake_blocker_observation_count=2, action_intake_blocker_observation_count=3, action_intake_blocked_audit_threshold_met=true and goal_status_recommendation=blocked prove this is the final threshold observation.
 - gate: `NO_GO`; owner_action_intake_ready_count=0, owner_action_intake_blocker_count=48, actionable_owner_resolution_count=0, binding_ready_after_action_intake_blocker_final_threshold_recheck_count=0, comparison_retry_ready_after_action_intake_blocker_final_threshold_recheck_count=0, raw_to_processed_value_comparison_performed_by_this_phase=false, full_raw_to_processed_value_comparison_complete=false and business_value_consistency_verified=false keep reconciliation, formal report, upload, reinstall and business execution blocked.
 - privacy: public artifacts contain aggregate counts and gate state only; private final-threshold diagnostic, records and report stay under ignored runtime and raw inbox remains untouched by this phase.
+
+## 2026-07-08｜V014 action-intake blocker blocked handoff after final threshold model note
+
+- model_key: `kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_after_final_threshold`
+- formula_id: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-ACTION-INTAKE-BLOCKER-BLOCKED-HANDOFF-AFTER-FINAL-THRESHOLD-001`
+- parameter_ids: `PARAM-KMFA-1573`, `PARAM-KMFA-1574`, `PARAM-KMFA-1575`
+- phase_id: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_AFTER_FINAL_THRESHOLD`
+- gate: `NO_GO`; 48 final-threshold action-intake blockers are converted into blocked handoff / owner-action queue only, with binding, raw-to-processed comparison, reconciliation, report, upload, reinstall and business execution blocked.
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_AFTER_FINAL_THRESHOLD/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_after_final_threshold_manifest.json`

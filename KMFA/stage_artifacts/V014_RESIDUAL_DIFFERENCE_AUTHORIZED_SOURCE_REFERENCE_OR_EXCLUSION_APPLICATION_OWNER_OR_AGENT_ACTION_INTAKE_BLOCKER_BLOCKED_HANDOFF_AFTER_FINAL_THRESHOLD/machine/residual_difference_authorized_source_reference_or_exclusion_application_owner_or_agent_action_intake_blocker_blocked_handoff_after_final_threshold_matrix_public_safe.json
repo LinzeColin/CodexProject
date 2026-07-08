@@ -1,0 +1,63 @@
+{
+  "check_count": 12,
+  "check_fail_count": 0,
+  "check_pass_count": 12,
+  "checks": [
+    {
+      "check_code": "source_final_threshold_phase_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_go_no_go_preserved",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_matrix_clean",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_final_threshold_complete",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_blockers_complete",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_private_final_threshold_records_complete",
+      "status": "PASS"
+    },
+    {
+      "check_code": "blocked_handoff_complete",
+      "status": "PASS"
+    },
+    {
+      "check_code": "owner_action_queue_complete",
+      "status": "PASS"
+    },
+    {
+      "check_code": "blocked_goal_preserved",
+      "status": "PASS"
+    },
+    {
+      "check_code": "diagnostic_kind_owner_action_counts_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_gates_closed",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-08T00:00:00+10:00",
+  "phase_id": "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_AFTER_FINAL_THRESHOLD",
+  "project_id": "KMFA",
+  "record_type": "v014_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_after_final_threshold_matrix_public_safe",
+  "schema_version": "kmfa.v014_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_after_final_threshold_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-ACTION-INTAKE-BLOCKER-BLOCKED-HANDOFF-AFTER-FINAL-THRESHOLD-20260708",
+  "version": "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-blocker-blocked-handoff-after-final-threshold"
+}
