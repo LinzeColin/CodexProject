@@ -2,8 +2,8 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S05 P1。任务 ID 为 `MA-V12-S05P1`，验收 ID 为
-`ACC-MA-V12-S05P1`，validator 为 `validate:v1.2-s05-p1`。
+当前阶段是 S05 P2。任务 ID 为 `MA-V12-S05P2`，验收 ID 为
+`ACC-MA-V12-S05P2`，validator 为 `validate:v1.2-s05-p2`。
 
 前置 S01 Review 已通过：`MA-V12-S01-REVIEW` / `ACC-MA-V12-S01-REVIEW` /
 `validate:v1.2-s01-review`。
@@ -228,4 +228,28 @@ S05 P1 gate：
 
 No GitHub main upload in this phase。
 No remote push in this phase。
-下一步是 S05 P2。
+前置 S05 P1 已通过：`MA-V12-S05P1` / `ACC-MA-V12-S05P1` /
+`validate:v1.2-s05-p1`。
+
+S05 P2 产物：
+
+- `scripts/extract_memory_atlas_facets.py`
+- `scripts/atlasctl.py analyze --stage facets`
+- `data/derived/behavior_intelligence/events.json`
+- `docs/reviews/memory_atlas_v1_2_s05_p2_facet_extractor.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p2.cjs`
+
+S05 P2 gate：
+
+- extractor 可从 ChatGPT、Codex 和 future_agent/other_agent 的 raw 或 derived 输入抽取
+  canonical events。
+- 缺失字段必须 fallback，不得抛出无意义异常。
+- 缺失来源必须写 source_status missing_reason，不得生成 fake events。
+- 每条 event 必须包含 `raw_ref`、`manifest_ref`、`derived_ref` 或
+  `evidence_missing_reason`。
+- 不修改 raw，不上传 GitHub main，不远端 push，不改变首屏 UI。
+
+No GitHub main upload in this phase。
+No remote push in this phase。
+No raw mutation in this phase。
+下一步是 S05 P3。

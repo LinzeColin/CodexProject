@@ -1,3 +1,47 @@
+## v1.2 S05 P2 Facet Extractor
+
+状态：`phase_s05_p2_facet_extractor_completed_pending_s05_p3`。
+
+任务 ID：`MA-V12-S05P2`。
+
+验收 ID：`ACC-MA-V12-S05P2`。
+
+S05 P2 实现 Memory Atlas v1.2 的 facet extractor。它从已有 public raw、
+processed manifest 和 derived snapshot 中生成 canonical behavior events，并把缺失来源写入
+source_status missing reason，而不是生成 fake events。
+
+涉及文件：
+
+- `scripts/extract_memory_atlas_facets.py`
+- `scripts/atlasctl.py`
+- `data/derived/behavior_intelligence/events.json`
+- `docs/reviews/memory_atlas_v1_2_s05_p2_facet_extractor.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p2.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s05-p2`
+- `ACC-MA-V12-S05P2`
+- `MA-V12-S05P2`
+- S05 P2
+- `extract_memory_atlas_facets.py`
+- `atlasctl.py analyze --stage facets`
+- `events.json`
+- 217 events
+- pending S05 P3
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase.
+- No raw mutation in this phase.
+- No fake events.
+- No app reinstall in this phase.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S05 P2 Facet Extractor; MA-V12-S05P2; ACC-MA-V12-S05P2; phase_s05_p2_facet_extractor_completed_pending_s05_p3; validate:v1.2-s05-p2; extract_memory_atlas_facets.py; atlasctl.py analyze --stage facets; events.json; 217 events; S05 P2; pending S05 P3; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No fake events.
+
 ## v1.2 S05 P1 Facet Schema
 
 状态：`phase_s05_p1_facet_schema_completed_pending_s05_p2`。

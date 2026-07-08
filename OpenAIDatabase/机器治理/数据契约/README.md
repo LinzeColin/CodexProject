@@ -12,11 +12,14 @@
 
 source registry 属于 S02 P2；本阶段不创建 registry 文件，不修改 raw archive。
 
-当前 S05 P1 已完成，并新增：
+当前 S05 P2 已完成，并新增：
 
 - `机器治理/数据契约/facet_event_schema.v1_2_s05_p1.json`
 - `人类可读/12_Facet字段与事件语义说明.md`
 - `docs/reviews/memory_atlas_v1_2_s05_p1_facet_schema.md`
+- `scripts/extract_memory_atlas_facets.py`
+- `data/derived/behavior_intelligence/events.json`
+- `docs/reviews/memory_atlas_v1_2_s05_p2_facet_extractor.md`
 
 S05 P1 定义 facet/canonical event schema：`source`、`topic`、`intent`、
 `task_type`、`project`、`output_type`、`language`、`tool`、`turn_count`、
@@ -25,3 +28,8 @@ S05 P1 定义 facet/canonical event schema：`source`、`topic`、`intent`、
 
 下一步是 S05 P2：实现 extractor。S05 P1 不生成 fake events，不写
 `data/derived/behavior_intelligence/events.json`，不修改 raw。
+
+S05 P2 实现 extractor 后，`events.json` 当前覆盖 ChatGPT、Codex 和
+future_agent source_status。ChatGPT 与 Codex 从 processed manifest 抽取；future_agent
+当前无 public raw，因此 `source_status.future_agent.missing_reason` 记录缺失原因而不生成
+fake events。下一步是 S05 P3：补强 evidence refs 和 review。
