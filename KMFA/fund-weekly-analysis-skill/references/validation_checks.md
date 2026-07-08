@@ -8,6 +8,7 @@ Blocking checks:
 * Existing configured input folder with unreadable/cloud-only files returns `SOURCE_UNREADABLE` and does not write an Excel package.
 * Source materialization dry-run creates no target files; apply copies missing files only, skips identical files, fails on conflicting existing targets, and returns `SOURCE_UNREADABLE` when OneDrive source files are cloud-only/dataless, bad zip, or otherwise unreadable.
 * ZIP source materialization must be explicit via `--source-zip` and group-scoped via `--zip-prefix 付款请示群`; it must not copy other DingTalk groups or unsafe path members.
+* ZIP source materialization accepts both `付款请示群/...` and `DWS_Outputs/付款请示群/...` member layouts when the operator passes `--zip-prefix 付款请示群`; relative output paths must strip the group/container prefix.
 * `INDEXED_PENDING_EXTRACTION` outputs do not contain generated financial amounts, forecasts, or management conclusions.
 * `kmfa_metadata_signals.csv` may carry only public-safe KMFA metadata signals and must keep all formal action / management conclusion gates false.
 * `ocr_text_candidates.csv` may carry only adjacent real OCR text sidecars linked to screenshot evidence; all rows must stay pending review with `financial_fact_promoted=false`.

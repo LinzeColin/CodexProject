@@ -81,6 +81,9 @@ python3 KMFA/fund-weekly-analysis-skill/tools/materialize_fund_source.py \
 
 ZIP materialization is explicit only. The daily runner still must not silently
 read or extract `DWS_Outputs.zip` when the configured hot folder is missing.
+If the zip was produced with a top-level `DWS_Outputs/` folder, still pass
+`--zip-prefix 付款请示群`; the materializer strips the standard container root
+and remains group-scoped.
 
 ## Manual work expected from user
 

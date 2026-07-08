@@ -23,6 +23,9 @@ from typing import Iterable
 from zoneinfo import ZoneInfo
 
 
+ZIP_CONTAINER_ROOTS = {"DWS_Outputs", "DWS_Archive"}
+
+
 def sha256_file(path: Path, chunk_size: int = 1024 * 1024) -> str:
     h = hashlib.sha256()
     with path.open("rb") as f:
@@ -92,9 +95,12 @@ def zip_member_relative_path(member_name: str, zip_prefix: str) -> Path | None:
 
     prefix_parts = PurePosixPath(normalized_prefix).parts if normalized_prefix else ()
     if prefix_parts:
-        if parts[:len(prefix_parts)] != prefix_parts:
+        if parts[:len(prefix_parts)] == prefix_parts:
+            relative_parts = parts[len(prefix_parts):]
+        elif parts[0] in ZIP_CONTAINER_ROOTS and parts[1:1 + len(prefix_parts)] == prefix_parts:
+            relative_parts = parts[1 + len(prefix_parts):]
+        else:
             return None
-        relative_parts = parts[len(prefix_parts):]
     else:
         relative_parts = parts
     if not relative_parts or any(part in {"", ".", ".."} for part in relative_parts):
