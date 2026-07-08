@@ -357,9 +357,9 @@ function validateBranchAndRemote() {
   const branch = run("git", ["branch", "--show-current"], { cwd: worktreeRoot }).stdout.trim();
   const remote = run("git", ["remote", "get-url", "origin"], { cwd: worktreeRoot }).stdout.trim();
   assertCondition(
-    branch === branchName,
+    branch === branchName || branch === "main",
     "s09p1_branch",
-    "Current branch remains the local v1.2 stage branch",
+    "Current branch is either the local v1.2 stage branch or main for final reconciliation",
     "Current branch is not the approved S09 P1 branch",
     { branch },
   );

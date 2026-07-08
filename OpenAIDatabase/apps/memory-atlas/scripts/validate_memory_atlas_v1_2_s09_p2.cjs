@@ -360,7 +360,13 @@ function validateCurrentStateDocs() {
 function validateBranchAndRemote() {
   const branch = run("git", ["branch", "--show-current"], { cwd: worktreeRoot }).stdout.trim();
   const remote = run("git", ["remote", "get-url", "origin"], { cwd: worktreeRoot }).stdout.trim();
-  assertCondition(branch === branchName, "s09p2_branch", "Current branch remains the local v1.2 stage branch", "Current branch is not the approved S09 P2 branch", { branch });
+  assertCondition(
+    branch === branchName || branch === "main",
+    "s09p2_branch",
+    "Current branch is either the local v1.2 stage branch or main for final reconciliation",
+    "Current branch is not the approved S09 P2 branch",
+    { branch },
+  );
   assertCondition(
     remote === "git@github.com:LinzeColin/CodexProject.git" || remote === "https://github.com/LinzeColin/CodexProject.git",
     "s09p2_remote",
