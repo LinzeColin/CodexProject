@@ -2055,3 +2055,12 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK_FOLLOW_UP/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_manifest.json`
 - validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up.py --require-private-business-execution-blocked-follow-up-continuation-recheck-follow-up`
 - decision logic: source continuation recheck remains `0 ready / 48 blockers`; follow-up queue remains `0 ready / 48 blockers`; downstream gates stay closed and decision remains `NO_GO`.
+
+
+### kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_final_check
+- version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-blocked-follow-up-continuation-recheck-follow-up-final-check`
+- formula: `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-BLOCKED-FOLLOW-UP-CONTINUATION-RECHECK-FOLLOW-UP-FINAL-CHECK-001`
+- parameters: `PARAM-KMFA-1651`, `PARAM-KMFA-1652`, `PARAM-KMFA-1653`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK_FOLLOW_UP_FINAL_CHECK/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_final_check_manifest.json`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_final_check.py --require-private-business-execution-blocked-follow-up-continuation-recheck-follow-up-final-check`
+- decision logic: source follow-up remains `0 ready / 48 blockers`; final-check queue remains `0 ready / 48 blockers`; downstream gates stay closed and decision remains `NO_GO`.

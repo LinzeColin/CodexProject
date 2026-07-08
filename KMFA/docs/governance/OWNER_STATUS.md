@@ -964,3 +964,5 @@ KMFA 当前版本 `0.1.4-residual-difference-authorized-source-reference-or-excl
 - owner_status: `blocked_owner_or_authorized_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up`
 - required_owner_or_agent_input: source reference, owner exclusion, formula mapping or non-numeric mapping basis before business execution can open.
 - decision: `NO_GO`; business execution, GitHub upload and app reinstall remain closed.
+
+- v0.1.4 business execution blocked follow-up continuation recheck follow-up final check 已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：source blockers=48、final-check blockers=48、business execution ready=0、unresolved differences=72、Go/No-Go=NO_GO。该 phase 只读取上一 public-safe follow-up evidence 和 ignored private follow-up queue，不读取或修改 raw inbox，不公开 raw 文件名、字段/表头、金额、明细、私有 hash、target slot 明细或业务值，不证明 authoritative binding、raw-to-processed value comparison、full reconciliation、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
