@@ -1,3 +1,46 @@
+## 134. Memory Atlas v1.2 S08 P2 Agent Authorization Boundary Parameters
+
+状态：`phase_s08_p2_authorization_boundary_completed_pending_s08_p3`。
+
+验收 ID：`ACC-MA-V12-S08P2`。
+
+S08 P2 固定以下参数：
+
+- `MA-V12-S08P2`
+- `validate:v1.2-s08-p2`
+- `机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json`
+- `scripts/build_memory_atlas_agent_authorization.py`
+- `atlasctl.py analyze --stage agent-authorization`
+- `atlasctl.py audit --check agent-authorization`
+- `data/derived/agent_collaboration/agent_authorization_boundary_report.json`
+- `approved_by_human`
+- S08 P2 完成后下一步为 pending S08 P3。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S08P2-001 phase_status = phase_s08_p2_authorization_boundary_completed_pending_s08_p3`
+- `PARAM-MA-V12-S08P2-002 validator = validate:v1.2-s08-p2`
+- `PARAM-MA-V12-S08P2-003 config = 机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json`
+- `PARAM-MA-V12-S08P2-004 builder = build_memory_atlas_agent_authorization.py`
+- `PARAM-MA-V12-S08P2-005 output = data/derived/agent_collaboration/agent_authorization_boundary_report.json`
+- `PARAM-MA-V12-S08P2-006 human_approval_required = true; approved_by_human`
+- `PARAM-MA-V12-S08P2-007 current_phase_executes_apply = false`
+- `PARAM-MA-V12-S08P2-008 raw_apply_target_allowed = false`
+- `PARAM-MA-V12-S08P2-009 machine_output_check_count = 4 checks`
+- `PARAM-MA-V12-S08P2-010 next_gate = pending S08 P3`
+- `PARAM-MA-V12-S08P2-011 phase_boundary = No raw mutation; No complex Delegation Contract UI; No multi-agent system; No proposal apply execution; No stage flight recorder; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s08-p2` checks S08 P1 predecessor, authorization boundary
+  config, persisted `agent_authorization_boundary_report.json`, `atlasctl
+  analyze --stage agent-authorization --dry-run`, `atlasctl audit --check
+  agent-authorization`, human/machine records, canonical remote and no raw/no
+  upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S08 P2 Agent Authorization Boundary; MA-V12-S08P2; ACC-MA-V12-S08P2; phase_s08_p2_authorization_boundary_completed_pending_s08_p3; validate:v1.2-s08-p2; S08 P2; agent_authorization_boundary_report.json; approved_by_human; human_approval_required=true; raw_apply_target_allowed=false; current_phase_executes_apply=false; pending S08 P3; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No complex Delegation Contract UI; No multi-agent system; No proposal apply execution; No stage flight recorder.
+
 ## 133. Memory Atlas v1.2 S08 P1 Agent Collaboration Metrics Parameters
 
 状态：`phase_s08_p1_collaboration_metrics_completed_pending_s08_p2`。

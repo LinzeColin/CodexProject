@@ -12,7 +12,7 @@
 
 source registry 属于 S02 P2；本阶段不创建 registry 文件，不修改 raw archive。
 
-当前 S08 P1 已完成。S05 Review 已通过，并新增：
+当前 S08 P2 已完成。S05 Review 已通过，并新增：
 
 - `机器治理/数据契约/facet_event_schema.v1_2_s05_p1.json`
 - `人类可读/12_Facet字段与事件语义说明.md`
@@ -59,6 +59,13 @@ source registry 属于 S02 P2；本阶段不创建 registry 文件，不修改 r
 - `人类可读/19_Agent协作质量指标说明.md`
 - `docs/reviews/memory_atlas_v1_2_s08_p1_agent_collaboration.md`
 - `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s08_p1.cjs`
+- `机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json`
+- `scripts/build_memory_atlas_agent_authorization.py`
+- `data/derived/agent_collaboration/agent_authorization_boundary_report.json`
+- `人类可读/20_Agent授权边界说明.md`
+- `docs/reviews/memory_atlas_v1_2_s08_p2_authorization_boundary.md`
+- `tests/test_s08p2_agent_authorization.py`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s08_p2.cjs`
 
 S05 P1 定义 facet/canonical event schema：`source`、`topic`、`intent`、
 `task_type`、`project`、`output_type`、`language`、`tool`、`turn_count`、
@@ -136,4 +143,11 @@ S08 P1 生成 `data/derived/agent_collaboration/agent_collaboration_quality_repo
 rework count、scope clarity、testability、rollbackability。source 字段支持 `chatgpt`、
 `codex` 和 `other_agent`，其中 future agent 没有真实证据时只能记录 `observed=false`，
 不得生成假指标。本阶段不修改 raw，不定义授权 apply 边界，不生成 stage flight recorder，
-不创建复杂 Delegation Contract UI。下一步是 S08 P2。
+不创建复杂 Delegation Contract UI。S08 P1 的下一历史 gate 是 S08 P2，当前已完成。
+
+S08 P2 生成 `data/derived/agent_collaboration/agent_authorization_boundary_report.json`。
+该输出由 `机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json` 和
+`scripts/build_memory_atlas_agent_authorization.py` 生成，固定轻量授权边界：
+raw 不可修改，proposal 需人类授权并进入 `approved_by_human` 后才能 apply，当前 phase
+不执行 proposal apply，不实现复杂 Delegation Contract UI，不创建多 agent 系统。
+下一步是 S08 P3。

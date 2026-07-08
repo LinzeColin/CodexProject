@@ -24,6 +24,7 @@ ECONOMIC_PROXY_BUILDER = ROOT / "scripts" / "build_memory_atlas_economic_proxy.p
 INFORMATION_ROI_BUILDER = ROOT / "scripts" / "build_memory_atlas_information_roi.py"
 FORMULA_WHAT_IF_BUILDER = ROOT / "scripts" / "build_memory_atlas_formula_what_if.py"
 AGENT_COLLABORATION_BUILDER = ROOT / "scripts" / "build_memory_atlas_agent_collaboration.py"
+AGENT_AUTHORIZATION_BUILDER = ROOT / "scripts" / "build_memory_atlas_agent_authorization.py"
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -382,13 +383,54 @@ def agent_collaboration_analyze_contract() -> dict[str, object]:
     }
 
 
+def agent_authorization_analyze_contract() -> dict[str, object]:
+    return {
+        "status": "PASS",
+        "command": "analyze",
+        "stage": "agent-authorization",
+        "dry_run": True,
+        "writes_files": False,
+        "builder": "scripts/build_memory_atlas_agent_authorization.py",
+        "authorization_config": "机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json",
+        "input": [
+            "data/derived/agent_collaboration/agent_collaboration_quality_report.json",
+            "机器治理/同步与备份/raw_public_archive_policy.v1_2_s03_p1.json",
+            "机器治理/同步与备份/raw_manifest_ledger_policy.v1_2_s03_p3.json",
+            "机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json",
+        ],
+        "output": "data/derived/agent_collaboration/agent_authorization_boundary_report.json",
+        "raw_mutation": False,
+        "task_id": "MA-V12-S08P2",
+        "acceptance_id": "ACC-MA-V12-S08P2",
+        "phase_boundary": {
+            "authorization_boundary_defined_as_machine_checks": True,
+            "does_not_modify_raw": True,
+            "does_not_apply_proposals": True,
+            "requires_human_approval_before_apply": True,
+            "does_not_implement_complex_delegation_contract_ui": True,
+            "does_not_generate_stage_flight_recorder": True,
+            "next_phase": "S08 P3",
+        },
+    }
+
+
 def run_analyze(args: argparse.Namespace) -> int:
-    if args.stage not in {"facets", "clusters", "low-value-loops", "opportunities", "economic-proxy", "information-roi", "formula-what-if", "agent-collaboration"}:
+    if args.stage not in {
+        "facets",
+        "clusters",
+        "low-value-loops",
+        "opportunities",
+        "economic-proxy",
+        "information-roi",
+        "formula-what-if",
+        "agent-collaboration",
+        "agent-authorization",
+    }:
         print(json.dumps({
             "status": "NOT_IMPLEMENTED",
             "command": "analyze",
             "stage": args.stage,
-            "reason": "Unknown analyze stage. Supported stages: facets, clusters, low-value-loops, opportunities, economic-proxy, information-roi, formula-what-if, agent-collaboration.",
+            "reason": "Unknown analyze stage. Supported stages: facets, clusters, low-value-loops, opportunities, economic-proxy, information-roi, formula-what-if, agent-collaboration, agent-authorization.",
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 2
 
@@ -433,6 +475,10 @@ def run_analyze(args: argparse.Namespace) -> int:
             command.append("--dry-run")
     elif args.stage == "agent-collaboration":
         command = [sys.executable, str(AGENT_COLLABORATION_BUILDER), "--database-dir", str(args.database_dir)]
+        if args.dry_run:
+            command.append("--dry-run")
+    elif args.stage == "agent-authorization":
+        command = [sys.executable, str(AGENT_AUTHORIZATION_BUILDER), "--database-dir", str(args.database_dir)]
         if args.dry_run:
             command.append("--dry-run")
     result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
@@ -842,7 +888,159 @@ def run_agent_collaboration_audit(args: argparse.Namespace) -> int:
     return 0 if status == "PASS" else 2
 
 
+def run_agent_authorization_audit(args: argparse.Namespace) -> int:
+    config_path = args.database_dir / "机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json"
+    output_path = args.database_dir / "data/derived/agent_collaboration/agent_authorization_boundary_report.json"
+    bad_items: list[str] = []
+    config: dict[str, object] = {}
+    output: dict[str, object] = {}
+    required_states = {
+        "draft",
+        "pending_human_review",
+        "approved_by_human",
+        "applying",
+        "applied",
+        "validated",
+        "committed",
+        "failed_validation",
+        "rollback_or_needs_revision",
+    }
+    required_fields = {
+        "proposal_id",
+        "target_type",
+        "target_files",
+        "human_reason_zh",
+        "evidence_refs",
+        "before_after_diff",
+        "risk_level",
+        "rollback_plan",
+        "expires_at",
+        "action_half_life",
+        "approval",
+        "validation_commands",
+    }
+    forbidden_targets = {"raw_archive", "public_raw", "credentials"}
+    forbidden_prefixes = {"data/public_raw/", "data/raw/"}
+
+    if not config_path.exists():
+        bad_items.append("agent_authorization_config:missing")
+    else:
+        config = json.loads(config_path.read_text(encoding="utf-8"))
+        if config.get("task_id") != "MA-V12-S08P2" or config.get("acceptance_id") != "ACC-MA-V12-S08P2":
+            bad_items.append("agent_authorization_config:identity_mismatch")
+        if config.get("boundary_mode") != "machine_config_and_output_checks":
+            bad_items.append("agent_authorization_config:boundary_mode_not_machine_checks")
+        ui = config.get("delegation_contract_ui") if isinstance(config.get("delegation_contract_ui"), dict) else {}
+        if ui.get("complex_ui_required") is not False:
+            bad_items.append("agent_authorization_config:complex_ui_required")
+        state_machine = config.get("proposal_state_machine") if isinstance(config.get("proposal_state_machine"), dict) else {}
+        states = {str(item) for item in state_machine.get("states") or []}
+        for state in sorted(required_states - states):
+            bad_items.append(f"agent_authorization_config:missing_state:{state}")
+        if state_machine.get("human_approval_required") is not True:
+            bad_items.append("agent_authorization_config:human_approval_not_required")
+        if state_machine.get("current_phase_executes_apply") is not False:
+            bad_items.append("agent_authorization_config:current_phase_executes_apply")
+        if state_machine.get("apply_execution_deferred_to") != "S13":
+            bad_items.append("agent_authorization_config:apply_not_deferred_to_s13")
+        field_set = set(config.get("proposal_required_fields") or [])
+        for field in sorted(required_fields - field_set):
+            bad_items.append(f"agent_authorization_config:missing_proposal_field:{field}")
+        target_set = set(config.get("apply_forbidden_targets") or [])
+        for target in sorted(forbidden_targets - target_set):
+            bad_items.append(f"agent_authorization_config:missing_forbidden_target:{target}")
+        prefix_set = set(config.get("forbidden_path_prefixes") or [])
+        for prefix in sorted(forbidden_prefixes - prefix_set):
+            bad_items.append(f"agent_authorization_config:missing_forbidden_prefix:{prefix}")
+        boundary = config.get("scope_boundary") if isinstance(config.get("scope_boundary"), dict) else {}
+        if boundary.get("raw_mutation") is not False:
+            bad_items.append("agent_authorization_config:raw_mutation_not_false")
+        if boundary.get("proposal_apply_execution") is not False:
+            bad_items.append("agent_authorization_config:proposal_apply_execution_not_false")
+        if boundary.get("authorization_boundary_defined_as_machine_checks") is not True:
+            bad_items.append("agent_authorization_config:machine_checks_boundary_missing")
+        if boundary.get("stage_flight_recorder") != "deferred_to_s08_p3":
+            bad_items.append("agent_authorization_config:stage_flight_not_deferred")
+
+    if not output_path.exists():
+        bad_items.append("agent_authorization_output:missing")
+    else:
+        output = json.loads(output_path.read_text(encoding="utf-8"))
+        if output.get("task_id") != "MA-V12-S08P2" or output.get("acceptance_id") != "ACC-MA-V12-S08P2":
+            bad_items.append("agent_authorization_output:identity_mismatch")
+        if output.get("status") != "phase_s08_p2_authorization_boundary_completed_pending_s08_p3":
+            bad_items.append("agent_authorization_output:status_mismatch")
+        summary = output.get("authorization_boundary_summary") if isinstance(output.get("authorization_boundary_summary"), dict) else {}
+        for key in ["summary_zh", "human_role_zh", "agent_role_zh", "raw_boundary_zh", "future_apply_zh"]:
+            if not summary.get(key):
+                bad_items.append(f"agent_authorization_output:missing_{key}")
+        checks = output.get("machine_output_checks") if isinstance(output.get("machine_output_checks"), list) else []
+        check_ids = {item.get("check_id") for item in checks if isinstance(item, dict)}
+        for check_id in {"S08P2-CHECK-001", "S08P2-CHECK-002", "S08P2-CHECK-003", "S08P2-CHECK-004"} - check_ids:
+            bad_items.append(f"agent_authorization_output:missing_check:{check_id}")
+        for item in checks:
+            if not isinstance(item, dict):
+                bad_items.append("agent_authorization_output:invalid_check_item")
+                continue
+            check_id = item.get("check_id")
+            if item.get("status") != "PASS":
+                bad_items.append(f"agent_authorization_output:{check_id}:not_pass")
+            if not item.get("explanation_zh"):
+                bad_items.append(f"agent_authorization_output:{check_id}:missing_chinese_explanation")
+            if not item.get("evidence_refs"):
+                bad_items.append(f"agent_authorization_output:{check_id}:missing_evidence_refs")
+        proposal_contract = output.get("proposal_contract") if isinstance(output.get("proposal_contract"), dict) else {}
+        output_field_set = set(proposal_contract.get("required_fields") or [])
+        for field in sorted(required_fields - output_field_set):
+            bad_items.append(f"agent_authorization_output:missing_contract_field:{field}")
+        if set(proposal_contract.get("apply_forbidden_targets") or []) < forbidden_targets:
+            bad_items.append("agent_authorization_output:forbidden_targets_incomplete")
+        boundary = output.get("phase_boundary") if isinstance(output.get("phase_boundary"), dict) else {}
+        if boundary.get("authorization_boundary_defined_as_machine_checks") is not True:
+            bad_items.append("agent_authorization_output:machine_checks_boundary_missing")
+        if boundary.get("does_not_modify_raw") is not True:
+            bad_items.append("agent_authorization_output:raw_boundary_missing")
+        if boundary.get("does_not_apply_proposals") is not True:
+            bad_items.append("agent_authorization_output:apply_boundary_missing")
+        if boundary.get("requires_human_approval_before_apply") is not True:
+            bad_items.append("agent_authorization_output:human_approval_boundary_missing")
+        if boundary.get("raw_is_never_apply_target") is not True:
+            bad_items.append("agent_authorization_output:raw_target_boundary_missing")
+        if boundary.get("does_not_implement_complex_delegation_contract_ui") is not True:
+            bad_items.append("agent_authorization_output:complex_ui_boundary_missing")
+        if boundary.get("does_not_create_multi_agent_system") is not True:
+            bad_items.append("agent_authorization_output:multi_agent_boundary_missing")
+        if boundary.get("does_not_generate_stage_flight_recorder") is not True:
+            bad_items.append("agent_authorization_output:stage_flight_boundary_missing")
+        if boundary.get("next_phase") != "S08 P3":
+            bad_items.append("agent_authorization_output:next_phase_not_s08p3")
+
+    status = "PASS" if not bad_items else "FAIL"
+    result = {
+        "status": status,
+        "command": "audit",
+        "check": "agent-authorization",
+        "task_id": config.get("task_id") or output.get("task_id"),
+        "acceptance_id": config.get("acceptance_id") or output.get("acceptance_id"),
+        "authorization_config": "机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json",
+        "authorization_output": "data/derived/agent_collaboration/agent_authorization_boundary_report.json" if output_path.exists() else "",
+        "machine_output_check_count": len(output.get("machine_output_checks") or []) if isinstance(output.get("machine_output_checks"), list) else 0,
+        "human_approval_required": True,
+        "raw_apply_target_allowed": False,
+        "proposal_apply_execution": False,
+        "complex_delegation_contract_ui": False,
+        "multi_agent_system_implementation": False,
+        "stage_flight_recorder": "deferred_to_s08_p3",
+        "bad_items": bad_items,
+        "raw_mutation": False,
+    }
+    print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0 if status == "PASS" else 2
+
+
 def run_audit(args: argparse.Namespace) -> int:
+    if args.check == "agent-authorization":
+        return run_agent_authorization_audit(args)
     if args.check == "agent-collaboration":
         return run_agent_collaboration_audit(args)
     if args.check == "formula-what-if":
@@ -856,7 +1054,7 @@ def run_audit(args: argparse.Namespace) -> int:
             "status": "NOT_IMPLEMENTED",
             "command": "audit",
             "check": args.check,
-            "reason": "Unknown audit check. Supported checks: insight-evidence, formulas, visual-roi, formula-what-if, agent-collaboration.",
+            "reason": "Unknown audit check. Supported checks: insight-evidence, formulas, visual-roi, formula-what-if, agent-collaboration, agent-authorization.",
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 2
 

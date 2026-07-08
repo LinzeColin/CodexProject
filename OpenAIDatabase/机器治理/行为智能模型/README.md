@@ -3,7 +3,7 @@
 用于放置 facets、semantic clusters、latent signals、collaboration quality、自我迭代和
 低价值循环识别的模型配置。
 
-当前 S08 P1 已完成。facet/canonical events 的数据契约已定义在
+当前 S08 P2 已完成。facet/canonical events 的数据契约已定义在
 `机器治理/数据契约/facet_event_schema.v1_2_s05_p1.json`，中文解释位于
 `人类可读/12_Facet字段与事件语义说明.md`，facet extractor 已实现为
 `scripts/extract_memory_atlas_facets.py`，并为 events 输出补齐
@@ -54,11 +54,18 @@ Information ROI 与 Visual ROI Gate 输出
 Personal Economic Proxy、Information ROI 和 Formula What-if 均可由行为智能派生输入解释，
 且不接入外部经济数据库。
 
-当前 S08 P1 已完成：`机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json`
+S08 P1 已完成：`机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json`
 定义 Codex/Agent 协作质量指标，`scripts/build_memory_atlas_agent_collaboration.py` 生成
 `data/derived/agent_collaboration/agent_collaboration_quality_report.json`。指标覆盖
 `planning_clarity`、`execution_clarity`、`review_burden`、`rework_count`、
 `scope_clarity`、`testability` 和 `rollbackability`，并用 evidence refs 支撑中文解释。
 source summary 支持 `chatgpt`、`codex` 和 `other_agent` 通用字段；future agent 没有真实
 证据时只保留缺失原因，不生成 fake events 或 fake scores。S08 P1 不创建复杂 Delegation
-Contract UI，不创建多 agent 系统，不修改 raw。下一步是 S08 P2。
+Contract UI，不创建多 agent 系统，不修改 raw。S08 P1 的下一历史 gate 是 S08 P2，当前已完成。
+
+当前 S08 P2 已完成：`机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json`
+定义轻量授权边界，`scripts/build_memory_atlas_agent_authorization.py` 生成
+`data/derived/agent_collaboration/agent_authorization_boundary_report.json`。S08 P2 明确
+proposal 必须经人类授权并进入 `approved_by_human` 后才能 apply，raw 不可修改，raw
+永远不能成为 apply target。S08 P2 不执行 proposal apply，不实现复杂 Delegation
+Contract UI，不创建多 agent 系统，不生成 stage flight recorder。下一步是 S08 P3。

@@ -2,8 +2,35 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S08 P1。任务 ID 为 `MA-V12-S08P1`，验收 ID 为
-`ACC-MA-V12-S08P1`，validator 为 `validate:v1.2-s08-p1`。
+当前阶段是 S08 P2。任务 ID 为 `MA-V12-S08P2`，验收 ID 为
+`ACC-MA-V12-S08P2`，validator 为 `validate:v1.2-s08-p2`。
+
+S08 P2 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s08_p2_authorization_boundary.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s08_p2.cjs`
+- `scripts/build_memory_atlas_agent_authorization.py`
+- `scripts/atlasctl.py`
+- `机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json`
+- `data/derived/agent_collaboration/agent_authorization_boundary_report.json`
+- `人类可读/20_Agent授权边界说明.md`
+
+S08 P2 gate：
+
+- `validate:v1.2-s08-p2` 可验证 Agent 授权边界。
+- `python scripts/atlasctl.py analyze --stage agent-authorization --dry-run` 返回 no-write payload。
+- `python scripts/atlasctl.py audit --check agent-authorization` 返回 PASS。
+- `agent-authorization` 输出包含 4 个机器输出检查。
+- raw 不可修改，raw 永远不能作为 apply target。
+- proposal 必须有人类授权并进入 `approved_by_human` 后才能 apply。
+- 当前 phase 不执行 proposal apply；apply 自动化留给 S13。
+- 不创建复杂 Delegation Contract UI。
+- 不创建多 agent 系统。
+- 不生成 stage flight recorder；运行证据留给 S08 P3。
+- 不修改 raw。
+
+No GitHub main upload in this phase。
+下一步是 S08 P3。
 
 S08 P1 产物：
 
@@ -33,7 +60,7 @@ S08 P1 gate：
 - 不修改 raw。
 
 No GitHub main upload in this phase。
-下一步是 S08 P2。
+S08 P1 的下一历史 gate 是 S08 P2，当前已完成。
 
 S07 Review 产物：
 
