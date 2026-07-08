@@ -577,6 +577,8 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "fact_promotion_execution_authorization_template.json",
                 "fact_promotion_execution_authorization_preview.csv",
                 "fact_promotion_execution_apply_gate.csv",
+                "fact_promotion_execution_result.csv",
+                "formal_fund_ledger.csv",
                 "exception_tasks.csv",
                 "cross_review.json",
                 "audit_log.json",
@@ -778,6 +780,24 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["fact_promotion_execution_apply_gate_ready_count"], 0)
             self.assertEqual(cross_review["fact_promotion_execution_apply_gate_planned_apply_count"], 0)
             self.assertEqual(cross_review["fact_promotion_execution_apply_gate_write_allowed_count"], 0)
+            self.assertEqual(cross_review["fact_promotion_execution_result_count"], 6)
+            self.assertEqual(cross_review["fact_promotion_execution_result_formalized_area_count"], 0)
+            self.assertEqual(cross_review["formal_fund_ledger_row_count"], 0)
+
+            with (run_dir / "fact_promotion_execution_result.csv").open(
+                encoding="utf-8-sig",
+                newline="",
+            ) as f:
+                execution_result_rows = list(csv.DictReader(f))
+            self.assertEqual(len(execution_result_rows), 6)
+            self.assertTrue(all(row["formal_ledger_row_count"] == "0" for row in execution_result_rows))
+            self.assertTrue(all(row["source_mutation_allowed"] == "false" for row in execution_result_rows))
+            self.assertTrue(all(row["fund_ledger_mutation_allowed"] == "false" for row in execution_result_rows))
+            self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in execution_result_rows))
+
+            with (run_dir / "formal_fund_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
+                formal_rows = list(csv.DictReader(f))
+            self.assertEqual(formal_rows, [])
 
     def test_runner_collects_real_ocr_text_sidecars_without_promoting_amounts(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -3355,6 +3375,9 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["fact_promotion_execution_apply_gate_ready_count"], 1)
             self.assertEqual(cross_review["fact_promotion_execution_apply_gate_planned_apply_count"], 4)
             self.assertEqual(cross_review["fact_promotion_execution_apply_gate_write_allowed_count"], 0)
+            self.assertEqual(cross_review["fact_promotion_execution_result_count"], 6)
+            self.assertEqual(cross_review["fact_promotion_execution_result_formalized_area_count"], 1)
+            self.assertEqual(cross_review["formal_fund_ledger_row_count"], 4)
 
             with (run_dir / "fact_promotion_execution_dry_run.csv").open(encoding="utf-8-sig", newline="") as f:
                 dry_run_rows = list(csv.DictReader(f))
@@ -3433,6 +3456,33 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in execution_apply_gate_rows))
             self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in execution_apply_gate_rows))
             self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in execution_apply_gate_rows))
+
+            with (run_dir / "fact_promotion_execution_result.csv").open(
+                encoding="utf-8-sig",
+                newline="",
+            ) as f:
+                execution_result_rows = list(csv.DictReader(f))
+            execution_result_by_area = {row["review_area"]: row for row in execution_result_rows}
+            self.assertEqual(
+                execution_result_by_area["structured_csv_facts"]["execution_result_status"],
+                "structured_csv_formal_ledger_sidecar_written",
+            )
+            self.assertEqual(execution_result_by_area["structured_csv_facts"]["formal_ledger_row_count"], "4")
+            self.assertTrue(all(row["source_mutation_allowed"] == "false" for row in execution_result_rows))
+            self.assertTrue(all(row["fund_ledger_mutation_allowed"] == "false" for row in execution_result_rows))
+            self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in execution_result_rows))
+
+            with (run_dir / "formal_fund_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
+                formal_rows = list(csv.DictReader(f))
+            self.assertEqual(len(formal_rows), 4)
+            self.assertEqual(formal_rows[0]["source_ledger_id"], "FL-structured_csv_test-00001")
+            self.assertTrue(all(row["formal_fact_source"] == "structured_csv_facts" for row in formal_rows))
+            self.assertTrue(
+                all(row["formal_write_status"] == "structured_csv_formal_ledger_sidecar_written" for row in formal_rows)
+            )
+            self.assertTrue(all(row["source_mutation_allowed"] == "false" for row in formal_rows))
+            self.assertTrue(all(row["fund_ledger_mutation_allowed"] == "false" for row in formal_rows))
+            self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in formal_rows))
 
             workbook_path = run_dir / "资金与税费管理母版_structured_csv_test.xlsx"
             with zipfile.ZipFile(workbook_path) as workbook:
