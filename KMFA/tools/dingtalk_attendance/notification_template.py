@@ -44,20 +44,15 @@ def build_notification_message(
     lines = [f"# {title}" if markdown else title, "", f"截止 {current_time}", ""]
     abnormal_names = _filter_hidden_names(_dedupe_nonempty([*unexpected_empty_record_names, *known_no_record_names]))
     consecutive_lines = _filter_hidden_lines(coerce_message_lines(consecutive_anomaly_summary))
-    pending_lines = _filter_hidden_lines(coerce_message_lines(pending_hr_actions))
     abnormal_items = coerce_current_monthly_status_people(monthly_attendance_anomalies, current_names=abnormal_names)
     consecutive_items = _filter_status_people_by_work_date(
         coerce_monthly_status_people(monthly_consecutive_anomalies),
         work_date=work_date,
     )
-    pending_items = _filter_status_people_by_work_date(
-        coerce_monthly_status_people(monthly_pending_actions),
-        work_date=work_date,
-    )
     rest_items = coerce_rest_required_people(rest_required_people)
-    if not abnormal_items and not consecutive_items and not consecutive_lines and not pending_items and not pending_lines and not rest_items:
+    if not abnormal_items and not consecutive_items and not consecutive_lines and not rest_items:
         if collection_complete:
-            lines.extend([f"本次{_coerce_nonnegative_int(member_count)}人全部考勤正常，今天一切良好", ""])
+            lines.extend([f"本次{_coerce_nonnegative_int(member_count)}人全部考勤正常", ""])
         else:
             lines.extend(["本次暂无需要处理的考勤事项", ""])
     else:
@@ -89,19 +84,6 @@ def build_notification_message(
         )
         _extend_section(
             lines,
-            title="待审批 / 待补卡 / 待核查",
-            body_lines=[
-                *_format_count_people(
-                    pending_items,
-                    over_limit_header="共 {total} 人，本月待处理 Top10:",
-                    formatter=lambda item: f"{item['name']}（本月累计{item['monthly_count']}项）",
-                ),
-                *pending_lines,
-            ],
-            markdown=markdown,
-        )
-        _extend_section(
-            lines,
             title="需要休息",
             body_lines=_format_rest_required_people(rest_items),
             markdown=markdown,
@@ -122,7 +104,6 @@ def notification_context_from_output_status(output_status: Mapping[str, Any]) ->
     current_time = str(output_status.get("current_time") or datetime.now(ZoneInfo(TIMEZONE)).strftime("%H:%M"))
     run_id = str(output_status.get("run_id") or "")
     run_type = str(output_status.get("run_type") or run_type_from_run_id(run_id) or "unknown")
-    pending_actions = coerce_message_lines(output_status.get("pending_hr_actions"))
     anomaly_names = current_notification_anomaly_names(stats, run_type=run_type)
     monthly_consecutive_anomalies = _filter_monthly_people_by_names(
         coerce_monthly_status_people(stats.get("monthly_consecutive_anomalies")),
@@ -135,14 +116,14 @@ def notification_context_from_output_status(output_status: Mapping[str, Any]) ->
         "unexpected_empty_record_names": _filter_hidden_names(_dedupe_nonempty(anomaly_names)),
         "known_no_record_names": [],
         "consecutive_anomaly_summary": coerce_message_lines(output_status.get("consecutive_anomaly_summary")),
-        "pending_hr_actions": pending_actions,
+        "pending_hr_actions": [],
         "rest_required_people": coerce_rest_required_people(stats.get("rest_required_people")),
         "monthly_attendance_anomalies": coerce_monthly_status_people(
             stats.get("monthly_attendance_anomalies"),
             fallback_names=anomaly_names,
         ),
         "monthly_consecutive_anomalies": monthly_consecutive_anomalies,
-        "monthly_pending_actions": coerce_monthly_status_people(stats.get("monthly_pending_actions")),
+        "monthly_pending_actions": [],
         "member_count": _coerce_nonnegative_int(stats.get("member_count")),
         "collection_complete": collection_is_complete(stats),
         "run_id": run_id or None,

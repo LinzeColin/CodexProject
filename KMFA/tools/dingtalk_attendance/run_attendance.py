@@ -44,13 +44,18 @@ from KMFA.tools.dingtalk_attendance.secrets_loader import merged_runtime_env
 
 
 RUN_TYPES = ("morning", "evening")
-SCHEDULE = {"morning": "08:35", "evening": "18:15"}
+SCHEDULE = {"morning": "10:35", "evening": "20:05"}
 
 
-def build_run_plan(run_type: str, timezone: str = TIMEZONE, run_id: str | None = None) -> dict[str, Any]:
+def build_run_plan(
+    run_type: str,
+    timezone: str = TIMEZONE,
+    run_id: str | None = None,
+    run_datetime: datetime | None = None,
+) -> dict[str, Any]:
     if run_type not in RUN_TYPES:
         raise ValueError(f"run_type must be one of {RUN_TYPES}")
-    now = datetime.now(ZoneInfo(timezone))
+    now = run_datetime or datetime.now(ZoneInfo(timezone))
     effective_run_id = run_id or f"s19_{run_type}_{now.strftime('%Y%m%d_%H%M%S')}"
     return {
         "project_id": "KMFA",
@@ -441,15 +446,19 @@ def run_attendance(
     timezone: str,
     *,
     allow_dws_commands: bool = False,
+    work_date: str | None = None,
+    notification_target_filter: str = "all",
     env: Mapping[str, str] | None = None,
     collector: Callable[..., dict[str, Any]] = collect_org_attendance,
     cleanup: Callable[[], dict[str, Any]] = cleanup_runtime,
 ) -> dict[str, Any]:
-    plan = build_run_plan(run_type=run_type, timezone=timezone)
+    effective_work_date = work_date or os.environ.get("KMFA_WORK_DATE_OVERRIDE") or os.environ.get("KMFA_TODAY_OVERRIDE")
+    run_datetime = _scheduled_run_datetime(run_type=run_type, timezone=timezone, work_date=effective_work_date)
+    effective_work_date = run_datetime.strftime("%Y-%m-%d")
+    plan = build_run_plan(run_type=run_type, timezone=timezone, run_datetime=run_datetime)
     notification_config_status = build_config_status()
     cleanup_status: dict[str, Any] = {"status": "NOT_RUN"}
-    work_date = datetime.now(ZoneInfo(timezone)).strftime("%Y-%m-%d")
-    summary_datetime = f"{work_date} {SCHEDULE[run_type]}:00"
+    summary_datetime = f"{effective_work_date} {SCHEDULE[run_type]}:00"
     dws_safety = dws_command_safety_status(env=env, allow_override=allow_dws_commands)
     if dws_safety["status"] != "READY":
         cleanup_status.update(cleanup())
@@ -473,7 +482,7 @@ def run_attendance(
     os.environ[DWS_COMMAND_ALLOW_ENV] = "1"
     try:
         collection = collector(
-            work_date=work_date,
+            work_date=effective_work_date,
             summary_datetime=summary_datetime,
         )
     except (DwsAttendanceError, FileNotFoundError, TimeoutError) as exc:
@@ -506,19 +515,19 @@ def run_attendance(
     notification_stats = build_stats_with_rest_required_people(
         collection["stats"],
         month_dir=Path(str(output_status["month_dir"])),
-        work_date=work_date,
+        work_date=effective_work_date,
     )
     output_status.update(
         {
             "run_id": plan["run_id"],
             "run_type": run_type,
-            "work_date": work_date,
-            "current_time": datetime.now(ZoneInfo(timezone)).strftime("%H:%M"),
+            "work_date": effective_work_date,
+            "current_time": run_datetime.strftime("%H:%M"),
             "stats": notification_stats,
         }
     )
     try:
-        dispatch_receipt = dispatch_reports_to_targets(output_status=output_status)
+        dispatch_receipt = dispatch_reports_to_targets(output_status=output_status, target_filter=notification_target_filter)
     finally:
         cleanup_status.update(cleanup())
         _write_cleanup_audit(output_status, cleanup_status)
@@ -539,7 +548,7 @@ def run_attendance(
         "backend": "dws",
         "dws_live": True,
         "uses_mock_data": False,
-        "work_date": work_date,
+        "work_date": effective_work_date,
         "summary_datetime": summary_datetime,
         "collection_status": "DWS_LIVE_COLLECTION_WRITTEN",
         "collection_stats": collection["stats"],
@@ -615,10 +624,21 @@ def send_latest_report_only(run_type: str, timezone: str) -> dict[str, Any]:
     }
 
 
+def _scheduled_run_datetime(*, run_type: str, timezone: str, work_date: str | None) -> datetime:
+    if work_date:
+        try:
+            return datetime.fromisoformat(f"{work_date[:10]}T{SCHEDULE[run_type]}:00").replace(tzinfo=ZoneInfo(timezone))
+        except ValueError as exc:
+            raise ValueError("work_date must be YYYY-MM-DD") from exc
+    return datetime.now(ZoneInfo(timezone))
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run KMFA S19 DingTalk attendance automation.")
     parser.add_argument("--run-type", required=True, choices=RUN_TYPES)
     parser.add_argument("--timezone", default=TIMEZONE)
+    parser.add_argument("--work-date", help="YYYY-MM-DD business date override for controlled reruns/tests.")
+    parser.add_argument("--notification-targets", default="all", choices=("all", "personal", "group"))
     parser.add_argument("--send-latest-report-only", action="store_true", help="Send the latest private reports without DWS collection.")
     parser.add_argument(
         "--allow-dws-commands",
@@ -632,7 +652,13 @@ def main(argv: list[str] | None = None) -> int:
     if args.send_latest_report_only:
         result = send_latest_report_only(run_type=args.run_type, timezone=args.timezone)
     else:
-        result = run_attendance(run_type=args.run_type, timezone=args.timezone, allow_dws_commands=args.allow_dws_commands)
+        result = run_attendance(
+            run_type=args.run_type,
+            timezone=args.timezone,
+            allow_dws_commands=args.allow_dws_commands,
+            work_date=args.work_date,
+            notification_target_filter=args.notification_targets,
+        )
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
     return 0
 

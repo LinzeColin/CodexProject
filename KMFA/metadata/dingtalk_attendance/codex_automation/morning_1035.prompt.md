@@ -8,7 +8,7 @@ Use $kmfa-dingtalk-attendance-skill.
 KMFA/kmfa-dingtalk-attendance-skill/SKILL.md
 ```
 
-每天北京时间 08:35 在 KMFA local main checkout 执行。当前部署 cwd 为 `/Users/linzezhang/CodexProject`；迁移到新电脑时使用同一 GitHub repo 的 `main` checkout。
+每天北京时间 10:35 在 KMFA local main checkout 执行。当前部署 cwd 为 `/Users/linzezhang/CodexProject`；迁移到新电脑时使用同一 GitHub repo 的 `main` checkout。
 
 运行约束：
 1. 确认 cwd 是 KMFA 所在的 `LinzeColin/CodexProject` checkout，branch 为 `main`，且 `HEAD == origin/main`。
@@ -22,10 +22,17 @@ KMFA/kmfa-dingtalk-attendance-skill/SKILL.md
 9. 只有在本机授权允许时才执行晨报入口；否则 fail closed，报告 `DWS_AUTH_REQUIRED` 或配置 blocker。Do not fabricate data。
 10. 晨报不执行 stage-2 acceptance，不提升 Q5，不生成 payroll baseline。
 11. 休息提醒规则必须来自 skill：`REST_REQUIRED_THRESHOLD_DAYS = 23`；`丁春法` 和 `李永占` 只排除出 `需要休息`，其他状态照常统计。
-12. 如果本次 run 修改 skill、automation prompt、metadata、validator 或相关配置，必须完成验证、commit，并 push 到 GitHub `main` 后再报告完成。
+12. 如果用户明确要求指定日期测试且只发张霖泽个人，入口必须加 `--work-date YYYY-MM-DD --notification-targets personal`；不得发送生产管理群。
+13. 如果本次 run 修改 skill、automation prompt、metadata、validator 或相关配置，必须完成验证、commit，并 push 到 GitHub `main` 后再报告完成。
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/dingtalk_attendance/run_attendance.py --run-type morning --timezone Asia/Shanghai
+```
+
+指定日期个人测试示例（仅 owner 明确要求时使用）：
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/dingtalk_attendance/run_attendance.py --run-type morning --timezone Asia/Shanghai --work-date 2026-07-06 --notification-targets personal
 ```
 
 硬边界：

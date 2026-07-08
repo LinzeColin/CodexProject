@@ -29,8 +29,8 @@ REQUIRED_METADATA_FILES = (
     "notification_targets_manifest.json",
     "onedrive_storage_manifest.yaml",
     "secrets_policy.md",
-    "codex_automation/morning_0835.prompt.md",
-    "codex_automation/evening_1815.prompt.md",
+    "codex_automation/morning_1035.prompt.md",
+    "codex_automation/evening_2005.prompt.md",
     "codex_automation/manual_rerun.prompt.md",
     "private_runtime/README.md",
     "private_runtime/.gitkeep",
@@ -146,6 +146,13 @@ def validate_s19_files(root: Path) -> dict[str, Any]:
     errors: list[str] = []
     if manifest.get("automation_name") != AUTOMATION_NAME:
         errors.append("automation name drift")
+    schedule = manifest.get("schedule", {})
+    if not isinstance(schedule, dict) or schedule.get("morning") != "10:35" or schedule.get("evening") != "20:05":
+        errors.append("automation schedule drift")
+    if (metadata_root / "codex_automation" / "morning_1035.prompt.md").read_text(encoding="utf-8").find("10:35") < 0:
+        errors.append("morning prompt schedule drift")
+    if (metadata_root / "codex_automation" / "evening_2005.prompt.md").read_text(encoding="utf-8").find("20:05") < 0:
+        errors.append("evening prompt schedule drift")
     if manifest.get("onedrive_root") != ONEDRIVE_ROOT:
         errors.append("onedrive root drift")
     if manifest.get("onedrive_month_folder_pattern") != "YYYYMM":
@@ -158,10 +165,10 @@ def validate_s19_files(root: Path) -> dict[str, Any]:
     errors.extend(prompt_errors)
     exemption_probe_context = notification_context_from_output_status(
         {
-            "run_id": "s19_morning_20260707_083500",
+            "run_id": "s19_morning_20260707_103500",
             "run_type": "morning",
             "work_date": "2026-07-07",
-            "current_time": "08:35",
+            "current_time": "10:35",
             "stats": {
                 "attendance_anomaly_names": ["张三", "李四"],
                 "known_no_record_names": ["张霖泽", "林全意"],
@@ -175,12 +182,37 @@ def validate_s19_files(root: Path) -> dict[str, Any]:
         errors.append("exempt no-attendance names rendered as user-visible anomalies")
     if "morning" in exemption_probe or "evening" in exemption_probe:
         errors.append("English run type rendered in user-visible notification template")
+    pending_probe = build_notification_message(
+        work_date="2026-07-07",
+        run_type="morning",
+        current_time="10:35",
+        unexpected_empty_record_names=[],
+        known_no_record_names=[],
+        pending_hr_actions=["王五待补卡"],
+        monthly_pending_actions=[{"name": "王五", "monthly_count": 3, "latest_date": "2026-07-07"}],
+        member_count=44,
+        markdown=False,
+    )
+    if "待审批" in pending_probe or "待补卡" in pending_probe or "待核查" in pending_probe or "王五" in pending_probe:
+        errors.append("pending action section rendered in user-visible notification template")
+    historical_probe = build_notification_message(
+        work_date="2026-07-08",
+        run_type="morning",
+        current_time="10:35",
+        unexpected_empty_record_names=[],
+        known_no_record_names=[],
+        monthly_attendance_anomalies=[{"name": "历史累计甲", "monthly_count": 3, "latest_date": "2026-07-03"}],
+        member_count=44,
+        markdown=False,
+    )
+    if "历史累计甲" in historical_probe or "今日异常 / 无考勤" in historical_probe:
+        errors.append("historical monthly anomaly rendered as today anomaly")
     backend_probe_context = notification_context_from_output_status(
         {
-            "run_id": "s19_morning_20260707_083500",
+            "run_id": "s19_morning_20260707_103500",
             "run_type": "morning",
             "work_date": "2026-07-07",
-            "current_time": "08:35",
+            "current_time": "10:35",
             "stats": {
                 "member_count": 44,
                 "record_success_count": 43,

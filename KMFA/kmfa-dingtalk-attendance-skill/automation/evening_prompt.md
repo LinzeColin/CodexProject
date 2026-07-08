@@ -7,6 +7,7 @@ If the current Codex agent cannot auto-resolve repo-scoped skills, read and foll
 ```
 
 Run slot: evening.
+Scheduled Beijing time: 20:05.
 Timezone: Asia/Shanghai. All business dates, run slots, month gates, and stage-2 windows are Beijing time.
 
 Goal: execute the KMFA S19 DingTalk attendance evening workflow through the repo-scoped skill, preserving existing production safety while enabling v0.3 database/stage-2 readiness.
@@ -33,7 +34,8 @@ Required steps:
 19. If five canonical hashes match exactly and P0/P1 unresolved counts are zero, generate stage-2 consensus certificate and payroll baseline candidate.
 20. If they do not match, generate divergence report and stop promotion.
 21. Preserve rest reminder rules from the skill: `REST_REQUIRED_THRESHOLD_DAYS = 23`; `丁春法` and `李永占` are excluded only from `需要休息`, while all other statuses are counted normally.
-22. If this run changes any skill or automation prompt file, run validators, commit, and push to GitHub `main` before reporting completion.
+22. If the owner explicitly requests a date-specific personal-only test, run the entry with `--work-date YYYY-MM-DD --notification-targets personal`; do not send the production management group.
+23. If this run changes any skill or automation prompt file, run validators, commit, and push to GitHub `main` before reporting completion.
 
 Hard boundaries:
 - Do not commit secrets, `.env.local`, resolved DWS IDs, SQLite, raw JSON/JSONL/GZ, employee plaintext, OneDrive raw archives, or report bodies.
