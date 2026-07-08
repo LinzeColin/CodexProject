@@ -1,3 +1,57 @@
+## v1.2 S13 Review
+
+状态：`stage_s13_review_passed_pending_s14_no_github_main_upload`。
+
+任务 ID：`MA-V12-S13-REVIEW`。
+
+验收 ID：`ACC-MA-V12-S13-REVIEW`。
+
+Validator：`validate:v1.2-s13-review`。
+
+S13 Review 已完成。复审确认 S13 P1 Proposal 状态机、S13 P2 Diff narrator 和 S13 P3
+Apply 与回滚共同满足 S13 stage gate。`proposal_state_machine.v1_2_s13_p1` 要求人类授权
+后才能 apply；`diff_narrator.v1_2_s13_p2` 覆盖改了什么、为什么改、影响什么、如何验证、
+如何回滚；`proposal_apply.v1_2_s13_p3` 确认 `sample_unauthorized` 未授权 `FAIL_CLOSED`，
+`sample` 授权 dry-run 有 `validation_after_apply` 和 rollback point。下一步为 pending S14 P1。
+
+产物：
+
+- `docs/reviews/memory_atlas_v1_2_s13_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s13_review.cjs`
+- `docs/reviews/memory_atlas_v1_2_s13_p1_proposal_state_machine.md`
+- `docs/reviews/memory_atlas_v1_2_s13_p2_diff_narrator.md`
+- `docs/reviews/memory_atlas_v1_2_s13_p3_apply_rollback.md`
+
+验收关键词：
+
+- `validate:v1.2-s13-review`
+- `ACC-MA-V12-S13-REVIEW`
+- `MA-V12-S13-REVIEW`
+- `stage_s13_review_passed_pending_s14_no_github_main_upload`
+- `proposal_state_machine.v1_2_s13_p1`
+- `diff_narrator.v1_2_s13_p2`
+- `proposal_apply.v1_2_s13_p3`
+- S13 Review
+- S13 P1
+- S13 P2
+- S13 P3
+- Proposal 状态机
+- Diff narrator
+- Apply 与回滚
+- `sample_unauthorized`
+- `sample`
+- `FAIL_CLOSED`
+- pending S14 P1
+
+边界：
+
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+- 真实 pending proposal 未获人类授权前不 apply。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S13 Review; MA-V12-S13-REVIEW; ACC-MA-V12-S13-REVIEW; stage_s13_review_passed_pending_s14_no_github_main_upload; validate:v1.2-s13-review; S13 Review; S13 P1; S13 P2; S13 P3; proposal_state_machine.v1_2_s13_p1; diff_narrator.v1_2_s13_p2; proposal_apply.v1_2_s13_p3; Proposal 状态机; Diff narrator; Apply 与回滚; sample_unauthorized; sample; FAIL_CLOSED; No GitHub main upload; No remote push; No raw mutation; pending S14 P1.
+
 ## v1.2 S13 P3 Apply 与回滚
 
 状态：`phase_s13_p3_apply_rollback_completed_pending_s13_review`。

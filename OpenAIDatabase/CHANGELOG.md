@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S13 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s13_review.md`.
+- Added `validate:v1.2-s13-review` for `MA-V12-S13-REVIEW` /
+  `ACC-MA-V12-S13-REVIEW`.
+- Registered status
+  `stage_s13_review_passed_pending_s14_no_github_main_upload`.
+- Confirmed S13 P1 Proposal 状态机, S13 P2 Diff narrator and S13 P3
+  Apply 与回滚 pass as a stage chain.
+- Confirmed `proposal_state_machine.v1_2_s13_p1`,
+  `diff_narrator.v1_2_s13_p2` and `proposal_apply.v1_2_s13_p3` jointly enforce
+  human authorization before apply.
+- Confirmed `sample_unauthorized` remains `FAIL_CLOSED`, `sample` authorized
+  dry-run preserves `validation_after_apply` and rollback point evidence, and
+  validation failure enters `rollback_or_needs_revision`.
+- Preserved S13 Review boundaries: No GitHub main upload, No remote push,
+  No raw mutation and no real pending proposal apply without human approval.
+- Marked the next gate as pending S14 P1.
+
 ## Unreleased - Memory Atlas v1.2 S13 P3 Apply 与回滚
 
 - Added `proposal_apply.v1_2_s13_p3` for `MA-V12-S13P3` /

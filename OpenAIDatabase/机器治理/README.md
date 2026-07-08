@@ -18,12 +18,22 @@
 
 ## 当前阶段
 
-当前为 S13 P3。任务 ID 为 `MA-V12-S13P3`，验收 ID 为
+当前为 S13 Review。任务 ID 为 `MA-V12-S13-REVIEW`，验收 ID 为
+`ACC-MA-V12-S13-REVIEW`，validator 为 `validate:v1.2-s13-review`。状态为
+`stage_s13_review_passed_pending_s14_no_github_main_upload`。S13 Review 已完成
+Proposal 状态机、Diff narrator 和 Apply 与回滚的整体复审。`proposal_state_machine.v1_2_s13_p1`、
+`diff_narrator.v1_2_s13_p2` 和 `proposal_apply.v1_2_s13_p3` 共同满足 S13 stage gate。
+下一步只允许进入 pending S14 P1。
+
+No GitHub main upload。No remote push。No raw mutation。
+
+历史复验兼容记录：S13 P3 完成时当前为 S13 P3。任务 ID 为 `MA-V12-S13P3`，验收 ID 为
 `ACC-MA-V12-S13P3`，validator 为 `validate:v1.2-s13-p3`。状态为
 `phase_s13_p3_apply_rollback_completed_pending_s13_review`。S13 P3 已完成 Apply 与回滚，
 合同版本为 `proposal_apply.v1_2_s13_p3`。`sample_unauthorized` 未授权 fail-closed，
-`sample` 授权 dry-run 可进入 apply、validation 和 rollback point 路径。下一步只允许进入
-pending S13 Review。
+`sample` 授权 dry-run 可进入 apply、validation 和 rollback point 路径。此句只用于保留
+已完成 phase 的复验语义，不代表当前阶段。当时下一步为 pending S13 Review。S13 Review
+已完成，下一步是 S14 P1。
 
 No GitHub main upload。No remote push。No raw mutation。
 
