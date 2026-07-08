@@ -2,8 +2,29 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S06 P1。任务 ID 为 `MA-V12-S06P1`，验收 ID 为
-`ACC-MA-V12-S06P1`，validator 为 `validate:v1.2-s06-p1`。
+当前阶段是 S06 P2。任务 ID 为 `MA-V12-S06P2`，验收 ID 为
+`ACC-MA-V12-S06P2`，validator 为 `validate:v1.2-s06-p2`。
+
+S06 P2 产物：
+
+- `scripts/build_memory_atlas_low_value_loops.py`
+- `scripts/atlasctl.py`
+- `data/derived/behavior_intelligence/low_value_loops.json`
+- `人类可读/14_低价值循环与DecisionDebt说明.md`
+- `docs/reviews/memory_atlas_v1_2_s06_p2_low_value_loops.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_p2.cjs`
+
+S06 P2 gate：
+
+- `python scripts/atlasctl.py analyze --stage low-value-loops --dry-run` 可运行且不写文件。
+- 输出包含低价值循环候选、Decision Debt Ledger 和 Action Half-Life。
+- 覆盖 `repeated_rework`、`discussion_without_landing`、`over_optimization`、
+  `scope_creep` 四类候选。
+- `python scripts/atlasctl.py audit --check insight-evidence` 返回 PASS 且 `bad_items` 为空。
+- 不做心理诊断，不生成 opportunity cards，不修改 raw。
+
+No GitHub main upload in this phase。
+下一步是 S06 P3。
 
 前置 S01 Review 已通过：`MA-V12-S01-REVIEW` / `ACC-MA-V12-S01-REVIEW` /
 `validate:v1.2-s01-review`。

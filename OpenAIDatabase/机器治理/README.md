@@ -18,8 +18,8 @@
 
 ## 当前阶段
 
-当前为 S06 P1。任务 ID 为 `MA-V12-S06P1`，验收 ID 为
-`ACC-MA-V12-S06P1`，validator 为 `validate:v1.2-s06-p1`。
+当前为 S06 P2。任务 ID 为 `MA-V12-S06P2`，验收 ID 为
+`ACC-MA-V12-S06P2`，validator 为 `validate:v1.2-s06-p2`。
 S01 整体复审已通过，S02 整体复审已通过，S03 P1/P2/P3
 整体复审已通过。S04 P1 已建立 ChatGPT 只读同步和 official export fallback。
 S04 P2 已建立 Codex local sync、future-agent minimal adapter、raw + derived + run log
@@ -33,7 +33,8 @@ schema。S05 P2 已实现 `scripts/extract_memory_atlas_facets.py`，并通过
 S05 Review 已通过，确认 S05 events 与 facets 可被后续 cluster、ROI、latent、
 visualization 复用。S06 P1 已生成主题簇和层级簇，支持
 `source/time/project/task/language` 过滤合同，并保留 cluster `evidence_refs`。
-下一步是 S06 P2。
+S06 P2 已生成低价值循环候选、Decision Debt Ledger 和 Action Half-Life，输出
+`data/derived/behavior_intelligence/low_value_loops.json`。下一步是 S06 P3。
 
 当前机器产物：
 
@@ -41,6 +42,7 @@ visualization 复用。S06 P1 已生成主题簇和层级簇，支持
 - `数据契约/facet_event_schema.v1_2_s05_p1.json`
 - `../data/derived/behavior_intelligence/events.json`
 - `../data/derived/behavior_intelligence/clusters.json`
+- `../data/derived/behavior_intelligence/low_value_loops.json`
 - `同步与备份/sync_source_registry.json`
 - `同步与备份/raw_public_archive_policy.v1_2_s03_p1.json`
 - `同步与备份/credential_exclusion_policy.v1_2_s03_p2.json`
@@ -65,6 +67,7 @@ visualization 复用。S06 P1 已生成主题簇和层级簇，支持
 - `../人类可读/11_GitHub备份DryRun与Apply.md`
 - `../人类可读/12_Facet字段与事件语义说明.md`
 - `../人类可读/13_行为簇与层级簇说明.md`
+- `../人类可读/14_低价值循环与DecisionDebt说明.md`
 - `../data/public_raw/README.md`
 - `人类可读/06_Raw明文公开与只读归档说明.md`
 - `data/public_raw/README.md`
@@ -82,6 +85,7 @@ visualization 复用。S06 P1 已生成主题簇和层级簇，支持
 - `../docs/reviews/memory_atlas_v1_2_s05_p3_evidence_refs.md`
 - `../docs/reviews/memory_atlas_v1_2_s05_review.md`
 - `../docs/reviews/memory_atlas_v1_2_s06_p1_cluster_builder.md`
+- `../docs/reviews/memory_atlas_v1_2_s06_p2_low_value_loops.md`
 - `scripts/privacy_guard.py`
 - `scripts/sync_codex_memory_data.py`
 - `scripts/raw_archive_manifest.py`
@@ -90,10 +94,12 @@ visualization 复用。S06 P1 已生成主题簇和层级簇，支持
 - `scripts/github_backup.py`
 - `scripts/extract_memory_atlas_facets.py`
 - `scripts/build_memory_atlas_clusters.py`
+- `scripts/build_memory_atlas_low_value_loops.py`
 - `scripts/atlasctl.py`
 - `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p3.cjs`
 - `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_review.cjs`
 - `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_p1.cjs`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_p2.cjs`
 
 `运行门禁/v1.2需求冻结清单.json` 继续固定：
 
@@ -103,4 +109,4 @@ visualization 复用。S06 P1 已生成主题簇和层级簇，支持
 - 凭证排除。
 - 后续其他 agent 数据源扩展规则。
 
-下一步是 S06 P2；本目录仍不替代 apps/scripts/tests/config/data/docs/governance。
+下一步是 S06 P3；本目录仍不替代 apps/scripts/tests/config/data/docs/governance。

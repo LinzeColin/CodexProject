@@ -18,6 +18,7 @@ BUILD_ATLAS = ROOT / "scripts" / "build_memory_atlas_data.py"
 GITHUB_BACKUP = ROOT / "scripts" / "github_backup.py"
 FACET_EXTRACTOR = ROOT / "scripts" / "extract_memory_atlas_facets.py"
 CLUSTER_BUILDER = ROOT / "scripts" / "build_memory_atlas_clusters.py"
+LOW_VALUE_LOOP_BUILDER = ROOT / "scripts" / "build_memory_atlas_low_value_loops.py"
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -214,13 +215,36 @@ def cluster_analyze_contract() -> dict[str, object]:
     }
 
 
+def low_value_loop_analyze_contract() -> dict[str, object]:
+    return {
+        "status": "PASS",
+        "command": "analyze",
+        "stage": "low-value-loops",
+        "dry_run": True,
+        "writes_files": False,
+        "builder": "scripts/build_memory_atlas_low_value_loops.py",
+        "input": [
+            "data/derived/behavior_intelligence/events.json",
+            "data/derived/behavior_intelligence/clusters.json",
+        ],
+        "output": "data/derived/behavior_intelligence/low_value_loops.json",
+        "raw_mutation": False,
+        "task_id": "MA-V12-S06P2",
+        "acceptance_id": "ACC-MA-V12-S06P2",
+        "phase_boundary": {
+            "does_not_generate_opportunity_cards": True,
+            "next_phase": "S06 P3",
+        },
+    }
+
+
 def run_analyze(args: argparse.Namespace) -> int:
-    if args.stage not in {"facets", "clusters"}:
+    if args.stage not in {"facets", "clusters", "low-value-loops"}:
         print(json.dumps({
             "status": "NOT_IMPLEMENTED",
             "command": "analyze",
             "stage": args.stage,
-            "reason": "Unknown analyze stage. Supported stages: facets, clusters.",
+            "reason": "Unknown analyze stage. Supported stages: facets, clusters, low-value-loops.",
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 2
 
@@ -229,7 +253,7 @@ def run_analyze(args: argparse.Namespace) -> int:
             command = [sys.executable, str(FACET_EXTRACTOR), "--database-dir", str(args.database_dir), "--dry-run"]
         else:
             command = [sys.executable, str(FACET_EXTRACTOR), "--database-dir", str(args.database_dir)]
-    else:
+    elif args.stage == "clusters":
         command = [sys.executable, str(CLUSTER_BUILDER), "--database-dir", str(args.database_dir)]
         if args.dry_run:
             command.append("--dry-run")
@@ -243,12 +267,33 @@ def run_analyze(args: argparse.Namespace) -> int:
         ]:
             if value:
                 command.extend([cli_name, value])
+    elif args.stage == "low-value-loops":
+        command = [sys.executable, str(LOW_VALUE_LOOP_BUILDER), "--database-dir", str(args.database_dir)]
+        if args.dry_run:
+            command.append("--dry-run")
     result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
     if result.stdout:
         print(result.stdout, end="")
     if result.stderr:
         print(result.stderr, file=sys.stderr, end="")
     return result.returncode
+
+
+def audit_evidence_collection(
+    items: list[dict[str, object]],
+    collection_name: str,
+    id_field: str,
+    required_text_fields: tuple[str, ...],
+) -> list[str]:
+    bad_items = []
+    for item in items:
+        item_id = item.get(id_field)
+        if not item.get("evidence_refs"):
+            bad_items.append(f"{collection_name}:{item_id}:missing_evidence_refs")
+        for field_name in required_text_fields:
+            if not str(item.get(field_name) or "").strip():
+                bad_items.append(f"{collection_name}:{item_id}:missing_{field_name}")
+    return bad_items
 
 
 def run_audit(args: argparse.Namespace) -> int:
@@ -279,8 +324,34 @@ def run_audit(args: argparse.Namespace) -> int:
                 bad_clusters.append(f"{collection_name}:{cluster.get('cluster_id')}:missing_evidence_refs")
             if not cluster.get("summary_zh"):
                 bad_clusters.append(f"{collection_name}:{cluster.get('cluster_id')}:missing_summary_zh")
-    status = "PASS" if not bad_clusters else "FAIL"
-    print(json.dumps({
+    low_value_path = args.database_dir / "data/derived/behavior_intelligence/low_value_loops.json"
+    low_value_payload = {}
+    bad_items = []
+    if low_value_path.exists():
+        low_value_payload = json.loads(low_value_path.read_text(encoding="utf-8"))
+        bad_items.extend(audit_evidence_collection(
+            low_value_payload.get("loop_clusters") or [],
+            "loop_clusters",
+            "loop_id",
+            ("summary_zh",),
+        ))
+        bad_items.extend(audit_evidence_collection(
+            low_value_payload.get("decision_debt_ledger") or [],
+            "decision_debt_ledger",
+            "debt_id",
+            ("suggested_closure_question",),
+        ))
+        bad_items.extend(audit_evidence_collection(
+            low_value_payload.get("action_half_life") or [],
+            "action_half_life",
+            "half_life_id",
+            ("interpretation_zh",),
+        ))
+        for item in low_value_payload.get("action_half_life") or []:
+            if int(item.get("action_half_life_days") or 0) <= 0:
+                bad_items.append(f"action_half_life:{item.get('half_life_id')}:invalid_action_half_life_days")
+    status = "PASS" if not bad_clusters and not bad_items else "FAIL"
+    result = {
         "status": status,
         "command": "audit",
         "check": "insight-evidence",
@@ -290,8 +361,15 @@ def run_audit(args: argparse.Namespace) -> int:
         "topic_cluster_count": payload.get("topic_cluster_count"),
         "hierarchy_cluster_count": payload.get("hierarchy_cluster_count"),
         "bad_clusters": bad_clusters,
+        "low_value_loop_task_id": low_value_payload.get("task_id"),
+        "low_value_loop_acceptance_id": low_value_payload.get("acceptance_id"),
+        "loop_cluster_count": low_value_payload.get("loop_cluster_count"),
+        "decision_debt_count": low_value_payload.get("decision_debt_count"),
+        "action_half_life_count": low_value_payload.get("action_half_life_count"),
+        "bad_items": bad_items,
         "raw_mutation": False,
-    }, ensure_ascii=False, indent=2, sort_keys=True))
+    }
+    print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
     return 0 if status == "PASS" else 2
 
 

@@ -44,13 +44,18 @@ const allowedOpenDiffPaths = [
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p2.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p3.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_review.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s06_p2.cjs",
   `OpenAIDatabase/apps/memory-atlas/scripts/${scriptName}`,
   `OpenAIDatabase/${builderPath}`,
   `OpenAIDatabase/${atlasctlPath}`,
+  "OpenAIDatabase/scripts/build_memory_atlas_low_value_loops.py",
   "OpenAIDatabase/tests/test_s06p1_cluster_builder.py",
+  "OpenAIDatabase/tests/test_s06p2_low_value_loops.py",
   `OpenAIDatabase/${clustersPath}`,
+  "OpenAIDatabase/data/derived/behavior_intelligence/low_value_loops.json",
   `OpenAIDatabase/${reviewPath}`,
   `OpenAIDatabase/${humanClusterDocPath}`,
+  "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s06_p2_low_value_loops.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_DELIVERY_RECORD.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md",
   "OpenAIDatabase/功能清单.md",
@@ -58,6 +63,7 @@ const allowedOpenDiffPaths = [
   "OpenAIDatabase/模型参数文件.md",
   "OpenAIDatabase/人类可读/00_快速入口.md",
   "OpenAIDatabase/人类可读/01_v1.2四线14Stage升级总览.md",
+  "OpenAIDatabase/人类可读/14_低价值循环与DecisionDebt说明.md",
   "OpenAIDatabase/机器治理/README.md",
   "OpenAIDatabase/机器治理/数据契约/README.md",
   "OpenAIDatabase/机器治理/行为智能模型/README.md",
@@ -284,6 +290,23 @@ function validateClusterBuilder() {
   );
 }
 
+function currentStateIsS06P2() {
+  const quick = readRepoFile("人类可读/00_快速入口.md");
+  const overview = readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md");
+  const machine = readRepoFile("机器治理/README.md");
+  const dataContract = readRepoFile("机器治理/数据契约/README.md");
+  const behavior = readRepoFile("机器治理/行为智能模型/README.md");
+  const runGate = readRepoFile("机器治理/运行门禁/README.md");
+  return (
+    hasAll(quick, ["当前阶段是 S06 P2", "MA-V12-S06P2", "ACC-MA-V12-S06P2", "下一步只允许进入 S06 P3"]) &&
+    hasAll(overview, ["S06 P2 已完成", "Decision Debt Ledger", "下一步是 S06 P3"]) &&
+    hasAll(machine, ["当前为 S06 P2", "MA-V12-S06P2", "validate:v1.2-s06-p2", "下一步是 S06 P3"]) &&
+    hasAll(dataContract, ["当前 S06 P2 已完成", "low_value_loops.json", "下一步是 S06 P3"]) &&
+    hasAll(behavior, ["当前 S06 P2 已完成", "Decision Debt Ledger", "下一步是 S06 P3"]) &&
+    hasAll(runGate, ["当前阶段是 S06 P2", "MA-V12-S06P2", "ACC-MA-V12-S06P2", "validate:v1.2-s06-p2"])
+  );
+}
+
 function validateDocsAndRecords() {
   [
     reviewPath,
@@ -305,6 +328,7 @@ function validateDocsAndRecords() {
   const dataContract = readRepoFile("机器治理/数据契约/README.md");
   const behavior = readRepoFile("机器治理/行为智能模型/README.md");
   const runGate = readRepoFile("机器治理/运行门禁/README.md");
+  const s06p2State = currentStateIsS06P2();
 
   assertCondition(
     hasAll(review, [
@@ -331,37 +355,37 @@ function validateDocsAndRecords() {
     "Human cluster doc is incomplete",
   );
   assertCondition(
-    hasAll(quick, [taskId, acceptanceId, status, "当前阶段是 S06 P1", "Cluster builder", "下一步只允许进入 S06 P2"]),
+    s06p2State || hasAll(quick, [taskId, acceptanceId, status, "当前阶段是 S06 P1", "Cluster builder", "下一步只允许进入 S06 P2"]),
     "s06p1_quick_entry",
     "Quick entry records S06 P1 state and next S06 P2 gate",
     "Quick entry is missing S06 P1 state",
   );
   assertCondition(
-    hasAll(overview, ["S06 P1 已完成", "Cluster builder", clustersPath, "下一步是 S06 P2"]),
+    s06p2State || hasAll(overview, ["S06 P1 已完成", "Cluster builder", clustersPath, "下一步是 S06 P2"]),
     "s06p1_overview",
     "Overview records S06 P1 state and next S06 P2 gate",
     "Overview is missing S06 P1 state",
   );
   assertCondition(
-    hasAll(machine, ["当前为 S06 P1", taskId, acceptanceId, validatorName, "下一步是 S06 P2"]),
+    s06p2State || hasAll(machine, ["当前为 S06 P1", taskId, acceptanceId, validatorName, "下一步是 S06 P2"]),
     "s06p1_machine_readme",
     "Machine README records S06 P1 identity and next gate",
     "Machine README is missing S06 P1 state",
   );
   assertCondition(
-    hasAll(dataContract, ["当前 S06 P1 已完成", clustersPath, "source/time/project/task/language", "下一步是 S06 P2"]),
+    s06p2State || hasAll(dataContract, ["当前 S06 P1 已完成", clustersPath, "source/time/project/task/language", "下一步是 S06 P2"]),
     "s06p1_data_contract",
     "Data contract README records S06 P1 clusters output and filter contract",
     "Data contract README is missing S06 P1 state",
   );
   assertCondition(
-    hasAll(behavior, ["当前 S06 P1 已完成", "主题簇", "层级簇", "evidence_refs", "下一步是 S06 P2"]),
+    s06p2State || hasAll(behavior, ["当前 S06 P1 已完成", "主题簇", "层级簇", "evidence_refs", "下一步是 S06 P2"]),
     "s06p1_behavior_readme",
     "Behavior model README records S06 P1 cluster builder",
     "Behavior model README is missing S06 P1 state",
   );
   assertCondition(
-    hasAll(runGate, ["当前阶段是 S06 P1", taskId, acceptanceId, validatorName, reviewPath, "下一步是 S06 P2"]),
+    s06p2State || hasAll(runGate, ["当前阶段是 S06 P1", taskId, acceptanceId, validatorName, reviewPath, "下一步是 S06 P2"]),
     "s06p1_run_gate",
     "Run gate README records S06 P1 validator and next gate",
     "Run gate README is missing S06 P1 state",
