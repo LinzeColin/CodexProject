@@ -46,6 +46,7 @@ Purpose: this checklist is the owner-facing review surface before any future aut
 | Workbook generation | Active | Native Excel copy patched without rewriting chart packages |
 | Workbook quality gates | Active | Sheet order, hidden sheets, row 2, charts, formulas, sensitive visible values |
 | Goal completion audit | Active | `goal_completion_audit.csv` records requirement-level status and remaining blockers |
+| Management conclusion gate | Active | `management_conclusion_gate.csv` blocks C-level conclusions until formal facts and all review gates pass |
 | Fact promotion review packet | Active | `fact_promotion_review_packet.csv` summarizes owner-review areas while keeping no-write/no-promote |
 | Fact promotion authorization template | Active | `fact_promotion_authorization_template.json` drafts one default-deny authorization row per review packet row |
 | Fact promotion authorization preview | Active | `fact_promotion_authorization_preview.csv` validates owner manifest coverage without promotion, ledger write, or management conclusion |

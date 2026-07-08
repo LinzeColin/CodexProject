@@ -1896,6 +1896,95 @@ def build_goal_completion_audit_rows(cross_review: dict) -> list[dict]:
     ]
 
 
+def management_conclusion_gate_row(
+    gate_area: str,
+    gate_status: str,
+    evidence: str,
+    blocking: bool,
+    next_action: str,
+) -> dict:
+    return {
+        "management_gate_id": gate_area,
+        "gate_area": gate_area,
+        "gate_status": gate_status,
+        "evidence": evidence,
+        "blocking": bool_text(blocking),
+        "management_conclusion_allowed": "false",
+        "next_action": next_action,
+    }
+
+
+def build_management_conclusion_gate_rows(cross_review: dict) -> list[dict]:
+    source_ready = int(cross_review.get("source_file_count") or 0) > 0
+    workbook_quality_blocking_count = int(cross_review.get("workbook_quality_blocking_count") or 0)
+    workbook_ready = bool(cross_review.get("excel_workbook_generated")) and workbook_quality_blocking_count == 0
+    fact_execution_allowed_count = int(cross_review.get("fact_promotion_execution_allowed_count") or 0)
+    fact_execution_ready_count = int(cross_review.get("fact_promotion_execution_gate_ready_count") or 0)
+    fact_execution_blocked_count = int(cross_review.get("fact_promotion_execution_gate_blocked_count") or 0)
+    generated_amount_count = int(cross_review.get("generated_financial_amount_count") or 0)
+    cashflow_row_count = int(cross_review.get("cashflow_validation_row_count") or 0)
+    balance_fail_count = int(cross_review.get("balance_continuity_fail_count") or 0)
+    evidence_blocking_count = sum([
+        int(cross_review.get("screenshot_ocr_missing_count") or 0),
+        int(cross_review.get("ocr_fact_ledger_staging_preview_blocked_count") or 0),
+        int(cross_review.get("chat_value_candidate_count") or 0),
+        int(cross_review.get("attachment_reconciliation_blocking_count") or 0),
+    ])
+
+    cashflow_ready = cashflow_row_count > 0 and balance_fail_count == 0
+    return [
+        management_conclusion_gate_row(
+            "source_readiness",
+            "ready" if source_ready else "blocked_source_not_ready",
+            f"source_file_count={cross_review.get('source_file_count', 0)}",
+            not source_ready,
+            "Restore configured source folder before management conclusion" if not source_ready else "Keep source readiness gate active",
+        ),
+        management_conclusion_gate_row(
+            "native_workbook_quality",
+            "ready" if workbook_ready else "blocked_workbook_quality",
+            f"excel_workbook_generated={bool_text(bool(cross_review.get('excel_workbook_generated')))}; workbook_quality_blocking_count={workbook_quality_blocking_count}",
+            not workbook_ready,
+            "Fix workbook quality blockers before management conclusion" if not workbook_ready else "Keep workbook quality checks active",
+        ),
+        management_conclusion_gate_row(
+            "formal_fact_promotion_execution",
+            "ready" if fact_execution_allowed_count > 0 else "blocked_fact_promotion_not_executed",
+            f"fact_promotion_execution_allowed_count={fact_execution_allowed_count}; fact_promotion_execution_gate_ready_count={fact_execution_ready_count}; fact_promotion_execution_gate_blocked_count={fact_execution_blocked_count}",
+            fact_execution_allowed_count == 0,
+            "Run a separately approved controlled fact-promotion execution before management conclusion",
+        ),
+        management_conclusion_gate_row(
+            "formal_ledger_population",
+            "ready" if generated_amount_count > 0 else "blocked_no_formal_ledger_rows",
+            f"generated_financial_amount_count={generated_amount_count}",
+            generated_amount_count == 0,
+            "Populate formal reviewed ledger facts before management conclusion",
+        ),
+        management_conclusion_gate_row(
+            "cashflow_validation",
+            "ready" if cashflow_ready else ("blocked_balance_continuity" if balance_fail_count else "blocked_cashflow_validation_missing"),
+            f"cashflow_validation_row_count={cashflow_row_count}; balance_continuity_fail_count={balance_fail_count}",
+            not cashflow_ready,
+            "Validate balance continuity and operating cashflow before management conclusion",
+        ),
+        management_conclusion_gate_row(
+            "evidence_cross_review",
+            "ready" if evidence_blocking_count == 0 else "blocked_unresolved_review_evidence",
+            f"evidence_blocking_count={evidence_blocking_count}",
+            evidence_blocking_count > 0,
+            "Resolve OCR/chat/attachment review blockers before management conclusion" if evidence_blocking_count > 0 else "Keep cross-review evidence with management gate",
+        ),
+        management_conclusion_gate_row(
+            "automation_schedule",
+            "external_check_required",
+            "runner cannot inspect local Codex automation state",
+            True,
+            "Run check_codex_app_automation.py before claiming scheduled readiness",
+        ),
+    ]
+
+
 def fact_promotion_review_packet_row(
     packet_id: str,
     review_area: str,
@@ -3892,6 +3981,14 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     cross_review["fact_promotion_execution_gate_ready_count"] = fact_promotion_execution_gate_ready_count
     cross_review["fact_promotion_execution_gate_blocked_count"] = manifest["fact_promotion_execution_gate_blocked_count"]
     cross_review["fact_promotion_execution_allowed_count"] = manifest["fact_promotion_execution_allowed_count"]
+    management_conclusion_gate_rows = build_management_conclusion_gate_rows(cross_review)
+    management_conclusion_gate_ready_count = sum(1 for row in management_conclusion_gate_rows if row["gate_status"] == "ready")
+    manifest["management_conclusion_gate_count"] = len(management_conclusion_gate_rows)
+    manifest["management_conclusion_gate_ready_count"] = management_conclusion_gate_ready_count
+    manifest["management_conclusion_gate_blocked_count"] = len(management_conclusion_gate_rows) - management_conclusion_gate_ready_count
+    cross_review["management_conclusion_gate_count"] = len(management_conclusion_gate_rows)
+    cross_review["management_conclusion_gate_ready_count"] = management_conclusion_gate_ready_count
+    cross_review["management_conclusion_gate_blocked_count"] = manifest["management_conclusion_gate_blocked_count"]
     write_csv(run_dir / "fact_promotion_review_packet.csv", [
         "review_packet_id",
         "review_area",
@@ -3951,6 +4048,15 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "source_artifact",
         "review_status",
     ], fact_promotion_execution_gate_rows)
+    write_csv(run_dir / "management_conclusion_gate.csv", [
+        "management_gate_id",
+        "gate_area",
+        "gate_status",
+        "evidence",
+        "blocking",
+        "management_conclusion_allowed",
+        "next_action",
+    ], management_conclusion_gate_rows)
     (run_dir / "cross_review.json").write_text(json.dumps(cross_review, ensure_ascii=False, indent=2), encoding="utf-8")
     (run_dir / "audit_log.json").write_text(
         json.dumps([
@@ -4026,6 +4132,9 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "fact_promotion_execution_gate_ready_count": fact_promotion_execution_gate_ready_count,
                 "fact_promotion_execution_gate_blocked_count": manifest["fact_promotion_execution_gate_blocked_count"],
                 "fact_promotion_execution_allowed_count": manifest["fact_promotion_execution_allowed_count"],
+                "management_conclusion_gate_count": len(management_conclusion_gate_rows),
+                "management_conclusion_gate_ready_count": management_conclusion_gate_ready_count,
+                "management_conclusion_gate_blocked_count": manifest["management_conclusion_gate_blocked_count"],
                 "management_conclusion_allowed": False,
             },
         ], ensure_ascii=False, indent=2),
@@ -4170,6 +4279,8 @@ def main() -> int:
         f"Fact promotion execution gate ready count: {manifest.get('fact_promotion_execution_gate_ready_count', 0)}\n\n"
         f"Fact promotion execution gate blocked count: {manifest.get('fact_promotion_execution_gate_blocked_count', 0)}\n\n"
         f"Fact promotion execution allowed count: {manifest.get('fact_promotion_execution_allowed_count', 0)}\n\n"
+        f"Management conclusion gate ready count: {manifest.get('management_conclusion_gate_ready_count', 0)}\n\n"
+        f"Management conclusion gate blocked count: {manifest.get('management_conclusion_gate_blocked_count', 0)}\n\n"
         "No financial amount, management conclusion, or evidence-free forecast was generated from unreviewed OCR/table extraction. "
         "Known due-date projections remain pending review. Next step: perform OCR/table extraction, internal-transfer netting, "
         "cross-review, then promote reviewed facts only.\n",
