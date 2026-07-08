@@ -26,6 +26,7 @@ REQUIRED = [
     "tools/ocr_with_vision.swift",
     "tools/run_fund_weekly_analysis.py",
     "tools/materialize_fund_source.py",
+    "tools/install_owner_decision_manifest.py",
     "tools/install_to_kmfa_main.sh",
     "templates/资金与税费管理母版_真实数据预览_v2.xlsx",
 ]
@@ -78,6 +79,9 @@ REQUIRED_SKILL_STRINGS = [
     "ocr_fact_owner_decision_correction_manifest_readiness.csv",
     "ready_for_owner_decision_manifest_validation_no_write",
     "blocked_missing_owner_decision_manifest",
+    "install_owner_decision_manifest.py",
+    "--acknowledge-owner-reviewed-values",
+    "BLOCKED_OWNER_VALUES_MISSING",
     "ocr_fact_owner_decision_correction_roundtrip_audit.csv",
     "owner_correction_resolved_apply_gate_ready_no_write",
     "owner_correction_present_apply_gate_still_blocked",
