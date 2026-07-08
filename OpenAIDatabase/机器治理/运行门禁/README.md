@@ -2,6 +2,33 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
+当前阶段是 v1.2 Final Review。任务 ID 为 `MA-V12-FINAL-REVIEW`，验收 ID 为
+`ACC-MA-V12-FINAL-REVIEW`，validator 为 `validate:v1.2-final-review`。状态为
+`v1_2_final_review_passed_pending_github_main_sync_no_upload_yet`。
+
+Final Review 产物：
+
+- `docs/reviews/memory_atlas_v1_2_final_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_final_review.cjs`
+- `机器治理/证据与日志/final_review/v1_2_final_review_status.json`
+
+Final Review gate：
+
+- `validate:v1.2-final-review` 可验证四线14Stage 的 `S01-S14 Review` 链。
+- `python3 scripts/atlasctl.py audit` 仍返回 final audit PASS。
+- 终审主题覆盖 raw append-only、credential audit、Chinese UX、visual ROI、report contract、proposal apply、owner-daily 和 final audit。
+- 进入最终同步 phase 前必须处理 remote branch reconciliation required。
+- 不修改 raw。
+- 不上传 GitHub main。
+- 不执行远端 push。
+- 不重装 app。
+- 不清理本机。
+
+No GitHub main upload。No remote push。No raw mutation。
+下一步是 pending GitHub main sync、app reinstall 和 local cleanup。
+
+历史复验兼容记录：
+
 当前阶段是 S14 Review。任务 ID 为 `MA-V12-S14-REVIEW`，验收 ID 为
 `ACC-MA-V12-S14-REVIEW`，validator 为 `validate:v1.2-s14-review`。状态为
 `stage_s14_review_passed_pending_v1_2_final_review_no_github_main_upload`。
@@ -27,8 +54,6 @@ S14 Review gate：
 
 No GitHub main upload。No remote push。No raw mutation。
 下一步是 pending v1.2 Final Review。
-
-历史复验兼容记录：
 
 当前阶段是 S13 Review。任务 ID 为 `MA-V12-S13-REVIEW`，验收 ID 为
 `ACC-MA-V12-S13-REVIEW`，validator 为 `validate:v1.2-s13-review`。状态为

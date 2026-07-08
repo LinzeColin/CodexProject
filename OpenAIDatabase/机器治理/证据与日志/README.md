@@ -2,6 +2,19 @@
 
 用于放置 run evidence、audit logs、manifest/hash、stage evidence 和复审证据摘要。
 
+当前 v1.2 Final Review 已完成。任务 ID 为 `MA-V12-FINAL-REVIEW`，验收 ID 为
+`ACC-MA-V12-FINAL-REVIEW`，状态为
+`v1_2_final_review_passed_pending_github_main_sync_no_upload_yet`。Validator 为
+`validate:v1.2-final-review`。Final Review 证据文件：
+
+- `机器治理/证据与日志/final_review/v1_2_final_review_status.json`
+- `docs/reviews/memory_atlas_v1_2_final_review.md`
+
+v1.2 Final Review 不上传 GitHub main，不远端 push，不修改 raw。下一步为 pending GitHub main sync、
+app reinstall 和 local cleanup。No GitHub main upload。No remote push。No raw mutation。
+
+历史复验兼容记录：
+
 当前 S14 Review 已完成。任务 ID 为 `MA-V12-S14-REVIEW`，验收 ID 为
 `ACC-MA-V12-S14-REVIEW`，状态为
 `stage_s14_review_passed_pending_v1_2_final_review_no_github_main_upload`。Validator 为

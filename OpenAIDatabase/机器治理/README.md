@@ -18,6 +18,18 @@
 
 ## 当前阶段
 
+当前为 v1.2 Final Review。任务 ID 为 `MA-V12-FINAL-REVIEW`，验收 ID 为
+`ACC-MA-V12-FINAL-REVIEW`，validator 为 `validate:v1.2-final-review`。状态为
+`v1_2_final_review_passed_pending_github_main_sync_no_upload_yet`。Final Review 已完成
+四线14Stage 的 `S01-S14 Review` 链复审，并确认 raw append-only、credential audit、
+Chinese UX、visual ROI、report contract、proposal apply、owner-daily 和 final audit 主题。
+下一步是 pending GitHub main sync、app reinstall 和 local cleanup；进入该 phase 前需要
+remote branch reconciliation required。
+
+No GitHub main upload。No remote push。No raw mutation。
+
+历史复验兼容记录：
+
 当前为 S14 Review。任务 ID 为 `MA-V12-S14-REVIEW`，验收 ID 为
 `ACC-MA-V12-S14-REVIEW`，validator 为 `validate:v1.2-s14-review`。状态为
 `stage_s14_review_passed_pending_v1_2_final_review_no_github_main_upload`。S14 Review 已完成
@@ -26,8 +38,6 @@ S14 P1、S14 P2、S14 P3 的整体复审。`owner-daily`、`atlasctl_unified_cli
 S14 stage gate。下一步是 pending v1.2 Final Review。
 
 No GitHub main upload。No remote push。No raw mutation。
-
-历史复验兼容记录：
 
 当前为 S13 Review。任务 ID 为 `MA-V12-S13-REVIEW`，验收 ID 为
 `ACC-MA-V12-S13-REVIEW`，validator 为 `validate:v1.2-s13-review`。状态为
