@@ -724,6 +724,68 @@ def build_funding_forecast_rows(structured: dict) -> list[dict]:
     return rows
 
 
+def build_cashflow_validation_rows(structured: dict, run_id: str) -> list[dict]:
+    previous_by_account: dict[tuple[str, str, str, str], Decimal] = {}
+    rows = []
+    ordered = sorted(
+        structured["fund_rows"],
+        key=lambda row: (
+            row["company"],
+            row["bank"],
+            row["account_alias"],
+            row["liquidity_tier"],
+            row["date"],
+            int(row["source_row_number"]),
+        ),
+    )
+    for row in ordered:
+        validation_id = f"CV-{run_id}-{len(rows) + 1:05d}"
+        key = (row["company"], row["bank"], row["account_alias"], row["liquidity_tier"])
+        inflow = money(row["inflow"])
+        outflow = money(row["outflow"])
+        actual_ending = money(row["ending_balance"])
+        previous_ending = previous_by_account.get(key)
+        if previous_ending is None:
+            expected_ending = actual_ending
+            diff = Decimal("0.00")
+            validation_status = "BASELINE"
+            review_status = "baseline_balance_recorded"
+        else:
+            expected_ending = previous_ending + inflow - outflow
+            diff = actual_ending - expected_ending
+            if abs(diff) <= Decimal("0.01"):
+                validation_status = "PASS"
+                review_status = "balance_continuity_passed_pending_review"
+            else:
+                validation_status = "FAIL"
+                review_status = "balance_continuity_gap_pending_review"
+        flow_type = row["flow_type"]
+        internal_transfer_excluded = flow_type == "internal_transfer"
+        operating_effect = inflow - outflow if flow_type == "operating" else Decimal("0.00")
+        rows.append({
+            "validation_id": validation_id,
+            "ledger_id": row["ledger_id"],
+            "date": row["date"],
+            "company": row["company"],
+            "bank": row["bank"],
+            "account_alias": row["account_alias"],
+            "previous_ending_balance": "" if previous_ending is None else money_text(previous_ending),
+            "inflow": money_text(inflow),
+            "outflow": money_text(outflow),
+            "expected_ending_balance": money_text(expected_ending),
+            "actual_ending_balance": money_text(actual_ending),
+            "continuity_diff": money_text(diff),
+            "flow_type": flow_type,
+            "operating_cashflow_effect": money_text(operating_effect),
+            "internal_transfer_excluded": bool_text(internal_transfer_excluded),
+            "validation_status": validation_status,
+            "review_status": review_status,
+            "source_evidence_id": row["source_evidence_id"],
+        })
+        previous_by_account[key] = actual_ending
+    return rows
+
+
 def workbook_display_matrix_rows(fund_rows: list[dict]) -> list[dict]:
     grouped: dict[tuple[str, str, str, str], dict[str, object]] = {}
     for row in fund_rows:
@@ -762,12 +824,13 @@ def workbook_display_matrix_rows(fund_rows: list[dict]) -> list[dict]:
     return [dict(row) for row in sorted(grouped.values(), key=lambda item: (item["company"], item["bank"], item["account_alias"]))]
 
 
-def write_structured_facts_to_workbook(workbook_path: Path, structured: dict, evidence: list[dict], input_dir: Path) -> None:
+def write_structured_facts_to_workbook(workbook_path: Path, structured: dict, evidence: list[dict], input_dir: Path, run_id: str) -> None:
     if not structured["fund_rows"]:
         return
 
     summary = structured_workbook_summary(structured)
     funding_forecast_rows = build_funding_forecast_rows(structured)
+    cashflow_validation_rows = build_cashflow_validation_rows(structured, run_id)
     evidence_by_id = {row["evidence_id"]: row for row in evidence}
     ledger_ids_by_evidence: dict[str, list[str]] = {}
     dates_by_evidence: dict[str, set[str]] = {}
@@ -997,6 +1060,23 @@ def write_structured_facts_to_workbook(workbook_path: Path, structured: dict, ev
         write_table_rows(sheet9, 4, h03_rows)
         replacements["xl/worksheets/sheet9.xml"] = serialize_sheet(sheet9)
 
+        sheet11 = ET.fromstring(workbook.read("xl/worksheets/sheet11.xml"))
+        clear_rows_from(sheet11, 12)
+        h05_rows = []
+        for row in cashflow_validation_rows:
+            is_blocking = row["validation_status"] == "FAIL"
+            h05_rows.append([
+                ("text", row["validation_id"]),
+                ("text", "余额连续性/经营现金流验证"),
+                ("text", "期末余额=上次期末余额+流入-流出；内部调拨不计入经营现金流"),
+                ("text", row["validation_status"]),
+                ("text", "差异进入异常任务池并阻断管理结论" if is_blocking else "待复核后可作为结构化事实"),
+                ("text", "是" if is_blocking else "否"),
+                ("text", f"ledger_id={row['ledger_id']}; diff={row['continuity_diff']}; operating_effect={row['operating_cashflow_effect']}; internal_transfer_excluded={row['internal_transfer_excluded']}"),
+            ])
+        write_table_rows(sheet11, 12, h05_rows)
+        replacements["xl/worksheets/sheet11.xml"] = serialize_sheet(sheet11)
+
     replace_xlsx_entries(workbook_path, replacements)
 
 
@@ -1169,9 +1249,14 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     evidence = write_evidence_index_stub(manifest, run_dir)
     structured = extract_structured_csv_facts(manifest, input_dir, evidence)
     funding_forecast_rows = build_funding_forecast_rows(structured)
+    cashflow_validation_rows = build_cashflow_validation_rows(structured, manifest["run_id"])
     metadata_signals = collect_kmfa_metadata_signals(repo_root, manifest["run_id"])
+    balance_continuity_fail_count = sum(1 for row in cashflow_validation_rows if row["validation_status"] == "FAIL")
+    internal_transfer_excluded_count = sum(1 for row in cashflow_validation_rows if row["internal_transfer_excluded"] == "true")
     manifest["metadata_signal_count"] = len(metadata_signals)
     manifest["forecast_row_count"] = len(funding_forecast_rows)
+    manifest["cashflow_validation_row_count"] = len(cashflow_validation_rows)
+    manifest["balance_continuity_fail_count"] = balance_continuity_fail_count
     if structured["fund_rows"]:
         manifest["status"] = "STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW"
         manifest["structured_fact_count"] = len(structured["fund_rows"])
@@ -1190,7 +1275,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     template = skill_root / "templates" / TEMPLATE_NAME
     workbook_path = run_dir / f"资金与税费管理母版_{manifest['run_id']}.xlsx"
     shutil.copyfile(template, workbook_path)
-    write_structured_facts_to_workbook(workbook_path, structured, evidence, input_dir)
+    write_structured_facts_to_workbook(workbook_path, structured, evidence, input_dir, manifest["run_id"])
     write_metadata_signals_to_workbook(workbook_path, metadata_signals, len(structured["risk_rows"]))
 
     write_csv(run_dir / "fund_ledger.csv", [
@@ -1247,6 +1332,26 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "forecast_basis",
         "review_status",
     ], funding_forecast_rows)
+    write_csv(run_dir / "cashflow_validation.csv", [
+        "validation_id",
+        "ledger_id",
+        "date",
+        "company",
+        "bank",
+        "account_alias",
+        "previous_ending_balance",
+        "inflow",
+        "outflow",
+        "expected_ending_balance",
+        "actual_ending_balance",
+        "continuity_diff",
+        "flow_type",
+        "operating_cashflow_effect",
+        "internal_transfer_excluded",
+        "validation_status",
+        "review_status",
+        "source_evidence_id",
+    ], cashflow_validation_rows)
     write_csv(run_dir / "kmfa_metadata_signals.csv", [
         "signal_id",
         "signal_type",
@@ -1260,21 +1365,34 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "review_status",
         "remark",
     ], metadata_signals)
+    exception_tasks = [
+        {
+            "task_id": f"EX-{manifest['run_id']}-{index:05d}",
+            "evidence_id": row["evidence_id"],
+            "task_type": "PENDING_OCR_OR_REVIEW",
+            "severity": "blocking_for_financial_fact",
+            "reason": "Real source evidence indexed; financial facts require OCR/table extraction and review before use.",
+            "relative_path": row["relative_path"],
+            "review_status": "pending",
+        }
+        for index, row in enumerate(evidence, 1)
+    ]
+    for row in cashflow_validation_rows:
+        if row["validation_status"] != "FAIL":
+            continue
+        exception_tasks.append({
+            "task_id": f"EX-{manifest['run_id']}-{len(exception_tasks) + 1:05d}",
+            "evidence_id": row["source_evidence_id"],
+            "task_type": "BALANCE_CONTINUITY_GAP",
+            "severity": "blocking_for_management_conclusion",
+            "reason": f"{row['validation_id']} continuity_diff={row['continuity_diff']} requires review; do not auto-correct.",
+            "relative_path": row["ledger_id"],
+            "review_status": "pending",
+        })
     write_csv(
         run_dir / "exception_tasks.csv",
         ["task_id", "evidence_id", "task_type", "severity", "reason", "relative_path", "review_status"],
-        [
-            {
-                "task_id": f"EX-{manifest['run_id']}-{index:05d}",
-                "evidence_id": row["evidence_id"],
-                "task_type": "PENDING_OCR_OR_REVIEW",
-                "severity": "blocking_for_financial_fact",
-                "reason": "Real source evidence indexed; financial facts require OCR/table extraction and review before use.",
-                "relative_path": row["relative_path"],
-                "review_status": "pending",
-            }
-            for index, row in enumerate(evidence, 1)
-        ],
+        exception_tasks,
     )
 
     cross_review = {
@@ -1284,6 +1402,9 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "structured_financial_fact_count": len(structured["fund_rows"]),
         "metadata_signal_count": len(metadata_signals),
         "forecast_row_count": len(funding_forecast_rows),
+        "cashflow_validation_row_count": len(cashflow_validation_rows),
+        "balance_continuity_fail_count": balance_continuity_fail_count,
+        "internal_transfer_excluded_count": internal_transfer_excluded_count,
         "excel_workbook_generated": True,
         "workbook": workbook_path.name,
         "source_file_count": manifest["file_count"],
@@ -1305,6 +1426,9 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "structured_financial_fact_count": len(structured["fund_rows"]),
                 "metadata_signal_count": len(metadata_signals),
                 "forecast_row_count": len(funding_forecast_rows),
+                "cashflow_validation_row_count": len(cashflow_validation_rows),
+                "balance_continuity_fail_count": balance_continuity_fail_count,
+                "internal_transfer_excluded_count": internal_transfer_excluded_count,
                 "management_conclusion_allowed": False,
             },
         ], ensure_ascii=False, indent=2),
@@ -1408,6 +1532,8 @@ def main() -> int:
         f"Structured financial fact count: {manifest.get('structured_fact_count', 0)}\n\n"
         f"KMFA metadata signal count: {manifest.get('metadata_signal_count', 0)}\n\n"
         f"Known due-date funding forecast row count: {manifest.get('forecast_row_count', 0)}\n\n"
+        f"Cashflow validation row count: {manifest.get('cashflow_validation_row_count', 0)}\n\n"
+        f"Balance continuity fail count: {manifest.get('balance_continuity_fail_count', 0)}\n\n"
         "No financial amount, management conclusion, or evidence-free forecast was generated from unreviewed OCR/table extraction. "
         "Known due-date projections remain pending review. Next step: perform OCR/table extraction, internal-transfer netting, "
         "cross-review, then promote reviewed facts only.\n",

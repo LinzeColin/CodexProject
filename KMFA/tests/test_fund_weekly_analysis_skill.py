@@ -390,6 +390,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "company_bank_matrix.csv",
                 "tax_loan_risk.csv",
                 "funding_forecast.csv",
+                "cashflow_validation.csv",
                 "kmfa_metadata_signals.csv",
                 "exception_tasks.csv",
                 "cross_review.json",
@@ -585,6 +586,77 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                     xlsx_cell_text(workbook, "xl/worksheets/sheet2.xml", "H7"),
                     "structured_csv_forecast_pending_review",
                 )
+
+    def test_runner_validates_balance_continuity_and_operating_cashflow_without_conclusion(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+            source_day = input_dir / "files" / "0708"
+            source_day.mkdir(parents=True)
+            structured_csv = source_day / "20260708113000_吴云霞_现金流校验.csv"
+            structured_csv.write_text(
+                "\n".join([
+                    "date,company,bank,account_alias,liquidity_tier,inflow,outflow,ending_balance,flow_type,due_date,risk_type",
+                    "2026-07-08,开明一公司,招商银行,基本户,T0_BANK_CASH,0,0,1000.00,operating,,",
+                    "2026-07-09,开明一公司,招商银行,基本户,T0_BANK_CASH,300.00,100.00,1200.00,operating,,",
+                    "2026-07-10,开明一公司,招商银行,基本户,T0_BANK_CASH,500.00,0,1700.00,internal_transfer,,",
+                    "2026-07-11,开明一公司,招商银行,基本户,T0_BANK_CASH,0,200.00,1600.00,operating,,",
+                ]),
+                encoding="utf-8",
+            )
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "run_fund_weekly_analysis.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--input-dir",
+                    str(input_dir),
+                    "--run-id",
+                    "cashflow_validation_test",
+                    "--timezone",
+                    "Australia/Sydney",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/cashflow_validation_test"
+            with (run_dir / "cashflow_validation.csv").open(encoding="utf-8-sig", newline="") as f:
+                validation_rows = list(csv.DictReader(f))
+            self.assertEqual(len(validation_rows), 4)
+            self.assertEqual(validation_rows[0]["validation_status"], "BASELINE")
+            self.assertEqual(validation_rows[1]["validation_status"], "PASS")
+            self.assertEqual(validation_rows[1]["operating_cashflow_effect"], "200.00")
+            self.assertEqual(validation_rows[2]["flow_type"], "internal_transfer")
+            self.assertEqual(validation_rows[2]["internal_transfer_excluded"], "true")
+            self.assertEqual(validation_rows[2]["operating_cashflow_effect"], "0.00")
+            self.assertEqual(validation_rows[3]["validation_status"], "FAIL")
+            self.assertEqual(validation_rows[3]["continuity_diff"], "100.00")
+            self.assertEqual(validation_rows[3]["review_status"], "balance_continuity_gap_pending_review")
+
+            with (run_dir / "exception_tasks.csv").open(encoding="utf-8-sig", newline="") as f:
+                task_rows = list(csv.DictReader(f))
+            self.assertTrue(any(row["task_type"] == "BALANCE_CONTINUITY_GAP" for row in task_rows))
+
+            cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
+            self.assertFalse(cross_review["management_conclusion_allowed"])
+            self.assertEqual(cross_review["cashflow_validation_row_count"], 4)
+            self.assertEqual(cross_review["balance_continuity_fail_count"], 1)
+            self.assertEqual(cross_review["internal_transfer_excluded_count"], 1)
+
+            workbook_path = run_dir / "资金与税费管理母版_cashflow_validation_test.xlsx"
+            with zipfile.ZipFile(workbook_path) as workbook:
+                self.assertEqual(
+                    xlsx_cell_text(workbook, "xl/worksheets/sheet11.xml", "A12"),
+                    "CV-cashflow_validation_test-00001",
+                )
+                self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet11.xml", "D13"), "PASS")
+                self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet11.xml", "D15"), "FAIL")
+                self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet11.xml", "F15"), "是")
 
     def test_runner_carries_kmfa_metadata_signals_without_management_conclusion(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
