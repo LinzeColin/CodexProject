@@ -575,6 +575,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "ocr_fact_owner_decision_correction_apply_preview.csv",
                 "ocr_fact_owner_decision_correction_roundtrip_audit.csv",
                 "ocr_fact_owner_decision_correction_evidence_packet.csv",
+                "ocr_fact_owner_decision_correction_chat_context.csv",
                 "ocr_fact_review_apply_gate.csv",
                 "ocr_fact_review_authorization_template.json",
                 "ocr_fact_review_authorization_preview.csv",
@@ -1421,6 +1422,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 correction_evidence_packet_rows = list(csv.DictReader(f))
             self.assertEqual(correction_evidence_packet_rows, [])
 
+            with (run_dir / "ocr_fact_owner_decision_correction_chat_context.csv").open(encoding="utf-8-sig", newline="") as f:
+                correction_chat_context_rows = list(csv.DictReader(f))
+            self.assertEqual(correction_chat_context_rows, [])
+
             correction_draft = json.loads(
                 (run_dir / "ocr_fact_owner_decision_correction_draft.json").read_text(encoding="utf-8")
             )
@@ -2198,6 +2203,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_evidence_packet_ready_count"], 0)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_evidence_packet_blocking_count"], 0)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_evidence_packet_write_allowed_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_chat_context_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_chat_context_ready_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_chat_context_blocking_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_chat_context_write_allowed_count"], 0)
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertFalse(cross_review["management_conclusion_allowed"])
 
@@ -2212,6 +2221,78 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             auth_dir.mkdir(parents=True)
             decision_dir.mkdir(parents=True)
             (source_day / "20260708113000_杨婷_资金账户截图.png").write_bytes(b"real-image-bytes")
+            manifest_dir = input_dir / "_manifest"
+            chat_dir = input_dir / "chat_records"
+            manifest_dir.mkdir(parents=True)
+            chat_dir.mkdir(parents=True)
+            with (manifest_dir / "manifest.csv").open("w", encoding="utf-8", newline="") as f:
+                writer = csv.writer(f)
+                writer.writerow([
+                    "group_name",
+                    "open_conversation_id",
+                    "message_id",
+                    "message_time",
+                    "sender_name",
+                    "sender_id",
+                    "msg_type",
+                    "resource_type",
+                    "resource_id",
+                    "original_filename",
+                    "local_archive_path",
+                    "output_path",
+                    "sha256",
+                    "size_bytes",
+                    "download_method",
+                    "status",
+                ])
+                writer.writerow([
+                    "付款请示群",
+                    "cid-fixture",
+                    "msg-fixture-001",
+                    "2026-07-08 11:30:00",
+                    "杨婷",
+                    "sender-fixture",
+                    "media",
+                    "image",
+                    "@fixture-media",
+                    "资金账户截图.png",
+                    "data/archive/付款请示群/files/2026/07/08/20260708113000_杨婷_资金账户截图.png",
+                    "files/0708/20260708113000_杨婷_资金账户截图.png",
+                    "",
+                    "16",
+                    "dws_chat_message_download_media",
+                    "downloaded",
+                ])
+            with (chat_dir / "chat_records.csv").open("w", encoding="utf-8", newline="") as f:
+                writer = csv.writer(f)
+                writer.writerow([
+                    "group_name",
+                    "open_conversation_id",
+                    "open_message_id",
+                    "message_time",
+                    "sender_name",
+                    "sender_id",
+                    "content",
+                    "quoted_message_id",
+                    "quoted_sender",
+                    "quoted_content",
+                    "resource_count",
+                    "resource_types",
+                ])
+                writer.writerow([
+                    "付款请示群",
+                    "cid-fixture",
+                    "msg-fixture-001",
+                    "2026-07-08 11:30:00",
+                    "杨婷",
+                    "sender-fixture",
+                    "[图片消息](mediaId=@fixture-media) 武汉开明资金账户截图，银行待财务确认",
+                    "",
+                    "",
+                    "",
+                    "1",
+                    "image",
+                ])
 
             run_id = "ocr_owner_correction_queue_test"
             run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs" / run_id
@@ -2339,7 +2420,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(evidence_packet["fact_candidate_id"], f"OCRFACT-{run_id}-00001")
             self.assertEqual(evidence_packet["candidate_metric"], "bank_deposit")
             self.assertEqual(evidence_packet["source_correction_queue_id"], row["correction_queue_id"])
-            self.assertEqual(evidence_packet["source_evidence_id"], "FWocr_owner_correction_queue_test-00001")
+            self.assertTrue(evidence_packet["source_evidence_id"].startswith("FWocr_owner_correction_queue_test-"))
             self.assertEqual(evidence_packet["source_image_relative_path"], "files/0708/20260708113000_杨婷_资金账户截图.png")
             self.assertEqual(evidence_packet["candidate_business_date"], "2026-07-08")
             self.assertEqual(evidence_packet["candidate_amount"], "12345.67")
@@ -2359,6 +2440,28 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(evidence_packet["financial_fact_promoted"], "false")
             self.assertEqual(evidence_packet["management_conclusion_allowed"], "false")
             self.assertIn('"owner_authorization_decision":"needs_correction"', evidence_packet["owner_decision_json_fragment"])
+
+            with (run_dir / "ocr_fact_owner_decision_correction_chat_context.csv").open(encoding="utf-8-sig", newline="") as f:
+                correction_chat_context_rows = list(csv.DictReader(f))
+            self.assertEqual(len(correction_chat_context_rows), 1)
+            chat_context = correction_chat_context_rows[0]
+            self.assertEqual(chat_context["fact_candidate_id"], f"OCRFACT-{run_id}-00001")
+            self.assertEqual(chat_context["source_evidence_packet_id"], evidence_packet["evidence_packet_id"])
+            self.assertEqual(chat_context["open_message_id"], "msg-fixture-001")
+            self.assertEqual(chat_context["message_time"], "2026-07-08 11:30:00")
+            self.assertEqual(chat_context["sender_name"], "杨婷")
+            self.assertEqual(chat_context["resource_type"], "image")
+            self.assertEqual(chat_context["resource_status"], "downloaded")
+            self.assertEqual(chat_context["manifest_row_number"], "2")
+            self.assertEqual(chat_context["chat_record_row_number"], "2")
+            self.assertIn("武汉开明资金账户截图", chat_context["chat_content_excerpt"])
+            self.assertEqual(chat_context["context_status"], "ready_chat_context_no_write")
+            self.assertEqual(chat_context["owner_field_autofill_allowed"], "false")
+            self.assertEqual(chat_context["owner_decision_manifest_write_allowed"], "false")
+            self.assertEqual(chat_context["fund_ledger_write_allowed"], "false")
+            self.assertEqual(chat_context["formal_fund_ledger_write_allowed"], "false")
+            self.assertEqual(chat_context["financial_fact_promoted"], "false")
+            self.assertEqual(chat_context["management_conclusion_allowed"], "false")
 
             correction_draft = json.loads(
                 (run_dir / "ocr_fact_owner_decision_correction_draft.json").read_text(encoding="utf-8")
@@ -2436,6 +2539,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_evidence_packet_ready_count"], 1)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_evidence_packet_blocking_count"], 0)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_evidence_packet_write_allowed_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_chat_context_count"], 1)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_chat_context_ready_count"], 1)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_chat_context_blocking_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_chat_context_write_allowed_count"], 0)
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertFalse(cross_review["management_conclusion_allowed"])
 
