@@ -37,6 +37,7 @@ REQUIRED_SKILL_STRINGS = [
     "hidden",
     "1728",
     "--source-zip",
+    "screenshot_ocr_coverage.csv",
     "ocr_text_candidates.csv",
     "ocr_value_candidates.csv",
     "chat_text_candidates.csv",
