@@ -562,6 +562,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "ocr_fact_cross_review.csv",
                 "ocr_fact_owner_review_batch.csv",
                 "ocr_fact_evidence_review_queue.csv",
+                "ocr_fact_candidate_owner_worklist.csv",
                 "ocr_fact_ledger_staging_preview.csv",
                 "ocr_fact_review_apply_gate.csv",
                 "ocr_fact_review_authorization_template.json",
@@ -1319,6 +1320,32 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in evidence_queue_rows))
             self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in evidence_queue_rows))
 
+            with (run_dir / "ocr_fact_candidate_owner_worklist.csv").open(encoding="utf-8-sig", newline="") as f:
+                owner_worklist_rows = list(csv.DictReader(f))
+            self.assertEqual([row["candidate_metric"] for row in owner_worklist_rows], [
+                "bank_deposit",
+                "electronic_bill",
+                "payment_outflow",
+            ])
+            worklist_by_id = {row["fact_candidate_id"]: row for row in owner_worklist_rows}
+            self.assertEqual(
+                worklist_by_id[f"OCRFACT-{run_id}-00001"]["ocr_fact_evidence_review_queue_id"],
+                evidence_queue_by_metric["bank_deposit"]["ocr_fact_evidence_review_queue_id"],
+            )
+            self.assertEqual(worklist_by_id[f"OCRFACT-{run_id}-00001"]["owner_authorization_decision"], "pending_owner_review")
+            self.assertEqual(worklist_by_id[f"OCRFACT-{run_id}-00001"]["authorization_validation_status"], "missing_authorization_manifest")
+            self.assertEqual(worklist_by_id[f"OCRFACT-{run_id}-00001"]["staging_preview_status"], "blocked_missing_operator_authorization")
+            self.assertEqual(worklist_by_id[f"OCRFACT-{run_id}-00001"]["owner_corrected_company"], "")
+            self.assertEqual(worklist_by_id[f"OCRFACT-{run_id}-00001"]["owner_corrected_bank"], "")
+            self.assertEqual(
+                worklist_by_id[f"OCRFACT-{run_id}-00001"]["authorization_manifest_relative_path"],
+                f"KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_fact_review_authorizations/{run_id}.json",
+            )
+            self.assertTrue(all(row["authorization_scope"] == "ocr_financial_fact_review_validation_only" for row in owner_worklist_rows))
+            self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in owner_worklist_rows))
+            self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in owner_worklist_rows))
+            self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in owner_worklist_rows))
+
             with (run_dir / "fund_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
                 fund_rows = list(csv.DictReader(f))
             self.assertEqual(fund_rows, [])
@@ -1334,6 +1361,9 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_owner_review_batch_blocking_count"], 3)
             self.assertEqual(cross_review["ocr_fact_evidence_review_queue_count"], 3)
             self.assertEqual(cross_review["ocr_fact_evidence_review_queue_blocking_count"], 3)
+            self.assertEqual(cross_review["ocr_fact_candidate_owner_worklist_count"], 3)
+            self.assertEqual(cross_review["ocr_fact_candidate_owner_worklist_ready_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_candidate_owner_worklist_blocking_count"], 3)
             self.assertEqual(cross_review["ocr_fact_review_apply_gate_count"], 3)
             self.assertEqual(cross_review["ocr_fact_review_authorization_present_count"], 0)
             self.assertEqual(cross_review["ocr_fact_review_authorization_template_count"], 3)
@@ -1809,6 +1839,25 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in evidence_queue_rows))
             self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in evidence_queue_rows))
 
+            with (run_dir / "ocr_fact_candidate_owner_worklist.csv").open(encoding="utf-8-sig", newline="") as f:
+                owner_worklist_rows = list(csv.DictReader(f))
+            worklist_by_id = {row["fact_candidate_id"]: row for row in owner_worklist_rows}
+            self.assertEqual(len(owner_worklist_rows), 3)
+            self.assertEqual(
+                worklist_by_id[f"OCRFACT-{run_id}-00001"]["ocr_fact_evidence_review_queue_id"],
+                evidence_queue_by_metric["bank_deposit"]["ocr_fact_evidence_review_queue_id"],
+            )
+            self.assertEqual(worklist_by_id[f"OCRFACT-{run_id}-00001"]["authorization_validation_status"], "valid_manifest_validation_only")
+            self.assertEqual(worklist_by_id[f"OCRFACT-{run_id}-00001"]["staging_preview_status"], "ready_for_ledger_staging_review_no_write")
+            self.assertEqual(worklist_by_id[f"OCRFACT-{run_id}-00001"]["owner_authorization_decision"], "pending_owner_review")
+            self.assertEqual(worklist_by_id[f"OCRFACT-{run_id}-00002"]["authorization_validation_status"], "valid_manifest_validation_only")
+            self.assertEqual(worklist_by_id[f"OCRFACT-{run_id}-00003"]["authorization_validation_status"], "fact_candidate_not_authorized")
+            self.assertEqual(worklist_by_id[f"OCRFACT-{run_id}-00003"]["staging_preview_status"], "blocked_fact_candidate_not_authorized")
+            self.assertTrue(all(row["authorization_scope"] == "ocr_financial_fact_review_validation_only" for row in owner_worklist_rows))
+            self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in owner_worklist_rows))
+            self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in owner_worklist_rows))
+            self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in owner_worklist_rows))
+
             with (run_dir / "fund_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
                 fund_rows = list(csv.DictReader(f))
             self.assertEqual(fund_rows, [])
@@ -1826,6 +1875,9 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_owner_review_batch_blocking_count"], 1)
             self.assertEqual(cross_review["ocr_fact_evidence_review_queue_count"], 3)
             self.assertEqual(cross_review["ocr_fact_evidence_review_queue_blocking_count"], 1)
+            self.assertEqual(cross_review["ocr_fact_candidate_owner_worklist_count"], 3)
+            self.assertEqual(cross_review["ocr_fact_candidate_owner_worklist_ready_count"], 2)
+            self.assertEqual(cross_review["ocr_fact_candidate_owner_worklist_blocking_count"], 1)
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertFalse(cross_review["management_conclusion_allowed"])
 
