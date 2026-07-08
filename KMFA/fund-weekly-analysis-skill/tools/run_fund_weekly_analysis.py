@@ -479,6 +479,26 @@ def chat_record_source_paths(manifest: dict) -> list[str]:
     ]
 
 
+def manifest_source_paths(manifest: dict) -> list[str]:
+    return [
+        item["relative_path"]
+        for item in manifest["files"]
+        if item["relative_path"].replace("\\", "/").endswith("_manifest/manifest.csv")
+    ]
+
+
+def normalize_manifest_output_path(output_path: str, input_dir: Path) -> str:
+    normalized = (output_path or "").replace("\\", "/").strip()
+    if not normalized:
+        return ""
+    parts = [part for part in normalized.split("/") if part]
+    group_name = input_dir.name
+    if group_name in parts:
+        group_index = len(parts) - 1 - list(reversed(parts)).index(group_name)
+        return "/".join(parts[group_index + 1:])
+    return "/".join(parts)
+
+
 def collect_chat_text_candidates(manifest: dict, input_dir: Path, evidence: list[dict]) -> list[dict]:
     evidence_by_path = {row["relative_path"]: row for row in evidence}
     rows: list[dict] = []
@@ -561,6 +581,71 @@ def extract_chat_value_candidates(manifest: dict, chat_text_candidates: list[dic
                 "text_role": candidate["text_role"],
                 "line_text": text_excerpt(text),
                 "extraction_status": "chat_value_candidate_pending_review",
+                "review_status": "pending_human_review",
+                "financial_fact_promoted": "false",
+            })
+    return rows
+
+
+def collect_manifest_resource_rows(manifest: dict, input_dir: Path) -> list[dict]:
+    rows: list[dict] = []
+    for relative_path in manifest_source_paths(manifest):
+        csv_path = input_dir / relative_path
+        with csv_path.open(encoding="utf-8-sig", newline="", errors="replace") as f:
+            reader = csv.DictReader(f)
+            for row_index, row in enumerate(reader, 2):
+                message_id = row.get("message_id") or row.get("open_message_id") or ""
+                if not message_id:
+                    continue
+                rows.append({
+                    "manifest_relative_path": relative_path,
+                    "manifest_row_number": str(row_index),
+                    "open_message_id": message_id,
+                    "resource_type": row.get("resource_type") or "",
+                    "resource_id": row.get("resource_id") or "",
+                    "status": row.get("status") or "",
+                    "linked_relative_path": normalize_manifest_output_path(row.get("output_path") or "", input_dir),
+                    "sha256": row.get("sha256") or "",
+                })
+    return rows
+
+
+def collect_chat_evidence_links(
+    manifest: dict,
+    input_dir: Path,
+    evidence: list[dict],
+    chat_text_candidates: list[dict],
+    chat_value_candidates: list[dict],
+) -> list[dict]:
+    evidence_by_path = {row["relative_path"]: row for row in evidence}
+    values_by_chat: dict[str, list[str]] = {}
+    for value in chat_value_candidates:
+        values_by_chat.setdefault(value["chat_text_candidate_id"], []).append(value["value_candidate_id"])
+    resources_by_message: dict[str, list[dict]] = {}
+    for resource in collect_manifest_resource_rows(manifest, input_dir):
+        resources_by_message.setdefault(resource["open_message_id"], []).append(resource)
+
+    rows: list[dict] = []
+    for candidate in chat_text_candidates:
+        for resource in resources_by_message.get(candidate["open_message_id"], []):
+            linked_relative_path = resource["linked_relative_path"]
+            linked_evidence = evidence_by_path.get(linked_relative_path)
+            link_status = "linked_pending_review" if linked_evidence else "linked_evidence_missing_pending_review"
+            rows.append({
+                "chat_evidence_link_id": f"CHATLINK-{manifest['run_id']}-{len(rows) + 1:05d}",
+                "chat_text_candidate_id": candidate["chat_text_candidate_id"],
+                "chat_value_candidate_ids": ";".join(values_by_chat.get(candidate["chat_text_candidate_id"], [])),
+                "open_message_id": candidate["open_message_id"],
+                "source_csv_relative_path": candidate["source_csv_relative_path"],
+                "source_row_number": candidate["source_row_number"],
+                "manifest_relative_path": resource["manifest_relative_path"],
+                "manifest_row_number": resource["manifest_row_number"],
+                "resource_type": resource["resource_type"],
+                "resource_id": resource["resource_id"],
+                "resource_status": resource["status"],
+                "linked_evidence_id": linked_evidence["evidence_id"] if linked_evidence else "",
+                "linked_relative_path": linked_relative_path,
+                "link_status": link_status,
                 "review_status": "pending_human_review",
                 "financial_fact_promoted": "false",
             })
@@ -1645,6 +1730,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     ocr_value_candidates = extract_ocr_value_candidates(manifest, input_dir, ocr_text_candidates)
     chat_text_candidates = collect_chat_text_candidates(manifest, input_dir, evidence)
     chat_value_candidates = extract_chat_value_candidates(manifest, chat_text_candidates)
+    chat_evidence_links = collect_chat_evidence_links(manifest, input_dir, evidence, chat_text_candidates, chat_value_candidates)
     structured = extract_structured_csv_facts(manifest, input_dir, evidence)
     funding_forecast_rows = build_funding_forecast_rows(structured)
     cashflow_validation_rows = build_cashflow_validation_rows(structured, manifest["run_id"])
@@ -1655,6 +1741,8 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     manifest["ocr_value_candidate_count"] = len(ocr_value_candidates)
     manifest["chat_text_candidate_count"] = len(chat_text_candidates)
     manifest["chat_value_candidate_count"] = len(chat_value_candidates)
+    manifest["chat_evidence_link_count"] = len(chat_evidence_links)
+    manifest["chat_evidence_linked_count"] = sum(1 for row in chat_evidence_links if row["link_status"] == "linked_pending_review")
     manifest["metadata_signal_count"] = len(metadata_signals)
     manifest["forecast_row_count"] = len(funding_forecast_rows)
     manifest["cashflow_validation_row_count"] = len(cashflow_validation_rows)
@@ -1821,6 +1909,24 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "review_status",
         "financial_fact_promoted",
     ], chat_value_candidates)
+    write_csv(run_dir / "chat_evidence_links.csv", [
+        "chat_evidence_link_id",
+        "chat_text_candidate_id",
+        "chat_value_candidate_ids",
+        "open_message_id",
+        "source_csv_relative_path",
+        "source_row_number",
+        "manifest_relative_path",
+        "manifest_row_number",
+        "resource_type",
+        "resource_id",
+        "resource_status",
+        "linked_evidence_id",
+        "linked_relative_path",
+        "link_status",
+        "review_status",
+        "financial_fact_promoted",
+    ], chat_evidence_links)
     write_csv(run_dir / "workbook_quality_checks.csv", [
         "check_id",
         "check_name",
@@ -1893,6 +1999,16 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
             "relative_path": f"{row['source_csv_relative_path']}:{row['source_row_number']}",
             "review_status": "pending",
         })
+    for row in chat_evidence_links:
+        exception_tasks.append({
+            "task_id": f"EX-{manifest['run_id']}-{len(exception_tasks) + 1:05d}",
+            "evidence_id": row["linked_evidence_id"],
+            "task_type": "CHAT_EVIDENCE_LINK_PENDING_REVIEW",
+            "severity": "blocking_for_financial_fact",
+            "reason": f"{row['chat_evidence_link_id']} links chat candidate to source evidence; cross-review is required before fact promotion.",
+            "relative_path": row["linked_relative_path"] or f"{row['manifest_relative_path']}:{row['manifest_row_number']}",
+            "review_status": "pending",
+        })
     for row in cashflow_validation_rows:
         if row["validation_status"] != "FAIL":
             continue
@@ -1931,6 +2047,8 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "ocr_value_candidate_count": len(ocr_value_candidates),
         "chat_text_candidate_count": len(chat_text_candidates),
         "chat_value_candidate_count": len(chat_value_candidates),
+        "chat_evidence_link_count": len(chat_evidence_links),
+        "chat_evidence_linked_count": manifest["chat_evidence_linked_count"],
         "structured_financial_fact_count": len(structured["fund_rows"]),
         "metadata_signal_count": len(metadata_signals),
         "forecast_row_count": len(funding_forecast_rows),
@@ -1961,6 +2079,8 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "ocr_value_candidate_count": len(ocr_value_candidates),
                 "chat_text_candidate_count": len(chat_text_candidates),
                 "chat_value_candidate_count": len(chat_value_candidates),
+                "chat_evidence_link_count": len(chat_evidence_links),
+                "chat_evidence_linked_count": manifest["chat_evidence_linked_count"],
                 "structured_financial_fact_count": len(structured["fund_rows"]),
                 "metadata_signal_count": len(metadata_signals),
                 "forecast_row_count": len(funding_forecast_rows),
@@ -2074,6 +2194,8 @@ def main() -> int:
         f"OCR value candidate count: {manifest.get('ocr_value_candidate_count', 0)}\n\n"
         f"Chat text candidate count: {manifest.get('chat_text_candidate_count', 0)}\n\n"
         f"Chat value candidate count: {manifest.get('chat_value_candidate_count', 0)}\n\n"
+        f"Chat evidence link count: {manifest.get('chat_evidence_link_count', 0)}\n\n"
+        f"Chat evidence linked count: {manifest.get('chat_evidence_linked_count', 0)}\n\n"
         f"KMFA metadata signal count: {manifest.get('metadata_signal_count', 0)}\n\n"
         f"Known due-date funding forecast row count: {manifest.get('forecast_row_count', 0)}\n\n"
         f"Cashflow validation row count: {manifest.get('cashflow_validation_row_count', 0)}\n\n"

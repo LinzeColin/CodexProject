@@ -407,6 +407,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "ocr_value_candidates.csv",
                 "chat_text_candidates.csv",
                 "chat_value_candidates.csv",
+                "chat_evidence_links.csv",
                 "workbook_quality_checks.csv",
                 "kmfa_metadata_signals.csv",
                 "exception_tasks.csv",
@@ -642,6 +643,143 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertEqual(cross_review["chat_text_candidate_count"], 1)
             self.assertEqual(cross_review["chat_value_candidate_count"], 3)
+            self.assertEqual(cross_review["structured_financial_fact_count"], 0)
+
+    def test_runner_links_chat_candidates_to_real_manifest_evidence_without_promoting_facts(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+            chat_dir = input_dir / "chat_records"
+            manifest_dir = input_dir / "_manifest"
+            file_dir = input_dir / "files" / "0708"
+            chat_dir.mkdir(parents=True)
+            manifest_dir.mkdir(parents=True)
+            file_dir.mkdir(parents=True)
+
+            screenshot_rel = "files/0708/20260708113000_杨婷_real_image.png"
+            screenshot = input_dir / screenshot_rel
+            screenshot.write_bytes(b"real-linked-image")
+            chat_text = "2026-07-08 付款请示 招商银行 可用余额 ￥12,345.67 税费待缴 800.00"
+            with (chat_dir / "chat_records.csv").open("w", encoding="utf-8", newline="") as f:
+                writer = csv.writer(f)
+                writer.writerow([
+                    "group_name",
+                    "open_conversation_id",
+                    "open_message_id",
+                    "message_time",
+                    "sender_name",
+                    "sender_id",
+                    "content",
+                    "quoted_message_id",
+                    "quoted_sender",
+                    "quoted_content",
+                    "resource_count",
+                    "resource_types",
+                ])
+                writer.writerow([
+                    "付款请示群",
+                    "conv-1",
+                    "msg-1",
+                    "2026-07-08T11:30:00+10:00",
+                    "杨婷",
+                    "sender-1",
+                    chat_text,
+                    "",
+                    "",
+                    "",
+                    "1",
+                    "image",
+                ])
+            with (manifest_dir / "manifest.csv").open("w", encoding="utf-8", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=[
+                    "group_name",
+                    "open_conversation_id",
+                    "message_id",
+                    "message_time",
+                    "sender_name",
+                    "sender_id",
+                    "msg_type",
+                    "resource_type",
+                    "resource_id",
+                    "original_filename",
+                    "local_archive_path",
+                    "output_path",
+                    "sha256",
+                    "size_bytes",
+                    "download_method",
+                    "status",
+                ])
+                writer.writeheader()
+                writer.writerow({
+                    "group_name": "付款请示群",
+                    "open_conversation_id": "conv-1",
+                    "message_id": "msg-1",
+                    "message_time": "2026-07-08T11:30:00+10:00",
+                    "sender_name": "杨婷",
+                    "sender_id": "sender-1",
+                    "msg_type": "image",
+                    "resource_type": "image",
+                    "resource_id": "resource-1",
+                    "original_filename": "real_image.png",
+                    "local_archive_path": "",
+                    "output_path": screenshot_rel,
+                    "sha256": sha256_bytes(screenshot.read_bytes()),
+                    "size_bytes": str(screenshot.stat().st_size),
+                    "download_method": "dws",
+                    "status": "downloaded",
+                })
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "run_fund_weekly_analysis.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--input-dir",
+                    str(input_dir),
+                    "--run-id",
+                    "chat_evidence_link_test",
+                    "--timezone",
+                    "Australia/Sydney",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/chat_evidence_link_test"
+            with (run_dir / "chat_text_candidates.csv").open(encoding="utf-8-sig", newline="") as f:
+                chat_rows = list(csv.DictReader(f))
+            with (run_dir / "chat_value_candidates.csv").open(encoding="utf-8-sig", newline="") as f:
+                value_rows = list(csv.DictReader(f))
+            with (run_dir / "chat_evidence_links.csv").open(encoding="utf-8-sig", newline="") as f:
+                link_rows = list(csv.DictReader(f))
+
+            self.assertEqual(len(chat_rows), 1)
+            self.assertEqual(len(value_rows), 3)
+            self.assertEqual(len(link_rows), 1)
+            self.assertEqual(link_rows[0]["chat_text_candidate_id"], chat_rows[0]["chat_text_candidate_id"])
+            self.assertEqual(link_rows[0]["chat_value_candidate_ids"], ";".join(row["value_candidate_id"] for row in value_rows))
+            self.assertEqual(link_rows[0]["open_message_id"], "msg-1")
+            self.assertEqual(link_rows[0]["linked_relative_path"], screenshot_rel)
+            self.assertTrue(link_rows[0]["linked_evidence_id"].startswith("FWchat_evidence_link_test-"))
+            self.assertEqual(link_rows[0]["link_status"], "linked_pending_review")
+            self.assertEqual(link_rows[0]["financial_fact_promoted"], "false")
+
+            with (run_dir / "fund_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
+                fund_rows = list(csv.DictReader(f))
+            self.assertEqual(fund_rows, [])
+
+            with (run_dir / "exception_tasks.csv").open(encoding="utf-8-sig", newline="") as f:
+                task_rows = list(csv.DictReader(f))
+            self.assertTrue(any(row["task_type"] == "CHAT_EVIDENCE_LINK_PENDING_REVIEW" for row in task_rows))
+
+            cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
+            self.assertFalse(cross_review["management_conclusion_allowed"])
+            self.assertEqual(cross_review["generated_financial_amount_count"], 0)
+            self.assertEqual(cross_review["chat_evidence_link_count"], 1)
+            self.assertEqual(cross_review["chat_evidence_linked_count"], 1)
             self.assertEqual(cross_review["structured_financial_fact_count"], 0)
 
     def test_runner_extracts_real_structured_csv_facts_without_management_conclusion(self) -> None:

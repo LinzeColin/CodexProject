@@ -41,6 +41,7 @@ REQUIRED_SKILL_STRINGS = [
     "ocr_value_candidates.csv",
     "chat_text_candidates.csv",
     "chat_value_candidates.csv",
+    "chat_evidence_links.csv",
 ]
 EXPECTED_SHEETS = [
     "01_首页总览",
