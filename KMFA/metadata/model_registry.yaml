@@ -1336,3 +1336,18 @@ kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_applicati
   evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_FORMAL_REPORT
   validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_formal_report.py
   scope: Owner or authorized-agent external action required before formal report only; converts 48 source lineage full check requirement blockers into an ignored private formal report requirement queue, records 0 ready actions and 48 blockers, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, business consistency, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_github_upload:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-github-upload"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-GITHUB-UPLOAD-001
+  parameter_refs:
+    - PARAM-KMFA-1612
+    - PARAM-KMFA-1613
+    - PARAM-KMFA-1614
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_GITHUB_UPLOAD
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_github_upload.py
+  scope: Owner or authorized-agent external action required before GitHub upload only; converts 48 source formal report requirement blockers into an ignored private GitHub upload requirement queue, records 0 ready actions and 48 blockers, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, business consistency, lineage, formal report, GitHub upload, app reinstall and business execution closed.

@@ -12829,3 +12829,37 @@ tasks:
     risk: "Formal report requirement evidence can be misread as permission to generate formal reports; it is explicitly NO_GO and keeps all downstream gates closed."
     rollback: "Remove this phase public artifacts and ignored private requirement outputs; keep source lineage full check evidence intact."
     target_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-formal-report"
+
+  - task_id: "KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-GITHUB-UPLOAD-20260708"
+    phase_id: "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_GITHUB_UPLOAD"
+    objective: "Lock owner or authorized-agent external action as required before GitHub upload and keep NO_GO / blocked gates closed."
+    scope:
+      - "public-safe aggregate GitHub upload requirement evidence"
+      - "ignored private GitHub upload requirement queue and report"
+      - "validator and focused unit test"
+    non_scope:
+      - "raw inbox access or mutation"
+      - "authoritative binding, value comparison, reconciliation, business consistency, lineage full check, formal report generation or GitHub upload"
+      - "Stage review, app reinstall or business execution"
+    status: "completed"
+    completed_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-github-upload"
+    dependencies:
+      - "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_FORMAL_REPORT"
+    required_files:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_GITHUB_UPLOAD/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_github_upload_manifest.json"
+      - "KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_github_upload.py"
+    acceptance_ids:
+      - "ACC-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-GITHUB-UPLOAD"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_github_upload.py --generated-at 2026-07-08T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_github_upload.py --require-private-github-upload-requirement"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_github_upload"
+    test_results:
+      - "PASS: GitHub upload requirement validator"
+      - "PASS: focused GitHub upload requirement unit test"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_GITHUB_UPLOAD/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_GITHUB_UPLOAD/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_github_upload_manifest.json"
+    risk: "GitHub upload requirement evidence can be misread as permission to upload; it is explicitly NO_GO and keeps upload closed."
+    rollback: "Remove this phase public artifacts and ignored private requirement outputs; keep source formal report evidence intact."
+    target_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-github-upload"
