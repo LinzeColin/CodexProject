@@ -2,8 +2,39 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S12 Review。任务 ID 为 `MA-V12-S12-REVIEW`，验收 ID 为
-`ACC-MA-V12-S12-REVIEW`，validator 为 `validate:v1.2-s12-review`。状态为
+当前阶段是 S13 P1。任务 ID 为 `MA-V12-S13P1`，验收 ID 为
+`ACC-MA-V12-S13P1`，validator 为 `validate:v1.2-s13-p1`。状态为
+`phase_s13_p1_proposal_state_machine_completed_pending_s13_p2`。
+
+S13 P1 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s13_p1_proposal_state_machine.md`
+- `人类可读/34_Proposal状态机说明.md`
+- `机器治理/运行门禁/proposal_state_machine.v1_2_s13_p1.json`
+- `data/derived/proposals/proposal_state_machine_report.json`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s13_p1.cjs`
+- `scripts/build_memory_atlas_proposal_state_machine.py`
+- `scripts/atlasctl.py`
+
+S13 P1 gate：
+
+- `validate:v1.2-s13-p1` 可验证 Proposal 状态机。
+- `proposal_state_machine.v1_2_s13_p1` runtime contract 存在。
+- proposal 默认进入 `pending_human_review`。
+- 未进入 `approved_by_human` 前不能 apply。
+- proposal expiry 有 warn/stale/archive 规则。
+- 本 phase 不执行 diff narrator。
+- 本 phase 不执行 proposal apply。
+- 不修改 raw。
+- 不上传 GitHub main。
+- 不执行远端 push。
+
+No GitHub main upload。No remote push。No raw mutation。No proposal apply execution。
+下一步是 S13 P2。
+
+历史复验兼容记录：S12 Review 完成时当前阶段是 S12 Review。任务 ID 为
+`MA-V12-S12-REVIEW`，验收 ID 为 `ACC-MA-V12-S12-REVIEW`，validator 为
+`validate:v1.2-s12-review`。状态为
 `stage_s12_review_passed_pending_s13_no_github_main_upload`。
 
 S12 Review 产物：

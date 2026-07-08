@@ -1,3 +1,47 @@
+## 154. Memory Atlas v1.2 S13 P1 Proposal 状态机 Parameters
+
+状态：`phase_s13_p1_proposal_state_machine_completed_pending_s13_p2`。
+
+验收 ID：`ACC-MA-V12-S13P1`。
+
+S13 P1 固定以下参数：
+
+- `MA-V12-S13P1`
+- `validate:v1.2-s13-p1`
+- `proposal_state_machine.v1_2_s13_p1`
+- S13 P1
+- Proposal 状态机
+- `draft`
+- `pending_human_review`
+- `approved_by_human`
+- `applying`
+- `applied`
+- `validated`
+- `committed`
+- `failed_validation`
+- `rollback_or_needs_revision`
+- proposal expiry
+- S13 P1 完成后下一步为 S13 P2。
+- No GitHub main upload。
+- No remote push。
+
+参数：
+
+- `PARAM-MA-V12-S13P1-001 phase_status = phase_s13_p1_proposal_state_machine_completed_pending_s13_p2`
+- `PARAM-MA-V12-S13P1-002 validator = validate:v1.2-s13-p1`
+- `PARAM-MA-V12-S13P1-003 contract_version = proposal_state_machine.v1_2_s13_p1`
+- `PARAM-MA-V12-S13P1-004 state_sequence = draft; pending_human_review; approved_by_human; applying; applied; validated; committed`
+- `PARAM-MA-V12-S13P1-005 failure_path = failed_validation; rollback_or_needs_revision`
+- `PARAM-MA-V12-S13P1-006 proposal_expiry = warn 7 days; stale 30 days; archive 90 days`
+- `PARAM-MA-V12-S13P1-007 next_phase = S13 P2`
+- `PARAM-MA-V12-S13P1-008 phase_boundary = No GitHub main upload; No remote push; No raw mutation; No proposal apply execution`
+
+验证逻辑：
+
+- `validate:v1.2-s13-p1` checks the proposal state-machine config, builder, `atlasctl proposals --dry-run`, normalized proposal report, proposal expiry, no raw apply target, no proposal apply execution, governance records and S12 Review compatibility.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S13 P1; MA-V12-S13P1; ACC-MA-V12-S13P1; phase_s13_p1_proposal_state_machine_completed_pending_s13_p2; validate:v1.2-s13-p1; proposal_state_machine.v1_2_s13_p1; S13 P1; Proposal 状态机; draft; pending_human_review; approved_by_human; applying; applied; validated; committed; failed_validation; rollback_or_needs_revision; proposal expiry; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution; pending S13 P2.
+
 ## 153. Memory Atlas v1.2 S12 Review Parameters
 
 状态：`stage_s12_review_passed_pending_s13_no_github_main_upload`。
