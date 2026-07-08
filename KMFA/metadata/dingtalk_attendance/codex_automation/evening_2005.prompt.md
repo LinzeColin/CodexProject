@@ -10,8 +10,13 @@ KMFA/kmfa-dingtalk-attendance-skill/SKILL.md
 
 每天北京时间 20:05 在 KMFA local main checkout 执行。当前部署 cwd 为 `/Users/linzezhang/CodexProject`；迁移到新电脑时使用同一 GitHub repo 的 `main` checkout。
 
+统一工作区规则：本 automation 与上游每日钉钉DWS归档、钉钉工作检查、KMFA资金周报日报自动化使用同一组 Codex cwds：
+- DWS 归档项目：`/Users/linzezhang/Documents/Codex/2026-07-04/392b1a986ba680338068ddc1c2a0fd0e-https-app-notion-com-p`
+- KMFA/CodexProject：`/Users/linzezhang/CodexProject`
+本 automation 的实际执行目录必须切到 `/Users/linzezhang/CodexProject` 后再运行 KMFA git、skill、test 或脚本命令；DWS 归档项目只作为上游输出和诊断可见工作区。若发现这些上游/下游 automation 的 cwds 不一致，先修正 automation 配置并报告。
+
 运行约束：
-1. 确认 cwd 是 KMFA 所在的 `LinzeColin/CodexProject` checkout，branch 为 `main`，且 `HEAD == origin/main`。
+1. 切到 `/Users/linzezhang/CodexProject`，再确认 branch 为 `main`，且 `HEAD == origin/main`。
 2. 确认 `KMFA/kmfa-dingtalk-attendance-skill/SKILL.md` 存在。
 3. 设置 `TZ=Asia/Shanghai` 和 `KMFA_RUN_SLOT=evening`。
 4. 运行 `KMFA/kmfa-dingtalk-attendance-skill/scripts/preflight.sh`。
@@ -50,5 +55,6 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/dingtalk_attendance/ru
 - 不创建 branch、PR、issue 或 worktree。
 - 不得在 accepted stage-2 consensus 之前 promote payroll baseline。
 - `KMFA/metadata` 只保存 public metadata/config；private runtime 和 DingTalk raw payloads 必须保持 ignored/private。
+- 不修改上游 DWS 归档输出。
 
 输出中文摘要：取数状态、异常人数、管理报告状态、HR 报告状态、通知状态、OneDrive 归档状态、清理状态、数据库大小、泄密风险。
