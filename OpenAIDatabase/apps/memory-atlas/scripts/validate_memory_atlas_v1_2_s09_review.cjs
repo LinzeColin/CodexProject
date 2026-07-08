@@ -44,6 +44,7 @@ const allowedOpenDiffPaths = [
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p1.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p2.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p3.cjs",
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_review.cjs",
   "OpenAIDatabase/apps/memory-atlas/src/App.tsx",
   "OpenAIDatabase/apps/memory-atlas/src/i18n/zh-CN.ts",
   "OpenAIDatabase/apps/memory-atlas/src/styles.css",
@@ -52,6 +53,7 @@ const allowedOpenDiffPaths = [
   `OpenAIDatabase/apps/memory-atlas/scripts/${scriptName}`,
   `OpenAIDatabase/${reviewPath}`,
   "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s10_p3_machine_detail_folding.md",
+  "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s10_review.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_DELIVERY_RECORD.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md",
   "OpenAIDatabase/功能清单.md",
@@ -389,14 +391,20 @@ function validateDocsAndRecords() {
   assertCondition(
     hasAll(quick, ["当前阶段是 S09 Review", taskId, acceptanceId, status, "下一步只允许进入 S10 P1"]) ||
       hasAll(quick, ["S09 Review 已完成", "S10 P1 已完成", "S10 P2 已完成"]) ||
-      hasAll(quick, ["S09 Review 已完成", "S10 P3 已完成", "下一步只允许进入 S10 Review"]),
+      hasAll(quick, ["S09 Review 已完成", "S10 P3 已完成", "下一步只允许进入 S10 Review"]) ||
+      hasAll(quick, ["S09 Review 已完成", "S10 Review 已完成", "下一步是 S11 P1"]),
     "s09_review_quick_entry",
     "Quick entry records S09 Review either as current state or historical review gate after later S10 phases",
     "Quick entry is missing S09 Review current or historical state",
   );
   assertCondition(
     hasAll(overview, ["S09 Review 已完成", "latent_signals.json", "self_iteration_suggestions.json", "decision_debt_ledger.json"]) &&
-      (overview.includes("下一步是 S10 P1") || hasAll(overview, ["S10 P1 已完成", "下一步是 S10 P2"]) || hasAll(overview, ["S10 P3 已完成", "下一步是 S10 Review"])),
+      (
+        overview.includes("下一步是 S10 P1") ||
+        hasAll(overview, ["S10 P1 已完成", "下一步是 S10 P2"]) ||
+        hasAll(overview, ["S10 P3 已完成", "下一步是 S10 Review"]) ||
+        hasAll(overview, ["S10 Review 已完成", "下一步是 S11 P1"])
+      ),
     "s09_review_overview",
     "Overview records S09 Review completion and either pending S10 P1 or later S10 P1 progression",
     "Overview is missing S09 Review historical state",
@@ -404,7 +412,8 @@ function validateDocsAndRecords() {
   assertCondition(
     hasAll(machine, ["当前为 S09 Review", taskId, acceptanceId, validatorName, "下一步是 S10 P1"]) ||
       hasAll(machine, ["S09 Review 已完成", "S10 P1 已完成", "S10 P2 已完成", validatorName]) ||
-      hasAll(machine, ["S09 Review 已完成", "S10 P3 已完成", "下一步是 S10 Review", validatorName]),
+      hasAll(machine, ["S09 Review 已完成", "S10 P3 已完成", "下一步是 S10 Review", validatorName]) ||
+      hasAll(machine, ["S09 Review 已完成", "S10 Review 已完成", "S11 P1", validatorName]),
     "s09_review_machine_readme",
     "Machine README records S09 Review either as current state or historical review gate after later S10 phases",
     "Machine README is missing S09 Review current or historical state",
@@ -427,7 +436,8 @@ function validateDocsAndRecords() {
         hasAll(runGate, ["当前阶段是 S09 Review", "下一步是 S10 P1"]) ||
         hasAll(runGate, ["当前阶段是 S10 P1", "MA-V12-S10P1", "下一步是 S10 P2", "历史复验兼容记录：S09 Review"]) ||
         hasAll(runGate, ["当前阶段是 S10 P2", "MA-V12-S10P2", "下一步是 S10 P3", "历史复验兼容记录：S09 Review"]) ||
-        hasAll(runGate, ["当前阶段是 S10 P3", "MA-V12-S10P3", "下一步是 S10 Review", "历史复验兼容记录：S09 Review"])
+        hasAll(runGate, ["当前阶段是 S10 P3", "MA-V12-S10P3", "下一步是 S10 Review", "历史复验兼容记录：S09 Review"]) ||
+        hasAll(runGate, ["当前阶段是 S10 Review", "MA-V12-S10-REVIEW", "下一步是 S11 P1", "历史复验兼容记录：S09 Review"])
       ),
     "s09_review_run_gate",
     "Run gate README records S09 Review validator either as current gate or historical review gate after later S10 phases",

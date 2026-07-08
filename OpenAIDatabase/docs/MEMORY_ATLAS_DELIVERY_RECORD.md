@@ -1,3 +1,41 @@
+## v1.2 S10 Review
+
+状态：`stage_s10_review_passed_pending_s11_no_github_main_upload`。
+
+任务 ID：`MA-V12-S10-REVIEW`。
+
+验收 ID：`ACC-MA-V12-S10-REVIEW`。
+
+Validator：`validate:v1.2-s10-review`。
+
+S10 Review 已完成。复审确认 S10 P1 首页 arrival briefing、S10 P2 全局中文和
+S10 P3 机器字段默认折叠共同满足 stage gate：首页能回答上次来以后发生了什么，核心
+UI 默认中文，机器字段默认折叠，Chinese UX linter 通过，默认路径呈现结论 / 变化 /
+证据 / 行动。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_2_s10_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_review.cjs`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p1.cjs`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p2.cjs`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p3.cjs`
+- `scripts/atlasctl.py`
+- `scripts/audit_memory_atlas_visual_acceptance.py`
+
+边界：
+
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+- No proposal apply execution。
+- No S11 implementation。
+- No app reinstall。
+
+下一步是 S11 P1。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S10 Review; MA-V12-S10-REVIEW; ACC-MA-V12-S10-REVIEW; stage_s10_review_passed_pending_s11_no_github_main_upload; validate:v1.2-s10-review; S10 P1; S10 P2; S10 P3; 首页能回答上次来以后发生了什么; 核心 UI 默认中文; 机器字段默认折叠; Chinese UX linter; S11 P1; No GitHub main upload; No raw mutation; No proposal apply execution.
+
 ## v1.2 S10 P3 Machine Detail Folding
 
 状态：`phase_s10_p3_machine_detail_folding_completed_pending_s10_review`。

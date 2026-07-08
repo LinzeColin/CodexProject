@@ -1,3 +1,42 @@
+## 144. Memory Atlas v1.2 S10 Review Parameters
+
+状态：`stage_s10_review_passed_pending_s11_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S10-REVIEW`。
+
+S10 Review 固定以下参数：
+
+- `MA-V12-S10-REVIEW`
+- `validate:v1.2-s10-review`
+- `validate:v1.2-s10-p1`
+- `validate:v1.2-s10-p2`
+- `validate:v1.2-s10-p3`
+- `atlasctl.py audit --check chinese-ux`
+- `audit_memory_atlas_visual_acceptance.py --repo-root .`
+- 首页能回答上次来以后发生了什么。
+- 核心 UI 默认中文。
+- 机器字段默认折叠。
+- S10 Review 完成后下一步为 S11 P1。
+- No GitHub main upload。
+
+参数：
+
+- `PARAM-MA-V12-S10-REVIEW-001 review_status = stage_s10_review_passed_pending_s11_no_github_main_upload`
+- `PARAM-MA-V12-S10-REVIEW-002 validator = validate:v1.2-s10-review`
+- `PARAM-MA-V12-S10-REVIEW-003 phase_validator_chain = validate:v1.2-s10-p1; validate:v1.2-s10-p2; validate:v1.2-s10-p3`
+- `PARAM-MA-V12-S10-REVIEW-004 chinese_ux_linter = atlasctl audit --check chinese-ux`
+- `PARAM-MA-V12-S10-REVIEW-005 pass_gate = 首页能回答上次来以后发生了什么; 核心 UI 默认中文; 机器字段默认折叠; Chinese UX linter`
+- `PARAM-MA-V12-S10-REVIEW-006 next_gate = pending S11 P1`
+- `PARAM-MA-V12-S10-REVIEW-007 review_boundary = No GitHub main upload; No remote push; No raw mutation; No proposal apply execution; No S11 implementation`
+
+验证逻辑：
+
+- `validate:v1.2-s10-review` runs or verifies S10 P1/P2/P3 validators,
+  `atlasctl audit --check chinese-ux`, visual human-facing summary audit,
+  governance records and raw no-change boundary.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S10 Review; MA-V12-S10-REVIEW; ACC-MA-V12-S10-REVIEW; stage_s10_review_passed_pending_s11_no_github_main_upload; validate:v1.2-s10-review; S10 P1; S10 P2; S10 P3; 首页能回答上次来以后发生了什么; 核心 UI 默认中文; 机器字段默认折叠; Chinese UX linter; S11 P1; No GitHub main upload; No raw mutation; No proposal apply execution.
+
 ## 143. Memory Atlas v1.2 S10 P3 Machine Detail Folding Parameters
 
 状态：`phase_s10_p3_machine_detail_folding_completed_pending_s10_review`。
