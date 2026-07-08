@@ -2495,3 +2495,14 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_processed_data_reconciliation.py --require-private-processed-data-reconciliation-requirement`
 - focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_processed_data_reconciliation`
 - governance boundary: aggregate-only public evidence; ignored private processed-data reconciliation requirement diagnostic/queue/report only; no raw inbox access or mutation, no authoritative binding, no value-comparison claim, no processed-data reconciliation, no Stage review, no upload, no reinstall and no business execution.
+
+## 2026-07-08 - V014 Owner/Authorized Agent External Action Required Before Business-Value Consistency
+
+- event_id: `DEV-KMFA-20260708-V014-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-BUSINESS-VALUE-CONSISTENCY`
+- task_id: `KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-BUSINESS-VALUE-CONSISTENCY-20260708`
+- version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-business-value-consistency`
+- status: `completed_validated_local_only_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_value_consistency_no_go_blocked`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_BUSINESS_VALUE_CONSISTENCY/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_value_consistency_manifest.json`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_value_consistency.py --require-private-business-value-consistency-requirement`
+- focused_test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_value_consistency`
+- governance boundary: aggregate-only public evidence; ignored private business-value consistency requirement queue only; no raw inbox access or mutation, no business-value verification, no Stage review, no upload, no reinstall and no business execution.

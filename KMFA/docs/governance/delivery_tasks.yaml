@@ -12725,3 +12725,38 @@ tasks:
     risk: "Processed-data reconciliation requirement evidence can be misread as permission to reconcile values; it is explicitly NO_GO and keeps all downstream gates closed."
     rollback: "Remove this phase public artifacts and ignored private requirement outputs; keep source raw comparison evidence intact."
     target_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-processed-data-reconciliation"
+
+
+  - task_id: "KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-BUSINESS-VALUE-CONSISTENCY-20260708"
+    phase_id: "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_BUSINESS_VALUE_CONSISTENCY"
+    objective: "Lock owner or authorized-agent external action as required before business-value consistency and keep NO_GO / blocked gates closed."
+    scope:
+      - "public-safe aggregate business-value consistency requirement evidence"
+      - "ignored private business-value consistency requirement queue and report"
+      - "validator and focused unit test"
+    non_scope:
+      - "raw inbox access or mutation"
+      - "authoritative binding, raw-to-processed value comparison, processed-data reconciliation or business-value consistency"
+      - "Stage review, GitHub upload, app reinstall or business execution"
+    status: "completed"
+    completed_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-business-value-consistency"
+    dependencies:
+      - "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_PROCESSED_DATA_RECONCILIATION"
+    required_files:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_BUSINESS_VALUE_CONSISTENCY/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_value_consistency_manifest.json"
+      - "KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_value_consistency.py"
+    acceptance_ids:
+      - "ACC-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-BUSINESS-VALUE-CONSISTENCY"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_value_consistency.py --generated-at 2026-07-08T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_value_consistency.py --require-private-business-value-consistency-requirement"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_value_consistency"
+    test_results:
+      - "PASS: business-value consistency requirement validator"
+      - "PASS: focused business-value consistency requirement unit test"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_BUSINESS_VALUE_CONSISTENCY/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_BUSINESS_VALUE_CONSISTENCY/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_value_consistency_manifest.json"
+    risk: "Business-value consistency requirement evidence can be misread as permission to validate business values; it is explicitly NO_GO and keeps all downstream gates closed."
+    rollback: "Remove this phase public artifacts and ignored private requirement outputs; keep source processed-data reconciliation evidence intact."
+    target_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-business-value-consistency"

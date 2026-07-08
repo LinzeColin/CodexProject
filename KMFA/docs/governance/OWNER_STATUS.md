@@ -841,3 +841,5 @@ KMFA 当前版本 `0.1.4-residual-difference-authorized-source-reference-or-excl
 - raw_inbox_touched: `false`
 - github_upload: `deferred_not_performed`
 - next_required_input: `actionable_source_reference_owner_exclusion_formula_mapping_or_non_numeric_mapping_required_before_binding_or_value_comparison`
+
+- v0.1.4 business-value consistency 前置外部动作锁定已确认本地 validator 通过；公开证据只显示 aggregate counts 和 gate flags：processed-data reconciliation requirement blockers=48、business-value consistency requirement blockers=48、ready=0、source reference/owner exclusion=40、formula/non-numeric mapping=8、unresolved differences=72、Go/No-Go=NO_GO。该 phase 只读取上一 phase public-safe evidence 和 ignored private requirement queue，不读取或修改 raw inbox，不公开 raw 文件名、字段/表头、金额、明细、私有 hash、target slot 明细或业务值，不证明 business-value consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
