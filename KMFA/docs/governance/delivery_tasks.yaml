@@ -12931,3 +12931,37 @@ tasks:
     risk: "Business execution requirement evidence can be misread as permission to execute business workflows; it is explicitly NO_GO and keeps execution closed."
     rollback: "Remove this phase public artifacts and ignored private requirement outputs; keep source app reinstall evidence intact."
     target_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-business-execution"
+
+  - task_id: "KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-ACTIONABLE-RESOLUTION-REQUIRED-BEFORE-BUSINESS-EXECUTION-20260708"
+    phase_id: "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTIONABLE_RESOLUTION_REQUIRED_BEFORE_BUSINESS_EXECUTION"
+    objective: "Lock owner or authorized-agent actionable resolution as required before business execution and keep NO_GO / blocked gates closed."
+    scope:
+      - "public-safe aggregate actionable resolution requirement evidence"
+      - "ignored private actionable resolution requirement queue and report"
+      - "validator and focused unit test"
+    non_scope:
+      - "raw inbox access or mutation"
+      - "authoritative binding, value comparison, reconciliation, business consistency, lineage full check, formal report generation, GitHub upload, app reinstall or business execution"
+      - "Stage review or GitHub upload"
+    status: "completed"
+    completed_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-actionable-resolution-required-before-business-execution"
+    dependencies:
+      - "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_BUSINESS_EXECUTION"
+    required_files:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTIONABLE_RESOLUTION_REQUIRED_BEFORE_BUSINESS_EXECUTION/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_required_before_business_execution_manifest.json"
+      - "KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_required_before_business_execution.py"
+    acceptance_ids:
+      - "ACC-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-ACTIONABLE-RESOLUTION-REQUIRED-BEFORE-BUSINESS-EXECUTION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_required_before_business_execution.py --generated-at 2026-07-08T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_required_before_business_execution.py --require-private-actionable-resolution-requirement"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_required_before_business_execution"
+    test_results:
+      - "PASS: actionable resolution requirement validator"
+      - "PASS: focused actionable resolution requirement unit test"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTIONABLE_RESOLUTION_REQUIRED_BEFORE_BUSINESS_EXECUTION/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTIONABLE_RESOLUTION_REQUIRED_BEFORE_BUSINESS_EXECUTION/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_required_before_business_execution_manifest.json"
+    risk: "Actionable resolution requirement evidence can be misread as permission to execute business workflows; it is explicitly NO_GO and keeps execution closed."
+    rollback: "Remove this phase public artifacts and ignored private requirement outputs; keep source business execution requirement evidence intact."
+    target_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-actionable-resolution-required-before-business-execution"

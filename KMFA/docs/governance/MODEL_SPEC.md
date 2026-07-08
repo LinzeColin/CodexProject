@@ -1998,3 +1998,7 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 ### V014 business execution requirement gate
 
 `FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-BUSINESS-EXECUTION-001` locks owner/authorized-agent external action as a required precondition before business execution. The model reads prior public-safe app reinstall requirement evidence and an ignored private requirement queue only, emits aggregate public counts, keeps detailed rows private, and leaves GitHub upload/app reinstall/business execution closed with `decision=NO_GO`.
+
+### V014 actionable resolution requirement gate before business execution
+
+`FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-ACTIONABLE-RESOLUTION-REQUIRED-BEFORE-BUSINESS-EXECUTION-001` locks owner/authorized-agent actionable resolution as a required precondition before business execution. The model reads prior public-safe business execution requirement evidence and an ignored private requirement queue only, emits aggregate public counts, keeps detailed rows private, and leaves binding/value comparison/reconciliation/business consistency/lineage/GitHub upload/app reinstall/business execution closed with `decision=NO_GO`.
