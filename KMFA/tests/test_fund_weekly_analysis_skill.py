@@ -563,6 +563,8 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "ocr_fact_owner_review_batch.csv",
                 "ocr_fact_evidence_review_queue.csv",
                 "ocr_fact_candidate_owner_worklist.csv",
+                "ocr_fact_candidate_owner_decision_template.json",
+                "ocr_fact_candidate_owner_decision_preview.csv",
                 "ocr_fact_ledger_staging_preview.csv",
                 "ocr_fact_review_apply_gate.csv",
                 "ocr_fact_review_authorization_template.json",
@@ -1346,6 +1348,29 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in owner_worklist_rows))
             self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in owner_worklist_rows))
 
+            decision_template = json.loads((run_dir / "ocr_fact_candidate_owner_decision_template.json").read_text(encoding="utf-8"))
+            self.assertEqual(decision_template["decision_scope"], "ocr_fact_candidate_owner_worklist_validation_only")
+            self.assertEqual(
+                decision_template["output_decision_manifest_relative_path"],
+                f"KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_fact_candidate_owner_decisions/{run_id}.json",
+            )
+            self.assertEqual(len(decision_template["owner_decisions"]), 3)
+            self.assertTrue(
+                all(row["owner_authorization_decision"] == "pending_owner_review" for row in decision_template["owner_decisions"])
+            )
+            self.assertFalse(decision_template["financial_fact_promotion_allowed"])
+            self.assertFalse(decision_template["fund_ledger_write_allowed"])
+            self.assertFalse(decision_template["management_conclusion_allowed"])
+
+            with (run_dir / "ocr_fact_candidate_owner_decision_preview.csv").open(encoding="utf-8-sig", newline="") as f:
+                decision_preview_rows = list(csv.DictReader(f))
+            self.assertEqual(len(decision_preview_rows), 3)
+            self.assertTrue(all(row["decision_validation_status"] == "missing_decision_manifest" for row in decision_preview_rows))
+            self.assertTrue(all(row["decision_preview_status"] == "blocked_missing_owner_decision_manifest" for row in decision_preview_rows))
+            self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in decision_preview_rows))
+            self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in decision_preview_rows))
+            self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in decision_preview_rows))
+
             with (run_dir / "fund_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
                 fund_rows = list(csv.DictReader(f))
             self.assertEqual(fund_rows, [])
@@ -1364,6 +1389,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_candidate_owner_worklist_count"], 3)
             self.assertEqual(cross_review["ocr_fact_candidate_owner_worklist_ready_count"], 0)
             self.assertEqual(cross_review["ocr_fact_candidate_owner_worklist_blocking_count"], 3)
+            self.assertEqual(cross_review["ocr_fact_candidate_owner_decision_template_count"], 3)
+            self.assertEqual(cross_review["ocr_fact_candidate_owner_decision_preview_count"], 3)
+            self.assertEqual(cross_review["ocr_fact_candidate_owner_decision_preview_ready_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_candidate_owner_decision_preview_blocking_count"], 3)
             self.assertEqual(cross_review["ocr_fact_review_apply_gate_count"], 3)
             self.assertEqual(cross_review["ocr_fact_review_authorization_present_count"], 0)
             self.assertEqual(cross_review["ocr_fact_review_authorization_template_count"], 3)
@@ -1651,8 +1680,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
             source_day = input_dir / "files" / "0708"
             auth_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_fact_review_authorizations"
+            decision_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_fact_candidate_owner_decisions"
             source_day.mkdir(parents=True)
             auth_dir.mkdir(parents=True)
+            decision_dir.mkdir(parents=True)
             screenshot = source_day / "20260708113000_杨婷_资金账户截图.png"
             screenshot.write_bytes(b"real-image-bytes")
 
@@ -1726,6 +1757,37 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             }
             (auth_dir / f"{run_id}.json").write_text(
                 json.dumps(authorization_manifest, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+            decision_manifest = {
+                "decision_manifest_version": "1",
+                "run_id": run_id,
+                "decision_scope": "ocr_fact_candidate_owner_worklist_validation_only",
+                "source_artifact": "ocr_fact_candidate_owner_worklist.csv",
+                "financial_fact_promotion_allowed": False,
+                "fund_ledger_write_allowed": False,
+                "management_conclusion_allowed": False,
+                "owner_decisions": [
+                    {
+                        "fact_candidate_id": f"OCRFACT-{run_id}-00001",
+                        "candidate_metric": "bank_deposit",
+                        "owner_authorization_decision": "approve_for_review_authorization",
+                        "owner_corrected_company": "武汉开明",
+                        "owner_corrected_bank": "招商银行",
+                        "owner_note": "fixture approval",
+                    },
+                    {
+                        "fact_candidate_id": f"OCRFACT-{run_id}-00002",
+                        "candidate_metric": "electronic_bill",
+                        "owner_authorization_decision": "approve_for_review_authorization",
+                        "owner_corrected_company": "武汉彤烨",
+                        "owner_corrected_bank": "",
+                        "owner_note": "fixture approval",
+                    },
+                ],
+            }
+            (decision_dir / f"{run_id}.json").write_text(
+                json.dumps(decision_manifest, ensure_ascii=False, indent=2),
                 encoding="utf-8",
             )
 
@@ -1858,6 +1920,29 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in owner_worklist_rows))
             self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in owner_worklist_rows))
 
+            with (run_dir / "ocr_fact_candidate_owner_decision_preview.csv").open(encoding="utf-8-sig", newline="") as f:
+                decision_preview_rows = list(csv.DictReader(f))
+            decisions_by_id = {row["fact_candidate_id"]: row for row in decision_preview_rows}
+            self.assertEqual(len(decision_preview_rows), 3)
+            self.assertEqual(
+                decisions_by_id[f"OCRFACT-{run_id}-00001"]["decision_preview_status"],
+                "ready_for_private_ocr_fact_authorization_update_no_write",
+            )
+            self.assertEqual(decisions_by_id[f"OCRFACT-{run_id}-00001"]["decision_validation_status"], "valid_owner_decision_validation_only")
+            self.assertEqual(decisions_by_id[f"OCRFACT-{run_id}-00001"]["owner_corrected_company"], "武汉开明")
+            self.assertEqual(
+                decisions_by_id[f"OCRFACT-{run_id}-00002"]["decision_preview_status"],
+                "ready_for_private_ocr_fact_authorization_update_no_write",
+            )
+            self.assertEqual(
+                decisions_by_id[f"OCRFACT-{run_id}-00003"]["decision_preview_status"],
+                "blocked_missing_candidate_owner_decision",
+            )
+            self.assertEqual(decisions_by_id[f"OCRFACT-{run_id}-00003"]["decision_validation_status"], "fact_candidate_owner_decision_missing")
+            self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in decision_preview_rows))
+            self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in decision_preview_rows))
+            self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in decision_preview_rows))
+
             with (run_dir / "fund_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
                 fund_rows = list(csv.DictReader(f))
             self.assertEqual(fund_rows, [])
@@ -1878,6 +1963,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_candidate_owner_worklist_count"], 3)
             self.assertEqual(cross_review["ocr_fact_candidate_owner_worklist_ready_count"], 2)
             self.assertEqual(cross_review["ocr_fact_candidate_owner_worklist_blocking_count"], 1)
+            self.assertEqual(cross_review["ocr_fact_candidate_owner_decision_template_count"], 3)
+            self.assertEqual(cross_review["ocr_fact_candidate_owner_decision_preview_count"], 3)
+            self.assertEqual(cross_review["ocr_fact_candidate_owner_decision_preview_ready_count"], 2)
+            self.assertEqual(cross_review["ocr_fact_candidate_owner_decision_preview_blocking_count"], 1)
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertFalse(cross_review["management_conclusion_allowed"])
 
