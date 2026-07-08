@@ -325,6 +325,13 @@ function validateDocsAndRecords() {
   const dataContract = readRepoFile("机器治理/数据契约/README.md");
   const behavior = readRepoFile("机器治理/行为智能模型/README.md");
   const runGate = readRepoFile("机器治理/运行门禁/README.md");
+  const s08p3State =
+    hasAll(quick, ["当前阶段是 S08 P3", "MA-V12-S08P3", "ACC-MA-V12-S08P3", "下一步只允许进入 S08 Review"]) &&
+    hasAll(overview, ["S08 P3 已完成", "stage flight recorder", "stage_flight_recorder.json", "下一步是 S08 Review"]) &&
+    hasAll(machine, ["当前为 S08 P3", "MA-V12-S08P3", "validate:v1.2-s08-p3", "下一步是 S08 Review"]) &&
+    hasAll(dataContract, ["当前 S08 P3 已完成", "stage_flight_recorder.json", "下一步是 S08 Review"]) &&
+    hasAll(behavior, ["当前 S08 P3 已完成", "stage_flight_recorder_fields.v1_2_s08_p3.json", "stage_flight_recorder.json", "下一步是 S08 Review"]) &&
+    hasAll(runGate, ["当前阶段是 S08 P3", "MA-V12-S08P3", "ACC-MA-V12-S08P3", "validate:v1.2-s08-p3"]);
   const s08p2State =
     hasAll(quick, ["当前阶段是 S08 P2", "MA-V12-S08P2", "ACC-MA-V12-S08P2", "下一步只允许进入 S08 P3"]) &&
     hasAll(overview, ["S08 P2 已完成", "授权边界", "agent_authorization_boundary_report.json", "下一步是 S08 P3"]) &&
@@ -345,37 +352,37 @@ function validateDocsAndRecords() {
     "S08 P1 human doc is incomplete",
   );
   assertCondition(
-    s08p2State || hasAll(quick, [taskId, acceptanceId, status, "当前阶段是 S08 P1", "下一步只允许进入 S08 P2"]),
+    s08p3State || s08p2State || hasAll(quick, [taskId, acceptanceId, status, "当前阶段是 S08 P1", "下一步只允许进入 S08 P2"]),
     "s08p1_quick_entry",
     "Quick entry records S08 P1 state and next S08 P2 gate",
     "Quick entry is missing S08 P1 state",
   );
   assertCondition(
-    s08p2State || hasAll(overview, ["S08 P1 已完成", "Codex/Agent 协作质量", outputPath, "下一步是 S08 P2"]),
+    s08p3State || s08p2State || hasAll(overview, ["S08 P1 已完成", "Codex/Agent 协作质量", outputPath, "下一步是 S08 P2"]),
     "s08p1_overview",
     "Overview records S08 P1 state and output",
     "Overview is missing S08 P1 state",
   );
   assertCondition(
-    s08p2State || hasAll(machine, ["当前为 S08 P1", taskId, validatorName, "下一步是 S08 P2"]),
+    s08p3State || s08p2State || hasAll(machine, ["当前为 S08 P1", taskId, validatorName, "下一步是 S08 P2"]),
     "s08p1_machine_readme",
     "Machine README records S08 P1 identity and next gate",
     "Machine README is missing S08 P1 state",
   );
   assertCondition(
-    s08p2State || hasAll(dataContract, ["当前 S08 P1 已完成", outputPath, "agent_collaboration_quality_report.json", "下一步是 S08 P2"]),
+    s08p3State || s08p2State || hasAll(dataContract, ["当前 S08 P1 已完成", outputPath, "agent_collaboration_quality_report.json", "下一步是 S08 P2"]),
     "s08p1_data_contract",
     "Data contract README records S08 P1 collaboration output",
     "Data contract README is missing S08 P1 output",
   );
   assertCondition(
-    s08p2State || hasAll(behavior, ["当前 S08 P1 已完成", configPath, outputPath, "planning_clarity", "rollbackability", "下一步是 S08 P2"]),
+    s08p3State || s08p2State || hasAll(behavior, ["当前 S08 P1 已完成", configPath, outputPath, "planning_clarity", "rollbackability", "下一步是 S08 P2"]),
     "s08p1_behavior_readme",
     "Behavior model README records S08 P1 metrics config and output",
     "Behavior model README is missing S08 P1 state",
   );
   assertCondition(
-    s08p2State || hasAll(runGate, ["当前阶段是 S08 P1", taskId, acceptanceId, validatorName, "agent-collaboration", "下一步是 S08 P2"]),
+    s08p3State || s08p2State || hasAll(runGate, ["当前阶段是 S08 P1", taskId, acceptanceId, validatorName, "agent-collaboration", "下一步是 S08 P2"]),
     "s08p1_run_gate",
     "Run gate README records S08 P1 validator and next gate",
     "Run gate README is missing S08 P1 gate",

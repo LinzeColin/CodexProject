@@ -18,8 +18,8 @@
 
 ## 当前阶段
 
-当前为 S08 P2。任务 ID 为 `MA-V12-S08P2`，验收 ID 为
-`ACC-MA-V12-S08P2`，validator 为 `validate:v1.2-s08-p2`。
+当前为 S08 P3。任务 ID 为 `MA-V12-S08P3`，验收 ID 为
+`ACC-MA-V12-S08P3`，validator 为 `validate:v1.2-s08-p3`。
 S01 整体复审已通过，S02 整体复审已通过，S03 P1/P2/P3
 整体复审已通过。S04 P1 已建立 ChatGPT 只读同步和 official export fallback。
 S04 P2 已建立 Codex local sync、future-agent minimal adapter、raw + derived + run log
@@ -59,7 +59,11 @@ S08 P2 已完成授权边界，配置为
 `data/derived/agent_collaboration/agent_authorization_boundary_report.json`。S08 P2 明确
 raw 不可修改，proposal 必须有人类授权并进入 `approved_by_human` 后才能 apply；本 phase
 不执行 proposal apply，不创建复杂 Delegation Contract UI，不创建多 agent 系统，不生成
-stage flight recorder。下一步是 S08 P3。
+stage flight recorder。S08 P3 已完成 lightweight stage flight recorder，字段配置为
+`机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json`，输出为
+`data/derived/agent_collaboration/stage_flight_recorder.json`。S08 P3 只记录轻量运行证据，
+不携带 raw/transcript 载荷，不生成臃肿人类文档，只在开发记录中总结必要信息。下一步是
+S08 Review。
 
 当前机器产物：
 
@@ -75,12 +79,14 @@ stage flight recorder。下一步是 S08 P3。
 - `../data/derived/information_roi/information_roi_gate.json`
 - `../data/derived/agent_collaboration/agent_collaboration_quality_report.json`
 - `../data/derived/agent_collaboration/agent_authorization_boundary_report.json`
+- `../data/derived/agent_collaboration/stage_flight_recorder.json`
 - `参数与公式/personal_economic_proxy.v1_2_s07_p1.json`
 - `参数与公式/information_roi.v1_2_s07_p2.json`
 - `参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`
 - `可视化配置/visual_roi_gate.v1_2_s07_p2.json`
 - `行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json`
 - `行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json`
+- `证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json`
 - `同步与备份/sync_source_registry.json`
 - `同步与备份/raw_public_archive_policy.v1_2_s03_p1.json`
 - `同步与备份/credential_exclusion_policy.v1_2_s03_p2.json`
@@ -150,6 +156,7 @@ stage flight recorder。下一步是 S08 P3。
 - `scripts/build_memory_atlas_opportunities.py`
 - `scripts/build_memory_atlas_economic_proxy.py`
 - `scripts/build_memory_atlas_agent_authorization.py`
+- `scripts/build_memory_atlas_stage_flight.py`
 - `scripts/atlasctl.py`
 - `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p3.cjs`
 - `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_review.cjs`
@@ -167,4 +174,4 @@ stage flight recorder。下一步是 S08 P3。
 - 凭证排除。
 - 后续其他 agent 数据源扩展规则。
 
-下一步是 S08 P3；本目录仍不替代 apps/scripts/tests/config/data/docs/governance。
+下一步是 S08 Review；本目录仍不替代 apps/scripts/tests/config/data/docs/governance。

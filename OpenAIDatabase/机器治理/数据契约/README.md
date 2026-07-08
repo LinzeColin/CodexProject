@@ -12,7 +12,7 @@
 
 source registry 属于 S02 P2；本阶段不创建 registry 文件，不修改 raw archive。
 
-当前 S08 P2 已完成。S05 Review 已通过，并新增：
+当前 S08 P3 已完成。S05 Review 已通过，并新增：
 
 - `机器治理/数据契约/facet_event_schema.v1_2_s05_p1.json`
 - `人类可读/12_Facet字段与事件语义说明.md`
@@ -66,6 +66,11 @@ source registry 属于 S02 P2；本阶段不创建 registry 文件，不修改 r
 - `docs/reviews/memory_atlas_v1_2_s08_p2_authorization_boundary.md`
 - `tests/test_s08p2_agent_authorization.py`
 - `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s08_p2.cjs`
+- `机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json`
+- `scripts/build_memory_atlas_stage_flight.py`
+- `data/derived/agent_collaboration/stage_flight_recorder.json`
+- `tests/test_s08p3_stage_flight.py`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s08_p3.cjs`
 
 S05 P1 定义 facet/canonical event schema：`source`、`topic`、`intent`、
 `task_type`、`project`、`output_type`、`language`、`tool`、`turn_count`、
@@ -150,4 +155,10 @@ S08 P2 生成 `data/derived/agent_collaboration/agent_authorization_boundary_rep
 `scripts/build_memory_atlas_agent_authorization.py` 生成，固定轻量授权边界：
 raw 不可修改，proposal 需人类授权并进入 `approved_by_human` 后才能 apply，当前 phase
 不执行 proposal apply，不实现复杂 Delegation Contract UI，不创建多 agent 系统。
-下一步是 S08 P3。
+S08 P2 的下一历史 gate 是 S08 P3，当前已完成。
+
+S08 P3 生成 `data/derived/agent_collaboration/stage_flight_recorder.json`。该输出由
+`机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json` 和
+`scripts/build_memory_atlas_stage_flight.py` 生成，固定 10 个轻量运行证据字段，覆盖
+S08 P1/P2/P3 phase records。S08 P3 不携带 raw 或 transcript payload，不生成臃肿人类文档，
+只在开发记录中总结必要信息。下一步是 S08 Review。
