@@ -572,6 +572,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "fact_promotion_authorization_template.json",
                 "fact_promotion_authorization_preview.csv",
                 "fact_promotion_execution_gate.csv",
+                "fact_promotion_execution_dry_run.csv",
                 "exception_tasks.csv",
                 "cross_review.json",
                 "audit_log.json",
@@ -674,6 +675,27 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["fact_promotion_owner_review_batch_count"], 6)
             self.assertEqual(cross_review["fact_promotion_owner_review_batch_authorization_required_count"], 1)
             self.assertEqual(cross_review["fact_promotion_owner_review_batch_blocking_count"], 1)
+
+            with (run_dir / "fact_promotion_execution_dry_run.csv").open(encoding="utf-8-sig", newline="") as f:
+                execution_dry_run_rows = list(csv.DictReader(f))
+            self.assertEqual(len(execution_dry_run_rows), 6)
+            dry_run_by_area = {row["review_area"]: row for row in execution_dry_run_rows}
+            self.assertEqual(
+                dry_run_by_area["structured_csv_facts"]["dry_run_status"],
+                "not_required_no_candidate_facts",
+            )
+            self.assertEqual(
+                dry_run_by_area["ocr_fact_ledger_staging"]["dry_run_status"],
+                "not_required_no_candidate_facts",
+            )
+            self.assertTrue(all(row["dry_run_impact_count"] == "0" for row in execution_dry_run_rows))
+            self.assertTrue(all(row["fact_promotion_execution_allowed"] == "false" for row in execution_dry_run_rows))
+            self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in execution_dry_run_rows))
+            self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in execution_dry_run_rows))
+            self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in execution_dry_run_rows))
+            self.assertEqual(cross_review["fact_promotion_execution_dry_run_count"], 6)
+            self.assertEqual(cross_review["fact_promotion_execution_dry_run_impact_count"], 0)
+            self.assertEqual(cross_review["fact_promotion_execution_dry_run_write_allowed_count"], 0)
 
     def test_runner_collects_real_ocr_text_sidecars_without_promoting_amounts(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -3109,7 +3131,9 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             repo_root = Path(temp_dir) / "repo"
             input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
             source_day = input_dir / "files" / "0708"
+            auth_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/fact_promotion_authorizations"
             source_day.mkdir(parents=True)
+            auth_dir.mkdir(parents=True)
             structured_csv = source_day / "20260708113000_吴云霞_资金日报.csv"
             structured_csv.write_text(
                 "\n".join([
@@ -3119,6 +3143,28 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                     "2026-07-08,开明一公司,招商银行,基本户,T0_BANK_CASH,0,800.00,11200.00,tax,2026-07-15,tax_payable",
                     "2026-07-08,开明一公司,招商银行,基本户,T0_BANK_CASH,500.00,0,11700.00,deposit,2026-07-20,deposit_release",
                 ]),
+                encoding="utf-8",
+            )
+            authorization_manifest = {
+                "authorization_manifest_version": "1",
+                "run_id": "structured_csv_test",
+                "authorization_scope": "fact_promotion_review_packet_validation_only",
+                "authorized_by": "operator-fixture",
+                "authorized_at": "2026-07-08T11:50:00+10:00",
+                "authorization_ticket": "S61-TEST",
+                "financial_fact_promotion_allowed": False,
+                "fund_ledger_write_allowed": False,
+                "management_conclusion_allowed": False,
+                "review_packet_authorizations": [
+                    {
+                        "review_packet_id": "FPRP-structured_csv_test-00001",
+                        "review_area": "structured_csv_facts",
+                        "authorized": True,
+                    },
+                ],
+            }
+            (auth_dir / "structured_csv_test.json").write_text(
+                json.dumps(authorization_manifest, ensure_ascii=False, indent=2),
                 encoding="utf-8",
             )
 
@@ -3178,6 +3224,23 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertFalse(cross_review["management_conclusion_allowed"])
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertEqual(cross_review["structured_financial_fact_count"], 4)
+            self.assertEqual(cross_review["fact_promotion_execution_dry_run_count"], 6)
+            self.assertEqual(cross_review["fact_promotion_execution_dry_run_ready_count"], 1)
+            self.assertEqual(cross_review["fact_promotion_execution_dry_run_impact_count"], 4)
+            self.assertEqual(cross_review["fact_promotion_execution_dry_run_write_allowed_count"], 0)
+
+            with (run_dir / "fact_promotion_execution_dry_run.csv").open(encoding="utf-8-sig", newline="") as f:
+                dry_run_rows = list(csv.DictReader(f))
+            dry_run_by_area = {row["review_area"]: row for row in dry_run_rows}
+            self.assertEqual(
+                dry_run_by_area["structured_csv_facts"]["dry_run_status"],
+                "ready_for_controlled_execution_preview_no_write",
+            )
+            self.assertEqual(dry_run_by_area["structured_csv_facts"]["dry_run_impact_count"], "4")
+            self.assertTrue(all(row["fact_promotion_execution_allowed"] == "false" for row in dry_run_rows))
+            self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in dry_run_rows))
+            self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in dry_run_rows))
+            self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in dry_run_rows))
 
             workbook_path = run_dir / "资金与税费管理母版_structured_csv_test.xlsx"
             with zipfile.ZipFile(workbook_path) as workbook:
