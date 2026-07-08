@@ -20,6 +20,8 @@ const status = "phase_s12_p1_command_palette_completed_pending_s12_p2";
 const validatorName = "validate:v1.2-s12-p1";
 const scriptName = "validate_memory_atlas_v1_2_s12_p1.cjs";
 const commandPaletteVersion = "command_palette.v1_2_s12_p1";
+const laterPromptTaskId = "MA-V12-S12P2";
+const laterPromptAcceptanceId = "ACC-MA-V12-S12P2";
 const reviewPath = "docs/reviews/memory_atlas_v1_2_s12_p1_command_palette.md";
 const humanDocPath = "人类可读/31_CommandPalette命令面板说明.md";
 const commandConfigPath = "机器治理/运行门禁/command_palette.v1_2_s12_p1.json";
@@ -262,10 +264,12 @@ function validateConfig() {
 
 function validateAtlasctlPromptDryRun() {
   const result = parseJsonFromStdout(run("python3", ["scripts/atlasctl.py", "generate-personalization-prompt", "--dry-run"], { cwd: repoRoot }));
+  const identityOk =
+    (result.task_id === taskId && result.acceptance_id === acceptanceId) ||
+    (result.task_id === laterPromptTaskId && result.acceptance_id === laterPromptAcceptanceId);
   assertCondition(
     result.status === "PASS" &&
-      result.task_id === taskId &&
-      result.acceptance_id === acceptanceId &&
+      identityOk &&
       result.command === "generate-personalization-prompt" &&
       result.dry_run === true &&
       result.writes_files === false &&

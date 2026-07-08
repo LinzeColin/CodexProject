@@ -1,3 +1,44 @@
+## 151. Memory Atlas v1.2 S12 P2 Personalization Prompt Parameters
+
+状态：`phase_s12_p2_personalization_prompt_completed_pending_s12_p3`。
+
+验收 ID：`ACC-MA-V12-S12P2`。
+
+S12 P2 固定以下参数：
+
+- `MA-V12-S12P2`
+- `validate:v1.2-s12-p2`
+- `personalization_prompt.v1_2_s12_p2`
+- `ChatGPT`
+- `Codex`
+- `other agent`
+- 中文人类说明
+- 机器可复制文本
+- latest memory
+- behavior
+- latent
+- self_iteration
+- S12 P2 完成后下一步为 S12 P3。
+- No GitHub main upload。
+- No remote push。
+
+参数：
+
+- `PARAM-MA-V12-S12P2-001 phase_status = phase_s12_p2_personalization_prompt_completed_pending_s12_p3`
+- `PARAM-MA-V12-S12P2-002 validator = validate:v1.2-s12-p2`
+- `PARAM-MA-V12-S12P2-003 prompt_version = personalization_prompt.v1_2_s12_p2`
+- `PARAM-MA-V12-S12P2-004 target_ids = ChatGPT; Codex; other agent`
+- `PARAM-MA-V12-S12P2-005 source_reports = latest memory; behavior; latent; self_iteration; decision debt; agent collaboration`
+- `PARAM-MA-V12-S12P2-006 output_contract = 中文人类说明; 机器可复制文本`
+- `PARAM-MA-V12-S12P2-007 next_phase = S12 P3`
+- `PARAM-MA-V12-S12P2-008 phase_boundary = No raw mutation; No proposal apply execution; No GitHub main upload; No remote push; No automatic send; No S12 P3 ChatGPT deep explore execution`
+
+验证逻辑：
+
+- `validate:v1.2-s12-p2` checks prompt builder contracts, atlasctl generation, ChatGPT/Codex/other agent prompt outputs, machine source freshness, Chinese human explanation, machine-copyable text, governance records, no forbidden prompt content, no raw mutation and previous S12 P1 compatibility.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S12 P2; MA-V12-S12P2; ACC-MA-V12-S12P2; phase_s12_p2_personalization_prompt_completed_pending_s12_p3; validate:v1.2-s12-p2; personalization_prompt.v1_2_s12_p2; ChatGPT; Codex; other agent; 中文人类说明; 机器可复制文本; latest memory; behavior; latent; self_iteration; S12 P3; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution.
+
 ## 150. Memory Atlas v1.2 S12 P1 Command Palette Parameters
 
 状态：`phase_s12_p1_command_palette_completed_pending_s12_p2`。
