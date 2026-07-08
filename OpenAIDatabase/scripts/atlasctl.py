@@ -46,6 +46,11 @@ PROPOSAL_APPLY_ACCEPTANCE_ID = "ACC-MA-V12-S13P3"
 PROPOSAL_APPLY_CONTRACT_VERSION = "proposal_apply.v1_2_s13_p3"
 PROPOSAL_APPLY_BUILDER_RELATIVE = "scripts/build_memory_atlas_proposal_apply.py"
 PROPOSAL_APPLY_BUILDER = ROOT / PROPOSAL_APPLY_BUILDER_RELATIVE
+FINAL_AUDIT_TASK_ID = "MA-V12-S14P2"
+FINAL_AUDIT_ACCEPTANCE_ID = "ACC-MA-V12-S14P2"
+FINAL_AUDIT_CONTRACT_VERSION = "atlasctl_final_audit.v1_2_s14_p2"
+FINAL_AUDIT_PHASE_STATUS = "phase_s14_p2_final_audit_gate_completed_pending_s14_p3"
+FINAL_AUDIT_OUTPUT_TAIL_CHARS = 600
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -317,6 +322,198 @@ def run_sync(args: argparse.Namespace) -> int:
     if result.stderr:
         print(result.stderr, file=sys.stderr, end="")
     return result.returncode
+
+
+def final_audit_gate_plan(database_dir: Path) -> list[dict[str, object]]:
+    return [
+        {
+            "gate_id": "unit_tests",
+            "name_zh": "Python unit tests",
+            "command": [sys.executable, "-B", "-m", "unittest", "discover", f"{database_dir.name}/tests", "-q"],
+            "cwd": str(database_dir.parent),
+            "timeout_seconds": 300,
+            "pass_explanation_zh": "Python 单元测试通过。",
+            "fail_explanation_zh": "Python 单元测试失败；先看 stdout_tail/stderr_tail 中的失败用例和 traceback。",
+        },
+        {
+            "gate_id": "frontend_build",
+            "name_zh": "Frontend build",
+            "command": ["npm", "run", "build", "--prefix", "apps/memory-atlas"],
+            "cwd": str(database_dir),
+            "timeout_seconds": 300,
+            "pass_explanation_zh": "前端生产构建通过。",
+            "fail_explanation_zh": "前端生产构建失败；先修复 TypeScript 或 Vite build 错误。",
+        },
+        {
+            "gate_id": "chinese_ux_audit",
+            "name_zh": "Chinese UX audit",
+            "command": [sys.executable, "scripts/atlasctl.py", "audit", "--check", "chinese-ux"],
+            "cwd": str(database_dir),
+            "timeout_seconds": 180,
+            "pass_explanation_zh": "中文 UX 审计通过。",
+            "fail_explanation_zh": "中文 UX 审计失败；先修复默认中文、机器字段折叠或中文解释缺失。",
+        },
+        {
+            "gate_id": "visual_roi_audit",
+            "name_zh": "Visual ROI audit",
+            "command": [sys.executable, "scripts/atlasctl.py", "audit", "--check", "visual-roi"],
+            "cwd": str(database_dir),
+            "timeout_seconds": 180,
+            "pass_explanation_zh": "Visual ROI 审计通过。",
+            "fail_explanation_zh": "Visual ROI 审计失败；先修复 P0 视觉候选、人类问题或行动解释。",
+        },
+        {
+            "gate_id": "raw_append_only_audit",
+            "name_zh": "Raw append-only audit",
+            "command": [sys.executable, "scripts/raw_archive_manifest.py", "audit", "--database-dir", str(database_dir)],
+            "cwd": str(database_dir),
+            "timeout_seconds": 180,
+            "pass_explanation_zh": "raw append-only 审计通过。",
+            "fail_explanation_zh": "raw append-only 审计失败；先处理 raw 删除、hash drift 或新增 raw 未登记问题。",
+        },
+        {
+            "gate_id": "credential_audit",
+            "name_zh": "Credential audit",
+            "command": [sys.executable, "scripts/privacy_guard.py", "--database-dir", str(database_dir), "--scan-only"],
+            "cwd": str(database_dir),
+            "timeout_seconds": 180,
+            "pass_explanation_zh": "凭证审计通过。",
+            "fail_explanation_zh": "凭证审计失败；先移除硬编码 secret、token、cookie 或私有 raw 文件。",
+        },
+        {
+            "gate_id": "report_contract_audit",
+            "name_zh": "Report contract audit",
+            "command": [
+                sys.executable,
+                "scripts/audit_memory_atlas_acceptance.py",
+                "--repo-root",
+                str(database_dir),
+                "--publish-dir",
+                str(database_dir / "apps/memory-atlas/dist"),
+            ],
+            "cwd": str(database_dir),
+            "timeout_seconds": 240,
+            "pass_explanation_zh": "报告与验收合同审计通过。",
+            "fail_explanation_zh": "报告与验收合同审计失败；先修复 acceptance、release、Cloudflare preflight 或报告字段合同。",
+        },
+    ]
+
+
+def compact_tail(value: str, limit: int = FINAL_AUDIT_OUTPUT_TAIL_CHARS) -> str:
+    if len(value) <= limit:
+        return value
+    return value[-limit:]
+
+
+def final_audit_dry_run_contract(args: argparse.Namespace) -> dict[str, object]:
+    gates = [
+        {
+            "gate_id": gate["gate_id"],
+            "name_zh": gate["name_zh"],
+            "command": gate["command"],
+            "dry_run": True,
+            "chinese_explanation": "计划执行该 gate；dry-run 不运行命令。",
+        }
+        for gate in final_audit_gate_plan(args.database_dir)
+    ]
+    return {
+        "status": "PASS",
+        "command": "audit",
+        "check": "final",
+        "task_id": FINAL_AUDIT_TASK_ID,
+        "acceptance_id": FINAL_AUDIT_ACCEPTANCE_ID,
+        "contract_version": FINAL_AUDIT_CONTRACT_VERSION,
+        "phase_status": FINAL_AUDIT_PHASE_STATUS,
+        "dry_run": True,
+        "gates": gates,
+        "high_token_auto_summary": False,
+        "max_output_chars_per_gate": FINAL_AUDIT_OUTPUT_TAIL_CHARS * 2,
+        "writes_files": False,
+        "writes_tracked_files": False,
+        "raw_mutation": False,
+        "remote_push": False,
+        "github_main_upload": False,
+        "phase_boundary": {
+            "does_not_upload_github_main": True,
+            "does_not_reinstall_app": True,
+            "does_not_clean_local_computer": True,
+            "stage_review_deferred_to": "S14 Review",
+            "next_phase": "S14 P3",
+        },
+        "中文说明": "S14 P2 final audit dry-run 只列出 gate，不运行测试、不构建、不上传。",
+    }
+
+
+def run_final_audit(args: argparse.Namespace) -> int:
+    if args.dry_run:
+        print(json.dumps(final_audit_dry_run_contract(args), ensure_ascii=False, indent=2, sort_keys=True))
+        return 0
+
+    gates: list[dict[str, object]] = []
+    for gate in final_audit_gate_plan(args.database_dir):
+        command = [str(part) for part in gate["command"]]
+        try:
+            result = subprocess.run(
+                command,
+                cwd=str(gate.get("cwd") or ROOT),
+                text=True,
+                capture_output=True,
+                check=False,
+                timeout=int(gate["timeout_seconds"]),
+            )
+            returncode = result.returncode
+            stdout_tail = compact_tail(result.stdout or "")
+            stderr_tail = compact_tail(result.stderr or "")
+        except subprocess.TimeoutExpired as exc:
+            returncode = 124
+            stdout_tail = compact_tail(exc.stdout or "")
+            stderr_tail = compact_tail(exc.stderr or "")
+
+        passed = returncode == 0
+        gates.append({
+            "gate_id": gate["gate_id"],
+            "name_zh": gate["name_zh"],
+            "command": command,
+            "status": "PASS" if passed else "FAIL",
+            "returncode": returncode,
+            "stdout_tail": stdout_tail,
+            "stderr_tail": stderr_tail,
+            "chinese_explanation": gate["pass_explanation_zh"] if passed else gate["fail_explanation_zh"],
+        })
+
+    failed = [gate for gate in gates if gate["status"] != "PASS"]
+    total_output_chars = sum(len(str(gate.get("stdout_tail") or "")) + len(str(gate.get("stderr_tail") or "")) for gate in gates)
+    payload = {
+        "status": "PASS" if not failed else "FAIL",
+        "command": "audit",
+        "check": "final",
+        "task_id": FINAL_AUDIT_TASK_ID,
+        "acceptance_id": FINAL_AUDIT_ACCEPTANCE_ID,
+        "contract_version": FINAL_AUDIT_CONTRACT_VERSION,
+        "phase_status": FINAL_AUDIT_PHASE_STATUS if not failed else "phase_s14_p2_final_audit_gate_failed_pending_fix",
+        "gates": gates,
+        "gate_count": len(gates),
+        "failed_gate_count": len(failed),
+        "failed_gate_ids": [str(gate["gate_id"]) for gate in failed],
+        "high_token_auto_summary": False,
+        "max_output_chars_per_gate": FINAL_AUDIT_OUTPUT_TAIL_CHARS * 2,
+        "total_output_chars": total_output_chars,
+        "writes_files": False,
+        "writes_tracked_files": False,
+        "raw_mutation": False,
+        "remote_push": False,
+        "github_main_upload": False,
+        "phase_boundary": {
+            "does_not_upload_github_main": True,
+            "does_not_reinstall_app": True,
+            "does_not_clean_local_computer": True,
+            "stage_review_deferred_to": "S14 Review",
+            "next_phase": "S14 P3" if not failed else "Fix S14 P2 failing gate",
+        },
+        "中文说明": "S14 P2 final audit 已运行；失败时先按 failed_gate_ids 和各 gate 的中文解释修复。",
+    }
+    print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0 if not failed else 2
 
 
 def run_build_atlas(args: argparse.Namespace) -> int:
@@ -2061,48 +2258,8 @@ def run_chinese_ux_audit(args: argparse.Namespace) -> int:
 
 
 def run_audit(args: argparse.Namespace) -> int:
-    if args.dry_run and not args.check:
-        print(json.dumps({
-            "status": "PASS",
-            "command": "audit",
-            "task_id": "MA-V12-S14P1",
-            "acceptance_id": "ACC-MA-V12-S14P1",
-            "contract_version": "atlasctl_unified_cli.v1_2_s14_p1",
-            "dry_run": True,
-            "writes_files": False,
-            "remote_push": False,
-            "github_main_upload": False,
-            "checks_available": [
-                "insight-evidence",
-                "formulas",
-                "visual-roi",
-                "formula-what-if",
-                "agent-collaboration",
-                "agent-authorization",
-                "stage-flight",
-                "latent-safety",
-                "self-iteration-safety",
-                "decision-debt-safety",
-                "chinese-ux",
-            ],
-            "phase_boundary": {
-                "does_not_run_final_audit": True,
-                "final_audit_deferred_to": "S14 P2",
-                "next_phase": "S14 P2",
-            },
-            "中文说明": "S14 P1 只提供 audit dry-run 命令面；四线总门禁整合属于 S14 P2。",
-        }, ensure_ascii=False, indent=2, sort_keys=True))
-        return 0
     if not args.check:
-        print(json.dumps({
-            "status": "FAIL_CLOSED",
-            "command": "audit",
-            "dry_run": False,
-            "writes_files": False,
-            "中文原因": "请指定 --check，或使用 --dry-run 查看可用检查；S14 P2 前不默认运行总门禁。",
-            "next_safe_command": "python3 scripts/atlasctl.py audit --dry-run",
-        }, ensure_ascii=False, indent=2, sort_keys=True))
-        return 2
+        return run_final_audit(args)
     if args.check == "chinese-ux":
         return run_chinese_ux_audit(args)
     if args.check == "decision-debt-safety":

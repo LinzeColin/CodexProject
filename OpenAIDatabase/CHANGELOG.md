@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S14 P2 Final Audit Gate
+
+- Added `validate:v1.2-s14-p2` for `MA-V12-S14P2` /
+  `ACC-MA-V12-S14P2`.
+- Registered status
+  `phase_s14_p2_final_audit_gate_completed_pending_s14_p3`.
+- Added `atlasctl_final_audit.v1_2_s14_p2` through
+  `python3 scripts/atlasctl.py audit`.
+- Integrated final audit gates: `unit_tests`, `frontend_build`, Chinese UX,
+  visual ROI, raw append-only, credential audit and report contract.
+- Added concise Chinese explanations for every final audit gate failure.
+- Kept output bounded with short stdout/stderr tails and
+  `high_token_auto_summary=false`.
+- Preserved S14 P2 boundaries: No GitHub main upload, No remote push,
+  No raw mutation, no app reinstall and no local deep clean.
+- Marked the next gate as pending S14 P3.
+
 ## Unreleased - Memory Atlas v1.2 S14 P1 Unified CLI
 
 - Added `validate:v1.2-s14-p1` for `MA-V12-S14P1` /
