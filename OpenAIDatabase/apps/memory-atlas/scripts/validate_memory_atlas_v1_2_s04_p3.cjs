@@ -345,23 +345,56 @@ function validateDocsAndRecords() {
 
   const quick = readRepoFile("人类可读/00_快速入口.md");
   const overview = readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md");
+  const machineReadme = readRepoFile("机器治理/README.md");
+  const syncReadme = readRepoFile("机器治理/同步与备份/README.md");
+  const runGateReadme = readRepoFile("机器治理/运行门禁/README.md");
+  const currentStateIsS04Review =
+    hasAll(quick, [
+      "当前阶段是 S04 Review",
+      "MA-V12-S04-REVIEW",
+      "ACC-MA-V12-S04-REVIEW",
+      "下一步只允许进入 S05 P1",
+    ]) &&
+    hasAll(overview, [
+      "S04 Review 已通过",
+      "S04 整体复审已通过",
+      "下一步是 S05 P1",
+    ]) &&
+    hasAll(machineReadme, [
+      "当前为 S04 Review",
+      "memory_atlas_v1_2_s04_review.md",
+      "下一步是 S05 P1",
+    ]) &&
+    hasAll(syncReadme, [
+      "当前 S04 Review 已通过",
+      "ChatGPT 只读同步",
+      "GitHub backup dry-run/apply",
+      "下一步是 S05 P1",
+    ]) &&
+    hasAll(runGateReadme, [
+      "当前阶段是 S04 Review",
+      "MA-V12-S04-REVIEW",
+      "ACC-MA-V12-S04-REVIEW",
+      "validate:v1.2-s04-review",
+    ]);
   assertCondition(
-    hasAll(quick, [taskId, acceptanceId, status, "S04 P3 已建立", "下一步只允许进入 S04 Review"]),
+    currentStateIsS04Review ||
+      hasAll(quick, [taskId, acceptanceId, status, "S04 P3 已建立", "下一步只允许进入 S04 Review"]),
     "s04p3_quick_entry",
-    "Human quick entry records S04 P3 state and S04 Review next gate",
-    "Human quick entry is missing S04 P3 state",
+    "Human quick entry records S04 P3 state or a later S04 Review state",
+    "Human quick entry is missing S04 P3 or S04 Review state",
   );
   assertCondition(
-    hasAll(overview, ["S04 P3 已完成", "scripts/github_backup.py", "下一步是 S04 Review"]),
+    currentStateIsS04Review || hasAll(overview, ["S04 P3 已完成", "scripts/github_backup.py", "下一步是 S04 Review"]),
     "s04p3_overview",
-    "Human overview records S04 P3 state and next S04 Review gate",
-    "Human overview is missing S04 P3 state",
+    "Human overview records S04 P3 state or a later S04 Review state",
+    "Human overview is missing S04 P3 or S04 Review state",
   );
 
   const machine = [
-    readRepoFile("机器治理/README.md"),
-    readRepoFile("机器治理/同步与备份/README.md"),
-    readRepoFile("机器治理/运行门禁/README.md"),
+    machineReadme,
+    syncReadme,
+    runGateReadme,
   ].join("\n");
   assertCondition(
     hasAll(machine, [taskId, acceptanceId, validatorName, "github_backup_policy.v1_2_s04_p3.json", "github_backup.py"]),

@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S04 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s04_review.md`.
+- Added `validate:v1.2-s04-review` for `MA-V12-S04-REVIEW` /
+  `ACC-MA-V12-S04-REVIEW`.
+- Registered status `stage_s04_review_passed_pending_s05_no_github_main_upload`.
+- Marked S04 Review as passed after covering S04 P1, S04 P2 and S04 P3.
+- Confirmed ChatGPT read-only sync, Codex local sync, future-agent minimal
+  adapter, build-atlas dry-run and GitHub backup dry-run/apply are verifiable.
+- Marked the next gate as pending S05 P1.
+- Preserved S04 Review boundaries: No GitHub main upload in this review,
+  No remote push in this review, No app reinstall, No ChatGPT mutation,
+  No credential capture and No fake sync data.
+
 ## Unreleased - Memory Atlas v1.2 S04 P3 GitHub Backup
 
 - Added `scripts/github_backup.py` for S04 P3 local GitHub backup dry-run and apply.

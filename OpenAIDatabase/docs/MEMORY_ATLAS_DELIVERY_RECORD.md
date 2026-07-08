@@ -1,3 +1,48 @@
+## v1.2 S04 Review
+
+状态：`stage_s04_review_passed_pending_s05_no_github_main_upload`。
+
+任务 ID：`MA-V12-S04-REVIEW`。
+
+验收 ID：`ACC-MA-V12-S04-REVIEW`。
+
+S04 Review 完成 Memory Atlas v1.2 自动同步 MVP 的整体复审。复审覆盖
+ChatGPT 只读同步、official export fallback、Codex local sync、future-agent
+minimal adapter、raw + derived + run log 输出、build-atlas dry-run 和 GitHub
+backup dry-run/apply 本地控制面。
+
+涉及文件：
+
+- `docs/reviews/memory_atlas_v1_2_s04_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s04_review.cjs`
+- `apps/memory-atlas/package.json`
+- `人类可读/00_快速入口.md`
+- `人类可读/01_v1.2四线14Stage升级总览.md`
+- `机器治理/README.md`
+- `机器治理/同步与备份/README.md`
+- `机器治理/运行门禁/README.md`
+
+验收：
+
+- `validate:v1.2-s04-review`
+- `ACC-MA-V12-S04-REVIEW`
+- `MA-V12-S04-REVIEW`
+- S04 Review
+- `memory_atlas_v1_2_s04_review.md`
+- pending S05 P1
+- No GitHub main upload in this review
+
+边界：
+
+- No remote push in this review.
+- No app reinstall.
+- No ChatGPT mutation.
+- No credential capture.
+- No fake sync data.
+- No GitHub main upload in this review.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S04 Review; MA-V12-S04-REVIEW; ACC-MA-V12-S04-REVIEW; stage_s04_review_passed_pending_s05_no_github_main_upload; validate:v1.2-s04-review; memory_atlas_v1_2_s04_review.md; S04 Review; pending S05 P1; No GitHub main upload in this review; No remote push in this review; No app reinstall; No ChatGPT mutation; No credential capture; No fake sync data.
+
 ## v1.2 S04 P3 GitHub Backup
 
 状态：`phase_s04_p3_github_backup_completed_pending_s04_review`。

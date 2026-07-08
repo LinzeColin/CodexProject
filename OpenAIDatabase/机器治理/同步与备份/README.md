@@ -101,4 +101,12 @@ S04 P3 固定 GitHub backup dry-run/apply：备份范围覆盖 `data/public_raw`
 apply 只本地 git add/commit，不远端 push。非 Git worktree 和无变更场景必须输出
 中文原因和 fallback 建议。
 
-下一步是 S04 Review。当前阶段不上传 GitHub main，不重装 app。
+当前 S04 Review 已通过，并新增：
+
+- `docs/reviews/memory_atlas_v1_2_s04_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s04_review.cjs`
+
+S04 Review 确认 ChatGPT 只读同步、Codex local sync、future-agent minimal adapter、
+raw + derived + run log 输出、build-atlas dry-run 和 GitHub backup dry-run/apply 均可验证。
+
+下一步是 S05 P1。当前 review 不上传 GitHub main，不远端 push，不重装 app。
