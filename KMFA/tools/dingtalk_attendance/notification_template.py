@@ -38,18 +38,23 @@ def build_notification_message(
     report_paths: Mapping[str, Any] | None = None,
     markdown: bool = True,
     member_count: int | None = None,
+    collection_complete: bool = True,
 ) -> str:
     title = f"开明考勤提醒｜{work_date}｜{display_run_type(run_type)}"
     lines = [f"# {title}" if markdown else title, "", f"截止 {current_time}", ""]
     abnormal_names = _filter_hidden_names(_dedupe_nonempty([*unexpected_empty_record_names, *known_no_record_names]))
     consecutive_lines = _filter_hidden_lines(coerce_message_lines(consecutive_anomaly_summary))
-    pending_lines = _filter_hidden_lines(coerce_message_lines(pending_hr_actions))
-    abnormal_items = coerce_monthly_status_people(monthly_attendance_anomalies, fallback_names=abnormal_names)
-    consecutive_items = coerce_monthly_status_people(monthly_consecutive_anomalies)
-    pending_items = coerce_monthly_status_people(monthly_pending_actions)
+    abnormal_items = coerce_current_monthly_status_people(monthly_attendance_anomalies, current_names=abnormal_names)
+    consecutive_items = _filter_status_people_by_work_date(
+        coerce_monthly_status_people(monthly_consecutive_anomalies),
+        work_date=work_date,
+    )
     rest_items = coerce_rest_required_people(rest_required_people)
-    if not abnormal_items and not consecutive_items and not consecutive_lines and not pending_items and not pending_lines and not rest_items:
-        lines.extend([f"本次{_coerce_nonnegative_int(member_count)}人全部考勤正常，今天一切良好", ""])
+    if not abnormal_items and not consecutive_items and not consecutive_lines and not rest_items:
+        if collection_complete:
+            lines.extend([f"本次{_coerce_nonnegative_int(member_count)}人全部考勤正常", ""])
+        else:
+            lines.extend(["本次暂无需要处理的考勤事项", ""])
     else:
         _extend_section(
             lines,
@@ -79,19 +84,6 @@ def build_notification_message(
         )
         _extend_section(
             lines,
-            title="待审批 / 待补卡 / 待核查",
-            body_lines=[
-                *_format_count_people(
-                    pending_items,
-                    over_limit_header="共 {total} 人，本月待处理 Top10:",
-                    formatter=lambda item: f"{item['name']}（本月累计{item['monthly_count']}项）",
-                ),
-                *pending_lines,
-            ],
-            markdown=markdown,
-        )
-        _extend_section(
-            lines,
             title="需要休息",
             body_lines=_format_rest_required_people(rest_items),
             markdown=markdown,
@@ -111,30 +103,29 @@ def notification_context_from_output_status(output_status: Mapping[str, Any]) ->
         stats = {}
     current_time = str(output_status.get("current_time") or datetime.now(ZoneInfo(TIMEZONE)).strftime("%H:%M"))
     run_id = str(output_status.get("run_id") or "")
-    pending_actions = coerce_message_lines(output_status.get("pending_hr_actions"))
-    pending_actions.extend(system_issue_lines_from_stats(stats))
-    anomaly_names = coerce_message_lines(stats.get("attendance_anomaly_names"))
-    if not anomaly_names:
-        anomaly_names = [
-            *coerce_message_lines(stats.get("unexpected_empty_record_names")),
-            *coerce_message_lines(stats.get("incomplete_record_names")),
-        ]
+    run_type = str(output_status.get("run_type") or run_type_from_run_id(run_id) or "unknown")
+    anomaly_names = current_notification_anomaly_names(stats, run_type=run_type)
+    monthly_consecutive_anomalies = _filter_monthly_people_by_names(
+        coerce_monthly_status_people(stats.get("monthly_consecutive_anomalies")),
+        anomaly_names,
+    )
     return {
         "work_date": str(output_status.get("work_date") or work_date_from_run_id(run_id) or "UNKNOWN_DATE"),
-        "run_type": str(output_status.get("run_type") or run_type_from_run_id(run_id) or "unknown"),
+        "run_type": run_type,
         "current_time": current_time,
         "unexpected_empty_record_names": _filter_hidden_names(_dedupe_nonempty(anomaly_names)),
         "known_no_record_names": [],
         "consecutive_anomaly_summary": coerce_message_lines(output_status.get("consecutive_anomaly_summary")),
-        "pending_hr_actions": pending_actions,
+        "pending_hr_actions": [],
         "rest_required_people": coerce_rest_required_people(stats.get("rest_required_people")),
         "monthly_attendance_anomalies": coerce_monthly_status_people(
             stats.get("monthly_attendance_anomalies"),
             fallback_names=anomaly_names,
         ),
-        "monthly_consecutive_anomalies": coerce_monthly_status_people(stats.get("monthly_consecutive_anomalies")),
-        "monthly_pending_actions": coerce_monthly_status_people(stats.get("monthly_pending_actions")),
+        "monthly_consecutive_anomalies": monthly_consecutive_anomalies,
+        "monthly_pending_actions": [],
         "member_count": _coerce_nonnegative_int(stats.get("member_count")),
+        "collection_complete": collection_is_complete(stats),
         "run_id": run_id or None,
         "beijing_time": str(output_status.get("beijing_time") or current_time),
         "report_paths": {
@@ -145,25 +136,34 @@ def notification_context_from_output_status(output_status: Mapping[str, Any]) ->
     }
 
 
-def system_issue_lines_from_stats(stats: Mapping[str, Any]) -> list[str]:
-    lines: list[str] = []
+def collection_is_complete(stats: Mapping[str, Any]) -> bool:
     member_count = _coerce_nonnegative_int(stats.get("member_count"))
-    record_successes = _coerce_nonnegative_int(stats.get("record_success_count"))
-    summary_successes = _coerce_nonnegative_int(stats.get("summary_success_count"))
-    record_failures = _coerce_nonnegative_int(stats.get("record_failure_count"))
-    summary_failures = _coerce_nonnegative_int(stats.get("summary_failure_count"))
-    command_failures = _coerce_nonnegative_int(stats.get("command_failure_count"))
-    if record_failures:
-        lines.append(f"DWS record 取数失败 {record_failures} 人，需核查 attendance.record:get 权限。")
-    elif member_count and "record_success_count" in stats and record_successes != member_count:
-        lines.append(f"DWS record 取数未覆盖全部人员：成功 {record_successes}/{member_count}，不得判定为正常。")
-    if summary_failures:
-        lines.append(f"DWS summary 取数失败 {summary_failures} 人，需核查 attendance:summary 权限。")
-    elif member_count and "summary_success_count" in stats and summary_successes != member_count:
-        lines.append(f"DWS summary 取数未覆盖全部人员：成功 {summary_successes}/{member_count}，不得判定为正常。")
-    if command_failures and not record_failures and not summary_failures:
-        lines.append(f"DWS 取数命令失败 {command_failures} 次，需核查权限或接口状态。")
-    return lines
+    if _coerce_nonnegative_int(stats.get("record_failure_count")):
+        return False
+    if _coerce_nonnegative_int(stats.get("summary_failure_count")):
+        return False
+    if _coerce_nonnegative_int(stats.get("command_failure_count")):
+        return False
+    if member_count and "record_success_count" in stats and _coerce_nonnegative_int(stats.get("record_success_count")) != member_count:
+        return False
+    if member_count and "summary_success_count" in stats and _coerce_nonnegative_int(stats.get("summary_success_count")) != member_count:
+        return False
+    return True
+
+
+def current_notification_anomaly_names(stats: Mapping[str, Any], *, run_type: str) -> list[str]:
+    detail_keys = {"unexpected_empty_record_names", "summary_today_anomaly_names", "incomplete_record_names"}
+    known_no_record_names = set(coerce_message_lines(stats.get("known_no_record_names")))
+    if any(key in stats for key in detail_keys):
+        names = [
+            *coerce_message_lines(stats.get("unexpected_empty_record_names")),
+            *coerce_message_lines(stats.get("summary_today_anomaly_names")),
+        ]
+        if str(run_type) != "morning":
+            names.extend(coerce_message_lines(stats.get("incomplete_record_names")))
+    else:
+        names = coerce_message_lines(stats.get("attendance_anomaly_names"))
+    return _filter_hidden_names(_dedupe_nonempty(name for name in names if name not in known_no_record_names))
 
 
 def coerce_message_lines(value: Any) -> list[str]:
@@ -224,6 +224,21 @@ def coerce_monthly_status_people(value: Any, *, fallback_names: list[str] | None
     return _sort_people(_filter_hidden_people(people), metric_key="monthly_count")
 
 
+def coerce_current_monthly_status_people(value: Any, *, current_names: list[str]) -> list[dict[str, Any]]:
+    names = _filter_hidden_names(_dedupe_nonempty(current_names))
+    if not names:
+        return []
+    monthly_by_name = {str(item.get("name") or ""): item for item in coerce_monthly_status_people(value)}
+    people: list[dict[str, Any]] = []
+    for name in names:
+        monthly_item = monthly_by_name.get(name)
+        if monthly_item:
+            people.append(monthly_item)
+        else:
+            people.append({"name": name, "monthly_count": 1, "latest_date": ""})
+    return _sort_people(_filter_hidden_people(people), metric_key="monthly_count")
+
+
 def _coerce_nonnegative_int(value: Any) -> int:
     try:
         result = int(value)
@@ -251,8 +266,10 @@ def display_run_type(run_type: str) -> str:
 
 
 def _extend_section(lines: list[str], *, title: str, body_lines: list[str], markdown: bool) -> None:
+    if not body_lines:
+        return
     lines.append(f"## {title}" if markdown else title)
-    lines.extend(body_lines or ["无"])
+    lines.extend(body_lines)
     lines.append("")
 
 
@@ -314,6 +331,21 @@ def _filter_hidden_names(names: list[str]) -> list[str]:
 
 def _filter_hidden_lines(lines: list[str]) -> list[str]:
     return [line for line in lines if not any(name in line for name in NOTIFICATION_HIDDEN_NAMES)]
+
+
+def _filter_status_people_by_work_date(people: list[dict[str, Any]], *, work_date: str) -> list[dict[str, Any]]:
+    return [
+        person
+        for person in people
+        if not str(person.get("latest_date") or "").strip() or str(person.get("latest_date") or "").strip()[:10] == work_date
+    ]
+
+
+def _filter_monthly_people_by_names(people: list[dict[str, Any]], names: list[str]) -> list[dict[str, Any]]:
+    allowed = set(names)
+    if not allowed:
+        return []
+    return [person for person in people if str(person.get("name") or "") in allowed]
 
 
 def _dedupe_nonempty(values: list[str]) -> list[str]:

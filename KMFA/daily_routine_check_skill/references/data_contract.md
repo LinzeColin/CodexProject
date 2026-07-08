@@ -1,21 +1,21 @@
 # DWS Output Data Contract
 
-This skill consumes an existing DWS output directory. It does not fetch DingTalk itself.
+This skill consumes an existing DWS output zip. It does not fetch DingTalk itself and does not extract the package to local disk.
 
-## Input Root
+## Primary Input Zip
 
 ```text
-/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
 ```
 
-Expected group folders:
+Expected group folders inside the zip, with or without a top-level `DWS_Outputs/` prefix:
 
 ```text
 付款请示群/
 生产管理群/
 ```
 
-Each group folder should contain:
+Each group folder should contain these members:
 
 ```text
 _manifest/manifest.csv
@@ -28,6 +28,8 @@ chat_records/chat_records.jsonl
 chat_records/raw_messages.jsonl
 files/MMDD/*
 ```
+
+A direct `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/` folder with the same layout is supported only as a compatibility fallback.
 
 ## Required Manifest Fields
 
@@ -107,7 +109,7 @@ The reader should normalize every input row into:
   "resource_type": "image",
   "original_filename": "...",
   "output_path": "files/0707/...png",
-  "absolute_path": "/Users/.../DWS_Outputs/付款请示群/files/0707/...png",
+  "absolute_path": "zip:///Users/.../DWS_Outputs.zip!/DWS_Outputs/付款请示群/files/0707/...png",
   "sha256": "...",
   "size_bytes": 123456,
   "status": "downloaded|duplicate|missing|failed",

@@ -19,6 +19,7 @@ from KMFA.tools.dingtalk_attendance.report_renderer import render_hr_report, ren
 
 ROOT_DEPT_ID = 1
 MAX_DEPTS_PER_CALL = 30
+DEFAULT_DWS_TIMEOUT_SECONDS = 120
 KNOWN_NO_RECORD_NAMES = frozenset({"张霖泽", "林全意"})
 USER_VISIBLE_HIDDEN_NAMES = frozenset()
 SUMMARY_TODAY_ANOMALY_TOKENS = frozenset(
@@ -35,6 +36,7 @@ SUMMARY_TODAY_ANOMALY_TOKENS = frozenset(
     }
 )
 RETRYABLE_SERVER_CODES = frozenset({"PAT_AUTH_CALL_FAILED", "TOKEN_VERIFIED_FAILED", "ERROR"})
+RETRYABLE_DWS_ERROR_CODES = frozenset({"6", "ERROR", "request_timeout", "timed_out", "timeout"})
 PAT_AUTH_REQUIRED_CODES = frozenset(
     {
         "PAT_SCOPE_AUTH_REQUIRED",
@@ -60,12 +62,13 @@ def run_dws_json(args: list[str], *, timeout: int = 30, verbose: bool = False) -
     command = [dws_bin, *args]
     if verbose:
         command.append("--verbose")
-    command.extend(["--format", "json"])
+    effective_timeout = max(int(os.environ.get("KMFA_S19_DWS_TIMEOUT_SECONDS", str(timeout))), timeout)
+    command.extend(["--timeout", str(effective_timeout), "--format", "json"])
     proc = subprocess.run(
         command,
         text=True,
         capture_output=True,
-        timeout=timeout,
+        timeout=effective_timeout + 5,
         check=False,
         env=dws_subprocess_env(),
     )
@@ -81,7 +84,13 @@ def _parse_json_payload(payload_text: str) -> dict[str, Any]:
     try:
         return json.loads(payload_text[start:])
     except json.JSONDecodeError as exc:
-        return {"parse_error": str(exc), "raw": payload_text[:2000]}
+        tail = payload_text[start:]
+        decoder = json.JSONDecoder()
+        try:
+            payload, _ = decoder.raw_decode(tail)
+            return payload
+        except json.JSONDecodeError:
+            return {"parse_error": str(exc), "raw": payload_text[:2000]}
 
 
 def _call_runner(
@@ -105,7 +114,7 @@ def _server_error_code(result: dict[str, Any]) -> str:
         return ""
     error = payload.get("error", {})
     if isinstance(error, dict):
-        return str(error.get("server_error_code") or "")
+        return str(error.get("server_error_code") or error.get("code") or "")
     return ""
 
 
@@ -117,7 +126,15 @@ def _should_retry(result: dict[str, Any]) -> bool:
     payload = result.get("payload", {})
     error = payload.get("error", {}) if isinstance(payload, dict) else {}
     retryable = bool(error.get("retryable")) if isinstance(error, dict) else False
-    return retryable or _server_error_code(result) in RETRYABLE_SERVER_CODES
+    code = _server_error_code(result)
+    reason = str(payload.get("reason") or "") if isinstance(payload, dict) else ""
+    return (
+        retryable
+        or code in RETRYABLE_SERVER_CODES
+        or code in RETRYABLE_DWS_ERROR_CODES
+        or reason.lower() in RETRYABLE_DWS_ERROR_CODES
+        or _contains_timeout(payload)
+    )
 
 
 def _run_with_retry(
@@ -125,12 +142,17 @@ def _run_with_retry(
     args: list[str],
     *,
     timeout: int = 30,
+    max_attempts: int = 3,
 ) -> dict[str, Any]:
     first = _call_runner(runner, args, timeout=timeout, verbose=False)
     _raise_if_pat_auth_required(first, args=args)
     attempts = [first]
     final = first
-    if _should_retry(first):
+    if max_attempts < 1:
+        return {"final": final, "attempts": attempts}
+    attempt = 1
+    while _should_retry(final) and attempt < max_attempts:
+        attempt += 1
         final = _call_runner(runner, args, timeout=timeout, verbose=True)
         _raise_if_pat_auth_required(final, args=args)
         attempts.append(final)
@@ -151,11 +173,11 @@ def discover_department_ids(
             continue
         seen.add(dept_id)
         ordered.append(dept_id)
-        result = _call_runner(
+        result = _run_with_retry(
             runner,
             ["contact", "dept", "list-children", "--dept", str(dept_id)],
-            timeout=30,
-        )
+            timeout=DEFAULT_DWS_TIMEOUT_SECONDS,
+        )["final"]
         _raise_if_pat_auth_required(result, args=["contact", "dept", "list-children"])
         if not _is_success(result):
             raise DwsAttendanceError(f"department discovery failed for dept {dept_id}: {_server_error_code(result)}")
@@ -175,11 +197,11 @@ def list_org_members(
     members: dict[str, dict[str, str]] = {}
     for index in range(0, len(dept_ids), MAX_DEPTS_PER_CALL):
         batch = dept_ids[index : index + MAX_DEPTS_PER_CALL]
-        result = _call_runner(
+        result = _run_with_retry(
             runner,
             ["contact", "dept", "list-members", "--depts", ",".join(str(value) for value in batch)],
-            timeout=45,
-        )
+            timeout=DEFAULT_DWS_TIMEOUT_SECONDS,
+        )["final"]
         _raise_if_pat_auth_required(result, args=["contact", "dept", "list-members"])
         if not _is_success(result):
             raise DwsAttendanceError(f"member listing failed: {_server_error_code(result)}")
@@ -460,6 +482,8 @@ def write_private_outputs(
     manifest = {
         "run_id": plan["run_id"],
         "stage_id": plan["stage_id"],
+        "run_type": plan["run_type"],
+        "work_date": collection["work_date"],
         "backend": "dws",
         "raw_jsonl_gz": str(raw_path),
         "raw_jsonl_gz_sha256": raw_hash,
@@ -488,53 +512,44 @@ def write_private_outputs(
 
 def _management_context(plan: dict[str, Any], collection: dict[str, Any]) -> dict[str, str]:
     stats = collection["stats"]
-    status = "完成" if stats["command_failure_count"] == 0 else "部分完成"
     attendance_anomaly_names = _visible_names(stats.get("attendance_anomaly_names", []))
     empty_record_names = _visible_names(stats.get("unexpected_empty_record_names", []))
     incomplete_record_names = _visible_names(stats.get("incomplete_record_names", []))
     abnormal_lines = [
         f"今日异常人员 / 无考勤人员：{_join_names(attendance_anomaly_names)}。",
-        f"record 为空人员：{_join_names(empty_record_names)}。",
-        f"record 缺少上下班打卡人员：{_join_names(incomplete_record_names)}。",
+        f"无考勤记录人员：{_join_names(empty_record_names)}。",
+        f"打卡记录不完整人员：{_join_names(incomplete_record_names)}。",
     ]
     return {
         "title": f"开明考勤管理报告｜{collection['work_date']}｜{display_run_type(plan['run_type'])}",
         "一、总体情况": (
-            f"本次 DWS 考勤接口验证{status}。覆盖 {stats['member_count']} 人，"
+            f"本次考勤检查完成。覆盖 {stats['member_count']} 人，"
             f"应考勤 {stats.get('attendance_required_count', stats['member_count'])} 人，"
-            f"record 成功 {stats['record_success_count']} 人，summary 成功 {stats['summary_success_count']} 人，"
             f"当天有打卡记录 {stats['record_nonempty_count']} 人。"
         ),
         "二、今日异常人员": "".join(abnormal_lines),
-        "三、建议动作": "如 command_failure_count 大于 0，先复跑失败人员；若仍失败，再检查 DWS profile 权限和钉钉考勤可见范围。",
-        "四、系统运行状态": (
-            f"后端：DWS attendance record/summary；mock 数据：否；原始数据仅写入私有 OneDrive 月目录。"
-            f"命令失败数：{stats['command_failure_count']}。"
-        ),
+        "三、建议动作": "如今日异常人员不为无，请按现场考勤复核流程处理；无异常时无需处理。",
+        "四、系统运行状态": "本次结果已写入私有月度归档；公开仓库不保存员工考勤明文。",
     }
 
 
 def _hr_context(plan: dict[str, Any], collection: dict[str, Any]) -> dict[str, str]:
     stats = collection["stats"]
-    failures = _visible_names([
-        row["member"]["name"]
-        for row in collection["results"]
-        if not row["derived"]["record_success"] or not row["derived"]["summary_success"]
-    ])
     attendance_anomaly_names = _visible_names(stats.get("attendance_anomaly_names", []))
+    empty_record_names = _visible_names(stats.get("unexpected_empty_record_names", []))
+    incomplete_record_names = _visible_names(stats.get("incomplete_record_names", []))
     return {
         "title": f"开明考勤 HR 报告｜{collection['work_date']}｜{display_run_type(plan['run_type'])}",
         "一、异常明细": (
             f"今日异常人员 / 无考勤人员：{_join_names(attendance_anomaly_names)}。"
-            f"接口局部失败：{_join_names(failures)}。"
+            f"无考勤记录人员：{_join_names(empty_record_names)}。"
+            f"打卡记录不完整人员：{_join_names(incomplete_record_names)}。"
         ),
-        "二、连续异常人员": "本轮只验证当天 record 与本月 summary，连续异常需依赖后续多日私有归档判断。",
-        "三、待审批/待补卡/待核查": "补卡、审批、缺卡等明细保留在私有 raw JSONL；Git 仓库不保存员工考勤明文。",
-        "四、数据质量与系统运行状态": (
-            f"summary 成功 {stats['summary_success_count']}/{stats['member_count']}；"
-            f"record 成功 {stats['record_success_count']}/{stats['member_count']}；"
+        "二、连续异常人员": "连续异常按自然月历史归档统计，人员名单以通知正文和私有台账为准。",
+        "三、数据质量与系统运行状态": (
+            f"覆盖 {stats['member_count']} 人；"
             f"应考勤 {stats.get('attendance_required_count', stats['member_count'])} 人；"
-            "record 为空或缺少应有上下班打卡均计入用户可见异常。"
+            f"当天有打卡记录 {stats['record_nonempty_count']} 人。"
         ),
     }
 
@@ -602,6 +617,17 @@ def _contains_open_browser_marker(value: Any) -> bool:
         return any(_contains_open_browser_marker(child) for child in value)
     if isinstance(value, str):
         return '"openBrowser":true' in value.replace(" ", "") or '"open_browser":true' in value.replace(" ", "")
+    return False
+
+
+def _contains_timeout(value: Any) -> bool:
+    if isinstance(value, Mapping):
+        return any(_contains_timeout(child) for child in value.values())
+    if isinstance(value, list):
+        return any(_contains_timeout(child) for child in value)
+    if isinstance(value, str):
+        lowered = value.lower()
+        return "timeout" in lowered or "timed out" in lowered
     return False
 
 

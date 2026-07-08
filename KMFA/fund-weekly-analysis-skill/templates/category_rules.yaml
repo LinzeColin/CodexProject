@@ -1,0 +1,22 @@
+categories:
+  operating_inflow:
+    examples: ["客户回款", "质保金回款", "保证金退款", "其他经营收入"]
+    include_in_real_operating_cash_flow: true
+  operating_outflow:
+    examples: ["项目成本", "采购", "工资", "社保", "税费", "报销", "手续费"]
+    include_in_real_operating_cash_flow: true
+  financing_inflow:
+    examples: ["借款到账", "银行贷款", "股东投入"]
+    include_in_real_operating_cash_flow: false
+  financing_outflow:
+    examples: ["还贷款", "借款提前结清", "利息"]
+    include_in_real_operating_cash_flow: false
+  cash_management:
+    examples: ["买理财", "赎回理财", "票据贴现", "电子汇票"]
+    include_in_real_operating_cash_flow: false
+  internal_transfer:
+    examples: ["内部调拨", "账户转账", "同主体账户互转", "个人代收转对公"]
+    include_in_real_operating_cash_flow: false
+  unclassified:
+    examples: ["待识别", "OCR低置信", "无凭证金额"]
+    include_in_real_operating_cash_flow: false

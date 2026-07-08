@@ -6,10 +6,10 @@ This system should support future work, KPI, and behavior-analysis data needs. I
 
 ## Storage Plan
 
-### Active Local Runtime
+### Active OneDrive Runtime
 
 ```text
-KMFA/metadata/daily_routine_check/private_runtime/
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime/
   daily_routine_check.sqlite
   daily_routine_check.sqlite-wal
   daily_routine_check.sqlite-shm
@@ -17,7 +17,7 @@ KMFA/metadata/daily_routine_check/private_runtime/
   notification_targets.local.json
 ```
 
-The active SQLite database stays local to avoid OneDrive sync-lock conflicts during writes.
+The active SQLite database and local notification target config stay out of the Git package. The repo path `KMFA/metadata/daily_routine_check/private_runtime/` is only a placeholder with `README.md` and `.gitkeep`.
 
 ### OneDrive Durable Archive
 

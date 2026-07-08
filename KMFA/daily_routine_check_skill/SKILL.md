@@ -73,17 +73,16 @@ daily 17:05 Asia/Shanghai -> trigger_window=evening_1705
 
 Do not create one automation per rule. `due_time` may remain in YAML as a business reference, but actual evaluation is controlled by the two trigger windows.
 
-Canonical input root:
+Canonical primary input:
+
+```text
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
+```
+
+The reader streams required CSV entries from the zip and does not extract the package to local disk. Direct group folders remain a compatibility fallback:
 
 ```text
 /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/
-```
-
-Required upstream group folders under the input root:
-
-```text
-付款请示群/
-生产管理群/
 ```
 
 This skill must not create or manage the upstream DWS archive automation. The upstream archive already exists and is treated as a producer.
@@ -155,7 +154,7 @@ Weekly Friday:
 Private input:
 
 ```text
-/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
 ```
 
 Private OneDrive routine-check archive:
@@ -167,10 +166,10 @@ Private OneDrive routine-check archive:
 Private local runtime:
 
 ```text
-KMFA/metadata/daily_routine_check/private_runtime/
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime/
 ```
 
-Active SQLite ledger is local-private and ignored by Git. Daily snapshots, append-only JSONL logs, OCR cache references, and cleanup reports may be stored in OneDrive.
+Active SQLite ledger, notification target config, append-only JSONL logs, OCR cache references, and cleanup reports stay in OneDrive private runtime/output paths, not inside the Git package.
 
 Every run log must include `run_at_beijing`, `check_date`, `trigger_window`, `rules_evaluated`, and `rules_skipped`. Missing or stale upstream DWS output must be recorded as `SOURCE_MISSING` or `SOURCE_STALE` and surfaced to 张霖泽 through the notification policy.
 

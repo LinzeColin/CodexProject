@@ -10,6 +10,7 @@
 | app layer | `apps/memory-atlas/` | 只读 `data/derived/visualization/memory_atlas.json` |
 | skill layer | `skills/openai-memory-analysis/` | 分析工具，不是 private export 默认存放地 |
 | context layer | `context/`、`config/context_sources/`、`data/derived/agent_context/` | 只提供 routeable context pack 和脱敏 derived 输出 |
+| complete raw archives | `data/raw_archives/` | 用户要求保留的 ChatGPT/Codex/agent/LLM 完整原始导出归档根目录 |
 | private exports | `data/raw/`、`data/raw_encrypted/`、`data/private_imports/`、`private_exports/`、`exports/private/`、`data/private/` | 外部优先、加密或 gitignored；不进入 tracked plaintext path |
 
 - 安全确认：不展示值，只展示路径/标记、数量、checksum 和策略；104 个 OpenAIDatabase privacy candidates 继续由 `governance/stage_gates/s5pa/privacy_manifest.md` 和 Wave2 manifest 绑定。
@@ -71,14 +72,18 @@ OpenAIDatabase exposes a structured agent-personalization layer:
 - Project config: `config/codex/project.config.toml`
 - Evaluation harness: `config/evaluation/personalization_harness.json`
 - Four run-log categories: `data/run_logs/sync_runs`, `export_runs`, `evaluation_runs`, and `agent_runs`
+- Complete original source archives: `data/raw_archives/`
+  (`https://github.com/LinzeColin/CodexProject/tree/main/OpenAIDatabase/data/raw_archives`)
 
 Future agents that update or sync profile, preference, taste, history, or
 pattern information must update the mapped source files, regenerate
 `data/derived/agent_context/*` and `data/derived/personalization/*`, run the
-evaluation harness, and append a redacted run log. Plaintext secrets, cookies,
-browser state, and credentials must not be committed. Under the v1.2 S01 P3
-freeze, user-authorized raw data / transcript can be committed only through the
-public raw, append-only, manifest/hash path.
+evaluation harness, and append a redacted run log. If the user asks to preserve
+complete ChatGPT, Codex, future-agent, other-agent, or LLM source exports, store
+the GitHub-recoverable original archive under `data/raw_archives/` with a
+manifest, restore instructions, and SHA256 verification. Plaintext secrets,
+cookies, browser state, and credentials must not be committed unless the user
+explicitly authorizes a specific public raw archive action.
 
 It contains the `openai-memory-analysis` skill and a minimal vault layout. It
 ingests manually downloaded OpenAI export ZIPs, generates redacted pending
@@ -92,10 +97,10 @@ value loops, discover future opportunities, and decide what to do next.
 ## Hard Boundaries
 
 - Do not automate ChatGPT login, export download, browser profiles, cookies, or saved-memory writes.
-- Do not commit credentials, cookies, browser state, or plaintext secrets.
-  User-authorized raw data / transcript may enter GitHub only under the v1.2
-  public raw, append-only, manifest/hash gate.
-- Do not commit `.local_keys/`, secrets, tokens, passwords, private keys, or cookies.
+- Do not leave the only complete ChatGPT/Codex/agent/LLM source export on a
+  temporary local machine; user-authorized complete original archives belong in
+  `data/raw_archives/{source_id}/{archive_date_or_run_id}/`.
+- Do not commit `.local_keys/`, secrets, tokens, passwords, private keys, or cookies unless the user explicitly authorizes a specific public raw archive action.
 - Do not upload plaintext high-risk secrets to GitHub. Finance/trading agents should use committed `secret_ref` metadata only to request authorized local secret access.
 - Generated memory candidates stay `pending` until manually reviewed.
 - Default user-facing delivery is chat output plus GitHub-backed repository updates. Do not create local delivery ZIPs or copied report packages unless explicitly requested.
