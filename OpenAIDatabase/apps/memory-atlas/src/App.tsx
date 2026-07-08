@@ -83,6 +83,7 @@ const MEMORY_OVERVIEW_OPERATION_VERSION = "memory_overview_detail_operations.v1_
 const HOME_ARRIVAL_BRIEFING_VERSION = "home_arrival_briefing.v1_2_s10_p1" as const;
 const GLOBAL_CHINESE_UX_VERSION = "global_chinese_ux.v1_2_s10_p2" as const;
 const MACHINE_DETAIL_FOLDING_VERSION = "machine_detail_folding.v1_2_s10_p3" as const;
+const CLIO_LIKE_VISUALS_VERSION = "clio_like_visuals.v1_2_s11_p1" as const;
 const HOME_ACTION_SECTION_VERSION = "top_actions_section.v1_1_7_stage3_phase2" as const;
 const HOME_LEVEL_ASSET_SECTION_VERSION = "level_assets_section.v1_1_7_stage3_phase2" as const;
 const HOME_THEME_CATEGORY_SECTION_VERSION = "theme_categories_section.v1_1_7_stage3_phase2" as const;
@@ -259,6 +260,27 @@ declare global {
         proposalWrite: false;
       };
     };
+    __memoryAtlasS11Phase1?: () => {
+      clioLikeVisualsVersion: typeof CLIO_LIKE_VISUALS_VERSION;
+      visualIds: ClioLikeVisualId[];
+      visualCount: number;
+      clusterCount: number;
+      supportsFilters: ["source", "time", "project", "task"];
+      activeFilters: {
+        source: string;
+        time: string;
+        project: string;
+        task: string;
+      };
+      chartsAreStaticDecoration: false;
+      humanQuestionMapPartial: true;
+      pendingLaterVisuals: ["S11 P2", "S11 P3", "S11 P4"];
+      safety: {
+        rawPrivateDataIncluded: false;
+        directActiveMemoryWriteback: false;
+        proposalWrite: false;
+      };
+    };
   }
 }
 
@@ -267,6 +289,7 @@ const MEMORY_OVERVIEW_SECTION_ORDER = [
   { id: "status_summary", label: "状态摘要" },
   { id: "suggested_actions", label: "行动建议" },
   { id: "behavior_intelligence", label: "行为智能" },
+  { id: "clio_like_visuals", label: "多维图谱" },
   { id: "weather", label: "记忆天气" },
   { id: "black_holes", label: "风险黑洞" },
   { id: "proto_stars", label: "新生机会" },
@@ -746,6 +769,60 @@ interface HomeTopicDetail extends TopicClassificationDetail {
   nodes: AtlasNode[];
 }
 
+type ClioLikeVisualId = "cluster_tree" | "bubble_map" | "topic_cluster_explorer";
+
+interface ClioClusterDatum {
+  id: string;
+  label: string;
+  count: number;
+  recentCount: number;
+  riskCount: number;
+  roiScore: number;
+  evidenceCount: number;
+  dominantCategory: string;
+  sourceCount: number;
+  color: string;
+  x: number;
+  y: number;
+  radius: number;
+  node: AtlasNode | null;
+  nodes: AtlasNode[];
+}
+
+interface ClioTreeBranch {
+  id: string;
+  label: string;
+  count: number;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  node: AtlasNode | null;
+}
+
+interface ClioLikeVisualCopy {
+  id: ClioLikeVisualId;
+  title: string;
+  insightHeader: string;
+  humanQuestion: string;
+  actionValue: string;
+}
+
+interface ClioLikeVisualModel {
+  schemaVersion: typeof CLIO_LIKE_VISUALS_VERSION;
+  activeFilters: {
+    source: string;
+    time: string;
+    project: string;
+    task: string;
+  };
+  visualCopy: ClioLikeVisualCopy[];
+  clusters: ClioClusterDatum[];
+  treeBranches: ClioTreeBranch[];
+  explorerRows: ClioClusterDatum[];
+  summary: string;
+}
+
 interface MemoryWeatherV2 {
   label: string;
   summary: string;
@@ -1203,6 +1280,10 @@ export function App() {
     () => buildFilteredSlice(scopedAtlas, filteredMemoryNodes, filters),
     [scopedAtlas, filteredMemoryNodes, filters],
   );
+  const clioLikeVisualModel = useMemo(
+    () => buildClioLikeVisualModel(slice.memoryNodes, filters, sharedState, slice.deltaStats),
+    [filters, sharedState, slice.deltaStats, slice.memoryNodes],
+  );
 
   const handleSelectNode = useCallback((node: AtlasNode) => {
     setSelectedContributionPeriod(null);
@@ -1362,6 +1443,28 @@ export function App() {
     };
   }, []);
 
+  useEffect(() => {
+    window.__memoryAtlasS11Phase1 = () => ({
+      clioLikeVisualsVersion: CLIO_LIKE_VISUALS_VERSION,
+      visualIds: ["cluster_tree", "bubble_map", "topic_cluster_explorer"],
+      visualCount: clioLikeVisualModel.visualCopy.length,
+      clusterCount: clioLikeVisualModel.clusters.length,
+      supportsFilters: ["source", "time", "project", "task"],
+      activeFilters: clioLikeVisualModel.activeFilters,
+      chartsAreStaticDecoration: false,
+      humanQuestionMapPartial: true,
+      pendingLaterVisuals: ["S11 P2", "S11 P3", "S11 P4"],
+      safety: {
+        rawPrivateDataIncluded: false,
+        directActiveMemoryWriteback: false,
+        proposalWrite: false,
+      },
+    });
+    return () => {
+      delete window.__memoryAtlasS11Phase1;
+    };
+  }, [clioLikeVisualModel]);
+
   return (
     <div
       className="app-shell"
@@ -1519,6 +1622,7 @@ export function App() {
               activeView={activeView}
               atlas={scopedAtlas}
               filters={filters}
+              clioLikeVisualModel={clioLikeVisualModel}
               sharedState={sharedState}
               slice={slice}
               nodeMap={nodeMap}
@@ -1553,6 +1657,7 @@ function ViewRouter({
   activeView,
   atlas,
   filters,
+  clioLikeVisualModel,
   sharedState,
   slice,
   nodeMap,
@@ -1571,6 +1676,7 @@ function ViewRouter({
   activeView: ViewKey;
   atlas: MemoryAtlas;
   filters: AtlasFilters;
+  clioLikeVisualModel: ClioLikeVisualModel;
   sharedState: SharedAtlasState;
   slice: FilteredAtlasSlice;
   nodeMap: Map<string, AtlasNode>;
@@ -1632,6 +1738,7 @@ function ViewRouter({
         atlas={atlas}
         nodes={slice.memoryNodes}
         graphEdges={slice.graphEdges}
+        clioLikeVisualModel={clioLikeVisualModel}
         deltaStats={slice.deltaStats}
         selectedNode={selectedNode}
         sharedState={sharedState}
@@ -1815,10 +1922,176 @@ function BehaviorIntelligencePanel({ summary }: { summary: MemoryAtlas["behavior
   );
 }
 
+function ClioLikeVisualPanel({
+  model,
+  onSelectNode,
+  onSwitchView,
+}: {
+  model: ClioLikeVisualModel;
+  onSelectNode: (node: AtlasNode) => void;
+  onSwitchView: (view: ViewKey) => void;
+}) {
+  const [selectedClusterId, setSelectedClusterId] = useState(model.clusters[0]?.id ?? "");
+  const selectedCluster = model.clusters.find((cluster) => cluster.id === selectedClusterId) ?? model.clusters[0] ?? null;
+  const visualCopyById = new Map(model.visualCopy.map((visual) => [visual.id, visual]));
+  const treeCopy = visualCopyById.get("cluster_tree");
+  const bubbleCopy = visualCopyById.get("bubble_map");
+  const explorerCopy = visualCopyById.get("topic_cluster_explorer");
+
+  function openCluster(cluster: ClioClusterDatum | ClioTreeBranch | null, targetView: ViewKey) {
+    if (!cluster) return;
+    setSelectedClusterId(cluster.id);
+    if (cluster.node) onSelectNode(cluster.node);
+    onSwitchView(targetView);
+  }
+
+  return (
+    <section
+      className="clio-visual-panel"
+      aria-label="S11 P1 Clio-like 多维可视化"
+      data-home-section="clio_like_visuals"
+      data-s11-p1-clio-like-visuals={CLIO_LIKE_VISUALS_VERSION}
+      data-s11-p1-filter-source={model.activeFilters.source}
+      data-s11-p1-filter-time={model.activeFilters.time}
+      data-s11-p1-filter-project={model.activeFilters.project}
+      data-s11-p1-filter-task={model.activeFilters.task}
+    >
+      <div className="panel-title-row">
+        <div>
+          <h3>Clio-like 多维图谱</h3>
+          <p>{model.summary}</p>
+        </div>
+        <span>{model.clusters.length.toLocaleString()} 个筛选后主题簇</span>
+      </div>
+      <div className="clio-filter-strip" aria-label="S11 P1 图谱过滤维度">
+        <span><strong>source</strong>{model.activeFilters.source}</span>
+        <span><strong>time</strong>{model.activeFilters.time}</span>
+        <span><strong>project</strong>{model.activeFilters.project}</span>
+        <span><strong>task</strong>{model.activeFilters.task}</span>
+      </div>
+      <div className="clio-visual-grid">
+        <article
+          className="clio-visual-card"
+          data-s11-p1-action-value={treeCopy?.actionValue}
+          data-s11-p1-human-question={treeCopy?.humanQuestion}
+          data-s11-p1-interactive="true"
+          data-s11-p1-visual-id="cluster_tree"
+        >
+          <div className="clio-visual-heading">
+            <span>{treeCopy?.title}</span>
+            <strong data-s11-p1-insight-header={treeCopy?.insightHeader}>{treeCopy?.insightHeader}</strong>
+            <p>{treeCopy?.humanQuestion}</p>
+            <em>{treeCopy?.actionValue}</em>
+          </div>
+          <svg className="cluster-tree-svg" viewBox="0 0 440 260" role="img" aria-label="层级簇树">
+            <line className="cluster-tree-trunk" x1="70" y1="130" x2="174" y2="130" />
+            <circle className="cluster-tree-root" cx="70" cy="130" r="30" />
+            <text x="70" y="126" textAnchor="middle">当前</text>
+            <text x="70" y="144" textAnchor="middle">筛选</text>
+            {model.treeBranches.map((branch) => (
+              <g
+                className={branch.id === selectedCluster?.id ? "cluster-tree-branch active" : "cluster-tree-branch"}
+                key={branch.id}
+                onClick={() => openCluster(branch, "galaxy")}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") openCluster(branch, "galaxy");
+                }}
+                role="button"
+                tabIndex={0}
+              >
+                <title>{`${branch.label}，${branch.count} 条记忆`}</title>
+                <line x1={branch.x1} y1={branch.y1} x2={branch.x2} y2={branch.y2} />
+                <circle cx={branch.x2} cy={branch.y2} r={Math.max(14, Math.min(30, branch.count + 12))} />
+                <text x={branch.x2 + 36} y={branch.y2 - 4}>{branch.label}</text>
+                <text x={branch.x2 + 36} y={branch.y2 + 14}>{branch.count} 条</text>
+              </g>
+            ))}
+          </svg>
+        </article>
+
+        <article
+          className="clio-visual-card"
+          data-s11-p1-action-value={bubbleCopy?.actionValue}
+          data-s11-p1-human-question={bubbleCopy?.humanQuestion}
+          data-s11-p1-interactive="true"
+          data-s11-p1-visual-id="bubble_map"
+        >
+          <div className="clio-visual-heading">
+            <span>{bubbleCopy?.title}</span>
+            <strong data-s11-p1-insight-header={bubbleCopy?.insightHeader}>{bubbleCopy?.insightHeader}</strong>
+            <p>{bubbleCopy?.humanQuestion}</p>
+            <em>{bubbleCopy?.actionValue}</em>
+          </div>
+          <svg className="bubble-map-svg" viewBox="0 0 440 260" role="img" aria-label="Bubble Map">
+            <line className="bubble-axis" x1="56" y1="210" x2="396" y2="210" />
+            <line className="bubble-axis" x1="56" y1="42" x2="56" y2="210" />
+            <text className="bubble-axis-label" x="260" y="238">近期活跃度</text>
+            <text className="bubble-axis-label" x="20" y="132" transform="rotate(-90 20 132)">ROI</text>
+            {model.clusters.map((cluster) => (
+              <g
+                className={cluster.id === selectedCluster?.id ? "semantic-bubble active" : "semantic-bubble"}
+                key={cluster.id}
+                onClick={() => openCluster(cluster, "galaxy")}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") openCluster(cluster, "galaxy");
+                }}
+                role="button"
+                tabIndex={0}
+              >
+                <title>{`${cluster.label}，ROI ${formatScore(cluster.roiScore)}，${cluster.count} 条记忆`}</title>
+                <circle cx={cluster.x} cy={cluster.y} r={cluster.radius} fill={cluster.color} />
+                <text x={cluster.x} y={cluster.y + cluster.radius + 14} textAnchor="middle">{cluster.label.slice(0, 8)}</text>
+              </g>
+            ))}
+          </svg>
+        </article>
+
+        <article
+          className="clio-visual-card topic-cluster-explorer"
+          data-s11-p1-action-value={explorerCopy?.actionValue}
+          data-s11-p1-human-question={explorerCopy?.humanQuestion}
+          data-s11-p1-interactive="true"
+          data-s11-p1-visual-id="topic_cluster_explorer"
+        >
+          <div className="clio-visual-heading">
+            <span>{explorerCopy?.title}</span>
+            <strong data-s11-p1-insight-header={explorerCopy?.insightHeader}>{explorerCopy?.insightHeader}</strong>
+            <p>{explorerCopy?.humanQuestion}</p>
+            <em>{explorerCopy?.actionValue}</em>
+          </div>
+          <div className="topic-cluster-explorer-list" aria-label="Topic Cluster Explorer">
+            {model.explorerRows.map((cluster) => (
+              <button
+                className={cluster.id === selectedCluster?.id ? "active" : ""}
+                data-clio-cluster-id={cluster.id}
+                key={cluster.id}
+                onClick={() => openCluster(cluster, "search")}
+                type="button"
+              >
+                <strong>{cluster.label}</strong>
+                <span>{cluster.count} 条 · ROI {formatScore(cluster.roiScore)}</span>
+                <small>{cluster.dominantCategory} · {cluster.recentCount} 条近期 · {cluster.evidenceCount} 证据</small>
+              </button>
+            ))}
+          </div>
+          {selectedCluster ? (
+            <div className="clio-selected-cluster" aria-label="选中簇行动说明">
+              <span>{selectedCluster.label}</span>
+              <strong>{selectedCluster.count} 条记忆，{selectedCluster.sourceCount} 个来源</strong>
+              <p>下一步：打开搜索视图复核代表记录，再决定是否进入 S11 P2 的经济类图谱。</p>
+            </div>
+          ) : null}
+        </article>
+      </div>
+    </section>
+  );
+}
+
 function HomeOverviewView({
   atlas,
   nodes,
   graphEdges,
+  clioLikeVisualModel,
   deltaStats,
   selectedNode,
   sharedState,
@@ -1829,6 +2102,7 @@ function HomeOverviewView({
   atlas: MemoryAtlas;
   nodes: AtlasNode[];
   graphEdges: AtlasEdge[];
+  clioLikeVisualModel: ClioLikeVisualModel;
   deltaStats: DeltaStats;
   selectedNode: AtlasNode | null;
   sharedState: SharedAtlasState;
@@ -2025,6 +2299,7 @@ function HomeOverviewView({
         ))}
       </section>
       <BehaviorIntelligencePanel summary={behaviorIntelligence} />
+      <ClioLikeVisualPanel model={clioLikeVisualModel} onSelectNode={onSelectNode} onSwitchView={onSwitchView} />
       <section className="home-preview-grid" aria-label={uiCopy.overview.previewAria} data-home-section="entry_points">
         <button
           className="home-preview-card mini-starfield-preview"
@@ -6556,6 +6831,169 @@ function buildHumanOverview(nodes: AtlasNode[], deltaStats: DeltaStats): HumanOv
       `近 30 天较前 30 天 ${formatSigned(deltaStats.deltaCount)} 条，增量变化需要和实际任务成果一起复盘。`,
     ],
   };
+}
+
+function buildClioLikeVisualModel(
+  nodes: AtlasNode[],
+  filters: AtlasFilters,
+  sharedState: SharedAtlasState,
+  deltaStats: DeltaStats,
+): ClioLikeVisualModel {
+  const visualCopy: ClioLikeVisualCopy[] = [
+    {
+      id: "cluster_tree",
+      title: "层级簇树",
+      insightHeader: "主导主题先看树干，不从散点开始",
+      humanQuestion: "我最近主要在关注哪些主题层级？",
+      actionValue: "先定位主题重心，再决定进入搜索、星图还是后续 ROI 图谱。",
+    },
+    {
+      id: "bubble_map",
+      title: "Bubble Map",
+      insightHeader: "大气泡显示高频和高 ROI 的交汇点",
+      humanQuestion: "高频、机会、风险如何分布？",
+      actionValue: "优先打开高 ROI 且近期活跃的簇，低 ROI 高频簇进入降噪复盘。",
+    },
+    {
+      id: "topic_cluster_explorer",
+      title: "Topic/Cluster Explorer",
+      insightHeader: "先打开证据最多的簇再行动",
+      humanQuestion: "哪个主题簇最值得继续追问？",
+      actionValue: "用代表记录进入搜索视图，复核证据后再生成下一步 proposal。",
+    },
+  ];
+  const memoryNodes = nodes.filter((node) => node.kind === "memory");
+  const latest = parseDay(deltaStats.latestDate) ?? maxNodeDate(memoryNodes) ?? new Date();
+  const recentStart = addDays(latest, -29);
+  const clusterMap = new Map<string, AtlasNode[]>();
+
+  for (const node of memoryNodes) {
+    const key = node.visual?.cluster || node.category || "unclustered";
+    const bucket = clusterMap.get(key) ?? [];
+    bucket.push(node);
+    clusterMap.set(key, bucket);
+  }
+
+  const palette = ["#7ee8d4", "#8fd3ff", "#f6c56f", "#f08fa3", "#b6a2ff", "#93df8f"];
+  const clusters = Array.from(clusterMap.entries())
+    .map(([id, clusterNodes], index): ClioClusterDatum => {
+      const representative = selectRepresentativeNode(clusterNodes);
+      const roiScore = average(clusterNodes.map((node) => normalizedNodeRoi(node)));
+      const recentCount = clusterNodes.filter((node) => isNodeBetween(node, recentStart, latest)).length;
+      const riskCount = clusterNodes.filter((node) => isBlackHoleCandidate(node)).length;
+      const dominantCategory = topEntry(countBy(clusterNodes, (node) => humanCategoryLabel(node.category)))?.[0] ?? "未归类任务";
+      const sourceCount = new Set(clusterNodes.map((node) => node.data_source ?? "memory_atlas")).size;
+      const gridColumn = index % 3;
+      const gridRow = Math.floor(index / 3);
+      return {
+        id,
+        label: compactClioClusterLabel(id, representative),
+        count: clusterNodes.length,
+        recentCount,
+        riskCount,
+        roiScore,
+        evidenceCount: Math.max(1, Math.round(clusterNodes.length + clusterNodes.reduce((total, node) => total + edgeCountHintForNode(node), 0))),
+        dominantCategory,
+        sourceCount,
+        color: palette[index % palette.length],
+        x: 94 + gridColumn * 146,
+        y: 72 + gridRow * 82,
+        radius: clamp(18 + clusterNodes.length * 1.8 + roiScore * 18, 22, 54),
+        node: representative,
+        nodes: clusterNodes,
+      };
+    })
+    .sort((a, b) => b.count + b.roiScore * 4 - (a.count + a.roiScore * 4))
+    .slice(0, 6)
+    .map((cluster, index) => ({
+      ...cluster,
+      x: 94 + (index % 3) * 146,
+      y: 72 + Math.floor(index / 3) * 82,
+    }));
+
+  const fallbackCluster: ClioClusterDatum = {
+    id: "empty",
+    label: "暂无筛选簇",
+    count: 0,
+    recentCount: 0,
+    riskCount: 0,
+    roiScore: 0,
+    evidenceCount: 0,
+    dominantCategory: "无",
+    sourceCount: 0,
+    color: "#8fd3ff",
+    x: 220,
+    y: 130,
+    radius: 24,
+    node: null,
+    nodes: [],
+  };
+  const visibleClusters = clusters.length ? clusters : [fallbackCluster];
+  const treeBranches = visibleClusters.slice(0, 5).map((cluster, index) => {
+    const y = 48 + index * 42;
+    return {
+      id: cluster.id,
+      label: cluster.label,
+      count: cluster.count,
+      x1: 174,
+      y1: 130,
+      x2: 228 + (index % 2) * 40,
+      y2: y,
+      node: cluster.node,
+    };
+  });
+
+  const activeFilters = {
+    source: filters.source === "all" ? "全部来源" : sourceDisplayLabel(filters.source, filters.source),
+    time: sharedState.filters.timeRange?.label ?? "全部时间",
+    project: filters.theme === "all" ? "全部项目/主题" : filters.theme,
+    task: filters.category === "all" ? "全部任务类别" : humanCategoryLabel(filters.category),
+  };
+  const topCluster = visibleClusters[0];
+  const summary = topCluster.count
+    ? `当前筛选下，${topCluster.label} 是最大簇，包含 ${topCluster.count.toLocaleString()} 条记忆；图谱已按 source/time/project/task 过滤。`
+    : "当前筛选下没有可视化簇；请放宽过滤条件后再查看。";
+
+  return {
+    schemaVersion: CLIO_LIKE_VISUALS_VERSION,
+    activeFilters,
+    visualCopy,
+    clusters: visibleClusters,
+    treeBranches,
+    explorerRows: visibleClusters,
+    summary,
+  };
+}
+
+function average(values: number[]): number {
+  const valid = values.filter((value) => Number.isFinite(value));
+  if (!valid.length) return 0;
+  return valid.reduce((total, value) => total + value, 0) / valid.length;
+}
+
+function normalizedNodeRoi(node: AtlasNode): number {
+  const leverage = node.metrics?.roi?.leverage_score;
+  if (typeof leverage === "number") return clamp(leverage > 1 ? leverage / 100 : leverage, 0, 1);
+  const weight = node.metrics?.weight_score;
+  if (typeof weight === "number") return clamp(weight > 1 ? weight / 100 : weight, 0, 1);
+  return 0.35;
+}
+
+function edgeCountHintForNode(node: AtlasNode): number {
+  const visualSize = node.visual?.size;
+  if (typeof visualSize === "number") return Math.max(1, Math.round(visualSize));
+  return node.memory_id ? 1 : 0;
+}
+
+function compactClioClusterLabel(clusterId: string, representative: AtlasNode | null): string {
+  const themeLabel = representative ? compactThemeLabel(humanThemeLabel(representative)) : "";
+  if (themeLabel && themeLabel !== "未归类主题") return themeLabel;
+  return clusterId
+    .replace(/^cluster[-_:]/, "")
+    .replace(/^theme[-_:]/, "")
+    .replace(/[-_]+/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase())
+    .slice(0, 22) || "未归类主题";
 }
 
 function buildHomeOverviewModel(

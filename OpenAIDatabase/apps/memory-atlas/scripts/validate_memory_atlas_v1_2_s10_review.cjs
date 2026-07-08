@@ -53,12 +53,14 @@ const allowedOpenDiffPaths = [
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p2.cjs",
   "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s10_p3.cjs",
   `OpenAIDatabase/apps/memory-atlas/scripts/${scriptName}`,
+  "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s11_p1.cjs",
   "OpenAIDatabase/apps/memory-atlas/src/App.tsx",
   "OpenAIDatabase/apps/memory-atlas/src/i18n/zh-CN.ts",
   "OpenAIDatabase/apps/memory-atlas/src/styles.css",
   "OpenAIDatabase/scripts/atlasctl.py",
   "OpenAIDatabase/scripts/audit_memory_atlas_visual_acceptance.py",
   `OpenAIDatabase/${reviewPath}`,
+  "OpenAIDatabase/docs/reviews/memory_atlas_v1_2_s11_p1_clio_like_visuals.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_DELIVERY_RECORD.md",
   "OpenAIDatabase/docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md",
   "OpenAIDatabase/功能清单.md",
@@ -66,7 +68,10 @@ const allowedOpenDiffPaths = [
   "OpenAIDatabase/模型参数文件.md",
   "OpenAIDatabase/人类可读/00_快速入口.md",
   "OpenAIDatabase/人类可读/01_v1.2四线14Stage升级总览.md",
+  "OpenAIDatabase/人类可读/27_ClioLike多维可视化说明.md",
   "OpenAIDatabase/机器治理/README.md",
+  "OpenAIDatabase/机器治理/可视化配置/README.md",
+  "OpenAIDatabase/机器治理/可视化配置/clio_like_visuals.v1_2_s11_p1.json",
   "OpenAIDatabase/机器治理/运行门禁/README.md",
 ];
 
@@ -283,29 +288,37 @@ function validateRecords() {
   const overview = readRepoFile("人类可读/01_v1.2四线14Stage升级总览.md");
   const machineReadme = readRepoFile("机器治理/README.md");
   const runGate = readRepoFile("机器治理/运行门禁/README.md");
+  const quickHasCurrentS10 = hasAll(quickEntry, [taskId, "S10 Review 已完成", "下一步是 S11 P1", "No GitHub main upload"]);
+  const quickHasLaterS11 = hasAll(quickEntry, [taskId, "S10 Review 已完成", "S11 P1 已完成", "下一步是 S11 P2", "No GitHub main upload"]);
   assertCondition(
-    hasAll(quickEntry, [taskId, "S10 Review 已完成", "下一步是 S11 P1", "No GitHub main upload"]),
+    quickHasCurrentS10 || quickHasLaterS11,
     "s10_review_quick_entry",
-    "Quick entry points to completed S10 Review and pending S11 P1",
-    "Quick entry does not point to completed S10 Review and pending S11 P1",
+    "Quick entry records S10 Review either as current state or historical review gate after S11 P1",
+    "Quick entry does not record completed S10 Review compatibility",
   );
+  const overviewHasCurrentS10 = hasAll(overview, ["S10 Review 已完成", "首页能回答上次来以后发生了什么", "核心 UI 默认中文", "机器字段默认折叠", "下一步是 S11 P1"]);
+  const overviewHasLaterS11 = hasAll(overview, ["S10 Review 已完成", "首页能回答上次来以后发生了什么", "核心 UI 默认中文", "机器字段默认折叠", "S11 P1 已完成", "下一步是 S11 P2"]);
   assertCondition(
-    hasAll(overview, ["S10 Review 已完成", "首页能回答上次来以后发生了什么", "核心 UI 默认中文", "机器字段默认折叠", "下一步是 S11 P1"]),
+    overviewHasCurrentS10 || overviewHasLaterS11,
     "s10_review_overview",
-    "Human overview records S10 Review pass gate and pending S11 P1",
+    "Human overview records S10 Review pass gate either before or after S11 P1",
     "Human overview is missing S10 Review pass gate",
   );
+  const machineHasCurrentS10 = hasAll(machineReadme, [taskId, acceptanceId, status, "validate:v1.2-s10-review", "S11 P1"]);
+  const machineHasLaterS11 = hasAll(machineReadme, [taskId, acceptanceId, "validate:v1.2-s10-review", "S11 P1", "S11 P2"]);
   assertCondition(
-    hasAll(machineReadme, [taskId, acceptanceId, status, "validate:v1.2-s10-review", "S11 P1"]),
+    machineHasCurrentS10 || machineHasLaterS11,
     "s10_review_machine_readme",
-    "Machine README records S10 Review as current gate",
-    "Machine README is missing S10 Review current gate",
+    "Machine README records S10 Review either as current gate or historical review gate after S11 P1",
+    "Machine README is missing S10 Review compatibility gate",
   );
+  const runGateHasCurrentS10 = hasAll(runGate, [taskId, acceptanceId, status, "validate:v1.2-s10-review", "S10 Review 产物", "S11 P1"]);
+  const runGateHasLaterS11 = hasAll(runGate, [taskId, acceptanceId, status, "validate:v1.2-s10-review", "S11 P1 产物", "S11 P2"]);
   assertCondition(
-    hasAll(runGate, [taskId, acceptanceId, status, "validate:v1.2-s10-review", "S10 Review 产物", "S11 P1"]),
+    runGateHasCurrentS10 || runGateHasLaterS11,
     "s10_review_run_gate",
-    "Run gate README records S10 Review artifact, validator and next phase",
-    "Run gate README is missing S10 Review gate",
+    "Run gate README records S10 Review either as current gate or historical review gate after S11 P1",
+    "Run gate README is missing S10 Review compatibility gate",
   );
 }
 

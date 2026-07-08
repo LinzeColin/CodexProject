@@ -18,13 +18,19 @@
 
 ## 当前阶段
 
-当前为 S10 Review。任务 ID 为 `MA-V12-S10-REVIEW`，验收 ID 为
-`ACC-MA-V12-S10-REVIEW`，validator 为 `validate:v1.2-s10-review`。状态为
-`stage_s10_review_passed_pending_s11_no_github_main_upload`。S10 Review 已完成，
-复审确认 S10 P1、S10 P2、S10 P3 共同满足全中文信息架构与首页重构 stage gate；
-下一步只允许进入 S11 P1。
+当前为 S11 P1。任务 ID 为 `MA-V12-S11P1`，验收 ID 为
+`ACC-MA-V12-S11P1`，validator 为 `validate:v1.2-s11-p1`。状态为
+`phase_s11_p1_clio_like_visuals_completed_pending_s11_p2`。S11 P1 已完成
+Clio-like visuals，运行时合同为 `clio_like_visuals.v1_2_s11_p1`；图谱包含
+`cluster_tree`、`bubble_map` 和 `topic_cluster_explorer`，并绑定
+`source/time/project/task` 过滤。下一步只允许进入 S11 P2。
 
 No GitHub main upload。No raw mutation。No proposal apply execution。
+
+历史复验兼容记录：S10 Review 完成时当前为 S10 Review，任务 ID 为
+`MA-V12-S10-REVIEW`，验收 ID 为 `ACC-MA-V12-S10-REVIEW`，validator 为
+`validate:v1.2-s10-review`，下一步是 S11 P1；此句只用于保留已完成 review
+的复验语义，不代表当前阶段。
 
 历史复验兼容记录：S10 P3 完成时当前为 S10 P3，任务 ID 为 `MA-V12-S10P3`，
 验收 ID 为 `ACC-MA-V12-S10P3`，validator 为 `validate:v1.2-s10-p3`，
