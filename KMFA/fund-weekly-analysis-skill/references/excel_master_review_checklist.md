@@ -13,7 +13,7 @@ Current evidence snapshot from the latest mother workbook:
 | Sheet 01 top card band | Rows 4-7 are the first KPI band, with labels anchored at `B4`, `E4`, `H4`, `K4` |
 | Sheet 01 second card band | Rows 8-11 are the second KPI band, with labels anchored at `B8`, `E8`, `H8`, `K8` |
 | Sheet 01 charts | Exactly two native line charts: latest 15 days and latest 30 days |
-| Schedule | Current owner-approved schedule is daily 11:30 `Australia/Sydney`; Beijing 09:30 is reference wording only |
+| Schedule | Current owner-approved schedule is Monday/Saturday 11:00 `Australia/Sydney` |
 
 ## Rule Checklist
 
@@ -31,8 +31,8 @@ Current evidence snapshot from the latest mother workbook:
 | Real data only | No simulated amount, forecast, or management conclusion is generated | Runner cross-review and audit log |
 | OCR and chat values | OCR/chat extracted amounts remain candidates until human review | Candidate sidecars keep `financial_fact_promoted=false` |
 | Ledger writes | OCR fact previews do not write `fund_ledger.csv` | `fund_ledger_write_allowed=false` gates |
-| Automation schedule | Local Codex automation runs daily at 11:30 in `Australia/Sydney` | `check_codex_app_automation.py` |
-| Stale schedule conflict | Any weekly Monday/Saturday 11:00 wording is stale unless explicitly re-approved in a later owner instruction | Current repo contract and local automation drift check |
+| Automation schedule | Local Codex automation runs Monday and Saturday at 11:00 in `Australia/Sydney` | `check_codex_app_automation.py` |
+| Stale schedule conflict | Any daily 11:30 wording is stale unless explicitly re-approved in a later owner instruction | Current repo contract and local automation drift check |
 | GitHub sync | Skill, automation prompt, validators, and public-safe governance changes are committed to GitHub `main` | Post-push parity check |
 
 ## Function Checklist
