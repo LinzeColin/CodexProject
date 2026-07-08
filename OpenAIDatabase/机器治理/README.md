@@ -18,12 +18,22 @@
 
 ## 当前阶段
 
-当前为 S13 P2。任务 ID 为 `MA-V12-S13P2`，验收 ID 为
+当前为 S13 P3。任务 ID 为 `MA-V12-S13P3`，验收 ID 为
+`ACC-MA-V12-S13P3`，validator 为 `validate:v1.2-s13-p3`。状态为
+`phase_s13_p3_apply_rollback_completed_pending_s13_review`。S13 P3 已完成 Apply 与回滚，
+合同版本为 `proposal_apply.v1_2_s13_p3`。`sample_unauthorized` 未授权 fail-closed，
+`sample` 授权 dry-run 可进入 apply、validation 和 rollback point 路径。下一步只允许进入
+pending S13 Review。
+
+No GitHub main upload。No remote push。No raw mutation。
+
+历史复验兼容记录：S13 P2 完成时当前为 S13 P2。任务 ID 为 `MA-V12-S13P2`，验收 ID 为
 `ACC-MA-V12-S13P2`，validator 为 `validate:v1.2-s13-p2`。状态为
 `phase_s13_p2_diff_narrator_completed_pending_s13_p3`。S13 P2 已完成 Diff narrator，
 合同版本为 `diff_narrator.v1_2_s13_p2`。每个 proposal 都有中文解释：改了什么、
 为什么改、影响什么、如何验证、如何回滚；机器 diff 保留在治理证据文件，不进入人类首页。
-下一步只允许进入 S13 P3。
+此句只用于保留已完成 phase 的复验语义，不代表当前阶段。S13 P3 已完成，下一步是
+S13 Review。
 
 No GitHub main upload。No remote push。No raw mutation。No proposal apply execution。
 

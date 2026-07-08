@@ -2,7 +2,36 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S13 P2。任务 ID 为 `MA-V12-S13P2`，验收 ID 为
+当前阶段是 S13 P3。任务 ID 为 `MA-V12-S13P3`，验收 ID 为
+`ACC-MA-V12-S13P3`，validator 为 `validate:v1.2-s13-p3`。状态为
+`phase_s13_p3_apply_rollback_completed_pending_s13_review`。
+
+S13 P3 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s13_p3_apply_rollback.md`
+- `人类可读/36_Apply回滚说明.md`
+- `机器治理/运行门禁/proposal_apply.v1_2_s13_p3.json`
+- `data/derived/proposals/proposal_apply_report.json`
+- `机器治理/证据与日志/proposal_apply/proposal_apply_evidence.v1_2_s13_p3.json`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s13_p3.cjs`
+- `scripts/build_memory_atlas_proposal_apply.py`
+- `scripts/atlasctl.py`
+
+S13 P3 gate：
+
+- `validate:v1.2-s13-p3` 可验证 Apply 与回滚。
+- `proposal_apply.v1_2_s13_p3` runtime contract 存在。
+- `sample_unauthorized` 未授权 fail-closed。
+- `sample` 授权 dry-run 可进入 apply、validation 和 rollback point 路径。
+- validation failure 会产生 `rollback_or_needs_revision`。
+- 不修改 raw。
+- 不上传 GitHub main。
+- 不执行远端 push。
+
+No GitHub main upload。No remote push。No raw mutation。
+下一步是 S13 Review。
+
+历史复验兼容记录：S13 P2 完成时当前阶段是 S13 P2。任务 ID 为 `MA-V12-S13P2`，验收 ID 为
 `ACC-MA-V12-S13P2`，validator 为 `validate:v1.2-s13-p2`。状态为
 `phase_s13_p2_diff_narrator_completed_pending_s13_p3`。
 

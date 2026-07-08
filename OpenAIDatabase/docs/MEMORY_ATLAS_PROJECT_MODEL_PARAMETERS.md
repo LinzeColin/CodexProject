@@ -1,3 +1,45 @@
+## 156. Memory Atlas v1.2 S13 P3 Apply 与回滚 Parameters
+
+状态：`phase_s13_p3_apply_rollback_completed_pending_s13_review`。
+
+验收 ID：`ACC-MA-V12-S13P3`。
+
+S13 P3 固定以下参数：
+
+- `MA-V12-S13P3`
+- `validate:v1.2-s13-p3`
+- `proposal_apply.v1_2_s13_p3`
+- S13 P3
+- Apply 与回滚
+- `sample_unauthorized`
+- `sample`
+- authorization required
+- validation_after_apply
+- rollback_or_needs_revision
+- S13 P3 完成后下一步为 S13 Review。
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+
+参数：
+
+- `PARAM-MA-V12-S13P3-001 phase_status = phase_s13_p3_apply_rollback_completed_pending_s13_review`
+- `PARAM-MA-V12-S13P3-002 validator = validate:v1.2-s13-p3`
+- `PARAM-MA-V12-S13P3-003 contract_version = proposal_apply.v1_2_s13_p3`
+- `PARAM-MA-V12-S13P3-004 unauthorized_fixture = sample_unauthorized FAIL_CLOSED`
+- `PARAM-MA-V12-S13P3-005 authorized_fixture = sample would_apply=true`
+- `PARAM-MA-V12-S13P3-006 rollback_path = rollback_or_needs_revision`
+- `PARAM-MA-V12-S13P3-007 next_phase = S13 Review`
+- `PARAM-MA-V12-S13P3-008 phase_boundary = No GitHub main upload; No remote push; No raw mutation`
+
+验证逻辑：
+
+- `validate:v1.2-s13-p3` checks the apply config, builder, `atlasctl apply`
+  unauthorized/authorized/failure dry-runs, apply report, machine evidence,
+  governance records, no raw mutation and no remote upload.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S13 P3; MA-V12-S13P3; ACC-MA-V12-S13P3; phase_s13_p3_apply_rollback_completed_pending_s13_review; validate:v1.2-s13-p3; proposal_apply.v1_2_s13_p3; S13 P3; Apply 与回滚; sample_unauthorized; sample; authorization required; validation_after_apply; rollback_or_needs_revision; No GitHub main upload; No remote push; No raw mutation; pending S13 Review.
+
 ## 155. Memory Atlas v1.2 S13 P2 Diff narrator Parameters
 
 状态：`phase_s13_p2_diff_narrator_completed_pending_s13_p3`。

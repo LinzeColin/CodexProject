@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 S13 P3 Apply 与回滚
+
+- Added `proposal_apply.v1_2_s13_p3` for `MA-V12-S13P3` /
+  `ACC-MA-V12-S13P3`.
+- Registered status
+  `phase_s13_p3_apply_rollback_completed_pending_s13_review`.
+- Added `scripts/build_memory_atlas_proposal_apply.py`.
+- Added `data/derived/proposals/proposal_apply_report.json`.
+- Added machine apply evidence at
+  `机器治理/证据与日志/proposal_apply/proposal_apply_evidence.v1_2_s13_p3.json`.
+- Added `atlasctl.py apply --proposal ... --dry-run`.
+- Added `validate:v1.2-s13-p3`.
+- Confirmed `sample_unauthorized` fails closed and `sample` can enter the
+  authorized dry-run apply path with validation and rollback point evidence.
+- Preserved S13 P3 boundaries: No GitHub main upload, No remote push and
+  No raw mutation.
+- Marked the next gate as pending S13 Review.
+
 ## Unreleased - Memory Atlas v1.2 S13 P2 Diff narrator
 
 - Added `diff_narrator.v1_2_s13_p2` for `MA-V12-S13P2` /
