@@ -469,13 +469,24 @@ def write_xlsx(path: Path, rows: list[dict]) -> None:
             return missing_fields_formula(row_number)
         return ""
 
+    editable_owner_fields = {
+        "owner_authorization_decision",
+        "owner_corrected_company",
+        "owner_corrected_bank",
+        "owner_note",
+    }
     row_xml: list[str] = []
     for row_number, values in enumerate(all_rows, 1):
         cells: list[str] = []
         for column_number, value in enumerate(values, 1):
             cell_ref = f"{column_letter(column_number)}{row_number}"
-            style = ' s="1"' if row_number == 1 else ""
             field = OUTPUT_FIELDS[column_number - 1]
+            if row_number == 1:
+                style = ' s="1"'
+            elif field in editable_owner_fields:
+                style = ' s="2"'
+            else:
+                style = ""
             formula = formula_for(field, row_number) if row_number > 1 else ""
             if formula:
                 cells.append(
@@ -519,6 +530,7 @@ def write_xlsx(path: Path, rows: list[dict]) -> None:
         '<col min="22" max="24" width="18" customWidth="1"/>'
         '</cols>'
         f'<sheetData>{"".join(row_xml)}</sheetData>'
+        '<sheetProtection sheet="1" objects="1" scenarios="1"/>'
         f'<autoFilter ref="A1:{last_col}{max_row}"/>'
         f'<ignoredErrors><ignoredError sqref="{company_col}2:{note_col}{max_row}" numberStoredAsText="1"/></ignoredErrors>'
         f'{validations}'
@@ -562,8 +574,9 @@ def write_xlsx(path: Path, rows: list[dict]) -> None:
         '<fills count="1"><fill><patternFill patternType="none"/></fill></fills>'
         '<borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>'
         '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>'
-        '<cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>'
-        '<xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs>'
+        '<cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>'
+        '<xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/>'
+        '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyProtection="1"><protection locked="0"/></xf></cellXfs>'
         '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>'
         '<dxfs count="0"/><tableStyles count="0" defaultTableStyle="TableStyleMedium2" defaultPivotStyle="PivotStyleLight16"/>'
         '</styleSheet>'
