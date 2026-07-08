@@ -1,3 +1,35 @@
+## v1.2 Final Delivery Cleanup
+
+状态：`local_delivery_cleanup_completed_pending_cloudflare_live_access_operator_evidence`。
+
+任务 ID：`MA-V12-FINAL-DELIVERY-CLEANUP`。
+
+验收 ID：`ACC-MA-V12-FINAL-DELIVERY-CLEANUP`。
+
+GitHub main、local app entry 和 runtime manifest 已对齐到当前 GitHub `main` HEAD；
+以 post-push `git rev-parse HEAD == git rev-parse origin/main` 和 app install manifest
+校验为准。本地清理已删除可再生前端
+`node_modules`、`dist`、`tsconfig.tsbuildinfo` 和 Memory Atlas `/private/tmp` 临时证据文件。
+清理目标从 `215760 KB` 降至 `0 KB`，`/System/Volumes/Data` 可用空间本轮观测增加
+`35660 KB`。保留 `/Applications/Memory Atlas.app`、`~/Downloads/Memory Atlas.app`、
+Application Support source/runtime，以及 Downloads roadmap/task pack。
+
+机器证据：
+
+- `机器治理/证据与日志/final_delivery/v1_2_final_delivery_cleanup_status.json`
+
+边界：
+
+- No raw mutation。
+- No credential change。
+- No open branch。
+- No pull request。
+- No destructive cleanup outside reproducible Memory Atlas build/tmp artifacts。
+
+剩余外部门：Cloudflare live deployment and Access challenge evidence 仍缺 operator/live 证据；
+`audit_memory_atlas_goal_completion.py --require-local-apps` 仍返回
+`LOCAL_PASS_EXTERNAL_AUTHORIZATION_REQUIRED`。
+
 ## v1.2 Final Review
 
 状态：`v1_2_final_review_passed_pending_github_main_sync_no_upload_yet`。

@@ -2,6 +2,14 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
+当前 final delivery cleanup 本地部分通过：GitHub `main`、本地 app 入口和 runtime manifest
+均需与当前 GitHub `main` HEAD 一致；以 post-push `git rev-parse HEAD == git rev-parse origin/main`
+和 app install manifest 校验为准。可再生 Memory Atlas 前端 build/cache
+和 `/private/tmp` 临时证据已清理。`audit_memory_atlas_acceptance.py --require-local-apps`
+本地通过。`audit_memory_atlas_goal_completion.py --require-local-apps` 仍停在
+`LOCAL_PASS_EXTERNAL_AUTHORIZATION_REQUIRED`，因为 Cloudflare live deployment and Access
+challenge 缺 operator/live 证据。
+
 当前阶段是 v1.2 Final Review。任务 ID 为 `MA-V12-FINAL-REVIEW`，验收 ID 为
 `ACC-MA-V12-FINAL-REVIEW`，validator 为 `validate:v1.2-final-review`。状态为
 `v1_2_final_review_passed_pending_github_main_sync_no_upload_yet`。

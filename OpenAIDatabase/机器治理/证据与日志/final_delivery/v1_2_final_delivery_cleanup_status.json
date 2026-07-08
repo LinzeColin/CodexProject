@@ -1,0 +1,64 @@
+{
+  "schema_version": "memory_atlas.final_delivery_cleanup.v1_2",
+  "task_id": "MA-V12-FINAL-DELIVERY-CLEANUP",
+  "acceptance_id": "ACC-MA-V12-FINAL-DELIVERY-CLEANUP",
+  "status": "local_delivery_cleanup_completed_pending_cloudflare_live_access_operator_evidence",
+  "generated_at": "2026-07-08T17:40:45Z",
+  "canonical_repo": "LinzeColin/CodexProject/OpenAIDatabase",
+  "main_commit": "current GitHub main HEAD; verify with git rev-parse HEAD after checkout",
+  "commit_identity_note": "This record intentionally does not hard-code its containing commit hash because amend/rebase changes that hash; post-push verification must compare HEAD and origin/main.",
+  "github_main_verified": true,
+  "github_main_verified_at": "2026-07-08T17:40:45Z",
+  "app_reinstall": {
+    "status": "PASS",
+    "applications_bundle": "/Applications/Memory Atlas.app",
+    "downloads_bundle": "/Users/linzezhang/Downloads/Memory Atlas.app",
+    "installed_git_commit": "must match current local git HEAD after install; verify launcher INSTALLED_GIT_COMMIT",
+    "runtime_build_manifest": "/Users/linzezhang/Library/Application Support/OpenAIDatabase/MemoryAtlas/runtime/memory_atlas_build.json",
+    "runtime_git_commit": "must match current local git HEAD after install; verify memory_atlas_build.json gitCommit"
+  },
+  "local_cleanup": {
+    "status": "PASS",
+    "scope": [
+      "OpenAIDatabase/apps/memory-atlas/node_modules",
+      "OpenAIDatabase/apps/memory-atlas/dist",
+      "OpenAIDatabase/apps/memory-atlas/tsconfig.tsbuildinfo",
+      "/private/tmp/memory_atlas_*",
+      "/private/tmp/memory-atlas-*"
+    ],
+    "protected_paths": [
+      "/Applications/Memory Atlas.app",
+      "/Users/linzezhang/Downloads/Memory Atlas.app",
+      "/Users/linzezhang/Library/Application Support/OpenAIDatabase/MemoryAtlas/source",
+      "/Users/linzezhang/Library/Application Support/OpenAIDatabase/MemoryAtlas/runtime",
+      "/Users/linzezhang/Downloads/v1.2_四线14Stage升级_Roadmap.md",
+      "/Users/linzezhang/Downloads/Memory_Atlas_v1.2_四线14Stage升级_TaskPack.zip"
+    ],
+    "target_kb_before": 215760,
+    "target_kb_remaining": 0,
+    "data_volume_available_kb_before": 39338856,
+    "data_volume_available_kb_after": 39374516,
+    "data_volume_available_delta_kb": 35660,
+    "notes": [
+      "Deleted only reproducible build outputs and Memory Atlas temporary evidence files.",
+      "Observed APFS available-space delta can be lower than target bytes because macOS cache accounting is asynchronous.",
+      "Application Support source/runtime and app bundles are intentionally retained for local launch readiness."
+    ]
+  },
+  "validation": {
+    "git_head_equals_origin_main": true,
+    "local_app_acceptance": "PASS",
+    "goal_completion_local": "LOCAL_PASS_EXTERNAL_AUTHORIZATION_REQUIRED",
+    "browser_smoke": "PASS",
+    "port_4177_released": true
+  },
+  "remaining_external_gate": {
+    "status": "EXTERNAL_BLOCKED",
+    "name": "cloudflare_live_access_evidence",
+    "evidence": "missing live evidence; explicit Cloudflare deployment and Access verification are still required",
+    "completion_rule": "Do not mark the thread goal complete until COMPLETE_WITH_OPERATOR_EVIDENCE or live Cloudflare deployment and Access challenge are independently verified."
+  },
+  "raw_mutation": false,
+  "secret_or_credential_change": false,
+  "open_branch_or_pr": false
+}
