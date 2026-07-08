@@ -483,6 +483,17 @@ def build_validation_summary(rows: list[dict]) -> list[dict]:
             metric,
             [row for row in rows if row.get("candidate_metric") == metric],
         ))
+    focus_status_keys = sorted({
+        str(row.get("source_ocr_excerpt_focus_status", ""))
+        for row in rows
+        if row.get("source_ocr_excerpt_focus_status")
+    })
+    for focus_status in focus_status_keys:
+        summary_rows.append(summary_row(
+            "source_ocr_excerpt_focus_status",
+            focus_status,
+            [row for row in rows if row.get("source_ocr_excerpt_focus_status") == focus_status],
+        ))
     return summary_rows
 
 
