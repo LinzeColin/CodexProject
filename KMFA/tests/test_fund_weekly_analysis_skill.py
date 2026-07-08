@@ -569,6 +569,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "ocr_fact_candidate_owner_authorization_update_preview.csv",
                 "ocr_fact_ledger_staging_preview.csv",
                 "ocr_fact_controlled_ledger_row_preview.csv",
+                "ocr_fact_controlled_ledger_apply_gate.csv",
                 "ocr_fact_review_apply_gate.csv",
                 "ocr_fact_review_authorization_template.json",
                 "ocr_fact_review_authorization_preview.csv",
@@ -1403,6 +1404,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 controlled_ledger_rows = list(csv.DictReader(f))
             self.assertEqual(controlled_ledger_rows, [])
 
+            with (run_dir / "ocr_fact_controlled_ledger_apply_gate.csv").open(encoding="utf-8-sig", newline="") as f:
+                controlled_apply_gate_rows = list(csv.DictReader(f))
+            self.assertEqual(controlled_apply_gate_rows, [])
+
             with (run_dir / "fund_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
                 fund_rows = list(csv.DictReader(f))
             self.assertEqual(fund_rows, [])
@@ -1432,6 +1437,11 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_controlled_ledger_row_preview_count"], 0)
             self.assertEqual(cross_review["ocr_fact_controlled_ledger_row_preview_ready_count"], 0)
             self.assertEqual(cross_review["ocr_fact_controlled_ledger_row_preview_blocking_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_ready_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_blocking_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_planned_apply_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_write_allowed_count"], 0)
             self.assertEqual(cross_review["ocr_fact_review_apply_gate_count"], 3)
             self.assertEqual(cross_review["ocr_fact_review_authorization_present_count"], 0)
             self.assertEqual(cross_review["ocr_fact_review_authorization_template_count"], 3)
@@ -2039,6 +2049,29 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in controlled_ledger_rows))
             self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in controlled_ledger_rows))
 
+            with (run_dir / "ocr_fact_controlled_ledger_apply_gate.csv").open(encoding="utf-8-sig", newline="") as f:
+                controlled_apply_gate_rows = list(csv.DictReader(f))
+            controlled_apply_by_id = {row["fact_candidate_id"]: row for row in controlled_apply_gate_rows}
+            self.assertEqual(len(controlled_apply_gate_rows), 2)
+            self.assertEqual(
+                controlled_apply_by_id[f"OCRFACT-{run_id}-00001"]["apply_gate_status"],
+                "ready_for_controlled_ledger_apply_no_write",
+            )
+            self.assertEqual(controlled_apply_by_id[f"OCRFACT-{run_id}-00001"]["planned_apply_count"], "1")
+            self.assertEqual(controlled_apply_by_id[f"OCRFACT-{run_id}-00001"]["company"], "武汉开明")
+            self.assertEqual(controlled_apply_by_id[f"OCRFACT-{run_id}-00001"]["bank"], "招商银行")
+            self.assertEqual(
+                controlled_apply_by_id[f"OCRFACT-{run_id}-00002"]["apply_gate_status"],
+                "blocked_missing_required_ledger_fields",
+            )
+            self.assertEqual(controlled_apply_by_id[f"OCRFACT-{run_id}-00002"]["planned_apply_count"], "0")
+            self.assertIn("bank", controlled_apply_by_id[f"OCRFACT-{run_id}-00002"]["gate_reason"])
+            self.assertTrue(all(row["source_mutation_allowed"] == "false" for row in controlled_apply_gate_rows))
+            self.assertTrue(all(row["fund_ledger_write_allowed"] == "false" for row in controlled_apply_gate_rows))
+            self.assertTrue(all(row["formal_fund_ledger_write_allowed"] == "false" for row in controlled_apply_gate_rows))
+            self.assertTrue(all(row["financial_fact_promoted"] == "false" for row in controlled_apply_gate_rows))
+            self.assertTrue(all(row["management_conclusion_allowed"] == "false" for row in controlled_apply_gate_rows))
+
             with (run_dir / "fund_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
                 fund_rows = list(csv.DictReader(f))
             self.assertEqual(fund_rows, [])
@@ -2070,6 +2103,11 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_controlled_ledger_row_preview_count"], 2)
             self.assertEqual(cross_review["ocr_fact_controlled_ledger_row_preview_ready_count"], 2)
             self.assertEqual(cross_review["ocr_fact_controlled_ledger_row_preview_blocking_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_count"], 2)
+            self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_ready_count"], 1)
+            self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_blocking_count"], 1)
+            self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_planned_apply_count"], 1)
+            self.assertEqual(cross_review["ocr_fact_controlled_ledger_apply_gate_write_allowed_count"], 0)
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertFalse(cross_review["management_conclusion_allowed"])
 
