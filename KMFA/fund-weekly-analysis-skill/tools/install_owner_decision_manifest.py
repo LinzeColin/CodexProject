@@ -32,6 +32,10 @@ def default_draft_path(repo_root: Path, run_id: str) -> Path:
     return default_run_dir(repo_root, run_id) / "ocr_fact_owner_decision_correction_draft.json"
 
 
+def candidate_template_path(repo_root: Path, run_id: str) -> Path:
+    return default_run_dir(repo_root, run_id) / "ocr_fact_candidate_owner_decision_template.json"
+
+
 def default_output_relative_path(run_id: str) -> str:
     return str(PRIVATE_DECISION_PREFIX / f"{run_id}.json")
 
@@ -53,6 +57,18 @@ def load_draft(path: Path) -> dict:
     if not isinstance(payload, dict):
         raise ValueError("draft_invalid_schema")
     return payload
+
+
+def resolve_default_draft_path(repo_root: Path, run_id: str) -> Path:
+    correction_path = default_draft_path(repo_root, run_id)
+    template_path = candidate_template_path(repo_root, run_id)
+    try:
+        correction_draft = load_draft(correction_path)
+    except ValueError:
+        return template_path if template_path.exists() else correction_path
+    if not correction_draft.get("owner_decisions") and template_path.exists():
+        return template_path
+    return correction_path
 
 
 def required_fields_from(decision: dict) -> list[str]:
@@ -102,7 +118,7 @@ def validate_draft(draft: dict, run_id: str) -> tuple[dict, list[dict]]:
         if owner_decision != "approve_for_review_authorization":
             not_approved.append(fact_candidate_id)
         required_owner_fields = required_fields_from(decision)
-        if not required_owner_fields:
+        if not required_owner_fields and draft.get("draft_status") == "owner_decision_correction_manifest_draft":
             raise ValueError(f"draft_invalid_schema:required_owner_fields:{fact_candidate_id}")
         for field in required_owner_fields:
             if not str(decision.get(field, "")).strip() and field not in missing_values:
@@ -148,7 +164,11 @@ def main() -> int:
     args = parser.parse_args()
 
     repo_root = Path(args.repo_root).expanduser().resolve()
-    draft_path = Path(args.draft_path).expanduser().resolve() if args.draft_path else default_draft_path(repo_root, args.run_id)
+    draft_path = (
+        Path(args.draft_path).expanduser().resolve()
+        if args.draft_path
+        else resolve_default_draft_path(repo_root, args.run_id)
+    )
     try:
         draft = load_draft(draft_path)
         validation, decisions = validate_draft(draft, args.run_id)
