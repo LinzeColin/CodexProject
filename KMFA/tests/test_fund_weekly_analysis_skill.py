@@ -364,6 +364,49 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(payload["status"], "CODEX_AUTOMATION_MISMATCH")
             self.assertIn("timezone", {row["field"] for row in payload["mismatches"]})
 
+    def test_codex_app_automation_check_rejects_stale_daily_contract_even_when_live_matches(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_root = Path(temp_dir)
+            repo_root = temp_root / "repo"
+            contract_dir = repo_root / "KMFA/fund-weekly-analysis-skill/automation"
+            contract_dir.mkdir(parents=True)
+            stale_contract = (
+                (SKILL_ROOT / "automation" / "codex_app_automation.contract.toml")
+                .read_text(encoding="utf-8")
+                .replace(
+                    'rrule = "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0"',
+                    'rrule = "FREQ=DAILY;BYHOUR=11;BYMINUTE=30"',
+                )
+                .replace(
+                    'prompt_file = "automation/weekly_mon_sat_1100_sydney.prompt.md"',
+                    'prompt_file = "automation/daily_1130_sydney.prompt.md"',
+                )
+            )
+            (contract_dir / "codex_app_automation.contract.toml").write_text(stale_contract, encoding="utf-8")
+            automation_dir = temp_root / "automations" / "kmfa"
+            automation_dir.mkdir(parents=True)
+            (automation_dir / "automation.toml").write_text(stale_contract, encoding="utf-8")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "check_codex_app_automation.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--automation-root",
+                    str(temp_root / "automations"),
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 3)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["status"], "CODEX_AUTOMATION_CONTRACT_INVALID")
+            self.assertIn("rrule", {row["field"] for row in payload["invalid_contract_fields"]})
+            self.assertIn("prompt_file", {row["field"] for row in payload["invalid_contract_fields"]})
+
     def test_latest_template_has_homepage_cards_two_line_charts_and_hidden_audit_sheets(self) -> None:
         self.assertTrue(TEMPLATE.exists(), "latest editable native Excel template must be present")
         ns_sheet = {"x": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
