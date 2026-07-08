@@ -4,7 +4,7 @@ Deliverables:
 
 1. Optimized Excel template: `templates/资金与税费管理母版_真实数据预览_v2.xlsx`
 2. Skill instructions: `SKILL.md`
-3. Automation prompt: `automation/daily_1130_sydney.prompt.md`
+3. Automation prompt: `automation/weekly_mon_sat_1100_sydney.prompt.md`
 4. macOS launchd template: `automation/launchd/com.kmfa.fund-weekly-analysis.plist`
 5. Deterministic runner, source readiness gate, source materializer, and validators under `tools/`
 6. Governance references under `references/`
@@ -28,3 +28,5 @@ The installer does not commit raw financial evidence. It tracks only skill/gover
 Runtime package rule: `ocr_fact_candidate_owner_decision_progress_summary.csv` is emitted from owner decision preview status for all OCR fact candidates and per metric. It is progress evidence only; it must keep `fund_ledger_write_allowed=false`, `financial_fact_promoted=false`, and `management_conclusion_allowed=false`.
 
 Owner decision intake rule: `tools/install_owner_decision_manifest.py --draft-csv-path <reviewed.csv>` may validate spreadsheet-edited owner decisions, but it remains dry-run by default and never promotes facts, writes ledgers, mutates source files, or releases management conclusions.
+
+Owner review export rule: `tools/export_owner_decision_review_csv.py` may export a small `ocr_fact_candidate_owner_decision_review_batch.csv` from the private owner worklist for spreadsheet review. It only prepares a pending-review CSV and must keep every write/promotion/conclusion flag false.
