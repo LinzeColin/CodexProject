@@ -26,6 +26,7 @@ FORMULA_WHAT_IF_BUILDER = ROOT / "scripts" / "build_memory_atlas_formula_what_if
 AGENT_COLLABORATION_BUILDER = ROOT / "scripts" / "build_memory_atlas_agent_collaboration.py"
 AGENT_AUTHORIZATION_BUILDER = ROOT / "scripts" / "build_memory_atlas_agent_authorization.py"
 STAGE_FLIGHT_BUILDER = ROOT / "scripts" / "build_memory_atlas_stage_flight.py"
+LATENT_SIGNAL_BUILDER = ROOT / "scripts" / "build_memory_atlas_latent_signals.py"
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -442,6 +443,37 @@ def stage_flight_analyze_contract() -> dict[str, object]:
     }
 
 
+def latent_analyze_contract() -> dict[str, object]:
+    return {
+        "status": "PASS",
+        "command": "analyze",
+        "stage": "latent",
+        "dry_run": True,
+        "writes_files": False,
+        "builder": "scripts/build_memory_atlas_latent_signals.py",
+        "latent_signal_config": "机器治理/行为智能模型/latent_signals.v1_2_s09_p1.json",
+        "input": [
+            "data/derived/behavior_intelligence/events.json",
+            "data/derived/behavior_intelligence/clusters.json",
+            "data/derived/behavior_intelligence/low_value_loops.json",
+            "data/derived/behavior_intelligence/opportunities.json",
+        ],
+        "output": "data/derived/behavior_intelligence/latent_signals.json",
+        "raw_mutation": False,
+        "task_id": "MA-V12-S09P1",
+        "acceptance_id": "ACC-MA-V12-S09P1",
+        "phase_boundary": {
+            "does_not_output_psychological_diagnosis": True,
+            "does_not_output_personality_label": True,
+            "does_not_create_self_iteration_suggestions": True,
+            "proposal_expiry_deferred_to": "S09 P2",
+            "does_not_create_decision_debt_ledger": True,
+            "decision_debt_ledger_deferred_to": "S09 P3",
+            "next_phase": "S09 P2",
+        },
+    }
+
+
 def run_analyze(args: argparse.Namespace) -> int:
     if args.stage not in {
         "facets",
@@ -454,12 +486,13 @@ def run_analyze(args: argparse.Namespace) -> int:
         "agent-collaboration",
         "agent-authorization",
         "stage-flight",
+        "latent",
     }:
         print(json.dumps({
             "status": "NOT_IMPLEMENTED",
             "command": "analyze",
             "stage": args.stage,
-            "reason": "Unknown analyze stage. Supported stages: facets, clusters, low-value-loops, opportunities, economic-proxy, information-roi, formula-what-if, agent-collaboration, agent-authorization, stage-flight.",
+            "reason": "Unknown analyze stage. Supported stages: facets, clusters, low-value-loops, opportunities, economic-proxy, information-roi, formula-what-if, agent-collaboration, agent-authorization, stage-flight, latent.",
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 2
 
@@ -512,6 +545,10 @@ def run_analyze(args: argparse.Namespace) -> int:
             command.append("--dry-run")
     elif args.stage == "stage-flight":
         command = [sys.executable, str(STAGE_FLIGHT_BUILDER), "--database-dir", str(args.database_dir)]
+        if args.dry_run:
+            command.append("--dry-run")
+    elif args.stage == "latent":
+        command = [sys.executable, str(LATENT_SIGNAL_BUILDER), "--database-dir", str(args.database_dir)]
         if args.dry_run:
             command.append("--dry-run")
     result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
@@ -1213,7 +1250,131 @@ def run_stage_flight_audit(args: argparse.Namespace) -> int:
     return 0 if status == "PASS" else 2
 
 
+def run_latent_safety_audit(args: argparse.Namespace) -> int:
+    config_path = args.database_dir / "机器治理/行为智能模型/latent_signals.v1_2_s09_p1.json"
+    output_path = args.database_dir / "data/derived/behavior_intelligence/latent_signals.json"
+    bad_items: list[str] = []
+    config: dict[str, object] = {}
+    output: dict[str, object] = {}
+    required_fields = {
+        "claim_zh",
+        "supporting_evidence_refs",
+        "contradicting_evidence_refs",
+        "alternative_explanation_zh",
+        "confidence",
+        "evidence_strength_badge",
+        "next_validation_zh",
+    }
+    blocked_terms = {"心理诊断", "人格诊断", "人格标签", "抑郁", "焦虑症"}
+
+    if not config_path.exists():
+        bad_items.append("latent_config:missing")
+    else:
+        config = json.loads(config_path.read_text(encoding="utf-8"))
+        if config.get("task_id") != "MA-V12-S09P1" or config.get("acceptance_id") != "ACC-MA-V12-S09P1":
+            bad_items.append("latent_config:identity_mismatch")
+        configured_fields = set(config.get("required_signal_fields") or [])
+        for field in sorted(required_fields - configured_fields):
+            bad_items.append(f"latent_config:missing_required_field:{field}")
+        badges = {item.get("badge") for item in config.get("evidence_strength_badges") or [] if isinstance(item, dict)}
+        for badge in {"A", "B", "C", "D"} - badges:
+            bad_items.append(f"latent_config:missing_badge:{badge}")
+        boundary = config.get("scope_boundary") if isinstance(config.get("scope_boundary"), dict) else {}
+        if boundary.get("raw_mutation") is not False:
+            bad_items.append("latent_config:raw_mutation_not_false")
+        if boundary.get("psychological_diagnosis") is not False:
+            bad_items.append("latent_config:psychological_boundary_not_false")
+        if boundary.get("personality_label") is not False:
+            bad_items.append("latent_config:personality_boundary_not_false")
+        if boundary.get("self_iteration_suggestions") != "deferred_to_s09_p2":
+            bad_items.append("latent_config:self_iteration_not_deferred")
+        if boundary.get("decision_debt_ledger") != "deferred_to_s09_p3":
+            bad_items.append("latent_config:decision_debt_not_deferred")
+
+    psychological_diagnosis_output = False
+    personality_label_output = False
+    has_contradicting_evidence = False
+    if not output_path.exists():
+        bad_items.append("latent_output:missing")
+    else:
+        output = json.loads(output_path.read_text(encoding="utf-8"))
+        if output.get("task_id") != "MA-V12-S09P1" or output.get("acceptance_id") != "ACC-MA-V12-S09P1":
+            bad_items.append("latent_output:identity_mismatch")
+        if output.get("status") != "phase_s09_p1_latent_signals_completed_pending_s09_p2":
+            bad_items.append("latent_output:status_mismatch")
+        signals = output.get("latent_signals") if isinstance(output.get("latent_signals"), list) else []
+        if len(signals) < 4:
+            bad_items.append("latent_output:signal_count_too_low")
+        confidence_policy = config.get("confidence_policy") if isinstance(config.get("confidence_policy"), dict) else {}
+        max_confidence = float(confidence_policy.get("max_confidence") or 0.85)
+        high_confidence_badges = set(confidence_policy.get("high_confidence_requires_badge") or ["A", "B"])
+        for signal in signals:
+            if not isinstance(signal, dict):
+                bad_items.append("latent_output:invalid_signal_item")
+                continue
+            signal_id = signal.get("signal_id")
+            for field in sorted(required_fields):
+                if signal.get(field) in (None, "", []):
+                    bad_items.append(f"latent_output:{signal_id}:missing_{field}")
+            if signal.get("evidence_strength_badge") not in {"A", "B", "C", "D"}:
+                bad_items.append(f"latent_output:{signal_id}:invalid_badge")
+            confidence = float(signal.get("confidence") or 0)
+            if confidence < 0 or confidence > max_confidence:
+                bad_items.append(f"latent_output:{signal_id}:confidence_out_of_range")
+            if confidence >= 0.75 and signal.get("evidence_strength_badge") not in high_confidence_badges:
+                bad_items.append(f"latent_output:{signal_id}:high_confidence_without_strong_evidence")
+            if signal.get("supporting_evidence_refs") and signal.get("contradicting_evidence_refs"):
+                has_contradicting_evidence = True
+            else:
+                bad_items.append(f"latent_output:{signal_id}:missing_two_sided_evidence")
+            text = " ".join(str(signal.get(field) or "") for field in ["claim_zh", "claim_type", "alternative_explanation_zh", "next_validation_zh"])
+            if any(term in text for term in blocked_terms):
+                bad_items.append(f"latent_output:{signal_id}:blocked_term")
+            if signal.get("not_psychological_diagnosis") is not True:
+                bad_items.append(f"latent_output:{signal_id}:psychological_boundary_missing")
+                psychological_diagnosis_output = True
+            if signal.get("not_personality_label") is not True:
+                bad_items.append(f"latent_output:{signal_id}:personality_boundary_missing")
+                personality_label_output = True
+            if signal.get("falsifiable") is not True:
+                bad_items.append(f"latent_output:{signal_id}:not_falsifiable")
+        boundary = output.get("phase_boundary") if isinstance(output.get("phase_boundary"), dict) else {}
+        if boundary.get("does_not_output_psychological_diagnosis") is not True:
+            bad_items.append("latent_output:psychological_boundary_missing")
+            psychological_diagnosis_output = True
+        if boundary.get("does_not_output_personality_label") is not True:
+            bad_items.append("latent_output:personality_boundary_missing")
+            personality_label_output = True
+        if boundary.get("does_not_create_self_iteration_suggestions") is not True:
+            bad_items.append("latent_output:self_iteration_not_deferred")
+        if boundary.get("does_not_create_decision_debt_ledger") is not True:
+            bad_items.append("latent_output:decision_debt_not_deferred")
+        if boundary.get("next_phase") != "S09 P2":
+            bad_items.append("latent_output:next_phase_not_s09p2")
+
+    status = "PASS" if not bad_items else "FAIL"
+    result = {
+        "status": status,
+        "command": "audit",
+        "check": "latent-safety",
+        "task_id": config.get("task_id") or output.get("task_id"),
+        "acceptance_id": config.get("acceptance_id") or output.get("acceptance_id"),
+        "latent_signal_config": "机器治理/行为智能模型/latent_signals.v1_2_s09_p1.json",
+        "latent_signal_output": "data/derived/behavior_intelligence/latent_signals.json" if output_path.exists() else "",
+        "signal_count": len(output.get("latent_signals") or []) if isinstance(output.get("latent_signals"), list) else 0,
+        "psychological_diagnosis_output": psychological_diagnosis_output,
+        "personality_label_output": personality_label_output,
+        "has_contradicting_evidence": has_contradicting_evidence,
+        "raw_mutation": False,
+        "bad_items": bad_items,
+    }
+    print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0 if status == "PASS" else 2
+
+
 def run_audit(args: argparse.Namespace) -> int:
+    if args.check == "latent-safety":
+        return run_latent_safety_audit(args)
     if args.check == "stage-flight":
         return run_stage_flight_audit(args)
     if args.check == "agent-authorization":
@@ -1231,7 +1392,7 @@ def run_audit(args: argparse.Namespace) -> int:
             "status": "NOT_IMPLEMENTED",
             "command": "audit",
             "check": args.check,
-            "reason": "Unknown audit check. Supported checks: insight-evidence, formulas, visual-roi, formula-what-if, agent-collaboration, agent-authorization, stage-flight.",
+            "reason": "Unknown audit check. Supported checks: insight-evidence, formulas, visual-roi, formula-what-if, agent-collaboration, agent-authorization, stage-flight, latent-safety.",
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 2
 

@@ -3,7 +3,7 @@
 用于放置 facets、semantic clusters、latent signals、collaboration quality、自我迭代和
 低价值循环识别的模型配置。
 
-当前 S08 Review 已完成。facet/canonical events 的数据契约已定义在
+当前 S09 P1 已完成。facet/canonical events 的数据契约已定义在
 `机器治理/数据契约/facet_event_schema.v1_2_s05_p1.json`，中文解释位于
 `人类可读/12_Facet字段与事件语义说明.md`，facet extractor 已实现为
 `scripts/extract_memory_atlas_facets.py`，并为 events 输出补齐
@@ -81,3 +81,10 @@ S08 P3，当前已完成。
 Codex/Agent 协作质量、授权边界和 stage flight recorder。S08 Review 确认系统能解释
 ChatGPT/Codex/其他 agent 的协作质量与边界，且不创建多 agent 系统、不创建复杂 Delegation
 Contract UI、不执行 proposal apply、不修改 raw、不上传 GitHub main。下一步是 S09 P1。
+
+当前 S09 P1 已完成：`机器治理/行为智能模型/latent_signals.v1_2_s09_p1.json`
+定义潜性信号字段和 Evidence Strength Badge，`scripts/build_memory_atlas_latent_signals.py`
+生成 `data/derived/behavior_intelligence/latent_signals.json`。每条 signal 都有 claim、
+supporting evidence、contradicting evidence、alternative explanation、confidence 和
+next validation。S09 P1 不输出心理诊断或人格标签，不创建 self-iteration suggestions，
+不创建 decision debt ledger。下一步是 S09 P2。

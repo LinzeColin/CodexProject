@@ -1,0 +1,1222 @@
+{
+  "acceptance_id": "ACC-MA-V12-S09P1",
+  "config_path": "机器治理/行为智能模型/latent_signals.v1_2_s09_p1.json",
+  "dry_run": false,
+  "evidence_strength_badge_counts": {
+    "B": 5
+  },
+  "generated_at": "2026-07-08T07:58:50Z",
+  "input_paths": [
+    "data/derived/behavior_intelligence/events.json",
+    "data/derived/behavior_intelligence/clusters.json",
+    "data/derived/behavior_intelligence/low_value_loops.json",
+    "data/derived/behavior_intelligence/opportunities.json"
+  ],
+  "input_task_ids": {
+    "clusters": "MA-V12-S06P1",
+    "events": "MA-V12-S05P3",
+    "low_value_loops": "MA-V12-S06P2",
+    "opportunities": "MA-V12-S06P3"
+  },
+  "latent_signals": [
+    {
+      "alternative_explanation_zh": "可复用资产的价值可能来自当前升级密度，后续频率下降时维护收益会变低。",
+      "claim_type": "reusable_asset_candidate",
+      "claim_zh": "可能存在把「AI 记忆与 agent 工作流、经营与管理决策」固化为可恢复资产的复利空间。",
+      "confidence": 0.63,
+      "confidence_label": "medium",
+      "contradicting_evidence": {
+        "refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+            "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+            "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+            "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+            "ref_id": "chatgpt_6861827f6188afa0_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+            "ref_id": "chatgpt_b6d16505b9e84d04_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          }
+        ],
+        "summary_zh": "over_optimization 或 defer 信号说明过早沉淀可能增加维护负担。"
+      },
+      "contradicting_evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+          "ref_id": "chatgpt_b6d16505b9e84d04_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        }
+      ],
+      "evidence_strength_badge": "B",
+      "falsifiable": true,
+      "next_validation_zh": "只沉淀能被另一 agent 从 GitHub 恢复并运行的最小资产；无法复跑的说明先不扩写。",
+      "not_personality_label": true,
+      "not_psychological_diagnosis": true,
+      "signal_id": "latent_asset_compounding_b40981a7787e",
+      "supporting_evidence": {
+        "refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+            "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+            "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+            "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+            "ref_id": "chatgpt_6861827f6188afa0_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+            "ref_id": "chatgpt_b6d16505b9e84d04_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+            "ref_id": "chatgpt_b6d16505b9e84d04_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "6a231495-9044-83ec-8b6d-9f89e7f483c2",
+            "ref_id": "chatgpt_5feb6d1472e79a92_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "6a231495-9044-83ec-8b6d-9f89e7f483c2",
+            "ref_id": "chatgpt_5feb6d1472e79a92_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          }
+        ],
+        "summary_zh": "compounding 候选机会显示多次复用的知识、流程或运行证据可以沉淀为资产。"
+      },
+      "supporting_evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+          "ref_id": "chatgpt_b6d16505b9e84d04_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+          "ref_id": "chatgpt_b6d16505b9e84d04_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6a231495-9044-83ec-8b6d-9f89e7f483c2",
+          "ref_id": "chatgpt_5feb6d1472e79a92_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "6a231495-9044-83ec-8b6d-9f89e7f483c2",
+          "ref_id": "chatgpt_5feb6d1472e79a92_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        }
+      ]
+    },
+    {
+      "alternative_explanation_zh": "这些重复也可能只是阶段性升级包带来的临时治理需求，而不是长期自动化对象。",
+      "claim_type": "workflow_reuse_candidate",
+      "claim_zh": "可能存在把「AI 记忆与 agent 工作流、项目：Memory Atlas」收束为 dry-run 脚本、validator 或固定运行门禁的复用空间。",
+      "confidence": 0.63,
+      "confidence_label": "medium",
+      "contradicting_evidence": {
+        "refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+            "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+            "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+            "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+            "ref_id": "chatgpt_056903f3a6952870_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+            "ref_id": "chatgpt_b48abca69a56afdd_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          }
+        ],
+        "summary_zh": "defer 或讨论未落地信号说明这些候选不应直接扩大为执行清单。"
+      },
+      "contradicting_evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        }
+      ],
+      "evidence_strength_badge": "B",
+      "falsifiable": true,
+      "next_validation_zh": "下一轮只选一个最高分候选，验证是否能用一个 dry-run 命令减少重复操作；若不能，就降级为记录项。",
+      "not_personality_label": true,
+      "not_psychological_diagnosis": true,
+      "signal_id": "latent_automation_reuse_ef89cc773c20",
+      "supporting_evidence": {
+        "refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+            "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+            "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+            "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+            "ref_id": "chatgpt_6861827f6188afa0_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+            "ref_id": "chatgpt_b6d16505b9e84d04_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+            "ref_id": "chatgpt_b6d16505b9e84d04_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "6a231495-9044-83ec-8b6d-9f89e7f483c2",
+            "ref_id": "chatgpt_5feb6d1472e79a92_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "6a231495-9044-83ec-8b6d-9f89e7f483c2",
+            "ref_id": "chatgpt_5feb6d1472e79a92_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          }
+        ],
+        "summary_zh": "automation 类型候选机会重复出现，并且已有最小下一步可落到脚本或 validator。"
+      },
+      "supporting_evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+          "ref_id": "chatgpt_b6d16505b9e84d04_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+          "ref_id": "chatgpt_b6d16505b9e84d04_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6a231495-9044-83ec-8b6d-9f89e7f483c2",
+          "ref_id": "chatgpt_5feb6d1472e79a92_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "6a231495-9044-83ec-8b6d-9f89e7f483c2",
+          "ref_id": "chatgpt_5feb6d1472e79a92_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        }
+      ]
+    },
+    {
+      "alternative_explanation_zh": "讨论可能是在补齐需求边界，短期没有落地产物不一定代表价值低。",
+      "claim_type": "artifact_closure_candidate",
+      "claim_zh": "可能存在把「经营与管理决策、自动化与流程治理、项目：Finance」先压缩成单个交付件、验收命令或停止条件的收口空间。",
+      "confidence": 0.63,
+      "confidence_label": "medium",
+      "contradicting_evidence": {
+        "refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/codex/codex_session_manifest.jsonl",
+            "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+            "ref_id": "codex_4f84738ed29d3edf_manifest_0bda04ac8f8f",
+            "ref_type": "manifest",
+            "source_id": "codex"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+            "ref_id": "codex_4f84738ed29d3edf_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "codex"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/codex/codex_session_manifest.jsonl",
+            "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+            "ref_id": "codex_35f56ee038f59650_manifest_0bda04ac8f8f",
+            "ref_type": "manifest",
+            "source_id": "codex"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+            "ref_id": "codex_35f56ee038f59650_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "codex"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/codex/codex_session_manifest.jsonl",
+            "record_id": "019f158f-3123-74f2-ae5e-ea592be583cb",
+            "ref_id": "codex_258379a2d9b8b620_manifest_0bda04ac8f8f",
+            "ref_type": "manifest",
+            "source_id": "codex"
+          }
+        ],
+        "summary_zh": "productization、automation 或 template 机会说明部分讨论已经能被转成产物候选。"
+      },
+      "contradicting_evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/codex/codex_session_manifest.jsonl",
+          "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+          "ref_id": "codex_4f84738ed29d3edf_manifest_0bda04ac8f8f",
+          "ref_type": "manifest",
+          "source_id": "codex"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+          "ref_id": "codex_4f84738ed29d3edf_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "codex"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/codex/codex_session_manifest.jsonl",
+          "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+          "ref_id": "codex_35f56ee038f59650_manifest_0bda04ac8f8f",
+          "ref_type": "manifest",
+          "source_id": "codex"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+          "ref_id": "codex_35f56ee038f59650_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "codex"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/codex/codex_session_manifest.jsonl",
+          "record_id": "019f158f-3123-74f2-ae5e-ea592be583cb",
+          "ref_id": "codex_258379a2d9b8b620_manifest_0bda04ac8f8f",
+          "ref_type": "manifest",
+          "source_id": "codex"
+        }
+      ],
+      "evidence_strength_badge": "B",
+      "falsifiable": true,
+      "next_validation_zh": "下次出现同类主题时，先要求一个可验收文件或命令；若无法定义，就归档为暂不推进候选。",
+      "not_personality_label": true,
+      "not_psychological_diagnosis": true,
+      "signal_id": "latent_discussion_artifact_e73037ee7630",
+      "supporting_evidence": {
+        "refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+            "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+            "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+            "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+            "ref_id": "chatgpt_056903f3a6952870_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+            "ref_id": "chatgpt_b48abca69a56afdd_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+            "ref_id": "chatgpt_b48abca69a56afdd_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+            "ref_id": "chatgpt_f5ed037fa8432ef8_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+            "ref_id": "chatgpt_f5ed037fa8432ef8_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          }
+        ],
+        "summary_zh": "discussion_without_landing 循环显示多次讨论但交付形态不稳定。"
+      },
+      "supporting_evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244761-ef38-8330-9c59-d8035e4e7bcc",
+          "ref_id": "chatgpt_3ea5c2473a751d9d_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69244842-0b6c-8333-959d-c0971f5245a9",
+          "ref_id": "chatgpt_056903f3a6952870_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69254d88-8530-8326-85b9-a3875d034887",
+          "ref_id": "chatgpt_b48abca69a56afdd_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+          "ref_id": "chatgpt_f5ed037fa8432ef8_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "692443c1-ae48-8327-ab8c-c2d217655e5b",
+          "ref_id": "chatgpt_f5ed037fa8432ef8_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        }
+      ]
+    },
+    {
+      "alternative_explanation_zh": "看似过度的细节处理可能是为了满足真实验收标准，不能只按迭代次数判断。",
+      "claim_type": "quality_ceiling_candidate",
+      "claim_zh": "可能存在「AI 记忆与 agent 工作流、经营与管理决策、项目：Memory Atlas」需要先设质量上限，而不是继续增加细节优化的信号。",
+      "confidence": 0.63,
+      "confidence_label": "medium",
+      "contradicting_evidence": {
+        "refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/codex/codex_session_manifest.jsonl",
+            "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+            "ref_id": "codex_4f84738ed29d3edf_manifest_0bda04ac8f8f",
+            "ref_type": "manifest",
+            "source_id": "codex"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+            "ref_id": "codex_4f84738ed29d3edf_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "codex"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/codex/codex_session_manifest.jsonl",
+            "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+            "ref_id": "codex_35f56ee038f59650_manifest_0bda04ac8f8f",
+            "ref_type": "manifest",
+            "source_id": "codex"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+            "ref_id": "codex_35f56ee038f59650_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "codex"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/codex/codex_session_manifest.jsonl",
+            "record_id": "019f158f-3123-74f2-ae5e-ea592be583cb",
+            "ref_id": "codex_258379a2d9b8b620_manifest_0bda04ac8f8f",
+            "ref_type": "manifest",
+            "source_id": "codex"
+          }
+        ],
+        "summary_zh": "productization、template 或 automation 机会说明部分细节优化可能会转化成稳定复用价值。"
+      },
+      "contradicting_evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/codex/codex_session_manifest.jsonl",
+          "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+          "ref_id": "codex_4f84738ed29d3edf_manifest_0bda04ac8f8f",
+          "ref_type": "manifest",
+          "source_id": "codex"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "019f131d-2a47-73a1-96b7-6f1b80719198",
+          "ref_id": "codex_4f84738ed29d3edf_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "codex"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/codex/codex_session_manifest.jsonl",
+          "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+          "ref_id": "codex_35f56ee038f59650_manifest_0bda04ac8f8f",
+          "ref_type": "manifest",
+          "source_id": "codex"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "019f1350-0cfa-7420-93a7-94f0b5b7dced",
+          "ref_id": "codex_35f56ee038f59650_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "codex"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/codex/codex_session_manifest.jsonl",
+          "record_id": "019f158f-3123-74f2-ae5e-ea592be583cb",
+          "ref_id": "codex_258379a2d9b8b620_manifest_0bda04ac8f8f",
+          "ref_type": "manifest",
+          "source_id": "codex"
+        }
+      ],
+      "evidence_strength_badge": "B",
+      "falsifiable": true,
+      "next_validation_zh": "下一次同类优化前写明质量上限和停止条件；达到上限后只修阻断验收的问题。",
+      "not_personality_label": true,
+      "not_psychological_diagnosis": true,
+      "signal_id": "latent_quality_ceiling_38f9e3b406ca",
+      "supporting_evidence": {
+        "refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+            "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+            "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+            "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+            "ref_id": "chatgpt_6861827f6188afa0_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+            "ref_id": "chatgpt_b6d16505b9e84d04_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+            "ref_id": "chatgpt_b6d16505b9e84d04_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "6a231495-9044-83ec-8b6d-9f89e7f483c2",
+            "ref_id": "chatgpt_5feb6d1472e79a92_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "6a231495-9044-83ec-8b6d-9f89e7f483c2",
+            "ref_id": "chatgpt_5feb6d1472e79a92_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          }
+        ],
+        "summary_zh": "over_optimization 循环提示局部质量细节可能占用过多迭代预算。"
+      },
+      "supporting_evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+          "ref_id": "chatgpt_b6d16505b9e84d04_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+          "ref_id": "chatgpt_b6d16505b9e84d04_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6a231495-9044-83ec-8b6d-9f89e7f483c2",
+          "ref_id": "chatgpt_5feb6d1472e79a92_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "6a231495-9044-83ec-8b6d-9f89e7f483c2",
+          "ref_id": "chatgpt_5feb6d1472e79a92_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        }
+      ]
+    },
+    {
+      "alternative_explanation_zh": "跨来源扩张可能是正常集成工作，而不是边界失控；需要用验收项验证。",
+      "claim_type": "scope_boundary_candidate",
+      "claim_zh": "可能存在「AI 记忆与 agent 工作流、自动化与流程治理」在多来源、多任务之间扩张时，需要更早锁定 run contract 的信号。",
+      "confidence": 0.63,
+      "confidence_label": "medium",
+      "contradicting_evidence": {
+        "refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+            "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+            "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+            "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+            "ref_id": "chatgpt_6861827f6188afa0_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+            "ref_id": "chatgpt_b6d16505b9e84d04_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          }
+        ],
+        "summary_zh": "automation、compounding 或 productization 机会也可能要求跨模块协同，不能简单视为范围问题。"
+      },
+      "contradicting_evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+          "ref_id": "chatgpt_b6d16505b9e84d04_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        }
+      ],
+      "evidence_strength_badge": "B",
+      "falsifiable": true,
+      "next_validation_zh": "下一次同类 run 开始前写出非目标列表；若新增需求不在非目标例外内，就进入下一 phase 而非本轮扩张。",
+      "not_personality_label": true,
+      "not_psychological_diagnosis": true,
+      "signal_id": "latent_scope_contract_faa8ed208720",
+      "supporting_evidence": {
+        "refs": [
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+            "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+            "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+            "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+            "ref_id": "chatgpt_6861827f6188afa0_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+            "ref_id": "chatgpt_b6d16505b9e84d04_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+            "ref_id": "chatgpt_b6d16505b9e84d04_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "processed_manifest",
+            "path": "data/processed/conversations/conversation_manifest.jsonl",
+            "record_id": "6a231495-9044-83ec-8b6d-9f89e7f483c2",
+            "ref_id": "chatgpt_5feb6d1472e79a92_manifest_1fb3c9323b8a",
+            "ref_type": "manifest",
+            "source_id": "chatgpt"
+          },
+          {
+            "evidence_level": "missing_reason",
+            "reason": "processed_manifest_without_public_raw_ref",
+            "record_id": "6a231495-9044-83ec-8b6d-9f89e7f483c2",
+            "ref_id": "chatgpt_5feb6d1472e79a92_missing_5dbc47fc3caa",
+            "ref_type": "missing_reason",
+            "source_id": "chatgpt"
+          }
+        ],
+        "summary_zh": "scope_creep 循环跨任务或来源出现，提示范围边界需要提前固定。"
+      },
+      "supporting_evidence_refs": [
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "696f5e27-6a30-8332-8f92-565fefeb5eed",
+          "ref_id": "chatgpt_b76f05967f0407e0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "69a4140e-eb70-832e-91c6-e0d24e6e85fb",
+          "ref_id": "chatgpt_6861827f6188afa0_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+          "ref_id": "chatgpt_b6d16505b9e84d04_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "6a16e195-0a8c-83ea-b847-7ceaaa262710",
+          "ref_id": "chatgpt_b6d16505b9e84d04_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "processed_manifest",
+          "path": "data/processed/conversations/conversation_manifest.jsonl",
+          "record_id": "6a231495-9044-83ec-8b6d-9f89e7f483c2",
+          "ref_id": "chatgpt_5feb6d1472e79a92_manifest_1fb3c9323b8a",
+          "ref_type": "manifest",
+          "source_id": "chatgpt"
+        },
+        {
+          "evidence_level": "missing_reason",
+          "reason": "processed_manifest_without_public_raw_ref",
+          "record_id": "6a231495-9044-83ec-8b6d-9f89e7f483c2",
+          "ref_id": "chatgpt_5feb6d1472e79a92_missing_5dbc47fc3caa",
+          "ref_type": "missing_reason",
+          "source_id": "chatgpt"
+        }
+      ]
+    }
+  ],
+  "output_path": "data/derived/behavior_intelligence/latent_signals.json",
+  "phase_boundary": {
+    "decision_debt_ledger_deferred_to": "S09 P3",
+    "does_not_create_decision_debt_ledger": true,
+    "does_not_create_self_iteration_suggestions": true,
+    "does_not_modify_raw": true,
+    "does_not_output_personality_label": true,
+    "does_not_output_psychological_diagnosis": true,
+    "does_not_upload_github_main": true,
+    "next_phase": "S09 P2",
+    "proposal_expiry_deferred_to": "S09 P2"
+  },
+  "safety_audit": {
+    "bad_items": [],
+    "high_confidence_without_evidence_blocked": true,
+    "personality_label_output_blocked": true,
+    "psychological_diagnosis_output_blocked": true,
+    "two_sided_evidence_required": true
+  },
+  "schema_version": "memory_atlas_latent_signals.v1_2_s09_p1",
+  "signal_count": 5,
+  "status": "phase_s09_p1_latent_signals_completed_pending_s09_p2",
+  "task_id": "MA-V12-S09P1",
+  "writes_files": true
+}
