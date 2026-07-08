@@ -7,7 +7,7 @@ status = "ACTIVE"
 rrule = "FREQ=WEEKLY;BYHOUR=11;BYMINUTE=0;BYDAY=MO,SA"
 timezone = "Australia/Sydney"
 execution_environment = "local"
-cwds = ["/Users/linzezhang/Documents/Codex/2026-07-04/392b1a986ba680338068ddc1c2a0fd0e-https-app-notion-com-p", "/Users/linzezhang/CodexProject"]
+cwds = ["/Users/linzezhang/Documents/Codex/workspaces/dws-kmfa-automation/dws-archive", "/Users/linzezhang/Documents/Codex/workspaces/dws-kmfa-automation/kmfa-codexproject"]
 model = "gpt-5.3-codex-spark"
 reasoning_effort = "xhigh"
 prompt_file = "automation/weekly_1100_sydney.prompt.md"

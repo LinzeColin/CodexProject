@@ -181,8 +181,8 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
         self.assertEqual(
             contract["cwds"],
             [
-                "/Users/linzezhang/Documents/Codex/2026-07-04/392b1a986ba680338068ddc1c2a0fd0e-https-app-notion-com-p",
-                "/Users/linzezhang/CodexProject",
+                "/Users/linzezhang/Documents/Codex/workspaces/dws-kmfa-automation/dws-archive",
+                "/Users/linzezhang/Documents/Codex/workspaces/dws-kmfa-automation/kmfa-codexproject",
             ],
         )
         self.assertEqual(contract["prompt_file"], "automation/weekly_1100_sydney.prompt.md")
@@ -191,6 +191,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             contract["input_dir"],
             "/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群",
         )
+        prompt = (SKILL_ROOT / contract["prompt_file"]).read_text(encoding="utf-8")
+        self.assertIn("干净显示入口", prompt)
+        self.assertIn("/Users/linzezhang/Documents/Codex/workspaces/dws-kmfa-automation/kmfa-codexproject", prompt)
+        self.assertIn("真实目录 `/Users/linzezhang/CodexProject`", prompt)
 
     def test_codex_app_automation_check_passes_when_local_state_matches_contract(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
