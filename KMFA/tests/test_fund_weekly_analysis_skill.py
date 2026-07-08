@@ -571,6 +571,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "ocr_fact_controlled_ledger_row_preview.csv",
                 "ocr_fact_controlled_ledger_apply_gate.csv",
                 "ocr_fact_owner_decision_correction_queue.csv",
+                "ocr_fact_owner_decision_correction_draft.json",
                 "ocr_fact_review_apply_gate.csv",
                 "ocr_fact_review_authorization_template.json",
                 "ocr_fact_review_authorization_preview.csv",
@@ -1413,6 +1414,14 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 correction_queue_rows = list(csv.DictReader(f))
             self.assertEqual(correction_queue_rows, [])
 
+            correction_draft = json.loads(
+                (run_dir / "ocr_fact_owner_decision_correction_draft.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(correction_draft["owner_decisions"], [])
+            self.assertFalse(correction_draft["financial_fact_promotion_allowed"])
+            self.assertFalse(correction_draft["fund_ledger_write_allowed"])
+            self.assertFalse(correction_draft["management_conclusion_allowed"])
+
             with (run_dir / "fund_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
                 fund_rows = list(csv.DictReader(f))
             self.assertEqual(fund_rows, [])
@@ -1450,6 +1459,8 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_queue_count"], 0)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_queue_blocking_count"], 0)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_queue_write_allowed_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_draft_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_draft_write_allowed_count"], 0)
             self.assertEqual(cross_review["ocr_fact_review_apply_gate_count"], 3)
             self.assertEqual(cross_review["ocr_fact_review_authorization_present_count"], 0)
             self.assertEqual(cross_review["ocr_fact_review_authorization_template_count"], 3)
@@ -2086,6 +2097,14 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 correction_queue_rows = list(csv.DictReader(f))
             self.assertEqual(correction_queue_rows, [])
 
+            correction_draft = json.loads(
+                (run_dir / "ocr_fact_owner_decision_correction_draft.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(correction_draft["owner_decisions"], [])
+            self.assertFalse(correction_draft["financial_fact_promotion_allowed"])
+            self.assertFalse(correction_draft["fund_ledger_write_allowed"])
+            self.assertFalse(correction_draft["management_conclusion_allowed"])
+
             with (run_dir / "fund_ledger.csv").open(encoding="utf-8-sig", newline="") as f:
                 fund_rows = list(csv.DictReader(f))
             self.assertEqual(fund_rows, [])
@@ -2125,6 +2144,8 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_queue_count"], 0)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_queue_blocking_count"], 0)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_queue_write_allowed_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_draft_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_draft_write_allowed_count"], 0)
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertFalse(cross_review["management_conclusion_allowed"])
 
@@ -2259,6 +2280,28 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(row["financial_fact_promoted"], "false")
             self.assertEqual(row["management_conclusion_allowed"], "false")
 
+            correction_draft = json.loads(
+                (run_dir / "ocr_fact_owner_decision_correction_draft.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(correction_draft["draft_status"], "owner_decision_correction_manifest_draft")
+            self.assertEqual(correction_draft["generated_from"], "ocr_fact_owner_decision_correction_queue.csv")
+            self.assertEqual(
+                correction_draft["output_decision_manifest_relative_path"],
+                f"KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_fact_candidate_owner_decisions/{run_id}.json",
+            )
+            self.assertFalse(correction_draft["financial_fact_promotion_allowed"])
+            self.assertFalse(correction_draft["fund_ledger_write_allowed"])
+            self.assertFalse(correction_draft["management_conclusion_allowed"])
+            self.assertEqual(len(correction_draft["owner_decisions"]), 1)
+            draft_decision = correction_draft["owner_decisions"][0]
+            self.assertEqual(draft_decision["fact_candidate_id"], f"OCRFACT-{run_id}-00001")
+            self.assertEqual(draft_decision["candidate_metric"], "bank_deposit")
+            self.assertEqual(draft_decision["owner_authorization_decision"], "needs_correction")
+            self.assertEqual(draft_decision["owner_corrected_company"], "武汉开明")
+            self.assertEqual(draft_decision["owner_corrected_bank"], "")
+            self.assertIn("owner_corrected_bank", draft_decision["required_owner_fields"])
+            self.assertEqual(draft_decision["source_correction_queue_id"], row["correction_queue_id"])
+
             with (run_dir / "ocr_fact_controlled_ledger_apply_gate.csv").open(encoding="utf-8-sig", newline="") as f:
                 apply_gate_rows = list(csv.DictReader(f))
             self.assertEqual(apply_gate_rows[0]["apply_gate_status"], "blocked_missing_required_ledger_fields")
@@ -2268,6 +2311,8 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_queue_count"], 1)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_queue_blocking_count"], 1)
             self.assertEqual(cross_review["ocr_fact_owner_decision_correction_queue_write_allowed_count"], 0)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_draft_count"], 1)
+            self.assertEqual(cross_review["ocr_fact_owner_decision_correction_draft_write_allowed_count"], 0)
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertFalse(cross_review["management_conclusion_allowed"])
 
