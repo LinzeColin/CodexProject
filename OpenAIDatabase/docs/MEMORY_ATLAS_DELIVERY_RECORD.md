@@ -1,3 +1,53 @@
+## v1.2 S07 P2 Information ROI
+
+状态：`phase_s07_p2_information_roi_completed_pending_s07_p3`。
+
+任务 ID：`MA-V12-S07P2`。
+
+验收 ID：`ACC-MA-V12-S07P2`。
+
+Validator：`validate:v1.2-s07-p2`。
+
+S07 P2 定义并生成 Information ROI 与 Visual ROI Gate。公式配置位于
+`机器治理/参数与公式/information_roi.v1_2_s07_p2.json`，Visual ROI Gate 配置位于
+`机器治理/可视化配置/visual_roi_gate.v1_2_s07_p2.json`，builder 位于
+`scripts/build_memory_atlas_information_roi.py`，输出位于
+`data/derived/information_roi/information_roi_gate.json`。输出覆盖 insight、card、chart，
+并要求没有决策价值的图表不进 P0。
+
+涉及文件：
+
+- `机器治理/参数与公式/information_roi.v1_2_s07_p2.json`
+- `机器治理/可视化配置/visual_roi_gate.v1_2_s07_p2.json`
+- `scripts/build_memory_atlas_information_roi.py`
+- `scripts/atlasctl.py`
+- `data/derived/information_roi/information_roi_gate.json`
+- `人类可读/17_InformationROI与VisualROIGate说明.md`
+- `docs/reviews/memory_atlas_v1_2_s07_p2_information_roi.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s07_p2.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s07-p2`
+- `ACC-MA-V12-S07P2`
+- `MA-V12-S07P2`
+- S07 P2
+- Information ROI
+- Visual ROI Gate
+- pending S07 P3
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation in this phase。
+- No external economic database。
+- No precise income prediction。
+- No S07 P3 what-if UI。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S07 P2 Information ROI; MA-V12-S07P2; ACC-MA-V12-S07P2; phase_s07_p2_information_roi_completed_pending_s07_p3; validate:v1.2-s07-p2; Information ROI; Visual ROI Gate; information_roi_gate.json; S07 P2; pending S07 P3; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No external economic database; No precise income prediction; No S07 P3 what-if UI.
+
 ## v1.2 S07 P1 Personal Economic Proxy
 
 状态：`phase_s07_p1_economic_proxy_completed_pending_s07_p2`。

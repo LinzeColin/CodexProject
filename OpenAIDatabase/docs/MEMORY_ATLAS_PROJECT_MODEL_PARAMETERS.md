@@ -1,3 +1,44 @@
+## 130. Memory Atlas v1.2 S07 P2 Information ROI Parameters
+
+状态：`phase_s07_p2_information_roi_completed_pending_s07_p3`。
+
+验收 ID：`ACC-MA-V12-S07P2`。
+
+S07 P2 固定以下参数：
+
+- `MA-V12-S07P2`
+- `validate:v1.2-s07-p2`
+- `机器治理/参数与公式/information_roi.v1_2_s07_p2.json`
+- `机器治理/可视化配置/visual_roi_gate.v1_2_s07_p2.json`
+- `scripts/build_memory_atlas_information_roi.py`
+- `atlasctl.py analyze --stage information-roi`
+- `atlasctl.py audit --check visual-roi`
+- `data/derived/information_roi/information_roi_gate.json`
+- S07 P2 完成后下一步为 pending S07 P3。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S07P2-001 phase_status = phase_s07_p2_information_roi_completed_pending_s07_p3`
+- `PARAM-MA-V12-S07P2-002 validator = validate:v1.2-s07-p2`
+- `PARAM-MA-V12-S07P2-003 formula_config = 机器治理/参数与公式/information_roi.v1_2_s07_p2.json`
+- `PARAM-MA-V12-S07P2-004 visual_gate_config = 机器治理/可视化配置/visual_roi_gate.v1_2_s07_p2.json`
+- `PARAM-MA-V12-S07P2-005 builder = build_memory_atlas_information_roi.py`
+- `PARAM-MA-V12-S07P2-006 output = data/derived/information_roi/information_roi_gate.json`
+- `PARAM-MA-V12-S07P2-007 roi_item_count = 31 roi_items`
+- `PARAM-MA-V12-S07P2-008 p0_gate = 10 P0 visuals; failed_p0_count=0`
+- `PARAM-MA-V12-S07P2-009 next_gate = pending S07 P3`
+- `PARAM-MA-V12-S07P2-010 phase_boundary = No raw mutation; No external economic database; No precise income prediction; No S07 P3 what-if UI; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s07-p2` checks S07 P1 predecessor, formula config, Visual ROI Gate
+  config, persisted `information_roi_gate.json`, `atlasctl analyze --stage
+  information-roi --dry-run`, `atlasctl audit --check visual-roi`, human/machine
+  records, canonical remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S07 P2 Information ROI; MA-V12-S07P2; ACC-MA-V12-S07P2; phase_s07_p2_information_roi_completed_pending_s07_p3; validate:v1.2-s07-p2; Information ROI; Visual ROI Gate; pending S07 P3; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No external economic database; No precise income prediction; No S07 P3 what-if UI.
+
 ## 129. Memory Atlas v1.2 S07 P1 Personal Economic Proxy Parameters
 
 状态：`phase_s07_p1_economic_proxy_completed_pending_s07_p2`。
