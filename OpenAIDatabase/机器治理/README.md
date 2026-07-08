@@ -18,7 +18,15 @@
 
 ## 当前阶段
 
-当前为 S11 P4。任务 ID 为 `MA-V12-S11P4`，验收 ID 为
+当前为 S11 Review。任务 ID 为 `MA-V12-S11-REVIEW`，验收 ID 为
+`ACC-MA-V12-S11-REVIEW`，validator 为 `validate:v1.2-s11-review`。状态为
+`stage_s11_review_passed_pending_s12_no_github_main_upload`。S11 Review 已完成
+S11 P1、S11 P2、S11 P3 和 S11 P4 复审，确认 12 张 P0 图谱均绑定中文问题、行动价值、
+Visual ROI Gate 和 `source/time/project/task` 过滤。下一步只允许进入 S12 P1。
+
+No GitHub main upload。No remote push。No raw mutation。No proposal apply execution。
+
+历史复验兼容记录：S11 P4 完成时当前为 S11 P4。任务 ID 为 `MA-V12-S11P4`，验收 ID 为
 `ACC-MA-V12-S11P4`，validator 为 `validate:v1.2-s11-p4`。状态为
 `phase_s11_p4_human_question_map_completed_pending_s11_review`。S11 P4 已完成
 Human Question Map，运行时合同为 `human_question_map.v1_2_s11_p4`；12 张 P0 图谱均绑定

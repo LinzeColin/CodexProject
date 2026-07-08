@@ -1,3 +1,54 @@
+## 149. Memory Atlas v1.2 S11 Review Parameters
+
+状态：`stage_s11_review_passed_pending_s12_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S11-REVIEW`。
+
+S11 Review 固定以下参数：
+
+- `MA-V12-S11-REVIEW`
+- `validate:v1.2-s11-review`
+- `S11 P1`
+- `S11 P2`
+- `S11 P3`
+- `S11 P4`
+- `Visual ROI Gate`
+- `source/time/project/task`
+- `cluster_tree`
+- `bubble_map`
+- `topic_cluster_explorer`
+- `task_treemap`
+- `automation_vs_augmentation`
+- `roi_scatter`
+- `opportunity_radar`
+- `agent_decision_sankey`
+- `friction_heatmap`
+- `latent_radar`
+- `evidence_timeline`
+- `formula_explorer`
+- S11 Review 完成后下一步为 S12 P1。
+- No GitHub main upload。
+- No remote push。
+
+参数：
+
+- `PARAM-MA-V12-S11-REVIEW-001 stage_status = stage_s11_review_passed_pending_s12_no_github_main_upload`
+- `PARAM-MA-V12-S11-REVIEW-002 validator = validate:v1.2-s11-review`
+- `PARAM-MA-V12-S11-REVIEW-003 phase_chain = S11 P1; S11 P2; S11 P3; S11 P4`
+- `PARAM-MA-V12-S11-REVIEW-004 p0_visual_count = 12`
+- `PARAM-MA-V12-S11-REVIEW-005 filter_dimensions = source/time/project/task`
+- `PARAM-MA-V12-S11-REVIEW-006 visual_roi_gate_pass = true`
+- `PARAM-MA-V12-S11-REVIEW-007 next_phase = S12 P1`
+- `PARAM-MA-V12-S11-REVIEW-008 review_boundary = No raw mutation; No proposal apply execution; No GitHub main upload; No remote push; No S12 implementation`
+
+验证逻辑：
+
+- `validate:v1.2-s11-review` checks the S11 P1/P2/P3/P4 validator chain, review
+  artifact, S11 visual configs, runtime contracts, Visual ROI Gate audit,
+  visual acceptance audit, governance records and no raw/secret open changes.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S11 Review; MA-V12-S11-REVIEW; ACC-MA-V12-S11-REVIEW; stage_s11_review_passed_pending_s12_no_github_main_upload; validate:v1.2-s11-review; S11 P1; S11 P2; S11 P3; S11 P4; Visual ROI Gate; source/time/project/task; S12 P1; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution.
+
 ## 148. Memory Atlas v1.2 S11 P4 Human Question Map Parameters
 
 状态：`phase_s11_p4_human_question_map_completed_pending_s11_review`。

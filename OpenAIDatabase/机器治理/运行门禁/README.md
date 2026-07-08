@@ -2,7 +2,38 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S11 P4。任务 ID 为 `MA-V12-S11P4`，验收 ID 为
+当前阶段是 S11 Review。任务 ID 为 `MA-V12-S11-REVIEW`，验收 ID 为
+`ACC-MA-V12-S11-REVIEW`，validator 为 `validate:v1.2-s11-review`。状态为
+`stage_s11_review_passed_pending_s12_no_github_main_upload`。
+
+S11 Review 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s11_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s11_review.cjs`
+- `CHANGELOG.md`
+- `功能清单.md`
+- `开发记录.md`
+- `模型参数文件.md`
+- `docs/MEMORY_ATLAS_DELIVERY_RECORD.md`
+- `docs/MEMORY_ATLAS_PROJECT_MODEL_PARAMETERS.md`
+
+S11 Review gate：
+
+- `validate:v1.2-s11-review` 可验证 S11 P1/P2/P3/P4 阶段链。
+- P0 图谱集合覆盖 12 张 S11 图谱。
+- 每张图都有中文 insight header、human question 和 action value。
+- 图谱跟随 `source/time/project/task` 过滤。
+- Visual ROI Gate 不通过的候选不进入 P0。
+- `python3 scripts/atlasctl.py audit --check visual-roi` 返回 PASS。
+- 不执行 proposal apply。
+- 不修改 raw。
+- 不上传 GitHub main。
+- 不进入 S12 implementation。
+
+No GitHub main upload。No remote push。No raw mutation。No proposal apply execution。
+下一步是 S12 P1。
+
+历史复验兼容记录：S11 P4 完成时当前阶段是 S11 P4。任务 ID 为 `MA-V12-S11P4`，验收 ID 为
 `ACC-MA-V12-S11P4`，validator 为 `validate:v1.2-s11-p4`。状态为
 `phase_s11_p4_human_question_map_completed_pending_s11_review`。
 
