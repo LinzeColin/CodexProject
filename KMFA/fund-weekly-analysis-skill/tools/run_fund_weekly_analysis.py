@@ -1488,6 +1488,71 @@ def build_ocr_fact_controlled_ledger_row_preview_rows(
     return rows
 
 
+def build_ocr_fact_controlled_ledger_apply_gate_rows(
+    manifest: dict,
+    controlled_ledger_rows: list[dict],
+) -> list[dict]:
+    rows: list[dict] = []
+    for row in controlled_ledger_rows:
+        missing_fields = [
+            field
+            for field in ("date", "company", "bank", "liquidity_tier", "currency", "flow_type")
+            if not str(row.get(field, "")).strip()
+        ]
+        if not any(str(row.get(field, "")).strip() for field in ("inflow", "outflow", "ending_balance")):
+            missing_fields.append("inflow_or_outflow_or_ending_balance")
+        if row["ledger_preview_status"] != "ready_for_controlled_ledger_apply_gate_no_write":
+            apply_gate_status = "blocked_ledger_preview_not_ready"
+            planned_apply_count = 0
+            gate_reason = "Controlled ledger row preview is not ready for the controlled ledger apply gate."
+            review_status = "pending_controlled_ledger_preview_resolution"
+        elif missing_fields:
+            apply_gate_status = "blocked_missing_required_ledger_fields"
+            planned_apply_count = 0
+            gate_reason = f"Missing required ledger fields before formal ledger apply: {','.join(missing_fields)}"
+            review_status = "pending_required_ledger_field_resolution"
+        else:
+            apply_gate_status = "ready_for_controlled_ledger_apply_no_write"
+            planned_apply_count = 1
+            gate_reason = (
+                "Controlled ledger preview has required ledger fields, but this runner still performs no "
+                "fund ledger write, no formal ledger write, and no management conclusion."
+            )
+            review_status = "pending_controlled_ledger_apply_review"
+        rows.append({
+            "controlled_ledger_apply_gate_id": f"OCRLEDGERAPPLY-{manifest['run_id']}-{len(rows) + 1:05d}",
+            "controlled_ledger_preview_id": row["controlled_ledger_preview_id"],
+            "staging_preview_id": row["staging_preview_id"],
+            "fact_candidate_id": row["fact_candidate_id"],
+            "candidate_metric": row["candidate_metric"],
+            "date": row["date"],
+            "company": row["company"],
+            "bank": row["bank"],
+            "account_alias": row["account_alias"],
+            "liquidity_tier": row["liquidity_tier"],
+            "inflow": row["inflow"],
+            "outflow": row["outflow"],
+            "ending_balance": row["ending_balance"],
+            "amount": row["amount"],
+            "currency": row["currency"],
+            "flow_type": row["flow_type"],
+            "source_evidence_id": row["source_evidence_id"],
+            "source_ocr_text_relative_path": row["source_ocr_text_relative_path"],
+            "authorization_validation_status": row["authorization_validation_status"],
+            "ledger_preview_status": row["ledger_preview_status"],
+            "apply_gate_status": apply_gate_status,
+            "planned_apply_count": str(planned_apply_count),
+            "source_mutation_allowed": "false",
+            "fund_ledger_write_allowed": "false",
+            "formal_fund_ledger_write_allowed": "false",
+            "financial_fact_promoted": "false",
+            "management_conclusion_allowed": "false",
+            "gate_reason": gate_reason,
+            "review_status": review_status,
+        })
+    return rows
+
+
 def chat_record_source_paths(manifest: dict) -> list[str]:
     return [
         item["relative_path"]
@@ -4975,6 +5040,10 @@ def write_no_hallucination_outputs(
         manifest,
         ocr_fact_ledger_staging_preview_rows,
     )
+    ocr_fact_controlled_ledger_apply_gate_rows = build_ocr_fact_controlled_ledger_apply_gate_rows(
+        manifest,
+        ocr_fact_controlled_ledger_row_preview_rows,
+    )
     ocr_fact_evidence_review_queue_rows = build_ocr_fact_evidence_review_queue_rows(
         manifest,
         ocr_fact_ledger_staging_preview_rows,
@@ -5078,6 +5147,22 @@ def write_no_hallucination_outputs(
     manifest["ocr_fact_controlled_ledger_row_preview_count"] = len(ocr_fact_controlled_ledger_row_preview_rows)
     manifest["ocr_fact_controlled_ledger_row_preview_ready_count"] = len(ocr_fact_controlled_ledger_row_preview_rows)
     manifest["ocr_fact_controlled_ledger_row_preview_blocking_count"] = 0
+    manifest["ocr_fact_controlled_ledger_apply_gate_count"] = len(ocr_fact_controlled_ledger_apply_gate_rows)
+    manifest["ocr_fact_controlled_ledger_apply_gate_ready_count"] = sum(
+        1 for row in ocr_fact_controlled_ledger_apply_gate_rows
+        if row["apply_gate_status"] == "ready_for_controlled_ledger_apply_no_write"
+    )
+    manifest["ocr_fact_controlled_ledger_apply_gate_blocking_count"] = (
+        len(ocr_fact_controlled_ledger_apply_gate_rows)
+        - manifest["ocr_fact_controlled_ledger_apply_gate_ready_count"]
+    )
+    manifest["ocr_fact_controlled_ledger_apply_gate_planned_apply_count"] = sum(
+        int(row["planned_apply_count"]) for row in ocr_fact_controlled_ledger_apply_gate_rows
+    )
+    manifest["ocr_fact_controlled_ledger_apply_gate_write_allowed_count"] = sum(
+        1 for row in ocr_fact_controlled_ledger_apply_gate_rows
+        if row["fund_ledger_write_allowed"] == "true" or row["formal_fund_ledger_write_allowed"] == "true"
+    )
     manifest["ocr_fact_review_apply_gate_count"] = len(ocr_fact_review_gate_rows)
     manifest["ocr_fact_review_authorization_present_count"] = sum(1 for row in ocr_fact_review_gate_rows if row["operator_authorization_present"] == "true")
     manifest["ocr_fact_review_authorization_valid_count"] = sum(1 for row in ocr_fact_review_gate_rows if row["authorization_validation_status"] == "valid_manifest_validation_only")
@@ -5468,6 +5553,37 @@ def write_no_hallucination_outputs(
         "management_conclusion_allowed",
         "review_status",
     ], ocr_fact_controlled_ledger_row_preview_rows)
+    write_csv(run_dir / "ocr_fact_controlled_ledger_apply_gate.csv", [
+        "controlled_ledger_apply_gate_id",
+        "controlled_ledger_preview_id",
+        "staging_preview_id",
+        "fact_candidate_id",
+        "candidate_metric",
+        "date",
+        "company",
+        "bank",
+        "account_alias",
+        "liquidity_tier",
+        "inflow",
+        "outflow",
+        "ending_balance",
+        "amount",
+        "currency",
+        "flow_type",
+        "source_evidence_id",
+        "source_ocr_text_relative_path",
+        "authorization_validation_status",
+        "ledger_preview_status",
+        "apply_gate_status",
+        "planned_apply_count",
+        "source_mutation_allowed",
+        "fund_ledger_write_allowed",
+        "formal_fund_ledger_write_allowed",
+        "financial_fact_promoted",
+        "management_conclusion_allowed",
+        "gate_reason",
+        "review_status",
+    ], ocr_fact_controlled_ledger_apply_gate_rows)
     write_csv(run_dir / "ocr_fact_review_apply_gate.csv", [
         "review_gate_id",
         "fact_candidate_id",
@@ -5874,6 +5990,11 @@ def write_no_hallucination_outputs(
         "ocr_fact_controlled_ledger_row_preview_count": manifest["ocr_fact_controlled_ledger_row_preview_count"],
         "ocr_fact_controlled_ledger_row_preview_ready_count": manifest["ocr_fact_controlled_ledger_row_preview_ready_count"],
         "ocr_fact_controlled_ledger_row_preview_blocking_count": manifest["ocr_fact_controlled_ledger_row_preview_blocking_count"],
+        "ocr_fact_controlled_ledger_apply_gate_count": manifest["ocr_fact_controlled_ledger_apply_gate_count"],
+        "ocr_fact_controlled_ledger_apply_gate_ready_count": manifest["ocr_fact_controlled_ledger_apply_gate_ready_count"],
+        "ocr_fact_controlled_ledger_apply_gate_blocking_count": manifest["ocr_fact_controlled_ledger_apply_gate_blocking_count"],
+        "ocr_fact_controlled_ledger_apply_gate_planned_apply_count": manifest["ocr_fact_controlled_ledger_apply_gate_planned_apply_count"],
+        "ocr_fact_controlled_ledger_apply_gate_write_allowed_count": manifest["ocr_fact_controlled_ledger_apply_gate_write_allowed_count"],
         "ocr_fact_review_apply_gate_count": manifest["ocr_fact_review_apply_gate_count"],
         "ocr_fact_review_authorization_present_count": manifest["ocr_fact_review_authorization_present_count"],
         "ocr_fact_review_authorization_valid_count": manifest["ocr_fact_review_authorization_valid_count"],
@@ -6643,6 +6764,11 @@ def write_no_hallucination_outputs(
                 "ocr_fact_controlled_ledger_row_preview_count": manifest["ocr_fact_controlled_ledger_row_preview_count"],
                 "ocr_fact_controlled_ledger_row_preview_ready_count": manifest["ocr_fact_controlled_ledger_row_preview_ready_count"],
                 "ocr_fact_controlled_ledger_row_preview_blocking_count": manifest["ocr_fact_controlled_ledger_row_preview_blocking_count"],
+                "ocr_fact_controlled_ledger_apply_gate_count": manifest["ocr_fact_controlled_ledger_apply_gate_count"],
+                "ocr_fact_controlled_ledger_apply_gate_ready_count": manifest["ocr_fact_controlled_ledger_apply_gate_ready_count"],
+                "ocr_fact_controlled_ledger_apply_gate_blocking_count": manifest["ocr_fact_controlled_ledger_apply_gate_blocking_count"],
+                "ocr_fact_controlled_ledger_apply_gate_planned_apply_count": manifest["ocr_fact_controlled_ledger_apply_gate_planned_apply_count"],
+                "ocr_fact_controlled_ledger_apply_gate_write_allowed_count": manifest["ocr_fact_controlled_ledger_apply_gate_write_allowed_count"],
                 "ocr_fact_review_apply_gate_count": manifest["ocr_fact_review_apply_gate_count"],
                 "ocr_fact_review_authorization_present_count": manifest["ocr_fact_review_authorization_present_count"],
                 "ocr_fact_review_authorization_valid_count": manifest["ocr_fact_review_authorization_valid_count"],
@@ -6876,6 +7002,10 @@ def main() -> int:
         f"OCR fact controlled ledger row preview count: {manifest.get('ocr_fact_controlled_ledger_row_preview_count', 0)}\n\n"
         f"OCR fact controlled ledger row preview ready count: {manifest.get('ocr_fact_controlled_ledger_row_preview_ready_count', 0)}\n\n"
         f"OCR fact controlled ledger row preview blocking count: {manifest.get('ocr_fact_controlled_ledger_row_preview_blocking_count', 0)}\n\n"
+        f"OCR fact controlled ledger apply gate ready count: {manifest.get('ocr_fact_controlled_ledger_apply_gate_ready_count', 0)}\n\n"
+        f"OCR fact controlled ledger apply gate blocking count: {manifest.get('ocr_fact_controlled_ledger_apply_gate_blocking_count', 0)}\n\n"
+        f"OCR fact controlled ledger apply gate planned apply count: {manifest.get('ocr_fact_controlled_ledger_apply_gate_planned_apply_count', 0)}\n\n"
+        f"OCR fact controlled ledger apply gate write-allowed count: {manifest.get('ocr_fact_controlled_ledger_apply_gate_write_allowed_count', 0)}\n\n"
         f"OCR fact review authorization valid count: {manifest.get('ocr_fact_review_authorization_valid_count', 0)}\n\n"
         f"OCR fact review authorization preview ready count: {manifest.get('ocr_fact_review_authorization_preview_ready_count', 0)}\n\n"
         f"OCR fact review authorization preview blocked count: {manifest.get('ocr_fact_review_authorization_preview_blocked_count', 0)}\n\n"
