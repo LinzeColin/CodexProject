@@ -2,16 +2,29 @@
 
 Purpose: this checklist is the owner-facing review surface before any future authorized task-pack execution. It records what Codex understands as the current latest mother workbook and what functions are in scope.
 
+Current evidence snapshot from the latest mother workbook:
+
+| Item | Observed State |
+|---|---|
+| Workbook | `资金与税费管理母版_真实数据预览_v2.xlsx` |
+| Sheet count and order | 12 sheets; `01_首页总览` first, `02_资金趋势预测` second |
+| Visible row 2 | Blank on visible report sheets `01` through `06` |
+| Hidden audit row 2 | Preserved on hidden `H01` through `H06`; hidden rows may contain data/header values and are not cleared by the visible-report rule |
+| Sheet 01 top card band | Rows 4-7 are the first KPI band, with labels anchored at `B4`, `E4`, `H4`, `K4` |
+| Sheet 01 second card band | Rows 8-11 are the second KPI band, with labels anchored at `B8`, `E8`, `H8`, `K8` |
+| Sheet 01 charts | Exactly two native line charts: latest 15 days and latest 30 days |
+| Schedule | Current owner-approved schedule is Monday and Saturday 11:00 `Australia/Sydney`; any older 11:30 wording is stale unless explicitly re-approved |
+
 ## Rule Checklist
 
 | Rule | Required State | Evidence |
 |---|---|---|
 | Latest mother workbook | `templates/资金与税费管理母版_真实数据预览_v2.xlsx` is the authoritative editable native Excel template | `validate_taskpack.py` and workbook template inspection |
-| Visible sheet row 2 | Row 2 on every visible report sheet is blank | `workbook_quality_checks.csv` and template validator |
+| Visible sheet row 2 | Row 2 on every visible report sheet is blank; hidden audit/data sheets keep their row 2 data unless separately authorized | `workbook_quality_checks.csv` and template validator |
 | Sheet order | `01_首页总览` is first and `02_资金趋势预测` is second | Template validator and workbook quality gate |
 | Hidden audit sheets | `H01` through `H06` stay hidden | Template validator and workbook quality gate |
-| Sheet 01 row 4 cards | Row 4 shows `可用现金占比`, `银行存款`, `票据/电子汇票`, `期末总资金` | Template validator |
-| Sheet 01 row 8 cards | Row 8 shows `保证金可释放`, `外部净流出`, `内部调拨净额`, `资金缺口` | Template validator |
+| Sheet 01 rows 4-7 cards | Rows 4-7 form the first KPI band; labels are `可用现金占比`, `银行存款`, `票据/电子汇票`, `期末总资金` anchored at row 4 | Template validator |
+| Sheet 01 rows 8-11 cards | Rows 8-11 form the second KPI band; labels are `保证金可释放`, `外部净流出`, `内部调拨净额`, `资金缺口` anchored at row 8 | Template validator |
 | Homepage charts | `01_首页总览` has exactly two native line charts: latest 15 days and latest 30 days | Template validator checks chart titles, series, and point counts |
 | Chart size | Each native chart is at most 18 in x 9 in | Workbook quality gate |
 | Native Excel only | Report elements remain editable cells, tables, formulas, and native charts, not pasted screenshots | Skill contract and template validation |
@@ -19,6 +32,7 @@ Purpose: this checklist is the owner-facing review surface before any future aut
 | OCR and chat values | OCR/chat extracted amounts remain candidates until human review | Candidate sidecars keep `financial_fact_promoted=false` |
 | Ledger writes | OCR fact previews do not write `fund_ledger.csv` | `fund_ledger_write_allowed=false` gates |
 | Automation schedule | Local Codex automation runs Monday and Saturday at 11:00 in `Australia/Sydney` | `check_codex_app_automation.py` |
+| Stale schedule conflict | Older goal text that says daily 11:30 or Sydney 11:30 is not authoritative after the owner changed the schedule to Monday/Saturday 11:00 | Current repo contract and local automation drift check |
 | GitHub sync | Skill, automation prompt, validators, and public-safe governance changes are committed to GitHub `main` | Post-push parity check |
 
 ## Function Checklist
@@ -52,6 +66,10 @@ Purpose: this checklist is the owner-facing review surface before any future aut
 | Fact promotion authorization template | Active | `fact_promotion_authorization_template.json` drafts one default-deny authorization row per review packet row |
 | Fact promotion authorization preview | Active | `fact_promotion_authorization_preview.csv` validates owner manifest coverage without promotion, ledger write, or management conclusion |
 | Fact promotion execution gate | Active | `fact_promotion_execution_gate.csv` blocks formal promotion until authorization is valid and review blockers are clear |
+| Fact promotion execution dry-run | Active | `fact_promotion_execution_dry_run.csv` previews impact with no write, no promotion, and no conclusion |
+| Fact promotion execution plan | Active | `fact_promotion_execution_plan.csv` defines owner execution authorization requirements without applying them |
+| Fact promotion execution authorization preview | Active | `fact_promotion_execution_authorization_preview.csv` validates private execution authorization coverage without writing ledgers |
+| Fact promotion execution apply gate | Active | `fact_promotion_execution_apply_gate.csv` shows final no-write readiness and planned apply counts before any future formal ledger write |
 | Automation drift check | Active | Repo contract must match local Codex automation before claiming ready |
 
 ## Authorization Boundary
