@@ -2993,3 +2993,13 @@ version_matrix_product_version_reference: 0.1.4-s18-stage-review
 - Validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_after_blocked_handoff.py --require-private-business-execution-blocked-follow-up`
 - Focused test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_after_blocked_handoff`
 - Boundary: no raw inbox read/list/stat/fingerprint/parse/value extraction/mutation; no GitHub upload, app reinstall or business execution.
+
+## 2026-07-08 - v0.1.4 business execution blocked follow-up continuation
+
+- Version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-blocked-follow-up-continuation`
+- Phase: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION`
+- Decision: `NO_GO`; 48 continuation blockers remain, 0 business execution ready, 72 unresolved differences.
+- Evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_manifest.json`
+- Validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation.py --require-private-business-execution-blocked-follow-up-continuation`
+- Focused test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation`
+- Boundary: no raw inbox read/list/stat/fingerprint/parse/value extraction/mutation; no GitHub upload, app reinstall or business execution.
