@@ -23,9 +23,17 @@ PRIVATE_DECISION_PREFIX = Path(
 )
 XLSX_NS = {"x": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
 VALIDATION_REPORT_FIELDS = [
+    "input_row_number",
     "fact_candidate_id",
     "candidate_metric",
+    "source_evidence_id",
+    "source_ocr_text_relative_path",
+    "business_date",
+    "amount",
+    "currency",
     "owner_authorization_decision",
+    "owner_corrected_company",
+    "owner_corrected_bank",
     "required_owner_fields",
     "missing_owner_fields",
     "decision_validation_status",
@@ -34,6 +42,13 @@ VALIDATION_REPORT_FIELDS = [
     "fund_ledger_write_allowed",
     "financial_fact_promoted",
     "management_conclusion_allowed",
+]
+OWNER_DECISION_CONTEXT_FIELDS = [
+    "source_evidence_id",
+    "source_ocr_text_relative_path",
+    "business_date",
+    "amount",
+    "currency",
 ]
 
 
@@ -98,7 +113,8 @@ def load_csv_draft(path: Path, run_id: str) -> dict:
     for index, row in enumerate(rows, 1):
         if not isinstance(row, dict):
             raise ValueError(f"draft_invalid_schema:csv_row[{index}]")
-        decisions.append({
+        decision = {
+            "input_row_number": str(index + 1),
             "fact_candidate_id": str(row.get("fact_candidate_id", "")),
             "candidate_metric": str(row.get("candidate_metric", "")),
             "owner_authorization_decision": str(row.get("owner_authorization_decision", "")),
@@ -106,7 +122,10 @@ def load_csv_draft(path: Path, run_id: str) -> dict:
             "owner_corrected_bank": str(row.get("owner_corrected_bank", "")),
             "required_owner_fields": str(row.get("required_owner_fields", "")),
             "owner_note": str(row.get("owner_note", "")),
-        })
+        }
+        for field in OWNER_DECISION_CONTEXT_FIELDS:
+            decision[field] = str(row.get(field, ""))
+        decisions.append(decision)
     return {
         "decision_manifest_version": "1",
         "run_id": run_id,
@@ -200,7 +219,8 @@ def load_xlsx_draft(path: Path, run_id: str) -> dict:
     for index, row in enumerate(rows, 1):
         if not isinstance(row, dict):
             raise ValueError(f"draft_invalid_schema:xlsx_row[{index}]")
-        decisions.append({
+        decision = {
+            "input_row_number": str(index + 1),
             "fact_candidate_id": str(row.get("fact_candidate_id", "")),
             "candidate_metric": str(row.get("candidate_metric", "")),
             "owner_authorization_decision": str(row.get("owner_authorization_decision", "")),
@@ -208,7 +228,10 @@ def load_xlsx_draft(path: Path, run_id: str) -> dict:
             "owner_corrected_bank": str(row.get("owner_corrected_bank", "")),
             "required_owner_fields": str(row.get("required_owner_fields", "")),
             "owner_note": str(row.get("owner_note", "")),
-        })
+        }
+        for field in OWNER_DECISION_CONTEXT_FIELDS:
+            decision[field] = str(row.get(field, ""))
+        decisions.append(decision)
     return {
         "decision_manifest_version": "1",
         "run_id": run_id,
@@ -302,9 +325,17 @@ def validate_draft(draft: dict, run_id: str) -> tuple[dict, list[dict]]:
             validation_status = "ready_for_private_owner_decision_manifest_no_write"
             recommended_action = "Ready for validation-only manifest apply if operator explicitly authorizes apply"
         validation_rows.append({
+            "input_row_number": str(decision.get("input_row_number", index + 1)),
             "fact_candidate_id": fact_candidate_id,
             "candidate_metric": candidate_metric,
+            "source_evidence_id": str(decision.get("source_evidence_id", "")),
+            "source_ocr_text_relative_path": str(decision.get("source_ocr_text_relative_path", "")),
+            "business_date": str(decision.get("business_date", "")),
+            "amount": str(decision.get("amount", "")),
+            "currency": str(decision.get("currency", "")),
             "owner_authorization_decision": owner_decision,
+            "owner_corrected_company": str(decision.get("owner_corrected_company", "")),
+            "owner_corrected_bank": str(decision.get("owner_corrected_bank", "")),
             "required_owner_fields": ",".join(required_owner_fields),
             "missing_owner_fields": ",".join(missing_fields),
             "decision_validation_status": validation_status,
