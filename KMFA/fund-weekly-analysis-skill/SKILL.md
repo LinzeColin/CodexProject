@@ -140,6 +140,8 @@ Required files:
 * `cashflow_validation.csv`
 * `ocr_text_candidates.csv`
 * `ocr_value_candidates.csv`
+* `chat_text_candidates.csv`
+* `chat_value_candidates.csv`
 * `workbook_quality_checks.csv`
 * `kmfa_metadata_signals.csv`
 * `exception_tasks.csv`
@@ -155,6 +157,7 @@ Current deterministic runner status contract:
 * Existing configured folder returns `INDEXED_PENDING_EXTRACTION`, hashes real files, copies the current native Excel mother template into the private run folder, writes the required CSV/JSON package, and creates exception tasks for every evidence item that still needs OCR/table extraction or human review.
 * Public-safe KMFA metadata signals from fund pressure, project-cost fact layer, report grade, and scope reconciliation metadata are copied into `kmfa_metadata_signals.csv` and workbook pending-review areas. These signals never create amounts, forecasts, or management conclusions.
 * Adjacent real OCR text sidecars for screenshots, such as `<image>.ocr.txt` or `<stem>.ocr.txt`, are indexed into `ocr_text_candidates.csv` and exception tasks as `ocr_text_sidecar_indexed_pending_review`. Date/amount candidates detected in that text are written to `ocr_value_candidates.csv` as `ocr_value_candidate_pending_review`. They never create ledger amounts or management conclusions without human/cross review.
+* Real DingTalk `chat_records/chat_records.csv` content and quoted_content fields are indexed into `chat_text_candidates.csv` when they carry finance signals. Date/amount candidates detected in that text are written to `chat_value_candidates.csv` as `chat_value_candidate_pending_review`. They never create ledger amounts or management conclusions without human/cross review.
 * CSV files with the exact structured columns `date, company, bank, account_alias, liquidity_tier, inflow, outflow, ending_balance, flow_type` are extracted into `fund_ledger.csv`, `net_flow_ledger.csv`, `company_bank_matrix.csv`, and `tax_loan_risk.csv` as `STRUCTURED_FACTS_EXTRACTED_PENDING_REVIEW`.
 * When structured CSV rows include real `due_date` risk/opportunity lines, the runner writes `funding_forecast.csv` and `02_资金趋势预测` with known due-date projections only. These remain `structured_csv_forecast_pending_review`, and they are not a management conclusion.
 * When structured CSV facts exist, the runner writes `cashflow_validation.csv`: balance continuity, operating cashflow effect, and internal-transfer exclusion are checked per ledger row. Continuity failures create exception tasks and block management conclusions.
