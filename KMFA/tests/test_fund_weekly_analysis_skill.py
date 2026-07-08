@@ -6131,7 +6131,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             sidecar_dir = run_dir / "private"
             sidecar_dir.mkdir(parents=True)
             (sidecar_dir / "OCRGEN-00001.ocr.txt").write_text(
-                "真实OCR公司A\n湖北中行\n付款金额 1.00\n",
+                "\n".join(
+                    [f"无关页眉{i}" for i in range(80)]
+                    + ["真实OCR公司A", "湖北中行", "付款金额 1.00"]
+                ),
                 encoding="utf-8",
             )
             worklist_path = run_dir / "ocr_fact_candidate_owner_worklist.csv"
@@ -6213,6 +6216,8 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 review_rows = list(csv.DictReader(f))
             self.assertIn("source_ocr_text_excerpt", review_rows[0])
             self.assertIn("真实OCR公司A", review_rows[0]["source_ocr_text_excerpt"])
+            self.assertIn("付款金额 1.00", review_rows[0]["source_ocr_text_excerpt"])
+            self.assertNotIn("无关页眉0", review_rows[0]["source_ocr_text_excerpt"])
 
             xlsx_path = repo_root / payload["xlsx_output_relative_path"]
             self.assertTrue(xlsx_path.exists())
