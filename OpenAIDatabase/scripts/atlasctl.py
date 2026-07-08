@@ -36,6 +36,11 @@ PROPOSAL_STATE_ACCEPTANCE_ID = "ACC-MA-V12-S13P1"
 PROPOSAL_STATE_CONTRACT_VERSION = "proposal_state_machine.v1_2_s13_p1"
 PROPOSAL_STATE_BUILDER_RELATIVE = "scripts/build_memory_atlas_proposal_state_machine.py"
 PROPOSAL_STATE_BUILDER = ROOT / PROPOSAL_STATE_BUILDER_RELATIVE
+DIFF_NARRATOR_TASK_ID = "MA-V12-S13P2"
+DIFF_NARRATOR_ACCEPTANCE_ID = "ACC-MA-V12-S13P2"
+DIFF_NARRATOR_CONTRACT_VERSION = "diff_narrator.v1_2_s13_p2"
+DIFF_NARRATOR_BUILDER_RELATIVE = "scripts/build_memory_atlas_diff_narrator.py"
+DIFF_NARRATOR_BUILDER = ROOT / DIFF_NARRATOR_BUILDER_RELATIVE
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -87,9 +92,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     deep_explore.add_argument("--open", action="store_true")
     deep_explore.add_argument("--confirm-auto-submit", action="store_true")
 
-    proposals = subparsers.add_parser("proposals", help="Inspect the proposal authorization state machine.")
+    proposals = subparsers.add_parser("proposals", help="Inspect proposal authorization and review views.")
     proposals.add_argument("--dry-run", action="store_true")
     proposals.add_argument("--database-dir", type=Path, default=ROOT)
+    proposals.add_argument("--view", choices=["state-machine", "diff-narrator"], default="state-machine")
     return parser.parse_args(argv)
 
 
@@ -2182,9 +2188,12 @@ def run_chatgpt_deep_explore(args: argparse.Namespace) -> int:
 
 
 def run_proposals(args: argparse.Namespace) -> int:
+    builder = PROPOSAL_STATE_BUILDER
+    if args.view == "diff-narrator":
+        builder = DIFF_NARRATOR_BUILDER
     command = [
         sys.executable,
-        str(PROPOSAL_STATE_BUILDER),
+        str(builder),
         "--database-dir",
         str(args.database_dir),
     ]

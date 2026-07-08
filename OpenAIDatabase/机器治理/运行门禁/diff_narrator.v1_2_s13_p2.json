@@ -1,0 +1,35 @@
+{
+  "schema_version": "diff_narrator.v1_2_s13_p2",
+  "task_id": "MA-V12-S13P2",
+  "acceptance_id": "ACC-MA-V12-S13P2",
+  "status": "phase_s13_p2_diff_narrator_completed_pending_s13_p3",
+  "validator": "validate:v1.2-s13-p2",
+  "diff_narrator": {
+    "language": "zh",
+    "source_state_machine_report": "data/derived/proposals/proposal_state_machine_report.json",
+    "source_proposal_report": "data/derived/behavior_intelligence/self_iteration_suggestions.json",
+    "required_human_sections": [
+      "what_changed_zh",
+      "why_changed_zh",
+      "affected_surfaces_zh",
+      "how_to_verify_zh",
+      "how_to_rollback_zh"
+    ],
+    "human_homepage_policy": {
+      "no_full_machine_diff": true,
+      "summary_only": true,
+      "max_items_on_homepage": 5
+    },
+    "machine_diff_evidence_path": "机器治理/证据与日志/proposal_diffs/diff_narrator_machine_diff.v1_2_s13_p2.json"
+  },
+  "output": "data/derived/proposals/diff_narrator_report.json",
+  "scope_boundary": {
+    "raw_mutation": false,
+    "proposal_apply_execution": false,
+    "rollback_execution": false,
+    "github_main_upload": false,
+    "remote_push": false,
+    "full_machine_diff_on_human_homepage": false
+  },
+  "next_phase": "S13 P3"
+}
