@@ -12,6 +12,7 @@ import subprocess
 import sys
 import tomllib
 import tempfile
+import time
 import unittest
 import zipfile
 from pathlib import Path
@@ -85,7 +86,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
         python_stub.write_text(
             "#!/usr/bin/env bash\n"
             "set -euo pipefail\n"
-            f"echo python:$1 >> {call_log}\n"
+            f"echo python:$@ >> {call_log}\n"
             "case \"$1\" in\n"
             f"  *check_source_readiness.py) exit {readiness_exit} ;;\n"
             "  *run_fund_weekly_analysis.py) echo '{\"run_id\":\"daily_stub\",\"run_dir\":\""
@@ -136,6 +137,15 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
 
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertLess(runner_index, ocr_index)
+
+    def test_daily_entrypoint_uses_vision_ocr_engine_by_default_when_ready(self) -> None:
+        result, call_log = self.run_daily_with_stubbed_tools(readiness_exit=0)
+        calls = call_log.read_text(encoding="utf-8").splitlines()
+        ocr_call = next(call for call in calls if "generate_screenshot_ocr_sidecars.py" in call)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("--engine vision", ocr_call)
+        self.assertIn("--apply", ocr_call)
 
     def test_skill_package_uses_sydney_monday_saturday_1100_local_schedule_and_real_input(self) -> None:
         self.assertTrue(SKILL_ROOT.exists(), "fund-weekly-analysis-skill package must exist under KMFA")
@@ -787,6 +797,257 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(summary["generated_sidecar_count"], 0)
             self.assertEqual(summary["engine_unavailable_count"], 1)
             self.assertFalse(summary["financial_fact_promoted"])
+
+    def test_ocr_sidecar_generation_can_write_private_vision_sidecar_without_promoting_facts(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/vision_ocr_generation_test"
+            image_dir = input_dir / "files" / "0708"
+            image_dir.mkdir(parents=True)
+            run_dir.mkdir(parents=True)
+            image = image_dir / "20260708113000_杨婷_资金账户截图.png"
+            image.write_bytes(b"real-image-bytes")
+            fake_vision = Path(temp_dir) / "fake_vision.py"
+            fake_vision.write_text(
+                "import json, sys\n"
+                "for path in sys.argv[1:]:\n"
+                "    print(json.dumps({"
+                "'path': path, "
+                "'status': 'ocr_text_available', "
+                "'text': '可用现金 123.45\\n银行存款 67.89', "
+                "'reason': ''"
+                "}, ensure_ascii=False))\n",
+                encoding="utf-8",
+            )
+
+            with (run_dir / "screenshot_ocr_coverage.csv").open("w", encoding="utf-8", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=[
+                    "ocr_coverage_id",
+                    "evidence_id",
+                    "source_image_relative_path",
+                    "ocr_sidecar_candidates",
+                    "ocr_text_relative_path",
+                    "ocr_coverage_status",
+                    "next_action",
+                    "review_status",
+                    "financial_fact_promoted",
+                ])
+                writer.writeheader()
+                writer.writerow({
+                    "ocr_coverage_id": "OCRCOV-vision_ocr_generation_test-00001",
+                    "evidence_id": "FW-00001",
+                    "source_image_relative_path": "files/0708/20260708113000_杨婷_资金账户截图.png",
+                    "ocr_sidecar_candidates": "files/0708/20260708113000_杨婷_资金账户截图.png.ocr.txt",
+                    "ocr_text_relative_path": "",
+                    "ocr_coverage_status": "ocr_text_sidecar_missing",
+                    "next_action": "run_ocr_or_attach_real_ocr_sidecar",
+                    "review_status": "pending_ocr_extraction",
+                    "financial_fact_promoted": "false",
+                })
+
+            env = os.environ.copy()
+            env["KMFA_FUND_VISION_OCR_COMMAND"] = f"{sys.executable} {fake_vision}"
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "generate_screenshot_ocr_sidecars.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--input-dir",
+                    str(input_dir),
+                    "--run-dir",
+                    str(run_dir),
+                    "--engine",
+                    "vision",
+                    "--apply",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+                env=env,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            with (run_dir / "screenshot_ocr_sidecar_generation_plan.csv").open(encoding="utf-8-sig", newline="") as f:
+                plan_rows = list(csv.DictReader(f))
+            self.assertEqual(len(plan_rows), 1)
+            self.assertEqual(plan_rows[0]["generation_status"], "ocr_text_generated_pending_review")
+            self.assertEqual(plan_rows[0]["apply_performed"], "true")
+            self.assertEqual(plan_rows[0]["financial_fact_promoted"], "false")
+            self.assertEqual(plan_rows[0]["text_length"], str(len("可用现金 123.45\n银行存款 67.89")))
+            self.assertNotIn("可用现金", (run_dir / "screenshot_ocr_sidecar_generation_plan.csv").read_text(encoding="utf-8-sig"))
+
+            sidecar_rel = Path(plan_rows[0]["ocr_text_private_relative_path"])
+            sidecar = repo_root / sidecar_rel
+            self.assertTrue(sidecar.exists())
+            self.assertEqual(sidecar.read_text(encoding="utf-8"), "可用现金 123.45\n银行存款 67.89\n")
+
+            summary = json.loads((run_dir / "screenshot_ocr_sidecar_generation_summary.json").read_text(encoding="utf-8"))
+            self.assertEqual(summary["engine"], "vision")
+            self.assertTrue(summary["apply"])
+            self.assertEqual(summary["planned_count"], 1)
+            self.assertEqual(summary["generated_sidecar_count"], 1)
+            self.assertEqual(summary["text_available_count"], 1)
+            self.assertFalse(summary["financial_fact_promoted"])
+
+    def test_vision_ocr_generation_runs_in_bounded_batches(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/vision_ocr_batch_test"
+            image_dir = input_dir / "files" / "0708"
+            image_dir.mkdir(parents=True)
+            run_dir.mkdir(parents=True)
+            call_log = Path(temp_dir) / "vision_calls.jsonl"
+            fake_vision = Path(temp_dir) / "fake_vision.py"
+            fake_vision.write_text(
+                "import json, os, sys\n"
+                "with open(os.environ['VISION_CALL_LOG'], 'a', encoding='utf-8') as f:\n"
+                "    f.write(json.dumps({'count': len(sys.argv[1:])}) + '\\n')\n"
+                "for path in sys.argv[1:]:\n"
+                "    print(json.dumps({'path': path, 'status': 'ocr_text_available', 'text': '文本', 'reason': ''}, ensure_ascii=False))\n",
+                encoding="utf-8",
+            )
+
+            with (run_dir / "screenshot_ocr_coverage.csv").open("w", encoding="utf-8", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=[
+                    "ocr_coverage_id",
+                    "evidence_id",
+                    "source_image_relative_path",
+                    "ocr_sidecar_candidates",
+                    "ocr_text_relative_path",
+                    "ocr_coverage_status",
+                    "next_action",
+                    "review_status",
+                    "financial_fact_promoted",
+                ])
+                writer.writeheader()
+                for index in range(3):
+                    image = image_dir / f"image_{index}.png"
+                    image.write_bytes(b"real-image-bytes")
+                    writer.writerow({
+                        "ocr_coverage_id": f"OCRCOV-vision_ocr_batch_test-{index:05d}",
+                        "evidence_id": f"FW-{index:05d}",
+                        "source_image_relative_path": f"files/0708/image_{index}.png",
+                        "ocr_sidecar_candidates": f"files/0708/image_{index}.png.ocr.txt",
+                        "ocr_text_relative_path": "",
+                        "ocr_coverage_status": "ocr_text_sidecar_missing",
+                        "next_action": "run_ocr_or_attach_real_ocr_sidecar",
+                        "review_status": "pending_ocr_extraction",
+                        "financial_fact_promoted": "false",
+                    })
+
+            env = os.environ.copy()
+            env["KMFA_FUND_VISION_OCR_COMMAND"] = f"{sys.executable} {fake_vision}"
+            env["VISION_CALL_LOG"] = str(call_log)
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "generate_screenshot_ocr_sidecars.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--input-dir",
+                    str(input_dir),
+                    "--run-dir",
+                    str(run_dir),
+                    "--engine",
+                    "vision",
+                    "--apply",
+                    "--vision-batch-size",
+                    "2",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+                env=env,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            calls = [json.loads(line)["count"] for line in call_log.read_text(encoding="utf-8").splitlines()]
+            self.assertEqual(calls, [2, 1])
+            summary = json.loads((run_dir / "screenshot_ocr_sidecar_generation_summary.json").read_text(encoding="utf-8"))
+            self.assertEqual(summary["generated_sidecar_count"], 3)
+            self.assertEqual(summary["text_available_count"], 3)
+
+    def test_vision_ocr_batch_timeout_is_per_batch_not_per_image(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs/vision_ocr_timeout_test"
+            image_dir = input_dir / "files" / "0708"
+            image_dir.mkdir(parents=True)
+            run_dir.mkdir(parents=True)
+            fake_vision = Path(temp_dir) / "slow_vision.py"
+            fake_vision.write_text(
+                "import json, sys, time\n"
+                "time.sleep(2)\n"
+                "for path in sys.argv[1:]:\n"
+                "    print(json.dumps({'path': path, 'status': 'ocr_text_available', 'text': 'late text', 'reason': ''}))\n",
+                encoding="utf-8",
+            )
+
+            with (run_dir / "screenshot_ocr_coverage.csv").open("w", encoding="utf-8", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=[
+                    "ocr_coverage_id",
+                    "evidence_id",
+                    "source_image_relative_path",
+                    "ocr_sidecar_candidates",
+                    "ocr_text_relative_path",
+                    "ocr_coverage_status",
+                    "next_action",
+                    "review_status",
+                    "financial_fact_promoted",
+                ])
+                writer.writeheader()
+                for index in range(3):
+                    image = image_dir / f"image_{index}.png"
+                    image.write_bytes(b"real-image-bytes")
+                    writer.writerow({
+                        "ocr_coverage_id": f"OCRCOV-vision_ocr_timeout_test-{index:05d}",
+                        "evidence_id": f"FW-{index:05d}",
+                        "source_image_relative_path": f"files/0708/image_{index}.png",
+                        "ocr_sidecar_candidates": f"files/0708/image_{index}.png.ocr.txt",
+                        "ocr_text_relative_path": "",
+                        "ocr_coverage_status": "ocr_text_sidecar_missing",
+                        "next_action": "run_ocr_or_attach_real_ocr_sidecar",
+                        "review_status": "pending_ocr_extraction",
+                        "financial_fact_promoted": "false",
+                    })
+
+            env = os.environ.copy()
+            env["KMFA_FUND_VISION_OCR_COMMAND"] = f"{sys.executable} {fake_vision}"
+            started = time.monotonic()
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "generate_screenshot_ocr_sidecars.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--input-dir",
+                    str(input_dir),
+                    "--run-dir",
+                    str(run_dir),
+                    "--engine",
+                    "vision",
+                    "--apply",
+                    "--timeout-seconds",
+                    "1",
+                    "--vision-batch-size",
+                    "3",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+                env=env,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertLess(time.monotonic() - started, 2)
+            with (run_dir / "screenshot_ocr_sidecar_generation_plan.csv").open(encoding="utf-8-sig", newline="") as f:
+                plan_rows = list(csv.DictReader(f))
+            self.assertEqual([row["generation_status"] for row in plan_rows], ["ocr_engine_timeout"] * 3)
+            self.assertFalse((repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_sidecars").exists())
 
     def test_runner_links_chat_candidates_to_real_manifest_evidence_without_promoting_facts(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

@@ -29,7 +29,7 @@ RUNNER_OUTPUT="$(python3 "$SKILL_DIR/tools/run_fund_weekly_analysis.py" --input-
 echo "$RUNNER_OUTPUT"
 RUN_DIR="$(printf '%s\n' "$RUNNER_OUTPUT" | sed -n 's/.*"run_dir"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | tail -1)"
 if [[ -n "$RUN_DIR" ]]; then
-  python3 "$SKILL_DIR/tools/generate_screenshot_ocr_sidecars.py" --input-dir "$INPUT_DIR" --repo-root "$REPO_ROOT" --run-dir "$RUN_DIR" --engine "${KMFA_FUND_OCR_ENGINE:-mdls}"
+  python3 "$SKILL_DIR/tools/generate_screenshot_ocr_sidecars.py" --input-dir "$INPUT_DIR" --repo-root "$REPO_ROOT" --run-dir "$RUN_DIR" --engine "${KMFA_FUND_OCR_ENGINE:-vision}" --apply
 else
   echo "WARN: runner output did not include run_dir; OCR sidecar generation plan was skipped." >&2
 fi

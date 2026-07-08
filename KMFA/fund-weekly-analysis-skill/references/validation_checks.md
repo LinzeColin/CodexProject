@@ -12,7 +12,7 @@ Blocking checks:
 * `INDEXED_PENDING_EXTRACTION` outputs do not contain generated financial amounts, forecasts, or management conclusions.
 * `kmfa_metadata_signals.csv` may carry only public-safe KMFA metadata signals and must keep all formal action / management conclusion gates false.
 * `screenshot_ocr_coverage.csv` must include every screenshot evidence row and show whether a real OCR text sidecar exists; missing sidecars must stay `ocr_text_sidecar_missing`, `financial_fact_promoted=false`, and must not populate `fund_ledger.csv`.
-* `screenshot_ocr_sidecar_generation_plan.csv` and summary JSON may be written only under private runtime. Empty OCR output must not create a sidecar; all rows must keep `financial_fact_promoted=false` and must not populate `fund_ledger.csv`.
+* `screenshot_ocr_sidecar_generation_plan.csv`, summary JSON, and generated Vision OCR text sidecars may be written only under private runtime. Empty OCR output must not create a sidecar; all rows must keep `financial_fact_promoted=false` and must not populate `fund_ledger.csv`.
 * `ocr_text_candidates.csv` may carry only adjacent real OCR text sidecars linked to screenshot evidence; all rows must stay pending review with `financial_fact_promoted=false`.
 * `ocr_value_candidates.csv` may carry only date/amount candidates parsed from `ocr_text_candidates.csv`; all rows must stay pending review with `financial_fact_promoted=false` and must not populate `fund_ledger.csv`.
 * `chat_text_candidates.csv` may carry only real DingTalk `chat_records.csv` content/quoted_content rows with finance signals; all rows must stay pending review with `financial_fact_promoted=false`.
