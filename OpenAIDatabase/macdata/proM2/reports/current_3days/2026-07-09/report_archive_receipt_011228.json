@@ -1,7 +1,7 @@
 {
-  "created_at_local": "2026-07-09T01:12:05+10:00",
+  "created_at_local": "2026-07-09T01:12:28+10:00",
   "device_key": "proM2",
   "message_suffix": "proM2-20260709-011154",
   "retention_note": "归档分支当前树只保留最近三天；更早数据通过 GitHub 提交历史保留。",
-  "stage": "raw"
+  "stage": "report"
 }
