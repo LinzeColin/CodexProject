@@ -876,3 +876,12 @@ KMFA 当前版本 `0.1.4-residual-difference-authorized-source-reference-or-excl
 - owner action boundary: 48 个 GitHub upload requirement blockers 已转为 app reinstall 前置 owner/授权代理动作要求；当前仍没有可执行 source reference、owner exclusion、formula mapping 或 non-numeric mapping。
 - counts: `app_reinstall_requirement_blocker_count=48`, `app_reinstall_ready_count=0`, `source_reference_or_owner_exclusion_app_reinstall_requirement_count=40`, `formula_or_non_numeric_mapping_app_reinstall_requirement_count=8`。
 - not performed: raw inbox access/mutation、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+
+## 2026-07-08｜Owner / authorized-agent action required before business execution
+
+- task_id: `KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-BUSINESS-EXECUTION-20260708`
+- decision: `NO_GO`
+- owner_action_required: owner or authorized agent must provide executable source reference, owner exclusion, formula mapping or non-numeric mapping before business execution can be considered.
+- blockers: `48`
+- actionable_owner_resolution_count: `0`
+- raw inbox: not touched.

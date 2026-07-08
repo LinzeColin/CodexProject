@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-app-reinstall"
-product_version_status: "completed_validated_local_only_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_app_reinstall_no_go_blocked"
-version_file_value: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-app-reinstall"
+product_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-business-execution"
+product_version_status: "completed_validated_local_only_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_execution_no_go_blocked"
+version_file_value: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-business-execution"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-app-reinstall"
+  MOD-KMFA-GOV-001: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-business-execution"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -918,6 +918,66 @@ kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_applicati
     app_reinstall_allowed: false
     app_reinstall_performed_by_this_phase: false
     app_reinstall_performed: false
+  forbidden_scope:
+    raw_inbox_read: false
+    raw_inbox_write: false
+    raw_inbox_delete: false
+    raw_inbox_move: false
+    raw_inbox_copy: false
+    raw_inbox_normalize: false
+    raw_inbox_mutation: false
+    lineage_full_check: false
+    formal_report: false
+    github_upload: false
+    app_reinstall: false
+    business_execution: false
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_execution:
+  status: completed_validated_local_only_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_execution_no_go_blocked
+  phase: V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_BUSINESS_EXECUTION
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_BUSINESS_EXECUTION
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_execution.py
+  focused_test: KMFA/tests/test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_execution.py
+  github_upload: blocked_no_go_upload_deferred
+  counts:
+    source_app_reinstall_requirement_ready_count: 0
+    source_app_reinstall_requirement_blocker_count: 48
+    source_app_reinstall_requirement_required_count: 48
+    source_private_app_reinstall_requirement_queue_item_count: 48
+    business_execution_requirement_ready_count: 0
+    business_execution_requirement_blocker_count: 48
+    business_execution_requirement_required_count: 48
+    actionable_owner_resolution_count: 0
+    source_reference_or_owner_exclusion_business_execution_requirement_count: 40
+    formula_or_non_numeric_mapping_business_execution_requirement_count: 8
+    authoritative_binding_application_ready_count: 0
+    raw_to_processed_value_comparison_ready_count: 0
+    processed_data_reconciliation_ready_count: 0
+    business_value_consistency_ready_count: 0
+    lineage_full_check_ready_count: 0
+    business_execution_ready_count: 0
+    unresolved_difference_count: 72
+  gates:
+    external_action_requirement_checked_by_this_phase: true
+    owner_or_agent_external_action_completed_by_this_phase: false
+    authoritative_binding_application_ready: false
+    raw_to_processed_value_comparison_ready: false
+    processed_data_reconciliation_ready: false
+    business_value_consistency_ready: false
+    lineage_full_check_ready: false
+    lineage_full_check_performed_by_this_phase: false
+    github_upload_ready: false
+    github_upload_allowed: false
+    github_upload_performed_by_this_phase: false
+    github_upload_performed: false
+    app_reinstall_ready: false
+    app_reinstall_allowed: false
+    app_reinstall_performed_by_this_phase: false
+    app_reinstall_performed: false
+    business_execution_ready: false
+    business_execution_allowed: false
+    business_execution_performed_by_this_phase: false
+    business_execution_performed: false
   forbidden_scope:
     raw_inbox_read: false
     raw_inbox_write: false
