@@ -1,0 +1,203 @@
+{
+  "schema_id": "memory_atlas_facet_event_schema_v1_2_s05_p1",
+  "task_id": "MA-V12-S05P1",
+  "acceptance_id": "ACC-MA-V12-S05P1",
+  "status": "phase_s05_p1_facet_schema_completed_pending_s05_p2",
+  "purpose": "Define the canonical facet and behavior-event schema before implementing the S05 P2 extractor.",
+  "schema_version": "memory_atlas_facet_event.v1",
+  "event_kind": "canonical_behavior_event",
+  "required_fields": [
+    "source",
+    "topic",
+    "intent",
+    "task_type",
+    "project",
+    "output_type",
+    "language",
+    "tool",
+    "turn_count",
+    "friction",
+    "value_signal",
+    "future_agent_source"
+  ],
+  "optional_fields_for_later_phases": [
+    "event_id",
+    "source_id",
+    "record_id",
+    "occurred_at",
+    "agent_name",
+    "raw_ref",
+    "manifest_ref",
+    "evidence_missing_reason",
+    "confidence",
+    "risk_signal",
+    "tools_used"
+  ],
+  "field_contract": {
+    "source": {
+      "type": "enum",
+      "required": true,
+      "allowed_values": [
+        "chatgpt",
+        "codex",
+        "future_agent",
+        "other_agent"
+      ],
+      "description_zh": "事件来自哪个 agent 或同步来源。"
+    },
+    "topic": {
+      "type": "string",
+      "required": true,
+      "fallback": "unknown_topic",
+      "description_zh": "这条事件讨论的主题。"
+    },
+    "intent": {
+      "type": "enum",
+      "required": true,
+      "allowed_values": [
+        "plan",
+        "build",
+        "debug",
+        "review",
+        "research",
+        "write",
+        "operate",
+        "decide",
+        "handoff",
+        "unknown"
+      ],
+      "description_zh": "用户或 agent 的主要意图。"
+    },
+    "task_type": {
+      "type": "enum",
+      "required": true,
+      "allowed_values": [
+        "product",
+        "engineering",
+        "data",
+        "automation",
+        "research",
+        "design",
+        "writing",
+        "operations",
+        "governance",
+        "unknown"
+      ],
+      "description_zh": "任务所属类型，用于后续聚类和 ROI 分析。"
+    },
+    "project": {
+      "type": "string_or_null",
+      "required": true,
+      "fallback": null,
+      "description_zh": "事件所属项目；无法判断时允许为空。"
+    },
+    "output_type": {
+      "type": "enum",
+      "required": true,
+      "allowed_values": [
+        "code",
+        "doc",
+        "config",
+        "data",
+        "report",
+        "plan",
+        "ui",
+        "test",
+        "decision",
+        "handoff",
+        "unknown"
+      ],
+      "description_zh": "这次工作主要产出了什么。"
+    },
+    "language": {
+      "type": "enum",
+      "required": true,
+      "allowed_values": [
+        "zh",
+        "en",
+        "mixed",
+        "other",
+        "unknown"
+      ],
+      "description_zh": "事件主要使用的语言。"
+    },
+    "tool": {
+      "type": "enum",
+      "required": true,
+      "allowed_values": [
+        "codex",
+        "chatgpt",
+        "browser",
+        "terminal",
+        "github",
+        "filesystem",
+        "notion",
+        "dingtalk",
+        "other",
+        "none",
+        "unknown"
+      ],
+      "description_zh": "事件最关键的工具或运行表面。"
+    },
+    "turn_count": {
+      "type": "integer",
+      "required": true,
+      "minimum": 0,
+      "fallback": 0,
+      "description_zh": "围绕这件事发生了多少轮交互；无法判断时为 0。"
+    },
+    "friction": {
+      "type": "array",
+      "required": true,
+      "item_type": "string",
+      "fallback": [],
+      "description_zh": "阻力、卡点、返工或不确定性信号。"
+    },
+    "value_signal": {
+      "type": "array",
+      "required": true,
+      "item_type": "string",
+      "fallback": [],
+      "description_zh": "价值信号，例如节省时间、复用、降低风险、形成决策。"
+    },
+    "future_agent_source": {
+      "type": "object_or_null",
+      "required": true,
+      "required_when": "source is future_agent or other_agent",
+      "fallback": null,
+      "description_zh": "后续其他 agent 的来源描述；ChatGPT/Codex 可为空。"
+    }
+  },
+  "source_coverage_contract": {
+    "chatgpt": {
+      "source": "chatgpt",
+      "future_agent_source": null,
+      "raw_root": "data/public_raw/chatgpt"
+    },
+    "codex": {
+      "source": "codex",
+      "future_agent_source": null,
+      "raw_root": "data/public_raw/codex"
+    },
+    "future_agent": {
+      "source": "future_agent",
+      "future_agent_source": {
+        "agent_id": "{agent_id}",
+        "agent_name": "{Agent Display Name}",
+        "source_type": "other_agent"
+      },
+      "raw_root": "data/public_raw/agents/{agent_id}"
+    }
+  },
+  "evidence_contract_for_later_phases": {
+    "s05_p2": "Extractor may produce canonical events from raw or derived inputs, but must not generate fake records for missing data.",
+    "s05_p3": "Every event must include raw_ref, manifest_ref or evidence_missing_reason."
+  },
+  "phase_boundary": {
+    "does_not_implement_extractor": true,
+    "does_not_generate_events_json": true,
+    "does_not_modify_raw": true,
+    "does_not_change_first_screen_ui": true,
+    "next_phase": "S05 P2 extractor"
+  }
+}

@@ -110,3 +110,7 @@ S04 Review 确认 ChatGPT 只读同步、Codex local sync、future-agent minimal
 raw + derived + run log 输出、build-atlas dry-run 和 GitHub backup dry-run/apply 均可验证。
 
 下一步是 S05 P1。当前 review 不上传 GitHub main，不远端 push，不重装 app。
+
+当前项目状态已继续推进：S05 P1 已完成 facet/canonical event schema，
+但它不改变本同步与备份页已定义的 ChatGPT/Codex/future-agent 同步边界。
+项目下一步是 S05 P2。

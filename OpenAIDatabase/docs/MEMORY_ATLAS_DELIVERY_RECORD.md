@@ -1,3 +1,43 @@
+## v1.2 S05 P1 Facet Schema
+
+状态：`phase_s05_p1_facet_schema_completed_pending_s05_p2`。
+
+任务 ID：`MA-V12-S05P1`。
+
+验收 ID：`ACC-MA-V12-S05P1`。
+
+S05 P1 定义 Memory Atlas v1.2 的 facet/canonical event schema。它覆盖
+ChatGPT、Codex 和 future agent 的后续事件语义层，并用中文解释英文机器字段。
+
+涉及文件：
+
+- `机器治理/数据契约/facet_event_schema.v1_2_s05_p1.json`
+- `人类可读/12_Facet字段与事件语义说明.md`
+- `docs/reviews/memory_atlas_v1_2_s05_p1_facet_schema.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p1.cjs`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s05-p1`
+- `ACC-MA-V12-S05P1`
+- `MA-V12-S05P1`
+- S05 P1
+- `facet_event_schema.v1_2_s05_p1.json`
+- `12_Facet字段与事件语义说明.md`
+- pending S05 P2
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase.
+- No extractor in this phase.
+- No fake events in this phase.
+- No raw mutation in this phase.
+- No GitHub main upload in this phase.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S05 P1 Facet Schema; MA-V12-S05P1; ACC-MA-V12-S05P1; phase_s05_p1_facet_schema_completed_pending_s05_p2; validate:v1.2-s05-p1; facet_event_schema.v1_2_s05_p1.json; 12_Facet字段与事件语义说明.md; memory_atlas_v1_2_s05_p1_facet_schema.md; S05 P1; pending S05 P2; No GitHub main upload in this phase; No remote push in this phase; No extractor in this phase; No fake events in this phase; No raw mutation in this phase.
+
 ## v1.2 S04 Review
 
 状态：`stage_s04_review_passed_pending_s05_no_github_main_upload`。
