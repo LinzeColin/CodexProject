@@ -966,6 +966,34 @@ def build_attachment_repair_apply_gate(manifest: dict, repo_root: Path, attachme
     return rows
 
 
+def build_attachment_repair_authorization_template(manifest: dict, attachment_apply_gate_rows: list[dict]) -> dict:
+    return {
+        "authorization_manifest_version": "1",
+        "run_id": manifest["run_id"],
+        "authorization_scope": "attachment_repair_plan_validation_only",
+        "template_status": "operator_review_required",
+        "template_generated_from": "attachment_repair_apply_gate.csv",
+        "output_authorization_manifest_relative_path": attachment_repair_authorization_relative_path(manifest["run_id"]),
+        "authorized_by": "",
+        "authorized_at": "",
+        "authorization_ticket": "",
+        "source_mutation_allowed": False,
+        "apply_execution_allowed": False,
+        "operator_instruction": "Review each repair plan row, edit authorized=true only where approved, then save a confirmed copy to output_authorization_manifest_relative_path. This template itself does not authorize or execute repairs.",
+        "repair_plan_authorizations": [
+            {
+                "repair_plan_id": row["repair_plan_id"],
+                "required_command_family": row["required_command_family"],
+                "open_message_id": row["open_message_id"],
+                "relative_path": row["relative_path"],
+                "authorized": False,
+                "operator_note": "",
+            }
+            for row in attachment_apply_gate_rows
+        ],
+    }
+
+
 def read_jsonl(path: Path) -> list[dict]:
     if not path.exists():
         return []
@@ -2050,6 +2078,7 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     attachment_dry_run_rows = build_attachment_remediation_dry_run(manifest, attachment_remediation_rows)
     attachment_repair_plan_rows = build_attachment_repair_plan(manifest, attachment_dry_run_rows)
     attachment_apply_gate_rows = build_attachment_repair_apply_gate(manifest, repo_root, attachment_repair_plan_rows)
+    attachment_authorization_template = build_attachment_repair_authorization_template(manifest, attachment_apply_gate_rows)
     structured = extract_structured_csv_facts(manifest, input_dir, evidence)
     funding_forecast_rows = build_funding_forecast_rows(structured)
     cashflow_validation_rows = build_cashflow_validation_rows(structured, manifest["run_id"])
@@ -2075,6 +2104,8 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
     manifest["attachment_repair_apply_blocked_count"] = sum(1 for row in attachment_apply_gate_rows if row["apply_allowed"] == "false")
     manifest["attachment_repair_authorization_present_count"] = sum(1 for row in attachment_apply_gate_rows if row["operator_authorization_present"] == "true")
     manifest["attachment_repair_authorization_valid_count"] = sum(1 for row in attachment_apply_gate_rows if row["authorization_validation_status"] == "valid_manifest_validation_only")
+    manifest["attachment_repair_authorization_template_count"] = len(attachment_authorization_template["repair_plan_authorizations"])
+    manifest["attachment_repair_authorization_template_authorized_count"] = sum(1 for row in attachment_authorization_template["repair_plan_authorizations"] if row["authorized"] is True)
     manifest["attachment_repair_apply_allowed_count"] = sum(1 for row in attachment_apply_gate_rows if row["apply_allowed"] == "true")
     manifest["metadata_signal_count"] = len(metadata_signals)
     manifest["forecast_row_count"] = len(funding_forecast_rows)
@@ -2343,6 +2374,10 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "relative_path",
         "review_status",
     ], attachment_apply_gate_rows)
+    (run_dir / "attachment_repair_authorization_template.json").write_text(
+        json.dumps(attachment_authorization_template, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
     write_csv(run_dir / "workbook_quality_checks.csv", [
         "check_id",
         "check_name",
@@ -2490,6 +2525,8 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
         "attachment_repair_apply_blocked_count": manifest["attachment_repair_apply_blocked_count"],
         "attachment_repair_authorization_present_count": manifest["attachment_repair_authorization_present_count"],
         "attachment_repair_authorization_valid_count": manifest["attachment_repair_authorization_valid_count"],
+        "attachment_repair_authorization_template_count": manifest["attachment_repair_authorization_template_count"],
+        "attachment_repair_authorization_template_authorized_count": manifest["attachment_repair_authorization_template_authorized_count"],
         "attachment_repair_apply_allowed_count": manifest["attachment_repair_apply_allowed_count"],
         "structured_financial_fact_count": len(structured["fund_rows"]),
         "metadata_signal_count": len(metadata_signals),
@@ -2536,6 +2573,8 @@ def write_no_hallucination_outputs(manifest: dict, run_dir: Path, input_dir: Pat
                 "attachment_repair_apply_blocked_count": manifest["attachment_repair_apply_blocked_count"],
                 "attachment_repair_authorization_present_count": manifest["attachment_repair_authorization_present_count"],
                 "attachment_repair_authorization_valid_count": manifest["attachment_repair_authorization_valid_count"],
+                "attachment_repair_authorization_template_count": manifest["attachment_repair_authorization_template_count"],
+                "attachment_repair_authorization_template_authorized_count": manifest["attachment_repair_authorization_template_authorized_count"],
                 "attachment_repair_apply_allowed_count": manifest["attachment_repair_apply_allowed_count"],
                 "structured_financial_fact_count": len(structured["fund_rows"]),
                 "metadata_signal_count": len(metadata_signals),
@@ -2659,6 +2698,7 @@ def main() -> int:
         f"Attachment repair plan open count: {manifest.get('attachment_repair_plan_open_count', 0)}\n\n"
         f"Attachment repair apply blocked count: {manifest.get('attachment_repair_apply_blocked_count', 0)}\n\n"
         f"Attachment repair authorization valid count: {manifest.get('attachment_repair_authorization_valid_count', 0)}\n\n"
+        f"Attachment repair authorization template count: {manifest.get('attachment_repair_authorization_template_count', 0)}\n\n"
         f"KMFA metadata signal count: {manifest.get('metadata_signal_count', 0)}\n\n"
         f"Known due-date funding forecast row count: {manifest.get('forecast_row_count', 0)}\n\n"
         f"Cashflow validation row count: {manifest.get('cashflow_validation_row_count', 0)}\n\n"

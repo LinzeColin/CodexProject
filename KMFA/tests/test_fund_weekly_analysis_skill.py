@@ -413,6 +413,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "attachment_remediation_dry_run.csv",
                 "attachment_repair_plan.csv",
                 "attachment_repair_apply_gate.csv",
+                "attachment_repair_authorization_template.json",
                 "workbook_quality_checks.csv",
                 "kmfa_metadata_signals.csv",
                 "exception_tasks.csv",
@@ -1475,6 +1476,120 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["attachment_repair_apply_allowed_count"], 0)
             self.assertFalse(cross_review["management_conclusion_allowed"])
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
+
+    def test_runner_emits_attachment_repair_authorization_template_without_authorizing(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+            manifest_dir = input_dir / "_manifest"
+            file_dir = input_dir / "files" / "0708"
+            manifest_dir.mkdir(parents=True)
+            file_dir.mkdir(parents=True)
+
+            run_id = "attachment_authorization_template_test"
+            missing_rel = "files/0708/20260708113200_missing_image.png"
+
+            with (manifest_dir / "manifest.csv").open("w", encoding="utf-8", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=[
+                    "group_name",
+                    "open_conversation_id",
+                    "message_id",
+                    "message_time",
+                    "sender_name",
+                    "sender_id",
+                    "msg_type",
+                    "resource_type",
+                    "resource_id",
+                    "original_filename",
+                    "local_archive_path",
+                    "output_path",
+                    "sha256",
+                    "size_bytes",
+                    "download_method",
+                    "status",
+                ])
+                writer.writeheader()
+                writer.writerow({
+                    "group_name": "付款请示群",
+                    "open_conversation_id": "conv-1",
+                    "message_id": "msg-missing-output",
+                    "message_time": "2026-07-08T11:30:00+10:00",
+                    "sender_name": "杨婷",
+                    "sender_id": "sender-1",
+                    "msg_type": "image",
+                    "resource_type": "image",
+                    "resource_id": "resource-missing-output",
+                    "original_filename": "missing_output.png",
+                    "local_archive_path": "",
+                    "output_path": "",
+                    "sha256": "",
+                    "size_bytes": "",
+                    "download_method": "dws",
+                    "status": "failed",
+                })
+                writer.writerow({
+                    "group_name": "付款请示群",
+                    "open_conversation_id": "conv-1",
+                    "message_id": "msg-missing-file",
+                    "message_time": "2026-07-08T11:31:00+10:00",
+                    "sender_name": "杨婷",
+                    "sender_id": "sender-1",
+                    "msg_type": "image",
+                    "resource_type": "image",
+                    "resource_id": "resource-missing-file",
+                    "original_filename": "missing_file.png",
+                    "local_archive_path": "",
+                    "output_path": missing_rel,
+                    "sha256": "0" * 64,
+                    "size_bytes": "123",
+                    "download_method": "dws",
+                    "status": "downloaded",
+                })
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "run_fund_weekly_analysis.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--input-dir",
+                    str(input_dir),
+                    "--run-id",
+                    run_id,
+                    "--timezone",
+                    "Australia/Sydney",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            run_dir = repo_root / f"KMFA/metadata/fund_weekly_analysis/private_runtime/runs/{run_id}"
+            template = json.loads((run_dir / "attachment_repair_authorization_template.json").read_text(encoding="utf-8"))
+            self.assertEqual(template["authorization_manifest_version"], "1")
+            self.assertEqual(template["run_id"], run_id)
+            self.assertEqual(template["authorization_scope"], "attachment_repair_plan_validation_only")
+            self.assertEqual(template["template_status"], "operator_review_required")
+            self.assertFalse(template["source_mutation_allowed"])
+            self.assertFalse(template["apply_execution_allowed"])
+            self.assertEqual(
+                template["output_authorization_manifest_relative_path"],
+                f"KMFA/metadata/fund_weekly_analysis/private_runtime/attachment_repair_authorizations/{run_id}.json",
+            )
+            self.assertEqual(len(template["repair_plan_authorizations"]), 2)
+            self.assertTrue(all(row["authorized"] is False for row in template["repair_plan_authorizations"]))
+
+            with (run_dir / "attachment_repair_apply_gate.csv").open(encoding="utf-8-sig", newline="") as f:
+                gate_rows = list(csv.DictReader(f))
+            self.assertTrue(all(row["apply_allowed"] == "false" for row in gate_rows))
+            self.assertTrue(all(row["apply_performed"] == "false" for row in gate_rows))
+
+            cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
+            self.assertEqual(cross_review["attachment_repair_authorization_template_count"], 2)
+            self.assertEqual(cross_review["attachment_repair_authorization_template_authorized_count"], 0)
+            self.assertEqual(cross_review["attachment_repair_apply_allowed_count"], 0)
+            self.assertFalse(cross_review["management_conclusion_allowed"])
 
     def test_runner_extracts_real_structured_csv_facts_without_management_conclusion(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
