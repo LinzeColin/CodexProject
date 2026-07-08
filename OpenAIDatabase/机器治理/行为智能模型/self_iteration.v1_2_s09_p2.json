@@ -1,0 +1,86 @@
+{
+  "acceptance_id": "ACC-MA-V12-S09P2",
+  "blocked_targets": [
+    "data/public_raw/",
+    "data/raw/",
+    "credentials",
+    "cookies",
+    "tokens"
+  ],
+  "proposal_expiry": {
+    "archive_after_days": 90,
+    "expires_after_days": 30,
+    "stale_after_days": 30,
+    "warn_after_days": 7
+  },
+  "proposal_state": {
+    "apply_execution_allowed": false,
+    "initial_state": "pending_human_review",
+    "raw_apply_target_allowed": false,
+    "requires_human_approval_before_apply": true
+  },
+  "required_suggestion_fields": [
+    "suggestion_id",
+    "target_type",
+    "target_files",
+    "rationale_zh",
+    "expected_change_zh",
+    "evidence_refs",
+    "proposal",
+    "action_half_life_days"
+  ],
+  "schema_version": "memory_atlas_self_iteration_config.v1_2_s09_p2",
+  "scope_boundary": {
+    "decision_debt_ledger": "deferred_to_s09_p3",
+    "github_main_upload": false,
+    "proposal_apply_execution": false,
+    "raw_mutation": false,
+    "self_iteration_suggestions": true
+  },
+  "suggestion_targets": [
+    {
+      "action_half_life_days": 45,
+      "signal_claim_type": "reusable_asset_candidate",
+      "target_files": [
+        ".codex/memories/extensions/ad_hoc/notes/"
+      ],
+      "target_type": "memory"
+    },
+    {
+      "action_half_life_days": 30,
+      "signal_claim_type": "workflow_reuse_candidate",
+      "target_files": [
+        "OpenAIDatabase/scripts/",
+        "OpenAIDatabase/apps/memory-atlas/scripts/"
+      ],
+      "target_type": "config"
+    },
+    {
+      "action_half_life_days": 21,
+      "signal_claim_type": "scope_boundary_candidate",
+      "target_files": [
+        "AGENTS.md",
+        "OpenAIDatabase/开发记录.md"
+      ],
+      "target_type": "AGENTS"
+    },
+    {
+      "action_half_life_days": 14,
+      "signal_claim_type": "quality_ceiling_candidate",
+      "target_files": [
+        "OpenAIDatabase/人类可读/"
+      ],
+      "target_type": "style"
+    },
+    {
+      "action_half_life_days": 21,
+      "signal_claim_type": "artifact_closure_candidate",
+      "target_files": [
+        "OpenAIDatabase/人类可读/",
+        "OpenAIDatabase/docs/reviews/"
+      ],
+      "target_type": "personalization"
+    }
+  ],
+  "task_id": "MA-V12-S09P2"
+}

@@ -326,12 +326,12 @@ function validateDocsAndRecords() {
   const behavior = readRepoFile("机器治理/行为智能模型/README.md");
   const runGate = readRepoFile("机器治理/运行门禁/README.md");
   const s08ReviewState =
-    hasAll(quick, ["当前阶段是 S09 P1", "MA-V12-S09P1", "ACC-MA-V12-S09P1", "下一步只允许进入 S09 P2"]) &&
-    hasAll(overview, ["S09 P1 已完成", "latent_signals.json", "下一步是 S09 P2"]) &&
-    hasAll(machine, ["当前为 S09 P1", "MA-V12-S09P1", "validate:v1.2-s09-p1", "下一步是 S09 P2"]) &&
-    hasAll(dataContract, ["当前 S09 P1 已完成", "latent_signals.json", "下一步是 S09 P2"]) &&
-    hasAll(behavior, ["当前 S09 P1 已完成", "latent_signals.v1_2_s09_p1.json", "latent_signals.json", "下一步是 S09 P2"]) &&
-    hasAll(runGate, ["当前阶段是 S09 P1", "MA-V12-S09P1", "ACC-MA-V12-S09P1", "validate:v1.2-s09-p1"]);
+    hasAll(quick, ["当前阶段是 S09 P2", "MA-V12-S09P2", "ACC-MA-V12-S09P2", "下一步只允许进入 S09 P3"]) &&
+    hasAll(overview, ["S09 P2 已完成", "self_iteration_suggestions.json", "下一步是 S09 P3"]) &&
+    hasAll(machine, ["当前为 S09 P2", "MA-V12-S09P2", "validate:v1.2-s09-p2", "下一步是 S09 P3"]) &&
+    hasAll(dataContract, ["当前 S09 P2 已完成", "self_iteration_suggestions.json", "下一步是 S09 P3"]) &&
+    hasAll(behavior, ["当前 S09 P2 已完成", "self_iteration.v1_2_s09_p2.json", "self_iteration_suggestions.json", "下一步是 S09 P3"]) &&
+    hasAll(runGate, ["当前阶段是 S09 P2", "MA-V12-S09P2", "ACC-MA-V12-S09P2", "validate:v1.2-s09-p2"]);
   const s08p3State =
     hasAll(quick, ["当前阶段是 S08 P3", "MA-V12-S08P3", "ACC-MA-V12-S08P3", "下一步只允许进入 S08 Review"]) &&
     hasAll(overview, ["S08 P3 已完成", "stage flight recorder", "stage_flight_recorder.json", "下一步是 S08 Review"]) &&

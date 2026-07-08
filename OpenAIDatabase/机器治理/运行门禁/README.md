@@ -2,8 +2,33 @@
 
 用于放置 stage gate、stop condition、rollback、需求冻结和运行前检查。
 
-当前阶段是 S09 P1。任务 ID 为 `MA-V12-S09P1`，验收 ID 为
-`ACC-MA-V12-S09P1`，validator 为 `validate:v1.2-s09-p1`。
+当前阶段是 S09 P2。任务 ID 为 `MA-V12-S09P2`，验收 ID 为
+`ACC-MA-V12-S09P2`，validator 为 `validate:v1.2-s09-p2`。
+
+S09 P2 产物：
+
+- `docs/reviews/memory_atlas_v1_2_s09_p2_self_iteration.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s09_p2.cjs`
+- `scripts/build_memory_atlas_self_iteration.py`
+- `scripts/atlasctl.py`
+- `机器治理/行为智能模型/self_iteration.v1_2_s09_p2.json`
+- `data/derived/behavior_intelligence/self_iteration_suggestions.json`
+- `人类可读/22_自我迭代建议说明.md`
+
+S09 P2 gate：
+
+- `validate:v1.2-s09-p2` 可验证 self-iteration suggestions。
+- `python scripts/atlasctl.py analyze --stage self-iteration --dry-run` 返回 no-write payload。
+- `python scripts/atlasctl.py audit --check self-iteration-safety` 返回 PASS。
+- 建议覆盖 memory、config、AGENTS、style 和 personalization。
+- 每条建议有 action half-life。
+- 每个 proposal 有 `expires_at` 和 warn/stale/archive 有效期规则。
+- proposal 保持 `pending_human_review`，本 phase 不执行 apply。
+- 不修改 raw。
+- 不创建 decision debt ledger；S09 P3 再处理。
+
+No GitHub main upload in this phase。
+下一步是 S09 P3。
 
 S09 P1 产物：
 

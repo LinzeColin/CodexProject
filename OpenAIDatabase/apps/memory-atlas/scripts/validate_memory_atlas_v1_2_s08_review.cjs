@@ -405,40 +405,40 @@ function validateDocsAndRecords() {
     "S08 Review artifact is incomplete",
   );
   assertCondition(
-    hasAll(quick, ["当前阶段是 S09 P1", "MA-V12-S09P1", "ACC-MA-V12-S09P1", "下一步只允许进入 S09 P2"]),
+    hasAll(quick, ["当前阶段是 S09 P2", "MA-V12-S09P2", "ACC-MA-V12-S09P2", "下一步只允许进入 S09 P3"]),
     "s08_review_quick_entry",
-    "Quick entry has advanced to S09 P1 while preserving S08 Review records",
-    "Quick entry is missing S09 P1 current state",
+    "Quick entry has advanced to S09 P2 while preserving S08 Review records",
+    "Quick entry is missing S09 P2 current state",
   );
   assertCondition(
-    hasAll(overview, ["S09 P1 已完成", "latent_signals.json", "下一步是 S09 P2"]),
+    hasAll(overview, ["S09 P2 已完成", "self_iteration_suggestions.json", "下一步是 S09 P3"]),
     "s08_review_overview",
-    "Overview has advanced to S09 P1 while preserving S08 Review records",
-    "Overview is missing S09 P1 current state",
+    "Overview has advanced to S09 P2 while preserving S08 Review records",
+    "Overview is missing S09 P2 current state",
   );
   assertCondition(
-    hasAll(machine, ["当前为 S09 P1", "MA-V12-S09P1", "ACC-MA-V12-S09P1", "validate:v1.2-s09-p1", "下一步是 S09 P2"]),
+    hasAll(machine, ["当前为 S09 P2", "MA-V12-S09P2", "ACC-MA-V12-S09P2", "validate:v1.2-s09-p2", "下一步是 S09 P3"]),
     "s08_review_machine_readme",
-    "Machine README has advanced to S09 P1 while preserving S08 Review records",
-    "Machine README is missing S09 P1 current state",
+    "Machine README has advanced to S09 P2 while preserving S08 Review records",
+    "Machine README is missing S09 P2 current state",
   );
   assertCondition(
-    hasAll(dataContract, ["当前 S09 P1 已完成", "latent_signals.json", "下一步是 S09 P2"]),
+    hasAll(dataContract, ["当前 S09 P2 已完成", "self_iteration_suggestions.json", "下一步是 S09 P3"]),
     "s08_review_data_contract",
-    "Data contract README has advanced to S09 P1 while preserving S08 Review records",
-    "Data contract README is missing S09 P1 current state",
+    "Data contract README has advanced to S09 P2 while preserving S08 Review records",
+    "Data contract README is missing S09 P2 current state",
   );
   assertCondition(
-    hasAll(behavior, ["当前 S09 P1 已完成", "latent_signals.v1_2_s09_p1.json", "latent_signals.json", "下一步是 S09 P2"]),
+    hasAll(behavior, ["当前 S09 P2 已完成", "self_iteration.v1_2_s09_p2.json", "self_iteration_suggestions.json", "下一步是 S09 P3"]),
     "s08_review_behavior_readme",
-    "Behavior model README has advanced to S09 P1 while preserving S08 Review records",
-    "Behavior model README is missing S09 P1 current state",
+    "Behavior model README has advanced to S09 P2 while preserving S08 Review records",
+    "Behavior model README is missing S09 P2 current state",
   );
   assertCondition(
-    hasAll(runGate, ["当前阶段是 S09 P1", "MA-V12-S09P1", "ACC-MA-V12-S09P1", "validate:v1.2-s09-p1"]),
+    hasAll(runGate, ["当前阶段是 S09 P2", "MA-V12-S09P2", "ACC-MA-V12-S09P2", "validate:v1.2-s09-p2"]),
     "s08_review_run_gate",
-    "Run gate README has advanced to S09 P1 while preserving S08 Review records",
-    "Run gate README is missing S09 P1 current state",
+    "Run gate README has advanced to S09 P2 while preserving S08 Review records",
+    "Run gate README is missing S09 P2 current state",
   );
   for (const name of recordFiles) {
     const source = readRepoFile(name);

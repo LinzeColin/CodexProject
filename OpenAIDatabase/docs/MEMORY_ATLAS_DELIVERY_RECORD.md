@@ -1,3 +1,52 @@
+## v1.2 S09 P2 Self Iteration
+
+状态：`phase_s09_p2_self_iteration_completed_pending_s09_p3`。
+
+任务 ID：`MA-V12-S09P2`。
+
+验收 ID：`ACC-MA-V12-S09P2`。
+
+Validator：`validate:v1.2-s09-p2`。
+
+S09 P2 生成 evidence-backed self-iteration suggestions。每条 suggestion 必须有
+target type、target files、evidence refs、proposal、action half-life；每个 proposal
+必须有 `expires_at` 和 warn/stale/archive 有效期规则。当前输出 5 条建议，覆盖
+memory、config、AGENTS、style 和 personalization。
+
+涉及文件：
+
+- `机器治理/行为智能模型/self_iteration.v1_2_s09_p2.json`
+- `scripts/build_memory_atlas_self_iteration.py`
+- `scripts/atlasctl.py`
+- `data/derived/behavior_intelligence/self_iteration_suggestions.json`
+- `docs/reviews/memory_atlas_v1_2_s09_p2_self_iteration.md`
+- `人类可读/22_自我迭代建议说明.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s09_p2.cjs`
+- `tests/test_s09p2_self_iteration.py`
+- `apps/memory-atlas/package.json`
+
+验收：
+
+- `validate:v1.2-s09-p2`
+- `ACC-MA-V12-S09P2`
+- `MA-V12-S09P2`
+- S09 P2
+- `phase_s09_p2_self_iteration_completed_pending_s09_p3`
+- `self_iteration_suggestions.json`
+- pending S09 P3
+- No GitHub main upload in this phase
+
+边界：
+
+- No remote push in this phase。
+- No raw mutation。
+- No proposal apply execution。
+- No credential target。
+- No permanent pending proposal。
+- No decision debt ledger。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S09 P2 Self Iteration; MA-V12-S09P2; ACC-MA-V12-S09P2; phase_s09_p2_self_iteration_completed_pending_s09_p3; validate:v1.2-s09-p2; S09 P2; self_iteration_suggestions.json; suggestion_count=5; pending S09 P3; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No proposal apply execution; No credential target; No permanent pending proposal; No decision debt ledger.
+
 ## v1.2 S09 P1 Latent Signals
 
 状态：`phase_s09_p1_latent_signals_completed_pending_s09_p2`。
