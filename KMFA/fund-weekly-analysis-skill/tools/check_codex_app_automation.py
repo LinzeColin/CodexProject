@@ -22,7 +22,7 @@ CHECK_FIELDS = [
     "reasoning_effort",
 ]
 EXPECTED_CONTRACT_FIELDS = {
-    "rrule": "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0",
+    "rrule": "RRULE:FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0",
     "timezone": "Australia/Sydney",
     "prompt_file": "automation/weekly_mon_sat_1100_sydney.prompt.md",
     "input_dir": "/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群",
