@@ -56,6 +56,15 @@ def load_ocr_sidecar_module():
     return module
 
 
+def load_delivery_acceptance_module():
+    module_path = SKILL_ROOT / "tools" / "check_delivery_acceptance.py"
+    spec = importlib.util.spec_from_file_location("delivery_acceptance_for_test", module_path)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
 def load_fund_runner_module():
     module_path = SKILL_ROOT / "tools" / "run_fund_weekly_analysis.py"
     spec = importlib.util.spec_from_file_location("fund_weekly_runner_for_test", module_path)
@@ -258,6 +267,70 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
     def test_taskpack_validator_requires_local_shell_entrypoint(self) -> None:
         validator = (SKILL_ROOT / "tools" / "validate_taskpack.py").read_text(encoding="utf-8")
         self.assertIn('"tools/run_daily_local.sh"', validator)
+        self.assertIn('"tools/check_delivery_acceptance.py"', validator)
+
+    def test_delivery_acceptance_checker_accepts_fail_closed_owner_blocker(self) -> None:
+        checker = load_delivery_acceptance_module()
+        with tempfile.TemporaryDirectory() as temp_dir:
+            run_id = "acceptance_unit"
+            run_dir = (
+                Path(temp_dir)
+                / "KMFA"
+                / "metadata"
+                / "fund_weekly_analysis"
+                / "private_runtime"
+                / "runs"
+                / run_id
+            )
+            run_dir.mkdir(parents=True)
+            workbook_name = f"资金与税费管理母版_{run_id}.xlsx"
+            pdf_name = f"资金与税费管理报告_{run_id}.pdf"
+            (run_dir / workbook_name).write_bytes(TEMPLATE.read_bytes())
+            (run_dir / pdf_name).write_bytes(b"%PDF-" + b"0" * 1200)
+            manifest = {
+                "run_id": run_id,
+                "status": "INDEXED_PENDING_EXTRACTION",
+                "file_count": 2,
+                "human_report_pdf": pdf_name,
+                "human_report_pdf_generated": True,
+                "workbook_quality_blocking_count": 0,
+                "screenshot_ocr_ready_count": 1,
+                "screenshot_ocr_missing_count": 0,
+                "ocr_financial_fact_candidate_count": 1,
+                "ocr_fact_candidate_owner_decision_review_all_xlsx_ready": True,
+                "owner_decision_readiness_status": "blocked_missing_owner_decision_manifest",
+                "owner_decision_readiness_gate_blocking_count": 1,
+            }
+            cross = {
+                "workbook": workbook_name,
+                "human_report_pdf": pdf_name,
+                "human_report_pdf_generated": True,
+                "workbook_quality_blocking_count": 0,
+                "generated_financial_amount_count": 0,
+                "management_conclusion_allowed": False,
+                "formal_fund_ledger_row_count": 0,
+            }
+            (run_dir / "run_manifest.json").write_text(json.dumps(manifest, ensure_ascii=False), encoding="utf-8")
+            (run_dir / "cross_review.json").write_text(json.dumps(cross, ensure_ascii=False), encoding="utf-8")
+            review_header = (
+                "id,fund_ledger_write_allowed,financial_fact_promoted,management_conclusion_allowed\n"
+            )
+            review_row = "row-1,false,false,false\n"
+            (run_dir / "ocr_fact_candidate_owner_worklist.csv").write_text(
+                "id\nrow-1\n",
+                encoding="utf-8",
+            )
+            (run_dir / "ocr_fact_candidate_owner_decision_review_all.csv").write_text(
+                review_header + review_row,
+                encoding="utf-8",
+            )
+
+            checks: list[dict] = []
+            checker.validate_run_dir(run_dir, checks, expected_file_count=2)
+
+        self.assertFalse([check for check in checks if check["status"] == "FAIL"], checks)
+        self.assertTrue(any(check["name"] == "owner_blockers_fail_closed" for check in checks), checks)
+        self.assertTrue(any(check["status"] == "OWNER_BLOCKED" for check in checks), checks)
 
     def test_codex_app_automation_contract_mirrors_weekly_mon_sat_1100_local_cron(self) -> None:
         contract_path = SKILL_ROOT / "automation" / "codex_app_automation.contract.toml"
