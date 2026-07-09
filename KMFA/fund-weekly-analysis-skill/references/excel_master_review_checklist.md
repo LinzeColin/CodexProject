@@ -69,7 +69,7 @@ Current evidence snapshot from the latest mother workbook:
 | Fact promotion execution gate | Active | `fact_promotion_execution_gate.csv` blocks formal promotion until authorization is valid and review blockers are clear |
 | Fact promotion execution dry-run | Active | `fact_promotion_execution_dry_run.csv` previews impact with no write, no promotion, and no conclusion |
 | Fact promotion execution plan | Active | `fact_promotion_execution_plan.csv` defines owner execution authorization requirements without applying them |
-| Fact promotion execution authorization preview | Active | `fact_promotion_execution_authorization_preview.csv` validates private execution authorization coverage without writing ledgers |
+| Fact promotion execution authorization preview | Active | `fact_promotion_execution_authorization_preview.csv` validates private execution authorization coverage for every ready execution plan row before any no-write apply gate can proceed |
 | Fact promotion execution apply gate | Active | `fact_promotion_execution_apply_gate.csv` shows final no-write readiness and planned apply counts before any future formal ledger write |
 | Fact promotion execution result | Active | `fact_promotion_execution_result.csv` records controlled execution results; only authorized structured CSV facts may write a formal ledger sidecar |
 | Formal fund ledger sidecar | Active | `formal_fund_ledger.csv` materializes authorized structured CSV rows without mutating source files or `fund_ledger.csv`; OCR/chat/attachment areas remain excluded |
