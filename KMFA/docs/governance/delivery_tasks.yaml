@@ -13444,3 +13444,38 @@ tasks:
     risk: "Resolution intake blocker recheck evidence can be misread as completed owner authorization; it is explicitly NO_GO and keeps execution closed."
     rollback: "Remove this phase public artifacts and ignored private recheck outputs; keep source resolution-intake blocker audit evidence intact."
     target_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-recheck-after-final-check-closure"
+
+
+  - task_id: "KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-RESOLUTION-INTAKE-BLOCKER-FINAL-RECHECK-AFTER-FINAL-CHECK-CLOSURE-20260710"
+    phase_id: "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_FINAL_RECHECK_AFTER_FINAL_CHECK_CLOSURE"
+    objective: "Record the final owner or authorized-agent resolution-intake blocker observation after final-check closure and keep NO_GO / blocked gates closed."
+    scope:
+      - "public-safe aggregate owner/authorized-agent resolution-intake final blocker recheck evidence"
+      - "ignored private owner/authorized-agent resolution-intake final recheck queue and report"
+      - "validator and focused unit test"
+    non_scope:
+      - "raw inbox access or mutation"
+      - "completed owner resolution, authoritative binding, value comparison, reconciliation, business consistency, lineage full check, formal report generation, GitHub upload, app reinstall or business execution"
+      - "Stage review or GitHub upload"
+    status: "completed"
+    completed_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-final-recheck-after-final-check-closure"
+    dependencies:
+      - "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_RECHECK_AFTER_FINAL_CHECK_CLOSURE"
+    required_files:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_FINAL_RECHECK_AFTER_FINAL_CHECK_CLOSURE/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_final_recheck_after_final_check_closure_manifest.json"
+      - "KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_final_recheck_after_final_check_closure.py"
+    acceptance_ids:
+      - "ACC-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-RESOLUTION-INTAKE-BLOCKER-FINAL-RECHECK-AFTER-FINAL-CHECK-CLOSURE"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_final_recheck_after_final_check_closure.py --generated-at 2026-07-10T00:00:00+10:00"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_final_recheck_after_final_check_closure.py --require-private-final-recheck"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_final_recheck_after_final_check_closure"
+    test_results:
+      - "PASS: owner/authorized-agent resolution intake blocker final recheck validator"
+      - "PASS: focused owner/authorized-agent resolution intake blocker final recheck unit test"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_FINAL_RECHECK_AFTER_FINAL_CHECK_CLOSURE/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_FINAL_RECHECK_AFTER_FINAL_CHECK_CLOSURE/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_final_recheck_after_final_check_closure_manifest.json"
+    risk: "Resolution-intake final blocker recheck evidence can be misread as completed owner authorization; it is explicitly NO_GO and keeps execution closed."
+    rollback: "Remove this phase public artifacts and ignored private recheck outputs; keep source resolution-intake blocker recheck evidence intact."
+    target_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-final-recheck-after-final-check-closure"
