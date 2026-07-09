@@ -3079,3 +3079,12 @@ version_matrix_product_version_reference: 0.1.4-s18-stage-review
 - Raw inbox was not read or mutated; Stage review, GitHub upload, app reinstall and business execution remain deferred.
 - Evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_RECHECK_AFTER_FINAL_CHECK_CLOSURE/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_recheck_after_final_check_closure_manifest.json`.
 - product_version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-recheck-after-final-check-closure`
+
+
+## 2026-07-10 - v0.1.4 resolution-intake blocker final recheck after final-check closure
+
+- Added `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_FINAL_RECHECK_AFTER_FINAL_CHECK_CLOSURE` local-only `NO_GO` phase.
+- Recorded the third blocker observation: 48 blockers, 0 completed resolutions, 72 unresolved differences; blocked threshold is now met and goal recommendation remains `blocked`.
+- Raw inbox was not read or mutated; Stage review, GitHub upload, app reinstall and business execution remain deferred.
+- Evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_FINAL_RECHECK_AFTER_FINAL_CHECK_CLOSURE/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_final_recheck_after_final_check_closure_manifest.json`.
+- product_version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-final-recheck-after-final-check-closure`

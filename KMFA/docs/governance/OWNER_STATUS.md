@@ -988,3 +988,6 @@ KMFA 当前版本 `0.1.4-residual-difference-authorized-source-reference-or-excl
 
 
 - v0.1.4 owner/authorized-agent resolution-intake blocker recheck after final-check closure records observation `2/3`: 48 blockers and 0 completed resolutions remain; threshold is not met and all downstream gates remain closed.
+
+
+- v0.1.4 owner/authorized-agent resolution-intake blocker final recheck records observation `3/3`: blocked threshold is met, 48 blockers and 0 completed resolutions remain, and all downstream gates stay closed pending blocked handoff.
