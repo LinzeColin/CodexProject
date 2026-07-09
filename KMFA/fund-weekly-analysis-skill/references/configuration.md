@@ -49,13 +49,13 @@ Australia/Sydney
 Scheduler local time:
 
 ```text
-Daily 11:30
+Monday and Saturday 11:00
 ```
 
 Reference only:
 
 ```text
-Australia/Sydney local time is authoritative. Beijing 09:30 is reference wording only for the current UTC+10 offset. Beijing time must not be used as the scheduler timezone.
+Australia/Sydney local time is authoritative. Beijing time must not be used as the scheduler timezone because daylight-saving offsets can change.
 ```
 
 Default chart limit:

@@ -14,6 +14,7 @@ import csv
 import datetime as dt
 from decimal import Decimal, InvalidOperation
 import hashlib
+import importlib.util
 import json
 import os
 import posixpath
@@ -160,6 +161,39 @@ OCR_FACT_METRIC_RULES = (
 )
 OCR_LINE_CONTEXT_RADIUS = 3
 CHAT_NEIGHBOR_CONTEXT_RADIUS = 2
+
+
+def load_owner_review_export_module():
+    module_path = Path(__file__).resolve().parent / "export_owner_decision_review_csv.py"
+    spec = importlib.util.spec_from_file_location("kmfa_owner_review_export", module_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError("owner_review_export_module_unavailable")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def build_owner_decision_review_all_artifacts(
+    repo_root: Path,
+    run_id: str,
+    run_dir: Path,
+    owner_worklist_rows: list[dict],
+) -> list[dict]:
+    if not owner_worklist_rows:
+        return []
+    export_module = load_owner_review_export_module()
+    review_rows = export_module.build_review_rows(repo_root, run_id, owner_worklist_rows)
+    export_module.write_csv(run_dir / "ocr_fact_candidate_owner_decision_review_all.csv", review_rows)
+    export_module.write_xlsx(run_dir / "ocr_fact_candidate_owner_decision_review_all.xlsx", review_rows)
+    return review_rows
+
+
+def count_owner_review_ready_rows(rows: list[dict]) -> int:
+    return sum(
+        1
+        for row in rows
+        if row.get("owner_review_completion_status") == "ready_for_private_owner_decision_manifest_no_write"
+    )
 
 
 def sha256_file(path: Path, chunk_size: int = 1024 * 1024) -> str:
@@ -3223,7 +3257,7 @@ def build_automation_readiness_rows(repo_root: Path, automation_root: Path) -> l
 
     ready = (
         not mismatches
-        and rrule == "FREQ=DAILY;BYHOUR=11;BYMINUTE=30"
+        and rrule == "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0"
         and expected_timezone == "Australia/Sydney"
     )
     return [
@@ -3239,7 +3273,7 @@ def build_automation_readiness_rows(repo_root: Path, automation_root: Path) -> l
             next_action=(
                 "Keep local Codex automation schedule aligned with repo contract"
                 if ready
-                else "Sync local Codex automation to the tracked daily 11:30 Australia/Sydney contract"
+                else "Sync local Codex automation to the tracked Monday/Saturday 11:00 Australia/Sydney contract"
             ),
         )
     ]
@@ -5064,7 +5098,7 @@ def write_runtime_rules_to_workbook(
         [("A", "run_id"), ("B", manifest["run_id"]), ("C", "runtime"), ("D", "private package trace id")],
         [("A", "source_input_dir"), ("B", str(input_dir)), ("C", "source"), ("D", "read-only OneDrive input")],
         [("A", "timezone"), ("B", manifest.get("timezone", "")), ("C", "runtime"), ("D", "local scheduler timezone")],
-        [("A", "schedule_rrule"), ("B", schedule_rrule), ("C", "automation"), ("D", "expected daily 11:30 Sydney")],
+        [("A", "schedule_rrule"), ("B", schedule_rrule), ("C", "automation"), ("D", "expected Monday/Saturday 11:00 Sydney")],
         [("A", "schedule_ready"), ("B", schedule_ready), ("C", "automation"), ("D", "read-only drift evidence")],
         [("A", "no_hallucinated_data_policy"), ("B", "true"), ("C", "data_policy"), ("D", "no generated financial facts without evidence")],
         [("A", "fact_promotion_execution_allowed"), ("B", "false"), ("C", "fact_promotion"), ("D", "separate owner authorization required")],
@@ -6031,6 +6065,12 @@ def write_no_hallucination_outputs(
         ocr_fact_ledger_staging_preview_rows,
         ocr_fact_evidence_review_queue_rows,
     )
+    ocr_fact_candidate_owner_decision_review_all_rows = build_owner_decision_review_all_artifacts(
+        repo_root,
+        manifest["run_id"],
+        run_dir,
+        ocr_fact_candidate_owner_worklist_rows,
+    )
     ocr_fact_candidate_owner_decision_template = build_ocr_fact_candidate_owner_decision_template(
         manifest,
         ocr_fact_candidate_owner_worklist_rows,
@@ -6177,6 +6217,20 @@ def write_no_hallucination_outputs(
     manifest["ocr_fact_candidate_owner_worklist_blocking_count"] = (
         len(ocr_fact_candidate_owner_worklist_rows)
         - manifest["ocr_fact_candidate_owner_worklist_ready_count"]
+    )
+    manifest["ocr_fact_candidate_owner_decision_review_all_count"] = len(
+        ocr_fact_candidate_owner_decision_review_all_rows
+    )
+    manifest["ocr_fact_candidate_owner_decision_review_all_ready_count"] = count_owner_review_ready_rows(
+        ocr_fact_candidate_owner_decision_review_all_rows
+    )
+    manifest["ocr_fact_candidate_owner_decision_review_all_blocking_count"] = (
+        len(ocr_fact_candidate_owner_decision_review_all_rows)
+        - manifest["ocr_fact_candidate_owner_decision_review_all_ready_count"]
+    )
+    manifest["ocr_fact_candidate_owner_decision_review_all_xlsx_ready"] = bool(
+        ocr_fact_candidate_owner_decision_review_all_rows
+        and (run_dir / "ocr_fact_candidate_owner_decision_review_all.xlsx").is_file()
     )
     manifest["ocr_fact_candidate_owner_decision_template_count"] = len(
         ocr_fact_candidate_owner_decision_template["owner_decisions"]
@@ -7544,6 +7598,10 @@ def write_no_hallucination_outputs(
         "ocr_fact_candidate_owner_worklist_count": manifest["ocr_fact_candidate_owner_worklist_count"],
         "ocr_fact_candidate_owner_worklist_ready_count": manifest["ocr_fact_candidate_owner_worklist_ready_count"],
         "ocr_fact_candidate_owner_worklist_blocking_count": manifest["ocr_fact_candidate_owner_worklist_blocking_count"],
+        "ocr_fact_candidate_owner_decision_review_all_count": manifest["ocr_fact_candidate_owner_decision_review_all_count"],
+        "ocr_fact_candidate_owner_decision_review_all_ready_count": manifest["ocr_fact_candidate_owner_decision_review_all_ready_count"],
+        "ocr_fact_candidate_owner_decision_review_all_blocking_count": manifest["ocr_fact_candidate_owner_decision_review_all_blocking_count"],
+        "ocr_fact_candidate_owner_decision_review_all_xlsx_ready": manifest["ocr_fact_candidate_owner_decision_review_all_xlsx_ready"],
         "ocr_fact_candidate_owner_decision_template_count": manifest["ocr_fact_candidate_owner_decision_template_count"],
         "ocr_fact_candidate_owner_decision_preview_count": manifest["ocr_fact_candidate_owner_decision_preview_count"],
         "ocr_fact_candidate_owner_decision_preview_ready_count": manifest["ocr_fact_candidate_owner_decision_preview_ready_count"],
@@ -8367,6 +8425,10 @@ def write_no_hallucination_outputs(
                 "ocr_fact_candidate_owner_worklist_count": manifest["ocr_fact_candidate_owner_worklist_count"],
                 "ocr_fact_candidate_owner_worklist_ready_count": manifest["ocr_fact_candidate_owner_worklist_ready_count"],
                 "ocr_fact_candidate_owner_worklist_blocking_count": manifest["ocr_fact_candidate_owner_worklist_blocking_count"],
+                "ocr_fact_candidate_owner_decision_review_all_count": manifest["ocr_fact_candidate_owner_decision_review_all_count"],
+                "ocr_fact_candidate_owner_decision_review_all_ready_count": manifest["ocr_fact_candidate_owner_decision_review_all_ready_count"],
+                "ocr_fact_candidate_owner_decision_review_all_blocking_count": manifest["ocr_fact_candidate_owner_decision_review_all_blocking_count"],
+                "ocr_fact_candidate_owner_decision_review_all_xlsx_ready": manifest["ocr_fact_candidate_owner_decision_review_all_xlsx_ready"],
                 "ocr_fact_candidate_owner_decision_template_count": manifest["ocr_fact_candidate_owner_decision_template_count"],
                 "ocr_fact_candidate_owner_decision_preview_count": manifest["ocr_fact_candidate_owner_decision_preview_count"],
                 "ocr_fact_candidate_owner_decision_preview_ready_count": manifest["ocr_fact_candidate_owner_decision_preview_ready_count"],
@@ -8650,6 +8712,10 @@ def main() -> int:
         f"OCR fact candidate owner worklist count: {manifest.get('ocr_fact_candidate_owner_worklist_count', 0)}\n\n"
         f"OCR fact candidate owner worklist ready count: {manifest.get('ocr_fact_candidate_owner_worklist_ready_count', 0)}\n\n"
         f"OCR fact candidate owner worklist blocking count: {manifest.get('ocr_fact_candidate_owner_worklist_blocking_count', 0)}\n\n"
+        f"OCR fact candidate owner decision review-all count: {manifest.get('ocr_fact_candidate_owner_decision_review_all_count', 0)}\n\n"
+        f"OCR fact candidate owner decision review-all ready count: {manifest.get('ocr_fact_candidate_owner_decision_review_all_ready_count', 0)}\n\n"
+        f"OCR fact candidate owner decision review-all blocking count: {manifest.get('ocr_fact_candidate_owner_decision_review_all_blocking_count', 0)}\n\n"
+        f"OCR fact candidate owner decision review-all xlsx ready: {str(manifest.get('ocr_fact_candidate_owner_decision_review_all_xlsx_ready', False)).lower()}\n\n"
         f"OCR fact candidate owner decision template count: {manifest.get('ocr_fact_candidate_owner_decision_template_count', 0)}\n\n"
         f"OCR fact candidate owner decision preview ready count: {manifest.get('ocr_fact_candidate_owner_decision_preview_ready_count', 0)}\n\n"
         f"OCR fact candidate owner decision preview blocking count: {manifest.get('ocr_fact_candidate_owner_decision_preview_blocking_count', 0)}\n\n"
