@@ -11,6 +11,7 @@ Deliverables:
 7. Owner review checklist: `references/excel_master_review_checklist.md`
 8. Owner review handoff rules: `references/owner_review_handoff.md`
 9. Successful run user deliverables: native `资金与税费管理母版_<run_id>.xlsx` and human-readable `资金与税费管理报告_<run_id>.pdf`
+10. Delivery acceptance checker: `tools/check_delivery_acceptance.py`
 
 Install:
 
@@ -28,6 +29,8 @@ launchctl load ~/Library/LaunchAgents/com.kmfa.fund-weekly-analysis.plist
 The installer does not commit raw financial evidence. It tracks only skill/governance/config files and a gitignored metadata private_runtime boundary.
 
 User-facing report rule: every successful runner package must emit `资金与税费管理报告_<run_id>.pdf` next to the native Excel workbook. The PDF is a readable run summary and gate-status report only; OCR raw text, logs, audit sidecars, screenshots, private authorization manifests, and generated OCR sidecars remain private validation materials and are not user deliverables.
+
+Delivery acceptance rule: run `tools/check_delivery_acceptance.py --run-id <run_id>` after a real runner/OCR/package validation. The checker must verify git main/origin/remote parity, public-safe taskpack zip contents, tracked and live weekly Monday/Saturday 11:00 Sydney automation, OneDrive source readiness, native Excel structure, human-readable PDF, OCR reuse/candidates, no generated hallucinated financial amounts, owner review all-packet readiness, and fail-closed owner blockers. `DELIVERY_ACCEPTANCE_READY_WITH_OWNER_BLOCKERS` is acceptable only when engineering delivery is ready and the remaining blocker is missing owner-reviewed values/manifest; it must not release formal ledger rows or management conclusions.
 
 Runtime package rule: `ocr_fact_candidate_owner_decision_progress_summary.csv` is emitted from owner decision preview status for all OCR fact candidates and per metric. It is progress evidence only; it must keep `fund_ledger_write_allowed=false`, `financial_fact_promoted=false`, and `management_conclusion_allowed=false`.
 

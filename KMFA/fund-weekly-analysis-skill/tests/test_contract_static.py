@@ -9,6 +9,7 @@ def test_required_files_exist():
         "references/validation_checks.md", "references/excel_master_review_checklist.md",
         "references/owner_review_handoff.md",
         "templates/excel_sheet_spec.yaml",
+        "tools/check_delivery_acceptance.py",
         "automation/weekly_mon_sat_1100_sydney.prompt.md",
         "templates/资金与税费管理母版_真实数据预览_v2.xlsx",
     ]:
@@ -25,6 +26,8 @@ def test_skill_has_no_branch_rule():
     assert "No simulation" in text or "simulated" in text
     assert "资金与税费管理报告_<run_id>.pdf" in text
     assert "user-facing deliverables" in text
+    assert "check_delivery_acceptance.py" in text
+    assert "DELIVERY_ACCEPTANCE_READY_WITH_OWNER_BLOCKERS" in text
 
 def test_excel_template_exists():
     assert (ROOT / "templates/资金与税费管理母版_真实数据预览_v2.xlsx").exists()
