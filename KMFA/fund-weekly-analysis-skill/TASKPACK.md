@@ -28,6 +28,8 @@ The installer does not commit raw financial evidence. It tracks only skill/gover
 
 Runtime package rule: `ocr_fact_candidate_owner_decision_progress_summary.csv` is emitted from owner decision preview status for all OCR fact candidates and per metric. It is progress evidence only; it must keep `fund_ledger_write_allowed=false`, `financial_fact_promoted=false`, and `management_conclusion_allowed=false`.
 
+Objective completion audit rule: `goal_completion_audit.csv` is a final-objective audit, not a success badge. Missing reviewed company-bank matrix facts, missing real internal-transfer rows, missing cashflow validation rows, and missing known due-date forecast rows must keep their rows `blocking=true` until real reviewed evidence exists. This prevents scheduled-readiness or workbook-quality success from being mistaken for full objective completion.
+
 Owner decision readiness rule: `owner_decision_readiness_gate.csv` is emitted from `ocr_fact_candidate_owner_decision_preview.csv` as a one-row run-level blocker summary. It shows whether the next step is still owner workbook/manifest completion or whether a no-write authorization update preview is ready. It must keep `owner_decision_manifest_write_allowed=false`, `fund_ledger_write_allowed=false`, `financial_fact_promoted=false`, and `management_conclusion_allowed=false`.
 
 Owner decision intake rule: `tools/install_owner_decision_manifest.py --draft-csv-path <reviewed.csv>` or `--draft-xlsx-path <reviewed.xlsx>` may validate spreadsheet-edited owner decisions, but it remains dry-run by default and never promotes facts, writes ledgers, mutates source files, or releases management conclusions.
