@@ -10,6 +10,7 @@ Deliverables:
 6. Governance references under `references/`
 7. Owner review checklist: `references/excel_master_review_checklist.md`
 8. Owner review handoff rules: `references/owner_review_handoff.md`
+9. Successful run user deliverables: native `资金与税费管理母版_<run_id>.xlsx` and human-readable `资金与税费管理报告_<run_id>.pdf`
 
 Install:
 
@@ -25,6 +26,8 @@ launchctl load ~/Library/LaunchAgents/com.kmfa.fund-weekly-analysis.plist
 ```
 
 The installer does not commit raw financial evidence. It tracks only skill/governance/config files and a gitignored metadata private_runtime boundary.
+
+User-facing report rule: every successful runner package must emit `资金与税费管理报告_<run_id>.pdf` next to the native Excel workbook. The PDF is a readable run summary and gate-status report only; OCR raw text, logs, audit sidecars, screenshots, private authorization manifests, and generated OCR sidecars remain private validation materials and are not user deliverables.
 
 Runtime package rule: `ocr_fact_candidate_owner_decision_progress_summary.csv` is emitted from owner decision preview status for all OCR fact candidates and per metric. It is progress evidence only; it must keep `fund_ledger_write_allowed=false`, `financial_fact_promoted=false`, and `management_conclusion_allowed=false`.
 

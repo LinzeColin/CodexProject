@@ -23,6 +23,8 @@ def test_skill_has_no_branch_rule():
     assert "Monday" in text
     assert "Saturday" in text
     assert "No simulation" in text or "simulated" in text
+    assert "资金与税费管理报告_<run_id>.pdf" in text
+    assert "user-facing deliverables" in text
 
 def test_excel_template_exists():
     assert (ROOT / "templates/资金与税费管理母版_真实数据预览_v2.xlsx").exists()

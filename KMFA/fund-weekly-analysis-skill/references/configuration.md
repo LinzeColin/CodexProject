@@ -40,6 +40,15 @@ Output run directory:
 KMFA/metadata/fund_weekly_analysis/private_runtime/runs/YYYYMMDDTHHMMSS+1000/
 ```
 
+Successful user-facing outputs in that run directory:
+
+```text
+资金与税费管理母版_<run_id>.xlsx
+资金与税费管理报告_<run_id>.pdf
+```
+
+Internal OCR, audit, log, and authorization sidecars in the same private runtime are validation materials only, not user-facing deliverables.
+
 Scheduler timezone:
 
 ```text

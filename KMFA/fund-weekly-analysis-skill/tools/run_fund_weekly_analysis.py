@@ -429,6 +429,129 @@ def write_csv(path: Path, fieldnames: list[str], rows: list[dict] | None = None)
             writer.writerows(rows)
 
 
+def write_human_readable_pdf_report(
+    run_dir: Path,
+    manifest: dict,
+    cross_review: dict,
+    workbook_path: Path,
+    input_dir: Path,
+) -> Path:
+    from reportlab.lib import colors
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+    from reportlab.lib.units import mm
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.cidfonts import UnicodeCIDFont
+    from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+
+    pdfmetrics.registerFont(UnicodeCIDFont("STSong-Light"))
+    pdf_path = run_dir / f"资金与税费管理报告_{manifest['run_id']}.pdf"
+    styles = getSampleStyleSheet()
+    body = ParagraphStyle(
+        "KMFABody",
+        parent=styles["BodyText"],
+        fontName="STSong-Light",
+        fontSize=9,
+        leading=13,
+        textColor=colors.HexColor("#111827"),
+    )
+    title = ParagraphStyle(
+        "KMFATitle",
+        parent=styles["Title"],
+        fontName="STSong-Light",
+        fontSize=16,
+        leading=20,
+        textColor=colors.HexColor("#0F172A"),
+        spaceAfter=8,
+    )
+    heading = ParagraphStyle(
+        "KMFAHeading",
+        parent=styles["Heading2"],
+        fontName="STSong-Light",
+        fontSize=11,
+        leading=15,
+        textColor=colors.HexColor("#0F172A"),
+        spaceBefore=8,
+        spaceAfter=4,
+    )
+
+    def paragraph(text: str, style: ParagraphStyle = body) -> Paragraph:
+        return Paragraph(text.replace("\n", "<br/>"), style)
+
+    summary_rows = [
+        ("运行 ID", manifest["run_id"]),
+        ("运行状态", manifest.get("status", "")),
+        ("输入目录", str(input_dir)),
+        ("真实源文件数", str(manifest.get("file_count", 0))),
+        ("Excel 交付物", workbook_path.name),
+        ("Workbook 质量阻断", str(cross_review.get("workbook_quality_blocking_count", 0))),
+        ("自动化状态", str(cross_review.get("automation_readiness_status", "CODEX_AUTOMATION_UNKNOWN"))),
+        ("OCR 文本候选", str(cross_review.get("ocr_text_candidate_count", 0))),
+        ("OCR 金额候选", str(cross_review.get("ocr_value_candidate_count", 0))),
+        ("正式账本行数", str(cross_review.get("formal_fund_ledger_row_count", 0))),
+        ("管理结论放行", "否"),
+    ]
+    blocker_rows = [
+        ("Owner 决策阻断", str(cross_review.get("owner_decision_readiness_status", ""))),
+        ("证据复核阻断数", str(cross_review.get("evidence_cross_review_resolution_plan_blocker_count", 0))),
+        ("目标审计阻断数", str(cross_review.get("goal_completion_blocking_count", 0))),
+        ("管理结论门禁阻断数", str(cross_review.get("management_conclusion_gate_blocked_count", 0))),
+    ]
+    table_style = TableStyle(
+        [
+            ("FONTNAME", (0, 0), (-1, -1), "STSong-Light"),
+            ("FONTSIZE", (0, 0), (-1, -1), 8),
+            ("LEADING", (0, 0), (-1, -1), 11),
+            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E5E7EB")),
+            ("TEXTCOLOR", (0, 0), (-1, -1), colors.HexColor("#111827")),
+            ("GRID", (0, 0), (-1, -1), 0.25, colors.HexColor("#CBD5E1")),
+            ("VALIGN", (0, 0), (-1, -1), "TOP"),
+            ("LEFTPADDING", (0, 0), (-1, -1), 5),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 5),
+        ]
+    )
+    story = [
+        paragraph("KMFA 资金与税费管理运行报告", title),
+        paragraph(
+            "本 PDF 是用户可读交付摘要，只引用本次运行的可审计计数、门禁状态和交付物路径。"
+            "OCR 原文、截图、日志、审计 sidecar 和私有授权材料继续仅保存在 private runtime，不作为用户交付物公开。"
+        ),
+        paragraph("运行摘要", heading),
+        Table([("项目", "值"), *summary_rows], colWidths=[42 * mm, 122 * mm], style=table_style),
+        Spacer(1, 6),
+        paragraph("当前阻断", heading),
+        Table([("阻断项", "状态/数量"), *blocker_rows], colWidths=[42 * mm, 122 * mm], style=table_style),
+        Spacer(1, 6),
+        paragraph("交付边界", heading),
+        paragraph(
+            "本次输出允许交付原生 Excel 和本 PDF 报告；无法确认的数据保持空白、待识别或待复核。"
+            "未经过 owner review、事实晋升执行授权、正式账本门禁和管理结论 release 授权前，不发布管理结论。"
+        ),
+        paragraph("推荐下一步", heading),
+        paragraph(
+            "由 owner 在私有 review workbook 中补齐 company/bank/decision 字段，再运行 validation-only intake；"
+            "只有门禁全部通过后，才进入后续受控事实晋升。"
+        ),
+    ]
+    doc = SimpleDocTemplate(
+        str(pdf_path),
+        pagesize=A4,
+        leftMargin=16 * mm,
+        rightMargin=16 * mm,
+        topMargin=16 * mm,
+        bottomMargin=16 * mm,
+        title=f"KMFA fund report {manifest['run_id']}",
+    )
+    doc.build(story)
+    manifest["human_report_pdf"] = pdf_path.name
+    manifest["human_report_pdf_generated"] = True
+    manifest["human_report_pdf_private_runtime_only"] = True
+    cross_review["human_report_pdf"] = pdf_path.name
+    cross_review["human_report_pdf_generated"] = True
+    cross_review["human_report_pdf_private_runtime_only"] = True
+    return pdf_path
+
+
 def ocr_sidecar_candidates(relative_path: str) -> list[Path]:
     path = Path(relative_path)
     candidates = [
@@ -8438,6 +8561,13 @@ def write_no_hallucination_outputs(
         "evidence",
         "recommended_next_step",
     ], owner_action_queue_rows)
+    pdf_report_path = write_human_readable_pdf_report(
+        run_dir,
+        manifest,
+        cross_review,
+        workbook_path,
+        input_dir,
+    )
     (run_dir / "cross_review.json").write_text(json.dumps(cross_review, ensure_ascii=False, indent=2), encoding="utf-8")
     (run_dir / "audit_log.json").write_text(
         json.dumps([
@@ -8628,6 +8758,8 @@ def write_no_hallucination_outputs(
                 "fact_promotion_execution_apply_gate_write_allowed_count": (
                     manifest["fact_promotion_execution_apply_gate_write_allowed_count"]
                 ),
+                "human_report_pdf_generated": manifest["human_report_pdf_generated"],
+                "human_report_pdf": pdf_report_path.name,
                 "management_conclusion_gate_count": len(management_conclusion_gate_rows),
                 "management_conclusion_gate_ready_count": management_conclusion_gate_ready_count,
                 "management_conclusion_gate_blocked_count": manifest["management_conclusion_gate_blocked_count"],
@@ -8735,6 +8867,7 @@ def main() -> int:
         f"# Fund weekly analysis run {run_id}\n\n"
         f"Status: {manifest['status']}\n\n"
         f"Indexed {manifest['file_count']} real source files and generated a native editable Excel workbook from the current mother template.\n\n"
+        f"Human-readable PDF report: {manifest.get('human_report_pdf', '')}\n\n"
         f"Structured financial fact count: {manifest.get('structured_fact_count', 0)}\n\n"
         f"Screenshot OCR coverage count: {manifest.get('screenshot_ocr_coverage_count', 0)}\n\n"
         f"Screenshot OCR ready count: {manifest.get('screenshot_ocr_ready_count', 0)}\n\n"
