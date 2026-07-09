@@ -227,37 +227,39 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
         self.assertIn("--run-id s55_validation_run", runner_call)
         self.assertFalse(any(call.startswith("codex:") for call in calls), calls)
 
-    def test_skill_package_uses_sydney_daily_1130_local_schedule_and_real_input(self) -> None:
+    def test_skill_package_uses_sydney_weekly_mon_sat_1100_local_schedule_and_real_input(self) -> None:
         self.assertTrue(SKILL_ROOT.exists(), "fund-weekly-analysis-skill package must exist under KMFA")
         skill = (SKILL_ROOT / "SKILL.md").read_text(encoding="utf-8")
         config = (SKILL_ROOT / "templates" / "fund_weekly_analysis_config.yaml").read_text(encoding="utf-8")
         plist = (SKILL_ROOT / "automation" / "launchd" / "com.kmfa.fund-weekly-analysis.plist").read_text(
             encoding="utf-8"
         )
-        prompt = (SKILL_ROOT / "automation" / "daily_1130_sydney.prompt.md").read_text(encoding="utf-8")
+        prompt = (SKILL_ROOT / "automation" / "weekly_mon_sat_1100_sydney.prompt.md").read_text(encoding="utf-8")
 
         for text in (skill, config, prompt):
             self.assertIn("Australia/Sydney", text)
-            self.assertIn("11:30", text)
+            self.assertIn("11:00", text)
             self.assertIn("/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群", text)
-        self.assertIn("daily", prompt)
-        self.assertIn("Beijing 09:30", prompt)
+        self.assertIn("Monday", prompt)
+        self.assertIn("Saturday", prompt)
         self.assertIn("scheduler source of truth", prompt)
         self.assertIn("No simulation", skill)
         self.assertIn("Do not use simulated", prompt)
 
-        self.assertRegex(config, r'schedule_local:\s*"11:30"')
-        self.assertRegex(config, r'schedule_days:\s*\["Daily"\]')
+        self.assertRegex(config, r'schedule_local:\s*"11:00"')
+        self.assertRegex(config, r'schedule_days:\s*\["Monday", "Saturday"\]')
         self.assertRegex(config, r'timezone:\s*Australia/Sydney')
-        self.assertNotIn("<key>Weekday</key>", plist)
-        self.assertEqual(plist.count("<integer>11</integer>"), 1)
-        self.assertEqual(plist.count("<integer>30</integer>"), 1)
+        self.assertEqual(plist.count("<key>Weekday</key>"), 2)
+        self.assertIn("<integer>1</integer>", plist)
+        self.assertIn("<integer>6</integer>", plist)
+        self.assertEqual(plist.count("<integer>11</integer>"), 2)
+        self.assertEqual(plist.count("<integer>0</integer>"), 2)
 
-    def test_taskpack_validator_requires_daily_shell_entrypoint(self) -> None:
+    def test_taskpack_validator_requires_local_shell_entrypoint(self) -> None:
         validator = (SKILL_ROOT / "tools" / "validate_taskpack.py").read_text(encoding="utf-8")
         self.assertIn('"tools/run_daily_local.sh"', validator)
 
-    def test_codex_app_automation_contract_mirrors_daily_1130_local_cron(self) -> None:
+    def test_codex_app_automation_contract_mirrors_weekly_mon_sat_1100_local_cron(self) -> None:
         contract_path = SKILL_ROOT / "automation" / "codex_app_automation.contract.toml"
         self.assertTrue(contract_path.exists(), "public-safe Codex App automation contract must be tracked")
         contract = tomllib.loads(contract_path.read_text(encoding="utf-8"))
@@ -266,7 +268,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
         self.assertEqual(contract["name"], "KMFA资金周报自动化")
         self.assertEqual(contract["kind"], "cron")
         self.assertEqual(contract["status"], "ACTIVE")
-        self.assertEqual(contract["rrule"], "FREQ=DAILY;BYHOUR=11;BYMINUTE=30")
+        self.assertEqual(contract["rrule"], "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0")
         self.assertEqual(contract["timezone"], "Australia/Sydney")
         self.assertEqual(contract["execution_environment"], "local")
         self.assertEqual(
@@ -276,7 +278,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "/Users/linzezhang/Documents/Codex/workspaces/dws-kmfa-automation/kmfa-codexproject",
             ],
         )
-        self.assertEqual(contract["prompt_file"], "automation/daily_1130_sydney.prompt.md")
+        self.assertEqual(contract["prompt_file"], "automation/weekly_mon_sat_1100_sydney.prompt.md")
         self.assertEqual(contract["source_readiness_gate"], "tools/check_source_readiness.py")
         self.assertEqual(
             contract["input_dir"],
@@ -374,7 +376,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(payload["status"], "CODEX_AUTOMATION_MISMATCH")
             self.assertIn("timezone", {row["field"] for row in payload["mismatches"]})
 
-    def test_codex_app_automation_check_rejects_stale_weekly_contract_even_when_live_matches(self) -> None:
+    def test_codex_app_automation_check_rejects_stale_daily_contract_even_when_live_matches(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_root = Path(temp_dir)
             repo_root = temp_root / "repo"
@@ -384,12 +386,12 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 (SKILL_ROOT / "automation" / "codex_app_automation.contract.toml")
                 .read_text(encoding="utf-8")
                 .replace(
-                    'rrule = "FREQ=DAILY;BYHOUR=11;BYMINUTE=30"',
                     'rrule = "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0"',
+                    'rrule = "FREQ=DAILY;BYHOUR=11;BYMINUTE=30"',
                 )
                 .replace(
-                    'prompt_file = "automation/daily_1130_sydney.prompt.md"',
                     'prompt_file = "automation/weekly_mon_sat_1100_sydney.prompt.md"',
+                    'prompt_file = "automation/daily_1130_sydney.prompt.md"',
                 )
             )
             (contract_dir / "codex_app_automation.contract.toml").write_text(stale_contract, encoding="utf-8")
@@ -569,9 +571,9 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             contract_dir = repo_root / "KMFA/fund-weekly-analysis-skill/automation"
             contract_dir.mkdir(parents=True)
             contract = (SKILL_ROOT / "automation" / "codex_app_automation.contract.toml").read_text(encoding="utf-8")
-            prompt = (SKILL_ROOT / "automation" / "daily_1130_sydney.prompt.md").read_text(encoding="utf-8")
+            prompt = (SKILL_ROOT / "automation" / "weekly_mon_sat_1100_sydney.prompt.md").read_text(encoding="utf-8")
             (contract_dir / "codex_app_automation.contract.toml").write_text(contract, encoding="utf-8")
-            (contract_dir / "daily_1130_sydney.prompt.md").write_text(prompt, encoding="utf-8")
+            (contract_dir / "weekly_mon_sat_1100_sydney.prompt.md").write_text(prompt, encoding="utf-8")
             automation_root = Path(temp_dir) / "automations"
             automation_dir = automation_root / "kmfa"
             automation_dir.mkdir(parents=True)
@@ -694,7 +696,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "A5"), "schedule_rrule")
                 self.assertEqual(
                     xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "B5"),
-                    "FREQ=DAILY;BYHOUR=11;BYMINUTE=30",
+                    "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0",
                 )
                 self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "A8"), "fact_promotion_execution_allowed")
                 self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "B8"), "false")
@@ -764,7 +766,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 automation_rows = list(csv.DictReader(f))
             self.assertEqual(len(automation_rows), 1)
             self.assertEqual(automation_rows[0]["status"], "CODEX_AUTOMATION_READY")
-            self.assertEqual(automation_rows[0]["rrule"], "FREQ=DAILY;BYHOUR=11;BYMINUTE=30")
+            self.assertEqual(automation_rows[0]["rrule"], "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0")
             self.assertEqual(automation_rows[0]["expected_timezone"], "Australia/Sydney")
             self.assertEqual(automation_rows[0]["schedule_ready"], "true")
             self.assertEqual(automation_rows[0]["management_conclusion_allowed"], "false")
@@ -1237,6 +1239,111 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["screenshot_ocr_missing_count"], 0)
             self.assertEqual(cross_review["ocr_text_candidate_count"], 1)
             self.assertEqual(cross_review["ocr_value_candidate_count"], 3)
+
+    def test_runner_reuses_historical_private_vision_ocr_sidecars_without_copying_to_source(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            input_dir = Path(temp_dir) / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群"
+            source_day = input_dir / "files" / "0708"
+            source_day.mkdir(parents=True)
+            screenshot = source_day / "20260708113000_杨婷_资金账户截图.png"
+            screenshot.write_bytes(b"real-image-bytes")
+
+            history_run_id = "historical_private_vision_ocr_source_run"
+            history_run_dir = (
+                repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs" / history_run_id
+            )
+            history_run_dir.mkdir(parents=True)
+            private_rel = Path(
+                "KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_sidecars/"
+                f"{history_run_id}/OCRGEN-{history_run_id}-00001.ocr.txt"
+            )
+            private_sidecar = repo_root / private_rel
+            private_sidecar.parent.mkdir(parents=True)
+            private_text = "\n".join([
+                "日期 2026-07-08 招商银行 基本户",
+                "期末余额 12,345.67 可用余额 12,000.00",
+            ])
+            private_sidecar.write_text(private_text + "\n", encoding="utf-8")
+            with (history_run_dir / "screenshot_ocr_sidecar_generation_plan.csv").open(
+                "w",
+                encoding="utf-8",
+                newline="",
+            ) as f:
+                writer = csv.DictWriter(f, fieldnames=[
+                    "ocr_generation_id",
+                    "evidence_id",
+                    "source_image_relative_path",
+                    "engine",
+                    "generation_status",
+                    "ocr_text_private_relative_path",
+                    "text_length",
+                    "text_sha256",
+                    "apply_performed",
+                    "financial_fact_promoted",
+                    "review_status",
+                    "reason",
+                ])
+                writer.writeheader()
+                writer.writerow({
+                    "ocr_generation_id": f"OCRGEN-{history_run_id}-00001",
+                    "evidence_id": "historical-run-evidence-id",
+                    "source_image_relative_path": "files/0708/20260708113000_杨婷_资金账户截图.png",
+                    "engine": "vision",
+                    "generation_status": "ocr_text_generated_pending_review",
+                    "ocr_text_private_relative_path": str(private_rel),
+                    "text_length": str(len(private_text)),
+                    "text_sha256": hashlib.sha256(private_text.encode("utf-8")).hexdigest(),
+                    "apply_performed": "true",
+                    "financial_fact_promoted": "false",
+                    "review_status": "pending_human_review",
+                    "reason": "",
+                })
+
+            run_id = "historical_private_vision_ocr_cache_test"
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SKILL_ROOT / "tools" / "run_fund_weekly_analysis.py"),
+                    "--repo-root",
+                    str(repo_root),
+                    "--input-dir",
+                    str(input_dir),
+                    "--run-id",
+                    run_id,
+                    "--timezone",
+                    "Australia/Sydney",
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertFalse((source_day / "20260708113000_杨婷_资金账户截图.png.ocr.txt").exists())
+            run_dir = repo_root / "KMFA/metadata/fund_weekly_analysis/private_runtime/runs" / run_id
+            self.assertFalse((run_dir / "screenshot_ocr_sidecar_generation_plan.csv").exists())
+
+            with (run_dir / "screenshot_ocr_coverage.csv").open(encoding="utf-8-sig", newline="") as f:
+                coverage_rows = list(csv.DictReader(f))
+            self.assertEqual(coverage_rows[0]["ocr_coverage_status"], "ocr_text_sidecar_present_pending_review")
+            self.assertEqual(coverage_rows[0]["ocr_text_relative_path"], str(private_rel))
+            self.assertEqual(coverage_rows[0]["next_action"], "review_private_ocr_text_candidate")
+
+            with (run_dir / "ocr_text_candidates.csv").open(encoding="utf-8-sig", newline="") as f:
+                ocr_rows = list(csv.DictReader(f))
+            self.assertEqual(len(ocr_rows), 1)
+            self.assertEqual(ocr_rows[0]["ocr_text_relative_path"], str(private_rel))
+            self.assertEqual(ocr_rows[0]["ocr_text_sha256"], hashlib.sha256(private_text.encode("utf-8")).hexdigest())
+            self.assertEqual(ocr_rows[0]["extraction_status"], "private_ocr_text_sidecar_indexed_pending_review")
+            self.assertEqual(ocr_rows[0]["financial_fact_promoted"], "false")
+
+            cross_review = json.loads((run_dir / "cross_review.json").read_text(encoding="utf-8"))
+            self.assertFalse(cross_review["management_conclusion_allowed"])
+            self.assertEqual(cross_review["generated_financial_amount_count"], 0)
+            self.assertEqual(cross_review["screenshot_ocr_ready_count"], 1)
+            self.assertEqual(cross_review["screenshot_ocr_missing_count"], 0)
+            self.assertEqual(cross_review["ocr_text_candidate_count"], 1)
 
     def test_runner_builds_pending_ocr_financial_fact_candidates_without_promoting(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -4804,9 +4911,9 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             execution_auth_dir.mkdir(parents=True)
             contract_dir.mkdir(parents=True)
             contract = (SKILL_ROOT / "automation" / "codex_app_automation.contract.toml").read_text(encoding="utf-8")
-            prompt = (SKILL_ROOT / "automation" / "daily_1130_sydney.prompt.md").read_text(encoding="utf-8")
+            prompt = (SKILL_ROOT / "automation" / "weekly_mon_sat_1100_sydney.prompt.md").read_text(encoding="utf-8")
             (contract_dir / "codex_app_automation.contract.toml").write_text(contract, encoding="utf-8")
-            (contract_dir / "daily_1130_sydney.prompt.md").write_text(prompt, encoding="utf-8")
+            (contract_dir / "weekly_mon_sat_1100_sydney.prompt.md").write_text(prompt, encoding="utf-8")
             automation_root = Path(temp_dir) / "automations"
             automation_dir = automation_root / "kmfa"
             automation_dir.mkdir(parents=True)

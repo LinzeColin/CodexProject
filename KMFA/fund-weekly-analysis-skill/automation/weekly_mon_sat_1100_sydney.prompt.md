@@ -1,7 +1,7 @@
 Use `$fund-weekly-analysis-skill`.
 
-Run KMFA资金与税费管理周报自动化 daily at local Sydney time 11:30.
-Australia/Sydney local time is the scheduler source of truth. Beijing 09:30 is reference wording only for the current UTC+10 offset; Beijing time must not be used as the scheduler timezone.
+Run KMFA资金与税费管理周报自动化 every Monday and Saturday at local Sydney time 11:00.
+Australia/Sydney local time is the scheduler source of truth. Do not use Beijing time as the scheduler timezone.
 
 统一工作区规则：本 automation 与上游每日钉钉DWS归档、考勤检查、钉钉工作检查使用同一组 Codex cwds（干净显示入口）：
 - DWS 归档 alias：`/Users/linzezhang/Documents/Codex/workspaces/dws-kmfa-automation/dws-archive` -> 真实目录 `/Users/linzezhang/Documents/Codex/2026-07-04/392b1a986ba680338068ddc1c2a0fd0e-https-app-notion-com-p`
@@ -37,7 +37,7 @@ Hard requirements:
 9. 首页 and trend charts must be native line charts and each chart must be <= 1728x864 px.
 10. Perform cross-review checks: formula errors, hidden sheets, no simulation data, internal transfer netting, balance continuity tolerance 0.01, sensitive fields not visible, tax version conflict detection, company-bank mapping coverage.
 11. Write all outputs to the private runtime run directory.
-12. After the runner writes `screenshot_ocr_coverage.csv`, generate private local Vision OCR sidecars with `tools/generate_screenshot_ocr_sidecars.py --engine vision --apply`; existing successful generation-plan rows must be preserved, new rows append with the next generation id, empty OCR output must not be written, OCR text remains private runtime only, and generated OCR text must not be promoted into financial facts without review. If new private sidecars are generated, rerun `tools/run_fund_weekly_analysis.py` once with the same `run_id` so the workbook package includes pending-review OCR text/value/financial-fact candidates plus OCR fact cross-review summary, no-write OCR fact ledger staging preview, and validation-only OCR fact review gate/template/preview outputs.
+12. After the runner writes `screenshot_ocr_coverage.csv`, reuse any matching, non-empty private OCR sidecars already present in ignored private runtime; if coverage is still missing, generate private local Vision OCR sidecars with `tools/generate_screenshot_ocr_sidecars.py --engine vision --apply`. Existing successful generation-plan rows must be preserved, new rows append with the next generation id, empty OCR output must not be written, OCR text remains private runtime only, and generated OCR text must not be promoted into financial facts without review. If new private sidecars are generated, rerun `tools/run_fund_weekly_analysis.py` once with the same `run_id` so the workbook package includes pending-review OCR text/value/financial-fact candidates plus OCR fact cross-review summary, no-write OCR fact ledger staging preview, and validation-only OCR fact review gate/template/preview outputs.
 13. Mirror any prompt/skill/template/governance changes under `KMFA/fund-weekly-analysis-skill/automation/` or relevant tracked folders, validate, commit and push to GitHub main if and only if validation passes.
 14. If a value cannot be confidently extracted from real evidence, leave it blank or mark `待识别/待复核` and create an exception task. Do not guess.
 15. Do not modify upstream DWS archive outputs; materialization is a downstream private compatibility copy from the current DWS zip into the configured KMFA input folder.

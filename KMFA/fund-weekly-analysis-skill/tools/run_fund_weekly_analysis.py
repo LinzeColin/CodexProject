@@ -34,6 +34,8 @@ PRIVATE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".xlsx", ".xls", ".csv",
 TEMPLATE_NAME = "资金与税费管理母版_真实数据预览_v2.xlsx"
 PRIVATE_OCR_ROOT = Path("KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_sidecars")
 OCR_GENERATION_PLAN_NAME = "screenshot_ocr_sidecar_generation_plan.csv"
+EXPECTED_AUTOMATION_RRULE = "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0"
+EXPECTED_AUTOMATION_SCHEDULE_LABEL = "weekly Monday/Saturday 11:00 Sydney"
 XLSX_MAIN_NS = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
 XLSX_REL_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 PACKAGE_REL_NS = "http://schemas.openxmlformats.org/package/2006/relationships"
@@ -486,35 +488,71 @@ def is_private_ocr_relative_path(path: Path) -> bool:
     return True
 
 
+def iter_private_ocr_generation_plans(run_dir: Path) -> Iterable[Path]:
+    current_plan = run_dir / OCR_GENERATION_PLAN_NAME
+    if current_plan.exists():
+        yield current_plan
+
+    runs_root = run_dir.parent
+    if not runs_root.exists():
+        return
+    historical_plans = []
+    for plan_path in runs_root.glob(f"*/{OCR_GENERATION_PLAN_NAME}"):
+        if plan_path == current_plan:
+            continue
+        try:
+            sort_key = (plan_path.stat().st_mtime, plan_path.parent.name)
+        except OSError:
+            continue
+        historical_plans.append((sort_key, plan_path))
+    for _, plan_path in sorted(historical_plans, reverse=True):
+        yield plan_path
+
+
+def is_safe_source_relative_path(value: str) -> bool:
+    path = Path(value)
+    return bool(value) and not path.is_absolute() and ".." not in path.parts
+
+
 def load_private_ocr_sidecars(repo_root: Path, run_dir: Path) -> dict[str, dict]:
-    plan_path = run_dir / OCR_GENERATION_PLAN_NAME
-    if not plan_path.exists():
-        return {}
     rows: dict[str, dict] = {}
-    try:
-        with plan_path.open(encoding="utf-8-sig", newline="") as f:
-            reader = csv.DictReader(f)
-            for row in reader:
-                if row.get("apply_performed") != "true":
-                    continue
-                if row.get("generation_status") != "ocr_text_generated_pending_review":
-                    continue
-                if row.get("financial_fact_promoted") != "false":
-                    continue
-                private_rel = safe_repo_relative_path(row.get("ocr_text_private_relative_path", ""))
-                source_rel = row.get("source_image_relative_path", "")
-                if private_rel is None or not is_private_ocr_relative_path(private_rel) or not source_rel:
-                    continue
-                private_path = repo_root / private_rel
-                if not private_path.exists() or not private_path.is_file():
-                    continue
-                rows.setdefault(source_rel, {
-                    "private_relative_path": str(private_rel),
-                    "text_sha256": row.get("text_sha256", ""),
-                    "engine": row.get("engine", ""),
-                })
-    except OSError:
-        return {}
+    for plan_path in iter_private_ocr_generation_plans(run_dir):
+        try:
+            with plan_path.open(encoding="utf-8-sig", newline="") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    if row.get("apply_performed") != "true":
+                        continue
+                    if row.get("generation_status") != "ocr_text_generated_pending_review":
+                        continue
+                    if row.get("financial_fact_promoted") != "false":
+                        continue
+                    private_rel = safe_repo_relative_path(row.get("ocr_text_private_relative_path", ""))
+                    source_rel = row.get("source_image_relative_path", "")
+                    if (
+                        private_rel is None
+                        or not is_private_ocr_relative_path(private_rel)
+                        or not is_safe_source_relative_path(source_rel)
+                    ):
+                        continue
+                    private_path = repo_root / private_rel
+                    if not private_path.exists() or not private_path.is_file() or private_path.stat().st_size == 0:
+                        continue
+                    text_hash = row.get("text_sha256", "")
+                    if text_hash:
+                        try:
+                            actual_text_hash = text_sha256(private_path.read_text(encoding="utf-8-sig", errors="replace").rstrip())
+                        except OSError:
+                            continue
+                        if actual_text_hash != text_hash:
+                            continue
+                    rows.setdefault(source_rel, {
+                        "private_relative_path": str(private_rel),
+                        "text_sha256": text_hash,
+                        "engine": row.get("engine", ""),
+                    })
+        except OSError:
+            continue
     return rows
 
 
@@ -3257,7 +3295,7 @@ def build_automation_readiness_rows(repo_root: Path, automation_root: Path) -> l
 
     ready = (
         not mismatches
-        and rrule == "FREQ=DAILY;BYHOUR=11;BYMINUTE=30"
+        and rrule == EXPECTED_AUTOMATION_RRULE
         and expected_timezone == "Australia/Sydney"
     )
     return [
@@ -3273,7 +3311,7 @@ def build_automation_readiness_rows(repo_root: Path, automation_root: Path) -> l
             next_action=(
                 "Keep local Codex automation schedule aligned with repo contract"
                 if ready
-                else "Sync local Codex automation to the tracked daily 11:30 Australia/Sydney contract"
+                else f"Sync local Codex automation to the tracked {EXPECTED_AUTOMATION_SCHEDULE_LABEL} contract"
             ),
         )
     ]
@@ -5098,7 +5136,7 @@ def write_runtime_rules_to_workbook(
         [("A", "run_id"), ("B", manifest["run_id"]), ("C", "runtime"), ("D", "private package trace id")],
         [("A", "source_input_dir"), ("B", str(input_dir)), ("C", "source"), ("D", "read-only OneDrive input")],
         [("A", "timezone"), ("B", manifest.get("timezone", "")), ("C", "runtime"), ("D", "local scheduler timezone")],
-        [("A", "schedule_rrule"), ("B", schedule_rrule), ("C", "automation"), ("D", "expected daily 11:30 Sydney")],
+        [("A", "schedule_rrule"), ("B", schedule_rrule), ("C", "automation"), ("D", f"expected {EXPECTED_AUTOMATION_SCHEDULE_LABEL}")],
         [("A", "schedule_ready"), ("B", schedule_ready), ("C", "automation"), ("D", "read-only drift evidence")],
         [("A", "no_hallucinated_data_policy"), ("B", "true"), ("C", "data_policy"), ("D", "no generated financial facts without evidence")],
         [("A", "fact_promotion_execution_allowed"), ("B", "false"), ("C", "fact_promotion"), ("D", "separate owner authorization required")],
