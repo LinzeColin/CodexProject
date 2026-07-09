@@ -1,3 +1,5 @@
+# Memory Atlas Delivery Record
+
 ## v1.2 Final Delivery Cleanup
 
 状态：`local_delivery_cleanup_completed_pending_cloudflare_live_access_operator_evidence`。
@@ -29,6 +31,13 @@ Application Support source/runtime，以及 Downloads roadmap/task pack。
 剩余外部门：Cloudflare live deployment and Access challenge evidence 仍缺 operator/live 证据；
 `audit_memory_atlas_goal_completion.py --require-local-apps` 仍返回
 `LOCAL_PASS_EXTERNAL_AUTHORIZATION_REQUIRED`。
+
+Fail-closed 外部收口：当前 Cloudflare Access API 返回 `access.api.error.not_enabled`。
+为避免 Memory Atlas live artifact 在 Access 未启用时公开暴露，已先移除
+`memoryatlas.linzezhang.com` Pages 绑定并删除 `openai-memory-atlas` Pages project。复验时
+`openai-memory-atlas.pages.dev`、`memoryatlas.linzezhang.com` 和已知 deployment preview URL
+均未返回 Memory Atlas JSON。真实 Pages project 只能在 Access 启用且未授权访问 challenge
+可独立验证后重建并部署。
 
 ## v1.2 Final Review
 
