@@ -2094,3 +2094,13 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: consume only public-safe owner/authorized-agent resolution intake evidence and ignored private intake queue; record first resolution-intake blocker audit observation with `0` ready, `48` blockers, `NO_GO` decision, and all downstream gates closed.
 - raw boundary: raw inbox was not read, listed, parsed, hashed, copied, moved, renamed, deleted or mutated.
 - validation: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_audit_after_final_check_closure.py --require-private-audit` and `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_audit_after_final_check_closure`.
+
+
+## FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-RESOLUTION-INTAKE-BLOCKER-RECHECK-AFTER-FINAL-CHECK-CLOSURE-001
+
+- phase: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_RECHECK_AFTER_FINAL_CHECK_CLOSURE`
+- model: `kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_recheck_after_final_check_closure`
+- product_version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-recheck-after-final-check-closure`
+- rule: consume only public-safe resolution-intake blocker audit evidence and ignored private audit queue; record the second blocker observation with `0` ready, `48` blockers, threshold `false`, `NO_GO`, and all downstream gates closed.
+- raw boundary: raw inbox was not read, listed, parsed, hashed, copied, moved, renamed, deleted or mutated.
+- validation: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_recheck_after_final_check_closure.py --require-private-recheck` and `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_recheck_after_final_check_closure`.
