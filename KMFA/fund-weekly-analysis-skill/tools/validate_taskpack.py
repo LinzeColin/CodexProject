@@ -165,6 +165,7 @@ REQUIRED_SKILL_STRINGS = [
     "ready_for_owner_execution_authorization_no_write",
     "controlled_fact_promotion_execution",
     "ready_for_controlled_execution_run_no_write",
+    "blocked_incomplete_execution_authorization_coverage",
     "ready_for_controlled_execution_apply_no_write",
     "planned_apply_count",
     "source_mutation_allowed=false",

@@ -4662,7 +4662,32 @@ def load_fact_promotion_execution_authorization(repo_root: Path, run_id: str) ->
     }
 
 
-def fact_promotion_execution_authorization_status(row: dict, authorization: dict) -> tuple[str, str, str, str, str]:
+def fact_promotion_execution_authorization_coverage_complete(
+    execution_plan_rows: list[dict],
+    authorization: dict,
+) -> bool:
+    if authorization["status"] != "valid_execution_authorization_manifest":
+        return False
+    required_rows = [
+        row for row in execution_plan_rows
+        if row["execution_plan_status"] == "ready_for_owner_execution_authorization_no_write"
+    ]
+    for row in required_rows:
+        entry = authorization["entries"].get(row["execution_plan_id"])
+        if entry is None:
+            return False
+        if entry["review_area"] != row["review_area"]:
+            return False
+        if not entry["authorized"]:
+            return False
+    return True
+
+
+def fact_promotion_execution_authorization_status(
+    row: dict,
+    authorization: dict,
+    complete_required_coverage: bool,
+) -> tuple[str, str, str, str, str]:
     if row["execution_plan_status"] != "ready_for_owner_execution_authorization_no_write":
         if row["execution_plan_status"].startswith("blocked_"):
             return (
@@ -4721,6 +4746,14 @@ def fact_promotion_execution_authorization_status(row: dict, authorization: dict
             "Controlled fact-promotion execution is blocked because this execution plan row is not explicitly authorized.",
             "pending_owner_execution_authorization",
         )
+    if not complete_required_coverage:
+        return (
+            "true",
+            "valid_execution_authorization_manifest_incomplete_required_coverage",
+            "blocked_incomplete_execution_authorization_coverage",
+            "Controlled fact-promotion execution is blocked because every ready execution plan row must be explicitly authorized before any apply gate can proceed.",
+            "pending_owner_execution_authorization",
+        )
     return (
         "true",
         "valid_execution_authorization_manifest",
@@ -4738,9 +4771,13 @@ def build_fact_promotion_execution_authorization_preview(
     rows: list[dict] = []
     authorization = load_fact_promotion_execution_authorization(repo_root, manifest["run_id"])
     metadata = authorization["metadata"]
+    complete_required_coverage = fact_promotion_execution_authorization_coverage_complete(
+        execution_plan_rows,
+        authorization,
+    )
     for row in execution_plan_rows:
         required, validation_status, preview_status, preview_reason, review_status = (
-            fact_promotion_execution_authorization_status(row, authorization)
+            fact_promotion_execution_authorization_status(row, authorization, complete_required_coverage)
         )
         rows.append({
             "execution_authorization_preview_id": f"FPEXEAUTHPREVIEW-{manifest['run_id']}-{len(rows) + 1:05d}",

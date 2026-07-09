@@ -56,6 +56,15 @@ def load_ocr_sidecar_module():
     return module
 
 
+def load_fund_runner_module():
+    module_path = SKILL_ROOT / "tools" / "run_fund_weekly_analysis.py"
+    spec = importlib.util.spec_from_file_location("fund_weekly_runner_for_test", module_path)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
 def xlsx_cell_text(workbook: zipfile.ZipFile, sheet_path: str, ref: str) -> str:
     sheet = ET.fromstring(workbook.read(sheet_path))
     cell = sheet.find(f".//x:c[@r='{ref}']", XLSX_NS)
@@ -5056,6 +5065,104 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                     xlsx_cell_text(workbook, "xl/worksheets/sheet9.xml", "K4"),
                     "structured_csv_extracted_pending_review",
                 )
+
+    def test_execution_authorization_requires_complete_ready_plan_coverage_before_formal_sidecar(self) -> None:
+        runner = load_fund_runner_module()
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir) / "repo"
+            run_id = "partial_execution_authorization_test"
+            execution_auth_dir = (
+                repo_root
+                / "KMFA/metadata/fund_weekly_analysis/private_runtime/fact_promotion_execution_authorizations"
+            )
+            execution_auth_dir.mkdir(parents=True)
+            (execution_auth_dir / f"{run_id}.json").write_text(
+                json.dumps(
+                    {
+                        "authorization_manifest_version": "1",
+                        "run_id": run_id,
+                        "authorization_scope": "controlled_fact_promotion_execution",
+                        "authorized_by": "operator-fixture",
+                        "authorized_at": "2026-07-08T12:00:00+10:00",
+                        "authorization_ticket": "S149-PARTIAL-COVERAGE-TEST",
+                        "source_mutation_allowed": False,
+                        "fact_promotion_execution_allowed": False,
+                        "fund_ledger_write_allowed": False,
+                        "financial_fact_promoted": False,
+                        "management_conclusion_allowed": False,
+                        "execution_plan_authorizations": [
+                            {
+                                "execution_plan_id": f"FPEXECPLAN-{run_id}-00001",
+                                "review_area": "structured_csv_facts",
+                                "authorized": True,
+                            },
+                        ],
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                ),
+                encoding="utf-8",
+            )
+            manifest = {"run_id": run_id}
+            execution_plan_rows = [
+                {
+                    "execution_plan_id": f"FPEXECPLAN-{run_id}-00001",
+                    "dry_run_id": f"FPDRYRUN-{run_id}-00001",
+                    "execution_gate_id": f"FPEXEC-{run_id}-00001",
+                    "review_packet_id": f"FPRP-{run_id}-00001",
+                    "review_area": "structured_csv_facts",
+                    "source_artifact": "fund_ledger.csv",
+                    "planned_impact_count": "4",
+                    "execution_plan_status": "ready_for_owner_execution_authorization_no_write",
+                },
+                {
+                    "execution_plan_id": f"FPEXECPLAN-{run_id}-00002",
+                    "dry_run_id": f"FPDRYRUN-{run_id}-00002",
+                    "execution_gate_id": f"FPEXEC-{run_id}-00002",
+                    "review_packet_id": f"FPRP-{run_id}-00002",
+                    "review_area": "ocr_fact_ledger_staging",
+                    "source_artifact": "ocr_fact_ledger_staging_preview.csv",
+                    "planned_impact_count": "2",
+                    "execution_plan_status": "ready_for_owner_execution_authorization_no_write",
+                },
+            ]
+
+            preview_rows = runner.build_fact_promotion_execution_authorization_preview(
+                manifest,
+                repo_root,
+                execution_plan_rows,
+            )
+            preview_by_area = {row["review_area"]: row for row in preview_rows}
+
+            self.assertEqual(
+                preview_by_area["structured_csv_facts"]["preview_status"],
+                "blocked_incomplete_execution_authorization_coverage",
+            )
+            self.assertEqual(
+                preview_by_area["structured_csv_facts"]["authorization_validation_status"],
+                "valid_execution_authorization_manifest_incomplete_required_coverage",
+            )
+            self.assertEqual(
+                preview_by_area["ocr_fact_ledger_staging"]["preview_status"],
+                "blocked_execution_plan_not_authorized",
+            )
+
+            apply_gate_rows = runner.build_fact_promotion_execution_apply_gate_rows(manifest, preview_rows)
+            self.assertTrue(all(row["apply_gate_status"] == "blocked_before_execution_apply" for row in apply_gate_rows))
+            self.assertTrue(all(row["planned_apply_count"] == "0" for row in apply_gate_rows))
+
+            execution_result_rows = runner.build_fact_promotion_execution_result_rows(
+                manifest,
+                apply_gate_rows,
+                {"fund_rows": [{"ledger_id": "FL-partial_execution_authorization_test-00001"}]},
+            )
+            self.assertTrue(
+                all(
+                    row["execution_result_status"] == "blocked_before_formal_ledger_sidecar"
+                    for row in execution_result_rows
+                )
+            )
+            self.assertTrue(all(row["formal_ledger_row_count"] == "0" for row in execution_result_rows))
 
     def test_runner_builds_known_due_date_funding_forecast_from_structured_csv(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
