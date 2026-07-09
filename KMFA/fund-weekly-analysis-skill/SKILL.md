@@ -131,6 +131,7 @@ Write outputs under:
 Required files:
 
 * `资金与税费管理母版_<run_id>.xlsx`
+* `资金与税费管理报告_<run_id>.pdf`
 * `run_manifest.json`
 * `evidence_index.csv`
 * `fund_ledger.csv`
@@ -178,6 +179,8 @@ Required files:
 * `cross_review.json`
 * `audit_log.json`
 * `run_summary.md`
+
+The Excel workbook and `资金与税费管理报告_<run_id>.pdf` are the user-facing deliverables for a successful run. Internal audit CSV/JSON files, OCR text, logs, private authorization manifests, and sidecar files are private validation material only and must stay under ignored private runtime unless a separate owner-approved handoff says otherwise.
 
 Current deterministic runner status contract:
 

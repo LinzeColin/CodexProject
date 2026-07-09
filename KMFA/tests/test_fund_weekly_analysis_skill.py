@@ -526,6 +526,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(manifest["status"], "SOURCE_MISSING")
             self.assertEqual(manifest["file_count"], 0)
             self.assertEqual(issues[0]["issue_type"], "SOURCE_MISSING")
+            self.assertFalse((run_dir / "资金与税费管理报告_missing_source_test.pdf").exists())
 
     def test_runner_reports_private_source_candidates_when_expected_folder_missing(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -612,6 +613,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
 
             required_outputs = [
                 "资金与税费管理母版_indexed_package_test.xlsx",
+                "资金与税费管理报告_indexed_package_test.pdf",
                 "evidence_index.csv",
                 "fund_ledger.csv",
                 "net_flow_ledger.csv",
@@ -688,6 +690,12 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             ]
             for name in required_outputs:
                 self.assertTrue((run_dir / name).exists(), name)
+            pdf_bytes = (run_dir / "资金与税费管理报告_indexed_package_test.pdf").read_bytes()
+            self.assertTrue(pdf_bytes.startswith(b"%PDF-"), pdf_bytes[:8])
+            self.assertGreater(len(pdf_bytes), 1000)
+            self.assertEqual(manifest["human_report_pdf"], "资金与税费管理报告_indexed_package_test.pdf")
+            self.assertTrue(manifest["human_report_pdf_generated"])
+            self.assertTrue(manifest["human_report_pdf_private_runtime_only"])
 
             with zipfile.ZipFile(run_dir / "资金与税费管理母版_indexed_package_test.xlsx") as workbook:
                 self.assertIn("xl/workbook.xml", workbook.namelist())
@@ -713,6 +721,9 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertFalse(cross_review["management_conclusion_allowed"])
             self.assertEqual(cross_review["generated_financial_amount_count"], 0)
             self.assertEqual(cross_review["screenshot_ocr_missing_count"], 1)
+            self.assertEqual(cross_review["human_report_pdf"], "资金与税费管理报告_indexed_package_test.pdf")
+            self.assertTrue(cross_review["human_report_pdf_generated"])
+            self.assertTrue(cross_review["human_report_pdf_private_runtime_only"])
 
             with (run_dir / "evidence_cross_review_resolution_plan.csv").open(encoding="utf-8-sig", newline="") as f:
                 evidence_plan_rows = list(csv.DictReader(f))
