@@ -16,16 +16,20 @@ DANGEROUS_SUFFIXES = (".sqlite", ".sqlite-wal", ".sqlite-shm", ".db")
 DANGEROUS_PATH_PARTS = ("/private_runtime/",)
 
 
-def _pattern(label: str, text: str) -> tuple[str, re.Pattern[str]]:
+def _literal_pattern(label: str, text: str) -> tuple[str, re.Pattern[str]]:
     return label, re.compile(re.escape(text), re.IGNORECASE)
 
 
+def _regex_pattern(label: str, text: str) -> tuple[str, re.Pattern[str]]:
+    return label, re.compile(text, re.IGNORECASE)
+
+
 SENSITIVE_TEXT_PATTERNS = (
-    _pattern("access credential", "access" + "_token"),
-    _pattern("app credential compact", "app" + "secret"),
-    _pattern("app credential snake", "app" + "_secret"),
-    _pattern("assignment style credential", "sec" + "ret="),
-    _pattern("dingtalk robot endpoint", "dingtalk.com/robot/" + "send"),
+    _literal_pattern("access credential", "access" + "_token"),
+    _literal_pattern("app credential compact", "app" + "secret"),
+    _literal_pattern("app credential snake", "app" + "_secret"),
+    _regex_pattern("assignment style credential", r"(?<![A-Za-z0-9_])sec" + r"ret\s*="),
+    _literal_pattern("dingtalk robot endpoint", "dingtalk.com/robot/" + "send"),
 )
 
 

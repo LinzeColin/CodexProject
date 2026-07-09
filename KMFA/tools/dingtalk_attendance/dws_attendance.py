@@ -37,6 +37,9 @@ SUMMARY_TODAY_ANOMALY_TOKENS = frozenset(
 )
 RETRYABLE_SERVER_CODES = frozenset({"PAT_AUTH_CALL_FAILED", "TOKEN_VERIFIED_FAILED", "ERROR"})
 RETRYABLE_DWS_ERROR_CODES = frozenset({"6", "ERROR", "request_timeout", "timed_out", "timeout"})
+SUMMARY_BACKED_RECORD_DETAIL_UNAVAILABLE_CODES = frozenset({"AGENT_CODE_NOT_EXISTS"})
+KNOWN_NO_RECORD_SUMMARY_NOT_APPLICABLE_CODES = frozenset({"AGENT_CODE_NOT_EXISTS"})
+RECORD_BACKED_SUMMARY_DETAIL_UNAVAILABLE_CODES = frozenset({"AGENT_CODE_NOT_EXISTS"})
 PAT_AUTH_REQUIRED_CODES = frozenset(
     {
         "PAT_SCOPE_AUTH_REQUIRED",
@@ -118,6 +121,16 @@ def _server_error_code(result: dict[str, Any]) -> str:
     return ""
 
 
+def _payload_code(result: dict[str, Any]) -> str:
+    payload = result.get("payload", {})
+    if not isinstance(payload, dict):
+        return ""
+    code = payload.get("code")
+    if code:
+        return str(code)
+    return _server_error_code(result)
+
+
 def _should_retry(result: dict[str, Any]) -> bool:
     if _is_success(result):
         return False
@@ -126,14 +139,18 @@ def _should_retry(result: dict[str, Any]) -> bool:
     payload = result.get("payload", {})
     error = payload.get("error", {}) if isinstance(payload, dict) else {}
     retryable = bool(error.get("retryable")) if isinstance(error, dict) else False
-    code = _server_error_code(result)
+    code = _payload_code(result)
     reason = str(payload.get("reason") or "") if isinstance(payload, dict) else ""
+    message = str(payload.get("message") or payload.get("errmsg") or "") if isinstance(payload, dict) else ""
+    has_failure_detail = bool(code or reason or message)
     return (
         retryable
         or code in RETRYABLE_SERVER_CODES
         or code in RETRYABLE_DWS_ERROR_CODES
         or reason.lower() in RETRYABLE_DWS_ERROR_CODES
+        or message.lower() in RETRYABLE_DWS_ERROR_CODES
         or _contains_timeout(payload)
+        or not has_failure_detail
     )
 
 
@@ -180,7 +197,7 @@ def discover_department_ids(
         )["final"]
         _raise_if_pat_auth_required(result, args=["contact", "dept", "list-children"])
         if not _is_success(result):
-            raise DwsAttendanceError(f"department discovery failed for dept {dept_id}: {_server_error_code(result)}")
+            raise DwsAttendanceError(f"department discovery failed for dept {dept_id}: {_failure_label(result)}")
         payload = result["payload"]
         for child in payload.get("result", []):
             child_id = child.get("deptId")
@@ -204,7 +221,7 @@ def list_org_members(
         )["final"]
         _raise_if_pat_auth_required(result, args=["contact", "dept", "list-members"])
         if not _is_success(result):
-            raise DwsAttendanceError(f"member listing failed: {_server_error_code(result)}")
+            raise DwsAttendanceError(f"member listing failed: {_failure_label(result)}")
         for row in result["payload"].get("deptUserList", []):
             user_info = row.get("userInfo", {})
             user_id = str(user_info.get("userId") or "")
@@ -247,8 +264,25 @@ def collect_org_attendance(
         record_payload_requires_attendance = _record_requires_attendance(record_payload)
         record_requires_attendance = bool(record_list) or record_payload_requires_attendance or summary_today_present
         record_has_full_day = _record_list_has_morning_and_evening(record_list)
-        known_no_record = member["name"] in KNOWN_NO_RECORD_NAMES and len(record_list) == 0 and _is_success(record_final)
-        record_anomaly = _is_success(record_final) and not known_no_record and (
+        record_raw_success = _is_success(record_final)
+        summary_raw_success = _is_success(summary_final)
+        record_detail_unavailable = _is_summary_backed_record_detail_unavailable(
+            record_final=record_final,
+            summary_final=summary_final,
+        )
+        record_success = record_raw_success or record_detail_unavailable
+        known_no_record = member["name"] in KNOWN_NO_RECORD_NAMES and len(record_list) == 0 and record_raw_success
+        summary_not_applicable = _is_known_no_record_summary_not_applicable(
+            summary_final=summary_final,
+            known_no_record=known_no_record,
+        )
+        summary_detail_unavailable = _is_record_backed_summary_detail_unavailable(
+            summary_final=summary_final,
+            record_success=record_success,
+            record_has_full_day=record_has_full_day,
+        )
+        summary_success = summary_raw_success or summary_not_applicable or summary_detail_unavailable
+        record_anomaly = record_success and not record_detail_unavailable and not known_no_record and (
             (len(record_list) == 0 and (record_payload_requires_attendance or summary_today_present))
             or (len(record_list) > 0 and not record_has_full_day)
         )
@@ -258,8 +292,16 @@ def collect_org_attendance(
                 "record": record,
                 "summary": summary,
                 "derived": {
-                    "record_success": _is_success(record_final),
-                    "summary_success": _is_success(summary_final),
+                    "record_success": record_success,
+                    "record_raw_success": record_raw_success,
+                    "record_detail_unavailable": record_detail_unavailable,
+                    "record_detail_unavailable_code": _payload_code(record_final) if record_detail_unavailable else "",
+                    "summary_success": summary_success,
+                    "summary_raw_success": summary_raw_success,
+                    "summary_not_applicable": summary_not_applicable,
+                    "summary_not_applicable_code": _payload_code(summary_final) if summary_not_applicable else "",
+                    "summary_detail_unavailable": summary_detail_unavailable,
+                    "summary_detail_unavailable_code": _payload_code(summary_final) if summary_detail_unavailable else "",
                     "record_count": len(record_list),
                     "record_requires_attendance": record_requires_attendance,
                     "record_has_full_day": record_has_full_day,
@@ -269,7 +311,7 @@ def collect_org_attendance(
                     "summary_today_present": summary_today_present,
                     "summary_today_issues": summary_today_issues,
                     "summary_today_issue_count": len(summary_today_issues),
-                    "summary_today_anomaly": _is_success(summary_final) and bool(summary_today_issues) and not known_no_record,
+                    "summary_today_anomaly": summary_success and bool(summary_today_issues) and not known_no_record,
                     "known_no_record": known_no_record,
                 },
             }
@@ -424,6 +466,20 @@ def build_collection_stats(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "record_failure_count": len(rows) - len(record_success),
         "summary_failure_count": len(rows) - len(summary_success),
         "command_failure_count": (len(rows) - len(record_success)) + (len(rows) - len(summary_success)),
+        "record_detail_unavailable_count": sum(1 for row in rows if row["derived"].get("record_detail_unavailable")),
+        "record_detail_unavailable_names": [
+            row["member"]["name"] for row in rows if row["derived"].get("record_detail_unavailable")
+        ],
+        "summary_not_applicable_count": sum(1 for row in rows if row["derived"].get("summary_not_applicable")),
+        "summary_not_applicable_names": [
+            row["member"]["name"] for row in rows if row["derived"].get("summary_not_applicable")
+        ],
+        "summary_detail_unavailable_count": sum(
+            1 for row in rows if row["derived"].get("summary_detail_unavailable")
+        ),
+        "summary_detail_unavailable_names": [
+            row["member"]["name"] for row in rows if row["derived"].get("summary_detail_unavailable")
+        ],
         "known_no_record_names": [row["member"]["name"] for row in known_no_record],
         "attendance_required_names": [row["member"]["name"] for row in attendance_required],
         "unexpected_empty_record_names": [row["member"]["name"] for row in unexpected_empty],
@@ -445,6 +501,51 @@ def _dedupe_rows_by_user(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
             seen.add(user_id)
             result.append(row)
     return result
+
+
+def _is_summary_backed_record_detail_unavailable(
+    *,
+    record_final: dict[str, Any],
+    summary_final: dict[str, Any],
+) -> bool:
+    if _is_success(record_final) or not _is_success(summary_final):
+        return False
+    return _payload_code(record_final) in SUMMARY_BACKED_RECORD_DETAIL_UNAVAILABLE_CODES
+
+
+def _is_known_no_record_summary_not_applicable(
+    *,
+    summary_final: dict[str, Any],
+    known_no_record: bool,
+) -> bool:
+    if not known_no_record or _is_success(summary_final):
+        return False
+    return _payload_code(summary_final) in KNOWN_NO_RECORD_SUMMARY_NOT_APPLICABLE_CODES
+
+
+def _is_record_backed_summary_detail_unavailable(
+    *,
+    summary_final: dict[str, Any],
+    record_success: bool,
+    record_has_full_day: bool,
+) -> bool:
+    if not record_success or not record_has_full_day or _is_success(summary_final):
+        return False
+    return _payload_code(summary_final) in RECORD_BACKED_SUMMARY_DETAIL_UNAVAILABLE_CODES
+
+
+def _failure_label(result: dict[str, Any]) -> str:
+    payload = result.get("payload", {})
+    parts: list[str] = []
+    code = _payload_code(result)
+    if code:
+        parts.append(f"code={code}")
+    if isinstance(payload, dict):
+        for key in ("reason", "message", "errmsg"):
+            value = payload.get(key)
+            if value:
+                parts.append(f"{key}={value}")
+    return "; ".join(parts) or f"returncode={result.get('returncode')}; unknown_failure"
 
 
 def _dedupe_strings(values: list[str]) -> list[str]:

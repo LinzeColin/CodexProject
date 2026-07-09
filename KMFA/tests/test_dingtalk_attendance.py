@@ -633,6 +633,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         bad_payloads = [
             "access" + "_token=abc",
             "app" + "_sec" + "ret=abc",
+            "sec" + "ret=abc",
             "https://oapi.dingtalk.com/robot/" + "send?access" + "_token=abc",
         ]
 
@@ -642,6 +643,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 self.assertGreaterEqual(len(findings), 1)
         allowed_schema_payload = "web" + "hook_env_key=DINGTALK_GROUP_ENDPOINT_ENV"
         self.assertEqual(scan_payload_for_sensitive_text(allowed_schema_payload), [])
+        self.assertEqual(scan_payload_for_sensitive_text("credential_" + "sec" + "ret=false"), [])
 
     def test_s19_file_contract_is_complete_and_private_runtime_is_placeholder_only(self) -> None:
         result = validate_s19_files(ROOT)
@@ -693,6 +695,55 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             timeout_by_call[("attendance", "record", "get", "--user", "li-dws-id", "--date", "2026-07-07")],
             60,
         )
+
+    def test_dws_department_empty_failure_is_retried_before_failing_run(self) -> None:
+        dept_one_calls = 0
+
+        def runner(args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict:
+            nonlocal dept_one_calls
+            if args == ["contact", "dept", "list-children", "--dept", "1"]:
+                dept_one_calls += 1
+                if dept_one_calls == 1:
+                    return {"returncode": 4, "payload": {"success": False}}
+                return {"returncode": 0, "payload": {"success": True, "result": [{"deptId": 100}]}}
+            if args == ["contact", "dept", "list-children", "--dept", "100"]:
+                return {"returncode": 0, "payload": {"success": True, "result": []}}
+            if args == ["contact", "dept", "list-members", "--depts", "1,100"]:
+                return {
+                    "returncode": 0,
+                    "payload": {
+                        "success": True,
+                        "deptUserList": [{"userInfo": {"name": "李同林", "userId": "li-dws-id"}}],
+                    },
+                }
+            if args[:4] == ["attendance", "record", "get", "--user"]:
+                return {
+                    "returncode": 0,
+                    "payload": {
+                        "success": True,
+                        "code": "0",
+                        "result": {"recordList": [{"checkTypeDesc": "上班"}, {"checkTypeDesc": "下班"}]},
+                    },
+                }
+            if args[:3] == ["attendance", "summary", "--user"]:
+                return {
+                    "returncode": 0,
+                    "payload": {
+                        "success": True,
+                        "code": "0",
+                        "result": {"abnormalCount": 0, "items": []},
+                    },
+                }
+            raise AssertionError(f"unexpected dws args: {args}")
+
+        result = collect_org_attendance(
+            work_date="2026-07-09",
+            summary_datetime="2026-07-09 20:05:00",
+            runner=runner,
+        )
+
+        self.assertEqual(dept_one_calls, 2)
+        self.assertEqual(result["stats"]["command_failure_count"], 0)
 
     def test_run_dws_json_passes_effective_timeout_to_dws_cli(self) -> None:
         captured: dict[str, object] = {}
@@ -873,6 +924,138 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertNotIn("今日异常人员 / 无考勤人员：张霖泽", body)
         self.assertNotIn("林全意。", body)
         self.assertNotIn("今天一切良好", body)
+
+    def test_summary_backed_agent_code_missing_is_detail_unavailable_not_command_failure(self) -> None:
+        def runner(args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict:
+            if args == ["contact", "dept", "list-children", "--dept", "1"]:
+                return {"returncode": 0, "payload": {"success": True, "result": []}}
+            if args == ["contact", "dept", "list-members", "--depts", "1"]:
+                return {
+                    "returncode": 0,
+                    "payload": {
+                        "success": True,
+                        "deptUserList": [{"userInfo": {"name": "吴云霞", "userId": "u-wu"}}],
+                    },
+                }
+            if args[:4] == ["attendance", "record", "get", "--user"]:
+                return {"returncode": 4, "payload": {"success": False, "code": "AGENT_CODE_NOT_EXISTS", "data": None}}
+            if args[:3] == ["attendance", "summary", "--user"]:
+                return {
+                    "returncode": 0,
+                    "payload": {
+                        "success": True,
+                        "code": "0",
+                        "result": {
+                            "abnormalCount": 0,
+                            "items": [
+                                {
+                                    "id": "RealAttend_Y",
+                                    "name": "出勤天数",
+                                    "children": [{"name": "2026-07-09（星期四）", "values": ["1.0"]}],
+                                }
+                            ],
+                        },
+                    },
+                }
+            raise AssertionError(f"unexpected dws args: {args}")
+
+        collection = collect_org_attendance(
+            work_date="2026-07-09",
+            summary_datetime="2026-07-09 10:35:00",
+            runner=runner,
+        )
+
+        self.assertEqual(collection["stats"]["record_success_count"], 1)
+        self.assertEqual(collection["stats"]["record_failure_count"], 0)
+        self.assertEqual(collection["stats"]["command_failure_count"], 0)
+        self.assertEqual(collection["stats"]["record_detail_unavailable_count"], 1)
+        self.assertEqual(collection["stats"]["record_detail_unavailable_names"], ["吴云霞"])
+        self.assertEqual(collection["stats"]["attendance_required_count"], 1)
+        self.assertEqual(collection["stats"]["attendance_anomaly_count"], 0)
+
+    def test_known_no_record_summary_agent_code_missing_is_not_command_failure(self) -> None:
+        def runner(args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict:
+            if args == ["contact", "dept", "list-children", "--dept", "1"]:
+                return {"returncode": 0, "payload": {"success": True, "result": []}}
+            if args == ["contact", "dept", "list-members", "--depts", "1"]:
+                return {
+                    "returncode": 0,
+                    "payload": {
+                        "success": True,
+                        "deptUserList": [{"userInfo": {"name": "张霖泽", "userId": "u-test"}}],
+                    },
+                }
+            if args[:4] == ["attendance", "record", "get", "--user"]:
+                return {
+                    "returncode": 0,
+                    "payload": {
+                        "success": True,
+                        "code": "0",
+                        "result": {"recordList": [], "isHasSchedule": True},
+                    },
+                }
+            if args[:3] == ["attendance", "summary", "--user"]:
+                return {"returncode": 4, "payload": {"success": False, "code": "AGENT_CODE_NOT_EXISTS", "data": None}}
+            raise AssertionError(f"unexpected dws args: {args}")
+
+        collection = collect_org_attendance(
+            work_date="2026-07-09",
+            summary_datetime="2026-07-09 20:05:00",
+            runner=runner,
+        )
+
+        self.assertEqual(collection["stats"]["record_success_count"], 1)
+        self.assertEqual(collection["stats"]["summary_success_count"], 1)
+        self.assertEqual(collection["stats"]["summary_failure_count"], 0)
+        self.assertEqual(collection["stats"]["command_failure_count"], 0)
+        self.assertEqual(collection["stats"]["known_no_record_names"], ["张霖泽"])
+        self.assertEqual(collection["stats"]["summary_not_applicable_count"], 1)
+        self.assertEqual(collection["stats"]["summary_not_applicable_names"], ["张霖泽"])
+        self.assertEqual(collection["stats"]["attendance_required_count"], 0)
+        self.assertEqual(collection["stats"]["attendance_anomaly_count"], 0)
+
+    def test_full_record_summary_agent_code_missing_is_detail_unavailable_not_command_failure(self) -> None:
+        def runner(args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict:
+            if args == ["contact", "dept", "list-children", "--dept", "1"]:
+                return {"returncode": 0, "payload": {"success": True, "result": []}}
+            if args == ["contact", "dept", "list-members", "--depts", "1"]:
+                return {
+                    "returncode": 0,
+                    "payload": {
+                        "success": True,
+                        "deptUserList": [{"userInfo": {"name": "周稳", "userId": "u-zhou"}}],
+                    },
+                }
+            if args[:4] == ["attendance", "record", "get", "--user"]:
+                return {
+                    "returncode": 0,
+                    "payload": {
+                        "success": True,
+                        "code": "0",
+                        "result": {
+                            "recordList": [{"checkTypeDesc": "上班"}, {"checkTypeDesc": "下班"}],
+                            "isHasSchedule": True,
+                        },
+                    },
+                }
+            if args[:3] == ["attendance", "summary", "--user"]:
+                return {"returncode": 4, "payload": {"success": False, "code": "AGENT_CODE_NOT_EXISTS", "data": None}}
+            raise AssertionError(f"unexpected dws args: {args}")
+
+        collection = collect_org_attendance(
+            work_date="2026-07-09",
+            summary_datetime="2026-07-09 20:05:00",
+            runner=runner,
+        )
+
+        self.assertEqual(collection["stats"]["record_success_count"], 1)
+        self.assertEqual(collection["stats"]["summary_success_count"], 1)
+        self.assertEqual(collection["stats"]["summary_failure_count"], 0)
+        self.assertEqual(collection["stats"]["command_failure_count"], 0)
+        self.assertEqual(collection["stats"]["summary_detail_unavailable_count"], 1)
+        self.assertEqual(collection["stats"]["summary_detail_unavailable_names"], ["周稳"])
+        self.assertEqual(collection["stats"]["attendance_required_count"], 1)
+        self.assertEqual(collection["stats"]["attendance_anomaly_count"], 0)
 
     def test_scheduled_partial_record_counts_as_attendance_anomaly(self) -> None:
         def runner(args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict:
