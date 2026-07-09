@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1277
-    total_active_formulas: 266
+    total_active_parameters: 1280
+    total_active_formulas: 267
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -2772,6 +2772,32 @@ kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_applicati
     business_execution_ready_count: 0
     unresolved_difference_count: 72
   gates:
+    owner_or_authorized_agent_resolution_completed_by_this_phase: false
+    authoritative_binding_application_ready: false
+    raw_to_processed_value_comparison_ready: false
+    processed_data_reconciliation_ready: false
+    business_value_consistency_ready: false
+    lineage_full_check_ready: false
+    github_upload_performed: false
+    app_reinstall_performed: false
+    business_execution_performed: false
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_audit_after_final_check_closure:
+  status: completed_validated_local_only_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_audit_after_final_check_closure_no_go_blocked_first_observation
+  phase_id: V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_AUDIT_AFTER_FINAL_CHECK_CLOSURE
+  task_id: KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-RESOLUTION-INTAKE-BLOCKER-AUDIT-AFTER-FINAL-CHECK-CLOSURE-20260708
+  decision: NO_GO
+  evidence_ref: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_AUDIT_AFTER_FINAL_CHECK_CLOSURE/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_audit_after_final_check_closure_manifest.json
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_audit_after_final_check_closure.py
+  counts:
+    source_resolution_intake_blocker_count: 48
+    resolution_intake_blocker_audit_blocker_count: 48
+    resolution_intake_blocker_observation_count: 1
+    owner_or_authorized_agent_resolution_count: 0
+    business_execution_ready_count: 0
+    unresolved_difference_count: 72
+  gates:
+    resolution_intake_blocker_audit_checked_by_this_phase: true
     owner_or_authorized_agent_resolution_completed_by_this_phase: false
     authoritative_binding_application_ready: false
     raw_to_processed_value_comparison_ready: false
