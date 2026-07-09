@@ -81,7 +81,7 @@
     "retention_days": 3,
     "status": "已在 raw 数据上传验证成功后清理本机旧数据、macdata 临时缓存、受控开发环境缓存和 GitHub/Codex 临时协作痕迹"
   },
-  "created_at_local": "2026-07-09T01:12:20+10:00",
+  "created_at_local": "2026-07-09T01:12:38+10:00",
   "development_cleanup": {
     "docker": {
       "command": "docker system prune -f",
@@ -127,7 +127,7 @@
   },
   "device_key": "proM2",
   "final_report_path": "reports/current_3days/2026-07-09/proM2-20260709-011154_final.md",
-  "ok": null,
+  "ok": true,
   "raw_archive": {
     "archive_branch": "macdata-proM2",
     "commit_message": "data(macdata-proM2): 2026-07-09 raw proM2-20260709-011154",
@@ -139,7 +139,16 @@
     "status": "上传成功并已验证"
   },
   "raw_data_path": "data/current_3days/raw/2026-07-09/proM2-20260709-011154.json",
-  "remote_verified": null,
-  "report_archive": null,
+  "remote_verified": true,
+  "report_archive": {
+    "archive_branch": "macdata-proM2",
+    "commit_message": "data(macdata-proM2): 2026-07-09 report proM2-20260709-011154",
+    "local_commit_hash": "df6451cc5004f881630721daf5835231a5ea0e2a",
+    "message": "远程分支提交哈希与本地提交哈希一致。",
+    "ok": true,
+    "remote_commit_hash": "df6451cc5004f881630721daf5835231a5ea0e2a",
+    "remote_verified": true,
+    "status": "上传成功并已验证"
+  },
   "run_id": "proM2-20260709-011154"
 }

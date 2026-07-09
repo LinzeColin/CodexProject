@@ -8,7 +8,7 @@
     "brew_formula_count": null,
     "brew_version": "未安装或不可用"
   },
-  "collected_at_local": "2026-07-07T01:11:16+10:00",
+  "collected_at_local": "2026-07-10T01:11:53+10:00",
   "collector_notes": [
     "本记录不采集 Time Machine。",
     "本记录不使用 iCloud。",
@@ -47,9 +47,9 @@
   },
   "memory": {
     "physical_memory_gb": 32.0,
-    "swap_used_gb": 2.63,
-    "swapusage_raw": "vm.swapusage: total = 4096.00M  used = 2690.81M  free = 1405.19M  (encrypted)",
-    "vm_stat_summary": "Mach Virtual Memory Statistics: (page size of 16384 bytes)\nPages free:                               50338.\nPages active:                            843454.\nPages inactive:                          836574.\nPages speculative:                         6974.\nPages throttled:                              0.\nPages wired down:                        153147.\nPages purgeable:                          13159.\n\"Translation faults\":                6266948291.\nPages copy-on-write:                  635848116.\nPages zero filled:                   2405483490.\nPages reactivated:                     70839852.\nPages purged:                          12008376.\nFile-backed pages:                       429336.\nAnonymous pages:                        1257666.\nPages stored in compressor:              568011.\nPages occupied by compressor:            151641.\nDecompressions:                        30634832."
+    "swap_used_gb": 1.87,
+    "swapusage_raw": "vm.swapusage: total = 3072.00M  used = 1910.12M  free = 1161.88M  (encrypted)",
+    "vm_stat_summary": "Mach Virtual Memory Statistics: (page size of 16384 bytes)\nPages free:                              100184.\nPages active:                            798337.\nPages inactive:                          723934.\nPages speculative:                       115057.\nPages throttled:                              0.\nPages wired down:                        141881.\nPages purgeable:                          23883.\n\"Translation faults\":                7097969291.\nPages copy-on-write:                  691022812.\nPages zero filled:                   2789893016.\nPages reactivated:                     81408712.\nPages purged:                          14388310.\nFile-backed pages:                       605439.\nAnonymous pages:                        1031889.\nPages stored in compressor:              533235.\nPages occupied by compressor:            162653.\nDecompressions:                        33473921."
   },
   "owner_confirmations_summary": {
     "allow_github_upload": true,
@@ -70,11 +70,11 @@
   "repo_root": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/macdata-proM2",
   "risk": {
     "battery_capacity_level": "绿色",
-    "overall_level": "黄色",
+    "overall_level": "绿色",
     "storage_level": "绿色",
-    "swap_level": "黄色"
+    "swap_level": "绿色"
   },
-  "run_id": "proM2-20260707-011109",
+  "run_id": "proM2-20260710-011146",
   "schema_version": "macdata-record-v1",
   "sizes": {
     "desktop_size": {
@@ -93,7 +93,7 @@
       "error": "",
       "exists": true,
       "path": "/Users/linzezhang/Documents",
-      "size_gb": 26.33
+      "size_gb": 30.31
     },
     "downloads_size": {
       "error": "",
@@ -115,14 +115,14 @@
     }
   },
   "storage": {
-    "root_free_gb": 546.44,
+    "root_free_gb": 547.0,
     "root_percent_used": 41.0,
     "root_total_gb": 926.35,
-    "root_used_gb": 379.91
+    "root_used_gb": 379.35
   },
   "timezone_expected": "Australia/Sydney",
   "top_processes": {
-    "top_cpu_raw": "Processes: 690 total, 3 running, 687 sleeping, 3613 threads \n2026/07/07 01:11:10\nLoad Avg: 3.62, 3.31, 3.18 \nCPU usage: 12.3% user, 10.65% sys, 77.31% idle \nSharedLibs: 784M resident, 152M data, 128M linkedit.\nMemRegions: 433256 total, 14G resident, 611M private, 3210M shared.\nPhysMem: 30G used (2393M wired, 2369M compressor), 888M unused.\nVM: 294T vsize, 5430M framework vsize, 238915(0) swapins, 435660(0) swapouts.\nNetworks: packets: 129819019/134G in, 50475430/25G out.\nDisks: 48169996/1609G read, 55894673/2096G written.\n\nPID    COMMAND          %CPU MEM  \n99900  Codex for Chrome 0.0  1969K\n99849  com.apple.ColorS 0.0  1777K\n99848  colorsync.userag 0.0  3297K\n99661  amfid            0.0  5377K",
-    "top_memory_raw": "Processes: 690 total, 3 running, 687 sleeping, 3616 threads \n2026/07/07 01:11:11\nLoad Avg: 3.57, 3.30, 3.18 \nCPU usage: 12.5% user, 11.0% sys, 76.93% idle \nSharedLibs: 784M resident, 152M data, 128M linkedit.\nMemRegions: 433267 total, 14G resident, 611M private, 3210M shared.\nPhysMem: 30G used (2393M wired, 2369M compressor), 887M unused.\nVM: 294T vsize, 5430M framework vsize, 238915(0) swapins, 435660(0) swapouts.\nNetworks: packets: 129819065/134G in, 50475472/25G out.\nDisks: 48170053/1609G read, 55894674/2096G written.\n\nPID    COMMAND          %CPU MEM  \n633    replayd          0.0  2498M\n87048  Codex (Renderer) 0.0  1059M\n3340   Google Chrome He 0.0  832M \n55101  Google Chrome He 0.0  795M "
+    "top_cpu_raw": "Processes: 706 total, 3 running, 703 sleeping, 3666 threads \n2026/07/10 01:11:46\nLoad Avg: 2.51, 2.20, 2.38 \nCPU usage: 10.52% user, 9.64% sys, 79.82% idle \nSharedLibs: 843M resident, 159M data, 135M linkedit.\nMemRegions: 417911 total, 9907M resident, 691M private, 4044M shared.\nPhysMem: 28G used (2217M wired, 2541M compressor), 3360M unused.\nVM: 305T vsize, 5430M framework vsize, 249729(0) swapins, 438750(0) swapouts.\nNetworks: packets: 156894169/162G in, 62299133/31G out.\nDisks: 67467171/2209G read, 65861523/2471G written.\n\nPID    COMMAND          %CPU MEM  \n99849  com.apple.ColorS 0.0  1793K\n99848  colorsync.userag 0.0  2961K\n99661  amfid            0.0  5313K\n99469  helpd            0.0  5777K",
+    "top_memory_raw": "Processes: 706 total, 3 running, 703 sleeping, 3664 threads \n2026/07/10 01:11:47\nLoad Avg: 2.51, 2.20, 2.38 \nCPU usage: 10.19% user, 8.35% sys, 81.44% idle \nSharedLibs: 843M resident, 159M data, 135M linkedit.\nMemRegions: 417899 total, 9908M resident, 691M private, 4044M shared.\nPhysMem: 28G used (2217M wired, 2541M compressor), 3358M unused.\nVM: 305T vsize, 5430M framework vsize, 249729(0) swapins, 438750(0) swapouts.\nNetworks: packets: 156894169/162G in, 62299133/31G out.\nDisks: 67467171/2209G read, 65861523/2471G written.\n\nPID    COMMAND          %CPU MEM  \n633    replayd          0.0  3046M\n26987  Codex (Renderer) 0.0  763M \n377    WindowServer     0.0  574M \n26986  Codex (Renderer) 0.0  482M "
   }
 }

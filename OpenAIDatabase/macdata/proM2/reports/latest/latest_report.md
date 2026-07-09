@@ -1,7 +1,7 @@
 # proM2 每日明文健康报告
 
-报告日期：2026-07-09
-采集时间：2026-07-09T01:12:01+10:00
+报告日期：2026-07-10
+采集时间：2026-07-10T01:11:53+10:00
 设备角色：主开发电脑
 运行来源：Codex Automation 调用受控脚本
 Codex 模型：gpt-5.3-codex-spark
@@ -15,15 +15,15 @@ iCloud：本任务不使用
 
 | 项目 | 明文值 |
 |---|---|
-| 采集编号 | proM2-20260709-011154 |
+| 采集编号 | proM2-20260710-011146 |
 | 本机任务目录 | OpenAIDatabase/macdata/proM2 |
-| 运行状态 | 上传成功并已验证 |
-| 上传说明 | 远程分支提交哈希与本地提交哈希一致。 |
+| 运行状态 | 待上传 |
+| 上传说明 | 本报告生成时尚未完成 GitHub 上传验证。 |
 | 归档分支 | macdata-proM2 |
-| 数据提交哈希 | e8230c2bdb8e02374a84349923f2269abd2b1080 |
+| 数据提交哈希 | 未采集 |
 | 报告提交哈希 | 未采集 |
-| 远程验证 | True |
-| 清理状态 | 已在 raw 数据上传验证成功后清理本机旧数据、macdata 临时缓存、受控开发环境缓存和 GitHub/Codex 临时协作痕迹 |
+| 远程验证 | 未采集 |
+| 清理状态 | 待清理 |
 
 二、设备基础信息
 
@@ -60,9 +60,9 @@ iCloud：本任务不使用
 | 指标 | 明文值 |
 |---|---|
 | 根目录总容量 | 926.35 GB |
-| 根目录已用容量 | 376.67 GB |
-| 根目录剩余容量 | 549.68 GB |
-| 根目录使用率 | 40.7% |
+| 根目录已用容量 | 379.35 GB |
+| 根目录剩余容量 | 547.0 GB |
+| 根目录使用率 | 41.0% |
 | 黄色预警线 | 剩余空间 < 200 GB |
 | 红色预警线 | 剩余空间 < 100 GB |
 | 当前存储风险等级 | 绿色 |
@@ -76,71 +76,71 @@ iCloud：本任务不使用
 | 指标 | 明文值 |
 |---|---|
 | 物理内存 | 32.0 GB |
-| 当前 swap 使用量 | 1.88 GB |
+| 当前 swap 使用量 | 1.87 GB |
 | 黄色预警线 | swap ≥ 2 GB |
 | 红色预警线 | swap ≥ 8 GB |
 | 当前内存风险等级 | 绿色 |
 | vm_stat 摘要 | Mach Virtual Memory Statistics: (page size of 16384 bytes)
-Pages free:                               51988.
-Pages active:                            760190.
-Pages inactive:                          752746.
-Pages speculative:                         5934.
+Pages free:                              100184.
+Pages active:                            798337.
+Pages inactive:                          723934.
+Pages speculative:                       115057.
 Pages throttled:                              0.
-Pages wired down:                        139309.
-Pages purgeable:                           8964.
-"Translation faults":                6998491921.
-Pages copy-on-write:                  683332858.
-Pages zero filled:                   2734736892.
-Pages reactivated:                     80230630.
-Pages purged:                          13927223.
-File-backed pages:                       598730.
-Anonymous pages:                         920140.
-Pages stored in compressor:              932469.
-Pages occupied by compressor:            331829.
-Decompressions:                        33241840. |
+Pages wired down:                        141881.
+Pages purgeable:                          23883.
+"Translation faults":                7097969291.
+Pages copy-on-write:                  691022812.
+Pages zero filled:                   2789893016.
+Pages reactivated:                     81408712.
+Pages purged:                          14388310.
+File-backed pages:                       605439.
+Anonymous pages:                        1031889.
+Pages stored in compressor:              533235.
+Pages occupied by compressor:            162653.
+Decompressions:                        33473921. |
 
 六、进程负载摘要
 
 Top CPU 进程原文摘要，尽量只包含进程名称，不采集命令行参数：
 
 ```text
-Processes: 696 total, 4 running, 692 sleeping, 3515 threads 
-2026/07/09 01:11:55
-Load Avg: 2.18, 1.97, 1.98 
-CPU usage: 17.54% user, 10.16% sys, 72.28% idle 
-SharedLibs: 827M resident, 155M data, 133M linkedit.
-MemRegions: 451346 total, 10G resident, 609M private, 3925M shared.
-PhysMem: 30G used (2177M wired, 5185M compressor), 809M unused.
-VM: 298T vsize, 5430M framework vsize, 248320(0) swapins, 438750(0) swapouts.
-Networks: packets: 151452451/156G in, 60001201/30G out.
-Disks: 64629746/2116G read, 62846545/2402G written.
+Processes: 706 total, 3 running, 703 sleeping, 3666 threads 
+2026/07/10 01:11:46
+Load Avg: 2.51, 2.20, 2.38 
+CPU usage: 10.52% user, 9.64% sys, 79.82% idle 
+SharedLibs: 843M resident, 159M data, 135M linkedit.
+MemRegions: 417911 total, 9907M resident, 691M private, 4044M shared.
+PhysMem: 28G used (2217M wired, 2541M compressor), 3360M unused.
+VM: 305T vsize, 5430M framework vsize, 249729(0) swapins, 438750(0) swapouts.
+Networks: packets: 156894169/162G in, 62299133/31G out.
+Disks: 67467171/2209G read, 65861523/2471G written.
 
 PID    COMMAND          %CPU MEM  
 99849  com.apple.ColorS 0.0  1793K
-99848  colorsync.userag 0.0  3057K
-99661  amfid            0.0  5329K
-99469  helpd            0.0  5793K
+99848  colorsync.userag 0.0  2961K
+99661  amfid            0.0  5313K
+99469  helpd            0.0  5777K
 ```
 
 Top 内存进程原文摘要，尽量只包含进程名称，不采集命令行参数：
 
 ```text
-Processes: 696 total, 4 running, 692 sleeping, 3511 threads 
-2026/07/09 01:11:56
-Load Avg: 2.18, 1.97, 1.98 
-CPU usage: 17.86% user, 11.67% sys, 70.46% idle 
-SharedLibs: 827M resident, 155M data, 133M linkedit.
-MemRegions: 451345 total, 10G resident, 609M private, 3925M shared.
-PhysMem: 30G used (2177M wired, 5185M compressor), 727M unused.
-VM: 298T vsize, 5430M framework vsize, 248320(0) swapins, 438750(0) swapouts.
-Networks: packets: 151452512/156G in, 60001283/30G out.
-Disks: 64629746/2116G read, 62846549/2402G written.
+Processes: 706 total, 3 running, 703 sleeping, 3664 threads 
+2026/07/10 01:11:47
+Load Avg: 2.51, 2.20, 2.38 
+CPU usage: 10.19% user, 8.35% sys, 81.44% idle 
+SharedLibs: 843M resident, 159M data, 135M linkedit.
+MemRegions: 417899 total, 9908M resident, 691M private, 4044M shared.
+PhysMem: 28G used (2217M wired, 2541M compressor), 3358M unused.
+VM: 305T vsize, 5430M framework vsize, 249729(0) swapins, 438750(0) swapouts.
+Networks: packets: 156894169/162G in, 62299133/31G out.
+Disks: 67467171/2209G read, 65861523/2471G written.
 
 PID    COMMAND          %CPU MEM  
-86033  Google Chrome He 0.0  3051M
-633    replayd          0.0  2986M
-54953  Google Chrome He 0.0  1152M
-53908  Google Chrome He 0.0  853M 
+633    replayd          0.0  3046M
+26987  Codex (Renderer) 0.0  763M 
+377    WindowServer     0.0  574M 
+26986  Codex (Renderer) 0.0  482M 
 ```
 
 七、Pro 开发负载与膨胀风险
@@ -194,24 +194,24 @@ Pro 膨胀明文判断：本任务观察 Docker、Homebrew、仓库体积、macd
 
 | 项目 | 明文值 |
 |---|---|
-| 保留天数 | 3 |
-| 保留起始日期 | 2026-07-07 |
-| 删除旧目录数量 | 2 |
-| 删除旧文件数量 | 0 |
-| 释放空间 | 0.03 MB |
-| 清理说明 | 已在 raw 数据上传验证成功后清理本机旧数据、macdata 临时缓存、受控开发环境缓存和 GitHub/Codex 临时协作痕迹 |
-| Docker 清理状态 | 执行失败 |
-| Docker 清理命令 | docker system prune -f |
-| Homebrew 清理状态 | 已跳过 |
+| 保留天数 | 未采集 |
+| 保留起始日期 | 未采集 |
+| 删除旧目录数量 | 未采集 |
+| 删除旧文件数量 | 未采集 |
+| 释放空间 | 未采集 MB |
+| 清理说明 | 上传验证完成后才允许清理本机旧数据。 |
+| Docker 清理状态 | 未采集 |
+| Docker 清理命令 | 未采集 |
+| Homebrew 清理状态 | 未采集 |
 | Homebrew 清理命令 | 未采集 |
-| 系统缓存清理状态 | 执行失败或权限不足 |
-| 系统缓存清理命令 | purge |
-| 项目缓存候选数量 | 0 |
-| 项目缓存释放空间 | 0.0 MB |
-| GitHub/Codex 收尾状态 | 已执行 |
-| 已删除临时远程分支数量 | 0 |
-| 已关闭 PR 数量 | 0 |
-| 已关闭 managed issue 数量 | 0 |
+| 系统缓存清理状态 | 未采集 |
+| 系统缓存清理命令 | 未采集 |
+| 项目缓存候选数量 | 未采集 |
+| 项目缓存释放空间 | 未采集 MB |
+| GitHub/Codex 收尾状态 | 未采集 |
+| 已删除临时远程分支数量 | 未采集 |
+| 已关闭 PR 数量 | 未采集 |
+| 已关闭 managed issue 数量 | 未采集 |
 
 十二、缺失项与失败项
 
@@ -220,8 +220,8 @@ Pro 膨胀明文判断：本任务观察 Docker、Homebrew、仓库体积、macd
 | Time Machine | 未采集 | 用户明确要求暂不采集 |
 | iCloud | 未采集 | 用户明确不要 iCloud |
 | API key / token / password | 未采集 | 凭证类数据禁止进入 GitHub |
-| Docker/Homebrew/系统缓存/项目缓存 | 已执行受控开发环境清理 | 仅在远程上传验证成功后执行；Docker 不清 volumes、不使用 -a，除非配置显式打开 |
-| PR/branch/issue 收尾 | 已执行 | 只清理 automation/Codex 创建且已合入 main 的临时对象；保护 main 和归档分支 |
+| Docker/Homebrew/系统缓存/项目缓存 | 待清理 | 仅在远程上传验证成功后执行；Docker 不清 volumes、不使用 -a，除非配置显式打开 |
+| PR/branch/issue 收尾 | 待执行 | 只清理 automation/Codex 创建且已合入 main 的临时对象；保护 main 和归档分支 |
 
 十三、下一次检查重点
 
