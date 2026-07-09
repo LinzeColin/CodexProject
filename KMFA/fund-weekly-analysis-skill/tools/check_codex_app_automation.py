@@ -22,9 +22,9 @@ CHECK_FIELDS = [
     "reasoning_effort",
 ]
 EXPECTED_CONTRACT_FIELDS = {
-    "rrule": "FREQ=DAILY;BYHOUR=11;BYMINUTE=30",
+    "rrule": "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0",
     "timezone": "Australia/Sydney",
-    "prompt_file": "automation/daily_1130_sydney.prompt.md",
+    "prompt_file": "automation/weekly_mon_sat_1100_sydney.prompt.md",
     "input_dir": "/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群",
     "source_readiness_gate": "tools/check_source_readiness.py",
     "branch_policy": "main_only_no_branch_no_pr_no_worktree",

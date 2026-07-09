@@ -227,37 +227,40 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
         self.assertIn("--run-id s55_validation_run", runner_call)
         self.assertFalse(any(call.startswith("codex:") for call in calls), calls)
 
-    def test_skill_package_uses_sydney_daily_1130_local_schedule_and_real_input(self) -> None:
+    def test_skill_package_uses_sydney_weekly_mon_sat_1100_local_schedule_and_real_input(self) -> None:
         self.assertTrue(SKILL_ROOT.exists(), "fund-weekly-analysis-skill package must exist under KMFA")
         skill = (SKILL_ROOT / "SKILL.md").read_text(encoding="utf-8")
         config = (SKILL_ROOT / "templates" / "fund_weekly_analysis_config.yaml").read_text(encoding="utf-8")
         plist = (SKILL_ROOT / "automation" / "launchd" / "com.kmfa.fund-weekly-analysis.plist").read_text(
             encoding="utf-8"
         )
-        prompt = (SKILL_ROOT / "automation" / "daily_1130_sydney.prompt.md").read_text(encoding="utf-8")
+        prompt = (SKILL_ROOT / "automation" / "weekly_mon_sat_1100_sydney.prompt.md").read_text(encoding="utf-8")
 
         for text in (skill, config, prompt):
             self.assertIn("Australia/Sydney", text)
-            self.assertIn("11:30", text)
+            self.assertIn("11:00", text)
             self.assertIn("/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群", text)
-        self.assertIn("daily", prompt)
-        self.assertIn("Beijing 09:30", prompt)
+        self.assertIn("Monday", prompt)
+        self.assertIn("Saturday", prompt)
+        self.assertIn("Beijing 09:00", prompt)
         self.assertIn("scheduler source of truth", prompt)
         self.assertIn("No simulation", skill)
         self.assertIn("Do not use simulated", prompt)
 
-        self.assertRegex(config, r'schedule_local:\s*"11:30"')
-        self.assertRegex(config, r'schedule_days:\s*\["Daily"\]')
+        self.assertRegex(config, r'schedule_local:\s*"11:00"')
+        self.assertRegex(config, r'schedule_days:\s*\["Monday", "Saturday"\]')
         self.assertRegex(config, r'timezone:\s*Australia/Sydney')
-        self.assertNotIn("<key>Weekday</key>", plist)
-        self.assertEqual(plist.count("<integer>11</integer>"), 1)
-        self.assertEqual(plist.count("<integer>30</integer>"), 1)
+        self.assertEqual(plist.count("<key>Weekday</key>"), 2)
+        self.assertIn("<integer>1</integer>", plist)
+        self.assertIn("<integer>6</integer>", plist)
+        self.assertEqual(plist.count("<integer>11</integer>"), 2)
+        self.assertEqual(plist.count("<integer>0</integer>"), 2)
 
     def test_taskpack_validator_requires_daily_shell_entrypoint(self) -> None:
         validator = (SKILL_ROOT / "tools" / "validate_taskpack.py").read_text(encoding="utf-8")
         self.assertIn('"tools/run_daily_local.sh"', validator)
 
-    def test_codex_app_automation_contract_mirrors_daily_1130_local_cron(self) -> None:
+    def test_codex_app_automation_contract_mirrors_weekly_mon_sat_1100_local_cron(self) -> None:
         contract_path = SKILL_ROOT / "automation" / "codex_app_automation.contract.toml"
         self.assertTrue(contract_path.exists(), "public-safe Codex App automation contract must be tracked")
         contract = tomllib.loads(contract_path.read_text(encoding="utf-8"))
@@ -266,7 +269,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
         self.assertEqual(contract["name"], "KMFA资金周报自动化")
         self.assertEqual(contract["kind"], "cron")
         self.assertEqual(contract["status"], "ACTIVE")
-        self.assertEqual(contract["rrule"], "FREQ=DAILY;BYHOUR=11;BYMINUTE=30")
+        self.assertEqual(contract["rrule"], "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0")
         self.assertEqual(contract["timezone"], "Australia/Sydney")
         self.assertEqual(contract["execution_environment"], "local")
         self.assertEqual(
@@ -276,7 +279,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "/Users/linzezhang/Documents/Codex/workspaces/dws-kmfa-automation/kmfa-codexproject",
             ],
         )
-        self.assertEqual(contract["prompt_file"], "automation/daily_1130_sydney.prompt.md")
+        self.assertEqual(contract["prompt_file"], "automation/weekly_mon_sat_1100_sydney.prompt.md")
         self.assertEqual(contract["source_readiness_gate"], "tools/check_source_readiness.py")
         self.assertEqual(
             contract["input_dir"],
@@ -374,7 +377,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(payload["status"], "CODEX_AUTOMATION_MISMATCH")
             self.assertIn("timezone", {row["field"] for row in payload["mismatches"]})
 
-    def test_codex_app_automation_check_rejects_stale_weekly_contract_even_when_live_matches(self) -> None:
+    def test_codex_app_automation_check_rejects_stale_daily_contract_even_when_live_matches(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_root = Path(temp_dir)
             repo_root = temp_root / "repo"
@@ -384,12 +387,12 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 (SKILL_ROOT / "automation" / "codex_app_automation.contract.toml")
                 .read_text(encoding="utf-8")
                 .replace(
-                    'rrule = "FREQ=DAILY;BYHOUR=11;BYMINUTE=30"',
                     'rrule = "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0"',
+                    'rrule = "FREQ=DAILY;BYHOUR=11;BYMINUTE=30"',
                 )
                 .replace(
-                    'prompt_file = "automation/daily_1130_sydney.prompt.md"',
                     'prompt_file = "automation/weekly_mon_sat_1100_sydney.prompt.md"',
+                    'prompt_file = "automation/daily_1130_sydney.prompt.md"',
                 )
             )
             (contract_dir / "codex_app_automation.contract.toml").write_text(stale_contract, encoding="utf-8")
@@ -569,9 +572,9 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             contract_dir = repo_root / "KMFA/fund-weekly-analysis-skill/automation"
             contract_dir.mkdir(parents=True)
             contract = (SKILL_ROOT / "automation" / "codex_app_automation.contract.toml").read_text(encoding="utf-8")
-            prompt = (SKILL_ROOT / "automation" / "daily_1130_sydney.prompt.md").read_text(encoding="utf-8")
+            prompt = (SKILL_ROOT / "automation" / "weekly_mon_sat_1100_sydney.prompt.md").read_text(encoding="utf-8")
             (contract_dir / "codex_app_automation.contract.toml").write_text(contract, encoding="utf-8")
-            (contract_dir / "daily_1130_sydney.prompt.md").write_text(prompt, encoding="utf-8")
+            (contract_dir / "weekly_mon_sat_1100_sydney.prompt.md").write_text(prompt, encoding="utf-8")
             automation_root = Path(temp_dir) / "automations"
             automation_dir = automation_root / "kmfa"
             automation_dir.mkdir(parents=True)
@@ -628,6 +631,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 "ocr_fact_candidate_owner_decision_template.json",
                 "ocr_fact_candidate_owner_decision_preview.csv",
                 "ocr_fact_candidate_owner_decision_progress_summary.csv",
+                "owner_decision_readiness_gate.csv",
                 "ocr_fact_candidate_owner_authorization_update_draft.json",
                 "ocr_fact_candidate_owner_authorization_update_preview.csv",
                 "ocr_fact_ledger_staging_preview.csv",
@@ -693,7 +697,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "A5"), "schedule_rrule")
                 self.assertEqual(
                     xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "B5"),
-                    "FREQ=DAILY;BYHOUR=11;BYMINUTE=30",
+                    "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0",
                 )
                 self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "A8"), "fact_promotion_execution_allowed")
                 self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "B8"), "false")
@@ -755,7 +759,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 automation_rows = list(csv.DictReader(f))
             self.assertEqual(len(automation_rows), 1)
             self.assertEqual(automation_rows[0]["status"], "CODEX_AUTOMATION_READY")
-            self.assertEqual(automation_rows[0]["rrule"], "FREQ=DAILY;BYHOUR=11;BYMINUTE=30")
+            self.assertEqual(automation_rows[0]["rrule"], "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0")
             self.assertEqual(automation_rows[0]["expected_timezone"], "Australia/Sydney")
             self.assertEqual(automation_rows[0]["schedule_ready"], "true")
             self.assertEqual(automation_rows[0]["management_conclusion_allowed"], "false")
@@ -1486,6 +1490,25 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(progress_by_scope[("candidate_metric", "electronic_bill")]["candidate_count"], "1")
             self.assertEqual(progress_by_scope[("candidate_metric", "payment_outflow")]["candidate_count"], "1")
 
+            with (run_dir / "owner_decision_readiness_gate.csv").open(encoding="utf-8-sig", newline="") as f:
+                owner_decision_gate_rows = list(csv.DictReader(f))
+            self.assertEqual(len(owner_decision_gate_rows), 1)
+            owner_decision_gate = owner_decision_gate_rows[0]
+            self.assertEqual(owner_decision_gate["candidate_count"], "3")
+            self.assertEqual(owner_decision_gate["ready_count"], "0")
+            self.assertEqual(owner_decision_gate["blocking_count"], "3")
+            self.assertEqual(owner_decision_gate["missing_owner_decision_manifest_count"], "3")
+            self.assertEqual(owner_decision_gate["pending_owner_review_count"], "3")
+            self.assertEqual(owner_decision_gate["readiness_status"], "blocked_missing_owner_decision_manifest")
+            self.assertEqual(
+                owner_decision_gate["owner_decision_manifest_relative_path"],
+                f"KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_fact_candidate_owner_decisions/{run_id}.json",
+            )
+            self.assertEqual(owner_decision_gate["owner_decision_manifest_write_allowed"], "false")
+            self.assertEqual(owner_decision_gate["fund_ledger_write_allowed"], "false")
+            self.assertEqual(owner_decision_gate["financial_fact_promoted"], "false")
+            self.assertEqual(owner_decision_gate["management_conclusion_allowed"], "false")
+
             authorization_update_draft = json.loads(
                 (run_dir / "ocr_fact_candidate_owner_authorization_update_draft.json").read_text(encoding="utf-8")
             )
@@ -1586,6 +1609,10 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             self.assertEqual(cross_review["ocr_fact_candidate_owner_decision_progress_summary_ready_count"], 0)
             self.assertEqual(cross_review["ocr_fact_candidate_owner_decision_progress_summary_blocking_count"], 3)
             self.assertEqual(cross_review["ocr_fact_candidate_owner_decision_progress_summary_missing_manifest_count"], 3)
+            self.assertEqual(cross_review["owner_decision_readiness_gate_count"], 1)
+            self.assertEqual(cross_review["owner_decision_readiness_gate_ready_count"], 0)
+            self.assertEqual(cross_review["owner_decision_readiness_gate_blocking_count"], 1)
+            self.assertEqual(cross_review["owner_decision_readiness_status"], "blocked_missing_owner_decision_manifest")
             self.assertEqual(cross_review["ocr_fact_candidate_owner_authorization_update_draft_count"], 0)
             self.assertEqual(cross_review["ocr_fact_candidate_owner_authorization_update_preview_count"], 3)
             self.assertEqual(cross_review["ocr_fact_candidate_owner_authorization_update_preview_ready_count"], 0)
@@ -4720,9 +4747,9 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             execution_auth_dir.mkdir(parents=True)
             contract_dir.mkdir(parents=True)
             contract = (SKILL_ROOT / "automation" / "codex_app_automation.contract.toml").read_text(encoding="utf-8")
-            prompt = (SKILL_ROOT / "automation" / "daily_1130_sydney.prompt.md").read_text(encoding="utf-8")
+            prompt = (SKILL_ROOT / "automation" / "weekly_mon_sat_1100_sydney.prompt.md").read_text(encoding="utf-8")
             (contract_dir / "codex_app_automation.contract.toml").write_text(contract, encoding="utf-8")
-            (contract_dir / "daily_1130_sydney.prompt.md").write_text(prompt, encoding="utf-8")
+            (contract_dir / "weekly_mon_sat_1100_sydney.prompt.md").write_text(prompt, encoding="utf-8")
             automation_root = Path(temp_dir) / "automations"
             automation_dir = automation_root / "kmfa"
             automation_dir.mkdir(parents=True)
@@ -5163,6 +5190,60 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 )
             )
             self.assertTrue(all(row["formal_ledger_row_count"] == "0" for row in execution_result_rows))
+
+    def test_owner_decision_readiness_gate_summarizes_manifest_blockers_no_write(self) -> None:
+        runner = load_fund_runner_module()
+        manifest = {"run_id": "owner_decision_readiness_gate_test"}
+        missing_manifest_rows = [
+            {
+                "decision_validation_status": "missing_decision_manifest",
+                "decision_preview_status": "blocked_missing_owner_decision_manifest",
+                "owner_authorization_decision": "pending_owner_review",
+                "owner_corrected_company": "",
+                "owner_corrected_bank": "",
+            },
+            {
+                "decision_validation_status": "missing_decision_manifest",
+                "decision_preview_status": "blocked_missing_owner_decision_manifest",
+                "owner_authorization_decision": "pending_owner_review",
+                "owner_corrected_company": "",
+                "owner_corrected_bank": "",
+            },
+        ]
+
+        missing_gate = runner.build_owner_decision_readiness_gate_rows(manifest, missing_manifest_rows)[0]
+
+        self.assertEqual(missing_gate["readiness_status"], "blocked_missing_owner_decision_manifest")
+        self.assertEqual(missing_gate["candidate_count"], "2")
+        self.assertEqual(missing_gate["ready_count"], "0")
+        self.assertEqual(missing_gate["blocking_count"], "2")
+        self.assertEqual(missing_gate["missing_owner_decision_manifest_count"], "2")
+        self.assertEqual(missing_gate["pending_owner_review_count"], "2")
+        self.assertEqual(missing_gate["owner_decision_manifest_write_allowed"], "false")
+        self.assertEqual(missing_gate["fund_ledger_write_allowed"], "false")
+        self.assertEqual(missing_gate["financial_fact_promoted"], "false")
+        self.assertEqual(missing_gate["management_conclusion_allowed"], "false")
+
+        ready_rows = [
+            {
+                "decision_validation_status": "valid_owner_decision_validation_only",
+                "decision_preview_status": "ready_for_private_ocr_fact_authorization_update_no_write",
+                "owner_authorization_decision": "approve_for_review_authorization",
+                "owner_corrected_company": "武汉开明",
+                "owner_corrected_bank": "招商银行",
+            },
+        ]
+        ready_gate = runner.build_owner_decision_readiness_gate_rows(manifest, ready_rows)[0]
+
+        self.assertEqual(ready_gate["readiness_status"], "ready_for_private_ocr_fact_authorization_update_no_write")
+        self.assertEqual(ready_gate["candidate_count"], "1")
+        self.assertEqual(ready_gate["ready_count"], "1")
+        self.assertEqual(ready_gate["blocking_count"], "0")
+        self.assertEqual(ready_gate["approved_for_authorization_count"], "1")
+        self.assertEqual(ready_gate["owner_decision_manifest_write_allowed"], "false")
+        self.assertEqual(ready_gate["fund_ledger_write_allowed"], "false")
+        self.assertEqual(ready_gate["financial_fact_promoted"], "false")
+        self.assertEqual(ready_gate["management_conclusion_allowed"], "false")
 
     def test_runner_builds_known_due_date_funding_forecast_from_structured_csv(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
