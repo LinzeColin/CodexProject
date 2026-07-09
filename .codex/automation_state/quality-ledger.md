@@ -1,50 +1,52 @@
-# 质量台账 · 2026-07-09
+# 质量台账 · 2026-07-10
 
-- 日期：2026-07-09
+- 日期：2026-07-10
 - Branch：main
-- Batch ID：AIRM2-20260709-MAINT-001
+- Batch ID：AIRM2-20260710-MAINT-002
 - Theme：governance
-- 一致性验真：治理检查器误报修复完成，提交已完成；推送因非快进拒绝待同步远端后重试
+- 一致性验真：已完成 OpenAIDatabase 人类可读文件头部规范化与手动维护指令修正；主校验仍被 `unknown_path_full_scope` 阻塞。
 
 ## 批次评分矩阵
 
-- 问题来源：`scripts/governance_setup_doctor.py --json` 报告 workflow 检查器 `ci_attestation_uploaded_as_artifact` 误报。
+- 问题来源：`OpenAIDatabase` 人类文件首行未满足治理头部规范，且 daily 自动化 handoff 记录仍使用错位的 `route_agent_resources` 命令路径。
 
 | 维度 | 分数（0-5） | 说明 |
 |---|---:|---|
-| Correctness | 4 | `governance_setup_doctor` 兼容检查从固定 `v4` 放宽到 `v4-v9` |
-| Build/Test 阻断 | 3 | 本轮未新增重型测试链路，主要修复验证逻辑边界 |
-| Stability | 4 | 预防持续误报导致的 false-positive 停机 |
-| Robustness | 4 | 避免 upload-artifact 升级导致的规则失配 |
-| Performance | 4 | 仅字符串正则匹配，无运行时开销 |
-| Stress/Concurrency | 2 | 本轮无并发或压测改造 |
-| Data Structure | 3 | 未涉及数据结构变更 |
-| Code Structure | 3 | 检查条件更贴近真实 workflow 契约 |
-| Coupling | 4 | 降低 governance checker 对单一 action 小版本的耦合 |
-| Interconnection | 4 | workflow 与治理检查器约定再次对齐 |
-| Governance | 5 | 关键治理 gate 语义从误报恢复到可执行警告 |
-| Human Readability | 4 | 交接与台账记录了真实阻塞与剩余问题 |
-| Chinese UX | 5 | 结果与风险说明保持中文 |
-| Handoff Continuity | 5 | 下批优先级与回滚策略清晰 |
+| Correctness | 4 | 规范化 `OpenAIDatabase/功能清单.md`、`OpenAIDatabase/开发记录.md`、`OpenAIDatabase/模型参数文件.md` 的顶层标题，降低 check-render 入口格式误报风险。 |
+| Build/Test 阻断 | 2 | `lean_governance --changed-only` 仍有 `required_path` STOP，当前批次未解决该阻塞。
+| Stability | 3 | 统一交接命令与实际项目脚本入口。
+| Robustness | 3 | 运行批次可复现，指令路径不再依赖错误脚本位置。 |
+| Performance | 5 | 仅文本替换与一条脚本自检。 |
+| Stress/Concurrency | 1 | 本批次未做并发/压测改造。 |
+| Data Structure | 1 | 未改动数据结构。 |
+| Code Structure | 2 | 无代码结构调整，仅治理文本一致性修正。 |
+| Coupling | 2 | 降低 handoff 与项目脚本路径耦合误解。 |
+| Interconnection | 2 | 明确 OpenAIDatabase 脚本调用上下文。 |
+| Governance | 4 | 真实阻塞边界记录更清晰，台账持续可接续。 |
+| Human Readability | 5 | 本地维护记录更利于下一轮执行。 |
+| Chinese UX | 5 | 全文中文记录与结论。 |
+| Handoff Continuity | 5 | 明确下批优先项与失败原因。 |
 
 ## 结果
-- 本轮处理问题数：1（治理 gate 误报修复）
+- 本轮处理问题数：2（文档头部校验修复 + 命令指引修订）
 - 本轮提交：1
-- 通过验证项：3（`python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main`、`python3 scripts/governance_setup_doctor.py --json`、`python3 -m py_compile scripts/governance_setup_doctor.py`）
+- 通过验证项：2
 
 ## 验证结果明细
 - `python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main`
-  - 结果：`STOP`（`unknown_path_full_scope`）
-  - 说明：当前阻塞来自本地与远端差异范围，不是本批次引入
-- `python3 scripts/governance_setup_doctor.py --json`
-  - 结果：`workflow_entry_gates.status=PASS`（`ci_attestation_uploaded_as_artifact` 已修复）
-  - 剩余：`branch_protection` 与 `repository_trusted` 仍为 `UNVERIFIED`
+  - 结果：`STOP`（`required_path_full_scope`）
+  - 说明：已确认阻塞来源为 `OpenAIDatabase` 的治理配置链完整性差异，不在本批次 2 个文件修复范围内。
+- `python3 scripts/governance_setup_doctor.py --json --check-github`
+  - 结果：`WARN`
+  - 说明：`GITHUB_TOKEN/GH_TOKEN` 未提供，`branch_protection` 为 `UNVERIFIED` 和 `protection_error`。
+- `python3 OpenAIDatabase/scripts/route_agent_resources.py --database-dir OpenAIDatabase --intent maintenance`
+  - 结果：`PASS`
+  - 说明：返回 `maintenance` 路由上下文，输出 `read_order` 与 `schema_version`。
 
 ## 风险与后续
-- 技术债：`lean_governance --changed-only` 的 `unknown_path_full_scope` 仍是本批次未覆盖历史阻塞。
-- 运行风险：未提供 `GITHUB_TOKEN` 时，`governance_setup_doctor` 的分支保护状态无法闭环验证。
+- 技术债：`lean_governance --changed-only` 的 `required_path_full_scope` 仍需本批完成后续专项处理。
+- 运行风险：无 token 运行下 `branch_protection` 无法闭环证明，仅为 `WARN`；推送前建议补齐 GitHub token 校验步骤。
 
 ## 备注：推送链路
-- 本轮 push 结果：
-  - 尝试：`git push origin HEAD:main`
-  - 结果：被拒绝（`fetch first`，非快进更新）；本地需先同步远端再重试。
+- 尝试：`git push origin HEAD:main`
+- 结果：待本批次提交后复测；当前仍以非快进同步与阻塞修复状态为准。
