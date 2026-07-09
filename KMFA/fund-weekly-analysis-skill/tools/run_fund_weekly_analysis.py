@@ -3558,7 +3558,7 @@ def build_goal_completion_audit_rows(cross_review: dict) -> list[dict]:
             "Produce company-bank matrix from reviewed structured facts",
             "pass" if structured_fact_count > 0 else "pending_review",
             f"structured_financial_fact_count={structured_fact_count}",
-            False,
+            structured_fact_count == 0,
             "Provide reviewed structured CSV rows or complete fact review" if structured_fact_count == 0 else "Review generated matrix rows",
         ),
         goal_completion_audit_row(
@@ -3566,7 +3566,7 @@ def build_goal_completion_audit_rows(cross_review: dict) -> list[dict]:
             "Exclude internal transfers from operating cash flow",
             "pass" if internal_transfer_count > 0 else "pending_real_rows",
             f"internal_transfer_excluded_count={internal_transfer_count}",
-            False,
+            internal_transfer_count == 0,
             "Needs real internal_transfer rows to evidence netting" if internal_transfer_count == 0 else "Keep internal-transfer exclusion checks",
         ),
         goal_completion_audit_row(
@@ -3574,7 +3574,7 @@ def build_goal_completion_audit_rows(cross_review: dict) -> list[dict]:
             "Validate balance continuity and operating cashflow effects",
             "pass" if cashflow_row_count > 0 else "pending_real_rows",
             f"cashflow_validation_row_count={cashflow_row_count}; balance_continuity_fail_count={cross_review.get('balance_continuity_fail_count', 0)}",
-            False,
+            cashflow_row_count == 0,
             "Needs real structured ledger rows to validate cashflow" if cashflow_row_count == 0 else "Review cashflow validation rows",
         ),
         goal_completion_audit_row(
@@ -3582,7 +3582,7 @@ def build_goal_completion_audit_rows(cross_review: dict) -> list[dict]:
             "Forecast only known due-date tax/deposit/loan/project-cost items",
             "pass" if forecast_row_count > 0 else "pending_known_due_dates",
             f"forecast_row_count={forecast_row_count}",
-            False,
+            forecast_row_count == 0,
             "Needs real due_date risk/opportunity rows" if forecast_row_count == 0 else "Review known due-date forecast rows",
         ),
         goal_completion_audit_row(
