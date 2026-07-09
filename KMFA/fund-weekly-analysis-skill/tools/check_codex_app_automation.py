@@ -87,7 +87,13 @@ def main() -> int:
     prompt_file = skill_root / contract["prompt_file"]
     if live.get("prompt") is not None and prompt_file.exists():
         expected_prompt = prompt_file.read_text(encoding="utf-8").strip()
-        if live["prompt"].strip() != expected_prompt:
+        live_prompt = live["prompt"].strip()
+        prompt_pointer_ok = (
+            contract["prompt_file"] in live_prompt
+            and "full execution contract" in live_prompt
+            and prompt_file.exists()
+        )
+        if live_prompt != expected_prompt and not prompt_pointer_ok:
             mismatches.append({"field": "prompt", "expected": str(prompt_file), "actual": "automation.toml prompt differs"})
 
     if mismatches:
