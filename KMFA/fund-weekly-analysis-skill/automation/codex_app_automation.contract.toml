@@ -1,7 +1,7 @@
 # Public-safe mirror of the local Codex App automation.
-# The live automation state is stored under ~/.codex/automations/kmfa-2/automation.toml.
-id = "kmfa-2"
-name = "KMFA资金周报自动化"
+# The live automation state is stored under ~/.codex/automations/kmfa-5/automation.toml.
+id = "kmfa-5"
+name = "KMFA｜资金周报自动化"
 kind = "cron"
 status = "ACTIVE"
 rrule = "RRULE:FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0"
