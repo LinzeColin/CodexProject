@@ -265,6 +265,8 @@ def build_stage034_data_retention_table_report(index_path: Path) -> dict[str, An
     index = _load_json(index_path)
     raw_boundary = index.get("guardrails", {}).get("raw_metadata_boundary", {})
     subjects = index.get("retention_subjects", {})
+    guardrail_results = _guardrail_results(index)
+    runtime_policy_results = _runtime_policy_results(index)
     return {
         "schema_version": SCHEMA_VERSION,
         "index_schema_version": index.get("schema_version"),
@@ -274,21 +276,21 @@ def build_stage034_data_retention_table_report(index_path: Path) -> dict[str, An
         "acceptance_id": ACCEPTANCE_ID,
         "data_retention_table_contract_id": index.get("data_retention_table_contract_id"),
         "retention_subjects": sorted(subjects),
-        "guardrail_results": _guardrail_results(index),
-        "runtime_policy_results": _runtime_policy_results(index),
+        "guardrail_results": guardrail_results,
+        "runtime_policy_results": runtime_policy_results,
         "raw_metadata_boundary": {
             "path": raw_boundary.get("path"),
             "path_only": raw_boundary.get("path_only") is True,
             "no_raw_content_access": raw_boundary.get("content_access_allowed") is False,
         },
         "data_retention_table_index_ref": index_path.as_posix(),
-        "does_not_connect_to_postgres": True,
-        "does_not_execute_migration": True,
-        "does_not_read_raw_metadata": True,
-        "does_not_write_runtime_outputs": True,
-        "does_not_use_fake_ids_business_data": True,
-        "does_not_execute_cleanup": True,
-        "does_not_execute_deletion": True,
+        "does_not_connect_to_postgres": runtime_policy_results["connect_to_postgres"],
+        "does_not_execute_migration": runtime_policy_results["execute_migration"],
+        "does_not_read_raw_metadata": runtime_policy_results["read_raw_metadata"],
+        "does_not_write_runtime_outputs": runtime_policy_results["write_runtime_outputs"],
+        "does_not_use_fake_ids_business_data": guardrail_results["real_data_only_guard"],
+        "does_not_execute_cleanup": runtime_policy_results["execute_cleanup"],
+        "does_not_execute_deletion": runtime_policy_results["execute_deletion"],
     }
 
 
@@ -404,13 +406,15 @@ def build_stage034_scenario_validation_report(index_path: Path) -> dict[str, Any
             "no_raw_content_access": raw_boundary.get("content_access_allowed") is False,
         },
         "data_retention_table_index_ref": index_path.as_posix(),
-        "does_not_connect_to_postgres": True,
-        "does_not_execute_migration": True,
-        "does_not_read_raw_metadata": True,
-        "does_not_write_runtime_outputs": True,
-        "does_not_use_fake_ids_business_data": True,
-        "does_not_execute_cleanup": True,
-        "does_not_execute_deletion": True,
+        "does_not_connect_to_postgres": phase2_report["does_not_connect_to_postgres"],
+        "does_not_execute_migration": phase2_report["does_not_execute_migration"],
+        "does_not_read_raw_metadata": phase2_report["does_not_read_raw_metadata"],
+        "does_not_write_runtime_outputs": phase2_report["does_not_write_runtime_outputs"],
+        "does_not_use_fake_ids_business_data": phase2_report[
+            "does_not_use_fake_ids_business_data"
+        ],
+        "does_not_execute_cleanup": phase2_report["does_not_execute_cleanup"],
+        "does_not_execute_deletion": phase2_report["does_not_execute_deletion"],
     }
 
 
@@ -427,6 +431,41 @@ def build_stage034_delivery_report(index_path: Path) -> dict[str, Any]:
     deletion = index.get("guardrails", {}).get("deletion_stop_gate_guard", {})
     rollback = index.get("guardrails", {}).get("rollback_restore_guard", {})
     raw_boundary = index.get("guardrails", {}).get("raw_metadata_boundary", {})
+    recovery_check_results = {
+        "raw_metadata_boundary_path_only": (
+            guardrails["raw_metadata_boundary_guard"]
+            and phase2_report["raw_metadata_boundary"]["path_only"]
+            and phase2_report["raw_metadata_boundary"]["no_raw_content_access"]
+        ),
+        "cleanup_default_mode_dry_run_only": (
+            guardrails["cleanup_dry_run_guard"]
+            and runtime_policy["execute_cleanup"]
+        ),
+        "owner_impact_report_required": guardrails["cleanup_dry_run_guard"],
+        "no_delete_proof_required": guardrails["cleanup_dry_run_guard"],
+        "destructive_action_blocked_by_default": (
+            guardrails["deletion_stop_gate_guard"]
+            and runtime_policy["execute_deletion"]
+            and runtime_policy["execute_log_compaction"]
+            and runtime_policy["execute_cache_eviction"]
+            and runtime_policy["execute_index_rebuild"]
+            and runtime_policy["execute_report_snapshot_pruning"]
+        ),
+        "owner_stop_gate_required": guardrails["deletion_stop_gate_guard"],
+        "rollback_restore_required": guardrails["rollback_restore_guard"],
+        "backup_restore_steps_defined": guardrails["rollback_restore_guard"],
+        "post_cleanup_verification_required": guardrails["rollback_restore_guard"],
+        "no_raw_payloads_in_postgres": (
+            guardrails["postgres_storage_scope_guard"]
+            and guardrails["raw_metadata_boundary_guard"]
+        ),
+    }
+    contract_valid = (
+        all(guardrails.values())
+        and all(runtime_policy.values())
+        and all(result["status"] == "PASS" for result in scenario_results.values())
+        and all(recovery_check_results.values())
+    )
 
     return {
         "schema_version": DELIVERY_SCHEMA_VERSION,
@@ -438,6 +477,7 @@ def build_stage034_delivery_report(index_path: Path) -> dict[str, Any]:
         "stage_review_status": "pending_next_run",
         "github_upload_allowed": False,
         "app_reinstall_allowed": False,
+        "contract_valid": contract_valid,
         "schema_diff": {
             "mode": "static_data_retention_table_contract_diff_not_executed",
             "baseline": "STAGE-034 Phase 2/3 tracked data-retention index and scenario validation without Phase 4 closeout evidence",
@@ -464,19 +504,9 @@ def build_stage034_delivery_report(index_path: Path) -> dict[str, Any]:
         },
         "recovery_test_log": {
             "mode": "static_data_retention_table_recovery_log_not_executed",
-            "checks": [
-                "raw_metadata_boundary_path_only",
-                "cleanup_default_mode_dry_run_only",
-                "owner_impact_report_required",
-                "no_delete_proof_required",
-                "destructive_action_blocked_by_default",
-                "owner_stop_gate_required",
-                "rollback_restore_required",
-                "backup_restore_steps_defined",
-                "post_cleanup_verification_required",
-                "no_raw_payloads_in_postgres",
-            ],
-            "result": "static PASS from tracked data-retention index and scenario validation contracts",
+            "checks": list(recovery_check_results),
+            "check_results": recovery_check_results,
+            "result": "PASS" if all(recovery_check_results.values()) else "FAIL",
             "cleanup_default_mode": cleanup.get("cleanup_default_mode"),
             "owner_stop_gate_required": deletion.get("owner_stop_gate_required"),
             "requires_backup_restore_plan": rollback.get("requires_backup_restore_plan"),
@@ -526,17 +556,21 @@ def build_stage034_delivery_report(index_path: Path) -> dict[str, Any]:
             "delete_blocked": raw_boundary.get("delete_allowed") is False,
             "dump_blocked": raw_boundary.get("dump_allowed") is False,
         },
-        "does_not_connect_to_postgres": True,
-        "does_not_execute_migration": True,
-        "does_not_read_raw_metadata": True,
-        "does_not_write_runtime_outputs": True,
-        "does_not_use_fake_ids_business_data": True,
-        "does_not_execute_cleanup": True,
-        "does_not_execute_deletion": True,
-        "does_not_execute_log_compaction": True,
-        "does_not_execute_cache_eviction": True,
-        "does_not_execute_index_rebuild": True,
-        "does_not_execute_report_snapshot_pruning": True,
+        "does_not_connect_to_postgres": phase2_report["does_not_connect_to_postgres"],
+        "does_not_execute_migration": phase2_report["does_not_execute_migration"],
+        "does_not_read_raw_metadata": phase2_report["does_not_read_raw_metadata"],
+        "does_not_write_runtime_outputs": phase2_report["does_not_write_runtime_outputs"],
+        "does_not_use_fake_ids_business_data": phase2_report[
+            "does_not_use_fake_ids_business_data"
+        ],
+        "does_not_execute_cleanup": phase2_report["does_not_execute_cleanup"],
+        "does_not_execute_deletion": phase2_report["does_not_execute_deletion"],
+        "does_not_execute_log_compaction": runtime_policy["execute_log_compaction"],
+        "does_not_execute_cache_eviction": runtime_policy["execute_cache_eviction"],
+        "does_not_execute_index_rebuild": runtime_policy["execute_index_rebuild"],
+        "does_not_execute_report_snapshot_pruning": runtime_policy[
+            "execute_report_snapshot_pruning"
+        ],
     }
 
 
@@ -594,6 +628,9 @@ def main() -> int:
             delivery_report["stage_review_status"] == "pending_next_run",
             delivery_report["github_upload_allowed"] is False,
             delivery_report["app_reinstall_allowed"] is False,
+            delivery_report["contract_valid"],
+            delivery_report["recovery_test_log"]["result"] == "PASS",
+            all(delivery_report["recovery_test_log"]["check_results"].values()),
             delivery_report["does_not_execute_cleanup"],
             delivery_report["does_not_execute_deletion"],
             delivery_report["does_not_execute_log_compaction"],

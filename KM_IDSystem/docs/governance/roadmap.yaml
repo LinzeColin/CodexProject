@@ -2,16 +2,21 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE034"
-current_phase_id: "IDS-STAGE034-P4"
-current_task_id: "IDS-V0_1-STAGE034-P4"
-next_gate_id: "IDS-STAGE034-REVIEW-GATE"
+current_phase_id: "IDS-STAGE034-REVIEW"
+current_task_id: "IDS-V0_1-STAGE034-REVIEW"
+next_gate_id: "IDS-STAGE035-P1-GATE"
 current_transition_history:
   previous_state:
+    current_stage_id: "IDS-STAGE034"
+    current_phase_id: "IDS-STAGE034-P4"
+    current_task_id: "IDS-V0_1-STAGE034-P4"
+    next_gate_id: "IDS-STAGE034-REVIEW-GATE"
+  earlier_state:
     current_stage_id: "IDS-STAGE034"
     current_phase_id: "IDS-STAGE034-P3"
     current_task_id: "IDS-V0_1-STAGE034-P3"
     next_gate_id: "IDS-STAGE034-P4-GATE"
-  earlier_state:
+  stage034_phase2_state:
     current_stage_id: "IDS-STAGE034"
     current_phase_id: "IDS-STAGE034-P2"
     current_task_id: "IDS-V0_1-STAGE034-P2"
@@ -8116,7 +8121,7 @@ stages:
     stage_id: "IDS-STAGE034"
     name: "STAGE-034 · 数据保留表"
     person_goal: "定义临时文件、缓存、旧索引、日志、报告快照的保留策略字段。"
-    status: "completed_local_pending_review"
+    status: "completed_reviewed_local"
     stop_conditions:
       - "一次 run 试图完成多个 phase"
       - "连接 PostgreSQL 或执行真实 migration dry-run/apply/rollback/backup/restore/schema diff、清理、删除、retention 或恢复冒烟"
@@ -8129,8 +8134,10 @@ stages:
       - "执行 GitHub upload、PR、merge、app reinstall、batch review、stage review 或进入 STAGE-035"
     stop_gate:
       gate_id: "IDS-STAGE034-REVIEW-GATE"
-      status: "pending_next_run"
+      status: "passed_with_local_evidence"
       pass_conditions:
+        - "STAGE034 whole-stage review verifies P0 binding, Phase 1-4 evidence, checker/index, scenario coverage, closeout, raw-data boundary, governance state, and no-upload lock"
+        - "Review repair makes top-level safety evidence derive from runtime/guardrail checks and makes invalid contracts fail closed through contract_valid and recovery check results"
         - "STAGE034_ENTRY_CONTRACT.md 已记录 P0 taskpack identity、前置依赖、Phase 1 合同、non-goals 和验收证据"
         - "STAGE034_PHASE1_SCOPE_BOUNDARY.md 已定义 data retention table 字段、输入、输出、状态、边界、停止条件和 rollback"
         - "STAGE034_PHASE2_DATA_RETENTION_TABLE_SLICE.md 已记录静态数据保留表切片、guardrails、non-goals、验收证据和 rollback"
@@ -8148,6 +8155,7 @@ stages:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE034_PHASE2_DATA_RETENTION_TABLE_SLICE.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE034_PHASE3_SCENARIO_VALIDATION.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE034_PHASE4_CLOSEOUT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE034_STAGE_REVIEW.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/data_retention_table/stage034_data_retention_table_index.json"
         - "KM_IDSystem/scripts/check_data_retention_table.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
@@ -8338,3 +8346,16 @@ stages:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
             risk: "如果 Phase 4 closeout 被误读为 live migration、retention cleanup/deletion、stage review 或 GitHub upload 授权，可能造成未复审发布或破坏性数据操作。"
             rollback: "Revert STAGE034 Phase 4 closeout evidence, check_data_retention_table.py delivery-report changes, batch lock, Stage034/Stage005 tests, Stage005 validator updates, roadmap/event changes, compatibility-test updates, and rendered owner-file changes only; do not touch /Users/linzezhang/Downloads/IDS_MetaData, runtime data, reports, outputs, app entries, GitHub state, PostgreSQL data directories, retention outputs, cleanup outputs, deletion outputs, or future review artifacts."
+    review:
+      review_id: "IDS-STAGE034-REVIEW"
+      task_id: "IDS-V0_1-STAGE034-REVIEW"
+      status: "completed"
+      reviewed_at_utc: "2026-07-10T13:54:17Z"
+      acceptance_ids:
+        - "ACC-STAGE-034"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE034_STAGE_REVIEW.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+        - "KM_IDSystem/docs/governance/events.jsonl"
+      test_results: "STAGE-034 whole-stage review verified the P0 source binding, Phase 1-4 evidence, tracked data-retention index/checker, thirteen scenarios, closeout evidence, raw-data boundary, owner/governance state, and no-upload lock. RED proved the checker could emit contradictory top-level safety/recovery evidence for an invalid in-memory contract, the review artifact was missing, and Stage005 did not accept the reviewed-local state. GREEN passed after deriving top-level safety fields from actual runtime/guardrail checks, adding contract_valid and per-check recovery results, making invalid contracts fail closed, adding the review artifact and exact reviewed-local governance state, and extending only the necessary Stage005/Stage031-034 compatibility assertions. check_data_retention_table.py returned rc=0 with contract_valid=true, ten recovery checks true, and recovery result PASS. Stage034 focused tests ran 17 OK; Stage005 governance regression ran 119 OK; Stage026-030 compatibility tests ran 75 OK; Stage031-034 aggregate tests ran 59 OK; full IDS v0.1 pursuing-goal discovery ran 438 OK. Stage005 validator returned valid=true with no missing files/events, JSONL errors, forbidden or unexpected changed paths, tracked forbidden runtime files, or raw-data boundary gaps; syntax compilation passed in memory for seven changed Python files; events.jsonl parsed with 161 events and zero duplicate ids; render updated three existing owner files and check-render returned drift_count=0 and reference_issue_count=0; git diff --check passed. Semantic validation reported sync errors=0 and then the expected sparse-worktree diagnostic rc=1 with 29 missing root governance or unrelated registered-project paths, so sparse checkout was not expanded. This review did not read, list, hash, open, copy, move, delete, modify, dump, scan, normalize, or commit /Users/linzezhang/Downloads/IDS_MetaData content; did not use fake IDS business data; and did not connect to PostgreSQL, execute migration/cleanup/deletion, write runtime outputs, upload to GitHub, create or merge a PR, reinstall app entries, run batch review, or enter STAGE-035."
+      decision: "ACC-STAGE-034 locally reviewed and passed after fail-closed checker repair; no GitHub upload, no app reinstall, and no STAGE-035 work in this run."

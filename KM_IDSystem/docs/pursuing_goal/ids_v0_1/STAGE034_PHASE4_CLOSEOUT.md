@@ -25,6 +25,7 @@ with:
 - `rollback_steps`
 - `backup_restore_steps`
 - `chinese_owner_feedback`
+- `contract_valid`
 
 The helper reads only the tracked Stage 034 index and writes JSON to stdout
 through the existing checker entry point. It does not choose an output path,
@@ -84,11 +85,27 @@ Static recovery checks:
 9. `post_cleanup_verification_required` is true.
 10. `no_raw_payloads_in_postgres` is true.
 
-Result: static `PASS` from tracked data-retention index and scenario contracts.
+The report includes `recovery_test_log.check_results` for every item above.
+Result is `PASS` only when every recovery check is true; otherwise it is
+`FAIL`.
 
 No backup, restore, live rollback, recovery smoke, retention scan, cleanup,
 deletion, log compaction, cache eviction, old-index rebuild, or report snapshot
 pruning was executed. 不执行 retention scan、cleanup、deletion、log compaction、cache eviction、old-index rebuild 或 report snapshot pruning.
+
+## Whole-Stage Review Repair
+
+The STAGE-034 review removed contradictory safety evidence:
+
+- Top-level `does_not_*` values now derive from runtime-policy and guardrail
+  checks instead of constants.
+- `contract_valid=true` requires every Phase 2 guardrail/runtime check, every
+  Phase 3 scenario, and every recovery check to pass.
+- An invalid in-memory contract now returns `contract_valid=false`,
+  `recovery_test_log.result=FAIL`, and false top-level safety values for the
+  affected operations.
+- The valid tracked index continues to return `contract_valid=true` and
+  `recovery_test_log.result=PASS`.
 
 ## destructive_migration_confirmation
 
