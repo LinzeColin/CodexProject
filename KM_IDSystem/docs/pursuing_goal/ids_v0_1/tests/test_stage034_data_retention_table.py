@@ -1,3 +1,4 @@
+import copy
 import json
 import importlib.util
 from pathlib import Path
@@ -13,6 +14,7 @@ PHASE1 = PURSUE_ROOT / "STAGE034_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE034_PHASE2_DATA_RETENTION_TABLE_SLICE.md"
 PHASE3 = PURSUE_ROOT / "STAGE034_PHASE3_SCENARIO_VALIDATION.md"
 PHASE4 = PURSUE_ROOT / "STAGE034_PHASE4_CLOSEOUT.md"
+STAGE_REVIEW = PURSUE_ROOT / "STAGE034_STAGE_REVIEW.md"
 INDEX = PURSUE_ROOT / "data_retention_table" / "stage034_data_retention_table_index.json"
 SCRIPT = ROOT / "scripts" / "check_data_retention_table.py"
 BATCH_LOCK = PURSUE_ROOT / "BATCH031_040_UPLOAD_LOCK.yaml"
@@ -146,6 +148,7 @@ class Stage034DataRetentionTablePhase1Tests(unittest.TestCase):
             'status: "stage034_phase2_in_progress"',
             'status: "stage034_phase3_in_progress"',
             'status: "stage034_completed_local_pending_review"',
+            'status: "stage034_completed_reviewed_local"',
         ]
         allowed_lock_next_terms = [
             'next_phase: "Phase 2"',
@@ -155,18 +158,21 @@ class Stage034DataRetentionTablePhase1Tests(unittest.TestCase):
             'next_gate: "IDS-STAGE034-P3-GATE"',
             'next_gate: "IDS-STAGE034-P4-GATE"',
             'next_gate: "IDS-STAGE034-REVIEW-GATE"',
+            'next_gate: "IDS-STAGE035-P1-GATE"',
         ]
         allowed_lock_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE034-P1"',
             'current_task_id: "IDS-V0_1-STAGE034-P2"',
             'current_task_id: "IDS-V0_1-STAGE034-P3"',
             'current_task_id: "IDS-V0_1-STAGE034-P4"',
+            'current_task_id: "IDS-V0_1-STAGE034-REVIEW"',
         ]
         allowed_acceptance_status_terms = [
             'acceptance_status: "phase1_scope_boundary_defined"',
             'acceptance_status: "phase2_retention_table_slice_defined"',
             'acceptance_status: "phase3_scenario_validation_passed"',
             'acceptance_status: "phase4_closeout_complete"',
+            'acceptance_status: "reviewed_local_passed"',
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE034"',
@@ -181,18 +187,21 @@ class Stage034DataRetentionTablePhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE034-P2"',
             'current_phase_id: "IDS-STAGE034-P3"',
             'current_phase_id: "IDS-STAGE034-P4"',
+            'current_phase_id: "IDS-STAGE034-REVIEW"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE034-P1"',
             'current_task_id: "IDS-V0_1-STAGE034-P2"',
             'current_task_id: "IDS-V0_1-STAGE034-P3"',
             'current_task_id: "IDS-V0_1-STAGE034-P4"',
+            'current_task_id: "IDS-V0_1-STAGE034-REVIEW"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE034-P2-GATE"',
             'next_gate_id: "IDS-STAGE034-P3-GATE"',
             'next_gate_id: "IDS-STAGE034-P4-GATE"',
             'next_gate_id: "IDS-STAGE034-REVIEW-GATE"',
+            'next_gate_id: "IDS-STAGE035-P1-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE034-P1-20260704-001"',
@@ -408,6 +417,7 @@ class Stage034DataRetentionTablePhase2Tests(unittest.TestCase):
             'status: "stage034_phase2_in_progress"',
             'status: "stage034_phase3_in_progress"',
             'status: "stage034_completed_local_pending_review"',
+            'status: "stage034_completed_reviewed_local"',
         ]
         allowed_lock_next_terms = [
             'next_phase: "Phase 3"',
@@ -415,16 +425,19 @@ class Stage034DataRetentionTablePhase2Tests(unittest.TestCase):
             'next_gate: "IDS-STAGE034-P3-GATE"',
             'next_gate: "IDS-STAGE034-P4-GATE"',
             'next_gate: "IDS-STAGE034-REVIEW-GATE"',
+            'next_gate: "IDS-STAGE035-P1-GATE"',
         ]
         allowed_lock_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE034-P2"',
             'current_task_id: "IDS-V0_1-STAGE034-P3"',
             'current_task_id: "IDS-V0_1-STAGE034-P4"',
+            'current_task_id: "IDS-V0_1-STAGE034-REVIEW"',
         ]
         allowed_acceptance_status_terms = [
             'acceptance_status: "phase2_retention_table_slice_defined"',
             'acceptance_status: "phase3_scenario_validation_passed"',
             'acceptance_status: "phase4_closeout_complete"',
+            'acceptance_status: "reviewed_local_passed"',
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE034"',
@@ -436,16 +449,19 @@ class Stage034DataRetentionTablePhase2Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE034-P2"',
             'current_phase_id: "IDS-STAGE034-P3"',
             'current_phase_id: "IDS-STAGE034-P4"',
+            'current_phase_id: "IDS-STAGE034-REVIEW"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE034-P2"',
             'current_task_id: "IDS-V0_1-STAGE034-P3"',
             'current_task_id: "IDS-V0_1-STAGE034-P4"',
+            'current_task_id: "IDS-V0_1-STAGE034-REVIEW"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE034-P3-GATE"',
             'next_gate_id: "IDS-STAGE034-P4-GATE"',
             'next_gate_id: "IDS-STAGE034-REVIEW-GATE"',
+            'next_gate_id: "IDS-STAGE035-P1-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE034-P2-20260704-001"',
@@ -606,18 +622,22 @@ class Stage034DataRetentionTablePhase3Tests(unittest.TestCase):
         allowed_lock_current_terms = [
             'status: "stage034_phase3_in_progress"',
             'status: "stage034_completed_local_pending_review"',
+            'status: "stage034_completed_reviewed_local"',
         ]
         allowed_lock_gate_terms = [
             'next_gate: "IDS-STAGE034-P4-GATE"',
             'next_gate: "IDS-STAGE034-REVIEW-GATE"',
+            'next_gate: "IDS-STAGE035-P1-GATE"',
         ]
         allowed_lock_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE034-P3"',
             'current_task_id: "IDS-V0_1-STAGE034-P4"',
+            'current_task_id: "IDS-V0_1-STAGE034-REVIEW"',
         ]
         allowed_acceptance_status_terms = [
             'acceptance_status: "phase3_scenario_validation_passed"',
             'acceptance_status: "phase4_closeout_complete"',
+            'acceptance_status: "reviewed_local_passed"',
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE034"',
@@ -784,17 +804,29 @@ class Stage034DataRetentionTablePhase4Tests(unittest.TestCase):
         events_text = EVENTS.read_text(encoding="utf-8")
 
         lock_terms = [
-            'status: "stage034_completed_local_pending_review"',
             '      - "Phase 1"',
             '      - "Phase 2"',
             '      - "Phase 3"',
             '      - "Phase 4"',
-            'next_gate: "IDS-STAGE034-REVIEW-GATE"',
-            'current_task_id: "IDS-V0_1-STAGE034-P4"',
-            'acceptance_status: "phase4_closeout_complete"',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE034_PHASE4_CLOSEOUT.md",
             "KM_IDSystem/scripts/check_data_retention_table.py",
             'push_allowed: false',
+        ]
+        allowed_lock_status_terms = [
+            'status: "stage034_completed_local_pending_review"',
+            'status: "stage034_completed_reviewed_local"',
+        ]
+        allowed_lock_gate_terms = [
+            'next_gate: "IDS-STAGE034-REVIEW-GATE"',
+            'next_gate: "IDS-STAGE035-P1-GATE"',
+        ]
+        allowed_lock_task_terms = [
+            'current_task_id: "IDS-V0_1-STAGE034-P4"',
+            'current_task_id: "IDS-V0_1-STAGE034-REVIEW"',
+        ]
+        allowed_acceptance_status_terms = [
+            'acceptance_status: "phase4_closeout_complete"',
+            'acceptance_status: "reviewed_local_passed"',
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE034"',
@@ -817,6 +849,134 @@ class Stage034DataRetentionTablePhase4Tests(unittest.TestCase):
         ]
 
         self.assertNotIn('current_task_id: "IDS_V0_1-STAGE034-P4"', lock_text)
+        for term in lock_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, lock_text)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_status_terms), allowed_lock_status_terms)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_gate_terms), allowed_lock_gate_terms)
+        self.assertTrue(any(term in lock_text for term in allowed_lock_task_terms), allowed_lock_task_terms)
+        self.assertTrue(
+            any(term in lock_text for term in allowed_acceptance_status_terms),
+            allowed_acceptance_status_terms,
+        )
+        for term in roadmap_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, roadmap_text)
+        for term in event_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, events_text)
+
+
+class Stage034DataRetentionTableReviewTests(unittest.TestCase):
+    def _load_checker_module(self):
+        self.assertTrue(SCRIPT.is_file(), f"missing checker script: {SCRIPT}")
+        spec = importlib.util.spec_from_file_location("stage034_data_retention_table", SCRIPT)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def test_review_repair_rejects_contradictory_safety_and_recovery_evidence(self):
+        module = self._load_checker_module()
+        index = json.loads(INDEX.read_text(encoding="utf-8"))
+        index["runtime_policy"]["connect_to_postgres"] = True
+        index["runtime_policy"]["execute_cleanup"] = True
+        index["guardrails"]["cleanup_dry_run_guard"]["auto_delete_allowed"] = True
+
+        original_loader = module._load_json
+        module._load_json = lambda _path: copy.deepcopy(index)
+        try:
+            phase2_report = module.build_stage034_data_retention_table_report(Path("memory-only.json"))
+            scenario_report = module.build_stage034_scenario_validation_report(Path("memory-only.json"))
+            delivery_report = module.build_stage034_delivery_report(Path("memory-only.json"))
+        finally:
+            module._load_json = original_loader
+
+        self.assertFalse(phase2_report["does_not_connect_to_postgres"])
+        self.assertFalse(phase2_report["does_not_execute_cleanup"])
+        self.assertFalse(scenario_report["does_not_connect_to_postgres"])
+        self.assertFalse(scenario_report["does_not_execute_cleanup"])
+        self.assertEqual("FAIL", scenario_report["scenario_results"]["cleanup_dry_run"]["status"])
+        self.assertFalse(delivery_report["contract_valid"])
+        self.assertEqual("FAIL", delivery_report["recovery_test_log"]["result"])
+        self.assertFalse(delivery_report["recovery_test_log"]["check_results"]["cleanup_default_mode_dry_run_only"])
+        self.assertFalse(delivery_report["does_not_connect_to_postgres"])
+        self.assertFalse(delivery_report["does_not_execute_cleanup"])
+
+    def test_stage_review_artifact_records_findings_repairs_and_no_upload_boundary(self):
+        self.assertTrue(STAGE_REVIEW.is_file(), f"missing stage review: {STAGE_REVIEW}")
+        review_text = STAGE_REVIEW.read_text(encoding="utf-8")
+
+        required_terms = [
+            "IDS-V0_1-STAGE034-REVIEW",
+            "ACC-STAGE-034",
+            "STAGE-034 · 数据保留表",
+            "STAGE034-REVIEW-F1",
+            "STAGE034-REVIEW-F2",
+            "STAGE034-REVIEW-F3",
+            "STAGE034-REVIEW-F4",
+            "P0 source binding",
+            "Phase 1 boundary",
+            "Phase 2 data retention table",
+            "Phase 3 scenario validation",
+            "Phase 4 closeout",
+            "build_stage034_delivery_report",
+            "contract_valid",
+            "recovery_test_log",
+            "completed_reviewed_local",
+            "IDS-STAGE035-P1-GATE",
+            "NO_GITHUB_UPLOAD",
+            "NO_APP_REINSTALL",
+            "NO_STAGE035_THIS_RUN",
+            "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "不得使用虚构 IDS 业务数据",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, review_text)
+
+    def test_stage_review_gate_batch_roadmap_and_event_track_reviewed_local_no_upload(self):
+        self.assertTrue(STAGE_REVIEW.is_file(), f"missing stage review: {STAGE_REVIEW}")
+        lock_text = BATCH_LOCK.read_text(encoding="utf-8")
+        roadmap_text = ROADMAP.read_text(encoding="utf-8")
+        events_text = EVENTS.read_text(encoding="utf-8")
+
+        lock_terms = [
+            'STAGE-034:',
+            'status: "completed_reviewed_local"',
+            '      - "Phase 1"',
+            '      - "Phase 2"',
+            '      - "Phase 3"',
+            '      - "Phase 4"',
+            'review_status: "passed"',
+            'next_stage: "STAGE-035"',
+            'next_gate: "IDS-STAGE035-P1-GATE"',
+            'current_task_id: "IDS-V0_1-STAGE034-REVIEW"',
+            'acceptance_status: "reviewed_local_passed"',
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE034_STAGE_REVIEW.md",
+            'push_allowed: false',
+        ]
+        roadmap_terms = [
+            'current_stage_id: "IDS-STAGE034"',
+            'current_phase_id: "IDS-STAGE034-REVIEW"',
+            'current_task_id: "IDS-V0_1-STAGE034-REVIEW"',
+            'next_gate_id: "IDS-STAGE035-P1-GATE"',
+            'review_id: "IDS-STAGE034-REVIEW"',
+            'task_id: "IDS-V0_1-STAGE034-REVIEW"',
+            'status: "completed"',
+            "STAGE034_STAGE_REVIEW.md",
+        ]
+        event_terms = [
+            '"event_id":"EVT-IDS-V0_1-STAGE034-REVIEW-20260710-001"',
+            '"event_type":"stage_review"',
+            '"task_id":"IDS-V0_1-STAGE034-REVIEW"',
+            '"ACC-STAGE-034"',
+            "STAGE034_STAGE_REVIEW.md",
+            "IDS-STAGE035-P1-GATE",
+        ]
+
         for term in lock_terms:
             with self.subTest(term=term):
                 self.assertIn(term, lock_text)
