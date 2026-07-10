@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 Remediation R6
+
+- Added an exact twelve-item P0 visual workflow registry, 217 bounded/redacted facet
+  events and the tracked Formula what-if preview to the public derived snapshot.
+- Added pure deterministic source/time/project/task filtering, option/signature models,
+  opportunity-to-event evidence joining and bounded Formula score computation.
+- Replaced duplicated stage-labelled Home panels with one question-led visual workbench
+  containing native filters, keyboard data, shared inline evidence, opportunity details
+  and no-write Formula controls.
+- Added a self-building Playwright gate that runs all twelve interactions and the full
+  four-axis content matrix at 1470x661, 1440x900 and 390x844.
+- Hardened acceptance so global filter signatures cannot mask unchanged card content;
+  every event-backed visual must change content/count/datum IDs or reach zero.
+- Preserved R1 Home, R3 command, R4 proposal, R5 Owner Daily and Stage 7 regressions;
+  independent review closed all High/Medium findings.
+- Preserved the R6 boundary: no R7 parity/recovery, R8 overall acceptance, merge/rebase,
+  push, app reinstall, Cloudflare deployment, active-config write or raw mutation.
+
 ## Unreleased - Memory Atlas v1.2 Remediation R5
 
 - Added one shared eight-step Owner Daily no-write runner for `atlasctl`, the local

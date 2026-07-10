@@ -84,11 +84,11 @@
 - Modify: `scripts/atlasctl.py`
 - Create: `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_owner_daily_e2e.cjs`
 
-- [ ] Add a failing browser test for starting owner-daily, viewing step results and reading an actionable failure.
-- [ ] Connect the UI entry to the allowlisted local profile runner.
-- [ ] Present human conclusions before machine details.
-- [ ] Verify retry, partial failure and no-write dry-run behavior.
-- [ ] Commit locally; do not push; stop before R6.
+- [x] Add a failing browser test for starting owner-daily, viewing step results and reading an actionable failure.
+- [x] Connect the UI entry to the allowlisted local profile runner.
+- [x] Present human conclusions before machine details.
+- [x] Verify retry, partial failure and no-write dry-run behavior.
+- [x] Commit locally; do not push; stop before R6.
 
 ### Task 6: R6 P0 Visualization And Filtering
 
@@ -98,11 +98,11 @@
 - Modify: `apps/memory-atlas/src/styles.css`
 - Create: `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_visual_workflows.cjs`
 
-- [ ] Inventory the required P0 views against the restored TaskPack and add one failing assertion per missing decision workflow.
-- [ ] Ensure every retained chart has a Chinese human question, action and evidence drill-down.
-- [ ] Implement source/time/project/task filters across the required views.
-- [ ] Verify interaction changes rendered state and charts are not static decoration at all three viewports.
-- [ ] Commit locally; do not push; stop before R7.
+- [x] Inventory the required P0 views against the restored TaskPack and add one failing assertion per missing decision workflow.
+- [x] Ensure every retained chart has a Chinese human question, action and evidence drill-down.
+- [x] Implement source/time/project/task filters across the required views.
+- [x] Verify interaction changes rendered state and charts are not static decoration at all three viewports.
+- [x] Commit locally; do not push; stop before R7.
 
 ### Task 7: R7 Data Parity Raw Evidence And Recovery
 
