@@ -20,6 +20,9 @@ const status = "phase_s14_p1_unified_cli_completed_pending_s14_p2";
 const validatorName = "validate:v1.2-s14-p1";
 const scriptName = "validate_memory_atlas_v1_2_s14_p1.cjs";
 const contractVersion = "atlasctl_unified_cli.v1_2_s14_p1";
+const ownerDailyApiVersion = "memory_atlas_owner_daily_api.v1_2_r5";
+const ownerDailyResultVersion = "memory_atlas_owner_daily_result.v1_2_r5";
+const maxOwnerDailyResultBytes = 64 * 1024;
 const previousValidatorName = "validate:v1.2-s13-review";
 const previousAcceptanceId = "ACC-MA-V12-S13-REVIEW";
 
@@ -172,6 +175,7 @@ function validateOwnerDailyProfile() {
   const result = run("python3", ["scripts/atlasctl.py", "run", "--profile", "owner-daily", "--dry-run"]);
   const payload = parseJsonFromStdout(result);
   const actualIds = (payload.commands || []).map((item) => item.command_id);
+  const actualStepIds = (payload.steps || []).map((item) => item.step_id);
   const details = {
     status: payload.status,
     command: payload.command,
@@ -184,10 +188,17 @@ function validateOwnerDailyProfile() {
     remote_push: payload.remote_push,
     github_main_upload: payload.github_main_upload,
     actualIds,
+    actualStepIds,
     expectedCommandIds,
+    completed_count: payload.completed_count,
+    failed_count: payload.failed_count,
+    result_bytes: Buffer.byteLength(result.stdout, "utf8"),
   };
   assertCondition(
     payload.status === "PASS" &&
+      payload.schema_version === ownerDailyResultVersion &&
+      payload.api_version === ownerDailyApiVersion &&
+      payload.action === "run" &&
       payload.command === "run" &&
       payload.profile === "owner-daily" &&
       payload.task_id === taskId &&
@@ -199,11 +210,24 @@ function validateOwnerDailyProfile() {
       payload.remote_push === false &&
       payload.github_main_upload === false &&
       JSON.stringify(actualIds) === JSON.stringify(expectedCommandIds) &&
+      JSON.stringify(actualStepIds) === JSON.stringify(expectedCommandIds) &&
       (payload.commands || []).every((item) => item.dry_run === true && Array.isArray(item.invocation) && item.invocation.includes("--dry-run")) &&
+      (payload.steps || []).every((item) => item.status === "pass" && item.retryable === false && Array.isArray(item.invocation) && item.invocation.includes("--dry-run")) &&
+      payload.completed_count === expectedCommandIds.length &&
+      payload.failed_count === 0 &&
+      Array.isArray(payload.retryable_step_ids) &&
+      payload.retryable_step_ids.length === 0 &&
+      payload.safety?.writes_files === false &&
+      payload.safety?.remote_push === false &&
+      payload.safety?.raw_mutation === false &&
+      payload.safety?.sends_to_chatgpt === false &&
+      payload.safety?.proposal_apply_execution === false &&
+      payload.safety?.canonical_repo_mutation === false &&
+      Buffer.byteLength(result.stdout, "utf8") <= maxOwnerDailyResultBytes &&
       payload.phase_boundary?.next_phase === "S14 P2" &&
       payload.phase_boundary?.does_not_run_final_audit === true,
     "s14p1_owner_daily_profile",
-    "atlasctl run --profile owner-daily --dry-run returns the unified no-write command plan",
+    "atlasctl run --profile owner-daily --dry-run executes eight bounded no-write steps",
     "atlasctl owner-daily dry-run profile does not match S14 P1 contract",
     details,
   );
