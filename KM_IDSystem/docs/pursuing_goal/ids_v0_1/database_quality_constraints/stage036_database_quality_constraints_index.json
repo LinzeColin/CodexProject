@@ -1,0 +1,373 @@
+{
+  "schema_version": "ids.stage036.database_quality_constraints.index.v1",
+  "stage": "STAGE-036",
+  "phase": "Phase 2",
+  "task_id": "IDS-V0_1-STAGE036-P2",
+  "acceptance_id": "ACC-STAGE-036",
+  "local_code": "D06-S007",
+  "domain": "D06 · PostgreSQL 控制面",
+  "entrance": "IDS 系统运营入口",
+  "database_quality_constraint_contract_id": "ids_stage036_database_quality_constraints_static_slice",
+  "contract_state": "STATIC_QUALITY_CONSTRAINT_CONTRACT_VALID",
+  "execution_ready": false,
+  "execution_state": "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_DATA_PROFILE",
+  "source_refs": {
+    "phase1_scope_ref": "../STAGE036_PHASE1_SCOPE_BOUNDARY.md",
+    "phase2_slice_ref": "../STAGE036_PHASE2_DATABASE_QUALITY_CONSTRAINTS_SLICE.md",
+    "stage030_control_plane_schema_ref": "../postgresql_control_plane/001_control_plane_schema.sql",
+    "stage030_control_plane_index_ref": "../postgresql_control_plane/control_plane_schema_index.json",
+    "stage031_migration_safety_index_ref": "../schema_migration_safety/stage031_migration_safety_index.json",
+    "stage032_connection_pool_index_ref": "../database_connection_pool/stage032_connection_pool_index.json",
+    "stage033_database_size_guard_index_ref": "../database_size_guard/stage033_database_size_guard_index.json",
+    "stage034_data_retention_table_index_ref": "../data_retention_table/stage034_data_retention_table_index.json",
+    "stage035_database_recovery_smoke_index_ref": "../database_recovery_smoke/stage035_database_recovery_smoke_index.json",
+    "migration_sql_ref": "002_database_quality_constraints.sql",
+    "raw_data_boundary_ref": "../IDS_METADATA_RAW_DATA_BOUNDARY.md",
+    "phase2_checker_ref": "../../../../scripts/check_database_quality_constraints.py"
+  },
+  "dependency_contract": {
+    "stage030_schema_version": "ids.stage030.postgresql_control_plane.index.v1",
+    "stage031_schema_version": "ids.stage031.schema_migration_safety.index.v1",
+    "stage032_schema_version": "ids.stage032.database_connection_pool.index.v1",
+    "stage033_schema_version": "ids.stage033.database_size_guard.index.v1",
+    "stage034_schema_version": "ids.stage034.data_retention_table.index.v1",
+    "stage035_schema_version": "ids.stage035.database_recovery_smoke.index.v1",
+    "stage030_migration_id": "ids_stage030_001_control_plane",
+    "required_control_plane_tables": [
+      "ids_metadata_sources",
+      "ids_jobs",
+      "ids_documents",
+      "ids_chunks",
+      "ids_evidence_records",
+      "ids_audit_events",
+      "ids_index_versions",
+      "ids_schema_migrations"
+    ]
+  },
+  "migration_contract": {
+    "migration_id": "ids_stage036_002_database_quality_constraints",
+    "migration_sql_ref": "002_database_quality_constraints.sql",
+    "mode": "tracked_static_migration_contract_not_executed",
+    "up_marker_required": true,
+    "down_marker_required": true,
+    "on_error_stop_required": true,
+    "single_transaction_required": true,
+    "owner_authorized_real_profile_ref_required": true,
+    "backup_checkpoint_ref_required": true,
+    "rollback_plan_ref_required": true,
+    "constraint_validation_required": true,
+    "destructive_migration_allowed": false,
+    "data_repair_allowed": false,
+    "state_value_seed_allowed": false,
+    "runtime_execution_allowed": false,
+    "future_apply_command_ref": "psql --set ON_ERROR_STOP=1 --single-transaction with approved ids.owner_authorized_real_profile_ref, ids.migration_backup_checkpoint_ref, and ids.migration_rollback_plan_ref session settings",
+    "future_rollback_command_ref": "psql --set ON_ERROR_STOP=1 --single-transaction --section migrate:down"
+  },
+  "versioned_state_registry": {
+    "table": "ids_state_value_registry",
+    "contract_kind": "versioned_state_registry",
+    "primary_key": [
+      "state_namespace",
+      "state_value"
+    ],
+    "required_metadata": [
+      "introduced_version",
+      "retired_version",
+      "is_active",
+      "owner_label_zh",
+      "owner_description_zh"
+    ],
+    "state_namespaces_reserved_for_future_contracts": [
+      "job_type",
+      "job_state",
+      "parser_state",
+      "validation_state",
+      "decision_state"
+    ],
+    "populated": false,
+    "state_values_defined": false,
+    "state_values_owner": "STAGE-037",
+    "transition_rules_defined": false,
+    "native_postgresql_enum_used": false,
+    "runtime_registry_write_allowed": false,
+    "rollback_requires_empty": true
+  },
+  "constraint_inventory": {
+    "existing_primary_keys": [
+      "ids_schema_migrations(migration_id)",
+      "ids_metadata_sources(source_id)",
+      "ids_jobs(job_id)",
+      "ids_documents(document_id)",
+      "ids_chunks(chunk_id)",
+      "ids_evidence_records(evidence_id)",
+      "ids_audit_events(audit_id)",
+      "ids_index_versions(index_id, index_version)"
+    ],
+    "existing_foreign_keys": [
+      "ids_documents.source_id -> ids_metadata_sources.source_id",
+      "ids_chunks.document_id -> ids_documents.document_id",
+      "ids_jobs.parent_job_id -> ids_jobs.job_id"
+    ],
+    "existing_stable_value_checks": [
+      "chk_source_storage_class",
+      "chk_fact_level",
+      "chk_index_state"
+    ],
+    "candidates": [
+      {
+        "constraint_id": "uq_ids_chunks_document_ordinal",
+        "constraint_class": "COMPOSITE_UNIQUENESS",
+        "table": "ids_chunks",
+        "columns": [
+          "document_id",
+          "chunk_ordinal"
+        ],
+        "candidate_state": "OWNER_AUTHORIZED_REAL_DATA_PROFILE_REQUIRED",
+        "owner_authorized_real_data_profile_required": true,
+        "validation_kind": "duplicate_count_must_be_zero",
+        "live_apply_blocked": true,
+        "rollback_required": true,
+        "owner_explanation_zh": "同一 document_id 下的 chunk_ordinal 必须唯一；应用前必须用 owner 授权真实控制面数据证明不存在重复。"
+      },
+      {
+        "constraint_id": "chk_ids_metadata_sources_quality_v2",
+        "constraint_class": "NOT_NULL_REQUIRED+CROSS_FIELD_CONSISTENCY",
+        "table": "ids_metadata_sources",
+        "columns": [
+          "source_id",
+          "source_uri",
+          "source_boundary",
+          "storage_class",
+          "source_size_bytes",
+          "payload_size_bytes",
+          "is_raw_content_stored"
+        ],
+        "candidate_state": "OWNER_AUTHORIZED_REAL_DATA_PROFILE_REQUIRED",
+        "owner_authorized_real_data_profile_required": true,
+        "validation_kind": "nonblank_nonnegative_bounded_no_raw",
+        "live_apply_blocked": true,
+        "rollback_required": true,
+        "owner_explanation_zh": "metadata source 身份和边界字段必须非空，体积必须非负且有界，并继续禁止 raw content。"
+      },
+      {
+        "constraint_id": "chk_ids_jobs_quality_v2",
+        "constraint_class": "NOT_NULL_REQUIRED+CROSS_FIELD_CONSISTENCY",
+        "table": "ids_jobs",
+        "columns": [
+          "job_id",
+          "job_type",
+          "job_state",
+          "retry_count",
+          "max_retries",
+          "connection_pool_size",
+          "payload_size_bytes"
+        ],
+        "candidate_state": "OWNER_AUTHORIZED_REAL_DATA_PROFILE_REQUIRED",
+        "owner_authorized_real_data_profile_required": true,
+        "validation_kind": "nonblank_retry_pool_payload_bounds",
+        "live_apply_blocked": true,
+        "rollback_required": true,
+        "owner_explanation_zh": "job 身份、类型和状态必须非空，重试、连接池和 payload 必须保持有界；状态值仍由 STAGE-037 定义。"
+      },
+      {
+        "constraint_id": "chk_ids_documents_quality_v2",
+        "constraint_class": "NOT_NULL_REQUIRED+CROSS_FIELD_CONSISTENCY",
+        "table": "ids_documents",
+        "columns": [
+          "document_id",
+          "source_id",
+          "source_uri",
+          "parser_state",
+          "payload_size_bytes"
+        ],
+        "candidate_state": "OWNER_AUTHORIZED_REAL_DATA_PROFILE_REQUIRED",
+        "owner_authorized_real_data_profile_required": true,
+        "validation_kind": "nonblank_bounded_payload",
+        "live_apply_blocked": true,
+        "rollback_required": true,
+        "owner_explanation_zh": "document 身份、source ref 和 parser_state 必须非空，控制面 payload 必须非负且不超过 1 MiB。"
+      },
+      {
+        "constraint_id": "chk_ids_chunks_quality_v2",
+        "constraint_class": "NOT_NULL_REQUIRED+CROSS_FIELD_CONSISTENCY",
+        "table": "ids_chunks",
+        "columns": [
+          "chunk_id",
+          "document_id",
+          "parser_state",
+          "chunk_ordinal",
+          "byte_start",
+          "byte_end",
+          "payload_size_bytes"
+        ],
+        "candidate_state": "OWNER_AUTHORIZED_REAL_DATA_PROFILE_REQUIRED",
+        "owner_authorized_real_data_profile_required": true,
+        "validation_kind": "nonblank_ordinal_offsets_payload_consistency",
+        "live_apply_blocked": true,
+        "rollback_required": true,
+        "owner_explanation_zh": "chunk 身份和 parser_state 必须非空，offset 必须成对、非负且有序，payload 必须有界。"
+      },
+      {
+        "constraint_id": "chk_ids_evidence_records_quality_v2",
+        "constraint_class": "NOT_NULL_REQUIRED+STATUS_VALUESET_INTEGRITY",
+        "table": "ids_evidence_records",
+        "columns": [
+          "evidence_id",
+          "evidence_kind",
+          "fact_level",
+          "source_ref",
+          "validation_state"
+        ],
+        "candidate_state": "OWNER_AUTHORIZED_REAL_DATA_PROFILE_REQUIRED",
+        "owner_authorized_real_data_profile_required": true,
+        "validation_kind": "nonblank_and_existing_fact_level_check",
+        "live_apply_blocked": true,
+        "rollback_required": true,
+        "owner_explanation_zh": "证据身份、来源和 validation_state 必须非空；fact_level 继续使用既有 VERIFIED/INFERRED/UNKNOWN 约束。"
+      },
+      {
+        "constraint_id": "chk_ids_audit_events_quality_v2",
+        "constraint_class": "NOT_NULL_REQUIRED+STATUS_VALUESET_INTEGRITY",
+        "table": "ids_audit_events",
+        "columns": [
+          "audit_id",
+          "actor_role",
+          "action_type",
+          "object_ref",
+          "decision_state"
+        ],
+        "candidate_state": "OWNER_AUTHORIZED_REAL_DATA_PROFILE_REQUIRED",
+        "owner_authorized_real_data_profile_required": true,
+        "validation_kind": "nonblank_audit_identity_and_state",
+        "live_apply_blocked": true,
+        "rollback_required": true,
+        "owner_explanation_zh": "审计事件的 actor、action、object 和 decision_state 必须非空；decision_state 值由后续 owner workflow 合同定义。"
+      },
+      {
+        "constraint_id": "chk_ids_index_versions_quality_v2",
+        "constraint_class": "NOT_NULL_REQUIRED+STATUS_VALUESET_INTEGRITY+CROSS_FIELD_CONSISTENCY",
+        "table": "ids_index_versions",
+        "columns": [
+          "index_id",
+          "index_version",
+          "index_state",
+          "coverage_ref",
+          "hot_index_pointer_ref",
+          "payload_size_bytes"
+        ],
+        "candidate_state": "OWNER_AUTHORIZED_REAL_DATA_PROFILE_REQUIRED",
+        "owner_authorized_real_data_profile_required": true,
+        "validation_kind": "nonblank_existing_state_check_bounded_payload",
+        "live_apply_blocked": true,
+        "rollback_required": true,
+        "owner_explanation_zh": "index identity、coverage 和 hot pointer 必须非空，index_state 继续使用既有值集，payload 必须有界。"
+      },
+      {
+        "constraint_id": "chk_ids_schema_migrations_quality_v2",
+        "constraint_class": "NOT_NULL_REQUIRED+CROSS_FIELD_CONSISTENCY",
+        "table": "ids_schema_migrations",
+        "columns": [
+          "migration_id",
+          "checksum_sha256",
+          "dry_run_required",
+          "rollback_required",
+          "rollback_sql_ref",
+          "recovery_checkpoint_ref"
+        ],
+        "candidate_state": "OWNER_AUTHORIZED_REAL_DATA_PROFILE_REQUIRED",
+        "owner_authorized_real_data_profile_required": true,
+        "validation_kind": "nonblank_dry_run_rollback_recovery_refs",
+        "live_apply_blocked": true,
+        "rollback_required": true,
+        "owner_explanation_zh": "每条 migration 必须有 checksum、dry-run、rollback SQL 和 recovery checkpoint；破坏性迁移仍需单独 owner gate。"
+      }
+    ]
+  },
+  "guardrails": {
+    "connection_pool": {
+      "aggregate_max_pool_size": 10,
+      "max_overflow": 0,
+      "backpressure_required": true,
+      "instantiate_pool_allowed": false
+    },
+    "storage_boundary": {
+      "stores_control_plane_metadata": true,
+      "stores_status_and_state": true,
+      "stores_hot_index_metadata": true,
+      "stores_raw_files": false,
+      "stores_raw_database_rows": false,
+      "stores_document_bodies": false,
+      "stores_ocr_full_text": false,
+      "stores_vector_payloads": false,
+      "stores_report_binaries": false,
+      "stores_raw_log_bodies": false,
+      "stores_unbounded_derived_artifacts": false
+    },
+    "migration_safety": {
+      "stage031_authoritative": true,
+      "dry_run_required": true,
+      "backup_required": true,
+      "validation_required": true,
+      "rollback_required": true,
+      "recovery_smoke_required": true,
+      "destructive_owner_confirmation_required": true
+    },
+    "recovery": {
+      "stage035_authoritative": true,
+      "isolated_target_required": true,
+      "source_database_mutation_allowed": false,
+      "runtime_recovery_allowed": false
+    }
+  },
+  "raw_metadata_boundary": {
+    "path": "/Users/linzezhang/Downloads/IDS_MetaData",
+    "path_only": true,
+    "content_access_allowed": false,
+    "recursive_listing_allowed": false,
+    "hashing_allowed": false,
+    "copy_allowed": false,
+    "modify_allowed": false,
+    "delete_allowed": false,
+    "dump_allowed": false,
+    "scan_allowed": false,
+    "normalize_allowed": false
+  },
+  "real_data_only_guard": {
+    "owner_authorized_real_data_profile_required": true,
+    "real_data_profile_available": false,
+    "fake_rows_allowed": false,
+    "fabricated_profile_allowed": false,
+    "placeholder_corpus_allowed": false,
+    "forbidden": [
+      "fake IDS business data",
+      "fake database rows",
+      "fake source documents",
+      "fabricated data profile",
+      "placeholder corpus",
+      "fabricated evidence",
+      "plaintext secrets"
+    ]
+  },
+  "runtime_policy": {
+    "connect_to_postgres": false,
+    "instantiate_connection_pool": false,
+    "query_real_rows": false,
+    "execute_data_profile": false,
+    "execute_migration": false,
+    "execute_constraint_validation": false,
+    "execute_backup": false,
+    "execute_restore": false,
+    "execute_recovery_smoke": false,
+    "write_runtime_outputs": false,
+    "read_raw_metadata": false,
+    "write_raw_metadata": false,
+    "seed_state_values": false,
+    "install_dependencies": false,
+    "start_services": false,
+    "github_upload": false,
+    "app_reinstall": false
+  },
+  "next_gate": "IDS-STAGE036-P3-GATE",
+  "github_upload_allowed": false,
+  "app_reinstall_allowed": false
+}
