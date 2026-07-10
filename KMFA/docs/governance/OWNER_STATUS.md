@@ -991,3 +991,6 @@ KMFA 当前版本 `0.1.4-residual-difference-authorized-source-reference-or-excl
 
 
 - v0.1.4 owner/authorized-agent resolution-intake blocker final recheck records observation `3/3`: blocked threshold is met, 48 blockers and 0 completed resolutions remain, and all downstream gates stay closed pending blocked handoff.
+
+
+- v0.1.4 resolution-intake blocker blocked handoff is prepared: 48 owner-resolution items remain actionable, 0 resolutions are completed and 72 differences remain unresolved; the standing user authorization permits the next private resolution-application phase to derive verifiable candidates from the read-only raw inbox without opening downstream gates.
