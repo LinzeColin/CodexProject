@@ -111,6 +111,39 @@ class S04P3GithubBackupTest(unittest.TestCase):
             self.assertIn("中文原因", result)
             self.assertIn("fallback建议", result)
 
+    def test_installed_source_copy_supports_only_no_write_backup_scope_check(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            create_backup_fixture(root)
+            (root / "memory_atlas_source_workspace.json").write_text(
+                json.dumps(
+                    {
+                        "schema_version": "memory_atlas_source_workspace.v1",
+                        "original_repo_root": "/temporary/canonical/repo",
+                        "installed_git_commit": "fixture",
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            dry_run_result = run_json(
+                [sys.executable, str(GITHUB_BACKUP_SCRIPT), "--database-dir", str(root), "--dry-run"]
+            )
+            self.assertEqual(dry_run_result["status"], "PASS")
+            self.assertEqual(dry_run_result["backup_scope_check"], "installed_source_copy_no_git")
+            self.assertTrue(dry_run_result["dry_run"])
+            self.assertFalse(dry_run_result["writes_files"])
+            self.assertFalse(dry_run_result["remote_push"])
+            self.assertFalse(dry_run_result["github_main_upload"])
+            self.assertEqual(dry_run_result["changed_files"], [])
+
+            apply_result = run_json(
+                [sys.executable, str(GITHUB_BACKUP_SCRIPT), "--database-dir", str(root), "--apply"],
+                expect_success=False,
+            )
+            self.assertEqual(apply_result["status"], "FAIL")
+            self.assertEqual(apply_result["reason"], "not_git_worktree")
+
 
 if __name__ == "__main__":
     unittest.main()

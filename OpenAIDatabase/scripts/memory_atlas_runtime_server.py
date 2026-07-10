@@ -19,6 +19,17 @@ from urllib.parse import urlparse
 
 COMMAND_API_VERSION = "memory_atlas_command_api.v1_2_r3"
 PROPOSAL_API_VERSION = "memory_atlas_proposal_api.v1_2_r4"
+OWNER_DAILY_API_VERSION = "memory_atlas_owner_daily_api.v1_2_r5"
+OWNER_DAILY_STEP_IDS = (
+    "sync",
+    "analyze",
+    "build-atlas",
+    "audit",
+    "push",
+    "proposals",
+    "generate-personalization-prompt",
+    "deep-explore",
+)
 MAX_COMMAND_BODY_BYTES = 1024
 LOOPBACK_HOSTS = ("127.0.0.1", "localhost")
 
@@ -93,6 +104,8 @@ class RuntimeState:
             "command_execution_scope": "local_application_support_source_copy",
             "proposal_api_version": PROPOSAL_API_VERSION,
             "proposal_action_scope": "local_application_support_source_copy",
+            "owner_daily_api_version": OWNER_DAILY_API_VERSION,
+            "owner_daily_scope": "fixed_eight_step_no_write_profile",
         }
 
 
@@ -183,6 +196,9 @@ class Handler(SimpleHTTPRequestHandler):
             return
         if path == "/__memory_atlas_proposal_action":
             self.handle_proposal_action()
+            return
+        if path == "/__memory_atlas_owner_daily":
+            self.handle_owner_daily()
             return
         self.send_command_error(404, "未找到该本地 Memory Atlas 接口。")
 
@@ -307,6 +323,42 @@ class Handler(SimpleHTTPRequestHandler):
                 self.send_command_error(400, str(exc))
                 return
             self.send_command_error(500, "本地 proposal 服务出现未预期错误；请查看 Memory Atlas 本机日志。")
+            return
+        self.server.state.touch(True)
+        self.send_json(result)
+
+    def handle_owner_daily(self) -> None:
+        if not self.validate_local_origin():
+            return
+        payload = self.read_json_payload()
+        if payload is None:
+            return
+        action = payload.get("action")
+        if action == "run":
+            expected = {"action"}
+        elif action == "retry":
+            expected = {"action", "step_id"}
+        else:
+            self.send_command_error(400, "Owner Daily action 不在固定允许列表中。")
+            return
+        if set(payload) != expected:
+            self.send_command_error(400, "Owner Daily 请求字段不符合固定合同。")
+            return
+        if action == "retry":
+            step_id = payload.get("step_id")
+            if not isinstance(step_id, str) or step_id not in OWNER_DAILY_STEP_IDS:
+                self.send_command_error(400, "Owner Daily retry step 不在固定允许列表中。")
+                return
+        try:
+            result = self.server.command_bridge.execute_owner_daily(payload)
+        except Exception as exc:
+            if exc.__class__.__name__ == "CommandBusyError":
+                self.send_command_error(409, "另一个 Memory Atlas 本地操作正在运行，请完成后重试。")
+                return
+            if exc.__class__.__name__ in {"CommandRequestError", "OwnerDailyRequestError"}:
+                self.send_command_error(400, "Owner Daily 请求不在固定允许合同中。")
+                return
+            self.send_command_error(500, "Owner Daily 本地服务出现未预期错误；请查看 Memory Atlas 本机日志。")
             return
         self.server.state.touch(True)
         self.send_json(result)

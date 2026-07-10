@@ -126,6 +126,37 @@ def fail_not_git(database_dir: Path, dry_run: bool, apply: bool) -> dict[str, An
     }
 
 
+def installed_source_dry_run(database_dir: Path) -> dict[str, Any] | None:
+    manifest_path = database_dir / "memory_atlas_source_workspace.json"
+    if not manifest_path.is_file() or manifest_path.is_symlink() or (database_dir / ".git").exists():
+        return None
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    original_repo_value = manifest.get("original_repo_root")
+    if (
+        manifest.get("schema_version") != "memory_atlas_source_workspace.v1"
+        or not isinstance(original_repo_value, str)
+        or not original_repo_value.strip()
+        or Path(original_repo_value).expanduser().resolve() == database_dir.resolve()
+    ):
+        return None
+    result = base_contract(database_dir, None, dry_run=True, apply=False)
+    result.update(
+        {
+            "backup_scope_check": "installed_source_copy_no_git",
+            "candidate_targets": [target for target in BACKUP_TARGETS if (database_dir / target).exists()],
+            "changed_files": [],
+            "writes_files": False,
+            "remote_push": False,
+            "github_main_upload": False,
+            "中文原因": "已安装 source 副本不含 Git 元数据；本步骤只确认备份范围，最终 GitHub main 上传仍由 R8 整体交付执行。",
+        }
+    )
+    return result
+
+
 def dry_run(database_dir: Path, repo_root: Path) -> dict[str, Any]:
     targets = git_target_paths(repo_root, database_dir)
     result = base_contract(database_dir, repo_root, dry_run=True, apply=False)
@@ -187,6 +218,10 @@ def main(argv: list[str] | None = None) -> int:
     database_dir = args.database_dir.resolve()
     repo_root = find_git_root(database_dir)
     if repo_root is None:
+        installed_result = installed_source_dry_run(database_dir) if args.dry_run else None
+        if installed_result is not None:
+            print(json.dumps(installed_result, ensure_ascii=False, indent=2, sort_keys=True))
+            return 0
         print(json.dumps(fail_not_git(database_dir, args.dry_run, args.apply), ensure_ascii=False, indent=2, sort_keys=True))
         return 2
 

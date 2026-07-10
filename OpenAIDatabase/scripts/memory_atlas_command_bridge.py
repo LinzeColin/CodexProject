@@ -27,6 +27,12 @@ from memory_atlas_proposal_workflow import (  # noqa: E402
     ProposalWorkflow,
     ProposalWorkflowContext,
 )
+from memory_atlas_owner_daily import (  # noqa: E402
+    OWNER_DAILY_API_VERSION,
+    OWNER_DAILY_STEP_IDS,
+    OwnerDailyContext,
+    OwnerDailyRunner,
+)
 
 
 COMMAND_API_VERSION = "memory_atlas_command_api.v1_2_r3"
@@ -251,6 +257,7 @@ class CommandBridge:
         runner: ProcessRunner = default_process_runner,
         base_env: dict[str, str] | None = None,
         proposal_workflow: Any | None = None,
+        owner_daily_runner: Any | None = None,
     ) -> None:
         self.context = validate_workspace(context)
         self.runner = runner
@@ -259,6 +266,13 @@ class CommandBridge:
             ProposalWorkflowContext(
                 source_root=self.context.source_root,
                 app_support=self.context.app_support,
+            )
+        )
+        self.owner_daily_runner = owner_daily_runner or OwnerDailyRunner(
+            OwnerDailyContext(
+                source_root=self.context.source_root,
+                python_executable=self.context.python_executable,
+                timeout_seconds=self.context.timeout_seconds,
             )
         )
         self._lock = threading.Lock()
@@ -329,6 +343,31 @@ class CommandBridge:
                 rollback_token=payload["rollback_token"],
                 confirmation=payload["confirmation"],
             )
+        finally:
+            self._lock.release()
+
+    def execute_owner_daily(self, payload: dict[str, Any]) -> dict[str, Any]:
+        if not isinstance(payload, dict):
+            raise CommandRequestError("Owner Daily 请求格式无效。")
+        action = payload.get("action")
+        if action == "run":
+            expected = {"action"}
+        elif action == "retry":
+            expected = {"action", "step_id"}
+        else:
+            raise CommandRequestError("Owner Daily action 不在固定允许列表中。")
+        if set(payload) != expected:
+            raise CommandRequestError("Owner Daily 请求字段不符合固定合同。")
+        if action == "retry":
+            step_id = payload.get("step_id")
+            if not isinstance(step_id, str) or step_id not in OWNER_DAILY_STEP_IDS:
+                raise CommandRequestError("Owner Daily retry step 不在固定允许列表中。")
+        if not self._lock.acquire(blocking=False):
+            raise CommandBusyError("另一个 Memory Atlas 本地操作正在运行，请完成后重试。")
+        try:
+            result = self.owner_daily_runner.run() if action == "run" else self.owner_daily_runner.retry(payload["step_id"])
+            self._append_owner_daily_audit(payload, result)
+            return result
         finally:
             self._lock.release()
 
@@ -611,10 +650,27 @@ class CommandBridge:
         with audit_path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
 
+    def _append_owner_daily_audit(self, payload: dict[str, Any], result: dict[str, Any]) -> None:
+        audit_path = self.context.app_support / "owner_daily_audit.jsonl"
+        audit_path.parent.mkdir(parents=True, exist_ok=True)
+        row = {
+            "schema_version": "memory_atlas_owner_daily_audit.v1_2_r5",
+            "recorded_at": utc_now(),
+            "action": payload.get("action"),
+            "requested_step_id": payload.get("step_id"),
+            "status": result.get("status"),
+            "completed_count": result.get("completed_count"),
+            "failed_count": result.get("failed_count"),
+        }
+        with audit_path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+
 
 __all__ = [
     "COMMAND_API_VERSION",
     "COMMAND_IDS",
+    "OWNER_DAILY_API_VERSION",
+    "OWNER_DAILY_STEP_IDS",
     "PROPOSAL_API_VERSION",
     "CommandBridge",
     "CommandBusyError",
