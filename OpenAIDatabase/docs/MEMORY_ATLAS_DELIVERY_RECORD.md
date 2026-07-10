@@ -1,5 +1,25 @@
 # Memory Atlas Delivery Record
 
+## Current Status Supersession: v1.2 Remediation R0
+
+当前发布状态：`FAIL_REMEDIATION_REQUIRED`。
+
+2026-07-10 R0 真实浏览器复核证明，历史 `v1_2_final_delivery_completed...`、
+`v1_2_final_review_passed...` 和 `COMPLETE_WITH_OPERATOR_EVIDENCE` 只证明当时的
+source/governance/deployment 合同，不证明 v1.2 用户产品完成。它们已被
+`机器治理/证据与日志/remediation/v1_2_r0/status.json` supersede。
+
+直接反证包括：三个目标视口首页重叠、Command Palette 无执行动作、默认首屏暴露
+Stage/CLI 内部信息、线上 snapshot 比本地少 63 nodes 和 363 edges、final audit 缺少
+v1.2 首页真实多视口门禁、raw audit 以空数据通过。
+
+原 Roadmap 和 TaskPack 已按历史 SHA-256 精确恢复到
+`docs/source_packages/memory_atlas_v1_2/`。完整差距矩阵位于
+`机器治理/证据与日志/remediation/v1_2_r0/requirements_gap_matrix.csv`。
+
+R8 全部真实验收前禁止再次更新 GitHub main、重装 app 或重新部署。下方记录保留为
+历史证据，不得单独用于宣称当前版本完成。
+
 ## v1.2 Final Delivery
 
 状态：`v1_2_final_delivery_completed_with_protected_cloudflare_live_evidence`。

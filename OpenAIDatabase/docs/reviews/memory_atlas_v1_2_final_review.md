@@ -1,5 +1,11 @@
 # Memory Atlas v1.2 Final Review
 
+> **SUPERSEDED 2026-07-10:** 本文是历史 review 记录，不再证明当前 v1.2 发布完成。
+> R0 真实浏览器和恢复审计已把发布状态重新打开为
+> `FAIL_REMEDIATION_REQUIRED`。当前状态与逐项矩阵见
+> `docs/remediation/memory_atlas_v1_2/R0_SOURCE_RECOVERY_AND_GAP_BASELINE.md` 和
+> `机器治理/证据与日志/remediation/v1_2_r0/status.json`。
+
 任务 ID：`MA-V12-FINAL-REVIEW`。
 
 验收 ID：`ACC-MA-V12-FINAL-REVIEW`。

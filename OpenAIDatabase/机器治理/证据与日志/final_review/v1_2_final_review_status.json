@@ -1,5 +1,8 @@
 {
   "schema_version": "memory_atlas.final_review.v1_2",
+  "historical_record": true,
+  "current_release_claim_valid": false,
+  "superseded_by": "机器治理/证据与日志/remediation/v1_2_r0/status.json",
   "task_id": "MA-V12-FINAL-REVIEW",
   "acceptance_id": "ACC-MA-V12-FINAL-REVIEW",
   "status": "v1_2_final_review_passed_pending_github_main_sync_no_upload_yet",

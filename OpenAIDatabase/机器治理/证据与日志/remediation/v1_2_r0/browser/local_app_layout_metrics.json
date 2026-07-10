@@ -1,0 +1,82 @@
+{
+  "captured_at": "2026-07-10T07:48:01.436Z",
+  "url": "http://127.0.0.1:4177/",
+  "layout": {
+    "items": [
+      {
+        "cls": "topbar",
+        "height": 55.5,
+        "i": 0,
+        "overflowY": "visible",
+        "scrollHeight": 56,
+        "width": 1194,
+        "x": 262,
+        "y": 14
+      },
+      {
+        "cls": "controls",
+        "height": 36,
+        "i": 1,
+        "overflowY": "visible",
+        "scrollHeight": 36,
+        "width": 1194,
+        "x": 262,
+        "y": 77.5
+      },
+      {
+        "cls": "interaction-lens",
+        "height": 44.5,
+        "i": 2,
+        "overflowY": "visible",
+        "scrollHeight": 43,
+        "width": 1194,
+        "x": 262,
+        "y": 121.5
+      },
+      {
+        "cls": "command-palette",
+        "height": 26,
+        "i": 3,
+        "overflowY": "visible",
+        "scrollHeight": 361,
+        "width": 1194,
+        "x": 262,
+        "y": 174
+      },
+      {
+        "cls": "content-grid wide-view",
+        "height": 465,
+        "i": 4,
+        "overflowY": "hidden",
+        "scrollHeight": 465,
+        "width": 1194,
+        "x": 262,
+        "y": 182
+      }
+    ],
+    "metrics": [
+      "记忆278",
+      "节点403",
+      "连接2,134",
+      "活动201"
+    ],
+    "overlaps": [
+      {
+        "a": 3,
+        "area": 21492,
+        "b": 4,
+        "height": 18,
+        "width": 1194
+      }
+    ],
+    "snapshot": [
+      "2026/7/10 17:46:16",
+      "2026/7/10 17:48:00",
+      "已同步 / 本地自释放"
+    ],
+    "viewport": {
+      "height": 661,
+      "width": 1470
+    }
+  }
+}
