@@ -4,13 +4,18 @@
 
 ## 一句话状态
 
-KMFA 已完成 `V014_AUTHORIZED_AGENT_PRIVATE_RESOLUTION_APPLICATION_AFTER_BLOCKED_HANDOFF` 本地单 phase：只读解析 5 个原始文件并证明前后逐文件完全一致；48 个槽位中 8 个结构映射已解析，40 个业务值槽位因 S08 合成项目身份和 S09 实际处理值缺失而继续保留。已生成 ignored private 全中文差异报告，当前维持 `NO_GO`，未上传 GitHub、未重装 app、未执行业务动作。
+KMFA 已完成 `V014_REAL_PROJECT_IDENTITY_PRIVATE_REBINDING_AND_PROCESSED_VALUE_MATERIALIZATION` 本地单 phase：4 个真实权威项目已私有重绑，32 条整数项目指标和 28 个可证明目标槽位已物化；12 个现金口径槽位仍需消歧，6 条权威/系统差异保持非零。5 个原始文件前后完全一致，当前维持 `NO_GO`，未上传 GitHub、未重装 app、未执行业务动作。
 
 ## 当前可信任范围
 
-- 可以信任：4 个公式契约映射、4 个 canonical 成本分类映射、S05 权威哈希聚合匹配计数、5 个原始文件前后完全一致。
-- 不能信任：40 个业务值槽位、72 个未关闭差异、项目级 raw-to-processed 一致性、任何正式业务报告或执行结论。
-- 下一步必须先建立真实项目身份私有绑定并物化实际处理值；不得用治理占位哈希替代业务值。
+- 可以信任：4 个唯一权威来源私有身份绑定、32 条整数指标、28 个已物化槽位、8 条已完成比较及 5 个原始文件前后完全一致。
+- 必须保留：6 条非零差异，不得通过覆盖、四舍五入或替换权威值消除。
+- 不能信任：12 个现金口径槽位、4 条现金比较、全局 72 条未重放 residual queue、任何正式业务报告或执行结论。
+- 下一步只做现金来源私有消歧和剩余值物化；无法唯一绑定的继续进入全中文 private 差异报告。
+
+## 前序一句话状态（上一 phase）
+
+KMFA 已完成 `V014_AUTHORIZED_AGENT_PRIVATE_RESOLUTION_APPLICATION_AFTER_BLOCKED_HANDOFF` 本地单 phase：只读解析 5 个原始文件并证明前后逐文件完全一致；48 个槽位中 8 个结构映射已解析，40 个业务值槽位因 S08 合成项目身份和 S09 实际处理值缺失而继续保留。已生成 ignored private 全中文差异报告，当前维持 `NO_GO`，未上传 GitHub、未重装 app、未执行业务动作。
 
 ## 前序一句话状态（历史）
 

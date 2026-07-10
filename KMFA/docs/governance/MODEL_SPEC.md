@@ -1,3 +1,15 @@
+## FORM-KMFA-V014-REAL-PROJECT-IDENTITY-PRIVATE-REBINDING-AND-PROCESSED-VALUE-MATERIALIZATION-001
+
+- version: `0.1.4-real-project-identity-private-rebinding-and-processed-value-materialization`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: 在只读 raw 边界内将 4 个合成项目身份私有重绑到唯一权威来源，并仅物化可被整数公式证明的 S09 值。
+- rule: `phase_valid = bindings == 4 AND metrics == 32 AND materialized_slots == 28 AND unresolved_cash_slots == 12 AND completed_comparisons == 8 AND zero_deltas == 2 AND nonzero_deltas == 6 AND incomplete_cash_comparisons == 4 AND raw_snapshot_exact_match == true AND decision == NO_GO`。
+- arithmetic rule: 金额只使用 integer cents，比例只使用 integer basis points；比较差额必须严格等于 `amount_a - amount_b`，不得用 float 或自动覆盖非零差异。
+- identity rule: 四字段权威哈希加唯一 PDF 来源仅建立 private overlay；现金毛利只有在工作簿项目身份唯一绑定后才能物化。
+- public_safety: 公开产物仅含聚合计数和 gate；项目名、raw 文件名、字段、金额、sheet/cell、来源和差异明细只存在于 ignored private runtime。
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_real_project_identity_private_rebinding_and_processed_value_materialization.py --require-private-materialization`
+- evidence: `KMFA/stage_artifacts/V014_REAL_PROJECT_IDENTITY_PRIVATE_REBINDING_AND_PROCESSED_VALUE_MATERIALIZATION/machine/real_project_identity_private_rebinding_and_processed_value_materialization_manifest.json`
+
 ## FORM-KMFA-V014-AUTHORIZED-AGENT-PRIVATE-RESOLUTION-AFTER-BLOCKED-HANDOFF-001
 
 - version: `0.1.4-authorized-agent-private-resolution-application-after-blocked-handoff`
