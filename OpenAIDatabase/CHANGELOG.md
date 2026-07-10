@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 Remediation R3
+
+- Added the tracked loopback runtime server and exact six-command bridge with fixed
+  argv, `shell=false`, scrubbed child environments and one-command locking.
+- Enforced installer-shaped source/runtime boundaries, exact same-origin requests,
+  bounded JSON, no CORS, metadata-only audit and process-group timeout cleanup.
+- Made all six Command Palette workflows executable only after an explicit Execute
+  click; sync refreshes the snapshot and results remain visible before navigation.
+- Added real redacted ChatGPT/Codex sync paths, a derived-only deterministic weekly
+  report, read-only proposal status, all-target personalization generation and
+  ChatGPT `prefill_only` deep explore with no auto-submit.
+- Added a self-building Playwright gate that executes all commands in a temporary
+  installer-shaped runtime and separately proves hosted static emits zero command
+  POSTs with the exact local-app handoff.
+- Added focused runtime, launcher and workflow regressions; resolved reviewer findings
+  for descendant timeout cleanup, symlink escape, lifecycle same-origin and stale
+  frontend acceptance.
+- Preserved the R3 boundary: no proposal apply/rollback, owner-daily, merge/rebase,
+  push, app reinstall, Cloudflare deployment, canonical repo write or raw mutation.
+
 ## Unreleased - Memory Atlas v1.2 Remediation R2
 
 - Added the `Memory Atlas / 记忆决策台 · v1.2` release identity and question-led
