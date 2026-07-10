@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Cloudflare L2 redacted public shell — 2026-07-10
+
+- 新增隔离的 `web/cloudflare-public` 静态产品壳、Workers Static Assets 配置、隐私扫描和兼容性回归。
+- 页面只展示定性、脱敏结构；不读取真实账户、组合、交易、broker credentials、私密 reports 或本地数据库。
+- build、private scan、响应式浏览器验收和 Wrangler dry-run 已通过；真实部署仍因 Workers 授权阻塞，未填写 live URL。
+
 ## v0.2.4 Overall Project Review - 2026-07-02
 
 - 完成 `v0.2.4 overall project review`：以整个 PFI v0.2.4 repair package 为目标复审 Stage 0-9、Stage 8/9 用户验收、整体交付证据和 GitHub main 上传状态。

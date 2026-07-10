@@ -2040,6 +2040,24 @@ tasks:
     completed_version: ""
     fact_level: "EXTRACTED"
     unknown_task_ids: []
+  - task_id: "CF-L2-20260710"
+    phase: "CF-L2"
+    objective: "Deliver a public-safe Cloudflare L2 EEI explorer without publishing production relationship facts or claiming legal or brand release."
+    scope: ["EEI/apps/cloudflare-public static adapter", "Cloudflare Workers Static Assets config", "privacy scan", "deployment evidence"]
+    non_scope: ["production graph database", "worker queue or scheduler", "legal clearance", "brand clearance", "A209 or A210 closure"]
+    status: "blocked"
+    dependencies: []
+    required_files: ["EEI/apps/cloudflare-public/public/index.html", "EEI/apps/cloudflare-public/public/public-surface.json", "EEI/apps/cloudflare-public/wrangler.jsonc", "governance/cloudflare/deployments.json"]
+    acceptance_ids: ["ACC-CF-L2-20260710"]
+    test_commands: ["npm run build", "python3 scripts/cloudflare/scan_public_dist.py --path EEI/apps/cloudflare-public/dist", "npx wrangler@4.110.0 deploy --dry-run", "python3 -m unittest tests.cloudflare.test_compatibility_envelope -v"]
+    test_results: ["PASS: static build", "PASS: private distribution scan", "PASS: Wrangler 4.110.0 dry-run", "PASS: compatibility tests 13/13", "BLOCKED: real Cloudflare deploy requires Workers authorization; no live URL claimed"]
+    evidence_refs: ["EEI/apps/cloudflare-public/public/public-surface.json", "governance/cloudflare/deployments.json", "FINAL_ACCEPTANCE_BUNDLE/cloudflare_compatibility_envelope/FINAL_REPORT.md"]
+    risk: "A static explorer could be mistaken for approved production relationship publication or legal and brand release."
+    rollback: "Remove the isolated cloudflare-public adapter and revert its bounded governance records; EEI core remains unchanged."
+    target_version: "0.1.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids: []
   - task_id: "TASK-T905"
     legacy_task_id: "T905"
     phase: "A"

@@ -1,5 +1,11 @@
 # Changelog
 
+## Cloudflare L2 MemoryAtlas public viewer — 2026-07-10
+
+- 将现有 MemoryAtlas 构建配置迁到 Workers Static Assets，并加入返回 LinzeHomeHub 的只读入口。
+- 继续只发布 redacted derived snapshot；raw archives、private imports、cookies、sessions、secrets 和直接写回保持禁止。
+- build、release privacy/accessibility、private scan、响应式浏览器验收和 Wrangler dry-run 已通过；现有 custom domain 仍受 Access 保护，匿名 public URL 未伪造。
+
 ## Unreleased - Memory Atlas v1.2 Final Review
 
 - Added `validate:v1.2-final-review` for `MA-V12-FINAL-REVIEW` /

@@ -13,7 +13,7 @@
       "worker_name": "linze-home-hub",
       "preferred_domain": "home.linzezhang.com",
       "actual_url": "https://home.linzezhang.com",
-      "status": "existing_live_requires_constellation_sync",
+      "status": "launch_constellation_build_scan_visual_dry_run_passed_existing_live_redeploy_auth_blocked",
       "data_boundary": "public_project_gateway_only",
       "private_data_allowed_in_dist": false,
       "build_command": "npm run build",
@@ -23,7 +23,7 @@
       "required_for_this_task": true,
       "deployment_required": true,
       "deployment_result": "deployed_custom_domain_verified",
-      "blockers": ["current_main_redeploy_evidence_required"],
+      "blockers": ["current_main_redeploy_evidence_required", "cloudflare_workers_auth"],
       "acceptance": ["validate", "build", "visual_acceptance", "private_scan", "wrangler_dry_run", "http_200"],
       "rollback": "Cloudflare deployment rollback and revert bounded HomeHub commit",
       "future_l3_extensions": ["manifest_fetch_after_signed_publication"]

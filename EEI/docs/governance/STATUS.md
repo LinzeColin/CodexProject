@@ -2,11 +2,11 @@
 
 ## Snapshot Metadata
 
-- source_base_commit: `0175e2b9616fa77d50ae06bcf0cd68ce9d015f7d`
+- source_base_commit: `236d25354db7d8f9774d1f91981ae30d69b0234e`
 - source_tree_hash: `356fcd0bb5d3b892b331d28351fe9e99a64c8457`
-- source_snapshot_hash: `sha256:d3cdd49fd2633da88e616b04320e5b9ba5dff5f313c7efc3bfa21b6a51ef4def`
-- snapshot_event_time: `2026-06-27T21:27:32+10:00`
-- generator_version: `4.0.0`
+- source_snapshot_hash: `sha256:7d50e55d4226a32b4eb242dbb4bbde05c387eaf25470d2f4c885060d48c47e31`
+- snapshot_event_time: `2026-07-10T17:50:45+10:00`
+- generator_version: `4.0.1`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
 ## Current State
@@ -14,10 +14,10 @@
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `D / TASK-T1301-A202-LIVE-OFFICIAL-CAPTURE-FRESHNESS`
-- Models/Formulas/Parameters total: `12 / 12 / 92`
-- Active formulas/parameters: `11 / 92`
-- Machine checked formulas/parameters: `11 / 92`
+- Phase/Gate: `CF-L2 / ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH`
+- Models/Formulas/Parameters total: `12 / 12 / 93`
+- Active formulas/parameters: `11 / 93`
+- Machine checked formulas/parameters: `11 / 93`
 
 ## Assurance
 
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `TASK-T1301-A202-LIVE-OFFICIAL-CAPTURE-FRESHNESS`
-- Next executable task: `TASK-T1301`
-- Pending/stale events: `113`
+- Release gate: `ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH`
+- Next executable task: `CF-L2-20260710`
+- Pending/stale events: `114`
 - Tree-bound events: `0`
 - Commit-bound events: `18`
 - Legacy unbound events: `19`

@@ -2,9 +2,9 @@
 
 model_count: 1
 formula_count: 1
-parameter_count: 22
-task_count: 6
-acceptance_count: 6
+parameter_count: 23
+task_count: 7
+acceptance_count: 7
 
 ## 当前模型
 

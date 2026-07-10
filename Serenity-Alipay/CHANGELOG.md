@@ -1,5 +1,11 @@
 # Changelog
 
+## Cloudflare L2 public review cockpit — 2026-07-10
+
+- 新增隔离的 `app/cloudflare-public` 静态 review cockpit、Workers Static Assets 配置、隐私扫描和兼容性回归。
+- 不读取 Alipay，不连接 MooMoo/OpenD，不发送 Apple Mail 或通知，不触发 trades、launchd 或外部账户动作。
+- build、private scan、响应式浏览器验收和 Wrangler dry-run 已通过；真实部署仍因 Workers 授权阻塞，未填写 live URL。
+
 ## Unreleased - Actionable Mail Frequency Control
 
 - Fixed production actionable mail deduplication so Serenity compares the current recommendation against the last successfully sent actionable mail, not against older historical runs at each slot.

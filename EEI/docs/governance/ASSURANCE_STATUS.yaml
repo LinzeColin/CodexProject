@@ -1,10 +1,10 @@
 project_id: "EEI"
-as_of_event_id: "EVENT-20260627-010"
-source_snapshot_hash: "sha256:d3cdd49fd2633da88e616b04320e5b9ba5dff5f313c7efc3bfa21b6a51ef4def"
-source_base_commit: "0175e2b9616fa77d50ae06bcf0cd68ce9d015f7d"
+as_of_event_id: "EVENT-20260710-EEI-CF-L2"
+source_snapshot_hash: "sha256:7d50e55d4226a32b4eb242dbb4bbde05c387eaf25470d2f4c885060d48c47e31"
+source_base_commit: "236d25354db7d8f9774d1f91981ae30d69b0234e"
 source_tree_hash: "356fcd0bb5d3b892b331d28351fe9e99a64c8457"
-snapshot_event_time: "2026-06-27T21:27:32+10:00"
-generator_version: "4.0.0"
+snapshot_event_time: "2026-07-10T17:50:45+10:00"
+generator_version: "4.0.1"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
   structural_completeness:
@@ -16,8 +16,8 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 92
-    total_active_parameters: 92
+    checked_active_parameters: 93
+    total_active_parameters: 93
     checked_active_formulas: 11
     total_active_formulas: 11
     unresolved_fact_ids: []
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 92
-    total_active_parameters: 92
+    checked_active_parameters: 93
+    total_active_parameters: 93
     evidence_refs:
       - "EEI/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -64,12 +64,12 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 18
     legacy_unbound_events: 19
-    precommit_pending_events: 92
+    precommit_pending_events: 93
     evidence_refs:
       - "EEI/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "TASK-T1301-A202-LIVE-OFFICIAL-CAPTURE-FRESHNESS"
+  release_gate: "ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH"
   blocker_ids:
     - "FACT-EEI-EMPIRICAL-EVIDENCE"
     - "FACT-EEI-OPERATIONAL-EVIDENCE"
@@ -78,14 +78,14 @@ delivery_readiness:
     - "TASK-T1307"
     - "TASK-T1309"
 next_executable_task:
-  task_id: "TASK-T1301"
-  status: "in_progress"
-  reason: "Implement real data ingestion, entity resolution and evidence chain for the Golden Vertical"
+  task_id: "CF-L2-20260710"
+  status: "blocked"
+  reason: "Deliver a public-safe Cloudflare L2 EEI explorer without publishing production relationship facts or claiming legal or brand release."
   acceptance_ids:
-    - "ACC-A202"
+    - "ACC-CF-L2-20260710"
   owner: "product_owner + data_owner + risk_owner"
   human_owner_role: "product_owner + data_owner + risk_owner"
-  unblock_condition: "Run `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/load_curated_ingestion_anchors.py scripts/check_database_schema.py tests/integration/test_database_migrations.py` and attach the listed evidence refs."
+  unblock_condition: "A static explorer could be mistaken for approved production relationship publication or legal and brand release."
   stale_candidates: []
 owner_decision:
   required: true
