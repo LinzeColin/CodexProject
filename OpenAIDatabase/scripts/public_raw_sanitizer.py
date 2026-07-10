@@ -18,6 +18,7 @@ BINARY_STRING_MIN_BYTES = 256 * 1024
 
 _DATA_URL_BASE64_RE = re.compile(r"\Adata:[^,\r\n]*;base64,", re.IGNORECASE)
 _BASE64_RE = re.compile(r"[A-Za-z0-9+/_-]+={0,2}")
+_GIT_HOOK_OPENAI_KEY_CANDIDATE_RE = re.compile(r"sk-[A-Za-z0-9]{20,}")
 _HEX_IDENTIFIER_RE = re.compile(r"[0-9a-f]{12,64}\Z")
 _UUID_RE = re.compile(
     r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\Z",
@@ -128,7 +129,15 @@ def sanitize_public_text(value: str) -> tuple[str, dict[str, int]]:
         return binary_omission_marker(value), {"binary_omission": 1}
     if is_safe_public_structured_string(value):
         return value, {}
-    redacted, counts = redact_text(value)
+    # The repository hook intentionally has no word-boundary requirement. Mirror
+    # that contract so random executable dumps or nested ciphertext cannot form a
+    # commit-blocking key-shaped substring inside otherwise public transcript text.
+    hook_safe, hook_candidate_count = _GIT_HOOK_OPENAI_KEY_CANDIDATE_RE.subn(
+        "[REDACTED_SECRET]", value
+    )
+    redacted, counts = redact_text(hook_safe)
+    if hook_candidate_count:
+        counts["openai_api_key"] = counts.get("openai_api_key", 0) + hook_candidate_count
     return redacted, {key: counts[key] for key in sorted(counts)}
 
 

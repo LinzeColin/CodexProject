@@ -289,6 +289,34 @@ class PublicRawSanitizerTests(unittest.TestCase):
         self.assertEqual(sanitized["content"], value["content"])
         self.assertEqual(counts, {"binary_omission": 1})
 
+    def test_git_hook_key_shaped_substring_is_redacted_without_word_boundary(self) -> None:
+        sanitizer = self.load_sanitizer("git_hook_candidate")
+        candidate = "prefixYsk-" + "AbCdEf0123456789XYZQ" + "::suffix"
+
+        sanitized, counts = sanitizer.sanitize_public_text(candidate)
+
+        self.assertNotRegex(sanitized, r"sk-[A-Za-z0-9]{20,}")
+        self.assertEqual(sanitized, "prefixY[REDACTED_SECRET]::suffix")
+        self.assertEqual(counts, {"openai_api_key": 1})
+
+    def test_nested_serialized_encrypted_text_cannot_reintroduce_git_hook_candidate(self) -> None:
+        sanitizer = self.load_sanitizer("nested_encrypted_text")
+        candidate = "gAAAAAAbCdEfGhJkLmNoPq" + "s" + "k-QwertyAbCdEfGhJkLmNoPq"
+        value = {
+            "output": json.dumps(
+                {"payload": {"encrypted_content": candidate}},
+                ensure_ascii=False,
+                separators=(",", ":"),
+            )
+        }
+
+        sanitized, counts = sanitizer.sanitize_public_value(value)
+        serialized = json.dumps(sanitized, ensure_ascii=False, sort_keys=True)
+
+        self.assertNotRegex(serialized, r"sk-[A-Za-z0-9]{20,}")
+        self.assertIn("[REDACTED_SECRET]", sanitized["output"])
+        self.assertEqual(counts, {"openai_api_key": 1})
+
     def test_sanitize_jsonl_event_rejects_non_dictionary_input(self) -> None:
         sanitizer = self.load_sanitizer("jsonl")
 
