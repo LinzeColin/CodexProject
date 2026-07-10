@@ -1,3 +1,16 @@
+## FORM-KMFA-V014-CASH-SOURCE-PRIVATE-DISAMBIGUATION-AND-REMAINING-VALUE-MATERIALIZATION-001
+
+- version: `0.1.4-cash-source-private-disambiguation-and-remaining-value-materialization`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: 在只读 raw 边界内以复合项目身份、应收交易、银行凭证平衡和整数分公式消歧现金来源，仅物化唯一可证明的剩余值。
+- rule: `phase_valid = candidates == 4 AND resolved == 1 AND unresolved == 3 AND new_cash_slots == 3 AND materialized_slots == 31 AND unresolved_cash_slots == 9 AND completed_comparisons == 9 AND zero_deltas == 2 AND nonzero_deltas == 7 AND incomplete_cash_comparisons == 3 AND external_wps_readable == 0 AND forced_zero == 0 AND raw_snapshot_exact_match == true AND decision == NO_GO`。
+- identity rule: 三位项目编号跨客户或年度可能重复，必须同时匹配私有别名和项目维度；客户名称相似或编号单独命中不能作为项目现金归属证据。
+- cash rule: 现金收款必须由项目应收贷方与同日同凭证银行借方精确一致证明；现金已付项目成本必须由项目成本净额与完整平衡银行付款凭证证明；金额只使用 integer cents。
+- missing rule: 无正向收款证据、成本付款链不完整或外部交叉核验不可用时必须保留未决，不得把空白、未命中或不可读来源写成零。
+- public_safety: 公开产物仅含聚合计数和 gate；项目名、编号、raw 文件名、字段、金额、交易、sheet/row 和差异明细只存在于 ignored private runtime。
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_cash_source_private_disambiguation_and_remaining_value_materialization.py --require-private-materialization`
+- evidence: `KMFA/stage_artifacts/V014_CASH_SOURCE_PRIVATE_DISAMBIGUATION_AND_REMAINING_VALUE_MATERIALIZATION/machine/cash_source_private_disambiguation_and_remaining_value_materialization_manifest.json`
+
 ## FORM-KMFA-V014-REAL-PROJECT-IDENTITY-PRIVATE-REBINDING-AND-PROCESSED-VALUE-MATERIALIZATION-001
 
 - version: `0.1.4-real-project-identity-private-rebinding-and-processed-value-materialization`

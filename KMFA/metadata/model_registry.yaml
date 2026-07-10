@@ -1,3 +1,18 @@
+kmfa_v014_cash_source_private_disambiguation_and_remaining_value_materialization:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-cash-source-private-disambiguation-and-remaining-value-materialization"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-CASH-SOURCE-PRIVATE-DISAMBIGUATION-AND-REMAINING-VALUE-MATERIALIZATION-001
+  parameter_refs:
+    - PARAM-KMFA-1678
+    - PARAM-KMFA-1679
+    - PARAM-KMFA-1680
+  evidence_dir: KMFA/stage_artifacts/V014_CASH_SOURCE_PRIVATE_DISAMBIGUATION_AND_REMAINING_VALUE_MATERIALIZATION
+  validator: KMFA/tools/check_v014_cash_source_private_disambiguation_and_remaining_value_materialization.py
+  scope: Private composite-identity cash-source disambiguation and integer-only remaining value materialization; missing evidence is never forced to zero; no Stage review, GitHub upload, app reinstall or business execution.
+
 kmfa_v014_real_project_identity_private_rebinding_and_processed_value_materialization:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-real-project-identity-private-rebinding-and-processed-value-materialization"
