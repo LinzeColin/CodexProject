@@ -2,26 +2,27 @@
 
 ## Current Run Override
 
-本轮只执行：`v0.2.4 overall re-review`。
+本轮只执行：`v0.2.4 final delivery`。
 
-- 唯一 Acceptance：`ACC-PFI-V024-OVERALL-REREVIEW`。
-- 本轮核验原 `v0.2.3-repair` Task Pack/Roadmap Stage 0-9、Phase R1、真实数据链路与最终交付边界。
-- 本轮不执行 GitHub upload。
-- 本轮不执行 app reinstall。
-- `product goal 未完成`；完成 re-review 后唯一下一 gate 为 `PFI-V024-FINAL-DELIVERY`。
-- 不启动 future version，不展开 sparse `MetaDatabase/`，不修改 `.venv`、`data`、`reports` 或真实财务数据。
+- 唯一 Acceptance：`ACC-PFI-V024-FINAL-DELIVERY`。
+- product commit：`17b9f59794740f927c5f531ba1aa334621a832e5`；evidence commit 必须为直接子提交。
+- 本轮只执行一次 GitHub main push，并在 push 后实时核验 remote/tracking/local SHA。
+- 本轮重装 Applications、Downloads、Desktop 三处 app entry，并执行 codesign/binding/dry-run/code-section parity。
+- runtime 验收只使用 `/private/tmp`，不修改 `.venv`、`data`、`reports` 或真实财务数据。
+- Tracked status 为 `pending_live_verifier`，`product goal` 为 pending；下一 gate 保持 `PFI-V024-FINAL-DELIVERY`，唯一 push 后 live verifier pass 即解析 completion postcondition，且不提交第二个 closeout commit；future version 未开始。
 
 Current validation:
 
 ```bash
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_overall_rereview.py -q
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_final_delivery.py -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v023_*.py -q
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_*.py -q
 /Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 -B scripts/lean_governance.py check-render --project PFI
 git diff --check -- PFI
+PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pfi_v02.stage_v024_final_delivery
 ```
 
-Current stop condition：只落账 re-review findings、修复和本地验证，停止在 `PFI-V024-FINAL-DELIVERY` 前。
+Current stop condition：push 前任一 proof 失败则停止且不 push；push 后 remote/app/local live verifier 必须 pass，不进入 future version。
 
 ## Historical Overall Review Run (Closed)
 

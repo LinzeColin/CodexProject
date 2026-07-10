@@ -1,7 +1,7 @@
 governance_spec_version: "1.0.0"
 project_id: "PFI"
 product_version: "v0.2.4 Repair Pack"
-product_version_status: "overall_rereview_pass_pending_final_delivery"
+product_version_status: "final_delivery_pending_live_verifier"
 version_file_value: "v0.2.1 前端优化"
 schema_version: "1.0.0"
 model_versions:
@@ -9,6 +9,6 @@ model_versions:
 parameter_profile_versions:
   pfi_root_contract: "pfi-v0.2-root-contract"
 data_snapshot_version: "not_applicable_contract_only"
-current_iteration: "ITER-20260710-PFI-V024-OVERALL-REREVIEW"
-current_phase: "V024-RR-P1"
-current_gate: "ACC-PFI-V024-OVERALL-REREVIEW-PASSED"
+current_iteration: "ITER-20260710-PFI-V024-FINAL-DELIVERY"
+current_phase: "V024-FD-P1"
+current_gate: "ACC-PFI-V024-FINAL-DELIVERY-PENDING-LIVE-VERIFIER"

@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v0.2.4 Final Delivery - 2026-07-11
+
+- Tracked transaction 状态为 `pending_live_verifier`；唯一 push 后 live verifier pass 才解析最终 completion postcondition，且不提交第二个 closeout commit。
+- 新增 `ACC-PFI-V024-FINAL-DELIVERY` fail-closed verifier，实时核验 GitHub remote main、tracking ref、local HEAD、clean worktree 与 product direct-parent。
+- product commit 冻结为 `17b9f59794740f927c5f531ba1aa334621a832e5`；evidence commit 作为其直接子提交，经当前 package 唯一一次 push 上传。
+- installer 使用固定 basename 与 `-Wl,-no_uuid`；三处 app entry 重装后 codesign/binding/dry-run 通过，signed hash 一致，Mach-O code-section hash 与 current-source compile 一致。
+- runtime shell 为内联 assets 增加 `data-pfi-source`；只读 current-code browser probe 对 app/localhost 两入口逐 filename 计算真实 inline content SHA-256，结果 `8 pass / 0 fail`，browser errors 为 0。
+- app acceptance `29 pass / 0 fail / 2 info`；final-delivery focused `11 passed`、v0.2.3 `200 passed`、v0.2.4 `242 passed`、renderer `0/0`、独立 reviewer `APPROVED`。
+- `.venv`、`data`、`reports` metadata hash 安装前后相同；future version、交易密码、券商订单、支付与自动真钱动作均未开始。
+
 ## v0.2.4 Overall Re-review - 2026-07-10
 
 - `ACC-PFI-V024-OVERALL-REREVIEW` 本地 gate pass；独立只读复核 `APPROVED`，Critical/Important/Minor 均为零。

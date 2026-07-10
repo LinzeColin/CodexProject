@@ -281,20 +281,23 @@ class TestV024OverallRereview(unittest.TestCase):
         self.assertTrue(any(issue["kind"] == "ui_value_mismatch" for issue in route_issues))
         self.assertTrue(any(issue["kind"] == "png_decode_error" for issue in png_issues))
 
-    def test_current_docs_stop_before_final_delivery_gate(self) -> None:
+    def test_historical_rereview_boundary_and_current_final_delivery_are_separate(self) -> None:
         run_contract = (ROOT / "docs" / "pfi_v024" / "RUN_CONTRACT.md").read_text(encoding="utf-8")
         rereview = (ROOT / "docs" / "pfi_v024" / "OVERALL_REREVIEW.md").read_text(encoding="utf-8")
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         handoff = (ROOT / "HANDOFF.md").read_text(encoding="utf-8")
 
-        for text in (run_contract, rereview, readme, handoff):
-            self.assertIn("v0.2.4 overall re-review", text)
-            self.assertIn("PFI-V024-FINAL-DELIVERY", text)
-            self.assertIn("product goal 未完成", text)
-
+        self.assertIn("v0.2.4 overall re-review", rereview)
+        self.assertIn("PFI-V024-FINAL-DELIVERY", rereview)
+        self.assertIn("product goal 未完成", rereview)
         self.assertNotIn("git push", rereview)
-        self.assertIn("本轮不执行 GitHub upload", run_contract)
-        self.assertIn("本轮不执行 app reinstall", run_contract)
+
+        for text in (run_contract, readme, handoff):
+            self.assertIn("v0.2.4 final delivery", text)
+            self.assertIn("ACC-PFI-V024-FINAL-DELIVERY", text)
+            self.assertIn("pending_live_verifier", text)
+            self.assertIn("PFI-V024-FINAL-DELIVERY", text)
+            self.assertIn("live verifier", text)
 
 
 if __name__ == "__main__":

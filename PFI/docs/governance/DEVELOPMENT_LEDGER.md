@@ -4,8 +4,8 @@ product_version: v0.2.4 Repair Pack
 model_count: 1
 formula_count: 1
 parameter_count: 23
-task_count: 9
-acceptance_count: 9
+task_count: 10
+acceptance_count: 10
 
 ## 2026-06-27
 
@@ -61,3 +61,13 @@ acceptance_count: 9
 - 当前范围：复核原 `v0.2.3-repair` Stage 0-9、Phase R1、真实数据和 final-delivery boundary；不执行 GitHub upload 或 app reinstall。
 - 当前证据：40/40 phase/whole-stage evidence unit 四件套完整，84 个 JSON 可解析，真实数据为 4 raw / 8815 processed / as of 2026-06-03。
 - 当前结果：overall re-review pass；focused `12 passed`、v0.2.3 `200 passed`、v0.2.4 `231 passed`、semantic/UI/data/renderer/reviewer gates 全部通过。`product goal 未完成`，唯一下一 gate 为 `PFI-V024-FINAL-DELIVERY`。
+
+## ITER-20260710-PFI-V024-FINAL-DELIVERY
+
+- Task / Acceptance：`PFI-V024-FINAL-DELIVERY-20260710` / `ACC-PFI-V024-FINAL-DELIVERY`。
+- Product freeze：`17b9f59794740f927c5f531ba1aa334621a832e5`；evidence commit 必须为其直接子提交并通过唯一一次 push 上传。
+- App：Applications、Downloads 与 Desktop 三入口 codesign/binding/dry-run 通过；signed hash 一致，Mach-O code-section hash 与 current-source deterministic compile 一致；lite acceptance `29/0/2`。
+- Runtime：只读 current-code probe `8/0`，app/localhost/disk 与 5 个 filename-bound inline assets 逐项一致，console/page/http errors 为 0。
+- Protected paths：`.venv`、`data`、`reports` 安装前后 metadata hash 相同，未修改。
+- 回归：final-delivery `11 passed`、v0.2.3 `200 passed`、v0.2.4 `242 passed`；独立只读复核 `APPROVED`。
+- 当前 tracked 状态：final-delivery transaction 已准备，等待唯一 push 后 live verifier；`product goal` 仍为 pending，下一 gate 保持 `PFI-V024-FINAL-DELIVERY`。verifier pass 即满足最终 postcondition，且不得再提交第二个 closeout commit；future version 未开始。
