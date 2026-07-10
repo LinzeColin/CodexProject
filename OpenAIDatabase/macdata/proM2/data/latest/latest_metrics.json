@@ -8,7 +8,7 @@
     "brew_formula_count": null,
     "brew_version": "未安装或不可用"
   },
-  "collected_at_local": "2026-07-10T01:11:53+10:00",
+  "collected_at_local": "2026-07-11T01:12:20+10:00",
   "collector_notes": [
     "本记录不采集 Time Machine。",
     "本记录不使用 iCloud。",
@@ -47,9 +47,9 @@
   },
   "memory": {
     "physical_memory_gb": 32.0,
-    "swap_used_gb": 1.87,
-    "swapusage_raw": "vm.swapusage: total = 3072.00M  used = 1910.12M  free = 1161.88M  (encrypted)",
-    "vm_stat_summary": "Mach Virtual Memory Statistics: (page size of 16384 bytes)\nPages free:                              100184.\nPages active:                            798337.\nPages inactive:                          723934.\nPages speculative:                       115057.\nPages throttled:                              0.\nPages wired down:                        141881.\nPages purgeable:                          23883.\n\"Translation faults\":                7097969291.\nPages copy-on-write:                  691022812.\nPages zero filled:                   2789893016.\nPages reactivated:                     81408712.\nPages purged:                          14388310.\nFile-backed pages:                       605439.\nAnonymous pages:                        1031889.\nPages stored in compressor:              533235.\nPages occupied by compressor:            162653.\nDecompressions:                        33473921."
+    "swap_used_gb": 1.76,
+    "swapusage_raw": "vm.swapusage: total = 3072.00M  used = 1798.12M  free = 1273.88M  (encrypted)",
+    "vm_stat_summary": "Mach Virtual Memory Statistics: (page size of 16384 bytes)\nPages free:                              288985.\nPages active:                            657378.\nPages inactive:                          693862.\nPages speculative:                        49896.\nPages throttled:                              0.\nPages wired down:                        157785.\nPages purgeable:                          31672.\n\"Translation faults\":                7980166717.\nPages copy-on-write:                  822581051.\nPages zero filled:                   3002501757.\nPages reactivated:                     84298551.\nPages purged:                          14940753.\nFile-backed pages:                       699433.\nAnonymous pages:                         701703.\nPages stored in compressor:              619964.\nPages occupied by compressor:            194270.\nDecompressions:                        34492230."
   },
   "owner_confirmations_summary": {
     "allow_github_upload": true,
@@ -74,7 +74,7 @@
     "storage_level": "绿色",
     "swap_level": "绿色"
   },
-  "run_id": "proM2-20260710-011146",
+  "run_id": "proM2-20260711-011214",
   "schema_version": "macdata-record-v1",
   "sizes": {
     "desktop_size": {
@@ -93,7 +93,7 @@
       "error": "",
       "exists": true,
       "path": "/Users/linzezhang/Documents",
-      "size_gb": 30.31
+      "size_gb": 37.97
     },
     "downloads_size": {
       "error": "",
@@ -115,14 +115,14 @@
     }
   },
   "storage": {
-    "root_free_gb": 547.0,
-    "root_percent_used": 41.0,
+    "root_free_gb": 532.6,
+    "root_percent_used": 42.5,
     "root_total_gb": 926.35,
-    "root_used_gb": 379.35
+    "root_used_gb": 393.76
   },
   "timezone_expected": "Australia/Sydney",
   "top_processes": {
-    "top_cpu_raw": "Processes: 706 total, 3 running, 703 sleeping, 3666 threads \n2026/07/10 01:11:46\nLoad Avg: 2.51, 2.20, 2.38 \nCPU usage: 10.52% user, 9.64% sys, 79.82% idle \nSharedLibs: 843M resident, 159M data, 135M linkedit.\nMemRegions: 417911 total, 9907M resident, 691M private, 4044M shared.\nPhysMem: 28G used (2217M wired, 2541M compressor), 3360M unused.\nVM: 305T vsize, 5430M framework vsize, 249729(0) swapins, 438750(0) swapouts.\nNetworks: packets: 156894169/162G in, 62299133/31G out.\nDisks: 67467171/2209G read, 65861523/2471G written.\n\nPID    COMMAND          %CPU MEM  \n99849  com.apple.ColorS 0.0  1793K\n99848  colorsync.userag 0.0  2961K\n99661  amfid            0.0  5313K\n99469  helpd            0.0  5777K",
-    "top_memory_raw": "Processes: 706 total, 3 running, 703 sleeping, 3664 threads \n2026/07/10 01:11:47\nLoad Avg: 2.51, 2.20, 2.38 \nCPU usage: 10.19% user, 8.35% sys, 81.44% idle \nSharedLibs: 843M resident, 159M data, 135M linkedit.\nMemRegions: 417899 total, 9908M resident, 691M private, 4044M shared.\nPhysMem: 28G used (2217M wired, 2541M compressor), 3358M unused.\nVM: 305T vsize, 5430M framework vsize, 249729(0) swapins, 438750(0) swapouts.\nNetworks: packets: 156894169/162G in, 62299133/31G out.\nDisks: 67467171/2209G read, 65861523/2471G written.\n\nPID    COMMAND          %CPU MEM  \n633    replayd          0.0  3046M\n26987  Codex (Renderer) 0.0  763M \n377    WindowServer     0.0  574M \n26986  Codex (Renderer) 0.0  482M "
+    "top_cpu_raw": "Processes: 714 total, 4 running, 710 sleeping, 3526 threads \n2026/07/11 01:12:14\nLoad Avg: 2.63, 2.64, 2.68 \nCPU usage: 12.0% user, 9.50% sys, 78.50% idle \nSharedLibs: 843M resident, 110M data, 94M linkedit.\nMemRegions: 216374 total, 7061M resident, 514M private, 2662M shared.\nPhysMem: 26G used (2475M wired, 3035M compressor), 5288M unused.\nVM: 288T vsize, 5430M framework vsize, 257255(0) swapins, 438750(0) swapouts.\nNetworks: packets: 167883266/174G in, 65123185/32G out.\nDisks: 72353759/2360G read, 68782107/2563G written.\n\nPID    COMMAND          %CPU MEM  \n99849  com.apple.ColorS 0.0  1809K\n99848  colorsync.userag 0.0  3345K\n99661  amfid            0.0  5345K\n99469  helpd            0.0  5809K",
+    "top_memory_raw": "Processes: 714 total, 3 running, 711 sleeping, 3528 threads \n2026/07/11 01:12:15\nLoad Avg: 2.63, 2.64, 2.68 \nCPU usage: 12.1% user, 8.65% sys, 79.32% idle \nSharedLibs: 843M resident, 110M data, 94M linkedit.\nMemRegions: 216387 total, 7062M resident, 514M private, 2662M shared.\nPhysMem: 26G used (2475M wired, 3035M compressor), 5285M unused.\nVM: 288T vsize, 5430M framework vsize, 257255(0) swapins, 438750(0) swapouts.\nNetworks: packets: 167883320/174G in, 65123234/32G out.\nDisks: 72353794/2360G read, 68782108/2563G written.\n\nPID    COMMAND          %CPU MEM  \n633    replayd          0.0  3057M\n87529  Codex (Renderer) 0.0  776M \n87523  codex            0.0  721M \n87914  Codex (Renderer) 0.0  633M "
   }
 }
