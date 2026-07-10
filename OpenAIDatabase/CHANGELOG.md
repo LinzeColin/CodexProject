@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 Remediation R5
+
+- Added one shared eight-step Owner Daily no-write runner for `atlasctl`, the local
+  loopback API and the rendered product workspace.
+- Added sequential continue-on-failure results and fixed allowlisted retry for only the
+  failed step; browser callers cannot provide argv, paths, environment or modes.
+- Added recursive rejection of unsafe `true` child fields, bounded output/results,
+  process-group cleanup and exact loopback Host/Origin matching.
+- Added a compact maintenance entry beside the exact six R3 cards, explicit Start,
+  human-first summary, eight ordered results, failed-step retry and dialog focus trap.
+- Added a self-building Playwright gate for partial failure, audit-only retry, three
+  viewports, static zero-POST fallback and source/runtime SHA-256 invariance.
+- Added committed npm/pnpm recovery metadata for Playwright `1.61.1`; fresh `npm ci`,
+  build and Owner Daily E2E pass without a machine-specific bundled browser path.
+- Preserved R3 command, R4 proposal apply/rollback, Home, Stage 7, sync, launcher and
+  privacy regressions; independent review closed all High/Medium findings.
+- Preserved the R5 boundary: no R6 work, parity/recovery final, merge/rebase, push, app
+  reinstall, Cloudflare deployment, canonical repo write or raw mutation.
+
 ## Unreleased - Memory Atlas v1.2 Remediation R4
 
 - Added a dedicated same-origin proposal action API beside the exact six R3 commands.
