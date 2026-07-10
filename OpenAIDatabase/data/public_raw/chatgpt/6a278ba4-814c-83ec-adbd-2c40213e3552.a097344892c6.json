@@ -1,0 +1,15 @@
+{
+  "content_sha256": "a097344892c66b44e45e3c293f50971b86fa449e625d4904de4d7154be8aed86",
+  "conversation_id": "6a278ba4-814c-83ec-adbd-2c40213e3552",
+  "created_at": "2026-06-09T03:43:26Z",
+  "credential_boundary": "credentials_not_transcript",
+  "message_count": 0,
+  "messages": [],
+  "redact_for_public_backup": true,
+  "redaction_counts": {},
+  "schema_version": "memory_atlas_public_raw_chatgpt.v1",
+  "source_id": "chatgpt",
+  "sync_mode": "official_export_fallback",
+  "title": "语音模式限制比较",
+  "updated_at": "2026-06-09T03:50:56Z"
+}

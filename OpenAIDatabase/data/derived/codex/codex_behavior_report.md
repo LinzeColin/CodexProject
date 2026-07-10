@@ -1,26 +1,26 @@
 # Codex 行为与记忆同步报告
 
-- 生成时间：2026-07-01T05:50:06Z
-- 数据来源：真实本地 Codex session 派生摘要，不包含原始全文和 plaintext secret。
-- 覆盖范围：2026-06-29 至 2026-07-01，16 个 session，11661 条消息，53580 次工具调用。
-- 统计口径：覆盖范围按最早 session 开始日到最新 session 更新日；热度日历仍按 session 最新活动日聚合（2026-06-29 至 2026-07-01）。
+- 生成时间：2026-07-10T21:34:21Z
+- 数据来源：真实本地 Codex session 派生摘要及 sanitized public transcripts，不包含 plaintext secret、本机绝对路径或非文本二进制正文。
+- 覆盖范围：2026-07-04 至 2026-07-10，128 个 session，17963 条消息，80075 次工具调用。
+- 统计口径：覆盖范围按最早 session 开始日到最新 session 更新日；热度日历仍按 session 最新活动日聚合（2026-07-04 至 2026-07-10）。
 
 ## 主要话题
-- Codex 本地数据 / agent 工作流：324
-- GitHub 备份 / durable state：289
-- 安全边界 / secret / 权限：283
-- 高质量交付 / 验证 / CI：273
-- Memory Atlas / 记忆可视化：30
-- 长期记忆数据库 / RAG：11
-- 前端交互 / Three.js / Dashboard：7
-- 金融 / trading / 风险边界：5
+- Codex 本地数据 / agent 工作流：1275
+- GitHub 备份 / durable state：1154
+- 高质量交付 / 验证 / CI：1125
+- 安全边界 / secret / 权限：1077
+- 长期记忆数据库 / RAG：348
+- 金融 / trading / 风险边界：190
+- Memory Atlas / 记忆可视化：73
+- 前端交互 / Three.js / Dashboard：53
 
 ## Memory（给 ChatGPT / Codex Personalization）
 ### 新增
 - 暂无
 
 ### 修改
-- OpenAIDatabase 是 durable memory source：GitHub 上的 OpenAIDatabase 应作为任意 agent 可读取的长期记忆、画像、偏好和历史上下文数据库。（证据 272）
+- 暂无
 
 ### 删除/降级建议
 - 暂无
@@ -30,7 +30,7 @@
 - 暂无
 
 ### 修改
-- GitHub secret 边界：GitHub 备份中不得提交 plaintext high-risk secrets；金融/交易 agent 使用 secret_ref 和受控本地 resolver。（证据 275）
+- 暂无
 
 ### 删除/降级建议
 - 暂无
@@ -40,5 +40,5 @@
 - 每周自动运行本脚本，更新 Codex 行为数据和 Memory Atlas 快照。
 
 ## 风险
-- 原始 Codex transcript 不进入 GitHub；需要深度原文分析时应由授权本地 agent 临时读取。
+- GitHub 仅包含 sanitized public transcripts；原始日志、凭据和被省略的二进制正文仍不可恢复。
 - plaintext secret 只允许存为 secret_ref 元数据，不提交到仓库。

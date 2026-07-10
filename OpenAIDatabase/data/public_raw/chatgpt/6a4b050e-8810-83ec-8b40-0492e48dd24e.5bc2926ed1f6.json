@@ -1,0 +1,28 @@
+{
+  "content_sha256": "5bc2926ed1f6b574b96070ce1c6c9936c6a0757c581f8b9cdbf9511a3e5641fe",
+  "conversation_id": "6a4b050e-8810-83ec-8b40-0492e48dd24e",
+  "created_at": "2026-07-06T01:29:51Z",
+  "credential_boundary": "credentials_not_transcript",
+  "message_count": 2,
+  "messages": [
+    {
+      "created_at": "2026-07-06T01:29:50Z",
+      "message_id": "0abd46a0-0100-4472-97f7-bbf7ad7e8cc7",
+      "role": "user",
+      "text": "你简短讲解一下casestudy"
+    },
+    {
+      "created_at": "2026-07-06T01:34:02Z",
+      "message_id": "632524f4-16c2-4598-8a29-285dae003c32",
+      "role": "assistant",
+      "text": "这个 **Case Study** 核心就是做一个 **NAB 2025 Annual Report vs. International <IR> Framework 的 gap analysis**。你们要假装给 **NAB senior executives** 做咨询报告，判断 NAB 现在的年报离“真正符合 integrated reporting”还差什么。fileciteturn0file5\n\n重点任务：\n\n1. **分析对象**：NAB 2025 Annual Report。  \n2. **比较标准**：International Integrated Reporting Framework 的 **19 个 mandatory / black-letter requirements**。  \n3. **最终产出**：一个 PowerPoint group report，最多 **20 页**，不含 cover sheet 和 references。  \n4. **每个 requirement 最好包含三件事**：  \n   - NAB 做得怎么样，最好用 scorecard / star rating。  \n   - 具体 gap 是什么，要有 NAB 年报证据。  \n   - 给 NAB 的改进建议，并用其他澳洲或国际公司的好披露例子支持。  \n5. **Presentation**：Week 9 课堂展示，最多 **12 分钟**，大概每人 2 分钟，所有组员都要讲。  \n6. **总分 35%**：group report 20%，presentation 15%。fileciteturn0file5\n\n评分最看重的是：你们是否真正理解 IR Framework，是否把 **19 个要求都覆盖到**，observations 是否具体且有证据，recommendations 是否和 gap 对应，examples 是否真正能支持建议；格式上要像给高管看的 professional / investor-grade deck，不能只是堆文字。fileciteturn0file6\n\n一句话理解：  \n**不是让你总结 NAB 年报，而是让你评估 NAB 年报“哪里符合 IR、哪里不够、怎么改得更像高质量 Integrated Report”。**"
+    }
+  ],
+  "redact_for_public_backup": true,
+  "redaction_counts": {},
+  "schema_version": "memory_atlas_public_raw_chatgpt.v1",
+  "source_id": "chatgpt",
+  "sync_mode": "official_export_fallback",
+  "title": "简短讲解Case Study",
+  "updated_at": "2026-07-06T01:34:02Z"
+}

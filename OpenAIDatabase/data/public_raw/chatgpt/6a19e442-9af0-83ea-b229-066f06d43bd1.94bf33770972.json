@@ -1,0 +1,42 @@
+{
+  "content_sha256": "94bf33770972fcc031efb7f2c27e5df0ad17fe04378af3ec55b1508f0329ac2a",
+  "conversation_id": "6a19e442-9af0-83ea-b229-066f06d43bd1",
+  "created_at": "2026-05-29T19:09:54Z",
+  "credential_boundary": "credentials_not_transcript",
+  "message_count": 4,
+  "messages": [
+    {
+      "created_at": "2026-05-29T19:09:54Z",
+      "message_id": "70a336c7-70b0-44b6-82df-a79a0a6b4fbf",
+      "role": "assistant",
+      "text": "我会按“可用于投资/交易跟踪”的口径来做：把 2026 年分成宏观数据、央行会议、财政/政策文件、企业财报窗口、期货/交易所休市与交割提醒几类，并优先采用官方日历来源。  \n我会先核验关键日期，再给你一个月度日历式总览，并附上可下载的 Excel 日历文件。"
+    },
+    {
+      "created_at": "2026-05-29T19:17:17Z",
+      "message_id": "c03a869b-fd34-4af6-b54e-b3befe117882",
+      "role": "assistant",
+      "text": "已整理成 **Excel 日历图表版**，包含 **365天逐日矩阵 + 263条重大财经事件库 + 12个月月历网格 + 来源清单**：\n\n[下载：2026_major_financial_events_calendar.xlsx](sandbo[REDACTED_LOCAL_PATH]\n\n## 文件内容\n\n| 工作表 | 内容 |\n|---|---|\n| **README** | 使用说明、口径说明、影响级别说明 |\n| **Daily_Calendar** | 2026全年逐日视图：每天的中美交易状态、CME期货状态、美国宏观、中国宏观/政策、央行会议、交易所/期货/衍生品事件 |\n| **Event_Library** | 263条事件明细：日期、地区、类别、影响级别、发布时间、交易意义、备注、来源URL |\n| **Monthly_Dashboard** | 每月事件数量、高影响事件数量、美国/中国/央行/期货事件统计 |\n| **Month_Grid** | 12个月传统日历网格，重大事件直接标在日期格中 |\n| **Sources** | 官方/权威来源URL清单 |\n\n## 覆盖的核心事件类型\n\n- **美国宏观**：非农、CPI、PPI、JOLTS、GDP、PCE/个人收支、零售销售、ISM制造业/服务业PMI。BLS非农和CPI采用官方2026发布日期，BEA采用GDP/PCE官方发布日程。citeturn779953view0turn181874view0turn181874view1  \n- **央行会议**：Fed FOMC、ECB、BOE、BOJ、RBA，其中FOMC和RBA采用官方日程。citeturn779953view1turn181874view3  \n- **中国宏观/政策**：国家统计局月度经济数据、CPI/PPI、PMI、LPR、两会、政府工作报告、已发布白皮书。国家统计局2026发布日历、CFETS LPR规则和国务院/新华社政策文本作为主要来源。citeturn241485search2turn346035view1turn324134search0turn324134search1  \n- **交易所/期货日历**：A股/中国期货休市、美国市场假期、CME假期时段、四巫日、月度期权到期、期货月末持仓/保证金/交割风险检查日。上交所2026休市安排和CME假期交易时段为主要来源。citeturn346035view2turn346035view0turn346035view3  \n\n## 重要口径说明\n\n白皮书不是像非农、CPI、FOMC那样全年固定预告的日程，所以表里只列入了**已发布/可确认的重大政策文本**，并在备注中标明需要滚动跟踪。\n\n期货部分没有穷尽每一个交易所、每一个品种、每一张合约的最后交易日和交割日；那会变成“合约规则数据库”。本表采用的是投资交易中更实用的口径：**交易状态、休市/恢复交易、节前夜盘风险、月末风控提醒、四巫日、期权到期、CME假期时段**。"
+    },
+    {
+      "created_at": "2026-05-29T19:11:20Z",
+      "message_id": "eaa34c74-e282-4674-823f-f42dc976b2c4",
+      "role": "assistant",
+      "text": "我已经核验到几个最关键的官方源：BLS 非农/CPI、Fed FOMC、BEA GDP/PCE、ISM PMI、RBA、上交所休市、CME 假期交易时间、国家统计局 2026 发布日程、LPR 历史/公布节奏。  \n接下来我会把这些日期结构化成“事件库 + 月度日历视图”，并标注高/中/低影响级别。"
+    },
+    {
+      "created_at": "2026-05-29T19:09:53Z",
+      "message_id": "fcd6d431-d96a-49cc-b03a-dea0d4c88d5e",
+      "role": "user",
+      "text": "用日历图表格式详细专业全面深度展示2026年全年每天每月重大财经事件，比如非农会议，白皮书发布，期货交易日等"
+    }
+  ],
+  "redact_for_public_backup": true,
+  "redaction_counts": {
+    "local_absolute_path": 1
+  },
+  "schema_version": "memory_atlas_public_raw_chatgpt.v1",
+  "source_id": "chatgpt",
+  "sync_mode": "official_export_fallback",
+  "title": "2026财经事件日历",
+  "updated_at": "2026-05-29T19:17:46Z"
+}

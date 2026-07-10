@@ -1,0 +1,76 @@
+{
+  "content_sha256": "700b731c8500f82fb8f1b2ebe0c1c58f00d8366a549ae6230356a2d7acc5b790",
+  "conversation_id": "6a4611fb-2a68-83ec-b9d6-813674e07ffb",
+  "created_at": "2026-07-02T07:23:40Z",
+  "credential_boundary": "credentials_not_transcript",
+  "message_count": 10,
+  "messages": [
+    {
+      "created_at": "2026-07-02T07:31:48Z",
+      "message_id": "0829768e-1561-43c0-9ad7-43e968a7e2b0",
+      "role": "assistant",
+      "text": "I’ll verify official Polymarket channels and App Store availability, then separate safe options for website, iPhone, and Mac without giving steps to bypass Australia restrictions."
+    },
+    {
+      "created_at": "2026-07-02T07:27:05Z",
+      "message_id": "0bf9888f-040c-4c73-98dc-e0dbd96f8a44",
+      "role": "assistant",
+      "text": "I found the key update: Polymarket lists Australia as blocked, and ACMA characterizes it as an unlicensed interactive gambling/betting service in Australia."
+    },
+    {
+      "created_at": "2026-07-02T07:23:38Z",
+      "message_id": "205e588e-255b-42b9-8ab6-af544eb9f331",
+      "role": "user",
+      "text": "怎么在澳洲在polymarket上交易\n为什么中国大陆都可以"
+    },
+    {
+      "created_at": "2026-07-02T07:31:32Z",
+      "message_id": "471ed420-94bc-49a4-a8ce-13de6e3411c6",
+      "role": "user",
+      "text": "polymarket官方网站 苹果手机软件 苹果电脑软件怎么下载"
+    },
+    {
+      "created_at": "2026-07-02T07:42:39Z",
+      "message_id": "4a219ac7-ba25-40d2-9492-bb76ed0679bb",
+      "role": "assistant",
+      "text": "## 结论\n\n**Polymtrade 不是 Polymarket 官方 App。**  \n它更像是一个“第三方 Polymarket 手机交易终端 / 前端工具”：把 Polymarket 的市场、行情、下单、钱包、AI 分析等功能包装成一个移动端 App。Apple App Store 上它的开发者显示为 **Polymtrade**，而官方 Polymarket App 的开发者显示为 **Polymarket**，这是最关键的区分点。citeturn901002view3turn755888view0\n\n**我的默认建议：在澳洲不要用它交易，也不要充值、导入私钥或连接主钱包。**  \n即使 Polymtrade 能打开或能下载，也不能绕开澳洲对 Polymarket 交易的合规限制；Polymarket 官方地理限制列表明确把 **Australia / AU** 列为 blocked，并禁止用 VPN 等方式绕过限制。citeturn340381view1\n\n---\n\n# 1. Polymtrade 到底是什么？\n\n| 项目 | 判断 |\n|---|---|\n| 类型 | 第三方 Polymarket 移动交易终端 |\n| 是否 Polymarket 官方 App | **不是官方 App** |\n| App Store 开发者 | **Polymtrade** |\n| 官方 Polymarket App 开发者 | **Polymarket** |\n| 核心功能 | 看 Polymarket 市场、实时价格、AI insights、下单、管理钱包、充值/提现 |\n| 资金形式 | 主要围绕 USDC / 加密钱包 |\n| 风险级别 | 对澳洲用户：高；对任何用户：钱包与第三方前端风险较高 |\n\nPolymtrade 自己的文档把它描述为“专门为 Polymarket 设计的移动交易终端”，主打移动端 UI、AI 分析、iOS/Android App、自托管交易，即用户连接自己的钱包并签署交易。citeturn901002view1\n\n---\n\n# 2. 它和 Polymarket 是什么关系？\n\n可以这样理解：\n\n```text\nPolymarket = 原始预测市场 / 交易平台\nPolymtrade = 第三方手机前端 / 交易终端 / 订单入口\n```\n\nPolymarket 官方确实有 **Builder Program**，允许第三方应用把用户订单路由到 Polymarket，并通过 builder code 做订单归因、gasless relayer、交易量统计等。官方文档说明，builder 可以是个人、团队或组织，只要它通过自己的系统让用户在 Polymarket 上交易，就属于这个模式。citeturn827653view0\n\n但这点很重要：  \n**“可能接入 Polymarket Builder Program” ≠ “Polymarket 官方出品” ≠ “一定安全” ≠ “在澳洲可以合法交易”。**\n\n---\n\n# 3. 为什么我不建议你用 Polymtrade？\n\n## 3.1 它不是官方 Polymarket App\n\nApple 上的 Polymtrade 页面显示：\n\n| App | 开发者 |\n|---|---|\n| Polymtrade: Polymarket Trading | Polymtrade |\n| Polymarket: Trade Soccer | Polymarket |\n\n这个差别足够说明：**Polymtrade 不是 Polymarket 官方客户端**。citeturn901002view3turn755888view0\n\n## 3.2 它处理的是钱包、USDC、私钥、充值提现\n\nPolymtrade 文档显示，它支持加资金、USDC、MoonPay、发送 crypto、导出钱包、导入私钥等功能；文档也明确说私钥就是对资金的完全访问权限。citeturn191982view2turn191982view0turn191982view1\n\n这意味着风险不是普通 App 风险，而是：\n\n| 风险 | 解释 |\n|---|---|\n| 钱包授权风险 | 你连接钱包后，错误授权可能影响资产 |\n| 私钥风险 | 私钥一旦泄露，资金可能不可追回 |\n| 充值不到账风险 | 第三方前端、链、桥、USDC 网络选择都可能出问题 |\n| 提现/地区封锁风险 | 地理限制触发后，账户或资金操作可能受阻 |\n| 合规风险 | 澳洲对 Polymarket 相关交易本身已经限制 |\n\n## 3.3 App Store 评价里已经有风险信号\n\n澳洲 App Store 页面上，Polymtrade 评分样本很少，且有用户评论抱怨地区限制、充值不到账等问题；开发者回复称他们是 Polymarket 的 official partners，并让用户联系 support。评论不是法律或技术定论，但足以作为风险信号。citeturn901002view3\n\n---\n\n# 4. 在澳洲能不能用？\n\n**不建议用 Polymtrade 交易。**\n\n原因很直接：Polymarket 官方限制页面列出 **AU / Australia** 为 blocked country，并说明禁止使用 VPN 或类似工具绕过地理限制。citeturn340381view1 澳洲 ACMA 也说明其可以要求 ISP 阻断非法在线博彩网站，并可对违反在线博彩规则的行为采取警告、处罚、转交执法、要求 ISP 阻断等措施。citeturn340381view2\n\n所以，不要把问题理解成：\n\n> “Polymtrade 能下载，所以我可以交易。”\n\n更准确的理解是：\n\n> “Polymtrade 是第三方入口；即使技术上可下载，也不改变澳洲对 Polymarket 交易的限制。”\n\n---\n\n# 5. 你现在应该怎么判断？\n\n## A. 如果你只是想研究 Polymarket\n\n可以做：\n\n- 看公开信息；\n- 不登录；\n- 不连接钱包；\n- 不充值；\n- 不导入私钥；\n- 不下单。\n\n## B. 如果你已经下载了 Polymtrade\n\n建议：\n\n1. 不要充值。\n2. 不要导入主钱包私钥。\n3. 不要用持有大额资产的钱包连接。\n4. 检查是否已经给过 token approval。\n5. 如果已经连接过钱包，用钱包工具检查并撤销可疑授权。\n6. 如果已经充值，先小额测试提现，不要继续加钱。\n\n## C. 如果你还没下载\n\n我的建议是：**别下。**  \n特别是你人在澳洲，这个 App 对你没有合规交易价值，只有钱包、资金、地区限制和合规风险。\n\n---\n\n## 最终判断\n\n**Polymtrade = 第三方 Polymarket 手机交易终端，不是官方 Polymarket App。**  \n它可能是 Polymarket 生态里的 builder / partner 类工具，但不是 Polymarket 官方客户端。对澳洲用户来说，最稳妥做法是：**不要通过 Polymtrade 连接钱包、充值或交易 Polymarket。**"
+    },
+    {
+      "created_at": "2026-07-02T07:28:36Z",
+      "message_id": "638fab64-0658-45a1-b2f9-fd1304ff9764",
+      "role": "assistant",
+      "text": "## 结论：人在澳洲，不应在 Polymarket 上交易；“中国大陆能用”不等于合法\n\n**当前合规结论是：你人在澳洲时，不能合规地在 Polymarket 下单交易。**  \n原因不是单纯“网站打不开”，而是 **Polymarket 已被澳洲 ACMA 认定为向澳洲用户提供未获许可的交互式博彩/投注服务，并被要求由澳洲 ISP 阻断**；Polymarket 官方自己的地理限制列表也把 **AU/Australia** 列为 blocked，并明确禁止用 VPN 等工具绕过地理限制。citeturn430735view0turn595501view0turn143019view0\n\n**下一步建议：**\n\n| 你的场景 | 推荐做法 | 不建议做法 |\n|---|---|---|\n| 你人在澳洲，只想看赔率/研究 | 只做观察、记录、模拟交易、研究市场概率 | 充值、下单、绕过地理限制 |\n| 你已有 Polymarket 资金/仓位 | 走官方支持渠道，申请合规关闭/提现；保存交易记录 | 用 VPN 强行登录、补 KYC 造假、继续加仓 |\n| 你想合规参与事件合约 | 等澳洲持牌/受监管产品，或只在你实际身处非限制司法辖区且当地合法时操作 | 把“技术能访问”当作“法律允许” |\n| 你问“中国大陆为什么可以” | 理解为“平台未把中国大陆列入其 blocked countries”，不代表中国大陆合法 | 认为“别人能用=没风险” |\n\n---\n\n## 1. 在澳洲为什么不能交易 Polymarket？\n\n### 1.1 澳洲监管把它看作“博彩/投注服务”，不是普通投资 App\n\nACMA 对 Polymarket 的调查结论是：Polymarket 是基于加密货币的 prediction market，用户可以对体育、政治、文化、经济指标、全球选举等事件买 Yes/No；ACMA 认为这构成 wagering service / gambling service。ACMA 还特别指出，Polymarket 没有澳洲州或领地颁发的相关许可，并且服务触达了“physically present in Australia”的客户，因此有 Australian-customer link。citeturn430735view0\n\n### 1.2 2025 年 8 月 13 日，ACMA 已把 Polymarket 加入阻断名单\n\nACMA 在 2025 年 8 月 13 日公告中列出最新被阻断的网站，包含 **Polymarket**；ACMA 说明其要求澳洲 ISP 阻断这些网站，是因为调查发现相关服务违反《Interactive Gambling Act 2001》。citeturn595501view0\n\n### 1.3 Polymarket 官方也把 Australia 列为 blocked\n\nPolymarket 官方 Help Center 的 Geographic Restrictions 页面写明，Polymarket 在部分国家和地区不可用，且严格禁止使用 VPN 或类似工具绕过地理限制；其 blocked countries 列表中明确包含 **AU — Australia**。citeturn143019view0\n\nPolymarket 开发者文档也写明：来自 blocked regions 的订单会被拒绝，列表中同样显示 **AU Australia — Blocked**。citeturn143019view1\n\n---\n\n## 2. 所以“怎么在澳洲交易”的合规答案是什么？\n\n**人在澳洲：不要交易。**  \n我也不建议、不会提供用 VPN、代理、远程服务器、假地址、假 KYC、绕过 geoblock 或规避平台/监管限制的操作步骤。\n\n你可以做的是下面几件合规替代动作：\n\n| 目标 | 可执行做法 | 验收标准 |\n|---|---|---|\n| 研究市场概率 | 记录公开赔率、成交量、盘口变化，自己做 paper trading | 不充值、不下单、不连接钱包交易 |\n| 管理已有风险 | 导出/保存历史记录、钱包流水、交易截图；联系 Polymarket Support 说明你在澳洲，询问合规关闭/提现路径 | 不新增仓位；有书面支持记录 |\n| 合规交易类似产品 | 查询澳洲是否有持牌交易所/金融市场/投注服务提供相关合规产品 | 能查到 AFSL、市场牌照或州/领地 wagering licence |\n| 税务与法律安全 | 保存所有链上交易、USDC 流水、盈亏记录，必要时问澳洲税务/法律专业人士 | 能解释资金来源、去向、收益性质 |\n\nACMA 也提醒，非法在线博彩服务即使看起来“正规”，也通常缺少澳洲持牌服务提供的消费者保护；如果平台扣留奖金、关闭服务或你无法登录，澳洲监管机构未必能帮你追回资金。citeturn595501view1\n\n---\n\n## 3. 如果人不在澳洲，可以吗？\n\n这要分清楚：**“澳洲居民”与“人在澳洲”不是同一个判断维度。**\n\nPolymarket 官方说明其地理权限基于 **physical location**，并举例称用户前往非受限地区时可以交易；但这仍然要满足当地法律、平台条款、KYC/AML、税务和资金来源要求。citeturn143019view0\n\n也就是说：\n\n| 情况 | 判断 |\n|---|---|\n| 人在澳洲，用任何方式下单 | 高风险，不建议；官方和澳洲监管均限制 |\n| 人在非受限国家/地区，且当地允许 | 可能可用，但仍需遵守当地法律和 Polymarket 条款 |\n| 澳洲税务居民在海外交易 | 不等于免税；仍可能有澳洲税务申报问题 |\n| 用 VPN 把自己“伪装成海外” | Polymarket 官方明确禁止；有封号、冻结、提现失败风险 |\n\n---\n\n## 4. 为什么“中国大陆都可以”？\n\n更准确地说：**截至我核验的 Polymarket 官方地理限制页面，中国大陆没有出现在 Polymarket 的 blocked countries 列表里；但这不代表在中国大陆合法。**\n\n### 4.1 平台没有封 ≠ 当地法律允许\n\nPolymarket 的地理限制逻辑主要包括两类：美国 OFAC 制裁地区，以及平台因特定监管、金融、博彩、AML/KYC 原因加入的额外限制地区。官方解释其限制是为了遵守国际制裁、本地金融监管、博彩/预测市场法律、反洗钱与 KYC 要求。citeturn143019view0turn143019view1\n\n所以，中国大陆“看起来能用”的原因可能是：\n\n| 原因 | 含义 |\n|---|---|\n| 中国大陆未列入 Polymarket 当前官方 blocked countries | 平台层面可能不主动拒单 |\n| 中国不是美国 OFAC 全面制裁司法辖区 | 不触发最硬的制裁型封锁 |\n| 中国监管方式不同 | 中国更多通过金融机构、支付通道、互联网接入、宣传推广、交易所服务、资金链治理来执法 |\n| 部分用户实际使用的是境外网络/钱包/账户环境 | 平台看到的未必是中国大陆真实合规状态 |\n\n### 4.2 但中国大陆的加密货币和网络赌博风险更高，不是更低\n\n中国 2021 年《关于进一步防范和处置虚拟货币交易炒作风险的通知》明确：虚拟货币不具有与法定货币等同的法律地位；法币与虚拟货币兑换、虚拟货币之间兑换、为虚拟货币交易提供信息中介和定价服务、虚拟货币衍生品交易等相关业务活动属于非法金融活动；境外虚拟货币交易所通过互联网向中国境内居民提供服务同样属于非法金融活动；参与虚拟货币投资交易活动存在法律风险，相关损失可能由参与者自行承担。citeturn796081view1\n\n2026 年中国证监会/人民银行相关答记者问也重申：境内对虚拟货币相关业务活动保持禁止性政策立场，在境内开展虚拟货币相关业务活动属于非法金融活动，境外单位和个人不得以任何形式非法向境内主体提供虚拟货币相关服务。citeturn796081view0\n\n另外，如果有人在中国大陆为这类平台做代理、推广、拉人、提供支付结算、技术维护或组织投注，风险会显著升级。最高人民法院关于网络赌博案件的解释性材料提到，建立赌博网站并接受投注、为赌博网站担任代理并接受投注等，可被认定为“开设赌场”相关行为；网络赌博的技术维护、推广、支付结算等环节也可能进入共犯认定范围。citeturn796081view2\n\n---\n\n## 5. 澳洲 vs 中国大陆：核心区别表\n\n| 维度 | 澳洲 | 中国大陆 |\n|---|---|---|\n| Polymarket 官方状态 | AU 明确 blocked | 官方 blocked countries 列表未列 CN；台湾为 close-only/受限 |\n| 本地监管动作 | ACMA 已调查、警告、要求 ISP 阻断 | 主要是加密货币业务禁止、跨境赌博/网络赌博治理、支付与资金链监管 |\n| 法律定性重点 | 未获许可的 interactive gambling / wagering service | 虚拟货币非法金融活动 + 可能涉及网络赌博/跨境赌博风险 |\n| 技术访问 | 澳洲 ISP 层面阻断 + 平台 geoblock | 技术可达性可能不稳定，且不等于合法 |\n| 用户主要风险 | 平台封锁、账户/资金损失、无消费者保护、税务记录问题 | 加密交易法律风险、资金链/外汇/AML风险、赌博相关风险、无民事保护 |\n| 结论 | 人在澳洲不应交易 | 能访问也不代表合法或安全 |\n\n---\n\n## 6. 最容易忽略的 5 个盲点\n\n**第一，Prediction market 在不同国家会被不同监管体系吸收。**  \n在美国某些语境下它可能被包装成 event contracts / derivatives；在澳洲，ACMA 已把 Polymarket 这类服务按 gambling / wagering 处理。监管分类不同，结论完全不同。\n\n**第二，Polymarket 的 blocked list 不是“全球合法清单”。**  \n它只是平台自身为了合规风控设置的访问/下单限制。某国家没被 Polymarket 封，不等于该国允许它运营，也不等于用户没有法律风险。\n\n**第三，USDC/Polygon/钱包路径会引入第二层风险。**  \n即使不谈 Polymarket，本身使用稳定币、链上钱包、交易所出入金、跨境资金流动，都可能触发税务、反洗钱、资金来源解释、交易记录保存问题。\n\n**第四，最大风险不一定是“被抓”，而是“钱拿不回来”。**  \nACMA 明确提醒，非法在线博彩服务可能没有澳洲消费者保护；如果平台拒绝提现、扣留奖金、关闭账户或网站被阻断，你的追索能力会很弱。citeturn595501view1\n\n**第五，推广、带单、做教程、拉群，比个人围观风险高很多。**  \n无论在澳洲还是中国大陆，面向他人推广、导流、组织、代理、支付结算、技术支持，风险都比个人研究高得多。\n\n---\n\n## 默认推荐方案\n\n**不要在澳洲交易 Polymarket。**  \n你可以把 Polymarket 当作一个“信息源/赔率信号”研究，但不要在澳洲本地充值、下单或绕过限制。若你已经有仓位，优先处理退出、记录和合规证明；若你想长期做 prediction market，把需求转成“合规事件合约/概率市场研究”，等待澳洲持牌方案或只在明确允许的司法辖区操作。"
+    },
+    {
+      "created_at": "2026-07-02T07:39:05Z",
+      "message_id": "76b82085-d1e0-4bf3-9faa-d57534837acb",
+      "role": "assistant",
+      "text": "I’ll verify whether Polymtrade is official, who develops it, and how it relates to Polymarket, then give a concise safety and usage judgment."
+    },
+    {
+      "created_at": "2026-07-02T07:34:44Z",
+      "message_id": "99396a11-fc44-40d3-b5c7-060b20587506",
+      "role": "assistant",
+      "text": "## 结论：官方入口只有两类，澳洲不应交易\n\n| 设备 | 官方入口 | 是否推荐下载/使用 | 关键判断 |\n|---|---|---:|---|\n| 官网 / 网页 | **Polymarket.com** | 只建议用于了解/查看；人在澳洲不要交易 | Polymarket 官方说明：网页给国际用户使用，但受 restricted countries 例外限制；澳洲在官方 blocked list 内。citeturn494906view0turn885598view0 |\n| iPhone | **App Store：Polymarket: Trade Soccer，Developer = Polymarket** | 在澳洲不建议下载后登录交易 | 官方 Help Center 说明 iOS App 是 **Polymarket US app**，面向美国用户，且和 Polymarket.com 是独立产品、账户不互通。citeturn494906view0turn771198view1 |\n| MacBook / iMac | **没有我能核验到的官方 Mac 原生 App** | 用浏览器打开官网；可做 Safari “添加到程序坞”网页 App | Apple 页面显示该 App “Only for iPhone / Not verified for macOS”；官方 Help Center 也只列 Web、US iOS App、Android Coming Soon，没有列 Mac App。citeturn771198view1turn494906view0 |\n\n---\n\n# 1. 官方网站怎么打开？\n\n官方主页是 **Polymarket.com**，官方标题为 “The World's Largest Prediction Market”。citeturn771198view0\n\n但你人在澳洲时要注意：Polymarket 官方地理限制页面列明 **AU / Australia** 是完全限制国家，并且明确禁止使用 VPN 或类似工具绕过地理限制。citeturn885598view0 另外，澳洲 ACMA 已对 Polymarket 发出正式警告，并说明没有澳洲许可提供 Polymarket 服务；ACMA 后续也把 Polymarket 列入被阻断的非法在线博彩网站名单。citeturn487204search1turn487204search3\n\n**可做：**打开官网看公开市场信息、学习界面。  \n**不要做：**在澳洲充值、下单、交易，或用 VPN/代理绕过限制。\n\n---\n\n# 2. iPhone 官方 App 怎么下载？\n\n官方 iPhone App 的核验标准是：\n\n| 核验项 | 正确结果 |\n|---|---|\n| App 名称 | **Polymarket: Trade Soccer** |\n| 开发者 | **Polymarket** |\n| 平台 | **Only for iPhone** |\n| 年龄评级 | **18+** |\n| Mac 状态 | **Not verified for macOS** |\n\nApple 官方 App Store 页面显示该 App 名称为 **Polymarket: Trade Soccer**，开发者为 **Polymarket**，并标注 “Only for iPhone / Not verified for macOS”。citeturn771198view1\n\n下载方式：\n\n1. 打开 iPhone 的 **App Store**。  \n2. 搜索：**Polymarket: Trade Soccer**。  \n3. 只认 **Developer = Polymarket**。  \n4. 不要下载开发者不是 Polymarket 的仿冒、工具类、分析类 App。澳洲区 App Store 能看到一些名字包含 Polymarket 的第三方应用，例如 **Polymtrade: Polymarket Trading**，其开发者是 **Polymtrade**，不是 Polymarket。citeturn487471search1  \n5. 即使你能下载，人在澳洲也不应登录后交易；官方 Help Center 明确说 iOS App 是 **US users only** 的独立产品。citeturn494906view0\n\n---\n\n# 3. MacBook / iMac 官方软件怎么下载？\n\n**目前不要找 Polymarket Mac 安装包。**我没有核验到官方 Mac 原生客户端；Apple 页面显示官方 iPhone App “Not verified for macOS”，Polymarket 官方 Help Center 也只说明 Web 版、US iOS App、Android Coming Soon，没有列 Mac App。citeturn771198view1turn494906view0\n\nMac 上的安全用法是：\n\n| 方式 | 操作 | 适合场景 |\n|---|---|---|\n| 浏览器访问 | 用 Safari / Chrome 打开 Polymarket.com | 查看公开信息、研究市场 |\n| Safari 网页 App | Safari 打开网页 → 菜单栏 **File > Add to Dock**，或点分享按钮 → **Add to Dock** | 像桌面 App 一样固定到 Dock |\n| 不建议 | 下载第三方 DMG、IPA、TestFlight、Telegram/GitHub 安装包 | 容易遇到钓鱼、盗钱包、盗账户 |\n\nApple 官方说明，macOS Sonoma 14 或更高版本可以在 Safari 中把网页通过 **File > Add to Dock** 保存成类似 App 的网页应用。citeturn833181search4\n\n---\n\n# 4. 你应该避开的下载源\n\n| 下载源 | 风险 |\n|---|---|\n| “Polymarket Mac.dmg” | 未核验官方来源，可能盗取钱包或浏览器 Cookie |\n| “Polymarket iOS IPA” | 可能是改包、企业签名、钓鱼 App |\n| Telegram / Discord 私发安装包 | 高风险 |\n| 第三方 “Polymarket Trading Terminal” | 不一定是官方；可能要求你授权钱包或输入账户信息 |\n| VPN 教程 + 下载教程 | 在澳洲违反平台地理限制，可能导致账号/资金风险 |\n\n---\n\n## 默认推荐方案\n\n**iPhone：只从 Apple App Store 下载，核对 Developer = Polymarket；人在澳洲不要用于交易。**  \n**Mac：不要下载所谓 Mac 客户端，用官网网页或 Safari “Add to Dock”。**  \n**澳洲场景：只观察/研究，不充值、不下单、不绕过地区限制。**"
+    },
+    {
+      "created_at": "2026-07-02T07:23:55Z",
+      "message_id": "a5f6717c-eb24-48c6-8e78-2db87aa72e4f",
+      "role": "assistant",
+      "text": "I’ll separate practical access from legal permissibility, checking Polymarket’s own terms, Australian regulatory boundaries, crypto funding mechanics, and why mainland China access doesn’t necessarily imply allowed trading."
+    },
+    {
+      "created_at": "2026-07-02T07:38:50Z",
+      "message_id": "feb1bf7c-8843-45c0-857a-48638bc615bf",
+      "role": "user",
+      "text": "    Polymtrade是什么"
+    }
+  ],
+  "redact_for_public_backup": true,
+  "redaction_counts": {},
+  "schema_version": "memory_atlas_public_raw_chatgpt.v1",
+  "source_id": "chatgpt",
+  "sync_mode": "official_export_fallback",
+  "title": "澳洲polymarket交易问题",
+  "updated_at": "2026-07-02T07:42:41Z"
+}
