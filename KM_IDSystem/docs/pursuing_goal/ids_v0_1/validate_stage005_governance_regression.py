@@ -217,8 +217,10 @@ REQUIRED_FILES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_PHASE2_DATABASE_QUALITY_CONSTRAINTS_SLICE.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_PHASE3_SCENARIO_VALIDATION.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_PHASE4_CLOSEOUT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_STAGE_REVIEW.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_quality_constraints/stage036_database_quality_constraints_index.json",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_quality_constraints/002_database_quality_constraints.sql",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_quality_constraints/stage036_quality_profile_queries.json",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_recovery_smoke/stage035_database_recovery_smoke_index.json",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/data_retention_table/stage034_data_retention_table_index.json",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_size_guard/stage033_database_size_guard_index.json",
@@ -255,6 +257,7 @@ REQUIRED_FILES = (
     "KM_IDSystem/scripts/check_data_retention_table.py",
     "KM_IDSystem/scripts/check_database_recovery_smoke.py",
     "KM_IDSystem/scripts/check_database_quality_constraints.py",
+    "KM_IDSystem/scripts/run_stage036_migration_section.py",
     "KM_IDSystem/scripts/check_database_connection_pool.py",
     "KM_IDSystem/scripts/check_original_raw_identity.py",
     "KM_IDSystem/scripts/check_file_fingerprint.py",
@@ -382,6 +385,7 @@ REQUIRED_EVENT_IDS = (
     "EVT-IDS-V0_1-STAGE036-P2-20260710-001",
     "EVT-IDS-V0_1-STAGE036-P3-20260710-001",
     "EVT-IDS-V0_1-STAGE036-P4-20260710-001",
+    "EVT-IDS-V0_1-STAGE036-REVIEW-20260711-001",
 )
 
 FORBIDDEN_RUNTIME_PREFIXES = (
@@ -394,6 +398,16 @@ FORBIDDEN_RUNTIME_PREFIXES = (
 )
 
 ALLOWED_CHANGED_PATHS = {
+    "KM_IDSystem/CHANGELOG.md",
+    "KM_IDSystem/docs/HANDOFF.md",
+    "KM_IDSystem/docs/governance/DEVELOPMENT_LEDGER.md",
+    "KM_IDSystem/docs/governance/DELIVERY_PLAN.md",
+    "KM_IDSystem/docs/governance/OWNER_STATUS.md",
+    "KM_IDSystem/docs/governance/STATUS.md",
+    "KM_IDSystem/docs/governance/TRACEABILITY_MATRIX.csv",
+    "KM_IDSystem/docs/governance/VERSION_MATRIX.yaml",
+    "KM_IDSystem/docs/governance/delivery_tasks.yaml",
+    "KM_IDSystem/docs/governance/development_events.jsonl",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_GATE.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH011_020_UPLOAD_LOCK.yaml",
@@ -423,6 +437,7 @@ ALLOWED_CHANGED_PATHS = {
     "KM_IDSystem/scripts/check_database_connection_pool.py",
     "KM_IDSystem/scripts/check_database_recovery_smoke.py",
     "KM_IDSystem/scripts/check_database_quality_constraints.py",
+    "KM_IDSystem/scripts/run_stage036_migration_section.py",
     "KM_IDSystem/scripts/build_app_bundle.sh",
     "KM_IDSystem/scripts/diagnose_app_entry.sh",
     "KM_IDSystem/scripts/install_app_entries.sh",
@@ -626,88 +641,220 @@ def _note_assignment_values(notes: str, field: str) -> list[str]:
 
 
 def evaluate_required_event_semantics(events: list[dict]) -> list[str]:
-    event_id = "EVT-IDS-V0_1-STAGE036-P4-20260710-001"
-    matching = [
-        event
-        for event in events
-        if isinstance(event, dict) and event.get("event_id") == event_id
-    ]
-    if len(matching) != 1:
-        return [f"{event_id}: expected exactly one event"]
+    expected_event_keys = {
+        "schema_version",
+        "event_id",
+        "project_id",
+        "occurred_at",
+        "event_type",
+        "summary",
+        "fact_level",
+        "task_id",
+        "acceptance_ids",
+        "changed_files",
+        "evidence_refs",
+        "actor_role",
+        "notes",
+    }
+    event_specs = {
+        "EVT-IDS-V0_1-STAGE036-P1-20260710-001": {
+            "event_type": "stage_boundary",
+            "task_id": "IDS-V0_1-STAGE036-P1",
+            "required_changed_files": {
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_ENTRY_CONTRACT.md",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_PHASE1_SCOPE_BOUNDARY.md",
+            },
+            "required_refs": {
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_ENTRY_CONTRACT.md",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_PHASE1_SCOPE_BOUNDARY.md",
+            },
+        },
+        "EVT-IDS-V0_1-STAGE036-P2-20260710-001": {
+            "event_type": "stage_slice",
+            "task_id": "IDS-V0_1-STAGE036-P2",
+            "required_changed_files": {
+                "KM_IDSystem/scripts/check_database_quality_constraints.py",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_quality_constraints/stage036_database_quality_constraints_index.json",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_quality_constraints/002_database_quality_constraints.sql",
+            },
+            "required_refs": {
+                "KM_IDSystem/scripts/check_database_quality_constraints.py",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_quality_constraints/stage036_database_quality_constraints_index.json",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_quality_constraints/002_database_quality_constraints.sql",
+            },
+        },
+        "EVT-IDS-V0_1-STAGE036-P3-20260710-001": {
+            "event_type": "validation",
+            "task_id": "IDS-V0_1-STAGE036-P3",
+            "required_changed_files": {
+                "KM_IDSystem/scripts/check_database_quality_constraints.py",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_PHASE3_SCENARIO_VALIDATION.md",
+            },
+            "required_refs": {
+                "KM_IDSystem/scripts/check_database_quality_constraints.py#build_stage036_scenario_validation_report",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_PHASE3_SCENARIO_VALIDATION.md",
+            },
+        },
+        "EVT-IDS-V0_1-STAGE036-P4-20260710-001": {
+            "event_type": "stage_closeout",
+            "task_id": "IDS-V0_1-STAGE036-P4",
+            "required_changed_files": {
+                "KM_IDSystem/scripts/check_database_quality_constraints.py",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_PHASE4_CLOSEOUT.md",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml",
+                "KM_IDSystem/docs/governance/roadmap.yaml",
+                "KM_IDSystem/docs/governance/events.jsonl",
+            },
+            "required_refs": {
+                "KM_IDSystem/scripts/check_database_quality_constraints.py#build_stage036_delivery_report",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_PHASE4_CLOSEOUT.md",
+            },
+            "next_gate": "IDS-STAGE036-REVIEW-GATE",
+            "exact_runtime_results_required": True,
+        },
+        "EVT-IDS-V0_1-STAGE036-REVIEW-20260711-001": {
+            "event_type": "stage_review",
+            "task_id": "IDS-V0_1-STAGE036-REVIEW",
+            "required_changed_files": {
+                "KM_IDSystem/scripts/check_database_quality_constraints.py",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_STAGE_REVIEW.md",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml",
+                "KM_IDSystem/docs/governance/roadmap.yaml",
+                "KM_IDSystem/docs/governance/events.jsonl",
+            },
+            "required_refs": {
+                "KM_IDSystem/scripts/check_database_quality_constraints.py#build_stage036_delivery_report",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_STAGE_REVIEW.md",
+            },
+            "next_gate": "IDS-STAGE037-P1-GATE",
+            "exact_runtime_results_required": True,
+        },
+    }
 
-    event = matching[0]
     errors: list[str] = []
-    if event.get("event_type") != "stage_closeout":
-        errors.append(f"{event_id}: event_type must be stage_closeout")
-    if event.get("task_id") != "IDS-V0_1-STAGE036-P4":
-        errors.append(f"{event_id}: task_id must bind STAGE036-P4")
-    if event.get("acceptance_ids") != ["ACC-STAGE-036"]:
-        errors.append(f"{event_id}: acceptance_ids must bind ACC-STAGE-036")
-
-    changed_files = event.get("changed_files")
-    changed_files = (
-        set(changed_files)
-        if isinstance(changed_files, list)
-        and all(isinstance(path, str) for path in changed_files)
-        else set()
-    )
-    required_changed_files = {
-        "KM_IDSystem/scripts/check_database_quality_constraints.py",
-        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_PHASE4_CLOSEOUT.md",
-        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml",
-        "KM_IDSystem/docs/governance/roadmap.yaml",
-        "KM_IDSystem/docs/governance/events.jsonl",
-    }
-    if not required_changed_files.issubset(changed_files):
-        errors.append(f"{event_id}: required changed_files are incomplete")
-
-    evidence_refs = event.get("evidence_refs")
-    evidence_refs = evidence_refs if isinstance(evidence_refs, list) else []
-    refs = {
-        item.get("ref")
-        for item in evidence_refs
-        if isinstance(item, dict) and isinstance(item.get("ref"), str)
-    }
-    required_refs = {
-        "KM_IDSystem/scripts/check_database_quality_constraints.py#build_stage036_delivery_report",
-        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_PHASE4_CLOSEOUT.md",
-    }
-    if not required_refs.issubset(refs):
-        errors.append(f"{event_id}: required evidence_refs are incomplete")
-
-    notes = event.get("notes")
-    notes = notes if isinstance(notes, str) else ""
-    exact_runtime_results = {
-        field: [
-            value.upper()
-            for value in _note_assignment_values(notes, field)
+    recognized_events = 0
+    for event_id, spec in event_specs.items():
+        matching = [
+            event
+            for event in events
+            if isinstance(event, dict) and event.get("event_id") == event_id
         ]
-        for field in (
-            "live_schema_diff_result",
-            "live_migration_result",
-            "live_constraint_validation_result",
-            "live_recovery_smoke_result",
+        if not matching:
+            continue
+        recognized_events += 1
+        if len(matching) != 1:
+            errors.append(f"{event_id}: expected exactly one event")
+            continue
+
+        event = matching[0]
+        if set(event) != expected_event_keys:
+            errors.append(f"{event_id}: top-level event keys must be exact")
+        if (
+            event.get("schema_version") != "codexproject.event.v1"
+            or event.get("project_id") != "KM_IDSystem"
+            or event.get("fact_level") != "VERIFIED"
+            or event.get("actor_role") != "Codex"
+            or not isinstance(event.get("occurred_at"), str)
+            or not isinstance(event.get("summary"), str)
+        ):
+            errors.append(f"{event_id}: event identity fields are invalid")
+        if event.get("event_type") != spec["event_type"]:
+            errors.append(
+                f"{event_id}: event_type must be {spec['event_type']}"
+            )
+        if event.get("task_id") != spec["task_id"]:
+            errors.append(f"{event_id}: task_id mismatch")
+        if event.get("acceptance_ids") != ["ACC-STAGE-036"]:
+            errors.append(f"{event_id}: acceptance_ids must bind ACC-STAGE-036")
+
+        changed_files = event.get("changed_files")
+        changed_files = (
+            set(changed_files)
+            if isinstance(changed_files, list)
+            and all(isinstance(path, str) for path in changed_files)
+            else set()
         )
-    }
-    stage_gate_tokens = [
-        value.upper()
-        for value in re.findall(
-            r"\bIDS-STAGE\d+-(?:P\d+|REVIEW)-GATE\b", notes, re.I
-        )
-    ]
-    next_gate_values = [
-        value.upper() for value in _note_assignment_values(notes, "next_gate")
-    ]
-    push_values = [
-        value.lower() for value in _note_assignment_values(notes, "push_allowed")
-    ]
-    if (
-        not all(values == ["NOT_EXECUTED"] for values in exact_runtime_results.values())
-        or stage_gate_tokens != ["IDS-STAGE036-REVIEW-GATE"]
-        or next_gate_values != ["IDS-STAGE036-REVIEW-GATE"]
-        or push_values != ["false"]
-    ):
-        errors.append(f"{event_id}: next-gate or no-live/no-upload notes are incomplete")
+        if not spec["required_changed_files"].issubset(changed_files):
+            errors.append(f"{event_id}: required changed_files are incomplete")
+
+        evidence_refs = event.get("evidence_refs")
+        evidence_refs = evidence_refs if isinstance(evidence_refs, list) else []
+        refs = {
+            item.get("ref")
+            for item in evidence_refs
+            if isinstance(item, dict) and isinstance(item.get("ref"), str)
+        }
+        if not spec["required_refs"].issubset(refs):
+            errors.append(f"{event_id}: required evidence_refs are incomplete")
+
+        notes = event.get("notes")
+        notes = notes if isinstance(notes, str) else ""
+        push_values = [
+            value.lower()
+            for value in _note_assignment_values(notes, "push_allowed")
+        ]
+        if push_values != ["false"]:
+            errors.append(f"{event_id}: push_allowed must be exactly false")
+
+        if spec.get("exact_runtime_results_required"):
+            exact_runtime_results = {
+                field: [
+                    value.upper()
+                    for value in _note_assignment_values(notes, field)
+                ]
+                for field in (
+                    "live_schema_diff_result",
+                    "live_migration_result",
+                    "live_constraint_validation_result",
+                    "live_recovery_smoke_result",
+                )
+            }
+            stage_gate_tokens = [
+                value.upper()
+                for value in re.findall(
+                    r"\bIDS-STAGE\d+-(?:P\d+|REVIEW)-GATE\b",
+                    notes,
+                    re.I,
+                )
+            ]
+            next_gate_values = [
+                value.upper()
+                for value in _note_assignment_values(notes, "next_gate")
+            ]
+            expected_gate = spec["next_gate"]
+            if (
+                not all(
+                    values == ["NOT_EXECUTED"]
+                    for values in exact_runtime_results.values()
+                )
+                or stage_gate_tokens != [expected_gate]
+                or next_gate_values != [expected_gate]
+            ):
+                errors.append(
+                    f"{event_id}: next-gate or no-live notes are incomplete"
+                )
+        else:
+            stage_gate_tokens = re.findall(
+                r"\bIDS-STAGE\d+-(?:P\d+|REVIEW)-GATE\b", notes, re.I
+            )
+            next_gate_values = _note_assignment_values(notes, "next_gate")
+            unexpected_live_values = [
+                value
+                for field in (
+                    "live_schema_diff_result",
+                    "live_migration_result",
+                    "live_constraint_validation_result",
+                    "live_recovery_smoke_result",
+                )
+                for value in _note_assignment_values(notes, field)
+            ]
+            if stage_gate_tokens or next_gate_values or unexpected_live_values:
+                errors.append(
+                    f"{event_id}: phase event must not claim gate or live results"
+                )
+
+    if recognized_events == 0:
+        errors.append("STAGE036 required event: expected exactly one recognized event")
     return errors
 
 
@@ -2038,6 +2185,22 @@ def evaluate_phase_state(
         and 'current_task_id: "IDS-V0_1-STAGE036-P4"' in roadmap_text
         and 'next_gate_id: "IDS-STAGE036-REVIEW-GATE"' in roadmap_text
     )
+    stage036_reviewed_local = (
+        'batch_id: "IDS-V0_1-BATCH-031-040"' in batch_text
+        and 'status: "stage036_completed_reviewed_local"' in batch_text
+        and 'status: "completed_reviewed_local"' in batch_text
+        and 'review_status: "passed"' in batch_text
+        and 'next_stage: "STAGE-037"' in batch_text
+        and 'next_gate: "IDS-STAGE037-P1-GATE"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE036-REVIEW"' in batch_text
+        and 'acceptance_status: "reviewed_local_passed"' in batch_text
+        and 'next_allowed_task_id: "IDS-V0_1-STAGE037-P1"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE036"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE036-REVIEW"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE036-REVIEW"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE037-P1-GATE"' in roadmap_text
+    )
     batch_terminal_state = batch_upload_gate_active or batch_uploaded_to_main
     later_stage_state = (
         batch_terminal_state
@@ -2155,6 +2318,7 @@ def evaluate_phase_state(
         or stage036_phase2_active
         or stage036_phase3_active
         or stage036_phase4_closeout
+        or stage036_reviewed_local
     )
     phase2_completed = '      - "Phase 2"' in batch_text
     stage005_active_or_complete = (
