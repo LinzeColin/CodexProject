@@ -18,6 +18,7 @@ from typing import Any
 REPO_ROOT = Path(__file__).resolve().parents[1]
 COMMAND_BRIDGE_PATH = REPO_ROOT / "scripts" / "memory_atlas_command_bridge.py"
 RUNTIME_SERVER_PATH = REPO_ROOT / "scripts" / "memory_atlas_runtime_server.py"
+PROPOSAL_WORKFLOW_PATH = REPO_ROOT / "scripts" / "memory_atlas_proposal_workflow.py"
 WEEKLY_REPORT_PATH = REPO_ROOT / "scripts" / "build_memory_atlas_weekly_report.py"
 COMMAND_VALIDATOR_PATH = REPO_ROOT / "apps/memory-atlas/scripts/validate_memory_atlas_v1_2_command_workflows.cjs"
 
@@ -126,6 +127,7 @@ class RecordingRunner:
 class MemoryAtlasCommandBridgeTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
+        cls.proposal_module = load_module("memory_atlas_proposal_workflow", PROPOSAL_WORKFLOW_PATH)
         cls.bridge_module = load_module("memory_atlas_command_bridge_test", COMMAND_BRIDGE_PATH)
 
     def test_registry_is_exact_and_rejects_command_injection(self) -> None:
@@ -398,6 +400,104 @@ class MemoryAtlasCommandBridgeTests(unittest.TestCase):
             self.assertFalse(worker.is_alive())
             self.assertEqual(len(runner.calls), 1)
 
+    def test_proposal_review_uses_the_existing_read_command_without_expanding_registry(self) -> None:
+        class FakeProposalWorkflow:
+            def review(self) -> dict[str, Any]:
+                return {
+                    "schema_version": "memory_atlas_proposal_review.v1_2_r4",
+                    "status": "success",
+                    "proposals": [
+                        {
+                            "proposal_id": "proposal_fixture",
+                            "apply_ready": True,
+                            "target_files": ["config/fixture.json"],
+                            "review_token": "fixture-token",
+                        }
+                    ],
+                    "summary": {"proposal_count": 1, "apply_ready_count": 1},
+                }
+
+            def approve_and_apply(self, **_kwargs: Any) -> dict[str, Any]:
+                raise AssertionError("review command must not apply")
+
+            def rollback(self, **_kwargs: Any) -> dict[str, Any]:
+                raise AssertionError("review command must not rollback")
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            app_support, source_root, runtime_dir = make_installed_workspace(root)
+            bridge = self.bridge_module.CommandBridge(
+                self.bridge_module.CommandContext(
+                    source_root=source_root,
+                    runtime_dir=runtime_dir,
+                    app_support=app_support,
+                ),
+                runner=RecordingRunner(),
+                proposal_workflow=FakeProposalWorkflow(),
+            )
+            result = bridge.execute("view_pending_proposals")
+            self.assertEqual(tuple(bridge.command_ids), (
+                "sync_chatgpt",
+                "sync_codex",
+                "generate_weekly_report",
+                "view_pending_proposals",
+                "generate_personalization_prompt",
+                "chatgpt_deep_explore",
+            ))
+            self.assertEqual(result["status"], "success")
+            self.assertEqual(result["proposal_review"]["proposals"][0]["proposal_id"], "proposal_fixture")
+            self.assertFalse(result["safety"]["proposal_apply_execution"])
+
+    def test_proposal_action_and_r3_command_share_one_operation_lock(self) -> None:
+        started = threading.Event()
+        release = threading.Event()
+
+        class BlockingProposalWorkflow:
+            def review(self) -> dict[str, Any]:
+                return {"status": "success", "proposals": [], "summary": {"proposal_count": 0}}
+
+            def approve_and_apply(self, **_kwargs: Any) -> dict[str, Any]:
+                started.set()
+                release.wait(timeout=3)
+                return {
+                    "schema_version": "memory_atlas_proposal_result.v1_2_r4",
+                    "action": "approve_apply",
+                    "status": "success",
+                    "proposal_id": "proposal_fixture",
+                }
+
+            def rollback(self, **_kwargs: Any) -> dict[str, Any]:
+                raise AssertionError("not used")
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            app_support, source_root, runtime_dir = make_installed_workspace(root)
+            runner = RecordingRunner()
+            bridge = self.bridge_module.CommandBridge(
+                self.bridge_module.CommandContext(
+                    source_root=source_root,
+                    runtime_dir=runtime_dir,
+                    app_support=app_support,
+                ),
+                runner=runner,
+                proposal_workflow=BlockingProposalWorkflow(),
+            )
+            payload = {
+                "action": "approve_apply",
+                "proposal_id": "proposal_fixture",
+                "review_token": "fixture-token",
+                "confirmation": "授权应用 proposal_fixture",
+            }
+            worker = threading.Thread(target=bridge.execute_proposal_action, args=(payload,))
+            worker.start()
+            self.assertTrue(started.wait(timeout=2))
+            with self.assertRaises(self.bridge_module.CommandBusyError):
+                bridge.execute("generate_weekly_report")
+            release.set()
+            worker.join(timeout=3)
+            self.assertFalse(worker.is_alive())
+            self.assertEqual(runner.calls, [])
+
 
 class MemoryAtlasRuntimeServerTests(unittest.TestCase):
     @classmethod
@@ -421,6 +521,7 @@ class MemoryAtlasRuntimeServerTests(unittest.TestCase):
 
             def __init__(self) -> None:
                 self.calls: list[str] = []
+                self.proposal_calls: list[dict[str, Any]] = []
 
             def execute(self, command_id: str) -> dict[str, Any]:
                 self.calls.append(command_id)
@@ -431,6 +532,17 @@ class MemoryAtlasRuntimeServerTests(unittest.TestCase):
                     "title_zh": "操作完成",
                     "message_zh": "本地受控操作已完成。",
                     "safety": {"sends_to_chatgpt": False},
+                }
+
+            def execute_proposal_action(self, payload: dict[str, Any]) -> dict[str, Any]:
+                self.proposal_calls.append(dict(payload))
+                return {
+                    "schema_version": "memory_atlas_proposal_result.v1_2_r4",
+                    "action": payload["action"],
+                    "status": "success",
+                    "proposal_id": payload.get("proposal_id"),
+                    "transaction_id": payload.get("transaction_id", "txn_0123456789abcdef0123"),
+                    "message_zh": "proposal 本地操作完成。",
                 }
 
         self.bridge = FakeBridge()
@@ -481,6 +593,7 @@ class MemoryAtlasRuntimeServerTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(payload["command_api_version"], "memory_atlas_command_api.v1_2_r3")
         self.assertEqual(payload["command_ids"], list(self.bridge.command_ids))
+        self.assertEqual(payload["proposal_api_version"], "memory_atlas_proposal_api.v1_2_r4")
         self.assertNotIn("access-control-allow-origin", headers)
 
     def test_valid_command_request_executes_once(self) -> None:
@@ -496,6 +609,82 @@ class MemoryAtlasRuntimeServerTests(unittest.TestCase):
         self.assertEqual(payload["command_id"], "sync_codex")
         self.assertEqual(self.bridge.calls, ["sync_codex"])
         self.assertNotIn("access-control-allow-origin", headers)
+
+    def test_valid_proposal_approve_apply_request_executes_once(self) -> None:
+        payload = {
+            "action": "approve_apply",
+            "proposal_id": "proposal_fixture",
+            "review_token": "fixture-token",
+            "confirmation": "授权应用 proposal_fixture",
+        }
+        body = json.dumps(payload, ensure_ascii=False).encode()
+        status, headers, response_body = self.request(
+            "POST",
+            "/__memory_atlas_proposal_action",
+            body=body,
+            headers=self.valid_headers(),
+        )
+        result = json.loads(response_body)
+        self.assertEqual(status, 200)
+        self.assertEqual(result["action"], "approve_apply")
+        self.assertEqual(self.bridge.proposal_calls, [payload])
+        self.assertNotIn("access-control-allow-origin", headers)
+
+    def test_valid_proposal_rollback_request_executes_once(self) -> None:
+        payload = {
+            "action": "rollback",
+            "transaction_id": "txn_0123456789abcdef0123",
+            "rollback_token": "fixture-token",
+            "confirmation": "确认回滚 txn_0123456789abcdef0123",
+        }
+        body = json.dumps(payload, ensure_ascii=False).encode()
+        status, _headers, response_body = self.request(
+            "POST",
+            "/__memory_atlas_proposal_action",
+            body=body,
+            headers=self.valid_headers(),
+        )
+        result = json.loads(response_body)
+        self.assertEqual(status, 200)
+        self.assertEqual(result["action"], "rollback")
+        self.assertEqual(self.bridge.proposal_calls, [payload])
+
+    def test_proposal_endpoint_rejects_remote_origin_extra_fields_unknown_action_and_wrong_shape(self) -> None:
+        valid = {
+            "action": "approve_apply",
+            "proposal_id": "proposal_fixture",
+            "review_token": "fixture-token",
+            "confirmation": "授权应用 proposal_fixture",
+        }
+        cases = [
+            (valid, {"Content-Type": "application/json", "Origin": "https://evil.example"}, 403),
+            ({**valid, "target_file": "data/raw/transcript.json"}, self.valid_headers(), 400),
+            ({**valid, "action": "run_argv"}, self.valid_headers(), 400),
+            ({"action": "approve_apply", "proposal_id": "proposal_fixture"}, self.valid_headers(), 400),
+            (
+                {
+                    "action": "rollback",
+                    "transaction_id": "txn_0123456789abcdef0123",
+                    "rollback_token": "fixture-token",
+                    "confirmation": "确认回滚 txn_0123456789abcdef0123",
+                    "argv": ["rm", "-rf", "/"],
+                },
+                self.valid_headers(),
+                400,
+            ),
+        ]
+        for payload, headers, expected_status in cases:
+            with self.subTest(payload=payload):
+                body = json.dumps(payload, ensure_ascii=False).encode()
+                status, _response_headers, response_body = self.request(
+                    "POST",
+                    "/__memory_atlas_proposal_action",
+                    body=body,
+                    headers=headers,
+                )
+                self.assertEqual(status, expected_status)
+                self.assertRegex(json.loads(response_body)["message_zh"], r"[\u4e00-\u9fff]")
+        self.assertEqual(self.bridge.proposal_calls, [])
 
     def test_remote_origin_extra_fields_and_unknown_commands_fail_closed(self) -> None:
         cases = [

@@ -18,6 +18,17 @@ from typing import Any, Callable
 from urllib.parse import parse_qs, urlparse
 
 
+SCRIPTS_DIR = Path(__file__).resolve().parent
+if str(SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_DIR))
+
+from memory_atlas_proposal_workflow import (  # noqa: E402
+    PROPOSAL_API_VERSION,
+    ProposalWorkflow,
+    ProposalWorkflowContext,
+)
+
+
 COMMAND_API_VERSION = "memory_atlas_command_api.v1_2_r3"
 COMMAND_RESULT_VERSION = "memory_atlas_command_result.v1_2_r3"
 COMMAND_IDS = (
@@ -239,10 +250,17 @@ class CommandBridge:
         *,
         runner: ProcessRunner = default_process_runner,
         base_env: dict[str, str] | None = None,
+        proposal_workflow: Any | None = None,
     ) -> None:
         self.context = validate_workspace(context)
         self.runner = runner
         self.child_env = build_child_environment(base_env)
+        self.proposal_workflow = proposal_workflow or ProposalWorkflow(
+            ProposalWorkflowContext(
+                source_root=self.context.source_root,
+                app_support=self.context.app_support,
+            )
+        )
         self._lock = threading.Lock()
 
     def execute(self, command_id: str) -> dict[str, Any]:
@@ -282,6 +300,35 @@ class CommandBridge:
             result["duration_ms"] = max(0, round((time.monotonic() - started) * 1000))
             self._append_audit(result)
             return result
+        finally:
+            self._lock.release()
+
+    def execute_proposal_action(self, payload: dict[str, Any]) -> dict[str, Any]:
+        if not isinstance(payload, dict):
+            raise CommandRequestError("proposal action 请求格式无效。")
+        action = payload.get("action")
+        if action == "approve_apply":
+            expected = {"action", "proposal_id", "review_token", "confirmation"}
+        elif action == "rollback":
+            expected = {"action", "transaction_id", "rollback_token", "confirmation"}
+        else:
+            raise CommandRequestError("proposal action 不在固定允许列表中。")
+        if set(payload) != expected or any(not isinstance(payload.get(key), str) or not payload.get(key) for key in expected):
+            raise CommandRequestError("proposal action 字段不符合固定合同。")
+        if not self._lock.acquire(blocking=False):
+            raise CommandBusyError("另一个 Memory Atlas 本地操作正在运行，请完成后重试。")
+        try:
+            if action == "approve_apply":
+                return self.proposal_workflow.approve_and_apply(
+                    proposal_id=payload["proposal_id"],
+                    review_token=payload["review_token"],
+                    confirmation=payload["confirmation"],
+                )
+            return self.proposal_workflow.rollback(
+                transaction_id=payload["transaction_id"],
+                rollback_token=payload["rollback_token"],
+                confirmation=payload["confirmation"],
+            )
         finally:
             self._lock.release()
 
@@ -453,23 +500,17 @@ class CommandBridge:
         )
 
     def _view_pending_proposals(self) -> dict[str, Any]:
-        payload = self._run(
-            self._atlasctl(
-                "proposals",
-                "--dry-run",
-                "--database-dir",
-                str(self.context.source_root),
-            ),
-            "待授权提案读取失败：当前入口不会执行 apply 或 rollback，请先修复 proposal 状态报告。",
-        )
-        count = payload.get("proposal_count", payload.get("pending_count", 0))
+        review = self.proposal_workflow.review()
+        summary = review.get("summary") if isinstance(review.get("summary"), dict) else {}
+        count = summary.get("proposal_count", 0)
         return self._result(
             "view_pending_proposals",
             status="success",
             title_zh="待授权提案已读取",
-            message_zh=f"已读取 {int(count or 0)} 条提案状态；当前入口只查看，不执行应用或回滚。",
+            message_zh=f"已读取 {int(count or 0)} 条提案状态；请核对中文 diff、精确目标、验证与回滚范围后再决定是否授权。",
             action={"type": "navigate_view", "view": "summary"},
             metrics={"proposal_count": int(count or 0)},
+            proposal_review=review,
         )
 
     def _generate_personalization_prompt(self) -> dict[str, Any]:
@@ -527,6 +568,7 @@ class CommandBridge:
         outputs: list[str] | None = None,
         metrics: dict[str, Any] | None = None,
         input_hint_zh: str | None = None,
+        proposal_review: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         result: dict[str, Any] = {
             "schema_version": COMMAND_RESULT_VERSION,
@@ -551,6 +593,8 @@ class CommandBridge:
             result["metrics"] = metrics
         if input_hint_zh:
             result["input_hint_zh"] = input_hint_zh
+        if proposal_review:
+            result["proposal_review"] = proposal_review
         return result
 
     def _append_audit(self, result: dict[str, Any]) -> None:
@@ -571,6 +615,7 @@ class CommandBridge:
 __all__ = [
     "COMMAND_API_VERSION",
     "COMMAND_IDS",
+    "PROPOSAL_API_VERSION",
     "CommandBridge",
     "CommandBusyError",
     "CommandContext",
