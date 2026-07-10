@@ -1,16 +1,16 @@
 # KMFA Status
 
-更新时间: 2026-07-10
+更新时间: 2026-07-11
 
 ## 最新状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s09-post-remediation-stage-review`
-- current_stage: `S09`
-- current_phase: `V014_S09_POST_REMEDIATION_STAGE_REVIEW`
-- status: `review_completed_validated_local_only_findings_fixed_no_go_upload_deferred`
+- version: `0.1.4-s10-p1-post-remediation-report-entry`
+- current_stage: `S10`
+- current_phase: `V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY`
+- status: `completed_validated_local_only_management_report_entries_locked_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `S10-P1_as_separate_run_with_Q4_D_NO_GO_boundary`
+- next_required_input: `S10-P2_as_separate_run_without_overriding_inherited_Q4_D_NO_GO`
 - production_ready: `false`
 - github_upload_ready: `false`
 - raw_snapshot_exact_match: `true`
@@ -19,12 +19,12 @@
 ## 前序状态（上一 phase）
 
 - project_id: `KMFA`
-- version: `0.1.4-remaining-eleven-residual-difference-source-trace-or-final-acceptance`
-- current_stage: `value-consistency`
-- current_phase: `V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE`
-- status: `completed_validated_local_only_eight_cost_components_materialized_three_final_differences_accepted_no_go`
+- version: `0.1.4-s09-post-remediation-stage-review`
+- current_stage: `S09`
+- current_phase: `V014_S09_POST_REMEDIATION_STAGE_REVIEW`
+- status: `review_completed_validated_local_only_findings_fixed_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `stage9_post_remediation_overall_review`
+- next_required_input: `S10-P1_as_separate_run_with_Q4_D_NO_GO_boundary`
 - raw_snapshot_exact_match: `true`
 - decision: `NO_GO`
 
@@ -44,6 +44,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 S10-P1 post-remediation report entry completed local-only：建立项目成本专题报告和经营总览报告两个管理入口，共 11 个管理可读章节；动态状态仅绑定最新 Stage 9 的 69 条关闭或排除、3 条最终接受未决、9 条非零和 1 条未完成差异，旧 S10-P1 只复用章节结构。入口显式展示 `Q4 / D / NO_GO（未放行）`，但不计算或覆盖报告等级；三条现金缺失不补零，权威值不被复算覆盖；5 个 raw 文件前后及跨 phase 快照一致；S10-P2=false、S10-P3=false、Stage 10 review=false、GitHub upload=false、app reinstall=false、business execution=false。next_required_input=`S10-P2_as_separate_run_without_overriding_inherited_Q4_D_NO_GO`。
 
 - v0.1.4 remaining eleven residual difference source trace or final acceptance completed local-only：4 个真实项目各有 1 个唯一权威 PDF 成本表；4 条差旅、4 条利息均完成项目/来源/行/金额列唯一绑定和整数分物化；8 条 PDF table/text 双引擎一致，4 条差旅子项求和、4 条直接支出分类求和、4 条权威总成本、4 条完整表格总额公式均精确重放。72 条队列现为 61 条数值重放、8 条非数值排除、69 条关闭或排除、3 条现金最终差异接受；9 条非零差异保持不变；5 个 raw 文件前后及跨 phase 快照链一致；Stage review=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`stage9_post_remediation_overall_review`。
 

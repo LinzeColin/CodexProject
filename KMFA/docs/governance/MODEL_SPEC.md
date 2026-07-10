@@ -2226,3 +2226,18 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - release rule: three unproven cash differences and nine preserved nonzero differences force `Q4 / D / NO_GO`; no silent pass, inferred zero, upload, app reinstall or business execution.
 - raw boundary: five raw files must match before, after and prior-phase snapshots exactly; all private snapshots and Chinese difference details remain ignored.
 - validation: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s09_post_remediation_stage_review.py --require-private-evidence`, focused unittest, full no-float/no-omission and governance validators.
+
+
+## FORM-KMFA-V014-S10-P1-POST-REMEDIATION-REPORT-ENTRY-001
+
+- phase: `V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY`
+- roadmap phase: `S10-P1`
+- model: `kmfa_v014_s10_p1_post_remediation_report_entry`
+- product_version: `0.1.4-s10-p1-post-remediation-report-entry`
+- structure rule: exactly two report entries and eleven visible management sections: four for the project-cost report and seven for the business overview.
+- state rule: current `69 closed-or-excluded / 3 final-accepted-open / 9 nonzero / 1 incomplete / Q4 / D / NO_GO` comes only from the latest Stage 9 post-remediation review; the historical S10-P1 artifact supplies structure only.
+- trust rule: display inherited `Q4 / D / NO_GO` and the release blocker without calculating or overriding a grade; S10-P2 remains false.
+- missing rule: three unproven cash values remain unresolved; missing-to-zero and authority/system overwrite counts must both be zero.
+- raw boundary: five raw files must match before, after and Stage 9 snapshots exactly; all raw identities and diagnostics remain ignored private evidence.
+- release boundary: no formal report, export, Stage 10 review, upload, app reinstall, business decision basis or business execution.
+- validation: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s10_p1_post_remediation_report_entry.py --require-private-evidence --require-final-evidence` and focused unittest.

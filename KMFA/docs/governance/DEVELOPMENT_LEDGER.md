@@ -2854,3 +2854,19 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - focused_test: `KMFA/tests/test_v014_s09_post_remediation_stage_review.py`
 - raw/private policy: five raw files and cross-phase snapshots remain identical; private snapshots and Chinese difference review remain gitignored and untracked.
 - deferred: S10-P1, GitHub upload, app reinstall and business execution.
+
+
+## 2026-07-11｜v0.1.4 S10-P1 post-remediation report entry
+
+- phase: `V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY`
+- roadmap_phase: `S10-P1`
+- task_id: `KMFA-V014-S10-P1-POST-REMEDIATION-REPORT-ENTRY-20260711`
+- product_version: `0.1.4-s10-p1-post-remediation-report-entry`
+- status: `completed_validated_local_only_management_report_entries_locked_no_go_upload_deferred`
+- result: `2 report entries / 11 management sections / 69 closed-or-excluded / 3 final-accepted-open / Q4 / D / NO_GO`.
+- control: historical S10-P1 contributes structure only; current Stage 9 supplies all dynamic trust and blocker state. Missing cash zero count and authority/system overwrite count remain `0 / 0`.
+- evidence: `KMFA/stage_artifacts/V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY/machine/report_entry_manifest.json`
+- validator: `KMFA/tools/check_v014_s10_p1_post_remediation_report_entry.py`
+- focused_test: `KMFA/tests/test_v014_s10_p1_post_remediation_report_entry.py`
+- raw/private policy: five raw files remain exact before, after and across phase; identities and diagnostics remain gitignored and untracked.
+- deferred: S10-P2, S10-P3, Stage 10 review, formal report, export, GitHub upload, app reinstall and business execution.

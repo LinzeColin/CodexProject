@@ -1,3 +1,18 @@
+kmfa_v014_s10_p1_post_remediation_report_entry:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s10-p1-post-remediation-report-entry"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S10-P1-POST-REMEDIATION-REPORT-ENTRY-001
+  parameter_refs:
+    - PARAM-KMFA-1696
+    - PARAM-KMFA-1697
+    - PARAM-KMFA-1698
+  evidence_dir: KMFA/stage_artifacts/V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY
+  validator: KMFA/tools/check_v014_s10_p1_post_remediation_report_entry.py
+  scope: Management-readable S10-P1 report entries bound to current Stage 9 Q4 D NO_GO and 69/3 disposition; no grade calculation export formal report upload app reinstall or business execution.
+
 kmfa_v014_s09_post_remediation_stage_review:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-s09-post-remediation-stage-review"
