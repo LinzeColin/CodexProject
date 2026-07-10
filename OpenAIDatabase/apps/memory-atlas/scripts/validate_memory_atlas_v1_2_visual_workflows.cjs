@@ -201,6 +201,8 @@ async function assertLayout(page) {
 
 async function assertInventory(page) {
   const inventory = await page.locator("[data-r6-visual-id]").evaluateAll((cards) => cards.map((card) => ({
+    dataEventCount: Number(card.getAttribute("data-r6-card-event-count") || 0),
+    dataSignature: card.getAttribute("data-r6-card-data-signature") || "",
     id: card.getAttribute("data-r6-visual-id"),
     title: card.querySelector("h3")?.textContent?.trim() || "",
     question: card.querySelector("[data-r6-card-question]")?.textContent?.trim() || "",
@@ -209,7 +211,21 @@ async function assertInventory(page) {
   })));
   assertCondition(JSON.stringify(inventory.map((item) => item.id)) === JSON.stringify(visualIds), "R6 P0 visual inventory is not the exact approved twelve", { inventory });
   assertCondition(inventory.every((item) => item.title && item.question && item.action && item.datumCount >= 1), "R6 visual copy or keyboard datum is incomplete", { inventory });
+  assertCondition(inventory.every((item) => item.dataSignature && item.dataEventCount >= 1), "R6 visual data signature or event backing is incomplete", { inventory });
   return inventory;
+}
+
+async function captureCardModels(page) {
+  return page.locator("[data-r6-visual-id]").evaluateAll((cards) => Object.fromEntries(cards.map((card) => [
+    card.getAttribute("data-r6-visual-id"),
+    {
+      contentSignature: card.getAttribute("data-r6-card-content-signature") || "",
+      count: Number(card.getAttribute("data-r6-card-event-count") || 0),
+      datumIds: Array.from(card.querySelectorAll("[data-r6-visual-datum]")).map((item) => item.getAttribute("data-r6-visual-datum")),
+      signature: card.getAttribute("data-r6-card-data-signature") || "",
+      zero: card.getAttribute("data-r6-card-zero") === "true",
+    },
+  ])));
 }
 
 async function assertEvidenceInteractions(page) {
@@ -245,6 +261,7 @@ async function assertFourAxisFilters(page) {
   const signature = page.locator("[data-r6-visual-filter-signature]");
   const baseline = await signature.getAttribute("data-r6-signature");
   assertCondition(Boolean(baseline), "R6 baseline filter signature is missing");
+  const baselineCards = await captureCardModels(page);
   const results = {};
   for (const axis of ["source", "time", "project", "task"]) {
     await reset.click();
@@ -265,10 +282,34 @@ async function assertFourAxisFilters(page) {
       const current = await signature.getAttribute("data-r6-signature");
       throw new Error(`R6 ${axis} filter did not change the event signature; current signature is ${current}`);
     }
+    const cardModels = await captureCardModels(page);
+    const unchanged = visualIds.filter((id) => {
+      const before = baselineCards[id];
+      const after = cardModels[id];
+      return !after?.zero && after?.signature === before?.signature;
+    });
+    assertCondition(unchanged.length === 0, `R6 ${axis} filter did not change every P0 card data signature or zero state`, {
+      axis,
+      cardModels,
+      choice,
+      unchanged,
+    });
+    const baselineOpportunity = baselineCards.opportunity_radar;
+    const filteredOpportunity = cardModels.opportunity_radar;
+    assertCondition(
+      filteredOpportunity.zero
+        || filteredOpportunity.contentSignature !== baselineOpportunity.contentSignature
+        || JSON.stringify(filteredOpportunity.datumIds) !== JSON.stringify(baselineOpportunity.datumIds),
+      `R6 ${axis} filter did not change the opportunity evidence join`,
+      { baselineOpportunity, choice, filteredOpportunity },
+    );
     results[axis] = {
       choice,
       count: await page.locator("[data-r6-visual-event-count]").getAttribute("data-r6-count"),
       signature: await signature.getAttribute("data-r6-signature"),
+      changedVisualCount: visualIds.length - unchanged.length,
+      contentChangedVisualCount: visualIds.filter((id) => cardModels[id]?.contentSignature !== baselineCards[id]?.contentSignature).length,
+      zeroVisualIds: visualIds.filter((id) => cardModels[id]?.zero),
     };
   }
   await reset.click();
@@ -284,6 +325,10 @@ async function assertFourAxisFilters(page) {
 async function assertOpportunityDetail(page) {
   const opportunity = page.locator("[data-r6-opportunity-id]").first();
   assertCondition(await opportunity.count() === 1, "R6 opportunity list is empty");
+  const matchedEventIds = String(await opportunity.getAttribute("data-r6-opportunity-event-ids") || "")
+    .split(",")
+    .filter(Boolean);
+  assertCondition(matchedEventIds.length >= 1, "R6 opportunity has no joined facet event IDs");
   await opportunity.click();
   const detail = page.locator("[data-r6-opportunity-detail]");
   await detail.waitFor({ state: "visible" });
@@ -295,7 +340,12 @@ async function assertOpportunityDetail(page) {
     boundary: element.querySelector("[data-r6-opportunity-not-pressure]")?.textContent?.trim() || "",
   }));
   assertCondition(result.evidence >= 1 && result.halfLife && result.next && result.reason && result.boundary, "R6 opportunity drill-down is incomplete", result);
-  return result;
+  const renderedEventIds = await page.locator("[data-r6-visual-evidence] [data-r6-event-id]").evaluateAll((items) => items.map((item) => item.getAttribute("data-r6-event-id")).filter(Boolean));
+  assertCondition(renderedEventIds.length >= 1 && renderedEventIds.every((id) => matchedEventIds.includes(id)), "R6 opportunity evidence is not backed by its joined facet events", {
+    matchedEventIds,
+    renderedEventIds,
+  });
+  return { ...result, matchedEventIds, renderedEventIds };
 }
 
 async function assertFormulaInteraction(page, writeRequests) {
@@ -347,15 +397,12 @@ async function validateViewport(browser, viewport) {
     const machineDetails = page.locator("details[data-r6-machine-details]");
     assertCondition(await machineDetails.count() >= 1 && !(await machineDetails.first().evaluate((item) => item.open)), "R6 machine details are not folded by default");
 
-    let interactions = null;
-    if (viewport.name === "desktop-low-height") {
-      interactions = {
-        evidence: await assertEvidenceInteractions(page),
-        filters: await assertFourAxisFilters(page),
-        opportunity: await assertOpportunityDetail(page),
-        formula: await assertFormulaInteraction(page, writeRequests),
-      };
-    }
+    const interactions = {
+      evidence: await assertEvidenceInteractions(page),
+      filters: await assertFourAxisFilters(page),
+      opportunity: await assertOpportunityDetail(page),
+      formula: await assertFormulaInteraction(page, writeRequests),
+    };
 
     await workbench.scrollIntoViewIfNeeded();
     const screenshotPath = path.join(outputDir, `visual-workflows-${viewport.name}-${viewport.width}x${viewport.height}.png`);
