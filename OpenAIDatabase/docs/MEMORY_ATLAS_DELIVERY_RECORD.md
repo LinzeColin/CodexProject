@@ -1,8 +1,19 @@
 # Memory Atlas Delivery Record
 
-## Current Status Supersession: v1.2 Remediation R0
+## Current Status Supersession: v1.2 Remediation R1
 
 当前发布状态：`FAIL_REMEDIATION_REQUIRED`。
+
+2026-07-10 R1 已在本地源码候选修复首页 Grid 阻断，并以 1470x661、1440x900、
+390x844 的真实 Chromium 门禁证明五个主区块无重叠、无横向溢出、无视口逃逸，
+Command Palette 和 Home Overview 关键内容可滚动到达。证据位于
+`机器治理/证据与日志/remediation/v1_2_r1/`。
+
+R1 只完成布局补救。线上网站、已安装 app、命令执行、产品信息架构、proposal
+工作流、owner-daily、snapshot parity、final audit 接入和 GitHub recovery 仍未完成，
+因此不得恢复 complete 语义。
+
+### R0 Reopened Baseline
 
 2026-07-10 R0 真实浏览器复核证明，历史 `v1_2_final_delivery_completed...`、
 `v1_2_final_review_passed...` 和 `COMPLETE_WITH_OPERATOR_EVIDENCE` 只证明当时的

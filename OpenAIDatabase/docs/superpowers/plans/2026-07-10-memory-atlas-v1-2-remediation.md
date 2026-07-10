@@ -27,11 +27,11 @@
 - Create: `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_home_multiviewport.cjs`
 - Create: `tests/test_memory_atlas_v1_2_home_layout_contract.py`
 
-- [ ] Add a failing contract asserting `.workspace` has a dedicated row for all five main children.
-- [ ] Add a failing Playwright gate for 1470x661, 1440x900 and 390x844 that checks pairwise element intersections, horizontal overflow, command palette clipping and first-screen visibility.
-- [ ] Fix grid rows and responsive command palette sizing without redesigning the information architecture.
-- [ ] Run the new contract, browser gate, TypeScript build and `git diff --check`.
-- [ ] Commit locally on `main`; do not push; stop before R2.
+- [x] Add a failing contract asserting `.workspace` has a dedicated row for all five main children.
+- [x] Add a failing Playwright gate for 1470x661, 1440x900 and 390x844 that checks pairwise element intersections, horizontal overflow, command palette clipping and first-screen visibility.
+- [x] Fix grid rows and responsive command palette sizing without redesigning the information architecture.
+- [x] Run the new contract, browser gate, TypeScript build and `git diff --check`.
+- [x] Commit locally on `main`; do not push; stop before R2.
 
 ### Task 2: R2 Product Identity And Information Architecture
 
