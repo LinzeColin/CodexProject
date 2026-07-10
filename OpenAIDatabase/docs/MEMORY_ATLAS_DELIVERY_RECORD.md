@@ -1,8 +1,27 @@
 # Memory Atlas Delivery Record
 
-## Current Status Supersession: v1.2 Remediation R6
+## Current Status Supersession: v1.2 Remediation R7
 
 当前发布状态：`FAIL_REMEDIATION_REQUIRED`。
+
+2026-07-10 R7 已在本地候选把真实 ChatGPT official export、Codex point-in-time
+snapshot 和 R6 reviewer event 转换为 512 份脱敏公开 raw。512 行不可变 manifest 与
+512 行 hash ledger 均通过，drift/deleted/new 为 0/0/0；完整审计未发现 credential、
+private text、unmarked binary、invalid marker、invalid JSON 或 oversize 文件。
+
+唯一 release `memory-atlas-v1-2-r7-20260710` 的 snapshot SHA-256 为
+`b608631fded9e116d350895be20e6e61be3c7e42ba651ccdf7fc52afd8fefcbc`，derived、
+release、temporary local-runtime candidate 和 Pages candidate 字节一致。tracked-only
+恢复演练对功能候选 `f65668b9` 归档 8,372 个 tracked files、0 个 worktree-only files，
+恢复两份原始 source package，并通过 fresh npm install/build、raw audit 和 Pages parity。
+
+R7 将汇总推进到 `VERIFIED 53 / PARTIAL 2 / FAILED 3 / NOT_VERIFIED 0`。这仍不是
+最终发布：remote clone 未验证，线上/installed app 未更新，R8 overall audit、双历史
+整合、单次 push、exact pushed commit 重装/部署和线上复验未执行。最终 fetch 得到
+`origin/main=37d757be958e1546b5263e86d2193663b184bbe8`；record 前 local `main` 为
+ahead 52 / behind 17。证据位于 `机器治理/证据与日志/remediation/v1_2_r7/`。
+
+### R6 Visualization Baseline
 
 2026-07-10 R6 已在本地源码候选建立精确十二项 P0 可视化决策工作台。217 条
 脱敏 derived facet event 统一驱动 source/time/project/task 四轴筛选、键盘数据点、内联

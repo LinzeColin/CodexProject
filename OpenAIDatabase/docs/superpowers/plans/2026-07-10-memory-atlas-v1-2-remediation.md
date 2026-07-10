@@ -113,11 +113,11 @@
 - Create: `scripts/audit_memory_atlas_snapshot_parity.py`
 - Create: `scripts/audit_memory_atlas_github_recovery.py`
 
-- [ ] Add failing tests for non-empty raw manifest proof, original source restoration and local/Pages candidate snapshot equality.
-- [ ] Materialize authorized source archives with manifest/hash evidence without credentials.
-- [ ] Build one immutable release snapshot and require local runtime and Pages candidate to use its hash.
-- [ ] Rehearse recovery into a temporary clean directory using only tracked files.
-- [ ] Commit locally; do not push; stop before R8.
+- [x] Add failing tests for non-empty raw manifest proof, original source restoration and local/Pages candidate snapshot equality.
+- [x] Materialize authorized source archives with manifest/hash evidence without credentials.
+- [x] Build one immutable release snapshot and require local runtime and Pages candidate to use its hash.
+- [x] Rehearse recovery into a temporary clean directory using only tracked files.
+- [x] Commit locally; do not push; stop before R8.
 
 ### Task 8: R8 Overall Acceptance And Single Final Delivery
 

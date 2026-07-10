@@ -1,3 +1,47 @@
+## 169. Memory Atlas v1.2 Remediation R7 Data And Recovery Parameters
+
+状态：`R7_COMPLETE_LOCAL_ONLY`；release 仍为 `FAIL_REMEDIATION_REQUIRED`。
+
+参数：
+
+- `source_families = chatgpt; codex; agent:codex-reviewer`
+- `chatgpt_export_sha256 = 52f204dd8d78b76a79c6fc37e3e09987d3ab682c87098da017b894dd88c3a868`
+- `chatgpt_export_size_bytes = 1473421021`
+- `codex_inventory_sha256 = a0fba71aaf3761a93abc4c8a802ba49ed8400e73cc4325c5e26f215bec06736d`
+- `public_raw_files = 512`
+- `public_raw_bytes = 452781632`
+- `binary_omission_markers = 23893`
+- `encrypted_content_omissions = 23620`
+- `public_raw_findings = 0`
+- `raw_manifest_entries = 512`
+- `raw_manifest_sha256 = 1a4fa71303903ca896c82640f7b4550cee47f3cc8ec600f81d03f7603e120c96`
+- `raw_ledger_entries = 512`
+- `raw_ledger_drift_deleted_new = 0; 0; 0`
+- `release_id = memory-atlas-v1-2-r7-20260710`
+- `snapshot_sha256 = b608631fded9e116d350895be20e6e61be3c7e42ba651ccdf7fc52afd8fefcbc`
+- `snapshot_size_bytes = 1905337`
+- `snapshot_candidates = derived; release; local_runtime; pages`
+- `snapshot_candidate_status = MATCH; MATCH; MATCH; MATCH`
+- `canonical_events = 491; chatgpt 379; codex 111; future_agent 1`
+- `snapshot_counts = memories 278; conversations 379; codex_sessions 128; nodes 435; edges 2325`
+- `recovery_candidate_commit = f65668b927522641f1a9d0e6fc5b77031908dd68`
+- `recovery_tracked_files = 8372`
+- `recovery_worktree_only_files = 0`
+- `remote_clone_verified = false`
+- `final_reviewer_high_medium_low = 0; 0; 1`
+- `requirements = 53 verified; 2 partial; 3 failed; 0 not_verified`
+
+验证逻辑：R7 必须从冻结 source 生成非空 sanitized public raw；byte-wise audit 必须
+为 0 findings；manifest、ledger、raw count 必须相等且无 drift/deletion/new；唯一 release
+必须让 derived/release/local/Pages 四候选 SHA-256 和 bytes 完全一致；tracked-only recovery
+必须复制 0 个 working-tree-only 文件并在临时树恢复 source package、raw、fresh build 与
+Pages parity。独立 review 必须为 0 High / 0 Medium。
+
+边界：该参数不证明 remote clone、最终 pushed HEAD、installed app 或 online site。
+功能候选与后续 evidence binder 的顺序必须显式记录，不能用本地 archive PASS 冒充
+R8 最终远端恢复。private path、credential、原始 binary body 和 private export bytes
+不进入公开恢复包。
+
 ## 168. Memory Atlas v1.2 Remediation R6 Visual Workflow Parameters
 
 状态：`R6_COMPLETE_LOCAL_ONLY`；release 仍为 `FAIL_REMEDIATION_REQUIRED`。
