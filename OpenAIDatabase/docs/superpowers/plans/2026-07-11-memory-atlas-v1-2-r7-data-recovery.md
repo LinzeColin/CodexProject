@@ -109,7 +109,8 @@ versioned output names. Existing strict/default behavior remains compatible.
 - Modify: `机器治理/同步与备份/raw_manifest_ledger_policy.v1_2_s03_p3.json`
 - Test: `tests/test_memory_atlas_r7_raw_integrity.py`
 - Regression: `tests/test_s03p3_raw_manifest.py`
-- Regression: `tests/test_memory_atlas_facets.py`
+- Regression: `tests/test_s05p2_facet_extractor.py`
+- Regression: `tests/test_s05p3_facet_evidence_refs.py`
 
 **Interfaces:**
 
