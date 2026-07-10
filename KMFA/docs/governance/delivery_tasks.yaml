@@ -1,6 +1,40 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "KMFA-V014-REMAINING-ELEVEN-RESIDUAL-DIFFERENCE-SOURCE-TRACE-OR-FINAL-ACCEPTANCE-20260710"
+    phase: "V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE"
+    objective: "Resolve eight project cost components from unique authority PDF tables and preserve three unproven cash values as final accepted differences."
+    scope:
+      - "read-only authority PDF table and text cross-engine extraction"
+      - "travel child-sum direct-expense category-sum authority-total and full-table formula replay"
+      - "private integer cost-component materialization and final Chinese difference report"
+      - "raw snapshot chain proof public-safe validator and focused test"
+    non_scope:
+      - "raw mutation source-value overwrite inferred cash zero averaging or silent candidate choice"
+      - "public raw filename project field amount PDF row or fingerprint detail"
+      - "Stage review S10 GitHub upload app reinstall or business execution"
+    status: "completed"
+    completed_version: "0.1.4-remaining-eleven-residual-difference-source-trace-or-final-acceptance"
+    dependencies:
+      - "V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION"
+    required_files:
+      - "KMFA/stage_artifacts/V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE/machine/remaining_eleven_residual_difference_source_trace_or_final_acceptance_manifest.json"
+      - "KMFA/tools/check_v014_remaining_eleven_residual_difference_source_trace_or_final_acceptance.py"
+    acceptance_ids:
+      - "ACC-V014-REMAINING-ELEVEN-RESIDUAL-DIFFERENCE-SOURCE-TRACE-OR-FINAL-ACCEPTANCE"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_remaining_eleven_residual_difference_source_trace_or_final_acceptance.py --require-private-evidence"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_remaining_eleven_residual_difference_source_trace_or_final_acceptance"
+    test_results:
+      - "PASS: remaining-eleven private-evidence validator"
+      - "PASS: PDF amount unique-row travel formula and final-acceptance policy tests"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE/machine/remaining_eleven_residual_difference_source_trace_or_final_acceptance_manifest.json"
+    risk: "Three cash slots still have no proven numeric value and nine nonzero scope differences remain preserved."
+    rollback: "Remove this phase public artifacts and ignored private outputs without touching the operator raw directory or source private evidence."
+    target_version: "0.1.4-remaining-eleven-residual-difference-source-trace-or-final-acceptance"
+
   - task_id: "KMFA-V014-GLOBAL-RESIDUAL-DIFFERENCE-QUEUE-REPLAY-OR-AUTHORITATIVE-EXCLUSION-20260710"
     phase: "V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION"
     objective: "Replay every item in the 72-record residual queue while closing only unique integer evidence and owner-authorized non-numeric exclusions."

@@ -1,0 +1,135 @@
+{
+  "schema_version": "kmfa.v014.remaining_eleven_trace_matrix.v1",
+  "project_id": "KMFA",
+  "phase_id": "V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE",
+  "check_count": 25,
+  "check_pass_count": 25,
+  "check_fail_count": 0,
+  "checks": [
+    {
+      "check_id": "RE11-01",
+      "check_name": "source_private_inputs_unchanged",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-02",
+      "check_name": "raw_snapshot_exact_match",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-03",
+      "check_name": "raw_snapshot_chain_exact",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-04",
+      "check_name": "source_open_count_11",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-05",
+      "check_name": "four_authority_projects",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-06",
+      "check_name": "four_unique_tables",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-07",
+      "check_name": "eight_cost_components",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-08",
+      "check_name": "four_travel",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-09",
+      "check_name": "four_interest",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-10",
+      "check_name": "eight_unique_sources",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-11",
+      "check_name": "eight_cross_engine_matches",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-12",
+      "check_name": "four_travel_formulas",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-13",
+      "check_name": "four_direct_expense_formulas",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-14",
+      "check_name": "four_authority_totals",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-15",
+      "check_name": "four_full_table_formulas",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-16",
+      "check_name": "final_classified_72",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-17",
+      "check_name": "numeric_replay_61",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-18",
+      "check_name": "closed_or_excluded_69",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-19",
+      "check_name": "three_final_open",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-20",
+      "check_name": "nonzero_preserved",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-21",
+      "check_name": "forced_zero_prohibited",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-22",
+      "check_name": "private_outputs_ignored",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-23",
+      "check_name": "business_consistency_not_overclaimed",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-24",
+      "check_name": "stage_review_not_performed",
+      "passed": true
+    },
+    {
+      "check_id": "RE11-25",
+      "check_name": "github_not_uploaded",
+      "passed": true
+    }
+  ]
+}

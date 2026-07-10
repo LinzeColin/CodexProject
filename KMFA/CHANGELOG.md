@@ -1,3 +1,11 @@
+## 0.1.4-remaining-eleven-residual-difference-source-trace-or-final-acceptance - 2026-07-10
+
+- 完成 `V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE` 本地单 phase。
+- 四个真实项目的权威 PDF 各定位到唯一成本表，差旅与利息各 4 条均获得唯一项目、唯一来源、唯一行和唯一金额列，新增物化 8 条整数分成本分项。
+- 8 条来源同时通过 PDF 表格/文本双引擎、差旅子项求和、直接支出分类求和、权威总成本和完整表格总额公式交叉验证。
+- 全局 72 条队列现为 61 条数值重放、8 条非数值排除、69 条关闭或排除、3 条现金最终差异接受；9 条非零差异未覆盖，未推导零。
+- 5 个原始文件前后快照及跨 phase 快照链完全一致；所有项目、字段、来源、金额、行列、指纹和中文最终差异报告仅存在 ignored private runtime，未做 Stage review、GitHub upload、app reinstall 或 business execution。
+
 ## 0.1.4-global-residual-difference-queue-replay-or-authoritative-exclusion - 2026-07-10
 
 - 完成 `V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION` 本地单 phase，对全局 72 条 residual difference queue 逐条分类。
