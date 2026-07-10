@@ -1,6 +1,58 @@
 # KMFA Automation Bug Log
 
-## 2026-07-10 Pure-RRULE Scheduler Repair
+## 2026-07-10 `kmfa-3` Owner-Fixed 20:00 Stability Repair
+
+Scope: only the evening attendance automation `kmfa-3`. The owner fixed its
+permanent trigger to the host's local wall-clock 20:00. This time must not be
+converted from Beijing time, UTC offset, or daylight-saving state.
+
+Root causes:
+
+- The live automation had already been edited to 20:00, but the Git contract,
+  prompt mirrors, S19 schedule constant, validator, and docs still encoded
+  22:05 / 20:05. The central checker therefore reported `kmfa-3: rrule` drift.
+- `run_attendance.py` printed failure payloads but always returned exit code 0,
+  allowing DWS, partial collection, or notification failures to look green to
+  the scheduler.
+- The local scheduler literal was also reused as an `Asia/Shanghai` DWS summary
+  cutoff. With Sydney 20:00 occurring at Beijing 18:00/17:00, that could query
+  two or three hours into the future.
+- The evening prompt did not lock the exact S19 command and could treat the
+  advisory App Key-oriented runtime inspection as more authoritative than the
+  current DWS PAT config-only healthcheck.
+
+Permanent contract:
+
+```text
+RRULE:FREQ=WEEKLY;BYHOUR=20;BYMINUTE=0;BYDAY=SU,MO,TU,WE,TH,FR,SA
+```
+
+The live record contains no `DTSTART`, `TZID`, or explicit scheduler timezone.
+The runner continues to use `Asia/Shanghai` only for business-date semantics;
+that internal argument must never shift the scheduler's 20:00 wall-clock time.
+Live summary queries now use the actual run datetime in the business-date
+clock, while controlled historical reruns keep their explicit replay datetime.
+The contract records `fixed_local_wall_clock=true` and
+`offset_conversion_allowed=false` for `kmfa-3`.
+The central live checker also locks the normalized evening prompt SHA-256 and
+canonical project id, so a future stale prompt or wrong-project rebound fails
+the same health gate even when the RRULE itself still looks correct.
+CLI success is a positive whitelist: collection/send-only status and
+`notification_status` must agree on `SENT`; contradictory payloads fail.
+
+Runtime evidence already observed from the automation-created task on this
+date: canonical cwd, real S19 DWS entry, 44/44 record calls, 44/44 summary
+calls, zero command failures, private OneDrive artifacts, and both configured
+notification targets `SENT`. This proves the execution and delivery chain, but
+the 21:18 AEST start was a save-trigger/missed-trigger run rather than a natural
+20:00 timing proof.
+
+Remaining acceptance gate: observe the next natural `kmfa-3` trigger at 20:00
+local wall clock and verify one task, canonical cwd, completed collection,
+private archive, and successful configured-target delivery. Do not claim the
+natural timing gate before that evidence exists.
+
+## 2026-07-10 Pure-RRULE Scheduler Repair (Historical Pre-20:00 State)
 
 Scope: remove scheduler timezone metadata from all five active KMFA-related
 Codex Desktop automations and add a regression gate that reads the live app
@@ -57,17 +109,15 @@ routine skill validator PASS
 fund live automation checker CODEX_AUTOMATION_READY
 ```
 
-Remaining acceptance gate: observe the next natural `kmfa-3` trigger at 22:05
-AEST and confirm one automation thread uses `/Users/linzezhang/CodexProject`
-and reaches the real S19 entry. Do not claim natural scheduling success before
-that evidence exists.
+The original 22:05 acceptance gate was superseded by the owner's permanent
+local 20:00 correction documented above.
 
 Known unrelated runtime issue: S20 routine-check config-only health reports its
 OneDrive `DWS_Outputs.zip` as a dataless placeholder. That source blocker is not
 caused by the scheduler repair and was not widened into this change.
 
-Because scheduler rules now intentionally follow local wall clock without a
-timezone, recalculate the AEST hours when the Mac's UTC offset changes.
+Historical note: offset conversion applied to this earlier repair. It no longer
+applies to `kmfa-3`, whose owner-fixed 20:00 scheduler time must never move.
 
 ## 2026-07-10 Diagnosis and Repair
 

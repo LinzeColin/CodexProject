@@ -16,15 +16,16 @@ files are the portable source for another agent or computer.
 Codex Desktop scheduler rules use the host's local wall clock and must be a
 single pure `RRULE:` string. Do not add `DTSTART`, `TZID`, an explicit
 scheduler timezone field, or multiple RRULE lines. Business dates and report
-cutoffs remain Beijing time.
+cutoffs remain Beijing time inside the runner; they do not shift the owner's
+fixed scheduler wall-clock time.
 
-Current host clock snapshot: Australia/Sydney AEST (UTC+10). Recalculate the
-local wall-clock hours whenever the host UTC offset changes.
+The `kmfa-3` owner-set 20:00 wall-clock time is permanent. Do not convert it
+when the host UTC offset or daylight-saving state changes.
 
-| Local id | Name | Beijing business time | Current AEST scheduler rule | Execution | Prompt mirror |
+| Local id | Name | Business/run time | Scheduler rule | Execution | Prompt mirror |
 | --- | --- | --- | --- | --- | --- |
 | `kmfa` | `KMFA｜每日钉钉考勤检查｜晨报` | Daily 10:35 | `RRULE:FREQ=DAILY;BYHOUR=12;BYMINUTE=35` | local, `gpt-5.3-codex-spark`, `xhigh` | `automation/morning_prompt.md` |
-| `kmfa-3` | `KMFA｜每日钉钉考勤检查｜晚报` | Daily 20:05 | `RRULE:FREQ=DAILY;BYHOUR=22;BYMINUTE=5` | local, `gpt-5.3-codex-spark`, `xhigh` | `automation/evening_prompt.md` |
+| `kmfa-3` | `KMFA｜每日钉钉考勤检查｜晚报` | Daily local wall-clock 20:00 | `RRULE:FREQ=WEEKLY;BYHOUR=20;BYMINUTE=0;BYDAY=SU,MO,TU,WE,TH,FR,SA` | local, `gpt-5.3-codex-spark`, `xhigh` | `automation/evening_prompt.md` |
 
 Current local Codex cwd list for both automations:
 

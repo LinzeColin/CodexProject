@@ -44,7 +44,7 @@ from KMFA.tools.dingtalk_attendance.secrets_loader import merged_runtime_env
 
 
 RUN_TYPES = ("morning", "evening")
-SCHEDULE = {"morning": "10:35", "evening": "20:05"}
+SCHEDULE = {"morning": "10:35", "evening": "20:00"}
 
 
 def build_run_plan(
@@ -64,7 +64,14 @@ def build_run_plan(
         "run_id": effective_run_id,
         "run_type": run_type,
         "timezone": timezone,
+        "business_date_timezone": timezone,
+        "scheduler_timezone_configured": False,
         "schedule": dict(SCHEDULE),
+        "schedule_clock": {
+            "morning": "business_clock",
+            "evening": "local_wall_clock",
+        },
+        "summary_datetime_source": "actual_run_datetime_in_business_date_timezone",
         "live_only": True,
         "uses_sample_data": False,
         "onedrive_root": ONEDRIVE_ROOT,
@@ -458,7 +465,7 @@ def run_attendance(
     plan = build_run_plan(run_type=run_type, timezone=timezone, run_datetime=run_datetime)
     notification_config_status = build_config_status()
     cleanup_status: dict[str, Any] = {"status": "NOT_RUN"}
-    summary_datetime = f"{effective_work_date} {SCHEDULE[run_type]}:00"
+    summary_datetime = run_datetime.strftime("%Y-%m-%d %H:%M:%S")
     dws_safety = dws_command_safety_status(env=env, allow_override=allow_dws_commands)
     if dws_safety["status"] != "READY":
         cleanup_status.update(cleanup())
@@ -633,6 +640,23 @@ def _scheduled_run_datetime(*, run_type: str, timezone: str, work_date: str | No
     return datetime.now(ZoneInfo(timezone))
 
 
+def result_exit_code(result: Mapping[str, Any]) -> int:
+    """Return a scheduler-visible fail-closed exit code for a run result."""
+    status = str(result.get("status") or "")
+    notification_status = str(result.get("notification_status") or "")
+    if status == "SENT":
+        return 0 if notification_status == "SENT" else 5
+    if status == "COMPLETED":
+        return 0 if notification_status == "SENT" else 5
+    if status in {"DWS_AUTH_REQUIRED", "DWS_BROWSER_POLICY_REQUIRED"}:
+        return 2
+    if status in {"DWS_UNAVAILABLE", "NO_LATEST_REPORT"}:
+        return 3
+    if status == "PARTIAL":
+        return 4
+    return 1
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run KMFA S19 DingTalk attendance automation.")
     parser.add_argument("--run-type", required=True, choices=RUN_TYPES)
@@ -660,7 +684,7 @@ def main(argv: list[str] | None = None) -> int:
             notification_target_filter=args.notification_targets,
         )
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
-    return 0
+    return result_exit_code(result)
 
 
 if __name__ == "__main__":

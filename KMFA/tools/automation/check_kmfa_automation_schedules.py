@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import re
 import sys
 import tomllib
 from pathlib import Path
@@ -41,6 +43,13 @@ def rrule_policy_errors(rrule: object) -> list[str]:
     return errors
 
 
+def normalized_prompt_sha256(prompt: object) -> str | None:
+    if not isinstance(prompt, str):
+        return None
+    normalized = prompt.rstrip("\r\n")
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--contract-path", default=str(DEFAULT_CONTRACT))
@@ -67,6 +76,17 @@ def main() -> int:
             continue
         automation_id = item.get("id")
         errors = rrule_policy_errors(item.get("rrule"))
+        expected_prompt_hash = item.get("prompt_sha256")
+        if expected_prompt_hash is not None and (
+            not isinstance(expected_prompt_hash, str)
+            or re.fullmatch(r"[0-9a-f]{64}", expected_prompt_hash) is None
+        ):
+            errors.append("prompt_sha256_invalid")
+        expected_project_id = item.get("project_id")
+        if expected_project_id is not None and (
+            not isinstance(expected_project_id, str) or not expected_project_id
+        ):
+            errors.append("project_id_invalid")
         if not isinstance(automation_id, str) or not automation_id:
             errors.append("id_missing")
         elif automation_id in seen_ids:
@@ -122,6 +142,21 @@ def main() -> int:
                 mismatches.append(error)
         if any(key in live for key in ("timezone", "tzid", "scheduler_timezone")):
             mismatches.append("forbidden_explicit_timezone")
+        expected_prompt_hash = expected.get("prompt_sha256")
+        if (
+            expected_prompt_hash is not None
+            and normalized_prompt_sha256(live.get("prompt")) != expected_prompt_hash
+        ):
+            mismatches.append("prompt")
+        expected_project_id = expected.get("project_id")
+        if expected_project_id is not None:
+            target = live.get("target")
+            if (
+                not isinstance(target, dict)
+                or target.get("type") != "project"
+                or target.get("project_id") != expected_project_id
+            ):
+                mismatches.append("project_id")
         for field in check_fields:
             if field in expected and live.get(field) != expected.get(field):
                 mismatches.append(field)

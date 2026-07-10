@@ -2,11 +2,23 @@
 
 更新时间: 2026-07-10
 
-## 2026-07-10 纯 RRULE 调度修复
+## 2026-07-10 `kmfa-3` 固定 20:00 稳定性修复
 
-用户明确要求所有 automation 的 scheduler 不设置时区。当前 5 张卡片已
-通过官方 `automation_update` 改成单行纯 RRULE；禁止 `DTSTART`、`TZID`、
-显式 scheduler timezone 和多 RRULE。
+用户明确要求所有 automation 的 scheduler 不设置时区，并已亲自把晚报
+`kmfa-3` 改为本机墙钟 20:00。以后 `kmfa-3` 永久保持这个时间：不得按北京
+时间、UTC offset 或夏令时换算。当前 live rule 是：
+
+```text
+RRULE:FREQ=WEEKLY;BYHOUR=20;BYMINUTE=0;BYDAY=SU,MO,TU,WE,TH,FR,SA
+```
+
+禁止 `DTSTART`、`TZID`、显式 scheduler timezone 和多 RRULE。runner 内部的
+`Asia/Shanghai` 只用于业务日期，不能改变 scheduler 的 20:00。
+live checker 同时锁定晚报 prompt 的规范化 SHA-256 和 canonical project id；
+以后即使时间没变，只要 prompt 回旧版或重新绑错项目，也必须判 mismatch。
+DWS summary 查询使用实际运行瞬间对应的北京时间，不能把本机 scheduler 的
+`20:00` 字面量冒充成北京 20:00；契约明确 `fixed_local_wall_clock=true`、
+`offset_conversion_allowed=false`。
 
 新的统一 schedule contract 与 live checker：
 
@@ -23,13 +35,14 @@ python3 KMFA/tools/automation/check_kmfa_automation_schedules.py
 python3 -m unittest KMFA.tests.test_automation_schedule_contract -q
 ```
 
-当前 readback：`CODEX_AUTOMATIONS_READY`，5 个 automation 均为 0 mismatch。
-S19 attendance healthcheck 当前为 `READY`。仍未完成的唯一 S19 调度验收是
-等待 22:05 AEST 的 `kmfa-3` 自然触发，确认只有一个新 automation thread、
-cwd 为 `/Users/linzezhang/CodexProject`，并进入真实 S19 runner。
+2026-07-10 automation-created task 已证明 canonical cwd → 真实 S19 DWS runner
+→ 44/44 record、44/44 summary、0 command failure → OneDrive 私有归档 → 两个
+通知目标均 `SENT`。但该次在 21:18 AEST 启动，属于保存/补触发证据，不是
+自然 20:00 调度证据。
 
-当前 Sydney 是 AEST (UTC+10)，因此北京 10:35/20:05 对应 scheduler 本地
-12:35/22:05。进入 AEDT 后必须重新换算本地小时；不要重新加入 timezone。
+仍未完成的唯一 S19 调度验收：等待下一次本机墙钟 20:00 自然触发，确认
+只产生一个新 task、cwd 为 `/Users/linzezhang/CodexProject`、真实取数完成、
+私有归档成功且通知目标发送成功。
 
 ## 当前目标
 
@@ -63,7 +76,7 @@ KMFA automation: repair Codex project binding
 | ID | 名称 | 工作区 | 说明 |
 |---|---|---|---|
 | `kmfa` | `KMFA｜每日钉钉考勤检查｜晨报` | `/Users/linzezhang/CodexProject` | S19 晨报，Asia/Shanghai 10:35 |
-| `kmfa-3` | `KMFA｜每日钉钉考勤检查｜晚报` | `/Users/linzezhang/CodexProject` | S19 晚报，Asia/Shanghai 20:05 |
+| `kmfa-3` | `KMFA｜每日钉钉考勤检查｜晚报` | `/Users/linzezhang/CodexProject` | S19 晚报，本机墙钟固定 20:00；scheduler 无时区 |
 | `kmfa-4` | `KMFA｜钉钉工作检查` | `/Users/linzezhang/CodexProject` | S20 routine check，Asia/Shanghai 11:35 和 17:05 |
 | `kmfa-5` | `KMFA｜资金周报自动化` | `/Users/linzezhang/CodexProject` | S21 fund weekly，Australia/Sydney 周一/周六 11:00 |
 | `kmfa-dws` | `KMFA｜上游每日钉钉DWS归档` | `/Users/linzezhang/Documents/Codex/2026-07-04/392b1a986ba680338068ddc1c2a0fd0e-https-app-notion-com-p` | 独立 DWS archive producer，不属于 KMFA 工作树 |
