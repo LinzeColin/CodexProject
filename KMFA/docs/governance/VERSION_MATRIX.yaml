@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-remaining-two-project-cash-collection-evidence-or-final-difference-acceptance"
-product_version_status: "completed_validated_local_only_third_cash_project_materialized_final_cash_project_difference_accepted_no_go"
-version_file_value: "0.1.4-remaining-two-project-cash-collection-evidence-or-final-difference-acceptance"
+product_version: "0.1.4-global-residual-difference-queue-replay-or-authoritative-exclusion"
+product_version_status: "completed_validated_local_only_61_closed_or_excluded_11_open_no_go"
+version_file_value: "0.1.4-global-residual-difference-queue-replay-or-authoritative-exclusion"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-remaining-two-project-cash-collection-evidence-or-final-difference-acceptance"
+  MOD-KMFA-GOV-001: "0.1.4-global-residual-difference-queue-replay-or-authoritative-exclusion"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_global_residual_difference_queue_replay_or_authoritative_exclusion: "0.1.4-global-residual-difference-queue-replay-or-authoritative-exclusion"
   kmfa_v014_remaining_two_project_cash_collection_evidence_or_final_difference_acceptance: "0.1.4-remaining-two-project-cash-collection-evidence-or-final-difference-acceptance"
   kmfa_v014_remaining_cash_source_private_trace_or_difference_acceptance: "0.1.4-remaining-cash-source-private-trace-or-difference-acceptance"
   kmfa_v014_cash_source_private_disambiguation_and_remaining_value_materialization: "0.1.4-cash-source-private-disambiguation-and-remaining-value-materialization"

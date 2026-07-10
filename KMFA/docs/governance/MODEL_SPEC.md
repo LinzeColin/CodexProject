@@ -2186,3 +2186,16 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - rule: consume only public-safe final-recheck evidence and its ignored private queue; preserve observation `3` and threshold `true`, create `48` blocked-handoff records and `48` owner-resolution items, keep `0` actionable resolutions, decision `NO_GO`, goal recommendation `blocked`, and all downstream gates closed.
 - raw boundary: raw inbox was not read, listed, parsed, hashed, copied, moved, renamed, deleted or mutated.
 - validation: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_blocked_handoff_after_final_recheck.py --require-private-blocked-handoff` and `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_blocked_handoff_after_final_recheck`.
+
+
+## FORM-KMFA-V014-GLOBAL-RESIDUAL-DIFFERENCE-QUEUE-REPLAY-OR-AUTHORITATIVE-EXCLUSION-001
+
+- phase: `V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION`
+- model: `kmfa_v014_global_residual_difference_queue_replay_or_authoritative_exclusion`
+- product_version: `0.1.4-global-residual-difference-queue-replay-or-authoritative-exclusion`
+- rule: classify all 72 private residual records; close only 37 current target values and 16 uniquely sourced integer metric formulas; exclude only 8 owner-authorized non-numeric records; keep 8 ambiguous cost-component sources and 3 accepted cash differences open; preserve 9 nonzero differences.
+- value fingerprint: `sha256(unit + ':' + integer_value)`; historical source fingerprints are accepted only when they match the current unit-value or legacy integer-value scheme and are normalized to the canonical fingerprint privately.
+- integer formulas: `system_gross_profit_cents = contract_amount_cents - cost_total_cents`; `gross_margin_basis_points = round_half_up(gross_profit_cents / contract_amount_cents * 10000)`; no float money values are permitted.
+- missing policy: missing or ambiguous sources remain open; no zero inference, averaging, candidate tie-breaking or nonzero-difference overwrite is allowed.
+- raw boundary: the five-file raw root is read-only and must have exact pre/post path size mtime inode mode and SHA256 equality; all private details remain ignored.
+- validation: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_global_residual_difference_queue_replay_or_authoritative_exclusion.py --require-private-evidence` and `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_global_residual_difference_queue_replay_or_authoritative_exclusion`.

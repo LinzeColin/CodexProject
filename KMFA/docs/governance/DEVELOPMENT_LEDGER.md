@@ -2808,3 +2808,18 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 | `KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-RESOLUTION-INTAKE-BLOCKER-BLOCKED-HANDOFF-AFTER-FINAL-RECHECK-20260710` | v0.1.4 owner/authorized-agent resolution-intake blocker blocked handoff completed local-only: 48 handoff records, 48 owner-resolution queue items, 0 completed resolutions, `NO_GO`, raw inbox untouched, Stage review/GitHub upload/app reinstall/business execution deferred | `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_AFTER_FINAL_RECHECK/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_blocked_handoff_after_final_recheck_manifest.json` |
 
 - product_version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-blocked-handoff-after-final-recheck`
+
+
+## 2026-07-10｜v0.1.4 global residual difference queue replay or authoritative exclusion
+
+- phase: `V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION`
+- task_id: `KMFA-V014-GLOBAL-RESIDUAL-DIFFERENCE-QUEUE-REPLAY-OR-AUTHORITATIVE-EXCLUSION-20260710`
+- product_version: `0.1.4-global-residual-difference-queue-replay-or-authoritative-exclusion`
+- status: `completed_validated_local_only_61_closed_or_excluded_11_open_no_go`
+- decision: `NO_GO`
+- counts: `72 classified`, `37 private target replay`, `16 integer formula replay`, `8 owner-authorized non-numeric exclusions`, `61 closed or excluded`, `11 open`, `9 nonzero differences preserved`.
+- evidence: `KMFA/stage_artifacts/V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION/machine/global_residual_difference_queue_replay_or_authoritative_exclusion_manifest.json`
+- validator: `KMFA/tools/check_v014_global_residual_difference_queue_replay_or_authoritative_exclusion.py`
+- focused_test: `KMFA/tests/test_v014_global_residual_difference_queue_replay_or_authoritative_exclusion.py`
+- raw/private policy: five raw files remained unchanged; private slots references fingerprints values candidates and Chinese report remain gitignored and untracked.
+- deferred: remaining eleven differences, Stage review, GitHub upload, app reinstall and business execution.

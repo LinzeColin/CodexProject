@@ -14275,3 +14275,48 @@ formulas:
       - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_AFTER_FINAL_RECHECK/human/go_no_go_record.md"
       - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_AFTER_FINAL_RECHECK/human/test_results.md"
       - "KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_AFTER_FINAL_RECHECK/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_blocked_handoff_after_final_recheck_manifest.json"
+
+
+  - formula_id: "FORM-KMFA-V014-GLOBAL-RESIDUAL-DIFFERENCE-QUEUE-REPLAY-OR-AUTHORITATIVE-EXCLUSION-001"
+    model_id: "MOD-KMFA-GOV-001"
+    assumption_ids:
+      - "ASM-KMFA-002"
+      - "ASM-KMFA-004"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "global_residual_replay_valid = residual_queue_count == 72 AND classified_count == 72 AND private_target_replay_count == 37 AND integer_metric_formula_replay_count == 16 AND replayed_numeric_count == 53 AND owner_authorized_non_numeric_exclusion_count == 8 AND closed_or_excluded_count == 61 AND open_ambiguous_source_count == 8 AND open_final_difference_accepted_count == 3 AND open_residual_difference_count == 11 AND preserved_nonzero_difference_count == 9 AND preserved_zero_difference_count == 2 AND incomplete_comparison_count == 1 AND forced_zero_count == 0 AND raw_snapshot_exact_match == true AND business_value_consistency_verified == false AND decision == NO_GO"
+    variables:
+      - name: "classified_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "72"
+      - name: "closed_or_excluded_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "61"
+      - name: "open_residual_difference_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "11"
+      - name: "preserved_nonzero_difference_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "9"
+    constraints:
+      - "Only a unique private source and replayable integer formula may close a numeric queue item."
+      - "Owner-authorized exclusions apply only to fields proven to be non-numeric."
+      - "Missing or ambiguous values remain open and must never be inferred as zero or averaged."
+      - "Raw files and source private evidence must remain byte-for-byte unchanged and private outputs must remain ignored."
+    missing_policy: "Missing replay manifest summary matrix private replay records Chinese difference report validator focused test or governance record fails validation."
+    output_range: "v014_global_residual_difference_queue_replay_or_authoritative_exclusion_manifest"
+    code_refs:
+      - "KMFA/tools/v014_global_residual_difference_queue_replay_or_authoritative_exclusion.py"
+      - "KMFA/tools/check_v014_global_residual_difference_queue_replay_or_authoritative_exclusion.py"
+    test_refs:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_global_residual_difference_queue_replay_or_authoritative_exclusion.py --require-private-evidence"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_global_residual_difference_queue_replay_or_authoritative_exclusion"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION/human/global_residual_difference_queue_replay_or_authoritative_exclusion.md"
+      - "KMFA/stage_artifacts/V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION/machine/global_residual_difference_queue_replay_or_authoritative_exclusion_manifest.json"

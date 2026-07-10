@@ -1,3 +1,11 @@
+## 0.1.4-global-residual-difference-queue-replay-or-authoritative-exclusion - 2026-07-10
+
+- 完成 `V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION` 本地单 phase，对全局 72 条 residual difference queue 逐条分类。
+- 37 条由当前私有目标值重放，16 条由四项目整数毛利/毛利率模型重放，8 条非数值字段经授权从数值比较队列排除；共 61 条关闭或排除。
+- 8 条成本分项缺少唯一权威来源、3 条现金槽位属于最终差异接受但仍无可证明数值，共 11 条继续写入 ignored private 全中文差异报告。
+- 9 条非零差异、2 条零差异和 1 条未完成比较原样保留；未推导零、未平均、未覆盖现有差异。
+- 5 个原始文件前后逐文件快照完全一致；所有目标槽位、来源引用、指纹和值仅存在 ignored private runtime，未做 Stage review、GitHub upload、app reinstall 或 business execution。
+
 ## 0.1.4-remaining-two-project-cash-collection-evidence-or-final-difference-acceptance - 2026-07-10
 
 - 完成 `V014_REMAINING_TWO_PROJECT_CASH_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE` 本地单 phase。

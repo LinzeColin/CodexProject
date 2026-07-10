@@ -5,12 +5,12 @@
 ## 最新状态
 
 - project_id: `KMFA`
-- version: `0.1.4-remaining-two-project-cash-collection-evidence-or-final-difference-acceptance`
+- version: `0.1.4-global-residual-difference-queue-replay-or-authoritative-exclusion`
 - current_stage: `value-consistency`
-- current_phase: `V014_REMAINING_TWO_PROJECT_CASH_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE`
-- status: `completed_validated_local_only_third_cash_project_materialized_final_cash_project_difference_accepted_no_go`
-- current_blocker: `1_cash_project_3_cash_slots_9_nonzero_differences_secure_wps_content_and_72_global_residuals_remain`
-- next_required_input: `global_residual_difference_queue_replay_or_authoritative_exclusion`
+- current_phase: `V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION`
+- status: `completed_validated_local_only_61_closed_or_excluded_11_open_no_go`
+- current_blocker: `8_cost_component_slots_lack_unique_authoritative_source_3_cash_slots_remain_final_accepted_differences_9_nonzero_differences_preserved`
+- next_required_input: `remaining_eleven_residual_difference_source_trace_or_final_acceptance`
 - production_ready: `false`
 - github_upload_ready: `false`
 - raw_snapshot_exact_match: `true`
@@ -19,12 +19,12 @@
 ## 前序状态（上一 phase）
 
 - project_id: `KMFA`
-- version: `0.1.4-remaining-cash-source-private-trace-or-difference-acceptance`
+- version: `0.1.4-remaining-two-project-cash-collection-evidence-or-final-difference-acceptance`
 - current_stage: `value-consistency`
-- current_phase: `V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE`
-- status: `completed_validated_local_only_second_cash_project_materialized_two_projects_difference_accepted_no_go`
-- current_blocker: `2_cash_projects_6_cash_slots_secure_wps_content_and_8_nonzero_differences_remain`
-- next_required_input: `remaining_two_project_cash_collection_evidence_or_final_difference_acceptance`
+- current_phase: `V014_REMAINING_TWO_PROJECT_CASH_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE`
+- status: `completed_validated_local_only_third_cash_project_materialized_final_cash_project_difference_accepted_no_go`
+- current_blocker: `1_cash_project_3_cash_slots_9_nonzero_differences_secure_wps_content_and_72_global_residuals_remain`
+- next_required_input: `global_residual_difference_queue_replay_or_authoritative_exclusion`
 - raw_snapshot_exact_match: `true`
 - decision: `NO_GO`
 
@@ -44,6 +44,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 global residual difference queue replay or authoritative exclusion completed local-only：72 条队列已逐条分类；37 条 current private target materialization replay、16 条 integer gross-profit/gross-margin formula replay、8 条 owner-authorized non-numeric exclusion，共 61 条关闭或排除；8 条成本分项缺唯一来源、3 条最终差异接受现金槽位继续未决。9 条非零差异、2 条零差异和 1 条未完成比较保持不变；5 个 raw 文件前后快照一致；private replay records 和全中文差异报告保持 ignored/untracked；Stage review=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`remaining_eleven_residual_difference_source_trace_or_final_acceptance`。
 
 - v0.1.4 residual difference authorized source reference or exclusion application owner/agent action intake blocker audit completed local-only: source_owner_action_intake_blocker_count=48，source_owner_action_intake_ready_count=0，source_private_action_intake_blocker_records_item_count=48，prior_action_intake_blocker_observation_count=0，action_intake_blocker_observation_count=1，action_intake_blocked_audit_threshold_met=false，owner_action_intake_ready_count=0，owner_action_intake_blocker_count=48，private_audit_queue_item_count=48，actionable_owner_resolution_count=0，source_reference_or_owner_exclusion_audit_blocker_count=40，formula_or_non_numeric_mapping_audit_blocker_count=8，binding_ready_after_action_intake_blocker_audit_count=0，comparison_retry_ready_after_action_intake_blocker_audit_count=0，unresolved_difference_count=72，current Go/No-Go=NO_GO。This phase reads only prior public-safe action-intake artifacts and ignored private intake blocker records；public evidence is aggregate-only；raw inbox read/list/stat/fingerprint/parse/write/delete/move/rename/copy/normalize/mutation=false；private audit diagnostic/queue/report stay in ignored runtime；authoritative binding=false；raw-to-processed value comparison=false；full reconciliation=false；lineage full check=false；formal report=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`actionable_source_reference_owner_exclusion_formula_mapping_or_non_numeric_mapping_required_before_binding_or_value_comparison`。
 

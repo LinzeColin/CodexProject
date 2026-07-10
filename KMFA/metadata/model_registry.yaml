@@ -1,3 +1,18 @@
+kmfa_v014_global_residual_difference_queue_replay_or_authoritative_exclusion:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-global-residual-difference-queue-replay-or-authoritative-exclusion"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-GLOBAL-RESIDUAL-DIFFERENCE-QUEUE-REPLAY-OR-AUTHORITATIVE-EXCLUSION-001
+  parameter_refs:
+    - PARAM-KMFA-1687
+    - PARAM-KMFA-1688
+    - PARAM-KMFA-1689
+  evidence_dir: KMFA/stage_artifacts/V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION
+  validator: KMFA/tools/check_v014_global_residual_difference_queue_replay_or_authoritative_exclusion.py
+  scope: Private 72-item residual replay with unique integer evidence owner-authorized non-numeric exclusions preserved nonzero differences and eleven explicit open differences; no Stage review GitHub upload app reinstall or business execution.
+
 kmfa_v014_remaining_two_project_cash_collection_evidence_or_final_difference_acceptance:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-remaining-two-project-cash-collection-evidence-or-final-difference-acceptance"
