@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KMFA 经营总览报告 - 内部复核预览</title>
+  <style>
+    :root { --ink:#17202b; --muted:#5c6773; --line:#d8dde3; --paper:#fff; --canvas:#f3f5f7; --blue:#245b86; --blue-soft:#eaf2f8; --red:#a52a2a; --red-soft:#fff0ee; --green:#326a51; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--canvas); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",Arial,sans-serif; font-size:14px; line-height:1.6; }
+    button,a { font:inherit; }
+    .page { width:min(1080px,calc(100% - 32px)); margin:24px auto 40px; background:var(--paper); border:1px solid var(--line); }
+    .masthead { padding:24px 28px; border-bottom:1px solid var(--line); display:flex; align-items:flex-start; justify-content:space-between; gap:20px; }
+    .brand { color:var(--blue); font-weight:800; }
+    h1 { margin:4px 0 4px; font-size:28px; line-height:1.25; letter-spacing:0; }
+    .muted { color:var(--muted); }
+    .status { flex:0 0 220px; border:1px solid #efb7b1; background:var(--red-soft); padding:14px; border-radius:8px; }
+    .status strong { display:block; color:var(--red); font-size:20px; }
+    .notice { margin:20px 28px 0; padding:16px; border-left:4px solid var(--red); background:#fff8f7; }
+    .metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin:16px 28px; }
+    .metric { min-height:92px; padding:14px; border:1px solid var(--line); border-radius:8px; }
+    .metric b { display:block; color:var(--blue); font-size:24px; }
+    .content { padding:4px 28px 28px; }
+    h2 { margin:22px 0 10px; font-size:18px; letter-spacing:0; }
+    table { width:100%; border-collapse:collapse; }
+    th,td { padding:10px 12px; border:1px solid var(--line); text-align:left; }
+    th { background:var(--blue-soft); color:#183b57; }
+    .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+    .button { display:inline-flex; min-height:40px; align-items:center; justify-content:center; border:1px solid var(--blue); border-radius:6px; padding:8px 13px; background:var(--blue); color:#fff; text-decoration:none; cursor:pointer; }
+    .button.secondary { background:#fff; color:var(--blue); }
+    .operation { margin-top:12px; color:var(--green); min-height:24px; }
+    footer { padding:14px 28px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+    @media(max-width:720px) { .page { width:100%; margin:0; border-left:0; border-right:0; } .masthead { display:block; padding:20px; } .status { margin-top:14px; width:100%; } .notice { margin:16px 20px 0; } .metrics { grid-template-columns:repeat(2,minmax(0,1fr)); margin:14px 20px; } .content { padding:4px 20px 22px; overflow-wrap:anywhere; } h1 { font-size:23px; } table { font-size:13px; } th,td { padding:8px; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="masthead">
+      <div><div class="brand">KMFA 经营分析系统</div><h1>经营总览报告</h1><div class="muted">受限导出版本 · 仅供内部复核</div></div>
+      <div class="status"><span>当前报告状态</span><strong>D级（未放行）</strong><span>不可作为正式经营决策依据</span></div>
+    </header>
+    <section class="notice"><strong>限制说明：</strong>关键现金数据缺失；九项非零差异继续保留；一项比较未完成。完整追溯、充分确认和业务一致性尚未成立。</section>
+    <section class="metrics" aria-label="聚合核对状态">
+      <div class="metric"><span>最终接受未决</span><b>3</b><span>不补零</span></div>
+      <div class="metric"><span>非零差异</span><b>9</b><span>不覆盖</span></div>
+      <div class="metric"><span>零差异</span><b>2</b><span>已保留证据</span></div>
+      <div class="metric"><span>未完成比较</span><b>1</b><span>继续阻断</span></div>
+    </section>
+    <section class="content">
+      <h2>报告章节</h2>
+      <table><thead><tr><th>序号</th><th>章节</th><th>展示边界</th></tr></thead><tbody><tr><td>1</td><td>经营总览</td><td>受限摘要，不展示业务明细</td></tr>
+<tr><td>2</td><td>收入</td><td>受限摘要，不展示业务明细</td></tr>
+<tr><td>3</td><td>开票</td><td>受限摘要，不展示业务明细</td></tr>
+<tr><td>4</td><td>回款</td><td>受限摘要，不展示业务明细</td></tr>
+<tr><td>5</td><td>现金</td><td>受限摘要，不展示业务明细</td></tr>
+<tr><td>6</td><td>项目</td><td>受限摘要，不展示业务明细</td></tr>
+<tr><td>7</td><td>税务</td><td>受限摘要，不展示业务明细</td></tr></tbody></table>
+      <h2>导出操作</h2>
+      <div class="actions"><a class="button" href="../csv/business_overview_report_appendix.csv" download>下载CSV附表</a><button class="button secondary" id="pdf-policy" type="button">PDF导出未执行</button></div>
+      <div class="operation" id="operation-status" role="status">本预览未生成 PDF 或 Excel 工作簿。</div>
+    </section>
+    <footer>公开安全摘要，不含原始文件身份、字段表头、业务金额或明细。当前等级与限制必须随导出保留。</footer>
+  </main>
+  <script>
+    document.getElementById('pdf-policy').addEventListener('click',function(){
+      document.getElementById('operation-status').textContent='PDF 仅可在私有运行环境按受限策略生成；本次仍未执行。';
+      document.body.dataset.lastAction='pdf-private-policy-not-executed';
+    });
+  </script>
+</body>
+</html>

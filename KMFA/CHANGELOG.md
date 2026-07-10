@@ -1,3 +1,11 @@
+## 0.1.4-s10-p3-post-remediation-restricted-export - 2026-07-11
+
+- 完成 `V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT` 本地单 phase，生成 2 份受限 HTML 预览、2 份全中文 CSV 附表和 2 个 Excel-compatible CSV 下载入口。
+- 当前动态状态只绑定最新 S10-P2 的 `Q4 / D / NO_GO / 3 final-accepted-open / 9 nonzero / 2 zero / 1 incomplete`；历史 S10-P3 只复用 HTML/CSV、Excel-compatible 和 PDF 私有策略框架，不复用旧 `12 pending` 状态。
+- 两份 HTML 首屏均显示 `D级（未放行）`、关键现金缺失、九项非零差异、一项未完成比较和使用限制；CSV 只含中文聚合状态，不含业务值或内部技术字段。
+- PDF 仅保留私有运行时策略且本 phase 未执行；未创建或提交 PDF、Excel 工作簿、private CSV、raw/private 数据或业务明细。
+- baseline browser audit `8/8 PASS`，新导出 browser audit `4/4 PASS`，桌面/移动 4 个 viewport 无横向溢出或 console error；未执行 Stage 10 review、GitHub upload、app reinstall 或 business execution。
+
 ## 0.1.4-s10-p2-post-remediation-trust-grade-lock - 2026-07-11
 
 - 完成 `V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK` 本地单 phase，复核 A/B/C/D 四级规则以及数据质量、差异、人工确认、时效四个驱动维度。

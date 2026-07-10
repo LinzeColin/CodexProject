@@ -4,18 +4,18 @@
 
 ## 一句话状态
 
-KMFA 已完成 `V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK`：A/B/C/D 与四维等级规则已复核，两条报告记录均完成八项版本绑定；当前 `Q4` 理论上限为 `B`，但每条 6 个 hard block 继续将结果锁定为 `D / NO_GO（未放行）`，未自动提级、导出、上传、重装 app 或执行业务动作。
+KMFA 已完成 `V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT`：2 份受限 HTML、2 份全中文 CSV 与 Excel-compatible 下载均显式传播 `D / NO_GO（未放行）` 和 3/9/2/1 差异状态；PDF 私有策略未执行，未创建正式报告、PDF、工作簿或私有 CSV，也未复审、上传、重装 app 或执行业务动作。
 
 ## 当前可信任范围
 
-- 可以信任：S10-P2 的 A/B/C/D 四级规则、数据质量/差异/人工确认/时效四维判断、两条报告的八项版本绑定，以及当前 `Q4 → 理论上限 B → hard blocks 后 D / NO_GO` 的重新计算结果。
+- 可以信任：S10-P3 两份 HTML 与两份中文 CSV 均只显示公开安全聚合状态，桌面/移动无溢出或脚本错误，CSV 下载可达，D级、未放行和使用限制未被导出流程绕过。
 - 必须保留：9 条非零差异，不得通过覆盖、四舍五入、空白兼容层或替换权威值消除。
 - 不能信任：3 条缺可证明数值的现金槽位、1 条未完成现金比较、任何完整业务一致性或正式经营决策结论。
-- 下一步只做 `S10-P3`，所有导出必须继续携带 `D / NO_GO` 和限制；不得顺手进行 Stage 10 review、GitHub upload、app reinstall 或 business execution。
+- 下一步只做 `Stage 10 整体复审`，复跑 S10-P1/P2/P3 并修复 findings；不得顺手进行 GitHub upload、S11、app reinstall 或 business execution。
 
 ## 前序一句话状态（上一 phase）
 
-KMFA 已完成 `V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY`：项目成本专题与经营总览两个管理入口、11 个管理可读章节已绑定最新 `69/3` disposition，并显式展示 `Q4 / D / NO_GO（未放行）`；旧 S10-P1 只复用结构，三条现金缺失不补零。
+KMFA 已完成 `V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK`：A/B/C/D 与四维等级规则已复核，两条报告记录均完成八项版本绑定；当前 `Q4` 理论上限为 `B`，但每条 6 个 hard block 继续将结果锁定为 `D / NO_GO（未放行）`。
 
 ## 前序一句话状态（历史）
 

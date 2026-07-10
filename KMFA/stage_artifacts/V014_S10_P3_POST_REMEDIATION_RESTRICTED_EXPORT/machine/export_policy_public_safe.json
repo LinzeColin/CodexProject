@@ -1,0 +1,16 @@
+{
+  "business_decision_basis_allowed": false,
+  "complete_trusted_report_display_allowed": false,
+  "csv_restricted_appendix_allowed": true,
+  "delivery_allowed": false,
+  "excel_compatible_csv_download_allowed": true,
+  "excel_download_mode": "excel_compatible_csv_no_workbook",
+  "formal_report_export_allowed": false,
+  "html_restricted_preview_allowed": true,
+  "pdf_export_performed": false,
+  "pdf_private_runtime_only": true,
+  "pdf_private_runtime_policy_available": true,
+  "phase_id": "V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT",
+  "project_id": "KMFA",
+  "schema_version": "kmfa.v014.s10_p3.post_remediation_export_policy_public_safe.v1"
+}
