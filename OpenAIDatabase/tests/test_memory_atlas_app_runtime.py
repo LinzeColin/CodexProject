@@ -19,6 +19,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 COMMAND_BRIDGE_PATH = REPO_ROOT / "scripts" / "memory_atlas_command_bridge.py"
 RUNTIME_SERVER_PATH = REPO_ROOT / "scripts" / "memory_atlas_runtime_server.py"
 PROPOSAL_WORKFLOW_PATH = REPO_ROOT / "scripts" / "memory_atlas_proposal_workflow.py"
+OWNER_DAILY_PATH = REPO_ROOT / "scripts" / "memory_atlas_owner_daily.py"
 WEEKLY_REPORT_PATH = REPO_ROOT / "scripts" / "build_memory_atlas_weekly_report.py"
 COMMAND_VALIDATOR_PATH = REPO_ROOT / "apps/memory-atlas/scripts/validate_memory_atlas_v1_2_command_workflows.cjs"
 
@@ -38,6 +39,7 @@ def make_installed_workspace(root: Path) -> tuple[Path, Path, Path]:
     source_root = app_support / "source"
     runtime_dir = app_support / "runtime"
     (source_root / "scripts").mkdir(parents=True)
+    (source_root / "scripts" / "atlasctl.py").write_text("# installed fixture\n", encoding="utf-8")
     runtime_dir.mkdir(parents=True)
     (source_root / "memory_atlas_source_workspace.json").write_text(
         json.dumps(
@@ -498,6 +500,104 @@ class MemoryAtlasCommandBridgeTests(unittest.TestCase):
             self.assertFalse(worker.is_alive())
             self.assertEqual(runner.calls, [])
 
+    def test_owner_daily_uses_fixed_request_contract_metadata_audit_and_existing_lock(self) -> None:
+        started = threading.Event()
+        release = threading.Event()
+
+        class BlockingOwnerDailyRunner:
+            def __init__(self) -> None:
+                self.calls: list[str] = []
+
+            def run(self) -> dict[str, Any]:
+                self.calls.append("run")
+                started.set()
+                release.wait(timeout=3)
+                return {
+                    "schema_version": "memory_atlas_owner_daily_result.v1_2_r5",
+                    "action": "run",
+                    "status": "PASS",
+                    "completed_count": 8,
+                    "failed_count": 0,
+                    "steps": [],
+                }
+
+            def retry(self, step_id: str) -> dict[str, Any]:
+                self.calls.append(step_id)
+                return {
+                    "schema_version": "memory_atlas_owner_daily_result.v1_2_r5",
+                    "action": "retry",
+                    "requested_step_id": step_id,
+                    "status": "PASS",
+                    "completed_count": 1,
+                    "failed_count": 0,
+                    "steps": [],
+                }
+
+        class UnusedProposalWorkflow:
+            def review(self) -> dict[str, Any]:
+                raise AssertionError("shared lock must reject before proposal review")
+
+            def approve_and_apply(self, **_kwargs: Any) -> dict[str, Any]:
+                raise AssertionError("shared lock must reject before proposal apply")
+
+            def rollback(self, **_kwargs: Any) -> dict[str, Any]:
+                raise AssertionError("shared lock must reject before proposal rollback")
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            app_support, source_root, runtime_dir = make_installed_workspace(root)
+            owner_runner = BlockingOwnerDailyRunner()
+            bridge = self.bridge_module.CommandBridge(
+                self.bridge_module.CommandContext(
+                    source_root=source_root,
+                    runtime_dir=runtime_dir,
+                    app_support=app_support,
+                ),
+                runner=RecordingRunner(),
+                proposal_workflow=UnusedProposalWorkflow(),
+                owner_daily_runner=owner_runner,
+            )
+            worker = threading.Thread(target=bridge.execute_owner_daily, args=({"action": "run"},))
+            worker.start()
+            self.assertTrue(started.wait(timeout=2))
+            with self.assertRaises(self.bridge_module.CommandBusyError):
+                bridge.execute("generate_weekly_report")
+            with self.assertRaises(self.bridge_module.CommandBusyError):
+                bridge.execute_proposal_action(
+                    {
+                        "action": "approve_apply",
+                        "proposal_id": "proposal_fixture",
+                        "review_token": "fixture-token",
+                        "confirmation": "授权应用 proposal_fixture",
+                    }
+                )
+            release.set()
+            worker.join(timeout=3)
+            self.assertFalse(worker.is_alive())
+            self.assertEqual(owner_runner.calls, ["run"])
+
+            retry = bridge.execute_owner_daily({"action": "retry", "step_id": "audit"})
+            self.assertEqual(retry["requested_step_id"], "audit")
+            self.assertEqual(owner_runner.calls, ["run", "audit"])
+            for bad_payload in (
+                {"action": "run", "argv": ["rm", "-rf", "/"]},
+                {"action": "retry", "step_id": "audit;rm"},
+                {"action": "retry"},
+                {"action": "unknown"},
+            ):
+                with self.subTest(payload=bad_payload), self.assertRaises(self.bridge_module.CommandRequestError):
+                    bridge.execute_owner_daily(bad_payload)
+            self.assertEqual(owner_runner.calls, ["run", "audit"])
+
+            audit_path = app_support / "owner_daily_audit.jsonl"
+            rows = [json.loads(line) for line in audit_path.read_text(encoding="utf-8").splitlines()]
+            self.assertEqual([row["action"] for row in rows], ["run", "retry"])
+            self.assertEqual(rows[1]["requested_step_id"], "audit")
+            audit_text = audit_path.read_text(encoding="utf-8")
+            self.assertNotIn(str(source_root), audit_text)
+            self.assertNotIn("stdout", audit_text)
+            self.assertNotIn("steps", audit_text)
+
 
 class MemoryAtlasRuntimeServerTests(unittest.TestCase):
     @classmethod
@@ -522,6 +622,8 @@ class MemoryAtlasRuntimeServerTests(unittest.TestCase):
             def __init__(self) -> None:
                 self.calls: list[str] = []
                 self.proposal_calls: list[dict[str, Any]] = []
+                self.owner_daily_calls: list[dict[str, Any]] = []
+                self.owner_daily_error: BaseException | None = None
 
             def execute(self, command_id: str) -> dict[str, Any]:
                 self.calls.append(command_id)
@@ -543,6 +645,22 @@ class MemoryAtlasRuntimeServerTests(unittest.TestCase):
                     "proposal_id": payload.get("proposal_id"),
                     "transaction_id": payload.get("transaction_id", "txn_0123456789abcdef0123"),
                     "message_zh": "proposal 本地操作完成。",
+                }
+
+            def execute_owner_daily(self, payload: dict[str, Any]) -> dict[str, Any]:
+                if self.owner_daily_error is not None:
+                    raise self.owner_daily_error
+                self.owner_daily_calls.append(dict(payload))
+                step_id = payload.get("step_id")
+                return {
+                    "schema_version": "memory_atlas_owner_daily_result.v1_2_r5",
+                    "api_version": "memory_atlas_owner_daily_api.v1_2_r5",
+                    "action": payload["action"],
+                    "requested_step_id": step_id,
+                    "status": "PASS",
+                    "completed_count": 1 if step_id else 8,
+                    "failed_count": 0,
+                    "steps": [],
                 }
 
         self.bridge = FakeBridge()
@@ -594,6 +712,8 @@ class MemoryAtlasRuntimeServerTests(unittest.TestCase):
         self.assertEqual(payload["command_api_version"], "memory_atlas_command_api.v1_2_r3")
         self.assertEqual(payload["command_ids"], list(self.bridge.command_ids))
         self.assertEqual(payload["proposal_api_version"], "memory_atlas_proposal_api.v1_2_r4")
+        self.assertEqual(payload["owner_daily_api_version"], "memory_atlas_owner_daily_api.v1_2_r5")
+        self.assertEqual(payload["owner_daily_scope"], "fixed_eight_step_no_write_profile")
         self.assertNotIn("access-control-allow-origin", headers)
 
     def test_valid_command_request_executes_once(self) -> None:
@@ -648,6 +768,52 @@ class MemoryAtlasRuntimeServerTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(result["action"], "rollback")
         self.assertEqual(self.bridge.proposal_calls, [payload])
+
+    def test_valid_owner_daily_run_and_fixed_retry_execute_once(self) -> None:
+        for payload in ({"action": "run"}, {"action": "retry", "step_id": "audit"}):
+            with self.subTest(payload=payload):
+                status, headers, response_body = self.request(
+                    "POST",
+                    "/__memory_atlas_owner_daily",
+                    body=json.dumps(payload).encode(),
+                    headers=self.valid_headers(),
+                )
+                result = json.loads(response_body)
+                self.assertEqual(status, 200)
+                self.assertEqual(result["action"], payload["action"])
+                self.assertNotIn("access-control-allow-origin", headers)
+        self.assertEqual(self.bridge.owner_daily_calls, [{"action": "run"}, {"action": "retry", "step_id": "audit"}])
+
+    def test_owner_daily_endpoint_rejects_origin_shape_step_and_busy_operation(self) -> None:
+        cases = [
+            ({"action": "run"}, {"Content-Type": "application/json", "Origin": "https://evil.example"}, 403),
+            ({"action": "run", "argv": ["rm", "-rf", "/"]}, self.valid_headers(), 400),
+            ({"action": "retry"}, self.valid_headers(), 400),
+            ({"action": "retry", "step_id": "audit;rm"}, self.valid_headers(), 400),
+            ({"action": "unknown"}, self.valid_headers(), 400),
+        ]
+        for payload, headers, expected_status in cases:
+            with self.subTest(payload=payload):
+                status, _response_headers, response_body = self.request(
+                    "POST",
+                    "/__memory_atlas_owner_daily",
+                    body=json.dumps(payload).encode(),
+                    headers=headers,
+                )
+                self.assertEqual(status, expected_status)
+                self.assertRegex(json.loads(response_body)["message_zh"], r"[\u4e00-\u9fff]")
+        self.assertEqual(self.bridge.owner_daily_calls, [])
+
+        busy_error = type("CommandBusyError", (RuntimeError,), {})("private busy detail")
+        self.bridge.owner_daily_error = busy_error
+        status, _headers, response_body = self.request(
+            "POST",
+            "/__memory_atlas_owner_daily",
+            body=json.dumps({"action": "run"}).encode(),
+            headers=self.valid_headers(),
+        )
+        self.assertEqual(status, 409)
+        self.assertNotIn("private busy detail", response_body.decode("utf-8"))
 
     def test_proposal_endpoint_rejects_remote_origin_extra_fields_unknown_action_and_wrong_shape(self) -> None:
         valid = {
