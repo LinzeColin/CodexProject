@@ -1,3 +1,18 @@
+kmfa_v014_s10_p3_post_remediation_restricted_export:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s10-p3-post-remediation-restricted-export"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S10-P3-POST-REMEDIATION-RESTRICTED-EXPORT-001
+  parameter_refs:
+    - PARAM-KMFA-1702
+    - PARAM-KMFA-1703
+    - PARAM-KMFA-1704
+  evidence_dir: KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT
+  validator: KMFA/tools/check_v014_s10_p3_post_remediation_restricted_export.py
+  scope: Two restricted HTML previews and two Chinese CSV appendices bound to current Q4 D NO_GO and 3 9 2 1 reconciliation state; PDF is private policy only and formal report review upload app reinstall and business execution remain closed.
+
 kmfa_v014_s10_p2_post_remediation_trust_grade_lock:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-s10-p2-post-remediation-trust-grade-lock"

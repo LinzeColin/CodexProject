@@ -2256,3 +2256,19 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - raw boundary: five raw files must match before, after and S10-P1 snapshots exactly; all raw identities and diagnostics remain ignored private evidence.
 - release boundary: no automatic promotion, complete trusted display, formal report, decision basis, S10-P3 export, Stage 10 review, upload, app reinstall or business execution.
 - validation: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s10_p2_post_remediation_trust_grade_lock.py --require-private-evidence --require-final-evidence` and focused unittest.
+
+
+## FORM-KMFA-V014-S10-P3-POST-REMEDIATION-RESTRICTED-EXPORT-001
+
+- phase: `V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT`
+- roadmap phase: `S10-P3`
+- model: `kmfa_v014_s10_p3_post_remediation_restricted_export`
+- product_version: `0.1.4-s10-p3-post-remediation-restricted-export`
+- export rule: exactly two restricted HTML previews and two Chinese CSV appendices; Excel-compatible downloads use those CSV files and no workbook is committed.
+- state rule: current `3 final-accepted-open / 9 nonzero / 2 zero / 1 incomplete / 12 hard blocks / Q4 / D / NO_GO` comes only from current S10-P2; historical S10-P3 contributes structure and policy only.
+- visibility rule: D grade, not released, key cash missing, nonzero differences, incomplete comparison and internal-review-only limit precede report sections in every HTML and appear in every CSV row.
+- PDF rule: private-runtime policy is available, but this phase performs no PDF export and commits no PDF file.
+- version rule: each record binds export, report-entry, grade-record, template, formula, mapping, field-mapping, HTML, CSV and PDF-policy versions.
+- raw boundary: five raw files match before, after and S10-P2 snapshots exactly; screenshots, browser audits, raw identities and diagnostics remain ignored private evidence.
+- release boundary: no complete trusted display, formal report, decision basis, Stage 10 review, upload, app reinstall or business execution.
+- validation: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s10_p3_post_remediation_restricted_export.py --require-private-evidence --require-browser-evidence --require-final-evidence` and focused unittest.

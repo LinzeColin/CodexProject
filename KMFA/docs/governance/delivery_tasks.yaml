@@ -1,6 +1,46 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "KMFA-V014-S10-P3-POST-REMEDIATION-RESTRICTED-EXPORT-20260711"
+    phase: "V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT"
+    objective: "Create restricted public-safe HTML and Chinese CSV exports while preserving the current D NO_GO release boundary."
+    scope:
+      - "two responsive restricted HTML previews with D grade and blockers first"
+      - "two Chinese CSV appendices and Excel-compatible CSV downloads"
+      - "private-runtime-only PDF policy without PDF generation"
+      - "current 3 9 2 1 reconciliation state and raw immutability proof"
+    non_scope:
+      - "Stage 10 overall review or S11"
+      - "formal report PDF file Excel workbook private CSV or business values"
+      - "GitHub upload app reinstall external connector or business execution"
+    status: "completed"
+    completed_version: "0.1.4-s10-p3-post-remediation-restricted-export"
+    dependencies:
+      - "V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY"
+      - "V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK"
+      - "V014_S10_P3_REPORT_EXPORT"
+      - "KMFA v1.4 human-flow HTML baseline"
+    required_files:
+      - "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/machine/restricted_export_manifest.json"
+      - "KMFA/tools/check_v014_s10_p3_post_remediation_restricted_export.py"
+    acceptance_ids:
+      - "ACC-V014-S10-P3-POST-REMEDIATION-RESTRICTED-EXPORT"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s10_p3_post_remediation_restricted_export.py --require-private-evidence --require-browser-evidence --require-final-evidence"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s10_p3_post_remediation_restricted_export"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_no_float_money.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/no_omission_check.py"
+    test_results:
+      - "PASS: RED then seven focused behavior tests"
+      - "PASS: baseline browser audit 8 of 8 and restricted export audit 4 of 4"
+      - "PASS: desktop and mobile checks 4 of 4 with no overflow or console errors"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/human/test_results_zh.md"
+      - "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/machine/restricted_export_manifest.json"
+    risk: "Restricted exports could be mistaken for formal reports unless D grade NO_GO blockers and usage limits remain first-view visible."
+    rollback: "Revert only this phase commit and ignored private browser and raw evidence; never mutate the raw inbox."
+    target_version: "0.1.4-s10-p3-post-remediation-restricted-export"
+
   - task_id: "KMFA-V014-S10-P2-POST-REMEDIATION-TRUST-GRADE-LOCK-20260711"
     phase: "V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK"
     objective: "Recompute the two current report trust grades under the reviewed A B C D policy and lock D while hard blocks remain."

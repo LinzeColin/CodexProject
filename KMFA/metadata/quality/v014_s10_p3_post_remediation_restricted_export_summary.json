@@ -1,0 +1,32 @@
+{
+  "business_decision_basis_allowed_count": 0,
+  "committed_excel_workbook_count": 0,
+  "committed_pdf_file_count": 0,
+  "committed_public_export_artifact_count": 4,
+  "csv_restricted_appendix_count": 2,
+  "current_data_quality_grade": "Q4",
+  "current_report_grade": "D",
+  "decision": "NO_GO",
+  "excel_compatible_csv_download_count": 2,
+  "formal_report_count": 0,
+  "grade_distribution": {
+    "D": 2
+  },
+  "hard_block_count": 12,
+  "html_restricted_preview_count": 2,
+  "incomplete_reconciliation_count": 1,
+  "nonzero_delta_reconciliation_count": 9,
+  "open_final_difference_accepted_count": 3,
+  "phase_id": "V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT",
+  "project_id": "KMFA",
+  "raw_cross_phase_snapshot_exact_match": true,
+  "raw_snapshot_exact_match": true,
+  "raw_source_file_count": 5,
+  "report_export_record_count": 2,
+  "report_template_count": 2,
+  "roadmap_phase_id": "S10-P3",
+  "schema_version": "kmfa.v014.s10_p3.post_remediation_restricted_export_summary.v1",
+  "stage_id": "S10",
+  "status": "completed_validated_local_only_restricted_exports_d_no_go_upload_deferred",
+  "zero_delta_reconciliation_count": 2
+}

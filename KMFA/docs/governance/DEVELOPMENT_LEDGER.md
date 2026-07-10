@@ -2886,3 +2886,20 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - focused_test: `KMFA/tests/test_v014_s10_p2_post_remediation_trust_grade_lock.py`
 - raw/private policy: five raw files remain exact before, after and across S10-P1; identities and diagnostics remain gitignored and untracked.
 - deferred: S10-P3, Stage 10 review, formal report, export, GitHub upload, app reinstall and business execution.
+
+
+## 2026-07-11｜v0.1.4 S10-P3 post-remediation restricted export
+
+- phase: `V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT`
+- roadmap_phase: `S10-P3`
+- task_id: `KMFA-V014-S10-P3-POST-REMEDIATION-RESTRICTED-EXPORT-20260711`
+- product_version: `0.1.4-s10-p3-post-remediation-restricted-export`
+- status: `completed_validated_local_only_restricted_exports_d_no_go_upload_deferred`
+- result: `2 restricted HTML / 2 Chinese CSV / 2 Excel-compatible CSV / 4 public artifacts / Q4 / D / NO_GO / 3 9 2 1`.
+- control: current S10-P2 supplies all dynamic state; historical S10-P3 and v1.4 human-flow sample contribute export structure only. D grade blockers and usage limits remain first-view visible.
+- browser: baseline `8/8 PASS`, new exports `4/4 PASS`, four desktop/mobile checks with no overflow or console errors.
+- evidence: `KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/machine/restricted_export_manifest.json`
+- validator: `KMFA/tools/check_v014_s10_p3_post_remediation_restricted_export.py`
+- focused_test: `KMFA/tests/test_v014_s10_p3_post_remediation_restricted_export.py`
+- raw/private policy: five raw files remain exact before, after and across S10-P2; browser screenshots, audits, identities and diagnostics remain gitignored and untracked.
+- deferred: Stage 10 review, formal report, PDF execution, GitHub upload, app reinstall and business execution.
