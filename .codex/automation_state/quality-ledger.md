@@ -50,3 +50,58 @@
 ## 备注：推送链路
 - 尝试：`git push origin HEAD:main`
 - 结果：待本批次提交后复测；当前仍以非快进同步与阻塞修复状态为准。
+
+## 质量台账 · 2026-07-11
+
+- 日期：2026-07-11
+- Branch：main
+- Batch ID：AIRM2-20260711-MAINT-001
+- Theme：governance
+- 结论：同步门禁失败。`M N` 分支状态下 rebase 触发 `OpenAIDatabase` 三级核心治理文件冲突，业务改动已停止。
+
+## 问题来源
+- 分支并行提交导致提交图谱冲突。
+- 该批次 rebase 尝试命中 `OpenAIDatabase` 关键治理文件（`功能清单.md`、`开发记录.md`、`模型参数文件.md`）。
+
+## 批次评分矩阵
+
+- 问题来源：`OpenAIDatabase` rebase 冲突与分支偏离。
+
+| 维度 | 分数（0-5） | 说明 |
+|---|---:|---|
+| Correctness | 1 | 代码逻辑未变更，仅同步流程受阻；未产出修复 |
+| Build/Test 阻断 | 0 | rebase 阻塞，无法进入本轮验证路径 |
+| Stability | 2 | 当前状态可恢复，无脏数据 |
+| Robustness | 3 | 冲突检测与回退执行成功，避免破坏性覆盖 |
+| Performance | 4 | 未引入新运行负担 |
+| Stress/Concurrency | 1 | 未进行压力测试 |
+| Data Structure | 2 | 无数据结构改动 |
+| Code Structure | 2 | 无代码结构改动 |
+| Coupling | 3 | 分支治理关系暴露为可操作失败点 |
+| Interconnection | 3 | 重现路径明确：fetch -> rev-list -> pull/rebase -> abort |
+| Governance | 4 | 自动化手册记录完整闭环 |
+| Human Readability | 5 | 失败信息和恢复步骤人类可读 |
+| Chinese UX | 5 | 全文中文 |
+| Handoff Continuity | 5 | 明确下一批优先级与恢复命令 |
+
+## 结果
+- 本轮处理问题数：0（功能/治理文件未改动）
+- 本轮提交：1（阻塞记录更新）
+- 通过验证项：0
+- 阻塞验证项：1（`git pull --rebase` 失败）
+
+## 验证结果明细
+- `git fetch --prune origin`：退出码 0
+- `git rev-list --left-right --count HEAD...origin/main`：输出 `34 14`
+- `git pull --rebase --autostash origin main`：退出码 1，出现三文件冲突
+- `git rebase --abort`：退出码 0
+- `git status --short --branch`：恢复后 `## main...origin/main [ahead 34, behind 14]`
+
+## 风险与后续
+- 业务风险：`origin/main` 未对齐导致持续阻塞，当前 automation 无法推进 commit/push。
+- 质量风险：若未先解决冲突再改动，`required_path_full_scope` 与本地验证仍会长期阻塞。
+- 恢复建议：先完成冲突清理并在 rebase 成功后立即执行 `python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main`。
+
+## 备注：推送链路
+- 本轮未提交业务改动，未执行 push。
+- 推送恢复命令见 handoff。
