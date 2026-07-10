@@ -153,6 +153,7 @@ class Stage032DatabaseConnectionPoolPhase1Tests(unittest.TestCase):
             'status: "stage034_phase1_in_progress"',
             'status: "stage034_phase2_in_progress"',
             'status: "stage034_phase3_in_progress"',
+            'status: "stage034_completed_local_pending_review"',
         ]
         allowed_lock_next_terms = [
             'next_phase: "stage_review_gate"',
@@ -170,6 +171,7 @@ class Stage032DatabaseConnectionPoolPhase1Tests(unittest.TestCase):
             'next_gate: "IDS-STAGE034-P2-GATE"',
             'next_gate: "IDS-STAGE034-P3-GATE"',
             'next_gate: "IDS-STAGE034-P4-GATE"',
+            'next_gate: "IDS-STAGE034-REVIEW-GATE"',
         ]
         allowed_lock_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE032-P4"',
@@ -182,6 +184,7 @@ class Stage032DatabaseConnectionPoolPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE034-P1"',
             'current_task_id: "IDS-V0_1-STAGE034-P2"',
             'current_task_id: "IDS-V0_1-STAGE034-P3"',
+            'current_task_id: "IDS-V0_1-STAGE034-P4"',
         ]
         allowed_lock_acceptance_terms = [
             'acceptance_status: "local_passed_pending_stage_review"',
@@ -189,9 +192,11 @@ class Stage032DatabaseConnectionPoolPhase1Tests(unittest.TestCase):
             'acceptance_status: "phase1_scope_boundary_defined"',
             'acceptance_status: "phase2_retention_table_slice_defined"',
             'acceptance_status: "phase3_scenario_validation_passed"',
+            'acceptance_status: "phase4_closeout_complete"',
             'acceptance_status: "phase1_scope_boundary_defined"',
             'acceptance_status: "phase2_retention_table_slice_defined"',
             'acceptance_status: "phase3_scenario_validation_passed"',
+            'acceptance_status: "phase4_closeout_complete"',
             'acceptance_status: "phase2_size_guard_slice_defined"',
             'acceptance_status: "phase3_scenario_validation_passed"',
             'acceptance_status: "phase4_closeout_complete"',
@@ -223,6 +228,7 @@ class Stage032DatabaseConnectionPoolPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE034-P1"',
             'current_phase_id: "IDS-STAGE034-P2"',
             'current_phase_id: "IDS-STAGE034-P3"',
+            'current_phase_id: "IDS-STAGE034-P4"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE032-P4"',
@@ -235,6 +241,7 @@ class Stage032DatabaseConnectionPoolPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE034-P1"',
             'current_task_id: "IDS-V0_1-STAGE034-P2"',
             'current_task_id: "IDS-V0_1-STAGE034-P3"',
+            'current_task_id: "IDS-V0_1-STAGE034-P4"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE032-REVIEW-GATE"',
@@ -247,6 +254,7 @@ class Stage032DatabaseConnectionPoolPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE034-P2-GATE"',
             'next_gate_id: "IDS-STAGE034-P3-GATE"',
             'next_gate_id: "IDS-STAGE034-P4-GATE"',
+            'next_gate_id: "IDS-STAGE034-REVIEW-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE032-P4-20260703-001"',
@@ -643,6 +651,7 @@ class Stage032DatabaseConnectionPoolReviewTests(unittest.TestCase):
             'acceptance_status: "phase1_scope_boundary_defined"',
             'acceptance_status: "phase2_retention_table_slice_defined"',
             'acceptance_status: "phase3_scenario_validation_passed"',
+            'acceptance_status: "phase4_closeout_complete"',
         ]
         allowed_lock_status_terms = [
             'status: "stage032_completed_reviewed_local"',
@@ -654,6 +663,7 @@ class Stage032DatabaseConnectionPoolReviewTests(unittest.TestCase):
             'status: "stage034_phase1_in_progress"',
             'status: "stage034_phase2_in_progress"',
             'status: "stage034_phase3_in_progress"',
+            'status: "stage034_completed_local_pending_review"',
         ]
         allowed_lock_gate_terms = [
             'next_gate: "IDS-STAGE033-P1-GATE"',
@@ -665,6 +675,7 @@ class Stage032DatabaseConnectionPoolReviewTests(unittest.TestCase):
             'next_gate: "IDS-STAGE034-P2-GATE"',
             'next_gate: "IDS-STAGE034-P3-GATE"',
             'next_gate: "IDS-STAGE034-P4-GATE"',
+            'next_gate: "IDS-STAGE034-REVIEW-GATE"',
         ]
         allowed_lock_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE032-REVIEW"',
@@ -676,6 +687,7 @@ class Stage032DatabaseConnectionPoolReviewTests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE034-P1"',
             'current_task_id: "IDS-V0_1-STAGE034-P2"',
             'current_task_id: "IDS-V0_1-STAGE034-P3"',
+            'current_task_id: "IDS-V0_1-STAGE034-P4"',
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE032"',
@@ -701,6 +713,7 @@ class Stage032DatabaseConnectionPoolReviewTests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE034-P1"',
             'current_phase_id: "IDS-STAGE034-P2"',
             'current_phase_id: "IDS-STAGE034-P3"',
+            'current_phase_id: "IDS-STAGE034-P4"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE032-REVIEW"',
@@ -712,6 +725,7 @@ class Stage032DatabaseConnectionPoolReviewTests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE034-P1"',
             'current_task_id: "IDS-V0_1-STAGE034-P2"',
             'current_task_id: "IDS-V0_1-STAGE034-P3"',
+            'current_task_id: "IDS-V0_1-STAGE034-P4"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE033-P1-GATE"',
@@ -723,6 +737,7 @@ class Stage032DatabaseConnectionPoolReviewTests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE034-P2-GATE"',
             'next_gate_id: "IDS-STAGE034-P3-GATE"',
             'next_gate_id: "IDS-STAGE034-P4-GATE"',
+            'next_gate_id: "IDS-STAGE034-REVIEW-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE032-REVIEW-20260703-001"',
