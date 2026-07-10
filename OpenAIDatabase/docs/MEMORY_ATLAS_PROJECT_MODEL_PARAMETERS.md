@@ -1,3 +1,37 @@
+## 165. Memory Atlas v1.2 Remediation R3 Command Workflow Parameters
+
+状态：`R3_COMPLETE_LOCAL_ONLY`；release 仍为 `FAIL_REMEDIATION_REQUIRED`。
+
+参数：
+
+- `command_api_version = memory_atlas_command_api.v1_2_r3`
+- `command_endpoint = /__memory_atlas_command`
+- `bind_host = 127.0.0.1`
+- `command_allowlist_count = 6`
+- `command_ids = sync_chatgpt; sync_codex; generate_weekly_report; view_pending_proposals; generate_personalization_prompt; chatgpt_deep_explore`
+- `request_body_keys = command_id only`
+- `max_command_body_bytes = 1024`
+- `default_command_timeout_seconds = 180`
+- `subprocess = fixed argv; shell=false; scrubbed environment`
+- `timeout_cleanup = process-group SIGTERM then SIGKILL before lock release`
+- `workspace_shape = <app-support>/source + <app-support>/runtime`
+- `hosted_static_command_post_count = 0`
+- `deep_explore_mode = prefill_only`
+- `external_request_methods = GET only`
+- `canonical_repo_mutation = false`
+- `final_reviewer_high_medium = 0; 0`
+- `requirements = 38 verified; 13 partial; 5 failed; 2 not_verified`
+
+验证逻辑：`validate:v1.2-command-workflows` 必须自行构建当前 frontend，在临时
+installer-shaped runtime 中经渲染 UI 真实执行六项命令，检查文件与 snapshot 结果，
+拒绝 remote Origin、lifecycle remote Origin 和 extra fields，证明无 CORS、metadata-only
+audit、静态 POST=0、prefill-only 无静默发送、canonical repo mutation=false 和
+remote push=false。三视口 Home、Stage 7、focused unit tests、lint、build 和 privacy
+scan 必须继续通过。
+
+边界：本参数只证明 R3 本地候选的命令执行路径，不证明 proposal apply/rollback、
+owner-daily、线上 snapshot parity、GitHub clean recovery、app 安装或 v1.2 最终完成。
+
 ## 164. Memory Atlas v1.2 Remediation R2 Identity And IA Parameters
 
 状态：`R2_COMPLETE_LOCAL_ONLY`；release 仍为 `FAIL_REMEDIATION_REQUIRED`。

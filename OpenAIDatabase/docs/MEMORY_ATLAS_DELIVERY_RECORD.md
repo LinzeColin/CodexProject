@@ -1,8 +1,25 @@
 # Memory Atlas Delivery Record
 
-## Current Status Supersession: v1.2 Remediation R2
+## Current Status Supersession: v1.2 Remediation R3
 
 当前发布状态：`FAIL_REMEDIATION_REQUIRED`。
+
+2026-07-10 R3 已在本地源码候选把 Command Palette 六项动作接入受控 loopback
+runtime。真实浏览器通过临时 installer-shaped `source/runtime` 和 synthetic fixtures
+完成 ChatGPT/Codex 脱敏同步、derived-only 周报、只读提案状态、三类个性化提示和
+ChatGPT prefill-only 深度探索。请求只能提供精确 `command_id`，子进程固定 argv、
+`shell=false`、环境清洗且超时时清理完整 process group。静态托管证据为命令 POST=0，
+只显示 `http://127.0.0.1:4177` 本地交接；深度探索只有显式 GET，无自动提交。
+证据位于 `机器治理/证据与日志/remediation/v1_2_r3/`。
+
+R3 将验收汇总推进到 `VERIFIED 38 / PARTIAL 13 / FAILED 5 / NOT_VERIFIED 2`，但
+不包含真实 proposal approval/apply/rollback、owner-daily、snapshot parity、final audit
+接入、GitHub clean recovery 或最终发布。线上和已安装 app 均未更新。`origin/main`
+已外部前进到 `bd06ee38c1b8c52bcafd68b3c3b0a752a53cae62`；R3 implementation head
+为 ahead 6 / behind 10。R3 没有 merge、rebase 或 push，十个 Cloudflare L2 commits
+留给 R8 显式整合。
+
+### R2 Identity And Information Architecture Baseline
 
 2026-07-10 R2 已在本地源码候选建立 `Memory Atlas / 记忆决策台 · v1.2`
 发行身份、判断/探索/复盘问题式导航和默认机器详情折叠。1470x661、1440x900、
@@ -11,7 +28,7 @@
 均完整包含于导航 scrollport，四边裁切为 0。证据位于
 `机器治理/证据与日志/remediation/v1_2_r2/`。
 
-R2 不包含真实命令执行、proposal apply/rollback、owner-daily、P0 可视化工作流、
+R2 当时不包含真实命令执行、proposal apply/rollback、owner-daily、P0 可视化工作流、
 snapshot parity、GitHub clean recovery 或最终发布；线上和已安装 app 仍是旧候选。
 收口 fetch 发现 `origin/main` 已由独立 Cloudflare L2 工作前进到
 `b864009c657c6a9cebbf451e30389c1aa5809700`，本地为 ahead 4 / behind 7。R2 未
