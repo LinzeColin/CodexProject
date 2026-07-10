@@ -18,6 +18,19 @@ BINARY_STRING_MIN_BYTES = 256 * 1024
 
 _DATA_URL_BASE64_RE = re.compile(r"\Adata:[^,\r\n]*;base64,", re.IGNORECASE)
 _BASE64_RE = re.compile(r"[A-Za-z0-9+/_-]+={0,2}")
+_HEX_IDENTIFIER_RE = re.compile(r"[0-9a-f]{12,64}\Z")
+_UUID_RE = re.compile(
+    r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\Z",
+    re.IGNORECASE,
+)
+_ISO_DATE_TIME_RE = re.compile(
+    r"\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2}))?\Z"
+)
+_PUBLIC_RELATIVE_PREFIXES = (
+    "data/public_raw/",
+    "sessions/",
+    "archived_sessions/",
+)
 
 
 class PublicRawSanitizationError(ValueError):
@@ -94,12 +107,33 @@ def is_non_text_binary_string(value: str) -> bool:
     return is_non_text_binary(value)
 
 
+def is_safe_public_structured_string(value: str) -> bool:
+    """Return whether a complete value is a portable identifier, time or raw ref."""
+
+    if _UUID_RE.fullmatch(value) or _ISO_DATE_TIME_RE.fullmatch(value):
+        return True
+    if _HEX_IDENTIFIER_RE.fullmatch(value) and any(character in "abcdef" for character in value):
+        return True
+    if value.startswith(_PUBLIC_RELATIVE_PREFIXES):
+        if any(character in "\r\n\t" for character in value):
+            return False
+        parts = value.replace("\\", "/").split("/")
+        return bool(parts) and all(part not in {"", ".", ".."} for part in parts)
+    return False
+
+
+def sanitize_public_text(value: str) -> tuple[str, dict[str, int]]:
+    if is_non_text_binary(value):
+        return binary_omission_marker(value), {"binary_omission": 1}
+    if is_safe_public_structured_string(value):
+        return value, {}
+    redacted, counts = redact_text(value)
+    return redacted, {key: counts[key] for key in sorted(counts)}
+
+
 def sanitize_public_value(value: Any) -> tuple[Any, dict[str, int]]:
     if isinstance(value, str):
-        if is_non_text_binary(value):
-            return binary_omission_marker(value), {"binary_omission": 1}
-        redacted, counts = redact_text(value)
-        return redacted, {key: counts[key] for key in sorted(counts)}
+        return sanitize_public_text(value)
 
     if isinstance(value, list):
         sanitized_items: list[Any] = []
@@ -114,8 +148,24 @@ def sanitize_public_value(value: Any) -> tuple[Any, dict[str, int]]:
         sanitized_dict: dict[Any, Any] = {}
         counts: dict[str, int] = {}
         for key, item in value.items():
+            sanitized_key: Any = key
+            key_counts: dict[str, int] = {}
+            if isinstance(key, str):
+                sanitized_key, key_counts = sanitize_public_text(key)
+                if sanitized_key in sanitized_dict:
+                    suffix = hashlib.sha256(key.encode("utf-8")).hexdigest()[:12].translate(
+                        str.maketrans("0123456789", "ghijklmnop")
+                    )
+                    sanitized_key = f"{sanitized_key}__redacted_key_{suffix}"
+                    counter = 2
+                    while sanitized_key in sanitized_dict:
+                        sanitized_key = (
+                            f"{sanitized_key.rsplit('__', 1)[0]}__{counter}"
+                        )
+                        counter += 1
             sanitized_item, item_counts = sanitize_public_value(item)
-            sanitized_dict[key] = sanitized_item
+            sanitized_dict[sanitized_key] = sanitized_item
+            counts = merge_counts(counts, key_counts)
             counts = merge_counts(counts, item_counts)
         return sanitized_dict, counts
 

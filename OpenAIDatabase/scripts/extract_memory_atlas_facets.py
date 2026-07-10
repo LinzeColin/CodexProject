@@ -608,23 +608,46 @@ def extract_codex(database_dir: Path) -> tuple[list[dict[str, Any]], dict[str, A
         ]
         raw_file, snapshot = max(snapshots, key=lambda item: version_rank(item[1], item[0]))
         rows = snapshot.get("sessions") if isinstance(snapshot.get("sessions"), list) else [snapshot]
+        selected_rows: dict[str, dict[str, Any]] = {}
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            record_id = str(row.get("session_id") or stable_hash(row)[:16])
+            previous = selected_rows.get(record_id)
+            if previous is None or version_rank(row, raw_file) > version_rank(previous, raw_file):
+                selected_rows[record_id] = row
+        rows = [selected_rows[record_id] for record_id in sorted(selected_rows)]
         exports = (
             snapshot.get("public_transcript_exports")
             if isinstance(snapshot.get("public_transcript_exports"), list)
             else []
         )
-        exports_by_session = {
-            str(export.get("session_id") or ""): export
-            for export in exports
-            if isinstance(export, dict) and export.get("session_id")
-        }
+        exports_by_session: dict[str, list[dict[str, Any]]] = {}
+        for export in exports:
+            if not isinstance(export, dict) or not export.get("session_id"):
+                continue
+            exports_by_session.setdefault(str(export["session_id"]), []).append(export)
         input_paths = [repo_rel(raw_file, database_dir)]
         for row in rows:
             if not isinstance(row, dict):
                 continue
             record_id = str(row.get("session_id") or stable_hash(row)[:16])
+            export_candidates = exports_by_session.get(record_id, [])
+            content_sha256 = str(row.get("content_sha256") or "")
+            exact_exports = [
+                export
+                for export in export_candidates
+                if content_sha256 and str(export.get("source_sha256") or "") == content_sha256
+            ]
+            selected_export = max(
+                exact_exports or export_candidates or [{}],
+                key=lambda export: (
+                    str(export.get("source_sha256") or ""),
+                    json.dumps(export.get("chunk_refs") or [], ensure_ascii=False, sort_keys=True),
+                ),
+            )
             transcript_refs = transcript_refs_for_export(
-                exports_by_session.get(record_id, {}),
+                selected_export,
                 database_dir,
             )
             raw_ref = transcript_refs[0] if transcript_refs else repo_rel(raw_file, database_dir)

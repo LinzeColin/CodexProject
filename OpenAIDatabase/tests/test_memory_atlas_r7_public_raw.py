@@ -213,6 +213,49 @@ class PublicRawSanitizerTests(unittest.TestCase):
             },
         )
 
+    def test_structured_hash_uuid_timestamp_and_relative_ref_are_not_phone_redacted(self) -> None:
+        sanitizer = self.load_sanitizer("structured")
+        values = [
+            "a" * 10 + "123456789012" + "b" * 42,
+            "019f4aea-fcab-7dd0-ad1a-1ce2637af2b8",
+            "2026-07-11T16:52:07Z",
+            "data/public_raw/codex/sessions/019f4aea-fcab-7dd0-ad1a-1ce2637af2b8."
+            + "a" * 12
+            + ".part-0001.jsonl",
+        ]
+
+        sanitized, counts = sanitizer.sanitize_public_value(values)
+
+        self.assertEqual(sanitized, values)
+        self.assertEqual(counts, {})
+
+    def test_recursive_redaction_sanitizes_sensitive_mapping_keys_without_data_loss(self) -> None:
+        sanitizer = self.load_sanitizer("mapping_keys")
+        sensitive_key = "/Users/alice/private/2026-07-11/input.txt"
+        value = {
+            sensitive_key: "first",
+            "[REDACTED_LOCAL_PATH]": "second",
+            "ordinary": {"Call +61 412 345 678": "third"},
+        }
+
+        sanitized, counts = sanitizer.sanitize_public_value(value)
+        repeated, repeated_counts = sanitizer.sanitize_public_value(sanitized)
+        serialized = json.dumps(sanitized, ensure_ascii=False, sort_keys=True)
+
+        self.assertEqual(len(sanitized), 3)
+        self.assertCountEqual(
+            list(sanitized.values()),
+            [{"Call [REDACTED_PHONE]": "third"}, "first", "second"],
+        )
+        self.assertNotIn(sensitive_key, serialized)
+        self.assertNotIn("+61 412 345 678", serialized)
+        self.assertEqual(counts, {"local_absolute_path": 1, "phone": 2})
+        collision_keys = [key for key in sanitized if "__redacted_key_" in key]
+        self.assertEqual(len(collision_keys), 1)
+        self.assertRegex(collision_keys[0], r"__redacted_key_[a-p]{12}$")
+        self.assertEqual(repeated, sanitized)
+        self.assertEqual(repeated_counts, {})
+
     def test_binary_replacement_counts_each_nested_string_once_without_truncating_text(self) -> None:
         sanitizer = self.load_sanitizer("replacement")
         data_url = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB"
@@ -259,6 +302,29 @@ class PublicRawSanitizerTests(unittest.TestCase):
 
 
 class PublicRawConnectorTest(unittest.TestCase):
+    def test_codex_public_snapshot_applies_final_recursive_sanitization(self) -> None:
+        module = load_script_module("sync_codex_memory_data.py", "sync_codex_memory_data_r7_snapshot")
+        rows = [
+            {
+                "session_id": "019f4aea-fcab-7dd0-ad1a-1ce2637af2b8",
+                "thread_name": "Call +61 412 345 678",
+                "cwd_label": "private/202607111234",
+            }
+        ]
+        snapshot = {
+            "generated_at": "2026-07-11T16:52:07Z",
+            "message_count": 1,
+            "tool_call_count": 0,
+        }
+
+        public = module.build_public_raw_snapshot(rows, snapshot, [])
+        serialized = json.dumps(public, ensure_ascii=False, sort_keys=True)
+
+        self.assertIn("[REDACTED_PHONE]", serialized)
+        self.assertNotIn("+61 412 345 678", serialized)
+        self.assertNotIn("202607111234", serialized)
+        self.assertGreaterEqual(public["redaction_counts"].get("phone", 0), 2)
+
     def test_chatgpt_public_backup_requires_explicit_redaction_and_writes_versioned_manifest(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
