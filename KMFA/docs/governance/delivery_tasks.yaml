@@ -1,6 +1,40 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "KMFA-V014-REMAINING-TWO-PROJECT-CASH-COLLECTION-EVIDENCE-OR-FINAL-DIFFERENCE-ACCEPTANCE-20260710"
+    phase: "V014_REMAINING_TWO_PROJECT_CASH_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE"
+    objective: "Resolve uniquely proven positive collection evidence for one remaining project and record final Chinese difference acceptance for the last project without forcing zero."
+    scope:
+      - "read-only raw OOXML project customer and collection candidate scan"
+      - "unique equal bank inflow balanced receivable voucher verification"
+      - "integer cents cash metrics target materialization and final Chinese difference acceptance"
+      - "raw immutability proof public-safe validator and focused test"
+    non_scope:
+      - "raw mutation or public raw filename project customer value worksheet or voucher detail"
+      - "cumulative-only addition ambiguous bank match forced zero or nonzero-difference overwrite"
+      - "global residual queue replay Stage review GitHub upload app reinstall or business execution"
+    status: "completed"
+    completed_version: "0.1.4-remaining-two-project-cash-collection-evidence-or-final-difference-acceptance"
+    dependencies:
+      - "V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE"
+    required_files:
+      - "KMFA/stage_artifacts/V014_REMAINING_TWO_PROJECT_CASH_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE/machine/remaining_two_project_cash_collection_evidence_or_final_difference_acceptance_manifest.json"
+      - "KMFA/tools/check_v014_remaining_two_project_cash_collection_evidence_or_final_difference_acceptance.py"
+    acceptance_ids:
+      - "ACC-V014-REMAINING-TWO-PROJECT-CASH-COLLECTION-EVIDENCE-OR-FINAL-DIFFERENCE-ACCEPTANCE"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_remaining_two_project_cash_collection_evidence_or_final_difference_acceptance.py --require-private-evidence"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_remaining_two_project_cash_collection_evidence_or_final_difference_acceptance"
+    test_results:
+      - "PASS: remaining-project collection evidence and final difference acceptance validator"
+      - "PASS: focused unique bank-receivable collection link unit test"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_REMAINING_TWO_PROJECT_CASH_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_REMAINING_TWO_PROJECT_CASH_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE/machine/remaining_two_project_cash_collection_evidence_or_final_difference_acceptance_manifest.json"
+    risk: "One project still lacks positive collection evidence, three cash slots remain open and global residual differences are not replayed."
+    rollback: "Remove this phase public artifacts and ignored private outputs; do not touch the operator raw directory or prior phase evidence."
+    target_version: "0.1.4-remaining-two-project-cash-collection-evidence-or-final-difference-acceptance"
+
   - task_id: "KMFA-V014-REMAINING-CASH-SOURCE-PRIVATE-TRACE-OR-DIFFERENCE-ACCEPTANCE-20260710"
     phase: "V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE"
     objective: "Trace remaining project costs through supplier payables receivable notes and bank settlements, while preserving explicit differences when secure WPS content or positive collection evidence remains unavailable."

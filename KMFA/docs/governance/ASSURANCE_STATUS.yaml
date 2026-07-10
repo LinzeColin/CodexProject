@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260710-V014-REMAINING-CASH-SOURCE-PRIVATE-TRACE-OR-DIFFERENCE-ACCEPTANCE"
+as_of_event_id: "DEV-KMFA-20260710-V014-REMAINING-TWO-PROJECT-CASH-COLLECTION-EVIDENCE-OR-FINAL-DIFFERENCE-ACCEPTANCE"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "29d5fc5c647a7709b4dde1a33c39426e257a99f9"
+source_base_commit: "7cd3998fbf8ff34f0e5bc2e3b5569c81720186fe"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
-snapshot_event_time: "2026-07-10T14:48:35+10:00"
-generator_version: "manual-0.1.4-remaining-cash-source-private-trace-or-difference-acceptance"
+snapshot_event_time: "2026-07-10T15:29:33+10:00"
+generator_version: "manual-0.1.4-remaining-two-project-cash-collection-evidence-or-final-difference-acceptance"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1301
-    total_active_formulas: 274
+    total_active_parameters: 1304
+    total_active_formulas: 275
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -37,6 +37,9 @@ dimensions:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     evidence_refs:
+      - "KMFA/stage_artifacts/V014_REMAINING_TWO_PROJECT_CASH_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE/human/test_results.md"
+      - "KMFA/tools/check_v014_remaining_two_project_cash_collection_evidence_or_final_difference_acceptance.py"
+      - "KMFA/stage_artifacts/V014_REMAINING_TWO_PROJECT_CASH_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE/machine/remaining_two_project_cash_collection_evidence_or_final_difference_acceptance_manifest.json"
       - "KMFA/stage_artifacts/V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE/human/test_results.md"
       - "KMFA/tools/check_v014_remaining_cash_source_private_trace_or_difference_acceptance.py"
       - "KMFA/stage_artifacts/V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE/machine/remaining_cash_source_private_trace_or_difference_acceptance_manifest.json"

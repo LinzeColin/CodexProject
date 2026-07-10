@@ -5,12 +5,12 @@
 ## 最新状态
 
 - project_id: `KMFA`
-- version: `0.1.4-remaining-cash-source-private-trace-or-difference-acceptance`
+- version: `0.1.4-remaining-two-project-cash-collection-evidence-or-final-difference-acceptance`
 - current_stage: `value-consistency`
-- current_phase: `V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE`
-- status: `completed_validated_local_only_second_cash_project_materialized_two_projects_difference_accepted_no_go`
-- current_blocker: `2_cash_projects_6_cash_slots_secure_wps_content_and_8_nonzero_differences_remain`
-- next_required_input: `remaining_two_project_cash_collection_evidence_or_final_difference_acceptance`
+- current_phase: `V014_REMAINING_TWO_PROJECT_CASH_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE`
+- status: `completed_validated_local_only_third_cash_project_materialized_final_cash_project_difference_accepted_no_go`
+- current_blocker: `1_cash_project_3_cash_slots_9_nonzero_differences_secure_wps_content_and_72_global_residuals_remain`
+- next_required_input: `global_residual_difference_queue_replay_or_authoritative_exclusion`
 - production_ready: `false`
 - github_upload_ready: `false`
 - raw_snapshot_exact_match: `true`
@@ -19,12 +19,12 @@
 ## 前序状态（上一 phase）
 
 - project_id: `KMFA`
-- version: `0.1.4-cash-source-private-disambiguation-and-remaining-value-materialization`
+- version: `0.1.4-remaining-cash-source-private-trace-or-difference-acceptance`
 - current_stage: `value-consistency`
-- current_phase: `V014_CASH_SOURCE_PRIVATE_DISAMBIGUATION_AND_REMAINING_VALUE_MATERIALIZATION`
-- status: `completed_validated_local_only_one_cash_project_materialized_remaining_cash_unresolved_no_go`
-- current_blocker: `3_cash_projects_9_cash_slots_2_unreadable_external_sources_and_7_nonzero_differences_remain`
-- next_required_input: `remaining_cash_source_private_trace_or_difference_acceptance`
+- current_phase: `V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE`
+- status: `completed_validated_local_only_second_cash_project_materialized_two_projects_difference_accepted_no_go`
+- current_blocker: `2_cash_projects_6_cash_slots_secure_wps_content_and_8_nonzero_differences_remain`
+- next_required_input: `remaining_two_project_cash_collection_evidence_or_final_difference_acceptance`
 - raw_snapshot_exact_match: `true`
 - decision: `NO_GO`
 

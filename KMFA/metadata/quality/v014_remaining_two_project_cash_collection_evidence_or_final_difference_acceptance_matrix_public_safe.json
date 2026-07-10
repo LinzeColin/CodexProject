@@ -1,0 +1,110 @@
+{
+  "check_count": 20,
+  "check_fail_count": 0,
+  "check_pass_count": 20,
+  "checks": [
+    {
+      "check_id": "FCE-01",
+      "check_name": "source_private_inputs_unchanged",
+      "passed": true
+    },
+    {
+      "check_id": "FCE-02",
+      "check_name": "raw_snapshot_exact_match",
+      "passed": true
+    },
+    {
+      "check_id": "FCE-03",
+      "check_name": "nineteen_ooxml_workbooks",
+      "passed": true
+    },
+    {
+      "check_id": "FCE-04",
+      "check_name": "forty_eight_raw_candidates",
+      "passed": true
+    },
+    {
+      "check_id": "FCE-05",
+      "check_name": "two_unique_collection_links",
+      "passed": true
+    },
+    {
+      "check_id": "FCE-06",
+      "check_name": "two_balanced_receivable_vouchers",
+      "passed": true
+    },
+    {
+      "check_id": "FCE-07",
+      "check_name": "third_cash_project_resolved",
+      "passed": true
+    },
+    {
+      "check_id": "FCE-08",
+      "check_name": "one_cash_project_unresolved",
+      "passed": true
+    },
+    {
+      "check_id": "FCE-09",
+      "check_name": "final_difference_accepted",
+      "passed": true
+    },
+    {
+      "check_id": "FCE-10",
+      "check_name": "three_new_targets",
+      "passed": true
+    },
+    {
+      "check_id": "FCE-11",
+      "check_name": "three_targets_remain",
+      "passed": true
+    },
+    {
+      "check_id": "FCE-12",
+      "check_name": "eleven_comparisons_complete",
+      "passed": true
+    },
+    {
+      "check_id": "FCE-13",
+      "check_name": "existing_nonzero_preserved",
+      "passed": true
+    },
+    {
+      "check_id": "FCE-14",
+      "check_name": "one_cash_comparison_incomplete",
+      "passed": true
+    },
+    {
+      "check_id": "FCE-15",
+      "check_name": "secure_wps_not_claimed",
+      "passed": true
+    },
+    {
+      "check_id": "FCE-16",
+      "check_name": "forced_zero_prohibited",
+      "passed": true
+    },
+    {
+      "check_id": "FCE-17",
+      "check_name": "business_consistency_not_claimed",
+      "passed": true
+    },
+    {
+      "check_id": "FCE-18",
+      "check_name": "global_residual_not_replayed",
+      "passed": true
+    },
+    {
+      "check_id": "FCE-19",
+      "check_name": "github_not_uploaded",
+      "passed": true
+    },
+    {
+      "check_id": "FCE-20",
+      "check_name": "stage_review_not_performed",
+      "passed": true
+    }
+  ],
+  "phase_id": "V014_REMAINING_TWO_PROJECT_CASH_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE",
+  "project_id": "KMFA",
+  "schema_version": "kmfa.v014.final_collection_evidence_matrix.v1"
+}
