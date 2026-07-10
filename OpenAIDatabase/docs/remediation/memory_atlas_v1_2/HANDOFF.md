@@ -16,12 +16,14 @@ GitHub main upload only after R8 passes.
 - R4: complete locally; proposal review, one-use human authorization, real exact apply,
   fixed validation, automatic/manual rollback, persisted rollback after workspace reopen,
   interrupted transaction recovery and raw review-only behavior pass.
-- Requirements after R4: `VERIFIED 40 / PARTIAL 11 / FAILED 5 / NOT_VERIFIED 2`.
+- R5: complete locally; Owner Daily has a real product entry, shared eight-step no-write
+  runner, exact loopback API, human-first result workspace and failed-step-only retry.
+- Requirements after R5: `VERIFIED 41 / PARTIAL 10 / FAILED 5 / NOT_VERIFIED 2`.
 - Release: `FAIL_REMEDIATION_REQUIRED`.
 - GitHub push, app reinstall and Cloudflare deployment: not performed.
-- Online website and installed app: still the prior release; do not present them as R0-R4.
+- Online website and installed app: still the prior release; do not present them as R0-R5.
 - Final fetch moved `origin/main` to `07a6e50d593c7b9c74b8f3870b614be86a87160d`.
-  At the R4 security head, local `main` was ahead 12 / behind 12 before closeout records.
+  At the R5 hardening head, local `main` was ahead 20 / behind 12 before closeout records.
   Remote history remains unmerged and must be preserved for R8 reconciliation.
 
 ## Key Decisions
@@ -30,6 +32,12 @@ GitHub main upload only after R8 passes.
   product acceptance.
 - Required browser viewports are `1470x661`, `1440x900` and `390x844`.
 - Hosted static remains read-only. Command and proposal execution are local-app only.
+- Owner Daily is also local-app only. It is not a seventh R3 command and cannot accept
+  browser-supplied argv, paths, environment or execution mode.
+- The exact eight Owner Daily step IDs, order and dry-run argv are server-side. Runs
+  continue after failure and retry only the exact failed allowlisted step.
+- Mutating loopback endpoints require an exact Host/Origin spelling match; child results
+  fail closed on unsafe `true` fields at arbitrary nested depth.
 - Proposal callers cannot provide target paths, content, argv, environment, validation
   commands or URLs. Apply-ready bundles use fixed roots and validators server-side.
 - Proposal target parents must already exist and are opened descriptor-relative with
@@ -39,19 +47,20 @@ GitHub main upload only after R8 passes.
 
 ## Read First
 
+- `docs/remediation/memory_atlas_v1_2/R5_OWNER_DAILY_PRODUCT_ENTRY.md`
 - `docs/remediation/memory_atlas_v1_2/R4_PROPOSAL_APPROVAL_APPLY_ROLLBACK_WORKFLOW.md`
 - `docs/remediation/memory_atlas_v1_2/R3_REAL_COMMAND_PALETTE_WORKFLOWS.md`
 - `docs/remediation/memory_atlas_v1_2/R0_SOURCE_RECOVERY_AND_GAP_BASELINE.md`
 - `docs/superpowers/plans/2026-07-10-memory-atlas-v1-2-remediation.md`
-- `机器治理/证据与日志/remediation/v1_2_r4/status.json`
+- `机器治理/证据与日志/remediation/v1_2_r5/status.json`
 
 ## Verified Commands
 
-- `python3 -m unittest tests.test_memory_atlas_proposal_apply tests.test_memory_atlas_app_runtime -q`
-- `python3 -m unittest tests.test_memory_atlas_launcher -q`
-- `python3 -m unittest tests.test_s04p1_chatgpt_sync tests.test_s04p2_codex_agent_sync tests.test_personalization_architecture -q`
+- `python3 -m unittest tests.test_memory_atlas_owner_daily tests.test_memory_atlas_app_runtime tests.test_s04p3_github_backup tests.test_memory_atlas_proposal_apply tests.test_memory_atlas_launcher tests.test_s04p1_chatgpt_sync tests.test_s04p2_codex_agent_sync tests.test_personalization_architecture -q`
 - `npm run lint`
 - `npm run build`
+- `npm run validate:v1.2-s14-p1`
+- `npm run validate:v1.2-owner-daily-e2e`
 - `npm run validate:v1.2-proposal-e2e`
 - `npm run validate:v1.2-command-workflows`
 - `npm run validate:v1.2-home-multiviewport`
@@ -60,16 +69,15 @@ GitHub main upload only after R8 passes.
 
 ## Remaining Risks
 
-- Owner Daily still lacks a complete product entry and rendered run result path.
 - P0 Galaxy/Memory River/filter workflows still need R6 requirement closure.
 - Online snapshot still differs from the final local snapshot.
-- R4 and the newer browser gates are not yet integrated into the overall final audit.
+- R4, R5 and the newer browser gates are not yet integrated into the overall final audit.
 - GitHub-only clean recovery is not yet proven.
 - Final R8 reconciliation must retain both local remediation commits and the incoming
   remote Cloudflare/HomeHub history without force-pushing either side.
 
 ## Next Phase
 
-Run only `R5_OWNER_DAILY_PRODUCT_ENTRY`: build and verify the real local Owner Daily UI
-entry, step results and actionable fail-closed state. Do not start R6, reconcile Git,
-push, reinstall or deploy in the same run.
+Run only `R6_P0_VISUALIZATION_AND_FILTERING`: close the P0 Galaxy, Memory River,
+human-question, source/time/project/task filter and interaction evidence gaps. Do not
+start R7, reconcile Git, push, reinstall or deploy in the same run.

@@ -1,0 +1,137 @@
+{
+  "status": "PASS",
+  "phase": "R4_PROPOSAL_APPROVAL_APPLY_ROLLBACK_WORKFLOW",
+  "proposal_api_version": "memory_atlas_proposal_api.v1_2_r4",
+  "local_url": "http://127.0.0.1:4183",
+  "static_url": "http://127.0.0.1:4184",
+  "layout": {
+    "desktop-low-height": {
+      "dialog": {
+        "left": 0,
+        "right": 1470,
+        "top": 0,
+        "bottom": 661,
+        "width": 1470,
+        "height": 661
+      },
+      "surface": {
+        "left": 175,
+        "right": 1295,
+        "top": 16,
+        "bottom": 645,
+        "width": 1120,
+        "height": 629
+      },
+      "bodyClientWidth": 1118,
+      "bodyScrollWidth": 1118,
+      "surfaceClientHeight": 627,
+      "surfaceScrollHeight": 627,
+      "screenshot": "proposal-review-desktop-low-height-1470x661.png"
+    },
+    "desktop-standard": {
+      "dialog": {
+        "left": 0,
+        "right": 1440,
+        "top": 0,
+        "bottom": 900,
+        "width": 1440,
+        "height": 900
+      },
+      "surface": {
+        "left": 160,
+        "right": 1280,
+        "top": 70,
+        "bottom": 830,
+        "width": 1120,
+        "height": 760
+      },
+      "bodyClientWidth": 1118,
+      "bodyScrollWidth": 1118,
+      "surfaceClientHeight": 758,
+      "surfaceScrollHeight": 758,
+      "screenshot": "proposal-review-desktop-standard-1440x900.png"
+    },
+    "mobile": {
+      "dialog": {
+        "left": 0,
+        "right": 390,
+        "top": 0,
+        "bottom": 844,
+        "width": 390,
+        "height": 844
+      },
+      "surface": {
+        "left": 8,
+        "right": 382,
+        "top": 8,
+        "bottom": 836,
+        "width": 374,
+        "height": 828
+      },
+      "bodyClientWidth": 372,
+      "bodyScrollWidth": 372,
+      "surfaceClientHeight": 826,
+      "surfaceScrollHeight": 826,
+      "screenshot": "proposal-review-mobile-390x844.png"
+    }
+  },
+  "workflow": {
+    "proposal_count": 8,
+    "chinese_diff_section_count": 5,
+    "authorized_apply_real_file_change": true,
+    "persisted_rollback_visible_after_reopen": true,
+    "manual_rollback_exact_restore": true,
+    "validation_failure_automatic_rollback": true,
+    "raw_proposal_review_only": true,
+    "state_sequences": {
+      "success": [
+        "pending_human_review",
+        "approved_by_human",
+        "applying",
+        "applied",
+        "validated",
+        "committed",
+        "rolled_back_by_human"
+      ],
+      "failure": [
+        "pending_human_review",
+        "approved_by_human",
+        "applying",
+        "applied",
+        "failed_validation",
+        "rollback_or_needs_revision"
+      ]
+    }
+  },
+  "security": {
+    "unauthorized_apply_rejected": true,
+    "remote_origin_rejected": true,
+    "extra_fields_rejected": true,
+    "raw_sentinel_unchanged": true,
+    "proposal_action_post_count": 3,
+    "command_post_count": 2,
+    "audit_metadata_only": true,
+    "canonical_repo_mutation": false,
+    "remote_push": false
+  },
+  "hosted_static": {
+    "command_or_proposal_post_count": 0,
+    "local_handoff": "http://127.0.0.1:4177",
+    "fake_workspace_opened": false
+  },
+  "artifacts": {
+    "success_target_restored": true,
+    "failure_target_restored": true,
+    "raw_target_unchanged": true,
+    "transaction_count": 2,
+    "audit_row_count": 3
+  },
+  "screenshots": [
+    "proposal-review-desktop-low-height-1470x661.png",
+    "proposal-review-desktop-standard-1440x900.png",
+    "proposal-review-mobile-390x844.png",
+    "proposal-persisted-rollback-after-reopen.png",
+    "proposal-workflow-final-desktop-low.png",
+    "proposal-hosted-static-read-only.png"
+  ]
+}

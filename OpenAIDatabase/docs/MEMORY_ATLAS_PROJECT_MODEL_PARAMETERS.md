@@ -1,3 +1,37 @@
+## 167. Memory Atlas v1.2 Remediation R5 Owner Daily Parameters
+
+状态：`R5_COMPLETE_LOCAL_ONLY`；release 仍为 `FAIL_REMEDIATION_REQUIRED`。
+
+参数：
+
+- `owner_daily_api_version = memory_atlas_owner_daily_api.v1_2_r5`
+- `owner_daily_result_version = memory_atlas_owner_daily_result.v1_2_r5`
+- `owner_daily_endpoint = /__memory_atlas_owner_daily`
+- `owner_daily_step_count = 8`
+- `owner_daily_step_ids = sync; analyze; build-atlas; audit; push; proposals; generate-personalization-prompt; deep-explore`
+- `execution = fixed argv; dry-run; shell=false; scrubbed environment`
+- `continue_after_failure = true`
+- `retry = one exact allowlisted failed step`
+- `max_child_output_bytes = 1048576`
+- `max_result_bytes = 65536`
+- `unsafe_true_validation = recursive dictionary/list scan`
+- `loopback_origin = exact Host/Origin spelling; no CORS`
+- `hosted_static_owner_daily_post_count = 0`
+- `browser_partial_then_retry = 7/1; audit-only retry; 8/0`
+- `target_viewports = 1470x661; 1440x900; 390x844`
+- `final_reviewer_high_medium = 0; 0`
+- `requirements = 41 verified; 10 partial; 5 failed; 2 not_verified`
+
+验证逻辑：`validate:v1.2-owner-daily-e2e` 必须自行构建当前 frontend，在临时
+installer-shaped runtime 中经渲染 UI 真实执行八项固定步骤，先证明 partial failure
+仍显示全部结果，再证明只重试 failed step 并合并为 PASS；同时拒绝 remote Origin、
+extra argv/body 和 unknown step，证明 source/runtime hash 不变、metadata-only audit、
+static POST=0、三视口无横向溢出和对话框焦点闭环。S14 P1、R3 命令、R4 提案、Home、
+Stage 7、unit、lint、build、privacy 和独立 review 必须继续通过。
+
+边界：本参数只证明 R5 本地候选的 Owner Daily 产品路径，不证明 R6 P0 visuals/filtering、
+线上 parity、GitHub clean recovery、app 安装或 v1.2 最终完成。
+
 ## 166. Memory Atlas v1.2 Remediation R4 Proposal Workflow Parameters
 
 状态：`R4_COMPLETE_LOCAL_ONLY`；release 仍为 `FAIL_REMEDIATION_REQUIRED`。
