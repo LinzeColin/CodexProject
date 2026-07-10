@@ -2,12 +2,12 @@
 
 ## Snapshot Metadata
 
-- source_base_commit: `9a3b9ae977275f4774e08ae69f61b54f7270b419`
+- source_base_commit: `42abfd60a49d0505984364c2e41efbbdcc73e9ac`
 - source_tree_hash: `356fcd0bb5d3b892b331d28351fe9e99a64c8457`
-- source_snapshot_hash: `sha256:3bc0df11a67825924a7056a81c6bcad25cd273a7004c064e4b681e7af313c883`
-- snapshot_event_time: `2026-07-10T18:35:12+10:00`
+- source_snapshot_hash: `sha256:6f4c7043b199dcd781737a24c221d8460ba78785de94e4b37cdaee1ee0d46a39`
+- snapshot_event_time: `2026-07-10T18:53:59+10:00`
 - generator_version: `4.0.1`
-- final_commit_binding: `COMMIT_BOUND:9a3b9ae977275f4774e08ae69f61b54f7270b419`
+- final_commit_binding: `COMMIT_BOUND:42abfd60a49d0505984364c2e41efbbdcc73e9ac`
 
 ## Current State
 
@@ -39,6 +39,6 @@
 - Next executable task: `CF-L2-20260710`
 - Pending/stale events: `114`
 - Tree-bound events: `0`
-- Commit-bound events: `19`
+- Commit-bound events: `20`
 - Legacy unbound events: `19`
 - Unresolved fact IDs: `6`

@@ -22,9 +22,9 @@ Read-only URL probes on 2026-07-10 Australia/Sydney established:
 
 - `home.linzezhang.com`: public HTTP 200 and Linze Home Hub content.
 - `nab.linzezhang.com`: public HTTP 200 and NAB content.
-- `memoryatlas.linzezhang.com`: HTTP 200 Cloudflare Access sign-in, including `/memory_atlas.json`; the protected content is not anonymously exposed.
+- `memoryatlas.linzezhang.com`: protected Pages deployment evidence verifies unauthenticated Access challenge plus owner-allowlist app and `/memory_atlas.json` loading; the content is online but not anonymously exposed.
 - `eei.linzezhang.com`, `pfi.linzezhang.com`, and `serenity.linzezhang.com`: not reachable.
-- The local Cloudflare API token is active, but account Workers access returns Cloudflare error `10000`; actual deploy remains blocked until OAuth or a correctly scoped account token succeeds.
+- The local Cloudflare API token is active, but account Workers access returns Cloudflare error `10000`; EEI, PFI and Serenity deploys remain blocked until OAuth or a correctly scoped account token succeeds. MemoryAtlas uses independently verified protected Pages evidence.
 
 ## Design decision
 
@@ -83,7 +83,7 @@ Only these terminal values are allowed:
 - `blocked_private_scan`
 - `blocked_build_or_dry_run`
 
-`actual_url` is empty until an HTTP smoke check succeeds. A dry run never becomes `deployed`. Existing Access-protected MemoryAtlas is recorded separately from an anonymous public URL.
+`actual_url` is empty until an HTTP smoke check succeeds. A dry run never becomes `deployed`. Access-protected MemoryAtlas may record its verified URL only together with challenge, allowlist, authorized app load and runtime JSON evidence; it is never described as anonymous public access.
 
 ## Runtime parameters
 
@@ -120,4 +120,3 @@ No scoring model, financial formula, ranking model, or automated decision parame
 6. `nab` is owned by `Archive/nab`, not the CodexProject root.
 7. Three repository `main` branches contain the final facts and are clean.
 8. No task-created branch or PR remains open.
-

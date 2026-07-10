@@ -23,10 +23,12 @@
     },
     {
       "project_id": "openaidatabase",
-      "actual_url": "",
+      "actual_url": "https://memoryatlas.linzezhang.com",
       "protected_domain_url": "https://memoryatlas.linzezhang.com",
       "fallback_url": "https://github.com/LinzeColin/CodexProject/tree/main/OpenAIDatabase/apps/memory-atlas",
-      "verification": "protected_domain_returns_cloudflare_access_not_anonymous_public"
+      "verification": "access_challenge_allowed_user_app_load_runtime_json_fetch_and_published_artifact_verified",
+      "deployment_id": "82988d29-504a-437e-a8b5-621a59e701af",
+      "deployed_commit": "5a24333eb2afa766f5f7416b877a8a560c5302ab"
     },
     {
       "project_id": "pfi",
