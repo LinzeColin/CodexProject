@@ -22,10 +22,14 @@ id = "kmfa-3"
 name = "KMFA｜每日钉钉考勤检查｜晚报"
 kind = "cron"
 status = "ACTIVE"
-rrule = "RRULE:FREQ=DAILY;BYHOUR=22;BYMINUTE=5"
+rrule = "RRULE:FREQ=WEEKLY;BYHOUR=20;BYMINUTE=0;BYDAY=SU,MO,TU,WE,TH,FR,SA"
+prompt_sha256 = "bc6e8b0a7cec04ed00219b563bd41b070ab10e93abcf42f4a47fb6450098cb83"
+project_id = "40dd52a0-b6eb-4528-9577-0cb5f4f86e3e"
 business_clock = "Asia/Shanghai"
-business_time = "20:05"
-local_wall_clock_time = "22:05"
+local_wall_clock_time = "20:00"
+summary_datetime_source = "actual_run_datetime_in_business_clock"
+fixed_local_wall_clock = true
+offset_conversion_allowed = false
 execution_environment = "local"
 cwds = ["/Users/linzezhang/CodexProject"]
 model = "gpt-5.3-codex-spark"
