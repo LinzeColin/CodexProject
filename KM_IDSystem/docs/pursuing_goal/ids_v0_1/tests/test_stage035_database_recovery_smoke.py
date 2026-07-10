@@ -1,4 +1,9 @@
+import copy
+import importlib.util
+import json
 from pathlib import Path
+import subprocess
+import sys
 import unittest
 
 
@@ -6,6 +11,13 @@ ROOT = Path(__file__).resolve().parents[4]
 PURSUE_ROOT = ROOT / "docs" / "pursuing_goal" / "ids_v0_1"
 ENTRY = PURSUE_ROOT / "STAGE035_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE035_PHASE1_SCOPE_BOUNDARY.md"
+PHASE2 = PURSUE_ROOT / "STAGE035_PHASE2_DATABASE_RECOVERY_SMOKE_SLICE.md"
+INDEX = (
+    PURSUE_ROOT
+    / "database_recovery_smoke"
+    / "stage035_database_recovery_smoke_index.json"
+)
+SCRIPT = ROOT / "scripts" / "check_database_recovery_smoke.py"
 BATCH_LOCK = PURSUE_ROOT / "BATCH031_040_UPLOAD_LOCK.yaml"
 ROADMAP = ROOT / "docs" / "governance" / "roadmap.yaml"
 EVENTS = ROOT / "docs" / "governance" / "events.jsonl"
@@ -125,15 +137,10 @@ class Stage035DatabaseRecoverySmokePhase1Tests(unittest.TestCase):
 
         lock_terms = [
             'batch_id: "IDS-V0_1-BATCH-031-040"',
-            'status: "stage035_phase1_in_progress"',
             'push_allowed: false',
             "STAGE-035:",
             '      - "Phase 1"',
-            'next_phase: "Phase 2"',
-            'next_gate: "IDS-STAGE035-P2-GATE"',
-            'current_task_id: "IDS-V0_1-STAGE035-P1"',
             'acceptance_id: "ACC-STAGE-035"',
-            'acceptance_status: "phase1_scope_boundary_defined"',
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE035_ENTRY_CONTRACT.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE035_PHASE1_SCOPE_BOUNDARY.md",
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage035_database_recovery_smoke.py",
@@ -161,6 +168,283 @@ class Stage035DatabaseRecoverySmokePhase1Tests(unittest.TestCase):
         ]
 
         self.assertNotIn('current_task_id: "IDS_V0_1-STAGE035-P1"', lock_text)
+        for term in lock_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, lock_text)
+        allowed_current_states = [
+            'status: "stage035_phase1_in_progress"',
+            'status: "stage035_phase2_in_progress"',
+        ]
+        allowed_next_phases = ['next_phase: "Phase 2"', 'next_phase: "Phase 3"']
+        allowed_next_gates = [
+            'next_gate: "IDS-STAGE035-P2-GATE"',
+            'next_gate: "IDS-STAGE035-P3-GATE"',
+        ]
+        allowed_current_tasks = [
+            'current_task_id: "IDS-V0_1-STAGE035-P1"',
+            'current_task_id: "IDS-V0_1-STAGE035-P2"',
+        ]
+        allowed_acceptance_states = [
+            'acceptance_status: "phase1_scope_boundary_defined"',
+            'acceptance_status: "phase2_static_recovery_smoke_contract_validated"',
+        ]
+        for allowed in [
+            allowed_current_states,
+            allowed_next_phases,
+            allowed_next_gates,
+            allowed_current_tasks,
+            allowed_acceptance_states,
+        ]:
+            self.assertTrue(any(term in lock_text for term in allowed), allowed)
+        for term in roadmap_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, roadmap_text)
+        for term in event_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, events_text)
+
+
+class Stage035DatabaseRecoverySmokePhase2Tests(unittest.TestCase):
+    def _load_checker_module(self):
+        self.assertTrue(SCRIPT.is_file(), f"missing checker script: {SCRIPT}")
+        spec = importlib.util.spec_from_file_location("stage035_database_recovery_smoke", SCRIPT)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def test_phase2_static_recovery_smoke_artifacts_exist(self):
+        for path in [PHASE2, INDEX, SCRIPT]:
+            self.assertTrue(path.is_file(), f"missing Phase 2 artifact: {path}")
+
+        combined = "\n".join(
+            [
+                PHASE2.read_text(encoding="utf-8"),
+                INDEX.read_text(encoding="utf-8"),
+                SCRIPT.read_text(encoding="utf-8"),
+            ]
+        )
+        required_terms = [
+            "ids.stage035.database_recovery_smoke.index.v1",
+            "ids.stage035.database_recovery_smoke.phase2.v1",
+            "IDS-V0_1-STAGE035-P2",
+            "ACC-STAGE-035",
+            "database_recovery_smoke_contract_id",
+            "STATIC_RECOVERY_PREFLIGHT_CONTRACT_VALID",
+            "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_METADATA_DUMP",
+            "contract_valid",
+            "execution_ready",
+            "owner_authorized_real_dump_required",
+            "owner_authorized_real_dump_available",
+            "metadata_dump_contract",
+            "restore_target_contract",
+            "schema_migration_compatibility",
+            "connection_pool_guard",
+            "database_size_guard",
+            "quality_constraint_guard",
+            "storage_boundary",
+            "restore_validation_contract",
+            "rollback_contract",
+            "audit_contract",
+            "real_data_only_guard",
+            "stage035_database_recovery_smoke_index.json",
+            "check_database_recovery_smoke.py",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, combined)
+
+    def test_checker_validates_integrated_contract_but_blocks_live_execution(self):
+        module = self._load_checker_module()
+        report = module.build_stage035_database_recovery_smoke_report(INDEX)
+
+        self.assertEqual("ids.stage035.database_recovery_smoke.phase2.v1", report["schema_version"])
+        self.assertEqual("ids.stage035.database_recovery_smoke.index.v1", report["index_schema_version"])
+        self.assertEqual("IDS-V0_1-STAGE035-P2", report["task_id"])
+        self.assertEqual("ACC-STAGE-035", report["acceptance_id"])
+        self.assertTrue(report["contract_valid"])
+        self.assertFalse(report["execution_ready"])
+        self.assertEqual(
+            "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_METADATA_DUMP",
+            report["execution_state"],
+        )
+        self.assertEqual(
+            "无 owner 授权真实 metadata dump，恢复执行保持阻断。",
+            report["block_reason_zh"],
+        )
+        self.assertTrue(all(report["contract_results"].values()), report["contract_results"])
+        self.assertTrue(all(report["dependency_results"].values()), report["dependency_results"])
+        self.assertTrue(all(report["runtime_policy_results"].values()), report["runtime_policy_results"])
+        self.assertTrue(report["does_not_read_metadata_dump"])
+        self.assertTrue(report["does_not_connect_to_postgres"])
+        self.assertTrue(report["does_not_execute_restore"])
+        self.assertTrue(report["does_not_write_runtime_outputs"])
+        self.assertTrue(report["does_not_use_fake_ids_data"])
+
+    def test_machine_index_binds_real_dependencies_and_fail_closed_guards(self):
+        self.assertTrue(INDEX.is_file(), f"missing machine index: {INDEX}")
+        index = json.loads(INDEX.read_text(encoding="utf-8"))
+
+        self.assertEqual("ids.stage035.database_recovery_smoke.index.v1", index["schema_version"])
+        self.assertEqual("IDS-V0_1-STAGE035-P2", index["task_id"])
+        self.assertEqual("ACC-STAGE-035", index["acceptance_id"])
+        self.assertEqual(
+            "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_METADATA_DUMP",
+            index["metadata_dump_contract"]["execution_state"],
+        )
+        self.assertTrue(index["metadata_dump_contract"]["owner_authorized_real_dump_required"])
+        self.assertFalse(index["metadata_dump_contract"]["owner_authorized_real_dump_available"])
+        self.assertFalse(index["metadata_dump_contract"]["fabricated_dump_allowed"])
+        self.assertFalse(index["metadata_dump_contract"]["fake_rows_allowed"])
+        self.assertFalse(index["metadata_dump_contract"]["placeholder_corpus_allowed"])
+        self.assertTrue(index["restore_target_contract"]["isolated_non_production_target_required"])
+        self.assertFalse(index["restore_target_contract"]["production_target_allowed"])
+        self.assertFalse(index["restore_target_contract"]["source_database_mutation_allowed"])
+        self.assertEqual(10, index["connection_pool_guard"]["aggregate_max_pool_size"])
+        self.assertEqual(0, index["connection_pool_guard"]["max_overflow"])
+        self.assertTrue(index["database_size_guard"]["stage033_guard_authoritative"])
+        self.assertTrue(index["quality_constraint_guard"]["chinese_failure_reason_required"])
+        self.assertFalse(index["storage_boundary"]["stores_raw_files"])
+        self.assertFalse(index["storage_boundary"]["stores_raw_database_rows"])
+        self.assertFalse(index["storage_boundary"]["stores_unbounded_derived_artifacts"])
+        self.assertFalse(index["runtime_policy"]["read_metadata_dump"])
+        self.assertFalse(index["runtime_policy"]["connect_to_postgres"])
+        self.assertFalse(index["runtime_policy"]["execute_restore"])
+        self.assertFalse(index["runtime_policy"]["write_runtime_outputs"])
+
+    def test_invalid_in_memory_contract_fails_closed_without_creating_files(self):
+        module = self._load_checker_module()
+        index = json.loads(INDEX.read_text(encoding="utf-8"))
+        index["metadata_dump_contract"]["fabricated_dump_allowed"] = True
+        index["restore_target_contract"]["production_target_allowed"] = True
+        index["runtime_policy"]["read_metadata_dump"] = True
+
+        original_loader = module._load_json
+        module._load_json = (
+            lambda path: copy.deepcopy(index)
+            if Path(path) == INDEX
+            else original_loader(path)
+        )
+        try:
+            report = module.build_stage035_database_recovery_smoke_report(INDEX)
+        finally:
+            module._load_json = original_loader
+
+        self.assertFalse(report["contract_valid"])
+        self.assertFalse(report["execution_ready"])
+        self.assertEqual("BLOCKED_INVALID_RECOVERY_CONTRACT", report["execution_state"])
+        self.assertFalse(report["contract_results"]["metadata_dump_contract_guard"])
+        self.assertFalse(report["contract_results"]["isolated_restore_target_guard"])
+        self.assertFalse(report["runtime_policy_results"]["read_metadata_dump"])
+        self.assertFalse(report["does_not_read_metadata_dump"])
+
+    def test_tampered_identity_or_missing_runtime_guard_fails_closed(self):
+        module = self._load_checker_module()
+        index = json.loads(INDEX.read_text(encoding="utf-8"))
+        index["database_recovery_smoke_contract_id"] = "tampered_contract"
+        index["runtime_policy"].pop("read_metadata_dump")
+
+        original_loader = module._load_json
+        module._load_json = (
+            lambda path: copy.deepcopy(index)
+            if Path(path) == INDEX
+            else original_loader(path)
+        )
+        try:
+            report = module.build_stage035_database_recovery_smoke_report(INDEX)
+        finally:
+            module._load_json = original_loader
+
+        self.assertFalse(report["contract_valid"])
+        self.assertEqual("BLOCKED_INVALID_RECOVERY_CONTRACT", report["execution_state"])
+        self.assertFalse(report["contract_results"]["contract_identity_guard"])
+        self.assertFalse(report["runtime_policy_results"]["keys_exact"])
+        self.assertFalse(report["runtime_policy_results"]["read_metadata_dump"])
+        self.assertFalse(report["does_not_read_metadata_dump"])
+
+    def test_checker_cli_emits_truthful_stdout_json_without_live_side_effects(self):
+        self.assertTrue(SCRIPT.is_file(), f"missing checker script: {SCRIPT}")
+        completed = subprocess.run(
+            [sys.executable, "-B", str(SCRIPT)],
+            cwd=ROOT,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertEqual(0, completed.returncode, completed.stderr)
+        payload = json.loads(completed.stdout)
+        self.assertTrue(payload["contract_valid"])
+        self.assertFalse(payload["execution_ready"])
+        self.assertEqual(
+            "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_METADATA_DUMP",
+            payload["execution_state"],
+        )
+        self.assertTrue(payload["does_not_read_metadata_dump"])
+        self.assertTrue(payload["does_not_connect_to_postgres"])
+        self.assertTrue(payload["does_not_execute_restore"])
+        self.assertEqual("", completed.stderr)
+
+    def test_phase2_doc_and_governance_record_blocked_static_slice_without_upload(self):
+        self.assertTrue(PHASE2.is_file(), f"missing phase2 evidence: {PHASE2}")
+        self.assertTrue(BATCH_LOCK.is_file(), f"missing batch lock: {BATCH_LOCK}")
+        self.assertTrue(ROADMAP.is_file(), f"missing roadmap: {ROADMAP}")
+        self.assertTrue(EVENTS.is_file(), f"missing events: {EVENTS}")
+
+        phase2_text = PHASE2.read_text(encoding="utf-8")
+        lock_text = BATCH_LOCK.read_text(encoding="utf-8")
+        roadmap_text = ROADMAP.read_text(encoding="utf-8")
+        events_text = EVENTS.read_text(encoding="utf-8")
+
+        phase2_terms = [
+            "Phase 2 · 静态恢复 preflight 合同切片",
+            "contract_valid=true",
+            "execution_ready=false",
+            "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_METADATA_DUMP",
+            "无 owner 授权真实 metadata dump，恢复执行保持阻断",
+            "不执行 pg_dump、pg_restore、psql、migration、backup、restore 或 recovery smoke",
+            "不得使用虚构 IDS 业务数据、虚构数据库行、虚构 metadata dump、placeholder corpus 或伪造证据",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "NO_PHASE3",
+        ]
+        lock_terms = [
+            'status: "stage035_phase2_in_progress"',
+            "STAGE-035:",
+            '      - "Phase 1"',
+            '      - "Phase 2"',
+            'next_phase: "Phase 3"',
+            'next_gate: "IDS-STAGE035-P3-GATE"',
+            'current_task_id: "IDS-V0_1-STAGE035-P2"',
+            'acceptance_status: "phase2_static_recovery_smoke_contract_validated"',
+            "STAGE035_PHASE2_DATABASE_RECOVERY_SMOKE_SLICE.md",
+            "stage035_database_recovery_smoke_index.json",
+            "check_database_recovery_smoke.py",
+            'push_allowed: false',
+        ]
+        roadmap_terms = [
+            'current_stage_id: "IDS-STAGE035"',
+            'current_phase_id: "IDS-STAGE035-P2"',
+            'current_task_id: "IDS-V0_1-STAGE035-P2"',
+            'next_gate_id: "IDS-STAGE035-P3-GATE"',
+            'phase_id: "IDS-STAGE035-P2"',
+            'task_id: "IDS-V0_1-STAGE035-P2"',
+            'status: "passed_with_local_evidence"',
+        ]
+        event_terms = [
+            '"event_id":"EVT-IDS-V0_1-STAGE035-P2-20260710-001"',
+            '"event_type":"stage_slice"',
+            '"task_id":"IDS-V0_1-STAGE035-P2"',
+            '"ACC-STAGE-035"',
+            "STAGE035_PHASE2_DATABASE_RECOVERY_SMOKE_SLICE.md",
+            "stage035_database_recovery_smoke_index.json",
+            "check_database_recovery_smoke.py",
+            "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_METADATA_DUMP",
+        ]
+
+        for term in phase2_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, phase2_text)
         for term in lock_terms:
             with self.subTest(term=term):
                 self.assertIn(term, lock_text)
