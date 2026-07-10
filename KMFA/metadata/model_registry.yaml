@@ -1,3 +1,18 @@
+kmfa_v014_s11_p2_post_remediation_source_check_board:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s11-p2-post-remediation-source-check-board"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S11-P2-POST-REMEDIATION-SOURCE-CHECK-BOARD-001
+  parameter_refs:
+    - PARAM-KMFA-1711
+    - PARAM-KMFA-1712
+    - PARAM-KMFA-1713
+  evidence_dir: KMFA/stage_artifacts/V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD
+  validator: KMFA/tools/check_v014_s11_p2_post_remediation_source_check_board.py
+  scope: Current public-safe thirteen-row source check matrix with eleven required columns current status overlay search filters row details session-only preview controls desktop mobile evidence and Q4 D NO_GO; S11-P3 review persistent write upload reinstall formal report and business execution remain closed.
+
 kmfa_v014_s11_p1_post_remediation_home_navigation:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-s11-p1-post-remediation-home-navigation"

@@ -5,12 +5,12 @@
 ## 最新状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s11-p1-post-remediation-home-navigation`
+- version: `0.1.4-s11-p2-post-remediation-source-check-board`
 - current_stage: `S11`
-- current_phase: `V014_S11_P1_POST_REMEDIATION_HOME_NAVIGATION`
-- status: `completed_validated_local_only_current_home_navigation_d_no_go_upload_deferred`
+- current_phase: `V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD`
+- status: `completed_validated_local_only_current_source_check_board_d_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `S11-P2_data_source_check_board_as_separate_run`
+- next_required_input: `S11-P3_project_cost_page_as_separate_run`
 - production_ready: `false`
 - github_upload_ready: `false`
 - raw_snapshot_exact_match: `true`
@@ -44,6 +44,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 S11-P2 post-remediation source check board completed local-only：13 行矩阵覆盖 `11` 个规定列；旧 `12 pending` 与 4 个 ready 状态被当前 `Q4 / D / NO_GO / 3-9-2-1` 证据覆盖，当前状态为 `0 ready / 6 partial / 1 failed / 2 outdated / 4 human review`。v1.4 基线 `54/54 PASS`、当前页 `21/21 PASS`；desktop/mobile 搜索 `4/4`、筛选 `10/10`、详情 `26/26`、session preview `10/10`、keyboard `2/2`、home link `1/1`，console error 与 overflow=`0`。raw 前后及跨 S11-P1 快照一致；persistent write、S11-P3、Stage 11 review、GitHub upload、app reinstall 和 business execution 均未执行。next_required_input=`S11-P3_project_cost_page_as_separate_run`。
 
 - v0.1.4 S11-P1 post-remediation home navigation completed local-only：实现 经营总览、项目成本、回款应收、财务资金、开票纳税、数据源检查、待处理事项、报告中心共 `8` 个全中文模块、`8` 个视图与 `8` 个可见动作；首页持续显示 `Q4 / D / NO_GO / 3-9-2-1`，只链接当前 S10 两份受限报告，未链接未来/历史页面。v1.4 基线 `54/54 PASS`、当前页 `13/13 PASS`；desktop/mobile 导航 `16/16`、动作 `16/16`、键盘 `4/4`、HTTP 链接 `4/4`，console error 与 overflow=`0`。fresh raw 前后及跨 S10 review 快照一致；S11-P2/P3、Stage 11 review、GitHub upload、app reinstall 和 business execution 均未执行。next_required_input=`S11-P2_data_source_check_board_as_separate_run`。
 

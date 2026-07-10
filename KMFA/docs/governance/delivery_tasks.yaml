@@ -1,6 +1,48 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "KMFA-V014-S11-P2-POST-REMEDIATION-SOURCE-CHECK-BOARD-20260711"
+    phase: "V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD"
+    objective: "Provide a current public-safe source check matrix with visible report impact and next action without reusing stale state or writing persistent business status."
+    scope:
+      - "thirteen source lanes and eleven required matrix columns"
+      - "current status overlay replacing stale twelve-pending and ready state"
+      - "search filters row details and session-only status previews"
+      - "desktop mobile keyboard current-home link and fresh raw evidence"
+    non_scope:
+      - "S11-P3 or Stage 11 overall review"
+      - "persistent status write formal report PDF Excel private CSV or business execution"
+      - "GitHub upload app reinstall live connector or release"
+    status: "completed"
+    completed_version: "0.1.4-s11-p2-post-remediation-source-check-board"
+    dependencies:
+      - "V014_S11_P1_POST_REMEDIATION_HOME_NAVIGATION current frozen dependency"
+      - "V014_S11_P2_SOURCE_CHECK_BOARD historical framework only"
+      - "current S5 authority and S7 adapter public-safe registries"
+      - "v1.4 human-flow HTML baseline"
+    required_files:
+      - "KMFA/stage_artifacts/V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD/exports/html/kmfa_source_check_board.html"
+      - "KMFA/stage_artifacts/V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD/machine/source_check_board_manifest.json"
+      - "KMFA/tools/check_v014_s11_p2_post_remediation_source_check_board.py"
+    acceptance_ids:
+      - "ACC-V014-S11-P2-POST-REMEDIATION-SOURCE-CHECK-BOARD"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s11_p2_post_remediation_source_check_board.py --require-private-evidence --require-browser-evidence --require-final-evidence"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s11_p2_post_remediation_source_check_board"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_no_float_money.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/no_omission_check.py"
+    test_results:
+      - "PASS: six focused tests after RED"
+      - "PASS: baseline 54 of 54 and current board 21 of 21 human-flow controls"
+      - "PASS: search 4 filters 10 details 26 previews 10 keyboard 2 and home link 1"
+      - "PASS: raw before after cross-phase and current snapshots exact"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD/human/s11_p2_completion_record_zh.md"
+      - "KMFA/stage_artifacts/V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD/machine/source_check_board_manifest.json"
+    risk: "Stale ready statuses can overstate source readiness unless current evidence overlays and persistent-write boundaries are enforced."
+    rollback: "Revert only this S11-P2 commit and ignored private browser evidence; never mutate the raw inbox."
+    target_version: "0.1.4-s11-p2-post-remediation-source-check-board"
+
   - task_id: "KMFA-V014-S11-P1-POST-REMEDIATION-HOME-NAVIGATION-20260711"
     phase: "V014_S11_P1_POST_REMEDIATION_HOME_NAVIGATION"
     objective: "Provide current public-safe eight-module home navigation without changing or bypassing Q4 D NO_GO."

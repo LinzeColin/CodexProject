@@ -1,3 +1,17 @@
+## FORM-KMFA-V014-S11-P2-POST-REMEDIATION-SOURCE-CHECK-BOARD-001
+
+- version: `0.1.4-s11-p2-post-remediation-source-check-board`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: 按当前锁定证据重算 13 行数据源矩阵状态，并验证 11 列、搜索筛选、逐行影响详情、会话状态预演和 raw 不变性。
+- rule: `board_valid = rows == 13 AND columns == 11 AND ready == 0 AND partial == 6 AND failed == 1 AND outdated == 2 AND review == 4 AND recomputed_old_ready == 4 AND detail_checks == 26 AND grade == D AND decision == NO_GO AND persistent_write == false`。
+- current-state gate: 旧 `12 pending` 和四个 ready 状态不得回流；当前差异结构固定为 `3/9/2/1`，报告保持 `Q4 / D / NO_GO`。
+- interaction gate: 搜索、五类筛选、13 行双视口详情、五类双视口预演、键盘与当前首页链接全部通过；预演只影响 browser session。
+- style gate: 大面积使用蓝灰和白色，状态色只用于带文字徽标，不使用大面积黄色或仅凭颜色传达状态。
+- raw gate: phase 前后、跨 S11-P1 和当前快照必须一致；不一致立即停止并保留 private 中文差异报告。
+- release gate: `S11-P3=false`、`stage11_review=false`、`persistent_write=false`、`github_upload=false`、`app_reinstall=false`、`formal_report=false`、`business_execution=false`。
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s11_p2_post_remediation_source_check_board.py --require-private-evidence --require-browser-evidence --require-final-evidence`
+- evidence: `KMFA/stage_artifacts/V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD/machine/source_check_board_manifest.json`
+
 ## FORM-KMFA-V014-S11-P1-POST-REMEDIATION-HOME-NAVIGATION-001
 
 - version: `0.1.4-s11-p1-post-remediation-home-navigation`
