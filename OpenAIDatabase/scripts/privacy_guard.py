@@ -294,9 +294,35 @@ def high_risk_secret_hits(database_dir: Path, tracked_files: list[str]) -> list[
         if not path.is_file() or path.stat().st_size > 1_000_000:
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")
-        for hit in credential_exclusion_hits(text, rel):
-            hits.append({"path": rel, "pattern": str(hit["category"])})
+        for segment in privacy_scan_segments(path, text):
+            for hit in credential_exclusion_hits(segment, rel):
+                hits.append({"path": rel, "pattern": str(hit["category"])})
     return hits
+
+
+def iter_json_strings(value: Any):
+    if isinstance(value, str):
+        yield value
+    elif isinstance(value, list):
+        for item in value:
+            yield from iter_json_strings(item)
+    elif isinstance(value, dict):
+        for key, item in value.items():
+            yield str(key)
+            yield from iter_json_strings(item)
+
+
+def privacy_scan_segments(path: Path, text: str) -> list[str]:
+    if path.suffix not in {".json", ".jsonl"}:
+        return [text]
+    try:
+        if path.suffix == ".json":
+            payloads = [json.loads(text)]
+        else:
+            payloads = [json.loads(line) for line in text.splitlines() if line.strip()]
+    except json.JSONDecodeError:
+        return [text]
+    return [segment for payload in payloads for segment in iter_json_strings(payload)]
 
 
 def scan_repo_privacy(database_dir: Path) -> dict[str, Any]:

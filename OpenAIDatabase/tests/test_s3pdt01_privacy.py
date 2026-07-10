@@ -22,6 +22,20 @@ def load_module():
 
 
 class S3PDT01PrivacyTests(unittest.TestCase):
+    def test_structured_repo_scan_does_not_match_across_json_escape_boundaries(self) -> None:
+        module = load_module()
+        with tempfile.TemporaryDirectory() as temp_dir:
+            database = Path(temp_dir)
+            fixture = database / "fixture.jsonl"
+            code_text = '"' + "coo" + "kie: sess" + 'ionid=" + "redacted-placeholder"'
+            fixture.write_text(
+                json.dumps({"code": code_text}, ensure_ascii=False) + "\n",
+                encoding="utf-8",
+            )
+
+            self.assertEqual(module.credential_exclusion_hits(code_text, "fixture"), [])
+            self.assertEqual(module.high_risk_secret_hits(database, ["fixture.jsonl"]), [])
+
     def test_private_import_writes_only_redacted_derived_data_and_survives_raw_deletion(self) -> None:
         module = load_module()
         with tempfile.TemporaryDirectory() as temp_dir:
