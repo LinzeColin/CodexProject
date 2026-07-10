@@ -1,3 +1,17 @@
+## 2026-07-11 - V014 S11-P2 post-remediation source check board
+
+- phase: `V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD`
+- task: `KMFA-V014-S11-P2-POST-REMEDIATION-SOURCE-CHECK-BOARD-20260711`
+- product_version: `0.1.4-s11-p2-post-remediation-source-check-board`
+- result: `completed_validated_local_only_current_source_check_board_d_no_go_upload_deferred` / `NO_GO`
+- matrix: `13` 行覆盖来源系统、业务板块、文件包、主体、账户、频率、状态、影响报告、处理规则和下一步共 `11` 列。
+- current status: `0 ready / 6 partial / 1 failed / 2 outdated / 4 human review`；旧四个 ready 状态全部按当前证据重算，另有一行由 partial 转为 review。
+- interaction: search `4/4`、filters `10/10`、row details `26/26`、session previews `10/10`、keyboard `2/2`、home HTTP link `1/1`；persistent/raw write=`false`。
+- browser: v1.4 baseline `54/54 PASS`、current page `21/21 PASS`；desktop/mobile `2/2`，console error 与 page overflow=`0`。
+- raw proof: `5` 个文件在 phase 前后、跨 S11-P1 与当前复核完全一致；所有 raw 身份、字段、金额和诊断保持 private ignored。
+- boundary: S11-P3、Stage 11 review、formal report、GitHub upload、app reinstall 和 business execution 均未执行。
+- evidence: `KMFA/stage_artifacts/V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD/machine/source_check_board_manifest.json`
+
 ## 2026-07-11 - V014 S11-P1 post-remediation home navigation
 
 - phase: `V014_S11_P1_POST_REMEDIATION_HOME_NAVIGATION`

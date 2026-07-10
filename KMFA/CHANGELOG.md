@@ -1,3 +1,11 @@
+## 0.1.4-s11-p2-post-remediation-source-check-board - 2026-07-11
+
+- 完成 `V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD` 本地 phase：13 行数据源矩阵覆盖 11 个规定列，并提供搜索、五类状态筛选、逐行影响详情和会话内状态预演。
+- 修复旧 S11-P2 假绿：旧 validator 可对 `12 pending` 和 4 个“已就绪”状态返回 PASS；当前状态重算为 `0 已就绪 / 6 部分阻塞 / 1 失败不适用 / 2 已过期 / 4 人工复核`。
+- v1.4 人类流程基线 `54/54 PASS`，当前页 `21/21 PASS`；桌面/移动完成搜索 4 次、筛选 10 次、详情 26 次、状态预演 10 次、键盘 2 次和首页链接 1 次，console error 与横向溢出均为 0。
+- 状态预演只写浏览器会话控制事件，明确禁止原始层和持久业务状态写回；5 个 raw 文件在 phase 前后、跨 S11-P1 和当前复核均一致。
+- 未执行 S11-P3、Stage 11 整体复审、GitHub upload、app reinstall、正式报告发布或 business execution。
+
 ## 0.1.4-s11-p1-post-remediation-home-navigation - 2026-07-11
 
 - 完成 `V014_S11_P1_POST_REMEDIATION_HOME_NAVIGATION` 本地 phase：8 个全中文业务模块均具备单页导航、独立视图、可见动作反馈和键盘切换。
