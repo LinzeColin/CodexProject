@@ -14,6 +14,7 @@ from typing import Any
 
 SCHEMA_VERSION = "ids.stage034.data_retention_table.phase2.v1"
 SCENARIO_SCHEMA_VERSION = "ids.stage034.data_retention_table.phase3.v1"
+DELIVERY_SCHEMA_VERSION = "ids.stage034.data_retention_table.phase4.v1"
 INDEX_SCHEMA_VERSION = "ids.stage034.data_retention_table.index.v1"
 STAGE = "STAGE-034"
 PHASE = "Phase 2"
@@ -413,6 +414,132 @@ def build_stage034_scenario_validation_report(index_path: Path) -> dict[str, Any
     }
 
 
+def build_stage034_delivery_report(index_path: Path) -> dict[str, Any]:
+    index = _load_json(index_path)
+    phase2_report = build_stage034_data_retention_table_report(index_path)
+    scenario_report = build_stage034_scenario_validation_report(index_path)
+    guardrails = phase2_report["guardrail_results"]
+    runtime_policy = phase2_report["runtime_policy_results"]
+    scenario_results = scenario_report["scenario_results"]
+    source_refs = index.get("source_refs", {})
+    schema_change = index.get("schema_change_plan", {})
+    cleanup = index.get("guardrails", {}).get("cleanup_dry_run_guard", {})
+    deletion = index.get("guardrails", {}).get("deletion_stop_gate_guard", {})
+    rollback = index.get("guardrails", {}).get("rollback_restore_guard", {})
+    raw_boundary = index.get("guardrails", {}).get("raw_metadata_boundary", {})
+
+    return {
+        "schema_version": DELIVERY_SCHEMA_VERSION,
+        "stage": STAGE,
+        "phase": "Phase 4",
+        "task_id": "IDS-V0_1-STAGE034-P4",
+        "acceptance_id": ACCEPTANCE_ID,
+        "next_gate": "IDS-STAGE034-REVIEW-GATE",
+        "stage_review_status": "pending_next_run",
+        "github_upload_allowed": False,
+        "app_reinstall_allowed": False,
+        "schema_diff": {
+            "mode": "static_data_retention_table_contract_diff_not_executed",
+            "baseline": "STAGE-034 Phase 2/3 tracked data-retention index and scenario validation without Phase 4 closeout evidence",
+            "target_data_retention_table_index_ref": index_path.as_posix(),
+            "data_retention_table_contract_id": index.get("data_retention_table_contract_id"),
+            "source_refs": source_refs,
+            "retention_subjects": sorted(index.get("retention_subjects", {})),
+            "guardrails_added": sorted(guardrails),
+            "scenario_ids": sorted(scenario_results),
+            "tracked_constraints": schema_change.get("tracked_constraints", []),
+            "raw_payload_columns_added": [],
+            "credential_fields_added": [],
+            "notes": "This is a tracked-contract data-retention diff only; no live PostgreSQL schema diff was executed.",
+        },
+        "migration_output": {
+            "mode": "static_data_retention_table_migration_output_not_executed",
+            "migration_dependency_ref": source_refs.get("stage031_migration_safety_index_ref"),
+            "future_migration_id": schema_change.get("future_migration_id"),
+            "expected_static_result": "all Phase2 guardrail/runtime policy checks true; all Phase3 scenario statuses PASS",
+            "guardrail_results": guardrails,
+            "runtime_policy_results": runtime_policy,
+            "scenario_results": scenario_results,
+            "live_output_ref": "NOT_AVAILABLE_BY_POLICY_NO_LIVE_POSTGRESQL_CONNECTION",
+        },
+        "recovery_test_log": {
+            "mode": "static_data_retention_table_recovery_log_not_executed",
+            "checks": [
+                "raw_metadata_boundary_path_only",
+                "cleanup_default_mode_dry_run_only",
+                "owner_impact_report_required",
+                "no_delete_proof_required",
+                "destructive_action_blocked_by_default",
+                "owner_stop_gate_required",
+                "rollback_restore_required",
+                "backup_restore_steps_defined",
+                "post_cleanup_verification_required",
+                "no_raw_payloads_in_postgres",
+            ],
+            "result": "static PASS from tracked data-retention index and scenario validation contracts",
+            "cleanup_default_mode": cleanup.get("cleanup_default_mode"),
+            "owner_stop_gate_required": deletion.get("owner_stop_gate_required"),
+            "requires_backup_restore_plan": rollback.get("requires_backup_restore_plan"),
+            "requires_post_cleanup_verification": rollback.get("requires_post_cleanup_verification"),
+            "live_restore_log_ref": "NOT_AVAILABLE_BY_POLICY_NO_BACKUP_OR_RESTORE_EXECUTION",
+        },
+        "destructive_migration_confirmation": {
+            "required": True,
+            "destructive_allowed_by_default": False,
+            "current_contract_value": deletion.get("destructive_action_allowed_by_default"),
+            "manual_confirmation_required_before_change": True,
+            "owner_message": "任何破坏性 schema 迁移、retention cleanup/deletion、日志压缩、缓存驱逐、旧索引重建或报告快照裁剪必须单独人工确认，默认阻断。",
+        },
+        "rollback_steps": [
+            "Stop before any live PostgreSQL connection, migration, retention scan, cleanup, deletion, compaction, eviction, rebuild, pruning, backup, restore, or schema diff if the static contract cannot explain the retention subject, TTL/hold policy, dry-run gate, deletion stop gate, raw boundary, real-data-only policy, or rollback evidence.",
+            "Revert the Phase 4 helper, closeout evidence, batch lock, roadmap/event updates, Stage005 validator/tests, Stage034 focused tests, compatibility tests, and rendered owner files only.",
+            "Do not touch PostgreSQL data directories, DSN/secret stores, runtime outputs, app entries, GitHub PR state, or /Users/linzezhang/Downloads/IDS_MetaData.",
+            "Keep data_retention_table_contract_id stable unless a future authorized stage explicitly changes the retention contract.",
+        ],
+        "backup_restore_steps": [
+            "Before any future live PostgreSQL migration or retention cleanup/deletion/compaction/eviction/rebuild/pruning action, create an owner-approved logical backup in a separate authorized run.",
+            "Record backup location, checksum, migration id, dry-run impact report, data_retention_table_contract_id, and owner approval in future run evidence.",
+            "If a future apply or cleanup fails, stop writes immediately and run the approved rollback command from the migration-safety contract with ON_ERROR_STOP=1 and single-transaction semantics where supported.",
+            "Restore from the approved backup only in a future authorized restore run, then re-run healthcheck, retention-state verification, no-delete proof, and raw metadata path-only checks.",
+        ],
+        "known_limits": [
+            "PostgreSQL live connection, migration dry-run, apply, rollback, backup, restore, schema diff, retention scan, cleanup, deletion, log compaction, cache eviction, old-index rebuild, report snapshot pruning, and recovery smoke were not executed in this phase.",
+            "The report proves tracked data-retention contract readiness, not production database readiness or permission to delete retained artifacts.",
+            "No DSN, credential-bearing config, runtime database rows, retention jobs, cleanup outputs, reports, screenshots, PDFs, manifests, ledgers, audit logs, JSON output files, or service state were generated.",
+            "Raw metadata remains path-only at /Users/linzezhang/Downloads/IDS_MetaData and was not inspected.",
+            "STAGE-034 review is blocked until a separate stage review run; BATCH031_040 upload remains blocked until STAGE-031..040 are complete, reviewed, and repaired.",
+        ],
+        "chinese_owner_feedback": (
+            "STAGE-034 已完成 Phase 4：当前交付的是数据保留表的静态工程合同、schema diff 摘要、"
+            "migration 输出说明、恢复测试日志、已知限制、破坏性迁移人工确认、数据库回滚步骤、"
+            "备份恢复步骤和中文反馈。它不是生产 PostgreSQL 连接、迁移或清理删除授权；"
+            "下一步应进入 STAGE-034 复审，而不是 GitHub upload 或 app reinstall。"
+        ),
+        "phase2_report": phase2_report,
+        "scenario_report": scenario_report,
+        "raw_metadata_boundary": {
+            "path": raw_boundary.get("path"),
+            "path_only": raw_boundary.get("path_only") is True,
+            "no_raw_content_access": raw_boundary.get("content_access_allowed") is False,
+            "copy_blocked": raw_boundary.get("copy_allowed") is False,
+            "modify_blocked": raw_boundary.get("modify_allowed") is False,
+            "delete_blocked": raw_boundary.get("delete_allowed") is False,
+            "dump_blocked": raw_boundary.get("dump_allowed") is False,
+        },
+        "does_not_connect_to_postgres": True,
+        "does_not_execute_migration": True,
+        "does_not_read_raw_metadata": True,
+        "does_not_write_runtime_outputs": True,
+        "does_not_use_fake_ids_business_data": True,
+        "does_not_execute_cleanup": True,
+        "does_not_execute_deletion": True,
+        "does_not_execute_log_compaction": True,
+        "does_not_execute_cache_eviction": True,
+        "does_not_execute_index_rebuild": True,
+        "does_not_execute_report_snapshot_pruning": True,
+    }
+
+
 def main() -> int:
     root = Path(__file__).resolve().parents[1]
     index_path = (
@@ -425,11 +552,13 @@ def main() -> int:
     )
     report = build_stage034_data_retention_table_report(index_path)
     scenario_report = build_stage034_scenario_validation_report(index_path)
+    delivery_report = build_stage034_delivery_report(index_path)
     print(
         json.dumps(
             {
                 "data_retention_table_report": report,
                 "scenario_report": scenario_report,
+                "delivery_report": delivery_report,
             },
             ensure_ascii=False,
             sort_keys=True,
@@ -456,6 +585,21 @@ def main() -> int:
             scenario_report["does_not_use_fake_ids_business_data"],
             scenario_report["does_not_execute_cleanup"],
             scenario_report["does_not_execute_deletion"],
+            delivery_report["schema_diff"]["mode"]
+            == "static_data_retention_table_contract_diff_not_executed",
+            delivery_report["migration_output"]["mode"]
+            == "static_data_retention_table_migration_output_not_executed",
+            delivery_report["recovery_test_log"]["mode"]
+            == "static_data_retention_table_recovery_log_not_executed",
+            delivery_report["stage_review_status"] == "pending_next_run",
+            delivery_report["github_upload_allowed"] is False,
+            delivery_report["app_reinstall_allowed"] is False,
+            delivery_report["does_not_execute_cleanup"],
+            delivery_report["does_not_execute_deletion"],
+            delivery_report["does_not_execute_log_compaction"],
+            delivery_report["does_not_execute_cache_eviction"],
+            delivery_report["does_not_execute_index_rebuild"],
+            delivery_report["does_not_execute_report_snapshot_pruning"],
         ]
     )
     return 0 if all(checks) else 1
