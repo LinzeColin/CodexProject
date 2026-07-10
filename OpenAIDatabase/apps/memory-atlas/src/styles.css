@@ -675,9 +675,21 @@ h3 {
 
 .command-palette-heading {
   display: flex;
-  align-items: end;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
+}
+
+.command-palette-heading-copy {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: baseline;
+  min-width: 0;
+  gap: 1px 7px;
+}
+
+.command-palette-heading-copy .eyebrow {
+  grid-column: 1 / -1;
 }
 
 .command-palette-heading h2 {
@@ -696,6 +708,93 @@ h3 {
   flex: 0 0 auto;
   color: #8fd3ff;
   font-size: 10px;
+}
+
+.owner-daily-entry {
+  display: flex;
+  flex: 0 1 340px;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 250px;
+  min-height: 36px;
+  gap: 10px;
+  border: 1px solid rgba(245, 199, 107, 0.24);
+  border-radius: 8px;
+  background: rgba(245, 199, 107, 0.065);
+  padding: 5px 6px 5px 8px;
+}
+
+.owner-daily-entry.available {
+  border-color: rgba(126, 232, 212, 0.3);
+  background: rgba(126, 232, 212, 0.065);
+}
+
+.owner-daily-entry-copy {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 7px;
+}
+
+.owner-daily-entry-copy > svg {
+  flex: 0 0 auto;
+  color: #f5c76b;
+}
+
+.owner-daily-entry.available .owner-daily-entry-copy > svg {
+  color: #7ee8d4;
+}
+
+.owner-daily-entry-copy > div {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+
+.owner-daily-entry-copy strong {
+  color: #f4f1e8;
+  font-size: 11px;
+  line-height: 1.15;
+}
+
+.command-palette-heading .owner-daily-entry-copy span {
+  color: #b6b1a6;
+  font-size: 9px;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.owner-daily-entry button,
+.owner-daily-entry a {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 28px;
+  border: 1px solid rgba(126, 232, 212, 0.34);
+  border-radius: 7px;
+  background: rgba(126, 232, 212, 0.11);
+  color: #e8fffb;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.owner-daily-entry.local-required a {
+  border-color: rgba(245, 199, 107, 0.34);
+  background: rgba(245, 199, 107, 0.1);
+  color: #ffe8b8;
+}
+
+.owner-daily-entry button:hover,
+.owner-daily-entry button:focus-visible,
+.owner-daily-entry a:hover,
+.owner-daily-entry a:focus-visible {
+  border-color: rgba(244, 241, 232, 0.72);
+  outline: none;
 }
 
 .command-palette-grid {
@@ -1352,6 +1451,316 @@ h3 {
 
 .proposal-action-result p {
   margin: 5px 0 0;
+}
+
+.owner-daily-workspace-surface {
+  width: min(1040px, calc(100vw - 32px));
+  height: min(760px, calc(100dvh - 32px));
+}
+
+.owner-daily-workspace-heading > div {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: baseline;
+  gap: 2px 10px;
+}
+
+.owner-daily-workspace-heading .eyebrow {
+  grid-column: 1 / -1;
+}
+
+.owner-daily-workspace-body {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-gutter: stable;
+  padding: 14px 16px 18px;
+}
+
+.owner-daily-start-band,
+.owner-daily-summary,
+.owner-daily-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  gap: 16px;
+  border: 1px solid rgba(244, 241, 232, 0.12);
+  border-radius: 8px;
+  background: rgba(22, 25, 32, 0.68);
+  padding: 11px 12px;
+}
+
+.owner-daily-start-band > div,
+.owner-daily-empty-state > div,
+.owner-daily-summary > div > div {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.owner-daily-start-band strong,
+.owner-daily-empty-state strong,
+.owner-daily-summary strong {
+  color: #f4f1e8;
+  font-size: 13px;
+}
+
+.owner-daily-start-band p,
+.owner-daily-empty-state p,
+.owner-daily-summary p,
+.owner-daily-step p {
+  margin: 0;
+  color: #c7c1b7;
+  font-size: 11px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.owner-daily-start-band button,
+.owner-daily-step-failure button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 34px;
+  border: 1px solid rgba(126, 232, 212, 0.4);
+  border-radius: 7px;
+  background: rgba(126, 232, 212, 0.12);
+  color: #e8fffb;
+  padding: 6px 11px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.owner-daily-start-band button:disabled,
+.owner-daily-step-failure button:disabled {
+  cursor: progress;
+  opacity: 0.58;
+}
+
+.owner-daily-action-error {
+  margin: 0;
+  border-left: 3px solid #f08f8f;
+  background: rgba(240, 143, 143, 0.08);
+  color: #ffd0d0;
+  padding: 9px 11px;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.owner-daily-summary {
+  border-color: rgba(245, 199, 107, 0.26);
+  background: rgba(245, 199, 107, 0.065);
+}
+
+.owner-daily-summary-pass {
+  border-color: rgba(126, 232, 212, 0.3);
+  background: rgba(126, 232, 212, 0.065);
+}
+
+.owner-daily-summary > div {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 10px;
+}
+
+.owner-daily-summary > div > svg,
+.owner-daily-empty-state > svg {
+  flex: 0 0 auto;
+  color: #f5c76b;
+}
+
+.owner-daily-summary-pass > div > svg {
+  color: #7ee8d4;
+}
+
+.owner-daily-summary dl {
+  display: grid;
+  grid-template-columns: repeat(2, 64px);
+  gap: 6px;
+  margin: 0;
+}
+
+.owner-daily-summary dl div {
+  display: grid;
+  justify-items: center;
+  gap: 1px;
+  border-left: 1px solid rgba(244, 241, 232, 0.12);
+}
+
+.owner-daily-summary dt {
+  color: #a8a196;
+  font-size: 9px;
+}
+
+.owner-daily-summary dd {
+  margin: 0;
+  color: #f4f1e8;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.owner-daily-step-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 9px;
+  min-width: 0;
+}
+
+.owner-daily-step {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(244, 241, 232, 0.12);
+  border-left: 4px solid #7ee8d4;
+  border-radius: 8px;
+  background: rgba(16, 16, 20, 0.58);
+  padding: 10px;
+}
+
+.owner-daily-step-failed {
+  border-left-color: #f08f8f;
+  background: rgba(240, 143, 143, 0.055);
+}
+
+.owner-daily-step > header {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) auto;
+  align-items: center;
+  min-width: 0;
+  gap: 8px;
+}
+
+.owner-daily-step > header > span {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid rgba(143, 211, 255, 0.2);
+  border-radius: 7px;
+  color: #8fd3ff;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.owner-daily-step > header > div {
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+  gap: 7px;
+}
+
+.owner-daily-step > header strong {
+  min-width: 0;
+  color: #f4f1e8;
+  font-size: 12px;
+}
+
+.owner-daily-step > header small {
+  color: #7ee8d4;
+  font-size: 9px;
+}
+
+.owner-daily-step-failed > header small,
+.owner-daily-step-failed > header > svg {
+  color: #f08f8f;
+}
+
+.owner-daily-step-pass > header > svg {
+  color: #7ee8d4;
+}
+
+.owner-daily-step-failure {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  gap: 12px;
+}
+
+.owner-daily-step-failure button {
+  min-height: 30px;
+  border-color: rgba(245, 199, 107, 0.38);
+  background: rgba(245, 199, 107, 0.1);
+  color: #ffe8b8;
+  padding: 5px 9px;
+  font-size: 10px;
+}
+
+.owner-daily-step details {
+  min-width: 0;
+  border-top: 1px solid rgba(244, 241, 232, 0.09);
+  padding-top: 7px;
+}
+
+.owner-daily-step summary {
+  width: fit-content;
+  color: #a8a196;
+  cursor: pointer;
+  font-size: 10px;
+}
+
+.owner-daily-machine-detail {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+  margin-top: 7px;
+}
+
+.owner-daily-machine-detail code {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  border: 1px solid rgba(244, 241, 232, 0.1);
+  border-radius: 7px;
+  background: rgba(4, 7, 12, 0.58);
+  color: #8fd3ff;
+  padding: 7px;
+  font-size: 10px;
+}
+
+.owner-daily-machine-detail > small,
+.owner-daily-machine-detail dt {
+  color: #a8a196;
+  font-size: 9px;
+}
+
+.owner-daily-machine-detail dl {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+}
+
+.owner-daily-machine-detail dl div {
+  display: grid;
+  grid-template-columns: minmax(90px, 0.45fr) minmax(0, 1fr);
+  gap: 8px;
+}
+
+.owner-daily-machine-detail dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: #d9d4ca;
+  font-size: 9px;
+}
+
+.owner-daily-empty-state {
+  justify-content: start;
+  min-height: 86px;
+}
+
+.owner-daily-running-state > svg {
+  color: #8fd3ff;
 }
 
 .visual-focus-workspace:not(.home-workspace) .command-palette {
@@ -9401,6 +9810,15 @@ h3 {
     display: grid;
   }
 
+  .command-palette-heading-copy {
+    grid-template-columns: auto auto;
+  }
+
+  .owner-daily-entry {
+    width: 100%;
+    min-width: 0;
+  }
+
   .command-palette-action {
     min-height: 42px;
   }
@@ -10274,6 +10692,48 @@ h3 {
 
   .proposal-approval-band button,
   .proposal-manual-rollback button {
+    width: 100%;
+  }
+
+  .owner-daily-workspace-heading > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .owner-daily-workspace-heading .eyebrow {
+    grid-column: auto;
+  }
+
+  .owner-daily-workspace-body {
+    gap: 9px;
+    padding: 10px 11px 14px;
+  }
+
+  .owner-daily-start-band,
+  .owner-daily-summary {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .owner-daily-start-band button {
+    width: 100%;
+  }
+
+  .owner-daily-summary dl {
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .owner-daily-step-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .owner-daily-step-failure {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .owner-daily-step-failure button {
     width: 100%;
   }
 }

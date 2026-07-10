@@ -114,6 +114,7 @@
     "validate:v1.2-home-multiviewport": "node scripts/validate_memory_atlas_v1_2_home_multiviewport.cjs",
     "validate:v1.2-command-workflows": "node scripts/validate_memory_atlas_v1_2_command_workflows.cjs",
     "validate:v1.2-proposal-e2e": "node scripts/validate_memory_atlas_v1_2_proposal_e2e.cjs",
+    "validate:v1.2-owner-daily-e2e": "node scripts/validate_memory_atlas_v1_2_owner_daily_e2e.cjs",
     "validate:v1.1.7-stage0-phase1": "node scripts/validate_memory_atlas_v1_1_7_stage0_phase1.cjs",
     "validate:v1.1.7-stage0-phase2": "node scripts/validate_memory_atlas_v1_1_7_stage0_phase2.cjs",
     "validate:v1.1.7-stage0-phase3": "node scripts/validate_memory_atlas_v1_1_7_stage0_phase3.cjs",

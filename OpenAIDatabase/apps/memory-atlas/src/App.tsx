@@ -97,6 +97,9 @@ const COMMAND_WORKFLOW_VERSION = "real_command_workflows.v1_2_r3" as const;
 const COMMAND_API_VERSION = "memory_atlas_command_api.v1_2_r3" as const;
 const PROPOSAL_WORKFLOW_VERSION = "memory_atlas_proposal_workflow.v1_2_r4" as const;
 const PROPOSAL_API_VERSION = "memory_atlas_proposal_api.v1_2_r4" as const;
+const OWNER_DAILY_UI_VERSION = "memory_atlas_owner_daily_ui.v1_2_r5" as const;
+const OWNER_DAILY_API_VERSION = "memory_atlas_owner_daily_api.v1_2_r5" as const;
+const OWNER_DAILY_RESULT_VERSION = "memory_atlas_owner_daily_result.v1_2_r5" as const;
 const LOCAL_APP_HANDOFF_URL = "http://127.0.0.1:4177" as const;
 const HOME_ACTION_SECTION_VERSION = "top_actions_section.v1_1_7_stage3_phase2" as const;
 const HOME_LEVEL_ASSET_SECTION_VERSION = "level_assets_section.v1_1_7_stage3_phase2" as const;
@@ -430,6 +433,18 @@ declare global {
       canonicalRepoMutation: false;
       remotePush: false;
     };
+    __memoryAtlasR5OwnerDaily?: () => {
+      uiVersion: typeof OWNER_DAILY_UI_VERSION;
+      ownerDailyApiVersion: typeof OWNER_DAILY_API_VERSION;
+      runtimeAvailable: boolean;
+      workspaceOpen: boolean;
+      resultStatus: OwnerDailyResult["status"] | "idle";
+      completedCount: number;
+      failedCount: number;
+      hostedStaticReadOnly: boolean;
+      canonicalRepoMutation: false;
+      remotePush: false;
+    };
   }
 }
 
@@ -485,9 +500,20 @@ const S12_P3_CHATGPT_DEEP_EXPLORE_COMMAND_ID = "chatgpt_deep_explore" as const;
 const S12_P3_CHATGPT_DEEP_EXPLORE_VERSION = "chatgpt_deep_explore.v1_2_s12_p3" as const;
 const S12_P1_COMMAND_IDS = [...S12_P1_ACCEPTED_CORE_COMMAND_IDS, S12_P1_PERSONALIZATION_COMMAND_ID, S12_P3_CHATGPT_DEEP_EXPLORE_COMMAND_ID] as const;
 const S12_P1_PERSONALIZATION_TARGETS = ["chatgpt", "codex", "other_agent"] as const;
+const OWNER_DAILY_STEP_IDS = [
+  "sync",
+  "analyze",
+  "build-atlas",
+  "audit",
+  "push",
+  "proposals",
+  "generate-personalization-prompt",
+  "deep-explore",
+] as const;
 
 type S12P1CoreCommandId = (typeof S12_P1_ACCEPTED_CORE_COMMAND_IDS)[number];
 type S12P1CommandId = (typeof S12_P1_COMMAND_IDS)[number];
+type OwnerDailyStepId = (typeof OWNER_DAILY_STEP_IDS)[number];
 
 interface CommandPaletteCommand {
   id: S12P1CommandId;
@@ -533,6 +559,42 @@ interface CommandWorkflowResult {
     sends_to_chatgpt: false;
     auto_submit?: false;
     canonical_repo_mutation?: false;
+  };
+}
+
+interface OwnerDailyStepResult {
+  step_id: OwnerDailyStepId;
+  order: number;
+  label_zh: string;
+  status: "pass" | "failed";
+  conclusion_zh: string;
+  failure_zh: string;
+  retryable: boolean;
+  duration_ms: number;
+  invocation: string[];
+  metrics: Record<string, string | number | boolean | Array<string | number | boolean>>;
+}
+
+interface OwnerDailyResult {
+  schema_version: typeof OWNER_DAILY_RESULT_VERSION;
+  api_version: typeof OWNER_DAILY_API_VERSION;
+  action: "run" | "retry";
+  requested_step_id?: OwnerDailyStepId;
+  status: "PASS" | "PARTIAL_FAILURE";
+  profile: "owner-daily";
+  dry_run: true;
+  conclusion_zh: string;
+  completed_count: number;
+  failed_count: number;
+  retryable_step_ids: OwnerDailyStepId[];
+  steps: OwnerDailyStepResult[];
+  safety: {
+    writes_files: false;
+    remote_push: false;
+    raw_mutation: false;
+    sends_to_chatgpt: false;
+    proposal_apply_execution: false;
+    canonical_repo_mutation: false;
   };
 }
 
@@ -1515,6 +1577,7 @@ interface RuntimeState {
   serverMode: "检测中" | "本地自释放" | "静态托管";
   commandApiAvailable: boolean;
   proposalApiAvailable: boolean;
+  ownerDailyApiAvailable: boolean;
 }
 
 const WRITEBACK_QUEUE_KEY = "memory-atlas.writeback.proposals.v1";
@@ -1733,6 +1796,90 @@ function isCommandWorkflowResult(value: unknown): value is CommandWorkflowResult
   return true;
 }
 
+function isOwnerDailyMetricValue(value: unknown): boolean {
+  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") return true;
+  return Array.isArray(value)
+    && value.length <= 8
+    && value.every((item) => typeof item === "string" || typeof item === "number" || typeof item === "boolean");
+}
+
+function isOwnerDailyStepResult(value: unknown): value is OwnerDailyStepResult {
+  if (!isRecord(value) || !OWNER_DAILY_STEP_IDS.includes(value.step_id as OwnerDailyStepId)) return false;
+  if (!(value.status === "pass" || value.status === "failed")) return false;
+  if (
+    typeof value.order !== "number"
+    || typeof value.label_zh !== "string"
+    || typeof value.conclusion_zh !== "string"
+    || typeof value.failure_zh !== "string"
+    || typeof value.retryable !== "boolean"
+    || typeof value.duration_ms !== "number"
+  ) return false;
+  if (!Array.isArray(value.invocation) || !value.invocation.every((item) => typeof item === "string")) return false;
+  if (
+    value.invocation[0] !== "python3"
+    || value.invocation[1] !== "scripts/atlasctl.py"
+    || !value.invocation.includes("--dry-run")
+    || value.invocation.length > 8
+  ) return false;
+  if (!isRecord(value.metrics) || !Object.values(value.metrics).every(isOwnerDailyMetricValue)) return false;
+  return value.status === "failed" ? value.retryable && Boolean(value.failure_zh.trim()) : !value.retryable;
+}
+
+function isOwnerDailyResult(value: unknown): value is OwnerDailyResult {
+  if (
+    !isRecord(value)
+    || value.schema_version !== OWNER_DAILY_RESULT_VERSION
+    || value.api_version !== OWNER_DAILY_API_VERSION
+    || !(value.action === "run" || value.action === "retry")
+    || !(value.status === "PASS" || value.status === "PARTIAL_FAILURE")
+    || value.profile !== "owner-daily"
+    || value.dry_run !== true
+    || typeof value.conclusion_zh !== "string"
+    || typeof value.completed_count !== "number"
+    || typeof value.failed_count !== "number"
+    || !Array.isArray(value.retryable_step_ids)
+    || !Array.isArray(value.steps)
+    || !value.steps.every(isOwnerDailyStepResult)
+    || !isRecord(value.safety)
+  ) return false;
+  if (
+    value.safety.writes_files !== false
+    || value.safety.remote_push !== false
+    || value.safety.raw_mutation !== false
+    || value.safety.sends_to_chatgpt !== false
+    || value.safety.proposal_apply_execution !== false
+    || value.safety.canonical_repo_mutation !== false
+  ) return false;
+  const stepIds = value.steps.map((step) => step.step_id);
+  const failedIds = value.steps.filter((step) => step.status === "failed").map((step) => step.step_id);
+  if (value.completed_count + value.failed_count !== value.steps.length || value.failed_count !== failedIds.length) return false;
+  if (value.status === "PASS" ? failedIds.length !== 0 : failedIds.length === 0) return false;
+  if (JSON.stringify(value.retryable_step_ids) !== JSON.stringify(failedIds)) return false;
+  if (value.action === "run") return JSON.stringify(stepIds) === JSON.stringify(OWNER_DAILY_STEP_IDS);
+  return OWNER_DAILY_STEP_IDS.includes(value.requested_step_id as OwnerDailyStepId)
+    && stepIds.length === 1
+    && stepIds[0] === value.requested_step_id;
+}
+
+function mergeOwnerDailyRetry(current: OwnerDailyResult, retry: OwnerDailyResult): OwnerDailyResult {
+  if (retry.action !== "retry" || !retry.requested_step_id || retry.steps.length !== 1) return current;
+  const replacement = retry.steps[0];
+  const steps = current.steps.map((step) => step.step_id === retry.requested_step_id ? replacement : step);
+  const failedIds = steps.filter((step) => step.status === "failed").map((step) => step.step_id);
+  const completedCount = steps.length - failedIds.length;
+  return {
+    ...current,
+    status: failedIds.length === 0 ? "PASS" : "PARTIAL_FAILURE",
+    conclusion_zh: failedIds.length === 0
+      ? `Owner Daily 已完成 ${completedCount} 项 no-write 检查，没有发现步骤失败。`
+      : `Owner Daily 已完成 ${completedCount} 项，${failedIds.length} 项未通过；可只重试失败步骤。`,
+    completed_count: completedCount,
+    failed_count: failedIds.length,
+    retryable_step_ids: failedIds,
+    steps,
+  };
+}
+
 function safeChatGPTPrefillUrl(value: string | undefined): string {
   if (!value) return "";
   try {
@@ -1815,6 +1962,8 @@ export function App() {
   const [selectedCommandId, setSelectedCommandId] = useState<S12P1CommandId>("sync_chatgpt");
   const [commandExecution, setCommandExecution] = useState<CommandExecutionState>(INITIAL_COMMAND_EXECUTION_STATE);
   const [proposalReview, setProposalReview] = useState<ProposalReviewPayload | null>(null);
+  const [ownerDailyWorkspaceOpen, setOwnerDailyWorkspaceOpen] = useState(false);
+  const [ownerDailyResult, setOwnerDailyResult] = useState<OwnerDailyResult | null>(null);
   const [runtimeState, setRuntimeState] = useState<RuntimeState>(() => ({
     runStartedAt: new Date(),
     snapshotLoadedAt: null,
@@ -1822,6 +1971,7 @@ export function App() {
     serverMode: "检测中",
     commandApiAvailable: false,
     proposalApiAvailable: false,
+    ownerDailyApiAvailable: false,
   }));
 
   useEffect(() => {
@@ -1896,8 +2046,9 @@ export function App() {
         if (!isRecord(payload) || payload.status !== "running") return;
         const commandApiAvailable = isRecord(payload) && payload.command_api_version === COMMAND_API_VERSION;
         const proposalApiAvailable = isRecord(payload) && payload.proposal_api_version === PROPOSAL_API_VERSION;
+        const ownerDailyApiAvailable = isRecord(payload) && payload.owner_daily_api_version === OWNER_DAILY_API_VERSION;
         heartbeatEnabled = true;
-        setRuntimeState((current) => ({ ...current, serverMode: "本地自释放", commandApiAvailable, proposalApiAvailable }));
+        setRuntimeState((current) => ({ ...current, serverMode: "本地自释放", commandApiAvailable, proposalApiAvailable, ownerDailyApiAvailable }));
         heartbeat();
         heartbeatTimer = window.setInterval(heartbeat, LOCAL_RUNTIME_HEARTBEAT_MS);
         window.addEventListener("pagehide", handlePageRelease);
@@ -1906,13 +2057,13 @@ export function App() {
       })
       .catch(() => {
         if (!cancelled) {
-          setRuntimeState((current) => ({ ...current, serverMode: "静态托管", commandApiAvailable: false, proposalApiAvailable: false }));
+          setRuntimeState((current) => ({ ...current, serverMode: "静态托管", commandApiAvailable: false, proposalApiAvailable: false, ownerDailyApiAvailable: false }));
         }
       });
 
     const fallbackTimer = window.setTimeout(() => {
       if (!heartbeatEnabled && !cancelled) {
-        setRuntimeState((current) => ({ ...current, serverMode: "静态托管", commandApiAvailable: false, proposalApiAvailable: false }));
+        setRuntimeState((current) => ({ ...current, serverMode: "静态托管", commandApiAvailable: false, proposalApiAvailable: false, ownerDailyApiAvailable: false }));
       }
     }, 1200);
 
@@ -2444,6 +2595,24 @@ export function App() {
     };
   }, [proposalReview, runtimeState.proposalApiAvailable, runtimeState.serverMode]);
 
+  useEffect(() => {
+    window.__memoryAtlasR5OwnerDaily = () => ({
+      uiVersion: OWNER_DAILY_UI_VERSION,
+      ownerDailyApiVersion: OWNER_DAILY_API_VERSION,
+      runtimeAvailable: runtimeState.serverMode === "本地自释放" && runtimeState.ownerDailyApiAvailable,
+      workspaceOpen: ownerDailyWorkspaceOpen,
+      resultStatus: ownerDailyResult?.status ?? "idle",
+      completedCount: ownerDailyResult?.completed_count ?? 0,
+      failedCount: ownerDailyResult?.failed_count ?? 0,
+      hostedStaticReadOnly: runtimeState.serverMode === "静态托管",
+      canonicalRepoMutation: false,
+      remotePush: false,
+    });
+    return () => {
+      delete window.__memoryAtlasR5OwnerDaily;
+    };
+  }, [ownerDailyResult, ownerDailyWorkspaceOpen, runtimeState.ownerDailyApiAvailable, runtimeState.serverMode]);
+
   return (
     <div
       className="app-shell"
@@ -2464,6 +2633,8 @@ export function App() {
       data-r3-command-api-available={runtimeState.commandApiAvailable ? "true" : "false"}
       data-r4-proposal-workflow={PROPOSAL_WORKFLOW_VERSION}
       data-r4-proposal-api-available={runtimeState.proposalApiAvailable ? "true" : "false"}
+      data-r5-owner-daily={OWNER_DAILY_UI_VERSION}
+      data-r5-owner-daily-api-available={runtimeState.ownerDailyApiAvailable ? "true" : "false"}
     >
       <aside className="sidebar" aria-label={uiCopy.app.navigationAria}>
         <div className="brand">
@@ -2624,6 +2795,13 @@ export function App() {
           model={commandPaletteModel}
           onExecuteCommand={handleExecuteCommand}
           onNavigateView={switchView}
+          ownerDailyEntry={(
+            <OwnerDailyEntry
+              available={runtimeState.serverMode === "本地自释放" && runtimeState.ownerDailyApiAvailable}
+              onOpen={() => setOwnerDailyWorkspaceOpen(true)}
+              serverMode={runtimeState.serverMode}
+            />
+          )}
           selectedCommandId={selectedCommandId}
           onSelectCommand={handleCommandPaletteAction}
         />
@@ -2665,6 +2843,244 @@ export function App() {
         <MemoryAtlasHelpPanel copy={uiCopy.help} onClose={() => setHelpOpen(false)} onSelectView={openHelpView} open={helpOpen} />
       </main>
       {proposalReview ? <ProposalWorkspace onClose={() => setProposalReview(null)} review={proposalReview} /> : null}
+      {ownerDailyWorkspaceOpen ? (
+        <OwnerDailyWorkspace
+          onClose={() => setOwnerDailyWorkspaceOpen(false)}
+          onResultChange={setOwnerDailyResult}
+          result={ownerDailyResult}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+function OwnerDailyEntry({
+  available,
+  onOpen,
+  serverMode,
+}: {
+  available: boolean;
+  onOpen: () => void;
+  serverMode: RuntimeState["serverMode"];
+}) {
+  return (
+    <section
+      className={available ? "owner-daily-entry available" : "owner-daily-entry local-required"}
+      data-r5-owner-daily-entry={OWNER_DAILY_UI_VERSION}
+      data-r5-owner-daily-runtime={available ? "available" : "local_required"}
+    >
+      <div className="owner-daily-entry-copy">
+        <ShieldCheck aria-hidden="true" size={16} />
+        <div>
+          <strong>日常维护</strong>
+          <span>8 项 no-write 检查</span>
+        </div>
+      </div>
+      {available ? (
+        <button data-r5-owner-daily-open onClick={onOpen} type="button">
+          <Play aria-hidden="true" size={14} />
+          <span>打开检查</span>
+        </button>
+      ) : (
+        <a data-r5-owner-daily-handoff href={LOCAL_APP_HANDOFF_URL}>
+          {serverMode === "本地自释放" ? "更新本地 app" : "在本地 app 打开"}
+        </a>
+      )}
+    </section>
+  );
+}
+
+function OwnerDailyWorkspace({
+  onClose,
+  onResultChange,
+  result,
+}: {
+  onClose: () => void;
+  onResultChange: (result: OwnerDailyResult | null) => void;
+  result: OwnerDailyResult | null;
+}) {
+  const [pendingAction, setPendingAction] = useState<"run" | OwnerDailyStepId | null>(null);
+  const [actionError, setActionError] = useState("");
+
+  useEffect(() => {
+    const closeOnEscape = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape" && pendingAction === null) onClose();
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [onClose, pendingAction]);
+
+  const postOwnerDaily = async (body: { action: "run" } | { action: "retry"; step_id: OwnerDailyStepId }): Promise<OwnerDailyResult> => {
+    const response = await fetch("/__memory_atlas_owner_daily", {
+      method: "POST",
+      cache: "no-store",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const payload: unknown = await response.json().catch(() => null);
+    if (!response.ok) {
+      const message = isRecord(payload) && typeof payload.message_zh === "string"
+        ? payload.message_zh
+        : `Owner Daily 请求失败（HTTP ${response.status}）。`;
+      throw new Error(message);
+    }
+    if (!isOwnerDailyResult(payload)) {
+      throw new Error("Owner Daily 返回格式或 no-write 安全字段未通过校验，已停止显示结果。");
+    }
+    return payload;
+  };
+
+  const runProfile = async () => {
+    if (pendingAction) return;
+    setPendingAction("run");
+    setActionError("");
+    onResultChange(null);
+    try {
+      const nextResult = await postOwnerDaily({ action: "run" });
+      if (nextResult.action !== "run") throw new Error("Owner Daily 返回了错误的 action，已停止显示结果。");
+      onResultChange(nextResult);
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : "Owner Daily 未完成，请查看本机日志后重试。");
+    } finally {
+      setPendingAction(null);
+    }
+  };
+
+  const retryStep = async (stepId: OwnerDailyStepId) => {
+    if (!result || pendingAction || !result.retryable_step_ids.includes(stepId)) return;
+    setPendingAction(stepId);
+    setActionError("");
+    try {
+      const retry = await postOwnerDaily({ action: "retry", step_id: stepId });
+      if (retry.action !== "retry" || retry.requested_step_id !== stepId) {
+        throw new Error("Owner Daily retry 返回了错误步骤，已停止合并结果。");
+      }
+      onResultChange(mergeOwnerDailyRetry(result, retry));
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : "Owner Daily 单步重试未完成。");
+    } finally {
+      setPendingAction(null);
+    }
+  };
+
+  return (
+    <div
+      className="proposal-workspace-backdrop owner-daily-workspace-backdrop"
+      data-r5-owner-daily-workspace={OWNER_DAILY_UI_VERSION}
+    >
+      <section aria-label="Owner Daily 日常维护" aria-modal="true" className="proposal-workspace-surface owner-daily-workspace-surface" role="dialog">
+        <header className="proposal-workspace-heading owner-daily-workspace-heading">
+          <div>
+            <p className="eyebrow">日常维护</p>
+            <h2>Owner Daily</h2>
+            <span>八个固定步骤 · 只读 dry-run · 失败步骤可单独重试</span>
+          </div>
+          <button aria-label="关闭 Owner Daily" className="proposal-workspace-close" disabled={pendingAction !== null} onClick={onClose} title="关闭" type="button">
+            <X aria-hidden="true" size={18} />
+          </button>
+        </header>
+        <div className="owner-daily-workspace-body">
+          <section className="owner-daily-start-band">
+            <div>
+              <strong>{result ? "重新检查当前维护状态" : "检查当前维护状态"}</strong>
+              <p>不会写入 source、runtime 或 raw 数据，不会推送 GitHub、应用提案、发送到 ChatGPT 或打开浏览器。</p>
+            </div>
+            <button data-r5-owner-daily-start disabled={pendingAction !== null} onClick={() => void runProfile()} type="button">
+              {pendingAction === "run" ? <RefreshCw aria-hidden="true" className="command-running-icon" size={16} /> : <Play aria-hidden="true" size={16} />}
+              <span>{pendingAction === "run" ? "正在检查" : "开始 no-write 检查"}</span>
+            </button>
+          </section>
+
+          {actionError ? <p className="owner-daily-action-error" data-r5-owner-daily-error role="alert">{actionError}</p> : null}
+
+          {result ? (
+            <>
+              <section
+                aria-live="polite"
+                className={`owner-daily-summary owner-daily-summary-${result.status.toLowerCase()}`}
+                data-r5-owner-daily-result-status={result.status}
+                data-r5-owner-daily-summary
+                role="status"
+              >
+                <div>
+                  {result.status === "PASS" ? <CheckCircle2 aria-hidden="true" size={22} /> : <ShieldCheck aria-hidden="true" size={22} />}
+                  <div>
+                    <strong>{result.status === "PASS" ? "日常检查已通过" : "部分步骤需要处理"}</strong>
+                    <p>{result.conclusion_zh}</p>
+                  </div>
+                </div>
+                <dl>
+                  <div data-r5-owner-daily-completed-count={result.completed_count}><dt>已完成</dt><dd>{result.completed_count}</dd></div>
+                  <div data-r5-owner-daily-failed-count={result.failed_count}><dt>未通过</dt><dd>{result.failed_count}</dd></div>
+                </dl>
+              </section>
+
+              <div className="owner-daily-step-list" data-r5-owner-daily-step-list>
+                {result.steps.map((step) => (
+                  <article
+                    className={`owner-daily-step owner-daily-step-${step.status}`}
+                    data-r5-owner-daily-step={step.step_id}
+                    data-r5-owner-daily-step-status={step.status}
+                    key={step.step_id}
+                  >
+                    <header>
+                      <span>{String(step.order).padStart(2, "0")}</span>
+                      <div>
+                        <strong>{step.label_zh}</strong>
+                        <small>{step.status === "pass" ? "通过" : "未通过"}</small>
+                      </div>
+                      {step.status === "pass" ? <CheckCircle2 aria-hidden="true" size={18} /> : <ShieldCheck aria-hidden="true" size={18} />}
+                    </header>
+                    {step.status === "pass" ? (
+                      <p>{step.conclusion_zh}</p>
+                    ) : (
+                      <div className="owner-daily-step-failure">
+                        <p data-r5-owner-daily-failure>{step.failure_zh}</p>
+                        <button
+                          data-r5-owner-daily-retry={step.step_id}
+                          disabled={pendingAction !== null}
+                          onClick={() => void retryStep(step.step_id)}
+                          type="button"
+                        >
+                          <RotateCcw aria-hidden="true" className={pendingAction === step.step_id ? "command-running-icon" : undefined} size={14} />
+                          <span>{pendingAction === step.step_id ? "正在重试" : "只重试此步骤"}</span>
+                        </button>
+                      </div>
+                    )}
+                    <details>
+                      <summary>机读详情</summary>
+                      <div className="owner-daily-machine-detail">
+                        <code>{step.invocation.join(" ")}</code>
+                        <small>耗时 {step.duration_ms} ms</small>
+                        {Object.keys(step.metrics).length > 0 ? (
+                          <dl>
+                            {Object.entries(step.metrics).map(([key, value]) => (
+                              <div key={key}><dt>{key}</dt><dd>{Array.isArray(value) ? value.join(" · ") : String(value)}</dd></div>
+                            ))}
+                          </dl>
+                        ) : null}
+                      </div>
+                    </details>
+                  </article>
+                ))}
+              </div>
+            </>
+          ) : pendingAction !== "run" ? (
+            <section className="owner-daily-empty-state">
+              <ShieldCheck aria-hidden="true" size={22} />
+              <div>
+                <strong>尚未运行本次检查</strong>
+                <p>开始后会先给出整体结论，再列出八个步骤；只有失败步骤会出现重试入口。</p>
+              </div>
+            </section>
+          ) : (
+            <section className="owner-daily-empty-state owner-daily-running-state" aria-live="polite">
+              <RefreshCw aria-hidden="true" className="command-running-icon" size={22} />
+              <div><strong>正在顺序检查八个步骤</strong><p>失败不会中断后续步骤，完成后会给出完整结论。</p></div>
+            </section>
+          )}
+        </div>
+      </section>
     </div>
   );
 }
@@ -2999,6 +3415,7 @@ function CommandPalettePanel({
   model,
   onExecuteCommand,
   onNavigateView,
+  ownerDailyEntry,
   selectedCommandId,
   onSelectCommand,
 }: {
@@ -3006,6 +3423,7 @@ function CommandPalettePanel({
   model: CommandPaletteModel;
   onExecuteCommand: (command: CommandPaletteCommand) => void;
   onNavigateView: (view: ViewKey) => void;
+  ownerDailyEntry: ReactNode;
   selectedCommandId: S12P1CommandId;
   onSelectCommand: (command: CommandPaletteCommand) => void;
 }) {
@@ -3026,11 +3444,12 @@ function CommandPalettePanel({
       data-r3-write-scope="Application Support installed source copy; redacted sync and derived outputs only; no canonical repo mutation"
     >
       <div className="command-palette-heading">
-        <div>
+        <div className="command-palette-heading-copy">
           <p className="eyebrow">快捷操作</p>
           <h2>接下来可以做什么</h2>
+          <span>{model.commands.length} 个可选动作</span>
         </div>
-        <span>{model.commands.length} 个可选动作</span>
+        {ownerDailyEntry}
       </div>
       <div className="command-palette-grid">
         {model.commands.map((command) => {
