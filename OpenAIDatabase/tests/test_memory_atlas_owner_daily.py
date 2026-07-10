@@ -255,6 +255,30 @@ class OwnerDailyRunnerTests(unittest.TestCase):
                 self.assertRegex(result["steps"][0]["failure_zh"], r"[\u4e00-\u9fff]")
                 self.assertLessEqual(len(json.dumps(result, ensure_ascii=False).encode("utf-8")), MAX_RESULT_BYTES)
 
+    def test_any_explicit_unsafe_child_flag_prevents_aggregate_pass(self) -> None:
+        unsafe_fields = (
+            "remote_push",
+            "github_main_upload",
+            "raw_mutation",
+            "sends_to_chatgpt",
+            "opens_browser",
+            "proposal_apply_execution",
+            "canonical_repo_mutation",
+        )
+        for field in unsafe_fields:
+            for placement in ("top_level", "nested_summary"):
+                with self.subTest(field=field, placement=placement), tempfile.TemporaryDirectory() as temp_dir:
+                    payload = safe_payload("audit")
+                    if placement == "top_level":
+                        payload[field] = True
+                    else:
+                        payload["summary"] = {"execution": {field: True}}
+                    process_runner = RecordingRunner({"audit": payload})
+                    result = self.make_runner(Path(temp_dir), process_runner).retry("audit")
+                    self.assertEqual(result["status"], "PARTIAL_FAILURE")
+                    self.assertEqual(result["failed_count"], 1)
+                    self.assertEqual(result["retryable_step_ids"], ["audit"])
+
     def test_child_environment_keeps_only_safe_runtime_keys(self) -> None:
         environment = build_child_environment(
             {

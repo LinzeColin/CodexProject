@@ -397,6 +397,11 @@ async function main() {
     await page.locator("[data-r5-owner-daily-open]").click();
     await page.waitForSelector('[data-r5-owner-daily-workspace="memory_atlas_owner_daily_ui.v1_2_r5"]');
     assertCondition(ownerRequests.length === 0, "Opening Owner Daily triggered execution before explicit start", { ownerRequests });
+    assertCondition(await page.locator("[data-r5-owner-daily-start]").evaluate((button) => button === document.activeElement), "Owner Daily did not move initial focus to the start action");
+    await page.keyboard.press("Tab");
+    assertCondition(await page.getByRole("button", { name: "关闭 Owner Daily" }).evaluate((button) => button === document.activeElement), "Owner Daily Tab focus escaped instead of cycling to close");
+    await page.keyboard.press("Shift+Tab");
+    assertCondition(await page.locator("[data-r5-owner-daily-start]").evaluate((button) => button === document.activeElement), "Owner Daily Shift+Tab focus escaped the dialog");
     await page.locator("[data-r5-owner-daily-start]").click();
     await page.waitForSelector('[data-r5-owner-daily-result-status="PARTIAL_FAILURE"]', { timeout: 30000 });
     assertCondition(await page.locator("[data-r5-owner-daily-step]").count() === 8, "Owner Daily did not render eight ordered step results");

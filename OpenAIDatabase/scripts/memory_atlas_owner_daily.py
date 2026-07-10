@@ -92,6 +92,22 @@ _METRIC_FIELDS: dict[str, tuple[str, ...]] = {
     "generate-personalization-prompt": ("targets", "task_id"),
     "deep-explore": ("mode", "task_id"),
 }
+_UNSAFE_TRUE_FIELDS = (
+    "writes_files",
+    "writes_tracked_files",
+    "remote_push",
+    "github_main_upload",
+    "raw_mutation",
+    "sends_to_chatgpt",
+    "opens_browser",
+    "proposal_apply_execution",
+    "canonical_repo_mutation",
+    "pushed",
+    "apply",
+    "applies_proposals",
+    "auto_submit",
+)
+_UNSAFE_TRUE_FIELD_SET = frozenset(_UNSAFE_TRUE_FIELDS)
 
 
 ProcessRunner = Callable[..., subprocess.CompletedProcess[str]]
@@ -251,6 +267,18 @@ def _nested_false(payload: dict[str, Any], field: str) -> bool:
     return False
 
 
+def _contains_explicit_unsafe_true(value: Any) -> bool:
+    if isinstance(value, dict):
+        for key, nested in value.items():
+            if key in _UNSAFE_TRUE_FIELD_SET and nested is True:
+                return True
+            if isinstance(nested, (dict, list)) and _contains_explicit_unsafe_true(nested):
+                return True
+    elif isinstance(value, list):
+        return any(_contains_explicit_unsafe_true(item) for item in value if isinstance(item, (dict, list)))
+    return False
+
+
 def _validate_safe_payload(step_id: str, payload: dict[str, Any]) -> None:
     payload_status = payload.get("status")
     historical_phase_pass = (
@@ -260,6 +288,8 @@ def _validate_safe_payload(step_id: str, payload: dict[str, Any]) -> None:
     )
     if payload_status not in {"PASS", "ok", "success"} and not historical_phase_pass:
         raise ValueError("status")
+    if _contains_explicit_unsafe_true(payload):
+        raise ValueError("unsafe_true")
     if payload.get("dry_run") is not True or payload.get("writes_files") is not False:
         raise ValueError("dry_run")
     if step_id in {"analyze", "audit", "proposals", "generate-personalization-prompt", "deep-explore"}:

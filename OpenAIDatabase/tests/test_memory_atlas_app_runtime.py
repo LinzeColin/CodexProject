@@ -880,6 +880,38 @@ class MemoryAtlasRuntimeServerTests(unittest.TestCase):
                 self.assertRegex(result["message_zh"], r"[\u4e00-\u9fff]")
         self.assertEqual(self.bridge.calls, [])
 
+    def test_host_and_origin_must_match_exactly_for_mutating_endpoints(self) -> None:
+        cases = [
+            ("/__memory_atlas_command", {"command_id": "sync_codex"}),
+            ("/__memory_atlas_owner_daily", {"action": "run"}),
+            (
+                "/__memory_atlas_proposal_action",
+                {
+                    "action": "approve_apply",
+                    "proposal_id": "proposal_fixture",
+                    "review_token": "fixture-token",
+                    "confirmation": "授权应用 proposal_fixture",
+                },
+            ),
+        ]
+        for path, payload in cases:
+            with self.subTest(path=path):
+                status, _headers, response_body = self.request(
+                    "POST",
+                    path,
+                    body=json.dumps(payload, ensure_ascii=False).encode(),
+                    headers={
+                        "Content-Type": "application/json",
+                        "Host": f"127.0.0.1:{self.port}",
+                        "Origin": f"http://localhost:{self.port}",
+                    },
+                )
+                self.assertEqual(status, 403)
+                self.assertRegex(json.loads(response_body)["message_zh"], r"[\u4e00-\u9fff]")
+        self.assertEqual(self.bridge.calls, [])
+        self.assertEqual(self.bridge.owner_daily_calls, [])
+        self.assertEqual(self.bridge.proposal_calls, [])
+
     def test_bad_content_type_and_oversized_body_fail_closed(self) -> None:
         body = json.dumps({"command_id": "sync_codex"}).encode()
         status, _headers, _response = self.request(
