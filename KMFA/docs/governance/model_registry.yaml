@@ -3456,3 +3456,19 @@ kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_applicati
   evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_FINAL_RECHECK_AFTER_FINAL_CHECK_CLOSURE
   validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_final_recheck_after_final_check_closure.py
   scope: Owner or authorized-agent resolution-intake blocker final recheck after final-check closure only; consumes 48 source recheck blockers, records the final blocker observation and marks the blocked threshold met, records 0 completed owner/authorized-agent resolutions and 48 final-recheck blockers, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.
+
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_blocked_handoff_after_final_recheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-blocked-handoff-after-final-recheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-RESOLUTION-INTAKE-BLOCKER-BLOCKED-HANDOFF-AFTER-FINAL-RECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1669
+    - PARAM-KMFA-1670
+    - PARAM-KMFA-1671
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_AFTER_FINAL_RECHECK
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_blocked_handoff_after_final_recheck.py
+  scope: Owner or authorized-agent resolution-intake blocker blocked handoff after final recheck only; consumes 48 final-recheck blockers, writes 48 ignored private handoff records and 48 owner-resolution queue items, records 0 completed resolutions, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.
