@@ -1,0 +1,32 @@
+{
+  "candidates": {
+    "derived": {
+      "sha256": "b608631fded9e116d350895be20e6e61be3c7e42ba651ccdf7fc52afd8fefcbc",
+      "size_bytes": 1905337,
+      "status": "MATCH"
+    },
+    "local_runtime": {
+      "sha256": "b608631fded9e116d350895be20e6e61be3c7e42ba651ccdf7fc52afd8fefcbc",
+      "size_bytes": 1905337,
+      "status": "MATCH"
+    },
+    "pages": {
+      "sha256": "b608631fded9e116d350895be20e6e61be3c7e42ba651ccdf7fc52afd8fefcbc",
+      "size_bytes": 1905337,
+      "status": "MATCH"
+    },
+    "release": {
+      "sha256": "b608631fded9e116d350895be20e6e61be3c7e42ba651ccdf7fc52afd8fefcbc",
+      "size_bytes": 1905337,
+      "status": "MATCH"
+    }
+  },
+  "errors": [],
+  "expected_sha256": "b608631fded9e116d350895be20e6e61be3c7e42ba651ccdf7fc52afd8fefcbc",
+  "mismatched_candidates": [],
+  "missing_candidates": [],
+  "release_id": "memory-atlas-v1-2-r7-20260710",
+  "release_verification": "PASS",
+  "schema_version": "memory_atlas.snapshot_parity.v1",
+  "status": "PASS"
+}
