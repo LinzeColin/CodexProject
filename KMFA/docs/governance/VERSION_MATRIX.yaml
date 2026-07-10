@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-blocked-handoff-after-final-recheck"
-product_version_status: "completed_validated_local_only_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_blocked_handoff_after_final_recheck_no_go_blocked"
-version_file_value: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-blocked-handoff-after-final-recheck"
+product_version: "0.1.4-authorized-agent-private-resolution-application-after-blocked-handoff"
+product_version_status: "completed_validated_local_only_partial_private_resolution_no_go_difference_report_required"
+version_file_value: "0.1.4-authorized-agent-private-resolution-application-after-blocked-handoff"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-blocked-handoff-after-final-recheck"
+  MOD-KMFA-GOV-001: "0.1.4-authorized-agent-private-resolution-application-after-blocked-handoff"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_authorized_agent_private_resolution_application_after_blocked_handoff: "0.1.4-authorized-agent-private-resolution-application-after-blocked-handoff"
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_blocked_handoff_after_final_recheck: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-blocked-handoff-after-final-recheck"
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_final_recheck_after_final_check_closure: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-final-recheck-after-final-check-closure"
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_recheck_after_final_check_closure: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-recheck-after-final-check-closure"
@@ -403,9 +404,9 @@ parameter_profile_versions:
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_blocked_handoff_final_threshold_recheck_after_reminder: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-final-threshold-recheck-after-reminder"
   kmfa_project_cost_mvp: "blocked_no_go_owner_scope_required"
 data_snapshot_version: "not_applicable_no_raw_data_committed"
-current_iteration: "ITER-20260708-KMFA-V014-BUSINESS-EXECUTION-BLOCKED-FOLLOW-UP-CONTINUATION-RECHECK-FOLLOW-UP"
-current_phase: "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK_FOLLOW_UP"
-current_gate: "NO_GO_OWNER_OR_AUTHORIZED_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK_FOLLOW_UP"
+current_iteration: "ITER-20260710-KMFA-V014-AUTHORIZED-AGENT-PRIVATE-RESOLUTION-AFTER-BLOCKED-HANDOFF"
+current_phase: "V014_AUTHORIZED_AGENT_PRIVATE_RESOLUTION_APPLICATION_AFTER_BLOCKED_HANDOFF"
+current_gate: "NO_GO_REAL_PROJECT_IDENTITY_AND_PROCESSED_VALUE_MATERIALIZATION_REQUIRED"
 
 
 kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_external_action_readiness_after_final_threshold:

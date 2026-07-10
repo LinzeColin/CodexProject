@@ -1,6 +1,48 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 formulas:
+  - formula_id: "FORM-KMFA-V014-AUTHORIZED-AGENT-PRIVATE-RESOLUTION-AFTER-BLOCKED-HANDOFF-001"
+    model_id: "MOD-KMFA-GOV-001"
+    assumption_ids:
+      - "ASM-KMFA-002"
+      - "ASM-KMFA-004"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "authorized_agent_private_resolution_valid = source_resolution_item_count == 48 AND resolved_formula_mapping_count == 4 AND resolved_non_numeric_mapping_count == 4 AND unresolved_business_value_item_count == 40 AND raw_snapshot_exact_match == true AND raw_to_processed_value_comparison_complete == false AND business_value_consistency_verified == false AND decision == NO_GO"
+    variables:
+      - name: "source_resolution_item_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "48"
+      - name: "resolved_structural_item_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "8"
+      - name: "unresolved_business_value_item_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "40"
+      - name: "raw_snapshot_exact_match"
+        data_type: "boolean"
+        unit: "flag"
+        input_domain: "true"
+    constraints:
+      - "Only deterministic formula and canonical taxonomy mappings may be resolved without actual business values."
+      - "Synthetic project identities and missing processed values keep all business-value slots unresolved."
+      - "Raw source files must remain identical before and after the phase."
+      - "Public evidence must remain aggregate-only and private details must remain gitignored."
+    missing_policy: "Missing source queue, raw snapshots, private resolution records, Chinese difference report, validator, focused test or governance evidence fails validation."
+    output_range: "v014_authorized_agent_private_resolution_application_after_blocked_handoff_manifest"
+    code_refs:
+      - "KMFA/tools/v014_authorized_agent_private_resolution_application_after_blocked_handoff.py"
+      - "KMFA/tools/check_v014_authorized_agent_private_resolution_application_after_blocked_handoff.py"
+    test_refs:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_authorized_agent_private_resolution_application_after_blocked_handoff.py --require-private-resolution"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_authorized_agent_private_resolution_application_after_blocked_handoff"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_AUTHORIZED_AGENT_PRIVATE_RESOLUTION_APPLICATION_AFTER_BLOCKED_HANDOFF/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_AUTHORIZED_AGENT_PRIVATE_RESOLUTION_APPLICATION_AFTER_BLOCKED_HANDOFF/machine/authorized_agent_private_resolution_application_after_blocked_handoff_manifest.json"
+
   - formula_id: "FORM-KMFA-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-BLOCKER-AUDIT-001"
     model_id: "MOD-KMFA-GOV-001"
     assumption_ids:

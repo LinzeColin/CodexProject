@@ -1,3 +1,11 @@
+## 0.1.4-authorized-agent-private-resolution-application-after-blocked-handoff - 2026-07-10
+
+- 完成 `V014_AUTHORIZED_AGENT_PRIVATE_RESOLUTION_APPLICATION_AFTER_BLOCKED_HANDOFF` 本地单 phase。
+- 在用户既有只读授权下解析 5 个原始文件，前后逐文件快照完全一致；原始目录未修改、移动、删除或覆盖。
+- 48 个 resolution 槽位中，4 个公式映射和 4 个成本分类映射已确定性解析；40 个业务值槽位因 S08 合成项目身份未绑定真实原始项目、S09 实际处理值未物化而继续保留。
+- S05 权威哈希交叉匹配命中 20 个字段目标，形成 4 个四项数值完整候选组；S09 当前选取的 4 个权威组仅 1 个在当前原始源中完整命中，不能据此强制建立项目级一一对应。
+- 已生成 ignored private 全中文差异报告；公开仓库只保留聚合计数、状态和 gate 证据。当前决策维持 `NO_GO`，未做 Stage review、GitHub upload、app reinstall 或 business execution。
+
 ## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-actionability-recheck - 2026-07-08
 
 - 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_ACTIONABILITY_RECHECK` 本地单 phase。
