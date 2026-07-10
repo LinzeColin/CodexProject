@@ -1,6 +1,51 @@
 # KMFA Automation Takeover Handoff
 
-更新时间: 2026-07-10
+更新时间: 2026-07-11
+
+## 2026-07-11 `kmfa-4` ZIP-only 与缓存 I/O 修复
+
+用户已澄清：S20 `KMFA｜钉钉工作检查` 的上游输出只可能是 ZIP，目标必须固定为：
+
+```text
+/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
+```
+
+这不是 “ZIP 优先、目录回退”，而是 **ZIP-only**。同级 `DWS_Outputs/`
+文件夹不存在是正常生产状态，不得要求、创建、解压或 materialize 该目录。
+
+### 根因与磁盘证据
+
+- 旧迁移同时保留 `input_zip_default` 和 `input_root_default`，healthcheck 仍逐群
+  probe 文件夹，reader/main/prompt 仍保留 folder fallback，导致 agent 可以继续把
+  不存在的文件夹误判为启用条件。
+- 当前 canonical ZIP 为 `568878497` bytes，实际占盘 `555548 KiB`，约 543 MiB，
+  已本地 materialize；`/Users/linzezhang/onedrive/DWS_Outputs.zip` 是同 inode
+  别名，不是重复副本。
+- OneDrive、别名路径和 Downloads 下均未发现 `DWS_Outputs/` 文件夹；未发现
+  routine-check 解压副本。private runtime 约 208 KiB，旧 `/private/tmp` 源码包
+  约 156 KiB，均不是主要缓存来源。
+- ZIP 约有 1006 entries；S20 实际需要的四个 CSV 在本次只读快照中合计仅
+  `267878` bytes 未压缩、`65374` bytes 压缩。主要磁盘成本来自 OneDrive 对整包
+  ZIP 的 hydration，而不是目标 CSV 或 SQLite 日志。
+
+### 当前修复状态
+
+- 当前工作树已把 reader、healthcheck 和 CLI 改为 explicit ZIP-only；非 `.zip`
+  输入 fail closed，不再派生 sibling ZIP 或读取目录。
+- source inspection 复用同一次每群 message snapshot，避免旧实现对每群
+  `chat_records.csv` 重复读取两次。
+- cleanup 已收紧为显式 `--cleanup --apply` 维护门禁；正式 scheduled command
+  已删除这两个参数。官方 automation update 后，live prompt SHA-256 与 canonical prompt
+  一致，5 个 automation contract 均无漂移；下一次自然触发仍待确认，因此不得声称
+  natural run 已验收。
+- 不得自动 evict/逐出 ZIP；否则下一次检查会重新下载约 543 MiB。数量级降低
+  hydration 需要上游另产目标专用小 ZIP 或 remote-range reader，属于需单独授权
+  的上游范围扩展。
+
+已确认 live prompt 只有 ZIP 目标、没有 folder fallback 或 scheduled cleanup flags；
+healthcheck 不输出 direct-folder readiness；手工 cleanup 在 ZIP/业务加载前早退；25 项 routine tests、skill validator、
+8 项 automation contract tests、真实 ZIP healthcheck 与两个窗口 dry-run 通过。
+接手只需继续确认下一次自然触发只读 ZIP member、没有创建文件夹、没有每 run VACUUM。
 
 ## 2026-07-10 `kmfa-3` 固定 20:00 稳定性修复
 

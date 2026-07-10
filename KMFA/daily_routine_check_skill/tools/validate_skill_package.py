@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+import re
 import sys
 from pathlib import Path
 
@@ -35,6 +37,16 @@ BLOCKED_SUFFIXES = {".sqlite", ".db", ".jsonl", ".gz"}
 BLOCKED_NAMES = {".env.local"}
 BLOCKED_PATH_PARTS = {"private_runtime"}
 PRIVATE_RUNTIME_ALLOWLIST = {"README.md", ".gitkeep"}
+CANONICAL_INPUT_ZIP = "/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip"
+FORBIDDEN_ZIP_CONTRACT_PHRASES = (
+    "input_root_default",
+    "direct_input_fallback",
+    "compatibility fallback",
+)
+TRIGGER_ONCE_PATTERN = re.compile(
+    r"exactly one matching (?:trigger )?window(?: command)? once",
+    re.IGNORECASE,
+)
 REQUIRED_PHRASES = [
     "Dingtalk-routine-check",
     "钉钉工作检查",
@@ -66,7 +78,7 @@ REQUIRED_PHRASES = [
     "ZIP_INPUT_UNREADABLE",
     "zip_input_ready",
     "input_zip_default",
-    "DWS_Outputs.zip",
+    CANONICAL_INPUT_ZIP,
     "CASH_P0_RED",
     "CASH_P1_YELLOW",
     "CASH_NEEDS_REVIEW",
@@ -80,6 +92,15 @@ REQUIRED_PHRASES = [
     "Asia/Shanghai",
     "DWS_Outputs",
 ]
+
+
+def trigger_commands(text: str) -> list[str]:
+    return [
+        line.strip()
+        for line in text.splitlines()
+        if "python3 -m KMFA.tools.daily_routine_check.main" in line
+        and "--trigger-window" in line
+    ]
 
 
 def main() -> int:
@@ -97,6 +118,66 @@ def main() -> int:
     for phrase in REQUIRED_PHRASES:
         if phrase not in joined:
             errors.append(f"missing required phrase: {phrase}")
+
+    lowered = joined.lower()
+    for phrase in FORBIDDEN_ZIP_CONTRACT_PHRASES:
+        if phrase.lower() in lowered:
+            errors.append(f"forbidden ZIP-only contract phrase: {phrase}")
+
+    manifest_path = (
+        REPO_ROOT
+        / "KMFA"
+        / "metadata"
+        / "daily_routine_check"
+        / "codex_automation"
+        / "automation_manifest.json"
+    )
+    prompt_path = (
+        REPO_ROOT
+        / "KMFA"
+        / "metadata"
+        / "daily_routine_check"
+        / "codex_automation"
+        / "daily_routine_check.prompt.md"
+    )
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        errors.append(f"invalid automation manifest: {exc}")
+        manifest = {}
+
+    if manifest.get("zip_input_only") is not True:
+        errors.append("automation manifest must set zip_input_only=true")
+    if manifest.get("zip_input_path") != CANONICAL_INPUT_ZIP:
+        errors.append(f"automation manifest zip_input_path must equal {CANONICAL_INPUT_ZIP}")
+    manifest_commands = [
+        str(item.get("command", ""))
+        for item in manifest.get("trigger_windows", [])
+        if isinstance(item, dict)
+    ]
+    if len(manifest_commands) != 2:
+        errors.append("automation manifest must define exactly two trigger commands")
+    for command in manifest_commands:
+        if f"--input-zip {CANONICAL_INPUT_ZIP}" not in command:
+            errors.append("trigger command must use the explicit canonical --input-zip path")
+        if "--cleanup" in command or "--apply" in command:
+            errors.append("regular trigger command must not run --cleanup or --apply")
+
+    try:
+        prompt = prompt_path.read_text(encoding="utf-8")
+    except OSError as exc:
+        errors.append(f"invalid automation prompt: {exc}")
+        prompt = ""
+    if not TRIGGER_ONCE_PATTERN.search(prompt):
+        errors.append("automation prompt must require exactly one matching trigger window once")
+    prompt_commands = trigger_commands(prompt)
+    if len(prompt_commands) != 2:
+        errors.append("automation prompt must define exactly two trigger commands")
+    for command in prompt_commands:
+        if f"--input-zip {CANONICAL_INPUT_ZIP}" not in command:
+            errors.append("prompt trigger command must use the explicit canonical --input-zip path")
+        if "--cleanup" in command or "--apply" in command:
+            errors.append("prompt trigger command must not run --cleanup or --apply")
 
     for base in [REPO_ROOT / "KMFA" / "daily_routine_check_skill", REPO_ROOT / "KMFA" / "metadata" / "daily_routine_check"]:
         if base.exists():

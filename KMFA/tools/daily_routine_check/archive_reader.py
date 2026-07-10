@@ -25,23 +25,15 @@ def parse_dt(value: str) -> datetime:
 
 
 class DwsArchiveReader:
-    def __init__(self, input_root: str | Path):
-        self.input_root = Path(input_root).expanduser()
-        self.zip_path = self._resolve_zip_path(self.input_root)
+    def __init__(self, input_zip: str | Path):
+        self.zip_path = Path(input_zip).expanduser()
+        if self.zip_path.suffix.lower() != ".zip":
+            raise ValueError(
+                f"ZIP_ONLY_INPUT_REQUIRED: expected an explicit .zip path, got {self.zip_path}"
+            )
         self._zip_names_cache: list[str] | None = None
         self._zip_error_code: str | None = None
         self._zip_error_detail: str | None = None
-
-    @staticmethod
-    def _resolve_zip_path(input_root: Path) -> Path:
-        if input_root.suffix.lower() == ".zip":
-            return input_root
-        return input_root.with_suffix(".zip")
-
-    def _should_use_zip(self) -> bool:
-        if self.input_root.suffix.lower() == ".zip":
-            return True
-        return not self.input_root.is_dir() and self.zip_path.exists()
 
     def _path_is_dataless(self, path: Path) -> bool:
         try:
@@ -96,21 +88,11 @@ class DwsArchiveReader:
         except (KeyError, zipfile.BadZipFile, OSError):
             return
 
-    def group_path(self, group_name: str) -> Path:
-        return self.input_root / group_name
-
     def read_messages(self, group_name: str) -> list[SourceMessage]:
-        if self._should_use_zip():
-            member = self.find_zip_member(group_name, "chat_records/chat_records.csv")
-            if not member:
-                return []
-            return self._messages_from_rows(self._read_zip_csv(member), group_name)
-
-        path = self.group_path(group_name) / "chat_records" / "chat_records.csv"
-        if not path.exists():
+        member = self.find_zip_member(group_name, "chat_records/chat_records.csv")
+        if not member:
             return []
-        with path.open("r", encoding="utf-8-sig", newline="") as f:
-            return self._messages_from_rows(csv.DictReader(f), group_name)
+        return self._messages_from_rows(self._read_zip_csv(member), group_name)
 
     def _messages_from_rows(self, rows: Iterable[dict[str, str]], group_name: str) -> list[SourceMessage]:
         out: list[SourceMessage] = []
@@ -129,139 +111,84 @@ class DwsArchiveReader:
                 continue
         return out
 
-    def inspect_group_sources(self, group_name: str, check_date: date) -> list[dict[str, str]]:
-        if self._should_use_zip():
-            zip_error = self.zip_error_code()
-            if zip_error:
-                return [{
-                    "issue_type": "SOURCE_MISSING",
-                    "issue_code": zip_error,
-                    "group_name": group_name,
-                    "check_date": check_date.isoformat(),
-                    "path": str(self.zip_path),
-                    "detail": self.zip_error_detail(),
-                }]
-            chat_member = self.find_zip_member(group_name, "chat_records/chat_records.csv")
-            manifest_member = self.find_zip_member(group_name, "_manifest/manifest.csv")
-            if not chat_member:
-                return [{
-                    "issue_type": "SOURCE_MISSING",
-                    "issue_code": "SOURCE_MISSING_ZIP_CHAT_RECORDS",
-                    "group_name": group_name,
-                    "check_date": check_date.isoformat(),
-                    "path": f"zip://{self.zip_path}!/*/{group_name}/chat_records/chat_records.csv",
-                }]
-            issues: list[dict[str, str]] = []
-            if not manifest_member:
-                issues.append({
-                    "issue_type": "SOURCE_MISSING",
-                    "issue_code": "SOURCE_MISSING_ZIP_MANIFEST",
-                    "group_name": group_name,
-                    "check_date": check_date.isoformat(),
-                    "path": f"zip://{self.zip_path}!/*/{group_name}/_manifest/manifest.csv",
-                })
-            messages = self.read_messages(group_name)
-            if not messages:
-                issues.append({
-                    "issue_type": "SOURCE_MISSING",
-                    "issue_code": "SOURCE_EMPTY_ZIP_CHAT_RECORDS",
-                    "group_name": group_name,
-                    "check_date": check_date.isoformat(),
-                    "path": f"zip://{self.zip_path}!/{chat_member}",
-                })
-                return issues
-            latest_message_time = max(msg.message_time for msg in messages)
-            if latest_message_time.date() < check_date:
-                issues.append({
-                    "issue_type": "SOURCE_STALE",
-                    "issue_code": "SOURCE_ZIP_CHAT_RECORDS_STALE",
-                    "group_name": group_name,
-                    "latest_message_date": latest_message_time.date().isoformat(),
-                    "check_date": check_date.isoformat(),
-                    "path": f"zip://{self.zip_path}!/{chat_member}",
-                })
-            return issues
-
-        group_dir = self.group_path(group_name)
-        chat_path = group_dir / "chat_records" / "chat_records.csv"
-        manifest_path = group_dir / "_manifest" / "manifest.csv"
-        if not group_dir.exists():
+    def inspect_group_sources(
+        self,
+        group_name: str,
+        check_date: date,
+        messages: list[SourceMessage] | None = None,
+    ) -> list[dict[str, str]]:
+        zip_error = self.zip_error_code()
+        if zip_error:
             return [{
                 "issue_type": "SOURCE_MISSING",
-                "issue_code": "SOURCE_MISSING_GROUP",
+                "issue_code": zip_error,
                 "group_name": group_name,
                 "check_date": check_date.isoformat(),
-                "path": str(group_dir),
+                "path": str(self.zip_path),
+                "detail": self.zip_error_detail(),
             }]
-        if not chat_path.exists():
+        chat_member = self.find_zip_member(group_name, "chat_records/chat_records.csv")
+        manifest_member = self.find_zip_member(group_name, "_manifest/manifest.csv")
+        if not chat_member:
             return [{
                 "issue_type": "SOURCE_MISSING",
-                "issue_code": "SOURCE_MISSING_CHAT_RECORDS",
+                "issue_code": "SOURCE_MISSING_ZIP_CHAT_RECORDS",
                 "group_name": group_name,
                 "check_date": check_date.isoformat(),
-                "path": str(chat_path),
+                "path": f"zip://{self.zip_path}!/*/{group_name}/chat_records/chat_records.csv",
             }]
-
         issues: list[dict[str, str]] = []
-        if not manifest_path.exists():
+        if not manifest_member:
             issues.append({
                 "issue_type": "SOURCE_MISSING",
-                "issue_code": "SOURCE_MISSING_MANIFEST",
+                "issue_code": "SOURCE_MISSING_ZIP_MANIFEST",
                 "group_name": group_name,
                 "check_date": check_date.isoformat(),
-                "path": str(manifest_path),
+                "path": f"zip://{self.zip_path}!/*/{group_name}/_manifest/manifest.csv",
             })
-
-        messages = self.read_messages(group_name)
+        if messages is None:
+            messages = self.read_messages(group_name)
         if not messages:
             issues.append({
                 "issue_type": "SOURCE_MISSING",
-                "issue_code": "SOURCE_EMPTY_CHAT_RECORDS",
+                "issue_code": "SOURCE_EMPTY_ZIP_CHAT_RECORDS",
                 "group_name": group_name,
                 "check_date": check_date.isoformat(),
-                "path": str(chat_path),
+                "path": f"zip://{self.zip_path}!/{chat_member}",
             })
             return issues
-
         latest_message_time = max(msg.message_time for msg in messages)
         if latest_message_time.date() < check_date:
             issues.append({
                 "issue_type": "SOURCE_STALE",
-                "issue_code": "SOURCE_CHAT_RECORDS_STALE",
+                "issue_code": "SOURCE_ZIP_CHAT_RECORDS_STALE",
                 "group_name": group_name,
                 "latest_message_date": latest_message_time.date().isoformat(),
                 "check_date": check_date.isoformat(),
-                "path": str(chat_path),
+                "path": f"zip://{self.zip_path}!/{chat_member}",
             })
         return issues
 
     def read_files(self, group_name: str) -> list[SourceFile]:
-        if self._should_use_zip():
-            member = self.find_zip_member(group_name, "_manifest/manifest.csv")
-            if not member:
-                return []
-            group_prefix = member.rsplit("/_manifest/manifest.csv", 1)[0]
-            return self._files_from_rows(self._read_zip_csv(member), group_name, group_prefix)
-
-        path = self.group_path(group_name) / "_manifest" / "manifest.csv"
-        if not path.exists():
+        member = self.find_zip_member(group_name, "_manifest/manifest.csv")
+        if not member:
             return []
-        with path.open("r", encoding="utf-8-sig", newline="") as f:
-            return self._files_from_rows(csv.DictReader(f), group_name)
+        group_prefix = member.rsplit("/_manifest/manifest.csv", 1)[0]
+        return self._files_from_rows(self._read_zip_csv(member), group_name, group_prefix)
 
     def _files_from_rows(
         self,
         rows: Iterable[dict[str, str]],
         group_name: str,
-        zip_group_prefix: str | None = None,
+        zip_group_prefix: str,
     ) -> list[SourceFile]:
         out: list[SourceFile] = []
         for row in rows:
             output_path = row.get("output_path") or ""
-            if zip_group_prefix and output_path:
+            if output_path:
                 absolute_path = f"zip://{self.zip_path}!/{zip_group_prefix}/{output_path}"
             else:
-                absolute_path = str(self.group_path(group_name) / output_path) if output_path else ""
+                absolute_path = ""
             try:
                 out.append(SourceFile(
                     group_name=row.get("group_name") or group_name,

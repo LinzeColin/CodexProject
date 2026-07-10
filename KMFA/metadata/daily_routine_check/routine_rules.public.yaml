@@ -4,7 +4,13 @@ automation_name: Dingtalk-routine-check
 chinese_name: 钉钉工作检查
 timezone: Asia/Shanghai
 input_zip_default: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
-input_root_default: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs
+input_policy:
+  mode: zip_only
+  disk_folder_probe_allowed: false
+  disk_folder_create_or_materialize_allowed: false
+  extract_or_copy_zip_members_allowed: false
+  stream_required_members_only: true
+  auto_evict_after_run: false
 notify_target_label: 张霖泽
 
 automation_triggers:

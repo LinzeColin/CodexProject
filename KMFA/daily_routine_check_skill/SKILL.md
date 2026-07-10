@@ -86,11 +86,13 @@ Canonical primary input:
 /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
 ```
 
-The reader streams required CSV entries from the zip and does not extract the package to local disk. Direct group folders remain a compatibility fallback:
-
-```text
-/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/
-```
+This complete zip is the only upstream input. The reader streams required CSV
+members in place and does not copy or extract the package. A disk
+`/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/` folder
+is normally absent and must never be probed, created, materialized, or used as
+a fallback. Paths such as `DWS_Outputs/<群>/...` refer only to members inside
+the zip. Do not automatically evict the zip after a run; OneDrive/user policy
+owns its hydration lifecycle.
 
 This skill must not create or manage the upstream DWS archive automation. The upstream archive already exists and is treated as a producer.
 
@@ -103,6 +105,10 @@ This skill must not create or manage the upstream DWS archive automation. The up
 - Do not run live DingTalk/DWS send commands without explicit current-thread authorization.
 - Do not change the user's existing DWS archive automation unless the owner explicitly asks.
 - Do not create multiple routine-check automations for individual rules.
+- Each scheduled trigger runs exactly one corresponding trigger window once; never run both windows in one task.
+- Scheduled routine checks must not run `--cleanup` or `--apply`; cleanup is separate manual maintenance.
+- Do not probe, create, materialize, copy, extract, or fall back to a disk `DWS_Outputs/` input folder.
+- Do not automatically evict the source zip after each run.
 - Do not merge `资金账户明细表` and `资金流水明细`; they are two separate required artifacts.
 - Treat `资金流水明细` and `资金明细` as the same document family.
 - Do not hard-code OCR/classification keywords in Python; load them from YAML configuration.

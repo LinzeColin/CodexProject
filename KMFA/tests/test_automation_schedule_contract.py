@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import subprocess
 import sys
 import tempfile
@@ -15,9 +16,97 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 CHECKER = REPO_ROOT / "KMFA" / "tools" / "automation" / "check_kmfa_automation_schedules.py"
 CONTRACT = REPO_ROOT / "KMFA" / "metadata" / "automation" / "codex_app_schedules.contract.toml"
 EVENING_PROMPT = REPO_ROOT / "KMFA" / "kmfa-dingtalk-attendance-skill" / "automation" / "evening_prompt.md"
+DAILY_ROUTINE_VALIDATOR = (
+    REPO_ROOT / "KMFA" / "daily_routine_check_skill" / "tools" / "validate_skill_package.py"
+)
+DAILY_ROUTINE_MANIFEST = (
+    REPO_ROOT
+    / "KMFA"
+    / "metadata"
+    / "daily_routine_check"
+    / "codex_automation"
+    / "automation_manifest.json"
+)
+DAILY_ROUTINE_PROMPT = (
+    REPO_ROOT
+    / "KMFA"
+    / "metadata"
+    / "daily_routine_check"
+    / "codex_automation"
+    / "daily_routine_check.prompt.md"
+)
+DAILY_ROUTINE_CONTRACT_FILES = (
+    REPO_ROOT / "KMFA" / "daily_routine_check_skill" / "SKILL.md",
+    REPO_ROOT / "KMFA" / "daily_routine_check_skill" / "README.md",
+    REPO_ROOT / "KMFA" / "daily_routine_check_skill" / "功能清单.md",
+    REPO_ROOT / "KMFA" / "daily_routine_check_skill" / "references" / "codex_desktop_setup.md",
+    REPO_ROOT / "KMFA" / "daily_routine_check_skill" / "references" / "configuration.md",
+    REPO_ROOT / "KMFA" / "daily_routine_check_skill" / "references" / "data_contract.md",
+    REPO_ROOT / "KMFA" / "daily_routine_check_skill" / "references" / "runbook.md",
+    REPO_ROOT / "KMFA" / "daily_routine_check_skill" / "references" / "rules.md",
+    REPO_ROOT / "KMFA" / "daily_routine_check_skill" / "templates" / "env.local.example",
+    REPO_ROOT / "KMFA" / "metadata" / "daily_routine_check" / "README.md",
+    REPO_ROOT / "KMFA" / "metadata" / "daily_routine_check" / "routine_rules.public.yaml",
+    REPO_ROOT / "KMFA" / "metadata" / "daily_routine_check" / "onedrive_storage_manifest.yaml",
+    DAILY_ROUTINE_MANIFEST,
+    DAILY_ROUTINE_PROMPT,
+    REPO_ROOT
+    / "KMFA"
+    / "metadata"
+    / "daily_routine_check"
+    / "codex_automation"
+    / "install_or_update_skill.prompt.md",
+)
+CANONICAL_DWS_OUTPUT_ZIP = (
+    "/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip"
+)
+TRIGGER_ONCE_PATTERN = re.compile(
+    r"exactly one matching (?:trigger )?window(?: command)? once",
+    re.IGNORECASE,
+)
 
 
 class KmfaAutomationScheduleContractTests(unittest.TestCase):
+    def test_daily_routine_contract_is_zip_only_without_folder_fallback(self) -> None:
+        manifest = json.loads(DAILY_ROUTINE_MANIFEST.read_text(encoding="utf-8"))
+        corpus = "\n".join(
+            path.read_text(encoding="utf-8") for path in DAILY_ROUTINE_CONTRACT_FILES
+        )
+
+        self.assertIs(manifest.get("zip_input_only"), True)
+        self.assertEqual(manifest["zip_input_path"], CANONICAL_DWS_OUTPUT_ZIP)
+        self.assertIn(CANONICAL_DWS_OUTPUT_ZIP, corpus)
+        self.assertNotIn("input_root_default", corpus)
+        self.assertNotIn("direct_input_fallback", corpus)
+        self.assertNotIn("compatibility fallback", corpus.lower())
+
+    def test_daily_routine_trigger_commands_are_explicit_single_runs_without_cleanup(self) -> None:
+        manifest = json.loads(DAILY_ROUTINE_MANIFEST.read_text(encoding="utf-8"))
+        prompt = DAILY_ROUTINE_PROMPT.read_text(encoding="utf-8")
+        contract = tomllib.loads(CONTRACT.read_text(encoding="utf-8"))
+        routine = next(item for item in contract["automations"] if item["id"] == "kmfa-4")
+
+        for trigger in manifest["trigger_windows"]:
+            command = trigger["command"]
+            self.assertIn(f"--input-zip {CANONICAL_DWS_OUTPUT_ZIP}", command)
+            self.assertNotIn("--cleanup", command)
+            self.assertNotIn("--apply", command)
+        self.assertRegex(prompt, TRIGGER_ONCE_PATTERN)
+        expected_prompt_hash = hashlib.sha256(
+            prompt.rstrip("\r\n").encode("utf-8")
+        ).hexdigest()
+        self.assertEqual(routine["prompt_sha256"], expected_prompt_hash)
+        self.assertEqual(routine["project_id"], "40dd52a0-b6eb-4528-9577-0cb5f4f86e3e")
+
+        completed = subprocess.run(
+            [sys.executable, str(DAILY_ROUTINE_VALIDATOR)],
+            cwd=REPO_ROOT,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr or completed.stdout)
+
     def test_kmfa_evening_contract_is_local_wall_clock_2000_without_scheduler_timezone(self) -> None:
         contract = tomllib.loads(CONTRACT.read_text(encoding="utf-8"))
         evening = next(item for item in contract["automations"] if item["id"] == "kmfa-3")

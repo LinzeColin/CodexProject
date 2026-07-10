@@ -8,10 +8,11 @@ This metadata controls a local skill that reads existing DWS output from OneDriv
 /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
 ```
 
-The checker streams required CSV entries from the zip and does not extract the package to local disk. A direct `DWS_Outputs/` folder with the same group structure remains a compatibility fallback.
+The checker streams required CSV members from this complete zip and does not copy or extract the package. It is the only upstream input. A disk `DWS_Outputs/` folder is normally absent and must never be probed, created, materialized, or used as fallback. `DWS_Outputs/<群>/...` is retained only as a member path inside the zip.
 
 It does not create the upstream DWS archive automation.
 If `DWS_Outputs.zip` is a OneDrive dataless placeholder or a corrupt zip, healthcheck reports `ZIP_INPUT_UNREADABLE` and asks for a readable hydrated zip.
+Scheduled triggers execute exactly one corresponding window once and never run cleanup. The reader does not create a source cache or automatically evict the zip after each run.
 
 Scheduler contract:
 

@@ -74,8 +74,8 @@ Default retention:
 ```text
 Active SQLite: current + recent months, compact weekly
 JSONL logs in OneDrive: 24 months
-OCR raw text cache: 12 months or until reprocessed into structured extraction
-Image thumbnails/cache: 90 days if recreated from DWS output
+OCR raw text cache: 12 months or until reprocessed into structured extraction; never copy ZIP source members into it
+Image/source-member cache: disabled; stream required members from the source ZIP
 Notification logs: 24 months
 DB snapshots: daily for 30 days, month-end for 24 months
 ```
@@ -84,7 +84,8 @@ Retention must be configurable.
 
 ## Cleanup Rules
 
-The system must provide cleanup commands:
+The system must provide manual maintenance cleanup commands. They are not part
+of either scheduled trigger:
 
 ```bash
 python3 -m KMFA.tools.daily_routine_check.main --cleanup --dry-run
@@ -97,7 +98,8 @@ Cleanup should:
 - vacuum SQLite when safe
 - write a `cleanup_events` ledger row
 - keep future hooks for expired OCR raw cache deletion, JSONL compression, local log rotation, and OneDrive cleanup reports
-- never delete the source DWS output folder
+- never copy or extract source ZIP members into cache
+- never delete or automatically evict the source `DWS_Outputs.zip`
 
 ## Accuracy And Auditability
 

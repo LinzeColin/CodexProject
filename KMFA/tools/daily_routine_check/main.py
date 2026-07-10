@@ -332,12 +332,39 @@ def run_sqlite_cleanup(db_path: str | Path = DEFAULT_DB) -> dict[str, Any]:
             "event_key": f"cleanup:{datetime.now().isoformat(timespec='seconds')}",
             "status": "DONE",
             "actions": actions,
-            "never_delete_input_root": True,
+            "never_delete_input_zip": True,
         }
         write_cleanup_event(conn, payload)
         return payload
     finally:
         conn.close()
+
+
+def collect_source_snapshot(
+    reader: DwsArchiveReader,
+    group_names: list[str],
+    check_date: date,
+) -> tuple[list[dict[str, Any]], list[SourceMessage]]:
+    """Read each required ZIP chat member once and reuse it for source checks."""
+    data_quality_issues: list[dict[str, Any]] = []
+    messages: list[SourceMessage] = []
+    for group in group_names:
+        group_messages = reader.read_messages(group)
+        data_quality_issues.extend(
+            reader.inspect_group_sources(group, check_date, messages=group_messages)
+        )
+        messages.extend(group_messages)
+    return data_quality_issues, messages
+
+
+def determine_cleanup_mode(*, cleanup: bool, apply: bool, dry_run: bool) -> str | None:
+    if not cleanup:
+        return None
+    if dry_run:
+        return "SKIPPED_DRY_RUN"
+    if not apply:
+        return "SKIPPED_APPLY_REQUIRED"
+    return "APPLY"
 
 
 def persist_run_log(run_id: str, payload: dict[str, Any]) -> dict[str, str]:
@@ -359,7 +386,7 @@ def main() -> int:
     ap.add_argument("--date", default="today")
     ap.add_argument("--timezone", default="Asia/Shanghai")
     ap.add_argument("--trigger-window", choices=sorted(TRIGGER_WINDOWS), default=None)
-    ap.add_argument("--input-root", default=None)
+    ap.add_argument("--input-zip", default=None)
     ap.add_argument("--rules", default=str(DEFAULT_RULES))
     ap.add_argument("--cash-config", default=str(DEFAULT_CASH))
     ap.add_argument("--dry-run", action="store_true")
@@ -370,24 +397,41 @@ def main() -> int:
 
     if args.timezone != "Asia/Shanghai":
         raise SystemExit("Dingtalk-routine-check only supports --timezone Asia/Shanghai")
+    if args.apply and not args.cleanup:
+        ap.error("--apply requires --cleanup")
+
+    cleanup_mode = determine_cleanup_mode(
+        cleanup=args.cleanup,
+        apply=args.apply,
+        dry_run=args.dry_run,
+    )
+    if cleanup_mode:
+        cleanup_payload = (
+            run_sqlite_cleanup(DEFAULT_DB)
+            if cleanup_mode == "APPLY"
+            else {"status": cleanup_mode}
+        )
+        print(json.dumps({
+            "operation": "sqlite_maintenance",
+            "cleanup": cleanup_payload,
+        }, ensure_ascii=False, indent=2))
+        return 0
 
     tz = ZoneInfo("Asia/Shanghai")
     now = datetime.now(tz)
     check_date = parse_date(args.date, tz)
     raw_rules, rules = load_rules(Path(args.rules))
     cash_config = load_yaml(Path(args.cash_config))
-    default_input = raw_rules.get("input_zip_default") or raw_rules.get("input_root_default")
-    input_root = Path(args.input_root or default_input).expanduser()
+    default_input = raw_rules.get("input_zip_default")
+    if not (args.input_zip or default_input):
+        raise SystemExit("ZIP_ONLY_INPUT_REQUIRED: input_zip_default or --input-zip is required")
+    input_zip = Path(args.input_zip or default_input).expanduser()
     trigger_window = args.trigger_window or infer_trigger_window(now)
     rules_to_evaluate, rules_skipped = rules_for_trigger_window(rules, check_date, trigger_window)
 
-    reader = DwsArchiveReader(input_root)
+    reader = DwsArchiveReader(input_zip)
     group_names = sorted({r.group_name for r in rules_to_evaluate})
-    data_quality_issues: list[dict[str, Any]] = []
-    messages = []
-    for group in group_names:
-        data_quality_issues.extend(reader.inspect_group_sources(group, check_date))
-        messages.extend(reader.read_messages(group))
+    data_quality_issues, messages = collect_source_snapshot(reader, group_names, check_date)
     blocked_groups = blocking_source_groups(data_quality_issues)
     rules_blocked_by_source = [rule for rule in rules_to_evaluate if rule.group_name in blocked_groups]
     rules_ready_for_evaluation = [rule for rule in rules_to_evaluate if rule.group_name not in blocked_groups]
@@ -422,8 +466,9 @@ def main() -> int:
         "run_id": f"drc_{now.strftime('%Y%m%dT%H%M%S')}_{trigger_window}",
         "automation_name": raw_rules.get("automation_name"),
         "chinese_name": raw_rules.get("chinese_name"),
-        "input_root": str(input_root),
-        "input_mode": "zip" if input_root.suffix.lower() == ".zip" else "folder_or_sibling_zip",
+        "input_zip": str(input_zip),
+        "input_mode": "zip_only",
+        "input_cache_policy": "stream_members_no_copy_no_extract",
         "dry_run": args.dry_run,
         "send": args.send,
         **run_summary,
@@ -437,10 +482,6 @@ def main() -> int:
     }
     if not args.dry_run:
         output["persistence"] = persist_run_log(output["run_id"], output)
-        if args.cleanup:
-            output["cleanup"] = run_sqlite_cleanup(DEFAULT_DB)
-    elif args.cleanup:
-        output["cleanup"] = {"status": "SKIPPED_DRY_RUN"}
     print(json.dumps(output, ensure_ascii=False, indent=2))
     return 0
 
