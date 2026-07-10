@@ -71,11 +71,11 @@
 - Create: `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_proposal_e2e.cjs`
 - Test: `tests/test_memory_atlas_proposal_apply.py`
 
-- [ ] Add failing E2E cases for unauthorized apply, authorized apply, validation failure and rollback.
-- [ ] Add a user-visible approval surface with diff narrator and exact target-file scope.
-- [ ] Execute only approved allowlisted proposals through the local bridge and preserve a rollback point.
-- [ ] Prove raw targets are impossible and failure restores the pre-apply state.
-- [ ] Commit locally; do not push; stop before R5.
+- [x] Add failing E2E cases for unauthorized apply, authorized apply, validation failure and rollback.
+- [x] Add a user-visible approval surface with diff narrator and exact target-file scope.
+- [x] Execute only approved allowlisted proposals through the local bridge and preserve a rollback point.
+- [x] Prove raw targets are impossible and failure restores the pre-apply state.
+- [x] Commit locally; do not push; stop before R5.
 
 ### Task 5: R5 Owner Daily Product Entry
 

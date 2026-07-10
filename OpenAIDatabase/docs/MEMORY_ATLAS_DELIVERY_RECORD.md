@@ -1,6 +1,24 @@
 # Memory Atlas Delivery Record
 
-## Current Status Supersession: v1.2 Remediation R3
+## Current Status Supersession: v1.2 Remediation R4
+
+当前发布状态：`FAIL_REMEDIATION_REQUIRED`。
+
+2026-07-10 R4 已在本地源码候选建立真实 proposal 人工复核、一次性授权、精确
+apply、固定 validation、失败自动回滚、持久人工回滚和中断事务恢复。真实浏览器在
+临时 installer-shaped runtime 中证明：授权会改变 allowlisted fixture 文件；关闭再打开
+工作区后 rollback point 仍可见并精确恢复；invalid JSON 自动恢复；raw target 只复核；
+static command/proposal POST=0。目录 fd 和 no-follow 写入阻止父目录变化把写入导向安装
+副本外；缺失父目录不会在 transaction 前创建。证据位于
+`机器治理/证据与日志/remediation/v1_2_r4/`。
+
+R4 将验收汇总推进到 `VERIFIED 40 / PARTIAL 11 / FAILED 5 / NOT_VERIFIED 2`，但
+owner-daily、P0 核心可视化/筛选、线上 snapshot parity、GitHub clean recovery、final
+audit 接入和最终发布仍未完成。线上和已安装 app 均未更新。`origin/main` 已外部前进到
+`07a6e50d593c7b9c74b8f3870b614be86a87160d`；R4 security head 在 record 前为
+ahead 12 / behind 12。R4 没有 merge、rebase 或 push，双历史整合继续留给 R8。
+
+### R3 Command Workflow Baseline
 
 当前发布状态：`FAIL_REMEDIATION_REQUIRED`。
 

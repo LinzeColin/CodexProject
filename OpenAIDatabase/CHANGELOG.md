@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 Remediation R4
+
+- Added a dedicated same-origin proposal action API beside the exact six R3 commands.
+- Added apply-ready bundle parsing with one-use digest-bound review tokens, fixed target
+  roots, expected hashes and fixed UTF-8/JSON validation IDs.
+- Added descriptor-relative no-follow target writes, durable transaction snapshots,
+  validation-failure rollback and interrupted transaction recovery.
+- Added a rendered three-viewport proposal workspace with five Chinese diff sections,
+  exact scope, separate apply/rollback acknowledgements and persistent rollback points
+  visible after closing and reopening the workspace.
+- Added real browser proof for authorized file changes, automatic/manual rollback, raw
+  review-only behavior and hosted-static zero-POST behavior.
+- Preserved existing R3 command, Home, Stage 7, launcher, sync, personalization and
+  privacy gates; independent review closed all High/Medium findings.
+- Preserved the R4 boundary: no owner-daily, final parity/recovery, merge/rebase, push,
+  app reinstall, Cloudflare deployment, canonical repo write or raw mutation.
+
 ## Unreleased - Memory Atlas v1.2 Remediation R3
 
 - Added the tracked loopback runtime server and exact six-command bridge with fixed

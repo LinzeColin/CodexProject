@@ -1,3 +1,37 @@
+## 166. Memory Atlas v1.2 Remediation R4 Proposal Workflow Parameters
+
+状态：`R4_COMPLETE_LOCAL_ONLY`；release 仍为 `FAIL_REMEDIATION_REQUIRED`。
+
+参数：
+
+- `proposal_api_version = memory_atlas_proposal_api.v1_2_r4`
+- `proposal_endpoint = /__memory_atlas_proposal_action`
+- `bundle_schema = memory_atlas_apply_ready_proposal.v1_2_r4`
+- `apply_ready_directory = data/derived/proposals/apply_ready`
+- `review_token_ttl_seconds = 600`
+- `review_token_binding = proposal_id + bundle_digest + one-use`
+- `target_type_count = 7`
+- `fixed_validation_ids = utf8_nonempty; json_document`
+- `max_operations = 8`
+- `max_content_bytes = 524288`
+- `target_parent = existing directory only; O_NOFOLLOW; O_DIRECTORY; held fd`
+- `forbidden_targets = raw; private; credential; archive; Git; executable`
+- `interrupted_recovery_states = applying; applied; failed_validation`
+- `persisted_rollback_visible_after_reopen = true`
+- `hosted_static_command_or_proposal_post_count = 0`
+- `final_reviewer_high_medium = 0; 0`
+- `requirements = 40 verified; 11 partial; 5 failed; 2 not_verified`
+
+验证逻辑：`validate:v1.2-proposal-e2e` 必须自行构建当前 frontend，在临时
+installer-shaped runtime 中通过渲染 UI 验证 unauthorized fail-closed、真实授权写入、
+五段中文 diff、关闭重开后的持久 rollback、validation 失败自动恢复、raw review-only、
+metadata-only audit 和 static POST=0；三个目标视口必须无横向溢出。proposal/runtime、
+launcher、sync/personalization、R3 六命令、Home、Stage 7、lint、build、privacy 和独立
+review 必须继续通过。
+
+边界：本参数只证明 R4 本地候选的 proposal 执行和恢复路径，不证明 owner-daily、
+P0 visuals/filtering、线上 parity、GitHub clean recovery、app 安装或 v1.2 最终完成。
+
 ## 165. Memory Atlas v1.2 Remediation R3 Command Workflow Parameters
 
 状态：`R3_COMPLETE_LOCAL_ONLY`；release 仍为 `FAIL_REMEDIATION_REQUIRED`。
