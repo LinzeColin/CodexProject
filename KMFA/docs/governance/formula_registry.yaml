@@ -14411,3 +14411,47 @@ formulas:
       - "KMFA/stage_artifacts/V014_S09_POST_REMEDIATION_STAGE_REVIEW/human/stage9_post_remediation_review_report_zh.md"
       - "KMFA/stage_artifacts/V014_S09_POST_REMEDIATION_STAGE_REVIEW/human/test_results_zh.md"
       - "KMFA/stage_artifacts/V014_S09_POST_REMEDIATION_STAGE_REVIEW/machine/stage9_post_remediation_review_manifest.json"
+
+
+  - formula_id: "FORM-KMFA-V014-S10-P1-POST-REMEDIATION-REPORT-ENTRY-001"
+    model_id: "MOD-KMFA-GOV-001"
+    assumption_ids:
+      - "ASM-KMFA-002"
+      - "ASM-KMFA-004"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "s10_p1_post_entry_valid = report_template_count == 2 AND management_section_count == 11 AND project_cost_section_count == 4 AND business_overview_section_count == 7 AND cost_category_count == 9 AND human_readable_reconciliation_count == 12 AND closed_or_excluded_count == 69 AND open_final_difference_accepted_count == 3 AND nonzero_difference_count == 9 AND incomplete_reconciliation_count == 1 AND forced_zero_count == 0 AND missing_cash_zero_count == 0 AND authority_system_overwrite_allowed_count == 0 AND inherited_grade == Q4_D_NO_GO AND grade_calculation_performed == false AND s10_p2_performed == false AND s10_p3_performed == false AND stage10_review_performed == false AND github_upload_performed == false"
+    variables:
+      - name: "report_template_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "2"
+      - name: "management_section_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "11"
+      - name: "open_final_difference_accepted_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "3"
+      - name: "missing_cash_zero_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "0"
+    constraints:
+      - "Visible report content uses only management-readable Chinese titles and summaries."
+      - "Current trust and blocker state comes from the Stage 9 post-remediation review; historical S10-P1 contributes structure only."
+      - "Missing cash values remain unresolved and are never rendered as zero."
+      - "S10-P2 grade calculation S10-P3 export Stage 10 review upload app reinstall and business execution remain false."
+    missing_policy: "Missing unique cash authority remains explicit and blocks formal report release; no inference averaging overwrite or silent pass."
+    output_range: "v014_s10_p1_post_remediation_report_entry_manifest"
+    code_refs:
+      - "KMFA/tools/v014_s10_p1_post_remediation_report_entry.py"
+      - "KMFA/tools/check_v014_s10_p1_post_remediation_report_entry.py"
+    test_refs:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s10_p1_post_remediation_report_entry.py --require-private-evidence --require-final-evidence"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s10_p1_post_remediation_report_entry"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY/human/management_report_entry_preview_zh.md"
+      - "KMFA/stage_artifacts/V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY/human/test_results_zh.md"
+      - "KMFA/stage_artifacts/V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY/machine/report_entry_manifest.json"

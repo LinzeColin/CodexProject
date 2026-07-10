@@ -1,0 +1,173 @@
+{
+  "acceptance_id": "ACC-V014-S10-P1-POST-REMEDIATION-REPORT-ENTRY",
+  "artifact_refs": {
+    "completion": "KMFA/stage_artifacts/V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY/human/s10_p1_completion_record_zh.md",
+    "entries": "KMFA/stage_artifacts/V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY/machine/report_entries_public_safe.json",
+    "go_no_go": "KMFA/stage_artifacts/V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY/machine/report_entry_go_no_go_report.json",
+    "management_preview": "KMFA/stage_artifacts/V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY/human/management_report_entry_preview_zh.md",
+    "summary": "KMFA/stage_artifacts/V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY/machine/report_entry_summary.json",
+    "test_results": "KMFA/stage_artifacts/V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY/human/test_results_zh.md",
+    "validator": "KMFA/tools/check_v014_s10_p1_post_remediation_report_entry.py"
+  },
+  "branch": "codex/kmfa",
+  "decision": "NO_GO",
+  "dependencies": {
+    "current_stage9_state_authoritative": true,
+    "historical_dynamic_state_reused": false,
+    "historical_s10_p1_structure_validated": true,
+    "stage9_post_remediation_review_validated": true
+  },
+  "generated_at": "2026-07-11T00:42:22+10:00",
+  "next_required_phase": "S10-P2",
+  "phase_boundaries": {
+    "app_reinstall_performed": false,
+    "business_execution_performed": false,
+    "github_upload_performed": false,
+    "s10_p1_performed": true,
+    "s10_p2_performed": false,
+    "s10_p3_performed": false,
+    "stage10_review_performed": false
+  },
+  "phase_id": "V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "aggregate_only": true,
+    "business_value_committed": false,
+    "credential_or_secret_committed": false,
+    "field_or_header_plaintext_committed": false,
+    "private_runtime_committed": false,
+    "project_or_customer_plaintext_committed": false,
+    "raw_file_committed": false,
+    "raw_filename_committed": false,
+    "raw_hash_committed": false
+  },
+  "raw_boundary": {
+    "raw_delete_performed": false,
+    "raw_move_performed": false,
+    "raw_mutation_performed": false,
+    "raw_overwrite_performed": false,
+    "raw_read_authorized": true,
+    "raw_rename_performed": false,
+    "raw_snapshot_validation_performed": true,
+    "raw_write_performed": false
+  },
+  "release_gate": {
+    "business_decision_basis_allowed": false,
+    "delivery_allowed": false,
+    "formal_report_allowed": false,
+    "report_export_performed": false,
+    "report_runtime_performed": false
+  },
+  "report_entries": [
+    {
+      "authority_value_overwrite_allowed": false,
+      "business_decision_basis_allowed": false,
+      "business_values_included": false,
+      "entry_id": "project_cost_special_report",
+      "formal_report_allowed": false,
+      "internal_technical_title_visible": false,
+      "missing_value_rendered_as_zero": false,
+      "visible_management_summary": [
+        "九类成本结构已覆盖，差旅和利息已有唯一权威分项来源。",
+        "权威显示与系统复算保持分离，禁止互相覆盖。",
+        "九项非零差异和一项未完成比较继续保留。"
+      ],
+      "visible_sections": [
+        "经营摘要",
+        "项目毛利",
+        "成本结构",
+        "风险事项"
+      ],
+      "visible_title": "项目成本专题报告",
+      "visible_trust_status": "当前可信等级 Q4 / D，状态 NO_GO（未放行），仅供内部复核。"
+    },
+    {
+      "authority_value_overwrite_allowed": false,
+      "business_decision_basis_allowed": false,
+      "business_values_included": false,
+      "entry_id": "business_overview_report",
+      "formal_report_allowed": false,
+      "internal_technical_title_visible": false,
+      "missing_value_rendered_as_zero": false,
+      "visible_management_summary": [
+        "收入、开票、回款、现金、项目和税务按管理章节组织。",
+        "十二项口径差异均保留可读原因、依据、责任和状态。",
+        "三项现金口径缺少唯一权威数值来源，保持未决且不补零。"
+      ],
+      "visible_sections": [
+        "经营总览",
+        "收入",
+        "开票",
+        "回款",
+        "现金",
+        "项目",
+        "税务"
+      ],
+      "visible_title": "经营总览报告",
+      "visible_trust_status": "当前可信等级 Q4 / D，状态 NO_GO（未放行），仅供内部复核。"
+    }
+  ],
+  "reviewed_head": "d9622e5043a21b9209d9625179e867f1f49602db",
+  "roadmap_phase_id": "S10-P1",
+  "schema_version": "kmfa.v014.s10_p1.post_remediation_report_entry_manifest.v1",
+  "source_evidence_refs": {
+    "current_stage9_review": "KMFA/stage_artifacts/V014_S09_POST_REMEDIATION_STAGE_REVIEW/machine/stage9_post_remediation_review_manifest.json",
+    "historical_s10_p1_structure": "KMFA/stage_artifacts/V014_S10_P1_REPORT_TEMPLATES/machine/report_templates_manifest.json",
+    "roadmap": "KMFA/taskpack/v1_4/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_4.md"
+  },
+  "stage_id": "S10",
+  "status": "completed_validated_local_only_management_report_entries_locked_no_go_upload_deferred",
+  "summary": {
+    "authority_system_overwrite_allowed_count": 0,
+    "business_overview_section_count": 7,
+    "cost_category_count": 9,
+    "current_data_quality_grade": "Q4",
+    "current_report_grade": "D",
+    "decision": "NO_GO",
+    "export_artifact_count": 0,
+    "forced_zero_materialization_count": 0,
+    "formal_report_count": 0,
+    "human_readable_reconciliation_count": 12,
+    "incomplete_reconciliation_count": 1,
+    "management_section_count": 11,
+    "missing_cash_value_materialized_as_zero_count": 0,
+    "nonzero_delta_reconciliation_count": 9,
+    "open_final_difference_accepted_count": 3,
+    "phase_id": "V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY",
+    "project_cost_section_count": 4,
+    "project_id": "KMFA",
+    "queue_closed_or_excluded_count": 69,
+    "raw_cross_phase_snapshot_exact_match": true,
+    "raw_snapshot_exact_match": true,
+    "raw_source_file_count": 5,
+    "release_permission": "blocked",
+    "report_template_count": 2,
+    "roadmap_phase_id": "S10-P1",
+    "schema_version": "kmfa.v014.s10_p1.post_remediation_report_entry_summary.v1",
+    "stage_id": "S10",
+    "status": "completed_validated_local_only_management_report_entries_locked_no_go_upload_deferred",
+    "zero_delta_reconciliation_count": 2
+  },
+  "task_id": "KMFA-V014-S10-P1-POST-REMEDIATION-REPORT-ENTRY-20260711",
+  "trust_entry": {
+    "current_data_quality_grade": "Q4",
+    "current_report_grade": "D",
+    "decision": "NO_GO",
+    "grade_calculation_performed_by_this_phase": false,
+    "grade_override_allowed": false,
+    "inherited_from_stage9_post_remediation_review": true,
+    "visible_release_label": "未放行",
+    "visible_usage_label": "仅供内部复核，不作为正式经营决策依据"
+  },
+  "validation_summary": {
+    "final_validation_recorded": true,
+    "focused_tests": "PASS",
+    "governance_and_safety_scans": "PASS",
+    "historical_s10_p1_structure": "PASS",
+    "raw_snapshot_exact": "PASS",
+    "red_test_observed": true,
+    "stage9_dependency": "PASS",
+    "strict_validator": "PASS"
+  },
+  "version": "0.1.4-s10-p1-post-remediation-report-entry"
+}

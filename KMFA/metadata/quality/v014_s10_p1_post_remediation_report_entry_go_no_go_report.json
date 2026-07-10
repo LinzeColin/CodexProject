@@ -1,0 +1,17 @@
+{
+  "blocking_reason_codes": [
+    "three_cash_slots_lack_unique_authority_source",
+    "nine_nonzero_differences_remain_preserved",
+    "one_reconciliation_remains_incomplete",
+    "full_business_value_consistency_not_verified"
+  ],
+  "current_data_quality_grade": "Q4",
+  "current_report_grade": "D",
+  "decision": "NO_GO",
+  "formal_report_allowed": false,
+  "github_upload_performed": false,
+  "phase_id": "V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY",
+  "project_id": "KMFA",
+  "schema_version": "kmfa.v014.s10_p1.post_remediation_report_entry_go_no_go.v1",
+  "stage_id": "S10"
+}

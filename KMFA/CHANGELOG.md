@@ -1,3 +1,11 @@
+## 0.1.4-s10-p1-post-remediation-report-entry - 2026-07-11
+
+- 完成 `V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY` 本地单 phase，按 Roadmap S10-P1 建立项目成本专题与经营总览两个管理入口，共 11 个管理可读章节。
+- 保留原 2026-07-04 S10-P1 产物作为历史结构基线，动态状态只绑定最新 Stage 9 post-remediation 的 `69 closed-or-excluded / 3 final-accepted-open / 9 nonzero / 1 incomplete`。
+- 入口显式展示继承的 `Q4 / D / NO_GO（未放行）`，但不执行 S10-P2 等级计算或覆盖；三条现金缺失保持未决且不补零，权威值与系统复算值不互相覆盖。
+- 5 个原始文件在本 phase 前后及跨 phase 快照完全一致；raw 身份、哈希和私有诊断只写 ignored private runtime。
+- 未执行 S10-P2、S10-P3、Stage 10 review、正式报告、导出、GitHub upload、app reinstall 或 business execution。
+
 ## 0.1.4-s09-post-remediation-stage-review - 2026-07-10
 
 - 完成 `V014_S09_POST_REMEDIATION_STAGE_REVIEW`，复跑 S09-P1/P2/P3、原 Stage 9 review、global residual、remaining-eleven、no-float 和 no-omission 共 8 条依赖验证。
