@@ -574,7 +574,7 @@ def render_roadmap_body(roadmap: dict[str, Any]) -> list[str]:
                         f"- {text_or_na(task.get('task_id'))} test_commands: `{text_or_na(task.get('test_commands'))}`",
                         f"- {text_or_na(task.get('task_id'))} test_results: `{task_test_results(task) if use_contextual_fallbacks else text_or_na(task.get('test_results'))}`",
                         f"- {text_or_na(task.get('task_id'))} evidence_refs: `{text_or_na(task.get('evidence_refs'))}`",
-                        f"- {text_or_na(task.get('task_id'))} risks: `{task_risks(task) if use_contextual_fallbacks else text_or_na(task.get('risks'))}`",
+                        f"- {text_or_na(task.get('task_id'))} risks: `{task_risks(task)}`",
                         f"- {text_or_na(task.get('task_id'))} rollback: `{text_or_na(task.get('rollback'))}`",
                     ]
                 )

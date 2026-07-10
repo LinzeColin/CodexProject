@@ -14,6 +14,7 @@ PHASE1 = PURSUE_ROOT / "STAGE035_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE035_PHASE2_DATABASE_RECOVERY_SMOKE_SLICE.md"
 PHASE3 = PURSUE_ROOT / "STAGE035_PHASE3_SCENARIO_VALIDATION.md"
 PHASE4 = PURSUE_ROOT / "STAGE035_PHASE4_CLOSEOUT.md"
+STAGE_REVIEW = PURSUE_ROOT / "STAGE035_STAGE_REVIEW.md"
 INDEX = (
     PURSUE_ROOT
     / "database_recovery_smoke"
@@ -178,30 +179,35 @@ class Stage035DatabaseRecoverySmokePhase1Tests(unittest.TestCase):
             'status: "stage035_phase2_in_progress"',
             'status: "stage035_phase3_in_progress"',
             'status: "stage035_completed_local_pending_review"',
+            'status: "stage035_completed_reviewed_local"',
         ]
         allowed_next_phases = [
             'next_phase: "Phase 2"',
             'next_phase: "Phase 3"',
             'next_phase: "Phase 4"',
             'next_phase: "stage_review_gate"',
+            'next_stage: "STAGE-036"',
         ]
         allowed_next_gates = [
             'next_gate: "IDS-STAGE035-P2-GATE"',
             'next_gate: "IDS-STAGE035-P3-GATE"',
             'next_gate: "IDS-STAGE035-P4-GATE"',
             'next_gate: "IDS-STAGE035-REVIEW-GATE"',
+            'next_gate: "IDS-STAGE036-P1-GATE"',
         ]
         allowed_current_tasks = [
             'current_task_id: "IDS-V0_1-STAGE035-P1"',
             'current_task_id: "IDS-V0_1-STAGE035-P2"',
             'current_task_id: "IDS-V0_1-STAGE035-P3"',
             'current_task_id: "IDS-V0_1-STAGE035-P4"',
+            'current_task_id: "IDS-V0_1-STAGE035-REVIEW"',
         ]
         allowed_acceptance_states = [
             'acceptance_status: "phase1_scope_boundary_defined"',
             'acceptance_status: "phase2_static_recovery_smoke_contract_validated"',
             'acceptance_status: "phase3_scenario_validation_passed"',
             'acceptance_status: "phase4_closeout_complete"',
+            'acceptance_status: "reviewed_local_passed"',
         ]
         for allowed in [
             allowed_current_states,
@@ -390,15 +396,17 @@ class Stage035DatabaseRecoverySmokePhase2Tests(unittest.TestCase):
 
         self.assertEqual(0, completed.returncode, completed.stderr)
         payload = json.loads(completed.stdout)
-        self.assertTrue(payload["contract_valid"])
-        self.assertFalse(payload["execution_ready"])
+        self.assertEqual("Phase 4", payload["phase"])
+        phase2 = payload["phase2_report"]
+        self.assertTrue(phase2["contract_valid"])
+        self.assertFalse(phase2["execution_ready"])
         self.assertEqual(
             "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_METADATA_DUMP",
-            payload["execution_state"],
+            phase2["execution_state"],
         )
-        self.assertTrue(payload["does_not_read_metadata_dump"])
-        self.assertTrue(payload["does_not_connect_to_postgres"])
-        self.assertTrue(payload["does_not_execute_restore"])
+        self.assertTrue(phase2["does_not_read_metadata_dump"])
+        self.assertTrue(phase2["does_not_connect_to_postgres"])
+        self.assertTrue(phase2["does_not_execute_restore"])
         self.assertEqual("", completed.stderr)
 
     def test_phase2_doc_and_governance_record_blocked_static_slice_without_upload(self):
@@ -462,26 +470,31 @@ class Stage035DatabaseRecoverySmokePhase2Tests(unittest.TestCase):
             'status: "stage035_phase2_in_progress"',
             'status: "stage035_phase3_in_progress"',
             'status: "stage035_completed_local_pending_review"',
+            'status: "stage035_completed_reviewed_local"',
         ]
         allowed_next_phases = [
             'next_phase: "Phase 3"',
             'next_phase: "Phase 4"',
             'next_phase: "stage_review_gate"',
+            'next_stage: "STAGE-036"',
         ]
         allowed_next_gates = [
             'next_gate: "IDS-STAGE035-P3-GATE"',
             'next_gate: "IDS-STAGE035-P4-GATE"',
             'next_gate: "IDS-STAGE035-REVIEW-GATE"',
+            'next_gate: "IDS-STAGE036-P1-GATE"',
         ]
         allowed_current_tasks = [
             'current_task_id: "IDS-V0_1-STAGE035-P2"',
             'current_task_id: "IDS-V0_1-STAGE035-P3"',
             'current_task_id: "IDS-V0_1-STAGE035-P4"',
+            'current_task_id: "IDS-V0_1-STAGE035-REVIEW"',
         ]
         allowed_acceptance_states = [
             'acceptance_status: "phase2_static_recovery_smoke_contract_validated"',
             'acceptance_status: "phase3_scenario_validation_passed"',
             'acceptance_status: "phase4_closeout_complete"',
+            'acceptance_status: "reviewed_local_passed"',
         ]
         for allowed in [
             allowed_current_states,
@@ -670,22 +683,27 @@ class Stage035DatabaseRecoverySmokePhase3Tests(unittest.TestCase):
         allowed_current_states = [
             'status: "stage035_phase3_in_progress"',
             'status: "stage035_completed_local_pending_review"',
+            'status: "stage035_completed_reviewed_local"',
         ]
         allowed_next_phases = [
             'next_phase: "Phase 4"',
             'next_phase: "stage_review_gate"',
+            'next_stage: "STAGE-036"',
         ]
         allowed_next_gates = [
             'next_gate: "IDS-STAGE035-P4-GATE"',
             'next_gate: "IDS-STAGE035-REVIEW-GATE"',
+            'next_gate: "IDS-STAGE036-P1-GATE"',
         ]
         allowed_current_tasks = [
             'current_task_id: "IDS-V0_1-STAGE035-P3"',
             'current_task_id: "IDS-V0_1-STAGE035-P4"',
+            'current_task_id: "IDS-V0_1-STAGE035-REVIEW"',
         ]
         allowed_acceptance_states = [
             'acceptance_status: "phase3_scenario_validation_passed"',
             'acceptance_status: "phase4_closeout_complete"',
+            'acceptance_status: "reviewed_local_passed"',
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE035"',
@@ -887,21 +905,35 @@ class Stage035DatabaseRecoverySmokePhase4Tests(unittest.TestCase):
             "NO_STAGE_REVIEW_THIS_RUN",
         ]
         lock_terms = [
-            'status: "stage035_completed_local_pending_review"',
             '      - "Phase 4"',
-            'next_phase: "stage_review_gate"',
-            'next_gate: "IDS-STAGE035-REVIEW-GATE"',
-            'current_task_id: "IDS-V0_1-STAGE035-P4"',
-            'acceptance_status: "phase4_closeout_complete"',
             "STAGE035_PHASE4_CLOSEOUT.md",
             'push_allowed: false',
+        ]
+        allowed_current_states = [
+            'status: "stage035_completed_local_pending_review"',
+            'status: "stage035_completed_reviewed_local"',
+        ]
+        allowed_next_phases = [
+            'next_phase: "stage_review_gate"',
+            'next_stage: "STAGE-036"',
+        ]
+        allowed_next_gates = [
+            'next_gate: "IDS-STAGE035-REVIEW-GATE"',
+            'next_gate: "IDS-STAGE036-P1-GATE"',
+        ]
+        allowed_current_tasks = [
+            'current_task_id: "IDS-V0_1-STAGE035-P4"',
+            'current_task_id: "IDS-V0_1-STAGE035-REVIEW"',
+        ]
+        allowed_acceptance_states = [
+            'acceptance_status: "phase4_closeout_complete"',
+            'acceptance_status: "reviewed_local_passed"',
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE035"',
             'current_phase_id: "IDS-STAGE035-P4"',
             'current_task_id: "IDS-V0_1-STAGE035-P4"',
             'next_gate_id: "IDS-STAGE035-REVIEW-GATE"',
-            'status: "completed_local_pending_review"',
             'phase_id: "IDS-STAGE035-P4"',
             'task_id: "IDS-V0_1-STAGE035-P4"',
             'status: "passed_no_github_upload_until_stage_review"',
@@ -925,6 +957,258 @@ class Stage035DatabaseRecoverySmokePhase4Tests(unittest.TestCase):
             for term in terms:
                 with self.subTest(term=term):
                     self.assertIn(term, text)
+        for allowed in [
+            allowed_current_states,
+            allowed_next_phases,
+            allowed_next_gates,
+            allowed_current_tasks,
+            allowed_acceptance_states,
+        ]:
+            self.assertTrue(any(term in lock_text for term in allowed), allowed)
+
+
+class Stage035DatabaseRecoverySmokeReviewTests(unittest.TestCase):
+    def _load_checker_module(self):
+        self.assertTrue(SCRIPT.is_file(), f"missing checker script: {SCRIPT}")
+        spec = importlib.util.spec_from_file_location(
+            "stage035_database_recovery_smoke_review", SCRIPT
+        )
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def _delivery_with_index(self, module, index):
+        original_loader = module._load_json
+        module._load_json = (
+            lambda path: copy.deepcopy(index)
+            if Path(path).resolve() == INDEX
+            else original_loader(path)
+        )
+        try:
+            return module.build_stage035_delivery_report(INDEX)
+        finally:
+            module._load_json = original_loader
+
+    def test_stage_review_artifact_records_phase_audit_findings_and_no_upload_boundary(self):
+        self.assertTrue(STAGE_REVIEW.is_file(), f"missing stage review: {STAGE_REVIEW}")
+        review_text = STAGE_REVIEW.read_text(encoding="utf-8")
+
+        required_terms = [
+            "IDS-V0_1-STAGE035-REVIEW",
+            "ACC-STAGE-035",
+            "STAGE-035 · 数据库恢复冒烟测试",
+            "STAGE035-REVIEW-F1",
+            "STAGE035-REVIEW-F2",
+            "STAGE035-REVIEW-F3",
+            "P0 source binding",
+            "Phase 1 boundary",
+            "Phase 2 static recovery preflight",
+            "Phase 3 scenario validation",
+            "Phase 4 closeout",
+            "build_stage035_delivery_report",
+            "PASS_WITH_EXPECTED_BLOCK",
+            "completed_reviewed_local",
+            "IDS-STAGE036-P1-GATE",
+            "NO_GITHUB_UPLOAD",
+            "NO_APP_REINSTALL",
+            "NO_STAGE036_THIS_RUN",
+            "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "不得使用虚构 IDS 业务数据",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, review_text)
+
+    def test_stage_review_gate_batch_roadmap_and_event_track_reviewed_local_no_upload(self):
+        self.assertTrue(STAGE_REVIEW.is_file(), f"missing stage review: {STAGE_REVIEW}")
+        lock_text = BATCH_LOCK.read_text(encoding="utf-8")
+        roadmap_text = ROADMAP.read_text(encoding="utf-8")
+        events_text = EVENTS.read_text(encoding="utf-8")
+
+        lock_terms = [
+            'STAGE-035:',
+            'status: "completed_reviewed_local"',
+            '      - "Phase 1"',
+            '      - "Phase 2"',
+            '      - "Phase 3"',
+            '      - "Phase 4"',
+            'review_status: "passed"',
+            'next_stage: "STAGE-036"',
+            'next_gate: "IDS-STAGE036-P1-GATE"',
+            'current_task_id: "IDS-V0_1-STAGE035-REVIEW"',
+            'acceptance_status: "reviewed_local_passed"',
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE035_STAGE_REVIEW.md",
+            'push_allowed: false',
+        ]
+        roadmap_terms = [
+            'current_stage_id: "IDS-STAGE035"',
+            'current_phase_id: "IDS-STAGE035-REVIEW"',
+            'current_task_id: "IDS-V0_1-STAGE035-REVIEW"',
+            'next_gate_id: "IDS-STAGE036-P1-GATE"',
+            'review_id: "IDS-STAGE035-REVIEW"',
+            'task_id: "IDS-V0_1-STAGE035-REVIEW"',
+            'status: "completed"',
+            "STAGE035_STAGE_REVIEW.md",
+        ]
+        event_terms = [
+            '"event_id":"EVT-IDS-V0_1-STAGE035-REVIEW-20260710-001"',
+            '"event_type":"stage_review"',
+            '"task_id":"IDS-V0_1-STAGE035-REVIEW"',
+            '"ACC-STAGE-035"',
+            "STAGE035_STAGE_REVIEW.md",
+            "IDS-STAGE036-P1-GATE",
+        ]
+
+        for terms, text in [
+            (lock_terms, lock_text),
+            (roadmap_terms, roadmap_text),
+            (event_terms, events_text),
+        ]:
+            for term in terms:
+                with self.subTest(term=term):
+                    self.assertIn(term, text)
+
+    def test_review_repair_promotes_phase4_delivery_to_cli_top_level(self):
+        completed = subprocess.run(
+            [sys.executable, "-B", str(SCRIPT)],
+            cwd=ROOT,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertEqual(0, completed.returncode, completed.stderr)
+        payload = json.loads(completed.stdout)
+        self.assertEqual("ids.stage035.database_recovery_smoke.phase4.v1", payload["schema_version"])
+        self.assertEqual("Phase 4", payload["phase"])
+        self.assertEqual("IDS-V0_1-STAGE035-P4", payload["task_id"])
+        self.assertEqual("IDS-STAGE035-REVIEW-GATE", payload["next_gate"])
+        self.assertTrue(payload["delivery_contract_valid"])
+        self.assertIn("phase2_report", payload)
+        self.assertIn("scenario_report", payload)
+        self.assertIn("delivery_report", payload)
+
+    def test_review_repair_uses_one_immutable_index_snapshot(self):
+        module = self._load_checker_module()
+        valid_index = json.loads(INDEX.read_text(encoding="utf-8"))
+        first_snapshot = copy.deepcopy(valid_index)
+        first_snapshot["metadata_dump_contract"][
+            "owner_authorized_real_dump_available"
+        ] = True
+        load_count = 0
+        original_loader = module._load_json
+
+        def sequenced_loader(path):
+            nonlocal load_count
+            if Path(path).resolve() == INDEX:
+                load_count += 1
+                return copy.deepcopy(first_snapshot if load_count == 1 else valid_index)
+            return original_loader(path)
+
+        module._load_json = sequenced_loader
+        try:
+            report = module.build_stage035_delivery_report(INDEX)
+        finally:
+            module._load_json = original_loader
+
+        self.assertEqual(1, load_count)
+        self.assertFalse(report["delivery_contract_valid"])
+        self.assertEqual("FAIL_CLOSED", report["recovery_test_log"]["result"])
+        self.assertEqual("BLOCKED_INVALID_RECOVERY_CONTRACT", report["execution_state"])
+        self.assertTrue(report["recovery_test_log"]["owner_authorized_real_dump_available"])
+
+    def test_review_repair_rejects_unvalidated_security_fields(self):
+        module = self._load_checker_module()
+        base = json.loads(INDEX.read_text(encoding="utf-8"))
+        cases = {
+            "plaintext_credential_policy": lambda index: index["restore_target_contract"].__setitem__(
+                "credential_ref_policy", "plaintext_credential_allowed"
+            ),
+            "missing_migration_validation_checks": lambda index: index[
+                "schema_migration_compatibility"
+            ].__setitem__("required_validation_checks", []),
+            "raw_log_body_storage": lambda index: index["storage_boundary"].__setitem__(
+                "stores_raw_log_bodies", True
+            ),
+        }
+
+        for name, mutate in cases.items():
+            with self.subTest(case=name):
+                index = copy.deepcopy(base)
+                mutate(index)
+                report = self._delivery_with_index(module, index)
+                self.assertFalse(report["delivery_contract_valid"])
+                self.assertFalse(report["delivery_check_results"]["phase2_contract_valid"])
+                self.assertEqual("FAIL_CLOSED", report["recovery_test_log"]["result"])
+
+    def test_review_repair_binds_phase4_evidence_to_machine_contract(self):
+        module = self._load_checker_module()
+        index = json.loads(INDEX.read_text(encoding="utf-8"))
+        self.assertIn("phase4_delivery_contract", index)
+        report = self._delivery_with_index(module, index)
+        self.assertIn("phase4_contract_results", report)
+        self.assertTrue(all(report["phase4_contract_results"].values()))
+
+        tampered = copy.deepcopy(index)
+        rollback = {
+            step["step_id"]: step
+            for step in tampered["phase4_delivery_contract"]["rollback_steps"]
+        }
+        rollback["preserve_source_database"]["source_database_mutation_allowed"] = True
+        tampered_report = self._delivery_with_index(module, tampered)
+
+        self.assertFalse(tampered_report["delivery_contract_valid"])
+        self.assertFalse(
+            tampered_report["phase4_contract_results"]["rollback_steps_valid"]
+        )
+        self.assertEqual("FAIL_CLOSED", tampered_report["recovery_test_log"]["result"])
+
+    def test_owner_render_uses_singular_risk_field(self):
+        scripts_dir = ROOT.parent / "scripts"
+        spec = importlib.util.spec_from_file_location(
+            "stage035_lean_governance_review", scripts_dir / "lean_governance.py"
+        )
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        sys.path.insert(0, str(scripts_dir))
+        try:
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+        finally:
+            sys.path.remove(str(scripts_dir))
+
+        roadmap = {
+            "project_id": "KM_IDSystem",
+            "stages": [
+                {
+                    "stage_id": "IDS-STAGE035",
+                    "name": "review fixture",
+                    "phases": [
+                        {
+                            "phase_id": "IDS-STAGE035-P4",
+                            "name": "review fixture",
+                            "tasks": [
+                                {
+                                    "task_id": "IDS-V0_1-STAGE035-P4",
+                                    "name": "review fixture",
+                                    "status": "completed",
+                                    "estimated_hours": 1,
+                                    "risk": "phase4 risk must remain owner-visible",
+                                }
+                            ],
+                        }
+                    ],
+                }
+            ],
+        }
+        rendered = "\n".join(module.render_roadmap_body(roadmap))
+        self.assertIn(
+            "IDS-V0_1-STAGE035-P4 risks: `phase4 risk must remain owner-visible`",
+            rendered,
+        )
 
 
 if __name__ == "__main__":

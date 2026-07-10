@@ -15,6 +15,9 @@ from typing import Any
 SCHEMA_VERSION = "ids.stage035.database_recovery_smoke.phase2.v1"
 SCENARIO_SCHEMA_VERSION = "ids.stage035.database_recovery_smoke.phase3.v1"
 DELIVERY_SCHEMA_VERSION = "ids.stage035.database_recovery_smoke.phase4.v1"
+DELIVERY_CONTRACT_SCHEMA_VERSION = (
+    "ids.stage035.database_recovery_smoke.delivery_contract.v1"
+)
 INDEX_SCHEMA_VERSION = "ids.stage035.database_recovery_smoke.index.v1"
 STAGE = "STAGE-035"
 TASK_ID = "IDS-V0_1-STAGE035-P2"
@@ -92,6 +95,96 @@ EXPECTED_VALIDATION_CHECKS = {
     "health_and_readiness",
     "no_raw_payloads",
     "source_non_interference",
+}
+
+EXPECTED_MIGRATION_VALIDATION_CHECKS = {
+    "schema_up_down_markers",
+    "payload_size_constraint",
+    "no_raw_content_constraint",
+    "connection_pool_constraint",
+    "fact_level_constraint",
+    "index_state_constraint",
+}
+
+EXPECTED_CREDENTIAL_REF_POLICY = (
+    "environment_managed_distinct_restore_target_ref_required"
+)
+
+EXPECTED_STORAGE_BOUNDARY = {
+    "stores_control_plane_metadata": True,
+    "stores_status_and_state": True,
+    "stores_path_only_refs": True,
+    "stores_audit_and_evidence_refs": True,
+    "stores_migration_and_retention_state": True,
+    "stores_hot_index_metadata": True,
+    "stores_raw_files": False,
+    "stores_raw_database_rows": False,
+    "stores_document_bodies": False,
+    "stores_ocr_full_text": False,
+    "stores_archive_bodies": False,
+    "stores_vector_payloads": False,
+    "stores_report_binaries": False,
+    "stores_raw_log_bodies": False,
+    "stores_unbounded_derived_artifacts": False,
+}
+
+EXPECTED_ROLLBACK_STEP_GUARDS = {
+    "stop_on_invalid_contract": {
+        "required": True,
+        "stop_all_database_actions": True,
+    },
+    "revert_review_scope_only": {
+        "required": True,
+        "database_content_rollback_allowed": False,
+    },
+    "preserve_source_database": {
+        "required": True,
+        "source_database_mutation_allowed": False,
+    },
+    "quarantine_failed_target": {
+        "required": True,
+        "failed_target_quarantine_required": True,
+    },
+    "owner_gate_target_cleanup": {
+        "required": True,
+        "target_cleanup_owner_stop_gate_required": True,
+    },
+}
+
+EXPECTED_BACKUP_RESTORE_STEP_GUARDS = {
+    "owner_authorized_real_dump": {
+        "required": True,
+        "owner_authorized_real_dump_required": True,
+    },
+    "isolated_target_compatibility": {
+        "required": True,
+        "isolated_non_production_target_required": True,
+    },
+    "dry_run_backup_rollback": {
+        "required": True,
+        "dry_run_and_backup_required": True,
+    },
+    "managed_secret_ref": {
+        "required": True,
+        "plaintext_credential_allowed": False,
+    },
+    "isolated_restore_validation": {
+        "required": True,
+        "source_database_overwrite_allowed": False,
+    },
+    "checkpoint_recovery": {
+        "required": True,
+        "source_database_preservation_required": True,
+    },
+}
+
+EXPECTED_KNOWN_LIMIT_IDS = {
+    "no_owner_authorized_real_dump",
+    "no_live_postgresql_execution",
+    "static_pass_is_not_readiness",
+    "no_runtime_artifacts_created",
+    "raw_metadata_path_only",
+    "stage_review_and_batch_upload_blocked",
 }
 
 EXPECTED_RUNTIME_POLICY_KEYS = {
@@ -299,6 +392,8 @@ def _contract_results(index: dict[str, Any]) -> dict[str, bool]:
             and target.get("source_database_migration_allowed") is False
             and target.get("source_database_deletion_allowed") is False
             and target.get("target_creation_allowed_in_current_run") is False
+            and target.get("credential_ref_policy")
+            == EXPECTED_CREDENTIAL_REF_POLICY
             and target.get("credential_bearing_config_in_git_allowed") is False
             and target.get("automatic_target_cleanup_allowed") is False
             and target.get("target_cleanup_owner_stop_gate_required") is True
@@ -317,6 +412,8 @@ def _contract_results(index: dict[str, Any]) -> dict[str, bool]:
             and migration.get("backup_checkpoint_required") is True
             and migration.get("recovery_smoke_required") is True
             and migration.get("destructive_migration_allowed") is False
+            and set(migration.get("required_validation_checks", []))
+            == EXPECTED_MIGRATION_VALIDATION_CHECKS
         ),
         "connection_pool_guard": (
             pool.get("stage032_guard_authoritative") is True
@@ -347,18 +444,7 @@ def _contract_results(index: dict[str, Any]) -> dict[str, bool]:
             and quality.get("chinese_failure_reason_required") is True
             and quality.get("runtime_validation_allowed_in_current_run") is False
         ),
-        "storage_boundary_guard": (
-            storage.get("stores_control_plane_metadata") is True
-            and storage.get("stores_status_and_state") is True
-            and storage.get("stores_hot_index_metadata") is True
-            and storage.get("stores_raw_files") is False
-            and storage.get("stores_raw_database_rows") is False
-            and storage.get("stores_document_bodies") is False
-            and storage.get("stores_ocr_full_text") is False
-            and storage.get("stores_vector_payloads") is False
-            and storage.get("stores_report_binaries") is False
-            and storage.get("stores_unbounded_derived_artifacts") is False
-        ),
+        "storage_boundary_guard": storage == EXPECTED_STORAGE_BOUNDARY,
         "restore_preflight_guard": (
             preflight.get("required") is True
             and set(preflight.get("required_checks", [])) == EXPECTED_PREFLIGHT_CHECKS
@@ -435,6 +521,112 @@ def _runtime_policy_results(index: dict[str, Any]) -> dict[str, bool]:
     return results
 
 
+def _items_by_id(value: Any, id_field: str) -> dict[str, dict[str, Any]]:
+    if not isinstance(value, list):
+        return {}
+    indexed: dict[str, dict[str, Any]] = {}
+    for item in value:
+        if not isinstance(item, dict):
+            return {}
+        item_id = item.get(id_field)
+        if not isinstance(item_id, str) or not item_id or item_id in indexed:
+            return {}
+        indexed[item_id] = item
+    return indexed
+
+
+def _phase4_contract_results(index: dict[str, Any]) -> dict[str, bool]:
+    delivery = index.get("phase4_delivery_contract", {})
+    schema_diff = delivery.get("schema_diff", {})
+    migration_output = delivery.get("migration_output", {})
+    recovery_log = delivery.get("recovery_test_log", {})
+    confirmation = delivery.get("destructive_migration_confirmation", {})
+    rollback_steps = _items_by_id(delivery.get("rollback_steps"), "step_id")
+    backup_restore_steps = _items_by_id(
+        delivery.get("backup_restore_steps"), "step_id"
+    )
+    known_limits = _items_by_id(delivery.get("known_limits"), "limit_id")
+    owner_feedback = delivery.get("chinese_owner_feedback")
+
+    rollback_steps_valid = (
+        set(rollback_steps) == set(EXPECTED_ROLLBACK_STEP_GUARDS)
+        and all(
+            all(item.get(field) is expected for field, expected in guards.items())
+            and isinstance(item.get("owner_message_zh"), str)
+            and bool(item["owner_message_zh"].strip())
+            for step_id, guards in EXPECTED_ROLLBACK_STEP_GUARDS.items()
+            for item in [rollback_steps.get(step_id, {})]
+        )
+    )
+    backup_restore_steps_valid = (
+        set(backup_restore_steps) == set(EXPECTED_BACKUP_RESTORE_STEP_GUARDS)
+        and all(
+            all(item.get(field) is expected for field, expected in guards.items())
+            and isinstance(item.get("owner_message_zh"), str)
+            and bool(item["owner_message_zh"].strip())
+            for step_id, guards in EXPECTED_BACKUP_RESTORE_STEP_GUARDS.items()
+            for item in [backup_restore_steps.get(step_id, {})]
+        )
+    )
+    known_limits_valid = (
+        set(known_limits) == EXPECTED_KNOWN_LIMIT_IDS
+        and all(
+            item.get("acknowledged") is True
+            and isinstance(item.get("owner_message_zh"), str)
+            and bool(item["owner_message_zh"].strip())
+            for item in known_limits.values()
+        )
+    )
+
+    return {
+        "identity_valid": (
+            delivery.get("schema_version") == DELIVERY_CONTRACT_SCHEMA_VERSION
+        ),
+        "schema_diff_valid": schema_diff
+        == {
+            "mode": "static_recovery_contract_diff_not_executed",
+            "live_schema_diff_result": "NOT_EXECUTED",
+            "new_schema_file_created": False,
+            "new_migration_file_created": False,
+        },
+        "migration_output_valid": migration_output
+        == {
+            "mode": "static_recovery_migration_output_not_executed",
+            "live_migration_result": "NOT_EXECUTED",
+            "dry_run_required_before_future_restore": True,
+            "rollback_required": True,
+            "backup_checkpoint_required": True,
+            "destructive_migration_allowed": False,
+        },
+        "recovery_test_log_valid": recovery_log
+        == {
+            "mode": "static_recovery_test_log_expected_block",
+            "expected_valid_result": "PASS_WITH_EXPECTED_BLOCK",
+            "live_restore_result": "NOT_EXECUTED",
+            "live_healthcheck_result": "NOT_EXECUTED",
+            "execution_ready": False,
+            "execution_state": BLOCKED_PENDING_DUMP,
+        },
+        "destructive_confirmation_valid": (
+            confirmation.get("required") is True
+            and confirmation.get("destructive_allowed_by_default") is False
+            and confirmation.get("current_contract_value") is False
+            and confirmation.get("manual_owner_confirmation_required") is True
+            and isinstance(confirmation.get("owner_message_zh"), str)
+            and "单独人工确认" in confirmation["owner_message_zh"]
+        ),
+        "rollback_steps_valid": rollback_steps_valid,
+        "backup_restore_steps_valid": backup_restore_steps_valid,
+        "known_limits_valid": known_limits_valid,
+        "owner_feedback_valid": (
+            isinstance(owner_feedback, str)
+            and "未执行真实恢复" in owner_feedback
+            and "owner 授权真实 metadata dump" in owner_feedback
+            and "STAGE-035 review" in owner_feedback
+        ),
+    }
+
+
 def _scenario_result(
     condition: bool,
     evidence: str,
@@ -453,8 +645,12 @@ def _scenario_result(
     }
 
 
-def build_stage035_database_recovery_smoke_report(index_path: Path) -> dict[str, Any]:
-    index = _load_json(index_path)
+def build_stage035_database_recovery_smoke_report(
+    index_path: Path,
+    *,
+    index_snapshot: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    index = index_snapshot if index_snapshot is not None else _load_json(index_path)
     dependency_results = _dependency_results(index_path, index)
     contract_results = _contract_results(index)
     runtime_policy_results = _runtime_policy_results(index)
@@ -533,8 +729,15 @@ def build_stage035_database_recovery_smoke_report(index_path: Path) -> dict[str,
     }
 
 
-def build_stage035_scenario_validation_report(index_path: Path) -> dict[str, Any]:
-    phase2_report = build_stage035_database_recovery_smoke_report(index_path)
+def build_stage035_scenario_validation_report(
+    index_path: Path,
+    *,
+    index_snapshot: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    index = index_snapshot if index_snapshot is not None else _load_json(index_path)
+    phase2_report = build_stage035_database_recovery_smoke_report(
+        index_path, index_snapshot=index
+    )
     dependency = phase2_report["dependency_results"]
     contract = phase2_report["contract_results"]
     runtime = phase2_report["runtime_policy_results"]
@@ -704,14 +907,27 @@ def build_stage035_scenario_validation_report(index_path: Path) -> dict[str, Any
     }
 
 
-def build_stage035_delivery_report(index_path: Path) -> dict[str, Any]:
-    index = _load_json(index_path)
-    phase2_report = build_stage035_database_recovery_smoke_report(index_path)
-    scenario_report = build_stage035_scenario_validation_report(index_path)
+def build_stage035_delivery_report(
+    index_path: Path,
+    *,
+    index_snapshot: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    index = index_snapshot if index_snapshot is not None else _load_json(index_path)
+    phase2_report = build_stage035_database_recovery_smoke_report(
+        index_path, index_snapshot=index
+    )
+    scenario_report = build_stage035_scenario_validation_report(
+        index_path, index_snapshot=index
+    )
     contract = phase2_report["contract_results"]
     runtime = phase2_report["runtime_policy_results"]
     migration = index.get("schema_migration_compatibility", {})
     dependency = index.get("dependency_contract", {})
+    phase4_contract = index.get("phase4_delivery_contract", {})
+    phase4_contract_results = _phase4_contract_results(index)
+    schema_diff_contract = phase4_contract.get("schema_diff", {})
+    migration_output_contract = phase4_contract.get("migration_output", {})
+    recovery_log_contract = phase4_contract.get("recovery_test_log", {})
     execution_state = phase2_report["execution_state"]
 
     delivery_check_results = {
@@ -746,6 +962,7 @@ def build_stage035_delivery_report(index_path: Path) -> dict[str, Any]:
         "destructive_migration_blocked": (
             migration.get("destructive_migration_allowed") is False
         ),
+        "phase4_machine_contract_valid": all(phase4_contract_results.values()),
     }
     delivery_contract_valid = all(delivery_check_results.values())
     recovery_result = (
@@ -765,13 +982,14 @@ def build_stage035_delivery_report(index_path: Path) -> dict[str, Any]:
         "app_reinstall_allowed": False,
         "delivery_contract_valid": delivery_contract_valid,
         "delivery_check_results": delivery_check_results,
+        "phase4_contract_results": phase4_contract_results,
         "execution_ready": phase2_report["execution_ready"],
         "execution_state": execution_state,
         "block_reason_zh": phase2_report["block_reason_zh"],
         "execution_mode": "STATIC_CLOSEOUT_EVIDENCE_ONLY",
         "live_execution_performed": False,
         "schema_diff": {
-            "mode": "static_recovery_contract_diff_not_executed",
+            "mode": schema_diff_contract.get("mode"),
             "baseline": "STAGE-035 Phase 2 tracked recovery preflight contract",
             "target": "STAGE-035 Phase 3 scenario evidence plus Phase 4 closeout contract",
             "machine_index_ref": index_path.as_posix(),
@@ -785,31 +1003,37 @@ def build_stage035_delivery_report(index_path: Path) -> dict[str, Any]:
                 "destructive_migration_confirmation",
                 "rollback_and_backup_restore_steps",
             ],
-            "new_schema_file_created": migration.get("new_schema_file_created"),
-            "new_migration_file_created": migration.get(
+            "new_schema_file_created": schema_diff_contract.get(
+                "new_schema_file_created"
+            ),
+            "new_migration_file_created": schema_diff_contract.get(
                 "new_migration_file_created"
             ),
-            "live_schema_diff_result": "NOT_EXECUTED",
+            "live_schema_diff_result": schema_diff_contract.get(
+                "live_schema_diff_result"
+            ),
             "live_output_ref": "NOT_AVAILABLE_BY_POLICY_NO_POSTGRESQL_CONNECTION",
         },
         "migration_output": {
-            "mode": "static_recovery_migration_output_not_executed",
+            "mode": migration_output_contract.get("mode"),
             "migration_dependency_id": dependency.get("stage030_migration_id"),
-            "dry_run_required_before_future_restore": migration.get(
+            "dry_run_required_before_future_restore": migration_output_contract.get(
                 "dry_run_required_before_future_restore"
             ),
-            "rollback_required": migration.get("rollback_required"),
-            "backup_checkpoint_required": migration.get(
+            "rollback_required": migration_output_contract.get("rollback_required"),
+            "backup_checkpoint_required": migration_output_contract.get(
                 "backup_checkpoint_required"
             ),
-            "destructive_migration_allowed": migration.get(
+            "destructive_migration_allowed": migration_output_contract.get(
                 "destructive_migration_allowed"
             ),
-            "live_migration_result": "NOT_EXECUTED",
+            "live_migration_result": migration_output_contract.get(
+                "live_migration_result"
+            ),
             "live_output_ref": "NOT_AVAILABLE_BY_POLICY_NO_MIGRATION_EXECUTION",
         },
         "recovery_test_log": {
-            "mode": "static_recovery_test_log_expected_block",
+            "mode": recovery_log_contract.get("mode"),
             "result": recovery_result,
             "execution_state": execution_state,
             "execution_ready": phase2_report["execution_ready"],
@@ -819,54 +1043,25 @@ def build_stage035_delivery_report(index_path: Path) -> dict[str, Any]:
             "scenario_count": len(scenario_report["scenario_results"]),
             "scenario_results": scenario_report["scenario_results"],
             "check_results": delivery_check_results,
-            "live_restore_result": "NOT_EXECUTED",
-            "live_healthcheck_result": "NOT_EXECUTED",
+            "live_restore_result": recovery_log_contract.get(
+                "live_restore_result"
+            ),
+            "live_healthcheck_result": recovery_log_contract.get(
+                "live_healthcheck_result"
+            ),
             "live_log_ref": "NOT_AVAILABLE_BY_POLICY_NO_OWNER_AUTHORIZED_REAL_DUMP",
             "owner_message_zh": (
                 "静态恢复合同和异常场景已验证；无 owner 授权真实 metadata dump，"
                 "因此真实恢复、healthcheck 和可运行状态验证均未执行。"
             ),
         },
-        "destructive_migration_confirmation": {
-            "required": True,
-            "destructive_allowed_by_default": False,
-            "current_contract_value": migration.get(
-                "destructive_migration_allowed"
-            ),
-            "manual_owner_confirmation_required": True,
-            "owner_message_zh": (
-                "任何破坏性 migration 或 restore 必须单独人工确认；当前默认阻断，"
-                "本阶段没有授权或执行破坏性动作。"
-            ),
-        },
-        "rollback_steps": [
-            "若静态合同、场景或 delivery check 任一失败，保持 BLOCKED 并停止所有后续数据库动作。",
-            "仅回滚 STAGE-035 Phase 4 checker helper、closeout 文档、测试和治理记录，不回滚或修改任何数据库内容。",
-            "保持 isolated restore target 与 source database 分离；不得 migration、mutation、truncate、delete 或 overwrite source。",
-            "若未来授权 restore 失败，立即停止写入、隔离目标、保存脱敏错误证据，并按 STAGE-031 rollback contract 执行单独 owner 授权的恢复流程。",
-            "目标清理或删除不是自动动作，必须遵守 STAGE-034 owner stop gate。",
-        ],
-        "backup_restore_steps": [
-            "未来 run 必须先取得 owner 授权真实 metadata dump identity、bounded scope、checksum evidence 和 approval ref。",
-            "在隔离非生产目标上记录 PostgreSQL tool version、source schema version、migration head 和目标容量检查。",
-            "任何 migration/restore 前必须完成 dry-run、backup checkpoint 和 rollback plan 验证。",
-            "凭证只能通过环境管理的 secret ref 提供，不得写入 Git、命令输出或审计正文。",
-            "仅在单独授权 run 中执行 restore，并验证 schema、migration ledger、required tables、constraints、indexes、bounded real metadata counts、health/readiness 和 no-raw-payload。",
-            "失败时隔离目标并从批准 checkpoint 恢复；source database 必须保持不变。",
-        ],
-        "known_limits": [
-            "没有 owner 授权真实 metadata dump，因此未验证真实 dump format、checksum、row counts 或业务值。",
-            "未连接 PostgreSQL，未执行 migration dry-run/apply/rollback、backup、restore、schema diff、healthcheck 或 recovery smoke。",
-            "PASS_WITH_EXPECTED_BLOCK 只证明静态合同正确阻断恢复路径，不代表数据库已恢复、可运行或 production-ready。",
-            "没有创建 DSN、credential config、restore target、database、runtime output、report、manifest、audit log 或 recovery log file。",
-            "原始 metadata 根只记录 path-only 地址，未读取、列出、hash、复制、dump、扫描或派生内容。",
-            "STAGE-035 尚未完成独立 stage review；BATCH031_040 upload 和 app reinstall 继续阻断。",
-        ],
-        "chinese_owner_feedback": (
-            "STAGE-035 Phase 4 已形成可执行、可测试、可回滚的静态数据库恢复工程合同交付证据。"
-            "本阶段未执行真实恢复；无 owner 授权真实 metadata dump，恢复状态继续阻断。"
-            "下一步只能进入独立 STAGE-035 review，不是 GitHub upload、app reinstall 或 STAGE-036。"
+        "destructive_migration_confirmation": phase4_contract.get(
+            "destructive_migration_confirmation", {}
         ),
+        "rollback_steps": phase4_contract.get("rollback_steps", []),
+        "backup_restore_steps": phase4_contract.get("backup_restore_steps", []),
+        "known_limits": phase4_contract.get("known_limits", []),
+        "chinese_owner_feedback": phase4_contract.get("chinese_owner_feedback"),
         "phase2_report": phase2_report,
         "scenario_report": scenario_report,
         "raw_metadata_boundary": phase2_report["raw_metadata_boundary"],
@@ -899,11 +1094,10 @@ def main() -> int:
         / "database_recovery_smoke"
         / "stage035_database_recovery_smoke_index.json"
     )
-    report = build_stage035_database_recovery_smoke_report(index_path)
-    scenario_report = build_stage035_scenario_validation_report(index_path)
     delivery_report = build_stage035_delivery_report(index_path)
-    payload = dict(report)
-    payload["scenario_report"] = scenario_report
+    report = delivery_report["phase2_report"]
+    scenario_report = delivery_report["scenario_report"]
+    payload = dict(delivery_report)
     payload["delivery_report"] = delivery_report
     print(json.dumps(payload, ensure_ascii=False, sort_keys=True, indent=2))
     checks = [
@@ -932,6 +1126,7 @@ def main() -> int:
         scenario_report["app_reinstall_allowed"] is False,
         delivery_report["delivery_contract_valid"],
         all(delivery_report["delivery_check_results"].values()),
+        all(delivery_report["phase4_contract_results"].values()),
         delivery_report["recovery_test_log"]["result"]
         == "PASS_WITH_EXPECTED_BLOCK",
         delivery_report["recovery_test_log"]["live_restore_result"]
