@@ -118,8 +118,9 @@ class ChatGptSyncS04P1Test(unittest.TestCase):
                 str(export_path),
             ])
             self.assertEqual(result["status"], "PASS")
-            raw_path = root / "data/public_raw/chatgpt/conv_001.json"
+            raw_path = root / result["raw_paths"][0]
             self.assertTrue(raw_path.exists())
+            self.assertRegex(raw_path.name, r"^conv_001\.[0-9a-f]{12}\.json$")
             raw = json.loads(raw_path.read_text(encoding="utf-8"))
             self.assertEqual(raw["source_id"], "chatgpt")
             self.assertEqual(raw["conversation_id"], "conv_001")
