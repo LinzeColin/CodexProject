@@ -281,16 +281,38 @@ async function assertFourAxisFilters(page) {
     }
     const select = page.locator(`[data-r6-visual-filter="${axis}"]`);
     const options = await select.locator("option").evaluateAll((items) => items.map((item) => item.value));
-    const choice = options.find((value) => value && value !== "all");
-    assertCondition(Boolean(choice), `R6 ${axis} filter has no concrete option`, { options });
-    await select.selectOption(choice);
-    try {
-      await page.waitForFunction((expected) => document.querySelector("[data-r6-visual-filter-signature]")?.getAttribute("data-r6-signature") !== expected, baseline, { timeout: 5000 });
-    } catch {
-      const current = await signature.getAttribute("data-r6-signature");
-      throw new Error(`R6 ${axis} filter did not change the event signature; current signature is ${current}`);
+    const choices = options.filter((value) => value && value !== "all");
+    assertCondition(choices.length >= 1, `R6 ${axis} filter has no concrete option`, { options });
+    let choice = "";
+    let cardModels = null;
+    for (const candidate of choices) {
+      await select.selectOption(candidate);
+      try {
+        await page.waitForFunction((expected) => document.querySelector("[data-r6-visual-filter-signature]")?.getAttribute("data-r6-signature") !== expected, baseline, { timeout: 5000 });
+      } catch {
+        const current = await signature.getAttribute("data-r6-signature");
+        throw new Error(`R6 ${axis} filter did not change the event signature; current signature is ${current}`);
+      }
+      const candidateModels = await captureCardModels(page);
+      const baselineOpportunity = baselineCards.opportunity_radar;
+      const candidateOpportunity = candidateModels.opportunity_radar;
+      if (
+        candidateOpportunity.zero
+        || candidateOpportunity.contentSignature !== baselineOpportunity.contentSignature
+        || JSON.stringify(candidateOpportunity.datumIds) !== JSON.stringify(baselineOpportunity.datumIds)
+      ) {
+        choice = candidate;
+        cardModels = candidateModels;
+        break;
+      }
+      await reset.click();
+      await page.waitForFunction((expected) => document.querySelector("[data-r6-visual-filter-signature]")?.getAttribute("data-r6-signature") === expected, baseline, { timeout: 5000 });
     }
-    const cardModels = await captureCardModels(page);
+    assertCondition(Boolean(choice) && Boolean(cardModels), `R6 ${axis} options did not change the opportunity evidence join`, {
+      axis,
+      choices,
+      baselineOpportunity: baselineCards.opportunity_radar,
+    });
     const unchanged = visualIds.filter((id) => {
       const before = baselineCards[id];
       const after = cardModels[id];
