@@ -14,10 +14,12 @@ from typing import Any
 
 SCHEMA_VERSION = "ids.stage035.database_recovery_smoke.phase2.v1"
 SCENARIO_SCHEMA_VERSION = "ids.stage035.database_recovery_smoke.phase3.v1"
+DELIVERY_SCHEMA_VERSION = "ids.stage035.database_recovery_smoke.phase4.v1"
 INDEX_SCHEMA_VERSION = "ids.stage035.database_recovery_smoke.index.v1"
 STAGE = "STAGE-035"
 TASK_ID = "IDS-V0_1-STAGE035-P2"
 SCENARIO_TASK_ID = "IDS-V0_1-STAGE035-P3"
+DELIVERY_TASK_ID = "IDS-V0_1-STAGE035-P4"
 ACCEPTANCE_ID = "ACC-STAGE-035"
 CONTRACT_ID = "ids_stage035_database_recovery_smoke_static_preflight"
 RAW_METADATA_ROOT = "/Users/linzezhang/Downloads/IDS_MetaData"
@@ -702,6 +704,191 @@ def build_stage035_scenario_validation_report(index_path: Path) -> dict[str, Any
     }
 
 
+def build_stage035_delivery_report(index_path: Path) -> dict[str, Any]:
+    index = _load_json(index_path)
+    phase2_report = build_stage035_database_recovery_smoke_report(index_path)
+    scenario_report = build_stage035_scenario_validation_report(index_path)
+    contract = phase2_report["contract_results"]
+    runtime = phase2_report["runtime_policy_results"]
+    migration = index.get("schema_migration_compatibility", {})
+    dependency = index.get("dependency_contract", {})
+    execution_state = phase2_report["execution_state"]
+
+    delivery_check_results = {
+        "phase2_contract_valid": phase2_report["contract_valid"],
+        "phase3_scenarios_valid": scenario_report["scenario_validation_valid"],
+        "eleven_scenarios_pass": (
+            len(scenario_report["scenario_results"]) == 11
+            and all(
+                result["status"] == "PASS"
+                for result in scenario_report["scenario_results"].values()
+            )
+        ),
+        "expected_recovery_block_preserved": (
+            phase2_report["execution_ready"] is False
+            and execution_state == BLOCKED_PENDING_DUMP
+            and scenario_report["scenario_results"]["recovery_smoke"][
+                "expected_block"
+            ]
+            is True
+            and scenario_report["live_execution_performed"] is False
+        ),
+        "schema_diff_not_executed": runtime["execute_schema_diff"],
+        "migration_not_executed": runtime["execute_migration"],
+        "backup_not_executed": runtime["execute_backup"],
+        "restore_not_executed": runtime["execute_restore"],
+        "postgres_not_connected": runtime["connect_to_postgres"],
+        "runtime_output_not_written": runtime["write_runtime_outputs"],
+        "rollback_contract_valid": contract["rollback_guard"],
+        "source_non_interference_valid": contract["isolated_restore_target_guard"],
+        "raw_metadata_boundary_valid": contract["raw_metadata_boundary_guard"],
+        "real_data_only_guard_valid": contract["real_data_only_guard"],
+        "destructive_migration_blocked": (
+            migration.get("destructive_migration_allowed") is False
+        ),
+    }
+    delivery_contract_valid = all(delivery_check_results.values())
+    recovery_result = (
+        "PASS_WITH_EXPECTED_BLOCK" if delivery_contract_valid else "FAIL_CLOSED"
+    )
+
+    return {
+        "schema_version": DELIVERY_SCHEMA_VERSION,
+        "index_schema_version": phase2_report["index_schema_version"],
+        "stage": STAGE,
+        "phase": "Phase 4",
+        "task_id": DELIVERY_TASK_ID,
+        "acceptance_id": ACCEPTANCE_ID,
+        "next_gate": "IDS-STAGE035-REVIEW-GATE",
+        "stage_review_status": "pending_next_run",
+        "github_upload_allowed": False,
+        "app_reinstall_allowed": False,
+        "delivery_contract_valid": delivery_contract_valid,
+        "delivery_check_results": delivery_check_results,
+        "execution_ready": phase2_report["execution_ready"],
+        "execution_state": execution_state,
+        "block_reason_zh": phase2_report["block_reason_zh"],
+        "execution_mode": "STATIC_CLOSEOUT_EVIDENCE_ONLY",
+        "live_execution_performed": False,
+        "schema_diff": {
+            "mode": "static_recovery_contract_diff_not_executed",
+            "baseline": "STAGE-035 Phase 2 tracked recovery preflight contract",
+            "target": "STAGE-035 Phase 3 scenario evidence plus Phase 4 closeout contract",
+            "machine_index_ref": index_path.as_posix(),
+            "database_recovery_smoke_contract_id": index.get(
+                "database_recovery_smoke_contract_id"
+            ),
+            "required_control_plane_tables": sorted(EXPECTED_CONTROL_PLANE_TABLES),
+            "tracked_contract_additions": [
+                "phase3_scenario_validation",
+                "phase4_delivery_evidence",
+                "destructive_migration_confirmation",
+                "rollback_and_backup_restore_steps",
+            ],
+            "new_schema_file_created": migration.get("new_schema_file_created"),
+            "new_migration_file_created": migration.get(
+                "new_migration_file_created"
+            ),
+            "live_schema_diff_result": "NOT_EXECUTED",
+            "live_output_ref": "NOT_AVAILABLE_BY_POLICY_NO_POSTGRESQL_CONNECTION",
+        },
+        "migration_output": {
+            "mode": "static_recovery_migration_output_not_executed",
+            "migration_dependency_id": dependency.get("stage030_migration_id"),
+            "dry_run_required_before_future_restore": migration.get(
+                "dry_run_required_before_future_restore"
+            ),
+            "rollback_required": migration.get("rollback_required"),
+            "backup_checkpoint_required": migration.get(
+                "backup_checkpoint_required"
+            ),
+            "destructive_migration_allowed": migration.get(
+                "destructive_migration_allowed"
+            ),
+            "live_migration_result": "NOT_EXECUTED",
+            "live_output_ref": "NOT_AVAILABLE_BY_POLICY_NO_MIGRATION_EXECUTION",
+        },
+        "recovery_test_log": {
+            "mode": "static_recovery_test_log_expected_block",
+            "result": recovery_result,
+            "execution_state": execution_state,
+            "execution_ready": phase2_report["execution_ready"],
+            "owner_authorized_real_dump_available": index.get(
+                "metadata_dump_contract", {}
+            ).get("owner_authorized_real_dump_available"),
+            "scenario_count": len(scenario_report["scenario_results"]),
+            "scenario_results": scenario_report["scenario_results"],
+            "check_results": delivery_check_results,
+            "live_restore_result": "NOT_EXECUTED",
+            "live_healthcheck_result": "NOT_EXECUTED",
+            "live_log_ref": "NOT_AVAILABLE_BY_POLICY_NO_OWNER_AUTHORIZED_REAL_DUMP",
+            "owner_message_zh": (
+                "静态恢复合同和异常场景已验证；无 owner 授权真实 metadata dump，"
+                "因此真实恢复、healthcheck 和可运行状态验证均未执行。"
+            ),
+        },
+        "destructive_migration_confirmation": {
+            "required": True,
+            "destructive_allowed_by_default": False,
+            "current_contract_value": migration.get(
+                "destructive_migration_allowed"
+            ),
+            "manual_owner_confirmation_required": True,
+            "owner_message_zh": (
+                "任何破坏性 migration 或 restore 必须单独人工确认；当前默认阻断，"
+                "本阶段没有授权或执行破坏性动作。"
+            ),
+        },
+        "rollback_steps": [
+            "若静态合同、场景或 delivery check 任一失败，保持 BLOCKED 并停止所有后续数据库动作。",
+            "仅回滚 STAGE-035 Phase 4 checker helper、closeout 文档、测试和治理记录，不回滚或修改任何数据库内容。",
+            "保持 isolated restore target 与 source database 分离；不得 migration、mutation、truncate、delete 或 overwrite source。",
+            "若未来授权 restore 失败，立即停止写入、隔离目标、保存脱敏错误证据，并按 STAGE-031 rollback contract 执行单独 owner 授权的恢复流程。",
+            "目标清理或删除不是自动动作，必须遵守 STAGE-034 owner stop gate。",
+        ],
+        "backup_restore_steps": [
+            "未来 run 必须先取得 owner 授权真实 metadata dump identity、bounded scope、checksum evidence 和 approval ref。",
+            "在隔离非生产目标上记录 PostgreSQL tool version、source schema version、migration head 和目标容量检查。",
+            "任何 migration/restore 前必须完成 dry-run、backup checkpoint 和 rollback plan 验证。",
+            "凭证只能通过环境管理的 secret ref 提供，不得写入 Git、命令输出或审计正文。",
+            "仅在单独授权 run 中执行 restore，并验证 schema、migration ledger、required tables、constraints、indexes、bounded real metadata counts、health/readiness 和 no-raw-payload。",
+            "失败时隔离目标并从批准 checkpoint 恢复；source database 必须保持不变。",
+        ],
+        "known_limits": [
+            "没有 owner 授权真实 metadata dump，因此未验证真实 dump format、checksum、row counts 或业务值。",
+            "未连接 PostgreSQL，未执行 migration dry-run/apply/rollback、backup、restore、schema diff、healthcheck 或 recovery smoke。",
+            "PASS_WITH_EXPECTED_BLOCK 只证明静态合同正确阻断恢复路径，不代表数据库已恢复、可运行或 production-ready。",
+            "没有创建 DSN、credential config、restore target、database、runtime output、report、manifest、audit log 或 recovery log file。",
+            "原始 metadata 根只记录 path-only 地址，未读取、列出、hash、复制、dump、扫描或派生内容。",
+            "STAGE-035 尚未完成独立 stage review；BATCH031_040 upload 和 app reinstall 继续阻断。",
+        ],
+        "chinese_owner_feedback": (
+            "STAGE-035 Phase 4 已形成可执行、可测试、可回滚的静态数据库恢复工程合同交付证据。"
+            "本阶段未执行真实恢复；无 owner 授权真实 metadata dump，恢复状态继续阻断。"
+            "下一步只能进入独立 STAGE-035 review，不是 GitHub upload、app reinstall 或 STAGE-036。"
+        ),
+        "phase2_report": phase2_report,
+        "scenario_report": scenario_report,
+        "raw_metadata_boundary": phase2_report["raw_metadata_boundary"],
+        "does_not_read_metadata_dump": phase2_report[
+            "does_not_read_metadata_dump"
+        ],
+        "does_not_connect_to_postgres": phase2_report[
+            "does_not_connect_to_postgres"
+        ],
+        "does_not_execute_restore": phase2_report["does_not_execute_restore"],
+        "does_not_execute_migration": phase2_report[
+            "does_not_execute_migration"
+        ],
+        "does_not_write_runtime_outputs": phase2_report[
+            "does_not_write_runtime_outputs"
+        ],
+        "does_not_use_fake_ids_data": phase2_report[
+            "does_not_use_fake_ids_data"
+        ],
+    }
+
+
 def main() -> int:
     root = Path(__file__).resolve().parents[1]
     index_path = (
@@ -714,8 +901,10 @@ def main() -> int:
     )
     report = build_stage035_database_recovery_smoke_report(index_path)
     scenario_report = build_stage035_scenario_validation_report(index_path)
+    delivery_report = build_stage035_delivery_report(index_path)
     payload = dict(report)
     payload["scenario_report"] = scenario_report
+    payload["delivery_report"] = delivery_report
     print(json.dumps(payload, ensure_ascii=False, sort_keys=True, indent=2))
     checks = [
         report["contract_valid"],
@@ -741,6 +930,17 @@ def main() -> int:
         scenario_report["next_gate"] == "IDS-STAGE035-P4-GATE",
         scenario_report["github_upload_allowed"] is False,
         scenario_report["app_reinstall_allowed"] is False,
+        delivery_report["delivery_contract_valid"],
+        all(delivery_report["delivery_check_results"].values()),
+        delivery_report["recovery_test_log"]["result"]
+        == "PASS_WITH_EXPECTED_BLOCK",
+        delivery_report["recovery_test_log"]["live_restore_result"]
+        == "NOT_EXECUTED",
+        delivery_report["live_execution_performed"] is False,
+        delivery_report["next_gate"] == "IDS-STAGE035-REVIEW-GATE",
+        delivery_report["stage_review_status"] == "pending_next_run",
+        delivery_report["github_upload_allowed"] is False,
+        delivery_report["app_reinstall_allowed"] is False,
     ]
     return 0 if all(checks) else 1
 
