@@ -4,9 +4,9 @@ project_id: "OpenAIDatabase"
 current_stage_id: "CF-L2"
 current_phase_id: "CF-L2-P1"
 current_task_id: "CF-L2-20260710"
-next_gate_id: "ACC-CF-L2-20260710"
+next_gate_id: "ACC-CF-L2-20260710-PASSED"
 total_estimated_hours: 7
-completed_estimated_hours: 4
+completed_estimated_hours: 6
 stages:
   -
     stage_id: "S5"
@@ -94,7 +94,7 @@ stages:
   - stage_id: "CF-L2"
     name: "MemoryAtlas Cloudflare 安全 L2 派生数据查看器"
     person_goal: "Owner 能通过公开安全的产品表面理解项目能力与边界，同时私密核心保持离线。"
-    status: "blocked"
+    status: "completed"
     estimated_hours: 2
     estimated_pct: 100
     stop_conditions:
@@ -117,7 +117,7 @@ stages:
       - phase_id: "CF-L2-P1"
         name: "安全 adapter、验证与永久部署"
         objective: "交付只读取 redacted derived snapshot 的 MemoryAtlas L2 viewer，私密 core 保持 L1。"
-        status: "blocked"
+        status: "completed"
         estimated_hours: 2
         estimated_pct: 100
         stop_conditions:
@@ -135,7 +135,7 @@ stages:
           - task_id: "CF-L2-20260710"
             name: "Cloudflare Compatibility Envelope L2"
             objective: "交付只读取 redacted derived snapshot 的 MemoryAtlas L2 viewer，私密 core 保持 L1。"
-            status: "blocked"
+            status: "completed"
             estimated_hours: 2
             estimated_pct: 100
             dependencies: []
@@ -150,14 +150,14 @@ stages:
             test_commands:
               - "npm run build；privacy/accessibility gate；private dist scan；Wrangler 4.110.0 dry-run"
             test_results:
-              - "Vite build、privacy/accessibility、private scan、desktop/mobile QA 与 dry-run PASS；永久 deploy 因 Workers auth 阻塞。"
+              - "Vite build、privacy/accessibility、private scan、desktop/mobile QA 与 dry-run PASS；Cloudflare Pages deployment 82988d29 从 clean commit 5a24333e 部署，owner-allowlist Access challenge、allowed-user app load、runtime JSON fetch 和 artifact safety 已验证。"
             evidence_refs:
               - "apps/memory-atlas"
               - "docs/governance/development_events.jsonl"
               - "docs/governance/project.yaml"
             risks:
               - "raw archive、private import、cookie、session、本机数据库和明文 secret 不得进入 public surface。"
-              - "认证阻塞期间不得填入虚假 actual_url。"
+              - "从 Pages 迁移到 Workers 时必须先为每个可达 hostname 保持 owner-allowlist Access，禁止重复出现短暂公开暴露。"
             rollback: "删除隔离的 L2 adapter 并回滚本任务治理记录；私密 core 不需要恢复。"
-            current_result: "repo_configured + dry_run_ready + deployment_blocked_by_auth"
-            completed_version: ""
+            current_result: "deployed_custom_domain_verified_access_protected"
+            completed_version: "0.2.0"

@@ -30,6 +30,7 @@ limitations:
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-OAIDB-DEVELOPMENT-EVENTS"
+      - "EVID-OAIDB-CF-L2-LIVE"
       - "EVID-REVIEW9-S5PBT03-MANIFEST"
     unknown_task_ids: []
 features:
@@ -2904,6 +2905,11 @@ evidence_refs:
     evidence_id: "EVID-OAIDB-DELIVERY-TASKS"
     kind: "file"
     ref: "OpenAIDatabase/docs/governance/delivery_tasks.yaml"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-OAIDB-CF-L2-LIVE"
+    kind: "machine_evidence"
+    ref: "OpenAIDatabase/机器治理/证据与日志/final_delivery/memory_atlas_cloudflare_live_evidence.json"
     fact_level: "EXTRACTED"
   -
     evidence_id: "EVID-OAIDB-DEVELOPMENT-EVENTS"

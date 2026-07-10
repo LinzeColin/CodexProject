@@ -26,15 +26,16 @@ parameter_profile_versions:
   macdata_prom2: "macdata-prom2-parameters-v1"
   memory_atlas_release_validation: "memory-atlas-release-validation-v1"
 data_snapshot_version: "public_redacted_read_only_visualization"
-current_iteration: "ITER-20260710-OAIDB-CF-L2-BINDING"
+current_iteration: "ITER-20260710-OAIDB-CF-L2-REMOTE-LIVE"
 current_phase: "CF-L2"
-current_gate: "ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH"
+current_gate: "ACC-CF-L2-20260710-PASSED-ACCESS-PROTECTED"
 legacy_version_labels:
   -
     source: "OpenAIDatabase/apps/memory-atlas/package.json"
     value: "0.1.0"
     fact_level: "EXTRACTED"
 notes:
+  - "ITER-20260710-OAIDB-CF-L2-REMOTE-LIVE reconciles protected Cloudflare Pages deployment 82988d29 from clean commit 5a24333e; custom, production Pages, and preview Pages hostnames are owner-allowlist Access protected with allowed-user app and runtime JSON verification."
   - "Review9 S5PBT03 migrates OpenAIDatabase to Lean v2 canonical facts and Chinese human-readable entries without changing memory extraction, privacy, retrieval, atlas, writeback, personalization, data, frontend, script, or runtime behavior."
   - "Other8 S3PDT01 adds synthetic privacy import, redaction, Git leakage, and deletion-recovery contract tests without approving real raw export ingestion or delivery readiness."
   - "ITER-20260626-OAIDB-D001 renames Notion map to 数据导图, refreshes the redacted Memory Atlas snapshot, records Monday/Friday 03:00 Codex auto-update support, and passes local release/visual/acceptance/Cloudflare preflight; live Cloudflare Pages deployment still requires Wrangler/API-token authentication."

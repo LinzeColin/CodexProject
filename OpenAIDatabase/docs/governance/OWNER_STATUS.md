@@ -31,10 +31,10 @@ OpenAIDatabase remains FAILED for delivery readiness and cannot claim safe memor
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `CF-L2-20260710`
+- next_task_id: `TASK-OAI-B-001`
 - responsible_role: `privacy_owner + product_owner`
-- acceptance_ids: `ACC-CF-L2-20260710`
-- unblock_condition: A protected Access sign-in page or redacted viewer could be mislabeled as anonymous public deployment or as the private memory core.
+- acceptance_ids: `ACC-OAI-B-001`
+- unblock_condition: Heuristic constants may be mistaken for calibrated values.
 
 ## 8. 九层 Assurance 状态
 
@@ -78,13 +78,13 @@ OpenAIDatabase remains FAILED for delivery readiness and cannot claim safe memor
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH`
+- release_gate: `ACC-CF-L2-20260710-PASSED-ACCESS-PROTECTED`
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `COMMIT_BOUND:9a3b9ae977275f4774e08ae69f61b54f7270b419`
+- final_commit_binding: `COMMIT_BOUND:00f4187f43960a3b25fc696ae2a15951f4431763`
 - tree_bound_events: `0`
-- commit_bound_events: `2`
+- commit_bound_events: `3`
 - legacy_unbound_events: `6`
 - precommit_pending_events: `10`
 - pending_or_stale_events: `17`
@@ -98,15 +98,15 @@ OpenAIDatabase remains FAILED for delivery readiness and cannot claim safe memor
 
 ## 16. 技术元数据
 
-- source_base_commit: `9a3b9ae977275f4774e08ae69f61b54f7270b419`
+- source_base_commit: `00f4187f43960a3b25fc696ae2a15951f4431763`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:2ed89f6edbb130900a5f73e04521c73093bd63cb88ba5edf6d3890d9392dd3ac`
-- snapshot_event_time: `2026-07-10T18:35:12+10:00`
+- source_snapshot_hash: `sha256:95810479060b9ee632413b4c1fc501a0a5350cc64736cc81a880cd28a09b952e`
+- snapshot_event_time: `2026-07-10T18:53:05+10:00`
 - generator_version: `4.0.1`
 - version: `0.2.0`
-- phase/gate: `CF-L2 / ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH`
+- phase/gate: `CF-L2 / ACC-CF-L2-20260710-PASSED-ACCESS-PROTECTED`
 
 ## 17. Next Unique Task
 
-- task_id: `CF-L2-20260710`
-- reason: Deliver the redacted derived MemoryAtlas viewer as a public-safe Cloudflare L2 surface while the raw and private OpenAIDatabase core remains local.
+- task_id: `TASK-OAI-B-001`
+- reason: Resolve UNKNOWN calibration evidence for heuristic weights and thresholds.

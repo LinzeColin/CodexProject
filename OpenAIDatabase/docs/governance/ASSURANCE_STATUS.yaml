@@ -1,11 +1,11 @@
 project_id: "OpenAIDatabase"
-as_of_event_id: "EVENT-20260710-OAIDB-CF-L2-BINDING"
-source_snapshot_hash: "sha256:2ed89f6edbb130900a5f73e04521c73093bd63cb88ba5edf6d3890d9392dd3ac"
-source_base_commit: "9a3b9ae977275f4774e08ae69f61b54f7270b419"
+as_of_event_id: "EVENT-20260710-OAIDB-CF-L2-REMOTE-LIVE"
+source_snapshot_hash: "sha256:95810479060b9ee632413b4c1fc501a0a5350cc64736cc81a880cd28a09b952e"
+source_base_commit: "00f4187f43960a3b25fc696ae2a15951f4431763"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-07-10T18:35:12+10:00"
+snapshot_event_time: "2026-07-10T18:53:05+10:00"
 generator_version: "4.0.1"
-final_commit_binding: "COMMIT_BOUND:9a3b9ae977275f4774e08ae69f61b54f7270b419"
+final_commit_binding: "COMMIT_BOUND:00f4187f43960a3b25fc696ae2a15951f4431763"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -64,14 +64,14 @@ dimensions:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     tree_bound_events: 0
-    commit_bound_events: 2
+    commit_bound_events: 3
     legacy_unbound_events: 6
     precommit_pending_events: 10
     evidence_refs:
       - "OpenAIDatabase/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH"
+  release_gate: "ACC-CF-L2-20260710-PASSED-ACCESS-PROTECTED"
   blocker_ids:
     - "FACT-OpenAIDatabase-EMPIRICAL-EVIDENCE"
     - "FACT-OpenAIDatabase-IMPLEMENTATION-FORMULA-REVIEW"
@@ -82,14 +82,14 @@ delivery_readiness:
     - "TASK-OAI-B-001"
     - "TASK-OAI-D-001"
 next_executable_task:
-  task_id: "CF-L2-20260710"
+  task_id: "TASK-OAI-B-001"
   status: "blocked"
-  reason: "Deliver the redacted derived MemoryAtlas viewer as a public-safe Cloudflare L2 surface while the raw and private OpenAIDatabase core remains local."
+  reason: "Resolve UNKNOWN calibration evidence for heuristic weights and thresholds."
   acceptance_ids:
-    - "ACC-CF-L2-20260710"
+    - "ACC-OAI-B-001"
   owner: "privacy_owner + product_owner"
   human_owner_role: "privacy_owner + product_owner"
-  unblock_condition: "A protected Access sign-in page or redacted viewer could be mislabeled as anonymous public deployment or as the private memory core."
+  unblock_condition: "Heuristic constants may be mistaken for calibrated values."
   stale_candidates: []
 owner_decision:
   required: true
