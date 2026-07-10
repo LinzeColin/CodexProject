@@ -139,6 +139,10 @@ export interface FormulaWhatIfPreview {
   readonly adjustable_weight_bounds: Readonly<Record<string, { min: number; max: number; step: number }>>;
   readonly baseline_signals: Readonly<Record<string, number>>;
   readonly rework_score: number;
+  readonly score_floor: number;
+  readonly score_ceiling: number;
+  readonly neutral_rework_score: number;
+  readonly rework_penalty_scale: number;
   readonly formula_source: string;
   readonly scenarios: readonly {
     scenario_id: string;

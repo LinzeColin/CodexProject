@@ -303,6 +303,10 @@ class MemoryAtlasVisualWorkflowDataTests(unittest.TestCase):
         self.assertEqual(formula["adjustable_weight_bounds"]["reuse_value_weight"]["max"], 2.0)
         self.assertEqual(formula["baseline_signals"]["time_saved_proxy"], 100.0)
         self.assertEqual(formula["rework_score"], 45.0)
+        self.assertEqual(formula["score_floor"], 0)
+        self.assertEqual(formula["score_ceiling"], 100)
+        self.assertEqual(formula["neutral_rework_score"], 50)
+        self.assertEqual(formula["rework_penalty_scale"], 0.35)
         self.assertEqual([item["scenario_id"] for item in formula["scenarios"]], ["baseline", "reuse_asset_first"])
         self.assertEqual(
             formula["safety"],

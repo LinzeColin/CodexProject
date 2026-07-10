@@ -117,7 +117,8 @@ formula or writing configuration. It includes:
 ```text
 schema_version, simulator_mode, base_score, summary_zh,
 default_weights, adjustable_weight_bounds, baseline_signals,
-rework_score, formula_source, scenarios, safety
+rework_score, score_floor, score_ceiling, neutral_rework_score,
+rework_penalty_scale, formula_source, scenarios, safety
 ```
 
 Safety is explicit: `active_config_write=false`,
