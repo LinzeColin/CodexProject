@@ -1,3 +1,11 @@
+## 0.1.4-s10-post-remediation-stage-review - 2026-07-11
+
+- 完成 `V014_S10_POST_REMEDIATION_STAGE_REVIEW` 本地整体复审，当前 S10-P1/P2/P3 frozen semantic validation 全部通过。
+- 修复 6 个复审 finding：旧 review 假绿、旧 phase validator 与全局当前状态耦合、D 级跨格式复验缺口、Stage 级浏览器下载证据缺口、fresh raw 快照缺口和正式报告边界缺口；open finding=0。
+- 复验 2 个报告模板、11 个管理章节、2 条等级记录、2 份受限 HTML、2 份中文 CSV、4 个桌面/移动视口和 2 次逐字节下载；当前状态保持 `Q4 / D / NO_GO / 3-9-2-1`。
+- 5 个 raw 文件在 review 前后、跨 S10-P3 和当前复核均一致；未提交 raw/private、PDF、Excel 工作簿、私有 CSV 或业务明细。
+- 未执行 S11、GitHub upload、app reinstall、正式报告发布或 business execution；GitHub main 仍等待 Stage 8-18 全部完成及最终整体复审。
+
 ## 0.1.4-s10-p3-post-remediation-restricted-export - 2026-07-11
 
 - 完成 `V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT` 本地单 phase，生成 2 份受限 HTML 预览、2 份全中文 CSV 附表和 2 个 Excel-compatible CSV 下载入口。

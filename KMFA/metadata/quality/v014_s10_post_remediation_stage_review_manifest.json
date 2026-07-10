@@ -1,0 +1,156 @@
+{
+  "acceptance_id": "ACC-V014-S10-POST-REMEDIATION-STAGE-REVIEW",
+  "branch": "codex/kmfa",
+  "browser_review": {
+    "byte_exact_download_count": 2,
+    "desktop_mobile_check_count": 4,
+    "desktop_mobile_pass_count": 4,
+    "human_flow_baseline": {
+      "fail_count": 0,
+      "file_count": 1,
+      "pass_count": 8,
+      "row_count": 8,
+      "warn_count": 0
+    },
+    "restricted_export_controls": {
+      "fail_count": 0,
+      "file_count": 2,
+      "pass_count": 4,
+      "row_count": 4,
+      "warn_count": 0
+    }
+  },
+  "cross_format_restriction_propagation_verified": true,
+  "frozen_phase_semantics_validated": true,
+  "generated_at": "2026-07-11T02:18:53+10:00",
+  "historical_legacy_review_dependency_validated": true,
+  "historical_review_dependency_validated": true,
+  "historical_review_dynamic_state_is_authoritative": false,
+  "historical_v013_review_dependency_validated": true,
+  "phase_id": "V014_S10_POST_REMEDIATION_STAGE_REVIEW",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "aggregate_only": true,
+    "business_value_committed": false,
+    "credential_or_secret_committed": false,
+    "field_or_header_plaintext_committed": false,
+    "private_runtime_committed": false,
+    "raw_file_committed": false,
+    "raw_filename_committed": false,
+    "raw_hash_committed": false
+  },
+  "record_type": "v014_s10_post_remediation_stage_review_manifest",
+  "remote": "git@github.com:LinzeColin/CodexProject.git",
+  "restricted_preview_mislabeled_as_formal_report": false,
+  "review_boundaries": {
+    "app_reinstall_performed": false,
+    "business_execution_performed": false,
+    "formal_report_release_performed": false,
+    "github_upload_performed": false,
+    "s11_p1_performed": false,
+    "stage10_review_performed": true
+  },
+  "review_findings": [
+    {
+      "finding_id": "S10-POST-REVIEW-F01",
+      "fix": "新增修补后 review，以最新 P1/P2/P3 证据为唯一当前链",
+      "status": "fixed",
+      "summary": "旧 Stage 10 review 对旧动态状态仍可返回 PASS"
+    },
+    {
+      "finding_id": "S10-POST-REVIEW-F02",
+      "fix": "review 改为验证冻结语义、metadata 镜像和 phase-time final PASS",
+      "status": "fixed",
+      "summary": "旧 phase strict validator 与全局当前 VERSION/HANDOFF 耦合"
+    },
+    {
+      "finding_id": "S10-POST-REVIEW-F03",
+      "fix": "逐份检查 D级、未放行、内部复核和正式报告禁用",
+      "status": "fixed",
+      "summary": "D 级限制缺少 Stage 级跨 HTML/CSV 复验"
+    },
+    {
+      "finding_id": "S10-POST-REVIEW-F04",
+      "fix": "重跑桌面与移动视口、控制项和两次逐字节下载",
+      "status": "fixed",
+      "summary": "浏览器下载证据未绑定 Stage 级复审"
+    },
+    {
+      "finding_id": "S10-POST-REVIEW-F05",
+      "fix": "新增 review 前后、S10-P3 和当前四向一致性检查",
+      "status": "fixed",
+      "summary": "Stage review 缺少 fresh raw 前后及跨 phase 快照"
+    },
+    {
+      "finding_id": "S10-POST-REVIEW-F06",
+      "fix": "Stage gate 固定 Q4/D/NO_GO，正式报告和经营决策依据为零",
+      "status": "fixed",
+      "summary": "旧 review 未声明修补后导出仍非正式报告"
+    }
+  ],
+  "reviewed_evidence": {
+    "S10-P1": "KMFA/stage_artifacts/V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY/machine/report_entry_manifest.json",
+    "S10-P2": "KMFA/stage_artifacts/V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK/machine/trust_grade_manifest.json",
+    "S10-P3": "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/machine/restricted_export_manifest.json",
+    "historical_v014_review": "KMFA/stage_artifacts/V014_S10_STAGE_REVIEW/machine/stage10_review_manifest.json"
+  },
+  "reviewed_head": "4fb694b730df9428ac181c86c3f0ee72f4610dfc",
+  "schema_version": "kmfa.v014.s10_post_remediation_review_manifest.v1",
+  "stage_id": "S10",
+  "stale_b_grade_or_pending_twelve_detected": false,
+  "summary": {
+    "acceptance_id": "ACC-V014-S10-POST-REMEDIATION-STAGE-REVIEW",
+    "app_reinstall_performed": false,
+    "browser_viewport_check_count": 4,
+    "business_decision_basis_allowed_count": 0,
+    "business_execution_performed": false,
+    "byte_exact_download_count": 2,
+    "committed_excel_workbook_count": 0,
+    "committed_pdf_file_count": 0,
+    "csv_restricted_appendix_count": 2,
+    "current_data_quality_grade": "Q4",
+    "current_report_grade": "D",
+    "decision": "NO_GO",
+    "excel_compatible_csv_download_count": 2,
+    "fixed_review_finding_count": 6,
+    "formal_report_count": 0,
+    "github_upload_performed": false,
+    "hard_block_count": 12,
+    "html_restricted_preview_count": 2,
+    "incomplete_reconciliation_count": 1,
+    "management_section_count": 11,
+    "nonzero_delta_reconciliation_count": 9,
+    "open_final_difference_accepted_count": 3,
+    "open_review_finding_count": 0,
+    "phase_id": "V014_S10_POST_REMEDIATION_STAGE_REVIEW",
+    "phase_results": {
+      "S10-P1": "PASS",
+      "S10-P2": "PASS",
+      "S10-P3": "PASS"
+    },
+    "project_id": "KMFA",
+    "raw_cross_phase_snapshot_exact_match": true,
+    "raw_snapshot_exact_match": true,
+    "raw_source_file_count": 5,
+    "report_export_record_count": 2,
+    "report_grade_record_count": 2,
+    "report_template_count": 2,
+    "review_scope": "v014_s10_post_remediation_stage_review_only",
+    "s11_p1_performed": false,
+    "schema_version": "kmfa.v014.s10_post_remediation_review_summary.v1",
+    "stage_id": "S10",
+    "status": "completed_validated_local_only_stage10_review_no_go_upload_deferred",
+    "task_id": "KMFA-V014-S10-POST-REMEDIATION-STAGE-REVIEW-20260711",
+    "version": "0.1.4-s10-post-remediation-stage-review",
+    "zero_delta_reconciliation_count": 2
+  },
+  "task_id": "KMFA-V014-S10-POST-REMEDIATION-STAGE-REVIEW-20260711",
+  "validation_summary": {
+    "browser_and_download": "PASS",
+    "final_validation_recorded": true,
+    "focused_phase_tests": "PASS",
+    "governance_and_safety_scans": "PASS",
+    "review_tests": "PASS",
+    "strict_validator": "PASS"
+  }
+}

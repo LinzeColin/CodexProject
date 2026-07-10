@@ -1,3 +1,16 @@
+## 2026-07-11 - V014 Stage 10 post-remediation review
+
+- phase: `V014_S10_POST_REMEDIATION_STAGE_REVIEW`
+- task: `KMFA-V014-S10-POST-REMEDIATION-STAGE-REVIEW-20260711`
+- product_version: `0.1.4-s10-post-remediation-stage-review`
+- result: `completed_validated_local_only_stage10_review_no_go_upload_deferred` / `NO_GO`
+- review: 当前 S10-P1/P2/P3 frozen semantics `3/3 PASS`；修复 `6` 个 finding，open finding=`0`。
+- report gate: `2` 个模板、`11` 个章节、`2` 条等级记录、`2` 份受限 HTML、`2` 份中文 CSV；当前状态 `Q4 / D / 3-9-2-1`。
+- browser: v1.4 人类流程基线、新导出控件、`4/4` desktop/mobile 和 `2/2` byte-exact downloads 通过。
+- raw proof: `5` 个文件在 review 前后、跨 S10-P3 与当前复核完全一致；所有 raw 身份、字段、金额和诊断保持 private ignored。
+- boundary: formal report、S11、GitHub upload、app reinstall 和 business execution 均未执行。
+- evidence: `KMFA/stage_artifacts/V014_S10_POST_REMEDIATION_STAGE_REVIEW/machine/stage10_post_remediation_review_manifest.json`
+
 ## 2026-07-10 - V014 remaining two project cash collection evidence or final difference acceptance
 
 - phase: `V014_REMAINING_TWO_PROJECT_CASH_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE`

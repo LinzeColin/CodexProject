@@ -1,3 +1,18 @@
+kmfa_v014_s10_post_remediation_stage_review:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s10-post-remediation-stage-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S10-POST-REMEDIATION-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1705
+    - PARAM-KMFA-1706
+    - PARAM-KMFA-1707
+  evidence_dir: KMFA/stage_artifacts/V014_S10_POST_REMEDIATION_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s10_post_remediation_stage_review.py
+  scope: Current Stage 10 post-remediation chain review with six fixed findings fresh raw snapshots four browser viewport checks two byte-exact downloads and Q4 D NO_GO; S11 upload reinstall formal report and business execution remain closed.
+
 kmfa_v014_s10_p3_post_remediation_restricted_export:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-s10-p3-post-remediation-restricted-export"
