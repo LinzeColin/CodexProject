@@ -403,7 +403,8 @@ function validateDocsAndRecords() {
         overview.includes("下一步是 S10 P1") ||
         hasAll(overview, ["S10 P1 已完成", "下一步是 S10 P2"]) ||
         hasAll(overview, ["S10 P3 已完成", "下一步是 S10 Review"]) ||
-        hasAll(overview, ["S10 Review 已完成", "下一步是 S11 P1"])
+        hasAll(overview, ["S10 Review 已完成", "下一步是 S11 P1"]) ||
+        hasAll(overview, ["S10 Review 已完成", "S11 P1 已完成"])
       ),
     "s09_review_overview",
     "Overview records S09 Review completion and either pending S10 P1 or later S10 P1 progression",
