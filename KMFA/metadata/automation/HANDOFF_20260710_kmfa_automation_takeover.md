@@ -2,6 +2,58 @@
 
 更新时间: 2026-07-11
 
+## 2026-07-11 `dws-auth-keepalive-2` 自动刷新修复
+
+原始需求是让可刷新的 DWS access token 由 automation 自动续期。旧 live
+prompt 没有兑现该要求：它把 `dws auth login --yes --no-browser` 当成“非交互
+刷新”，但该命令仍会启动完整 OAuth 授权并等待人工回调。更隐蔽的问题是
+`dws auth status --format json` 在刷新失败时仍可能 exit 0、返回
+`authenticated=true` 和 `refresh_token_valid=true`，却不返回
+`token_valid=true`；旧 prompt 没有对此 fail closed。
+
+当前修复：
+
+- 新增确定性入口 `KMFA/tools/automation/dws_auth_keepalive.py`，自动续期只调用
+  DWS CLI 官方 refresh 路径 `dws auth status --format json`，最多 3 次重试。
+- 成功硬门固定为 `success=true`、`authenticated=true`、
+  `token_valid=true`、`refresh_token_valid=true`、私有固定 profile 匹配、
+  access/refresh expiry 均可解析且晚于当前时间，并且 doctor 无 fail；任何单一
+  exit code 或布尔值均不能独立判定成功。
+- 预期组织 profile 已固定到 active automation 目录下的 machine-private 0600
+  文件；status 与 doctor 都显式使用它，禁止依赖可变 `currentProfile`。
+- DWS HTTP timeout 固定 20 秒，外层 subprocess timeout 固定 25 秒，给 CLI
+  清理/原子 token 写入保留 5 秒 grace，避免在内部默认 30 秒超时前杀进程。
+- 删除 automation 的自动 login fallback。失败时只给出一次性
+  `dws auth login --device` 下一步，不启动浏览器、loopback listener 或 OAuth。
+- doctor 参数修正为 profile-pinned `dws doctor --json --timeout 20`，任何
+  fail/unavailable/malformed 结果非零阻断。
+- wrapper 确定性管理 24 小时/最后 4 小时提醒去重，并以原子 0600 文件维护最多
+  24 条脱敏运行记录；active ledger 不再含 corp/user identity，旧含标识记录仅保留
+  在同目录 0600 private legacy 文件中。
+- live automation 已按 Git-tracked prompt 更新并只读回读；RRULE 保持
+  `RRULE:FREQ=DAILY;BYHOUR=0,4,8,12,16,20;BYMINUTE=20`，无 timezone 字段。
+- DWS CLI 已通过官方升级入口从 v1.0.46 升至 v1.0.51；升级不被当作 token
+  修复证据。
+
+若 machine-private profile 文件丢失，scheduled run 必须停在
+`pin_expected_profile`，不得自行选择组织。仅在 owner 已确认当前 DWS profile 就是
+目标组织后，人工执行一次：
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 python3 /Users/linzezhang/CodexProject/KMFA/tools/automation/dws_auth_keepalive.py --bootstrap-current-profile
+```
+
+该命令只读取并固定当前本机 profile，不执行 `auth status`、refresh 或 login。
+wrapper 的 `notification_required` 仅表示 Scheduled final/inbox 应通知；在没有
+delivery 证据前不得写成外部提醒已送达。
+
+当前真实运行仍 fail closed：现有 access token 已过期，本地 refresh token
+元数据尚在有效期，但服务端 exchange 连续 3 次未换得新 access token，wrapper
+返回 `auto_refresh_failed`/exit 3。需要 owner 完成一次 `dws auth login --device`
+重新取得 token pair；此后还必须等待 access token 自然过期，并由一次自然定时
+运行观察到 `refreshed=true`、`token_valid=true` 和新的 expiry，才能关闭长期稳定性
+验收门。不得在该门完成前声称自动刷新已恢复生产可用。
+
 ## 2026-07-11 `kmfa-4` ZIP-only 与缓存 I/O 修复
 
 用户已澄清：S20 `KMFA｜钉钉工作检查` 的上游输出只可能是 ZIP，目标必须固定为：

@@ -1,5 +1,53 @@
 # KMFA Automation Bug Log
 
+## 2026-07-11 `dws-auth-keepalive-2` False Keepalive And Login Fallback
+
+Scope: only the DWS authentication keepalive automation. The original contract
+required automatic renewal of refreshable access tokens.
+
+Root causes:
+
+- The live prompt mislabeled `dws auth login --yes --no-browser` as a
+  non-interactive refresh. `--no-browser` only suppresses browser launch; login
+  still starts a complete OAuth authorization and waits for user interaction.
+- The actual refresh trigger is `dws auth status --format json`.
+- DWS status can exit 0 with `authenticated=true` and
+  `refresh_token_valid=true` after an access-token refresh failure while
+  omitting `token_valid` and `refreshed`. Trusting exit 0 created false-green
+  keepalive runs.
+- The prompt wrote dedupe state to the retired `dws-auth-keepalive` memory while
+  the active automation ID is `dws-auth-keepalive-2`, splitting the ledger.
+- The old doctor command used `--format json`; doctor requires `--json`.
+
+Repair:
+
+- Added `KMFA/tools/automation/dws_auth_keepalive.py` and regression tests.
+- The wrapper invokes only profile-pinned `auth status`; success requires a
+  consistent success/authenticated/token/refresh/profile state, future parseable
+  access and refresh expiries, and doctor with zero fails. It returns nonzero
+  for every missing, contradictory, stale, malformed, or unavailable gate.
+- DWS's inner HTTP timeout is 20 seconds and the parent process timeout is 25
+  seconds, preventing the wrapper from killing the CLI before its own timeout.
+- No failure path executes `auth login`; manual device authorization is only a
+  reported next action.
+- Added a Git-tracked prompt/contract and updated the live automation without
+  changing its pure RRULE or adding a timezone.
+- Pinned the expected organization in a machine-private 0600 config; status and
+  doctor no longer depend on mutable `currentProfile`.
+- Moved ledger and 24-hour/final-4-hour reminder dedupe into the deterministic
+  wrapper. Active files are 0600 in a 0700 directory and contain no corp/user
+  identity; the legacy identity-bearing ledger is retained private at 0600.
+- Upgraded the official DWS CLI to v1.0.51 for current credential diagnostics;
+  the upgrade itself is not treated as refresh proof.
+
+Open acceptance gate:
+
+- The current token pair cannot obtain a new access token even though the local
+  refresh expiry metadata is still in the future. A one-time owner-authorized
+  `dws auth login --device` is required. Long-term closure additionally requires
+  a later natural scheduled run after access-token expiry to report
+  `refreshed=true` and `token_valid=true` with a newer expiry.
+
 ## 2026-07-10 `kmfa-3` Owner-Fixed 20:00 Stability Repair
 
 Scope: only the evening attendance automation `kmfa-3`. The owner fixed its
