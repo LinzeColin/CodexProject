@@ -564,7 +564,7 @@ interface ProposalReviewItem {
 interface ProposalReviewTransaction {
   transaction_id: string;
   proposal_id: string;
-  state: "committed";
+  state: "committed" | "manual_rollback_required";
   target_files: string[];
   rollback_token: string;
 }
@@ -580,6 +580,8 @@ interface ProposalReviewPayload {
     apply_ready_count: number;
     review_only_count: number;
     rollback_available_count: number;
+    interrupted_recovery_count: number;
+    manual_recovery_required_count: number;
   };
   safety: {
     raw_mutation: false;
@@ -1675,8 +1677,11 @@ function isProposalReviewPayload(value: unknown): value is ProposalReviewPayload
   if (!isRecord(value) || value.schema_version !== "memory_atlas_proposal_review.v1_2_r4" || value.status !== "success") return false;
   if (value.proposal_api_version !== PROPOSAL_API_VERSION || !Array.isArray(value.proposals) || !Array.isArray(value.transactions)) return false;
   if (!isRecord(value.summary) || !isRecord(value.safety)) return false;
-  if (value.safety.raw_mutation !== false || value.safety.canonical_repo_mutation !== false || value.safety.remote_push !== false) return false;
-  return value.proposals.every((proposal) => {
+  const summary = value.summary;
+  const summaryFields = ["proposal_count", "apply_ready_count", "review_only_count", "rollback_available_count", "interrupted_recovery_count", "manual_recovery_required_count"];
+  if (!summaryFields.every((field) => Number.isInteger(summary[field]) && Number(summary[field]) >= 0)) return false;
+  if (value.safety.raw_mutation !== false || value.safety.canonical_repo_mutation !== false || value.safety.remote_push !== false || value.safety.operation_content_returned !== false) return false;
+  const proposalsValid = value.proposals.every((proposal) => {
     if (!isRecord(proposal) || typeof proposal.proposal_id !== "string" || typeof proposal.apply_ready !== "boolean") return false;
     if (!Array.isArray(proposal.target_files) || !proposal.target_files.every((item) => typeof item === "string")) return false;
     if (!Array.isArray(proposal.validation_ids) || !proposal.validation_ids.every((item) => typeof item === "string")) return false;
@@ -1685,6 +1690,16 @@ function isProposalReviewPayload(value: unknown): value is ProposalReviewPayload
     return ["what_changed_zh", "why_changed_zh", "affected_surfaces_zh", "how_to_verify_zh", "how_to_rollback_zh"]
       .every((field) => typeof narrator[field] === "string");
   });
+  const transactionsValid = value.transactions.every((transaction) => (
+    isRecord(transaction)
+    && typeof transaction.transaction_id === "string"
+    && typeof transaction.proposal_id === "string"
+    && (transaction.state === "committed" || transaction.state === "manual_rollback_required")
+    && Array.isArray(transaction.target_files)
+    && transaction.target_files.every((item) => typeof item === "string")
+    && typeof transaction.rollback_token === "string"
+  ));
+  return proposalsValid && transactionsValid;
 }
 
 function isProposalActionResult(value: unknown): value is ProposalActionResult {
@@ -2668,6 +2683,15 @@ function ProposalWorkspace({ onClose, review }: { onClose: () => void; review: P
     () => review.proposals.find((proposal) => proposal.proposal_id === selectedProposalId) ?? review.proposals[0] ?? null,
     [review.proposals, selectedProposalId],
   );
+  const selectedTransaction = useMemo(
+    () => review.transactions.find((transaction) => transaction.proposal_id === selectedProposal?.proposal_id) ?? null,
+    [review.transactions, selectedProposal?.proposal_id],
+  );
+  const rollbackCandidate = actionResult?.rollback_available && actionResult.rollback_token
+    ? { transactionId: actionResult.transaction_id, rollbackToken: actionResult.rollback_token }
+    : selectedTransaction
+      ? { transactionId: selectedTransaction.transaction_id, rollbackToken: selectedTransaction.rollback_token }
+      : null;
 
   useEffect(() => {
     const closeOnEscape = (event: globalThis.KeyboardEvent) => {
@@ -2729,8 +2753,7 @@ function ProposalWorkspace({ onClose, review }: { onClose: () => void; review: P
 
   const rollback = async () => {
     if (
-      !actionResult?.rollback_available
-      || !actionResult.rollback_token
+      !rollbackCandidate
       || !rollbackAcknowledged
       || pendingAction
     ) return;
@@ -2739,9 +2762,9 @@ function ProposalWorkspace({ onClose, review }: { onClose: () => void; review: P
     try {
       const result = await postProposalAction({
         action: "rollback",
-        transaction_id: actionResult.transaction_id,
-        rollback_token: actionResult.rollback_token,
-        confirmation: `确认回滚 ${actionResult.transaction_id}`,
+        transaction_id: rollbackCandidate.transactionId,
+        rollback_token: rollbackCandidate.rollbackToken,
+        confirmation: `确认回滚 ${rollbackCandidate.transactionId}`,
       });
       setActionResult(result);
     } catch (error) {
@@ -2758,7 +2781,11 @@ function ProposalWorkspace({ onClose, review }: { onClose: () => void; review: P
           <div>
             <p className="eyebrow">授权与回滚</p>
             <h2>待授权提案</h2>
-            <span>{review.summary.apply_ready_count} 条可应用 · {review.summary.review_only_count} 条仅复核</span>
+            <span>
+              {review.summary.apply_ready_count} 条可应用 · {review.summary.review_only_count} 条仅复核
+              {review.summary.interrupted_recovery_count > 0 ? ` · 已自动恢复 ${review.summary.interrupted_recovery_count} 个中断事务` : ""}
+              {review.summary.manual_recovery_required_count > 0 ? ` · ${review.summary.manual_recovery_required_count} 个事务需人工回滚` : ""}
+            </span>
           </div>
           <button aria-label="关闭提案复核" className="proposal-workspace-close" disabled={pendingAction !== null} onClick={onClose} title="关闭" type="button">
             <X aria-hidden="true" size={18} />
@@ -2796,6 +2823,36 @@ function ProposalWorkspace({ onClose, review }: { onClose: () => void; review: P
                     {selectedProposal.apply_ready ? "可应用" : "仅复核"}
                   </strong>
                 </header>
+
+                {selectedTransaction && !actionResult ? (
+                  <section
+                    className={`proposal-persisted-transaction proposal-persisted-transaction-${selectedTransaction.state}`}
+                    data-r4-persisted-transaction={selectedTransaction.transaction_id}
+                    data-r4-transaction-proposal={selectedTransaction.proposal_id}
+                  >
+                    <div>
+                      <strong>{selectedTransaction.state === "manual_rollback_required" ? "中断事务需要人工回滚" : "已提交事务仍可回滚"}</strong>
+                      <p>{selectedTransaction.transaction_id}</p>
+                      <p>{selectedTransaction.target_files.join(" · ")}</p>
+                    </div>
+                    <div className="proposal-manual-rollback">
+                      <label>
+                        <input
+                          checked={rollbackAcknowledged}
+                          data-r4-rollback-ack
+                          disabled={pendingAction !== null}
+                          onChange={(event) => setRollbackAcknowledged(event.currentTarget.checked)}
+                          type="checkbox"
+                        />
+                        <span>我确认将该事务恢复到应用前字节。</span>
+                      </label>
+                      <button data-r4-rollback disabled={!rollbackAcknowledged || pendingAction !== null} onClick={() => void rollback()} type="button">
+                        <RotateCcw aria-hidden="true" size={16} />
+                        <span>{pendingAction === "rollback" ? "正在回滚" : "回滚该事务"}</span>
+                      </button>
+                    </div>
+                  </section>
+                ) : null}
 
                 {selectedProposal.apply_ready ? (
                   <div className="proposal-scope-strip">

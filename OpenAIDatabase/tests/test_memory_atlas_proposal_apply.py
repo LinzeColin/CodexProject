@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import os
 import shutil
 import sys
 import tempfile
@@ -267,6 +268,199 @@ class ProposalWorkflowTests(unittest.TestCase):
         self.assertTrue(result["automatic_rollback"])
         self.assertEqual(target.read_bytes(), before)
         self.assertEqual(result["restored_sha256"]["config/r4_acceptance/failure.json"], sha256_bytes(before))
+
+    def test_parent_symlink_swap_after_review_never_writes_outside_source(self) -> None:
+        target_parent = self.source_root / "config/r4_acceptance"
+        target = target_parent / "success.json"
+        before = b'{"value":"before"}\n'
+        after = b'{"value":"after"}\n'
+        target.write_bytes(before)
+        self.write_bundle(
+            bundle_payload(
+                "proposal_success",
+                "config/r4_acceptance/success.json",
+                expected_sha256=sha256_bytes(before),
+                content=after.decode(),
+            )
+        )
+        workflow = self.workflow()
+        proposal = next(item for item in workflow.review()["proposals"] if item["proposal_id"] == "proposal_success")
+
+        parked_parent = self.source_root / "config/r4_acceptance_original"
+        outside_parent = self.root / "outside"
+        outside_parent.mkdir()
+        outside_target = outside_parent / "success.json"
+        outside_target.write_bytes(before)
+        original_parse_bundle = workflow._parse_bundle
+
+        def parse_then_swap(*args: Any, **kwargs: Any) -> Any:
+            parsed = original_parse_bundle(*args, **kwargs)
+            target_parent.rename(parked_parent)
+            target_parent.symlink_to(outside_parent, target_is_directory=True)
+            return parsed
+
+        workflow._parse_bundle = parse_then_swap
+        with self.assertRaises(self.module.ProposalWorkflowError):
+            workflow.approve_and_apply(
+                proposal_id="proposal_success",
+                review_token=proposal["review_token"],
+                confirmation="授权应用 proposal_success",
+            )
+
+        self.assertEqual(outside_target.read_bytes(), before)
+        self.assertEqual((parked_parent / "success.json").read_bytes(), before)
+
+    def test_interrupted_apply_is_automatically_recovered_on_next_review(self) -> None:
+        target = self.source_root / "config/r4_acceptance/success.json"
+        before = b'{"value":"before"}\n'
+        after = b'{"value":"after"}\n'
+        target.write_bytes(before)
+        self.write_bundle(
+            bundle_payload(
+                "proposal_success",
+                "config/r4_acceptance/success.json",
+                expected_sha256=sha256_bytes(before),
+                content=after.decode(),
+            )
+        )
+        workflow = self.workflow()
+        proposal = next(item for item in workflow.review()["proposals"] if item["proposal_id"] == "proposal_success")
+
+        class SimulatedProcessExit(BaseException):
+            pass
+
+        original_atomic_write_at = workflow._atomic_write_at
+
+        def write_then_exit(*args: Any, **kwargs: Any) -> None:
+            original_atomic_write_at(*args, **kwargs)
+            raise SimulatedProcessExit()
+
+        workflow._atomic_write_at = write_then_exit
+        with self.assertRaises(SimulatedProcessExit):
+            workflow.approve_and_apply(
+                proposal_id="proposal_success",
+                review_token=proposal["review_token"],
+                confirmation="授权应用 proposal_success",
+            )
+        self.assertEqual(target.read_bytes(), after)
+
+        review = self.workflow().review()
+        transaction_path = next((self.app_support / "proposal_transactions").glob("txn_*/transaction.json"))
+        transaction = json.loads(transaction_path.read_text(encoding="utf-8"))
+        self.assertEqual(target.read_bytes(), before)
+        self.assertEqual(transaction["state"], "recovered_after_interruption")
+        self.assertIn("recovered_after_interruption", transaction["state_history"])
+        self.assertEqual(review["summary"]["interrupted_recovery_count"], 1)
+
+    def test_interrupted_recovery_failure_is_visible_and_can_be_manually_rolled_back(self) -> None:
+        target_parent = self.source_root / "config/r4_acceptance"
+        target = target_parent / "success.json"
+        before = b'{"value":"before"}\n'
+        after = b'{"value":"after"}\n'
+        target.write_bytes(before)
+        self.write_bundle(
+            bundle_payload(
+                "proposal_success",
+                "config/r4_acceptance/success.json",
+                expected_sha256=sha256_bytes(before),
+                content=after.decode(),
+            )
+        )
+        workflow = self.workflow()
+        proposal = next(item for item in workflow.review()["proposals"] if item["proposal_id"] == "proposal_success")
+
+        class SimulatedProcessExit(BaseException):
+            pass
+
+        original_atomic_write_at = workflow._atomic_write_at
+
+        def write_then_exit(*args: Any, **kwargs: Any) -> None:
+            original_atomic_write_at(*args, **kwargs)
+            raise SimulatedProcessExit()
+
+        workflow._atomic_write_at = write_then_exit
+        with self.assertRaises(SimulatedProcessExit):
+            workflow.approve_and_apply(
+                proposal_id="proposal_success",
+                review_token=proposal["review_token"],
+                confirmation="授权应用 proposal_success",
+            )
+        self.assertEqual(target.read_bytes(), after)
+
+        parked_parent = self.source_root / "config/r4_acceptance_original"
+        outside_parent = self.root / "outside-recovery"
+        outside_parent.mkdir()
+        target_parent.rename(parked_parent)
+        target_parent.symlink_to(outside_parent, target_is_directory=True)
+
+        recovery_workflow = self.workflow()
+        review = recovery_workflow.review()
+        self.assertEqual(review["summary"]["manual_recovery_required_count"], 1)
+        transaction = review["transactions"][0]
+        self.assertEqual(transaction["state"], "manual_rollback_required")
+
+        target_parent.unlink()
+        parked_parent.rename(target_parent)
+        result = recovery_workflow.rollback(
+            transaction_id=transaction["transaction_id"],
+            rollback_token=transaction["rollback_token"],
+            confirmation=f"确认回滚 {transaction['transaction_id']}",
+        )
+        self.assertEqual(result["state"], "rolled_back_by_human")
+        self.assertEqual(target.read_bytes(), before)
+
+    def test_missing_target_parent_is_review_only_and_never_created(self) -> None:
+        missing_parent = self.source_root / "config/not-created-by-proposal"
+        self.write_bundle(
+            bundle_payload(
+                "proposal_missing_parent",
+                "config/not-created-by-proposal/change.json",
+                expected_sha256="missing",
+                content='{"value":"after"}\n',
+            )
+        )
+        review = self.workflow().review()
+        proposal = next(item for item in review["proposals"] if item["proposal_id"] == "proposal_missing_parent")
+        self.assertFalse(proposal["apply_ready"])
+        self.assertFalse(missing_parent.exists())
+
+    def test_prepare_read_failure_closes_current_parent_fd(self) -> None:
+        target = self.source_root / "config/r4_acceptance/success.json"
+        before = b'{"value":"before"}\n'
+        target.write_bytes(before)
+        bundle_path = self.write_bundle(
+            bundle_payload(
+                "proposal_success",
+                "config/r4_acceptance/success.json",
+                expected_sha256=sha256_bytes(before),
+                content='{"value":"after"}\n',
+            )
+        )
+        workflow = self.workflow()
+        proposal = next(item for item in workflow.review()["proposals"] if item["proposal_id"] == "proposal_success")
+        parsed = workflow._parse_bundle(bundle_path, now=1_800_000_000.0, verify_current_hash=True)
+        workflow._parse_bundle = lambda *_args, **_kwargs: parsed
+        opened_fds: list[int] = []
+        original_open_parent = workflow._open_target_parent
+
+        def open_and_capture(*args: Any, **kwargs: Any) -> tuple[int, str]:
+            parent_fd, target_name = original_open_parent(*args, **kwargs)
+            opened_fds.append(parent_fd)
+            return parent_fd, target_name
+
+        workflow._open_target_parent = open_and_capture
+        workflow._read_regular_at = lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            self.module.ProposalBundleError("simulated safe read failure")
+        )
+        with self.assertRaises(self.module.ProposalBundleError):
+            workflow.approve_and_apply(
+                proposal_id="proposal_success",
+                review_token=proposal["review_token"],
+                confirmation="授权应用 proposal_success",
+            )
+        self.assertTrue(opened_fds)
+        with self.assertRaises(OSError):
+            os.fstat(opened_fds[-1])
 
     def test_review_token_is_bound_single_use_and_expires(self) -> None:
         target = self.source_root / "config/r4_acceptance/success.json"

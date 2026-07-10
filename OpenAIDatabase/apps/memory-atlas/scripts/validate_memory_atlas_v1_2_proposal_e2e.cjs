@@ -470,6 +470,17 @@ async function main() {
     await page.waitForFunction((id) => document.querySelector(`[data-r4-action-result="${id}"]`)?.getAttribute("data-r4-action-state") === "committed", proposalIds.success);
     const successAfterSha = sha256(fs.readFileSync(fixture.successTarget));
     assertCondition(successAfterSha !== sha256(fixture.successBefore), "Authorized apply did not change the success target");
+
+    await page.getByRole("button", { name: "关闭提案复核" }).click();
+    await openProposalWorkspace(page);
+    await selectProposal(page, proposalIds.success);
+    assertCondition(
+      await page.locator(`[data-r4-persisted-transaction][data-r4-transaction-proposal="${proposalIds.success}"]`).count() === 1,
+      "Committed transaction is not available after reopening the proposal workspace",
+    );
+    const persistedRollbackScreenshot = "proposal-persisted-rollback-after-reopen.png";
+    await page.screenshot({ path: path.join(outputDir, persistedRollbackScreenshot), fullPage: false });
+    status.screenshots.push(persistedRollbackScreenshot);
     assertCondition(await page.locator("[data-r4-rollback]").isDisabled(), "Rollback is enabled before separate acknowledgement");
     await page.locator("[data-r4-rollback-ack]").check();
     await page.locator("[data-r4-rollback]").click();
@@ -533,6 +544,7 @@ async function main() {
       proposal_count: proposalCount,
       chinese_diff_section_count: 5,
       authorized_apply_real_file_change: true,
+      persisted_rollback_visible_after_reopen: true,
       manual_rollback_exact_restore: true,
       validation_failure_automatic_rollback: true,
       raw_proposal_review_only: true,

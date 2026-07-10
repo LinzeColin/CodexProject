@@ -1235,6 +1235,36 @@ h3 {
   padding-top: 10px;
 }
 
+.proposal-persisted-transaction {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  border-left: 3px solid #7ee8d4;
+  background: rgba(126, 232, 212, 0.06);
+  padding: 10px 12px;
+}
+
+.proposal-persisted-transaction-manual_rollback_required {
+  border-left-color: #f5c76b;
+  background: rgba(245, 199, 107, 0.07);
+}
+
+.proposal-persisted-transaction strong {
+  color: #f4f1e8;
+  font-size: 11px;
+}
+
+.proposal-persisted-transaction p {
+  margin: 4px 0 0;
+  overflow-wrap: anywhere;
+  color: #b6b1a6;
+  font-size: 10px;
+}
+
+.proposal-persisted-transaction .proposal-manual-rollback {
+  margin-top: 0;
+}
+
 .proposal-approval-band,
 .proposal-manual-rollback {
   display: flex;
