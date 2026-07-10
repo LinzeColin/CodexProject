@@ -12,13 +12,13 @@ features:
     status: "active"
     fact_level: "EXTRACTED"
     evidence_refs:
-      - "PFI/README.md"
-      - "PFI/docs/pfi_v02/STAGE1_CORE_SKELETON.md"
-      - "PFI/docs/pfi_v02/STAGE2_DATA_SYNC_MVP.md"
-      - "PFI/docs/pfi_v02/STAGE3_READABLE_MVP.md"
-      - "PFI/docs/pfi_v02/STAGE4_ANALYSIS_MVP.md"
-      - "PFI/docs/pfi_v02/STAGE5_ADVICE_REPORT_ALPHA_EXPORT.md"
-      - "PFI/docs/pfi_v02/STAGE6_E2E_STABILIZATION.md"
+      - "EVID-PFI-PRODUCT-ROOT"
+  - feature_id: "FEAT-PFI-CF-L2-001"
+    name: "Cloudflare 安全 L2 脱敏财务产品壳"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-PFI-CF-L2"
 limitations:
   - statement: "生产联通、真实账户凭证、实盘执行、自动付款或券商提交动作未验证。"
     fact_level: "EXTRACTED"
@@ -32,3 +32,12 @@ limitations:
     fact_level: "EXTRACTED"
     evidence_refs:
       - "PFI/docs/pfi_v02/STAGE6_E2E_STABILIZATION.md"
+evidence_refs:
+  - evidence_id: "EVID-PFI-PRODUCT-ROOT"
+    kind: "owner"
+    ref: "PFI/README.md; PFI/docs/pfi_v02/STAGE1_CORE_SKELETON.md; PFI/docs/pfi_v02/STAGE2_DATA_SYNC_MVP.md; PFI/docs/pfi_v02/STAGE3_READABLE_MVP.md; PFI/docs/pfi_v02/STAGE4_ANALYSIS_MVP.md; PFI/docs/pfi_v02/STAGE5_ADVICE_REPORT_ALPHA_EXPORT.md; PFI/docs/pfi_v02/STAGE6_E2E_STABILIZATION.md"
+    fact_level: "EXTRACTED"
+  - evidence_id: "EVID-PFI-CF-L2"
+    kind: "public_surface_contract"
+    ref: "PFI/web/cloudflare-public/public/public-surface.json; governance/cloudflare/deployments.json"
+    fact_level: "EXTRACTED"

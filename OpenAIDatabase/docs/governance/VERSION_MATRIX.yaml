@@ -26,7 +26,7 @@ parameter_profile_versions:
   macdata_prom2: "macdata-prom2-parameters-v1"
   memory_atlas_release_validation: "memory-atlas-release-validation-v1"
 data_snapshot_version: "public_redacted_read_only_visualization"
-current_iteration: "ITER-20260710-OAIDB-CF-L2"
+current_iteration: "ITER-20260710-OAIDB-CF-L2-BINDING"
 current_phase: "CF-L2"
 current_gate: "ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH"
 legacy_version_labels:

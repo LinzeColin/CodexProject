@@ -82,9 +82,9 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- final_commit_binding: `COMMIT_BOUND:9a3b9ae977275f4774e08ae69f61b54f7270b419`
 - tree_bound_events: `0`
-- commit_bound_events: `18`
+- commit_bound_events: `19`
 - legacy_unbound_events: `19`
 - precommit_pending_events: `93`
 - pending_or_stale_events: `114`
@@ -98,10 +98,10 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 16. 技术元数据
 
-- source_base_commit: `236d25354db7d8f9774d1f91981ae30d69b0234e`
+- source_base_commit: `9a3b9ae977275f4774e08ae69f61b54f7270b419`
 - source_tree_hash: `356fcd0bb5d3b892b331d28351fe9e99a64c8457`
-- source_snapshot_hash: `sha256:7d50e55d4226a32b4eb242dbb4bbde05c387eaf25470d2f4c885060d48c47e31`
-- snapshot_event_time: `2026-07-10T17:50:45+10:00`
+- source_snapshot_hash: `sha256:3bc0df11a67825924a7056a81c6bcad25cd273a7004c064e4b681e7af313c883`
+- snapshot_event_time: `2026-07-10T18:35:12+10:00`
 - generator_version: `4.0.1`
 - version: `0.1.0`
 - phase/gate: `CF-L2 / ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH`

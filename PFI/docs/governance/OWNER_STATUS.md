@@ -82,9 +82,9 @@ readiness remains blocked
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- final_commit_binding: `COMMIT_BOUND:9a3b9ae977275f4774e08ae69f61b54f7270b419`
 - tree_bound_events: `0`
-- commit_bound_events: `0`
+- commit_bound_events: `1`
 - legacy_unbound_events: `6`
 - precommit_pending_events: `1`
 - pending_or_stale_events: `7`
@@ -98,10 +98,10 @@ readiness remains blocked
 
 ## 16. 技术元数据
 
-- source_base_commit: `47d36e0227d85849b2f7624c137c1f644bef13a0`
+- source_base_commit: `9a3b9ae977275f4774e08ae69f61b54f7270b419`
 - source_tree_hash: `5f05ad339e9519bd5981b54e788f0dbeefbcac9c`
-- source_snapshot_hash: `sha256:217a35eea7d1656c901b5557f43488ed2c0b1e70fcc226ec262ee2476c71d050`
-- snapshot_event_time: `2026-07-10T17:50:45+10:00`
+- source_snapshot_hash: `sha256:0cc17f17bb76659bf7155c820751b41139aa27dc2b62c34954d1e933fb801133`
+- snapshot_event_time: `2026-07-10T18:35:12+10:00`
 - generator_version: `4.0.1`
 - version: `v0.2.2 数据库治理 Stage 4`
 - phase/gate: `CF-L2 / ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH`

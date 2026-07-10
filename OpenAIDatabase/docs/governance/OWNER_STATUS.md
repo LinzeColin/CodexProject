@@ -82,9 +82,9 @@ OpenAIDatabase remains FAILED for delivery readiness and cannot claim safe memor
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- final_commit_binding: `COMMIT_BOUND:9a3b9ae977275f4774e08ae69f61b54f7270b419`
 - tree_bound_events: `0`
-- commit_bound_events: `1`
+- commit_bound_events: `2`
 - legacy_unbound_events: `6`
 - precommit_pending_events: `10`
 - pending_or_stale_events: `17`
@@ -98,10 +98,10 @@ OpenAIDatabase remains FAILED for delivery readiness and cannot claim safe memor
 
 ## 16. 技术元数据
 
-- source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
+- source_base_commit: `9a3b9ae977275f4774e08ae69f61b54f7270b419`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:159faf94ab3799848a2841e74144ba11a219ecf847f78c09b4bc7ebd376efe8f`
-- snapshot_event_time: `2026-07-10T17:50:45+10:00`
+- source_snapshot_hash: `sha256:2ed89f6edbb130900a5f73e04521c73093bd63cb88ba5edf6d3890d9392dd3ac`
+- snapshot_event_time: `2026-07-10T18:35:12+10:00`
 - generator_version: `4.0.1`
 - version: `0.2.0`
 - phase/gate: `CF-L2 / ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH`
