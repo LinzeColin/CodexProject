@@ -435,6 +435,24 @@ class PublicRawConnectorTest(unittest.TestCase):
             )
             self.assertNotIn(source_absolute, public_outputs)
             self.assertLessEqual(raw_files[0].stat().st_size, MAX_PUBLIC_RAW_FILE_BYTES)
+            sync_log_path = next((root / "data/run_logs/sync_runs").glob("*.jsonl"))
+            sync_log = json.loads(sync_log_path.read_text(encoding="utf-8").strip())
+            self.assertTrue(
+                {
+                    "task_id",
+                    "run_type",
+                    "status",
+                    "context_used",
+                    "tools_used",
+                    "tests_run",
+                    "failure_recovery",
+                    "base_commit",
+                    "result_commit",
+                    "residual_risks",
+                }.issubset(sync_log)
+            )
+            self.assertEqual(sync_log["run_type"], "sync_run")
+            self.assertEqual(sync_log["tests_run"][0]["result"], "NOT_RUN")
 
     def test_codex_public_transcripts_preserve_every_event_with_relative_provenance(self) -> None:
         module = load_script_module("sync_codex_memory_data.py", "sync_codex_memory_data_r7")
@@ -546,6 +564,24 @@ class PublicRawConnectorTest(unittest.TestCase):
             self.assertIn("[REDACTED_LOCAL_PATH]", payload_text)
             self.assertNotIn(str(report.resolve()), payload_text)
             self.assertLessEqual(raw_path.stat().st_size, MAX_PUBLIC_RAW_FILE_BYTES)
+            sync_log_path = next((root / "data/run_logs/sync_runs").glob("*.jsonl"))
+            sync_log = json.loads(sync_log_path.read_text(encoding="utf-8").strip())
+            self.assertTrue(
+                {
+                    "task_id",
+                    "run_type",
+                    "status",
+                    "context_used",
+                    "tools_used",
+                    "tests_run",
+                    "failure_recovery",
+                    "base_commit",
+                    "result_commit",
+                    "residual_risks",
+                }.issubset(sync_log)
+            )
+            self.assertEqual(sync_log["run_type"], "sync_run")
+            self.assertEqual(sync_log["tests_run"][0]["result"], "NOT_RUN")
 
         registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
         sources = {row["source_id"]: row for row in registry["sources"]}

@@ -13,6 +13,7 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 import sys
 import zipfile
 from datetime import datetime, timezone
@@ -96,6 +97,78 @@ def append_jsonl(path: Path, row: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+
+
+def git_head(database_dir: Path) -> str:
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            cwd=database_dir,
+            text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip()
+    except Exception:
+        return "UNKNOWN_NO_GIT_HEAD"
+
+
+def build_sync_log_row(
+    database_dir: Path,
+    generated_at: str,
+    summary: dict[str, Any],
+    export_sha256: str,
+    redact_for_public_backup: bool,
+) -> dict[str, Any]:
+    head = git_head(database_dir)
+    residual_risk = (
+        "the authorized private export and omitted credentials remain outside GitHub"
+    )
+    return {
+        "timestamp": generated_at,
+        "category": "sync_runs",
+        "task_id": "MA-V12-S04P1",
+        "run_type": "sync_run",
+        "status": "PASS",
+        "task": "sync_chatgpt_memory_data",
+        "source_id": SOURCE_ID,
+        "mode": OFFICIAL_EXPORT_MODE,
+        "dry_run": False,
+        "conversation_count": summary["conversation_count"],
+        "message_count": summary["message_count"],
+        "export_sha256": export_sha256,
+        "redact_for_public_backup": redact_for_public_backup,
+        "redaction_counts": summary["redaction_counts"],
+        "updated_targets": ["history", "pattern"],
+        "source_files": ["authorized ChatGPT official export snapshot"],
+        "output_files": [
+            RAW_ROOT.as_posix(),
+            PROCESSED_MANIFEST.as_posix(),
+            DERIVED_SUMMARY.as_posix(),
+        ],
+        "context_used": [
+            {
+                "source": "authorized ChatGPT official export snapshot",
+                "reason": "read-only fallback input for sanitized public transcript recovery",
+            }
+        ],
+        "tools_used": [
+            {
+                "tool": "python",
+                "operation": "sync_chatgpt_memory_data",
+                "result": "success",
+            }
+        ],
+        "tests_run": [
+            {
+                "command": "connector runtime does not execute test suites",
+                "result": "NOT_RUN",
+                "not_run_reason": "tests are executed by the surrounding R7 validation run",
+            }
+        ],
+        "failure_recovery": [],
+        "base_commit": head,
+        "result_commit": head,
+        "residual_risks": [residual_risk],
+    }
 
 
 def write_current_jsonl(path: Path, rows: Iterable[dict[str, Any]]) -> None:
@@ -364,18 +437,16 @@ def sync_official_export(
         )
         (database_dir / DERIVED_SUMMARY).parent.mkdir(parents=True, exist_ok=True)
         (database_dir / DERIVED_SUMMARY).write_text(json.dumps(summary, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        append_jsonl(database_dir / SYNC_LOG_DIR / f"{generated_at[:10]}.jsonl", {
-            "source_id": SOURCE_ID,
-            "status": "PASS",
-            "mode": OFFICIAL_EXPORT_MODE,
-            "dry_run": False,
-            "conversation_count": len(rows),
-            "message_count": summary["message_count"],
-            "generated_at": generated_at,
-            "export_sha256": export_sha,
-            "redact_for_public_backup": redact_for_public_backup,
-            "redaction_counts": redaction_counts,
-        })
+        append_jsonl(
+            database_dir / SYNC_LOG_DIR / f"{generated_at[:10]}.jsonl",
+            build_sync_log_row(
+                database_dir,
+                generated_at,
+                summary,
+                export_sha,
+                redact_for_public_backup,
+            ),
+        )
 
     return {
         "status": "PASS",

@@ -14,6 +14,7 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -80,6 +81,78 @@ def append_jsonl(path: Path, row: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+
+
+def git_head(database_dir: Path) -> str:
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            cwd=database_dir,
+            text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip()
+    except Exception:
+        return "UNKNOWN_NO_GIT_HEAD"
+
+
+def build_sync_log_row(
+    database_dir: Path,
+    generated_at: str,
+    safe_agent: str,
+    summary: dict[str, Any],
+    source_sha256: str,
+) -> dict[str, Any]:
+    head = git_head(database_dir)
+    residual_risk = (
+        "the authorized private agent source and omitted credentials remain outside GitHub"
+    )
+    return {
+        "timestamp": generated_at,
+        "category": "sync_runs",
+        "task_id": "MA-V12-S04P2",
+        "run_type": "sync_run",
+        "status": "PASS",
+        "task": "sync_future_agent_data",
+        "source_id": SOURCE_ID,
+        "agent_id": safe_agent,
+        "adapter_mode": ADAPTER_MODE,
+        "dry_run": False,
+        "event_count": summary["event_count"],
+        "message_count": summary["message_count"],
+        "source_formats": summary["source_formats"],
+        "redaction_counts": summary["redaction_counts"],
+        "source_sha256": source_sha256,
+        "updated_targets": ["history", "pattern"],
+        "source_files": ["authorized future-agent report snapshot"],
+        "output_files": [
+            (RAW_ROOT / safe_agent).as_posix(),
+            (DERIVED_ROOT / safe_agent / "agent_sync_summary.json").as_posix(),
+        ],
+        "context_used": [
+            {
+                "source": "authorized future-agent report snapshot",
+                "reason": "minimal adapter input for sanitized public transcript recovery",
+            }
+        ],
+        "tools_used": [
+            {
+                "tool": "python",
+                "operation": "sync_future_agent_data",
+                "result": "success",
+            }
+        ],
+        "tests_run": [
+            {
+                "command": "connector runtime does not execute test suites",
+                "result": "NOT_RUN",
+                "not_run_reason": "tests are executed by the surrounding R7 validation run",
+            }
+        ],
+        "failure_recovery": [],
+        "base_commit": head,
+        "result_commit": head,
+        "residual_risks": [residual_risk],
+    }
 
 
 def load_input(path: Path) -> list[dict[str, Any]]:
@@ -240,19 +313,16 @@ def sync_rows(
             write_if_changed(database_dir / relative_path, payload)
         summary_path = database_dir / DERIVED_ROOT / safe_agent / "agent_sync_summary.json"
         write_json(summary_path, summary)
-        append_jsonl(database_dir / SYNC_LOG_DIR / f"{generated_at[:10]}.jsonl", {
-            "source_id": SOURCE_ID,
-            "agent_id": safe_agent,
-            "adapter_mode": ADAPTER_MODE,
-            "status": "PASS",
-            "dry_run": False,
-            "event_count": len(rows),
-            "message_count": summary["message_count"],
-            "generated_at": generated_at,
-            "source_formats": summary["source_formats"],
-            "redaction_counts": summary["redaction_counts"],
-            "source_sha256": source_sha256,
-        })
+        append_jsonl(
+            database_dir / SYNC_LOG_DIR / f"{generated_at[:10]}.jsonl",
+            build_sync_log_row(
+                database_dir,
+                generated_at,
+                safe_agent,
+                summary,
+                source_sha256,
+            ),
+        )
 
     result = {
         "status": "PASS",
