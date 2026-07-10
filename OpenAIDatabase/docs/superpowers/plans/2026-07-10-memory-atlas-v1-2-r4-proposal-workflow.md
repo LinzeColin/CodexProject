@@ -156,5 +156,5 @@ only token-bound approve/apply and rollback actions.
   aggregate is `VERIFIED 40 / PARTIAL 11 / FAILED 5 / NOT_VERIFIED 2`.
 - [x] Record that online/installed app remain unchanged and release status remains
   `FAIL_REMEDIATION_REQUIRED`.
-- [ ] Commit R4 locally, remove only reproducible frontend caches, verify clean
+- [x] Commit R4 locally, remove only reproducible frontend caches, verify clean
   worktree/ports/branch/stash and stop before R5.

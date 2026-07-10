@@ -126,8 +126,8 @@ requirements. R5-R8 gaps remain, so the release stays FAIL.
 
 ## Rollback And Stop
 
-Revert the five R4 local commits while retaining R0-R3. This removes the proposal
-transaction service, endpoint, rendered workspace, tests and R4 evidence without
+Revert all R4 commits after R3 closeout `e1a3d670d` while retaining R0-R3. This removes
+the proposal transaction service, endpoint, rendered workspace, tests and R4 evidence without
 touching raw data, credentials, installed apps, Cloudflare or GitHub main.
 
 Stop after the R4 closeout commit. Do not start R5, merge/rebase remote history, push,
