@@ -87,6 +87,26 @@ no-live-execution guard.
 to restore without an owner-authorized real metadata dump. It does not mean a
 database was restored, started, queried, or proven production-ready.
 
+## Whole-Stage Review Repair
+
+The STAGE-035 review removed five evidence-integrity gaps from the Phase 4
+implementation:
+
+- The CLI top level now identifies Phase 4 and `IDS-STAGE035-REVIEW-GATE`;
+  Phase 2 and Phase 3 remain nested evidence.
+- Phase 2, Phase 3, and Phase 4 use one loaded index snapshot, so different
+  versions cannot combine into a contradictory PASS.
+- The checker validates the exact credential-ref policy, exact migration
+  validation set, and complete storage-boundary map.
+- The tracked index now contains
+  `ids.stage035.database_recovery_smoke.delivery_contract.v1`; schema diff,
+  migration output, recovery log, manual confirmation, rollback steps,
+  backup/restore steps, known limits, and Chinese feedback derive from that
+  machine contract.
+- Tampered source-preservation, plaintext-credential, empty-validation, and
+  raw-log-storage policies fail closed through `phase4_contract_results`,
+  `delivery_contract_valid=false`, and `result=FAIL_CLOSED`.
+
 ## destructive_migration_confirmation
 
 任何破坏性 migration 或 restore 必须单独人工确认。

@@ -2,16 +2,38 @@
 
 from __future__ import annotations
 
+from functools import lru_cache
+import importlib.util
 import json
 import subprocess
+import sys
 from pathlib import Path
-from typing import Iterable
+from typing import Any, Iterable
 
 
 STAGE = "STAGE-005"
 ACCEPTANCE_ID = "ACC-STAGE-005"
 CURRENT_PRODUCT_NAME = "IDS / Industrial Data System"
 ACCEPTED_NAMES = (CURRENT_PRODUCT_NAME, "ProductMetaDatabase", "FinanceMetaDatabase")
+
+
+@lru_cache(maxsize=64)
+def _parse_yaml_text(text: str) -> dict[str, Any]:
+    module_name = "_ids_stage005_governance_yaml"
+    module = sys.modules.get(module_name)
+    if module is None:
+        parser_path = Path(__file__).resolve().parents[4] / "scripts" / "validate_project_governance.py"
+        spec = importlib.util.spec_from_file_location(module_name, parser_path)
+        if spec is None or spec.loader is None:
+            raise RuntimeError(f"cannot load governance YAML parser: {parser_path}")
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[module_name] = module
+        spec.loader.exec_module(module)
+    try:
+        parsed = module.fallback_yaml_load(text)
+    except ValueError:
+        return {}
+    return parsed if isinstance(parsed, dict) else {}
 
 SURFACE_PREFIXES = {
     "README": ("KM_IDSystem/README.md",),
@@ -188,6 +210,7 @@ REQUIRED_FILES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE035_PHASE2_DATABASE_RECOVERY_SMOKE_SLICE.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE035_PHASE3_SCENARIO_VALIDATION.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE035_PHASE4_CLOSEOUT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE035_STAGE_REVIEW.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_recovery_smoke/stage035_database_recovery_smoke_index.json",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/data_retention_table/stage034_data_retention_table_index.json",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_size_guard/stage033_database_size_guard_index.json",
@@ -344,6 +367,7 @@ REQUIRED_EVENT_IDS = (
     "EVT-IDS-V0_1-STAGE035-P2-20260710-001",
     "EVT-IDS-V0_1-STAGE035-P3-20260710-001",
     "EVT-IDS-V0_1-STAGE035-P4-20260710-001",
+    "EVT-IDS-V0_1-STAGE035-REVIEW-20260710-001",
 )
 
 FORBIDDEN_RUNTIME_PREFIXES = (
@@ -587,7 +611,73 @@ def _text_checks(root: Path, tracked_paths: list[str]) -> dict[str, int]:
     return hits
 
 
-def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
+def evaluate_current_state_consistency(
+    batch_text: str, roadmap_text: str
+) -> dict[str, bool]:
+    batch = _parse_yaml_text(batch_text)
+    roadmap = _parse_yaml_text(roadmap_text)
+    current_stage_id = roadmap.get("current_stage_id")
+    stage_suffix = (
+        current_stage_id.removeprefix("IDS-STAGE")
+        if isinstance(current_stage_id, str)
+        and current_stage_id.startswith("IDS-STAGE")
+        else ""
+    )
+    stage_key = f"STAGE-{stage_suffix}" if stage_suffix else ""
+    stage_prefix = f"stage{stage_suffix}" if stage_suffix else ""
+    stage_progress = batch.get("stage_progress")
+    stage_progress = stage_progress if isinstance(stage_progress, dict) else {}
+    stage_node = stage_progress.get(stage_key)
+    stage_node = stage_node if isinstance(stage_node, dict) else {}
+    upload_gate = batch.get("upload_gate")
+    upload_gate = upload_gate if isinstance(upload_gate, dict) else {}
+    decision = batch.get("decision")
+    decision = decision if isinstance(decision, dict) else {}
+
+    if not stage_node:
+        return {
+            "yaml_documents_parsed": bool(batch) and bool(roadmap),
+            "current_stage_node_resolved": False,
+            "batch_top_status_matches_stage": True,
+            "batch_stage_task_matches_roadmap": True,
+            "batch_stage_gate_matches_roadmap": True,
+            "roadmap_phase_matches_stage": True,
+            "decision_task_matches_roadmap": True,
+            "push_locked_structurally": upload_gate.get("push_allowed") is False,
+            "decision_upload_locked": decision.get("github_upload_allowed")
+            in (None, False),
+        }
+
+    stage_status = stage_node.get("status")
+    expected_batch_statuses = {stage_status}
+    if isinstance(stage_status, str) and not stage_status.startswith(stage_prefix):
+        expected_batch_statuses.add(f"{stage_prefix}_{stage_status}")
+    roadmap_task = roadmap.get("current_task_id")
+    roadmap_gate = roadmap.get("next_gate_id")
+    roadmap_phase = roadmap.get("current_phase_id")
+
+    return {
+        "yaml_documents_parsed": bool(batch) and bool(roadmap),
+        "current_stage_node_resolved": bool(stage_key) and bool(stage_node),
+        "batch_top_status_matches_stage": batch.get("status")
+        in expected_batch_statuses,
+        "batch_stage_task_matches_roadmap": stage_node.get("current_task_id")
+        == roadmap_task,
+        "batch_stage_gate_matches_roadmap": stage_node.get("next_gate")
+        == roadmap_gate,
+        "roadmap_phase_matches_stage": isinstance(roadmap_phase, str)
+        and roadmap_phase.startswith(f"IDS-STAGE{stage_suffix}"),
+        "decision_task_matches_roadmap": not decision
+        or decision.get("current_task_id") == roadmap_task,
+        "push_locked_structurally": upload_gate.get("push_allowed") is False,
+        "decision_upload_locked": decision.get("github_upload_allowed")
+        in (None, False),
+    }
+
+
+def evaluate_phase_state(
+    batch_text: str, roadmap_text: str, *, require_structured: bool = False
+) -> dict[str, bool]:
     batch_upload_gate_active = (
         'gate_task_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"' in batch_text
         and 'current_task_id: "IDS-V0_1-BATCH-001-010-UPLOAD-GATE"' in roadmap_text
@@ -1742,6 +1832,21 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         and 'current_task_id: "IDS-V0_1-STAGE035-P4"' in roadmap_text
         and 'next_gate_id: "IDS-STAGE035-REVIEW-GATE"' in roadmap_text
     )
+    stage035_reviewed_local = (
+        'batch_id: "IDS-V0_1-BATCH-031-040"' in batch_text
+        and 'status: "stage035_completed_reviewed_local"' in batch_text
+        and 'status: "completed_reviewed_local"' in batch_text
+        and 'review_status: "passed"' in batch_text
+        and 'next_stage: "STAGE-036"' in batch_text
+        and 'next_gate: "IDS-STAGE036-P1-GATE"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE035-REVIEW"' in batch_text
+        and 'acceptance_status: "reviewed_local_passed"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE035"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE035-REVIEW"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE035-REVIEW"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE036-P1-GATE"' in roadmap_text
+    )
     batch_terminal_state = batch_upload_gate_active or batch_uploaded_to_main
     later_stage_state = (
         batch_terminal_state
@@ -1854,6 +1959,7 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         or stage035_phase2_active
         or stage035_phase3_active
         or stage035_phase4_closeout
+        or stage035_reviewed_local
     )
     phase2_completed = '      - "Phase 2"' in batch_text
     stage005_active_or_complete = (
@@ -1914,7 +2020,7 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         or 'next_gate_id: "IDS-STAGE006-P1-GATE"' in roadmap_text
         or later_stage_state
     )
-    return {
+    checks = {
         "stage005_active_or_complete": stage005_active_or_complete,
         "phase2_completed": phase2_completed,
         "current_task_allowed": current_task_allowed,
@@ -1929,6 +2035,17 @@ def evaluate_phase_state(batch_text: str, roadmap_text: str) -> dict[str, bool]:
         and 'status: "passed_with_local_evidence"' in roadmap_text
         or later_stage_state,
     }
+    structured_checks = evaluate_current_state_consistency(batch_text, roadmap_text)
+    if structured_checks["yaml_documents_parsed"] and (
+        require_structured or structured_checks["current_stage_node_resolved"]
+    ):
+        checks.update(
+            {
+                f"current_state_{name}": value
+                for name, value in structured_checks.items()
+            }
+        )
+    return checks
 
 
 def evaluate_data_boundary(root_lock_text: str, batch_text: str, boundary_text: str) -> dict[str, bool]:
@@ -1998,7 +2115,9 @@ def build_report(root: Path | None = None) -> dict:
     readme_text = (root / "README.md").read_text(encoding="utf-8")
     handoff_text = (root / "docs/HANDOFF.md").read_text(encoding="utf-8")
 
-    phase_state_checks = evaluate_phase_state(batch_text, roadmap_text)
+    phase_state_checks = evaluate_phase_state(
+        batch_text, roadmap_text, require_structured=True
+    )
     data_boundary_checks = evaluate_data_boundary(root_lock_text, batch_text, boundary_text)
     owner_text_checks = {
         "readme_current_name": CURRENT_PRODUCT_NAME in readme_text,

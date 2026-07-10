@@ -6939,6 +6939,158 @@ next_gate_id: "IDS-STAGE035-REVIEW-GATE"
 
         self.assertTrue(all(checks.values()), checks)
 
+    def test_phase_state_allows_stage035_reviewed_local_no_upload(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-031-040"
+status: "stage035_completed_reviewed_local"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-031:
+    status: "completed_reviewed_local"
+    current_task_id: "IDS-V0_1-STAGE031-REVIEW"
+    acceptance_status: "reviewed_local_passed"
+  STAGE-032:
+    status: "completed_reviewed_local"
+    current_task_id: "IDS-V0_1-STAGE032-REVIEW"
+    acceptance_status: "reviewed_local_passed"
+  STAGE-033:
+    status: "completed_reviewed_local"
+    current_task_id: "IDS-V0_1-STAGE033-REVIEW"
+    acceptance_status: "reviewed_local_passed"
+  STAGE-034:
+    status: "completed_reviewed_local"
+    current_task_id: "IDS-V0_1-STAGE034-REVIEW"
+    acceptance_status: "reviewed_local_passed"
+  STAGE-035:
+    status: "completed_reviewed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    review_status: "passed"
+    next_stage: "STAGE-036"
+    next_gate: "IDS-STAGE036-P1-GATE"
+    current_task_id: "IDS-V0_1-STAGE035-REVIEW"
+    acceptance_id: "ACC-STAGE-035"
+    acceptance_status: "reviewed_local_passed"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE035"
+current_phase_id: "IDS-STAGE035-REVIEW"
+current_task_id: "IDS-V0_1-STAGE035-REVIEW"
+next_gate_id: "IDS-STAGE036-P1-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE005-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE005-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE035-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE035-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE035-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE035-P4"
+          status: "passed_no_github_upload_until_stage_review"
+      review_id: "IDS-STAGE035-REVIEW"
+      task_id: "IDS-V0_1-STAGE035-REVIEW"
+      status: "completed"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_structured_state_rejects_stage035_node_contradictions(self):
+        module = self._load_module()
+        self.assertTrue(
+            hasattr(module, "evaluate_current_state_consistency"),
+            "missing structured current-state consistency validator",
+        )
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-031-040"
+status: "stage035_completed_local_pending_review"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-035:
+    status: "stage035_completed_local_pending_review"
+    next_phase: "stage_review_gate"
+    next_gate: "IDS-STAGE035-REVIEW-GATE"
+    current_task_id: "IDS-V0_1-STAGE035-P4"
+    acceptance_status: "phase4_closeout_complete"
+decision:
+  current_task_id: "IDS-V0_1-STAGE035-P4"
+  next_allowed_task_id: "IDS-V0_1-STAGE035-REVIEW"
+  github_upload_allowed: false
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE035"
+current_phase_id: "IDS-STAGE035-P4"
+current_task_id: "IDS-V0_1-STAGE035-P4"
+next_gate_id: "IDS-STAGE035-REVIEW-GATE"
+"""
+
+        valid = module.evaluate_current_state_consistency(batch_text, roadmap_text)
+        self.assertTrue(all(valid.values()), valid)
+
+        top_status_tampered = batch_text.replace(
+            'status: "stage035_completed_local_pending_review"',
+            'status: "stage035_phase3_in_progress"',
+            1,
+        )
+        top_checks = module.evaluate_current_state_consistency(
+            top_status_tampered, roadmap_text
+        )
+        self.assertFalse(top_checks["batch_top_status_matches_stage"])
+
+        stage_task_tampered = batch_text.replace(
+            'current_task_id: "IDS-V0_1-STAGE035-P4"',
+            'current_task_id: "IDS-V0_1-STAGE035-P3"',
+            1,
+        )
+        stage_checks = module.evaluate_current_state_consistency(
+            stage_task_tampered, roadmap_text
+        )
+        self.assertFalse(stage_checks["batch_stage_task_matches_roadmap"])
+
+        decision_task_tampered = batch_text.replace(
+            'decision:\n  current_task_id: "IDS-V0_1-STAGE035-P4"',
+            'decision:\n  current_task_id: "IDS-V0_1-STAGE035-P3"',
+        )
+        decision_checks = module.evaluate_current_state_consistency(
+            decision_task_tampered, roadmap_text
+        )
+        self.assertFalse(decision_checks["decision_task_matches_roadmap"])
+
+        missing_stage_node = batch_text.replace("STAGE-035:", "STAGE-034:", 1)
+        missing_stage_checks = module.evaluate_current_state_consistency(
+            missing_stage_node, roadmap_text
+        )
+        self.assertFalse(
+            missing_stage_checks["current_stage_node_resolved"],
+            missing_stage_checks,
+        )
+        strict_checks = module.evaluate_phase_state(
+            missing_stage_node, roadmap_text, require_structured=True
+        )
+        self.assertFalse(
+            strict_checks["current_state_current_stage_node_resolved"],
+            strict_checks,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
