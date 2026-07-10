@@ -18,12 +18,16 @@ GitHub main upload only after R8 passes.
   interrupted transaction recovery and raw review-only behavior pass.
 - R5: complete locally; Owner Daily has a real product entry, shared eight-step no-write
   runner, exact loopback API, human-first result workspace and failed-step-only retry.
-- Requirements after R5: `VERIFIED 41 / PARTIAL 10 / FAILED 5 / NOT_VERIFIED 2`.
+- R6: complete locally; the exact twelve P0 visuals use one redacted 217-event snapshot,
+  literal source/time/project/task filtering, keyboard evidence drill-down, filtered
+  opportunity detail and bounded no-write Formula what-if controls.
+- Requirements after R6: `VERIFIED 48 / PARTIAL 5 / FAILED 4 / NOT_VERIFIED 1`.
 - Release: `FAIL_REMEDIATION_REQUIRED`.
 - GitHub push, app reinstall and Cloudflare deployment: not performed.
-- Online website and installed app: still the prior release; do not present them as R0-R5.
+- Online website and installed app: still the prior release; do not present them as R0-R6.
 - Final fetch moved `origin/main` to `07a6e50d593c7b9c74b8f3870b614be86a87160d`.
-  At the R5 hardening head, local `main` was ahead 20 / behind 12 before closeout records.
+  At the R6 implementation/review head, local `main` was ahead 33 / behind 12 before
+  closeout records.
   Remote history remains unmerged and must be preserved for R8 reconciliation.
 
 ## Key Decisions
@@ -31,6 +35,11 @@ GitHub main upload only after R8 passes.
 - Rendered/runtime evidence is required; source markers and document presence are not
   product acceptance.
 - Required browser viewports are `1470x661`, `1440x900` and `390x844`.
+- R6 acceptance owns exactly twelve P0 visual IDs. All use the same literal
+  source/time/project/task state and a shared evidence workspace; source markers are
+  regression evidence only.
+- Public visual facets are bounded derived metadata only. Formula what-if is local
+  no-write proxy comparison, not an income prediction or financial advice.
 - Hosted static remains read-only. Command and proposal execution are local-app only.
 - Owner Daily is also local-app only. It is not a seventh R3 command and cannot accept
   browser-supplied argv, paths, environment or execution mode.
@@ -47,18 +56,22 @@ GitHub main upload only after R8 passes.
 
 ## Read First
 
+- `docs/remediation/memory_atlas_v1_2/R6_P0_VISUALIZATION_AND_FILTERING.md`
 - `docs/remediation/memory_atlas_v1_2/R5_OWNER_DAILY_PRODUCT_ENTRY.md`
 - `docs/remediation/memory_atlas_v1_2/R4_PROPOSAL_APPROVAL_APPLY_ROLLBACK_WORKFLOW.md`
 - `docs/remediation/memory_atlas_v1_2/R3_REAL_COMMAND_PALETTE_WORKFLOWS.md`
 - `docs/remediation/memory_atlas_v1_2/R0_SOURCE_RECOVERY_AND_GAP_BASELINE.md`
 - `docs/superpowers/plans/2026-07-10-memory-atlas-v1-2-remediation.md`
-- `机器治理/证据与日志/remediation/v1_2_r5/status.json`
+- `机器治理/证据与日志/remediation/v1_2_r6/status.json`
 
 ## Verified Commands
 
 - `python3 -m unittest tests.test_memory_atlas_owner_daily tests.test_memory_atlas_app_runtime tests.test_s04p3_github_backup tests.test_memory_atlas_proposal_apply tests.test_memory_atlas_launcher tests.test_s04p1_chatgpt_sync tests.test_s04p2_codex_agent_sync tests.test_personalization_architecture -q`
+- `python3 -m unittest tests.test_memory_atlas_visual_workflows tests.test_memory_atlas_data -q`
 - `npm run lint`
 - `npm run build`
+- `npm run validate:v1.2-visual-models`
+- `npm run validate:v1.2-visual-workflows`
 - `npm run validate:v1.2-s14-p1`
 - `npm run validate:v1.2-owner-daily-e2e`
 - `npm run validate:v1.2-proposal-e2e`
@@ -69,15 +82,16 @@ GitHub main upload only after R8 passes.
 
 ## Remaining Risks
 
-- P0 Galaxy/Memory River/filter workflows still need R6 requirement closure.
 - Online snapshot still differs from the final local snapshot.
-- R4, R5 and the newer browser gates are not yet integrated into the overall final audit.
+- Raw/archive proof is still empty or incomplete for recovery purposes.
+- R4, R5, R6 and the newer browser gates are not yet integrated into the overall final audit.
 - GitHub-only clean recovery is not yet proven.
 - Final R8 reconciliation must retain both local remediation commits and the incoming
   remote Cloudflare/HomeHub history without force-pushing either side.
 
 ## Next Phase
 
-Run only `R6_P0_VISUALIZATION_AND_FILTERING`: close the P0 Galaxy, Memory River,
-human-question, source/time/project/task filter and interaction evidence gaps. Do not
-start R7, reconcile Git, push, reinstall or deploy in the same run.
+Run only `R7_DATA_PARITY_RAW_EVIDENCE_AND_RECOVERY`: build one immutable release
+snapshot, prove local/Pages candidate parity, materialize authorized recovery evidence
+without credentials and rehearse GitHub-only recovery in a clean temporary directory.
+Do not start R8, reconcile Git, push, reinstall or deploy in the same run.

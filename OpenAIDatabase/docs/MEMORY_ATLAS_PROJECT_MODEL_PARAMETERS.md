@@ -1,3 +1,44 @@
+## 168. Memory Atlas v1.2 Remediation R6 Visual Workflow Parameters
+
+状态：`R6_COMPLETE_LOCAL_ONLY`；release 仍为 `FAIL_REMEDIATION_REQUIRED`。
+
+参数：
+
+- `visual_workflow_schema = memory_atlas_visual_workflows.v1_2_r6`
+- `p0_visual_count = 12`
+- `facet_event_count = 217`
+- `facet_event_cap = 1000`
+- `evidence_refs_per_event_max = 3`
+- `filter_dimensions = source; time; project; task`
+- `bounded_time_anchor = latest valid facet event`
+- `unknown_project_task = 未标注`
+- `event_backed_visual_count = 11`
+- `content_changes_by_axis = source 11; time 10; project 11; task 11`
+- `evidence_interactions_per_viewport = 12`
+- `opportunity_join = exact evidence ref_id; matched IDs equal rendered IDs`
+- `formula_adjustable_weights = time_saved; reuse_value; skill_compounding`
+- `formula_bounds = 0.25..2.00; step 0.05`
+- `formula_browser_result = 80; 84; 80 after reset`
+- `formula_non_get_request_count = 0`
+- `target_viewports = 1470x661; 1440x900; 390x844`
+- `layout_failures = overlap 0; clipping 0; horizontal overflow 0`
+- `privacy_guard = high-risk 0; tracked raw/private 0`
+- `final_reviewer_high_medium = 0; 0`
+- `requirements = 48 verified; 5 partial; 4 failed; 1 not_verified`
+
+Formula 预览沿用已跟踪信号：默认可调权重均为 1.0，边界 0.25..2.00、step 0.05；
+`score = clamp(round(weighted_positive - rework_penalty), 0, 100)`，其中 rework penalty
+只在 `rework_score > neutral_rework_score` 时生效。UI 明确标为内部 proxy，不是收入
+预测或财务建议，且 `active_config_write=false`、`proposal_required_before_apply=true`。
+
+验证逻辑：`validate:v1.2-visual-workflows` 必须自行构建 frontend，并在三个目标视口
+逐一验证精确 12 项 inventory、12 项键盘证据交互、四个 literal 轴、逐卡真实内容变化
+或 zero-state、机会 exact evidence join、Formula change/reset、零写请求、零布局失败和
+非空截图。source-level S06/S07/S11 validator 只能作为 regression，不能替代该门禁。
+
+边界：本参数只证明 R6 本地候选的可视化和筛选工作流，不证明 R7 snapshot parity、
+raw/archive recovery、GitHub clean recovery、app 安装、线上部署或 v1.2 最终完成。
+
 ## 167. Memory Atlas v1.2 Remediation R5 Owner Daily Parameters
 
 状态：`R5_COMPLETE_LOCAL_ONLY`；release 仍为 `FAIL_REMEDIATION_REQUIRED`。
