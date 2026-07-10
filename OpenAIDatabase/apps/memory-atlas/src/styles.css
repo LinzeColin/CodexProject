@@ -185,7 +185,7 @@ button {
 
 .workspace {
   display: grid;
-  grid-template-rows: auto auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto auto clamp(160px, 26dvh, 240px) minmax(0, 1fr);
   min-width: 0;
   min-height: 0;
   height: 100vh;
@@ -200,6 +200,10 @@ button {
   grid-template-rows: auto auto auto minmax(0, 1fr);
   padding: 14px;
   gap: 8px;
+}
+
+.workspace.visual-focus-workspace.home-workspace {
+  grid-template-rows: auto auto auto clamp(160px, 26dvh, 240px) minmax(0, 1fr);
 }
 
 .visual-focus-workspace .topbar,
@@ -601,6 +605,12 @@ h3 {
 .command-palette {
   display: grid;
   gap: 10px;
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
   border: 1px solid rgba(126, 232, 212, 0.18);
   border-radius: 8px;
   background: rgba(14, 18, 24, 0.72);
@@ -5444,6 +5454,14 @@ h3 {
   overflow: hidden;
 }
 
+.visual-workspace.home-overview-view {
+  grid-template-rows: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
 .visual-workspace.summary-iteration-view {
   display: flex;
   flex-direction: column;
@@ -8801,12 +8819,16 @@ h3 {
   }
 
   .workspace {
-    height: calc(100dvh - 55px);
+    height: 100%;
     min-height: 0;
-    grid-template-rows: auto auto auto minmax(0, 1fr);
+    grid-template-rows: auto auto auto clamp(132px, 22dvh, 160px) minmax(0, 1fr);
     overflow: hidden;
     padding: 8px;
     gap: 8px;
+  }
+
+  .workspace.visual-focus-workspace.home-workspace {
+    grid-template-rows: auto auto auto clamp(132px, 22dvh, 160px) minmax(0, 1fr);
   }
 
   .workspace.visual-focus-workspace,
@@ -9298,6 +9320,10 @@ h3 {
     grid-template-rows: minmax(320px, 1fr) minmax(0, 240px);
     width: 100%;
     min-width: 0;
+  }
+
+  .content-grid.wide-view[data-view="home"] {
+    grid-template-rows: minmax(0, 1fr);
   }
 
   .view-surface,

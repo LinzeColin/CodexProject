@@ -1,3 +1,35 @@
+## 163. Memory Atlas v1.2 Remediation R1 Layout Parameters
+
+状态：`R1_COMPLETE_LOCAL_ONLY`；release 仍为 `FAIL_REMEDIATION_REQUIRED`。
+
+参数：
+
+- `workspace_visible_row_count = 5`
+- `desktop_palette_track = clamp(160px, 26dvh, 240px)`
+- `mobile_palette_track = clamp(132px, 22dvh, 160px)`
+- `target_viewports = 1470x661; 1440x900; 390x844`
+- `pairwise_overlap_tolerance_px = 1`
+- `horizontal_overflow_tolerance_px = 1`
+- `desktop_min_palette_client_height_px = 156`
+- `mobile_min_palette_client_height_px = 128`
+- `desktop_min_content_grid_height_px = 160`
+- `mobile_min_content_grid_height_px = 120`
+- `screenshot_min_bytes = 15000`
+- `nested_home_min_target_count = 12`
+- `nested_home_min_child_count = 12`
+- `nested_home_observed_per_viewport = 27 targets; 70 children; 0 issues`
+- `s06_required_behavior_categories = 3`
+- `s06_observed_chinese_summaries = 9; all scroll-reachable`
+
+验证逻辑：`validate:v1.2-home-multiviewport` 必须在三个视口逐一证明五个主区块
+无重叠、无横向溢出、无视口逃逸，命令面板首部/详情/末尾安全项可达，首页首尾
+关键区块可达，子 surface 不逃出 content grid，截图非空且 preview 端口释放。
+门禁还必须检查首页直接子区块和关键嵌套网格无横向裁切，并逐条验证 S06 三类
+行为智能的中文摘要可滚动到达。
+
+边界：本参数只证明 R1 本地布局候选，不证明线上版本、已安装 app、命令工作流、
+数据一致性、GitHub recovery 或 v1.2 最终完成。
+
 ## 162. Memory Atlas v1.2 Final Review Parameters
 
 状态：`v1_2_final_review_passed_pending_github_main_sync_no_upload_yet`。

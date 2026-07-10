@@ -1,0 +1,89 @@
+{
+  "schema_version": "memory_atlas.remediation_r1_status.v1",
+  "phase": "R1",
+  "captured_at": "2026-07-10T08:28:08Z",
+  "status": "R1_COMPLETE_LOCAL_ONLY",
+  "release_status": "FAIL_REMEDIATION_REQUIRED",
+  "base_commit": "418a822333a798abc3951db66b965ca6029dc30e",
+  "origin_main_at_phase_start": "00f4187f43960a3b25fc696ae2a15951f4431763",
+  "root_causes": [
+    "five visible workspace children allocated to four CSS Grid rows",
+    "command palette had no bounded internal scroll container",
+    "mobile workspace subtracted a hardcoded 55px header from a taller real header",
+    "mobile home child surface retained a 320px minimum row inside a 128px content track"
+  ],
+  "browser_acceptance": {
+    "validator": "validate:v1.2-home-multiviewport",
+    "viewports": [
+      "1470x661",
+      "1440x900",
+      "390x844"
+    ],
+    "before_pass_count": 0,
+    "before_failure_count": 3,
+    "before_command_palette_client_height_px": 26,
+    "before_command_palette_content_overlap_px": 18,
+    "final_pass_count": 3,
+    "final_failure_count": 0,
+    "final_pairwise_overlap_count": 0,
+    "final_horizontal_overflow_count": 0,
+    "final_viewport_escape_count": 0,
+    "final_nested_home_overflow_count": 0,
+    "nested_home_targets_checked_per_viewport": 27,
+    "nested_home_children_checked_per_viewport": 70,
+    "final_command_palette_client_height_px": {
+      "1470x661": 170,
+      "1440x900": 232,
+      "390x844": 158
+    },
+    "final_content_viewport_height_px": {
+      "1470x661": 290,
+      "1440x900": 467,
+      "390x844": 126
+    },
+    "palette_content_reachable": true,
+    "home_first_and_final_sections_reachable": true,
+    "s06_behavior_category_count": 3,
+    "s06_chinese_summary_count": 9,
+    "s06_chinese_summaries_reachable": true,
+    "preview_ports_released": true
+  },
+  "requirements_after_r1": {
+    "requirement_count": 58,
+    "verified": 30,
+    "partial": 18,
+    "failed": 8,
+    "not_verified": 2,
+    "promoted_to_verified": [
+      "S06-AC02",
+      "S10-AC01"
+    ],
+    "still_partial": [
+      "S12-AC01"
+    ],
+    "still_failed": [
+      "S14-AC02"
+    ]
+  },
+  "regression": {
+    "python_targeted_tests": "6 passed",
+    "typescript_lint": "PASS",
+    "production_build": "PASS",
+    "stage7_visual": "PASS",
+    "galaxy_pixel_gate": "PASS",
+    "memory_river_browser_gate": "PASS"
+  },
+  "evidence": {
+    "before": "机器治理/证据与日志/remediation/v1_2_r1/browser/before/status.json",
+    "final": "机器治理/证据与日志/remediation/v1_2_r1/browser/final/status.json",
+    "stage7": "机器治理/证据与日志/remediation/v1_2_r1/regression/stage7",
+    "requirement_delta": "机器治理/证据与日志/remediation/v1_2_r1/requirements_gap_delta.csv",
+    "human_record": "docs/remediation/memory_atlas_v1_2/R1_HOME_LAYOUT_AND_MULTIVIEWPORT_GATE.md"
+  },
+  "github_main_upload_allowed": false,
+  "remote_push": false,
+  "deployment": false,
+  "app_reinstall": false,
+  "raw_mutation": false,
+  "next_phase": "R2_PRODUCT_IDENTITY_AND_INFORMATION_ARCHITECTURE"
+}
