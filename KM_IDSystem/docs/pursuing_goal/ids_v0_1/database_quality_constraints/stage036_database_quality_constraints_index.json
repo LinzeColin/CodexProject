@@ -348,6 +348,169 @@
       "plaintext secrets"
     ]
   },
+  "phase4_delivery_contract": {
+    "schema_version": "ids.stage036.database_quality_constraints.delivery_contract.v1",
+    "schema_diff": {
+      "mode": "static_tracked_schema_diff_not_executed",
+      "baseline_schema_ref": "../postgresql_control_plane/001_control_plane_schema.sql",
+      "migration_sql_ref": "002_database_quality_constraints.sql",
+      "baseline_schema_sha256": "9fa7b8e535fe799c0aed14d738f568b33a19fc2835eeb492c8217bc35b588479",
+      "migration_sha256": "b8e3e49473fe89fae34b81042e7bc456499ba4702e4f6e6c637b65d91b5f3af1",
+      "added_table_contracts": [
+        "ids_state_value_registry"
+      ],
+      "candidate_constraint_count": 9,
+      "existing_foreign_key_count": 3,
+      "live_schema_diff_result": "NOT_EXECUTED"
+    },
+    "migration_output": {
+      "mode": "static_tracked_migration_output_not_executed",
+      "migration_id": "ids_stage036_002_database_quality_constraints",
+      "tracked_migration_sha256": "b8e3e49473fe89fae34b81042e7bc456499ba4702e4f6e6c637b65d91b5f3af1",
+      "live_migration_result": "NOT_EXECUTED",
+      "live_constraint_validation_result": "NOT_EXECUTED",
+      "dry_run_required": true,
+      "backup_checkpoint_required": true,
+      "rollback_required": true,
+      "destructive_migration_allowed": false
+    },
+    "recovery_test_log": {
+      "mode": "static_quality_constraint_recovery_log_expected_block",
+      "expected_valid_result": "PASS_WITH_EXPECTED_BLOCK",
+      "live_recovery_smoke_result": "NOT_EXECUTED",
+      "scenario_count": 14,
+      "execution_ready": false,
+      "execution_state": "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_DATA_PROFILE"
+    },
+    "destructive_migration_confirmation": {
+      "required": true,
+      "destructive_allowed_by_default": false,
+      "current_migration_destructive": false,
+      "authorized_this_run": false,
+      "manual_owner_confirmation_required": true,
+      "owner_message_zh": "任何破坏性 migration 必须单独人工确认；本轮没有授权或执行 DROP、TRUNCATE、DELETE、覆盖 source database 或不可逆 schema 变更。"
+    },
+    "rollback_steps": [
+      {
+        "step_id": "stop_on_invalid_contract",
+        "required": true,
+        "stop_all_database_actions": true,
+        "owner_message_zh": "若 schema diff、migration contract、场景或 delivery check 任一失败，保持 BLOCKED 并停止所有数据库动作。"
+      },
+      {
+        "step_id": "require_prechange_checkpoint",
+        "required": true,
+        "backup_checkpoint_required": true,
+        "owner_message_zh": "未来授权 apply 前必须先创建并验证可恢复 backup checkpoint，未验证时不得进入 migration。"
+      },
+      {
+        "step_id": "execute_tracked_down_section",
+        "required": true,
+        "tracked_down_section_only": true,
+        "owner_message_zh": "仅在独立授权 run 中执行 tracked 002 migration 的 migrate:down 段，并使用 ON_ERROR_STOP 与单事务；本轮不执行。"
+      },
+      {
+        "step_id": "preserve_source_database",
+        "required": true,
+        "source_database_mutation_allowed": false,
+        "owner_message_zh": "回滚和恢复必须在批准目标上进行，不得修改、覆盖、删除或 restore 到 source database。"
+      },
+      {
+        "step_id": "guard_nonempty_state_registry",
+        "required": true,
+        "nonempty_registry_auto_drop_allowed": false,
+        "owner_message_zh": "ids_state_value_registry 非空时自动回滚必须失败关闭；任何清理需后续 owner 决策，禁止自动 DROP。"
+      },
+      {
+        "step_id": "separate_cleanup_owner_gate",
+        "required": true,
+        "automatic_cleanup_allowed": false,
+        "owner_message_zh": "失败目标、约束或派生产物的清理不是本轮自动动作，必须进入单独 owner cleanup gate。"
+      }
+    ],
+    "backup_restore_steps": [
+      {
+        "step_id": "owner_authorized_real_profile",
+        "required": true,
+        "owner_authorized_real_profile_required": true,
+        "owner_message_zh": "未来 run 必须先取得 owner 授权真实控制面数据 profile reference、bounded scope 和 approval reference。"
+      },
+      {
+        "step_id": "managed_secret_ref",
+        "required": true,
+        "plaintext_credentials_allowed": false,
+        "owner_message_zh": "数据库凭证只能由环境管理的 secret reference 提供，不得进入 Git、命令输出、报告或 audit body。"
+      },
+      {
+        "step_id": "verified_backup_checkpoint",
+        "required": true,
+        "backup_checkpoint_verification_required": true,
+        "owner_message_zh": "在任何 apply 前创建隔离、可识别、已验证的 backup checkpoint，并记录不含原始 payload 或凭证的 evidence reference。"
+      },
+      {
+        "step_id": "isolated_target_dry_run",
+        "required": true,
+        "isolated_non_production_target_required": true,
+        "owner_message_zh": "先在批准的隔离非生产目标执行 dry-run，核对 PostgreSQL version、schema head、容量、连接池和 source non-interference。"
+      },
+      {
+        "step_id": "apply_and_validate_constraints",
+        "required": true,
+        "bounded_profile_zero_violations_required": true,
+        "owner_message_zh": "仅当真实 profile 对九个候选约束证明零违规，才可在单事务内 apply 并逐项 VALIDATE CONSTRAINT。"
+      },
+      {
+        "step_id": "recovery_verification",
+        "required": true,
+        "recovery_smoke_and_schema_verification_required": true,
+        "owner_message_zh": "apply 后必须验证 schema、migration ledger、约束、索引、bounded counts、health/readiness 和 recovery smoke。"
+      },
+      {
+        "step_id": "restore_checkpoint_on_failure",
+        "required": true,
+        "source_database_overwrite_allowed": false,
+        "owner_message_zh": "失败时停止写入、隔离目标并从批准 checkpoint 恢复；不得覆盖 source database。"
+      }
+    ],
+    "known_limits": [
+      {
+        "limit_id": "no_owner_authorized_real_profile",
+        "acknowledged": true,
+        "owner_message_zh": "本轮没有 owner 授权真实数据 profile，因此未验证真实重复、空值、外键、状态或一致性违规。"
+      },
+      {
+        "limit_id": "no_live_postgresql_execution",
+        "acknowledged": true,
+        "owner_message_zh": "未连接 PostgreSQL，未执行 schema diff、dry-run、migration、constraint validation、rollback、backup、restore 或 recovery smoke。"
+      },
+      {
+        "limit_id": "static_pass_is_not_readiness",
+        "acknowledged": true,
+        "owner_message_zh": "PASS_WITH_EXPECTED_BLOCK 只证明 tracked 合同和停止路径有效，不代表真实数据库 clean、约束已安装或 production-ready。"
+      },
+      {
+        "limit_id": "no_runtime_artifacts_created",
+        "acknowledged": true,
+        "owner_message_zh": "没有创建数据库、DSN、credential config、profile、migration output file、recovery log file、report 或 runtime output。"
+      },
+      {
+        "limit_id": "raw_metadata_path_only",
+        "acknowledged": true,
+        "owner_message_zh": "原始 metadata 根只记录 path-only 地址，未读取、列出、hash、复制、dump、扫描或派生内容。"
+      },
+      {
+        "limit_id": "state_registry_values_deferred",
+        "acknowledged": true,
+        "owner_message_zh": "ids_state_value_registry 仅交付空结构；状态值和 transition 仍由 STAGE-037 定义，本轮没有写入。"
+      },
+      {
+        "limit_id": "stage_review_and_batch_upload_blocked",
+        "acknowledged": true,
+        "owner_message_zh": "STAGE-036 whole-stage review 尚未执行；BATCH031_040 upload 和 app reinstall 继续阻断。"
+      }
+    ],
+    "chinese_owner_feedback": "STAGE-036 Phase 4 已形成可执行、可测试、可回滚的静态数据库质量约束交付合同。本轮未执行真实 migration、constraint validation、rollback、backup、restore 或 recovery smoke；没有 owner 授权真实数据 profile，所有 live 操作继续阻断。下一步只能进入独立 STAGE-036 review，不是 GitHub upload、app reinstall 或 STAGE-037。"
+  },
   "runtime_policy": {
     "connect_to_postgres": false,
     "instantiate_connection_pool": false,

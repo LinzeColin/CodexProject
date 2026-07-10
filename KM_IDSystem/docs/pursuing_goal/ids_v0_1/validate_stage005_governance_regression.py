@@ -5,6 +5,7 @@ from __future__ import annotations
 from functools import lru_cache
 import importlib.util
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -215,6 +216,7 @@ REQUIRED_FILES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_PHASE1_SCOPE_BOUNDARY.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_PHASE2_DATABASE_QUALITY_CONSTRAINTS_SLICE.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_PHASE3_SCENARIO_VALIDATION.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_PHASE4_CLOSEOUT.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_quality_constraints/stage036_database_quality_constraints_index.json",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_quality_constraints/002_database_quality_constraints.sql",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_recovery_smoke/stage035_database_recovery_smoke_index.json",
@@ -379,6 +381,7 @@ REQUIRED_EVENT_IDS = (
     "EVT-IDS-V0_1-STAGE036-P1-20260710-001",
     "EVT-IDS-V0_1-STAGE036-P2-20260710-001",
     "EVT-IDS-V0_1-STAGE036-P3-20260710-001",
+    "EVT-IDS-V0_1-STAGE036-P4-20260710-001",
 )
 
 FORBIDDEN_RUNTIME_PREFIXES = (
@@ -600,10 +603,112 @@ def _parse_events(path: Path) -> tuple[list[dict], list[str]]:
         if not line.strip():
             continue
         try:
-            events.append(json.loads(line))
+            event = json.loads(line)
         except json.JSONDecodeError as exc:
             errors.append(f"{path.as_posix()}:{lineno}:{exc.msg}")
+            continue
+        if isinstance(event, dict):
+            events.append(event)
+        else:
+            errors.append(f"{path.as_posix()}:{lineno}:event must be a JSON object")
     return events, errors
+
+
+def _note_assignment_values(notes: str, field: str) -> list[str]:
+    assignment_pattern = rf"(?<![\w]){re.escape(field)}\s*="
+    assignment_count = len(re.findall(assignment_pattern, notes, re.I))
+    values = re.findall(
+        rf"{assignment_pattern}\s*([^,;.\s]+)", notes, re.I
+    )
+    if len(values) != assignment_count:
+        values.append("<MALFORMED_ASSIGNMENT>")
+    return values
+
+
+def evaluate_required_event_semantics(events: list[dict]) -> list[str]:
+    event_id = "EVT-IDS-V0_1-STAGE036-P4-20260710-001"
+    matching = [
+        event
+        for event in events
+        if isinstance(event, dict) and event.get("event_id") == event_id
+    ]
+    if len(matching) != 1:
+        return [f"{event_id}: expected exactly one event"]
+
+    event = matching[0]
+    errors: list[str] = []
+    if event.get("event_type") != "stage_closeout":
+        errors.append(f"{event_id}: event_type must be stage_closeout")
+    if event.get("task_id") != "IDS-V0_1-STAGE036-P4":
+        errors.append(f"{event_id}: task_id must bind STAGE036-P4")
+    if event.get("acceptance_ids") != ["ACC-STAGE-036"]:
+        errors.append(f"{event_id}: acceptance_ids must bind ACC-STAGE-036")
+
+    changed_files = event.get("changed_files")
+    changed_files = (
+        set(changed_files)
+        if isinstance(changed_files, list)
+        and all(isinstance(path, str) for path in changed_files)
+        else set()
+    )
+    required_changed_files = {
+        "KM_IDSystem/scripts/check_database_quality_constraints.py",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_PHASE4_CLOSEOUT.md",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml",
+        "KM_IDSystem/docs/governance/roadmap.yaml",
+        "KM_IDSystem/docs/governance/events.jsonl",
+    }
+    if not required_changed_files.issubset(changed_files):
+        errors.append(f"{event_id}: required changed_files are incomplete")
+
+    evidence_refs = event.get("evidence_refs")
+    evidence_refs = evidence_refs if isinstance(evidence_refs, list) else []
+    refs = {
+        item.get("ref")
+        for item in evidence_refs
+        if isinstance(item, dict) and isinstance(item.get("ref"), str)
+    }
+    required_refs = {
+        "KM_IDSystem/scripts/check_database_quality_constraints.py#build_stage036_delivery_report",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_PHASE4_CLOSEOUT.md",
+    }
+    if not required_refs.issubset(refs):
+        errors.append(f"{event_id}: required evidence_refs are incomplete")
+
+    notes = event.get("notes")
+    notes = notes if isinstance(notes, str) else ""
+    exact_runtime_results = {
+        field: [
+            value.upper()
+            for value in _note_assignment_values(notes, field)
+        ]
+        for field in (
+            "live_schema_diff_result",
+            "live_migration_result",
+            "live_constraint_validation_result",
+            "live_recovery_smoke_result",
+        )
+    }
+    stage_gate_tokens = [
+        value.upper()
+        for value in re.findall(
+            r"\bIDS-STAGE\d+-(?:P\d+|REVIEW)-GATE\b", notes, re.I
+        )
+    ]
+    next_gate_values = [
+        value.upper() for value in _note_assignment_values(notes, "next_gate")
+    ]
+    push_values = [
+        value.lower() for value in _note_assignment_values(notes, "push_allowed")
+    ]
+    if (
+        not all(values == ["NOT_EXECUTED"] for values in exact_runtime_results.values())
+        or stage_gate_tokens != ["IDS-STAGE036-REVIEW-GATE"]
+        or next_gate_values != ["IDS-STAGE036-REVIEW-GATE"]
+        or push_values != ["false"]
+    ):
+        errors.append(f"{event_id}: next-gate or no-live/no-upload notes are incomplete")
+    return errors
 
 
 def _surface_counts(tracked_paths: list[str]) -> dict[str, int]:
@@ -658,6 +763,7 @@ def evaluate_current_state_consistency(
             "batch_stage_gate_matches_roadmap": True,
             "roadmap_phase_matches_stage": True,
             "decision_task_matches_roadmap": True,
+            "decision_next_allowed_task_matches_gate": True,
             "push_locked_structurally": upload_gate.get("push_allowed") is False,
             "decision_upload_locked": decision.get("github_upload_allowed")
             in (None, False),
@@ -670,6 +776,15 @@ def evaluate_current_state_consistency(
     roadmap_task = roadmap.get("current_task_id")
     roadmap_gate = roadmap.get("next_gate_id")
     roadmap_phase = roadmap.get("current_phase_id")
+    expected_next_task = None
+    if (
+        isinstance(roadmap_gate, str)
+        and roadmap_gate.startswith("IDS-STAGE")
+        and roadmap_gate.endswith("-GATE")
+    ):
+        expected_next_task = (
+            "IDS-V0_1-" + roadmap_gate.removeprefix("IDS-").removesuffix("-GATE")
+        )
 
     return {
         "yaml_documents_parsed": bool(batch) and bool(roadmap),
@@ -684,6 +799,16 @@ def evaluate_current_state_consistency(
         and roadmap_phase.startswith(f"IDS-STAGE{stage_suffix}"),
         "decision_task_matches_roadmap": not decision
         or decision.get("current_task_id") == roadmap_task,
+        "decision_next_allowed_task_matches_gate": (
+            decision.get("next_allowed_task_id") == expected_next_task
+            if roadmap_phase == "IDS-STAGE036-P4"
+            else (
+                not decision
+                or expected_next_task is None
+                or decision.get("next_allowed_task_id")
+                in (None, expected_next_task)
+            )
+        ),
         "push_locked_structurally": upload_gate.get("push_allowed") is False,
         "decision_upload_locked": decision.get("github_upload_allowed")
         in (None, False),
@@ -1899,6 +2024,20 @@ def evaluate_phase_state(
         and 'current_task_id: "IDS-V0_1-STAGE036-P3"' in roadmap_text
         and 'next_gate_id: "IDS-STAGE036-P4-GATE"' in roadmap_text
     )
+    stage036_phase4_closeout = (
+        'batch_id: "IDS-V0_1-BATCH-031-040"' in batch_text
+        and 'status: "stage036_completed_local_pending_review"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE036-P4"' in batch_text
+        and 'acceptance_status: "phase4_closeout_complete"' in batch_text
+        and 'next_phase: "stage_review_gate"' in batch_text
+        and 'next_gate: "IDS-STAGE036-REVIEW-GATE"' in batch_text
+        and 'next_allowed_task_id: "IDS-V0_1-STAGE036-REVIEW"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE036"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE036-P4"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE036-P4"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE036-REVIEW-GATE"' in roadmap_text
+    )
     batch_terminal_state = batch_upload_gate_active or batch_uploaded_to_main
     later_stage_state = (
         batch_terminal_state
@@ -2015,6 +2154,7 @@ def evaluate_phase_state(
         or stage036_phase1_active
         or stage036_phase2_active
         or stage036_phase3_active
+        or stage036_phase4_closeout
     )
     phase2_completed = '      - "Phase 2"' in batch_text
     stage005_active_or_complete = (
@@ -2148,6 +2288,7 @@ def build_report(root: Path | None = None) -> dict:
     events, event_json_errors = _parse_events(events_path)
     event_ids = {event.get("event_id") for event in events}
     missing_event_ids = [event_id for event_id in REQUIRED_EVENT_IDS if event_id not in event_ids]
+    event_semantic_errors = evaluate_required_event_semantics(events)
 
     batch_paths = [
         root / "docs/pursuing_goal/ids_v0_1/BATCH001_010_UPLOAD_LOCK.yaml",
@@ -2189,6 +2330,8 @@ def build_report(root: Path | None = None) -> dict:
         issues.append("events.jsonl has invalid JSON lines")
     if missing_event_ids:
         issues.append("missing required stage events")
+    if event_semantic_errors:
+        issues.append("required stage event semantics are invalid")
     if tracked_forbidden_runtime_files:
         issues.append("forbidden runtime files are tracked")
     if forbidden_changed_paths:
@@ -2213,6 +2356,7 @@ def build_report(root: Path | None = None) -> dict:
         "phase_state_checks": phase_state_checks,
         "changed_paths": changed_paths,
         "event_json_errors": event_json_errors,
+        "event_semantic_errors": event_semantic_errors,
         "data_boundary_checks": data_boundary_checks,
         "forbidden_changed_paths": forbidden_changed_paths,
         "issues": issues,
