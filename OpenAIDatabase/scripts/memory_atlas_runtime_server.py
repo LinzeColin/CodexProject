@@ -18,6 +18,7 @@ from urllib.parse import urlparse
 
 
 COMMAND_API_VERSION = "memory_atlas_command_api.v1_2_r3"
+PROPOSAL_API_VERSION = "memory_atlas_proposal_api.v1_2_r4"
 MAX_COMMAND_BODY_BYTES = 1024
 LOOPBACK_HOSTS = ("127.0.0.1", "localhost")
 
@@ -90,6 +91,8 @@ class RuntimeState:
             "command_api_version": COMMAND_API_VERSION,
             "command_ids": list(command_ids),
             "command_execution_scope": "local_application_support_source_copy",
+            "proposal_api_version": PROPOSAL_API_VERSION,
+            "proposal_action_scope": "local_application_support_source_copy",
         }
 
 
@@ -178,6 +181,9 @@ class Handler(SimpleHTTPRequestHandler):
         if path == "/__memory_atlas_command":
             self.handle_command()
             return
+        if path == "/__memory_atlas_proposal_action":
+            self.handle_proposal_action()
+            return
         self.send_command_error(404, "未找到该本地 Memory Atlas 接口。")
 
     def do_OPTIONS(self) -> None:
@@ -214,38 +220,16 @@ class Handler(SimpleHTTPRequestHandler):
     def handle_command(self) -> None:
         if not self.validate_local_origin():
             return
-
-        content_type = (self.headers.get("Content-Type") or "").split(";", 1)[0].strip().lower()
-        if content_type != "application/json":
-            self.send_command_error(415, "本地命令请求必须使用 JSON。")
+        payload = self.read_json_payload()
+        if payload is None:
             return
-        length_text = self.headers.get("Content-Length")
-        if length_text is None:
-            self.send_command_error(411, "本地命令请求缺少 Content-Length。")
-            return
-        try:
-            length = int(length_text)
-        except ValueError:
-            self.send_command_error(400, "本地命令请求长度无效。")
-            return
-        if length < 2 or length > MAX_COMMAND_BODY_BYTES:
-            self.send_command_error(413, "本地命令请求体过大或为空，已拒绝执行。")
-            return
-
-        try:
-            body = self.rfile.read(length)
-            payload = json.loads(body.decode("utf-8"))
-        except (UnicodeDecodeError, json.JSONDecodeError):
-            self.send_command_error(400, "本地命令请求不是有效 JSON。")
-            return
-        if not isinstance(payload, dict) or set(payload) != {"command_id"}:
+        if set(payload) != {"command_id"}:
             self.send_command_error(400, "本地命令请求只能包含 command_id。")
             return
         command_id = payload.get("command_id")
         if not isinstance(command_id, str) or command_id not in self.server.command_bridge.command_ids:
             self.send_command_error(400, "命令不在 Memory Atlas 固定允许列表中。")
             return
-
         try:
             result = self.server.command_bridge.execute(command_id)
         except Exception as exc:
@@ -256,6 +240,73 @@ class Handler(SimpleHTTPRequestHandler):
                 self.send_command_error(400, "命令不在 Memory Atlas 固定允许列表中。")
                 return
             self.send_command_error(500, "本地命令服务出现未预期错误；请查看 Memory Atlas 本机日志。")
+            return
+        self.server.state.touch(True)
+        self.send_json(result)
+
+    def read_json_payload(self) -> dict[str, Any] | None:
+        content_type = (self.headers.get("Content-Type") or "").split(";", 1)[0].strip().lower()
+        if content_type != "application/json":
+            self.send_command_error(415, "本地命令请求必须使用 JSON。")
+            return None
+        length_text = self.headers.get("Content-Length")
+        if length_text is None:
+            self.send_command_error(411, "本地命令请求缺少 Content-Length。")
+            return None
+        try:
+            length = int(length_text)
+        except ValueError:
+            self.send_command_error(400, "本地命令请求长度无效。")
+            return None
+        if length < 2 or length > MAX_COMMAND_BODY_BYTES:
+            self.send_command_error(413, "本地命令请求体过大或为空，已拒绝执行。")
+            return None
+
+        try:
+            body = self.rfile.read(length)
+            payload = json.loads(body.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            self.send_command_error(400, "本地命令请求不是有效 JSON。")
+            return None
+        if not isinstance(payload, dict):
+            self.send_command_error(400, "本地命令请求必须是 JSON object。")
+            return None
+        return payload
+
+    def handle_proposal_action(self) -> None:
+        if not self.validate_local_origin():
+            return
+        payload = self.read_json_payload()
+        if payload is None:
+            return
+        action = payload.get("action")
+        if action == "approve_apply":
+            expected = {"action", "proposal_id", "review_token", "confirmation"}
+        elif action == "rollback":
+            expected = {"action", "transaction_id", "rollback_token", "confirmation"}
+        else:
+            self.send_command_error(400, "proposal action 不在固定允许列表中。")
+            return
+        if set(payload) != expected or any(not isinstance(payload.get(key), str) or not payload.get(key) for key in expected):
+            self.send_command_error(400, "proposal action 字段不符合固定合同。")
+            return
+        try:
+            result = self.server.command_bridge.execute_proposal_action(payload)
+        except Exception as exc:
+            if exc.__class__.__name__ == "CommandBusyError":
+                self.send_command_error(409, "另一个 Memory Atlas 本地操作正在运行，请完成后重试。")
+                return
+            if exc.__class__.__name__ in {
+                "CommandRequestError",
+                "ProposalAuthorizationError",
+                "ProposalBundleError",
+                "ProposalRollbackError",
+                "ProposalValidationError",
+                "ProposalWorkflowError",
+            }:
+                self.send_command_error(400, str(exc))
+                return
+            self.send_command_error(500, "本地 proposal 服务出现未预期错误；请查看 Memory Atlas 本机日志。")
             return
         self.server.state.touch(True)
         self.send_json(result)
