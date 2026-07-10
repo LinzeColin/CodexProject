@@ -12,7 +12,7 @@
 
 | Repository | Immutable source/evidence commit | Meaning |
 |---|---|---|
-| `LinzeColin/CodexProject` | `42abfd60a49d0505984364c2e41efbbdcc73e9ac` | Rebasing-safe L2 adapters, governance records and deployment evidence base; the report carrier is resolved after clone with `git log -1 --format=%H -- FINAL_ACCEPTANCE_BUNDLE/cloudflare_compatibility_envelope/FINAL_REPORT.md` |
+| `LinzeColin/CodexProject` | `1cefb46158feb66fb93007fec5b4a2a0412aee70` | Remote-live reconciliation commit containing the rebased L2 adapters, governance records and MemoryAtlas protected evidence; the final report carrier is resolved after clone with `git log -1 --format=%H -- FINAL_ACCEPTANCE_BUNDLE/cloudflare_compatibility_envelope/FINAL_REPORT.md` |
 | `LinzeColin/LinzeHomeHub` | `da2fd0fa2f9eb208231bd5abc61da7d1795a1fda` | Five-card Launch Constellation with NAB `Live`, MemoryAtlas `Protected`, and deploy-ready fallback routing |
 | `LinzeColin/Archive` | `10129d6c40883941e0845cb15222a46b7b2e3dc9` | Self-contained `nab` source on Archive `main` |
 
@@ -48,7 +48,8 @@ Passed:
 
 Executed but not green:
 
-- `python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main` stopped only on ten pre-existing WDA lean-v2 schema errors after all Cloudflare task errors were removed. `git diff --name-only origin/main -- WDA` was empty. Local evidence id: `a80214f9066d`.
+- Before push, root-governance fanout made `python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main` stop only on ten pre-existing WDA lean-v2 schema errors after all Cloudflare task errors were removed. `git diff --name-only origin/main -- WDA` was empty. Local evidence id: `a80214f9066d`.
+- After CodexProject `HEAD == origin/main`, the exact required command returned exit 0, `decision=SHIP`, `changed_file_count=0`, and `zero_tracked_write=true`. Local evidence id: `93e50bea8af2`.
 - Real HomeHub deploy with the discovered API token returned Cloudflare error `10000`.
 - Two OAuth callbacks timed out; the second requested only `account:read`, `user:read`, `workers:write`, and Keychain storage.
 
@@ -81,6 +82,7 @@ Not run because of the stop condition:
 - LinzeHomeHub and Archive have only remote branch `main`.
 - CodexProject also has protected archive branches `macdata-airM2` and `macdata-proM2`. Repository tests and governance explicitly classify `macdata-proM2` as protected and not a managed temporary branch; neither branch was created by this task or deleted.
 - No task branch or task PR was created.
+- The successful CodexProject push reported one moderate Dependabot alert on the default branch. HomeHub and MemoryAtlas installs each reported 0 npm vulnerabilities; the repository-wide alert was not attributed to or changed by this bounded L2 task and remains an explicit follow-up risk.
 
 ## 8. Local cleanup
 

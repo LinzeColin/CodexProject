@@ -388,7 +388,7 @@
   ],
   "binding_status": "COMMIT_BOUND",
   "ci_attestation_subject": "Cloudflare Compatibility Envelope L2 public-safe adapters and deployment evidence",
-  "ci_run_reference": "LOCAL_a80214f9066d_BLOCKED_ONLY_BY_PREEXISTING_WDA_SCHEMA",
+  "ci_run_reference": "POST_PUSH_LOCAL_93e50bea8af2_SHIP_CHANGED_FILES_0",
   "production_status": "MEMORYATLAS_PROTECTED_LIVE_REMAINING_EEI_PFI_SERENITY_BLOCKED_BY_AUTH",
   "rollback": {
     "action": "Revert the bounded Cloudflare compatibility commits and manifests in each repository.",
