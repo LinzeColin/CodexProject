@@ -217,6 +217,7 @@ def stop_existing_runtime_server() -> None:
             command = ""
         if (
             ("python3 -m http.server" in command and "OpenAIDatabase/MemoryAtlas" in command)
+            or ("memory_atlas_runtime_server.py" in command and "OpenAIDatabase/MemoryAtlas" in command)
             or ("memory_atlas_server.py" in command and "OpenAIDatabase/MemoryAtlas" in command)
         ):
             subprocess.run(["kill", str(pid)], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -527,7 +528,8 @@ BUILD_INFO="$RUNTIME_DIR/memory_atlas_build.json"
 STATUS_FILE="$APP_SUPPORT/launching.html"
 PID_FILE="$APP_SUPPORT/server.pid"
 WATCHDOG_PID_FILE="$APP_SUPPORT/server_watchdog.pid"
-SERVER_SCRIPT="$APP_SUPPORT/memory_atlas_server.py"
+SERVER_SOURCE="$REPO_ROOT/scripts/memory_atlas_runtime_server.py"
+SERVER_SCRIPT="$APP_SUPPORT/memory_atlas_runtime_server.py"
 SNAPSHOT="$REPO_ROOT/data/derived/visualization/memory_atlas.json"
 LOG_DIR="$HOME/Library/Logs/OpenAIDatabase"
 LOG_FILE="$LOG_DIR/memory-atlas-launcher.log"
@@ -629,205 +631,16 @@ is_managed_server() {{
   local pid="$1"
   local command_line
   command_line="$(ps -p "$pid" -o command= 2>/dev/null || true)"
-  [[ ( "$command_line" == *"memory_atlas_server.py"* && "$command_line" == *"$RUNTIME_DIR"* ) || ( "$command_line" == *"-m http.server"* && "$command_line" == *"$RUNTIME_DIR"* ) ]]
+  [[ ( "$command_line" == *"memory_atlas_runtime_server.py"* && "$command_line" == *"$RUNTIME_DIR"* ) || ( "$command_line" == *"memory_atlas_server.py"* && "$command_line" == *"$RUNTIME_DIR"* ) || ( "$command_line" == *"-m http.server"* && "$command_line" == *"$RUNTIME_DIR"* ) ]]
 }}
 
 write_runtime_server() {{
   mkdir -p "$APP_SUPPORT"
-  cat > "$SERVER_SCRIPT" <<'PY'
-#!/usr/bin/env python3
-from __future__ import annotations
-
-import json
-import os
-import sys
-import threading
-import time
-from functools import partial
-from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
-from pathlib import Path
-from urllib.parse import urlparse
-
-
-runtime_dir = Path(sys.argv[1]).resolve()
-port = int(sys.argv[2])
-ttl_seconds = int(sys.argv[3])
-idle_seconds = int(sys.argv[4])
-started_at = time.time()
-last_seen_at = started_at
-had_client = False
-release_requested = False
-released_at: float | None = None
-shutdown_timer: threading.Timer | None = None
-state_lock = threading.Lock()
-httpd: ThreadingHTTPServer | None = None
-pid_file = os.environ.get("MEMORY_ATLAS_PID_FILE", "")
-
-
-def touch(client: bool = True) -> None:
-    global had_client, last_seen_at
-    with state_lock:
-        last_seen_at = time.time()
-        if client:
-            had_client = True
-
-
-def snapshot_mtime() -> int | None:
-    snapshot = runtime_dir / "memory_atlas.json"
-    if not snapshot.exists():
-        return None
-    return int(snapshot.stat().st_mtime)
-
-
-def request_shutdown(reason: str) -> None:
-    global had_client, last_seen_at, release_requested, released_at, shutdown_timer
-    start_timer = False
-    with state_lock:
-        had_client = True
-        last_seen_at = time.time()
-        release_requested = True
-        released_at = last_seen_at
-        if shutdown_timer is None:
-            start_timer = True
-    if not start_timer:
-        return
-    sys.stderr.write("Memory Atlas server release requested (%s); shutting down.\\n" % reason)
-
-    def shutdown_later() -> None:
-        if httpd is not None:
-            httpd.shutdown()
-
-    timer = threading.Timer(0.2, shutdown_later)
-    timer.daemon = True
-    with state_lock:
-        shutdown_timer = timer
-    timer.start()
-
-
-class MemoryAtlasHTTPServer(ThreadingHTTPServer):
-    daemon_threads = True
-    allow_reuse_address = True
-
-    def handle_error(self, request: object, client_address: object) -> None:
-        exc_type, exc, _traceback = sys.exc_info()
-        if exc_type in {{BrokenPipeError, ConnectionResetError}} or isinstance(exc, (BrokenPipeError, ConnectionResetError)):
-            return
-        super().handle_error(request, client_address)
-
-
-class Handler(SimpleHTTPRequestHandler):
-    def end_headers(self) -> None:
-        if self.path.startswith("/memory_atlas.json") or self.path.startswith("/__memory_atlas"):
-            self.send_header("Cache-Control", "no-store")
-        else:
-            self.send_header("Cache-Control", "no-cache")
-        super().end_headers()
-
-    def log_message(self, fmt: str, *args: object) -> None:
-        sys.stderr.write("%s - - [%s] %s\\n" % (self.client_address[0], self.log_date_time_string(), fmt % args))
-
-    def send_json(self, payload: dict[str, object], status: int = 200) -> None:
-        body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
-        self.send_response(status)
-        self.send_header("Content-Type", "application/json; charset=utf-8")
-        self.send_header("Content-Length", str(len(body)))
-        self.end_headers()
-        self.wfile.write(body)
-
-    def send_empty(self, status: int = 204) -> None:
-        self.send_response(status)
-        self.send_header("Content-Length", "0")
-        self.end_headers()
-
-    def do_GET(self) -> None:
-        path = urlparse(self.path).path
-        if path == "/__memory_atlas_runtime_state":
-            with state_lock:
-                last_seen = int(last_seen_at)
-                active = had_client
-                released = release_requested
-                release_epoch = int(released_at) if released_at else None
-            self.send_json({{
-                "status": "running",
-                "pid": os.getpid(),
-                "started_at_epoch": int(started_at),
-                "last_seen_epoch": last_seen,
-                "had_client": active,
-                "release_requested": released,
-                "released_at_epoch": release_epoch,
-                "active_thread_count": threading.active_count(),
-                "idle_seconds": idle_seconds,
-                "ttl_seconds": ttl_seconds,
-                "snapshot_mtime_epoch": snapshot_mtime(),
-            }})
-            return
-        if path == "/memory_atlas.json":
-            touch(True)
-        super().do_GET()
-
-    def do_POST(self) -> None:
-        path = urlparse(self.path).path
-        if path == "/__memory_atlas_heartbeat":
-            touch(True)
-            self.send_empty()
-            return
-        if path == "/__memory_atlas_release":
-            request_shutdown("page_release")
-            self.send_empty()
-            return
-        self.send_error(404, "Not found")
-
-
-def monitor_idle() -> None:
-    while True:
-        time.sleep(2)
-        now = time.time()
-        with state_lock:
-            idle_for = now - last_seen_at
-            client_seen = had_client
-            release_seen = release_requested
-        if release_seen:
-            sys.stderr.write("Memory Atlas server release flag observed; shutting down.\\n")
-            if httpd is not None:
-                httpd.shutdown()
-            return
-        if ttl_seconds > 0 and now - started_at >= ttl_seconds:
-            sys.stderr.write("Memory Atlas server reached TTL; shutting down.\\n")
-            if httpd is not None:
-                httpd.shutdown()
-            return
-        if client_seen and idle_seconds > 0 and idle_for >= idle_seconds:
-            sys.stderr.write("Memory Atlas server idle after page close; shutting down.\\n")
-            if httpd is not None:
-                httpd.shutdown()
-            return
-
-
-def main() -> int:
-    global httpd
-    if not runtime_dir.exists():
-        sys.stderr.write("runtime directory missing: %s\\n" % runtime_dir)
-        return 1
-    handler = partial(Handler, directory=str(runtime_dir))
-    httpd = MemoryAtlasHTTPServer(("127.0.0.1", port), handler)
-    threading.Thread(target=monitor_idle, daemon=True).start()
-    try:
-        httpd.serve_forever()
-    finally:
-        httpd.server_close()
-        if pid_file:
-            try:
-                path = Path(pid_file)
-                if path.exists() and path.read_text(encoding="utf-8").strip() == str(os.getpid()):
-                    path.unlink()
-            except Exception:
-                pass
-    return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
-PY
+  if [[ ! -f "$SERVER_SOURCE" ]]; then
+    notify_error "Memory Atlas 本地命令服务缺失。请重新安装运行副本。"
+    return 1
+  fi
+  cp "$SERVER_SOURCE" "$SERVER_SCRIPT"
   chmod 700 "$SERVER_SCRIPT"
 }}
 
@@ -1176,7 +989,7 @@ fi
 
 echo "Starting Memory Atlas on $URL"
 write_runtime_server
-  MEMORY_ATLAS_PID_FILE="$PID_FILE" nohup python3 "$SERVER_SCRIPT" "$RUNTIME_DIR" "$PORT" "$TTL_SECONDS" "$IDLE_SECONDS" >> "$LOG_FILE" 2>&1 &
+MEMORY_ATLAS_PID_FILE="$PID_FILE" nohup python3 "$SERVER_SCRIPT" "$RUNTIME_DIR" "$PORT" "$TTL_SECONDS" "$IDLE_SECONDS" "$REPO_ROOT" >> "$LOG_FILE" 2>&1 &
 SERVER_PID=$!
 echo "$SERVER_PID" > "$PID_FILE"
 
