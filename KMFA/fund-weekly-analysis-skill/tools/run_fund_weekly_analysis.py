@@ -34,7 +34,7 @@ PRIVATE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".xlsx", ".xls", ".csv",
 TEMPLATE_NAME = "资金与税费管理母版_真实数据预览_v2.xlsx"
 PRIVATE_OCR_ROOT = Path("KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_sidecars")
 OCR_GENERATION_PLAN_NAME = "screenshot_ocr_sidecar_generation_plan.csv"
-EXPECTED_AUTOMATION_RRULE = "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0"
+EXPECTED_AUTOMATION_RRULE = "RRULE:FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0"
 EXPECTED_AUTOMATION_SCHEDULE_LABEL = "weekly Monday/Saturday 11:00 Sydney"
 XLSX_MAIN_NS = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
 XLSX_REL_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"

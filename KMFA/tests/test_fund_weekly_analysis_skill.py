@@ -89,18 +89,28 @@ def xlsx_cell_text(workbook: zipfile.ZipFile, sheet_path: str, ref: str) -> str:
 class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
     def run_daily_with_stubbed_tools(
         self,
-        readiness_exit: int,
+        readiness_exit: int | list[int],
         generated_sidecar_count: int = 0,
         env_overrides: dict[str, str] | None = None,
+        create_source_zip: bool = True,
     ) -> tuple[subprocess.CompletedProcess[str], Path]:
         temp_dir = tempfile.TemporaryDirectory()
         self.addCleanup(temp_dir.cleanup)
         temp_root = Path(temp_dir.name)
         repo_root = temp_root / "repo"
         repo_root.mkdir()
+        source_zip = temp_root / "OneDrive-Personal" / "DWS_Outputs.zip"
+        source_zip.parent.mkdir(parents=True)
+        if create_source_zip:
+            source_zip.write_bytes(b"stub zip is only checked for readability")
         bin_dir = temp_root / "bin"
         bin_dir.mkdir()
         call_log = temp_root / "calls.log"
+        readiness_exits = readiness_exit if isinstance(readiness_exit, list) else [readiness_exit]
+        readiness_exit_script = "\n".join(
+            f"  {index}) exit {exit_code} ;;"
+            for index, exit_code in enumerate(readiness_exits, start=1)
+        )
 
         git_stub = bin_dir / "git"
         git_stub.write_text(
@@ -120,7 +130,18 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             "set -euo pipefail\n"
             f"echo python:$@ >> {call_log}\n"
             "case \"$1\" in\n"
-            f"  *check_source_readiness.py) exit {readiness_exit} ;;\n"
+            "  *check_source_readiness.py)\n"
+            f"    COUNT_FILE=\"{temp_root}/readiness_count\"\n"
+            "    COUNT=0\n"
+            "    if [[ -f \"$COUNT_FILE\" ]]; then COUNT=$(cat \"$COUNT_FILE\"); fi\n"
+            "    COUNT=$((COUNT + 1))\n"
+            "    echo \"$COUNT\" > \"$COUNT_FILE\"\n"
+            "    case \"$COUNT\" in\n"
+            f"{readiness_exit_script}\n"
+            f"      *) exit {readiness_exits[-1]} ;;\n"
+            "    esac\n"
+            "    ;;\n"
+            "  *materialize_fund_source.py) echo '{\"status\":\"MATERIALIZED\"}'; exit 0 ;;\n"
             "  *run_fund_weekly_analysis.py) echo '{\"run_id\":\"daily_stub\",\"run_dir\":\""
             f"{repo_root}/KMFA/metadata/fund_weekly_analysis/private_runtime/runs/daily_stub"
             "\"}'; exit 0 ;;\n"
@@ -147,6 +168,8 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
         env = os.environ.copy()
         env["KMFA_REPO_ROOT"] = str(repo_root)
         env["KMFA_FUND_INPUT_DIR"] = str(temp_root / "OneDrive-Personal" / "DWS_Outputs" / "付款请示群")
+        env["KMFA_FUND_SOURCE_ZIP"] = str(source_zip)
+        env["KMFA_FUND_FALLBACK_SOURCE_ZIP"] = str(temp_root / "missing" / "DWS_Outputs.zip")
         env["PATH"] = f"{bin_dir}:/usr/bin:/bin"
         if env_overrides:
             env.update(env_overrides)
@@ -160,12 +183,34 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
         return result, call_log
 
     def test_daily_entrypoint_stops_before_runner_when_readiness_is_not_ready(self) -> None:
-        result, call_log = self.run_daily_with_stubbed_tools(readiness_exit=2)
+        result, call_log = self.run_daily_with_stubbed_tools(readiness_exit=5)
         calls = call_log.read_text(encoding="utf-8").splitlines()
 
-        self.assertEqual(result.returncode, 2)
+        self.assertEqual(result.returncode, 5)
         self.assertTrue(any("check_source_readiness.py" in call for call in calls), calls)
+        self.assertFalse(any("materialize_fund_source.py" in call for call in calls), calls)
         self.assertFalse(any("run_fund_weekly_analysis.py" in call for call in calls), calls)
+
+    def test_daily_entrypoint_materializes_source_zip_when_hot_folder_is_missing(self) -> None:
+        result, call_log = self.run_daily_with_stubbed_tools(
+            readiness_exit=[2, 0],
+            env_overrides={"KMFA_SKIP_CODEX_EXEC": "1"},
+        )
+        calls = call_log.read_text(encoding="utf-8").splitlines()
+        readiness_indexes = [i for i, call in enumerate(calls) if "check_source_readiness.py" in call]
+        materialize_index = next(i for i, call in enumerate(calls) if "materialize_fund_source.py" in call)
+        runner_index = next(i for i, call in enumerate(calls) if "run_fund_weekly_analysis.py" in call)
+        materialize_call = calls[materialize_index]
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(len(readiness_indexes), 2, calls)
+        self.assertLess(readiness_indexes[0], materialize_index)
+        self.assertLess(materialize_index, readiness_indexes[1])
+        self.assertLess(readiness_indexes[1], runner_index)
+        self.assertIn("--source-zip", materialize_call)
+        self.assertIn("DWS_Outputs.zip", materialize_call)
+        self.assertIn("--zip-prefix 付款请示群", materialize_call)
+        self.assertIn("--apply", materialize_call)
 
     def test_daily_entrypoint_runs_readiness_before_runner_when_ready(self) -> None:
         result, call_log = self.run_daily_with_stubbed_tools(readiness_exit=0)
@@ -337,18 +382,17 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
         self.assertTrue(contract_path.exists(), "public-safe Codex App automation contract must be tracked")
         contract = tomllib.loads(contract_path.read_text(encoding="utf-8"))
 
-        self.assertEqual(contract["id"], "kmfa")
-        self.assertEqual(contract["name"], "KMFA资金周报自动化")
+        self.assertEqual(contract["id"], "kmfa-5")
+        self.assertEqual(contract["name"], "KMFA｜资金周报自动化")
         self.assertEqual(contract["kind"], "cron")
         self.assertEqual(contract["status"], "ACTIVE")
-        self.assertEqual(contract["rrule"], "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0")
+        self.assertEqual(contract["rrule"], "RRULE:FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0")
         self.assertEqual(contract["timezone"], "Australia/Sydney")
         self.assertEqual(contract["execution_environment"], "local")
         self.assertEqual(
             contract["cwds"],
             [
-                "/Users/linzezhang/Documents/Codex/workspaces/dws-kmfa-automation/dws-archive",
-                "/Users/linzezhang/Documents/Codex/workspaces/dws-kmfa-automation/kmfa-codexproject",
+                "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject",
             ],
         )
         self.assertEqual(contract["prompt_file"], "automation/weekly_mon_sat_1100_sydney.prompt.md")
@@ -358,9 +402,9 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             "/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群",
         )
         prompt = (SKILL_ROOT / contract["prompt_file"]).read_text(encoding="utf-8")
-        self.assertIn("干净显示入口", prompt)
-        self.assertIn("/Users/linzezhang/Documents/Codex/workspaces/dws-kmfa-automation/kmfa-codexproject", prompt)
-        self.assertIn("真实目录 `/Users/linzezhang/CodexProject`", prompt)
+        self.assertIn("统一工作区规则", prompt)
+        self.assertIn("/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject", prompt)
+        self.assertIn("DWS 归档是独立上游 automation", prompt)
 
     def test_codex_app_automation_check_passes_when_local_state_matches_contract(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -370,7 +414,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             contract_dir.mkdir(parents=True)
             contract = (SKILL_ROOT / "automation" / "codex_app_automation.contract.toml").read_text(encoding="utf-8")
             (contract_dir / "codex_app_automation.contract.toml").write_text(contract, encoding="utf-8")
-            automation_dir = temp_root / "automations" / "kmfa"
+            automation_dir = temp_root / "automations" / "kmfa-5"
             automation_dir.mkdir(parents=True)
             (automation_dir / "automation.toml").write_text(contract, encoding="utf-8")
 
@@ -425,7 +469,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             contract_dir.mkdir(parents=True)
             contract = (SKILL_ROOT / "automation" / "codex_app_automation.contract.toml").read_text(encoding="utf-8")
             (contract_dir / "codex_app_automation.contract.toml").write_text(contract, encoding="utf-8")
-            automation_dir = temp_root / "automations" / "kmfa"
+            automation_dir = temp_root / "automations" / "kmfa-5"
             automation_dir.mkdir(parents=True)
             live = contract.replace('timezone = "Australia/Sydney"', 'timezone = "Asia/Shanghai"')
             (automation_dir / "automation.toml").write_text(live, encoding="utf-8")
@@ -459,8 +503,8 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 (SKILL_ROOT / "automation" / "codex_app_automation.contract.toml")
                 .read_text(encoding="utf-8")
                 .replace(
-                    'rrule = "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0"',
-                    'rrule = "FREQ=DAILY;BYHOUR=11;BYMINUTE=30"',
+                    'rrule = "RRULE:FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0"',
+                    'rrule = "RRULE:FREQ=DAILY;BYHOUR=11;BYMINUTE=30"',
                 )
                 .replace(
                     'prompt_file = "automation/weekly_mon_sat_1100_sydney.prompt.md"',
@@ -468,7 +512,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 )
             )
             (contract_dir / "codex_app_automation.contract.toml").write_text(stale_contract, encoding="utf-8")
-            automation_dir = temp_root / "automations" / "kmfa"
+            automation_dir = temp_root / "automations" / "kmfa-5"
             automation_dir.mkdir(parents=True)
             (automation_dir / "automation.toml").write_text(stale_contract, encoding="utf-8")
 
@@ -649,7 +693,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             (contract_dir / "codex_app_automation.contract.toml").write_text(contract, encoding="utf-8")
             (contract_dir / "weekly_mon_sat_1100_sydney.prompt.md").write_text(prompt, encoding="utf-8")
             automation_root = Path(temp_dir) / "automations"
-            automation_dir = automation_root / "kmfa"
+            automation_dir = automation_root / "kmfa-5"
             automation_dir.mkdir(parents=True)
             (automation_dir / "automation.toml").write_text(contract + "\nprompt = '''" + prompt + "'''\n", encoding="utf-8")
             source_day = input_dir / "files" / "0708"
@@ -777,7 +821,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "A5"), "schedule_rrule")
                 self.assertEqual(
                     xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "B5"),
-                    "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0",
+                    "RRULE:FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0",
                 )
                 self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "A8"), "fact_promotion_execution_allowed")
                 self.assertEqual(xlsx_cell_text(workbook, "xl/worksheets/sheet12.xml", "B8"), "false")
@@ -850,7 +894,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
                 automation_rows = list(csv.DictReader(f))
             self.assertEqual(len(automation_rows), 1)
             self.assertEqual(automation_rows[0]["status"], "CODEX_AUTOMATION_READY")
-            self.assertEqual(automation_rows[0]["rrule"], "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0")
+            self.assertEqual(automation_rows[0]["rrule"], "RRULE:FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0")
             self.assertEqual(automation_rows[0]["expected_timezone"], "Australia/Sydney")
             self.assertEqual(automation_rows[0]["schedule_ready"], "true")
             self.assertEqual(automation_rows[0]["management_conclusion_allowed"], "false")
@@ -4999,7 +5043,7 @@ class FundWeeklyAnalysisSkillContractTest(unittest.TestCase):
             (contract_dir / "codex_app_automation.contract.toml").write_text(contract, encoding="utf-8")
             (contract_dir / "weekly_mon_sat_1100_sydney.prompt.md").write_text(prompt, encoding="utf-8")
             automation_root = Path(temp_dir) / "automations"
-            automation_dir = automation_root / "kmfa"
+            automation_dir = automation_root / "kmfa-5"
             automation_dir.mkdir(parents=True)
             (automation_dir / "automation.toml").write_text(contract + "\nprompt = '''" + prompt + "'''\n", encoding="utf-8")
             structured_csv = source_day / "20260708113000_吴云霞_资金日报.csv"

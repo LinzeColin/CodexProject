@@ -11,7 +11,7 @@ from pathlib import Path
 from xml.etree import ElementTree as ET
 
 
-EXPECTED_RRULE = "FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0"
+EXPECTED_RRULE = "RRULE:FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0"
 EXPECTED_SOURCE_DIR = "/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群"
 EXPECTED_ROW4 = ["可用现金占比", "银行存款", "票据/电子汇票", "期末总资金"]
 EXPECTED_ROW8 = ["保证金可释放", "外部净流出", "内部调拨净额", "资金缺口"]
