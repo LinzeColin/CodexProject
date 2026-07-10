@@ -243,7 +243,7 @@ async function validateBrowserRollback() {
       restoredGalaxy,
     );
 
-    await page.getByRole("button", { name: /时间轴/ }).click({ timeout: 5000 });
+    await page.locator('[data-nav-view="timeline"]').click({ timeout: 5000 });
     await page.waitForSelector(".timeline-map", { timeout: 20000 });
     const legacyTimeline = await page.evaluate(() => ({
       renderer: document.querySelector(".timeline-map")?.getAttribute("data-timeline-renderer") || "",
@@ -277,7 +277,7 @@ async function validateBrowserRollback() {
     await page.waitForSelector('.content-grid[data-view="home"]', { timeout: 20000 });
     await page.getByRole("button", { name: /银河星云/ }).click({ timeout: 5000 });
     await page.waitForFunction(() => window.__memoryAtlasGalaxySignal?.()?.rendererMode === "memory-starfield", null, { timeout: 20000 });
-    await page.getByRole("button", { name: /时间轴/ }).click({ timeout: 5000 });
+    await page.locator('[data-nav-view="timeline"]').click({ timeout: 5000 });
     await page.waitForSelector('.timeline-map[data-timeline-renderer="memory-river"]', { timeout: 20000 });
     pass("stage8_2_storage_restore", "Persisted renderer selections survive a fresh navigation without URL flags");
 

@@ -2074,6 +2074,14 @@ export function App() {
           <strong>{loadedAt}</strong>
           <span>{uiCopy.app.runtimeStatus}</span>
           <strong>{runtimeStatus}</strong>
+          <a
+            className="homehub-return"
+            data-homehub-return
+            href="https://home.linzezhang.com"
+            rel="noreferrer"
+          >
+            返回 LinzeHomeHub
+          </a>
         </div>
       </aside>
 
