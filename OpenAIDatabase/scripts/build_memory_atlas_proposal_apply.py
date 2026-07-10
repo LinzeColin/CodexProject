@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import shlex
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
@@ -208,49 +207,6 @@ def fail_closed(attempt: dict[str, Any], explanation_zh: str, rollback_available
     return attempt
 
 
-def restore_targets(database_dir: Path, snapshots: dict[Path, str | None]) -> None:
-    for path, previous in snapshots.items():
-        absolute = database_dir / path
-        if previous is None:
-            if absolute.exists():
-                absolute.unlink()
-        else:
-            absolute.parent.mkdir(parents=True, exist_ok=True)
-            absolute.write_text(previous, encoding="utf-8")
-
-
-def write_targets(database_dir: Path, proposal: dict[str, Any]) -> dict[Path, str | None]:
-    payload = proposal.get("apply_payload") if isinstance(proposal.get("apply_payload"), dict) else {}
-    snapshots: dict[Path, str | None] = {}
-    for target in [Path(str(item)) for item in proposal.get("target_files") or []]:
-        absolute = database_dir / target
-        snapshots[target] = absolute.read_text(encoding="utf-8") if absolute.exists() else None
-        absolute.parent.mkdir(parents=True, exist_ok=True)
-        absolute.write_text(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    return snapshots
-
-
-def run_validation_commands(database_dir: Path, commands: list[str]) -> list[dict[str, Any]]:
-    results: list[dict[str, Any]] = []
-    for command in commands:
-        result = subprocess.run(
-            shlex.split(command),
-            cwd=database_dir,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-        results.append(
-            {
-                "command": command,
-                "returncode": result.returncode,
-                "stdout_tail": result.stdout[-1200:],
-                "stderr_tail": result.stderr[-1200:],
-            }
-        )
-    return results
-
-
 def build_apply_attempt(
     database_dir: Path,
     proposal_id: str,
@@ -299,19 +255,11 @@ def build_apply_attempt(
     if dry_run:
         return attempt
 
-    snapshots = write_targets(database_dir, proposal)
-    attempt["writes_files"] = True
-    attempt["applies_proposal"] = True
-    validation_results = run_validation_commands(database_dir, [str(item) for item in proposal.get("validation_commands") or []])
-    attempt["validation_results"] = validation_results
-    if any(result["returncode"] != 0 for result in validation_results):
-        restore_targets(database_dir, snapshots)
-        attempt["status"] = "FAIL_CLOSED"
-        attempt["failure_explanation_zh"] = "apply 后 validation 失败，已按 rollback snapshot 还原目标文件。"
-        attempt["writes_files"] = False
-        attempt["applies_proposal"] = False
-        attempt["rollback_or_needs_revision"] = True
-    return attempt
+    return fail_closed(
+        attempt,
+        "真实 apply 只能由本地 Memory Atlas R4 人类复核界面签发一次性授权后执行。",
+    )
+
 
 
 def build_report_payloads(database_dir: Path, dry_run: bool) -> tuple[dict[str, Any], dict[str, Any]]:
