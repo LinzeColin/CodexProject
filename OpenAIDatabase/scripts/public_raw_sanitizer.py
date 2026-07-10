@@ -31,6 +31,7 @@ _PUBLIC_RELATIVE_PREFIXES = (
     "sessions/",
     "archived_sessions/",
 )
+_NON_TEXT_STRING_FIELDS = {"encrypted_content"}
 
 
 class PublicRawSanitizationError(ValueError):
@@ -163,7 +164,16 @@ def sanitize_public_value(value: Any) -> tuple[Any, dict[str, int]]:
                             f"{sanitized_key.rsplit('__', 1)[0]}__{counter}"
                         )
                         counter += 1
-            sanitized_item, item_counts = sanitize_public_value(item)
+            if (
+                isinstance(key, str)
+                and key.strip().lower() in _NON_TEXT_STRING_FIELDS
+                and isinstance(item, str)
+                and item
+            ):
+                sanitized_item = binary_omission_marker(item)
+                item_counts = {"binary_omission": 1}
+            else:
+                sanitized_item, item_counts = sanitize_public_value(item)
             sanitized_dict[sanitized_key] = sanitized_item
             counts = merge_counts(counts, key_counts)
             counts = merge_counts(counts, item_counts)
