@@ -1,15 +1,30 @@
 # Memory Atlas Delivery Record
 
-## Current Status Supersession: v1.2 Remediation R1
+## Current Status Supersession: v1.2 Remediation R2
 
 当前发布状态：`FAIL_REMEDIATION_REQUIRED`。
+
+2026-07-10 R2 已在本地源码候选建立 `Memory Atlas / 记忆决策台 · v1.2`
+发行身份、判断/探索/复盘问题式导航和默认机器详情折叠。1470x661、1440x900、
+390x844 真实 Chromium 门禁证明默认首页无 Stage/CLI/path/内部安全词匹配，四类技术
+详情默认关闭且可从键盘操作，布局和焦点顺序通过；移动端正序 10 路由、逆序 9 步
+均完整包含于导航 scrollport，四边裁切为 0。证据位于
+`机器治理/证据与日志/remediation/v1_2_r2/`。
+
+R2 不包含真实命令执行、proposal apply/rollback、owner-daily、P0 可视化工作流、
+snapshot parity、GitHub clean recovery 或最终发布；线上和已安装 app 仍是旧候选。
+收口 fetch 发现 `origin/main` 已由独立 Cloudflare L2 工作前进到
+`b864009c657c6a9cebbf451e30389c1aa5809700`，本地为 ahead 4 / behind 7。R2 未
+merge、rebase 或 push；R8 最终同步必须保留两侧历史并整合 HomeHub 返回链接。
+
+### R1 Layout Baseline
 
 2026-07-10 R1 已在本地源码候选修复首页 Grid 阻断，并以 1470x661、1440x900、
 390x844 的真实 Chromium 门禁证明五个主区块无重叠、无横向溢出、无视口逃逸，
 Command Palette 和 Home Overview 关键内容可滚动到达。证据位于
 `机器治理/证据与日志/remediation/v1_2_r1/`。
 
-R1 只完成布局补救。线上网站、已安装 app、命令执行、产品信息架构、proposal
+R1 只完成布局补救。线上网站、已安装 app、命令执行、proposal
 工作流、owner-daily、snapshot parity、final audit 接入和 GitHub recovery 仍未完成，
 因此不得恢复 complete 语义。
 

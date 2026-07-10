@@ -16,11 +16,11 @@ def test_home_workspace_reserves_a_real_command_palette_row() -> None:
 
     assert (
         "grid-template-rows: auto auto auto "
-        "clamp(160px, 26dvh, 240px) minmax(0, 1fr);"
+        "clamp(112px, 18dvh, 152px) minmax(0, 1fr);"
     ) in css
     assert (
         "grid-template-rows: auto auto auto "
-        "clamp(132px, 22dvh, 160px) minmax(0, 1fr);"
+        "clamp(124px, 18dvh, 140px) minmax(0, 1fr);"
     ) in css
 
 

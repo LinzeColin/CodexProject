@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 Remediation R2
+
+- Added the `Memory Atlas / 记忆决策台 · v1.2` release identity and question-led
+  navigation while preserving all ten route keys.
+- Folded snapshot/runtime, shared-focus, command CLI/safety and formula source fields
+  behind keyboard-operable technical disclosures.
+- Replaced default Stage/Phase, internal visual, raw filter and machine-evidence copy
+  with Chinese decision language.
+- Extended the real-browser gate across 1470x661, 1440x900 and 390x844 for identity,
+  copy exclusions, disclosures, keyboard order, responsive hierarchy and mobile nav.
+- Fixed keyboard-focused mobile routes being partially clipped; forward and reverse
+  traversal now require full focus geometry inside the navigation scrollport.
+- Preserved the R2 boundary: no command execution, proposal apply, push, app reinstall,
+  Cloudflare deployment or raw mutation.
+
 ## Unreleased - Memory Atlas v1.2 Final Review
 
 - Added `validate:v1.2-final-review` for `MA-V12-FINAL-REVIEW` /

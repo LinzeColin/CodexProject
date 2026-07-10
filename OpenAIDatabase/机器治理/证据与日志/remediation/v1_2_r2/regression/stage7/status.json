@@ -1,0 +1,108 @@
+{
+  "status": "PASS",
+  "stage": "7.1",
+  "targetUrl": "http://127.0.0.1:4177",
+  "outputDir": "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject/OpenAIDatabase/机器治理/证据与日志/remediation/v1_2_r2/regression/stage7",
+  "checks": [
+    "galaxy canvas non-empty pixel signal",
+    "galaxy starfield quality screenshot gate",
+    "memory river quality screenshot gate",
+    "preview server released after validation"
+  ],
+  "results": {
+    "galaxy": {
+      "screenshot": {
+        "path": "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject/OpenAIDatabase/机器治理/证据与日志/remediation/v1_2_r2/regression/stage7/stage7-galaxy-desktop.png",
+        "bytes": 891091
+      },
+      "signal": {
+        "frame": 29,
+        "renderTicks": 29,
+        "fps": 0,
+        "averageFrameMs": 0,
+        "sampleSeconds": 0,
+        "lit": 67161,
+        "alpha": 70400,
+        "max": 765,
+        "hash": 166238211,
+        "width": 1162,
+        "height": 560,
+        "sampleWidth": 320,
+        "sampleHeight": 220,
+        "calls": 204,
+        "triangles": 43650,
+        "points": 11828,
+        "focusNodeId": "memory:mem_0021f45ff99acd80",
+        "highlightedNeighborCount": 5,
+        "focusVisibleNeighborCount": 5,
+        "focusHiddenNeighborCount": 0,
+        "focusPrimaryNeighborCount": 5,
+        "focusSecondaryNeighborCount": 0,
+        "cameraX": 6.655,
+        "cameraY": 9.178,
+        "cameraZ": 173.685,
+        "cameraDistance": 174.055,
+        "rendererMode": "memory-starfield",
+        "quality": "mid",
+        "targetFps": 60,
+        "minFps": 30,
+        "adaptiveQualityEnabled": true,
+        "adaptiveQualityDecision": "hold",
+        "flowFieldStrength": 1,
+        "flowPaused": false,
+        "starfieldMode": "presentation",
+        "terrainFeatureCount": 254,
+        "parameterSource": "config/visualization/model_parameters.memory_starfield.yaml",
+        "fallbackMode": "webgl",
+        "mappingVersion": "memory_starfield_snapshot_mapping.v1_1_7_stage4_phase3",
+        "mappingSource": "universe_state_snapshot",
+        "mappedParticleCount": 328,
+        "snapshotMappedCount": 305
+      }
+    },
+    "memoryRiver": {
+      "screenshot": {
+        "path": "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject/OpenAIDatabase/机器治理/证据与日志/remediation/v1_2_r2/regression/stage7/stage7-memory-river-desktop.png",
+        "bytes": 589447
+      },
+      "river": {
+        "renderer": "memory-river",
+        "canvasBox": {
+          "width": 1162,
+          "height": 364
+        },
+        "utcScale": "true",
+        "evidenceContract": "black-hole-lifecycle proto-star-lifecycle stale-deprecated roi-gradient",
+        "laneFlows": 10,
+        "laneLabels": 10,
+        "levelLabels": [
+          "Macro",
+          "Meso",
+          "Micro"
+        ],
+        "evidenceLayers": [
+          "black-hole-lifecycle",
+          "proto-star-lifecycle",
+          "stale-deprecated"
+        ],
+        "evidenceSegments": 19,
+        "blackHoleMarkers": 24,
+        "protoStarMarkers": 37,
+        "eventMarkers": 3,
+        "totalMarkers": 64,
+        "densityBands": 48
+      }
+    },
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    ],
+    "failedResponses": [
+      {
+        "status": 404,
+        "url": "http://127.0.0.1:4177/__memory_atlas_heartbeat"
+      }
+    ],
+    "actionableConsoleErrors": [],
+    "actionableFailedResponses": []
+  }
+}

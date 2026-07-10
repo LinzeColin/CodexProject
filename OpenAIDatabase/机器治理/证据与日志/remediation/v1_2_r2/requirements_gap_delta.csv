@@ -1,0 +1,6 @@
+requirement_id,before_status,after_status,r2_evidence,remaining_gap,next_remediation_phase
+S03-AC05,PARTIAL,PARTIAL,"Default Home has zero visible Stage/CLI/path/machine-evidence matches and technical details are folded","A real raw ledger still does not exist, so raw-manifest separation cannot yet be proven",R7
+S05-AC04,FAILED,VERIFIED,"Three-view browser gate proves the default Home has zero visible machine/internal-copy matches and all four technical disclosures are closed","None for this criterion",R8
+S09-AC04,PARTIAL,VERIFIED,"Product identity, navigation, headings, filters and default Home copy are Chinese decision language; internal analytical names are absent","None for this criterion",R8
+S10-AC02,PARTIAL,VERIFIED,"Exact Chinese-first v1.2 identity and question-led navigation render at all three viewports; category and action labels are humanized","None for this criterion",R8
+S10-AC03,FAILED,VERIFIED,"Sidebar runtime data, focus signal/revision, command CLI/safety and formula ids/paths are folded by default and keyboard-operable","None for this criterion",R8

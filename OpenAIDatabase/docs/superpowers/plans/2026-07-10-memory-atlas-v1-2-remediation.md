@@ -38,14 +38,14 @@
 **Files:**
 - Modify: `apps/memory-atlas/src/App.tsx`
 - Modify: `apps/memory-atlas/src/styles.css`
-- Modify: `apps/memory-atlas/src/copy.ts`
+- Modify: `apps/memory-atlas/src/i18n/zh-CN.ts`
 - Extend: `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_home_multiviewport.cjs`
 
-- [ ] Add failing browser assertions that Stage/Phase IDs, CLI snippets and English safety internals are absent from the default first screen.
-- [ ] Replace the legacy shell hierarchy with v1.2 release identity and user-question-first navigation while preserving existing views.
-- [ ] Keep machine details behind explicit disclosure controls.
-- [ ] Verify headings, scan order, keyboard focus and three viewports.
-- [ ] Commit locally; do not push; stop before R3.
+- [x] Add failing browser assertions that Stage/Phase IDs, CLI snippets and English safety internals are absent from the default first screen.
+- [x] Replace the legacy shell hierarchy with v1.2 release identity and user-question-first navigation while preserving existing views.
+- [x] Keep machine details behind explicit disclosure controls.
+- [x] Verify headings, scan order, keyboard focus and three viewports.
+- [x] Commit locally; do not push; stop before R3.
 
 ### Task 3: R3 Real Command Palette Workflows
 

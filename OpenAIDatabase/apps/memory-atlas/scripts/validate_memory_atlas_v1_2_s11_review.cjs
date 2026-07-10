@@ -261,7 +261,7 @@ function validateRuntimeAndConfigs() {
       "data-s11-p2-economic-like-visuals",
       "data-s11-p3-workflow-latent-governance-visuals",
       "data-s11-p4-human-question-map",
-      "source/time/project/task",
+      'supportsFilters: ["source", "time", "project", "task"]',
     ]),
     "s11_review_runtime_chain",
     "App.tsx exposes S11 P1-P4 runtime contracts and shared filter semantics",

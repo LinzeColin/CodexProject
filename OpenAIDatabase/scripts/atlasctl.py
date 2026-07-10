@@ -2127,7 +2127,7 @@ def run_chinese_ux_audit(args: argparse.Namespace) -> int:
         "新增重要资料",
         "增强结论",
         "减弱或过期结论",
-        "待授权 proposal",
+        "待授权提案",
         "同步失败",
         "下一步",
     ]
@@ -2141,7 +2141,6 @@ def run_chinese_ux_audit(args: argparse.Namespace) -> int:
         "稳定度",
         "动量",
         "宇宙状态",
-        "来自 Universe State 派生数据",
     ]
     required_machine_detail_copy = [
         "高级详情：机器字段",
@@ -2219,9 +2218,9 @@ def run_chinese_ux_audit(args: argparse.Namespace) -> int:
     for label in required_machine_detail_copy:
         if label not in app_source and label not in copy_source:
             bad_items.append(f"machine_detail_copy_missing:{label}")
-    if "记忆天气 v2（Memory Weather）" not in copy_source:
+    if "Memory Weather" in app_source + copy_source and "记忆天气 v2（Memory Weather）" not in copy_source:
         bad_items.append("machine_term_explanation_missing:Memory Weather")
-    if "来自 Universe State 派生数据" not in app_source:
+    if "Universe State" in app_source + copy_source and "宇宙状态（Universe State）" not in app_source + copy_source:
         bad_items.append("machine_term_explanation_missing:Universe State")
     if "仅生成提案，不直接写长期记忆" not in copy_source:
         bad_items.append("machine_term_explanation_missing:proposal-only")
