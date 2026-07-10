@@ -235,7 +235,6 @@ console.log(JSON.stringify(reportsPage.buildStage7Phase71ReportsViewModel(report
         paths = [
             ROOT / "src" / "pfi_v02" / "stage_v023_reports.py",
             ROOT / "src" / "pfi_v02" / "stage_v023_formula_registry.py",
-            ROOT / "web" / "app" / "pages" / "reports.js",
             ROOT / "tests" / "test_v023_stage7_reports.py",
             ROOT / "docs" / "pfi_v023" / "STAGE7_REPORTS.md",
         ]
@@ -244,6 +243,27 @@ console.log(JSON.stringify(reportsPage.buildStage7Phase71ReportsViewModel(report
             text = path.read_text(encoding="utf-8").lower().replace("sample_size", "")
             for term in terms:
                 self.assertIsNone(re.search(term, text), f"{path} contains blocked placeholder term {term}")
+
+        report_contract = json.loads(
+            (ROOT / "reports" / "pfi_v023" / "stage_7" / "phase_7_1" / "report_contract.json").read_text(encoding="utf-8")
+        )
+        formula_registry = json.loads(
+            (ROOT / "reports" / "pfi_v023" / "stage_7" / "phase_7_1" / "formula_registry.json").read_text(encoding="utf-8")
+        )
+        script = """
+const reportsPage = require('./PFI/web/app/pages/reports.js');
+const reportContract = JSON.parse(process.argv[1]);
+const formulaRegistry = JSON.parse(process.argv[2]);
+console.log(JSON.stringify(reportsPage.buildStage7Phase71ReportsViewModel(reportContract, formulaRegistry)));
+"""
+        view = node_json(
+            script,
+            json.dumps(report_contract, ensure_ascii=False),
+            json.dumps(formula_registry, ensure_ascii=False),
+        )
+        view_text = json.dumps(view, ensure_ascii=False).lower().replace("sample_size", "")
+        for term in terms:
+            self.assertIsNone(re.search(term, view_text), f"v0.2.3 reports view contains blocked placeholder term {term}")
 
     def test_phase72_contract_is_limited_to_core_reports(self) -> None:
         module = load_reports_module()

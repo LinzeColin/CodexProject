@@ -37,9 +37,10 @@ if ! command -v clang >/dev/null 2>&1; then
   exit 1
 fi
 
-BUILT_LAUNCHER_BINARY="$(mktemp "${TMPDIR:-/tmp}/pfi_launcher.XXXXXX")"
-trap 'rm -f "$BUILT_LAUNCHER_BINARY"' EXIT
-clang -O2 -Wall -Wextra -o "$BUILT_LAUNCHER_BINARY" "$LAUNCHER_SOURCE"
+BUILT_LAUNCHER_DIR="$(mktemp -d "${TMPDIR:-/tmp}/pfi_launcher.XXXXXX")"
+BUILT_LAUNCHER_BINARY="$BUILT_LAUNCHER_DIR/PFI"
+trap 'rm -rf "$BUILT_LAUNCHER_DIR"' EXIT
+clang -O2 -Wall -Wextra -Wl,-no_uuid -o "$BUILT_LAUNCHER_BINARY" "$LAUNCHER_SOURCE"
 chmod +x "$BUILT_LAUNCHER_BINARY"
 
 install_app() {

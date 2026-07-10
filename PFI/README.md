@@ -7,6 +7,47 @@ PFI V0.2 is the Personal Financial Intelligence project under
 under `LinzeColin/CodexProject/QBVS`; PFI investment management does not own
 or cover QBVS.
 
+## v0.2.4 Final Delivery
+
+Current run unit: `v0.2.4 final delivery`.
+
+- Acceptance: `ACC-PFI-V024-FINAL-DELIVERY`.
+- Product commit: `17b9f59794740f927c5f531ba1aa334621a832e5`; the evidence commit is its direct child.
+- Final-delivery tests: focused `11 passed`; v0.2.3 `200 passed`; v0.2.4 `242 passed`; renderer `0/0`.
+- App entries: Applications, Downloads and Desktop pass codesign, canonical binding, exact dry-run and current-source Mach-O code-section parity; lite acceptance `29/0/2`.
+- Runtime: read-only current-code probe `8/0`; app/localhost/disk and filename-bound inline assets match; console/page/http errors are 0.
+- `.venv`, `data` and `reports` metadata is unchanged across reinstall/runtime verification.
+- The final delivery uses one GitHub main push; live verification must prove local HEAD, tracking ref and remote main are identical with a clean worktree.
+- Tracked status: `pending_live_verifier`; next gate remains `PFI-V024-FINAL-DELIVERY` until the single push and live verifier pass. That pass resolves the recorded final postcondition without a second closeout commit; future version 未开始。
+- Record: `docs/pfi_v024/FINAL_DELIVERY.md` and `docs/pfi_v024/FINAL_DELIVERY_EVIDENCE.json`.
+
+## v0.2.4 Overall Re-review (Completed)
+
+Historical run unit: `v0.2.4 overall re-review`.
+
+- Acceptance: `ACC-PFI-V024-OVERALL-REREVIEW`.
+- Local gate result: pass; independent read-only review `APPROVED` with no findings.
+- Stage 0-9 evidence, user confirmation and the Phase R1 real-data flow passed final local re-review.
+- Historical overall upload does not prove that the current Phase R1/re-review changes are uploaded.
+- At this historical gate, final GitHub upload, app reinstall and GitHub/app/local parity remained pending; they are closed by `ACC-PFI-V024-FINAL-DELIVERY`.
+- This run does not upload, reinstall the app, start a future version or mutate financial data.
+- Historical validation snapshot: re-review `12 passed`; v0.2.3 `200 passed`; v0.2.4 `231 passed`; 11/11 UI validation files and 46 PNG decodes pass.
+- Record: `docs/pfi_v024/OVERALL_REREVIEW.md`.
+
+## v0.2.4 Post-Overall Consistency Remediation
+
+Current run unit: `post-overall consistency remediation / Phase R1`.
+
+- Phase R1 local gate: pass.
+- Canonical governance now preserves the completed `v0.2.4 overall project review` facts in all three owner entries.
+- Sparse PFI worktrees read the tracked real `MetaDatabase/PFI` dataset from the current Git tree without expanding the sparse path or copying financial data.
+- Current real-data contract: 4 raw CSV files, 8815 processed records, as of `2026-06-03`.
+- Validation: focused `33 passed`; v0.2.3 compatibility `200 passed`; v0.2.4 regression `219 passed`; check-render `0/0`.
+- GitHub upload: not executed in this run.
+- App bundle reinstall: not executed in this run.
+- Next gate: v0.2.4 overall re-review in a separate run.
+- Record: `docs/pfi_v024/POST_OVERALL_CONSISTENCY_REMEDIATION.md`.
+
 ## v0.2.4 Repair Pack Pre Stage 0
 
 PFI v0.2.4 is the repair package following the completed v0.2.3 closeout.

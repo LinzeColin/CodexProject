@@ -39,7 +39,7 @@ Serenity remains UNVERIFIED for empirical/delivery readiness despite machine-ver
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (49/49 active parameters, 12/12 active formulas)
+- implementation_congruence: `VERIFIED` (50/50 active parameters, 12/12 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `UNVERIFIED`
@@ -71,23 +71,26 @@ Serenity remains UNVERIFIED for empirical/delivery readiness despite machine-ver
 - model_count: `5`
 - total_formulas: `12`
 - active_formulas: `12`
-- total_parameters: `49`
-- active_parameters: `49`
+- total_parameters: `50`
+- active_parameters: `50`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `GOV-REVIEW6-B-SEMANTIC-EXTRACT; OTHER8-S3PC-LIFECYCLE-IN-PROGRESS`
+- release_gate: `ACC-CF-L2-20260710-PASSED`
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- final_commit_binding: `COMMIT_BOUND:ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935`
 - tree_bound_events: `0`
-- commit_bound_events: `1`
+- commit_bound_events: `4`
 - legacy_unbound_events: `3`
-- precommit_pending_events: `1`
-- pending_or_stale_events: `5`
+- precommit_pending_events: `3`
+- pending_or_stale_events: `7`
+- freshness_counts: `pending_or_stale_events=7; legacy_unbound_events=3`
+- freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+- current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
 
 ## 15. UNKNOWN
 
@@ -95,13 +98,13 @@ Serenity remains UNVERIFIED for empirical/delivery readiness despite machine-ver
 
 ## 16. 技术元数据
 
-- source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
+- source_base_commit: `ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:0c8fa2276365a67eeaa586422882b54b549ffb3c852114d6eaded719ca79f491`
-- snapshot_event_time: `2026-06-24T23:20:00+10:00`
-- generator_version: `4.0.0`
+- source_snapshot_hash: `sha256:bf98509632bca5f764251c736c8d8e6368ef9ab5f53e523768cbff0f4b28c6dc`
+- snapshot_event_time: `2026-07-10T19:46:00+10:00`
+- generator_version: `4.0.1`
 - version: `0.1.0`
-- phase/gate: `B / GOV-REVIEW6-B-SEMANTIC-EXTRACT; OTHER8-S3PC-LIFECYCLE-IN-PROGRESS`
+- phase/gate: `CF-L2 / ACC-CF-L2-20260710-PASSED`
 
 ## 17. Next Unique Task
 

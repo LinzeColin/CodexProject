@@ -1,6 +1,30 @@
 # PFI v0.2.4 Run Contract
 
-## Current Run
+## Current Run Override
+
+本轮只执行：`v0.2.4 final delivery`。
+
+- 唯一 Acceptance：`ACC-PFI-V024-FINAL-DELIVERY`。
+- product commit：`17b9f59794740f927c5f531ba1aa334621a832e5`；evidence commit 必须为直接子提交。
+- 本轮只执行一次 GitHub main push，并在 push 后实时核验 remote/tracking/local SHA。
+- 本轮重装 Applications、Downloads、Desktop 三处 app entry，并执行 codesign/binding/dry-run/code-section parity。
+- runtime 验收只使用 `/private/tmp`，不修改 `.venv`、`data`、`reports` 或真实财务数据。
+- Tracked status 为 `pending_live_verifier`，`product goal` 为 pending；下一 gate 保持 `PFI-V024-FINAL-DELIVERY`，唯一 push 后 live verifier pass 即解析 completion postcondition，且不提交第二个 closeout commit；future version 未开始。
+
+Current validation:
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_final_delivery.py -q
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v023_*.py -q
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_*.py -q
+/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 -B scripts/lean_governance.py check-render --project PFI
+git diff --check -- PFI
+PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pfi_v02.stage_v024_final_delivery
+```
+
+Current stop condition：push 前任一 proof 失败则停止且不 push；push 后 remote/app/local live verifier 必须 pass，不进入 future version。
+
+## Historical Overall Review Run (Closed)
 
 本轮只执行：PFI v0.2.4 `v0.2.4 overall project review`。
 
@@ -99,6 +123,6 @@ git ls-remote origin refs/heads/main
 - Do not write, clean, delete, synthesize, or backfill user financial data.
 - Do not add forbidden placeholder financial data.
 
-## Stop Condition
+## Historical Stop Condition (Closed)
 
 停止在 `v0.2.4 overall project review` 且 terminal 证明 `HEAD == origin/main == remote main`。future version 未开始，后续版本必须下一轮在用户明确指令后再进入。

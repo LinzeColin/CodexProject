@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib
 import json
 from pathlib import Path
+import tempfile
 import unittest
 
 
@@ -37,8 +38,38 @@ class TestV024OverallProjectReview(unittest.TestCase):
         self.assertFalse(payload["app_bundle_reinstall_executed"])
         self.assertFalse(payload["data_logic_changes_made"])
         self.assertFalse(payload["formal_fake_financial_data_added"])
+        expected_storage_mode = "filesystem" if (ROOT.parent / "MetaDatabase" / "PFI").exists() else "git_tree"
+        self.assertEqual(payload["data_boundary"]["source_status"], "ready")
+        self.assertEqual(payload["data_boundary"]["storage_mode"], expected_storage_mode)
+        self.assertEqual(payload["data_boundary"]["alipay_raw_file_count"], 4)
+        self.assertEqual(payload["data_boundary"]["alipay_normalized_row_count"], 8815)
         self.assertIn("git push origin HEAD:main", payload["validation_commands"])
         self.assertIn("git ls-remote origin refs/heads/main", payload["validation_commands"])
+
+    def test_overall_filesystem_presence_uses_normalized_data_audit(self) -> None:
+        module = importlib.import_module("pfi_v02.stage_v024_overall_project_review")
+        with tempfile.TemporaryDirectory() as tmp:
+            repo_root = Path(tmp)
+            pfi_root = repo_root / "PFI"
+            (pfi_root / "src" / "pfi_v02").mkdir(parents=True)
+            data_root = repo_root / "MetaDatabase" / "PFI" / "alipay_daily"
+            (data_root / "processed").mkdir(parents=True)
+            (data_root / "raw").mkdir(parents=True)
+            (data_root / "processed" / "alipay_import_manifest.json").write_text(
+                json.dumps({"transaction_count": 1, "date_start": "2026-01-01", "date_end": "2026-01-01"}),
+                encoding="utf-8",
+            )
+            (data_root / "processed" / "alipay_transactions.csv").write_text(
+                "event_type,amount\nCASH,-1\n",
+                encoding="utf-8",
+            )
+            (data_root / "raw" / "source.csv").write_text("source\nlocal\n", encoding="utf-8")
+
+            payload = module.build_v024_overall_project_review_payload(pfi_root)
+
+        self.assertEqual(payload["data_boundary"]["source_status"], "ready")
+        self.assertEqual(payload["data_boundary"]["storage_mode"], "filesystem")
+        self.assertTrue(payload["data_boundary"]["pfi_worktree_metadb_present"])
 
     def test_overall_artifacts_and_audit_are_machine_readable(self) -> None:
         expected_files = [
@@ -122,6 +153,10 @@ class TestV024OverallProjectReview(unittest.TestCase):
         self.assertIn("Overall project review: pass", readme)
         self.assertIn("GitHub main upload after overall review: complete", readme)
         self.assertNotIn("future version started", readme)
+
+        model_parameters = (ROOT / "模型参数文件.md").read_text(encoding="utf-8")
+        self.assertIn("MOD-PFI-001", model_parameters)
+        self.assertNotIn("MOD-PFI-V024-OVERALL", model_parameters)
 
 
 if __name__ == "__main__":

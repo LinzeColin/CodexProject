@@ -108,6 +108,12 @@
 - Preserved the R2 boundary: no command execution, proposal apply, push, app reinstall,
   Cloudflare deployment or raw mutation.
 
+## Cloudflare L2 MemoryAtlas public viewer — 2026-07-10
+
+- 将现有 MemoryAtlas 构建配置迁到 Workers Static Assets，并加入返回 LinzeHomeHub 的只读入口。
+- 继续只发布 redacted derived snapshot；raw archives、private imports、cookies、sessions、secrets 和直接写回保持禁止。
+- build、release privacy/accessibility、private scan、响应式浏览器验收和 Wrangler dry-run 已通过；远端 main 进一步证明 Pages deployment `82988d29` 来自 clean commit `5a24333e`，custom、production Pages 与 preview Pages 均受 owner-allowlist Access 保护，授权用户 app/JSON 加载已验证；不将其误写成匿名 public。
+
 ## Unreleased - Memory Atlas v1.2 Final Review
 
 - Added `validate:v1.2-final-review` for `MA-V12-FINAL-REVIEW` /

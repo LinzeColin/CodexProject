@@ -75,6 +75,8 @@ class TestV024Stage4Phase42ReadModelLink(unittest.TestCase):
         self.assertEqual(payload["phase_id"], "4.2")
         self.assertRegex(payload["read_model_hash"], r"^sha256:[0-9a-f]{64}$")
         self.assertEqual(payload["source"]["data_root"], str(REPO_ROOT / "MetaDatabase" / "PFI"))
+        expected_storage_mode = "filesystem" if (REPO_ROOT / "MetaDatabase" / "PFI").exists() else "git_tree"
+        self.assertEqual(payload["source"]["storage_mode"], expected_storage_mode)
         self.assertEqual(payload["source"]["status"], "ready")
         self.assertEqual(payload["source"]["record_count"], 8815)
         self.assertEqual(payload["source"]["raw_file_count"], 4)

@@ -8,22 +8,19 @@ Use $kmfa-dingtalk-attendance-skill.
 KMFA/kmfa-dingtalk-attendance-skill/SKILL.md
 ```
 
-每天北京时间 20:05 在 KMFA local main checkout 执行。当前部署 cwd 为 `/Users/linzezhang/CodexProject`；迁移到新电脑时使用同一 GitHub repo 的 `main` checkout。
+每天本机墙钟 20:00 在 KMFA local main checkout 执行。scheduler 不设置时区，只保留一个纯 RRULE；不得因 UTC offset 或夏令时变化换算 20:00。考勤 runner 内部仍使用 `Asia/Shanghai` 判定业务日期，但不能据此平移 scheduler 时间。当前部署 cwd 为 `/Users/linzezhang/CodexProject`；迁移到新电脑时使用同一 GitHub repo 的 `main` checkout。
 
-统一工作区规则：本 automation 与上游每日钉钉DWS归档、钉钉工作检查、KMFA资金周报日报自动化使用同一组 Codex cwds：
-- DWS 归档项目：`/Users/linzezhang/Documents/Codex/2026-07-04/392b1a986ba680338068ddc1c2a0fd0e-https-app-notion-com-p`
-- KMFA/CodexProject：`/Users/linzezhang/CodexProject`
-本 automation 的实际执行目录必须切到 `/Users/linzezhang/CodexProject` 后再运行 KMFA git、skill、test 或脚本命令；DWS 归档项目只作为上游输出和诊断可见工作区。若发现这些上游/下游 automation 的 cwds 不一致，先修正 automation 配置并报告。
+统一工作区规则：本 automation 只使用 KMFA/CodexProject：`/Users/linzezhang/CodexProject`。本 automation 的实际执行目录必须切到该目录后再运行 KMFA git、skill、test 或脚本命令；上游 DWS 归档是独立 automation，只提供已生成输出。若本 automation 的 cwd 不一致，先修正 automation 配置并报告。
 
 运行约束：
 1. 切到 `/Users/linzezhang/CodexProject`，再确认 branch 为 `main`，且 `HEAD == origin/main`。
 2. 确认 `KMFA/kmfa-dingtalk-attendance-skill/SKILL.md` 存在。
 3. 设置 `TZ=Asia/Shanghai` 和 `KMFA_RUN_SLOT=evening`。
 4. 运行 `KMFA/kmfa-dingtalk-attendance-skill/scripts/preflight.sh`。
-5. 运行 `KMFA/kmfa-dingtalk-attendance-skill/scripts/inspect_runtime.sh`。
+5. 运行 `KMFA/kmfa-dingtalk-attendance-skill/scripts/inspect_runtime.sh`，只把它作为诊断信息。
 6. 运行 `KMFA/kmfa-dingtalk-attendance-skill/scripts/validate_offline.sh`。
-7. 运行 `python3 KMFA/tools/dingtalk_attendance/healthcheck.py --config-only`。
-8. 只有在本机授权允许时才执行晚报入口；否则 fail closed，报告 `DWS_AUTH_REQUIRED` 或配置 blocker。Do not fabricate data。
+7. 运行 `python3 KMFA/tools/dingtalk_attendance/healthcheck.py --config-only`；这个 config-only healthcheck 是当前 DWS PAT/runtime readiness 的权威门禁，`inspect_runtime.sh` 单独出现旧 App Key warning 不能覆盖 READY 结果。
+8. 只有在权威 healthcheck 为 `READY` 且本机授权允许时，才执行下方唯一晚报入口一次；否则 fail closed，报告 `DWS_AUTH_REQUIRED` 或配置 blocker。Do not fabricate data。命令非零退出时必须把 automation 标为失败，不能把部分取数或通知失败报告为成功。
 9. 只能通过 approved local S19/DWS path 获取或 replay DingTalk attendance result/detail evidence。
 10. public-safe metadata 写入 `KMFA/metadata`；private raw payloads 保持在 ignored private runtime 或 OneDrive。
 11. 运行 `KMFA/kmfa-dingtalk-attendance-skill/scripts/month_gate.py --run-slot evening --print-json`。

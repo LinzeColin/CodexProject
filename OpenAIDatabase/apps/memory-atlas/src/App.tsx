@@ -2685,6 +2685,14 @@ export function App() {
               <div><dt>{uiCopy.app.runtimeStatus}</dt><dd>{runtimeStatus}</dd></div>
             </dl>
           </MachineFieldDetails>
+          <a
+            className="homehub-return"
+            data-homehub-return
+            href="https://home.linzezhang.com"
+            rel="noreferrer"
+          >
+            返回 LinzeHomeHub
+          </a>
         </div>
       </aside>
 

@@ -56,7 +56,7 @@ function requirePlaywright() {
 
 async function openTimeline(page, url = targetUrl) {
   await page.goto(url, { waitUntil: "networkidle", timeout: 30_000 });
-  await page.getByRole("button", { name: /时间轴/ }).click({ timeout: 10_000 });
+  await page.locator('[data-nav-view="timeline"]').click({ timeout: 10_000 });
   await page.waitForSelector(".timeline-map", { timeout: 30_000 });
 }
 

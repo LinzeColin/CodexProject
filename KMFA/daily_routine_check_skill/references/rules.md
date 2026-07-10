@@ -8,15 +8,25 @@
 Dingtalk-routine-check / 钉钉工作检查
 ```
 
-它读取已有 DWS 输出目录，不设置、不创建、不替换上游 DWS 扫描 automation。
+它只读取完整 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip`，不设置、不创建、不替换上游 DWS 扫描 automation。
 只保留这一个 automation，不为每条规则拆多个 automation。
 
-北京时间触发窗口固定为：
+业务检查窗口固定为北京时间：
 
 ```text
 11:35 Asia/Shanghai -> morning_1135
 17:05 Asia/Shanghai -> evening_1705
 ```
+
+Codex Desktop 调度器不设置时区，只保存当前主机本地 wall clock 的单行
+纯 RRULE。当前 Australia/Sydney 为 AEST (UTC+10)，对应：
+
+```text
+RRULE:FREQ=DAILY;BYHOUR=13,19;BYMINUTE=5,35;BYSETPOS=2,3
+```
+
+禁止 `DTSTART`、`TZID`、显式 scheduler timezone 和多 RRULE。主机 UTC
+offset 变化时重新换算本地小时，业务日期判断仍使用 Asia/Shanghai。
 
 `due_time` 保留在 YAML 中作为业务参考，实际提醒窗口统一由上述两个 automation trigger 执行。每次运行必须记录 `run_at_beijing`、`check_date`、`trigger_window`、`rules_evaluated`、`rules_skipped`。
 
@@ -26,7 +36,11 @@ Dingtalk-routine-check / 钉钉工作检查
 /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
 ```
 
-zip 内需包含 `付款请示群` 和 `生产管理群` 的 `chat_records/chat_records.csv` 与 `_manifest/manifest.csv`；直接 `DWS_Outputs/` 群目录只作为 fallback。
+zip 内需包含 `付款请示群` 和 `生产管理群` 的 `chat_records/chat_records.csv` 与 `_manifest/manifest.csv`。这是唯一输入；磁盘 `DWS_Outputs/` 目录不存在是正常状态，禁止探测、创建、materialize、复制、解压或 fallback。`DWS_Outputs/<群>/...` 只表示 ZIP 内 member 路径。
+
+每个 scheduler trigger 只执行对应 window 一次，禁止同一 task 同时执行
+morning 与 evening。scheduled command 不运行 cleanup；cleanup 只允许手工
+maintenance。输入只流式读取，不复制到缓存，也不在每次运行后自动 evict ZIP。
 
 输出：
 

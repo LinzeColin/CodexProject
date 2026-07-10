@@ -238,6 +238,27 @@ button {
   overflow-wrap: anywhere;
 }
 
+.homehub-return {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: 8px;
+  border-bottom: 1px solid rgba(126, 232, 212, 0.55);
+  color: #a8eee0;
+  padding-bottom: 3px;
+  text-decoration: none;
+}
+
+.homehub-return:hover,
+.homehub-return:focus-visible {
+  border-bottom-color: #f4f1e8;
+  color: #f4f1e8;
+  outline: none;
+}
+
+.homehub-return:focus-visible {
+  box-shadow: 0 2px 0 #7ee8d4;
+}
+
 .workspace {
   display: grid;
   grid-template-rows: auto auto auto clamp(112px, 18dvh, 152px) minmax(0, 1fr);

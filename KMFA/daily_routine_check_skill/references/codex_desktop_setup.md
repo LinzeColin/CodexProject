@@ -35,7 +35,7 @@ KMFA/tests/test_daily_routine_check.py
 /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
 ```
 
-The automation should treat this as read-only upstream data, stream required CSV entries from the zip, and avoid local extraction. `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/` is only a compatibility fallback.
+The automation must treat this complete zip as the only read-only upstream input and stream only required members. A disk `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/` folder is normally absent: never probe, create, materialize, copy, extract, or use it as fallback. Do not automatically evict the zip after each run.
 
 ## Recommended Automation Commands
 
@@ -43,22 +43,26 @@ The automation should treat this as read-only upstream data, stream required CSV
 
 ```bash
 cd /Users/linzezhang/CodexProject
-python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window morning_1135 --send
+python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window morning_1135 --input-zip /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip --send
 ```
 
 17:05 Beijing:
 
 ```bash
 cd /Users/linzezhang/CodexProject
-python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window evening_1705 --send
+python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window evening_1705 --input-zip /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip --send
 ```
 
 For setup verification:
 
 ```bash
-python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window morning_1135 --dry-run
-python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window evening_1705 --dry-run
+python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window morning_1135 --input-zip /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip --dry-run
+python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window evening_1705 --input-zip /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip --dry-run
 ```
+
+Each scheduled trigger executes only its corresponding command once. Never run
+both commands in one task, and never add `--cleanup` or `--apply` to scheduled
+commands. Cleanup remains a separate manual maintenance action.
 
 ## Git Autosync Command
 
