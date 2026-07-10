@@ -2,25 +2,29 @@
   "policy_id": "memory_atlas_raw_manifest_ledger_policy_v1_2_s03_p3",
   "task_id": "MA-V12-S03P3",
   "acceptance_id": "ACC-MA-V12-S03P3",
-  "status": "phase_s03_p3_machine_ledger_completed_pending_s03_review",
-  "purpose": "Generate machine-only raw manifest/hash ledger files for Memory Atlas v1.2 S03 P3 and make append-only/hash-drift audit executable without ingesting real transcripts in this phase.",
+  "status": "r7_immutable_public_raw_integrity_contract_ready",
+  "purpose": "Generate immutable run manifests, maintain a union hash ledger, and audit every sanitized public transcript before Memory Atlas v1.2 release materialization.",
   "manifest_root": "机器治理/证据与日志/raw_archive_manifests",
   "baseline_manifest": "机器治理/证据与日志/raw_archive_manifests/raw_manifest.s03_p3_baseline.jsonl",
   "hash_ledger": "机器治理/证据与日志/raw_archive_manifests/raw_hash_ledger.jsonl",
   "generator": "scripts/raw_archive_manifest.py",
-  "generation_command": "python3 scripts/raw_archive_manifest.py generate --run-id s03_p3_baseline --imported-at 2026-07-08T00:00:00Z",
+  "public_raw_auditor": "scripts/audit_memory_atlas_public_raw.py",
+  "generation_command": "python3 scripts/raw_archive_manifest.py generate --run-id v1_2_r7 --imported-at <UTC_TIMESTAMP> --require-non-empty --database-dir .",
   "audit_command": "python3 scripts/raw_archive_manifest.py audit --database-dir .",
+  "public_raw_audit_command": "python3 scripts/audit_memory_atlas_public_raw.py --database-dir .",
   "minimum_manifest_fields": [
     "source_id",
     "relative_path",
     "sha256",
-    "imported_at"
+    "imported_at",
+    "size_bytes"
   ],
   "baseline": {
     "run_id": "s03_p3_baseline",
     "imported_at": "2026-07-08T00:00:00Z",
     "current_raw_file_count": 0,
     "empty_baseline_allowed_when_no_raw_transcript_exists": true,
+    "historical_only_not_valid_for_r7_release": true,
     "excluded_non_transcript_files": [
       "README.md",
       ".gitkeep",
@@ -29,16 +33,38 @@
   },
   "audit_contract": {
     "allow_new_raw_files": true,
+    "new_files_extend_union_ledger": true,
+    "manifest_run_id_is_immutable": true,
+    "byte_identical_manifest_regeneration_is_idempotent": true,
     "hash_drift_fails": true,
     "deleted_manifest_entry_fails": true,
     "existing_raw_file_must_keep_same_sha256": true,
-    "raw_files_are_not_apply_targets": true
+    "raw_files_are_not_apply_targets": true,
+    "r7_requires_non_empty_source_families": [
+      "chatgpt",
+      "codex",
+      "agent:*"
+    ],
+    "public_raw_file_limit_bytes": 41943040,
+    "audit_all_files_independent_of_git_tracking": true,
+    "audit_skips_files_over_one_megabyte": false,
+    "credentials_email_phone_local_paths_fail": true,
+    "raw_data_urls_or_unmarked_binary_fail": true,
+    "deterministic_binary_omission_marker_allowed": true
+  },
+  "facet_consumption_contract": {
+    "extractor": "scripts/extract_memory_atlas_facets.py",
+    "select_current_content_version_only": true,
+    "chatgpt_prefers_current_processed_manifest_raw_ref": true,
+    "codex_uses_exact_public_transcript_chunk_ref": true,
+    "future_agent_uses_exact_versioned_event_raw_ref": true
   },
   "phase_boundary": {
-    "previous_phase_required": "S03 P2",
-    "next_gate": "S03 Review",
-    "connector_implementation_deferred_to": "S04",
-    "does_not_ingest_transcripts_in_this_phase": true,
+    "historical_previous_phase": "S03 P2",
+    "r7_task": "Task 2 Immutable Non-Empty Raw Manifest And Canonical Events",
+    "next_gate": "R7 Task 3 authorized source materialization",
+    "connector_implementation_owned_by": "R7 Task 1",
+    "does_not_materialize_transcripts_in_this_task": true,
     "raw_manifest_is_machine_file_not_human_primary_page": true,
     "does_not_create_ui": true,
     "no_github_main_upload": true

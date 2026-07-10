@@ -92,6 +92,71 @@ def repo_rel(path: Path, database_dir: Path) -> str:
         return path.as_posix()
 
 
+def version_rank(row: dict[str, Any], path: Path) -> tuple[str, str, str]:
+    timestamp = str(
+        row.get("updated_at")
+        or row.get("generated_at")
+        or row.get("created_at")
+        or row.get("parsed_at")
+        or ""
+    )
+    content_hash = str(row.get("content_sha256") or row.get("source_sha256") or "")
+    return timestamp, content_hash, path.as_posix()
+
+
+def select_latest_json_versions(
+    raw_files: list[Path],
+    identity,
+) -> list[tuple[Path, dict[str, Any]]]:
+    selected: dict[str, tuple[Path, dict[str, Any]]] = {}
+    for raw_file in raw_files:
+        row = read_json(raw_file)
+        if not isinstance(row, dict):
+            continue
+        record_id = str(identity(row, raw_file))
+        previous = selected.get(record_id)
+        if previous is None or version_rank(row, raw_file) > version_rank(previous[1], previous[0]):
+            selected[record_id] = (raw_file, row)
+    return [selected[key] for key in sorted(selected)]
+
+
+def existing_public_raw_ref(
+    value: Any,
+    database_dir: Path,
+    family_root: Path,
+) -> str | None:
+    text = str(value or "").strip().replace("\\", "/")
+    if not text:
+        return None
+    relative = Path(text)
+    if relative.is_absolute() or ".." in relative.parts:
+        return None
+    if relative.parts[:2] == ("data", "public_raw"):
+        candidate = database_dir / relative
+    else:
+        candidate = database_dir / family_root / relative
+    try:
+        candidate.resolve().relative_to((database_dir / family_root).resolve())
+    except ValueError:
+        return None
+    return repo_rel(candidate, database_dir) if candidate.is_file() else None
+
+
+def transcript_refs_for_export(
+    export: dict[str, Any],
+    database_dir: Path,
+) -> list[str]:
+    refs = export.get("chunk_refs") if isinstance(export.get("chunk_refs"), list) else []
+    if not refs and isinstance(export.get("chunks"), list):
+        refs = [chunk.get("ref") for chunk in export["chunks"] if isinstance(chunk, dict)]
+    result: list[str] = []
+    for value in refs:
+        normalized = existing_public_raw_ref(value, database_dir, CODEX_RAW_ROOT)
+        if normalized and normalized not in result:
+            result.append(normalized)
+    return result
+
+
 def text_of(*values: Any) -> str:
     parts: list[str] = []
     for value in values:
@@ -432,10 +497,45 @@ def extract_chatgpt(database_dir: Path) -> tuple[list[dict[str, Any]], dict[str,
     raw_root = database_dir / CHATGPT_RAW_ROOT
     raw_files = sorted(raw_root.glob("*.json")) if raw_root.exists() else []
     if raw_files:
-        for raw_file in raw_files:
-            row = read_json(raw_file)
-            if not isinstance(row, dict):
-                continue
+        selected = select_latest_json_versions(
+            raw_files,
+            lambda row, path: row.get("conversation_id") or row.get("source_id") or path.stem,
+        )
+        manifest_rows = read_jsonl(database_dir / CHATGPT_MANIFEST)
+        current_refs = {
+            str(row.get("conversation_id") or ""): str(row.get("raw_ref") or "")
+            for row in manifest_rows
+            if row.get("conversation_id") and row.get("raw_ref")
+        }
+        latest_by_id = {
+            str(row.get("conversation_id") or row.get("source_id") or path.stem): (path, row)
+            for path, row in selected
+        }
+        if current_refs:
+            selected_by_id: dict[str, tuple[Path, dict[str, Any]]] = {}
+            for record_id, raw_ref in current_refs.items():
+                normalized = existing_public_raw_ref(raw_ref, database_dir, CHATGPT_RAW_ROOT)
+                if not normalized:
+                    raise FacetExtractionError(
+                        f"current ChatGPT manifest raw_ref is unavailable for {record_id}"
+                    )
+                current_path = database_dir / normalized
+                current_row = read_json(current_path)
+                if not isinstance(current_row, dict):
+                    raise FacetExtractionError(
+                        f"current ChatGPT raw row is not an object for {record_id}"
+                    )
+                payload_id = str(current_row.get("conversation_id") or current_row.get("source_id") or "")
+                if payload_id and payload_id != record_id:
+                    raise FacetExtractionError(
+                        f"current ChatGPT raw identity mismatch for {record_id}"
+                    )
+                selected_by_id[record_id] = (current_path, current_row)
+        else:
+            selected_by_id = latest_by_id
+
+        selected = [selected_by_id[key] for key in sorted(selected_by_id)]
+        for raw_file, row in selected:
             record_id = str(row.get("conversation_id") or row.get("source_id") or raw_file.stem)
             events.append(
                 build_event(
@@ -449,7 +549,7 @@ def extract_chatgpt(database_dir: Path) -> tuple[list[dict[str, Any]], dict[str,
                     raw_ref=repo_rel(raw_file, database_dir),
                 )
             )
-        input_paths = [repo_rel(path, database_dir) for path in raw_files]
+        input_paths = [repo_rel(path, database_dir) for path, _ in selected]
         return events, source_status(
             source_id="chatgpt",
             status="extracted_from_public_raw",
@@ -501,31 +601,50 @@ def extract_codex(database_dir: Path) -> tuple[list[dict[str, Any]], dict[str, A
     raw_root = database_dir / CODEX_RAW_ROOT
     raw_files = sorted(raw_root.glob("*.json")) if raw_root.exists() else []
     if raw_files:
-        for raw_file in raw_files:
-            snapshot = read_json(raw_file)
-            if not isinstance(snapshot, dict):
+        snapshots = [
+            (path, payload)
+            for path in raw_files
+            if isinstance((payload := read_json(path)), dict)
+        ]
+        raw_file, snapshot = max(snapshots, key=lambda item: version_rank(item[1], item[0]))
+        rows = snapshot.get("sessions") if isinstance(snapshot.get("sessions"), list) else [snapshot]
+        exports = (
+            snapshot.get("public_transcript_exports")
+            if isinstance(snapshot.get("public_transcript_exports"), list)
+            else []
+        )
+        exports_by_session = {
+            str(export.get("session_id") or ""): export
+            for export in exports
+            if isinstance(export, dict) and export.get("session_id")
+        }
+        input_paths = [repo_rel(raw_file, database_dir)]
+        for row in rows:
+            if not isinstance(row, dict):
                 continue
-            rows = snapshot.get("sessions") if isinstance(snapshot.get("sessions"), list) else [snapshot]
-            for row in rows:
-                if not isinstance(row, dict):
-                    continue
-                record_id = str(row.get("session_id") or stable_hash(row)[:16])
-                events.append(
-                    build_event(
-                        source="codex",
-                        source_id="codex",
-                        record_id=record_id,
-                        title=compact_text(row.get("thread_name") or row.get("cwd_label") or "Codex activity"),
-                        row=row,
-                        default_tool="codex",
-                        occurred_at=str(row.get("updated_at") or row.get("started_at") or snapshot.get("generated_at") or ""),
-                        raw_ref=repo_rel(raw_file, database_dir),
-                    )
+            record_id = str(row.get("session_id") or stable_hash(row)[:16])
+            transcript_refs = transcript_refs_for_export(
+                exports_by_session.get(record_id, {}),
+                database_dir,
+            )
+            raw_ref = transcript_refs[0] if transcript_refs else repo_rel(raw_file, database_dir)
+            input_paths.extend(ref for ref in transcript_refs if ref not in input_paths)
+            events.append(
+                build_event(
+                    source="codex",
+                    source_id="codex",
+                    record_id=record_id,
+                    title=compact_text(row.get("thread_name") or row.get("cwd_label") or "Codex activity"),
+                    row=row,
+                    default_tool="codex",
+                    occurred_at=str(row.get("updated_at") or row.get("started_at") or snapshot.get("generated_at") or ""),
+                    raw_ref=raw_ref,
                 )
+            )
         return events, source_status(
             source_id="codex",
             status="extracted_from_public_raw",
-            input_paths=[repo_rel(path, database_dir) for path in raw_files],
+            input_paths=input_paths,
             event_count=len(events),
             evidence_level="raw",
         )
@@ -603,10 +722,14 @@ def extract_future_agents(database_dir: Path) -> tuple[list[dict[str, Any]], dic
     input_paths: list[str] = []
     raw_root = database_dir / FUTURE_AGENT_RAW_ROOT
     raw_files = sorted(raw_root.glob("*/*.json")) if raw_root.exists() else []
-    for raw_file in raw_files:
-        row = read_json(raw_file)
-        if not isinstance(row, dict):
-            continue
+    selected = select_latest_json_versions(
+        raw_files,
+        lambda row, path: (
+            f"{row.get('agent_id') or path.parent.name}:"
+            f"{row.get('event_id') or row.get('id') or path.stem}"
+        ),
+    )
+    for raw_file, row in selected:
         agent_id = str(row.get("agent_id") or raw_file.parent.name)
         agent_name = str(row.get("agent_name") or agent_id)
         record_id = str(row.get("event_id") or row.get("id") or raw_file.stem)

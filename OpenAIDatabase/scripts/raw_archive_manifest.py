@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -17,6 +18,11 @@ PUBLIC_RAW_ROOT = Path("data/public_raw")
 MANIFEST_ROOT = Path("机器治理/证据与日志/raw_archive_manifests")
 HASH_LEDGER_FILE = "raw_hash_ledger.jsonl"
 IGNORED_RAW_NAMES = {".DS_Store", ".gitkeep", "README.md"}
+RUN_ID_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*\Z")
+
+
+class ManifestConflict(ValueError):
+    """Raised when an immutable manifest or raw-ledger invariant would be broken."""
 
 
 def now_utc() -> str:
@@ -43,8 +49,12 @@ def write_text_atomic(path: Path, payload: str) -> None:
 
 
 def write_jsonl(path: Path, rows: Iterable[dict[str, Any]]) -> None:
-    payload = "".join(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n" for row in rows)
+    payload = jsonl_payload(rows)
     write_text_atomic(path, payload)
+
+
+def jsonl_payload(rows: Iterable[dict[str, Any]]) -> str:
+    return "".join(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n" for row in rows)
 
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -59,9 +69,13 @@ def read_jsonl(path: Path) -> list[dict[str, Any]]:
             try:
                 row = json.loads(text)
             except json.JSONDecodeError as exc:
-                raise ValueError(f"invalid JSONL in {path}:{line_number}: {exc}") from exc
+                raise ManifestConflict(
+                    f"invalid JSONL in {path.name} at row {line_number}"
+                ) from exc
             if not isinstance(row, dict):
-                raise ValueError(f"invalid JSONL row in {path}:{line_number}: expected object")
+                raise ManifestConflict(
+                    f"invalid JSONL object in {path.name} at row {line_number}"
+                )
             rows.append(row)
     return rows
 
@@ -112,9 +126,9 @@ def build_manifest_rows(database_dir: Path, imported_at: str) -> list[dict[str, 
 
 
 def manifest_path_for(database_dir: Path, run_id: str) -> Path:
-    safe_run_id = "".join(char if char.isalnum() or char in {"-", "_"} else "_" for char in run_id.strip())
-    if not safe_run_id:
-        raise ValueError("run_id must not be empty")
+    safe_run_id = run_id.strip()
+    if run_id != safe_run_id or not RUN_ID_RE.fullmatch(safe_run_id):
+        raise ManifestConflict("run_id must use only letters, digits, dot, underscore or hyphen")
     return database_dir / MANIFEST_ROOT / f"raw_manifest.{safe_run_id}.jsonl"
 
 
@@ -122,17 +136,94 @@ def hash_ledger_path(database_dir: Path) -> Path:
     return database_dir / MANIFEST_ROOT / HASH_LEDGER_FILE
 
 
-def generate_raw_manifest(database_dir: Path, run_id: str, imported_at: str | None = None) -> dict[str, Any]:
+def _rows_by_path(rows: list[dict[str, Any]], label: str) -> dict[str, dict[str, Any]]:
+    result: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        relative_path = str(row.get("relative_path") or "")
+        sha256 = str(row.get("sha256") or "")
+        if not relative_path or Path(relative_path).is_absolute() or ".." in Path(relative_path).parts:
+            raise ManifestConflict(f"{label} contains an invalid relative_path")
+        if not re.fullmatch(r"[0-9a-f]{64}", sha256):
+            raise ManifestConflict(f"{label} contains an invalid sha256 for {relative_path}")
+        previous = result.get(relative_path)
+        if previous is not None and previous != row:
+            raise ManifestConflict(f"{label} contains conflicting rows for {relative_path}")
+        if previous is not None:
+            raise ManifestConflict(f"{label} contains duplicate rows for {relative_path}")
+        result[relative_path] = row
+    return result
+
+
+def update_hash_ledger(
+    existing: list[dict[str, Any]],
+    current: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Return the append-only union after proving every historical raw still matches."""
+
+    existing_by_path = _rows_by_path(existing, "hash ledger")
+    current_by_path = _rows_by_path(current, "current raw inventory")
+
+    deleted = sorted(set(existing_by_path) - set(current_by_path))
+    if deleted:
+        raise ManifestConflict(f"raw files recorded by the ledger were deleted: {', '.join(deleted)}")
+
+    for relative_path, ledger_row in existing_by_path.items():
+        current_row = current_by_path[relative_path]
+        immutable_fields = ("source_id", "relative_path", "sha256", "size_bytes")
+        if any(ledger_row.get(field) != current_row.get(field) for field in immutable_fields):
+            raise ManifestConflict(f"raw file changed after ledger entry: {relative_path}")
+
+    union = [dict(row) for row in existing]
+    for relative_path in sorted(set(current_by_path) - set(existing_by_path)):
+        union.append(dict(current_by_path[relative_path]))
+    return union
+
+
+def _require_source_families(rows: list[dict[str, Any]]) -> list[str]:
+    source_families = sorted({str(row.get("source_id") or "") for row in rows})
+    missing = [source for source in ("chatgpt", "codex") if source not in source_families]
+    if not any(source.startswith("agent:") for source in source_families):
+        missing.append("agent:*")
+    if not rows:
+        raise ManifestConflict("public raw inventory is empty")
+    if missing:
+        raise ManifestConflict(f"public raw source-family gate failed: missing {', '.join(missing)}")
+    return source_families
+
+
+def generate_raw_manifest(
+    database_dir: Path,
+    run_id: str,
+    imported_at: str | None = None,
+    require_non_empty: bool = False,
+) -> dict[str, Any]:
     database_dir = database_dir.resolve()
     imported_at = imported_at or now_utc()
     rows = build_manifest_rows(database_dir, imported_at)
+    source_families = sorted({str(row.get("source_id") or "") for row in rows})
+    if require_non_empty:
+        source_families = _require_source_families(rows)
+
     manifest_path = manifest_path_for(database_dir, run_id)
     ledger_path = hash_ledger_path(database_dir)
-    write_jsonl(manifest_path, rows)
-    write_jsonl(ledger_path, rows)
+    manifest_payload = jsonl_payload(rows)
+    manifest_exists = manifest_path.exists()
+    if manifest_exists and manifest_path.read_text(encoding="utf-8") != manifest_payload:
+        raise ManifestConflict(f"manifest run_id is immutable: {run_id}")
+
+    existing_ledger = read_jsonl(ledger_path)
+    union_ledger = update_hash_ledger(existing_ledger, rows)
+    ledger_payload = jsonl_payload(union_ledger)
+
+    # All conflict checks complete before either immutable artifact is written.
+    if not manifest_exists:
+        write_text_atomic(manifest_path, manifest_payload)
+    if not ledger_path.exists() or ledger_path.read_text(encoding="utf-8") != ledger_payload:
+        write_text_atomic(ledger_path, ledger_payload)
+
     return {
         "status": "PASS",
-        "schema_version": "memory_atlas_raw_manifest.v1",
+        "schema_version": "memory_atlas_raw_manifest.v2",
         "run_id": run_id,
         "generated_at": now_utc(),
         "imported_at": imported_at,
@@ -140,6 +231,11 @@ def generate_raw_manifest(database_dir: Path, run_id: str, imported_at: str | No
         "manifest_path": manifest_path.relative_to(database_dir).as_posix(),
         "hash_ledger_path": ledger_path.relative_to(database_dir).as_posix(),
         "raw_file_count": len(rows),
+        "ledger_entry_count": len(union_ledger),
+        "source_families": source_families,
+        "manifest_sha256": hashlib.sha256(manifest_payload.encode("utf-8")).hexdigest(),
+        "idempotent": manifest_exists,
+        "require_non_empty": require_non_empty,
     }
 
 
@@ -148,8 +244,17 @@ def audit_raw_append_only(database_dir: Path) -> dict[str, Any]:
     ledger_path = hash_ledger_path(database_dir)
     ledger_rows = read_jsonl(ledger_path)
     current_rows = build_manifest_rows(database_dir, imported_at=now_utc())
-    ledger_by_path = {str(row.get("relative_path") or ""): row for row in ledger_rows}
-    current_by_path = {str(row.get("relative_path") or ""): row for row in current_rows}
+    try:
+        ledger_by_path = _rows_by_path(ledger_rows, "hash ledger")
+        current_by_path = _rows_by_path(current_rows, "current raw inventory")
+    except ManifestConflict as exc:
+        return {
+            "status": "FAIL",
+            "schema_version": "memory_atlas_raw_append_only_audit.v2",
+            "raw_root": PUBLIC_RAW_ROOT.as_posix(),
+            "hash_ledger_path": ledger_path.relative_to(database_dir).as_posix(),
+            "reason": str(exc),
+        }
 
     deleted = sorted(path for path in ledger_by_path if path and path not in current_by_path)
     changed = sorted(
@@ -161,7 +266,7 @@ def audit_raw_append_only(database_dir: Path) -> dict[str, Any]:
     status = "PASS" if not deleted and not changed else "FAIL"
     return {
         "status": status,
-        "schema_version": "memory_atlas_raw_append_only_audit.v1",
+        "schema_version": "memory_atlas_raw_append_only_audit.v2",
         "raw_root": PUBLIC_RAW_ROOT.as_posix(),
         "hash_ledger_path": ledger_path.relative_to(database_dir).as_posix(),
         "ledger_entry_count": len(ledger_rows),
@@ -183,6 +288,11 @@ def build_parser() -> argparse.ArgumentParser:
     generate.add_argument("--database-dir", default=".", help="OpenAIDatabase root")
     generate.add_argument("--run-id", required=True, help="manifest run id")
     generate.add_argument("--imported-at", default=None, help="stable imported_at timestamp")
+    generate.add_argument(
+        "--require-non-empty",
+        action="store_true",
+        help="require ChatGPT, Codex and at least one agent source family",
+    )
 
     audit = subparsers.add_parser("audit", help="audit raw append-only/hash drift rules")
     audit.add_argument("--database-dir", default=".", help="OpenAIDatabase root")
@@ -192,12 +302,24 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    if args.command == "generate":
-        result = generate_raw_manifest(Path(args.database_dir), args.run_id, args.imported_at)
-    elif args.command == "audit":
-        result = audit_raw_append_only(Path(args.database_dir))
-    else:
-        raise AssertionError(f"unhandled command: {args.command}")
+    try:
+        if args.command == "generate":
+            result = generate_raw_manifest(
+                Path(args.database_dir),
+                args.run_id,
+                args.imported_at,
+                require_non_empty=args.require_non_empty,
+            )
+        elif args.command == "audit":
+            result = audit_raw_append_only(Path(args.database_dir))
+        else:
+            raise AssertionError(f"unhandled command: {args.command}")
+    except ManifestConflict as exc:
+        result = {
+            "status": "FAIL",
+            "schema_version": "memory_atlas_raw_manifest_error.v1",
+            "reason": str(exc),
+        }
 
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
     return 0 if result["status"] == "PASS" else 1
