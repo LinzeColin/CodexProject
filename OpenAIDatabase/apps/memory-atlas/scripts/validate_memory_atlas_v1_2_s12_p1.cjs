@@ -190,6 +190,9 @@ function validatePackageScript() {
 function validateRuntimeContract() {
   const app = readRepoFile("apps/memory-atlas/src/App.tsx");
   const styles = readRepoFile("apps/memory-atlas/src/styles.css");
+  const acceptedProductCopy =
+    (app.includes("查看待授权 proposal") || app.includes("查看待授权提案"))
+    && (app.includes("生成 personalization prompt") || app.includes("生成个性化提示"));
   assertCondition(
     hasAll(app, [
       `const COMMAND_PALETTE_VERSION = "${commandPaletteVersion}" as const;`,
@@ -202,13 +205,11 @@ function validateRuntimeContract() {
       "同步 ChatGPT",
       "同步 Codex",
       "生成本周报告",
-      "查看待授权 proposal",
-      "生成 personalization prompt",
       "No automatic send",
       "No raw mutation",
       "No proposal apply execution",
       ...requiredCommandIds,
-    ]),
+    ]) && acceptedProductCopy,
     "s12p1_runtime_contract",
     "App.tsx exposes S12 P1 command palette runtime contract and accepted commands",
     "App.tsx is missing S12 P1 command palette runtime contract",

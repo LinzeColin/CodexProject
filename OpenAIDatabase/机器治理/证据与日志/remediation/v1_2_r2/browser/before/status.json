@@ -1,0 +1,119 @@
+{
+  "status": "FAIL",
+  "gate": "memory_atlas_v1_2_home_multiviewport",
+  "message": "One or more v1.2 home viewport contracts failed",
+  "details": {
+    "failures": [
+      {
+        "status": "FAIL",
+        "viewport": {
+          "name": "desktop-low-height",
+          "width": 1470,
+          "height": 661
+        },
+        "message": "R2 release identity marker is missing",
+        "details": {
+          "shellPresent": false,
+          "brandTitle": "记忆星图",
+          "productName": "OpenAIDatabase",
+          "groups": [],
+          "activeHomeLabel": "记忆总览",
+          "homeTitle": "记忆总览"
+        },
+        "screenshot": {
+          "path": "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject/OpenAIDatabase/机器治理/证据与日志/remediation/v1_2_r2/browser/before/home-desktop-low-height-1470x661-failure.png",
+          "bytes": 376336
+        },
+        "consoleErrors": [
+          "Failed to load resource: the server responded with a status of 404 (Not Found)"
+        ],
+        "failedResponses": [
+          {
+            "status": 404,
+            "url": "http://127.0.0.1:4178/__memory_atlas_heartbeat"
+          }
+        ]
+      },
+      {
+        "status": "FAIL",
+        "viewport": {
+          "name": "desktop-standard",
+          "width": 1440,
+          "height": 900
+        },
+        "message": "R2 release identity marker is missing",
+        "details": {
+          "shellPresent": false,
+          "brandTitle": "记忆星图",
+          "productName": "OpenAIDatabase",
+          "groups": [],
+          "activeHomeLabel": "记忆总览",
+          "homeTitle": "记忆总览"
+        },
+        "screenshot": {
+          "path": "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject/OpenAIDatabase/机器治理/证据与日志/remediation/v1_2_r2/browser/before/home-desktop-standard-1440x900-failure.png",
+          "bytes": 489429
+        },
+        "consoleErrors": [
+          "Failed to load resource: the server responded with a status of 404 (Not Found)"
+        ],
+        "failedResponses": [
+          {
+            "status": 404,
+            "url": "http://127.0.0.1:4178/__memory_atlas_heartbeat"
+          }
+        ]
+      },
+      {
+        "status": "FAIL",
+        "viewport": {
+          "name": "mobile",
+          "width": 390,
+          "height": 844
+        },
+        "message": "R2 release identity marker is missing",
+        "details": {
+          "shellPresent": false,
+          "brandTitle": "记忆星图",
+          "productName": "OpenAIDatabase",
+          "groups": [],
+          "activeHomeLabel": "记忆总览",
+          "homeTitle": "记忆总览"
+        },
+        "screenshot": {
+          "path": "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject/OpenAIDatabase/机器治理/证据与日志/remediation/v1_2_r2/browser/before/home-mobile-390x844-failure.png",
+          "bytes": 143034
+        },
+        "consoleErrors": [
+          "Failed to load resource: the server responded with a status of 404 (Not Found)"
+        ],
+        "failedResponses": [
+          {
+            "status": 404,
+            "url": "http://127.0.0.1:4178/__memory_atlas_heartbeat"
+          }
+        ]
+      }
+    ]
+  },
+  "targetUrl": "http://127.0.0.1:4178",
+  "outputDir": "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject/OpenAIDatabase/机器治理/证据与日志/remediation/v1_2_r2/browser/before",
+  "viewports": [
+    {
+      "name": "desktop-low-height",
+      "width": 1470,
+      "height": 661
+    },
+    {
+      "name": "desktop-standard",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "serverLogs": "  ➜  Local:   http://127.0.0.1:4178/\n"
+}

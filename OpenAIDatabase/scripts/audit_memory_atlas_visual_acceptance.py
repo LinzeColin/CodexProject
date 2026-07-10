@@ -84,7 +84,8 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     require(
         checks,
         ('{ key: "home", label: "记忆总览", icon: Home }' in app_source
-         or ('{ key: "home", label: uiCopy.navigation.views.home, icon: Home }' in app_source and 'home: "记忆总览"' in i18n_source))
+         or ('{ key: "home", label: uiCopy.navigation.views.home, icon: Home }' in app_source
+             and ('home: "记忆总览"' in i18n_source or 'home: "发生了什么"' in i18n_source)))
         and ('const [activeView, setActiveView] = useState<ViewKey>("home")' in app_source or "const activeView = sharedState.mode.activeView" in app_source)
         and 'if (activeView === "home")' in app_source
         and "function HomeOverviewView" in app_source
@@ -639,7 +640,8 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     require(
         checks,
         '"wordcloud"' in app_source
-        and ('label: "词云洞察"' in app_source or ('label: uiCopy.navigation.views.wordcloud' in app_source and 'wordcloud: "词云洞察"' in i18n_source))
+        and ('label: "词云洞察"' in app_source or ('label: uiCopy.navigation.views.wordcloud' in app_source
+             and ('wordcloud: "词云洞察"' in i18n_source or 'wordcloud: "反复出现什么"' in i18n_source)))
         and "function WordCloudView" in app_source
         and "buildSemanticInsights" in app_source
         and "SemanticInsight" in app_source
@@ -729,7 +731,8 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     require(
         checks,
         '"summary"' in app_source
-        and ('label: "总结与迭代"' in app_source or ('label: uiCopy.navigation.views.summary' in app_source and 'summary: "总结与迭代"' in i18n_source))
+        and ('label: "总结与迭代"' in app_source or ('label: uiCopy.navigation.views.summary' in app_source
+             and ('summary: "总结与迭代"' in i18n_source or 'summary: "决定下一步"' in i18n_source)))
         and "function SummaryIterationView" in app_source
         and "function ConfigMemoryPanel" in app_source
         and "Personalization / Agents.md 建议" in app_source

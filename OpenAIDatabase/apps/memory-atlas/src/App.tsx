@@ -83,6 +83,7 @@ const MEMORY_OVERVIEW_OPERATION_VERSION = "memory_overview_detail_operations.v1_
 const HOME_ARRIVAL_BRIEFING_VERSION = "home_arrival_briefing.v1_2_s10_p1" as const;
 const GLOBAL_CHINESE_UX_VERSION = "global_chinese_ux.v1_2_s10_p2" as const;
 const MACHINE_DETAIL_FOLDING_VERSION = "machine_detail_folding.v1_2_s10_p3" as const;
+const PRODUCT_IDENTITY_VERSION = "memory_atlas_product_identity.v1_2_r2" as const;
 const CLIO_LIKE_VISUALS_VERSION = "clio_like_visuals.v1_2_s11_p1" as const;
 const ECONOMIC_LIKE_VISUALS_VERSION = "economic_like_visuals.v1_2_s11_p2" as const;
 const WORKFLOW_LATENT_GOVERNANCE_VISUALS_VERSION = "workflow_latent_governance_visuals.v1_2_s11_p3" as const;
@@ -436,7 +437,7 @@ const HOME_ARRIVAL_CATEGORY_LABELS = {
   new_material: "新增重要资料",
   strengthened: "增强结论",
   weakened: "减弱或过期结论",
-  pending_proposal: "待授权 proposal",
+  pending_proposal: "待授权提案",
   sync_failure: "同步失败",
 } as const;
 
@@ -488,6 +489,17 @@ const views: Array<{ key: ViewKey; label: string; icon: ComponentType<{ size?: n
   { key: "wordcloud", label: uiCopy.navigation.views.wordcloud, icon: Cloud },
   { key: "search", label: uiCopy.navigation.views.search, icon: Search },
   { key: "summary", label: uiCopy.navigation.views.summary, icon: RefreshCw },
+];
+
+const navigationGroups: Array<{
+  id: "judgment" | "exploration" | "reflection";
+  label: string;
+  question: string;
+  viewKeys: ViewKey[];
+}> = [
+  { id: "judgment", label: "判断", question: "我现在应该先判断什么", viewKeys: ["home", "summary"] },
+  { id: "exploration", label: "探索", question: "我需要从哪里找证据", viewKeys: ["galaxy", "notion", "timeline", "search"] },
+  { id: "reflection", label: "复盘", question: "哪里值得投入或降噪", viewKeys: ["roi", "obsidian", "contribution", "wordcloud"] },
 ];
 
 const visualFocusViews: ViewKey[] = ["home", "galaxy", "notion", "roi", "obsidian", "timeline", "contribution", "wordcloud", "summary"];
@@ -1434,7 +1446,7 @@ function buildCommandPaletteModel(atlas: MemoryAtlas, slice: FilteredAtlasSlice,
     {
       id: "sync_chatgpt",
       label: "同步 ChatGPT",
-      description: "只读触发 ChatGPT 同步入口，优先走 browser connector 或 official export fallback。",
+      description: "检查 ChatGPT 同步入口与可复核资料；实际同步仍由用户明确触发。",
       humanAction: "用户触发后再运行 `atlasctl.py sync --source chatgpt --dry-run` 预检，不会自动读取 cookies/tokens。",
       dryRunCommand: "python3 scripts/atlasctl.py sync --source chatgpt --dry-run",
       status: `${(sourceCount.get("memory_atlas") ?? 0).toLocaleString()} 条 ChatGPT/Memory Atlas 节点可复核`,
@@ -1443,7 +1455,7 @@ function buildCommandPaletteModel(atlas: MemoryAtlas, slice: FilteredAtlasSlice,
     {
       id: "sync_codex",
       label: "同步 Codex",
-      description: "只读触发 Codex local sync 入口，先看 dry-run 合同和本地 source 状态。",
+      description: "检查 Codex 本地同步入口和来源状态；实际同步仍由用户明确触发。",
       humanAction: "用户触发后再运行 `atlasctl.py sync --source codex --dry-run` 预检，不会写 raw。",
       dryRunCommand: "python3 scripts/atlasctl.py sync --source codex --dry-run",
       status: `${(sourceCount.get("codex") ?? 0).toLocaleString()} 条 Codex 节点可复核`,
@@ -1452,7 +1464,7 @@ function buildCommandPaletteModel(atlas: MemoryAtlas, slice: FilteredAtlasSlice,
     {
       id: "generate_weekly_report",
       label: "生成本周报告",
-      description: "从当前 redacted derived 节点进入 Summary & Iteration，生成周报前先看变化和证据。",
+      description: "从当前低敏派生资料进入总结，生成周报前先核对变化和证据。",
       humanAction: "打开 Summary & Iteration；报告生成仍由用户触发，不在后台静默写入。",
       dryRunCommand: "python3 scripts/atlasctl.py build-atlas --dry-run",
       status: `${weeklyReportNodeCount.toLocaleString()} 条近周/近期节点 · 最新 ${latestDateLabel}`,
@@ -1460,8 +1472,8 @@ function buildCommandPaletteModel(atlas: MemoryAtlas, slice: FilteredAtlasSlice,
     },
     {
       id: "view_pending_proposals",
-      label: "查看待授权 proposal",
-      description: "集中查看待授权 proposal 候选，保持 proposal-only，不执行 apply。",
+      label: "查看待授权提案",
+      description: "集中查看待授权提案候选；这里只做判断，不直接应用变更。",
       humanAction: "打开 Summary & Iteration 的 proposal 区域；任何 apply 都推迟到 S13 授权闭环。",
       dryRunCommand: "python3 scripts/atlasctl.py audit --check self-iteration",
       status: `${pendingProposalCount.toLocaleString()} 条候选线索需要人工判断`,
@@ -1469,11 +1481,11 @@ function buildCommandPaletteModel(atlas: MemoryAtlas, slice: FilteredAtlasSlice,
     },
     {
       id: "generate_personalization_prompt",
-      label: "生成 personalization prompt",
-      description: "生成给 ChatGPT / Codex / other agent 可用的最新 personalization prompt 入口。",
+      label: "生成个性化提示",
+      description: "准备供 ChatGPT、Codex 和其他 agent 使用的最新个性化提示入口。",
       humanAction: "运行 dry-run 先确认来源报告；S12 P2 再生成完整中文说明和机器可复制文本。",
       dryRunCommand: "python3 scripts/atlasctl.py generate-personalization-prompt --dry-run",
-      status: `覆盖 ${S12_P1_PERSONALIZATION_TARGETS.join(" / ")} · runtime ${runtimeState.lifecycle}`,
+      status: `覆盖 ChatGPT / Codex / 其他代理 · 运行状态 ${runtimeState.lifecycle}`,
       viewTarget: "summary",
       personalizationTargets: S12_P1_PERSONALIZATION_TARGETS,
     },
@@ -1483,7 +1495,7 @@ function buildCommandPaletteModel(atlas: MemoryAtlas, slice: FilteredAtlasSlice,
       description: "把最新记忆分析报告和探索提示转成 ChatGPT 预填充入口。",
       humanAction: "用户触发后运行 `atlasctl.py chatgpt-deep-explore --mode prefill_only --open`；默认只填入，不静默发送。auto_submit 必须有配置和显式确认。",
       dryRunCommand: "python3 scripts/atlasctl.py chatgpt-deep-explore --mode prefill_only --dry-run",
-      status: "prefill_only 默认 · auto_submit gated",
+      status: "默认仅预填 · 自动发送受控",
       viewTarget: null,
     },
   ];
@@ -2030,6 +2042,7 @@ export function App() {
       className="app-shell"
       data-default-route-view={DEFAULT_MEMORY_ATLAS_VIEW}
       data-memory-overview-default-route="true"
+      data-r2-release-identity={PRODUCT_IDENTITY_VERSION}
       data-s10-p2-global-chinese-ux={GLOBAL_CHINESE_UX_VERSION}
       data-s10-p3-machine-detail-folding={MACHINE_DETAIL_FOLDING_VERSION}
       data-stage9-phase1-shared-state={CROSS_BOARD_SHARED_STATE_RUNTIME_VERSION}
@@ -2050,30 +2063,45 @@ export function App() {
           </div>
         </div>
         <nav className="nav-list">
-          {views.map((view) => {
-            const Icon = view.icon;
-            return (
-              <button
-                className={activeView === view.key ? "nav-item active" : "nav-item"}
-                data-nav-view={view.key}
-                key={view.key}
-                onClick={() => switchView(view.key)}
-                title={view.label}
-                type="button"
-              >
-                <Icon size={18} />
-                <span>{view.label}</span>
-              </button>
-            );
-          })}
+          {navigationGroups.map((group) => (
+            <div className="nav-group" data-nav-question-group={group.id} key={group.id}>
+              <div className="nav-group-heading">
+                <span className="nav-group-label">{group.label}</span>
+                <small className="nav-group-question">{group.question}</small>
+              </div>
+              <div className="nav-group-items">
+                {group.viewKeys.map((viewKey) => {
+                  const view = views.find((candidate) => candidate.key === viewKey);
+                  if (!view) return null;
+                  const Icon = view.icon;
+                  return (
+                    <button
+                      aria-label={view.label}
+                      className={activeView === view.key ? "nav-item active" : "nav-item"}
+                      data-nav-view={view.key}
+                      key={view.key}
+                      onClick={() => switchView(view.key)}
+                      onFocus={(event) => event.currentTarget.scrollIntoView({ block: "nearest", inline: "nearest" })}
+                      title={view.label}
+                      type="button"
+                    >
+                      <Icon size={18} />
+                      <span>{view.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
         <div className="sidebar-footer">
-          <span>{uiCopy.app.snapshotGeneratedAt}</span>
-          <strong>{generatedAt}</strong>
-          <span>{uiCopy.app.snapshotLoadedAt}</span>
-          <strong>{loadedAt}</strong>
-          <span>{uiCopy.app.runtimeStatus}</span>
-          <strong>{runtimeStatus}</strong>
+          <MachineFieldDetails title="数据状态" className="sidebar-data-status">
+            <dl>
+              <div><dt>{uiCopy.app.snapshotGeneratedAt}</dt><dd>{generatedAt}</dd></div>
+              <div><dt>{uiCopy.app.snapshotLoadedAt}</dt><dd>{loadedAt}</dd></div>
+              <div><dt>{uiCopy.app.runtimeStatus}</dt><dd>{runtimeStatus}</dd></div>
+            </dl>
+          </MachineFieldDetails>
         </div>
       </aside>
 
@@ -2148,6 +2176,7 @@ export function App() {
             label={uiCopy.filters.categoryLabel}
             value={filters.category}
             options={categories}
+            formatOption={humanCategoryLabel}
             onChange={(value) => updateFilters((current) => ({ ...current, category: value }))}
           />
           <label className="select-filter">
@@ -2248,10 +2277,10 @@ function CommandPalettePanel({
     >
       <div className="command-palette-heading">
         <div>
-          <p className="eyebrow">S12 P1</p>
-          <h2>命令面板</h2>
+          <p className="eyebrow">快捷操作</p>
+          <h2>接下来可以做什么</h2>
         </div>
-        <span>{model.commands.length} 个采纳命令</span>
+        <span>{model.commands.length} 个可选动作</span>
       </div>
       <div className="command-palette-grid">
         {model.commands.map((command) => {
@@ -2262,7 +2291,7 @@ function CommandPalettePanel({
               data-s12-p1-command-id={command.id}
               key={command.id}
               onClick={() => onSelectCommand(command)}
-              title={command.humanAction}
+              title={command.description}
               type="button"
             >
               <Icon size={18} />
@@ -2273,22 +2302,24 @@ function CommandPalettePanel({
         })}
       </div>
       <div className="command-palette-detail">
-        <div>
-          <strong>{selectedCommand.label}</strong>
-          <p>{selectedCommand.description}</p>
+        <strong>{selectedCommand.label}</strong>
+        <p>{selectedCommand.description}</p>
+      </div>
+      <MachineFieldDetails title="运行边界与技术详情" className="command-technical-details">
+        <div className="command-palette-technical-content">
           <small>{selectedCommand.humanAction}</small>
+          <code>{selectedCommand.dryRunCommand}</code>
+          <div className="command-palette-safety">
+            <span>No automatic send</span>
+            <span>No silent send</span>
+            <span>No raw mutation</span>
+            <span>No proposal apply execution</span>
+            <span>No cookie/token/secret export</span>
+            <span>ChatGPT / Codex / other agent personalization prompt</span>
+            <span>prefill_only / auto_submit</span>
+          </div>
         </div>
-        <code>{selectedCommand.dryRunCommand}</code>
-      </div>
-      <div className="command-palette-safety">
-        <span>No automatic send</span>
-        <span>No silent send</span>
-        <span>No raw mutation</span>
-        <span>No proposal apply execution</span>
-        <span>No cookie/token/secret export</span>
-        <span>ChatGPT / Codex / other agent personalization prompt</span>
-        <span>prefill_only / auto_submit</span>
-      </div>
+      </MachineFieldDetails>
     </section>
   );
 }
@@ -2536,8 +2567,8 @@ function BehaviorIntelligencePanel({ summary }: { summary: MemoryAtlas["behavior
       data-s06-opportunity-count={summary.counts.opportunities}
     >
       <div className="panel-title-row">
-        <h3>S06 行为智能</h3>
-        <span>{summary.status}</span>
+        <h3>哪些行为模式值得调整</h3>
+        <span>已完成行为归纳</span>
       </div>
       <div className="home-behavior-count-row" aria-label="S06 行为智能计数">
         <span><strong>{summary.counts.clusters.toLocaleString()}</strong>主题/层级簇</span>
@@ -2616,16 +2647,16 @@ function ClioLikeVisualPanel({
     >
       <div className="panel-title-row">
         <div>
-          <h3>Clio-like 多维图谱</h3>
+          <h3>主题如何聚合与变化</h3>
           <p>{model.summary}</p>
         </div>
         <span>{model.clusters.length.toLocaleString()} 个筛选后主题簇</span>
       </div>
       <div className="clio-filter-strip" aria-label="S11 P1 图谱过滤维度">
-        <span><strong>source</strong>{model.activeFilters.source}</span>
-        <span><strong>time</strong>{model.activeFilters.time}</span>
-        <span><strong>project</strong>{model.activeFilters.project}</span>
-        <span><strong>task</strong>{model.activeFilters.task}</span>
+        <span><strong>来源</strong>{model.activeFilters.source}</span>
+        <span><strong>时间</strong>{model.activeFilters.time}</span>
+        <span><strong>项目</strong>{model.activeFilters.project}</span>
+        <span><strong>任务</strong>{model.activeFilters.task}</span>
       </div>
       <div className="clio-visual-grid">
         <article
@@ -2736,7 +2767,7 @@ function ClioLikeVisualPanel({
             <div className="clio-selected-cluster" aria-label="选中簇行动说明">
               <span>{selectedCluster.label}</span>
               <strong>{selectedCluster.count} 条记忆，{selectedCluster.sourceCount} 个来源</strong>
-              <p>下一步：打开搜索视图复核代表记录，再决定是否进入 S11 P2 的经济类图谱。</p>
+              <p>下一步：打开查找与核对，复核代表记录后再比较投入回报。</p>
             </div>
           ) : null}
         </article>
@@ -2789,16 +2820,16 @@ function EconomicLikeVisualPanel({
     >
       <div className="panel-title-row">
         <div>
-          <h3>Economic-like 经济图谱</h3>
+          <h3>时间和精力投在哪里</h3>
           <p>{model.summary}</p>
         </div>
         <span>{model.taskRows.length.toLocaleString()} 个筛选后任务面</span>
       </div>
       <div className="economic-filter-strip" aria-label="S11 P2 图谱过滤维度">
-        <span><strong>source</strong>{model.activeFilters.source}</span>
-        <span><strong>time</strong>{model.activeFilters.time}</span>
-        <span><strong>project</strong>{model.activeFilters.project}</span>
-        <span><strong>task</strong>{model.activeFilters.task}</span>
+        <span><strong>来源</strong>{model.activeFilters.source}</span>
+        <span><strong>时间</strong>{model.activeFilters.time}</span>
+        <span><strong>项目</strong>{model.activeFilters.project}</span>
+        <span><strong>任务</strong>{model.activeFilters.task}</span>
       </div>
       <div className="economic-visual-grid">
         <article
@@ -2984,16 +3015,16 @@ function WorkflowLatentGovernanceVisualPanel({
     >
       <div className="panel-title-row">
         <div>
-          <h3>Workflow / Latent / Governance 治理图谱</h3>
+          <h3>执行链路哪里需要治理</h3>
           <p>{model.summary}</p>
         </div>
-        <span>{model.visualCopy.length.toLocaleString()} 张 P3 决策图</span>
+        <span>{model.visualCopy.length.toLocaleString()} 张决策图</span>
       </div>
       <div className="workflow-governance-filter-strip" aria-label="S11 P3 图谱过滤维度">
-        <span><strong>source</strong>{model.activeFilters.source}</span>
-        <span><strong>time</strong>{model.activeFilters.time}</span>
-        <span><strong>project</strong>{model.activeFilters.project}</span>
-        <span><strong>task</strong>{model.activeFilters.task}</span>
+        <span><strong>来源</strong>{model.activeFilters.source}</span>
+        <span><strong>时间</strong>{model.activeFilters.time}</span>
+        <span><strong>项目</strong>{model.activeFilters.project}</span>
+        <span><strong>任务</strong>{model.activeFilters.task}</span>
       </div>
       <div className="workflow-governance-visual-grid">
         <article
@@ -3169,16 +3200,18 @@ function WorkflowLatentGovernanceVisualPanel({
             <p>{formulaCopy?.humanQuestion}</p>
             <em>{formulaCopy?.actionValue}</em>
           </div>
-          <div className="formula-explorer-list" aria-label="Formula Explorer/Parameter Inspector">
-            {model.formulaRows.map((row) => (
-              <button key={row.id} onClick={() => openNode(row.node, "roi")} type="button">
-                <span>{row.label}</span>
-                <strong>{row.value}</strong>
-                <small>{row.description}</small>
-                <em>{row.sourcePath}</em>
-              </button>
-            ))}
-          </div>
+          <MachineFieldDetails title="查看公式参数与来源" className="formula-technical-details">
+            <div className="formula-explorer-list" aria-label="Formula Explorer/Parameter Inspector">
+              {model.formulaRows.map((row) => (
+                <button key={row.id} onClick={() => openNode(row.node, "roi")} type="button">
+                  <span>{row.label}</span>
+                  <strong>{row.value}</strong>
+                  <small>{row.description}</small>
+                  <em>{row.sourcePath}</em>
+                </button>
+              ))}
+            </div>
+          </MachineFieldDetails>
         </article>
       </div>
     </section>
@@ -3214,22 +3247,22 @@ function HumanQuestionMapPanel({
     >
       <div className="panel-title-row">
         <div>
-          <h3>Human Question Map</h3>
+          <h3>问题如何连接到行动</h3>
           <p>{model.summary}</p>
         </div>
-        <span>{model.p0VisualCount.toLocaleString()} 张 P0 图谱</span>
+        <span>{model.p0VisualCount.toLocaleString()} 张可行动图谱</span>
       </div>
       <div className="human-question-map-gate-row" aria-label="S11 P4 Visual ROI Gate 汇总">
-        <span><strong>{model.p0VisualCount.toLocaleString()}</strong>P0 通过</span>
-        <span><strong>{model.failedP0Count.toLocaleString()}</strong>P0 失败</span>
-        <span><strong>{model.excludedCandidates.length.toLocaleString()}</strong>未进 P0</span>
+        <span><strong>{model.p0VisualCount.toLocaleString()}</strong>已纳入</span>
+        <span><strong>{model.failedP0Count.toLocaleString()}</strong>未通过</span>
+        <span><strong>{model.excludedCandidates.length.toLocaleString()}</strong>候选排除</span>
         <span><strong>{model.strongestGateLabel}</strong>最强决策族</span>
       </div>
       <div className="human-question-map-filter-strip" aria-label="S11 P4 图谱过滤维度">
-        <span><strong>source</strong>{model.activeFilters.source}</span>
-        <span><strong>time</strong>{model.activeFilters.time}</span>
-        <span><strong>project</strong>{model.activeFilters.project}</span>
-        <span><strong>task</strong>{model.activeFilters.task}</span>
+        <span><strong>来源</strong>{model.activeFilters.source}</span>
+        <span><strong>时间</strong>{model.activeFilters.time}</span>
+        <span><strong>项目</strong>{model.activeFilters.project}</span>
+        <span><strong>任务</strong>{model.activeFilters.task}</span>
       </div>
       <div className="human-question-map-family-tabs" aria-label="Human Question Map family filter">
         {familyOptions.map((option) => (
@@ -3455,9 +3488,9 @@ function HomeOverviewView({
         ))}
       </nav>
       <section className="home-shared-focus-strip" aria-label="共享焦点" data-home-section="status_summary">
-        <span>宇宙状态（Universe State）</span>
+        <span>当前判断焦点</span>
         <strong>{selectedNode ? humanNodeDisplayTitle(selectedNode) : uiCopy.overview.defaultFocus}</strong>
-        <small>{sharedState.focus.home.clusterId ?? uiCopy.overview.noTopic} · r{sharedState.sync.revision}</small>
+        <small>{sharedState.focus.home.clusterId ?? uiCopy.overview.noTopic} · 证据已同步</small>
       </section>
       <section className="home-primary-band" aria-label="当前认知状态">
         <article
@@ -3489,7 +3522,7 @@ function HomeOverviewView({
           <div data-home-section="status_summary"><Metric label="近期增量" value={deltaStats.recentCount} /></div>
         </div>
       </section>
-      <section className="home-status-grid" aria-label="宇宙状态（Universe State）状态卡片">
+      <section className="home-status-grid" aria-label="当前判断状态卡片">
         {model.signals.map((signal) => (
           <article className={`home-status-card ${signal.tone}`} key={signal.id}>
             <span>{signal.title}</span>
@@ -3568,19 +3601,19 @@ function HomeOverviewView({
         </div>
         <div className="home-section-summary-row" aria-label="Top Actions Section fields">
           <span className="home-operation-chip" data-top-actions-field="suggestion">
-            <strong>suggestion</strong>
+            <strong>建议</strong>
             <small>{model.actions.length.toLocaleString()} 条行动建议</small>
           </span>
           <span className="home-operation-chip" data-top-actions-field="reason">
-            <strong>reason</strong>
-            <small>来自 Universe State 派生数据</small>
+            <strong>依据</strong>
+            <small>来自当前快照的派生分析</small>
           </span>
           <span className="home-operation-chip" data-top-actions-field="priority">
-            <strong>priority</strong>
-            <small>{model.actions[0]?.priority ?? "none"}</small>
+            <strong>优先级</strong>
+            <small>{humanPriorityLabel(model.actions[0]?.priority)}</small>
           </span>
           <span className="home-operation-chip" data-top-actions-field="status">
-            <strong>status</strong>
+            <strong>状态</strong>
             <small>{actionStatusChips.map((chip) => `${chip.label}:${chip.count}`).join(" / ")}</small>
           </span>
         </div>
@@ -3596,13 +3629,13 @@ function HomeOverviewView({
               onClick={() => openActionDetail(action)}
               type="button"
             >
-              <span>{action.priority}</span>
+              <span>{humanPriorityLabel(action.priority)}</span>
               <strong>{action.title}</strong>
               <div className="home-action-meta-grid" aria-label="建议动作排序信号">
                 <i>ROI {formatScore(action.roi_score)}</i>
-                <i>{action.effort_cost}</i>
-                <i>{action.urgency}</i>
-                <i className="home-action-status">{action.status}</i>
+                <i>{humanEffortLabel(action.effort_cost)}</i>
+                <i>{humanUrgencyLabel(action.urgency)}</i>
+                <i className="home-action-status">{humanActionStatusLabel(action.status)}</i>
                 <i>{action.evidence_count} 证据</i>
               </div>
               <small>{action.reason}</small>
@@ -3758,8 +3791,24 @@ function buildHomeActionStatusChips(actions: HomeAction[]): Array<{ id: HomeActi
   return statuses.map((status) => ({
     count: actions.filter((action) => action.status === status).length,
     id: status,
-    label: status,
+    label: humanActionStatusLabel(status),
   }));
+}
+
+function humanPriorityLabel(priority?: string): string {
+  return ({ P0: "立即判断", P1: "优先处理", P2: "随后处理", P3: "持续观察" } as Record<string, string>)[priority ?? ""] ?? "待判断";
+}
+
+function humanActionStatusLabel(status: HomeActionDetail["status"]): string {
+  return ({ proposed: "待判断", review: "待复核", blocked: "受阻", done_safe: "已安全完成" } as Record<HomeActionDetail["status"], string>)[status];
+}
+
+function humanEffortLabel(effort: HomeActionDetail["effort_cost"]): string {
+  return ({ low: "低投入", medium: "中等投入", high: "高投入" } as Record<HomeActionDetail["effort_cost"], string>)[effort];
+}
+
+function humanUrgencyLabel(urgency: HomeActionDetail["urgency"]): string {
+  return ({ low: "低紧迫", medium: "中等紧迫", high: "高紧迫" } as Record<HomeActionDetail["urgency"], string>)[urgency];
 }
 
 type HomeLevelAssetGroupId = (typeof HOME_LEVEL_ASSET_GROUPS)[number]["id"];
@@ -5318,11 +5367,13 @@ function InteractionLens({
           <span>重置筛选</span>
         </button>
       </div>
-      <div className="lens-state-strip" aria-label="宇宙状态（Universe State）快照">
-        <span>宇宙状态（Universe State）</span>
-        <strong>信号 {sharedState.selection.signal}</strong>
-        <em>来源 {sharedState.sync.updatedBy} · r{sharedState.sync.revision}</em>
-      </div>
+      <MachineFieldDetails title="焦点技术详情" className="lens-technical-details">
+        <div className="lens-state-strip" aria-label="宇宙状态（Universe State）快照">
+          <span>宇宙状态（Universe State）</span>
+          <strong>信号 {sharedState.selection.signal}</strong>
+          <em>来源 {sharedState.sync.updatedBy} · r{sharedState.sync.revision}</em>
+        </div>
+      </MachineFieldDetails>
       <div className="filter-chip-row" aria-label="活跃筛选">
         {chips.length || timelineTimeRange ? (
           <>
@@ -7529,11 +7580,13 @@ function SelectFilter({
   label,
   value,
   options,
+  formatOption = (option) => option,
   onChange,
 }: {
   label: string;
   value: string;
   options: string[];
+  formatOption?: (option: string) => string;
   onChange: (value: string) => void;
 }) {
   return (
@@ -7543,7 +7596,7 @@ function SelectFilter({
         <option value="all">{uiCopy.filters.allOption}</option>
         {options.map((option) => (
           <option key={option} value={option}>
-            {option}
+            {formatOption(option)}
           </option>
         ))}
       </select>
@@ -8052,14 +8105,14 @@ function buildClioLikeVisualModel(
     },
     {
       id: "bubble_map",
-      title: "Bubble Map",
+      title: "气泡分布",
       insightHeader: "大气泡显示高频和高 ROI 的交汇点",
       humanQuestion: "高频、机会、风险如何分布？",
       actionValue: "优先打开高 ROI 且近期活跃的簇，低 ROI 高频簇进入降噪复盘。",
     },
     {
       id: "topic_cluster_explorer",
-      title: "Topic/Cluster Explorer",
+      title: "主题簇探索",
       insightHeader: "先打开证据最多的簇再行动",
       humanQuestion: "哪个主题簇最值得继续追问？",
       actionValue: "用代表记录进入搜索视图，复核证据后再生成下一步 proposal。",
@@ -8154,7 +8207,7 @@ function buildClioLikeVisualModel(
   };
   const topCluster = visibleClusters[0];
   const summary = topCluster.count
-    ? `当前筛选下，${topCluster.label} 是最大簇，包含 ${topCluster.count.toLocaleString()} 条记忆；图谱已按 source/time/project/task 过滤。`
+    ? `当前筛选下，${topCluster.label} 是最大簇，包含 ${topCluster.count.toLocaleString()} 条记忆；图谱已按来源、时间、项目和任务过滤。`
     : "当前筛选下没有可视化簇；请放宽过滤条件后再查看。";
 
   return {
@@ -8177,28 +8230,28 @@ function buildEconomicLikeVisualModel(
   const visualCopy: EconomicLikeVisualCopy[] = [
     {
       id: "task_treemap",
-      title: "Task Treemap",
+      title: "任务占比分布",
       insightHeader: "任务面积显示 AI 使用最集中的地方",
       humanQuestion: "我的 AI 使用集中在哪些任务？",
       actionValue: "把最大面积任务先和 ROI 对齐，避免把时间继续投给低回报任务。",
     },
     {
       id: "automation_vs_augmentation",
-      title: "Automation vs Augmentation",
+      title: "自动化与辅助判断",
       insightHeader: "自动化和增强必须分开决策",
       humanQuestion: "哪些任务是 AI 自动化，哪些只是增强？",
       actionValue: "自动化高的任务优先固化流程；增强高的任务保留人工判断和复盘入口。",
     },
     {
       id: "roi_scatter",
-      title: "ROI Scatter",
+      title: "投入回报分布",
       insightHeader: "右上角任务才值得继续加码",
       humanQuestion: "哪些任务最值得继续？",
       actionValue: "优先打开高 ROI 且近期活跃的任务；低 ROI 高频任务进入停止或降噪判断。",
     },
     {
       id: "opportunity_radar",
-      title: "Opportunity Radar",
+      title: "机会雷达",
       insightHeader: "机会不只看数量，还要看新鲜度和复用价值",
       humanQuestion: "哪些方向有机会但还需要证据？",
       actionValue: "用雷达缺口选择下一步验证问题，不把机会清单变成压力清单。",
@@ -8306,7 +8359,7 @@ function buildEconomicLikeVisualModel(
   };
   const topTask = taskRows[0];
   const summary = topTask.count
-    ? `当前筛选下，${topTask.label} 是最大经济任务面，平均 ROI ${formatScore(topTask.roiScore)}；图谱已按 source/time/project/task 过滤。`
+    ? `当前筛选下，${topTask.label} 是最大的投入任务面，平均 ROI ${formatScore(topTask.roiScore)}；图谱已按来源、时间、项目和任务过滤。`
     : "当前筛选下没有可计算的经济任务；请放宽过滤条件后再查看。";
 
   return {
@@ -8397,38 +8450,38 @@ function buildWorkflowLatentGovernanceVisualModel(
   const visualCopy: WorkflowLatentGovernanceVisualCopy[] = [
     {
       id: "agent_decision_sankey",
-      title: "Codex/Agent Decision Sankey",
+      title: "执行决策流",
       insightHeader: "Agent 路径要看入口、验收和回滚是否连起来",
       humanQuestion: "Codex/Agent 执行路径哪里失真？",
       actionValue: "把断点转成下一轮 run contract、validator 或人工授权判断。",
     },
     {
       id: "friction_heatmap",
-      title: "Friction Heatmap",
+      title: "返工摩擦热区",
       insightHeader: "返工热区优先处理证据缺口和 scope creep",
       humanQuestion: "我在哪些地方反复浪费时间？",
       actionValue: "把高热区转成停止条件、验收门禁或降噪规则。",
     },
     {
       id: "latent_radar",
-      title: "Latent Radar",
+      title: "潜在信号雷达",
       insightHeader: "潜在信号必须能被证据验证或降权",
       humanQuestion: "哪些潜在信号正在增强？",
       actionValue: "只继续验证可反驳、有证据 badge、有下一步的问题。",
     },
     {
       id: "evidence_timeline",
-      title: "Evidence Timeline",
+      title: "证据时间线",
       insightHeader: "结论要能沿时间线追到证据来源",
       humanQuestion: "这个结论从哪些记录来？",
       actionValue: "打开时间线复核证据新鲜度，避免旧结论继续驱动行动。",
     },
     {
       id: "formula_explorer",
-      title: "Formula Explorer/Parameter Inspector",
+      title: "公式解释",
       insightHeader: "公式权重只解释 proxy，不直接代表真实收益",
       humanQuestion: "这个分数为什么这样算？",
-      actionValue: "检查参数、边界和 proposal-only 规则，再决定是否进入 S12/S13。",
+      actionValue: "检查参数、边界和仅提案规则，再决定是否继续进入授权流程。",
     },
   ];
   const memoryNodes = nodes.filter((node) => node.kind === "memory");
@@ -8618,7 +8671,7 @@ function buildWorkflowLatentGovernanceVisualModel(
   const hottestCell = [...frictionCells].sort((a, b) => b.count - a.count)[0];
   const strongestAxis = [...latentAxes].sort((a, b) => b.value - a.value)[0];
   const summary = memoryNodes.length
-    ? `当前筛选下，${hottestCell?.rowLabel ?? "摩擦"} 在${hottestCell?.columnLabel ?? "流程"}最需要降噪，${strongestAxis?.label ?? "潜在信号"}是最强潜性轴；P3 图谱已按 source/time/project/task 过滤。`
+    ? `当前筛选下，${hottestCell?.rowLabel ?? "摩擦"} 在${hottestCell?.columnLabel ?? "流程"}最需要降噪，${strongestAxis?.label ?? "潜在信号"}是最强潜性轴；图谱已按来源、时间、项目和任务过滤。`
     : "当前筛选下没有可计算的工作流/潜性/治理信号；请放宽过滤条件后再查看。";
 
   return {
@@ -8687,14 +8740,14 @@ function buildHumanQuestionMapModel(
     {
       id: "decorative_density_cloud",
       title: "装饰性密度云",
-      reason: "只有视觉密度，没有可回答的人类问题和行动入口，Visual ROI Gate 不通过。",
+      reason: "只有视觉密度，没有可回答的人类问题和行动入口，因此不纳入默认决策图谱。",
       visualRoiGatePass: false,
       p0Included: false,
     },
     {
       id: "raw_conversation_heat_glow",
       title: "Raw conversation heat glow",
-      reason: "依赖 raw/private 语料且不能提升验收决策，必须停在非 P0 候选。",
+      reason: "依赖原始私有语料且不能提升验收决策，因此保留为排除候选。",
       visualRoiGatePass: false,
       p0Included: false,
     },
@@ -8702,7 +8755,7 @@ function buildHumanQuestionMapModel(
   const p0VisualCount = entries.filter((entry) => entry.p0Included && entry.visualRoiGatePass).length;
   const failedP0Count = entries.filter((entry) => !entry.p0Included || !entry.visualRoiGatePass).length;
   const familyCounts = countBy(entries, (entry) => entry.familyLabel);
-  const strongestGateLabel = topRows(familyCounts, 1)[0]?.label ?? "Human Question Map";
+  const strongestGateLabel = topRows(familyCounts, 1)[0]?.label ?? "问题行动图谱";
   return {
     schemaVersion: HUMAN_QUESTION_MAP_VERSION,
     activeFilters: workflowModel.activeFilters,
@@ -8711,7 +8764,7 @@ function buildHumanQuestionMapModel(
     p0VisualCount,
     failedP0Count,
     strongestGateLabel,
-    summary: `S11 P4 把 ${entries.length.toLocaleString()} 张 P1-P3 图谱统一到人类问题、行动价值和 Visual ROI Gate；当前筛选沿用 source/time/project/task，${failedP0Count.toLocaleString()} 张失败图进入 P0。`,
+    summary: `${entries.length.toLocaleString()} 张图谱已统一到人类问题、行动价值和可验收判断；当前筛选沿用来源、时间、项目和任务，${failedP0Count.toLocaleString()} 张图谱未通过纳入标准。`,
   };
 }
 
@@ -8955,7 +9008,7 @@ function buildHomeArrivalBriefing(
         ? `这个结论在近期窗口增强 ${formatSigned(strengtheningSegment.delta)} 条。`
         : "没有稳定增强信号；先看主导主题是否仍有决策价值。",
       evidence: strengtheningSegment
-        ? `recent=${strengtheningSegment.recentCount} / previous=${strengtheningSegment.previousCount}`
+        ? `近期 ${strengtheningSegment.recentCount.toLocaleString()} 条，对比窗口 ${strengtheningSegment.previousCount.toLocaleString()} 条。`
         : `主导主题 ${model.topicRows[0]?.count ?? 0} 条。`,
       nextStep: "进入时间轴查看增强发生在哪些记录上",
       targetView: "timeline",
@@ -8972,8 +9025,8 @@ function buildHomeArrivalBriefing(
         ? `「${weakeningSegment.label}」近期减弱 ${formatSigned(weakeningSegment.delta)} 条，需要确认是过期还是沉淀完成。`
         : `${model.blackHoleCount.toLocaleString()} 条风险循环或过期候选需要保留在复盘视野里。`,
       evidence: weakeningSegment
-        ? `recent=${weakeningSegment.recentCount} / previous=${weakeningSegment.previousCount}`
-        : "来自 staleness 与 low-value loop derived signals。",
+        ? `近期 ${weakeningSegment.recentCount.toLocaleString()} 条，对比窗口 ${weakeningSegment.previousCount.toLocaleString()} 条。`
+        : "根据时效和低价值循环信号综合判断。",
       nextStep: "先复核，不直接降权或删除",
       targetView: "summary",
       node: weakeningSegment?.node ?? topAction?.node ?? null,
@@ -8986,10 +9039,10 @@ function buildHomeArrivalBriefing(
       label: HOME_ARRIVAL_CATEGORY_LABELS.pending_proposal,
       value: `${pendingProposalCount.toLocaleString()} 项`,
       summary: pendingProposalCount
-        ? "有 recommendation 或下一步行动可转成 proposal-only 候选，仍需人工授权。"
-        : "当前没有待授权 proposal；前端继续保持 proposal-only，不执行 apply。",
-      evidence: `agent recommendations=${recommendationCount}; 行动建议=${proposedActionCount}`,
-      nextStep: pendingProposalCount ? "进入总结与迭代做人工 triage" : "保留 proposal-only 边界",
+        ? "有代理建议或下一步行动可转成提案候选，仍需人工授权。"
+        : "当前没有待授权提案；系统继续保持仅生成提案，不直接应用。",
+      evidence: `代理建议 ${recommendationCount.toLocaleString()} 项，行动建议 ${proposedActionCount.toLocaleString()} 项。`,
+      nextStep: pendingProposalCount ? "进入决定下一步，逐项人工判断" : "保留仅生成提案的边界",
       targetView: "summary",
       node: topAction?.node ?? null,
       icon: Save,
@@ -9003,7 +9056,7 @@ function buildHomeArrivalBriefing(
       summary: failedSources.length
         ? `需要处理的数据源：${failedSources.map((source) => source.label).join("、")}。`
         : `当前未看到同步失败；最新活跃数据源是 ${latestSource?.label ?? "未知数据源"}。`,
-      evidence: latestSource ? `${latestSource.id}:${latestSource.ingestion_status || latestSource.status || "unknown"}` : "no data_sources",
+      evidence: latestSource ? `最新数据源「${latestSource.label}」已纳入本次快照。` : "当前没有可用的数据源状态。",
       nextStep: failedSources.length ? "先修同步，再相信新增结论" : "继续用当前快照判断",
       targetView: "search",
       node: null,
@@ -10415,6 +10468,10 @@ function themeLabelFromCluster(cluster: string): string {
 function humanCategoryLabel(value: string | undefined): string {
   const labels: Record<string, string> = {
     answering_rule: "回答规则",
+    codex_agent_metadata: "Codex agent 元数据",
+    codex_development_record: "Codex 开发记录",
+    codex_personalization: "Codex 个性化上下文",
+    codex_usage_record: "Codex 使用记录",
     decision: "重要决策",
     deprecated_info: "历史/可能过时信息",
     fact: "事实资料",

@@ -1,3 +1,32 @@
+## 164. Memory Atlas v1.2 Remediation R2 Identity And IA Parameters
+
+状态：`R2_COMPLETE_LOCAL_ONLY`；release 仍为 `FAIL_REMEDIATION_REQUIRED`。
+
+参数：
+
+- `product_identity = Memory Atlas / 记忆决策台 · v1.2`
+- `home_question = 发生了什么`
+- `navigation_groups = judgment; exploration; reflection`
+- `navigation_route_count = 10`
+- `default_internal_copy_match_count = 0`
+- `folded_details = sidebar-data-status; lens-technical-details; command-technical-details; formula-technical-details`
+- `desktop_palette_track = clamp(112px, 18dvh, 152px)`
+- `mobile_palette_track = clamp(124px, 18dvh, 140px)`
+- `content_height = 345px@1470x661; 551px@1440x900; 311px@390x844`
+- `mobile_topbar_height = 46px`
+- `mobile_lens_height = 78px`
+- `mobile_keyboard_focus = 10 forward; 9 reverse; max clip 0px`
+- `command_execution_enabled = false`
+
+验证逻辑：`validate:v1.2-home-multiviewport` 必须逐视口验证精确发行身份、三组问题式
+导航、默认界面无内部文案、四类技术详情默认折叠和键盘可开关、主流程焦点顺序、
+移动端每一步正逆序焦点完整包含于导航 scrollport、
+五区布局、内容滚动、嵌套裁切、移动导航、非空截图和端口释放。Stage 7 Galaxy 与
+Memory River 真实视觉回归必须继续通过。
+
+边界：本参数只证明 R2 本地产品壳层与信息架构，不证明命令执行、proposal 工作流、
+owner-daily、线上数据一致性、GitHub recovery 或 v1.2 最终完成。
+
 ## 163. Memory Atlas v1.2 Remediation R1 Layout Parameters
 
 状态：`R1_COMPLETE_LOCAL_ONLY`；release 仍为 `FAIL_REMEDIATION_REQUIRED`。

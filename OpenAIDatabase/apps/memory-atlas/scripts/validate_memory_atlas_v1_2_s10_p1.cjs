@@ -164,6 +164,9 @@ function validateHomeArrivalBriefing() {
   const styles = readRepoFile("apps/memory-atlas/src/styles.css");
   const sectionIndex = app.indexOf("data-home-section=\"arrival_briefing\"");
   const weatherIndex = app.indexOf("data-home-section=\"weather\"");
+  const acceptedPendingProposalCopy =
+    (app.includes("待授权 proposal") || app.includes("待授权提案"))
+    && (copy.includes('pendingProposal: "待授权 proposal"') || copy.includes('pendingProposal: "待授权提案"'));
   assertCondition(
     sectionIndex >= 0 && weatherIndex >= 0 && sectionIndex < weatherIndex,
     "s10p1_arrival_briefing_first",
@@ -180,9 +183,8 @@ function validateHomeArrivalBriefing() {
       "新增重要资料",
       "增强结论",
       "减弱或过期结论",
-      "待授权 proposal",
       "同步失败",
-    ]),
+    ]) && acceptedPendingProposalCopy,
     "s10p1_app_contract",
     "App.tsx contains the S10 P1 arrival briefing contract and required categories",
     "App.tsx is missing S10 P1 arrival briefing contract fragments",
@@ -194,9 +196,8 @@ function validateHomeArrivalBriefing() {
       "newMaterial: \"新增重要资料\"",
       "strengthened: \"增强结论\"",
       "weakened: \"减弱或过期结论\"",
-      "pendingProposal: \"待授权 proposal\"",
       "syncFailure: \"同步失败\"",
-    ]),
+    ]) && acceptedPendingProposalCopy,
     "s10p1_chinese_copy",
     "Chinese copy contains the arrival question and five required status categories",
     "Chinese copy is missing S10 P1 required labels",
