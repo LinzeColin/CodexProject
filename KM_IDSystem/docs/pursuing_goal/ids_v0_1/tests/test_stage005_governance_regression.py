@@ -7520,6 +7520,277 @@ next_gate_id: "IDS-STAGE037-P1-GATE"
         )
         self.assertTrue(all(structured.values()), structured)
 
+    def test_phase_state_allows_stage037_phase1_job_state_boundary(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-031-040"
+status: "stage037_phase1_in_progress"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-037:
+    status: "stage037_phase1_in_progress"
+    completed_phases:
+      - "Phase 1"
+    next_phase: "Phase 2"
+    next_gate: "IDS-STAGE037-P2-GATE"
+    current_task_id: "IDS-V0_1-STAGE037-P1"
+    acceptance_id: "ACC-STAGE-037"
+    acceptance_status: "phase1_scope_boundary_defined"
+decision:
+  current_task_id: "IDS-V0_1-STAGE037-P1"
+  next_allowed_task_id: "IDS-V0_1-STAGE037-P2"
+  github_upload_allowed: false
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE037"
+current_phase_id: "IDS-STAGE037-P1"
+current_task_id: "IDS-V0_1-STAGE037-P1"
+next_gate_id: "IDS-STAGE037-P2-GATE"
+stages:
+  -
+    stage_id: "IDS-STAGE005"
+    phases:
+      -
+        phase_id: "IDS-STAGE005-P2"
+        status: "passed_with_local_evidence"
+      -
+        phase_id: "IDS-STAGE005-P3"
+        status: "passed_with_local_evidence"
+      -
+        phase_id: "IDS-STAGE005-P4"
+        status: "passed_no_github_upload_until_batch_complete"
+  -
+    stage_id: "IDS-STAGE037"
+    phases:
+      -
+        phase_id: "IDS-STAGE037-P1"
+        status: "passed_with_local_evidence"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE037-P1"
+            status: "completed"
+            test_results: "GREEN: Stage037 8 tests OK, Stage005 134 tests OK, Stage031-037 aggregate 138 tests OK, Stage026-030 75 tests OK, full IDS v0.1 discovery 532 tests OK, Stage005 validator valid=true"
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE1_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage037_job_state_model.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+        self.assertTrue(all(checks.values()), checks)
+        structured = module.evaluate_current_state_consistency(
+            batch_text,
+            roadmap_text,
+        )
+        self.assertTrue(all(structured.values()), structured)
+
+        missing_completed_phase = batch_text.replace(
+            '  STAGE-037:\n    status: "stage037_phase1_in_progress"\n'
+            '    completed_phases:\n      - "Phase 1"\n',
+            '  STAGE-037:\n    status: "stage037_phase1_in_progress"\n'
+            '    completed_phases:\n      - "Phase 0"\n',
+        )
+        missing_checks = module.evaluate_current_state_consistency(
+            missing_completed_phase,
+            roadmap_text,
+        )
+        self.assertIn("batch_current_phase_completed", missing_checks)
+        self.assertFalse(
+            missing_checks["batch_current_phase_completed"],
+            missing_checks,
+        )
+
+        planned_phase = roadmap_text.replace(
+            '        phase_id: "IDS-STAGE037-P1"\n'
+            '        status: "passed_with_local_evidence"',
+            '        phase_id: "IDS-STAGE037-P1"\n'
+            '        status: "planned"',
+        )
+        planned_checks = module.evaluate_current_state_consistency(
+            batch_text,
+            planned_phase,
+        )
+        self.assertIn("roadmap_current_phase_passed", planned_checks)
+        self.assertFalse(
+            planned_checks["roadmap_current_phase_passed"],
+            planned_checks,
+        )
+
+        planned_task = roadmap_text.replace(
+            '            task_id: "IDS-V0_1-STAGE037-P1"\n'
+            '            status: "completed"',
+            '            task_id: "IDS-V0_1-STAGE037-P1"\n'
+            '            status: "planned"',
+        )
+        planned_task_checks = module.evaluate_current_state_consistency(
+            batch_text,
+            planned_task,
+        )
+        self.assertFalse(
+            planned_task_checks["roadmap_current_task_completed"],
+            planned_task_checks,
+        )
+
+        not_run_task = roadmap_text.replace(
+            '            test_results: "GREEN: Stage037 8 tests OK, '
+            'Stage005 134 tests OK, Stage031-037 aggregate 138 tests OK, '
+            'Stage026-030 75 tests OK, full IDS v0.1 discovery 532 tests OK, '
+            'Stage005 validator valid=true"',
+            '            test_results: "NOT_RUN"',
+        )
+        not_run_checks = module.evaluate_current_state_consistency(
+            batch_text,
+            not_run_task,
+        )
+        self.assertFalse(
+            not_run_checks["roadmap_current_task_results_recorded"],
+            not_run_checks,
+        )
+
+        fabricated_results = roadmap_text.replace(
+            '            test_results: "GREEN: Stage037 8 tests OK, '
+            'Stage005 134 tests OK, Stage031-037 aggregate 138 tests OK, '
+            'Stage026-030 75 tests OK, full IDS v0.1 discovery 532 tests OK, '
+            'Stage005 validator valid=true"',
+            '            test_results: "GREEN: Stage037 0 tests OK; '
+            'fabricated valid=true"',
+        )
+        fabricated_checks = module.evaluate_current_state_consistency(
+            batch_text,
+            fabricated_results,
+        )
+        self.assertFalse(
+            fabricated_checks["roadmap_current_task_results_recorded"],
+            fabricated_checks,
+        )
+
+        polluted_results = roadmap_text.replace(
+            '            test_results: "GREEN: Stage037 8 tests OK, ',
+            '            test_results: "GREEN: Stage037 0 tests OK; '
+            'fabricated=true; Stage037 8 tests OK, ',
+        )
+        polluted_checks = module.evaluate_current_state_consistency(
+            batch_text,
+            polluted_results,
+        )
+        self.assertFalse(
+            polluted_checks["roadmap_current_task_results_recorded"],
+            polluted_checks,
+        )
+
+        token_boundary_mutations = {
+            "negative_green_prefix": roadmap_text.replace(
+                'test_results: "GREEN:',
+                'test_results: "NOTGREEN:',
+            ),
+            "prefixed_stage_label": roadmap_text.replace(
+                "Stage037 8 tests OK",
+                "FakeStage037 8 tests OK",
+            ),
+            "negated_test_result": roadmap_text.replace(
+                "Stage037 8 tests OK",
+                "Stage037 8 tests OK=false",
+            ),
+            "negated_validator_result": roadmap_text.replace(
+                "Stage005 validator valid=true",
+                "Stage005 validator valid=true=false",
+            ),
+        }
+        for mutation_name, mutated_roadmap in token_boundary_mutations.items():
+            with self.subTest(mutation_name=mutation_name):
+                mutation_checks = module.evaluate_current_state_consistency(
+                    batch_text,
+                    mutated_roadmap,
+                )
+                self.assertFalse(
+                    mutation_checks["roadmap_current_task_results_recorded"],
+                    mutation_checks,
+                )
+
+        remainder_mutations = {
+            "failed_result": "; Stage037 0 tests FAILED",
+            "zero_test_count": "; test_count=0",
+            "invalid_validator": "; Stage005 validator invalid=true",
+            "negative_green_assignment": "; GREEN=false",
+            "empty_audit_remainder": "; ",
+        }
+        for mutation_name, suffix in remainder_mutations.items():
+            with self.subTest(mutation_name=mutation_name):
+                mutated_roadmap = roadmap_text.replace(
+                    'Stage005 validator valid=true"',
+                    f'Stage005 validator valid=true{suffix}"',
+                )
+                mutation_checks = module.evaluate_current_state_consistency(
+                    batch_text,
+                    mutated_roadmap,
+                )
+                self.assertFalse(
+                    mutation_checks["roadmap_current_task_results_recorded"],
+                    mutation_checks,
+                )
+
+        no_evidence_task = roadmap_text.replace(
+            '            evidence_refs:\n'
+            '              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/'
+            'STAGE037_ENTRY_CONTRACT.md"\n'
+            '              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/'
+            'STAGE037_PHASE1_SCOPE_BOUNDARY.md"\n'
+            '              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/'
+            'BATCH031_040_UPLOAD_LOCK.yaml"\n'
+            '              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/'
+            'tests/test_stage037_job_state_model.py"\n'
+            '              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/'
+            'IDS_METADATA_RAW_DATA_BOUNDARY.md"',
+            '            evidence_refs: []',
+        )
+        no_evidence_checks = module.evaluate_current_state_consistency(
+            batch_text,
+            no_evidence_task,
+        )
+        self.assertFalse(
+            no_evidence_checks["roadmap_current_task_evidence_recorded"],
+            no_evidence_checks,
+        )
+
+        missing_batch_evidence = roadmap_text.replace(
+            '              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/'
+            'BATCH031_040_UPLOAD_LOCK.yaml"\n',
+            "",
+        )
+        missing_batch_checks = module.evaluate_current_state_consistency(
+            batch_text,
+            missing_batch_evidence,
+        )
+        self.assertFalse(
+            missing_batch_checks["roadmap_current_task_evidence_recorded"],
+            missing_batch_checks,
+        )
+
+        missing_boundary_evidence = roadmap_text.replace(
+            '              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/'
+            'IDS_METADATA_RAW_DATA_BOUNDARY.md"\n',
+            "",
+        )
+        missing_boundary_checks = module.evaluate_current_state_consistency(
+            batch_text,
+            missing_boundary_evidence,
+        )
+        self.assertFalse(
+            missing_boundary_checks["roadmap_current_task_evidence_recorded"],
+            missing_boundary_checks,
+        )
+
     def test_structured_state_rejects_stage035_node_contradictions(self):
         module = self._load_module()
         self.assertTrue(

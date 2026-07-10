@@ -159,6 +159,7 @@ class Stage034DataRetentionTablePhase1Tests(unittest.TestCase):
             'status: "stage036_phase3_in_progress"',
             'status: "stage036_completed_local_pending_review"',
             'status: "stage036_completed_reviewed_local"',
+            'status: "stage037_phase1_in_progress"',
         ]
         allowed_lock_next_terms = [
             'next_phase: "Phase 2"',
@@ -438,6 +439,7 @@ class Stage034DataRetentionTablePhase2Tests(unittest.TestCase):
             'status: "stage036_phase3_in_progress"',
             'status: "stage036_completed_local_pending_review"',
             'status: "stage036_completed_reviewed_local"',
+            'status: "stage037_phase1_in_progress"',
         ]
         allowed_lock_next_terms = [
             'next_phase: "Phase 3"',
@@ -653,6 +655,7 @@ class Stage034DataRetentionTablePhase3Tests(unittest.TestCase):
             'status: "stage036_phase3_in_progress"',
             'status: "stage036_completed_local_pending_review"',
             'status: "stage036_completed_reviewed_local"',
+            'status: "stage037_phase1_in_progress"',
         ]
         allowed_lock_gate_terms = [
             'next_gate: "IDS-STAGE034-P4-GATE"',
@@ -855,6 +858,7 @@ class Stage034DataRetentionTablePhase4Tests(unittest.TestCase):
             'status: "stage036_phase3_in_progress"',
             'status: "stage036_completed_local_pending_review"',
             'status: "stage036_completed_reviewed_local"',
+            'status: "stage037_phase1_in_progress"',
         ]
         allowed_lock_gate_terms = [
             'next_gate: "IDS-STAGE034-REVIEW-GATE"',

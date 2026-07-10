@@ -1,8 +1,8 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-031-040"
 created_at_utc: "2026-07-03T08:32:56Z"
-updated_at_utc: "2026-07-10T21:51:40Z"
-status: "stage036_completed_reviewed_local"
+updated_at_utc: "2026-07-10T22:43:49Z"
+status: "stage037_phase1_in_progress"
 
 repository:
   owner_repo: "LinzeColin/CodexProject"
@@ -191,10 +191,25 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage036_database_quality_constraints.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+  STAGE-037:
+    status: "stage037_phase1_in_progress"
+    completed_phases:
+      - "Phase 1"
+    next_phase: "Phase 2"
+    next_gate: "IDS-STAGE037-P2-GATE"
+    current_task_id: "IDS-V0_1-STAGE037-P1"
+    acceptance_id: "ACC-STAGE-037"
+    acceptance_status: "phase1_scope_boundary_defined"
+    evidence_refs:
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_ENTRY_CONTRACT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE1_SCOPE_BOUNDARY.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage037_job_state_model.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
-  current_task_id: "IDS-V0_1-STAGE036-REVIEW"
-  next_allowed_task_id: "IDS-V0_1-STAGE037-P1"
+  current_task_id: "IDS-V0_1-STAGE037-P1"
+  next_allowed_task_id: "IDS-V0_1-STAGE037-P2"
   github_upload_allowed: false
-  current_run: "STAGE-036 whole-stage review verifies P0, Phase 1-4, migration section execution, ownership-safe rollback, bounded real-data evidence structure, dependency/snapshot provenance, event semantics, raw-data boundary, and governance. Nineteen findings across two independent review rounds plus final checker-output verification are repaired locally; the second review closes all prior 3 Critical, 4 Important, and 1 Minor findings, and final verification removes the last stale review-pending owner message. v0.1 up emission remains permanently blocked because trusted authorization-signature and target-database-binding verifiers do not exist. No PostgreSQL or raw metadata content is accessed, no fake IDS data is used, and no GitHub upload, app reinstall, batch gate, or STAGE-037 work runs."
-  no_upload_reason: "BATCH031_040 has STAGE-031 through STAGE-036 completed and reviewed locally; STAGE-037..040 and the separate batch review/upload gates remain incomplete, so push_allowed stays false."
+  current_run: "STAGE-037 Phase 1 defines the contract-only unified IMPORT/ARCHIVE/PARSE/OCR/CHUNK/EMBED/INDEX/REPORT lifecycle, transition guards, worker claim/lease/fencing boundary, retry/dead-letter/backpressure interfaces, pause reasons, idempotency keys, lock granularity, checkpoint/error/audit refs, cleanup allowlist, and Chinese status projection. It does not implement a queue, worker, state-registry write, database/schema change, lock, runtime transition, cleanup, STAGE-038 work, GitHub upload, app reinstall, stage review, batch review, or upload gate."
+  no_upload_reason: "BATCH031_040 has STAGE-031 through STAGE-036 completed and reviewed locally, while STAGE-037 has only Phase 1 and STAGE-038..040 are incomplete; the separate batch review/upload gates have not run, so push_allowed stays false."
