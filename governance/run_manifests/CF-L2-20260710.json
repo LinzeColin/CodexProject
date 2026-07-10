@@ -401,10 +401,10 @@
   ],
   "binding_status": "COMMIT_BOUND",
   "ci_attestation_subject": "Cloudflare Compatibility Envelope L2 public-safe adapters and deployment evidence",
-  "ci_run_reference": "FINAL_POST_PUSH_CHANGED_ONLY_CI_PENDING",
+  "ci_run_reference": "POST_PUSH_LOCAL_A8DD8C5EDCB1_SHIP_CHANGED_FILES_0",
   "production_status": "ALL_REQUIRED_L2_SURFACES_ONLINE_VERIFIED",
   "repository_heads": {
-    "LinzeColin/CodexProject": "FINAL_EVIDENCE_COMMIT_PENDING",
+    "LinzeColin/CodexProject": "ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935",
     "LinzeColin/LinzeHomeHub": "59347956c03ee2810358887f20cb13bdc2ef9289",
     "LinzeColin/Archive": "d0721022cfb48ae3edf439fffeb92c36ed00cefc"
   },

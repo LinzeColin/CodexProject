@@ -33,7 +33,8 @@
       "verification": "root_and_public_surface_json_http_200",
       "deployment_id": "26f6b03a-8c3d-40b2-a162-050236e1652b",
       "version_id": "d84eb7f9-f564-4e0b-b202-d95a86b2b225",
-      "deployed_commit": "b864009c657c6a9cebbf451e30389c1aa5809700"
+      "deployed_commit": "b864009c657c6a9cebbf451e30389c1aa5809700",
+      "evidence_commit": "ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935"
     },
     {
       "project_id": "openaidatabase",
@@ -42,7 +43,8 @@
       "fallback_url": "https://github.com/LinzeColin/CodexProject/tree/main/OpenAIDatabase/apps/memory-atlas",
       "verification": "access_challenge_allowed_user_app_load_runtime_json_fetch_and_published_artifact_verified",
       "deployment_id": "82988d29-504a-437e-a8b5-621a59e701af",
-      "deployed_commit": "5a24333eb2afa766f5f7416b877a8a560c5302ab"
+      "deployed_commit": "5a24333eb2afa766f5f7416b877a8a560c5302ab",
+      "evidence_commit": "00f4187f43960a3b25fc696ae2a15951f4431763"
     },
     {
       "project_id": "pfi",
@@ -52,7 +54,8 @@
       "verification": "root_and_public_surface_json_http_200",
       "deployment_id": "7c6d216e-0fd3-43e6-904b-404aac0d776e",
       "version_id": "c371544d-4184-48be-80a1-3ca23f11b576",
-      "deployed_commit": "b864009c657c6a9cebbf451e30389c1aa5809700"
+      "deployed_commit": "b864009c657c6a9cebbf451e30389c1aa5809700",
+      "evidence_commit": "ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935"
     },
     {
       "project_id": "serenity-alipay",
@@ -62,7 +65,8 @@
       "verification": "root_and_public_surface_json_http_200_after_propagation",
       "deployment_id": "bf27bdbc-c199-4e39-9009-8250ae2eb7df",
       "version_id": "d7a0a069-9754-4a86-ab37-aa7833352049",
-      "deployed_commit": "b864009c657c6a9cebbf451e30389c1aa5809700"
+      "deployed_commit": "b864009c657c6a9cebbf451e30389c1aa5809700",
+      "evidence_commit": "ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935"
     }
   ]
 }
