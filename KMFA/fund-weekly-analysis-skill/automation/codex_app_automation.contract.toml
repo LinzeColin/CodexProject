@@ -7,7 +7,7 @@ status = "ACTIVE"
 rrule = "RRULE:FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0"
 timezone = "Australia/Sydney"
 execution_environment = "local"
-cwds = ["/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject"]
+cwds = ["/Users/linzezhang/CodexProject"]
 model = "gpt-5.3-codex-spark"
 reasoning_effort = "xhigh"
 prompt_file = "automation/weekly_mon_sat_1100_sydney.prompt.md"

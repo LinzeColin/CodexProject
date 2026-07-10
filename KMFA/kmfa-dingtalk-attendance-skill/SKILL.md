@@ -71,8 +71,8 @@ When the user says "raw/original data is in `KMFA/metadata`", treat tracked `KMF
 
 Existing local Codex automation ids:
 
-- Morning: `automation-3`, daily 10:35 Beijing time.
-- Evening: `automation-4`, daily 20:05 Beijing time.
+- Morning: `kmfa`, daily 10:35 Beijing time.
+- Evening: `kmfa-3`, daily 20:05 Beijing time.
 
 Both automation prompts must invoke this skill by name:
 

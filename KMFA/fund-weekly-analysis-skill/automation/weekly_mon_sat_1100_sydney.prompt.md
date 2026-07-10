@@ -4,8 +4,8 @@ Run KMFA资金与税费管理周报自动化 every Monday and Saturday at local 
 Australia/Sydney local time is the scheduler source of truth. Do not use Beijing time as the scheduler timezone.
 
 统一工作区规则：本 automation 只保留并只显示 KMFA/CodexProject 工作间：
-- KMFA/CodexProject 工作间：`/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject`
-本 automation 的实际执行目录必须切到 `/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject` 后再运行 KMFA git、skill、test 或脚本命令。
+- KMFA/CodexProject 工作间：`/Users/linzezhang/CodexProject`
+本 automation 的实际执行目录必须切到 `/Users/linzezhang/CodexProject` 后再运行 KMFA git、skill、test 或脚本命令。
 DWS 归档是独立上游 automation，不再作为本 KMFA automation 的 cwd/workspace；需要上游数据时只读取已生成的 OneDrive `DWS_Outputs.zip` 或 KMFA 私有输入副本，不得切入 DWS 归档工作间运行命令。
 若发现本 KMFA automation 重新绑定了 DWS archive cwd/workspace，先修正 automation 配置并报告。
 
@@ -18,11 +18,11 @@ Legacy direct-folder source is compatibility fallback only and must not be assum
 Hard requirements:
 
 1. Work on GitHub `main` only. No branch, no PR, no worktree.
-2. Switch to `/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject` or `/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject` before repo commands, then read `KMFA/fund-weekly-analysis-skill/SKILL.md` and all referenced files before acting.
+2. Switch to `/Users/linzezhang/CodexProject` before repo commands, then read `KMFA/fund-weekly-analysis-skill/SKILL.md` and all referenced files before acting.
 3. Run source readiness first:
-   `python3 KMFA/fund-weekly-analysis-skill/tools/check_source_readiness.py --repo-root /Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject --timezone Australia/Sydney`
+   `python3 KMFA/fund-weekly-analysis-skill/tools/check_source_readiness.py --repo-root /Users/linzezhang/CodexProject --timezone Australia/Sydney`
 4. If readiness is `SOURCE_MISSING` only because the legacy direct folder is absent, inspect the readiness report source candidates. If a DWS_Outputs.zip candidate is `READY`, materialize the 付款请示群 source explicitly and then rerun readiness:
-   `python3 KMFA/fund-weekly-analysis-skill/tools/materialize_fund_source.py --source-zip /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip --zip-prefix 付款请示群 --target-dir /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群 --repo-root /Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject --timezone Australia/Sydney --apply`
+   `python3 KMFA/fund-weekly-analysis-skill/tools/materialize_fund_source.py --source-zip /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip --zip-prefix 付款请示群 --target-dir /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群 --repo-root /Users/linzezhang/CodexProject --timezone Australia/Sydney --apply`
    If the CloudStorage zip is unavailable but `/Users/linzezhang/onedrive/DWS_Outputs.zip` is readable, use that path with the same `--zip-prefix` and `--target-dir`. Do not materialize from stale, unreadable, or non-DWS zip sources.
 5. Continue to extraction only if readiness is `READY` after the initial check or after explicit materialization; otherwise fail closed with the readiness report and include which upstream DWS zip/fallback path was checked.
 6. Do not use simulated/test/fake/estimated financial data.
