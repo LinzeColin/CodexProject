@@ -14,9 +14,11 @@ from typing import Any
 
 
 SCHEMA_VERSION = "ids.stage036.database_quality_constraints.phase2.v1"
+PHASE3_SCHEMA_VERSION = "ids.stage036.database_quality_constraints.phase3.v1"
 INDEX_SCHEMA_VERSION = "ids.stage036.database_quality_constraints.index.v1"
 STAGE = "STAGE-036"
 TASK_ID = "IDS-V0_1-STAGE036-P2"
+PHASE3_TASK_ID = "IDS-V0_1-STAGE036-P3"
 ACCEPTANCE_ID = "ACC-STAGE-036"
 CONTRACT_ID = "ids_stage036_database_quality_constraints_static_slice"
 MIGRATION_ID = "ids_stage036_002_database_quality_constraints"
@@ -24,6 +26,41 @@ RAW_METADATA_ROOT = "/Users/linzezhang/Downloads/IDS_MetaData"
 BLOCKED_PENDING_PROFILE = "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_DATA_PROFILE"
 BLOCKED_INVALID_CONTRACT = "BLOCKED_INVALID_QUALITY_CONSTRAINT_CONTRACT"
 INVALID_CONTRACT_STATE = "INVALID_QUALITY_CONSTRAINT_CONTRACT"
+PHASE3_EXECUTION_MODE = "STATIC_TRACKED_CONTRACT_SCENARIO_VALIDATION_ONLY"
+
+EXPECTED_PHASE3_SCENARIOS = {
+    "migration_dry_run",
+    "repeat_execution",
+    "failure_rollback",
+    "recovery_smoke",
+    "candidate_constraint_semantics",
+    "duplicate_uniqueness_profile_gate",
+    "existing_foreign_key_integrity",
+    "state_registry_deferred",
+    "raw_large_file_block",
+    "unbounded_derived_artifact_block",
+    "connection_pool_boundary",
+    "transaction_boundary",
+    "constraint_error_explanations",
+    "source_non_interference",
+}
+
+PHASE3_SCENARIO_EXPLANATIONS = {
+    "migration_dry_run": "migration dry-run 场景只验证 STAGE-031 的静态门禁、单事务和当前禁止执行状态；没有连接 PostgreSQL，也没有运行 dry-run、apply、backup、restore 或 validation。",
+    "repeat_execution": "重复执行场景验证 migration 使用稳定约束 id 和存在性保护，并验证 checker 对同一 tracked 快照输出确定结果；没有重复执行 SQL 或写运行产物。",
+    "failure_rollback": "失败回滚场景验证 down 覆盖、单事务要求和非空状态 registry 保护；没有执行 rollback、删除约束或恢复数据库。",
+    "recovery_smoke": "缺少 owner 授权真实数据 profile 时 recovery smoke 必须按预期阻断；PASS 只证明停止合同有效，不代表恢复已执行。",
+    "candidate_constraint_semantics": "九个候选约束必须同时匹配精确 table、columns、validation kind 和 SQL 语义；任何漂移都失败关闭。",
+    "duplicate_uniqueness_profile_gate": "chunk 复合唯一性在 owner 授权真实数据 duplicate profile 证明为零前不得应用，禁止用虚构行替代。",
+    "existing_foreign_key_integrity": "三条既有外键按 tracked STAGE-030 schema 保持完整，不从名称相似的 text ref 推导新外键。",
+    "state_registry_deferred": "versioned state registry 只验证空结构、回滚保护和 STAGE-037 ownership，不写入状态值或 transition。",
+    "raw_large_file_block": "PostgreSQL 继续只存控制面、状态和热索引，不读取或写入原始大文件、raw rows、正文、向量或报告二进制。",
+    "unbounded_derived_artifact_block": "STAGE-033 的无界派生产物禁令保持有效；场景不生成 report、output、fixture 或 runtime artifact。",
+    "connection_pool_boundary": "STAGE-032 连接池总预算 10、overflow 0 和 backpressure 保持不变，当前不创建 pool 或连接配置。",
+    "transaction_boundary": "future apply 必须 ON_ERROR_STOP 和 single transaction；当前不打开、提交或回滚真实数据库事务。",
+    "constraint_error_explanations": "每个专项场景必须提供非空中文 owner 解释，明确区分静态合同通过、预期阻断和真实执行。",
+    "source_non_interference": "STAGE-035 source non-interference 与 isolated-target 要求保持有效；当前不迁移、修改、删除或恢复 source database。",
+}
 
 ROOT = Path(__file__).resolve().parents[1]
 PURSUE_ROOT = ROOT / "docs" / "pursuing_goal" / "ids_v0_1"
@@ -479,6 +516,56 @@ def _candidate_sql_definitions_exact(normalized_sql: str) -> bool:
     return True
 
 
+def _candidate_existence_guards_exact(sql: str) -> bool:
+    if "-- migrate:up" not in sql or "-- migrate:down" not in sql:
+        return False
+    normalized_up = _normalized_sql(sql.split("-- migrate:down", 1)[0])
+    for constraint_id, spec in EXPECTED_CANDIDATE_SPECS.items():
+        table = spec["table"]
+        expected_guard = (
+            f"if not exists ( select 1 from pg_constraint where conname = "
+            f"'{constraint_id}' and conrelid = '{table}'::regclass ) then "
+            f"alter table {table} add constraint {constraint_id}"
+        )
+        if expected_guard not in normalized_up:
+            return False
+    return normalized_up.count("if not exists ( select 1 from pg_constraint") == 9
+
+
+def _state_registry_rollback_guard_exact(sql: str) -> bool:
+    if "-- migrate:down" not in sql:
+        return False
+    normalized_down = _normalized_sql(sql.split("-- migrate:down", 1)[1])
+    expected_guard = " ".join(
+        (
+            "do $ids_quality_rollback_gate$",
+            "declare registry_has_rows boolean := false;",
+            "begin",
+            "if to_regclass('public.ids_state_value_registry') is not null then",
+            "execute 'select exists (select 1 from ids_state_value_registry)'",
+            "into registry_has_rows;",
+            "if registry_has_rows then",
+            "raise exception 'stage-036 rollback blocked: ids_state_value_registry is not empty';",
+            "end if;",
+            "end if;",
+            "end",
+            "$ids_quality_rollback_gate$;",
+        )
+    )
+    registry_drop = "drop table if exists ids_state_value_registry"
+    registry_drop_count = len(
+        re.findall(
+            r"\bdrop table(?: if exists)? ids_state_value_registry\b",
+            normalized_down,
+        )
+    )
+    return (
+        expected_guard in normalized_down
+        and registry_drop_count == 1
+        and normalized_down.index(expected_guard) < normalized_down.index(registry_drop)
+    )
+
+
 def _migration_contract_results(
     sql: str, index: dict[str, Any]
 ) -> dict[str, bool]:
@@ -557,15 +644,14 @@ def _migration_contract_results(
         "candidate_sql_definitions_exact": _candidate_sql_definitions_exact(
             normalized
         ),
+        "candidate_existence_guards_exact": _candidate_existence_guards_exact(sql),
         "future_check_validation_steps_present": all(
             f"validate constraint {constraint_id}" in normalized
             for constraint_id in EXPECTED_CHECK_CONSTRAINTS
         ),
         "state_registry_rollback_requires_empty": (
             registry.get("rollback_requires_empty") is True
-            and "select exists (select 1 from ids_state_value_registry)" in normalized
-            and "stage-036 rollback blocked: ids_state_value_registry is not empty"
-            in normalized
+            and _state_registry_rollback_guard_exact(sql)
         ),
         "rollback_covers_candidates": all(
             f"drop constraint if exists {constraint_id}" in normalized
@@ -873,10 +959,312 @@ def build_stage036_quality_constraint_report(
     }
 
 
+def _scenario_result(
+    passed: bool,
+    evidence: str,
+    owner_explanation_zh: str,
+    *,
+    observed_state: str | None = None,
+    expected_block: bool = False,
+) -> dict[str, Any]:
+    return {
+        "status": "PASS" if passed else "FAIL",
+        "evidence": evidence,
+        "owner_explanation_zh": owner_explanation_zh,
+        "observed_state": observed_state,
+        "expected_block": expected_block,
+        "live_execution_performed": False,
+    }
+
+
+def _repeat_execution_contract_valid(sql: str) -> bool:
+    if "-- migrate:up" not in sql or "-- migrate:down" not in sql:
+        return False
+    up_sql = sql.split("-- migrate:down", 1)[0]
+    normalized = _normalized_sql(up_sql)
+    return (
+        "create table if not exists ids_state_value_registry" in normalized
+        and "create index if not exists idx_ids_state_value_registry_active"
+        in normalized
+        and _candidate_existence_guards_exact(sql)
+    )
+
+
+def _has_chinese_text(value: object) -> bool:
+    return isinstance(value, str) and re.search(r"[\u4e00-\u9fff]", value) is not None
+
+
+def build_stage036_scenario_validation_report(
+    index_path: Path = INDEX_PATH,
+    migration_path: Path = MIGRATION_PATH,
+    baseline_schema_path: Path = CONTROL_SCHEMA_PATH,
+    *,
+    index_snapshot: dict[str, Any] | None = None,
+    migration_sql_snapshot: str | None = None,
+    baseline_sql_snapshot: str | None = None,
+) -> dict[str, Any]:
+    index = index_snapshot if index_snapshot is not None else _load_json(index_path)
+    migration_sql = (
+        migration_sql_snapshot
+        if migration_sql_snapshot is not None
+        else migration_path.read_text(encoding="utf-8")
+    )
+    baseline_sql = (
+        baseline_sql_snapshot
+        if baseline_sql_snapshot is not None
+        else baseline_schema_path.read_text(encoding="utf-8")
+    )
+    phase2_report = build_stage036_quality_constraint_report(
+        index_path,
+        migration_path,
+        baseline_schema_path,
+        index_snapshot=index,
+        migration_sql_snapshot=migration_sql,
+        baseline_sql_snapshot=baseline_sql,
+    )
+    phase2_valid = phase2_report["contract_valid"]
+    execution_state = phase2_report["execution_state"]
+    migration_results = phase2_report["migration_contract_results"]
+    inventory_results = phase2_report["constraint_inventory_results"]
+    guardrail_results = phase2_report["guardrail_results"]
+    baseline_results = phase2_report["baseline_schema_results"]
+    runtime = index.get("runtime_policy", {})
+    runtime = runtime if isinstance(runtime, dict) else {}
+    migration_contract = index.get("migration_contract", {})
+    migration_contract = (
+        migration_contract if isinstance(migration_contract, dict) else {}
+    )
+    inventory = index.get("constraint_inventory", {})
+    inventory = inventory if isinstance(inventory, dict) else {}
+    candidates = inventory.get("candidates", [])
+    candidates = candidates if isinstance(candidates, list) else []
+    candidate_by_id = {
+        item.get("constraint_id"): item
+        for item in candidates
+        if isinstance(item, dict) and isinstance(item.get("constraint_id"), str)
+    }
+    unique_candidate = candidate_by_id.get("uq_ids_chunks_document_ordinal", {})
+
+    def runtime_actions_disabled(*keys: str) -> bool:
+        return all(runtime.get(key) is False for key in keys)
+
+    explanations_valid = (
+        set(PHASE3_SCENARIO_EXPLANATIONS) == EXPECTED_PHASE3_SCENARIOS
+        and all(
+            _has_chinese_text(value)
+            for value in PHASE3_SCENARIO_EXPLANATIONS.values()
+        )
+    )
+    scenario_results = {
+        "migration_dry_run": _scenario_result(
+            phase2_valid
+            and guardrail_results["migration_safety_preserved"]
+            and migration_results["migration_identity_matches"]
+            and migration_results["owner_profile_backup_rollback_guards_present"]
+            and migration_contract.get("on_error_stop_required") is True
+            and migration_contract.get("single_transaction_required") is True
+            and runtime_actions_disabled(
+                "connect_to_postgres",
+                "execute_data_profile",
+                "execute_migration",
+                "execute_constraint_validation",
+                "execute_backup",
+                "execute_restore",
+                "execute_recovery_smoke",
+            ),
+            "STAGE031 migration safety, apply guards, ON_ERROR_STOP, and single-transaction requirements are present while every live action remains disabled",
+            PHASE3_SCENARIO_EXPLANATIONS["migration_dry_run"],
+        ),
+        "repeat_execution": _scenario_result(
+            phase2_valid
+            and _repeat_execution_contract_valid(migration_sql)
+            and runtime_actions_disabled(
+                "connect_to_postgres",
+                "execute_migration",
+                "write_runtime_outputs",
+            ),
+            "tracked SQL uses table/index IF NOT EXISTS plus nine pg_constraint existence guards; checker remains stdout-only",
+            PHASE3_SCENARIO_EXPLANATIONS["repeat_execution"],
+        ),
+        "failure_rollback": _scenario_result(
+            phase2_valid
+            and migration_results["rollback_covers_candidates"]
+            and migration_results["state_registry_rollback_requires_empty"]
+            and migration_contract.get("single_transaction_required") is True
+            and runtime_actions_disabled(
+                "connect_to_postgres",
+                "execute_migration",
+                "execute_constraint_validation",
+                "execute_backup",
+                "execute_restore",
+                "execute_recovery_smoke",
+            ),
+            "down migration covers all candidates, refuses a nonempty state registry, and remains an unexecuted single-transaction contract",
+            PHASE3_SCENARIO_EXPLANATIONS["failure_rollback"],
+        ),
+        "recovery_smoke": _scenario_result(
+            phase2_valid
+            and execution_state == BLOCKED_PENDING_PROFILE
+            and guardrail_results["recovery_source_non_interference_preserved"]
+            and runtime_actions_disabled(
+                "connect_to_postgres",
+                "execute_data_profile",
+                "execute_migration",
+                "execute_backup",
+                "execute_restore",
+                "execute_recovery_smoke",
+            ),
+            "contract is valid but remains blocked pending owner-authorized real-data profile; no recovery action is enabled",
+            PHASE3_SCENARIO_EXPLANATIONS["recovery_smoke"],
+            observed_state=execution_state,
+            expected_block=phase2_valid
+            and execution_state == BLOCKED_PENDING_PROFILE,
+        ),
+        "candidate_constraint_semantics": _scenario_result(
+            phase2_valid
+            and inventory_results["candidate_ids_exact"]
+            and inventory_results["candidate_specs_exact"]
+            and migration_results["candidate_sql_definitions_exact"],
+            "nine candidate ids, table/column/validation specs, and normalized SQL definitions match exactly",
+            PHASE3_SCENARIO_EXPLANATIONS["candidate_constraint_semantics"],
+        ),
+        "duplicate_uniqueness_profile_gate": _scenario_result(
+            phase2_valid
+            and inventory_results["unique_candidate_exact"]
+            and unique_candidate.get("owner_authorized_real_data_profile_required")
+            is True
+            and unique_candidate.get("live_apply_blocked") is True
+            and unique_candidate.get("candidate_state")
+            == "OWNER_AUTHORIZED_REAL_DATA_PROFILE_REQUIRED"
+            and runtime_actions_disabled(
+                "query_real_rows", "execute_data_profile", "execute_migration"
+            ),
+            "ids_chunks(document_id, chunk_ordinal) remains blocked until a real duplicate-count profile exists",
+            PHASE3_SCENARIO_EXPLANATIONS["duplicate_uniqueness_profile_gate"],
+        ),
+        "existing_foreign_key_integrity": _scenario_result(
+            phase2_valid
+            and baseline_results["existing_foreign_keys_present"]
+            and inventory_results["existing_foreign_keys_exact"],
+            "the three tracked STAGE030 foreign keys are present and exactly inventoried; no inferred text-reference foreign key is added",
+            PHASE3_SCENARIO_EXPLANATIONS["existing_foreign_key_integrity"],
+        ),
+        "state_registry_deferred": _scenario_result(
+            phase2_valid
+            and migration_results["state_registry_definition_exact"]
+            and migration_results["state_registry_rollback_requires_empty"]
+            and inventory_results["state_registry_is_unpopulated_and_stage037_owned"]
+            and runtime_actions_disabled("seed_state_values"),
+            "registry structure and rollback guard are exact; values/transitions remain unpopulated and STAGE037-owned",
+            PHASE3_SCENARIO_EXPLANATIONS["state_registry_deferred"],
+        ),
+        "raw_large_file_block": _scenario_result(
+            phase2_valid
+            and guardrail_results["storage_boundary_preserved"]
+            and guardrail_results["raw_metadata_boundary_path_only"]
+            and runtime_actions_disabled("read_raw_metadata", "write_raw_metadata"),
+            "storage guard excludes raw files/rows/bodies/vectors/binaries and the raw root remains path-only",
+            PHASE3_SCENARIO_EXPLANATIONS["raw_large_file_block"],
+        ),
+        "unbounded_derived_artifact_block": _scenario_result(
+            phase2_valid
+            and guardrail_results["storage_boundary_preserved"]
+            and runtime_actions_disabled("write_runtime_outputs"),
+            "stores_unbounded_derived_artifacts=false and write_runtime_outputs=false",
+            PHASE3_SCENARIO_EXPLANATIONS["unbounded_derived_artifact_block"],
+        ),
+        "connection_pool_boundary": _scenario_result(
+            phase2_valid
+            and guardrail_results["connection_pool_budget_preserved"]
+            and runtime_actions_disabled(
+                "connect_to_postgres", "instantiate_connection_pool"
+            ),
+            "aggregate pool max=10, overflow=0, backpressure required, and no pool/connection action is enabled",
+            PHASE3_SCENARIO_EXPLANATIONS["connection_pool_boundary"],
+        ),
+        "transaction_boundary": _scenario_result(
+            phase2_valid
+            and migration_contract.get("on_error_stop_required") is True
+            and migration_contract.get("single_transaction_required") is True
+            and runtime_actions_disabled(
+                "connect_to_postgres",
+                "execute_migration",
+                "execute_constraint_validation",
+            ),
+            "future apply requires ON_ERROR_STOP and one transaction while no live connection, migration, or validation action is enabled",
+            PHASE3_SCENARIO_EXPLANATIONS["transaction_boundary"],
+        ),
+        "constraint_error_explanations": _scenario_result(
+            phase2_valid and explanations_valid,
+            "all fourteen exact scenario ids have nonempty Chinese owner explanations and explicit no-live semantics",
+            PHASE3_SCENARIO_EXPLANATIONS["constraint_error_explanations"],
+        ),
+        "source_non_interference": _scenario_result(
+            phase2_valid
+            and guardrail_results["recovery_source_non_interference_preserved"]
+            and guardrail_results["raw_metadata_boundary_path_only"]
+            and runtime_actions_disabled(
+                "connect_to_postgres",
+                "execute_migration",
+                "execute_backup",
+                "execute_restore",
+                "execute_recovery_smoke",
+                "write_raw_metadata",
+            ),
+            "isolated-target/source-preservation guards remain authoritative and all source-affecting actions are disabled",
+            PHASE3_SCENARIO_EXPLANATIONS["source_non_interference"],
+        ),
+    }
+    scenario_validation_valid = (
+        phase2_valid
+        and set(scenario_results) == EXPECTED_PHASE3_SCENARIOS
+        and all(result["status"] == "PASS" for result in scenario_results.values())
+        and scenario_results["recovery_smoke"]["expected_block"] is True
+    )
+    return {
+        "schema_version": PHASE3_SCHEMA_VERSION,
+        "phase2_schema_version": SCHEMA_VERSION,
+        "index_schema_version": INDEX_SCHEMA_VERSION,
+        "stage": STAGE,
+        "phase": "Phase 3",
+        "task_id": PHASE3_TASK_ID,
+        "acceptance_id": ACCEPTANCE_ID,
+        "phase2_contract_valid": phase2_valid,
+        "scenario_validation_valid": scenario_validation_valid,
+        "scenario_results": scenario_results,
+        "execution_mode": PHASE3_EXECUTION_MODE,
+        "execution_ready": False,
+        "execution_state": execution_state,
+        "live_execution_performed": False,
+        "postgresql_connection_performed": False,
+        "migration_dry_run_performed": False,
+        "migration_apply_performed": False,
+        "constraint_validation_performed": False,
+        "rollback_performed": False,
+        "backup_performed": False,
+        "restore_performed": False,
+        "recovery_smoke_performed": False,
+        "real_data_profile_executed": False,
+        "state_values_seeded": False,
+        "runtime_output_written": False,
+        "raw_metadata_boundary": phase2_report["raw_metadata_boundary"],
+        "phase2_report": phase2_report,
+        "next_gate": "IDS-STAGE036-P4-GATE",
+        "github_upload_allowed": False,
+        "app_reinstall_allowed": False,
+        "owner_feedback_zh": (
+            "数据库质量约束 Phase 3 静态场景验证通过；当前仍未连接或修改数据库，"
+            "真实数据 profile 和所有 live 操作继续阻断。"
+            if scenario_validation_valid
+            else "数据库质量约束 Phase 3 静态场景验证失败；已失败关闭，禁止进入任何 live 数据库操作。"
+        ),
+    }
+
+
 def main() -> int:
-    report = build_stage036_quality_constraint_report()
+    report = build_stage036_scenario_validation_report()
     print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
-    return 0 if report["contract_valid"] else 1
+    return 0 if report["scenario_validation_valid"] else 1
 
 
 if __name__ == "__main__":

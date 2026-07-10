@@ -13,6 +13,7 @@ PURSUE_ROOT = ROOT / "docs" / "pursuing_goal" / "ids_v0_1"
 ENTRY = PURSUE_ROOT / "STAGE036_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE036_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE036_PHASE2_DATABASE_QUALITY_CONSTRAINTS_SLICE.md"
+PHASE3 = PURSUE_ROOT / "STAGE036_PHASE3_SCENARIO_VALIDATION.md"
 INDEX = (
     PURSUE_ROOT
     / "database_quality_constraints"
@@ -152,6 +153,13 @@ class Stage036DatabaseQualityConstraintsPhase1Tests(unittest.TestCase):
                 'next_gate: "IDS-STAGE036-P3-GATE"',
                 'current_task_id: "IDS-V0_1-STAGE036-P2"',
                 'acceptance_status: "phase2_static_quality_constraint_contract_validated"',
+            ],
+            [
+                'status: "stage036_phase3_in_progress"',
+                'next_phase: "Phase 4"',
+                'next_gate: "IDS-STAGE036-P4-GATE"',
+                'current_task_id: "IDS-V0_1-STAGE036-P3"',
+                'acceptance_status: "phase3_scenario_validation_passed"',
             ],
         ]
         roadmap_terms = [
@@ -431,7 +439,7 @@ class Stage036DatabaseQualityConstraintsPhase2Tests(unittest.TestCase):
             ["candidate_sql_definitions_exact"]
         )
 
-    def test_cli_emits_phase2_json_without_writing_outputs(self):
+    def test_cli_preserves_phase2_report_under_current_phase3_output(self):
         completed = subprocess.run(
             [sys.executable, "-B", str(SCRIPT)],
             cwd=ROOT.parent,
@@ -441,26 +449,40 @@ class Stage036DatabaseQualityConstraintsPhase2Tests(unittest.TestCase):
         )
         self.assertEqual(0, completed.returncode, completed.stderr)
         payload = json.loads(completed.stdout)
-        self.assertEqual("Phase 2", payload["phase"])
-        self.assertEqual("IDS-V0_1-STAGE036-P2", payload["task_id"])
-        self.assertTrue(payload["contract_valid"])
-        self.assertFalse(payload["execution_ready"])
-        self.assertEqual("IDS-STAGE036-P3-GATE", payload["next_gate"])
+        self.assertEqual("Phase 3", payload["phase"])
+        phase2 = payload["phase2_report"]
+        self.assertEqual("Phase 2", phase2["phase"])
+        self.assertEqual("IDS-V0_1-STAGE036-P2", phase2["task_id"])
+        self.assertTrue(phase2["contract_valid"])
+        self.assertFalse(phase2["execution_ready"])
+        self.assertEqual("IDS-STAGE036-P3-GATE", phase2["next_gate"])
 
     def test_governance_tracks_phase2_and_preserves_upload_lock(self):
         lock_text = BATCH_LOCK.read_text(encoding="utf-8")
         roadmap_text = ROADMAP.read_text(encoding="utf-8")
         events_text = EVENTS.read_text(encoding="utf-8")
-        required = {
-            lock_text: [
+        lock_terms = [
+            'push_allowed: false',
+            '      - "Phase 2"',
+        ]
+        allowed_lock_states = [
+            [
                 'status: "stage036_phase2_in_progress"',
-                'push_allowed: false',
-                '      - "Phase 2"',
                 'next_phase: "Phase 3"',
                 'next_gate: "IDS-STAGE036-P3-GATE"',
                 'current_task_id: "IDS-V0_1-STAGE036-P2"',
                 'acceptance_status: "phase2_static_quality_constraint_contract_validated"',
             ],
+            [
+                'status: "stage036_phase3_in_progress"',
+                'next_phase: "Phase 4"',
+                'next_gate: "IDS-STAGE036-P4-GATE"',
+                'current_task_id: "IDS-V0_1-STAGE036-P3"',
+                'acceptance_status: "phase3_scenario_validation_passed"',
+            ],
+        ]
+        required = {
+            lock_text: lock_terms,
             roadmap_text: [
                 'current_stage_id: "IDS-STAGE036"',
                 'current_phase_id: "IDS-STAGE036-P2"',
@@ -476,6 +498,330 @@ class Stage036DatabaseQualityConstraintsPhase2Tests(unittest.TestCase):
                 '"ACC-STAGE-036"',
                 "STAGE036_PHASE2_DATABASE_QUALITY_CONSTRAINTS_SLICE.md",
                 "check_database_quality_constraints.py",
+            ],
+        }
+        self.assertTrue(
+            any(
+                all(term in lock_text for term in state_terms)
+                for state_terms in allowed_lock_states
+            ),
+            allowed_lock_states,
+        )
+        for text, terms in required.items():
+            for term in terms:
+                with self.subTest(term=term):
+                    self.assertIn(term, text)
+
+
+class Stage036DatabaseQualityConstraintsPhase3Tests(unittest.TestCase):
+    EXPECTED_SCENARIOS = {
+        "migration_dry_run",
+        "repeat_execution",
+        "failure_rollback",
+        "recovery_smoke",
+        "candidate_constraint_semantics",
+        "duplicate_uniqueness_profile_gate",
+        "existing_foreign_key_integrity",
+        "state_registry_deferred",
+        "raw_large_file_block",
+        "unbounded_derived_artifact_block",
+        "connection_pool_boundary",
+        "transaction_boundary",
+        "constraint_error_explanations",
+        "source_non_interference",
+    }
+
+    def _load_checker_module(self):
+        self.assertTrue(SCRIPT.is_file(), f"missing checker: {SCRIPT}")
+        spec = importlib.util.spec_from_file_location(
+            "stage036_database_quality_constraints_p3", SCRIPT
+        )
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def _scenario_builder(self):
+        module = self._load_checker_module()
+        self.assertTrue(
+            hasattr(module, "build_stage036_scenario_validation_report"),
+            "missing Phase 3 scenario report builder",
+        )
+        return module, module.build_stage036_scenario_validation_report
+
+    def test_phase3_artifact_and_scenario_contract_exist(self):
+        self.assertTrue(PHASE3.is_file(), f"missing Phase 3 evidence: {PHASE3}")
+        combined = "\n".join(
+            [PHASE3.read_text(encoding="utf-8"), SCRIPT.read_text(encoding="utf-8")]
+        )
+        required_terms = [
+            "ids.stage036.database_quality_constraints.phase3.v1",
+            "IDS-V0_1-STAGE036-P3",
+            "ACC-STAGE-036",
+            "build_stage036_scenario_validation_report",
+            "scenario_validation_valid",
+            "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_DATA_PROFILE",
+            "STATIC_TRACKED_CONTRACT_SCENARIO_VALIDATION_ONLY",
+            "live_execution_performed",
+            "NO_PHASE4",
+            "13037f63e370759fcf0411a062a4b74086fa9ce1ab1410ed443c4ba171450a7b",
+        ] + sorted(self.EXPECTED_SCENARIOS)
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, combined)
+
+    def test_scenario_report_passes_static_checks_and_keeps_execution_blocked(self):
+        module, builder = self._scenario_builder()
+        report = builder(INDEX, MIGRATION, module.CONTROL_SCHEMA_PATH)
+
+        self.assertEqual(
+            "ids.stage036.database_quality_constraints.phase3.v1",
+            report["schema_version"],
+        )
+        self.assertEqual("Phase 3", report["phase"])
+        self.assertEqual("IDS-V0_1-STAGE036-P3", report["task_id"])
+        self.assertEqual("ACC-STAGE-036", report["acceptance_id"])
+        self.assertEqual(self.EXPECTED_SCENARIOS, set(report["scenario_results"]))
+        self.assertTrue(report["phase2_contract_valid"], report)
+        self.assertTrue(report["scenario_validation_valid"], report)
+        self.assertFalse(report["execution_ready"])
+        self.assertEqual(
+            "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_DATA_PROFILE",
+            report["execution_state"],
+        )
+        self.assertTrue(
+            all(
+                result["status"] == "PASS"
+                for result in report["scenario_results"].values()
+            ),
+            report["scenario_results"],
+        )
+        recovery = report["scenario_results"]["recovery_smoke"]
+        self.assertTrue(recovery["expected_block"])
+        self.assertEqual(report["execution_state"], recovery["observed_state"])
+        for field in [
+            "live_execution_performed",
+            "postgresql_connection_performed",
+            "migration_dry_run_performed",
+            "migration_apply_performed",
+            "constraint_validation_performed",
+            "rollback_performed",
+            "backup_performed",
+            "restore_performed",
+            "recovery_smoke_performed",
+            "real_data_profile_executed",
+            "state_values_seeded",
+            "runtime_output_written",
+        ]:
+            with self.subTest(field=field):
+                self.assertFalse(report[field])
+        self.assertEqual("IDS-STAGE036-P4-GATE", report["next_gate"])
+        self.assertFalse(report["github_upload_allowed"])
+        self.assertFalse(report["app_reinstall_allowed"])
+
+    def test_scenario_report_is_deterministic_and_owner_explainable(self):
+        module, builder = self._scenario_builder()
+        first = builder(INDEX, MIGRATION, module.CONTROL_SCHEMA_PATH)
+        second = builder(INDEX, MIGRATION, module.CONTROL_SCHEMA_PATH)
+
+        self.assertEqual(first["scenario_results"], second["scenario_results"])
+        for scenario_id, result in first["scenario_results"].items():
+            with self.subTest(scenario_id=scenario_id):
+                self.assertTrue(result["evidence"])
+                self.assertRegex(result["owner_explanation_zh"], r"[\u4e00-\u9fff]")
+                self.assertFalse(result["live_execution_performed"])
+
+    def test_runtime_policy_tampering_fails_relevant_scenarios_closed(self):
+        module, builder = self._scenario_builder()
+        index = json.loads(INDEX.read_text(encoding="utf-8"))
+        migration_sql = MIGRATION.read_text(encoding="utf-8")
+        baseline_sql = module.CONTROL_SCHEMA_PATH.read_text(encoding="utf-8")
+
+        for runtime_key, scenario_id in [
+            ("execute_migration", "migration_dry_run"),
+            ("execute_restore", "recovery_smoke"),
+            ("connect_to_postgres", "transaction_boundary"),
+        ]:
+            tampered = copy.deepcopy(index)
+            tampered["runtime_policy"][runtime_key] = True
+            report = builder(
+                INDEX,
+                MIGRATION,
+                module.CONTROL_SCHEMA_PATH,
+                index_snapshot=tampered,
+                migration_sql_snapshot=migration_sql,
+                baseline_sql_snapshot=baseline_sql,
+            )
+            with self.subTest(runtime_key=runtime_key):
+                self.assertFalse(report["phase2_contract_valid"])
+                self.assertFalse(report["scenario_validation_valid"])
+                self.assertEqual(
+                    "BLOCKED_INVALID_QUALITY_CONSTRAINT_CONTRACT",
+                    report["execution_state"],
+                )
+                self.assertEqual(
+                    "FAIL", report["scenario_results"][scenario_id]["status"]
+                )
+                self.assertFalse(report["live_execution_performed"])
+
+    def test_repeat_and_rollback_contract_tampering_fail_closed(self):
+        module, builder = self._scenario_builder()
+        index = json.loads(INDEX.read_text(encoding="utf-8"))
+        migration_sql = MIGRATION.read_text(encoding="utf-8")
+        baseline_sql = module.CONTROL_SCHEMA_PATH.read_text(encoding="utf-8")
+        mutations = [
+            (
+                "missing_table_idempotency_guard",
+                migration_sql.replace(
+                    "CREATE TABLE IF NOT EXISTS ids_state_value_registry",
+                    "CREATE TABLE ids_state_value_registry",
+                    1,
+                ),
+                "repeat_execution",
+            ),
+            (
+                "missing_registry_rollback_query",
+                migration_sql.replace(
+                    "SELECT EXISTS (SELECT 1 FROM ids_state_value_registry)",
+                    "SELECT FALSE",
+                    1,
+                ),
+                "failure_rollback",
+            ),
+            (
+                "constraint_guard_or_true",
+                migration_sql.replace(
+                    "AND conrelid = 'ids_chunks'::regclass\n  ) THEN",
+                    "AND conrelid = 'ids_chunks'::regclass\n      OR TRUE\n  ) THEN",
+                    1,
+                ),
+                "repeat_execution",
+            ),
+            (
+                "registry_rollback_and_false",
+                migration_sql.replace(
+                    "SELECT EXISTS (SELECT 1 FROM ids_state_value_registry)'",
+                    "SELECT EXISTS (SELECT 1 FROM ids_state_value_registry) AND FALSE'",
+                    1,
+                ),
+                "failure_rollback",
+            ),
+            (
+                "premature_registry_drop",
+                migration_sql.replace(
+                    "DO $ids_quality_rollback_gate$",
+                    "DROP TABLE IF EXISTS ids_state_value_registry;\n\n"
+                    "DO $ids_quality_rollback_gate$",
+                    1,
+                ),
+                "failure_rollback",
+            ),
+        ]
+        for mutation_id, tampered_sql, scenario_id in mutations:
+            self.assertNotEqual(migration_sql, tampered_sql, mutation_id)
+            report = builder(
+                INDEX,
+                MIGRATION,
+                module.CONTROL_SCHEMA_PATH,
+                index_snapshot=index,
+                migration_sql_snapshot=tampered_sql,
+                baseline_sql_snapshot=baseline_sql,
+            )
+            with self.subTest(mutation_id=mutation_id, scenario_id=scenario_id):
+                self.assertFalse(report["phase2_contract_valid"])
+                self.assertFalse(report["scenario_validation_valid"])
+                self.assertEqual(
+                    "FAIL", report["scenario_results"][scenario_id]["status"]
+                )
+
+    def test_malformed_candidate_inventory_fails_closed_without_crashing(self):
+        module, builder = self._scenario_builder()
+        index = json.loads(INDEX.read_text(encoding="utf-8"))
+        index["constraint_inventory"] = "invalid"
+        try:
+            report = builder(
+                INDEX,
+                MIGRATION,
+                module.CONTROL_SCHEMA_PATH,
+                index_snapshot=index,
+                migration_sql_snapshot=MIGRATION.read_text(encoding="utf-8"),
+                baseline_sql_snapshot=module.CONTROL_SCHEMA_PATH.read_text(
+                    encoding="utf-8"
+                ),
+            )
+        except Exception as exc:
+            self.fail(f"scenario builder must fail closed without crashing: {exc}")
+
+        self.assertFalse(report["phase2_contract_valid"])
+        self.assertFalse(report["scenario_validation_valid"])
+        self.assertEqual(
+            "FAIL",
+            report["scenario_results"]["candidate_constraint_semantics"]["status"],
+        )
+        self.assertEqual(
+            "BLOCKED_INVALID_QUALITY_CONSTRAINT_CONTRACT",
+            report["execution_state"],
+        )
+
+    def test_cli_emits_current_phase3_report_without_live_side_effects(self):
+        completed = subprocess.run(
+            [sys.executable, "-B", str(SCRIPT)],
+            cwd=ROOT.parent,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(0, completed.returncode, completed.stderr)
+        payload = json.loads(completed.stdout)
+        self.assertEqual("Phase 3", payload["phase"])
+        self.assertEqual("IDS-V0_1-STAGE036-P3", payload["task_id"])
+        self.assertTrue(payload["scenario_validation_valid"])
+        self.assertFalse(payload["live_execution_performed"])
+        self.assertIn("phase2_report", payload)
+        self.assertTrue(payload["phase2_report"]["contract_valid"])
+        self.assertEqual("", completed.stderr)
+
+    def test_governance_tracks_phase3_and_preserves_upload_lock(self):
+        self.assertTrue(PHASE3.is_file(), f"missing Phase 3 evidence: {PHASE3}")
+        phase3_text = PHASE3.read_text(encoding="utf-8")
+        lock_text = BATCH_LOCK.read_text(encoding="utf-8")
+        roadmap_text = ROADMAP.read_text(encoding="utf-8")
+        events_text = EVENTS.read_text(encoding="utf-8")
+        required = {
+            phase3_text: [
+                "Phase 3 · 数据库质量约束专项验证与异常场景",
+                "migration_dry_run",
+                "recovery_smoke",
+                "live_execution_performed=false",
+                "不得使用虚构 IDS 业务数据、虚构数据库行、placeholder corpus 或伪造证据",
+                "/Users/linzezhang/Downloads/IDS_MetaData",
+                "NO_PHASE4",
+            ],
+            lock_text: [
+                'status: "stage036_phase3_in_progress"',
+                'push_allowed: false',
+                '      - "Phase 3"',
+                'next_phase: "Phase 4"',
+                'next_gate: "IDS-STAGE036-P4-GATE"',
+                'current_task_id: "IDS-V0_1-STAGE036-P3"',
+                'acceptance_status: "phase3_scenario_validation_passed"',
+            ],
+            roadmap_text: [
+                'current_stage_id: "IDS-STAGE036"',
+                'current_phase_id: "IDS-STAGE036-P3"',
+                'current_task_id: "IDS-V0_1-STAGE036-P3"',
+                'next_gate_id: "IDS-STAGE036-P4-GATE"',
+                'phase_id: "IDS-STAGE036-P3"',
+                'task_id: "IDS-V0_1-STAGE036-P3"',
+            ],
+            events_text: [
+                '"event_id":"EVT-IDS-V0_1-STAGE036-P3-20260710-001"',
+                '"event_type":"validation"',
+                '"task_id":"IDS-V0_1-STAGE036-P3"',
+                '"ACC-STAGE-036"',
+                "STAGE036_PHASE3_SCENARIO_VALIDATION.md",
+                "build_stage036_scenario_validation_report",
             ],
         }
         for text, terms in required.items():
