@@ -1,10 +1,12 @@
 import copy
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
 import re
 import subprocess
 import sys
+import tempfile
 import unittest
 
 
@@ -14,6 +16,7 @@ ENTRY = PURSUE_ROOT / "STAGE036_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE036_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE036_PHASE2_DATABASE_QUALITY_CONSTRAINTS_SLICE.md"
 PHASE3 = PURSUE_ROOT / "STAGE036_PHASE3_SCENARIO_VALIDATION.md"
+PHASE4 = PURSUE_ROOT / "STAGE036_PHASE4_CLOSEOUT.md"
 INDEX = (
     PURSUE_ROOT
     / "database_quality_constraints"
@@ -160,6 +163,13 @@ class Stage036DatabaseQualityConstraintsPhase1Tests(unittest.TestCase):
                 'next_gate: "IDS-STAGE036-P4-GATE"',
                 'current_task_id: "IDS-V0_1-STAGE036-P3"',
                 'acceptance_status: "phase3_scenario_validation_passed"',
+            ],
+            [
+                'status: "stage036_completed_local_pending_review"',
+                'next_phase: "stage_review_gate"',
+                'next_gate: "IDS-STAGE036-REVIEW-GATE"',
+                'current_task_id: "IDS-V0_1-STAGE036-P4"',
+                'acceptance_status: "phase4_closeout_complete"',
             ],
         ]
         roadmap_terms = [
@@ -439,7 +449,7 @@ class Stage036DatabaseQualityConstraintsPhase2Tests(unittest.TestCase):
             ["candidate_sql_definitions_exact"]
         )
 
-    def test_cli_preserves_phase2_report_under_current_phase3_output(self):
+    def test_cli_preserves_phase2_report_under_current_phase4_output(self):
         completed = subprocess.run(
             [sys.executable, "-B", str(SCRIPT)],
             cwd=ROOT.parent,
@@ -449,7 +459,7 @@ class Stage036DatabaseQualityConstraintsPhase2Tests(unittest.TestCase):
         )
         self.assertEqual(0, completed.returncode, completed.stderr)
         payload = json.loads(completed.stdout)
-        self.assertEqual("Phase 3", payload["phase"])
+        self.assertEqual("Phase 4", payload["phase"])
         phase2 = payload["phase2_report"]
         self.assertEqual("Phase 2", phase2["phase"])
         self.assertEqual("IDS-V0_1-STAGE036-P2", phase2["task_id"])
@@ -479,6 +489,13 @@ class Stage036DatabaseQualityConstraintsPhase2Tests(unittest.TestCase):
                 'next_gate: "IDS-STAGE036-P4-GATE"',
                 'current_task_id: "IDS-V0_1-STAGE036-P3"',
                 'acceptance_status: "phase3_scenario_validation_passed"',
+            ],
+            [
+                'status: "stage036_completed_local_pending_review"',
+                'next_phase: "stage_review_gate"',
+                'next_gate: "IDS-STAGE036-REVIEW-GATE"',
+                'current_task_id: "IDS-V0_1-STAGE036-P4"',
+                'acceptance_status: "phase4_closeout_complete"',
             ],
         ]
         required = {
@@ -764,7 +781,7 @@ class Stage036DatabaseQualityConstraintsPhase3Tests(unittest.TestCase):
             report["execution_state"],
         )
 
-    def test_cli_emits_current_phase3_report_without_live_side_effects(self):
+    def test_cli_preserves_phase3_report_under_current_phase4_output(self):
         completed = subprocess.run(
             [sys.executable, "-B", str(SCRIPT)],
             cwd=ROOT.parent,
@@ -774,12 +791,16 @@ class Stage036DatabaseQualityConstraintsPhase3Tests(unittest.TestCase):
         )
         self.assertEqual(0, completed.returncode, completed.stderr)
         payload = json.loads(completed.stdout)
-        self.assertEqual("Phase 3", payload["phase"])
-        self.assertEqual("IDS-V0_1-STAGE036-P3", payload["task_id"])
-        self.assertTrue(payload["scenario_validation_valid"])
+        self.assertEqual("Phase 4", payload["phase"])
+        self.assertEqual("IDS-V0_1-STAGE036-P4", payload["task_id"])
         self.assertFalse(payload["live_execution_performed"])
-        self.assertIn("phase2_report", payload)
-        self.assertTrue(payload["phase2_report"]["contract_valid"])
+        self.assertIn("scenario_report", payload)
+        scenario = payload["scenario_report"]
+        self.assertEqual("Phase 3", scenario["phase"])
+        self.assertEqual("IDS-V0_1-STAGE036-P3", scenario["task_id"])
+        self.assertTrue(scenario["scenario_validation_valid"])
+        self.assertIn("phase2_report", scenario)
+        self.assertTrue(scenario["phase2_report"]["contract_valid"])
         self.assertEqual("", completed.stderr)
 
     def test_governance_tracks_phase3_and_preserves_upload_lock(self):
@@ -799,19 +820,20 @@ class Stage036DatabaseQualityConstraintsPhase3Tests(unittest.TestCase):
                 "NO_PHASE4",
             ],
             lock_text: [
-                'status: "stage036_phase3_in_progress"',
+                'status: "stage036_completed_local_pending_review"',
                 'push_allowed: false',
                 '      - "Phase 3"',
-                'next_phase: "Phase 4"',
-                'next_gate: "IDS-STAGE036-P4-GATE"',
-                'current_task_id: "IDS-V0_1-STAGE036-P3"',
-                'acceptance_status: "phase3_scenario_validation_passed"',
+                '      - "Phase 4"',
+                'next_phase: "stage_review_gate"',
+                'next_gate: "IDS-STAGE036-REVIEW-GATE"',
+                'current_task_id: "IDS-V0_1-STAGE036-P4"',
+                'acceptance_status: "phase4_closeout_complete"',
             ],
             roadmap_text: [
                 'current_stage_id: "IDS-STAGE036"',
-                'current_phase_id: "IDS-STAGE036-P3"',
-                'current_task_id: "IDS-V0_1-STAGE036-P3"',
-                'next_gate_id: "IDS-STAGE036-P4-GATE"',
+                'current_phase_id: "IDS-STAGE036-P4"',
+                'current_task_id: "IDS-V0_1-STAGE036-P4"',
+                'next_gate_id: "IDS-STAGE036-REVIEW-GATE"',
                 'phase_id: "IDS-STAGE036-P3"',
                 'task_id: "IDS-V0_1-STAGE036-P3"',
             ],
@@ -822,6 +844,420 @@ class Stage036DatabaseQualityConstraintsPhase3Tests(unittest.TestCase):
                 '"ACC-STAGE-036"',
                 "STAGE036_PHASE3_SCENARIO_VALIDATION.md",
                 "build_stage036_scenario_validation_report",
+            ],
+        }
+        for text, terms in required.items():
+            for term in terms:
+                with self.subTest(term=term):
+                    self.assertIn(term, text)
+
+
+class Stage036DatabaseQualityConstraintsPhase4Tests(unittest.TestCase):
+    def _load_checker_module(self):
+        self.assertTrue(SCRIPT.is_file(), f"missing checker: {SCRIPT}")
+        spec = importlib.util.spec_from_file_location(
+            "stage036_database_quality_constraints_p4", SCRIPT
+        )
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def _delivery_builder(self):
+        module = self._load_checker_module()
+        self.assertTrue(
+            hasattr(module, "build_stage036_delivery_report"),
+            "missing Phase 4 delivery report builder",
+        )
+        return module, module.build_stage036_delivery_report
+
+    def test_phase4_artifact_and_delivery_contract_exist(self):
+        self.assertTrue(PHASE4.is_file(), f"missing Phase 4 evidence: {PHASE4}")
+        combined = "\n".join(
+            [PHASE4.read_text(encoding="utf-8"), SCRIPT.read_text(encoding="utf-8")]
+        )
+        required_terms = [
+            "ids.stage036.database_quality_constraints.phase4.v1",
+            "ids.stage036.database_quality_constraints.delivery_contract.v1",
+            "IDS-V0_1-STAGE036-P4",
+            "ACC-STAGE-036",
+            "build_stage036_delivery_report",
+            "delivery_contract_valid",
+            "schema_diff",
+            "migration_output",
+            "recovery_test_log",
+            "known_limits",
+            "destructive_migration_confirmation",
+            "rollback_steps",
+            "backup_restore_steps",
+            "chinese_owner_feedback",
+            "PASS_WITH_EXPECTED_BLOCK",
+            "NO_STAGE_REVIEW_THIS_RUN",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, combined)
+
+    def test_delivery_report_is_valid_and_keeps_every_live_action_blocked(self):
+        module, builder = self._delivery_builder()
+        report = builder(INDEX, MIGRATION, module.CONTROL_SCHEMA_PATH)
+
+        self.assertEqual(
+            "ids.stage036.database_quality_constraints.phase4.v1",
+            report["schema_version"],
+        )
+        self.assertEqual("Phase 4", report["phase"])
+        self.assertEqual("IDS-V0_1-STAGE036-P4", report["task_id"])
+        self.assertEqual("ACC-STAGE-036", report["acceptance_id"])
+        self.assertTrue(report["delivery_contract_valid"], report)
+        self.assertTrue(all(report["delivery_check_results"].values()), report)
+        self.assertTrue(all(report["phase4_contract_results"].values()), report)
+        self.assertFalse(report["execution_ready"])
+        self.assertEqual(
+            "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_DATA_PROFILE",
+            report["execution_state"],
+        )
+        self.assertEqual("IDS-STAGE036-REVIEW-GATE", report["next_gate"])
+        self.assertEqual("pending_next_run", report["stage_review_status"])
+        self.assertFalse(report["github_upload_allowed"])
+        self.assertFalse(report["app_reinstall_allowed"])
+        self.assertEqual("tracked_files", report["snapshot_binding"]["source"])
+        self.assertTrue(report["snapshot_binding"]["tracked_snapshot_bound"])
+        self.assertTrue(report["snapshot_binding"]["single_snapshot_reused"])
+        for field in [
+            "live_execution_performed",
+            "postgresql_connection_performed",
+            "migration_dry_run_performed",
+            "migration_apply_performed",
+            "constraint_validation_performed",
+            "rollback_performed",
+            "backup_performed",
+            "restore_performed",
+            "recovery_smoke_performed",
+            "real_data_profile_executed",
+            "state_values_seeded",
+            "runtime_output_written",
+        ]:
+            with self.subTest(field=field):
+                self.assertFalse(report[field])
+
+    def test_delivery_evidence_is_real_tracked_snapshot_not_live_output(self):
+        module, builder = self._delivery_builder()
+        report = builder(INDEX, MIGRATION, module.CONTROL_SCHEMA_PATH)
+        migration_sha = hashlib.sha256(MIGRATION.read_bytes()).hexdigest()
+        baseline_sha = hashlib.sha256(
+            module.CONTROL_SCHEMA_PATH.read_bytes()
+        ).hexdigest()
+
+        schema_diff = report["schema_diff"]
+        self.assertEqual("static_tracked_schema_diff_not_executed", schema_diff["mode"])
+        self.assertEqual("NOT_EXECUTED", schema_diff["live_schema_diff_result"])
+        self.assertEqual(migration_sha, schema_diff["migration_sha256"])
+        self.assertEqual(baseline_sha, schema_diff["baseline_schema_sha256"])
+        self.assertEqual(["ids_state_value_registry"], schema_diff["added_table_contracts"])
+        self.assertEqual(9, schema_diff["candidate_constraint_count"])
+        self.assertEqual(3, schema_diff["existing_foreign_key_count"])
+
+        migration_output = report["migration_output"]
+        self.assertEqual(
+            "static_tracked_migration_output_not_executed",
+            migration_output["mode"],
+        )
+        self.assertEqual(
+            "ids_stage036_002_database_quality_constraints",
+            migration_output["migration_id"],
+        )
+        self.assertEqual(migration_sha, migration_output["tracked_migration_sha256"])
+        self.assertEqual("NOT_EXECUTED", migration_output["live_migration_result"])
+        self.assertEqual(
+            "NOT_EXECUTED",
+            migration_output["live_constraint_validation_result"],
+        )
+        self.assertFalse(migration_output["destructive_migration_allowed"])
+
+        recovery_log = report["recovery_test_log"]
+        self.assertEqual(
+            "static_quality_constraint_recovery_log_expected_block",
+            recovery_log["mode"],
+        )
+        self.assertEqual("PASS_WITH_EXPECTED_BLOCK", recovery_log["result"])
+        self.assertEqual("NOT_EXECUTED", recovery_log["live_recovery_smoke_result"])
+        self.assertEqual(14, recovery_log["scenario_count"])
+        self.assertTrue(
+            all(item["status"] == "PASS" for item in recovery_log["scenario_results"].values())
+        )
+        self.assertFalse(recovery_log["live_execution_performed"])
+
+    def test_manual_confirmation_rollback_backup_and_limits_are_explicit(self):
+        module, builder = self._delivery_builder()
+        report = builder(INDEX, MIGRATION, module.CONTROL_SCHEMA_PATH)
+
+        confirmation = report["destructive_migration_confirmation"]
+        self.assertTrue(confirmation["required"])
+        self.assertFalse(confirmation["destructive_allowed_by_default"])
+        self.assertFalse(confirmation["authorized_this_run"])
+        self.assertTrue(confirmation["manual_owner_confirmation_required"])
+        self.assertGreaterEqual(len(report["rollback_steps"]), 5)
+        self.assertGreaterEqual(len(report["backup_restore_steps"]), 6)
+        self.assertGreaterEqual(len(report["known_limits"]), 6)
+        self.assertIn("未执行真实 migration", report["chinese_owner_feedback"])
+        self.assertIn("STAGE-036 review", report["chinese_owner_feedback"])
+
+    def test_tampered_delivery_runtime_or_sql_contract_fails_closed(self):
+        module, builder = self._delivery_builder()
+        index = json.loads(INDEX.read_text(encoding="utf-8"))
+        migration_sql = MIGRATION.read_text(encoding="utf-8")
+        baseline_sql = module.CONTROL_SCHEMA_PATH.read_text(encoding="utf-8")
+
+        bad_confirmation = copy.deepcopy(index)
+        bad_confirmation["phase4_delivery_contract"][
+            "destructive_migration_confirmation"
+        ]["authorized_this_run"] = True
+        bad_runtime = copy.deepcopy(index)
+        bad_runtime["runtime_policy"]["execute_migration"] = True
+        bad_phase4_root = copy.deepcopy(index)
+        bad_phase4_root["phase4_delivery_contract"][
+            "future_destructive_authorization"
+        ] = True
+        bad_guardrails = copy.deepcopy(index)
+        bad_guardrails["guardrails"]["connection_pool"] = []
+        bad_candidate_columns = copy.deepcopy(index)
+        bad_candidate_columns["constraint_inventory"]["candidates"][0][
+            "columns"
+        ] = None
+        bad_sql = migration_sql.replace(
+            "CREATE TABLE IF NOT EXISTS ids_state_value_registry",
+            "CREATE TABLE ids_state_value_registry",
+            1,
+        )
+        destructive_sql = migration_sql.replace(
+            "-- migrate:down",
+            "-- migrate:down\nDROP TABLE ids_documents;",
+            1,
+        )
+        quoted_destructive_sql = migration_sql.replace(
+            "-- migrate:down",
+            '-- migrate:down\nDROP TABLE "ids_documents";',
+            1,
+        )
+        drop_owned_sql = migration_sql.replace(
+            "-- migrate:down", "-- migrate:down\nDROP OWNED BY ids_runtime;", 1
+        )
+        drop_sequence_sql = migration_sql.replace(
+            "-- migrate:down", "-- migrate:down\nDROP SEQUENCE ids_sequence;", 1
+        )
+        drop_function_sql = migration_sql.replace(
+            "-- migrate:down", "-- migrate:down\nDROP FUNCTION ids_fn();", 1
+        )
+        alter_column_type_sql = migration_sql.replace(
+            "-- migrate:down",
+            "-- migrate:down\nALTER TABLE ids_documents ALTER COLUMN document_id TYPE integer;",
+            1,
+        )
+        check_or_true_sql = migration_sql.replace(
+            "AND is_raw_content_stored = false\n      ) NOT VALID;",
+            "AND is_raw_content_stored = false\n        OR TRUE\n      ) NOT VALID;",
+            1,
+        )
+        comment_drift_sql = migration_sql + "\n-- untracked content drift\n"
+        for mutation_id, index_snapshot, sql_snapshot in [
+            ("unauthorized_destructive_confirmation", bad_confirmation, migration_sql),
+            ("runtime_migration_enabled", bad_runtime, migration_sql),
+            ("extra_phase4_root_field", bad_phase4_root, migration_sql),
+            ("malformed_nested_guardrails", bad_guardrails, migration_sql),
+            ("migration_guard_removed", index, bad_sql),
+            ("extra_destructive_down_sql", index, destructive_sql),
+            ("quoted_destructive_down_sql", index, quoted_destructive_sql),
+            ("drop_owned_down_sql", index, drop_owned_sql),
+            ("drop_sequence_down_sql", index, drop_sequence_sql),
+            ("drop_function_down_sql", index, drop_function_sql),
+            ("alter_column_type_down_sql", index, alter_column_type_sql),
+            ("check_constraint_or_true", index, check_or_true_sql),
+            ("snapshot_hash_drift", index, comment_drift_sql),
+            ("malformed_candidate_columns", bad_candidate_columns, migration_sql),
+        ]:
+            report = builder(
+                INDEX,
+                MIGRATION,
+                module.CONTROL_SCHEMA_PATH,
+                index_snapshot=index_snapshot,
+                migration_sql_snapshot=sql_snapshot,
+                baseline_sql_snapshot=baseline_sql,
+            )
+            with self.subTest(mutation_id=mutation_id):
+                self.assertFalse(report["delivery_contract_valid"], report)
+                self.assertEqual("FAIL_CLOSED", report["recovery_test_log"]["result"])
+                self.assertEqual(
+                    "BLOCKED_INVALID_QUALITY_CONSTRAINT_CONTRACT",
+                    report["execution_state"],
+                )
+                self.assertFalse(report["live_execution_performed"])
+                self.assertIn("失败关闭", report["chinese_owner_feedback"])
+                self.assertEqual(
+                    "in_memory_validation_snapshot",
+                    report["snapshot_binding"]["source"],
+                )
+                self.assertFalse(report["snapshot_binding"]["tracked_snapshot_bound"])
+                if mutation_id == "extra_phase4_root_field":
+                    self.assertFalse(
+                        report["phase4_contract_results"]["root_keys_exact"]
+                    )
+                if mutation_id in {
+                    "extra_destructive_down_sql",
+                    "quoted_destructive_down_sql",
+                    "drop_owned_down_sql",
+                    "drop_sequence_down_sql",
+                    "drop_function_down_sql",
+                    "alter_column_type_down_sql",
+                }:
+                    self.assertFalse(
+                        report["delivery_check_results"][
+                            "destructive_migration_blocked"
+                        ]
+                    )
+                if mutation_id == "check_constraint_or_true":
+                    self.assertFalse(
+                        report["phase2_report"]["migration_contract_results"][
+                            "candidate_sql_definitions_exact"
+                        ]
+                    )
+                if mutation_id == "snapshot_hash_drift":
+                    self.assertFalse(
+                        report["delivery_check_results"][
+                            "snapshot_hashes_match_contract"
+                        ]
+                    )
+
+    def test_noncanonical_path_cannot_claim_tracked_snapshot_binding(self):
+        module, builder = self._delivery_builder()
+
+        class NonCanonicalMigrationPath:
+            def __fspath__(self):
+                return "/tmp/not-a-tracked-stage036-migration.sql"
+
+            def read_text(self, encoding="utf-8"):
+                return MIGRATION.read_text(encoding=encoding)
+
+            def as_posix(self):
+                return self.__fspath__()
+
+            def resolve(self):
+                return Path(self.__fspath__())
+
+        report = builder(
+            INDEX,
+            NonCanonicalMigrationPath(),
+            module.CONTROL_SCHEMA_PATH,
+        )
+        self.assertFalse(report["snapshot_binding"]["tracked_snapshot_bound"])
+        self.assertEqual(
+            "noncanonical_path_validation_snapshot",
+            report["snapshot_binding"]["source"],
+        )
+        self.assertFalse(report["delivery_contract_valid"])
+        self.assertEqual("FAIL_CLOSED", report["result"])
+
+    def test_malformed_top_level_index_fails_closed_without_crashing(self):
+        module, builder = self._delivery_builder()
+        migration_sql = MIGRATION.read_text(encoding="utf-8")
+        baseline_sql = module.CONTROL_SCHEMA_PATH.read_text(encoding="utf-8")
+
+        for malformed_index in ([], "not-an-object", 36):
+            with self.subTest(malformed_index=malformed_index):
+                report = builder(
+                    INDEX,
+                    MIGRATION,
+                    module.CONTROL_SCHEMA_PATH,
+                    index_snapshot=malformed_index,
+                    migration_sql_snapshot=migration_sql,
+                    baseline_sql_snapshot=baseline_sql,
+                )
+                self.assertFalse(report["delivery_contract_valid"])
+                self.assertEqual("FAIL_CLOSED", report["result"])
+                self.assertIn("失败关闭", report["chinese_owner_feedback"])
+                self.assertFalse(report["live_execution_performed"])
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            invalid_json_path = Path(tmp_dir) / "stage036-invalid-index.json"
+            invalid_json_path.write_text("{invalid-json", encoding="utf-8")
+            report = builder(
+                invalid_json_path,
+                MIGRATION,
+                module.CONTROL_SCHEMA_PATH,
+            )
+        self.assertFalse(report["delivery_contract_valid"])
+        self.assertEqual("FAIL_CLOSED", report["result"])
+        self.assertIn("失败关闭", report["chinese_owner_feedback"])
+        self.assertFalse(report["live_execution_performed"])
+
+    def test_cli_emits_phase4_top_level_and_preserves_nested_history(self):
+        completed = subprocess.run(
+            [sys.executable, "-B", str(SCRIPT)],
+            cwd=ROOT.parent,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(0, completed.returncode, completed.stderr)
+        payload = json.loads(completed.stdout)
+        self.assertEqual("Phase 4", payload["phase"])
+        self.assertEqual("IDS-V0_1-STAGE036-P4", payload["task_id"])
+        self.assertTrue(payload["delivery_contract_valid"])
+        self.assertEqual("PASS_WITH_EXPECTED_BLOCK", payload["recovery_test_log"]["result"])
+        self.assertFalse(payload["live_execution_performed"])
+        self.assertEqual("Phase 3", payload["scenario_report"]["phase"])
+        self.assertEqual("Phase 2", payload["phase2_report"]["phase"])
+        self.assertEqual("IDS-STAGE036-REVIEW-GATE", payload["next_gate"])
+        self.assertEqual("", completed.stderr)
+
+    def test_governance_tracks_phase4_and_stops_at_separate_review_gate(self):
+        self.assertTrue(PHASE4.is_file(), f"missing Phase 4 evidence: {PHASE4}")
+        phase4_text = PHASE4.read_text(encoding="utf-8")
+        lock_text = BATCH_LOCK.read_text(encoding="utf-8")
+        roadmap_text = ROADMAP.read_text(encoding="utf-8")
+        events_text = EVENTS.read_text(encoding="utf-8")
+        required = {
+            phase4_text: [
+                "Phase 4 · 数据库质量约束交付证据、回滚与中文反馈",
+                "live_schema_diff_result=NOT_EXECUTED",
+                "live_migration_result=NOT_EXECUTED",
+                "live_recovery_smoke_result=NOT_EXECUTED",
+                "result=PASS_WITH_EXPECTED_BLOCK",
+                "stage_review_status=pending_next_run",
+                "任何破坏性 migration 必须单独人工确认",
+                "不得使用虚构 IDS 业务数据、虚构数据库行、placeholder corpus 或伪造证据",
+                "/Users/linzezhang/Downloads/IDS_MetaData",
+                "NO_STAGE_REVIEW_THIS_RUN",
+            ],
+            lock_text: [
+                'status: "stage036_completed_local_pending_review"',
+                '      - "Phase 4"',
+                'next_phase: "stage_review_gate"',
+                'next_gate: "IDS-STAGE036-REVIEW-GATE"',
+                'current_task_id: "IDS-V0_1-STAGE036-P4"',
+                'acceptance_status: "phase4_closeout_complete"',
+                'push_allowed: false',
+                "STAGE036_PHASE4_CLOSEOUT.md",
+            ],
+            roadmap_text: [
+                'current_stage_id: "IDS-STAGE036"',
+                'current_phase_id: "IDS-STAGE036-P4"',
+                'current_task_id: "IDS-V0_1-STAGE036-P4"',
+                'next_gate_id: "IDS-STAGE036-REVIEW-GATE"',
+                'phase_id: "IDS-STAGE036-P4"',
+                'task_id: "IDS-V0_1-STAGE036-P4"',
+                'status: "passed_no_github_upload_until_stage_review"',
+            ],
+            events_text: [
+                '"event_id":"EVT-IDS-V0_1-STAGE036-P4-',
+                '"event_type":"stage_closeout"',
+                '"task_id":"IDS-V0_1-STAGE036-P4"',
+                '"ACC-STAGE-036"',
+                "STAGE036_PHASE4_CLOSEOUT.md",
+                "build_stage036_delivery_report",
+                "PASS_WITH_EXPECTED_BLOCK",
+                "IDS-STAGE036-REVIEW-GATE",
             ],
         }
         for text, terms in required.items():

@@ -7,6 +7,7 @@ migration, seed state values, or write runtime outputs.
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 import re
@@ -15,18 +16,30 @@ from typing import Any
 
 SCHEMA_VERSION = "ids.stage036.database_quality_constraints.phase2.v1"
 PHASE3_SCHEMA_VERSION = "ids.stage036.database_quality_constraints.phase3.v1"
+PHASE4_SCHEMA_VERSION = "ids.stage036.database_quality_constraints.phase4.v1"
+PHASE4_CONTRACT_SCHEMA_VERSION = (
+    "ids.stage036.database_quality_constraints.delivery_contract.v1"
+)
 INDEX_SCHEMA_VERSION = "ids.stage036.database_quality_constraints.index.v1"
 STAGE = "STAGE-036"
 TASK_ID = "IDS-V0_1-STAGE036-P2"
 PHASE3_TASK_ID = "IDS-V0_1-STAGE036-P3"
+PHASE4_TASK_ID = "IDS-V0_1-STAGE036-P4"
 ACCEPTANCE_ID = "ACC-STAGE-036"
 CONTRACT_ID = "ids_stage036_database_quality_constraints_static_slice"
 MIGRATION_ID = "ids_stage036_002_database_quality_constraints"
+EXPECTED_MIGRATION_SHA256 = (
+    "b8e3e49473fe89fae34b81042e7bc456499ba4702e4f6e6c637b65d91b5f3af1"
+)
+EXPECTED_BASELINE_SCHEMA_SHA256 = (
+    "9fa7b8e535fe799c0aed14d738f568b33a19fc2835eeb492c8217bc35b588479"
+)
 RAW_METADATA_ROOT = "/Users/linzezhang/Downloads/IDS_MetaData"
 BLOCKED_PENDING_PROFILE = "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_DATA_PROFILE"
 BLOCKED_INVALID_CONTRACT = "BLOCKED_INVALID_QUALITY_CONSTRAINT_CONTRACT"
 INVALID_CONTRACT_STATE = "INVALID_QUALITY_CONSTRAINT_CONTRACT"
 PHASE3_EXECUTION_MODE = "STATIC_TRACKED_CONTRACT_SCENARIO_VALIDATION_ONLY"
+PHASE4_EXECUTION_MODE = "STATIC_TRACKED_CLOSEOUT_EVIDENCE_ONLY"
 
 EXPECTED_PHASE3_SCENARIOS = {
     "migration_dry_run",
@@ -367,6 +380,74 @@ EXPECTED_FORBIDDEN_REAL_DATA_SUBSTITUTES = {
     "plaintext secrets",
 }
 
+EXPECTED_PHASE4_ROLLBACK_GUARDS = {
+    "stop_on_invalid_contract": {
+        "required": True,
+        "stop_all_database_actions": True,
+    },
+    "require_prechange_checkpoint": {
+        "required": True,
+        "backup_checkpoint_required": True,
+    },
+    "execute_tracked_down_section": {
+        "required": True,
+        "tracked_down_section_only": True,
+    },
+    "preserve_source_database": {
+        "required": True,
+        "source_database_mutation_allowed": False,
+    },
+    "guard_nonempty_state_registry": {
+        "required": True,
+        "nonempty_registry_auto_drop_allowed": False,
+    },
+    "separate_cleanup_owner_gate": {
+        "required": True,
+        "automatic_cleanup_allowed": False,
+    },
+}
+
+EXPECTED_PHASE4_BACKUP_RESTORE_GUARDS = {
+    "owner_authorized_real_profile": {
+        "required": True,
+        "owner_authorized_real_profile_required": True,
+    },
+    "managed_secret_ref": {
+        "required": True,
+        "plaintext_credentials_allowed": False,
+    },
+    "verified_backup_checkpoint": {
+        "required": True,
+        "backup_checkpoint_verification_required": True,
+    },
+    "isolated_target_dry_run": {
+        "required": True,
+        "isolated_non_production_target_required": True,
+    },
+    "apply_and_validate_constraints": {
+        "required": True,
+        "bounded_profile_zero_violations_required": True,
+    },
+    "recovery_verification": {
+        "required": True,
+        "recovery_smoke_and_schema_verification_required": True,
+    },
+    "restore_checkpoint_on_failure": {
+        "required": True,
+        "source_database_overwrite_allowed": False,
+    },
+}
+
+EXPECTED_PHASE4_KNOWN_LIMIT_IDS = {
+    "no_owner_authorized_real_profile",
+    "no_live_postgresql_execution",
+    "static_pass_is_not_readiness",
+    "no_runtime_artifacts_created",
+    "raw_metadata_path_only",
+    "state_registry_values_deferred",
+    "stage_review_and_batch_upload_blocked",
+}
+
 FORBIDDEN_SQL_SECRET_PATTERNS = (
     r"postgres(?:ql)?://",
     r"password\s*=",
@@ -375,8 +456,15 @@ FORBIDDEN_SQL_SECRET_PATTERNS = (
 )
 
 
+def _as_json_object(value: Any) -> dict[str, Any]:
+    return value if isinstance(value, dict) else {}
+
+
 def _load_json(path: Path) -> dict[str, Any]:
-    return json.loads(path.read_text(encoding="utf-8"))
+    try:
+        return _as_json_object(json.loads(path.read_text(encoding="utf-8")))
+    except (AttributeError, OSError, TypeError, UnicodeError, json.JSONDecodeError):
+        return {}
 
 
 def _strip_sql_comments(sql: str) -> str:
@@ -501,7 +589,7 @@ def _candidate_sql_definitions_exact(normalized_sql: str) -> bool:
         r"alter table ids_chunks add constraint uq_ids_chunks_document_ordinal "
         r"unique \(document_id, chunk_ordinal\)"
     )
-    if re.search(unique_pattern, normalized_sql) is None:
+    if len(re.findall(unique_pattern, normalized_sql)) != 1:
         return False
 
     for constraint_id, clauses in EXPECTED_CHECK_SQL_CLAUSES.items():
@@ -510,8 +598,19 @@ def _candidate_sql_definitions_exact(normalized_sql: str) -> bool:
             rf"alter table {re.escape(str(table))} add constraint "
             rf"{re.escape(constraint_id)} check \((.*?)\) not valid"
         )
-        match = re.search(pattern, normalized_sql)
-        if match is None or not all(clause in match.group(1) for clause in clauses):
+        matches = re.findall(pattern, normalized_sql)
+        if len(matches) != 1:
+            return False
+        if constraint_id == "chk_ids_chunks_quality_v2":
+            expected_expression = (
+                " and ".join(clauses[:6])
+                + f" and ( ({clauses[6]}) or ( "
+                + " and ".join(clauses[7:])
+                + " ) )"
+            )
+        else:
+            expected_expression = " and ".join(clauses)
+        if matches[0].strip() != expected_expression:
             return False
     return True
 
@@ -563,6 +662,37 @@ def _state_registry_rollback_guard_exact(sql: str) -> bool:
         expected_guard in normalized_down
         and registry_drop_count == 1
         and normalized_down.index(expected_guard) < normalized_down.index(registry_drop)
+    )
+
+
+def _destructive_ddl_is_exact(sql: str) -> bool:
+    normalized = _normalized_sql(sql)
+    dropped_tables = re.findall(
+        r"\bdrop table(?: if exists)? ([a-z_][a-z0-9_]*)\b", normalized
+    )
+    dropped_constraints = re.findall(
+        r"\balter table ([a-z_][a-z0-9_]*) drop constraint if exists "
+        r"([a-z_][a-z0-9_]*)\b",
+        normalized,
+    )
+    expected_constraint_drops = {
+        (str(spec["table"]), constraint_id)
+        for constraint_id, spec in EXPECTED_CANDIDATE_SPECS.items()
+    }
+    forbidden_destructive_ddl = re.search(
+        r"\b(?:drop database|drop schema|drop index|drop view|drop materialized view|"
+        r"truncate|delete from|cascade)\b|\balter table\b.*?\bdrop column\b",
+        normalized,
+    )
+    return (
+        hashlib.sha256(sql.encode("utf-8")).hexdigest()
+        == EXPECTED_MIGRATION_SHA256
+        and dropped_tables == ["ids_state_value_registry"]
+        and normalized.count("drop table") == 1
+        and len(dropped_constraints) == len(expected_constraint_drops)
+        and set(dropped_constraints) == expected_constraint_drops
+        and normalized.count("drop constraint") == len(expected_constraint_drops)
+        and forbidden_destructive_ddl is None
     )
 
 
@@ -658,6 +788,7 @@ def _migration_contract_results(
             for constraint_id in EXPECTED_CANDIDATE_CONSTRAINTS
         )
         and "drop table if exists ids_state_value_registry" in normalized,
+        "destructive_ddl_exact": _destructive_ddl_is_exact(sql),
         "no_data_changing_dml": forbidden_dml is None,
         "no_plaintext_secrets_or_dsn": secret_free,
         "raw_metadata_path_absent_from_sql": RAW_METADATA_ROOT not in sql,
@@ -671,6 +802,13 @@ def _migration_contract_results(
 
 
 def _constraint_inventory_results(index: dict[str, Any]) -> dict[str, bool]:
+    def string_set(value: object) -> set[str]:
+        if not isinstance(value, list) or not all(
+            isinstance(item, str) for item in value
+        ):
+            return set()
+        return set(value)
+
     inventory = index.get("constraint_inventory", {})
     inventory = inventory if isinstance(inventory, dict) else {}
     candidates = inventory.get("candidates", [])
@@ -684,7 +822,12 @@ def _constraint_inventory_results(index: dict[str, Any]) -> dict[str, bool]:
         constraint_id: {
             "constraint_class": item.get("constraint_class"),
             "table": item.get("table"),
-            "columns": tuple(item.get("columns", [])),
+            "columns": (
+                tuple(item["columns"])
+                if isinstance(item.get("columns"), list)
+                and all(isinstance(column, str) for column in item["columns"])
+                else ()
+            ),
             "validation_kind": item.get("validation_kind"),
         }
         for constraint_id, item in candidate_by_id.items()
@@ -726,16 +869,16 @@ def _constraint_inventory_results(index: dict[str, Any]) -> dict[str, bool]:
             and unique_candidate.get("validation_kind")
             == "duplicate_count_must_be_zero"
         ),
-        "existing_foreign_keys_exact": set(
-            inventory.get("existing_foreign_keys", [])
+        "existing_foreign_keys_exact": string_set(
+            inventory.get("existing_foreign_keys")
         )
         == EXPECTED_FOREIGN_KEYS,
-        "existing_primary_keys_exact": set(
-            inventory.get("existing_primary_keys", [])
+        "existing_primary_keys_exact": string_set(
+            inventory.get("existing_primary_keys")
         )
         == EXPECTED_PRIMARY_KEYS,
-        "stable_value_checks_exact": set(
-            inventory.get("existing_stable_value_checks", [])
+        "stable_value_checks_exact": string_set(
+            inventory.get("existing_stable_value_checks")
         )
         == EXPECTED_STABLE_VALUE_CHECKS,
         "state_registry_is_unpopulated_and_stage037_owned": (
@@ -743,7 +886,9 @@ def _constraint_inventory_results(index: dict[str, Any]) -> dict[str, bool]:
             and registry.get("table") == "ids_state_value_registry"
             and registry.get("primary_key")
             == ["state_namespace", "state_value"]
-            and set(registry.get("state_namespaces_reserved_for_future_contracts", []))
+            and string_set(
+                registry.get("state_namespaces_reserved_for_future_contracts")
+            )
             == EXPECTED_STATE_NAMESPACES
             and registry.get("populated") is False
             and registry.get("state_values_defined") is False
@@ -752,7 +897,7 @@ def _constraint_inventory_results(index: dict[str, Any]) -> dict[str, bool]:
             and registry.get("native_postgresql_enum_used") is False
             and registry.get("runtime_registry_write_allowed") is False
             and registry.get("rollback_requires_empty") is True
-            and set(registry.get("required_metadata", []))
+            and string_set(registry.get("required_metadata"))
             == {
                 "introduced_version",
                 "retired_version",
@@ -774,6 +919,12 @@ def _guardrail_results(index: dict[str, Any]) -> dict[str, bool]:
     recovery = guardrails.get("recovery", {})
     raw = index.get("raw_metadata_boundary", {})
     real_data = index.get("real_data_only_guard", {})
+    pool = pool if isinstance(pool, dict) else {}
+    storage = storage if isinstance(storage, dict) else {}
+    migration = migration if isinstance(migration, dict) else {}
+    recovery = recovery if isinstance(recovery, dict) else {}
+    raw = raw if isinstance(raw, dict) else {}
+    real_data = real_data if isinstance(real_data, dict) else {}
     return {
         "connection_pool_budget_preserved": (
             pool.get("aggregate_max_pool_size") == 10
@@ -870,7 +1021,11 @@ def build_stage036_quality_constraint_report(
     migration_sql_snapshot: str | None = None,
     baseline_sql_snapshot: str | None = None,
 ) -> dict[str, Any]:
-    index = index_snapshot if index_snapshot is not None else _load_json(index_path)
+    index = (
+        _as_json_object(index_snapshot)
+        if index_snapshot is not None
+        else _load_json(index_path)
+    )
     migration_sql = (
         migration_sql_snapshot
         if migration_sql_snapshot is not None
@@ -994,6 +1149,151 @@ def _has_chinese_text(value: object) -> bool:
     return isinstance(value, str) and re.search(r"[\u4e00-\u9fff]", value) is not None
 
 
+def _items_by_id(value: object, id_field: str) -> dict[str, dict[str, Any]]:
+    if not isinstance(value, list):
+        return {}
+    indexed: dict[str, dict[str, Any]] = {}
+    for item in value:
+        if not isinstance(item, dict):
+            return {}
+        item_id = item.get(id_field)
+        if not isinstance(item_id, str) or not item_id or item_id in indexed:
+            return {}
+        indexed[item_id] = item
+    return indexed
+
+
+def _phase4_contract_results(index: dict[str, Any]) -> dict[str, bool]:
+    delivery = index.get("phase4_delivery_contract", {})
+    delivery = delivery if isinstance(delivery, dict) else {}
+    schema_diff = delivery.get("schema_diff", {})
+    migration_output = delivery.get("migration_output", {})
+    recovery_log = delivery.get("recovery_test_log", {})
+    confirmation = delivery.get("destructive_migration_confirmation", {})
+    schema_diff = schema_diff if isinstance(schema_diff, dict) else {}
+    migration_output = (
+        migration_output if isinstance(migration_output, dict) else {}
+    )
+    recovery_log = recovery_log if isinstance(recovery_log, dict) else {}
+    confirmation = confirmation if isinstance(confirmation, dict) else {}
+    rollback_steps = _items_by_id(delivery.get("rollback_steps"), "step_id")
+    backup_restore_steps = _items_by_id(
+        delivery.get("backup_restore_steps"), "step_id"
+    )
+    known_limits = _items_by_id(delivery.get("known_limits"), "limit_id")
+    owner_feedback = delivery.get("chinese_owner_feedback")
+
+    rollback_steps_valid = (
+        set(rollback_steps) == set(EXPECTED_PHASE4_ROLLBACK_GUARDS)
+        and all(
+            set(item)
+            == {"step_id", "owner_message_zh", *guards}
+            and all(item.get(field) is expected for field, expected in guards.items())
+            and _has_chinese_text(item.get("owner_message_zh"))
+            for step_id, guards in EXPECTED_PHASE4_ROLLBACK_GUARDS.items()
+            for item in [rollback_steps.get(step_id, {})]
+        )
+    )
+    backup_restore_steps_valid = (
+        set(backup_restore_steps) == set(EXPECTED_PHASE4_BACKUP_RESTORE_GUARDS)
+        and all(
+            set(item)
+            == {"step_id", "owner_message_zh", *guards}
+            and all(item.get(field) is expected for field, expected in guards.items())
+            and _has_chinese_text(item.get("owner_message_zh"))
+            for step_id, guards in EXPECTED_PHASE4_BACKUP_RESTORE_GUARDS.items()
+            for item in [backup_restore_steps.get(step_id, {})]
+        )
+    )
+    known_limits_valid = (
+        set(known_limits) == EXPECTED_PHASE4_KNOWN_LIMIT_IDS
+        and all(
+            set(item) == {"limit_id", "acknowledged", "owner_message_zh"}
+            and item.get("acknowledged") is True
+            and _has_chinese_text(item.get("owner_message_zh"))
+            for item in known_limits.values()
+        )
+    )
+
+    return {
+        "root_keys_exact": set(delivery)
+        == {
+            "schema_version",
+            "schema_diff",
+            "migration_output",
+            "recovery_test_log",
+            "destructive_migration_confirmation",
+            "rollback_steps",
+            "backup_restore_steps",
+            "known_limits",
+            "chinese_owner_feedback",
+        },
+        "identity_valid": (
+            delivery.get("schema_version") == PHASE4_CONTRACT_SCHEMA_VERSION
+        ),
+        "schema_diff_valid": schema_diff
+        == {
+            "mode": "static_tracked_schema_diff_not_executed",
+            "baseline_schema_ref": "../postgresql_control_plane/001_control_plane_schema.sql",
+            "migration_sql_ref": "002_database_quality_constraints.sql",
+            "baseline_schema_sha256": EXPECTED_BASELINE_SCHEMA_SHA256,
+            "migration_sha256": EXPECTED_MIGRATION_SHA256,
+            "added_table_contracts": ["ids_state_value_registry"],
+            "candidate_constraint_count": 9,
+            "existing_foreign_key_count": 3,
+            "live_schema_diff_result": "NOT_EXECUTED",
+        },
+        "migration_output_valid": migration_output
+        == {
+            "mode": "static_tracked_migration_output_not_executed",
+            "migration_id": MIGRATION_ID,
+            "tracked_migration_sha256": EXPECTED_MIGRATION_SHA256,
+            "live_migration_result": "NOT_EXECUTED",
+            "live_constraint_validation_result": "NOT_EXECUTED",
+            "dry_run_required": True,
+            "backup_checkpoint_required": True,
+            "rollback_required": True,
+            "destructive_migration_allowed": False,
+        },
+        "recovery_test_log_valid": recovery_log
+        == {
+            "mode": "static_quality_constraint_recovery_log_expected_block",
+            "expected_valid_result": "PASS_WITH_EXPECTED_BLOCK",
+            "live_recovery_smoke_result": "NOT_EXECUTED",
+            "scenario_count": 14,
+            "execution_ready": False,
+            "execution_state": BLOCKED_PENDING_PROFILE,
+        },
+        "destructive_confirmation_valid": (
+            set(confirmation)
+            == {
+                "required",
+                "destructive_allowed_by_default",
+                "current_migration_destructive",
+                "authorized_this_run",
+                "manual_owner_confirmation_required",
+                "owner_message_zh",
+            }
+            and confirmation.get("required") is True
+            and confirmation.get("destructive_allowed_by_default") is False
+            and confirmation.get("current_migration_destructive") is False
+            and confirmation.get("authorized_this_run") is False
+            and confirmation.get("manual_owner_confirmation_required") is True
+            and _has_chinese_text(confirmation.get("owner_message_zh"))
+            and "单独人工确认" in confirmation.get("owner_message_zh", "")
+        ),
+        "rollback_steps_valid": rollback_steps_valid,
+        "backup_restore_steps_valid": backup_restore_steps_valid,
+        "known_limits_valid": known_limits_valid,
+        "owner_feedback_valid": (
+            isinstance(owner_feedback, str)
+            and "未执行真实 migration" in owner_feedback
+            and "owner 授权真实数据 profile" in owner_feedback
+            and "STAGE-036 review" in owner_feedback
+        ),
+    }
+
+
 def build_stage036_scenario_validation_report(
     index_path: Path = INDEX_PATH,
     migration_path: Path = MIGRATION_PATH,
@@ -1003,7 +1303,11 @@ def build_stage036_scenario_validation_report(
     migration_sql_snapshot: str | None = None,
     baseline_sql_snapshot: str | None = None,
 ) -> dict[str, Any]:
-    index = index_snapshot if index_snapshot is not None else _load_json(index_path)
+    index = (
+        _as_json_object(index_snapshot)
+        if index_snapshot is not None
+        else _load_json(index_path)
+    )
     migration_sql = (
         migration_sql_snapshot
         if migration_sql_snapshot is not None
@@ -1261,10 +1565,336 @@ def build_stage036_scenario_validation_report(
     }
 
 
+def _sha256_text(value: str) -> str:
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+
+def build_stage036_delivery_report(
+    index_path: Path = INDEX_PATH,
+    migration_path: Path = MIGRATION_PATH,
+    baseline_schema_path: Path = CONTROL_SCHEMA_PATH,
+    *,
+    index_snapshot: dict[str, Any] | None = None,
+    migration_sql_snapshot: str | None = None,
+    baseline_sql_snapshot: str | None = None,
+) -> dict[str, Any]:
+    in_memory_snapshot_supplied = any(
+        snapshot is not None
+        for snapshot in (
+            index_snapshot,
+            migration_sql_snapshot,
+            baseline_sql_snapshot,
+        )
+    )
+    try:
+        canonical_paths_bound = (
+            index_path.resolve() == INDEX_PATH.resolve()
+            and migration_path.resolve() == MIGRATION_PATH.resolve()
+            and baseline_schema_path.resolve() == CONTROL_SCHEMA_PATH.resolve()
+        )
+    except (AttributeError, OSError, RuntimeError):
+        canonical_paths_bound = False
+    if in_memory_snapshot_supplied:
+        snapshot_source = "in_memory_validation_snapshot"
+    elif canonical_paths_bound:
+        snapshot_source = "tracked_files"
+    else:
+        snapshot_source = "noncanonical_path_validation_snapshot"
+    tracked_snapshot_bound = not in_memory_snapshot_supplied and canonical_paths_bound
+    index = (
+        _as_json_object(index_snapshot)
+        if index_snapshot is not None
+        else _load_json(index_path)
+    )
+    migration_sql = (
+        migration_sql_snapshot
+        if migration_sql_snapshot is not None
+        else migration_path.read_text(encoding="utf-8")
+    )
+    baseline_sql = (
+        baseline_sql_snapshot
+        if baseline_sql_snapshot is not None
+        else baseline_schema_path.read_text(encoding="utf-8")
+    )
+    scenario_report = build_stage036_scenario_validation_report(
+        index_path,
+        migration_path,
+        baseline_schema_path,
+        index_snapshot=index,
+        migration_sql_snapshot=migration_sql,
+        baseline_sql_snapshot=baseline_sql,
+    )
+    phase2_report = scenario_report["phase2_report"]
+    phase4_contract = index.get("phase4_delivery_contract", {})
+    phase4_contract = (
+        phase4_contract if isinstance(phase4_contract, dict) else {}
+    )
+    schema_diff_contract = phase4_contract.get("schema_diff", {})
+    migration_output_contract = phase4_contract.get("migration_output", {})
+    recovery_log_contract = phase4_contract.get("recovery_test_log", {})
+    schema_diff_contract = (
+        schema_diff_contract if isinstance(schema_diff_contract, dict) else {}
+    )
+    migration_output_contract = (
+        migration_output_contract
+        if isinstance(migration_output_contract, dict)
+        else {}
+    )
+    recovery_log_contract = (
+        recovery_log_contract if isinstance(recovery_log_contract, dict) else {}
+    )
+    migration_contract = index.get("migration_contract", {})
+    migration_contract = (
+        migration_contract if isinstance(migration_contract, dict) else {}
+    )
+    runtime_results = phase2_report["runtime_policy_results"]
+    inventory_results = phase2_report["constraint_inventory_results"]
+    migration_results = phase2_report["migration_contract_results"]
+    guardrail_results = phase2_report["guardrail_results"]
+    phase4_contract_results = _phase4_contract_results(index)
+    scenario_results = scenario_report["scenario_results"]
+    migration_sha256 = _sha256_text(migration_sql)
+    baseline_schema_sha256 = _sha256_text(baseline_sql)
+    canonical_index_sha256 = _sha256_text(
+        json.dumps(index, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    )
+
+    delivery_check_results = {
+        "phase2_contract_valid": phase2_report["contract_valid"],
+        "phase3_scenarios_valid": scenario_report["scenario_validation_valid"],
+        "fourteen_scenarios_pass": (
+            len(scenario_results) == 14
+            and set(scenario_results) == EXPECTED_PHASE3_SCENARIOS
+            and all(item["status"] == "PASS" for item in scenario_results.values())
+        ),
+        "expected_profile_block_preserved": (
+            scenario_report["execution_ready"] is False
+            and scenario_report["execution_state"] == BLOCKED_PENDING_PROFILE
+            and scenario_results.get("recovery_smoke", {}).get("expected_block")
+            is True
+            and scenario_report["live_execution_performed"] is False
+        ),
+        "phase4_machine_contract_valid": all(phase4_contract_results.values()),
+        "tracked_snapshot_bound": tracked_snapshot_bound,
+        "snapshot_hashes_match_contract": (
+            migration_sha256 == EXPECTED_MIGRATION_SHA256
+            and baseline_schema_sha256 == EXPECTED_BASELINE_SCHEMA_SHA256
+            and schema_diff_contract.get("migration_sha256")
+            == EXPECTED_MIGRATION_SHA256
+            and schema_diff_contract.get("baseline_schema_sha256")
+            == EXPECTED_BASELINE_SCHEMA_SHA256
+            and migration_output_contract.get("tracked_migration_sha256")
+            == EXPECTED_MIGRATION_SHA256
+        ),
+        "tracked_schema_sources_valid": (
+            all(phase2_report["source_integrity_results"].values())
+            and all(phase2_report["baseline_schema_results"].values())
+        ),
+        "tracked_migration_contract_valid": all(migration_results.values()),
+        "candidate_inventory_valid": all(inventory_results.values()),
+        "state_registry_still_deferred": inventory_results.get(
+            "state_registry_is_unpopulated_and_stage037_owned", False
+        ),
+        "raw_metadata_boundary_preserved": (
+            guardrail_results.get("raw_metadata_boundary_path_only", False)
+            and guardrail_results.get("storage_boundary_preserved", False)
+        ),
+        "source_non_interference_preserved": guardrail_results.get(
+            "recovery_source_non_interference_preserved", False
+        ),
+        "all_runtime_actions_disabled": runtime_results.get(
+            "all_runtime_actions_disabled", False
+        ),
+        "destructive_migration_blocked": (
+            migration_contract.get("destructive_migration_allowed") is False
+            and migration_contract.get("data_repair_allowed") is False
+            and migration_results.get("destructive_ddl_exact", False)
+        ),
+        "github_and_app_delivery_blocked": (
+            index.get("github_upload_allowed") is False
+            and index.get("app_reinstall_allowed") is False
+        ),
+    }
+    delivery_contract_valid = all(delivery_check_results.values())
+    execution_state = (
+        BLOCKED_PENDING_PROFILE
+        if delivery_contract_valid
+        else BLOCKED_INVALID_CONTRACT
+    )
+    result = "PASS_WITH_EXPECTED_BLOCK" if delivery_contract_valid else "FAIL_CLOSED"
+
+    return {
+        "schema_version": PHASE4_SCHEMA_VERSION,
+        "phase3_schema_version": PHASE3_SCHEMA_VERSION,
+        "phase2_schema_version": SCHEMA_VERSION,
+        "index_schema_version": INDEX_SCHEMA_VERSION,
+        "stage": STAGE,
+        "phase": "Phase 4",
+        "task_id": PHASE4_TASK_ID,
+        "acceptance_id": ACCEPTANCE_ID,
+        "delivery_contract_valid": delivery_contract_valid,
+        "delivery_check_results": delivery_check_results,
+        "phase4_contract_results": phase4_contract_results,
+        "result": result,
+        "execution_mode": PHASE4_EXECUTION_MODE,
+        "execution_ready": False,
+        "execution_state": execution_state,
+        "stage_review_status": "pending_next_run",
+        "next_gate": "IDS-STAGE036-REVIEW-GATE",
+        "github_upload_allowed": False,
+        "app_reinstall_allowed": False,
+        "snapshot_binding": {
+            "source": snapshot_source,
+            "tracked_snapshot_bound": tracked_snapshot_bound,
+            "single_snapshot_reused": True,
+            "index_ref": index_path.as_posix(),
+            "migration_ref": migration_path.as_posix(),
+            "baseline_schema_ref": baseline_schema_path.as_posix(),
+            "index_canonical_sha256": canonical_index_sha256,
+            "migration_sha256": migration_sha256,
+            "baseline_schema_sha256": baseline_schema_sha256,
+        },
+        "schema_diff": {
+            "mode": schema_diff_contract.get("mode"),
+            "baseline_schema_ref": schema_diff_contract.get(
+                "baseline_schema_ref"
+            ),
+            "migration_sql_ref": schema_diff_contract.get("migration_sql_ref"),
+            "baseline_schema_sha256": baseline_schema_sha256,
+            "migration_sha256": migration_sha256,
+            "added_table_contracts": schema_diff_contract.get(
+                "added_table_contracts", []
+            ),
+            "candidate_constraint_ids": sorted(EXPECTED_CANDIDATE_CONSTRAINTS),
+            "candidate_constraint_count": schema_diff_contract.get(
+                "candidate_constraint_count"
+            ),
+            "existing_foreign_key_count": schema_diff_contract.get(
+                "existing_foreign_key_count"
+            ),
+            "live_schema_diff_result": schema_diff_contract.get(
+                "live_schema_diff_result"
+            ),
+            "live_output_ref": "NOT_AVAILABLE_BY_POLICY_NO_POSTGRESQL_CONNECTION",
+        },
+        "migration_output": {
+            "mode": migration_output_contract.get("mode"),
+            "migration_id": migration_output_contract.get("migration_id"),
+            "tracked_migration_sha256": migration_sha256,
+            "up_down_markers_valid": migration_results.get(
+                "ordered_up_down_markers", False
+            ),
+            "candidate_guards_exact": migration_results.get(
+                "candidate_existence_guards_exact", False
+            ),
+            "rollback_covers_candidates": migration_results.get(
+                "rollback_covers_candidates", False
+            ),
+            "dry_run_required": migration_output_contract.get(
+                "dry_run_required"
+            ),
+            "backup_checkpoint_required": migration_output_contract.get(
+                "backup_checkpoint_required"
+            ),
+            "rollback_required": migration_output_contract.get(
+                "rollback_required"
+            ),
+            "destructive_migration_allowed": migration_output_contract.get(
+                "destructive_migration_allowed"
+            ),
+            "live_migration_result": migration_output_contract.get(
+                "live_migration_result"
+            ),
+            "live_constraint_validation_result": migration_output_contract.get(
+                "live_constraint_validation_result"
+            ),
+            "live_output_ref": "NOT_AVAILABLE_BY_POLICY_NO_MIGRATION_EXECUTION",
+        },
+        "recovery_test_log": {
+            "mode": recovery_log_contract.get("mode"),
+            "result": result,
+            "execution_ready": False,
+            "execution_state": execution_state,
+            "scenario_count": len(scenario_results),
+            "scenario_results": scenario_results,
+            "delivery_check_results": delivery_check_results,
+            "live_recovery_smoke_result": recovery_log_contract.get(
+                "live_recovery_smoke_result"
+            ),
+            "live_execution_performed": False,
+            "live_log_ref": "NOT_AVAILABLE_BY_POLICY_NO_OWNER_AUTHORIZED_REAL_DATA_PROFILE",
+            "owner_message_zh": (
+                "静态质量约束合同与十四项场景已验证；没有 owner 授权真实数据 profile，"
+                "因此 schema diff、migration、constraint validation、rollback、backup、"
+                "restore 和 recovery smoke 均未执行。"
+                if delivery_contract_valid
+                else "数据库质量约束交付合同无效；已失败关闭，禁止任何 live 数据库动作。"
+            ),
+        },
+        "destructive_migration_confirmation": phase4_contract.get(
+            "destructive_migration_confirmation", {}
+        ),
+        "rollback_steps": phase4_contract.get("rollback_steps", []),
+        "backup_restore_steps": phase4_contract.get("backup_restore_steps", []),
+        "known_limits": phase4_contract.get("known_limits", []),
+        "chinese_owner_feedback": (
+            phase4_contract.get("chinese_owner_feedback")
+            if delivery_contract_valid
+            else "数据库质量约束 Phase 4 交付合同无效；已失败关闭，禁止执行 schema diff、migration、constraint validation、rollback、backup、restore 或 recovery smoke。"
+        ),
+        "live_execution_performed": False,
+        "postgresql_connection_performed": False,
+        "migration_dry_run_performed": False,
+        "migration_apply_performed": False,
+        "constraint_validation_performed": False,
+        "rollback_performed": False,
+        "backup_performed": False,
+        "restore_performed": False,
+        "recovery_smoke_performed": False,
+        "real_data_profile_executed": False,
+        "state_values_seeded": False,
+        "runtime_output_written": False,
+        "raw_metadata_boundary": phase2_report["raw_metadata_boundary"],
+        "scenario_report": scenario_report,
+        "phase2_report": phase2_report,
+    }
+
+
 def main() -> int:
-    report = build_stage036_scenario_validation_report()
+    report = build_stage036_delivery_report()
     print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
-    return 0 if report["scenario_validation_valid"] else 1
+    checks = [
+        report["delivery_contract_valid"],
+        all(report["delivery_check_results"].values()),
+        all(report["phase4_contract_results"].values()),
+        report["result"] == "PASS_WITH_EXPECTED_BLOCK",
+        report["execution_ready"] is False,
+        report["execution_state"] == BLOCKED_PENDING_PROFILE,
+        report["stage_review_status"] == "pending_next_run",
+        report["next_gate"] == "IDS-STAGE036-REVIEW-GATE",
+        report["github_upload_allowed"] is False,
+        report["app_reinstall_allowed"] is False,
+        report["live_execution_performed"] is False,
+        report["postgresql_connection_performed"] is False,
+        report["migration_apply_performed"] is False,
+        report["constraint_validation_performed"] is False,
+        report["rollback_performed"] is False,
+        report["backup_performed"] is False,
+        report["restore_performed"] is False,
+        report["recovery_smoke_performed"] is False,
+        report["real_data_profile_executed"] is False,
+        report["state_values_seeded"] is False,
+        report["runtime_output_written"] is False,
+        report["schema_diff"]["live_schema_diff_result"] == "NOT_EXECUTED",
+        report["migration_output"]["live_migration_result"] == "NOT_EXECUTED",
+        report["migration_output"]["live_constraint_validation_result"]
+        == "NOT_EXECUTED",
+        report["recovery_test_log"]["live_recovery_smoke_result"]
+        == "NOT_EXECUTED",
+        report["scenario_report"]["scenario_validation_valid"],
+        report["phase2_report"]["contract_valid"],
+    ]
+    return 0 if all(checks) else 1
 
 
 if __name__ == "__main__":
