@@ -201,6 +201,7 @@ async function assertLayout(page) {
 
 async function assertInventory(page) {
   const inventory = await page.locator("[data-r6-visual-id]").evaluateAll((cards) => cards.map((card) => ({
+    contentSignature: card.getAttribute("data-r6-card-content-signature") || "",
     dataEventCount: Number(card.getAttribute("data-r6-card-event-count") || 0),
     dataSignature: card.getAttribute("data-r6-card-data-signature") || "",
     id: card.getAttribute("data-r6-visual-id"),
@@ -211,7 +212,7 @@ async function assertInventory(page) {
   })));
   assertCondition(JSON.stringify(inventory.map((item) => item.id)) === JSON.stringify(visualIds), "R6 P0 visual inventory is not the exact approved twelve", { inventory });
   assertCondition(inventory.every((item) => item.title && item.question && item.action && item.datumCount >= 1), "R6 visual copy or keyboard datum is incomplete", { inventory });
-  assertCondition(inventory.every((item) => item.dataSignature && item.dataEventCount >= 1), "R6 visual data signature or event backing is incomplete", { inventory });
+  assertCondition(inventory.every((item) => item.contentSignature && item.dataSignature && item.dataEventCount >= 1), "R6 visual data signature or event backing is incomplete", { inventory });
   return inventory;
 }
 
@@ -262,6 +263,9 @@ async function assertFourAxisFilters(page) {
   const baseline = await signature.getAttribute("data-r6-signature");
   assertCondition(Boolean(baseline), "R6 baseline filter signature is missing");
   const baselineCards = await captureCardModels(page);
+  const eventBackedVisualIds = visualIds.filter((id) => id !== "formula_explorer");
+  const contentChangedAcrossAxes = new Set();
+  const zeroAcrossAxes = new Set();
   const results = {};
   for (const axis of ["source", "time", "project", "task"]) {
     await reset.click();
@@ -294,6 +298,21 @@ async function assertFourAxisFilters(page) {
       choice,
       unchanged,
     });
+    const contentChangedVisualIds = eventBackedVisualIds.filter((id) => {
+      const before = baselineCards[id];
+      const after = cardModels[id];
+      return after?.contentSignature !== before?.contentSignature
+        || after?.count !== before?.count
+        || JSON.stringify(after?.datumIds) !== JSON.stringify(before?.datumIds);
+    });
+    const zeroVisualIds = eventBackedVisualIds.filter((id) => cardModels[id]?.zero);
+    for (const id of contentChangedVisualIds) contentChangedAcrossAxes.add(id);
+    for (const id of zeroVisualIds) zeroAcrossAxes.add(id);
+    assertCondition(
+      new Set([...contentChangedVisualIds, ...zeroVisualIds]).size >= eventBackedVisualIds.length - 1,
+      `R6 ${axis} filter changed too few event-backed visual contents`,
+      { axis, choice, contentChangedVisualIds, zeroVisualIds },
+    );
     const baselineOpportunity = baselineCards.opportunity_radar;
     const filteredOpportunity = cardModels.opportunity_radar;
     assertCondition(
@@ -308,10 +327,17 @@ async function assertFourAxisFilters(page) {
       count: await page.locator("[data-r6-visual-event-count]").getAttribute("data-r6-count"),
       signature: await signature.getAttribute("data-r6-signature"),
       changedVisualCount: visualIds.length - unchanged.length,
-      contentChangedVisualCount: visualIds.filter((id) => cardModels[id]?.contentSignature !== baselineCards[id]?.contentSignature).length,
-      zeroVisualIds: visualIds.filter((id) => cardModels[id]?.zero),
+      contentChangedVisualCount: contentChangedVisualIds.length,
+      contentChangedVisualIds,
+      zeroVisualIds,
     };
   }
+  const neverChangedEventVisuals = eventBackedVisualIds.filter((id) => !contentChangedAcrossAxes.has(id) && !zeroAcrossAxes.has(id));
+  assertCondition(neverChangedEventVisuals.length === 0, "One or more event-backed P0 visuals ignored the complete four-axis filter matrix", {
+    contentChangedAcrossAxes: Array.from(contentChangedAcrossAxes),
+    neverChangedEventVisuals,
+    zeroAcrossAxes: Array.from(zeroAcrossAxes),
+  });
   await reset.click();
   try {
     await page.waitForFunction((expected) => document.querySelector("[data-r6-visual-filter-signature]")?.getAttribute("data-r6-signature") === expected, baseline, { timeout: 5000 });
