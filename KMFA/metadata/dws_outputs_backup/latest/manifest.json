@@ -4,29 +4,29 @@
   "source_package": "/Users/linzezhang/onedrive/DWS_Outputs.zip",
   "raw_zip_committed": false,
   "raw_zip_commit_policy": "blocked_by_github_file_size_and_private_raw_data_boundary",
-  "source_package_size_bytes": 551181870,
-  "source_package_sha256": "eeaa8e84419eb4414694d8926a2e7102033dc0e7bb9cc0a7e682119ee9eebd5a",
-  "source_package_file_count": 996,
+  "source_package_size_bytes": 550849862,
+  "source_package_sha256": "30cf47e99d20c223ac301b10fae2ef40a03e4b873cbbf07e095d55b7b7071c42",
+  "source_package_file_count": 990,
   "dws_run": {
-    "run_id": "20260709T215022",
+    "run_id": "20260710T110126",
     "automation_name": "每日钉钉DWS归档",
     "run_source": "codex_automation",
-    "run_started": "2026-07-09T21:50:22+10:00",
-    "run_ended": "2026-07-09T21:51:42+10:00",
+    "run_started": "2026-07-10T11:01:26+10:00",
+    "run_ended": "2026-07-10T11:01:55+10:00",
     "success": true,
     "group_count": 9,
     "downloads_temp_output_removed": true,
     "missing_total": 100,
     "exhausted_total": 0,
-    "mirror_archive_size_bytes": 551181870,
-    "data_archive_size_before": 683995378,
-    "data_archive_size_after": 689010290,
+    "mirror_archive_size_bytes": 550849862,
+    "data_archive_size_before": 689010290,
+    "data_archive_size_after": 688651453,
     "cold_archive_root": "/Users/linzezhang/onedrive/DWS_Archive"
   },
   "validation": {
     "validate_dws_output_structure": "pass",
-    "mirror_file_count": 996,
+    "mirror_file_count": 990,
     "cold_storage_status": "ok"
   },
-  "updated_at": "2026-07-09T22:09:53+10:00"
+  "updated_at": "2026-07-10T11:03:01+10:00"
 }
