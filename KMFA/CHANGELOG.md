@@ -1,3 +1,11 @@
+## 0.1.4-cash-source-private-disambiguation-and-remaining-value-materialization - 2026-07-10
+
+- 完成 `V014_CASH_SOURCE_PRIVATE_DISAMBIGUATION_AND_REMAINING_VALUE_MATERIALIZATION` 本地单 phase。
+- 以复合项目身份、精确凭证、银行收付方向和整数分公式交叉核验 4 个项目；1 个项目形成可访问账套内唯一现金闭环，3 个项目继续未决，未把空白或未命中强填为零。
+- 新增物化 3 个私有现金目标槽位，累计已物化 31 个、剩余 9 个；12 条比较中 9 条完成，其中 2 条零差异、7 条非零差异，3 条现金比较未完成。
+- 两个外部 WPS/OLE 来源被验证为当前读取链路不可用，未虚假声称已读取内容；完整业务一致性仍未成立，决策维持 `NO_GO`。
+- 5 个原始文件前后逐文件快照完全一致；私有项目身份、文件名、金额、交易和全中文差异报告仅保留在 ignored runtime，未做 Stage review、GitHub upload、app reinstall 或 business execution。
+
 ## 0.1.4-real-project-identity-private-rebinding-and-processed-value-materialization - 2026-07-10
 
 - 完成 `V014_REAL_PROJECT_IDENTITY_PRIVATE_REBINDING_AND_PROCESSED_VALUE_MATERIALIZATION` 本地单 phase。

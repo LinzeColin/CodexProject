@@ -1,3 +1,18 @@
+## 2026-07-10 - V014 cash source private disambiguation and remaining value materialization
+
+- phase: `V014_CASH_SOURCE_PRIVATE_DISAMBIGUATION_AND_REMAINING_VALUE_MATERIALIZATION`
+- task: `KMFA-V014-CASH-SOURCE-PRIVATE-DISAMBIGUATION-AND-REMAINING-VALUE-MATERIALIZATION-20260710`
+- result: `completed_validated_local_only_one_cash_project_materialized_remaining_cash_unresolved_no_go` / `NO_GO`
+- disambiguation: 4 个私有项目候选中 1 个通过复合项目身份、应收交易、银行收款和现金成本凭证平衡形成可访问账套内唯一闭环；3 个继续未决，禁止用缺失或未命中推导零值。
+- materialization: 本轮新增 3 个私有现金目标槽位，累计 31 个已物化、9 个未决；12 条比较中 9 条完成，其中 2 条零差异、7 条非零差异，3 条现金比较未完成。
+- external crosscheck: 2 个 WPS/OLE 来源当前不可由验证链路读取，内容未被声明为已读取；business value consistency 继续为 false。
+- raw proof: 5 个原始文件前后逐文件路径、大小、mtime、inode、mode、SHA256 完全一致。
+- evidence: `KMFA/stage_artifacts/V014_CASH_SOURCE_PRIVATE_DISAMBIGUATION_AND_REMAINING_VALUE_MATERIALIZATION/machine/cash_source_private_disambiguation_and_remaining_value_materialization_manifest.json`
+- validation: focused unit test and private-materialization validator passed；治理 validator 与 raw/secret scan 在 commit 前复跑。
+- boundary: private identities, raw filenames, values, transactions and Chinese difference report remain ignored；no Stage review, GitHub upload, app reinstall or business execution。
+product_version: 0.1.4-cash-source-private-disambiguation-and-remaining-value-materialization
+version_matrix_product_version_reference: 0.1.4-cash-source-private-disambiguation-and-remaining-value-materialization
+
 ## 2026-07-10 - V014 real project identity private rebinding and processed value materialization
 
 - phase: `V014_REAL_PROJECT_IDENTITY_PRIVATE_REBINDING_AND_PROCESSED_VALUE_MATERIALIZATION`

@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260710-V014-REAL-PROJECT-IDENTITY-PRIVATE-REBINDING-AND-PROCESSED-VALUE-MATERIALIZATION"
+as_of_event_id: "DEV-KMFA-20260710-V014-CASH-SOURCE-PRIVATE-DISAMBIGUATION-AND-REMAINING-VALUE-MATERIALIZATION"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "29d5fc5c647a7709b4dde1a33c39426e257a99f9"
 source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S01P1_COMMIT"
-snapshot_event_time: "2026-07-10T13:30:29+10:00"
-generator_version: "manual-0.1.4-real-project-identity-private-rebinding-and-processed-value-materialization"
+snapshot_event_time: "2026-07-10T14:18:38+10:00"
+generator_version: "manual-0.1.4-cash-source-private-disambiguation-and-remaining-value-materialization"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1295
-    total_active_formulas: 272
+    total_active_parameters: 1298
+    total_active_formulas: 273
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -37,6 +37,9 @@ dimensions:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     evidence_refs:
+      - "KMFA/stage_artifacts/V014_CASH_SOURCE_PRIVATE_DISAMBIGUATION_AND_REMAINING_VALUE_MATERIALIZATION/human/test_results.md"
+      - "KMFA/tools/check_v014_cash_source_private_disambiguation_and_remaining_value_materialization.py"
+      - "KMFA/stage_artifacts/V014_CASH_SOURCE_PRIVATE_DISAMBIGUATION_AND_REMAINING_VALUE_MATERIALIZATION/machine/cash_source_private_disambiguation_and_remaining_value_materialization_manifest.json"
       - "KMFA/stage_artifacts/V014_REAL_PROJECT_IDENTITY_PRIVATE_REBINDING_AND_PROCESSED_VALUE_MATERIALIZATION/human/test_results.md"
       - "KMFA/tools/check_v014_real_project_identity_private_rebinding_and_processed_value_materialization.py"
       - "KMFA/stage_artifacts/V014_REAL_PROJECT_IDENTITY_PRIVATE_REBINDING_AND_PROCESSED_VALUE_MATERIALIZATION/machine/real_project_identity_private_rebinding_and_processed_value_materialization_manifest.json"
