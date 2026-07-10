@@ -2,6 +2,35 @@
 
 更新时间: 2026-07-10
 
+## 2026-07-10 纯 RRULE 调度修复
+
+用户明确要求所有 automation 的 scheduler 不设置时区。当前 5 张卡片已
+通过官方 `automation_update` 改成单行纯 RRULE；禁止 `DTSTART`、`TZID`、
+显式 scheduler timezone 和多 RRULE。
+
+新的统一 schedule contract 与 live checker：
+
+```text
+KMFA/metadata/automation/codex_app_schedules.contract.toml
+KMFA/tools/automation/check_kmfa_automation_schedules.py
+KMFA/tests/test_automation_schedule_contract.py
+```
+
+验收命令：
+
+```bash
+python3 KMFA/tools/automation/check_kmfa_automation_schedules.py
+python3 -m unittest KMFA.tests.test_automation_schedule_contract -q
+```
+
+当前 readback：`CODEX_AUTOMATIONS_READY`，5 个 automation 均为 0 mismatch。
+S19 attendance healthcheck 当前为 `READY`。仍未完成的唯一 S19 调度验收是
+等待 22:05 AEST 的 `kmfa-3` 自然触发，确认只有一个新 automation thread、
+cwd 为 `/Users/linzezhang/CodexProject`，并进入真实 S19 runner。
+
+当前 Sydney 是 AEST (UTC+10)，因此北京 10:35/20:05 对应 scheduler 本地
+12:35/22:05。进入 AEDT 后必须重新换算本地小时；不要重新加入 timezone。
+
 ## 当前目标
 
 接手 KMFA 相关 Codex Desktop Scheduled automations 的稳定性维护。用户的真实问题不是卡片消失，而是 automation 长期存在但不能稳定自动运行、运行内容错误、反复回到旧工作区或旧 prompt。

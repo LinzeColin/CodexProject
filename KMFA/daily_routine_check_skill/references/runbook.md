@@ -127,7 +127,9 @@ Do not send live notifications unless the user confirms that notification target
 
 ## 6. Codex Desktop Automation Schedule
 
-Use Beijing time / `Asia/Shanghai`.
+Business date evaluation uses Beijing time / `Asia/Shanghai`. The Codex
+Desktop scheduler itself uses the host local wall clock with no explicit
+timezone field.
 
 Create exactly one local Codex Desktop automation:
 
@@ -135,14 +137,23 @@ Create exactly one local Codex Desktop automation:
 Dingtalk-routine-check / 钉钉工作检查
 ```
 
-The automation has two daily trigger windows only:
+The automation has two daily business trigger windows only:
 
 ```text
 11:35 Asia/Shanghai -> --trigger-window morning_1135
 17:05 Asia/Shanghai -> --trigger-window evening_1705
 ```
 
-Save them as two independent Beijing-time scheduler rules. Do not use a combined `BYHOUR=...;BYMINUTE=...` RRULE, because that creates extra Cartesian-product runs.
+At the current Australia/Sydney AEST offset (UTC+10), save one pure local
+scheduler rule:
+
+```text
+RRULE:FREQ=DAILY;BYHOUR=13,19;BYMINUTE=5,35;BYSETPOS=2,3
+```
+
+`BYSETPOS=2,3` selects 13:35 and 19:05 from the four hour/minute candidates.
+Do not add `DTSTART`, `TZID`, an explicit scheduler timezone field, or multiple
+RRULE lines. Recalculate the local hours when the host UTC offset changes.
 
 Do not create one automation per rule. `due_time` remains in YAML as business reference, but rule evaluation is controlled by the trigger window.
 

@@ -13,10 +13,18 @@ files are the portable source for another agent or computer.
 
 ## Local Automations
 
-| Local id | Name | Beijing schedule | Execution | Prompt mirror |
-| --- | --- | --- | --- | --- |
-| `kmfa` | `KMFA｜每日钉钉考勤检查｜晨报` | Daily 10:35 | local, `gpt-5.3-codex-spark`, `xhigh` | `automation/morning_prompt.md` |
-| `kmfa-3` | `KMFA｜每日钉钉考勤检查｜晚报` | Daily 20:05 | local, `gpt-5.3-codex-spark`, `xhigh` | `automation/evening_prompt.md` |
+Codex Desktop scheduler rules use the host's local wall clock and must be a
+single pure `RRULE:` string. Do not add `DTSTART`, `TZID`, an explicit
+scheduler timezone field, or multiple RRULE lines. Business dates and report
+cutoffs remain Beijing time.
+
+Current host clock snapshot: Australia/Sydney AEST (UTC+10). Recalculate the
+local wall-clock hours whenever the host UTC offset changes.
+
+| Local id | Name | Beijing business time | Current AEST scheduler rule | Execution | Prompt mirror |
+| --- | --- | --- | --- | --- | --- |
+| `kmfa` | `KMFA｜每日钉钉考勤检查｜晨报` | Daily 10:35 | `RRULE:FREQ=DAILY;BYHOUR=12;BYMINUTE=35` | local, `gpt-5.3-codex-spark`, `xhigh` | `automation/morning_prompt.md` |
+| `kmfa-3` | `KMFA｜每日钉钉考勤检查｜晚报` | Daily 20:05 | `RRULE:FREQ=DAILY;BYHOUR=22;BYMINUTE=5` | local, `gpt-5.3-codex-spark`, `xhigh` | `automation/evening_prompt.md` |
 
 Current local Codex cwd list for both automations:
 

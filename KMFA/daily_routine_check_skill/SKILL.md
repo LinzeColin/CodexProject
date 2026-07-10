@@ -57,7 +57,7 @@ Chinese name:
 钉钉工作检查
 ```
 
-Timezone:
+Business clock:
 
 ```text
 Asia/Shanghai
@@ -67,9 +67,16 @@ Automation schedule:
 
 ```text
 one automation only: Dingtalk-routine-check / 钉钉工作检查
-daily 11:35 Asia/Shanghai -> trigger_window=morning_1135
-daily 17:05 Asia/Shanghai -> trigger_window=evening_1705
+business 11:35 Asia/Shanghai -> trigger_window=morning_1135
+business 17:05 Asia/Shanghai -> trigger_window=evening_1705
+current AEST local scheduler: 13:35 and 19:05
+RRULE:FREQ=DAILY;BYHOUR=13,19;BYMINUTE=5,35;BYSETPOS=2,3
 ```
+
+The Codex scheduler rule is local-wall-clock only. Do not add `DTSTART`,
+`TZID`, an explicit scheduler timezone, or multiple RRULE lines. Recalculate
+the local wall-clock hours when the host UTC offset changes; business date
+evaluation remains `Asia/Shanghai`.
 
 Do not create one automation per rule. `due_time` may remain in YAML as a business reference, but actual evaluation is controlled by the two trigger windows.
 
