@@ -101,7 +101,7 @@ export function buildVisualFilterSignature(
   const ids = filterVisualFacetEvents(events, filters)
     .map((event) => event.event_id)
     .sort((left, right) => left.localeCompare(right, "zh-CN"));
-  return [filters.source, filters.time, filters.project, filters.task, String(ids.length), ...ids].join("|");
+  return [filters.source, filters.time, filters.project, filters.task, String(ids.length), stableHash(ids.join("|"))].join("|");
 }
 
 export function computeFormulaWhatIfScore(
@@ -170,4 +170,13 @@ function finiteNumber(value: number | undefined, fallback: number): number {
 function clamp(value: number, minimum: number, maximum: number): number {
   if (maximum < minimum) return minimum;
   return Math.min(maximum, Math.max(minimum, value));
+}
+
+function stableHash(value: string): string {
+  let hash = 0x811c9dc5;
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 0x01000193) >>> 0;
+  }
+  return hash.toString(16).padStart(8, "0");
 }
