@@ -352,6 +352,10 @@ def build_formula_what_if_summary(database_dir: Path) -> dict[str, Any]:
         "adjustable_weight_bounds": {},
         "baseline_signals": {},
         "rework_score": 0,
+        "score_floor": 0,
+        "score_ceiling": 100,
+        "neutral_rework_score": 50,
+        "rework_penalty_scale": 0.35,
         "formula_source": "",
         "scenarios": [],
         "safety": {
@@ -390,6 +394,10 @@ def build_formula_what_if_summary(database_dir: Path) -> dict[str, Any]:
         if isinstance(value, dict) and (score := finite_number(value.get("score"))) is not None
     } if isinstance(signals, dict) else {}
     rework_score = finite_number(baseline.get("score_components", {}).get("rework_score")) if isinstance(baseline.get("score_components"), dict) else None
+    score_floor = finite_number(parameters.get("score_floor"))
+    score_ceiling = finite_number(parameters.get("score_ceiling"))
+    neutral_rework_score = finite_number(parameters.get("neutral_rework_score"))
+    rework_penalty_scale = finite_number(parameters.get("rework_penalty_scale"))
     formula_source = public_relative_path(baseline.get("formula_source") or payload.get("config_path"))
     sanitized_scenarios = []
     for item in scenarios:
@@ -424,6 +432,10 @@ def build_formula_what_if_summary(database_dir: Path) -> dict[str, Any]:
         "adjustable_weight_bounds": bounds,
         "baseline_signals": dict(sorted(baseline_signals.items())),
         "rework_score": rework_score if rework_score is not None else 0,
+        "score_floor": score_floor if score_floor is not None else 0,
+        "score_ceiling": score_ceiling if score_ceiling is not None else 100,
+        "neutral_rework_score": neutral_rework_score if neutral_rework_score is not None else 50,
+        "rework_penalty_scale": rework_penalty_scale if rework_penalty_scale is not None else 0.35,
         "formula_source": formula_source,
         "scenarios": sanitized_scenarios,
     }
