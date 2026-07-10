@@ -70,6 +70,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     memory_river_params_source = read_text(repo_root / "config/visualization/model_parameters.memory_river.yaml")
     data_builder_source = read_text(repo_root / "scripts/build_memory_atlas_data.py")
     installer_source = read_text(repo_root / "scripts/install_memory_atlas_app.py")
+    runtime_server_source = read_text(repo_root / "scripts/memory_atlas_runtime_server.py")
     stage7_visual_source = read_text(repo_root / "apps/memory-atlas/scripts/validate_stage7_visual_acceptance.cjs")
     stage7_performance_source = read_text(repo_root / "apps/memory-atlas/scripts/validate_stage7_performance_acceptance.cjs")
     stage7_privacy_accessibility_source = read_text(repo_root / "apps/memory-atlas/scripts/validate_stage7_privacy_accessibility.cjs")
@@ -808,12 +809,12 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and 'window.addEventListener("pagehide", handlePageRelease)' in app_source
         and 'window.addEventListener("beforeunload", handlePageRelease)' in app_source
         and 'release("react_unmount")' in app_source
-        and "request_shutdown" in installer_source
-        and "release_requested" in installer_source
-        and "active_thread_count" in installer_source
-        and "allow_reuse_address = True" in installer_source
+        and "request_shutdown" in runtime_server_source
+        and "release_requested" in runtime_server_source
+        and "active_thread_count" in runtime_server_source
+        and "allow_reuse_address = True" in runtime_server_source
         and '"-m http.server"' in installer_source
-        and "last_seen_at = time.time() - max" not in installer_source
+        and "last_seen_at = time.time() - max" not in runtime_server_source
         and "关闭 tab" in readme
         and "清理临时浏览器缓存" in readme,
         "runtime_tab_close_cache_cleanup_contract",
