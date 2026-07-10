@@ -10,6 +10,7 @@ import shutil
 import subprocess
 import tempfile
 import unittest
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -119,12 +120,134 @@ class TestV023Stage6CoreMetrics(unittest.TestCase):
         self.assertEqual(read_input["status"], "ready")
         self.assertEqual(read_input["data_root"], str(REPO_ROOT / "MetaDatabase" / "PFI"))
         self.assertEqual(read_input["source_type"], "metadatabase_pfi")
-        self.assertTrue(Path(read_input["transactions_path"]).exists())
-        self.assertTrue(Path(read_input["manifest_path"]).exists())
+        expected_storage_mode = "filesystem" if (REPO_ROOT / "MetaDatabase" / "PFI").exists() else "git_tree"
+        self.assertEqual(read_input["storage_mode"], expected_storage_mode)
+        if expected_storage_mode == "filesystem":
+            self.assertTrue(Path(read_input["transactions_path"]).exists())
+            self.assertTrue(Path(read_input["manifest_path"]).exists())
+        else:
+            self.assertRegex(read_input["git_ref"], r"^[0-9a-f]{40,64}$")
+            self.assertEqual(
+                read_input["git_transactions_path"],
+                "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv",
+            )
+            self.assertEqual(
+                read_input["git_manifest_path"],
+                "MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json",
+            )
         self.assertEqual(read_input["raw_file_count"], 4)
         self.assertEqual(read_input["transaction_count"], 8815)
         self.assertEqual(read_input["date_range"], {"start": "2022-06-06", "end": "2026-06-03"})
         self.assertRegex(read_input["evidence_hash"], r"^sha256:[0-9a-f]{64}$")
+
+    def test_git_blob_reads_disable_partial_clone_lazy_fetch(self) -> None:
+        module = load_read_model_module()
+        completed = subprocess.CompletedProcess(args=[], returncode=1, stdout=b"", stderr=b"")
+
+        with mock.patch.object(module.subprocess, "run", return_value=completed) as run:
+            self.assertIsNone(module._git_blob(REPO_ROOT, "MetaDatabase/PFI/missing.csv", ref="0" * 40))
+
+        self.assertEqual(run.call_args.kwargs["env"]["GIT_NO_LAZY_FETCH"], "1")
+
+    def test_tracked_but_unavailable_git_objects_fail_closed_without_network(self) -> None:
+        module = load_read_model_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            pfi_root = Path(tmp) / "PFI"
+            (pfi_root / "src" / "pfi_v02").mkdir(parents=True)
+            tracked_paths = [
+                "MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json",
+                "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv",
+                "MetaDatabase/PFI/alipay_daily/raw/source.csv",
+            ]
+            with (
+                mock.patch.object(module, "_git_commit_oid", return_value="0" * 40),
+                mock.patch.object(module, "_git_tree_files", return_value=tracked_paths),
+                mock.patch.object(module, "_git_blob", return_value=None),
+            ):
+                read_input = module.build_stage6_read_model_input(project_root=pfi_root)
+
+        self.assertEqual(read_input["status"], "not_mounted")
+        self.assertEqual(read_input["storage_mode"], "git_tree")
+        self.assertEqual(read_input["git_object_status"], "unavailable")
+        self.assertIn("未允许网络补取", read_input["message_zh"])
+
+    def test_tracked_git_tree_ready_path_is_deterministic(self) -> None:
+        module = load_read_model_module()
+        git_ref = "1" * 40
+        manifest_path = "MetaDatabase/PFI/alipay_daily/processed/alipay_import_manifest.json"
+        transactions_path = "MetaDatabase/PFI/alipay_daily/processed/alipay_transactions.csv"
+        raw_path = "MetaDatabase/PFI/alipay_daily/raw/source.csv"
+        blobs = {
+            manifest_path: json.dumps(
+                {
+                    "transaction_count": 1,
+                    "date_start": "2026-01-01",
+                    "date_end": "2026-01-01",
+                    "event_counts": {"CASH": 1},
+                }
+            ).encode(),
+            transactions_path: b"event_type,amount\nCASH,-1\n",
+            raw_path: b"source\ntracked\n",
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            pfi_root = Path(tmp) / "PFI"
+            (pfi_root / "src" / "pfi_v02").mkdir(parents=True)
+            with (
+                mock.patch.object(module, "_git_commit_oid", return_value=git_ref),
+                mock.patch.object(module, "_git_tree_files", return_value=sorted(blobs)),
+                mock.patch.object(module, "_git_blob", side_effect=lambda _root, path, ref: blobs.get(path)),
+            ):
+                read_input = module.build_stage6_read_model_input(project_root=pfi_root)
+
+        self.assertEqual(read_input["status"], "ready")
+        self.assertEqual(read_input["storage_mode"], "git_tree")
+        self.assertEqual(read_input["git_ref"], git_ref)
+        self.assertEqual(read_input["git_object_status"], "available")
+        self.assertEqual(read_input["raw_file_count"], 1)
+        self.assertEqual(read_input["transaction_count"], 1)
+        self.assertEqual(read_input["as_of"], "2026-01-01")
+        self.assertEqual(read_input["git_raw_paths"], [raw_path])
+        self.assertEqual(
+            read_input["evidence_hash"],
+            module._hash_blobs(
+                [
+                    ("alipay_daily/processed/alipay_import_manifest.json", blobs[manifest_path]),
+                    ("alipay_daily/processed/alipay_transactions.csv", blobs[transactions_path]),
+                    ("alipay_daily/raw/source.csv", blobs[raw_path]),
+                ]
+            ),
+        )
+
+    def test_explicit_missing_data_root_never_uses_git_fallback(self) -> None:
+        module = load_read_model_module()
+        with tempfile.TemporaryDirectory() as tmp:
+            missing = Path(tmp) / "explicit-missing"
+            with mock.patch.object(module, "_build_git_tree_input") as fallback:
+                read_input = module.build_stage6_read_model_input(project_root=ROOT, data_root=missing)
+
+        fallback.assert_not_called()
+        self.assertEqual(read_input["status"], "not_mounted")
+        self.assertEqual(read_input["storage_mode"], "filesystem")
+
+    def test_filesystem_and_git_blobs_share_canonical_hash_algorithm(self) -> None:
+        module = load_read_model_module()
+        blobs = {
+            "alipay_daily/processed/alipay_import_manifest.json": b'{"transaction_count":1}',
+            "alipay_daily/processed/alipay_transactions.csv": b"event_type,amount\nCASH,-1\n",
+            "alipay_daily/raw/source.csv": b"source\ntracked\n",
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            data_root = Path(tmp)
+            paths = []
+            for relative, raw in blobs.items():
+                path = data_root / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(raw)
+                paths.append(path)
+            filesystem_hash = module._hash_files(paths, root=data_root)
+
+        git_hash = module._hash_blobs(blobs.items())
+        self.assertEqual(filesystem_hash, git_hash)
 
     def test_phase61_read_model_returns_real_or_blocked_metric_states(self) -> None:
         module = load_core_metrics_module()

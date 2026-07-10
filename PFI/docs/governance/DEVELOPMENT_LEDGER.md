@@ -1,11 +1,11 @@
 # DEVELOPMENT_LEDGER
 
-product_version: v0.2.1 前端优化
+product_version: v0.2.4 Repair Pack
 model_count: 1
 formula_count: 1
 parameter_count: 23
-task_count: 7
-acceptance_count: 7
+task_count: 9
+acceptance_count: 9
 
 ## 2026-06-27
 
@@ -47,3 +47,17 @@ acceptance_count: 7
 - 模型与参数边界：不修改投资、消费、现金流、汇率、分类、推荐或执行逻辑；`PARAM-PFI-023` 只记录公开 adapter 的 L2 兼容合同。
 - 回滚：删除 `web/cloudflare-public` 与本次治理记录；PFI 私密核心和真实财务数据不受影响。
 - 下一门槛：仅剩可选 `pfi.linzezhang.com` 绑定；真实账户、broker、支付和执行能力仍不在 L2 范围。
+
+## ITER-20260710-PFI-V024-R1
+
+- Task / Acceptance：`PFI-V024-R1-20260710` / `ACC-PFI-V024-R1`。
+- 结果：恢复 v0.2.4 canonical closeout history；sparse worktree 通过 immutable Git OID 只读验证真实 `MetaDatabase/PFI`，不触发 lazy fetch，不复制或改写财务数据。
+- 验证：focused `33 passed`、v0.2.3 `200 passed`、v0.2.4 `219 passed`、check-render `0/0`、独立复核 `APPROVED`。
+- 下一门槛：独立 `v0.2.4 overall re-review`。
+
+## ITER-20260710-PFI-V024-OVERALL-REREVIEW
+
+- Task / Acceptance：`PFI-V024-OVERALL-REREVIEW-20260710` / `ACC-PFI-V024-OVERALL-REREVIEW`。
+- 当前范围：复核原 `v0.2.3-repair` Stage 0-9、Phase R1、真实数据和 final-delivery boundary；不执行 GitHub upload 或 app reinstall。
+- 当前证据：40/40 phase/whole-stage evidence unit 四件套完整，84 个 JSON 可解析，真实数据为 4 raw / 8815 processed / as of 2026-06-03。
+- 当前结果：overall re-review pass；focused `12 passed`、v0.2.3 `200 passed`、v0.2.4 `231 passed`、semantic/UI/data/renderer/reviewer gates 全部通过。`product goal 未完成`，唯一下一 gate 为 `PFI-V024-FINAL-DELIVERY`。

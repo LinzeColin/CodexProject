@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## v0.2.4 Overall Re-review - 2026-07-10
+
+- `ACC-PFI-V024-OVERALL-REREVIEW` 本地 gate pass；独立只读复核 `APPROVED`，Critical/Important/Minor 均为零。
+- 新增 `ACC-PFI-V024-OVERALL-REREVIEW`，按原 `v0.2.3-repair` Task Pack/Roadmap 复核 Stage 0-9、Phase R1、真实数据链路与最终交付边界。
+- 机器审计确认 40/40 evidence unit 四件套存在，84 个 JSON 可解析；历史 upload 与当前最终交付状态已拆分。
+- 审查修复后逐项核验 40-unit schema/ID/status、10 个 whole-stage acceptance、非空 evidence、有效 UI PNG、派生人工确认/历史 upload，以及精确 `4/8815/2026-06-03/hash/Git object` 数据合同。
+- 验证快照：re-review `12 passed`、v0.2.3 `200 passed`、v0.2.4 `231 passed`、11/11 UI validation、46 PNG decode、Git ref == current HEAD；machine gate pass 但 `product_goal_complete=false`。
+- 当前 Phase R1/re-review 变更、app reinstall 与 GitHub/app/local consistency 统一保留到单一 `PFI-V024-FINAL-DELIVERY`；`product goal 未完成`。
+- 本轮不执行 GitHub upload、app reinstall、future version 或真实财务数据修改。
+
+## v0.2.4 Post-Overall Consistency Remediation - 2026-07-10
+
+- 完成 `post-overall consistency remediation / Phase R1` 本地 gate：恢复 canonical v0.2.4 closeout history，并由既有 renderer 重新生成三份 owner 入口。
+- `stage_v023_read_model.py` 新增默认 tracked `MetaDatabase/PFI` 的只读 Git-tree adapter；长期 sparse PFI worktree 无需展开数据路径即可验证 4 个 raw CSV 与 8815 条 processed 记录。
+- 修正 v0.2.3 Stage 7 placeholder 扫描边界：共享 JS 改为验证真实 v0.2.3 report view-model 输出，不再把 v0.2.4 合法样本量标识误判为假数据。
+- 验证：focused `33 passed`；v0.2.3 `200 passed`；v0.2.4 `219 passed`；Python、Node、diff、check-render 均通过。
+- 本轮未执行 overall re-review、GitHub upload 或 app reinstall；future version 未开始。
+
 ## Cloudflare L2 redacted public shell — 2026-07-10
 
 - 新增隔离的 `web/cloudflare-public` 静态产品壳、Workers Static Assets 配置、隐私扫描和兼容性回归。

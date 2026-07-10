@@ -116,7 +116,9 @@ class TestV023Stage1AppEntryBundleContract(unittest.TestCase):
         self.assertIn('INSTALL_SCOPE="downloads"', script)
         self.assertIn('install_required_app "$DOWNLOADS_APP"', script)
         self.assertIn('if [[ "$INSTALL_SCOPE" == "all" ]]', script)
-        self.assertIn('BUILT_LAUNCHER_BINARY="$(mktemp', script)
+        self.assertIn('BUILT_LAUNCHER_DIR="$(mktemp -d', script)
+        self.assertIn('BUILT_LAUNCHER_BINARY="$BUILT_LAUNCHER_DIR/PFI"', script)
+        self.assertIn("-Wl,-no_uuid", script)
         self.assertIn('install -m 755 "$BUILT_LAUNCHER_BINARY"', script)
         self.assertNotIn('LAUNCHER_BINARY="$SOURCE_APP/Contents/MacOS/PFI"', script)
 
