@@ -8,6 +8,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[4]
@@ -17,6 +18,7 @@ PHASE1 = PURSUE_ROOT / "STAGE036_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE036_PHASE2_DATABASE_QUALITY_CONSTRAINTS_SLICE.md"
 PHASE3 = PURSUE_ROOT / "STAGE036_PHASE3_SCENARIO_VALIDATION.md"
 PHASE4 = PURSUE_ROOT / "STAGE036_PHASE4_CLOSEOUT.md"
+STAGE_REVIEW = PURSUE_ROOT / "STAGE036_STAGE_REVIEW.md"
 INDEX = (
     PURSUE_ROOT
     / "database_quality_constraints"
@@ -27,7 +29,13 @@ MIGRATION = (
     / "database_quality_constraints"
     / "002_database_quality_constraints.sql"
 )
+PROFILE_QUERIES = (
+    PURSUE_ROOT
+    / "database_quality_constraints"
+    / "stage036_quality_profile_queries.json"
+)
 SCRIPT = ROOT / "scripts" / "check_database_quality_constraints.py"
+MIGRATION_RUNNER = ROOT / "scripts" / "run_stage036_migration_section.py"
 BATCH_LOCK = PURSUE_ROOT / "BATCH031_040_UPLOAD_LOCK.yaml"
 ROADMAP = ROOT / "docs" / "governance" / "roadmap.yaml"
 EVENTS = ROOT / "docs" / "governance" / "events.jsonl"
@@ -171,6 +179,14 @@ class Stage036DatabaseQualityConstraintsPhase1Tests(unittest.TestCase):
                 'current_task_id: "IDS-V0_1-STAGE036-P4"',
                 'acceptance_status: "phase4_closeout_complete"',
             ],
+            [
+                'status: "stage036_completed_reviewed_local"',
+                'status: "completed_reviewed_local"',
+                'review_status: "passed"',
+                'next_gate: "IDS-STAGE037-P1-GATE"',
+                'current_task_id: "IDS-V0_1-STAGE036-REVIEW"',
+                'acceptance_status: "reviewed_local_passed"',
+            ],
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE036"',
@@ -266,12 +282,12 @@ class Stage036DatabaseQualityConstraintsPhase2Tests(unittest.TestCase):
             "ids.owner_authorized_real_profile_ref",
             "ids.migration_backup_checkpoint_ref",
             "ids.migration_rollback_plan_ref",
-            "CREATE TABLE IF NOT EXISTS ids_state_value_registry",
+            "CREATE TABLE IF NOT EXISTS public.ids_state_value_registry",
             "PRIMARY KEY (state_namespace, state_value)",
             "VALIDATE CONSTRAINT",
-            "SELECT EXISTS (SELECT 1 FROM ids_state_value_registry)",
+            "SELECT EXISTS (SELECT 1 FROM public.ids_state_value_registry)",
             "STAGE-036 rollback blocked: ids_state_value_registry is not empty",
-            "DROP TABLE IF EXISTS ids_state_value_registry",
+            "DROP TABLE IF EXISTS public.ids_state_value_registry",
         ] + sorted(self.EXPECTED_CANDIDATE_CONSTRAINTS)
         for term in required_terms:
             with self.subTest(term=term):
@@ -497,6 +513,14 @@ class Stage036DatabaseQualityConstraintsPhase2Tests(unittest.TestCase):
                 'current_task_id: "IDS-V0_1-STAGE036-P4"',
                 'acceptance_status: "phase4_closeout_complete"',
             ],
+            [
+                'status: "stage036_completed_reviewed_local"',
+                'status: "completed_reviewed_local"',
+                'review_status: "passed"',
+                'next_gate: "IDS-STAGE037-P1-GATE"',
+                'current_task_id: "IDS-V0_1-STAGE036-REVIEW"',
+                'acceptance_status: "reviewed_local_passed"',
+            ],
         ]
         required = {
             lock_text: lock_terms,
@@ -691,8 +715,8 @@ class Stage036DatabaseQualityConstraintsPhase3Tests(unittest.TestCase):
             (
                 "missing_table_idempotency_guard",
                 migration_sql.replace(
-                    "CREATE TABLE IF NOT EXISTS ids_state_value_registry",
-                    "CREATE TABLE ids_state_value_registry",
+                    "CREATE TABLE IF NOT EXISTS public.ids_state_value_registry",
+                    "CREATE TABLE public.ids_state_value_registry",
                     1,
                 ),
                 "repeat_execution",
@@ -700,7 +724,7 @@ class Stage036DatabaseQualityConstraintsPhase3Tests(unittest.TestCase):
             (
                 "missing_registry_rollback_query",
                 migration_sql.replace(
-                    "SELECT EXISTS (SELECT 1 FROM ids_state_value_registry)",
+                    "SELECT EXISTS (SELECT 1 FROM public.ids_state_value_registry)",
                     "SELECT FALSE",
                     1,
                 ),
@@ -709,8 +733,8 @@ class Stage036DatabaseQualityConstraintsPhase3Tests(unittest.TestCase):
             (
                 "constraint_guard_or_true",
                 migration_sql.replace(
-                    "AND conrelid = 'ids_chunks'::regclass\n  ) THEN",
-                    "AND conrelid = 'ids_chunks'::regclass\n      OR TRUE\n  ) THEN",
+                    "AND conrelid = 'public.ids_chunks'::regclass\n  ) THEN",
+                    "AND conrelid = 'public.ids_chunks'::regclass\n      OR TRUE\n  ) THEN",
                     1,
                 ),
                 "repeat_execution",
@@ -718,8 +742,8 @@ class Stage036DatabaseQualityConstraintsPhase3Tests(unittest.TestCase):
             (
                 "registry_rollback_and_false",
                 migration_sql.replace(
-                    "SELECT EXISTS (SELECT 1 FROM ids_state_value_registry)'",
-                    "SELECT EXISTS (SELECT 1 FROM ids_state_value_registry) AND FALSE'",
+                    "SELECT EXISTS (SELECT 1 FROM public.ids_state_value_registry)'",
+                    "SELECT EXISTS (SELECT 1 FROM public.ids_state_value_registry) AND FALSE'",
                     1,
                 ),
                 "failure_rollback",
@@ -728,7 +752,7 @@ class Stage036DatabaseQualityConstraintsPhase3Tests(unittest.TestCase):
                 "premature_registry_drop",
                 migration_sql.replace(
                     "DO $ids_quality_rollback_gate$",
-                    "DROP TABLE IF EXISTS ids_state_value_registry;\n\n"
+                    "DROP TABLE IF EXISTS public.ids_state_value_registry;\n\n"
                     "DO $ids_quality_rollback_gate$",
                     1,
                 ),
@@ -820,14 +844,15 @@ class Stage036DatabaseQualityConstraintsPhase3Tests(unittest.TestCase):
                 "NO_PHASE4",
             ],
             lock_text: [
-                'status: "stage036_completed_local_pending_review"',
+                'status: "stage036_completed_reviewed_local"',
+                'status: "completed_reviewed_local"',
                 'push_allowed: false',
                 '      - "Phase 3"',
                 '      - "Phase 4"',
-                'next_phase: "stage_review_gate"',
-                'next_gate: "IDS-STAGE036-REVIEW-GATE"',
-                'current_task_id: "IDS-V0_1-STAGE036-P4"',
-                'acceptance_status: "phase4_closeout_complete"',
+                'review_status: "passed"',
+                'next_gate: "IDS-STAGE037-P1-GATE"',
+                'current_task_id: "IDS-V0_1-STAGE036-REVIEW"',
+                'acceptance_status: "reviewed_local_passed"',
             ],
             roadmap_text: [
                 'current_stage_id: "IDS-STAGE036"',
@@ -918,8 +943,8 @@ class Stage036DatabaseQualityConstraintsPhase4Tests(unittest.TestCase):
             "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_DATA_PROFILE",
             report["execution_state"],
         )
-        self.assertEqual("IDS-STAGE036-REVIEW-GATE", report["next_gate"])
-        self.assertEqual("pending_next_run", report["stage_review_status"])
+        self.assertEqual("IDS-STAGE037-P1-GATE", report["next_gate"])
+        self.assertEqual("completed_reviewed_local", report["stage_review_status"])
         self.assertFalse(report["github_upload_allowed"])
         self.assertFalse(report["app_reinstall_allowed"])
         self.assertEqual("tracked_files", report["snapshot_binding"]["source"])
@@ -1002,7 +1027,21 @@ class Stage036DatabaseQualityConstraintsPhase4Tests(unittest.TestCase):
         self.assertGreaterEqual(len(report["backup_restore_steps"]), 6)
         self.assertGreaterEqual(len(report["known_limits"]), 6)
         self.assertIn("未执行真实 migration", report["chinese_owner_feedback"])
-        self.assertIn("STAGE-036 review", report["chinese_owner_feedback"])
+        self.assertIn("STAGE-036 review 已完成", report["chinese_owner_feedback"])
+        self.assertIn("IDS-STAGE037-P1-GATE", report["chinese_owner_feedback"])
+        self.assertNotIn("review 尚未执行", report["chinese_owner_feedback"])
+        self.assertNotIn(
+            "下一步只能进入独立 STAGE-036 review",
+            report["chinese_owner_feedback"],
+        )
+        review_limit = next(
+            item
+            for item in report["known_limits"]
+            if item["limit_id"] == "stage_review_and_batch_upload_blocked"
+        )
+        self.assertIn("STAGE-036 review 已完成", review_limit["owner_message_zh"])
+        self.assertIn("BATCH031_040", review_limit["owner_message_zh"])
+        self.assertNotIn("尚未执行", review_limit["owner_message_zh"])
 
     def test_tampered_delivery_runtime_or_sql_contract_fails_closed(self):
         module, builder = self._delivery_builder()
@@ -1027,8 +1066,8 @@ class Stage036DatabaseQualityConstraintsPhase4Tests(unittest.TestCase):
             "columns"
         ] = None
         bad_sql = migration_sql.replace(
-            "CREATE TABLE IF NOT EXISTS ids_state_value_registry",
-            "CREATE TABLE ids_state_value_registry",
+            "CREATE TABLE IF NOT EXISTS public.ids_state_value_registry",
+            "CREATE TABLE public.ids_state_value_registry",
             1,
         )
         destructive_sql = migration_sql.replace(
@@ -1152,7 +1191,7 @@ class Stage036DatabaseQualityConstraintsPhase4Tests(unittest.TestCase):
         )
         self.assertFalse(report["snapshot_binding"]["tracked_snapshot_bound"])
         self.assertEqual(
-            "noncanonical_path_validation_snapshot",
+            "unbound_worktree_validation_snapshot",
             report["snapshot_binding"]["source"],
         )
         self.assertFalse(report["delivery_contract_valid"])
@@ -1208,7 +1247,7 @@ class Stage036DatabaseQualityConstraintsPhase4Tests(unittest.TestCase):
         self.assertFalse(payload["live_execution_performed"])
         self.assertEqual("Phase 3", payload["scenario_report"]["phase"])
         self.assertEqual("Phase 2", payload["phase2_report"]["phase"])
-        self.assertEqual("IDS-STAGE036-REVIEW-GATE", payload["next_gate"])
+        self.assertEqual("IDS-STAGE037-P1-GATE", payload["next_gate"])
         self.assertEqual("", completed.stderr)
 
     def test_governance_tracks_phase4_and_stops_at_separate_review_gate(self):
@@ -1231,12 +1270,13 @@ class Stage036DatabaseQualityConstraintsPhase4Tests(unittest.TestCase):
                 "NO_STAGE_REVIEW_THIS_RUN",
             ],
             lock_text: [
-                'status: "stage036_completed_local_pending_review"',
+                'status: "stage036_completed_reviewed_local"',
+                'status: "completed_reviewed_local"',
                 '      - "Phase 4"',
-                'next_phase: "stage_review_gate"',
-                'next_gate: "IDS-STAGE036-REVIEW-GATE"',
-                'current_task_id: "IDS-V0_1-STAGE036-P4"',
-                'acceptance_status: "phase4_closeout_complete"',
+                'review_status: "passed"',
+                'next_gate: "IDS-STAGE037-P1-GATE"',
+                'current_task_id: "IDS-V0_1-STAGE036-REVIEW"',
+                'acceptance_status: "reviewed_local_passed"',
                 'push_allowed: false',
                 "STAGE036_PHASE4_CLOSEOUT.md",
             ],
@@ -1264,6 +1304,506 @@ class Stage036DatabaseQualityConstraintsPhase4Tests(unittest.TestCase):
             for term in terms:
                 with self.subTest(term=term):
                     self.assertIn(term, text)
+
+
+class Stage036DatabaseQualityConstraintsReviewTests(unittest.TestCase):
+    OWNERSHIP_MARKER = (
+        "ids.stage036.owner:ids_stage036_002_database_quality_constraints"
+    )
+
+    def _load_checker_module(self):
+        self.assertTrue(SCRIPT.is_file(), f"missing checker: {SCRIPT}")
+        spec = importlib.util.spec_from_file_location(
+            "stage036_database_quality_constraints_review", SCRIPT
+        )
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def _phase2_report(self, module, index):
+        return module.build_stage036_quality_constraint_report(
+            INDEX,
+            MIGRATION,
+            module.CONTROL_SCHEMA_PATH,
+            index_snapshot=index,
+            migration_sql_snapshot=MIGRATION.read_text(encoding="utf-8"),
+            baseline_sql_snapshot=module.CONTROL_SCHEMA_PATH.read_text(
+                encoding="utf-8"
+            ),
+        )
+
+    def test_review_artifact_records_full_stage_audit_and_no_upload_boundary(self):
+        self.assertTrue(
+            STAGE_REVIEW.is_file(), f"missing stage review: {STAGE_REVIEW}"
+        )
+        review_text = STAGE_REVIEW.read_text(encoding="utf-8")
+        required_terms = [
+            "IDS-V0_1-STAGE036-REVIEW",
+            "ACC-STAGE-036",
+            "STAGE-036 · 数据库质量约束",
+            "P0 source binding",
+            "Phase 1 boundary",
+            "Phase 2 static quality-constraint contract",
+            "Phase 3 scenario validation",
+            "Phase 4 closeout",
+            "STAGE036-REVIEW-F1",
+            "completed_reviewed_local",
+            "IDS-STAGE037-P1-GATE",
+            "NO_GITHUB_UPLOAD",
+            "NO_APP_REINSTALL",
+            "NO_STAGE037_THIS_RUN",
+            "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "不得使用虚构 IDS 业务数据",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, review_text)
+
+    def test_review_gate_tracks_reviewed_local_and_keeps_batch_upload_locked(self):
+        lock_text = BATCH_LOCK.read_text(encoding="utf-8")
+        roadmap_text = ROADMAP.read_text(encoding="utf-8")
+        events_text = EVENTS.read_text(encoding="utf-8")
+        required = {
+            lock_text: [
+                'status: "stage036_completed_reviewed_local"',
+                'status: "completed_reviewed_local"',
+                'review_status: "passed"',
+                'next_stage: "STAGE-037"',
+                'next_gate: "IDS-STAGE037-P1-GATE"',
+                'current_task_id: "IDS-V0_1-STAGE036-REVIEW"',
+                'acceptance_status: "reviewed_local_passed"',
+                'next_allowed_task_id: "IDS-V0_1-STAGE037-P1"',
+                "STAGE036_STAGE_REVIEW.md",
+                "push_allowed: false",
+            ],
+            roadmap_text: [
+                'current_stage_id: "IDS-STAGE036"',
+                'current_phase_id: "IDS-STAGE036-REVIEW"',
+                'current_task_id: "IDS-V0_1-STAGE036-REVIEW"',
+                'next_gate_id: "IDS-STAGE037-P1-GATE"',
+                'review_id: "IDS-STAGE036-REVIEW"',
+                'task_id: "IDS-V0_1-STAGE036-REVIEW"',
+                "STAGE036_STAGE_REVIEW.md",
+            ],
+            events_text: [
+                '"event_id":"EVT-IDS-V0_1-STAGE036-REVIEW-',
+                '"event_type":"stage_review"',
+                '"task_id":"IDS-V0_1-STAGE036-REVIEW"',
+                '"ACC-STAGE-036"',
+                "STAGE036_STAGE_REVIEW.md",
+                "IDS-STAGE037-P1-GATE",
+            ],
+        }
+        for text, terms in required.items():
+            for term in terms:
+                with self.subTest(term=term):
+                    self.assertIn(term, text)
+
+    def test_review_rejects_unknown_safety_authorization_fields(self):
+        module = self._load_checker_module()
+        base = json.loads(INDEX.read_text(encoding="utf-8"))
+        cases = {
+            "top_level": lambda index: index.__setitem__(
+                "live_execution_authorized", True
+            ),
+            "migration": lambda index: index["migration_contract"].__setitem__(
+                "execute_now", True
+            ),
+            "candidate": lambda index: index["constraint_inventory"][
+                "candidates"
+            ][0].__setitem__("live_apply_allowed", True),
+            "raw_metadata": lambda index: index["raw_metadata_boundary"].__setitem__(
+                "open_allowed", True
+            ),
+            "real_data": lambda index: index["real_data_only_guard"].__setitem__(
+                "synthetic_rows_allowed", True
+            ),
+            "storage": lambda index: index["guardrails"][
+                "storage_boundary"
+            ].__setitem__("stores_raw_payloads", True),
+        }
+
+        for name, mutate in cases.items():
+            with self.subTest(case=name):
+                index = copy.deepcopy(base)
+                mutate(index)
+                report = self._phase2_report(module, index)
+                self.assertIn("contract_shape_results", report)
+                self.assertFalse(report["contract_valid"], report)
+                self.assertFalse(all(report["contract_shape_results"].values()))
+                self.assertEqual(
+                    "BLOCKED_INVALID_QUALITY_CONSTRAINT_CONTRACT",
+                    report["execution_state"],
+                )
+
+    def test_review_malformed_contract_and_missing_sources_fail_closed(self):
+        module = self._load_checker_module()
+        base = json.loads(INDEX.read_text(encoding="utf-8"))
+        malformed_cases = {
+            "null_required_tables": (
+                "dependency_contract",
+                "required_control_plane_tables",
+            ),
+            "null_forbidden_values": ("real_data_only_guard", "forbidden"),
+        }
+        for name, (container, field) in malformed_cases.items():
+            with self.subTest(case=name):
+                index = copy.deepcopy(base)
+                index[container][field] = None
+                try:
+                    report = self._phase2_report(module, index)
+                except Exception as exc:  # pragma: no cover - RED diagnostic
+                    self.fail(f"{name} raised {type(exc).__name__}: {exc}")
+                self.assertFalse(report["contract_valid"], report)
+                self.assertEqual(
+                    "BLOCKED_INVALID_QUALITY_CONSTRAINT_CONTRACT",
+                    report["execution_state"],
+                )
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            missing = Path(tmp_dir) / "missing.sql"
+            for field, kwargs in {
+                "migration": {"migration_path": missing},
+                "baseline": {"baseline_schema_path": missing},
+            }.items():
+                with self.subTest(missing_source=field):
+                    try:
+                        report = module.build_stage036_delivery_report(**kwargs)
+                    except Exception as exc:  # pragma: no cover - RED diagnostic
+                        self.fail(
+                            f"missing {field} raised {type(exc).__name__}: {exc}"
+                        )
+                    self.assertFalse(report["delivery_contract_valid"], report)
+                    self.assertEqual("FAIL_CLOSED", report["result"])
+                    self.assertIn("失败关闭", report["chinese_owner_feedback"])
+
+    def test_review_migration_pins_schema_and_guards_owned_objects(self):
+        module = self._load_checker_module()
+        sql = MIGRATION.read_text(encoding="utf-8")
+        for term in [
+            "SET LOCAL search_path = pg_catalog, public;",
+            self.OWNERSHIP_MARKER,
+            "COMMENT ON TABLE public.ids_state_value_registry",
+            "COMMENT ON INDEX public.idx_ids_state_value_registry_active",
+            "obj_description",
+            "STAGE-036 apply blocked: pre-existing migration object requires recovery",
+            "STAGE-036 rollback blocked: database object is not owned by this migration",
+        ]:
+            with self.subTest(term=term):
+                self.assertIn(term, sql)
+
+        report = module.build_stage036_quality_constraint_report()
+        migration_results = report["migration_contract_results"]
+        self.assertIn("search_path_pinned", migration_results)
+        self.assertIn("owned_object_guards_exact", migration_results)
+        self.assertTrue(migration_results["search_path_pinned"])
+        self.assertTrue(migration_results["owned_object_guards_exact"])
+
+    def test_review_migration_runner_selects_one_section_and_blocks_unauthorized_up(self):
+        self.assertTrue(
+            MIGRATION_RUNNER.is_file(),
+            f"missing migration section runner: {MIGRATION_RUNNER}",
+        )
+        down = subprocess.run(
+            [sys.executable, "-B", str(MIGRATION_RUNNER), "--section", "down"],
+            cwd=ROOT.parent,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(0, down.returncode, down.stderr)
+        self.assertNotIn("-- migrate:up", down.stdout)
+        self.assertIn("-- migrate:down", down.stdout)
+        self.assertIn("DROP CONSTRAINT", down.stdout)
+        self.assertNotIn("ADD CONSTRAINT", down.stdout)
+
+        blocked_env = {
+            key: value
+            for key, value in __import__("os").environ.items()
+            if key
+            not in {
+                "IDS_OWNER_AUTHORIZED_REAL_PROFILE_REF",
+                "IDS_MIGRATION_BACKUP_CHECKPOINT_REF",
+                "IDS_MIGRATION_ROLLBACK_PLAN_REF",
+                "IDS_STAGE036_AUTHORIZATION_ENVELOPE",
+            }
+        }
+        up = subprocess.run(
+            [sys.executable, "-B", str(MIGRATION_RUNNER), "--section", "up"],
+            cwd=ROOT.parent,
+            env=blocked_env,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        self.assertNotEqual(0, up.returncode)
+        self.assertEqual("", up.stdout)
+        self.assertIn("owner-authorized", up.stderr)
+
+        index = json.loads(INDEX.read_text(encoding="utf-8"))
+        migration_contract = index["migration_contract"]
+        self.assertEqual(
+            "BLOCKED_V0_1_NO_TRUSTED_AUTHORIZATION_OR_TARGET_BINDING",
+            migration_contract["future_apply_command_ref"],
+        )
+        self.assertIn(
+            "run_stage036_migration_section.py --section down",
+            migration_contract["future_rollback_command_ref"],
+        )
+        self.assertNotIn("psql --section", migration_contract["future_rollback_command_ref"])
+
+    def test_review_authorization_contract_binds_bounded_profile_queries(self):
+        self.assertTrue(
+            PROFILE_QUERIES.is_file(),
+            f"missing profile query contract: {PROFILE_QUERIES}",
+        )
+        query_contract = json.loads(PROFILE_QUERIES.read_text(encoding="utf-8"))
+        index = json.loads(INDEX.read_text(encoding="utf-8"))
+        queries = query_contract["queries"]
+        by_id = {item["constraint_id"]: item for item in queries}
+        self.assertEqual(
+            Stage036DatabaseQualityConstraintsPhase2Tests.EXPECTED_CANDIDATE_CONSTRAINTS,
+            set(by_id),
+        )
+        self.assertEqual(9, len(queries))
+        for constraint_id, item in by_id.items():
+            with self.subTest(constraint_id=constraint_id):
+                sql = item["query_sql"]
+                self.assertRegex(sql, r"^SELECT count\(\*\) AS violation_count FROM ")
+                self.assertEqual(
+                    hashlib.sha256(sql.encode("utf-8")).hexdigest(),
+                    item["query_sha256"],
+                )
+                self.assertNotRegex(sql, r"(?i)SELECT\s+\*")
+                self.assertNotIn("/Users/linzezhang/Downloads/IDS_MetaData", sql)
+
+        envelope_contract = index["authorization_envelope_contract"]
+        self.assertTrue(envelope_contract["required"])
+        self.assertFalse(envelope_contract["runtime_authorization_default"])
+        self.assertEqual(
+            {constraint_id: item["query_sha256"] for constraint_id, item in by_id.items()},
+            envelope_contract["candidate_query_sha256"],
+        )
+        candidates = {
+            item["constraint_id"]: item
+            for item in index["constraint_inventory"]["candidates"]
+        }
+        for constraint_id, query in by_id.items():
+            candidate = candidates[constraint_id]
+            with self.subTest(candidate_ref=constraint_id):
+                self.assertEqual(query["query_id"], candidate["preflight_query_id"])
+                self.assertEqual(
+                    query["query_sha256"], candidate["preflight_query_sha256"]
+                )
+                self.assertEqual(
+                    "002_database_quality_constraints.sql",
+                    candidate["migration_ref"],
+                )
+                self.assertEqual(
+                    "owner_authorized_zero_violation_evidence_required",
+                    candidate["validation_evidence_ref"],
+                )
+                self.assertEqual(
+                    "002_database_quality_constraints.sql#migrate:down",
+                    candidate["rollback_ref"],
+                )
+
+    def test_review_dependency_indexes_are_bound_by_content_hash(self):
+        module = self._load_checker_module()
+        index = json.loads(INDEX.read_text(encoding="utf-8"))
+        expected_hashes = {
+            "stage030_control_plane_index_ref": "00779a914d7eb08ea94285cc07f9ae9583ca4d50a7d7f6d8f647cc9bdbd278cd",
+            "stage031_migration_safety_index_ref": "cd1362d8bda358becc6d5cfc14d6e4f9a3b85ca3d6155d70fe2714fac66b2bb0",
+            "stage032_connection_pool_index_ref": "2ffb32d423429c40e5198fe22c95fc15f038a06c92ce401aa7e4527d13d1b56d",
+            "stage033_database_size_guard_index_ref": "008f582cb2d2a95d53f02a45b5f4acbd54f749d77ebdb216192f2b61db3ed419",
+            "stage034_data_retention_table_index_ref": "0b579f93c623cd20e99752c9801f5c9bb14757e531697d687f87fe5c7c6c8504",
+            "stage035_database_recovery_smoke_index_ref": "34cf0f28f921d0a136fc91256b7a5e9119d71cccbbb8db4bbc1f98bcb9f6345c",
+        }
+        self.assertEqual(
+            expected_hashes,
+            index["dependency_contract"]["dependency_index_sha256"],
+        )
+        report = self._phase2_report(module, index)
+        self.assertTrue(
+            report["source_integrity_results"]["dependency_content_hashes_match"]
+        )
+
+        tampered = copy.deepcopy(index)
+        tampered["dependency_contract"]["dependency_index_sha256"][
+            "stage035_database_recovery_smoke_index_ref"
+        ] = "0" * 64
+        report = self._phase2_report(module, tampered)
+        self.assertFalse(report["contract_valid"], report)
+        self.assertFalse(
+            report["source_integrity_results"]["dependency_content_hashes_match"]
+        )
+
+    def test_review_tracked_snapshot_requires_real_git_tracked_paths_and_raw_hash(self):
+        module = self._load_checker_module()
+        report = module.build_stage036_delivery_report()
+        binding = report["snapshot_binding"]
+        self.assertTrue(binding["canonical_paths_bound"])
+        self.assertTrue(binding["path_objects_verified"])
+        self.assertTrue(binding["git_paths_tracked"])
+        self.assertTrue(binding["tracked_snapshot_bound"])
+        self.assertEqual(
+            hashlib.sha256(INDEX.read_bytes()).hexdigest(),
+            binding["index_raw_sha256"],
+        )
+        self.assertEqual(module.EXPECTED_INDEX_SHA256, binding["index_raw_sha256"])
+
+        class SpoofPath:
+            def __init__(self, real_path):
+                self.real_path = real_path
+
+            def resolve(self):
+                return self.real_path.resolve()
+
+            def read_text(self, encoding="utf-8"):
+                return self.real_path.read_text(encoding=encoding)
+
+            def as_posix(self):
+                return self.real_path.as_posix()
+
+        spoofed = module.build_stage036_delivery_report(
+            index_path=SpoofPath(INDEX),
+            migration_path=SpoofPath(MIGRATION),
+            baseline_schema_path=SpoofPath(module.CONTROL_SCHEMA_PATH),
+        )
+        spoofed_binding = spoofed["snapshot_binding"]
+        self.assertFalse(spoofed_binding["path_objects_verified"])
+        self.assertFalse(spoofed_binding["tracked_snapshot_bound"])
+        self.assertFalse(spoofed["delivery_contract_valid"])
+
+    def test_review_runner_never_emits_live_up_and_rejects_boolean_zero(self):
+        spec = importlib.util.spec_from_file_location(
+            "stage036_migration_runner_review", MIGRATION_RUNNER
+        )
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        runner = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(runner)
+
+        self.assertEqual(
+            hashlib.sha256(INDEX.read_bytes()).hexdigest(),
+            runner.EXPECTED_INDEX_SHA256,
+        )
+        self.assertEqual(9, len(runner.EXPECTED_PROFILE_QUERY_SHA256))
+        self.assertTrue(runner._zero_violation_count(0))
+        for unsafe_zero in (False, 0.0, "0", None):
+            with self.subTest(unsafe_zero=unsafe_zero):
+                self.assertFalse(runner._zero_violation_count(unsafe_zero))
+
+        sql = MIGRATION.read_text(encoding="utf-8")
+        with self.assertRaises(runner.SelectionError):
+            runner.select_migration_section(
+                sql,
+                "up",
+                session_refs={"ids.owner_authorized_real_profile_ref": "ref"},
+            )
+        index = json.loads(INDEX.read_text(encoding="utf-8"))
+        authorization = index["authorization_envelope_contract"]
+        self.assertFalse(authorization["trusted_signature_verifier_available"])
+        self.assertFalse(authorization["target_binding_verifier_available"])
+        self.assertFalse(authorization["live_up_emission_allowed"])
+        self.assertEqual(
+            "BLOCKED_V0_1_NO_TRUSTED_AUTHORIZATION_OR_TARGET_BINDING",
+            index["migration_contract"]["future_apply_command_ref"],
+        )
+
+    def test_review_repeat_apply_blocks_existing_objects_and_down_is_atomic(self):
+        module = self._load_checker_module()
+        sql = MIGRATION.read_text(encoding="utf-8")
+        up_sql, down_sql = sql.split("-- migrate:down", 1)
+        self.assertIn(
+            "STAGE-036 apply blocked: pre-existing migration object requires recovery",
+            up_sql,
+        )
+        self.assertNotIn(
+            "existing database object is not owned by this migration", up_sql
+        )
+        registry_guard = down_sql.index("DO $ids_quality_rollback_gate$")
+        first_drop = down_sql.index("DROP CONSTRAINT IF EXISTS")
+        self.assertLess(registry_guard, first_drop)
+
+        down = subprocess.run(
+            [sys.executable, "-B", str(MIGRATION_RUNNER), "--section", "down"],
+            cwd=ROOT.parent,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(0, down.returncode, down.stderr)
+        self.assertTrue(down.stdout.startswith("\\set ON_ERROR_STOP on\nBEGIN;\n"))
+        self.assertTrue(down.stdout.rstrip().endswith("COMMIT;"))
+        results = module.build_stage036_quality_constraint_report()[
+            "migration_contract_results"
+        ]
+        for check_id in (
+            "preexisting_object_fail_closed",
+            "rollback_registry_guard_before_drops",
+            "runner_atomic_transaction_contract",
+        ):
+            with self.subTest(check_id=check_id):
+                self.assertTrue(results[check_id], results)
+
+    def test_review_security_sources_are_git_bound_hashed_and_read_once(self):
+        module = self._load_checker_module()
+        source_paths = [
+            module.PURSUE_ROOT
+            / "postgresql_control_plane"
+            / "control_plane_schema_index.json",
+            module.PURSUE_ROOT
+            / "schema_migration_safety"
+            / "stage031_migration_safety_index.json",
+            module.PURSUE_ROOT
+            / "database_connection_pool"
+            / "stage032_connection_pool_index.json",
+            module.PURSUE_ROOT
+            / "database_size_guard"
+            / "stage033_database_size_guard_index.json",
+            module.PURSUE_ROOT
+            / "data_retention_table"
+            / "stage034_data_retention_table_index.json",
+            module.PURSUE_ROOT
+            / "database_recovery_smoke"
+            / "stage035_database_recovery_smoke_index.json",
+            PROFILE_QUERIES,
+            MIGRATION_RUNNER,
+        ]
+        canonical = {path.resolve() for path in source_paths}
+        counts = {path: 0 for path in canonical}
+        original_read_text = Path.read_text
+
+        def counting_read_text(path, *args, **kwargs):
+            resolved = path.resolve()
+            if resolved in counts:
+                counts[resolved] += 1
+            return original_read_text(path, *args, **kwargs)
+
+        with mock.patch.object(Path, "read_text", counting_read_text):
+            report = module.build_stage036_delivery_report()
+
+        self.assertEqual({path: 1 for path in canonical}, counts)
+        binding = report["snapshot_binding"]
+        self.assertTrue(binding["security_sources_git_tracked"])
+        self.assertEqual(
+            hashlib.sha256(PROFILE_QUERIES.read_bytes()).hexdigest(),
+            binding["profile_queries_sha256"],
+        )
+        self.assertEqual(
+            hashlib.sha256(MIGRATION_RUNNER.read_bytes()).hexdigest(),
+            binding["migration_runner_sha256"],
+        )
+
+    def test_review_checker_reports_current_reviewed_local_state(self):
+        module = self._load_checker_module()
+        report = module.build_stage036_delivery_report()
+        self.assertEqual("completed_reviewed_local", report["stage_review_status"])
+        self.assertEqual("IDS-STAGE037-P1-GATE", report["next_gate"])
 
 
 if __name__ == "__main__":

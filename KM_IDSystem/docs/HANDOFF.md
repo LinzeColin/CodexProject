@@ -95,6 +95,18 @@ Commit/PR summaries must include:
 - remaining risks
 - local files that are intentionally not tracked
 
+## IDS v0.1 Staged Development
+
+- Canonical worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS`
+- Project scope: `KM_IDSystem/` only.
+- Current local state: `STAGE-036 · 数据库质量约束` is `completed_reviewed_local` after whole-stage review and remediation.
+- Current task: `IDS-V0_1-STAGE036-REVIEW`; acceptance: `ACC-STAGE-036`.
+- Next allowed run: `IDS-V0_1-STAGE037-P1` from `IDS-STAGE037-P1-GATE`; the Stage036 review did not enter STAGE-037.
+- `BATCH031_040` remains locked with `push_allowed=false`; do not upload, merge, reinstall app entries, or run batch gates before all ten stages are complete and reviewed.
+- Review evidence: `docs/pursuing_goal/ids_v0_1/STAGE036_STAGE_REVIEW.md`.
+- The real metadata root `/Users/linzezhang/Downloads/IDS_MetaData` is path-only governance context. Do not read, list, hash, open, copy, move, delete, modify, dump, scan, normalize, or commit its contents.
+- Do not use fake IDS business data, fake database rows, placeholder corpus, fabricated profiles, dumps, execution logs, or evidence.
+
 ## Local Files Intentionally Not Tracked
 
 - `.venv/`

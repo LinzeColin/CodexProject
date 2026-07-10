@@ -120,3 +120,19 @@ tasks:
     rollback: "Revert S3PCT01 code, scripts, tests, stage-gate evidence, rendered governance files, and run manifest."
     target_version: "1.0.0"
     completed_version: "1.0.0"
+  - task_id: "IDS-V0_1-STAGE036-REVIEW"
+    phase: "IDS-STAGE036-REVIEW"
+    objective: "Review and remediate the STAGE-036 database-quality engineering contract without live database or raw-data access."
+    scope: ["migration section runner", "quality constraint SQL ownership", "bounded authorization contract", "snapshot and dependency provenance", "governance event semantics"]
+    non_scope: ["PostgreSQL connection", "real row profile", "raw metadata content", "fake IDS data", "GitHub upload", "app reinstall", "batch gates", "STAGE-037 execution"]
+    status: "completed"
+    dependencies: ["IDS-V0_1-STAGE036-P4"]
+    required_files: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_STAGE_REVIEW.md", "KM_IDSystem/scripts/run_stage036_migration_section.py", "KM_IDSystem/scripts/check_database_quality_constraints.py"]
+    acceptance_ids: ["ACC-STAGE-036"]
+    test_commands: ["python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage036_database_quality_constraints -q", "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q", "python3 -B KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"]
+    test_results: ["41 Stage036 tests OK", "523 IDS v0.1 tests OK", "133 Stage005 tests OK", "Stage005 validator valid=true", "second independent review closed 3 Critical, 4 Important, and 1 Minor findings", "final checker verification repaired stale review-pending owner output"]
+    evidence_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_STAGE_REVIEW.md", "KM_IDSystem/docs/governance/events.jsonl"]
+    risk: "Static PASS_WITH_EXPECTED_BLOCK must not be interpreted as live migration, clean real rows, or production readiness."
+    rollback: "Revert the Stage036 review commit only; do not execute SQL or touch raw metadata, databases, runtime outputs, app entries, GitHub state, batch gates, or STAGE-037."
+    target_version: "1.0.0"
+    completed_version: "1.0.0"

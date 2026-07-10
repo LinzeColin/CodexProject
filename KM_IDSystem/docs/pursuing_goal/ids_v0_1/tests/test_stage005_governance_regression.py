@@ -1,4 +1,5 @@
 import importlib.util
+import json
 from pathlib import Path
 import unittest
 
@@ -128,8 +129,13 @@ next_gate_id: "IDS-STAGE005-P4-GATE"
             "missing required-event semantic validator",
         )
         valid_event = {
+            "schema_version": "codexproject.event.v1",
             "event_id": "EVT-IDS-V0_1-STAGE036-P4-20260710-001",
+            "project_id": "KM_IDSystem",
+            "occurred_at": "2026-07-10T18:00:04Z",
             "event_type": "stage_closeout",
+            "summary": "STAGE036 Phase 4 test event",
+            "fact_level": "VERIFIED",
             "task_id": "IDS-V0_1-STAGE036-P4",
             "acceptance_ids": ["ACC-STAGE-036"],
             "changed_files": [
@@ -147,6 +153,7 @@ next_gate_id: "IDS-STAGE005-P4-GATE"
                     "ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_PHASE4_CLOSEOUT.md"
                 },
             ],
+            "actor_role": "Codex",
             "notes": (
                 "live_schema_diff_result=NOT_EXECUTED; "
                 "live_migration_result=NOT_EXECUTED; "
@@ -214,6 +221,110 @@ next_gate_id: "IDS-STAGE005-P4-GATE"
                 self.assertTrue(
                     module.evaluate_required_event_semantics([malformed])
                 )
+
+    def test_stage036_phase1_to_phase3_event_semantics_are_not_ignored(self):
+        module = self._load_module()
+        events_path = ROOT / "docs" / "governance" / "events.jsonl"
+        events = [
+            json.loads(line)
+            for line in events_path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+        stage036_events = [
+            event
+            for event in events
+            if event.get("task_id", "").startswith("IDS-V0_1-STAGE036-P")
+        ]
+        self.assertEqual([], module.evaluate_required_event_semantics(stage036_events))
+
+        for task_id in (
+            "IDS-V0_1-STAGE036-P1",
+            "IDS-V0_1-STAGE036-P2",
+            "IDS-V0_1-STAGE036-P3",
+        ):
+            with self.subTest(task_id=task_id):
+                tampered = [dict(event) for event in stage036_events]
+                target = next(event for event in tampered if event["task_id"] == task_id)
+                target["event_type"] = "upload"
+                self.assertTrue(module.evaluate_required_event_semantics(tampered))
+
+        phase1 = next(
+            event
+            for event in stage036_events
+            if event["task_id"] == "IDS-V0_1-STAGE036-P1"
+        )
+        for mutation in (
+            {**phase1, "notes": phase1["notes"] + "; IDS-STAGE999-P1-GATE"},
+            {
+                **phase1,
+                "notes": phase1["notes"]
+                + "; live_migration_result=EXECUTED",
+            },
+            {**phase1, "push_allowed": True},
+        ):
+            with self.subTest(mutation=mutation):
+                replaced = [
+                    mutation if event["event_id"] == phase1["event_id"] else event
+                    for event in stage036_events
+                ]
+                self.assertTrue(module.evaluate_required_event_semantics(replaced))
+
+    def test_stage036_review_event_semantics_fail_closed(self):
+        module = self._load_module()
+        valid_event = {
+            "schema_version": "codexproject.event.v1",
+            "event_id": "EVT-IDS-V0_1-STAGE036-REVIEW-20260711-001",
+            "project_id": "KM_IDSystem",
+            "occurred_at": "2026-07-10T21:51:40Z",
+            "event_type": "stage_review",
+            "summary": "STAGE036 review test event",
+            "fact_level": "VERIFIED",
+            "task_id": "IDS-V0_1-STAGE036-REVIEW",
+            "acceptance_ids": ["ACC-STAGE-036"],
+            "changed_files": [
+                "KM_IDSystem/scripts/check_database_quality_constraints.py",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_STAGE_REVIEW.md",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml",
+                "KM_IDSystem/docs/governance/roadmap.yaml",
+                "KM_IDSystem/docs/governance/events.jsonl",
+            ],
+            "evidence_refs": [
+                {
+                    "ref": "KM_IDSystem/scripts/check_database_quality_constraints.py#build_stage036_delivery_report"
+                },
+                {
+                    "ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_STAGE_REVIEW.md"
+                },
+            ],
+            "actor_role": "Codex",
+            "notes": (
+                "live_schema_diff_result=NOT_EXECUTED; "
+                "live_migration_result=NOT_EXECUTED; "
+                "live_constraint_validation_result=NOT_EXECUTED; "
+                "live_recovery_smoke_result=NOT_EXECUTED; "
+                "next_gate=IDS-STAGE037-P1-GATE; push_allowed=false"
+            ),
+        }
+        self.assertEqual([], module.evaluate_required_event_semantics([valid_event]))
+        for old, new in (
+            ("stage_review", "upload"),
+            ("IDS-STAGE037-P1-GATE", "IDS-STAGE036-REVIEW-GATE"),
+            ("push_allowed=false", "push_allowed=true"),
+            ("live_migration_result=NOT_EXECUTED", "live_migration_result=EXECUTED"),
+        ):
+            with self.subTest(old=old, new=new):
+                tampered = dict(valid_event)
+                if old == "stage_review":
+                    tampered["event_type"] = new
+                else:
+                    tampered["notes"] = valid_event["notes"].replace(old, new)
+                self.assertTrue(module.evaluate_required_event_semantics([tampered]))
+
+        top_level_unsafe = dict(valid_event)
+        top_level_unsafe["push_allowed"] = True
+        self.assertTrue(
+            module.evaluate_required_event_semantics([top_level_unsafe])
+        )
 
     def test_ids_metadata_raw_boundary_requires_real_data_only_policy(self):
         module = self._load_module()
@@ -7337,6 +7448,77 @@ next_gate_id: "IDS-STAGE036-REVIEW-GATE"
             missing_checks["decision_next_allowed_task_matches_gate"],
             missing_checks,
         )
+
+    def test_phase_state_allows_stage036_reviewed_local_no_upload(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-031-040"
+status: "stage036_completed_reviewed_local"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-036:
+    status: "completed_reviewed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    review_status: "passed"
+    next_stage: "STAGE-037"
+    next_gate: "IDS-STAGE037-P1-GATE"
+    current_task_id: "IDS-V0_1-STAGE036-REVIEW"
+    acceptance_id: "ACC-STAGE-036"
+    acceptance_status: "reviewed_local_passed"
+decision:
+  current_task_id: "IDS-V0_1-STAGE036-REVIEW"
+  next_allowed_task_id: "IDS-V0_1-STAGE037-P1"
+  github_upload_allowed: false
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE036"
+current_phase_id: "IDS-STAGE036-REVIEW"
+current_task_id: "IDS-V0_1-STAGE036-REVIEW"
+next_gate_id: "IDS-STAGE037-P1-GATE"
+        phase_id: "IDS-STAGE005-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE005-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE005-P4"
+          status: "passed_no_github_upload_until_batch_complete"
+        phase_id: "IDS-STAGE036-P1"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE036-P2"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE036-P3"
+          status: "passed_with_local_evidence"
+        phase_id: "IDS-STAGE036-P4"
+          status: "passed_no_github_upload_until_stage_review"
+      review_id: "IDS-STAGE036-REVIEW"
+      task_id: "IDS-V0_1-STAGE036-REVIEW"
+      status: "completed"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+        self.assertTrue(all(checks.values()), checks)
+        structured_roadmap = """
+current_stage_id: "IDS-STAGE036"
+current_phase_id: "IDS-STAGE036-REVIEW"
+current_task_id: "IDS-V0_1-STAGE036-REVIEW"
+next_gate_id: "IDS-STAGE037-P1-GATE"
+"""
+        structured = module.evaluate_current_state_consistency(
+            batch_text, structured_roadmap
+        )
+        self.assertTrue(all(structured.values()), structured)
 
     def test_structured_state_rejects_stage035_node_contradictions(self):
         module = self._load_module()

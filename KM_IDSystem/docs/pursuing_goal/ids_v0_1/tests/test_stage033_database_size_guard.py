@@ -151,6 +151,7 @@ class Stage033DatabaseSizeGuardPhase1Tests(unittest.TestCase):
             'status: "stage036_phase2_in_progress"',
             'status: "stage036_phase3_in_progress"',
             'status: "stage036_completed_local_pending_review"',
+            'status: "stage036_completed_reviewed_local"',
         ]
         allowed_lock_next_terms = [
             'next_phase: "Phase 2"',
@@ -407,6 +408,7 @@ class Stage033DatabaseSizeGuardPhase3Tests(unittest.TestCase):
             'status: "stage036_phase2_in_progress"',
             'status: "stage036_phase3_in_progress"',
             'status: "stage036_completed_local_pending_review"',
+            'status: "stage036_completed_reviewed_local"',
         ]
         allowed_lock_gate_terms = [
             'next_gate: "IDS-STAGE033-P4-GATE"',
@@ -645,6 +647,7 @@ class Stage033DatabaseSizeGuardPhase4Tests(unittest.TestCase):
             'status: "stage036_phase2_in_progress"',
             'status: "stage036_phase3_in_progress"',
             'status: "stage036_completed_local_pending_review"',
+            'status: "stage036_completed_reviewed_local"',
         ]
         allowed_lock_gate_terms = [
             'next_gate: "IDS-STAGE033-REVIEW-GATE"',
@@ -801,6 +804,7 @@ class Stage033DatabaseSizeGuardReviewTests(unittest.TestCase):
             'status: "stage036_phase2_in_progress"',
             'status: "stage036_phase3_in_progress"',
             'status: "stage036_completed_local_pending_review"',
+            'status: "stage036_completed_reviewed_local"',
         ]
         allowed_lock_gate_terms = [
             'next_gate: "IDS-STAGE034-P1-GATE"',
@@ -1058,6 +1062,7 @@ class Stage033DatabaseSizeGuardPhase2Tests(unittest.TestCase):
             'status: "stage036_phase2_in_progress"',
             'status: "stage036_phase3_in_progress"',
             'status: "stage036_completed_local_pending_review"',
+            'status: "stage036_completed_reviewed_local"',
         ]
         allowed_lock_next_terms = [
             'next_phase: "Phase 3"',

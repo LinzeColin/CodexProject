@@ -1,5 +1,15 @@
 # Project Governance Status
 
+## IDS v0.1 Staged Delivery
+
+- Current stage: `STAGE-036 · 数据库质量约束`
+- Current task: `IDS-V0_1-STAGE036-REVIEW`
+- State: `completed_reviewed_local`
+- Next gate: `IDS-STAGE037-P1-GATE`
+- Batch gate: `BATCH031_040` remains locked with `push_allowed=false`.
+- Review result: engineering contract reviewed after remediation; this is not live PostgreSQL, real-row quality, or production-readiness evidence.
+- Model/formula/parameter delta: none.
+
 ## Snapshot Metadata
 
 - source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
@@ -14,7 +24,7 @@
 - Project: `KM_IDSystem`
 - Path: `KM_IDSystem`
 - Product version: `1.0.0`
-- Phase/Gate: `B / GOV-SEMANTIC-OPME-in-progress`
+- Phase/Gate: `IDS-STAGE036-REVIEW / IDS-STAGE037-P1-GATE`
 - Models/Formulas/Parameters total: `7 / 7 / 49`
 - Active formulas/parameters: `7 / 49`
 - Machine checked formulas/parameters: `7 / 49`

@@ -22,8 +22,10 @@
     "stage034_data_retention_table_index_ref": "../data_retention_table/stage034_data_retention_table_index.json",
     "stage035_database_recovery_smoke_index_ref": "../database_recovery_smoke/stage035_database_recovery_smoke_index.json",
     "migration_sql_ref": "002_database_quality_constraints.sql",
+    "quality_profile_queries_ref": "stage036_quality_profile_queries.json",
     "raw_data_boundary_ref": "../IDS_METADATA_RAW_DATA_BOUNDARY.md",
-    "phase2_checker_ref": "../../../../scripts/check_database_quality_constraints.py"
+    "phase2_checker_ref": "../../../../scripts/check_database_quality_constraints.py",
+    "migration_section_runner_ref": "../../../../scripts/run_stage036_migration_section.py"
   },
   "dependency_contract": {
     "stage030_schema_version": "ids.stage030.postgresql_control_plane.index.v1",
@@ -33,6 +35,14 @@
     "stage034_schema_version": "ids.stage034.data_retention_table.index.v1",
     "stage035_schema_version": "ids.stage035.database_recovery_smoke.index.v1",
     "stage030_migration_id": "ids_stage030_001_control_plane",
+    "dependency_index_sha256": {
+      "stage030_control_plane_index_ref": "00779a914d7eb08ea94285cc07f9ae9583ca4d50a7d7f6d8f647cc9bdbd278cd",
+      "stage031_migration_safety_index_ref": "cd1362d8bda358becc6d5cfc14d6e4f9a3b85ca3d6155d70fe2714fac66b2bb0",
+      "stage032_connection_pool_index_ref": "2ffb32d423429c40e5198fe22c95fc15f038a06c92ce401aa7e4527d13d1b56d",
+      "stage033_database_size_guard_index_ref": "008f582cb2d2a95d53f02a45b5f4acbd54f749d77ebdb216192f2b61db3ed419",
+      "stage034_data_retention_table_index_ref": "0b579f93c623cd20e99752c9801f5c9bb14757e531697d687f87fe5c7c6c8504",
+      "stage035_database_recovery_smoke_index_ref": "34cf0f28f921d0a136fc91256b7a5e9119d71cccbbb8db4bbc1f98bcb9f6345c"
+    },
     "required_control_plane_tables": [
       "ids_metadata_sources",
       "ids_jobs",
@@ -60,8 +70,12 @@
     "data_repair_allowed": false,
     "state_value_seed_allowed": false,
     "runtime_execution_allowed": false,
-    "future_apply_command_ref": "psql --set ON_ERROR_STOP=1 --single-transaction with approved ids.owner_authorized_real_profile_ref, ids.migration_backup_checkpoint_ref, and ids.migration_rollback_plan_ref session settings",
-    "future_rollback_command_ref": "psql --set ON_ERROR_STOP=1 --single-transaction --section migrate:down"
+    "section_runner_required": true,
+    "section_runner_ref": "../../../../scripts/run_stage036_migration_section.py",
+    "authorization_envelope_required": true,
+    "authorization_envelope_schema_version": "ids.stage036.migration_authorization.v1",
+    "future_apply_command_ref": "BLOCKED_V0_1_NO_TRUSTED_AUTHORIZATION_OR_TARGET_BINDING",
+    "future_rollback_command_ref": "python3 -B KM_IDSystem/scripts/run_stage036_migration_section.py --section down | psql --set ON_ERROR_STOP=1"
   },
   "versioned_state_registry": {
     "table": "ids_state_value_registry",
@@ -125,6 +139,12 @@
         "candidate_state": "OWNER_AUTHORIZED_REAL_DATA_PROFILE_REQUIRED",
         "owner_authorized_real_data_profile_required": true,
         "validation_kind": "duplicate_count_must_be_zero",
+        "preflight_query_id": "profile.uq_ids_chunks_document_ordinal.v1",
+        "preflight_query_sha256": "b04c3c07c72c2c8cbef6df7c7327a1174a947e545471587dbb652648b9c9bc83",
+        "migration_ref": "002_database_quality_constraints.sql",
+        "validation_evidence_ref": "owner_authorized_zero_violation_evidence_required",
+        "rollback_ref": "002_database_quality_constraints.sql#migrate:down",
+        "dependency_refs": ["stage030_control_plane_schema_ref", "stage031_migration_safety_index_ref", "stage035_database_recovery_smoke_index_ref"],
         "live_apply_blocked": true,
         "rollback_required": true,
         "owner_explanation_zh": "同一 document_id 下的 chunk_ordinal 必须唯一；应用前必须用 owner 授权真实控制面数据证明不存在重复。"
@@ -145,6 +165,12 @@
         "candidate_state": "OWNER_AUTHORIZED_REAL_DATA_PROFILE_REQUIRED",
         "owner_authorized_real_data_profile_required": true,
         "validation_kind": "nonblank_nonnegative_bounded_no_raw",
+        "preflight_query_id": "profile.chk_ids_metadata_sources_quality_v2.v1",
+        "preflight_query_sha256": "8be22adcb663d4aa8ccd1adc8db756391e1f57975526a83efb10d4eedc058be3",
+        "migration_ref": "002_database_quality_constraints.sql",
+        "validation_evidence_ref": "owner_authorized_zero_violation_evidence_required",
+        "rollback_ref": "002_database_quality_constraints.sql#migrate:down",
+        "dependency_refs": ["stage030_control_plane_schema_ref", "stage031_migration_safety_index_ref", "stage035_database_recovery_smoke_index_ref"],
         "live_apply_blocked": true,
         "rollback_required": true,
         "owner_explanation_zh": "metadata source 身份和边界字段必须非空，体积必须非负且有界，并继续禁止 raw content。"
@@ -165,6 +191,12 @@
         "candidate_state": "OWNER_AUTHORIZED_REAL_DATA_PROFILE_REQUIRED",
         "owner_authorized_real_data_profile_required": true,
         "validation_kind": "nonblank_retry_pool_payload_bounds",
+        "preflight_query_id": "profile.chk_ids_jobs_quality_v2.v1",
+        "preflight_query_sha256": "aa3e0da5e3e5f6309c4012a65778c4f98c1a8f80614b0c92a97b4df62440b5b9",
+        "migration_ref": "002_database_quality_constraints.sql",
+        "validation_evidence_ref": "owner_authorized_zero_violation_evidence_required",
+        "rollback_ref": "002_database_quality_constraints.sql#migrate:down",
+        "dependency_refs": ["stage030_control_plane_schema_ref", "stage031_migration_safety_index_ref", "stage035_database_recovery_smoke_index_ref"],
         "live_apply_blocked": true,
         "rollback_required": true,
         "owner_explanation_zh": "job 身份、类型和状态必须非空，重试、连接池和 payload 必须保持有界；状态值仍由 STAGE-037 定义。"
@@ -183,6 +215,12 @@
         "candidate_state": "OWNER_AUTHORIZED_REAL_DATA_PROFILE_REQUIRED",
         "owner_authorized_real_data_profile_required": true,
         "validation_kind": "nonblank_bounded_payload",
+        "preflight_query_id": "profile.chk_ids_documents_quality_v2.v1",
+        "preflight_query_sha256": "12b9d678da2204b00bd1a497da568ba9b0da0d8f9b26bad55f05eecf023a2e28",
+        "migration_ref": "002_database_quality_constraints.sql",
+        "validation_evidence_ref": "owner_authorized_zero_violation_evidence_required",
+        "rollback_ref": "002_database_quality_constraints.sql#migrate:down",
+        "dependency_refs": ["stage030_control_plane_schema_ref", "stage031_migration_safety_index_ref", "stage035_database_recovery_smoke_index_ref"],
         "live_apply_blocked": true,
         "rollback_required": true,
         "owner_explanation_zh": "document 身份、source ref 和 parser_state 必须非空，控制面 payload 必须非负且不超过 1 MiB。"
@@ -203,6 +241,12 @@
         "candidate_state": "OWNER_AUTHORIZED_REAL_DATA_PROFILE_REQUIRED",
         "owner_authorized_real_data_profile_required": true,
         "validation_kind": "nonblank_ordinal_offsets_payload_consistency",
+        "preflight_query_id": "profile.chk_ids_chunks_quality_v2.v1",
+        "preflight_query_sha256": "866795bdfa33989140f3fada627423e86260ce66d880962fb75c953974790bde",
+        "migration_ref": "002_database_quality_constraints.sql",
+        "validation_evidence_ref": "owner_authorized_zero_violation_evidence_required",
+        "rollback_ref": "002_database_quality_constraints.sql#migrate:down",
+        "dependency_refs": ["stage030_control_plane_schema_ref", "stage031_migration_safety_index_ref", "stage035_database_recovery_smoke_index_ref"],
         "live_apply_blocked": true,
         "rollback_required": true,
         "owner_explanation_zh": "chunk 身份和 parser_state 必须非空，offset 必须成对、非负且有序，payload 必须有界。"
@@ -221,6 +265,12 @@
         "candidate_state": "OWNER_AUTHORIZED_REAL_DATA_PROFILE_REQUIRED",
         "owner_authorized_real_data_profile_required": true,
         "validation_kind": "nonblank_and_existing_fact_level_check",
+        "preflight_query_id": "profile.chk_ids_evidence_records_quality_v2.v1",
+        "preflight_query_sha256": "ac3466a0af67d329bc3c6d3fbb6e51c8166860f31af09e259147d37f556ac92b",
+        "migration_ref": "002_database_quality_constraints.sql",
+        "validation_evidence_ref": "owner_authorized_zero_violation_evidence_required",
+        "rollback_ref": "002_database_quality_constraints.sql#migrate:down",
+        "dependency_refs": ["stage030_control_plane_schema_ref", "stage031_migration_safety_index_ref", "stage035_database_recovery_smoke_index_ref"],
         "live_apply_blocked": true,
         "rollback_required": true,
         "owner_explanation_zh": "证据身份、来源和 validation_state 必须非空；fact_level 继续使用既有 VERIFIED/INFERRED/UNKNOWN 约束。"
@@ -239,6 +289,12 @@
         "candidate_state": "OWNER_AUTHORIZED_REAL_DATA_PROFILE_REQUIRED",
         "owner_authorized_real_data_profile_required": true,
         "validation_kind": "nonblank_audit_identity_and_state",
+        "preflight_query_id": "profile.chk_ids_audit_events_quality_v2.v1",
+        "preflight_query_sha256": "1f6e72be87c55716806759f6d40c48d8b01e7744bbbd04057db084a3f0970711",
+        "migration_ref": "002_database_quality_constraints.sql",
+        "validation_evidence_ref": "owner_authorized_zero_violation_evidence_required",
+        "rollback_ref": "002_database_quality_constraints.sql#migrate:down",
+        "dependency_refs": ["stage030_control_plane_schema_ref", "stage031_migration_safety_index_ref", "stage035_database_recovery_smoke_index_ref"],
         "live_apply_blocked": true,
         "rollback_required": true,
         "owner_explanation_zh": "审计事件的 actor、action、object 和 decision_state 必须非空；decision_state 值由后续 owner workflow 合同定义。"
@@ -258,6 +314,12 @@
         "candidate_state": "OWNER_AUTHORIZED_REAL_DATA_PROFILE_REQUIRED",
         "owner_authorized_real_data_profile_required": true,
         "validation_kind": "nonblank_existing_state_check_bounded_payload",
+        "preflight_query_id": "profile.chk_ids_index_versions_quality_v2.v1",
+        "preflight_query_sha256": "37c7f80f4ebc1336fdb375dbe4d35f0057d35851f9c612c2b4a5729ea9d31393",
+        "migration_ref": "002_database_quality_constraints.sql",
+        "validation_evidence_ref": "owner_authorized_zero_violation_evidence_required",
+        "rollback_ref": "002_database_quality_constraints.sql#migrate:down",
+        "dependency_refs": ["stage030_control_plane_schema_ref", "stage031_migration_safety_index_ref", "stage035_database_recovery_smoke_index_ref"],
         "live_apply_blocked": true,
         "rollback_required": true,
         "owner_explanation_zh": "index identity、coverage 和 hot pointer 必须非空，index_state 继续使用既有值集，payload 必须有界。"
@@ -277,6 +339,12 @@
         "candidate_state": "OWNER_AUTHORIZED_REAL_DATA_PROFILE_REQUIRED",
         "owner_authorized_real_data_profile_required": true,
         "validation_kind": "nonblank_dry_run_rollback_recovery_refs",
+        "preflight_query_id": "profile.chk_ids_schema_migrations_quality_v2.v1",
+        "preflight_query_sha256": "d4775dbe8beb587b0618c96c1f5882d5602e38b51d7eb601da2e51e06e836d98",
+        "migration_ref": "002_database_quality_constraints.sql",
+        "validation_evidence_ref": "owner_authorized_zero_violation_evidence_required",
+        "rollback_ref": "002_database_quality_constraints.sql#migrate:down",
+        "dependency_refs": ["stage030_control_plane_schema_ref", "stage031_migration_safety_index_ref", "stage035_database_recovery_smoke_index_ref"],
         "live_apply_blocked": true,
         "rollback_required": true,
         "owner_explanation_zh": "每条 migration 必须有 checksum、dry-run、rollback SQL 和 recovery checkpoint；破坏性迁移仍需单独 owner gate。"
@@ -348,6 +416,50 @@
       "plaintext secrets"
     ]
   },
+  "authorization_envelope_contract": {
+    "schema_version": "ids.stage036.migration_authorization.v1",
+    "required": true,
+    "runtime_authorization_default": false,
+    "trusted_signature_verifier_available": false,
+    "target_binding_verifier_available": false,
+    "live_up_emission_allowed": false,
+    "tracked_envelope_allowed": false,
+    "raw_row_values_allowed": false,
+    "secrets_allowed": false,
+    "source_database_mutation_allowed": false,
+    "destructive_migration_authorized_by_default": false,
+    "required_fields": [
+      "schema_version",
+      "migration_id",
+      "migration_sha256",
+      "acceptance_id",
+      "authorization_granted",
+      "approved_at_utc",
+      "expires_at_utc",
+      "owner_approval_ref",
+      "profile_evidence_ref",
+      "backup_checkpoint_ref",
+      "rollback_plan_ref",
+      "source_database_identity_ref",
+      "target_database_identity_ref",
+      "schema_head_ref",
+      "source_database_mutation_allowed",
+      "destructive_migration_authorized",
+      "secrets_in_envelope",
+      "candidate_results"
+    ],
+    "candidate_query_sha256": {
+      "uq_ids_chunks_document_ordinal": "b04c3c07c72c2c8cbef6df7c7327a1174a947e545471587dbb652648b9c9bc83",
+      "chk_ids_metadata_sources_quality_v2": "8be22adcb663d4aa8ccd1adc8db756391e1f57975526a83efb10d4eedc058be3",
+      "chk_ids_jobs_quality_v2": "aa3e0da5e3e5f6309c4012a65778c4f98c1a8f80614b0c92a97b4df62440b5b9",
+      "chk_ids_documents_quality_v2": "12b9d678da2204b00bd1a497da568ba9b0da0d8f9b26bad55f05eecf023a2e28",
+      "chk_ids_chunks_quality_v2": "866795bdfa33989140f3fada627423e86260ce66d880962fb75c953974790bde",
+      "chk_ids_evidence_records_quality_v2": "ac3466a0af67d329bc3c6d3fbb6e51c8166860f31af09e259147d37f556ac92b",
+      "chk_ids_audit_events_quality_v2": "1f6e72be87c55716806759f6d40c48d8b01e7744bbbd04057db084a3f0970711",
+      "chk_ids_index_versions_quality_v2": "37c7f80f4ebc1336fdb375dbe4d35f0057d35851f9c612c2b4a5729ea9d31393",
+      "chk_ids_schema_migrations_quality_v2": "d4775dbe8beb587b0618c96c1f5882d5602e38b51d7eb601da2e51e06e836d98"
+    }
+  },
   "phase4_delivery_contract": {
     "schema_version": "ids.stage036.database_quality_constraints.delivery_contract.v1",
     "schema_diff": {
@@ -355,7 +467,7 @@
       "baseline_schema_ref": "../postgresql_control_plane/001_control_plane_schema.sql",
       "migration_sql_ref": "002_database_quality_constraints.sql",
       "baseline_schema_sha256": "9fa7b8e535fe799c0aed14d738f568b33a19fc2835eeb492c8217bc35b588479",
-      "migration_sha256": "b8e3e49473fe89fae34b81042e7bc456499ba4702e4f6e6c637b65d91b5f3af1",
+      "migration_sha256": "52cd624f9e3bec197fa20a14405c7fe2ea149362115c33e9de0145b315dd455a",
       "added_table_contracts": [
         "ids_state_value_registry"
       ],
@@ -366,7 +478,7 @@
     "migration_output": {
       "mode": "static_tracked_migration_output_not_executed",
       "migration_id": "ids_stage036_002_database_quality_constraints",
-      "tracked_migration_sha256": "b8e3e49473fe89fae34b81042e7bc456499ba4702e4f6e6c637b65d91b5f3af1",
+      "tracked_migration_sha256": "52cd624f9e3bec197fa20a14405c7fe2ea149362115c33e9de0145b315dd455a",
       "live_migration_result": "NOT_EXECUTED",
       "live_constraint_validation_result": "NOT_EXECUTED",
       "dry_run_required": true,
