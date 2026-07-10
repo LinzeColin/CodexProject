@@ -4,20 +4,21 @@
 
 - product version: 0.2.0
 - product version status: provisional
-- current phase: D - Memory Atlas local release acceptance
-- current gate: MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED
-- confirmed iterations: 10
+- current phase: CF-L2 - MemoryAtlas public-safe deployment
+- current gate: ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH
+- confirmed iterations: 11
 - reconstructed development events: 16
-- current task: TASK-OAI-D-002 blocked by Cloudflare authentication/env; latest completed task TASK-OAI-D-004 Memory Atlas Phase 1 live URL readiness gate repair
+- current task: CF-L2-20260710 blocked by Cloudflare Workers authorization; existing TASK-OAI-D-002 and TASK-OAI-D-004 evidence remains preserved
 - blockers: live Wrangler authentication, Cloudflare account/token/hostname/allowed-email env, remaining complex branch rules, TypeScript writeback semantics, heuristic calibration evidence, owner privacy signoff, and production memory safety are HUMAN_REVIEW_REQUIRED or UNKNOWN; S3PDT01 is synthetic privacy-boundary evidence only
 
 Confirmed iterations are not inferred from commit count. This ledger currently
-records ten confirmed iterations: the baseline run, three TASK-OAI-C-002
+records eleven confirmed iterations: the baseline run, three TASK-OAI-C-002
 follow-up governance and personalization hardening runs, the semantic
 extractor rollout run, the S3PDT01 synthetic privacy-boundary run, the
 TASK-OAI-D-001 Memory Atlas local release/preflight run, and the TASK-OAI-D-003
 OpenAIDatabase CI evidence-schema repair run, the macdata proM2 setup run, and
-the TASK-OAI-D-004 Memory Atlas Phase 1 live URL readiness gate repair run.
+the TASK-OAI-D-004 Memory Atlas Phase 1 live URL readiness gate repair run, plus
+the CF-L2 public-safe build/privacy/dry-run iteration.
 
 ## Phase Matrix
 
@@ -287,3 +288,15 @@ RECONSTRUCTED development events only, not confirmed iterations.
 
 - Work before the monorepo import on 2026-06-19 is not reconstructable from the scoped path log in this checkout.
 - Earlier standalone repository iterations, if any, are UNKNOWN unless supported by durable records outside this scoped audit.
+
+### ITER-20260710-OAIDB-CF-L2
+
+- Date: 2026-07-10
+- Fact level: VERIFIED for build, privacy/accessibility, scan, responsive rendering, and dry-run; UNKNOWN for anonymous public deployment.
+- Version before/after: `0.2.0` / `0.2.0`.
+- Task / Acceptance: `CF-L2-20260710` / `ACC-CF-L2-20260710`.
+- Goal: deploy the existing MemoryAtlas redacted derived viewer as an L2 surface while the raw/private database core stays local.
+- Result: Vite build, release privacy/accessibility gate, private dist scan, desktop/mobile QA, and Wrangler 4.110.0 dry-run passed. The existing custom domain remains Access-protected and is not mislabeled as anonymous public access; real deploy is blocked by Workers authorization.
+- Model and parameter boundary: no memory formula, model, derived snapshot, raw archive, import, session, cookie, secret, or writeback behavior changed.
+- Rollback: restore the prior Wrangler config and remove the HomeHub return link while preserving Access and all private data boundaries.
+- Next gate: authorize Workers deploy, verify a public-safe URL with HTTP 200, then bind deployment evidence without removing Access from the protected domain.

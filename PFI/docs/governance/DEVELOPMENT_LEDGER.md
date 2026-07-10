@@ -3,9 +3,9 @@
 product_version: v0.2.1 前端优化
 model_count: 1
 formula_count: 1
-parameter_count: 22
-task_count: 6
-acceptance_count: 6
+parameter_count: 23
+task_count: 7
+acceptance_count: 7
 
 ## 2026-06-27
 
@@ -35,3 +35,15 @@ acceptance_count: 6
 - 完成 PFI v0.2.2 Stage 4 Economic Event 与 Interconnection 逻辑，新增 `src/pfi_v02/stage_v022_interconnection.py`、`docs/pfi_v022/STAGE4_INTERCONNECTION.md`、`docs/pfi_v02/INTERCONNECTION_MATRIX.md`、`tests/test_v022_interconnection_no_double_count.py` 和 `tests/test_v022_consumption_investment_outflow.py`。
 - product_version v0.2.2 数据库治理 Stage 4 对应本轮 interconnection/no-double-count 文档状态；`VERSION` 继续保留 v0.2.1 前端优化，表示 UIUX 基线仍沿用 v0.2.1 HTML Web Shell。
 - Stage 4 覆盖 `S4-P1-T1..S4-P2-T3`，建立 `economic_event_id`、`interconnection_group_id`、事件影响 flags、Interconnection Matrix、Metric Dependency Graph、双消费口径和 no-double-count 规则。
+
+## ITER-20260710-PFI-CF-L2
+
+- 日期：2026-07-10。
+- 事实等级：本地 build、隐私扫描、13 项兼容性测试、桌面/移动端渲染和 Wrangler dry-run 为 VERIFIED；真实部署为 UNKNOWN。
+- 版本前后：`v0.2.1 前端优化` / `v0.2.1 前端优化`。
+- Task / Acceptance：`CF-L2-20260710` / `ACC-CF-L2-20260710`。
+- 目标：增加隔离的定性脱敏 L2 产品壳，不读取真实账户、组合、交易、券商凭据、私密报告或本地数据库。
+- 结果：静态 build、private dist scan、响应式 QA 和 Wrangler 4.110.0 dry-run 通过；真实 deploy 因 Workers 授权阻塞，未填写 live URL。
+- 模型与参数边界：不修改投资、消费、现金流、汇率、分类、推荐或执行逻辑；`PARAM-PFI-023` 只记录公开 adapter 的 L2 兼容合同。
+- 回滚：删除 `web/cloudflare-public` 与本次治理记录；PFI 私密核心和真实财务数据不受影响。
+- 下一门槛：完成 Workers 授权、部署、HTTP 200 验证和 commit/evidence 绑定。

@@ -1,10 +1,10 @@
 project_id: "Serenity-Alipay"
-as_of_event_id: "ITER-20260624-SERENITY-S3PCT03"
-source_snapshot_hash: "sha256:0c8fa2276365a67eeaa586422882b54b549ffb3c852114d6eaded719ca79f491"
+as_of_event_id: "EVENT-20260710-SERENITY-CF-L2"
+source_snapshot_hash: "sha256:ba1ac49f88f9c640f64be68fe87ff35f7c1560283c7f9780fb74ef17a51dca33"
 source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-24T23:20:00+10:00"
-generator_version: "4.0.0"
+snapshot_event_time: "2026-07-10T17:50:45+10:00"
+generator_version: "4.0.1"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
   structural_completeness:
@@ -16,8 +16,8 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 49
-    total_active_parameters: 49
+    checked_active_parameters: 50
+    total_active_parameters: 50
     checked_active_formulas: 12
     total_active_formulas: 12
     unresolved_fact_ids: []
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 49
-    total_active_parameters: 49
+    checked_active_parameters: 50
+    total_active_parameters: 50
     evidence_refs:
       - "Serenity-Alipay/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -64,23 +64,24 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 1
     legacy_unbound_events: 3
-    precommit_pending_events: 1
+    precommit_pending_events: 2
     evidence_refs:
       - "Serenity-Alipay/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "UNVERIFIED"
-  release_gate: "GOV-REVIEW6-B-SEMANTIC-EXTRACT; OTHER8-S3PC-LIFECYCLE-IN-PROGRESS"
+  release_gate: "ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH"
   blocker_ids:
     - "FACT-Serenity-Alipay-EMPIRICAL-EVIDENCE"
     - "FACT-Serenity-Alipay-OPERATIONAL-EVIDENCE"
 next_executable_task:
-  task_id: "NONE"
-  status: "not_applicable"
-  reason: "No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands."
-  acceptance_ids: []
-  owner: "project owner"
-  human_owner_role: "project_owner"
-  unblock_condition: "Define a ready/in_progress/blocked task with completed dependencies, Acceptance IDs, and evidence policy."
+  task_id: "CF-L2-20260710"
+  status: "blocked"
+  reason: "Deliver a read-only redacted Serenity cockpit as a public-safe Cloudflare L2 surface with no external account action."
+  acceptance_ids:
+    - "ACC-CF-L2-20260710"
+  owner: "model_owner + risk_owner"
+  human_owner_role: "model_owner + risk_owner"
+  unblock_condition: "A public cockpit could be mistaken for a live Alipay, broker, mail, notification, or trading integration."
   stale_candidates:
     -
       task_id: "TASK-A-001"

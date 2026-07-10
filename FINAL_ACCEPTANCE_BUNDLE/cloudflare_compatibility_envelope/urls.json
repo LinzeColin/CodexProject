@@ -1,0 +1,44 @@
+{
+  "schema_version": "cloudflare_compatibility_urls.v1",
+  "acceptance_id": "ACC-CF-L2-20260710",
+  "generated_at": "2026-07-10T08:30:00Z",
+  "projects": [
+    {
+      "project_id": "linze-home-hub",
+      "actual_url": "https://home.linzezhang.com",
+      "fallback_url": "https://github.com/LinzeColin/LinzeHomeHub",
+      "verification": "http_200_existing_deployment_current_commit_redeploy_auth_blocked"
+    },
+    {
+      "project_id": "nab",
+      "actual_url": "https://nab.linzezhang.com",
+      "fallback_url": "https://github.com/LinzeColin/Archive/tree/main/nab",
+      "verification": "http_200_content_byte_equivalent_to_archive_source"
+    },
+    {
+      "project_id": "eei",
+      "actual_url": "",
+      "fallback_url": "https://github.com/LinzeColin/CodexProject/tree/main/EEI/apps/cloudflare-public",
+      "verification": "deploy_ready_auth_blocked"
+    },
+    {
+      "project_id": "openaidatabase",
+      "actual_url": "",
+      "protected_domain_url": "https://memoryatlas.linzezhang.com",
+      "fallback_url": "https://github.com/LinzeColin/CodexProject/tree/main/OpenAIDatabase/apps/memory-atlas",
+      "verification": "protected_domain_returns_cloudflare_access_not_anonymous_public"
+    },
+    {
+      "project_id": "pfi",
+      "actual_url": "",
+      "fallback_url": "https://github.com/LinzeColin/CodexProject/tree/main/PFI/web/cloudflare-public",
+      "verification": "deploy_ready_auth_blocked"
+    },
+    {
+      "project_id": "serenity-alipay",
+      "actual_url": "",
+      "fallback_url": "https://github.com/LinzeColin/CodexProject/tree/main/Serenity-Alipay/app/cloudflare-public",
+      "verification": "deploy_ready_auth_blocked"
+    }
+  ]
+}

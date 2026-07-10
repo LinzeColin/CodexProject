@@ -146,6 +146,24 @@ tasks:
     target_version: "0.2.0"
     completed_version: "0.2.0"
     completed_commit: "PENDING"
+  - task_id: "CF-L2-20260710"
+    phase: "CF-L2"
+    objective: "Deliver the redacted derived MemoryAtlas viewer as a public-safe Cloudflare L2 surface while the raw and private OpenAIDatabase core remains local."
+    scope: ["MemoryAtlas production build", "Workers Static Assets config", "privacy and accessibility validation", "public deployment evidence"]
+    non_scope: ["raw archives", "private imports", "cookies or sessions", "direct database mutation", "Access policy removal"]
+    status: "blocked"
+    dependencies: []
+    required_files: ["OpenAIDatabase/apps/memory-atlas/src/App.tsx", "OpenAIDatabase/apps/memory-atlas/dist", "OpenAIDatabase/wrangler.jsonc", "governance/cloudflare/deployments.json"]
+    acceptance_ids: ["ACC-CF-L2-20260710"]
+    test_commands: ["npm run build", "npm run validate:stage7-privacy-accessibility", "python3 scripts/cloudflare/scan_public_dist.py --path OpenAIDatabase/apps/memory-atlas/dist", "npx wrangler@4.110.0 deploy --dry-run"]
+    test_results: ["PASS: Vite production build", "PASS: release privacy and accessibility gate", "PASS: private distribution scan", "PASS: Wrangler 4.110.0 dry-run", "BLOCKED: real Cloudflare deploy requires Workers authorization; protected custom domain is not claimed as anonymous public access"]
+    evidence_refs: ["OpenAIDatabase/apps/memory-atlas/src/App.tsx", "governance/cloudflare/deployments.json", "FINAL_ACCEPTANCE_BUNDLE/cloudflare_compatibility_envelope/FINAL_REPORT.md"]
+    risk: "A protected Access sign-in page or redacted viewer could be mislabeled as anonymous public deployment or as the private memory core."
+    rollback: "Restore the previous Wrangler config and HomeHub link while preserving the Access-protected custom domain and local private data."
+    target_version: "0.2.0"
+    completed_version: ""
+    fact_level: "EXTRACTED"
+    unknown_task_ids: []
   - task_id: "TASK-OAI-D-002"
     phase: "D"
     objective: "Execute authorized Cloudflare Pages direct upload and verify Cloudflare Access protection for Memory Atlas."

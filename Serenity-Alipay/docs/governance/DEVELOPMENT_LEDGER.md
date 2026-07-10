@@ -11,19 +11,19 @@ This ledger is human-readable. The append-only machine event stream is
 
 - Product version: `0.1.0`
 - Product version status: `provisional`
-- Current phase: `B`
-- Current gate: `GOV-REVIEW6-B-SEMANTIC-EXTRACT`
-- Confirmed iteration count: 3
+- Current phase: `CF-L2`
+- Current gate: `ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH`
+- Confirmed iteration count: 4
 - Reconstructed development event count: 2
-- Current task: `GOV-REVIEW6-B-SERENITY-SEMANTIC-EXTRACT-001`; latest remediation task `S3PCT03` completed
+- Current task: `CF-L2-20260710`; existing semantic and S3PCT03 evidence remains preserved.
 - Blockers: empirical calibration, live OpenD/email/trading readiness, and owner production-readiness approval remain unresolved; S3PCT03 is lifecycle-contract evidence only.
 
 machine_summary:
 
 - model_count: 5
 - formula_count: 12
-- parameter_count: 49
-- task_count: 9
+- parameter_count: 50
+- task_count: 10
 
 ## Phase Matrix
 
@@ -157,3 +157,15 @@ Do not infer iteration count from Git commit count.
 | `python -m pytest` focused Serenity tests | BLOCKED | exit 127; current shell has no `python` executable |
 | `python3 -m pytest` focused Serenity tests | PASS | exit 0; 20 passed |
 | `git diff --check` | PASS | exit 0 |
+
+## ITER-20260710-SERENITY-CF-L2
+
+- Date: 2026-07-10
+- Fact level: VERIFIED for local build, scan, compatibility tests, responsive rendering, and dry-run; UNKNOWN for live deployment.
+- Version before/after: `0.1.0` / `0.1.0`.
+- Task / Acceptance: `CF-L2-20260710` / `ACC-CF-L2-20260710`.
+- Goal: add an isolated read-only public cockpit with a hard boundary against Alipay, MooMoo/OpenD, Apple Mail, notifications, trades, launchd, and external accounts.
+- Result: static build, 13 compatibility tests, private dist scan, desktop/mobile QA, and Wrangler 4.110.0 dry-run passed. Real deploy is blocked by Workers authorization and no live URL is claimed.
+- Model and parameter boundary: no scoring, ranking, risk gate, scheduler, account, mail, notification, or trading behavior changed; `PARAM-050` only records the public adapter compatibility contract.
+- Rollback: remove `app/cloudflare-public` and this bounded governance slice; the private Serenity runtime remains unchanged.
+- Next gate: authorize Workers deploy, verify HTTP 200, then bind deployment SHA and evidence without enabling any external action.

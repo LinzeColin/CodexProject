@@ -10,11 +10,11 @@ This ledger is human-readable. The append-only machine record is `development_ev
 
 - Product version: `0.1.0`
 - Product version status: `provisional`
-- Current phase: `D`
-- Current gate: `TASK-T1307-A209-WALL-CLOCK-BUDGET-REPAIR`
+- Current phase: `CF-L2`
+- Current gate: `ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH`
 - Confirmed iteration count: 40
 - Reconstructed development event count: 8
-- Current task: `TASK-T1307/A209 wall-clock budget repair and fresh 24h rerun preparation`
+- Current task: `CF-L2-20260710`; existing A209/A210 core gates remain open and unchanged.
 - Current A209 point-in-time heartbeat: the active origin/main isolated rerun under `/private/tmp/eei-a209-rerun-20260627-originmain-8d5a3916/` failed at window `32/288`; the chain has `31` PASS windows and `1` FAIL window, latest failed checkpoint `generated_at=2026-06-27T06:16:44Z`, and `elapsed_wall_seconds=397.8961` exceeded the old `375` second wall-clock budget for a 300 second measured window. `watchdog.json` latest cycle reports `OPERATOR_INTERVENTION_REQUIRED`, operator PID `37871` `NOT_RUNNING`, stale age above the 900 second threshold, and release gates not closed. This is failed operator evidence; A209 remains `IN_PROGRESS` and has no release-ready 24h evidence.
 - Current isolated rerun comparison: `/private/tmp/eei-a209-rerun-20260627-fd66c8a0-0806/` also failed at window `15/288` with `14` PASS and `1` FAIL after `elapsed_wall_seconds=398.4896` exceeded the same old `375` second budget. The older `/private/tmp/eei-a209-rerun-20260626-150051-b6c63687/` chain is historical failed/stale comparison evidence with `85` windows, `84` PASS and `1` FAIL. These chains are not release evidence and must not be overwritten by partial progress.
 - Current app icon state: `scripts/generate_app_icon.py` deterministically generates `assets/app_icon/EEIAppIcon.svg`, `assets/app_icon/EEIAppIcon.png`, `assets/app_icon/EEIAppIcon.icns`, and web public icon assets; `/Applications/EEI.app` has `Contents/Resources/EEIAppIcon.icns`, `CFBundleIconFile=EEIAppIcon`, and `CFBundleIconName=EEIAppIcon`.
@@ -1943,3 +1943,15 @@ Status: LOCAL FULL VERIFIED; A209 STILL IN PROGRESS; 24H SOAK AND WATCHDOG RUNNI
 - `EVENT-20260627-008` / `ITER-20260627-008`: Hardened the A209 browser-soak runtime to reuse one Chromium process across short measurement slices while retaining a fresh page per slice. Local checks passed: `node --check scripts/run_soak_smoke.mjs`, A209 focused tests `27/27`, v5 readiness sync, 3s operator smoke, and a real 300s operator probe with `elapsed_wall_seconds=346.5261 <= 375`. A209 remains open until a fresh 288/288 zero-failure 24h run validates.
 - `EVENT-20260627-009` / `ITER-20260627-009`: Refreshed selected A202 live official-source capture evidence for `NVDA-ANCHOR-002..004`, regenerated A202/A205 fail-closed release evidence hashes, and kept A202, A209, A204/A205, A210, A026/A027 and MVP release readiness blocked.
 - `EVENT-20260627-010` / `ITER-20260627-010`: Repaired the A209 operator wall-clock budget to `measured_duration_seconds + max(180, measured_duration_seconds * 0.5)` after originmain and fd66 300 second windows failed on bounded host/browser overhead around 398 seconds; regression coverage still rejects serialized 300 measured / 600 elapsed evidence, and A209 remains open until a fresh 288/288 zero-failure 24h run validates.
+
+## ITER-20260710-EEI-CF-L2
+
+- Date: 2026-07-10
+- Fact level: VERIFIED for local build, scan, tests, responsive rendering, and dry-run; UNKNOWN for live deployment.
+- Version before/after: `0.1.0` / `0.1.0`.
+- Task / Acceptance: `CF-L2-20260710` / `ACC-CF-L2-20260710`.
+- Goal: add an isolated public-safe L2 explorer without touching the production graph or closing A209/A210.
+- Result: static build, 13 compatibility tests, private dist scan, desktop/mobile browser QA, and Wrangler 4.110.0 dry-run passed. Real deploy is blocked by Cloudflare Workers authorization and no live URL is claimed.
+- Model and parameter boundary: no EEI business model, formula, score, runtime threshold, release gate, or active production parameter changed; `PARAM-093` only records the L2 adapter compatibility contract.
+- Rollback: remove `apps/cloudflare-public` and this bounded governance slice; retain the EEI core and all existing release blockers.
+- Next gate: authorize Workers deploy, verify the returned URL with HTTP 200, then bind the deployment SHA and evidence.
