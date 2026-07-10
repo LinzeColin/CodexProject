@@ -89,6 +89,9 @@ const ECONOMIC_LIKE_VISUALS_VERSION = "economic_like_visuals.v1_2_s11_p2" as con
 const WORKFLOW_LATENT_GOVERNANCE_VISUALS_VERSION = "workflow_latent_governance_visuals.v1_2_s11_p3" as const;
 const HUMAN_QUESTION_MAP_VERSION = "human_question_map.v1_2_s11_p4" as const;
 const COMMAND_PALETTE_VERSION = "command_palette.v1_2_s12_p1" as const;
+const COMMAND_WORKFLOW_VERSION = "real_command_workflows.v1_2_r3" as const;
+const COMMAND_API_VERSION = "memory_atlas_command_api.v1_2_r3" as const;
+const LOCAL_APP_HANDOFF_URL = "http://127.0.0.1:4177" as const;
 const HOME_ACTION_SECTION_VERSION = "top_actions_section.v1_1_7_stage3_phase2" as const;
 const HOME_LEVEL_ASSET_SECTION_VERSION = "level_assets_section.v1_1_7_stage3_phase2" as const;
 const HOME_THEME_CATEGORY_SECTION_VERSION = "theme_categories_section.v1_1_7_stage3_phase2" as const;
@@ -397,6 +400,18 @@ declare global {
         sendsCookiesTokensSecrets: false;
       };
     };
+    __memoryAtlasR3CommandWorkflows?: () => {
+      workflowVersion: typeof COMMAND_WORKFLOW_VERSION;
+      commandApiVersion: typeof COMMAND_API_VERSION;
+      commandIds: S12P1CommandId[];
+      runtimeAvailable: boolean;
+      selectedCommandId: S12P1CommandId;
+      executionStatus: CommandExecutionStatus;
+      hostedStaticReadOnly: boolean;
+      localAppHandoff: typeof LOCAL_APP_HANDOFF_URL;
+      noSilentSend: true;
+      canonicalRepoMutation: false;
+    };
   }
 }
 
@@ -476,6 +491,41 @@ interface CommandPaletteModel {
   pendingProposalCount: number;
   weeklyReportNodeCount: number;
   latestDateLabel: string;
+}
+
+type CommandExecutionStatus = "idle" | "running" | "success" | "needs_input" | "error" | "local_required";
+
+interface CommandWorkflowAction {
+  type: "reload_atlas" | "navigate_view" | "open_url";
+  view?: ViewKey;
+  url?: string;
+}
+
+interface CommandWorkflowResult {
+  schema_version: "memory_atlas_command_result.v1_2_r3";
+  command_id: S12P1CommandId;
+  status: "success" | "needs_input" | "error";
+  title_zh: string;
+  message_zh: string;
+  outputs: string[];
+  input_hint_zh?: string;
+  action?: CommandWorkflowAction;
+  safety: {
+    sends_to_chatgpt: false;
+    auto_submit?: false;
+    canonical_repo_mutation?: false;
+  };
+}
+
+interface CommandExecutionState {
+  commandId: S12P1CommandId | null;
+  status: CommandExecutionStatus;
+  title: string;
+  message: string;
+  outputs: string[];
+  inputHint: string;
+  fallbackUrl: string;
+  navigationView: ViewKey | null;
 }
 
 const views: Array<{ key: ViewKey; label: string; icon: ComponentType<{ size?: number }> }> = [
@@ -1367,6 +1417,7 @@ interface RuntimeState {
   snapshotLoadedAt: Date | null;
   lifecycle: "载入中" | "已同步" | "读取失败";
   serverMode: "检测中" | "本地自释放" | "静态托管";
+  commandApiAvailable: boolean;
 }
 
 const WRITEBACK_QUEUE_KEY = "memory-atlas.writeback.proposals.v1";
@@ -1374,6 +1425,16 @@ const TIMELINE_FEEDBACK_SETTINGS_KEY = "memory-atlas.timeline.feedback";
 const TRANSIENT_STORAGE_PREFIXES = ["memory-atlas.runtime.", "memory-atlas.cache.", "memory-atlas.temp.", "memory-atlas.view."];
 const TRANSIENT_CACHE_PREFIXES = ["memory-atlas", "memory_atlas", "vite-memory-atlas"];
 const LOCAL_RUNTIME_HEARTBEAT_MS = 10_000;
+const INITIAL_COMMAND_EXECUTION_STATE: CommandExecutionState = {
+  commandId: null,
+  status: "idle",
+  title: "",
+  message: "",
+  outputs: [],
+  inputHint: "",
+  fallbackUrl: "",
+  navigationView: null,
+};
 const NEXT_ACTION_TOP_LIMIT = 5;
 const NEXT_ACTION_SORT_WEIGHTS = {
   roi_weight: 0.4,
@@ -1446,27 +1507,27 @@ function buildCommandPaletteModel(atlas: MemoryAtlas, slice: FilteredAtlasSlice,
     {
       id: "sync_chatgpt",
       label: "同步 ChatGPT",
-      description: "检查 ChatGPT 同步入口与可复核资料；实际同步仍由用户明确触发。",
-      humanAction: "用户触发后再运行 `atlasctl.py sync --source chatgpt --dry-run` 预检，不会自动读取 cookies/tokens。",
-      dryRunCommand: "python3 scripts/atlasctl.py sync --source chatgpt --dry-run",
+      description: "从固定本地导入箱读取一个官方导出，并刷新脱敏后的页面数据。",
+      humanAction: "只接受 Application Support 导入箱中的一个官方 ZIP；不读取浏览器 cookies、tokens 或登录状态。",
+      dryRunCommand: "python3 scripts/atlasctl.py sync --source chatgpt --official-export <fixed-local-inbox>",
       status: `${(sourceCount.get("memory_atlas") ?? 0).toLocaleString()} 条 ChatGPT/Memory Atlas 节点可复核`,
       viewTarget: null,
     },
     {
       id: "sync_codex",
       label: "同步 Codex",
-      description: "检查 Codex 本地同步入口和来源状态；实际同步仍由用户明确触发。",
-      humanAction: "用户触发后再运行 `atlasctl.py sync --source codex --dry-run` 预检，不会写 raw。",
-      dryRunCommand: "python3 scripts/atlasctl.py sync --source codex --dry-run",
+      description: "读取本机 Codex sessions 的脱敏摘要，并刷新当前页面快照。",
+      humanAction: "只读取 sessions 与 session index；不读取 auth、cookies 或明文凭据文件。",
+      dryRunCommand: "python3 scripts/atlasctl.py sync --source codex --codex-home <configured-local-home>",
       status: `${(sourceCount.get("codex") ?? 0).toLocaleString()} 条 Codex 节点可复核`,
       viewTarget: null,
     },
     {
       id: "generate_weekly_report",
       label: "生成本周报告",
-      description: "从当前低敏派生资料进入总结，生成周报前先核对变化和证据。",
-      humanAction: "打开 Summary & Iteration；报告生成仍由用户触发，不在后台静默写入。",
-      dryRunCommand: "python3 scripts/atlasctl.py build-atlas --dry-run",
+      description: "从当前脱敏快照汇总近七天变化、决策、提案与建议。",
+      humanAction: "用户明确执行后，只在本地安装副本生成一份 Markdown 周报。",
+      dryRunCommand: "python3 scripts/build_memory_atlas_weekly_report.py --database-dir <installed-source>",
       status: `${weeklyReportNodeCount.toLocaleString()} 条近周/近期节点 · 最新 ${latestDateLabel}`,
       viewTarget: "summary",
     },
@@ -1474,8 +1535,8 @@ function buildCommandPaletteModel(atlas: MemoryAtlas, slice: FilteredAtlasSlice,
       id: "view_pending_proposals",
       label: "查看待授权提案",
       description: "集中查看待授权提案候选；这里只做判断，不直接应用变更。",
-      humanAction: "打开 Summary & Iteration 的 proposal 区域；任何 apply 都推迟到 S13 授权闭环。",
-      dryRunCommand: "python3 scripts/atlasctl.py audit --check self-iteration",
+      humanAction: "读取 proposal 状态机并打开总结视图；不会执行 apply 或 rollback。",
+      dryRunCommand: "python3 scripts/atlasctl.py proposals --dry-run",
       status: `${pendingProposalCount.toLocaleString()} 条候选线索需要人工判断`,
       viewTarget: "summary",
     },
@@ -1483,8 +1544,8 @@ function buildCommandPaletteModel(atlas: MemoryAtlas, slice: FilteredAtlasSlice,
       id: "generate_personalization_prompt",
       label: "生成个性化提示",
       description: "准备供 ChatGPT、Codex 和其他 agent 使用的最新个性化提示入口。",
-      humanAction: "运行 dry-run 先确认来源报告；S12 P2 再生成完整中文说明和机器可复制文本。",
-      dryRunCommand: "python3 scripts/atlasctl.py generate-personalization-prompt --dry-run",
+      humanAction: "在本地安装副本生成 ChatGPT、Codex 和其他 agent 的中文说明及机器可复制文本。",
+      dryRunCommand: "python3 scripts/atlasctl.py generate-personalization-prompt --target all",
       status: `覆盖 ChatGPT / Codex / 其他代理 · 运行状态 ${runtimeState.lifecycle}`,
       viewTarget: "summary",
       personalizationTargets: S12_P1_PERSONALIZATION_TARGETS,
@@ -1493,8 +1554,8 @@ function buildCommandPaletteModel(atlas: MemoryAtlas, slice: FilteredAtlasSlice,
       id: "chatgpt_deep_explore",
       label: "打开 ChatGPT 深度探索",
       description: "把最新记忆分析报告和探索提示转成 ChatGPT 预填充入口。",
-      humanAction: "用户触发后运行 `atlasctl.py chatgpt-deep-explore --mode prefill_only --open`；默认只填入，不静默发送。auto_submit 必须有配置和显式确认。",
-      dryRunCommand: "python3 scripts/atlasctl.py chatgpt-deep-explore --mode prefill_only --dry-run",
+      humanAction: "用户明确执行后生成最新提示，并由浏览器打开仅预填页面；不会自动发送。",
+      dryRunCommand: "python3 scripts/atlasctl.py chatgpt-deep-explore --mode prefill_only",
       status: "默认仅预填 · 自动发送受控",
       viewTarget: null,
     },
@@ -1509,6 +1570,49 @@ function buildCommandPaletteModel(atlas: MemoryAtlas, slice: FilteredAtlasSlice,
     weeklyReportNodeCount,
     latestDateLabel,
   };
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function isCommandWorkflowResult(value: unknown): value is CommandWorkflowResult {
+  if (!isRecord(value) || value.schema_version !== "memory_atlas_command_result.v1_2_r3") return false;
+  if (!S12_P1_COMMAND_IDS.includes(value.command_id as S12P1CommandId)) return false;
+  if (!(["success", "needs_input", "error"] as const).includes(value.status as "success" | "needs_input" | "error")) return false;
+  if (typeof value.title_zh !== "string" || typeof value.message_zh !== "string" || !Array.isArray(value.outputs)) return false;
+  if (!isRecord(value.safety) || value.safety.sends_to_chatgpt !== false) return false;
+  if (!value.outputs.every((output) => typeof output === "string")) return false;
+  if (value.action !== undefined) {
+    if (!isRecord(value.action)) return false;
+    const action = value.action;
+    if (!(["reload_atlas", "navigate_view", "open_url"] as const).includes(action.type as CommandWorkflowAction["type"])) return false;
+    if (action.type === "navigate_view" && (typeof action.view !== "string" || !views.some((view) => view.key === action.view))) return false;
+    if (action.type === "open_url" && typeof action.url !== "string") return false;
+  }
+  return true;
+}
+
+function safeChatGPTPrefillUrl(value: string | undefined): string {
+  if (!value) return "";
+  try {
+    const url = new URL(value);
+    if (
+      url.protocol !== "https:"
+      || url.hostname !== "chatgpt.com"
+      || url.port
+      || url.username
+      || url.password
+      || (url.pathname !== "/" && url.pathname !== "")
+      || url.hash
+      || !url.searchParams.get("q")?.trim()
+    ) {
+      return "";
+    }
+    return url.toString();
+  } catch {
+    return "";
+  }
 }
 
 async function clearTransientBrowserState(): Promise<void> {
@@ -1569,11 +1673,13 @@ export function App() {
   const [loadError, setLoadError] = useState("");
   const [helpOpen, setHelpOpen] = useState(false);
   const [selectedCommandId, setSelectedCommandId] = useState<S12P1CommandId>("sync_chatgpt");
+  const [commandExecution, setCommandExecution] = useState<CommandExecutionState>(INITIAL_COMMAND_EXECUTION_STATE);
   const [runtimeState, setRuntimeState] = useState<RuntimeState>(() => ({
     runStartedAt: new Date(),
     snapshotLoadedAt: null,
     lifecycle: "载入中",
     serverMode: "检测中",
+    commandApiAvailable: false,
   }));
 
   useEffect(() => {
@@ -1642,10 +1748,13 @@ export function App() {
     };
 
     fetch("/__memory_atlas_runtime_state", { cache: "no-store" })
-      .then((response) => {
+      .then(async (response) => {
         if (cancelled || !response.ok) return;
+        const payload: unknown = await response.json().catch(() => null);
+        if (!isRecord(payload) || payload.status !== "running") return;
+        const commandApiAvailable = isRecord(payload) && payload.command_api_version === COMMAND_API_VERSION;
         heartbeatEnabled = true;
-        setRuntimeState((current) => ({ ...current, serverMode: "本地自释放" }));
+        setRuntimeState((current) => ({ ...current, serverMode: "本地自释放", commandApiAvailable }));
         heartbeat();
         heartbeatTimer = window.setInterval(heartbeat, LOCAL_RUNTIME_HEARTBEAT_MS);
         window.addEventListener("pagehide", handlePageRelease);
@@ -1654,13 +1763,13 @@ export function App() {
       })
       .catch(() => {
         if (!cancelled) {
-          setRuntimeState((current) => ({ ...current, serverMode: "静态托管" }));
+          setRuntimeState((current) => ({ ...current, serverMode: "静态托管", commandApiAvailable: false }));
         }
       });
 
     const fallbackTimer = window.setTimeout(() => {
       if (!heartbeatEnabled && !cancelled) {
-        setRuntimeState((current) => ({ ...current, serverMode: "静态托管" }));
+        setRuntimeState((current) => ({ ...current, serverMode: "静态托管", commandApiAvailable: false }));
       }
     }, 1200);
 
@@ -1765,15 +1874,123 @@ export function App() {
     switchView(view);
     setHelpOpen(false);
   }, [switchView]);
-  const handleCommandPaletteAction = useCallback(
-    (command: CommandPaletteCommand) => {
-      setSelectedCommandId(command.id);
-      if (command.viewTarget) {
-        switchView(command.viewTarget);
+  const handleCommandPaletteAction = useCallback((command: CommandPaletteCommand) => {
+    setSelectedCommandId(command.id);
+    setCommandExecution((current) => current.status === "running" ? current : INITIAL_COMMAND_EXECUTION_STATE);
+  }, []);
+  const handleExecuteCommand = useCallback(async (command: CommandPaletteCommand) => {
+    if (commandExecution.status === "running") return;
+    if (runtimeState.serverMode !== "本地自释放" || !runtimeState.commandApiAvailable) {
+      setCommandExecution({
+        commandId: command.id,
+        status: "local_required",
+        title: runtimeState.serverMode === "本地自释放" ? "需要更新本地 app" : "需要本地 app",
+        message: runtimeState.serverMode === "本地自释放"
+          ? "当前本地运行服务不支持受控命令，请在最终交付后更新 Memory Atlas app。"
+          : "此操作仅在本地 Memory Atlas app 执行。",
+        outputs: [],
+        inputHint: "",
+        fallbackUrl: LOCAL_APP_HANDOFF_URL,
+        navigationView: null,
+      });
+      return;
+    }
+
+    let chatgptWindow: Window | null = null;
+    if (command.id === "chatgpt_deep_explore") {
+      chatgptWindow = window.open("about:blank", "_blank");
+      if (chatgptWindow) {
+        try {
+          chatgptWindow.opener = null;
+          chatgptWindow.document.title = "正在准备 ChatGPT 深度探索";
+          chatgptWindow.document.body.textContent = "正在准备仅预填的 ChatGPT 页面...";
+        } catch {
+          // The fallback link remains available if a browser blocks this temporary page.
+        }
       }
-    },
-    [switchView],
-  );
+    }
+
+    setCommandExecution({
+      commandId: command.id,
+      status: "running",
+      title: `正在执行：${command.label}`,
+      message: "本地受控操作正在运行，请稍候。",
+      outputs: [],
+      inputHint: "",
+      fallbackUrl: "",
+      navigationView: null,
+    });
+
+    try {
+      const response = await fetch("/__memory_atlas_command", {
+        method: "POST",
+        cache: "no-store",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ command_id: command.id }),
+      });
+      const payload: unknown = await response.json().catch(() => null);
+      if (!response.ok) {
+        const message = isRecord(payload) && typeof payload.message_zh === "string"
+          ? payload.message_zh
+          : `本地命令请求失败（HTTP ${response.status}）。`;
+        throw new Error(message);
+      }
+      if (!isCommandWorkflowResult(payload) || payload.command_id !== command.id) {
+        throw new Error("本地命令返回格式未通过校验，已停止后续动作。");
+      }
+
+      let fallbackUrl = "";
+      let navigationView: ViewKey | null = null;
+      if (payload.status === "success" && payload.action?.type === "reload_atlas") {
+        const loadedAtlas = await loadMemoryAtlas();
+        setAtlas(loadedAtlas);
+        const firstNode = getMemoryNodes(loadedAtlas)[0] ?? loadedAtlas.nodes[0] ?? null;
+        if (firstNode) {
+          dispatchSharedState({ type: "select_node", node: firstNode, source: "startup" });
+        }
+        setRuntimeState((current) => ({ ...current, snapshotLoadedAt: new Date(), lifecycle: "已同步" }));
+      }
+      if (payload.status === "success" && payload.action?.type === "navigate_view" && payload.action.view) {
+        navigationView = payload.action.view;
+      }
+      if (payload.status === "success" && payload.action?.type === "open_url") {
+        const safeUrl = safeChatGPTPrefillUrl(payload.action.url);
+        if (!safeUrl) {
+          throw new Error("ChatGPT 预填充地址未通过浏览器安全校验，已停止打开。");
+        }
+        fallbackUrl = safeUrl;
+        if (chatgptWindow && !chatgptWindow.closed) {
+          chatgptWindow.location.replace(safeUrl);
+          fallbackUrl = "";
+        }
+      } else if (chatgptWindow && !chatgptWindow.closed) {
+        chatgptWindow.close();
+      }
+
+      setCommandExecution({
+        commandId: command.id,
+        status: payload.status,
+        title: payload.title_zh,
+        message: payload.message_zh,
+        outputs: payload.outputs,
+        inputHint: payload.input_hint_zh ?? "",
+        fallbackUrl,
+        navigationView,
+      });
+    } catch (error) {
+      if (chatgptWindow && !chatgptWindow.closed) chatgptWindow.close();
+      setCommandExecution({
+        commandId: command.id,
+        status: "error",
+        title: "操作未完成",
+        message: error instanceof Error ? error.message : "本地操作失败，请查看 Memory Atlas 本机日志。",
+        outputs: [],
+        inputHint: "",
+        fallbackUrl: "",
+        navigationView: null,
+      });
+    }
+  }, [commandExecution.status, runtimeState.commandApiAvailable, runtimeState.serverMode]);
   const focusSelectedTheme = useCallback(() => {
     const theme = selectedNode?.visual?.cluster;
     if (!theme) return;
@@ -2037,6 +2254,24 @@ export function App() {
     };
   }, [commandPaletteModel, selectedCommandId]);
 
+  useEffect(() => {
+    window.__memoryAtlasR3CommandWorkflows = () => ({
+      workflowVersion: COMMAND_WORKFLOW_VERSION,
+      commandApiVersion: COMMAND_API_VERSION,
+      commandIds: [...commandPaletteModel.commandIds],
+      runtimeAvailable: runtimeState.serverMode === "本地自释放" && runtimeState.commandApiAvailable,
+      selectedCommandId,
+      executionStatus: commandExecution.status,
+      hostedStaticReadOnly: runtimeState.serverMode === "静态托管",
+      localAppHandoff: LOCAL_APP_HANDOFF_URL,
+      noSilentSend: true,
+      canonicalRepoMutation: false,
+    });
+    return () => {
+      delete window.__memoryAtlasR3CommandWorkflows;
+    };
+  }, [commandExecution.status, commandPaletteModel.commandIds, runtimeState.commandApiAvailable, runtimeState.serverMode, selectedCommandId]);
+
   return (
     <div
       className="app-shell"
@@ -2053,6 +2288,8 @@ export function App() {
       data-s12-p1-command-palette={COMMAND_PALETTE_VERSION}
       data-s12-p3-chatgpt-deep-explore={S12_P3_CHATGPT_DEEP_EXPLORE_VERSION}
       data-s12-p3-chatgpt-deep-explore-boundary="prefill_only default; auto_submit gated; No silent send; No cookie/token/secret export"
+      data-r3-command-workflows={COMMAND_WORKFLOW_VERSION}
+      data-r3-command-api-available={runtimeState.commandApiAvailable ? "true" : "false"}
     >
       <aside className="sidebar" aria-label={uiCopy.app.navigationAria}>
         <div className="brand">
@@ -2209,7 +2446,10 @@ export function App() {
         />
 
         <CommandPalettePanel
+          execution={commandExecution}
           model={commandPaletteModel}
+          onExecuteCommand={handleExecuteCommand}
+          onNavigateView={switchView}
           selectedCommandId={selectedCommandId}
           onSelectCommand={handleCommandPaletteAction}
         />
@@ -2255,15 +2495,22 @@ export function App() {
 }
 
 function CommandPalettePanel({
+  execution,
   model,
+  onExecuteCommand,
+  onNavigateView,
   selectedCommandId,
   onSelectCommand,
 }: {
+  execution: CommandExecutionState;
   model: CommandPaletteModel;
+  onExecuteCommand: (command: CommandPaletteCommand) => void;
+  onNavigateView: (view: ViewKey) => void;
   selectedCommandId: S12P1CommandId;
   onSelectCommand: (command: CommandPaletteCommand) => void;
 }) {
   const selectedCommand = model.commands.find((command) => command.id === selectedCommandId) ?? model.commands[0];
+  const selectedExecution = execution.commandId === selectedCommand.id ? execution : INITIAL_COMMAND_EXECUTION_STATE;
   return (
     <section
       className="command-palette"
@@ -2271,9 +2518,12 @@ function CommandPalettePanel({
       data-s12-p1-command-palette={model.version}
       data-s12-p1-command-count={model.commands.length}
       data-s12-p1-personalization-targets={model.personalizationTargets.join(",")}
-      data-s12-p1-safety-boundary="No automatic send; No raw mutation; No proposal apply execution"
+      data-s12-p1-safety-boundary="S12 dry-run: No automatic send; No raw mutation; No proposal apply execution"
       data-s12-p3-chatgpt-deep-explore={S12_P3_CHATGPT_DEEP_EXPLORE_VERSION}
       data-s12-p3-chatgpt-deep-explore-command="chatgpt_deep_explore"
+      data-r3-command-workflows={COMMAND_WORKFLOW_VERSION}
+      data-r3-execution-status={selectedExecution.status}
+      data-r3-write-scope="Application Support installed source copy; redacted sync and derived outputs only; no canonical repo mutation"
     >
       <div className="command-palette-heading">
         <div>
@@ -2289,6 +2539,7 @@ function CommandPalettePanel({
             <button
               className={command.id === selectedCommand.id ? "command-palette-action active" : "command-palette-action"}
               data-s12-p1-command-id={command.id}
+              disabled={execution.status === "running"}
               key={command.id}
               onClick={() => onSelectCommand(command)}
               title={command.description}
@@ -2302,9 +2553,54 @@ function CommandPalettePanel({
         })}
       </div>
       <div className="command-palette-detail">
-        <strong>{selectedCommand.label}</strong>
-        <p>{selectedCommand.description}</p>
+        <div className="command-palette-detail-copy">
+          <strong>{selectedCommand.label}</strong>
+          <p>{selectedCommand.description}</p>
+        </div>
+        <button
+          className="command-execute-button"
+          data-r3-command-execute={selectedCommand.id}
+          disabled={execution.status === "running"}
+          onClick={() => onExecuteCommand(selectedCommand)}
+          type="button"
+        >
+          {selectedExecution.status === "running" ? <RefreshCw aria-hidden="true" className="command-running-icon" size={15} /> : <Play aria-hidden="true" size={15} />}
+          <span>{selectedExecution.status === "running" ? "正在执行" : "执行此操作"}</span>
+        </button>
       </div>
+      {selectedExecution.status !== "idle" ? (
+        <div
+          aria-live="polite"
+          className={`command-result command-result-${selectedExecution.status}`}
+          data-r3-command-result={selectedCommand.id}
+          data-r3-command-result-status={selectedExecution.status}
+          role="status"
+        >
+          <strong>{selectedExecution.title}</strong>
+          <p>{selectedExecution.message}</p>
+          {selectedExecution.inputHint ? <code>{selectedExecution.inputHint}</code> : null}
+          {selectedExecution.outputs.length > 0 ? (
+            <ul>
+              {selectedExecution.outputs.map((output) => <li key={output}><code>{output}</code></li>)}
+            </ul>
+          ) : null}
+          {selectedExecution.fallbackUrl ? (
+            <a href={selectedExecution.fallbackUrl} rel="noreferrer" target="_blank">
+              {selectedExecution.status === "local_required" ? "打开本地 Memory Atlas" : "打开 ChatGPT 预填充页面"}
+            </a>
+          ) : null}
+          {selectedExecution.navigationView ? (
+            <button
+              className="command-result-action"
+              data-r3-command-navigate={selectedExecution.navigationView}
+              onClick={() => onNavigateView(selectedExecution.navigationView as ViewKey)}
+              type="button"
+            >
+              查看总结
+            </button>
+          ) : null}
+        </div>
+      ) : null}
       <MachineFieldDetails title="运行边界与技术详情" className="command-technical-details">
         <div className="command-palette-technical-content">
           <small>{selectedCommand.humanAction}</small>
@@ -2312,7 +2608,8 @@ function CommandPalettePanel({
           <div className="command-palette-safety">
             <span>No automatic send</span>
             <span>No silent send</span>
-            <span>No raw mutation</span>
+            <span>No canonical repo mutation</span>
+            <span>Application Support source copy only</span>
             <span>No proposal apply execution</span>
             <span>No cookie/token/secret export</span>
             <span>ChatGPT / Codex / other agent personalization prompt</span>
