@@ -116,6 +116,7 @@
     "validate:v1.2-proposal-e2e": "node scripts/validate_memory_atlas_v1_2_proposal_e2e.cjs",
     "validate:v1.2-owner-daily-e2e": "node scripts/validate_memory_atlas_v1_2_owner_daily_e2e.cjs",
     "validate:v1.2-visual-models": "node --experimental-strip-types scripts/validate_memory_atlas_v1_2_visual_models.mjs",
+    "validate:v1.2-visual-workflows": "node scripts/validate_memory_atlas_v1_2_visual_workflows.cjs",
     "validate:v1.1.7-stage0-phase1": "node scripts/validate_memory_atlas_v1_1_7_stage0_phase1.cjs",
     "validate:v1.1.7-stage0-phase2": "node scripts/validate_memory_atlas_v1_1_7_stage0_phase2.cjs",
     "validate:v1.1.7-stage0-phase3": "node scripts/validate_memory_atlas_v1_1_7_stage0_phase3.cjs",
