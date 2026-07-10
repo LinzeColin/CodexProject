@@ -1,0 +1,16 @@
+{
+  "schema_version": "memory_atlas.cloudflare_live_evidence.v1",
+  "deployment_url": "https://memoryatlas.linzezhang.com",
+  "git_commit": "5a24333eb2afa766f5f7416b877a8a560c5302ab",
+  "cloudflare_pages_project": "openai-memory-atlas",
+  "access_hostname": "memoryatlas.linzezhang.com",
+  "allowed_email": "REDACTED_OWNER_EMAIL_ALLOWLIST_VERIFIED",
+  "verified_at": "2026-07-10T07:06:03Z",
+  "operator": "Codex",
+  "access_challenge_verified": true,
+  "allowed_user_app_load_verified": true,
+  "memory_atlas_json_fetch_verified": true,
+  "published_artifact_audited": true,
+  "no_raw_sensitive_artifacts_verified": true,
+  "notes": "Sanitized operator evidence only. No Cloudflare tokens, account IDs, cookies, sessions, or private keys."
+}
