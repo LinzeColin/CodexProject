@@ -225,9 +225,8 @@ class Handler(SimpleHTTPRequestHandler):
             self.send_command_error(403, "请求 Host 不是当前本地 Memory Atlas，已拒绝执行。")
             return False
 
-        allowed_origins = {f"http://{host_value}:{active_port}" for host_value in LOOPBACK_HOSTS}
         origin = (self.headers.get("Origin") or "").strip().lower()
-        if origin not in allowed_origins:
+        if origin != f"http://{host}":
             self.send_command_error(403, "请求来源不是当前本地 Memory Atlas 页面，已拒绝执行。")
             return False
         fetch_site = (self.headers.get("Sec-Fetch-Site") or "").strip().lower()

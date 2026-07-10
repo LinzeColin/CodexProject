@@ -28,7 +28,7 @@ import {
   ZoomOut,
 } from "lucide-react";
 import type { ComponentType, CSSProperties, KeyboardEvent, PointerEvent, ReactNode, WheelEvent } from "react";
-import { Suspense, lazy, useCallback, useEffect, useMemo, useReducer, useState } from "react";
+import { Suspense, lazy, useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import {
   emptyAtlas,
   filterMemoryNodes,
@@ -2899,15 +2899,41 @@ function OwnerDailyWorkspace({
   onResultChange: (result: OwnerDailyResult | null) => void;
   result: OwnerDailyResult | null;
 }) {
+  const dialogRef = useRef<HTMLElement | null>(null);
   const [pendingAction, setPendingAction] = useState<"run" | OwnerDailyStepId | null>(null);
   const [actionError, setActionError] = useState("");
 
   useEffect(() => {
-    const closeOnEscape = (event: globalThis.KeyboardEvent) => {
-      if (event.key === "Escape" && pendingAction === null) onClose();
+    const focusStart = window.requestAnimationFrame(() => {
+      dialogRef.current?.querySelector<HTMLButtonElement>("[data-r5-owner-daily-start]")?.focus();
+    });
+    return () => window.cancelAnimationFrame(focusStart);
+  }, []);
+
+  useEffect(() => {
+    const handleDialogKey = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape" && pendingAction === null) {
+        onClose();
+        return;
+      }
+      if (event.key !== "Tab" || !dialogRef.current) return;
+      const focusable = Array.from(
+        dialogRef.current.querySelectorAll<HTMLElement>("button:not([disabled]), a[href], summary, [tabindex]:not([tabindex='-1'])"),
+      ).filter((element) => element.getClientRects().length > 0);
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+      if (event.shiftKey && (active === first || !dialogRef.current.contains(active))) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (active === last || !dialogRef.current.contains(active))) {
+        event.preventDefault();
+        first.focus();
+      }
     };
-    window.addEventListener("keydown", closeOnEscape);
-    return () => window.removeEventListener("keydown", closeOnEscape);
+    window.addEventListener("keydown", handleDialogKey);
+    return () => window.removeEventListener("keydown", handleDialogKey);
   }, [onClose, pendingAction]);
 
   const postOwnerDaily = async (body: { action: "run" } | { action: "retry"; step_id: OwnerDailyStepId }): Promise<OwnerDailyResult> => {
@@ -2968,7 +2994,7 @@ function OwnerDailyWorkspace({
       className="proposal-workspace-backdrop owner-daily-workspace-backdrop"
       data-r5-owner-daily-workspace={OWNER_DAILY_UI_VERSION}
     >
-      <section aria-label="Owner Daily 日常维护" aria-modal="true" className="proposal-workspace-surface owner-daily-workspace-surface" role="dialog">
+      <section aria-label="Owner Daily 日常维护" aria-modal="true" className="proposal-workspace-surface owner-daily-workspace-surface" ref={dialogRef} role="dialog">
         <header className="proposal-workspace-heading owner-daily-workspace-heading">
           <div>
             <p className="eyebrow">日常维护</p>
