@@ -56,11 +56,11 @@
 - Create: `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_command_workflows.cjs`
 - Test: `tests/test_memory_atlas_app_runtime.py`
 
-- [ ] Define an allowlisted local command API for the six accepted commands; reject arbitrary shell input and non-local origins.
-- [ ] Make Cloudflare Pages read-only and show a specific local-app handoff instead of fake execution.
-- [ ] Add E2E tests for sync ChatGPT, sync Codex, weekly report, proposals, personalization and ChatGPT prefill-only deep explore.
-- [ ] Verify no silent send, no credential access and actionable failures.
-- [ ] Commit locally; do not push; stop before R4.
+- [x] Define an allowlisted local command API for the six accepted commands; reject arbitrary shell input and non-local origins.
+- [x] Make Cloudflare Pages read-only and show a specific local-app handoff instead of fake execution.
+- [x] Add E2E tests for sync ChatGPT, sync Codex, weekly report, proposals, personalization and ChatGPT prefill-only deep explore.
+- [x] Verify no silent send, no credential access and actionable failures.
+- [x] Commit locally; do not push; stop before R4.
 
 ### Task 4: R4 Proposal Approval Apply Rollback Workflow
 
