@@ -26,7 +26,7 @@ kmfa_v014_s11_p2_post_remediation_source_check_board:
     - PARAM-KMFA-1713
   evidence_dir: KMFA/stage_artifacts/V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD
   validator: KMFA/tools/check_v014_s11_p2_post_remediation_source_check_board.py
-  scope: Current public-safe thirteen-row source check matrix with eleven required columns current status overlay search filters row details session-only preview controls desktop mobile evidence and Q4 D NO_GO; S11-P3 review persistent write upload reinstall formal report and business execution remain closed.
+  scope: Current public-safe thirteen-row source check matrix with eleven required columns current status overlay search filters row details session-only preview controls current home and project-cost links desktop mobile evidence and Q4 D NO_GO; review persistent write upload reinstall formal report and business execution remain closed.
 
 kmfa_v014_s11_p1_post_remediation_home_navigation:
   model_id: MOD-KMFA-GOV-001
@@ -41,7 +41,7 @@ kmfa_v014_s11_p1_post_remediation_home_navigation:
     - PARAM-KMFA-1710
   evidence_dir: KMFA/stage_artifacts/V014_S11_P1_POST_REMEDIATION_HOME_NAVIGATION
   validator: KMFA/tools/check_v014_s11_p1_post_remediation_home_navigation.py
-  scope: Current public-safe eight-module single-page home navigation with visible actions current S10 restricted report links desktop mobile keyboard evidence and Q4 D NO_GO; S11-P2 review upload reinstall formal report and business execution remain closed.
+  scope: Current public-safe eight-module single-page home navigation with visible actions current S10 restricted report links current S11-P2/P3 page links desktop mobile keyboard evidence and Q4 D NO_GO; review upload reinstall formal report and business execution remain closed.
 
 kmfa_v014_s10_post_remediation_stage_review:
   model_id: MOD-KMFA-GOV-001
@@ -1869,3 +1869,17 @@ kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_applicati
   evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_AFTER_FINAL_RECHECK
   validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_blocked_handoff_after_final_recheck.py
   scope: Owner or authorized-agent resolution-intake blocker blocked handoff after final recheck only; consumes 48 final-recheck blockers, writes 48 ignored private handoff records and 48 owner-resolution queue items, records 0 completed resolutions, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.
+kmfa_v014_s11_post_remediation_stage_review:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s11-post-remediation-stage-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S11-POST-REMEDIATION-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1717
+    - PARAM-KMFA-1718
+    - PARAM-KMFA-1719
+  evidence_dir: KMFA/stage_artifacts/V014_S11_POST_REMEDIATION_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s11_post_remediation_stage_review.py
+  scope: Current Stage 11 post-remediation review with seven fixed findings three frozen phase validators six cross-page links six desktop-mobile viewports accessible mobile icon links unattributed-null project state fresh raw evidence and Q4 D NO_GO; S12 upload reinstall formal report and business execution remain closed.

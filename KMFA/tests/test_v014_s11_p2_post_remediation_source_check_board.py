@@ -1,5 +1,6 @@
 import importlib
 import unittest
+from pathlib import Path
 
 from KMFA.tools.source_check_board_runtime import ALLOWED_BOARD_STATUSES, REQUIRED_BOARD_COLUMNS
 
@@ -82,6 +83,8 @@ class TestV014S11P2PostRemediationSourceCheckBoard(unittest.TestCase):
         self.assertEqual(summary["large_yellow_surface_count"], 0)
         self.assertTrue(summary["all_chinese_visible_copy"])
         self.assertEqual(summary["home_navigation_link_count"], 1)
+        self.assertEqual(summary["project_cost_page_link_count"], 1)
+        self.assertEqual(summary["current_stage_page_target_count"], 2)
         self.assertEqual(summary["visible_feedback_panel_count"], 3)
         self.assertEqual(summary["formal_report_count"], 0)
         self.assertEqual(summary["business_decision_basis_allowed_count"], 0)
@@ -102,8 +105,37 @@ class TestV014S11P2PostRemediationSourceCheckBoard(unittest.TestCase):
         self.assertEqual(browser["status_preview_interaction_count"], 10)
         self.assertEqual(browser["keyboard_interaction_count"], 2)
         self.assertEqual(browser["home_link_http_check_count"], 1)
+        self.assertEqual(browser["project_cost_link_http_check_count"], 1)
         self.assertEqual(browser["console_error_count"], 0)
         self.assertEqual(browser["horizontal_overflow_count"], 0)
+
+    def test_frozen_phase_validator_survives_later_global_phase(self) -> None:
+        module = importlib.import_module(
+            "KMFA.tools.check_v014_s11_p2_post_remediation_source_check_board"
+        )
+
+        self.assertTrue(
+            module._phase_is_current(
+                'current_phase: "V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD"'
+            )
+        )
+        self.assertFalse(
+            module._phase_is_current(
+                'current_phase: "V014_S11_POST_REMEDIATION_STAGE_REVIEW"'
+            )
+        )
+
+    def test_mobile_icon_links_keep_chinese_accessible_names(self) -> None:
+        text = Path(
+            "KMFA/stage_artifacts/V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD/"
+            "exports/html/kmfa_source_check_board.html"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn('data-home-link aria-label="返回经营首页" title="返回经营首页"', text)
+        self.assertIn(
+            'data-project-cost-link aria-label="查看项目成本页面" title="查看项目成本页面"',
+            text,
+        )
 
     def test_raw_and_downstream_phase_boundaries_remain_closed(self) -> None:
         manifest = self._validate()

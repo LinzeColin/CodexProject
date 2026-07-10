@@ -8,17 +8,19 @@
     "baseline_pass_count": 54,
     "baseline_warn_count": 0,
     "console_error_count": 0,
-    "current_html_control_row_count": 13,
+    "current_html_control_row_count": 15,
     "current_html_fail_count": 0,
     "current_html_file_count": 1,
-    "current_html_pass_count": 13,
+    "current_html_pass_count": 15,
     "current_html_warn_count": 0,
+    "current_stage_page_link_http_check_count": 2,
     "horizontal_overflow_count": 0,
     "keyboard_navigation_check_count": 4,
     "module_action_interaction_count": 16,
     "navigation_interaction_count": 16,
     "report_link_http_check_count": 4,
-    "viewport_check_count": 2
+    "viewport_check_count": 2,
+    "visible_no_go_viewport_count": 2
   },
   "decision": "NO_GO",
   "dependencies": {
@@ -27,13 +29,14 @@
     "historical_s11_p1_framework_validated": true,
     "v14_human_flow_baseline_rerun": true
   },
-  "generated_at": "2026-07-11T02:55:17+10:00",
+  "generated_at": "2026-07-11T08:26:25+10:00",
   "navigation_modules": [
     {
       "availability_summary": "当前可查看 D 级受限预览",
       "business_decision_basis_allowed": false,
       "current_data_quality_grade": "Q4",
       "current_report_grade": "D",
+      "current_stage_page_links": [],
       "decision": "NO_GO",
       "formal_report_allowed": false,
       "module_id": "business_overview",
@@ -60,6 +63,12 @@
       "business_decision_basis_allowed": false,
       "current_data_quality_grade": "Q4",
       "current_report_grade": "D",
+      "current_stage_page_links": [
+        {
+          "href": "../../../V014_S11_P3_POST_REMEDIATION_PROJECT_COST_PAGE/exports/html/kmfa_project_cost_page.html",
+          "label": "打开项目成本页面"
+        }
+      ],
       "decision": "NO_GO",
       "formal_report_allowed": false,
       "module_id": "project_cost",
@@ -86,6 +95,7 @@
       "business_decision_basis_allowed": false,
       "current_data_quality_grade": "Q4",
       "current_report_grade": "D",
+      "current_stage_page_links": [],
       "decision": "NO_GO",
       "formal_report_allowed": false,
       "module_id": "receivable_collection",
@@ -107,6 +117,7 @@
       "business_decision_basis_allowed": false,
       "current_data_quality_grade": "Q4",
       "current_report_grade": "D",
+      "current_stage_page_links": [],
       "decision": "NO_GO",
       "formal_report_allowed": false,
       "module_id": "financial_cash",
@@ -128,6 +139,7 @@
       "business_decision_basis_allowed": false,
       "current_data_quality_grade": "Q4",
       "current_report_grade": "D",
+      "current_stage_page_links": [],
       "decision": "NO_GO",
       "formal_report_allowed": false,
       "module_id": "invoice_tax",
@@ -149,6 +161,12 @@
       "business_decision_basis_allowed": false,
       "current_data_quality_grade": "Q4",
       "current_report_grade": "D",
+      "current_stage_page_links": [
+        {
+          "href": "../../../V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD/exports/html/kmfa_source_check_board.html",
+          "label": "打开数据源检查板"
+        }
+      ],
       "decision": "NO_GO",
       "formal_report_allowed": false,
       "module_id": "source_check",
@@ -170,6 +188,7 @@
       "business_decision_basis_allowed": false,
       "current_data_quality_grade": "Q4",
       "current_report_grade": "D",
+      "current_stage_page_links": [],
       "decision": "NO_GO",
       "formal_report_allowed": false,
       "module_id": "pending_actions",
@@ -191,6 +210,7 @@
       "business_decision_basis_allowed": false,
       "current_data_quality_grade": "Q4",
       "current_report_grade": "D",
+      "current_stage_page_links": [],
       "decision": "NO_GO",
       "formal_report_allowed": false,
       "module_id": "report_center",
@@ -262,7 +282,7 @@
   },
   "record_type": "v014_s11_p1_post_remediation_home_navigation_manifest",
   "remote": "git@github.com:LinzeColin/CodexProject.git",
-  "reviewed_head": "559d49cb97f9c7046465ec872a490f0bf34b0ba8",
+  "reviewed_head": "e2dc894c1b4fcdabc0c991426da939468c782801",
   "roadmap_phase_id": "S11-P1",
   "schema_version": "kmfa.v014.s11_p1.post_remediation_home_navigation_manifest.v1",
   "stage_id": "S11",
@@ -275,11 +295,11 @@
     "contains_stale_pending_twelve": false,
     "current_data_quality_grade": "Q4",
     "current_report_grade": "D",
-    "current_s10_restricted_report_links_only": true,
+    "current_stage_page_link_count": 2,
+    "current_stage_page_target_count": 2,
     "decision": "NO_GO",
     "formal_report_count": 0,
     "hard_block_count": 12,
-    "historical_future_target_link_count": 0,
     "incomplete_reconciliation_count": 1,
     "km_brand_mark_present": true,
     "module_action_button_count": 8,
@@ -304,11 +324,13 @@
       "待处理事项",
       "报告中心"
     ],
+    "restricted_report_links_preserve_s10_grade": true,
     "roadmap_phase_id": "S11-P1",
     "schema_version": "kmfa.v014.s11_p1.post_remediation_home_navigation_summary.v1",
     "single_k_brand_mark_present": false,
     "stage_id": "S11",
     "status": "completed_validated_local_only_current_home_navigation_d_no_go_upload_deferred",
+    "unavailable_future_target_link_count": 0,
     "unique_report_target_count": 2,
     "visible_feedback_panel_count": 1,
     "zero_delta_reconciliation_count": 2

@@ -87,6 +87,14 @@ PROJECT_REPORT_HREF = (
     "../../../V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/exports/html/"
     "project_cost_special_report.html"
 )
+SOURCE_CHECK_BOARD_HREF = (
+    "../../../V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD/exports/html/"
+    "kmfa_source_check_board.html"
+)
+PROJECT_COST_PAGE_HREF = (
+    "../../../V014_S11_P3_POST_REMEDIATION_PROJECT_COST_PAGE/exports/html/"
+    "kmfa_project_cost_page.html"
+)
 
 DEVELOPMENT_EVENTS_PATH = governance_phase.DEVELOPMENT_EVENTS_PATH
 STAGE_STATUS_PATH = governance_phase.STAGE_STATUS_PATH
@@ -240,6 +248,14 @@ def _module_records() -> list[dict[str, Any]]:
                 "availability_summary": availability,
                 "route_hash": f"#{module_id}",
                 "report_links": links,
+                "current_stage_page_links": {
+                    "project_cost": [
+                        {"label": "打开项目成本页面", "href": PROJECT_COST_PAGE_HREF}
+                    ],
+                    "source_check": [
+                        {"label": "打开数据源检查板", "href": SOURCE_CHECK_BOARD_HREF}
+                    ],
+                }.get(module_id, []),
                 "visible_feedback_required": True,
                 "current_data_quality_grade": "Q4",
                 "current_report_grade": "D",
@@ -267,10 +283,15 @@ def _render_html(records: list[dict[str, Any]]) -> str:
     )
     views = []
     for index, record in enumerate(records):
-        links = "".join(
+        report_links = "".join(
             f'<a class="report-link" data-report-link href="{html.escape(link["href"])}" target="_blank" rel="noopener">{html.escape(link["label"])}</a>'
             for link in record["report_links"]
         )
+        stage_page_links = "".join(
+            f'<a class="report-link" data-current-stage-page-link href="{html.escape(link["href"])}">{html.escape(link["label"])}</a>'
+            for link in record["current_stage_page_links"]
+        )
+        links = report_links + stage_page_links
         links_block = (
             f'<div class="report-links" aria-label="当前受限报告">{links}</div>'
             if links
@@ -362,7 +383,7 @@ def _render_html(records: list[dict[str, Any]]) -> str:
       <div class="side-status"><span>当前可信状态</span><strong>Q4 / D · NO_GO</strong></div>
     </aside>
     <main>
-      <header class="topbar"><div><h1>经营分析工作台</h1><p>当前首页仅展示公开安全状态与受控入口</p></div><div class="gate"><span>报告状态</span><strong>D级（未放行）</strong></div></header>
+      <header class="topbar"><div><h1>经营分析工作台</h1><p>当前首页仅展示公开安全状态与受控入口</p></div><div class="gate"><span>报告状态</span><strong>D级（未放行） · NO_GO</strong></div></header>
       <section class="quality-band"><strong>限制说明：</strong>关键现金数据仍不完整，九项非零差异继续保留，一项比较未完成；所有报告入口仅供内部复核。</section>
       <section class="metrics" aria-label="当前差异状态"><div class="metric"><span>最终接受未决</span><strong>3</strong></div><div class="metric"><span>非零差异</span><strong>9</strong></div><div class="metric"><span>零差异</span><strong>2</strong></div><div class="metric"><span>未完成比较</span><strong>1</strong></div></section>
       <section class="workspace"><div>{''.join(views)}</div><aside class="activity-panel" id="activity-panel" aria-live="polite"><h2 id="activity-title">经营总览入口已选中</h2><p id="activity-message">经营总览入口状态已更新：当前可查看 D 级受限预览。</p><div class="activity-state"><span>当前发布边界</span><strong>未放行 · 仅供内部复核</strong></div></aside></section>
@@ -481,7 +502,8 @@ def _browser_worker() -> dict[str, Any]:
     navigation_checks = []
     action_checks = []
     keyboard_checks = []
-    link_checks = []
+    report_link_checks = []
+    stage_page_link_checks = []
     try:
         with sync_playwright() as playwright:
             browser = playwright.chromium.launch(
@@ -555,7 +577,14 @@ def _browser_worker() -> dict[str, Any]:
                     for index in range(links.count()):
                         href = links.nth(index).get_attribute("href") or ""
                         response = page.request.get(urljoin(page.url, href))
-                        link_checks.append({"href": href, "status": response.status, "passed": response.ok})
+                        report_link_checks.append({"href": href, "status": response.status, "passed": response.ok})
+                    stage_links = page.locator("a[data-current-stage-page-link]")
+                    for index in range(stage_links.count()):
+                        href = stage_links.nth(index).get_attribute("href") or ""
+                        response = page.request.get(urljoin(page.url, href))
+                        stage_page_link_checks.append(
+                            {"href": href, "status": response.status, "passed": response.ok}
+                        )
                 dimensions = page.evaluate(
                     "({scrollWidth:document.documentElement.scrollWidth,innerWidth:window.innerWidth})"
                 )
@@ -568,6 +597,7 @@ def _browser_worker() -> dict[str, Any]:
                         "no_horizontal_overflow": dimensions["scrollWidth"] <= dimensions["innerWidth"],
                         "console_error_count": len(console_errors),
                         "ui_ready": page.locator(".app-shell").get_attribute("data-ui-ready") == "true",
+                        "no_go_visible": "NO_GO" in page.locator("body").inner_text(),
                     }
                 )
                 page.close()
@@ -580,8 +610,9 @@ def _browser_worker() -> dict[str, Any]:
         all(item["passed"] for item in navigation_checks)
         and all(item["passed"] for item in action_checks)
         and all(item["passed"] for item in keyboard_checks)
-        and all(item["passed"] for item in link_checks)
-        and all(item["no_horizontal_overflow"] and item["console_error_count"] == 0 and item["ui_ready"] for item in viewport_checks)
+        and all(item["passed"] for item in report_link_checks)
+        and all(item["passed"] for item in stage_page_link_checks)
+        and all(item["no_horizontal_overflow"] and item["console_error_count"] == 0 and item["ui_ready"] and item["no_go_visible"] for item in viewport_checks)
     )
     result = {
         "status": "PASS" if passed else "FAIL",
@@ -589,7 +620,8 @@ def _browser_worker() -> dict[str, Any]:
         "navigation_checks": navigation_checks,
         "module_action_checks": action_checks,
         "keyboard_navigation_checks": keyboard_checks,
-        "report_link_http_checks": link_checks,
+        "report_link_http_checks": report_link_checks,
+        "current_stage_page_link_http_checks": stage_page_link_checks,
     }
     _write_json(PRIVATE_BROWSER_PATH, result)
     if not passed:
@@ -629,8 +661,12 @@ def _run_browser_suite() -> dict[str, Any]:
         "module_action_interaction_count": len(browser["module_action_checks"]),
         "keyboard_navigation_check_count": len(browser["keyboard_navigation_checks"]),
         "report_link_http_check_count": len(browser["report_link_http_checks"]),
+        "current_stage_page_link_http_check_count": len(
+            browser["current_stage_page_link_http_checks"]
+        ),
         "console_error_count": sum(item["console_error_count"] for item in browser["viewport_checks"]),
         "horizontal_overflow_count": sum(not item["no_horizontal_overflow"] for item in browser["viewport_checks"]),
+        "visible_no_go_viewport_count": sum(item["no_go_visible"] for item in browser["viewport_checks"]),
     }
 
 
@@ -813,6 +849,9 @@ def generate(*, final_validation: bool = False, write_governance: bool = True) -
     s10_summary = s10["summary"]
     html_text = HTML_PATH.read_text(encoding="utf-8")
     report_links = [link for record in records for link in record["report_links"]]
+    stage_page_links = [
+        link for record in records for link in record["current_stage_page_links"]
+    ]
     summary = {
         "schema_version": "kmfa.v014.s11_p1.post_remediation_home_navigation_summary.v1",
         "project_id": "KMFA",
@@ -829,11 +868,15 @@ def generate(*, final_validation: bool = False, write_governance: bool = True) -
         "visible_feedback_panel_count": html_text.count('aria-live="polite"'),
         "report_link_count": len(report_links),
         "unique_report_target_count": len({link["href"] for link in report_links}),
-        "historical_future_target_link_count": sum(
-            token in html_text
-            for token in ("S11_P2", "S11_P3", "S12_P1", "S13_P1", "S13_P2", "S14_P1", "S14_P2")
+        "current_stage_page_link_count": len(stage_page_links),
+        "current_stage_page_target_count": len(
+            {link["href"] for link in stage_page_links}
         ),
-        "current_s10_restricted_report_links_only": True,
+        "unavailable_future_target_link_count": sum(
+            token in html_text
+            for token in ("S12_P1", "S13_P1", "S13_P2", "S14_P1", "S14_P2")
+        ),
+        "restricted_report_links_preserve_s10_grade": True,
         "contains_stale_pending_twelve": "pending_reconciliation_count" in html_text or "12 pending" in html_text,
         "contains_b_grade": "B级" in html_text,
         "km_brand_mark_present": "KMFA" in html_text and ">KM<" in html_text,
@@ -980,7 +1023,7 @@ def generate(*, final_validation: bool = False, write_governance: bool = True) -
 | 风险 | 控制 | 状态 |
 |---|---|---|
 | 旧 12 pending 或 B 级状态回流 | 当前 Stage 10 review 是唯一动态输入 | controlled |
-| 首页跳转到后续历史页面 | 单页模块视图，仅保留最新两份 S10 受限报告目标 | controlled |
+| 首页链接到错误阶段页面 | 仅开放当前 S11-P2/P3 页面和最新两份 S10 受限报告 | controlled |
 | 导航只有视觉无反馈 | 8 个导航和 8 个操作按钮逐项执行真实浏览器检查 | controlled |
 | 移动端溢出或控件遮挡 | 390px 视口、截图和横向溢出检查 | controlled |
 | raw/private/secret 进入 Git | fresh raw 快照、ignore 与 changed-file 安全扫描 | controlled |

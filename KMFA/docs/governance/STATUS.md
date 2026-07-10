@@ -5,12 +5,12 @@
 ## 最新状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s11-p3-post-remediation-project-cost-page`
+- version: `0.1.4-s11-post-remediation-stage-review`
 - current_stage: `S11`
-- current_phase: `V014_S11_P3_POST_REMEDIATION_PROJECT_COST_PAGE`
-- status: `completed_validated_local_only_current_project_cost_page_d_no_go_upload_deferred`
+- current_phase: `V014_S11_POST_REMEDIATION_STAGE_REVIEW`
+- status: `completed_validated_local_only_stage11_review_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `Stage_11_overall_review_as_separate_run`
+- next_required_input: `S12-P1_as_separate_run`
 - production_ready: `false`
 - github_upload_ready: `false`
 - raw_snapshot_exact_match: `true`
@@ -19,12 +19,12 @@
 ## 前序状态（上一 phase）
 
 - project_id: `KMFA`
-- version: `0.1.4-s11-p2-post-remediation-source-check-board`
+- version: `0.1.4-s11-p3-post-remediation-project-cost-page`
 - current_stage: `S11`
-- current_phase: `V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD`
-- status: `completed_validated_local_only_current_source_check_board_d_no_go_upload_deferred`
+- current_phase: `V014_S11_P3_POST_REMEDIATION_PROJECT_COST_PAGE`
+- status: `completed_validated_local_only_current_project_cost_page_d_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `S11-P3_project_cost_page_as_separate_run`
+- next_required_input: `Stage_11_overall_review_as_separate_run`
 - raw_snapshot_exact_match: `true`
 - decision: `NO_GO`
 
@@ -44,6 +44,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 Stage 11 post-remediation review completed local-only：S11-P1/P2/P3 strict validators 与 focused tests PASS，`7 fixed / 0 open`；修复 P1/P2 时态耦合、首页/检查板前向链接、旧 12 pending review、移动端 NO_GO 可见性和 icon-only 链接可访问名称。三页形成 `6` 条有向边，desktop/mobile `6/6`、HTTP `6/6`、真实导航 `6/6`，console/overflow=`0/0`。项目级归属保持 `0 attributed / 4 unknown/null`，当前 `Q4 / D / NO_GO / 3-9-2-1`。raw 前后、跨 S11-P3 与当前快照一致；S12-P1、GitHub upload、app reinstall 和 business execution 均未执行。next_required_input=`S12-P1_as_separate_run`。
 
 - v0.1.4 S11-P3 post-remediation project cost page completed local-only：`4` 个公开安全项目槽位覆盖 `7` 列；项目级差异归属 `0 attributed / 4 unknown / 4 null counts`，不把全局 `3/9/2/1` 伪分配到项目。v1.4 baseline `54/54 PASS`、current page `21/21 PASS`，desktop/mobile 搜索 `4/4`、详情 `8/8`、报告章节 `8/8`、预览开关 `2/2`、keyboard `2/2`、linked artifacts `4/4`，console error 与 overflow=`0`。raw 前后及跨 S11-P2 快照一致；Stage 11 review、S12、GitHub upload、app reinstall 和 business execution 均未执行。next_required_input=`Stage_11_overall_review_as_separate_run`。
 

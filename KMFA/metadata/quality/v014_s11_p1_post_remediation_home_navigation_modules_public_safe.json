@@ -6,6 +6,7 @@
       "business_decision_basis_allowed": false,
       "current_data_quality_grade": "Q4",
       "current_report_grade": "D",
+      "current_stage_page_links": [],
       "decision": "NO_GO",
       "formal_report_allowed": false,
       "module_id": "business_overview",
@@ -32,6 +33,12 @@
       "business_decision_basis_allowed": false,
       "current_data_quality_grade": "Q4",
       "current_report_grade": "D",
+      "current_stage_page_links": [
+        {
+          "href": "../../../V014_S11_P3_POST_REMEDIATION_PROJECT_COST_PAGE/exports/html/kmfa_project_cost_page.html",
+          "label": "打开项目成本页面"
+        }
+      ],
       "decision": "NO_GO",
       "formal_report_allowed": false,
       "module_id": "project_cost",
@@ -58,6 +65,7 @@
       "business_decision_basis_allowed": false,
       "current_data_quality_grade": "Q4",
       "current_report_grade": "D",
+      "current_stage_page_links": [],
       "decision": "NO_GO",
       "formal_report_allowed": false,
       "module_id": "receivable_collection",
@@ -79,6 +87,7 @@
       "business_decision_basis_allowed": false,
       "current_data_quality_grade": "Q4",
       "current_report_grade": "D",
+      "current_stage_page_links": [],
       "decision": "NO_GO",
       "formal_report_allowed": false,
       "module_id": "financial_cash",
@@ -100,6 +109,7 @@
       "business_decision_basis_allowed": false,
       "current_data_quality_grade": "Q4",
       "current_report_grade": "D",
+      "current_stage_page_links": [],
       "decision": "NO_GO",
       "formal_report_allowed": false,
       "module_id": "invoice_tax",
@@ -121,6 +131,12 @@
       "business_decision_basis_allowed": false,
       "current_data_quality_grade": "Q4",
       "current_report_grade": "D",
+      "current_stage_page_links": [
+        {
+          "href": "../../../V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD/exports/html/kmfa_source_check_board.html",
+          "label": "打开数据源检查板"
+        }
+      ],
       "decision": "NO_GO",
       "formal_report_allowed": false,
       "module_id": "source_check",
@@ -142,6 +158,7 @@
       "business_decision_basis_allowed": false,
       "current_data_quality_grade": "Q4",
       "current_report_grade": "D",
+      "current_stage_page_links": [],
       "decision": "NO_GO",
       "formal_report_allowed": false,
       "module_id": "pending_actions",
@@ -163,6 +180,7 @@
       "business_decision_basis_allowed": false,
       "current_data_quality_grade": "Q4",
       "current_report_grade": "D",
+      "current_stage_page_links": [],
       "decision": "NO_GO",
       "formal_report_allowed": false,
       "module_id": "report_center",
