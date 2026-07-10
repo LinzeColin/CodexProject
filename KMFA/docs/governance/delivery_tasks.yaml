@@ -1,6 +1,43 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "KMFA-V014-S09-POST-REMEDIATION-STAGE-REVIEW-20260710"
+    phase: "V014_S09_POST_REMEDIATION_STAGE_REVIEW"
+    objective: "Review Stage 9 after residual remediation, fix review findings and preserve the NO_GO release boundary."
+    scope:
+      - "rerun S09-P1 P2 P3 original review and residual validators"
+      - "repair no-float scan semantics and missing stage status governance fields"
+      - "verify nine cost categories authority-system separation and human-readable reconciliation"
+      - "prove raw immutability and generate public-safe Chinese review evidence"
+    non_scope:
+      - "S10-P1 new business functionality or formal report release"
+      - "raw mutation inferred zero difference overwrite or private content publication"
+      - "GitHub upload app reinstall or business execution"
+    status: "completed"
+    completed_version: "0.1.4-s09-post-remediation-stage-review"
+    dependencies:
+      - "V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE"
+    required_files:
+      - "KMFA/stage_artifacts/V014_S09_POST_REMEDIATION_STAGE_REVIEW/machine/stage9_post_remediation_review_manifest.json"
+      - "KMFA/tools/check_v014_s09_post_remediation_stage_review.py"
+    acceptance_ids:
+      - "ACC-V014-S09-POST-REMEDIATION-STAGE-REVIEW"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s09_post_remediation_stage_review.py --require-private-evidence"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s09_post_remediation_stage_review"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/no_omission_check.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_no_float_money.py"
+    test_results:
+      - "PASS: Stage 9 post-remediation private-evidence validator"
+      - "PASS: eleven findings fixed and zero findings open"
+      - "PASS: no-float and no-omission checks"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S09_POST_REMEDIATION_STAGE_REVIEW/human/test_results_zh.md"
+      - "KMFA/stage_artifacts/V014_S09_POST_REMEDIATION_STAGE_REVIEW/machine/stage9_post_remediation_review_manifest.json"
+    risk: "Three final-accepted cash differences and nine nonzero differences keep Q4 D and NO_GO active."
+    rollback: "Revert only this review commit and normalized governance fields; never mutate the raw inbox."
+    target_version: "0.1.4-s09-post-remediation-stage-review"
+
   - task_id: "KMFA-V014-REMAINING-ELEVEN-RESIDUAL-DIFFERENCE-SOURCE-TRACE-OR-FINAL-ACCEPTANCE-20260710"
     phase: "V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE"
     objective: "Resolve eight project cost components from unique authority PDF tables and preserve three unproven cash values as final accepted differences."

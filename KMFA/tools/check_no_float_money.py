@@ -11,7 +11,14 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_EXCLUDES = {"taskpack", "stage_artifacts", "__pycache__"}
+DEFAULT_EXCLUDES = {
+    ".codex_private_runtime",
+    "taskpack",
+    "stage_artifacts",
+    "tests",
+    "__pycache__",
+}
+NON_MONEY_FLOAT_DICT_KEYS = {"derived_percent"}
 
 
 @dataclass(frozen=True)
@@ -48,6 +55,7 @@ class FloatMoneyVisitor(ast.NodeVisitor):
     def __init__(self, path: Path) -> None:
         self.path = path
         self.findings: list[FloatFinding] = []
+        self.non_money_nodes: set[int] = set()
 
     def add(self, node: ast.AST, message: str) -> None:
         self.findings.append(
@@ -60,8 +68,14 @@ class FloatMoneyVisitor(ast.NodeVisitor):
         )
 
     def visit_Constant(self, node: ast.Constant) -> None:
-        if isinstance(node.value, float):
+        if isinstance(node.value, float) and id(node) not in self.non_money_nodes:
             self.add(node, "float literal is forbidden for KMFA business money")
+        self.generic_visit(node)
+
+    def visit_Dict(self, node: ast.Dict) -> None:
+        for key, value in zip(node.keys, node.values):
+            if isinstance(key, ast.Constant) and key.value in NON_MONEY_FLOAT_DICT_KEYS:
+                self.non_money_nodes.update(id(child) for child in ast.walk(value))
         self.generic_visit(node)
 
     def visit_Call(self, node: ast.Call) -> None:

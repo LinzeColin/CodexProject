@@ -1,0 +1,105 @@
+{
+  "check_count": 24,
+  "check_fail_count": 0,
+  "check_pass_count": 24,
+  "checks": [
+    {
+      "check_id": "S09-POST-01",
+      "passed": true
+    },
+    {
+      "check_id": "S09-POST-02",
+      "passed": true
+    },
+    {
+      "check_id": "S09-POST-03",
+      "passed": true
+    },
+    {
+      "check_id": "S09-POST-04",
+      "passed": true
+    },
+    {
+      "check_id": "S09-POST-05",
+      "passed": true
+    },
+    {
+      "check_id": "S09-POST-06",
+      "passed": true
+    },
+    {
+      "check_id": "S09-POST-07",
+      "passed": true
+    },
+    {
+      "check_id": "S09-POST-08",
+      "passed": true
+    },
+    {
+      "check_id": "S09-POST-09",
+      "passed": true
+    },
+    {
+      "check_id": "S09-POST-10",
+      "passed": true
+    },
+    {
+      "check_id": "S09-POST-11",
+      "passed": true
+    },
+    {
+      "check_id": "S09-POST-12",
+      "passed": true
+    },
+    {
+      "check_id": "S09-POST-13",
+      "passed": true
+    },
+    {
+      "check_id": "S09-POST-14",
+      "passed": true
+    },
+    {
+      "check_id": "S09-POST-15",
+      "passed": true
+    },
+    {
+      "check_id": "S09-POST-16",
+      "passed": true
+    },
+    {
+      "check_id": "S09-POST-17",
+      "passed": true
+    },
+    {
+      "check_id": "S09-POST-18",
+      "passed": true
+    },
+    {
+      "check_id": "S09-POST-19",
+      "passed": true
+    },
+    {
+      "check_id": "S09-POST-20",
+      "passed": true
+    },
+    {
+      "check_id": "S09-POST-21",
+      "passed": true
+    },
+    {
+      "check_id": "S09-POST-22",
+      "passed": true
+    },
+    {
+      "check_id": "S09-POST-23",
+      "passed": true
+    },
+    {
+      "check_id": "S09-POST-24",
+      "passed": true
+    }
+  ],
+  "phase_id": "V014_S09_POST_REMEDIATION_STAGE_REVIEW",
+  "schema_version": "kmfa.v014.s09_post_remediation_review_matrix.v1"
+}

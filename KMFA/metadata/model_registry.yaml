@@ -1,3 +1,18 @@
+kmfa_v014_s09_post_remediation_stage_review:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s09-post-remediation-stage-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S09-POST-REMEDIATION-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1693
+    - PARAM-KMFA-1694
+    - PARAM-KMFA-1695
+  evidence_dir: KMFA/stage_artifacts/V014_S09_POST_REMEDIATION_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s09_post_remediation_stage_review.py
+  scope: Stage 9 post-remediation review with fresh phase and residual replay, no-float/no-omission repair, public-safe evidence and immutable raw snapshots; S10 upload app reinstall and business execution remain closed.
+
 kmfa_v014_remaining_eleven_residual_difference_source_trace_or_final_acceptance:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-remaining-eleven-residual-difference-source-trace-or-final-acceptance"

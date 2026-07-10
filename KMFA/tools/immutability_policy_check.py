@@ -183,6 +183,8 @@ def check_control_event_policy() -> None:
 def check_privacy_boundary() -> None:
     bad_suffixes = []
     for path in ROOT.rglob("*"):
+        if ".codex_private_runtime" in path.relative_to(ROOT).parts:
+            continue
         if path.is_file() and path.suffix.lower() in FORBIDDEN_SUFFIXES:
             bad_suffixes.append(str(path.relative_to(ROOT)))
     if bad_suffixes:

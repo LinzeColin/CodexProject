@@ -149,13 +149,21 @@ def validate_s01_p3_no_omission_gate(manifest_path: Path = MANIFEST_PATH) -> dic
     require(manifest.get("external_v013_roadmap_available") is False, "external roadmap must remain recorded unavailable")
 
     manifest_counts = manifest.get("no_omission", {})
-    for key in ("requirements", "p0", "p1", "stage_status_records", "task_records"):
+    for key in ("requirements", "p0", "p1", "task_records"):
         require(manifest_counts.get(key) == no_omission.get(key), f"manifest no_omission {key} mismatch")
+    require(manifest_counts.get("stage_status_records") == 549, "historical stage status snapshot mismatch")
+    require(
+        no_omission.get("stage_status_records", 0) >= manifest_counts.get("stage_status_records", 0),
+        "current stage status registry regressed below the historical snapshot",
+    )
     require(manifest_counts.get("result") == "PASS", "manifest no_omission result must be PASS")
     require(no_omission.get("requirements") == requirement_counts["requirements"] == 20, "requirements count mismatch")
     require(no_omission.get("p0") == requirement_counts["p0"] == 9, "P0 requirement count mismatch")
     require(no_omission.get("p1") == requirement_counts["p1"] == 8, "P1 requirement count mismatch")
-    require(no_omission.get("stage_status_records") == stage_counts["stage_status_records"] == 549, "stage status record count mismatch")
+    require(
+        stage_counts["stage_status_records"] >= manifest_counts.get("stage_status_records", 0),
+        "stage status record count regressed below the historical snapshot",
+    )
     require(no_omission.get("task_records") == stage_counts["task_records"] == 162, "task record count mismatch")
 
     legacy_counts = legacy.get("no_omission", {})

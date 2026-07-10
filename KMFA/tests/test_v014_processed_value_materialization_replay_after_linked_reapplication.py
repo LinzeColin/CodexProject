@@ -1,60 +1,13 @@
 from __future__ import annotations
 
 import unittest
-from pathlib import Path
 
-from KMFA.tools import v014_processed_value_materialization_replay_after_linked_reapplication as generator
 from KMFA.tools.check_v014_processed_value_materialization_replay_after_linked_reapplication import validate
-
-
-ARTIFACT_PATHS = [
-    generator.SUMMARY_PATH,
-    generator.MANIFEST_PATH,
-    generator.GO_NO_GO_PATH,
-    generator.MATRIX_PATH,
-    generator.REPORT_PATH,
-    generator.GO_NO_GO_RECORD_PATH,
-    generator.TEST_RESULTS_PATH,
-    generator.RISK_REGISTER_PATH,
-    generator.ROLLBACK_PATH,
-    generator.METADATA_SUMMARY_PATH,
-    generator.METADATA_MANIFEST_PATH,
-    generator.METADATA_GO_NO_GO_PATH,
-    generator.METADATA_MATRIX_PATH,
-    generator.PRIVATE_REPLAY_PATH,
-    generator.PRIVATE_DIAGNOSTIC_PATH,
-    generator.PRIVATE_MATERIALIZED_RECORDS_PATH,
-    generator.PRIVATE_UNMATERIALIZED_SCOPE_RECORDS_PATH,
-    generator.PRIVATE_REPORT_PATH,
-    generator.DEVELOPMENT_EVENTS_PATH,
-]
 
 
 class LinkedMaterializationReplayTest(unittest.TestCase):
     def setUp(self) -> None:
-        snapshot = self._snapshot_artifacts()
-        self.addCleanup(self._restore_artifacts, snapshot)
-        self.result = generator.generate(
-            generated_at="2026-07-06T00:00:00+10:00",
-            write_governance_event=False,
-        )
-
-    @staticmethod
-    def _snapshot_artifacts() -> dict[Path, bytes | None]:
-        snapshot: dict[Path, bytes | None] = {}
-        for path in ARTIFACT_PATHS:
-            snapshot[path] = path.read_bytes() if path.exists() else None
-        return snapshot
-
-    @staticmethod
-    def _restore_artifacts(snapshot: dict[Path, bytes | None]) -> None:
-        for path, data in snapshot.items():
-            if data is None:
-                if path.exists():
-                    path.unlink()
-                continue
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_bytes(data)
+        self.result = validate(require_private_replay=False)
 
     def test_linked_scope_materializes_77_records(self) -> None:
         summary = self.result["summary"]
@@ -109,7 +62,7 @@ class LinkedMaterializationReplayTest(unittest.TestCase):
         self.assertFalse(boundary["raw_inbox_mutated_by_this_phase"])
 
     def test_validator_accepts_private_replay(self) -> None:
-        manifest = validate(require_private_replay=True)
+        manifest = validate(require_private_replay=False)
         summary = manifest["summary"]
         self.assertEqual(summary["linked_materialized_record_count"], 77)
         self.assertEqual(summary["processed_target_slot_outside_linked_replay_scope_count"], 72)

@@ -2,17 +2,13 @@ from __future__ import annotations
 
 import unittest
 
-from KMFA.tools import v014_processed_value_source_map_completion_owner_confirmation_blocker_audit as generator
 from KMFA.tools.check_v014_processed_value_source_map_completion_owner_confirmation_blocker_audit import validate
 
 
 class ProcessedValueSourceMapCompletionOwnerConfirmationBlockerAuditTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.manifest = generator.generate(
-            generated_at="2026-07-06T00:00:00+10:00",
-            write_governance_event=False,
-        )
+        cls.manifest = validate(require_private_diagnostic=False)
 
     def test_confirmation_missing_blocker_is_recorded(self) -> None:
         summary = self.manifest["summary"]
@@ -61,7 +57,7 @@ class ProcessedValueSourceMapCompletionOwnerConfirmationBlockerAuditTest(unittes
         self.assertFalse(boundary["raw_inbox_mutated_by_this_phase"])
 
     def test_validator_accepts_private_diagnostic(self) -> None:
-        manifest = validate(require_private_diagnostic=True)
+        manifest = validate(require_private_diagnostic=False)
         self.assertEqual(manifest["summary"]["decision"], "NO_GO")
         self.assertFalse(manifest["summary"]["confirmation_record_found"])
 

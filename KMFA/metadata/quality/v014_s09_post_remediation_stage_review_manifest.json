@@ -1,0 +1,228 @@
+{
+  "artifact_refs": {
+    "go_no_go": "KMFA/stage_artifacts/V014_S09_POST_REMEDIATION_STAGE_REVIEW/machine/stage9_post_remediation_review_go_no_go_report.json",
+    "matrix": "KMFA/stage_artifacts/V014_S09_POST_REMEDIATION_STAGE_REVIEW/machine/stage9_post_remediation_review_matrix_public_safe.json",
+    "report": "KMFA/stage_artifacts/V014_S09_POST_REMEDIATION_STAGE_REVIEW/human/stage9_post_remediation_review_report_zh.md",
+    "summary": "KMFA/stage_artifacts/V014_S09_POST_REMEDIATION_STAGE_REVIEW/machine/stage9_post_remediation_review_summary.json",
+    "test_results": "KMFA/stage_artifacts/V014_S09_POST_REMEDIATION_STAGE_REVIEW/human/test_results_zh.md",
+    "validator": "KMFA/tools/check_v014_s09_post_remediation_stage_review.py"
+  },
+  "branch": "codex/kmfa",
+  "dependency_results": [
+    {
+      "check_id": "s09_p1_validator",
+      "exit_code": 0,
+      "result": "PASS",
+      "result_line": "PASS: KMFA v0.1.4 S09-P1 project cost fact layer validated (metrics=6, categories=9, fact_records=4, unallocated_pool=9, s09p2=false, github_upload=false)"
+    },
+    {
+      "check_id": "s09_p2_validator",
+      "exit_code": 0,
+      "result": "PASS",
+      "result_line": "PASS: KMFA v0.1.4 S09-P2 margin and cash margin validated (margin_metrics=4, margin_records=4, difference_summary=12, s09p3=false, stage9_review=false, github_upload=false)"
+    },
+    {
+      "check_id": "s09_p3_validator",
+      "exit_code": 0,
+      "result": "PASS",
+      "result_line": "PASS: KMFA v0.1.4 S09-P3 scope reconciliation validated (reconciliation_records=12, domain_controls=6, pending_resolutions=12, stage9_review=false, github_upload=false)"
+    },
+    {
+      "check_id": "original_s09_review_validator",
+      "exit_code": 0,
+      "result": "PASS",
+      "result_line": "PASS: KMFA v0.1.4 Stage 9 review validated (cost_metrics=6, margin_metrics=4, reconciliation_records=12, s10_p1=false, github_upload=false)"
+    },
+    {
+      "check_id": "global_residual_validator",
+      "exit_code": 0,
+      "result": "PASS",
+      "result_line": "PASS: global residual replay validator classified=72 closed_or_excluded=61 open=11 decision=NO_GO"
+    },
+    {
+      "check_id": "remaining_eleven_validator",
+      "exit_code": 0,
+      "result": "PASS",
+      "result_line": "PASS: remaining eleven trace validator resolved=8 closed_or_excluded=69 open=3 decision=NO_GO"
+    },
+    {
+      "check_id": "no_float_money",
+      "exit_code": 0,
+      "result": "PASS",
+      "result_line": "PASS: no KMFA Python float money usage found"
+    },
+    {
+      "check_id": "no_omission",
+      "exit_code": 0,
+      "result": "PASS",
+      "result_line": "PASS: KMFA no omission check passed (requirements=20, P0=9, P1=8, status_records=1176, tasks=162, v1.2_html=45+)"
+    }
+  ],
+  "generated_at": "2026-07-11T00:19:06+10:00",
+  "phase_id": "V014_S09_POST_REMEDIATION_STAGE_REVIEW",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "aggregate_only": true,
+    "business_value_committed": false,
+    "credential_or_secret_committed": false,
+    "field_or_header_plaintext_committed": false,
+    "private_reference_committed": false,
+    "raw_file_committed": false,
+    "raw_filename_committed": false,
+    "raw_hash_committed": false
+  },
+  "record_type": "v014_s09_post_remediation_stage_review_manifest",
+  "remote": "git@github.com:LinzeColin/CodexProject.git",
+  "review_boundaries": {
+    "app_reinstall_performed": false,
+    "business_execution_performed": false,
+    "github_upload_performed": false,
+    "stage10_started": false,
+    "stage9_review_only": true
+  },
+  "review_findings": [
+    {
+      "finding_id": "KMFA-V014-S09-POST-REVIEW-F01",
+      "fix": "新增 post-remediation review，绑定八条成本分项物化及六十九条关闭或排除、三条最终接受未决的最新链路。",
+      "severity": "P1",
+      "status": "fixed",
+      "summary": "原 Stage 9 review 仍停留在修补前的十二条待确认快照。"
+    },
+    {
+      "finding_id": "KMFA-V014-S09-POST-REVIEW-F02",
+      "fix": "保留业务金额严格扫描，仅排除目录级 private/test 输入并允许非金额治理键 derived_percent。",
+      "severity": "P1",
+      "status": "fixed",
+      "summary": "no-float 全量扫描将治理进度、ignored private 依赖和负向测试误判为业务金额。"
+    },
+    {
+      "finding_id": "KMFA-V014-S09-POST-REVIEW-F03",
+      "fix": "结构化补齐 fact_level，并为八条事件记录补齐 record_type 和 updated_at，不改写原状态结论。",
+      "severity": "P1",
+      "status": "fixed",
+      "summary": "stage status 注册表存在六十二条缺少必填治理字段的历史记录。"
+    },
+    {
+      "finding_id": "KMFA-V014-S09-POST-REVIEW-F04",
+      "fix": "本 review 重新执行八条依赖命令，并结构化校验 event、公式、参数与机器证据的 finding 计数一致。",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "原 review 的静态 validation summary 不能证明当前命令仍通过，治理镜像也可能停留在早期 finding 计数。"
+    },
+    {
+      "finding_id": "KMFA-V014-S09-POST-REVIEW-F05",
+      "fix": "保留历史快照值，并将当前 registry 校验改为不得低于历史快照的单调性约束。",
+      "severity": "P1",
+      "status": "fixed",
+      "summary": "v0.1.3 no-omission 历史快照错误要求持续增长的 stage registry 永远等于五百四十九条。"
+    },
+    {
+      "finding_id": "KMFA-V014-S09-POST-REVIEW-F06",
+      "fix": "公开仓库扫描跳过 .codex_private_runtime，tracked/raw/private 边界校验保持不变。",
+      "severity": "P1",
+      "status": "fixed",
+      "summary": "immutability 与 report-grade 扫描器将明确 ignored 的 private runtime 误判为公开敏感文件。"
+    },
+    {
+      "finding_id": "KMFA-V014-S09-POST-REVIEW-F07",
+      "fix": "仅对 Sxx、SxxP1-3 与 SxxP1-3Txx implementation records 执行基线 schema 和计数校验。",
+      "severity": "P1",
+      "status": "fixed",
+      "summary": "v1.4 S01 baseline loader 将后续追加阶段记录混入最初十八阶段 implementation registry。"
+    },
+    {
+      "finding_id": "KMFA-V014-S09-POST-REVIEW-F08",
+      "fix": "历史阶段测试改为只读冻结 public evidence；当前 private state 只由所属后续阶段验证。",
+      "severity": "P1",
+      "status": "fixed",
+      "summary": "多个历史阶段测试用当前 private state 重放旧阶段，造成时态漂移和 tracked evidence 污染。"
+    },
+    {
+      "finding_id": "KMFA-V014-S09-POST-REVIEW-F09",
+      "fix": "upload 校验改为 phase-local evidence 引用，并在历史测试中验证冻结 stage summaries。",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "历史 overall review 将后续 upload 目录的存在反向解释为当时已上传。"
+    },
+    {
+      "finding_id": "KMFA-V014-S09-POST-REVIEW-F10",
+      "fix": "上游依赖严格验证冻结 public evidence，本复审自行执行 fresh raw before/after/prior/current 四向校验。",
+      "severity": "P1",
+      "status": "fixed",
+      "summary": "本复审额外绑定早期 private diagnostic 的阶段时点 source hashes，后续合法产物会导致伪漂移。"
+    },
+    {
+      "finding_id": "KMFA-V014-S09-POST-REVIEW-F11",
+      "fix": "manifest 仅保留 branch 与 HEAD，不再记录工作树文件列表，并增加泄漏回归断言。",
+      "severity": "P1",
+      "status": "fixed",
+      "summary": "一份 public manifest 嵌入完整 git status，可能把任意私有语义文件名带入公开证据。"
+    }
+  ],
+  "reviewed_head": "d8cad041c233ea19680855fa5f94b10338e4e4c8",
+  "schema_version": "kmfa.v014.s09_post_remediation_review_manifest.v1",
+  "source_evidence_refs": {
+    "latest_residual_review": "KMFA/stage_artifacts/V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE/machine/remaining_eleven_residual_difference_source_trace_or_final_acceptance_manifest.json",
+    "original_stage_review": "KMFA/stage_artifacts/V014_S09_STAGE_REVIEW/machine/stage9_review_manifest.json"
+  },
+  "stage_id": "S09",
+  "summary": {
+    "acceptance_id": "ACC-V014-S09-POST-REMEDIATION-STAGE-REVIEW",
+    "app_reinstall_performed": false,
+    "authority_system_overwrite_allowed_count": 0,
+    "business_execution_performed": false,
+    "cost_category_count": 9,
+    "cost_component_materialization_count": 8,
+    "current_data_quality_grade": "Q4",
+    "current_report_grade": "D",
+    "decision": "NO_GO",
+    "dependency_validation_count": 8,
+    "dependency_validation_pass_count": 8,
+    "fixed_review_finding_count": 11,
+    "forced_zero_materialization_count": 0,
+    "full_regression_elapsed_seconds": "9556.914",
+    "full_regression_failure_count": 0,
+    "full_regression_result": "OK",
+    "full_regression_test_count": 1200,
+    "github_upload_performed": false,
+    "goal_status_recommendation": "continue_active_with_s10_p1_as_separate_run",
+    "human_readable_reconciliation_count": 12,
+    "incomplete_reconciliation_count": 1,
+    "interest_category_covered": true,
+    "next_recommended_phase": "S10-P1",
+    "nonzero_delta_reconciliation_count": 9,
+    "open_final_difference_accepted_count": 3,
+    "open_review_finding_count": 0,
+    "original_stage_review_validated": true,
+    "phase_id": "V014_S09_POST_REMEDIATION_STAGE_REVIEW",
+    "phase_results": {
+      "S09-P1": "PASS",
+      "S09-P2": "PASS",
+      "S09-P3": "PASS"
+    },
+    "private_runtime_committed": false,
+    "project_id": "KMFA",
+    "queue_closed_or_excluded_count": 69,
+    "raw_business_data_committed": false,
+    "raw_cross_phase_snapshot_exact_match": true,
+    "raw_snapshot_exact_match": true,
+    "raw_source_file_count": 5,
+    "reconciliation_record_count": 12,
+    "record_type": "v014_s09_post_remediation_stage_review_summary",
+    "release_permission": "blocked",
+    "review_scope": "v014_s09_post_remediation_stage_review_only",
+    "s10_p1_performed": false,
+    "schema_version": "kmfa.v014.s09_post_remediation_review_summary.v1",
+    "source_global_residual_record_count": 72,
+    "stage_id": "S09",
+    "stage_status_normalized_event_record_count": 8,
+    "stage_status_normalized_record_count": 62,
+    "stage_status_normalized_stage_phase_record_count": 54,
+    "status": "review_completed_validated_local_only_findings_fixed_no_go_upload_deferred",
+    "task_id": "KMFA-V014-S09-POST-REMEDIATION-STAGE-REVIEW-20260710",
+    "travel_category_covered": true,
+    "version": "0.1.4-s09-post-remediation-stage-review",
+    "zero_delta_reconciliation_count": 2
+  },
+  "task_id": "KMFA-V014-S09-POST-REMEDIATION-STAGE-REVIEW-20260710"
+}
