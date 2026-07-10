@@ -317,6 +317,7 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
     galaxy_source = read_text(repo_root / "apps/memory-atlas/src/components/GalaxyScene.tsx")
     index_html = read_text(repo_root / "apps/memory-atlas/index.html")
     installer_source = read_text(repo_root / "scripts/install_memory_atlas_app.py")
+    runtime_server_source = read_text(repo_root / "scripts/memory_atlas_runtime_server.py")
     codex_sync_source = read_text(repo_root / "scripts/sync_codex_memory_data.py")
     codex_auto_update_source = read_text(repo_root / "scripts/run_codex_memory_auto_update.py")
     codex_history_export_source = read_text(repo_root / "scripts/export_codex_history_archives.py")
@@ -512,14 +513,14 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         and "构建缓存清理失败" in installer_source
         and "Application Support/OpenAIDatabase/MemoryAtlas" in installer_source
         and "scripts/audit_memory_atlas_release.py" in installer_source
-        and "request_shutdown" in installer_source
+        and "request_shutdown" in runtime_server_source
         and "MEMORY_ATLAS_PID_FILE" in installer_source
-        and "path.unlink()" in installer_source
-        and "release_requested" in installer_source
-        and "active_thread_count" in installer_source
-        and "allow_reuse_address = True" in installer_source
+        and "path.unlink()" in runtime_server_source
+        and "release_requested" in runtime_server_source
+        and "active_thread_count" in runtime_server_source
+        and "allow_reuse_address = True" in runtime_server_source
         and '"-m http.server"' in installer_source
-        and "last_seen_at = time.time() - max" not in installer_source,
+        and "last_seen_at = time.time() - max" not in runtime_server_source,
         "local_app_launcher_contract",
         "installer creates Downloads/Applications launchers, custom icon, an Application Support source workspace, npm/pnpm dependency fallback, runtime cache manifest/stale checks, cleanup guard, release audit gate, pid cleanup, and immediate tab-close shutdown",
         "local app launcher contract missing required pieces",
