@@ -62,3 +62,94 @@ Safety notes:
   bodies, robot URLs, signing keys, tokens, or cookies are committed by this log.
 - GitHub backup for DWS output is metadata-only; raw archive files remain in
   OneDrive/private runtime.
+
+## 2026-07-10 Registry Hot-Directory Cleanup
+
+Scope: fix recurring Codex Desktop Scheduled visibility drift after the active
+KMFA automations were already restored.
+
+Observed state:
+
+| Check | Result |
+|---|---|
+| Official Codex automation view | `kmfa-dws`, `kmfa`, `kmfa-3`, `kmfa-4`, and `kmfa-5` rendered successfully. |
+| Active top-level KMFA IDs | Only the five expected KMFA automation IDs were active. |
+| Old top-level active IDs | None of `dws`, `automation-5`, `automation-6`, `automation-7`, `kmfa-2`, or old keepalive IDs remained. |
+| Residual registry clutter | Eight backup/orphan directories still lived directly under the hot `~/.codex/automations` namespace. |
+
+Root cause:
+
+- The repeated bug was not only stale active automation TOML. Backup and orphan
+  directories were left inside the same hot registry namespace that Codex
+  Desktop scans for scheduled cards. Even when active IDs were correct, this
+  kept the registry surface noisy and made UI/cache drift easier to reproduce.
+
+Fix:
+
+- Moved the eight `_backup_*` and `_orphan_*` directories out of
+  `~/.codex/automations` into:
+  `/Users/linzezhang/.codex/automation_backups/registry_cleanup_20260710T105856`
+- Active automation directories were not modified or deleted.
+- Future fixes must not store backup copies directly inside
+  `~/.codex/automations`; use `~/.codex/automation_backups/` or a repo-private
+  evidence path instead.
+
+## 2026-07-10 Fund Automation Entrypoint Recovery
+
+Scope: fix `kmfa-5` so the scheduled entrypoint can recover from a missing
+fund hot folder without bypassing the source-readiness gate.
+
+Observed state:
+
+| Check | Result |
+|---|---|
+| `kmfa-5` automation contract | Active, weekly Monday/Saturday 11:00 local Sydney time, CodexProject workspace. |
+| Configured source folder | `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群` was missing before the entrypoint smoke. |
+| Source zip candidates | `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip` and `/Users/linzezhang/onedrive/DWS_Outputs.zip` were readable. |
+| First source readiness | `SOURCE_MISSING`; runner was not started. |
+
+Root cause:
+
+- The fund weekly skill already had a safe `materialize_fund_source.py` tool,
+  and `check_source_readiness.py` could point at the DWS zip candidate, but the
+  scheduled shell entrypoint did not perform the explicit materialization step.
+  Any cleanup or OneDrive hot-folder loss could therefore make `kmfa-5`
+  repeatedly unavailable even though the latest DWS zip was healthy.
+- The runner and delivery-acceptance helpers still compared the schedule against
+  the pre-normalized RRULE string without the `RRULE:` prefix. The live Codex
+  automation and tracked contract had already moved to
+  `RRULE:FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0`, so generated run
+  packages could incorrectly mark the automation schedule gate as mismatch even
+  when the card was correct.
+
+Fix:
+
+- `tools/run_daily_local.sh` now handles only readiness exit `2`
+  (`SOURCE_MISSING`) by explicitly materializing `付款请示群` from the configured
+  DWS zip candidate, then rerunning `check_source_readiness.py`.
+- The runner still starts only after the second readiness check returns
+  `READY`; other readiness failures remain fail-closed and do not trigger
+  materialization.
+- `tools/run_fund_weekly_analysis.py` and `tools/check_delivery_acceptance.py`
+  now use the same RRULE string as the tracked `kmfa-5` contract.
+- Added a regression test covering this exact call order:
+  readiness `SOURCE_MISSING` -> materialize zip -> readiness `READY` -> runner.
+
+Validation:
+
+| Evidence | Result |
+|---|---|
+| Focused regression tests | `Ran 3 tests ... OK`. |
+| Full fund weekly tests | `Ran 71 tests ... OK`. |
+| Real scheduled-entrypoint smoke | First smoke: readiness `SOURCE_MISSING`; materialized 292 `付款请示群` files from `DWS_Outputs.zip`; second readiness `READY`; runner reached `INDEXED_PENDING_EXTRACTION`. Post-fix smoke: readiness directly `READY`; runner reached `INDEXED_PENDING_EXTRACTION`. OCR engine intentionally set to `none`; Codex handoff intentionally skipped. |
+| Hot source folder after smoke | 292 files present under the configured fund input folder. |
+| Fund taskpack / automation / source checks | Taskpack static validation `PASS`; `check_codex_app_automation.py` returned `CODEX_AUTOMATION_READY`; source readiness returned `READY` with 292 files and 0 unreadable files. |
+
+Safety notes:
+
+- This is not silent fallback. The entrypoint logs the materialization action and
+  still requires a fresh readiness pass before extraction.
+- The materialization is group-scoped to `付款请示群`; other DWS groups are not
+  copied into the fund input folder.
+- No source files are overwritten by the materializer; conflicts remain
+  fail-closed under the existing materialization contract.

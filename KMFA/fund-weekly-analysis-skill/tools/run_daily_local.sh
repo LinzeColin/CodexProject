@@ -7,6 +7,8 @@ REPO_ROOT="${KMFA_REPO_ROOT:-$(cd "$SKILL_DIR/../.." && pwd)}"
 INPUT_DIR="${KMFA_FUND_INPUT_DIR:-/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群}"
 PROMPT_FILE="$SKILL_DIR/automation/weekly_mon_sat_1100_sydney.prompt.md"
 RUN_ID_OVERRIDE="${KMFA_FUND_RUN_ID:-}"
+PRIMARY_SOURCE_ZIP="${KMFA_FUND_SOURCE_ZIP:-/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip}"
+FALLBACK_SOURCE_ZIP="${KMFA_FUND_FALLBACK_SOURCE_ZIP:-/Users/linzezhang/onedrive/DWS_Outputs.zip}"
 
 cd "$REPO_ROOT"
 if [[ "$(git branch --show-current)" != "main" ]]; then
@@ -17,10 +19,34 @@ fi
 git fetch origin main
 git merge --ff-only origin/main
 
-set +e
-python3 "$SKILL_DIR/tools/check_source_readiness.py" --target-dir "$INPUT_DIR" --repo-root "$REPO_ROOT" --timezone Australia/Sydney
-READINESS_EXIT=$?
-set -e
+run_source_readiness() {
+  set +e
+  python3 "$SKILL_DIR/tools/check_source_readiness.py" --target-dir "$INPUT_DIR" --repo-root "$REPO_ROOT" --timezone Australia/Sydney
+  READINESS_EXIT=$?
+  set -e
+}
+
+run_source_readiness
+if [[ "$READINESS_EXIT" -eq 2 ]]; then
+  MATERIALIZED=0
+  for SOURCE_ZIP in "$PRIMARY_SOURCE_ZIP" "$FALLBACK_SOURCE_ZIP"; do
+    if [[ -r "$SOURCE_ZIP" ]]; then
+      echo "INFO: source readiness is SOURCE_MISSING; explicitly materializing 付款请示群 from $SOURCE_ZIP"
+      python3 "$SKILL_DIR/tools/materialize_fund_source.py" \
+        --source-zip "$SOURCE_ZIP" \
+        --zip-prefix "付款请示群" \
+        --target-dir "$INPUT_DIR" \
+        --repo-root "$REPO_ROOT" \
+        --timezone Australia/Sydney \
+        --apply
+      MATERIALIZED=1
+      break
+    fi
+  done
+  if [[ "$MATERIALIZED" -eq 1 ]]; then
+    run_source_readiness
+  fi
+fi
 if [[ "$READINESS_EXIT" -ne 0 ]]; then
   echo "ERROR: source readiness gate failed; run_fund_weekly_analysis.py was not started" >&2
   exit "$READINESS_EXIT"
