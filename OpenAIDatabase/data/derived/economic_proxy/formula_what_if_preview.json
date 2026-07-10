@@ -1,7 +1,7 @@
 {
   "acceptance_id": "ACC-MA-V12-S07P3",
   "active_formula_config_path": "机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json",
-  "base_score": 74,
+  "base_score": 72,
   "config_path": "机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json",
   "dry_run": false,
   "formulas": [
@@ -32,7 +32,7 @@
       "score_key": "what_if_parameter_proposal"
     }
   ],
-  "generated_at": "2026-07-08T05:50:57Z",
+  "generated_at": "2026-07-10T21:38:28Z",
   "human_readable_summary_zh": "Formula What-if Simulator 当前为配置预览：可查看时间节省、复用价值、长期复利、返工成本和低价值循环惩罚等权重变化，但不会直接修改 active formula config。",
   "input_paths": [
     "data/derived/economic_proxy/personal_economic_proxy.json",
@@ -136,12 +136,12 @@
       "scenario_id": "baseline",
       "score_components": {
         "rework_penalty": 0.0,
-        "rework_score": 45.0,
+        "rework_score": 47.0,
         "signals": {
           "automation_enhancement_ratio_proxy": {
-            "score": 27.0,
+            "score": 73.0,
             "weight": 1.0,
-            "weighted_signal": 27.0
+            "weighted_signal": 73.0
           },
           "opportunity_score_proxy": {
             "score": 86.0,
@@ -149,14 +149,14 @@
             "weighted_signal": 86.0
           },
           "reuse_value_proxy": {
-            "score": 88.0,
+            "score": 68.0,
             "weight": 1.0,
-            "weighted_signal": 88.0
+            "weighted_signal": 68.0
           },
           "skill_compounding_proxy": {
-            "score": 100.0,
+            "score": 57.0,
             "weight": 1.0,
-            "weighted_signal": 100.0
+            "weighted_signal": 57.0
           },
           "time_saved_proxy": {
             "score": 100.0,
@@ -164,11 +164,11 @@
             "weighted_signal": 100.0
           }
         },
-        "weighted_positive_score": 80.2
+        "weighted_positive_score": 76.8
       },
       "score_delta_vs_baseline": 0,
       "top_parameter_impacts": [],
-      "weighted_proxy_score": 80
+      "weighted_proxy_score": 77
     },
     {
       "adjustable_weights": {
@@ -200,12 +200,12 @@
       "scenario_id": "time_saved_first",
       "score_components": {
         "rework_penalty": 0.0,
-        "rework_score": 45.0,
+        "rework_score": 47.0,
         "signals": {
           "automation_enhancement_ratio_proxy": {
-            "score": 27.0,
+            "score": 73.0,
             "weight": 1.15,
-            "weighted_signal": 31.05
+            "weighted_signal": 83.95
           },
           "opportunity_score_proxy": {
             "score": 86.0,
@@ -213,14 +213,14 @@
             "weighted_signal": 86.0
           },
           "reuse_value_proxy": {
-            "score": 88.0,
+            "score": 68.0,
             "weight": 0.95,
-            "weighted_signal": 83.6
+            "weighted_signal": 64.6
           },
           "skill_compounding_proxy": {
-            "score": 100.0,
+            "score": 57.0,
             "weight": 0.9,
-            "weighted_signal": 90.0
+            "weighted_signal": 51.3
           },
           "time_saved_proxy": {
             "score": 100.0,
@@ -228,21 +228,15 @@
             "weighted_signal": 135.0
           }
         },
-        "weighted_positive_score": 79.56
+        "weighted_positive_score": 78.66
       },
-      "score_delta_vs_baseline": 0,
+      "score_delta_vs_baseline": 2,
       "top_parameter_impacts": [
         {
           "default": 1.0,
           "parameter": "time_saved_weight",
           "scenario": 1.35,
           "single_parameter_score_delta": 1
-        },
-        {
-          "default": 1.0,
-          "parameter": "automation_alignment_weight",
-          "scenario": 1.15,
-          "single_parameter_score_delta": -1
         },
         {
           "default": 1.0,
@@ -255,9 +249,15 @@
           "parameter": "skill_compounding_weight",
           "scenario": 0.9,
           "single_parameter_score_delta": 0
+        },
+        {
+          "default": 1.0,
+          "parameter": "automation_alignment_weight",
+          "scenario": 1.15,
+          "single_parameter_score_delta": 0
         }
       ],
-      "weighted_proxy_score": 80
+      "weighted_proxy_score": 79
     },
     {
       "adjustable_weights": {
@@ -288,12 +288,12 @@
       "scenario_id": "reuse_asset_first",
       "score_components": {
         "rework_penalty": 0.0,
-        "rework_score": 45.0,
+        "rework_score": 47.0,
         "signals": {
           "automation_enhancement_ratio_proxy": {
-            "score": 27.0,
+            "score": 73.0,
             "weight": 1.0,
-            "weighted_signal": 27.0
+            "weighted_signal": 73.0
           },
           "opportunity_score_proxy": {
             "score": 86.0,
@@ -301,14 +301,14 @@
             "weighted_signal": 86.0
           },
           "reuse_value_proxy": {
-            "score": 88.0,
+            "score": 68.0,
             "weight": 1.4,
-            "weighted_signal": 123.2
+            "weighted_signal": 95.2
           },
           "skill_compounding_proxy": {
-            "score": 100.0,
+            "score": 57.0,
             "weight": 1.2,
-            "weighted_signal": 120.0
+            "weighted_signal": 68.4
           },
           "time_saved_proxy": {
             "score": 100.0,
@@ -316,21 +316,21 @@
             "weighted_signal": 95.0
           }
         },
-        "weighted_positive_score": 81.3
+        "weighted_positive_score": 75.24
       },
-      "score_delta_vs_baseline": 1,
+      "score_delta_vs_baseline": -2,
       "top_parameter_impacts": [
         {
           "default": 1.0,
           "parameter": "reuse_value_weight",
           "scenario": 1.4,
-          "single_parameter_score_delta": 1
+          "single_parameter_score_delta": -1
         },
         {
           "default": 1.0,
           "parameter": "skill_compounding_weight",
           "scenario": 1.2,
-          "single_parameter_score_delta": 1
+          "single_parameter_score_delta": -1
         },
         {
           "default": 1.0,
@@ -339,7 +339,7 @@
           "single_parameter_score_delta": 0
         }
       ],
-      "weighted_proxy_score": 81
+      "weighted_proxy_score": 75
     },
     {
       "adjustable_weights": {
@@ -370,12 +370,12 @@
       "scenario_id": "long_term_compounding_first",
       "score_components": {
         "rework_penalty": 0.0,
-        "rework_score": 45.0,
+        "rework_score": 47.0,
         "signals": {
           "automation_enhancement_ratio_proxy": {
-            "score": 27.0,
+            "score": 73.0,
             "weight": 1.0,
-            "weighted_signal": 27.0
+            "weighted_signal": 73.0
           },
           "opportunity_score_proxy": {
             "score": 86.0,
@@ -383,14 +383,14 @@
             "weighted_signal": 90.3
           },
           "reuse_value_proxy": {
-            "score": 88.0,
+            "score": 68.0,
             "weight": 1.15,
-            "weighted_signal": 101.2
+            "weighted_signal": 78.2
           },
           "skill_compounding_proxy": {
-            "score": 100.0,
+            "score": 57.0,
             "weight": 1.5,
-            "weighted_signal": 150.0
+            "weighted_signal": 85.5
           },
           "time_saved_proxy": {
             "score": 100.0,
@@ -398,15 +398,15 @@
             "weighted_signal": 100.0
           }
         },
-        "weighted_positive_score": 82.19
+        "weighted_positive_score": 74.91
       },
-      "score_delta_vs_baseline": 2,
+      "score_delta_vs_baseline": -2,
       "top_parameter_impacts": [
         {
           "default": 1.0,
           "parameter": "skill_compounding_weight",
           "scenario": 1.5,
-          "single_parameter_score_delta": 2
+          "single_parameter_score_delta": -2
         },
         {
           "default": 1.0,
@@ -421,7 +421,7 @@
           "single_parameter_score_delta": 0
         }
       ],
-      "weighted_proxy_score": 82
+      "weighted_proxy_score": 75
     },
     {
       "adjustable_weights": {
@@ -452,12 +452,12 @@
       "scenario_id": "rework_reduction_first",
       "score_components": {
         "rework_penalty": 0.0,
-        "rework_score": 45.0,
+        "rework_score": 47.0,
         "signals": {
           "automation_enhancement_ratio_proxy": {
-            "score": 27.0,
+            "score": 73.0,
             "weight": 1.0,
-            "weighted_signal": 27.0
+            "weighted_signal": 73.0
           },
           "opportunity_score_proxy": {
             "score": 86.0,
@@ -465,14 +465,14 @@
             "weighted_signal": 86.0
           },
           "reuse_value_proxy": {
-            "score": 88.0,
+            "score": 68.0,
             "weight": 1.0,
-            "weighted_signal": 88.0
+            "weighted_signal": 68.0
           },
           "skill_compounding_proxy": {
-            "score": 100.0,
+            "score": 57.0,
             "weight": 1.0,
-            "weighted_signal": 100.0
+            "weighted_signal": 57.0
           },
           "time_saved_proxy": {
             "score": 100.0,
@@ -480,15 +480,15 @@
             "weighted_signal": 110.0
           }
         },
-        "weighted_positive_score": 80.59
+        "weighted_positive_score": 77.25
       },
-      "score_delta_vs_baseline": 1,
+      "score_delta_vs_baseline": 0,
       "top_parameter_impacts": [
         {
           "default": 1.0,
           "parameter": "time_saved_weight",
           "scenario": 1.1,
-          "single_parameter_score_delta": 1
+          "single_parameter_score_delta": 0
         },
         {
           "default": 1.0,
@@ -503,7 +503,7 @@
           "single_parameter_score_delta": 0
         }
       ],
-      "weighted_proxy_score": 81
+      "weighted_proxy_score": 77
     }
   ],
   "schema_version": "memory_atlas_formula_what_if_preview.v1_2_s07_p3",

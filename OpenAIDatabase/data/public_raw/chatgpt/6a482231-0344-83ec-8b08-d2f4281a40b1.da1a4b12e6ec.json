@@ -1,0 +1,64 @@
+{
+  "content_sha256": "da1a4b12e6eca1363bec7b079742cf26a5879455ade47829220331b39e8b6a4e",
+  "conversation_id": "6a482231-0344-83ec-8b08-d2f4281a40b1",
+  "created_at": "2026-07-03T20:57:21Z",
+  "credential_boundary": "credentials_not_transcript",
+  "message_count": 8,
+  "messages": [
+    {
+      "created_at": "2026-07-03T21:20:19Z",
+      "message_id": "0014f2aa-d815-46e1-9ef7-45bd9c80d0a8",
+      "role": "assistant",
+      "text": "## 结论\n\n**70%–80%利润率的公司，主要是“毛利率”达到 70%–80%，不是“营业利润率/净利润率”达到 70%–80%。**\n\n如果按**公司整体营业利润率或净利润率**看，主流上市互联网/AI 大厂里几乎没有 70%–80% 这一档。即使是 NVIDIA，FY2026 的 **GAAP 毛利率为 71.1%**，但营业利润率约 **60.4%**、净利率约 **55.6%**，所以它的“70%+”也是毛利率，不是净利率。citeturn714252view0\n\n---\n\n## 1. 70%–80%毛利率的典型公司名单\n\n> 口径：优先用最新公开年度财报/官方业绩。  \n> 这里的“70%–80%”指 **Gross Margin / 毛利率**。营业利润率、净利润率我单独列出，防止误读。\n\n| 公司 | 行业/属性 | 70%–80%是哪种利润率 | 真实经营利润提醒 |\n|---|---|---:|---|\n| **NVIDIA** | AI GPU、数据中心芯片 | FY2026 GAAP **毛利率 71.1%**；Q4 FY2026 GAAP 毛利率 75.0% | FY2026 营业利润率约 **60.4%**，净利率约 **55.6%**，已非常高，但仍不是 70%–80%净利率。citeturn714252view0 |\n| **Salesforce** | CRM / 企业 SaaS | FY2026 GAAP **毛利率 78%** | GAAP 营业利润率 **20.1%**，Non-GAAP 营业利润率 **34.1%**，GAAP 净利率约 **18%**。citeturn981603view1turn243172view4 |\n| **ServiceNow** | AI 工作流 / 企业 SaaS | FY2025 GAAP 总毛利率约 **77.5%**；订阅毛利率 **80%** | GAAP 营业利润率约 **13.5%**，Non-GAAP 营业利润率约 **31%**。citeturn122821view0 |\n| **CrowdStrike** | 网络安全 SaaS | FY2026 GAAP 总毛利率 **75%**，Non-GAAP 总毛利率 **78%**；订阅 GAAP 毛利率 **78%** | GAAP 口径仍是营业亏损，Non-GAAP 营业利润约 US$1.05B。citeturn462710view0turn243172view6 |\n| **Datadog** | 可观测性 / 云安全 SaaS | FY2025 GAAP **毛利率 80%**，Non-GAAP 毛利率 **81%** | GAAP 营业利润率 **-1%**，Non-GAAP 营业利润率 **22%**。citeturn178323view1turn178323view2 |\n| **Cloudflare** | CDN、安全、边缘云 | FY2025 GAAP **毛利率 74.5%**，Non-GAAP 毛利率 **75.8%** | GAAP 营业利润率 **-9.6%**，Non-GAAP 营业利润率 **14.0%**。citeturn243172view1 |\n| **Workday** | 人力资本 / 财务 SaaS | FY2026 按收入和成本计算，总毛利率约 **75.7%**；订阅毛利率约 **82.7%** | GAAP 营业利润率 **7.5%**，Non-GAAP 营业利润率 **29.6%**。citeturn820063view1turn243172view2 |\n| **Zoom** | 视频会议 / 协作 SaaS | FY2026 按收入、成本、毛利计算，毛利率约 **77.0%** | GAAP 营业利润率 **23.1%**；净利率较高受到战略投资收益影响，不能简单当作主业利润率。citeturn533018view0turn199967view0 |\n| **Snowflake** | AI Data Cloud / 数据云 | FY2026 **产品毛利率** GAAP **72%**，Non-GAAP **76%** | 这是产品毛利率，不是公司整体净利率；GAAP 营业利润率为 **-31%**，Non-GAAP 营业利润率 **10%**。citeturn983632view1 |\n\n---\n\n## 2. 最容易混淆的点\n\n### A. 70%–80%通常是毛利率\n\n公式是：\n\n> **毛利率 =（收入 - 直接成本）/ 收入**\n\n它只扣除了云服务成本、芯片制造成本、客服/托管成本、交付成本等直接成本，**还没有扣研发、销售、市场、管理费用、股权激励、折旧摊销、税费等**。\n\n所以很多 SaaS 公司看起来毛利率 75%–80%，但 GAAP 营业利润率可能只有 10%–25%，甚至仍然亏损。\n\n典型例子：\n\n| 公司 | 毛利率很高 | 但营业利润率并不高 |\n|---|---:|---:|\n| Salesforce | GAAP 毛利率 78% | GAAP 营业利润率 20.1% |\n| ServiceNow | GAAP 总毛利率约 77.5% | GAAP 营业利润率约 13.5% |\n| Cloudflare | GAAP 毛利率 74.5% | GAAP 营业利润率 -9.6% |\n| Datadog | GAAP 毛利率 80% | GAAP 营业利润率 -1% |\n\n---\n\n### B. 真正接近“高净利率”的是少数 AI 算力链公司\n\nNVIDIA 是当前最典型的例外：它不仅毛利率在 70%+，营业利润率和净利率也非常高。FY2026 NVIDIA 收入约 US$215.9B，GAAP 毛利率 71.1%，营业利润约 US$130.4B，净利润约 US$120.1B，对应营业利润率约 60.4%、净利率约 55.6%。citeturn714252view0\n\n但这仍然没有达到 70%–80%净利润率。严格讲，**70%–80%净利润率的主流上市互联网/AI大厂，基本没有。**\n\n---\n\n## 3. 哪类公司最容易出现70%–80%毛利率？\n\n| 类型 | 为什么毛利率高 | 代表公司 |\n|---|---|---|\n| **企业 SaaS** | 软件订阅边际交付成本低，新增客户不需要同比例增加生产成本 | Salesforce、ServiceNow、Workday、Zoom |\n| **网络安全 SaaS** | 安全平台、终端代理、云检测服务有强订阅属性 | CrowdStrike、Cloudflare、Datadog |\n| **数据云 / AI 数据平台** | 数据仓库、数据云服务直接成本较低，但研发和销售费用很高 | Snowflake |\n| **AI 芯片 / 高端算力硬件** | 供需紧张、技术壁垒高、定价权强 | NVIDIA |\n| **纯软件 / 数据平台公司** | 产品复制成本低，客户粘性强 | Palantir、Adobe、Atlassian 这类公司常见高毛利，但很多会超过80%，不一定落在70%–80%区间 |\n\n---\n\n## 4. 不要把这些公司误认为70%–80%净利率\n\n| 公司/类型 | 为什么容易误读 | 实际情况 |\n|---|---|---|\n| **Microsoft** | 软件和云业务很强，很多人以为毛利率一定 70%+ | Microsoft Cloud FY2025 毛利率为 **69%**，接近但低于 70%；公司整体营业利润率很高，但不是70%–80%。citeturn404544search2 |\n| **Palantir** | 软件属性极强，现金流和调整后利润率很高 | FY2025 GAAP 营业利润率约 **32%**，GAAP 净利率约 **36%**，调整后营业利润率约 **50%**，不是70%–80%营业/净利润率。citeturn983632view0 |\n| **OpenAI / Anthropic / xAI** | 估值高、收入增长快，容易被想象成高利润 | 私营公司没有统一、完整、可比的上市公司式审计利润表；不能和 NVIDIA、Salesforce、Meta 这类公开财报公司直接横向比较。 |\n\n---\n\n## 总判断\n\n**70%–80%利润率名单，严格应理解为“70%–80%毛利率名单”。**\n\n最典型的是：\n\n**NVIDIA、Salesforce、ServiceNow、CrowdStrike、Datadog、Cloudflare、Workday、Zoom、Snowflake 的产品业务。**\n\n但如果你问的是**营业利润率或净利润率 70%–80%**，那么在主流公开上市互联网/AI大厂里，基本没有这个档位。当前最接近“超高利润”的是 NVIDIA，但它也主要是 **毛利率 70%+，营业利润率约60%，净利率约56%**。"
+    },
+    {
+      "created_at": "2026-07-03T20:57:45Z",
+      "message_id": "3cddfac9-16af-4eab-89dc-c7111bd5e007",
+      "role": "assistant",
+      "text": "I’ll standardize the comparison by gross, operating, and net margins using the latest comparable fiscal-year or TTM filings, separating public-company reported figures from private AI firms with limited disclosure."
+    },
+    {
+      "created_at": "2026-07-03T21:12:02Z",
+      "message_id": "4b9a8c50-500d-4bd0-b2fc-486d239d29bf",
+      "role": "assistant",
+      "text": "I’ll first separate gross, operating, and net margin, because 70–80% usually refers to gross margin, not operating or net margin."
+    },
+    {
+      "created_at": "2026-07-03T21:11:46Z",
+      "message_id": "7d4632c5-f7ae-4013-9111-631311689b16",
+      "role": "user",
+      "text": "70-80%利润率的是哪些公司"
+    },
+    {
+      "created_at": "2026-07-03T21:03:53Z",
+      "message_id": "b2bb814b-1990-4094-9cf4-92989d5f432f",
+      "role": "assistant",
+      "text": "I’ve verified comparable data for listed companies; OpenAI, Anthropic, ByteDance, DeepSeek, and similar private firms should remain in a separate estimate section, not the main audited table."
+    },
+    {
+      "created_at": "2026-07-03T20:57:20Z",
+      "message_id": "b45bfc29-6402-4448-9145-7a5fa10f3d11",
+      "role": "user",
+      "text": "国内外全球互联网行业和AI行业大厂的利润率是多少"
+    },
+    {
+      "created_at": "2026-07-03T21:15:11Z",
+      "message_id": "f1c5bc03-382b-42e6-9a8a-838d63f1ff79",
+      "role": "assistant",
+      "text": "I’ll verify the latest figures against company annual reports or official results before naming examples."
+    },
+    {
+      "created_at": "2026-07-03T21:08:13Z",
+      "message_id": "f8c46dbd-d697-42dd-b564-244d0483fe37",
+      "role": "assistant",
+      "text": "## 结论：利润率分化非常大，AI 算力链最高，互联网平台次之，电商/本地生活最低\n\n截至 **2026 年 7 月 3 日可获得的最新公开年度财报/业绩数据**，全球互联网与 AI 大厂的利润率大致分为四档：\n\n| 档位 | 典型公司 | 营业利润率大致范围 | 核心原因 |\n|---|---:|---:|---|\n| **AI 算力/半导体超级高利润层** | NVIDIA、TSMC、Broadcom | **约 40%–60%** | AI 芯片、先进制程、网络/ASIC 供给紧张，定价权强 |\n| **软件/广告/云平台高利润层** | Microsoft、Meta、Alphabet、Tencent、NetEase | **约 30%–46%** | 软件、广告、游戏、平台生态边际成本低 |\n| **平台电商/内容平台中等利润层** | PDD、Kuaishou、Amazon、AMD | **约 10%–23%** | 有规模效应，但受物流、补贴、硬件周期或研发投入影响 |\n| **低利润/亏损投入层** | Alibaba、JD、Baidu、Meituan | **约 -7%–5%** | 价格战、即时零售补贴、云/AI/本地生活投入、减值等压低利润 |\n\n**下一步看法：**如果你做行业研究，优先看“营业利润率”；如果你做投资/估值，必须再看 **自由现金流率、资本开支强度、业务分部利润率**，否则会被阿里、百度这类一次性投资收益/减值项目误导。\n\n---\n\n## 1. 海外/全球互联网与 AI 大厂利润率\n\n> 口径：收入、营业利润、净利润均来自公司最新公开年度财报或官方业绩；利润率为我按财报数计算并四舍五入。B = 十亿。\n\n| 公司 | 主要属性 | 最新口径 | 年收入 | 营业利润率 | 净利润率 | 核心判断 |\n|---|---|---:|---:|---:|---:|---|\n| **NVIDIA** | AI GPU、数据中心芯片 | FY2026 | US$215.9B | **60.4%** | **55.6%** | 当前公开大厂中最强利润率样本之一；FY2026 收入 US$215.9B、营业利润 US$130.4B、净利润 US$120.1B。citeturn104717view0 |\n| **TSMC 台积电** | 先进制程、AI/HPC 代工 | FY2025 | NT$3,809.1B | **50.8%** | **45.1%** | AI/HPC 和先进制程驱动高毛利、高营业利润；公司年报直接披露营业利润率 50.8%、净利率 45.1%。citeturn254277view0turn254277view3 |\n| **Microsoft** | 云、软件、AI 平台 | FY2025 | US$281.7B | **45.6%** | **36.2%** | 软件订阅、企业云、AI 基础设施叠加，利润率非常高。citeturn515571view1 |\n| **Meta** | 社交广告、AI 推荐、模型投入 | FY2025 | US$201.0B | **41.4%** | **30.1%** | 广告主业极强；Reality Labs 亏损约 US$19.2B，拉低合并利润。citeturn582043view0turn748845view2 |\n| **Broadcom** | AI 网络芯片、ASIC、基础设施软件 | FY2025 | US$63.9B | **39.9%** | **36.2%** | 半导体 + 基础设施软件组合，利润率接近头部软件公司。citeturn731026view0turn731026view2turn731026view1 |\n| **Alphabet / Google** | 搜索广告、YouTube、云、AI | FY2025 | US$402.8B | **32.0%** | **32.8%** | 搜索广告仍是利润核心；净利率略高于营业利润率，受营业外/投资等项目影响。citeturn891121view0 |\n| **Apple** | 硬件、服务、端侧 AI | FY2025 | US$416.2B | **32.0%** | **26.9%** | 硬件 + 服务混合模式，利润率高但不如纯软件/AI 芯片。citeturn592533view0 |\n| **Amazon** | 电商、AWS、广告、AI 云 | FY2025 | US$716.9B | **11.2%** | **10.8%** | AWS 和广告贡献利润，但零售、履约、物流压低合并利润率。citeturn891121view1 |\n| **AMD** | CPU、GPU、数据中心 AI | FY2025 | US$34.6B | **10.7%** | **12.5%** | AI 数据中心增长很快，但整体 GAAP 利润率仍远低于 NVIDIA。citeturn902707view0 |\n\n---\n\n## 2. 中国互联网与 AI 相关大厂利润率\n\n| 公司 | 主要属性 | 最新口径 | 年收入 | 营业利润率 | 净利润率 | 核心判断 |\n|---|---|---:|---:|---:|---:|---|\n| **腾讯 Tencent** | 社交、游戏、广告、云与 AI | FY2025 | RMB 751.8B | **32.1%** | **29.9%** | 国内互联网利润质量最强之一；Non-IFRS 营业利润率约 37.3%，Non-IFRS 归母净利率约 34.5%。citeturn720411view0turn720411view1 |\n| **网易 NetEase** | 游戏、音乐、教育 | FY2025 | RMB 112.6B | **31.8%** | **约 30.0%** | 游戏业务高利润属性明显，是中国互联网中利润率最稳的一类。citeturn355590view0turn544295view3 |\n| **拼多多 / PDD Holdings** | 平台电商、交易服务 | FY2025 | RMB 431.8B | **21.9%** | **23.0%** | 平台型电商利润率显著高于自营零售；Non-GAAP 净利率约 24.9%。citeturn340639view1turn340639view2turn340639view3 |\n| **快手 Kuaishou** | 短视频、直播、电商、Kling AI | FY2025 | RMB 142.8B | **14.5%** | **13.0%** | 内容平台商业化改善，年报披露营业利润率 14.5%、净利率 13.0%。citeturn643231view0 |\n| **阿里巴巴 Alibaba** | 电商、云、AI、本地生活 | FY2026 | RMB 1,023.7B | **4.9%** | **约 10.3%** | 净利率高于营业利润率，主要因为投资收益/处置收益等项目；主业营业端受电商竞争、即时零售、云与 AI 基建投入压制。citeturn530297view0 |\n| **京东 JD.com** | 自营零售、物流、云与新业务 | FY2025 | RMB 1,309.1B | **0.2%** | **1.5%** | 自营零售和物流模式天然低利润；京东零售经营利润率较高，但合并口径被新业务/投入稀释。citeturn903293view1 |\n| **百度 Baidu** | 搜索、AI 云、文心、自动驾驶 | FY2025 | RMB 129.1B | **-4.5%** | **4.3%** | 合并营业亏损，归母净利润仍为正；公司披露剔除长期资产减值后的归母净利润约 RMB 19.4B，对应调整后利润率约 15%。citeturn637204view0turn340639view6 |\n| **美团 Meituan** | 本地生活、即时零售、到店酒旅 | FY2025 | RMB 364.9B | **-6.9%** | **-6.4%** | 即时零售、补贴竞争、新业务投入导致合并亏损。citeturn525586view0 |\n\n---\n\n## 3. 私营 AI 公司：不要和上市公司直接比较\n\nOpenAI、Anthropic、xAI、字节跳动等不是都按上市公司 10-K/年报方式披露完整审计利润表，因此不适合直接放进上面两张“营业利润率/净利润率”横向表。\n\n尤其是 **字节跳动**：市场上有估值、收入和利润估算，但并非统一审计财报口径。例如 Reuters 对二级交易的报道中提到的是估值与利润估计，而不是上市公司式完整利润率披露；这类数据只能作为参考，不能和腾讯、阿里、Meta、NVIDIA 的公开财报口径混用。citeturn233314news16\n\n---\n\n## 4. 关键解读：为什么差距这么大？\n\n### 第一层：商业模式决定利润率上限\n\n**最高利润率来自“强定价权 + 高壁垒 + 规模经济”。**  \nNVIDIA、TSMC、Broadcom 的利润率高，是因为它们掌握 AI 算力链关键环节：GPU、先进制程、AI 网络、ASIC、基础设施软件。客户对算力的需求强，而供给端壁垒极高，所以利润率明显高于普通互联网平台。\n\n**软件、广告、游戏平台处于第二高层。**  \nMicrosoft、Meta、Alphabet、腾讯、网易的共同点是边际成本低：多卖一份软件订阅、多展示一次广告、多卖一件虚拟道具，并不需要同比例增加履约成本。因此它们能长期维持 30% 以上的营业利润率。\n\n**电商、本地生活、自营零售利润率天然偏低。**  \nAmazon、京东、美团、阿里的一部分业务涉及仓储、物流、骑手、补贴、即时配送、商家激励、履约网络，所以合并利润率远低于纯软件/广告/芯片公司。\n\n---\n\n### 第二层：AI 对利润率的影响是“双向的”\n\nAI 并不一定让所有公司利润率提高。它对不同环节的影响完全不同：\n\n| 环节 | AI 对利润率的影响 | 代表公司 |\n|---|---|---|\n| **芯片/先进制程/AI 网络** | 明显提高利润率，定价权增强 | NVIDIA、TSMC、Broadcom |\n| **云平台/企业软件** | 中长期增强利润率，但短期资本开支很重 | Microsoft、Alphabet、Amazon、Alibaba |\n| **广告/推荐系统** | 提升广告转化和内容分发效率 | Meta、腾讯、快手、百度 |\n| **大模型实验室/AI 应用层** | 短期通常高投入、低利润或亏损 | OpenAI、Anthropic、xAI 等 |\n| **本地生活/即时零售** | AI 能提效，但补贴和履约成本仍压利润 | 美团、京东、阿里本地生活 |\n\n换句话说，**AI 产业链真正最赚钱的不是“做大模型”本身，而是卖算力、卖先进制程、卖云平台、卖高粘性软件和广告系统。**\n\n---\n\n### 第三层：净利润率容易被一次性项目扭曲\n\n看利润率时，最容易误读的是“净利润率”。\n\n几个典型例子：\n\n1. **阿里巴巴**：营业利润率只有约 4.9%，但净利润率约 10.3%，中间受到投资收益、资产处置等项目影响。所以判断阿里主业盈利能力时，营业利润率比净利率更关键。citeturn530297view0  \n2. **百度**：营业利润率为负，但归母净利率为正；如果剔除长期资产减值，调整后利润率会明显改善。citeturn637204view0turn340639view6  \n3. **Alphabet**：净利率略高于营业利润率，也说明营业外项目会影响最终净利。citeturn891121view0  \n\n所以，做严肃比较时建议按优先级看：\n\n1. **营业利润率**：看主业赚钱能力。  \n2. **自由现金流率**：看利润能否变成现金。  \n3. **资本开支 / 收入**：看 AI 投入强度。  \n4. **分部利润率**：看 AWS、Azure、Google Cloud、阿里云、广告、游戏、电商各自的真实质量。  \n5. **净利润率**：最后看，且要剔除一次性收益/减值。\n\n---\n\n## 总判断\n\n如果只按公开财报利润率排序，当前格局可以简化为：\n\n**NVIDIA、TSMC 这类 AI 算力核心层 > Microsoft、Meta、Broadcom、Alphabet、腾讯、网易这类软件/广告/游戏平台 > PDD、快手、Amazon、AMD 这类中等利润平台/硬件公司 > 阿里、京东、百度、美团这类受投入、履约、竞争和会计项目影响较大的公司。**\n\n一句话概括：**AI 行业最高利润不在“模型公司”，而在“算力、先进制程、云平台、软件和广告分发层”。**"
+    }
+  ],
+  "redact_for_public_backup": true,
+  "redaction_counts": {},
+  "schema_version": "memory_atlas_public_raw_chatgpt.v1",
+  "source_id": "chatgpt",
+  "sync_mode": "official_export_fallback",
+  "title": "互联网AI行业利润率",
+  "updated_at": "2026-07-03T21:20:23Z"
+}

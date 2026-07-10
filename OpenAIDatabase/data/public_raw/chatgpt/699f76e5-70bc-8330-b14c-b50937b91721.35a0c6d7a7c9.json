@@ -1,0 +1,15 @@
+{
+  "content_sha256": "35a0c6d7a7c9f8707f2cbd8496024c4fbc11570e9af3c20ce40b9408d33b55bb",
+  "conversation_id": "699f76e5-70bc-8330-b14c-b50937b91721",
+  "created_at": "2026-02-25T22:27:01Z",
+  "credential_boundary": "credentials_not_transcript",
+  "message_count": 0,
+  "messages": [],
+  "redact_for_public_backup": true,
+  "redaction_counts": {},
+  "schema_version": "memory_atlas_public_raw_chatgpt.v1",
+  "source_id": "chatgpt",
+  "sync_mode": "official_export_fallback",
+  "title": "内卷与全球化挑战",
+  "updated_at": "2026-02-26T23:56:01Z"
+}
