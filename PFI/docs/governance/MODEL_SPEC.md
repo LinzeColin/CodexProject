@@ -3,8 +3,8 @@
 model_count: 1
 formula_count: 1
 parameter_count: 23
-task_count: 9
-acceptance_count: 9
+task_count: 10
+acceptance_count: 10
 
 ## 当前模型
 
@@ -12,7 +12,7 @@ acceptance_count: 9
 
 ## 非模型验收事实
 
-v0.2.4 Stage 0-9、用户确认、真实数据边界与 post-overall consistency gate 由 `FEAT-PFI-V024-OVERALL`、`EVID-PFI-V024-OVERALL` 和 Roadmap acceptance 管理；它们不是 math/stat/ML、ranking/scoring、公式、规则引擎或 LLM routing model，不单独登记 model ID。
+v0.2.4 Stage 0-9、用户确认、真实数据边界、post-overall consistency 与 final delivery gate 由 `FEAT-PFI-V024-OVERALL`、`FEAT-PFI-V024-FINAL-DELIVERY`、对应 evidence 和 Roadmap acceptance 管理；它们不是 math/stat/ML、ranking/scoring、公式、规则引擎或 LLM routing model，不单独登记 model ID。
 
 ## 边界
 

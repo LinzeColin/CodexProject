@@ -320,9 +320,12 @@ Section
 
         if evidence_path.exists():
             delivery = (ROOT / "docs" / "pfi_v024" / "FINAL_DELIVERY.md").read_text(encoding="utf-8")
-            self.assertIn('current_status: "v024_final_delivery_complete"', project)
-            self.assertIn('next_gate_id: "NONE"', roadmap)
+            self.assertIn('current_status: "v024_final_delivery_pending_live_verifier"', project)
+            self.assertIn('next_gate_id: "PFI-V024-FINAL-DELIVERY"', roadmap)
+            self.assertIn("completion_predicate:", project)
+            self.assertIn("second_closeout_commit_allowed: false", roadmap)
             self.assertIn("ACC-PFI-V024-FINAL-DELIVERY", delivery)
+            self.assertIn("pending_live_verifier", delivery)
             self.assertIn("future version 未开始", delivery)
             self.assertIn("不包含交易密码、券商订单、支付或自动真钱动作", delivery)
         else:

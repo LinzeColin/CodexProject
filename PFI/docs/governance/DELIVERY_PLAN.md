@@ -3,8 +3,8 @@
 model_count: 1
 formula_count: 1
 parameter_count: 23
-task_count: 9
-acceptance_count: 9
+task_count: 10
+acceptance_count: 10
 
 ## 当前交付
 
@@ -24,6 +24,8 @@ acceptance_count: 9
 
 `PFI-V024-OVERALL-REREVIEW-20260710`：按原 `v0.2.3-repair` Task Pack/Roadmap 复核 Stage 0-9、Phase R1、真实数据与 final-delivery boundary；本 gate 不执行 upload 或 app reinstall。
 
+`PFI-V024-FINAL-DELIVERY-20260710`：冻结 product commit、重装三处 app entry、执行只读 runtime parity，并用唯一一次 push 完成 GitHub/app/local closeout。
+
 ## 下一步
 
-`PFI-V024-FINAL-DELIVERY`：overall re-review 通过后的唯一下一 gate，执行当前 package 唯一一次最终 GitHub upload、重装 app，并证明 GitHub/app/local 一致；在此之前 `product goal 未完成`。真实环境交易、自动实盘下单和支付提交仍不在范围。
+`PFI-V024-FINAL-DELIVERY`：tracked transaction 已准备；唯一 push 后必须运行 live verifier，pass 即解析最终 postcondition，且不允许第二个 closeout commit。future version 未开始；真实环境交易、自动实盘下单和支付提交仍不在范围。

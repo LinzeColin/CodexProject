@@ -1,12 +1,18 @@
 schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "PFI"
-total_estimated_hours: 24
+total_estimated_hours: 25
 completed_estimated_hours: 24
-current_stage_id: "V024-RR"
-current_phase_id: "V024-RR-P1"
-current_task_id: "PFI-V024-OVERALL-REREVIEW-20260710"
+current_stage_id: "V024-FD"
+current_phase_id: "V024-FD-P1"
+current_task_id: "PFI-V024-FINAL-DELIVERY-20260710"
 next_gate_id: "PFI-V024-FINAL-DELIVERY"
+completion_predicate:
+  evidence_commit_contains_final_records: true
+  product_commit_is_direct_parent: true
+  single_push_required: true
+  post_push_verifier_gate_result: "pass"
+  second_closeout_commit_allowed: false
 stages:
   - stage_id: "S2"
     name: "数据源与低操作自动同步 MVP"
@@ -718,3 +724,88 @@ stages:
             current_result: "Overall re-review pass locally; product goal 未完成，唯一下一 gate 为 PFI-V024-FINAL-DELIVERY。"
             target_version: "v0.2.4"
             completed_version: "v0.2.4"
+  - stage_id: "V024-FD"
+    name: "v0.2.4 final delivery"
+    person_goal: "执行当前 repair package 唯一最终 GitHub main upload，重装 app，并证明 GitHub/app/local 一致。"
+    status: "in_progress"
+    estimated_hours: 1
+    estimated_pct: 95
+    stop_conditions:
+      - "origin/main 在 push 前前移或无法 fast-forward"
+      - "任一 app entry 的 codesign、binding、dry-run、full hash 或 code-section hash 不一致"
+      - "runtime app/localhost/disk 或 filename-bound asset hash 不一致"
+      - "PFI/.venv、PFI/data、PFI/reports metadata 发生变化"
+      - "future version、交易密码、券商订单、支付或自动真钱动作"
+    stop_gate:
+      gate_id: "ACC-PFI-V024-FINAL-DELIVERY"
+      pass_criteria:
+        - "product commit 是 evidence commit 的直接父提交"
+        - "v0.2.3/v0.2.4 回归、renderer、compile、Node 和 diff checks 通过"
+        - "三处 app entry 重装，codesign/binding/dry-run 与 deterministic launcher code-section hash 通过"
+        - "只读 current-code browser probe 证明 app/localhost/disk 与 filename-bound assets 一致且无 errors"
+        - "唯一 push 后 HEAD == origin/main == live remote main，worktree clean"
+      evidence:
+        - "PFI/docs/pfi_v024/FINAL_DELIVERY.md"
+        - "PFI/docs/pfi_v024/FINAL_DELIVERY_EVIDENCE.json"
+      failure_action: "stop_without_second_delivery_or_future_version"
+    phases:
+      - phase_id: "V024-FD-P1"
+        name: "single final upload and app parity"
+        objective: "在不修改 PFI/.venv、PFI/data、PFI/reports 的前提下完成唯一最终交付。"
+        status: "in_progress"
+        estimated_hours: 1
+        estimated_pct: 95
+        stop_conditions:
+          - "任何 final-delivery proof 只能由布尔参数或静态自报伪造"
+          - "需要第二次 push 才能修正 tracked records"
+        stop_gate:
+          gate_id: "ACC-PFI-V024-FINAL-DELIVERY"
+          pass_criteria:
+            - "live fail-closed verifier pass"
+            - "independent read-only review APPROVED"
+            - "product goal complete 且 next gate NONE"
+          evidence:
+            - "PFI/src/pfi_v02/stage_v024_final_delivery.py"
+            - "PFI/tests/test_v024_final_delivery.py"
+          failure_action: "fix_locally_before_the_single_push"
+        tasks:
+          - task_id: "PFI-V024-FINAL-DELIVERY-20260710"
+            name: "v0.2.4 final delivery"
+            objective: "冻结 product commit、重装 app、固化 evidence commit，并唯一一次 push 到 GitHub main。"
+            status: "in_progress"
+            estimated_hours: 1
+            estimated_pct: 95
+            dependencies:
+              - "PFI-V024-OVERALL-REREVIEW-20260710"
+            acceptance_ids:
+              - "ACC-PFI-V024-FINAL-DELIVERY"
+            acceptance:
+              - acceptance_id: "ACC-PFI-V024-FINAL-DELIVERY"
+                description: "GitHub main、canonical local PFI 与三处 app entry 由 live git/app/runtime audit 证明一致。"
+                evidence_refs:
+                  - "PFI/docs/pfi_v024/FINAL_DELIVERY.md"
+                  - "PFI/docs/pfi_v024/FINAL_DELIVERY_EVIDENCE.json"
+            test_commands:
+              - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_final_delivery.py -q"
+              - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v023_*.py -q"
+              - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_*.py -q"
+              - "PFI/scripts/macosAppAcceptanceLite.sh --summary-json"
+              - "node PFI/scripts/validate_v024_final_delivery_read_only.js"
+              - "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pfi_v02.stage_v024_final_delivery"
+            test_results:
+              - "Final-delivery focused tests: 11 passed."
+              - "v0.2.3 compatibility regression: 200 passed."
+              - "v0.2.4 regression: 242 passed."
+              - "macOS app acceptance lite: 29 pass / 0 fail / 2 info."
+              - "Read-only runtime probe: 8 pass / 0 fail; console/page/http errors 0."
+              - "Protected-path metadata: unchanged before/after."
+              - "check-render: drift_count=0 / reference_issue_count=0."
+              - "Independent read-only review: APPROVED / no Critical or Important findings."
+            evidence_refs:
+              - "PFI/docs/pfi_v024/FINAL_DELIVERY.md"
+              - "PFI/docs/pfi_v024/FINAL_DELIVERY_EVIDENCE.json"
+            risks:
+              - "最终交付只证明本机 app entry 与 GitHub/local 代码一致，不证明生产券商联通或实盘能力。"
+            rollback: "Revert evidence/product commits and reinstall app from the reverted canonical PFI; never mutate financial data."
+            current_result: "Final-delivery transaction ready; product goal remains pending until the single push and post-push live verifier pass; no second closeout commit."
+            target_version: "v0.2.4"
