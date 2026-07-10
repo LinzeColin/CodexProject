@@ -9,6 +9,13 @@ import subprocess
 import sys
 from pathlib import Path
 
+from memory_atlas_owner_daily import (
+    OWNER_DAILY_STEP_IDS,
+    OwnerDailyContext,
+    OwnerDailyRunner,
+    owner_daily_profile_contract as build_owner_daily_profile_contract,
+)
+
 
 ROOT = Path(__file__).resolve().parents[1]
 CHATGPT_SYNC = ROOT / "scripts" / "sync_chatgpt_memory_data.py"
@@ -60,6 +67,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     run = subparsers.add_parser("run", help="Run a named low-burden Memory Atlas profile.")
     run.add_argument("--profile", choices=["owner-daily"], required=True)
     run.add_argument("--dry-run", action="store_true")
+    run.add_argument("--step", choices=OWNER_DAILY_STEP_IDS)
 
     sync = subparsers.add_parser("sync", help="Run source sync.")
     sync.add_argument("--source", required=True)
@@ -128,81 +136,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def owner_daily_profile_contract() -> dict[str, object]:
-    commands = [
-        {
-            "command_id": "sync",
-            "dry_run": True,
-            "invocation": ["python3", "scripts/atlasctl.py", "sync", "--source", "chatgpt", "--dry-run"],
-            "purpose_zh": "检查 ChatGPT 同步入口合同，不写文件。",
-        },
-        {
-            "command_id": "analyze",
-            "dry_run": True,
-            "invocation": ["python3", "scripts/atlasctl.py", "analyze", "--stage", "facets", "--dry-run"],
-            "purpose_zh": "检查行为智能 facet 分析 dry-run。",
-        },
-        {
-            "command_id": "build-atlas",
-            "dry_run": True,
-            "invocation": ["python3", "scripts/atlasctl.py", "build-atlas", "--dry-run"],
-            "purpose_zh": "检查可视化 atlas 构建计划，不写派生文件。",
-        },
-        {
-            "command_id": "audit",
-            "dry_run": True,
-            "invocation": ["python3", "scripts/atlasctl.py", "audit", "--dry-run"],
-            "purpose_zh": "检查轻量 audit 命令面，不执行 S14 P2 总门禁。",
-        },
-        {
-            "command_id": "push",
-            "dry_run": True,
-            "invocation": ["python3", "scripts/atlasctl.py", "push", "--dry-run"],
-            "purpose_zh": "检查本地 GitHub 备份范围，不上传远端 main。",
-        },
-        {
-            "command_id": "proposals",
-            "dry_run": True,
-            "invocation": ["python3", "scripts/atlasctl.py", "proposals", "--dry-run"],
-            "purpose_zh": "检查 proposal 状态机，不执行 apply。",
-        },
-        {
-            "command_id": "generate-personalization-prompt",
-            "dry_run": True,
-            "invocation": ["python3", "scripts/atlasctl.py", "generate-personalization-prompt", "--dry-run"],
-            "purpose_zh": "检查 personalization prompt 生成合同，不发送到 ChatGPT。",
-        },
-        {
-            "command_id": "deep-explore",
-            "dry_run": True,
-            "invocation": ["python3", "scripts/atlasctl.py", "deep-explore", "--dry-run"],
-            "purpose_zh": "检查深度探索提示合同，不打开浏览器、不自动提交。",
-        },
-    ]
-    return {
-        "status": "PASS",
-        "command": "run",
-        "profile": "owner-daily",
-        "task_id": "MA-V12-S14P1",
-        "acceptance_id": "ACC-MA-V12-S14P1",
-        "contract_version": "atlasctl_unified_cli.v1_2_s14_p1",
-        "phase_status": "phase_s14_p1_unified_cli_completed_pending_s14_p2",
-        "dry_run": True,
-        "writes_files": False,
-        "remote_push": False,
-        "github_main_upload": False,
-        "app_reinstall": False,
-        "local_deep_clean": False,
-        "commands": commands,
-        "phase_boundary": {
-            "does_not_run_final_audit": True,
-            "does_not_upload_github_main": True,
-            "does_not_reinstall_app": True,
-            "does_not_clean_local_computer": True,
-            "stage_review_deferred_to": "S14 Review",
-            "next_phase": "S14 P2",
-        },
-        "中文说明": "owner-daily 只返回低负担 dry-run 计划；每个子命令的 dry-run 可由 validator 单独执行确认。",
-    }
+    return build_owner_daily_profile_contract()
 
 
 def run_profile(args: argparse.Namespace) -> int:
@@ -215,8 +149,10 @@ def run_profile(args: argparse.Namespace) -> int:
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 2
     if args.dry_run:
-        print(json.dumps(owner_daily_profile_contract(), ensure_ascii=False, indent=2, sort_keys=True))
-        return 0
+        runner = OwnerDailyRunner(OwnerDailyContext(source_root=ROOT, python_executable=sys.executable))
+        result = runner.retry(args.step) if args.step else runner.run()
+        print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+        return 0 if result.get("status") == "PASS" else 2
     print(json.dumps({
         "status": "FAIL_CLOSED",
         "command": "run",
@@ -225,7 +161,7 @@ def run_profile(args: argparse.Namespace) -> int:
         "writes_files": False,
         "remote_push": False,
         "github_main_upload": False,
-        "中文原因": "S14 P1 只交付 owner-daily dry-run；真实串行执行留给后续验收门禁和人工确认。",
+        "中文原因": "Owner Daily 只允许八个固定 no-write dry-run；真实写入、推送、发送和部署均被拒绝。",
         "next_safe_command": "python3 scripts/atlasctl.py run --profile owner-daily --dry-run",
     }, ensure_ascii=False, indent=2, sort_keys=True))
     return 2
