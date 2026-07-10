@@ -1,3 +1,17 @@
+## FORM-KMFA-V014-S11-P3-POST-REMEDIATION-PROJECT-COST-PAGE-001
+
+- version: `0.1.4-s11-p3-post-remediation-project-cost-page`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: 以当前 S09/S10/S11-P2 公开安全证据生成 4 个项目槽位，并验证 7 列、项目详情、证据、待办、受限报告预览和 raw 不变性。
+- rule: `page_valid = project_row_count == 4 AND project_list_column_count == 7 AND cost_category_count == 9 AND margin_record_count == 4 AND project_specific_attributed_difference_count == 0 AND current_report_grade == D AND decision == NO_GO AND quality_grade_bypass_allowed == false`。
+- attribution gate: 无公开证据证明项目级归属时，项目级差异计数必须为 `null`，不得把全局 `3/9/2/1` 平均或推断分配到四个项目。
+- report gate: D 级受限内部预览可直接查看，正式报告、完整可信报告和业务决策依据均保持 false。
+- interaction gate: 搜索、四项目双视口详情、四章节双视口切换、预览开关、键盘和四个当前链接全部通过；控制事件仅作用于 browser session。
+- raw gate: phase 前后、跨 S11-P2 和当前快照必须一致；不一致立即停止并保留 private 中文差异报告。
+- release gate: `stage11_review=false`、`s12_p1=false`、`github_upload=false`、`app_reinstall=false`、`formal_report=false`、`business_execution=false`。
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s11_p3_post_remediation_project_cost_page.py --require-private-evidence --require-browser-evidence --require-final-evidence`
+- evidence: `KMFA/stage_artifacts/V014_S11_P3_POST_REMEDIATION_PROJECT_COST_PAGE/machine/project_cost_page_manifest.json`
+
 ## FORM-KMFA-V014-S11-P2-POST-REMEDIATION-SOURCE-CHECK-BOARD-001
 
 - version: `0.1.4-s11-p2-post-remediation-source-check-board`

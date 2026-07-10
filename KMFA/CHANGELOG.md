@@ -1,3 +1,11 @@
+## 0.1.4-s11-p3-post-remediation-project-cost-page - 2026-07-11
+
+- 完成 `V014_S11_P3_POST_REMEDIATION_PROJECT_COST_PAGE` 本地 phase：4 个公开安全项目槽位覆盖 7 个规定列，展示毛利、成本结构、回款、差异状态和下一步。
+- 修复历史 S11-P3 假绿：旧 validator 可对 `pending_reconciliation_count=12` 返回 PASS；当前页面改为 `Q4 / D / NO_GO / 3-9-2-1`，且不再公开分配项目级差异数字。
+- 项目详情绑定 6 类当前公开安全证据和 5 项全局待办；四个项目槽位的项目级归属均保持 `not_publicly_attributed / null`。
+- v1.4 人类流程基线 `54/54 PASS`，当前页 `21/21 PASS`；桌面/移动完成搜索 4 次、详情 8 次、报告章节 8 次、预览开关 4 次、键盘 2 次和 4 个链接 HTTP 复验，console error 与横向溢出均为 0。
+- 5 个 raw 文件在 phase 前后、跨 S11-P2 和当前复核均一致；未执行 Stage 11 整体复审、S12、GitHub upload、app reinstall、正式报告或 business execution。
+
 ## 0.1.4-s11-p2-post-remediation-source-check-board - 2026-07-11
 
 - 完成 `V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD` 本地 phase：13 行数据源矩阵覆盖 11 个规定列，并提供搜索、五类状态筛选、逐行影响详情和会话内状态预演。

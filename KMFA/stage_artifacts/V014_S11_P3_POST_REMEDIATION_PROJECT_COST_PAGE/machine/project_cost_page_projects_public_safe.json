@@ -1,0 +1,227 @@
+{
+  "phase_id": "V014_S11_P3_POST_REMEDIATION_PROJECT_COST_PAGE",
+  "project_id": "KMFA",
+  "project_rows": [
+    {
+      "business_decision_basis_allowed": false,
+      "collection_status": "回款槽位已登记，关键现金比较仍未完成",
+      "contains_private_file_references": false,
+      "contains_raw_business_values": false,
+      "cost_structure_summary": "九类成本结构已登记，项目级业务金额不展示",
+      "difference_status": "项目级归属未公开，全局状态继续 NO_GO",
+      "formal_report_allowed": false,
+      "generated_at": "2026-07-11T07:40:29+10:00",
+      "global_state_ref": {
+        "incomplete_reconciliation_count": 1,
+        "nonzero_delta_reconciliation_count": 9,
+        "open_final_difference_accepted_count": 3,
+        "zero_delta_reconciliation_count": 2
+      },
+      "gross_margin_status": "毛利槽位已登记，正式结论继续阻断",
+      "next_step": "完成可证明的项目级追溯与人工确认后，才可分配差异并复核等级",
+      "pending_items": [
+        "三项最终接受未决仍需保留",
+        "九项非零差异不得被覆盖或归零",
+        "一项比较尚未完成",
+        "关键现金数值来源仍不完整",
+        "完整追溯与充分人工确认尚未成立"
+      ],
+      "persistent_business_write_allowed": false,
+      "project_display_ref": "项目分组 001",
+      "project_entity_group_ref": "项目实体分组 001",
+      "project_id": "KMFA",
+      "project_order": 1,
+      "project_specific_allocation_status": "not_publicly_attributed",
+      "project_specific_difference_count": null,
+      "quality_grade_bypass_allowed": false,
+      "raw_layer_write_allowed": false,
+      "record_type": "post_remediation_public_safe_project_slot",
+      "report_preview_status": "D级受限预览可查看，不作为正式报告或决策依据",
+      "row_id": "PCP-001",
+      "schema_version": "kmfa.v014.s11_p3.post_remediation_project_slot.v1",
+      "source_evidence_labels": [
+        "S09 项目成本事实层",
+        "S09 修补后整体复审",
+        "S10 项目成本报告入口",
+        "S10 可信等级锁",
+        "S10 受限报告导出",
+        "S11 数据源检查板"
+      ],
+      "source_evidence_refs": [
+        "KMFA/stage_artifacts/V014_S09_P1_PROJECT_COST_FACT_LAYER/machine/project_cost_fact_layer_manifest.json",
+        "KMFA/stage_artifacts/V014_S09_POST_REMEDIATION_STAGE_REVIEW/machine/stage9_post_remediation_review_summary.json",
+        "KMFA/stage_artifacts/V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY/machine/report_entries_public_safe.json",
+        "KMFA/stage_artifacts/V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK/machine/report_grade_records_public_safe.json",
+        "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/machine/restricted_export_manifest.json",
+        "KMFA/stage_artifacts/V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD/machine/source_check_board_manifest.json"
+      ],
+      "stage_phase": "S11-P3"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "collection_status": "回款槽位已登记，关键现金比较仍未完成",
+      "contains_private_file_references": false,
+      "contains_raw_business_values": false,
+      "cost_structure_summary": "九类成本结构已登记，项目级业务金额不展示",
+      "difference_status": "项目级归属未公开，全局状态继续 NO_GO",
+      "formal_report_allowed": false,
+      "generated_at": "2026-07-11T07:40:29+10:00",
+      "global_state_ref": {
+        "incomplete_reconciliation_count": 1,
+        "nonzero_delta_reconciliation_count": 9,
+        "open_final_difference_accepted_count": 3,
+        "zero_delta_reconciliation_count": 2
+      },
+      "gross_margin_status": "毛利槽位已登记，正式结论继续阻断",
+      "next_step": "完成可证明的项目级追溯与人工确认后，才可分配差异并复核等级",
+      "pending_items": [
+        "三项最终接受未决仍需保留",
+        "九项非零差异不得被覆盖或归零",
+        "一项比较尚未完成",
+        "关键现金数值来源仍不完整",
+        "完整追溯与充分人工确认尚未成立"
+      ],
+      "persistent_business_write_allowed": false,
+      "project_display_ref": "项目分组 002",
+      "project_entity_group_ref": "项目实体分组 002",
+      "project_id": "KMFA",
+      "project_order": 2,
+      "project_specific_allocation_status": "not_publicly_attributed",
+      "project_specific_difference_count": null,
+      "quality_grade_bypass_allowed": false,
+      "raw_layer_write_allowed": false,
+      "record_type": "post_remediation_public_safe_project_slot",
+      "report_preview_status": "D级受限预览可查看，不作为正式报告或决策依据",
+      "row_id": "PCP-002",
+      "schema_version": "kmfa.v014.s11_p3.post_remediation_project_slot.v1",
+      "source_evidence_labels": [
+        "S09 项目成本事实层",
+        "S09 修补后整体复审",
+        "S10 项目成本报告入口",
+        "S10 可信等级锁",
+        "S10 受限报告导出",
+        "S11 数据源检查板"
+      ],
+      "source_evidence_refs": [
+        "KMFA/stage_artifacts/V014_S09_P1_PROJECT_COST_FACT_LAYER/machine/project_cost_fact_layer_manifest.json",
+        "KMFA/stage_artifacts/V014_S09_POST_REMEDIATION_STAGE_REVIEW/machine/stage9_post_remediation_review_summary.json",
+        "KMFA/stage_artifacts/V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY/machine/report_entries_public_safe.json",
+        "KMFA/stage_artifacts/V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK/machine/report_grade_records_public_safe.json",
+        "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/machine/restricted_export_manifest.json",
+        "KMFA/stage_artifacts/V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD/machine/source_check_board_manifest.json"
+      ],
+      "stage_phase": "S11-P3"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "collection_status": "回款槽位已登记，关键现金比较仍未完成",
+      "contains_private_file_references": false,
+      "contains_raw_business_values": false,
+      "cost_structure_summary": "九类成本结构已登记，项目级业务金额不展示",
+      "difference_status": "项目级归属未公开，全局状态继续 NO_GO",
+      "formal_report_allowed": false,
+      "generated_at": "2026-07-11T07:40:29+10:00",
+      "global_state_ref": {
+        "incomplete_reconciliation_count": 1,
+        "nonzero_delta_reconciliation_count": 9,
+        "open_final_difference_accepted_count": 3,
+        "zero_delta_reconciliation_count": 2
+      },
+      "gross_margin_status": "毛利槽位已登记，正式结论继续阻断",
+      "next_step": "完成可证明的项目级追溯与人工确认后，才可分配差异并复核等级",
+      "pending_items": [
+        "三项最终接受未决仍需保留",
+        "九项非零差异不得被覆盖或归零",
+        "一项比较尚未完成",
+        "关键现金数值来源仍不完整",
+        "完整追溯与充分人工确认尚未成立"
+      ],
+      "persistent_business_write_allowed": false,
+      "project_display_ref": "项目分组 003",
+      "project_entity_group_ref": "项目实体分组 003",
+      "project_id": "KMFA",
+      "project_order": 3,
+      "project_specific_allocation_status": "not_publicly_attributed",
+      "project_specific_difference_count": null,
+      "quality_grade_bypass_allowed": false,
+      "raw_layer_write_allowed": false,
+      "record_type": "post_remediation_public_safe_project_slot",
+      "report_preview_status": "D级受限预览可查看，不作为正式报告或决策依据",
+      "row_id": "PCP-003",
+      "schema_version": "kmfa.v014.s11_p3.post_remediation_project_slot.v1",
+      "source_evidence_labels": [
+        "S09 项目成本事实层",
+        "S09 修补后整体复审",
+        "S10 项目成本报告入口",
+        "S10 可信等级锁",
+        "S10 受限报告导出",
+        "S11 数据源检查板"
+      ],
+      "source_evidence_refs": [
+        "KMFA/stage_artifacts/V014_S09_P1_PROJECT_COST_FACT_LAYER/machine/project_cost_fact_layer_manifest.json",
+        "KMFA/stage_artifacts/V014_S09_POST_REMEDIATION_STAGE_REVIEW/machine/stage9_post_remediation_review_summary.json",
+        "KMFA/stage_artifacts/V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY/machine/report_entries_public_safe.json",
+        "KMFA/stage_artifacts/V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK/machine/report_grade_records_public_safe.json",
+        "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/machine/restricted_export_manifest.json",
+        "KMFA/stage_artifacts/V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD/machine/source_check_board_manifest.json"
+      ],
+      "stage_phase": "S11-P3"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "collection_status": "回款槽位已登记，关键现金比较仍未完成",
+      "contains_private_file_references": false,
+      "contains_raw_business_values": false,
+      "cost_structure_summary": "九类成本结构已登记，项目级业务金额不展示",
+      "difference_status": "项目级归属未公开，全局状态继续 NO_GO",
+      "formal_report_allowed": false,
+      "generated_at": "2026-07-11T07:40:29+10:00",
+      "global_state_ref": {
+        "incomplete_reconciliation_count": 1,
+        "nonzero_delta_reconciliation_count": 9,
+        "open_final_difference_accepted_count": 3,
+        "zero_delta_reconciliation_count": 2
+      },
+      "gross_margin_status": "毛利槽位已登记，正式结论继续阻断",
+      "next_step": "完成可证明的项目级追溯与人工确认后，才可分配差异并复核等级",
+      "pending_items": [
+        "三项最终接受未决仍需保留",
+        "九项非零差异不得被覆盖或归零",
+        "一项比较尚未完成",
+        "关键现金数值来源仍不完整",
+        "完整追溯与充分人工确认尚未成立"
+      ],
+      "persistent_business_write_allowed": false,
+      "project_display_ref": "项目分组 004",
+      "project_entity_group_ref": "项目实体分组 004",
+      "project_id": "KMFA",
+      "project_order": 4,
+      "project_specific_allocation_status": "not_publicly_attributed",
+      "project_specific_difference_count": null,
+      "quality_grade_bypass_allowed": false,
+      "raw_layer_write_allowed": false,
+      "record_type": "post_remediation_public_safe_project_slot",
+      "report_preview_status": "D级受限预览可查看，不作为正式报告或决策依据",
+      "row_id": "PCP-004",
+      "schema_version": "kmfa.v014.s11_p3.post_remediation_project_slot.v1",
+      "source_evidence_labels": [
+        "S09 项目成本事实层",
+        "S09 修补后整体复审",
+        "S10 项目成本报告入口",
+        "S10 可信等级锁",
+        "S10 受限报告导出",
+        "S11 数据源检查板"
+      ],
+      "source_evidence_refs": [
+        "KMFA/stage_artifacts/V014_S09_P1_PROJECT_COST_FACT_LAYER/machine/project_cost_fact_layer_manifest.json",
+        "KMFA/stage_artifacts/V014_S09_POST_REMEDIATION_STAGE_REVIEW/machine/stage9_post_remediation_review_summary.json",
+        "KMFA/stage_artifacts/V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY/machine/report_entries_public_safe.json",
+        "KMFA/stage_artifacts/V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK/machine/report_grade_records_public_safe.json",
+        "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/machine/restricted_export_manifest.json",
+        "KMFA/stage_artifacts/V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD/machine/source_check_board_manifest.json"
+      ],
+      "stage_phase": "S11-P3"
+    }
+  ],
+  "schema_version": "kmfa.v014.s11_p3.post_remediation_project_cost_page_projects.v1"
+}
