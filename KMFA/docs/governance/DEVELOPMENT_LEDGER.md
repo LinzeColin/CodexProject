@@ -1,3 +1,17 @@
+## 2026-07-10 - V014 authorized-agent private resolution application after blocked handoff
+
+- phase: `V014_AUTHORIZED_AGENT_PRIVATE_RESOLUTION_APPLICATION_AFTER_BLOCKED_HANDOFF`
+- task: `KMFA-V014-AUTHORIZED-AGENT-PRIVATE-RESOLUTION-APPLICATION-AFTER-BLOCKED-HANDOFF-20260710`
+- result: `completed_validated_local_only_partial_private_resolution_no_go_difference_report_required` / `NO_GO`
+- counts: source=48、formula resolved=4、taxonomy resolved=4、business-value unresolved=40、unresolved differences=72。
+- raw proof: 5 个原始文件前后逐文件路径、大小、mtime、inode、mode、SHA256 完全一致。
+- finding: S08 项目身份是合成测试样本；S09 实际处理值未物化。S05 权威哈希命中 20 个字段、4 个完整数值组，但当前 S09 选取组仅 1/4 完整命中，不能强制建立项目级一一对应。
+- evidence: `KMFA/stage_artifacts/V014_AUTHORIZED_AGENT_PRIVATE_RESOLUTION_APPLICATION_AFTER_BLOCKED_HANDOFF/machine/authorized_agent_private_resolution_application_after_blocked_handoff_manifest.json`
+- validation: focused unit test and private-resolution validator passed；治理 validator 与 raw/secret scan 在 commit 前复跑。
+- boundary: private details and Chinese difference report remain ignored；no Stage review, GitHub upload, app reinstall or business execution。
+product_version: 0.1.4-authorized-agent-private-resolution-application-after-blocked-handoff
+version_matrix_product_version_reference: 0.1.4-authorized-agent-private-resolution-application-after-blocked-handoff
+
 ## 2026-07-07 - V014 residual difference owner-authorized anchor blocker audit
 
 - phase: `V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_AUDIT`

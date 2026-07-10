@@ -1,6 +1,40 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "KMFA-V014-AUTHORIZED-AGENT-PRIVATE-RESOLUTION-APPLICATION-AFTER-BLOCKED-HANDOFF-20260710"
+    phase: "V014_AUTHORIZED_AGENT_PRIVATE_RESOLUTION_APPLICATION_AFTER_BLOCKED_HANDOFF"
+    objective: "Apply deterministic private resolutions after the blocked handoff and issue a Chinese difference report for unresolved business values."
+    scope:
+      - "read-only raw authority hash cross-validation"
+      - "private formula and canonical taxonomy resolution"
+      - "raw immutability proof and private Chinese difference report"
+      - "public-safe aggregate evidence validator and focused test"
+    non_scope:
+      - "raw mutation or public raw/private detail"
+      - "forced business-value binding or false zero-delta claim"
+      - "Stage review GitHub upload app reinstall or business execution"
+    status: "completed"
+    completed_version: "0.1.4-authorized-agent-private-resolution-application-after-blocked-handoff"
+    dependencies:
+      - "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_AFTER_FINAL_RECHECK"
+    required_files:
+      - "KMFA/stage_artifacts/V014_AUTHORIZED_AGENT_PRIVATE_RESOLUTION_APPLICATION_AFTER_BLOCKED_HANDOFF/machine/authorized_agent_private_resolution_application_after_blocked_handoff_manifest.json"
+      - "KMFA/tools/check_v014_authorized_agent_private_resolution_application_after_blocked_handoff.py"
+    acceptance_ids:
+      - "ACC-V014-AUTHORIZED-AGENT-PRIVATE-RESOLUTION-APPLICATION-AFTER-BLOCKED-HANDOFF"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_authorized_agent_private_resolution_application_after_blocked_handoff.py --require-private-resolution"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_authorized_agent_private_resolution_application_after_blocked_handoff"
+    test_results:
+      - "PASS: authorized-agent private resolution validator"
+      - "PASS: focused authorized-agent private resolution unit test"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_AUTHORIZED_AGENT_PRIVATE_RESOLUTION_APPLICATION_AFTER_BLOCKED_HANDOFF/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_AUTHORIZED_AGENT_PRIVATE_RESOLUTION_APPLICATION_AFTER_BLOCKED_HANDOFF/machine/authorized_agent_private_resolution_application_after_blocked_handoff_manifest.json"
+    risk: "Partial authority hash matches can be misread as project-level consistency; the phase remains NO_GO and does not force unresolved values."
+    rollback: "Remove this phase public artifacts and ignored private outputs; do not touch the operator raw directory."
+    target_version: "0.1.4-authorized-agent-private-resolution-application-after-blocked-handoff"
+
   - task_id: "OABA01"
     phase: "V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_AUDIT"
     objective: "Record the first owner-authorized anchor confirmation blocker observation after the unresolved difference report."

@@ -1,10 +1,18 @@
-KMFA 当前版本 `0.1.4-residual-difference-raw-to-processed-comparison-fingerprint-pair-completion-blocker-threshold-recheck-after-owner-anchor-confirmation` 已完成 `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_THRESHOLD_RECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION` 本地单 phase：Codex 未读取 raw inbox，只基于上一 blocker audit 的 public-safe artifacts 和 ignored private blocker records 记录 48 个 pair-completion blocker 的第二次 observation。公开证据只显示 aggregate counts：source blocker audit items=48、private blocker audit records=48、prior observation=1、current observation=2、blocked threshold met=false、comparison retry ready=0、unresolved differences=72。系统仍是 `NO_GO`，因为 48 个 private raw candidate fingerprint 缺口未解决，raw-to-processed value comparison、reconciliation 和 business consistency 均未执行。next_required_input=`resolve_or_authorize_raw_candidate_fingerprints_for_48_pair_completion_blockers`。
-
 # KMFA Owner Status
 
-更新时间: 2026-07-07
+更新时间: 2026-07-10
 
 ## 一句话状态
+
+KMFA 已完成 `V014_AUTHORIZED_AGENT_PRIVATE_RESOLUTION_APPLICATION_AFTER_BLOCKED_HANDOFF` 本地单 phase：只读解析 5 个原始文件并证明前后逐文件完全一致；48 个槽位中 8 个结构映射已解析，40 个业务值槽位因 S08 合成项目身份和 S09 实际处理值缺失而继续保留。已生成 ignored private 全中文差异报告，当前维持 `NO_GO`，未上传 GitHub、未重装 app、未执行业务动作。
+
+## 当前可信任范围
+
+- 可以信任：4 个公式契约映射、4 个 canonical 成本分类映射、S05 权威哈希聚合匹配计数、5 个原始文件前后完全一致。
+- 不能信任：40 个业务值槽位、72 个未关闭差异、项目级 raw-to-processed 一致性、任何正式业务报告或执行结论。
+- 下一步必须先建立真实项目身份私有绑定并物化实际处理值；不得用治理占位哈希替代业务值。
+
+## 前序一句话状态（历史）
 
 KMFA 当前版本 `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-actionability-recheck` 已完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_ACTIONABILITY_RECHECK` 本地单 phase：Codex 未读取 raw inbox，只复核上一 phase 48 条有效 generated diagnostic responses 的 actionability。公开证据只显示 aggregate counts：source valid diagnostic responses=48、source non-actionable diagnostic responses=48、actionability recheck items=48、actionability ready=0、actionability blockers=48、40/8 诊断分流、unresolved differences=72。系统仍是 `NO_GO`，因为这些诊断响应不能直接用于 authoritative binding 或 raw-to-processed value comparison。next_required_input=`actionable_source_reference_owner_exclusion_formula_mapping_or_non_numeric_mapping_required_before_binding_or_value_comparison`。
 

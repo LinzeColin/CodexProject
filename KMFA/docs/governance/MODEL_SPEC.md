@@ -1,3 +1,14 @@
+## FORM-KMFA-V014-AUTHORIZED-AGENT-PRIVATE-RESOLUTION-AFTER-BLOCKED-HANDOFF-001
+
+- version: `0.1.4-authorized-agent-private-resolution-application-after-blocked-handoff`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: 在只读 raw 边界内应用可证明的结构 resolution，并对不可证明的业务值生成私有差异报告。
+- rule: `phase_valid = source_items == 48 AND formula_resolved == 4 AND taxonomy_resolved == 4 AND business_value_unresolved == 40 AND raw_snapshot_exact_match == true AND raw_to_processed_comparison_complete == false AND business_value_consistency_verified == false AND decision == NO_GO`。
+- authority rule: S05 normalized-hash 局部命中不能替代真实项目身份绑定；S08 synthetic identity 或 S09 processed value missing 任一成立时，禁止强制业务值映射。
+- public_safety: 公开产物仅含聚合计数和 gate；raw 文件名、字段、金额、定位、上下文、匹配明细和差异报告只存在于 ignored private runtime。
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_authorized_agent_private_resolution_application_after_blocked_handoff.py --require-private-resolution`
+- evidence: `KMFA/stage_artifacts/V014_AUTHORIZED_AGENT_PRIVATE_RESOLUTION_APPLICATION_AFTER_BLOCKED_HANDOFF/machine/authorized_agent_private_resolution_application_after_blocked_handoff_manifest.json`
+
 ## FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-GENERATED-DIAGNOSTIC-RESPONSE-ACTIONABILITY-RECHECK-001
 
 - version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-actionability-recheck`

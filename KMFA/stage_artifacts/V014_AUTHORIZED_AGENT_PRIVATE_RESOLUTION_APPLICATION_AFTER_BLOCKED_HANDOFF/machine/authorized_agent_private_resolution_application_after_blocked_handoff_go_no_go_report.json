@@ -1,0 +1,15 @@
+{
+  "blocking_difference_count": 72,
+  "blocking_item_count": 40,
+  "decision": "NO_GO",
+  "github_upload_performed": false,
+  "phase_id": "V014_AUTHORIZED_AGENT_PRIVATE_RESOLUTION_APPLICATION_AFTER_BLOCKED_HANDOFF",
+  "project_id": "KMFA",
+  "reason_codes": [
+    "synthetic_project_identity_not_raw_bound",
+    "processed_business_values_not_materialized",
+    "raw_to_processed_value_comparison_incomplete"
+  ],
+  "resolved_structural_item_count": 8,
+  "schema_version": "kmfa.v014_authorized_agent_private_resolution_go_no_go.v1"
+}
