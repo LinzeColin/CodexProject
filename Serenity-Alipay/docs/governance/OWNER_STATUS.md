@@ -31,10 +31,10 @@ Serenity remains UNVERIFIED for empirical/delivery readiness despite machine-ver
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `CF-L2-20260710`
-- responsible_role: `model_owner + risk_owner`
-- acceptance_ids: `ACC-CF-L2-20260710`
-- unblock_condition: A public cockpit could be mistaken for a live Alipay, broker, mail, notification, or trading integration.
+- next_task_id: `NONE`
+- responsible_role: `project_owner`
+- acceptance_ids: `none`
+- unblock_condition: Define a ready/in_progress/blocked task with completed dependencies, Acceptance IDs, and evidence policy.
 
 ## 8. 九层 Assurance 状态
 
@@ -78,17 +78,17 @@ Serenity remains UNVERIFIED for empirical/delivery readiness despite machine-ver
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH`
+- release_gate: `ACC-CF-L2-20260710-PASSED`
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `COMMIT_BOUND:42abfd60a49d0505984364c2e41efbbdcc73e9ac`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `3`
 - legacy_unbound_events: `3`
-- precommit_pending_events: `2`
-- pending_or_stale_events: `6`
-- freshness_counts: `pending_or_stale_events=6; legacy_unbound_events=3`
+- precommit_pending_events: `3`
+- pending_or_stale_events: `7`
+- freshness_counts: `pending_or_stale_events=7; legacy_unbound_events=3`
 - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
 - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
 
@@ -100,13 +100,13 @@ Serenity remains UNVERIFIED for empirical/delivery readiness despite machine-ver
 
 - source_base_commit: `42abfd60a49d0505984364c2e41efbbdcc73e9ac`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:2ff52f91a041829b49e26edb0ff99c29a6471d8e7dd75c6384856678aba51488`
-- snapshot_event_time: `2026-07-10T18:53:59+10:00`
+- source_snapshot_hash: `sha256:6f87d3fa52325f5ae73d68d7d1d99fe959c5ce5cd19ac043c482cbda88bc8b81`
+- snapshot_event_time: `2026-07-10T19:26:02+10:00`
 - generator_version: `4.0.1`
 - version: `0.1.0`
-- phase/gate: `CF-L2 / ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH`
+- phase/gate: `CF-L2 / ACC-CF-L2-20260710-PASSED`
 
 ## 17. Next Unique Task
 
-- task_id: `CF-L2-20260710`
-- reason: Deliver a read-only redacted Serenity cockpit as a public-safe Cloudflare L2 surface with no external account action.
+- task_id: `NONE`
+- reason: No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands.

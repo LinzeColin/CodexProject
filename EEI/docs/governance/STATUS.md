@@ -4,17 +4,17 @@
 
 - source_base_commit: `42abfd60a49d0505984364c2e41efbbdcc73e9ac`
 - source_tree_hash: `356fcd0bb5d3b892b331d28351fe9e99a64c8457`
-- source_snapshot_hash: `sha256:6f4c7043b199dcd781737a24c221d8460ba78785de94e4b37cdaee1ee0d46a39`
-- snapshot_event_time: `2026-07-10T18:53:59+10:00`
+- source_snapshot_hash: `sha256:e8bdfd4d9b3f8f63641ba5efe8d1fc5d9d3fe378f581ed7977360f90dc519320`
+- snapshot_event_time: `2026-07-10T19:26:02+10:00`
 - generator_version: `4.0.1`
-- final_commit_binding: `COMMIT_BOUND:42abfd60a49d0505984364c2e41efbbdcc73e9ac`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
 ## Current State
 
 - Project: `EEI`
 - Path: `EEI`
 - Product version: `0.1.0`
-- Phase/Gate: `CF-L2 / ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH`
+- Phase/Gate: `CF-L2 / ACC-CF-L2-20260710-PASSED`
 - Models/Formulas/Parameters total: `12 / 12 / 93`
 - Active formulas/parameters: `11 / 93`
 - Machine checked formulas/parameters: `11 / 93`
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH`
-- Next executable task: `CF-L2-20260710`
-- Pending/stale events: `114`
+- Release gate: `ACC-CF-L2-20260710-PASSED`
+- Next executable task: `TASK-T1301`
+- Pending/stale events: `115`
 - Tree-bound events: `0`
 - Commit-bound events: `20`
 - Legacy unbound events: `19`

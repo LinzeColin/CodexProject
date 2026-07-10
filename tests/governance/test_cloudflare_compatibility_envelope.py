@@ -16,6 +16,17 @@ REQUIRED_PROJECTS = {
     "pfi",
     "serenity-alipay",
 }
+EXPECTED_ONLINE_SURFACES = {
+    "linze-home-hub": ("deployed_custom_domain_verified", "https://home.linzezhang.com"),
+    "nab": ("deployed_custom_domain_verified", "https://nab.linzezhang.com"),
+    "eei": ("deployed_workers_dev_domain_pending", "https://codex-eei.linzezhang35.workers.dev"),
+    "openaidatabase": ("deployed_custom_domain_verified", "https://memoryatlas.linzezhang.com"),
+    "pfi": ("deployed_workers_dev_domain_pending", "https://codex-pfi.linzezhang35.workers.dev"),
+    "serenity-alipay": (
+        "deployed_workers_dev_domain_pending",
+        "https://serenity-alipay.linzezhang35.workers.dev",
+    ),
+}
 PROJECT_TASK_FILES = (
     ROOT / "EEI/docs/governance/delivery_tasks.yaml",
     ROOT / "OpenAIDatabase/docs/governance/delivery_tasks.yaml",
@@ -41,6 +52,17 @@ class CloudflareCompatibilityGovernanceTests(unittest.TestCase):
         for path in PROJECT_TASK_FILES:
             with self.subTest(path=path):
                 self.assertIn('task_id: "CF-L2-20260710"', path.read_text(encoding="utf-8"))
+
+    def test_required_l2_online_surfaces_are_verified(self) -> None:
+        document = json.loads(DEPLOYMENTS.read_text(encoding="utf-8"))
+        records = {item["project_id"]: item for item in document["projects"]}
+        self.assertEqual(set(records), set(EXPECTED_ONLINE_SURFACES))
+        for project_id, (expected_result, expected_url) in EXPECTED_ONLINE_SURFACES.items():
+            with self.subTest(project_id=project_id):
+                record = records[project_id]
+                self.assertEqual(record["deploy_result"], expected_result)
+                self.assertEqual(record["actual_url"], expected_url)
+                self.assertEqual(record["http_verification"], "verified_200")
 
     def test_root_run_manifest_binds_the_acceptance(self) -> None:
         manifest = json.loads(RUN_MANIFEST.read_text(encoding="utf-8"))

@@ -1,11 +1,11 @@
 project_id: "PFI"
-as_of_event_id: "EVENT-20260710-PFI-CF-L2-REBASE-BINDING"
-source_snapshot_hash: "sha256:7feafea487df706b12860cb592886a4c05ab0726784ae7608ecf5b90c911f994"
+as_of_event_id: "EVENT-20260710-PFI-CF-L2-DEPLOYED"
+source_snapshot_hash: "sha256:c27fd036684692c61189a04145e23f303180bd9d5e2ac1001b1d25cabb85cfef"
 source_base_commit: "42abfd60a49d0505984364c2e41efbbdcc73e9ac"
 source_tree_hash: "5f05ad339e9519bd5981b54e788f0dbeefbcac9c"
-snapshot_event_time: "2026-07-10T18:53:59+10:00"
+snapshot_event_time: "2026-07-10T19:26:02+10:00"
 generator_version: "4.0.1"
-final_commit_binding: "COMMIT_BOUND:42abfd60a49d0505984364c2e41efbbdcc73e9ac"
+final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -63,24 +63,23 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 2
     legacy_unbound_events: 6
-    precommit_pending_events: 1
+    precommit_pending_events: 2
     evidence_refs:
       - "PFI/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH"
+  release_gate: "ACC-CF-L2-20260710-PASSED"
   blocker_ids:
     - "FACT-PFI-IMPLEMENTATION-FORMULA-REVIEW"
     - "FACT-PFI-IMPLEMENTATION-PARAMETER-REVIEW"
 next_executable_task:
-  task_id: "CF-L2-20260710"
-  status: "blocked"
-  reason: "Deliver a qualitative redacted PFI product shell as a public-safe Cloudflare L2 surface without exposing financial accounts or enabling execution."
-  acceptance_ids:
-    - "ACC-CF-L2-20260710"
-  owner: "project_owner"
+  task_id: "NONE"
+  status: "not_applicable"
+  reason: "No ready or in_progress task has completed dependencies, Acceptance IDs, and test commands."
+  acceptance_ids: []
+  owner: "project owner"
   human_owner_role: "project_owner"
-  unblock_condition: "A public product shell could be mistaken for a connected financial account, private report, recommendation, or execution system."
+  unblock_condition: "Define a ready/in_progress/blocked task with completed dependencies, Acceptance IDs, and evidence policy."
   stale_candidates: []
 owner_decision:
   required: true

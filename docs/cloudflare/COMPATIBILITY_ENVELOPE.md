@@ -18,13 +18,14 @@ Give LinzeHomeHub, Archive/nab, EEI, OpenAIDatabase, PFI, and Serenity-Alipay a 
 | `LinzeColin/LinzeHomeHub` | `95b5842bd3141026bae9276b9b269761c3422ea7` | gateway and Launch Constellation |
 | `LinzeColin/Archive` | `eda7ac6674dee57b864ad03bbadb698bc54453ad` | self-contained `nab` archive surface |
 
-Read-only URL probes on 2026-07-10 Australia/Sydney established:
+Final deployment probes on 2026-07-10 Australia/Sydney established:
 
-- `home.linzezhang.com`: public HTTP 200 and Linze Home Hub content.
-- `nab.linzezhang.com`: public HTTP 200 and NAB content.
+- `home.linzezhang.com` and `linze-home-hub.linzezhang35.workers.dev`: current HomeHub main deployment, public HTTP 200; live desktop/mobile acceptance passed.
+- `nab.linzezhang.com` and `nab.linzezhang35.workers.dev`: current Archive main deployment, public HTTP 200 and NAB content.
 - `memoryatlas.linzezhang.com`: protected Pages deployment evidence verifies unauthenticated Access challenge plus owner-allowlist app and `/memory_atlas.json` loading; the content is online but not anonymously exposed.
-- `eei.linzezhang.com`, `pfi.linzezhang.com`, and `serenity.linzezhang.com`: not reachable.
-- The local Cloudflare API token is active, but account Workers access returns Cloudflare error `10000`; EEI, PFI and Serenity deploys remain blocked until OAuth or a correctly scoped account token succeeds. MemoryAtlas uses independently verified protected Pages evidence.
+- `codex-eei.linzezhang35.workers.dev`, `codex-pfi.linzezhang35.workers.dev`, and `serenity-alipay.linzezhang35.workers.dev`: permanent public Workers deployments; roots and `public-surface.json` return HTTP 200.
+- `eei.linzezhang.com`, `pfi.linzezhang.com`, and `serenity.linzezhang.com` remain optional manual domain bindings and are not claimed as configured.
+- Wrangler OAuth succeeded with only `account:read`, `user:read`, `workers_scripts:write`, and `offline_access`; the dedicated script scope resolved the earlier API-token and aggregate-scope error `10000` without granting KV, D1, Pages, Zone or Routes access.
 
 ## Design decision
 

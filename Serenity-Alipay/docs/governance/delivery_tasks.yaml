@@ -169,16 +169,16 @@ tasks:
     objective: "Deliver a read-only redacted Serenity cockpit as a public-safe Cloudflare L2 surface with no external account action."
     scope: ["Serenity-Alipay/app/cloudflare-public static adapter", "Workers Static Assets config", "privacy scan", "deployment evidence"]
     non_scope: ["Alipay live data", "MooMoo or OpenD", "Apple Mail", "notifications", "trades", "launchd", "external accounts"]
-    status: "blocked"
+    status: "completed"
     dependencies: []
     required_files: ["Serenity-Alipay/app/cloudflare-public/public/index.html", "Serenity-Alipay/app/cloudflare-public/public/public-surface.json", "Serenity-Alipay/app/cloudflare-public/wrangler.jsonc", "governance/cloudflare/deployments.json"]
     acceptance_ids: ["ACC-CF-L2-20260710"]
-    test_commands: ["npm run build", "python3 scripts/cloudflare/scan_public_dist.py --path Serenity-Alipay/app/cloudflare-public/dist", "npx wrangler@4.110.0 deploy --dry-run", "python3 -m unittest tests.cloudflare.test_compatibility_envelope -v"]
-    test_results: ["PASS: static build", "PASS: private distribution scan", "PASS: Wrangler 4.110.0 dry-run", "PASS: compatibility tests 13/13", "BLOCKED: real Cloudflare deploy requires Workers authorization; no live URL claimed"]
+    test_commands: ["npm run build", "python3 scripts/cloudflare/scan_public_dist.py --path Serenity-Alipay/app/cloudflare-public/dist", "npx wrangler@4.110.0 deploy --dry-run", "npx wrangler deploy", "curl workers.dev root and public-surface.json", "python3 -m unittest tests.cloudflare.test_compatibility_envelope -v"]
+    test_results: ["PASS: static build", "PASS: private distribution scan", "PASS: Wrangler 4.110.0 dry-run", "PASS: permanent workers.dev deployment", "PASS: root and public-surface.json HTTP 200", "PASS: compatibility tests 13/13"]
     evidence_refs: ["Serenity-Alipay/app/cloudflare-public/public/public-surface.json", "governance/cloudflare/deployments.json", "FINAL_ACCEPTANCE_BUNDLE/cloudflare_compatibility_envelope/FINAL_REPORT.md"]
     risk: "A public cockpit could be mistaken for a live Alipay, broker, mail, notification, or trading integration."
     rollback: "Remove the isolated cloudflare-public adapter and revert its bounded governance records; Serenity private runtime remains unchanged."
     target_version: "0.1.0"
-    completed_version: ""
+    completed_version: "0.1.0"
     fact_level: "EXTRACTED"
     unknown_task_ids: []
