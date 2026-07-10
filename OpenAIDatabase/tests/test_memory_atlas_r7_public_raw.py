@@ -271,6 +271,24 @@ class PublicRawSanitizerTests(unittest.TestCase):
         self.assertEqual(sanitized["nested"][1], ordinary_text)
         self.assertEqual(counts, {"binary_omission": 2})
 
+    def test_short_encrypted_content_field_is_omitted_even_below_binary_size_threshold(self) -> None:
+        sanitizer = self.load_sanitizer("encrypted_field")
+        encrypted = "gAAAAA" + "AbCdEf012345_-" * 8
+        value = {
+            "encrypted_content": encrypted,
+            "content": "ordinary complete transcript text",
+        }
+
+        self.assertLess(len(encrypted.encode("utf-8")), sanitizer.BINARY_STRING_MIN_BYTES)
+        sanitized, counts = sanitizer.sanitize_public_value(value)
+
+        self.assertEqual(
+            sanitized["encrypted_content"],
+            sanitizer.binary_omission_marker(encrypted),
+        )
+        self.assertEqual(sanitized["content"], value["content"])
+        self.assertEqual(counts, {"binary_omission": 1})
+
     def test_sanitize_jsonl_event_rejects_non_dictionary_input(self) -> None:
         sanitizer = self.load_sanitizer("jsonl")
 
