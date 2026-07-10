@@ -13,6 +13,7 @@ ENTRY = PURSUE_ROOT / "STAGE035_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE035_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE035_PHASE2_DATABASE_RECOVERY_SMOKE_SLICE.md"
 PHASE3 = PURSUE_ROOT / "STAGE035_PHASE3_SCENARIO_VALIDATION.md"
+PHASE4 = PURSUE_ROOT / "STAGE035_PHASE4_CLOSEOUT.md"
 INDEX = (
     PURSUE_ROOT
     / "database_recovery_smoke"
@@ -176,26 +177,31 @@ class Stage035DatabaseRecoverySmokePhase1Tests(unittest.TestCase):
             'status: "stage035_phase1_in_progress"',
             'status: "stage035_phase2_in_progress"',
             'status: "stage035_phase3_in_progress"',
+            'status: "stage035_completed_local_pending_review"',
         ]
         allowed_next_phases = [
             'next_phase: "Phase 2"',
             'next_phase: "Phase 3"',
             'next_phase: "Phase 4"',
+            'next_phase: "stage_review_gate"',
         ]
         allowed_next_gates = [
             'next_gate: "IDS-STAGE035-P2-GATE"',
             'next_gate: "IDS-STAGE035-P3-GATE"',
             'next_gate: "IDS-STAGE035-P4-GATE"',
+            'next_gate: "IDS-STAGE035-REVIEW-GATE"',
         ]
         allowed_current_tasks = [
             'current_task_id: "IDS-V0_1-STAGE035-P1"',
             'current_task_id: "IDS-V0_1-STAGE035-P2"',
             'current_task_id: "IDS-V0_1-STAGE035-P3"',
+            'current_task_id: "IDS-V0_1-STAGE035-P4"',
         ]
         allowed_acceptance_states = [
             'acceptance_status: "phase1_scope_boundary_defined"',
             'acceptance_status: "phase2_static_recovery_smoke_contract_validated"',
             'acceptance_status: "phase3_scenario_validation_passed"',
+            'acceptance_status: "phase4_closeout_complete"',
         ]
         for allowed in [
             allowed_current_states,
@@ -455,19 +461,27 @@ class Stage035DatabaseRecoverySmokePhase2Tests(unittest.TestCase):
         allowed_current_states = [
             'status: "stage035_phase2_in_progress"',
             'status: "stage035_phase3_in_progress"',
+            'status: "stage035_completed_local_pending_review"',
         ]
-        allowed_next_phases = ['next_phase: "Phase 3"', 'next_phase: "Phase 4"']
+        allowed_next_phases = [
+            'next_phase: "Phase 3"',
+            'next_phase: "Phase 4"',
+            'next_phase: "stage_review_gate"',
+        ]
         allowed_next_gates = [
             'next_gate: "IDS-STAGE035-P3-GATE"',
             'next_gate: "IDS-STAGE035-P4-GATE"',
+            'next_gate: "IDS-STAGE035-REVIEW-GATE"',
         ]
         allowed_current_tasks = [
             'current_task_id: "IDS-V0_1-STAGE035-P2"',
             'current_task_id: "IDS-V0_1-STAGE035-P3"',
+            'current_task_id: "IDS-V0_1-STAGE035-P4"',
         ]
         allowed_acceptance_states = [
             'acceptance_status: "phase2_static_recovery_smoke_contract_validated"',
             'acceptance_status: "phase3_scenario_validation_passed"',
+            'acceptance_status: "phase4_closeout_complete"',
         ]
         for allowed in [
             allowed_current_states,
@@ -649,14 +663,29 @@ class Stage035DatabaseRecoverySmokePhase3Tests(unittest.TestCase):
             "NO_PHASE4",
         ]
         lock_terms = [
-            'status: "stage035_phase3_in_progress"',
             '      - "Phase 3"',
-            'next_phase: "Phase 4"',
-            'next_gate: "IDS-STAGE035-P4-GATE"',
-            'current_task_id: "IDS-V0_1-STAGE035-P3"',
-            'acceptance_status: "phase3_scenario_validation_passed"',
             "STAGE035_PHASE3_SCENARIO_VALIDATION.md",
             'push_allowed: false',
+        ]
+        allowed_current_states = [
+            'status: "stage035_phase3_in_progress"',
+            'status: "stage035_completed_local_pending_review"',
+        ]
+        allowed_next_phases = [
+            'next_phase: "Phase 4"',
+            'next_phase: "stage_review_gate"',
+        ]
+        allowed_next_gates = [
+            'next_gate: "IDS-STAGE035-P4-GATE"',
+            'next_gate: "IDS-STAGE035-REVIEW-GATE"',
+        ]
+        allowed_current_tasks = [
+            'current_task_id: "IDS-V0_1-STAGE035-P3"',
+            'current_task_id: "IDS-V0_1-STAGE035-P4"',
+        ]
+        allowed_acceptance_states = [
+            'acceptance_status: "phase3_scenario_validation_passed"',
+            'acceptance_status: "phase4_closeout_complete"',
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE035"',
@@ -678,6 +707,217 @@ class Stage035DatabaseRecoverySmokePhase3Tests(unittest.TestCase):
         ]
         for terms, text in [
             (phase3_terms, phase3_text),
+            (lock_terms, lock_text),
+            (roadmap_terms, roadmap_text),
+            (event_terms, events_text),
+        ]:
+            for term in terms:
+                with self.subTest(term=term):
+                    self.assertIn(term, text)
+        for allowed in [
+            allowed_current_states,
+            allowed_next_phases,
+            allowed_next_gates,
+            allowed_current_tasks,
+            allowed_acceptance_states,
+        ]:
+            self.assertTrue(any(term in lock_text for term in allowed), allowed)
+
+
+class Stage035DatabaseRecoverySmokePhase4Tests(unittest.TestCase):
+    def _load_checker_module(self):
+        self.assertTrue(SCRIPT.is_file(), f"missing checker script: {SCRIPT}")
+        spec = importlib.util.spec_from_file_location("stage035_database_recovery_smoke_p4", SCRIPT)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def _delivery_builder(self):
+        module = self._load_checker_module()
+        self.assertTrue(
+            hasattr(module, "build_stage035_delivery_report"),
+            "missing Phase 4 delivery report builder",
+        )
+        return module, module.build_stage035_delivery_report
+
+    def test_phase4_artifact_and_delivery_contract_exist(self):
+        self.assertTrue(PHASE4.is_file(), f"missing Phase 4 evidence: {PHASE4}")
+        combined = "\n".join(
+            [PHASE4.read_text(encoding="utf-8"), SCRIPT.read_text(encoding="utf-8")]
+        )
+        required_terms = [
+            "ids.stage035.database_recovery_smoke.phase4.v1",
+            "IDS-V0_1-STAGE035-P4",
+            "ACC-STAGE-035",
+            "build_stage035_delivery_report",
+            "delivery_contract_valid",
+            "schema_diff",
+            "migration_output",
+            "recovery_test_log",
+            "known_limits",
+            "destructive_migration_confirmation",
+            "rollback_steps",
+            "backup_restore_steps",
+            "chinese_owner_feedback",
+            "PASS_WITH_EXPECTED_BLOCK",
+            "NO_STAGE_REVIEW_THIS_RUN",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, combined)
+
+    def test_delivery_report_is_valid_but_does_not_claim_live_restore(self):
+        _, builder = self._delivery_builder()
+        report = builder(INDEX)
+
+        self.assertEqual("ids.stage035.database_recovery_smoke.phase4.v1", report["schema_version"])
+        self.assertEqual("Phase 4", report["phase"])
+        self.assertEqual("IDS-V0_1-STAGE035-P4", report["task_id"])
+        self.assertEqual("ACC-STAGE-035", report["acceptance_id"])
+        self.assertTrue(report["delivery_contract_valid"])
+        self.assertTrue(all(report["delivery_check_results"].values()))
+        self.assertEqual("IDS-STAGE035-REVIEW-GATE", report["next_gate"])
+        self.assertEqual("pending_next_run", report["stage_review_status"])
+        self.assertFalse(report["github_upload_allowed"])
+        self.assertFalse(report["app_reinstall_allowed"])
+        self.assertFalse(report["live_execution_performed"])
+        self.assertTrue(report["does_not_read_metadata_dump"])
+        self.assertTrue(report["does_not_connect_to_postgres"])
+        self.assertTrue(report["does_not_execute_restore"])
+        self.assertTrue(report["does_not_execute_migration"])
+        self.assertTrue(report["does_not_write_runtime_outputs"])
+        self.assertTrue(report["does_not_use_fake_ids_data"])
+
+    def test_delivery_evidence_distinguishes_static_contract_from_live_outputs(self):
+        _, builder = self._delivery_builder()
+        report = builder(INDEX)
+
+        self.assertEqual(
+            "static_recovery_contract_diff_not_executed",
+            report["schema_diff"]["mode"],
+        )
+        self.assertEqual("NOT_EXECUTED", report["schema_diff"]["live_schema_diff_result"])
+        self.assertEqual(
+            "static_recovery_migration_output_not_executed",
+            report["migration_output"]["mode"],
+        )
+        self.assertEqual("NOT_EXECUTED", report["migration_output"]["live_migration_result"])
+        self.assertEqual(
+            "static_recovery_test_log_expected_block",
+            report["recovery_test_log"]["mode"],
+        )
+        self.assertEqual("NOT_EXECUTED", report["recovery_test_log"]["live_restore_result"])
+        self.assertEqual("PASS_WITH_EXPECTED_BLOCK", report["recovery_test_log"]["result"])
+        self.assertEqual(
+            "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_METADATA_DUMP",
+            report["recovery_test_log"]["execution_state"],
+        )
+        confirmation = report["destructive_migration_confirmation"]
+        self.assertTrue(confirmation["required"])
+        self.assertFalse(confirmation["destructive_allowed_by_default"])
+        self.assertTrue(confirmation["manual_owner_confirmation_required"])
+        self.assertGreaterEqual(len(report["rollback_steps"]), 4)
+        self.assertGreaterEqual(len(report["backup_restore_steps"]), 5)
+        self.assertGreaterEqual(len(report["known_limits"]), 5)
+        self.assertIn("未执行真实恢复", report["chinese_owner_feedback"])
+
+    def test_invalid_restore_policy_fails_delivery_closed_without_creating_files(self):
+        module, builder = self._delivery_builder()
+        index = json.loads(INDEX.read_text(encoding="utf-8"))
+        index["runtime_policy"]["execute_restore"] = True
+
+        original_loader = module._load_json
+        module._load_json = (
+            lambda path: copy.deepcopy(index)
+            if Path(path) == INDEX
+            else original_loader(path)
+        )
+        try:
+            report = builder(INDEX)
+        finally:
+            module._load_json = original_loader
+
+        self.assertFalse(report["delivery_contract_valid"])
+        self.assertFalse(report["delivery_check_results"]["phase2_contract_valid"])
+        self.assertFalse(report["delivery_check_results"]["phase3_scenarios_valid"])
+        self.assertEqual("FAIL_CLOSED", report["recovery_test_log"]["result"])
+        self.assertEqual("BLOCKED_INVALID_RECOVERY_CONTRACT", report["execution_state"])
+        self.assertFalse(report["does_not_execute_restore"])
+        self.assertFalse(report["live_execution_performed"])
+
+    def test_checker_cli_includes_phase4_delivery_without_live_side_effects(self):
+        completed = subprocess.run(
+            [sys.executable, "-B", str(SCRIPT)],
+            cwd=ROOT,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertEqual(0, completed.returncode, completed.stderr)
+        payload = json.loads(completed.stdout)
+        self.assertIn("delivery_report", payload)
+        delivery = payload["delivery_report"]
+        self.assertTrue(delivery["delivery_contract_valid"])
+        self.assertEqual("PASS_WITH_EXPECTED_BLOCK", delivery["recovery_test_log"]["result"])
+        self.assertEqual("NOT_EXECUTED", delivery["recovery_test_log"]["live_restore_result"])
+        self.assertFalse(delivery["live_execution_performed"])
+        self.assertEqual("IDS-STAGE035-REVIEW-GATE", delivery["next_gate"])
+        self.assertEqual("", completed.stderr)
+
+    def test_phase4_doc_and_governance_stop_at_separate_review_gate(self):
+        self.assertTrue(PHASE4.is_file(), f"missing Phase 4 evidence: {PHASE4}")
+        phase4_text = PHASE4.read_text(encoding="utf-8")
+        lock_text = BATCH_LOCK.read_text(encoding="utf-8")
+        roadmap_text = ROADMAP.read_text(encoding="utf-8")
+        events_text = EVENTS.read_text(encoding="utf-8")
+
+        phase4_terms = [
+            "Phase 4 · 数据库恢复冒烟测试交付证据、回滚与中文反馈",
+            "live_schema_diff_result=NOT_EXECUTED",
+            "live_migration_result=NOT_EXECUTED",
+            "live_restore_result=NOT_EXECUTED",
+            "result=PASS_WITH_EXPECTED_BLOCK",
+            "stage_review_status=pending_next_run",
+            "任何破坏性 migration 或 restore 必须单独人工确认",
+            "不得使用虚构 IDS 业务数据、虚构数据库行、虚构 metadata dump、placeholder corpus 或伪造证据",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "NO_STAGE_REVIEW_THIS_RUN",
+        ]
+        lock_terms = [
+            'status: "stage035_completed_local_pending_review"',
+            '      - "Phase 4"',
+            'next_phase: "stage_review_gate"',
+            'next_gate: "IDS-STAGE035-REVIEW-GATE"',
+            'current_task_id: "IDS-V0_1-STAGE035-P4"',
+            'acceptance_status: "phase4_closeout_complete"',
+            "STAGE035_PHASE4_CLOSEOUT.md",
+            'push_allowed: false',
+        ]
+        roadmap_terms = [
+            'current_stage_id: "IDS-STAGE035"',
+            'current_phase_id: "IDS-STAGE035-P4"',
+            'current_task_id: "IDS-V0_1-STAGE035-P4"',
+            'next_gate_id: "IDS-STAGE035-REVIEW-GATE"',
+            'status: "completed_local_pending_review"',
+            'phase_id: "IDS-STAGE035-P4"',
+            'task_id: "IDS-V0_1-STAGE035-P4"',
+            'status: "passed_no_github_upload_until_stage_review"',
+        ]
+        event_terms = [
+            '"event_id":"EVT-IDS-V0_1-STAGE035-P4-20260710-001"',
+            '"event_type":"stage_closeout"',
+            '"task_id":"IDS-V0_1-STAGE035-P4"',
+            '"ACC-STAGE-035"',
+            "STAGE035_PHASE4_CLOSEOUT.md",
+            "build_stage035_delivery_report",
+            "PASS_WITH_EXPECTED_BLOCK",
+            "IDS-STAGE035-REVIEW-GATE",
+        ]
+        for terms, text in [
+            (phase4_terms, phase4_text),
             (lock_terms, lock_text),
             (roadmap_terms, roadmap_text),
             (event_terms, events_text),
