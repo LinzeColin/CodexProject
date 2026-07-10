@@ -12,7 +12,7 @@
 
 | Repository | Immutable source/evidence commit | Meaning |
 |---|---|---|
-| `LinzeColin/CodexProject` | `b864009c657c6a9cebbf451e30389c1aa5809700` | Clean `main` checkout used to deploy EEI, PFI and Serenity-Alipay; the later final-evidence carrier is resolved after clone with `git log -1 --format=%H -- FINAL_ACCEPTANCE_BUNDLE/cloudflare_compatibility_envelope/FINAL_REPORT.md` |
+| `LinzeColin/CodexProject` | `ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935` | Immutable deployment-evidence commit; runtime source `b864009c657c6a9cebbf451e30389c1aa5809700` deployed EEI, PFI and Serenity-Alipay. The later report-binding carrier is resolved after clone with `git log -1 --format=%H -- FINAL_ACCEPTANCE_BUNDLE/cloudflare_compatibility_envelope/FINAL_REPORT.md` |
 | `LinzeColin/LinzeHomeHub` | `59347956c03ee2810358887f20cb13bdc2ef9289` | Final `main` evidence carrier; runtime source `3dc34a3d7fd051c57c7aa8b47a02e767245ce640` deployed the five-card Launch Constellation with four verified `Live` routes and one Access `Protected` route |
 | `LinzeColin/Archive` | `d0721022cfb48ae3edf439fffeb92c36ed00cefc` | Final `main` evidence carrier; runtime source `10129d6c40883941e0845cb15222a46b7b2e3dc9` deployed the self-contained `nab` surface |
 
@@ -49,7 +49,7 @@ Passed:
 Executed but not green:
 
 - Before push, root-governance fanout made `python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main` stop only on ten pre-existing WDA lean-v2 schema errors after the Cloudflare scope itself reported zero errors. `git diff --name-only origin/main -- WDA` was empty. Local evidence id: `ecdac34e4d5b`.
-- After CodexProject `HEAD == origin/main`, the exact required command returned exit 0, `decision=SHIP`, `changed_file_count=0`, and `zero_tracked_write=true`. Local evidence id: `93e50bea8af2`.
+- After evidence commit `ed0fe3a3…` reached `origin/main`, the exact required command returned exit 0, `decision=SHIP`, `changed_file_count=0`, and `zero_tracked_write=true`. Local evidence id: `a8dd8c5edcb1`.
 - The discovered API token and an initial aggregate `workers:write` OAuth token returned Cloudflare error `10000`; neither failed attempt created a deployment.
 - A fresh OAuth grant with only `account:read`, `user:read`, `workers_scripts:write`, and `offline_access` succeeded. The credentials are encrypted with their key stored in macOS Keychain.
 - Real serial deploy and HTTP verification passed for EEI, PFI, Serenity-Alipay, HomeHub and Archive/nab. HomeHub live visual acceptance also passed against `https://home.linzezhang.com`.
