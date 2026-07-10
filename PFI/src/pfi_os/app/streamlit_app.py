@@ -1002,8 +1002,14 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
         **build_v024_stage2_entry_runtime_metadata(ROOT),
     }
     runtime_json = json.dumps(runtime_payload, ensure_ascii=False).replace("</", "<\\/")
-    shell_html = shell_html.replace('<link rel="stylesheet" href="./styles/tokens.css" />', f"<style>{css}</style>")
-    shell_html = shell_html.replace('<link rel="stylesheet" href="./styles.css" />', f"<style>{legacy_css}</style>")
+    shell_html = shell_html.replace(
+        '<link rel="stylesheet" href="./styles/tokens.css" />',
+        f'<style data-pfi-source="web/styles/tokens.css">{css}</style>',
+    )
+    shell_html = shell_html.replace(
+        '<link rel="stylesheet" href="./styles.css" />',
+        f'<style data-pfi-source="web/styles.css">{legacy_css}</style>',
+    )
     shell_html = re.sub(
         r'<script type="application/json" id="pfi-runtime-config">.*?</script>',
         f'<script type="application/json" id="pfi-runtime-config">{runtime_json}</script>',
@@ -1030,45 +1036,48 @@ def _pfi_web_shell_html(home_summary: dict | None = None) -> str:
     )
     shell_html = shell_html.replace(
         '<script src="./app/version.js"></script>',
-        f"<script>{version_js}</script>",
+        f'<script data-pfi-source="web/app/version.js">{version_js}</script>',
     )
     shell_html = shell_html.replace(
         '<script src="./app/entry_audit.js"></script>',
-        f"<script>{entry_audit_js}</script>",
+        f'<script data-pfi-source="web/app/entry_audit.js">{entry_audit_js}</script>',
     )
     shell_html = shell_html.replace(
         '<script src="./app/navigation.js"></script>',
-        f"<script>{navigation_js}</script>",
+        f'<script data-pfi-source="web/app/navigation.js">{navigation_js}</script>',
     )
     shell_html = shell_html.replace(
         '<script src="./app/routes.js"></script>',
-        f"<script>{routes_js}</script>",
+        f'<script data-pfi-source="web/app/routes.js">{routes_js}</script>',
     )
     shell_html = shell_html.replace(
         '<script src="./app/data_state.js"></script>',
-        f"<script>{data_state_js}</script>",
+        f'<script data-pfi-source="web/app/data_state.js">{data_state_js}</script>',
     )
     shell_html = shell_html.replace(
         '<script src="./app/pages/stage4Subpages.js"></script>',
-        f"<script>{stage4_pages_js}</script>",
+        f'<script data-pfi-source="web/app/pages/stage4Subpages.js">{stage4_pages_js}</script>',
     )
     shell_html = shell_html.replace(
         '<script src="./app/pages/stage5Subpages.js"></script>',
-        f"<script>{stage5_pages_js}</script>",
+        f'<script data-pfi-source="web/app/pages/stage5Subpages.js">{stage5_pages_js}</script>',
     )
     shell_html = shell_html.replace(
         '<script src="./app/ux_state.js"></script>',
-        f"<script>{ux_state_js}</script>",
+        f'<script data-pfi-source="web/app/ux_state.js">{ux_state_js}</script>',
     )
     shell_html = shell_html.replace(
         '<script src="./app/pages/home.js"></script>',
-        f"<script>{home_page_js}</script>",
+        f'<script data-pfi-source="web/app/pages/home.js">{home_page_js}</script>',
     )
     shell_html = shell_html.replace(
         '<script src="./app/pages/reports.js"></script>',
-        f"<script>{reports_page_js}</script>",
+        f'<script data-pfi-source="web/app/pages/reports.js">{reports_page_js}</script>',
     )
-    shell_html = shell_html.replace('<script src="./app/shell.js"></script>', f"<script>{js}</script>")
+    shell_html = shell_html.replace(
+        '<script src="./app/shell.js"></script>',
+        f'<script data-pfi-source="web/app/shell.js">{js}</script>',
+    )
     return shell_html
 
 

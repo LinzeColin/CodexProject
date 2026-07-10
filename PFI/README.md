@@ -7,6 +7,34 @@ PFI V0.2 is the Personal Financial Intelligence project under
 under `LinzeColin/CodexProject/QBVS`; PFI investment management does not own
 or cover QBVS.
 
+## v0.2.4 Overall Re-review
+
+Current run unit: `v0.2.4 overall re-review`.
+
+- Acceptance: `ACC-PFI-V024-OVERALL-REREVIEW`.
+- Local gate result: pass; independent read-only review `APPROVED` with no findings.
+- Stage 0-9 evidence, user confirmation and the Phase R1 real-data flow are under final local re-review.
+- Historical overall upload does not prove that the current Phase R1/re-review changes are uploaded.
+- `product goal 未完成`; current final GitHub upload, app reinstall and GitHub/app/local parity remain pending.
+- Next and only gate after this review: `PFI-V024-FINAL-DELIVERY`.
+- This run does not upload, reinstall the app, start a future version or mutate financial data.
+- Validation snapshot: re-review `12 passed`; v0.2.3 `200 passed`; v0.2.4 `231 passed`; 11/11 UI validation files and 46 PNG decodes pass; machine gate pass with `product_goal_complete=false`.
+- Record: `docs/pfi_v024/OVERALL_REREVIEW.md`.
+
+## v0.2.4 Post-Overall Consistency Remediation
+
+Current run unit: `post-overall consistency remediation / Phase R1`.
+
+- Phase R1 local gate: pass.
+- Canonical governance now preserves the completed `v0.2.4 overall project review` facts in all three owner entries.
+- Sparse PFI worktrees read the tracked real `MetaDatabase/PFI` dataset from the current Git tree without expanding the sparse path or copying financial data.
+- Current real-data contract: 4 raw CSV files, 8815 processed records, as of `2026-06-03`.
+- Validation: focused `33 passed`; v0.2.3 compatibility `200 passed`; v0.2.4 regression `219 passed`; check-render `0/0`.
+- GitHub upload: not executed in this run.
+- App bundle reinstall: not executed in this run.
+- Next gate: v0.2.4 overall re-review in a separate run.
+- Record: `docs/pfi_v024/POST_OVERALL_CONSISTENCY_REMEDIATION.md`.
+
 ## v0.2.4 Repair Pack Pre Stage 0
 
 PFI v0.2.4 is the repair package following the completed v0.2.3 closeout.

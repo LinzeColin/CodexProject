@@ -1,6 +1,29 @@
 # PFI v0.2.4 Run Contract
 
-## Current Run
+## Current Run Override
+
+本轮只执行：`v0.2.4 overall re-review`。
+
+- 唯一 Acceptance：`ACC-PFI-V024-OVERALL-REREVIEW`。
+- 本轮核验原 `v0.2.3-repair` Task Pack/Roadmap Stage 0-9、Phase R1、真实数据链路与最终交付边界。
+- 本轮不执行 GitHub upload。
+- 本轮不执行 app reinstall。
+- `product goal 未完成`；完成 re-review 后唯一下一 gate 为 `PFI-V024-FINAL-DELIVERY`。
+- 不启动 future version，不展开 sparse `MetaDatabase/`，不修改 `.venv`、`data`、`reports` 或真实财务数据。
+
+Current validation:
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_overall_rereview.py -q
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v023_*.py -q
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_*.py -q
+/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 -B scripts/lean_governance.py check-render --project PFI
+git diff --check -- PFI
+```
+
+Current stop condition：只落账 re-review findings、修复和本地验证，停止在 `PFI-V024-FINAL-DELIVERY` 前。
+
+## Historical Overall Review Run (Closed)
 
 本轮只执行：PFI v0.2.4 `v0.2.4 overall project review`。
 
@@ -99,6 +122,6 @@ git ls-remote origin refs/heads/main
 - Do not write, clean, delete, synthesize, or backfill user financial data.
 - Do not add forbidden placeholder financial data.
 
-## Stop Condition
+## Historical Stop Condition (Closed)
 
 停止在 `v0.2.4 overall project review` 且 terminal 证明 `HEAD == origin/main == remote main`。future version 未开始，后续版本必须下一轮在用户明确指令后再进入。

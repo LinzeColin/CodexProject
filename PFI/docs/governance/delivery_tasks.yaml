@@ -52,6 +52,50 @@ tasks:
     completed_version: "v0.2.1 前端优化"
     fact_level: "EXTRACTED"
     unknown_task_ids: []
+  - task_id: "PFI-V024-OVERALL-REREVIEW-20260710"
+    phase: "V024-RR-P1"
+    objective: "复核原 v0.2.3-repair Stage 0-9、Phase R1、真实数据与 final delivery boundary。"
+    scope:
+      - "Stage 0-9 evidence and regression"
+      - "Phase R1 real-data consistency"
+      - "historical upload versus current final delivery state"
+    non_scope:
+      - "GitHub upload"
+      - "app reinstall"
+      - "future version"
+      - "PFI reports/data/.venv mutation"
+    status: "completed"
+    dependencies:
+      - "PFI-V024-R1-20260710"
+    required_files:
+      - "PFI/docs/pfi_v024/OVERALL_REREVIEW.md"
+      - "PFI/src/pfi_v02/stage_v024_overall_project_review.py"
+      - "PFI/tests/test_v024_overall_rereview.py"
+    acceptance_ids:
+      - "ACC-PFI-V024-OVERALL-REREVIEW"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_overall_rereview.py -q"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v023_*.py -q"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_*.py -q"
+      - "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 -B scripts/lean_governance.py check-render --project PFI"
+    test_results:
+      - "Re-review focused tests: 12 passed"
+      - "v0.2.3 compatibility regression: 200 passed"
+      - "v0.2.4 regression: 231 passed"
+      - "40/40 semantic evidence units / 10/10 whole-stage acceptance"
+      - "11/11 UI validation manifests / 46/46 PNG decode"
+      - "Exact real-data contract and Git ref == current HEAD"
+      - "check-render 0/0, Python compile, Node syntax and diff check pass"
+      - "Independent read-only review APPROVED / no findings"
+    evidence_refs:
+      - "PFI/docs/pfi_v024/OVERALL_REREVIEW.md"
+      - "PFI/docs/pfi_v024/POST_OVERALL_CONSISTENCY_REMEDIATION.md"
+    risk: "不得把历史 upload/app evidence 误写为当前 final delivery complete。"
+    rollback: "回退本轮 re-review contract/tests/governance；保留 Phase R1 与历史 evidence。"
+    target_version: "v0.2.4"
+    completed_version: "v0.2.4"
+    fact_level: "EXTRACTED"
+    unknown_task_ids: []
   - task_id: "S2PZT01"
     phase: "S2PZ"
     objective: "完成 PFI V0.2 Stage 2 2A-2H acceptance closeout、本机入口验收和非必要缓存清理。"
@@ -297,3 +341,45 @@ tasks:
     rollback: "Revert the Stage 6 closeout commit; keep external repositories untouched and QBVS runtime path unchanged."
     target_version: "0.2.0"
     completed_version: "0.2.0"
+  - task_id: "PFI-V024-R1-20260710"
+    phase: "V024-R1-P1"
+    objective: "恢复 v0.2.4 historical closeout owner facts，并让 sparse PFI worktree 只读使用当前 Git tree 中的真实 MetaDatabase/PFI 数据。"
+    scope:
+      - "PFI v0.2.4 canonical governance and owner entries"
+      - "PFI v0.2.3/v0.2.4 read-model data-source adapter"
+      - "PFI v0.2.3/v0.2.4 compatibility regression"
+    non_scope:
+      - "MetaDatabase sparse expansion or financial-data mutation"
+      - "future version"
+      - "GitHub upload"
+      - "app reinstall"
+    status: "completed"
+    dependencies:
+      - "CF-L2-20260710"
+    required_files:
+      - "PFI/docs/pfi_v024/POST_OVERALL_CONSISTENCY_REMEDIATION.md"
+      - "PFI/src/pfi_v02/stage_v023_read_model.py"
+      - "PFI/src/pfi_os/application/read_model_status.py"
+      - "PFI/tests/test_v024_overall_project_review.py"
+    acceptance_ids:
+      - "ACC-PFI-V024-R1"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v023_*.py -q"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_*.py -q"
+      - "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 -B scripts/lean_governance.py check-render --project PFI"
+    test_results:
+      - "Focused remediation tests: 33 passed"
+      - "v0.2.3 compatibility regression: 200 passed"
+      - "v0.2.4 regression: 219 passed"
+      - "check-render: drift_count=0 / reference_issue_count=0"
+      - "Python compile, Node syntax and git diff --check: pass"
+      - "Independent read-only review: APPROVED / no findings"
+    evidence_refs:
+      - "PFI/docs/pfi_v024/POST_OVERALL_CONSISTENCY_REMEDIATION.md"
+      - "PFI/docs/pfi_v024/OVERALL_PROJECT_REVIEW.md"
+    risk: "Git-tree fallback 只读取默认 tracked MetaDatabase/PFI；本任务不证明 app 已重装或最终发布已完成。"
+    rollback: "回退 Phase R1 canonical governance 与 Git-tree adapter；不修改真实数据或 app bundle。"
+    target_version: "v0.2.4"
+    completed_version: "v0.2.4"
+    fact_level: "EXTRACTED"
+    unknown_task_ids: []
