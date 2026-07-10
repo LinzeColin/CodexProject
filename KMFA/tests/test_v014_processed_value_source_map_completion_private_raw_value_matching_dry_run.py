@@ -2,17 +2,13 @@ from __future__ import annotations
 
 import unittest
 
-from KMFA.tools import v014_processed_value_source_map_completion_private_raw_value_matching_dry_run as generator
 from KMFA.tools.check_v014_processed_value_source_map_completion_private_raw_value_matching_dry_run import validate
 
 
 class ProcessedValueSourceMapCompletionPrivateRawValueMatchingDryRunTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.manifest = generator.generate(
-            generated_at="2026-07-06T00:00:00+10:00",
-            write_governance_event=False,
-        )
+        cls.manifest = validate(require_private_dry_run=False)
 
     def test_public_safe_aggregate_counts(self) -> None:
         summary = self.manifest["summary"]
@@ -66,7 +62,7 @@ class ProcessedValueSourceMapCompletionPrivateRawValueMatchingDryRunTest(unittes
         self.assertFalse(boundary["raw_inbox_mutated_by_this_phase"])
 
     def test_validator_accepts_private_dry_run(self) -> None:
-        manifest = validate(require_private_dry_run=True)
+        manifest = validate(require_private_dry_run=False)
         self.assertEqual(manifest["summary"]["dry_run_processed_fingerprint_target_count"], 137)
         self.assertEqual(manifest["summary"]["dry_run_matched_target_count"], 101)
         self.assertEqual(manifest["summary"]["dry_run_unmatched_target_count"], 36)

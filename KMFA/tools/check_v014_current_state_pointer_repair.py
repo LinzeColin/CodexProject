@@ -171,6 +171,40 @@ def validate_current_state_pointer_repair() -> dict[str, Any]:
     }
 
 
+def validate_recorded_current_state_pointer_repair() -> dict[str, Any]:
+    """Validate the frozen repair evidence without treating it as today's pointer."""
+    errors: list[str] = []
+    evidence = _read_json(EVIDENCE_MANIFEST_PATH)
+    _require(evidence.get("phase_id") == REPAIR_PHASE_ID, "recorded repair phase mismatch", errors)
+    _require(evidence.get("canonical_phase_id") == EXPECTED_PHASE_ID, "recorded canonical phase mismatch", errors)
+    _require(evidence.get("canonical_version") == EXPECTED_VERSION, "recorded canonical version mismatch", errors)
+    _require(evidence.get("canonical_status") == EXPECTED_STATUS, "recorded canonical status mismatch", errors)
+    _require(evidence.get("go_no_go_decision") == "NO_GO", "recorded decision mismatch", errors)
+    _require(evidence.get("next_required_input") == EXPECTED_NEXT_INPUT, "recorded next input mismatch", errors)
+    _require(evidence.get("repaired_public_state_file_count") == 5, "recorded repair file count mismatch", errors)
+    for key in (
+        "handoff_top_current",
+        "status_top_current",
+        "owner_status_top_current",
+        "features_summary_current",
+        "parameters_summary_current",
+    ):
+        _require(evidence.get(key) is True, f"recorded {key} must be true", errors)
+    for key in (
+        "processed_value_materialization_replay_allowed",
+        "raw_to_processed_value_comparison_allowed",
+        "github_upload_allowed",
+        "raw_inbox_access_performed_by_repair",
+        "raw_inbox_mutation_performed_by_repair",
+        "github_upload_performed",
+        "app_reinstall_performed",
+    ):
+        _require(evidence.get(key) is False, f"recorded {key} must be false", errors)
+    if errors:
+        raise ValidationError("; ".join(errors))
+    return evidence
+
+
 def write_evidence() -> dict[str, Any]:
     evidence = validate_current_state_pointer_repair()
     (EVIDENCE_MANIFEST_PATH.parent).mkdir(parents=True, exist_ok=True)

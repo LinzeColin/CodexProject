@@ -46,6 +46,24 @@ class AmountToolsTests(unittest.TestCase):
             findings = scan_paths([bad])
         self.assertGreaterEqual(len(findings), 2)
 
+    def test_no_float_scan_ignores_non_money_progress_and_directory_only_test_inputs(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "safe_progress.py").write_text(
+                "status = {'derived_percent': 100.0}\n",
+                encoding="utf-8",
+            )
+            private_dir = root / ".codex_private_runtime"
+            private_dir.mkdir()
+            (private_dir / "dependency.py").write_text("amount_cents = 12.34\n", encoding="utf-8")
+            tests_dir = root / "tests"
+            tests_dir.mkdir()
+            (tests_dir / "negative_fixture.py").write_text("amount_cents = 12.34\n", encoding="utf-8")
+
+            findings = scan_paths([root])
+
+        self.assertEqual(findings, [])
+
     def test_cli_entrypoints(self) -> None:
         root = Path(__file__).resolve().parents[2]
         amount_result = subprocess.run(

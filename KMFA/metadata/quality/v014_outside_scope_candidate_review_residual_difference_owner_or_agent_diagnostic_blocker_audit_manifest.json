@@ -5,8 +5,7 @@
   "generated_at": "2026-07-07T00:00:00+10:00",
   "git": {
     "branch": "codex/kmfa",
-    "head": "b80515ad5ec47c3f157af2fa720f70365a054b76",
-    "status_short_branch": "## codex/kmfa...origin/codex/kmfa [ahead 535, behind 8]"
+    "head": "d8cad041c233ea19680855fa5f94b10338e4e4c8"
   },
   "go_no_go_report": {
     "acceptance_id": "ACC-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-OWNER-OR-AGENT-DIAGNOSTIC-BLOCKER-AUDIT",

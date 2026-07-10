@@ -1,20 +1,17 @@
 from __future__ import annotations
 
-import json
 import unittest
 
 from KMFA.tools.check_v014_current_state_pointer_repair import (
-    EVIDENCE_MANIFEST_PATH,
     EXPECTED_PHASE_ID,
     EXPECTED_VERSION,
-    validate_current_state_pointer_repair,
-    write_evidence,
+    validate_recorded_current_state_pointer_repair,
 )
 
 
 class V014CurrentStatePointerRepairTest(unittest.TestCase):
-    def test_current_state_pointers_match_latest_owner_fill_application_gate(self) -> None:
-        result = validate_current_state_pointer_repair()
+    def test_recorded_pointer_repair_matches_owner_fill_application_gate(self) -> None:
+        result = validate_recorded_current_state_pointer_repair()
 
         self.assertEqual(result["phase_id"], "V014_CURRENT_STATE_POINTER_REPAIR")
         self.assertEqual(result["canonical_phase_id"], EXPECTED_PHASE_ID)
@@ -26,11 +23,9 @@ class V014CurrentStatePointerRepairTest(unittest.TestCase):
         self.assertFalse(result["github_upload_allowed"])
         self.assertFalse(result["raw_inbox_access_performed_by_repair"])
 
-    def test_repair_writes_public_safe_evidence(self) -> None:
-        evidence = write_evidence()
-        saved = json.loads(EVIDENCE_MANIFEST_PATH.read_text(encoding="utf-8"))
+    def test_recorded_repair_evidence_is_public_safe(self) -> None:
+        saved = validate_recorded_current_state_pointer_repair()
 
-        self.assertEqual(saved, evidence)
         self.assertEqual(saved["canonical_phase_id"], EXPECTED_PHASE_ID)
         self.assertEqual(saved["canonical_version"], EXPECTED_VERSION)
         self.assertEqual(saved["repaired_public_state_file_count"], 5)

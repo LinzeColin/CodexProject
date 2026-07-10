@@ -1,3 +1,11 @@
+## 0.1.4-s09-post-remediation-stage-review - 2026-07-10
+
+- 完成 `V014_S09_POST_REMEDIATION_STAGE_REVIEW`，复跑 S09-P1/P2/P3、原 Stage 9 review、global residual、remaining-eleven、no-float 和 no-omission 共 8 条依赖验证。
+- 复审确认九类成本完整，差旅与利息已由 8 条唯一权威成本分项覆盖；权威显示值与系统复算值互相覆盖数保持 0。
+- 十二条口径核对均具有人类可读的原因、依据、责任角色和状态；最新队列为 69 条关闭或排除、3 条最终接受未决，9 条非零差异继续保留。
+- 修复 11 个复审 finding：覆盖旧 review 状态、no-float/private/no-omission 边界、62 条 stage status 必填字段、历史基线与测试时态、phase-local upload 语义、过时 private hash 绑定及 public git-status 泄漏风险。
+- 5 个原始文件前后及跨 phase 快照一致；结论维持 `Q4 / D / NO_GO`，未推进 S10-P1、GitHub upload、app reinstall 或 business execution。
+
 ## 0.1.4-remaining-eleven-residual-difference-source-trace-or-final-acceptance - 2026-07-10
 
 - 完成 `V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE` 本地单 phase。

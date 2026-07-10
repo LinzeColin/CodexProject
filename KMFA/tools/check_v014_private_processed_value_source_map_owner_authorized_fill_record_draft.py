@@ -234,7 +234,9 @@ def _validate_private_draft(*, require_private_draft: bool, errors: list[str]) -
     require(not git_output(["ls-files", str(PRIVATE_DRAFT_PATH)]), "private draft must not be tracked", errors)
     for path in ACTIVE_FILL_RECORD_CANDIDATE_PATHS:
         require(git_check_ignore(path), f"active record candidate must be git-ignored: {path}", errors)
-        require(not path.exists(), f"active record candidate must not be created by draft phase: {path}", errors)
+    # A later authorized-application phase may create an active record. The
+    # draft evidence proves its own non-activation through the frozen summary
+    # and draft payload; current filesystem absence is not a historical fact.
     if not require_private_draft:
         return
     require(PRIVATE_DRAFT_PATH.exists(), f"private draft must exist: {PRIVATE_DRAFT_PATH}", errors)

@@ -9,7 +9,7 @@ from KMFA.tools.check_v014_raw_processed_alignment_blocker_report import validat
 
 class V014RawProcessedAlignmentBlockerReportTest(unittest.TestCase):
     def setUp(self) -> None:
-        generator.generate(generated_at="2026-07-06T00:00:00+10:00")
+        validate()
 
     def test_summary_explains_no_comparable_pairs(self) -> None:
         summary = json.loads(generator.SUMMARY_PATH.read_text(encoding="utf-8"))

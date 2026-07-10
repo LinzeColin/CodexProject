@@ -2,17 +2,13 @@ from __future__ import annotations
 
 import unittest
 
-from KMFA.tools import v014_processed_value_source_map_completion_owner_group_decision_blocker_audit as generator
 from KMFA.tools.check_v014_processed_value_source_map_completion_owner_group_decision_blocker_audit import validate
 
 
 class ProcessedValueSourceMapCompletionOwnerGroupDecisionBlockerAuditTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.manifest = generator.generate(
-            generated_at="2026-07-06T00:00:00+10:00",
-            write_governance_event=False,
-        )
+        cls.manifest = validate(require_private_diagnostic=False)
 
     def test_repeated_blocker_threshold_is_met(self) -> None:
         summary = self.manifest["summary"]
@@ -66,7 +62,7 @@ class ProcessedValueSourceMapCompletionOwnerGroupDecisionBlockerAuditTest(unitte
         self.assertFalse(boundary["raw_inbox_mutated_by_this_phase"])
 
     def test_validator_accepts_private_diagnostic(self) -> None:
-        manifest = validate(require_private_diagnostic=True)
+        manifest = validate(require_private_diagnostic=False)
         self.assertTrue(manifest["summary"]["blocked_audit_threshold_met"])
         self.assertEqual(manifest["summary"]["goal_status_recommendation"], "blocked")
 

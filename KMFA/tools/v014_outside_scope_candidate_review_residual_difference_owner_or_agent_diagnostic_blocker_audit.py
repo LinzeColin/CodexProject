@@ -467,7 +467,6 @@ def _build_manifest(summary: dict[str, Any], matrix: dict[str, Any], go_no_go: d
         "git": {
             "branch": _git_output(["branch", "--show-current"]),
             "head": _git_output(["rev-parse", "HEAD"]),
-            "status_short_branch": _git_output(["status", "--short", "--branch"]),
         },
     }
 

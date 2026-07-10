@@ -4,18 +4,18 @@
 
 ## 一句话状态
 
-KMFA 已完成 `V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE` 本地单 phase：四个真实项目的差旅和利息各 4 条均从唯一权威 PDF 表格行完成整数分物化，72 条队列现为 69 条关闭或排除、3 条现金最终差异接受；5 个原始文件前后及跨 phase 快照链完全一致，当前维持 `NO_GO`，未上传 GitHub、未重装 app、未执行业务动作。
+KMFA 已完成 `V014_S09_POST_REMEDIATION_STAGE_REVIEW`：S09-P1/P2/P3、原 review、两条 residual 链、no-float 与 no-omission 共 8 条依赖验证通过，11 个 finding 已修复且 0 个未关闭；当前仍为 69 条关闭或排除、3 条最终接受未决、9 条非零差异保留，可信等级 `Q4 / D / NO_GO`，未推进 S10、GitHub、app 或业务执行。
 
 ## 当前可信任范围
 
-- 可以信任：61 条整数数值重放、8 条非数值排除、4 个权威项目成本表、8 条唯一成本分项来源及 5 个原始文件前后完全一致。
+- 可以信任：S09 九类成本覆盖、权威值与系统复算值不互相覆盖、12 条人类可读差异链、8 条唯一成本分项来源、69 条关闭或排除及 5 个原始文件前后完全一致。
 - 必须保留：9 条非零差异，不得通过覆盖、四舍五入、空白兼容层或替换权威值消除。
 - 不能信任：3 条缺可证明数值的现金槽位、1 条未完成现金比较、任何完整业务一致性或正式经营决策结论。
-- 下一步只做 Stage 9 post-remediation 整体复审并修复 findings；不得顺手进行 GitHub upload、app reinstall 或 business execution。
+- 下一步只做 `S10-P1`，并继续显式携带 `Q4 / D / NO_GO` 边界；不得顺手进行 GitHub upload、app reinstall 或 business execution。
 
 ## 前序一句话状态（上一 phase）
 
-KMFA 已完成 `V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION` 本地单 phase：72 条全局残余队列已逐条分类，53 条真实私有整数值重放、8 条非数值记录经授权排除，61 条关闭或排除，11 条继续未决；5 个原始文件前后完全一致，当前维持 `NO_GO`。
+KMFA 已完成 `V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE`：四个真实项目的差旅和利息各 4 条均从唯一权威 PDF 表格行完成整数分物化，72 条队列收敛为 69 条关闭或排除、3 条现金最终差异接受；5 个原始文件前后及跨 phase 快照链一致，当前维持 `NO_GO`。
 
 ## 前序一句话状态（历史）
 

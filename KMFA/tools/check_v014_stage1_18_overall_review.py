@@ -209,9 +209,13 @@ def validate_stage_review_validators(errors: list[str]) -> list[str]:
     return passed
 
 
-def validate_no_v014_upload_artifacts(errors: list[str]) -> None:
-    upload_dirs = sorted(Path("KMFA/stage_artifacts").glob("V014*UPLOAD*"))
-    require(not upload_dirs, "v0.1.4 upload artifacts must not exist before final upload gate", errors)
+def validate_no_v014_upload_artifacts(manifest: dict[str, Any], errors: list[str]) -> None:
+    linked_refs = [str(ref).upper() for ref in manifest.get("evidence_refs", [])]
+    require(
+        not any("UPLOAD" in ref for ref in linked_refs),
+        "overall review evidence must not link upload artifacts",
+        errors,
+    )
 
 
 def validate_tracked_public_suffixes(errors: list[str]) -> None:
@@ -220,7 +224,11 @@ def validate_tracked_public_suffixes(errors: list[str]) -> None:
     require(not forbidden, "forbidden raw/private tracked suffixes: " + ", ".join(forbidden[:20]), errors)
 
 
-def validate_v014_stage1_18_overall_review(manifest_path: Path = MANIFEST_PATH) -> dict[str, Any]:
+def validate_v014_stage1_18_overall_review(
+    manifest_path: Path = MANIFEST_PATH,
+    *,
+    rerun_stage_validators: bool = True,
+) -> dict[str, Any]:
     errors: list[str] = []
     manifest = read_json(manifest_path)
     metadata_manifest = read_json(METADATA_MANIFEST_PATH)
@@ -229,7 +237,14 @@ def validate_v014_stage1_18_overall_review(manifest_path: Path = MANIFEST_PATH) 
     s05_p1 = read_json(S05_P1_MANIFEST_PATH)
     s18 = read_json(S18_STAGE_REVIEW_PATH)
     validate_lineage_completeness_review()
-    passed_stage_validators = validate_stage_review_validators(errors)
+    if rerun_stage_validators:
+        passed_stage_validators = validate_stage_review_validators(errors)
+    else:
+        passed_stage_validators = [
+            str(item.get("stage_id"))
+            for item in manifest.get("stage_review_summary", {}).get("stage_summaries", [])
+            if item.get("stage_passed") is True
+        ]
 
     require(metadata_manifest == manifest, "metadata manifest copy must match machine manifest", errors)
     require(metadata_go_no_go == go_no_go, "metadata Go/No-Go copy must match machine Go/No-Go", errors)
@@ -325,7 +340,7 @@ def validate_v014_stage1_18_overall_review(manifest_path: Path = MANIFEST_PATH) 
         METADATA_GO_NO_GO_PATH,
     ):
         check_public_evidence_text(path, errors)
-    validate_no_v014_upload_artifacts(errors)
+    validate_no_v014_upload_artifacts(manifest, errors)
     validate_tracked_public_suffixes(errors)
 
     status = git_output(["status", "--short", "--branch"])

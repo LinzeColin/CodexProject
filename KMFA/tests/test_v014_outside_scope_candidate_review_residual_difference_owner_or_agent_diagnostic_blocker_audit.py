@@ -52,6 +52,7 @@ class ResidualDifferenceOwnerAgentDiagnosticBlockerAuditTest(unittest.TestCase):
         self.assertTrue(phase.PRIVATE_AUDIT_DIAGNOSTIC_PATH.exists())
 
     def test_public_evidence_has_no_forbidden_private_markers(self) -> None:
+        self.assertNotIn("status_short_branch", self.result["manifest"]["git"])
         forbidden = [
             "/Users/linzezhang/Downloads",
             "KMFA_MetaData",

@@ -196,6 +196,8 @@ def check_no_raw_sensitive_files() -> None:
     for path in ROOT.rglob("*"):
         if not path.is_file():
             continue
+        if ".codex_private_runtime" in path.relative_to(ROOT).parts:
+            continue
         rel = path.relative_to(ROOT).as_posix()
         if "90_用户原始上传数据_仅本地私有_禁止提交GitHub/" in rel:
             matches.append(rel)

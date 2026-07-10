@@ -30,6 +30,7 @@ V14_STATUS_PATH = Path("KMFA/metadata/traceability/v1_4_stage_phase_task_status.
 LEGACY_NO_OMISSION_TOOL = Path("KMFA/tools/no_omission_check.py")
 IMPLEMENTATION_PHASE_RE = re.compile(r"^S\d{2}P[123]$")
 IMPLEMENTATION_TASK_RE = re.compile(r"^S\d{2}P[123]T\d{2}$")
+IMPLEMENTATION_STAGE_RE = re.compile(r"^S\d{2}$")
 EVIDENCE_FILES = [
     Path("KMFA/stage_artifacts/V014_S01_P3_NO_OMISSION_BASELINE/human/s01_p3_completion_record.md"),
     Path("KMFA/stage_artifacts/V014_S01_P3_NO_OMISSION_BASELINE/human/risk_register.md"),
@@ -151,6 +152,14 @@ def load_v14_status() -> tuple[list[dict[str, Any]], set[str], set[str], set[str
         value = json.loads(line)
         if not isinstance(value, dict):
             raise ValidationError(f"{V14_STATUS_PATH}:{line_no} must contain a JSON object")
+        record_type = value.get("record_type")
+        is_implementation_record = (
+            (record_type == "stage" and IMPLEMENTATION_STAGE_RE.fullmatch(str(value.get("stage_id") or "")))
+            or (record_type == "phase" and IMPLEMENTATION_PHASE_RE.fullmatch(str(value.get("phase_id") or "")))
+            or (record_type == "task" and IMPLEMENTATION_TASK_RE.fullmatch(str(value.get("task_id") or "")))
+        )
+        if not is_implementation_record:
+            continue
         if value.get("schema_version") != "kmfa.v014_stage_phase_task_status.v1":
             raise ValidationError(f"{V14_STATUS_PATH}:{line_no} schema mismatch")
         if value.get("project_id") != "KMFA" or value.get("version") != "0.1.4":
@@ -158,13 +167,13 @@ def load_v14_status() -> tuple[list[dict[str, Any]], set[str], set[str], set[str
         if value.get("raw_data_committed") is not False:
             raise ValidationError(f"{V14_STATUS_PATH}:{line_no} raw_data_committed must be false")
         records.append(value)
-        if value.get("record_type") == "stage":
+        if record_type == "stage":
             stage_ids.add(str(value.get("stage_id")))
-        elif value.get("record_type") == "phase":
+        elif record_type == "phase":
             phase_id = str(value.get("phase_id"))
             if IMPLEMENTATION_PHASE_RE.fullmatch(phase_id):
                 phase_ids.add(phase_id)
-        elif value.get("record_type") == "task":
+        elif record_type == "task":
             task_id = str(value.get("task_id"))
             if IMPLEMENTATION_TASK_RE.fullmatch(task_id):
                 task_ids.add(task_id)

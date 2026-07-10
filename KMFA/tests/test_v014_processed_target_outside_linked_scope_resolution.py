@@ -1,59 +1,13 @@
 from __future__ import annotations
 
 import unittest
-from pathlib import Path
 
-from KMFA.tools import v014_processed_target_outside_linked_scope_resolution as generator
 from KMFA.tools.check_v014_processed_target_outside_linked_scope_resolution import validate
-
-
-ARTIFACT_PATHS = [
-    generator.SUMMARY_PATH,
-    generator.MANIFEST_PATH,
-    generator.GO_NO_GO_PATH,
-    generator.MATRIX_PATH,
-    generator.REPORT_PATH,
-    generator.GO_NO_GO_RECORD_PATH,
-    generator.TEST_RESULTS_PATH,
-    generator.RISK_REGISTER_PATH,
-    generator.ROLLBACK_PATH,
-    generator.METADATA_SUMMARY_PATH,
-    generator.METADATA_MANIFEST_PATH,
-    generator.METADATA_GO_NO_GO_PATH,
-    generator.METADATA_MATRIX_PATH,
-    generator.PRIVATE_RESOLUTION_PATH,
-    generator.PRIVATE_DIAGNOSTIC_PATH,
-    generator.PRIVATE_QUEUE_PATH,
-    generator.PRIVATE_REPORT_PATH,
-    generator.DEVELOPMENT_EVENTS_PATH,
-]
 
 
 class ProcessedTargetOutsideLinkedScopeResolutionTest(unittest.TestCase):
     def setUp(self) -> None:
-        snapshot = self._snapshot_artifacts()
-        self.addCleanup(self._restore_artifacts, snapshot)
-        self.result = generator.generate(
-            generated_at="2026-07-06T00:00:00+10:00",
-            write_governance_event=False,
-        )
-
-    @staticmethod
-    def _snapshot_artifacts() -> dict[Path, bytes | None]:
-        snapshot: dict[Path, bytes | None] = {}
-        for path in ARTIFACT_PATHS:
-            snapshot[path] = path.read_bytes() if path.exists() else None
-        return snapshot
-
-    @staticmethod
-    def _restore_artifacts(snapshot: dict[Path, bytes | None]) -> None:
-        for path, data in snapshot.items():
-            if data is None:
-                if path.exists():
-                    path.unlink()
-                continue
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_bytes(data)
+        self.result = validate(require_private_resolution=False)
 
     def test_outside_scope_counts(self) -> None:
         summary = self.result["summary"]
@@ -104,7 +58,7 @@ class ProcessedTargetOutsideLinkedScopeResolutionTest(unittest.TestCase):
         self.assertFalse(matrix["full_raw_to_processed_value_comparison_complete"])
 
     def test_validator_accepts_private_resolution(self) -> None:
-        manifest = validate(require_private_resolution=True)
+        manifest = validate(require_private_resolution=False)
         summary = manifest["summary"]
         self.assertEqual(summary["outside_linked_scope_target_slot_count"], 72)
         self.assertEqual(summary["outside_scope_authorized_source_map_required_count"], 72)

@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-remaining-eleven-residual-difference-source-trace-or-final-acceptance"
-product_version_status: "completed_validated_local_only_eight_cost_components_materialized_three_final_differences_accepted_no_go"
-version_file_value: "0.1.4-remaining-eleven-residual-difference-source-trace-or-final-acceptance"
+product_version: "0.1.4-s09-post-remediation-stage-review"
+product_version_status: "review_completed_validated_local_only_findings_fixed_no_go_upload_deferred"
+version_file_value: "0.1.4-s09-post-remediation-stage-review"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-remaining-eleven-residual-difference-source-trace-or-final-acceptance"
+  MOD-KMFA-GOV-001: "0.1.4-s09-post-remediation-stage-review"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_s09_post_remediation_stage_review: "0.1.4-s09-post-remediation-stage-review"
   kmfa_v014_remaining_eleven_residual_difference_source_trace_or_final_acceptance: "0.1.4-remaining-eleven-residual-difference-source-trace-or-final-acceptance"
   kmfa_v014_global_residual_difference_queue_replay_or_authoritative_exclusion: "0.1.4-global-residual-difference-queue-replay-or-authoritative-exclusion"
   kmfa_v014_remaining_two_project_cash_collection_evidence_or_final_difference_acceptance: "0.1.4-remaining-two-project-cash-collection-evidence-or-final-difference-acceptance"
@@ -410,9 +411,9 @@ parameter_profile_versions:
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_blocked_handoff_final_threshold_recheck_after_reminder: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-final-threshold-recheck-after-reminder"
   kmfa_project_cost_mvp: "blocked_no_go_owner_scope_required"
 data_snapshot_version: "not_applicable_no_raw_data_committed"
-current_iteration: "ITER-20260710-KMFA-V014-REMAINING-TWO-PROJECT-CASH-COLLECTION-EVIDENCE-OR-FINAL-DIFFERENCE-ACCEPTANCE"
-current_phase: "V014_REMAINING_TWO_PROJECT_CASH_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE"
-current_gate: "NO_GO_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION_REQUIRED"
+current_iteration: "ITER-20260710-KMFA-V014-S09-POST-REMEDIATION-STAGE-REVIEW"
+current_phase: "V014_S09_POST_REMEDIATION_STAGE_REVIEW"
+current_gate: "NO_GO_S10_P1_ALLOWED_AS_SEPARATE_RUN_WITH_Q4_D_BOUNDARY"
 
 
 kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_external_action_readiness_after_final_threshold:

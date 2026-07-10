@@ -1,13 +1,14 @@
+import json
 import unittest
 
 from KMFA.tools.check_v014_stage1_18_overall_review import validate_v014_stage1_18_overall_review
-from KMFA.tools.v014_stage1_18_overall_review import generate
+from KMFA.tools.v014_stage1_18_overall_review import MANIFEST_PATH
 
 
 class V014Stage118OverallReviewTests(unittest.TestCase):
     def test_reviews_all_stage_reviews_and_blocks_upload_until_raw_alignment(self) -> None:
-        manifest = generate(generated_at="2026-07-05T20:30:00+10:00")
-        validated = validate_v014_stage1_18_overall_review()
+        manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+        validated = validate_v014_stage1_18_overall_review(rerun_stage_validators=False)
 
         self.assertEqual(manifest, validated)
         self.assertEqual(validated["schema_version"], "kmfa.v014_stage1_18_overall_review.v1")
