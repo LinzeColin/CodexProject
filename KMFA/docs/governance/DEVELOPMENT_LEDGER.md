@@ -2870,3 +2870,19 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - focused_test: `KMFA/tests/test_v014_s10_p1_post_remediation_report_entry.py`
 - raw/private policy: five raw files remain exact before, after and across phase; identities and diagnostics remain gitignored and untracked.
 - deferred: S10-P2, S10-P3, Stage 10 review, formal report, export, GitHub upload, app reinstall and business execution.
+
+
+## 2026-07-11｜v0.1.4 S10-P2 post-remediation trust grade lock
+
+- phase: `V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK`
+- roadmap_phase: `S10-P2`
+- task_id: `KMFA-V014-S10-P2-POST-REMEDIATION-TRUST-GRADE-LOCK-20260711`
+- product_version: `0.1.4-s10-p2-post-remediation-trust-grade-lock`
+- status: `completed_validated_local_only_report_grade_recomputed_d_locked_no_go_upload_deferred`
+- result: `2 grade records / Q4 / theoretical B ceiling / D final / 12 hard blocks / NO_GO`.
+- control: A/B/C/D and all four driver dimensions are reviewed; each record binds eight versions. Current S10-P1 supplies dynamic state while historical S10-P2 supplies rules and version framework only.
+- evidence: `KMFA/stage_artifacts/V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK/machine/trust_grade_manifest.json`
+- validator: `KMFA/tools/check_v014_s10_p2_post_remediation_trust_grade_lock.py`
+- focused_test: `KMFA/tests/test_v014_s10_p2_post_remediation_trust_grade_lock.py`
+- raw/private policy: five raw files remain exact before, after and across S10-P1; identities and diagnostics remain gitignored and untracked.
+- deferred: S10-P3, Stage 10 review, formal report, export, GitHub upload, app reinstall and business execution.

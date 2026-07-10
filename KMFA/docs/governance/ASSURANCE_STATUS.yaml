@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260711-V014-S10-P1-POST-REMEDIATION-REPORT-ENTRY"
+as_of_event_id: "DEV-KMFA-20260711-V014-S10-P2-POST-REMEDIATION-TRUST-GRADE-LOCK"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "d9622e5043a21b9209d9625179e867f1f49602db"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY_COMMIT"
-snapshot_event_time: "2026-07-11T00:42:22+10:00"
-generator_version: "manual-0.1.4-s10-p1-post-remediation-report-entry"
+source_base_commit: "8d29e64bc46f0ffd666410a495a7c557f4b1c00b"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK_COMMIT"
+snapshot_event_time: "2026-07-11T01:10:50+10:00"
+generator_version: "manual-0.1.4-s10-p2-post-remediation-trust-grade-lock"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1316
-    total_active_formulas: 279
+    total_active_parameters: 1319
+    total_active_formulas: 280
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -37,6 +37,9 @@ dimensions:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     evidence_refs:
+      - "KMFA/stage_artifacts/V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK/human/test_results_zh.md"
+      - "KMFA/tools/check_v014_s10_p2_post_remediation_trust_grade_lock.py"
+      - "KMFA/stage_artifacts/V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK/machine/trust_grade_manifest.json"
       - "KMFA/stage_artifacts/V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY/human/test_results_zh.md"
       - "KMFA/tools/check_v014_s10_p1_post_remediation_report_entry.py"
       - "KMFA/stage_artifacts/V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY/machine/report_entry_manifest.json"
