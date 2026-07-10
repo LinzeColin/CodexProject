@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KMFA 经营分析系统</title>
+  <style>
+    :root { --navy:#102f50; --blue:#17679b; --blue-dark:#114b74; --blue-soft:#edf6fb; --line:#cfdae3; --text:#152331; --muted:#5e6d79; --danger:#a62e2e; --danger-bg:#fff1f0; --surface:#fff; --page:#f3f6f8; }
+    * { box-sizing:border-box; }
+    html { min-width:320px; background:var(--page); }
+    body { margin:0; color:var(--text); background:var(--page); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif; letter-spacing:0; }
+    button,a { font:inherit; }
+    button:focus-visible,a:focus-visible { outline:3px solid rgba(23,103,155,.28); outline-offset:2px; }
+    .app-shell { display:grid; grid-template-columns:248px minmax(0,1fr); min-height:100vh; }
+    .sidebar { background:var(--navy); color:#fff; padding:22px 16px; }
+    .brand { display:flex; align-items:center; gap:11px; padding:0 8px 20px; border-bottom:1px solid rgba(255,255,255,.16); }
+    .brand-mark { width:44px; height:44px; display:grid; place-items:center; border:1px solid rgba(255,255,255,.42); border-radius:6px; background:#17679b; font-size:17px; font-weight:800; }
+    .brand strong { display:block; font-size:17px; } .brand span { display:block; margin-top:2px; color:#bed6e8; font-size:12px; }
+    .nav-list { display:grid; gap:4px; padding-top:18px; }
+    .nav-item { width:100%; min-height:44px; display:flex; align-items:center; gap:10px; border:0; border-radius:6px; padding:9px 11px; color:#dbeaf4; background:transparent; text-align:left; cursor:pointer; }
+    .nav-item:hover,.nav-item.active { color:#fff; background:rgba(255,255,255,.13); }
+    .nav-item .icon { width:18px; height:18px; flex:0 0 18px; }
+    .side-status { margin:20px 8px 0; padding-top:16px; border-top:1px solid rgba(255,255,255,.16); }
+    .side-status span { display:block; color:#bed6e8; font-size:12px; } .side-status strong { display:block; margin-top:5px; font-size:16px; }
+    main { min-width:0; padding:24px 30px 30px; }
+    .topbar { display:flex; justify-content:space-between; align-items:flex-start; gap:20px; }
+    h1 { margin:0; color:var(--navy); font-size:25px; } .topbar p { margin:6px 0 0; color:var(--muted); }
+    .gate { flex:0 0 auto; border:1px solid #efaaa5; border-radius:6px; background:var(--danger-bg); padding:10px 13px; color:var(--danger); }
+    .gate span { display:block; font-size:12px; } .gate strong { display:block; margin-top:2px; font-size:16px; }
+    .quality-band { margin-top:18px; padding:13px 15px; border-left:4px solid var(--danger); background:#fff8f7; line-height:1.55; }
+    .metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin:16px 0; }
+    .metric { min-width:0; border:1px solid var(--line); border-radius:6px; background:var(--surface); padding:12px 14px; }
+    .metric span { display:block; color:var(--muted); font-size:12px; } .metric strong { display:block; margin-top:4px; color:var(--blue-dark); font-size:21px; }
+    .workspace { display:grid; grid-template-columns:minmax(0,1fr) 290px; min-height:430px; border:1px solid var(--line); background:var(--surface); }
+    .module-view { min-width:0; padding:24px; } .module-view[hidden] { display:none; }
+    .module-heading { display:flex; justify-content:space-between; gap:18px; align-items:flex-start; padding-bottom:19px; border-bottom:1px solid var(--line); }
+    .eyebrow { color:var(--blue); font-size:12px; font-weight:700; } h2 { margin:5px 0 7px; color:var(--navy); font-size:23px; } .module-heading p { max-width:680px; margin:0; color:var(--muted); line-height:1.65; }
+    .grade-badge { flex:0 0 auto; border:1px solid #efaaa5; border-radius:999px; background:var(--danger-bg); color:var(--danger); padding:6px 10px; font-size:12px; font-weight:700; }
+    .module-facts { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:20px; border-top:1px solid var(--line); border-left:1px solid var(--line); }
+    .module-facts div { min-width:0; min-height:96px; padding:14px; border-right:1px solid var(--line); border-bottom:1px solid var(--line); }
+    .module-facts span { display:block; color:var(--muted); font-size:12px; } .module-facts strong { display:block; margin-top:7px; color:var(--navy); font-size:15px; line-height:1.45; overflow-wrap:anywhere; }
+    .module-commands { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:22px; }
+    .primary-command,.report-link { min-height:40px; display:inline-flex; align-items:center; justify-content:center; gap:8px; border-radius:6px; padding:8px 12px; text-decoration:none; cursor:pointer; }
+    .primary-command { border:1px solid var(--blue); background:var(--blue); color:#fff; } .primary-command:hover { background:var(--blue-dark); } .primary-command .icon { width:17px; height:17px; }
+    .report-links { display:flex; flex-wrap:wrap; gap:8px; } .report-link { border:1px solid var(--blue); color:var(--blue); background:#fff; } .report-link:hover { background:var(--blue-soft); }
+    .availability-note { margin:0; color:var(--muted); font-size:13px; }
+    .activity-panel { border-left:1px solid var(--line); background:#f8fafb; padding:22px 18px; } .activity-panel h2 { margin:0 0 10px; font-size:17px; } .activity-panel p { margin:0; color:#42515e; line-height:1.65; }
+    .activity-state { margin-top:18px; padding-top:15px; border-top:1px solid var(--line); } .activity-state span { display:block; color:var(--muted); font-size:12px; } .activity-state strong { display:block; margin-top:5px; color:var(--danger); }
+    footer { padding-top:14px; color:var(--muted); font-size:12px; }
+    @media(max-width:980px) { .workspace { grid-template-columns:1fr; } .activity-panel { border-left:0; border-top:1px solid var(--line); } }
+    @media(max-width:760px) {
+      .app-shell { grid-template-columns:minmax(0,1fr); } .sidebar { min-width:0; width:100%; max-width:100%; overflow:hidden; padding:14px 12px 10px; } .brand { padding:0 4px 12px; }
+      .nav-list { min-width:0; max-width:100%; display:flex; overflow-x:auto; gap:6px; padding-top:12px; scrollbar-width:thin; } .nav-item { flex:0 0 auto; width:auto; min-height:38px; white-space:nowrap; } .side-status { display:none; }
+      main { padding:18px 14px 24px; } .topbar { display:block; } .gate { display:inline-block; margin-top:12px; } .metrics { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .workspace { min-height:0; } .module-view { padding:19px 15px; } .module-heading { display:block; } .grade-badge { display:inline-flex; margin-top:12px; } .module-facts { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell" data-active-module="business_overview">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark">KM</div><div><strong>KMFA</strong><span>经营分析系统</span></div></div>
+      <nav class="nav-list" role="tablist" aria-label="业务导航" aria-orientation="vertical"><button id="nav-business_overview" class="nav-item active" type="button" role="tab" aria-selected="true" aria-controls="view-business_overview" tabindex="0" data-module-id="business_overview"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16"/><path d="M7 16V9"/><path d="M12 16V5"/><path d="M17 16v-6"/></svg><span>经营总览</span></button>
+<button id="nav-project_cost" class="nav-item" type="button" role="tab" aria-selected="false" aria-controls="view-project_cost" tabindex="-1" data-module-id="project_cost"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v10H4z"/><path d="M8 11h8"/><path d="M8 14h5"/></svg><span>项目成本</span></button>
+<button id="nav-receivable_collection" class="nav-item" type="button" role="tab" aria-selected="false" aria-controls="view-receivable_collection" tabindex="-1" data-module-id="receivable_collection"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14"/><path d="M5 12h14"/><path d="M5 16h10"/><path d="M17 14l2 2 3-4"/></svg><span>回款应收</span></button>
+<button id="nav-financial_cash" class="nav-item" type="button" role="tab" aria-selected="false" aria-controls="view-financial_cash" tabindex="-1" data-module-id="financial_cash"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v10H4z"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/></svg><span>财务资金</span></button>
+<button id="nav-invoice_tax" class="nav-item" type="button" role="tab" aria-selected="false" aria-controls="view-invoice_tax" tabindex="-1" data-module-id="invoice_tax"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v18l-2-1-2 1-2-1-2 1-2-1z"/><path d="M9 8h6"/><path d="M9 12h6"/><path d="M9 16h3"/></svg><span>开票纳税</span></button>
+<button id="nav-source_check" class="nav-item" type="button" role="tab" aria-selected="false" aria-controls="view-source_check" tabindex="-1" data-module-id="source_check"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7c0-2 14-2 14 0s-14 2-14 0z"/><path d="M5 7v5c0 2 14 2 14 0V7"/><path d="M5 12v5c0 2 14 2 14 0v-5"/></svg><span>数据源检查</span></button>
+<button id="nav-pending_actions" class="nav-item" type="button" role="tab" aria-selected="false" aria-controls="view-pending_actions" tabindex="-1" data-module-id="pending_actions"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v16H5z"/><path d="M8 9l2 2 4-4"/><path d="M8 15h7"/></svg><span>待处理事项</span></button>
+<button id="nav-report_center" class="nav-item" type="button" role="tab" aria-selected="false" aria-controls="view-report_center" tabindex="-1" data-module-id="report_center"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l3 3v15H7z"/><path d="M14 3v4h4"/><path d="M9 12h6"/><path d="M9 16h6"/></svg><span>报告中心</span></button></nav>
+      <div class="side-status"><span>当前可信状态</span><strong>Q4 / D · NO_GO</strong></div>
+    </aside>
+    <main>
+      <header class="topbar"><div><h1>经营分析工作台</h1><p>当前首页仅展示公开安全状态与受控入口</p></div><div class="gate"><span>报告状态</span><strong>D级（未放行）</strong></div></header>
+      <section class="quality-band"><strong>限制说明：</strong>关键现金数据仍不完整，九项非零差异继续保留，一项比较未完成；所有报告入口仅供内部复核。</section>
+      <section class="metrics" aria-label="当前差异状态"><div class="metric"><span>最终接受未决</span><strong>3</strong></div><div class="metric"><span>非零差异</span><strong>9</strong></div><div class="metric"><span>零差异</span><strong>2</strong></div><div class="metric"><span>未完成比较</span><strong>1</strong></div></section>
+      <section class="workspace"><div><section id="view-business_overview" class="module-view" role="tabpanel" aria-labelledby="nav-business_overview" data-module-view="business_overview">
+  <div class="module-heading"><div><span class="eyebrow">经营状态入口</span><h2>经营总览</h2><p>汇总查看当前报告可信等级、差异状态和受限经营概览。</p></div><span class="grade-badge">D级 · 未放行</span></div>
+  <div class="module-facts">
+    <div><span>当前可信状态</span><strong>Q4 / D</strong></div>
+    <div><span>差异状态</span><strong>3 / 9 / 2 / 1</strong></div>
+    <div><span>可用边界</span><strong>当前可查看 D 级受限预览</strong></div>
+  </div>
+  <div class="module-commands"><button class="primary-command" type="button" data-module-action="business_overview"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16"/><path d="M7 16V9"/><path d="M12 16V5"/><path d="M17 16v-6"/></svg><span>显示经营总览入口状态</span></button><div class="report-links" aria-label="当前受限报告"><a class="report-link" data-report-link href="../../../V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/exports/html/business_overview_report.html" target="_blank" rel="noopener">打开经营总览受限报告</a></div></div>
+</section><section id="view-project_cost" class="module-view" role="tabpanel" aria-labelledby="nav-project_cost" data-module-view="project_cost" hidden>
+  <div class="module-heading"><div><span class="eyebrow">成本报告入口</span><h2>项目成本</h2><p>查看项目成本专题结构、差异阻断和当前受限报告入口。</p></div><span class="grade-badge">D级 · 未放行</span></div>
+  <div class="module-facts">
+    <div><span>当前可信状态</span><strong>Q4 / D</strong></div>
+    <div><span>差异状态</span><strong>3 / 9 / 2 / 1</strong></div>
+    <div><span>可用边界</span><strong>当前可查看 D 级受限预览</strong></div>
+  </div>
+  <div class="module-commands"><button class="primary-command" type="button" data-module-action="project_cost"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v10H4z"/><path d="M8 11h8"/><path d="M8 14h5"/></svg><span>显示项目成本入口状态</span></button><div class="report-links" aria-label="当前受限报告"><a class="report-link" data-report-link href="../../../V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/exports/html/project_cost_special_report.html" target="_blank" rel="noopener">打开项目成本受限报告</a></div></div>
+</section><section id="view-receivable_collection" class="module-view" role="tabpanel" aria-labelledby="nav-receivable_collection" data-module-view="receivable_collection" hidden>
+  <div class="module-heading"><div><span class="eyebrow">导航已建立</span><h2>回款应收</h2><p>保留回款、应收和账龄入口，业务明细尚未放行。</p></div><span class="grade-badge">D级 · 未放行</span></div>
+  <div class="module-facts">
+    <div><span>当前可信状态</span><strong>Q4 / D</strong></div>
+    <div><span>差异状态</span><strong>3 / 9 / 2 / 1</strong></div>
+    <div><span>可用边界</span><strong>关键现金比较仍有未完成项</strong></div>
+  </div>
+  <div class="module-commands"><button class="primary-command" type="button" data-module-action="receivable_collection"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14"/><path d="M5 12h14"/><path d="M5 16h10"/><path d="M17 14l2 2 3-4"/></svg><span>显示回款应收入口状态</span></button><p class="availability-note">当前仅开放导航与状态反馈，未开放业务明细。</p></div>
+</section><section id="view-financial_cash" class="module-view" role="tabpanel" aria-labelledby="nav-financial_cash" data-module-view="financial_cash" hidden>
+  <div class="module-heading"><div><span class="eyebrow">导航已建立</span><h2>财务资金</h2><p>保留现金、资金计划和融资提示入口，不执行付款或融资审批。</p></div><span class="grade-badge">D级 · 未放行</span></div>
+  <div class="module-facts">
+    <div><span>当前可信状态</span><strong>Q4 / D</strong></div>
+    <div><span>差异状态</span><strong>3 / 9 / 2 / 1</strong></div>
+    <div><span>可用边界</span><strong>关键现金数据仍不完整</strong></div>
+  </div>
+  <div class="module-commands"><button class="primary-command" type="button" data-module-action="financial_cash"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v10H4z"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/></svg><span>显示财务资金入口状态</span></button><p class="availability-note">当前仅开放导航与状态反馈，未开放业务明细。</p></div>
+</section><section id="view-invoice_tax" class="module-view" role="tabpanel" aria-labelledby="nav-invoice_tax" data-module-view="invoice_tax" hidden>
+  <div class="module-heading"><div><span class="eyebrow">导航已建立</span><h2>开票纳税</h2><p>保留开票、税务和政策证据入口，不生成正式申报结论。</p></div><span class="grade-badge">D级 · 未放行</span></div>
+  <div class="module-facts">
+    <div><span>当前可信状态</span><strong>Q4 / D</strong></div>
+    <div><span>差异状态</span><strong>3 / 9 / 2 / 1</strong></div>
+    <div><span>可用边界</span><strong>正式开票与申报均未执行</strong></div>
+  </div>
+  <div class="module-commands"><button class="primary-command" type="button" data-module-action="invoice_tax"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v18l-2-1-2 1-2-1-2 1-2-1z"/><path d="M9 8h6"/><path d="M9 12h6"/><path d="M9 16h3"/></svg><span>显示开票纳税入口状态</span></button><p class="availability-note">当前仅开放导航与状态反馈，未开放业务明细。</p></div>
+</section><section id="view-source_check" class="module-view" role="tabpanel" aria-labelledby="nav-source_check" data-module-view="source_check" hidden>
+  <div class="module-heading"><div><span class="eyebrow">导航已建立</span><h2>数据源检查</h2><p>显示数据质量与来源检查入口，检查矩阵明细尚未展开。</p></div><span class="grade-badge">D级 · 未放行</span></div>
+  <div class="module-facts">
+    <div><span>当前可信状态</span><strong>Q4 / D</strong></div>
+    <div><span>差异状态</span><strong>3 / 9 / 2 / 1</strong></div>
+    <div><span>可用边界</span><strong>检查板明细等待后续阶段</strong></div>
+  </div>
+  <div class="module-commands"><button class="primary-command" type="button" data-module-action="source_check"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7c0-2 14-2 14 0s-14 2-14 0z"/><path d="M5 7v5c0 2 14 2 14 0V7"/><path d="M5 12v5c0 2 14 2 14 0v-5"/></svg><span>显示数据源检查入口状态</span></button><p class="availability-note">当前仅开放导航与状态反馈，未开放业务明细。</p></div>
+</section><section id="view-pending_actions" class="module-view" role="tabpanel" aria-labelledby="nav-pending_actions" data-module-view="pending_actions" hidden>
+  <div class="module-heading"><div><span class="eyebrow">导航已建立</span><h2>待处理事项</h2><p>汇总人工确认、差异处理和报告发布前的受控待办入口。</p></div><span class="grade-badge">D级 · 未放行</span></div>
+  <div class="module-facts">
+    <div><span>当前可信状态</span><strong>Q4 / D</strong></div>
+    <div><span>差异状态</span><strong>3 / 9 / 2 / 1</strong></div>
+    <div><span>可用边界</span><strong>三项最终接受未决继续保留</strong></div>
+  </div>
+  <div class="module-commands"><button class="primary-command" type="button" data-module-action="pending_actions"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v16H5z"/><path d="M8 9l2 2 4-4"/><path d="M8 15h7"/></svg><span>显示待处理事项入口状态</span></button><p class="availability-note">当前仅开放导航与状态反馈，未开放业务明细。</p></div>
+</section><section id="view-report_center" class="module-view" role="tabpanel" aria-labelledby="nav-report_center" data-module-view="report_center" hidden>
+  <div class="module-heading"><div><span class="eyebrow">受限报告入口</span><h2>报告中心</h2><p>集中查看两份当前受限报告，等级与使用限制必须随入口保留。</p></div><span class="grade-badge">D级 · 未放行</span></div>
+  <div class="module-facts">
+    <div><span>当前可信状态</span><strong>Q4 / D</strong></div>
+    <div><span>差异状态</span><strong>3 / 9 / 2 / 1</strong></div>
+    <div><span>可用边界</span><strong>仅供内部复核，不是正式报告</strong></div>
+  </div>
+  <div class="module-commands"><button class="primary-command" type="button" data-module-action="report_center"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l3 3v15H7z"/><path d="M14 3v4h4"/><path d="M9 12h6"/><path d="M9 16h6"/></svg><span>显示报告中心入口状态</span></button><div class="report-links" aria-label="当前受限报告"><a class="report-link" data-report-link href="../../../V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/exports/html/business_overview_report.html" target="_blank" rel="noopener">打开经营总览受限报告</a><a class="report-link" data-report-link href="../../../V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/exports/html/project_cost_special_report.html" target="_blank" rel="noopener">打开项目成本受限报告</a></div></div>
+</section></div><aside class="activity-panel" id="activity-panel" aria-live="polite"><h2 id="activity-title">经营总览入口已选中</h2><p id="activity-message">经营总览入口状态已更新：当前可查看 D 级受限预览。</p><div class="activity-state"><span>当前发布边界</span><strong>未放行 · 仅供内部复核</strong></div></aside></section>
+      <footer>公开安全首页，不包含原始文件身份、字段表头、业务金额或明细。</footer>
+    </main>
+  </div>
+  <script>
+    const moduleState={"business_overview":{"action":"显示经营总览入口状态已完成，当前仍保持 D级、未放行和仅供内部复核限制。","feedback":"经营总览入口状态已更新：当前可查看 D 级受限预览。","label":"经营总览"},"financial_cash":{"action":"显示财务资金入口状态已完成，当前仍保持 D级、未放行和仅供内部复核限制。","feedback":"财务资金入口状态已更新：关键现金数据仍不完整。","label":"财务资金"},"invoice_tax":{"action":"显示开票纳税入口状态已完成，当前仍保持 D级、未放行和仅供内部复核限制。","feedback":"开票纳税入口状态已更新：正式开票与申报均未执行。","label":"开票纳税"},"pending_actions":{"action":"显示待处理事项入口状态已完成，当前仍保持 D级、未放行和仅供内部复核限制。","feedback":"待处理事项入口状态已更新：三项最终接受未决继续保留。","label":"待处理事项"},"project_cost":{"action":"显示项目成本入口状态已完成，当前仍保持 D级、未放行和仅供内部复核限制。","feedback":"项目成本入口状态已更新：当前可查看 D 级受限预览。","label":"项目成本"},"receivable_collection":{"action":"显示回款应收入口状态已完成，当前仍保持 D级、未放行和仅供内部复核限制。","feedback":"回款应收入口状态已更新：关键现金比较仍有未完成项。","label":"回款应收"},"report_center":{"action":"显示报告中心入口状态已完成，当前仍保持 D级、未放行和仅供内部复核限制。","feedback":"报告中心入口状态已更新：仅供内部复核，不是正式报告。","label":"报告中心"},"source_check":{"action":"显示数据源检查入口状态已完成，当前仍保持 D级、未放行和仅供内部复核限制。","feedback":"数据源检查入口状态已更新：检查板明细等待后续阶段。","label":"数据源检查"}};
+    const shell=document.querySelector('.app-shell');
+    const navButtons=Array.from(document.querySelectorAll('[data-module-id]'));
+    const views=Array.from(document.querySelectorAll('[data-module-view]'));
+    const activityTitle=document.getElementById('activity-title');
+    const activityMessage=document.getElementById('activity-message');
+    let sequence=0;
+    function setFeedback(id,message,kind){sequence+=1;activityTitle.textContent=moduleState[id].label+'入口状态';activityMessage.textContent=message;shell.dataset.lastAction=kind+':'+id+':'+sequence;document.body.dataset.lastAction=shell.dataset.lastAction;}
+    function activateModule(id,source,moveFocus){if(!moduleState[id])return;navButtons.forEach(button=>{const active=button.dataset.moduleId===id;button.classList.toggle('active',active);button.setAttribute('aria-selected',String(active));button.tabIndex=active?0:-1;if(active&&moveFocus)button.focus();});views.forEach(view=>{view.hidden=view.dataset.moduleView!==id;});shell.dataset.activeModule=id;if(location.protocol==='http:'||location.protocol==='https:')history.replaceState(null,'','#'+id);setFeedback(id,moduleState[id].feedback,source||'navigate');}
+    navButtons.forEach((button,index)=>{button.addEventListener('click',()=>activateModule(button.dataset.moduleId,'navigate',false));button.addEventListener('keydown',event=>{let target=null;if(event.key==='ArrowDown'||event.key==='ArrowRight')target=(index+1)%navButtons.length;if(event.key==='ArrowUp'||event.key==='ArrowLeft')target=(index-1+navButtons.length)%navButtons.length;if(event.key==='Home')target=0;if(event.key==='End')target=navButtons.length-1;if(target!==null){event.preventDefault();activateModule(navButtons[target].dataset.moduleId,'keyboard',true);}});});
+    document.querySelectorAll('[data-module-action]').forEach(button=>button.addEventListener('click',()=>{const id=button.dataset.moduleAction;setFeedback(id,moduleState[id].action,'action');}));
+    window.addEventListener('hashchange',()=>activateModule(location.hash.slice(1)||'business_overview','hash',false));
+    const initial=moduleState[location.hash.slice(1)]?location.hash.slice(1):'business_overview';activateModule(initial,'ready',false);shell.dataset.uiReady='true';
+  </script>
+</body>
+</html>

@@ -4,14 +4,14 @@
 
 ## 一句话状态
 
-KMFA 已完成 `V014_S10_POST_REMEDIATION_STAGE_REVIEW`：当前 S10-P1/P2/P3 全部复验通过，6 个 review finding 已修复且 open=0；2 份受限 HTML、2 份中文 CSV、4 个桌面/移动视口和 2 次逐字节下载均保持 `Q4 / D / NO_GO` 与 3/9/2/1 差异状态，未创建正式报告、PDF 或工作簿，也未上传、重装 app 或执行业务动作。
+KMFA 已完成 `V014_S11_P1_POST_REMEDIATION_HOME_NAVIGATION`：8 个全中文业务模块均可单页导航并产生可见反馈，桌面/移动、键盘和当前 S10 受限报告链接均已实测；首页保持 `Q4 / D / NO_GO` 与 3/9/2/1，未推进 S11-P2/P3、整体复审、上传、重装 app 或业务动作。
 
 ## 当前可信任范围
 
-- 可以信任：Stage 10 当前三 phase、两份 HTML 与两份中文 CSV 的公开安全聚合状态已完成整体复审，桌面/移动无溢出或真实脚本错误，两次下载逐字节一致，D级、未放行和使用限制未被导出流程绕过。
+- 可以信任：S11-P1 首页 8 个模块的导航、视图、动作反馈、键盘切换和两类当前受限报告入口；桌面/移动无溢出或真实脚本错误，D级、未放行和使用限制未被首页绕过。
 - 必须保留：9 条非零差异，不得通过覆盖、四舍五入、空白兼容层或替换权威值消除。
 - 不能信任：3 条缺可证明数值的现金槽位、1 条未完成现金比较、任何完整业务一致性或正式经营决策结论。
-- 下一步只做 `S11-P1` 独立 phase；不得在当前 review 顺手推进 S11、GitHub upload、app reinstall 或 business execution。
+- 下一步只做 `S11-P2｜数据源检查板` 独立 phase；不得顺手推进 S11-P3、Stage 11 review、GitHub upload、app reinstall 或 business execution。
 
 ## 前序一句话状态（上一 phase）
 

@@ -1,3 +1,11 @@
+## 0.1.4-s11-p1-post-remediation-home-navigation - 2026-07-11
+
+- 完成 `V014_S11_P1_POST_REMEDIATION_HOME_NAVIGATION` 本地 phase：8 个全中文业务模块均具备单页导航、独立视图、可见动作反馈和键盘切换。
+- 首页持续显示当前 `Q4 / D / NO_GO / 3-9-2-1`，只链接当前 S10 的 2 份受限报告；移除旧 12 pending、B 级和未来/历史页面链接。
+- v1.4 人类流程基线 `54/54 PASS`，当前首页 `13/13 PASS`；桌面/移动完成 16 次导航、16 次动作、4 次键盘操作和 4 次 HTTP 链接验证，console error 与横向溢出均为 0。
+- 5 个 raw 文件在 phase 前后、跨 S10 review 和当前复核均一致；未提交 raw/private、Excel、PDF、私有 CSV 或业务明细。
+- 未执行 S11-P2/P3、Stage 11 整体复审、GitHub upload、app reinstall、正式报告发布或 business execution。
+
 ## 0.1.4-s10-post-remediation-stage-review - 2026-07-11
 
 - 完成 `V014_S10_POST_REMEDIATION_STAGE_REVIEW` 本地整体复审，当前 S10-P1/P2/P3 frozen semantic validation 全部通过。

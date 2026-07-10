@@ -1,3 +1,18 @@
+kmfa_v014_s11_p1_post_remediation_home_navigation:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s11-p1-post-remediation-home-navigation"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S11-P1-POST-REMEDIATION-HOME-NAVIGATION-001
+  parameter_refs:
+    - PARAM-KMFA-1708
+    - PARAM-KMFA-1709
+    - PARAM-KMFA-1710
+  evidence_dir: KMFA/stage_artifacts/V014_S11_P1_POST_REMEDIATION_HOME_NAVIGATION
+  validator: KMFA/tools/check_v014_s11_p1_post_remediation_home_navigation.py
+  scope: Current public-safe eight-module single-page home navigation with visible actions current S10 restricted report links desktop mobile keyboard evidence and Q4 D NO_GO; S11-P2 review upload reinstall formal report and business execution remain closed.
+
 kmfa_v014_s10_post_remediation_stage_review:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-s10-post-remediation-stage-review"

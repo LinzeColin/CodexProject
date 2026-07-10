@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-s10-post-remediation-stage-review"
-product_version_status: "completed_validated_local_only_stage10_review_no_go_upload_deferred"
-version_file_value: "0.1.4-s10-post-remediation-stage-review"
+product_version: "0.1.4-s11-p1-post-remediation-home-navigation"
+product_version_status: "completed_validated_local_only_current_home_navigation_d_no_go_upload_deferred"
+version_file_value: "0.1.4-s11-p1-post-remediation-home-navigation"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-s10-post-remediation-stage-review"
+  MOD-KMFA-GOV-001: "0.1.4-s11-p1-post-remediation-home-navigation"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_s11_p1_post_remediation_home_navigation: "0.1.4-s11-p1-post-remediation-home-navigation"
   kmfa_v014_s10_post_remediation_stage_review: "0.1.4-s10-post-remediation-stage-review"
   kmfa_v014_s10_p3_post_remediation_restricted_export: "0.1.4-s10-p3-post-remediation-restricted-export"
   kmfa_v014_s10_p2_post_remediation_trust_grade_lock: "0.1.4-s10-p2-post-remediation-trust-grade-lock"
@@ -415,9 +416,9 @@ parameter_profile_versions:
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_blocked_handoff_final_threshold_recheck_after_reminder: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-final-threshold-recheck-after-reminder"
   kmfa_project_cost_mvp: "blocked_no_go_owner_scope_required"
 data_snapshot_version: "not_applicable_no_raw_data_committed"
-current_iteration: "ITER-20260711-KMFA-V014-S10-POST-REMEDIATION-STAGE-REVIEW"
-current_phase: "V014_S10_POST_REMEDIATION_STAGE_REVIEW"
-current_gate: "NO_GO_S11_P1_NEXT_SEPARATE_RUN_UPLOAD_DEFERRED"
+current_iteration: "ITER-20260711-KMFA-V014-S11-P1-POST-REMEDIATION-HOME-NAVIGATION"
+current_phase: "V014_S11_P1_POST_REMEDIATION_HOME_NAVIGATION"
+current_gate: "NO_GO_S11_P2_NEXT_SEPARATE_RUN_UPLOAD_DEFERRED"
 
 
 kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_external_action_readiness_after_final_threshold:

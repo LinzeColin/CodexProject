@@ -1,3 +1,17 @@
+## FORM-KMFA-V014-S11-P1-POST-REMEDIATION-HOME-NAVIGATION-001
+
+- version: `0.1.4-s11-p1-post-remediation-home-navigation`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: 在不改变当前可信等级的前提下提供 8 模块全中文首页、可见动作反馈、当前受限报告入口和桌面/移动/键盘验收。
+- rule: `home_navigation_valid = modules == 8 AND views == 8 AND navigation_checks == 16 AND action_checks == 16 AND keyboard_checks == 4 AND report_http_checks == 4 AND grade == D AND decision == NO_GO AND future_links == 0 AND overflow == 0`。
+- current-state gate: 首页必须显示 `Q4 / D / NO_GO` 与 `3/9/2/1`；旧 `12 pending`、B 级或样板业务值不得回流。
+- target gate: 报告入口只允许当前 S10 两份受限 HTML，S11-P2/P3、S12-S14 或其他历史页面不得作为当前链接目标。
+- browser gate: v1.4 基线和当前页面 audit 无 WARN/FAIL；desktop/mobile、16 次导航、16 次动作、4 次键盘与 4 次 HTTP 链接全部通过，console error 和横向溢出为 0。
+- raw gate: phase 前后、跨 S10 review 和当前快照必须一致；不一致立即停止并保留 private 中文差异报告。
+- release gate: `S11-P2=false`、`stage11_review=false`、`github_upload=false`、`app_reinstall=false`、`formal_report=false`、`business_execution=false`。
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s11_p1_post_remediation_home_navigation.py --require-private-evidence --require-browser-evidence --require-final-evidence`
+- evidence: `KMFA/stage_artifacts/V014_S11_P1_POST_REMEDIATION_HOME_NAVIGATION/machine/home_navigation_manifest.json`
+
 ## FORM-KMFA-V014-S10-POST-REMEDIATION-STAGE-REVIEW-001
 
 - version: `0.1.4-s10-post-remediation-stage-review`
