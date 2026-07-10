@@ -300,6 +300,12 @@ features:
     evidence_refs:
       - "EVID-MACDATA-PROM2-CONFIG"
       - "EVID-MACDATA-PROM2-OWNER-CONFIRMATION"
+  - feature_id: "FEAT-OAIDB-CF-L2-001"
+    name: "Cloudflare 安全 L2 MemoryAtlas 派生数据查看器"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-OAIDB-DEVELOPMENT-EVENTS"
 models:
   -
     model_id: "MOD-001"

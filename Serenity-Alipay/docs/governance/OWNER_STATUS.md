@@ -82,9 +82,9 @@ Serenity remains UNVERIFIED for empirical/delivery readiness despite machine-ver
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- final_commit_binding: `COMMIT_BOUND:9a3b9ae977275f4774e08ae69f61b54f7270b419`
 - tree_bound_events: `0`
-- commit_bound_events: `1`
+- commit_bound_events: `2`
 - legacy_unbound_events: `3`
 - precommit_pending_events: `2`
 - pending_or_stale_events: `6`
@@ -98,10 +98,10 @@ Serenity remains UNVERIFIED for empirical/delivery readiness despite machine-ver
 
 ## 16. 技术元数据
 
-- source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
+- source_base_commit: `9a3b9ae977275f4774e08ae69f61b54f7270b419`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:ba1ac49f88f9c640f64be68fe87ff35f7c1560283c7f9780fb74ef17a51dca33`
-- snapshot_event_time: `2026-07-10T17:50:45+10:00`
+- source_snapshot_hash: `sha256:208a1ad9a8021a6076953d2976895a92c2d17ec028cc4aec5916186de3e4d61e`
+- snapshot_event_time: `2026-07-10T18:35:12+10:00`
 - generator_version: `4.0.1`
 - version: `0.1.0`
 - phase/gate: `CF-L2 / ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH`

@@ -9,7 +9,7 @@
   "iteration_id": "ITER-20260710-CF-L2",
   "generated_at": "2026-07-10T17:50:45+10:00",
   "implementation_base_sha": "cfee2cea2f1851cd192406ae70fc0aeef72ed996",
-  "content_tree_hash": "precommit-cloudflare-compatibility-envelope-20260710",
+  "content_tree_hash": "git_commit:9a3b9ae977275f4774e08ae69f61b54f7270b419",
   "changed_files_declared": [
     "\"EEI/\\345\\212\\237\\350\\203\\275\\346\\270\\205\\345\\215\\225.md\"",
     "\"EEI/\\345\\274\\200\\345\\217\\221\\350\\256\\260\\345\\275\\225.md\"",
@@ -127,7 +127,15 @@
     "Serenity-Alipay/模型参数文件.md",
     "FINAL_ACCEPTANCE_BUNDLE/cloudflare_compatibility_envelope/deployments.md",
     "FINAL_ACCEPTANCE_BUNDLE/cloudflare_compatibility_envelope/urls.json",
-    "FINAL_ACCEPTANCE_BUNDLE/cloudflare_compatibility_envelope/FINAL_REPORT.md"
+    "FINAL_ACCEPTANCE_BUNDLE/cloudflare_compatibility_envelope/FINAL_REPORT.md",
+    "EEI/docs/governance/project.yaml",
+    "EEI/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "PFI/docs/governance/project.yaml",
+    "PFI/docs/governance/roadmap.yaml",
+    "Serenity-Alipay/docs/governance/project.yaml",
+    "Serenity-Alipay/docs/governance/roadmap.yaml"
   ],
   "changed_files_actual": [
     "\"EEI/\\345\\212\\237\\350\\203\\275\\346\\270\\205\\345\\215\\225.md\"",
@@ -246,7 +254,15 @@
     "Serenity-Alipay/模型参数文件.md",
     "FINAL_ACCEPTANCE_BUNDLE/cloudflare_compatibility_envelope/deployments.md",
     "FINAL_ACCEPTANCE_BUNDLE/cloudflare_compatibility_envelope/urls.json",
-    "FINAL_ACCEPTANCE_BUNDLE/cloudflare_compatibility_envelope/FINAL_REPORT.md"
+    "FINAL_ACCEPTANCE_BUNDLE/cloudflare_compatibility_envelope/FINAL_REPORT.md",
+    "EEI/docs/governance/project.yaml",
+    "EEI/docs/governance/roadmap.yaml",
+    "OpenAIDatabase/docs/governance/project.yaml",
+    "OpenAIDatabase/docs/governance/roadmap.yaml",
+    "PFI/docs/governance/project.yaml",
+    "PFI/docs/governance/roadmap.yaml",
+    "Serenity-Alipay/docs/governance/project.yaml",
+    "Serenity-Alipay/docs/governance/roadmap.yaml"
   ],
   "required_governance_files": [
     "EEI/CHANGELOG.md",
@@ -361,7 +377,7 @@
     {
       "command": "real Cloudflare deploy",
       "result": "BLOCKED",
-      "observed": "Existing API token returned authentication code 10000; no new live URL claimed"
+      "observed": "Existing API token returned authentication code 10000 and two OAuth callbacks timed out; no new live URL claimed"
     }
   ],
   "evidence_refs": [
@@ -370,9 +386,9 @@
     "docs/cloudflare/COMPATIBILITY_ENVELOPE.md",
     "FINAL_ACCEPTANCE_BUNDLE/cloudflare_compatibility_envelope/FINAL_REPORT.md"
   ],
-  "binding_status": "PRECOMMIT_TREE_BOUND",
+  "binding_status": "COMMIT_BOUND",
   "ci_attestation_subject": "Cloudflare Compatibility Envelope L2 public-safe adapters and deployment evidence",
-  "ci_run_reference": "LOCAL_PRECOMMIT_PENDING_FINAL_CHANGED_ONLY",
+  "ci_run_reference": "LOCAL_5dd39049386d_BLOCKED_ONLY_BY_PREEXISTING_WDA_SCHEMA",
   "production_status": "DEPLOYMENT_BLOCKED_BY_AUTH_NO_FALSE_LIVE_CLAIM",
   "rollback": {
     "action": "Revert the bounded Cloudflare compatibility commits and manifests in each repository.",
