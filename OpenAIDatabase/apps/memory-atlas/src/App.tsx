@@ -66,6 +66,7 @@ import { ActionDetailDrawer, type HomeActionDetail } from "./components/ActionDe
 import { AssetDetailPanel, type TierAssetDetail } from "./components/AssetDetailPanel";
 import { ProposalEditor } from "./components/ProposalEditor";
 import { ThemeDetailPanel, type TopicClassificationDetail } from "./components/ThemeDetailPanel";
+import { VisualWorkflowWorkbench } from "./components/VisualWorkflowWorkbench";
 import { MemoryAtlasHelpPanel } from "./components/help/MemoryAtlasHelpPanel";
 import { zhCNCopy } from "./i18n/zh-CN";
 import universeStateSample from "./fixtures/universe_state.sample.json";
@@ -4774,10 +4775,7 @@ function HomeOverviewView({
         ))}
       </section>
       <BehaviorIntelligencePanel summary={behaviorIntelligence} />
-      <ClioLikeVisualPanel model={clioLikeVisualModel} onSelectNode={onSelectNode} onSwitchView={onSwitchView} />
-      <EconomicLikeVisualPanel model={economicLikeVisualModel} onSelectNode={onSelectNode} onSwitchView={onSwitchView} />
-      <WorkflowLatentGovernanceVisualPanel model={workflowLatentGovernanceVisualModel} onSelectNode={onSelectNode} onSwitchView={onSwitchView} />
-      <HumanQuestionMapPanel model={humanQuestionMapModel} onSwitchView={onSwitchView} />
+      <VisualWorkflowWorkbench atlas={atlas} onSwitchView={onSwitchView} />
       <section className="home-preview-grid" aria-label={uiCopy.overview.previewAria} data-home-section="entry_points">
         <button
           className="home-preview-card mini-starfield-preview"

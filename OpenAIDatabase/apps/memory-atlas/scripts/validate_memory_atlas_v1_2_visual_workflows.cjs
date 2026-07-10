@@ -218,9 +218,14 @@ async function assertEvidenceInteractions(page) {
     const datum = page.locator(`[data-r6-visual-id="${id}"] [data-r6-visual-datum]`).first();
     await datum.scrollIntoViewIfNeeded();
     await datum.click();
-    await page.waitForFunction((visualId) => {
-      return document.querySelector("[data-r6-visual-evidence]")?.getAttribute("data-r6-selected-visual") === visualId;
-    }, id);
+    try {
+      await page.waitForFunction((visualId) => {
+        return document.querySelector("[data-r6-visual-evidence]")?.getAttribute("data-r6-selected-visual") === visualId;
+      }, id, { timeout: 5000 });
+    } catch {
+      const current = await page.locator("[data-r6-visual-evidence]").getAttribute("data-r6-selected-visual");
+      throw new Error(`R6 visual datum did not select ${id}; current selection is ${current || "missing"}`);
+    }
     const evidence = await page.locator("[data-r6-visual-evidence]").evaluate((element) => ({
       action: element.querySelector("[data-r6-action-value]")?.textContent?.trim() || "",
       evidenceCount: element.querySelectorAll("[data-r6-evidence-ref]").length,
@@ -243,13 +248,23 @@ async function assertFourAxisFilters(page) {
   const results = {};
   for (const axis of ["source", "time", "project", "task"]) {
     await reset.click();
-    await page.waitForFunction((expected) => document.querySelector("[data-r6-visual-filter-signature]")?.getAttribute("data-r6-signature") === expected, baseline);
+    try {
+      await page.waitForFunction((expected) => document.querySelector("[data-r6-visual-filter-signature]")?.getAttribute("data-r6-signature") === expected, baseline, { timeout: 5000 });
+    } catch {
+      const current = await signature.getAttribute("data-r6-signature");
+      throw new Error(`R6 ${axis} filter did not reset to baseline; current signature is ${current}`);
+    }
     const select = page.locator(`[data-r6-visual-filter="${axis}"]`);
     const options = await select.locator("option").evaluateAll((items) => items.map((item) => item.value));
     const choice = options.find((value) => value && value !== "all");
     assertCondition(Boolean(choice), `R6 ${axis} filter has no concrete option`, { options });
     await select.selectOption(choice);
-    await page.waitForFunction((expected) => document.querySelector("[data-r6-visual-filter-signature]")?.getAttribute("data-r6-signature") !== expected, baseline);
+    try {
+      await page.waitForFunction((expected) => document.querySelector("[data-r6-visual-filter-signature]")?.getAttribute("data-r6-signature") !== expected, baseline, { timeout: 5000 });
+    } catch {
+      const current = await signature.getAttribute("data-r6-signature");
+      throw new Error(`R6 ${axis} filter did not change the event signature; current signature is ${current}`);
+    }
     results[axis] = {
       choice,
       count: await page.locator("[data-r6-visual-event-count]").getAttribute("data-r6-count"),
@@ -257,7 +272,12 @@ async function assertFourAxisFilters(page) {
     };
   }
   await reset.click();
-  await page.waitForFunction((expected) => document.querySelector("[data-r6-visual-filter-signature]")?.getAttribute("data-r6-signature") === expected, baseline);
+  try {
+    await page.waitForFunction((expected) => document.querySelector("[data-r6-visual-filter-signature]")?.getAttribute("data-r6-signature") === expected, baseline, { timeout: 5000 });
+  } catch {
+    const current = await signature.getAttribute("data-r6-signature");
+    throw new Error(`R6 final filter reset did not restore the baseline signature; current signature is ${current}`);
+  }
   return { baseline, results };
 }
 
@@ -284,15 +304,21 @@ async function assertFormulaInteraction(page, writeRequests) {
   const slider = page.locator('[data-r6-formula-weight="time_saved_weight"]');
   const maximum = await slider.getAttribute("max");
   assertCondition(Boolean(baseline) && Boolean(maximum), "R6 Formula baseline or bounds are missing", { baseline, maximum });
-  await slider.evaluate((element, value) => {
-    element.value = value;
-    element.dispatchEvent(new Event("input", { bubbles: true }));
-    element.dispatchEvent(new Event("change", { bubbles: true }));
-  }, maximum);
-  await page.waitForFunction((expected) => document.querySelector("[data-r6-formula-score]")?.getAttribute("data-r6-score") !== expected, baseline);
+  await slider.fill(maximum);
+  try {
+    await page.waitForFunction((expected) => document.querySelector("[data-r6-formula-score]")?.getAttribute("data-r6-score") !== expected, baseline, { timeout: 5000 });
+  } catch {
+    const current = await score.getAttribute("data-r6-score");
+    throw new Error(`R6 Formula score did not change from ${baseline}; current score is ${current}`);
+  }
   const changed = await score.getAttribute("data-r6-score");
   await page.locator("[data-r6-formula-reset]").click();
-  await page.waitForFunction((expected) => document.querySelector("[data-r6-formula-score]")?.getAttribute("data-r6-score") === expected, baseline);
+  try {
+    await page.waitForFunction((expected) => document.querySelector("[data-r6-formula-score]")?.getAttribute("data-r6-score") === expected, baseline, { timeout: 5000 });
+  } catch {
+    const current = await score.getAttribute("data-r6-score");
+    throw new Error(`R6 Formula reset did not restore ${baseline}; current score is ${current}`);
+  }
   const safety = await page.locator("[data-r6-formula-safety]").innerText();
   assertCondition(/proxy/i.test(safety) && /不是.*(收入|财务建议)/.test(safety), "R6 Formula safety copy is incomplete", { safety });
   assertCondition(writeRequests.length === 0, "R6 Formula interaction issued a write request", { writeRequests });

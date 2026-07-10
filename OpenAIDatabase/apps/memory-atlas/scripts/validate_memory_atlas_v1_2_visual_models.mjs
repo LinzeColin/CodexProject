@@ -94,6 +94,7 @@ assert.deepEqual(
 );
 
 const initialSignature = buildVisualFilterSignature(events, allFilters);
+assert.match(initialSignature, /^all\|all\|all\|all\|4\|[0-9a-f]{8}$/);
 assert.equal(initialSignature, buildVisualFilterSignature([...events].reverse(), allFilters));
 assert.notEqual(initialSignature, buildVisualFilterSignature(events, { ...allFilters, source: "codex" }));
 assert.notEqual(initialSignature, buildVisualFilterSignature(events, { ...allFilters, time: "30d" }));
