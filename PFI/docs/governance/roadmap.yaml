@@ -81,7 +81,7 @@ stages:
   - stage_id: "CF-L2"
     name: "PFI Cloudflare 安全 L2 脱敏财务产品壳"
     person_goal: "Owner 能通过公开安全的产品表面理解项目能力与边界，同时私密核心保持离线。"
-    status: "blocked"
+    status: "completed"
     estimated_hours: 2
     estimated_pct: 100
     stop_conditions:
@@ -104,7 +104,7 @@ stages:
       - phase_id: "CF-L2-P1"
         name: "安全 adapter、验证与永久部署"
         objective: "交付不读取真实账户、不暴露组合数值、不支持交易或支付的定性 L2 shell。"
-        status: "blocked"
+        status: "completed"
         estimated_hours: 2
         estimated_pct: 100
         stop_conditions:
@@ -122,7 +122,7 @@ stages:
           - task_id: "CF-L2-20260710"
             name: "Cloudflare Compatibility Envelope L2"
             objective: "交付不读取真实账户、不暴露组合数值、不支持交易或支付的定性 L2 shell。"
-            status: "blocked"
+            status: "completed"
             estimated_hours: 2
             estimated_pct: 100
             dependencies: []
@@ -137,7 +137,7 @@ stages:
             test_commands:
               - "npm run build；private dist scan；Wrangler 4.110.0 dry-run；compatibility tests 13/13"
             test_results:
-              - "adapter build、private scan、desktop/mobile QA 与 dry-run PASS；永久 deploy 因 Workers auth 阻塞。"
+              - "adapter build、private scan、desktop/mobile QA、dry-run 与永久 deploy PASS；workers.dev 根页面和 public-surface.json 均为 HTTP 200。"
             evidence_refs:
               - "web/cloudflare-public"
               - "docs/governance/development_events.jsonl"
@@ -146,8 +146,8 @@ stages:
               - "真实账户、组合数值、broker credential、order、payment 和 private report 不得进入 public surface。"
               - "认证阻塞期间不得填入虚假 actual_url。"
             rollback: "删除隔离的 L2 adapter 并回滚本任务治理记录；私密 core 不需要恢复。"
-            current_result: "repo_configured + dry_run_ready + deployment_blocked_by_auth"
-            completed_version: ""
+            current_result: "deployed_workers_dev_domain_pending + http_verified"
+            completed_version: "v0.2.1 前端优化"
           - task_id: "S2PZT01"
             name: "Stage 2 closeout 与本地入口验收"
             objective: "证明 Stage 2 2A-2H acceptance、stop condition、validation、入口和缓存清理均完成。"

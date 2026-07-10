@@ -4,17 +4,17 @@
 
 - source_base_commit: `42abfd60a49d0505984364c2e41efbbdcc73e9ac`
 - source_tree_hash: `5f05ad339e9519bd5981b54e788f0dbeefbcac9c`
-- source_snapshot_hash: `sha256:7feafea487df706b12860cb592886a4c05ab0726784ae7608ecf5b90c911f994`
-- snapshot_event_time: `2026-07-10T18:53:59+10:00`
+- source_snapshot_hash: `sha256:c27fd036684692c61189a04145e23f303180bd9d5e2ac1001b1d25cabb85cfef`
+- snapshot_event_time: `2026-07-10T19:26:02+10:00`
 - generator_version: `4.0.1`
-- final_commit_binding: `COMMIT_BOUND:42abfd60a49d0505984364c2e41efbbdcc73e9ac`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
 ## Current State
 
 - Project: `PFI`
 - Path: `PFI`
 - Product version: `v0.2.2 数据库治理 Stage 4`
-- Phase/Gate: `CF-L2 / ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH`
+- Phase/Gate: `CF-L2 / ACC-CF-L2-20260710-PASSED`
 - Models/Formulas/Parameters total: `1 / 1 / 23`
 - Active formulas/parameters: `1 / 23`
 - Machine checked formulas/parameters: `0 / 0`
@@ -35,9 +35,9 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH`
-- Next executable task: `CF-L2-20260710`
-- Pending/stale events: `7`
+- Release gate: `ACC-CF-L2-20260710-PASSED`
+- Next executable task: `NONE`
+- Pending/stale events: `8`
 - Tree-bound events: `0`
 - Commit-bound events: `2`
 - Legacy unbound events: `6`

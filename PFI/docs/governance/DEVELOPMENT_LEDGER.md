@@ -39,11 +39,11 @@ acceptance_count: 7
 ## ITER-20260710-PFI-CF-L2
 
 - 日期：2026-07-10。
-- 事实等级：本地 build、隐私扫描、13 项兼容性测试、桌面/移动端渲染和 Wrangler dry-run 为 VERIFIED；真实部署为 UNKNOWN。
+- 事实等级：本地 build、隐私扫描、13 项兼容性测试、桌面/移动端渲染、Wrangler dry-run、永久 workers.dev 部署与 HTTP 检查均为 VERIFIED。
 - 版本前后：`v0.2.1 前端优化` / `v0.2.1 前端优化`。
 - Task / Acceptance：`CF-L2-20260710` / `ACC-CF-L2-20260710`。
 - 目标：增加隔离的定性脱敏 L2 产品壳，不读取真实账户、组合、交易、券商凭据、私密报告或本地数据库。
-- 结果：静态 build、private dist scan、响应式 QA 和 Wrangler 4.110.0 dry-run 通过；真实 deploy 因 Workers 授权阻塞，未填写 live URL。
+- 结果：静态 build、private dist scan、响应式 QA 和 Wrangler 4.110.0 dry-run 通过；永久 deployment `7c6d216e-0fd3-43e6-904b-404aac0d776e` 已上线 `https://codex-pfi.linzezhang35.workers.dev`，根页面与 `public-surface.json` 均为 HTTP 200。
 - 模型与参数边界：不修改投资、消费、现金流、汇率、分类、推荐或执行逻辑；`PARAM-PFI-023` 只记录公开 adapter 的 L2 兼容合同。
 - 回滚：删除 `web/cloudflare-public` 与本次治理记录；PFI 私密核心和真实财务数据不受影响。
-- 下一门槛：完成 Workers 授权、部署、HTTP 200 验证和 commit/evidence 绑定。
+- 下一门槛：仅剩可选 `pfi.linzezhang.com` 绑定；真实账户、broker、支付和执行能力仍不在 L2 范围。

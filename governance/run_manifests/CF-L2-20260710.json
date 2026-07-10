@@ -7,9 +7,9 @@
     "ACC-CF-L2-20260710"
   ],
   "iteration_id": "ITER-20260710-CF-L2",
-  "generated_at": "2026-07-10T17:50:45+10:00",
+  "generated_at": "2026-07-10T19:26:02+10:00",
   "implementation_base_sha": "cfee2cea2f1851cd192406ae70fc0aeef72ed996",
-  "content_tree_hash": "git_commit:42abfd60a49d0505984364c2e41efbbdcc73e9ac",
+  "content_tree_hash": "deployment_source_git_commit:b864009c657c6a9cebbf451e30389c1aa5809700",
   "changed_files_declared": [
     "\"EEI/\\345\\212\\237\\350\\203\\275\\346\\270\\205\\345\\215\\225.md\"",
     "\"EEI/\\345\\274\\200\\345\\217\\221\\350\\256\\260\\345\\275\\225.md\"",
@@ -355,6 +355,9 @@
     "python3 -m unittest tests.governance.test_cloudflare_compatibility_envelope -v",
     "python3 scripts/cloudflare/validate_compatibility_envelope.py",
     "python3 scripts/cloudflare/scan_public_dist.py --all-required-deployments",
+    "npx wrangler deploy for EEI, PFI, Serenity-Alipay, LinzeHomeHub, and Archive/nab",
+    "HTTP root and public metadata smoke checks for every deployed URL",
+    "HOMEHUB_URL=https://home.linzezhang.com npm run acceptance:visual",
     "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main",
     "git diff --check"
   ],
@@ -363,6 +366,11 @@
       "command": "compatibility unit tests",
       "result": "PASS",
       "observed": "13 tests passed"
+    },
+    {
+      "command": "Cloudflare governance unit tests",
+      "result": "PASS",
+      "observed": "4 tests passed including exact terminal URL and deployment-result assertions for all required surfaces"
     },
     {
       "command": "required public distribution scans",
@@ -376,8 +384,13 @@
     },
     {
       "command": "remaining real Cloudflare deploys",
-      "result": "BLOCKED",
-      "observed": "MemoryAtlas protected Pages deployment is verified from remote main evidence; EEI, PFI and Serenity remain blocked because the existing API token returned code 10000 and two OAuth callbacks timed out"
+      "result": "PASS",
+      "observed": "EEI, PFI and Serenity-Alipay permanent workers.dev deployments passed root and public metadata HTTP 200 checks; HomeHub and Archive/nab current-main deployments passed workers.dev and custom-domain HTTP 200 checks"
+    },
+    {
+      "command": "HomeHub live visual acceptance",
+      "result": "PASS",
+      "observed": "desktop/mobile five-card acceptance passed against https://home.linzezhang.com with four Live cards and one Protected card"
     }
   ],
   "evidence_refs": [
@@ -388,8 +401,13 @@
   ],
   "binding_status": "COMMIT_BOUND",
   "ci_attestation_subject": "Cloudflare Compatibility Envelope L2 public-safe adapters and deployment evidence",
-  "ci_run_reference": "POST_PUSH_LOCAL_93e50bea8af2_SHIP_CHANGED_FILES_0",
-  "production_status": "MEMORYATLAS_PROTECTED_LIVE_REMAINING_EEI_PFI_SERENITY_BLOCKED_BY_AUTH",
+  "ci_run_reference": "FINAL_POST_PUSH_CHANGED_ONLY_CI_PENDING",
+  "production_status": "ALL_REQUIRED_L2_SURFACES_ONLINE_VERIFIED",
+  "repository_heads": {
+    "LinzeColin/CodexProject": "FINAL_EVIDENCE_COMMIT_PENDING",
+    "LinzeColin/LinzeHomeHub": "59347956c03ee2810358887f20cb13bdc2ef9289",
+    "LinzeColin/Archive": "d0721022cfb48ae3edf439fffeb92c36ed00cefc"
+  },
   "rollback": {
     "action": "Revert the bounded Cloudflare compatibility commits and manifests in each repository.",
     "business_data_restore_required": false,

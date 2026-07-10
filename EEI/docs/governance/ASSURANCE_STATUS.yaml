@@ -1,11 +1,11 @@
 project_id: "EEI"
-as_of_event_id: "EVENT-20260710-EEI-CF-L2-REBASE-BINDING"
-source_snapshot_hash: "sha256:6f4c7043b199dcd781737a24c221d8460ba78785de94e4b37cdaee1ee0d46a39"
+as_of_event_id: "EVENT-20260710-EEI-CF-L2-DEPLOYED"
+source_snapshot_hash: "sha256:e8bdfd4d9b3f8f63641ba5efe8d1fc5d9d3fe378f581ed7977360f90dc519320"
 source_base_commit: "42abfd60a49d0505984364c2e41efbbdcc73e9ac"
 source_tree_hash: "356fcd0bb5d3b892b331d28351fe9e99a64c8457"
-snapshot_event_time: "2026-07-10T18:53:59+10:00"
+snapshot_event_time: "2026-07-10T19:26:02+10:00"
 generator_version: "4.0.1"
-final_commit_binding: "COMMIT_BOUND:42abfd60a49d0505984364c2e41efbbdcc73e9ac"
+final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -64,12 +64,12 @@ dimensions:
     tree_bound_events: 0
     commit_bound_events: 20
     legacy_unbound_events: 19
-    precommit_pending_events: 93
+    precommit_pending_events: 94
     evidence_refs:
       - "EEI/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH"
+  release_gate: "ACC-CF-L2-20260710-PASSED"
   blocker_ids:
     - "FACT-EEI-EMPIRICAL-EVIDENCE"
     - "FACT-EEI-OPERATIONAL-EVIDENCE"
@@ -78,14 +78,14 @@ delivery_readiness:
     - "TASK-T1307"
     - "TASK-T1309"
 next_executable_task:
-  task_id: "CF-L2-20260710"
-  status: "blocked"
-  reason: "Deliver a public-safe Cloudflare L2 EEI explorer without publishing production relationship facts or claiming legal or brand release."
+  task_id: "TASK-T1301"
+  status: "in_progress"
+  reason: "Implement real data ingestion, entity resolution and evidence chain for the Golden Vertical"
   acceptance_ids:
-    - "ACC-CF-L2-20260710"
+    - "ACC-A202"
   owner: "product_owner + data_owner + risk_owner"
   human_owner_role: "product_owner + data_owner + risk_owner"
-  unblock_condition: "A static explorer could be mistaken for approved production relationship publication or legal and brand release."
+  unblock_condition: "Run `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/load_curated_ingestion_anchors.py scripts/check_database_schema.py tests/integration/test_database_migrations.py` and attach the listed evidence refs."
   stale_candidates: []
 owner_decision:
   required: true

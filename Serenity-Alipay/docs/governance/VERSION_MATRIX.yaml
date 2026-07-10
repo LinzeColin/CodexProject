@@ -11,9 +11,9 @@ model_versions:
 parameter_profile_versions:
   serenity-parameters: "serenity-parameters-v1"
 data_snapshot_version: "manual-csv-2026-06-12"
-current_iteration: "ITER-20260710-SERENITY-CF-L2-REBASE-BINDING"
+current_iteration: "ITER-20260710-SERENITY-CF-L2-DEPLOYED"
 current_phase: "CF-L2"
-current_gate: "ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH"
+current_gate: "ACC-CF-L2-20260710-PASSED"
 version_file_value: "0.1.0"
 legacy_version_labels:
   - "pyproject.toml 0.1.0"

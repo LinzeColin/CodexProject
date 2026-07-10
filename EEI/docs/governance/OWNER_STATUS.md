@@ -31,10 +31,10 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 7. 下一行动、责任角色和验收证据
 
-- next_task_id: `CF-L2-20260710`
+- next_task_id: `TASK-T1301`
 - responsible_role: `product_owner + data_owner + risk_owner`
-- acceptance_ids: `ACC-CF-L2-20260710`
-- unblock_condition: A static explorer could be mistaken for approved production relationship publication or legal and brand release.
+- acceptance_ids: `ACC-A202`
+- unblock_condition: Run `UV_CACHE_DIR=/private/tmp/eei-uv-cache .venv/bin/ruff check scripts/load_curated_ingestion_anchors.py scripts/check_database_schema.py tests/integration/test_database_migrations.py` and attach the listed evidence refs.
 
 ## 8. 九层 Assurance 状态
 
@@ -78,17 +78,17 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH`
+- release_gate: `ACC-CF-L2-20260710-PASSED`
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `COMMIT_BOUND:42abfd60a49d0505984364c2e41efbbdcc73e9ac`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `20`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `93`
-- pending_or_stale_events: `114`
-- freshness_counts: `pending_or_stale_events=114; legacy_unbound_events=19`
+- precommit_pending_events: `94`
+- pending_or_stale_events: `115`
+- freshness_counts: `pending_or_stale_events=115; legacy_unbound_events=19`
 - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
 - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
 
@@ -100,13 +100,13 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 - source_base_commit: `42abfd60a49d0505984364c2e41efbbdcc73e9ac`
 - source_tree_hash: `356fcd0bb5d3b892b331d28351fe9e99a64c8457`
-- source_snapshot_hash: `sha256:6f4c7043b199dcd781737a24c221d8460ba78785de94e4b37cdaee1ee0d46a39`
-- snapshot_event_time: `2026-07-10T18:53:59+10:00`
+- source_snapshot_hash: `sha256:e8bdfd4d9b3f8f63641ba5efe8d1fc5d9d3fe378f581ed7977360f90dc519320`
+- snapshot_event_time: `2026-07-10T19:26:02+10:00`
 - generator_version: `4.0.1`
 - version: `0.1.0`
-- phase/gate: `CF-L2 / ACC-CF-L2-20260710-BLOCKED-BY-WORKERS-AUTH`
+- phase/gate: `CF-L2 / ACC-CF-L2-20260710-PASSED`
 
 ## 17. Next Unique Task
 
-- task_id: `CF-L2-20260710`
-- reason: Deliver a public-safe Cloudflare L2 EEI explorer without publishing production relationship facts or claiming legal or brand release.
+- task_id: `TASK-T1301`
+- reason: Implement real data ingestion, entity resolution and evidence chain for the Golden Vertical
