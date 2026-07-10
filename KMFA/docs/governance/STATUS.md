@@ -5,12 +5,12 @@
 ## 最新状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s11-p2-post-remediation-source-check-board`
+- version: `0.1.4-s11-p3-post-remediation-project-cost-page`
 - current_stage: `S11`
-- current_phase: `V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD`
-- status: `completed_validated_local_only_current_source_check_board_d_no_go_upload_deferred`
+- current_phase: `V014_S11_P3_POST_REMEDIATION_PROJECT_COST_PAGE`
+- status: `completed_validated_local_only_current_project_cost_page_d_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `S11-P3_project_cost_page_as_separate_run`
+- next_required_input: `Stage_11_overall_review_as_separate_run`
 - production_ready: `false`
 - github_upload_ready: `false`
 - raw_snapshot_exact_match: `true`
@@ -19,12 +19,12 @@
 ## 前序状态（上一 phase）
 
 - project_id: `KMFA`
-- version: `0.1.4-s10-p2-post-remediation-trust-grade-lock`
-- current_stage: `S10`
-- current_phase: `V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK`
-- status: `completed_validated_local_only_report_grade_recomputed_d_locked_no_go_upload_deferred`
+- version: `0.1.4-s11-p2-post-remediation-source-check-board`
+- current_stage: `S11`
+- current_phase: `V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD`
+- status: `completed_validated_local_only_current_source_check_board_d_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `S10-P3_as_separate_run_with_D_NO_GO_export_boundary`
+- next_required_input: `S11-P3_project_cost_page_as_separate_run`
 - raw_snapshot_exact_match: `true`
 - decision: `NO_GO`
 
@@ -44,6 +44,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 S11-P3 post-remediation project cost page completed local-only：`4` 个公开安全项目槽位覆盖 `7` 列；项目级差异归属 `0 attributed / 4 unknown / 4 null counts`，不把全局 `3/9/2/1` 伪分配到项目。v1.4 baseline `54/54 PASS`、current page `21/21 PASS`，desktop/mobile 搜索 `4/4`、详情 `8/8`、报告章节 `8/8`、预览开关 `2/2`、keyboard `2/2`、linked artifacts `4/4`，console error 与 overflow=`0`。raw 前后及跨 S11-P2 快照一致；Stage 11 review、S12、GitHub upload、app reinstall 和 business execution 均未执行。next_required_input=`Stage_11_overall_review_as_separate_run`。
 
 - v0.1.4 S11-P2 post-remediation source check board completed local-only：13 行矩阵覆盖 `11` 个规定列；旧 `12 pending` 与 4 个 ready 状态被当前 `Q4 / D / NO_GO / 3-9-2-1` 证据覆盖，当前状态为 `0 ready / 6 partial / 1 failed / 2 outdated / 4 human review`。v1.4 基线 `54/54 PASS`、当前页 `21/21 PASS`；desktop/mobile 搜索 `4/4`、筛选 `10/10`、详情 `26/26`、session preview `10/10`、keyboard `2/2`、home link `1/1`，console error 与 overflow=`0`。raw 前后及跨 S11-P1 快照一致；persistent write、S11-P3、Stage 11 review、GitHub upload、app reinstall 和 business execution 均未执行。next_required_input=`S11-P3_project_cost_page_as_separate_run`。
 

@@ -4,18 +4,18 @@
 
 ## 一句话状态
 
-KMFA 已完成 `V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD`：13 行数据源矩阵覆盖 11 个规定列，旧 12 pending 和 4 个 ready 状态已被当前证据覆盖；当前状态为 `0/6/1/2/4`，搜索、筛选、逐行影响详情及只在浏览器会话生效的状态预演均已实测，报告保持 `Q4 / D / NO_GO / 3-9-2-1`。
+KMFA 已完成 `V014_S11_P3_POST_REMEDIATION_PROJECT_COST_PAGE`：4 个公开安全项目槽位覆盖 7 个规定列，旧 12 pending 未被复用；项目级差异归属全部保持 unknown/null，当前状态为 `Q4 / D / NO_GO / 3-9-2-1`，项目详情、证据、待办和 D级受限报告预览均已在桌面/移动实测。
 
 ## 当前可信任范围
 
-- 可以信任：S11-P2 的 13×11 公开安全来源矩阵、`0/6/1/2/4` 当前状态、搜索筛选、影响报告/处理规则/下一步详情，以及 session-only 状态预演边界；桌面/移动无页面溢出或真实脚本错误。
+- 可以信任：S11-P3 的 4×7 公开安全项目槽位、九类成本结构状态、项目级 unknown/null 归属控制、6 类证据、5 项全局待办和 D级受限报告预览；桌面/移动无页面溢出或真实脚本错误。
 - 必须保留：9 条非零差异，不得通过覆盖、四舍五入、空白兼容层或替换权威值消除。
 - 不能信任：3 条缺可证明数值的现金槽位、1 条未完成现金比较、任何完整业务一致性或正式经营决策结论。
-- 下一步只做 `S11-P3｜项目成本页面` 独立 phase；不得顺手执行 Stage 11 review、GitHub upload、app reinstall 或 business execution。
+- 下一步只做 Stage 11 整体复审并修复 findings；不得顺手推进 S12-P1、GitHub upload、app reinstall 或 business execution。
 
 ## 前序一句话状态（上一 phase）
 
-KMFA 已完成 `V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK`：A/B/C/D 与四维等级规则已复核，两条报告记录均完成八项版本绑定；当前 `Q4` 理论上限为 `B`，但每条 6 个 hard block 继续将结果锁定为 `D / NO_GO（未放行）`。
+KMFA 已完成 `V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD`：13 行数据源矩阵覆盖 11 个规定列，当前状态为 `0 ready / 6 partial / 1 failed / 2 outdated / 4 human review`；搜索、筛选、逐行详情和 session-only 状态预演均已实测，报告持续为 `Q4 / D / NO_GO / 3-9-2-1`。
 
 ## 前序一句话状态（历史）
 
