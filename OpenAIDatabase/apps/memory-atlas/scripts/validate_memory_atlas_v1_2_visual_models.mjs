@@ -5,6 +5,7 @@ import {
   buildVisualWorkflowOptions,
   computeFormulaWhatIfScore,
   filterVisualFacetEvents,
+  matchOpportunitiesToFacetEvents,
 } from "../src/visualWorkflows.ts";
 
 
@@ -91,6 +92,30 @@ assert.deepEqual(
 assert.deepEqual(
   filterVisualFacetEvents(events, { source: "codex", time: "365d", project: "KMFA", task: "automation" }).map((item) => item.event_id),
   ["event_old"],
+);
+
+const opportunities = [
+  { opportunity_id: "opp_latest", evidence_refs: [{ ref_id: "ref_latest", source_id: "codex" }] },
+  { opportunity_id: "opp_recent", evidence_refs: [{ ref_id: "ref_recent", source_id: "chatgpt" }] },
+  { opportunity_id: "opp_old", evidence_refs: [{ ref_id: "ref_old", source_id: "codex" }] },
+  { opportunity_id: "opp_same_source_without_ref", evidence_refs: [{ ref_id: "different_ref", source_id: "codex" }] },
+];
+const allOpportunityMatches = matchOpportunitiesToFacetEvents(opportunities, events);
+assert.deepEqual(allOpportunityMatches.map((item) => item.opportunity.opportunity_id), ["opp_latest", "opp_recent", "opp_old"]);
+assert.deepEqual(allOpportunityMatches.map((item) => item.events.map((event) => event.event_id)), [
+  ["event_latest"],
+  ["event_recent"],
+  ["event_old"],
+]);
+assert.deepEqual(
+  matchOpportunitiesToFacetEvents(opportunities, filterVisualFacetEvents(events, { ...allFilters, source: "chatgpt" }))
+    .map((item) => item.opportunity.opportunity_id),
+  ["opp_recent"],
+);
+assert.deepEqual(
+  matchOpportunitiesToFacetEvents(opportunities, filterVisualFacetEvents(events, { ...allFilters, time: "30d" }))
+    .map((item) => item.opportunity.opportunity_id),
+  ["opp_latest", "opp_recent"],
 );
 
 const initialSignature = buildVisualFilterSignature(events, allFilters);

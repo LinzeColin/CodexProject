@@ -11035,6 +11035,15 @@ h3 {
   font-size: 9px;
 }
 
+.r6-opportunity-empty {
+  grid-column: 1 / -1;
+  align-self: center;
+  margin: 0;
+  color: #aaa69f;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
 .r6-formula-card {
   grid-template-rows: auto auto minmax(120px, 1fr) auto auto;
 }

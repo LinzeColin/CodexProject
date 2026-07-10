@@ -15,8 +15,10 @@ import {
   buildVisualWorkflowOptions,
   computeFormulaWhatIfScore,
   filterVisualFacetEvents,
+  matchOpportunitiesToFacetEvents,
   type FormulaWeightKey,
   type FormulaWeights,
+  type OpportunityEventMatch,
   type VisualTimeFilter,
   type VisualWorkflowFilters,
 } from "../visualWorkflows";
@@ -62,30 +64,48 @@ export function VisualWorkflowWorkbench({ atlas, onSwitchView }: VisualWorkflowW
     datumLabel: "当前筛选",
     events: allEvents.slice(0, 3),
   }));
-  const opportunities = behavior?.opportunities ?? [];
+  const opportunities = useMemo(() => behavior?.opportunities ?? [], [behavior?.opportunities]);
+  const opportunityMatches = useMemo(
+    () => matchOpportunitiesToFacetEvents(opportunities, filteredEvents),
+    [filteredEvents, opportunities],
+  );
   const [selectedOpportunityId, setSelectedOpportunityId] = useState(opportunities[0]?.opportunity_id ?? "");
   const [formulaWeights, setFormulaWeights] = useState<Partial<FormulaWeights>>(() => ({ ...(formula?.default_weights ?? {}) }));
 
   useEffect(() => {
-    setSelection((current) => ({ ...current, events: filteredEvents.slice(0, 3) }));
-  }, [filterSignature, filteredEvents]);
+    setSelection((current) => {
+      if (current.visualId === "opportunity_radar") {
+        const match = opportunityMatches.find((item) => item.opportunity.opportunity_id === selectedOpportunityId)
+          ?? opportunityMatches[0];
+        if (match) {
+          return {
+            visualId: current.visualId,
+            datumLabel: match.opportunity.label_zh || match.opportunity.opportunity_type,
+            events: match.events.slice(0, 4),
+          };
+        }
+      }
+      return { ...current, events: filteredEvents.slice(0, 3) };
+    });
+  }, [filterSignature, filteredEvents, opportunityMatches, selectedOpportunityId]);
 
   useEffect(() => {
     if (formula) setFormulaWeights({ ...formula.default_weights });
   }, [formula?.schema_version]);
 
   useEffect(() => {
-    if (!opportunities.some((item) => item.opportunity_id === selectedOpportunityId)) {
-      setSelectedOpportunityId(opportunities[0]?.opportunity_id ?? "");
+    if (!opportunityMatches.some((item) => item.opportunity.opportunity_id === selectedOpportunityId)) {
+      setSelectedOpportunityId(opportunityMatches[0]?.opportunity.opportunity_id ?? "");
     }
-  }, [opportunities, selectedOpportunityId]);
+  }, [opportunityMatches, selectedOpportunityId]);
 
   const selectedWorkflow = registry?.visuals.find((item) => item.id === selection.visualId)
     ?? registry?.visuals[0]
     ?? null;
-  const selectedOpportunity = opportunities.find((item) => item.opportunity_id === selectedOpportunityId)
-    ?? opportunities[0]
+  const selectedOpportunityMatch = opportunityMatches.find((item) => item.opportunity.opportunity_id === selectedOpportunityId)
+    ?? opportunityMatches[0]
     ?? null;
+  const selectedOpportunity = selectedOpportunityMatch?.opportunity ?? null;
   const formulaResult = useMemo(
     () => formula ? computeFormulaWhatIfScore(formula, formulaWeights) : null,
     [formula, formulaWeights],
@@ -109,12 +129,12 @@ export function VisualWorkflowWorkbench({ atlas, onSwitchView }: VisualWorkflowW
     setSelection({ visualId: workflow.id, datumLabel: datum.label, events: datum.events.slice(0, 4) });
   }
 
-  function selectOpportunity(workflow: VisualWorkflow, opportunity: OpportunitySummary) {
-    setSelectedOpportunityId(opportunity.opportunity_id);
+  function selectOpportunity(workflow: VisualWorkflow, match: OpportunityEventMatch) {
+    setSelectedOpportunityId(match.opportunity.opportunity_id);
     setSelection({
       visualId: workflow.id,
-      datumLabel: opportunity.label_zh || opportunity.opportunity_type,
-      events: filteredEvents.slice(0, 4),
+      datumLabel: match.opportunity.label_zh || match.opportunity.opportunity_type,
+      events: match.events.slice(0, 4),
     });
   }
 
@@ -145,27 +165,27 @@ export function VisualWorkflowWorkbench({ atlas, onSwitchView }: VisualWorkflowW
       <div className="r6-filter-bar" aria-label="决策视图过滤">
         <label>
           <span>来源</span>
-          <select data-r6-visual-filter="source" value={filters.source} onChange={(event) => updateFilter("source", event.target.value)}>
+          <select data-r6-filter="source" data-r6-visual-filter="source" value={filters.source} onChange={(event) => updateFilter("source", event.target.value)}>
             <option value="all">全部来源</option>
             {options.sources.map((source) => <option key={source} value={source}>{source}</option>)}
           </select>
         </label>
         <label>
           <span>时间</span>
-          <select data-r6-visual-filter="time" value={filters.time} onChange={(event) => updateFilter("time", event.target.value as VisualTimeFilter)}>
+          <select data-r6-filter="time" data-r6-visual-filter="time" value={filters.time} onChange={(event) => updateFilter("time", event.target.value as VisualTimeFilter)}>
             {options.times.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}
           </select>
         </label>
         <label>
           <span>项目</span>
-          <select data-r6-visual-filter="project" value={filters.project} onChange={(event) => updateFilter("project", event.target.value)}>
+          <select data-r6-filter="project" data-r6-visual-filter="project" value={filters.project} onChange={(event) => updateFilter("project", event.target.value)}>
             <option value="all">全部项目</option>
             {options.projects.map((project) => <option key={project} value={project}>{project}</option>)}
           </select>
         </label>
         <label>
           <span>任务</span>
-          <select data-r6-visual-filter="task" value={filters.task} onChange={(event) => updateFilter("task", event.target.value)}>
+          <select data-r6-filter="task" data-r6-visual-filter="task" value={filters.task} onChange={(event) => updateFilter("task", event.target.value)}>
             <option value="all">全部任务</option>
             {options.tasks.map((task) => <option key={task} value={task}>{humanFacetLabel(task)}</option>)}
           </select>
@@ -194,8 +214,10 @@ export function VisualWorkflowWorkbench({ atlas, onSwitchView }: VisualWorkflowW
             if (workflow.id === "opportunity_radar") {
               return (
                 <OpportunityVisualCard
+                  filterSignature={filterSignature}
+                  filteredEventCount={filteredEvents.length}
                   key={workflow.id}
-                  opportunities={opportunities}
+                  matches={opportunityMatches}
                   selectedOpportunityId={selectedOpportunity?.opportunity_id ?? ""}
                   workflow={workflow}
                   onSelect={(opportunity) => selectOpportunity(workflow, opportunity)}
@@ -208,6 +230,8 @@ export function VisualWorkflowWorkbench({ atlas, onSwitchView }: VisualWorkflowW
                   key={workflow.id}
                   formula={formula}
                   formulaResult={formulaResult}
+                  filterSignature={filterSignature}
+                  filteredEventCount={filteredEvents.length}
                   weights={formulaWeights}
                   workflow={workflow}
                   onReset={() => setFormulaWeights({ ...(formula?.default_weights ?? {}) })}
@@ -220,6 +244,8 @@ export function VisualWorkflowWorkbench({ atlas, onSwitchView }: VisualWorkflowW
             return (
               <EventVisualCard
                 data={data}
+                filterSignature={filterSignature}
+                filteredEventCount={filteredEvents.length}
                 key={workflow.id}
                 workflow={workflow}
                 onSelect={(datum) => selectDatum(workflow, datum)}
@@ -230,6 +256,7 @@ export function VisualWorkflowWorkbench({ atlas, onSwitchView }: VisualWorkflowW
 
         <aside
           className="r6-evidence-workspace"
+          data-r6-evidence-workspace
           data-r6-selected-visual={selectedWorkflow?.id ?? ""}
           data-r6-visual-evidence
         >
@@ -250,7 +277,7 @@ export function VisualWorkflowWorkbench({ atlas, onSwitchView }: VisualWorkflowW
           </dl>
           <div className="r6-evidence-list" aria-label="选中数据的证据">
             {selection.events.length ? selection.events.map((event) => (
-              <article data-r6-evidence-ref key={event.event_id}>
+              <article data-r6-evidence-ref data-r6-event-id={event.event_id} key={event.event_id}>
                 <span>{event.source_id} · {humanDate(event.occurred_at)}</span>
                 <strong>{event.topic || "未命名主题"}</strong>
                 <small>{event.project} · {humanFacetLabel(event.task_type)} · {humanFacetLabel(event.evidence_refs[0]?.evidence_level || "派生证据")}</small>
@@ -288,21 +315,38 @@ export function VisualWorkflowWorkbench({ atlas, onSwitchView }: VisualWorkflowW
 
 function EventVisualCard({
   data,
+  filterSignature,
+  filteredEventCount,
   workflow,
   onSelect,
 }: {
   data: R6ChartDatum[];
+  filterSignature: string;
+  filteredEventCount: number;
   workflow: VisualWorkflow;
   onSelect: (datum: R6ChartDatum) => void;
 }) {
   const maximum = Math.max(1, ...data.map((datum) => datum.value));
+  const dataEvents = uniqueVisualEvents(data.flatMap((datum) => datum.events));
+  const contentSignature = buildVisualFilterSignature(dataEvents, DEFAULT_FILTERS);
+  const modelSignature = `${filterSignature}:${contentSignature}`;
   return (
-    <article className={`r6-visual-card r6-family-${safeCssToken(workflow.family)}`} data-r6-visual-id={workflow.id}>
+    <article
+      className={`r6-visual-card r6-family-${safeCssToken(workflow.family)}`}
+      data-r6-card-content-signature={contentSignature}
+      data-r6-card-data-signature={modelSignature}
+      data-r6-card-event-count={dataEvents.length}
+      data-r6-card-zero={dataEvents.length === 0 ? "true" : "false"}
+      data-r6-filter-signature={filterSignature}
+      data-r6-filtered-event-count={filteredEventCount}
+      data-r6-visual-id={workflow.id}
+    >
       <VisualCardHeading workflow={workflow} />
       <div className={`r6-chart r6-chart-${workflow.id}`} aria-label={workflow.title_zh}>
         {data.map((datum, index) => (
           <button
             className="r6-chart-datum"
+            data-r6-datum={datum.id}
             data-r6-visual-datum={datum.id}
             key={datum.id}
             onClick={() => onSelect(datum)}
@@ -323,34 +367,52 @@ function EventVisualCard({
 }
 
 function OpportunityVisualCard({
-  opportunities,
+  filterSignature,
+  filteredEventCount,
+  matches,
   selectedOpportunityId,
   workflow,
   onSelect,
 }: {
-  opportunities: OpportunitySummary[];
+  filterSignature: string;
+  filteredEventCount: number;
+  matches: OpportunityEventMatch[];
   selectedOpportunityId: string;
   workflow: VisualWorkflow;
-  onSelect: (opportunity: OpportunitySummary) => void;
+  onSelect: (match: OpportunityEventMatch) => void;
 }) {
+  const dataEvents = uniqueVisualEvents(matches.flatMap((match) => match.events));
+  const contentSignature = buildVisualFilterSignature(dataEvents, DEFAULT_FILTERS);
+  const modelSignature = `${filterSignature}:${contentSignature}`;
   return (
-    <article className="r6-visual-card r6-family-economic" data-r6-visual-id={workflow.id}>
+    <article
+      className="r6-visual-card r6-family-economic"
+      data-r6-card-content-signature={contentSignature}
+      data-r6-card-data-signature={modelSignature}
+      data-r6-card-event-count={dataEvents.length}
+      data-r6-card-zero={dataEvents.length === 0 ? "true" : "false"}
+      data-r6-filter-signature={filterSignature}
+      data-r6-filtered-event-count={filteredEventCount}
+      data-r6-visual-id={workflow.id}
+    >
       <VisualCardHeading workflow={workflow} />
       <div className="r6-opportunity-list">
-        {opportunities.slice(0, 5).map((opportunity) => (
+        {matches.length ? matches.slice(0, 5).map((match) => (
           <button
-            className={selectedOpportunityId === opportunity.opportunity_id ? "active" : ""}
-            data-r6-opportunity-id={opportunity.opportunity_id}
-            data-r6-visual-datum={opportunity.opportunity_id}
-            key={opportunity.opportunity_id}
-            onClick={() => onSelect(opportunity)}
+            className={selectedOpportunityId === match.opportunity.opportunity_id ? "active" : ""}
+            data-r6-datum={match.opportunity.opportunity_id}
+            data-r6-opportunity-event-ids={match.events.map((event) => event.event_id).join(",")}
+            data-r6-opportunity-id={match.opportunity.opportunity_id}
+            data-r6-visual-datum={match.opportunity.opportunity_id}
+            key={match.opportunity.opportunity_id}
+            onClick={() => onSelect(match)}
             type="button"
           >
-            <span>{opportunity.label_zh || opportunity.opportunity_type}</span>
-            <strong>{Math.round(opportunity.score)}</strong>
-            <small>{opportunity.opportunity_half_life_days ?? 0} 天窗口</small>
+            <span>{match.opportunity.label_zh || match.opportunity.opportunity_type}</span>
+            <strong>{Math.round(match.opportunity.score)}</strong>
+            <small>{match.opportunity.opportunity_half_life_days ?? 0} 天窗口 · {match.events.length} 条匹配事件</small>
           </button>
-        ))}
+        )) : <p className="r6-opportunity-empty">当前条件下没有证据相交的机会，请放宽一个过滤项。</p>}
       </div>
     </article>
   );
@@ -359,6 +421,8 @@ function OpportunityVisualCard({
 function FormulaVisualCard({
   formula,
   formulaResult,
+  filterSignature,
+  filteredEventCount,
   weights,
   workflow,
   onReset,
@@ -367,6 +431,8 @@ function FormulaVisualCard({
 }: {
   formula: FormulaWhatIfPreview | undefined;
   formulaResult: ReturnType<typeof computeFormulaWhatIfScore> | null;
+  filterSignature: string;
+  filteredEventCount: number;
   weights: Partial<FormulaWeights>;
   workflow: VisualWorkflow;
   onReset: () => void;
@@ -374,9 +440,19 @@ function FormulaVisualCard({
   onWeightChange: (key: FormulaWeightKey, value: number) => void;
 }) {
   return (
-    <article className="r6-visual-card r6-formula-card r6-family-workflow" data-r6-visual-id={workflow.id}>
+    <article
+      className="r6-visual-card r6-formula-card r6-family-workflow"
+      data-r6-card-content-signature={formula?.schema_version || "formula-unavailable"}
+      data-r6-card-data-signature={`${filterSignature}:${formula?.schema_version || "formula-unavailable"}`}
+      data-r6-card-event-count={filteredEventCount}
+      data-r6-card-filter-mode="context"
+      data-r6-card-zero={filteredEventCount === 0 ? "true" : "false"}
+      data-r6-filter-signature={filterSignature}
+      data-r6-filtered-event-count={filteredEventCount}
+      data-r6-visual-id={workflow.id}
+    >
       <VisualCardHeading workflow={workflow} />
-      <button className="r6-formula-score" data-r6-formula-score data-r6-score={formulaResult?.score ?? 0} data-r6-visual-datum="formula-score" onClick={onSelect} type="button">
+      <button className="r6-formula-score" data-r6-datum="formula-score" data-r6-formula-score data-r6-score={formulaResult?.score ?? 0} data-r6-visual-datum="formula-score" onClick={onSelect} type="button">
         <span>当前 proxy 分</span>
         <strong>{formulaResult?.score ?? "--"}</strong>
         <small>{formulaResult ? `${formulaResult.delta >= 0 ? "+" : ""}${formulaResult.delta} 相对经济基线` : "公式快照不可用"}</small>
@@ -497,6 +573,12 @@ function buildVisualData(visualId: string, events: VisualFacetEvent[]): R6ChartD
     .sort((left, right) => right.value - left.value || left.label.localeCompare(right.label, "zh-CN"))
     .slice(0, 6);
   return rows.length ? rows : emptyDatum();
+}
+
+function uniqueVisualEvents(events: VisualFacetEvent[]): VisualFacetEvent[] {
+  const byId = new Map<string, VisualFacetEvent>();
+  for (const event of events) byId.set(event.event_id, event);
+  return Array.from(byId.values()).sort((left, right) => left.event_id.localeCompare(right.event_id, "zh-CN"));
 }
 
 function visualDatumSecondary(visualId: string, events: VisualFacetEvent[]): string {

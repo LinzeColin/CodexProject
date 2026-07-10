@@ -1,4 +1,4 @@
-import type { FormulaWhatIfPreview, VisualFacetEvent } from "./types.ts";
+import type { FormulaWhatIfPreview, OpportunitySummary, VisualFacetEvent } from "./types.ts";
 
 
 export type VisualTimeFilter = "all" | "30d" | "90d" | "365d";
@@ -34,6 +34,11 @@ export interface FormulaWhatIfResult {
   positiveScore: number;
   reworkPenalty: number;
   weights: FormulaWeights;
+}
+
+export interface OpportunityEventMatch {
+  opportunity: OpportunitySummary;
+  events: VisualFacetEvent[];
 }
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -102,6 +107,22 @@ export function buildVisualFilterSignature(
     .map((event) => event.event_id)
     .sort((left, right) => left.localeCompare(right, "zh-CN"));
   return [filters.source, filters.time, filters.project, filters.task, String(ids.length), stableHash(ids.join("|"))].join("|");
+}
+
+export function matchOpportunitiesToFacetEvents(
+  opportunities: OpportunitySummary[],
+  events: VisualFacetEvent[],
+): OpportunityEventMatch[] {
+  return opportunities.flatMap((opportunity) => {
+    const opportunityRefIds = new Set(
+      opportunity.evidence_refs.map((ref) => ref.ref_id).filter(Boolean),
+    );
+    if (opportunityRefIds.size === 0) return [];
+    const matchedEvents = events.filter((event) => {
+      return event.evidence_refs.some((ref) => opportunityRefIds.has(ref.ref_id));
+    });
+    return matchedEvents.length ? [{ opportunity, events: matchedEvents }] : [];
+  });
 }
 
 export function computeFormulaWhatIfScore(
