@@ -1,5 +1,8 @@
 {
   "schema_version": "memory_atlas.final_delivery_cleanup.v1_2",
+  "historical_record": true,
+  "current_release_claim_valid": false,
+  "superseded_by": "机器治理/证据与日志/remediation/v1_2_r0/status.json",
   "task_id": "MA-V12-FINAL-DELIVERY-CLEANUP",
   "acceptance_id": "ACC-MA-V12-FINAL-DELIVERY-CLEANUP",
   "status": "v1_2_final_delivery_completed_with_protected_cloudflare_live_evidence",

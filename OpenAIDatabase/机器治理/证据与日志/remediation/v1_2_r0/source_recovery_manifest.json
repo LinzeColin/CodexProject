@@ -1,0 +1,40 @@
+{
+  "schema_version": "memory_atlas.remediation_source_recovery.v1",
+  "phase": "R0",
+  "captured_at": "2026-07-10T07:52:10Z",
+  "status": "PASS_EXACT_BYTE_RECOVERY",
+  "canonical_git_baseline": {
+    "head": "00f4187f43960a3b25fc696ae2a15951f4431763",
+    "origin_main": "00f4187f43960a3b25fc696ae2a15951f4431763",
+    "branch": "main"
+  },
+  "roadmap": {
+    "original_name": "v1.2_四线14Stage升级_Roadmap.md",
+    "size": 22261,
+    "sha256": "699a8fe5f99a5edc88fec1f8940c4339f7b9b291bd31830f946f521f80904a71",
+    "matches_taskpack_roadmap": true,
+    "restored_downloads": true,
+    "repository_portable_copy": "docs/source_packages/memory_atlas_v1_2/v1.2_四线14Stage升级_Roadmap.md"
+  },
+  "taskpack": {
+    "original_name": "Memory_Atlas_v1.2_四线14Stage升级_TaskPack.zip",
+    "size": 48133,
+    "sha256": "38e21ae3e94d860e6a40c70a629c8f7048f889164358df7b184bd8caf7bf2472",
+    "archive_file_count": 32,
+    "archive_uncompressed_bytes": 83145,
+    "manifest_payload_count": 30,
+    "manifest_payload_failures": 0,
+    "restored_downloads": true,
+    "repository_portable_part": "docs/source_packages/memory_atlas_v1_2/Memory_Atlas_v1.2_四线14Stage升级_TaskPack.zip.part",
+    "restore_script": "docs/source_packages/memory_atlas_v1_2/restore_taskpack.sh"
+  },
+  "inner_zip_sha256_metadata": {
+    "sha256": "6b1951ebddd53c18adf72a7128ceee172aca301b1fc9d49aafd418c4f5c10e43",
+    "authoritative": false,
+    "reason": "It does not equal the historical containing ZIP hash."
+  },
+  "remote_push": false,
+  "deployment": false,
+  "app_reinstall": false,
+  "raw_mutation": false
+}

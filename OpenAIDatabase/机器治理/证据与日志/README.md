@@ -2,6 +2,18 @@
 
 用于放置 run evidence、audit logs、manifest/hash、stage evidence 和复审证据摘要。
 
+当前权威状态是 `remediation/v1_2_r0/status.json`：v1.2 已重新打开，发布状态为
+`FAIL_REMEDIATION_REQUIRED`。R0 已精确恢复原 Roadmap/TaskPack，并用 58 条需求矩阵和
+三个真实视口证明历史 Final Review/Final Delivery 的完成语义无效。当前证据：
+
+- `remediation/v1_2_r0/source_recovery_manifest.json`
+- `remediation/v1_2_r0/requirements_gap_matrix.csv`
+- `remediation/v1_2_r0/browser/online_layout_metrics.json`
+- `remediation/v1_2_r0/browser/local_app_layout_metrics.json`
+
+以下 final delivery、final review 和 stage pass 文件均保留为历史记录；R8 重新验收前
+不得单独用于宣称完成。
+
 当前 final delivery cleanup 证据文件：
 
 - `final_delivery/v1_2_final_delivery_cleanup_status.json`
