@@ -40,8 +40,8 @@ Before acting, read:
 ## Current Attendance Rules
 
 - Automation name: `每日早晚钉钉考勤检查`.
-- Timezone: `Asia/Shanghai`.
-- Morning run: 10:35. Evening run: 20:05.
+- Business-date timezone: `Asia/Shanghai`; this is not a scheduler timezone field.
+- Morning run: 10:35. Evening run: fixed local wall-clock 20:00.
 - DWS backend is live-only; no sample employees or fixture attendance records are allowed as production data.
 - Known no-record people: `张霖泽`, `林全意`; only their own missing records are exempted.
 - Rest reminder rule: `REST_REQUIRED_THRESHOLD_DAYS = 23`.
@@ -72,7 +72,7 @@ When the user says "raw/original data is in `KMFA/metadata`", treat tracked `KMF
 Existing local Codex automation ids:
 
 - Morning: `kmfa`, daily 10:35 Beijing time.
-- Evening: `kmfa-3`, daily 20:05 Beijing time.
+- Evening: `kmfa-3`, daily at the owner's fixed local wall-clock 20:00; never UTC-offset convert this scheduler time.
 
 Both automation prompts must invoke this skill by name:
 

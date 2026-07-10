@@ -1,6 +1,6 @@
 # DWS Output Data Contract
 
-This skill consumes an existing DWS output zip. It does not fetch DingTalk itself and does not extract the package to local disk.
+This skill consumes one complete DWS output zip as its only upstream input. It does not fetch DingTalk itself and does not copy or extract the package to local disk.
 
 ## Primary Input Zip
 
@@ -29,7 +29,11 @@ chat_records/raw_messages.jsonl
 files/MMDD/*
 ```
 
-A direct `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/` folder with the same layout is supported only as a compatibility fallback.
+A disk `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/`
+folder is normally absent and is never an input. Do not probe, create,
+materialize, copy, extract, or fall back to it. The `DWS_Outputs/<群>/...`
+layout above refers only to member paths inside the zip. Stream required
+members in place and do not automatically evict the zip after each run.
 
 ## Required Manifest Fields
 
@@ -145,7 +149,7 @@ notify:{event_type}:{event_key}:{target_label}
 
 ## Missing Data Behavior
 
-- Missing group folder: create `SOURCE_MISSING_GROUP` issue.
+- Missing group member prefix inside the zip: create `SOURCE_MISSING_GROUP` issue.
 - Missing manifest: create `SOURCE_MISSING_MANIFEST` issue.
 - Missing chat records: create `SOURCE_MISSING_CHAT_RECORDS` issue.
 - Missing file referenced by manifest: create `SOURCE_MISSING_FILE` issue.

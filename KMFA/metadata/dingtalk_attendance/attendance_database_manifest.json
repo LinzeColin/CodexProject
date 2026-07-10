@@ -54,9 +54,13 @@
     "sqlite_committed": false
   },
   "schedule": {
-    "evening": "20:05",
+    "business_date_timezone": "Asia/Shanghai",
+    "evening": "20:00",
+    "evening_clock": "local_wall_clock",
     "morning": "10:35",
-    "timezone": "Asia/Shanghai"
+    "morning_clock": "business_clock",
+    "scheduler_timezone_configured": false,
+    "summary_datetime_source": "actual_run_datetime_in_business_date_timezone"
   },
   "stage_id": "S19",
   "sqlite_committed": false

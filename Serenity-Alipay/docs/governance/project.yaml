@@ -154,6 +154,12 @@ features:
     evidence_refs:
       - "EVID-SER-MODEL-REGISTRY"
       - "EVID-SER-MODEL-EXTRACTION"
+  - feature_id: "FEAT-SER-CF-L2-001"
+    name: "Cloudflare 安全 L2 只读投资驾驶舱"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-SER-LEGACY-EVENTS"
 models:
   -
     model_id: "MOD-001"

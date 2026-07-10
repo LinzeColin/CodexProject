@@ -8,19 +8,26 @@ This metadata controls a local skill that reads existing DWS output from OneDriv
 /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
 ```
 
-The checker streams required CSV entries from the zip and does not extract the package to local disk. A direct `DWS_Outputs/` folder with the same group structure remains a compatibility fallback.
+The checker streams required CSV members from this complete zip and does not copy or extract the package. It is the only upstream input. A disk `DWS_Outputs/` folder is normally absent and must never be probed, created, materialized, or used as fallback. `DWS_Outputs/<群>/...` is retained only as a member path inside the zip.
 
 It does not create the upstream DWS archive automation.
 If `DWS_Outputs.zip` is a OneDrive dataless placeholder or a corrupt zip, healthcheck reports `ZIP_INPUT_UNREADABLE` and asks for a readable hydrated zip.
+Scheduled triggers execute exactly one corresponding window once and never run cleanup. The reader does not create a source cache or automatically evict the zip after each run.
 
 Scheduler contract:
 
 ```text
 one automation only: Dingtalk-routine-check / 钉钉工作检查
-timezone: Asia/Shanghai
-daily 11:35 -> trigger_window=morning_1135
-daily 17:05 -> trigger_window=evening_1705
+business clock: Asia/Shanghai
+business 11:35 -> trigger_window=morning_1135
+business 17:05 -> trigger_window=evening_1705
+current AEST local scheduler: 13:35 and 19:05
+RRULE:FREQ=DAILY;BYHOUR=13,19;BYMINUTE=5,35;BYSETPOS=2,3
 ```
+
+The scheduler record has no explicit timezone, `DTSTART`, or `TZID`. The
+local-wall-clock hours must be recalculated whenever the host UTC offset
+changes; business evaluation remains `Asia/Shanghai`.
 
 Every run log must include `run_at_beijing`, `check_date`, `trigger_window`, `rules_evaluated`, and `rules_skipped`. Missing or stale upstream DWS output is recorded as `SOURCE_MISSING` or `SOURCE_STALE`. Routine abnormalities use `abnormal_type=late|review|wrong|merged|missing` plus `reminder_level=P0|P1|P2`.
 

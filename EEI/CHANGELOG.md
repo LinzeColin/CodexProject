@@ -1,5 +1,11 @@
 # Changelog
 
+## Cloudflare L2 public explorer — 2026-07-10
+
+- 新增隔离的 `apps/cloudflare-public` 静态 explorer、Workers Static Assets 配置、隐私扫描和兼容性回归。
+- 仅使用示意拓扑，不连接生产关系数据库，不关闭 A209/A210，不声明 production data publication、legal release 或 brand clearance 完成。
+- build、private scan、响应式浏览器验收和 Wrangler dry-run 已通过；真实部署仍因 Workers 授权阻塞，未填写 live URL。
+
 ## 0.1.0 - 2026-06-20
 
 - Established CodexProject canonical governance baseline under `docs/governance/`.

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <meta
+      name="description"
+      content="A dry-run-only public cockpit for the Serenity-Alipay review workflow."
+    />
+    <title>Serenity — Public Review Cockpit</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <div class="night-window" aria-hidden="true"><i></i><i></i><i></i></div>
+
+    <header class="site-header">
+      <a class="brand" href="#content" aria-label="Serenity public cockpit home">
+        <span class="cloud-mark" aria-hidden="true">☁</span>
+        <span><strong>Serenity</strong> — Alipay Review</span>
+      </a>
+      <div class="header-meta">
+        <span><i aria-hidden="true"></i>L2 public cockpit · no external actions</span>
+        <a href="https://home.linzezhang.com">LinzeHomeHub</a>
+      </div>
+    </header>
+
+    <main id="content">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="context">A public, dry-run-only review surface</p>
+          <h1 id="hero-title"><span>Review signals.</span><br />Never move money.</h1>
+          <p class="lead">
+            Serenity turns evidence into a reviewable next step. This public cockpit uses fully redacted,
+            illustrative examples and contains no account connection or private financial record.
+          </p>
+          <p class="hard-boundary">
+            It never reads real Alipay data, connects MooMoo/OpenD, sends Apple Mail, triggers notifications,
+            trades, launchd, or external account actions.
+          </p>
+          <div class="actions">
+            <a class="button primary" href="#cockpit">Open public cockpit <span aria-hidden="true">↗</span></a>
+            <a class="button secondary" href="#safety">Safety boundary</a>
+          </div>
+        </div>
+
+        <figure class="review-orbit" id="cockpit" aria-labelledby="orbit-caption">
+          <div class="confirmation-ring" aria-hidden="true"></div>
+          <div class="confirmation-label"><i aria-hidden="true">✋</i><span>Human confirmation</span></div>
+          <div class="orbit-line orbit-one" aria-hidden="true"></div>
+          <div class="orbit-line orbit-two" aria-hidden="true"></div>
+          <div class="orbit-core" aria-hidden="true">☁</div>
+          <article class="orbit-node evidence">
+            <i aria-hidden="true">◉</i>
+            <h2>Evidence</h2>
+            <p>Collect and normalize redacted signals.</p>
+          </article>
+          <article class="orbit-node review">
+            <i aria-hidden="true">⌕</i>
+            <h2>Review</h2>
+            <p>Assess quality and consistency.</p>
+          </article>
+          <article class="orbit-node decision">
+            <i aria-hidden="true">⚖</i>
+            <h2>Decision</h2>
+            <p>Determine the next dry-run step.</p>
+          </article>
+          <svg viewBox="0 0 700 620" aria-hidden="true">
+            <path d="M230 210C358 124 488 156 535 270" />
+            <path d="M546 310C529 430 440 482 347 468" />
+            <path d="M309 467C211 435 169 343 197 252" />
+          </svg>
+          <figcaption id="orbit-caption">
+            The outer confirmation ring is a hard stop. No public interaction crosses into account or
+            production execution.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="capabilities" aria-label="Public capabilities">
+        <article><span>Observe</span><strong>Evidence map</strong><p>Illustrative sources and quality states, never private records.</p></article>
+        <article><span>Review</span><strong>Decision trail</strong><p>A public explanation of how a review moves through dry-run gates.</p></article>
+        <article><span>Pause</span><strong>Human stop</strong><p>A visible boundary before any notification, account, or trade action.</p></article>
+      </section>
+
+      <section class="dry-run" aria-labelledby="dry-run-title">
+        <div class="section-intro">
+          <p>Public demo</p>
+          <h2 id="dry-run-title">A review path with every side effect switched off.</h2>
+        </div>
+        <ol>
+          <li><span>Evidence</span><strong>Illustrative signal received</strong><small>No external source call</small></li>
+          <li><span>Review</span><strong>Quality and consistency checked</strong><small>No local database read</small></li>
+          <li><span>Decision</span><strong>Dry-run note prepared</strong><small>No notification or trade</small></li>
+          <li><span>Stop</span><strong>Human confirmation required</strong><small>Public flow ends here</small></li>
+        </ol>
+      </section>
+
+      <section class="safety" id="safety" aria-labelledby="safety-title">
+        <div>
+          <p>Safety boundary</p>
+          <h2 id="safety-title">The public cockpit explains the process. It cannot operate the system.</h2>
+        </div>
+        <dl>
+          <div><dt>Data</dt><dd>No Alipay export, holding, portfolio, SQLite row, local report, or account identifier.</dd></div>
+          <div><dt>Connections</dt><dd>No MooMoo/OpenD process, broker credential, API secret, or external account.</dd></div>
+          <div><dt>Actions</dt><dd>No Apple Mail, notification, schedule, launchd job, order, payment, transfer, or trade.</dd></div>
+        </dl>
+      </section>
+    </main>
+
+    <footer>
+      <span>Serenity-Alipay · Cloudflare Compatibility Envelope · L2</span>
+      <nav aria-label="Project links">
+        <a href="https://home.linzezhang.com">HomeHub</a>
+        <a href="https://github.com/LinzeColin/CodexProject/tree/main/Serenity-Alipay">GitHub source</a>
+        <a href="#content">Deployment status</a>
+      </nav>
+    </footer>
+  </body>
+</html>

@@ -1,5 +1,172 @@
 # KMFA Automation Bug Log
 
+## 2026-07-11 `dws-auth-keepalive-2` False Keepalive And Login Fallback
+
+Scope: only the DWS authentication keepalive automation. The original contract
+required automatic renewal of refreshable access tokens.
+
+Root causes:
+
+- The live prompt mislabeled `dws auth login --yes --no-browser` as a
+  non-interactive refresh. `--no-browser` only suppresses browser launch; login
+  still starts a complete OAuth authorization and waits for user interaction.
+- The actual refresh trigger is `dws auth status --format json`.
+- DWS status can exit 0 with `authenticated=true` and
+  `refresh_token_valid=true` after an access-token refresh failure while
+  omitting `token_valid` and `refreshed`. Trusting exit 0 created false-green
+  keepalive runs.
+- The prompt wrote dedupe state to the retired `dws-auth-keepalive` memory while
+  the active automation ID is `dws-auth-keepalive-2`, splitting the ledger.
+- The old doctor command used `--format json`; doctor requires `--json`.
+
+Repair:
+
+- Added `KMFA/tools/automation/dws_auth_keepalive.py` and regression tests.
+- The wrapper invokes only profile-pinned `auth status`; success requires a
+  consistent success/authenticated/token/refresh/profile state, future parseable
+  access and refresh expiries, and doctor with zero fails. It returns nonzero
+  for every missing, contradictory, stale, malformed, or unavailable gate.
+- DWS's inner HTTP timeout is 20 seconds and the parent process timeout is 25
+  seconds, preventing the wrapper from killing the CLI before its own timeout.
+- No failure path executes `auth login`; manual device authorization is only a
+  reported next action.
+- Added a Git-tracked prompt/contract and updated the live automation without
+  changing its pure RRULE or adding a timezone.
+- Pinned the expected organization in a machine-private 0600 config; status and
+  doctor no longer depend on mutable `currentProfile`.
+- Moved ledger and 24-hour/final-4-hour reminder dedupe into the deterministic
+  wrapper. Active files are 0600 in a 0700 directory and contain no corp/user
+  identity; the legacy identity-bearing ledger is retained private at 0600.
+- Upgraded the official DWS CLI to v1.0.51 for current credential diagnostics;
+  the upgrade itself is not treated as refresh proof.
+
+Open acceptance gate:
+
+- The current token pair cannot obtain a new access token even though the local
+  refresh expiry metadata is still in the future. A one-time owner-authorized
+  `dws auth login --device` is required. Long-term closure additionally requires
+  a later natural scheduled run after access-token expiry to report
+  `refreshed=true` and `token_valid=true` with a newer expiry.
+
+## 2026-07-10 `kmfa-3` Owner-Fixed 20:00 Stability Repair
+
+Scope: only the evening attendance automation `kmfa-3`. The owner fixed its
+permanent trigger to the host's local wall-clock 20:00. This time must not be
+converted from Beijing time, UTC offset, or daylight-saving state.
+
+Root causes:
+
+- The live automation had already been edited to 20:00, but the Git contract,
+  prompt mirrors, S19 schedule constant, validator, and docs still encoded
+  22:05 / 20:05. The central checker therefore reported `kmfa-3: rrule` drift.
+- `run_attendance.py` printed failure payloads but always returned exit code 0,
+  allowing DWS, partial collection, or notification failures to look green to
+  the scheduler.
+- The local scheduler literal was also reused as an `Asia/Shanghai` DWS summary
+  cutoff. With Sydney 20:00 occurring at Beijing 18:00/17:00, that could query
+  two or three hours into the future.
+- The evening prompt did not lock the exact S19 command and could treat the
+  advisory App Key-oriented runtime inspection as more authoritative than the
+  current DWS PAT config-only healthcheck.
+
+Permanent contract:
+
+```text
+RRULE:FREQ=WEEKLY;BYHOUR=20;BYMINUTE=0;BYDAY=SU,MO,TU,WE,TH,FR,SA
+```
+
+The live record contains no `DTSTART`, `TZID`, or explicit scheduler timezone.
+The runner continues to use `Asia/Shanghai` only for business-date semantics;
+that internal argument must never shift the scheduler's 20:00 wall-clock time.
+Live summary queries now use the actual run datetime in the business-date
+clock, while controlled historical reruns keep their explicit replay datetime.
+The contract records `fixed_local_wall_clock=true` and
+`offset_conversion_allowed=false` for `kmfa-3`.
+The central live checker also locks the normalized evening prompt SHA-256 and
+canonical project id, so a future stale prompt or wrong-project rebound fails
+the same health gate even when the RRULE itself still looks correct.
+CLI success is a positive whitelist: collection/send-only status and
+`notification_status` must agree on `SENT`; contradictory payloads fail.
+
+Runtime evidence already observed from the automation-created task on this
+date: canonical cwd, real S19 DWS entry, 44/44 record calls, 44/44 summary
+calls, zero command failures, private OneDrive artifacts, and both configured
+notification targets `SENT`. This proves the execution and delivery chain, but
+the 21:18 AEST start was a save-trigger/missed-trigger run rather than a natural
+20:00 timing proof.
+
+Remaining acceptance gate: observe the next natural `kmfa-3` trigger at 20:00
+local wall clock and verify one task, canonical cwd, completed collection,
+private archive, and successful configured-target delivery. Do not claim the
+natural timing gate before that evidence exists.
+
+## 2026-07-10 Pure-RRULE Scheduler Repair (Historical Pre-20:00 State)
+
+Scope: remove scheduler timezone metadata from all five active KMFA-related
+Codex Desktop automations and add a regression gate that reads the live app
+records instead of validating only business-time constants.
+
+Root cause and evidence:
+
+- The live attendance and routine records used `DTSTART;TZID=Asia/Shanghai`
+  while the Codex scheduler executed historical runs by the Mac's Sydney local
+  wall clock. Prompt text saying `Asia/Shanghai` did not change scheduler time.
+- Existing S19 and S20 tests validated business times and prompt/package files,
+  but did not read `~/.codex/automations/*/automation.toml`; invalid live RRULEs
+  therefore passed every repo validator.
+- The S19 business runtime is currently healthy: config-only healthcheck is
+  `READY`, DWS command safety is `READY`, and both the personal and group
+  notification targets are available. The last successful manual personal run
+  proves the runner, but not the natural scheduler.
+
+Repair:
+
+| ID | Pure scheduler rule | Business interpretation |
+|---|---|---|
+| `kmfa` | `RRULE:FREQ=DAILY;BYHOUR=12;BYMINUTE=35` | 10:35 Asia/Shanghai at current AEST offset |
+| `kmfa-3` | `RRULE:FREQ=DAILY;BYHOUR=22;BYMINUTE=5` | 20:05 Asia/Shanghai at current AEST offset |
+| `kmfa-4` | `RRULE:FREQ=DAILY;BYHOUR=13,19;BYMINUTE=5,35;BYSETPOS=2,3` | 11:35 and 17:05 Asia/Shanghai at current AEST offset |
+| `kmfa-5` | `RRULE:FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0` | Monday/Saturday 11:00 Sydney local |
+| `kmfa-dws` | `RRULE:FREQ=DAILY;BYHOUR=11,19;BYMINUTE=0` | Daily 11:00 and 19:00 Sydney local |
+
+All five records were saved through the official Codex automation update API.
+No live TOML was edited directly. `kmfa-4` remains one automation: `BYSETPOS`
+selects 13:35 and 19:05 without creating the unwanted 13:05/19:35 product.
+
+Regression protection:
+
+```text
+KMFA/metadata/automation/codex_app_schedules.contract.toml
+KMFA/tools/automation/check_kmfa_automation_schedules.py
+KMFA/tests/test_automation_schedule_contract.py
+```
+
+The checker rejects `DTSTART`, `TZID`, explicit scheduler timezone fields,
+multiline/multiple RRULEs, schedule drift, cwd drift, inactive state, model
+drift, and reasoning-setting drift across the five live records.
+
+Validation observed after the official update:
+
+```text
+CODEX_AUTOMATIONS_READY (5 automations, 0 mismatches)
+3 scheduler regression tests OK
+66 S19 attendance tests OK
+19 S20 routine tests OK
+attendance skill validator PASS
+routine skill validator PASS
+fund live automation checker CODEX_AUTOMATION_READY
+```
+
+The original 22:05 acceptance gate was superseded by the owner's permanent
+local 20:00 correction documented above.
+
+Known unrelated runtime issue: S20 routine-check config-only health reports its
+OneDrive `DWS_Outputs.zip` as a dataless placeholder. That source blocker is not
+caused by the scheduler repair and was not widened into this change.
+
+Historical note: offset conversion applied to this earlier repair. It no longer
+applies to `kmfa-3`, whose owner-fixed 20:00 scheduler time must never move.
+
 ## 2026-07-10 Diagnosis and Repair
 
 Scope: diagnose why KMFA automations were visible but not reliable, and repair
@@ -201,3 +368,48 @@ Safety notes:
   copied into the fund input folder.
 - No source files are overwritten by the materializer; conflicts remain
   fail-closed under the existing materialization contract.
+
+## 2026-07-11 S20 Routine Check ZIP-only And Cache I/O Root Cause
+
+Scope: `kmfa-4` / `Dingtalk-routine-check` only. This entry does not change the
+separate S21 fund-folder materialization contract.
+
+Observed state:
+
+| Check | Result |
+|---|---|
+| Canonical S20 input | `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip` existed and was the actual latest run input. |
+| ZIP disk state | Logical size `568878497` bytes; allocated `555548 KiB` (about 543 MiB); locally materialized, not dataless. |
+| Alias duplication | `/Users/linzezhang/onedrive/DWS_Outputs.zip` had the same inode as the canonical path; it was not a second copy. |
+| Direct folder state | `DWS_Outputs/` was absent under canonical OneDrive, the alias path, and Downloads; absence is normal for S20. |
+| Extraction/cache scan | No DWS extraction copy was found. Routine private runtime was about 208 KiB; the old `/private/tmp/daily_routine_check_pkg` source package was about 156 KiB with no CSV/JSONL/SQLite/ZIP payloads. |
+| Required ZIP payload | Four target CSV members totaled `267878` bytes uncompressed and `65374` bytes compressed inside a roughly 1006-entry archive. |
+
+Root cause:
+
+- Commit history had converted the workflow to ZIP-first but retained the old
+  folder fallback across rules, healthcheck, reader, CLI output wording, docs,
+  and the live prompt. This was an incomplete contract migration.
+- Healthcheck still probed direct group paths, and the reader could switch to
+  the folder branch. The prompt therefore continued teaching future agents that
+  a folder might be expected even though the owner can only provide a ZIP.
+- `inspect_group_sources()` read a group CSV and the main loop read the same CSV
+  again. The scheduled command also requested SQLite VACUUM every run through
+  cleanup flags. Neither behavior caused a DWS extraction folder, but both added
+  avoidable I/O around an already large hydrated ZIP.
+
+Repair state:
+
+- ZIP-only reader/healthcheck/CLI and the single-read source snapshot are
+  implemented. Manual cleanup now exits before ZIP/business loading. The owning
+  run passed 25 routine tests, the skill validator,
+  8 automation contract tests, a real-ZIP healthcheck, and both window dry-runs.
+- Cleanup execution now requires the explicit maintenance gate
+  `--cleanup --apply`; scheduled commands no longer carry those flags. Official
+  live prompt/hash readback passed and all 5 KMFA automation contracts reported
+  no drift. The next natural-trigger run remains the only runtime acceptance
+  gate; no natural-run success is claimed by this entry.
+- Auto-eviction of the ZIP is prohibited because it would force the next run to
+  download the full archive again. A target-only small ZIP or reliable remote
+  range reader would be a separate upstream design decision requiring owner
+  authorization.

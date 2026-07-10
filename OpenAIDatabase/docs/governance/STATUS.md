@@ -2,42 +2,22 @@
 
 ## Snapshot Metadata
 
-- source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
+- source_base_commit: `00f4187f43960a3b25fc696ae2a15951f4431763`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:bbec5b8736622a8f1e07d68e21e6d78e4c05d1ac941d8664304a25c5fa98c84e`
-- snapshot_event_time: `2026-06-26T21:56:00+10:00`
-- generator_version: `4.0.0`
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- source_snapshot_hash: `sha256:95810479060b9ee632413b4c1fc501a0a5350cc64736cc81a880cd28a09b952e`
+- snapshot_event_time: `2026-07-10T18:53:05+10:00`
+- generator_version: `4.0.1`
+- final_commit_binding: `COMMIT_BOUND:00f4187f43960a3b25fc696ae2a15951f4431763`
 
 ## Current State
 
 - Project: `OpenAIDatabase`
 - Path: `OpenAIDatabase`
 - Product version: `0.2.0`
-- Phase/Gate: `D / S5PB-GATE-IN-PROGRESS; MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED`
-- Latest maintenance task: `TASK-OAI-D-004 / Memory Atlas Phase 1 live URL readiness gate repair`
-- Latest controlled sub-workflow setup: `MACDATA-PROM2-SETUP-20260705 / proM2 MacData archive and cleanup automation`
+- Phase/Gate: `CF-L2 / ACC-CF-L2-20260710-PASSED-ACCESS-PROTECTED`
 - Models/Formulas/Parameters total: `12 / 12 / 99`
 - Active formulas/parameters: `12 / 99`
 - Machine checked formulas/parameters: `10 / 28`
-
-## Memory Atlas Phase 1 Readiness Repair
-
-- Status: `local_go_passed_pending_pr_checks_and_merge`
-- Scope: Stage 8 packaging alias, Stage 3/Stage 6 validator drift, whole-project validator aggregation, visual acceptance audit validator, and release-safety removal of a tracked encrypted session-history key.
-- Validation: lint, build, Stage 8 release safety, Stage 8 local app, Stage 8 local app packaging, whole-project validation, offline Cloudflare Pages + Access preflight, and changed-only governance CI passed locally.
-- Deployment boundary: no Cloudflare live upload, Access policy mutation, or memoryatlas.linzezhang.com publish was executed.
-
-## macdata proM2 Controlled Archive
-
-- Status: `in_progress`
-- Device truth: `MacBook Pro / Mac14,5 / Apple M2 Max / 32GB`
-- Archive branch: `macdata-proM2`
-- Cleanup gate: remote upload hash verification must pass before macdata retention cleanup or Docker/Homebrew/system/project cache cleanup runs.
-- Post-run hygiene: verified runs clean only managed merged temporary PRs/branches/issues; `main` and `macdata-proM2` are protected.
-- Status file: `last_run_status.json` records raw/report archive results, top-level `ok`, archive branch, and remote verification after report upload completes.
-- Report artifact: the full Chinese MacData report uses Markdown `.md` files: `reports/latest/latest_report.md`, current-day `*_draft.md`, and current-day `*_final.md`.
-- Secret boundary: API keys, tokens, passwords, cookies, sessions, Keychain, shell history, full environment dumps, and `.env` raw content are out of scope.
 
 ## Assurance
 
@@ -55,10 +35,10 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `S5PB-GATE-IN-PROGRESS; MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED`
-- Next executable task: `TASK-OAI-B-001`; `TASK-OAI-D-004` is a completed local readiness gate repair and does not change delivery readiness.
-- Pending/stale events: `9`
+- Release gate: `ACC-CF-L2-20260710-PASSED-ACCESS-PROTECTED`
+- Next executable task: `TASK-OAI-B-001`
+- Pending/stale events: `17`
 - Tree-bound events: `0`
-- Commit-bound events: `1`
+- Commit-bound events: `3`
 - Legacy unbound events: `6`
-- Unresolved fact IDs: `7`
+- Unresolved fact IDs: `9`

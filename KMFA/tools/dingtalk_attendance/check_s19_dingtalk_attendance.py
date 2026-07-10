@@ -30,7 +30,7 @@ REQUIRED_METADATA_FILES = (
     "onedrive_storage_manifest.yaml",
     "secrets_policy.md",
     "codex_automation/morning_1035.prompt.md",
-    "codex_automation/evening_2005.prompt.md",
+    "codex_automation/evening_2000.prompt.md",
     "codex_automation/manual_rerun.prompt.md",
     "private_runtime/README.md",
     "private_runtime/.gitkeep",
@@ -147,11 +147,19 @@ def validate_s19_files(root: Path) -> dict[str, Any]:
     if manifest.get("automation_name") != AUTOMATION_NAME:
         errors.append("automation name drift")
     schedule = manifest.get("schedule", {})
-    if not isinstance(schedule, dict) or schedule.get("morning") != "10:35" or schedule.get("evening") != "20:05":
+    if (
+        not isinstance(schedule, dict)
+        or schedule.get("morning") != "10:35"
+        or schedule.get("evening") != "20:00"
+        or schedule.get("evening_clock") != "local_wall_clock"
+        or schedule.get("business_date_timezone") != "Asia/Shanghai"
+        or schedule.get("scheduler_timezone_configured") is not False
+        or schedule.get("summary_datetime_source") != "actual_run_datetime_in_business_date_timezone"
+    ):
         errors.append("automation schedule drift")
     if (metadata_root / "codex_automation" / "morning_1035.prompt.md").read_text(encoding="utf-8").find("10:35") < 0:
         errors.append("morning prompt schedule drift")
-    if (metadata_root / "codex_automation" / "evening_2005.prompt.md").read_text(encoding="utf-8").find("20:05") < 0:
+    if (metadata_root / "codex_automation" / "evening_2000.prompt.md").read_text(encoding="utf-8").find("20:00") < 0:
         errors.append("evening prompt schedule drift")
     if manifest.get("onedrive_root") != ONEDRIVE_ROOT:
         errors.append("onedrive root drift")

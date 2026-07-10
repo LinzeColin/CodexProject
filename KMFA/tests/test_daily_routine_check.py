@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import io
 import json
 import subprocess
 import sys
@@ -8,6 +9,7 @@ import zipfile
 from datetime import date, datetime
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest import mock
 
 from KMFA.tools.daily_routine_check.archive_reader import DwsArchiveReader
 from KMFA.tools.daily_routine_check.healthcheck import DEFAULT_RUNTIME, build_source_readiness
@@ -17,6 +19,7 @@ from KMFA.tools.daily_routine_check.main import (
     DEFAULT_NOTIFICATION_TARGETS,
     build_notification_events,
     build_run_summary,
+    determine_cleanup_mode,
     evaluate_cash_risk,
     flag_merged_results,
     load_rules,
@@ -376,6 +379,49 @@ class TriggerWindowTests(unittest.TestCase):
         self.assertEqual(counts["cleanup_events"], 1)
         self.assertIn("wal_checkpoint", cleanup["actions"])
 
+    def test_cleanup_requires_explicit_apply_and_is_not_a_scheduled_default(self) -> None:
+        self.assertIsNone(determine_cleanup_mode(cleanup=False, apply=False, dry_run=False))
+        self.assertEqual(
+            determine_cleanup_mode(cleanup=True, apply=False, dry_run=False),
+            "SKIPPED_APPLY_REQUIRED",
+        )
+        self.assertEqual(
+            determine_cleanup_mode(cleanup=True, apply=True, dry_run=True),
+            "SKIPPED_DRY_RUN",
+        )
+        self.assertEqual(
+            determine_cleanup_mode(cleanup=True, apply=True, dry_run=False),
+            "APPLY",
+        )
+
+    def test_cleanup_command_exits_before_zip_reader_and_business_persistence(self) -> None:
+        from KMFA.tools.daily_routine_check.main import main as routine_main
+
+        cleanup_payload = {"status": "DONE", "actions": ["wal_checkpoint", "vacuum"]}
+        with (
+            mock.patch.object(sys, "argv", ["daily-routine-check", "--cleanup", "--apply"]),
+            mock.patch(
+                "KMFA.tools.daily_routine_check.main.DwsArchiveReader",
+                side_effect=AssertionError("cleanup must not open the source ZIP"),
+            ),
+            mock.patch(
+                "KMFA.tools.daily_routine_check.main.persist_run_log",
+                side_effect=AssertionError("cleanup must not persist a business run"),
+            ),
+            mock.patch(
+                "KMFA.tools.daily_routine_check.main.run_sqlite_cleanup",
+                return_value=cleanup_payload,
+            ) as cleanup,
+            mock.patch("sys.stdout", new_callable=io.StringIO) as stdout,
+        ):
+            exit_code = routine_main()
+
+        payload = json.loads(stdout.getvalue())
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(payload["operation"], "sqlite_maintenance")
+        self.assertEqual(payload["cleanup"], cleanup_payload)
+        cleanup.assert_called_once_with(DEFAULT_DB)
+
     def test_source_blocked_run_supersedes_prior_same_day_false_positives(self) -> None:
         with TemporaryDirectory() as tmp:
             db_path = f"{tmp}/daily_routine_check.sqlite"
@@ -490,25 +536,29 @@ class TriggerWindowTests(unittest.TestCase):
 
     def test_reader_reports_missing_and_stale_sources(self) -> None:
         with TemporaryDirectory() as tmp:
-            reader = DwsArchiveReader(tmp)
+            zip_path = Path(tmp) / "DWS_Outputs.zip"
+            reader = DwsArchiveReader(zip_path)
             missing = reader.inspect_group_sources("付款请示群", date(2026, 7, 7))
             self.assertEqual(missing[0]["issue_type"], "SOURCE_MISSING")
 
-            group_chat = reader.group_path("生产管理群") / "chat_records"
-            group_chat.mkdir(parents=True)
-            group_manifest = reader.group_path("生产管理群") / "_manifest"
-            group_manifest.mkdir(parents=True)
-            (group_chat / "chat_records.csv").write_text(
-                "group_name,open_message_id,message_time,sender_name,content,resource_count,resource_types\n"
-                "生产管理群,m1,2026-07-06 17:00:00,黄婷,每日人员表,0,\n",
-                encoding="utf-8",
-            )
-            (group_manifest / "manifest.csv").write_text(
-                "group_name,message_id,message_time,sender_name,resource_type,output_path,sha256,status\n",
-                encoding="utf-8",
-            )
+            with zipfile.ZipFile(zip_path, "w") as zf:
+                zf.writestr(
+                    "DWS_Outputs/生产管理群/chat_records/chat_records.csv",
+                    "group_name,open_message_id,message_time,sender_name,content,resource_count,resource_types\n"
+                    "生产管理群,m1,2026-07-06 17:00:00,黄婷,每日人员表,0,\n",
+                )
+                zf.writestr(
+                    "DWS_Outputs/生产管理群/_manifest/manifest.csv",
+                    "group_name,message_id,message_time,sender_name,resource_type,output_path,sha256,status\n",
+                )
+            reader = DwsArchiveReader(zip_path)
             stale = reader.inspect_group_sources("生产管理群", date(2026, 7, 7))
             self.assertEqual(stale[0]["issue_type"], "SOURCE_STALE")
+
+    def test_reader_rejects_non_zip_target_instead_of_deriving_a_sibling_zip(self) -> None:
+        with TemporaryDirectory() as tmp:
+            with self.assertRaisesRegex(ValueError, "ZIP_ONLY_INPUT_REQUIRED"):
+                DwsArchiveReader(Path(tmp) / "DWS_Outputs")
 
     def test_reader_streams_messages_and_manifest_from_dws_zip(self) -> None:
         with TemporaryDirectory() as tmp:
@@ -516,7 +566,7 @@ class TriggerWindowTests(unittest.TestCase):
             zip_path = base / "DWS_Outputs.zip"
             write_dws_zip(zip_path)
 
-            reader = DwsArchiveReader(base / "DWS_Outputs")
+            reader = DwsArchiveReader(zip_path)
             issues = reader.inspect_group_sources("付款请示群", date(2026, 7, 7))
             messages = reader.read_messages("付款请示群")
             files = reader.read_files("付款请示群")
@@ -527,26 +577,63 @@ class TriggerWindowTests(unittest.TestCase):
         self.assertTrue(files[0].absolute_path.startswith("zip://"))
         self.assertIn("DWS_Outputs.zip!", files[0].absolute_path)
 
+    def test_reader_never_materializes_zip_members_to_disk(self) -> None:
+        with TemporaryDirectory() as tmp:
+            zip_path = Path(tmp) / "DWS_Outputs.zip"
+            write_dws_zip(zip_path)
+            with (
+                mock.patch.object(zipfile.ZipFile, "read", side_effect=AssertionError("no bulk read")),
+                mock.patch.object(zipfile.ZipFile, "extract", side_effect=AssertionError("no extract")),
+                mock.patch.object(zipfile.ZipFile, "extractall", side_effect=AssertionError("no extractall")),
+            ):
+                reader = DwsArchiveReader(zip_path)
+                messages = reader.read_messages("付款请示群")
+                files = reader.read_files("付款请示群")
+
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(len(files), 1)
+
     def test_healthcheck_accepts_readable_zip_as_primary_input(self) -> None:
         with TemporaryDirectory() as tmp:
             base = Path(tmp)
-            write_dws_zip(base / "DWS_Outputs.zip")
-            readiness = build_source_readiness(base / "DWS_Outputs")
+            zip_path = base / "DWS_Outputs.zip"
+            write_dws_zip(zip_path)
+            readiness = build_source_readiness(zip_path)
 
-        self.assertFalse(readiness["direct_input_ready"])
         self.assertTrue(readiness["zip_present"])
         self.assertTrue(readiness["zip_input_ready"])
         self.assertEqual(readiness["status"], "READY")
         self.assertEqual(readiness["next_enable_conditions"], [])
+        self.assertGreater(readiness["zip_size_bytes"], 0)
+        self.assertEqual(readiness["input_cache_policy"], "stream_members_no_copy_no_extract")
+        self.assertNotIn("direct_input_ready", readiness)
+        self.assertNotIn("input_root", readiness)
+
+    def test_healthcheck_ignores_complete_sibling_folder_when_zip_is_corrupt(self) -> None:
+        with TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            for group in ("付款请示群", "生产管理群"):
+                group_root = base / "DWS_Outputs" / group
+                (group_root / "chat_records").mkdir(parents=True)
+                (group_root / "_manifest").mkdir(parents=True)
+                (group_root / "chat_records" / "chat_records.csv").write_text("folder must be ignored", encoding="utf-8")
+                (group_root / "_manifest" / "manifest.csv").write_text("folder must be ignored", encoding="utf-8")
+            zip_path = base / "DWS_Outputs.zip"
+            zip_path.write_text("not a zip", encoding="utf-8")
+
+            readiness = build_source_readiness(zip_path)
+
+        self.assertEqual(readiness["status"], "ZIP_INPUT_UNREADABLE")
+        self.assertFalse(readiness["zip_input_ready"])
+        self.assertNotIn("direct_input_ready", readiness)
 
     def test_healthcheck_reports_unreadable_zip_without_requiring_direct_folder(self) -> None:
         with TemporaryDirectory() as tmp:
             base = Path(tmp)
             (base / "DWS_Outputs.zip").write_text("placeholder", encoding="utf-8")
             (base / "DWS_Archive" / "付款请示群" / "files" / "0707").mkdir(parents=True)
-            readiness = build_source_readiness(base / "DWS_Outputs")
+            readiness = build_source_readiness(base / "DWS_Outputs.zip")
 
-        self.assertFalse(readiness["direct_input_ready"])
         self.assertTrue(readiness["zip_present"])
         self.assertFalse(readiness["zip_input_ready"])
         self.assertTrue(readiness["archive_present"])
@@ -555,6 +642,24 @@ class TriggerWindowTests(unittest.TestCase):
             "DWS_Outputs.zip" in item and "readable" in item
             for item in readiness["next_enable_conditions"]
         ))
+
+    def test_source_snapshot_reads_each_group_chat_csv_once(self) -> None:
+        from KMFA.tools.daily_routine_check.main import collect_source_snapshot
+
+        with TemporaryDirectory() as tmp:
+            zip_path = Path(tmp) / "DWS_Outputs.zip"
+            write_dws_zip(zip_path)
+            reader = DwsArchiveReader(zip_path)
+            with mock.patch.object(reader, "read_messages", wraps=reader.read_messages) as read_messages:
+                issues, messages = collect_source_snapshot(
+                    reader,
+                    ["付款请示群", "生产管理群"],
+                    date(2026, 7, 7),
+                )
+
+        self.assertEqual(issues, [])
+        self.assertEqual(len(messages), 2)
+        self.assertEqual(read_messages.call_count, 2)
 
     def test_runtime_defaults_keep_sqlite_and_notification_config_out_of_repo_package(self) -> None:
         repo_private_runtime = Path("KMFA/metadata/daily_routine_check/private_runtime")
@@ -581,7 +686,7 @@ class TriggerWindowTests(unittest.TestCase):
                     "Asia/Shanghai",
                     "--trigger-window",
                     "morning_1135",
-                    "--input-root",
+                    "--input-zip",
                     str(base / "DWS_Outputs.zip"),
                     "--dry-run",
                 ],
@@ -591,6 +696,10 @@ class TriggerWindowTests(unittest.TestCase):
             )
 
         payload = json.loads(result.stdout)
+        self.assertEqual(payload["input_mode"], "zip_only")
+        self.assertEqual(payload["input_cache_policy"], "stream_members_no_copy_no_extract")
+        self.assertEqual(payload["input_zip"], str(base / "DWS_Outputs.zip"))
+        self.assertNotIn("input_root", payload)
         self.assertEqual(
             {issue["issue_type"] for issue in payload["data_quality_issues"]},
             {"SOURCE_STALE"},

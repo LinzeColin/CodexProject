@@ -1,4 +1,5 @@
 import gzip
+import importlib
 import json
 import tempfile
 import unittest
@@ -66,6 +67,7 @@ from KMFA.tools.dingtalk_attendance.validate_no_sensitive_git import scan_payloa
 
 
 ROOT = Path(__file__).resolve().parents[1]
+ATTENDANCE_RUNNER = importlib.import_module("KMFA.tools.dingtalk_attendance.run_attendance")
 
 
 def _write_ledger_fixture_run(
@@ -279,8 +281,15 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(plan["automation_name"], "每日早晚钉钉考勤检查")
         self.assertEqual(plan["run_type"], "morning")
         self.assertEqual(plan["timezone"], "Asia/Shanghai")
+        self.assertEqual(plan["business_date_timezone"], "Asia/Shanghai")
+        self.assertFalse(plan["scheduler_timezone_configured"])
         self.assertEqual(plan["schedule"]["morning"], "10:35")
-        self.assertEqual(plan["schedule"]["evening"], "20:05")
+        self.assertEqual(plan["schedule"]["evening"], "20:00")
+        self.assertEqual(plan["schedule_clock"]["evening"], "local_wall_clock")
+        self.assertEqual(
+            plan["summary_datetime_source"],
+            "actual_run_datetime_in_business_date_timezone",
+        )
         self.assertEqual(plan["onedrive_root"], "/Users/linzezhang/OneDrive/dingtalk_attendance")
         self.assertEqual(plan["onedrive_month_folder_pattern"], "YYYYMM")
         self.assertEqual(plan["known_recipients"]["zhang_linze"]["dingtalk_user_id"], "1iv-1t2oesv2yd")
@@ -288,6 +297,60 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertFalse(plan["public_repo_safety"]["sqlite_committed"])
         self.assertFalse(plan["public_repo_safety"]["credential_committed"])
         self.assertTrue(plan["live_only"])
+
+    def test_cli_exit_code_fails_closed_for_runtime_and_notification_failures(self) -> None:
+        self.assertEqual(
+            ATTENDANCE_RUNNER.result_exit_code(
+                {"status": "DWS_AUTH_REQUIRED", "notification_status": "NOT_SENT_DWS_AUTH_REQUIRED"}
+            ),
+            2,
+        )
+        self.assertEqual(ATTENDANCE_RUNNER.result_exit_code({"status": "DWS_UNAVAILABLE"}), 3)
+        self.assertEqual(
+            ATTENDANCE_RUNNER.result_exit_code({"status": "PARTIAL", "notification_status": "SENT"}),
+            4,
+        )
+        self.assertEqual(
+            ATTENDANCE_RUNNER.result_exit_code({"status": "COMPLETED", "notification_status": "FAILED"}),
+            5,
+        )
+        self.assertEqual(
+            ATTENDANCE_RUNNER.result_exit_code({"status": "COMPLETED", "notification_status": "SENT"}),
+            0,
+        )
+        self.assertEqual(
+            ATTENDANCE_RUNNER.result_exit_code({"status": "SENT", "notification_status": "FAILED"}),
+            5,
+        )
+        self.assertEqual(
+            ATTENDANCE_RUNNER.result_exit_code({"status": "SENT", "notification_status": "SENT"}),
+            0,
+        )
+
+    def test_live_evening_summary_uses_actual_beijing_time_not_scheduler_wall_clock(self) -> None:
+        captured: dict[str, str] = {}
+
+        def capture_then_stop(*, work_date: str, summary_datetime: str) -> dict:
+            captured["work_date"] = work_date
+            captured["summary_datetime"] = summary_datetime
+            raise DwsAttendanceError("stop after summary datetime capture")
+
+        actual_beijing_time = datetime(2026, 7, 10, 18, 0, tzinfo=ZoneInfo("Asia/Shanghai"))
+        with (
+            patch.object(ATTENDANCE_RUNNER, "_scheduled_run_datetime", return_value=actual_beijing_time),
+            patch.object(ATTENDANCE_RUNNER, "dws_command_safety_status", return_value={"status": "READY"}),
+            patch.dict("os.environ", {}, clear=False),
+        ):
+            result = run_attendance(
+                run_type="evening",
+                timezone="Asia/Shanghai",
+                collector=capture_then_stop,
+                cleanup=lambda: {"status": "OK"},
+            )
+
+        self.assertEqual(result["status"], "DWS_UNAVAILABLE")
+        self.assertEqual(captured["work_date"], "2026-07-10")
+        self.assertEqual(captured["summary_datetime"], "2026-07-10 18:00:00")
 
     def test_run_plan_supports_controlled_work_date_rerun_datetime(self) -> None:
         plan = build_run_plan(
@@ -738,7 +801,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
         result = collect_org_attendance(
             work_date="2026-07-09",
-            summary_datetime="2026-07-09 20:05:00",
+            summary_datetime="2026-07-09 20:00:00",
             runner=runner,
         )
 
@@ -1000,7 +1063,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
         collection = collect_org_attendance(
             work_date="2026-07-09",
-            summary_datetime="2026-07-09 20:05:00",
+            summary_datetime="2026-07-09 20:00:00",
             runner=runner,
         )
 
@@ -1044,7 +1107,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
         collection = collect_org_attendance(
             work_date="2026-07-09",
-            summary_datetime="2026-07-09 20:05:00",
+            summary_datetime="2026-07-09 20:00:00",
             runner=runner,
         )
 
