@@ -6,12 +6,12 @@
       "freed_mb": 0.0,
       "status": "已清理 macdata 临时上传缓存"
     },
-    "cutoff_date_kept_from": "2026-07-08",
+    "cutoff_date_kept_from": "2026-07-09",
     "deleted_dirs": 2,
     "deleted_files": 0,
     "deleted_paths": [
-      "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/macdata-proM2/OpenAIDatabase/macdata/proM2/data/current_3days/raw/2026-07-07",
-      "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/macdata-proM2/OpenAIDatabase/macdata/proM2/reports/current_3days/2026-07-07"
+      "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/macdata-proM2/OpenAIDatabase/macdata/proM2/data/current_3days/raw/2026-07-08",
+      "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/macdata-proM2/OpenAIDatabase/macdata/proM2/reports/current_3days/2026-07-08"
     ],
     "development_cleanup": {
       "docker": {
@@ -19,7 +19,7 @@
         "ok": false,
         "returncode": 1,
         "safety": "不使用 -a，不清理 volumes，除非配置显式打开。",
-        "seconds": 0.12,
+        "seconds": 0.119,
         "status": "执行失败",
         "stderr": "failed to connect to the docker API at unix:///Users/linzezhang/.docker/run/docker.sock; check if the path is correct and if the daemon is running: dial unix /Users/linzezhang/.docker/run/docker.sock: connect: no such file or directory",
         "stdout": "",
@@ -49,7 +49,7 @@
         "mode": "purge_best_effort",
         "ok": false,
         "returncode": 1,
-        "seconds": 0.01,
+        "seconds": 0.008,
         "status": "执行失败或权限不足",
         "stderr": "Unable to purge disk buffers: Operation not permitted",
         "stdout": "",
@@ -66,7 +66,7 @@
       "dry_run": false,
       "fetch_prune": {
         "ok": true,
-        "stderr": "From github.com:LinzeColin/CodexProject\n   a9b7950a5..b16b41bee  macdata-airM2 -> origin/macdata-airM2\n   e8230c2bd..915ffe1bf  macdata-proM2 -> origin/macdata-proM2\n   7b986f8f3..62624cdbc  main          -> origin/main",
+        "stderr": "From github.com:LinzeColin/CodexProject\n   b16b41bee..cf1e03f12  macdata-airM2 -> origin/macdata-airM2\n   6c3881806..7b85508ce  macdata-proM2 -> origin/macdata-proM2",
         "stdout": ""
       },
       "github_cli_available": false,
@@ -81,14 +81,14 @@
     "retention_days": 3,
     "status": "已在 raw 数据上传验证成功后清理本机旧数据、macdata 临时缓存、受控开发环境缓存和 GitHub/Codex 临时协作痕迹"
   },
-  "created_at_local": "2026-07-10T01:12:22+10:00",
+  "created_at_local": "2026-07-11T01:12:36+10:00",
   "development_cleanup": {
     "docker": {
       "command": "docker system prune -f",
       "ok": false,
       "returncode": 1,
       "safety": "不使用 -a，不清理 volumes，除非配置显式打开。",
-      "seconds": 0.12,
+      "seconds": 0.119,
       "status": "执行失败",
       "stderr": "failed to connect to the docker API at unix:///Users/linzezhang/.docker/run/docker.sock; check if the path is correct and if the daemon is running: dial unix /Users/linzezhang/.docker/run/docker.sock: connect: no such file or directory",
       "stdout": "",
@@ -118,7 +118,7 @@
       "mode": "purge_best_effort",
       "ok": false,
       "returncode": 1,
-      "seconds": 0.01,
+      "seconds": 0.008,
       "status": "执行失败或权限不足",
       "stderr": "Unable to purge disk buffers: Operation not permitted",
       "stdout": "",
@@ -126,29 +126,20 @@
     }
   },
   "device_key": "proM2",
-  "final_report_path": "reports/current_3days/2026-07-10/proM2-20260710-011146_final.md",
-  "ok": true,
+  "final_report_path": "reports/current_3days/2026-07-11/proM2-20260711-011214_final.md",
+  "ok": null,
   "raw_archive": {
     "archive_branch": "macdata-proM2",
-    "commit_message": "data(macdata-proM2): 2026-07-10 raw proM2-20260710-011146",
-    "local_commit_hash": "915ffe1bf77a43162ddeaf58f023b483830083e4",
+    "commit_message": "data(macdata-proM2): 2026-07-11 raw proM2-20260711-011214",
+    "local_commit_hash": "7b85508ced882171fe58311e74464d4c5f6aa706",
     "message": "远程分支提交哈希与本地提交哈希一致。",
     "ok": true,
-    "remote_commit_hash": "915ffe1bf77a43162ddeaf58f023b483830083e4",
+    "remote_commit_hash": "7b85508ced882171fe58311e74464d4c5f6aa706",
     "remote_verified": true,
     "status": "上传成功并已验证"
   },
-  "raw_data_path": "data/current_3days/raw/2026-07-10/proM2-20260710-011146.json",
-  "remote_verified": true,
-  "report_archive": {
-    "archive_branch": "macdata-proM2",
-    "commit_message": "data(macdata-proM2): 2026-07-10 report proM2-20260710-011146",
-    "local_commit_hash": "6c3881806dabbaca998febbf0d609624b9132880",
-    "message": "远程分支提交哈希与本地提交哈希一致。",
-    "ok": true,
-    "remote_commit_hash": "6c3881806dabbaca998febbf0d609624b9132880",
-    "remote_verified": true,
-    "status": "上传成功并已验证"
-  },
-  "run_id": "proM2-20260710-011146"
+  "raw_data_path": "data/current_3days/raw/2026-07-11/proM2-20260711-011214.json",
+  "remote_verified": null,
+  "report_archive": null,
+  "run_id": "proM2-20260711-011214"
 }
