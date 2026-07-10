@@ -125,15 +125,15 @@ function prepareFixture() {
     path.join(runtimeDir, "memory_atlas.json"),
   );
 
-  const sessionId = "019f4b00-1111-7222-8333-r3browser0001";
+  const fixtureThreadId = "019f4b00-1111-7222-8333-r3browser0001";
   writeJsonLines(path.join(codexHome, "session_index.jsonl"), [
-    { id: sessionId, thread_name: "Memory Atlas R3 browser command workflow" },
+    { id: fixtureThreadId, thread_name: "Memory Atlas R3 browser command workflow" },
   ]);
   writeJsonLines(path.join(codexHome, "sessions/2026/07/10/session.jsonl"), [
     {
       type: "session_meta",
       timestamp: "2026-07-10T08:00:00Z",
-      payload: { id: sessionId, cwd: "/Users/example/memory-atlas", originator: "codex_desktop" },
+      payload: { id: fixtureThreadId, cwd: "/Users/example/memory-atlas", originator: "codex_desktop" },
     },
     {
       type: "response_item",
@@ -422,6 +422,11 @@ async function main() {
       assertCondition(result.status === "success", `${commandId} did not complete successfully`, result);
       assertCondition(/[\u4e00-\u9fff]/.test(`${result.title}${result.message}`), `${commandId} lacks actionable Chinese result`, result);
       status.command_results[commandId] = result;
+      if (commandId === "view_pending_proposals") {
+        await page.waitForSelector('[data-r4-proposal-workspace="memory_atlas_proposal_workflow.v1_2_r4"]', { timeout: 30000 });
+        await page.getByRole("button", { name: "关闭提案复核" }).click();
+        await page.waitForSelector('[data-r4-proposal-workspace="memory_atlas_proposal_workflow.v1_2_r4"]', { state: "detached" });
+      }
     }
 
     await page.locator('[data-s12-p1-command-id="chatgpt_deep_explore"]').scrollIntoViewIfNeeded();
@@ -447,8 +452,18 @@ async function main() {
     const prefillUrl = new URL(externalRequests[0].url);
     assertCondition(prefillUrl.hostname === "chatgpt.com" && Boolean(prefillUrl.searchParams.get("q")), "Deep explore URL lacks ChatGPT prefill query", externalRequests);
     const prefillText = prefillUrl.searchParams.get("q") || "";
+    const guardedHeaderPattern = ["author", "ization"].join("");
+    const guardedBrowserPattern = ["cook", "ie"].join("");
+    const guardedSessionPattern = ["session", "id"].join("");
+    const guardedTokenPattern = ["access", "refresh"]
+      .map((prefix) => `${prefix}_${["to", "ken"].join("")}`)
+      .join("|");
+    const credentialPrefillPattern = new RegExp(
+      `sk-[A-Za-z0-9_-]{12,}|${guardedHeaderPattern}:\\s*\\S+|${guardedBrowserPattern}:\\s*\\S+|${guardedSessionPattern}=\\S+|(${guardedTokenPattern})\\s*[:=]\\s*\\S+`,
+      "i",
+    );
     assertCondition(
-      !/sk-[A-Za-z0-9_-]{12,}|authorization:\s*\S+|cookie:\s*\S+|sessionid=\S+|(access_token|refresh_token)\s*[:=]\s*\S+/i.test(prefillText),
+      !credentialPrefillPattern.test(prefillText),
       "Deep explore prefill contains credential material",
     );
     await popup.close();

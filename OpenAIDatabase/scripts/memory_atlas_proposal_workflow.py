@@ -8,6 +8,7 @@ import json
 import os
 import re
 import secrets
+import stat
 import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -111,6 +112,15 @@ class ParsedOperation:
     content: bytes
 
 
+@dataclass
+class PreparedOperation:
+    operation: ParsedOperation
+    parent_fd: int
+    target_name: str
+    before: bytes | None
+    before_mode: int
+
+
 @dataclass(frozen=True)
 class ParsedBundle:
     path: Path
@@ -211,9 +221,165 @@ class ProposalWorkflow:
             token_ttl_seconds=max(1, int(context.token_ttl_seconds)),
         )
 
+    @staticmethod
+    def _directory_open_flags() -> int:
+        if not hasattr(os, "O_NOFOLLOW") or not hasattr(os, "O_DIRECTORY"):
+            raise ProposalWorkflowError("当前系统不支持 symlink-safe proposal 文件操作。")
+        return os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+
+    def _open_target_parent(self, target_file: str, *, create: bool) -> tuple[int, str]:
+        pure = PurePosixPath(target_file)
+        flags = self._directory_open_flags()
+        try:
+            current_fd = os.open(self.context.source_root, flags)
+        except OSError as exc:
+            raise ProposalBundleError("proposal source 根目录无法安全打开。") from exc
+        try:
+            for part in pure.parts[:-1]:
+                try:
+                    next_fd = os.open(part, flags, dir_fd=current_fd)
+                except FileNotFoundError:
+                    if not create:
+                        raise ProposalBundleError("proposal target_file 父目录不存在。")
+                    try:
+                        os.mkdir(part, mode=0o755, dir_fd=current_fd)
+                    except FileExistsError:
+                        pass
+                    next_fd = os.open(part, flags, dir_fd=current_fd)
+                except OSError as exc:
+                    raise ProposalBundleError("proposal target_file 父目录已变化或含 symlink。") from exc
+                os.close(current_fd)
+                current_fd = next_fd
+            return current_fd, pure.name
+        except Exception:
+            os.close(current_fd)
+            raise
+
+    @staticmethod
+    def _read_regular_at(parent_fd: int, target_name: str) -> tuple[bytes | None, int]:
+        flags = os.O_RDONLY | os.O_NOFOLLOW
+        try:
+            file_fd = os.open(target_name, flags, dir_fd=parent_fd)
+        except FileNotFoundError:
+            return None, 0o644
+        except OSError as exc:
+            raise ProposalBundleError("proposal 目标已变化、含 symlink 或无法安全读取。") from exc
+        try:
+            file_stat = os.fstat(file_fd)
+            if not stat.S_ISREG(file_stat.st_mode):
+                raise ProposalBundleError("proposal 目标必须是普通文件。")
+            chunks: list[bytes] = []
+            while True:
+                chunk = os.read(file_fd, 65_536)
+                if not chunk:
+                    break
+                chunks.append(chunk)
+            return b"".join(chunks), stat.S_IMODE(file_stat.st_mode)
+        finally:
+            os.close(file_fd)
+
+    @staticmethod
+    def _atomic_write_at(parent_fd: int, target_name: str, content: bytes, mode: int) -> None:
+        staged_name = f".{target_name}.{os.getpid()}.{secrets.token_hex(4)}.next"
+        staged_fd: int | None = None
+        try:
+            staged_fd = os.open(
+                staged_name,
+                os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+                mode,
+                dir_fd=parent_fd,
+            )
+            os.fchmod(staged_fd, mode)
+            offset = 0
+            while offset < len(content):
+                offset += os.write(staged_fd, content[offset:])
+            os.fsync(staged_fd)
+            os.close(staged_fd)
+            staged_fd = None
+            os.replace(staged_name, target_name, src_dir_fd=parent_fd, dst_dir_fd=parent_fd)
+            os.fsync(parent_fd)
+        except OSError as exc:
+            raise ProposalWorkflowError("proposal 目标无法安全原子写入。") from exc
+        finally:
+            if staged_fd is not None:
+                os.close(staged_fd)
+            try:
+                os.unlink(staged_name, dir_fd=parent_fd)
+            except FileNotFoundError:
+                pass
+
+    def _prepare_operations(self, bundle: ParsedBundle) -> list[PreparedOperation]:
+        prepared: list[PreparedOperation] = []
+        try:
+            for operation in bundle.operations:
+                parent_fd, target_name = self._open_target_parent(operation.target_file, create=False)
+                try:
+                    before, before_mode = self._read_regular_at(parent_fd, target_name)
+                    current_sha256 = sha256_bytes(before) if before is not None else "missing"
+                    if current_sha256 != operation.expected_sha256:
+                        raise ProposalBundleError("proposal 目标文件已变化，expected_sha256 不匹配。")
+                except Exception:
+                    os.close(parent_fd)
+                    raise
+                prepared.append(
+                    PreparedOperation(
+                        operation=operation,
+                        parent_fd=parent_fd,
+                        target_name=target_name,
+                        before=before,
+                        before_mode=before_mode,
+                    )
+                )
+            return prepared
+        except Exception:
+            self._close_prepared(prepared)
+            raise
+
+    @staticmethod
+    def _close_prepared(prepared: list[PreparedOperation]) -> None:
+        for item in prepared:
+            try:
+                os.close(item.parent_fd)
+            except OSError:
+                pass
+
+    def _verify_prepared_bindings(self, prepared: list[PreparedOperation]) -> None:
+        for item in prepared:
+            current_fd, _ = self._open_target_parent(item.operation.target_file, create=False)
+            try:
+                opened = os.fstat(item.parent_fd)
+                current = os.fstat(current_fd)
+                if (opened.st_dev, opened.st_ino) != (current.st_dev, current.st_ino):
+                    raise ProposalValidationError("proposal target 父目录在 apply 期间已变化。")
+            finally:
+                os.close(current_fd)
+
+    def _restore_prepared(self, prepared: list[PreparedOperation]) -> dict[str, str]:
+        restored: dict[str, str] = {}
+        for item in prepared:
+            if item.before is None:
+                try:
+                    node = os.stat(item.target_name, dir_fd=item.parent_fd, follow_symlinks=False)
+                except FileNotFoundError:
+                    node = None
+                if node is not None:
+                    if stat.S_ISDIR(node.st_mode):
+                        raise ProposalRollbackError("proposal 新目标已变成目录，无法自动回滚。")
+                    os.unlink(item.target_name, dir_fd=item.parent_fd)
+                    os.fsync(item.parent_fd)
+                restored[item.operation.target_file] = "missing"
+                continue
+            self._atomic_write_at(item.parent_fd, item.target_name, item.before, item.before_mode)
+            current, _ = self._read_regular_at(item.parent_fd, item.target_name)
+            restored[item.operation.target_file] = sha256_bytes(current or b"")
+            if restored[item.operation.target_file] != sha256_bytes(item.before):
+                raise ProposalRollbackError("proposal 目标未恢复到事务前 hash。")
+        return restored
+
     def review(self) -> dict[str, Any]:
         now = self.now_fn()
         self._prune_tokens(now)
+        recovery = self._recover_interrupted_transactions(now)
         state_items = self._state_items()
         narrator_items = self._narrator_items()
         indexed: dict[str, dict[str, Any]] = {}
@@ -282,6 +448,8 @@ class ProposalWorkflow:
                 "apply_ready_count": sum(1 for item in proposals if item["apply_ready"]),
                 "review_only_count": sum(1 for item in proposals if not item["apply_ready"]),
                 "rollback_available_count": len(transactions),
+                "interrupted_recovery_count": recovery["recovered_count"],
+                "manual_recovery_required_count": recovery["manual_required_count"],
             },
             "safety": {
                 "raw_mutation": False,
@@ -318,14 +486,18 @@ class ProposalWorkflow:
             raise ProposalAuthorizationError("rollback token 缺失、过期或已使用，请重新打开提案复核。")
         transaction_dir = self.context.app_support / "proposal_transactions" / transaction_id
         transaction = read_json(transaction_dir / "transaction.json")
-        if transaction.get("schema_version") != TRANSACTION_VERSION or transaction.get("state") != "committed":
+        state = str(transaction.get("state") or "")
+        if transaction.get("schema_version") != TRANSACTION_VERSION or state not in {"committed", "manual_rollback_required"}:
             raise ProposalRollbackError("该 transaction 当前不允许人工回滚。")
         targets = transaction.get("targets") if isinstance(transaction.get("targets"), list) else []
         for target in targets:
             relative = str(target.get("target_file") or "")
-            target_path = self._resolve_target(str(transaction.get("target_type") or ""), relative)
-            current = target_path.read_bytes() if target_path.exists() else b""
-            if (target_path.exists() is not True) or sha256_bytes(current) != target.get("after_sha256"):
+            current = self._read_transaction_target(str(transaction.get("target_type") or ""), relative)
+            current_sha256 = sha256_bytes(current) if current is not None else "missing"
+            allowed_hashes = {str(target.get("after_sha256") or "")}
+            if state == "manual_rollback_required":
+                allowed_hashes.add(str(target.get("before_sha256") or ""))
+            if current_sha256 not in allowed_hashes:
                 raise ProposalRollbackError("目标文件在 apply 后又发生变化，已停止自动覆盖。")
         self._rollback_tokens.pop(rollback_token, None)
         restored = self._restore_transaction(transaction_dir, transaction)
@@ -353,124 +525,137 @@ class ProposalWorkflow:
         }
 
     def _apply_bundle(self, bundle: ParsedBundle, *, now: float) -> dict[str, Any]:
-        transaction_id = self._new_transaction_id(now)
-        transaction_dir = self.context.app_support / "proposal_transactions" / transaction_id
-        if transaction_dir.exists() or transaction_dir.is_symlink():
-            raise ProposalWorkflowError("proposal transaction ID 冲突，未执行写入。")
-        snapshots_dir = transaction_dir / "snapshots"
-        snapshots_dir.mkdir(parents=True, exist_ok=False)
-        state_history = ["pending_human_review", "approved_by_human", "applying"]
-        targets: list[dict[str, Any]] = []
-        for index, operation in enumerate(bundle.operations):
-            before_exists = operation.target_path.exists()
-            before = operation.target_path.read_bytes() if before_exists else b""
-            snapshot_relative = f"snapshots/{index:03d}.bin"
-            (transaction_dir / snapshot_relative).write_bytes(before)
-            targets.append(
-                {
-                    "target_file": operation.target_file,
-                    "before_exists": before_exists,
-                    "before_sha256": sha256_bytes(before) if before_exists else "missing",
-                    "after_sha256": sha256_bytes(operation.content),
-                    "snapshot_file": snapshot_relative,
-                }
-            )
-        transaction = {
-            "schema_version": TRANSACTION_VERSION,
-            "transaction_id": transaction_id,
-            "proposal_id": bundle.proposal_id,
-            "target_type": bundle.target_type,
-            "state": "applying",
-            "state_history": state_history,
-            "started_at": utc_iso(now),
-            "targets": targets,
-            "validation_ids": list(bundle.validation_ids),
-            "rollback_plan_zh": bundle.rollback_plan_zh,
-            "raw_mutation": False,
-            "canonical_repo_mutation": False,
-            "remote_push": False,
-        }
-        write_json_atomic(transaction_dir / "transaction.json", transaction)
+        prepared = self._prepare_operations(bundle)
         try:
-            for operation in bundle.operations:
-                atomic_write(operation.target_path, operation.content)
-            state_history.append("applied")
-            transaction["state"] = "applied"
-            write_json_atomic(transaction_dir / "transaction.json", transaction)
-            self._run_validations(bundle)
-            state_history.extend(["validated", "committed"])
-            transaction["state"] = "committed"
-            transaction["committed_at"] = utc_iso(self.now_fn())
-            write_json_atomic(transaction_dir / "transaction.json", transaction)
-        except Exception as exc:
-            state_history.append("failed_validation")
-            transaction["state"] = "failed_validation"
-            transaction["failure_type"] = exc.__class__.__name__
+            transaction_id = self._new_transaction_id(now)
+            transaction_root = self.context.app_support / "proposal_transactions"
+            if transaction_root.is_symlink():
+                raise ProposalWorkflowError("proposal transaction 根目录不能是 symlink。")
+            transaction_dir = transaction_root / transaction_id
+            if transaction_dir.exists() or transaction_dir.is_symlink():
+                raise ProposalWorkflowError("proposal transaction ID 冲突，未执行写入。")
+            snapshots_dir = transaction_dir / "snapshots"
+            snapshots_dir.mkdir(parents=True, exist_ok=False)
+            state_history = ["pending_human_review", "approved_by_human", "applying"]
+            targets: list[dict[str, Any]] = []
+            for index, item in enumerate(prepared):
+                before = item.before or b""
+                snapshot_relative = f"snapshots/{index:03d}.bin"
+                atomic_write(transaction_dir / snapshot_relative, before)
+                targets.append(
+                    {
+                        "target_file": item.operation.target_file,
+                        "before_exists": item.before is not None,
+                        "before_sha256": sha256_bytes(before) if item.before is not None else "missing",
+                        "before_mode": item.before_mode,
+                        "after_sha256": sha256_bytes(item.operation.content),
+                        "snapshot_file": snapshot_relative,
+                    }
+                )
+            transaction = {
+                "schema_version": TRANSACTION_VERSION,
+                "transaction_id": transaction_id,
+                "proposal_id": bundle.proposal_id,
+                "target_type": bundle.target_type,
+                "state": "applying",
+                "state_history": state_history,
+                "started_at": utc_iso(now),
+                "targets": targets,
+                "validation_ids": list(bundle.validation_ids),
+                "rollback_plan_zh": bundle.rollback_plan_zh,
+                "raw_mutation": False,
+                "canonical_repo_mutation": False,
+                "remote_push": False,
+            }
             write_json_atomic(transaction_dir / "transaction.json", transaction)
             try:
-                restored = self._restore_transaction(transaction_dir, transaction)
-            except Exception as rollback_exc:
-                transaction["state"] = "manual_rollback_required"
-                transaction["state_history"].append("manual_rollback_required")
-                transaction["rollback_failure_type"] = rollback_exc.__class__.__name__
+                for item in prepared:
+                    self._atomic_write_at(
+                        item.parent_fd,
+                        item.target_name,
+                        item.operation.content,
+                        item.before_mode,
+                    )
+                state_history.append("applied")
+                transaction["state"] = "applied"
                 write_json_atomic(transaction_dir / "transaction.json", transaction)
-                raise ProposalRollbackError("validation 失败且自动回滚未完成；请保留 transaction 证据并停止后续操作。") from rollback_exc
-            transaction["state"] = "rollback_or_needs_revision"
-            transaction["state_history"].append("rollback_or_needs_revision")
-            transaction["rolled_back_at"] = utc_iso(self.now_fn())
-            write_json_atomic(transaction_dir / "transaction.json", transaction)
+                self._run_validations(bundle)
+                self._verify_prepared_bindings(prepared)
+                state_history.extend(["validated", "committed"])
+                transaction["state"] = "committed"
+                transaction["committed_at"] = utc_iso(self.now_fn())
+                write_json_atomic(transaction_dir / "transaction.json", transaction)
+            except Exception as exc:
+                state_history.append("failed_validation")
+                transaction["state"] = "failed_validation"
+                transaction["failure_type"] = exc.__class__.__name__
+                write_json_atomic(transaction_dir / "transaction.json", transaction)
+                try:
+                    restored = self._restore_prepared(prepared)
+                except Exception as rollback_exc:
+                    transaction["state"] = "manual_rollback_required"
+                    transaction["state_history"].append("manual_rollback_required")
+                    transaction["rollback_failure_type"] = rollback_exc.__class__.__name__
+                    write_json_atomic(transaction_dir / "transaction.json", transaction)
+                    raise ProposalRollbackError("validation 失败且自动回滚未完成；请保留 transaction 证据并停止后续操作。") from rollback_exc
+                transaction["state"] = "rollback_or_needs_revision"
+                transaction["state_history"].append("rollback_or_needs_revision")
+                transaction["rolled_back_at"] = utc_iso(self.now_fn())
+                write_json_atomic(transaction_dir / "transaction.json", transaction)
+                self._append_audit(
+                    action="approve_apply",
+                    proposal_id=bundle.proposal_id,
+                    status="validation_failed_rolled_back",
+                    transaction_id=transaction_id,
+                    target_files=[item.target_file for item in bundle.operations],
+                )
+                return {
+                    "schema_version": PROPOSAL_RESULT_VERSION,
+                    "action": "approve_apply",
+                    "status": "validation_failed_rolled_back",
+                    "state": "rollback_or_needs_revision",
+                    "proposal_id": bundle.proposal_id,
+                    "transaction_id": transaction_id,
+                    "message_zh": "apply 后 validation 未通过，所有目标已按事务快照自动恢复。",
+                    "state_history": list(transaction["state_history"]),
+                    "validation_ids": list(bundle.validation_ids),
+                    "validation_results": [{"validation_id": item, "status": "FAIL"} for item in bundle.validation_ids],
+                    "automatic_rollback": True,
+                    "rollback_available": False,
+                    "restored_sha256": restored,
+                    "safety": self._safety(proposal_apply_execution=True),
+                }
+
+            rollback_token = self.token_factory()
+            self._rollback_tokens[rollback_token] = {
+                "transaction_id": transaction_id,
+                "expires_epoch": self.now_fn() + self.context.token_ttl_seconds,
+            }
             self._append_audit(
                 action="approve_apply",
                 proposal_id=bundle.proposal_id,
-                status="validation_failed_rolled_back",
+                status="success",
                 transaction_id=transaction_id,
                 target_files=[item.target_file for item in bundle.operations],
             )
             return {
                 "schema_version": PROPOSAL_RESULT_VERSION,
                 "action": "approve_apply",
-                "status": "validation_failed_rolled_back",
-                "state": "rollback_or_needs_revision",
+                "status": "success",
+                "state": "committed",
                 "proposal_id": bundle.proposal_id,
                 "transaction_id": transaction_id,
-                "message_zh": "apply 后 validation 未通过，所有目标已按事务快照自动恢复。",
+                "message_zh": "proposal 已获本次人类授权，精确目标已应用并通过固定 validation。",
                 "state_history": list(transaction["state_history"]),
                 "validation_ids": list(bundle.validation_ids),
-                "validation_results": [{"validation_id": item, "status": "FAIL"} for item in bundle.validation_ids],
-                "automatic_rollback": True,
-                "rollback_available": False,
-                "restored_sha256": restored,
+                "validation_results": [{"validation_id": item, "status": "PASS"} for item in bundle.validation_ids],
+                "automatic_rollback": False,
+                "rollback_available": True,
+                "rollback_token": rollback_token,
                 "safety": self._safety(proposal_apply_execution=True),
             }
-
-        rollback_token = self.token_factory()
-        self._rollback_tokens[rollback_token] = {
-            "transaction_id": transaction_id,
-            "expires_epoch": self.now_fn() + self.context.token_ttl_seconds,
-        }
-        self._append_audit(
-            action="approve_apply",
-            proposal_id=bundle.proposal_id,
-            status="success",
-            transaction_id=transaction_id,
-            target_files=[item.target_file for item in bundle.operations],
-        )
-        return {
-            "schema_version": PROPOSAL_RESULT_VERSION,
-            "action": "approve_apply",
-            "status": "success",
-            "state": "committed",
-            "proposal_id": bundle.proposal_id,
-            "transaction_id": transaction_id,
-            "message_zh": "proposal 已获本次人类授权，精确目标已应用并通过固定 validation。",
-            "state_history": list(transaction["state_history"]),
-            "validation_ids": list(bundle.validation_ids),
-            "validation_results": [{"validation_id": item, "status": "PASS"} for item in bundle.validation_ids],
-            "automatic_rollback": False,
-            "rollback_available": True,
-            "rollback_token": rollback_token,
-            "safety": self._safety(proposal_apply_execution=True),
-        }
+        finally:
+            self._close_prepared(prepared)
 
     def _parse_bundle(self, path: Path, *, now: float, verify_current_hash: bool) -> ParsedBundle:
         if path.is_symlink() or not path.is_file():
@@ -537,10 +722,14 @@ class ProposalWorkflow:
             if len(content) > MAX_CONTENT_BYTES:
                 raise ProposalBundleError("proposal operation content 超过大小限制。")
             if verify_current_hash:
-                current = target_path.read_bytes() if target_path.exists() else None
-                current_sha = sha256_bytes(current) if current is not None else "missing"
-                if current_sha != expected:
-                    raise ProposalBundleError("proposal 目标文件已变化，expected_sha256 不匹配。")
+                parent_fd, target_name = self._open_target_parent(target_file, create=False)
+                try:
+                    current, _mode = self._read_regular_at(parent_fd, target_name)
+                    current_sha = sha256_bytes(current) if current is not None else "missing"
+                    if current_sha != expected:
+                        raise ProposalBundleError("proposal 目标文件已变化，expected_sha256 不匹配。")
+                finally:
+                    os.close(parent_fd)
             operations.append(ParsedOperation(target_file, target_path, expected, content))
         validation_ids_payload = payload.get("validation_ids") if isinstance(payload.get("validation_ids"), list) else []
         validation_ids = tuple(str(item) for item in validation_ids_payload)
@@ -598,26 +787,42 @@ class ProposalWorkflow:
         return target_path
 
     def _run_validations(self, bundle: ParsedBundle) -> None:
-        targets = [operation.target_path for operation in bundle.operations]
+        targets = [
+            (operation.target_file, self._read_transaction_target(bundle.target_type, operation.target_file))
+            for operation in bundle.operations
+        ]
         for validation_id in bundle.validation_ids:
             if validation_id == "utf8_nonempty":
-                for target in targets:
+                for _target_file, content in targets:
+                    if content is None:
+                        raise ProposalValidationError("proposal 目标文件在 validation 前缺失。")
                     try:
-                        value = target.read_text(encoding="utf-8")
-                    except (OSError, UnicodeDecodeError) as exc:
+                        value = content.decode("utf-8")
+                    except UnicodeDecodeError as exc:
                         raise ProposalValidationError("目标不是有效 UTF-8 文件。") from exc
                     if not value.strip():
                         raise ProposalValidationError("目标文件为空，未通过 utf8_nonempty。")
             elif validation_id == "json_document":
-                for target in targets:
-                    if target.suffix.lower() != ".json":
+                for target_file, content in targets:
+                    if PurePosixPath(target_file).suffix.lower() != ".json":
                         raise ProposalValidationError("json_document 只能验证 .json 目标。")
+                    if content is None:
+                        raise ProposalValidationError("proposal JSON 目标在 validation 前缺失。")
                     try:
-                        json.loads(target.read_text(encoding="utf-8"))
-                    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+                        json.loads(content.decode("utf-8"))
+                    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
                         raise ProposalValidationError("目标未通过固定 JSON document 验证。") from exc
             else:
                 raise ProposalValidationError("validation ID 不在固定允许列表。")
+
+    def _read_transaction_target(self, target_type: str, relative: str) -> bytes | None:
+        self._resolve_target(target_type, relative)
+        parent_fd, target_name = self._open_target_parent(relative, create=False)
+        try:
+            content, _mode = self._read_regular_at(parent_fd, target_name)
+            return content
+        finally:
+            os.close(parent_fd)
 
     def _restore_transaction(self, transaction_dir: Path, transaction: dict[str, Any]) -> dict[str, str]:
         restored: dict[str, str] = {}
@@ -625,7 +830,7 @@ class ProposalWorkflow:
         targets = transaction.get("targets") if isinstance(transaction.get("targets"), list) else []
         for target in targets:
             relative = str(target.get("target_file") or "")
-            target_path = self._resolve_target(target_type, relative)
+            self._resolve_target(target_type, relative)
             snapshot_relative = str(target.get("snapshot_file") or "")
             snapshot_path = transaction_dir / snapshot_relative
             try:
@@ -635,17 +840,30 @@ class ProposalWorkflow:
             if snapshot_path.is_symlink() or not snapshot_path.is_file():
                 raise ProposalRollbackError("transaction snapshot 缺失或不是普通文件。")
             before = snapshot_path.read_bytes()
-            if target.get("before_exists") is True:
-                if sha256_bytes(before) != target.get("before_sha256"):
-                    raise ProposalRollbackError("transaction snapshot hash 不匹配。")
-                atomic_write(target_path, before)
-                restored[relative] = sha256_bytes(target_path.read_bytes())
-            else:
-                if before:
-                    raise ProposalRollbackError("新文件 transaction snapshot 必须为空。")
-                if target_path.exists():
-                    target_path.unlink()
-                restored[relative] = "missing"
+            parent_fd, target_name = self._open_target_parent(relative, create=True)
+            try:
+                if target.get("before_exists") is True:
+                    if sha256_bytes(before) != target.get("before_sha256"):
+                        raise ProposalRollbackError("transaction snapshot hash 不匹配。")
+                    mode = int(target.get("before_mode") or 0o644)
+                    self._atomic_write_at(parent_fd, target_name, before, mode)
+                    current, _mode = self._read_regular_at(parent_fd, target_name)
+                    restored[relative] = sha256_bytes(current or b"")
+                else:
+                    if before:
+                        raise ProposalRollbackError("新文件 transaction snapshot 必须为空。")
+                    try:
+                        node = os.stat(target_name, dir_fd=parent_fd, follow_symlinks=False)
+                    except FileNotFoundError:
+                        node = None
+                    if node is not None:
+                        if stat.S_ISDIR(node.st_mode):
+                            raise ProposalRollbackError("新目标已变成目录，无法按 transaction 删除。")
+                        os.unlink(target_name, dir_fd=parent_fd)
+                        os.fsync(parent_fd)
+                    restored[relative] = "missing"
+            finally:
+                os.close(parent_fd)
             if restored[relative] != target.get("before_sha256"):
                 raise ProposalRollbackError("目标文件未恢复到事务前 hash。")
         return restored
@@ -690,18 +908,87 @@ class ProposalWorkflow:
             "review_token": token,
         }
 
+    def _recover_interrupted_transactions(self, now: float) -> dict[str, int]:
+        result = {"recovered_count": 0, "manual_required_count": 0}
+        root = self.context.app_support / "proposal_transactions"
+        if not root.exists():
+            return result
+        if root.is_symlink() or not root.is_dir():
+            raise ProposalRollbackError("proposal transaction 根目录无效，已停止 recovery。")
+        for transaction_dir in sorted(root.glob("txn_*")):
+            if transaction_dir.is_symlink() or not transaction_dir.is_dir():
+                continue
+            transaction_path = transaction_dir / "transaction.json"
+            if transaction_path.is_symlink() or not transaction_path.is_file():
+                continue
+            try:
+                transaction = read_json(transaction_path)
+            except ProposalBundleError:
+                continue
+            transaction_id = str(transaction.get("transaction_id") or "")
+            state = str(transaction.get("state") or "")
+            if (
+                transaction.get("schema_version") != TRANSACTION_VERSION
+                or transaction_dir.name != transaction_id
+                or not TRANSACTION_ID_PATTERN.fullmatch(transaction_id)
+                or state not in {"applying", "applied", "failed_validation"}
+            ):
+                continue
+            try:
+                self._restore_transaction(transaction_dir, transaction)
+            except Exception as exc:
+                transaction["state"] = "manual_rollback_required"
+                history = transaction.setdefault("state_history", [])
+                if "manual_rollback_required" not in history:
+                    history.append("manual_rollback_required")
+                transaction["rollback_failure_type"] = exc.__class__.__name__
+                transaction["recovery_checked_at"] = utc_iso(now)
+                write_json_atomic(transaction_path, transaction)
+                result["manual_required_count"] += 1
+                self._append_audit(
+                    action="interrupted_recovery",
+                    proposal_id=str(transaction.get("proposal_id") or ""),
+                    status="manual_rollback_required",
+                    transaction_id=transaction_id,
+                    target_files=[str(item.get("target_file") or "") for item in transaction.get("targets") or []],
+                )
+                continue
+            transaction["state"] = "recovered_after_interruption"
+            transaction.setdefault("state_history", []).append("recovered_after_interruption")
+            transaction["recovered_at"] = utc_iso(now)
+            write_json_atomic(transaction_path, transaction)
+            result["recovered_count"] += 1
+            self._append_audit(
+                action="interrupted_recovery",
+                proposal_id=str(transaction.get("proposal_id") or ""),
+                status="recovered_after_interruption",
+                transaction_id=transaction_id,
+                target_files=[str(item.get("target_file") or "") for item in transaction.get("targets") or []],
+            )
+        return result
+
     def _review_transactions(self, now: float) -> list[dict[str, Any]]:
         root = self.context.app_support / "proposal_transactions"
-        if not root.is_dir() or root.is_symlink():
+        if not root.exists():
             return []
+        if not root.is_dir() or root.is_symlink():
+            raise ProposalRollbackError("proposal transaction 根目录无效，已停止 rollback review。")
         result: list[dict[str, Any]] = []
         for path in sorted(root.glob("txn_*/transaction.json")):
+            if path.parent.is_symlink() or path.is_symlink():
+                continue
             try:
                 transaction = read_json(path)
             except ProposalBundleError:
                 continue
             transaction_id = str(transaction.get("transaction_id") or "")
-            if transaction.get("schema_version") != TRANSACTION_VERSION or transaction.get("state") != "committed" or not TRANSACTION_ID_PATTERN.fullmatch(transaction_id):
+            state = str(transaction.get("state") or "")
+            if (
+                transaction.get("schema_version") != TRANSACTION_VERSION
+                or state not in {"committed", "manual_rollback_required"}
+                or path.parent.name != transaction_id
+                or not TRANSACTION_ID_PATTERN.fullmatch(transaction_id)
+            ):
                 continue
             token = self.token_factory()
             self._rollback_tokens[token] = {
@@ -712,7 +999,7 @@ class ProposalWorkflow:
                 {
                     "transaction_id": transaction_id,
                     "proposal_id": transaction.get("proposal_id"),
-                    "state": "committed",
+                    "state": state,
                     "target_files": [str(item.get("target_file") or "") for item in transaction.get("targets") or []],
                     "rollback_token": token,
                 }
