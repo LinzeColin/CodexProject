@@ -1,3 +1,18 @@
+## 2026-07-10 - V014 remaining cash source private trace or difference acceptance
+
+- phase: `V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE`
+- task: `KMFA-V014-REMAINING-CASH-SOURCE-PRIVATE-TRACE-OR-DIFFERENCE-ACCEPTANCE-20260710`
+- result: `completed_validated_local_only_second_cash_project_materialized_two_projects_difference_accepted_no_go` / `NO_GO`
+- payable trace: 3 条未决项目成本被分类为后续银行结清 1、票据非现金结算 1、期末未付 1；第二个项目形成可访问账套内现金闭环。
+- materialization: 本轮新增 3 个私有现金目标槽位，累计 34 个已物化、6 个未决；12 条比较中 10 条完成，其中 2 条零差异、8 条非零差异，2 条现金比较未完成。
+- WPS recovery: 2 个标准 Office 兼容层均成功解锁但为空白；2 个实际 WPS 安全文档层仍不可读，未声明已读取安全内容。
+- raw proof: 5 个原始文件前后逐文件路径、大小、mtime、inode、mode、SHA256 完全一致。
+- evidence: `KMFA/stage_artifacts/V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE/machine/remaining_cash_source_private_trace_or_difference_acceptance_manifest.json`
+- validation: focused unit test and private-trace validator passed；治理 validator 与 raw/secret scan 在 commit 前复跑。
+- boundary: private compatibility secret, suppliers, notes, values, transactions and Chinese difference report remain ignored；no Stage review, GitHub upload, app reinstall or business execution。
+product_version: 0.1.4-remaining-cash-source-private-trace-or-difference-acceptance
+version_matrix_product_version_reference: 0.1.4-remaining-cash-source-private-trace-or-difference-acceptance
+
 ## 2026-07-10 - V014 cash source private disambiguation and remaining value materialization
 
 - phase: `V014_CASH_SOURCE_PRIVATE_DISAMBIGUATION_AND_REMAINING_VALUE_MATERIALIZATION`

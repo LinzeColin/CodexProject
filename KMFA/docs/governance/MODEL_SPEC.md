@@ -1,3 +1,16 @@
+## FORM-KMFA-V014-REMAINING-CASH-SOURCE-PRIVATE-TRACE-OR-DIFFERENCE-ACCEPTANCE-001
+
+- version: `0.1.4-remaining-cash-source-private-trace-or-difference-acceptance`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: 在只读 raw 边界内追踪未决项目成本的应付、票据和银行结算链，并在无法恢复实际 WPS 安全内容时保留明确差异接受。
+- rule: `phase_valid = payable_traces == 3 AND cash_paid_later == 1 AND noncash_note_settlement == 1 AND unpaid_at_cutoff == 1 AND resolved_projects == 2 AND unresolved_projects == 2 AND new_cash_slots == 3 AND materialized_slots == 34 AND unresolved_cash_slots == 6 AND completed_comparisons == 10 AND zero_deltas == 2 AND nonzero_deltas == 8 AND incomplete_cash_comparisons == 2 AND compatibility_unlock == 2 AND secure_wps_readable == 0 AND forced_zero == 0 AND raw_snapshot_exact_match == true AND decision == NO_GO`。
+- payable rule: 项目成本只有在供应商应付来源唯一、后续应付借方完整结清、同日同凭证银行贷方精确平衡时计入现金已付；票据背书结算与期末未付均不计入现金已付。
+- WPS rule: 标准 Office 兼容层解锁后必须检查工作簿是否为空；空白兼容层不能替代实际 WpsContent，专有安全 ticket 未恢复时不得声明应收账龄或项目状态已读取。
+- missing rule: 两个剩余项目没有正向现金收款证据时保持未决，不得用银行别名未命中或空白兼容层推导零值。
+- public_safety: 公开产物仅含聚合计数和 gate；兼容密码、供应商、票据、raw 文件名、金额、交易、sheet/row 和差异明细只存在于 ignored private runtime。
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_remaining_cash_source_private_trace_or_difference_acceptance.py --require-private-trace`
+- evidence: `KMFA/stage_artifacts/V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE/machine/remaining_cash_source_private_trace_or_difference_acceptance_manifest.json`
+
 ## FORM-KMFA-V014-CASH-SOURCE-PRIVATE-DISAMBIGUATION-AND-REMAINING-VALUE-MATERIALIZATION-001
 
 - version: `0.1.4-cash-source-private-disambiguation-and-remaining-value-materialization`

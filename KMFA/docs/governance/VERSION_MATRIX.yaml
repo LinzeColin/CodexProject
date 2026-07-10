@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-cash-source-private-disambiguation-and-remaining-value-materialization"
-product_version_status: "completed_validated_local_only_one_cash_project_materialized_remaining_cash_unresolved_no_go"
-version_file_value: "0.1.4-cash-source-private-disambiguation-and-remaining-value-materialization"
+product_version: "0.1.4-remaining-cash-source-private-trace-or-difference-acceptance"
+product_version_status: "completed_validated_local_only_second_cash_project_materialized_two_projects_difference_accepted_no_go"
+version_file_value: "0.1.4-remaining-cash-source-private-trace-or-difference-acceptance"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-cash-source-private-disambiguation-and-remaining-value-materialization"
+  MOD-KMFA-GOV-001: "0.1.4-remaining-cash-source-private-trace-or-difference-acceptance"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_remaining_cash_source_private_trace_or_difference_acceptance: "0.1.4-remaining-cash-source-private-trace-or-difference-acceptance"
   kmfa_v014_cash_source_private_disambiguation_and_remaining_value_materialization: "0.1.4-cash-source-private-disambiguation-and-remaining-value-materialization"
   kmfa_v014_real_project_identity_private_rebinding_and_processed_value_materialization: "0.1.4-real-project-identity-private-rebinding-and-processed-value-materialization"
   kmfa_v014_authorized_agent_private_resolution_application_after_blocked_handoff: "0.1.4-authorized-agent-private-resolution-application-after-blocked-handoff"
@@ -406,9 +407,9 @@ parameter_profile_versions:
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_blocked_handoff_final_threshold_recheck_after_reminder: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-final-threshold-recheck-after-reminder"
   kmfa_project_cost_mvp: "blocked_no_go_owner_scope_required"
 data_snapshot_version: "not_applicable_no_raw_data_committed"
-current_iteration: "ITER-20260710-KMFA-V014-CASH-SOURCE-PRIVATE-DISAMBIGUATION-AND-REMAINING-VALUE-MATERIALIZATION"
-current_phase: "V014_CASH_SOURCE_PRIVATE_DISAMBIGUATION_AND_REMAINING_VALUE_MATERIALIZATION"
-current_gate: "NO_GO_REMAINING_CASH_TRACE_OR_DIFFERENCE_ACCEPTANCE_REQUIRED"
+current_iteration: "ITER-20260710-KMFA-V014-REMAINING-CASH-SOURCE-PRIVATE-TRACE-OR-DIFFERENCE-ACCEPTANCE"
+current_phase: "V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE"
+current_gate: "NO_GO_REMAINING_TWO_PROJECT_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE_REQUIRED"
 
 
 kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_external_action_readiness_after_final_threshold:
