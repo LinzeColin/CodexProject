@@ -1,0 +1,85 @@
+{
+  "schema_version": "memory_atlas.remediation_r7_browser_regression.v1",
+  "captured_at": "2026-07-10T23:33:15Z",
+  "status": "PASS",
+  "viewports": [
+    "1470x661",
+    "1440x900",
+    "390x844"
+  ],
+  "home_multiviewport": {
+    "status": "PASS_3_OF_3",
+    "active_memory_count": 278,
+    "node_count": 435,
+    "edge_count": 2325,
+    "activity_count": 379,
+    "workspace_overlap_count": 0,
+    "nested_horizontal_clipping_count": 0,
+    "horizontal_overflow_count": 0,
+    "mobile_forward_routes": 10,
+    "mobile_reverse_routes": 9,
+    "actionable_console_error_count": 0,
+    "actionable_failed_response_count": 0
+  },
+  "visual_workflows": {
+    "status": "PASS_3_OF_3_FULL_INTERACTION_MATRIX",
+    "visual_count": 12,
+    "canonical_event_count": 491,
+    "evidence_interactions_per_viewport": 12,
+    "source_filter_choice": "codex",
+    "source_filter_event_count": 111,
+    "content_changed_visuals_by_axis": {
+      "source": 10,
+      "time": 10,
+      "project": 11,
+      "task": 11
+    },
+    "opportunity_matched_and_rendered_event_ids_equal": true,
+    "formula_baseline": 77,
+    "formula_changed": 81,
+    "formula_reset": 77,
+    "non_get_request_count": 0,
+    "overlap_count": 0,
+    "clipped_card_count": 0,
+    "horizontal_overflow_count": 0
+  },
+  "command_workflows": {
+    "status": "PASS",
+    "command_count": 6
+  },
+  "proposal_workflow": {
+    "status": "PASS",
+    "proposal_count": 8,
+    "authorized_apply_real_file_change": true,
+    "persisted_rollback_visible_after_reopen": true,
+    "manual_rollback_exact_restore": true,
+    "validation_failure_automatic_rollback": true,
+    "raw_proposal_review_only": true,
+    "hosted_static_post_count": 0
+  },
+  "owner_daily": {
+    "status": "PASS",
+    "initial_completed_failed": "7/1",
+    "retry_step_id": "audit",
+    "final_completed_failed": "8/0",
+    "fixed_retry_only": true,
+    "hosted_static_post_count": 0
+  },
+  "stage7_visual": {
+    "status": "PASS",
+    "galaxy_nonblank_lit_pixels": 67239,
+    "galaxy_mapped_particle_count": 423,
+    "memory_river_total_markers": 64,
+    "browser_console_error_count": 0,
+    "failed_response_count": 0
+  },
+  "stage7_full": "PASS",
+  "screenshots": {
+    "generated_in_validator_temp_directories": true,
+    "nonblank_checks_passed": true,
+    "tracked_as_permanent_r7_artifacts": false,
+    "cleanup_expected": true
+  },
+  "remote_or_installed_runtime_tested": false,
+  "r8_delivery_performed": false
+}

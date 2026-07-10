@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 Remediation R7
+
+- Added sanitized public raw connectors for a real ChatGPT official export, a frozen
+  Codex snapshot and a real reviewer-agent event, with deterministic omission markers.
+- Hardened privacy handling for structured identifiers, encrypted content, mapping keys
+  and boundary-free hook-shaped token candidates.
+- Materialized 512 public raw files plus immutable 512-entry manifest and hash ledger;
+  full audit reports zero credential/private-text, binary-marker or JSON findings.
+- Added one pinned immutable release and exact derived/local/Pages snapshot parity using
+  SHA-256 `b608631f...fefcbc`.
+- Changed app install and Cloudflare candidate assembly to consume the pinned release by
+  default; explicit refresh remains separate.
+- Added tracked-files-only recovery rehearsal with source-package restoration, fresh
+  dependency install/build, raw integrity and Pages parity checks.
+- Preserved R1-R6 browser/runtime/security regressions; independent review reports
+  0 High / 0 Medium and one documented Low about candidate/evidence ordering.
+- Preserved the R7 boundary: no R8 overall acceptance, merge/rebase, push, app reinstall,
+  Cloudflare deployment, remote-clone claim or overall completion claim.
+
 ## Unreleased - Memory Atlas v1.2 Remediation R6
 
 - Added an exact twelve-item P0 visual workflow registry, 217 bounded/redacted facet
