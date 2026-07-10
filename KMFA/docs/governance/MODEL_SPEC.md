@@ -2241,3 +2241,18 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - raw boundary: five raw files must match before, after and Stage 9 snapshots exactly; all raw identities and diagnostics remain ignored private evidence.
 - release boundary: no formal report, export, Stage 10 review, upload, app reinstall, business decision basis or business execution.
 - validation: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s10_p1_post_remediation_report_entry.py --require-private-evidence --require-final-evidence` and focused unittest.
+
+
+## FORM-KMFA-V014-S10-P2-POST-REMEDIATION-TRUST-GRADE-LOCK-001
+
+- phase: `V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK`
+- roadmap phase: `S10-P2`
+- model: `kmfa_v014_s10_p2_post_remediation_trust_grade_lock`
+- product_version: `0.1.4-s10-p2-post-remediation-trust-grade-lock`
+- policy rule: A/B/C/D must cover data quality, difference status, human confirmation and timeliness; A requires at least Q5 and zero delta, B at least Q4 with limitations, C is preview-only, D blocks decision use.
+- grade rule: current quality `Q4` gives a theoretical `B` ceiling, then any remaining hard block forces final `D`; two records each have six current hard blocks.
+- state rule: current `3 final-accepted-open / 9 nonzero / 2 zero / 1 incomplete / Q4 / NO_GO` comes only from current S10-P1; historical S10-P2 contributes rules and version framework only.
+- version rule: each record requires report-record, report-entry, template, formula, mapping, field-mapping, grade-policy and release-gate versions.
+- raw boundary: five raw files must match before, after and S10-P1 snapshots exactly; all raw identities and diagnostics remain ignored private evidence.
+- release boundary: no automatic promotion, complete trusted display, formal report, decision basis, S10-P3 export, Stage 10 review, upload, app reinstall or business execution.
+- validation: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s10_p2_post_remediation_trust_grade_lock.py --require-private-evidence --require-final-evidence` and focused unittest.

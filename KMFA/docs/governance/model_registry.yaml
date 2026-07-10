@@ -1,3 +1,18 @@
+kmfa_v014_s10_p2_post_remediation_trust_grade_lock:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s10-p2-post-remediation-trust-grade-lock"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S10-P2-POST-REMEDIATION-TRUST-GRADE-LOCK-001
+  parameter_refs:
+    - PARAM-KMFA-1699
+    - PARAM-KMFA-1700
+    - PARAM-KMFA-1701
+  evidence_dir: KMFA/stage_artifacts/V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK
+  validator: KMFA/tools/check_v014_s10_p2_post_remediation_trust_grade_lock.py
+  scope: Current S10-P2 A B C D trust-grade recomputation with two version-bound records; Q4 has a theoretical B ceiling but six hard blocks per record force D NO_GO and keep export formal release upload app reinstall and business execution closed.
+
 kmfa_v014_s10_p1_post_remediation_report_entry:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-s10-p1-post-remediation-report-entry"

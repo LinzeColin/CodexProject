@@ -1,0 +1,54 @@
+{
+  "driver_dimensions": [
+    "data_quality",
+    "difference_status",
+    "human_confirmation",
+    "timeliness"
+  ],
+  "grade_policy_version": "kmfa.report_grade_policy.v1",
+  "phase_id": "V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK",
+  "project_id": "KMFA",
+  "promotion_blocks": [
+    "unresolved_critical_difference",
+    "zero_delta_failed",
+    "missing_required_lineage",
+    "missing_human_confirmation_for_A",
+    "stale_input",
+    "raw_data_mutation_detected"
+  ],
+  "report_grades": [
+    {
+      "business_decision_basis_allowed": true,
+      "critical_differences_closed_required": true,
+      "grade": "A",
+      "human_confirmation_required": true,
+      "limitations_required": false,
+      "minimum_quality_grade": "Q5",
+      "release_permission": "formal_internal_report",
+      "zero_delta_required": true
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "critical_differences_explainable_required": true,
+      "grade": "B",
+      "limitations_required": true,
+      "minimum_quality_grade": "Q4",
+      "release_permission": "internal_review_report",
+      "zero_delta_required": false
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "grade": "C",
+      "minimum_quality_grade": "Q3",
+      "preview_only": true,
+      "release_permission": "preview_only"
+    },
+    {
+      "blocked_reason": "关键数据缺失、过期或差异未处理",
+      "business_decision_basis_allowed": false,
+      "grade": "D",
+      "release_permission": "blocked_decision_use"
+    }
+  ],
+  "schema_version": "kmfa.v014.s10_p2.post_remediation_grade_rules_public_safe.v1"
+}

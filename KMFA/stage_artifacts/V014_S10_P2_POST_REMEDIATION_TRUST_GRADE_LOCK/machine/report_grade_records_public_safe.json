@@ -1,0 +1,101 @@
+{
+  "phase_id": "V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK",
+  "project_id": "KMFA",
+  "report_grade_records": [
+    {
+      "business_decision_basis_allowed": false,
+      "complete_trusted_report_display_allowed": false,
+      "computed_report_grade": "D",
+      "field_mapping_version": "MAP-KMFA-S10P1-PUBLIC-SAFE-v1",
+      "formal_report_allowed": false,
+      "formula_version": "FORM-KMFA-V014-S10-P2-POST-REMEDIATION-TRUST-GRADE-LOCK-001",
+      "full_trusted_report_allowed": false,
+      "generated_at": "2026-07-11T01:10:50+10:00",
+      "grade_policy_version": "kmfa.report_grade_policy.v1",
+      "hard_blocks": [
+        "zero_delta_failed",
+        "unresolved_critical_difference",
+        "incomplete_reconciliation",
+        "missing_required_lineage",
+        "missing_human_confirmation_for_A",
+        "full_business_value_consistency_not_verified"
+      ],
+      "limitations": [
+        "关键现金数据缺失，不能显示为完整可信报告。",
+        "九项非零差异和一项未完成比较继续阻断发布。",
+        "完整追溯、充分人工确认和业务一致性尚未成立。"
+      ],
+      "mapping_version": "MAP-KMFA-V014-S10P2-POST-REMEDIATION-PUBLIC-SAFE-v1",
+      "maximum_report_grade_before_hard_blocks": "B",
+      "phase_id": "V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK",
+      "project_id": "KMFA",
+      "public_repo_safety": {
+        "aggregate_only": true,
+        "business_values_included": false,
+        "field_or_header_plaintext_included": false,
+        "raw_identity_included": false
+      },
+      "record_type": "post_remediation_report_grade_record",
+      "release_gate_version": "kmfa.report_release_gate.v1",
+      "release_permission": "blocked_decision_use",
+      "report_entry_id": "project_cost_special_report",
+      "report_entry_version": "0.1.4-s10-p1-post-remediation-report-entry",
+      "report_record_id": "S10P2-POST-GRADE-PROJECT-COST-SPECIAL-REPORT",
+      "report_record_version": "RPTREC-KMFA-V014-S10P2-POST-REMEDIATION-001",
+      "s10_p3_export_allowed": false,
+      "schema_version": "kmfa.v014.s10_p2.post_remediation_grade_record.v1",
+      "source_quality_grade": "Q4",
+      "stage_id": "S10",
+      "template_version": "TPL-KMFA-S10P1-REPORT-TEMPLATES-001",
+      "visible_report_title": "项目成本专题报告"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "complete_trusted_report_display_allowed": false,
+      "computed_report_grade": "D",
+      "field_mapping_version": "MAP-KMFA-S10P1-PUBLIC-SAFE-v1",
+      "formal_report_allowed": false,
+      "formula_version": "FORM-KMFA-V014-S10-P2-POST-REMEDIATION-TRUST-GRADE-LOCK-001",
+      "full_trusted_report_allowed": false,
+      "generated_at": "2026-07-11T01:10:50+10:00",
+      "grade_policy_version": "kmfa.report_grade_policy.v1",
+      "hard_blocks": [
+        "zero_delta_failed",
+        "unresolved_critical_difference",
+        "incomplete_reconciliation",
+        "missing_required_lineage",
+        "missing_human_confirmation_for_A",
+        "full_business_value_consistency_not_verified"
+      ],
+      "limitations": [
+        "关键现金数据缺失，不能显示为完整可信报告。",
+        "九项非零差异和一项未完成比较继续阻断发布。",
+        "完整追溯、充分人工确认和业务一致性尚未成立。"
+      ],
+      "mapping_version": "MAP-KMFA-V014-S10P2-POST-REMEDIATION-PUBLIC-SAFE-v1",
+      "maximum_report_grade_before_hard_blocks": "B",
+      "phase_id": "V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK",
+      "project_id": "KMFA",
+      "public_repo_safety": {
+        "aggregate_only": true,
+        "business_values_included": false,
+        "field_or_header_plaintext_included": false,
+        "raw_identity_included": false
+      },
+      "record_type": "post_remediation_report_grade_record",
+      "release_gate_version": "kmfa.report_release_gate.v1",
+      "release_permission": "blocked_decision_use",
+      "report_entry_id": "business_overview_report",
+      "report_entry_version": "0.1.4-s10-p1-post-remediation-report-entry",
+      "report_record_id": "S10P2-POST-GRADE-BUSINESS-OVERVIEW-REPORT",
+      "report_record_version": "RPTREC-KMFA-V014-S10P2-POST-REMEDIATION-001",
+      "s10_p3_export_allowed": false,
+      "schema_version": "kmfa.v014.s10_p2.post_remediation_grade_record.v1",
+      "source_quality_grade": "Q4",
+      "stage_id": "S10",
+      "template_version": "TPL-KMFA-S10P1-REPORT-TEMPLATES-001",
+      "visible_report_title": "经营总览报告"
+    }
+  ],
+  "schema_version": "kmfa.v014.s10_p2.post_remediation_grade_records_public_safe.v1"
+}

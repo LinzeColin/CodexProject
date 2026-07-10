@@ -1,6 +1,44 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "KMFA-V014-S10-P2-POST-REMEDIATION-TRUST-GRADE-LOCK-20260711"
+    phase: "V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK"
+    objective: "Recompute the two current report trust grades under the reviewed A B C D policy and lock D while hard blocks remain."
+    scope:
+      - "A B C D rule review across data quality difference status human confirmation and timeliness"
+      - "two current report grade records with eight required version bindings"
+      - "Q4 theoretical B ceiling followed by six hard blocks per record and final D NO_GO"
+      - "raw immutability proof and public-safe Chinese management explanation"
+    non_scope:
+      - "S10-P3 export or Stage 10 review"
+      - "grade promotion formal report release or business decision use"
+      - "GitHub upload app reinstall UI runtime or business execution"
+    status: "completed"
+    completed_version: "0.1.4-s10-p2-post-remediation-trust-grade-lock"
+    dependencies:
+      - "V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY"
+      - "V014_S10_P2_REPORT_TRUST_GRADE"
+    required_files:
+      - "KMFA/stage_artifacts/V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK/machine/trust_grade_manifest.json"
+      - "KMFA/tools/check_v014_s10_p2_post_remediation_trust_grade_lock.py"
+    acceptance_ids:
+      - "ACC-V014-S10-P2-POST-REMEDIATION-TRUST-GRADE-LOCK"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s10_p2_post_remediation_trust_grade_lock.py --require-private-evidence --require-final-evidence"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s10_p2_post_remediation_trust_grade_lock"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_no_float_money.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/no_omission_check.py"
+    test_results:
+      - "PASS: RED then seven focused behavior tests"
+      - "PASS: current S10-P1 state replaces stale historical dynamic state"
+      - "PASS: Q4 theoretical B ceiling is reduced to D by twelve record-level hard blocks"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK/human/test_results_zh.md"
+      - "KMFA/stage_artifacts/V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK/machine/trust_grade_manifest.json"
+    risk: "Three unproven cash values nine nonzero differences and one incomplete comparison keep D NO_GO and formal release blocked."
+    rollback: "Revert only this phase commit and ignored private runtime draft; never mutate the raw inbox."
+    target_version: "0.1.4-s10-p2-post-remediation-trust-grade-lock"
+
   - task_id: "KMFA-V014-S10-P1-POST-REMEDIATION-REPORT-ENTRY-20260711"
     phase: "V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY"
     objective: "Bind the S10-P1 management report templates to the current Stage 9 post-remediation trust and blocker state."

@@ -14455,3 +14455,48 @@ formulas:
       - "KMFA/stage_artifacts/V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY/human/management_report_entry_preview_zh.md"
       - "KMFA/stage_artifacts/V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY/human/test_results_zh.md"
       - "KMFA/stage_artifacts/V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY/machine/report_entry_manifest.json"
+
+
+  - formula_id: "FORM-KMFA-V014-S10-P2-POST-REMEDIATION-TRUST-GRADE-LOCK-001"
+    model_id: "MOD-KMFA-GOV-001"
+    assumption_ids:
+      - "ASM-KMFA-002"
+      - "ASM-KMFA-004"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "s10_p2_grade_valid = current_quality_grade == Q4 AND maximum_grade_before_hard_blocks = B AND hard_blocks > 0 => final_grade = D AND grade_record_count == 2 AND hard_block_count == 12 AND automatic_grade_promotion == false AND s10_p3_performed == false AND stage10_review_performed == false AND github_upload_performed == false"
+    variables:
+      - name: "current_quality_grade"
+        data_type: "status"
+        unit: "quality_grade"
+        input_domain: "Q4"
+      - name: "maximum_grade_before_hard_blocks"
+        data_type: "status"
+        unit: "report_grade"
+        input_domain: "B"
+      - name: "hard_block_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "12"
+      - name: "final_grade"
+        data_type: "status"
+        unit: "report_grade"
+        input_domain: "D"
+    constraints:
+      - "A B C D policy must cover data quality difference status human confirmation and timeliness."
+      - "Each current report record binds report entry template formula mapping field mapping grade policy and release gate versions."
+      - "Current S10-P1 supplies dynamic inputs; historical S10-P2 supplies rules and version framework only."
+      - "Missing cash nonzero differences incomplete reconciliation and incomplete lineage or confirmation block grade promotion."
+      - "S10-P3 Stage 10 review formal release upload app reinstall and business execution remain false."
+    missing_policy: "Missing key cash authority or unresolved differences force D and block complete trusted display; no inferred zero promotion overwrite or silent pass."
+    output_range: "v014_s10_p2_post_remediation_trust_grade_lock_manifest"
+    code_refs:
+      - "KMFA/tools/v014_s10_p2_post_remediation_trust_grade_lock.py"
+      - "KMFA/tools/check_v014_s10_p2_post_remediation_trust_grade_lock.py"
+    test_refs:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s10_p2_post_remediation_trust_grade_lock.py --require-private-evidence --require-final-evidence"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s10_p2_post_remediation_trust_grade_lock"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK/human/management_grade_explanation_zh.md"
+      - "KMFA/stage_artifacts/V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK/human/test_results_zh.md"
+      - "KMFA/stage_artifacts/V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK/machine/trust_grade_manifest.json"

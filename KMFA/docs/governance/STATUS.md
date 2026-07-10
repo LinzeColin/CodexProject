@@ -5,12 +5,12 @@
 ## 最新状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s10-p1-post-remediation-report-entry`
+- version: `0.1.4-s10-p2-post-remediation-trust-grade-lock`
 - current_stage: `S10`
-- current_phase: `V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY`
-- status: `completed_validated_local_only_management_report_entries_locked_no_go_upload_deferred`
+- current_phase: `V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK`
+- status: `completed_validated_local_only_report_grade_recomputed_d_locked_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `S10-P2_as_separate_run_without_overriding_inherited_Q4_D_NO_GO`
+- next_required_input: `S10-P3_as_separate_run_with_D_NO_GO_export_boundary`
 - production_ready: `false`
 - github_upload_ready: `false`
 - raw_snapshot_exact_match: `true`
@@ -19,12 +19,12 @@
 ## 前序状态（上一 phase）
 
 - project_id: `KMFA`
-- version: `0.1.4-s09-post-remediation-stage-review`
-- current_stage: `S09`
-- current_phase: `V014_S09_POST_REMEDIATION_STAGE_REVIEW`
-- status: `review_completed_validated_local_only_findings_fixed_no_go_upload_deferred`
+- version: `0.1.4-s10-p1-post-remediation-report-entry`
+- current_stage: `S10`
+- current_phase: `V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY`
+- status: `completed_validated_local_only_management_report_entries_locked_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `S10-P1_as_separate_run_with_Q4_D_NO_GO_boundary`
+- next_required_input: `S10-P2_as_separate_run_without_overriding_inherited_Q4_D_NO_GO`
 - raw_snapshot_exact_match: `true`
 - decision: `NO_GO`
 
@@ -44,6 +44,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 S10-P2 post-remediation trust grade lock completed local-only：复核 A/B/C/D 四级规则和数据质量、差异、人工确认、时效四维输入；两条报告记录均完成八项版本绑定。当前 `Q4` 理论上限为 `B`，但每条报告均存在 6 个 hard block，共 12 个，原因包括关键现金数据缺失、3 项最终接受未决、9 项非零差异、1 项未完成比较、追溯与人工确认不足，因此重新计算结果继续锁定 `D / NO_GO`，未自动提级。5 个 raw 文件前后及跨 S10-P1 快照一致；S10-P3=false、Stage 10 review=false、GitHub upload=false、app reinstall=false、business execution=false。next_required_input=`S10-P3_as_separate_run_with_D_NO_GO_export_boundary`。
 
 - v0.1.4 S10-P1 post-remediation report entry completed local-only：建立项目成本专题报告和经营总览报告两个管理入口，共 11 个管理可读章节；动态状态仅绑定最新 Stage 9 的 69 条关闭或排除、3 条最终接受未决、9 条非零和 1 条未完成差异，旧 S10-P1 只复用章节结构。入口显式展示 `Q4 / D / NO_GO（未放行）`，但不计算或覆盖报告等级；三条现金缺失不补零，权威值不被复算覆盖；5 个 raw 文件前后及跨 phase 快照一致；S10-P2=false、S10-P3=false、Stage 10 review=false、GitHub upload=false、app reinstall=false、business execution=false。next_required_input=`S10-P2_as_separate_run_without_overriding_inherited_Q4_D_NO_GO`。
 
