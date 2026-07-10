@@ -1,3 +1,11 @@
+## 0.1.4-remaining-two-project-cash-collection-evidence-or-final-difference-acceptance - 2026-07-10
+
+- 完成 `V014_REMAINING_TWO_PROJECT_CASH_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE` 本地单 phase。
+- 只读扫描 3 个原始 ZIP 中 19 个可访问非主账 OOXML 工作簿，形成 48 条正向收款候选；其中 4 条来源记录归并为 2 条唯一银行入账链，每条均满足项目维度、客户、唯一等额银行借方、同凭证应收贷方和借贷平衡。
+- 第三个项目形成现金闭环，新增物化 3 个私有现金目标槽位；累计已物化 37 个、剩余 3 个。12 条比较中 11 条完成，其中 2 条零差异、9 条非零差异，1 条现金比较未完成。
+- 最后一个项目在主账、银行、应收、可访问 OOXML 和 WPS/OLE 兼容层的重复核验中仍无正向收款证据，已生成 ignored private 全中文最终差异接受报告，未把缺失值写成零。
+- 5 个原始文件前后逐文件快照完全一致；私有文件名、项目、客户、金额、工作表、凭证和差异报告未进入 Git，未做 Stage review、GitHub upload、app reinstall 或 business execution。
+
 ## 0.1.4-remaining-cash-source-private-trace-or-difference-acceptance - 2026-07-10
 
 - 完成 `V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE` 本地单 phase。

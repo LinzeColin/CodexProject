@@ -1,3 +1,16 @@
+## FORM-KMFA-V014-REMAINING-TWO-PROJECT-CASH-COLLECTION-EVIDENCE-OR-FINAL-DIFFERENCE-ACCEPTANCE-001
+
+- version: `0.1.4-remaining-two-project-cash-collection-evidence-or-final-difference-acceptance`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: 在只读 raw 边界内核验最后两个项目的正向收款来源，物化唯一银行应收闭环，并对最后一个无证据项目执行最终差异接受。
+- rule: `phase_valid = accessible_ooxml_workbooks == 19 AND raw_collection_candidates == 48 AND strict_source_records == 4 AND unique_collection_links == 2 AND balanced_receivable_vouchers == 2 AND resolved_projects == 3 AND unresolved_projects == 1 AND final_difference_accepted_projects == 1 AND new_cash_slots == 3 AND materialized_slots == 37 AND unresolved_cash_slots == 3 AND completed_comparisons == 11 AND zero_deltas == 2 AND nonzero_deltas == 9 AND incomplete_cash_comparisons == 1 AND secure_wps_readable == 0 AND forced_zero == 0 AND raw_snapshot_exact_match == true AND decision == NO_GO`。
+- collection rule: 收款链必须同时具备项目维度、客户维度、非公式正向金额、唯一等额银行借方、同凭证应收贷方和借贷平衡；累计值单独存在时不得作为可加总收款。
+- materialization rule: 两条已验证银行入账按唯一凭证去重后相加；现金已付成本仅重放既有银行付款证据，现金毛利严格等于收款减现金已付成本，全部使用 integer cents。
+- difference rule: 最后一个项目在所有可访问来源均无正向收款证据时保持未决并生成全中文 private 最终差异接受报告，不得推导零。
+- public_safety: 公开产物仅含聚合计数和 gate；raw 文件名/hash、项目、客户、金额、工作表、行列、银行和凭证明细只存在于 ignored private runtime。
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_remaining_two_project_cash_collection_evidence_or_final_difference_acceptance.py --require-private-evidence`
+- evidence: `KMFA/stage_artifacts/V014_REMAINING_TWO_PROJECT_CASH_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE/machine/remaining_two_project_cash_collection_evidence_or_final_difference_acceptance_manifest.json`
+
 ## FORM-KMFA-V014-REMAINING-CASH-SOURCE-PRIVATE-TRACE-OR-DIFFERENCE-ACCEPTANCE-001
 
 - version: `0.1.4-remaining-cash-source-private-trace-or-difference-acceptance`

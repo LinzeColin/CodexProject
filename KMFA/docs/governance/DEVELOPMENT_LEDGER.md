@@ -1,3 +1,18 @@
+## 2026-07-10 - V014 remaining two project cash collection evidence or final difference acceptance
+
+- phase: `V014_REMAINING_TWO_PROJECT_CASH_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE`
+- task: `KMFA-V014-REMAINING-TWO-PROJECT-CASH-COLLECTION-EVIDENCE-OR-FINAL-DIFFERENCE-ACCEPTANCE-20260710`
+- result: `completed_validated_local_only_third_cash_project_materialized_final_cash_project_difference_accepted_no_go` / `NO_GO`
+- source crosscheck: 19 个可访问非主账 OOXML 工作簿生成 48 条候选；4 条严格来源记录归并为 2 条唯一收款链，2 个银行凭证均借贷平衡且银行借方等于应收贷方。
+- materialization: 第三个项目新增 3 条私有现金指标和 3 个目标槽位；累计 37 个已物化、3 个未决。12 条比较中 11 条完成，2 条零差异、9 条非零差异、1 条未完成。
+- final difference acceptance: 最后一个项目无可证明正向收款，缺失值保持 `null`，ignored private 全中文报告记录完整差异和证据缺口。
+- raw proof: 5 个原始文件前后逐文件路径、大小、mtime、inode、mode、SHA256 完全一致。
+- evidence: `KMFA/stage_artifacts/V014_REMAINING_TWO_PROJECT_CASH_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE/machine/remaining_two_project_cash_collection_evidence_or_final_difference_acceptance_manifest.json`
+- validation: focused unit test and private-evidence validator passed；治理 validator 与 raw/private/secret scan 在 commit 前复跑。
+- boundary: private filenames, projects, customers, values, worksheets, vouchers and Chinese difference report remain ignored；no Stage review, GitHub upload, app reinstall or business execution。
+product_version: 0.1.4-remaining-two-project-cash-collection-evidence-or-final-difference-acceptance
+version_matrix_product_version_reference: 0.1.4-remaining-two-project-cash-collection-evidence-or-final-difference-acceptance
+
 ## 2026-07-10 - V014 remaining cash source private trace or difference acceptance
 
 - phase: `V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE`

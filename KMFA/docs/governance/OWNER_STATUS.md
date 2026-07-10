@@ -4,18 +4,18 @@
 
 ## 一句话状态
 
-KMFA 已完成 `V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE` 本地单 phase：3 条未决成本被追踪为后续银行结清、票据非现金结算和期末未付各 1 条，第二个项目形成现金闭环；累计 34 个槽位已物化、6 个未决。两个 WPS/OLE 兼容层可解锁但实际安全内容仍不可读，5 个原始文件前后完全一致，当前维持 `NO_GO`，未上传 GitHub、未重装 app、未执行业务动作。
+KMFA 已完成 `V014_REMAINING_TWO_PROJECT_CASH_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE` 本地单 phase：19 个可访问工作簿形成 48 条候选，4 条严格来源记录归并为 2 条唯一平衡收款链，第三个项目形成现金闭环；累计 37 个槽位已物化、3 个未决。最后一个项目已形成全中文 private 最终差异接受，5 个原始文件前后完全一致，当前维持 `NO_GO`，未上传 GitHub、未重装 app、未执行业务动作。
 
 ## 当前可信任范围
 
-- 可以信任：3 条应付/票据/银行追踪、2 个可访问账套内现金闭环、6 条现金指标、34 个已物化槽位、10 条已完成比较及 5 个原始文件前后完全一致。
-- 必须保留：8 条非零差异，不得通过覆盖、四舍五入、空白兼容层或替换权威值消除。
-- 不能信任：6 个现金口径槽位、2 条现金比较、2 个仍不可读实际安全内容的 WPS/OLE 来源、全局 72 条未重放 residual queue、任何正式业务报告或执行结论。
-- 下一步只做剩余两个项目的正向收款证据核验或最终差异接受；无法唯一验证的继续进入全中文 private 差异报告，缺失值不得写成零。
+- 可以信任：3 个现金闭环项目、9 条现金指标、37 个已物化槽位、11 条已完成比较、2 条唯一银行应收收款链及 5 个原始文件前后完全一致。
+- 必须保留：9 条非零差异，不得通过覆盖、四舍五入、空白兼容层或替换权威值消除。
+- 不能信任：3 个现金口径槽位、1 条现金比较、实际安全内容仍不可读的 WPS/OLE 来源、全局 72 条未重放 residual queue、任何正式业务报告或执行结论。
+- 下一步只做全局 residual difference queue 的重放或权威排除应用；不得顺手进行 Stage review、GitHub upload、app reinstall 或 business execution。
 
 ## 前序一句话状态（上一 phase）
 
-KMFA 已完成 `V014_CASH_SOURCE_PRIVATE_DISAMBIGUATION_AND_REMAINING_VALUE_MATERIALIZATION` 本地单 phase：4 个候选中 1 个形成可访问账套内唯一现金闭环，新增物化 3 个私有现金槽位，累计 31 个已物化、9 个未决；2 个 WPS/OLE 外部来源当前不可读且未虚假声称已读取。5 个原始文件前后完全一致，当前维持 `NO_GO`，未上传 GitHub、未重装 app、未执行业务动作。
+KMFA 已完成 `V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE` 本地单 phase：3 条未决成本被追踪为后续银行结清、票据非现金结算和期末未付各 1 条，第二个项目形成现金闭环；累计 34 个槽位已物化、6 个未决。两个 WPS/OLE 兼容层可解锁但实际安全内容仍不可读，5 个原始文件前后完全一致，当前维持 `NO_GO`，未上传 GitHub、未重装 app、未执行业务动作。
 
 ## 前序一句话状态（历史）
 

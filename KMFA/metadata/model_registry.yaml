@@ -1,3 +1,18 @@
+kmfa_v014_remaining_two_project_cash_collection_evidence_or_final_difference_acceptance:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-remaining-two-project-cash-collection-evidence-or-final-difference-acceptance"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-REMAINING-TWO-PROJECT-CASH-COLLECTION-EVIDENCE-OR-FINAL-DIFFERENCE-ACCEPTANCE-001
+  parameter_refs:
+    - PARAM-KMFA-1684
+    - PARAM-KMFA-1685
+    - PARAM-KMFA-1686
+  evidence_dir: KMFA/stage_artifacts/V014_REMAINING_TWO_PROJECT_CASH_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE
+  validator: KMFA/tools/check_v014_remaining_two_project_cash_collection_evidence_or_final_difference_acceptance.py
+  scope: Private raw project/customer collection evidence, balanced bank-receivable voucher links, integer-only materialization and final Chinese difference acceptance; no Stage review, GitHub upload, app reinstall or business execution.
+
 kmfa_v014_remaining_cash_source_private_trace_or_difference_acceptance:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-remaining-cash-source-private-trace-or-difference-acceptance"
