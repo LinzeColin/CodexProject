@@ -287,9 +287,24 @@ function validateAtlasctlSource() {
     '"owner-daily"',
     'subparsers.add_parser("deep-explore"',
     "def owner_daily_profile_contract",
-    "atlasctl_unified_cli.v1_2_s14_p1",
+    "OwnerDailyRunner",
   ]) {
     assertCondition(source.includes(fragment), `s14p1_source:${fragment}`, `atlasctl.py includes ${fragment}`, `atlasctl.py is missing ${fragment}`);
+  }
+  const runnerSource = readRepoFile("scripts/memory_atlas_owner_daily.py");
+  for (const fragment of [
+    "atlasctl_unified_cli.v1_2_s14_p1",
+    ownerDailyApiVersion,
+    ownerDailyResultVersion,
+    "OWNER_DAILY_STEP_IDS",
+    "class OwnerDailyRunner",
+  ]) {
+    assertCondition(
+      runnerSource.includes(fragment),
+      `s14p1_runner_source:${fragment}`,
+      `memory_atlas_owner_daily.py includes ${fragment}`,
+      `memory_atlas_owner_daily.py is missing ${fragment}`,
+    );
   }
 }
 
@@ -326,6 +341,7 @@ function main() {
     validateOpenDiffScope();
     validateTextFile(`apps/memory-atlas/scripts/${scriptName}`);
     validateTextFile("scripts/atlasctl.py");
+    validateTextFile("scripts/memory_atlas_owner_daily.py");
     validatePreviousStageStillRegistered();
     validateOwnerDailyProfile();
     validateDryRunCoverage();
