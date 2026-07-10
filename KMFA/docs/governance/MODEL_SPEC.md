@@ -2199,3 +2199,17 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - missing policy: missing or ambiguous sources remain open; no zero inference, averaging, candidate tie-breaking or nonzero-difference overwrite is allowed.
 - raw boundary: the five-file raw root is read-only and must have exact pre/post path size mtime inode mode and SHA256 equality; all private details remain ignored.
 - validation: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_global_residual_difference_queue_replay_or_authoritative_exclusion.py --require-private-evidence` and `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_global_residual_difference_queue_replay_or_authoritative_exclusion`.
+
+
+## FORM-KMFA-V014-REMAINING-ELEVEN-RESIDUAL-DIFFERENCE-SOURCE-TRACE-OR-FINAL-ACCEPTANCE-001
+
+- phase: `V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE`
+- model: `kmfa_v014_remaining_eleven_residual_difference_source_trace_or_final_acceptance`
+- product_version: `0.1.4-remaining-eleven-residual-difference-source-trace-or-final-acceptance`
+- source priority: one real-project identity binding plus one authority PDF plus one cost table plus one component row plus the table's yuan amount column outranks context-free global numeric candidates.
+- value normalization: strict Decimal source text to integer cents; decorative table prefixes are accepted only when the amount column contains exactly one numeric token.
+- formulas: `travel_cents = ticket_cents + lodging_cents`; `direct_expense_cents = sum(six top-level direct expense categories)`; `total_expense_cents = direct_expense_cents + allocated_management_cents + interest_cents`.
+- cross-engine rule: PDF table and PDF text extraction must both contain the same integer amount; authority total must equal the already bound current authority total.
+- missing policy: cash slots without new unique evidence remain final accepted differences; no zero inference, averaging, source overwrite or nonzero-difference overwrite is allowed.
+- raw boundary: five raw files must have exact current before/after and cross-phase path size mtime inode mode and SHA256 equality; all private details remain ignored.
+- validation: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_remaining_eleven_residual_difference_source_trace_or_final_acceptance.py --require-private-evidence` and `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_remaining_eleven_residual_difference_source_trace_or_final_acceptance`.

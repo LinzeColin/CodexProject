@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260710-V014-GLOBAL-RESIDUAL-DIFFERENCE-QUEUE-REPLAY-OR-AUTHORITATIVE-EXCLUSION"
+as_of_event_id: "DEV-KMFA-20260710-V014-REMAINING-ELEVEN-RESIDUAL-DIFFERENCE-SOURCE-TRACE-OR-FINAL-ACCEPTANCE"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "9fb287d166113df44f66a9f6fc11d7894faf35d5"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_GLOBAL_RESIDUAL_REPLAY_COMMIT"
-snapshot_event_time: "2026-07-10T16:03:06+10:00"
-generator_version: "manual-0.1.4-global-residual-difference-queue-replay-or-authoritative-exclusion"
+source_base_commit: "9261d25d55679d714b96fe86a95b01f3b1e29ac6"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_REMAINING_ELEVEN_TRACE_COMMIT"
+snapshot_event_time: "2026-07-10T16:31:49+10:00"
+generator_version: "manual-0.1.4-remaining-eleven-residual-difference-source-trace-or-final-acceptance"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1307
-    total_active_formulas: 276
+    total_active_parameters: 1310
+    total_active_formulas: 277
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -37,6 +37,9 @@ dimensions:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     evidence_refs:
+      - "KMFA/stage_artifacts/V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE/human/test_results.md"
+      - "KMFA/tools/check_v014_remaining_eleven_residual_difference_source_trace_or_final_acceptance.py"
+      - "KMFA/stage_artifacts/V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE/machine/remaining_eleven_residual_difference_source_trace_or_final_acceptance_manifest.json"
       - "KMFA/stage_artifacts/V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION/human/test_results.md"
       - "KMFA/tools/check_v014_global_residual_difference_queue_replay_or_authoritative_exclusion.py"
       - "KMFA/stage_artifacts/V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION/machine/global_residual_difference_queue_replay_or_authoritative_exclusion_manifest.json"

@@ -14320,3 +14320,48 @@ formulas:
       - "KMFA/stage_artifacts/V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION/human/go_no_go_record.md"
       - "KMFA/stage_artifacts/V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION/human/test_results.md"
       - "KMFA/stage_artifacts/V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION/machine/global_residual_difference_queue_replay_or_authoritative_exclusion_manifest.json"
+
+
+  - formula_id: "FORM-KMFA-V014-REMAINING-ELEVEN-RESIDUAL-DIFFERENCE-SOURCE-TRACE-OR-FINAL-ACCEPTANCE-001"
+    model_id: "MOD-KMFA-GOV-001"
+    assumption_ids:
+      - "ASM-KMFA-002"
+      - "ASM-KMFA-004"
+    status: "active"
+    fact_level: "EXTRACTED"
+    expression: "remaining_eleven_trace_valid = source_open_count == 11 AND authority_project_source_count == 4 AND unique_authority_table_count == 4 AND travel_materialization_count == 4 AND interest_materialization_count == 4 AND unique_cost_component_source_count == 8 AND pdf_cross_engine_match_count == 8 AND travel_child_sum_exact_count == 4 AND direct_expense_category_sum_exact_count == 4 AND current_bound_authority_total_exact_count == 4 AND authority_full_total_formula_exact_count == 4 AND numeric_replay_count == 61 AND non_numeric_exclusion_count == 8 AND closed_or_excluded_count == 69 AND open_final_difference_accepted_count == 3 AND preserved_nonzero_difference_count == 9 AND forced_zero_count == 0 AND raw_snapshot_chain_exact == true AND business_value_consistency_verified == false AND decision == NO_GO"
+    variables:
+      - name: "unique_cost_component_source_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "8"
+      - name: "closed_or_excluded_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "69"
+      - name: "open_final_difference_accepted_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "3"
+      - name: "preserved_nonzero_difference_count"
+        data_type: "integer"
+        unit: "count"
+        input_domain: "9"
+    constraints:
+      - "Each cost component requires one real-project binding one authority PDF one table one row and one yuan amount column."
+      - "Travel must equal the integer sum of ticket and lodging child rows; authority direct-expense and total formulas must replay exactly."
+      - "Cash values without new unique evidence remain final accepted differences and are never inferred as zero."
+      - "Raw files and source private evidence remain unchanged and all source details stay ignored."
+    missing_policy: "Missing source-trace manifest summary matrix private authority tables source evidence materializations final Chinese report validator focused test or governance record fails validation."
+    output_range: "v014_remaining_eleven_residual_difference_source_trace_or_final_acceptance_manifest"
+    code_refs:
+      - "KMFA/tools/v014_remaining_eleven_residual_difference_source_trace_or_final_acceptance.py"
+      - "KMFA/tools/check_v014_remaining_eleven_residual_difference_source_trace_or_final_acceptance.py"
+    test_refs:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_remaining_eleven_residual_difference_source_trace_or_final_acceptance.py --require-private-evidence"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_remaining_eleven_residual_difference_source_trace_or_final_acceptance"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE/human/remaining_eleven_residual_difference_source_trace_or_final_acceptance.md"
+      - "KMFA/stage_artifacts/V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE/human/go_no_go_record.md"
+      - "KMFA/stage_artifacts/V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE/machine/remaining_eleven_residual_difference_source_trace_or_final_acceptance_manifest.json"

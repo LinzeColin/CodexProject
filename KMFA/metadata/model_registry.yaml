@@ -1,3 +1,18 @@
+kmfa_v014_remaining_eleven_residual_difference_source_trace_or_final_acceptance:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-remaining-eleven-residual-difference-source-trace-or-final-acceptance"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-REMAINING-ELEVEN-RESIDUAL-DIFFERENCE-SOURCE-TRACE-OR-FINAL-ACCEPTANCE-001
+  parameter_refs:
+    - PARAM-KMFA-1690
+    - PARAM-KMFA-1691
+    - PARAM-KMFA-1692
+  evidence_dir: KMFA/stage_artifacts/V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE
+  validator: KMFA/tools/check_v014_remaining_eleven_residual_difference_source_trace_or_final_acceptance.py
+  scope: Private unique authority PDF cost-component trace with integer materialization and final accepted unproven cash differences; no Stage review GitHub upload app reinstall or business execution.
+
 kmfa_v014_global_residual_difference_queue_replay_or_authoritative_exclusion:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-global-residual-difference-queue-replay-or-authoritative-exclusion"

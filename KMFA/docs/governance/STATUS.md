@@ -5,12 +5,12 @@
 ## 最新状态
 
 - project_id: `KMFA`
-- version: `0.1.4-global-residual-difference-queue-replay-or-authoritative-exclusion`
+- version: `0.1.4-remaining-eleven-residual-difference-source-trace-or-final-acceptance`
 - current_stage: `value-consistency`
-- current_phase: `V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION`
-- status: `completed_validated_local_only_61_closed_or_excluded_11_open_no_go`
-- current_blocker: `8_cost_component_slots_lack_unique_authoritative_source_3_cash_slots_remain_final_accepted_differences_9_nonzero_differences_preserved`
-- next_required_input: `remaining_eleven_residual_difference_source_trace_or_final_acceptance`
+- current_phase: `V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE`
+- status: `completed_validated_local_only_eight_cost_components_materialized_three_final_differences_accepted_no_go`
+- current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
+- next_required_input: `stage9_post_remediation_overall_review`
 - production_ready: `false`
 - github_upload_ready: `false`
 - raw_snapshot_exact_match: `true`
@@ -19,12 +19,12 @@
 ## 前序状态（上一 phase）
 
 - project_id: `KMFA`
-- version: `0.1.4-remaining-two-project-cash-collection-evidence-or-final-difference-acceptance`
+- version: `0.1.4-global-residual-difference-queue-replay-or-authoritative-exclusion`
 - current_stage: `value-consistency`
-- current_phase: `V014_REMAINING_TWO_PROJECT_CASH_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE`
-- status: `completed_validated_local_only_third_cash_project_materialized_final_cash_project_difference_accepted_no_go`
-- current_blocker: `1_cash_project_3_cash_slots_9_nonzero_differences_secure_wps_content_and_72_global_residuals_remain`
-- next_required_input: `global_residual_difference_queue_replay_or_authoritative_exclusion`
+- current_phase: `V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION`
+- status: `completed_validated_local_only_61_closed_or_excluded_11_open_no_go`
+- current_blocker: `8_cost_component_slots_lack_unique_authoritative_source_3_cash_slots_remain_final_accepted_differences_9_nonzero_differences_preserved`
+- next_required_input: `remaining_eleven_residual_difference_source_trace_or_final_acceptance`
 - raw_snapshot_exact_match: `true`
 - decision: `NO_GO`
 
@@ -44,6 +44,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 remaining eleven residual difference source trace or final acceptance completed local-only：4 个真实项目各有 1 个唯一权威 PDF 成本表；4 条差旅、4 条利息均完成项目/来源/行/金额列唯一绑定和整数分物化；8 条 PDF table/text 双引擎一致，4 条差旅子项求和、4 条直接支出分类求和、4 条权威总成本、4 条完整表格总额公式均精确重放。72 条队列现为 61 条数值重放、8 条非数值排除、69 条关闭或排除、3 条现金最终差异接受；9 条非零差异保持不变；5 个 raw 文件前后及跨 phase 快照链一致；Stage review=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`stage9_post_remediation_overall_review`。
 
 - v0.1.4 global residual difference queue replay or authoritative exclusion completed local-only：72 条队列已逐条分类；37 条 current private target materialization replay、16 条 integer gross-profit/gross-margin formula replay、8 条 owner-authorized non-numeric exclusion，共 61 条关闭或排除；8 条成本分项缺唯一来源、3 条最终差异接受现金槽位继续未决。9 条非零差异、2 条零差异和 1 条未完成比较保持不变；5 个 raw 文件前后快照一致；private replay records 和全中文差异报告保持 ignored/untracked；Stage review=false；GitHub upload=false；app reinstall=false；business execution=false。next_required_input=`remaining_eleven_residual_difference_source_trace_or_final_acceptance`。
 
