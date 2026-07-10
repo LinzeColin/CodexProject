@@ -4,14 +4,14 @@
 
 ## 一句话状态
 
-KMFA 已完成 `V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT`：2 份受限 HTML、2 份全中文 CSV 与 Excel-compatible 下载均显式传播 `D / NO_GO（未放行）` 和 3/9/2/1 差异状态；PDF 私有策略未执行，未创建正式报告、PDF、工作簿或私有 CSV，也未复审、上传、重装 app 或执行业务动作。
+KMFA 已完成 `V014_S10_POST_REMEDIATION_STAGE_REVIEW`：当前 S10-P1/P2/P3 全部复验通过，6 个 review finding 已修复且 open=0；2 份受限 HTML、2 份中文 CSV、4 个桌面/移动视口和 2 次逐字节下载均保持 `Q4 / D / NO_GO` 与 3/9/2/1 差异状态，未创建正式报告、PDF 或工作簿，也未上传、重装 app 或执行业务动作。
 
 ## 当前可信任范围
 
-- 可以信任：S10-P3 两份 HTML 与两份中文 CSV 均只显示公开安全聚合状态，桌面/移动无溢出或脚本错误，CSV 下载可达，D级、未放行和使用限制未被导出流程绕过。
+- 可以信任：Stage 10 当前三 phase、两份 HTML 与两份中文 CSV 的公开安全聚合状态已完成整体复审，桌面/移动无溢出或真实脚本错误，两次下载逐字节一致，D级、未放行和使用限制未被导出流程绕过。
 - 必须保留：9 条非零差异，不得通过覆盖、四舍五入、空白兼容层或替换权威值消除。
 - 不能信任：3 条缺可证明数值的现金槽位、1 条未完成现金比较、任何完整业务一致性或正式经营决策结论。
-- 下一步只做 `Stage 10 整体复审`，复跑 S10-P1/P2/P3 并修复 findings；不得顺手进行 GitHub upload、S11、app reinstall 或 business execution。
+- 下一步只做 `S11-P1` 独立 phase；不得在当前 review 顺手推进 S11、GitHub upload、app reinstall 或 business execution。
 
 ## 前序一句话状态（上一 phase）
 

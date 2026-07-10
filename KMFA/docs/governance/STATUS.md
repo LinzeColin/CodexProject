@@ -5,12 +5,12 @@
 ## 最新状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s10-p3-post-remediation-restricted-export`
+- version: `0.1.4-s10-post-remediation-stage-review`
 - current_stage: `S10`
-- current_phase: `V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT`
-- status: `completed_validated_local_only_restricted_exports_d_no_go_upload_deferred`
+- current_phase: `V014_S10_POST_REMEDIATION_STAGE_REVIEW`
+- status: `completed_validated_local_only_stage10_review_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `Stage_10_overall_review_as_separate_run`
+- next_required_input: `S11-P1_as_separate_run_after_user_instruction`
 - production_ready: `false`
 - github_upload_ready: `false`
 - raw_snapshot_exact_match: `true`
@@ -44,6 +44,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 Stage 10 post-remediation review completed local-only：复验当前 S10-P1/P2/P3 冻结语义并修复 6 个 review finding，open finding=0；确认 2 个报告入口、11 个管理章节、2 条 D 级记录、2 份受限 HTML、2 份中文 CSV、4/4 桌面/移动检查和 2/2 逐字节下载。当前差异保持 `3/9/2/1`，等级与决策维持 `Q4 / D / NO_GO`；fresh raw 前后及跨 S10-P3 快照一致；正式报告、S11、GitHub upload、app reinstall 和 business execution 均未执行。next_required_input=`S11-P1_as_separate_run_after_user_instruction`。
 
 - v0.1.4 S10-P3 post-remediation restricted export completed local-only：生成 2 份受限 HTML 预览、2 份全中文 CSV 附表、2 个 Excel-compatible CSV 下载和 4 个公开安全导出文件；所有导出首屏/首行传播 `Q4 / D / NO_GO（未放行）`、3 项最终接受未决、9 项非零差异、2 项零差异、1 项未完成比较和正式决策禁用。旧 S10-P3 只复用导出框架，不复用旧 12 pending 或样板 B 级/业务值。PDF 私有策略可用但本 phase 未执行，PDF/Excel workbook/private CSV committed=0；baseline audit=8/8、new export audit=4/4、desktop/mobile checks=4/4；5 个 raw 文件前后及跨 S10-P2 快照一致；Stage 10 review=false、GitHub upload=false、app reinstall=false、business execution=false。next_required_input=`Stage_10_overall_review_as_separate_run`。
 

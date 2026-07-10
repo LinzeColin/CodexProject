@@ -1,3 +1,16 @@
+## FORM-KMFA-V014-S10-POST-REMEDIATION-STAGE-REVIEW-001
+
+- version: `0.1.4-s10-post-remediation-stage-review`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: 整体复审当前 S10-P1/P2/P3 修补链，并验证报告入口、可信等级、受限导出、浏览器下载、raw 不变性和 release 边界。
+- rule: `review_valid = phases_pass == 3 AND open_final == 3 AND nonzero == 9 AND zero == 2 AND incomplete == 1 AND grade == D AND decision == NO_GO AND fixed_findings == 6 AND open_findings == 0 AND browser_viewports == 4 AND byte_exact_downloads == 2 AND formal_reports == 0`。
+- frozen semantics: phase-time 证据验证业务语义、metadata 镜像与 final PASS；历史 review 不得作为当前动态状态来源。
+- cross-format gate: 两份 HTML 和两份 CSV 必须传播 D级、未放行和仅供内部复核，且不得出现 B级回流或正式报告放行。
+- raw gate: review 前后、跨 S10-P3 和当前快照必须一致；不一致立即停止并保留 private 中文差异报告。
+- release gate: `S11-P1=false`、`github_upload=false`、`app_reinstall=false`、`formal_report=false`、`business_execution=false`。
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s10_post_remediation_stage_review.py --require-private-evidence --require-browser-evidence --require-final-evidence`
+- evidence: `KMFA/stage_artifacts/V014_S10_POST_REMEDIATION_STAGE_REVIEW/machine/stage10_post_remediation_review_manifest.json`
+
 ## FORM-KMFA-V014-REMAINING-TWO-PROJECT-CASH-COLLECTION-EVIDENCE-OR-FINAL-DIFFERENCE-ACCEPTANCE-001
 
 - version: `0.1.4-remaining-two-project-cash-collection-evidence-or-final-difference-acceptance`
