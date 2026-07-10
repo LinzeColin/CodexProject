@@ -16,6 +16,9 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 CHECKER = REPO_ROOT / "KMFA" / "tools" / "automation" / "check_kmfa_automation_schedules.py"
 CONTRACT = REPO_ROOT / "KMFA" / "metadata" / "automation" / "codex_app_schedules.contract.toml"
 EVENING_PROMPT = REPO_ROOT / "KMFA" / "kmfa-dingtalk-attendance-skill" / "automation" / "evening_prompt.md"
+DWS_AUTH_KEEPALIVE_PROMPT = (
+    REPO_ROOT / "KMFA" / "metadata" / "automation" / "dws_auth_keepalive.prompt.md"
+)
 DAILY_ROUTINE_VALIDATOR = (
     REPO_ROOT / "KMFA" / "daily_routine_check_skill" / "tools" / "validate_skill_package.py"
 )
@@ -67,6 +70,41 @@ TRIGGER_ONCE_PATTERN = re.compile(
 
 
 class KmfaAutomationScheduleContractTests(unittest.TestCase):
+    def test_dws_auth_keepalive_uses_deterministic_refresh_wrapper(self) -> None:
+        prompt = DWS_AUTH_KEEPALIVE_PROMPT.read_text(encoding="utf-8")
+        contract = tomllib.loads(CONTRACT.read_text(encoding="utf-8"))
+        keepalive = next(
+            item for item in contract["automations"]
+            if item["id"] == "dws-auth-keepalive-2"
+        )
+
+        self.assertIn(
+            "/Users/linzezhang/CodexProject/KMFA/tools/automation/dws_auth_keepalive.py",
+            prompt,
+        )
+        self.assertNotIn("auth login --format json --yes --no-browser", prompt)
+        self.assertNotIn("automations/dws-auth-keepalive/memory.md", prompt)
+        self.assertIn("automations/dws-auth-keepalive-2/memory.md", prompt)
+        self.assertIn("Do not execute any `dws auth login` command", prompt)
+        self.assertIn("private-pinned-profile", prompt)
+        self.assertIn("parseable", prompt)
+        self.assertIn("atomically writes 0600", prompt)
+        expected_prompt_hash = hashlib.sha256(
+            prompt.rstrip("\r\n").encode("utf-8")
+        ).hexdigest()
+        self.assertEqual(keepalive["prompt_sha256"], expected_prompt_hash)
+        self.assertEqual(keepalive["project_id"], "cbf3c45e-f4ad-47d7-b397-faf7e3dea35e")
+        self.assertEqual(
+            keepalive["rrule"],
+            "RRULE:FREQ=DAILY;BYHOUR=0,4,8,12,16,20;BYMINUTE=20",
+        )
+        self.assertEqual(keepalive["profile_selection"], "machine_private_pinned_profile")
+        self.assertEqual(keepalive["dws_timeout_seconds"], 20)
+        self.assertEqual(keepalive["outer_timeout_seconds"], 25)
+        self.assertFalse(keepalive["automatic_login_allowed"])
+        self.assertEqual(keepalive["ledger_owner"], "deterministic_wrapper")
+        self.assertNotIn("timezone", keepalive)
+
     def test_daily_routine_contract_is_zip_only_without_folder_fallback(self) -> None:
         manifest = json.loads(DAILY_ROUTINE_MANIFEST.read_text(encoding="utf-8"))
         corpus = "\n".join(
