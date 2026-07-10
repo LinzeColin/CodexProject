@@ -1,24 +1,45 @@
 # Memory Atlas Delivery Record
 
-## v1.2 Final Delivery Cleanup
+## v1.2 Final Delivery
 
-状态：`local_delivery_cleanup_completed_pending_cloudflare_live_access_operator_evidence`。
+状态：`v1_2_final_delivery_completed_with_protected_cloudflare_live_evidence`。
 
 任务 ID：`MA-V12-FINAL-DELIVERY-CLEANUP`。
 
 验收 ID：`ACC-MA-V12-FINAL-DELIVERY-CLEANUP`。
 
-GitHub main、local app entry 和 runtime manifest 已对齐到当前 GitHub `main` HEAD；
-以 post-push `git rev-parse HEAD == git rev-parse origin/main` 和 app install manifest
-校验为准。本地清理已删除可再生前端
-`node_modules`、`dist`、`tsconfig.tsbuildinfo` 和 Memory Atlas `/private/tmp` 临时证据文件。
-清理目标从 `215760 KB` 降至 `0 KB`，`/System/Volumes/Data` 可用空间本轮观测增加
-`35660 KB`。保留 `/Applications/Memory Atlas.app`、`~/Downloads/Memory Atlas.app`、
-Application Support source/runtime，以及 Downloads roadmap/task pack。
+Cloudflare Pages project `openai-memory-atlas` 已从 clean commit
+`5a24333eb2afa766f5f7416b877a8a560c5302ab` 部署成功，production deployment 为
+`82988d29-504a-437e-a8b5-621a59e701af`，`commit_dirty=false`。发布快照生成时间为
+`2026-07-10T06:52:07.110Z`，SHA-256 为
+`f2613b612cc5afcf225e8884b6b37996681751ccc31514d104707406aa0a753c`。
+
+Access 保护覆盖三类 hostname：`memoryatlas.linzezhang.com`、
+`openai-memory-atlas.pages.dev` 和 `*.openai-memory-atlas.pages.dev`。每个 application
+只有一条 owner email allowlist policy，无 `everyone` rule；literal email 未写入 GitHub。
+未授权请求对 custom、production Pages 和 preview Pages 的根路径及
+`/memory_atlas.json` 均返回 Access challenge。允许身份 Chrome 会话已加载当前“记忆星图”，
+页面显示 2026-07-10 快照，并实际 fetch 受保护的 `memory_atlas.json` 和 runtime state。
+
+父提交证据合同已修复：live evidence 记录精确 deployed commit；最终 evidence commit 只能是
+它的直接子提交，且只能包含交付记录白名单。最终一次 GitHub push 后必须验证
+`HEAD == origin/main`，再重装 `/Applications/Memory Atlas.app` 与
+`~/Downloads/Memory Atlas.app`，确认 launcher/runtime manifest 匹配最终 `HEAD`。
+最后删除可再生 `node_modules`、`dist`、`tsconfig.tsbuildinfo`、`.wrangler` 和
+Memory Atlas `/private/tmp` 临时文件，保留 app、Application Support source/runtime 与
+Downloads roadmap/task pack。
 
 机器证据：
 
 - `机器治理/证据与日志/final_delivery/v1_2_final_delivery_cleanup_status.json`
+- `机器治理/证据与日志/final_delivery/memory_atlas_cloudflare_live_evidence.json`
+
+安全事件记录：首次 real deployment 时仅 custom domain 受 Access，默认 production
+`pages.dev` 与 immutable preview URL 曾短暂返回脱敏 publish artifact。发现后立即发布
+无数据 fail-closed placeholder、用同名 safe-marker JSON 覆盖 CDN key，并删除两条
+real-artifact deployment；随后为 production Pages 和 preview wildcard 分别新增 owner
+allowlist Access application，再部署 clean real artifact。暴露内容不包含 raw database、
+transcript、cookie、session、token、key 或 credential，但该保护缺口仍按真实事件记录。
 
 边界：
 
@@ -27,17 +48,9 @@ Application Support source/runtime，以及 Downloads roadmap/task pack。
 - No open branch。
 - No pull request。
 - No destructive cleanup outside reproducible Memory Atlas build/tmp artifacts。
-
-剩余外部门：Cloudflare live deployment and Access challenge evidence 仍缺 operator/live 证据；
-`audit_memory_atlas_goal_completion.py --require-local-apps` 仍返回
-`LOCAL_PASS_EXTERNAL_AUTHORIZATION_REQUIRED`。
-
-Fail-closed 外部收口：当前 Cloudflare Access API 返回 `access.api.error.not_enabled`。
-为避免 Memory Atlas live artifact 在 Access 未启用时公开暴露，已先移除
-`memoryatlas.linzezhang.com` Pages 绑定并删除 `openai-memory-atlas` Pages project。复验时
-`openai-memory-atlas.pages.dev`、`memoryatlas.linzezhang.com` 和已知 deployment preview URL
-均未返回 Memory Atlas JSON。真实 Pages project 只能在 Access 启用且未授权访问 challenge
-可独立验证后重建并部署。
+- Access policy change limited to the three Memory Atlas hostname classes。
+- Completion audit target: `COMPLETE_WITH_OPERATOR_EVIDENCE`。
+- Remaining external gate: none。
 
 ## v1.2 Final Review
 
