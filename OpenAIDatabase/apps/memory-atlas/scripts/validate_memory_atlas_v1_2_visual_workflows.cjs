@@ -14,6 +14,10 @@ const targetUrl = `http://127.0.0.1:${port}`;
 const outputDir = process.env.MEMORY_ATLAS_R6_VISUAL_AUDIT_DIR
   ? path.resolve(databaseRoot, process.env.MEMORY_ATLAS_R6_VISUAL_AUDIT_DIR)
   : fs.mkdtempSync(path.join(os.tmpdir(), "memory-atlas-r6-visual-audit-"));
+const relativeOutputDir = path.relative(databaseRoot, outputDir);
+const outputDirLabel = relativeOutputDir && !relativeOutputDir.startsWith("..") && !path.isAbsolute(relativeOutputDir)
+  ? relativeOutputDir
+  : outputDir;
 const browserExecutable = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || findChromiumExecutable();
 const visualIds = [
   "cluster_tree",
@@ -443,7 +447,7 @@ async function validateViewport(browser, viewport) {
       consoleErrors,
       failedResponses,
     });
-    return { status: "PASS", viewport, inventory, layout, interactions, screenshot: { path: screenshotPath, bytes: screenshotBytes } };
+    return { status: "PASS", viewport, inventory, layout, interactions, screenshot: { path: path.basename(screenshotPath), bytes: screenshotBytes } };
   } catch (error) {
     const screenshotPath = path.join(outputDir, `visual-workflows-${viewport.name}-failure.png`);
     await page.screenshot({ path: screenshotPath, fullPage: false }).catch(() => undefined);
@@ -454,7 +458,7 @@ async function validateViewport(browser, viewport) {
       details: error.details || null,
       consoleErrors,
       failedResponses,
-      screenshot: fs.existsSync(screenshotPath) ? { path: screenshotPath, bytes: fs.statSync(screenshotPath).size } : null,
+      screenshot: fs.existsSync(screenshotPath) ? { path: path.basename(screenshotPath), bytes: fs.statSync(screenshotPath).size } : null,
     };
   } finally {
     await page.close();
@@ -491,7 +495,7 @@ function writeStatus(payload) {
       status: "PASS",
       gate: "memory_atlas_v1_2_r6_visual_workflows",
       targetUrl,
-      outputDir,
+      outputDir: outputDirLabel,
       visualIds,
       viewports,
       checks: [
@@ -516,7 +520,7 @@ function writeStatus(payload) {
       message: error.message,
       details: error.details || null,
       targetUrl,
-      outputDir,
+      outputDir: outputDirLabel,
       serverLogs: preview?.logs?.join("").slice(-4000) || "",
     };
     writeStatus(payload);
