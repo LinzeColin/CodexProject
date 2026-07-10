@@ -1,6 +1,49 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "KMFA-V014-S11-POST-REMEDIATION-STAGE-REVIEW-20260711"
+    phase: "V014_S11_POST_REMEDIATION_STAGE_REVIEW"
+    objective: "Review the current Stage 11 chain fix all findings and preserve public-safe Q4 D NO_GO boundaries without entering S12."
+    scope:
+      - "S11-P1 P2 and P3 frozen validator and focused-test replay"
+      - "home source-check and project-cost six-edge current navigation graph"
+      - "desktop mobile representative interactions HTTP navigation and HTML audits"
+      - "unknown-null project attribution fresh raw evidence and governance closure"
+    non_scope:
+      - "S12-P1 or any later phase"
+      - "formal report PDF Excel private CSV live connector or business execution"
+      - "GitHub upload app reinstall or release"
+    status: "completed"
+    completed_version: "0.1.4-s11-post-remediation-stage-review"
+    dependencies:
+      - "V014_S11_P1_POST_REMEDIATION_HOME_NAVIGATION current frozen dependency"
+      - "V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD current frozen dependency"
+      - "V014_S11_P3_POST_REMEDIATION_PROJECT_COST_PAGE current frozen dependency"
+      - "V014_S11_STAGE_REVIEW historical framework only"
+      - "v1.4 human-flow HTML baseline"
+    required_files:
+      - "KMFA/stage_artifacts/V014_S11_POST_REMEDIATION_STAGE_REVIEW/machine/stage11_post_remediation_review_manifest.json"
+      - "KMFA/stage_artifacts/V014_S11_POST_REMEDIATION_STAGE_REVIEW/human/stage11_post_remediation_review_report_zh.md"
+      - "KMFA/tools/check_v014_s11_post_remediation_stage_review.py"
+    acceptance_ids:
+      - "ACC-V014-S11-POST-REMEDIATION-STAGE-REVIEW"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s11_post_remediation_stage_review.py --require-private-evidence --require-browser-evidence --require-final-evidence"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s11_p1_post_remediation_home_navigation KMFA.tests.test_v014_s11_p2_post_remediation_source_check_board KMFA.tests.test_v014_s11_p3_post_remediation_project_cost_page KMFA.tests.test_v014_s11_post_remediation_stage_review"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_no_float_money.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/no_omission_check.py"
+    test_results:
+      - "PASS: seven review findings fixed and zero open"
+      - "PASS: six desktop-mobile viewports six HTTP links and six actual cross-page navigations"
+      - "PASS: project attribution remains zero attributed and four unknown-null"
+      - "PASS: raw before after cross-S11-P3 and current snapshots exact"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S11_POST_REMEDIATION_STAGE_REVIEW/human/stage11_post_remediation_review_report_zh.md"
+      - "KMFA/stage_artifacts/V014_S11_POST_REMEDIATION_STAGE_REVIEW/machine/stage11_post_remediation_review_manifest.json"
+    risk: "Historical dynamic pending state broken current-page links or hidden mobile NO_GO can misrepresent Stage 11 unless the current review validator and browser evidence remain authoritative."
+    rollback: "Revert only this Stage 11 review commit and ignored private evidence; never mutate the raw inbox."
+    target_version: "0.1.4-s11-post-remediation-stage-review"
+
   - task_id: "KMFA-V014-S11-P3-POST-REMEDIATION-PROJECT-COST-PAGE-20260711"
     phase: "V014_S11_P3_POST_REMEDIATION_PROJECT_COST_PAGE"
     objective: "Provide a current public-safe project cost page without stale twelve-pending state false project attribution or D-grade bypass."

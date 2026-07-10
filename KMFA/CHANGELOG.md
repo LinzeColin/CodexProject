@@ -3217,3 +3217,12 @@ version_matrix_product_version_reference: 0.1.4-s18-stage-review
 - Raw inbox was not read or mutated; Stage review, GitHub upload, app reinstall and business execution remain deferred.
 - Evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_AFTER_FINAL_RECHECK/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_blocked_handoff_after_final_recheck_manifest.json`.
 - product_version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-blocked-handoff-after-final-recheck`
+## 0.1.4-s11-post-remediation-stage-review - 2026-07-11
+
+- 完成 `V014_S11_POST_REMEDIATION_STAGE_REVIEW` 本地整体复审：S11-P1/P2/P3 当前 strict validators 和 focused tests 复验通过，7 个 findings 全部修复，open=0。
+- 修复 S11-P1/P2 validators 对全局最新 `VERSION/VERSION_MATRIX/HANDOFF` 的时态耦合，新增 frozen phase regression；P3 既有 frozen semantics 继续通过。
+- 修复三页当前导航：P1→P2/P3、P2→P1/P3、P3→P1/P2 共 6 条边；desktop/mobile 6 个视口、6 次 HTTP 和 6 次真实跨页导航通过。
+- 修复首页移动视口隐藏侧栏后 `NO_GO` 不可见；顶部报告状态现始终显示 `D级（未放行） · NO_GO`。
+- 修复检查板移动端 icon-only 跨页按钮缺少可访问名称；补充中文 `aria-label` 与 `title`。
+- 项目级差异继续保持 `0 attributed / 4 unknown/null`，全局状态维持 `3/9/2/1`，等级与决策维持 `Q4 / D / NO_GO`。
+- 5 个 raw 文件在 review 前后、跨 S11-P3 和当前复核均一致；未执行 S12-P1、GitHub upload、app reinstall、正式报告或 business execution。

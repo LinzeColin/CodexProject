@@ -51,8 +51,10 @@ class TestV014S11P1PostRemediationHomeNavigation(unittest.TestCase):
 
         self.assertEqual(summary["report_link_count"], 4)
         self.assertEqual(summary["unique_report_target_count"], 2)
-        self.assertEqual(summary["historical_future_target_link_count"], 0)
-        self.assertTrue(summary["current_s10_restricted_report_links_only"])
+        self.assertEqual(summary["current_stage_page_link_count"], 2)
+        self.assertEqual(summary["current_stage_page_target_count"], 2)
+        self.assertEqual(summary["unavailable_future_target_link_count"], 0)
+        self.assertTrue(summary["restricted_report_links_preserve_s10_grade"])
         self.assertFalse(summary["contains_stale_pending_twelve"])
         self.assertFalse(summary["contains_b_grade"])
 
@@ -85,8 +87,26 @@ class TestV014S11P1PostRemediationHomeNavigation(unittest.TestCase):
         self.assertEqual(browser["module_action_interaction_count"], 16)
         self.assertEqual(browser["keyboard_navigation_check_count"], 4)
         self.assertEqual(browser["report_link_http_check_count"], 4)
+        self.assertEqual(browser["current_stage_page_link_http_check_count"], 2)
+        self.assertEqual(browser["visible_no_go_viewport_count"], 2)
         self.assertEqual(browser["console_error_count"], 0)
         self.assertEqual(browser["horizontal_overflow_count"], 0)
+
+    def test_frozen_phase_validator_survives_later_global_phase(self) -> None:
+        module = importlib.import_module(
+            "KMFA.tools.check_v014_s11_p1_post_remediation_home_navigation"
+        )
+
+        self.assertTrue(
+            module._phase_is_current(
+                'current_phase: "V014_S11_P1_POST_REMEDIATION_HOME_NAVIGATION"'
+            )
+        )
+        self.assertFalse(
+            module._phase_is_current(
+                'current_phase: "V014_S11_POST_REMEDIATION_STAGE_REVIEW"'
+            )
+        )
 
     def test_raw_and_phase_boundaries_remain_closed(self) -> None:
         manifest = self._validate()

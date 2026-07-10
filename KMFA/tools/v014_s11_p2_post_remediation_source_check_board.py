@@ -84,6 +84,10 @@ HOME_HREF = (
     "../../../V014_S11_P1_POST_REMEDIATION_HOME_NAVIGATION/exports/html/"
     "kmfa_home_navigation.html"
 )
+PROJECT_COST_HREF = (
+    "../../../V014_S11_P3_POST_REMEDIATION_PROJECT_COST_PAGE/exports/html/"
+    "kmfa_project_cost_page.html"
+)
 
 STATUS_OVERLAY = {
     "SCB-001": {
@@ -399,6 +403,7 @@ def _render_html(rows: list[dict[str, Any]], counts: dict[str, int]) -> str:
     ).replace("</", "<\\/")
     source_icon = _icon_svg("source_check")
     home_icon = _icon_svg("business_overview")
+    project_icon = _icon_svg("project_cost")
     first = rows[0]
     return f'''<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -406,7 +411,7 @@ def _render_html(rows: list[dict[str, Any]], counts: dict[str, int]) -> str:
 <style>
 :root{{--navy:#123553;--blue:#17679b;--blue-dark:#104a71;--blue-soft:#edf5fa;--page:#f3f6f8;--surface:#fff;--line:#ccd8e1;--text:#172632;--muted:#60717e;--danger:#a83232;--danger-bg:#fff1f0;--green:#176b4a;--green-bg:#e9f7f0;--violet:#6743a5;--violet-bg:#f2edfb;--gray:#3f4b55;--gray-bg:#edf0f2}}
 *{{box-sizing:border-box}}html{{min-width:320px;background:var(--page)}}body{{margin:0;background:var(--page);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;letter-spacing:0}}button,input,select,a{{font:inherit}}button,a{{-webkit-tap-highlight-color:transparent}}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{{outline:3px solid rgba(23,103,155,.28);outline-offset:2px}}
-.top-band{{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:18px 28px;background:var(--navy);color:#fff;border-bottom:4px solid var(--blue)}}.brand{{display:flex;align-items:center;gap:12px;min-width:0}}.brand-mark{{width:46px;height:46px;display:grid;place-items:center;flex:0 0 46px;border:1px solid rgba(255,255,255,.38);border-radius:6px;background:var(--blue)}}.brand-mark svg{{width:23px;height:23px}}.brand strong{{display:block;font-size:18px}}.brand span{{display:block;margin-top:2px;color:#c6dbea;font-size:12px}}.home-link{{min-height:40px;display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid rgba(255,255,255,.42);border-radius:6px;color:#fff;text-decoration:none}}.home-link:hover{{background:rgba(255,255,255,.1)}}.home-link svg{{width:17px;height:17px}}
+.top-band{{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:18px 28px;background:var(--navy);color:#fff;border-bottom:4px solid var(--blue)}}.brand{{display:flex;align-items:center;gap:12px;min-width:0}}.brand-mark{{width:46px;height:46px;display:grid;place-items:center;flex:0 0 46px;border:1px solid rgba(255,255,255,.38);border-radius:6px;background:var(--blue)}}.brand-mark svg{{width:23px;height:23px}}.brand strong{{display:block;font-size:18px}}.brand span{{display:block;margin-top:2px;color:#c6dbea;font-size:12px}}.top-links{{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}}.home-link{{min-height:40px;display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid rgba(255,255,255,.42);border-radius:6px;color:#fff;text-decoration:none}}.home-link:hover{{background:rgba(255,255,255,.1)}}.home-link svg{{width:17px;height:17px}}
 main{{min-width:0;padding:24px 28px 34px}}.heading{{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}}h1{{margin:0;color:var(--navy);font-size:25px}}.heading p{{margin:7px 0 0;color:var(--muted);line-height:1.65}}.gate{{flex:0 0 auto;border:1px solid #e6a39e;border-radius:6px;background:var(--danger-bg);padding:10px 13px;color:var(--danger)}}.gate span{{display:block;font-size:12px}}.gate strong{{display:block;margin-top:3px;font-size:16px}}
 .quality-strip{{margin:16px 0;padding:12px 14px;border-left:4px solid var(--danger);background:#fff8f7;line-height:1.6}}.status-summary{{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:18px}}.status-card{{min-width:0;border:1px solid var(--line);border-radius:6px;background:var(--surface);padding:12px 14px}}.status-card span{{display:block;color:var(--muted);font-size:12px}}.status-card strong{{display:block;margin-top:4px;color:var(--navy);font-size:22px}}
 .controls{{display:grid;grid-template-columns:minmax(230px,1fr) 240px auto;gap:10px;align-items:end;margin:0 0 10px}}label{{display:grid;gap:6px;color:#344652;font-size:12px;font-weight:700}}input,select{{width:100%;height:41px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);padding:0 11px}}.reset-button{{height:41px;border:1px solid var(--blue);border-radius:6px;background:#fff;color:var(--blue);padding:0 14px;cursor:pointer}}.reset-button:hover{{background:var(--blue-soft)}}.filter-feedback{{min-height:25px;margin:0 0 9px;color:var(--muted);font-size:13px}}
@@ -417,7 +422,7 @@ main{{min-width:0;padding:24px 28px 34px}}.heading{{display:flex;justify-content
 @media(max-width:600px){{.top-band{{align-items:flex-start;padding:14px}}.home-link{{flex:0 0 auto;padding:8px}}.home-link span{{display:none}}main{{padding:18px 14px 26px}}.heading{{display:block}}.gate{{display:inline-block;margin-top:12px}}.status-summary{{grid-template-columns:repeat(2,minmax(0,1fr))}}.controls{{grid-template-columns:minmax(0,1fr)}}.reset-button{{grid-column:auto}}}}
 </style></head>
 <body data-ui-ready="false" data-last-action="initial">
-<header class="top-band"><div class="brand"><div class="brand-mark">{source_icon}</div><div><strong>KMFA 数据源检查板</strong><span>公开安全状态矩阵</span></div></div><a class="home-link" data-home-link href="{HOME_HREF}">{home_icon}<span>返回经营首页</span></a></header>
+<header class="top-band"><div class="brand"><div class="brand-mark">{source_icon}</div><div><strong>KMFA 数据源检查板</strong><span>公开安全状态矩阵</span></div></div><nav class="top-links"><a class="home-link" data-home-link aria-label="返回经营首页" title="返回经营首页" href="{HOME_HREF}">{home_icon}<span>返回经营首页</span></a><a class="home-link" data-project-cost-link aria-label="查看项目成本页面" title="查看项目成本页面" href="{PROJECT_COST_HREF}">{project_icon}<span>查看项目成本页面</span></a></nav></header>
 <main><section class="heading"><div><h1>数据源状态与报告影响</h1><p>按来源系统、业务板块、文件包、主体和账户逐项检查；状态预演只写浏览器会话控制事件。</p></div><div class="gate"><span>当前报告状态</span><strong>Q4 / D · NO_GO</strong></div></section>
 <section class="quality-strip"><strong>当前限制：</strong>3 项最终接受未决、9 项非零差异、2 项零差异、1 项比较未完成。检查板不代表正式报告放行。</section>
 <section class="status-summary" aria-label="来源状态汇总">{status_cards}</section>
@@ -471,6 +476,7 @@ def _browser_worker() -> dict[str, Any]:
     preview_checks: list[dict[str, Any]] = []
     keyboard_checks: list[dict[str, Any]] = []
     home_checks: list[dict[str, Any]] = []
+    project_cost_checks: list[dict[str, Any]] = []
     try:
         with sync_playwright() as playwright:
             browser = playwright.chromium.launch(
@@ -562,6 +568,15 @@ def _browser_worker() -> dict[str, Any]:
                     href = page.locator("a[data-home-link]").get_attribute("href") or ""
                     response = page.request.get(urljoin(page.url, href))
                     home_checks.append({"href": href, "status": response.status, "passed": response.ok})
+                    project_href = page.locator("a[data-project-cost-link]").get_attribute("href") or ""
+                    project_response = page.request.get(urljoin(page.url, project_href))
+                    project_cost_checks.append(
+                        {
+                            "href": project_href,
+                            "status": project_response.status,
+                            "passed": project_response.ok,
+                        }
+                    )
 
                 page.reload(wait_until="load")
                 page.wait_for_timeout(80)
@@ -599,6 +614,7 @@ def _browser_worker() -> dict[str, Any]:
         and all(item["passed"] for item in preview_checks)
         and all(item["passed"] for item in keyboard_checks)
         and all(item["passed"] for item in home_checks)
+        and all(item["passed"] for item in project_cost_checks)
         and all(
             item["ui_ready"]
             and item["console_error_count"] == 0
@@ -616,6 +632,7 @@ def _browser_worker() -> dict[str, Any]:
         "status_preview_checks": preview_checks,
         "keyboard_checks": keyboard_checks,
         "home_link_http_checks": home_checks,
+        "project_cost_link_http_checks": project_cost_checks,
     }
     _write_json(PRIVATE_BROWSER_PATH, result)
     if not passed:
@@ -657,6 +674,7 @@ def _run_browser_suite() -> dict[str, Any]:
         "status_preview_interaction_count": len(browser["status_preview_checks"]),
         "keyboard_interaction_count": len(browser["keyboard_checks"]),
         "home_link_http_check_count": len(browser["home_link_http_checks"]),
+        "project_cost_link_http_check_count": len(browser["project_cost_link_http_checks"]),
         "console_error_count": sum(item["console_error_count"] for item in browser["viewport_checks"]),
         "horizontal_overflow_count": sum(not item["no_horizontal_overflow"] for item in browser["viewport_checks"]),
         "matrix_scroll_containment_count": sum(item["matrix_scroll_contained"] for item in browser["viewport_checks"]),
@@ -807,6 +825,8 @@ def generate(*, final_validation: bool = False) -> dict[str, Any]:
         "raw_snapshot_exact_match": True,
         "raw_cross_phase_snapshot_exact_match": True,
         "home_navigation_link_count": 1,
+        "project_cost_page_link_count": 1,
+        "current_stage_page_target_count": 2,
         "visible_feedback_panel_count": 3,
         "km_brand_mark_present": True,
         "single_k_brand_mark_present": False,

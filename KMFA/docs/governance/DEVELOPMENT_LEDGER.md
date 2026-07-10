@@ -2957,3 +2957,16 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - focused_test: `KMFA/tests/test_v014_s10_p3_post_remediation_restricted_export.py`
 - raw/private policy: five raw files remain exact before, after and across S10-P2; browser screenshots, audits, identities and diagnostics remain gitignored and untracked.
 - deferred: Stage 10 review, formal report, PDF execution, GitHub upload, app reinstall and business execution.
+## 2026-07-11 - V014 Stage 11 post-remediation review
+
+- phase: `V014_S11_POST_REMEDIATION_STAGE_REVIEW`
+- task: `KMFA-V014-S11-POST-REMEDIATION-STAGE-REVIEW-20260711`
+- product_version: `0.1.4-s11-post-remediation-stage-review`
+- result: `completed_validated_local_only_stage11_review_no_go_upload_deferred` / `NO_GO`
+- phase review: S11-P1/P2/P3 strict validators and focused tests PASS；P1/P2 frozen-validator coupling fixed；P3 frozen semantics retained。
+- findings: `7 fixed / 0 open`，覆盖两个 validator 时态耦合、首页前向链接、检查板项目入口、旧 12 pending review、移动端 NO_GO 可见性和 icon-only 链接可访问名称。
+- navigation: `3` 个当前页面形成 `6` 条有向边；desktop/mobile `6/6`、HTTP `6/6`、真实跨页导航 `6/6`，console/overflow=`0/0`。
+- quality: `Q4 / D / NO_GO / 3-9-2-1`；项目级归属 `0 attributed / 4 unknown/null`；正式报告和经营决策依据为 0。
+- raw boundary: 5 个文件的 review 前后、跨 S11-P3 和当前快照一致；公开证据不含原始文件名、字段、表头、金额或明细。
+- stop gate: S12-P1、GitHub upload、app reinstall、formal report、business execution 均为 `false`。
+- evidence: `KMFA/stage_artifacts/V014_S11_POST_REMEDIATION_STAGE_REVIEW/machine/stage11_post_remediation_review_manifest.json`。

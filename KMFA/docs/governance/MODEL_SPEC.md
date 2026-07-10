@@ -16,10 +16,10 @@
 
 - version: `0.1.4-s11-p2-post-remediation-source-check-board`
 - model_id: `MOD-KMFA-GOV-001`
-- scope: 按当前锁定证据重算 13 行数据源矩阵状态，并验证 11 列、搜索筛选、逐行影响详情、会话状态预演和 raw 不变性。
-- rule: `board_valid = rows == 13 AND columns == 11 AND ready == 0 AND partial == 6 AND failed == 1 AND outdated == 2 AND review == 4 AND recomputed_old_ready == 4 AND detail_checks == 26 AND grade == D AND decision == NO_GO AND persistent_write == false`。
+- scope: 按当前锁定证据重算 13 行数据源矩阵状态，并验证 11 列、搜索筛选、逐行影响详情、会话状态预演、当前项目成本页面链接和 raw 不变性。
+- rule: `board_valid = rows == 13 AND columns == 11 AND ready == 0 AND partial == 6 AND failed == 1 AND outdated == 2 AND review == 4 AND recomputed_old_ready == 4 AND detail_checks == 26 AND current_stage_targets == 2 AND grade == D AND decision == NO_GO AND persistent_write == false`。
 - current-state gate: 旧 `12 pending` 和四个 ready 状态不得回流；当前差异结构固定为 `3/9/2/1`，报告保持 `Q4 / D / NO_GO`。
-- interaction gate: 搜索、五类筛选、13 行双视口详情、五类双视口预演、键盘与当前首页链接全部通过；预演只影响 browser session。
+- interaction gate: 搜索、五类筛选、13 行双视口详情、五类双视口预演、键盘、当前首页与项目成本页面链接全部通过；预演只影响 browser session。
 - style gate: 大面积使用蓝灰和白色，状态色只用于带文字徽标，不使用大面积黄色或仅凭颜色传达状态。
 - raw gate: phase 前后、跨 S11-P1 和当前快照必须一致；不一致立即停止并保留 private 中文差异报告。
 - release gate: `S11-P3=false`、`stage11_review=false`、`persistent_write=false`、`github_upload=false`、`app_reinstall=false`、`formal_report=false`、`business_execution=false`。
@@ -30,11 +30,11 @@
 
 - version: `0.1.4-s11-p1-post-remediation-home-navigation`
 - model_id: `MOD-KMFA-GOV-001`
-- scope: 在不改变当前可信等级的前提下提供 8 模块全中文首页、可见动作反馈、当前受限报告入口和桌面/移动/键盘验收。
-- rule: `home_navigation_valid = modules == 8 AND views == 8 AND navigation_checks == 16 AND action_checks == 16 AND keyboard_checks == 4 AND report_http_checks == 4 AND grade == D AND decision == NO_GO AND future_links == 0 AND overflow == 0`。
+- scope: 在不改变当前可信等级的前提下提供 8 模块全中文首页、可见动作反馈、当前受限报告入口、当前 S11-P2/P3 页面入口和桌面/移动/键盘验收。
+- rule: `home_navigation_valid = modules == 8 AND views == 8 AND navigation_checks == 16 AND action_checks == 16 AND keyboard_checks == 4 AND report_http_checks == 4 AND current_stage_page_http_checks == 2 AND grade == D AND decision == NO_GO AND unavailable_future_links == 0 AND overflow == 0`。
 - current-state gate: 首页必须显示 `Q4 / D / NO_GO` 与 `3/9/2/1`；旧 `12 pending`、B 级或样板业务值不得回流。
-- target gate: 报告入口只允许当前 S10 两份受限 HTML，S11-P2/P3、S12-S14 或其他历史页面不得作为当前链接目标。
-- browser gate: v1.4 基线和当前页面 audit 无 WARN/FAIL；desktop/mobile、16 次导航、16 次动作、4 次键盘与 4 次 HTTP 链接全部通过，console error 和横向溢出为 0。
+- target gate: 报告入口只允许当前 S10 两份受限 HTML；业务页面入口只允许当前 S11-P2/P3，S12-S14 或其他历史页面不得作为当前链接目标。
+- browser gate: v1.4 基线和当前页面 audit 无 WARN/FAIL；desktop/mobile、16 次导航、16 次动作、4 次键盘、4 次报告链接与 2 次当前 Stage 页面链接全部通过，console error 和横向溢出为 0。
 - raw gate: phase 前后、跨 S10 review 和当前快照必须一致；不一致立即停止并保留 private 中文差异报告。
 - release gate: `S11-P2=false`、`stage11_review=false`、`github_upload=false`、`app_reinstall=false`、`formal_report=false`、`business_execution=false`。
 - validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s11_p1_post_remediation_home_navigation.py --require-private-evidence --require-browser-evidence --require-final-evidence`
@@ -2327,3 +2327,17 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - raw boundary: five raw files match before, after and S10-P2 snapshots exactly; screenshots, browser audits, raw identities and diagnostics remain ignored private evidence.
 - release boundary: no complete trusted display, formal report, decision basis, Stage 10 review, upload, app reinstall or business execution.
 - validation: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s10_p3_post_remediation_restricted_export.py --require-private-evidence --require-browser-evidence --require-final-evidence` and focused unittest.
+## FORM-KMFA-V014-S11-POST-REMEDIATION-STAGE-REVIEW-001
+
+- version: `0.1.4-s11-post-remediation-stage-review`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: 复审当前 S11-P1/P2/P3，修复 validator 时态耦合、三页断链、移动端 NO_GO 不可见和 icon-only 链接缺少可访问名称，并锁定 raw 与发布边界。
+- rule: `stage11_review_valid = phase_pass_count == 3 AND cross_page_link_count == 6 AND broken_cross_page_link_count == 0 AND fixed_review_finding_count == 7 AND open_review_finding_count == 0 AND current_grade == D AND decision == NO_GO AND project_specific_attributed_difference_count == 0 AND project_specific_unknown_allocation_count == 4`。
+- phase gate: P1/P2/P3 strict validator 与 focused tests 均通过；旧 phase 在全局状态后移后仍可按 frozen semantics 复验。
+- navigation gate: 首页、数据源检查板和项目成本页面形成 6 条有向边；desktop/mobile、HTTP 与真实点击导航均通过，断链、console error、页面 overflow 均为 0。
+- attribution gate: 项目级可证明归属为 0，四个项目槽位保持 unknown/null；不得把全局 `3/9/2/1` 分配到项目。
+- quality gate: 三页持续显示 `Q4 / D / NO_GO`；D级受限预览不可绕过，正式报告和经营决策依据保持 false。
+- raw gate: review 前后、跨 S11-P3 和当前快照必须一致；不一致立即停止并保留 private 中文差异报告。
+- release gate: `s12_p1=false`、`github_upload=false`、`app_reinstall=false`、`formal_report=false`、`business_execution=false`。
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s11_post_remediation_stage_review.py --require-private-evidence --require-browser-evidence --require-final-evidence`
+- evidence: `KMFA/stage_artifacts/V014_S11_POST_REMEDIATION_STAGE_REVIEW/machine/stage11_post_remediation_review_manifest.json`

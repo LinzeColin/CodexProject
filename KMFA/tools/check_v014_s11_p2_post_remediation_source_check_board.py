@@ -124,6 +124,11 @@ def _git_tracked(path: Path) -> bool:
     )
 
 
+def _phase_is_current(version_matrix_text: str) -> bool:
+    match = re.search(r'^current_phase:\s*"([^"]+)"', version_matrix_text, re.MULTILINE)
+    return bool(match and match.group(1) == phase.PHASE_ID)
+
+
 def _validate_public(errors: list[str]) -> dict[str, Any]:
     public_paths = (
         phase.SUMMARY_PATH,
@@ -185,6 +190,8 @@ def _validate_public(errors: list[str]) -> dict[str, Any]:
         "raw_snapshot_exact_match": True,
         "raw_cross_phase_snapshot_exact_match": True,
         "home_navigation_link_count": 1,
+        "project_cost_page_link_count": 1,
+        "current_stage_page_target_count": 2,
         "visible_feedback_panel_count": 3,
         "formal_report_count": 0,
         "business_decision_basis_allowed_count": 0,
@@ -324,6 +331,8 @@ def _validate_html(errors: list[str]) -> None:
         "browser_session_only",
         "persistent_write:false",
         "raw_layer_write:false",
+        'data-home-link aria-label="返回经营首页" title="返回经营首页"',
+        'data-project-cost-link aria-label="查看项目成本页面" title="查看项目成本页面"',
     ):
         _require(token in text, f"HTML token missing: {token}", errors)
     for column in REQUIRED_BOARD_COLUMNS:
@@ -339,8 +348,17 @@ def _validate_html(errors: list[str]) -> None:
     _require(len(matrix_rows) == 13, "HTML row count mismatch", errors)
     _require('data-count-for="已就绪">0<' in text, "HTML ready count must be zero", errors)
     hrefs = re.findall(r'<a[^>]+href="([^"]+)"', text)
-    _require(hrefs == [phase.HOME_HREF], "HTML link allowlist mismatch", errors)
+    _require(
+        hrefs == [phase.HOME_HREF, phase.PROJECT_COST_HREF],
+        "HTML link allowlist mismatch",
+        errors,
+    )
     _require((phase.HTML_PATH.parent / phase.HOME_HREF).resolve().is_file(), "current home target missing", errors)
+    _require(
+        (phase.HTML_PATH.parent / phase.PROJECT_COST_HREF).resolve().is_file(),
+        "current project cost target missing",
+        errors,
+    )
     _require("gradient(" not in text, "HTML gradient surface forbidden", errors)
 
 
@@ -373,6 +391,7 @@ def _validate_governance(errors: list[str]) -> None:
         "current_ready_row_count == 0",
         "historical_ready_status_recomputed_count == 4",
         "status_detail_interaction_count == 26",
+        "project_cost_link_http_check_count == 1",
         "persistent_status_write_performed == false",
         "current_grade == D",
     ):
@@ -392,13 +411,16 @@ def _validate_governance(errors: list[str]) -> None:
         for field in ("default_value", "initial_or_prior_value", "active_value", "extracted_value"):
             _require(row.get(field) == expected_value, f"parameter drift: {parameter_id}:{field}", errors)
 
-    _require(Path("KMFA/VERSION").read_text(encoding="utf-8").strip() == phase.VERSION, "VERSION drift", errors)
     matrix = Path("KMFA/docs/governance/VERSION_MATRIX.yaml").read_text(encoding="utf-8")
-    _require(f'current_phase: "{phase.PHASE_ID}"' in matrix, "VERSION_MATRIX current phase drift", errors)
-    handoff = Path("KMFA/HANDOFF.md").read_text(encoding="utf-8")
-    _require(f"phase: `{phase.PHASE_ID}`" in handoff, "HANDOFF current phase drift", errors)
-    _require("S11-P3" in handoff, "HANDOFF next phase missing", errors)
-    _require("不得执行 GitHub upload" in handoff, "HANDOFF upload boundary missing", errors)
+    phase_is_current = _phase_is_current(matrix)
+    _require(phase.MODEL_REGISTRY_KEY in matrix, "VERSION_MATRIX phase profile missing", errors)
+    _require(phase.VERSION in matrix, "VERSION_MATRIX phase version missing", errors)
+    if phase_is_current:
+        _require(Path("KMFA/VERSION").read_text(encoding="utf-8").strip() == phase.VERSION, "VERSION drift", errors)
+        handoff = Path("KMFA/HANDOFF.md").read_text(encoding="utf-8")
+        _require(f"phase: `{phase.PHASE_ID}`" in handoff, "HANDOFF current phase drift", errors)
+        _require("S11-P3" in handoff, "HANDOFF next phase missing", errors)
+        _require("不得执行 GitHub upload" in handoff, "HANDOFF upload boundary missing", errors)
 
 
 def _read_audit(path: Path, errors: list[str], expected_files: int, expected_rows: int = 0) -> None:
@@ -472,6 +494,7 @@ def _validate_private(errors: list[str], require_browser_evidence: bool) -> None
             "status_preview_checks": 10,
             "keyboard_checks": 2,
             "home_link_http_checks": 1,
+            "project_cost_link_http_checks": 1,
         }
         for key, count in expected_counts.items():
             _require(len(browser.get(key, [])) == count, f"browser {key} count mismatch", errors)
@@ -482,6 +505,7 @@ def _validate_private(errors: list[str], require_browser_evidence: bool) -> None
             "status_preview_checks",
             "keyboard_checks",
             "home_link_http_checks",
+            "project_cost_link_http_checks",
         ):
             _require(all(item.get("passed") is True for item in browser.get(key, [])), f"browser {key} failed", errors)
         _require(

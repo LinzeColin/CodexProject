@@ -2,7 +2,7 @@
 
 - focused tests：`6/6 PASS`
 - v1.4 人类流程基线：`54/54 PASS`，WARN `0`，FAIL `0`
-- 当前页面审计：`21/21 PASS`，WARN `0`，FAIL `0`
+- 当前页面审计：`22/22 PASS`，WARN `0`，FAIL `0`
 - desktop/mobile：`2/2 PASS`
 - 搜索 / 状态筛选 / 逐行详情 / 状态预演 / 键盘：`4 / 10 / 26 / 10 / 2 PASS`
 - 返回当前首页：`1/1 HTTP PASS`

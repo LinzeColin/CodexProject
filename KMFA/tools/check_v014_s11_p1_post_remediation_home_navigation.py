@@ -49,9 +49,7 @@ SECRET_PATTERNS = (
     ),
 )
 BUSINESS_AMOUNT_PATTERN = re.compile(r"(?:¥|￥|\bCNY\b|\bRMB\b|\d{1,3}(?:,\d{3})+\.\d{2})")
-HISTORICAL_FUTURE_TOKENS = (
-    "S11_P2",
-    "S11_P3",
+UNAVAILABLE_FUTURE_TOKENS = (
     "S12_P1",
     "S13_P1",
     "S13_P2",
@@ -131,6 +129,11 @@ def _git_tracked(path: Path) -> bool:
     )
 
 
+def _phase_is_current(version_matrix_text: str) -> bool:
+    match = re.search(r'^current_phase:\s*"([^"]+)"', version_matrix_text, re.MULTILINE)
+    return bool(match and match.group(1) == phase.PHASE_ID)
+
+
 def _validate_public(errors: list[str]) -> dict[str, Any]:
     public_paths = (
         phase.SUMMARY_PATH,
@@ -176,7 +179,9 @@ def _validate_public(errors: list[str]) -> dict[str, Any]:
         "visible_feedback_panel_count": 1,
         "report_link_count": 4,
         "unique_report_target_count": 2,
-        "historical_future_target_link_count": 0,
+        "current_stage_page_link_count": 2,
+        "current_stage_page_target_count": 2,
+        "unavailable_future_target_link_count": 0,
         "open_final_difference_accepted_count": 3,
         "nonzero_delta_reconciliation_count": 9,
         "zero_delta_reconciliation_count": 2,
@@ -192,7 +197,7 @@ def _validate_public(errors: list[str]) -> dict[str, Any]:
         _require(summary.get(key) == value, f"summary {key} mismatch", errors)
     _require(summary.get("required_navigation_labels") == list(REQUIRED_NAVIGATION_LABELS), "navigation labels mismatch", errors)
     for key in (
-        "current_s10_restricted_report_links_only",
+        "restricted_report_links_preserve_s10_grade",
         "km_brand_mark_present",
         "blue_business_style",
         "all_chinese_visible_copy",
@@ -269,7 +274,7 @@ def _validate_html(errors: list[str]) -> None:
         ">KM<",
         "Q4 / D",
         "NO_GO",
-        "D级（未放行）",
+        "D级（未放行） · NO_GO",
         "关键现金数据仍不完整",
         "九项非零差异",
         "一项比较未完成",
@@ -280,7 +285,7 @@ def _validate_html(errors: list[str]) -> None:
         "hashchange",
     ):
         _require(token in text, f"HTML token missing: {token}", errors)
-    for token in ("B级", "12 pending", "pending_reconciliation_count", *HISTORICAL_FUTURE_TOKENS):
+    for token in ("B级", "12 pending", "pending_reconciliation_count", *UNAVAILABLE_FUTURE_TOKENS):
         _require(token not in text, f"stale/future token in HTML: {token}", errors)
     _require(text.count("data-module-id=") == 8, "HTML nav button count mismatch", errors)
     _require(text.count("data-module-view=") == 8, "HTML view count mismatch", errors)
@@ -290,6 +295,20 @@ def _validate_html(errors: list[str]) -> None:
     _require(set(hrefs) == {phase.BUSINESS_REPORT_HREF, phase.PROJECT_REPORT_HREF}, "HTML report targets mismatch", errors)
     for href in hrefs:
         _require((phase.HTML_PATH.parent / href).resolve().is_file(), f"report target missing: {href}", errors)
+    stage_page_hrefs = re.findall(
+        r'<a[^>]+data-current-stage-page-link[^>]+href="([^"]+)"', text
+    )
+    _require(
+        stage_page_hrefs == [phase.PROJECT_COST_PAGE_HREF, phase.SOURCE_CHECK_BOARD_HREF],
+        "current Stage 11 page link allowlist mismatch",
+        errors,
+    )
+    for href in stage_page_hrefs:
+        _require(
+            (phase.HTML_PATH.parent / href).resolve().is_file(),
+            f"current Stage 11 page target missing: {href}",
+            errors,
+        )
 
 
 def _validate_dependencies(errors: list[str]) -> None:
@@ -318,8 +337,10 @@ def _validate_governance(errors: list[str]) -> None:
         "navigation_module_count == 8",
         "navigation_interaction_count == 16",
         "module_action_interaction_count == 16",
+        "current_stage_page_link_count == 2",
+        "current_stage_page_target_count == 2",
         "current_grade == D",
-        "historical_future_target_link_count == 0",
+        "unavailable_future_target_link_count == 0",
     ):
         _require(token in formula_text, f"formula control missing: {token}", errors)
     _require(phase.MODEL_REGISTRY_KEY in model_text, "model registry record missing", errors)
@@ -337,13 +358,16 @@ def _validate_governance(errors: list[str]) -> None:
         for field in ("default_value", "initial_or_prior_value", "active_value", "extracted_value"):
             _require(row.get(field) == expected_value, f"parameter drift: {parameter_id}:{field}", errors)
 
-    _require(Path("KMFA/VERSION").read_text(encoding="utf-8").strip() == phase.VERSION, "VERSION drift", errors)
     matrix = Path("KMFA/docs/governance/VERSION_MATRIX.yaml").read_text(encoding="utf-8")
-    _require(f'current_phase: "{phase.PHASE_ID}"' in matrix, "VERSION_MATRIX current phase drift", errors)
-    handoff = Path("KMFA/HANDOFF.md").read_text(encoding="utf-8")
-    _require(f"phase: `{phase.PHASE_ID}`" in handoff, "HANDOFF current phase drift", errors)
-    _require("S11-P2" in handoff, "HANDOFF next phase missing", errors)
-    _require("不得执行 GitHub upload" in handoff, "HANDOFF upload boundary missing", errors)
+    phase_is_current = _phase_is_current(matrix)
+    _require(phase.MODEL_REGISTRY_KEY in matrix, "VERSION_MATRIX phase profile missing", errors)
+    _require(phase.VERSION in matrix, "VERSION_MATRIX phase version missing", errors)
+    if phase_is_current:
+        _require(Path("KMFA/VERSION").read_text(encoding="utf-8").strip() == phase.VERSION, "VERSION drift", errors)
+        handoff = Path("KMFA/HANDOFF.md").read_text(encoding="utf-8")
+        _require(f"phase: `{phase.PHASE_ID}`" in handoff, "HANDOFF current phase drift", errors)
+        _require("S11-P2" in handoff, "HANDOFF next phase missing", errors)
+        _require("不得执行 GitHub upload" in handoff, "HANDOFF upload boundary missing", errors)
 
 
 def _read_audit(path: Path, errors: list[str], expected_files: int, expected_rows: int = 0) -> None:
@@ -411,10 +435,26 @@ def _validate_private(errors: list[str], require_browser_evidence: bool) -> None
         _require(len(browser.get("module_action_checks", [])) == 16, "browser action count mismatch", errors)
         _require(len(browser.get("keyboard_navigation_checks", [])) == 4, "browser keyboard count mismatch", errors)
         _require(len(browser.get("report_link_http_checks", [])) == 4, "browser link count mismatch", errors)
-        for key in ("navigation_checks", "module_action_checks", "keyboard_navigation_checks", "report_link_http_checks"):
+        _require(
+            len(browser.get("current_stage_page_link_http_checks", [])) == 2,
+            "browser current Stage 11 page link count mismatch",
+            errors,
+        )
+        for key in (
+            "navigation_checks",
+            "module_action_checks",
+            "keyboard_navigation_checks",
+            "report_link_http_checks",
+            "current_stage_page_link_http_checks",
+        ):
             _require(all(item.get("passed") is True for item in browser.get(key, [])), f"browser {key} failed", errors)
         _require(
-            all(item.get("console_error_count") == 0 and item.get("no_horizontal_overflow") is True for item in browser.get("viewport_checks", [])),
+            all(
+                item.get("console_error_count") == 0
+                and item.get("no_horizontal_overflow") is True
+                and item.get("no_go_visible") is True
+                for item in browser.get("viewport_checks", [])
+            ),
             "browser viewport safety failed",
             errors,
         )
