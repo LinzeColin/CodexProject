@@ -45,6 +45,23 @@ REQUIRED_FIELDS = (
     "rollback",
     "future_l3_extensions",
 )
+ADAPTERS = {
+    "eei": {
+        "root": REPO_ROOT / "EEI/apps/cloudflare-public",
+        "worker": "codex-eei",
+        "required_copy": ("Enterprise Ecosystem Intelligence", "demo data only", "production data publication"),
+    },
+    "pfi": {
+        "root": REPO_ROOT / "PFI/web/cloudflare-public",
+        "worker": "codex-pfi",
+        "required_copy": ("Personal Financial Intelligence", "redacted", "No real accounts"),
+    },
+    "serenity-alipay": {
+        "root": REPO_ROOT / "Serenity-Alipay/app/cloudflare-public",
+        "worker": "serenity-alipay",
+        "required_copy": ("Serenity", "dry-run-only", "Never move money"),
+    },
+}
 
 
 def project(project_id: str) -> dict[str, object]:
@@ -200,6 +217,18 @@ class CompatibilityEnvelopeTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("local_absolute_path", result.stdout + result.stderr)
 
+    def test_embedded_home_route_is_not_a_local_absolute_path(self) -> None:
+        with tempfile.TemporaryDirectory() as raw_temp:
+            dist = Path(raw_temp) / "dist"
+            dist.mkdir()
+            (dist / "index.html").write_text("<!doctype html><title>safe</title>", encoding="utf-8")
+            (dist / "app.js").write_text(
+                "const formula = 'focus(inspector/home/obsidian/timeline/roi)';",
+                encoding="utf-8",
+            )
+            result = self.run_python(SCANNER, "--path", str(dist))
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
     def test_static_builder_replaces_stale_output_and_copies_source(self) -> None:
         self.assertTrue(STATIC_BUILDER.is_file(), f"production script missing: {STATIC_BUILDER}")
         with tempfile.TemporaryDirectory() as raw_temp:
@@ -229,6 +258,72 @@ class CompatibilityEnvelopeTests(unittest.TestCase):
             self.assertFalse((output / "stale.txt").exists())
             self.assertEqual((output / "index.html").read_text(), "<title>safe</title>")
             self.assertEqual((output / "styles.css").read_text(), "body { color: black; }")
+
+    def test_static_adapters_have_public_safe_contracts(self) -> None:
+        for project_id, contract in ADAPTERS.items():
+            with self.subTest(project_id=project_id):
+                root = contract["root"]
+                required = (
+                    root / "package.json",
+                    root / "wrangler.jsonc",
+                    root / "public/index.html",
+                    root / "public/styles.css",
+                    root / "public/public-surface.json",
+                )
+                for path in required:
+                    self.assertTrue(path.is_file(), f"missing adapter file: {path}")
+                package = json.loads((root / "package.json").read_text(encoding="utf-8"))
+                self.assertIn("build_static_surface.mjs", package["scripts"]["build"])
+                wrangler = json.loads((root / "wrangler.jsonc").read_text(encoding="utf-8"))
+                self.assertEqual(wrangler["name"], contract["worker"])
+                self.assertEqual(wrangler["assets"]["directory"], "./dist")
+                self.assertEqual(wrangler["assets"]["not_found_handling"], "single-page-application")
+                surface = json.loads((root / "public/public-surface.json").read_text(encoding="utf-8"))
+                self.assertEqual(surface["project_id"], project_id)
+                self.assertEqual(surface["compatibility_level"], "L2")
+                self.assertIs(surface["private_data_allowed_in_dist"], False)
+                self.assertEqual(surface["data_sources"], [])
+                self.assertIs(surface["external_actions_enabled"], False)
+                html = (root / "public/index.html").read_text(encoding="utf-8")
+                self.assertIn("https://home.linzezhang.com", html)
+                self.assertIn("Safety boundary", html)
+                for copy in contract["required_copy"]:
+                    self.assertIn(copy, html)
+
+    def test_static_adapters_define_mobile_link_targets_and_no_wide_serenity_orbit(self) -> None:
+        for project_id, contract in ADAPTERS.items():
+            with self.subTest(project_id=project_id):
+                css = (contract["root"] / "public/styles.css").read_text(encoding="utf-8")
+                self.assertIn("min-height: 44px", css)
+        serenity_css = (
+            ADAPTERS["serenity-alipay"]["root"] / "public/styles.css"
+        ).read_text(encoding="utf-8")
+        self.assertNotIn(".review-orbit { width: 112%; margin-left: -6%; }", serenity_css)
+
+    def test_memory_atlas_uses_workers_static_assets_and_homehub_return(self) -> None:
+        wrangler_path = REPO_ROOT / "OpenAIDatabase/wrangler.jsonc"
+        app_path = REPO_ROOT / "OpenAIDatabase/apps/memory-atlas/src/App.tsx"
+        self.assertTrue(wrangler_path.is_file())
+        self.assertTrue(app_path.is_file())
+        wrangler_text = wrangler_path.read_text(encoding="utf-8")
+        self.assertNotIn("pages_build_output_dir", wrangler_text)
+        wrangler = json.loads(wrangler_text)
+        self.assertEqual(wrangler["name"], "openai-memory-atlas")
+        self.assertEqual(wrangler["assets"]["directory"], "./apps/memory-atlas/dist")
+        self.assertEqual(wrangler["assets"]["not_found_handling"], "single-page-application")
+        app = app_path.read_text(encoding="utf-8")
+        self.assertIn("https://home.linzezhang.com", app)
+        self.assertIn("data-homehub-return", app)
+
+    def test_memory_atlas_browser_validators_use_stable_timeline_selector(self) -> None:
+        scripts = REPO_ROOT / "OpenAIDatabase/apps/memory-atlas/scripts"
+        ambiguous = 'getByRole("button", { name: /时间轴/ })'
+        offenders = []
+        for path in sorted(scripts.glob("validate_*.cjs")):
+            text = path.read_text(encoding="utf-8")
+            if ambiguous in text:
+                offenders.append(path.name)
+        self.assertEqual(offenders, [], f"ambiguous timeline selectors: {offenders}")
 
 
 if __name__ == "__main__":

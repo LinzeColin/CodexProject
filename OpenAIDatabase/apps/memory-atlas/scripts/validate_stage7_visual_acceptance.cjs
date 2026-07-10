@@ -154,7 +154,7 @@ async function validateGalaxyVisualAcceptance(page) {
 }
 
 async function validateMemoryRiverVisualAcceptance(page) {
-  await page.getByRole("button", { name: /时间轴/ }).click({ timeout: 5000 });
+  await page.locator('[data-nav-view="timeline"]').click({ timeout: 5000 });
   await page.waitForSelector(".timeline-map", { timeout: 15000 });
   const renderer = await page.locator(".timeline-map").getAttribute("data-timeline-renderer");
   if (renderer !== "memory-river") {

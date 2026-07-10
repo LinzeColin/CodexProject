@@ -226,7 +226,7 @@ async function validateAutoCanResume(page) {
 }
 
 async function validateCleanupHooks(page) {
-  await page.getByRole("button", { name: /时间轴/ }).click({ timeout: 5000 });
+  await page.locator('[data-nav-view="timeline"]').click({ timeout: 5000 });
   await page.waitForFunction(() => {
     const lifecycle = window.__memoryAtlasGalaxyLifecycle;
     return Boolean(

@@ -25,7 +25,9 @@ FORBIDDEN_SUFFIXES = {
 FORBIDDEN_NAMES = {".env", ".env.local", "id_ed25519", "id_rsa"}
 TEXT_PATTERNS = {
     "private_key": re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----"),
-    "local_absolute_path": re.compile(r"(?:/Users/|/home/[^/\s]+/|[A-Za-z]:\\\\Users\\\\)"),
+    "local_absolute_path": re.compile(
+        r"(?<![A-Za-z0-9_.-])(?:/Users/[A-Za-z0-9_.-]+/|/home/[A-Za-z0-9_.-]+/|[A-Za-z]:\\\\Users\\\\[A-Za-z0-9_.-]+\\\\)"
+    ),
     "openai_api_key": re.compile(r"\bsk-[A-Za-z0-9_-]{16,}\b"),
     "github_token": re.compile(r"\bgh[pousr]_[A-Za-z0-9]{20,}\b"),
     "cloudflare_token_value": re.compile(
@@ -116,4 +118,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
