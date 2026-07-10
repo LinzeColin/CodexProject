@@ -198,6 +198,19 @@ class PublicRawAuditTests(unittest.TestCase):
                 data_url_path,
                 [{"payload": "data:application/octet-stream;base64,AAECAwQ="}],
             )
+            safe_structured_path = database / "data/public_raw/codex/structured.json"
+            write_json(
+                safe_structured_path,
+                {
+                    "sha256": "a" * 10 + "123456789012" + "b" * 42,
+                    "session_id": "019f4aea-fcab-7dd0-ad1a-1ce2637af2b8",
+                    "generated_at": "2026-07-11T16:52:07Z",
+                    "raw_ref": (
+                        "data/public_raw/codex/sessions/"
+                        "019f4aea-fcab-7dd0-ad1a-1ce2637af2b8.aaaaaaaaaaaa.part-0001.jsonl"
+                    ),
+                },
+            )
 
             failed = module.audit_public_raw(database)
             serialized = json.dumps(failed, ensure_ascii=False)
@@ -221,10 +234,10 @@ class PublicRawAuditTests(unittest.TestCase):
             limited = module.audit_public_raw(database, max_file_bytes=128)
 
         self.assertEqual(passed["status"], "PASS", passed)
-        self.assertEqual(passed["file_count"], 2)
+        self.assertEqual(passed["file_count"], 3)
         self.assertEqual(passed["binary_marker_count"], 1)
         self.assertEqual(limited["status"], "FAIL")
-        self.assertEqual(limited["oversize_file_count"], 2)
+        self.assertEqual(limited["oversize_file_count"], 3)
 
 
 class VersionAwareFacetTests(unittest.TestCase):
@@ -293,13 +306,30 @@ class VersionAwareFacetTests(unittest.TestCase):
                     "sessions": [
                         {
                             "session_id": "session-1",
+                            "thread_name": "Superseded Codex transcript",
+                            "updated_at": "2026-07-10T12:00:00Z",
+                            "content_sha256": "old-source-sha",
+                            "message_count": 2,
+                        },
+                        {
+                            "session_id": "session-1",
                             "thread_name": "Current Codex transcript",
                             "updated_at": "2026-07-11T00:00:00Z",
+                            "content_sha256": "new-source-sha",
                             "message_count": 3,
                         }
                     ],
                     "public_transcript_exports": [
-                        {"session_id": "session-1", "chunk_refs": [current_chunk]}
+                        {
+                            "session_id": "session-1",
+                            "source_sha256": "old-source-sha",
+                            "chunk_refs": [old_chunk],
+                        },
+                        {
+                            "session_id": "session-1",
+                            "source_sha256": "new-source-sha",
+                            "chunk_refs": [current_chunk],
+                        },
                     ],
                 },
             )

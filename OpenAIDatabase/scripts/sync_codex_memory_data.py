@@ -802,7 +802,7 @@ def build_public_raw_snapshot(
 ) -> dict[str, Any]:
     public_transcripts_included = transcript_exports is not None
     exports = transcript_exports or []
-    return {
+    payload = {
         "schema_version": "memory_atlas_public_raw_codex_snapshot.v1",
         "source_id": SOURCE_ID,
         "generated_at": snapshot["generated_at"],
@@ -822,6 +822,11 @@ def build_public_raw_snapshot(
         "public_transcript_chunk_count": sum(int(row.get("chunk_count") or 0) for row in exports),
         "public_transcript_exports": exports,
     }
+    sanitized, redaction_counts = sanitize_public_value(payload)
+    if not isinstance(sanitized, dict):
+        raise PublicRawSanitizationError("Codex public raw snapshot must remain an object")
+    sanitized["redaction_counts"] = redaction_counts
+    return sanitized
 
 
 def public_raw_snapshot_path(snapshot_payload: dict[str, Any]) -> Path:

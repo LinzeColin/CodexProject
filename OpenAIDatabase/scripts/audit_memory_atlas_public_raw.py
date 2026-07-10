@@ -10,8 +10,11 @@ import sys
 from pathlib import Path
 from typing import Any, Iterator
 
-from privacy_guard import redact_text
-from public_raw_sanitizer import MAX_PUBLIC_RAW_FILE_BYTES, is_non_text_binary_string
+from public_raw_sanitizer import (
+    MAX_PUBLIC_RAW_FILE_BYTES,
+    is_non_text_binary_string,
+    sanitize_public_text,
+)
 from raw_archive_manifest import PUBLIC_RAW_ROOT, iter_public_raw_files
 
 
@@ -103,7 +106,7 @@ def audit_public_raw(
                     if is_non_text_binary_string(value):
                         file_has_unmarked_binary = True
                         continue
-                    _, counts = redact_text(value)
+                    _, counts = sanitize_public_text(value)
                     file_categories.update(counts)
         except (UnicodeError, ValueError, OSError):
             invalid_json_files.add(relative_path)
