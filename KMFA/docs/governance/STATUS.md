@@ -5,12 +5,12 @@
 ## 最新状态
 
 - project_id: `KMFA`
-- version: `0.1.4-cash-source-private-disambiguation-and-remaining-value-materialization`
+- version: `0.1.4-remaining-cash-source-private-trace-or-difference-acceptance`
 - current_stage: `value-consistency`
-- current_phase: `V014_CASH_SOURCE_PRIVATE_DISAMBIGUATION_AND_REMAINING_VALUE_MATERIALIZATION`
-- status: `completed_validated_local_only_one_cash_project_materialized_remaining_cash_unresolved_no_go`
-- current_blocker: `3_cash_projects_9_cash_slots_2_unreadable_external_sources_and_7_nonzero_differences_remain`
-- next_required_input: `remaining_cash_source_private_trace_or_difference_acceptance`
+- current_phase: `V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE`
+- status: `completed_validated_local_only_second_cash_project_materialized_two_projects_difference_accepted_no_go`
+- current_blocker: `2_cash_projects_6_cash_slots_secure_wps_content_and_8_nonzero_differences_remain`
+- next_required_input: `remaining_two_project_cash_collection_evidence_or_final_difference_acceptance`
 - production_ready: `false`
 - github_upload_ready: `false`
 - raw_snapshot_exact_match: `true`
@@ -19,12 +19,12 @@
 ## 前序状态（上一 phase）
 
 - project_id: `KMFA`
-- version: `0.1.4-real-project-identity-private-rebinding-and-processed-value-materialization`
+- version: `0.1.4-cash-source-private-disambiguation-and-remaining-value-materialization`
 - current_stage: `value-consistency`
-- current_phase: `V014_REAL_PROJECT_IDENTITY_PRIVATE_REBINDING_AND_PROCESSED_VALUE_MATERIALIZATION`
-- status: `completed_validated_local_only_real_identity_rebound_partial_value_materialization_no_go`
-- current_blocker: `12_cash_value_slots_require_unique_workbook_source_binding_and_6_nonzero_differences_remain`
-- next_required_input: `cash_source_private_disambiguation_and_remaining_value_materialization`
+- current_phase: `V014_CASH_SOURCE_PRIVATE_DISAMBIGUATION_AND_REMAINING_VALUE_MATERIALIZATION`
+- status: `completed_validated_local_only_one_cash_project_materialized_remaining_cash_unresolved_no_go`
+- current_blocker: `3_cash_projects_9_cash_slots_2_unreadable_external_sources_and_7_nonzero_differences_remain`
+- next_required_input: `remaining_cash_source_private_trace_or_difference_acceptance`
 - raw_snapshot_exact_match: `true`
 - decision: `NO_GO`
 

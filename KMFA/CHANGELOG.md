@@ -1,3 +1,11 @@
+## 0.1.4-remaining-cash-source-private-trace-or-difference-acceptance - 2026-07-10
+
+- 完成 `V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE` 本地单 phase。
+- 对 3 条未决项目成本执行应付、票据和银行链追踪：1 条后续银行结清、1 条票据非现金结算、1 条期末未付；第二个项目形成可访问账套内现金闭环。
+- 新增物化 3 个私有现金目标槽位，累计已物化 34 个、剩余 6 个；12 条比较中 10 条完成，其中 2 条零差异、8 条非零差异，2 条现金比较未完成。
+- 两个 WPS/OLE 文件的标准 Office 兼容层可解锁但均为空白，实际安全内容仍依赖专有 ticket runtime；未虚假声称已读取，也未把缺失收款证据填零。
+- 5 个原始文件前后逐文件快照完全一致；私有兼容密码、供应商、票据、金额、交易和中文差异报告仅保留在 ignored runtime，未做 Stage review、GitHub upload、app reinstall 或 business execution。
+
 ## 0.1.4-cash-source-private-disambiguation-and-remaining-value-materialization - 2026-07-10
 
 - 完成 `V014_CASH_SOURCE_PRIVATE_DISAMBIGUATION_AND_REMAINING_VALUE_MATERIALIZATION` 本地单 phase。

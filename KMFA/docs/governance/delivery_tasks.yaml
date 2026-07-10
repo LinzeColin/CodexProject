@@ -1,6 +1,40 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "KMFA-V014-REMAINING-CASH-SOURCE-PRIVATE-TRACE-OR-DIFFERENCE-ACCEPTANCE-20260710"
+    phase: "V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE"
+    objective: "Trace remaining project costs through supplier payables receivable notes and bank settlements, while preserving explicit differences when secure WPS content or positive collection evidence remains unavailable."
+    scope:
+      - "read-only supplier payable note and bank settlement trace"
+      - "private Office compatibility unlock and secure WPS layer diagnostic"
+      - "integer cents cash metrics remaining target materialization and Chinese difference acceptance report"
+      - "raw immutability proof public-safe validator and focused test"
+    non_scope:
+      - "raw mutation or public private password supplier note transaction or value detail"
+      - "empty compatibility workbook as business evidence forced zero or nonzero-difference overwrite"
+      - "global residual queue replay Stage review GitHub upload app reinstall or business execution"
+    status: "completed"
+    completed_version: "0.1.4-remaining-cash-source-private-trace-or-difference-acceptance"
+    dependencies:
+      - "V014_CASH_SOURCE_PRIVATE_DISAMBIGUATION_AND_REMAINING_VALUE_MATERIALIZATION"
+    required_files:
+      - "KMFA/stage_artifacts/V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE/machine/remaining_cash_source_private_trace_or_difference_acceptance_manifest.json"
+      - "KMFA/tools/check_v014_remaining_cash_source_private_trace_or_difference_acceptance.py"
+    acceptance_ids:
+      - "ACC-V014-REMAINING-CASH-SOURCE-PRIVATE-TRACE-OR-DIFFERENCE-ACCEPTANCE"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_remaining_cash_source_private_trace_or_difference_acceptance.py --require-private-trace"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_remaining_cash_source_private_trace_or_difference_acceptance"
+    test_results:
+      - "PASS: remaining private cash trace or difference acceptance validator"
+      - "PASS: focused payable note bank and WPS recovery unit test"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE/machine/remaining_cash_source_private_trace_or_difference_acceptance_manifest.json"
+    risk: "Two projects still lack positive collection evidence and secure WPS business content remains protected by a proprietary ticket runtime; six cash slots remain open."
+    rollback: "Remove this phase public artifacts and ignored private outputs; do not touch the operator raw directory or prior phase evidence."
+    target_version: "0.1.4-remaining-cash-source-private-trace-or-difference-acceptance"
+
   - task_id: "KMFA-V014-CASH-SOURCE-PRIVATE-DISAMBIGUATION-AND-REMAINING-VALUE-MATERIALIZATION-20260710"
     phase: "V014_CASH_SOURCE_PRIVATE_DISAMBIGUATION_AND_REMAINING_VALUE_MATERIALIZATION"
     objective: "Disambiguate private project cash sources with composite identity and balanced vouchers, materializing only uniquely proven integer values without forcing missing evidence to zero."

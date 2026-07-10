@@ -1,0 +1,18 @@
+{
+  "blocking_reason_codes": [
+    "two_cash_projects_still_lack_positive_collection_evidence",
+    "secure_wps_content_requires_proprietary_ticket_runtime",
+    "nonzero_scope_differences_remain",
+    "global_residual_queue_not_replayed"
+  ],
+  "cash_project_unresolved_count": 2,
+  "decision": "NO_GO",
+  "github_upload_performed": false,
+  "incomplete_cash_reconciliation_count": 2,
+  "nonzero_delta_reconciliation_count": 8,
+  "phase_id": "V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE",
+  "project_id": "KMFA",
+  "schema_version": "kmfa.v014.remaining_cash_trace_go_no_go.v1",
+  "secure_wps_content_readable_count": 0,
+  "unresolved_cash_value_target_slot_count": 6
+}
