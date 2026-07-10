@@ -24,6 +24,7 @@ CHECK_FIELDS = [
 EXPECTED_CONTRACT_FIELDS = {
     "rrule": "RRULE:FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0",
     "timezone": "Australia/Sydney",
+    "cwds": ["/Users/linzezhang/CodexProject"],
     "prompt_file": "automation/weekly_mon_sat_1100_sydney.prompt.md",
     "input_dir": "/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群",
     "source_readiness_gate": "tools/check_source_readiness.py",

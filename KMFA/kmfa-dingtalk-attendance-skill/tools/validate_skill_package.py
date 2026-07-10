@@ -83,8 +83,8 @@ REQUIRED_TEXT = {
         "payroll baseline",
     ],
     "automation/codex_automation_manifest.md": [
-        "automation-3",
-        "automation-4",
+        "kmfa",
+        "kmfa-3",
         "Beijing",
         "GitHub",
     ],

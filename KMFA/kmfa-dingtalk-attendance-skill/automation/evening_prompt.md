@@ -6,10 +6,9 @@ If the current Codex agent cannot auto-resolve repo-scoped skills, read and foll
 /Users/linzezhang/CodexProject/KMFA/kmfa-dingtalk-attendance-skill/SKILL.md
 ```
 
-统一工作区规则：本 automation 与上游每日钉钉DWS归档、钉钉工作检查、KMFA资金周报日报自动化使用同一组 Codex cwds：
-- DWS 归档项目：`/Users/linzezhang/Documents/Codex/2026-07-04/392b1a986ba680338068ddc1c2a0fd0e-https-app-notion-com-p`
+统一工作区规则：本 KMFA automation 只使用 KMFA/CodexProject 工作间：
 - KMFA/CodexProject：`/Users/linzezhang/CodexProject`
-本 automation 的实际执行目录必须切到 `/Users/linzezhang/CodexProject` 后再运行 KMFA git、skill、test 或脚本命令；DWS 归档项目只作为上游输出和诊断可见工作区。若发现这些上游/下游 automation 的 cwds 不一致，先修正 automation 配置并报告。
+本 automation 的实际执行目录必须切到 `/Users/linzezhang/CodexProject` 后再运行 KMFA git、skill、test 或脚本命令；上游 DWS 归档是独立 automation，只提供已生成的 OneDrive/DWS 输出。若发现本 automation 的 cwd 不是 `/Users/linzezhang/CodexProject`，先修正 automation 配置并报告。
 
 Run slot: evening.
 Scheduled Beijing time: 20:05.

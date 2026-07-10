@@ -1,5 +1,53 @@
 # KMFA Automation Bug Log
 
+## 2026-07-10 Diagnosis and Repair
+
+Scope: diagnose why KMFA automations were visible but not reliable, and repair
+the live Codex App automation records plus the tracked repo contracts.
+
+Root causes:
+
+| Issue | Impact | Fix | Validation |
+|---|---|---|---|
+| Two local projects were both named `CodexProject`. The KMFA automations were bound to project id `25bfcad9-f99d-40f9-9094-64a7045f80b0`, whose cwd is the old `/Users/linzezhang/Documents/Codex/2026-07-05/.../CodexProject` worktree. | Fixes made in canonical `/Users/linzezhang/CodexProject` were not used by scheduled runs, so the same bugs appeared to return. | Rebound `kmfa`, `kmfa-3`, `kmfa-4`, and `kmfa-5` to project id `40dd52a0-b6eb-4528-9577-0cb5f4f86e3e`, cwd `/Users/linzezhang/CodexProject`. | Live toml now shows all four KMFA/CodexProject automations with `cwds = ["/Users/linzezhang/CodexProject"]`. |
+| Fund weekly automation checker did not treat old cwd drift as a failure, and runtime readiness compared `FREQ=...` while the tracked/live toml used `RRULE:FREQ=...`. | Quality gates could say ready in one place and blocked in another, or fail to catch the wrong workspace. | Added canonical cwd to `codex_app_automation.contract.toml` and `check_codex_app_automation.py`; aligned runtime/delivery expected RRULE strings. | `python3 KMFA/fund-weekly-analysis-skill/tools/check_codex_app_automation.py` returns `CODEX_AUTOMATION_READY` with cwd `/Users/linzezhang/CodexProject`. |
+| Tracked prompt mirrors still referenced the old July 5 worktree or stale automation ids. | Future agents could recreate the same bad live configuration from stale repo docs. | Updated fund prompt, attendance SKILL/manifest/validator, and daily routine manifest to current ids and canonical cwd. | Attendance skill package, daily routine skill package, and fund taskpack validators pass. |
+| Upstream DWS archive was separate but KMFA prompts previously described mixed cwd usage. | KMFA tasks could drift back into the DWS archive workspace and duplicate resource-heavy archive work. | KMFA prompts now state that KMFA automations run only from `/Users/linzezhang/CodexProject`; DWS archive remains separate producer automation. | Live `kmfa-dws` remains bound only to the DWS project cwd; KMFA tasks do not include that cwd. |
+
+Current active KMFA automation set after repair:
+
+| ID | Name | Project id | Cwd | Expected state |
+|---|---|---|---|---|
+| `kmfa` | `KMFA｜每日钉钉考勤检查｜晨报` | `40dd52a0-b6eb-4528-9577-0cb5f4f86e3e` | `/Users/linzezhang/CodexProject` | Active |
+| `kmfa-3` | `KMFA｜每日钉钉考勤检查｜晚报` | `40dd52a0-b6eb-4528-9577-0cb5f4f86e3e` | `/Users/linzezhang/CodexProject` | Active |
+| `kmfa-4` | `KMFA｜钉钉工作检查` | `40dd52a0-b6eb-4528-9577-0cb5f4f86e3e` | `/Users/linzezhang/CodexProject` | Active |
+| `kmfa-5` | `KMFA｜资金周报自动化` | `40dd52a0-b6eb-4528-9577-0cb5f4f86e3e` | `/Users/linzezhang/CodexProject` | Active |
+| `kmfa-dws` | `KMFA｜上游每日钉钉DWS归档` | `cbf3c45e-f4ad-47d7-b397-faf7e3dea35e` | `/Users/linzezhang/Documents/Codex/2026-07-04/392b1a986ba680338068ddc1c2a0fd0e-https-app-notion-com-p` | Active |
+
+Validation commands run:
+
+```text
+python3 KMFA/fund-weekly-analysis-skill/tools/check_codex_app_automation.py
+python3 KMFA/kmfa-dingtalk-attendance-skill/tools/validate_skill_package.py
+python3 KMFA/daily_routine_check_skill/tools/validate_skill_package.py
+python3 KMFA/fund-weekly-analysis-skill/tools/validate_taskpack.py
+python3 -m unittest KMFA.tests.test_dingtalk_attendance -q
+python3 -m unittest KMFA.tests.test_daily_routine_check -q
+python3 KMFA/fund-weekly-analysis-skill/tools/check_source_readiness.py --repo-root /Users/linzezhang/CodexProject --timezone Australia/Sydney
+dws doctor --format json
+/usr/bin/python3 scripts/archive_dingtalk_all_files.py --plan-only --run-source codex_automation --automation-name 每日钉钉DWS归档
+python3 KMFA/tools/dingtalk_attendance/healthcheck.py --config-only
+```
+
+Observed validation result:
+
+- Attendance tests: 66 tests passed.
+- Daily routine tests: 19 tests passed.
+- Fund source readiness: `READY`, file_count `292`, unreadable_count `0`.
+- DWS doctor: 3 pass, 1 version warning, 0 fail.
+- DWS archive plan-only: success, 9 groups planned.
+- Attendance healthcheck: `READY`, DWS command safety ready, multi-target notification ready with 张霖泽 personal target available.
+
 ## 2026-07-09 Recovery
 
 Scope: restore and verify the five KMFA-related Codex Desktop automations without

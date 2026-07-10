@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "automation_id": "dingtalk-routine-check",
+  "automation_id": "kmfa-4",
   "automation_name": "Dingtalk-routine-check / 钉钉工作检查",
   "status": "ACTIVE",
   "kind": "cron",
@@ -8,7 +8,8 @@
   "execution_environment": "local",
   "cwd": "/Users/linzezhang/CodexProject",
   "skill_path": "KMFA/daily_routine_check_skill/SKILL.md",
-  "rrule": "DTSTART;TZID=Asia/Shanghai:20260708T113500\nRRULE:FREQ=DAILY\nDTSTART;TZID=Asia/Shanghai:20260708T170500\nRRULE:FREQ=DAILY",
+  "rrule": "DTSTART;TZID=Asia/Shanghai:20260710T113500\nRRULE:FREQ=DAILY\nDTSTART;TZID=Asia/Shanghai:20260710T170500\nRRULE:FREQ=DAILY",
+  "rrule_policy": "Two independent Beijing-time daily rules. Do not combine BYHOUR and BYMINUTE into a product schedule.",
   "trigger_windows": [
     {
       "trigger_window": "morning_1135",
