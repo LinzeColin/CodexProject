@@ -13,9 +13,11 @@ from typing import Any
 
 
 SCHEMA_VERSION = "ids.stage035.database_recovery_smoke.phase2.v1"
+SCENARIO_SCHEMA_VERSION = "ids.stage035.database_recovery_smoke.phase3.v1"
 INDEX_SCHEMA_VERSION = "ids.stage035.database_recovery_smoke.index.v1"
 STAGE = "STAGE-035"
 TASK_ID = "IDS-V0_1-STAGE035-P2"
+SCENARIO_TASK_ID = "IDS-V0_1-STAGE035-P3"
 ACCEPTANCE_ID = "ACC-STAGE-035"
 CONTRACT_ID = "ids_stage035_database_recovery_smoke_static_preflight"
 RAW_METADATA_ROOT = "/Users/linzezhang/Downloads/IDS_MetaData"
@@ -118,6 +120,20 @@ EXPECTED_RUNTIME_POLICY_KEYS = {
     "start_services",
     "github_upload",
     "app_reinstall",
+}
+
+SCENARIO_EXPLANATIONS = {
+    "migration_dry_run": "migration dry-run 只验证 STAGE-031 的静态要求和当前禁止执行状态；不连接 PostgreSQL，不运行 dry-run、apply、rollback、backup、restore 或 schema diff。",
+    "repeat_execution": "重复执行只重新读取 Git 已追踪合同并输出 stdout JSON，不创建数据库行、文件、manifest、报告或 runtime artifact。",
+    "failure_rollback": "失败回滚只验证 rollback、隔离目标、source preservation、backup checkpoint 和 post-rollback evidence 要求，不执行真实回滚或恢复。",
+    "recovery_smoke": "无 owner 授权真实 metadata dump 时，恢复冒烟必须按预期阻断；场景 PASS 仅证明阻断合同有效，不代表执行过恢复。",
+    "owner_dump_absence_stop_gate": "owner 授权真实 dump 身份、checksum evidence 和批准引用缺失时必须停止，禁止用 fake rows、fabricated dump 或 placeholder corpus 替代。",
+    "raw_large_file_block": "PostgreSQL 只存有界控制面 metadata、状态和 refs，不存 500GB 原始文件、raw rows、OCR 全文、报告二进制或 vector payload。",
+    "unbounded_derived_artifact_block": "无限制派生产物继续由 STAGE-033 体积护栏阻断，恢复合同不得覆盖该边界。",
+    "connection_pool_boundary": "恢复验证不增加 STAGE-032 连接池预算，aggregate max pool 为 10、overflow 为 0，并保持 backpressure 和无连接状态。",
+    "transaction_boundary": "事务边界只在 schema/migration/pool 静态合同层验证；当前不打开、提交或回滚真实数据库事务。",
+    "constraint_error_explanations": "每个专项场景必须提供中文 owner 解释，区分合同通过、执行阻断、输入缺失和安全边界失败。",
+    "source_non_interference": "恢复目标必须与 source database 分离；当前禁止 source migration、mutation、deletion 和任何真实 restore 写入。",
 }
 
 
@@ -417,6 +433,24 @@ def _runtime_policy_results(index: dict[str, Any]) -> dict[str, bool]:
     return results
 
 
+def _scenario_result(
+    condition: bool,
+    evidence: str,
+    owner_explanation_zh: str,
+    *,
+    observed_state: str = "STATIC_CONTRACT_VALIDATED",
+    expected_block: bool = False,
+) -> dict[str, Any]:
+    return {
+        "status": "PASS" if condition else "FAIL",
+        "evidence": evidence,
+        "owner_explanation_zh": owner_explanation_zh,
+        "observed_state": observed_state,
+        "expected_block": expected_block,
+        "live_execution_performed": False,
+    }
+
+
 def build_stage035_database_recovery_smoke_report(index_path: Path) -> dict[str, Any]:
     index = _load_json(index_path)
     dependency_results = _dependency_results(index_path, index)
@@ -497,6 +531,177 @@ def build_stage035_database_recovery_smoke_report(index_path: Path) -> dict[str,
     }
 
 
+def build_stage035_scenario_validation_report(index_path: Path) -> dict[str, Any]:
+    phase2_report = build_stage035_database_recovery_smoke_report(index_path)
+    dependency = phase2_report["dependency_results"]
+    contract = phase2_report["contract_results"]
+    runtime = phase2_report["runtime_policy_results"]
+    execution_state = phase2_report["execution_state"]
+
+    scenario_results = {
+        "migration_dry_run": _scenario_result(
+            phase2_report["contract_valid"]
+            and dependency["stage031_migration_safety_contract"]
+            and contract["schema_migration_compatibility_guard"]
+            and runtime["connect_to_postgres"]
+            and runtime["execute_migration"]
+            and runtime["execute_backup"]
+            and runtime["execute_restore"]
+            and runtime["execute_schema_diff"],
+            "STAGE031 dry-run/rollback/backup requirements are present; all live migration, backup, restore, schema-diff, and PostgreSQL connection actions remain false",
+            SCENARIO_EXPLANATIONS["migration_dry_run"],
+        ),
+        "repeat_execution": _scenario_result(
+            phase2_report["contract_valid"]
+            and dependency["source_refs_match"]
+            and dependency["source_refs_resolve"]
+            and runtime["write_runtime_outputs"]
+            and runtime["read_metadata_dump"],
+            "checker deterministically reads the same tracked index/dependencies and writes stdout JSON only",
+            SCENARIO_EXPLANATIONS["repeat_execution"],
+        ),
+        "failure_rollback": _scenario_result(
+            phase2_report["contract_valid"]
+            and dependency["stage031_migration_safety_contract"]
+            and contract["rollback_guard"]
+            and contract["isolated_restore_target_guard"]
+            and runtime["execute_backup"]
+            and runtime["execute_restore"]
+            and runtime["execute_migration"],
+            "rollback/source-preservation/quarantine evidence is required while backup, restore, and migration execution remain false",
+            SCENARIO_EXPLANATIONS["failure_rollback"],
+        ),
+        "recovery_smoke": _scenario_result(
+            phase2_report["contract_valid"]
+            and phase2_report["execution_ready"] is False
+            and execution_state == BLOCKED_PENDING_DUMP
+            and runtime["execute_pg_restore"]
+            and runtime["execute_psql"]
+            and runtime["execute_restore"]
+            and runtime["execute_healthcheck"],
+            "contract_valid=true, execution_ready=false, no restore/healthcheck actions, and execution state remains blocked pending an owner-authorized real metadata dump",
+            SCENARIO_EXPLANATIONS["recovery_smoke"],
+            observed_state=execution_state,
+            expected_block=execution_state == BLOCKED_PENDING_DUMP,
+        ),
+        "owner_dump_absence_stop_gate": _scenario_result(
+            phase2_report["contract_valid"]
+            and contract["metadata_dump_contract_guard"]
+            and contract["restore_preflight_guard"]
+            and phase2_report["execution_ready"] is False
+            and execution_state == BLOCKED_PENDING_DUMP,
+            "owner_authorized_real_dump_available=false and preflight execution_ready=false",
+            SCENARIO_EXPLANATIONS["owner_dump_absence_stop_gate"],
+            observed_state=execution_state,
+            expected_block=execution_state == BLOCKED_PENDING_DUMP,
+        ),
+        "raw_large_file_block": _scenario_result(
+            phase2_report["contract_valid"]
+            and dependency["stage030_control_plane_contract"]
+            and dependency["stage033_database_size_guard_contract"]
+            and contract["storage_boundary_guard"]
+            and contract["raw_metadata_boundary_guard"]
+            and runtime["read_raw_metadata"]
+            and runtime["write_raw_metadata"],
+            "STAGE030/STAGE033 storage guards pass; raw metadata remains path-only and raw read/write actions remain false",
+            SCENARIO_EXPLANATIONS["raw_large_file_block"],
+        ),
+        "unbounded_derived_artifact_block": _scenario_result(
+            phase2_report["contract_valid"]
+            and dependency["stage033_database_size_guard_contract"]
+            and contract["database_size_guard"]
+            and contract["storage_boundary_guard"]
+            and runtime["write_runtime_outputs"],
+            "STAGE033 remains authoritative and stores_unbounded_derived_artifacts=false",
+            SCENARIO_EXPLANATIONS["unbounded_derived_artifact_block"],
+        ),
+        "connection_pool_boundary": _scenario_result(
+            phase2_report["contract_valid"]
+            and dependency["stage032_connection_pool_contract"]
+            and contract["connection_pool_guard"]
+            and runtime["connect_to_postgres"]
+            and runtime["create_connection_config"],
+            "STAGE032 pool budget is authoritative; aggregate max=10, overflow=0, and no connection/config is created",
+            SCENARIO_EXPLANATIONS["connection_pool_boundary"],
+        ),
+        "transaction_boundary": _scenario_result(
+            phase2_report["contract_valid"]
+            and contract["schema_migration_compatibility_guard"]
+            and contract["connection_pool_guard"]
+            and runtime["connect_to_postgres"]
+            and runtime["execute_migration"]
+            and runtime["execute_psql"],
+            "schema/migration/pool contracts pass while PostgreSQL, migration, and psql execution remain false",
+            SCENARIO_EXPLANATIONS["transaction_boundary"],
+        ),
+        "constraint_error_explanations": _scenario_result(
+            phase2_report["contract_valid"]
+            and set(SCENARIO_EXPLANATIONS)
+            == {
+                "migration_dry_run",
+                "repeat_execution",
+                "failure_rollback",
+                "recovery_smoke",
+                "owner_dump_absence_stop_gate",
+                "raw_large_file_block",
+                "unbounded_derived_artifact_block",
+                "connection_pool_boundary",
+                "transaction_boundary",
+                "constraint_error_explanations",
+                "source_non_interference",
+            }
+            and all(SCENARIO_EXPLANATIONS.values()),
+            "all eleven required recovery-smoke scenarios have non-empty Chinese owner explanations",
+            SCENARIO_EXPLANATIONS["constraint_error_explanations"],
+        ),
+        "source_non_interference": _scenario_result(
+            phase2_report["contract_valid"]
+            and contract["isolated_restore_target_guard"]
+            and contract["rollback_guard"]
+            and runtime["connect_to_postgres"]
+            and runtime["execute_migration"]
+            and runtime["execute_restore"],
+            "isolated target and source preservation guards pass while all source-affecting execution remains false",
+            SCENARIO_EXPLANATIONS["source_non_interference"],
+        ),
+    }
+
+    scenario_validation_valid = bool(
+        phase2_report["contract_valid"]
+        and all(result["status"] == "PASS" for result in scenario_results.values())
+        and scenario_results["recovery_smoke"]["observed_state"]
+        == BLOCKED_PENDING_DUMP
+        and scenario_results["recovery_smoke"]["expected_block"] is True
+    )
+    return {
+        "schema_version": SCENARIO_SCHEMA_VERSION,
+        "index_schema_version": phase2_report["index_schema_version"],
+        "stage": STAGE,
+        "phase": "Phase 3",
+        "task_id": SCENARIO_TASK_ID,
+        "acceptance_id": ACCEPTANCE_ID,
+        "phase2_contract_valid": phase2_report["contract_valid"],
+        "scenario_validation_valid": scenario_validation_valid,
+        "scenario_results": scenario_results,
+        "execution_ready": phase2_report["execution_ready"],
+        "execution_state": execution_state,
+        "block_reason_zh": phase2_report["block_reason_zh"],
+        "execution_mode": "STATIC_TRACKED_CONTRACT_VALIDATION_ONLY",
+        "live_execution_performed": False,
+        "does_not_read_metadata_dump": phase2_report["does_not_read_metadata_dump"],
+        "does_not_connect_to_postgres": phase2_report["does_not_connect_to_postgres"],
+        "does_not_execute_restore": phase2_report["does_not_execute_restore"],
+        "does_not_execute_migration": phase2_report["does_not_execute_migration"],
+        "does_not_write_runtime_outputs": phase2_report["does_not_write_runtime_outputs"],
+        "does_not_use_fake_ids_data": phase2_report["does_not_use_fake_ids_data"],
+        "raw_metadata_boundary": phase2_report["raw_metadata_boundary"],
+        "machine_index_ref": index_path.as_posix(),
+        "next_gate": "IDS-STAGE035-P4-GATE",
+        "github_upload_allowed": False,
+        "app_reinstall_allowed": False,
+    }
+
+
 def main() -> int:
     root = Path(__file__).resolve().parents[1]
     index_path = (
@@ -508,7 +713,10 @@ def main() -> int:
         / "stage035_database_recovery_smoke_index.json"
     )
     report = build_stage035_database_recovery_smoke_report(index_path)
-    print(json.dumps(report, ensure_ascii=False, sort_keys=True, indent=2))
+    scenario_report = build_stage035_scenario_validation_report(index_path)
+    payload = dict(report)
+    payload["scenario_report"] = scenario_report
+    print(json.dumps(payload, ensure_ascii=False, sort_keys=True, indent=2))
     checks = [
         report["contract_valid"],
         report["execution_ready"] is False,
@@ -522,6 +730,17 @@ def main() -> int:
         report["github_upload_allowed"] is False,
         report["app_reinstall_allowed"] is False,
         report["next_gate"] == "IDS-STAGE035-P3-GATE",
+        scenario_report["scenario_validation_valid"],
+        all(
+            result["status"] == "PASS"
+            for result in scenario_report["scenario_results"].values()
+        ),
+        scenario_report["execution_ready"] is False,
+        scenario_report["execution_state"] == BLOCKED_PENDING_DUMP,
+        scenario_report["live_execution_performed"] is False,
+        scenario_report["next_gate"] == "IDS-STAGE035-P4-GATE",
+        scenario_report["github_upload_allowed"] is False,
+        scenario_report["app_reinstall_allowed"] is False,
     ]
     return 0 if all(checks) else 1
 
