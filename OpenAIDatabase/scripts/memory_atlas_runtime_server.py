@@ -17,6 +17,9 @@ from typing import Any
 from urllib.parse import urlparse
 
 
+sys.dont_write_bytecode = True
+
+
 COMMAND_API_VERSION = "memory_atlas_command_api.v1_2_r3"
 PROPOSAL_API_VERSION = "memory_atlas_proposal_api.v1_2_r4"
 OWNER_DAILY_API_VERSION = "memory_atlas_owner_daily_api.v1_2_r5"
