@@ -12,6 +12,7 @@ PURSUE_ROOT = ROOT / "docs" / "pursuing_goal" / "ids_v0_1"
 ENTRY = PURSUE_ROOT / "STAGE035_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE035_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE035_PHASE2_DATABASE_RECOVERY_SMOKE_SLICE.md"
+PHASE3 = PURSUE_ROOT / "STAGE035_PHASE3_SCENARIO_VALIDATION.md"
 INDEX = (
     PURSUE_ROOT
     / "database_recovery_smoke"
@@ -174,19 +175,27 @@ class Stage035DatabaseRecoverySmokePhase1Tests(unittest.TestCase):
         allowed_current_states = [
             'status: "stage035_phase1_in_progress"',
             'status: "stage035_phase2_in_progress"',
+            'status: "stage035_phase3_in_progress"',
         ]
-        allowed_next_phases = ['next_phase: "Phase 2"', 'next_phase: "Phase 3"']
+        allowed_next_phases = [
+            'next_phase: "Phase 2"',
+            'next_phase: "Phase 3"',
+            'next_phase: "Phase 4"',
+        ]
         allowed_next_gates = [
             'next_gate: "IDS-STAGE035-P2-GATE"',
             'next_gate: "IDS-STAGE035-P3-GATE"',
+            'next_gate: "IDS-STAGE035-P4-GATE"',
         ]
         allowed_current_tasks = [
             'current_task_id: "IDS-V0_1-STAGE035-P1"',
             'current_task_id: "IDS-V0_1-STAGE035-P2"',
+            'current_task_id: "IDS-V0_1-STAGE035-P3"',
         ]
         allowed_acceptance_states = [
             'acceptance_status: "phase1_scope_boundary_defined"',
             'acceptance_status: "phase2_static_recovery_smoke_contract_validated"',
+            'acceptance_status: "phase3_scenario_validation_passed"',
         ]
         for allowed in [
             allowed_current_states,
@@ -409,14 +418,9 @@ class Stage035DatabaseRecoverySmokePhase2Tests(unittest.TestCase):
             "NO_PHASE3",
         ]
         lock_terms = [
-            'status: "stage035_phase2_in_progress"',
             "STAGE-035:",
             '      - "Phase 1"',
             '      - "Phase 2"',
-            'next_phase: "Phase 3"',
-            'next_gate: "IDS-STAGE035-P3-GATE"',
-            'current_task_id: "IDS-V0_1-STAGE035-P2"',
-            'acceptance_status: "phase2_static_recovery_smoke_contract_validated"',
             "STAGE035_PHASE2_DATABASE_RECOVERY_SMOKE_SLICE.md",
             "stage035_database_recovery_smoke_index.json",
             "check_database_recovery_smoke.py",
@@ -448,12 +452,239 @@ class Stage035DatabaseRecoverySmokePhase2Tests(unittest.TestCase):
         for term in lock_terms:
             with self.subTest(term=term):
                 self.assertIn(term, lock_text)
+        allowed_current_states = [
+            'status: "stage035_phase2_in_progress"',
+            'status: "stage035_phase3_in_progress"',
+        ]
+        allowed_next_phases = ['next_phase: "Phase 3"', 'next_phase: "Phase 4"']
+        allowed_next_gates = [
+            'next_gate: "IDS-STAGE035-P3-GATE"',
+            'next_gate: "IDS-STAGE035-P4-GATE"',
+        ]
+        allowed_current_tasks = [
+            'current_task_id: "IDS-V0_1-STAGE035-P2"',
+            'current_task_id: "IDS-V0_1-STAGE035-P3"',
+        ]
+        allowed_acceptance_states = [
+            'acceptance_status: "phase2_static_recovery_smoke_contract_validated"',
+            'acceptance_status: "phase3_scenario_validation_passed"',
+        ]
+        for allowed in [
+            allowed_current_states,
+            allowed_next_phases,
+            allowed_next_gates,
+            allowed_current_tasks,
+            allowed_acceptance_states,
+        ]:
+            self.assertTrue(any(term in lock_text for term in allowed), allowed)
         for term in roadmap_terms:
             with self.subTest(term=term):
                 self.assertIn(term, roadmap_text)
         for term in event_terms:
             with self.subTest(term=term):
                 self.assertIn(term, events_text)
+
+
+class Stage035DatabaseRecoverySmokePhase3Tests(unittest.TestCase):
+    EXPECTED_SCENARIOS = {
+        "migration_dry_run",
+        "repeat_execution",
+        "failure_rollback",
+        "recovery_smoke",
+        "owner_dump_absence_stop_gate",
+        "raw_large_file_block",
+        "unbounded_derived_artifact_block",
+        "connection_pool_boundary",
+        "transaction_boundary",
+        "constraint_error_explanations",
+        "source_non_interference",
+    }
+
+    def _load_checker_module(self):
+        self.assertTrue(SCRIPT.is_file(), f"missing checker script: {SCRIPT}")
+        spec = importlib.util.spec_from_file_location("stage035_database_recovery_smoke_p3", SCRIPT)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def _scenario_builder(self):
+        module = self._load_checker_module()
+        self.assertTrue(
+            hasattr(module, "build_stage035_scenario_validation_report"),
+            "missing Phase 3 scenario report builder",
+        )
+        return module, module.build_stage035_scenario_validation_report
+
+    def test_phase3_artifact_and_scenario_contract_exist(self):
+        self.assertTrue(PHASE3.is_file(), f"missing Phase 3 evidence: {PHASE3}")
+        combined = "\n".join(
+            [PHASE3.read_text(encoding="utf-8"), SCRIPT.read_text(encoding="utf-8")]
+        )
+        required_terms = [
+            "ids.stage035.database_recovery_smoke.phase3.v1",
+            "IDS-V0_1-STAGE035-P3",
+            "ACC-STAGE-035",
+            "build_stage035_scenario_validation_report",
+            "scenario_validation_valid",
+            "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_METADATA_DUMP",
+            "live_execution_performed",
+            "NO_PHASE4",
+        ] + sorted(self.EXPECTED_SCENARIOS)
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, combined)
+
+    def test_scenario_report_passes_static_checks_but_keeps_recovery_blocked(self):
+        _, builder = self._scenario_builder()
+        report = builder(INDEX)
+
+        self.assertEqual("ids.stage035.database_recovery_smoke.phase3.v1", report["schema_version"])
+        self.assertEqual("Phase 3", report["phase"])
+        self.assertEqual("IDS-V0_1-STAGE035-P3", report["task_id"])
+        self.assertEqual("ACC-STAGE-035", report["acceptance_id"])
+        self.assertEqual(self.EXPECTED_SCENARIOS, set(report["scenario_results"]))
+        self.assertTrue(report["phase2_contract_valid"])
+        self.assertTrue(report["scenario_validation_valid"])
+        self.assertFalse(report["execution_ready"])
+        self.assertEqual(
+            "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_METADATA_DUMP",
+            report["execution_state"],
+        )
+        self.assertTrue(
+            all(result["status"] == "PASS" for result in report["scenario_results"].values()),
+            report["scenario_results"],
+        )
+        recovery = report["scenario_results"]["recovery_smoke"]
+        self.assertEqual(
+            "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_METADATA_DUMP",
+            recovery["observed_state"],
+        )
+        self.assertTrue(recovery["expected_block"])
+        self.assertFalse(recovery["live_execution_performed"])
+        self.assertFalse(report["live_execution_performed"])
+        self.assertTrue(report["does_not_read_metadata_dump"])
+        self.assertTrue(report["does_not_connect_to_postgres"])
+        self.assertTrue(report["does_not_execute_restore"])
+        self.assertTrue(report["does_not_execute_migration"])
+        self.assertTrue(report["does_not_write_runtime_outputs"])
+        self.assertTrue(report["does_not_use_fake_ids_data"])
+        self.assertEqual("IDS-STAGE035-P4-GATE", report["next_gate"])
+        self.assertFalse(report["github_upload_allowed"])
+        self.assertFalse(report["app_reinstall_allowed"])
+
+    def test_scenario_report_is_deterministic_and_owner_explainable(self):
+        _, builder = self._scenario_builder()
+        first = builder(INDEX)
+        second = builder(INDEX)
+
+        self.assertEqual(first["scenario_results"], second["scenario_results"])
+        for scenario_id, result in first["scenario_results"].items():
+            with self.subTest(scenario_id=scenario_id):
+                self.assertTrue(result["evidence"])
+                self.assertTrue(result["owner_explanation_zh"])
+                self.assertFalse(result["live_execution_performed"])
+
+    def test_invalid_runtime_restore_contract_fails_scenarios_closed(self):
+        module, builder = self._scenario_builder()
+        index = json.loads(INDEX.read_text(encoding="utf-8"))
+        index["runtime_policy"]["execute_restore"] = True
+
+        original_loader = module._load_json
+        module._load_json = (
+            lambda path: copy.deepcopy(index)
+            if Path(path) == INDEX
+            else original_loader(path)
+        )
+        try:
+            report = builder(INDEX)
+        finally:
+            module._load_json = original_loader
+
+        self.assertFalse(report["phase2_contract_valid"])
+        self.assertFalse(report["scenario_validation_valid"])
+        self.assertEqual("BLOCKED_INVALID_RECOVERY_CONTRACT", report["execution_state"])
+        self.assertEqual("FAIL", report["scenario_results"]["recovery_smoke"]["status"])
+        self.assertFalse(report["does_not_execute_restore"])
+        self.assertFalse(report["live_execution_performed"])
+
+    def test_checker_cli_includes_phase3_report_without_live_side_effects(self):
+        completed = subprocess.run(
+            [sys.executable, "-B", str(SCRIPT)],
+            cwd=ROOT,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertEqual(0, completed.returncode, completed.stderr)
+        payload = json.loads(completed.stdout)
+        self.assertIn("scenario_report", payload)
+        scenario = payload["scenario_report"]
+        self.assertTrue(scenario["scenario_validation_valid"])
+        self.assertFalse(scenario["execution_ready"])
+        self.assertFalse(scenario["live_execution_performed"])
+        self.assertEqual(
+            "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_METADATA_DUMP",
+            scenario["scenario_results"]["recovery_smoke"]["observed_state"],
+        )
+        self.assertEqual("", completed.stderr)
+
+    def test_phase3_doc_and_governance_record_static_validation_without_upload(self):
+        self.assertTrue(PHASE3.is_file(), f"missing Phase 3 evidence: {PHASE3}")
+        phase3_text = PHASE3.read_text(encoding="utf-8")
+        lock_text = BATCH_LOCK.read_text(encoding="utf-8")
+        roadmap_text = ROADMAP.read_text(encoding="utf-8")
+        events_text = EVENTS.read_text(encoding="utf-8")
+
+        phase3_terms = [
+            "Phase 3 · 数据库恢复冒烟测试专项验证与异常场景",
+            "recovery_smoke",
+            "observed_state=BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_METADATA_DUMP",
+            "live_execution_performed=false",
+            "不执行 live migration dry-run、apply、rollback、backup、restore、schema diff 或 recovery smoke",
+            "不得使用虚构 IDS 业务数据、虚构数据库行、虚构 metadata dump、placeholder corpus 或伪造证据",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "NO_PHASE4",
+        ]
+        lock_terms = [
+            'status: "stage035_phase3_in_progress"',
+            '      - "Phase 3"',
+            'next_phase: "Phase 4"',
+            'next_gate: "IDS-STAGE035-P4-GATE"',
+            'current_task_id: "IDS-V0_1-STAGE035-P3"',
+            'acceptance_status: "phase3_scenario_validation_passed"',
+            "STAGE035_PHASE3_SCENARIO_VALIDATION.md",
+            'push_allowed: false',
+        ]
+        roadmap_terms = [
+            'current_stage_id: "IDS-STAGE035"',
+            'current_phase_id: "IDS-STAGE035-P3"',
+            'current_task_id: "IDS-V0_1-STAGE035-P3"',
+            'next_gate_id: "IDS-STAGE035-P4-GATE"',
+            'phase_id: "IDS-STAGE035-P3"',
+            'task_id: "IDS-V0_1-STAGE035-P3"',
+            'status: "passed_with_local_evidence"',
+        ]
+        event_terms = [
+            '"event_id":"EVT-IDS-V0_1-STAGE035-P3-20260710-001"',
+            '"event_type":"validation"',
+            '"task_id":"IDS-V0_1-STAGE035-P3"',
+            '"ACC-STAGE-035"',
+            "STAGE035_PHASE3_SCENARIO_VALIDATION.md",
+            "build_stage035_scenario_validation_report",
+            "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_METADATA_DUMP",
+        ]
+        for terms, text in [
+            (phase3_terms, phase3_text),
+            (lock_terms, lock_text),
+            (roadmap_terms, roadmap_text),
+            (event_terms, events_text),
+        ]:
+            for term in terms:
+                with self.subTest(term=term):
+                    self.assertIn(term, text)
 
 
 if __name__ == "__main__":
