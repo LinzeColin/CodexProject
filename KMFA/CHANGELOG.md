@@ -1,3 +1,11 @@
+## 0.1.4-real-project-identity-private-rebinding-and-processed-value-materialization - 2026-07-10
+
+- 完成 `V014_REAL_PROJECT_IDENTITY_PRIVATE_REBINDING_AND_PROCESSED_VALUE_MATERIALIZATION` 本地单 phase。
+- 将 4 个合成项目身份替换为可验证的真实权威来源私有 overlay；4 个来源均唯一，4 个权威毛利率均可用整数基点复算。
+- 物化 32 条整数项目指标和 28 个可证明的 S09 目标槽位；完成 8 条权威/系统比较，其中 2 条零差异、6 条非零差异，未覆盖或抹平真实差异。
+- 12 个现金口径目标槽位因工作簿项目身份无法唯一绑定而保持未决；全局 72 条 residual queue 尚未重放，决策维持 `NO_GO`。
+- 5 个原始文件前后逐文件快照完全一致；私有名称、来源、金额、定位和中文差异报告仅保留在 ignored runtime，未做 Stage review、GitHub upload、app reinstall 或 business execution。
+
 ## 0.1.4-authorized-agent-private-resolution-application-after-blocked-handoff - 2026-07-10
 
 - 完成 `V014_AUTHORIZED_AGENT_PRIVATE_RESOLUTION_APPLICATION_AFTER_BLOCKED_HANDOFF` 本地单 phase。

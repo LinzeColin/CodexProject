@@ -1,3 +1,18 @@
+kmfa_v014_real_project_identity_private_rebinding_and_processed_value_materialization:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-real-project-identity-private-rebinding-and-processed-value-materialization"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-REAL-PROJECT-IDENTITY-PRIVATE-REBINDING-AND-PROCESSED-VALUE-MATERIALIZATION-001
+  parameter_refs:
+    - PARAM-KMFA-1675
+    - PARAM-KMFA-1676
+    - PARAM-KMFA-1677
+  evidence_dir: KMFA/stage_artifacts/V014_REAL_PROJECT_IDENTITY_PRIVATE_REBINDING_AND_PROCESSED_VALUE_MATERIALIZATION
+  validator: KMFA/tools/check_v014_real_project_identity_private_rebinding_and_processed_value_materialization.py
+  scope: Private real-project identity rebinding and integer-only proven S09 value materialization; unresolved cash sources and nonzero differences stay open; no Stage review, GitHub upload, app reinstall or business execution.
+
 kmfa_v014_authorized_agent_private_resolution_application_after_blocked_handoff:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-authorized-agent-private-resolution-application-after-blocked-handoff"

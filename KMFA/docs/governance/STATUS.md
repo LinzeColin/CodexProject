@@ -5,14 +5,26 @@
 ## 最新状态
 
 - project_id: `KMFA`
+- version: `0.1.4-real-project-identity-private-rebinding-and-processed-value-materialization`
+- current_stage: `value-consistency`
+- current_phase: `V014_REAL_PROJECT_IDENTITY_PRIVATE_REBINDING_AND_PROCESSED_VALUE_MATERIALIZATION`
+- status: `completed_validated_local_only_real_identity_rebound_partial_value_materialization_no_go`
+- current_blocker: `12_cash_value_slots_require_unique_workbook_source_binding_and_6_nonzero_differences_remain`
+- next_required_input: `cash_source_private_disambiguation_and_remaining_value_materialization`
+- production_ready: `false`
+- github_upload_ready: `false`
+- raw_snapshot_exact_match: `true`
+- decision: `NO_GO`
+
+## 前序状态（上一 phase）
+
+- project_id: `KMFA`
 - version: `0.1.4-authorized-agent-private-resolution-application-after-blocked-handoff`
 - current_stage: `value-consistency`
 - current_phase: `V014_AUTHORIZED_AGENT_PRIVATE_RESOLUTION_APPLICATION_AFTER_BLOCKED_HANDOFF`
 - status: `completed_validated_local_only_partial_private_resolution_no_go_difference_report_required`
 - current_blocker: `40_business_value_slots_require_real_project_identity_binding_and_actual_processed_value_materialization`
 - next_required_input: `real_project_identity_private_rebinding_and_processed_value_materialization`
-- production_ready: `false`
-- github_upload_ready: `false`
 - raw_snapshot_exact_match: `true`
 - decision: `NO_GO`
 

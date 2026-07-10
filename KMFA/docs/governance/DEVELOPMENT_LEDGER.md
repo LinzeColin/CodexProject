@@ -1,3 +1,17 @@
+## 2026-07-10 - V014 real project identity private rebinding and processed value materialization
+
+- phase: `V014_REAL_PROJECT_IDENTITY_PRIVATE_REBINDING_AND_PROCESSED_VALUE_MATERIALIZATION`
+- task: `KMFA-V014-REAL-PROJECT-IDENTITY-PRIVATE-REBINDING-AND-PROCESSED-VALUE-MATERIALIZATION-20260710`
+- result: `completed_validated_local_only_real_identity_rebound_partial_value_materialization_no_go` / `NO_GO`
+- authority: 4 个真实项目私有绑定、4 个唯一权威 PDF 来源、4 个权威毛利率整数复算通过；权威毛利与合同额减支出仅 1/4 一致。
+- materialization: 32 条私有整数指标、28 个已物化目标槽位、12 个现金口径未决槽位；比较完成 8 条，其中 2 条零差异、6 条非零差异，4 条现金比较未完成。
+- raw proof: 5 个原始文件前后逐文件路径、大小、mtime、inode、mode、SHA256 完全一致。
+- evidence: `KMFA/stage_artifacts/V014_REAL_PROJECT_IDENTITY_PRIVATE_REBINDING_AND_PROCESSED_VALUE_MATERIALIZATION/machine/real_project_identity_private_rebinding_and_processed_value_materialization_manifest.json`
+- validation: focused unit test and private-materialization validator passed；治理 validator 与 raw/secret scan 在 commit 前复跑。
+- boundary: private identities, sources, values and Chinese difference report remain ignored；no Stage review, GitHub upload, app reinstall or business execution。
+product_version: 0.1.4-real-project-identity-private-rebinding-and-processed-value-materialization
+version_matrix_product_version_reference: 0.1.4-real-project-identity-private-rebinding-and-processed-value-materialization
+
 ## 2026-07-10 - V014 authorized-agent private resolution application after blocked handoff
 
 - phase: `V014_AUTHORIZED_AGENT_PRIVATE_RESOLUTION_APPLICATION_AFTER_BLOCKED_HANDOFF`

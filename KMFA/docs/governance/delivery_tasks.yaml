@@ -1,6 +1,40 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "KMFA-V014-REAL-PROJECT-IDENTITY-PRIVATE-REBINDING-AND-PROCESSED-VALUE-MATERIALIZATION-20260710"
+    phase: "V014_REAL_PROJECT_IDENTITY_PRIVATE_REBINDING_AND_PROCESSED_VALUE_MATERIALIZATION"
+    objective: "Privately rebind four real authority projects and materialize only proven integer S09 values while preserving unresolved cash sources and nonzero differences."
+    scope:
+      - "read-only authority source and workbook identity cross-validation"
+      - "private real-project identity overlay and integer cents/basis-points metrics"
+      - "proven S09 target materialization and Chinese private difference report"
+      - "raw immutability proof public-safe validator and focused test"
+    non_scope:
+      - "raw mutation or public raw/private identity/value detail"
+      - "forced cash-source binding or nonzero-difference overwrite"
+      - "global residual queue replay Stage review GitHub upload app reinstall or business execution"
+    status: "completed"
+    completed_version: "0.1.4-real-project-identity-private-rebinding-and-processed-value-materialization"
+    dependencies:
+      - "V014_AUTHORIZED_AGENT_PRIVATE_RESOLUTION_APPLICATION_AFTER_BLOCKED_HANDOFF"
+    required_files:
+      - "KMFA/stage_artifacts/V014_REAL_PROJECT_IDENTITY_PRIVATE_REBINDING_AND_PROCESSED_VALUE_MATERIALIZATION/machine/real_project_identity_private_rebinding_and_processed_value_materialization_manifest.json"
+      - "KMFA/tools/check_v014_real_project_identity_private_rebinding_and_processed_value_materialization.py"
+    acceptance_ids:
+      - "ACC-V014-REAL-PROJECT-IDENTITY-PRIVATE-REBINDING-AND-PROCESSED-VALUE-MATERIALIZATION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_real_project_identity_private_rebinding_and_processed_value_materialization.py --require-private-materialization"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_real_project_identity_private_rebinding_and_processed_value_materialization"
+    test_results:
+      - "PASS: real-project identity and processed-value materialization validator"
+      - "PASS: focused real-project identity materialization unit test"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_REAL_PROJECT_IDENTITY_PRIVATE_REBINDING_AND_PROCESSED_VALUE_MATERIALIZATION/human/test_results.md"
+      - "KMFA/stage_artifacts/V014_REAL_PROJECT_IDENTITY_PRIVATE_REBINDING_AND_PROCESSED_VALUE_MATERIALIZATION/machine/real_project_identity_private_rebinding_and_processed_value_materialization_manifest.json"
+    risk: "Ambiguous workbook identities can be misread as cash-value proof; 12 cash slots remain unresolved and six nonzero differences remain explicit."
+    rollback: "Remove this phase public artifacts and ignored private outputs; do not touch the operator raw directory or prior phase evidence."
+    target_version: "0.1.4-real-project-identity-private-rebinding-and-processed-value-materialization"
+
   - task_id: "KMFA-V014-AUTHORIZED-AGENT-PRIVATE-RESOLUTION-APPLICATION-AFTER-BLOCKED-HANDOFF-20260710"
     phase: "V014_AUTHORIZED_AGENT_PRIVATE_RESOLUTION_APPLICATION_AFTER_BLOCKED_HANDOFF"
     objective: "Apply deterministic private resolutions after the blocked handoff and issue a Chinese difference report for unresolved business values."
