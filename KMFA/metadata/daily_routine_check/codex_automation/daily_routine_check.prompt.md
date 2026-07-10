@@ -10,13 +10,22 @@ Automation:
 
 ```text
 Dingtalk-routine-check / 钉钉工作检查
-Timezone: Asia/Shanghai
-Triggers: daily 11:35 and daily 17:05 Beijing time
+Business clock: Asia/Shanghai
+Business triggers: daily 11:35 and daily 17:05 Beijing time
+Current AEST scheduler wall clock: 13:35 and 19:05
 ```
 
 Do not create one automation per rule. Use this single automation with the two trigger windows below.
 
-The saved scheduler must use two independent Beijing-time trigger rules, not a combined `BYHOUR=...;BYMINUTE=...` product that also fires at 11:05 or 17:35.
+The saved scheduler must contain exactly one pure local-wall-clock rule and no
+explicit timezone, `DTSTART`, `TZID`, or second RRULE line:
+
+```text
+RRULE:FREQ=DAILY;BYHOUR=13,19;BYMINUTE=5,35;BYSETPOS=2,3
+```
+
+`BYSETPOS=2,3` prevents the unwanted 13:05 and 19:35 Cartesian-product runs.
+Recalculate the local hours whenever the host UTC offset changes.
 
 11:35 command:
 

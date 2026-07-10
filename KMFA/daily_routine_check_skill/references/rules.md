@@ -11,12 +11,22 @@ Dingtalk-routine-check / 钉钉工作检查
 它读取已有 DWS 输出目录，不设置、不创建、不替换上游 DWS 扫描 automation。
 只保留这一个 automation，不为每条规则拆多个 automation。
 
-北京时间触发窗口固定为：
+业务检查窗口固定为北京时间：
 
 ```text
 11:35 Asia/Shanghai -> morning_1135
 17:05 Asia/Shanghai -> evening_1705
 ```
+
+Codex Desktop 调度器不设置时区，只保存当前主机本地 wall clock 的单行
+纯 RRULE。当前 Australia/Sydney 为 AEST (UTC+10)，对应：
+
+```text
+RRULE:FREQ=DAILY;BYHOUR=13,19;BYMINUTE=5,35;BYSETPOS=2,3
+```
+
+禁止 `DTSTART`、`TZID`、显式 scheduler timezone 和多 RRULE。主机 UTC
+offset 变化时重新换算本地小时，业务日期判断仍使用 Asia/Shanghai。
 
 `due_time` 保留在 YAML 中作为业务参考，实际提醒窗口统一由上述两个 automation trigger 执行。每次运行必须记录 `run_at_beijing`、`check_date`、`trigger_window`、`rules_evaluated`、`rules_skipped`。
 

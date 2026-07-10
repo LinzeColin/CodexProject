@@ -1,5 +1,74 @@
 # KMFA Automation Bug Log
 
+## 2026-07-10 Pure-RRULE Scheduler Repair
+
+Scope: remove scheduler timezone metadata from all five active KMFA-related
+Codex Desktop automations and add a regression gate that reads the live app
+records instead of validating only business-time constants.
+
+Root cause and evidence:
+
+- The live attendance and routine records used `DTSTART;TZID=Asia/Shanghai`
+  while the Codex scheduler executed historical runs by the Mac's Sydney local
+  wall clock. Prompt text saying `Asia/Shanghai` did not change scheduler time.
+- Existing S19 and S20 tests validated business times and prompt/package files,
+  but did not read `~/.codex/automations/*/automation.toml`; invalid live RRULEs
+  therefore passed every repo validator.
+- The S19 business runtime is currently healthy: config-only healthcheck is
+  `READY`, DWS command safety is `READY`, and both the personal and group
+  notification targets are available. The last successful manual personal run
+  proves the runner, but not the natural scheduler.
+
+Repair:
+
+| ID | Pure scheduler rule | Business interpretation |
+|---|---|---|
+| `kmfa` | `RRULE:FREQ=DAILY;BYHOUR=12;BYMINUTE=35` | 10:35 Asia/Shanghai at current AEST offset |
+| `kmfa-3` | `RRULE:FREQ=DAILY;BYHOUR=22;BYMINUTE=5` | 20:05 Asia/Shanghai at current AEST offset |
+| `kmfa-4` | `RRULE:FREQ=DAILY;BYHOUR=13,19;BYMINUTE=5,35;BYSETPOS=2,3` | 11:35 and 17:05 Asia/Shanghai at current AEST offset |
+| `kmfa-5` | `RRULE:FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0` | Monday/Saturday 11:00 Sydney local |
+| `kmfa-dws` | `RRULE:FREQ=DAILY;BYHOUR=11,19;BYMINUTE=0` | Daily 11:00 and 19:00 Sydney local |
+
+All five records were saved through the official Codex automation update API.
+No live TOML was edited directly. `kmfa-4` remains one automation: `BYSETPOS`
+selects 13:35 and 19:05 without creating the unwanted 13:05/19:35 product.
+
+Regression protection:
+
+```text
+KMFA/metadata/automation/codex_app_schedules.contract.toml
+KMFA/tools/automation/check_kmfa_automation_schedules.py
+KMFA/tests/test_automation_schedule_contract.py
+```
+
+The checker rejects `DTSTART`, `TZID`, explicit scheduler timezone fields,
+multiline/multiple RRULEs, schedule drift, cwd drift, inactive state, model
+drift, and reasoning-setting drift across the five live records.
+
+Validation observed after the official update:
+
+```text
+CODEX_AUTOMATIONS_READY (5 automations, 0 mismatches)
+3 scheduler regression tests OK
+66 S19 attendance tests OK
+19 S20 routine tests OK
+attendance skill validator PASS
+routine skill validator PASS
+fund live automation checker CODEX_AUTOMATION_READY
+```
+
+Remaining acceptance gate: observe the next natural `kmfa-3` trigger at 22:05
+AEST and confirm one automation thread uses `/Users/linzezhang/CodexProject`
+and reaches the real S19 entry. Do not claim natural scheduling success before
+that evidence exists.
+
+Known unrelated runtime issue: S20 routine-check config-only health reports its
+OneDrive `DWS_Outputs.zip` as a dataless placeholder. That source blocker is not
+caused by the scheduler repair and was not widened into this change.
+
+Because scheduler rules now intentionally follow local wall clock without a
+timezone, recalculate the AEST hours when the Mac's UTC offset changes.
+
 ## 2026-07-10 Diagnosis and Repair
 
 Scope: diagnose why KMFA automations were visible but not reliable, and repair

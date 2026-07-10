@@ -4,21 +4,25 @@
   "automation_name": "Dingtalk-routine-check / 钉钉工作检查",
   "status": "ACTIVE",
   "kind": "cron",
-  "timezone": "Asia/Shanghai",
+  "business_clock": "Asia/Shanghai",
+  "scheduler_policy": "pure_rrule_local_wall_clock_no_explicit_timezone",
+  "host_clock_snapshot": "Australia/Sydney AEST UTC+10",
   "execution_environment": "local",
   "cwd": "/Users/linzezhang/CodexProject",
   "skill_path": "KMFA/daily_routine_check_skill/SKILL.md",
-  "rrule": "DTSTART;TZID=Asia/Shanghai:20260710T113500\nRRULE:FREQ=DAILY\nDTSTART;TZID=Asia/Shanghai:20260710T170500\nRRULE:FREQ=DAILY",
-  "rrule_policy": "Two independent Beijing-time daily rules. Do not combine BYHOUR and BYMINUTE into a product schedule.",
+  "rrule": "RRULE:FREQ=DAILY;BYHOUR=13,19;BYMINUTE=5,35;BYSETPOS=2,3",
+  "rrule_policy": "One pure local-wall-clock RRULE. BYSETPOS selects the paired 13:35 and 19:05 runs. No DTSTART, TZID, explicit scheduler timezone, or multiple RRULE lines.",
   "trigger_windows": [
     {
       "trigger_window": "morning_1135",
       "run_time_beijing": "11:35",
+      "run_time_local_wall_clock": "13:35 AEST",
       "command": "python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window morning_1135 --send --cleanup --apply"
     },
     {
       "trigger_window": "evening_1705",
       "run_time_beijing": "17:05",
+      "run_time_local_wall_clock": "19:05 AEST",
       "command": "python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window evening_1705 --send --cleanup --apply"
     }
   ],

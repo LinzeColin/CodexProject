@@ -17,10 +17,16 @@ Scheduler contract:
 
 ```text
 one automation only: Dingtalk-routine-check / 钉钉工作检查
-timezone: Asia/Shanghai
-daily 11:35 -> trigger_window=morning_1135
-daily 17:05 -> trigger_window=evening_1705
+business clock: Asia/Shanghai
+business 11:35 -> trigger_window=morning_1135
+business 17:05 -> trigger_window=evening_1705
+current AEST local scheduler: 13:35 and 19:05
+RRULE:FREQ=DAILY;BYHOUR=13,19;BYMINUTE=5,35;BYSETPOS=2,3
 ```
+
+The scheduler record has no explicit timezone, `DTSTART`, or `TZID`. The
+local-wall-clock hours must be recalculated whenever the host UTC offset
+changes; business evaluation remains `Asia/Shanghai`.
 
 Every run log must include `run_at_beijing`, `check_date`, `trigger_window`, `rules_evaluated`, and `rules_skipped`. Missing or stale upstream DWS output is recorded as `SOURCE_MISSING` or `SOURCE_STALE`. Routine abnormalities use `abnormal_type=late|review|wrong|merged|missing` plus `reminder_level=P0|P1|P2`.
 
