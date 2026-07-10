@@ -14,7 +14,7 @@ Start with `SKILL.md`, then read:
 
 ## Purpose
 
-The skill reads an existing local DWS output folder and checks whether required DingTalk work artifacts were sent on time. It also performs cash monitoring for Yang Ting's two separate daily finance artifacts:
+The skill streams required members from the complete OneDrive `DWS_Outputs.zip` and checks whether required DingTalk work artifacts were sent on time. That zip is the only upstream input; a disk `DWS_Outputs/` folder is normally absent and must not be probed, created, materialized, extracted, or used as fallback. It also performs cash monitoring for Yang Ting's two separate daily finance artifacts:
 
 - `资金账户明细表`
 - `资金流水明细` / `资金明细`
@@ -38,9 +38,10 @@ Create exactly one Codex Desktop automation:
 Dingtalk-routine-check / 钉钉工作检查
 ```
 
-Use `Asia/Shanghai` only. The automation has two daily trigger windows:
+Business evaluation uses `Asia/Shanghai`. The existing timezone-free local scheduler has two daily trigger windows:
 
 - `11:35` -> `--trigger-window morning_1135`
 - `17:05` -> `--trigger-window evening_1705`
 
 Do not create one automation per rule. Every run log records `run_at_beijing`, `check_date`, `trigger_window`, `rules_evaluated`, and `rules_skipped`.
+Each trigger runs only its corresponding window once. Scheduled runs do not perform cleanup, copy/extract source members, or automatically evict the source zip.

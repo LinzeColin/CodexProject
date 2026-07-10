@@ -8,7 +8,7 @@
 Dingtalk-routine-check / 钉钉工作检查
 ```
 
-它读取已有 DWS 输出目录，不设置、不创建、不替换上游 DWS 扫描 automation。
+它只读取完整 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip`，不设置、不创建、不替换上游 DWS 扫描 automation。
 只保留这一个 automation，不为每条规则拆多个 automation。
 
 业务检查窗口固定为北京时间：
@@ -36,7 +36,11 @@ offset 变化时重新换算本地小时，业务日期判断仍使用 Asia/Shan
 /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
 ```
 
-zip 内需包含 `付款请示群` 和 `生产管理群` 的 `chat_records/chat_records.csv` 与 `_manifest/manifest.csv`；直接 `DWS_Outputs/` 群目录只作为 fallback。
+zip 内需包含 `付款请示群` 和 `生产管理群` 的 `chat_records/chat_records.csv` 与 `_manifest/manifest.csv`。这是唯一输入；磁盘 `DWS_Outputs/` 目录不存在是正常状态，禁止探测、创建、materialize、复制、解压或 fallback。`DWS_Outputs/<群>/...` 只表示 ZIP 内 member 路径。
+
+每个 scheduler trigger 只执行对应 window 一次，禁止同一 task 同时执行
+morning 与 evening。scheduled command 不运行 cleanup；cleanup 只允许手工
+maintenance。输入只流式读取，不复制到缓存，也不在每次运行后自动 evict ZIP。
 
 输出：
 

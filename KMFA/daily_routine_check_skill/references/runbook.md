@@ -36,13 +36,13 @@ This skill powers one automation only:
 Dingtalk-routine-check / 钉钉工作检查
 ```
 
-It does not create, replace, or operate the upstream DWS archive job. It reads the existing local OneDrive zip package as the primary input:
+It does not create, replace, or operate the upstream DWS archive job. It reads the existing complete OneDrive zip package as its only upstream input:
 
 ```text
 /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
 ```
 
-The checker streams CSV entries from the zip and does not extract the package to local disk. A direct `DWS_Outputs/` folder is only a compatibility fallback. The zip must contain these members, with or without a top-level `DWS_Outputs/` prefix:
+The checker streams required CSV members from the zip without copying or extracting it. A disk `DWS_Outputs/` folder is normally absent and must never be probed, created, materialized, or used as fallback. The zip must contain these members, with or without a top-level `DWS_Outputs/` prefix:
 
 ```text
 DWS_Outputs/付款请示群/chat_records/chat_records.csv
@@ -51,7 +51,7 @@ DWS_Outputs/生产管理群/chat_records/chat_records.csv
 DWS_Outputs/生产管理群/_manifest/manifest.csv
 ```
 
-If healthcheck reports `ZIP_INPUT_UNREADABLE`, hydrate or replace the OneDrive placeholder zip; do not unzip large packages into local scratch just to satisfy this checker.
+If healthcheck reports `ZIP_INPUT_MISSING` or `ZIP_INPUT_UNREADABLE`, hydrate or replace the sole OneDrive zip and fail closed. Do not search for a directory alternative, copy/extract members into local scratch, or automatically evict the zip after the run.
 
 The automation performs:
 
@@ -91,7 +91,7 @@ KMFA/tests/test_daily_routine_check.py
 Run from repo root:
 
 ```bash
-python3 KMFA/tools/daily_routine_check/healthcheck.py --config-only
+python3 KMFA/tools/daily_routine_check/healthcheck.py --config-only --input-zip /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
 python3 KMFA/daily_routine_check_skill/tools/validate_skill_package.py
 python3 -m py_compile KMFA/tools/daily_routine_check/*.py
 python3 -m unittest KMFA.tests.test_daily_routine_check -q
@@ -110,6 +110,7 @@ python3 -m KMFA.tools.daily_routine_check.main \
   --date today \
   --timezone Asia/Shanghai \
   --trigger-window morning_1135 \
+  --input-zip /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip \
   --dry-run
 ```
 
@@ -120,10 +121,14 @@ python3 -m KMFA.tools.daily_routine_check.main \
   --date today \
   --timezone Asia/Shanghai \
   --trigger-window evening_1705 \
+  --input-zip /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip \
   --send
 ```
 
 Do not send live notifications unless the user confirms that notification targets are configured.
+Each scheduled trigger must execute exactly one matching window command once.
+Never run both commands in one task. Scheduled commands must not include
+`--cleanup` or `--apply`; cleanup remains a separate manual maintenance action.
 
 ## 6. Codex Desktop Automation Schedule
 

@@ -1,6 +1,6 @@
 # KMFA Handoff
 
-更新时间: 2026-07-09
+更新时间: 2026-07-11
 
 ## S19 当前状态
 
@@ -21,11 +21,20 @@
 
 - `Dingtalk-routine-check / 钉钉工作检查` 是唯一 S20 automation，时间统一 `Asia/Shanghai`，窗口为 `11:35 -> morning_1135` 和 `17:05 -> evening_1705`。
 - 公开代码/规则/测试位于 `KMFA/daily_routine_check_skill/`、`KMFA/metadata/daily_routine_check/`、`KMFA/tools/daily_routine_check/`、`KMFA/tests/test_daily_routine_check.py`。
-- 运行输入主路径为 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip`；reader 流式读取 zip 内 `付款请示群` / `生产管理群` 的 `chat_records/chat_records.csv` 与 `_manifest/manifest.csv`，不解压大包到本机。直接 `DWS_Outputs/` 群目录只作为兼容 fallback；zip 占位或损坏时 healthcheck 输出 `ZIP_INPUT_UNREADABLE`，缺失或过期数据降级为 `SOURCE_MISSING` / `SOURCE_STALE`，不崩溃、不删除源数据。
+- 运行输入唯一目标为 `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip`；reader 只允许显式 `.zip` 路径，流式读取 zip 内 `付款请示群` / `生产管理群` 的 `chat_records/chat_records.csv` 与 `_manifest/manifest.csv`，不解压、不复制、不 materialize。磁盘上不存在同级 `DWS_Outputs/` 文件夹是正常状态，不得把文件夹当启用条件或自动创建；zip 占位、损坏、缺 member 或过期时分别 fail closed 为 `ZIP_INPUT_UNREADABLE`、`SOURCE_MISSING` / `SOURCE_STALE`。
 - 例行异常类型固定为 `missing/late/review/wrong/merged`，提醒等级固定为 `P0/P1/P2`，通知事件包含 `abnormal_type`、`reminder_level`、matched message、confidence 和 reason。
 - `morning_1135` 生成杨婷现金 `cash_risk_result`；当前 public-safe 离线实现只从 DWS 消息文本按 `cash_monitor.public.yaml` 配置化金额锚点提取 `total_available_cash`，图片/附件候选无结构化金额时输出 `CASH_NEEDS_REVIEW`，不伪造 OCR。
-- SQLite 私有 ledger 写入 `run_log`、`routine_check_results`、`cash_risk_results`、`cash_account_snapshots`、`notification_events`、`data_quality_issues`；`--cleanup --apply` 执行 WAL checkpoint、VACUUM 并写 `cleanup_events`。
+- SQLite 私有 ledger 写入 `run_log`、`routine_check_results`、`cash_risk_results`、`cash_account_snapshots`、`notification_events`、`data_quality_issues`；WAL checkpoint、VACUUM 和 `cleanup_events` 只属于显式维护动作，不随 scheduled check 执行。代码要求同时提供 `--cleanup --apply`；repo/live prompt 均已去除这两个参数并完成哈希 readback，自然触发验收仍待下一次真实调度。
 - 真实钉钉发送仍需 ignored private runtime 通知配置；缺配置时必须返回 `CONFIG_MISSING`，不得伪造已发送。
+
+### S20 ZIP-only 与缓存 I/O 稳定性修复 - 2026-07-11
+
+- owner_decision: `DWS_Outputs.zip` 是唯一可能提供给 S20 的输入；旧 `DWS_Outputs/` folder fallback 契约无效，文件夹不存在不是故障。
+- root_cause: 2026-07-07 的迁移只把 ZIP 提升为 primary input，却保留了 `input_root_default`、healthcheck 目录探测、reader 文件夹分支和 prompt 中的 compatibility fallback，形成“ZIP-first 而非 ZIP-only”的半迁移状态。
+- storage_evidence: 当前 ZIP 逻辑大小 `568878497` bytes，实际占盘 `555548 KiB`（约 543 MiB），flags 显示已本地 materialize；`/Users/linzezhang/onedrive/DWS_Outputs.zip` 与 canonical 路径是同 inode 别名，不是第二份。常见路径下没有 `DWS_Outputs/` 或 Downloads 解压副本；routine private runtime 约 `208 KiB`，旧 `/private/tmp/daily_routine_check_pkg` 约 `156 KiB` 且无数据类文件。
+- cache_conclusion: 占用主体是 OneDrive 为读取大 ZIP 产生的整包本地 materialization，不是本 automation 解压出的文件夹。该 ZIP 有约 1006 entries，而 S20 目标四个 CSV 在本次快照中压缩后仅约 `65 KiB`。
+- implementation_state: 已切换 explicit ZIP-only input，并复用每群第一次读取到的 message snapshot，避免 source inspection 与主流程重复读取同一 `chat_records.csv`；手工 cleanup 会在加载 ZIP 与业务规则前独立早退。25 项 routine tests、skill validator、8 项 automation contract tests、真实 ZIP healthcheck 和两个窗口 dry-run 均通过。live prompt 哈希 readback 一致且 5 个 automation contract 无漂移；只剩下一次自然触发证据。
+- cache_policy: 禁止为满足 S20 创建/解压/materialize `DWS_Outputs/` 文件夹；禁止自动逐出 ZIP，因为这会在后续每次运行重新下载约 543 MiB。若要数量级降低 hydration，只能另立上游“目标专用小 ZIP”或可靠 remote-range 读取设计，并需 owner 单独授权扩大上游范围。
 
 ## S21 当前状态｜资金与税费管理周报 Skill
 

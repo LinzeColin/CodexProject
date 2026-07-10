@@ -41,6 +41,8 @@ name = "KMFA｜钉钉工作检查"
 kind = "cron"
 status = "ACTIVE"
 rrule = "RRULE:FREQ=DAILY;BYHOUR=13,19;BYMINUTE=5,35;BYSETPOS=2,3"
+prompt_sha256 = "2686367acd2661fd5f38e57f60039f62d2dd52945504b59e9bc452780b022a19"
+project_id = "40dd52a0-b6eb-4528-9577-0cb5f4f86e3e"
 business_clock = "Asia/Shanghai"
 business_times = ["11:35", "17:05"]
 local_wall_clock_times = ["13:35", "19:05"]

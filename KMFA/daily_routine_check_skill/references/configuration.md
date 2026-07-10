@@ -46,7 +46,7 @@ DINGTALK_BOSS_DISPLAY_NAME
 OPENAI_API_KEY
 CLOUD_OCR_PROVIDER
 CLOUD_OCR_API_KEY
-DWS_OUTPUT_ROOT
+DWS_OUTPUT_ZIP
 DAILY_ROUTINE_ONEDRIVE_ROOT
 DAILY_ROUTINE_ALLOW_SEND
 DAILY_ROUTINE_ALLOW_CLOUD_OCR
@@ -67,24 +67,23 @@ The user authorized cloud OCR/LLM/agent for this use case. Sending notifications
 
 ## Canonical Paths
 
-Primary input zip:
+Only upstream input zip:
 
 ```text
 /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
 ```
 
-Fallback input root:
-
-```text
-/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs
-```
-
-Input groups inside either source:
+Required group member prefixes inside the zip:
 
 ```text
 付款请示群
 生产管理群
 ```
+
+A disk `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/`
+folder is normally absent and is not configurable input. Never probe, create,
+materialize, copy, extract, or fall back to it. Stream required zip members in
+place and do not automatically evict the zip after each run.
 
 OneDrive routine-check output root:
 

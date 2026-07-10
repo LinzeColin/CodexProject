@@ -320,3 +320,48 @@ Safety notes:
   copied into the fund input folder.
 - No source files are overwritten by the materializer; conflicts remain
   fail-closed under the existing materialization contract.
+
+## 2026-07-11 S20 Routine Check ZIP-only And Cache I/O Root Cause
+
+Scope: `kmfa-4` / `Dingtalk-routine-check` only. This entry does not change the
+separate S21 fund-folder materialization contract.
+
+Observed state:
+
+| Check | Result |
+|---|---|
+| Canonical S20 input | `/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip` existed and was the actual latest run input. |
+| ZIP disk state | Logical size `568878497` bytes; allocated `555548 KiB` (about 543 MiB); locally materialized, not dataless. |
+| Alias duplication | `/Users/linzezhang/onedrive/DWS_Outputs.zip` had the same inode as the canonical path; it was not a second copy. |
+| Direct folder state | `DWS_Outputs/` was absent under canonical OneDrive, the alias path, and Downloads; absence is normal for S20. |
+| Extraction/cache scan | No DWS extraction copy was found. Routine private runtime was about 208 KiB; the old `/private/tmp/daily_routine_check_pkg` source package was about 156 KiB with no CSV/JSONL/SQLite/ZIP payloads. |
+| Required ZIP payload | Four target CSV members totaled `267878` bytes uncompressed and `65374` bytes compressed inside a roughly 1006-entry archive. |
+
+Root cause:
+
+- Commit history had converted the workflow to ZIP-first but retained the old
+  folder fallback across rules, healthcheck, reader, CLI output wording, docs,
+  and the live prompt. This was an incomplete contract migration.
+- Healthcheck still probed direct group paths, and the reader could switch to
+  the folder branch. The prompt therefore continued teaching future agents that
+  a folder might be expected even though the owner can only provide a ZIP.
+- `inspect_group_sources()` read a group CSV and the main loop read the same CSV
+  again. The scheduled command also requested SQLite VACUUM every run through
+  cleanup flags. Neither behavior caused a DWS extraction folder, but both added
+  avoidable I/O around an already large hydrated ZIP.
+
+Repair state:
+
+- ZIP-only reader/healthcheck/CLI and the single-read source snapshot are
+  implemented. Manual cleanup now exits before ZIP/business loading. The owning
+  run passed 25 routine tests, the skill validator,
+  8 automation contract tests, a real-ZIP healthcheck, and both window dry-runs.
+- Cleanup execution now requires the explicit maintenance gate
+  `--cleanup --apply`; scheduled commands no longer carry those flags. Official
+  live prompt/hash readback passed and all 5 KMFA automation contracts reported
+  no drift. The next natural-trigger run remains the only runtime acceptance
+  gate; no natural-run success is claimed by this entry.
+- Auto-eviction of the ZIP is prohibited because it would force the next run to
+  download the full archive again. A target-only small ZIP or reliable remote
+  range reader would be a separate upstream design decision requiring owner
+  authorization.

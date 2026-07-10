@@ -9,7 +9,7 @@ retention:
   db_snapshots_month_end_months: 24
 cleanup:
   require_dry_run_before_apply: true
-  never_delete_input_root: true
+  never_delete_input_zip: true
   never_delete_git_metadata: true
   checkpoint_wal_before_backup: true
   vacuum_after_large_delete: true
