@@ -20,6 +20,13 @@ from pathlib import Path
 from typing import Any
 
 from privacy_guard import PrivacyViolation, assert_no_credentials
+from public_raw_sanitizer import (
+    PublicRawLimitError,
+    PublicRawSanitizationError,
+    merge_counts,
+    require_public_raw_file_size,
+    sanitize_public_value,
+)
 
 
 SOURCE_ID = "future-agent"
@@ -114,7 +121,7 @@ def normalize_event(agent_id: str, event: dict[str, Any]) -> dict[str, Any]:
             "text": text,
         })
     assert_no_credentials(title, f"{SOURCE_ID}:{agent_id}:{event_id}:title")
-    return {
+    row = {
         "schema_version": "memory_atlas_public_raw_future_agent.v1",
         "source_id": SOURCE_ID,
         "agent_id": agent_id,
@@ -125,10 +132,59 @@ def normalize_event(agent_id: str, event: dict[str, Any]) -> dict[str, Any]:
         "messages": messages,
         "credential_boundary": "credentials_not_transcript",
         "sync_mode": "manual_import",
+        "source_format": "json_event",
+        "redaction_counts": {},
     }
+    row["content_sha256"] = stable_hash(row)
+    return row
+
+
+def markdown_title(text: str) -> str:
+    for line in text.splitlines():
+        candidate = line.strip()
+        if candidate.startswith("#"):
+            title = candidate.lstrip("#").strip()
+            if title:
+                return title
+        if candidate:
+            return candidate[:160]
+    return "Untitled future agent Markdown report"
+
+
+def normalize_markdown_event(agent_id: str, event_id: str, text: str) -> dict[str, Any]:
+    if not text.strip():
+        raise PublicRawSanitizationError("Markdown report must not be empty")
+    row: dict[str, Any] = {
+        "schema_version": "memory_atlas_public_raw_future_agent.v1",
+        "source_id": SOURCE_ID,
+        "agent_id": agent_id,
+        "adapter_mode": ADAPTER_MODE,
+        "event_id": event_id,
+        "title": markdown_title(text),
+        "message_count": 1,
+        "messages": [
+            {
+                "message_id": f"{event_id}-report",
+                "role": "assistant",
+                "text": text,
+            }
+        ],
+        "credential_boundary": "credentials_not_transcript",
+        "sync_mode": "manual_markdown_import",
+        "source_format": "markdown_report",
+    }
+    sanitized, redaction_counts = sanitize_public_value(row)
+    if not isinstance(sanitized, dict):
+        raise PublicRawSanitizationError("sanitized Markdown event must remain an object")
+    sanitized["redaction_counts"] = redaction_counts
+    sanitized["content_sha256"] = stable_hash(sanitized)
+    return sanitized
 
 
 def build_summary(agent_id: str, rows: list[dict[str, Any]], generated_at: str) -> dict[str, Any]:
+    redaction_counts: dict[str, int] = {}
+    for row in rows:
+        redaction_counts = merge_counts(redaction_counts, row.get("redaction_counts") or {})
     return {
         "schema_version": "memory_atlas_future_agent_sync_summary.v1",
         "source_id": SOURCE_ID,
@@ -139,6 +195,8 @@ def build_summary(agent_id: str, rows: list[dict[str, Any]], generated_at: str) 
         "message_count": sum(int(row.get("message_count") or 0) for row in rows),
         "event_ids": [row["event_id"] for row in rows],
         "credential_boundary": "credentials_not_transcript",
+        "source_formats": sorted({str(row.get("source_format") or "json_event") for row in rows}),
+        "redaction_counts": redaction_counts,
     }
 
 
@@ -159,16 +217,27 @@ def dry_run_contract(agent_id: str) -> dict[str, Any]:
     }
 
 
-def sync_future_agent(database_dir: Path, agent_id: str, input_path: Path, dry_run: bool) -> dict[str, Any]:
-    safe_agent = safe_name(agent_id)
-    rows = [normalize_event(safe_agent, event) for event in load_input(input_path)]
+def sync_rows(
+    database_dir: Path,
+    safe_agent: str,
+    rows: list[dict[str, Any]],
+    dry_run: bool,
+    *,
+    source_sha256: str = "",
+) -> dict[str, Any]:
     generated_at = now_utc()
-    raw_paths = [RAW_ROOT / safe_agent / f"{safe_name(row['event_id'])}.json" for row in rows]
+    raw_paths = [
+        RAW_ROOT / safe_agent / f"{safe_name(row['event_id'])}.{row['content_sha256'][:12]}.json"
+        for row in rows
+    ]
+    raw_payloads = [json.dumps(row, ensure_ascii=False, indent=2, sort_keys=True) + "\n" for row in rows]
+    for relative_path, payload in zip(raw_paths, raw_payloads):
+        require_public_raw_file_size(payload, relative_path.as_posix())
     summary = build_summary(safe_agent, rows, generated_at)
 
     if not dry_run:
-        for row, relative_path in zip(rows, raw_paths):
-            write_if_changed(database_dir / relative_path, json.dumps(row, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
+        for relative_path, payload in zip(raw_paths, raw_payloads):
+            write_if_changed(database_dir / relative_path, payload)
         summary_path = database_dir / DERIVED_ROOT / safe_agent / "agent_sync_summary.json"
         write_json(summary_path, summary)
         append_jsonl(database_dir / SYNC_LOG_DIR / f"{generated_at[:10]}.jsonl", {
@@ -180,9 +249,12 @@ def sync_future_agent(database_dir: Path, agent_id: str, input_path: Path, dry_r
             "event_count": len(rows),
             "message_count": summary["message_count"],
             "generated_at": generated_at,
+            "source_formats": summary["source_formats"],
+            "redaction_counts": summary["redaction_counts"],
+            "source_sha256": source_sha256,
         })
 
-    return {
+    result = {
         "status": "PASS",
         "source_id": SOURCE_ID,
         "agent_id": safe_agent,
@@ -196,14 +268,51 @@ def sync_future_agent(database_dir: Path, agent_id: str, input_path: Path, dry_r
         "event_count": len(rows),
         "message_count": summary["message_count"],
         "append_only": True,
+        "source_formats": summary["source_formats"],
+        "redaction_counts": summary["redaction_counts"],
+        "source_sha256": source_sha256,
     }
+    if len(rows) == 1:
+        result["event_id"] = rows[0]["event_id"]
+        result["source_format"] = rows[0].get("source_format") or "json_event"
+    return result
+
+
+def sync_future_agent(database_dir: Path, agent_id: str, input_path: Path, dry_run: bool) -> dict[str, Any]:
+    safe_agent = safe_name(agent_id)
+    rows = [normalize_event(safe_agent, event) for event in load_input(input_path)]
+    return sync_rows(database_dir, safe_agent, rows, dry_run)
+
+
+def sync_markdown_report(
+    database_dir: Path,
+    agent_id: str,
+    markdown_report: Path,
+    event_id: str,
+    dry_run: bool,
+) -> dict[str, Any]:
+    safe_agent = safe_name(agent_id)
+    safe_event = safe_name(event_id)
+    source_bytes = markdown_report.read_bytes()
+    text = source_bytes.decode("utf-8", errors="replace")
+    row = normalize_markdown_event(safe_agent, safe_event, text)
+    return sync_rows(
+        database_dir,
+        safe_agent,
+        [row],
+        dry_run,
+        source_sha256=hashlib.sha256(source_bytes).hexdigest(),
+    )
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Memory Atlas S04 P2 future-agent minimal adapter.")
     parser.add_argument("--database-dir", type=Path, default=Path("."))
     parser.add_argument("--agent-id", default="future-agent")
-    parser.add_argument("--input", type=Path)
+    source = parser.add_mutually_exclusive_group()
+    source.add_argument("--input", type=Path)
+    source.add_argument("--markdown-report", type=Path)
+    parser.add_argument("--event-id")
     parser.add_argument("--dry-run", action="store_true")
     return parser.parse_args(argv)
 
@@ -212,7 +321,16 @@ def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     database_dir = args.database_dir.resolve()
     try:
-        if args.input:
+        if args.markdown_report:
+            event_id = args.event_id or args.markdown_report.stem
+            result = sync_markdown_report(
+                database_dir,
+                args.agent_id,
+                args.markdown_report.resolve(),
+                event_id,
+                args.dry_run,
+            )
+        elif args.input:
             result = sync_future_agent(database_dir, args.agent_id, args.input.resolve(), args.dry_run)
         elif args.dry_run:
             result = dry_run_contract(args.agent_id)
@@ -245,6 +363,15 @@ def main(argv: list[str] | None = None) -> int:
             "writes_files": False,
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 5
+    except (PublicRawLimitError, PublicRawSanitizationError) as exc:
+        print(json.dumps({
+            "status": "FAIL",
+            "source_id": SOURCE_ID,
+            "reason": "public_raw_sanitization_failed",
+            "error": str(exc),
+            "writes_files": False,
+        }, ensure_ascii=False, indent=2, sort_keys=True))
+        return 6
 
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
     return 0

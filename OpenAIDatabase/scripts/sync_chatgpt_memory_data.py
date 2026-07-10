@@ -20,10 +20,18 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from privacy_guard import PrivacyViolation, assert_no_credentials
+from public_raw_sanitizer import (
+    PublicRawLimitError,
+    PublicRawSanitizationError,
+    merge_counts,
+    require_public_raw_file_size,
+    sanitize_public_value,
+)
 
 
 SOURCE_ID = "chatgpt"
 RAW_ROOT = Path("data/public_raw/chatgpt")
+PROCESSED_MANIFEST = Path("data/processed/conversations/conversation_manifest.jsonl")
 DERIVED_SUMMARY = Path("data/derived/chatgpt/chatgpt_sync_summary.json")
 SYNC_LOG_DIR = Path("data/run_logs/sync_runs")
 FORBIDDEN_BROWSER_STATES = {"login_required", "password_required", "verification_required", "captcha_required"}
@@ -90,6 +98,18 @@ def append_jsonl(path: Path, row: dict[str, Any]) -> None:
         handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
 
 
+def write_current_jsonl(path: Path, rows: Iterable[dict[str, Any]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = "".join(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n" for row in rows)
+    tmp_path = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+    try:
+        tmp_path.write_text(payload, encoding="utf-8")
+        os.replace(tmp_path, path)
+    finally:
+        if tmp_path.exists():
+            tmp_path.unlink()
+
+
 def extract_text(content: Any) -> str:
     if isinstance(content, str):
         return content
@@ -145,7 +165,7 @@ def normalize_messages(conversation: dict[str, Any]) -> list[dict[str, Any]]:
     return rows
 
 
-def normalize_conversation(conversation: dict[str, Any]) -> dict[str, Any]:
+def conversation_payload(conversation: dict[str, Any]) -> dict[str, Any]:
     conversation_id = str(conversation.get("id") or conversation.get("conversation_id") or stable_hash(conversation)[:16])
     title = str(conversation.get("title") or "Untitled ChatGPT conversation")
     messages = normalize_messages(conversation)
@@ -161,10 +181,43 @@ def normalize_conversation(conversation: dict[str, Any]) -> dict[str, Any]:
         "credential_boundary": "credentials_not_transcript",
         "sync_mode": OFFICIAL_EXPORT_MODE,
     }
-    assert_no_credentials(title, f"{SOURCE_ID}:{conversation_id}:title")
-    for message in messages:
-        assert_no_credentials(str(message.get("text") or ""), f"{SOURCE_ID}:{conversation_id}:{message.get('message_id')}")
     return payload
+
+
+def assert_conversation_has_no_credentials(payload: dict[str, Any]) -> None:
+    conversation_id = str(payload["conversation_id"])
+    assert_no_credentials(str(payload.get("title") or ""), f"{SOURCE_ID}:{conversation_id}:title")
+    for message in payload.get("messages") or []:
+        assert_no_credentials(
+            str(message.get("text") or ""),
+            f"{SOURCE_ID}:{conversation_id}:{message.get('message_id')}",
+        )
+
+
+def normalize_conversation(conversation: dict[str, Any]) -> dict[str, Any]:
+    payload = conversation_payload(conversation)
+    assert_conversation_has_no_credentials(payload)
+    return payload
+
+
+def prepare_public_conversation(
+    conversation: dict[str, Any],
+    *,
+    redact_for_public_backup: bool,
+) -> tuple[dict[str, Any], dict[str, int]]:
+    payload = conversation_payload(conversation)
+    redaction_counts: dict[str, int] = {}
+    if redact_for_public_backup:
+        sanitized, redaction_counts = sanitize_public_value(payload)
+        if not isinstance(sanitized, dict):
+            raise PublicRawSanitizationError("sanitized ChatGPT conversation must remain an object")
+        payload = sanitized
+    else:
+        assert_conversation_has_no_credentials(payload)
+    payload["redact_for_public_backup"] = redact_for_public_backup
+    payload["redaction_counts"] = redaction_counts
+    payload["content_sha256"] = stable_hash(payload)
+    return payload, redaction_counts
 
 
 def coerce_conversation_list(payload: Any) -> list[dict[str, Any]]:
@@ -202,7 +255,32 @@ def load_official_export(path: Path) -> list[dict[str, Any]]:
     return coerce_conversation_list(json.loads(path.read_text(encoding="utf-8")))
 
 
-def build_summary(rows: list[dict[str, Any]], generated_at: str) -> dict[str, Any]:
+def official_export_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    if path.is_dir():
+        candidates = sorted(path.glob("**/conversations*.json"))
+        for candidate in candidates:
+            relative = candidate.relative_to(path).as_posix().encode("utf-8")
+            digest.update(len(relative).to_bytes(8, "big"))
+            digest.update(relative)
+            with candidate.open("rb") as handle:
+                for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+                    digest.update(chunk)
+        return digest.hexdigest()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def build_summary(
+    rows: list[dict[str, Any]],
+    generated_at: str,
+    *,
+    export_sha256: str = "",
+    redaction_counts: dict[str, int] | None = None,
+    redact_for_public_backup: bool = False,
+) -> dict[str, Any]:
     return {
         "schema_version": "memory_atlas_chatgpt_sync_summary.v1",
         "source_id": SOURCE_ID,
@@ -212,20 +290,78 @@ def build_summary(rows: list[dict[str, Any]], generated_at: str) -> dict[str, An
         "conversation_ids": [row["conversation_id"] for row in rows],
         "mode": OFFICIAL_EXPORT_MODE,
         "credential_boundary": "credentials_not_transcript",
+        "export_sha256": export_sha256,
+        "redact_for_public_backup": redact_for_public_backup,
+        "redaction_counts": redaction_counts or {},
+        "processed_manifest": PROCESSED_MANIFEST.as_posix(),
     }
 
 
-def sync_official_export(database_dir: Path, export_path: Path, dry_run: bool) -> dict[str, Any]:
+def build_manifest_row(
+    row: dict[str, Any],
+    raw_path: Path,
+    export_sha256: str,
+    generated_at: str,
+) -> dict[str, Any]:
+    roles = [str(message.get("role") or "unknown") for message in row.get("messages") or []]
+    return {
+        "schema_version": "memory_atlas_conversation_manifest.v2",
+        "conversation_id": row["conversation_id"],
+        "title": row["title"],
+        "created_at": row["created_at"],
+        "updated_at": row["updated_at"],
+        "message_count": row["message_count"],
+        "user_message_count": roles.count("user"),
+        "assistant_message_count": roles.count("assistant"),
+        "content_sha256": row["content_sha256"],
+        "export_sha256": export_sha256,
+        "raw_ref": raw_path.as_posix(),
+        "parsed_at": generated_at,
+        "redaction_counts": row.get("redaction_counts") or {},
+    }
+
+
+def sync_official_export(
+    database_dir: Path,
+    export_path: Path,
+    dry_run: bool,
+    redact_for_public_backup: bool = False,
+) -> dict[str, Any]:
     conversations = load_official_export(export_path)
-    rows = [normalize_conversation(conversation) for conversation in conversations]
+    rows: list[dict[str, Any]] = []
+    redaction_counts: dict[str, int] = {}
+    for conversation in conversations:
+        row, row_counts = prepare_public_conversation(
+            conversation,
+            redact_for_public_backup=redact_for_public_backup,
+        )
+        rows.append(row)
+        redaction_counts = merge_counts(redaction_counts, row_counts)
     generated_at = now_utc()
-    raw_paths = [RAW_ROOT / f"{safe_filename(row['conversation_id'])}.json" for row in rows]
+    export_sha = official_export_sha256(export_path)
+    raw_paths = [
+        RAW_ROOT / f"{safe_filename(row['conversation_id'])}.{row['content_sha256'][:12]}.json"
+        for row in rows
+    ]
+    raw_payloads = [json.dumps(row, ensure_ascii=False, indent=2, sort_keys=True) + "\n" for row in rows]
+    for relative_path, payload in zip(raw_paths, raw_payloads):
+        require_public_raw_file_size(payload, relative_path.as_posix())
+    manifest_rows = [
+        build_manifest_row(row, relative_path, export_sha, generated_at)
+        for row, relative_path in zip(rows, raw_paths)
+    ]
 
     if not dry_run:
-        for row, relative_path in zip(rows, raw_paths):
-            payload = json.dumps(row, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+        for relative_path, payload in zip(raw_paths, raw_payloads):
             write_if_changed(database_dir / relative_path, payload)
-        summary = build_summary(rows, generated_at)
+        write_current_jsonl(database_dir / PROCESSED_MANIFEST, manifest_rows)
+        summary = build_summary(
+            rows,
+            generated_at,
+            export_sha256=export_sha,
+            redaction_counts=redaction_counts,
+            redact_for_public_backup=redact_for_public_backup,
+        )
         (database_dir / DERIVED_SUMMARY).parent.mkdir(parents=True, exist_ok=True)
         (database_dir / DERIVED_SUMMARY).write_text(json.dumps(summary, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         append_jsonl(database_dir / SYNC_LOG_DIR / f"{generated_at[:10]}.jsonl", {
@@ -236,6 +372,9 @@ def sync_official_export(database_dir: Path, export_path: Path, dry_run: bool) -
             "conversation_count": len(rows),
             "message_count": summary["message_count"],
             "generated_at": generated_at,
+            "export_sha256": export_sha,
+            "redact_for_public_backup": redact_for_public_backup,
+            "redaction_counts": redaction_counts,
         })
 
     return {
@@ -248,6 +387,10 @@ def sync_official_export(database_dir: Path, export_path: Path, dry_run: bool) -
         "conversation_count": len(rows),
         "message_count": sum(int(row.get("message_count") or 0) for row in rows),
         "raw_paths": [path.as_posix() for path in raw_paths],
+        "export_sha256": export_sha,
+        "redact_for_public_backup": redact_for_public_backup,
+        "redaction_counts": redaction_counts,
+        "processed_manifest": PROCESSED_MANIFEST.as_posix(),
         "derived_summary": DERIVED_SUMMARY.as_posix(),
         "run_log_dir": SYNC_LOG_DIR.as_posix(),
         "writes_files": not dry_run,
@@ -256,7 +399,7 @@ def sync_official_export(database_dir: Path, export_path: Path, dry_run: bool) -
     }
 
 
-def dry_run_contract() -> dict[str, Any]:
+def dry_run_contract(redact_for_public_backup: bool = False) -> dict[str, Any]:
     return {
         "status": "PASS",
         "source_id": SOURCE_ID,
@@ -271,6 +414,8 @@ def dry_run_contract() -> dict[str, Any]:
         "no_browser_mutation": True,
         "input_required_for_apply": True,
         "official_export_fallback": "official export ZIP/conversations.json fallback",
+        "redact_for_public_backup": redact_for_public_backup,
+        "processed_manifest": PROCESSED_MANIFEST.as_posix(),
     }
 
 
@@ -279,6 +424,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--database-dir", type=Path, default=Path("."))
     parser.add_argument("--official-export", type=Path)
     parser.add_argument("--browser-state", choices=["ready", "not_configured", "login_required", "password_required", "verification_required", "captcha_required"], default="not_configured")
+    parser.add_argument("--redact-for-public-backup", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     return parser.parse_args(argv)
 
@@ -298,9 +444,14 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         if args.official_export:
-            result = sync_official_export(args.database_dir.resolve(), args.official_export.resolve(), args.dry_run)
+            result = sync_official_export(
+                args.database_dir.resolve(),
+                args.official_export.resolve(),
+                args.dry_run,
+                redact_for_public_backup=args.redact_for_public_backup,
+            )
         elif args.dry_run:
-            result = dry_run_contract()
+            result = dry_run_contract(args.redact_for_public_backup)
         else:
             result = {
                 "status": "NEEDS_INPUT",
@@ -330,6 +481,15 @@ def main(argv: list[str] | None = None) -> int:
             "no_browser_mutation": True,
         }, ensure_ascii=False, indent=2, sort_keys=True))
         return 5
+    except (PublicRawLimitError, PublicRawSanitizationError) as exc:
+        print(json.dumps({
+            "status": "FAIL",
+            "source_id": SOURCE_ID,
+            "reason": "public_raw_sanitization_failed",
+            "error": str(exc),
+            "no_browser_mutation": True,
+        }, ensure_ascii=False, indent=2, sort_keys=True))
+        return 6
 
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
     return 0

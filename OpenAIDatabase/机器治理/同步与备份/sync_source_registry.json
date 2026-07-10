@@ -158,6 +158,50 @@
         "modify_existing_raw",
         "delete_existing_raw"
       ]
+    },
+    {
+      "source_id": "codex-reviewer",
+      "source_type": "other_agent",
+      "agent_name": "Codex Independent Reviewer",
+      "connector_type": "markdown_report_import",
+      "raw_root": "data/public_raw/agents/codex-reviewer",
+      "sync_mode": "manual",
+      "public_backup_mode": "plaintext_public",
+      "connector_capability": [
+        "local_markdown_report",
+        "manual_import"
+      ],
+      "transcript_boundary": {
+        "rule": "transcript_is_not_credential",
+        "allowed_content": [
+          "report_title",
+          "report_markdown",
+          "event_id",
+          "metadata"
+        ]
+      },
+      "credential_boundary": {
+        "rule": "credentials_not_transcript",
+        "forbidden_content": [
+          "cookies",
+          "session_tokens",
+          "passwords",
+          "api_keys",
+          "private_keys",
+          "oauth_tokens",
+          "browser_credential_store"
+        ]
+      },
+      "allowed_actions": [
+        "import_markdown_report",
+        "sync_raw",
+        "derive_facets"
+      ],
+      "forbidden_actions": [
+        "capture_credentials",
+        "modify_existing_raw",
+        "delete_existing_raw"
+      ]
     }
   ],
   "phase_boundary": {

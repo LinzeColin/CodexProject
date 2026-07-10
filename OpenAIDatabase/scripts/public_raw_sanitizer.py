@@ -1,0 +1,155 @@
+#!/usr/bin/env python3
+"""Shared recursive sanitizer for public raw JSON exports."""
+
+from __future__ import annotations
+
+import base64
+import binascii
+import hashlib
+import json
+import re
+from typing import Any
+
+from privacy_guard import redact_text
+
+
+MAX_PUBLIC_RAW_FILE_BYTES = 40 * 1024 * 1024
+BINARY_STRING_MIN_BYTES = 256 * 1024
+
+_DATA_URL_BASE64_RE = re.compile(r"\Adata:[^,\r\n]*;base64,", re.IGNORECASE)
+_BASE64_RE = re.compile(r"[A-Za-z0-9+/_-]+={0,2}")
+
+
+class PublicRawSanitizationError(ValueError):
+    pass
+
+
+class PublicRawLimitError(PublicRawSanitizationError):
+    """Compatibility error for concurrent R7 connector work."""
+
+
+def merge_counts(left: dict[str, int], right: dict[str, int]) -> dict[str, int]:
+    merged = dict(left)
+    for key, value in right.items():
+        merged[key] = merged.get(key, 0) + value
+    return {key: merged[key] for key in sorted(merged)}
+
+
+def binary_omission_marker(value: str) -> str:
+    payload = value.encode("utf-8")
+    return (
+        f"[REDACTED_BINARY sha256={hashlib.sha256(payload).hexdigest()} "
+        f"bytes={len(payload)} reason=non_text_binary_not_transcript]"
+    )
+
+
+def _is_strong_base64_candidate(candidate: str) -> bool:
+    core = candidate.rstrip("=")
+    if not core:
+        return False
+    character_classes = (
+        any(character.isupper() for character in core),
+        any(character.islower() for character in core),
+        any(character.isdigit() for character in core),
+        any(character in "+/_-" for character in core),
+    )
+    return sum(character_classes) >= 3 or len(set(core)) >= 32
+
+
+def _decoded_payload_is_text(payload: bytes) -> bool:
+    try:
+        text = payload.decode("utf-8")
+    except UnicodeDecodeError:
+        return False
+    if not text:
+        return True
+    printable = sum(character.isprintable() or character in "\r\n\t" for character in text)
+    return printable / len(text) >= 0.95
+
+
+def is_non_text_binary(value: str) -> bool:
+    if _DATA_URL_BASE64_RE.match(value):
+        return True
+    if len(value.encode("utf-8")) < BINARY_STRING_MIN_BYTES:
+        return False
+    if any(character.isspace() and character not in "\r\n" for character in value):
+        return False
+
+    candidate = value.replace("\r", "").replace("\n", "")
+    if len(candidate) < BINARY_STRING_MIN_BYTES or not _BASE64_RE.fullmatch(candidate):
+        return False
+    if len(candidate) % 4 == 1 or not _is_strong_base64_candidate(candidate):
+        return False
+
+    padded_candidate = candidate + "=" * (-len(candidate) % 4)
+    try:
+        decoded = base64.b64decode(padded_candidate, altchars=b"-_", validate=True)
+    except (binascii.Error, ValueError):
+        return False
+    return bool(decoded) and not _decoded_payload_is_text(decoded)
+
+
+def is_non_text_binary_string(value: str) -> bool:
+    """Compatibility alias for concurrent R7 connector work."""
+    return is_non_text_binary(value)
+
+
+def sanitize_public_value(value: Any) -> tuple[Any, dict[str, int]]:
+    if isinstance(value, str):
+        if is_non_text_binary(value):
+            return binary_omission_marker(value), {"binary_omission": 1}
+        redacted, counts = redact_text(value)
+        return redacted, {key: counts[key] for key in sorted(counts)}
+
+    if isinstance(value, list):
+        sanitized_items: list[Any] = []
+        counts: dict[str, int] = {}
+        for item in value:
+            sanitized_item, item_counts = sanitize_public_value(item)
+            sanitized_items.append(sanitized_item)
+            counts = merge_counts(counts, item_counts)
+        return sanitized_items, counts
+
+    if isinstance(value, dict):
+        sanitized_dict: dict[Any, Any] = {}
+        counts: dict[str, int] = {}
+        for key, item in value.items():
+            sanitized_item, item_counts = sanitize_public_value(item)
+            sanitized_dict[key] = sanitized_item
+            counts = merge_counts(counts, item_counts)
+        return sanitized_dict, counts
+
+    return value, {}
+
+
+def sanitize_jsonl_event(event: dict[str, Any]) -> tuple[dict[str, Any], dict[str, int]]:
+    if not isinstance(event, dict):
+        raise PublicRawSanitizationError("JSONL event must be a dictionary")
+    sanitized, counts = sanitize_public_value(event)
+    if not isinstance(sanitized, dict):
+        raise PublicRawSanitizationError("sanitized JSONL event must remain a dictionary")
+    return sanitized, counts
+
+
+def assert_json_event_within_limit(
+    event: dict[str, Any], limit: int = MAX_PUBLIC_RAW_FILE_BYTES
+) -> None:
+    payload = (json.dumps(event, ensure_ascii=False, separators=(",", ":")) + "\n").encode(
+        "utf-8"
+    )
+    size = len(payload)
+    if size > limit:
+        raise PublicRawSanitizationError(
+            f"compact UTF-8 JSONL event is {size} bytes; limit is {limit} bytes"
+        )
+
+
+def require_public_raw_file_size(payload: bytes | str, label: str) -> int:
+    """Compatibility size guard for concurrent R7 connector work."""
+    encoded = payload.encode("utf-8") if isinstance(payload, str) else payload
+    size = len(encoded)
+    if size > MAX_PUBLIC_RAW_FILE_BYTES:
+        raise PublicRawLimitError(
+            f"{label} is {size} bytes; public raw limit is {MAX_PUBLIC_RAW_FILE_BYTES} bytes"
+        )
+    return size
