@@ -1,3 +1,18 @@
+## FORM-KMFA-V014-S15P3-POST-REMEDIATION-SALARY-BOUNDARY-001
+
+- phase: V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY
+- version: 0.1.4-s15-p3-post-remediation-salary-boundary
+- model_id: MOD-KMFA-GOV-001
+- scope: 预留六字段 schema-only 绩效事实输出接口和未来工资系统读取草案，登记人工审批与发放边界，不生成任何工资记录或业务值。
+- rule: salary_boundary_valid = fact_output_interface_field_count == 6 AND interface_payload_record_count == 0 AND future_salary_readiness_record_count == 0 AND human_boundary_checkpoint_count == 4 AND salary_numeric_value_count == 0 AND raw_exact == true AND current_grade == D AND decision == NO_GO。
+- interface gate: 来源事实、payload、项目/员工引用和薪资数值均为 0；live API、connector、导出、同步和外部写入均关闭。
+- human gate: 绩效事实质量、薪酬政策映射、最终薪酬和发放放行 4 项必须人工，已完成审批、自动审批、发放放行和支付执行均为 0。
+- history gate: 旧 S15-P3 的 4 条合成就绪记录和 16 个复核引用仅作历史结构夹具，不具有当前动态权威性。
+- raw gate: phase 前后、跨 S15-P2 和当前只读快照一致；raw/private 明文不得进入 Git。
+- downstream gate: Stage 15 review、S16、salary、bonus、payroll、final payment、upload、reinstall、formal report、difference closure 与 business execution=false。
+- validator: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s15_p3_post_remediation_salary_boundary.py --require-private-evidence --require-browser-evidence --require-final-evidence
+- evidence: KMFA/stage_artifacts/V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY/machine/salary_boundary_manifest.json
+
 ## FORM-KMFA-V014-S15P2-POST-REMEDIATION-PERFORMANCE-REVIEW-LIST-001
 
 - phase: V014_S15_P2_POST_REMEDIATION_PERFORMANCE_REVIEW_LIST

@@ -1,3 +1,18 @@
+## 2026-07-11 - V014 S15-P3 post-remediation salary boundary
+
+- phase: V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY
+- task: KMFA-V014-S15-P3-POST-REMEDIATION-SALARY-BOUNDARY-20260711
+- product_version: 0.1.4-s15-p3-post-remediation-salary-boundary
+- result: completed_validated_local_only_s15_p3_schema_only_zero_salary_records_no_go_upload_deferred / NO_GO
+- interface: 1 public-safe schema-only contract / 6 fields / 0 source fact rows / 0 payload records / 0 project or employee references.
+- future draft: 1 draft / 6 field mappings / 0 readiness records / 0 salary numeric values / future read disabled.
+- human boundary: 4 checkpoints / 0 completed approvals / 0 automatic approvals / 0 payment releases / 0 payment executions.
+- history gate: legacy 4 synthetic readiness rows and 16 review references remain quarantined as non-authoritative fixtures.
+- browser: v1.4 baseline 54/54 PASS、current 14/14 PASS；viewports/fields/HTTP/navigation=2/12/4/4，console/overflow=0/0。
+- raw proof: phase before/after, cross-S15-P2 and current snapshots exact; raw/private details and screenshots remain ignored.
+- boundary: Stage 15 review、S16、salary、bonus、payroll、final payment、GitHub upload、app reinstall、formal report、difference closure 和 business execution 均未执行；下一步只能 Stage 15 整体复审。
+- evidence: KMFA/stage_artifacts/V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY/machine/salary_boundary_manifest.json
+
 ## 2026-07-11 - V014 S15-P2 post-remediation performance review list
 
 - phase: V014_S15_P2_POST_REMEDIATION_PERFORMANCE_REVIEW_LIST

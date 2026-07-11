@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate current KMFA v0.1.4 S15-P2 performance review evidence."""
+"""Validate current KMFA v0.1.4 S15-P3 salary-boundary evidence."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ import subprocess
 from pathlib import Path
 from typing import Any, Iterator
 
-from KMFA.tools import v014_s15_p2_post_remediation_performance_review_list as phase
+from KMFA.tools import v014_s15_p3_post_remediation_salary_boundary as phase
 
 
 FORBIDDEN_PUBLIC_SUFFIXES = {".zip", ".xls", ".xlsx", ".pdf", ".csv", ".db", ".sqlite", ".sqlite3"}
@@ -24,17 +24,17 @@ FORBIDDEN_PUBLIC_KEYS = {
     "member_name_private",
     "member_sha256",
     "sheet_name_private",
-    "matched_terms_private",
-    "preview_rows_private",
-    "probe_fingerprint",
     "field_plaintext",
     "header_plaintext",
     "business_value",
-    "business_amount",
-    "project_name_plaintext",
-    "person_name_plaintext",
+    "project_ref",
+    "employee_ref",
+    "employee_name",
+    "staff_name",
     "salary_value",
     "bonus_value",
+    "payroll_value",
+    "payment_account",
 }
 FORBIDDEN_PUBLIC_TEXT = (
     "private_ref://",
@@ -63,37 +63,22 @@ def _read_json(path: Path) -> dict[str, Any]:
     return value
 
 
-def _git_output(args: list[str]) -> str:
-    result = subprocess.run(
-        ["git", "-c", "core.quotePath=false", *args],
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        check=False,
-    )
-    if result.returncode != 0:
-        raise ValidationError(result.stderr.strip())
-    return result.stdout.strip()
-
-
 def _git_ignored(path: Path) -> bool:
-    result = subprocess.run(
+    return subprocess.run(
         ["git", "check-ignore", "-q", path.as_posix()],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         check=False,
-    )
-    return result.returncode == 0
+    ).returncode == 0
 
 
 def _git_tracked(path: Path) -> bool:
-    result = subprocess.run(
+    return subprocess.run(
         ["git", "ls-files", "--error-unmatch", path.as_posix()],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         check=False,
-    )
-    return result.returncode == 0
+    ).returncode == 0
 
 
 def _require(condition: bool, message: str, errors: list[str]) -> None:
@@ -115,10 +100,9 @@ def _generated_public_paths() -> tuple[Path, ...]:
     return (
         phase.SUMMARY_PATH,
         phase.MANIFEST_PATH,
-        phase.FACT_SCHEMA_PATH,
-        phase.FACT_TABLE_PATH,
-        phase.ABNORMAL_METHOD_PATH,
-        phase.REVIEW_ITEMS_PATH,
+        phase.INTERFACE_PATH,
+        phase.READ_DRAFT_PATH,
+        phase.HUMAN_BOUNDARY_PATH,
         phase.MATRIX_PATH,
         phase.GO_NO_GO_PATH,
         phase.HTML_PATH,
@@ -128,10 +112,9 @@ def _generated_public_paths() -> tuple[Path, ...]:
         phase.ROLLBACK_PATH,
         phase.METADATA_SUMMARY_PATH,
         phase.METADATA_MANIFEST_PATH,
-        phase.METADATA_FACT_SCHEMA_PATH,
-        phase.METADATA_FACT_TABLE_PATH,
-        phase.METADATA_ABNORMAL_METHOD_PATH,
-        phase.METADATA_REVIEW_ITEMS_PATH,
+        phase.METADATA_INTERFACE_PATH,
+        phase.METADATA_READ_DRAFT_PATH,
+        phase.METADATA_HUMAN_BOUNDARY_PATH,
         phase.METADATA_MATRIX_PATH,
         phase.METADATA_GO_NO_GO_PATH,
     )
@@ -160,28 +143,29 @@ def _scan_public(path: Path, errors: list[str]) -> None:
 def _expected_summary() -> dict[str, Any]:
     return {
         "required_field_count": 6,
-        "s15_p1_manual_review_required_field_count": 6,
-        "s15_p1_materialized_performance_fact_count": 0,
-        "performance_fact_table_schema_count": 1,
-        "performance_fact_table_column_count": 6,
-        "performance_fact_row_count": 0,
-        "authoritative_project_row_count": 0,
-        "authoritative_value_binding_count": 0,
-        "synthetic_project_row_count": 0,
-        "public_business_value_count": 0,
-        "abnormal_project_method_count": 1,
-        "abnormal_project_rule_count": 6,
-        "actual_abnormal_project_count": 0,
-        "field_review_item_count": 6,
-        "manual_review_required_item_count": 6,
-        "project_specific_review_item_count": 0,
+        "s15_p2_field_review_item_count": 6,
+        "s15_p2_performance_fact_row_count": 0,
+        "fact_output_interface_contract_count": 1,
+        "fact_output_interface_field_count": 6,
+        "source_performance_fact_row_count": 0,
+        "interface_payload_record_count": 0,
+        "project_reference_count": 0,
+        "employee_reference_count": 0,
+        "future_salary_read_draft_count": 1,
+        "future_salary_field_mapping_count": 6,
+        "future_salary_readiness_record_count": 0,
+        "salary_numeric_value_count": 0,
+        "human_boundary_checkpoint_count": 4,
+        "human_approval_completed_count": 0,
+        "automatic_approval_count": 0,
+        "payment_release_count": 0,
+        "payment_execution_count": 0,
         "raw_source_file_count": 5,
         "private_xlsx_container_count": 48,
         "private_parseable_xlsx_count": 25,
         "private_unparseable_xlsx_count": 23,
         "private_parseable_sheet_count": 4198,
         "private_unique_candidate_sheet_count": 13,
-        "private_multi_field_candidate_sheet_count": 3,
         "private_candidate_covered_field_count": 6,
         "private_probe_roundtrip_mismatch_count": 0,
         "raw_snapshot_exact_match": True,
@@ -190,7 +174,7 @@ def _expected_summary() -> dict[str, Any]:
         "baseline_html_control_row_count": 54,
         "baseline_html_pass_count": 54,
         "browser_viewport_check_count": 2,
-        "review_item_interaction_check_count": 12,
+        "interface_field_interaction_check_count": 12,
         "dependency_link_http_check_count": 4,
         "dependency_navigation_check_count": 4,
         "console_error_count": 0,
@@ -204,11 +188,13 @@ def _expected_summary() -> dict[str, Any]:
         "decision": "NO_GO",
         "s15_p1_performed": True,
         "s15_p2_performed": True,
-        "s15_p3_performed": False,
+        "s15_p3_performed": True,
         "stage15_review_performed": False,
         "salary_calculation_performed": False,
         "bonus_approval_performed": False,
         "payroll_export_performed": False,
+        "final_compensation_decision_performed": False,
+        "final_payment_performed": False,
         "github_upload_performed": False,
         "app_reinstall_performed": False,
         "formal_report_release_performed": False,
@@ -223,45 +209,45 @@ def _validate_public(errors: list[str]) -> dict[str, Any]:
         return {}
     manifest = _read_json(phase.MANIFEST_PATH)
     summary = _read_json(phase.SUMMARY_PATH)
-    schema = _read_json(phase.FACT_SCHEMA_PATH)
-    table = _read_json(phase.FACT_TABLE_PATH)
-    abnormal = _read_json(phase.ABNORMAL_METHOD_PATH)
-    review_document = _read_json(phase.REVIEW_ITEMS_PATH)
+    interface = _read_json(phase.INTERFACE_PATH)
+    draft = _read_json(phase.READ_DRAFT_PATH)
+    boundary_document = _read_json(phase.HUMAN_BOUNDARY_PATH)
     matrix = _read_json(phase.MATRIX_PATH)
     go_no_go = _read_json(phase.GO_NO_GO_PATH)
 
     _require(manifest.get("phase_id") == phase.PHASE_ID, "phase identity drift", errors)
-    _require(manifest.get("roadmap_phase_id") == "S15-P2", "roadmap phase drift", errors)
+    _require(manifest.get("roadmap_phase_id") == "S15-P3", "roadmap phase drift", errors)
     _require(manifest.get("task_id") == phase.TASK_ID, "task drift", errors)
     _require(manifest.get("acceptance_id") == phase.ACCEPTANCE_ID, "acceptance drift", errors)
     _require(manifest.get("version") == phase.VERSION, "version drift", errors)
     _require(manifest.get("status") == phase.STATUS, "status drift", errors)
     _require(manifest.get("decision") == "NO_GO", "decision drift", errors)
+    _require(manifest.get("boundary_version") == phase.BOUNDARY_VERSION, "boundary version drift", errors)
     _require(manifest.get("formula_id") == phase.FORMULA_ID, "formula identity drift", errors)
     _require(manifest.get("parameter_ids") == list(phase.PARAMETER_IDS), "parameter identities drift", errors)
     _require(manifest.get("model_registry_key") == phase.MODEL_REGISTRY_KEY, "model identity drift", errors)
     _require(manifest.get("summary") == summary, "summary mirror drift", errors)
-    _require(manifest.get("performance_fact_table") == table, "fact table mirror drift", errors)
-    _require(manifest.get("abnormal_project_method") == abnormal, "abnormal method mirror drift", errors)
-    _require(manifest.get("review_items") == review_document.get("items"), "review item mirror drift", errors)
+    _require(manifest.get("fact_output_interface_contract") == interface, "interface mirror drift", errors)
+    _require(manifest.get("future_salary_read_draft") == draft, "read draft mirror drift", errors)
+    _require(manifest.get("human_boundaries") == boundary_document.get("checkpoints"), "human boundary mirror drift", errors)
     _require(manifest.get("acceptance_matrix") == matrix, "acceptance matrix mirror drift", errors)
     _require(manifest.get("go_no_go") == go_no_go, "go/no-go mirror drift", errors)
     _require(manifest.get("quality_gate") == phase._quality_gate(), "quality gate drift", errors)
     _require(manifest.get("phase_boundaries") == phase._phase_boundaries(), "phase boundaries drift", errors)
     _require(manifest.get("raw_boundary") == phase._raw_boundary(), "raw boundary drift", errors)
     _require(manifest.get("public_repo_safety") == phase._public_safety(), "public safety drift", errors)
-    _require(manifest.get("next_phase") == "S15-P3", "next phase drift", errors)
-    _require(manifest.get("s15_p1_post_remediation_dependency_validated") is True, "S15-P1 dependency missing", errors)
-    _require(manifest.get("historical_s15_p2_fixture_validated") is True, "legacy fixture missing", errors)
+    _require(manifest.get("next_phase") == "S15_STAGE_REVIEW", "next phase drift", errors)
+    _require(manifest.get("s15_p2_post_remediation_dependency_validated") is True, "S15-P2 dependency missing", errors)
+    _require(manifest.get("historical_s15_p3_fixture_validated") is True, "legacy fixture missing", errors)
     _require(
-        manifest.get("historical_s15_p2_dynamic_rows_are_authoritative") is False,
+        manifest.get("historical_s15_p3_dynamic_rows_are_authoritative") is False,
         "legacy dynamic rows not quarantined",
         errors,
     )
-    _require(manifest.get("historical_four_fact_rows_quarantined") is True, "legacy fact rows not quarantined", errors)
+    _require(manifest.get("historical_four_readiness_rows_quarantined") is True, "legacy rows not quarantined", errors)
     _require(
-        manifest.get("historical_sixteen_review_items_quarantined") is True,
-        "legacy review items not quarantined",
+        manifest.get("historical_sixteen_review_refs_quarantined") is True,
+        "legacy review refs not quarantined",
         errors,
     )
     for key, value in _expected_summary().items():
@@ -273,44 +259,42 @@ def _validate_public(errors: list[str]) -> dict[str, Any]:
         errors,
     )
 
-    _require(schema.get("column_count") == 6, "schema column count drift", errors)
-    _require(schema.get("columns") == table.get("columns"), "schema/table columns drift", errors)
-    _require([row.get("field_key") for row in schema.get("columns", [])] == list(phase.FIELD_KEYS), "column order drift", errors)
-    _require(table.get("row_count") == 0 and table.get("rows") == [], "fact table must remain empty", errors)
-    _require(table.get("row_materialization_allowed") is False, "fact row materialization opened", errors)
-    _require(table.get("synthetic_project_row_count") == 0, "synthetic rows detected", errors)
-    _require(abnormal.get("method_count") == 1, "abnormal method count drift", errors)
-    _require(abnormal.get("rule_count") == 6, "abnormal rule count drift", errors)
-    _require(abnormal.get("actual_abnormal_project_count") == 0, "actual abnormal projects detected", errors)
-    _require(
-        abnormal.get("current_output_status") == "blocked_no_authoritative_project_rows",
-        "abnormal method status drift",
-        errors,
-    )
-    reviews = review_document.get("items", [])
-    _require(review_document.get("review_item_count") == 6 and len(reviews) == 6, "review count drift", errors)
-    _require([row.get("field_key") for row in reviews] == list(phase.FIELD_KEYS), "review order drift", errors)
-    for row in reviews:
-        key = str(row.get("field_key"))
-        _require(row.get("scope_type") == "field_level_authoritative_binding_review", f"{key} scope drift", errors)
-        _require(row.get("manual_review_required") is True, f"{key} manual flag missing", errors)
-        _require(row.get("current_status") == "pending_authoritative_binding", f"{key} status drift", errors)
-        _require("project_ref" not in row, f"{key} project ref exposed", errors)
-        _require(row.get("abnormal_project_claimed") is False, f"{key} abnormal claim drift", errors)
-        _require(row.get("salary_or_bonus_action_allowed") is False, f"{key} compensation gate opened", errors)
+    _require(interface.get("field_count") == 6, "interface field count drift", errors)
+    _require([row.get("field_key") for row in interface.get("fields", [])] == list(phase.FIELD_KEYS), "interface field order drift", errors)
+    _require(interface.get("interface_mode") == "schema_only_no_records", "interface mode drift", errors)
+    _require(interface.get("payload_record_count") == 0 and interface.get("payload_records") == [], "interface records detected", errors)
+    for key in (
+        "live_read_enabled",
+        "api_endpoint_created",
+        "connector_enabled",
+        "file_export_created",
+        "scheduled_sync_enabled",
+        "external_write_enabled",
+    ):
+        _require(interface.get(key) is False, f"interface capability opened: {key}", errors)
+    _require(draft.get("draft_count") == 1, "draft count drift", errors)
+    _require(draft.get("field_mapping_count") == 6, "mapping count drift", errors)
+    _require(draft.get("readiness_record_count") == 0 and draft.get("readiness_records") == [], "readiness rows detected", errors)
+    _require(draft.get("current_status") == "draft_blocked_no_authoritative_fact_rows", "draft status drift", errors)
+    boundaries = boundary_document.get("checkpoints", [])
+    _require(boundary_document.get("checkpoint_count") == 4 and len(boundaries) == 4, "human boundary count drift", errors)
+    _require([row.get("checkpoint_key") for row in boundaries] == list(phase.HUMAN_CHECKPOINT_KEYS), "human boundary order drift", errors)
+    for row in boundaries:
+        key = str(row.get("checkpoint_key"))
+        _require(row.get("human_action_required") is True, f"{key} human gate missing", errors)
+        _require(row.get("current_status") == "not_performed", f"{key} status drift", errors)
+        _require(row.get("automatic_execution_allowed") is False, f"{key} automation opened", errors)
     _require(matrix.get("check_count") == 20, "acceptance check count drift", errors)
-    _require(matrix.get("check_pass_count") == 20, "acceptance pass count drift", errors)
-    _require(matrix.get("check_fail_count") == 0, "acceptance failures detected", errors)
+    _require(matrix.get("check_pass_count") == 20 and matrix.get("check_fail_count") == 0, "acceptance failures", errors)
     _require(go_no_go.get("decision") == "NO_GO", "go/no-go decision drift", errors)
-    _require(go_no_go.get("performance_fact_release_allowed") is False, "fact release gate opened", errors)
+    _require(go_no_go.get("live_salary_integration_allowed") is False, "live salary gate opened", errors)
 
     mirrors = (
         (phase.METADATA_SUMMARY_PATH, summary),
         (phase.METADATA_MANIFEST_PATH, manifest),
-        (phase.METADATA_FACT_SCHEMA_PATH, schema),
-        (phase.METADATA_FACT_TABLE_PATH, table),
-        (phase.METADATA_ABNORMAL_METHOD_PATH, abnormal),
-        (phase.METADATA_REVIEW_ITEMS_PATH, review_document),
+        (phase.METADATA_INTERFACE_PATH, interface),
+        (phase.METADATA_READ_DRAFT_PATH, draft),
+        (phase.METADATA_HUMAN_BOUNDARY_PATH, boundary_document),
         (phase.METADATA_MATRIX_PATH, matrix),
         (phase.METADATA_GO_NO_GO_PATH, go_no_go),
     )
@@ -324,40 +308,44 @@ def _validate_html(errors: list[str]) -> None:
         return
     text = phase.HTML_PATH.read_text(encoding="utf-8")
     for token in (
-        "绩效复核清单工作台",
+        "工资项目边界工作台",
         "Q4 / D",
         "NO_GO",
-        "事实行 0",
-        "实际异常项目",
-        "6 项复核",
-        "暂无权威项目事实行",
-        "不得自动填值，不得生成绩效分数、工资或奖金结论",
-        "S15-P3",
+        "记录 0",
+        "读取记录",
+        "4 项均未执行",
+        "6 项值不可用",
+        "最终审批和发放必须由人工完成",
+        "Stage 15 整体复审",
         "table-layout:fixed",
         "overflow-x:auto",
     ):
         _require(token in text, f"HTML token missing: {token}", errors)
     for spec in phase.FIELD_SPECS:
         _require(spec["label"] in text, f"field label missing: {spec['field_key']}", errors)
-        _require(spec["reason_zh"] in text, f"Chinese reason missing: {spec['field_key']}", errors)
-        _require(spec["reason_code"] not in text, f"internal reason exposed: {spec['field_key']}", errors)
-    _require(text.count("data-review-button=") == 6, "review button count drift", errors)
-    _require(text.count("data-review-panel=") == 6, "review panel count drift", errors)
+    for label in ("金额（整数分）", "比率（基点）", "时长（天）", "金额（整数分）或比率（基点）"):
+        _require(label in text, f"Chinese fact kind missing: {label}", errors)
+    for internal in ("money_minor_unit", "ratio_basis_points", "duration_days"):
+        _require(internal not in text, f"internal fact kind exposed in HTML: {internal}", errors)
+    for label in phase.HUMAN_CHECKPOINT_LABELS.values():
+        _require(label in text, f"human boundary label missing: {label}", errors)
+    _require(text.count("data-field-button=") == 6, "field button count drift", errors)
+    _require(text.count("data-field-panel=") == 6, "field panel count drift", errors)
     _require(text.count("data-dependency-link=") == 8, "dependency link count drift", errors)
 
 
 def _expected_parameter_values(manifest: dict[str, Any]) -> dict[str, str]:
     summary = manifest["summary"]
     return {
-        "PARAM-KMFA-1769": "1;6;0;0;0;0;0;1;6;0;6;6;0;4;16;Q4;D;NO_GO",
-        "PARAM-KMFA-1770": "5;48;25;23;4198;13;6;0;3;9;2;1",
-        "PARAM-KMFA-1771": (
+        "PARAM-KMFA-1773": "1;6;0;0;0;0;1;6;0;0;0;4;0;0;0;0;4;16;Q4;D;NO_GO",
+        "PARAM-KMFA-1774": "5;48;25;23;4198;13;6;0;3;9;2;1",
+        "PARAM-KMFA-1775": (
             f"6;54;54;0;0;1;{summary['current_html_control_row_count']};"
             f"{summary['current_html_pass_count']};0;0;2;12;4;4;0;0"
         ),
-        "PARAM-KMFA-1772": (
-            "true;true;true;true;true;true;true;true;true;false;false;false;false;false;"
-            "false;false;false;true;true;Q4;D;NO_GO"
+        "PARAM-KMFA-1776": (
+            "true;true;true;true;true;true;true;true;true;true;false;false;false;false;"
+            "false;false;false;false;false;false;true;true;Q4;D;NO_GO"
         ),
     }
 
@@ -366,23 +354,21 @@ def _validate_governance(manifest: dict[str, Any], errors: list[str]) -> None:
     formula_text = Path("KMFA/docs/governance/formula_registry.yaml").read_text(encoding="utf-8")
     _require(phase.FORMULA_ID in formula_text, "formula missing", errors)
     for token in (
-        "performance_fact_table_column_count == 6",
-        "performance_fact_row_count == 0",
-        "actual_abnormal_project_count == 0",
-        "field_review_item_count == 6",
-        "public_business_value_count == 0",
+        "fact_output_interface_field_count == 6",
+        "interface_payload_record_count == 0",
+        "future_salary_readiness_record_count == 0",
+        "human_boundary_checkpoint_count == 4",
+        "salary_numeric_value_count == 0",
         "current_grade == D",
         "decision == NO_GO",
     ):
         _require(token in formula_text, f"formula control missing: {token}", errors)
-
     for path in (Path("KMFA/docs/governance/model_registry.yaml"), Path("KMFA/metadata/model_registry.yaml")):
         text = path.read_text(encoding="utf-8")
         _require(phase.MODEL_REGISTRY_KEY in text, f"model missing: {path}", errors)
         _require(phase.FORMULA_ID in text, f"formula ref missing: {path}", errors)
         for parameter_id in phase.PARAMETER_IDS:
             _require(parameter_id in text, f"parameter ref missing: {path}:{parameter_id}", errors)
-
     with Path("KMFA/docs/governance/parameter_registry.csv").open(encoding="utf-8", newline="") as handle:
         parameters = {row["parameter_id"]: row for row in csv.DictReader(handle)}
     for parameter_id, expected in _expected_parameter_values(manifest).items():
@@ -393,28 +379,24 @@ def _validate_governance(manifest: dict[str, Any], errors: list[str]) -> None:
     version_matrix = Path("KMFA/docs/governance/VERSION_MATRIX.yaml").read_text(encoding="utf-8")
     _require(phase.MODEL_REGISTRY_KEY in version_matrix, "VERSION_MATRIX profile missing", errors)
     _require(phase.VERSION in version_matrix, "VERSION_MATRIX version missing", errors)
-    current_phase_is_s15_p2 = f'current_phase: "{phase.PHASE_ID}"' in version_matrix
-    if current_phase_is_s15_p2:
+    current_phase_is_s15_p3 = f'current_phase: "{phase.PHASE_ID}"' in version_matrix
+    if current_phase_is_s15_p3:
         _require(Path("KMFA/VERSION").read_text(encoding="utf-8").strip() == phase.VERSION, "VERSION drift", errors)
         handoff = Path("KMFA/HANDOFF.md").read_text(encoding="utf-8")
         _require(phase.PHASE_ID in handoff, "HANDOFF phase drift", errors)
-        _require("下一步只能执行 S15-P3" in handoff, "HANDOFF S15-P3 route missing", errors)
-        _require("不得执行 Stage 15 整体复审" in handoff, "HANDOFF Stage 15 boundary missing", errors)
+        _require("下一步只能执行 Stage 15 整体复审" in handoff, "HANDOFF review route missing", errors)
+        _require("不得执行 S16" in handoff, "HANDOFF S16 boundary missing", errors)
         _require("不得执行 GitHub upload" in handoff, "HANDOFF upload boundary missing", errors)
         agents = Path("KMFA/AGENTS.md").read_text(encoding="utf-8")
-        _require("S15-P2" in agents and "S15-P3" in agents, "AGENTS scope drift", errors)
+        _require("S15-P3" in agents and "Stage 15 整体复审" in agents, "AGENTS scope drift", errors)
 
     trace = Path("KMFA/docs/governance/TRACEABILITY_MATRIX.csv").read_text(encoding="utf-8")
     delivery = Path("KMFA/docs/governance/delivery_tasks.yaml").read_text(encoding="utf-8")
     assurance = Path("KMFA/docs/governance/ASSURANCE_STATUS.yaml").read_text(encoding="utf-8")
     _require(phase.TASK_ID in trace and phase.ACCEPTANCE_ID in trace, "traceability missing", errors)
     _require(phase.TASK_ID in delivery and phase.ACCEPTANCE_ID in delivery, "delivery missing", errors)
-    if current_phase_is_s15_p2:
-        _require(
-            f'snapshot_event_time: "{manifest["generated_at"]}"' in assurance,
-            "assurance time drift",
-            errors,
-        )
+    if current_phase_is_s15_p3:
+        _require(f'snapshot_event_time: "{manifest["generated_at"]}"' in assurance, "assurance time drift", errors)
     _require(phase.FORMULA_ID in assurance, "assurance formula missing", errors)
     for parameter_id in phase.PARAMETER_IDS:
         _require(parameter_id in assurance, f"assurance parameter missing: {parameter_id}", errors)
@@ -422,12 +404,11 @@ def _validate_governance(manifest: dict[str, Any], errors: list[str]) -> None:
         (Path("KMFA/CHANGELOG.md"), phase.VERSION),
         (Path("KMFA/docs/governance/DEVELOPMENT_LEDGER.md"), phase.PHASE_ID),
         (Path("KMFA/docs/governance/MODEL_SPEC.md"), phase.FORMULA_ID),
-        (Path("KMFA/功能清单.md"), "S15-P2 修补后绩效复核清单"),
+        (Path("KMFA/功能清单.md"), "S15-P3 修补后工资项目边界"),
         (Path("KMFA/开发记录.md"), phase.TASK_ID),
         (Path("KMFA/模型参数文件.md"), phase.FORMULA_ID),
     ):
         _require(token in path.read_text(encoding="utf-8"), f"governance token missing: {path}", errors)
-
     for path in (phase.DEVELOPMENT_EVENTS_PATH, phase.STAGE_STATUS_PATH, phase.TASK_STATUS_PATH):
         rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
         matches = [row for row in rows if row.get("phase_id") == phase.PHASE_ID]
@@ -468,12 +449,12 @@ def _validate_private(manifest: dict[str, Any], errors: list[str], require_brows
     if all(path.is_file() for path in paths):
         before = _read_json(phase.PRIVATE_RAW_BEFORE_PATH)
         after = _read_json(phase.PRIVATE_RAW_AFTER_PATH)
-        prior = _read_json(phase.p1.PRIVATE_RAW_AFTER_PATH)
-        helper = phase.p1.s14_review.p1.s13_review.p1.s12_review.p1.s11_project
-        current = helper._raw_snapshot("validate_v014_s15_p2_post_remediation_performance_review_list")
+        prior = _read_json(phase.p2.PRIVATE_RAW_AFTER_PATH)
+        helper = phase.p2.p1.s14_review.p1.s13_review.p1.s12_review.p1.s11_project
+        current = helper._raw_snapshot("validate_v014_s15_p3_post_remediation_salary_boundary")
         normalize = helper._normalize_raw
         _require(normalize(before) == normalize(after), "raw before/after mismatch", errors)
-        _require(normalize(before) == normalize(prior), "raw cross-S15-P1 mismatch", errors)
+        _require(normalize(before) == normalize(prior), "raw cross-S15-P2 mismatch", errors)
         _require(normalize(after) == normalize(current), "raw current mismatch", errors)
         diagnostic = _read_json(phase.PRIVATE_DIAGNOSTIC_PATH)
         expected = {
@@ -481,35 +462,30 @@ def _validate_private(manifest: dict[str, Any], errors: list[str], require_brows
             "private_xlsx_container_count": 48,
             "private_parseable_sheet_count": 4198,
             "private_unique_candidate_sheet_count": 13,
-            "private_multi_field_candidate_sheet_count": 3,
-            "private_candidate_covered_field_count": 6,
             "private_probe_roundtrip_mismatch_count": 0,
-            "authoritative_project_row_count": 0,
-            "authoritative_value_binding_count": 0,
-            "performance_fact_row_count": 0,
-            "actual_abnormal_project_count": 0,
-            "field_review_item_count": 6,
-            "legacy_fact_rows_quarantined": 4,
-            "legacy_review_items_quarantined": 16,
+            "source_performance_fact_row_count": 0,
+            "interface_payload_record_count": 0,
+            "future_salary_readiness_record_count": 0,
+            "project_reference_count": 0,
+            "employee_reference_count": 0,
+            "salary_numeric_value_count": 0,
+            "human_boundary_checkpoint_count": 4,
+            "legacy_readiness_rows_quarantined": 4,
+            "legacy_review_refs_quarantined": 16,
             "raw_snapshot_exact_match": True,
             "raw_cross_phase_snapshot_exact_match": True,
         }
         for key, value in expected.items():
             _require(diagnostic.get(key) == value, f"private diagnostic {key} drift", errors)
         report = phase.PRIVATE_REPORT_PATH.read_text(encoding="utf-8")
-        for token in ("当前事实表只能输出结构", "六项字段级复核事项", "全中文最终差异报告"):
+        for token in ("未来工资读取草案不能生成记录", "四个人工检查点均未执行", "全中文最终差异报告"):
             _require(token in report, f"private report token missing: {token}", errors)
 
     if not require_browser:
         return
     summary = manifest["summary"]
     _read_audit(phase.PRIVATE_BASELINE_AUDIT_PATH, 6, 54, errors)
-    _read_audit(
-        phase.PRIVATE_CURRENT_AUDIT_PATH,
-        1,
-        summary["current_html_control_row_count"],
-        errors,
-    )
+    _read_audit(phase.PRIVATE_CURRENT_AUDIT_PATH, 1, summary["current_html_control_row_count"], errors)
     _require(phase.PRIVATE_BROWSER_PATH.is_file(), "browser evidence missing", errors)
     _require(_git_ignored(phase.PRIVATE_BROWSER_PATH), "browser evidence not ignored", errors)
     _require(not _git_tracked(phase.PRIVATE_BROWSER_PATH), "browser evidence tracked", errors)
@@ -517,15 +493,15 @@ def _validate_private(manifest: dict[str, Any], errors: list[str], require_brows
         browser = _read_json(phase.PRIVATE_BROWSER_PATH)
         _require(browser.get("status") == "PASS", "browser status drift", errors)
         _require(len(browser.get("viewport_checks", [])) == 2, "browser viewport count drift", errors)
-        _require(len(browser.get("review_item_interaction_checks", [])) == 12, "review interaction drift", errors)
+        _require(len(browser.get("interface_field_interaction_checks", [])) == 12, "field interaction drift", errors)
         _require(len(browser.get("dependency_link_http_checks", [])) == 4, "HTTP count drift", errors)
         _require(len(browser.get("dependency_navigation_checks", [])) == 4, "navigation count drift", errors)
         _require(
             all(
                 row.get("marker_visible")
                 and row.get("quality_visible")
-                and row.get("zero_fact_rows_visible")
-                and row.get("six_review_items_visible")
+                and row.get("zero_records_visible")
+                and row.get("four_human_visible")
                 and row.get("stage_boundary_visible")
                 and row.get("console_error_count") == 0
                 and row.get("no_horizontal_overflow")
@@ -535,7 +511,7 @@ def _validate_private(manifest: dict[str, Any], errors: list[str], require_brows
             errors,
         )
     for mode, width in (("desktop", 1440), ("mobile", 390)):
-        path = phase.PRIVATE_SCREENSHOT_DIR / f"performance_review_{mode}.png"
+        path = phase.PRIVATE_SCREENSHOT_DIR / f"salary_boundary_{mode}.png"
         _require(path.is_file(), f"screenshot missing: {path}", errors)
         _require(_git_ignored(path), f"screenshot not ignored: {path}", errors)
         _require(not _git_tracked(path), f"screenshot tracked: {path}", errors)
@@ -545,7 +521,7 @@ def _validate_private(manifest: dict[str, Any], errors: list[str], require_brows
             _require(height >= 700, f"screenshot height too small: {path}", errors)
 
 
-def validate_v014_s15_p2_post_remediation_performance_review_list(
+def validate_v014_s15_p3_post_remediation_salary_boundary(
     *,
     require_private_evidence: bool = False,
     require_browser_evidence: bool = False,
@@ -585,18 +561,18 @@ def main() -> int:
     parser.add_argument("--require-browser-evidence", action="store_true")
     parser.add_argument("--require-final-evidence", action="store_true")
     args = parser.parse_args()
-    manifest = validate_v014_s15_p2_post_remediation_performance_review_list(
+    manifest = validate_v014_s15_p3_post_remediation_salary_boundary(
         require_private_evidence=args.require_private_evidence,
         require_browser_evidence=args.require_browser_evidence,
         require_final_evidence=args.require_final_evidence,
     )
     summary = manifest["summary"]
     print(
-        "S15-P2 strict validation PASS: "
-        f"columns={summary['performance_fact_table_column_count']} "
-        f"fact_rows={summary['performance_fact_row_count']} "
-        f"abnormal_projects={summary['actual_abnormal_project_count']} "
-        f"review_items={summary['field_review_item_count']} "
+        "S15-P3 strict validation PASS: "
+        f"fields={summary['fact_output_interface_field_count']} "
+        f"interface_records={summary['interface_payload_record_count']} "
+        f"readiness_records={summary['future_salary_readiness_record_count']} "
+        f"human_checkpoints={summary['human_boundary_checkpoint_count']} "
         f"decision={summary['decision']}"
     )
     return 0
