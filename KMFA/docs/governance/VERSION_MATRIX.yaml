@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-s13-p2-post-remediation-collection-receivable-aging"
-product_version_status: "completed_validated_local_only_s13_p2_method_locked_business_items_unproven_upload_deferred"
-version_file_value: "0.1.4-s13-p2-post-remediation-collection-receivable-aging"
+product_version: "0.1.4-s13-p3-post-remediation-cross-table-review"
+product_version_status: "completed_validated_local_only_s13_p3_not_comparable_no_go_upload_deferred"
+version_file_value: "0.1.4-s13-p3-post-remediation-cross-table-review"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-s13-p2-post-remediation-collection-receivable-aging"
+  MOD-KMFA-GOV-001: "0.1.4-s13-p3-post-remediation-cross-table-review"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_s13_p3_post_remediation_cross_table_review: "0.1.4-s13-p3-post-remediation-cross-table-review"
   kmfa_v014_s13_p2_post_remediation_collection_receivable_aging: "0.1.4-s13-p2-post-remediation-collection-receivable-aging"
   kmfa_v014_s13_p1_post_remediation_financial_operating_report: "0.1.4-s13-p1-post-remediation-financial-operating-report"
   kmfa_v014_s12_post_remediation_stage_review: "0.1.4-s12-post-remediation-stage-review"
@@ -425,12 +426,55 @@ parameter_profile_versions:
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_blocked_handoff_final_threshold_recheck_after_reminder: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-final-threshold-recheck-after-reminder"
   kmfa_project_cost_mvp: "blocked_no_go_owner_scope_required"
 data_snapshot_version: "not_applicable_no_raw_data_committed"
-current_iteration: "ITER-20260711-KMFA-V014-S13-P2-POST-REMEDIATION-COLLECTION-RECEIVABLE-AGING"
-current_phase: "V014_S13_P2_POST_REMEDIATION_COLLECTION_RECEIVABLE_AGING"
-current_task_id: "KMFA-V014-S13-P2-POST-REMEDIATION-COLLECTION-RECEIVABLE-AGING-20260711"
-current_acceptance_id: "ACC-V014-S13-P2-POST-REMEDIATION-COLLECTION-RECEIVABLE-AGING"
-current_gate: "NO_GO_S13_P3_NEXT_SEPARATE_RUN_UPLOAD_DEFERRED"
+current_iteration: "ITER-20260711-KMFA-V014-S13-P3-POST-REMEDIATION-CROSS-TABLE-REVIEW"
+current_phase: "V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW"
+current_task_id: "KMFA-V014-S13-P3-POST-REMEDIATION-CROSS-TABLE-REVIEW-20260711"
+current_acceptance_id: "ACC-V014-S13-P3-POST-REMEDIATION-CROSS-TABLE-REVIEW"
+current_gate: "NO_GO_STAGE13_REVIEW_NEXT_SEPARATE_RUN_UPLOAD_DEFERRED"
 
+
+kmfa_v014_s13_p3_post_remediation_cross_table_review:
+  status: completed_validated_local_only_s13_p3_not_comparable_no_go_upload_deferred
+  phase: V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW
+  evidence_dir: KMFA/stage_artifacts/V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW
+  validator: KMFA/tools/check_v014_s13_p3_post_remediation_cross_table_review.py
+  focused_test: KMFA/tests/test_v014_s13_p3_post_remediation_cross_table_review.py
+  github_upload: blocked_no_go_upload_deferred
+  counts:
+    review_dimension_count: 4
+    comparable_dimension_count: 0
+    exact_comparison_performed_count: 0
+    proven_match_dimension_count: 0
+    proven_mismatch_dimension_count: 0
+    not_comparable_dimension_count: 4
+    difference_queue_count: 4
+    quality_report_count: 1
+    raw_source_file_count: 5
+    private_dimension_diagnostic_count: 4
+  browser:
+    baseline_pass_count: 54
+    current_pass_count: 7
+    viewport_check_count: 2
+    dimension_interaction_check_count: 4
+    dependency_http_count: 3
+    dependency_navigation_count: 3
+    console_error_count: 0
+    horizontal_overflow_count: 0
+  quality:
+    data_quality_grade: Q4
+    report_grade: D
+    decision: NO_GO
+    cross_table_review_status: insufficient_row_level_evidence
+    comparison_completion_ratio_bps: 0
+    difference_queue_is_non_additive: true
+    formal_report_allowed: false
+    business_decision_basis_allowed: false
+    difference_closure_allowed: false
+    stage13_review_performed: false
+    s14_p1_performed: false
+    github_upload_performed: false
+    app_reinstall_performed: false
+    business_execution_performed: false
 
 kmfa_v014_s13_p2_post_remediation_collection_receivable_aging:
   status: completed_validated_local_only_s13_p2_method_locked_business_items_unproven_upload_deferred
