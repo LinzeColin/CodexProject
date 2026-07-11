@@ -1,3 +1,18 @@
+## FORM-KMFA-V014-S14-POST-REMEDIATION-STAGE-REVIEW-001
+
+- phase: V014_S14_POST_REMEDIATION_STAGE_REVIEW
+- version: 0.1.4-s14-post-remediation-stage-review
+- model_id: MOD-KMFA-GOV-001
+- scope: 复审当前 S14-P1/P2/P3，隔离旧动态状态，修复三页互链、阶段文案和移动端表格，并锁定 raw 不变与下游门禁。
+- rule: stage14_review_valid = phase_pass_count == 3 AND fund_identified_business_item_count == 0 AND invoice_tax_identified_issue_candidate_count == 0 AND invoice_tax_materialized_cash_summary_count == 0 AND policy_authoritative_evidence_bound_program_count == 0 AND policy_formal_qualification_conclusion_count == 0 AND cross_page_link_count == 6 AND fixed_review_finding_count == 11 AND open_review_finding_count == 0 AND current_grade == D AND decision == NO_GO。
+- phase gate: 仅当前 post-remediation 三个 strict validators 提供动态 phase 事实；旧 Stage 14 review 和 upload-ready 产物仅作历史夹具。
+- navigation gate: 资金、开票纳税、政策证据三页形成 6 条无断链强连通有向边，desktop/mobile、HTTP 和真实导航必须全部通过。
+- evidence gate: 私有结构或词法候选不证明业务行、金额、问题事项、政策材料身份或正式资格。
+- raw gate: review 前后、跨 S14-P3 和当前只读快照一致；raw/private 明文不得进入 Git。
+- downstream gate: S15-P1、GitHub upload、app reinstall、financial/policy actions、formal report、difference closure、persistent write 与 business execution=false。
+- validator: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s14_post_remediation_stage_review.py --require-private-evidence --require-browser-evidence --require-final-evidence
+- evidence: KMFA/stage_artifacts/V014_S14_POST_REMEDIATION_STAGE_REVIEW/machine/stage14_post_remediation_review_manifest.json
+
 ## FORM-KMFA-V014-S14P3-POST-REMEDIATION-POLICY-EVIDENCE-PLAN-001
 
 - phase: V014_S14_P3_POST_REMEDIATION_POLICY_EVIDENCE_PLAN

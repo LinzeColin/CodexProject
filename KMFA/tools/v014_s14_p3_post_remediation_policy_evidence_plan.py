@@ -589,7 +589,7 @@ def _render_html(
     <section class="metrics" aria-label="状态摘要"><div class="metric"><strong>5 / 5</strong><span>目录定义已登记</span></div><div class="metric"><strong>2 / 5</strong><span>存在私有词法候选</span></div><div class="metric"><strong>0 / 5</strong><span>权威证据已绑定</span></div><div class="metric"><strong>0</strong><span>正式资格结论</span></div></section>
     <section class="band"><div class="band-header"><h2>政策证据目录</h2><span class="tag blocked">只登记缺口</span></div><div class="table-wrap"><table><thead><tr><th>目录</th><th>证据类别</th><th>私有词法候选表</th><th>权威绑定</th></tr></thead><tbody>{directory_rows}</tbody></table></div></section>
     <section class="band"><div class="band-header"><h2>缺口与风险复核</h2><span class="tag blocked">5 缺口 · 5 风险</span></div><div class="program-layout"><nav class="program-nav" aria-label="政策目录">{buttons}</nav><div class="program-panels">{panels}</div></div><div class="footer-band"><p id="interaction-status" aria-live="polite">已显示“科小”证据缺口；当前不形成资格结论。</p><div class="links">{links}</div></div></section>
-    <footer>本 phase 仅完成 S14-P3；Stage 14 整体复审、政策资格结论、政策申报、补贴申请、GitHub upload、app reinstall、正式报告、差异关闭和业务执行均未执行。</footer>
+    <footer>Stage 14 三个 phase 均已完成；整体复审保持 Q4 / D · NO_GO，不执行政策资格结论、政策申报、补贴申请、GitHub upload、app reinstall、正式报告、差异关闭或业务执行。</footer>
   </main>
   <script>
     const labels={labels};

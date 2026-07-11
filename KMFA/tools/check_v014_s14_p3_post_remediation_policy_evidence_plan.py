@@ -387,6 +387,8 @@ def _validate_html(errors: list[str]) -> None:
     _require(text.count("data-dependency-link=") == 8, "HTML dependency link count mismatch", errors)
     _require("table{min-width:0;table-layout:fixed}" in text, "mobile table layout guard missing", errors)
     _require("word-break:break-word" in text, "mobile table wrapping guard missing", errors)
+    _require("Stage 14 三个 phase 均已完成" in text, "current Stage 14 status missing", errors)
+    _require("本 phase 仅完成 S14-P3" not in text, "stale S14-P3 status remains", errors)
     for link_id, (href, _) in phase.DEPENDENCY_LINKS.items():
         _require(href in text, f"HTML href missing: {link_id}", errors)
         _require((phase.HTML_PATH.parent / href).resolve().is_file(), f"HTML target missing: {link_id}", errors)

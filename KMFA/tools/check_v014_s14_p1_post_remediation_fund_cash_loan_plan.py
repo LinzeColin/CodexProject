@@ -321,6 +321,14 @@ def _validate_html(errors: list[str]) -> None:
     _require(text.count("data-method-button=") == 3, "HTML method button count mismatch", errors)
     _require(text.count("data-method-panel=") == 3, "HTML method panel count mismatch", errors)
     _require(text.count("data-dependency-link=") == 8, "HTML dependency link count mismatch", errors)
+    _require(text.count("data-stage-link=") == 2, "HTML stage link count mismatch", errors)
+    for href in (phase.P2_HREF, phase.P3_HREF):
+        _require(href in text, f"HTML stage href missing: {href}", errors)
+        _require((phase.HTML_PATH.parent / href).resolve().is_file(), f"HTML stage target missing: {href}", errors)
+    _require("Stage 14 三个 phase 均已完成" in text, "current Stage 14 status missing", errors)
+    _require("本 phase 仅完成 S14-P1" not in text, "stale S14-P1 status remains", errors)
+    _require("table{min-width:0;table-layout:fixed}" in text, "mobile table layout guard missing", errors)
+    _require("word-break:break-word" in text, "mobile table wrapping guard missing", errors)
     for link_id, (href, _) in phase.DEPENDENCY_LINKS.items():
         _require(href in text, f"HTML href missing: {link_id}", errors)
         _require((phase.HTML_PATH.parent / href).resolve().is_file(), f"HTML target missing: {link_id}", errors)
