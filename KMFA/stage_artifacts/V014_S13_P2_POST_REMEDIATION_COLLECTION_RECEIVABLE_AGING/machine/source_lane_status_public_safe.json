@@ -1,0 +1,80 @@
+{
+  "lanes": [
+    {
+      "business_decision_basis_allowed": false,
+      "business_priority_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "data_status": "structure_connected_native_wps_conversion_required",
+      "lane_id": "collection_table",
+      "private_raw_parseable": false,
+      "public_structure_source_ref": "SRC-WPS-COLLECTION-001",
+      "responsibility_assignment_allowed": false,
+      "row_level_binding_proven": false,
+      "structure_connected": true,
+      "visible_lane_name": "回款表"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "business_priority_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "data_status": "structure_connected_native_wps_conversion_required",
+      "lane_id": "receivable_aging",
+      "private_raw_parseable": false,
+      "public_structure_source_ref": "SRC-WPS-AGING-001",
+      "responsibility_assignment_allowed": false,
+      "row_level_binding_proven": false,
+      "structure_connected": true,
+      "visible_lane_name": "应收账龄"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "business_priority_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "data_status": "structure_and_private_container_parseable_row_binding_unproven",
+      "lane_id": "customer_aging",
+      "private_raw_parseable": true,
+      "public_structure_source_ref": "SRC-FIN-AGING-001",
+      "responsibility_assignment_allowed": false,
+      "row_level_binding_proven": false,
+      "structure_connected": true,
+      "visible_lane_name": "客户账龄"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "business_priority_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "data_status": "structure_and_private_container_parseable_row_binding_unproven",
+      "lane_id": "journal",
+      "private_raw_parseable": true,
+      "public_structure_source_ref": "SRC-FIN-JOURNAL-001",
+      "responsibility_assignment_allowed": false,
+      "row_level_binding_proven": false,
+      "structure_connected": true,
+      "visible_lane_name": "日记账"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "business_priority_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "data_status": "structure_and_private_container_parseable_row_binding_unproven",
+      "lane_id": "invoice_plan",
+      "private_raw_parseable": true,
+      "public_structure_source_ref": "SRC-FIN-INVOICE-001",
+      "responsibility_assignment_allowed": false,
+      "row_level_binding_proven": false,
+      "structure_connected": true,
+      "visible_lane_name": "开票计划"
+    }
+  ],
+  "schema_version": "kmfa.v014.s13_p2.source_lanes.v1"
+}

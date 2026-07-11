@@ -1,3 +1,19 @@
+## FORM-KMFA-V014-S13P2-POST-REMEDIATION-COLLECTION-RECEIVABLE-AGING-001
+
+- phase: `V014_S13_P2_POST_REMEDIATION_COLLECTION_RECEIVABLE_AGING`
+- version: `0.1.4-s13-p2-post-remediation-collection-receivable-aging`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: 接入回款表、应收账龄、客户账龄、日记账和开票计划 5 条 public-safe 结构主题，锁定 4 类问题方法与复核角色定义。
+- rule: `s13_p2_receivable_valid = source_lane_count == 5 AND structure_connected_lane_count == 5 AND private_raw_parseable_lane_count == 3 AND row_level_binding_proven_lane_count == 0 AND issue_definition_count == 4 AND identified_business_item_count == 0 AND actionable_collection_priority_item_count == 0 AND assigned_responsibility_item_count == 0 AND current_grade == D AND decision == NO_GO AND raw_exact == true`。
+- source gate: 结构接入、私有容器可解析与行级绑定分别计数；三者不得相互替代。
+- issue gate: 已开票未回款、完工未结算、结算未开票、超期应收仅锁定方法定义；已证明业务项、业务优先级和责任人均为 0。
+- private gate: 两个 WPS 私密容器、共享行键和期间口径差异只保存在 ignored private runtime；公开证据不含原始文件名、字段、表头、金额或诊断。
+- history gate: 旧 S13-P2 的 `12 pending`、4 个静态优先级和 4 个静态责任项只作 historical fixture。
+- raw gate: phase 前后、跨 S13-P1 与当前只读快照一致；任何 raw 差异立即失败。
+- downstream gate: S13-P3、Stage 13 review、GitHub upload、app reinstall、formal report、persistent write 与 business execution=false。
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s13_p2_post_remediation_collection_receivable_aging.py --require-private-evidence --require-browser-evidence --require-final-evidence`
+- evidence: `KMFA/stage_artifacts/V014_S13_P2_POST_REMEDIATION_COLLECTION_RECEIVABLE_AGING/machine/collection_receivable_aging_manifest.json`
+
 ## FORM-KMFA-V014-S13P1-POST-REMEDIATION-FINANCIAL-OPERATING-REPORT-001
 
 - phase: `V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT`

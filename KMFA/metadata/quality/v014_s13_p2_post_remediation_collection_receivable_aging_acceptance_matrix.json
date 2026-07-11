@@ -1,0 +1,112 @@
+{
+  "check_count": 26,
+  "check_fail_count": 0,
+  "check_pass_count": 26,
+  "checks": [
+    {
+      "check_id": "browser_pass",
+      "passed": true
+    },
+    {
+      "check_id": "decision_no_go",
+      "passed": true
+    },
+    {
+      "check_id": "dependency_validated",
+      "passed": true
+    },
+    {
+      "check_id": "five_lanes",
+      "passed": true
+    },
+    {
+      "check_id": "five_raw_sources",
+      "passed": true
+    },
+    {
+      "check_id": "five_structures",
+      "passed": true
+    },
+    {
+      "check_id": "four_issue_definitions",
+      "passed": true
+    },
+    {
+      "check_id": "grade_q4",
+      "passed": true
+    },
+    {
+      "check_id": "no_business_execution",
+      "passed": true
+    },
+    {
+      "check_id": "no_console_errors",
+      "passed": true
+    },
+    {
+      "check_id": "no_decision_basis",
+      "passed": true
+    },
+    {
+      "check_id": "no_formal_report",
+      "passed": true
+    },
+    {
+      "check_id": "no_overflow",
+      "passed": true
+    },
+    {
+      "check_id": "no_reinstall",
+      "passed": true
+    },
+    {
+      "check_id": "no_s13_p3",
+      "passed": true
+    },
+    {
+      "check_id": "no_upload",
+      "passed": true
+    },
+    {
+      "check_id": "private_differences_recorded",
+      "passed": true
+    },
+    {
+      "check_id": "raw_cross_phase_exact",
+      "passed": true
+    },
+    {
+      "check_id": "raw_exact",
+      "passed": true
+    },
+    {
+      "check_id": "report_grade_d",
+      "passed": true
+    },
+    {
+      "check_id": "three_private_parseable",
+      "passed": true
+    },
+    {
+      "check_id": "two_wps_private_containers",
+      "passed": true
+    },
+    {
+      "check_id": "zero_actionable_priorities",
+      "passed": true
+    },
+    {
+      "check_id": "zero_assigned_responsibilities",
+      "passed": true
+    },
+    {
+      "check_id": "zero_identified_items",
+      "passed": true
+    },
+    {
+      "check_id": "zero_row_bindings",
+      "passed": true
+    }
+  ],
+  "schema_version": "kmfa.v014.s13_p2_post_remediation.acceptance_matrix.v1"
+}
