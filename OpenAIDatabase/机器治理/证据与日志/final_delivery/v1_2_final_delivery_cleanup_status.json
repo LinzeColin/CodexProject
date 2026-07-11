@@ -1,117 +1,84 @@
 {
-  "schema_version": "memory_atlas.final_delivery_cleanup.v1_2",
-  "historical_record": true,
-  "current_release_claim_valid": false,
-  "superseded_by": "机器治理/证据与日志/remediation/v1_2_r0/status.json",
-  "task_id": "MA-V12-FINAL-DELIVERY-CLEANUP",
-  "acceptance_id": "ACC-MA-V12-FINAL-DELIVERY-CLEANUP",
-  "status": "v1_2_final_delivery_completed_with_protected_cloudflare_live_evidence",
-  "generated_at": "2026-07-10T07:06:03Z",
+  "schema_version": "memory_atlas.final_delivery_cleanup.v1_2_r8",
+  "historical_record": false,
+  "current_release_claim_valid": true,
+  "task_id": "MA-V12-R8-FINAL-DELIVERY",
+  "acceptance_id": "ACC-MA-V12-R8-FINAL-DELIVERY",
+  "status": "R8_ACCEPTANCE_AND_LIVE_DELIVERY_VERIFIED_PENDING_SINGLE_FINAL_PUSH",
+  "generated_at": "2026-07-11T23:28:15Z",
   "canonical_repo": "LinzeColin/CodexProject/OpenAIDatabase",
-  "main_commit": "current GitHub main HEAD; verify with git rev-parse HEAD after checkout",
-  "commit_identity_note": "Cloudflare live evidence names the exact deployed commit. The final evidence commit must be its immediate child and may contain only final-delivery records; post-push verification compares HEAD with origin/main.",
-  "github_main_verified": true,
-  "github_main_verified_at": "post-push verification required before goal completion",
+  "runtime_commit": "12734c10bf37ee7afc86d62f72e70369a1bcd732",
+  "final_record_commit": "pending direct child of runtime_commit",
+  "github_main_verified": false,
+  "github_main_verification": "required after the single final push",
   "app_reinstall": {
-    "status": "PASS_BY_FINAL_POST_COMMIT_VERIFICATION",
-    "applications_bundle": "/Applications/Memory Atlas.app",
-    "downloads_bundle": "/Users/linzezhang/Downloads/Memory Atlas.app",
-    "installed_git_commit": "must match current local git HEAD after final evidence commit install",
-    "runtime_build_manifest": "/Users/linzezhang/Library/Application Support/OpenAIDatabase/MemoryAtlas/runtime/memory_atlas_build.json",
-    "runtime_git_commit": "must match current local git HEAD after final evidence commit install"
+    "status": "PASS_AT_RUNTIME_COMMIT_FINAL_RECORD_REINSTALL_PENDING",
+    "installed_git_commit": "12734c10bf37ee7afc86d62f72e70369a1bcd732",
+    "applications_bundle_verified": true,
+    "downloads_bundle_verified": true,
+    "runtime_manifest_verified": true,
+    "final_record_commit_reinstall_required": true
   },
   "local_cleanup": {
-    "status": "PASS_BY_FINAL_POST_VERIFICATION",
-    "scope": [
-      "OpenAIDatabase/apps/memory-atlas/node_modules",
-      "OpenAIDatabase/apps/memory-atlas/dist",
-      "OpenAIDatabase/apps/memory-atlas/tsconfig.tsbuildinfo",
-      "OpenAIDatabase/.wrangler",
-      "/private/tmp/memory_atlas_*",
-      "/private/tmp/memory-atlas-*"
-    ],
-    "protected_paths": [
-      "/Applications/Memory Atlas.app",
-      "/Users/linzezhang/Downloads/Memory Atlas.app",
-      "/Users/linzezhang/Library/Application Support/OpenAIDatabase/MemoryAtlas/source",
-      "/Users/linzezhang/Library/Application Support/OpenAIDatabase/MemoryAtlas/runtime",
-      "/Users/linzezhang/Downloads/v1.2_四线14Stage升级_Roadmap.md",
-      "/Users/linzezhang/Downloads/Memory_Atlas_v1.2_四线14Stage升级_TaskPack.zip"
-    ],
+    "status": "PENDING_POST_PUSH_RECOVERY_VERIFICATION",
+    "reproducible_outputs_only": true,
+    "protected_runtime_and_app_bundles": true,
     "notes": [
-      "Delete only reproducible build outputs, Wrangler cache, and Memory Atlas temporary evidence files after final verification.",
-      "Application Support source/runtime and app bundles remain protected for local launch readiness."
+      "Keep installed app bundles, pinned source, and runtime data available after final cleanup.",
+      "Delete only reproducible build outputs, Cloudflare cache, and temporary verification trees."
     ]
   },
   "cloudflare_live_delivery": {
     "status": "PASS",
-    "verified_at": "2026-07-10T07:06:03Z",
-    "evidence_file": "机器治理/证据与日志/final_delivery/memory_atlas_cloudflare_live_evidence.json",
     "pages_project": "openai-memory-atlas",
-    "deployment_id": "82988d29-504a-437e-a8b5-621a59e701af",
-    "deployment_url": "https://82988d29.openai-memory-atlas.pages.dev",
+    "deployment_id": "e0cb0004-d6c6-4182-965c-5b09cbab10c1",
+    "deployment_url": "https://e0cb0004.openai-memory-atlas.pages.dev",
     "custom_url": "https://memoryatlas.linzezhang.com",
-    "deployed_git_commit": "5a24333eb2afa766f5f7416b877a8a560c5302ab",
-    "commit_dirty": false,
+    "deployed_git_commit": "12734c10bf37ee7afc86d62f72e70369a1bcd732",
     "deployment_status": "success",
-    "published_snapshot_sha256": "f2613b612cc5afcf225e8884b6b37996681751ccc31514d104707406aa0a753c",
-    "published_snapshot_generated_at": "2026-07-10T06:52:07.110Z",
-    "access_applications": [
-      {
-        "domain": "memoryatlas.linzezhang.com",
-        "policy": "owner email allowlist verified; literal email redacted from GitHub evidence"
-      },
-      {
-        "domain": "openai-memory-atlas.pages.dev",
-        "policy": "owner email allowlist verified; literal email redacted from GitHub evidence"
-      },
-      {
-        "domain": "*.openai-memory-atlas.pages.dev",
-        "policy": "owner email allowlist verified; literal email redacted from GitHub evidence"
-      }
-    ],
-    "everyone_policy_present": false,
-    "unauthenticated_custom_domain_challenge_verified": true,
-    "unauthenticated_pages_domain_challenge_verified": true,
-    "unauthenticated_preview_domain_challenge_verified": true,
+    "published_snapshot_sha256": "b608631fded9e116d350895be20e6e61be3c7e42ba651ccdf7fc52afd8fefcbc",
+    "access_challenge_verified": true,
     "allowed_user_app_load_verified": true,
     "memory_atlas_json_fetch_verified": true,
     "published_artifact_audited": true,
-    "no_raw_sensitive_artifacts_verified": true
-  },
-  "cloudflare_exposure_incident": {
-    "status": "CLOSED",
-    "detected_at": "2026-07-10T06:55:25Z",
-    "contained_at": "2026-07-10T06:59:00Z",
-    "cause": "The custom domain Access application did not cover the default Pages production hostname or immutable preview hostnames, which Cloudflare documents as public by default.",
-    "exposed_artifact_class": "redacted static Memory Atlas publish artifact; no raw database, transcript, cookie, session, token, key, or credential artifact",
-    "immediate_actions": [
-      "Replaced production content with a fail-closed placeholder and explicit safe-marker memory_atlas.json.",
-      "Deleted the two real-artifact deployments 501108af and 86e82465.",
-      "Verified known direct URLs no longer returned real Memory Atlas fields."
-    ],
-    "permanent_fix": "Added separate owner-allowlist Access applications for openai-memory-atlas.pages.dev and *.openai-memory-atlas.pages.dev while retaining the custom-domain application.",
-    "final_verification": "Custom, production Pages, and preview Pages root/JSON paths all return an unauthenticated Access challenge; an allowed Chrome identity loads the current app and fetches memory_atlas.json."
-  },
-  "cloudflare_fail_closed_mitigation_history": {
-    "status": "RESOLVED",
-    "original_verified_at": "2026-07-08T22:37:45Z",
-    "reason": "Cloudflare Access was previously not enabled, so the Pages project and custom-domain binding were removed to prevent public exposure.",
-    "resolved_at": "2026-07-10T07:06:03Z",
-    "resolution": "Access is enabled, all three required hostname classes are protected, and the clean real deployment has independently verified challenge and allowed-user evidence."
+    "no_raw_sensitive_artifacts_verified": true,
+    "access_policy_changed_in_r8": false,
+    "browser_acceptance": {
+      "status": "PASS",
+      "viewports_passed": 3,
+      "viewports_total": 3,
+      "desktop_low_height": "1470x661",
+      "desktop_standard": "1440x900",
+      "mobile": "390x844",
+      "overlap_failures": 0,
+      "horizontal_overflow_failures": 0,
+      "console_issues": 0
+    }
   },
   "validation": {
-    "git_head_equals_origin_main": true,
+    "atlasctl_final_audit": "PASS_17_OF_17",
+    "requirements": "VERIFIED_58_OF_58",
+    "upgrade_lines": "PASS_4_OF_4",
+    "stages": "VERIFIED_14_OF_14",
+    "exact_commit_recovery": "PASS",
+    "fresh_frontend_build": "PASS",
     "local_app_acceptance": "PASS",
-    "goal_completion_local": "COMPLETE_WITH_OPERATOR_EVIDENCE",
-    "browser_smoke": "PASS",
-    "cloudflare_access_api": "PASS",
-    "cloudflare_pages_api": "PASS",
-    "port_4177_released": true
+    "cloudflare_live_browser_acceptance": "PASS",
+    "github_remote_codeload_recovery": "PENDING_POST_PUSH"
   },
-  "remaining_external_gate": null,
+  "remaining_external_gate": [
+    "create the direct-child final record commit",
+    "reinstall both app bundles at that commit",
+    "perform the single final push to GitHub main",
+    "verify origin/main and GitHub codeload recovery"
+  ],
   "raw_mutation": false,
   "secret_or_credential_change": false,
-  "access_policy_change": true,
-  "open_branch_or_pr": false
+  "access_policy_change": false,
+  "open_branch_or_pr_created": false,
+  "unrelated_dirty_paths_preserved": [
+    "WDA/docs/governance/TRACEABILITY_MATRIX.csv",
+    "WDA/docs/governance/VERSION_MATRIX.yaml",
+    "WDA/docs/governance/parameter_registry.csv"
+  ]
 }

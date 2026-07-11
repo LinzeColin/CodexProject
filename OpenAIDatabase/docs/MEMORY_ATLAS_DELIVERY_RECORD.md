@@ -1,5 +1,33 @@
 # Memory Atlas Delivery Record
 
+## Current Status Supersession: v1.2 Remediation R8
+
+当前状态：`R8_ACCEPTANCE_AND_LIVE_DELIVERY_VERIFIED_PENDING_SINGLE_FINAL_PUSH`。
+
+2026-07-12 最终 runtime commit
+`12734c10bf37ee7afc86d62f72e70369a1bcd732` 已完成 17/17 聚合门禁、58/58
+需求、四条升级线和 S01-S14 全部 VERIFIED；exact-commit tracked-only recovery、
+两份 source package、512-file raw/ledger、fresh npm install/build、Pages parity 和
+workspace cleanup 全部 PASS。
+
+两份 Memory Atlas app、Application Support source/runtime 与 pinned release 已安装到该
+runtime commit。Cloudflare Pages production deployment
+`e0cb0004-d6c6-4182-965c-5b09cbab10c1` 的 Source 为 `12734c1`。授权 Chrome 在
+1470x661、1440x900、390x844 三个精确 CDP 视口均显示“记忆决策台 · v1.2 / 发生了什么”，
+六项快捷操作完整，区块 overlap=0、horizontal overflow=0、console issue=0；线上
+`memory_atlas.json` 返回 200，SHA-256 为
+`b608631fded9e116d350895be20e6e61be3c7e42ba651ccdf7fc52afd8fefcbc`，包含
+435 nodes、2,325 edges、401 timeline rows，与本地 runtime 字节一致。未授权 custom
+和 immutable preview 均返回 Access challenge。
+
+R8 同时删除了外部 automation 写入的 zero-part `SENSITIVE_SCAN_BLOCKED` session
+metadata，并把 `codex-session` automation 改为只有 `part_count > 0` 且存在可恢复
+encrypted part 才允许 stage/commit/push。三处无关 WDA worktree 变更保持原样且排除在
+Memory Atlas staging 之外。
+
+剩余动作仅为：生成本记录的直接子提交、执行唯一一次 `main` push、验证 remote HEAD
+和 GitHub codeload 全量恢复。完成这些外部验证前仍不得宣称 goal complete。
+
 ## Current Status Supersession: v1.2 Remediation R7
 
 当前发布状态：`FAIL_REMEDIATION_REQUIRED`。
