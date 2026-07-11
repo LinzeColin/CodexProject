@@ -16,8 +16,13 @@ Automation contract:
   - Do not commit `DWS_Outputs.zip` or expanded raw DWS output files.
   - Manifests may record package path, byte size, SHA-256, file count, and
     DWS run summary only.
-- The DWS archive automation may update this directory only after its existing
-  archive, validation, and sync goals have completed without a blocking failure.
+- The DWS archive automation may update this directory only after archive and
+  structure validation complete without a blocking failure. Notion sync is
+  best-effort: a recorded `pending` state does not block the manifest backup.
+- Publishing is performed by
+  `KMFA/tools/automation/backup_dws_output_manifest.py` with an explicit
+  `/Users/linzezhang/CodexProject` repository root, because the upstream DWS
+  project directory is intentionally not a Git checkout.
 - Updates must commit and push directly to `main`.
 - No branch, pull request, issue, or extra worktree is allowed.
 - Manifests must not include tokens, cookies, full open conversation IDs,
