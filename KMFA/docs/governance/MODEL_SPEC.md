@@ -1,3 +1,18 @@
+## FORM-KMFA-V014-S12P1-POST-REMEDIATION-PENDING-ACTIONS-001
+
+- phase: `V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS`
+- version: `0.1.4-s12-p1-post-remediation-pending-actions`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: 以 Stage 11 当前证据建立 6 个公开安全待处理分组、4 类候选事件模板和可点击 session-only 工作台。
+- rule: `pending_actions_valid = group_count == 6 AND template_count == 4 AND action_kind_count == 4 AND approved_business_event_count == 0 AND current_html_fail_count == 0 AND grade == D AND decision == NO_GO AND append_only == true AND persistent_business_write == false`。
+- attribution gate: 4 个项目槽位的归属继续保持未证明/不适用，项目级差异值为 `null`；不得把全局 `3/9/2/1` 推断或平均到项目。
+- event gate: 候选事件必须包含处理人引用、会话时间、原因、影响范围和版本；批准后不得静默改写，只能追加反向事件。
+- interaction gate: desktop/mobile 搜索、类型/状态筛选、选择、候选、反向、刷新清空和 3 个返回链接均通过；状态只存在浏览器内存。
+- raw gate: phase 前后、跨 Stage 11 review 和当前快照必须一致；不一致立即停止并仅在 private runtime 保留中文差异报告。
+- release gate: `s12_p2=false`、`s12_p3=false`、`stage12_review=false`、`persistent_write=false`、`github_upload=false`、`app_reinstall=false`、`formal_report=false`、`business_execution=false`。
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s12_p1_post_remediation_pending_actions.py --require-private-evidence --require-browser-evidence --require-final-evidence`
+- evidence: `KMFA/stage_artifacts/V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS/machine/pending_actions_manifest.json`
+
 ## FORM-KMFA-V014-S11-P3-POST-REMEDIATION-PROJECT-COST-PAGE-001
 
 - version: `0.1.4-s11-p3-post-remediation-project-cost-page`

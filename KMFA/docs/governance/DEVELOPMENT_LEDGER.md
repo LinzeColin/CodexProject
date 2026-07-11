@@ -1,3 +1,17 @@
+## 2026-07-11 - V014 S12-P1 post-remediation pending actions
+
+- phase: `V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS`
+- task: `KMFA-V014-S12-P1-POST-REMEDIATION-PENDING-ACTIONS-20260711`
+- product_version: `0.1.4-s12-p1-post-remediation-pending-actions`
+- result: `completed_validated_local_only_s12_p1_no_go_upload_deferred` / `NO_GO`
+- workbench: `6` 个公开安全重叠分组、`4` 类人工动作和 `4` 个 session-only 候选事件模板；当前批准业务事件=`0`。
+- event policy: 候选事件包含处理人、时间、原因、影响范围和版本；仅追加，已批准事件不可静默改写，只能追加反向事件。
+- browser: v1.4 baseline `54/54 PASS`、current page `13/13 PASS`；desktop/mobile search、kind/status filter、selection、candidate、reverse、reload 各 `2`，HTTP/actual navigation=`3/3`，console/overflow=`0/0`。
+- current facts: `Q4 / D / NO_GO / 3 open-final / 9 nonzero / 2 zero / 1 incomplete / 4 unattributed project slots / 13 source rows / 12 hard blocks`。
+- raw proof: `5` 个文件在 phase 前后、跨 Stage 11 review 和当前快照一致；raw 身份、字段、金额、项目和诊断保持 private ignored。
+- boundary: S12-P2/P3、Stage 12 review、持久业务写入、formal report、GitHub upload、app reinstall 和 business execution 均未执行。
+- evidence: `KMFA/stage_artifacts/V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS/machine/pending_actions_manifest.json`
+
 ## 2026-07-11 - V014 S11-P3 post-remediation project cost page
 
 - phase: `V014_S11_P3_POST_REMEDIATION_PROJECT_COST_PAGE`

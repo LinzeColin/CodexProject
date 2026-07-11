@@ -1,3 +1,19 @@
+kmfa_v014_s12_p1_post_remediation_pending_actions:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s12-p1-post-remediation-pending-actions"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S12P1-POST-REMEDIATION-PENDING-ACTIONS-001
+  parameter_refs:
+    - PARAM-KMFA-1720
+    - PARAM-KMFA-1721
+    - PARAM-KMFA-1722
+    - PARAM-KMFA-1723
+  evidence_dir: KMFA/stage_artifacts/V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS
+  validator: KMFA/tools/check_v014_s12_p1_post_remediation_pending_actions.py
+  scope: Current public-safe six-group pending-action workbench with four session-only append-only event templates approved-event reversal policy desktop mobile evidence and Q4 D NO_GO; impact preview rerun persistent business write Stage 12 review upload reinstall formal report and business execution remain closed.
+
 kmfa_v014_s11_p3_post_remediation_project_cost_page:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-s11-p3-post-remediation-project-cost-page"

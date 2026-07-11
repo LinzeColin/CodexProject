@@ -1,3 +1,11 @@
+## 0.1.4-s12-p1-post-remediation-pending-actions - 2026-07-11
+
+- 完成 `V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS` 本地 phase：以 6 个公开安全、不可相加的待处理分组覆盖当前 `Q4 / D / NO_GO / 3-9-2-1`、4 个未公开归属项目槽位和 13 行来源状态。
+- 提供字段映射、项目匹配、差异处理和备注 4 类 session-only 候选事件模板；每类均包含处理人引用、会话时间、原因、影响范围和版本，并执行 append-only 与批准后反向事件策略。
+- 可点击工作台完成搜索、类型/状态筛选、行选择、候选事件、反向事件、刷新清空和 3 个当前页面返回链接；v1.4 基线 `54/54 PASS`、当前页 `13/13 PASS`，桌面/移动 console error 与横向溢出均为 0。
+- 5 个 raw 文件在 phase 前后、跨 Stage 11 review 和当前复核一致；公开仓库仅含聚合状态，不含 raw 文件名、字段、金额、项目/客户明文或私有诊断。
+- 未执行 S12-P2 影响预览、S12-P3 重跑、Stage 12 review、持久业务写入、GitHub upload、app reinstall、正式报告或 business execution。
+
 ## 0.1.4-s11-p3-post-remediation-project-cost-page - 2026-07-11
 
 - 完成 `V014_S11_P3_POST_REMEDIATION_PROJECT_COST_PAGE` 本地 phase：4 个公开安全项目槽位覆盖 7 个规定列，展示毛利、成本结构、回款、差异状态和下一步。
