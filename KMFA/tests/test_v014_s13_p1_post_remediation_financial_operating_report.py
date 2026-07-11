@@ -89,6 +89,8 @@ class TestV014S13P1PostRemediationFinancialOperatingReport(unittest.TestCase):
         self.assertEqual(browser["baseline_warn_count"], 0)
         self.assertEqual(browser["baseline_fail_count"], 0)
         self.assertEqual(browser["current_page_count"], 2)
+        self.assertEqual(browser["current_control_row_count"], 20)
+        self.assertEqual(browser["current_pass_count"], 20)
         self.assertEqual(browser["viewport_check_count"], 4)
         self.assertEqual(browser["section_interaction_check_count"], 28)
         self.assertEqual(browser["cross_draft_link_http_check_count"], 2)

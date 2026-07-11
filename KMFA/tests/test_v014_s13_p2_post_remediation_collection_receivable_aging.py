@@ -130,8 +130,8 @@ class TestV014S13P2PostRemediationCollectionReceivableAging(unittest.TestCase):
         self.assertEqual(browser["current_page_count"], 1)
         self.assertEqual(browser["viewport_check_count"], 2)
         self.assertEqual(browser["issue_interaction_check_count"], 4)
-        self.assertEqual(browser["dependency_link_http_check_count"], 2)
-        self.assertEqual(browser["dependency_navigation_check_count"], 2)
+        self.assertEqual(browser["dependency_link_http_check_count"], 3)
+        self.assertEqual(browser["dependency_navigation_check_count"], 3)
         self.assertEqual(browser["console_error_count"], 0)
         self.assertEqual(browser["horizontal_overflow_count"], 0)
 

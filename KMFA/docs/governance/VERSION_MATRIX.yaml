@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-s13-p3-post-remediation-cross-table-review"
-product_version_status: "completed_validated_local_only_s13_p3_not_comparable_no_go_upload_deferred"
-version_file_value: "0.1.4-s13-p3-post-remediation-cross-table-review"
+product_version: "0.1.4-s13-post-remediation-stage-review"
+product_version_status: "completed_validated_local_only_stage13_review_no_go_upload_deferred"
+version_file_value: "0.1.4-s13-post-remediation-stage-review"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-s13-p3-post-remediation-cross-table-review"
+  MOD-KMFA-GOV-001: "0.1.4-s13-post-remediation-stage-review"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_s13_post_remediation_stage_review: "0.1.4-s13-post-remediation-stage-review"
   kmfa_v014_s13_p3_post_remediation_cross_table_review: "0.1.4-s13-p3-post-remediation-cross-table-review"
   kmfa_v014_s13_p2_post_remediation_collection_receivable_aging: "0.1.4-s13-p2-post-remediation-collection-receivable-aging"
   kmfa_v014_s13_p1_post_remediation_financial_operating_report: "0.1.4-s13-p1-post-remediation-financial-operating-report"
@@ -426,12 +427,69 @@ parameter_profile_versions:
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_blocked_handoff_final_threshold_recheck_after_reminder: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-final-threshold-recheck-after-reminder"
   kmfa_project_cost_mvp: "blocked_no_go_owner_scope_required"
 data_snapshot_version: "not_applicable_no_raw_data_committed"
-current_iteration: "ITER-20260711-KMFA-V014-S13-P3-POST-REMEDIATION-CROSS-TABLE-REVIEW"
-current_phase: "V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW"
-current_task_id: "KMFA-V014-S13-P3-POST-REMEDIATION-CROSS-TABLE-REVIEW-20260711"
-current_acceptance_id: "ACC-V014-S13-P3-POST-REMEDIATION-CROSS-TABLE-REVIEW"
-current_gate: "NO_GO_STAGE13_REVIEW_NEXT_SEPARATE_RUN_UPLOAD_DEFERRED"
+current_iteration: "ITER-20260711-KMFA-V014-S13-POST-REMEDIATION-STAGE-REVIEW"
+current_phase: "V014_S13_POST_REMEDIATION_STAGE_REVIEW"
+current_task_id: "KMFA-V014-S13-POST-REMEDIATION-STAGE-REVIEW-20260711"
+current_acceptance_id: "ACC-V014-S13-POST-REMEDIATION-STAGE-REVIEW"
+current_gate: "NO_GO_S14_P1_NEXT_SEPARATE_RUN_UPLOAD_DEFERRED"
 
+
+kmfa_v014_s13_post_remediation_stage_review:
+  status: completed_validated_local_only_stage13_review_no_go_upload_deferred
+  phase: V014_S13_POST_REMEDIATION_STAGE_REVIEW
+  evidence_dir: KMFA/stage_artifacts/V014_S13_POST_REMEDIATION_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s13_post_remediation_stage_review.py
+  focused_test: KMFA/tests/test_v014_s13_post_remediation_stage_review.py
+  github_upload: blocked_no_go_upload_deferred
+  counts:
+    phase_pass_count: 3
+    financial_source_lane_count: 4
+    financial_raw_value_bound_lane_count: 0
+    financial_draft_report_count: 2
+    receivable_source_lane_count: 5
+    receivable_private_parseable_lane_count: 3
+    receivable_row_binding_proven_lane_count: 0
+    receivable_identified_business_item_count: 0
+    cross_table_review_dimension_count: 4
+    cross_table_comparable_dimension_count: 0
+    cross_table_exact_comparison_count: 0
+    cross_table_not_comparable_dimension_count: 4
+    cross_table_difference_queue_count: 4
+    cross_table_quality_report_count: 1
+    current_stage_page_count: 4
+    cross_page_link_count: 12
+    broken_cross_page_link_count: 0
+    fixed_review_finding_count: 9
+    open_review_finding_count: 0
+    raw_source_file_count: 5
+  browser:
+    baseline_pass_count: 54
+    current_page_count: 4
+    viewport_check_count: 8
+    representative_interaction_check_count: 8
+    cross_page_link_http_check_count: 12
+    cross_page_navigation_check_count: 12
+    console_error_count: 0
+    horizontal_overflow_count: 0
+  state:
+    open_final_difference_accepted_count: 3
+    nonzero_delta_reconciliation_count: 9
+    zero_delta_reconciliation_count: 2
+    incomplete_reconciliation_count: 1
+  quality:
+    data_quality_grade: Q4
+    report_grade: D
+    decision: NO_GO
+    difference_queue_is_non_additive: true
+    cross_page_navigation_strongly_connected: true
+    historical_state_authoritative: false
+    formal_report_allowed: false
+    business_decision_basis_allowed: false
+    difference_closure_allowed: false
+    s14_p1_performed: false
+    github_upload_performed: false
+    app_reinstall_performed: false
+    business_execution_performed: false
 
 kmfa_v014_s13_p3_post_remediation_cross_table_review:
   status: completed_validated_local_only_s13_p3_not_comparable_no_go_upload_deferred
@@ -497,11 +555,11 @@ kmfa_v014_s13_p2_post_remediation_collection_receivable_aging:
     private_difference_item_count: 4
   browser:
     baseline_pass_count: 54
-    current_pass_count: 6
+    current_pass_count: 7
     viewport_check_count: 2
     issue_interaction_check_count: 4
-    dependency_http_count: 2
-    dependency_navigation_count: 2
+    dependency_http_count: 3
+    dependency_navigation_count: 3
     console_error_count: 0
     horizontal_overflow_count: 0
   quality:
