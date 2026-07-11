@@ -332,7 +332,7 @@ def _validate_html(errors: list[str]) -> None:
         "6 项复核",
         "暂无权威项目事实行",
         "不得自动填值，不得生成绩效分数、工资或奖金结论",
-        "S15-P3",
+        "Stage 15 三个 phase 与整体复审均已完成",
         "table-layout:fixed",
         "overflow-x:auto",
     ):
@@ -344,6 +344,13 @@ def _validate_html(errors: list[str]) -> None:
     _require(text.count("data-review-button=") == 6, "review button count drift", errors)
     _require(text.count("data-review-panel=") == 6, "review panel count drift", errors)
     _require(text.count("data-dependency-link=") == 8, "dependency link count drift", errors)
+    _require(text.count("data-stage-link=") == 1, "stage link count drift", errors)
+    _require(phase.P3_HREF in text, "S15-P3 href missing", errors)
+    _require((phase.HTML_PATH.parent / phase.P3_HREF).resolve().is_file(), "S15-P3 target missing", errors)
+    _require("Stage 15 三个 phase 与整体复审均已完成" in text, "Stage 15 review status missing", errors)
+    _require("Stage 15 当前完成 S15-P1/P2" not in text, "stale S15-P2 footer remains", errors)
+    _require("table{min-width:0;table-layout:fixed}" in text, "mobile table layout guard missing", errors)
+    _require("word-break:break-word" in text, "mobile table wrapping guard missing", errors)
 
 
 def _expected_parameter_values(manifest: dict[str, Any]) -> dict[str, str]:

@@ -344,7 +344,7 @@ def _validate_html(errors: list[str]) -> None:
         "NO_GO",
         "6 项待补证",
         "0 / 6",
-        "S15-P2/P3",
+        "Stage 15 三个 phase 与整体复审均已完成",
         "不得计算绩效、工资或奖金",
         "table-layout:fixed",
         "overflow-wrap:anywhere",
@@ -360,6 +360,13 @@ def _validate_html(errors: list[str]) -> None:
     _require(text.count("data-field-button=") == 6, "field button count mismatch", errors)
     _require(text.count("data-field-panel=") == 6, "field panel count mismatch", errors)
     _require(text.count("data-dependency-link=") == 8, "dependency link count mismatch", errors)
+    _require(text.count("data-stage-link=") == 2, "stage link count mismatch", errors)
+    for href in (phase.P2_HREF, phase.P3_HREF):
+        _require(href in text, f"stage href missing: {href}", errors)
+        _require((phase.HTML_PATH.parent / href).resolve().is_file(), f"stage target missing: {href}", errors)
+    _require("Stage 15 三个 phase 与整体复审均已完成" in text, "Stage 15 review status missing", errors)
+    _require("Stage 15 当前仅完成 S15-P1" not in text, "stale S15-P1 footer remains", errors)
+    _require("word-break:break-word" in text, "mobile table wrapping guard missing", errors)
 
 
 def _expected_parameter_values(manifest: dict[str, Any]) -> dict[str, str]:

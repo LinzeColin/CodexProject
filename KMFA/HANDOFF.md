@@ -2,38 +2,39 @@
 
 ## 当前状态
 
-- phase: V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY
-- roadmap gate: S15-P3｜与工资项目边界
-- task: KMFA-V014-S15-P3-POST-REMEDIATION-SALARY-BOUNDARY-20260711
-- acceptance: ACC-V014-S15-P3-POST-REMEDIATION-SALARY-BOUNDARY
-- status: completed_validated_local_only_s15_p3_schema_only_zero_salary_records_no_go_upload_deferred
-- version: 0.1.4-s15-p3-post-remediation-salary-boundary
+- phase: V014_S15_POST_REMEDIATION_STAGE_REVIEW
+- roadmap gate: Stage 15 整体复审
+- task: KMFA-V014-S15-POST-REMEDIATION-STAGE-REVIEW-20260711
+- acceptance: ACC-V014-S15-POST-REMEDIATION-STAGE-REVIEW
+- status: completed_validated_local_only_stage15_review_no_go_upload_deferred
+- version: 0.1.4-s15-post-remediation-stage-review
 - decision: NO_GO
 - data quality / report grade: Q4 / D
 - pursuing_goal_status: active
-- S15-P1 / S15-P2 / S15-P3 / Stage 15 review: performed / performed / performed / not performed
-- GitHub upload / app reinstall: not performed / not performed
-- 下一步只能执行 Stage 15 整体复审
-- 不得执行 S16
+- S15-P1 / S15-P2 / S15-P3 / Stage 15 review: performed / performed / performed / performed
+- S16-P1 / GitHub upload / app reinstall: not performed / not performed / not performed
+- 下一步只能执行 S16-P1
+- 不得执行 S16-P2
 - 不得执行 GitHub upload
 
-## S15-P3 结果
+## Stage 15 复审结果
 
-- 事实输出接口：1 个 public-safe schema-only 契约、6 个字段、0 条来源事实、0 条 payload、0 个项目/员工引用。
-- 未来读取草案：1 个、6 个字段映射、0 条就绪记录、0 个薪资数值，当前读取保持禁用。
-- 人工边界：绩效事实质量、薪酬政策映射、最终薪酬、发放放行 4 个检查点均必须人工且均未执行。
-- live 能力：API endpoint、connector、文件导出、定时同步和外部写入均未创建。
-- legacy 隔离：旧 S15-P3 的 4 条合成就绪记录和 16 个复核引用仅作历史结构夹具。
-- S15-P2 依赖：6 列事实表保持 0 行、6 项字段级复核、0 个实际异常项目和 0 个公开业务值。
-- 私有聚合：5 个 raw、48 个 XLSX 容器、25 可解析、23 不可解析、4,198 个可解析工作表、13 个唯一候选。
-- 浏览器：baseline/current=54/54 / 14/14 PASS；viewports/fields/HTTP/navigation=2/12/4/4，console/overflow=0/0。
-- raw：phase 前后、跨 S15-P2 和当前快照一致。
+- phase replay：当前 S15-P1/P2/P3 focused tests 24/24 PASS，strict validators 3/3 PASS。
+- findings：10 项全部修复，open=0。
+- 当前事实：6 个字段全部人工复核；权威值、绩效事实行、实际异常项目和公开业务值均为 0。
+- 当前清单：1 个六列空事实表、6 项字段级复核事项，不含项目级业务记录。
+- 工资边界：1 个 schema-only 接口、6 个映射、0 payload、0 就绪记录、4 个人工检查点、0 薪资数值。
+- legacy 隔离：旧 review 的 4 条合成事实、4 条工资就绪记录和 16 项复核仅作历史夹具。
+- 页面修复：P1 增加 P2/P3 入口，P2 增加 P3 入口；三页 footer 和移动端表格已修复。
+- 页面验收：3 页形成 6 条强连通有向边；baseline 54/54，current 16/16 + 15/15 + 14/14 PASS。
+- 浏览器：viewports/interactions/HTTP/navigation=6/6/6/6，console/overflow=0/0。
+- raw：review 前后、跨 S15-P3 和当前快照一致。
 - quality: Q4 / D / NO_GO / 3-9-2-1。
 
 ## 关键边界
 
-1. 接口与未来读取草案只登记结构，不证明任何项目、员工或薪资记录存在。
-2. S15-P2 权威事实行为 0 时，未来读取、工资计算、奖金审批和薪资导出必须保持关闭。
+1. 空绩效事实表和 schema-only 工资接口不证明任何项目、员工或薪资记录存在。
+2. 权威事实行为 0 时，工资读取、计算、奖金审批和薪资导出必须保持关闭。
 3. 绩效事实质量、政策映射、最终薪酬和发放放行不得自动执行或绕过人工审批。
 4. 不推断、不平均、不补零，不忽略 0.01 元，不关闭尚未由权威证据解释的差异。
 5. 原始目录只读；不得修改、删除、移动、重命名、覆盖或写入任何原始文件。
@@ -42,20 +43,19 @@
 
 ## 证据
 
-- manifest: KMFA/stage_artifacts/V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY/machine/salary_boundary_manifest.json
-- summary: KMFA/stage_artifacts/V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY/machine/salary_boundary_summary.json
-- interface: KMFA/stage_artifacts/V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY/machine/fact_output_interface_contract_public_safe.json
-- future read draft: KMFA/stage_artifacts/V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY/machine/future_salary_system_read_draft_public_safe.json
-- human boundary: KMFA/stage_artifacts/V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY/machine/human_approval_boundary_public_safe.json
-- workbench: KMFA/stage_artifacts/V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY/exports/html/salary_boundary_workbench.html
-- validator: KMFA/tools/check_v014_s15_p3_post_remediation_salary_boundary.py
-- focused test: KMFA/tests/test_v014_s15_p3_post_remediation_salary_boundary.py
-- private raw/diagnostic/browser evidence: KMFA/.codex_private_runtime/v014_s15_p3_post_remediation_salary_boundary/
+- manifest: KMFA/stage_artifacts/V014_S15_POST_REMEDIATION_STAGE_REVIEW/machine/stage15_post_remediation_review_manifest.json
+- summary: KMFA/stage_artifacts/V014_S15_POST_REMEDIATION_STAGE_REVIEW/machine/stage15_post_remediation_review_summary.json
+- matrix: KMFA/stage_artifacts/V014_S15_POST_REMEDIATION_STAGE_REVIEW/machine/stage15_post_remediation_review_matrix_public_safe.json
+- report: KMFA/stage_artifacts/V014_S15_POST_REMEDIATION_STAGE_REVIEW/human/stage15_post_remediation_review_report_zh.md
+- validator: KMFA/tools/check_v014_s15_post_remediation_stage_review.py
+- focused test: KMFA/tests/test_v014_s15_post_remediation_stage_review.py
+- private raw/browser evidence: KMFA/.codex_private_runtime/v014_s15_post_remediation_stage_review/
 
 ## 验证命令
 
-- PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s15_p3_post_remediation_salary_boundary
-- PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s15_p3_post_remediation_salary_boundary.py --require-private-evidence --require-browser-evidence --require-final-evidence
+- PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s15_p1_post_remediation_performance_fact_fields KMFA.tests.test_v014_s15_p2_post_remediation_performance_review_list KMFA.tests.test_v014_s15_p3_post_remediation_salary_boundary
+- PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s15_post_remediation_stage_review
+- PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s15_post_remediation_stage_review.py --require-private-evidence --require-browser-evidence --require-final-evidence
 - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_no_float_money.py
 - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/no_omission_check.py
 - PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 scripts/validate_project_governance.py --project KMFA --mode required
@@ -72,14 +72,14 @@
 ## 未解决风险
 
 - 23 个 XLSX 容器当前无法由 openpyxl 直接解析；不得损伤原文件进行转换。
-- 13 个候选工作表没有权威项目行、人员、期间、单位、公式或数值绑定，不能形成工资输入。
+- 13 个候选工作表没有权威项目行、人员、期间、单位、公式或数值绑定，不能形成绩效或工资输入。
 - 3 条开放接受差异、9 条非零差异和 1 条未完成比较仍未关闭。
 - GitHub main 未上传，app 未重装；统一延期到 Stage 12-18 全部完成、最终整体复审并修复 findings 后一次性执行。
 
 ## 推荐下一轮 pursuing goal prompt
 
-继续 KMFA，只执行 Stage 15 整体复审；不得执行 S16 或 GitHub upload。
-先确认 git root、branch、remote、HEAD、status，并读取最新 HANDOFF、v1.4 Task Pack/Roadmap 的 Stage 15 契约。
-复跑当前 S15-P1/P2/P3 focused tests、strict validators、浏览器/移动端交互、治理 validator、raw/private/secret scan；整体检查字段、事实表、复核清单、工资项目边界和跨页面导航，修复本次复审 findings。
-验收必须包含 public-safe review evidence、ignored private evidence、raw 前后/跨 phase 交叉验证、全部 findings 关闭、governance validators 和 local commit。
-本轮不得执行 S16、工资计算、奖金审批、薪资导出、最终发放、GitHub upload、app reinstall、正式报告、差异关闭、持久业务写入或 business execution。
+继续 KMFA，只执行一个 phase：S16-P1｜外协采购归集；不得执行 S16-P2/P3、Stage 16 整体复审或 GitHub upload。
+先确认 git root、branch、remote、HEAD、status，并读取最新 HANDOFF、v1.4 Task Pack/Roadmap 的 S16-P1 契约。
+基于 Stage 15 review 的 Q4 / D / NO_GO / 3-9-2-1 和只读 raw 边界，接入外协合同、采购订单、付款申请、发票、项目归属的 public-safe 结构与私有候选解析；识别未归集成本、重复付款、无合同付款候选，但不得执行采购、付款审批、付款或银行动作。
+验收必须包含 focused tests、strict validator、public-safe evidence、ignored private evidence、raw 前后/跨 phase 交叉验证、浏览器/移动端、raw/private/secret scan、governance validators 和 local commit。
+本轮不得执行 S16-P2/P3、Stage 16 整体复审、采购执行、付款审批、付款执行、银行操作、GitHub upload、app reinstall、正式报告、差异关闭、持久业务写入或 business execution。

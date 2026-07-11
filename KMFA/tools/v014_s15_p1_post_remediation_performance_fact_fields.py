@@ -222,6 +222,14 @@ DEPENDENCY_LINKS = {
         "跨表复核质量工作台",
     ),
 }
+P2_HREF = (
+    "../../../V014_S15_P2_POST_REMEDIATION_PERFORMANCE_REVIEW_LIST/exports/html/"
+    "performance_review_workbench.html"
+)
+P3_HREF = (
+    "../../../V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY/exports/html/"
+    "salary_boundary_workbench.html"
+)
 
 
 def _read_json(path: Path) -> dict[str, Any]:
@@ -675,6 +683,10 @@ def _render_html(
         f'<a data-dependency-link="{link_id}" href="{href}">{label}</a>'
         for link_id, (href, label) in DEPENDENCY_LINKS.items()
     )
+    stage_links = (
+        f'<a data-stage-link="review-list" href="{P2_HREF}">绩效复核清单工作台</a>'
+        f'<a data-stage-link="salary-boundary" href="{P3_HREF}">工资项目边界工作台</a>'
+    )
     labels = json.dumps(FIELD_LABELS, ensure_ascii=False, sort_keys=True)
     return f"""<!doctype html>
 <html lang="zh-CN">
@@ -706,12 +718,12 @@ def _render_html(
     .status{{padding:12px 16px;background:#f5f8f7;border-top:1px solid #cad6d3;color:#5d716b}}.status-links{{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}}.status a{{color:#007696;text-decoration:none}}
     footer{{color:#5f736e;font-size:13px}}button:focus-visible,a:focus-visible{{outline:3px solid #f0ba4d;outline-offset:2px}}
     @media(max-width:680px){{.nav{{display:block}}nav{{justify-content:flex-start;margin-top:12px}}h1{{font-size:27px}}.stats{{grid-template-columns:repeat(2,1fr)}}.stat:nth-child(2){{border-right:0}}.stat:nth-child(-n+2){{border-bottom:1px solid #cad6d3}}
-      table{{font-size:12px}}th,td{{padding:8px 6px}}.workspace{{display:block}}.field-buttons{{border-right:0;border-bottom:1px solid #cad6d3;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}}
+      table{{min-width:0;table-layout:fixed;font-size:11px}}th,td{{padding:8px 5px;word-break:break-word}}.workspace{{display:block}}.field-buttons{{border-right:0;border-bottom:1px solid #cad6d3;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}}
       .field-buttons button{{text-align:center}}.panel{{padding:16px}}dl{{grid-template-columns:1fr}}.panel-head{{align-items:center}}}}
   </style>
 </head>
 <body data-active-field="">
-  <header><div class="nav"><div class="brand"><div class="logo">KM</div><div><strong>KMFA 经营分析系统</strong><small>S15-P1 · 绩效事实字段</small></div></div><nav>{links}</nav></div></header>
+  <header><div class="nav"><div class="brand"><div class="logo">KM</div><div><strong>KMFA 经营分析系统</strong><small>S15-P1 · 绩效事实字段</small></div></div><nav>{links}{stage_links}</nav></div></header>
   <main class="page">
     <h1>绩效事实字段工作台</h1>
     <p class="intro">六个必需字段已接入结构候选；当前不展示项目、人员、金额、比率或日期明细。</p>
@@ -721,7 +733,7 @@ def _render_html(
     <section class="section"><div class="section-head"><h2>字段绑定状态</h2><span class="tag blocked">不含业务值</span></div><table><thead><tr><th>字段</th><th>私有候选表</th><th>项目成本结构</th><th>回款结构</th><th>当前状态</th></tr></thead><tbody>{rows}</tbody></table></section>
     <section class="section"><div class="section-head"><h2>人工复核要求</h2><span class="tag blocked">6 项待补证</span></div><div class="workspace"><div class="field-buttons">{buttons}</div><div class="panel">{panels}</div></div>
       <div class="status"><span id="interaction-status">字段复核状态已加载。</span><div class="status-links">{links}</div></div></section>
-    <footer>Stage 15 当前仅完成 S15-P1；S15-P2/P3、工资奖金、GitHub upload、app reinstall、正式报告、差异关闭和业务执行均未执行。</footer>
+    <footer>Stage 15 三个 phase 与整体复审均已完成；当前保持 Q4 / D · NO_GO，S16 仅可在下一 run work，不执行工资奖金、GitHub upload、app reinstall、正式报告、差异关闭或业务执行。</footer>
   </main>
   <script>
     const labels={labels};let actionSequence=0;

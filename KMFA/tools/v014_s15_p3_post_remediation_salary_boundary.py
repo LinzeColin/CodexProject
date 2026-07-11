@@ -444,7 +444,7 @@ def _render_html(
     .status{{padding:12px 16px;background:#f5f8f7;border-top:1px solid #cad6d3;color:#5d716b}}.status-links{{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}}.status a{{color:#007696;text-decoration:none}}
     footer{{color:#5f736e;font-size:13px}}button:focus-visible,a:focus-visible{{outline:3px solid #f0ba4d;outline-offset:2px}}
     @media(max-width:680px){{.nav{{display:block}}nav{{justify-content:flex-start;margin-top:12px}}h1{{font-size:27px}}.stats{{grid-template-columns:repeat(2,1fr)}}.stat:nth-child(2){{border-right:0}}.stat:nth-child(-n+2){{border-bottom:1px solid #cad6d3}}
-      .draft{{grid-template-columns:1fr}}.workspace{{display:block}}.field-buttons{{border-right:0;border-bottom:1px solid #cad6d3;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}}.field-buttons button{{text-align:center}}
+      table{{min-width:0;table-layout:fixed}}th,td{{padding:8px 5px;font-size:11px;word-break:break-word}}.draft{{grid-template-columns:1fr}}.workspace{{display:block}}.field-buttons{{border-right:0;border-bottom:1px solid #cad6d3;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}}.field-buttons button{{text-align:center}}
       .panel{{padding:16px}}dl{{grid-template-columns:1fr}}.panel-head{{align-items:center}}.section-head{{align-items:flex-start}}}}
   </style>
 </head>
@@ -461,7 +461,7 @@ def _render_html(
     <section class="section"><div class="section-head"><h2>人工审批与发放边界</h2><span class="tag blocked">4 项均未执行</span></div><div class="table-scroll"><table><thead><tr><th>顺序</th><th>检查点</th><th>责任方式</th><th>当前状态</th></tr></thead><tbody>{boundary_rows}</tbody></table></div></section>
     <section class="section"><div class="section-head"><h2>接口字段检查</h2><span class="tag blocked">6 项值不可用</span></div><div class="workspace"><div class="field-buttons">{buttons}</div><div class="panel">{panels}</div></div>
       <div class="status"><span id="interaction-status">接口字段结构已加载。</span><div class="status-links">{links}</div></div></section>
-    <footer>Stage 15 当前完成 S15-P1/P2/P3；Stage 15 整体复审、工资计算、奖金审批、薪资导出、最终发放、GitHub 上传、应用重装、正式报告、差异关闭和业务执行均未执行。</footer>
+    <footer>Stage 15 三个 phase 与整体复审均已完成；当前保持 Q4 / D · NO_GO，S16 仅可在下一 run work，不执行工资计算、奖金审批、薪资导出、最终发放、GitHub 上传、应用重装、正式报告、差异关闭或业务执行。</footer>
   </main>
   <script>
     const labels={labels};let actionSequence=0;

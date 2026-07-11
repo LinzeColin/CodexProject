@@ -1,3 +1,11 @@
+## 0.1.4-s15-post-remediation-stage-review - 2026-07-11
+
+- 完成 `V014_S15_POST_REMEDIATION_STAGE_REVIEW` 本地整体复审：当前 S15-P1/P2/P3 focused tests `24/24 PASS`，strict validators `3/3 PASS`，`10 fixed / 0 open`。
+- 隔离旧 Stage 15 review 的 4 条合成绩效事实、4 条工资就绪记录和 16 项复核；当前事实行、实际异常项目、接口 payload、就绪记录和薪资数值均为 0。
+- 修复 P1 缺 P2/P3 入口、P2 缺 P3 入口、三页过期 footer 与 P1/P2/P3 移动端表格；三页形成 6 条强连通有向边。
+- v1.4 baseline `54/54 PASS`，当前页面 `16/16 + 15/15 + 14/14 PASS`；6 视口、6 次代表性交互、6 条 HTTP 与 6 次真实导航通过，console error 与横向溢出为 0。
+- raw review 前后、跨 S15-P3 与当前快照一致；保持 Q4 / D / NO_GO / 3-9-2-1，未执行 S16、工资奖金、薪资导出、最终发放、GitHub upload、app reinstall、正式报告、差异关闭或 business execution。
+
 ## 0.1.4-s15-p3-post-remediation-salary-boundary - 2026-07-11
 
 - 完成 `V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY` 本地 phase：预留 1 个 schema-only 绩效事实输出接口、6 个字段映射和 1 个未来工资系统读取草案。
