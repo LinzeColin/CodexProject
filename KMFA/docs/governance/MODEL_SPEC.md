@@ -1,3 +1,19 @@
+## FORM-KMFA-V014-S12P3-POST-REMEDIATION-RERUN-MECHANISM-001
+
+- phase: `V014_S12_P3_POST_REMEDIATION_RERUN_MECHANISM`
+- version: `0.1.4-s12-p3-post-remediation-rerun-mechanism`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: 以当前 S12-P2 六个影响定义生成 public-safe 缓存失效与四层重跑计划，并验证高风险确认、同源引用、仅追加版本和持久执行阻断。
+- rule: `rerun_mechanism_valid = plan_count == 6 AND planned_step_count == 24 AND chain_layer_count == 4 AND high_risk_count == 5 AND approved == 0 AND published == 0 AND persistent_rerun == 0 AND current_html_fail == 0 AND grade == D AND decision == NO_GO AND raw_exact == true`。
+- chain gate: `field_mapping -> fact_layer -> derived_metric -> report_reference`，同一计划四层必须共享唯一 public-safe source anchor。
+- version gate: old version retained=true、new version append required=true、overwrite=false；金额容忍为 0 分，不忽略一分钱差异。
+- execution gate: 仅允许 browser session simulation；真实持久缓存失效、派生重跑和一致性记录均为 0。
+- attribution gate: 四个项目仅表示潜在影响，不得建立项目归属或公开业务值。
+- raw gate: phase 前后、跨 S12-P2 和当前快照必须一致；不一致立即停止并仅在 private runtime 保留中文差异报告。
+- release gate: `stage12_review=false`、`persistent_write=false`、`github_upload=false`、`app_reinstall=false`、`formal_report=false`、`business_execution=false`。
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s12_p3_post_remediation_rerun_mechanism.py --require-private-evidence --require-browser-evidence --require-final-evidence`
+- evidence: `KMFA/stage_artifacts/V014_S12_P3_POST_REMEDIATION_RERUN_MECHANISM/machine/rerun_manifest.json`
+
 ## FORM-KMFA-V014-S12P2-POST-REMEDIATION-IMPACT-PREVIEW-001
 
 - phase: `V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW`

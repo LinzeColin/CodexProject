@@ -5,12 +5,12 @@
 ## 最新状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s12-p2-post-remediation-impact-preview`
+- version: `0.1.4-s12-p3-post-remediation-rerun-mechanism`
 - current_stage: `S12`
-- current_phase: `V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW`
-- status: `completed_validated_local_only_s12_p2_no_go_upload_deferred`
+- current_phase: `V014_S12_P3_POST_REMEDIATION_RERUN_MECHANISM`
+- status: `completed_validated_local_only_s12_p3_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `S12-P3_derived_rerun_as_separate_run`
+- next_required_input: `Stage_12_overall_review_as_separate_run`
 - production_ready: `false`
 - github_upload_ready: `false`
 - raw_snapshot_exact_match: `true`
@@ -19,12 +19,12 @@
 ## 前序状态（上一 phase）
 
 - project_id: `KMFA`
-- version: `0.1.4-s12-p1-post-remediation-pending-actions`
+- version: `0.1.4-s12-p2-post-remediation-impact-preview`
 - current_stage: `S12`
-- current_phase: `V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS`
-- status: `completed_validated_local_only_s12_p1_no_go_upload_deferred`
+- current_phase: `V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW`
+- status: `completed_validated_local_only_s12_p2_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `S12-P2_impact_preview_as_separate_run`
+- next_required_input: `S12-P3_derived_rerun_as_separate_run`
 - raw_snapshot_exact_match: `true`
 - decision: `NO_GO`
 
@@ -44,6 +44,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 S12-P3 post-remediation rerun mechanism completed local-only：`6` 个 current public-safe 重跑计划覆盖 S12-P2 全部影响定义，每份 `4` 层，共 `24` 个计划步骤；`5` 个高风险计划要求二次确认。当前 approved/published business events=`0/0`，persistent cache invalidation/rerun/consistency=`0/0/0`，页面仅执行 session-only 模拟。四层共享同一 source anchor，旧版本保留、新版本追加，0.01 元差异不得忽略。v1.4 baseline `54/54 PASS`、current HTML `12/12 PASS`；desktop/mobile 全流程与 4 条返回链接通过。raw 前后、跨 S12-P2 与当前快照一致；Stage 12 review、upload、reinstall、正式报告、持久业务写入和 business execution 均未执行。next_required_input=`Stage_12_overall_review_as_separate_run`。
 
 - v0.1.4 S12-P2 post-remediation impact preview completed local-only：`6` 个 public-safe 影响定义覆盖项目范围、指标和报告；`5` 个高风险定义要求 session-only 二次确认。4 个项目仅作潜在影响槽位，不证明归属。未生成预览、未完成二次确认或当前 `Q4 / D / NO_GO` 任一条件均阻止发布；批准/发布业务事件=`0/0`。v1.4 baseline `54/54 PASS`、current HTML `14/14 PASS`；desktop/mobile 中/高风险流程、发布阻断和 4 条返回链接通过。raw 前后、跨 S12-P1 与当前快照一致；S12-P3、Stage 12 review、upload、reinstall、正式报告、持久业务写入和 business execution 均未执行。next_required_input=`S12-P3_derived_rerun_as_separate_run`。
 

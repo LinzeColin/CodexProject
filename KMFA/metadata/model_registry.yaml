@@ -1,3 +1,19 @@
+kmfa_v014_s12_p3_post_remediation_rerun_mechanism:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s12-p3-post-remediation-rerun-mechanism"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S12P3-POST-REMEDIATION-RERUN-MECHANISM-001
+  parameter_refs:
+    - PARAM-KMFA-1728
+    - PARAM-KMFA-1729
+    - PARAM-KMFA-1730
+    - PARAM-KMFA-1731
+  evidence_dir: KMFA/stage_artifacts/V014_S12_P3_POST_REMEDIATION_RERUN_MECHANISM
+  validator: KMFA/tools/check_v014_s12_p3_post_remediation_rerun_mechanism.py
+  scope: Current public-safe six-plan twenty-four-step four-layer rerun simulation with high-risk confirmation same-source anchors append-only versions zero persistent execution desktop mobile evidence and Q4 D NO_GO; Stage 12 review upload reinstall formal report and business execution remain closed.
+
 kmfa_v014_s12_p2_post_remediation_impact_preview:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-s12-p2-post-remediation-impact-preview"

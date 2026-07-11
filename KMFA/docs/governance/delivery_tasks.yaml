@@ -1,6 +1,47 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "KMFA-V014-S12-P3-POST-REMEDIATION-RERUN-MECHANISM-20260711"
+    phase: "V014_S12_P3_POST_REMEDIATION_RERUN_MECHANISM"
+    objective: "Provide current public-safe derived-cache invalidation plans four-layer rerun simulations and same-source consistency checks while keeping persistent execution closed."
+    scope:
+      - "six current S12-P2 impact previews and six rerun plan definitions"
+      - "field mapping fact layer derived metric and report reference chain"
+      - "high-risk second confirmation same-source anchor and append-only version controls"
+      - "desktop mobile browser evidence public-safe evidence fresh raw evidence and governance closure"
+    non_scope:
+      - "Stage 12 review or S13"
+      - "persistent cache invalidation derived write business event approval publication formal report or business execution"
+      - "GitHub upload app reinstall raw private Excel PDF CSV database or secret material"
+    status: "completed"
+    completed_version: "0.1.4-s12-p3-post-remediation-rerun-mechanism"
+    dependencies:
+      - "V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW current frozen dependency"
+      - "V014_S12_P3_MANUAL_RERUN_MECHANISM historical chain-policy fixture only"
+      - "v1.4 roadmap taskpack clickable workbench and full-flow baseline"
+    required_files:
+      - "KMFA/stage_artifacts/V014_S12_P3_POST_REMEDIATION_RERUN_MECHANISM/exports/html/kmfa_rerun_workbench.html"
+      - "KMFA/stage_artifacts/V014_S12_P3_POST_REMEDIATION_RERUN_MECHANISM/machine/rerun_manifest.json"
+      - "KMFA/tools/check_v014_s12_p3_post_remediation_rerun_mechanism.py"
+    acceptance_ids:
+      - "ACC-V014-S12-P3-POST-REMEDIATION-RERUN-MECHANISM"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s12_p3_post_remediation_rerun_mechanism.py --require-private-evidence --require-browser-evidence --require-final-evidence"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s12_p3_post_remediation_rerun_mechanism"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_no_float_money.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/no_omission_check.py"
+    test_results:
+      - "PASS: six plans twenty-four four-layer planned steps and zero persistent execution records"
+      - "PASS: desktop mobile medium high confirmation simulation consistency persistent-block and session-reset flows"
+      - "PASS: current audit twelve of twelve and v1.4 baseline fifty-four of fifty-four"
+      - "PASS: raw before after cross-S12-P2 and current snapshots exact"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S12_P3_POST_REMEDIATION_RERUN_MECHANISM/human/s12_p3_rerun_mechanism_report_zh.md"
+      - "KMFA/stage_artifacts/V014_S12_P3_POST_REMEDIATION_RERUN_MECHANISM/machine/rerun_manifest.json"
+    risk: "A session simulation can be misread as persistent execution unless zero approved and published events zero persistent counts Q4 D NO_GO and append-only semantics remain explicit."
+    rollback: "Revert only this S12-P3 commit and ignored private evidence; never mutate the raw inbox."
+    target_version: "0.1.4-s12-p3-post-remediation-rerun-mechanism"
+
   - task_id: "KMFA-V014-S12-P2-POST-REMEDIATION-IMPACT-PREVIEW-20260711"
     phase: "V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW"
     objective: "Provide current public-safe project metric and report impact previews with high-risk second confirmation while keeping all business publication and rerun gates closed."

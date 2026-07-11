@@ -1,3 +1,11 @@
+## 0.1.4-s12-p3-post-remediation-rerun-mechanism - 2026-07-11
+
+- 完成 `V014_S12_P3_POST_REMEDIATION_RERUN_MECHANISM` 本地 phase：6 个当前重跑计划覆盖 S12-P2 全部影响定义，每份包含字段映射、事实层、指标、报告引用 4 层，共 24 个计划步骤。
+- 当前批准/发布业务事件均为 0，因此真实持久缓存失效、派生重跑和一致性记录均为 0；页面仅允许 session-only 模拟，刷新后清零。
+- 5 个高风险计划必须二次确认；四层共享同一 public-safe source anchor，旧版本保留、新版本仅追加，金额容忍度为 0 分。
+- v1.4 基线 `54/54 PASS`、当前页 `12/12 PASS`；desktop/mobile 搜索、筛选、中/高风险流程、确认前阻断、重跑模拟、同源一致性、持久执行阻断、刷新清空和 4 个返回链接均通过，console error 与横向溢出为 0。
+- 5 个 raw 文件在 phase 前后、跨 S12-P2 和当前复核一致；未执行 Stage 12 review、持久业务写入、GitHub upload、app reinstall、正式报告或 business execution。
+
 ## 0.1.4-s12-p2-post-remediation-impact-preview - 2026-07-11
 
 - 完成 `V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW` 本地 phase：6 个公开安全影响定义覆盖 S12-P1 全部待办，并展示潜在项目范围、16 类指标状态和 6 类报告入口影响。
