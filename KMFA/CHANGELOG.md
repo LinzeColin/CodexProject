@@ -1,3 +1,12 @@
+## 0.1.4-s16-p1-post-remediation-subcontract-procurement - 2026-07-12
+
+- 完成 `V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT` 本地 phase：只读接入外协合同、采购订单、付款申请、发票和项目归属 5 类结构。
+- 双次探针覆盖 5 个 raw、48 个 XLSX 容器、25 可解析、23 不可解析、4,198 个工作表、1,335 个唯一候选、1,647 个结构关联和 274 个跨类型候选，探针不一致为 0。
+- 当前权威交易行/值绑定、交易物化、项目匹配、未归集成本项目和异常候选均为 0；锁定未归集成本、重复付款、无合同付款和跨项目费用 4 类人工复核规则。
+- 隔离旧 S16-P1 的 5 条项目匹配、2 条未归集成本和 4 条异常候选；缺少权威行级归属时不得把结构候选当作业务事实。
+- baseline/current HTML `54/54 / 13/13 PASS`；2 视口、10 次结构线交互、8 次规则交互、4 条 HTTP 与 4 次真实导航通过，console/overflow 为 0。
+- raw phase 前后、跨 Stage 15 review 与当前快照一致；保持 Q4 / D / NO_GO / 3-9-2-1，未执行 S16-P2/P3、Stage 16 review、采购、付款审批、付款、银行、GitHub upload、app reinstall、正式报告、差异关闭或 business execution。
+
 ## 0.1.4-s15-post-remediation-stage-review - 2026-07-11
 
 - 完成 `V014_S15_POST_REMEDIATION_STAGE_REVIEW` 本地整体复审：当前 S15-P1/P2/P3 focused tests `24/24 PASS`，strict validators `3/3 PASS`，`10 fixed / 0 open`。

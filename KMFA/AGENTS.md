@@ -8,8 +8,8 @@
 - 中文名: 经营分析系统
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
-- 当前 Stage: `v0.1.4 Stage 15 phase delivery`
-- 当前 Phase: `V014_S15_POST_REMEDIATION_STAGE_REVIEW 已复跑当前 S15-P1/P2/P3 的 24/24 focused tests 与 3/3 strict validators，隔离旧 review 的 4 条合成事实、4 条工资就绪记录和 16 项复核，并修复 10 项 findings。当前 6 个字段全部人工复核，权威值绑定、绩效事实行、实际异常项目、接口 payload、工资就绪记录和薪资数值均为 0；4 个薪酬检查点均未执行。三页形成 6 条强连通有向边，移动端表格、过期 footer 和阶段入口已修复；54 baseline 与 45 current controls 通过，6 视口、6 交互、6 HTTP 和 6 次真实导航通过。当前仍为 Q4 / D / NO_GO / 3-9-2-1，raw 前后、跨 S15-P3 与当前快照一致。下一步只能另起 run work 执行 S16-P1，不得执行 S16-P2/P3、Stage 16 整体复审、工资奖金、薪资导出、最终发放、GitHub upload、app reinstall、正式报告、差异关闭或业务执行。历史 Stage 12-18 产物仅作 legacy 证据，不是当前 active gate。`
+- 当前 Stage: `v0.1.4 Stage 16 phase delivery`
+- 当前 Phase: `V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT 已只读接入外协合同、采购订单、付款申请、发票和项目归属 5 类结构，双次探针覆盖 5 个 raw、48 个 XLSX 容器、25 可解析、23 不可解析、4,198 个工作表、1,335 个唯一候选和 1,647 个结构关联，探针不一致为 0。当前权威交易行/值绑定、交易物化、项目匹配、未归集成本项目和异常候选均为 0；未归集成本、重复付款、无合同付款和跨项目费用 4 类规则仅供人工复核。旧 S16-P1 的 5 条项目匹配、2 条未归集成本和 4 条异常候选已隔离为非权威夹具。当前仍为 Q4 / D / NO_GO / 3-9-2-1，raw 前后、跨 Stage 15 review 与当前快照一致。下一步只能另起 run work 执行 S16-P2，不得执行 S16-P3、Stage 16 整体复审、采购、付款审批、付款、银行、GitHub upload、app reinstall、正式报告、差异关闭或业务执行。历史 Stage 16-18 产物仅作 legacy 证据，不是当前 active gate。`
 
 ## Execution Rules
 
@@ -41,7 +41,7 @@
 
 ## Current Non-Goals
 
-- v0.1.4 Stage 15 整体复审本轮完成；下一轮只能单独执行 S16-P1。不得顺手执行 S16-P2/P3、Stage 16 整体复审、工资计算、奖金审批、薪资导出、最终发放、GitHub upload、protected source matching、lineage full check、正式报告、差异关闭、live connector、app reinstall、OpMe 深度耦合、客户联络、催收、法务、发票开具、纳税申报、付款、银行、贷款管理或任何业务动作。
+- v0.1.4 S16-P1 本轮完成；下一轮只能单独执行 S16-P2。不得顺手执行 S16-P3、Stage 16 整体复审、采购执行、付款审批、付款执行、银行、工资计算、奖金审批、薪资导出、最终发放、GitHub upload、protected source matching、lineage full check、正式报告、差异关闭、live connector、app reinstall、OpMe 深度耦合、客户联络、催收、法务、发票开具、纳税申报、贷款管理或任何业务动作。
 - 以下 Stage 15/16/17/18 final upload 相关表述是 legacy/Post-S18 历史证据，不是当前 v0.1.4 active gate。当前 v0.1.4 GitHub main upload 仍延期到 Stage 1-18 全部完成并整体复审修复后一次性执行；不得直接进入 lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。

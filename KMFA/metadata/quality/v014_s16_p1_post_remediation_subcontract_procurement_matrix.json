@@ -1,0 +1,74 @@
+{
+  "acceptance_id": "ACC-V014-S16-P1-POST-REMEDIATION-SUBCONTRACT-PROCUREMENT",
+  "check_count": 13,
+  "check_fail_count": 0,
+  "check_pass_count": 13,
+  "checks": [
+    {
+      "check_id": "V014-S16P1-ACC-001",
+      "name": "dependency",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S16P1-ACC-002",
+      "name": "five_lanes",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S16P1-ACC-003",
+      "name": "candidate_coverage",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S16P1-ACC-004",
+      "name": "probe_exact",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S16P1-ACC-005",
+      "name": "processed_alignment",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S16P1-ACC-006",
+      "name": "zero_row_binding",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S16P1-ACC-007",
+      "name": "zero_transactions",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S16P1-ACC-008",
+      "name": "zero_project_matches",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S16P1-ACC-009",
+      "name": "four_rules",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S16P1-ACC-010",
+      "name": "zero_anomalies",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S16P1-ACC-011",
+      "name": "browser",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S16P1-ACC-012",
+      "name": "raw_exact",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S16P1-ACC-013",
+      "name": "downstream_closed",
+      "status": "PASS"
+    }
+  ],
+  "schema_version": "kmfa.v014.s16_p1.acceptance_matrix.v1"
+}

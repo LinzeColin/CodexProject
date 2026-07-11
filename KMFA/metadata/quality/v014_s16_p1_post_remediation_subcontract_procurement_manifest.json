@@ -1,0 +1,517 @@
+{
+  "acceptance_id": "ACC-V014-S16-P1-POST-REMEDIATION-SUBCONTRACT-PROCUREMENT",
+  "acceptance_matrix": {
+    "acceptance_id": "ACC-V014-S16-P1-POST-REMEDIATION-SUBCONTRACT-PROCUREMENT",
+    "check_count": 13,
+    "check_fail_count": 0,
+    "check_pass_count": 13,
+    "checks": [
+      {
+        "check_id": "V014-S16P1-ACC-001",
+        "name": "dependency",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S16P1-ACC-002",
+        "name": "five_lanes",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S16P1-ACC-003",
+        "name": "candidate_coverage",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S16P1-ACC-004",
+        "name": "probe_exact",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S16P1-ACC-005",
+        "name": "processed_alignment",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S16P1-ACC-006",
+        "name": "zero_row_binding",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S16P1-ACC-007",
+        "name": "zero_transactions",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S16P1-ACC-008",
+        "name": "zero_project_matches",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S16P1-ACC-009",
+        "name": "four_rules",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S16P1-ACC-010",
+        "name": "zero_anomalies",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S16P1-ACC-011",
+        "name": "browser",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S16P1-ACC-012",
+        "name": "raw_exact",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S16P1-ACC-013",
+        "name": "downstream_closed",
+        "status": "PASS"
+      }
+    ],
+    "schema_version": "kmfa.v014.s16_p1.acceptance_matrix.v1"
+  },
+  "branch": "codex/kmfa",
+  "browser_review": {
+    "baseline_control_row_count": 54,
+    "baseline_fail_count": 0,
+    "baseline_file_count": 6,
+    "baseline_pass_count": 54,
+    "baseline_warn_count": 0,
+    "console_error_count": 0,
+    "current_control_row_count": 13,
+    "current_fail_count": 0,
+    "current_file_count": 1,
+    "current_pass_count": 13,
+    "current_warn_count": 0,
+    "dependency_link_http_check_count": 4,
+    "dependency_navigation_check_count": 4,
+    "horizontal_overflow_count": 0,
+    "lane_interaction_check_count": 10,
+    "rule_interaction_check_count": 8,
+    "status": "PASS",
+    "viewport_check_count": 2
+  },
+  "decision": "NO_GO",
+  "detection_rules": [
+    {
+      "action_execution_allowed": false,
+      "authoritative_transaction_row_count": 0,
+      "candidate_close_without_owner_review_allowed": false,
+      "condition": "外协或采购交易存在且项目归属为空或未通过权威复核",
+      "current_status": "rule_ready_candidate_materialization_blocked",
+      "manual_review_required": true,
+      "materialized_candidate_count": 0,
+      "required_lanes": [
+        "subcontract_contract",
+        "procurement_order",
+        "project_attribution"
+      ],
+      "rule_definition_complete": true,
+      "rule_id": "unallocated_cost",
+      "visible_label": "未归集成本"
+    },
+    {
+      "action_execution_allowed": false,
+      "authoritative_transaction_row_count": 0,
+      "candidate_close_without_owner_review_allowed": false,
+      "condition": "同一对手方、金额签名、期间和付款引用出现重复组合",
+      "current_status": "rule_ready_candidate_materialization_blocked",
+      "manual_review_required": true,
+      "materialized_candidate_count": 0,
+      "required_lanes": [
+        "payment_application",
+        "project_attribution"
+      ],
+      "rule_definition_complete": true,
+      "rule_id": "duplicate_payment",
+      "visible_label": "重复付款"
+    },
+    {
+      "action_execution_allowed": false,
+      "authoritative_transaction_row_count": 0,
+      "candidate_close_without_owner_review_allowed": false,
+      "condition": "付款交易存在但无法连接合同锚点",
+      "current_status": "rule_ready_candidate_materialization_blocked",
+      "manual_review_required": true,
+      "materialized_candidate_count": 0,
+      "required_lanes": [
+        "payment_application",
+        "subcontract_contract"
+      ],
+      "rule_definition_complete": true,
+      "rule_id": "payment_without_contract",
+      "visible_label": "无合同付款"
+    },
+    {
+      "action_execution_allowed": false,
+      "authoritative_transaction_row_count": 0,
+      "candidate_close_without_owner_review_allowed": false,
+      "condition": "同一交易签名连接多个冲突项目锚点",
+      "current_status": "rule_ready_candidate_materialization_blocked",
+      "manual_review_required": true,
+      "materialized_candidate_count": 0,
+      "required_lanes": [
+        "subcontract_contract",
+        "procurement_order",
+        "payment_application",
+        "project_attribution"
+      ],
+      "rule_definition_complete": true,
+      "rule_id": "cross_project_cost",
+      "visible_label": "跨项目费用"
+    }
+  ],
+  "formula_id": "FORM-KMFA-V014-S16-P1-POST-REMEDIATION-SUBCONTRACT-PROCUREMENT-001",
+  "generated_at": "2026-07-12T00:12:08+10:00",
+  "go_no_go": {
+    "anomaly_candidate_materialization_allowed": false,
+    "bank_operation_allowed": false,
+    "business_execution_allowed": false,
+    "decision": "NO_GO",
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "payment_approval_allowed": false,
+    "payment_execution_allowed": false,
+    "phase_id": "V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT",
+    "procurement_execution_allowed": false,
+    "project_id": "KMFA",
+    "project_match_materialization_allowed": false,
+    "s16_p2_allowed_in_this_run": false,
+    "s16_p3_allowed_in_this_run": false,
+    "schema_version": "kmfa.v014.s16_p1.go_no_go.v1",
+    "stage16_review_allowed_in_this_run": false,
+    "stage_id": "S16",
+    "structure_candidate_review_allowed": true,
+    "unallocated_cost_materialization_allowed": false
+  },
+  "historical_five_project_matches_quarantined": true,
+  "historical_four_anomaly_candidates_quarantined": true,
+  "historical_s16_p1_dynamic_state_is_authoritative": false,
+  "historical_s16_p1_fixture_validated": true,
+  "historical_two_unallocated_items_quarantined": true,
+  "model_registry_key": "kmfa_v014_s16_p1_post_remediation_subcontract_procurement",
+  "next_phase": "S16-P2",
+  "next_required_step": "Execute S16-P2 project status lifecycle only as a separate run; do not execute S16-P3, Stage 16 review, procurement or payment actions, bank operations, GitHub upload, app reinstall, formal report, difference closure, persistent business write, or business execution.",
+  "parameter_ids": [
+    "PARAM-KMFA-1780",
+    "PARAM-KMFA-1781",
+    "PARAM-KMFA-1782"
+  ],
+  "phase_boundaries": {
+    "app_reinstall_performed": false,
+    "bank_operation_performed": false,
+    "business_execution_performed": false,
+    "difference_closure_performed": false,
+    "formal_report_release_performed": false,
+    "github_upload_performed": false,
+    "historical_s16_p1_fixture_reused_for_shape_only": true,
+    "lineage_full_check_performed": false,
+    "payment_approval_performed": false,
+    "payment_execution_performed": false,
+    "procurement_execution_performed": false,
+    "protected_source_matching_performed": false,
+    "s15_post_remediation_review_dependency_reused": true,
+    "s16_p1_performed": true,
+    "s16_p2_performed": false,
+    "s16_p3_performed": false,
+    "stage16_review_performed": false
+  },
+  "phase_id": "V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT",
+  "project_id": "KMFA",
+  "project_matching_contract": {
+    "amount_only_match_allowed": false,
+    "authoritative_row_binding_required": true,
+    "automatic_project_assignment_allowed": false,
+    "candidate_materialization_allowed": false,
+    "component_count": 6,
+    "components": [
+      {
+        "component_id": "project_anchor_ref",
+        "current_binding_status": "unproven",
+        "visible_label": "项目锚点"
+      },
+      {
+        "component_id": "contract_anchor_ref",
+        "current_binding_status": "unproven",
+        "visible_label": "合同锚点"
+      },
+      {
+        "component_id": "counterparty_anchor_ref",
+        "current_binding_status": "unproven",
+        "visible_label": "对手方锚点"
+      },
+      {
+        "component_id": "transaction_period_ref",
+        "current_binding_status": "unproven",
+        "visible_label": "期间锚点"
+      },
+      {
+        "component_id": "amount_signature_ref",
+        "current_binding_status": "unproven",
+        "visible_label": "金额签名"
+      },
+      {
+        "component_id": "source_fingerprint_ref",
+        "current_binding_status": "unproven",
+        "visible_label": "来源指纹"
+      }
+    ],
+    "contract_id": "MATCH-KMFA-V014-S16P1-CURRENT-ROW-BINDING-REQUIRED-001",
+    "missing_component_policy": "manual_review_no_project_assignment",
+    "project_match_record_count": 0,
+    "schema_version": "kmfa.v014.s16_p1.project_matching_contract.v1"
+  },
+  "public_repo_safety": {
+    "bank_payload_committed": false,
+    "business_amount_committed": false,
+    "contract_or_order_plaintext_committed": false,
+    "credential_or_secret_committed": false,
+    "invoice_or_payment_plaintext_committed": false,
+    "private_runtime_committed": false,
+    "project_or_supplier_plaintext_committed": false,
+    "raw_business_data_committed": false,
+    "raw_file_names_committed": false,
+    "raw_hashes_committed": false,
+    "raw_schema_or_header_committed": false,
+    "zip_excel_pdf_private_csv_committed": false
+  },
+  "quality_gate": {
+    "automatic_project_assignment_allowed": false,
+    "bank_operation_allowed": false,
+    "business_decision_basis_allowed": false,
+    "current_data_quality_grade": "Q4",
+    "current_report_grade": "D",
+    "decision": "NO_GO",
+    "derived_amount_calculation_allowed": false,
+    "detection_rule_review_allowed": true,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "owner_or_authorized_delegate_review_required": true,
+    "payment_approval_allowed": false,
+    "payment_execution_allowed": false,
+    "procurement_execution_allowed": false,
+    "row_level_candidate_materialization_allowed": false,
+    "s16_p2_allowed": false,
+    "s16_p3_allowed": false,
+    "stage16_review_allowed": false,
+    "structure_candidate_review_allowed": true
+  },
+  "raw_boundary": {
+    "private_candidate_probe_performed": true,
+    "private_probe_roundtrip_performed": true,
+    "raw_delete_performed": false,
+    "raw_hash_snapshot_performed": true,
+    "raw_inventory_performed": true,
+    "raw_move_performed": false,
+    "raw_mutation_performed": false,
+    "raw_overwrite_performed": false,
+    "raw_read_authorized": true,
+    "raw_rename_performed": false,
+    "raw_write_performed": false
+  },
+  "remote": "git@github.com:LinzeColin/CodexProject.git",
+  "reviewed_dependencies": {
+    "historical_s16_p1_fixture": "KMFA/stage_artifacts/V014_S16_P1_SUBCONTRACT_PROCUREMENT/machine/subcontract_procurement_manifest.json",
+    "stage15_post_remediation_review": "KMFA/stage_artifacts/V014_S15_POST_REMEDIATION_STAGE_REVIEW/machine/stage15_post_remediation_review_manifest.json"
+  },
+  "reviewed_head": "66554b849d721f240a239664f62fdee9481aafeb",
+  "roadmap_phase_id": "S16-P1",
+  "schema_version": "kmfa.v014.s16_p1.post_remediation.manifest.v1",
+  "source_lanes": [
+    {
+      "authoritative_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "business_value_display_allowed": false,
+      "candidate_sheet_count": 283,
+      "current_status": "structure_candidates_observed_row_binding_unproven",
+      "lane_id": "subcontract_contract",
+      "manual_review_required": true,
+      "materialized_transaction_record_count": 0,
+      "payment_execution_allowed": false,
+      "procurement_execution_allowed": false,
+      "purpose": "连接外协或分包合同结构与项目归属，缺少行级证据时不形成成本事实。",
+      "structure_candidate_observed": true,
+      "visible_label": "外协合同结构"
+    },
+    {
+      "authoritative_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "business_value_display_allowed": false,
+      "candidate_sheet_count": 296,
+      "current_status": "structure_candidates_observed_row_binding_unproven",
+      "lane_id": "procurement_order",
+      "manual_review_required": true,
+      "materialized_transaction_record_count": 0,
+      "payment_execution_allowed": false,
+      "procurement_execution_allowed": false,
+      "purpose": "连接采购结构与项目、合同和对手方锚点，不触发采购动作。",
+      "structure_candidate_observed": true,
+      "visible_label": "采购订单结构"
+    },
+    {
+      "authoritative_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "business_value_display_allowed": false,
+      "candidate_sheet_count": 391,
+      "current_status": "structure_candidates_observed_row_binding_unproven",
+      "lane_id": "payment_application",
+      "manual_review_required": true,
+      "materialized_transaction_record_count": 0,
+      "payment_execution_allowed": false,
+      "procurement_execution_allowed": false,
+      "purpose": "连接付款申请或登记结构，仅生成复核信号，不执行审批或付款。",
+      "structure_candidate_observed": true,
+      "visible_label": "付款申请结构"
+    },
+    {
+      "authoritative_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "business_value_display_allowed": false,
+      "candidate_sheet_count": 672,
+      "current_status": "structure_candidates_observed_row_binding_unproven",
+      "lane_id": "invoice",
+      "manual_review_required": true,
+      "materialized_transaction_record_count": 0,
+      "payment_execution_allowed": false,
+      "procurement_execution_allowed": false,
+      "purpose": "连接发票结构与合同、采购和付款候选，不形成开票或税务动作。",
+      "structure_candidate_observed": true,
+      "visible_label": "发票结构"
+    },
+    {
+      "authoritative_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "business_value_display_allowed": false,
+      "candidate_sheet_count": 5,
+      "current_status": "structure_candidates_observed_row_binding_unproven",
+      "lane_id": "project_attribution",
+      "manual_review_required": true,
+      "materialized_transaction_record_count": 0,
+      "payment_execution_allowed": false,
+      "procurement_execution_allowed": false,
+      "purpose": "提供项目归属候选；没有权威行绑定时不生成项目匹配。",
+      "structure_candidate_observed": true,
+      "visible_label": "项目归属结构"
+    }
+  ],
+  "stage15_post_remediation_review_dependency_validated": true,
+  "stage_id": "S16",
+  "status": "completed_validated_local_only_s16_p1_structure_candidates_zero_transaction_materialization_no_go_upload_deferred",
+  "summary": {
+    "acceptance_id": "ACC-V014-S16-P1-POST-REMEDIATION-SUBCONTRACT-PROCUREMENT",
+    "anomaly_candidate_count": 0,
+    "app_reinstall_performed": false,
+    "authoritative_row_binding_count": 0,
+    "authoritative_value_binding_count": 0,
+    "bank_operation_performed": false,
+    "baseline_html_control_row_count": 54,
+    "baseline_html_pass_count": 54,
+    "browser_status": "PASS",
+    "browser_viewport_check_count": 2,
+    "business_execution_performed": false,
+    "console_error_count": 0,
+    "cross_project_cost_candidate_count": 0,
+    "current_data_quality_grade": "Q4",
+    "current_html_control_row_count": 13,
+    "current_html_pass_count": 13,
+    "current_report_grade": "D",
+    "decision": "NO_GO",
+    "dependency_link_http_check_count": 4,
+    "dependency_navigation_check_count": 4,
+    "detection_rule_count": 4,
+    "difference_closure_performed": false,
+    "duplicate_payment_candidate_count": 0,
+    "formal_report_release_performed": false,
+    "github_upload_performed": false,
+    "horizontal_overflow_count": 0,
+    "incomplete_reconciliation_count": 1,
+    "lane_interaction_check_count": 10,
+    "materialized_transaction_record_count": 0,
+    "nonzero_delta_reconciliation_count": 9,
+    "open_final_difference_accepted_count": 3,
+    "payment_approval_performed": false,
+    "payment_execution_performed": false,
+    "payment_without_contract_candidate_count": 0,
+    "phase_id": "V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT",
+    "private_candidate_covered_lane_count": 5,
+    "private_candidate_lane_association_count": 1647,
+    "private_candidate_sheet_count_by_lane": {
+      "invoice": 672,
+      "payment_application": 391,
+      "procurement_order": 296,
+      "project_attribution": 5,
+      "subcontract_contract": 283
+    },
+    "private_multi_lane_candidate_sheet_count": 274,
+    "private_parseable_sheet_count": 4198,
+    "private_parseable_xlsx_count": 25,
+    "private_probe_roundtrip_mismatch_count": 0,
+    "private_unique_candidate_sheet_count": 1335,
+    "private_unparseable_xlsx_count": 23,
+    "private_xlsx_container_count": 48,
+    "processed_candidate_lane_association_count": 1647,
+    "processed_candidate_sheet_count": 1335,
+    "processed_private_structure_alignment_exact": true,
+    "procurement_execution_performed": false,
+    "project_id": "KMFA",
+    "project_match_record_count": 0,
+    "project_matching_component_count": 6,
+    "project_matching_contract_count": 1,
+    "public_business_value_count": 0,
+    "raw_cross_phase_snapshot_exact_match": true,
+    "raw_snapshot_exact_match": true,
+    "raw_source_file_count": 5,
+    "roadmap_phase_id": "S16-P1",
+    "rule_interaction_check_count": 8,
+    "s16_p1_performed": true,
+    "s16_p2_performed": false,
+    "s16_p3_performed": false,
+    "schema_version": "kmfa.v014.s16_p1.post_remediation.summary.v1",
+    "source_lane_count": 5,
+    "stage15_post_remediation_review_dependency_validated": true,
+    "stage16_review_performed": false,
+    "stage_id": "S16",
+    "status": "completed_validated_local_only_s16_p1_structure_candidates_zero_transaction_materialization_no_go_upload_deferred",
+    "task_id": "KMFA-V014-S16-P1-POST-REMEDIATION-SUBCONTRACT-PROCUREMENT-20260712",
+    "unallocated_cost_pool_item_count": 0,
+    "version": "0.1.4-s16-p1-post-remediation-subcontract-procurement",
+    "workbench_html_count": 1,
+    "zero_delta_reconciliation_count": 2
+  },
+  "task_id": "KMFA-V014-S16-P1-POST-REMEDIATION-SUBCONTRACT-PROCUREMENT-20260712",
+  "taskpack_contract": {
+    "duplicate_and_cross_project_rules_locked": true,
+    "five_current_structure_lanes_locked": true,
+    "raw_read_only_contract_applied": true,
+    "roadmap_read": true,
+    "taskpack_read": true,
+    "unmatched_cost_pool_rule_locked": true
+  },
+  "unallocated_cost_pool_contract": {
+    "authoritative_transaction_row_count": 0,
+    "automatic_project_assignment_allowed": false,
+    "contract_id": "POOL-KMFA-V014-S16P1-CURRENT-001",
+    "cost_allocation_execution_allowed": false,
+    "current_status": "blocked_no_authoritative_transaction_rows",
+    "eligible_unmatched_transaction_count": 0,
+    "entry_condition": "transaction_row_proven_and_project_assignment_unmatched",
+    "forced_zero_amount_allowed": false,
+    "manual_review_required": true,
+    "materialized_pool_item_count": 0,
+    "schema_version": "kmfa.v014.s16_p1.unallocated_cost_pool_contract.v1"
+  },
+  "validation_summary": {
+    "browser_desktop_mobile": "PASS",
+    "final_validation_recorded": true,
+    "focused_test": "PASS",
+    "governance_and_safety_scans": "PASS",
+    "processed_private_structure_alignment": "PASS",
+    "raw_alignment": "PASS",
+    "strict_validator": "PASS"
+  },
+  "version": "0.1.4-s16-p1-post-remediation-subcontract-procurement"
+}

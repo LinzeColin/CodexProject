@@ -1,3 +1,17 @@
+## 2026-07-12 - V014 S16-P1 post-remediation subcontract procurement
+
+- phase: V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT
+- task: KMFA-V014-S16-P1-POST-REMEDIATION-SUBCONTRACT-PROCUREMENT-20260712
+- product_version: 0.1.4-s16-p1-post-remediation-subcontract-procurement
+- result: completed_validated_local_only_s16_p1_structure_candidates_zero_transaction_materialization_no_go_upload_deferred / NO_GO
+- private probe: raw=5 / XLSX=48 / parseable=25 / unparseable=23 / sheets=4,198 / unique candidates=1,335 / lane associations=1,647 / multi-lane=274 / mismatch=0.
+- current output: 5 source lanes / 1 matching contract / 6 matching components / 0 authoritative rows / 0 transactions / 0 project matches / 0 unallocated items / 4 rules / 0 anomaly candidates.
+- history gate: legacy 5 project matches / 2 unallocated items / 4 anomaly candidates remain quarantined and non-authoritative.
+- browser: baseline 54/54 PASS、current 13/13 PASS；viewports/lanes/rules/HTTP/navigation=2/10/8/4/4，console/overflow=0/0。
+- raw proof: phase before/after, cross-Stage15-review and current snapshots exact; raw/private details and screenshots remain ignored.
+- boundary: S16-P2/P3、Stage 16 review、procurement、payment approval/execution、bank、GitHub upload、app reinstall、formal report、difference closure and business execution were not performed; next step is S16-P2 only.
+- evidence: KMFA/stage_artifacts/V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT/machine/subcontract_procurement_manifest.json
+
 ## 2026-07-11 - V014 Stage 15 post-remediation review
 
 - phase: V014_S15_POST_REMEDIATION_STAGE_REVIEW
