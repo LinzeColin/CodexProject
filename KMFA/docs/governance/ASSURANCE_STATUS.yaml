@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260712-V014-S18-P2-POST-REMEDIATION-FULL-REGRESSION-ACCEPTANCE"
+as_of_event_id: "DEV-KMFA-20260712-V014-S18-P3-POST-REMEDIATION-INTEGRATION-PREPARATION"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "f0cbc46d9fd122f6337f41898cce356f24b4dca0"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE_COMMIT"
-snapshot_event_time: "2026-07-12T07:23:20+10:00"
-generator_version: "manual-0.1.4-s18-p2-post-remediation-full-regression-acceptance"
+source_base_commit: "4b1b19b2e1339b42b90ca7c383229d3459e14819"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION_COMMIT"
+snapshot_event_time: "2026-07-12T08:29:38+10:00"
+generator_version: "manual-0.1.4-s18-p3-post-remediation-integration-preparation"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1430
-    total_active_formulas: 312
+    total_active_parameters: 1433
+    total_active_formulas: 313
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -37,6 +37,9 @@ dimensions:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     evidence_refs:
+      - "KMFA/stage_artifacts/V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION/human/test_results_zh.md"
+      - "KMFA/tools/check_v014_s18_p3_post_remediation_integration_preparation.py"
+      - "KMFA/stage_artifacts/V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION/machine/integration_preparation_manifest.json"
       - "KMFA/stage_artifacts/V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE/human/test_results_zh.md"
       - "KMFA/tools/check_v014_s18_p2_post_remediation_full_regression_acceptance.py"
       - "KMFA/stage_artifacts/V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE/machine/full_regression_acceptance_manifest.json"
@@ -980,6 +983,43 @@ dimensions:
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
+kmfa_v014_s18_p3_post_remediation_integration_preparation:
+  status: completed_validated_local_only_s18_p3_integration_prepared_no_go_upload_deferred
+  phase_id: V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION
+  task_id: KMFA-V014-S18-P3-POST-REMEDIATION-INTEGRATION-PREPARATION-20260712
+  acceptance_id: ACC-V014-S18-P3-POST-REMEDIATION-INTEGRATION-PREPARATION
+  formula_ref: FORM-KMFA-V014-S18-P3-POST-REMEDIATION-INTEGRATION-PREPARATION-001
+  parameter_refs:
+    - PARAM-KMFA-1813
+    - PARAM-KMFA-1814
+    - PARAM-KMFA-1815
+  decision: NO_GO
+  evidence_ref: KMFA/stage_artifacts/V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION/machine/integration_preparation_manifest.json
+  validator: KMFA/tools/check_v014_s18_p3_post_remediation_integration_preparation.py
+  counts:
+    connector_plan_count: 3
+    read_only_connector_count: 3
+    opme_entry_surface_count: 4
+    backlog_item_count: 6
+    backlog_started_count: 0
+    live_connector_call_count: 0
+    raw_source_file_count: 5
+  boundaries:
+    raw_snapshot_exact_match: true
+    raw_cross_phase_snapshot_exact_match: true
+    source_mutation_allowed: false
+    shared_database_allowed: false
+    s18_p3_performed: true
+    stage18_review_performed: false
+    final_overall_review_performed: false
+    github_upload_performed: false
+    app_reinstall_performed: false
+    business_execution_performed: false
+  quality:
+    current_data_quality_grade: Q4
+    current_report_grade: D
+    decision: NO_GO
+
 kmfa_v014_s18_p2_post_remediation_full_regression_acceptance:
   status: completed_validated_local_only_s18_p2_full_regression_no_go_upload_deferred
   phase_id: V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE

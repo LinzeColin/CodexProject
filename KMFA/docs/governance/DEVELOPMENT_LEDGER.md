@@ -1,3 +1,17 @@
+## 2026-07-12 - V014 S18-P3 post-remediation integration preparation
+
+- phase: V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION
+- task: KMFA-V014-S18-P3-POST-REMEDIATION-INTEGRATION-PREPARATION-20260712
+- product_version: 0.1.4-s18-p3-post-remediation-integration-preparation
+- result: completed_validated_local_only_s18_p3_integration_prepared_no_go_upload_deferred / NO_GO
+- TDD: current generator/checker missing produced 1 failure + 9 skipped before implementation.
+- connector plans: redcircle/kingdee/wps=3/3 read-only proposals; authorization, connection, live call, writeback and credential material all absent.
+- OpMe / backlog: 4 light-entry surfaces with no shared database/runtime; 6 backlog items all unstarted.
+- raw: before/after, cross-S18-P2 and current snapshots exact; raw business content not used for plans and no raw mutation, copy or backup.
+- evidence: KMFA/stage_artifacts/V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION/machine/integration_preparation_manifest.json
+- validator: KMFA/tools/check_v014_s18_p3_post_remediation_integration_preparation.py
+- next: Stage 18 overall review and finding fix only; final overall review, upload, reinstall, live connectors, credentials, formal report and business execution remain closed.
+
 ## 2026-07-12 - V014 S18-P2 post-remediation full regression acceptance
 
 - phase: V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE
