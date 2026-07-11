@@ -222,6 +222,7 @@ REQUIRED_FILES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE1_SCOPE_BOUNDARY.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE2_JOB_STATE_MODEL_SLICE.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE3_ADVERSARIAL_SCENARIOS.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE4_CLOSEOUT.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/job_state_model/stage037_job_state_model_index.json",
     "KM_IDSystem/scripts/check_job_state_model.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_quality_constraints/stage036_database_quality_constraints_index.json",
@@ -396,6 +397,7 @@ REQUIRED_EVENT_IDS = (
     "EVT-IDS-V0_1-STAGE037-P1-20260711-001",
     "EVT-IDS-V0_1-STAGE037-P2-20260711-001",
     "EVT-IDS-V0_1-STAGE037-P3-20260711-001",
+    "EVT-IDS-V0_1-STAGE037-P4-20260711-001",
 )
 
 FORBIDDEN_RUNTIME_PREFIXES = (
@@ -797,6 +799,27 @@ def evaluate_required_event_semantics(events: list[dict]) -> list[str]:
                 "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage037_job_state_model.py",
             },
         },
+        "EVT-IDS-V0_1-STAGE037-P4-20260711-001": {
+            "event_type": "phase_closeout",
+            "task_id": "IDS-V0_1-STAGE037-P4",
+            "acceptance_id": "ACC-STAGE-037",
+            "required_changed_files": {
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE4_CLOSEOUT.md",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/job_state_model/stage037_job_state_model_index.json",
+                "KM_IDSystem/scripts/check_job_state_model.py",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml",
+                "KM_IDSystem/docs/governance/roadmap.yaml",
+                "KM_IDSystem/docs/governance/events.jsonl",
+            },
+            "required_refs": {
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE4_CLOSEOUT.md",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/job_state_model/stage037_job_state_model_index.json",
+                "KM_IDSystem/scripts/check_job_state_model.py#build_stage037_delivery_report",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage037_job_state_model.py",
+            },
+            "next_gate": "IDS-STAGE037-REVIEW-GATE",
+            "exact_job_runtime_results_required": True,
+        },
     }
 
     errors: list[str] = []
@@ -867,7 +890,57 @@ def evaluate_required_event_semantics(events: list[dict]) -> list[str]:
         if push_values != ["false"]:
             errors.append(f"{event_id}: push_allowed must be exactly false")
 
-        if spec.get("exact_runtime_results_required"):
+        if spec.get("exact_job_runtime_results_required"):
+            exact_job_runtime_results = {
+                field: [
+                    value.lower()
+                    for value in _note_assignment_values(notes, field)
+                ]
+                for field in (
+                    "live_execution_performed",
+                    "queue_runtime_performed",
+                    "worker_runtime_performed",
+                    "retry_scheduler_performed",
+                    "dead_letter_runtime_performed",
+                    "backpressure_runtime_performed",
+                    "lock_runtime_performed",
+                    "automatic_lifecycle_runtime_performed",
+                    "crash_recovery_runtime_performed",
+                    "cleanup_runtime_performed",
+                    "database_connection_performed",
+                    "schema_change_performed",
+                    "state_registry_write_performed",
+                    "runtime_output_written",
+                    "real_job_created",
+                    "fake_ids_business_data_used",
+                    "raw_metadata_content_accessed",
+                )
+            }
+            stage_gate_tokens = [
+                value.upper()
+                for value in re.findall(
+                    r"\bIDS-STAGE\d+-(?:P\d+|REVIEW)-GATE\b",
+                    notes,
+                    re.I,
+                )
+            ]
+            next_gate_values = [
+                value.upper()
+                for value in _note_assignment_values(notes, "next_gate")
+            ]
+            expected_gate = spec["next_gate"]
+            if (
+                not all(
+                    values == ["false"]
+                    for values in exact_job_runtime_results.values()
+                )
+                or stage_gate_tokens != [expected_gate]
+                or next_gate_values != [expected_gate]
+            ):
+                errors.append(
+                    f"{event_id}: next-gate or no-job-runtime notes are incomplete"
+                )
+        elif spec.get("exact_runtime_results_required"):
             exact_runtime_results = {
                 field: [
                     value.upper()
@@ -984,10 +1057,15 @@ def evaluate_current_state_consistency(
         current_stage_id == "IDS-STAGE037"
         and roadmap_phase == "IDS-STAGE037-P3"
     )
+    stage037_phase4_current = (
+        current_stage_id == "IDS-STAGE037"
+        and roadmap_phase == "IDS-STAGE037-P4"
+    )
     stage037_current = (
         stage037_phase1_current
         or stage037_phase2_current
         or stage037_phase3_current
+        or stage037_phase4_current
     )
 
     completed_phases = stage_node.get("completed_phases")
@@ -995,6 +1073,7 @@ def evaluate_current_state_consistency(
         "IDS-STAGE037-P1": "Phase 1",
         "IDS-STAGE037-P2": "Phase 2",
         "IDS-STAGE037-P3": "Phase 3",
+        "IDS-STAGE037-P4": "Phase 4",
     }.get(roadmap_phase)
     batch_current_phase_completed = not stage037_current or (
         isinstance(completed_phases, list)
@@ -1064,10 +1143,17 @@ def evaluate_current_state_consistency(
         "all six were repaired, and final re-review found 0 Critical, "
         "0 Important, and 0 Minor issues with Ready for local commit=Yes"
     )
+    expected_stage037_phase4_result_block = (
+        "GREEN: Stage037 Phase4 7 tests OK, Stage037 aggregate 29 tests OK, "
+        "Stage005 137 tests OK, Stage031-037 aggregate 159 tests OK, "
+        "Stage026-030 75 tests OK, full IDS v0.1 discovery 556 tests OK, "
+        "checker delivery_contract_valid=true, Stage005 validator valid=true"
+    )
     expected_stage037_result_block = {
         "IDS-STAGE037-P1": expected_stage037_phase1_result_block,
         "IDS-STAGE037-P2": expected_stage037_phase2_result_block,
         "IDS-STAGE037-P3": expected_stage037_phase3_result_block,
+        "IDS-STAGE037-P4": expected_stage037_phase4_result_block,
     }.get(roadmap_phase)
     roadmap_current_task_results_recorded = not stage037_current or (
         task_results == expected_stage037_result_block
@@ -1098,10 +1184,22 @@ def evaluate_current_state_consistency(
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage037_job_state_model.py",
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md",
     }
+    required_stage037_phase4_evidence = {
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE1_SCOPE_BOUNDARY.md",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE2_JOB_STATE_MODEL_SLICE.md",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE3_ADVERSARIAL_SCENARIOS.md",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE4_CLOSEOUT.md",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/job_state_model/stage037_job_state_model_index.json",
+        "KM_IDSystem/scripts/check_job_state_model.py",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage037_job_state_model.py",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md",
+    }
     required_stage037_evidence = {
         "IDS-STAGE037-P1": required_stage037_phase1_evidence,
         "IDS-STAGE037-P2": required_stage037_phase2_evidence,
         "IDS-STAGE037-P3": required_stage037_phase3_evidence,
+        "IDS-STAGE037-P4": required_stage037_phase4_evidence,
     }.get(roadmap_phase, set())
     task_evidence = roadmap_task_node.get("evidence_refs")
     roadmap_current_task_evidence_recorded = not stage037_current or (
@@ -1165,7 +1263,7 @@ def evaluate_current_state_consistency(
         or decision.get("current_task_id") == roadmap_task,
         "decision_next_allowed_task_matches_gate": (
             decision.get("next_allowed_task_id") == expected_next_task
-            if roadmap_phase == "IDS-STAGE036-P4"
+            if roadmap_phase in {"IDS-STAGE036-P4", "IDS-STAGE037-P4"}
             else (
                 not decision
                 or expected_next_task is None
@@ -2474,6 +2572,23 @@ def evaluate_phase_state(
         and 'current_task_id: "IDS-V0_1-STAGE037-P3"' in roadmap_text
         and 'next_gate_id: "IDS-STAGE037-P4-GATE"' in roadmap_text
     )
+    stage037_phase4_closeout = (
+        'batch_id: "IDS-V0_1-BATCH-031-040"' in batch_text
+        and 'status: "stage037_phase4_completed_review_pending"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE037-P4"' in batch_text
+        and 'acceptance_id: "ACC-STAGE-037"' in batch_text
+        and 'acceptance_status: "phase4_closeout_passed_review_pending"'
+        in batch_text
+        and 'review_status: "pending"' in batch_text
+        and 'next_phase: "stage_review"' in batch_text
+        and 'next_gate: "IDS-STAGE037-REVIEW-GATE"' in batch_text
+        and 'next_allowed_task_id: "IDS-V0_1-STAGE037-REVIEW"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE037"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE037-P4"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE037-P4"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE037-REVIEW-GATE"' in roadmap_text
+    )
     batch_terminal_state = batch_upload_gate_active or batch_uploaded_to_main
     later_stage_state = (
         batch_terminal_state
@@ -2595,6 +2710,7 @@ def evaluate_phase_state(
         or stage037_phase1_active
         or stage037_phase2_active
         or stage037_phase3_active
+        or stage037_phase4_closeout
     )
     phase2_completed = '      - "Phase 2"' in batch_text
     stage005_active_or_complete = (

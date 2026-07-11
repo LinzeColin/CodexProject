@@ -7997,6 +7997,119 @@ stages:
             missing_phase3_checks,
         )
 
+    def test_phase_state_allows_stage037_phase4_closeout_review_pending(self):
+        module = self._load_module()
+        result_block = (
+            "GREEN: Stage037 Phase4 7 tests OK, Stage037 aggregate 29 tests OK, "
+            "Stage005 137 tests OK, Stage031-037 aggregate 159 tests OK, "
+            "Stage026-030 75 tests OK, full IDS v0.1 discovery 556 tests OK, "
+            "checker delivery_contract_valid=true, Stage005 validator valid=true"
+        )
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-031-040"
+status: "stage037_phase4_completed_review_pending"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-037:
+    status: "stage037_phase4_completed_review_pending"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    review_status: "pending"
+    next_phase: "stage_review"
+    next_gate: "IDS-STAGE037-REVIEW-GATE"
+    current_task_id: "IDS-V0_1-STAGE037-P4"
+    acceptance_id: "ACC-STAGE-037"
+    acceptance_status: "phase4_closeout_passed_review_pending"
+decision:
+  current_task_id: "IDS-V0_1-STAGE037-P4"
+  next_allowed_task_id: "IDS-V0_1-STAGE037-REVIEW"
+  github_upload_allowed: false
+"""
+        roadmap_text = f"""
+current_stage_id: "IDS-STAGE037"
+current_phase_id: "IDS-STAGE037-P4"
+current_task_id: "IDS-V0_1-STAGE037-P4"
+next_gate_id: "IDS-STAGE037-REVIEW-GATE"
+stages:
+  -
+    stage_id: "IDS-STAGE037"
+    phases:
+      -
+        phase_id: "IDS-STAGE037-P4"
+        status: "passed_with_local_evidence"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE037-P4"
+            status: "completed"
+            test_results: "{result_block}"
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE1_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE2_JOB_STATE_MODEL_SLICE.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE3_ADVERSARIAL_SCENARIOS.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/job_state_model/stage037_job_state_model_index.json"
+              - "KM_IDSystem/scripts/check_job_state_model.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage037_job_state_model.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+"""
+
+        phase_checks = module.evaluate_phase_state(batch_text, roadmap_text)
+        self.assertTrue(all(phase_checks.values()), phase_checks)
+        structured = module.evaluate_current_state_consistency(
+            batch_text, roadmap_text
+        )
+        self.assertTrue(all(structured.values()), structured)
+
+        missing_phase = batch_text.replace('      - "Phase 4"\n', "")
+        missing_phase_checks = module.evaluate_current_state_consistency(
+            missing_phase, roadmap_text
+        )
+        self.assertFalse(
+            missing_phase_checks["batch_current_phase_completed"],
+            missing_phase_checks,
+        )
+
+        missing_phase4 = roadmap_text.replace(
+            '              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/'
+            'STAGE037_PHASE4_CLOSEOUT.md"\n',
+            "",
+        )
+        missing_phase4_checks = module.evaluate_current_state_consistency(
+            batch_text, missing_phase4
+        )
+        self.assertFalse(
+            missing_phase4_checks["roadmap_current_task_evidence_recorded"],
+            missing_phase4_checks,
+        )
+
+        for invalid_results in ("NOT_RUN", result_block + "; runtime=true"):
+            invalid_roadmap = roadmap_text.replace(result_block, invalid_results)
+            invalid_checks = module.evaluate_current_state_consistency(
+                batch_text, invalid_roadmap
+            )
+            with self.subTest(invalid_results=invalid_results):
+                self.assertFalse(
+                    invalid_checks["roadmap_current_task_results_recorded"],
+                    invalid_checks,
+                )
+
+        wrong_next_task = batch_text.replace(
+            'next_allowed_task_id: "IDS-V0_1-STAGE037-REVIEW"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE038-P1"',
+        )
+        wrong_next_checks = module.evaluate_current_state_consistency(
+            wrong_next_task, roadmap_text
+        )
+        self.assertFalse(
+            wrong_next_checks["decision_next_allowed_task_matches_gate"],
+            wrong_next_checks,
+        )
+
     def test_structured_state_rejects_stage035_node_contradictions(self):
         module = self._load_module()
         self.assertTrue(
