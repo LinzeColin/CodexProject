@@ -27,6 +27,26 @@
   },
   "onedrive_month_folder_pattern": "YYYYMM",
   "onedrive_root": "/Users/linzezhang/OneDrive/dingtalk_attendance",
+  "official_statistics_source": {
+    "anomaly_source": "attendance_report_exact_columns",
+    "batch_size": 5,
+    "business_date_timezone": "Asia/Shanghai",
+    "coverage_gate": "official_report_coverage_count_equals_attendance_group_member_count",
+    "failure_status": "OFFICIAL_ATTENDANCE_PARITY_FAILED",
+    "legacy_record_and_summary_role": "diagnostic_only",
+    "membership_scope": "current_attendance_groups",
+    "required_columns": [
+      "考勤结果",
+      "应出勤天数",
+      "出勤天数",
+      "休息天数",
+      "迟到次数",
+      "早退次数",
+      "上班缺卡次数",
+      "下班缺卡次数",
+      "旷工天数"
+    ]
+  },
   "private_archive_file_types": [
     "raw.jsonl.gz",
     "management.md",
@@ -36,10 +56,12 @@
     "cleanup.json"
   ],
   "ledger_index": {
+    "canonical_user_day_precedence": "latest_official_then_latest_legacy",
     "enabled": true,
     "private_sqlite_path": "KMFA/metadata/dingtalk_attendance/private_runtime/attendance_ledger.sqlite",
     "rebuild_command": "python tools/dingtalk_attendance/sync_attendance_ledger.py --all",
     "salary_basis_allowed": false,
+    "schema_version": 2,
     "source_of_truth": "OneDrive raw/manifest/dispatch/cleanup archives",
     "tracked_in_git": false,
     "validate_command": "python tools/dingtalk_attendance/sync_attendance_ledger.py --validate"
