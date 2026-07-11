@@ -132,6 +132,97 @@
     "terminal_state_mutation_allowed": false,
     "direct_running_cancel_allowed": false
   },
+  "job_control_envelope_contract": {
+    "schema_version": "ids.job_control_envelope.v1",
+    "phase2_scope": "STATIC_EVALUATOR_SUBSET_ONLY",
+    "all_fields": [
+      "job_id",
+      "job_type",
+      "job_state",
+      "state_version",
+      "idempotency_key",
+      "transition_request_id",
+      "parent_job_id",
+      "dependency_refs",
+      "attempt_id",
+      "retry_count",
+      "max_retries",
+      "retry_pending",
+      "next_eligible_at",
+      "input_refs",
+      "output_refs",
+      "checkpoint_ref",
+      "operation_contract_version",
+      "lease_owner_ref",
+      "lease_expires_at",
+      "fencing_token",
+      "lock_key",
+      "priority_ref",
+      "pause_reason_code",
+      "stop_reason",
+      "owner_action_ref",
+      "resource_gate_refs",
+      "safe_error_code",
+      "error_ref",
+      "audit_ref",
+      "transition_actor_ref",
+      "created_at",
+      "updated_at",
+      "cleanup_manifest_ref"
+    ],
+    "phase2_snapshot_fields": [
+      "evaluation_mode",
+      "job_id",
+      "job_type",
+      "job_state",
+      "state_version",
+      "retry_count",
+      "max_retries",
+      "retry_pending",
+      "retry_disposition",
+      "next_eligible_at",
+      "lease_active",
+      "lock_active",
+      "fencing_token",
+      "attempt_id",
+      "lease_owner_ref",
+      "lease_expires_at",
+      "lock_key",
+      "pause_reason_code",
+      "stop_reason",
+      "input_refs",
+      "output_refs",
+      "checkpoint_ref",
+      "quarantine_ref",
+      "error_ref"
+    ],
+    "phase2_request_fields": [
+      "job_id",
+      "transition_request_id",
+      "expected_state",
+      "expected_state_version",
+      "target_state",
+      "actor_ref",
+      "reason_code",
+      "audit_ref",
+      "guard_facts",
+      "input_refs",
+      "output_refs",
+      "checkpoint_ref",
+      "quarantine_ref",
+      "error_ref",
+      "resource_gate_refs",
+      "pause_reason_code",
+      "stop_reason",
+      "next_eligible_at",
+      "next_eligible_evidence_ref",
+      "fencing_token",
+      "candidate_claim"
+    ],
+    "runtime_persistence_owner": "STAGE-038..STAGE-041",
+    "runtime_persistence_performed": false,
+    "timestamp_fabrication_allowed": false
+  },
   "transition_contract": {
     "compare_and_set_fields": [
       "job_id",
@@ -154,6 +245,7 @@
       "max_retries",
       "retry_pending",
       "retry_disposition",
+      "next_eligible_at",
       "lease_active",
       "lock_active",
       "fencing_token",
@@ -162,6 +254,7 @@
       "lease_expires_at",
       "lock_key",
       "pause_reason_code",
+      "stop_reason",
       "input_refs",
       "output_refs",
       "checkpoint_ref",
@@ -185,6 +278,9 @@
       "error_ref",
       "resource_gate_refs",
       "pause_reason_code",
+      "stop_reason",
+      "next_eligible_at",
+      "next_eligible_evidence_ref",
       "fencing_token",
       "candidate_claim"
     ],
@@ -314,6 +410,7 @@
         "audit_ref"
       ],
       "CREATED->CANCELLED": [
+        "stop_reason",
         "audit_ref"
       ],
       "QUEUED->CLAIMED": [
@@ -326,6 +423,7 @@
         "audit_ref"
       ],
       "QUEUED->CANCELLED": [
+        "stop_reason",
         "audit_ref"
       ],
       "CLAIMED->RUNNING": [
@@ -371,6 +469,7 @@
       "PAUSE_REQUESTED->CANCELLED": [
         "fencing_token",
         "checkpoint_or_quarantine_ref",
+        "stop_reason",
         "audit_ref"
       ],
       "PAUSE_REQUESTED->RETRY_WAIT": [
@@ -382,9 +481,11 @@
         "audit_ref"
       ],
       "PAUSED->CANCELLED": [
+        "stop_reason",
         "audit_ref"
       ],
       "RETRY_WAIT->QUEUED": [
+        "next_eligible_evidence_ref",
         "audit_ref"
       ],
       "RETRY_WAIT->PAUSED": [
@@ -397,6 +498,7 @@
         "audit_ref"
       ],
       "RETRY_WAIT->CANCELLED": [
+        "stop_reason",
         "audit_ref"
       ]
     }
@@ -438,6 +540,11 @@
     "resource_gate_can_pause_exhausted_retry": false,
     "running_to_dead_letter_allowed": false,
     "retry_delay_policy": "POLICY_VALUE_DEFERRED_TO_STAGE039_040_041",
+    "next_eligible_at_required_for_eligible_retry": true,
+    "next_eligible_evidence_required_for_admission": true,
+    "paused_retry_resume_requires_next_eligible_at": true,
+    "paused_retry_resume_requires_next_eligible_evidence": true,
+    "paused_retry_resume_requires_next_eligible_reached": true,
     "retry_scheduler_allowed": false
   },
   "reference_policy": {
@@ -472,6 +579,8 @@
       "lease_owner_ref",
       "lease_expires_at",
       "lock_key",
+      "next_eligible_at",
+      "next_eligible_evidence_ref",
       "transition_request_id",
       "actor_ref",
       "audit_ref",
@@ -521,7 +630,7 @@
       "owner_attention_required": false
     },
     "PAUSE_REQUESTED": {
-      "label_zh": "已暂停",
+      "label_zh": "暂停中",
       "owner_action_zh": "查看原因并等待安全检查点",
       "owner_attention_required": true
     },
@@ -778,7 +887,7 @@
     },
     "evidence_sha256": {
       "phase1_scope_ref": "e692bfb2f4786c076135888731c6eca6ce0f342a8fa19c1334394ca2d3db3730",
-      "phase2_slice_ref": "8d6a37991f62f3179cd5e65aeef5a9f6bf91b702029ec9a051e75ba6d6c3eebb",
+      "phase2_slice_ref": "e29690f7d7c45760c53cbc69f5594dc15d8b3ba31d36bd270bf778d2f622d3d9",
       "phase3_scenarios_ref": "059033f50b1aba9ff1cc72ea716efb0895a0e292e72ec50e518041ff588c12f8",
       "phase4_closeout_ref": "00beec1b60d7dbdb6da5678dcbbcf2d9c6d02826979403797759798ea518201a"
     },

@@ -189,6 +189,7 @@ class Stage035DatabaseRecoverySmokePhase1Tests(unittest.TestCase):
             'status: "stage037_phase2_in_progress"',
             'status: "stage037_phase3_in_progress"',
             'status: "stage037_phase4_completed_review_pending"',
+            'status: "stage037_completed_reviewed_local"',
         ]
         allowed_next_phases = [
             'next_phase: "Phase 2"',
@@ -489,6 +490,7 @@ class Stage035DatabaseRecoverySmokePhase2Tests(unittest.TestCase):
             'status: "stage037_phase2_in_progress"',
             'status: "stage037_phase3_in_progress"',
             'status: "stage037_phase4_completed_review_pending"',
+            'status: "stage037_completed_reviewed_local"',
         ]
         allowed_next_phases = [
             'next_phase: "Phase 3"',
@@ -711,6 +713,7 @@ class Stage035DatabaseRecoverySmokePhase3Tests(unittest.TestCase):
             'status: "stage037_phase2_in_progress"',
             'status: "stage037_phase3_in_progress"',
             'status: "stage037_phase4_completed_review_pending"',
+            'status: "stage037_completed_reviewed_local"',
         ]
         allowed_next_phases = [
             'next_phase: "Phase 4"',
@@ -948,6 +951,7 @@ class Stage035DatabaseRecoverySmokePhase4Tests(unittest.TestCase):
             'status: "stage037_phase2_in_progress"',
             'status: "stage037_phase3_in_progress"',
             'status: "stage037_phase4_completed_review_pending"',
+            'status: "stage037_completed_reviewed_local"',
         ]
         allowed_next_phases = [
             'next_phase: "stage_review_gate"',
