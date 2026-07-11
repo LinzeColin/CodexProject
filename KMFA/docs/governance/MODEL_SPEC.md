@@ -1,3 +1,18 @@
+## FORM-KMFA-V014-S17-P3-POST-REMEDIATION-OPERATIONS-SOP-001
+
+- phase: V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP
+- version: 0.1.4-s17-p3-post-remediation-operations-sop
+- model_id: MOD-KMFA-GOV-001
+- scope: 锁定导入、复核、发布、回滚人工手册，财务 SOP/岗位交接知识索引，以及隔离合成错误与备份恢复演练，不触碰 raw 或生产系统。
+- rule: s17_p3_valid = operation_runbook_count == 4 AND runbook_step_count == 20 AND knowledge_item_count == 2 AND error_drill_rejected_count == 2 AND restored_byte_exact_count == 1 AND production_restore_count == 0 AND raw_copy_or_backup_count == 0 AND raw_exact == true AND current_grade == D AND decision == NO_GO。
+- runbook gate: 4 types / 20 steps / manual-only / precheck-evidence-rollback=true / raw mutation external production restore business execution=false。
+- knowledge gate: 2 indexes / 12 checklist items / automated finance execution=false。
+- drill gate: 2 invalid candidates rejected / 0 unexpected accepts / 1 synthetic backup / 1 corruption detection / 1 byte-exact restore / 0 production restore。
+- raw gate: phase 前后、跨 S17-P2 和当前只读快照一致；raw copy/backup/mutation=false。
+- downstream gate: Stage 17 review、S18、notification/contact/collection/legal/construction/signature/invoice/payment/bank、upload、reinstall、formal report、difference closure 与 business execution=false。
+- validator: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s17_p3_post_remediation_operations_sop.py --require-private-evidence --require-final-evidence
+- evidence: KMFA/stage_artifacts/V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP/machine/operations_sop_manifest.json
+
 ## FORM-KMFA-V014-S16-P3-POST-REMEDIATION-CUSTOMER-BUSINESS-ANALYSIS-001
 
 - phase: V014_S16_P3_POST_REMEDIATION_CUSTOMER_BUSINESS_ANALYSIS

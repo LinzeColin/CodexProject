@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260712-V014-S17-P2-POST-REMEDIATION-NOTIFICATION"
+as_of_event_id: "DEV-KMFA-20260712-V014-S17-P3-POST-REMEDIATION-OPERATIONS-SOP"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "d76d0d097b952c33d40eed5c8a494357eeed1bbe"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S17_P2_POST_REMEDIATION_NOTIFICATION_COMMIT"
-snapshot_event_time: "2026-07-12T04:09:16+10:00"
-generator_version: "manual-0.1.4-s17-p2-post-remediation-notification"
+source_base_commit: "83b8d7962f3970864e559affd2e67a84b8bec98d"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP_COMMIT"
+snapshot_event_time: "2026-07-12T04:40:42+10:00"
+generator_version: "manual-0.1.4-s17-p3-post-remediation-operations-sop"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1417
-    total_active_formulas: 308
+    total_active_parameters: 1421
+    total_active_formulas: 309
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -974,6 +974,55 @@ dimensions:
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
+kmfa_v014_s17_p3_post_remediation_operations_sop:
+  status: completed_validated_local_only_s17_p3_operations_sop_no_go_upload_deferred
+  phase_id: V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP
+  task_id: KMFA-V014-S17-P3-POST-REMEDIATION-OPERATIONS-SOP-20260712
+  acceptance_id: ACC-V014-S17-P3-POST-REMEDIATION-OPERATIONS-SOP
+  formula_ref: FORM-KMFA-V014-S17-P3-POST-REMEDIATION-OPERATIONS-SOP-001
+  parameter_refs:
+    - PARAM-KMFA-1800
+    - PARAM-KMFA-1801
+    - PARAM-KMFA-1802
+    - PARAM-KMFA-1803
+  decision: NO_GO
+  evidence_ref: KMFA/stage_artifacts/V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP/machine/operations_sop_manifest.json
+  validator: KMFA/tools/check_v014_s17_p3_post_remediation_operations_sop.py
+  counts:
+    operation_runbook_count: 4
+    runbook_step_count: 20
+    knowledge_item_count: 2
+    knowledge_checklist_item_count: 12
+    error_drill_scenario_count: 2
+    error_drill_rejected_count: 2
+    error_drill_unexpected_accept_count: 0
+    backup_restore_drill_count: 1
+    synthetic_fixture_count: 1
+    backup_created_count: 1
+    corruption_detected_count: 1
+    restore_completed_count: 1
+    restored_byte_exact_count: 1
+    production_restore_count: 0
+    raw_copy_or_backup_count: 0
+    external_service_call_count: 0
+    business_execution_count: 0
+    raw_source_file_count: 5
+  release_boundary:
+    s17_p1_performed: true
+    s17_p2_performed: true
+    s17_p3_performed: true
+    private_synthetic_drill_performed: true
+    stage17_review_performed: false
+    s18_performed: false
+    production_restore_performed: false
+    raw_copy_or_backup_performed: false
+    external_connector_performed: false
+    formal_report_release_performed: false
+    github_upload_performed: false
+    app_reinstall_performed: false
+    persistent_business_write_performed: false
+    business_execution_performed: false
+
 kmfa_v014_s17_p2_post_remediation_notification:
   status: completed_validated_local_only_s17_p2_metadata_reminders_no_delivery_no_go_upload_deferred
   phase_id: V014_S17_P2_POST_REMEDIATION_NOTIFICATION
