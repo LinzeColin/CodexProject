@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260711-V014-S13-P2-POST-REMEDIATION-COLLECTION-RECEIVABLE-AGING"
+as_of_event_id: "DEV-KMFA-20260711-V014-S13-P3-POST-REMEDIATION-CROSS-TABLE-REVIEW"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "19d9b8014c069b497574b333ddc97aa49307d0e1"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S13_P2_POST_REMEDIATION_COLLECTION_RECEIVABLE_AGING_COMMIT"
-snapshot_event_time: "2026-07-11T14:22:27+10:00"
-generator_version: "manual-0.1.4-s13-p2-post-remediation-collection-receivable-aging"
+source_base_commit: "338b794d1a7dc3cee5541b19326b07dbdfe26946"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW_COMMIT"
+snapshot_event_time: "2026-07-11T14:53:35+10:00"
+generator_version: "manual-0.1.4-s13-p3-post-remediation-cross-table-review"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1360
-    total_active_formulas: 292
+    total_active_parameters: 1364
+    total_active_formulas: 293
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -37,6 +37,9 @@ dimensions:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     evidence_refs:
+      - "KMFA/stage_artifacts/V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW/human/test_results_zh.md"
+      - "KMFA/tools/check_v014_s13_p3_post_remediation_cross_table_review.py"
+      - "KMFA/stage_artifacts/V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW/machine/cross_table_review_manifest.json"
       - "KMFA/stage_artifacts/V014_S13_P2_POST_REMEDIATION_COLLECTION_RECEIVABLE_AGING/human/test_results_zh.md"
       - "KMFA/tools/check_v014_s13_p2_post_remediation_collection_receivable_aging.py"
       - "KMFA/stage_artifacts/V014_S13_P2_POST_REMEDIATION_COLLECTION_RECEIVABLE_AGING/machine/collection_receivable_aging_manifest.json"
@@ -953,6 +956,45 @@ dimensions:
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
+kmfa_v014_s13_p3_post_remediation_cross_table_review:
+  status: completed_validated_local_only_s13_p3_not_comparable_no_go_upload_deferred
+  phase_id: V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW
+  task_id: KMFA-V014-S13-P3-POST-REMEDIATION-CROSS-TABLE-REVIEW-20260711
+  acceptance_id: ACC-V014-S13-P3-POST-REMEDIATION-CROSS-TABLE-REVIEW
+  formula_ref: FORM-KMFA-V014-S13P3-POST-REMEDIATION-CROSS-TABLE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1743
+    - PARAM-KMFA-1744
+    - PARAM-KMFA-1745
+    - PARAM-KMFA-1746
+  decision: NO_GO
+  evidence_ref: KMFA/stage_artifacts/V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW/machine/cross_table_review_manifest.json
+  validator: KMFA/tools/check_v014_s13_p3_post_remediation_cross_table_review.py
+  counts:
+    review_dimension_count: 4
+    comparable_dimension_count: 0
+    exact_comparison_performed_count: 0
+    proven_match_dimension_count: 0
+    proven_mismatch_dimension_count: 0
+    not_comparable_dimension_count: 4
+    difference_queue_count: 4
+    quality_report_count: 1
+    browser_viewport_check_count: 2
+    dimension_interaction_check_count: 4
+    raw_source_file_count: 5
+  gates:
+    current_data_quality_grade: Q4
+    current_report_grade: D
+    difference_queue_is_non_additive: true
+    formal_report_allowed: false
+    business_decision_basis_allowed: false
+    difference_closure_allowed: false
+    stage13_review_performed: false
+    s14_p1_performed: false
+    github_upload_performed: false
+    app_reinstall_performed: false
+    business_execution_performed: false
+
 kmfa_v014_s13_p2_post_remediation_collection_receivable_aging:
   status: completed_validated_local_only_s13_p2_method_locked_business_items_unproven_upload_deferred
   phase_id: V014_S13_P2_POST_REMEDIATION_COLLECTION_RECEIVABLE_AGING

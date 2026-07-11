@@ -1,3 +1,11 @@
+## 0.1.4-s13-p3-post-remediation-cross-table-review - 2026-07-11
+
+- 完成 `V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW` 本地 phase：项目、客户、金额、时间 4 个维度均完成证据充分性检查。
+- 由于共享逐行绑定、期间绑定和精确数值比较均未证明，comparable/exact/match/mismatch=`0/0/0/0`，not-comparable=`4`；不伪造一致或不一致结论。
+- 生成 4 个 public-safe 非累加差异项和 1 份经营报表质量报告；金额字段保持 null、容差锁为 0 分、不忽略 0.01 元，全局状态保持 `Q4 / D / NO_GO / 3-9-2-1`。
+- v1.4 基线 `54/54 PASS`、当前页 `7/7 PASS`；2 视口、4 维交互、3 条依赖 HTTP 与 3 次真实导航通过，console error 与横向溢出为 0。
+- 5 个 raw 文件在 phase 前后、跨 S13-P2 和当前快照一致；未执行 Stage 13 review、S14、GitHub upload、app reinstall、正式报告、差异关闭、持久业务写入或 business execution。
+
 ## 0.1.4-s13-p2-post-remediation-collection-receivable-aging - 2026-07-11
 
 - 完成 `V014_S13_P2_POST_REMEDIATION_COLLECTION_RECEIVABLE_AGING` 本地 phase：回款表、应收账龄、客户账龄、日记账、开票计划 `5/5` public-safe 结构接入。

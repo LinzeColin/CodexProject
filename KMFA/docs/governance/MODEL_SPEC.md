@@ -1,3 +1,19 @@
+## FORM-KMFA-V014-S13P3-POST-REMEDIATION-CROSS-TABLE-REVIEW-001
+
+- phase: `V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW`
+- version: `0.1.4-s13-p3-post-remediation-cross-table-review`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: 对项目、客户、金额、时间四维执行跨表证据充分性检查，输出 public-safe 非累加差异队列和经营报表质量报告。
+- rule: `s13_p3_cross_table_valid = review_dimension_count == 4 AND comparable_dimension_count == 0 AND exact_comparison_performed_count == 0 AND proven_match_dimension_count == 0 AND proven_mismatch_dimension_count == 0 AND not_comparable_dimension_count == 4 AND difference_queue_count == 4 AND difference_queue_is_non_additive == true AND current_grade == D AND decision == NO_GO AND raw_exact == true`。
+- comparison gate: 候选键标签不证明共享业务行、期间或数值；不可比较不得解释为一致或不一致。
+- money gate: 没有精确绑定前，队列金额字段保持 null；容差为 0 分，不忽略 0.01 元，也不补零。
+- queue gate: 4 项仅记录证据缺口，均 non-additive，不改变全局 `3-9-2-1`。
+- private gate: 原始文件名、字段、表头、金额、截图和详细诊断只保存在 ignored private runtime。
+- history gate: 旧 S13-P3 的 `12 pending` 和 completed 声明仅作 historical fixture。
+- downstream gate: Stage 13 review、S14、GitHub upload、app reinstall、formal report、difference closure 与 business execution=false。
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s13_p3_post_remediation_cross_table_review.py --require-private-evidence --require-browser-evidence --require-final-evidence`
+- evidence: `KMFA/stage_artifacts/V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW/machine/cross_table_review_manifest.json`
+
 ## FORM-KMFA-V014-S13P2-POST-REMEDIATION-COLLECTION-RECEIVABLE-AGING-001
 
 - phase: `V014_S13_P2_POST_REMEDIATION_COLLECTION_RECEIVABLE_AGING`
