@@ -1,3 +1,18 @@
+kmfa_v014_s16_p3_post_remediation_customer_business_analysis:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s16-p3-post-remediation-customer-business-analysis"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S16-P3-POST-REMEDIATION-CUSTOMER-BUSINESS-ANALYSIS-001
+  parameter_refs:
+    - PARAM-KMFA-1786
+    - PARAM-KMFA-1787
+    - PARAM-KMFA-1788
+  evidence_dir: KMFA/stage_artifacts/V014_S16_P3_POST_REMEDIATION_CUSTOMER_BUSINESS_ANALYSIS
+  validator: KMFA/tools/check_v014_s16_p3_post_remediation_customer_business_analysis.py
+  scope: Current read-only four-lane customer value project margin collection quality and aging risk structure candidates with one four-component binding contract one four-dimension summary contract four risk rules four human decision guards zero authoritative customer summaries zero risk items raw immutability browser evidence and Q4 D NO_GO 3-9-2-1; Stage 16 review ranking contact collection legal invoice payment bank upload reinstall formal release difference closure and business execution remain closed.
+
 kmfa_v014_s16_p2_post_remediation_project_status_lifecycle:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-s16-p2-post-remediation-project-status-lifecycle"

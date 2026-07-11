@@ -1,0 +1,21 @@
+{
+  "automatic_customer_ranking_allowed": false,
+  "bank_operation_allowed": false,
+  "business_execution_allowed": false,
+  "collection_action_allowed": false,
+  "customer_contact_action_allowed": false,
+  "customer_risk_item_materialization_allowed": false,
+  "customer_summary_materialization_allowed": false,
+  "decision": "NO_GO",
+  "formal_report_allowed": false,
+  "github_upload_allowed": false,
+  "invoice_issuance_allowed": false,
+  "legal_decision_allowed": false,
+  "payment_execution_allowed": false,
+  "phase_id": "V014_S16_P3_POST_REMEDIATION_CUSTOMER_BUSINESS_ANALYSIS",
+  "project_id": "KMFA",
+  "schema_version": "kmfa.v014.s16_p3.go_no_go.v1",
+  "stage16_review_allowed_in_this_run": false,
+  "stage_id": "S16",
+  "structure_candidate_review_allowed": true
+}

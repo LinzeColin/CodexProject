@@ -1,3 +1,20 @@
+## FORM-KMFA-V014-S16-P3-POST-REMEDIATION-CUSTOMER-BUSINESS-ANALYSIS-001
+
+- phase: V014_S16_P3_POST_REMEDIATION_CUSTOMER_BUSINESS_ANALYSIS
+- version: 0.1.4-s16-p3-post-remediation-customer-business-analysis
+- model_id: MOD-KMFA-GOV-001
+- scope: 只读接入客户价值、项目毛利、回款质量和账龄风险四类结构，锁定客户/项目绑定、客户摘要、风险复核和人工决策门禁，不生成未证明的客户画像、排名、金额或动作。
+- rule: s16_p3_valid = source_lane_count == 4 AND private_candidate_covered_lane_count == 4 AND private_probe_roundtrip_mismatch_count == 0 AND processed_private_structure_alignment_exact == true AND authoritative_customer_row_binding_count == 0 AND materialized_customer_summary_count == 0 AND customer_risk_rule_count == 4 AND customer_risk_item_count == 0 AND raw_exact == true AND current_grade == D AND decision == NO_GO。
+- probe gate: 5 raw / 48 XLSX / 25 parseable / 23 unparseable / 4,198 sheets / 3,342 unique candidates / 3,772 lane associations / 374 multi-lane / 0 mismatch。
+- summary gate: 1 contract / 4 binding components / 4 dimensions / 0 customer rows / 0 project rows / 0 values / 0 summaries / 0 rankings。
+- risk gate: 4 rules / 0 actual risk items / 4 human handoff guards / 0 public business values。
+- history gate: legacy 7 lanes / 4 value signals / 4 risk signals / 4 summaries / 4 guards are non-authoritative fixtures only。
+- browser gate: baseline 54/54、current 12/12、2 viewports、8 lane interactions、8 rule interactions、4 HTTP、4 navigation、0 console、0 overflow。
+- raw gate: phase 前后、跨 S16-P2 和当前只读快照一致；raw/private 明文不得进入 Git。
+- downstream gate: Stage 16 review、ranking/contact/collection/legal、invoice/payment/bank、upload、reinstall、formal report、difference closure 与 business execution=false。
+- validator: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s16_p3_post_remediation_customer_business_analysis.py --require-private-evidence --require-browser-evidence --require-final-evidence
+- evidence: KMFA/stage_artifacts/V014_S16_P3_POST_REMEDIATION_CUSTOMER_BUSINESS_ANALYSIS/machine/customer_business_analysis_manifest.json
+
 ## FORM-KMFA-V014-S16-P2-POST-REMEDIATION-PROJECT-STATUS-LIFECYCLE-001
 
 - phase: V014_S16_P2_POST_REMEDIATION_PROJECT_STATUS_LIFECYCLE
