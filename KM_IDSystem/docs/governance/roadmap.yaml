@@ -2,11 +2,16 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE037"
-current_phase_id: "IDS-STAGE037-P3"
-current_task_id: "IDS-V0_1-STAGE037-P3"
-next_gate_id: "IDS-STAGE037-P4-GATE"
+current_phase_id: "IDS-STAGE037-P4"
+current_task_id: "IDS-V0_1-STAGE037-P4"
+next_gate_id: "IDS-STAGE037-REVIEW-GATE"
 current_transition_history:
   previous_state:
+    current_stage_id: "IDS-STAGE037"
+    current_phase_id: "IDS-STAGE037-P3"
+    current_task_id: "IDS-V0_1-STAGE037-P3"
+    next_gate_id: "IDS-STAGE037-P4-GATE"
+  stage037_phase2_state:
     current_stage_id: "IDS-STAGE037"
     current_phase_id: "IDS-STAGE037-P2"
     current_task_id: "IDS-V0_1-STAGE037-P2"
@@ -97,7 +102,7 @@ current_transition_history:
     current_task_id: "IDS-V0_1-STAGE033-REVIEW"
     next_gate_id: "IDS-STAGE034-P1-GATE"
 total_estimated_hours: 158
-completed_estimated_hours: 288
+completed_estimated_hours: 290
 stages:
   -
     stage_id: "S5"
@@ -8954,25 +8959,23 @@ stages:
       - "提交 secrets、API key、数据库密码、credential-bearing DSN 或云端凭证"
       - "使用虚构 IDS 业务数据、虚构数据库行、fake source documents、placeholder corpus、fabricated jobs/logs/evidence"
       - "把 Phase 2 deterministic candidate 写成运行队列、持久化 transition event、数据库状态值或真实任务已验证"
-      - "进入 Phase 4、STAGE-038、GitHub upload、PR、merge、app reinstall、stage review、batch review 或 upload gate"
+      - "进入 STAGE-038、GitHub upload、PR、merge、app reinstall、stage review、batch review 或 upload gate"
     stop_gate:
-      gate_id: "IDS-STAGE037-P4-GATE"
+      gate_id: "IDS-STAGE037-REVIEW-GATE"
       status: "pending_next_run"
       pass_conditions:
-        - "The exact ten Phase 3 scenario ids produce deterministic PASS results with STATIC_CONTRACT_SCENARIO_ONLY and no live action"
-        - "Duplicate replay returns the original candidate while request-id payload conflict fails closed"
-        - "Worker-crash evaluation reserves retry without consuming it, revokes lease/lock, advances fencing, and blocks stale success by compare-and-set"
-        - "Drive-offline pause preserves SAFE_MODE_DRIVE_OFFLINE and reconnect cannot auto-resume without owner revalidation"
-        - "Low-disk retry pause preserves retry_pending, disposition, and retry_count without running backpressure"
-        - "Same-source concurrency and claim without positive lock-acquisition proof fail before CLAIMED"
-        - "A transition carrying cleanup authorization is rejected as an unknown request shape and STAGE-044 ownership remains exact"
-        - "The Phase 3 report nests the complete valid Phase 2 report and fails closed when the machine contract is malformed or runtime-enabled"
-        - "No queue, worker, retry scheduler, backpressure, lock, lifecycle, crash recovery, cleanup, registry, schema/database action, runtime output, fake data, raw metadata access, upload, or app reinstall occurs"
+        - "The Phase 4 report binds the exact eight job types, eleven states, twenty-one transitions, four terminal states, and three active states"
+        - "Retry, backpressure, cleanup, and automatic/manual boundaries preserve STAGE-039/040/042/044 ownership and invent no numeric policy"
+        - "Safe shutdown, recovery, rollback, and known-limit contracts are exact, Chinese, deterministic, and fail closed on malformed or tampered input"
+        - "The Phase 4 report nests the complete valid Phase 3 and Phase 2 reports and binds canonical P1-P4 evidence hashes"
+        - "stage_review_status remains pending_next_run and only IDS-STAGE037-REVIEW-GATE is allowed next"
+        - "No queue, worker, retry/dead-letter scheduler, backpressure, lock, lifecycle, crash recovery, cleanup, registry, schema/database action, runtime output, real job, fake data, raw metadata access, upload, or app reinstall occurs"
         - "BATCH031_040_UPLOAD_LOCK.yaml keeps push_allowed=false"
       evidence_refs:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE1_SCOPE_BOUNDARY.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE2_JOB_STATE_MODEL_SLICE.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE3_ADVERSARIAL_SCENARIOS.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE4_CLOSEOUT.md"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/job_state_model/stage037_job_state_model_index.json"
         - "KM_IDSystem/scripts/check_job_state_model.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
@@ -9115,7 +9118,7 @@ stages:
         phase_id: "IDS-STAGE037-P4"
         name: "任务状态模型 交付证据、回滚与中文反馈"
         objective: "交付状态图、重试/反压/清理证据合同、自动与人工处理边界，以及安全关闭、恢复和回滚说明。"
-        status: "planned"
+        status: "passed_with_local_evidence"
         stop_conditions:
           - "未从 IDS-STAGE037-P4-GATE 进入独立 run"
           - "在 whole-stage review 前上传 GitHub 或重装 app"
@@ -9124,7 +9127,7 @@ stages:
             task_id: "IDS-V0_1-STAGE037-P4"
             name: "Job-state closeout evidence"
             objective: "形成 Phase 4 delivery contract，并把 whole-stage review 保持为后续独立 run。"
-            status: "planned"
+            status: "completed"
             estimated_hours: 2
             total_hours_percent: "14.29%"
             dependencies:
@@ -9132,9 +9135,26 @@ stages:
             acceptance_ids:
               - "ACC-STAGE-037"
             test_commands:
-              - "Defined in the independent Phase 4 run after RED"
-            test_results: "NOT_RUN"
+              - "RED/GREEN: python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage037_job_state_model.Stage037JobStateModelPhase4Tests -q"
+              - "RED/GREEN: python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression.Stage005GovernanceRegressionTests.test_phase_state_allows_stage037_phase4_closeout_review_pending -q"
+              - "python3 -B KM_IDSystem/scripts/check_job_state_model.py"
+              - "python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage037_job_state_model -q"
+              - "python3 -B KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "python3 -B scripts/lean_governance.py check-render --project KM_IDSystem"
+              - "events.jsonl parse and duplicate-id check"
+              - "git diff --check"
+              - "python3 -B scripts/validate_governance_sync.py --changed-only --base-ref HEAD --semantic --drift-report"
+            test_results: "GREEN: Stage037 Phase4 7 tests OK, Stage037 aggregate 29 tests OK, Stage005 137 tests OK, Stage031-037 aggregate 159 tests OK, Stage026-030 75 tests OK, full IDS v0.1 discovery 556 tests OK, checker delivery_contract_valid=true, Stage005 validator valid=true"
             evidence_refs:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE1_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE2_JOB_STATE_MODEL_SLICE.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE3_ADVERSARIAL_SCENARIOS.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/job_state_model/stage037_job_state_model_index.json"
+              - "KM_IDSystem/scripts/check_job_state_model.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage037_job_state_model.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
             risk: "Static closeout must not be misreported as whole-stage review, batch upload, or production readiness."
-            rollback: "Defined by the independent Phase 4 run."
+            rollback: "Revert only the Phase 4 delivery contract field, checker delivery builder, closeout document/tests, Stage005 validator/test support, batch lock, roadmap/event, narrow compatibility updates, and rendered owner files; preserve Phase 1-3 evidence, prior stages, user-edited files, raw metadata, PostgreSQL, state registry, source/runtime data, app entries, and GitHub state."

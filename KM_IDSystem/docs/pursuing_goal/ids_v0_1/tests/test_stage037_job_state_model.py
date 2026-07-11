@@ -14,6 +14,7 @@ ENTRY = PURSUE_ROOT / "STAGE037_ENTRY_CONTRACT.md"
 PHASE1 = PURSUE_ROOT / "STAGE037_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE037_PHASE2_JOB_STATE_MODEL_SLICE.md"
 PHASE3 = PURSUE_ROOT / "STAGE037_PHASE3_ADVERSARIAL_SCENARIOS.md"
+PHASE4 = PURSUE_ROOT / "STAGE037_PHASE4_CLOSEOUT.md"
 MODEL_ROOT = PURSUE_ROOT / "job_state_model"
 MODEL_INDEX = MODEL_ROOT / "stage037_job_state_model_index.json"
 CHECKER = ROOT / "scripts" / "check_job_state_model.py"
@@ -340,6 +341,14 @@ class Stage037JobStateModelPhase1Tests(unittest.TestCase):
                 'acceptance_status: "phase3_adversarial_scenarios_passed"',
                 'next_allowed_task_id: "IDS-V0_1-STAGE037-P4"',
             ],
+            [
+                'status: "stage037_phase4_completed_review_pending"',
+                'next_phase: "stage_review"',
+                'next_gate: "IDS-STAGE037-REVIEW-GATE"',
+                'current_task_id: "IDS-V0_1-STAGE037-P4"',
+                'acceptance_status: "phase4_closeout_passed_review_pending"',
+                'next_allowed_task_id: "IDS-V0_1-STAGE037-REVIEW"',
+            ],
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE037"',
@@ -597,8 +606,8 @@ class Stage037JobStateModelPhase2Tests(unittest.TestCase):
         self.assertEqual(0, result.returncode, result.stderr or result.stdout)
         self.assertEqual("", result.stderr)
         payload = json.loads(result.stdout)
-        self.assertEqual("Phase 3", payload["phase"])
-        self.assertEqual("IDS-V0_1-STAGE037-P3", payload["task_id"])
+        self.assertEqual("Phase 4", payload["phase"])
+        self.assertEqual("IDS-V0_1-STAGE037-P4", payload["task_id"])
         self.assertEqual(report, payload["phase2_report"])
 
     def test_deterministic_engine_enforces_cas_and_idempotent_replay(self):
@@ -1126,6 +1135,14 @@ class Stage037JobStateModelPhase2Tests(unittest.TestCase):
                 'acceptance_status: "phase3_adversarial_scenarios_passed"',
                 'next_allowed_task_id: "IDS-V0_1-STAGE037-P4"',
             ],
+            [
+                'status: "stage037_phase4_completed_review_pending"',
+                'next_phase: "stage_review"',
+                'next_gate: "IDS-STAGE037-REVIEW-GATE"',
+                'current_task_id: "IDS-V0_1-STAGE037-P4"',
+                'acceptance_status: "phase4_closeout_passed_review_pending"',
+                'next_allowed_task_id: "IDS-V0_1-STAGE037-REVIEW"',
+            ],
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE037"',
@@ -1470,10 +1487,10 @@ class Stage037JobStateModelPhase3Tests(unittest.TestCase):
         self.assertEqual(0, completed.returncode, completed.stderr or completed.stdout)
         self.assertEqual("", completed.stderr)
         payload = json.loads(completed.stdout)
-        self.assertEqual("Phase 3", payload["phase"])
-        self.assertEqual("IDS-V0_1-STAGE037-P3", payload["task_id"])
-        self.assertTrue(payload["scenario_validation_valid"], payload)
-        self.assertIn("phase2_report", payload)
+        self.assertEqual("Phase 4", payload["phase"])
+        self.assertEqual("IDS-V0_1-STAGE037-P4", payload["task_id"])
+        self.assertTrue(payload["phase3_report"]["scenario_validation_valid"])
+        self.assertEqual("Phase 3", payload["phase3_report"]["phase"])
         self.assertTrue(payload["phase2_report"]["contract_valid"])
         self.assertEqual("Phase 2", payload["phase2_report"]["phase"])
 
@@ -1487,17 +1504,29 @@ class Stage037JobStateModelPhase3Tests(unittest.TestCase):
             if line.strip()
         ]
         lock_terms = [
-            'status: "stage037_phase3_in_progress"',
             '      - "Phase 1"',
             '      - "Phase 2"',
             '      - "Phase 3"',
-            'next_phase: "Phase 4"',
-            'next_gate: "IDS-STAGE037-P4-GATE"',
-            'current_task_id: "IDS-V0_1-STAGE037-P3"',
-            'acceptance_status: "phase3_adversarial_scenarios_passed"',
-            'next_allowed_task_id: "IDS-V0_1-STAGE037-P4"',
             "push_allowed: false",
             "github_upload_allowed: false",
+        ]
+        allowed_current_states = [
+            [
+                'status: "stage037_phase3_in_progress"',
+                'next_phase: "Phase 4"',
+                'next_gate: "IDS-STAGE037-P4-GATE"',
+                'current_task_id: "IDS-V0_1-STAGE037-P3"',
+                'acceptance_status: "phase3_adversarial_scenarios_passed"',
+                'next_allowed_task_id: "IDS-V0_1-STAGE037-P4"',
+            ],
+            [
+                'status: "stage037_phase4_completed_review_pending"',
+                'next_phase: "stage_review"',
+                'next_gate: "IDS-STAGE037-REVIEW-GATE"',
+                'current_task_id: "IDS-V0_1-STAGE037-P4"',
+                'acceptance_status: "phase4_closeout_passed_review_pending"',
+                'next_allowed_task_id: "IDS-V0_1-STAGE037-REVIEW"',
+            ],
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE037"',
@@ -1508,6 +1537,13 @@ class Stage037JobStateModelPhase3Tests(unittest.TestCase):
             'task_id: "IDS-V0_1-STAGE037-P3"',
             'status: "passed_with_local_evidence"',
         ]
+        self.assertTrue(
+            any(
+                all(term in lock_text for term in state)
+                for state in allowed_current_states
+            ),
+            allowed_current_states,
+        )
         for terms, text in ((lock_terms, lock_text), (roadmap_terms, roadmap_text)):
             for term in terms:
                 with self.subTest(term=term):
@@ -1530,6 +1566,341 @@ class Stage037JobStateModelPhase3Tests(unittest.TestCase):
             event["changed_files"],
         )
         self.assertIn("live_execution_performed=false", event["notes"])
+        self.assertIn("push_allowed=false", event["notes"])
+        self.assertNotIn("github_upload_allowed=true", event["notes"])
+
+
+class Stage037JobStateModelPhase4Tests(unittest.TestCase):
+    maxDiff = None
+
+    EXPECTED_JOB_TYPES = [
+        "IMPORT",
+        "ARCHIVE",
+        "PARSE",
+        "OCR",
+        "CHUNK",
+        "EMBED",
+        "INDEX",
+        "REPORT",
+    ]
+    EXPECTED_JOB_STATES = [
+        "CREATED",
+        "QUEUED",
+        "CLAIMED",
+        "RUNNING",
+        "PAUSE_REQUESTED",
+        "PAUSED",
+        "RETRY_WAIT",
+        "SUCCEEDED",
+        "FAILED",
+        "DEAD_LETTERED",
+        "CANCELLED",
+    ]
+    EXPECTED_SAFE_SHUTDOWN_STEPS = {
+        "stop_new_admission",
+        "request_safe_checkpoint",
+        "deactivate_and_fence",
+        "preserve_source_and_evidence",
+    }
+    EXPECTED_RECOVERY_STEPS = {
+        "record_worker_loss_evidence",
+        "cas_deactivate_expired_attempt",
+        "reserve_retry_without_consuming",
+        "require_owner_resource_revalidation",
+        "block_stale_worker_commit",
+    }
+    EXPECTED_ROLLBACK_STEPS = {
+        "stop_on_invalid_contract",
+        "revert_phase4_contract_only",
+        "preserve_phase1_phase3_evidence",
+        "preserve_data_and_runtime",
+    }
+    EXPECTED_KNOWN_LIMITS = {
+        "no_queue_or_worker_runtime",
+        "numeric_policies_deferred",
+        "no_live_crash_or_recovery",
+        "no_cleanup_runtime",
+        "no_database_or_registry_execution",
+        "static_closeout_is_not_readiness",
+        "stage_review_and_batch_upload_blocked",
+    }
+
+    _load_checker = staticmethod(Stage037JobStateModelPhase2Tests._load_checker)
+    _load_index = staticmethod(Stage037JobStateModelPhase2Tests._load_index)
+
+    def _delivery_builder(self):
+        module = self._load_checker()
+        self.assertTrue(
+            hasattr(module, "build_stage037_delivery_report"),
+            "missing Stage037 Phase 4 delivery report builder",
+        )
+        return module, module.build_stage037_delivery_report
+
+    def test_phase4_artifact_and_machine_delivery_contract_exist(self):
+        self.assertTrue(PHASE4.is_file(), f"missing Phase 4 evidence: {PHASE4}")
+        combined = "\n".join(
+            [PHASE4.read_text(encoding="utf-8"), CHECKER.read_text(encoding="utf-8")]
+        )
+        required_terms = [
+            "IDS-V0_1-STAGE037-P4",
+            "ACC-STAGE-037",
+            "ids.stage037.job_state_model.phase4.v1",
+            "ids.stage037.job_state_model.delivery_contract.v1",
+            "build_stage037_delivery_report",
+            "STATIC_TRACKED_CLOSEOUT_EVIDENCE_ONLY",
+            "PASS_STATIC_CLOSEOUT_RUNTIME_DISABLED",
+            "state_graph",
+            "retry_evidence_contract",
+            "backpressure_evidence_contract",
+            "cleanup_evidence_contract",
+            "automatic_manual_boundary",
+            "safe_shutdown_steps",
+            "recovery_steps",
+            "rollback_steps",
+            "known_limits",
+            "stage_review_status=pending_next_run",
+            "STAGE037_PHASE4_CLOSEOUT_NO_STAGE_REVIEW_THIS_RUN_NO_BATCH_UPLOAD_NO_GITHUB_UPLOAD",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "不得使用虚构 IDS 业务数据",
+            "ab1296ab690e445f2ae915ff508d68e9fac40c888cd9ce851bfcc0cf5ce77dc2",
+        ]
+        for term in required_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, combined)
+
+        contract = self._load_index()["phase4_delivery_contract"]
+        self.assertEqual(
+            "ids.stage037.job_state_model.delivery_contract.v1",
+            contract["schema_version"],
+        )
+
+    def test_delivery_report_binds_exact_state_graph_and_nested_history(self):
+        _, builder = self._delivery_builder()
+        report = builder()
+
+        self.assertEqual("ids.stage037.job_state_model.phase4.v1", report["schema_version"])
+        self.assertEqual("Phase 4", report["phase"])
+        self.assertEqual("IDS-V0_1-STAGE037-P4", report["task_id"])
+        self.assertEqual("ACC-STAGE-037", report["acceptance_id"])
+        self.assertTrue(report["delivery_contract_valid"], report)
+        self.assertTrue(all(report["delivery_check_results"].values()), report)
+        self.assertTrue(all(report["phase4_contract_results"].values()), report)
+        self.assertEqual("PASS_STATIC_CLOSEOUT_RUNTIME_DISABLED", report["result"])
+        self.assertFalse(report["execution_ready"])
+        self.assertEqual(
+            "STATIC_JOB_STATE_CLOSEOUT_VALID_RUNTIME_DISABLED",
+            report["execution_state"],
+        )
+        self.assertEqual(self.EXPECTED_JOB_TYPES, report["state_graph"]["job_types"])
+        self.assertEqual(self.EXPECTED_JOB_STATES, report["state_graph"]["job_states"])
+        self.assertEqual(21, report["state_graph"]["allowed_transition_count"])
+        self.assertEqual("ids.job_state.v1", report["state_graph"]["state_model_version"])
+        self.assertTrue(report["phase3_report"]["scenario_validation_valid"])
+        self.assertEqual("Phase 3", report["phase3_report"]["phase"])
+        self.assertTrue(report["phase2_report"]["contract_valid"])
+        self.assertEqual("Phase 2", report["phase2_report"]["phase"])
+
+    def test_retry_backpressure_cleanup_and_human_boundaries_stay_deferred(self):
+        _, builder = self._delivery_builder()
+        report = builder()
+
+        retry = report["retry_evidence_contract"]
+        self.assertEqual("STAGE-039", retry["runtime_owner"])
+        self.assertEqual("1 + max_retries", retry["total_attempt_limit_formula"])
+        self.assertFalse(retry["retry_scheduler_performed"])
+        self.assertFalse(retry["dead_letter_runtime_performed"])
+
+        backpressure = report["backpressure_evidence_contract"]
+        self.assertEqual("STAGE-040", backpressure["runtime_owner"])
+        self.assertFalse(backpressure["pause_reason_is_state"])
+        self.assertFalse(backpressure["backpressure_runtime_performed"])
+        self.assertEqual(
+            "POLICY_VALUE_DEFERRED_TO_STAGE039_040_041",
+            backpressure["numeric_policy"],
+        )
+
+        cleanup = report["cleanup_evidence_contract"]
+        self.assertEqual("STAGE-044", cleanup["runtime_owner"])
+        self.assertFalse(cleanup["state_transition_authorizes_deletion"])
+        self.assertFalse(cleanup["cleanup_runtime_performed"])
+        self.assertTrue(cleanup["exclusive_namespace_lock_required"])
+        self.assertTrue(cleanup["writer_quiescence_required"])
+
+        boundary = report["automatic_manual_boundary"]
+        self.assertEqual("STAGE-042", boundary["runtime_owner"])
+        self.assertFalse(boundary["automatic_run_allowed"])
+        self.assertFalse(boundary["automatic_resume_allowed"])
+        self.assertFalse(boundary["automatic_shutdown_allowed"])
+        self.assertTrue(boundary["owner_revalidation_required_for_resume"])
+        self.assertTrue(boundary["safe_deactivation_required_for_cancel"])
+
+    def test_safe_shutdown_recovery_rollback_and_known_limits_are_complete(self):
+        _, builder = self._delivery_builder()
+        report = builder()
+
+        for field, expected in (
+            ("safe_shutdown_steps", self.EXPECTED_SAFE_SHUTDOWN_STEPS),
+            ("recovery_steps", self.EXPECTED_RECOVERY_STEPS),
+            ("rollback_steps", self.EXPECTED_ROLLBACK_STEPS),
+        ):
+            steps = report[field]
+            self.assertEqual(expected, {item["step_id"] for item in steps})
+            for item in steps:
+                self.assertIs(item["required"], True)
+                self.assertRegex(item["owner_message_zh"], r"[\u4e00-\u9fff]")
+
+        limits = report["known_limits"]
+        self.assertEqual(
+            self.EXPECTED_KNOWN_LIMITS,
+            {item["limit_id"] for item in limits},
+        )
+        self.assertTrue(all(item["acknowledged"] is True for item in limits))
+        self.assertRegex(report["chinese_owner_feedback"], r"[\u4e00-\u9fff]")
+
+        for field in [
+            "live_execution_performed",
+            "queue_runtime_performed",
+            "worker_runtime_performed",
+            "retry_scheduler_performed",
+            "dead_letter_runtime_performed",
+            "backpressure_runtime_performed",
+            "lock_runtime_performed",
+            "automatic_lifecycle_runtime_performed",
+            "crash_recovery_runtime_performed",
+            "cleanup_runtime_performed",
+            "database_connection_performed",
+            "schema_change_performed",
+            "state_registry_write_performed",
+            "runtime_output_written",
+            "real_job_created",
+            "fake_ids_business_data_used",
+            "raw_metadata_content_accessed",
+        ]:
+            with self.subTest(field=field):
+                self.assertFalse(report[field])
+
+    def test_phase4_tampering_and_malformed_contracts_fail_closed(self):
+        _, builder = self._delivery_builder()
+
+        mutations = []
+        auto_resume = self._load_index()
+        auto_resume["phase4_delivery_contract"]["automatic_manual_boundary"][
+            "automatic_resume_allowed"
+        ] = True
+        mutations.append(auto_resume)
+
+        missing_shutdown = self._load_index()
+        missing_shutdown["phase4_delivery_contract"]["safe_shutdown_steps"].pop()
+        mutations.append(missing_shutdown)
+
+        cleanup_runtime = self._load_index()
+        cleanup_runtime["phase4_delivery_contract"]["cleanup_evidence_contract"][
+            "cleanup_runtime_performed"
+        ] = True
+        mutations.append(cleanup_runtime)
+
+        wrong_hash = self._load_index()
+        wrong_hash["phase4_delivery_contract"]["evidence_sha256"][
+            "phase3_scenarios_ref"
+        ] = "0" * 64
+        mutations.append(wrong_hash)
+
+        for contract in mutations:
+            with self.subTest(mutation=contract["phase4_delivery_contract"]):
+                report = builder(contract=contract)
+                self.assertFalse(report["delivery_contract_valid"], report)
+                self.assertEqual("FAIL_CLOSED", report["result"])
+                self.assertEqual(
+                    "BLOCKED_INVALID_JOB_STATE_CONTRACT",
+                    report["execution_state"],
+                )
+                self.assertFalse(report["live_execution_performed"])
+
+        malformed_nested = self._load_index()
+        malformed_nested["phase4_delivery_contract"] = ["invalid"]
+        for contract in (malformed_nested, ["not", "an", "object"]):
+            with self.subTest(contract=contract):
+                try:
+                    report = builder(contract=contract)
+                except Exception as exc:
+                    self.fail(f"malformed Phase 4 contract must fail closed: {exc}")
+                self.assertFalse(report["delivery_contract_valid"])
+                self.assertEqual("FAIL_CLOSED", report["result"])
+                self.assertFalse(report["live_execution_performed"])
+
+    def test_cli_emits_phase4_and_stops_at_separate_review_gate(self):
+        completed = subprocess.run(
+            [sys.executable, "-B", str(CHECKER)],
+            cwd=ROOT.parent,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(0, completed.returncode, completed.stderr or completed.stdout)
+        self.assertEqual("", completed.stderr)
+        payload = json.loads(completed.stdout)
+        self.assertEqual("Phase 4", payload["phase"])
+        self.assertEqual("IDS-V0_1-STAGE037-P4", payload["task_id"])
+        self.assertTrue(payload["delivery_contract_valid"], payload)
+        self.assertEqual("pending_next_run", payload["stage_review_status"])
+        self.assertEqual("IDS-STAGE037-REVIEW-GATE", payload["next_gate"])
+        self.assertFalse(payload["github_upload_allowed"])
+        self.assertFalse(payload["app_reinstall_allowed"])
+        self.assertTrue(payload["phase3_report"]["scenario_validation_valid"])
+        self.assertTrue(payload["phase2_report"]["contract_valid"])
+
+    def test_phase4_governance_records_review_pending_without_upload(self):
+        self.assertTrue(PHASE4.is_file(), f"missing Phase 4 evidence: {PHASE4}")
+        lock_text = BATCH_LOCK.read_text(encoding="utf-8")
+        roadmap_text = ROADMAP.read_text(encoding="utf-8")
+        events = [
+            json.loads(line)
+            for line in EVENTS.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+        lock_terms = [
+            'status: "stage037_phase4_completed_review_pending"',
+            '      - "Phase 4"',
+            'review_status: "pending"',
+            'next_phase: "stage_review"',
+            'next_gate: "IDS-STAGE037-REVIEW-GATE"',
+            'current_task_id: "IDS-V0_1-STAGE037-P4"',
+            'acceptance_status: "phase4_closeout_passed_review_pending"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE037-REVIEW"',
+            "push_allowed: false",
+            "github_upload_allowed: false",
+        ]
+        roadmap_terms = [
+            'current_stage_id: "IDS-STAGE037"',
+            'current_phase_id: "IDS-STAGE037-P4"',
+            'current_task_id: "IDS-V0_1-STAGE037-P4"',
+            'next_gate_id: "IDS-STAGE037-REVIEW-GATE"',
+            'phase_id: "IDS-STAGE037-P4"',
+            'task_id: "IDS-V0_1-STAGE037-P4"',
+            'status: "passed_with_local_evidence"',
+            "STAGE037_PHASE4_CLOSEOUT.md",
+        ]
+        for terms, text in ((lock_terms, lock_text), (roadmap_terms, roadmap_text)):
+            for term in terms:
+                with self.subTest(term=term):
+                    self.assertIn(term, text)
+
+        matching = [
+            event
+            for event in events
+            if event.get("event_id") == "EVT-IDS-V0_1-STAGE037-P4-20260711-001"
+        ]
+        self.assertEqual(1, len(matching), matching)
+        event = matching[0]
+        self.assertEqual("phase_closeout", event["event_type"])
+        self.assertEqual("IDS-V0_1-STAGE037-P4", event["task_id"])
+        self.assertEqual(["ACC-STAGE-037"], event["acceptance_ids"])
+        self.assertIn(
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE4_CLOSEOUT.md",
+            event["changed_files"],
+        )
+        self.assertIn("live_execution_performed=false", event["notes"])
+        self.assertIn("next_gate=IDS-STAGE037-REVIEW-GATE", event["notes"])
         self.assertIn("push_allowed=false", event["notes"])
         self.assertNotIn("github_upload_allowed=true", event["notes"])
 

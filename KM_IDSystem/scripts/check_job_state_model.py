@@ -36,6 +36,15 @@ PHASE3_EXECUTION_MODE = (
     "STATIC_JOB_STATE_ADVERSARIAL_SCENARIO_VALIDATION_ONLY"
 )
 SCENARIO_FACT_LEVEL = "STATIC_CONTRACT_SCENARIO_ONLY"
+PHASE4_REPORT_SCHEMA_VERSION = "ids.stage037.job_state_model.phase4.v1"
+PHASE4_CONTRACT_SCHEMA_VERSION = (
+    "ids.stage037.job_state_model.delivery_contract.v1"
+)
+PHASE4_TASK_ID = "IDS-V0_1-STAGE037-P4"
+PHASE4_NEXT_GATE = "IDS-STAGE037-REVIEW-GATE"
+PHASE4_VALID_STATE = "STATIC_JOB_STATE_CLOSEOUT_VALID_RUNTIME_DISABLED"
+PHASE4_EXECUTION_MODE = "STATIC_TRACKED_CLOSEOUT_EVIDENCE_ONLY"
+PHASE4_VALID_RESULT = "PASS_STATIC_CLOSEOUT_RUNTIME_DISABLED"
 
 EXPECTED_PHASE3_SCENARIOS = (
     "duplicate_click_idempotent_replay",
@@ -49,6 +58,56 @@ EXPECTED_PHASE3_SCENARIOS = (
     "lock_claim_without_proof_blocked",
     "cleanup_authorization_blocked",
 )
+
+EXPECTED_PHASE4_EVIDENCE_REFS = {
+    "phase1_scope_ref": "../STAGE037_PHASE1_SCOPE_BOUNDARY.md",
+    "phase2_slice_ref": "../STAGE037_PHASE2_JOB_STATE_MODEL_SLICE.md",
+    "phase3_scenarios_ref": "../STAGE037_PHASE3_ADVERSARIAL_SCENARIOS.md",
+    "phase4_closeout_ref": "../STAGE037_PHASE4_CLOSEOUT.md",
+}
+EXPECTED_PHASE4_EVIDENCE_SHA256 = {
+    "phase1_scope_ref": "e692bfb2f4786c076135888731c6eca6ce0f342a8fa19c1334394ca2d3db3730",
+    "phase2_slice_ref": "8d6a37991f62f3179cd5e65aeef5a9f6bf91b702029ec9a051e75ba6d6c3eebb",
+    "phase3_scenarios_ref": "059033f50b1aba9ff1cc72ea716efb0895a0e292e72ec50e518041ff588c12f8",
+    "phase4_closeout_ref": "00beec1b60d7dbdb6da5678dcbbcf2d9c6d02826979403797759798ea518201a",
+}
+EXPECTED_SAFE_SHUTDOWN_GUARDS = {
+    "stop_new_admission": ("queue_admission_runtime_performed", False),
+    "request_safe_checkpoint": ("checkpoint_runtime_performed", False),
+    "deactivate_and_fence": ("deactivation_runtime_performed", False),
+    "preserve_source_and_evidence": (
+        "source_or_evidence_deletion_allowed",
+        False,
+    ),
+}
+EXPECTED_RECOVERY_GUARDS = {
+    "record_worker_loss_evidence": ("fabricated_crash_log_allowed", False),
+    "cas_deactivate_expired_attempt": ("recovery_runtime_performed", False),
+    "reserve_retry_without_consuming": (
+        "retry_admission_runtime_performed",
+        False,
+    ),
+    "require_owner_resource_revalidation": ("automatic_resume_allowed", False),
+    "block_stale_worker_commit": ("stale_worker_commit_allowed", False),
+}
+EXPECTED_ROLLBACK_GUARDS = {
+    "stop_on_invalid_contract": ("runtime_action_allowed", False),
+    "revert_phase4_contract_only": ("phase1_phase3_revert_allowed", False),
+    "preserve_phase1_phase3_evidence": (
+        "prior_evidence_mutation_allowed",
+        False,
+    ),
+    "preserve_data_and_runtime": ("data_or_runtime_mutation_allowed", False),
+}
+EXPECTED_KNOWN_LIMIT_IDS = {
+    "no_queue_or_worker_runtime",
+    "numeric_policies_deferred",
+    "no_live_crash_or_recovery",
+    "no_cleanup_runtime",
+    "no_database_or_registry_execution",
+    "static_closeout_is_not_readiness",
+    "stage_review_and_batch_upload_blocked",
+}
 
 JOB_TYPES = [
     "IMPORT",
@@ -326,6 +385,7 @@ TOP_LEVEL_KEYS = {
     "downstream_ownership",
     "runtime_policy",
     "delivery_policy",
+    "phase4_delivery_contract",
     "truth_contract",
 }
 DEPENDENCY_KEYS = {
@@ -461,6 +521,82 @@ DELIVERY_KEYS = {
     "batch_review_allowed",
     "next_phase_allowed",
     "next_gate",
+}
+PHASE4_CONTRACT_KEYS = {
+    "schema_version",
+    "state_graph",
+    "retry_evidence_contract",
+    "backpressure_evidence_contract",
+    "cleanup_evidence_contract",
+    "automatic_manual_boundary",
+    "safe_shutdown_steps",
+    "recovery_steps",
+    "rollback_steps",
+    "known_limits",
+    "evidence_refs",
+    "evidence_sha256",
+    "stage_review_status",
+    "next_gate",
+    "github_upload_allowed",
+    "app_reinstall_allowed",
+    "chinese_owner_feedback",
+}
+PHASE4_STATE_GRAPH_KEYS = {
+    "mode",
+    "state_model_version",
+    "job_type_count",
+    "job_state_count",
+    "allowed_transition_count",
+    "terminal_state_count",
+    "active_execution_state_count",
+    "source_ref",
+    "runtime_transition_performed",
+}
+PHASE4_RETRY_KEYS = {
+    "mode",
+    "runtime_owner",
+    "total_attempt_limit_formula",
+    "reservation_increments_retry_count",
+    "admission_increments_retry_count",
+    "resource_pause_preserves_reservation",
+    "exhausted_only_next_state",
+    "numeric_policy",
+    "retry_scheduler_performed",
+    "dead_letter_runtime_performed",
+}
+PHASE4_BACKPRESSURE_KEYS = {
+    "mode",
+    "runtime_owner",
+    "pause_reason_is_state",
+    "resource_gate_required",
+    "retry_budget_consumed_while_blocked",
+    "numeric_policy",
+    "backpressure_runtime_performed",
+}
+PHASE4_CLEANUP_KEYS = {
+    "mode",
+    "runtime_owner",
+    "state_transition_authorizes_deletion",
+    "approved_root_identity_required",
+    "lstat_identity_required",
+    "symlink_allowed",
+    "exclusive_namespace_lock_required",
+    "writer_quiescence_required",
+    "openat_no_follow_required",
+    "unlinkat_required",
+    "source_and_durable_evidence_targets_allowed",
+    "cleanup_runtime_performed",
+}
+PHASE4_AUTOMATIC_MANUAL_KEYS = {
+    "mode",
+    "runtime_owner",
+    "automatic_run_allowed",
+    "automatic_resume_allowed",
+    "automatic_shutdown_allowed",
+    "owner_revalidation_required_for_resume",
+    "safe_deactivation_required_for_cancel",
+    "terminal_history_rewrite_allowed",
+    "automatic_lifecycle_runtime_performed",
 }
 EXPECTED_TRUTH_CONTRACT = {
     "runtime_transition_performed": False,
@@ -664,6 +800,88 @@ def _projection_contract_valid(value: Any) -> bool:
     return True
 
 
+def _zh_text(value: Any) -> bool:
+    return (
+        isinstance(value, str)
+        and 1 <= len(value) <= 512
+        and re.search(r"[\u4e00-\u9fff]", value) is not None
+    )
+
+
+def _step_contract_valid(
+    value: Any, expected_guards: Mapping[str, tuple[str, bool]]
+) -> bool:
+    if not isinstance(value, list) or len(value) != len(expected_guards):
+        return False
+    observed_ids: set[str] = set()
+    for item in value:
+        if not isinstance(item, dict):
+            return False
+        step_id = item.get("step_id")
+        if not isinstance(step_id, str) or step_id not in expected_guards:
+            return False
+        guard_name, guard_value = expected_guards[step_id]
+        if (
+            set(item) != {"step_id", "required", guard_name, "owner_message_zh"}
+            or item.get("required") is not True
+            or item.get(guard_name) is not guard_value
+            or not _zh_text(item.get("owner_message_zh"))
+        ):
+            return False
+        observed_ids.add(step_id)
+    return observed_ids == set(expected_guards)
+
+
+def _known_limits_valid(value: Any) -> bool:
+    if not isinstance(value, list) or len(value) != len(EXPECTED_KNOWN_LIMIT_IDS):
+        return False
+    observed_ids: set[str] = set()
+    for item in value:
+        if (
+            not isinstance(item, dict)
+            or set(item) != {"limit_id", "acknowledged", "owner_message_zh"}
+            or item.get("acknowledged") is not True
+            or not _zh_text(item.get("owner_message_zh"))
+        ):
+            return False
+        limit_id = item.get("limit_id")
+        if not isinstance(limit_id, str):
+            return False
+        observed_ids.add(limit_id)
+    return observed_ids == EXPECTED_KNOWN_LIMIT_IDS
+
+
+def _phase4_shape_exact(value: Any) -> bool:
+    contract = _as_object(value)
+    return (
+        set(contract) == PHASE4_CONTRACT_KEYS
+        and set(_as_object(contract.get("state_graph")))
+        == PHASE4_STATE_GRAPH_KEYS
+        and set(_as_object(contract.get("retry_evidence_contract")))
+        == PHASE4_RETRY_KEYS
+        and set(_as_object(contract.get("backpressure_evidence_contract")))
+        == PHASE4_BACKPRESSURE_KEYS
+        and set(_as_object(contract.get("cleanup_evidence_contract")))
+        == PHASE4_CLEANUP_KEYS
+        and set(_as_object(contract.get("automatic_manual_boundary")))
+        == PHASE4_AUTOMATIC_MANUAL_KEYS
+        and _step_contract_valid(
+            contract.get("safe_shutdown_steps"), EXPECTED_SAFE_SHUTDOWN_GUARDS
+        )
+        and _step_contract_valid(
+            contract.get("recovery_steps"), EXPECTED_RECOVERY_GUARDS
+        )
+        and _step_contract_valid(
+            contract.get("rollback_steps"), EXPECTED_ROLLBACK_GUARDS
+        )
+        and _known_limits_valid(contract.get("known_limits"))
+        and set(_as_object(contract.get("evidence_refs")))
+        == set(EXPECTED_PHASE4_EVIDENCE_REFS)
+        and set(_as_object(contract.get("evidence_sha256")))
+        == set(EXPECTED_PHASE4_EVIDENCE_SHA256)
+    )
+
+
 def _contract_shape_exact(index: Mapping[str, Any]) -> bool:
     transition = _as_object(index.get("transition_contract"))
     return (
@@ -686,9 +904,173 @@ def _contract_shape_exact(index: Mapping[str, Any]) -> bool:
         and set(_as_object(index.get("cleanup_boundary"))) == CLEANUP_KEYS
         and set(_as_object(index.get("runtime_policy"))) == RUNTIME_KEYS
         and set(_as_object(index.get("delivery_policy"))) == DELIVERY_KEYS
+        and _phase4_shape_exact(index.get("phase4_delivery_contract"))
         and set(_as_object(index.get("truth_contract")))
         == set(EXPECTED_TRUTH_CONTRACT)
     )
+
+
+def _phase4_evidence_integrity(
+    contract: Mapping[str, Any],
+) -> tuple[dict[str, bool], dict[str, Optional[str]]]:
+    refs = _as_object(contract.get("evidence_refs"))
+    configured_hashes = _as_object(contract.get("evidence_sha256"))
+    checks: dict[str, bool] = {}
+    observed: dict[str, Optional[str]] = {}
+    for name, expected_ref in EXPECTED_PHASE4_EVIDENCE_REFS.items():
+        configured_ref = refs.get(name)
+        path: Optional[Path] = None
+        if configured_ref == expected_ref:
+            candidate = (INDEX_PATH.parent / expected_ref).resolve()
+            if candidate != PROJECT_ROOT and PROJECT_ROOT in candidate.parents:
+                path = candidate
+        observed_hash: Optional[str] = None
+        if path is not None and path.is_file():
+            try:
+                observed_hash = _sha256_file(path)
+            except OSError:
+                observed_hash = None
+        observed[name] = observed_hash
+        expected_hash = EXPECTED_PHASE4_EVIDENCE_SHA256[name]
+        checks[name] = (
+            configured_hashes.get(name) == expected_hash
+            and observed_hash == expected_hash
+        )
+    checks["exact_ref_key_set"] = set(refs) == set(EXPECTED_PHASE4_EVIDENCE_REFS)
+    checks["exact_hash_key_set"] = set(configured_hashes) == set(
+        EXPECTED_PHASE4_EVIDENCE_SHA256
+    )
+    return checks, observed
+
+
+def _phase4_contract_results(index: Mapping[str, Any]) -> dict[str, bool]:
+    contract = _as_object(index.get("phase4_delivery_contract"))
+    state_graph = _as_object(contract.get("state_graph"))
+    retry_evidence = _as_object(contract.get("retry_evidence_contract"))
+    backpressure = _as_object(contract.get("backpressure_evidence_contract"))
+    cleanup_evidence = _as_object(contract.get("cleanup_evidence_contract"))
+    automatic_manual = _as_object(contract.get("automatic_manual_boundary"))
+    state_model = _as_object(index.get("state_model"))
+    retry = _as_object(index.get("retry_contract"))
+    cleanup = _as_object(index.get("cleanup_boundary"))
+    evidence_checks, _ = _phase4_evidence_integrity(contract)
+    transition_count = sum(
+        len(targets)
+        for targets in ALLOWED_TRANSITIONS.values()
+        if isinstance(targets, list)
+    )
+    return {
+        "contract_shape_exact": _phase4_shape_exact(contract),
+        "identity_exact": (
+            contract.get("schema_version") == PHASE4_CONTRACT_SCHEMA_VERSION
+        ),
+        "state_graph_exact": (
+            state_graph.get("mode") == "static_tracked_job_state_graph"
+            and state_graph.get("state_model_version") == "ids.job_state.v1"
+            and state_graph.get("job_type_count") == len(JOB_TYPES)
+            and state_graph.get("job_state_count") == len(JOB_STATES)
+            and state_graph.get("allowed_transition_count") == transition_count
+            and state_graph.get("terminal_state_count") == len(TERMINAL_STATES)
+            and state_graph.get("active_execution_state_count")
+            == len(ACTIVE_STATES)
+            and state_graph.get("source_ref")
+            == "../STAGE037_PHASE1_SCOPE_BOUNDARY.md"
+            and state_graph.get("runtime_transition_performed") is False
+            and state_model.get("state_model_version") == "ids.job_state.v1"
+            and state_model.get("job_types") == JOB_TYPES
+            and state_model.get("job_states") == JOB_STATES
+            and state_model.get("allowed_transitions") == ALLOWED_TRANSITIONS
+        ),
+        "retry_evidence_exact": (
+            retry_evidence.get("mode") == "static_retry_contract_evidence_only"
+            and retry_evidence.get("runtime_owner") == "STAGE-039"
+            and retry_evidence.get("total_attempt_limit_formula")
+            == "1 + max_retries"
+            and retry_evidence.get("reservation_increments_retry_count") is False
+            and retry_evidence.get("admission_increments_retry_count") is True
+            and retry_evidence.get("resource_pause_preserves_reservation") is True
+            and retry_evidence.get("exhausted_only_next_state")
+            == "DEAD_LETTERED"
+            and retry_evidence.get("numeric_policy")
+            == "POLICY_VALUE_DEFERRED_TO_STAGE039_040_041"
+            and retry_evidence.get("retry_scheduler_performed") is False
+            and retry_evidence.get("dead_letter_runtime_performed") is False
+            and retry.get("total_attempt_limit_formula") == "1 + max_retries"
+            and retry.get("eligible_entry_increments_retry_count") is False
+            and retry.get("retry_admission_increments_retry_count") is True
+            and retry.get("retry_pause_preserves_retry_pending") is True
+            and retry.get("exhausted_only_next_state") == "DEAD_LETTERED"
+        ),
+        "backpressure_evidence_exact": (
+            backpressure.get("mode")
+            == "static_backpressure_boundary_evidence_only"
+            and backpressure.get("runtime_owner") == "STAGE-040"
+            and backpressure.get("pause_reason_is_state") is False
+            and backpressure.get("resource_gate_required") is True
+            and backpressure.get("retry_budget_consumed_while_blocked") is False
+            and backpressure.get("numeric_policy")
+            == "POLICY_VALUE_DEFERRED_TO_STAGE039_040_041"
+            and backpressure.get("backpressure_runtime_performed") is False
+            and state_model.get("pause_reason_is_state") is False
+        ),
+        "cleanup_evidence_exact": (
+            cleanup_evidence.get("mode")
+            == "static_cleanup_boundary_evidence_only"
+            and cleanup_evidence.get("runtime_owner") == "STAGE-044"
+            and cleanup_evidence.get("state_transition_authorizes_deletion")
+            is False
+            and cleanup_evidence.get("approved_root_identity_required") is True
+            and cleanup_evidence.get("lstat_identity_required") is True
+            and cleanup_evidence.get("symlink_allowed") is False
+            and cleanup_evidence.get("exclusive_namespace_lock_required") is True
+            and cleanup_evidence.get("writer_quiescence_required") is True
+            and cleanup_evidence.get("openat_no_follow_required") is True
+            and cleanup_evidence.get("unlinkat_required") is True
+            and cleanup_evidence.get(
+                "source_and_durable_evidence_targets_allowed"
+            )
+            is False
+            and cleanup_evidence.get("cleanup_runtime_performed") is False
+            and cleanup.get("cleanup_owner") == "STAGE-044"
+            and cleanup.get("state_transition_authorizes_deletion") is False
+            and cleanup.get("cleanup_runtime_allowed") is False
+        ),
+        "automatic_manual_boundary_exact": (
+            automatic_manual.get("mode")
+            == "static_automatic_manual_boundary_only"
+            and automatic_manual.get("runtime_owner") == "STAGE-042"
+            and automatic_manual.get("automatic_run_allowed") is False
+            and automatic_manual.get("automatic_resume_allowed") is False
+            and automatic_manual.get("automatic_shutdown_allowed") is False
+            and automatic_manual.get("owner_revalidation_required_for_resume")
+            is True
+            and automatic_manual.get("safe_deactivation_required_for_cancel")
+            is True
+            and automatic_manual.get("terminal_history_rewrite_allowed") is False
+            and automatic_manual.get("automatic_lifecycle_runtime_performed")
+            is False
+        ),
+        "safe_shutdown_steps_exact": _step_contract_valid(
+            contract.get("safe_shutdown_steps"), EXPECTED_SAFE_SHUTDOWN_GUARDS
+        ),
+        "recovery_steps_exact": _step_contract_valid(
+            contract.get("recovery_steps"), EXPECTED_RECOVERY_GUARDS
+        ),
+        "rollback_steps_exact": _step_contract_valid(
+            contract.get("rollback_steps"), EXPECTED_ROLLBACK_GUARDS
+        ),
+        "known_limits_exact": _known_limits_valid(contract.get("known_limits")),
+        "evidence_integrity_exact": all(evidence_checks.values()),
+        "review_and_delivery_locked": (
+            contract.get("stage_review_status") == "pending_next_run"
+            and contract.get("next_gate") == PHASE4_NEXT_GATE
+            and contract.get("github_upload_allowed") is False
+            and contract.get("app_reinstall_allowed") is False
+        ),
+        "chinese_owner_feedback_present": _zh_text(
+            contract.get("chinese_owner_feedback")
+        ),
+    }
 
 
 def _dependency_semantics_valid(
@@ -2328,10 +2710,247 @@ def build_stage037_scenario_validation_report(
     }
 
 
+def build_stage037_delivery_report(
+    *, contract: Optional[dict[str, Any]] = None
+) -> dict[str, Any]:
+    load_error: Optional[str] = None
+    canonical_snapshot_bound = contract is None
+    if contract is None:
+        try:
+            loaded_contract = load_contract()
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            loaded_contract = {}
+            load_error = f"{type(exc).__name__}: {exc}"
+        contract_object = (
+            loaded_contract if isinstance(loaded_contract, dict) else {}
+        )
+        if not isinstance(loaded_contract, dict):
+            canonical_snapshot_bound = False
+            load_error = "index must be a JSON object"
+    else:
+        contract_object = contract if isinstance(contract, dict) else {}
+        canonical_snapshot_bound = False
+        if not isinstance(contract, dict):
+            load_error = "index must be a JSON object"
+
+    phase3_report = build_stage037_scenario_validation_report(
+        contract=contract_object
+    )
+    phase2_report = phase3_report["phase2_report"]
+    phase4_contract = _as_object(
+        contract_object.get("phase4_delivery_contract")
+    )
+    state_model = _as_object(contract_object.get("state_model"))
+    transitions = _as_object(state_model.get("allowed_transitions"))
+    runtime_policy = _as_object(contract_object.get("runtime_policy"))
+    truth_contract = _as_object(contract_object.get("truth_contract"))
+    phase4_contract_results = _phase4_contract_results(contract_object)
+    evidence_integrity, observed_evidence_sha256 = _phase4_evidence_integrity(
+        phase4_contract
+    )
+    scenario_results = phase3_report.get("scenario_results")
+    scenario_results = (
+        scenario_results if isinstance(scenario_results, dict) else {}
+    )
+    allowed_transition_count = sum(
+        len(targets)
+        for targets in transitions.values()
+        if isinstance(targets, list)
+    )
+
+    delivery_check_results = {
+        "canonical_snapshot_bound": canonical_snapshot_bound
+        and load_error is None,
+        "phase2_contract_valid": phase2_report.get("contract_valid") is True,
+        "phase3_scenarios_valid": phase3_report.get(
+            "scenario_validation_valid"
+        )
+        is True,
+        "ten_scenarios_pass": (
+            tuple(scenario_results) == EXPECTED_PHASE3_SCENARIOS
+            and all(
+                isinstance(item, dict) and item.get("status") == "PASS"
+                for item in scenario_results.values()
+            )
+        ),
+        "phase4_machine_contract_valid": all(
+            phase4_contract_results.values()
+        ),
+        "phase4_evidence_hashes_valid": all(evidence_integrity.values()),
+        "state_graph_matches_phase2": (
+            state_model.get("job_types") == JOB_TYPES
+            and state_model.get("job_states") == JOB_STATES
+            and state_model.get("allowed_transitions") == ALLOWED_TRANSITIONS
+            and allowed_transition_count == 21
+        ),
+        "all_runtime_actions_disabled": (
+            set(runtime_policy) == RUNTIME_KEYS
+            and bool(runtime_policy)
+            and all(value is False for value in runtime_policy.values())
+        ),
+        "truth_contract_preserved": truth_contract == EXPECTED_TRUTH_CONTRACT,
+        "raw_metadata_boundary_preserved": (
+            phase2_report.get("raw_metadata_content_accessed") is False
+            and phase3_report.get("raw_metadata_content_accessed") is False
+        ),
+        "fake_data_boundary_preserved": (
+            phase2_report.get("fake_ids_business_data_used") is False
+            and phase3_report.get("fake_ids_business_data_used") is False
+        ),
+        "github_and_app_delivery_blocked": (
+            phase4_contract.get("github_upload_allowed") is False
+            and phase4_contract.get("app_reinstall_allowed") is False
+        ),
+    }
+    delivery_contract_valid = all(delivery_check_results.values())
+    execution_state = (
+        PHASE4_VALID_STATE if delivery_contract_valid else INVALID_STATE
+    )
+    result = PHASE4_VALID_RESULT if delivery_contract_valid else "FAIL_CLOSED"
+
+    retry_evidence = copy.deepcopy(
+        _as_object(phase4_contract.get("retry_evidence_contract"))
+    )
+    backpressure_evidence = copy.deepcopy(
+        _as_object(phase4_contract.get("backpressure_evidence_contract"))
+    )
+    cleanup_evidence = copy.deepcopy(
+        _as_object(phase4_contract.get("cleanup_evidence_contract"))
+    )
+    automatic_manual = copy.deepcopy(
+        _as_object(phase4_contract.get("automatic_manual_boundary"))
+    )
+
+    return {
+        "schema_version": PHASE4_REPORT_SCHEMA_VERSION,
+        "phase3_schema_version": PHASE3_REPORT_SCHEMA_VERSION,
+        "phase2_schema_version": REPORT_SCHEMA_VERSION,
+        "index_schema_version": INDEX_SCHEMA_VERSION,
+        "stage": "STAGE-037",
+        "phase": "Phase 4",
+        "task_id": PHASE4_TASK_ID,
+        "acceptance_id": ACCEPTANCE_ID,
+        "job_state_model_contract_id": CONTRACT_ID,
+        "delivery_contract_valid": delivery_contract_valid,
+        "delivery_check_results": delivery_check_results,
+        "phase4_contract_results": phase4_contract_results,
+        "result": result,
+        "execution_mode": PHASE4_EXECUTION_MODE,
+        "execution_ready": False,
+        "execution_state": execution_state,
+        "stage_review_status": "pending_next_run",
+        "next_gate": PHASE4_NEXT_GATE,
+        "github_upload_allowed": False,
+        "app_reinstall_allowed": False,
+        "snapshot_binding": {
+            "source": (
+                "canonical_repository_index"
+                if canonical_snapshot_bound and load_error is None
+                else "in_memory_validation_snapshot"
+            ),
+            "canonical_snapshot_bound": canonical_snapshot_bound
+            and load_error is None,
+            "single_snapshot_reused": True,
+            "index_ref": INDEX_PATH.relative_to(PROJECT_ROOT).as_posix(),
+            "load_error": load_error,
+            "evidence_integrity": evidence_integrity,
+            "observed_evidence_sha256": observed_evidence_sha256,
+        },
+        "state_graph": {
+            "mode": _as_object(phase4_contract.get("state_graph")).get(
+                "mode"
+            ),
+            "state_model_version": state_model.get("state_model_version"),
+            "job_types": copy.deepcopy(state_model.get("job_types", [])),
+            "job_states": copy.deepcopy(state_model.get("job_states", [])),
+            "terminal_states": copy.deepcopy(
+                state_model.get("terminal_states", [])
+            ),
+            "active_execution_states": copy.deepcopy(
+                state_model.get("active_execution_states", [])
+            ),
+            "allowed_transitions": copy.deepcopy(transitions),
+            "allowed_transition_count": allowed_transition_count,
+            "runtime_transition_performed": False,
+        },
+        "retry_evidence_contract": retry_evidence,
+        "backpressure_evidence_contract": backpressure_evidence,
+        "cleanup_evidence_contract": cleanup_evidence,
+        "automatic_manual_boundary": automatic_manual,
+        "safe_shutdown_steps": copy.deepcopy(
+            phase4_contract.get("safe_shutdown_steps", [])
+        ),
+        "recovery_steps": copy.deepcopy(
+            phase4_contract.get("recovery_steps", [])
+        ),
+        "rollback_steps": copy.deepcopy(
+            phase4_contract.get("rollback_steps", [])
+        ),
+        "known_limits": copy.deepcopy(
+            phase4_contract.get("known_limits", [])
+        ),
+        "chinese_owner_feedback": (
+            phase4_contract.get("chinese_owner_feedback")
+            if delivery_contract_valid
+            else "任务状态模型 Phase 4 交付合同无效；已失败关闭，禁止运行队列、worker、重试、反压、锁、自动生命周期、恢复或清理。"
+        ),
+        "live_execution_performed": False,
+        "queue_runtime_performed": False,
+        "worker_runtime_performed": False,
+        "retry_scheduler_performed": False,
+        "dead_letter_runtime_performed": False,
+        "backpressure_runtime_performed": False,
+        "lock_runtime_performed": False,
+        "automatic_lifecycle_runtime_performed": False,
+        "crash_recovery_runtime_performed": False,
+        "cleanup_runtime_performed": False,
+        "database_connection_performed": False,
+        "schema_change_performed": False,
+        "state_registry_write_performed": False,
+        "runtime_output_written": False,
+        "real_job_created": False,
+        "fake_ids_business_data_used": False,
+        "raw_metadata_content_accessed": False,
+        "phase3_report": phase3_report,
+        "phase2_report": phase2_report,
+    }
+
+
 def main() -> int:
-    report = build_stage037_scenario_validation_report()
+    report = build_stage037_delivery_report()
     print(json.dumps(report, ensure_ascii=False, sort_keys=True))
-    return 0 if report["scenario_validation_valid"] else 1
+    checks = [
+        report["delivery_contract_valid"],
+        all(report["delivery_check_results"].values()),
+        all(report["phase4_contract_results"].values()),
+        report["result"] == PHASE4_VALID_RESULT,
+        report["execution_ready"] is False,
+        report["execution_state"] == PHASE4_VALID_STATE,
+        report["stage_review_status"] == "pending_next_run",
+        report["next_gate"] == PHASE4_NEXT_GATE,
+        report["github_upload_allowed"] is False,
+        report["app_reinstall_allowed"] is False,
+        report["live_execution_performed"] is False,
+        report["queue_runtime_performed"] is False,
+        report["worker_runtime_performed"] is False,
+        report["retry_scheduler_performed"] is False,
+        report["dead_letter_runtime_performed"] is False,
+        report["backpressure_runtime_performed"] is False,
+        report["lock_runtime_performed"] is False,
+        report["automatic_lifecycle_runtime_performed"] is False,
+        report["crash_recovery_runtime_performed"] is False,
+        report["cleanup_runtime_performed"] is False,
+        report["database_connection_performed"] is False,
+        report["schema_change_performed"] is False,
+        report["state_registry_write_performed"] is False,
+        report["runtime_output_written"] is False,
+        report["real_job_created"] is False,
+        report["fake_ids_business_data_used"] is False,
+        report["raw_metadata_content_accessed"] is False,
+        report["phase3_report"]["scenario_validation_valid"],
+        report["phase2_report"]["contract_valid"],
+    ]
+    return 0 if all(checks) else 1
 
 
 if __name__ == "__main__":
