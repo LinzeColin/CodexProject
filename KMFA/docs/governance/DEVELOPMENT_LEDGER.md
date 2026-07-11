@@ -1,3 +1,18 @@
+## 2026-07-11 - V014 S14-P2 post-remediation invoice tax plan
+
+- phase: V014_S14_P2_POST_REMEDIATION_INVOICE_TAX_PLAN
+- task: KMFA-V014-S14-P2-POST-REMEDIATION-INVOICE-TAX-PLAN-20260711
+- product_version: 0.1.4-s14-p2-post-remediation-invoice-tax-plan
+- result: completed_validated_local_only_s14_p2_structure_method_no_go_upload_deferred / NO_GO
+- source model: 开票计划、纳税明细、开票纳税资金汇总 3/3 public-safe 结构接入；唯一来源=4、主题关联=6、唯一候选=20、主题候选关联=30。
+- private probe: 5 个 raw 文件、48 个 XLSX 容器、25 可解析、23 不可解析；4,198 个可解析工作表，开票/税务/重叠/唯一候选=538/104/30/612。
+- deterministic gate: 612 个候选表两次只读探针指纹不一致=0。
+- output gate: 3 类问题方法和 3 类资金方法定义完成；权威行/数值绑定=0/0，已证明问题候选、已物化资金汇总、业务事项与公开金额均为 0。
+- browser: v1.4 baseline 54/54 PASS、current 11/11 PASS；viewports/methods/HTTP/navigation=2/6/4/4，console/overflow=0/0。
+- raw proof: 5 个文件在 phase 前后、跨 S14-P1 和当前快照一致；原始身份、工作表、表头、字段、值和诊断保持 private ignored。
+- boundary: S14-P3、Stage 14 review、发票开具、纳税申报、付款/银行动作、formal report、GitHub upload、app reinstall、difference closure 和 business execution 均未执行。
+- evidence: KMFA/stage_artifacts/V014_S14_P2_POST_REMEDIATION_INVOICE_TAX_PLAN/machine/invoice_tax_plan_manifest.json
+
 ## 2026-07-11 - V014 S14-P1 post-remediation fund cash loan plan
 
 - phase: `V014_S14_P1_POST_REMEDIATION_FUND_CASH_LOAN_PLAN`

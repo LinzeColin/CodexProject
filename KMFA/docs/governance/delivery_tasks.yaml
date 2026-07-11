@@ -1,6 +1,48 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "KMFA-V014-S14-P2-POST-REMEDIATION-INVOICE-TAX-PLAN-20260711"
+    phase: "V014_S14_P2_POST_REMEDIATION_INVOICE_TAX_PLAN"
+    objective: "Connect invoice tax source structures and review methods while preserving zero proven business candidates and summaries until authoritative row and value bindings exist."
+    scope:
+      - "invoice plan tax detail and invoice tax cash summary public-safe structure lanes"
+      - "read-only private invoice and tax candidate workbook probe with deterministic cell fingerprints"
+      - "three issue review methods and three cash summary method definitions"
+      - "desktop mobile interaction and four upstream dependency navigation checks"
+    non_scope:
+      - "S14-P3 or Stage 14 overall review"
+      - "invoice issuance tax filing tax declaration payment bank operation or business alert"
+      - "GitHub upload app reinstall raw private Excel PDF CSV database or secret material"
+    status: "completed"
+    completed_version: "0.1.4-s14-p2-post-remediation-invoice-tax-plan"
+    dependencies:
+      - "V014_S14_P1_POST_REMEDIATION_FUND_CASH_LOAN_PLAN current frozen dependency"
+      - "v0.1.4 S07 finance public-safe structure registry and candidates"
+      - "V014_S14_P2_INVOICE_TAX_PLAN historical policy fixture only"
+      - "v1.4 roadmap taskpack and full-flow baseline"
+    required_files:
+      - "KMFA/stage_artifacts/V014_S14_P2_POST_REMEDIATION_INVOICE_TAX_PLAN/machine/invoice_tax_plan_manifest.json"
+      - "KMFA/stage_artifacts/V014_S14_P2_POST_REMEDIATION_INVOICE_TAX_PLAN/exports/html/invoice_tax_plan_workbench.html"
+      - "KMFA/tools/check_v014_s14_p2_post_remediation_invoice_tax_plan.py"
+    acceptance_ids:
+      - "ACC-V014-S14-P2-POST-REMEDIATION-INVOICE-TAX-PLAN"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s14_p2_post_remediation_invoice_tax_plan.py --require-private-evidence --require-browser-evidence --require-final-evidence"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s14_p2_post_remediation_invoice_tax_plan"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_no_float_money.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/no_omission_check.py"
+    test_results:
+      - "PASS: three source lanes connected and two direct private candidate lanes parseable"
+      - "PASS: 612 unique invoice tax candidate sheets reproduce with zero probe fingerprint mismatch"
+      - "PASS: three issue and three cash methods defined with zero proven candidates summaries and amounts"
+      - "PASS: raw snapshots exact and private details remain ignored"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S14_P2_POST_REMEDIATION_INVOICE_TAX_PLAN/human/invoice_tax_plan_report_zh.md"
+      - "KMFA/stage_artifacts/V014_S14_P2_POST_REMEDIATION_INVOICE_TAX_PLAN/machine/invoice_tax_plan_manifest.json"
+    risk: "Candidate sheets can be mistaken for invoice tax business records unless authoritative row value period and rate bindings remain explicit zero-count gates."
+    rollback: "Revert only this S14-P2 local commit and ignored private evidence; never mutate the raw inbox."
+    target_version: "0.1.4-s14-p2-post-remediation-invoice-tax-plan"
+
   - task_id: "KMFA-V014-S14-P1-POST-REMEDIATION-FUND-CASH-LOAN-PLAN-20260711"
     phase: "V014_S14_P1_POST_REMEDIATION_FUND_CASH_LOAN_PLAN"
     objective: "Connect fund cash loan source structures and review methods while preserving zero proven business items until authoritative row and value bindings exist."

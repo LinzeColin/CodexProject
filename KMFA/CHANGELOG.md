@@ -1,3 +1,11 @@
+## 0.1.4-s14-p2-post-remediation-invoice-tax-plan - 2026-07-11
+
+- 完成 V014_S14_P2_POST_REMEDIATION_INVOICE_TAX_PLAN 本地 phase：开票计划、纳税明细、开票纳税资金汇总 3 条 public-safe 结构接入。
+- 只读探针覆盖 5 个 raw 文件、48 个 XLSX 容器；25 个可解析、23 个保留不可解析诊断，4,198 个可解析工作表中识别 612 个唯一开票/税务结构候选，二次指纹不一致为 0。
+- 待开票、已开票未回款、税率异常候选 3 类问题方法和 3 类资金汇总方法定义完成；因权威行、期间、发票、项目、客户、回款、税率与数值绑定均未证明，业务候选、已物化汇总和公开金额保持 0。
+- v1.4 基线 54/54 PASS、当前页 11/11 PASS；2 视口、6 次方法交互、4 条依赖 HTTP 与 4 次真实导航通过，console error 与横向溢出为 0。
+- 保持 Q4 / D / NO_GO / 3-9-2-1；未执行 S14-P3、Stage 14 review、发票开具、纳税申报、付款/银行动作、GitHub upload、app reinstall、正式报告、差异关闭或 business execution。
+
 ## 0.1.4-s14-p1-post-remediation-fund-cash-loan-plan - 2026-07-11
 
 - 完成 `V014_S14_P1_POST_REMEDIATION_FUND_CASH_LOAN_PLAN` 本地 phase：账户清单、月度现金、资金计划、贷款明细 4 条 public-safe 结构与私有候选解析链接入。
