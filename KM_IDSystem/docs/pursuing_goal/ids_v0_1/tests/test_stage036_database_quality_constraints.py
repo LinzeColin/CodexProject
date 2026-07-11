@@ -187,6 +187,14 @@ class Stage036DatabaseQualityConstraintsPhase1Tests(unittest.TestCase):
                 'current_task_id: "IDS-V0_1-STAGE036-REVIEW"',
                 'acceptance_status: "reviewed_local_passed"',
             ],
+            [
+                'status: "stage037_phase2_in_progress"',
+                'status: "completed_reviewed_local"',
+                'review_status: "passed"',
+                'next_gate: "IDS-STAGE037-P1-GATE"',
+                'current_task_id: "IDS-V0_1-STAGE036-REVIEW"',
+                'acceptance_status: "reviewed_local_passed"',
+            ],
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE036"',
@@ -521,6 +529,14 @@ class Stage036DatabaseQualityConstraintsPhase2Tests(unittest.TestCase):
                 'current_task_id: "IDS-V0_1-STAGE036-REVIEW"',
                 'acceptance_status: "reviewed_local_passed"',
             ],
+            [
+                'status: "stage037_phase2_in_progress"',
+                'status: "completed_reviewed_local"',
+                'review_status: "passed"',
+                'next_gate: "IDS-STAGE037-P1-GATE"',
+                'current_task_id: "IDS-V0_1-STAGE036-REVIEW"',
+                'acceptance_status: "reviewed_local_passed"',
+            ],
         ]
         required = {
             lock_text: lock_terms,
@@ -844,7 +860,7 @@ class Stage036DatabaseQualityConstraintsPhase3Tests(unittest.TestCase):
                 "NO_PHASE4",
             ],
             lock_text: [
-                'status: "stage037_phase1_in_progress"',
+                'status: "stage037_phase2_in_progress"',
                 'status: "completed_reviewed_local"',
                 'push_allowed: false',
                 '      - "Phase 3"',
@@ -1270,7 +1286,7 @@ class Stage036DatabaseQualityConstraintsPhase4Tests(unittest.TestCase):
                 "NO_STAGE_REVIEW_THIS_RUN",
             ],
             lock_text: [
-                'status: "stage037_phase1_in_progress"',
+                'status: "stage037_phase2_in_progress"',
                 'status: "completed_reviewed_local"',
                 '      - "Phase 4"',
                 'review_status: "passed"',
@@ -1368,7 +1384,7 @@ class Stage036DatabaseQualityConstraintsReviewTests(unittest.TestCase):
         events_text = EVENTS.read_text(encoding="utf-8")
         required = {
             lock_text: [
-                'status: "stage037_phase1_in_progress"',
+                'status: "stage037_phase2_in_progress"',
                 'status: "completed_reviewed_local"',
                 'review_status: "passed"',
                 'next_stage: "STAGE-037"',
@@ -1406,6 +1422,7 @@ class Stage036DatabaseQualityConstraintsReviewTests(unittest.TestCase):
                 for term in (
                     'next_allowed_task_id: "IDS-V0_1-STAGE037-P1"',
                     'next_allowed_task_id: "IDS-V0_1-STAGE037-P2"',
+                    'next_allowed_task_id: "IDS-V0_1-STAGE037-P3"',
                 )
             )
         )

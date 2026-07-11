@@ -166,6 +166,7 @@ class Stage032DatabaseConnectionPoolPhase1Tests(unittest.TestCase):
             'status: "stage036_completed_local_pending_review"',
             'status: "stage036_completed_reviewed_local"',
             'status: "stage037_phase1_in_progress"',
+            'status: "stage037_phase2_in_progress"',
         ]
         allowed_lock_next_terms = [
             'next_phase: "stage_review_gate"',
@@ -688,6 +689,7 @@ class Stage032DatabaseConnectionPoolReviewTests(unittest.TestCase):
             'status: "stage036_completed_local_pending_review"',
             'status: "stage036_completed_reviewed_local"',
             'status: "stage037_phase1_in_progress"',
+            'status: "stage037_phase2_in_progress"',
         ]
         allowed_lock_gate_terms = [
             'next_gate: "IDS-STAGE033-P1-GATE"',

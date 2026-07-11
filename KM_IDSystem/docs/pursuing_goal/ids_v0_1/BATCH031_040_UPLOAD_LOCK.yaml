@@ -1,8 +1,8 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-031-040"
 created_at_utc: "2026-07-03T08:32:56Z"
-updated_at_utc: "2026-07-10T22:43:49Z"
-status: "stage037_phase1_in_progress"
+updated_at_utc: "2026-07-11T00:49:55Z"
+status: "stage037_phase2_in_progress"
 
 repository:
   owner_repo: "LinzeColin/CodexProject"
@@ -192,24 +192,28 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
   STAGE-037:
-    status: "stage037_phase1_in_progress"
+    status: "stage037_phase2_in_progress"
     completed_phases:
       - "Phase 1"
-    next_phase: "Phase 2"
-    next_gate: "IDS-STAGE037-P2-GATE"
-    current_task_id: "IDS-V0_1-STAGE037-P1"
+      - "Phase 2"
+    next_phase: "Phase 3"
+    next_gate: "IDS-STAGE037-P3-GATE"
+    current_task_id: "IDS-V0_1-STAGE037-P2"
     acceptance_id: "ACC-STAGE-037"
-    acceptance_status: "phase1_scope_boundary_defined"
+    acceptance_status: "phase2_deterministic_engine_passed"
     evidence_refs:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_ENTRY_CONTRACT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE1_SCOPE_BOUNDARY.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE2_JOB_STATE_MODEL_SLICE.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/job_state_model/stage037_job_state_model_index.json"
+      - "KM_IDSystem/scripts/check_job_state_model.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage037_job_state_model.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
-  current_task_id: "IDS-V0_1-STAGE037-P1"
-  next_allowed_task_id: "IDS-V0_1-STAGE037-P2"
+  current_task_id: "IDS-V0_1-STAGE037-P2"
+  next_allowed_task_id: "IDS-V0_1-STAGE037-P3"
   github_upload_allowed: false
-  current_run: "STAGE-037 Phase 1 defines the contract-only unified IMPORT/ARCHIVE/PARSE/OCR/CHUNK/EMBED/INDEX/REPORT lifecycle, transition guards, worker claim/lease/fencing boundary, retry/dead-letter/backpressure interfaces, pause reasons, idempotency keys, lock granularity, checkpoint/error/audit refs, cleanup allowlist, and Chinese status projection. It does not implement a queue, worker, state-registry write, database/schema change, lock, runtime transition, cleanup, STAGE-038 work, GitHub upload, app reinstall, stage review, batch review, or upload gate."
-  no_upload_reason: "BATCH031_040 has STAGE-031 through STAGE-036 completed and reviewed locally, while STAGE-037 has only Phase 1 and STAGE-038..040 are incomplete; the separate batch review/upload gates have not run, so push_allowed stays false."
+  current_run: "STAGE-037 Phase 2 implements a metadata-only deterministic transition evaluator, machine-readable job-state contract, stdout-only checker, bounded input/output/error/checkpoint reference validation, retry/pause/exhaustion accounting, fencing/deactivation rules, and Chinese status projection. Every result remains STATIC_CONTRACT_EVALUATION_ONLY with runtime_transition_performed=false; no queue, worker, scheduler, database/schema/registry write, real job, cleanup, Stage 038 work, GitHub upload, app reinstall, stage review, batch review, or upload gate occurs."
+  no_upload_reason: "BATCH031_040 has STAGE-031 through STAGE-036 completed and reviewed locally, while STAGE-037 has only Phase 1 and Phase 2 complete and STAGE-038..040 are incomplete; the separate batch review/upload gates have not run, so push_allowed stays false."

@@ -1,0 +1,605 @@
+{
+  "schema_version": "ids.stage037.job_state_model.index.v1",
+  "stage": "STAGE-037",
+  "phase": "Phase 2",
+  "task_id": "IDS-V0_1-STAGE037-P2",
+  "acceptance_id": "ACC-STAGE-037",
+  "local_code": "D07-S001",
+  "domain": "D07 · 任务编排与机器控制",
+  "entrance": "IDS 系统运营入口",
+  "job_state_model_contract_id": "ids_stage037_job_state_model_static_slice",
+  "contract_state": "STATIC_JOB_STATE_CONTRACT_VALID_RUNTIME_DISABLED",
+  "execution_mode": "METADATA_ONLY_DETERMINISTIC_CONTRACT_EVALUATION",
+  "execution_ready": false,
+  "next_gate": "IDS-STAGE037-P3-GATE",
+  "source_refs": {
+    "phase1_scope_ref": "../STAGE037_PHASE1_SCOPE_BOUNDARY.md",
+    "phase2_slice_ref": "../STAGE037_PHASE2_JOB_STATE_MODEL_SLICE.md",
+    "removable_drive_state_ref": "../STAGE008_PHASE2_REMOVABLE_DRIVE_STATE.md",
+    "storage_budget_ref": "../STAGE009_PHASE2_STORAGE_BUDGET_BASELINE.md",
+    "safe_mode_ref": "../STAGE011_PHASE2_SAFE_MODE_BASELINE.md",
+    "import_idempotency_ref": "../STAGE016_PHASE2_IMPORT_IDEMPOTENCY_SLICE.md",
+    "priority_queue_ref": "../STAGE022_PHASE2_DATA_PRIORITY_QUEUE_SLICE.md",
+    "control_plane_schema_ref": "../postgresql_control_plane/001_control_plane_schema.sql",
+    "database_quality_index_ref": "../database_quality_constraints/stage036_database_quality_constraints_index.json",
+    "state_registry_structure_ref": "../database_quality_constraints/002_database_quality_constraints.sql",
+    "raw_data_boundary_ref": "../IDS_METADATA_RAW_DATA_BOUNDARY.md",
+    "phase2_checker_ref": "../../../../scripts/check_job_state_model.py"
+  },
+  "dependency_contract": {
+    "source_sha256": {
+      "phase1_scope_ref": "e692bfb2f4786c076135888731c6eca6ce0f342a8fa19c1334394ca2d3db3730",
+      "removable_drive_state_ref": "e7bca4b8ad2be3ab1c5c91ace5c6741309faa4c0f53509e1cd1ba1c7779a5fc9",
+      "storage_budget_ref": "4e43fb28d0616fcacfe8303146f6558b72e2478cd2c32163ec61041d914e2cdf",
+      "safe_mode_ref": "ee1aa8202ff40bc69a50fc5d515afd3cf5cfa48df8bcaf8ca8a1e5ef5baa44e3",
+      "import_idempotency_ref": "43b91e02072c56d0459dd7e62ed653f1702848f9eb725fffb1183f7715498765",
+      "priority_queue_ref": "7abcc97a3812454b6767d88989c53992d2db45db4a56450ca24c6b47b05b8359",
+      "control_plane_schema_ref": "9fa7b8e535fe799c0aed14d738f568b33a19fc2835eeb492c8217bc35b588479",
+      "database_quality_index_ref": "016abaa478da1c6cc98513e432429a26402fde5b0b5ac050ec4ceb03aeb33271",
+      "state_registry_structure_ref": "52cd624f9e3bec197fa20a14405c7fe2ea149362115c33e9de0145b315dd455a",
+      "raw_data_boundary_ref": "ad4695abf250049699a1b96b49b81432e5d5754dfe7de69c7f3056463a0a7d51"
+    },
+    "required_control_plane_table": "ids_jobs",
+    "required_job_columns": [
+      "job_id",
+      "job_type",
+      "job_state",
+      "parent_job_id",
+      "retry_count",
+      "max_retries",
+      "stop_reason"
+    ],
+    "state_registry_table": "ids_state_value_registry",
+    "state_registry_write_allowed": false,
+    "postgres_connection_allowed": false
+  },
+  "state_model": {
+    "state_namespace": "job_state",
+    "state_model_version": "ids.job_state.v1",
+    "introduced_version": "v0.1",
+    "job_types": [
+      "IMPORT",
+      "ARCHIVE",
+      "PARSE",
+      "OCR",
+      "CHUNK",
+      "EMBED",
+      "INDEX",
+      "REPORT"
+    ],
+    "job_states": [
+      "CREATED",
+      "QUEUED",
+      "CLAIMED",
+      "RUNNING",
+      "PAUSE_REQUESTED",
+      "PAUSED",
+      "RETRY_WAIT",
+      "SUCCEEDED",
+      "FAILED",
+      "DEAD_LETTERED",
+      "CANCELLED"
+    ],
+    "terminal_states": [
+      "SUCCEEDED",
+      "FAILED",
+      "DEAD_LETTERED",
+      "CANCELLED"
+    ],
+    "active_execution_states": [
+      "CLAIMED",
+      "RUNNING",
+      "PAUSE_REQUESTED"
+    ],
+    "allowed_transitions": {
+      "CREATED": [
+        "QUEUED",
+        "CANCELLED"
+      ],
+      "QUEUED": [
+        "CLAIMED",
+        "PAUSED",
+        "CANCELLED"
+      ],
+      "CLAIMED": [
+        "RUNNING",
+        "PAUSE_REQUESTED",
+        "RETRY_WAIT"
+      ],
+      "RUNNING": [
+        "SUCCEEDED",
+        "PAUSE_REQUESTED",
+        "RETRY_WAIT",
+        "FAILED"
+      ],
+      "PAUSE_REQUESTED": [
+        "PAUSED",
+        "CANCELLED",
+        "RETRY_WAIT"
+      ],
+      "PAUSED": [
+        "QUEUED",
+        "CANCELLED"
+      ],
+      "RETRY_WAIT": [
+        "QUEUED",
+        "PAUSED",
+        "DEAD_LETTERED",
+        "CANCELLED"
+      ]
+    },
+    "pause_reason_is_state": false,
+    "terminal_state_mutation_allowed": false,
+    "direct_running_cancel_allowed": false
+  },
+  "transition_contract": {
+    "compare_and_set_fields": [
+      "job_id",
+      "expected_state",
+      "expected_state_version"
+    ],
+    "state_version_increment": 1,
+    "transition_request_id_unique": true,
+    "idempotent_replay_returns_original_result": true,
+    "request_id_payload_conflict_fails_closed": true,
+    "append_only_audit_required": true,
+    "runtime_transition_performed": false,
+    "snapshot_required_fields": [
+      "evaluation_mode",
+      "job_id",
+      "job_type",
+      "job_state",
+      "state_version",
+      "retry_count",
+      "max_retries",
+      "retry_pending",
+      "retry_disposition",
+      "lease_active",
+      "lock_active",
+      "fencing_token",
+      "attempt_id",
+      "lease_owner_ref",
+      "lease_expires_at",
+      "lock_key",
+      "pause_reason_code",
+      "input_refs",
+      "output_refs",
+      "checkpoint_ref",
+      "quarantine_ref",
+      "error_ref"
+    ],
+    "transition_request_required_fields": [
+      "job_id",
+      "transition_request_id",
+      "expected_state",
+      "expected_state_version",
+      "target_state",
+      "actor_ref",
+      "reason_code",
+      "audit_ref",
+      "guard_facts",
+      "input_refs",
+      "output_refs",
+      "checkpoint_ref",
+      "quarantine_ref",
+      "error_ref",
+      "resource_gate_refs",
+      "pause_reason_code",
+      "fencing_token",
+      "candidate_claim"
+    ],
+    "guard_facts_allowed": [
+      "identity_idempotency_valid",
+      "admission_gates_passed",
+      "no_active_claim_or_lock",
+      "claim_lease_and_lock_acquired",
+      "live_lease_valid",
+      "lease_valid_or_expiry_evidence",
+      "fencing_token_matches",
+      "pause_intent_recorded",
+      "checkpoint_or_quarantine_complete",
+      "output_validated",
+      "retryable_failure_recorded",
+      "permanent_failure_recorded",
+      "error_evidence_present",
+      "resource_gate_blocked",
+      "resource_gates_passed",
+      "owner_revalidated",
+      "next_eligible_reached",
+      "retry_exhaustion_confirmed",
+      "cancellation_requested"
+    ],
+    "edge_guard_requirements": {
+      "CREATED->QUEUED": [
+        "identity_idempotency_valid",
+        "admission_gates_passed",
+        "no_active_claim_or_lock"
+      ],
+      "CREATED->CANCELLED": [
+        "no_active_claim_or_lock"
+      ],
+      "QUEUED->CLAIMED": [
+        "admission_gates_passed",
+        "claim_lease_and_lock_acquired"
+      ],
+      "QUEUED->PAUSED": [
+        "resource_gate_blocked",
+        "no_active_claim_or_lock"
+      ],
+      "QUEUED->CANCELLED": [
+        "no_active_claim_or_lock"
+      ],
+      "CLAIMED->RUNNING": [
+        "live_lease_valid",
+        "fencing_token_matches"
+      ],
+      "CLAIMED->PAUSE_REQUESTED": [
+        "live_lease_valid",
+        "fencing_token_matches",
+        "pause_intent_recorded"
+      ],
+      "CLAIMED->RETRY_WAIT": [
+        "lease_valid_or_expiry_evidence",
+        "fencing_token_matches",
+        "retryable_failure_recorded",
+        "error_evidence_present"
+      ],
+      "RUNNING->SUCCEEDED": [
+        "live_lease_valid",
+        "fencing_token_matches",
+        "output_validated"
+      ],
+      "RUNNING->PAUSE_REQUESTED": [
+        "live_lease_valid",
+        "fencing_token_matches",
+        "pause_intent_recorded"
+      ],
+      "RUNNING->RETRY_WAIT": [
+        "lease_valid_or_expiry_evidence",
+        "fencing_token_matches",
+        "retryable_failure_recorded",
+        "error_evidence_present"
+      ],
+      "RUNNING->FAILED": [
+        "live_lease_valid",
+        "fencing_token_matches",
+        "permanent_failure_recorded",
+        "error_evidence_present"
+      ],
+      "PAUSE_REQUESTED->PAUSED": [
+        "lease_valid_or_expiry_evidence",
+        "fencing_token_matches",
+        "checkpoint_or_quarantine_complete"
+      ],
+      "PAUSE_REQUESTED->CANCELLED": [
+        "lease_valid_or_expiry_evidence",
+        "fencing_token_matches",
+        "checkpoint_or_quarantine_complete",
+        "cancellation_requested"
+      ],
+      "PAUSE_REQUESTED->RETRY_WAIT": [
+        "lease_valid_or_expiry_evidence",
+        "fencing_token_matches",
+        "retryable_failure_recorded",
+        "error_evidence_present"
+      ],
+      "PAUSED->QUEUED": [
+        "owner_revalidated",
+        "resource_gates_passed",
+        "no_active_claim_or_lock"
+      ],
+      "PAUSED->CANCELLED": [
+        "no_active_claim_or_lock"
+      ],
+      "RETRY_WAIT->QUEUED": [
+        "next_eligible_reached",
+        "resource_gates_passed",
+        "no_active_claim_or_lock"
+      ],
+      "RETRY_WAIT->PAUSED": [
+        "resource_gate_blocked",
+        "no_active_claim_or_lock"
+      ],
+      "RETRY_WAIT->DEAD_LETTERED": [
+        "retry_exhaustion_confirmed",
+        "no_active_claim_or_lock"
+      ],
+      "RETRY_WAIT->CANCELLED": [
+        "no_active_claim_or_lock"
+      ]
+    },
+    "edge_reference_requirements": {
+      "CREATED->QUEUED": [
+        "input_refs",
+        "audit_ref"
+      ],
+      "CREATED->CANCELLED": [
+        "audit_ref"
+      ],
+      "QUEUED->CLAIMED": [
+        "candidate_claim",
+        "audit_ref"
+      ],
+      "QUEUED->PAUSED": [
+        "pause_reason_code",
+        "resource_gate_refs",
+        "audit_ref"
+      ],
+      "QUEUED->CANCELLED": [
+        "audit_ref"
+      ],
+      "CLAIMED->RUNNING": [
+        "fencing_token",
+        "audit_ref"
+      ],
+      "CLAIMED->PAUSE_REQUESTED": [
+        "fencing_token",
+        "pause_reason_code",
+        "audit_ref"
+      ],
+      "CLAIMED->RETRY_WAIT": [
+        "fencing_token",
+        "error_ref",
+        "audit_ref"
+      ],
+      "RUNNING->SUCCEEDED": [
+        "fencing_token",
+        "output_refs",
+        "audit_ref"
+      ],
+      "RUNNING->PAUSE_REQUESTED": [
+        "fencing_token",
+        "pause_reason_code",
+        "audit_ref"
+      ],
+      "RUNNING->RETRY_WAIT": [
+        "fencing_token",
+        "error_ref",
+        "audit_ref"
+      ],
+      "RUNNING->FAILED": [
+        "fencing_token",
+        "error_ref",
+        "audit_ref"
+      ],
+      "PAUSE_REQUESTED->PAUSED": [
+        "fencing_token",
+        "checkpoint_or_quarantine_ref",
+        "pause_reason_code",
+        "audit_ref"
+      ],
+      "PAUSE_REQUESTED->CANCELLED": [
+        "fencing_token",
+        "checkpoint_or_quarantine_ref",
+        "audit_ref"
+      ],
+      "PAUSE_REQUESTED->RETRY_WAIT": [
+        "fencing_token",
+        "error_ref",
+        "audit_ref"
+      ],
+      "PAUSED->QUEUED": [
+        "audit_ref"
+      ],
+      "PAUSED->CANCELLED": [
+        "audit_ref"
+      ],
+      "RETRY_WAIT->QUEUED": [
+        "audit_ref"
+      ],
+      "RETRY_WAIT->PAUSED": [
+        "pause_reason_code",
+        "resource_gate_refs",
+        "audit_ref"
+      ],
+      "RETRY_WAIT->DEAD_LETTERED": [
+        "error_ref",
+        "audit_ref"
+      ],
+      "RETRY_WAIT->CANCELLED": [
+        "audit_ref"
+      ]
+    }
+  },
+  "deactivation_contract": {
+    "active_states": [
+      "CLAIMED",
+      "RUNNING",
+      "PAUSE_REQUESTED"
+    ],
+    "non_active_destinations": [
+      "PAUSED",
+      "RETRY_WAIT",
+      "SUCCEEDED",
+      "FAILED",
+      "CANCELLED"
+    ],
+    "atomic_state_and_audit": true,
+    "lease_revoked": true,
+    "lock_revoked": true,
+    "fencing_token_advanced": true,
+    "stale_worker_commit_allowed": false
+  },
+  "retry_contract": {
+    "max_retries_definition": "number_of_retry_attempts_after_initial_attempt",
+    "initial_retry_count": 0,
+    "total_attempt_limit_formula": "1 + max_retries",
+    "max_retries_immutable": true,
+    "eligible_entry_sets_retry_pending": true,
+    "eligible_entry_increments_retry_count": false,
+    "retry_admission_increments_retry_count": true,
+    "retry_admission_clears_retry_pending": true,
+    "retry_pause_preserves_retry_pending": true,
+    "paused_retry_resume_consumes_pending_retry": true,
+    "ordinary_pause_consumes_retry": false,
+    "exhausted_entry_retry_pending": false,
+    "exhausted_disposition": "exhausted",
+    "exhausted_only_next_state": "DEAD_LETTERED",
+    "resource_gate_can_pause_exhausted_retry": false,
+    "running_to_dead_letter_allowed": false,
+    "retry_delay_policy": "POLICY_VALUE_DEFERRED_TO_STAGE039_040_041",
+    "retry_scheduler_allowed": false
+  },
+  "reference_policy": {
+    "maximum_text_length": 512,
+    "maximum_refs_per_field": 64,
+    "absolute_path_allowed": false,
+    "parent_path_segment_allowed": false,
+    "file_uri_allowed": false,
+    "backslash_separator_allowed": false,
+    "percent_encoded_path_tokens_allowed": false,
+    "unicode_path_separator_normalization_required": true,
+    "case_insensitive_path_guard_required": true,
+    "raw_metadata_root": "/Users/linzezhang/Downloads/IDS_MetaData",
+    "raw_metadata_content_access_allowed": false,
+    "forbidden_key_tokens": [
+      "api_key",
+      "password",
+      "credential",
+      "plaintext_secret",
+      "dsn",
+      "raw_content",
+      "source_body",
+      "document_body",
+      "ocr_body",
+      "vector_payload",
+      "report_binary",
+      "raw_log"
+    ],
+    "bounded_ref_fields": [
+      "job_id",
+      "attempt_id",
+      "lease_owner_ref",
+      "lease_expires_at",
+      "lock_key",
+      "transition_request_id",
+      "actor_ref",
+      "audit_ref",
+      "input_refs",
+      "output_refs",
+      "checkpoint_ref",
+      "quarantine_ref",
+      "error_ref",
+      "resource_gate_refs"
+    ],
+    "raw_body_fields_allowed": false,
+    "plaintext_secrets_allowed": false
+  },
+  "cleanup_boundary": {
+    "cleanup_runtime_allowed": false,
+    "state_transition_authorizes_deletion": false,
+    "cleanup_owner": "STAGE-044",
+    "approved_root_identity_required": true,
+    "root_relative_path_required": true,
+    "lstat_identity_required": true,
+    "symlink_allowed": false,
+    "exclusive_namespace_lock_required": true,
+    "writer_quiescence_required": true,
+    "openat_no_follow_required": true,
+    "unlinkat_required": true,
+    "source_and_durable_evidence_targets_allowed": false
+  },
+  "human_status_projection": {
+    "CREATED": {
+      "label_zh": "等待处理",
+      "owner_action_zh": "查看优先级或暂停",
+      "owner_attention_required": false
+    },
+    "QUEUED": {
+      "label_zh": "等待处理",
+      "owner_action_zh": "查看优先级或暂停",
+      "owner_attention_required": false
+    },
+    "CLAIMED": {
+      "label_zh": "处理中",
+      "owner_action_zh": "查看进度；必要时安全暂停",
+      "owner_attention_required": false
+    },
+    "RUNNING": {
+      "label_zh": "处理中",
+      "owner_action_zh": "查看进度；必要时安全暂停",
+      "owner_attention_required": false
+    },
+    "PAUSE_REQUESTED": {
+      "label_zh": "已暂停",
+      "owner_action_zh": "查看原因并等待安全检查点",
+      "owner_attention_required": true
+    },
+    "PAUSED": {
+      "label_zh": "已暂停",
+      "owner_action_zh": "查看原因并完成复核",
+      "owner_attention_required": true
+    },
+    "RETRY_WAIT": {
+      "label_zh": "等待重试",
+      "owner_action_zh": "查看安全错误与下次资格时间",
+      "owner_attention_required": false
+    },
+    "SUCCEEDED": {
+      "label_zh": "已完成",
+      "owner_action_zh": "查看已验证输出引用",
+      "owner_attention_required": false
+    },
+    "FAILED": {
+      "label_zh": "处理失败",
+      "owner_action_zh": "查看原因并决定是否新建重跑",
+      "owner_attention_required": true
+    },
+    "DEAD_LETTERED": {
+      "label_zh": "需要人工处理",
+      "owner_action_zh": "人工复核，不自动继续",
+      "owner_attention_required": true
+    },
+    "CANCELLED": {
+      "label_zh": "已取消",
+      "owner_action_zh": "确认无自动副作用",
+      "owner_attention_required": false
+    }
+  },
+  "downstream_ownership": {
+    "queue_and_claim_transport": "STAGE-038",
+    "retry_and_dead_letter_policy": "STAGE-039",
+    "backpressure_runtime": "STAGE-040",
+    "lock_lease_and_fencing_runtime": "STAGE-041",
+    "automatic_lifecycle_runtime": "STAGE-042",
+    "worker_crash_recovery": "STAGE-043",
+    "half_product_cleanup_runtime": "STAGE-044"
+  },
+  "runtime_policy": {
+    "queue_runtime_allowed": false,
+    "worker_runtime_allowed": false,
+    "retry_scheduler_allowed": false,
+    "dead_letter_runtime_allowed": false,
+    "backpressure_runtime_allowed": false,
+    "lock_runtime_allowed": false,
+    "automatic_lifecycle_runtime_allowed": false,
+    "cleanup_runtime_allowed": false,
+    "postgres_connection_allowed": false,
+    "state_registry_write_allowed": false,
+    "schema_change_allowed": false,
+    "runtime_output_allowed": false,
+    "source_read_allowed": false
+  },
+  "delivery_policy": {
+    "github_upload_allowed": false,
+    "pull_request_allowed": false,
+    "merge_allowed": false,
+    "app_reinstall_allowed": false,
+    "stage_review_allowed_in_phase2": false,
+    "batch_review_allowed": false,
+    "next_phase_allowed": "Phase 3",
+    "next_gate": "IDS-STAGE037-P3-GATE"
+  },
+  "truth_contract": {
+    "runtime_transition_performed": false,
+    "real_job_created": false,
+    "fake_ids_business_data_used": false,
+    "fake_database_row_used": false,
+    "fabricated_job_log_or_evidence_used": false,
+    "raw_metadata_content_accessed": false,
+    "database_connected": false,
+    "state_registry_written": false,
+    "schema_changed": false,
+    "runtime_output_written": false
+  }
+}

@@ -7791,6 +7791,111 @@ stages:
             missing_boundary_checks,
         )
 
+    def test_phase_state_allows_stage037_phase2_job_state_engine(self):
+        module = self._load_module()
+        result_block = (
+            "GREEN: Stage037 Phase2 8 tests OK, Stage037 aggregate 16 tests OK, "
+            "Stage005 135 tests OK, Stage031-037 aggregate 146 tests OK, "
+            "Stage026-030 75 tests OK, full IDS v0.1 discovery 541 tests OK, "
+            "checker contract_valid=true, Stage005 validator valid=true"
+        )
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-031-040"
+status: "stage037_phase2_in_progress"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-037:
+    status: "stage037_phase2_in_progress"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+    next_phase: "Phase 3"
+    next_gate: "IDS-STAGE037-P3-GATE"
+    current_task_id: "IDS-V0_1-STAGE037-P2"
+    acceptance_id: "ACC-STAGE-037"
+    acceptance_status: "phase2_deterministic_engine_passed"
+decision:
+  current_task_id: "IDS-V0_1-STAGE037-P2"
+  next_allowed_task_id: "IDS-V0_1-STAGE037-P3"
+  github_upload_allowed: false
+"""
+        roadmap_text = f"""
+current_stage_id: "IDS-STAGE037"
+current_phase_id: "IDS-STAGE037-P2"
+current_task_id: "IDS-V0_1-STAGE037-P2"
+next_gate_id: "IDS-STAGE037-P3-GATE"
+stages:
+  -
+    stage_id: "IDS-STAGE037"
+    phases:
+      -
+        phase_id: "IDS-STAGE037-P2"
+        status: "passed_with_local_evidence"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE037-P2"
+            status: "completed"
+            test_results: "{result_block}"
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE1_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE2_JOB_STATE_MODEL_SLICE.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/job_state_model/stage037_job_state_model_index.json"
+              - "KM_IDSystem/scripts/check_job_state_model.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage037_job_state_model.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+"""
+
+        phase_checks = module.evaluate_phase_state(batch_text, roadmap_text)
+        self.assertTrue(all(phase_checks.values()), phase_checks)
+        structured = module.evaluate_current_state_consistency(
+            batch_text, roadmap_text
+        )
+        self.assertTrue(all(structured.values()), structured)
+
+        missing_phase = batch_text.replace('      - "Phase 2"\n', "")
+        missing_phase_checks = module.evaluate_current_state_consistency(
+            missing_phase, roadmap_text
+        )
+        self.assertFalse(
+            missing_phase_checks["batch_current_phase_completed"],
+            missing_phase_checks,
+        )
+
+        not_run = roadmap_text.replace(result_block, "NOT_RUN")
+        not_run_checks = module.evaluate_current_state_consistency(
+            batch_text, not_run
+        )
+        self.assertFalse(
+            not_run_checks["roadmap_current_task_results_recorded"],
+            not_run_checks,
+        )
+
+        polluted = roadmap_text.replace(
+            result_block,
+            result_block + "; fabricated=true",
+        )
+        polluted_checks = module.evaluate_current_state_consistency(
+            batch_text, polluted
+        )
+        self.assertFalse(
+            polluted_checks["roadmap_current_task_results_recorded"],
+            polluted_checks,
+        )
+
+        missing_checker = roadmap_text.replace(
+            '              - "KM_IDSystem/scripts/check_job_state_model.py"\n',
+            "",
+        )
+        missing_checker_checks = module.evaluate_current_state_consistency(
+            batch_text, missing_checker
+        )
+        self.assertFalse(
+            missing_checker_checks["roadmap_current_task_evidence_recorded"],
+            missing_checker_checks,
+        )
+
     def test_structured_state_rejects_stage035_node_contradictions(self):
         module = self._load_module()
         self.assertTrue(
