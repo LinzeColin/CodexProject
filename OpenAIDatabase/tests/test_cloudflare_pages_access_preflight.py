@@ -62,6 +62,12 @@ class CloudflarePagesAccessPreflightTests(unittest.TestCase):
 
         self.assertEqual(result["status"], "PASS")
         names = {check["name"] for check in result["checks"]}
+        self.assertEqual(
+            result["deployment_mode"],
+            "pages_direct_upload_with_workers_migration_ready_config",
+        )
+        self.assertIn("cloudflare_delivery_mode_contract", names)
+        self.assertIn("wrangler_static_output_config", names)
         self.assertIn("cloudflare_pages_template_contract", names)
         self.assertIn("cloudflare_access_template_contract", names)
         self.assertIn("cloudflare_live_deploy_authorization", names)

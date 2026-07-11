@@ -116,6 +116,26 @@ class MemoryAtlasReleaseAuditTests(unittest.TestCase):
             )
         )
 
+    def test_tracked_audit_rejects_failed_zero_part_session_history_metadata(self) -> None:
+        module = load_module()
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir)
+            manifest = repo_root / "session_history/failed-run/MANIFEST.txt"
+            manifest.parent.mkdir(parents=True)
+            manifest.write_text(
+                "part_count=0\nrisk_scan=SENSITIVE_SCAN_BLOCKED\nsource_sessions=/Users/example/.codex/sessions\n",
+                encoding="utf-8",
+            )
+            subprocess.run(["git", "init", "--quiet"], cwd=repo_root, check=True)
+            subprocess.run(["git", "add", "session_history"], cwd=repo_root, check=True)
+
+            problems = module.audit_tracked_files(repo_root)
+
+        self.assertTrue(
+            any("failed zero-part session history metadata" in problem for problem in problems),
+            problems,
+        )
+
     def test_release_audit_passes_for_static_redacted_output(self) -> None:
         module = load_module()
         with tempfile.TemporaryDirectory() as temp_dir:
