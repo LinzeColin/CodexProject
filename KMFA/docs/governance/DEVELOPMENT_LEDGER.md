@@ -1,3 +1,17 @@
+## 2026-07-11 - V014 S12-P3 post-remediation rerun mechanism
+
+- phase: `V014_S12_P3_POST_REMEDIATION_RERUN_MECHANISM`
+- task: `KMFA-V014-S12-P3-POST-REMEDIATION-RERUN-MECHANISM-20260711`
+- product_version: `0.1.4-s12-p3-post-remediation-rerun-mechanism`
+- result: `completed_validated_local_only_s12_p3_no_go_upload_deferred` / `NO_GO`
+- rerun model: `6` 个当前 S12-P2 预览对应 `6` 个计划，每份 `4` 层，共 `24` 个计划步骤。
+- execution gate: approved/published=`0/0`，persistent invalidation/rerun/consistency=`0/0/0`；仅允许 session simulation。
+- consistency gate: 四层共享同一 public-safe source anchor，旧版本保留、新版本追加，金额容忍为 0 分。
+- browser: v1.4 baseline `54/54 PASS`、current page `12/12 PASS`；desktop/mobile 全流程、HTTP/actual navigation=`4/4`，console/overflow=`0/0`。
+- raw proof: `5` 个文件在 phase 前后、跨 S12-P2 和当前快照一致；raw 身份、字段、金额、项目和诊断保持 private ignored。
+- boundary: Stage 12 review、持久业务写入、formal report、GitHub upload、app reinstall 和 business execution 均未执行。
+- evidence: `KMFA/stage_artifacts/V014_S12_P3_POST_REMEDIATION_RERUN_MECHANISM/machine/rerun_manifest.json`
+
 ## 2026-07-11 - V014 S12-P2 post-remediation impact preview
 
 - phase: `V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW`
