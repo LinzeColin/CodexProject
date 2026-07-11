@@ -119,13 +119,16 @@ class MemoryAtlasReleaseAuditTests(unittest.TestCase):
     def test_release_audit_passes_for_static_redacted_output(self) -> None:
         module = load_module()
         with tempfile.TemporaryDirectory() as temp_dir:
-            publish_dir = Path(temp_dir)
+            repo_root = Path(temp_dir) / "database"
+            publish_dir = repo_root / "dist"
+            publish_dir.mkdir(parents=True)
             (publish_dir / "index.html").write_text("<!doctype html><div id='root'></div>", encoding="utf-8")
             (publish_dir / "assets").mkdir()
             (publish_dir / "assets/app.js").write_text("console.log('memory atlas')", encoding="utf-8")
             (publish_dir / "memory_atlas.json").write_text(json.dumps(valid_atlas()), encoding="utf-8")
+            subprocess.run(["git", "init", "--quiet"], cwd=repo_root, check=True)
 
-            result = module.audit_release(ROOT, publish_dir)
+            result = module.audit_release(repo_root, publish_dir)
 
         self.assertEqual(result["status"], "PASS")
         self.assertEqual(result["file_count"], 3)
@@ -133,7 +136,9 @@ class MemoryAtlasReleaseAuditTests(unittest.TestCase):
     def test_release_audit_rejects_raw_or_sensitive_output(self) -> None:
         module = load_module()
         with tempfile.TemporaryDirectory() as temp_dir:
-            publish_dir = Path(temp_dir)
+            repo_root = Path(temp_dir) / "database"
+            publish_dir = repo_root / "dist"
+            publish_dir.mkdir(parents=True)
             (publish_dir / "index.html").write_text("<!doctype html>", encoding="utf-8")
             (publish_dir / "memory_atlas.json").write_text(
                 json.dumps({**valid_atlas(), "evidence": [{"source": "raw should not ship"}]}),
@@ -142,7 +147,7 @@ class MemoryAtlasReleaseAuditTests(unittest.TestCase):
             (publish_dir / "OpenAI-export.zip").write_bytes(b"not really a zip")
 
             with self.assertRaises(module.AuditError) as raised:
-                module.audit_release(ROOT, publish_dir)
+                module.audit_release(repo_root, publish_dir)
 
         message = str(raised.exception)
         self.assertIn("forbidden publish suffix", message)

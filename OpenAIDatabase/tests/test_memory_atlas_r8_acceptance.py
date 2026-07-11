@@ -95,6 +95,11 @@ class MemoryAtlasR8AcceptanceTests(unittest.TestCase):
             list(module.REQUIRED_R8_GATE_IDS),
         )
         self.assertTrue(all(int(gate["timeout_seconds"]) > 0 for gate in plan))
+        by_id = {gate["gate_id"]: gate for gate in plan}
+        self.assertGreaterEqual(int(by_id["unit_tests"]["timeout_seconds"]), 600)
+        self.assertGreaterEqual(int(by_id["stage7_privacy_accessibility"]["timeout_seconds"]), 600)
+        self.assertNotIn("--publish-dir", by_id["report_contract_audit"]["command"])
+        self.assertEqual(atlasctl.compact_tail(b"timeout output"), "timeout output")
 
     def test_rendered_chinese_gate_checks_human_copy_and_raw_manifest_pollution(self) -> None:
         source = HOME_BROWSER_GATE.read_text(encoding="utf-8")

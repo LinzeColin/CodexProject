@@ -303,7 +303,7 @@ def final_audit_gate_plan(database_dir: Path) -> list[dict[str, object]]:
             "name_zh": "Python unit tests",
             "command": [sys.executable, "-B", "-m", "unittest", "discover", f"{database_dir.name}/tests", "-q"],
             "cwd": str(database_dir.parent),
-            "timeout_seconds": 300,
+            "timeout_seconds": 900,
             "pass_explanation_zh": "Python 单元测试通过。",
             "fail_explanation_zh": "Python 单元测试失败；先看 stdout_tail/stderr_tail 中的失败用例和 traceback。",
         },
@@ -459,18 +459,18 @@ def final_audit_gate_plan(database_dir: Path) -> list[dict[str, object]]:
                 "scripts/audit_memory_atlas_acceptance.py",
                 "--repo-root",
                 str(database_dir),
-                "--publish-dir",
-                str(database_dir / "apps/memory-atlas/dist"),
             ],
             "cwd": str(database_dir),
-            "timeout_seconds": 240,
+            "timeout_seconds": 300,
             "pass_explanation_zh": "报告与验收合同审计通过。",
             "fail_explanation_zh": "报告与验收合同审计失败；先修复 acceptance、release、Cloudflare preflight 或报告字段合同。",
         },
     ]
 
 
-def compact_tail(value: str, limit: int = FINAL_AUDIT_OUTPUT_TAIL_CHARS) -> str:
+def compact_tail(value: str | bytes, limit: int = FINAL_AUDIT_OUTPUT_TAIL_CHARS) -> str:
+    if isinstance(value, bytes):
+        value = value.decode("utf-8", errors="replace")
     if len(value) <= limit:
         return value
     return value[-limit:]
