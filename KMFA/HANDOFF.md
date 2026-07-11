@@ -30,6 +30,7 @@
 - mixed_archive_precedence: 月累计和 private SQLite v2 均先按 `(user_id, work_date)` 归并；同日存在 official row 时完全忽略 legacy 业务分类，多个 official snapshot 取时间最新一条。异常累计、连续异常、有效出勤和休息提醒使用同一 canonical user-day。
 - automation_state: live `kmfa` 与 `kmfa-3` prompt 已同步官方 parity 门禁，readback hash 与 repo canonical prompt 一致；两张卡均 ACTIVE、无 timezone 字段，晚报仍为本机墙钟 20:00，未改调度。
 - verification: 91 项 `test_dingtalk_attendance`、9 项 automation schedule contract、17 项 auth keepalive regression、Python compile、S19 file/prompt contract、skill validator、no-sensitive scan 和真实只读官方对账通过。现存 private ledger 已先备份再从全部 raw manifests 重建为 schema v2，19/19 runs 的 canonical version 与 sort key 完整，validate/query 均 PASS。2026-07-11 full collector readback 为 42/42、异常 11、应考勤 39、有效出勤 28、delivery gate PASS、diagnostic command failure=0。剩余唯一生产证据是下一次自然触发后确认通知正文与当时钉钉 UI 快照一致。
+- runtime_stability_fix: 2026-07-11 晚报失败并非授权缺失；healthcheck 为 `READY`，官方链路后进入 42 人逐个 `record/summary` legacy sweep，约 292 秒后被 automation 中断并误报 `DWS_AUTH_REQUIRED`。scheduled official collector 已移除该非权威 sweep，真实只读 DWS 验收 65.1 秒完成 42/42、parity PASS、异常 11、command failure 0、legacy diagnostic skipped 42；未发送通知。
 
 ## S20 当前状态｜钉钉工作检查 daily routine check
 

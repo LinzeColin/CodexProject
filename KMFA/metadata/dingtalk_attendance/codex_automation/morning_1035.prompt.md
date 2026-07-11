@@ -26,6 +26,9 @@ KMFA/kmfa-dingtalk-attendance-skill/SKILL.md
 8. 运行 `python3 KMFA/tools/dingtalk_attendance/healthcheck.py --config-only`。
 9. 只有在本机授权允许时才执行晨报入口；否则 fail closed，报告 `DWS_AUTH_REQUIRED` 或配置 blocker。Do not fabricate data。入口必须以当前钉钉考勤组成员为统计范围，并以精确的 `attendance report columns/query-data` 官方列值作为唯一业务统计源；`record get`、两卡推断和个人 `summary` 只能作为诊断证据。
 10. 发送任何结论前必须满足 `official_report_parity_status=PASS`、北京时间目标业务日完全覆盖且 `official_report_coverage_count == member_count`。出现 `OFFICIAL_ATTENDANCE_PARITY_FAILED` 时停止且不发送，禁止回退到 record/summary 猜数。
+10a. The production official collector intentionally skips the legacy per-member record/summary sweep. Do not run that sweep before or after the entry.
+10b. Do not interrupt the entry while its process is still inside the runner's bounded DWS timeout/retry budget.
+10c. When the authoritative healthcheck is READY, a running process or later timeout must never be reported as DWS_AUTH_REQUIRED; report the entry's exact final JSON status and exit code.
 11. 晨报不执行 stage-2 acceptance，不提升 Q5，不生成 payroll baseline。
 12. 休息提醒规则必须来自 skill：`REST_REQUIRED_THRESHOLD_DAYS = 23`；`丁春法` 和 `李永占` 只排除出 `需要休息`，其他状态照常统计。
 13. 如果用户明确要求指定日期测试且只发张霖泽个人，入口必须加 `--work-date YYYY-MM-DD --notification-targets personal`；不得发送生产管理群。

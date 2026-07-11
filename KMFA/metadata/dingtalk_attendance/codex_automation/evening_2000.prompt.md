@@ -22,6 +22,9 @@ KMFA/kmfa-dingtalk-attendance-skill/SKILL.md
 7. 运行 `python3 KMFA/tools/dingtalk_attendance/healthcheck.py --config-only`；这个 config-only healthcheck 是当前 DWS PAT/runtime readiness 的权威门禁，`inspect_runtime.sh` 单独出现旧 App Key warning 不能覆盖 READY 结果。
 8. 只有在权威 healthcheck 为 `READY` 且本机授权允许时，才执行下方唯一晚报入口一次；否则 fail closed，报告 `DWS_AUTH_REQUIRED` 或配置 blocker。Do not fabricate data。命令非零退出时必须把 automation 标为失败，不能把部分取数或通知失败报告为成功。
 9. 入口必须以当前钉钉考勤组成员为统计范围，并以精确的 `attendance report columns/query-data` 官方列值作为唯一业务统计源。发送任何结论前必须满足 `official_report_parity_status=PASS`、北京时间目标业务日完全覆盖且 `official_report_coverage_count == member_count`；`record get`、两卡推断和个人 `summary` 只能作为诊断证据。出现 `OFFICIAL_ATTENDANCE_PARITY_FAILED` 时停止且不发送，禁止回退到 record/summary 猜数。
+9a. The production official collector intentionally skips the legacy per-member record/summary sweep. Do not run that sweep before or after the entry.
+9b. Do not interrupt the entry while its process is still inside the runner's bounded DWS timeout/retry budget.
+9c. When the authoritative healthcheck is READY, a running process or later timeout must never be reported as DWS_AUTH_REQUIRED; report the entry's exact final JSON status and exit code.
 10. 只能通过 approved local S19/DWS path 获取或 replay DingTalk attendance result/detail evidence。
 11. public-safe metadata 写入 `KMFA/metadata`；private raw payloads 保持在 ignored private runtime 或 OneDrive。
 12. 运行 `KMFA/kmfa-dingtalk-attendance-skill/scripts/month_gate.py --run-slot evening --print-json`。

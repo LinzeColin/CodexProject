@@ -400,22 +400,21 @@ def collect_official_org_attendance(
         work_date=work_date,
         column_ids=report_columns["column_ids"],
     )
-    rows = _collect_member_attendance_rows(
+    rows = _build_official_only_rows(
         members=members,
-        work_date=work_date,
-        summary_datetime=summary_datetime,
-        runner=runner,
-        tolerate_diagnostic_errors=True,
+        official_by_user=official_by_user,
     )
-    for row in rows:
-        user_id = row["member"]["userId"]
-        row["derived"].update(official_by_user[user_id])
 
     stats = build_collection_stats(rows)
     stats.update(
         {
             "attendance_group_count": len(group_scope["group_ids"]),
             "attendance_group_member_count": len(members),
+            "record_failure_count": 0,
+            "summary_failure_count": 0,
+            "command_failure_count": 0,
+            "legacy_diagnostic_mode": "SKIPPED_OFFICIAL_REPORT_AUTHORITATIVE",
+            "legacy_diagnostic_skipped_count": len(members),
         }
     )
     official_report_evidence = {
@@ -439,6 +438,62 @@ def collect_official_org_attendance(
         "stats": stats,
         "official_report_evidence": official_report_evidence,
     }
+
+
+def _build_official_only_rows(
+    *,
+    members: list[dict[str, str]],
+    official_by_user: Mapping[str, dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Build production rows without the slow, non-authoritative legacy sweep."""
+
+    rows: list[dict[str, Any]] = []
+    for member in members:
+        user_id = member["userId"]
+        diagnostic_placeholder = {
+            "final": {
+                "returncode": None,
+                "payload": {
+                    "success": False,
+                    "code": "DIAGNOSTIC_SKIPPED_OFFICIAL_REPORT_AUTHORITATIVE",
+                },
+            },
+            "attempts": [],
+        }
+        derived = {
+            "record_success": False,
+            "record_raw_success": False,
+            "record_detail_unavailable": False,
+            "record_detail_unavailable_code": "",
+            "summary_success": False,
+            "summary_raw_success": False,
+            "summary_not_applicable": False,
+            "summary_not_applicable_code": "",
+            "summary_detail_unavailable": False,
+            "summary_detail_unavailable_code": "",
+            "record_count": 0,
+            "record_requires_attendance": False,
+            "record_has_full_day": False,
+            "record_anomaly": False,
+            "summary_item_count": 0,
+            "summary_abnormal_count": None,
+            "summary_today_present": False,
+            "summary_today_issues": [],
+            "summary_today_issue_count": 0,
+            "summary_today_anomaly": False,
+            "known_no_record": False,
+            "legacy_diagnostic_skipped": True,
+            **official_by_user[user_id],
+        }
+        rows.append(
+            {
+                "member": member,
+                "record": diagnostic_placeholder,
+                "summary": diagnostic_placeholder,
+                "derived": derived,
+            }
+        )
+    return rows
 
 
 def _collect_attendance_group_scope(*, runner: Callable[..., dict[str, Any]]) -> dict[str, Any]:

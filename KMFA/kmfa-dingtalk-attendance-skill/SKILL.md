@@ -50,6 +50,7 @@ Before acting, read:
 - Monthly notification rollups reset by natural month.
 - Notification `今日异常 / 无考勤` is same-day only and must use the exact official report row for current attendance-group members. `缺卡`, `未打卡`, `旷工`, `迟到`, and `早退` are shown only when official `考勤结果` or official count columns mark the target work date. Raw record counts, two-punch inference, and personal summary children are diagnostics only and must never override the official report.
 - `OFFICIAL_ATTENDANCE_PARITY_FAILED` is a hard stop: missing/ambiguous official columns, incomplete attendance-group coverage, wrong business date, unknown status, or any official query failure must prevent report conclusions and notification delivery. Never fall back to `record get + summary` guesses.
+- The scheduled production collector stops after exact official report parity and does not run the legacy per-member `record get + summary` sweep. Those endpoints remain available only through the separate legacy/diagnostic collector; they must not delay or fail an official production run.
 - Current natural-month counts are annotations for today's displayed names; they must not create a today no-record/anomaly row by themselves.
 - Empty notification sections render nothing. When collection is complete and today's anomaly list is empty, output `本次 N 人全部考勤正常`.
 - Do not render a user-visible `待审批 / 待补卡 / 待核查` section; keep those details only in private/internal machine state if present.

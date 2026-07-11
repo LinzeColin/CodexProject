@@ -1083,7 +1083,8 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(collection["stats"]["official_report_anomaly_names"], ["异常员工"])
         self.assertEqual(collection["stats"]["attendance_anomaly_names"], ["异常员工"])
         self.assertEqual(collection["stats"]["attendance_anomaly_count"], 1)
-        self.assertEqual(collection["stats"]["record_incomplete_success_count"], 1)
+        self.assertEqual(collection["stats"]["record_incomplete_success_count"], 0)
+        self.assertEqual(collection["stats"]["legacy_diagnostic_skipped_count"], 2)
         self.assertNotIn("正常员工", collection["stats"]["attendance_anomaly_names"])
         self.assertNotIn("非考勤组员工", [row["member"]["name"] for row in collection["results"]])
         self.assertEqual(
@@ -1112,8 +1113,29 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(collection["stats"]["official_report_parity_status"], "PASS")
         self.assertEqual(collection["stats"]["official_report_coverage_count"], 2)
         self.assertEqual(collection["stats"]["official_report_anomaly_count"], 1)
-        self.assertEqual(collection["stats"]["command_failure_count"], 4)
+        self.assertEqual(collection["stats"]["command_failure_count"], 0)
+        self.assertEqual(collection["stats"]["legacy_diagnostic_skipped_count"], 2)
         self.assertIsNone(official_report_parity_failure_reason(collection["stats"]))
+
+    def test_official_collector_does_not_block_on_legacy_per_member_diagnostics(self) -> None:
+        delegate = OfficialParityFixtureRunner()
+
+        def runner(args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict:
+            if args[:2] in (["attendance", "record"], ["attendance", "summary"]):
+                raise AssertionError("official production collector must not call legacy per-member diagnostics")
+            return delegate(args, timeout=timeout, verbose=verbose)
+
+        collection = collect_official_org_attendance(
+            work_date="2026-07-11",
+            summary_datetime="2026-07-11 10:35:00",
+            runner=runner,
+        )
+
+        self.assertEqual(collection["stats"]["official_report_parity_status"], "PASS")
+        self.assertEqual(collection["stats"]["official_report_coverage_count"], 2)
+        self.assertEqual(collection["stats"]["legacy_diagnostic_mode"], "SKIPPED_OFFICIAL_REPORT_AUTHORITATIVE")
+        self.assertEqual(collection["stats"]["legacy_diagnostic_skipped_count"], 2)
+        self.assertEqual(collection["stats"]["command_failure_count"], 0)
 
     def test_official_collector_fails_closed_when_report_coverage_is_incomplete(self) -> None:
         runner = OfficialParityFixtureRunner(omit_user="u-normal")
