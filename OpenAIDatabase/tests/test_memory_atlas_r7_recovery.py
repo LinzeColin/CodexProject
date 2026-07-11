@@ -327,6 +327,7 @@ class MemoryAtlasR7RecoveryTests(unittest.TestCase):
         flattened = [item for command in plan for item in command]
         self.assertIn("archive", flattened)
         self.assertIn(self.commit, flattened)
+        self.assertFalse(any("recovery.tar" in item for item in flattened), plan)
         self.assertEqual(plan[-2][0:2], ["npm", "ci"])
         self.assertEqual(plan[-1], ["npm", "run", "build"])
         assert_portable(self, plan)
@@ -336,6 +337,8 @@ class MemoryAtlasR7RecoveryTests(unittest.TestCase):
         self.assertEqual(result["status"], "PASS", result)
         self.assertEqual(result["commit"], self.commit)
         self.assertEqual(result["archive"]["source"], "git_tracked_files_only")
+        self.assertTrue(result["archive"]["streamed"])
+        self.assertFalse(result["archive"]["intermediate_archive_written"])
         self.assertGreater(result["archive"]["tracked_file_count"], 0)
         self.assertEqual(result["source_packages"]["restored_file_count"], 2)
         self.assertEqual(result["raw_integrity"]["raw_file_count"], 3)
@@ -357,6 +360,20 @@ class MemoryAtlasR7RecoveryTests(unittest.TestCase):
                 self.assertEqual(result["status"], "FAIL")
                 self.assertEqual(result["failure"]["code"], "EXACT_COMMIT_REQUIRED")
                 self.assertFalse(self.fixture.output_dir.exists())
+
+    def test_streaming_archive_rejects_tracked_symlink_and_cleans_workspace(self) -> None:
+        tracked_link = self.fixture.database / "tracked-link"
+        tracked_link.symlink_to("data/derived/visualization/memory_atlas.json")
+        run_git(self.fixture.repo, "add", tracked_link.relative_to(self.fixture.repo).as_posix())
+        run_git(self.fixture.repo, "commit", "-qm", "add unsafe tracked symlink")
+        commit = run_git(self.fixture.repo, "rev-parse", "HEAD")
+
+        result = self.rehearse(commit=commit)
+
+        self.assertEqual(result["status"], "FAIL")
+        self.assertEqual(result["failure"]["code"], "GIT_ARCHIVE_UNSAFE")
+        self.assertTrue(result["cleanup"]["output_dir_removed"])
+        self.assertFalse(self.fixture.output_dir.exists())
 
     def test_existing_output_directory_is_preserved_and_not_misreported_as_cleanup_failure(self) -> None:
         self.fixture.output_dir.mkdir()
