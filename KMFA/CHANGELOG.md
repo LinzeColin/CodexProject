@@ -1,3 +1,12 @@
+## 0.1.4-s16-p2-post-remediation-project-status-lifecycle - 2026-07-12
+
+- 完成 `V014_S16_P2_POST_REMEDIATION_PROJECT_STATUS_LIFECYCLE` 本地 phase：只读接入生产项目状态、开工、完工、结算、开票和回款 6 类结构。
+- 双次探针覆盖 5 个 raw、48 个 XLSX 容器、25 可解析、23 不可解析、4,198 个工作表、2,021 个唯一候选、2,277 个结构关联和 224 个跨类型候选，探针不一致为 0。
+- 锁定 6 状态、5 转换的生命周期契约，以及开工未完工、完工未结算、结算未开票、开票未回款 4 类异常规则；当前权威行/值、生命周期记录和实际异常事项均为 0。
+- 隔离旧 S16-P2 的 4 条生命周期记录、3 条异常事项和 3 项交接门禁；现场施工、安全签字和技术签字保持人工权限边界。
+- baseline/current HTML `54/54 / 14/14 PASS`；2 视口、12 次结构线交互、8 次规则交互、4 条 HTTP 与 4 次真实导航通过，console/overflow 为 0。
+- raw phase 前后、跨 S16-P1 与当前快照一致；保持 Q4 / D / NO_GO / 3-9-2-1，未执行 S16-P3、Stage 16 review、现场或签字动作、开票、催收、付款、银行、GitHub upload、app reinstall、正式报告、差异关闭或 business execution。
+
 ## 0.1.4-s16-p1-post-remediation-subcontract-procurement - 2026-07-12
 
 - 完成 `V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT` 本地 phase：只读接入外协合同、采购订单、付款申请、发票和项目归属 5 类结构。
