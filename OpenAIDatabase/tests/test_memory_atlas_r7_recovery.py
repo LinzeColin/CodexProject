@@ -1,11 +1,15 @@
 from __future__ import annotations
 
+import base64
 import hashlib
 import importlib.util
+import io
 import json
 import subprocess
 import sys
+import tarfile
 import tempfile
+import time
 import unittest
 import zipfile
 from pathlib import Path
@@ -322,6 +326,44 @@ class MemoryAtlasR7RecoveryTests(unittest.TestCase):
                 output_dir=self.fixture.output_dir,
             )
 
+    def run_stream_probe(
+        self,
+        child_code: str,
+        *,
+        timeout_seconds: float,
+        max_stderr_bytes: int,
+    ) -> tuple[str, float, list[subprocess.Popen[bytes]]]:
+        original_popen = subprocess.Popen
+        spawned: list[subprocess.Popen[bytes]] = []
+
+        def launch_probe(_argv: list[str], **kwargs: Any) -> subprocess.Popen[bytes]:
+            process = original_popen([sys.executable, "-c", child_code], **kwargs)
+            spawned.append(process)
+            return process
+
+        destination = Path(self.temp.name) / f"stream-probe-{time.monotonic_ns()}"
+        started = time.monotonic()
+        try:
+            with (
+                mock.patch.object(self.module, "COMMAND_TIMEOUT_SECONDS", timeout_seconds),
+                mock.patch.object(self.module, "MAX_COMMAND_OUTPUT_BYTES", max_stderr_bytes),
+                mock.patch.object(self.module.subprocess, "Popen", side_effect=launch_probe),
+                self.assertRaises(self.module.RecoveryAuditError) as raised,
+            ):
+                self.module._stream_git_archive_safely(
+                    self.fixture.repo,
+                    self.commit,
+                    destination,
+                    env=self.module._safe_environment(),
+                    display_argv=["git", "archive", "--format=tar", self.commit],
+                )
+        finally:
+            for process in spawned:
+                if process.poll() is None:
+                    process.kill()
+                    process.wait()
+        return raised.exception.code, time.monotonic() - started, spawned
+
     def test_plan_and_rehearsal_use_exact_commit_tracked_archive_and_portable_results(self) -> None:
         plan = self.module.build_recovery_plan(self.fixture.repo, self.commit)
         flattened = [item for command in plan for item in command]
@@ -374,6 +416,51 @@ class MemoryAtlasR7RecoveryTests(unittest.TestCase):
         self.assertEqual(result["failure"]["code"], "GIT_ARCHIVE_UNSAFE")
         self.assertTrue(result["cleanup"]["output_dir_removed"])
         self.assertFalse(self.fixture.output_dir.exists())
+
+    def test_streaming_archive_timeout_interrupts_blocked_header_and_reaps_child(self) -> None:
+        code, elapsed, spawned = self.run_stream_probe(
+            "import sys,time; sys.stdout.buffer.write(b'x'); sys.stdout.buffer.flush(); time.sleep(2)",
+            timeout_seconds=0.05,
+            max_stderr_bytes=1024 * 1024,
+        )
+
+        self.assertEqual(code, "GIT_ARCHIVE_TIMEOUT")
+        self.assertLess(elapsed, 0.75)
+        self.assertTrue(spawned)
+        self.assertTrue(all(process.poll() is not None for process in spawned))
+
+    def test_streaming_archive_enforces_stderr_limit_while_reader_is_blocked(self) -> None:
+        code, elapsed, spawned = self.run_stream_probe(
+            "import sys,time; sys.stderr.buffer.write(b'e'*(2*1024*1024)); sys.stderr.buffer.flush(); time.sleep(2)",
+            timeout_seconds=1.0,
+            max_stderr_bytes=1024,
+        )
+
+        self.assertEqual(code, "GIT_ARCHIVE_OUTPUT_LIMIT")
+        self.assertLess(elapsed, 0.75)
+        self.assertTrue(all(process.poll() is not None for process in spawned))
+
+    def test_streaming_archive_preserves_unsafe_error_when_git_requires_termination(self) -> None:
+        payload = io.BytesIO()
+        with tarfile.open(fileobj=payload, mode="w") as archive:
+            member = tarfile.TarInfo("tracked-link")
+            member.type = tarfile.SYMTYPE
+            member.linkname = "target"
+            archive.addfile(member)
+        encoded = base64.b64encode(payload.getvalue()).decode("ascii")
+        code, elapsed, spawned = self.run_stream_probe(
+            (
+                "import base64,sys,time; "
+                f"sys.stdout.buffer.write(base64.b64decode({encoded!r})); "
+                "sys.stdout.buffer.flush(); time.sleep(2)"
+            ),
+            timeout_seconds=1.0,
+            max_stderr_bytes=1024 * 1024,
+        )
+
+        self.assertEqual(code, "GIT_ARCHIVE_UNSAFE")
+        self.assertLess(elapsed, 0.75)
+        self.assertTrue(all(process.poll() is not None for process in spawned))
 
     def test_existing_output_directory_is_preserved_and_not_misreported_as_cleanup_failure(self) -> None:
         self.fixture.output_dir.mkdir()

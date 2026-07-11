@@ -15,6 +15,7 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+import threading
 import time
 import zipfile
 from dataclasses import dataclass
@@ -368,8 +369,8 @@ def _stream_git_archive_safely(
 ) -> int:
     argv = ["git", "archive", "--format=tar", commit]
     deadline = time.monotonic() + COMMAND_TIMEOUT_SECONDS
-    extraction_error: BaseException | None = None
-    timed_out = False
+    extraction_error: Exception | None = None
+    terminated_for_extraction_error = False
     with tempfile.TemporaryFile() as stderr_file:
         try:
             process = subprocess.Popen(
@@ -394,6 +395,33 @@ def _stream_git_archive_safely(
             _terminate_process(process)
             raise RecoveryAuditError("GIT_ARCHIVE_FAILED", "git archive stdout pipe was unavailable.")
 
+        watchdog_stop = threading.Event()
+        watchdog_failure: list[str] = []
+        terminate_lock = threading.Lock()
+
+        def terminate_once() -> None:
+            with terminate_lock:
+                _terminate_process(process)
+
+        def watch_process() -> None:
+            while not watchdog_stop.wait(0.01):
+                if process.poll() is not None:
+                    return
+                if os.fstat(stderr_file.fileno()).st_size > MAX_COMMAND_OUTPUT_BYTES:
+                    watchdog_failure.append("OUTPUT_LIMIT")
+                    terminate_once()
+                    return
+                if time.monotonic() >= deadline:
+                    watchdog_failure.append("TIMEOUT")
+                    terminate_once()
+                    return
+
+        watchdog = threading.Thread(
+            target=watch_process,
+            name="memory-atlas-git-archive-watchdog",
+            daemon=True,
+        )
+        watchdog.start()
         tracked_file_count = 0
         try:
             tracked_file_count = _extract_archive_safely(
@@ -403,7 +431,9 @@ def _stream_git_archive_safely(
             )
         except (OSError, RecoveryAuditError, tarfile.TarError) as exc:
             extraction_error = exc
-            _terminate_process(process)
+            if process.poll() is None and not watchdog_failure:
+                terminated_for_extraction_error = True
+                terminate_once()
         finally:
             process.stdout.close()
 
@@ -412,8 +442,18 @@ def _stream_git_archive_safely(
             try:
                 process.wait(timeout=remaining)
             except subprocess.TimeoutExpired:
-                timed_out = True
-                _terminate_process(process)
+                if not watchdog_failure:
+                    watchdog_failure.append("TIMEOUT")
+                terminate_once()
+        watchdog_stop.set()
+        watchdog.join(timeout=3)
+        if watchdog.is_alive():
+            terminate_once()
+            raise RecoveryAuditError(
+                "GIT_ARCHIVE_WATCHDOG_FAILED",
+                "git archive watchdog did not stop after the child process ended.",
+                command=display_argv,
+            )
 
         stderr_size = os.fstat(stderr_file.fileno()).st_size
         stderr_file.seek(max(0, stderr_size - OUTPUT_TAIL_BYTES))
@@ -421,20 +461,30 @@ def _stream_git_archive_safely(
             stderr_file.read(OUTPUT_TAIL_BYTES).decode("utf-8", errors="replace"),
             (repo_root, destination),
         )
-        if timed_out:
+        watchdog_reason = watchdog_failure[0] if watchdog_failure else ""
+        if watchdog_reason == "TIMEOUT":
             raise RecoveryAuditError(
                 "GIT_ARCHIVE_TIMEOUT",
                 "Streaming git archive extraction timed out.",
                 command=display_argv,
                 stderr_tail=stderr_tail,
             )
-        if stderr_size > MAX_COMMAND_OUTPUT_BYTES:
+        if watchdog_reason == "OUTPUT_LIMIT" or stderr_size > MAX_COMMAND_OUTPUT_BYTES:
             raise RecoveryAuditError(
                 "GIT_ARCHIVE_OUTPUT_LIMIT",
                 "git archive stderr exceeded the bounded output limit.",
                 command=display_argv,
                 stderr_tail=stderr_tail,
             )
+        if extraction_error is not None and terminated_for_extraction_error:
+            if isinstance(extraction_error, RecoveryAuditError):
+                raise extraction_error
+            if isinstance(extraction_error, OSError):
+                raise extraction_error
+            raise RecoveryAuditError(
+                "GIT_ARCHIVE_INVALID",
+                "git archive could not be extracted safely.",
+            ) from extraction_error
         if process.returncode != 0:
             raise RecoveryAuditError(
                 "GIT_ARCHIVE_FAILED",
