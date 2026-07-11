@@ -26,7 +26,13 @@ from KMFA.tools.dingtalk_attendance import (
 )
 from KMFA.tools.dingtalk_attendance.cleanup_runtime import cleanup_runtime
 from KMFA.tools.dingtalk_attendance.dws_auth_guard import DWS_COMMAND_ALLOW_ENV, dws_command_safety_status
-from KMFA.tools.dingtalk_attendance.dws_attendance import DwsAttendanceError, collect_org_attendance, write_private_outputs
+from KMFA.tools.dingtalk_attendance.dws_attendance import (
+    DwsAttendanceError,
+    OfficialAttendanceParityError,
+    attendance_run_sort_key,
+    collect_official_org_attendance,
+    write_private_outputs,
+)
 from KMFA.tools.dingtalk_attendance.healthcheck import build_config_status
 from KMFA.tools.dingtalk_attendance.notifier_dingtalk import send_group_robot_markdown
 from KMFA.tools.dingtalk_attendance.notification_targets import dispatch_reports_to_targets
@@ -37,6 +43,7 @@ from KMFA.tools.dingtalk_attendance.notification_template import (
     build_personal_notification_message,
     coerce_message_lines,
     notification_context_from_output_status,
+    official_report_parity_failure_reason,
     work_date_from_run_id,
 )
 from KMFA.tools.dingtalk_attendance.onedrive_archive import archive_paths_for_run
@@ -106,6 +113,22 @@ def dispatch_reports_to_robot(
     values = dict(env) if env is not None else merged_runtime_env()
     receipt_path = Path(str(output_status["dispatch_receipt"]))
     messages: list[dict[str, Any]] = []
+
+    stats = output_status.get("stats", {})
+    parity_failure = official_report_parity_failure_reason(stats if isinstance(stats, Mapping) else {})
+    if parity_failure:
+        receipt = {
+            "notification_status": "NOT_SENT_OFFICIAL_ATTENDANCE_PARITY_FAILED",
+            "channel": "dingtalk_group_robot",
+            "messages": messages,
+            "management_report": str(output_status.get("management_report", "")),
+            "hr_report": str(output_status.get("hr_report", "")),
+            "notification_template_text": "",
+            "notification_delivery_table": "| 发送对象 | 是否成功 |\n|---|---|\n| 钉钉群机器人 | 否 |",
+            "failure_reason": parity_failure,
+        }
+        receipt_path.write_text(json.dumps(receipt, ensure_ascii=False, indent=2), encoding="utf-8")
+        return receipt
 
     if not values.get("DINGTALK_ROBOT_URL") or not values.get("DINGTALK_ROBOT_SIGNING_KEY"):
         receipt = {
@@ -187,7 +210,7 @@ def build_monthly_notification_rollups(
     pending_latest_by_user: dict[str, str] = {}
     current_pending_users: set[str] = set()
 
-    for record in records:
+    for record in _canonical_user_day_records(records):
         member = record.get("member", {})
         if not isinstance(member, Mapping):
             continue
@@ -200,10 +223,12 @@ def build_monthly_notification_rollups(
             continue
         names_by_user[user_id] = name
         users_by_name[name] = user_id
-        if _attendance_record_success(record) and _record_list_has_morning_and_evening(_record_list_from_attendance_record(record)):
+        if _attendance_record_effective_day(record):
             effective_dates_by_user.setdefault(user_id, set()).add(record_work_date)
         summary_issues = _summary_today_issues_from_attendance_record(record)
-        if _attendance_record_has_anomaly(record) or summary_issues:
+        derived = record.get("derived", {})
+        official_result_present = isinstance(derived, Mapping) and "official_report_anomaly" in derived
+        if _attendance_record_has_anomaly(record) or (summary_issues and not official_result_present):
             anomaly_dates_by_user.setdefault(user_id, set()).add(record_work_date)
         if summary_issues:
             pending_counts_by_user[user_id] = pending_counts_by_user.get(user_id, 0) + len(summary_issues)
@@ -300,6 +325,45 @@ def _max_work_date(records: list[Mapping[str, Any]]) -> str | None:
     return dates[-1] if dates else None
 
 
+def _canonical_user_day_records(records: list[Mapping[str, Any]]) -> list[Mapping[str, Any]]:
+    """Choose one business classification per user/day, preferring the latest official row."""
+    grouped: dict[tuple[str, str], list[tuple[int, Mapping[str, Any]]]] = {}
+    ungrouped: list[tuple[int, Mapping[str, Any]]] = []
+    for index, record in enumerate(records):
+        member = record.get("member", {})
+        if not isinstance(member, Mapping):
+            ungrouped.append((index, record))
+            continue
+        user_id = str(member.get("userId") or member.get("user_id") or member.get("name") or "").strip()
+        work_date = str(record.get("work_date") or "").strip()
+        if not user_id or not work_date:
+            ungrouped.append((index, record))
+            continue
+        grouped.setdefault((user_id, work_date), []).append((index, record))
+
+    selected: list[tuple[int, Mapping[str, Any]]] = list(ungrouped)
+    for candidates in grouped.values():
+        official_candidates = [item for item in candidates if _attendance_record_has_official_result(item[1])]
+        eligible = official_candidates or candidates
+        selected.append(max(eligible, key=lambda item: _attendance_record_precedence_key(item[1], item[0])))
+    return [record for _, record in sorted(selected, key=lambda item: item[0])]
+
+
+def _attendance_record_has_official_result(record: Mapping[str, Any]) -> bool:
+    derived = record.get("derived", {})
+    return isinstance(derived, Mapping) and (
+        "official_report_anomaly" in derived
+        or "official_effective_day" in derived
+        or derived.get("official_report_covered") is True
+    )
+
+
+def _attendance_record_precedence_key(record: Mapping[str, Any], fallback_index: int) -> tuple[int, str, int]:
+    run_id = str(record.get("_archive_run_id") or record.get("run_id") or "")
+    sort_key = attendance_run_sort_key(run_id)
+    return (1 if run_id else 0, sort_key, fallback_index)
+
+
 def _attendance_record_success(record: Mapping[str, Any]) -> bool:
     derived = record.get("derived", {})
     if isinstance(derived, Mapping) and "record_success" in derived:
@@ -318,7 +382,18 @@ def _attendance_record_has_anomaly(record: Mapping[str, Any]) -> bool:
     derived = record.get("derived", {})
     if not isinstance(derived, Mapping):
         return False
+    if "official_report_anomaly" in derived:
+        return bool(derived.get("official_report_anomaly"))
     return bool(derived.get("record_anomaly") or derived.get("summary_today_anomaly"))
+
+
+def _attendance_record_effective_day(record: Mapping[str, Any]) -> bool:
+    derived = record.get("derived", {})
+    if isinstance(derived, Mapping) and "official_effective_day" in derived:
+        return bool(derived.get("official_effective_day"))
+    return _attendance_record_success(record) and _record_list_has_morning_and_evening(
+        _record_list_from_attendance_record(record)
+    )
 
 
 def _summary_today_issues_from_attendance_record(record: Mapping[str, Any]) -> list[str]:
@@ -373,6 +448,7 @@ def _date_ordinal(value: str) -> int:
 def _monthly_attendance_records(month_dir: Path) -> list[dict[str, Any]]:
     records: list[dict[str, Any]] = []
     for raw_path in sorted(month_dir.glob("s19_*.raw.jsonl.gz")):
+        run_id = raw_path.name.removesuffix(".raw.jsonl.gz")
         work_date = work_date_from_run_id(raw_path.name)
         try:
             with gzip.open(raw_path, "rt", encoding="utf-8") as handle:
@@ -385,12 +461,14 @@ def _monthly_attendance_records(month_dir: Path) -> list[dict[str, Any]]:
                     if payload.get("type") == "metadata":
                         run_plan = payload.get("run_plan", {})
                         if isinstance(run_plan, Mapping):
-                            work_date = work_date_from_run_id(str(run_plan.get("run_id") or raw_path.name))
+                            run_id = str(run_plan.get("run_id") or run_id)
+                            work_date = work_date_from_run_id(run_id)
                         continue
                     if payload.get("type") != "employee_attendance":
                         continue
                     row = dict(payload)
                     row["work_date"] = str(row.get("work_date") or work_date or "")
+                    row["_archive_run_id"] = run_id
                     records.append(row)
         except (OSError, EOFError, json.JSONDecodeError):
             continue
@@ -456,7 +534,7 @@ def run_attendance(
     work_date: str | None = None,
     notification_target_filter: str = "all",
     env: Mapping[str, str] | None = None,
-    collector: Callable[..., dict[str, Any]] = collect_org_attendance,
+    collector: Callable[..., dict[str, Any]] = collect_official_org_attendance,
     cleanup: Callable[[], dict[str, Any]] = cleanup_runtime,
 ) -> dict[str, Any]:
     effective_work_date = work_date or os.environ.get("KMFA_WORK_DATE_OVERRIDE") or os.environ.get("KMFA_TODAY_OVERRIDE")
@@ -492,6 +570,34 @@ def run_attendance(
             work_date=effective_work_date,
             summary_datetime=summary_datetime,
         )
+        collection_stats = collection.get("stats", {})
+        parity_failure = official_report_parity_failure_reason(
+            collection_stats if isinstance(collection_stats, Mapping) else {}
+        )
+        if parity_failure:
+            raise OfficialAttendanceParityError(
+                "OFFICIAL_REPORT_PARITY_ASSERTION_FAILED",
+                parity_failure,
+            )
+    except OfficialAttendanceParityError as exc:
+        cleanup_status.update(cleanup())
+        return {
+            "status": "OFFICIAL_ATTENDANCE_PARITY_FAILED",
+            "run_plan": plan,
+            "config_status": {
+                "status": "OFFICIAL_ATTENDANCE_PARITY_FAILED",
+                "backend": "dws_official_report",
+                "notification_config_status": notification_config_status,
+            },
+            "parity_error": str(exc),
+            "collection_status": "SKIPPED_OFFICIAL_ATTENDANCE_PARITY_FAILED",
+            "anomaly_count": None,
+            "management_report_status": "NOT_GENERATED",
+            "hr_report_status": "NOT_GENERATED",
+            "notification_status": "NOT_SENT_OFFICIAL_ATTENDANCE_PARITY_FAILED",
+            "onedrive_archive_status": "NOT_WRITTEN_OFFICIAL_ATTENDANCE_PARITY_FAILED",
+            "cleanup_status": cleanup_status,
+        }
     except (DwsAttendanceError, FileNotFoundError, TimeoutError) as exc:
         cleanup_status.update(cleanup())
         return {
@@ -539,7 +645,7 @@ def run_attendance(
         cleanup_status.update(cleanup())
         _write_cleanup_audit(output_status, cleanup_status)
 
-    run_status = "COMPLETED" if collection["stats"]["command_failure_count"] == 0 else "PARTIAL"
+    run_status = "COMPLETED"
     return {
         "status": run_status,
         "run_plan": plan,
@@ -595,13 +701,29 @@ def send_latest_report_only(run_type: str, timezone: str) -> dict[str, Any]:
         }
 
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest_stats = manifest.get("stats", {})
+    parity_failure = official_report_parity_failure_reason(
+        manifest_stats if isinstance(manifest_stats, Mapping) else {}
+    )
+    if parity_failure:
+        cleanup_status.update(cleanup_runtime())
+        return {
+            "status": "OFFICIAL_ATTENDANCE_PARITY_FAILED",
+            "mode": "send_latest_report_only",
+            "run_type": run_type,
+            "timezone": timezone,
+            "manifest": str(manifest_path),
+            "notification_status": "NOT_SENT_OFFICIAL_ATTENDANCE_PARITY_FAILED",
+            "failure_reason": parity_failure,
+            "cleanup_status": cleanup_status,
+        }
     output_status = {
         "run_id": manifest["run_id"],
         "run_type": run_type,
         "work_date": work_date_from_run_id(str(manifest["run_id"])),
         "current_time": datetime.now(ZoneInfo(timezone)).strftime("%H:%M"),
         "stats": build_stats_with_rest_required_people(
-            manifest.get("stats", {}),
+            manifest_stats,
             month_dir=manifest_path.parent,
             work_date=work_date_from_run_id(str(manifest["run_id"])),
         ),
@@ -652,6 +774,8 @@ def result_exit_code(result: Mapping[str, Any]) -> int:
         return 2
     if status in {"DWS_UNAVAILABLE", "NO_LATEST_REPORT"}:
         return 3
+    if status == "OFFICIAL_ATTENDANCE_PARITY_FAILED":
+        return 6
     if status == "PARTIAL":
         return 4
     return 1

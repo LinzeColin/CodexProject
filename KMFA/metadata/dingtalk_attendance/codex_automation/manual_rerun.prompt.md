@@ -18,10 +18,11 @@ KMFA/kmfa-dingtalk-attendance-skill/SKILL.md
 5. 运行 `KMFA/kmfa-dingtalk-attendance-skill/scripts/inspect_runtime.sh`。
 6. 运行 `KMFA/kmfa-dingtalk-attendance-skill/scripts/validate_offline.sh`。
 7. 运行 `python3 KMFA/tools/dingtalk_attendance/healthcheck.py --config-only`。
-8. 只有在本机授权允许时才执行补跑入口；否则 fail closed，报告 `DWS_AUTH_REQUIRED` 或配置 blocker。Do not fabricate data。
-9. 若补跑 `evening` 且涉及 stage-2，必须继承晚报 prompt 的 DB proof、state verification、five-run consensus 和 payroll baseline fail-closed 边界。
-10. 休息提醒规则必须来自 skill：`REST_REQUIRED_THRESHOLD_DAYS = 23`；`丁春法` 和 `李永占` 只排除出 `需要休息`，其他状态照常统计。
-11. 如果本次 run 修改 skill、automation prompt、metadata、validator 或相关配置，必须完成验证、commit，并 push 到 GitHub `main` 后再报告完成。
+8. 只有在本机授权允许时才执行补跑入口；否则 fail closed，报告 `DWS_AUTH_REQUIRED` 或配置 blocker。Do not fabricate data。入口必须以当前钉钉考勤组成员为统计范围，并以精确的 `attendance report columns/query-data` 官方列值作为唯一业务统计源。
+9. 发送任何结论前必须满足 `official_report_parity_status=PASS`、北京时间目标业务日完全覆盖且 `official_report_coverage_count == member_count`。出现 `OFFICIAL_ATTENDANCE_PARITY_FAILED` 时停止且不发送，禁止回退到 record/summary、两卡数量或个人 summary child 猜数。
+10. 若补跑 `evening` 且涉及 stage-2，必须继承晚报 prompt 的 DB proof、state verification、five-run consensus 和 payroll baseline fail-closed 边界。
+11. 休息提醒规则必须来自 skill：`REST_REQUIRED_THRESHOLD_DAYS = 23`；`丁春法` 和 `李永占` 只排除出 `需要休息`，其他状态照常统计。
+12. 如果本次 run 修改 skill、automation prompt、metadata、validator 或相关配置，必须完成验证、commit，并 push 到 GitHub `main` 后再报告完成。
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/dingtalk_attendance/run_attendance.py --run-type morning --timezone Asia/Shanghai

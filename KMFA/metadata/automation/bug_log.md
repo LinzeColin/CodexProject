@@ -1,5 +1,75 @@
 # KMFA Automation Bug Log
 
+## 2026-07-11 S19 Attendance Official-Statistics Parity Failure
+
+Scope: `kmfa` morning and `kmfa-3` evening attendance content. No schedule was
+changed in this repair.
+
+Root causes:
+
+- The automation used all 44 organization-directory users, while the current 8
+  DingTalk attendance groups contain 42 unique members.
+- It treated fewer than two raw punch rows as an attendance anomaly. This made
+  every normal morning punch look incomplete before the evening punch existed.
+- It derived daily business status from personal `record get + month summary`
+  instead of the DingTalk admin attendance report.
+- A successful but detail-empty summary response was treated as proof of no
+  anomaly.
+- Legacy date arguments were converted through the Mac's Sydney `time.Local`;
+  archived evidence showed a 2026-07-10 run whose record timestamps all belonged
+  to Beijing 2026-07-09.
+
+Evidence:
+
+- 2026-07-10 old evening output: 14 automation anomalies versus 4 official
+  `旷工`; the extra 10 had normal raw records and no official summary anomaly.
+- 2026-07-11 old morning output: 28 automation anomalies, all with one normal
+  morning record. The official report snapshot returned 11 `未打卡`, 22
+  `上班外勤`, 3 `休息`, and 6 `正常` for 42/42 scoped members.
+
+Repair:
+
+- Attendance-group membership is now the denominator.
+- Exact dynamic `report columns/query-data` values are the sole business truth;
+  9 required columns are fetched 5 users per batch.
+- Full user/date/status coverage is mandatory. Any mismatch is
+  `OFFICIAL_ATTENDANCE_PARITY_FAILED`, with no notification or legacy fallback.
+- Every live or resend notification now passes one exact official-delivery gate
+  before target probing or sender invocation. Legacy/partial manifests, including
+  `stats: {}`, are rejected with zero attendance-message sends.
+- Raw records and personal summaries remain diagnostic evidence only.
+- Once official parity passes, a separate record/summary permission or call
+  failure is retained as private diagnostic evidence and cannot block or alter
+  the official notification.
+- The DWS subprocess receives `TZ=Asia/Shanghai`; scheduler records retain no
+  timezone field.
+- Notification, monthly rollups, and private ledger prefer official anomaly and
+  effective-day fields. Raw archives retain private official report evidence.
+- Mixed archives are canonicalized per `(user_id, work_date)`: the latest official
+  row overrides every legacy row and earlier official snapshot for that day. The
+  private SQLite v2 canonical view applies the same rule to anomaly, effective-day,
+  rest-reminder, and month-summary queries.
+
+Validation:
+
+- 91 S19 unit/integration tests、9 automation schedule contract tests 和 17 auth keepalive regression tests passed.
+- S19 file/prompt contract, skill validator, Python compile, no-sensitive scan,
+  and focused evening automation contract passed.
+- New collector live readback for 2026-07-10: 42/42 coverage, 4 official
+  anomalies, 42 required, 38 effective, zero command failures.
+- Full production-collector live readback for 2026-07-11: 42/42 coverage, 11
+  anomalies, 39 required, 28 effective, exact delivery gate PASS, zero diagnostic
+  command failures.
+- The existing private v1 ledger was backed up, then rebuilt from all raw
+  manifests. Validation now reports schema v2 PASS; all 19 indexed runs have the
+  v2 canonical version and a non-empty shared run sort key.
+- Both live attendance prompts match their repo canonical hashes and include
+  the parity fail-closed contract.
+
+Open acceptance gate: the next natural trigger must be compared with the same
+moment's DingTalk official UI/export. Do not close the long-term production gate
+before that one natural-run parity check.
+
 ## 2026-07-11 `dws-auth-keepalive-2` False Keepalive And Login Fallback
 
 Scope: only the DWS authentication keepalive automation. The original contract
@@ -42,11 +112,11 @@ Repair:
 
 Open acceptance gate:
 
-- The current token pair cannot obtain a new access token even though the local
-  refresh expiry metadata is still in the future. A one-time owner-authorized
-  `dws auth login --device` is required. Long-term closure additionally requires
-  a later natural scheduled run after access-token expiry to report
-  `refreshed=true` and `token_valid=true` with a newer expiry.
+- After the owner-authorized login, current `dws doctor --json` is 5 pass / 0
+  warn / 0 fail and real read-only attendance queries succeed. This proves only
+  current authentication. Long-term closure still requires a later natural
+  scheduled run after access-token expiry to report `refreshed=true` and
+  `token_valid=true` with a newer expiry.
 
 ## 2026-07-10 `kmfa-3` Owner-Fixed 20:00 Stability Repair
 
@@ -413,3 +483,58 @@ Repair state:
   download the full archive again. A target-only small ZIP or reliable remote
   range reader would be a separate upstream design decision requiring owner
   authorization.
+
+## 2026-07-11 DWS Manifest Main Push Repair
+
+Scope: `kmfa-dws` manifest-only GitHub backup. The user-owned automation RRULE
+was read back and preserved; this repair does not change its execution time.
+
+Observed root causes:
+
+- The upstream DWS working directory is intentionally not a Git repository,
+  while the prompt issued repository-relative Git commands from that directory.
+- The prompt made successful Notion sync a hard prerequisite for GitHub. The
+  latest archive and structure validation succeeded, but missing Notion
+  credentials repeatedly left sync `pending`, so the current manifest never
+  reached `main`.
+
+Repair:
+
+- Added `KMFA/tools/automation/backup_dws_output_manifest.py`. It accepts an
+  explicit `/Users/linzezhang/CodexProject` repo root, validates the current ZIP
+  against the structure report, publishes only public-safe aggregate manifest
+  fields, stages only `KMFA/metadata/dws_outputs_backup/`, and pushes only
+  `origin main`.
+- A Notion `pending` state is now recorded in the manifest and reported as a
+  warning, but it does not block a validated manifest-only backup.
+- The publisher fails closed on validation failure, tracked worktree changes,
+  a non-`main` branch, unrelated local-only commits, or diverged history. It
+  never stages the ZIP, expanded DWS output, or unrelated untracked files.
+- Replaced the live automation prompt through the official Codex automation
+  update path. Readback preserved its exact user-owned RRULE and removed the old
+  Notion hard gate.
+
+Regression evidence:
+
+- A temporary non-Git DWS workspace can publish through an explicit Git repo
+  root while Notion is `pending`.
+- A failed structure validation produces `VALIDATION_FAILED` with no manifest
+  write and no remote commit.
+- The live prompt contains the deterministic publisher and nonblocking Notion
+  contract, and no longer contains the old sync-complete prerequisite.
+
+## 2026-07-11 S19 Official-Only Runtime Stability Repair
+
+- Latest `kmfa-3` run passed preflight and authoritative config healthcheck but
+  was interrupted after roughly 292 seconds inside
+  `_collect_member_attendance_rows`; it was incorrectly reported as
+  `DWS_AUTH_REQUIRED` even though readiness was `READY`.
+- Root cause was architectural: exact official report parity completed first,
+  then production serially called two non-authoritative legacy endpoints for
+  every attendance-group member, each with retry and timeout budgets.
+- Scheduled production now builds rows directly from exact official report
+  evidence. The legacy per-member sweep remains only in the explicit legacy
+  collector and cannot delay, alter, or fail the official business result.
+- A real read-only DWS probe completed in 65.1 seconds with 42/42 coverage,
+  parity `PASS`, 11 official anomalies, zero command failures, and 42 skipped
+  legacy diagnostic rows. No notification was sent by the probe.

@@ -14,11 +14,16 @@ from typing import Any
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
-from KMFA.tools.dingtalk_attendance.sync_attendance_ledger import DEFAULT_LEDGER_PATH
+from KMFA.tools.dingtalk_attendance.sync_attendance_ledger import DEFAULT_LEDGER_PATH, SCHEMA_VERSION
+
+
+class LedgerSchemaUpgradeRequired(RuntimeError):
+    """Raised when canonical user-day queries would read an unrebuilt v1 ledger."""
 
 
 def get_month_summary(*, db_path: Path = DEFAULT_LEDGER_PATH, month: str) -> dict[str, Any]:
     with closing(_connect(db_path)) as conn:
+        _assert_canonical_month_ready(conn, month=month)
         row = conn.execute(
             """
             select
@@ -40,7 +45,11 @@ def get_month_summary(*, db_path: Path = DEFAULT_LEDGER_PATH, month: str) -> dic
             (month,),
         ).fetchone()[0]
         effective_days = conn.execute(
-            "select coalesce(sum(effective_attendance_day), 0) from daily_attendance where month = ?",
+            "select coalesce(sum(effective_attendance_day), 0) from canonical_daily_attendance where month = ?",
+            (month,),
+        ).fetchone()[0]
+        attendance_anomaly_count = conn.execute(
+            "select coalesce(sum(attendance_anomaly_day), 0) from canonical_daily_attendance where month = ?",
             (month,),
         ).fetchone()[0]
     return {
@@ -53,17 +62,18 @@ def get_month_summary(*, db_path: Path = DEFAULT_LEDGER_PATH, month: str) -> dic
         "record_failure_count_total": int(row["record_failure_count_total"]),
         "summary_failure_count_total": int(row["summary_failure_count_total"]),
         "command_failure_count_total": int(row["command_failure_count_total"]),
-        "attendance_anomaly_count_total": int(row["attendance_anomaly_count_total"]),
+        "attendance_anomaly_count_total": int(attendance_anomaly_count),
         "effective_attendance_day_total": int(effective_days),
     }
 
 
 def get_employee_month_effective_days(*, db_path: Path = DEFAULT_LEDGER_PATH, month: str, employee: str) -> int:
     with closing(_connect(db_path)) as conn:
+        _assert_canonical_month_ready(conn, month=month)
         row = conn.execute(
             """
             select count(distinct da.work_date) as effective_days
-            from daily_attendance da
+            from canonical_daily_attendance da
             join employees e on e.user_id = da.user_id
             where da.month = ?
               and da.effective_attendance_day = 1
@@ -76,10 +86,15 @@ def get_employee_month_effective_days(*, db_path: Path = DEFAULT_LEDGER_PATH, mo
 
 def get_month_anomalies(*, db_path: Path = DEFAULT_LEDGER_PATH, month: str) -> list[dict[str, Any]]:
     with closing(_connect(db_path)) as conn:
+        _assert_canonical_month_ready(conn, month=month)
         rows = conn.execute(
             """
             select a.run_id, a.work_date, a.user_id, e.name, a.anomaly_type, a.detail
             from anomalies a
+            join canonical_daily_attendance c
+              on c.run_id = a.run_id
+             and c.user_id = a.user_id
+             and c.work_date = a.work_date
             join employees e on e.user_id = a.user_id
             where a.month = ?
             order by a.work_date, e.name, a.anomaly_type, a.detail
@@ -91,6 +106,7 @@ def get_month_anomalies(*, db_path: Path = DEFAULT_LEDGER_PATH, month: str) -> l
 
 def get_month_rest_required_people(*, db_path: Path = DEFAULT_LEDGER_PATH, month: str) -> list[dict[str, Any]]:
     with closing(_connect(db_path)) as conn:
+        _assert_canonical_month_ready(conn, month=month)
         rows = conn.execute(
             """
             select e.name, r.user_id, min(r.work_date) as first_work_date, max(r.effective_attendance_days) as effective_attendance_days
@@ -133,6 +149,32 @@ def _connect(db_path: Path) -> sqlite3.Connection:
     return conn
 
 
+def _assert_canonical_month_ready(conn: sqlite3.Connection, *, month: str) -> None:
+    run_columns = {row[1] for row in conn.execute("pragma table_info(runs)").fetchall()}
+    daily_columns = {row[1] for row in conn.execute("pragma table_info(daily_attendance)").fetchall()}
+    view_present = bool(
+        conn.execute(
+            "select 1 from sqlite_master where type='view' and name='canonical_daily_attendance'"
+        ).fetchone()
+    )
+    if (
+        not {"canonical_schema_version", "canonical_run_sort_key"}.issubset(run_columns)
+        or not {"attendance_anomaly_day", "official_report_present"}.issubset(daily_columns)
+        or not view_present
+    ):
+        raise LedgerSchemaUpgradeRequired(
+            "LEDGER_SCHEMA_MIGRATION_REQUIRED: run sync_attendance_ledger.py --all before canonical queries"
+        )
+    stale_runs = conn.execute(
+        "select count(*) from runs where month = ? and canonical_schema_version < ?",
+        (month, SCHEMA_VERSION),
+    ).fetchone()[0]
+    if stale_runs:
+        raise LedgerSchemaUpgradeRequired(
+            f"LEDGER_CANONICAL_REBUILD_REQUIRED: {stale_runs} run(s) require --all raw-manifest resync"
+        )
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Query the private KMFA S19 attendance ledger.")
     parser.add_argument("--db-path", default=str(DEFAULT_LEDGER_PATH))
@@ -146,32 +188,48 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--run-status", action="store_true")
     args = parser.parse_args(argv)
     db_path = Path(args.db_path)
-    if args.summary:
-        _require(args.month, "--month is required for --summary")
-        result: Any = get_month_summary(db_path=db_path, month=args.month)
-    elif args.effective_days:
-        _require(args.month, "--month is required for --effective-days")
-        _require(args.employee, "--employee is required for --effective-days")
-        result = {
-            "month": args.month,
-            "employee": args.employee,
-            "effective_attendance_days": get_employee_month_effective_days(
-                db_path=db_path,
-                month=args.month,
-                employee=args.employee,
-            ),
-        }
-    elif args.anomalies:
-        _require(args.month, "--month is required for --anomalies")
-        result = {"month": args.month, "anomalies": get_month_anomalies(db_path=db_path, month=args.month)}
-    elif args.rest_required:
-        _require(args.month, "--month is required for --rest-required")
-        result = {"month": args.month, "rest_required_people": get_month_rest_required_people(db_path=db_path, month=args.month)}
-    elif args.run_status:
-        _require(args.run_id, "--run-id is required for --run-status")
-        result = get_run_sync_status(db_path=db_path, run_id=args.run_id)
-    else:
-        parser.error("choose one query: --summary, --effective-days, --anomalies, --rest-required, or --run-status")
+    try:
+        if args.summary:
+            _require(args.month, "--month is required for --summary")
+            result: Any = get_month_summary(db_path=db_path, month=args.month)
+        elif args.effective_days:
+            _require(args.month, "--month is required for --effective-days")
+            _require(args.employee, "--employee is required for --effective-days")
+            result = {
+                "month": args.month,
+                "employee": args.employee,
+                "effective_attendance_days": get_employee_month_effective_days(
+                    db_path=db_path,
+                    month=args.month,
+                    employee=args.employee,
+                ),
+            }
+        elif args.anomalies:
+            _require(args.month, "--month is required for --anomalies")
+            result = {"month": args.month, "anomalies": get_month_anomalies(db_path=db_path, month=args.month)}
+        elif args.rest_required:
+            _require(args.month, "--month is required for --rest-required")
+            result = {"month": args.month, "rest_required_people": get_month_rest_required_people(db_path=db_path, month=args.month)}
+        elif args.run_status:
+            _require(args.run_id, "--run-id is required for --run-status")
+            result = get_run_sync_status(db_path=db_path, run_id=args.run_id)
+        else:
+            parser.error("choose one query: --summary, --effective-days, --anomalies, --rest-required, or --run-status")
+    except LedgerSchemaUpgradeRequired as exc:
+        print(
+            json.dumps(
+                {
+                    "status": "LEDGER_SCHEMA_MIGRATION_REQUIRED",
+                    "db_path": str(db_path),
+                    "failure_reason": str(exc),
+                    "recommended_action": "python3 KMFA/tools/dingtalk_attendance/sync_attendance_ledger.py --all",
+                },
+                ensure_ascii=False,
+                indent=2,
+                sort_keys=True,
+            )
+        )
+        return 2
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
     return 0
 

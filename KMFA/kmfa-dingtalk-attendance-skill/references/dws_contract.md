@@ -35,11 +35,11 @@ The live acquisition adapter must collect:
 - attendance detail records with user coordinates and addresses when available
 - attendance group metadata when needed for site/geofence validation
 - shift metadata when needed for schedule validation
-- report columns when used by payroll baseline logic
+- attendance-group membership plus exact report columns/values for every user-visible daily statistic and classification
 
 ## Fail behavior
 
-If API response indicates delay, pagination uncertainty, partial response, or permission failure, the run must mark data quality below Q4 until a later run proves completeness.
+If official report columns/values are missing, ambiguous, delayed, partial, wrong-date, or permission-blocked, the operational run must return `OFFICIAL_ATTENDANCE_PARITY_FAILED` and send no attendance conclusion. It must not downgrade to record-count or personal-summary inference. Stage-2 quality also remains below Q4 until a later run proves completeness.
 
 For stage-2 automation, live DWS source resolution must fail closed before any
 command unless `KMFA_S19_ALLOW_DWS_COMMANDS=1` and the browser policy status is
