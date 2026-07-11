@@ -366,12 +366,20 @@ def _validate_html(errors: list[str]) -> None:
         "人工交接门禁",
         "Q4 / D",
         "NO_GO",
-        "S16-P3 仅可在下一轮执行",
+        "Stage 16 三个 phase 与整体复审均已完成",
+        "S17 仅可在下一 run work",
     ):
         _require(marker in text, f"HTML marker missing: {marker}", errors)
     _require(text.count("data-lane-button=") == 6, "HTML lane button count drift", errors)
     _require(text.count("data-rule-button=") == 4, "HTML rule button count drift", errors)
     _require(text.count("data-dependency-link=") == 4, "HTML dependency link count drift", errors)
+    _require(text.count("data-stage-link=") == 1, "HTML stage link count drift", errors)
+    stage_target = Path("KMFA/stage_artifacts/V014_S16_P3_POST_REMEDIATION_CUSTOMER_BUSINESS_ANALYSIS/exports/html/customer_business_analysis_workbench.html")
+    stage_matches = re.findall(r'data-stage-link="customer-analysis" href="([^"]+)"', text)
+    _require(len(stage_matches) == 1, "S16-P3 stage href drift", errors)
+    if stage_matches:
+        _require((phase.HTML_PATH.parent / stage_matches[0]).resolve() == stage_target.resolve(), "S16-P3 stage target drift", errors)
+        _require(stage_target.is_file(), "S16-P3 stage target missing", errors)
     _require("linear-gradient" not in text and "radial-gradient" not in text, "HTML gradient decoration found", errors)
 
 

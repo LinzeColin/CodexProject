@@ -224,9 +224,15 @@ def _validate_dependencies(errors: list[str]) -> None:
 def _validate_html(errors: list[str]) -> None:
     if not phase.HTML_PATH.is_file(): return
     text = phase.HTML_PATH.read_text(encoding="utf-8")
-    for marker in ("客户经营分析工作台", "客户价值", "项目毛利", "回款质量", "账龄风险", "客户绑定与摘要边界", "客户经营风险规则", "人工决策门禁", "Q4 / D", "NO_GO", "Stage 16 整体复审仅可在下一轮执行"):
+    for marker in ("客户经营分析工作台", "客户价值", "项目毛利", "回款质量", "账龄风险", "客户绑定与摘要边界", "客户经营风险规则", "人工决策门禁", "Q4 / D", "NO_GO", "Stage 16 三个 phase 与整体复审均已完成", "S17 仅可在下一 run work"):
         _require(marker in text, f"HTML marker missing: {marker}", errors)
-    _require(text.count("data-lane-button=") == 4, "HTML lane button count drift", errors); _require(text.count("data-rule-button=") == 4, "HTML rule button count drift", errors); _require(text.count("data-dependency-link=") == 4, "HTML dependency link count drift", errors); _require("linear-gradient" not in text and "radial-gradient" not in text, "HTML gradient decoration found", errors)
+    _require(text.count("data-lane-button=") == 4, "HTML lane button count drift", errors); _require(text.count("data-rule-button=") == 4, "HTML rule button count drift", errors); _require(text.count("data-dependency-link=") == 4, "HTML dependency link count drift", errors); _require(text.count("data-stage-link=") == 1, "HTML stage link count drift", errors); _require("linear-gradient" not in text and "radial-gradient" not in text, "HTML gradient decoration found", errors)
+    stage_target = Path("KMFA/stage_artifacts/V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT/exports/html/subcontract_procurement_workbench.html")
+    stage_matches = re.findall(r'data-stage-link="subcontract-procurement" href="([^"]+)"', text)
+    _require(len(stage_matches) == 1, "S16-P1 stage href drift", errors)
+    if stage_matches:
+        _require((phase.HTML_PATH.parent / stage_matches[0]).resolve() == stage_target.resolve(), "S16-P1 stage target drift", errors)
+        _require(stage_target.is_file(), "S16-P1 stage target missing", errors)
 
 
 def _expected_parameter_values(manifest: dict[str, Any]) -> dict[str, str]:
@@ -247,9 +253,16 @@ def _validate_governance(manifest: dict[str, Any], errors: list[str]) -> None:
     _require(set(rows) == set(phase.PARAMETER_IDS), "parameter registry row set drift", errors)
     for parameter_id, expected in _expected_parameter_values(manifest).items():
         row = rows.get(parameter_id, {}); _require(row.get("formula_id") == phase.FORMULA_ID, f"parameter formula drift: {parameter_id}", errors); _require(row.get("active_value") == expected and row.get("extracted_value") == expected, f"parameter value drift: {parameter_id}", errors); _require(row.get("status") == "active", f"parameter status drift: {parameter_id}", errors)
-    for path, marker in ((Path("KMFA/docs/governance/TRACEABILITY_MATRIX.csv"), phase.ACCEPTANCE_ID), (Path("KMFA/docs/governance/VERSION_MATRIX.yaml"), f'current_phase: "{phase.PHASE_ID}"'), (Path("KMFA/docs/governance/delivery_tasks.yaml"), phase.TASK_ID), (Path("KMFA/docs/governance/DEVELOPMENT_LEDGER.md"), phase.PHASE_ID), (Path("KMFA/docs/governance/MODEL_SPEC.md"), phase.FORMULA_ID), (Path("KMFA/AGENTS.md"), phase.PHASE_ID), (Path("KMFA/功能清单.md"), phase.PHASE_ID), (Path("KMFA/开发记录.md"), phase.TASK_ID), (Path("KMFA/模型参数文件.md"), phase.FORMULA_ID), (Path("KMFA/HANDOFF.md"), phase.PHASE_ID), (Path("KMFA/CHANGELOG.md"), phase.PHASE_ID)):
+    version_matrix_path = Path("KMFA/docs/governance/VERSION_MATRIX.yaml")
+    version_matrix = version_matrix_path.read_text(encoding="utf-8")
+    _require(phase.MODEL_REGISTRY_KEY in version_matrix, "VERSION_MATRIX profile missing", errors)
+    _require(phase.VERSION in version_matrix, "VERSION_MATRIX version missing", errors)
+    for path, marker in ((Path("KMFA/docs/governance/TRACEABILITY_MATRIX.csv"), phase.ACCEPTANCE_ID), (Path("KMFA/docs/governance/delivery_tasks.yaml"), phase.TASK_ID), (Path("KMFA/docs/governance/DEVELOPMENT_LEDGER.md"), phase.PHASE_ID), (Path("KMFA/docs/governance/MODEL_SPEC.md"), phase.FORMULA_ID), (Path("KMFA/功能清单.md"), phase.PHASE_ID), (Path("KMFA/开发记录.md"), phase.TASK_ID), (Path("KMFA/模型参数文件.md"), phase.FORMULA_ID), (Path("KMFA/CHANGELOG.md"), phase.PHASE_ID)):
         _require(path.is_file() and marker in path.read_text(encoding="utf-8"), f"governance marker missing: {path}", errors)
-    _require(Path("KMFA/VERSION").read_text(encoding="utf-8").strip() == phase.VERSION, "VERSION drift", errors)
+    if f'current_phase: "{phase.PHASE_ID}"' in version_matrix:
+        _require(Path("KMFA/VERSION").read_text(encoding="utf-8").strip() == phase.VERSION, "VERSION drift", errors)
+        _require(phase.PHASE_ID in Path("KMFA/AGENTS.md").read_text(encoding="utf-8"), "AGENTS phase drift", errors)
+        _require(phase.PHASE_ID in Path("KMFA/HANDOFF.md").read_text(encoding="utf-8"), "HANDOFF phase drift", errors)
     for path in (phase.DEVELOPMENT_EVENTS_PATH, phase.STAGE_STATUS_PATH, phase.TASK_STATUS_PATH):
         rows = [row for row in _read_jsonl(path) if row.get("phase_id") == phase.PHASE_ID]; _require(len(rows) == 1 and rows[0].get("status") == phase.STATUS, f"governance JSONL drift: {path}", errors)
     events = [row for row in _read_jsonl(phase.DEVELOPMENT_EVENTS_PATH) if row.get("phase_id") == phase.PHASE_ID]
