@@ -1,0 +1,23 @@
+# Codex session history run report
+
+- timestamp: 20260711T160742Z
+- mode: hard_cap
+- full session candidates: 0
+- archived delete candidates: 58
+- full archive count: 0
+- archived delete to backup: 0
+- backup commit: PENDING
+- remote verify: PENDING
+- remote path: OpenAIDatabase/session_history/codex-session-history-auto-20260711T160742Z
+- sessions bytes before: 1187233792
+- sessions files before: 146
+- archived bytes before: 72228864
+- archived files before: 86
+- archived delete before bytes: 72228864
+- archived delete after bytes: 72228864
+- archived delete before files: 86
+- archived delete after files: 86
+- delete count: 0
+- delete bytes: 0
+- sensitive_scan: BLOCKED:58
+- blocked_reason: SENSITIVE_SCAN_BLOCKED
