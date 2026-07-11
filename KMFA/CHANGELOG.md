@@ -1,3 +1,11 @@
+## 0.1.4-s14-p3-post-remediation-policy-evidence-plan - 2026-07-11
+
+- 完成 V014_S14_P3_POST_REMEDIATION_POLICY_EVIDENCE_PLAN 本地 phase：登记科小、高新、专精特新、小巨人和研发费用 5 类 public-safe 证据目录及 23 类必需证据。
+- 只读探针覆盖 5 个 raw 文件、48 个 XLSX 容器；25 个可解析、23 个保留不可解析诊断，4,198 个可解析工作表中识别 3,830 个唯一政策词法候选，二次指纹不一致为 0。
+- 仅输出 5 个证据缺口和 5 条风险提示；权威证据绑定、证据完整目录、正式资格结论、政策评分、政策申报、补贴申请、业务事项和公开金额均为 0。
+- v1.4 基线 54/54 PASS、当前页 13/13 PASS；2 视口、10 次目录交互、4 条依赖 HTTP 与 4 次真实导航通过，console error 与横向溢出为 0。
+- 保持 Q4 / D / NO_GO / 3-9-2-1；未执行 Stage 14 review、S15、政策动作、GitHub upload、app reinstall、正式报告、差异关闭或 business execution。
+
 ## 0.1.4-s14-p2-post-remediation-invoice-tax-plan - 2026-07-11
 
 - 完成 V014_S14_P2_POST_REMEDIATION_INVOICE_TAX_PLAN 本地 phase：开票计划、纳税明细、开票纳税资金汇总 3 条 public-safe 结构接入。

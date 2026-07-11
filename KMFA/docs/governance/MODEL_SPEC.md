@@ -1,3 +1,19 @@
+## FORM-KMFA-V014-S14P3-POST-REMEDIATION-POLICY-EVIDENCE-PLAN-001
+
+- phase: V014_S14_P3_POST_REMEDIATION_POLICY_EVIDENCE_PLAN
+- version: 0.1.4-s14-p3-post-remediation-policy-evidence-plan
+- model_id: MOD-KMFA-GOV-001
+- scope: 登记科小、高新、专精特新、小巨人、研发费用五类 public-safe 证据目录，执行私有只读词法候选探针，仅输出证据缺口和风险提示。
+- rule: policy_evidence_plan_valid = policy_program_count == 5 AND evidence_directory_definition_count == 5 AND required_evidence_category_total_count == 23 AND authoritative_evidence_bound_program_count == 0 AND evidence_complete_program_count == 0 AND evidence_gap_count == 5 AND risk_tip_count == 5 AND formal_policy_qualification_conclusion_count == 0 AND private_probe_roundtrip_mismatch_count == 0 AND raw_exact == true AND current_grade == D AND decision == NO_GO。
+- source gate: public-safe 结构、私有词法候选、权威材料身份、有效期、适用条件和资格结论分别计数，不得相互替代。
+- probe gate: 只检查工作表标题与前 12 行、30 列中的精确政策词组；同一候选工作表两次只读探针指纹必须完全一致。
+- output gate: 5 类目录只登记 23 类必需证据、5 个缺口和 5 条风险；权威绑定、完整目录、资格结论、评分、申报和补贴申请均为 0。
+- evidence gate: 词法命中不证明材料身份、完整性、有效期、主体、项目、人员、成果、金额、适用条件或政策资格。
+- private gate: raw 文件名、成员、工作表、命中词、字段和值指纹只保存在 ignored private runtime。
+- downstream gate: Stage 14 review、S15、政策动作、GitHub upload、app reinstall、formal report、difference closure 与 business execution=false。
+- validator: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s14_p3_post_remediation_policy_evidence_plan.py --require-private-evidence --require-browser-evidence --require-final-evidence
+- evidence: KMFA/stage_artifacts/V014_S14_P3_POST_REMEDIATION_POLICY_EVIDENCE_PLAN/machine/policy_evidence_plan_manifest.json
+
 ## FORM-KMFA-V014-S14P2-POST-REMEDIATION-INVOICE-TAX-PLAN-001
 
 - phase: V014_S14_P2_POST_REMEDIATION_INVOICE_TAX_PLAN

@@ -9,7 +9,7 @@
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
 - 当前 Stage: `v0.1.4 Stage 14 phase delivery`
-- 当前 Phase: `V014_S14_P2_POST_REMEDIATION_INVOICE_TAX_PLAN 已完成开票计划、纳税明细、开票纳税资金汇总 3 条结构主题、3 类问题方法和 3 类资金方法；只读探针覆盖 48 个 XLSX 容器、4,198 个可解析工作表和 612 个唯一开票/税务候选工作表，二次指纹不一致为 0。权威行/数值绑定、问题候选和已物化汇总保持 0/0/0/0，当前仍为 Q4 / D / NO_GO / 3-9-2-1。raw 前后、跨 S14-P1 与当前快照一致。下一步只能另起 run work 执行 S14-P3，不执行 Stage 14 整体复审、发票开具、纳税申报、付款/银行动作、GitHub upload、正式报告、差异关闭、app reinstall 或业务执行。历史 Stage 12-18 产物仅作 legacy 证据，不是当前 active gate。`
+- 当前 Phase: `V014_S14_P3_POST_REMEDIATION_POLICY_EVIDENCE_PLAN 已完成科小、高新、专精特新、小巨人、研发费用 5 类 public-safe 证据目录定义与 23 类必需证据类别登记，只输出 5 个证据缺口和 5 条风险提示。只读精确词组探针覆盖 48 个 XLSX 容器、4,198 个可解析工作表和 3,830 个唯一词法候选工作表，二次指纹不一致为 0；权威证据绑定、证据完整目录、正式资格结论、评分、申报、补贴申请和公开金额均为 0。当前仍为 Q4 / D / NO_GO / 3-9-2-1，raw 前后、跨 S14-P2 与当前快照一致。下一步只能另起 run work 执行 Stage 14 整体复审，不得执行 S15、政策资格结论、政策申报、补贴申请、GitHub upload、正式报告、差异关闭、app reinstall 或业务执行。历史 Stage 12-18 产物仅作 legacy 证据，不是当前 active gate。`
 
 ## Execution Rules
 
@@ -41,7 +41,7 @@
 
 ## Current Non-Goals
 
-- v0.1.4 S14-P2 本轮完成；下一轮只能单独执行 S14-P3。不得顺手执行 Stage 14 整体复审、GitHub upload、protected source matching、lineage full check、正式报告、差异关闭、live connector、app reinstall、OpMe 深度耦合、客户联络、催收、法务、发票开具、纳税申报、付款、银行、贷款管理或任何业务动作。
+- v0.1.4 S14-P3 本轮完成；下一轮只能单独执行 Stage 14 整体复审。不得顺手执行 S15、GitHub upload、protected source matching、lineage full check、正式报告、差异关闭、live connector、app reinstall、OpMe 深度耦合、政策资格判断、政策评分、政策申报、补贴申请、客户联络、催收、法务、发票开具、纳税申报、付款、银行、贷款管理或任何业务动作。
 - 以下 Stage 15/16/17/18 final upload 相关表述是 legacy/Post-S18 历史证据，不是当前 v0.1.4 active gate。当前 v0.1.4 GitHub main upload 仍延期到 Stage 1-18 全部完成并整体复审修复后一次性执行；不得直接进入 lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。

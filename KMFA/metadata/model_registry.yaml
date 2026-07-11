@@ -1,3 +1,19 @@
+kmfa_v014_s14_p3_post_remediation_policy_evidence_plan:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s14-p3-post-remediation-policy-evidence-plan"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S14P3-POST-REMEDIATION-POLICY-EVIDENCE-PLAN-001
+  parameter_refs:
+    - PARAM-KMFA-1758
+    - PARAM-KMFA-1759
+    - PARAM-KMFA-1760
+    - PARAM-KMFA-1761
+  evidence_dir: KMFA/stage_artifacts/V014_S14_P3_POST_REMEDIATION_POLICY_EVIDENCE_PLAN
+  validator: KMFA/tools/check_v014_s14_p3_post_remediation_policy_evidence_plan.py
+  scope: Current public-safe policy evidence directory workbench for five programs with twenty-three required categories four unique public source refs twenty structure candidates five gaps five risk tips private deterministic lexical probes zero authoritative evidence-bound or complete programs zero qualification conclusions scores applications subsidies and amounts raw immutability browser evidence and Q4 D NO_GO 3-9-2-1; Stage 14 review S15 upload reinstall formal release and business execution remain closed.
+
 kmfa_v014_s14_p2_post_remediation_invoice_tax_plan:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-s14-p2-post-remediation-invoice-tax-plan"
