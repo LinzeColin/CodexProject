@@ -103,6 +103,10 @@ def _read_json(path: Path) -> dict[str, Any]:
     return value
 
 
+def _read_jsonl(path: Path) -> list[dict[str, Any]]:
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+
 def _write_json(path: Path, value: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -242,7 +246,8 @@ RUNBOOK_SPECS: tuple[dict[str, Any], ...] = (
     {
         "runbook_type": "import",
         "title_zh": "导入操作手册",
-        "owner_role": "finance_operator",
+        "owner_role": "finance",
+        "audit_action_type": "import",
         "steps_zh": [
             "确认原始目录只读且当前任务授权有效",
             "仅登记 public-safe 来源引用与批次标识",
@@ -256,6 +261,7 @@ RUNBOOK_SPECS: tuple[dict[str, Any], ...] = (
         "runbook_type": "review",
         "title_zh": "复核操作手册",
         "owner_role": "reviewer",
+        "audit_action_type": "processing",
         "steps_zh": [
             "确认导入证据、依赖 validator 与 raw 快照一致",
             "复核差异队列和 0.01 元零容差控制",
@@ -269,6 +275,7 @@ RUNBOOK_SPECS: tuple[dict[str, Any], ...] = (
         "runbook_type": "publish",
         "title_zh": "发布操作手册",
         "owner_role": "management",
+        "audit_action_type": "report",
         "steps_zh": [
             "确认发布门、人工授权和证据完整性",
             "确认当前报告等级不是 D 且决策不是 NO_GO",
@@ -282,6 +289,7 @@ RUNBOOK_SPECS: tuple[dict[str, Any], ...] = (
         "runbook_type": "rollback",
         "title_zh": "回滚操作手册",
         "owner_role": "reviewer",
+        "audit_action_type": "processing",
         "steps_zh": [
             "识别需回退的派生证据和治理记录范围",
             "确认原始文件及生产状态均不在回滚范围",
@@ -298,7 +306,7 @@ KNOWLEDGE_SPECS: tuple[dict[str, Any], ...] = (
     {
         "item_type": "finance_sop",
         "title_zh": "财务 SOP 知识索引",
-        "owner_role": "finance_operator",
+        "owner_role": "finance",
         "checklist_zh": [
             "原始目录只读",
             "来源与证据引用完整",
@@ -340,6 +348,9 @@ def _runbook_rows() -> list[dict[str, Any]]:
                 "runbook_type": runbook_type,
                 "title_zh": spec["title_zh"],
                 "owner_role": spec["owner_role"],
+                "audit_action_type": spec["audit_action_type"],
+                "audit_required_fields": list(s17_p2.AUDIT_REQUIRED_FIELDS),
+                "audit_contract_ref": s17_p2.s17_p1.AUDIT_CONTRACT_PATH.as_posix(),
                 "execution_mode": "manual_sop_only",
                 "precheck_required": True,
                 "evidence_required": True,
@@ -388,6 +399,35 @@ def _knowledge_rows() -> list[dict[str, Any]]:
             }
         )
     return rows
+
+
+def _cross_phase_contract_state(
+    runbooks: list[dict[str, Any]],
+    knowledge: list[dict[str, Any]],
+) -> dict[str, Any]:
+    roles = _read_jsonl(s17_p2.s17_p1.ROLE_POLICY_PATH)
+    audit_contracts = _read_jsonl(s17_p2.s17_p1.AUDIT_CONTRACT_PATH)
+    role_ids = {str(row["role_id"]) for row in roles}
+    audit_action_types = {str(row["action_type"]) for row in audit_contracts}
+    runbook_owner_matches = sum(str(row["owner_role"]) in role_ids for row in runbooks)
+    knowledge_owner_matches = sum(str(row["owner_role"]) in role_ids for row in knowledge)
+    runbook_audit_matches = sum(str(row["audit_action_type"]) in audit_action_types for row in runbooks)
+    mismatch_count = (
+        len(runbooks) - runbook_owner_matches
+        + len(knowledge) - knowledge_owner_matches
+        + len(runbooks) - runbook_audit_matches
+    )
+    return {
+        "canonical_role_count": len(role_ids),
+        "audit_action_type_count": len(audit_action_types),
+        "runbook_owner_role_match_count": runbook_owner_matches,
+        "knowledge_owner_role_match_count": knowledge_owner_matches,
+        "runbook_audit_mapping_match_count": runbook_audit_matches,
+        "cross_phase_contract_mismatch_count": mismatch_count,
+        "notification_delivery_scope": next(
+            row["delivery_scope"] for row in audit_contracts if row["action_type"] == "notification"
+        ),
+    }
 
 
 def validate_import_candidate(candidate: dict[str, Any]) -> dict[str, Any]:
@@ -516,6 +556,8 @@ def _acceptance_matrix(summary: dict[str, Any]) -> dict[str, Any]:
         ("historical_quarantine", summary["historical_s17_p3_validated"]),
         ("four_runbooks", summary["operation_runbook_count"] == 4 and summary["runbook_step_count"] == 20),
         ("knowledge_index", summary["knowledge_item_count"] == 2 and summary["knowledge_checklist_item_count"] == 12),
+        ("canonical_roles", summary["runbook_owner_role_match_count"] == 4 and summary["knowledge_owner_role_match_count"] == 2),
+        ("audit_mapping", summary["runbook_audit_mapping_match_count"] == 4 and summary["cross_phase_contract_mismatch_count"] == 0),
         ("error_drill", summary["error_drill_scenario_count"] == 2 and summary["error_drill_rejected_count"] == 2),
         ("backup_restore", summary["backup_restore_drill_count"] == 1 and summary["restored_byte_exact_count"] == 1),
         ("no_production_restore", summary["production_restore_count"] == 0),
@@ -704,6 +746,11 @@ def generate(*, final_validation: bool = False, write_governance: bool = True) -
     raw_before = raw_helper._raw_snapshot("before_v014_s17_p3_post_remediation_operations_sop")
     runbooks = _runbook_rows()
     knowledge = _knowledge_rows()
+    cross_phase_contract = _cross_phase_contract_state(runbooks, knowledge)
+    if cross_phase_contract["cross_phase_contract_mismatch_count"] != 0:
+        raise ValueError("S17-P3 owner role or audit action is not covered by S17-P1")
+    if cross_phase_contract["notification_delivery_scope"] != "audit_log_contract_only_no_delivery":
+        raise ValueError("S17-P1 notification audit scope is stale")
     error_drills, backup_drills, _diagnostic = _run_private_drills(generated_at)
     raw_after = raw_helper._raw_snapshot("after_v014_s17_p3_post_remediation_operations_sop")
     prior_raw = _read_json(s17_p2.PRIVATE_RAW_AFTER_PATH)
@@ -737,6 +784,7 @@ def generate(*, final_validation: bool = False, write_governance: bool = True) -
         "knowledge_item_count": len(knowledge),
         "knowledge_item_type_count": len({row["item_type"] for row in knowledge}),
         "knowledge_checklist_item_count": sum(len(row["checklist_zh"]) for row in knowledge),
+        **cross_phase_contract,
         "error_handling_drill_count": len(error_drills),
         "error_drill_scenario_count": error_drills[0]["scenario_count"],
         "error_drill_rejected_count": error_drills[0]["rejected_candidate_count"],
@@ -828,6 +876,7 @@ def generate(*, final_validation: bool = False, write_governance: bool = True) -
         "taskpack_contract": taskpack_contract,
         "required_runbook_types": list(REQUIRED_RUNBOOK_TYPES),
         "required_knowledge_types": list(REQUIRED_KNOWLEDGE_TYPES),
+        "cross_phase_contract_state": cross_phase_contract,
         "stage17_progress": {
             "completed_phase_count": 3,
             "total_phase_count": 3,

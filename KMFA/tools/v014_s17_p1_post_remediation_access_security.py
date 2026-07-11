@@ -370,7 +370,7 @@ def _audit_contract_rows() -> list[dict[str, Any]]:
                 "private_document_allowed": False,
                 "business_value_plaintext_allowed": False,
                 "sends_full_report_body": False,
-                "delivery_scope": "log_contract_only_s17_p2_not_implemented"
+                "delivery_scope": "audit_log_contract_only_no_delivery"
                 if action_type == "notification"
                 else "audit_log_contract_only",
                 "persistent_event_write_enabled": False,

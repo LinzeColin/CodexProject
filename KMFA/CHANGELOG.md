@@ -1,3 +1,11 @@
+## 0.1.4-s17-post-remediation-stage-review - 2026-07-12
+
+- 完成 `V014_S17_POST_REMEDIATION_STAGE_REVIEW`：当前 S17-P1/P2/P3 focused tests=`30/30 PASS`，strict validators=`3/3 PASS`。
+- 修复 P3 非 canonical `finance_operator`、4 个 runbook 缺审计 action/7字段映射、P1 notification scope 过期时态、P2 test/checker 与 P3 test 的 active-phase 耦合，以及 review 证据引用断链。
+- 6 项跨 phase 合同检查全部通过；11 项 findings=`7 fixed / 4 passed / 0 open`，acceptance=`16/16 PASS`。
+- 真实通知、完整正文、正式报告、raw 复制/备份、生产恢复、外部服务、持久业务写入和业务执行均为 0。
+- raw review 前后、跨 S17-P3 与当前快照一致；保持 `Q4 / D / NO_GO / 3-9-2-1`，未执行 S18、GitHub upload 或 app reinstall。
+
 ## 0.1.4-s17-p3-post-remediation-operations-sop - 2026-07-12
 
 - 完成 `V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP` 本地 phase：导入、复核、发布、回滚 4 类人工手册共 20 个步骤，全部要求前置检查、证据与回滚。

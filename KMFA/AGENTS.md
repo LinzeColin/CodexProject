@@ -8,8 +8,8 @@
 - 中文名: 经营分析系统
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
-- 当前 Stage: `v0.1.4 Stage 17 phases complete; review pending`
-- 当前 Phase: `V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP 已完成导入、复核、发布、回滚 4 类人工手册与 20 个步骤，登记财务 SOP/岗位交接 2 项知识索引和 12 个检查点，并在 ignored private runtime 完成 2 个无效候选拒绝及 1 个合成夹具 byte-exact 备份恢复演练。raw 前后、跨 S17-P2 与当前快照一致，未复制或备份 raw，生产恢复、外部服务和业务执行均为 0。当前仍为 Q4 / D / NO_GO / 3-9-2-1。下一步只能另起 run work 执行 Stage 17 整体复审，不得执行 Stage 18、GitHub upload、app reinstall、正式报告、外部通知、客户联络、催收、法务、施工、签署、开票、支付、银行、差异关闭、持久业务写入或业务执行。历史 Stage 17-18 产物仅作 legacy 证据，不是当前 active gate。`
+- 当前 Stage: `v0.1.4 Stage 17 review complete`
+- 当前 Phase: `V014_S17_POST_REMEDIATION_STAGE_REVIEW 已复跑当前 S17-P1/P2/P3 的 30/30 focused tests 与 3/3 strict validators，完成 6/6 跨 phase 合同检查并修复 7 项 findings：canonical finance role、runbook 审计 action/7字段映射、P1 notification scope 过期时态、P2 test active-phase 耦合、P2 checker 状态文档 active-phase 耦合、P3 test active-phase 耦合、review 证据引用断链。11 项 findings 为 7 fixed / 4 passed / 0 open。真实通知、完整正文、正式报告、raw 复制/备份、生产恢复、外部服务、持久业务写入和业务执行均为 0；raw review 前后、跨 S17-P3 与当前快照一致。当前仍为 Q4 / D / NO_GO / 3-9-2-1。下一步只能另起 run work 执行 S18-P1，不得执行 S18-P2/P3、Stage 18 review、GitHub upload、app reinstall、正式报告、外部通知、客户联络、催收、法务、施工、签署、开票、支付、银行、差异关闭、持久业务写入或业务执行。历史 Stage 17-18 产物仅作 legacy 证据，不是当前 active gate。`
 
 ## Execution Rules
 
@@ -41,7 +41,7 @@
 
 ## Current Non-Goals
 
-- v0.1.4 `V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP` 本轮完成；下一轮只能单独执行 Stage 17 整体复审。不得顺手执行 Stage 18、生产恢复、raw 复制或备份、真实身份提供方、用户或凭据创建、持久授权/业务审计写入、真实通知发送、完整报告正文、附件、收件地址明文、外部连接器、自动客户排名、客户联络、催收、法务、施工、签署、开票、采购执行、支付审批、支付执行、银行、工资计算、奖金审批、薪资导出、最终发放、GitHub upload、protected source matching、lineage full check、正式报告、差异关闭、app reinstall、纳税申报、贷款管理或任何业务动作。
+- v0.1.4 `V014_S17_POST_REMEDIATION_STAGE_REVIEW` 本轮完成；下一轮只能单独执行 S18-P1。不得顺手执行 S18-P2/P3、Stage 18 review、生产恢复、raw 复制或备份、真实身份提供方、用户或凭据创建、持久授权/业务审计写入、真实通知发送、完整报告正文、附件、收件地址明文、外部连接器、自动客户排名、客户联络、催收、法务、施工、签署、开票、采购执行、支付审批、支付执行、银行、工资计算、奖金审批、薪资导出、最终发放、GitHub upload、protected source matching、lineage full check、正式报告、差异关闭、app reinstall、纳税申报、贷款管理或任何业务动作。
 - 以下 Stage 15/16/17/18 final upload 相关表述是 legacy/Post-S18 历史证据，不是当前 v0.1.4 active gate。当前 v0.1.4 GitHub main upload 仍延期到 Stage 1-18 全部完成并整体复审修复后一次性执行；不得直接进入 lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。

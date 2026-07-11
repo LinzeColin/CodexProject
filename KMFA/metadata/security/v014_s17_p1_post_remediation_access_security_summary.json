@@ -50,7 +50,7 @@
   "status": "completed_validated_local_only_s17_p1_access_security_policy_no_go_upload_deferred",
   "task_id": "KMFA-V014-S17-P1-POST-REMEDIATION-ACCESS-SECURITY-20260712",
   "tracked_forbidden_suffix_count": 0,
-  "tracked_path_count": 5470,
+  "tracked_path_count": 5537,
   "tracked_private_runtime_path_count": 0,
   "version": "0.1.4-s17-p1-post-remediation-access-security",
   "zero_delta_reconciliation_count": 2

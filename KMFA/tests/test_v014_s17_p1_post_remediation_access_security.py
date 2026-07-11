@@ -92,6 +92,8 @@ class V014S17P1PostRemediationAccessSecurityTest(unittest.TestCase):
         self.assertEqual(self.summary["audit_contract_probe_mismatch_count"], 0)
         self.assertEqual(self.summary["actual_business_audit_event_count"], 0)
         self.assertEqual(self.summary["notification_delivery_count"], 0)
+        notification = next(row for row in contracts if row["action_type"] == "notification")
+        self.assertEqual(notification["delivery_scope"], "audit_log_contract_only_no_delivery")
 
     def test_raw_snapshots_remain_exact(self) -> None:
         self._require_implementation()

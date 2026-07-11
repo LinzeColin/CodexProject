@@ -184,10 +184,12 @@ class V014S17P2PostRemediationNotificationTests(unittest.TestCase):
         self.assertIn(self.phase.FORMULA_ID, formula)
         for parameter_id in self.phase.PARAMETER_IDS:
             self.assertIn(parameter_id, parameters)
-        self.assertIn(f'current_phase: "{self.phase.PHASE_ID}"', version_matrix)
-        self.assertIn("下一步只能执行 S17-P3", handoff)
-        self.assertIn("不得执行 Stage 17 整体复审", handoff)
-        self.assertIn("不得执行 GitHub upload", handoff)
+        self.assertIn(self.phase.MODEL_REGISTRY_KEY, version_matrix)
+        self.assertIn(self.phase.VERSION, version_matrix)
+        if f'current_phase: "{self.phase.PHASE_ID}"' in version_matrix:
+            self.assertIn("下一步只能执行 S17-P3", handoff)
+            self.assertIn("不得执行 Stage 17 整体复审", handoff)
+            self.assertIn("不得执行 GitHub upload", handoff)
 
 
 if __name__ == "__main__":

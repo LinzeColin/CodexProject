@@ -75,7 +75,7 @@
   "decision": "NO_GO",
   "deny_by_default_enforced": true,
   "formula_id": "FORM-KMFA-V014-S17-P1-POST-REMEDIATION-ACCESS-SECURITY-001",
-  "generated_at": "2026-07-12T03:34:03+10:00",
+  "generated_at": "2026-07-12T05:00:49+10:00",
   "go_no_go": {
     "app_reinstall_allowed": false,
     "business_execution_allowed": false,
@@ -171,10 +171,10 @@
     "scan_scope": "tracked_kmfa_paths",
     "status": "PASS",
     "tracked_forbidden_suffix_count": 0,
-    "tracked_path_count": 5470,
+    "tracked_path_count": 5537,
     "tracked_private_runtime_path_count": 0
   },
-  "reviewed_head": "8f449e97ebef40991b1907a98fcd7969c6c3f71b",
+  "reviewed_head": "c19df2f67ae288e741cdbce45c12c2fd689c4f17",
   "roadmap_phase_id": "S17-P1",
   "role_ids": [
     "management",
@@ -237,7 +237,7 @@
     "status": "completed_validated_local_only_s17_p1_access_security_policy_no_go_upload_deferred",
     "task_id": "KMFA-V014-S17-P1-POST-REMEDIATION-ACCESS-SECURITY-20260712",
     "tracked_forbidden_suffix_count": 0,
-    "tracked_path_count": 5470,
+    "tracked_path_count": 5537,
     "tracked_private_runtime_path_count": 0,
     "version": "0.1.4-s17-p1-post-remediation-access-security",
     "zero_delta_reconciliation_count": 2
