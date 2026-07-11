@@ -2,6 +2,51 @@
 
 更新时间: 2026-07-11
 
+## 2026-07-11 S19 考勤官方统计一致性修复
+
+用户报告 automation 内容长期与钉钉官方统计不一致。归档和 live 官方报表只读
+对账证明这是确定性口径错误，不是偶发延迟：
+
+- 旧实现用组织通讯录 44 人作分母；当前 8 个钉钉考勤组实际只有 42 名唯一成员。
+- 旧实现把“没有同时出现上班+下班两条记录”直接判异常。2026-07-10 晚报因此
+  报 14 人，官方报表实际只有 4 人旷工；多出的 10 人原始记录均为 normal。
+- 2026-07-11 晨报把 28 个只有晨卡且 `isNormal=true` 的人员全部误报异常；官方
+  当日只读快照为 11 未打卡、22 上班外勤、3 休息、6 正常。
+- legacy `record get/summary` 使用进程 `time.Local` 转 epoch；历史 07-10 morning
+  run 的 record 时间全部落在北京时间 07-09，却与 07-10 summary 混算。
+- personal month summary 还出现过 `success=true` 但没有任何目标日 children 的空壳
+  响应，旧逻辑将其 fail-open 为无异常。
+
+当前修复：
+
+- production collector 改为 `collect_official_org_attendance`：动态读取全部考勤组、
+  精确解析 9 个官方字段，并按 5 人批次查询目标北京时间自然日。
+- 用户可见人数、异常、应考勤和有效出勤只来自 `attendance report
+  columns/query-data`；`record get`、两卡推断和个人 summary 仅作私有诊断。
+- official parity 完整后，record/summary 的单独权限或调用失败只进入私有 diagnostic
+  evidence，不阻断、不改写官方通知；legacy collector 仍维持 PAT fail-fast。
+- 缺列、缺人、额外用户、错误日期、未知状态或任一批失败统一返回
+  `OFFICIAL_ATTENDANCE_PARITY_FAILED`，不生成业务结论、不发通知、不 fallback。
+- 正常运行、两个 resend 和三个 dispatch 边界统一执行 exact official delivery gate；
+  旧/残缺 manifest 在 target probe 或 sender 前失败关闭，不能重发旧推断结论。
+- DWS 子进程显式 `TZ=Asia/Shanghai`，只修复 legacy 日期转换；Codex scheduler 仍无
+  timezone 字段。
+- 新 raw archive 增加私有 `official_report_evidence`；通知、月累计和 private SQLite
+  均优先 official derived fields，旧 archive 仍兼容 replay。
+- 混合 replay 按 `(user_id, work_date)` 建立 canonical precedence：同日 official
+  覆盖 legacy，多个 official snapshot 取时间最新一条；SQLite schema v2 的 canonical
+  view 对异常、有效出勤、休息提醒和月汇总使用同一规则。
+- live `kmfa` / `kmfa-3` prompt 已用官方 automation API 同步；readback hash 与 repo
+  canonical prompt 一致，两张卡 ACTIVE、无 timezone 字段，晚报仍固定本机 20:00。
+
+验收证据：91 个 S19 tests、9 个 automation contract tests、17 个 auth regression、Python compile、S19
+file/prompt contract、skill validator、no-sensitive scan 均通过。新 collector 对
+2026-07-10 得到 42/42 coverage、official anomaly=4、required=42、effective=38、
+command failure=0；2026-07-11 full collector 得到 42/42、anomaly=11、required=39、
+effective=28、delivery gate PASS、diagnostic command failure=0。只剩下一次自然触发后将通知正文与当时钉钉 UI 快照逐项核对。
+现存 private ledger 已先备份再从全部 raw manifests 重建为 schema v2；19/19 runs
+均有 v2 canonical version 和共享 run sort key，validate 与月查询通过。
+
 ## 2026-07-11 `dws-auth-keepalive-2` 自动刷新修复
 
 原始需求是让可刷新的 DWS access token 由 automation 自动续期。旧 live
@@ -47,12 +92,11 @@ PYTHONDONTWRITEBYTECODE=1 python3 /Users/linzezhang/CodexProject/KMFA/tools/auto
 wrapper 的 `notification_required` 仅表示 Scheduled final/inbox 应通知；在没有
 delivery 证据前不得写成外部提醒已送达。
 
-当前真实运行仍 fail closed：现有 access token 已过期，本地 refresh token
-元数据尚在有效期，但服务端 exchange 连续 3 次未换得新 access token，wrapper
-返回 `auto_refresh_failed`/exit 3。需要 owner 完成一次 `dws auth login --device`
-重新取得 token pair；此后还必须等待 access token 自然过期，并由一次自然定时
-运行观察到 `refreshed=true`、`token_valid=true` 和新的 expiry，才能关闭长期稳定性
-验收门。不得在该门完成前声称自动刷新已恢复生产可用。
+2026-07-11 当前只读 `dws doctor --json` 已恢复为 5 pass / 0 warn / 0 fail，
+说明 owner-authorized 登录后的当前 token 可用于真实只读考勤对账；这只证明当前登录
+可用，不证明 keepalive 自动刷新已通过长期验收。仍须等待 access token 自然过期，
+并由一次自然定时运行观察到 `refreshed=true`、`token_valid=true` 和新的 expiry，
+才能关闭自动刷新稳定性门。不得在该门完成前声称自动刷新已恢复生产可用。
 
 ## 2026-07-11 `kmfa-4` ZIP-only 与缓存 I/O 修复
 
@@ -172,7 +216,7 @@ KMFA automation: repair Codex project binding
 
 | ID | 名称 | 工作区 | 说明 |
 |---|---|---|---|
-| `kmfa` | `KMFA｜每日钉钉考勤检查｜晨报` | `/Users/linzezhang/CodexProject` | S19 晨报，Asia/Shanghai 10:35 |
+| `kmfa` | `KMFA｜每日钉钉考勤检查｜晨报` | `/Users/linzezhang/CodexProject` | S19 晨报；当前 live 为本机墙钟 10:45、scheduler 无时区；业务日仍按 Asia/Shanghai |
 | `kmfa-3` | `KMFA｜每日钉钉考勤检查｜晚报` | `/Users/linzezhang/CodexProject` | S19 晚报，本机墙钟固定 20:00；scheduler 无时区 |
 | `kmfa-4` | `KMFA｜钉钉工作检查` | `/Users/linzezhang/CodexProject` | S20 routine check，Asia/Shanghai 11:35 和 17:05 |
 | `kmfa-5` | `KMFA｜资金周报自动化` | `/Users/linzezhang/CodexProject` | S21 fund weekly，Australia/Sydney 周一/周六 11:00 |

@@ -83,6 +83,11 @@ PROMPT_CONTRACT_NEEDLES = {
     "uses_beijing_time": ("Asia/Shanghai",),
     "preserves_github_sync": ("HEAD == origin/main", "GitHub `main`"),
     "fails_closed_for_dws": ("DWS_AUTH_REQUIRED", "Do not fabricate data"),
+    "uses_official_report_parity": (
+        "attendance report columns/query-data",
+        "official_report_parity_status=PASS",
+        "OFFICIAL_ATTENDANCE_PARITY_FAILED",
+    ),
     "protects_private_runtime": (".env.local", "SQLite", "raw JSON", "report bodies"),
 }
 
@@ -94,6 +99,7 @@ def validate_prompt_contracts(prompt_files: list[Path]) -> tuple[dict[str, Any],
         "all_prompts_use_beijing_time": True,
         "all_prompts_preserve_github_sync": True,
         "all_prompts_fail_closed_for_dws": True,
+        "all_prompts_use_official_report_parity": True,
         "all_prompts_protect_private_runtime": True,
     }
     errors: list[str] = []
@@ -102,6 +108,7 @@ def validate_prompt_contracts(prompt_files: list[Path]) -> tuple[dict[str, Any],
         "uses_beijing_time": "all_prompts_use_beijing_time",
         "preserves_github_sync": "all_prompts_preserve_github_sync",
         "fails_closed_for_dws": "all_prompts_fail_closed_for_dws",
+        "uses_official_report_parity": "all_prompts_use_official_report_parity",
         "protects_private_runtime": "all_prompts_protect_private_runtime",
     }
     for path in prompt_files:
@@ -165,6 +172,17 @@ def validate_s19_files(root: Path) -> dict[str, Any]:
         errors.append("onedrive root drift")
     if manifest.get("onedrive_month_folder_pattern") != "YYYYMM":
         errors.append("onedrive month folder pattern drift")
+    official_source = manifest.get("official_statistics_source", {})
+    if (
+        not isinstance(official_source, dict)
+        or official_source.get("membership_scope") != "current_attendance_groups"
+        or official_source.get("anomaly_source") != "attendance_report_exact_columns"
+        or official_source.get("batch_size") != 5
+        or official_source.get("business_date_timezone") != "Asia/Shanghai"
+        or official_source.get("failure_status") != "OFFICIAL_ATTENDANCE_PARITY_FAILED"
+        or official_source.get("legacy_record_and_summary_role") != "diagnostic_only"
+    ):
+        errors.append("official attendance statistics source drift")
     if unexpected_private_runtime_files:
         errors.append("private runtime contains unexpected local files")
     if len(prompt_files) != 3:

@@ -137,21 +137,70 @@ def notification_context_from_output_status(output_status: Mapping[str, Any]) ->
 
 
 def collection_is_complete(stats: Mapping[str, Any]) -> bool:
-    member_count = _coerce_nonnegative_int(stats.get("member_count"))
-    if _coerce_nonnegative_int(stats.get("record_failure_count")):
-        return False
-    if _coerce_nonnegative_int(stats.get("summary_failure_count")):
-        return False
-    if _coerce_nonnegative_int(stats.get("command_failure_count")):
-        return False
-    if member_count and "record_success_count" in stats and _coerce_nonnegative_int(stats.get("record_success_count")) != member_count:
-        return False
-    if member_count and "summary_success_count" in stats and _coerce_nonnegative_int(stats.get("summary_success_count")) != member_count:
-        return False
-    return True
+    return official_report_parity_failure_reason(stats) is None
+
+
+def official_report_parity_failure_reason(stats: Mapping[str, Any]) -> str | None:
+    """Return None only when a notification is backed by exact official-report coverage."""
+    if stats.get("official_report_parity_status") != "PASS":
+        return "official_report_parity_status must be PASS"
+
+    count_keys = (
+        "attendance_group_member_count",
+        "member_count",
+        "official_report_expected_count",
+        "official_report_coverage_count",
+        "official_report_failure_count",
+        "official_report_anomaly_count",
+        "attendance_required_count",
+        "official_effective_day_count",
+    )
+    counts: dict[str, int] = {}
+    for key in count_keys:
+        if key not in stats:
+            return f"missing required official parity field: {key}"
+        value = stats.get(key)
+        if isinstance(value, bool):
+            return f"invalid official parity count: {key}"
+        try:
+            parsed = int(value)
+        except (TypeError, ValueError):
+            return f"invalid official parity count: {key}"
+        if parsed < 0 or str(value).strip() not in {str(parsed), f"{parsed}.0"}:
+            return f"invalid official parity count: {key}"
+        counts[key] = parsed
+
+    member_count = counts["member_count"]
+    if member_count <= 0:
+        return "official attendance member_count must be positive"
+    if counts["attendance_group_member_count"] != member_count:
+        return "attendance-group scope does not match member_count"
+    if counts["official_report_expected_count"] != member_count:
+        return "official expected count does not match member_count"
+    if counts["official_report_coverage_count"] != member_count:
+        return "official coverage count does not match member_count"
+    if counts["official_report_failure_count"] != 0:
+        return "official report failure count must be zero"
+    for key in ("official_report_anomaly_count", "attendance_required_count", "official_effective_day_count"):
+        if counts[key] > member_count:
+            return f"official count exceeds member_count: {key}"
+
+    names = stats.get("official_report_anomaly_names")
+    if not isinstance(names, list):
+        return "official_report_anomaly_names must be a list"
+    normalized_names = [str(name).strip() for name in names if str(name).strip()]
+    if len(normalized_names) != len(names):
+        return "official_report_anomaly_names contains blank entries"
+    if len(normalized_names) != counts["official_report_anomaly_count"]:
+        return "official anomaly names/count mismatch"
+    return None
 
 
 def current_notification_anomaly_names(stats: Mapping[str, Any], *, run_type: str) -> list[str]:
+    if "official_report_anomaly_names" in stats:
+        return _filter_hidden_names(
+            _dedupe_nonempty(coerce_message_lines(stats.get("official_report_anomaly_names")))
+        )
     detail_keys = {"unexpected_empty_record_names", "summary_today_anomaly_names", "incomplete_record_names"}
     known_no_record_names = set(coerce_message_lines(stats.get("known_no_record_names")))
     if any(key in stats for key in detail_keys):

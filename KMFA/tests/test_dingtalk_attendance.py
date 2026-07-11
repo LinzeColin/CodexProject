@@ -13,7 +13,11 @@ from zoneinfo import ZoneInfo
 from KMFA.tools.dingtalk_attendance.healthcheck import build_config_status
 from KMFA.tools.dingtalk_attendance.dws_auth_guard import dws_command_safety_status
 from KMFA.tools.dingtalk_attendance.notification_probe import probe_notification_channels
-from KMFA.tools.dingtalk_attendance.notification_template import notification_context_from_output_status
+from KMFA.tools.dingtalk_attendance.notification_template import (
+    collection_is_complete,
+    notification_context_from_output_status,
+    official_report_parity_failure_reason,
+)
 from KMFA.tools.dingtalk_attendance.notification_targets import (
     dispatch_reports_to_targets,
     migrate_legacy_resolved_channel,
@@ -35,11 +39,15 @@ from KMFA.tools.dingtalk_attendance.report_renderer import (
 )
 from KMFA.tools.dingtalk_attendance.dws_attendance import (
     DwsAttendanceError,
+    OfficialAttendanceParityError,
+    _query_official_report,
+    collect_official_org_attendance,
     collect_org_attendance,
     run_dws_json,
     write_private_outputs,
 )
 from KMFA.tools.dingtalk_attendance.run_attendance import (
+    build_monthly_notification_rollups,
     build_monthly_rest_required_people,
     build_notification_message,
     build_personal_notification_message,
@@ -56,6 +64,7 @@ from KMFA.tools.dingtalk_attendance.sync_attendance_ledger import (
     validate_ledger,
 )
 from KMFA.tools.dingtalk_attendance.query_attendance_ledger import (
+    LedgerSchemaUpgradeRequired,
     get_employee_month_effective_days,
     get_month_anomalies,
     get_month_rest_required_people,
@@ -68,6 +77,28 @@ from KMFA.tools.dingtalk_attendance.validate_no_sensitive_git import scan_payloa
 
 ROOT = Path(__file__).resolve().parents[1]
 ATTENDANCE_RUNNER = importlib.import_module("KMFA.tools.dingtalk_attendance.run_attendance")
+
+
+def _official_pass_stats(
+    *,
+    member_count: int = 2,
+    anomaly_names: list[str] | None = None,
+) -> dict[str, object]:
+    names = list(anomaly_names or [])
+    return {
+        "attendance_group_member_count": member_count,
+        "member_count": member_count,
+        "official_report_parity_status": "PASS",
+        "official_report_expected_count": member_count,
+        "official_report_coverage_count": member_count,
+        "official_report_failure_count": 0,
+        "official_report_anomaly_count": len(names),
+        "official_report_anomaly_names": names,
+        "official_effective_day_count": max(member_count - len(names), 0),
+        "attendance_required_count": member_count,
+        "attendance_anomaly_count": len(names),
+        "attendance_anomaly_names": names,
+    }
 
 
 def _write_ledger_fixture_run(
@@ -155,6 +186,19 @@ def _write_ledger_fixture_run(
                             "summary_today_anomaly": bool(item.get("summary_today_anomaly", False)),
                             "summary_today_issues": item.get("summary_today_issues", []),
                             "known_no_record": bool(item.get("known_no_record", False)),
+                            **(
+                                {"official_effective_day": bool(item.get("official_effective_day"))}
+                                if "official_effective_day" in item
+                                else {}
+                            ),
+                            **(
+                                {
+                                    "official_report_anomaly": bool(item.get("official_report_anomaly")),
+                                    "official_report_issues": item.get("official_report_issues", []),
+                                }
+                                if "official_report_anomaly" in item
+                                else {}
+                            ),
                         },
                     },
                     ensure_ascii=False,
@@ -270,6 +314,132 @@ class FakeDwsRunner:
                     },
                 },
             }
+        raise AssertionError(f"unexpected dws args: {args}")
+
+
+class OfficialParityFixtureRunner:
+    REQUIRED_COLUMNS = (
+        "考勤结果",
+        "应出勤天数",
+        "出勤天数",
+        "休息天数",
+        "迟到次数",
+        "早退次数",
+        "上班缺卡次数",
+        "下班缺卡次数",
+        "旷工天数",
+    )
+
+    def __init__(
+        self,
+        *,
+        omit_user: str | None = None,
+        omit_column: str | None = None,
+        status_overrides: dict[str, str] | None = None,
+        date_overrides: dict[str, str] | None = None,
+    ) -> None:
+        self.calls: list[tuple[str, ...]] = []
+        self.omit_user = omit_user
+        self.omit_column = omit_column
+        self.status_overrides = status_overrides or {}
+        self.date_overrides = date_overrides or {}
+        self.column_ids = {name: f"c-{index}" for index, name in enumerate(self.REQUIRED_COLUMNS, start=1)}
+
+    def __call__(self, args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict:
+        self.calls.append(tuple(args))
+        if args == ["contact", "dept", "list-children", "--dept", "1"]:
+            return {"returncode": 0, "payload": {"success": True, "result": []}}
+        if args == ["contact", "dept", "list-members", "--depts", "1"]:
+            return {
+                "returncode": 0,
+                "payload": {
+                    "success": True,
+                    "deptUserList": [
+                        {"userInfo": {"name": "正常员工", "userId": "u-normal"}},
+                        {"userInfo": {"name": "异常员工", "userId": "u-anomaly"}},
+                        {"userInfo": {"name": "非考勤组员工", "userId": "u-outside"}},
+                    ],
+                },
+            }
+        if args[:4] == ["attendance", "record", "get", "--user"]:
+            user_id = args[4]
+            record_list = (
+                [{"checkTypeDesc": "上班", "isNormal": True}]
+                if user_id == "u-normal"
+                else [{"checkTypeDesc": "上班", "isNormal": True}, {"checkTypeDesc": "下班", "isNormal": True}]
+            )
+            return {
+                "returncode": 0,
+                "payload": {
+                    "success": True,
+                    "result": {"recordList": record_list, "isHasSchedule": True, "isRest": False},
+                },
+            }
+        if args[:3] == ["attendance", "summary", "--user"]:
+            return {
+                "returncode": 0,
+                "payload": {"success": True, "result": {"abnormalCount": 0, "items": []}},
+            }
+        if args[:3] == ["attendance", "group", "search"]:
+            return {
+                "returncode": 0,
+                "payload": {
+                    "success": True,
+                    "result": {"items": [{"id": 101, "name": "测试考勤组"}], "totalCount": 1},
+                },
+            }
+        if args[:3] == ["attendance", "group", "filtered-get"]:
+            return {
+                "returncode": 0,
+                "payload": {
+                    "success": True,
+                    "result": {"id": 101, "memberUsers": ["u-normal", "u-anomaly"]},
+                },
+            }
+        if args == ["attendance", "report", "columns"]:
+            return {
+                "returncode": 0,
+                "payload": {
+                    "success": True,
+                    "result": [
+                        {"id": column_id, "name": name}
+                        for name, column_id in self.column_ids.items()
+                        if name != self.omit_column
+                    ],
+                },
+            }
+        if args[:3] == ["attendance", "report", "query-data"]:
+            requested = args[args.index("--users") + 1].split(",")
+            rows = []
+            for user_id in requested:
+                if user_id == self.omit_user:
+                    continue
+                status = self.status_overrides.get(
+                    user_id,
+                    "旷工" if user_id == "u-anomaly" else "正常",
+                )
+                values = {
+                    "考勤结果": status,
+                    "应出勤天数": "1",
+                    "出勤天数": "0" if user_id == "u-anomaly" else "1",
+                    "休息天数": "0",
+                    "迟到次数": "0",
+                    "早退次数": "0",
+                    "上班缺卡次数": "0",
+                    "下班缺卡次数": "0",
+                    "旷工天数": "1" if user_id == "u-anomaly" else "0",
+                }
+                rows.append(
+                    {
+                        "userId": user_id,
+                        "workDate": self.date_overrides.get(user_id, "2026-07-11"),
+                        "values": [
+                            {"termId": self.column_ids[name], "value": value}
+                            for name, value in values.items()
+                        ],
+                    }
+                )
+            return {"returncode": 0, "payload": {"success": True, "result": {"records": rows}}}
         raise AssertionError(f"unexpected dws args: {args}")
 
 
@@ -477,6 +647,179 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             sync_archives_to_ledger(onedrive_root=root, db_path=db_path, all_months=True)
 
             self.assertEqual(get_employee_month_effective_days(db_path=db_path, month="202606", employee="测试甲"), 1)
+
+    def test_attendance_ledger_prefers_official_effective_day_and_anomaly_over_two_punch_heuristic(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / "onedrive"
+            db_path = Path(tmpdir) / "attendance_ledger.sqlite"
+            _write_ledger_fixture_run(
+                root,
+                run_id="s19_morning_20260711_103500",
+                work_date="2026-07-11",
+                employees=[
+                    {
+                        "name": "测试甲",
+                        "user_id": "u1",
+                        "punches": _fixture_punches(morning=True, evening=False),
+                        "record_anomaly": True,
+                        "official_effective_day": True,
+                        "official_report_anomaly": False,
+                    },
+                    {
+                        "name": "测试乙",
+                        "user_id": "u2",
+                        "punches": _fixture_punches(),
+                        "official_effective_day": False,
+                        "official_report_anomaly": True,
+                        "official_report_issues": ["旷工天数=1"],
+                    },
+                ],
+            )
+
+            sync_archives_to_ledger(onedrive_root=root, db_path=db_path, all_months=True)
+
+            self.assertEqual(get_employee_month_effective_days(db_path=db_path, month="202607", employee="测试甲"), 1)
+            self.assertEqual(get_employee_month_effective_days(db_path=db_path, month="202607", employee="测试乙"), 0)
+            anomalies = get_month_anomalies(db_path=db_path, month="202607")
+            self.assertEqual([(row["name"], row["anomaly_type"]) for row in anomalies], [("测试乙", "OFFICIAL_REPORT_ANOMALY")])
+
+    def test_attendance_ledger_canonical_user_day_prefers_official_over_later_legacy_run(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / "onedrive"
+            db_path = Path(tmpdir) / "attendance_ledger.sqlite"
+            _write_ledger_fixture_run(
+                root,
+                run_id="s19_morning_20260710_103500",
+                work_date="2026-07-10",
+                employees=[
+                    {
+                        "name": "测试甲",
+                        "user_id": "u1",
+                        "punches": [],
+                        "official_effective_day": False,
+                        "official_report_anomaly": False,
+                    }
+                ],
+            )
+            _write_ledger_fixture_run(
+                root,
+                run_id="s19_evening_20260710_230000",
+                work_date="2026-07-10",
+                employees=[
+                    {
+                        "name": "测试甲",
+                        "user_id": "u1",
+                        "punches": _fixture_punches(),
+                        "record_anomaly": True,
+                    }
+                ],
+            )
+            _write_ledger_fixture_run(
+                root,
+                run_id="s19_morning_20260711_103500",
+                work_date="2026-07-11",
+                employees=[
+                    {
+                        "name": "测试甲",
+                        "user_id": "u1",
+                        "punches": [],
+                        "official_effective_day": False,
+                        "official_report_anomaly": True,
+                        "official_report_issues": ["未打卡"],
+                    }
+                ],
+            )
+
+            sync_archives_to_ledger(onedrive_root=root, db_path=db_path, all_months=True)
+
+            self.assertEqual(get_employee_month_effective_days(db_path=db_path, month="202607", employee="测试甲"), 0)
+            anomalies = get_month_anomalies(db_path=db_path, month="202607")
+            self.assertEqual(
+                [(row["work_date"], row["anomaly_type"]) for row in anomalies],
+                [("2026-07-11", "OFFICIAL_REPORT_ANOMALY")],
+            )
+            summary = get_month_summary(db_path=db_path, month="202607")
+            self.assertEqual(summary["attendance_anomaly_count_total"], 1)
+
+    def test_attendance_ledger_uses_shared_timestamp_key_for_suffixed_official_rerun(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / "onedrive"
+            db_path = Path(tmpdir) / "attendance_ledger.sqlite"
+            _write_ledger_fixture_run(
+                root,
+                run_id="s19_morning_20260710_103500",
+                work_date="2026-07-10",
+                employees=[
+                    {
+                        "name": "测试甲",
+                        "user_id": "u1",
+                        "punches": [],
+                        "official_effective_day": False,
+                        "official_report_anomaly": True,
+                        "official_report_issues": ["未打卡"],
+                    }
+                ],
+            )
+            _write_ledger_fixture_run(
+                root,
+                run_id="s19_evening_20260710_200000_retry",
+                work_date="2026-07-10",
+                employees=[
+                    {
+                        "name": "测试甲",
+                        "user_id": "u1",
+                        "punches": _fixture_punches(),
+                        "official_effective_day": True,
+                        "official_report_anomaly": False,
+                    }
+                ],
+            )
+
+            sync_archives_to_ledger(onedrive_root=root, db_path=db_path, all_months=True)
+
+            self.assertEqual(get_employee_month_effective_days(db_path=db_path, month="202607", employee="测试甲"), 1)
+            self.assertEqual(get_month_anomalies(db_path=db_path, month="202607"), [])
+
+    def test_attendance_ledger_v1_state_fails_closed_until_raw_manifest_resync(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / "onedrive"
+            db_path = Path(tmpdir) / "attendance_ledger.sqlite"
+            _write_ledger_fixture_run(
+                root,
+                run_id="s19_morning_20260710_103500",
+                work_date="2026-07-10",
+                employees=[
+                    {
+                        "name": "测试甲",
+                        "user_id": "u1",
+                        "punches": _fixture_punches(),
+                        "official_effective_day": False,
+                        "official_report_anomaly": False,
+                    }
+                ],
+            )
+            sync_archives_to_ledger(onedrive_root=root, db_path=db_path, all_months=True)
+            import sqlite3
+
+            with closing(sqlite3.connect(db_path)) as conn:
+                conn.execute("update daily_attendance set official_report_present = 0")
+                conn.execute("update runs set canonical_schema_version = 1")
+                conn.execute("drop view canonical_daily_attendance")
+                conn.commit()
+
+            validation = validate_ledger(db_path=db_path)
+            self.assertEqual(validation["status"], "MIGRATION_REQUIRED")
+            self.assertEqual(validation["schema_version"], 1)
+            self.assertTrue(validation["migration_required"])
+            with self.assertRaisesRegex(LedgerSchemaUpgradeRequired, "LEDGER_SCHEMA_MIGRATION_REQUIRED"):
+                get_month_summary(db_path=db_path, month="202607")
+
+            sync_archives_to_ledger(onedrive_root=root, db_path=db_path, all_months=True)
+
+            validation = validate_ledger(db_path=db_path)
+            self.assertEqual(validation["status"], "PASS")
+            self.assertEqual(validation["schema_version"], 2)
+            self.assertEqual(get_employee_month_effective_days(db_path=db_path, month="202607", employee="测试甲"), 0)
 
     def test_attendance_ledger_preserves_record_failure_as_system_anomaly(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -720,7 +1063,317 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertTrue(result["automation_prompt_contracts"]["all_prompts_use_beijing_time"])
         self.assertTrue(result["automation_prompt_contracts"]["all_prompts_preserve_github_sync"])
         self.assertTrue(result["automation_prompt_contracts"]["all_prompts_fail_closed_for_dws"])
+        self.assertTrue(result["automation_prompt_contracts"]["all_prompts_use_official_report_parity"])
         self.assertTrue(result["automation_prompt_contracts"]["all_prompts_protect_private_runtime"])
+
+    def test_official_collector_uses_attendance_group_scope_and_official_report_as_business_truth(self) -> None:
+        runner = OfficialParityFixtureRunner()
+
+        collection = collect_official_org_attendance(
+            work_date="2026-07-11",
+            summary_datetime="2026-07-11 10:35:00",
+            runner=runner,
+        )
+
+        self.assertEqual(collection["stats"]["member_count"], 2)
+        self.assertEqual(collection["stats"]["attendance_group_member_count"], 2)
+        self.assertEqual(collection["stats"]["official_report_expected_count"], 2)
+        self.assertEqual(collection["stats"]["official_report_coverage_count"], 2)
+        self.assertEqual(collection["stats"]["official_report_parity_status"], "PASS")
+        self.assertEqual(collection["stats"]["official_report_anomaly_names"], ["异常员工"])
+        self.assertEqual(collection["stats"]["attendance_anomaly_names"], ["异常员工"])
+        self.assertEqual(collection["stats"]["attendance_anomaly_count"], 1)
+        self.assertEqual(collection["stats"]["record_incomplete_success_count"], 1)
+        self.assertNotIn("正常员工", collection["stats"]["attendance_anomaly_names"])
+        self.assertNotIn("非考勤组员工", [row["member"]["name"] for row in collection["results"]])
+        self.assertEqual(
+            [row["derived"]["official_status_text"] for row in collection["results"]],
+            ["旷工", "正常"],
+        )
+        report_queries = [call for call in runner.calls if call[:3] == ("attendance", "report", "query-data")]
+        self.assertEqual(len(report_queries), 1)
+        self.assertEqual(report_queries[0][report_queries[0].index("--start") + 1], "2026-07-11 00:00:00")
+        self.assertEqual(report_queries[0][report_queries[0].index("--end") + 1], "2026-07-11 23:59:59")
+
+    def test_official_collector_keeps_record_and_summary_permission_errors_diagnostic_only(self) -> None:
+        delegate = OfficialParityFixtureRunner()
+
+        def runner(args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict:
+            if args[:2] in (["attendance", "record"], ["attendance", "summary"]):
+                raise DwsAttendanceError("diagnostic scope unavailable")
+            return delegate(args, timeout=timeout, verbose=verbose)
+
+        collection = collect_official_org_attendance(
+            work_date="2026-07-11",
+            summary_datetime="2026-07-11 10:35:00",
+            runner=runner,
+        )
+
+        self.assertEqual(collection["stats"]["official_report_parity_status"], "PASS")
+        self.assertEqual(collection["stats"]["official_report_coverage_count"], 2)
+        self.assertEqual(collection["stats"]["official_report_anomaly_count"], 1)
+        self.assertEqual(collection["stats"]["command_failure_count"], 4)
+        self.assertIsNone(official_report_parity_failure_reason(collection["stats"]))
+
+    def test_official_collector_fails_closed_when_report_coverage_is_incomplete(self) -> None:
+        runner = OfficialParityFixtureRunner(omit_user="u-normal")
+
+        with self.assertRaisesRegex(OfficialAttendanceParityError, "OFFICIAL_REPORT_COVERAGE_MISMATCH"):
+            collect_official_org_attendance(
+                work_date="2026-07-11",
+                summary_datetime="2026-07-11 10:35:00",
+                runner=runner,
+            )
+
+    def test_official_collector_fails_closed_for_missing_exact_column_unknown_status_and_wrong_date(self) -> None:
+        scenarios = (
+            (
+                OfficialParityFixtureRunner(omit_column="旷工天数"),
+                "OFFICIAL_REPORT_REQUIRED_COLUMN_MISSING",
+            ),
+            (
+                OfficialParityFixtureRunner(status_overrides={"u-normal": "未来新增状态"}),
+                "OFFICIAL_REPORT_STATUS_UNKNOWN",
+            ),
+            (
+                OfficialParityFixtureRunner(status_overrides={"u-normal": "未出勤"}),
+                "OFFICIAL_REPORT_STATUS_UNKNOWN",
+            ),
+            (
+                OfficialParityFixtureRunner(status_overrides={"u-normal": "非正常"}),
+                "OFFICIAL_REPORT_STATUS_UNKNOWN",
+            ),
+            (
+                OfficialParityFixtureRunner(date_overrides={"u-normal": "2026-07-10"}),
+                "OFFICIAL_REPORT_DATE_MISMATCH",
+            ),
+        )
+        for runner, expected_code in scenarios:
+            with self.subTest(expected_code=expected_code):
+                with self.assertRaisesRegex(OfficialAttendanceParityError, expected_code):
+                    collect_official_org_attendance(
+                        work_date="2026-07-11",
+                        summary_datetime="2026-07-11 10:35:00",
+                        runner=runner,
+                    )
+
+    def test_official_collector_accepts_only_explicit_known_status_combinations(self) -> None:
+        runner = OfficialParityFixtureRunner(
+            status_overrides={"u-normal": "上班外勤+下班外勤"},
+        )
+
+        collection = collect_official_org_attendance(
+            work_date="2026-07-11",
+            summary_datetime="2026-07-11 10:35:00",
+            runner=runner,
+        )
+
+        normal = next(row for row in collection["results"] if row["member"]["userId"] == "u-normal")
+        self.assertEqual(normal["derived"]["official_status_category"], "non_anomaly")
+
+    def test_official_report_rejects_cross_batch_user_swaps(self) -> None:
+        column_ids = {
+            name: f"c-{index}"
+            for index, name in enumerate(OfficialParityFixtureRunner.REQUIRED_COLUMNS, start=1)
+        }
+        members = [{"userId": f"u-{index}", "name": f"员工{index}"} for index in range(1, 7)]
+
+        def report_row(user_id: str) -> dict[str, object]:
+            values = {
+                "考勤结果": "正常",
+                "应出勤天数": "1",
+                "出勤天数": "1",
+                "休息天数": "0",
+                "迟到次数": "0",
+                "早退次数": "0",
+                "上班缺卡次数": "0",
+                "下班缺卡次数": "0",
+                "旷工天数": "0",
+            }
+            return {
+                "userId": user_id,
+                "workDate": "2026-07-11",
+                "values": [
+                    {"termId": column_ids[name], "value": value}
+                    for name, value in values.items()
+                ],
+            }
+
+        def runner(args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict:
+            requested = args[args.index("--users") + 1].split(",")
+            returned = [*requested[:-1], "u-6"] if len(requested) == 5 else ["u-5"]
+            return {
+                "returncode": 0,
+                "payload": {"success": True, "result": {"records": [report_row(user_id) for user_id in returned]}},
+            }
+
+        with self.assertRaisesRegex(OfficialAttendanceParityError, "OFFICIAL_REPORT_BATCH_SCOPE_MISMATCH"):
+            _query_official_report(
+                runner=runner,
+                members=members,
+                work_date="2026-07-11",
+                column_ids=column_ids,
+            )
+
+    def test_official_group_permission_failure_is_reported_as_parity_failure(self) -> None:
+        delegate = OfficialParityFixtureRunner()
+
+        def runner(args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict:
+            if args[:3] == ["attendance", "group", "search"]:
+                return {
+                    "returncode": 4,
+                    "payload": {
+                        "success": False,
+                        "code": "PAT_MEDIUM_RISK_NO_PERMISSION",
+                        "data": {"openBrowser": True, "requiredScopes": [{"scope": "attendance.group:read"}]},
+                    },
+                }
+            return delegate(args, timeout=timeout, verbose=verbose)
+
+        with self.assertRaisesRegex(OfficialAttendanceParityError, "OFFICIAL_REPORT_PERMISSION_REQUIRED"):
+            collect_official_org_attendance(
+                work_date="2026-07-11",
+                summary_datetime="2026-07-11 10:35:00",
+                runner=runner,
+            )
+
+    def test_run_dws_json_maps_subprocess_timeout_to_retryable_result(self) -> None:
+        timeout_error = __import__("subprocess").TimeoutExpired(cmd="dws", timeout=65)
+        with (
+            patch(
+                "KMFA.tools.dingtalk_attendance.dws_attendance.dws_command_safety_status",
+                return_value={"status": "READY"},
+            ),
+            patch("KMFA.tools.dingtalk_attendance.dws_attendance.subprocess.run", side_effect=timeout_error),
+        ):
+            result = run_dws_json(["attendance", "report", "columns"], timeout=60)
+
+        self.assertEqual(result["returncode"], 124)
+        self.assertEqual(result["payload"]["code"], "request_timeout")
+        self.assertTrue(result["payload"]["error"]["retryable"])
+
+    def test_notification_uses_only_official_report_anomaly_names_when_parity_is_present(self) -> None:
+        context = notification_context_from_output_status(
+            {
+                "run_id": "s19_morning_20260711_103500",
+                "run_type": "morning",
+                "work_date": "2026-07-11",
+                "current_time": "10:35",
+                "stats": {
+                    "member_count": 2,
+                    "record_success_count": 2,
+                    "summary_success_count": 2,
+                    "record_failure_count": 0,
+                    "summary_failure_count": 0,
+                    "command_failure_count": 0,
+                    "official_report_parity_status": "PASS",
+                    "official_report_failure_count": 0,
+                    "official_report_anomaly_names": ["官方异常员工"],
+                    "unexpected_empty_record_names": ["原始记录误报员工"],
+                    "incomplete_record_names": ["两卡规则误报员工"],
+                    "summary_today_anomaly_names": ["摘要误报员工"],
+                },
+            }
+        )
+        body = build_notification_message(**context, markdown=False)
+
+        self.assertIn("官方异常员工", body)
+        self.assertNotIn("原始记录误报员工", body)
+        self.assertNotIn("两卡规则误报员工", body)
+        self.assertNotIn("摘要误报员工", body)
+
+    def test_official_delivery_gate_requires_complete_exact_stats(self) -> None:
+        valid = _official_pass_stats(member_count=2, anomaly_names=["异常员工"])
+        self.assertIsNone(official_report_parity_failure_reason(valid))
+        self.assertTrue(collection_is_complete(valid))
+
+        scenarios: list[dict[str, object]] = []
+        for missing_key in (
+            "attendance_group_member_count",
+            "member_count",
+            "official_report_expected_count",
+            "official_report_coverage_count",
+            "official_report_failure_count",
+            "official_report_anomaly_count",
+            "official_report_anomaly_names",
+            "attendance_required_count",
+            "official_effective_day_count",
+        ):
+            candidate = dict(valid)
+            candidate.pop(missing_key)
+            scenarios.append(candidate)
+        scenarios.extend(
+            [
+                {**valid, "official_report_parity_status": "FAILED"},
+                {**valid, "member_count": 0, "attendance_group_member_count": 0, "official_report_expected_count": 0, "official_report_coverage_count": 0},
+                {**valid, "official_report_coverage_count": 1},
+                {**valid, "official_report_failure_count": 1},
+                {**valid, "official_report_anomaly_count": 0},
+            ]
+        )
+        for stats in scenarios:
+            with self.subTest(stats=stats):
+                self.assertIsNotNone(official_report_parity_failure_reason(stats))
+                self.assertFalse(collection_is_complete(stats))
+
+    def test_official_delivery_gate_ignores_legacy_diagnostic_failures(self) -> None:
+        stats = {
+            **_official_pass_stats(member_count=2),
+            "record_failure_count": 2,
+            "summary_failure_count": 2,
+            "command_failure_count": 4,
+        }
+
+        self.assertIsNone(official_report_parity_failure_reason(stats))
+        self.assertTrue(collection_is_complete(stats))
+
+    def test_official_delivery_gate_allows_distinct_people_with_the_same_display_name(self) -> None:
+        stats = _official_pass_stats(member_count=2, anomaly_names=["同名员工", "同名员工"])
+
+        self.assertIsNone(official_report_parity_failure_reason(stats))
+        self.assertTrue(collection_is_complete(stats))
+
+    def test_run_attendance_fails_closed_without_notification_when_official_parity_fails(self) -> None:
+        def parity_failure_collector(**kwargs: object) -> dict:
+            raise OfficialAttendanceParityError(
+                "OFFICIAL_REPORT_COVERAGE_MISMATCH",
+                "expected 2 users, received 1",
+            )
+
+        with patch.object(ATTENDANCE_RUNNER, "dws_command_safety_status", return_value={"status": "READY"}):
+            result = run_attendance(
+                run_type="morning",
+                timezone="Asia/Shanghai",
+                collector=parity_failure_collector,
+                cleanup=lambda: {"status": "OK"},
+            )
+
+        self.assertEqual(result["status"], "OFFICIAL_ATTENDANCE_PARITY_FAILED")
+        self.assertEqual(result["collection_status"], "SKIPPED_OFFICIAL_ATTENDANCE_PARITY_FAILED")
+        self.assertEqual(result["notification_status"], "NOT_SENT_OFFICIAL_ATTENDANCE_PARITY_FAILED")
+        self.assertEqual(ATTENDANCE_RUNNER.result_exit_code(result), 6)
+
+    def test_run_attendance_rejects_collector_payload_without_exact_parity_before_archive(self) -> None:
+        def incomplete_collector(**kwargs: object) -> dict[str, object]:
+            return {"stats": {}, "results": []}
+
+        with (
+            patch.object(ATTENDANCE_RUNNER, "dws_command_safety_status", return_value={"status": "READY"}),
+            patch.object(
+                ATTENDANCE_RUNNER,
+                "write_private_outputs",
+                side_effect=AssertionError("must not archive a parity-failed collection"),
+            ),
+        ):
+            result = run_attendance(
+                run_type="morning",
+                timezone="Asia/Shanghai",
+                collector=incomplete_collector,
+                cleanup=lambda: {"status": "OK"},
+            )
+
+        self.assertEqual(result["status"], "OFFICIAL_ATTENDANCE_PARITY_FAILED")
+        self.assertEqual(result["notification_status"], "NOT_SENT_OFFICIAL_ATTENDANCE_PARITY_FAILED")
 
     def test_dws_attendance_collects_org_records_and_summaries_without_mock_data(self) -> None:
         runner = FakeDwsRunner()
@@ -819,6 +1472,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         def fake_run(command: list[str], **kwargs: object) -> Proc:
             captured["command"] = command
             captured["timeout"] = kwargs["timeout"]
+            captured["env"] = kwargs["env"]
             return Proc()
 
         with (
@@ -834,6 +1488,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             ["/tmp/fake-dws", "contact", "dept", "list-members", "--timeout", "120", "--format", "json"],
         )
         self.assertEqual(captured["timeout"], 125)
+        self.assertEqual(captured["env"]["TZ"], "Asia/Shanghai")
 
     def test_run_dws_json_env_timeout_cannot_shrink_call_timeout(self) -> None:
         captured: dict[str, object] = {}
@@ -1162,7 +1817,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 "run_type": "morning",
                 "work_date": "2026-07-07",
                 "current_time": "08:35",
-                "stats": collection["stats"],
+                "stats": {**collection["stats"], **_official_pass_stats(member_count=1)},
             }
         )
         body = build_notification_message(**context, markdown=False)
@@ -1437,6 +2092,48 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(manifest["stats"]["record_failure_count"], 1)
         self.assertEqual(manifest["stats"]["command_failure_count"], 1)
 
+    def test_official_reports_expose_only_official_totals_and_preserve_raw_evidence_privately(self) -> None:
+        collection = collect_official_org_attendance(
+            work_date="2026-07-11",
+            summary_datetime="2026-07-11 10:35:00",
+            runner=OfficialParityFixtureRunner(),
+        )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            plan = {
+                "run_id": "s19_morning_20260711_103500",
+                "stage_id": "S19",
+                "run_type": "morning",
+                "archive_paths": {
+                    "month_dir": str(base),
+                    "raw_jsonl_gz": str(base / "raw.jsonl.gz"),
+                    "management_report": str(base / "management.md"),
+                    "hr_report": str(base / "hr.md"),
+                    "dispatch_receipt": str(base / "dispatch.json"),
+                    "archive_manifest": str(base / "manifest.json"),
+                    "cleanup_audit": str(base / "cleanup.json"),
+                },
+                "public_repo_safety": {"no_sensitive_git": True},
+            }
+
+            output = write_private_outputs(plan=plan, collection=collection, cleanup_status={"status": "SKIPPED"})
+            report_text = (
+                Path(output["management_report"]).read_text(encoding="utf-8")
+                + "\n"
+                + Path(output["hr_report"]).read_text(encoding="utf-8")
+            )
+            with gzip.open(output["raw_jsonl_gz"], "rt", encoding="utf-8") as handle:
+                raw_rows = [json.loads(line) for line in handle if line.strip()]
+
+        self.assertIn("官方报表覆盖 2 人", report_text)
+        self.assertIn("应考勤 2 人", report_text)
+        self.assertIn("有效出勤 1 人", report_text)
+        self.assertNotIn("当天有打卡记录", report_text)
+        self.assertNotIn("无考勤记录人员", report_text)
+        self.assertNotIn("打卡记录不完整人员", report_text)
+        self.assertTrue(any(row.get("type") == "official_report_evidence" for row in raw_rows))
+
     def test_dws_attendance_retries_transient_attendance_error_once(self) -> None:
         runner = FakeDwsRunner(fail_first_record_for="li-dws-id")
 
@@ -1527,6 +2224,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                     "work_date": "2026-07-07",
                     "current_time": "18:15",
                     "stats": {
+                        **_official_pass_stats(anomaly_names=["张三"]),
                         "unexpected_empty_record_names": ["张三"],
                         "known_no_record_names": ["张霖泽"],
                     },
@@ -1590,7 +2288,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 "work_date": "2026-07-07",
                 "current_time": "08:35",
                 "stats": {
-                    "member_count": 41,
+                    **_official_pass_stats(member_count=41),
                     "record_success_count": 41,
                     "summary_success_count": 41,
                     "record_failure_count": 0,
@@ -1922,7 +2620,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 "work_date": "2026-07-08",
                 "current_time": "08:35",
                 "stats": {
-                    "member_count": 44,
+                    **_official_pass_stats(member_count=44),
                     "record_success_count": 44,
                     "summary_success_count": 44,
                     "command_failure_count": 0,
@@ -2094,6 +2792,61 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             [{"name": "张三", "effective_attendance_days": 2, "latest_date": "2026-07-03"}],
         )
 
+    def test_monthly_rollup_uses_latest_official_user_day_over_legacy_and_earlier_official_runs(self) -> None:
+        records = [
+            {
+                "_archive_run_id": "s19_evening_20260710_230000",
+                "member": {"name": "测试甲", "userId": "u1"},
+                "work_date": "2026-07-10",
+                "record_list": [{"checkTypeDesc": "上班"}, {"checkTypeDesc": "下班"}],
+                "derived": {"record_success": True, "record_anomaly": True},
+            },
+            {
+                "_archive_run_id": "s19_morning_20260710_103500",
+                "member": {"name": "测试甲", "userId": "u1"},
+                "work_date": "2026-07-10",
+                "derived": {
+                    "official_report_anomaly": True,
+                    "official_effective_day": False,
+                },
+            },
+            {
+                "_archive_run_id": "s19_evening_20260710_200000",
+                "member": {"name": "测试甲", "userId": "u1"},
+                "work_date": "2026-07-10",
+                "derived": {
+                    "official_report_anomaly": False,
+                    "official_effective_day": True,
+                },
+            },
+            {
+                "_archive_run_id": "s19_morning_20260711_103500",
+                "member": {"name": "测试甲", "userId": "u1"},
+                "work_date": "2026-07-11",
+                "derived": {
+                    "official_report_anomaly": True,
+                    "official_effective_day": False,
+                },
+            },
+        ]
+
+        result = build_monthly_notification_rollups(
+            records,
+            current_stats={"attendance_anomaly_names": ["测试甲"]},
+            work_date="2026-07-11",
+            threshold_days=1,
+        )
+
+        self.assertEqual(
+            result["monthly_attendance_anomalies"],
+            [{"name": "测试甲", "monthly_count": 1, "latest_date": "2026-07-11"}],
+        )
+        self.assertEqual(result["monthly_consecutive_anomalies"], [])
+        self.assertEqual(
+            result["rest_required_people"],
+            [{"name": "测试甲", "effective_attendance_days": 1, "latest_date": "2026-07-10"}],
+        )
+
     def test_rest_required_people_can_be_built_from_monthly_private_archive(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             month_dir = Path(tmpdir)
@@ -2245,6 +2998,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                     "work_date": "2026-07-07",
                     "current_time": "18:15",
                     "stats": {
+                        **_official_pass_stats(anomaly_names=["张三"]),
                         "unexpected_empty_record_names": ["张三"],
                         "known_no_record_names": ["张霖泽"],
                         "rest_required_people": [{"name": "李四", "effective_attendance_days": 25}],
@@ -2304,7 +3058,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                         "hr_report": str(hr),
                         "dispatch_receipt": str(receipt),
                         "cleanup_audit": str(month_dir / "s19_evening_20260707_181500.cleanup.json"),
-                        "stats": {},
+                        "stats": _official_pass_stats(),
                     },
                     ensure_ascii=False,
                 ),
@@ -2357,6 +3111,102 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             self.assertNotIn("# 开明考勤管理报告", str(sent[0]["text"]))
             self.assertNotIn("# 开明考勤 HR 报告", str(sent[0]["text"]))
             self.assertTrue(receipt.exists())
+
+    def test_send_latest_report_rejects_legacy_manifest_without_exact_official_parity(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            month_dir = root / "202607"
+            runtime_dir = root / "private_runtime"
+            month_dir.mkdir()
+            runtime_dir.mkdir()
+            management = month_dir / "s19_evening_20260707_200000.management.md"
+            hr = month_dir / "s19_evening_20260707_200000.hr.md"
+            receipt = month_dir / "s19_evening_20260707_200000.dispatch.json"
+            manifest = month_dir / "s19_evening_20260707_200000.manifest.json"
+            management.write_text("# legacy management", encoding="utf-8")
+            hr.write_text("# legacy hr", encoding="utf-8")
+            manifest.write_text(
+                json.dumps(
+                    {
+                        "run_id": "s19_evening_20260707_200000",
+                        "management_report": str(management),
+                        "hr_report": str(hr),
+                        "dispatch_receipt": str(receipt),
+                        "stats": {},
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            targets_resolved = runtime_dir / "notification_targets_resolved.json"
+            targets_resolved.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "targets": [
+                            {
+                                "label": "张霖泽",
+                                "type": "personal",
+                                "enabled": True,
+                                "reports": ["management", "hr"],
+                                "resolved_channel": "dws_userid_chat",
+                                "user_id": "local-test-user",
+                                "last_probe_status": "SENT",
+                            }
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            sent: list[dict[str, object]] = []
+
+            result = send_latest_report(
+                channel="auto",
+                onedrive_root=root,
+                targets_resolved_path=targets_resolved,
+                public_targets_manifest_path=runtime_dir / "notification_targets_manifest.json",
+                env={},
+                sender=lambda **kwargs: sent.append(dict(kwargs)) or {"status": "SENT"},
+            )
+
+            self.assertEqual(result["status"], "OFFICIAL_ATTENDANCE_PARITY_FAILED")
+            self.assertEqual(result["notification_status"], "NOT_SENT_OFFICIAL_ATTENDANCE_PARITY_FAILED")
+            self.assertEqual(sent, [])
+            self.assertFalse(receipt.exists())
+
+    def test_run_attendance_send_latest_only_rejects_manifest_without_official_parity(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            manifest = root / "s19_morning_20260711_103500.manifest.json"
+            manifest.write_text(
+                json.dumps(
+                    {
+                        "run_id": "s19_morning_20260711_103500",
+                        "management_report": str(root / "management.md"),
+                        "hr_report": str(root / "hr.md"),
+                        "dispatch_receipt": str(root / "dispatch.json"),
+                        "cleanup_audit": str(root / "cleanup.json"),
+                        "stats": {},
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+
+            with (
+                patch.object(ATTENDANCE_RUNNER, "find_latest_report_manifest", return_value=manifest),
+                patch.object(
+                    ATTENDANCE_RUNNER,
+                    "dispatch_reports_to_targets",
+                    side_effect=AssertionError("must not dispatch an unverified archive"),
+                ),
+                patch.object(ATTENDANCE_RUNNER, "cleanup_runtime", return_value={"status": "OK"}),
+            ):
+                result = ATTENDANCE_RUNNER.send_latest_report_only("morning", "Asia/Shanghai")
+
+            self.assertEqual(result["status"], "OFFICIAL_ATTENDANCE_PARITY_FAILED")
+            self.assertEqual(result["notification_status"], "NOT_SENT_OFFICIAL_ATTENDANCE_PARITY_FAILED")
 
     def test_legacy_resolved_channel_migrates_to_multitarget_registry(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -2450,7 +3300,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                     "run_type": "evening",
                     "work_date": "2026-07-07",
                     "current_time": "18:15",
-                    "stats": {},
+                    "stats": _official_pass_stats(),
                     "management_report": str(management),
                     "hr_report": str(hr),
                     "dispatch_receipt": str(receipt),
@@ -2488,6 +3338,52 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             self.assertEqual(receipt_payload["target_results"][1]["management_status"], "SKIPPED")
             self.assertEqual(receipt_payload["target_results"][1]["hr_status"], "SENT")
             self.assertFalse(receipt_payload["target_results"][1]["trace_id_present"])
+
+    def test_dispatch_boundary_rejects_missing_official_parity_before_sender_call(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            targets_resolved = root / "notification_targets_resolved.json"
+            receipt = root / "dispatch.json"
+            targets_resolved.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "targets": [
+                            {
+                                "label": "张霖泽",
+                                "type": "personal",
+                                "enabled": True,
+                                "reports": ["management", "hr"],
+                                "resolved_channel": "dws_userid_chat",
+                                "user_id": "local-test-user",
+                                "last_probe_status": "SENT",
+                            }
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            sent: list[dict[str, object]] = []
+
+            result = dispatch_reports_to_targets(
+                output_status={
+                    "run_id": "s19_evening_20260707_200000",
+                    "run_type": "evening",
+                    "work_date": "2026-07-07",
+                    "stats": {},
+                    "management_report": str(root / "management.md"),
+                    "hr_report": str(root / "hr.md"),
+                    "dispatch_receipt": str(receipt),
+                },
+                targets_resolved_path=targets_resolved,
+                env={},
+                sender=lambda **kwargs: sent.append(dict(kwargs)) or {"status": "SENT"},
+            )
+
+            self.assertEqual(result["notification_status"], "NOT_SENT_OFFICIAL_ATTENDANCE_PARITY_FAILED")
+            self.assertEqual(sent, [])
+            self.assertTrue(receipt.exists())
 
     def test_probe_notification_targets_resolves_personal_target_and_redacts_public_manifest(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

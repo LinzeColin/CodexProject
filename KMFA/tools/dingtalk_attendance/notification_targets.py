@@ -15,6 +15,7 @@ from KMFA.tools.dingtalk_attendance.dws_auth_guard import dws_command_safety_sta
 from KMFA.tools.dingtalk_attendance.notification_template import (
     build_notification_message,
     notification_context_from_output_status,
+    official_report_parity_failure_reason,
 )
 from KMFA.tools.dingtalk_attendance.notifier_dingtalk import send_group_robot_markdown
 from KMFA.tools.dingtalk_attendance.notifier_dws_personal_chat import (
@@ -197,6 +198,17 @@ def dispatch_reports_to_targets(
     sender: Callable[..., dict[str, Any]] = send_text_with_resolved_channel,
 ) -> dict[str, Any]:
     receipt_path = Path(str(output_status["dispatch_receipt"]))
+    stats = output_status.get("stats", {})
+    parity_failure = official_report_parity_failure_reason(stats if isinstance(stats, Mapping) else {})
+    if parity_failure:
+        receipt = _targets_receipt(
+            status="NOT_SENT_OFFICIAL_ATTENDANCE_PARITY_FAILED",
+            output_status=output_status,
+            target_results=[],
+            failure_reason=parity_failure,
+        )
+        _write_json(receipt_path, receipt)
+        return receipt
     if not targets_resolved_path.exists():
         migrate_legacy_resolved_channel(
             legacy_path=legacy_resolved_path,
