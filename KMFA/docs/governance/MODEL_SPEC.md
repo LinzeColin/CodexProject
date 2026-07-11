@@ -1,3 +1,19 @@
+## FORM-KMFA-V014-S13-POST-REMEDIATION-STAGE-REVIEW-001
+
+- phase: `V014_S13_POST_REMEDIATION_STAGE_REVIEW`
+- version: `0.1.4-s13-post-remediation-stage-review`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: 复审当前 S13-P1/P2/P3，修复过期状态与页面互链，隔离历史动态状态，并锁定 raw 不变和下游门禁。
+- rule: `stage13_review_valid = phase_pass_count == 3 AND financial_raw_value_bound_lane_count == 0 AND receivable_identified_business_item_count == 0 AND cross_table_not_comparable_dimension_count == 4 AND cross_table_exact_comparison_count == 0 AND cross_table_difference_queue_is_non_additive == true AND cross_page_link_count == 12 AND fixed_review_finding_count == 9 AND open_review_finding_count == 0 AND current_grade == D AND decision == NO_GO`。
+- phase gate: 仅当前 post-remediation 三个 strict validators 可提供动态 phase 事实；旧 Stage 13 review 仅作历史夹具。
+- navigation gate: 周报、月报、应收工作台、跨表工作台形成 12 条边强连通图，HTTP 和真实导航必须全部通过。
+- history gate: 旧 `pending=12`、静态业务项、旧跨表语义及 upload-ready 状态均不具当前权威性。
+- quality gate: `Q4 / D / NO_GO / 3-9-2-1`；4 个维度仍 NOT_COMPARABLE，0 次精确比较，4 个队列项 non-additive。
+- raw gate: review 前后、跨 S13-P3 和当前只读快照一致；raw/private 明文不得进入 Git。
+- downstream gate: S14-P1、GitHub upload、app reinstall、formal report、difference closure、persistent write 与 business execution=false。
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s13_post_remediation_stage_review.py --require-private-evidence --require-browser-evidence --require-final-evidence`
+- evidence: `KMFA/stage_artifacts/V014_S13_POST_REMEDIATION_STAGE_REVIEW/machine/stage13_post_remediation_review_manifest.json`
+
 ## FORM-KMFA-V014-S13P3-POST-REMEDIATION-CROSS-TABLE-REVIEW-001
 
 - phase: `V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW`

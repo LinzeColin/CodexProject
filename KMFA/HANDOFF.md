@@ -2,29 +2,28 @@
 
 ## 当前状态
 
-- phase: `V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW`
-- roadmap gate: `S13-P3｜跨表复核`
-- task: `KMFA-V014-S13-P3-POST-REMEDIATION-CROSS-TABLE-REVIEW-20260711`
-- status: `completed_validated_local_only_s13_p3_not_comparable_no_go_upload_deferred`
-- version: `0.1.4-s13-p3-post-remediation-cross-table-review`
+- phase: `V014_S13_POST_REMEDIATION_STAGE_REVIEW`
+- roadmap gate: `Stage 13 整体复审`
+- task: `KMFA-V014-S13-POST-REMEDIATION-STAGE-REVIEW-20260711`
+- status: `completed_validated_local_only_stage13_review_no_go_upload_deferred`
+- version: `0.1.4-s13-post-remediation-stage-review`
 - decision: `NO_GO`
 - data quality / report grade: `Q4 / D`
 - pursuing_goal_status: `active`
 - S13-P1 / S13-P2 / S13-P3: `performed / performed / performed`
-- Stage 13 review / S14-P1: `not performed / not performed`
+- Stage 13 review / S14-P1: `performed / not performed`
 - GitHub upload / app reinstall: `not performed / not performed`
-- 下一步只能执行 Stage 13 整体复审；不得执行 S14 或 GitHub upload。
+- 下一步只能执行 S14-P1；不得执行 GitHub upload、app reinstall 或后续 phase。
 
-## S13-P3 结果
+## Stage 13 整体复审结果
 
-- 四维检查：项目、客户、金额、时间 `4/4`；comparable/exact/match/mismatch=`0/0/0/0`，not-comparable=`4`。
-- 差异队列：`4` 个 public-safe 证据缺口，均为 non-additive，不增加或关闭全局 `3-9-2-1`。
-- 金额边界：金额字段保持 null，容差锁为 `0` 分，未忽略 0.01 元；没有逐行绑定时不得补零或声明一致。
-- 质量报告：`insufficient_row_level_evidence / 0 bps / Q4 / D / NO_GO`；formal/decision/closure/execution=false。
-- 私有诊断：4 个候选键类别已观察，但不证明同一业务行、期间或数值；只保存在 ignored private runtime。
-- 历史隔离：旧 S13-P3 的 `pending=12` 与 completed 声明均非当前动态事实。
-- 浏览器：baseline `54/54 PASS`，current `7/7 PASS`；viewports/dimensions/HTTP/navigation=`2/4/3/3`，console/overflow=`0/0`。
-- raw：5 个文件在 phase 前后、跨 S13-P2 和当前快照一致。
+- phase replay：S13-P1/P2/P3 focused tests 与 strict validators 均通过，`3/3 PASS`。
+- findings：旧 review、旧 pending/业务项/跨表语义/upload-ready 与页面导航/状态共 9 项已修复，open=0。
+- 当前事实：财务 raw 数值绑定=0；应收业务项/优先级/责任指派=`0/0/0`；跨表=`4 NOT_COMPARABLE / 0 exact / 4 non-additive queue`。
+- 质量与状态：`Q4 / D / NO_GO / 3-9-2-1`，不推断、不平均、不补零，不形成正式报告或经营决策依据。
+- 页面：周报、月报、应收工作台、跨表工作台形成 12 条有向边并强连通。
+- 浏览器：baseline `54/54 PASS`；viewports/interactions/HTTP/navigation=`8/8/12/12`，console/overflow=`0/0`。
+- raw：5 个文件在 review 前后、跨 S13-P3 和当前快照一致；无需生成 raw 差异报告。
 
 ## 关键边界
 
@@ -39,19 +38,18 @@
 
 ## 证据
 
-- manifest: `KMFA/stage_artifacts/V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW/machine/cross_table_review_manifest.json`
-- summary: `KMFA/stage_artifacts/V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW/machine/cross_table_review_summary.json`
-- queue: `KMFA/stage_artifacts/V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW/machine/cross_table_difference_queue_public_safe.json`
-- quality: `KMFA/stage_artifacts/V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW/machine/operating_report_quality_report.json`
-- workbench: `KMFA/stage_artifacts/V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW/exports/html/cross_table_quality_workbench.html`
-- validator: `KMFA/tools/check_v014_s13_p3_post_remediation_cross_table_review.py`
-- focused test: `KMFA/tests/test_v014_s13_p3_post_remediation_cross_table_review.py`
-- private raw/browser/difference evidence: `KMFA/.codex_private_runtime/v014_s13_p3_post_remediation_cross_table_review/`
+- manifest: `KMFA/stage_artifacts/V014_S13_POST_REMEDIATION_STAGE_REVIEW/machine/stage13_post_remediation_review_manifest.json`
+- summary: `KMFA/stage_artifacts/V014_S13_POST_REMEDIATION_STAGE_REVIEW/machine/stage13_post_remediation_review_summary.json`
+- matrix: `KMFA/stage_artifacts/V014_S13_POST_REMEDIATION_STAGE_REVIEW/machine/stage13_post_remediation_review_matrix_public_safe.json`
+- report: `KMFA/stage_artifacts/V014_S13_POST_REMEDIATION_STAGE_REVIEW/human/stage13_post_remediation_review_report_zh.md`
+- validator: `KMFA/tools/check_v014_s13_post_remediation_stage_review.py`
+- focused test: `KMFA/tests/test_v014_s13_post_remediation_stage_review.py`
+- private raw/browser/difference evidence: `KMFA/.codex_private_runtime/v014_s13_post_remediation_stage_review/`
 
 ## 验证命令
 
-- `KMFA_AUDIT_PYTHON=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s13_p3_post_remediation_cross_table_review`
-- `KMFA_AUDIT_PYTHON=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s13_p3_post_remediation_cross_table_review.py --require-private-evidence --require-browser-evidence --require-final-evidence`
+- `KMFA_AUDIT_PYTHON=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s13_post_remediation_stage_review`
+- `KMFA_AUDIT_PYTHON=/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s13_post_remediation_stage_review.py --require-private-evidence --require-browser-evidence --require-final-evidence`
 - `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_no_float_money.py`
 - `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/no_omission_check.py`
 - `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 scripts/validate_project_governance.py --project KMFA --mode required`
@@ -69,14 +67,14 @@
 - 两个原生 WPS 私密容器当前无法在不损伤原文件的前提下转换。
 - 共享行级主键与跨来源期间口径未被证明，因此项目、客户、金额、时间四维均不可比较。
 - 3 条开放接受差异、9 条非零差异和 1 条未完成比较仍未关闭。
-- Stage 13 整体复审尚未执行；复审前不得进入 S14。
-- GitHub main 未上传，app 未重装；统一延期到 Stage 8-18 全部完成、最终整体复审并修复 findings 后一次性执行。
+- Stage 13 整体复审已完成；S14-P1 尚未执行，必须另起 run work。
+- GitHub main 未上传，app 未重装；统一延期到 Stage 12-18 全部完成、最终整体复审并修复 findings 后一次性执行。
 
 ## 推荐下一轮 pursuing goal prompt
 
-继续 KMFA，只执行 `Stage 13 整体复审`；不得执行 S14 或 GitHub upload。
-先确认 git root、branch、remote、HEAD、status，并读取最新 HANDOFF、v1.4 Task Pack/Roadmap 的 Stage 13 review 契约。
-复跑当前 S13-P1/P2/P3 focused tests 与 strict validators，核对三 phase 的 `Q4 / D / NO_GO / 3-9-2-1`、raw 快照、public-safe 产物、浏览器证据和治理同步。
-重点检查 S13-P3 的 `4 not-comparable / 4 non-additive queue / 0 exact comparison` 是否被误读为一致、不一致或差异关闭；发现 findings 必须在本轮修复并复验。
-验收必须包含 review findings、修复证据、validators、raw/private/secret scan、governance validators 和 local commit。
-本轮不得执行 S14、GitHub upload、app reinstall、formal report、difference closure、persistent business write 或 business execution。
+继续 KMFA，只执行 `S14-P1｜资金现金贷款`；不得执行 S14-P2/P3、Stage 14 整体复审或 GitHub upload。
+先确认 git root、branch、remote、HEAD、status，并读取最新 HANDOFF、v1.4 Task Pack/Roadmap 的 S14-P1 契约。
+以上一轮 Stage 13 review 冻结的 `Q4 / D / NO_GO / 3-9-2-1` 和 public-safe 结构为唯一当前上游；只读核对 raw，禁止推断、平均、补零或公开业务金额。
+实现资金、现金、贷款 phase 时必须区分结构候选、行级绑定、精确数值和可执行业务动作；未证明项保持 null/blocked。
+验收必须包含 focused tests、strict validator、public-safe evidence、ignored private difference evidence、raw/private/secret scan、governance validators 和 local commit。
+本轮不得执行 S14-P2/P3、Stage 14 review、GitHub upload、app reinstall、formal report、difference closure、persistent business write 或 business execution。

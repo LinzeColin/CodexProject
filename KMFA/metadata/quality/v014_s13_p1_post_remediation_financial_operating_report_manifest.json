@@ -114,10 +114,10 @@
     "console_error_count": 0,
     "cross_draft_link_http_check_count": 2,
     "cross_draft_navigation_check_count": 2,
-    "current_control_row_count": 16,
+    "current_control_row_count": 20,
     "current_fail_count": 0,
     "current_page_count": 2,
-    "current_pass_count": 16,
+    "current_pass_count": 20,
     "current_warn_count": 0,
     "horizontal_overflow_count": 0,
     "section_interaction_check_count": 28,
@@ -201,7 +201,7 @@
       "zero_delta_reconciliation_count": 2
     }
   ],
-  "generated_at": "2026-07-11T13:02:45+10:00",
+  "generated_at": "2026-07-11T15:23:55+10:00",
   "historical_b_grade_sample_quarantined": true,
   "historical_pending_twelve_quarantined": true,
   "historical_s13_p1_dynamic_state_is_authoritative": false,
@@ -274,7 +274,7 @@
     "current_stage12_review": "KMFA/stage_artifacts/V014_S12_POST_REMEDIATION_STAGE_REVIEW/machine/stage12_post_remediation_review_manifest.json",
     "historical_s13_p1_policy_fixture": "KMFA/stage_artifacts/V014_S13_P1_FINANCIAL_OPERATING_REPORT/machine/financial_operating_report_manifest.json"
   },
-  "reviewed_head": "6d85b76f303abc8fe34c76ae7159d5a1ce6c1a12",
+  "reviewed_head": "ed499c6be35df76d1f5a924d92130c7536a9f4ea",
   "roadmap_phase_id": "S13-P1",
   "schema_version": "kmfa.v014.s13_p1_post_remediation_report_manifest.v1",
   "source_lane_status": [

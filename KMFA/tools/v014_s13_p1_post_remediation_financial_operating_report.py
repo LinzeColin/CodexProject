@@ -89,6 +89,15 @@ DEVELOPMENT_EVENTS_PATH = Path("KMFA/docs/governance/development_events.jsonl")
 STAGE_STATUS_PATH = Path("KMFA/metadata/stage_status.jsonl")
 TASK_STATUS_PATH = Path("KMFA/metadata/traceability/v1_4_stage_phase_task_status.jsonl")
 
+P2_HREF = (
+    "../../../V014_S13_P2_POST_REMEDIATION_COLLECTION_RECEIVABLE_AGING/exports/html/"
+    "collection_receivable_aging_workbench.html"
+)
+P3_HREF = (
+    "../../../V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW/exports/html/"
+    "cross_table_quality_workbench.html"
+)
+
 SECTIONS = (
     ("summary", "经营摘要"),
     ("operating", "经营情况"),
@@ -431,7 +440,7 @@ def _render_html(draft: dict[str, Any], lanes: list[dict[str, Any]]) -> str:
     </section>
     <section id="section-next" class="report-section" data-section-panel="next">
       <h2>七、下一步复核事项</h2>
-      <ol class="next-list"><li>保持当前四类主题结构接入，不将结构候选解释为已完成数值绑定。</li><li>后续独立执行 S13-P2 回款应收账龄，不在本 phase 提前生成催收或责任结论。</li><li>待 S13-P3 完成跨表复核后，重新评估报告数据状态；当前继续维持 D 级和 NO_GO。</li></ol>
+      <ol class="next-list"><li>保持当前四类主题结构接入，不将结构候选解释为已完成数值绑定。</li><li>S13-P2 已完成结构与方法复核，但行级绑定和业务事项仍为零。</li><li>S13-P3 已完成四维证据检查并保持 NOT_COMPARABLE；整体复审不改变 D 级和 NO_GO。</li></ol>
     </section>
     """
     return f"""<!doctype html>
@@ -455,13 +464,13 @@ def _render_html(draft: dict[str, Any], lanes: list[dict[str, Any]]) -> str:
   </style>
 </head>
 <body data-page-id="{current_page_id}" data-active-section="summary" data-ui-ready="false">
-  <header class="topbar"><div class="brand"><div class="mark">KM</div><div><strong>KMFA 经营分析系统</strong><span>S13-P1 · 财务经营报表初稿</span></div></div><nav class="draft-nav" aria-label="初稿切换"><a data-other-draft href="{other_href}">切换至{other_name}</a></nav></header>
+  <header class="topbar"><div class="brand"><div class="mark">KM</div><div><strong>KMFA 经营分析系统</strong><span>S13-P1 · 财务经营报表初稿</span></div></div><nav class="draft-nav" aria-label="阶段页面导航"><a data-other-draft href="{other_href}">切换至{other_name}</a><a data-stage-link="receivable" href="{P2_HREF}">回款应收</a><a data-stage-link="cross-table" href="{P3_HREF}">跨表复核</a></nav></header>
   <main>
     <section class="report-head"><div><div class="eyebrow">内部复核初稿</div><h1>{draft['visible_report_name']}</h1><p class="subtitle">财务经营四主题状态汇总，不展示原始业务金额。</p></div><div class="grade"><span>当前可信状态</span><strong>Q4 / D · NO_GO</strong></div></section>
     <div class="notice"><strong>限制：</strong> 四类主题只有结构候选接入，当前 raw 数值绑定为 0/4；本初稿不是正式报告，不得作为经营决策依据。</div>
     <section class="metrics" aria-label="报告状态"><div class="metric"><span>主题结构</span><strong>4 / 4</strong></div><div class="metric"><span>当前数值绑定</span><strong>0 / 4</strong></div><div class="metric"><span>报告等级</span><strong>D</strong></div><div class="metric"><span>当前决策</span><strong>NO_GO</strong></div></section>
     <article class="report-shell"><nav class="tabs" aria-label="报告章节">{tabs}</nav><div class="report-body">{sections}<div id="interaction-status" class="interaction-status" aria-live="polite">报告初稿已就绪；当前显示经营摘要。</div></div></article>
-    <footer>Stage 13 仅完成 S13-P1；S13-P2、S13-P3、Stage 13 review、GitHub upload、app reinstall、正式报告和业务执行均未执行。</footer>
+    <footer>Stage 13 三个 phase 均已完成；整体复审保持 Q4 / D · NO_GO，不执行 GitHub upload、app reinstall、正式报告、差异关闭或业务执行。</footer>
   </main>
   <script>
     const labels={json.dumps(dict(SECTIONS), ensure_ascii=False, separators=(',', ':'))};

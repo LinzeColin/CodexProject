@@ -1,3 +1,11 @@
+## 0.1.4-s13-post-remediation-stage-review - 2026-07-11
+
+- 完成 `V014_S13_POST_REMEDIATION_STAGE_REVIEW` 本地整体复审：当前 S13-P1/P2/P3 focused tests 与 strict validators 通过，`9 fixed / 0 open`。
+- 修复周报/月报缺少 P2/P3 入口、P2 缺少 P3 入口及 P1 过期阶段文案；4 个当前页面形成 12 条有向边并强连通。
+- 隔离旧 Stage 13 review 的 `pending=12`、4 个静态优先级/责任项、旧跨表语义和 upload-ready 状态；当前保持 `Q4 / D / NO_GO / 3-9-2-1`。
+- v1.4 基线 `54/54 PASS`；8 视口、8 次代表性交互、12 条 HTTP 和 12 次真实导航通过，console error 与横向溢出为 0。
+- 5 个 raw 文件在 review 前后、跨 S13-P3 和当前快照一致；未执行 S14、GitHub upload、app reinstall、正式报告、差异关闭、持久业务写入或 business execution。
+
 ## 0.1.4-s13-p3-post-remediation-cross-table-review - 2026-07-11
 
 - 完成 `V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW` 本地 phase：项目、客户、金额、时间 4 个维度均完成证据充分性检查。
@@ -11,7 +19,7 @@
 - 完成 `V014_S13_P2_POST_REMEDIATION_COLLECTION_RECEIVABLE_AGING` 本地 phase：回款表、应收账龄、客户账龄、日记账、开票计划 `5/5` public-safe 结构接入。
 - 私有只读探针区分结构、容器可解析与行级绑定：`3/5` 主题具备可解析归档容器，当前可证明行级绑定保持 `0/5`；两个 WPS 私密容器和 4 类差异只留 ignored private runtime。
 - 锁定已开票未回款、完工未结算、结算未开票、超期应收 4 类方法、复核顺序和责任角色定义；已证明业务项、可执行回款优先级、已指派责任事项均为 0。
-- v1.4 基线 `54/54 PASS`、当前页 `6/6 PASS`；2 视口、4 类问题交互、2 条 S13-P1 HTTP 与 2 次真实导航通过，console error 与横向溢出为 0。
+- v1.4 基线 `54/54 PASS`、当前页 `7/7 PASS`；2 视口、4 类问题交互、3 条阶段 HTTP 与 3 次真实导航通过，console error 与横向溢出为 0。
 - 5 个 raw 文件在 phase 前后、跨 S13-P1 和当前快照一致；未执行 S13-P3、Stage 13 review、GitHub upload、app reinstall、正式报告、持久业务写入或 business execution。
 
 ## 0.1.4-s13-p1-post-remediation-financial-operating-report - 2026-07-11

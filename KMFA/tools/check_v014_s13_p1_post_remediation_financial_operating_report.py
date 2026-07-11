@@ -340,8 +340,8 @@ def _validate_public(errors: list[str]) -> dict[str, Any]:
         "baseline_warn_count": 0,
         "baseline_fail_count": 0,
         "current_page_count": 2,
-        "current_control_row_count": 16,
-        "current_pass_count": 16,
+        "current_control_row_count": 20,
+        "current_pass_count": 20,
         "current_warn_count": 0,
         "current_fail_count": 0,
         "viewport_check_count": 4,
@@ -387,6 +387,12 @@ def _validate_html(errors: list[str]) -> None:
         if href_match:
             _require(href_match.group(1) == expected_href, f"cross-draft href mismatch: {page_id}", errors)
             _require((path.parent / expected_href).is_file(), f"cross-draft target missing: {page_id}", errors)
+        _require(text.count("data-stage-link=") == 2, f"stage link count mismatch: {page_id}", errors)
+        for href in (phase.P2_HREF, phase.P3_HREF):
+            _require(href in text, f"stage href missing {page_id}: {href}", errors)
+            _require((path.parent / href).resolve().is_file(), f"stage target missing {page_id}: {href}", errors)
+        _require("Stage 13 三个 phase 均已完成" in text, f"current stage status missing: {page_id}", errors)
+        _require("Stage 13 仅完成 S13-P1" not in text, f"stale stage status remains: {page_id}", errors)
         _require("gradient(" not in text, f"gradient surface found: {page_id}", errors)
         _require("pending_reconciliation_count" not in text, f"historical pending leaked: {page_id}", errors)
         _require(">B<" not in text and "Q4 / B" not in text, f"historical B grade leaked: {page_id}", errors)
@@ -491,7 +497,7 @@ def _validate_governance(errors: list[str]) -> None:
         parameters = {row["parameter_id"]: row for row in csv.DictReader(handle)}
     expected_parameter_values = {
         "PARAM-KMFA-1735": "4;7;8;35;40;4;0;2;2;7;3;9;2;1;12;5;Q4;D;NO_GO",
-        "PARAM-KMFA-1736": "6;54;54;0;0;2;16;16;0;0;4;28;2;2;0;0",
+        "PARAM-KMFA-1736": "6;54;54;0;0;2;20;20;0;0;4;28;2;2;0;0",
         "PARAM-KMFA-1737": "true;true;true;true;true;true;true;true;false;false;false;false;false;false;false;false;NO_GO",
         "PARAM-KMFA-1738": "true;true;true;true;false;false;false;false;false;false;false;false;false;false;NO_GO",
     }
@@ -607,7 +613,7 @@ def _validate_private(errors: list[str], require_browser_evidence: bool) -> None
         _require(_git_check_ignore(path), f"browser evidence not ignored: {path}", errors)
         _require(not _git_tracked(path), f"browser evidence tracked: {path}", errors)
     _read_audit(phase.PRIVATE_BASELINE_AUDIT_PATH, errors, 6, 54)
-    _read_audit(phase.PRIVATE_CURRENT_AUDIT_PATH, errors, 2, 16)
+    _read_audit(phase.PRIVATE_CURRENT_AUDIT_PATH, errors, 2, 20)
     if phase.PRIVATE_BROWSER_PATH.is_file():
         browser = _read_json(phase.PRIVATE_BROWSER_PATH)
         _require(browser.get("status") == "PASS", "browser evidence status mismatch", errors)

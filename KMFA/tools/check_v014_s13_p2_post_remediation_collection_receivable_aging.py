@@ -237,8 +237,8 @@ def _validate_public(errors: list[str]) -> dict[str, Any]:
         "browser_status": "PASS",
         "browser_viewport_check_count": 2,
         "issue_interaction_check_count": 4,
-        "dependency_link_http_check_count": 2,
-        "dependency_navigation_check_count": 2,
+        "dependency_link_http_check_count": 3,
+        "dependency_navigation_check_count": 3,
         "console_error_count": 0,
         "horizontal_overflow_count": 0,
         "s13_p3_performed": False,
@@ -366,8 +366,8 @@ def _validate_public(errors: list[str]) -> dict[str, Any]:
         "current_fail_count": 0,
         "viewport_check_count": 2,
         "issue_interaction_check_count": 4,
-        "dependency_link_http_check_count": 2,
-        "dependency_navigation_check_count": 2,
+        "dependency_link_http_check_count": 3,
+        "dependency_navigation_check_count": 3,
         "console_error_count": 0,
         "horizontal_overflow_count": 0,
     }
@@ -411,8 +411,8 @@ def _validate_html(errors: list[str]) -> None:
         _require(token in text, f"HTML token missing: {token}", errors)
     _require(text.count("data-issue-button=") == 4, "HTML issue button count mismatch", errors)
     _require(text.count("data-issue-panel=") == 4, "HTML issue panel count mismatch", errors)
-    _require(text.count("data-report-link=") == 2, "HTML report link count mismatch", errors)
-    for href in (phase.WEEKLY_HREF, phase.MONTHLY_HREF):
+    _require(text.count("data-report-link=") == 3, "HTML report link count mismatch", errors)
+    for href in (phase.WEEKLY_HREF, phase.MONTHLY_HREF, phase.CROSS_TABLE_HREF):
         _require(href in text, f"HTML dependency href missing: {href}", errors)
         _require((phase.HTML_PATH.parent / href).resolve().is_file(), f"HTML dependency target missing: {href}", errors)
     _require("gradient(" not in text, "gradient surface found", errors)
@@ -511,7 +511,7 @@ def _validate_governance(errors: list[str]) -> None:
         parameters = {row["parameter_id"]: row for row in csv.DictReader(handle)}
     expected_parameter_values = {
         "PARAM-KMFA-1739": "5;5;3;0;4;4;0;4;0;4;0;2;4;5;Q4;D;NO_GO",
-        "PARAM-KMFA-1740": "6;54;54;0;0;1;2;4;2;2;0;0",
+        "PARAM-KMFA-1740": "6;54;54;0;0;1;2;4;3;3;0;0",
         "PARAM-KMFA-1741": "true;true;true;true;true;true;false;false;false;false;false;false;NO_GO",
         "PARAM-KMFA-1742": "true;true;true;false;false;false;false;false;false;false;false;false;false;NO_GO",
     }
@@ -724,8 +724,8 @@ def _validate_private(errors: list[str], require_browser_evidence: bool) -> None
         expected_counts = {
             "viewport_checks": 2,
             "issue_interaction_checks": 4,
-            "dependency_link_http_checks": 2,
-            "dependency_navigation_checks": 2,
+            "dependency_link_http_checks": 3,
+            "dependency_navigation_checks": 3,
         }
         for key, count in expected_counts.items():
             _require(len(browser.get(key, [])) == count, f"browser {key} count mismatch", errors)

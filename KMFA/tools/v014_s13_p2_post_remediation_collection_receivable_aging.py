@@ -99,6 +99,10 @@ MONTHLY_HREF = (
     "../../../V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT/exports/html/"
     "financial_operating_monthly_draft.html"
 )
+CROSS_TABLE_HREF = (
+    "../../../V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW/exports/html/"
+    "cross_table_quality_workbench.html"
+)
 
 LANE_SPECS = (
     {
@@ -740,7 +744,7 @@ def _render_html(lanes: list[dict[str, Any]], issues: list[dict[str, Any]]) -> s
     <section class="headline"><div><h1>回款与应收账龄工作台</h1><p class="subtitle">结构接入与私有只读探针已完成；业务明细仍受行级证据门禁限制。</p></div><div class="status-strip"><span class="badge grade">Q4 / D</span><span class="badge danger">NO_GO</span><span class="badge">内部复核</span></div></section>
     <section class="metrics" aria-label="状态摘要"><div class="metric"><strong>5 / 5</strong><span>结构主题已接入</span></div><div class="metric"><strong>3 / 5</strong><span>私有容器可解析</span></div><div class="metric"><strong>0 / 5</strong><span>行级绑定已证明</span></div><div class="metric"><strong>0</strong><span>可执行业务项</span></div></section>
     <section class="band"><div class="band-header"><h2>来源主题状态</h2><span class="state blocked">不含业务金额</span></div><div class="table-wrap"><table><thead><tr><th>主题</th><th>结构</th><th>私有解析</th><th>行级绑定</th></tr></thead><tbody>{lane_rows}</tbody></table></div></section>
-    <section class="band"><div class="band-header"><h2>四类问题方法定义</h2><span class="state blocked">0 项已证明</span></div><div class="issue-layout"><nav class="issue-nav" aria-label="问题类型">{buttons}</nav><div>{panels}</div></div><div class="footer-band"><p id="interaction-status" aria-live="polite">已显示“{html.escape(issues[0]['visible_name'])}”方法定义；不是业务催收优先级。</p><div class="links"><a data-report-link="weekly" href="{WEEKLY_HREF}">经营周报初稿</a><a data-report-link="monthly" href="{MONTHLY_HREF}">经营月报初稿</a></div></div></section>
+    <section class="band"><div class="band-header"><h2>四类问题方法定义</h2><span class="state blocked">0 项已证明</span></div><div class="issue-layout"><nav class="issue-nav" aria-label="问题类型">{buttons}</nav><div>{panels}</div></div><div class="footer-band"><p id="interaction-status" aria-live="polite">已显示“{html.escape(issues[0]['visible_name'])}”方法定义；不是业务催收优先级。</p><div class="links"><a data-report-link="weekly" href="{WEEKLY_HREF}">经营周报初稿</a><a data-report-link="monthly" href="{MONTHLY_HREF}">经营月报初稿</a><a data-report-link="cross-table" href="{CROSS_TABLE_HREF}">跨表复核</a></div></div></section>
   </main>
   <script>
     const labels={{{','.join(json.dumps(row['issue_type'])+':'+json.dumps(row['visible_name'],ensure_ascii=False) for row in issues)}}};
@@ -841,7 +845,11 @@ def _browser_worker() -> dict[str, Any]:
                 page.close()
 
             request = playwright.request.new_context()
-            for link_id, marker in (("weekly", "经营周报初稿"), ("monthly", "经营月报初稿")):
+            for link_id, marker in (
+                ("weekly", "经营周报初稿"),
+                ("monthly", "经营月报初稿"),
+                ("cross-table", "跨表复核质量工作台"),
+            ):
                 page = browser.new_page(viewport={"width": 1280, "height": 900})
                 page.goto(_workbench_url(base), wait_until="networkidle")
                 href = page.locator(f'a[data-report-link="{link_id}"]').get_attribute("href") or ""
@@ -879,9 +887,9 @@ def _browser_worker() -> dict[str, Any]:
         )
         and len(issue_checks) == 4
         and all(row["passed"] for row in issue_checks)
-        and len(http_checks) == 2
+        and len(http_checks) == 3
         and all(row["passed"] for row in http_checks)
-        and len(navigation_checks) == 2
+        and len(navigation_checks) == 3
         and all(row["passed"] for row in navigation_checks)
     )
     result = {
@@ -1445,7 +1453,7 @@ def generate(*, final_validation: bool = False, write_governance: bool = True) -
 - current HTML audit：`{browser['current_pass_count']} PASS / {browser['current_warn_count']} WARN / {browser['current_fail_count']} FAIL`
 - desktop/mobile：`{browser['viewport_check_count']}/2 PASS`
 - 四类问题交互：`{browser['issue_interaction_check_count']}/4 PASS`
-- S13-P1 链接 HTTP / 真实导航：`{browser['dependency_link_http_check_count']}/2 / {browser['dependency_navigation_check_count']}/2 PASS`
+- S13-P1/P3 链接 HTTP / 真实导航：`{browser['dependency_link_http_check_count']}/3 / {browser['dependency_navigation_check_count']}/3 PASS`
 - raw 前后/跨 S13-P1/current：exact match
 """,
     )
