@@ -1,0 +1,16 @@
+{
+  "app_reinstall_performed": false,
+  "business_decision_basis_allowed": false,
+  "business_execution_performed": false,
+  "decision": "NO_GO",
+  "draft_report_allowed": true,
+  "formal_report_allowed": false,
+  "github_upload_performed": false,
+  "phase_id": "V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT",
+  "project_id": "KMFA",
+  "s13_p2_performed": false,
+  "s13_p3_performed": false,
+  "schema_version": "kmfa.v014.s13_p1_post_remediation_report_go_no_go.v1",
+  "stage13_review_performed": false,
+  "stage_id": "S13"
+}

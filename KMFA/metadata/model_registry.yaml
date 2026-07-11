@@ -1,3 +1,19 @@
+kmfa_v014_s13_p1_post_remediation_financial_operating_report:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s13-p1-post-remediation-financial-operating-report"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S13P1-POST-REMEDIATION-FINANCIAL-OPERATING-REPORT-001
+  parameter_refs:
+    - PARAM-KMFA-1735
+    - PARAM-KMFA-1736
+    - PARAM-KMFA-1737
+    - PARAM-KMFA-1738
+  evidence_dir: KMFA/stage_artifacts/V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT
+  validator: KMFA/tools/check_v014_s13_p1_post_remediation_financial_operating_report.py
+  scope: Current public-safe four-theme weekly and monthly financial operating drafts with seven unique structure sources thirty-five unique candidates zero proven current raw-value bindings browser and raw evidence and Q4 D NO_GO; S13-P2 P3 review upload reinstall formal report and business execution remain closed.
+
 kmfa_v014_s12_post_remediation_stage_review:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-s12-post-remediation-stage-review"

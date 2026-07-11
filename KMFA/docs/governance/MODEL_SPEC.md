@@ -1,3 +1,19 @@
+## FORM-KMFA-V014-S13P1-POST-REMEDIATION-FINANCIAL-OPERATING-REPORT-001
+
+- phase: `V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT`
+- version: `0.1.4-s13-p1-post-remediation-financial-operating-report`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: 在当前 Stage 12 post-remediation review 下生成经营、费用税金资产、现金和贷款 4 条 public-safe 状态型周报/月报初稿。
+- rule: `s13_p1_report_valid = source_lane_count == 4 AND unique_source_count == 7 AND lane_source_binding_count == 8 AND unique_structure_candidate_count == 35 AND lane_structure_candidate_association_count == 40 AND structure_connected_lane_count == 4 AND raw_value_bound_lane_count == 0 AND draft_report_count == 2 AND current_grade == D AND decision == NO_GO AND formal_report_count == 0 AND business_decision_basis_count == 0 AND raw_exact == true`。
+- source gate: 公开证据只含聚合结构计数，不含原始文件名、来源身份、字段/表头、金额或私有诊断。
+- value gate: `4/4` 结构接入不等于数值接入；当前可证明数值绑定 `0/4`，不得填造金额或升级等级。
+- history gate: 旧 S13-P1 的 `12 pending` 和 v1.4 B 级样板只作 historical fixture，不是当前动态事实。
+- report gate: 周报/月报仅为 D 级内部复核初稿；formal report、decision basis 和 business execution=false。
+- raw gate: phase 前后、跨 Stage 12 review 与当前只读快照一致；private evidence 必须 ignored 且 untracked。
+- downstream gate: S13-P2/P3、Stage 13 review、GitHub upload、app reinstall、persistent write 与 business execution=false。
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s13_p1_post_remediation_financial_operating_report.py --require-private-evidence --require-browser-evidence --require-final-evidence`
+- evidence: `KMFA/stage_artifacts/V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT/machine/financial_operating_report_manifest.json`
+
 ## FORM-KMFA-V014-S12-POST-REMEDIATION-STAGE-REVIEW-001
 
 - phase: `V014_S12_POST_REMEDIATION_STAGE_REVIEW`

@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260711-V014-S12-POST-REMEDIATION-STAGE-REVIEW"
+as_of_event_id: "DEV-KMFA-20260711-V014-S13-P1-POST-REMEDIATION-FINANCIAL-OPERATING-REPORT"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "8f2430d30539421bddf14e5e21c6415e686e42dc"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S12_POST_REMEDIATION_STAGE_REVIEW_COMMIT"
-snapshot_event_time: "2026-07-11T12:19:50+10:00"
-generator_version: "manual-0.1.4-s12-post-remediation-stage-review"
+source_base_commit: "6d85b76f303abc8fe34c76ae7159d5a1ce6c1a12"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT_COMMIT"
+snapshot_event_time: "2026-07-11T12:54:32+10:00"
+generator_version: "manual-0.1.4-s13-p1-post-remediation-financial-operating-report"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1352
-    total_active_formulas: 290
+    total_active_parameters: 1356
+    total_active_formulas: 291
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -37,6 +37,9 @@ dimensions:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     evidence_refs:
+      - "KMFA/stage_artifacts/V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT/human/test_results_zh.md"
+      - "KMFA/tools/check_v014_s13_p1_post_remediation_financial_operating_report.py"
+      - "KMFA/stage_artifacts/V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT/machine/financial_operating_report_manifest.json"
       - "KMFA/stage_artifacts/V014_S12_POST_REMEDIATION_STAGE_REVIEW/human/test_results_zh.md"
       - "KMFA/tools/check_v014_s12_post_remediation_stage_review.py"
       - "KMFA/stage_artifacts/V014_S12_POST_REMEDIATION_STAGE_REVIEW/machine/stage12_post_remediation_review_manifest.json"
@@ -947,6 +950,43 @@ dimensions:
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
+kmfa_v014_s13_p1_post_remediation_financial_operating_report:
+  status: completed_validated_local_only_s13_p1_draft_no_go_upload_deferred
+  phase_id: V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT
+  task_id: KMFA-V014-S13-P1-POST-REMEDIATION-FINANCIAL-OPERATING-REPORT-20260711
+  acceptance_id: ACC-V014-S13-P1-POST-REMEDIATION-FINANCIAL-OPERATING-REPORT
+  formula_ref: FORM-KMFA-V014-S13P1-POST-REMEDIATION-FINANCIAL-OPERATING-REPORT-001
+  parameter_refs:
+    - PARAM-KMFA-1735
+    - PARAM-KMFA-1736
+    - PARAM-KMFA-1737
+    - PARAM-KMFA-1738
+  decision: NO_GO
+  evidence_ref: KMFA/stage_artifacts/V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT/machine/financial_operating_report_manifest.json
+  validator: KMFA/tools/check_v014_s13_p1_post_remediation_financial_operating_report.py
+  counts:
+    source_lane_count: 4
+    unique_source_count: 7
+    unique_structure_candidate_count: 35
+    structure_connected_lane_count: 4
+    raw_value_bound_lane_count: 0
+    draft_report_count: 2
+    browser_viewport_check_count: 4
+    section_interaction_check_count: 28
+    raw_source_file_count: 5
+  gates:
+    current_data_quality_grade: Q4
+    current_report_grade: D
+    draft_report_allowed: true
+    formal_report_allowed: false
+    business_decision_basis_allowed: false
+    s13_p2_performed: false
+    s13_p3_performed: false
+    stage13_review_performed: false
+    github_upload_performed: false
+    app_reinstall_performed: false
+    business_execution_performed: false
+
 delivery_readiness:
   status: "WHOLE_PROJECT_REVIEWED_NO_GO"
   release_gate: "KMFA-LINEAGE-REPORT-GATE-PENDING_OWNER_SCOPE"
