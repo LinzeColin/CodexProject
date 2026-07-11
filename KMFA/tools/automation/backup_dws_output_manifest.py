@@ -210,16 +210,18 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     try:
-        timestamp = args.timestamp or datetime.now().astimezone().isoformat(timespec="seconds")
-        try:
-            parsed_timestamp = datetime.fromisoformat(timestamp)
-        except ValueError as exc:
-            raise BackupError("INPUT_INVALID", "--timestamp must be ISO-8601") from exc
         repo = args.repo_root.expanduser().resolve()
         dws_project = args.dws_project.expanduser().resolve()
         source_package = args.source_package.expanduser().resolve()
         summary = load_json(args.summary_json.expanduser().resolve(), "DWS summary")
         validation = load_json(args.validation_json.expanduser().resolve(), "DWS validation")
+        timestamp = args.timestamp or summary.get("run_ended")
+        if not isinstance(timestamp, str) or not timestamp:
+            raise BackupError("INPUT_INVALID", "DWS summary run_ended or --timestamp is required")
+        try:
+            parsed_timestamp = datetime.fromisoformat(timestamp)
+        except ValueError as exc:
+            raise BackupError("INPUT_INVALID", "manifest timestamp must be ISO-8601") from exc
         run_id, file_count = validate_inputs(dws_project, source_package, summary, validation)
         ensure_main_ready(repo)
 
