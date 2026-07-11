@@ -89,7 +89,11 @@ TASK_STATUS_PATH = Path("KMFA/metadata/traceability/v1_4_stage_phase_task_status
 HOME_HREF = "../../../V014_S11_P1_POST_REMEDIATION_HOME_NAVIGATION/exports/html/kmfa_home_navigation.html#pending_actions"
 SOURCE_HREF = "../../../V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD/exports/html/kmfa_source_check_board.html"
 PROJECT_HREF = "../../../V014_S11_P3_POST_REMEDIATION_PROJECT_COST_PAGE/exports/html/kmfa_project_cost_page.html"
+P2_HREF = "../../../V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW/exports/html/kmfa_impact_preview_workbench.html"
+P3_HREF = "../../../V014_S12_P3_POST_REMEDIATION_RERUN_MECHANISM/exports/html/kmfa_rerun_workbench.html"
 RETURN_LINKS = (
+    ("impact", P2_HREF, "影响预览"),
+    ("rerun", P3_HREF, "KMFA 重跑机制"),
     ("home", HOME_HREF, "经营分析工作台"),
     ("source", SOURCE_HREF, "KMFA 数据源检查板"),
     ("project", PROJECT_HREF, "KMFA 项目成本页面"),
@@ -528,7 +532,7 @@ def _render_html(groups: list[dict[str, Any]], templates: list[dict[str, Any]]) 
   <div class="app">
     <header class="topbar">
       <div class="brand"><div class="brand-mark">KM</div><div><strong>KMFA</strong><span>经营分析系统</span></div></div>
-      <nav class="top-links" aria-label="返回当前页面"><a data-return-link="home" href="__HOME_HREF__">经营首页</a><a data-return-link="source" href="__SOURCE_HREF__">数据源检查</a><a data-return-link="project" href="__PROJECT_HREF__">项目成本</a></nav>
+      <nav class="top-links" aria-label="阶段页面导航"><a data-return-link="impact" href="__P2_HREF__">影响预览</a><a data-return-link="rerun" href="__P3_HREF__">重跑机制</a><a data-return-link="home" href="__HOME_HREF__">经营首页</a><a data-return-link="source" href="__SOURCE_HREF__">数据源检查</a><a data-return-link="project" href="__PROJECT_HREF__">项目成本</a></nav>
       <div class="gate"><span>当前可信状态</span><strong>Q4 / D · NO_GO</strong></div>
     </header>
     <main>
@@ -543,7 +547,7 @@ def _render_html(groups: list[dict[str, Any]], templates: list[dict[str, Any]]) 
         <div class="editor"><h2>候选事件</h2><div class="selected-summary" id="selected-summary">请选择一个待处理分组。</div><div class="field-grid"><label>处理类型<select class="control" id="event-kind">__KIND_OPTIONS__</select></label><label>处理人<span class="control" id="event-actor" role="status">所有者或授权代理</span></label></div><label style="margin-top:10px">原因与备注<textarea class="control" id="event-reason" placeholder="填写公开安全原因，不输入业务金额、原始字段或明细"></textarea></label><label style="margin-top:10px">影响范围<span class="control" id="event-impact" role="status">待选择事项</span></label><div class="actions" style="margin-top:12px"><button class="button" type="button" data-create-event>生成候选事件</button><button class="button button-secondary" type="button" data-reverse-approved>追加反向事件候选</button></div><div class="feedback" id="event-feedback" aria-live="polite">候选事件只存在于当前页面内存，刷新页面后清空。</div></div>
         <div class="ledger"><h2>当前会话事件</h2><div class="event-count"><span>append-only 草案</span><strong id="ledger-count">0</strong></div><div class="event-log" id="event-log"><div class="empty">尚未生成候选事件</div></div></div>
       </section>
-      <section class="flow" aria-label="阶段边界"><div><span>当前 phase</span><strong>S12-P1 · 候选事件</strong></div><div><span>后续独立 phase</span><strong>S12-P2 · 影响预览</strong></div><div><span>后续独立 phase</span><strong>S12-P3 · 派生重跑</strong></div></section>
+      <section class="flow" aria-label="阶段边界"><div><span>已完成</span><strong>S12-P1 · 候选事件</strong></div><div><span>已完成</span><strong>S12-P2 · 影响预览</strong></div><div><span>已完成</span><strong>S12-P3 · 派生重跑</strong></div></section>
       <footer>公开页面只含聚合计数、状态与候选事件模板，不含原始文件身份、表头、业务金额、项目或客户明文。</footer>
     </main>
   </div>
@@ -573,6 +577,8 @@ def _render_html(groups: list[dict[str, Any]], templates: list[dict[str, Any]]) 
   </script>
 </body>
 </html>"""
+        .replace("__P2_HREF__", html.escape(P2_HREF))
+        .replace("__P3_HREF__", html.escape(P3_HREF))
         .replace("__HOME_HREF__", html.escape(HOME_HREF))
         .replace("__SOURCE_HREF__", html.escape(SOURCE_HREF))
         .replace("__PROJECT_HREF__", html.escape(PROJECT_HREF))

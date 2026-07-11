@@ -129,8 +129,8 @@ class TestV014S12P2PostRemediationImpactPreview(unittest.TestCase):
         self.assertEqual(len(evidence["second_confirmation_checks"]), 2)
         self.assertEqual(len(evidence["publish_block_checks"]), 4)
         self.assertEqual(len(evidence["reload_reset_checks"]), 2)
-        self.assertEqual(len(evidence["return_link_http_checks"]), 4)
-        self.assertEqual(len(evidence["actual_navigation_checks"]), 4)
+        self.assertEqual(len(evidence["return_link_http_checks"]), 5)
+        self.assertEqual(len(evidence["actual_navigation_checks"]), 5)
         self.assertTrue(all(row["no_horizontal_overflow"] for row in evidence["viewport_checks"]))
         self.assertTrue(all(row["console_error_count"] == 0 for row in evidence["viewport_checks"]))
         ignored = subprocess.run(["git", "check-ignore", "-q", PRIVATE.as_posix()]).returncode

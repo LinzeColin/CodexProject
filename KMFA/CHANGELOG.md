@@ -1,3 +1,11 @@
+## 0.1.4-s12-post-remediation-stage-review - 2026-07-11
+
+- 完成 `V014_S12_POST_REMEDIATION_STAGE_REVIEW` 本地整体复审：S12-P1/P2/P3 strict validators 与 focused tests 复验通过，7 个 findings 全部修复，open=0。
+- 修复 P1 缺少 P2/P3 前向入口、P2 缺少 P3 入口和 P1/P2 过期阶段状态；当前三页形成 6 条有向边，desktop/mobile 的 6 视口、6 交互、6 HTTP 和 6 真实导航全部通过。
+- 历史 `5 manual events / 2 eligible / 8 rerun steps` 与 upload-ready 语义隔离为历史策略夹具；当前链锁定为 `6 groups / 6 previews / 6 plans / 24 planned session steps`。
+- 当前 approved/published=`0/0`，persistent invalidation/rerun/consistency=`0/0/0`，继续保持 `Q4 / D / NO_GO / 3-9-2-1`、0 条可证明项目归属和 4 个潜在槽位。
+- 5 个 raw 文件在 review 前后、跨 S12-P3 和当前快照一致；未执行 S13-P1、GitHub upload、app reinstall、正式报告、持久业务写入或 business execution。
+
 ## 0.1.4-s12-p3-post-remediation-rerun-mechanism - 2026-07-11
 
 - 完成 `V014_S12_P3_POST_REMEDIATION_RERUN_MECHANISM` 本地 phase：6 个当前重跑计划覆盖 S12-P2 全部影响定义，每份包含字段映射、事实层、指标、报告引用 4 层，共 24 个计划步骤。
@@ -11,14 +19,14 @@
 - 完成 `V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW` 本地 phase：6 个公开安全影响定义覆盖 S12-P1 全部待办，并展示潜在项目范围、16 类指标状态和 6 类报告入口影响。
 - 5 个高风险定义必须完成 session-only 二次确认；中风险预览可直接形成会话预览通过状态，但所有批准和发布仍被 `Q4 / D / NO_GO` 阻断。
 - 4 个项目仅作为潜在影响槽位，不公开项目名、金额或归属结论；预览通过不代表业务批准，当前批准/发布业务事件均为 0。
-- v1.4 基线 `54/54 PASS`、当前页 `14/14 PASS`；桌面/移动完成搜索、风险筛选、中/高风险预览、确认前阻断、二次确认、确认后发布阻断、刷新清空和 4 个返回链接，console error 与横向溢出均为 0。
+- v1.4 基线 `54/54 PASS`、当前页 `14/14 PASS`；桌面/移动完成搜索、风险筛选、中/高风险预览、确认前阻断、二次确认、确认后发布阻断、刷新清空和 5 个返回链接，console error 与横向溢出均为 0。
 - 5 个 raw 文件在 phase 前后、跨 S12-P1 和当前复核一致；未执行 S12-P3 重跑、Stage 12 review、持久业务写入、GitHub upload、app reinstall、正式报告或 business execution。
 
 ## 0.1.4-s12-p1-post-remediation-pending-actions - 2026-07-11
 
 - 完成 `V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS` 本地 phase：以 6 个公开安全、不可相加的待处理分组覆盖当前 `Q4 / D / NO_GO / 3-9-2-1`、4 个未公开归属项目槽位和 13 行来源状态。
 - 提供字段映射、项目匹配、差异处理和备注 4 类 session-only 候选事件模板；每类均包含处理人引用、会话时间、原因、影响范围和版本，并执行 append-only 与批准后反向事件策略。
-- 可点击工作台完成搜索、类型/状态筛选、行选择、候选事件、反向事件、刷新清空和 3 个当前页面返回链接；v1.4 基线 `54/54 PASS`、当前页 `13/13 PASS`，桌面/移动 console error 与横向溢出均为 0。
+- 可点击工作台完成搜索、类型/状态筛选、行选择、候选事件、反向事件、刷新清空和 5 个页面返回链接；v1.4 基线 `54/54 PASS`、当前页 `13/13 PASS`，桌面/移动 console error 与横向溢出均为 0。
 - 5 个 raw 文件在 phase 前后、跨 Stage 11 review 和当前复核一致；公开仓库仅含聚合状态，不含 raw 文件名、字段、金额、项目/客户明文或私有诊断。
 - 未执行 S12-P2 影响预览、S12-P3 重跑、Stage 12 review、持久业务写入、GitHub upload、app reinstall、正式报告或 business execution。
 

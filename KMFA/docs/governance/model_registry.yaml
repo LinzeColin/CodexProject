@@ -1,3 +1,18 @@
+kmfa_v014_s12_post_remediation_stage_review:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s12-post-remediation-stage-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S12-POST-REMEDIATION-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1732
+    - PARAM-KMFA-1733
+    - PARAM-KMFA-1734
+  evidence_dir: KMFA/stage_artifacts/V014_S12_POST_REMEDIATION_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s12_post_remediation_stage_review.py
+  scope: Current Stage 12 post-remediation review with seven fixed findings three frozen phase validators six cross-page links six desktop-mobile viewports historical 5 2 8 state quarantined zero persistent execution fresh raw evidence and Q4 D NO_GO; S13 upload reinstall formal report and business execution remain closed.
+
 kmfa_v014_s12_p3_post_remediation_rerun_mechanism:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-s12-p3-post-remediation-rerun-mechanism"

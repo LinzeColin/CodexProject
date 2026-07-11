@@ -255,13 +255,13 @@ def _validate_html(errors: list[str]) -> None:
         "高风险二次确认",
         "未通过影响预览不得发布",
         "Q4 / D · NO_GO",
-        "S12-P3 重跑未执行",
+        "Stage 12 三个 phase 均已完成",
     ):
         _require(token in text, f"HTML token missing: {token}", errors)
     for token in ("data-rerun", "localStorage", "sessionStorage", "indexedDB", "fetch(", "XMLHttpRequest"):
         _require(token not in text, f"forbidden HTML behavior: {token}", errors)
     _require(text.count("data-generate-preview=") == 6, "HTML preview button count mismatch", errors)
-    _require(text.count("data-return-link=") == 4, "HTML return link count mismatch", errors)
+    _require(text.count("data-return-link=") == 5, "HTML return link count mismatch", errors)
 
 
 def _validate_dependencies(errors: list[str]) -> None:
@@ -375,8 +375,8 @@ def _validate_private(errors: list[str], require_browser_evidence: bool) -> None
         "second_confirmation_checks": 2,
         "publish_block_checks": 4,
         "reload_reset_checks": 2,
-        "return_link_http_checks": 4,
-        "actual_navigation_checks": 4,
+        "return_link_http_checks": 5,
+        "actual_navigation_checks": 5,
     }
     for key, count in expected_counts.items():
         rows = browser.get(key, [])

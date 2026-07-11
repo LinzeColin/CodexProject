@@ -80,11 +80,13 @@ STAGE_STATUS_PATH = s12_p1.STAGE_STATUS_PATH
 TASK_STATUS_PATH = s12_p1.TASK_STATUS_PATH
 
 P1_HREF = "../../../V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS/exports/html/kmfa_pending_actions_workbench.html"
+P3_HREF = "../../../V014_S12_P3_POST_REMEDIATION_RERUN_MECHANISM/exports/html/kmfa_rerun_workbench.html"
 HOME_HREF = s12_p1.HOME_HREF
 SOURCE_HREF = s12_p1.SOURCE_HREF
 PROJECT_HREF = s12_p1.PROJECT_HREF
 RETURN_LINKS = (
     ("pending", P1_HREF, "待处理事项"),
+    ("rerun", P3_HREF, "KMFA 重跑机制"),
     ("home", HOME_HREF, "经营分析工作台"),
     ("source", SOURCE_HREF, "KMFA 数据源检查板"),
     ("project", PROJECT_HREF, "KMFA 项目成本页面"),
@@ -404,8 +406,8 @@ def _render_html(previews: list[dict[str, Any]]) -> str:
       <div class="panel"><div class="panel-head"><h2>待预览事项</h2><span id="visible-count">6 项</span></div><div class="filters"><input class="control" type="search" data-preview-search aria-label="搜索影响预览" placeholder="搜索事项、指标或报告"><select class="control" data-risk-filter aria-label="按风险筛选"><option value="">全部风险</option><option value="high">高风险</option><option value="medium">中风险</option></select><button class="button button-muted" type="button" data-reset-filters>重置</button></div><div class="preview-list">__ROWS__</div></div>
       <div class="panel workbench"><div class="panel-head" style="padding:0 0 12px"><h2>会话影响预览</h2><span>不写业务状态</span></div><div class="selected-summary" id="selected-summary">请选择一个事项并生成影响预览。</div><div class="impact-grid"><section class="impact-box"><h3>受影响项目</h3><ul id="affected-projects"><li>待生成预览</li></ul></section><section class="impact-box"><h3>受影响指标</h3><ul id="affected-metrics"><li>待生成预览</li></ul></section><section class="impact-box"><h3>受影响报告</h3><ul id="affected-reports"><li>待生成预览</li></ul></section></div><section class="confirm" id="high-risk-confirm" hidden><h3 style="margin:0 0 8px">高风险二次确认</h3><label><input type="checkbox" data-high-risk-ack>我已阅读潜在项目、指标和报告影响；此确认只作用于当前会话。</label><button class="button" type="button" data-confirm-preview style="margin-top:10px">完成二次确认</button></section><div class="status-line"><span>预览状态</span><strong id="preview-status">尚未生成</strong></div><div class="status-line"><span>发布状态</span><strong id="publish-status">阻断</strong></div><div class="actions"><button class="button" type="button" data-check-publish>检查发布门禁</button><button class="button button-secondary" type="button" data-reset-session>清空会话预览</button></div><div class="feedback" id="impact-feedback" aria-live="polite">工作台已就绪；所有预览和确认仅保留在当前页面内存。</div></div>
     </section>
-    <section class="flow" aria-label="阶段边界"><div><span>已完成</span><strong>S12-P1 · 候选事件</strong></div><div><span>当前 phase</span><strong>S12-P2 · 影响预览</strong></div><div><span>后续独立 phase</span><strong>S12-P3 · 派生重跑</strong></div></section>
-    <footer>公开页面只含聚合计数和影响范围标签，不含原始文件身份、字段表头、业务金额、项目或客户明文。S12-P3 重跑未执行。</footer>
+    <section class="flow" aria-label="阶段边界"><div><span>已完成</span><strong>S12-P1 · 候选事件</strong></div><div><span>已完成</span><strong>S12-P2 · 影响预览</strong></div><div><span>已完成</span><strong>S12-P3 · 派生重跑</strong></div></section>
+    <footer>公开页面只含聚合计数和影响范围标签，不含原始文件身份、字段表头、业务金额、项目或客户明文。Stage 12 三个 phase 均已完成，当前仍为 Q4 / D · NO_GO。</footer>
   </main>
   <script>
     const previews=__PREVIEWS__;
