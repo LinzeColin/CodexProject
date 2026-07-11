@@ -1,3 +1,20 @@
+## FORM-KMFA-V014-S16-P2-POST-REMEDIATION-PROJECT-STATUS-LIFECYCLE-001
+
+- phase: V014_S16_P2_POST_REMEDIATION_PROJECT_STATUS_LIFECYCLE
+- version: 0.1.4-s16-p2-post-remediation-project-status-lifecycle
+- model_id: MOD-KMFA-GOV-001
+- scope: 只读接入生产项目状态、开工、完工、结算、开票和回款六类结构，锁定六状态生命周期、四类异常规则和三项人工交接门禁，不生成未证明的项目状态或业务动作。
+- rule: s16_p2_valid = source_lane_count == 6 AND private_candidate_covered_lane_count == 6 AND private_probe_roundtrip_mismatch_count == 0 AND processed_private_structure_alignment_exact == true AND authoritative_row_binding_count == 0 AND materialized_project_lifecycle_record_count == 0 AND lifecycle_exception_rule_count == 4 AND lifecycle_exception_item_count == 0 AND raw_exact == true AND current_grade == D AND decision == NO_GO。
+- probe gate: 5 raw / 48 XLSX / 25 parseable / 23 unparseable / 4,198 sheets / 2,021 unique candidates / 2,277 lane associations / 224 multi-lane / 0 mismatch。
+- lifecycle gate: 6 states / 5 transitions / 0 authoritative rows / 0 authoritative values / 0 materialized lifecycle records。
+- exception gate: 4 rules / 0 actual exception items / 3 human handoff guards / 0 public business values。
+- history gate: legacy 4 lifecycle records / 3 exception items / 3 handoff guards are non-authoritative fixtures only。
+- browser gate: baseline 54/54、current 14/14、2 viewports、12 lane interactions、8 rule interactions、4 HTTP、4 navigation、0 console、0 overflow。
+- raw gate: phase 前后、跨 S16-P1 和当前只读快照一致；raw/private 明文不得进入 Git。
+- downstream gate: S16-P3、Stage 16 review、site construction、safety/technical signature、invoice issuance、collection、payment、bank、upload、reinstall、formal report、difference closure 与 business execution=false。
+- validator: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s16_p2_post_remediation_project_status_lifecycle.py --require-private-evidence --require-browser-evidence --require-final-evidence
+- evidence: KMFA/stage_artifacts/V014_S16_P2_POST_REMEDIATION_PROJECT_STATUS_LIFECYCLE/machine/project_status_lifecycle_manifest.json
+
 ## FORM-KMFA-V014-S16-P1-POST-REMEDIATION-SUBCONTRACT-PROCUREMENT-001
 
 - phase: V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT

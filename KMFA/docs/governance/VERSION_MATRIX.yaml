@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-s16-p1-post-remediation-subcontract-procurement"
-product_version_status: "completed_validated_local_only_s16_p1_structure_candidates_zero_transaction_materialization_no_go_upload_deferred"
-version_file_value: "0.1.4-s16-p1-post-remediation-subcontract-procurement"
+product_version: "0.1.4-s16-p2-post-remediation-project-status-lifecycle"
+product_version_status: "completed_validated_local_only_s16_p2_structure_candidates_zero_lifecycle_materialization_no_go_upload_deferred"
+version_file_value: "0.1.4-s16-p2-post-remediation-project-status-lifecycle"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-s16-p1-post-remediation-subcontract-procurement"
+  MOD-KMFA-GOV-001: "0.1.4-s16-p2-post-remediation-project-status-lifecycle"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_s16_p2_post_remediation_project_status_lifecycle: "0.1.4-s16-p2-post-remediation-project-status-lifecycle"
   kmfa_v014_s16_p1_post_remediation_subcontract_procurement: "0.1.4-s16-p1-post-remediation-subcontract-procurement"
   kmfa_v014_s15_post_remediation_stage_review: "0.1.4-s15-post-remediation-stage-review"
   kmfa_v014_s15_p3_post_remediation_salary_boundary: "0.1.4-s15-p3-post-remediation-salary-boundary"
@@ -436,11 +437,72 @@ parameter_profile_versions:
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_blocked_handoff_final_threshold_recheck_after_reminder: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-final-threshold-recheck-after-reminder"
   kmfa_project_cost_mvp: "blocked_no_go_owner_scope_required"
 data_snapshot_version: "not_applicable_no_raw_data_committed"
-current_iteration: "ITER-20260712-KMFA-V014-S16-P1-POST-REMEDIATION-SUBCONTRACT-PROCUREMENT"
-current_phase: "V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT"
-current_task_id: "KMFA-V014-S16-P1-POST-REMEDIATION-SUBCONTRACT-PROCUREMENT-20260712"
-current_acceptance_id: "ACC-V014-S16-P1-POST-REMEDIATION-SUBCONTRACT-PROCUREMENT"
-current_gate: "NO_GO_S16_P2_NEXT_SEPARATE_RUN_UPLOAD_REINSTALL_DEFERRED"
+current_iteration: "ITER-20260712-KMFA-V014-S16-P2-POST-REMEDIATION-PROJECT-STATUS-LIFECYCLE"
+current_phase: "V014_S16_P2_POST_REMEDIATION_PROJECT_STATUS_LIFECYCLE"
+current_task_id: "KMFA-V014-S16-P2-POST-REMEDIATION-PROJECT-STATUS-LIFECYCLE-20260712"
+current_acceptance_id: "ACC-V014-S16-P2-POST-REMEDIATION-PROJECT-STATUS-LIFECYCLE"
+current_gate: "NO_GO_S16_P3_NEXT_SEPARATE_RUN_UPLOAD_REINSTALL_DEFERRED"
+
+kmfa_v014_s16_p2_post_remediation_project_status_lifecycle:
+  status: completed_validated_local_only_s16_p2_structure_candidates_zero_lifecycle_materialization_no_go_upload_deferred
+  phase: V014_S16_P2_POST_REMEDIATION_PROJECT_STATUS_LIFECYCLE
+  evidence_dir: KMFA/stage_artifacts/V014_S16_P2_POST_REMEDIATION_PROJECT_STATUS_LIFECYCLE
+  validator: KMFA/tools/check_v014_s16_p2_post_remediation_project_status_lifecycle.py
+  focused_test: KMFA/tests/test_v014_s16_p2_post_remediation_project_status_lifecycle.py
+  github_upload: blocked_no_go_upload_deferred
+  counts:
+    source_lane_count: 6
+    raw_source_file_count: 5
+    private_xlsx_container_count: 48
+    private_parseable_xlsx_count: 25
+    private_unparseable_xlsx_count: 23
+    private_parseable_sheet_count: 4198
+    private_unique_candidate_sheet_count: 2021
+    private_candidate_lane_association_count: 2277
+    private_multi_lane_candidate_sheet_count: 224
+    private_probe_roundtrip_mismatch_count: 0
+    lifecycle_state_count: 6
+    lifecycle_transition_count: 5
+    authoritative_row_binding_count: 0
+    authoritative_value_binding_count: 0
+    materialized_project_lifecycle_record_count: 0
+    lifecycle_exception_rule_count: 4
+    lifecycle_exception_item_count: 0
+    handoff_guard_count: 3
+    public_business_value_count: 0
+  gates:
+    raw_snapshot_exact_match: true
+    raw_cross_phase_snapshot_exact_match: true
+    processed_private_structure_alignment_exact: true
+    s16_p1_performed: true
+    s16_p2_performed: true
+    s16_p3_performed: false
+    stage16_review_performed: false
+    site_construction_performed: false
+    safety_signature_performed: false
+    technical_signature_performed: false
+    invoice_issuance_performed: false
+    collection_action_performed: false
+    payment_execution_performed: false
+    bank_operation_performed: false
+    github_upload_performed: false
+    app_reinstall_performed: false
+    formal_report_release_performed: false
+    difference_closure_performed: false
+    business_execution_performed: false
+  forbidden_scope:
+    raw_inbox_write: false
+    raw_inbox_delete: false
+    raw_inbox_move: false
+    raw_inbox_rename: false
+    site_construction: false
+    safety_signature: false
+    technical_signature: false
+    invoice_issuance: false
+    collection_action: false
+    github_upload: false
+    app_reinstall: false
+    business_execution: false
 
 kmfa_v014_s16_p1_post_remediation_subcontract_procurement:
   status: completed_validated_local_only_s16_p1_structure_candidates_zero_transaction_materialization_no_go_upload_deferred

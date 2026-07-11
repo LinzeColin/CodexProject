@@ -1,3 +1,17 @@
+## 2026-07-12 - V014 S16-P2 post-remediation project status lifecycle
+
+- phase: V014_S16_P2_POST_REMEDIATION_PROJECT_STATUS_LIFECYCLE
+- task: KMFA-V014-S16-P2-POST-REMEDIATION-PROJECT-STATUS-LIFECYCLE-20260712
+- product_version: 0.1.4-s16-p2-post-remediation-project-status-lifecycle
+- result: completed_validated_local_only_s16_p2_structure_candidates_zero_lifecycle_materialization_no_go_upload_deferred / NO_GO
+- private probe: raw=5 / XLSX=48 / parseable=25 / unparseable=23 / sheets=4,198 / unique candidates=2,021 / lane associations=2,277 / multi-lane=224 / mismatch=0.
+- current output: 6 source lanes / 6 states / 5 transitions / 0 authoritative rows / 0 lifecycle records / 4 exception rules / 0 exception items / 3 handoff guards.
+- history gate: legacy 4 lifecycle records / 3 exception items / 3 handoff guards remain quarantined and non-authoritative.
+- browser: baseline 54/54 PASS、current 14/14 PASS；viewports/lanes/rules/HTTP/navigation=2/12/8/4/4，console/overflow=0/0。
+- raw proof: phase before/after, cross-S16-P1 and current snapshots exact; raw/private details and screenshots remain ignored.
+- boundary: S16-P3、Stage 16 review、site construction、safety/technical signature、invoice issuance、collection、payment、bank、GitHub upload、app reinstall、formal report、difference closure and business execution were not performed; next step is S16-P3 only.
+- evidence: KMFA/stage_artifacts/V014_S16_P2_POST_REMEDIATION_PROJECT_STATUS_LIFECYCLE/machine/project_status_lifecycle_manifest.json
+
 ## 2026-07-12 - V014 S16-P1 post-remediation subcontract procurement
 
 - phase: V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT

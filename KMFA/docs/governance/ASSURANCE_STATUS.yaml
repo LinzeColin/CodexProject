@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260712-V014-S16-P1-POST-REMEDIATION-SUBCONTRACT-PROCUREMENT"
+as_of_event_id: "DEV-KMFA-20260712-V014-S16-P2-POST-REMEDIATION-PROJECT-STATUS-LIFECYCLE"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "66554b849d721f240a239664f62fdee9481aafeb"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT_COMMIT"
-snapshot_event_time: "2026-07-12T00:12:08+10:00"
-generator_version: "manual-0.1.4-s16-p1-post-remediation-subcontract-procurement"
+source_base_commit: "2d85a5f2eb3b7cb0dd67ee01952488bc6b504bf5"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S16_P2_POST_REMEDIATION_PROJECT_STATUS_LIFECYCLE_COMMIT"
+snapshot_event_time: "2026-07-12T01:33:50+10:00"
+generator_version: "manual-0.1.4-s16-p2-post-remediation-project-status-lifecycle"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1400
-    total_active_formulas: 303
+    total_active_parameters: 1403
+    total_active_formulas: 304
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -974,6 +974,75 @@ dimensions:
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
+kmfa_v014_s16_p2_post_remediation_project_status_lifecycle:
+  status: completed_validated_local_only_s16_p2_structure_candidates_zero_lifecycle_materialization_no_go_upload_deferred
+  phase_id: V014_S16_P2_POST_REMEDIATION_PROJECT_STATUS_LIFECYCLE
+  task_id: KMFA-V014-S16-P2-POST-REMEDIATION-PROJECT-STATUS-LIFECYCLE-20260712
+  acceptance_id: ACC-V014-S16-P2-POST-REMEDIATION-PROJECT-STATUS-LIFECYCLE
+  formula_ref: FORM-KMFA-V014-S16-P2-POST-REMEDIATION-PROJECT-STATUS-LIFECYCLE-001
+  parameter_refs:
+    - PARAM-KMFA-1783
+    - PARAM-KMFA-1784
+    - PARAM-KMFA-1785
+  decision: NO_GO
+  evidence_ref: KMFA/stage_artifacts/V014_S16_P2_POST_REMEDIATION_PROJECT_STATUS_LIFECYCLE/machine/project_status_lifecycle_manifest.json
+  validator: KMFA/tools/check_v014_s16_p2_post_remediation_project_status_lifecycle.py
+  counts:
+    source_lane_count: 6
+    raw_source_file_count: 5
+    private_xlsx_container_count: 48
+    private_parseable_xlsx_count: 25
+    private_unparseable_xlsx_count: 23
+    private_parseable_sheet_count: 4198
+    private_unique_candidate_sheet_count: 2021
+    private_candidate_lane_association_count: 2277
+    private_multi_lane_candidate_sheet_count: 224
+    private_probe_roundtrip_mismatch_count: 0
+    lifecycle_state_count: 6
+    lifecycle_transition_count: 5
+    authoritative_row_binding_count: 0
+    authoritative_value_binding_count: 0
+    materialized_project_lifecycle_record_count: 0
+    lifecycle_exception_rule_count: 4
+    lifecycle_exception_item_count: 0
+    handoff_guard_count: 3
+    public_business_value_count: 0
+    baseline_html_pass_count: 54
+    current_html_pass_count: 14
+    browser_viewport_check_count: 2
+    lane_interaction_check_count: 12
+    rule_interaction_check_count: 8
+    dependency_link_http_check_count: 4
+    dependency_navigation_check_count: 4
+    console_error_count: 0
+    horizontal_overflow_count: 0
+    open_final_difference_accepted_count: 3
+    nonzero_delta_reconciliation_count: 9
+    zero_delta_reconciliation_count: 2
+    incomplete_reconciliation_count: 1
+  gates:
+    raw_snapshot_exact_match: true
+    raw_cross_phase_snapshot_exact_match: true
+    processed_private_structure_alignment_exact: true
+    lifecycle_record_materialization_allowed: false
+    exception_item_materialization_allowed: false
+    s16_p1_performed: true
+    s16_p2_performed: true
+    s16_p3_performed: false
+    stage16_review_performed: false
+    site_construction_performed: false
+    safety_signature_performed: false
+    technical_signature_performed: false
+    invoice_issuance_performed: false
+    collection_action_performed: false
+    payment_execution_performed: false
+    bank_operation_performed: false
+    github_upload_performed: false
+    app_reinstall_performed: false
+    formal_report_release_performed: false
+    difference_closure_performed: false
+    business_execution_performed: false
+
 kmfa_v014_s16_p1_post_remediation_subcontract_procurement:
   status: completed_validated_local_only_s16_p1_structure_candidates_zero_transaction_materialization_no_go_upload_deferred
   phase_id: V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT
