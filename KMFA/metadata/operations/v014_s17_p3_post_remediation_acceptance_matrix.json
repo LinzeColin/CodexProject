@@ -1,8 +1,8 @@
 {
   "acceptance_id": "ACC-V014-S17-P3-POST-REMEDIATION-OPERATIONS-SOP",
-  "check_count": 15,
+  "check_count": 17,
   "check_fail_count": 0,
-  "check_pass_count": 15,
+  "check_pass_count": 17,
   "checks": [
     {
       "check_id": "V014-S17-P3-ACC-001",
@@ -26,56 +26,66 @@
     },
     {
       "check_id": "V014-S17-P3-ACC-005",
-      "name": "error_drill",
+      "name": "canonical_roles",
       "status": "PASS"
     },
     {
       "check_id": "V014-S17-P3-ACC-006",
-      "name": "backup_restore",
+      "name": "audit_mapping",
       "status": "PASS"
     },
     {
       "check_id": "V014-S17-P3-ACC-007",
-      "name": "no_production_restore",
+      "name": "error_drill",
       "status": "PASS"
     },
     {
       "check_id": "V014-S17-P3-ACC-008",
-      "name": "no_raw_copy",
+      "name": "backup_restore",
       "status": "PASS"
     },
     {
       "check_id": "V014-S17-P3-ACC-009",
-      "name": "no_external",
+      "name": "no_production_restore",
       "status": "PASS"
     },
     {
       "check_id": "V014-S17-P3-ACC-010",
-      "name": "no_business_execution",
+      "name": "no_raw_copy",
       "status": "PASS"
     },
     {
       "check_id": "V014-S17-P3-ACC-011",
-      "name": "raw_exact",
+      "name": "no_external",
       "status": "PASS"
     },
     {
       "check_id": "V014-S17-P3-ACC-012",
-      "name": "quality",
+      "name": "no_business_execution",
       "status": "PASS"
     },
     {
       "check_id": "V014-S17-P3-ACC-013",
-      "name": "stage_review_closed",
+      "name": "raw_exact",
       "status": "PASS"
     },
     {
       "check_id": "V014-S17-P3-ACC-014",
-      "name": "stage18_closed",
+      "name": "quality",
       "status": "PASS"
     },
     {
       "check_id": "V014-S17-P3-ACC-015",
+      "name": "stage_review_closed",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P3-ACC-016",
+      "name": "stage18_closed",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P3-ACC-017",
       "name": "upload_closed",
       "status": "PASS"
     }

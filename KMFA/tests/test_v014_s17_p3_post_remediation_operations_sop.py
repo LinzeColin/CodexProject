@@ -68,6 +68,12 @@ class V014S17P3PostRemediationOperationsSopTests(unittest.TestCase):
             self.assertFalse(row["external_service_allowed"])
             self.assertFalse(row["business_execution_allowed"])
             self.assertFalse(row["formal_report_release_allowed"])
+        self.assertEqual({row["owner_role"] for row in self.runbooks}, {"management", "finance", "reviewer"})
+        self.assertEqual(
+            {row["audit_action_type"] for row in self.runbooks},
+            {"import", "processing", "report"},
+        )
+        self.assertTrue(all(len(row["audit_required_fields"]) == 7 for row in self.runbooks))
 
     @unittest.skipUnless(IMPLEMENTATION_EXISTS, "implementation not written yet")
     def test_finance_sop_and_handoff_are_index_only(self) -> None:
@@ -80,6 +86,7 @@ class V014S17P3PostRemediationOperationsSopTests(unittest.TestCase):
             self.assertFalse(row["automated_finance_execution_allowed"])
             self.assertFalse(row["private_document_committed"])
             self.assertFalse(row["raw_business_data_committed"])
+        self.assertEqual({row["owner_role"] for row in self.knowledge}, {"finance", "reviewer"})
 
     @unittest.skipUnless(IMPLEMENTATION_EXISTS, "implementation not written yet")
     def test_error_handling_drill_rejects_both_invalid_candidates(self) -> None:
@@ -183,10 +190,12 @@ class V014S17P3PostRemediationOperationsSopTests(unittest.TestCase):
         self.assertIn(self.phase.FORMULA_ID, formula)
         for parameter_id in self.phase.PARAMETER_IDS:
             self.assertIn(parameter_id, parameters)
-        self.assertIn(f'current_phase: "{self.phase.PHASE_ID}"', version_matrix)
-        self.assertIn("下一步只能执行 Stage 17 整体复审", handoff)
-        self.assertIn("不得执行 Stage 18", handoff)
-        self.assertIn("不得执行 GitHub upload", handoff)
+        self.assertIn(self.phase.MODEL_REGISTRY_KEY, version_matrix)
+        self.assertIn(self.phase.VERSION, version_matrix)
+        if f'current_phase: "{self.phase.PHASE_ID}"' in version_matrix:
+            self.assertIn("下一步只能执行 Stage 17 整体复审", handoff)
+            self.assertIn("不得执行 Stage 18", handoff)
+            self.assertIn("不得执行 GitHub upload", handoff)
 
 
 if __name__ == "__main__":

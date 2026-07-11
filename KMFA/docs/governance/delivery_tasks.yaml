@@ -1,6 +1,50 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "KMFA-V014-S17-POST-REMEDIATION-STAGE-REVIEW-20260712"
+    phase: "V014_S17_POST_REMEDIATION_STAGE_REVIEW"
+    objective: "Replay current Stage 17 phases, fix cross-phase role audit and test-time findings, and lock local-only NO_GO review evidence."
+    scope:
+      - "S17-P1 P2 P3 focused tests and strict validator replay"
+      - "canonical role notification outbox runbook knowledge and audit contract matrix"
+      - "five fixed and four passed review findings with zero open"
+      - "read-only raw alignment public safety and governance evidence"
+    non_scope:
+      - "S18-P1 P2 P3 or Stage 18 review"
+      - "raw copy backup mutation production restore external connectors notifications or customer actions"
+      - "GitHub upload app reinstall formal reports difference closure persistent writes or business execution"
+    status: "completed"
+    completed_version: "0.1.4-s17-post-remediation-stage-review"
+    dependencies:
+      - "V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY"
+      - "V014_S17_P2_POST_REMEDIATION_NOTIFICATION"
+      - "V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP"
+      - "V014_S17_STAGE_REVIEW historical fixture only"
+      - "v1.4 roadmap and taskpack"
+    required_files:
+      - "KMFA/stage_artifacts/V014_S17_POST_REMEDIATION_STAGE_REVIEW/machine/stage17_post_remediation_review_manifest.json"
+      - "KMFA/stage_artifacts/V014_S17_POST_REMEDIATION_STAGE_REVIEW/human/stage17_post_remediation_review_report_zh.md"
+      - "KMFA/tools/check_v014_s17_post_remediation_stage_review.py"
+    acceptance_ids:
+      - "ACC-V014-S17-POST-REMEDIATION-STAGE-REVIEW"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s17_p1_post_remediation_access_security"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s17_p2_post_remediation_notification"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s17_p3_post_remediation_operations_sop"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s17_post_remediation_stage_review"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s17_post_remediation_stage_review.py --require-private-evidence --require-final-evidence"
+    test_results:
+      - "PASS: current three-phase focused tests 30 of 30"
+      - "PASS: current three strict validators"
+      - "PASS: eleven findings closed and six cross-phase contracts"
+      - "PASS: raw snapshots exact and all S18 plus business actions closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S17_POST_REMEDIATION_STAGE_REVIEW/human/stage17_post_remediation_review_report_zh.md"
+      - "KMFA/stage_artifacts/V014_S17_POST_REMEDIATION_STAGE_REVIEW/machine/stage17_post_remediation_review_manifest.json"
+    risk: "Local policy metadata and synthetic recovery evidence may be mistaken for live identity notification delivery or production recovery."
+    rollback: "Revert this review and its paired P1/P2/P3 remediation changes together; never mutate copy or back up the raw inbox."
+    target_version: "0.1.4-s17-post-remediation-stage-review"
+
   - task_id: "KMFA-V014-S17-P3-POST-REMEDIATION-OPERATIONS-SOP-20260712"
     phase: "V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP"
     objective: "Lock four manual operations runbooks, two public-safe knowledge indexes, and isolated synthetic error and backup recovery drills without raw or production mutation."

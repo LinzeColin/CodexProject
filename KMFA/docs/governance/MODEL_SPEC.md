@@ -1,3 +1,19 @@
+## FORM-KMFA-V014-S17-POST-REMEDIATION-STAGE-REVIEW-001
+
+- phase: V014_S17_POST_REMEDIATION_STAGE_REVIEW
+- version: 0.1.4-s17-post-remediation-stage-review
+- model_id: MOD-KMFA-GOV-001
+- scope: 复跑当前 Stage 17 三个 phase，修复角色、审计映射、契约时态与 P2/P3 测试时态 findings，并保持通知、恢复、上传和业务动作关闭。
+- rule: stage17_review_valid = phase_pass_count == 3 AND phase_focused_test_pass_count == 30 AND phase_strict_validator_pass_count == 3 AND fixed_review_finding_count == 7 AND open_review_finding_count == 0 AND cross_phase_contract_mismatch_count == 0 AND raw_exact == true AND current_grade == D AND decision == NO_GO。
+- replay gate: 3 phases / 30 focused tests / 3 strict validators / all PASS。
+- finding gate: 11 findings / 7 fixed / 4 passed / 0 open。
+- contract gate: 4 canonical roles / 5 audit actions / 6 checks / 0 mismatch。
+- business gate: delivery/full body/formal report/raw copy/production restore/external/persistent write/business execution=0。
+- raw gate: review 前后、跨 S17-P3 和当前只读快照一致。
+- downstream gate: S18-P1/P2/P3、Stage 18 review、upload、reinstall、formal report、difference closure 与 business execution=false。
+- validator: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s17_post_remediation_stage_review.py --require-private-evidence --require-final-evidence
+- evidence: KMFA/stage_artifacts/V014_S17_POST_REMEDIATION_STAGE_REVIEW/machine/stage17_post_remediation_review_manifest.json
+
 ## FORM-KMFA-V014-S17-P3-POST-REMEDIATION-OPERATIONS-SOP-001
 
 - phase: V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP

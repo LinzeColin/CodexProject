@@ -1,0 +1,89 @@
+{
+  "acceptance_id": "ACC-V014-S17-POST-REMEDIATION-STAGE-REVIEW",
+  "check_count": 16,
+  "check_fail_count": 0,
+  "check_pass_count": 16,
+  "checks": [
+    {
+      "check_id": "V014-S17-REVIEW-ACC-001",
+      "name": "phase_chain",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-REVIEW-ACC-002",
+      "name": "focused_tests",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-REVIEW-ACC-003",
+      "name": "strict_validators",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-REVIEW-ACC-004",
+      "name": "historical_quarantine",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-REVIEW-ACC-005",
+      "name": "canonical_roles",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-REVIEW-ACC-006",
+      "name": "findings_closed",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-REVIEW-ACC-007",
+      "name": "raw_exact",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-REVIEW-ACC-008",
+      "name": "quality",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-REVIEW-ACC-009",
+      "name": "no_delivery",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-REVIEW-ACC-010",
+      "name": "no_full_report",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-REVIEW-ACC-011",
+      "name": "no_restore",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-REVIEW-ACC-012",
+      "name": "no_external",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-REVIEW-ACC-013",
+      "name": "no_persistent_write",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-REVIEW-ACC-014",
+      "name": "no_business_execution",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-REVIEW-ACC-015",
+      "name": "downstream_closed",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-REVIEW-ACC-016",
+      "name": "review_performed",
+      "status": "PASS"
+    }
+  ],
+  "schema_version": "kmfa.v014.s17_post_remediation_stage_review_matrix.v1"
+}

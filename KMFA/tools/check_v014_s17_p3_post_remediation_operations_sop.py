@@ -175,6 +175,13 @@ def _expected_summary() -> dict[str, Any]:
         "knowledge_item_count": 2,
         "knowledge_item_type_count": 2,
         "knowledge_checklist_item_count": 12,
+        "canonical_role_count": 4,
+        "audit_action_type_count": 5,
+        "runbook_owner_role_match_count": 4,
+        "knowledge_owner_role_match_count": 2,
+        "runbook_audit_mapping_match_count": 4,
+        "cross_phase_contract_mismatch_count": 0,
+        "notification_delivery_scope": "audit_log_contract_only_no_delivery",
         "error_handling_drill_count": 1,
         "error_drill_scenario_count": 2,
         "error_drill_rejected_count": 2,
@@ -212,6 +219,10 @@ def _validate_runbooks(errors: list[str]) -> None:
         _require(row.get("record_type") == "v014_s17_p3_post_remediation_operation_runbook", f"runbook record drift: {runbook_type}", errors)
         _require(row.get("execution_mode") == "manual_sop_only", f"runbook mode drift: {runbook_type}", errors)
         _require(len(row.get("steps_zh", [])) == 5, f"runbook steps drift: {runbook_type}", errors)
+        _require(row.get("owner_role") in {"management", "finance", "reviewer", "readonly"}, f"runbook role drift: {runbook_type}", errors)
+        _require(row.get("audit_action_type") in {"import", "processing", "report", "export", "notification"}, f"runbook audit mapping drift: {runbook_type}", errors)
+        _require(row.get("audit_required_fields") == list(phase.s17_p2.AUDIT_REQUIRED_FIELDS), f"runbook audit fields drift: {runbook_type}", errors)
+        _require(row.get("audit_contract_ref") == phase.s17_p2.s17_p1.AUDIT_CONTRACT_PATH.as_posix(), f"runbook audit ref drift: {runbook_type}", errors)
         for key in ("precheck_required", "evidence_required", "rollback_required", "append_only_audit_required"):
             _require(row.get(key) is True, f"runbook control missing: {runbook_type}:{key}", errors)
         for key in (
@@ -234,6 +245,7 @@ def _validate_knowledge(errors: list[str]) -> None:
         _require(row.get("storage_mode") == "public_safe_knowledge_index_only", f"knowledge mode drift: {item_type}", errors)
         _require(row.get("execution_mode") == "knowledge_and_checklist_only", f"knowledge execution drift: {item_type}", errors)
         _require(len(row.get("checklist_zh", [])) == 6, f"knowledge checklist drift: {item_type}", errors)
+        _require(row.get("owner_role") in {"management", "finance", "reviewer", "readonly"}, f"knowledge role drift: {item_type}", errors)
         for key in ("automated_finance_execution_allowed", "business_decision_basis_allowed", "private_document_committed", "raw_business_data_committed", "credential_material_committed"):
             _require(row.get(key) is False, f"knowledge boundary opened: {item_type}:{key}", errors)
 
@@ -309,7 +321,8 @@ def _validate_public(errors: list[str]) -> dict[str, Any]:
     _require(manifest.get("public_repo_safety") == phase._public_safety(), "public safety drift", errors)
     _require(manifest.get("raw_boundary") == phase._raw_boundary(), "raw boundary drift", errors)
     _require(manifest.get("repo_tracking_scan", {}).get("status") == "PASS", "repo tracking scan failed", errors)
-    _require(matrix.get("check_count") == 15 and matrix.get("check_pass_count") == 15 and matrix.get("check_fail_count") == 0, "acceptance matrix failed", errors)
+    _require(matrix.get("check_count") == 17 and matrix.get("check_pass_count") == 17 and matrix.get("check_fail_count") == 0, "acceptance matrix failed", errors)
+    _require(manifest.get("cross_phase_contract_state", {}).get("cross_phase_contract_mismatch_count") == 0, "cross-phase contract mismatch", errors)
     _require(go_no_go.get("s17_p3_validated") is True, "S17-P3 go/no-go missing", errors)
     for key, value in go_no_go.items():
         if key.endswith("_allowed") or key.endswith("_allowed_in_this_run"):
@@ -381,6 +394,7 @@ def _validate_governance(manifest: dict[str, Any], errors: list[str]) -> None:
         "operation_runbook_count == 4",
         "runbook_step_count == 20",
         "knowledge_item_count == 2",
+        "cross_phase_contract_mismatch_count == 0",
         "error_drill_rejected_count == 2",
         "restored_byte_exact_count == 1",
         "production_restore_count == 0",

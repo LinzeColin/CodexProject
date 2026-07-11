@@ -416,6 +416,8 @@ def _validate_governance(manifest: dict[str, Any], errors: list[str]) -> None:
         _require("不得执行 GitHub upload" in handoff, "HANDOFF upload boundary missing", errors)
         agents = Path("KMFA/AGENTS.md").read_text(encoding="utf-8")
         _require(phase.PHASE_ID in agents and "S17-P3" in agents, "AGENTS scope drift", errors)
+        for path in (Path("KMFA/docs/governance/OWNER_STATUS.md"), Path("KMFA/docs/governance/STATUS.md")):
+            _require(phase.PHASE_ID in path.read_text(encoding="utf-8"), f"active status token missing: {path}", errors)
     trace = Path("KMFA/docs/governance/TRACEABILITY_MATRIX.csv").read_text(encoding="utf-8")
     delivery = Path("KMFA/docs/governance/delivery_tasks.yaml").read_text(encoding="utf-8")
     assurance = Path("KMFA/docs/governance/ASSURANCE_STATUS.yaml").read_text(encoding="utf-8")
@@ -430,8 +432,6 @@ def _validate_governance(manifest: dict[str, Any], errors: list[str]) -> None:
         (Path("KMFA/CHANGELOG.md"), phase.VERSION),
         (Path("KMFA/docs/governance/DEVELOPMENT_LEDGER.md"), phase.PHASE_ID),
         (Path("KMFA/docs/governance/MODEL_SPEC.md"), phase.FORMULA_ID),
-        (Path("KMFA/docs/governance/OWNER_STATUS.md"), phase.PHASE_ID),
-        (Path("KMFA/docs/governance/STATUS.md"), phase.PHASE_ID),
         (Path("KMFA/功能清单.md"), "S17-P2 通知"),
         (Path("KMFA/开发记录.md"), phase.TASK_ID),
         (Path("KMFA/模型参数文件.md"), phase.FORMULA_ID),

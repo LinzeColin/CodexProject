@@ -267,7 +267,7 @@ def _validate_audit_contract(errors: list[str]) -> None:
         for key in ("raw_payload_allowed", "private_document_allowed", "business_value_plaintext_allowed", "sends_full_report_body", "persistent_event_write_enabled"):
             _require(row.get(key) is False, f"audit boundary opened: {action}:{key}", errors)
         if action == "notification":
-            _require(row.get("delivery_scope") == "log_contract_only_s17_p2_not_implemented", "notification contract drift", errors)
+            _require(row.get("delivery_scope") == "audit_log_contract_only_no_delivery", "notification contract drift", errors)
     probes = _read_jsonl(phase.AUDIT_PROBE_PATH)
     _require(len(probes) == 5 and {row.get("action_type") for row in probes} == set(REQUIRED_AUDIT_ACTION_TYPES), "audit probe drift", errors)
     for row in probes:
