@@ -1,0 +1,69 @@
+{
+  "lanes": [
+    {
+      "business_decision_basis_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "current_raw_value_binding_proven": false,
+      "data_status": "structure_connected_values_unproven",
+      "formal_report_allowed": false,
+      "lane_id": "operating_situation",
+      "readonly_source_count": 1,
+      "source_binding_count": 1,
+      "status_label": "结构候选已接入；当前数值绑定未被证明，不能形成经营金额结论。",
+      "structure_candidate_count": 5,
+      "structure_connected": true,
+      "visible_lane_name": "经营情况"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "current_raw_value_binding_proven": false,
+      "data_status": "structure_connected_values_unproven",
+      "formal_report_allowed": false,
+      "lane_id": "expense_tax_asset",
+      "readonly_source_count": 4,
+      "source_binding_count": 4,
+      "status_label": "费用、税金与资产结构候选已接入；金额、期间与归属仍受复核门禁限制。",
+      "structure_candidate_count": 20,
+      "structure_connected": true,
+      "visible_lane_name": "费用税金资产"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "current_raw_value_binding_proven": false,
+      "data_status": "structure_connected_values_unproven",
+      "formal_report_allowed": false,
+      "lane_id": "cash_situation",
+      "readonly_source_count": 2,
+      "source_binding_count": 2,
+      "status_label": "现金结构候选已接入；现金安全结论缺少可证明的当前数值绑定。",
+      "structure_candidate_count": 10,
+      "structure_connected": true,
+      "visible_lane_name": "现金情况"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "current_raw_value_binding_proven": false,
+      "data_status": "structure_connected_values_unproven",
+      "formal_report_allowed": false,
+      "lane_id": "loan_detail",
+      "readonly_source_count": 1,
+      "source_binding_count": 1,
+      "status_label": "贷款结构候选已接入；不形成还款、续贷、付款或银行操作建议。",
+      "structure_candidate_count": 5,
+      "structure_connected": true,
+      "visible_lane_name": "贷款明细"
+    }
+  ],
+  "schema_version": "kmfa.v014.s13_p1.source_lanes.v1"
+}

@@ -1,6 +1,49 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "KMFA-V014-S13-P1-POST-REMEDIATION-FINANCIAL-OPERATING-REPORT-20260711"
+    phase: "V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT"
+    objective: "Generate public-safe weekly and monthly financial operating drafts with explicit current data status and limitations."
+    scope:
+      - "operating expense-tax-asset cash and loan structure lanes"
+      - "weekly and monthly internal review drafts with seven visible sections"
+      - "desktop mobile section interaction cross-draft navigation and HTML audits"
+      - "historical pending-twelve and B-grade quarantine fresh raw evidence and governance closure"
+    non_scope:
+      - "S13-P2 S13-P3 or Stage 13 review"
+      - "business amounts formal report decision basis payment bank loan tax or business execution"
+      - "GitHub upload app reinstall raw private Excel PDF CSV database or secret material"
+    status: "completed"
+    completed_version: "0.1.4-s13-p1-post-remediation-financial-operating-report"
+    dependencies:
+      - "V014_S12_POST_REMEDIATION_STAGE_REVIEW current frozen dependency"
+      - "v0.1.4 S07 finance structure registry and candidate map"
+      - "V014_S13_P1_FINANCIAL_OPERATING_REPORT historical policy fixture only"
+      - "v1.4 roadmap taskpack clickable report sample and full-flow baseline"
+    required_files:
+      - "KMFA/stage_artifacts/V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT/machine/financial_operating_report_manifest.json"
+      - "KMFA/stage_artifacts/V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT/exports/html/financial_operating_weekly_draft.html"
+      - "KMFA/stage_artifacts/V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT/exports/html/financial_operating_monthly_draft.html"
+      - "KMFA/tools/check_v014_s13_p1_post_remediation_financial_operating_report.py"
+    acceptance_ids:
+      - "ACC-V014-S13-P1-POST-REMEDIATION-FINANCIAL-OPERATING-REPORT"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s13_p1_post_remediation_financial_operating_report.py --require-private-evidence --require-browser-evidence --require-final-evidence"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s13_p1_post_remediation_financial_operating_report"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_no_float_money.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/no_omission_check.py"
+    test_results:
+      - "PASS: four structure-connected themes and zero proven current raw-value bindings"
+      - "PASS: weekly and monthly drafts expose Q4 D NO_GO data status and limitations without business amounts"
+      - "PASS: fifty-four baseline controls sixteen current controls four viewports twenty-eight section interactions and two-way navigation"
+      - "PASS: raw before after cross-Stage12 and current snapshots exact"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT/human/financial_operating_report_zh.md"
+      - "KMFA/stage_artifacts/V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT/machine/financial_operating_report_manifest.json"
+    risk: "Structure-only candidates can be mistaken for current value bindings unless D NO_GO zero-binding and no-amount controls stay authoritative."
+    rollback: "Revert only this S13-P1 local commit and ignored private evidence; never mutate the raw inbox."
+    target_version: "0.1.4-s13-p1-post-remediation-financial-operating-report"
+
   - task_id: "KMFA-V014-S12-POST-REMEDIATION-STAGE-REVIEW-20260711"
     phase: "V014_S12_POST_REMEDIATION_STAGE_REVIEW"
     objective: "Review the current Stage 12 chain fix all findings and preserve public-safe Q4 D NO_GO boundaries without entering S13."

@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-s12-post-remediation-stage-review"
-product_version_status: "completed_validated_local_only_stage12_review_no_go_upload_deferred"
-version_file_value: "0.1.4-s12-post-remediation-stage-review"
+product_version: "0.1.4-s13-p1-post-remediation-financial-operating-report"
+product_version_status: "completed_validated_local_only_s13_p1_draft_no_go_upload_deferred"
+version_file_value: "0.1.4-s13-p1-post-remediation-financial-operating-report"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-s12-post-remediation-stage-review"
+  MOD-KMFA-GOV-001: "0.1.4-s13-p1-post-remediation-financial-operating-report"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_s13_p1_post_remediation_financial_operating_report: "0.1.4-s13-p1-post-remediation-financial-operating-report"
   kmfa_v014_s12_post_remediation_stage_review: "0.1.4-s12-post-remediation-stage-review"
   kmfa_v014_s12_p3_post_remediation_rerun_mechanism: "0.1.4-s12-p3-post-remediation-rerun-mechanism"
   kmfa_v014_s12_p2_post_remediation_impact_preview: "0.1.4-s12-p2-post-remediation-impact-preview"
@@ -423,12 +424,46 @@ parameter_profile_versions:
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_blocked_handoff_final_threshold_recheck_after_reminder: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-final-threshold-recheck-after-reminder"
   kmfa_project_cost_mvp: "blocked_no_go_owner_scope_required"
 data_snapshot_version: "not_applicable_no_raw_data_committed"
-current_iteration: "ITER-20260711-KMFA-V014-S12-POST-REMEDIATION-STAGE-REVIEW"
-current_phase: "V014_S12_POST_REMEDIATION_STAGE_REVIEW"
-current_task_id: "KMFA-V014-S12-POST-REMEDIATION-STAGE-REVIEW-20260711"
-current_acceptance_id: "ACC-V014-S12-POST-REMEDIATION-STAGE-REVIEW"
-current_gate: "NO_GO_S13_P1_NEXT_SEPARATE_RUN_UPLOAD_DEFERRED"
+current_iteration: "ITER-20260711-KMFA-V014-S13-P1-POST-REMEDIATION-FINANCIAL-OPERATING-REPORT"
+current_phase: "V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT"
+current_task_id: "KMFA-V014-S13-P1-POST-REMEDIATION-FINANCIAL-OPERATING-REPORT-20260711"
+current_acceptance_id: "ACC-V014-S13-P1-POST-REMEDIATION-FINANCIAL-OPERATING-REPORT"
+current_gate: "NO_GO_S13_P2_NEXT_SEPARATE_RUN_UPLOAD_DEFERRED"
 
+
+kmfa_v014_s13_p1_post_remediation_financial_operating_report:
+  status: completed_validated_local_only_s13_p1_draft_no_go_upload_deferred
+  phase: V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT
+  evidence_dir: KMFA/stage_artifacts/V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT
+  validator: KMFA/tools/check_v014_s13_p1_post_remediation_financial_operating_report.py
+  focused_test: KMFA/tests/test_v014_s13_p1_post_remediation_financial_operating_report.py
+  github_upload: blocked_no_go_upload_deferred
+  counts:
+    source_lane_count: 4
+    unique_source_count: 7
+    lane_source_binding_count: 8
+    unique_structure_candidate_count: 35
+    lane_structure_candidate_association_count: 40
+    structure_connected_lane_count: 4
+    raw_value_bound_lane_count: 0
+    draft_report_count: 2
+    html_draft_count: 2
+    browser_viewport_check_count: 4
+    section_interaction_check_count: 28
+    raw_source_file_count: 5
+  gates:
+    current_data_quality_grade: Q4
+    current_report_grade: D
+    decision: NO_GO
+    draft_report_allowed: true
+    formal_report_allowed: false
+    business_decision_basis_allowed: false
+    s13_p2_performed: false
+    s13_p3_performed: false
+    stage13_review_performed: false
+    github_upload_performed: false
+    app_reinstall_performed: false
+    business_execution_performed: false
 
 kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_external_action_readiness_after_final_threshold:
   status: completed_validated_local_only_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_external_action_readiness_after_final_threshold_no_go_blocked

@@ -8,8 +8,8 @@
 - 中文名: 经营分析系统
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
-- 当前 Stage: `v0.1.4 Stage 12 post-remediation replay`
-- 当前 Phase: `V014_S12_P3_POST_REMEDIATION_RERUN_MECHANISM 已本地完成并通过最终验证；6 个 current public-safe 重跑计划覆盖 S12-P2 全部影响定义，每份包含字段映射、事实层、指标和报告引用 4 层，共 24 个计划步骤。高风险计划必须二次确认，四层共享同一 public-safe source anchor，旧版本保留且新版本仅追加。当前没有已批准或已发布业务事件，持久缓存失效、持久重跑和持久一致性记录均为 0；浏览器只执行 session-only 模拟，刷新后清空。Q4 / D / NO_GO / 3-9-2-1 保持不变，raw 前后及跨 S12-P2 一致。下一步只能另起 run work 执行 Stage 12 整体复审，不执行 GitHub upload、正式报告、app reinstall 或业务执行。历史 Stage 12-18 产物仅作 legacy 证据，不是当前 active gate。`
+- 当前 Stage: `v0.1.4 Stage 13 post-remediation replay`
+- 当前 Phase: `V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT 已生成 public-safe 经营周报/月报内部复核初稿；经营、费用税金资产、现金、贷款 4 条主题结构接入为 4/4，但当前 raw 数值可证明绑定为 0/4。页面持续显示 Q4 / D / NO_GO / 3-9-2-1、数据状态与限制，不含业务金额，不形成正式报告或决策依据。raw 前后、跨 Stage 12 review 与当前快照一致。下一步只能另起 run work 执行 S13-P2，不执行 S13-P3、Stage 13 review、GitHub upload、正式报告、app reinstall 或业务执行。历史 Stage 12-18 产物仅作 legacy 证据，不是当前 active gate。`
 
 ## Execution Rules
 
@@ -41,7 +41,7 @@
 
 ## Current Non-Goals
 
-- v0.1.4 S12-P3 本轮完成；下一轮只能单独执行 Stage 12 整体复审并修复 findings。不得顺手执行 S13、GitHub upload、protected source matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合、客户联络、催收、法务、开票、付款、银行或任何业务动作。
+- v0.1.4 S13-P1 本轮完成；下一轮只能单独执行 S13-P2 回款应收账龄。不得顺手执行 S13-P3、Stage 13 review、GitHub upload、protected source matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合、客户联络、催收、法务、开票、付款、银行或任何业务动作。
 - 以下 Stage 15/16/17/18 final upload 相关表述是 legacy/Post-S18 历史证据，不是当前 v0.1.4 active gate。当前 v0.1.4 GitHub main upload 仍延期到 Stage 1-18 全部完成并整体复审修复后一次性执行；不得直接进入 lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KMFA 经营周报初稿</title>
+  <style>
+    :root {--navy:#102d4f;--blue:#1769aa;--blue-soft:#eaf3fb;--page:#f4f6f8;--panel:#fff;--line:#d6dee5;--ink:#1c2834;--muted:#667482;--amber:#8a5200;--amber-soft:#fff5dc;--red:#a92d25;--red-soft:#fff0ee;--green:#176b48;--green-soft:#eaf7f1}
+    *{box-sizing:border-box}html{background:var(--page)}body{margin:0;color:var(--ink);background:var(--page);font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",Arial,sans-serif;letter-spacing:0}button,a{font:inherit;letter-spacing:0}button{cursor:pointer}
+    .topbar{min-height:68px;padding:10px 24px;background:var(--navy);color:#fff;display:flex;align-items:center;gap:18px;border-bottom:4px solid #2f81bd}.brand{display:flex;align-items:center;gap:10px;min-width:240px}.mark{width:40px;height:40px;display:grid;place-items:center;background:#fff;color:var(--navy);border-radius:6px;font-weight:900}.brand strong,.brand span{display:block}.brand span{font-size:12px;color:#c9dbee}.draft-nav{margin-left:auto;display:flex;gap:7px;align-items:center}.draft-nav a{color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.35);border-radius:5px;padding:8px 10px}.draft-nav a:hover,.draft-nav a:focus-visible{background:rgba(255,255,255,.12)}
+    main{width:min(1180px,100%);margin:0 auto;padding:22px 24px 42px}.report-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:14px}.eyebrow{font-size:12px;color:var(--blue);font-weight:800}h1{font-size:27px;margin:3px 0 5px;color:var(--navy)}.subtitle{margin:0;color:var(--muted)}.grade{min-width:170px;border-left:4px solid var(--red);background:var(--red-soft);padding:10px 12px;color:#6d2823}.grade span,.grade strong{display:block}.grade strong{font-size:18px;margin-top:2px}
+    .notice{border:1px solid #e5c88d;background:var(--amber-soft);color:#68430a;padding:11px 13px;margin-bottom:14px}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:#fff;border:1px solid var(--line);margin-bottom:14px}.metric{padding:13px 15px;border-right:1px solid var(--line)}.metric:last-child{border-right:0}.metric span{display:block;color:var(--muted);font-size:12px}.metric strong{display:block;color:var(--navy);font-size:23px;margin-top:2px}
+    .report-shell{background:#fff;border:1px solid var(--line);border-radius:7px;overflow:hidden}.tabs{display:flex;gap:5px;flex-wrap:wrap;padding:12px;border-bottom:1px solid var(--line);background:#f8fafb}.section-tab{border:1px solid var(--line);border-radius:5px;background:#fff;color:var(--navy);padding:8px 10px;font-weight:750}.section-tab.active{background:var(--navy);border-color:var(--navy);color:#fff}.report-body{padding:22px}.report-section{display:none}.report-section.active{display:block}.report-section h2{font-size:19px;margin:0 0 12px;color:var(--navy)}.report-section p{max-width:900px}
+    .summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}.summary-item{border:1px solid var(--line);padding:13px;min-width:0}.summary-item span,.summary-item small{display:block;color:var(--muted)}.summary-item strong{display:block;font-size:23px;color:var(--navy);margin:3px 0}
+    .lane-detail{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line)}.lane-detail div{padding:12px;border-right:1px solid var(--line)}.lane-detail div:last-child{border-right:0}.lane-detail span,.lane-detail strong{display:block}.lane-detail span{font-size:12px;color:var(--muted)}.lane-detail strong{margin-top:3px;color:var(--navy)}.lane-detail .danger{color:var(--red)}.limit-copy{border-left:4px solid var(--amber);padding:9px 11px;background:var(--amber-soft)}
+    .table-wrap{overflow-x:auto;border:1px solid var(--line)}table{width:100%;border-collapse:collapse;min-width:820px}th,td{text-align:left;padding:10px;border-bottom:1px solid #e8edf1;vertical-align:top}th{background:#f3f7fa;color:#34495c;font-size:12px}tr:last-child td{border-bottom:0}.status{display:inline-block;padding:3px 6px;border-radius:4px;font-size:12px;font-weight:750}.status-structure{background:var(--green-soft);color:var(--green)}.status-blocked{background:var(--red-soft);color:var(--red)}.next-list{padding-left:20px}.next-list li{margin:8px 0}.interaction-status{margin-top:14px;color:var(--muted);font-size:12px;border-top:1px solid var(--line);padding-top:10px}
+    footer{color:var(--muted);font-size:12px;margin-top:12px}
+    @media(max-width:760px){.topbar{padding:10px 12px;align-items:flex-start;flex-wrap:wrap}.brand{min-width:0}.draft-nav{margin-left:0;width:100%}main{padding:16px 12px 30px}.report-head{display:block}.grade{margin-top:12px;min-width:0}.metrics,.summary-grid,.lane-detail{grid-template-columns:1fr}.metric,.lane-detail div{border-right:0;border-bottom:1px solid var(--line)}.metric:last-child,.lane-detail div:last-child{border-bottom:0}.report-body{padding:15px}.tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.section-tab{min-width:0;white-space:normal}}
+  </style>
+</head>
+<body data-page-id="weekly" data-active-section="summary" data-ui-ready="false">
+  <header class="topbar"><div class="brand"><div class="mark">KM</div><div><strong>KMFA 经营分析系统</strong><span>S13-P1 · 财务经营报表初稿</span></div></div><nav class="draft-nav" aria-label="初稿切换"><a data-other-draft href="financial_operating_monthly_draft.html">切换至经营月报初稿</a></nav></header>
+  <main>
+    <section class="report-head"><div><div class="eyebrow">内部复核初稿</div><h1>经营周报初稿</h1><p class="subtitle">财务经营四主题状态汇总，不展示原始业务金额。</p></div><div class="grade"><span>当前可信状态</span><strong>Q4 / D · NO_GO</strong></div></section>
+    <div class="notice"><strong>限制：</strong> 四类主题只有结构候选接入，当前 raw 数值绑定为 0/4；本初稿不是正式报告，不得作为经营决策依据。</div>
+    <section class="metrics" aria-label="报告状态"><div class="metric"><span>主题结构</span><strong>4 / 4</strong></div><div class="metric"><span>当前数值绑定</span><strong>0 / 4</strong></div><div class="metric"><span>报告等级</span><strong>D</strong></div><div class="metric"><span>当前决策</span><strong>NO_GO</strong></div></section>
+    <article class="report-shell"><nav class="tabs" aria-label="报告章节"><button class="section-tab active" type="button" data-section-button="summary" aria-controls="section-summary">经营摘要</button><button class="section-tab" type="button" data-section-button="operating" aria-controls="section-operating">经营情况</button><button class="section-tab" type="button" data-section-button="expense" aria-controls="section-expense">费用税金资产</button><button class="section-tab" type="button" data-section-button="cash" aria-controls="section-cash">现金情况</button><button class="section-tab" type="button" data-section-button="loan" aria-controls="section-loan">贷款明细</button><button class="section-tab" type="button" data-section-button="limits" aria-controls="section-limits">数据状态与限制</button><button class="section-tab" type="button" data-section-button="next" aria-controls="section-next">下一步复核事项</button></nav><div class="report-body">
+    <section id="section-summary" class="report-section active" data-section-panel="summary">
+      <h2>一、经营摘要</h2>
+      <p>本期仅形成状态型财务经营初稿。四类主题结构候选已接入，但当前原始数值到主题的可证明绑定为零，因此不展示业务金额、不形成经营结论。</p>
+      <div class="summary-grid">
+        <div class="summary-item"><span>当前差异</span><strong>3 / 9 / 2 / 1</strong><small>开放接受 / 非零 / 零差异 / 未完成</small></div>
+        <div class="summary-item"><span>结构主题</span><strong>4 / 4</strong><small>结构候选已接入</small></div>
+        <div class="summary-item"><span>数值绑定</span><strong>0 / 4</strong><small>不得填造金额</small></div>
+      </div>
+    </section>
+    <section id="section-operating" class="report-section" data-section-panel="operating">
+      <h2>二、经营情况</h2>
+      <div class="lane-detail">
+        <div><span>结构状态</span><strong>已接入结构候选</strong></div>
+        <div><span>来源绑定</span><strong>1 个公开安全引用</strong></div>
+        <div><span>结构候选</span><strong>5 项</strong></div>
+        <div><span>数值状态</span><strong class="danger">未证明当前绑定</strong></div>
+      </div>
+      <p class="limit-copy">结构候选已接入；当前数值绑定未被证明，不能形成经营金额结论。</p>
+    </section>
+    <section id="section-expense" class="report-section" data-section-panel="expense">
+      <h2>三、费用税金资产</h2>
+      <div class="lane-detail">
+        <div><span>结构状态</span><strong>已接入结构候选</strong></div>
+        <div><span>来源绑定</span><strong>4 个公开安全引用</strong></div>
+        <div><span>结构候选</span><strong>20 项</strong></div>
+        <div><span>数值状态</span><strong class="danger">未证明当前绑定</strong></div>
+      </div>
+      <p class="limit-copy">费用、税金与资产结构候选已接入；金额、期间与归属仍受复核门禁限制。</p>
+    </section>
+    <section id="section-cash" class="report-section" data-section-panel="cash">
+      <h2>四、现金情况</h2>
+      <div class="lane-detail">
+        <div><span>结构状态</span><strong>已接入结构候选</strong></div>
+        <div><span>来源绑定</span><strong>2 个公开安全引用</strong></div>
+        <div><span>结构候选</span><strong>10 项</strong></div>
+        <div><span>数值状态</span><strong class="danger">未证明当前绑定</strong></div>
+      </div>
+      <p class="limit-copy">现金结构候选已接入；现金安全结论缺少可证明的当前数值绑定。</p>
+    </section>
+    <section id="section-loan" class="report-section" data-section-panel="loan">
+      <h2>五、贷款明细</h2>
+      <div class="lane-detail">
+        <div><span>结构状态</span><strong>已接入结构候选</strong></div>
+        <div><span>来源绑定</span><strong>1 个公开安全引用</strong></div>
+        <div><span>结构候选</span><strong>5 项</strong></div>
+        <div><span>数值状态</span><strong class="danger">未证明当前绑定</strong></div>
+      </div>
+      <p class="limit-copy">贷款结构候选已接入；不形成还款、续贷、付款或银行操作建议。</p>
+    </section>
+    <section id="section-limits" class="report-section" data-section-panel="limits">
+      <h2>六、数据状态与限制</h2>
+      <div class="table-wrap"><table><thead><tr><th>主题</th><th>结构状态</th><th>来源引用</th><th>结构候选</th><th>数值状态</th><th>限制</th></tr></thead><tbody><tr><td><strong>经营情况</strong></td>
+        <td><span class="status status-structure">结构已接入</span></td>
+        <td>1</td><td>5</td>
+        <td><span class="status status-blocked">数值未证明</span></td>
+        <td>结构候选已接入；当前数值绑定未被证明，不能形成经营金额结论。</td></tr><tr><td><strong>费用税金资产</strong></td>
+        <td><span class="status status-structure">结构已接入</span></td>
+        <td>4</td><td>20</td>
+        <td><span class="status status-blocked">数值未证明</span></td>
+        <td>费用、税金与资产结构候选已接入；金额、期间与归属仍受复核门禁限制。</td></tr><tr><td><strong>现金情况</strong></td>
+        <td><span class="status status-structure">结构已接入</span></td>
+        <td>2</td><td>10</td>
+        <td><span class="status status-blocked">数值未证明</span></td>
+        <td>现金结构候选已接入；现金安全结论缺少可证明的当前数值绑定。</td></tr><tr><td><strong>贷款明细</strong></td>
+        <td><span class="status status-structure">结构已接入</span></td>
+        <td>1</td><td>5</td>
+        <td><span class="status status-blocked">数值未证明</span></td>
+        <td>贷款结构候选已接入；不形成还款、续贷、付款或银行操作建议。</td></tr></tbody></table></div>
+    </section>
+    <section id="section-next" class="report-section" data-section-panel="next">
+      <h2>七、下一步复核事项</h2>
+      <ol class="next-list"><li>保持当前四类主题结构接入，不将结构候选解释为已完成数值绑定。</li><li>后续独立执行 S13-P2 回款应收账龄，不在本 phase 提前生成催收或责任结论。</li><li>待 S13-P3 完成跨表复核后，重新评估报告数据状态；当前继续维持 D 级和 NO_GO。</li></ol>
+    </section>
+    <div id="interaction-status" class="interaction-status" aria-live="polite">报告初稿已就绪；当前显示经营摘要。</div></div></article>
+    <footer>Stage 13 仅完成 S13-P1；S13-P2、S13-P3、Stage 13 review、GitHub upload、app reinstall、正式报告和业务执行均未执行。</footer>
+  </main>
+  <script>
+    const labels={"summary":"经营摘要","operating":"经营情况","expense":"费用税金资产","cash":"现金情况","loan":"贷款明细","limits":"数据状态与限制","next":"下一步复核事项"};
+    const buttons=Array.from(document.querySelectorAll('[data-section-button]'));
+    const panels=Array.from(document.querySelectorAll('[data-section-panel]'));
+    const status=document.getElementById('interaction-status');
+    function activate(section){
+      buttons.forEach(button=>button.classList.toggle('active',button.dataset.sectionButton===section));
+      panels.forEach(panel=>panel.classList.toggle('active',panel.dataset.sectionPanel===section));
+      document.body.dataset.activeSection=section;
+      document.body.dataset.lastAction=`section:${section}:${Date.now()}`;
+      status.textContent=`已切换至“${labels[section]}”；页面仍为 D 级内部复核初稿。`;
+    }
+    buttons.forEach(button=>button.addEventListener('click',()=>activate(button.dataset.sectionButton)));
+    document.body.dataset.uiReady='true';
+  </script>
+</body>
+</html>
