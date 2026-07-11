@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.5-s19-official-only-runtime - 2026-07-11
+
+- 修复 S19 晚报在官方报表已完成后仍串行执行 42 人 × `record/summary` 的架构问题；旧诊断最多可形成数小时等待并被 automation 错误中断为 `DWS_AUTH_REQUIRED`。
+- scheduled production collector 现在在 42/42 官方 parity 后直接生成 official-only rows；旧逐人接口只保留给显式 legacy/diagnostic collector。
+- automation prompt 禁止在 runner 自身有界 timeout/retry 内中断进程，并禁止在 healthcheck `READY` 后把运行中或后续 timeout 误报为授权失败。
+- 真实只读 DWS 验收：42/42 覆盖、parity `PASS`、command failure 0、legacy diagnostic skipped 42、总耗时 65.1 秒；未发送通知。
+
 ## 0.1.4-s19-dingtalk-attendance - 2026-07-07
 
 - 新增 `S19｜每日早晚钉钉考勤检查` public-safe 自动化结构，固定每日北京时间 08:35 晨报和 18:15 晚报。

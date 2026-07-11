@@ -16,6 +16,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 CHECKER = REPO_ROOT / "KMFA" / "tools" / "automation" / "check_kmfa_automation_schedules.py"
 CONTRACT = REPO_ROOT / "KMFA" / "metadata" / "automation" / "codex_app_schedules.contract.toml"
 EVENING_PROMPT = REPO_ROOT / "KMFA" / "kmfa-dingtalk-attendance-skill" / "automation" / "evening_prompt.md"
+MORNING_PROMPT = REPO_ROOT / "KMFA" / "kmfa-dingtalk-attendance-skill" / "automation" / "morning_prompt.md"
 DWS_AUTH_KEEPALIVE_PROMPT = (
     REPO_ROOT / "KMFA" / "metadata" / "automation" / "dws_auth_keepalive.prompt.md"
 )
@@ -183,6 +184,18 @@ class KmfaAutomationScheduleContractTests(unittest.TestCase):
             prompt,
         )
         self.assertIn("config-only healthcheck is authoritative", prompt)
+
+    def test_attendance_prompts_do_not_run_legacy_sweep_or_mislabel_live_failures(self) -> None:
+        required = (
+            "The production official collector intentionally skips the legacy per-member record/summary sweep.",
+            "Do not interrupt the entry while its process is still inside the runner's bounded DWS timeout/retry budget.",
+            "must never be reported as DWS_AUTH_REQUIRED",
+            "report the entry's exact final JSON status and exit code",
+        )
+        for path in (MORNING_PROMPT, EVENING_PROMPT):
+            prompt = path.read_text(encoding="utf-8")
+            for phrase in required:
+                self.assertIn(phrase, prompt, path)
 
     def test_checker_rejects_dtstart_tzid_and_explicit_timezone(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

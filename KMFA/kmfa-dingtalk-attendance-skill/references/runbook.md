@@ -72,6 +72,7 @@ Source of truth is the current code and tests, but the expected rules are:
 - Notification display rule: 10 or fewer people shows all names; over 10 shows total plus Top 10.
 - Top 10 ordering: monthly count or days descending, latest date descending, then stable name sort.
 - DWS collection logic must not be changed when only notification wording or ledger indexing is requested.
+- Scheduled production uses the exact official report collector only. Do not add a per-member `record get` / `summary` sweep before or after it; that legacy diagnostic path is non-authoritative and can multiply the run into hours.
 
 ## 5. Safe Offline Commands
 

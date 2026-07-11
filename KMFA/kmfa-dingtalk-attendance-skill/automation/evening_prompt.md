@@ -33,6 +33,9 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/dingtalk_attendance/ru
 
 Treat every nonzero command exit code as a failed automation run; do not report success from partial collection or failed notification delivery.
 9. The entry must use current DingTalk attendance-group members plus exact `attendance report columns/query-data` values as the only business-statistics source. Require `official_report_parity_status=PASS`, exact Beijing business-date coverage, and `official_report_coverage_count == member_count` before any conclusion or notification. `record get`, two-punch inference, and personal `summary` are diagnostics only. On `OFFICIAL_ATTENDANCE_PARITY_FAILED`, stop without sending and never fall back to record/summary guesses.
+9a. The production official collector intentionally skips the legacy per-member record/summary sweep. Do not run that sweep before or after the entry.
+9b. Do not interrupt the entry while its process is still inside the runner's bounded DWS timeout/retry budget.
+9c. When the authoritative healthcheck is READY, a running process or later timeout must never be reported as DWS_AUTH_REQUIRED; report the entry's exact final JSON status and exit code.
 10. Acquire or replay DingTalk attendance result/detail evidence only through approved local S19/DWS paths.
 11. Store public-safe metadata under `KMFA/metadata`; keep private raw payloads in ignored private runtime or OneDrive.
 12. Run `KMFA/kmfa-dingtalk-attendance-skill/scripts/month_gate.py --run-slot evening --print-json`.

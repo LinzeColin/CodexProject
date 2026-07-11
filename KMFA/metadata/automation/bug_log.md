@@ -522,3 +522,19 @@ Regression evidence:
   write and no remote commit.
 - The live prompt contains the deterministic publisher and nonblocking Notion
   contract, and no longer contains the old sync-complete prerequisite.
+
+## 2026-07-11 S19 Official-Only Runtime Stability Repair
+
+- Latest `kmfa-3` run passed preflight and authoritative config healthcheck but
+  was interrupted after roughly 292 seconds inside
+  `_collect_member_attendance_rows`; it was incorrectly reported as
+  `DWS_AUTH_REQUIRED` even though readiness was `READY`.
+- Root cause was architectural: exact official report parity completed first,
+  then production serially called two non-authoritative legacy endpoints for
+  every attendance-group member, each with retry and timeout budgets.
+- Scheduled production now builds rows directly from exact official report
+  evidence. The legacy per-member sweep remains only in the explicit legacy
+  collector and cannot delay, alter, or fail the official business result.
+- A real read-only DWS probe completed in 65.1 seconds with 42/42 coverage,
+  parity `PASS`, 11 official anomalies, zero command failures, and 42 skipped
+  legacy diagnostic rows. No notification was sent by the probe.
