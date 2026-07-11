@@ -1,3 +1,16 @@
+## 2026-07-12 - V014 S17-P3 post-remediation operations SOP
+
+- phase: V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP
+- task: KMFA-V014-S17-P3-POST-REMEDIATION-OPERATIONS-SOP-20260712
+- product_version: 0.1.4-s17-p3-post-remediation-operations-sop
+- result: completed_validated_local_only_s17_p3_operations_sop_no_go_upload_deferred / NO_GO
+- current output: 4 manual runbooks / 20 steps / 2 knowledge indexes / 12 checklist items.
+- isolated drills: 2 invalid synthetic candidates rejected / 0 unexpected accepts / 1 backup / 1 corruption detected / 1 byte-exact restore.
+- history gate: legacy 4 runbooks / 2 knowledge items / 2 metadata-only drills remain structural fixtures and non-authoritative.
+- raw proof: phase before/after, cross-S17-P2 and current snapshots exact; raw copy backup mutation and production restore all remain zero.
+- boundary: Stage 17 review、S18、external connectors、notifications、customer/legal/construction/signature/invoice/payment/bank、GitHub upload、app reinstall、formal report、difference closure and business execution were not performed; next step is Stage 17 overall review only.
+- evidence: KMFA/stage_artifacts/V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP/machine/operations_sop_manifest.json
+
 ## 2026-07-12 - V014 S16-P3 post-remediation customer business analysis
 
 - phase: V014_S16_P3_POST_REMEDIATION_CUSTOMER_BUSINESS_ANALYSIS

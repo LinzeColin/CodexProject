@@ -1,0 +1,318 @@
+{
+  "acceptance_id": "ACC-V014-S17-P3-POST-REMEDIATION-OPERATIONS-SOP",
+  "acceptance_matrix": {
+    "acceptance_id": "ACC-V014-S17-P3-POST-REMEDIATION-OPERATIONS-SOP",
+    "check_count": 15,
+    "check_fail_count": 0,
+    "check_pass_count": 15,
+    "checks": [
+      {
+        "check_id": "V014-S17-P3-ACC-001",
+        "name": "current_dependency",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-P3-ACC-002",
+        "name": "historical_quarantine",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-P3-ACC-003",
+        "name": "four_runbooks",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-P3-ACC-004",
+        "name": "knowledge_index",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-P3-ACC-005",
+        "name": "error_drill",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-P3-ACC-006",
+        "name": "backup_restore",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-P3-ACC-007",
+        "name": "no_production_restore",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-P3-ACC-008",
+        "name": "no_raw_copy",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-P3-ACC-009",
+        "name": "no_external",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-P3-ACC-010",
+        "name": "no_business_execution",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-P3-ACC-011",
+        "name": "raw_exact",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-P3-ACC-012",
+        "name": "quality",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-P3-ACC-013",
+        "name": "stage_review_closed",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-P3-ACC-014",
+        "name": "stage18_closed",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-P3-ACC-015",
+        "name": "upload_closed",
+        "status": "PASS"
+      }
+    ],
+    "schema_version": "kmfa.v014.s17_p3_post_remediation_operations_sop_matrix.v1"
+  },
+  "branch": "codex/kmfa",
+  "current_s17_p2_manifest_ref": "KMFA/stage_artifacts/V014_S17_P2_POST_REMEDIATION_NOTIFICATION/machine/notification_manifest.json",
+  "current_s17_p2_validated": true,
+  "decision": "NO_GO",
+  "formula_id": "FORM-KMFA-V014-S17-P3-POST-REMEDIATION-OPERATIONS-SOP-001",
+  "generated_at": "2026-07-12T04:40:42+10:00",
+  "go_no_go": {
+    "app_reinstall_allowed": false,
+    "business_execution_allowed": false,
+    "decision": "NO_GO",
+    "difference_closure_allowed": false,
+    "external_connector_allowed": false,
+    "formal_report_release_allowed": false,
+    "github_upload_allowed": false,
+    "isolated_synthetic_drill_allowed": true,
+    "manual_sop_and_knowledge_index_allowed": true,
+    "notification_delivery_allowed": false,
+    "persistent_business_write_allowed": false,
+    "phase_id": "V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP",
+    "production_restore_allowed": false,
+    "project_id": "KMFA",
+    "raw_copy_or_backup_allowed": false,
+    "s17_p3_validated": true,
+    "s18_allowed": false,
+    "schema_version": "kmfa.v014.s17_p3_post_remediation_operations_sop_go_no_go.v1",
+    "stage17_review_allowed_in_this_run": false,
+    "stage_id": "S17"
+  },
+  "historical_s17_p3_dynamic_state_is_authoritative": false,
+  "historical_s17_p3_validated": true,
+  "historical_structure_quarantined": {
+    "drill_log_count": 2,
+    "knowledge_item_count": 2,
+    "runbook_count": 4
+  },
+  "legacy_manifest_ref": "KMFA/stage_artifacts/V014_S17_P3_OPERATIONS_SOP/machine/operations_sop_manifest.json",
+  "model_registry_key": "kmfa_v014_s17_p3_post_remediation_operations_sop",
+  "next_phase": "S17_STAGE_REVIEW",
+  "next_required_step": "下一轮只能执行 Stage 17 整体复审；不得执行 Stage 18、GitHub upload、app reinstall、正式报告、外部通知、客户联系、催收、法务、施工、签署、开票、支付或银行操作、差异关闭、持久业务写入或业务执行。",
+  "parameter_ids": [
+    "PARAM-KMFA-1800",
+    "PARAM-KMFA-1801",
+    "PARAM-KMFA-1802",
+    "PARAM-KMFA-1803"
+  ],
+  "phase_boundaries": {
+    "app_reinstall_performed": false,
+    "business_execution_performed": false,
+    "collection_action_performed": false,
+    "construction_action_performed": false,
+    "customer_contact_performed": false,
+    "difference_closure_performed": false,
+    "external_connector_performed": false,
+    "formal_report_release_performed": false,
+    "github_upload_performed": false,
+    "invoice_action_performed": false,
+    "legal_action_performed": false,
+    "notification_delivery_performed": false,
+    "payment_or_bank_action_performed": false,
+    "persistent_business_write_performed": false,
+    "private_synthetic_drill_performed": true,
+    "production_restore_performed": false,
+    "raw_backup_or_copy_performed": false,
+    "s17_p1_performed": true,
+    "s17_p2_performed": true,
+    "s17_p3_performed": true,
+    "s18_performed": false,
+    "signature_action_performed": false,
+    "stage17_review_performed": false
+  },
+  "phase_id": "V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "business_value_plaintext_committed": false,
+    "credential_or_secret_committed": false,
+    "private_drill_hash_committed": false,
+    "private_runtime_committed": false,
+    "project_customer_or_counterparty_plaintext_committed": false,
+    "raw_business_data_committed": false,
+    "raw_file_names_committed": false,
+    "raw_schema_or_header_committed": false,
+    "synthetic_fixture_payload_committed": false,
+    "zip_excel_pdf_private_csv_database_committed": false
+  },
+  "quality_gate": {
+    "automated_finance_execution_allowed": false,
+    "current_data_quality_grade": "Q4",
+    "current_report_grade": "D",
+    "decision": "NO_GO",
+    "formal_report_release_allowed": false,
+    "incomplete_reconciliation_count": 1,
+    "isolated_synthetic_drill_allowed": true,
+    "manual_sop_allowed": true,
+    "nonzero_delta_reconciliation_count": 9,
+    "one_cent_tolerance_minor_unit": 0,
+    "open_final_difference_accepted_count": 3,
+    "production_restore_allowed": false,
+    "public_safe_knowledge_index_allowed": true,
+    "zero_delta_reconciliation_count": 2
+  },
+  "raw_boundary": {
+    "raw_content_materialization_performed": false,
+    "raw_copy_or_backup_performed": false,
+    "raw_delete_performed": false,
+    "raw_move_performed": false,
+    "raw_mutation_performed": false,
+    "raw_overwrite_performed": false,
+    "raw_rename_performed": false,
+    "raw_snapshot_read_performed": true,
+    "raw_write_performed": false
+  },
+  "remote": "git@github.com:LinzeColin/CodexProject.git",
+  "repo_tracking_scan": {
+    "forbidden_suffix_policy_count": 6,
+    "scan_scope": "tracked_kmfa_paths",
+    "status": "PASS",
+    "tracked_forbidden_suffix_count": 0,
+    "tracked_path_count": 5514,
+    "tracked_private_runtime_path_count": 0
+  },
+  "required_knowledge_types": [
+    "finance_sop",
+    "handoff_materials"
+  ],
+  "required_runbook_types": [
+    "import",
+    "review",
+    "publish",
+    "rollback"
+  ],
+  "reviewed_head": "83b8d7962f3970864e559affd2e67a84b8bec98d",
+  "roadmap_phase_id": "S17-P3",
+  "schema_version": "kmfa.v014.s17_p3_post_remediation_operations_sop_manifest.v1",
+  "stage17_progress": {
+    "completed_phase_count": 3,
+    "s17_p1_performed": true,
+    "s17_p2_performed": true,
+    "s17_p3_performed": true,
+    "stage17_review_performed": false,
+    "total_phase_count": 3
+  },
+  "stage_id": "S17",
+  "status": "completed_validated_local_only_s17_p3_operations_sop_no_go_upload_deferred",
+  "summary": {
+    "acceptance_id": "ACC-V014-S17-P3-POST-REMEDIATION-OPERATIONS-SOP",
+    "app_reinstall_performed": false,
+    "backup_created_count": 1,
+    "backup_restore_drill_count": 1,
+    "business_execution_count": 0,
+    "business_execution_performed": false,
+    "collection_action_performed": false,
+    "construction_action_performed": false,
+    "corruption_detected_count": 1,
+    "current_data_quality_grade": "Q4",
+    "current_report_grade": "D",
+    "current_s17_p2_validated": true,
+    "customer_contact_performed": false,
+    "decision": "NO_GO",
+    "difference_closure_performed": false,
+    "error_drill_rejected_count": 2,
+    "error_drill_scenario_count": 2,
+    "error_drill_unexpected_accept_count": 0,
+    "error_handling_drill_count": 1,
+    "external_connector_performed": false,
+    "external_service_call_count": 0,
+    "formal_report_count": 0,
+    "formal_report_release_performed": false,
+    "github_upload_performed": false,
+    "historical_s17_p3_validated": true,
+    "incomplete_reconciliation_count": 1,
+    "invoice_action_performed": false,
+    "knowledge_checklist_item_count": 12,
+    "knowledge_item_count": 2,
+    "knowledge_item_type_count": 2,
+    "legal_action_performed": false,
+    "nonzero_delta_reconciliation_count": 9,
+    "notification_delivery_performed": false,
+    "open_final_difference_accepted_count": 3,
+    "operation_runbook_count": 4,
+    "payment_or_bank_action_performed": false,
+    "persistent_business_write_count": 0,
+    "persistent_business_write_performed": false,
+    "phase_id": "V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP",
+    "private_synthetic_drill_performed": true,
+    "production_restore_count": 0,
+    "production_restore_performed": false,
+    "project_id": "KMFA",
+    "raw_backup_or_copy_performed": false,
+    "raw_copy_or_backup_count": 0,
+    "raw_cross_phase_snapshot_exact_match": true,
+    "raw_snapshot_exact_match": true,
+    "raw_source_file_count": 5,
+    "restore_completed_count": 1,
+    "restored_byte_exact_count": 1,
+    "roadmap_phase_id": "S17-P3",
+    "runbook_step_count": 20,
+    "runbook_type_count": 4,
+    "s17_p1_performed": true,
+    "s17_p2_performed": true,
+    "s17_p3_performed": true,
+    "s18_performed": false,
+    "schema_version": "kmfa.v014.s17_p3_post_remediation_operations_sop_summary.v1",
+    "signature_action_performed": false,
+    "stage17_review_performed": false,
+    "stage_id": "S17",
+    "status": "completed_validated_local_only_s17_p3_operations_sop_no_go_upload_deferred",
+    "synthetic_fixture_count": 1,
+    "task_id": "KMFA-V014-S17-P3-POST-REMEDIATION-OPERATIONS-SOP-20260712",
+    "version": "0.1.4-s17-p3-post-remediation-operations-sop",
+    "zero_delta_reconciliation_count": 2
+  },
+  "task_id": "KMFA-V014-S17-P3-POST-REMEDIATION-OPERATIONS-SOP-20260712",
+  "taskpack_contract": {
+    "automated_finance_execution_forbidden": true,
+    "operations_runbook_knowledge_and_drill_contract_locked": true,
+    "roadmap_read": true,
+    "source_refs": {
+      "roadmap": "KMFA/taskpack/v1_4/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_4.md",
+      "taskpack": "KMFA/taskpack/v1_4/taskpack/01_KMFA_Codex_TaskPack_v1_4_public_safe.md"
+    },
+    "taskpack_read": true
+  },
+  "validation_summary": {
+    "final_validation_recorded": true,
+    "focused_test": "PASS",
+    "governance_and_safety_scans": "PASS",
+    "isolated_error_and_backup_drills": "PASS",
+    "raw_alignment": "PASS",
+    "strict_validator": "PASS"
+  },
+  "version": "0.1.4-s17-p3-post-remediation-operations-sop"
+}

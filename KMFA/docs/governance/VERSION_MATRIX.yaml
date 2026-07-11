@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-s17-p2-post-remediation-notification"
-product_version_status: "completed_validated_local_only_s17_p2_metadata_reminders_no_delivery_no_go_upload_deferred"
-version_file_value: "0.1.4-s17-p2-post-remediation-notification"
+product_version: "0.1.4-s17-p3-post-remediation-operations-sop"
+product_version_status: "completed_validated_local_only_s17_p3_operations_sop_no_go_upload_deferred"
+version_file_value: "0.1.4-s17-p3-post-remediation-operations-sop"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-s17-p2-post-remediation-notification"
+  MOD-KMFA-GOV-001: "0.1.4-s17-p3-post-remediation-operations-sop"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_s17_p3_post_remediation_operations_sop: "0.1.4-s17-p3-post-remediation-operations-sop"
   kmfa_v014_s17_p2_post_remediation_notification: "0.1.4-s17-p2-post-remediation-notification"
   kmfa_v014_s17_p1_post_remediation_access_security: "0.1.4-s17-p1-post-remediation-access-security"
   kmfa_v014_s16_post_remediation_stage_review: "0.1.4-s16-post-remediation-stage-review"
@@ -441,11 +442,28 @@ parameter_profile_versions:
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_blocked_handoff_final_threshold_recheck_after_reminder: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-final-threshold-recheck-after-reminder"
   kmfa_project_cost_mvp: "blocked_no_go_owner_scope_required"
 data_snapshot_version: "not_applicable_no_raw_data_committed"
-current_iteration: "ITER-20260712-KMFA-V014-S17-P2-POST-REMEDIATION-NOTIFICATION"
-current_phase: "V014_S17_P2_POST_REMEDIATION_NOTIFICATION"
-current_task_id: "KMFA-V014-S17-P2-POST-REMEDIATION-NOTIFICATION-20260712"
-current_acceptance_id: "ACC-V014-S17-P2-POST-REMEDIATION-NOTIFICATION"
-current_gate: "NO_GO_S17P2_METADATA_REMINDERS_COMPLETE_S17P3_NEXT_SEPARATE_RUN_UPLOAD_REINSTALL_DEFERRED"
+current_iteration: "ITER-20260712-KMFA-V014-S17-P3-POST-REMEDIATION-OPERATIONS-SOP"
+current_phase: "V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP"
+current_task_id: "KMFA-V014-S17-P3-POST-REMEDIATION-OPERATIONS-SOP-20260712"
+current_acceptance_id: "ACC-V014-S17-P3-POST-REMEDIATION-OPERATIONS-SOP"
+current_gate: "NO_GO_S17_PHASES_COMPLETE_STAGE17_REVIEW_NEXT_SEPARATE_RUN_UPLOAD_REINSTALL_DEFERRED"
+
+kmfa_v014_s17_p3_post_remediation_operations_sop:
+  status: completed_validated_local_only_s17_p3_operations_sop_no_go_upload_deferred
+  phase: V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP
+  evidence_dir: KMFA/stage_artifacts/V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP
+  formula_ref: FORM-KMFA-V014-S17-P3-POST-REMEDIATION-OPERATIONS-SOP-001
+  parameter_refs:
+    - PARAM-KMFA-1800
+    - PARAM-KMFA-1801
+    - PARAM-KMFA-1802
+    - PARAM-KMFA-1803
+  validator: KMFA/tools/check_v014_s17_p3_post_remediation_operations_sop.py
+  next_phase: S17_STAGE_REVIEW
+  production_restore_performed: false
+  raw_copy_or_backup_performed: false
+  upload_performed: false
+  app_reinstall_performed: false
 
 kmfa_v014_s17_p2_post_remediation_notification:
   status: completed_validated_local_only_s17_p2_metadata_reminders_no_delivery_no_go_upload_deferred

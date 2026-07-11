@@ -1,3 +1,11 @@
+## 0.1.4-s17-p3-post-remediation-operations-sop - 2026-07-12
+
+- 完成 `V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP` 本地 phase：导入、复核、发布、回滚 4 类人工手册共 20 个步骤，全部要求前置检查、证据与回滚。
+- 财务 SOP 与岗位交接 2 项 public-safe 知识索引共 12 个检查点，只作知识和检查清单，不参与自动财务执行。
+- 在 ignored private runtime 完成 2 个无效合成候选拒绝和 1 个合成夹具备份、损坏检测、byte-exact 恢复；未复制/备份 raw，生产恢复为 0。
+- 历史 S17-P3 的 4 runbooks / 2 knowledge / 2 metadata-only drills 只作结构夹具；合成载荷、哈希与诊断未进入公开证据。
+- raw phase 前后、跨 S17-P2 与当前快照一致；保持 `Q4 / D / NO_GO / 3-9-2-1`，未执行 Stage 17 review、S18、GitHub upload、app reinstall、正式报告、差异关闭、持久业务写入或 business execution。
+
 ## 0.1.4-s17-p2-post-remediation-notification - 2026-07-12
 
 - 完成 `V014_S17_P2_POST_REMEDIATION_NOTIFICATION` 本地 phase：报告生成完成、重大风险、数据源缺失三类规则与当前触发评估均为 `3/3 PASS`。

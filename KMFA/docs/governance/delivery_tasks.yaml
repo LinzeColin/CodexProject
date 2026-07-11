@@ -1,6 +1,47 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "KMFA-V014-S17-P3-POST-REMEDIATION-OPERATIONS-SOP-20260712"
+    phase: "V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP"
+    objective: "Lock four manual operations runbooks, two public-safe knowledge indexes, and isolated synthetic error and backup recovery drills without raw or production mutation."
+    scope:
+      - "import review publish and rollback manual runbooks"
+      - "finance SOP and handoff public-safe knowledge indexes and checklists"
+      - "two invalid-candidate rejections and one byte-exact synthetic backup restore"
+      - "read-only raw alignment public safety and governance evidence"
+    non_scope:
+      - "Stage 17 review Stage 18 or later phases"
+      - "raw copy backup mutation production restore external connectors notifications or customer actions"
+      - "GitHub upload app reinstall formal reports difference closure persistent writes or business execution"
+    status: "completed"
+    completed_version: "0.1.4-s17-p3-post-remediation-operations-sop"
+    dependencies:
+      - "V014_S17_P2_POST_REMEDIATION_NOTIFICATION"
+      - "V014_S17_P3_OPERATIONS_SOP historical fixture only"
+      - "v1.4 roadmap and taskpack"
+    required_files:
+      - "KMFA/stage_artifacts/V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP/machine/operations_sop_manifest.json"
+      - "KMFA/stage_artifacts/V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP/human/operations_sop_report_zh.md"
+      - "KMFA/tools/check_v014_s17_p3_post_remediation_operations_sop.py"
+    acceptance_ids:
+      - "ACC-V014-S17-P3-POST-REMEDIATION-OPERATIONS-SOP"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s17_p3_post_remediation_operations_sop"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s17_p3_post_remediation_operations_sop.py --require-private-evidence --require-final-evidence"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_no_float_money.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/no_omission_check.py"
+    test_results:
+      - "PASS: four manual runbooks and two knowledge indexes"
+      - "PASS: two invalid synthetic candidates rejected"
+      - "PASS: one synthetic fixture restored byte-exact after corruption detection"
+      - "PASS: raw snapshots exact and production plus downstream actions closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP/human/operations_sop_report_zh.md"
+      - "KMFA/stage_artifacts/V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP/machine/operations_sop_manifest.json"
+    risk: "Manual SOP metadata or an isolated synthetic drill may be mistaken for production authorization or recovery proof."
+    rollback: "Revert only this S17-P3 local commit and ignored synthetic evidence; never copy backup or mutate the raw inbox."
+    target_version: "0.1.4-s17-p3-post-remediation-operations-sop"
+
   - task_id: "KMFA-V014-S17-P2-POST-REMEDIATION-NOTIFICATION-20260712"
     phase: "V014_S17_P2_POST_REMEDIATION_NOTIFICATION"
     objective: "Evaluate three current notification triggers and write short Chinese reminder plus existing in-app link records to a public-safe metadata-only outbox without real delivery."
