@@ -71,7 +71,7 @@ from KMFA.tools.dingtalk_attendance.query_attendance_ledger import (
     get_month_summary,
     get_run_sync_status,
 )
-from KMFA.tools.dingtalk_attendance.check_s19_dingtalk_attendance import validate_s19_files
+from KMFA.tools.dingtalk_attendance.check_dingtalk_attendance import validate_dingtalk_attendance_files
 from KMFA.tools.dingtalk_attendance.validate_no_sensitive_git import scan_payload_for_sensitive_text
 
 
@@ -211,6 +211,7 @@ def _write_ledger_fixture_run(
         json.dumps(
             {
                 "run_id": run_id,
+                "skill_id": "kmfa-dingtalk-attendance-skill",
                 "backend": "dws",
                 "raw_jsonl_gz": str(raw_path),
                 "raw_jsonl_gz_sha256": raw_hash,
@@ -444,10 +445,117 @@ class OfficialParityFixtureRunner:
 
 
 class DingTalkAttendanceContractTests(unittest.TestCase):
-    def test_run_plan_locks_s19_schedule_storage_and_owner(self) -> None:
+    def test_identity_migration_new_writer_and_legacy_reader_contract(self) -> None:
+        identity = importlib.import_module("KMFA.tools.dingtalk_attendance.identity")
+        plan = build_run_plan(
+            run_type="morning",
+            timezone="Asia/Shanghai",
+            run_datetime=datetime(2026, 7, 12, 10, 45, tzinfo=ZoneInfo("Asia/Shanghai")),
+        )
+
+        self.assertEqual(plan["skill_id"], "kmfa-dingtalk-attendance-skill")
+        self.assertNotIn("stage_id", plan)
+        self.assertEqual(plan["run_id"], "dingtalk_attendance_morning_20260712_104500")
+        self.assertEqual(
+            identity.validate_manifest_identity({"skill_id": "kmfa-dingtalk-attendance-skill"}),
+            {"skill_id": "kmfa-dingtalk-attendance-skill", "identity_source": "skill_id"},
+        )
+        self.assertEqual(
+            identity.validate_manifest_identity({"stage_id": "S19"}),  # legacy_read_only
+            {"skill_id": "kmfa-dingtalk-attendance-skill", "identity_source": "legacy_read_only"},
+        )
+        with self.assertRaises(identity.IdentityConflictError):
+            identity.validate_manifest_identity(
+                {"skill_id": "another-skill", "stage_id": "S19"}  # legacy_read_only conflict
+            )
+
+    def test_identity_migration_archive_discovery_dual_reads_new_and_legacy(self) -> None:
+        identity = importlib.import_module("KMFA.tools.dingtalk_attendance.identity")
+        with tempfile.TemporaryDirectory() as tmpdir:
+            month_dir = Path(tmpdir)
+            new_manifest = month_dir / "dingtalk_attendance_evening_20260712_200000.manifest.json"
+            legacy_manifest = month_dir / "s19_evening_20260711_200000.manifest.json"  # legacy_read_only
+            ignored_manifest = month_dir / "unrelated.manifest.json"
+            for path in (new_manifest, legacy_manifest, ignored_manifest):
+                path.write_text("{}", encoding="utf-8")
+
+            self.assertEqual(
+                set(identity.archive_manifest_paths(month_dir)),
+                {new_manifest, legacy_manifest},
+            )
+
+    def test_identity_migration_environment_keys_prefer_new_and_fail_on_conflict(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            policy_path = Path(tmpdir) / "pat_policy.json"
+            policy_path.write_text(
+                json.dumps({"default": {"openBrowser": False}}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            new_env = {
+                "KMFA_DINGTALK_ATTENDANCE_ALLOW_DWS_COMMANDS": "1",
+                "KMFA_DINGTALK_ATTENDANCE_DWS_BROWSER_POLICY_PATH": str(policy_path),
+            }
+            allowed = dws_command_safety_status(env=new_env)
+            conflict = dws_command_safety_status(
+                env={
+                    **new_env,
+                    "KMFA_S19_ALLOW_DWS_COMMANDS": "0",  # legacy_read_only conflict
+                }
+            )
+
+        self.assertEqual(allowed["status"], "READY")
+        self.assertEqual(
+            allowed["required_env"],
+            "KMFA_DINGTALK_ATTENDANCE_ALLOW_DWS_COMMANDS",
+        )
+        self.assertEqual(conflict["status"], "DWS_ENV_CONFLICT")
+        self.assertFalse(conflict["dws_commands_allowed"])
+
+    def test_identity_migration_timeout_key_new_legacy_and_conflict(self) -> None:
+        dws_module = importlib.import_module("KMFA.tools.dingtalk_attendance.dws_attendance")
+
+        self.assertEqual(
+            dws_module.resolve_dws_timeout(
+                {"KMFA_DINGTALK_ATTENDANCE_DWS_TIMEOUT_SECONDS": "120"},
+                45,
+            ),
+            120,
+        )
+        self.assertEqual(
+            dws_module.resolve_dws_timeout(
+                {"KMFA_S19_DWS_TIMEOUT_SECONDS": "90"},  # legacy_read_only fallback
+                45,
+            ),
+            90,
+        )
+        with self.assertRaises(DwsAttendanceError):
+            dws_module.resolve_dws_timeout(
+                {
+                    "KMFA_DINGTALK_ATTENDANCE_DWS_TIMEOUT_SECONDS": "120",
+                    "KMFA_S19_DWS_TIMEOUT_SECONDS": "90",  # legacy_read_only conflict
+                },
+                45,
+            )
+
+    def test_identity_migration_checker_new_entry_and_deprecated_wrapper(self) -> None:
+        current = importlib.import_module(
+            "KMFA.tools.dingtalk_attendance.check_dingtalk_attendance"
+        )
+        deprecated = importlib.import_module(
+            "KMFA.tools.dingtalk_attendance.check_s19_dingtalk_attendance"  # deprecated_compatibility
+        )
+
+        self.assertIs(
+            deprecated.validate_s19_files,  # deprecated_compatibility
+            current.validate_dingtalk_attendance_files,
+        )
+        self.assertTrue(deprecated.DEPRECATED_COMPATIBILITY)
+
+    def test_run_plan_locks_attendance_schedule_storage_and_owner(self) -> None:
         plan = build_run_plan(run_type="morning", timezone="Asia/Shanghai", run_id="contract-only")
 
-        self.assertEqual(plan["stage_id"], "S19")
+        self.assertEqual(plan["skill_id"], "kmfa-dingtalk-attendance-skill")
+        self.assertNotIn("stage_id", plan)
         self.assertEqual(plan["automation_name"], "每日早晚钉钉考勤检查")
         self.assertEqual(plan["run_type"], "morning")
         self.assertEqual(plan["timezone"], "Asia/Shanghai")
@@ -529,7 +637,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             run_datetime=datetime(2026, 7, 6, 10, 35, tzinfo=ZoneInfo("Asia/Shanghai")),
         )
 
-        self.assertEqual(plan["run_id"], "s19_morning_20260706_103500")
+        self.assertEqual(plan["run_id"], "dingtalk_attendance_morning_20260706_103500")
         self.assertIn("/202607/", plan["archive_paths"]["archive_manifest"])
 
     def test_attendance_ledger_initializes_required_private_schema(self) -> None:
@@ -568,7 +676,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             db_path = Path(tmpdir) / "attendance_ledger.sqlite"
             _write_ledger_fixture_run(
                 root,
-                run_id="s19_evening_20260601_181500",
+                run_id="dingtalk_attendance_evening_20260601_181500",
                 work_date="2026-06-01",
                 employees=[
                     {"name": "测试甲", "user_id": "u1", "punches": _fixture_punches()},
@@ -592,7 +700,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
             with closing(sqlite3.connect(db_path)) as conn:
                 sync_run_audits = conn.execute(
-                    "select count(*) from sync_audit where event_type='SYNC_RUN' and run_id='s19_evening_20260601_181500'"
+                    "select count(*) from sync_audit where event_type='SYNC_RUN' and run_id='dingtalk_attendance_evening_20260601_181500'"
                 ).fetchone()[0]
             self.assertEqual(sync_run_audits, 1)
 
@@ -604,7 +712,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 work_date = f"2026-06-{day:02d}"
                 _write_ledger_fixture_run(
                     root,
-                    run_id=f"s19_evening_202606{day:02d}_181500",
+                    run_id=f"dingtalk_attendance_evening_202606{day:02d}_181500",
                     work_date=work_date,
                     employees=[
                         {"name": "测试甲", "user_id": "u1", "punches": _fixture_punches()},
@@ -627,19 +735,19 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             db_path = Path(tmpdir) / "attendance_ledger.sqlite"
             _write_ledger_fixture_run(
                 root,
-                run_id="s19_evening_20260601_181500",
+                run_id="dingtalk_attendance_evening_20260601_181500",
                 work_date="2026-06-01",
                 employees=[{"name": "测试甲", "user_id": "u1", "punches": _fixture_punches(morning=True, evening=False)}],
             )
             _write_ledger_fixture_run(
                 root,
-                run_id="s19_evening_20260602_181500",
+                run_id="dingtalk_attendance_evening_20260602_181500",
                 work_date="2026-06-02",
                 employees=[{"name": "测试甲", "user_id": "u1", "punches": _fixture_punches(morning=False, evening=True)}],
             )
             _write_ledger_fixture_run(
                 root,
-                run_id="s19_evening_20260603_181500",
+                run_id="dingtalk_attendance_evening_20260603_181500",
                 work_date="2026-06-03",
                 employees=[{"name": "测试甲", "user_id": "u1", "punches": _fixture_punches()}],
             )
@@ -654,7 +762,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             db_path = Path(tmpdir) / "attendance_ledger.sqlite"
             _write_ledger_fixture_run(
                 root,
-                run_id="s19_morning_20260711_103500",
+                run_id="dingtalk_attendance_morning_20260711_103500",
                 work_date="2026-07-11",
                 employees=[
                     {
@@ -689,7 +797,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             db_path = Path(tmpdir) / "attendance_ledger.sqlite"
             _write_ledger_fixture_run(
                 root,
-                run_id="s19_morning_20260710_103500",
+                run_id="dingtalk_attendance_morning_20260710_103500",
                 work_date="2026-07-10",
                 employees=[
                     {
@@ -703,7 +811,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             )
             _write_ledger_fixture_run(
                 root,
-                run_id="s19_evening_20260710_230000",
+                run_id="dingtalk_attendance_evening_20260710_230000",
                 work_date="2026-07-10",
                 employees=[
                     {
@@ -716,7 +824,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             )
             _write_ledger_fixture_run(
                 root,
-                run_id="s19_morning_20260711_103500",
+                run_id="dingtalk_attendance_morning_20260711_103500",
                 work_date="2026-07-11",
                 employees=[
                     {
@@ -747,7 +855,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             db_path = Path(tmpdir) / "attendance_ledger.sqlite"
             _write_ledger_fixture_run(
                 root,
-                run_id="s19_morning_20260710_103500",
+                run_id="dingtalk_attendance_morning_20260710_103500",
                 work_date="2026-07-10",
                 employees=[
                     {
@@ -762,7 +870,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             )
             _write_ledger_fixture_run(
                 root,
-                run_id="s19_evening_20260710_200000_retry",
+                run_id="dingtalk_attendance_evening_20260710_200000_retry",
                 work_date="2026-07-10",
                 employees=[
                     {
@@ -786,7 +894,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             db_path = Path(tmpdir) / "attendance_ledger.sqlite"
             _write_ledger_fixture_run(
                 root,
-                run_id="s19_morning_20260710_103500",
+                run_id="dingtalk_attendance_morning_20260710_103500",
                 work_date="2026-07-10",
                 employees=[
                     {
@@ -827,7 +935,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             db_path = Path(tmpdir) / "attendance_ledger.sqlite"
             _write_ledger_fixture_run(
                 root,
-                run_id="s19_evening_20260601_181500",
+                run_id="dingtalk_attendance_evening_20260601_181500",
                 work_date="2026-06-01",
                 employees=[{"name": "测试甲", "user_id": "u1", "punches": [], "record_success": False}],
             )
@@ -855,7 +963,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             db_path = Path(tmpdir) / "attendance_ledger.sqlite"
             paths = _write_ledger_fixture_run(
                 root,
-                run_id="s19_evening_20260601_181500",
+                run_id="dingtalk_attendance_evening_20260601_181500",
                 work_date="2026-06-01",
                 employees=[{"name": "测试甲", "user_id": "u1", "punches": _fixture_punches()}],
             )
@@ -864,7 +972,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
             validation = validate_ledger(db_path=db_path)
             self.assertEqual(validation["status"], "PASS")
-            self.assertEqual(get_run_sync_status(db_path=db_path, run_id="s19_evening_20260601_181500")["raw_path"], str(paths["raw"]))
+            self.assertEqual(get_run_sync_status(db_path=db_path, run_id="dingtalk_attendance_evening_20260601_181500")["raw_path"], str(paths["raw"]))
 
     def test_run_attendance_fails_closed_before_dws_without_explicit_auth_allow(self) -> None:
         def blocked_collector(**kwargs: object) -> dict:
@@ -882,7 +990,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(result["collection_status"], "SKIPPED_DWS_AUTH_REQUIRED")
         self.assertEqual(result["notification_status"], "NOT_SENT_DWS_AUTH_REQUIRED")
         self.assertFalse(result["dws_command_safety"]["dws_commands_allowed"])
-        self.assertEqual(result["dws_command_safety"]["required_env"], "KMFA_S19_ALLOW_DWS_COMMANDS")
+        self.assertEqual(result["dws_command_safety"]["required_env"], "KMFA_DINGTALK_ATTENDANCE_ALLOW_DWS_COMMANDS")
 
     def test_dws_command_safety_requires_explicit_local_allow(self) -> None:
         blocked = dws_command_safety_status(env={})
@@ -891,8 +999,8 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             policy_path.write_text(json.dumps({"default": {"openBrowser": False}}, ensure_ascii=False), encoding="utf-8")
             allowed = dws_command_safety_status(
                 env={
-                    "KMFA_S19_ALLOW_DWS_COMMANDS": "1",
-                    "KMFA_S19_DWS_BROWSER_POLICY_PATH": str(policy_path),
+                    "KMFA_DINGTALK_ATTENDANCE_ALLOW_DWS_COMMANDS": "1",
+                    "KMFA_DINGTALK_ATTENDANCE_DWS_BROWSER_POLICY_PATH": str(policy_path),
                 }
             )
 
@@ -907,8 +1015,8 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             policy_path.write_text(json.dumps({"default": {"openBrowser": True}}, ensure_ascii=False), encoding="utf-8")
             result = dws_command_safety_status(
                 env={
-                    "KMFA_S19_ALLOW_DWS_COMMANDS": "1",
-                    "KMFA_S19_DWS_BROWSER_POLICY_PATH": str(policy_path),
+                    "KMFA_DINGTALK_ATTENDANCE_ALLOW_DWS_COMMANDS": "1",
+                    "KMFA_DINGTALK_ATTENDANCE_DWS_BROWSER_POLICY_PATH": str(policy_path),
                 }
             )
 
@@ -1051,13 +1159,15 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(scan_payload_for_sensitive_text(allowed_schema_payload), [])
         self.assertEqual(scan_payload_for_sensitive_text("credential_" + "sec" + "ret=false"), [])
 
-    def test_s19_file_contract_is_complete_and_private_runtime_is_placeholder_only(self) -> None:
-        result = validate_s19_files(ROOT)
+    def test_attendance_file_contract_is_complete_and_private_runtime_is_placeholder_only(self) -> None:
+        result = validate_dingtalk_attendance_files(ROOT)
 
         self.assertEqual(result["status"], "PASS")
         self.assertEqual(result["automation_name"], "每日早晚钉钉考勤检查")
+        self.assertEqual(result["skill_id"], "kmfa-dingtalk-attendance-skill")
         self.assertEqual(result["onedrive_root"], "/Users/linzezhang/OneDrive/dingtalk_attendance")
         self.assertEqual(result["prompt_count"], 3)
+        self.assertTrue(result["prompt_mirrors_match"])
         self.assertEqual(result["private_runtime_tracked_files"], [".gitkeep", "README.md"])
         self.assertTrue(result["automation_prompt_contracts"]["all_prompts_call_skill"])
         self.assertTrue(result["automation_prompt_contracts"]["all_prompts_use_beijing_time"])
@@ -1277,7 +1387,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
     def test_notification_uses_only_official_report_anomaly_names_when_parity_is_present(self) -> None:
         context = notification_context_from_output_status(
             {
-                "run_id": "s19_morning_20260711_103500",
+                "run_id": "dingtalk_attendance_morning_20260711_103500",
                 "run_type": "morning",
                 "work_date": "2026-07-11",
                 "current_time": "10:35",
@@ -1500,7 +1610,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         with (
             patch("KMFA.tools.dingtalk_attendance.dws_attendance.dws_command_safety_status", return_value={"status": "READY"}),
             patch("KMFA.tools.dingtalk_attendance.dws_attendance.subprocess.run", side_effect=fake_run),
-            patch.dict("os.environ", {"DWS_BIN": "/tmp/fake-dws", "KMFA_S19_DWS_TIMEOUT_SECONDS": "120"}),
+            patch.dict("os.environ", {"DWS_BIN": "/tmp/fake-dws", "KMFA_DINGTALK_ATTENDANCE_DWS_TIMEOUT_SECONDS": "120"}),
         ):
             result = run_dws_json(["contact", "dept", "list-members"], timeout=45)
 
@@ -1528,7 +1638,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         with (
             patch("KMFA.tools.dingtalk_attendance.dws_attendance.dws_command_safety_status", return_value={"status": "READY"}),
             patch("KMFA.tools.dingtalk_attendance.dws_attendance.subprocess.run", side_effect=fake_run),
-            patch.dict("os.environ", {"DWS_BIN": "/tmp/fake-dws", "KMFA_S19_DWS_TIMEOUT_SECONDS": "20"}),
+            patch.dict("os.environ", {"DWS_BIN": "/tmp/fake-dws", "KMFA_DINGTALK_ATTENDANCE_DWS_TIMEOUT_SECONDS": "20"}),
         ):
             run_dws_json(["attendance", "record", "get"], timeout=60)
 
@@ -1640,7 +1750,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         )
         context = notification_context_from_output_status(
             {
-                "run_id": "s19_morning_20260707_083500",
+                "run_id": "dingtalk_attendance_morning_20260707_083500",
                 "run_type": "morning",
                 "work_date": "2026-07-07",
                 "current_time": "08:35",
@@ -1835,7 +1945,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         )
         context = notification_context_from_output_status(
             {
-                "run_id": "s19_morning_20260707_083500",
+                "run_id": "dingtalk_attendance_morning_20260707_083500",
                 "run_type": "morning",
                 "work_date": "2026-07-07",
                 "current_time": "08:35",
@@ -1902,7 +2012,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         )
         context = notification_context_from_output_status(
             {
-                "run_id": "s19_morning_20260707_083500",
+                "run_id": "dingtalk_attendance_morning_20260707_083500",
                 "run_type": "morning",
                 "work_date": "2026-07-07",
                 "current_time": "08:35",
@@ -1970,7 +2080,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 )
                 context = notification_context_from_output_status(
                     {
-                        "run_id": "s19_morning_20260707_103500",
+                        "run_id": "dingtalk_attendance_morning_20260707_103500",
                         "run_type": "morning",
                         "work_date": "2026-07-07",
                         "current_time": "10:35",
@@ -2029,8 +2139,8 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             base = Path(tmp)
             plan = {
-                "run_id": "s19_morning_20260707_083500",
-                "stage_id": "S19",
+                "run_id": "dingtalk_attendance_morning_20260707_083500",
+                "skill_id": "kmfa-dingtalk-attendance-skill",
                 "run_type": "morning",
                 "archive_paths": {
                     "month_dir": str(base),
@@ -2076,8 +2186,8 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             base = Path(tmp)
             plan = {
-                "run_id": "s19_morning_20260707_083500",
-                "stage_id": "S19",
+                "run_id": "dingtalk_attendance_morning_20260707_083500",
+                "skill_id": "kmfa-dingtalk-attendance-skill",
                 "run_type": "morning",
                 "archive_paths": {
                     "month_dir": str(base),
@@ -2124,8 +2234,8 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             base = Path(tmp)
             plan = {
-                "run_id": "s19_morning_20260711_103500",
-                "stage_id": "S19",
+                "run_id": "dingtalk_attendance_morning_20260711_103500",
+                "skill_id": "kmfa-dingtalk-attendance-skill",
                 "run_type": "morning",
                 "archive_paths": {
                     "month_dir": str(base),
@@ -2241,7 +2351,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
             result = dispatch_reports_to_robot(
                 output_status={
-                    "run_id": "s19_evening_20260707_181500",
+                    "run_id": "dingtalk_attendance_evening_20260707_181500",
                     "run_type": "evening",
                     "work_date": "2026-07-07",
                     "current_time": "18:15",
@@ -2305,7 +2415,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
     def test_notification_context_all_clear_uses_member_count_phrase(self) -> None:
         context = notification_context_from_output_status(
             {
-                "run_id": "s19_morning_20260707_083500",
+                "run_id": "dingtalk_attendance_morning_20260707_083500",
                 "run_type": "morning",
                 "work_date": "2026-07-07",
                 "current_time": "08:35",
@@ -2334,7 +2444,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         ]
         context = notification_context_from_output_status(
             {
-                "run_id": "s19_evening_20260711_181500",
+                "run_id": "dingtalk_attendance_evening_20260711_181500",
                 "run_type": "evening",
                 "work_date": "2026-07-11",
                 "current_time": "18:15",
@@ -2419,11 +2529,11 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmpdir:
             month_dir = Path(tmpdir)
             for day in range(1, 24):
-                raw_path = month_dir / f"s19_evening_202607{day:02d}_181500.raw.jsonl.gz"
+                raw_path = month_dir / f"dingtalk_attendance_evening_202607{day:02d}_181500.raw.jsonl.gz"
                 with gzip.open(raw_path, "wt", encoding="utf-8") as handle:
                     handle.write(
                         json.dumps(
-                            {"type": "metadata", "run_plan": {"run_id": f"s19_evening_202607{day:02d}_181500"}},
+                            {"type": "metadata", "run_plan": {"run_id": f"dingtalk_attendance_evening_202607{day:02d}_181500"}},
                             ensure_ascii=False,
                         )
                         + "\n"
@@ -2443,11 +2553,11 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                     )
             for exempt_name, exempt_user_id in (("丁春法", "u3"), ("李永占", "u4")):
                 for day in range(1, 24):
-                    raw_path = month_dir / f"s19_evening_{exempt_user_id}_202607{day:02d}_181500.raw.jsonl.gz"
+                    raw_path = month_dir / f"dingtalk_attendance_evening_{exempt_user_id}_202607{day:02d}_181500.raw.jsonl.gz"
                     with gzip.open(raw_path, "wt", encoding="utf-8") as handle:
                         handle.write(
                             json.dumps(
-                                {"type": "metadata", "run_plan": {"run_id": f"s19_evening_{exempt_user_id}_202607{day:02d}_181500"}},
+                                {"type": "metadata", "run_plan": {"run_id": f"dingtalk_attendance_evening_{exempt_user_id}_202607{day:02d}_181500"}},
                                 ensure_ascii=False,
                             )
                             + "\n"
@@ -2466,11 +2576,11 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                             + "\n"
                         )
             for day in (1, 23):
-                raw_path = month_dir / f"s19_morning_202607{day:02d}_083500.raw.jsonl.gz"
+                raw_path = month_dir / f"dingtalk_attendance_morning_202607{day:02d}_083500.raw.jsonl.gz"
                 with gzip.open(raw_path, "wt", encoding="utf-8") as handle:
                     handle.write(
                         json.dumps(
-                            {"type": "metadata", "run_plan": {"run_id": f"s19_morning_202607{day:02d}_083500"}},
+                            {"type": "metadata", "run_plan": {"run_id": f"dingtalk_attendance_morning_202607{day:02d}_083500"}},
                             ensure_ascii=False,
                         )
                         + "\n"
@@ -2616,7 +2726,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
     def test_notification_context_uses_real_anomaly_names_without_exempt_people(self) -> None:
         context = notification_context_from_output_status(
             {
-                "run_id": "s19_morning_20260707_083500",
+                "run_id": "dingtalk_attendance_morning_20260707_083500",
                 "run_type": "morning",
                 "work_date": "2026-07-07",
                 "current_time": "08:35",
@@ -2637,7 +2747,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
     def test_notification_context_excludes_morning_incomplete_records_from_today_sections(self) -> None:
         context = notification_context_from_output_status(
             {
-                "run_id": "s19_morning_20260708_083500",
+                "run_id": "dingtalk_attendance_morning_20260708_083500",
                 "run_type": "morning",
                 "work_date": "2026-07-08",
                 "current_time": "08:35",
@@ -2674,7 +2784,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
     def test_notification_context_keeps_evening_incomplete_records_as_today_anomalies(self) -> None:
         context = notification_context_from_output_status(
             {
-                "run_id": "s19_evening_20260708_181500",
+                "run_id": "dingtalk_attendance_evening_20260708_181500",
                 "run_type": "evening",
                 "work_date": "2026-07-08",
                 "current_time": "18:15",
@@ -2707,7 +2817,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
     def test_notification_context_reports_system_collection_failures(self) -> None:
         context = notification_context_from_output_status(
             {
-                "run_id": "s19_morning_20260707_083500",
+                "run_id": "dingtalk_attendance_morning_20260707_083500",
                 "run_type": "morning",
                 "work_date": "2026-07-07",
                 "current_time": "08:35",
@@ -2731,7 +2841,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
     def test_notification_context_blocks_all_clear_when_success_counts_do_not_cover_members(self) -> None:
         context = notification_context_from_output_status(
             {
-                "run_id": "s19_morning_20260707_083500",
+                "run_id": "dingtalk_attendance_morning_20260707_083500",
                 "run_type": "morning",
                 "work_date": "2026-07-07",
                 "current_time": "08:35",
@@ -2756,7 +2866,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
     def test_notification_context_keeps_backend_diagnostics_out_of_user_message(self) -> None:
         context = notification_context_from_output_status(
             {
-                "run_id": "s19_morning_20260708_083500",
+                "run_id": "dingtalk_attendance_morning_20260708_083500",
                 "run_type": "morning",
                 "work_date": "2026-07-08",
                 "current_time": "08:35",
@@ -2817,14 +2927,14 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
     def test_monthly_rollup_uses_latest_official_user_day_over_legacy_and_earlier_official_runs(self) -> None:
         records = [
             {
-                "_archive_run_id": "s19_evening_20260710_230000",
+                "_archive_run_id": "dingtalk_attendance_evening_20260710_230000",
                 "member": {"name": "测试甲", "userId": "u1"},
                 "work_date": "2026-07-10",
                 "record_list": [{"checkTypeDesc": "上班"}, {"checkTypeDesc": "下班"}],
                 "derived": {"record_success": True, "record_anomaly": True},
             },
             {
-                "_archive_run_id": "s19_morning_20260710_103500",
+                "_archive_run_id": "dingtalk_attendance_morning_20260710_103500",
                 "member": {"name": "测试甲", "userId": "u1"},
                 "work_date": "2026-07-10",
                 "derived": {
@@ -2833,7 +2943,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 },
             },
             {
-                "_archive_run_id": "s19_evening_20260710_200000",
+                "_archive_run_id": "dingtalk_attendance_evening_20260710_200000",
                 "member": {"name": "测试甲", "userId": "u1"},
                 "work_date": "2026-07-10",
                 "derived": {
@@ -2842,7 +2952,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 },
             },
             {
-                "_archive_run_id": "s19_morning_20260711_103500",
+                "_archive_run_id": "dingtalk_attendance_morning_20260711_103500",
                 "member": {"name": "测试甲", "userId": "u1"},
                 "work_date": "2026-07-11",
                 "derived": {
@@ -2873,14 +2983,14 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmpdir:
             month_dir = Path(tmpdir)
             for day in ("20260701", "20260702", "20260703"):
-                raw_path = month_dir / f"s19_evening_{day}_181500.raw.jsonl.gz"
+                raw_path = month_dir / f"dingtalk_attendance_evening_{day}_181500.raw.jsonl.gz"
                 record_list = [{"checkTypeDesc": "上班"}, {"checkTypeDesc": "下班"}]
                 if day == "20260702":
                     record_list = [{"checkTypeDesc": "上班"}]
                 with gzip.open(raw_path, "wt", encoding="utf-8") as handle:
                     handle.write(
                         json.dumps(
-                            {"type": "metadata", "run_plan": {"run_id": f"s19_evening_{day}_181500"}},
+                            {"type": "metadata", "run_plan": {"run_id": f"dingtalk_attendance_evening_{day}_181500"}},
                             ensure_ascii=False,
                         )
                         + "\n"
@@ -3015,7 +3125,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
             result = dispatch_reports_with_resolved_channel(
                 output_status={
-                    "run_id": "s19_evening_20260707_181500",
+                    "run_id": "dingtalk_attendance_evening_20260707_181500",
                     "run_type": "evening",
                     "work_date": "2026-07-07",
                     "current_time": "18:15",
@@ -3043,7 +3153,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             self.assertNotIn("张霖泽", sent[0][1])
             self.assertNotIn("林全意", sent[0][1])
             self.assertIn("需要休息\n李四（本月有效考勤25天）", sent[0][1])
-            self.assertNotIn("run_id：s19_evening_20260707_181500", sent[0][1])
+            self.assertNotIn("run_id：dingtalk_attendance_evening_20260707_181500", sent[0][1])
             self.assertNotIn("北京时间：18:15", sent[0][1])
             self.assertNotIn("OneDrive 报告路径：", sent[0][1])
             self.assertNotIn(f"管理报告：{management}", sent[0][1])
@@ -3055,7 +3165,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             self.assertNotIn("长" * 100, sent[0][1])
             receipt_payload = json.loads(receipt.read_text(encoding="utf-8"))
             self.assertEqual([message["report"] for message in receipt_payload["messages"]], ["attendance_notification"])
-            self.assertEqual(receipt_payload["run_id"], "s19_evening_20260707_181500")
+            self.assertEqual(receipt_payload["run_id"], "dingtalk_attendance_evening_20260707_181500")
             self.assertEqual(receipt_payload["management_report"], str(management))
             self.assertEqual(receipt_payload["hr_report"], str(hr))
 
@@ -3066,20 +3176,21 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             runtime_dir = root / "private_runtime"
             month_dir.mkdir()
             runtime_dir.mkdir()
-            management = month_dir / "s19_evening_20260707_181500.management.md"
-            hr = month_dir / "s19_evening_20260707_181500.hr.md"
-            receipt = month_dir / "s19_evening_20260707_181500.dispatch.json"
-            manifest = month_dir / "s19_evening_20260707_181500.manifest.json"
+            management = month_dir / "dingtalk_attendance_evening_20260707_181500.management.md"
+            hr = month_dir / "dingtalk_attendance_evening_20260707_181500.hr.md"
+            receipt = month_dir / "dingtalk_attendance_evening_20260707_181500.dispatch.json"
+            manifest = month_dir / "dingtalk_attendance_evening_20260707_181500.manifest.json"
             management.write_text("# 开明考勤管理报告\n完成。", encoding="utf-8")
             hr.write_text("# 开明考勤 HR 报告\n无。", encoding="utf-8")
             manifest.write_text(
                 json.dumps(
                     {
-                        "run_id": "s19_evening_20260707_181500",
+                        "run_id": "dingtalk_attendance_evening_20260707_181500",
+                        "skill_id": "kmfa-dingtalk-attendance-skill",
                         "management_report": str(management),
                         "hr_report": str(hr),
                         "dispatch_receipt": str(receipt),
-                        "cleanup_audit": str(month_dir / "s19_evening_20260707_181500.cleanup.json"),
+                        "cleanup_audit": str(month_dir / "dingtalk_attendance_evening_20260707_181500.cleanup.json"),
                         "stats": _official_pass_stats(),
                     },
                     ensure_ascii=False,
@@ -3141,16 +3252,17 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             runtime_dir = root / "private_runtime"
             month_dir.mkdir()
             runtime_dir.mkdir()
-            management = month_dir / "s19_evening_20260707_200000.management.md"
-            hr = month_dir / "s19_evening_20260707_200000.hr.md"
-            receipt = month_dir / "s19_evening_20260707_200000.dispatch.json"
-            manifest = month_dir / "s19_evening_20260707_200000.manifest.json"
+            management = month_dir / "dingtalk_attendance_evening_20260707_200000.management.md"
+            hr = month_dir / "dingtalk_attendance_evening_20260707_200000.hr.md"
+            receipt = month_dir / "dingtalk_attendance_evening_20260707_200000.dispatch.json"
+            manifest = month_dir / "dingtalk_attendance_evening_20260707_200000.manifest.json"
             management.write_text("# legacy management", encoding="utf-8")
             hr.write_text("# legacy hr", encoding="utf-8")
             manifest.write_text(
                 json.dumps(
                     {
-                        "run_id": "s19_evening_20260707_200000",
+                        "run_id": "dingtalk_attendance_evening_20260707_200000",
+                        "skill_id": "kmfa-dingtalk-attendance-skill",
                         "management_report": str(management),
                         "hr_report": str(hr),
                         "dispatch_receipt": str(receipt),
@@ -3200,11 +3312,12 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
     def test_run_attendance_send_latest_only_rejects_manifest_without_official_parity(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            manifest = root / "s19_morning_20260711_103500.manifest.json"
+            manifest = root / "dingtalk_attendance_morning_20260711_103500.manifest.json"
             manifest.write_text(
                 json.dumps(
                     {
-                        "run_id": "s19_morning_20260711_103500",
+                        "run_id": "dingtalk_attendance_morning_20260711_103500",
+                        "skill_id": "kmfa-dingtalk-attendance-skill",
                         "management_report": str(root / "management.md"),
                         "hr_report": str(root / "hr.md"),
                         "dispatch_receipt": str(root / "dispatch.json"),
@@ -3318,7 +3431,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
             result = dispatch_reports_to_targets(
                 output_status={
-                    "run_id": "s19_evening_20260707_181500",
+                    "run_id": "dingtalk_attendance_evening_20260707_181500",
                     "run_type": "evening",
                     "work_date": "2026-07-07",
                     "current_time": "18:15",
@@ -3354,7 +3467,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 "| 发送对象 | 是否成功 |\n|---|---|\n| 张霖泽 | 是 |\n| 考勤小群 | 是 |",
             )
             receipt_payload = json.loads(receipt.read_text(encoding="utf-8"))
-            self.assertEqual(receipt_payload["run_id"], "s19_evening_20260707_181500")
+            self.assertEqual(receipt_payload["run_id"], "dingtalk_attendance_evening_20260707_181500")
             self.assertEqual(receipt_payload["target_results"][0]["management_status"], "SENT")
             self.assertEqual(receipt_payload["target_results"][0]["hr_status"], "SKIPPED")
             self.assertEqual(receipt_payload["target_results"][1]["management_status"], "SKIPPED")
@@ -3390,7 +3503,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
             result = dispatch_reports_to_targets(
                 output_status={
-                    "run_id": "s19_evening_20260707_200000",
+                    "run_id": "dingtalk_attendance_evening_20260707_200000",
                     "run_type": "evening",
                     "work_date": "2026-07-07",
                     "stats": {},

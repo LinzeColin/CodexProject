@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Report rendering contracts for KMFA S19 attendance reports."""
+"""Report rendering contracts for KMFA DingTalk attendance reports."""
 
 from __future__ import annotations
 

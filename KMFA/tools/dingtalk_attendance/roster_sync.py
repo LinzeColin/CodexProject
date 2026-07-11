@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Roster sync boundary for KMFA S19 live-only attendance."""
+"""Roster sync boundary for KMFA DingTalk live-only attendance."""
 
 from __future__ import annotations
 

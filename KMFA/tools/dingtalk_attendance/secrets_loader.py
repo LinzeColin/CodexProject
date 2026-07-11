@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Local-only configuration loader for KMFA S19."""
+"""Local-only configuration loader for the KMFA DingTalk attendance skill."""
 
 from __future__ import annotations
 

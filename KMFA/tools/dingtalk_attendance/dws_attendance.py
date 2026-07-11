@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""DWS-backed live attendance collection for KMFA S19."""
+"""DWS-backed live collection for the KMFA 钉钉考勤 skill."""
 
 from __future__ import annotations
 
@@ -14,7 +14,12 @@ from pathlib import Path
 from typing import Any, Callable, Mapping
 from zoneinfo import ZoneInfo
 
-from KMFA.tools.dingtalk_attendance.dws_auth_guard import dws_command_safety_status, dws_subprocess_env
+from KMFA.tools.dingtalk_attendance.dws_auth_guard import (
+    DwsEnvironmentConflictError,
+    dws_command_safety_status,
+    dws_subprocess_env,
+    migrated_env_value,
+)
 from KMFA.tools.dingtalk_attendance.notification_template import display_run_type
 from KMFA.tools.dingtalk_attendance.report_renderer import render_hr_report, render_management_report
 
@@ -22,6 +27,9 @@ from KMFA.tools.dingtalk_attendance.report_renderer import render_hr_report, ren
 ROOT_DEPT_ID = 1
 MAX_DEPTS_PER_CALL = 30
 DEFAULT_DWS_TIMEOUT_SECONDS = 120
+CURRENT_DWS_TIMEOUT_ENV = "KMFA_DINGTALK_ATTENDANCE_DWS_TIMEOUT_SECONDS"
+# legacy_read_only timeout alias.
+LEGACY_DWS_TIMEOUT_ENV = "KMFA_S19_DWS_TIMEOUT_SECONDS"
 OFFICIAL_REPORT_USER_BATCH_SIZE = 5
 OFFICIAL_REPORT_REQUIRED_COLUMNS = (
     "考勤结果",
@@ -120,6 +128,18 @@ PAT_AUTH_REQUIRED_CODES = frozenset(
 DwsRunner = Callable[[list[str]], dict[str, Any]]
 
 
+def resolve_dws_timeout(env: Mapping[str, str], timeout: int) -> int:
+    try:
+        value, _ = migrated_env_value(
+            env,
+            current_key=CURRENT_DWS_TIMEOUT_ENV,
+            legacy_key=LEGACY_DWS_TIMEOUT_ENV,
+        )
+    except DwsEnvironmentConflictError as exc:
+        raise DwsAttendanceError("DWS_ENV_CONFLICT", str(exc)) from exc
+    return max(int(value or timeout), timeout)
+
+
 def attendance_run_sort_key(run_id: str) -> str:
     """Return the shared chronological ordering key for standard or suffixed run IDs."""
     value = str(run_id or "")
@@ -148,7 +168,7 @@ def run_dws_json(args: list[str], *, timeout: int = 30, verbose: bool = False) -
     command = [dws_bin, *args]
     if verbose:
         command.append("--verbose")
-    effective_timeout = max(int(os.environ.get("KMFA_S19_DWS_TIMEOUT_SECONDS", str(timeout))), timeout)
+    effective_timeout = resolve_dws_timeout(os.environ, timeout)
     command.extend(["--timeout", str(effective_timeout), "--format", "json"])
     subprocess_env = dws_subprocess_env()
     subprocess_env["TZ"] = "Asia/Shanghai"
@@ -1425,7 +1445,7 @@ def write_private_outputs(
     raw_hash = hashlib.sha256(raw_path.read_bytes()).hexdigest()
     manifest = {
         "run_id": plan["run_id"],
-        "stage_id": plan["stage_id"],
+        "skill_id": plan["skill_id"],
         "run_type": plan["run_type"],
         "work_date": collection["work_date"],
         "backend": "dws",

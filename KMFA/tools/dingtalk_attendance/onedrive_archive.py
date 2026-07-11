@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""OneDrive archive path helpers for KMFA S19."""
+"""OneDrive archive path helpers for the KMFA DingTalk attendance skill."""
 
 from __future__ import annotations
 

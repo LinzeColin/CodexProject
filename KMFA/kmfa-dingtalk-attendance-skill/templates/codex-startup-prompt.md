@@ -1,6 +1,6 @@
 # KMFA DingTalk Attendance Startup Prompt
 
-You are taking over KMFA S19 DingTalk attendance automation in `LinzeColin/CodexProject`.
+You are taking over KMFA 钉钉考勤 skill in `LinzeColin/CodexProject`.
 
 Work from repo root and stay on `main`. Do not create branches, PRs, issues, or worktrees.
 
@@ -28,7 +28,7 @@ Run safe validation before claiming completion:
 python3 KMFA/kmfa-dingtalk-attendance-skill/tools/validate_skill_package.py
 python3 KMFA/tools/dingtalk_attendance/healthcheck.py --config-only
 python3 KMFA/tools/dingtalk_attendance/validate_no_sensitive_git.py
-python3 KMFA/tools/dingtalk_attendance/check_s19_dingtalk_attendance.py
+python3 KMFA/tools/dingtalk_attendance/check_dingtalk_attendance.py
 python -m py_compile KMFA/tools/dingtalk_attendance/*.py
 python3 -m unittest KMFA.tests.test_dingtalk_attendance -q
 git diff --check

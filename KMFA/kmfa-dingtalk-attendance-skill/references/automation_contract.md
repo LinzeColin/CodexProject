@@ -71,7 +71,7 @@ The current portable stage-2 runner is fail-closed:
   `database_transaction_verified=false`; day-5 consensus must fail closed.
 - `scripts/resolve_stage2_source.py` records `source_adapter_status.json` for
   each eligible run, including fail-closed DWS safety status.
-- If `KMFA_STAGE2_SOURCE_MODE=dws_live` is set but `KMFA_S19_ALLOW_DWS_COMMANDS`
+- If `KMFA_STAGE2_SOURCE_MODE=dws_live` is set but `KMFA_DINGTALK_ATTENDANCE_ALLOW_DWS_COMMANDS`
   and browser policy are not READY, the run exits with
   `STAGE2_ADAPTER_SOURCE_MISSING` before any live call.
 - If no approved source adapter is configured, it exits with

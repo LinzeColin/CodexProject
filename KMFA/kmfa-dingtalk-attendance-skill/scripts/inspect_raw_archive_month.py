@@ -6,10 +6,24 @@ import argparse
 import gzip
 import hashlib
 import json
+import sys
 from collections import Counter
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
+
+
+REPO_ROOT = Path(__file__).resolve().parents[3]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from KMFA.tools.dingtalk_attendance.identity import (  # noqa: E402
+    IdentityConflictError,
+    archive_manifest_paths,
+    archive_raw_paths,
+    is_seed_run_id,
+    validate_manifest_identity,
+)
 
 
 LOCATION_KEYS = {
@@ -37,10 +51,6 @@ def run_id_from_manifest(path: Path) -> str:
 
 def run_id_from_raw(path: Path) -> str:
     return path.name.removesuffix(".raw.jsonl.gz").removesuffix(".raw.jsonl")
-
-
-def is_seed_run_id(run_id: str) -> bool:
-    return run_id.startswith("s19_seed_")
 
 
 def open_raw(path: Path):
@@ -153,8 +163,8 @@ def inspect_month(
 ) -> dict[str, Any]:
     month_dir = archive_root / target_month
     failures: list[str] = []
-    manifests = sorted(month_dir.glob("s19_*.manifest.json")) if month_dir.is_dir() else []
-    raw_files = sorted(month_dir.glob("s19_*.raw.jsonl.gz")) + sorted(month_dir.glob("s19_*.raw.jsonl"))
+    manifests = archive_manifest_paths(month_dir) if month_dir.is_dir() else []
+    raw_files = archive_raw_paths(month_dir) if month_dir.is_dir() else []
     raw_by_run_id = {run_id_from_raw(path): path for path in raw_files}
     manifest_run_ids = {run_id_from_manifest(path) for path in manifests}
     raw_run_ids = {run_id_from_raw(path) for path in raw_files}
@@ -196,6 +206,11 @@ def inspect_month(
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
             failures.append(f"manifest_read_failed:{run_id}:{type(exc).__name__}")
+            continue
+        try:
+            validate_manifest_identity(manifest)
+        except IdentityConflictError as exc:
+            failures.append(f"manifest_identity_conflict:{run_id}:{type(exc).__name__}")
             continue
         stats = manifest.get("stats") if isinstance(manifest.get("stats"), Mapping) else {}
         manifest_stats = {key: int(stats.get(key) or 0) for key in STAT_KEYS}

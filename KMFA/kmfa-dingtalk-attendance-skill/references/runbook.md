@@ -1,4 +1,4 @@
-# KMFA S19 DingTalk Attendance Runbook
+# KMFA 钉钉考勤 skill Runbook
 
 ## 1. Repo Entry
 
@@ -83,7 +83,7 @@ python3 KMFA/tools/dingtalk_attendance/healthcheck.py --config-only
 python3 KMFA/tools/dingtalk_attendance/sync_attendance_ledger.py --validate
 python3 KMFA/tools/dingtalk_attendance/query_attendance_ledger.py --month 202607 --summary
 python3 KMFA/tools/dingtalk_attendance/validate_no_sensitive_git.py
-python3 KMFA/tools/dingtalk_attendance/check_s19_dingtalk_attendance.py
+python3 KMFA/tools/dingtalk_attendance/check_dingtalk_attendance.py
 python -m py_compile KMFA/tools/dingtalk_attendance/*.py
 python3 -m unittest KMFA.tests.test_dingtalk_attendance -q
 python3 KMFA/kmfa-dingtalk-attendance-skill/tools/validate_skill_package.py
@@ -114,7 +114,7 @@ python3 KMFA/tools/dingtalk_attendance/healthcheck.py --config-only
 
 Live DWS collection also requires:
 
-- `KMFA_S19_ALLOW_DWS_COMMANDS=1`
+- `KMFA_DINGTALK_ATTENDANCE_ALLOW_DWS_COMMANDS=1`
 - DWS browser policy file present
 - policy `default.openBrowser=false`
 - no stale DWS or attendance process still running
