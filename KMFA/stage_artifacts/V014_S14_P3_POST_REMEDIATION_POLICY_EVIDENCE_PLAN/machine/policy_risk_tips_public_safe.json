@@ -1,0 +1,75 @@
+{
+  "risks": [
+    {
+      "business_decision_basis_allowed": false,
+      "formal_policy_qualification_conclusion_allowed": false,
+      "formal_report_allowed": false,
+      "policy_application_submission_allowed": false,
+      "program_id": "small_tech_company",
+      "required_control": "manual_authoritative_policy_evidence_review_before_any_conclusion",
+      "risk_level": "medium",
+      "risk_sequence": 1,
+      "risk_tip": "结构性目录不得解释为科小资格判断。",
+      "risk_tip_only": true,
+      "subsidy_application_allowed": false,
+      "visible_name": "科小"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "formal_policy_qualification_conclusion_allowed": false,
+      "formal_report_allowed": false,
+      "policy_application_submission_allowed": false,
+      "program_id": "high_tech_enterprise",
+      "required_control": "manual_authoritative_policy_evidence_review_before_any_conclusion",
+      "risk_level": "high",
+      "risk_sequence": 2,
+      "risk_tip": "证据链未闭合时不得输出高新资格或准备度肯定结论。",
+      "risk_tip_only": true,
+      "subsidy_application_allowed": false,
+      "visible_name": "高新"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "formal_policy_qualification_conclusion_allowed": false,
+      "formal_report_allowed": false,
+      "policy_application_submission_allowed": false,
+      "program_id": "specialized_refined_innovative",
+      "required_control": "manual_authoritative_policy_evidence_review_before_any_conclusion",
+      "risk_level": "medium",
+      "risk_sequence": 3,
+      "risk_tip": "风险提示只能指向材料缺口与复核动作，不得替代资格判断。",
+      "risk_tip_only": true,
+      "subsidy_application_allowed": false,
+      "visible_name": "专精特新"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "formal_policy_qualification_conclusion_allowed": false,
+      "formal_report_allowed": false,
+      "policy_application_submission_allowed": false,
+      "program_id": "little_giant",
+      "required_control": "manual_authoritative_policy_evidence_review_before_any_conclusion",
+      "risk_level": "high",
+      "risk_sequence": 4,
+      "risk_tip": "当前只能提示材料准备风险，不得形成小巨人资格结论。",
+      "risk_tip_only": true,
+      "subsidy_application_allowed": false,
+      "visible_name": "小巨人"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "formal_policy_qualification_conclusion_allowed": false,
+      "formal_report_allowed": false,
+      "policy_application_submission_allowed": false,
+      "program_id": "r_and_d_expense",
+      "required_control": "manual_authoritative_policy_evidence_review_before_any_conclusion",
+      "risk_level": "high",
+      "risk_sequence": 5,
+      "risk_tip": "研发费用结构候选不得替代税务申报、加计扣除或政策结论。",
+      "risk_tip_only": true,
+      "subsidy_application_allowed": false,
+      "visible_name": "研发费用"
+    }
+  ],
+  "schema_version": "kmfa.v014.s14_p3_risks.v1"
+}

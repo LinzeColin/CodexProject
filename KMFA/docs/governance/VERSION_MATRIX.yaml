@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-s14-p2-post-remediation-invoice-tax-plan"
-product_version_status: "completed_validated_local_only_s14_p2_structure_method_no_go_upload_deferred"
-version_file_value: "0.1.4-s14-p2-post-remediation-invoice-tax-plan"
+product_version: "0.1.4-s14-p3-post-remediation-policy-evidence-plan"
+product_version_status: "completed_validated_local_only_s14_p3_evidence_gap_risk_no_go_upload_deferred"
+version_file_value: "0.1.4-s14-p3-post-remediation-policy-evidence-plan"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-s14-p2-post-remediation-invoice-tax-plan"
+  MOD-KMFA-GOV-001: "0.1.4-s14-p3-post-remediation-policy-evidence-plan"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_s14_p3_post_remediation_policy_evidence_plan: "0.1.4-s14-p3-post-remediation-policy-evidence-plan"
   kmfa_v014_s14_p2_post_remediation_invoice_tax_plan: "0.1.4-s14-p2-post-remediation-invoice-tax-plan"
   kmfa_v014_s14_p1_post_remediation_fund_cash_loan_plan: "0.1.4-s14-p1-post-remediation-fund-cash-loan-plan"
   kmfa_v014_s13_post_remediation_stage_review: "0.1.4-s13-post-remediation-stage-review"
@@ -429,11 +430,62 @@ parameter_profile_versions:
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_blocked_handoff_final_threshold_recheck_after_reminder: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-final-threshold-recheck-after-reminder"
   kmfa_project_cost_mvp: "blocked_no_go_owner_scope_required"
 data_snapshot_version: "not_applicable_no_raw_data_committed"
-current_iteration: "ITER-20260711-KMFA-V014-S14-P2-POST-REMEDIATION-INVOICE-TAX-PLAN"
-current_phase: "V014_S14_P2_POST_REMEDIATION_INVOICE_TAX_PLAN"
-current_task_id: "KMFA-V014-S14-P2-POST-REMEDIATION-INVOICE-TAX-PLAN-20260711"
-current_acceptance_id: "ACC-V014-S14-P2-POST-REMEDIATION-INVOICE-TAX-PLAN"
-current_gate: "NO_GO_S14_P3_NEXT_SEPARATE_RUN_UPLOAD_DEFERRED"
+current_iteration: "ITER-20260711-KMFA-V014-S14-P3-POST-REMEDIATION-POLICY-EVIDENCE-PLAN"
+current_phase: "V014_S14_P3_POST_REMEDIATION_POLICY_EVIDENCE_PLAN"
+current_task_id: "KMFA-V014-S14-P3-POST-REMEDIATION-POLICY-EVIDENCE-PLAN-20260711"
+current_acceptance_id: "ACC-V014-S14-P3-POST-REMEDIATION-POLICY-EVIDENCE-PLAN"
+current_gate: "NO_GO_STAGE14_REVIEW_NEXT_SEPARATE_RUN_S15_UPLOAD_REINSTALL_DEFERRED"
+
+kmfa_v014_s14_p3_post_remediation_policy_evidence_plan:
+  status: completed_validated_local_only_s14_p3_evidence_gap_risk_no_go_upload_deferred
+  phase: V014_S14_P3_POST_REMEDIATION_POLICY_EVIDENCE_PLAN
+  evidence_dir: KMFA/stage_artifacts/V014_S14_P3_POST_REMEDIATION_POLICY_EVIDENCE_PLAN
+  validator: KMFA/tools/check_v014_s14_p3_post_remediation_policy_evidence_plan.py
+  focused_test: KMFA/tests/test_v014_s14_p3_post_remediation_policy_evidence_plan.py
+  github_upload: blocked_no_go_upload_deferred
+  counts:
+    policy_program_count: 5
+    evidence_directory_definition_count: 5
+    required_evidence_category_total_count: 23
+    unique_public_source_ref_count: 4
+    program_source_association_count: 12
+    unique_structure_candidate_count: 20
+    program_structure_candidate_association_count: 60
+    authoritative_evidence_bound_program_count: 0
+    evidence_complete_program_count: 0
+    evidence_gap_count: 5
+    risk_tip_count: 5
+    formal_policy_qualification_conclusion_count: 0
+    policy_score_count: 0
+    policy_application_submission_count: 0
+    subsidy_application_count: 0
+    private_parseable_sheet_count: 4198
+    private_unique_policy_lexical_candidate_sheet_count: 3830
+    private_probe_roundtrip_mismatch_count: 0
+    raw_source_file_count: 5
+  private_lexical_candidate_sheet_counts:
+    small_tech_company: 0
+    high_tech_enterprise: 1
+    specialized_refined_innovative: 0
+    little_giant: 0
+    r_and_d_expense: 3830
+  quality:
+    current_data_quality_grade: Q4
+    current_report_grade: D
+    decision: NO_GO
+    open_final_difference_accepted_count: 3
+    nonzero_delta_reconciliation_count: 9
+    zero_delta_reconciliation_count: 2
+    incomplete_reconciliation_count: 1
+  boundaries:
+    s14_p3_performed: true
+    stage14_review_performed: false
+    formal_policy_qualification_conclusion_performed: false
+    policy_application_submission_performed: false
+    subsidy_application_performed: false
+    github_upload_performed: false
+    app_reinstall_performed: false
+    business_execution_performed: false
 
 kmfa_v014_s14_p2_post_remediation_invoice_tax_plan:
   status: completed_validated_local_only_s14_p2_structure_method_no_go_upload_deferred

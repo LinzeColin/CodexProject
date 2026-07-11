@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260711-V014-S14-P2-POST-REMEDIATION-INVOICE-TAX-PLAN"
+as_of_event_id: "DEV-KMFA-20260711-V014-S14-P3-POST-REMEDIATION-POLICY-EVIDENCE-PLAN"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "59ec950b5acf4f7776fcd2675c2da14eecc6637a"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S14_P2_POST_REMEDIATION_INVOICE_TAX_PLAN_COMMIT"
-snapshot_event_time: "2026-07-11T17:56:55+10:00"
-generator_version: "manual-0.1.4-s14-p2-post-remediation-invoice-tax-plan"
+source_base_commit: "a48c83f85f78547b24965e64123528991825cb9b"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S14_P3_POST_REMEDIATION_POLICY_EVIDENCE_PLAN_COMMIT"
+snapshot_event_time: "2026-07-11T18:48:29+10:00"
+generator_version: "manual-0.1.4-s14-p3-post-remediation-policy-evidence-plan"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1375
-    total_active_formulas: 296
+    total_active_parameters: 1379
+    total_active_formulas: 297
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -965,6 +965,50 @@ dimensions:
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
+kmfa_v014_s14_p3_post_remediation_policy_evidence_plan:
+  status: completed_validated_local_only_s14_p3_evidence_gap_risk_no_go_upload_deferred
+  phase_id: V014_S14_P3_POST_REMEDIATION_POLICY_EVIDENCE_PLAN
+  task_id: KMFA-V014-S14-P3-POST-REMEDIATION-POLICY-EVIDENCE-PLAN-20260711
+  acceptance_id: ACC-V014-S14-P3-POST-REMEDIATION-POLICY-EVIDENCE-PLAN
+  formula_ref: FORM-KMFA-V014-S14P3-POST-REMEDIATION-POLICY-EVIDENCE-PLAN-001
+  parameter_refs:
+    - PARAM-KMFA-1758
+    - PARAM-KMFA-1759
+    - PARAM-KMFA-1760
+    - PARAM-KMFA-1761
+  decision: NO_GO
+  evidence_ref: KMFA/stage_artifacts/V014_S14_P3_POST_REMEDIATION_POLICY_EVIDENCE_PLAN/machine/policy_evidence_plan_manifest.json
+  validator: KMFA/tools/check_v014_s14_p3_post_remediation_policy_evidence_plan.py
+  counts:
+    policy_program_count: 5
+    evidence_directory_definition_count: 5
+    required_evidence_category_total_count: 23
+    authoritative_evidence_bound_program_count: 0
+    evidence_complete_program_count: 0
+    evidence_gap_count: 5
+    risk_tip_count: 5
+    formal_policy_qualification_conclusion_count: 0
+    policy_score_count: 0
+    private_parseable_sheet_count: 4198
+    private_unique_policy_lexical_candidate_sheet_count: 3830
+    private_probe_roundtrip_mismatch_count: 0
+    browser_viewport_check_count: 2
+    program_interaction_check_count: 10
+    dependency_navigation_check_count: 4
+    raw_source_file_count: 5
+  gates:
+    current_data_quality_grade: Q4
+    current_report_grade: D
+    formal_policy_qualification_conclusion_allowed: false
+    policy_application_submission_allowed: false
+    subsidy_application_allowed: false
+    formal_report_allowed: false
+    business_decision_basis_allowed: false
+    stage14_review_performed: false
+    github_upload_performed: false
+    app_reinstall_performed: false
+    business_execution_performed: false
+
 kmfa_v014_s14_p2_post_remediation_invoice_tax_plan:
   status: completed_validated_local_only_s14_p2_structure_method_no_go_upload_deferred
   phase_id: V014_S14_P2_POST_REMEDIATION_INVOICE_TAX_PLAN
