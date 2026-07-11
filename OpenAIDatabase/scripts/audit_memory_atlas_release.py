@@ -214,6 +214,10 @@ def audit_release(repo_root: Path, publish_dir: Path) -> dict[str, Any]:
     else:
         audit_memory_atlas_json(atlas_path, problems)
 
+    # A rejected publish artifact cannot become safer by scanning the source tree.
+    if problems:
+        raise AuditError("\n".join(problems))
+
     tracked_problems = audit_tracked_files(repo_root)
     problems.extend(tracked_problems)
     public_raw_audit, public_raw_problems = audit_governed_public_raw(repo_root)

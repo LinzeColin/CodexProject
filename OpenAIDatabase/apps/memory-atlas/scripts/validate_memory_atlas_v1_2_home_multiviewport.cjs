@@ -375,6 +375,7 @@ async function assertDefaultSurfaceHasNoInternalCopy(page) {
       { id: "execution_modes", pattern: "prefill_only|auto_submit" },
       { id: "universe_state", pattern: "Universe State" },
       { id: "source_paths", pattern: "data/derived/|机器治理/参数与公式/" },
+      { id: "raw_manifest_details", pattern: "raw_manifest|raw_hash_ledger|sha-?256|imported_at|relative_path|data/public_raw/" },
       { id: "internal_visual_names", pattern: "Clio-like|Economic-like|Workflow/Latent/Governance|Human Question Map|Visual ROI Gate" },
       { id: "arrival_machine_evidence", pattern: "recent=|previous=|staleness|low-value loop|derived signals|agent_recommendations|codex:[a-z0-9_.-]+" },
     ];
@@ -399,6 +400,65 @@ async function assertDefaultSurfaceHasNoInternalCopy(page) {
   assertCondition(Boolean(result), "Default product surface is missing");
   assertCondition(result.textLength > 500, "Default product surface text coverage is unexpectedly sparse", result);
   assertCondition(result.matches.length === 0, "Default product surface exposes stage, machine, or implementation copy", result);
+  return result;
+}
+
+async function assertRenderedChineseUx(page) {
+  const result = await page.evaluate(() => {
+    const root = document.querySelector(".app-shell");
+    if (!root) return null;
+    const selectors = [
+      ".topbar h1",
+      ".nav-group-label",
+      ".nav-group-question",
+      ".nav-item span",
+      ".lens-copy strong",
+      ".command-palette-heading strong",
+      ".command-palette-action > span",
+      ".home-overview-view h2",
+      ".home-overview-view h3",
+      ".arrival-briefing-card-label",
+    ];
+    const isRendered = (element) => {
+      const style = getComputedStyle(element);
+      const rect = element.getBoundingClientRect();
+      return style.display !== "none" && style.visibility !== "hidden" && rect.width > 1 && rect.height > 1;
+    };
+    const labels = Array.from(root.querySelectorAll(selectors.join(",")))
+      .filter(isRendered)
+      .map((element) => element.textContent?.replace(/\s+/g, " ").trim() || "")
+      .filter(Boolean);
+    const untranslatedPattern = /^(?:Search|Source|Time|Project|Task|Settings|Loading|Error|Run|Apply|Rollback)(?:\b|\s|:)/i;
+    const untranslatedLabels = labels.filter((label) => untranslatedPattern.test(label));
+    const nonChineseLabels = labels.filter((label) => !/[\u3400-\u9fff]/.test(label));
+    const visibleButtons = Array.from(root.querySelectorAll("button")).filter(isRendered);
+    const unnamedButtons = visibleButtons
+      .filter((button) => {
+        const accessibleName = [
+          button.getAttribute("aria-label"),
+          button.getAttribute("title"),
+          button.textContent,
+        ].filter(Boolean).join(" ").trim();
+        return !accessibleName;
+      })
+      .map((button) => button.className || button.outerHTML.slice(0, 120));
+    return {
+      documentLanguage: document.documentElement.lang,
+      labelCount: labels.length,
+      labels,
+      nonChineseLabels,
+      untranslatedLabels,
+      visibleButtonCount: visibleButtons.length,
+      unnamedButtons,
+    };
+  });
+
+  assertCondition(Boolean(result), "Rendered Chinese UX root is missing");
+  assertCondition(String(result.documentLanguage).toLowerCase().startsWith("zh"), "Document language is not Chinese", result);
+  assertCondition(result.labelCount >= 24, "Rendered Chinese UX label coverage is unexpectedly sparse", result);
+  assertCondition(result.nonChineseLabels.length === 0, "Primary rendered product labels are not Chinese-readable", result);
+  assertCondition(result.untranslatedLabels.length === 0, "Primary rendered product labels contain untranslated UI tokens", result);
+  assertCondition(result.visibleButtonCount >= 18 && result.unnamedButtons.length === 0, "Visible buttons lack accessible names", result);
   return result;
 }
 
@@ -837,6 +897,7 @@ async function validateViewport(browser, viewport) {
     assertViewportContainment(layout);
     const releaseIdentity = await assertReleaseIdentityAndNavigation(page);
     const defaultSurfaceCopy = await assertDefaultSurfaceHasNoInternalCopy(page);
+    const renderedChineseUx = await assertRenderedChineseUx(page);
     const machineDetails = await assertMachineDetailsFolded(page);
     const scanOrder = await assertDefaultScanOrderAndFocus(page);
     const mobileNavigationKeyboard = await assertMobileNavigationKeyboardTraversal(page, viewport);
@@ -861,6 +922,7 @@ async function validateViewport(browser, viewport) {
       layout,
       releaseIdentity,
       defaultSurfaceCopy,
+      renderedChineseUx,
       machineDetails,
       scanOrder,
       mobileNavigationKeyboard,
@@ -936,7 +998,8 @@ function writeStatus(payload) {
         "document and workspace sections have no horizontal overflow",
         "workspace and sections remain inside the visible viewport",
         "Memory Atlas v1.2 release identity and question-led navigation are visible",
-        "default Home copy hides stage, machine, CLI, path, and internal visual terminology",
+        "default Home copy hides stage, machine, CLI, path, raw manifest, and internal visual terminology",
+        "rendered Chinese UX labels, document language, translations, and accessible button names pass",
         "sidebar, lens, command, and formula machine details are folded and keyboard-operable",
         "default keyboard scan follows navigation, help, filters, focus, actions, and Home evidence",
         "mobile Tab and Shift+Tab keep every traversed navigation route fully visible and activate all ten routes",

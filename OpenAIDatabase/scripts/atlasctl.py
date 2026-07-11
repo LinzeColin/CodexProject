@@ -7,6 +7,8 @@ import argparse
 import json
 import subprocess
 import sys
+import tempfile
+import uuid
 from pathlib import Path
 
 from memory_atlas_owner_daily import (
@@ -14,6 +16,12 @@ from memory_atlas_owner_daily import (
     OwnerDailyContext,
     OwnerDailyRunner,
     owner_daily_profile_contract as build_owner_daily_profile_contract,
+)
+from memory_atlas_r8_acceptance import (
+    FOUR_LINE_GATES,
+    REQUIRED_R8_GATE_IDS,
+    AcceptanceHistoryError,
+    build_acceptance_summary,
 )
 
 
@@ -278,6 +286,17 @@ def run_sync(args: argparse.Namespace) -> int:
 
 
 def final_audit_gate_plan(database_dir: Path) -> list[dict[str, object]]:
+    app_dir = database_dir / "apps/memory-atlas"
+    worktree_root = database_dir.parent
+    commit_result = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=worktree_root,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    exact_commit = commit_result.stdout.strip() if commit_result.returncode == 0 else "UNRESOLVED_HEAD"
+    recovery_output = Path(tempfile.gettempdir()) / f"memory-atlas-r8-recovery-{uuid.uuid4().hex}"
     return [
         {
             "gate_id": "unit_tests",
@@ -307,6 +326,15 @@ def final_audit_gate_plan(database_dir: Path) -> list[dict[str, object]]:
             "fail_explanation_zh": "中文 UX 审计失败；先修复默认中文、机器字段折叠或中文解释缺失。",
         },
         {
+            "gate_id": "rendered_chinese_ux",
+            "name_zh": "Rendered Chinese UX and three-viewport Home audit",
+            "command": ["npm", "run", "validate:v1.2-home-multiviewport"],
+            "cwd": str(app_dir),
+            "timeout_seconds": 300,
+            "pass_explanation_zh": "三视口真实浏览器中文 UX、布局、可达性和默认人类界面审计通过。",
+            "fail_explanation_zh": "三视口中文 UX 失败；先修复重叠、裁切、英文残留、raw manifest 污染或不可达内容。",
+        },
+        {
             "gate_id": "visual_roi_audit",
             "name_zh": "Visual ROI audit",
             "command": [sys.executable, "scripts/atlasctl.py", "audit", "--check", "visual-roi"],
@@ -314,6 +342,69 @@ def final_audit_gate_plan(database_dir: Path) -> list[dict[str, object]]:
             "timeout_seconds": 180,
             "pass_explanation_zh": "Visual ROI 审计通过。",
             "fail_explanation_zh": "Visual ROI 审计失败；先修复 P0 视觉候选、人类问题或行动解释。",
+        },
+        {
+            "gate_id": "visual_workflows",
+            "name_zh": "Twelve visual decision workflows",
+            "command": ["npm", "run", "validate:v1.2-visual-workflows"],
+            "cwd": str(app_dir),
+            "timeout_seconds": 420,
+            "pass_explanation_zh": "十二项真实视觉工作流、筛选、证据交互和公式变化审计通过。",
+            "fail_explanation_zh": "视觉工作流失败；先修复真实数据联动、筛选差异、证据入口或公式交互。",
+        },
+        {
+            "gate_id": "command_workflows",
+            "name_zh": "Command workflow browser audit",
+            "command": ["npm", "run", "validate:v1.2-command-workflows"],
+            "cwd": str(app_dir),
+            "timeout_seconds": 420,
+            "pass_explanation_zh": "六个命令工作流通过真实浏览器与受控本地 runtime 审计。",
+            "fail_explanation_zh": "命令工作流失败；先修复执行路径、结果反馈、静默发送边界或 runtime 接口。",
+        },
+        {
+            "gate_id": "proposal_e2e",
+            "name_zh": "Authorized proposal apply and rollback E2E",
+            "command": ["npm", "run", "validate:v1.2-proposal-e2e"],
+            "cwd": str(app_dir),
+            "timeout_seconds": 420,
+            "pass_explanation_zh": "提案审批、授权 apply、验证失败自动回滚和人工回滚端到端审计通过。",
+            "fail_explanation_zh": "提案端到端失败；先修复授权令牌、allowlist、验证、事务恢复或 rollback。",
+        },
+        {
+            "gate_id": "owner_daily_e2e",
+            "name_zh": "Owner Daily product entry E2E",
+            "command": ["npm", "run", "validate:v1.2-owner-daily-e2e"],
+            "cwd": str(app_dir),
+            "timeout_seconds": 420,
+            "pass_explanation_zh": "Owner Daily 八步运行、中文结论和仅重试失败步骤的产品入口审计通过。",
+            "fail_explanation_zh": "Owner Daily 失败；先修复八步执行、结果归纳或固定失败步骤重试。",
+        },
+        {
+            "gate_id": "stage7_visual",
+            "name_zh": "Canvas visual acceptance",
+            "command": ["npm", "run", "validate:stage7-visual"],
+            "cwd": str(app_dir),
+            "timeout_seconds": 300,
+            "pass_explanation_zh": "Galaxy 与 Memory River 真实 canvas 非空、映射和交互审计通过。",
+            "fail_explanation_zh": "Canvas 视觉审计失败；先修复空白画布、映射、构图或浏览器错误。",
+        },
+        {
+            "gate_id": "stage7_performance",
+            "name_zh": "Canvas performance acceptance",
+            "command": ["npm", "run", "validate:stage7-performance"],
+            "cwd": str(app_dir),
+            "timeout_seconds": 300,
+            "pass_explanation_zh": "桌面与移动性能预算审计通过。",
+            "fail_explanation_zh": "性能审计失败；先修复帧率、启动耗时或资源预算超限。",
+        },
+        {
+            "gate_id": "stage7_privacy_accessibility",
+            "name_zh": "Release privacy and accessibility acceptance",
+            "command": ["npm", "run", "validate:stage7-privacy-accessibility"],
+            "cwd": str(app_dir),
+            "timeout_seconds": 600,
+            "pass_explanation_zh": "发布隐私、512 文件全内容安全、reduced-motion 和静默默认审计通过。",
+            "fail_explanation_zh": "发布隐私或可访问性失败；先修复敏感数据、manifest/ledger、动效或静默默认。",
         },
         {
             "gate_id": "raw_append_only_audit",
@@ -332,6 +423,33 @@ def final_audit_gate_plan(database_dir: Path) -> list[dict[str, object]]:
             "timeout_seconds": 180,
             "pass_explanation_zh": "凭证审计通过。",
             "fail_explanation_zh": "凭证审计失败；先移除硬编码 secret、token、cookie 或私有 raw 文件。",
+        },
+        {
+            "gate_id": "github_backup_modes",
+            "name_zh": "GitHub backup dry-run and apply modes",
+            "command": [sys.executable, "-B", "-m", "unittest", "tests.test_s04p3_github_backup", "-q"],
+            "cwd": str(database_dir),
+            "timeout_seconds": 180,
+            "pass_explanation_zh": "GitHub 备份 dry-run 与隔离 apply 本地提交模式通过，且不会远端 push。",
+            "fail_explanation_zh": "GitHub 备份模式失败；先修复范围预览、本地 commit 或 no-remote-push 边界。",
+        },
+        {
+            "gate_id": "tracked_only_recovery",
+            "name_zh": "Exact-commit tracked-only recovery",
+            "command": [
+                sys.executable,
+                "scripts/audit_memory_atlas_github_recovery.py",
+                "--repo-root",
+                str(worktree_root),
+                "--commit",
+                exact_commit,
+                "--output-dir",
+                str(recovery_output),
+            ],
+            "cwd": str(database_dir),
+            "timeout_seconds": 1200,
+            "pass_explanation_zh": "当前精确 Git commit 可仅凭 tracked files 恢复源包、raw、release、依赖和生产构建。",
+            "fail_explanation_zh": "精确 commit 恢复失败；先修复 Git 可移植资料、源包、raw 完整性、依赖或构建。",
         },
         {
             "gate_id": "report_contract_audit",
@@ -379,6 +497,15 @@ def final_audit_dry_run_contract(args: argparse.Namespace) -> dict[str, object]:
         "phase_status": FINAL_AUDIT_PHASE_STATUS,
         "dry_run": True,
         "gates": gates,
+        "required_r8_gate_ids": list(REQUIRED_R8_GATE_IDS),
+        "four_line_gate_plan": [
+            {
+                "line_id": line["line_id"],
+                "name_zh": line["name_zh"],
+                "gate_ids": list(line["gate_ids"]),
+            }
+            for line in FOUR_LINE_GATES
+        ],
         "high_token_auto_summary": False,
         "max_output_chars_per_gate": FINAL_AUDIT_OUTPUT_TAIL_CHARS * 2,
         "writes_files": False,
@@ -435,19 +562,40 @@ def run_final_audit(args: argparse.Namespace) -> int:
         })
 
     failed = [gate for gate in gates if gate["status"] != "PASS"]
+    try:
+        verified_commit = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=args.database_dir.parent,
+            text=True,
+            capture_output=True,
+            check=True,
+        ).stdout.strip()
+        r8_acceptance = build_acceptance_summary(args.database_dir, gates, verified_commit)
+    except (OSError, subprocess.CalledProcessError, AcceptanceHistoryError) as exc:
+        r8_acceptance = {
+            "schema_version": "memory_atlas.r8_acceptance.v1",
+            "status": "FAIL",
+            "reason": str(exc),
+        }
+    r8_passed = r8_acceptance.get("status") == "PASS"
     total_output_chars = sum(len(str(gate.get("stdout_tail") or "")) + len(str(gate.get("stderr_tail") or "")) for gate in gates)
     payload = {
-        "status": "PASS" if not failed else "FAIL",
+        "status": "PASS" if not failed and r8_passed else "FAIL",
         "command": "audit",
         "check": "final",
         "task_id": FINAL_AUDIT_TASK_ID,
         "acceptance_id": FINAL_AUDIT_ACCEPTANCE_ID,
         "contract_version": FINAL_AUDIT_CONTRACT_VERSION,
-        "phase_status": FINAL_AUDIT_PHASE_STATUS if not failed else "phase_s14_p2_final_audit_gate_failed_pending_fix",
+        "phase_status": FINAL_AUDIT_PHASE_STATUS if not failed and r8_passed else "r8_overall_acceptance_failed_pending_fix",
         "gates": gates,
         "gate_count": len(gates),
-        "failed_gate_count": len(failed),
-        "failed_gate_ids": [str(gate["gate_id"]) for gate in failed],
+        "failed_gate_count": len(failed) + (0 if r8_passed else 1),
+        "failed_gate_ids": [str(gate["gate_id"]) for gate in failed]
+        + ([] if r8_passed else ["r8_58_requirement_reconciliation"]),
+        "r8_acceptance": r8_acceptance,
+        "four_line_coverage": r8_acceptance.get("four_line_coverage", []),
+        "requirements": r8_acceptance.get("requirements", {}),
+        "stage_pass_gates": r8_acceptance.get("stage_pass_gates", []),
         "high_token_auto_summary": False,
         "max_output_chars_per_gate": FINAL_AUDIT_OUTPUT_TAIL_CHARS * 2,
         "total_output_chars": total_output_chars,
@@ -461,12 +609,12 @@ def run_final_audit(args: argparse.Namespace) -> int:
             "does_not_reinstall_app": True,
             "does_not_clean_local_computer": True,
             "stage_review_deferred_to": "S14 Review",
-            "next_phase": "S14 P3" if not failed else "Fix S14 P2 failing gate",
+            "next_phase": "single final delivery" if not failed and r8_passed else "Fix R8 failing gate",
         },
         "中文说明": "S14 P2 final audit 已运行；失败时先按 failed_gate_ids 和各 gate 的中文解释修复。",
     }
     print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
-    return 0 if not failed else 2
+    return 0 if not failed and r8_passed else 2
 
 
 def run_build_atlas(args: argparse.Namespace) -> int:

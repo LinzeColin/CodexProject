@@ -53,6 +53,17 @@ def add_check(checks: list[dict[str, str]], name: str, status: str, evidence: st
     checks.append({"name": name, "status": status, "evidence": evidence})
 
 
+def static_output_directory(config: dict[str, Any]) -> str:
+    pages_directory = config.get("pages_build_output_dir")
+    if isinstance(pages_directory, str) and pages_directory.strip():
+        return pages_directory.strip().removeprefix("./")
+    assets = config.get("assets")
+    assets_directory = assets.get("directory") if isinstance(assets, dict) else None
+    if isinstance(assets_directory, str) and assets_directory.strip():
+        return assets_directory.strip().removeprefix("./")
+    return ""
+
+
 def require(checks: list[dict[str, str]], name: str, condition: bool, success: str, failure: str) -> None:
     add_check(checks, name, "PASS" if condition else "FAIL", success if condition else failure)
 
@@ -134,11 +145,11 @@ def audit_wrangler(repo_root: Path, checks: list[dict[str, str]]) -> None:
         checks,
         "wrangler_pages_config",
         config.get("name") == "openai-memory-atlas"
-        and config.get("pages_build_output_dir") == "apps/memory-atlas/dist"
+        and static_output_directory(config) == "apps/memory-atlas/dist"
         and isinstance(config.get("compatibility_date"), str)
         and bool(config.get("compatibility_date")),
-        "wrangler.jsonc names Pages project and build output",
-        "wrangler.jsonc missing name, pages_build_output_dir, or compatibility_date",
+        "wrangler.jsonc names the Memory Atlas project and static output for Pages or Workers assets",
+        "wrangler.jsonc missing name, supported static output directory, or compatibility_date",
     )
 
 
