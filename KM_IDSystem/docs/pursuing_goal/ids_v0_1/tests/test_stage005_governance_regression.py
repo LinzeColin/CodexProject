@@ -326,6 +326,71 @@ next_gate_id: "IDS-STAGE005-P4-GATE"
             module.evaluate_required_event_semantics([top_level_unsafe])
         )
 
+    def test_stage037_review_event_and_unknown_stage_event_fail_closed(self):
+        module = self._load_module()
+        runtime_notes = "; ".join(
+            f"{field}=false"
+            for field in (
+                "live_execution_performed",
+                "queue_runtime_performed",
+                "worker_runtime_performed",
+                "retry_scheduler_performed",
+                "dead_letter_runtime_performed",
+                "backpressure_runtime_performed",
+                "lock_runtime_performed",
+                "automatic_lifecycle_runtime_performed",
+                "crash_recovery_runtime_performed",
+                "cleanup_runtime_performed",
+                "database_connection_performed",
+                "schema_change_performed",
+                "state_registry_write_performed",
+                "runtime_output_written",
+                "real_job_created",
+                "fake_ids_business_data_used",
+                "raw_metadata_content_accessed",
+            )
+        )
+        valid_event = {
+            "schema_version": "codexproject.event.v1",
+            "event_id": "EVT-IDS-V0_1-STAGE037-REVIEW-20260711-001",
+            "project_id": "KM_IDSystem",
+            "occurred_at": "2026-07-11T05:30:00Z",
+            "event_type": "stage_review",
+            "summary": "STAGE037 review test event",
+            "fact_level": "VERIFIED",
+            "task_id": "IDS-V0_1-STAGE037-REVIEW",
+            "acceptance_ids": ["ACC-STAGE-037"],
+            "changed_files": [
+                "KM_IDSystem/scripts/check_job_state_model.py",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_STAGE_REVIEW.md",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml",
+                "KM_IDSystem/docs/governance/roadmap.yaml",
+                "KM_IDSystem/docs/governance/events.jsonl",
+            ],
+            "evidence_refs": [
+                {
+                    "ref": "KM_IDSystem/scripts/check_job_state_model.py#build_stage037_delivery_report"
+                },
+                {
+                    "ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_STAGE_REVIEW.md"
+                },
+            ],
+            "actor_role": "Codex",
+            "notes": (
+                runtime_notes
+                + "; next_gate=IDS-STAGE038-P1-GATE; push_allowed=false"
+            ),
+        }
+        self.assertEqual([], module.evaluate_required_event_semantics([valid_event]))
+
+        unknown_event = dict(valid_event)
+        unknown_event["event_id"] = "EVT-IDS-V0_1-STAGE037-UPLOAD-20260711-001"
+        unknown_event["task_id"] = "IDS-V0_1-STAGE037-UPLOAD"
+        unknown_event["event_type"] = "upload"
+        self.assertTrue(
+            module.evaluate_required_event_semantics([valid_event, unknown_event])
+        )
+
     def test_ids_metadata_raw_boundary_requires_real_data_only_policy(self):
         module = self._load_module()
         root_lock_text = """
@@ -8109,6 +8174,54 @@ stages:
             wrong_next_checks["decision_next_allowed_task_matches_gate"],
             wrong_next_checks,
         )
+
+    def test_phase_state_allows_stage037_reviewed_local_no_upload(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-031-040"
+status: "stage037_completed_reviewed_local"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-037:
+    status: "completed_reviewed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    review_status: "passed"
+    next_stage: "STAGE-038"
+    next_gate: "IDS-STAGE038-P1-GATE"
+    current_task_id: "IDS-V0_1-STAGE037-REVIEW"
+    acceptance_id: "ACC-STAGE-037"
+    acceptance_status: "reviewed_local_passed"
+decision:
+  current_task_id: "IDS-V0_1-STAGE037-REVIEW"
+  next_allowed_task_id: "IDS-V0_1-STAGE038-P1"
+  github_upload_allowed: false
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE037"
+current_phase_id: "IDS-STAGE037-REVIEW"
+current_task_id: "IDS-V0_1-STAGE037-REVIEW"
+next_gate_id: "IDS-STAGE038-P1-GATE"
+stages:
+  -
+    stage_id: "IDS-STAGE037"
+    review:
+      review_id: "IDS-STAGE037-REVIEW"
+      task_id: "IDS-V0_1-STAGE037-REVIEW"
+      status: "completed"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_STAGE_REVIEW.md"
+"""
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+        self.assertTrue(all(checks.values()), checks)
+        structured = module.evaluate_current_state_consistency(
+            batch_text, roadmap_text
+        )
+        self.assertTrue(all(structured.values()), structured)
 
     def test_structured_state_rejects_stage035_node_contradictions(self):
         module = self._load_module()

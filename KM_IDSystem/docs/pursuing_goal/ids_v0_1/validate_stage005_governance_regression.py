@@ -820,6 +820,24 @@ def evaluate_required_event_semantics(events: list[dict]) -> list[str]:
             "next_gate": "IDS-STAGE037-REVIEW-GATE",
             "exact_job_runtime_results_required": True,
         },
+        "EVT-IDS-V0_1-STAGE037-REVIEW-20260711-001": {
+            "event_type": "stage_review",
+            "task_id": "IDS-V0_1-STAGE037-REVIEW",
+            "acceptance_id": "ACC-STAGE-037",
+            "required_changed_files": {
+                "KM_IDSystem/scripts/check_job_state_model.py",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_STAGE_REVIEW.md",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml",
+                "KM_IDSystem/docs/governance/roadmap.yaml",
+                "KM_IDSystem/docs/governance/events.jsonl",
+            },
+            "required_refs": {
+                "KM_IDSystem/scripts/check_job_state_model.py#build_stage037_delivery_report",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_STAGE_REVIEW.md",
+            },
+            "next_gate": "IDS-STAGE038-P1-GATE",
+            "exact_job_runtime_results_required": True,
+        },
     }
 
     errors: list[str] = []
@@ -996,6 +1014,21 @@ def evaluate_required_event_semantics(events: list[dict]) -> list[str]:
                 errors.append(
                     f"{event_id}: phase event must not claim gate or live results"
                 )
+
+    known_stage037_event_ids = {
+        event_id for event_id in event_specs if "STAGE037" in event_id
+    }
+    for event in events:
+        if not isinstance(event, dict):
+            continue
+        task_id = event.get("task_id")
+        event_id = event.get("event_id")
+        if (
+            isinstance(task_id, str)
+            and task_id.startswith("IDS-V0_1-STAGE037-")
+            and event_id not in known_stage037_event_ids
+        ):
+            errors.append(f"{event_id}: unknown STAGE037 event")
 
     if recognized_events == 0:
         errors.append("required staged event: expected exactly one recognized event")
@@ -2589,6 +2622,66 @@ def evaluate_phase_state(
         and 'current_task_id: "IDS-V0_1-STAGE037-P4"' in roadmap_text
         and 'next_gate_id: "IDS-STAGE037-REVIEW-GATE"' in roadmap_text
     )
+    batch_document = _parse_yaml_text(batch_text)
+    roadmap_document = _parse_yaml_text(roadmap_text)
+    stage_progress = batch_document.get("stage_progress")
+    stage_progress = stage_progress if isinstance(stage_progress, dict) else {}
+    stage037_node = stage_progress.get("STAGE-037")
+    stage037_node = stage037_node if isinstance(stage037_node, dict) else {}
+    upload_gate = batch_document.get("upload_gate")
+    upload_gate = upload_gate if isinstance(upload_gate, dict) else {}
+    decision_node = batch_document.get("decision")
+    decision_node = decision_node if isinstance(decision_node, dict) else {}
+    roadmap_stages = roadmap_document.get("stages")
+    roadmap_stages = roadmap_stages if isinstance(roadmap_stages, list) else []
+    roadmap_stage037 = next(
+        (
+            item
+            for item in roadmap_stages
+            if isinstance(item, dict) and item.get("stage_id") == "IDS-STAGE037"
+        ),
+        {},
+    )
+    roadmap_stage037 = (
+        roadmap_stage037 if isinstance(roadmap_stage037, dict) else {}
+    )
+    roadmap_stage037_review = roadmap_stage037.get("review")
+    roadmap_stage037_review = (
+        roadmap_stage037_review
+        if isinstance(roadmap_stage037_review, dict)
+        else {}
+    )
+    stage037_reviewed_local = (
+        batch_document.get("batch_id") == "IDS-V0_1-BATCH-031-040"
+        and batch_document.get("status") == "stage037_completed_reviewed_local"
+        and upload_gate.get("push_allowed") is False
+        and stage037_node.get("status") == "completed_reviewed_local"
+        and stage037_node.get("completed_phases")
+        == ["Phase 1", "Phase 2", "Phase 3", "Phase 4"]
+        and stage037_node.get("review_status") == "passed"
+        and stage037_node.get("next_stage") == "STAGE-038"
+        and stage037_node.get("next_gate") == "IDS-STAGE038-P1-GATE"
+        and stage037_node.get("current_task_id")
+        == "IDS-V0_1-STAGE037-REVIEW"
+        and stage037_node.get("acceptance_id") == "ACC-STAGE-037"
+        and stage037_node.get("acceptance_status") == "reviewed_local_passed"
+        and decision_node.get("current_task_id")
+        == "IDS-V0_1-STAGE037-REVIEW"
+        and decision_node.get("next_allowed_task_id") == "IDS-V0_1-STAGE038-P1"
+        and decision_node.get("github_upload_allowed") is False
+        and roadmap_document.get("current_stage_id") == "IDS-STAGE037"
+        and roadmap_document.get("current_phase_id") == "IDS-STAGE037-REVIEW"
+        and roadmap_document.get("current_task_id")
+        == "IDS-V0_1-STAGE037-REVIEW"
+        and roadmap_document.get("next_gate_id") == "IDS-STAGE038-P1-GATE"
+        and roadmap_stage037_review.get("review_id")
+        == "IDS-STAGE037-REVIEW"
+        and roadmap_stage037_review.get("task_id")
+        == "IDS-V0_1-STAGE037-REVIEW"
+        and roadmap_stage037_review.get("status") == "completed"
+        and "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_STAGE_REVIEW.md"
+        in roadmap_stage037_review.get("evidence_refs", [])
+    )
     batch_terminal_state = batch_upload_gate_active or batch_uploaded_to_main
     later_stage_state = (
         batch_terminal_state
@@ -2711,6 +2804,7 @@ def evaluate_phase_state(
         or stage037_phase2_active
         or stage037_phase3_active
         or stage037_phase4_closeout
+        or stage037_reviewed_local
     )
     phase2_completed = '      - "Phase 2"' in batch_text
     stage005_active_or_complete = (
@@ -2817,6 +2911,74 @@ def evaluate_data_boundary(root_lock_text: str, batch_text: str, boundary_text: 
         "real_data_only_policy_recorded": "real_data_only_policy" in root_lock_text
         and "Real Data Only Policy" in boundary_text
         and "fake business data" in combined,
+    }
+
+
+def build_stage037_review_governance_report(root: Path | None = None) -> dict:
+    """Return only the structured evidence needed by the Stage037 review gate."""
+    root = (root or Path(__file__).resolve().parents[3]).resolve()
+    required_paths = {
+        "review_artifact": root
+        / "docs/pursuing_goal/ids_v0_1/STAGE037_STAGE_REVIEW.md",
+        "batch_lock": root
+        / "docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml",
+        "roadmap": root / "docs/governance/roadmap.yaml",
+        "events": root / "docs/governance/events.jsonl",
+        "root_lock": root / "docs/pursuing_goal/ids_v0_1/V0_1_ROOT_LOCK.yaml",
+        "raw_boundary": root
+        / "docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md",
+        "validator": Path(__file__).resolve(),
+    }
+    missing_required_files = [
+        name for name, path in required_paths.items() if not path.is_file()
+    ]
+
+    def read_text(name: str) -> str:
+        path = required_paths[name]
+        return path.read_text(encoding="utf-8") if path.is_file() else ""
+
+    events, event_json_errors = _parse_events(required_paths["events"])
+    event_ids = {
+        event.get("event_id") for event in events if isinstance(event, dict)
+    }
+    missing_event_ids = [
+        event_id for event_id in REQUIRED_EVENT_IDS if event_id not in event_ids
+    ]
+    event_semantic_errors = evaluate_required_event_semantics(events)
+    batch_text = read_text("batch_lock")
+    roadmap_text = read_text("roadmap")
+    phase_state_checks = evaluate_phase_state(
+        batch_text, roadmap_text, require_structured=True
+    )
+    data_boundary_checks = evaluate_data_boundary(
+        read_text("root_lock"), batch_text, read_text("raw_boundary")
+    )
+    tracked_forbidden_runtime_files = [
+        path for path in _git_ls_files(root) if is_forbidden_runtime_path(path)
+    ]
+    issues: list[str] = []
+    if missing_required_files:
+        issues.append("missing Stage037 review governance files")
+    if event_json_errors or event_semantic_errors or missing_event_ids:
+        issues.append("Stage037 review event governance is invalid")
+    if not all(phase_state_checks.values()):
+        issues.append("Stage037 reviewed-local state is inconsistent")
+    if not all(data_boundary_checks.values()):
+        issues.append("IDS raw or real-data-only boundary is incomplete")
+    if tracked_forbidden_runtime_files:
+        issues.append("forbidden runtime files are tracked")
+    return {
+        "acceptance_id": ACCEPTANCE_ID,
+        "data_boundary_checks": data_boundary_checks,
+        "event_json_errors": event_json_errors,
+        "event_semantic_errors": event_semantic_errors,
+        "issues": issues,
+        "missing_event_ids": missing_event_ids,
+        "missing_required_files": missing_required_files,
+        "phase_state_checks": phase_state_checks,
+        "stage": STAGE,
+        "tracked_forbidden_runtime_files": tracked_forbidden_runtime_files,
+        "valid": not issues,
     }
 
 

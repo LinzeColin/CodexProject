@@ -6,6 +6,7 @@ import re
 import subprocess
 import sys
 import unittest
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[4]
@@ -15,6 +16,7 @@ PHASE1 = PURSUE_ROOT / "STAGE037_PHASE1_SCOPE_BOUNDARY.md"
 PHASE2 = PURSUE_ROOT / "STAGE037_PHASE2_JOB_STATE_MODEL_SLICE.md"
 PHASE3 = PURSUE_ROOT / "STAGE037_PHASE3_ADVERSARIAL_SCENARIOS.md"
 PHASE4 = PURSUE_ROOT / "STAGE037_PHASE4_CLOSEOUT.md"
+REVIEW = PURSUE_ROOT / "STAGE037_STAGE_REVIEW.md"
 MODEL_ROOT = PURSUE_ROOT / "job_state_model"
 MODEL_INDEX = MODEL_ROOT / "stage037_job_state_model_index.json"
 CHECKER = ROOT / "scripts" / "check_job_state_model.py"
@@ -349,6 +351,15 @@ class Stage037JobStateModelPhase1Tests(unittest.TestCase):
                 'acceptance_status: "phase4_closeout_passed_review_pending"',
                 'next_allowed_task_id: "IDS-V0_1-STAGE037-REVIEW"',
             ],
+            [
+                'status: "completed_reviewed_local"',
+                'review_status: "passed"',
+                'next_stage: "STAGE-038"',
+                'next_gate: "IDS-STAGE038-P1-GATE"',
+                'current_task_id: "IDS-V0_1-STAGE037-REVIEW"',
+                'acceptance_status: "reviewed_local_passed"',
+                'next_allowed_task_id: "IDS-V0_1-STAGE038-P1"',
+            ],
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE037"',
@@ -431,6 +442,7 @@ class Stage037JobStateModelPhase2Tests(unittest.TestCase):
             "max_retries": 2,
             "retry_pending": False,
             "retry_disposition": "none",
+            "next_eligible_at": None,
             "lease_active": active,
             "lock_active": active,
             "fencing_token": 7 if active else 0,
@@ -443,6 +455,9 @@ class Stage037JobStateModelPhase2Tests(unittest.TestCase):
             ),
             "lock_key": "contract:stage037:p2" if active else None,
             "pause_reason_code": None,
+            "stop_reason": (
+                "CONTRACT_TERMINAL_CANCELLED" if state == "CANCELLED" else None
+            ),
             "input_refs": [
                 "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
                 "STAGE037_PHASE1_SCOPE_BOUNDARY.md#Job-Control-Envelope"
@@ -484,6 +499,9 @@ class Stage037JobStateModelPhase2Tests(unittest.TestCase):
             "error_ref": None,
             "resource_gate_refs": [],
             "pause_reason_code": None,
+            "stop_reason": None,
+            "next_eligible_at": None,
+            "next_eligible_evidence_ref": None,
             "fencing_token": None,
             "candidate_claim": None,
         }
@@ -762,6 +780,14 @@ class Stage037JobStateModelPhase2Tests(unittest.TestCase):
     def test_retry_pause_resume_and_exhaustion_preserve_budget(self):
         module = self._load_checker()
         contract = self._load_index()
+        retry_contract = contract["retry_contract"]
+        for field in (
+            "paused_retry_resume_requires_next_eligible_at",
+            "paused_retry_resume_requires_next_eligible_evidence",
+            "paused_retry_resume_requires_next_eligible_reached",
+        ):
+            with self.subTest(retry_contract_field=field):
+                self.assertIs(retry_contract[field], True)
         running = self._snapshot("RUNNING", state_version=3)
         retry_request = self._request(
             "RUNNING",
@@ -772,6 +798,7 @@ class Stage037JobStateModelPhase2Tests(unittest.TestCase):
                 "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
                 "STAGE037_PHASE2_JOB_STATE_MODEL_SLICE.md#Error-Reference-Boundary"
             ),
+            next_eligible_at="policy:STAGE039:next-eligible-at",
             guard_facts={
                 "lease_valid_or_expiry_evidence": True,
                 "fencing_token_matches": True,
@@ -808,7 +835,7 @@ class Stage037JobStateModelPhase2Tests(unittest.TestCase):
         self.assertTrue(paused["next_snapshot"]["retry_pending"])
         self.assertEqual(0, paused["next_snapshot"]["retry_count"])
 
-        resume_request = self._request(
+        resume_without_eligibility_evidence = self._request(
             "PAUSED",
             "QUEUED",
             state_version=paused["next_snapshot"]["state_version"],
@@ -817,6 +844,23 @@ class Stage037JobStateModelPhase2Tests(unittest.TestCase):
                 "resource_gates_passed": True,
                 "no_active_claim_or_lock": True,
             },
+        )
+        blocked_resume = module.evaluate_transition(
+            paused["next_snapshot"],
+            resume_without_eligibility_evidence,
+            contract=contract,
+        )
+        self.assertFalse(blocked_resume["accepted"], blocked_resume)
+        self.assertEqual(
+            "MISSING_RETRY_SCHEDULE_EVIDENCE",
+            blocked_resume["result_code"],
+        )
+
+        resume_request = copy.deepcopy(resume_without_eligibility_evidence)
+        resume_request["guard_facts"]["next_eligible_reached"] = True
+        resume_request["next_eligible_evidence_ref"] = (
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
+            "STAGE037_PHASE2_JOB_STATE_MODEL_SLICE.md#Retry-Eligibility-Evidence"
         )
         resumed = module.evaluate_transition(
             paused["next_snapshot"], resume_request, contract=contract
@@ -831,6 +875,7 @@ class Stage037JobStateModelPhase2Tests(unittest.TestCase):
         )
         exhausted_request = copy.deepcopy(retry_request)
         exhausted_request["expected_state_version"] = 8
+        exhausted_request["next_eligible_at"] = None
         exhausted = module.evaluate_transition(
             exhausted_running, exhausted_request, contract=contract
         )
@@ -873,6 +918,150 @@ class Stage037JobStateModelPhase2Tests(unittest.TestCase):
         self.assertTrue(dead_lettered["accepted"], dead_lettered)
         self.assertEqual(
             "DEAD_LETTERED", dead_lettered["next_snapshot"]["job_state"]
+        )
+
+    def test_retry_admission_requires_next_eligible_time_and_evidence(self):
+        module = self._load_checker()
+        contract = self._load_index()
+        error_ref = (
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
+            "STAGE037_PHASE2_JOB_STATE_MODEL_SLICE.md#Error-Reference-Boundary"
+        )
+        next_eligible_at = "policy:STAGE039:next-eligible-at"
+        next_eligible_evidence_ref = (
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
+            "STAGE037_PHASE2_JOB_STATE_MODEL_SLICE.md#Retry-Pause-And-Exhaustion"
+        )
+        waiting = self._snapshot(
+            "RETRY_WAIT",
+            retry_pending=True,
+            retry_disposition="eligible",
+            error_ref=error_ref,
+            next_eligible_at=next_eligible_at,
+        )
+        request = self._request(
+            "RETRY_WAIT",
+            "QUEUED",
+            next_eligible_evidence_ref=next_eligible_evidence_ref,
+            guard_facts={
+                "next_eligible_reached": True,
+                "resource_gates_passed": True,
+                "no_active_claim_or_lock": True,
+            },
+        )
+
+        accepted = module.evaluate_transition(waiting, request, contract=contract)
+        self.assertTrue(accepted["accepted"], accepted)
+        self.assertIsNone(accepted["next_snapshot"]["next_eligible_at"])
+
+        for field, value in (
+            ("next_eligible_at", None),
+            ("next_eligible_evidence_ref", None),
+        ):
+            with self.subTest(field=field):
+                changed_snapshot = copy.deepcopy(waiting)
+                changed_request = copy.deepcopy(request)
+                if field == "next_eligible_at":
+                    changed_snapshot[field] = value
+                else:
+                    changed_request[field] = value
+                rejected = module.evaluate_transition(
+                    changed_snapshot, changed_request, contract=contract
+                )
+                self.assertFalse(rejected["accepted"], rejected)
+                self.assertEqual(
+                    "MISSING_RETRY_SCHEDULE_EVIDENCE",
+                    rejected["result_code"],
+                )
+
+    def test_cancellation_requires_bounded_stop_reason(self):
+        module = self._load_checker()
+        contract = self._load_index()
+        request = self._request(
+            "CREATED",
+            "CANCELLED",
+            stop_reason="OWNER_REQUESTED_CANCEL",
+            guard_facts={"no_active_claim_or_lock": True},
+        )
+        accepted = module.evaluate_transition(
+            self._snapshot("CREATED"), request, contract=contract
+        )
+        self.assertTrue(accepted["accepted"], accepted)
+        self.assertEqual(
+            "OWNER_REQUESTED_CANCEL",
+            accepted["next_snapshot"]["stop_reason"],
+        )
+
+        missing_reason = copy.deepcopy(request)
+        missing_reason["stop_reason"] = None
+        rejected = module.evaluate_transition(
+            self._snapshot("CREATED"), missing_reason, contract=contract
+        )
+        self.assertFalse(rejected["accepted"], rejected)
+        self.assertEqual("MISSING_STOP_REASON", rejected["result_code"])
+
+    def test_machine_contract_partitions_complete_future_job_envelope(self):
+        index = self._load_index()
+        self.assertIn("job_control_envelope_contract", index)
+        envelope = index["job_control_envelope_contract"]
+        self.assertEqual("ids.job_control_envelope.v1", envelope["schema_version"])
+        self.assertEqual(
+            "STATIC_EVALUATOR_SUBSET_ONLY", envelope["phase2_scope"]
+        )
+        required_fields = {
+            "job_id",
+            "job_type",
+            "job_state",
+            "state_version",
+            "idempotency_key",
+            "transition_request_id",
+            "parent_job_id",
+            "dependency_refs",
+            "attempt_id",
+            "retry_count",
+            "max_retries",
+            "retry_pending",
+            "next_eligible_at",
+            "input_refs",
+            "output_refs",
+            "checkpoint_ref",
+            "operation_contract_version",
+            "lease_owner_ref",
+            "lease_expires_at",
+            "fencing_token",
+            "lock_key",
+            "priority_ref",
+            "pause_reason_code",
+            "stop_reason",
+            "owner_action_ref",
+            "resource_gate_refs",
+            "safe_error_code",
+            "error_ref",
+            "audit_ref",
+            "transition_actor_ref",
+            "created_at",
+            "updated_at",
+            "cleanup_manifest_ref",
+        }
+        self.assertEqual(required_fields, set(envelope["all_fields"]))
+        self.assertEqual(
+            set(index["transition_contract"]["snapshot_required_fields"]),
+            set(envelope["phase2_snapshot_fields"]),
+        )
+        self.assertEqual(
+            set(index["transition_contract"]["transition_request_required_fields"]),
+            set(envelope["phase2_request_fields"]),
+        )
+        self.assertFalse(envelope["runtime_persistence_performed"])
+        self.assertFalse(envelope["timestamp_fabrication_allowed"])
+
+    def test_pause_requested_projection_is_distinct_from_paused(self):
+        projection = self._load_index()["human_status_projection"]
+        self.assertEqual("暂停中", projection["PAUSE_REQUESTED"]["label_zh"])
+        self.assertEqual("已暂停", projection["PAUSED"]["label_zh"])
+        self.assertNotEqual(
+            projection["PAUSE_REQUESTED"]["label_zh"],
+            projection["PAUSED"]["label_zh"],
         )
 
     def test_engine_rejects_illegal_terminal_raw_secret_and_unbounded_inputs(self):
@@ -1142,6 +1331,15 @@ class Stage037JobStateModelPhase2Tests(unittest.TestCase):
                 'current_task_id: "IDS-V0_1-STAGE037-P4"',
                 'acceptance_status: "phase4_closeout_passed_review_pending"',
                 'next_allowed_task_id: "IDS-V0_1-STAGE037-REVIEW"',
+            ],
+            [
+                'status: "completed_reviewed_local"',
+                'review_status: "passed"',
+                'next_stage: "STAGE-038"',
+                'next_gate: "IDS-STAGE038-P1-GATE"',
+                'current_task_id: "IDS-V0_1-STAGE037-REVIEW"',
+                'acceptance_status: "reviewed_local_passed"',
+                'next_allowed_task_id: "IDS-V0_1-STAGE038-P1"',
             ],
         ]
         roadmap_terms = [
@@ -1527,6 +1725,15 @@ class Stage037JobStateModelPhase3Tests(unittest.TestCase):
                 'acceptance_status: "phase4_closeout_passed_review_pending"',
                 'next_allowed_task_id: "IDS-V0_1-STAGE037-REVIEW"',
             ],
+            [
+                'status: "completed_reviewed_local"',
+                'review_status: "passed"',
+                'next_stage: "STAGE-038"',
+                'next_gate: "IDS-STAGE038-P1-GATE"',
+                'current_task_id: "IDS-V0_1-STAGE037-REVIEW"',
+                'acceptance_status: "reviewed_local_passed"',
+                'next_allowed_task_id: "IDS-V0_1-STAGE038-P1"',
+            ],
         ]
         roadmap_terms = [
             'current_stage_id: "IDS-STAGE037"',
@@ -1828,7 +2035,7 @@ class Stage037JobStateModelPhase4Tests(unittest.TestCase):
                 self.assertEqual("FAIL_CLOSED", report["result"])
                 self.assertFalse(report["live_execution_performed"])
 
-    def test_cli_emits_phase4_and_stops_at_separate_review_gate(self):
+    def test_cli_emits_reviewed_state_with_historical_phase4_evidence(self):
         completed = subprocess.run(
             [sys.executable, "-B", str(CHECKER)],
             cwd=ROOT.parent,
@@ -1842,15 +2049,68 @@ class Stage037JobStateModelPhase4Tests(unittest.TestCase):
         self.assertEqual("Phase 4", payload["phase"])
         self.assertEqual("IDS-V0_1-STAGE037-P4", payload["task_id"])
         self.assertTrue(payload["delivery_contract_valid"], payload)
-        self.assertEqual("pending_next_run", payload["stage_review_status"])
-        self.assertEqual("IDS-STAGE037-REVIEW-GATE", payload["next_gate"])
+        self.assertEqual("completed_reviewed_local", payload["stage_review_status"])
+        self.assertEqual("IDS-STAGE038-P1-GATE", payload["next_gate"])
         self.assertFalse(payload["github_upload_allowed"])
         self.assertFalse(payload["app_reinstall_allowed"])
         self.assertTrue(payload["phase3_report"]["scenario_validation_valid"])
         self.assertTrue(payload["phase2_report"]["contract_valid"])
+        binding = payload["snapshot_binding"]
+        self.assertEqual("canonical_repository_index", binding["source"])
+        self.assertTrue(binding["canonical_snapshot_bound"])
+        self.assertTrue(binding["single_snapshot_reused"])
+        self.assertTrue(binding["all_delivery_sources_git_tracked"])
+        self.assertTrue(binding["all_delivery_sources_match_git_index"])
+        self.assertTrue(all(payload["review_governance_check_results"].values()))
+        self.assertTrue(
+            payload["review_governance_binding"][
+                "all_review_sources_match_git_index"
+            ]
+        )
+        self.assertIsNone(binding["load_error"])
 
-    def test_phase4_governance_records_review_pending_without_upload(self):
+    def test_canonical_snapshot_binds_all_delivery_sources_to_git(self):
+        module = self._load_checker()
+        report = module.build_stage037_delivery_report()
+        binding = report["snapshot_binding"]
+        self.assertTrue(binding["canonical_snapshot_bound"], binding)
+        self.assertTrue(binding["all_delivery_sources_git_tracked"], binding)
+        self.assertTrue(binding["all_delivery_sources_match_git_index"], binding)
+        expected_sources = {
+            "index",
+            "checker",
+            "phase1_scope_ref",
+            "phase2_slice_ref",
+            "phase3_scenarios_ref",
+            "phase4_closeout_ref",
+        }
+        self.assertEqual(expected_sources, set(binding["git_tracked_sources"]))
+        self.assertTrue(all(binding["git_tracked_sources"].values()), binding)
+        self.assertEqual(expected_sources, set(binding["observed_source_sha256"]))
+        for digest in binding["observed_source_sha256"].values():
+            self.assertRegex(digest, r"^[0-9a-f]{64}$")
+
+    def test_delivery_snapshot_requires_git_index_match(self):
+        module = self._load_checker()
+        report = module.build_stage037_delivery_report()
+        binding = report["snapshot_binding"]
+        self.assertIn("all_delivery_sources_match_git_index", binding)
+        self.assertTrue(binding["all_delivery_sources_match_git_index"], binding)
+
+        with mock.patch.object(module, "_git_index_matches", return_value=False):
+            blocked = module.build_stage037_delivery_report()
+        self.assertFalse(blocked["delivery_contract_valid"], blocked)
+        self.assertFalse(
+            blocked["delivery_check_results"]["canonical_sources_match_git_index"]
+        )
+
+    def test_phase4_historical_evidence_remains_review_pending(self):
         self.assertTrue(PHASE4.is_file(), f"missing Phase 4 evidence: {PHASE4}")
+        index = json.loads(MODEL_INDEX.read_text(encoding="utf-8"))
+        phase4_contract = index["phase4_delivery_contract"]
+        self.assertEqual("pending_next_run", phase4_contract["stage_review_status"])
+        self.assertEqual("IDS-STAGE037-REVIEW-GATE", phase4_contract["next_gate"])
+        self.assertFalse(phase4_contract["github_upload_allowed"])
         lock_text = BATCH_LOCK.read_text(encoding="utf-8")
         roadmap_text = ROADMAP.read_text(encoding="utf-8")
         events = [
@@ -1858,32 +2118,17 @@ class Stage037JobStateModelPhase4Tests(unittest.TestCase):
             for line in EVENTS.read_text(encoding="utf-8").splitlines()
             if line.strip()
         ]
-        lock_terms = [
-            'status: "stage037_phase4_completed_review_pending"',
-            '      - "Phase 4"',
-            'review_status: "pending"',
-            'next_phase: "stage_review"',
-            'next_gate: "IDS-STAGE037-REVIEW-GATE"',
-            'current_task_id: "IDS-V0_1-STAGE037-P4"',
-            'acceptance_status: "phase4_closeout_passed_review_pending"',
-            'next_allowed_task_id: "IDS-V0_1-STAGE037-REVIEW"',
-            "push_allowed: false",
-            "github_upload_allowed: false",
-        ]
+        self.assertIn("push_allowed: false", lock_text)
+        self.assertIn("github_upload_allowed: false", lock_text)
         roadmap_terms = [
-            'current_stage_id: "IDS-STAGE037"',
-            'current_phase_id: "IDS-STAGE037-P4"',
-            'current_task_id: "IDS-V0_1-STAGE037-P4"',
-            'next_gate_id: "IDS-STAGE037-REVIEW-GATE"',
             'phase_id: "IDS-STAGE037-P4"',
             'task_id: "IDS-V0_1-STAGE037-P4"',
             'status: "passed_with_local_evidence"',
             "STAGE037_PHASE4_CLOSEOUT.md",
         ]
-        for terms, text in ((lock_terms, lock_text), (roadmap_terms, roadmap_text)):
-            for term in terms:
-                with self.subTest(term=term):
-                    self.assertIn(term, text)
+        for term in roadmap_terms:
+            with self.subTest(term=term):
+                self.assertIn(term, roadmap_text)
 
         matching = [
             event
@@ -1903,6 +2148,145 @@ class Stage037JobStateModelPhase4Tests(unittest.TestCase):
         self.assertIn("next_gate=IDS-STAGE037-REVIEW-GATE", event["notes"])
         self.assertIn("push_allowed=false", event["notes"])
         self.assertNotIn("github_upload_allowed=true", event["notes"])
+
+
+class Stage037JobStateModelReviewTests(unittest.TestCase):
+    @staticmethod
+    def _load_checker():
+        spec = importlib.util.spec_from_file_location(
+            "stage037_job_state_model_review_checker", CHECKER
+        )
+        if spec is None or spec.loader is None:
+            raise AssertionError("unable to load Stage037 checker module")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def test_review_artifact_records_findings_and_no_upload_boundary(self):
+        self.assertTrue(REVIEW.is_file(), f"missing Stage037 review: {REVIEW}")
+        text = REVIEW.read_text(encoding="utf-8")
+        for term in (
+            "IDS-V0_1-STAGE037-REVIEW",
+            "ACC-STAGE-037",
+            "completed_reviewed_local",
+            "IDS-STAGE038-P1-GATE",
+            "NO_GITHUB_UPLOAD",
+            "NO_STAGE038_THIS_RUN",
+            "next_eligible_at",
+            "stop_reason",
+            "job_control_envelope_contract",
+            "Git-tracked",
+            "暂停中",
+        ):
+            with self.subTest(term=term):
+                self.assertIn(term, text)
+
+    def test_delivery_report_projects_reviewed_local_state(self):
+        report = self._load_checker().build_stage037_delivery_report()
+        self.assertTrue(report["delivery_contract_valid"], report)
+        self.assertEqual("completed_reviewed_local", report["stage_review_status"])
+        self.assertEqual("IDS-STAGE038-P1-GATE", report["next_gate"])
+        self.assertFalse(report["github_upload_allowed"])
+        self.assertFalse(report["app_reinstall_allowed"])
+        self.assertNotIn("review pending", report["chinese_owner_feedback"].lower())
+
+    def test_reviewed_state_requires_valid_structured_governance_evidence(self):
+        module = self._load_checker()
+        scoped_governance = module._canonical_review_governance_report()
+        self.assertNotIn("changed_paths", scoped_governance)
+        self.assertNotIn("unexpected_changed_paths", scoped_governance)
+        self.assertTrue(scoped_governance["valid"], scoped_governance)
+        canonical = module.build_stage037_delivery_report()
+        self.assertIn("review_governance_check_results", canonical)
+        self.assertTrue(
+            all(canonical["review_governance_check_results"].values()),
+            canonical,
+        )
+        self.assertIn(
+            "review_artifact_semantics_exact",
+            canonical["review_governance_check_results"],
+        )
+
+        with mock.patch.object(module, "REVIEW_ARTIFACT_PATH", PHASE1):
+            invalid_artifact = module.build_stage037_delivery_report()
+        self.assertFalse(invalid_artifact["delivery_contract_valid"])
+        self.assertFalse(
+            invalid_artifact["review_governance_check_results"][
+                "review_artifact_semantics_exact"
+            ]
+        )
+
+        blocked = module.build_stage037_delivery_report(
+            review_governance_report={"valid": False}
+        )
+        self.assertFalse(blocked["delivery_contract_valid"], blocked)
+        self.assertFalse(
+            blocked["delivery_check_results"]["review_governance_valid"]
+        )
+        self.assertEqual(
+            "blocked_invalid_review_evidence", blocked["stage_review_status"]
+        )
+        self.assertEqual("IDS-STAGE037-REVIEW-GATE", blocked["next_gate"])
+
+    def test_review_governance_and_event_sequence_are_exact(self):
+        batch_text = BATCH_LOCK.read_text(encoding="utf-8")
+        roadmap_text = ROADMAP.read_text(encoding="utf-8")
+        for term in (
+            'status: "stage037_completed_reviewed_local"',
+            'status: "completed_reviewed_local"',
+            'review_status: "passed"',
+            'next_stage: "STAGE-038"',
+            'next_gate: "IDS-STAGE038-P1-GATE"',
+            'current_task_id: "IDS-V0_1-STAGE037-REVIEW"',
+            'acceptance_status: "reviewed_local_passed"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE038-P1"',
+            "push_allowed: false",
+        ):
+            with self.subTest(surface="batch", term=term):
+                self.assertIn(term, batch_text)
+        for term in (
+            'current_stage_id: "IDS-STAGE037"',
+            'current_phase_id: "IDS-STAGE037-REVIEW"',
+            'current_task_id: "IDS-V0_1-STAGE037-REVIEW"',
+            'next_gate_id: "IDS-STAGE038-P1-GATE"',
+            'review_id: "IDS-STAGE037-REVIEW"',
+            'task_id: "IDS-V0_1-STAGE037-REVIEW"',
+            'status: "completed"',
+            "STAGE037_STAGE_REVIEW.md",
+        ):
+            with self.subTest(surface="roadmap", term=term):
+                self.assertIn(term, roadmap_text)
+
+        events = [
+            json.loads(line)
+            for line in EVENTS.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+        stage_events = [
+            event
+            for event in events
+            if str(event.get("task_id", "")).startswith("IDS-V0_1-STAGE037-")
+        ]
+        self.assertEqual(
+            [
+                "IDS-V0_1-STAGE037-P1",
+                "IDS-V0_1-STAGE037-P2",
+                "IDS-V0_1-STAGE037-P3",
+                "IDS-V0_1-STAGE037-P4",
+                "IDS-V0_1-STAGE037-REVIEW",
+            ],
+            [event["task_id"] for event in stage_events],
+        )
+        review_event = stage_events[-1]
+        self.assertEqual("stage_review", review_event["event_type"])
+        self.assertEqual(["ACC-STAGE-037"], review_event["acceptance_ids"])
+        self.assertIn(
+            "Review findings STAGE037-REVIEW-F1 through STAGE037-REVIEW-F11",
+            review_event["notes"],
+        )
+        self.assertIn("next_gate=IDS-STAGE038-P1-GATE", review_event["notes"])
+        self.assertIn("push_allowed=false", review_event["notes"])
+        self.assertNotIn("push_allowed=true", review_event["notes"])
 
 
 if __name__ == "__main__":

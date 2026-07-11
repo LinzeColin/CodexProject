@@ -18,7 +18,10 @@ slice with three tracked engineering artifacts:
 1. `job_state_model/stage037_job_state_model_index.json` is the
    machine-readable contract for eight job types, eleven states, exact allowed
    transitions, guards, retry accounting, references, Chinese projections,
-   runtime blocks, downstream ownership, and source hashes.
+   runtime blocks, downstream ownership, source hashes, and one explicit
+   `ids.job_control_envelope.v1` field-compatibility contract. The envelope
+   separates the Phase 2 evaluator subset from fields whose persistence stays
+   owned by STAGE-038..041.
 2. `scripts/check_job_state_model.py` validates that tracked contract and
    exposes a pure `evaluate_transition` function.
 3. This document records the truthful result, input/output/error/checkpoint
@@ -43,6 +46,8 @@ external record:
   returns the original candidate only for the same job; cross-job replay,
   modified prior results, and the same id with different content fail closed;
 - terminal states are immutable, and `RUNNING -> CANCELLED` remains illegal;
+- every allowed `* -> CANCELLED` request carries a bounded `stop_reason`; a
+  generic boolean cancel fact or audit ref alone cannot authorize cancellation;
 - entering `CLAIMED` requires a complete candidate lease/lock/fencing
   envelope with a strictly advanced fencing token;
 - active execution transitions require the matching fencing token;
@@ -66,11 +71,16 @@ attempt. A retryable active failure enters `RETRY_WAIT` without incrementing
 `retry_count`:
 
 - when budget remains, the candidate sets `retry_pending=true` and
-  `retry_disposition=eligible`;
+  `retry_disposition=eligible` and carries the caller-supplied bounded
+  `next_eligible_at` control ref;
+- `RETRY_WAIT -> QUEUED` requires both `next_eligible_reached=true` and a
+  bounded `next_eligible_evidence_ref`; a bare boolean cannot prove timing;
 - `RETRY_WAIT -> PAUSED` preserves that reservation when a resource gate is
   blocked;
-- `PAUSED -> QUEUED` consumes one pending reservation atomically by
-  incrementing `retry_count` and clearing `retry_pending`;
+- `PAUSED -> QUEUED` with `retry_pending=true` still requires the preserved
+  bounded `next_eligible_at`, a bounded `next_eligible_evidence_ref`, and
+  `next_eligible_reached=true`; only then does it atomically increment
+  `retry_count` and clear `retry_pending`;
 - an ordinary pause has no pending reservation and does not consume retry
   budget;
 - when `retry_count == max_retries`, entry to `RETRY_WAIT` sets
@@ -78,8 +88,10 @@ attempt. A retryable active failure enters `RETRY_WAIT` without incrementing
 - an exhausted retry cannot pause, requeue, or cancel through the evaluator;
   its only next state is `DEAD_LETTERED`.
 
-No retry time, jitter, taxonomy, or scheduler is invented. Those policy values
-remain `POLICY_VALUE_DEFERRED_TO_STAGE039_040_041`; STAGE-039 owns retry and
+No retry time, jitter, taxonomy, or scheduler is invented. `next_eligible_at`
+is an opaque bounded control ref supplied by the future STAGE-039 runtime, not
+a timestamp calculated by Phase 2. Numeric policy values remain
+`POLICY_VALUE_DEFERRED_TO_STAGE039_040_041`; STAGE-039 owns retry and
 dead-letter runtime, STAGE-040 owns backpressure runtime, and STAGE-042 owns
 automatic lifecycle runtime.
 
@@ -96,6 +108,8 @@ are limited by the machine contract, and it rejects:
 - missing output refs for success, missing error refs for failure/retry,
   missing checkpoint or quarantine refs for safe deactivation, and missing
   resource evidence for a resource pause;
+- missing retry-eligibility time/evidence and missing or unbounded cancellation
+  `stop_reason`;
 - unbounded or structurally unknown request fields.
 
 The checker requires exact top-level and safety-subcontract key sets. Removing
@@ -137,7 +151,8 @@ The expected checker result is:
 
 `contract_valid=true` means the tracked JSON, source hashes, checker, exact
 state vocabulary, transition rules, guard facts, reference policy, retry
-accounting, Chinese projection, runtime blocks, and downstream ownership agree.
+accounting, complete future envelope field partition, Chinese projection,
+runtime blocks, and downstream ownership agree.
 It does not mean a queue exists, a worker ran, PostgreSQL was connected, a
 state-registry row was inserted, a real job was evaluated, or production is
 ready.
@@ -177,6 +192,7 @@ Rejected candidates return a stable safe code such as
 `COMPARE_AND_SET_MISMATCH`, `TRANSITION_NOT_ALLOWED`,
 `FENCING_TOKEN_MISMATCH`, `MISSING_TRANSITION_GUARD`,
 `MISSING_REQUIRED_REFERENCE`, `EXHAUSTED_RETRY_MUST_DEAD_LETTER`,
+`MISSING_RETRY_SCHEDULE_EVIDENCE`, `MISSING_STOP_REASON`,
 `FORBIDDEN_REFERENCE`, or `INVALID_CONTRACT`. They do not echo source
 content or secrets and do not claim that an audit event was persisted.
 
@@ -190,7 +206,9 @@ state.
 
 ## 中文 Owner 反馈
 STAGE-037 Phase 2 已形成可机器检查、无副作用的统一任务状态转换工程切片。当前
-只验证 bounded metadata 候选，不创建队列、不运行 worker、不连接数据库，也不
-执行重试、反压、自动恢复或清理。中文状态映射可以稳定供后续 UI/报告使用，但
-不代表真实任务已运行。下一步只能从 `IDS-STAGE037-P3-GATE` 进入独立 Phase 3
-异常场景验证。
+只验证 bounded metadata 候选；重试资格必须带时间引用与证据，取消必须带
+`stop_reason`，完整 job envelope 已按 evaluator 与后续持久化责任分层。系统不
+创建队列、不运行 worker、不连接数据库，也不执行重试、反压、自动恢复或清理。
+`PAUSE_REQUESTED` 显示为“暂停中”，只有 `PAUSED` 才显示“已暂停”。这些结果不
+代表真实任务已运行。下一步只能从 `IDS-STAGE037-P3-GATE` 进入独立 Phase 3 异常
+场景验证。

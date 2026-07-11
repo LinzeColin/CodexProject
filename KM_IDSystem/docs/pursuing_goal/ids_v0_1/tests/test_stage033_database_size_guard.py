@@ -156,6 +156,7 @@ class Stage033DatabaseSizeGuardPhase1Tests(unittest.TestCase):
             'status: "stage037_phase2_in_progress"',
             'status: "stage037_phase3_in_progress"',
             'status: "stage037_phase4_completed_review_pending"',
+            'status: "stage037_completed_reviewed_local"',
         ]
         allowed_lock_next_terms = [
             'next_phase: "Phase 2"',
@@ -417,6 +418,7 @@ class Stage033DatabaseSizeGuardPhase3Tests(unittest.TestCase):
             'status: "stage037_phase2_in_progress"',
             'status: "stage037_phase3_in_progress"',
             'status: "stage037_phase4_completed_review_pending"',
+            'status: "stage037_completed_reviewed_local"',
         ]
         allowed_lock_gate_terms = [
             'next_gate: "IDS-STAGE033-P4-GATE"',
@@ -660,6 +662,7 @@ class Stage033DatabaseSizeGuardPhase4Tests(unittest.TestCase):
             'status: "stage037_phase2_in_progress"',
             'status: "stage037_phase3_in_progress"',
             'status: "stage037_phase4_completed_review_pending"',
+            'status: "stage037_completed_reviewed_local"',
         ]
         allowed_lock_gate_terms = [
             'next_gate: "IDS-STAGE033-REVIEW-GATE"',
@@ -821,6 +824,7 @@ class Stage033DatabaseSizeGuardReviewTests(unittest.TestCase):
             'status: "stage037_phase2_in_progress"',
             'status: "stage037_phase3_in_progress"',
             'status: "stage037_phase4_completed_review_pending"',
+            'status: "stage037_completed_reviewed_local"',
         ]
         allowed_lock_gate_terms = [
             'next_gate: "IDS-STAGE034-P1-GATE"',
@@ -1083,6 +1087,7 @@ class Stage033DatabaseSizeGuardPhase2Tests(unittest.TestCase):
             'status: "stage037_phase2_in_progress"',
             'status: "stage037_phase3_in_progress"',
             'status: "stage037_phase4_completed_review_pending"',
+            'status: "stage037_completed_reviewed_local"',
         ]
         allowed_lock_next_terms = [
             'next_phase: "Phase 3"',

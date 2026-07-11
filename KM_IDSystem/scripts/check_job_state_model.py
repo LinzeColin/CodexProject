@@ -5,9 +5,11 @@ from __future__ import annotations
 
 import copy
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 import re
+import subprocess
 import sys
 from typing import Any, Mapping, Optional
 import unicodedata
@@ -16,6 +18,11 @@ import unicodedata
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 PURSUE_ROOT = PROJECT_ROOT / "docs" / "pursuing_goal" / "ids_v0_1"
 INDEX_PATH = PURSUE_ROOT / "job_state_model" / "stage037_job_state_model_index.json"
+REVIEW_ARTIFACT_PATH = PURSUE_ROOT / "STAGE037_STAGE_REVIEW.md"
+BATCH_LOCK_PATH = PURSUE_ROOT / "BATCH031_040_UPLOAD_LOCK.yaml"
+ROADMAP_PATH = PROJECT_ROOT / "docs" / "governance" / "roadmap.yaml"
+EVENTS_PATH = PROJECT_ROOT / "docs" / "governance" / "events.jsonl"
+GOVERNANCE_VALIDATOR_PATH = PURSUE_ROOT / "validate_stage005_governance_regression.py"
 
 INDEX_SCHEMA_VERSION = "ids.stage037.job_state_model.index.v1"
 REPORT_SCHEMA_VERSION = "ids.stage037.job_state_model.phase2.v1"
@@ -45,6 +52,14 @@ PHASE4_NEXT_GATE = "IDS-STAGE037-REVIEW-GATE"
 PHASE4_VALID_STATE = "STATIC_JOB_STATE_CLOSEOUT_VALID_RUNTIME_DISABLED"
 PHASE4_EXECUTION_MODE = "STATIC_TRACKED_CLOSEOUT_EVIDENCE_ONLY"
 PHASE4_VALID_RESULT = "PASS_STATIC_CLOSEOUT_RUNTIME_DISABLED"
+REVIEW_STATUS = "completed_reviewed_local"
+REVIEW_NEXT_GATE = "IDS-STAGE038-P1-GATE"
+BLOCKED_REVIEW_STATUS = "blocked_invalid_review_evidence"
+REVIEW_OWNER_FEEDBACK_ZH = (
+    "STAGE-037 已完成本地 whole-stage review；直接与暂停重试资格、取消原因、"
+    "完整 job envelope、中文中间态、结构化治理及 Git-index 交付/复审证据均已修复。"
+    "当前仍未运行队列、worker、重试、数据库、清理或真实任务，批次上传继续阻断。"
+)
 
 EXPECTED_PHASE3_SCENARIOS = (
     "duplicate_click_idempotent_replay",
@@ -67,7 +82,7 @@ EXPECTED_PHASE4_EVIDENCE_REFS = {
 }
 EXPECTED_PHASE4_EVIDENCE_SHA256 = {
     "phase1_scope_ref": "e692bfb2f4786c076135888731c6eca6ce0f342a8fa19c1334394ca2d3db3730",
-    "phase2_slice_ref": "8d6a37991f62f3179cd5e65aeef5a9f6bf91b702029ec9a051e75ba6d6c3eebb",
+    "phase2_slice_ref": "e29690f7d7c45760c53cbc69f5594dc15d8b3ba31d36bd270bf778d2f622d3d9",
     "phase3_scenarios_ref": "059033f50b1aba9ff1cc72ea716efb0895a0e292e72ec50e518041ff588c12f8",
     "phase4_closeout_ref": "00beec1b60d7dbdb6da5678dcbbcf2d9c6d02826979403797759798ea518201a",
 }
@@ -288,10 +303,10 @@ EXPECTED_EDGE_GUARDS = {
 
 EXPECTED_EDGE_REFERENCES = {
     "CREATED->QUEUED": ["input_refs", "audit_ref"],
-    "CREATED->CANCELLED": ["audit_ref"],
+    "CREATED->CANCELLED": ["stop_reason", "audit_ref"],
     "QUEUED->CLAIMED": ["candidate_claim", "audit_ref"],
     "QUEUED->PAUSED": ["pause_reason_code", "resource_gate_refs", "audit_ref"],
-    "QUEUED->CANCELLED": ["audit_ref"],
+    "QUEUED->CANCELLED": ["stop_reason", "audit_ref"],
     "CLAIMED->RUNNING": ["fencing_token", "audit_ref"],
     "CLAIMED->PAUSE_REQUESTED": [
         "fencing_token",
@@ -316,6 +331,7 @@ EXPECTED_EDGE_REFERENCES = {
     "PAUSE_REQUESTED->CANCELLED": [
         "fencing_token",
         "checkpoint_or_quarantine_ref",
+        "stop_reason",
         "audit_ref",
     ],
     "PAUSE_REQUESTED->RETRY_WAIT": [
@@ -324,15 +340,15 @@ EXPECTED_EDGE_REFERENCES = {
         "audit_ref",
     ],
     "PAUSED->QUEUED": ["audit_ref"],
-    "PAUSED->CANCELLED": ["audit_ref"],
-    "RETRY_WAIT->QUEUED": ["audit_ref"],
+    "PAUSED->CANCELLED": ["stop_reason", "audit_ref"],
+    "RETRY_WAIT->QUEUED": ["next_eligible_evidence_ref", "audit_ref"],
     "RETRY_WAIT->PAUSED": [
         "pause_reason_code",
         "resource_gate_refs",
         "audit_ref",
     ],
     "RETRY_WAIT->DEAD_LETTERED": ["error_ref", "audit_ref"],
-    "RETRY_WAIT->CANCELLED": ["audit_ref"],
+    "RETRY_WAIT->CANCELLED": ["stop_reason", "audit_ref"],
 }
 
 EXPECTED_PROJECTIONS = {
@@ -340,7 +356,7 @@ EXPECTED_PROJECTIONS = {
     "QUEUED": ("等待处理", "查看优先级或暂停", False),
     "CLAIMED": ("处理中", "查看进度；必要时安全暂停", False),
     "RUNNING": ("处理中", "查看进度；必要时安全暂停", False),
-    "PAUSE_REQUESTED": ("已暂停", "查看原因并等待安全检查点", True),
+    "PAUSE_REQUESTED": ("暂停中", "查看原因并等待安全检查点", True),
     "PAUSED": ("已暂停", "查看原因并完成复核", True),
     "RETRY_WAIT": ("等待重试", "查看安全错误与下次资格时间", False),
     "SUCCEEDED": ("已完成", "查看已验证输出引用", False),
@@ -376,6 +392,7 @@ TOP_LEVEL_KEYS = {
     "source_refs",
     "dependency_contract",
     "state_model",
+    "job_control_envelope_contract",
     "transition_contract",
     "deactivation_contract",
     "retry_contract",
@@ -388,6 +405,51 @@ TOP_LEVEL_KEYS = {
     "phase4_delivery_contract",
     "truth_contract",
 }
+JOB_CONTROL_ENVELOPE_KEYS = {
+    "schema_version",
+    "phase2_scope",
+    "all_fields",
+    "phase2_snapshot_fields",
+    "phase2_request_fields",
+    "runtime_persistence_owner",
+    "runtime_persistence_performed",
+    "timestamp_fabrication_allowed",
+}
+EXPECTED_JOB_CONTROL_ENVELOPE_FIELDS = [
+    "job_id",
+    "job_type",
+    "job_state",
+    "state_version",
+    "idempotency_key",
+    "transition_request_id",
+    "parent_job_id",
+    "dependency_refs",
+    "attempt_id",
+    "retry_count",
+    "max_retries",
+    "retry_pending",
+    "next_eligible_at",
+    "input_refs",
+    "output_refs",
+    "checkpoint_ref",
+    "operation_contract_version",
+    "lease_owner_ref",
+    "lease_expires_at",
+    "fencing_token",
+    "lock_key",
+    "priority_ref",
+    "pause_reason_code",
+    "stop_reason",
+    "owner_action_ref",
+    "resource_gate_refs",
+    "safe_error_code",
+    "error_ref",
+    "audit_ref",
+    "transition_actor_ref",
+    "created_at",
+    "updated_at",
+    "cleanup_manifest_ref",
+]
 DEPENDENCY_KEYS = {
     "source_sha256",
     "required_control_plane_table",
@@ -450,6 +512,11 @@ RETRY_KEYS = {
     "resource_gate_can_pause_exhausted_retry",
     "running_to_dead_letter_allowed",
     "retry_delay_policy",
+    "next_eligible_at_required_for_eligible_retry",
+    "next_eligible_evidence_required_for_admission",
+    "paused_retry_resume_requires_next_eligible_at",
+    "paused_retry_resume_requires_next_eligible_evidence",
+    "paused_retry_resume_requires_next_eligible_reached",
     "retry_scheduler_allowed",
 }
 EXPECTED_FORBIDDEN_KEY_TOKENS = [
@@ -621,6 +688,7 @@ SNAPSHOT_KEYS = {
     "max_retries",
     "retry_pending",
     "retry_disposition",
+    "next_eligible_at",
     "lease_active",
     "lock_active",
     "fencing_token",
@@ -629,6 +697,7 @@ SNAPSHOT_KEYS = {
     "lease_expires_at",
     "lock_key",
     "pause_reason_code",
+    "stop_reason",
     "input_refs",
     "output_refs",
     "checkpoint_ref",
@@ -652,6 +721,9 @@ REQUEST_KEYS = {
     "error_ref",
     "resource_gate_refs",
     "pause_reason_code",
+    "stop_reason",
+    "next_eligible_at",
+    "next_eligible_evidence_ref",
     "fencing_token",
     "candidate_claim",
 }
@@ -690,8 +762,13 @@ TRANSITION_CANDIDATE_KEYS = {
     "previous_state_version",
     "current_state_version",
     "reason_code",
+    "stop_reason",
+    "next_eligible_at",
+    "next_eligible_evidence_ref",
     "actor_ref",
     "audit_ref",
+    "transition_timestamp",
+    "timestamp_persistence_required",
     "append_only_audit_required",
     "persisted",
 }
@@ -701,6 +778,8 @@ REF_SCALAR_FIELDS = {
     "lease_owner_ref",
     "lease_expires_at",
     "lock_key",
+    "next_eligible_at",
+    "next_eligible_evidence_ref",
     "transition_request_id",
     "actor_ref",
     "audit_ref",
@@ -800,6 +879,32 @@ def _projection_contract_valid(value: Any) -> bool:
     return True
 
 
+def _job_control_envelope_valid(
+    value: Any, transition: Mapping[str, Any]
+) -> bool:
+    envelope = _as_object(value)
+    snapshot_fields = envelope.get("phase2_snapshot_fields")
+    request_fields = envelope.get("phase2_request_fields")
+    return (
+        set(envelope) == JOB_CONTROL_ENVELOPE_KEYS
+        and envelope.get("schema_version") == "ids.job_control_envelope.v1"
+        and envelope.get("phase2_scope") == "STATIC_EVALUATOR_SUBSET_ONLY"
+        and envelope.get("all_fields") == EXPECTED_JOB_CONTROL_ENVELOPE_FIELDS
+        and isinstance(snapshot_fields, list)
+        and len(snapshot_fields) == len(SNAPSHOT_KEYS)
+        and set(snapshot_fields) == SNAPSHOT_KEYS
+        and snapshot_fields == transition.get("snapshot_required_fields")
+        and isinstance(request_fields, list)
+        and len(request_fields) == len(REQUEST_KEYS)
+        and set(request_fields) == REQUEST_KEYS
+        and request_fields == transition.get("transition_request_required_fields")
+        and envelope.get("runtime_persistence_owner")
+        == "STAGE-038..STAGE-041"
+        and envelope.get("runtime_persistence_performed") is False
+        and envelope.get("timestamp_fabrication_allowed") is False
+    )
+
+
 def _zh_text(value: Any) -> bool:
     return (
         isinstance(value, str)
@@ -889,6 +994,9 @@ def _contract_shape_exact(index: Mapping[str, Any]) -> bool:
         and index.get("source_refs") == EXPECTED_SOURCE_REFS
         and set(_as_object(index.get("dependency_contract"))) == DEPENDENCY_KEYS
         and set(_as_object(index.get("state_model"))) == STATE_MODEL_KEYS
+        and _job_control_envelope_valid(
+            index.get("job_control_envelope_contract"), transition
+        )
         and set(transition) == TRANSITION_KEYS
         and set(transition.get("snapshot_required_fields", [])) == SNAPSHOT_KEYS
         and len(transition.get("snapshot_required_fields", []))
@@ -941,6 +1049,220 @@ def _phase4_evidence_integrity(
         EXPECTED_PHASE4_EVIDENCE_SHA256
     )
     return checks, observed
+
+
+def _git_relative(path: Path) -> Optional[str]:
+    try:
+        return path.resolve().relative_to(PROJECT_ROOT).as_posix()
+    except ValueError:
+        return None
+
+
+def _git_path_check(path: Path, arguments: list[str]) -> bool:
+    relative = _git_relative(path)
+    if relative is None:
+        return False
+    try:
+        completed = subprocess.run(
+            ["git", "-C", str(PROJECT_ROOT), *arguments, "--", relative],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return False
+    return completed.returncode == 0
+
+
+def _git_tracked(path: Path) -> bool:
+    return _git_path_check(path, ["ls-files", "--error-unmatch"])
+
+
+def _git_index_matches(path: Path) -> bool:
+    return _git_tracked(path) and _git_path_check(path, ["diff", "--quiet"])
+
+
+def _git_head_matches(path: Path) -> bool:
+    return _git_tracked(path) and _git_path_check(
+        path, ["diff", "--cached", "--quiet", "HEAD"]
+    )
+
+
+def _source_binding(
+    paths: Mapping[str, Optional[Path]],
+) -> tuple[
+    dict[str, bool],
+    dict[str, bool],
+    dict[str, bool],
+    dict[str, Optional[str]],
+]:
+    tracked: dict[str, bool] = {}
+    index_matches: dict[str, bool] = {}
+    head_matches: dict[str, bool] = {}
+    observed: dict[str, Optional[str]] = {}
+    for name, path in paths.items():
+        is_file = path is not None and path.is_file()
+        tracked[name] = bool(is_file and path is not None and _git_tracked(path))
+        index_matches[name] = bool(
+            tracked[name] and path is not None and _git_index_matches(path)
+        )
+        head_matches[name] = bool(
+            tracked[name] and path is not None and _git_head_matches(path)
+        )
+        observed_hash: Optional[str] = None
+        if is_file and path is not None:
+            try:
+                observed_hash = _sha256_file(path)
+            except OSError:
+                observed_hash = None
+        observed[name] = observed_hash
+    return tracked, index_matches, head_matches, observed
+
+
+def _delivery_source_binding(
+    contract: Mapping[str, Any],
+) -> tuple[
+    dict[str, bool],
+    dict[str, bool],
+    dict[str, bool],
+    dict[str, Optional[str]],
+]:
+    refs = _as_object(contract.get("evidence_refs"))
+    paths: dict[str, Optional[Path]] = {
+        "index": INDEX_PATH.resolve(),
+        "checker": Path(__file__).resolve(),
+    }
+    for name, expected_ref in EXPECTED_PHASE4_EVIDENCE_REFS.items():
+        path: Optional[Path] = None
+        if refs.get(name) == expected_ref:
+            candidate = (INDEX_PATH.parent / expected_ref).resolve()
+            if candidate != PROJECT_ROOT and PROJECT_ROOT in candidate.parents:
+                path = candidate
+        paths[name] = path
+
+    return _source_binding(paths)
+
+
+def _review_source_binding() -> tuple[
+    dict[str, bool],
+    dict[str, bool],
+    dict[str, bool],
+    dict[str, Optional[str]],
+]:
+    return _source_binding(
+        {
+            "review_artifact": REVIEW_ARTIFACT_PATH,
+            "batch_lock": BATCH_LOCK_PATH,
+            "roadmap": ROADMAP_PATH,
+            "events": EVENTS_PATH,
+            "governance_validator": GOVERNANCE_VALIDATOR_PATH,
+        }
+    )
+
+
+def _canonical_review_governance_report() -> dict[str, Any]:
+    module_name = "_ids_stage037_review_governance_validator"
+    try:
+        spec = importlib.util.spec_from_file_location(
+            module_name, GOVERNANCE_VALIDATOR_PATH
+        )
+        if spec is None or spec.loader is None:
+            raise RuntimeError("unable to load Stage005 governance validator")
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[module_name] = module
+        spec.loader.exec_module(module)
+        report = module.build_stage037_review_governance_report(PROJECT_ROOT)
+    except Exception as exc:
+        return {
+            "valid": False,
+            "load_error": f"{type(exc).__name__}: {exc}",
+        }
+    return copy.deepcopy(report) if isinstance(report, dict) else {"valid": False}
+
+
+def _review_artifact_semantics_exact() -> bool:
+    try:
+        text = REVIEW_ARTIFACT_PATH.read_text(encoding="utf-8")
+    except OSError:
+        return False
+    required_terms = {
+        "# STAGE-037 Whole-Stage Review - 任务状态模型",
+        "- Review Task ID: `IDS-V0_1-STAGE037-REVIEW`",
+        "- Acceptance ID: `ACC-STAGE-037`",
+        "- Current state: `completed_reviewed_local`",
+        "- Current upload switch: `push_allowed=false`",
+        "- Next allowed gate: `IDS-STAGE038-P1-GATE`",
+        "NO_GITHUB_UPLOAD",
+        "NO_APP_REINSTALL",
+        "NO_STAGE038_THIS_RUN",
+        "/Users/linzezhang/Downloads/IDS_MetaData",
+        "不得读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描该目录内容。",
+        "## Real Data Only Policy",
+        "fake business data",
+    }
+    contradictory_true = re.search(
+        r"\b(?:push_allowed|github_upload_allowed|app_reinstall_allowed|"
+        r"raw_metadata_content_accessed|fake_ids_business_data_used)\s*=\s*true\b",
+        text,
+        re.IGNORECASE,
+    )
+    return all(term in text for term in required_terms) and contradictory_true is None
+
+
+def _review_governance_checks(report: Mapping[str, Any]) -> dict[str, bool]:
+    phase_checks = _as_object(report.get("phase_state_checks"))
+    data_checks = _as_object(report.get("data_boundary_checks"))
+    required_phase_checks = {
+        "current_state_yaml_documents_parsed",
+        "current_state_current_stage_node_resolved",
+        "current_state_batch_top_status_matches_stage",
+        "current_state_batch_stage_gate_matches_roadmap",
+        "current_state_batch_stage_task_matches_roadmap",
+        "current_state_decision_task_matches_roadmap",
+        "current_state_decision_next_allowed_task_matches_gate",
+        "current_state_decision_upload_locked",
+        "current_state_push_locked_structurally",
+        "current_state_roadmap_current_task_completed",
+        "current_state_roadmap_current_task_evidence_recorded",
+        "current_state_roadmap_current_task_results_recorded",
+        "current_task_allowed",
+        "next_gate_allowed",
+    }
+    required_data_checks = {
+        "boundary_ref_recorded",
+        "raw_content_not_committed",
+        "raw_root_recorded",
+        "read_only_policy_recorded",
+        "real_data_only_policy_recorded",
+    }
+    return {
+        "validator_identity_exact": (
+            report.get("stage") == "STAGE-005"
+            and report.get("acceptance_id") == "ACC-STAGE-005"
+        ),
+        "validator_valid": report.get("valid") is True,
+        "review_artifact_semantics_exact": _review_artifact_semantics_exact(),
+        "review_event_semantics_exact": (
+            report.get("event_json_errors") == []
+            and report.get("event_semantic_errors") == []
+            and report.get("missing_event_ids") == []
+        ),
+        "review_state_structured_and_exact": (
+            required_phase_checks.issubset(phase_checks)
+            and all(phase_checks.get(name) is True for name in required_phase_checks)
+        ),
+        "raw_and_real_data_boundaries_exact": (
+            set(data_checks) == required_data_checks
+            and all(data_checks.get(name) is True for name in required_data_checks)
+        ),
+        "required_governance_files_present": report.get("missing_required_files")
+        == [],
+        "no_tracked_forbidden_runtime_paths": report.get(
+            "tracked_forbidden_runtime_files"
+        )
+        == [],
+    }
 
 
 def _phase4_contract_results(index: Mapping[str, Any]) -> dict[str, bool]:
@@ -1146,6 +1468,7 @@ def build_stage037_job_state_report(
     delivery = _as_object(index.get("delivery_policy"))
     truth = _as_object(index.get("truth_contract"))
     cleanup = _as_object(index.get("cleanup_boundary"))
+    envelope = _as_object(index.get("job_control_envelope_contract"))
     paths = _resolve_source_paths(index)
     source_checks, observed_hashes = _source_integrity(index)
 
@@ -1162,6 +1485,8 @@ def build_stage037_job_state_report(
         "output_refs",
         "error_ref",
         "checkpoint_or_quarantine_ref",
+        "stop_reason",
+        "next_eligible_evidence_ref",
     }
 
     checks = {
@@ -1203,6 +1528,9 @@ def build_stage037_job_state_report(
             and transition.get("request_id_payload_conflict_fails_closed") is True
             and transition.get("append_only_audit_required") is True
             and transition.get("runtime_transition_performed") is False
+        ),
+        "job_control_envelope_exact": _job_control_envelope_valid(
+            envelope, transition
         ),
         "guard_fact_vocabulary_exact": (
             transition.get("guard_facts_allowed") == EXPECTED_GUARD_FACTS
@@ -1253,6 +1581,13 @@ def build_stage037_job_state_report(
             and retry.get("running_to_dead_letter_allowed") is False
             and retry.get("retry_delay_policy")
             == "POLICY_VALUE_DEFERRED_TO_STAGE039_040_041"
+            and retry.get("next_eligible_at_required_for_eligible_retry") is True
+            and retry.get("next_eligible_evidence_required_for_admission") is True
+            and retry.get("paused_retry_resume_requires_next_eligible_at") is True
+            and retry.get("paused_retry_resume_requires_next_eligible_evidence")
+            is True
+            and retry.get("paused_retry_resume_requires_next_eligible_reached")
+            is True
             and retry.get("retry_scheduler_allowed") is False
         ),
         "reference_policy_fail_closed": (
@@ -1488,7 +1823,7 @@ def _metadata_boundaries_valid(
         return False, "FORBIDDEN_METADATA_FIELD"
 
     for owner in (snapshot, request):
-        for field in ("reason_code", "pause_reason_code"):
+        for field in ("reason_code", "pause_reason_code", "stop_reason"):
             value = owner.get(field)
             if value is not None and not _bounded_text(value, maximum):
                 return False, "UNBOUNDED_METADATA"
@@ -1564,6 +1899,10 @@ def _snapshot_shape_valid(snapshot: Mapping[str, Any]) -> bool:
         return False
     if pending and (disposition != "eligible" or state not in {"RETRY_WAIT", "PAUSED"}):
         return False
+    if pending and not snapshot.get("next_eligible_at"):
+        return False
+    if not pending and snapshot.get("next_eligible_at") is not None:
+        return False
     if disposition == "exhausted" and not (
         state == "RETRY_WAIT"
         and pending is False
@@ -1579,6 +1918,11 @@ def _snapshot_shape_valid(snapshot: Mapping[str, Any]) -> bool:
         if not snapshot.get("error_ref"):
             return False
     if state == "PAUSED" and not snapshot.get("pause_reason_code"):
+        return False
+    if state == "CANCELLED":
+        if not isinstance(snapshot.get("stop_reason"), str):
+            return False
+    elif snapshot.get("stop_reason") is not None:
         return False
     return True
 
@@ -1669,8 +2013,15 @@ def _prior_result_valid(
         or candidate.get("previous_state_version") != expected_version
         or candidate.get("current_state_version") != expected_version + 1
         or candidate.get("reason_code") != request.get("reason_code")
+        or candidate.get("stop_reason") != request.get("stop_reason")
+        or candidate.get("next_eligible_at")
+        != next_snapshot.get("next_eligible_at")
+        or candidate.get("next_eligible_evidence_ref")
+        != request.get("next_eligible_evidence_ref")
         or candidate.get("actor_ref") != request.get("actor_ref")
         or candidate.get("audit_ref") != request.get("audit_ref")
+        or candidate.get("transition_timestamp") is not None
+        or candidate.get("timestamp_persistence_required") is not True
         or prior.get("human_status_projection")
         != _projection(contract, str(request.get("target_state")))
     ):
@@ -1732,6 +2083,14 @@ def evaluate_transition(
         for item in transition.get("guard_facts_allowed", [])
         if isinstance(item, str)
     }
+    if (
+        set(snapshot) == SNAPSHOT_KEYS
+        and snapshot.get("retry_pending") is True
+        and not snapshot.get("next_eligible_at")
+    ):
+        return _reject(
+            snapshot, request, "MISSING_RETRY_SCHEDULE_EVIDENCE"
+        )
     if not _snapshot_shape_valid(snapshot):
         return _reject(snapshot, request, "INVALID_SNAPSHOT_SHAPE")
     if not _request_shape_valid(request, allowed_guard_facts):
@@ -1780,6 +2139,42 @@ def evaluate_transition(
     if target not in ALLOWED_TRANSITIONS.get(source, []):
         return _reject(snapshot, request, "TRANSITION_NOT_ALLOWED", fingerprint)
 
+    if target == "CANCELLED" and not request.get("stop_reason"):
+        return _reject(snapshot, request, "MISSING_STOP_REASON", fingerprint)
+
+    if source == "RETRY_WAIT" and target == "QUEUED" and (
+        not snapshot.get("next_eligible_at")
+        or not request.get("next_eligible_evidence_ref")
+    ):
+        return _reject(
+            snapshot, request, "MISSING_RETRY_SCHEDULE_EVIDENCE", fingerprint
+        )
+
+    paused_retry_resume = (
+        source == "PAUSED"
+        and target == "QUEUED"
+        and snapshot.get("retry_pending") is True
+    )
+    if paused_retry_resume and (
+        not snapshot.get("next_eligible_at")
+        or not request.get("next_eligible_evidence_ref")
+        or request.get("guard_facts", {}).get("next_eligible_reached") is not True
+    ):
+        return _reject(
+            snapshot, request, "MISSING_RETRY_SCHEDULE_EVIDENCE", fingerprint
+        )
+
+    if target == "RETRY_WAIT":
+        retry_is_eligible = snapshot["retry_count"] < snapshot["max_retries"]
+        if retry_is_eligible and not request.get("next_eligible_at"):
+            return _reject(
+                snapshot, request, "MISSING_RETRY_SCHEDULE_EVIDENCE", fingerprint
+            )
+        if not retry_is_eligible and request.get("next_eligible_at") is not None:
+            return _reject(
+                snapshot, request, "INVALID_RETRY_SCHEDULE_EVIDENCE", fingerprint
+            )
+
     if (
         source == "RETRY_WAIT"
         and snapshot.get("retry_disposition") == "exhausted"
@@ -1818,7 +2213,13 @@ def evaluate_transition(
         next_snapshot["input_refs"] = copy.deepcopy(request["input_refs"])
     if request.get("output_refs"):
         next_snapshot["output_refs"] = copy.deepcopy(request["output_refs"])
-    for field in ("checkpoint_ref", "quarantine_ref", "error_ref", "pause_reason_code"):
+    for field in (
+        "checkpoint_ref",
+        "quarantine_ref",
+        "error_ref",
+        "pause_reason_code",
+        "stop_reason",
+    ):
         if request.get(field) is not None:
             next_snapshot[field] = request[field]
 
@@ -1843,9 +2244,11 @@ def evaluate_transition(
         if snapshot["retry_count"] < snapshot["max_retries"]:
             next_snapshot["retry_pending"] = True
             next_snapshot["retry_disposition"] = "eligible"
+            next_snapshot["next_eligible_at"] = request["next_eligible_at"]
         else:
             next_snapshot["retry_pending"] = False
             next_snapshot["retry_disposition"] = "exhausted"
+            next_snapshot["next_eligible_at"] = None
 
     if source == "RETRY_WAIT" and target == "QUEUED":
         if (
@@ -1859,6 +2262,7 @@ def evaluate_transition(
         next_snapshot["retry_count"] = snapshot["retry_count"] + 1
         next_snapshot["retry_pending"] = False
         next_snapshot["retry_disposition"] = "none"
+        next_snapshot["next_eligible_at"] = None
 
     if source == "RETRY_WAIT" and target == "PAUSED":
         if (
@@ -1883,6 +2287,7 @@ def evaluate_transition(
             next_snapshot["retry_count"] = snapshot["retry_count"] + 1
             next_snapshot["retry_pending"] = False
             next_snapshot["retry_disposition"] = "none"
+            next_snapshot["next_eligible_at"] = None
         next_snapshot["pause_reason_code"] = None
 
     if source == "RETRY_WAIT" and target == "DEAD_LETTERED":
@@ -1913,8 +2318,13 @@ def evaluate_transition(
         "previous_state_version": snapshot["state_version"],
         "current_state_version": next_snapshot["state_version"],
         "reason_code": request["reason_code"],
+        "stop_reason": request["stop_reason"],
+        "next_eligible_at": next_snapshot["next_eligible_at"],
+        "next_eligible_evidence_ref": request["next_eligible_evidence_ref"],
         "actor_ref": request["actor_ref"],
         "audit_ref": request["audit_ref"],
+        "transition_timestamp": None,
+        "timestamp_persistence_required": True,
         "append_only_audit_required": True,
         "persisted": False,
     }
@@ -1936,6 +2346,7 @@ def _scenario_snapshot(
         "max_retries": 2,
         "retry_pending": False,
         "retry_disposition": "none",
+        "next_eligible_at": None,
         "lease_active": active,
         "lock_active": active,
         "fencing_token": 7 if active else 0,
@@ -1950,6 +2361,9 @@ def _scenario_snapshot(
         ),
         "lock_key": f"contract:ids.job_state.v1:{scenario_id}" if active else None,
         "pause_reason_code": None,
+        "stop_reason": (
+            "CONTRACT_TERMINAL_CANCELLED" if state == "CANCELLED" else None
+        ),
         "input_refs": [
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
             "STAGE037_PHASE1_SCOPE_BOUNDARY.md#Job-Control-Envelope"
@@ -1991,6 +2405,9 @@ def _scenario_request(
         "error_ref": None,
         "resource_gate_refs": [],
         "pause_reason_code": None,
+        "stop_reason": None,
+        "next_eligible_at": None,
+        "next_eligible_evidence_ref": None,
         "fencing_token": None,
         "candidate_claim": None,
     }
@@ -2116,6 +2533,7 @@ def build_stage037_scenario_validation_report(
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
             "STAGE037_PHASE3_ADVERSARIAL_SCENARIOS.md#Scenario-Matrix"
         ),
+        next_eligible_at="policy:STAGE039:next-eligible-at",
         guard_facts={
             "lease_valid_or_expiry_evidence": True,
             "fencing_token_matches": True,
@@ -2241,6 +2659,7 @@ def build_stage037_scenario_validation_report(
         state_version=3,
         retry_pending=True,
         retry_disposition="eligible",
+        next_eligible_at="policy:STAGE039:next-eligible-at",
         error_ref=(
             "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
             "STAGE037_PHASE3_ADVERSARIAL_SCENARIOS.md#Scenario-Matrix"
@@ -2363,6 +2782,7 @@ def build_stage037_scenario_validation_report(
         cleanup_snapshot,
         "CANCELLED",
         "cleanup-through-transition",
+        stop_reason="OWNER_REQUESTED_CANCEL",
         guard_facts={"no_active_claim_or_lock": True},
     )
     cleanup_baseline = evaluate_transition(
@@ -2711,7 +3131,9 @@ def build_stage037_scenario_validation_report(
 
 
 def build_stage037_delivery_report(
-    *, contract: Optional[dict[str, Any]] = None
+    *,
+    contract: Optional[dict[str, Any]] = None,
+    review_governance_report: Optional[Mapping[str, Any]] = None,
 ) -> dict[str, Any]:
     load_error: Optional[str] = None
     canonical_snapshot_bound = contract is None
@@ -2748,6 +3170,24 @@ def build_stage037_delivery_report(
     evidence_integrity, observed_evidence_sha256 = _phase4_evidence_integrity(
         phase4_contract
     )
+    (
+        git_tracked_sources,
+        git_index_sources,
+        git_head_sources,
+        observed_source_sha256,
+    ) = _delivery_source_binding(phase4_contract)
+    governance_report = (
+        _canonical_review_governance_report()
+        if review_governance_report is None
+        else copy.deepcopy(dict(review_governance_report))
+    )
+    review_governance_check_results = _review_governance_checks(governance_report)
+    (
+        review_git_tracked_sources,
+        review_git_index_sources,
+        review_git_head_sources,
+        review_observed_source_sha256,
+    ) = _review_source_binding()
     scenario_results = phase3_report.get("scenario_results")
     scenario_results = (
         scenario_results if isinstance(scenario_results, dict) else {}
@@ -2777,6 +3217,27 @@ def build_stage037_delivery_report(
             phase4_contract_results.values()
         ),
         "phase4_evidence_hashes_valid": all(evidence_integrity.values()),
+        "canonical_sources_git_tracked": (
+            bool(git_tracked_sources)
+            and all(git_tracked_sources.values())
+            and all(observed_source_sha256.values())
+        ),
+        "canonical_sources_match_git_index": (
+            bool(git_index_sources) and all(git_index_sources.values())
+        ),
+        "review_governance_valid": (
+            bool(review_governance_check_results)
+            and all(review_governance_check_results.values())
+        ),
+        "review_sources_git_tracked": (
+            bool(review_git_tracked_sources)
+            and all(review_git_tracked_sources.values())
+            and all(review_observed_source_sha256.values())
+        ),
+        "review_sources_match_git_index": (
+            bool(review_git_index_sources)
+            and all(review_git_index_sources.values())
+        ),
         "state_graph_matches_phase2": (
             state_model.get("job_types") == JOB_TYPES
             and state_model.get("job_states") == JOB_STATES
@@ -2807,6 +3268,21 @@ def build_stage037_delivery_report(
         PHASE4_VALID_STATE if delivery_contract_valid else INVALID_STATE
     )
     result = PHASE4_VALID_RESULT if delivery_contract_valid else "FAIL_CLOSED"
+    review_evidence_valid = (
+        delivery_check_results["review_governance_valid"]
+        and delivery_check_results["review_sources_git_tracked"]
+        and delivery_check_results["review_sources_match_git_index"]
+    )
+    stage_review_status = (
+        REVIEW_STATUS
+        if delivery_contract_valid
+        else (
+            BLOCKED_REVIEW_STATUS
+            if not review_evidence_valid
+            else "blocked_invalid_delivery_evidence"
+        )
+    )
+    next_gate = REVIEW_NEXT_GATE if delivery_contract_valid else PHASE4_NEXT_GATE
 
     retry_evidence = copy.deepcopy(
         _as_object(phase4_contract.get("retry_evidence_contract"))
@@ -2820,6 +3296,18 @@ def build_stage037_delivery_report(
     automatic_manual = copy.deepcopy(
         _as_object(phase4_contract.get("automatic_manual_boundary"))
     )
+    known_limits = copy.deepcopy(phase4_contract.get("known_limits", []))
+    if isinstance(known_limits, list):
+        for item in known_limits:
+            if (
+                isinstance(item, dict)
+                and item.get("limit_id") == "stage_review_and_batch_upload_blocked"
+            ):
+                if delivery_contract_valid:
+                    item["owner_message_zh"] = (
+                        "STAGE-037 whole-stage review 已完成；BATCH031_040 upload、"
+                        "app reinstall 和 STAGE-038 本轮仍阻断。"
+                    )
 
     return {
         "schema_version": PHASE4_REPORT_SCHEMA_VERSION,
@@ -2838,8 +3326,8 @@ def build_stage037_delivery_report(
         "execution_mode": PHASE4_EXECUTION_MODE,
         "execution_ready": False,
         "execution_state": execution_state,
-        "stage_review_status": "pending_next_run",
-        "next_gate": PHASE4_NEXT_GATE,
+        "stage_review_status": stage_review_status,
+        "next_gate": next_gate,
         "github_upload_allowed": False,
         "app_reinstall_allowed": False,
         "snapshot_binding": {
@@ -2855,6 +3343,42 @@ def build_stage037_delivery_report(
             "load_error": load_error,
             "evidence_integrity": evidence_integrity,
             "observed_evidence_sha256": observed_evidence_sha256,
+            "all_delivery_sources_git_tracked": (
+                bool(git_tracked_sources) and all(git_tracked_sources.values())
+            ),
+            "all_delivery_sources_match_git_index": (
+                bool(git_index_sources) and all(git_index_sources.values())
+            ),
+            "all_delivery_sources_match_head": (
+                bool(git_head_sources) and all(git_head_sources.values())
+            ),
+            "git_tracked_sources": git_tracked_sources,
+            "git_index_sources": git_index_sources,
+            "git_head_sources": git_head_sources,
+            "observed_source_sha256": observed_source_sha256,
+        },
+        "review_governance_check_results": review_governance_check_results,
+        "review_governance_binding": {
+            "validator_ref": GOVERNANCE_VALIDATOR_PATH.relative_to(
+                PROJECT_ROOT
+            ).as_posix(),
+            "validator_load_error": governance_report.get("load_error"),
+            "all_review_sources_git_tracked": (
+                bool(review_git_tracked_sources)
+                and all(review_git_tracked_sources.values())
+            ),
+            "all_review_sources_match_git_index": (
+                bool(review_git_index_sources)
+                and all(review_git_index_sources.values())
+            ),
+            "all_review_sources_match_head": (
+                bool(review_git_head_sources)
+                and all(review_git_head_sources.values())
+            ),
+            "git_tracked_sources": review_git_tracked_sources,
+            "git_index_sources": review_git_index_sources,
+            "git_head_sources": review_git_head_sources,
+            "observed_source_sha256": review_observed_source_sha256,
         },
         "state_graph": {
             "mode": _as_object(phase4_contract.get("state_graph")).get(
@@ -2886,11 +3410,9 @@ def build_stage037_delivery_report(
         "rollback_steps": copy.deepcopy(
             phase4_contract.get("rollback_steps", [])
         ),
-        "known_limits": copy.deepcopy(
-            phase4_contract.get("known_limits", [])
-        ),
+        "known_limits": known_limits,
         "chinese_owner_feedback": (
-            phase4_contract.get("chinese_owner_feedback")
+            REVIEW_OWNER_FEEDBACK_ZH
             if delivery_contract_valid
             else "任务状态模型 Phase 4 交付合同无效；已失败关闭，禁止运行队列、worker、重试、反压、锁、自动生命周期、恢复或清理。"
         ),
@@ -2926,8 +3448,8 @@ def main() -> int:
         report["result"] == PHASE4_VALID_RESULT,
         report["execution_ready"] is False,
         report["execution_state"] == PHASE4_VALID_STATE,
-        report["stage_review_status"] == "pending_next_run",
-        report["next_gate"] == PHASE4_NEXT_GATE,
+        report["stage_review_status"] == REVIEW_STATUS,
+        report["next_gate"] == REVIEW_NEXT_GATE,
         report["github_upload_allowed"] is False,
         report["app_reinstall_allowed"] is False,
         report["live_execution_performed"] is False,

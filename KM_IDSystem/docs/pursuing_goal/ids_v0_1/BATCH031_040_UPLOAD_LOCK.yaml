@@ -1,8 +1,8 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-031-040"
 created_at_utc: "2026-07-03T08:32:56Z"
-updated_at_utc: "2026-07-11T04:53:01Z"
-status: "stage037_phase4_completed_review_pending"
+updated_at_utc: "2026-07-11T05:54:51Z"
+status: "stage037_completed_reviewed_local"
 
 repository:
   owner_repo: "LinzeColin/CodexProject"
@@ -192,24 +192,25 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
   STAGE-037:
-    status: "stage037_phase4_completed_review_pending"
+    status: "completed_reviewed_local"
     completed_phases:
       - "Phase 1"
       - "Phase 2"
       - "Phase 3"
       - "Phase 4"
-    review_status: "pending"
-    next_phase: "stage_review"
-    next_gate: "IDS-STAGE037-REVIEW-GATE"
-    current_task_id: "IDS-V0_1-STAGE037-P4"
+    review_status: "passed"
+    next_stage: "STAGE-038"
+    next_gate: "IDS-STAGE038-P1-GATE"
+    current_task_id: "IDS-V0_1-STAGE037-REVIEW"
     acceptance_id: "ACC-STAGE-037"
-    acceptance_status: "phase4_closeout_passed_review_pending"
+    acceptance_status: "reviewed_local_passed"
     evidence_refs:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_ENTRY_CONTRACT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE1_SCOPE_BOUNDARY.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE2_JOB_STATE_MODEL_SLICE.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE3_ADVERSARIAL_SCENARIOS.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE4_CLOSEOUT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_STAGE_REVIEW.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/job_state_model/stage037_job_state_model_index.json"
       - "KM_IDSystem/scripts/check_job_state_model.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage037_job_state_model.py"
@@ -217,8 +218,8 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
-  current_task_id: "IDS-V0_1-STAGE037-P4"
-  next_allowed_task_id: "IDS-V0_1-STAGE037-REVIEW"
+  current_task_id: "IDS-V0_1-STAGE037-REVIEW"
+  next_allowed_task_id: "IDS-V0_1-STAGE038-P1"
   github_upload_allowed: false
-  current_run: "STAGE-037 Phase 4 delivers one static machine-checked closeout contract for the exact state graph, retry/backpressure/cleanup evidence boundaries, automatic/manual handling, safe shutdown, recovery, rollback, known limits, and Chinese owner feedback. The report nests valid Phase 3 and Phase 2 evidence and keeps every queue, worker, retry/dead-letter, backpressure, lock, lifecycle, crash-recovery, cleanup, database/schema/registry, runtime-output, real-job, fake-data, and raw-metadata action false. Whole-stage review remains a separate next run; no STAGE-038, GitHub upload, PR, merge, issue mutation, app reinstall, batch review, or upload gate occurs."
-  no_upload_reason: "BATCH031_040 has STAGE-031 through STAGE-036 completed and reviewed locally, while STAGE-037 has Phase 1 through Phase 4 complete but whole-stage review remains pending and STAGE-038..040 are incomplete; the separate batch review/upload gates have not run, so push_allowed stays false."
+  current_run: "STAGE-037 whole-stage review repaired direct and paused retry eligibility evidence, cancellation stop reasons, complete future job-envelope compatibility, Chinese intermediate-state projection, structured review governance, Git-index-bound delivery/review sources, and Stage037 event fail-closed checks. ACC-STAGE-037 is completed_reviewed_local; no STAGE-038 implementation, GitHub upload, PR, merge, issue mutation, app reinstall, batch review, or upload gate occurs."
+  no_upload_reason: "BATCH031_040 has STAGE-031 through STAGE-037 completed and reviewed locally, while STAGE-038..040 remain incomplete; the tenth-stage review and separate batch upload gates have not run, so push_allowed stays false."
