@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-s14-post-remediation-stage-review"
-product_version_status: "completed_validated_local_only_stage14_review_no_go_upload_deferred"
-version_file_value: "0.1.4-s14-post-remediation-stage-review"
+product_version: "0.1.4-s15-p1-post-remediation-performance-fact-fields"
+product_version_status: "completed_validated_local_only_s15_p1_all_fields_manual_review_no_go_upload_deferred"
+version_file_value: "0.1.4-s15-p1-post-remediation-performance-fact-fields"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-s14-post-remediation-stage-review"
+  MOD-KMFA-GOV-001: "0.1.4-s15-p1-post-remediation-performance-fact-fields"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_s15_p1_post_remediation_performance_fact_fields: "0.1.4-s15-p1-post-remediation-performance-fact-fields"
   kmfa_v014_s14_post_remediation_stage_review: "0.1.4-s14-post-remediation-stage-review"
   kmfa_v014_s14_p3_post_remediation_policy_evidence_plan: "0.1.4-s14-p3-post-remediation-policy-evidence-plan"
   kmfa_v014_s14_p2_post_remediation_invoice_tax_plan: "0.1.4-s14-p2-post-remediation-invoice-tax-plan"
@@ -431,11 +432,51 @@ parameter_profile_versions:
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_blocked_handoff_final_threshold_recheck_after_reminder: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-final-threshold-recheck-after-reminder"
   kmfa_project_cost_mvp: "blocked_no_go_owner_scope_required"
 data_snapshot_version: "not_applicable_no_raw_data_committed"
-current_iteration: "ITER-20260711-KMFA-V014-S14-POST-REMEDIATION-STAGE-REVIEW"
-current_phase: "V014_S14_POST_REMEDIATION_STAGE_REVIEW"
-current_task_id: "KMFA-V014-S14-POST-REMEDIATION-STAGE-REVIEW-20260711"
-current_acceptance_id: "ACC-V014-S14-POST-REMEDIATION-STAGE-REVIEW"
-current_gate: "NO_GO_S15_P1_NEXT_SEPARATE_RUN_UPLOAD_REINSTALL_DEFERRED"
+current_iteration: "ITER-20260711-KMFA-V014-S15-P1-POST-REMEDIATION-PERFORMANCE-FACT-FIELDS"
+current_phase: "V014_S15_P1_POST_REMEDIATION_PERFORMANCE_FACT_FIELDS"
+current_task_id: "KMFA-V014-S15-P1-POST-REMEDIATION-PERFORMANCE-FACT-FIELDS-20260711"
+current_acceptance_id: "ACC-V014-S15-P1-POST-REMEDIATION-PERFORMANCE-FACT-FIELDS"
+current_gate: "NO_GO_S15_P2_NEXT_SEPARATE_RUN_UPLOAD_REINSTALL_DEFERRED"
+
+kmfa_v014_s15_p1_post_remediation_performance_fact_fields:
+  status: completed_validated_local_only_s15_p1_all_fields_manual_review_no_go_upload_deferred
+  phase: V014_S15_P1_POST_REMEDIATION_PERFORMANCE_FACT_FIELDS
+  evidence_dir: KMFA/stage_artifacts/V014_S15_P1_POST_REMEDIATION_PERFORMANCE_FACT_FIELDS
+  validator: KMFA/tools/check_v014_s15_p1_post_remediation_performance_fact_fields.py
+  focused_test: KMFA/tests/test_v014_s15_p1_post_remediation_performance_fact_fields.py
+  github_upload: blocked_no_go_upload_deferred
+  counts:
+    required_field_count: 6
+    field_definition_count: 6
+    field_binding_status_count: 6
+    manual_review_required_field_count: 6
+    candidate_covered_field_count: 6
+    private_unique_candidate_sheet_count: 13
+    private_multi_field_candidate_sheet_count: 3
+    project_cost_structure_reference_connected_field_count: 6
+    collection_structure_reference_connected_field_count: 6
+    authoritative_row_binding_proven_field_count: 0
+    authoritative_value_binding_proven_field_count: 0
+    materialized_performance_fact_count: 0
+    raw_source_file_count: 5
+  quality:
+    current_data_quality_grade: Q4
+    current_report_grade: D
+    decision: NO_GO
+    open_final_difference_accepted_count: 3
+    nonzero_delta_reconciliation_count: 9
+    zero_delta_reconciliation_count: 2
+    incomplete_reconciliation_count: 1
+  boundaries:
+    s15_p1_performed: true
+    s15_p2_performed: false
+    s15_p3_performed: false
+    salary_calculation_performed: false
+    bonus_approval_performed: false
+    payroll_export_performed: false
+    github_upload_performed: false
+    app_reinstall_performed: false
+    business_execution_performed: false
 
 kmfa_v014_s14_post_remediation_stage_review:
   status: completed_validated_local_only_stage14_review_no_go_upload_deferred

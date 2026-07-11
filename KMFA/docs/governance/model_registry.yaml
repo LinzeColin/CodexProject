@@ -1,3 +1,19 @@
+kmfa_v014_s15_p1_post_remediation_performance_fact_fields:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s15-p1-post-remediation-performance-fact-fields"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S15P1-POST-REMEDIATION-PERFORMANCE-FACT-FIELDS-001
+  parameter_refs:
+    - PARAM-KMFA-1765
+    - PARAM-KMFA-1766
+    - PARAM-KMFA-1767
+    - PARAM-KMFA-1768
+  evidence_dir: KMFA/stage_artifacts/V014_S15_P1_POST_REMEDIATION_PERFORMANCE_FACT_FIELDS
+  validator: KMFA/tools/check_v014_s15_p1_post_remediation_performance_fact_fields.py
+  scope: Current six-field performance fact structure and manual-review gate with project-cost and collection references six private candidate groups thirteen unique sheets zero authoritative row or value binding zero materialized facts raw immutability browser evidence and Q4 D NO_GO 3-9-2-1; S15-P2 P3 salary bonus payroll upload reinstall formal release and business execution remain closed.
+
 kmfa_v014_s14_post_remediation_stage_review:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-s14-post-remediation-stage-review"

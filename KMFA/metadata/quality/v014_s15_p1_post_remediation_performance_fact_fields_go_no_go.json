@@ -1,0 +1,16 @@
+{
+  "business_execution_allowed": false,
+  "decision": "NO_GO",
+  "field_definition_allowed": true,
+  "formal_report_allowed": false,
+  "github_upload_allowed": false,
+  "manual_review_allowed": true,
+  "payroll_export_allowed": false,
+  "performance_fact_release_allowed": false,
+  "performance_review_list_allowed": false,
+  "phase_id": "V014_S15_P1_POST_REMEDIATION_PERFORMANCE_FACT_FIELDS",
+  "project_id": "KMFA",
+  "salary_or_bonus_action_allowed": false,
+  "schema_version": "kmfa.v014.s15_p1.performance_fact_fields_go_no_go.v1",
+  "stage_id": "S15"
+}
