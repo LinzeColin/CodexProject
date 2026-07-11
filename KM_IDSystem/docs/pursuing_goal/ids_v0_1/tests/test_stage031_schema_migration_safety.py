@@ -185,6 +185,7 @@ class Stage031SchemaMigrationSafetyPhase1Tests(unittest.TestCase):
             'status: "stage036_completed_reviewed_local"',
             'status: "stage037_phase1_in_progress"',
             'status: "stage037_phase2_in_progress"',
+            'status: "stage037_phase3_in_progress"',
         ]
         allowed_lock_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE031-P1"',
@@ -463,6 +464,7 @@ class Stage031SchemaMigrationSafetyPhase1Tests(unittest.TestCase):
             'status: "stage036_completed_reviewed_local"',
             'status: "stage037_phase1_in_progress"',
             'status: "stage037_phase2_in_progress"',
+            'status: "stage037_phase3_in_progress"',
         ]
         allowed_lock_next_terms = [
             'next_phase: "Phase 3"',
@@ -729,6 +731,7 @@ class Stage031SchemaMigrationSafetyPhase1Tests(unittest.TestCase):
             'status: "stage036_completed_reviewed_local"',
             'status: "stage037_phase1_in_progress"',
             'status: "stage037_phase2_in_progress"',
+            'status: "stage037_phase3_in_progress"',
         ]
         allowed_lock_next_terms = [
             'next_phase: "Phase 4"',
@@ -1080,6 +1083,7 @@ class Stage031SchemaMigrationSafetyPhase1Tests(unittest.TestCase):
             'status: "stage036_completed_reviewed_local"',
             'status: "stage037_phase1_in_progress"',
             'status: "stage037_phase2_in_progress"',
+            'status: "stage037_phase3_in_progress"',
         ]
         allowed_lock_next_terms = [
             'next_phase: "stage_review_gate"',
@@ -1170,6 +1174,7 @@ class Stage031SchemaMigrationSafetyPhase1Tests(unittest.TestCase):
             'next_allowed_task_id: "IDS-V0_1-STAGE037-P1"',
             'next_allowed_task_id: "IDS-V0_1-STAGE037-P2"',
             'next_allowed_task_id: "IDS-V0_1-STAGE037-P3"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE037-P4"',
         ]
         allowed_roadmap_phase_terms = [
             'current_phase_id: "IDS-STAGE031-P4"',
@@ -1195,6 +1200,7 @@ class Stage031SchemaMigrationSafetyPhase1Tests(unittest.TestCase):
             'current_phase_id: "IDS-STAGE035-REVIEW"',
             'current_phase_id: "IDS-STAGE036-P4"',
             'current_phase_id: "IDS-STAGE037-P2"',
+            'current_phase_id: "IDS-STAGE037-P3"',
         ]
         allowed_roadmap_task_terms = [
             'current_task_id: "IDS-V0_1-STAGE031-P4"',
@@ -1220,6 +1226,7 @@ class Stage031SchemaMigrationSafetyPhase1Tests(unittest.TestCase):
             'current_task_id: "IDS-V0_1-STAGE035-REVIEW"',
             'current_task_id: "IDS-V0_1-STAGE036-P4"',
             'current_task_id: "IDS-V0_1-STAGE037-P2"',
+            'current_task_id: "IDS-V0_1-STAGE037-P3"',
         ]
         allowed_roadmap_gate_terms = [
             'next_gate_id: "IDS-STAGE031-REVIEW-GATE"',
@@ -1245,6 +1252,7 @@ class Stage031SchemaMigrationSafetyPhase1Tests(unittest.TestCase):
             'next_gate_id: "IDS-STAGE036-P1-GATE"',
             'next_gate_id: "IDS-STAGE036-REVIEW-GATE"',
             'next_gate_id: "IDS-STAGE037-P3-GATE"',
+            'next_gate_id: "IDS-STAGE037-P4-GATE"',
         ]
         event_terms = [
             '"event_id":"EVT-IDS-V0_1-STAGE031-P4-20260703-001"',

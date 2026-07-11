@@ -28,6 +28,27 @@ EVALUATION_MODE = "STATIC_CONTRACT_EVALUATION_ONLY"
 TASK_ID = "IDS-V0_1-STAGE037-P2"
 ACCEPTANCE_ID = "ACC-STAGE-037"
 NEXT_GATE = "IDS-STAGE037-P3-GATE"
+PHASE3_REPORT_SCHEMA_VERSION = "ids.stage037.job_state_model.phase3.v1"
+PHASE3_TASK_ID = "IDS-V0_1-STAGE037-P3"
+PHASE3_NEXT_GATE = "IDS-STAGE037-P4-GATE"
+PHASE3_VALID_STATE = "STATIC_JOB_STATE_SCENARIOS_VALID_RUNTIME_DISABLED"
+PHASE3_EXECUTION_MODE = (
+    "STATIC_JOB_STATE_ADVERSARIAL_SCENARIO_VALIDATION_ONLY"
+)
+SCENARIO_FACT_LEVEL = "STATIC_CONTRACT_SCENARIO_ONLY"
+
+EXPECTED_PHASE3_SCENARIOS = (
+    "duplicate_click_idempotent_replay",
+    "duplicate_click_payload_conflict",
+    "worker_crash_retry_reservation",
+    "stale_worker_fencing_block",
+    "removable_drive_offline_pause",
+    "drive_reconnect_no_auto_resume",
+    "low_disk_retry_pause_preserves_budget",
+    "same_source_concurrency_blocked",
+    "lock_claim_without_proof_blocked",
+    "cleanup_authorization_blocked",
+)
 
 JOB_TYPES = [
     "IMPORT",
@@ -1519,10 +1540,798 @@ def evaluate_transition(
     return result
 
 
+def _scenario_snapshot(
+    scenario_id: str, state: str = "CREATED", **overrides: Any
+) -> dict[str, Any]:
+    active = state in ACTIVE_STATES
+    snapshot: dict[str, Any] = {
+        "evaluation_mode": EVALUATION_MODE,
+        "job_id": f"contract:{PHASE3_TASK_ID}:{scenario_id}",
+        "job_type": "IMPORT",
+        "job_state": state,
+        "state_version": 0,
+        "retry_count": 0,
+        "max_retries": 2,
+        "retry_pending": False,
+        "retry_disposition": "none",
+        "lease_active": active,
+        "lock_active": active,
+        "fencing_token": 7 if active else 0,
+        "attempt_id": (
+            f"acceptance:{ACCEPTANCE_ID}:{scenario_id}" if active else None
+        ),
+        "lease_owner_ref": f"task:{PHASE3_TASK_ID}" if active else None,
+        "lease_expires_at": (
+            "policy:POLICY_VALUE_DEFERRED_TO_STAGE039_040_041"
+            if active
+            else None
+        ),
+        "lock_key": f"contract:ids.job_state.v1:{scenario_id}" if active else None,
+        "pause_reason_code": None,
+        "input_refs": [
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
+            "STAGE037_PHASE1_SCOPE_BOUNDARY.md#Job-Control-Envelope"
+        ],
+        "output_refs": [],
+        "checkpoint_ref": None,
+        "quarantine_ref": None,
+        "error_ref": None,
+    }
+    snapshot.update(overrides)
+    return snapshot
+
+
+def _scenario_request(
+    snapshot: Mapping[str, Any],
+    target_state: str,
+    request_suffix: str,
+    **overrides: Any,
+) -> dict[str, Any]:
+    request: dict[str, Any] = {
+        "job_id": snapshot.get("job_id"),
+        "transition_request_id": (
+            f"acceptance:{ACCEPTANCE_ID}:{request_suffix}"
+        ),
+        "expected_state": snapshot.get("job_state"),
+        "expected_state_version": snapshot.get("state_version"),
+        "target_state": target_state,
+        "actor_ref": f"task:{PHASE3_TASK_ID}",
+        "reason_code": "PHASE3_STATIC_ADVERSARIAL_SCENARIO",
+        "audit_ref": (
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
+            "STAGE037_PHASE3_ADVERSARIAL_SCENARIOS.md#Truthful-Scenario-Result"
+        ),
+        "guard_facts": {},
+        "input_refs": [],
+        "output_refs": [],
+        "checkpoint_ref": None,
+        "quarantine_ref": None,
+        "error_ref": None,
+        "resource_gate_refs": [],
+        "pause_reason_code": None,
+        "fencing_token": None,
+        "candidate_claim": None,
+    }
+    request.update(overrides)
+    return request
+
+
+def _scenario_result(
+    decision: Mapping[str, Any],
+    *,
+    phase2_contract_valid: bool,
+    expected_accepted: bool,
+    expected_result_code: str,
+    expected_state: Optional[str],
+    evidence: str,
+    owner_explanation_zh: str,
+    invariant_checks: Mapping[str, bool],
+) -> dict[str, Any]:
+    next_snapshot = decision.get("next_snapshot")
+    transition_candidate = decision.get("transition_candidate")
+    candidate_created = (
+        next_snapshot is not None or transition_candidate is not None
+    )
+    observed_state = (
+        next_snapshot.get("job_state") if isinstance(next_snapshot, dict) else None
+    )
+    observed_accepted = decision.get("accepted")
+    observed_code = decision.get("result_code")
+    checks = {
+        "phase2_contract_valid": phase2_contract_valid,
+        "accepted_matches": observed_accepted is expected_accepted,
+        "result_code_matches": observed_code == expected_result_code,
+        "state_matches": observed_state == expected_state,
+        "candidate_presence_matches": (
+            isinstance(next_snapshot, dict)
+            and isinstance(transition_candidate, dict)
+            if expected_accepted
+            else next_snapshot is None and transition_candidate is None
+        ),
+        "runtime_transition_not_performed": (
+            decision.get("runtime_transition_performed") is False
+        ),
+        "database_write_not_performed": (
+            decision.get("database_write_performed") is False
+        ),
+        "queue_or_worker_action_not_performed": (
+            decision.get("queue_or_worker_action_performed") is False
+        ),
+        **{name: value is True for name, value in invariant_checks.items()},
+    }
+    return {
+        "status": "PASS" if all(checks.values()) else "FAIL",
+        "fact_level": SCENARIO_FACT_LEVEL,
+        "expected_outcome": "ACCEPT" if expected_accepted else "BLOCK",
+        "observed_accepted": observed_accepted,
+        "observed_result_code": observed_code,
+        "observed_state": observed_state,
+        "candidate_created": candidate_created,
+        "invariant_checks": checks,
+        "evidence": evidence,
+        "owner_explanation_zh": owner_explanation_zh,
+        "live_execution_performed": False,
+    }
+
+
+def build_stage037_scenario_validation_report(
+    *, contract: Optional[dict[str, Any]] = None
+) -> dict[str, Any]:
+    if contract is None:
+        try:
+            loaded_contract = load_contract()
+        except (OSError, ValueError, json.JSONDecodeError):
+            loaded_contract = {}
+        contract_object = loaded_contract if isinstance(loaded_contract, dict) else {}
+    else:
+        contract_object = contract if isinstance(contract, dict) else {}
+
+    phase2_report = build_stage037_job_state_report(index=contract_object)
+    phase2_valid = phase2_report["contract_valid"] is True
+
+    duplicate_snapshot = _scenario_snapshot("duplicate-click")
+    duplicate_request = _scenario_request(
+        duplicate_snapshot,
+        "QUEUED",
+        "duplicate-click",
+        guard_facts={
+            "identity_idempotency_valid": True,
+            "admission_gates_passed": True,
+            "no_active_claim_or_lock": True,
+        },
+    )
+    duplicate_first = evaluate_transition(
+        duplicate_snapshot, duplicate_request, contract=contract_object
+    )
+    duplicate_replay = evaluate_transition(
+        duplicate_snapshot,
+        duplicate_request,
+        contract=contract_object,
+        prior_results={
+            str(duplicate_request["transition_request_id"]): duplicate_first
+        },
+    )
+    conflict_request = copy.deepcopy(duplicate_request)
+    conflict_request["target_state"] = "CANCELLED"
+    duplicate_conflict = evaluate_transition(
+        duplicate_snapshot,
+        conflict_request,
+        contract=contract_object,
+        prior_results={
+            str(duplicate_request["transition_request_id"]): duplicate_first
+        },
+    )
+
+    crash_snapshot = _scenario_snapshot(
+        "worker-crash", "RUNNING", state_version=4
+    )
+    crash_request = _scenario_request(
+        crash_snapshot,
+        "RETRY_WAIT",
+        "worker-crash-retry",
+        fencing_token=7,
+        error_ref=(
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
+            "STAGE037_PHASE3_ADVERSARIAL_SCENARIOS.md#Scenario-Matrix"
+        ),
+        guard_facts={
+            "lease_valid_or_expiry_evidence": True,
+            "fencing_token_matches": True,
+            "retryable_failure_recorded": True,
+            "error_evidence_present": True,
+        },
+    )
+    worker_crash = evaluate_transition(
+        crash_snapshot, crash_request, contract=contract_object
+    )
+    crash_next = worker_crash.get("next_snapshot")
+    worker_crash_prerequisite_exact = (
+        worker_crash.get("accepted") is True
+        and isinstance(crash_next, dict)
+        and crash_next.get("job_state") == "RETRY_WAIT"
+        and crash_next.get("state_version") == crash_snapshot["state_version"] + 1
+        and crash_next.get("retry_pending") is True
+        and crash_next.get("lease_active") is False
+        and crash_next.get("lock_active") is False
+        and crash_next.get("fencing_token")
+        == crash_snapshot["fencing_token"] + 1
+    )
+    stale_worker_request = _scenario_request(
+        crash_snapshot,
+        "SUCCEEDED",
+        "stale-worker-success",
+        fencing_token=7,
+        output_refs=[
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
+            "STAGE037_PHASE3_ADVERSARIAL_SCENARIOS.md#Scenario-Matrix"
+        ],
+        guard_facts={
+            "live_lease_valid": True,
+            "fencing_token_matches": True,
+            "output_validated": True,
+        },
+    )
+    stale_worker_snapshot = (
+        crash_next if worker_crash_prerequisite_exact else crash_snapshot
+    )
+    stale_worker = (
+        _reject(
+            stale_worker_snapshot,
+            stale_worker_request,
+            "SCENARIO_PREREQUISITE_FAILED",
+        )
+        if phase2_valid and not worker_crash_prerequisite_exact
+        else evaluate_transition(
+            stale_worker_snapshot,
+            stale_worker_request,
+            contract=contract_object,
+        )
+    )
+
+    drive_snapshot = _scenario_snapshot("drive-offline", "QUEUED")
+    drive_pause_request = _scenario_request(
+        drive_snapshot,
+        "PAUSED",
+        "drive-offline-pause",
+        pause_reason_code="SAFE_MODE_DRIVE_OFFLINE",
+        resource_gate_refs=[
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
+            "STAGE008_PHASE2_REMOVABLE_DRIVE_STATE.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
+            "STAGE011_PHASE2_SAFE_MODE_BASELINE.md",
+        ],
+        guard_facts={
+            "resource_gate_blocked": True,
+            "no_active_claim_or_lock": True,
+        },
+    )
+    drive_paused = evaluate_transition(
+        drive_snapshot, drive_pause_request, contract=contract_object
+    )
+    drive_paused_snapshot = drive_paused.get("next_snapshot")
+    drive_pause_prerequisite_exact = (
+        drive_paused.get("accepted") is True
+        and isinstance(drive_paused_snapshot, dict)
+        and drive_paused_snapshot.get("job_state") == "PAUSED"
+        and drive_paused_snapshot.get("state_version")
+        == drive_snapshot["state_version"] + 1
+        and drive_paused_snapshot.get("pause_reason_code")
+        == "SAFE_MODE_DRIVE_OFFLINE"
+        and drive_paused_snapshot.get("lease_active") is False
+        and drive_paused_snapshot.get("lock_active") is False
+    )
+    drive_resume_snapshot = (
+        drive_paused_snapshot
+        if drive_pause_prerequisite_exact
+        else _scenario_snapshot(
+            "drive-offline",
+            "PAUSED",
+            state_version=1,
+            pause_reason_code="SAFE_MODE_DRIVE_OFFLINE",
+        )
+    )
+    drive_resume_request = _scenario_request(
+        drive_resume_snapshot,
+        "QUEUED",
+        "drive-reconnect-without-owner",
+        guard_facts={
+            "resource_gates_passed": True,
+            "no_active_claim_or_lock": True,
+        },
+    )
+    drive_auto_resume = (
+        _reject(
+            drive_resume_snapshot,
+            drive_resume_request,
+            "SCENARIO_PREREQUISITE_FAILED",
+        )
+        if phase2_valid and not drive_pause_prerequisite_exact
+        else evaluate_transition(
+            drive_resume_snapshot,
+            drive_resume_request,
+            contract=contract_object,
+        )
+    )
+
+    low_disk_snapshot = _scenario_snapshot(
+        "low-disk",
+        "RETRY_WAIT",
+        state_version=3,
+        retry_pending=True,
+        retry_disposition="eligible",
+        error_ref=(
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
+            "STAGE037_PHASE3_ADVERSARIAL_SCENARIOS.md#Scenario-Matrix"
+        ),
+    )
+    low_disk_request = _scenario_request(
+        low_disk_snapshot,
+        "PAUSED",
+        "low-disk-retry-pause",
+        pause_reason_code="BUDGET_BLOCKED_LOW_FREE",
+        resource_gate_refs=[
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
+            "STAGE009_PHASE2_STORAGE_BUDGET_BASELINE.md"
+        ],
+        guard_facts={
+            "resource_gate_blocked": True,
+            "no_active_claim_or_lock": True,
+        },
+    )
+    low_disk_paused = evaluate_transition(
+        low_disk_snapshot, low_disk_request, contract=contract_object
+    )
+
+    same_source_refs = [
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
+        "STAGE016_PHASE2_IMPORT_IDEMPOTENCY_SLICE.md"
+        "#Import-Idempotency-Key"
+    ]
+    same_source_lock_key = (
+        "contract:IDS-V0_1-STAGE016-P2:ids-import-file-sha256"
+    )
+    concurrency_holder_snapshot = _scenario_snapshot(
+        "same-source-holder",
+        "QUEUED",
+        input_refs=same_source_refs,
+    )
+    concurrency_holder_claim = {
+        "attempt_id": f"acceptance:{ACCEPTANCE_ID}:same-source-holder",
+        "lease_owner_ref": f"task:{PHASE3_TASK_ID}:same-source-holder",
+        "lease_expires_at": "policy:POLICY_VALUE_DEFERRED_TO_STAGE039_040_041",
+        "fencing_token": 1,
+        "lock_key": same_source_lock_key,
+    }
+    concurrency_holder_request = _scenario_request(
+        concurrency_holder_snapshot,
+        "CLAIMED",
+        "same-source-holder-claim",
+        guard_facts={
+            "admission_gates_passed": True,
+            "claim_lease_and_lock_acquired": True,
+        },
+        candidate_claim=concurrency_holder_claim,
+    )
+    concurrency_holder = evaluate_transition(
+        concurrency_holder_snapshot,
+        concurrency_holder_request,
+        contract=contract_object,
+    )
+
+    concurrency_snapshot = _scenario_snapshot(
+        "same-source-contender",
+        "QUEUED",
+        input_refs=same_source_refs,
+    )
+    concurrency_claim = {
+        "attempt_id": f"acceptance:{ACCEPTANCE_ID}:same-source-contender",
+        "lease_owner_ref": f"task:{PHASE3_TASK_ID}:same-source-contender",
+        "lease_expires_at": "policy:POLICY_VALUE_DEFERRED_TO_STAGE039_040_041",
+        "fencing_token": 1,
+        "lock_key": same_source_lock_key,
+    }
+    concurrency_request = _scenario_request(
+        concurrency_snapshot,
+        "CLAIMED",
+        "same-source-second-claim",
+        reason_code="SAME_SOURCE_LOCK_HELD_STATIC_EVIDENCE",
+        guard_facts={
+            "admission_gates_passed": True,
+            "claim_lease_and_lock_acquired": False,
+        },
+        candidate_claim=concurrency_claim,
+    )
+    concurrency_blocked = evaluate_transition(
+        concurrency_snapshot, concurrency_request, contract=contract_object
+    )
+
+    lock_snapshot = _scenario_snapshot("lock-proof", "QUEUED")
+    lock_claim = {
+        "attempt_id": f"acceptance:{ACCEPTANCE_ID}:lock-proof",
+        "lease_owner_ref": f"task:{PHASE3_TASK_ID}:lock-proof",
+        "lease_expires_at": "policy:POLICY_VALUE_DEFERRED_TO_STAGE039_040_041",
+        "fencing_token": 1,
+        "lock_key": "contract:ids.job_state.v1:lock-proof",
+    }
+    lock_positive_request = _scenario_request(
+        lock_snapshot,
+        "CLAIMED",
+        "lock-proof-control",
+        guard_facts={
+            "admission_gates_passed": True,
+            "claim_lease_and_lock_acquired": True,
+        },
+        candidate_claim=lock_claim,
+    )
+    lock_positive = evaluate_transition(
+        lock_snapshot, lock_positive_request, contract=contract_object
+    )
+    lock_request = copy.deepcopy(lock_positive_request)
+    lock_request["guard_facts"]["claim_lease_and_lock_acquired"] = False
+    lock_blocked = evaluate_transition(
+        lock_snapshot, lock_request, contract=contract_object
+    )
+
+    cleanup_snapshot = _scenario_snapshot(
+        "cleanup-protection",
+        "PAUSED",
+        pause_reason_code="OWNER_HOLD",
+    )
+    cleanup_baseline_request = _scenario_request(
+        cleanup_snapshot,
+        "CANCELLED",
+        "cleanup-through-transition",
+        guard_facts={"no_active_claim_or_lock": True},
+    )
+    cleanup_baseline = evaluate_transition(
+        cleanup_snapshot,
+        cleanup_baseline_request,
+        contract=contract_object,
+    )
+    cleanup_request = copy.deepcopy(cleanup_baseline_request)
+    cleanup_request["cleanup_manifest_ref"] = (
+        "contract:STAGE-044:cleanup-runtime-not-authorized"
+    )
+    cleanup_blocked = evaluate_transition(
+        cleanup_snapshot, cleanup_request, contract=contract_object
+    )
+
+    retry_next = worker_crash.get("next_snapshot")
+    drive_next = drive_paused.get("next_snapshot")
+    low_disk_next = low_disk_paused.get("next_snapshot")
+    concurrency_holder_next = concurrency_holder.get("next_snapshot")
+    lock_positive_next = lock_positive.get("next_snapshot")
+    cleanup_baseline_next = cleanup_baseline.get("next_snapshot")
+    lock_proof_only_changed = copy.deepcopy(lock_positive_request)
+    lock_proof_only_changed["guard_facts"][
+        "claim_lease_and_lock_acquired"
+    ] = False
+    cleanup_only_field_added = (
+        set(cleanup_request) - set(cleanup_baseline_request)
+        == {"cleanup_manifest_ref"}
+        and all(
+            cleanup_request.get(key) == value
+            for key, value in cleanup_baseline_request.items()
+        )
+    )
+    cleanup_contract = _as_object(contract_object.get("cleanup_boundary"))
+    scenario_results = {
+        "duplicate_click_idempotent_replay": _scenario_result(
+            duplicate_replay,
+            phase2_contract_valid=phase2_valid,
+            expected_accepted=True,
+            expected_result_code="TRANSITION_ACCEPTED",
+            expected_state="QUEUED",
+            evidence=(
+                "the same transition_request_id and payload returns the exact "
+                "original in-memory candidate with idempotent_replay=true"
+            ),
+            owner_explanation_zh=(
+                "重复点击使用同一请求标识时只返回原确定性候选，不产生第二次状态变更或审计写入。"
+            ),
+            invariant_checks={
+                "first_candidate_accepted": duplicate_first.get("accepted") is True,
+                "idempotent_replay_marked": (
+                    duplicate_replay.get("idempotent_replay") is True
+                ),
+                "candidate_unchanged": duplicate_replay.get("next_snapshot")
+                == duplicate_first.get("next_snapshot"),
+            },
+        ),
+        "duplicate_click_payload_conflict": _scenario_result(
+            duplicate_conflict,
+            phase2_contract_valid=phase2_valid,
+            expected_accepted=False,
+            expected_result_code="TRANSITION_REQUEST_CONFLICT",
+            expected_state=None,
+            evidence=(
+                "reusing a transition_request_id with a different target state "
+                "fails closed before a candidate is produced"
+            ),
+            owner_explanation_zh=(
+                "同一请求标识若携带不同目标状态会失败关闭，防止重复点击被篡改成另一项操作。"
+            ),
+            invariant_checks={
+                "no_conflicting_candidate": duplicate_conflict.get("next_snapshot")
+                is None,
+            },
+        ),
+        "worker_crash_retry_reservation": _scenario_result(
+            worker_crash,
+            phase2_contract_valid=phase2_valid,
+            expected_accepted=True,
+            expected_result_code="TRANSITION_ACCEPTED",
+            expected_state="RETRY_WAIT",
+            evidence=(
+                "lease-expiry evidence routes RUNNING to RETRY_WAIT, reserves one "
+                "retry, revokes lease/lock, and advances fencing without runtime"
+            ),
+            owner_explanation_zh=(
+                "worker 崩溃只形成等待重试候选；重试次数尚未消费，旧租约和锁已在候选中撤销。"
+            ),
+            invariant_checks={
+                "retry_reserved_without_consumption": isinstance(retry_next, dict)
+                and retry_next.get("retry_pending") is True
+                and retry_next.get("retry_count") == crash_snapshot["retry_count"],
+                "lease_and_lock_revoked": isinstance(retry_next, dict)
+                and retry_next.get("lease_active") is False
+                and retry_next.get("lock_active") is False,
+                "fencing_advanced": isinstance(retry_next, dict)
+                and retry_next.get("fencing_token")
+                == crash_snapshot["fencing_token"] + 1,
+            },
+        ),
+        "stale_worker_fencing_block": _scenario_result(
+            stale_worker,
+            phase2_contract_valid=phase2_valid,
+            expected_accepted=False,
+            expected_result_code="COMPARE_AND_SET_MISMATCH",
+            expected_state=None,
+            evidence=(
+                "a stale success request evaluated against the post-crash retry "
+                "snapshot cannot satisfy compare-and-set"
+            ),
+            owner_explanation_zh=(
+                "崩溃后的旧 worker 不能再标记成功；状态版本已推进，旧请求按 CAS 失败关闭。"
+            ),
+            invariant_checks={
+                "worker_crash_prerequisite_exact": (
+                    worker_crash_prerequisite_exact
+                ),
+                "no_stale_success_candidate": stale_worker.get("next_snapshot")
+                is None,
+            },
+        ),
+        "removable_drive_offline_pause": _scenario_result(
+            drive_paused,
+            phase2_contract_valid=phase2_valid,
+            expected_accepted=True,
+            expected_result_code="TRANSITION_ACCEPTED",
+            expected_state="PAUSED",
+            evidence=(
+                "SAFE_MODE_DRIVE_OFFLINE plus tracked STAGE008/STAGE011 refs "
+                "pauses a queued candidate without acquiring a worker lease"
+            ),
+            owner_explanation_zh=(
+                "移动硬盘离线时任务保持暂停候选，不领取 worker，也不会因设备重新出现而自动恢复。"
+            ),
+            invariant_checks={
+                "drive_reason_preserved": isinstance(drive_next, dict)
+                and drive_next.get("pause_reason_code")
+                == "SAFE_MODE_DRIVE_OFFLINE",
+                "no_claim_activated": isinstance(drive_next, dict)
+                and drive_next.get("lease_active") is False
+                and drive_next.get("lock_active") is False,
+            },
+        ),
+        "drive_reconnect_no_auto_resume": _scenario_result(
+            drive_auto_resume,
+            phase2_contract_valid=phase2_valid,
+            expected_accepted=False,
+            expected_result_code="MISSING_TRANSITION_GUARD",
+            expected_state=None,
+            evidence=(
+                "PAUSED to QUEUED without owner_revalidated remains blocked even "
+                "when a resource-gates-passed fact is supplied"
+            ),
+            owner_explanation_zh=(
+                "设备重连不等于自动恢复；缺少 owner 复核时，暂停任务不能重新排队。"
+            ),
+            invariant_checks={
+                "drive_pause_prerequisite_exact": drive_pause_prerequisite_exact,
+                "paused_candidate_not_resumed": drive_auto_resume.get(
+                    "next_snapshot"
+                )
+                is None,
+            },
+        ),
+        "low_disk_retry_pause_preserves_budget": _scenario_result(
+            low_disk_paused,
+            phase2_contract_valid=phase2_valid,
+            expected_accepted=True,
+            expected_result_code="TRANSITION_ACCEPTED",
+            expected_state="PAUSED",
+            evidence=(
+                "BUDGET_BLOCKED_LOW_FREE pauses an eligible retry while keeping "
+                "retry_pending=true and retry_count unchanged"
+            ),
+            owner_explanation_zh=(
+                "低磁盘条件只暂停已保留的重试资格，不提前消耗重试次数，也不启动反压运行时。"
+            ),
+            invariant_checks={
+                "retry_reservation_preserved": isinstance(low_disk_next, dict)
+                and low_disk_next.get("retry_pending") is True
+                and low_disk_next.get("retry_disposition") == "eligible",
+                "retry_count_unchanged": isinstance(low_disk_next, dict)
+                and low_disk_next.get("retry_count")
+                == low_disk_snapshot["retry_count"],
+                "low_disk_reason_preserved": isinstance(low_disk_next, dict)
+                and low_disk_next.get("pause_reason_code")
+                == "BUDGET_BLOCKED_LOW_FREE",
+            },
+        ),
+        "same_source_concurrency_blocked": _scenario_result(
+            concurrency_blocked,
+            phase2_contract_valid=phase2_valid,
+            expected_accepted=False,
+            expected_result_code="MISSING_TRANSITION_GUARD",
+            expected_state=None,
+            evidence=(
+                "a same-source second claim with claim_lease_and_lock_acquired=false "
+                "cannot produce a CLAIMED candidate"
+            ),
+            owner_explanation_zh=(
+                "同源并发只有在后续锁运行时证明已取得唯一租约和锁后才能领取；当前证明失败即阻断。"
+            ),
+            invariant_checks={
+                "first_same_source_claim_accepted": (
+                    concurrency_holder.get("accepted") is True
+                    and isinstance(concurrency_holder_next, dict)
+                    and concurrency_holder_next.get("job_state") == "CLAIMED"
+                ),
+                "distinct_job_ids": concurrency_holder_snapshot.get("job_id")
+                != concurrency_snapshot.get("job_id"),
+                "shared_source_identity": (
+                    concurrency_holder_snapshot.get("input_refs")
+                    == concurrency_snapshot.get("input_refs")
+                    == same_source_refs
+                ),
+                "shared_lock_key": (
+                    concurrency_holder_claim.get("lock_key")
+                    == concurrency_claim.get("lock_key")
+                    == same_source_lock_key
+                ),
+                "second_claim_envelope_complete": (
+                    set(concurrency_claim) == CLAIM_KEYS
+                    and concurrency_claim.get("fencing_token")
+                    > concurrency_snapshot.get("fencing_token")
+                ),
+                "no_second_claim_candidate": concurrency_blocked.get(
+                    "next_snapshot"
+                )
+                is None,
+            },
+        ),
+        "lock_claim_without_proof_blocked": _scenario_result(
+            lock_blocked,
+            phase2_contract_valid=phase2_valid,
+            expected_accepted=False,
+            expected_result_code="MISSING_TRANSITION_GUARD",
+            expected_state=None,
+            evidence=(
+                "QUEUED to CLAIMED without positive lock-acquisition proof fails "
+                "before any worker or lock action"
+            ),
+            owner_explanation_zh=(
+                "没有锁取得证明就不能形成领取候选；Phase 3 不创建锁记录或 worker。"
+            ),
+            invariant_checks={
+                "positive_claim_accepted": (
+                    lock_positive.get("accepted") is True
+                    and isinstance(lock_positive_next, dict)
+                    and lock_positive_next.get("job_state") == "CLAIMED"
+                ),
+                "negative_claim_envelope_complete": (
+                    isinstance(lock_request.get("candidate_claim"), dict)
+                    and set(lock_request["candidate_claim"]) == CLAIM_KEYS
+                ),
+                "only_lock_proof_changed": (
+                    lock_request == lock_proof_only_changed
+                ),
+                "no_unproven_claim_candidate": lock_blocked.get("next_snapshot")
+                is None,
+            },
+        ),
+        "cleanup_authorization_blocked": _scenario_result(
+            cleanup_blocked,
+            phase2_contract_valid=phase2_valid,
+            expected_accepted=False,
+            expected_result_code="INVALID_REQUEST_SHAPE",
+            expected_state=None,
+            evidence=(
+                "adding cleanup_manifest_ref to a state-transition request is an "
+                "unknown request shape and cleanup remains STAGE044-owned"
+            ),
+            owner_explanation_zh=(
+                "状态转换不能夹带清理授权；清理仍由 Stage 44 独立门禁，当前不会删除任何内容。"
+            ),
+            invariant_checks={
+                "baseline_cancel_accepted": (
+                    cleanup_baseline.get("accepted") is True
+                    and isinstance(cleanup_baseline_next, dict)
+                    and cleanup_baseline_next.get("job_state") == "CANCELLED"
+                ),
+                "only_cleanup_field_added": cleanup_only_field_added,
+                "state_transition_does_not_authorize_deletion": (
+                    cleanup_contract.get("state_transition_authorizes_deletion")
+                    is False
+                ),
+                "cleanup_runtime_disabled": (
+                    cleanup_contract.get("cleanup_runtime_allowed") is False
+                ),
+                "no_cleanup_candidate": cleanup_blocked.get("next_snapshot")
+                is None,
+            },
+        ),
+    }
+    scenario_validation_valid = (
+        phase2_valid
+        and tuple(scenario_results) == EXPECTED_PHASE3_SCENARIOS
+        and all(
+            result.get("status") == "PASS"
+            for result in scenario_results.values()
+        )
+    )
+    return {
+        "schema_version": PHASE3_REPORT_SCHEMA_VERSION,
+        "phase2_schema_version": REPORT_SCHEMA_VERSION,
+        "index_schema_version": INDEX_SCHEMA_VERSION,
+        "stage": "STAGE-037",
+        "phase": "Phase 3",
+        "task_id": PHASE3_TASK_ID,
+        "acceptance_id": ACCEPTANCE_ID,
+        "job_state_model_contract_id": CONTRACT_ID,
+        "phase2_contract_valid": phase2_valid,
+        "scenario_validation_valid": scenario_validation_valid,
+        "scenario_results": scenario_results,
+        "execution_mode": PHASE3_EXECUTION_MODE,
+        "execution_ready": False,
+        "execution_state": (
+            PHASE3_VALID_STATE if scenario_validation_valid else INVALID_STATE
+        ),
+        "live_execution_performed": False,
+        "queue_runtime_performed": False,
+        "worker_runtime_performed": False,
+        "retry_scheduler_performed": False,
+        "backpressure_runtime_performed": False,
+        "lock_runtime_performed": False,
+        "automatic_lifecycle_runtime_performed": False,
+        "crash_recovery_runtime_performed": False,
+        "cleanup_runtime_performed": False,
+        "database_connection_performed": False,
+        "schema_change_performed": False,
+        "state_registry_write_performed": False,
+        "runtime_output_written": False,
+        "real_job_created": False,
+        "fake_ids_business_data_used": False,
+        "raw_metadata_content_accessed": False,
+        "phase2_report": phase2_report,
+        "next_gate": PHASE3_NEXT_GATE,
+        "github_upload_allowed": False,
+        "app_reinstall_allowed": False,
+        "owner_feedback_zh": (
+            "任务状态模型 Phase 3 静态异常场景验证通过；所有结果仅为内存合同候选，"
+            "未运行 worker、磁盘动作、锁、清理或数据库。"
+            if scenario_validation_valid
+            else "任务状态模型 Phase 3 静态异常场景验证失败；已失败关闭，禁止进入 Phase 4。"
+        ),
+    }
+
+
 def main() -> int:
-    report = build_stage037_job_state_report()
+    report = build_stage037_scenario_validation_report()
     print(json.dumps(report, ensure_ascii=False, sort_keys=True))
-    return 0 if report["contract_valid"] else 1
+    return 0 if report["scenario_validation_valid"] else 1
 
 
 if __name__ == "__main__":
