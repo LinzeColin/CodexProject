@@ -1,3 +1,19 @@
+kmfa_v014_s12_p2_post_remediation_impact_preview:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s12-p2-post-remediation-impact-preview"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S12P2-POST-REMEDIATION-IMPACT-PREVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1724
+    - PARAM-KMFA-1725
+    - PARAM-KMFA-1726
+    - PARAM-KMFA-1727
+  evidence_dir: KMFA/stage_artifacts/V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW
+  validator: KMFA/tools/check_v014_s12_p2_post_remediation_impact_preview.py
+  scope: Current public-safe six-definition project metric report impact preview with five high-risk session confirmations zero business approvals or publications desktop mobile evidence and Q4 D NO_GO; rerun persistent write Stage 12 review upload reinstall formal report and business execution remain closed.
+
 kmfa_v014_s12_p1_post_remediation_pending_actions:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-s12-p1-post-remediation-pending-actions"
