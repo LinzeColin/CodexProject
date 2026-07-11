@@ -1,3 +1,19 @@
+kmfa_v014_s14_p2_post_remediation_invoice_tax_plan:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s14-p2-post-remediation-invoice-tax-plan"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S14P2-POST-REMEDIATION-INVOICE-TAX-PLAN-001
+  parameter_refs:
+    - PARAM-KMFA-1754
+    - PARAM-KMFA-1755
+    - PARAM-KMFA-1756
+    - PARAM-KMFA-1757
+  evidence_dir: KMFA/stage_artifacts/V014_S14_P2_POST_REMEDIATION_INVOICE_TAX_PLAN
+  validator: KMFA/tools/check_v014_s14_p2_post_remediation_invoice_tax_plan.py
+  scope: Current public-safe invoice tax structure and method workbench with three connected lanes two private direct candidate-parseable lanes zero proven row or value bindings three issue methods three cash summary methods zero business candidates zero materialized summaries deterministic private probes raw immutability browser evidence and Q4 D NO_GO 3-9-2-1; S14-P3 review invoice issuance tax filing upload reinstall formal release and business execution remain closed.
+
 kmfa_v014_s14_p1_post_remediation_fund_cash_loan_plan:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-s14-p1-post-remediation-fund-cash-loan-plan"

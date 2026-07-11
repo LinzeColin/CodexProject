@@ -1,0 +1,20 @@
+{
+  "checks": {
+    "browser_pass": true,
+    "current_s14_p1_dependency": true,
+    "no_later_scope": true,
+    "private_probe_roundtrip_exact": true,
+    "quality_locked": true,
+    "raw_exact": true,
+    "three_cash_method_definitions": true,
+    "three_issue_method_definitions": true,
+    "three_structure_lanes": true,
+    "two_private_direct_candidate_lanes": true,
+    "zero_business_candidates_and_summaries": true,
+    "zero_row_value_bindings": true
+  },
+  "decision": "NO_GO",
+  "fail_count": 0,
+  "pass_count": 12,
+  "schema_version": "kmfa.v014.s14_p2_acceptance_matrix.v1"
+}
