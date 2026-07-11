@@ -1,3 +1,11 @@
+## 0.1.4-s18-p1-post-remediation-precision-stress - 2026-07-12
+
+- 完成 `V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS`：实际执行 5 类 public-safe synthetic 精度/压力场景，acceptance=`19/19 PASS`。
+- 金额通过/拒绝=`9/9 + 9/9`；zero-delta exact PASS，1 分 mismatch 被阻断并要求进入差异队列。
+- 连续 3 次导入最终状态 hash 一致；1200 条 synthetic file metadata 首次写入 1198 条，后两次各识别 1198 条重复且新增为 0。
+- 坏文件和缺字段生成 2 类 blocking error report；实际 elapsed 使用 `perf_counter_ns` 测量并低于 1500ms 预算，旧固定 348ms 仅作结构夹具。
+- raw phase 前后、跨 Stage 17 review 与当前快照一致；保持 `Q4 / D / NO_GO / 3-9-2-1`，未执行 S18-P2/P3、Stage 18 review、GitHub upload 或 app reinstall。
+
 ## 0.1.4-s17-post-remediation-stage-review - 2026-07-12
 
 - 完成 `V014_S17_POST_REMEDIATION_STAGE_REVIEW`：当前 S17-P1/P2/P3 focused tests=`30/30 PASS`，strict validators=`3/3 PASS`。

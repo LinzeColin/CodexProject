@@ -4081,3 +4081,17 @@ kmfa_v014_s17_post_remediation_stage_review:
   evidence_dir: KMFA/stage_artifacts/V014_S17_POST_REMEDIATION_STAGE_REVIEW
   validator: KMFA/tools/check_v014_s17_post_remediation_stage_review.py
   scope: Current Stage 17 three-phase replay thirty focused tests three strict validators eleven closed findings and six cross-phase contract checks with raw immutability and Q4 D NO_GO 3-9-2-1; S18 notification production restore external operations upload reinstall formal release difference closure persistent write and business execution remain closed.
+kmfa_v014_s18_p1_post_remediation_precision_stress:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s18-p1-post-remediation-precision-stress"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S18-P1-POST-REMEDIATION-PRECISION-STRESS-001
+  parameter_refs:
+    - PARAM-KMFA-1807
+    - PARAM-KMFA-1808
+    - PARAM-KMFA-1809
+  evidence_dir: KMFA/stage_artifacts/V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS
+  validator: KMFA/tools/check_v014_s18_p1_post_remediation_precision_stress.py
+  scope: Current actual public-safe synthetic amount zero-delta duplicate bad-file missing-field three-run consistency and 1200-item stress execution with two blocking errors raw immutability and Q4 D NO_GO 3-9-2-1; historical S18 dynamic state is non-authoritative and S18-P2 P3 review upload reinstall formal release and business execution remain closed.
