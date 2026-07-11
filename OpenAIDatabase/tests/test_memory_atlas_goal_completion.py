@@ -131,6 +131,11 @@ class MemoryAtlasGoalCompletionTests(unittest.TestCase):
             with (
                 mock.patch.object(module, "audit_acceptance", return_value={"checks": []}),
                 mock.patch.object(module, "cloudflare_preflight", return_value={"checks": []}),
+                mock.patch.object(
+                    module,
+                    "audit_final_records",
+                    side_effect=module.AcceptanceHistoryError("missing R8 final records"),
+                ),
             ):
                 result = module.audit_goal_completion(ROOT, live_evidence=evidence_path)
 
