@@ -355,8 +355,8 @@ def _validate_html(errors: list[str]) -> None:
         "外协采购归集工作台",
         "Q4 / D",
         "NO_GO",
-        "S16-P1 已完成结构候选接入",
-        "S16-P2 仅可在下一轮执行",
+        "Stage 16 三个 phase 与整体复审均已完成",
+        "S17 仅可在下一 run work",
         "table{min-width:0;table-layout:fixed}",
         "word-break:break-word",
     ):
@@ -366,11 +366,21 @@ def _validate_html(errors: list[str]) -> None:
     _require(text.count("data-rule-button=") == 4, "rule button count drift", errors)
     _require(text.count("data-rule-panel=") == 4, "rule panel count drift", errors)
     _require(text.count("data-dependency-link=") == 4, "dependency link count drift", errors)
+    _require(text.count("data-stage-link=") == 2, "stage link count drift", errors)
     for link_id, target, _marker in phase.DEPENDENCY_SPECS:
         href = phase._relative_href(target)
         _require(f'data-dependency-link="{link_id}" href="{href}"' in text, f"dependency href drift: {link_id}", errors)
         _require((path.parent / href).resolve() == target.resolve(), f"dependency target drift: {link_id}", errors)
         _require(target.is_file(), f"dependency target missing: {link_id}", errors)
+    for link_id, target in (
+        ("project-lifecycle", Path("KMFA/stage_artifacts/V014_S16_P2_POST_REMEDIATION_PROJECT_STATUS_LIFECYCLE/exports/html/project_status_lifecycle_workbench.html")),
+        ("customer-analysis", Path("KMFA/stage_artifacts/V014_S16_P3_POST_REMEDIATION_CUSTOMER_BUSINESS_ANALYSIS/exports/html/customer_business_analysis_workbench.html")),
+    ):
+        matches = re.findall(rf'data-stage-link="{link_id}" href="([^"]+)"', text)
+        _require(len(matches) == 1, f"stage href drift: {link_id}", errors)
+        if matches:
+            _require((path.parent / matches[0]).resolve() == target.resolve(), f"stage target drift: {link_id}", errors)
+            _require(target.is_file(), f"stage target missing: {link_id}", errors)
 
 
 def _expected_parameters(manifest: dict[str, Any]) -> dict[str, str]:

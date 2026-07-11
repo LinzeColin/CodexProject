@@ -1,0 +1,23 @@
+{
+  "app_reinstall_allowed": false,
+  "business_execution_allowed": false,
+  "collection_action_allowed": false,
+  "customer_contact_allowed": false,
+  "customer_ranking_allowed": false,
+  "decision": "NO_GO",
+  "difference_closure_allowed": false,
+  "formal_report_release_allowed": false,
+  "github_upload_allowed": false,
+  "invoice_issuance_allowed": false,
+  "legal_decision_allowed": false,
+  "payment_or_bank_action_allowed": false,
+  "persistent_business_write_allowed": false,
+  "phase_id": "V014_S16_POST_REMEDIATION_STAGE_REVIEW",
+  "project_id": "KMFA",
+  "s17_p1_allowed_in_this_run": false,
+  "safety_or_technical_signature_allowed": false,
+  "schema_version": "kmfa.v014.s16_post_remediation_review_go_no_go.v1",
+  "site_construction_allowed": false,
+  "stage16_review_validated": true,
+  "stage_id": "S16"
+}

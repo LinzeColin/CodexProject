@@ -3246,3 +3246,16 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - raw boundary: 5 个文件的 review 前后、跨 S11-P3 和当前快照一致；公开证据不含原始文件名、字段、表头、金额或明细。
 - stop gate: S12-P1、GitHub upload、app reinstall、formal report、business execution 均为 `false`。
 - evidence: `KMFA/stage_artifacts/V014_S11_POST_REMEDIATION_STAGE_REVIEW/machine/stage11_post_remediation_review_manifest.json`。
+## 2026-07-12 - V014 Stage 16 post-remediation review
+
+- phase: V014_S16_POST_REMEDIATION_STAGE_REVIEW
+- task: KMFA-V014-S16-POST-REMEDIATION-STAGE-REVIEW-20260712
+- product_version: 0.1.4-s16-post-remediation-stage-review
+- status: completed_validated_local_only_stage16_review_no_go_upload_deferred
+- scope: 复跑当前 S16-P1/P2/P3，隔离旧 Stage 16 动态夹具，修复三页互链和过期状态，并锁定 public-safe 整体复审证据。
+- phase gate: 32/32 focused tests、3/3 strict validators、9 fixed、0 open。
+- current facts: 权威行和值、项目匹配、生命周期记录、客户摘要、风险事项、自动排名与公开业务值均为 0。
+- browser gate: baseline/current=54/54 / 43/43；6 视口、6 交互、6 HTTP、6 真实导航、0 console、0 overflow。
+- raw gate: review 前后、跨 S16-P3 和当前只读快照一致；raw/private 明文未进入 Git。
+- downstream gate: S17、客户/现场/法律/开票/付款/银行、upload、reinstall、formal report、difference closure、persistent write 和 business execution=false。
+- evidence: KMFA/stage_artifacts/V014_S16_POST_REMEDIATION_STAGE_REVIEW/machine/stage16_post_remediation_review_manifest.json

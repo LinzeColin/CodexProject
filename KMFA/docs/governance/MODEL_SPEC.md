@@ -2638,3 +2638,17 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - release gate: `s12_p1=false`、`github_upload=false`、`app_reinstall=false`、`formal_report=false`、`business_execution=false`。
 - validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s11_post_remediation_stage_review.py --require-private-evidence --require-browser-evidence --require-final-evidence`
 - evidence: `KMFA/stage_artifacts/V014_S11_POST_REMEDIATION_STAGE_REVIEW/machine/stage11_post_remediation_review_manifest.json`
+## FORM-KMFA-V014-S16-POST-REMEDIATION-STAGE-REVIEW-001
+
+- phase: V014_S16_POST_REMEDIATION_STAGE_REVIEW
+- version: 0.1.4-s16-post-remediation-stage-review
+- model_id: MOD-KMFA-GOV-001
+- scope: 复跑外协采购、项目生命周期和客户经营三条当前链，隔离旧动态夹具，修复 Stage 16 三页互链与状态，并保持所有业务记录及动作关闭。
+- rule: stage16_review_valid = phase_pass_count == 3 AND project_match_record_count == 0 AND lifecycle_record_count == 0 AND customer_summary_count == 0 AND automatic_customer_ranking_count == 0 AND fixed_review_finding_count == 9 AND open_review_finding_count == 0 AND cross_page_link_count == 6 AND raw_exact == true AND current_grade == D AND decision == NO_GO。
+- current gate: 15 条结构线和 phase 内唯一候选合计 6,698；权威行/值、项目匹配、生命周期记录、客户摘要、风险、排名和公开业务值均为 0。
+- history gate: 旧 5 个项目匹配、4 条生命周期记录和 4 个客户摘要仅作历史夹具，不具有当前动态权威性。
+- browser gate: 三页六边强连通，baseline/current=54/43，6 视口、6 交互、6 HTTP、6 真实导航，console/overflow=0/0。
+- raw gate: review 前后、跨 S16-P3 和当前只读快照一致；raw/private 明文不得进入 Git。
+- downstream gate: S17、customer/site/legal/invoice/payment/bank、upload、reinstall、formal report、difference closure、persistent write 与 business execution=false。
+- validator: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s16_post_remediation_stage_review.py --require-private-evidence --require-browser-evidence --require-final-evidence
+- evidence: KMFA/stage_artifacts/V014_S16_POST_REMEDIATION_STAGE_REVIEW/machine/stage16_post_remediation_review_manifest.json

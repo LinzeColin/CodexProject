@@ -3381,3 +3381,10 @@ version_matrix_product_version_reference: 0.1.4-s18-stage-review
 - 修复检查板移动端 icon-only 跨页按钮缺少可访问名称；补充中文 `aria-label` 与 `title`。
 - 项目级差异继续保持 `0 attributed / 4 unknown/null`，全局状态维持 `3/9/2/1`，等级与决策维持 `Q4 / D / NO_GO`。
 - 5 个 raw 文件在 review 前后、跨 S11-P3 和当前复核均一致；未执行 S12-P1、GitHub upload、app reinstall、正式报告或 business execution。
+## 0.1.4-s16-post-remediation-stage-review - 2026-07-12
+
+- 完成 `V014_S16_POST_REMEDIATION_STAGE_REVIEW` 本地整体复审：当前 S16-P1/P2/P3 focused tests `32/32 PASS`，strict validators `3/3 PASS`，`9 fixed / 0 open`。
+- 隔离旧 Stage 16 review 的 5 个项目匹配、4 条生命周期记录和 4 个客户摘要；当前项目匹配、生命周期记录、客户摘要、风险事项、自动排名和公开业务值均为 0。
+- 修复 P1 缺 P2/P3 入口、P2 缺 P3 入口、P3 缺 P1 入口及三页过期 footer；三页形成 6 条强连通有向边。
+- v1.4 baseline `54/54 PASS`，当前页面 `15/15 + 15/15 + 13/13 PASS`；6 视口、6 次代表性交互、6 条 HTTP 与 6 次真实导航通过，console error 与横向溢出为 0。
+- raw review 前后、跨 S16-P3 与当前快照一致；保持 Q4 / D / NO_GO / 3-9-2-1，未执行 S17、客户或现场动作、GitHub upload、app reinstall、正式报告、差异关闭、持久业务写入或 business execution。
