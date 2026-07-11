@@ -483,3 +483,42 @@ Repair state:
   download the full archive again. A target-only small ZIP or reliable remote
   range reader would be a separate upstream design decision requiring owner
   authorization.
+
+## 2026-07-11 DWS Manifest Main Push Repair
+
+Scope: `kmfa-dws` manifest-only GitHub backup. The user-owned automation RRULE
+was read back and preserved; this repair does not change its execution time.
+
+Observed root causes:
+
+- The upstream DWS working directory is intentionally not a Git repository,
+  while the prompt issued repository-relative Git commands from that directory.
+- The prompt made successful Notion sync a hard prerequisite for GitHub. The
+  latest archive and structure validation succeeded, but missing Notion
+  credentials repeatedly left sync `pending`, so the current manifest never
+  reached `main`.
+
+Repair:
+
+- Added `KMFA/tools/automation/backup_dws_output_manifest.py`. It accepts an
+  explicit `/Users/linzezhang/CodexProject` repo root, validates the current ZIP
+  against the structure report, publishes only public-safe aggregate manifest
+  fields, stages only `KMFA/metadata/dws_outputs_backup/`, and pushes only
+  `origin main`.
+- A Notion `pending` state is now recorded in the manifest and reported as a
+  warning, but it does not block a validated manifest-only backup.
+- The publisher fails closed on validation failure, tracked worktree changes,
+  a non-`main` branch, unrelated local-only commits, or diverged history. It
+  never stages the ZIP, expanded DWS output, or unrelated untracked files.
+- Replaced the live automation prompt through the official Codex automation
+  update path. Readback preserved its exact user-owned RRULE and removed the old
+  Notion hard gate.
+
+Regression evidence:
+
+- A temporary non-Git DWS workspace can publish through an explicit Git repo
+  root while Notion is `pending`.
+- A failed structure validation produces `VALIDATION_FAILED` with no manifest
+  write and no remote commit.
+- The live prompt contains the deterministic publisher and nonblocking Notion
+  contract, and no longer contains the old sync-complete prerequisite.

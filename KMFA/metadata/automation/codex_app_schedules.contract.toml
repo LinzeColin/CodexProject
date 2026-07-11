@@ -91,10 +91,13 @@ id = "kmfa-dws"
 name = "KMFA｜上游每日钉钉DWS归档"
 kind = "cron"
 status = "ACTIVE"
-rrule = "RRULE:FREQ=DAILY;BYHOUR=11,19;BYMINUTE=0"
+rrule = "RRULE:FREQ=WEEKLY;BYHOUR=11;BYMINUTE=0;BYDAY=SU,MO,TU,WE,TH,FR,SA"
+prompt_sha256 = "f1746f7551d640ede455475c391b2c4d60e1b44f20f0bd0eab07e34bc20c7e79"
+schedule_owner = "user"
+schedule_management_scope = "readback_only"
 business_clock = "Australia/Sydney"
-business_times = ["11:00", "19:00"]
-local_wall_clock_times = ["11:00", "19:00"]
+business_times = ["11:00"]
+local_wall_clock_times = ["11:00"]
 execution_environment = "local"
 cwds = ["/Users/linzezhang/Documents/Codex/2026-07-04/392b1a986ba680338068ddc1c2a0fd0e-https-app-notion-com-p"]
 model = "gpt-5.3-codex-spark"
