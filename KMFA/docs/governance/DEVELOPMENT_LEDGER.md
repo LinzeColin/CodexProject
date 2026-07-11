@@ -1,3 +1,18 @@
+## 2026-07-12 - V014 S18-P2 post-remediation full regression acceptance
+
+- phase: V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE
+- task: KMFA-V014-S18-P2-POST-REMEDIATION-FULL-REGRESSION-ACCEPTANCE-20260712
+- product_version: 0.1.4-s18-p2-post-remediation-full-regression-acceptance
+- result: completed_validated_local_only_s18_p2_full_regression_no_go_upload_deferred / NO_GO
+- TDD: current generator/checker missing produced 1 failure + 9 skipped before implementation.
+- actual checks: five executed; no-omission/zero-delta/schema/UI PASS, lineage BLOCKED_SAFE, command failure=0.
+- stage evidence: S01-S17 current review manifests 17/17 valid; S18 P1/P2 complete with P3 and review pending; no upload record used.
+- UI: current local Playwright audit 6 files / 54 rows / 54 PASS / 0 WARN / 0 FAIL.
+- raw: before/after, cross-S18-P1 and current snapshots exact; no raw mutation, copy or backup.
+- evidence: KMFA/stage_artifacts/V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE/machine/full_regression_acceptance_manifest.json
+- validator: KMFA/tools/check_v014_s18_p2_post_remediation_full_regression_acceptance.py
+- next: S18-P3 only; Stage 18 review, upload, reinstall, formal report and business execution remain closed.
+
 ## 2026-07-12 - V014 S18-P1 post-remediation precision and stress
 
 - phase: V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS

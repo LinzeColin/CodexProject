@@ -1,6 +1,50 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "KMFA-V014-S18-P2-POST-REMEDIATION-FULL-REGRESSION-ACCEPTANCE-20260712"
+    phase: "V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE"
+    objective: "Execute five current regression checks confirm eighteen Stage evidence records and lock the current fail-closed Go/No-Go decision."
+    scope:
+      - "actual no-omission zero-delta schema lineage and UI command execution"
+      - "current S01-S17 review manifest validation and current S18 P1/P2 evidence"
+      - "current local Playwright human-flow audit with 54 controls"
+      - "read-only raw snapshot alignment public safety and governance evidence"
+    non_scope:
+      - "S18-P3 or Stage 18 review"
+      - "historical GitHub upload records as current acceptance evidence"
+      - "lineage full-check completion GitHub upload app reinstall formal report external connectors or business execution"
+    status: "completed"
+    completed_version: "0.1.4-s18-p2-post-remediation-full-regression-acceptance"
+    dependencies:
+      - "V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS"
+      - "V014_S18_P2_FULL_REGRESSION_ACCEPTANCE historical structural fixture only"
+      - "v1.4 roadmap taskpack and HTML human-flow baseline"
+    required_files:
+      - "KMFA/stage_artifacts/V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE/machine/full_regression_acceptance_manifest.json"
+      - "KMFA/stage_artifacts/V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE/human/full_regression_acceptance_report_zh.md"
+      - "KMFA/tools/check_v014_s18_p2_post_remediation_full_regression_acceptance.py"
+    acceptance_ids:
+      - "ACC-V014-S18-P2-POST-REMEDIATION-FULL-REGRESSION-ACCEPTANCE"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s18_p2_post_remediation_full_regression_acceptance"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s18_p2_post_remediation_full_regression_acceptance.py --require-private-evidence --require-final-evidence"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/no_omission_check.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_lineage_completeness.py"
+    test_results:
+      - "PASS: five current commands executed with four PASS and one BLOCKED_SAFE"
+      - "PASS: seventeen Stage reviews validated and current S18 P1/P2 evidence present"
+      - "PASS: current Playwright human-flow audit 54 of 54"
+      - "PASS: raw snapshots exact and S18-P3 onward actions closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE/human/full_regression_acceptance_report_zh.md"
+      - "KMFA/stage_artifacts/V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE/machine/full_regression_acceptance_manifest.json"
+    risk: "A passing lineage gate can be misread as full-lineage completion or historical upload evidence can be substituted for current review evidence."
+    rollback: "Revert the local phase commit and current public-safe evidence restore S18-P1 as current and leave raw untouched."
+    remaining_work:
+      - "S18-P3 integration preparation"
+      - "Stage 18 overall review and finding repair"
+      - "final whole-project review one-time GitHub upload and app reinstall"
+
   - task_id: "KMFA-V014-S18-P1-POST-REMEDIATION-PRECISION-STRESS-20260712"
     phase: "V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS"
     objective: "Execute current actual public-safe synthetic precision idempotency and large-batch stress controls while preserving raw and downstream gates."

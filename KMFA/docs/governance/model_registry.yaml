@@ -4081,6 +4081,21 @@ kmfa_v014_s17_post_remediation_stage_review:
   evidence_dir: KMFA/stage_artifacts/V014_S17_POST_REMEDIATION_STAGE_REVIEW
   validator: KMFA/tools/check_v014_s17_post_remediation_stage_review.py
   scope: Current Stage 17 three-phase replay thirty focused tests three strict validators eleven closed findings and six cross-phase contract checks with raw immutability and Q4 D NO_GO 3-9-2-1; S18 notification production restore external operations upload reinstall formal release difference closure persistent write and business execution remain closed.
+kmfa_v014_s18_p2_post_remediation_full_regression_acceptance:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s18-p2-post-remediation-full-regression-acceptance"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S18-P2-POST-REMEDIATION-FULL-REGRESSION-ACCEPTANCE-001
+  parameter_refs:
+    - PARAM-KMFA-1810
+    - PARAM-KMFA-1811
+    - PARAM-KMFA-1812
+  evidence_dir: KMFA/stage_artifacts/V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE
+  validator: KMFA/tools/check_v014_s18_p2_post_remediation_full_regression_acceptance.py
+  scope: Current no-omission zero-delta schema lineage and UI execution with seventeen validated Stage reviews one current S18 in-progress record current Playwright 54 of 54 raw immutability and Q4 D NO_GO 3-9-2-1; historical upload evidence is excluded and S18-P3 review upload reinstall formal release and business execution remain closed.
+
 kmfa_v014_s18_p1_post_remediation_precision_stress:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-s18-p1-post-remediation-precision-stress"

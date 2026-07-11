@@ -1,3 +1,11 @@
+## 0.1.4-s18-p2-post-remediation-full-regression-acceptance - 2026-07-12
+
+- 完成 `V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE`：实际执行 no-omission、zero-delta、schema、lineage、UI 五类 current checks，command failure=0。
+- no-omission、zero-delta、schema、UI 为 PASS；lineage validator 为 BLOCKED_SAFE，明确 full lineage 未完成且不得交付。
+- S01-S17 current review manifest 17/17 通过身份、状态、开放 finding、引用和公开 hash 校验；S18 仅完成 P1/P2，P3 与整体复审待执行。
+- 本轮重新执行 Playwright human-flow audit：6 files / 54 rows / 54 PASS / 0 WARN / 0 FAIL；未复用旧动态状态。
+- raw phase 前后、跨 S18-P1 与当前快照一致；保持 `Q4 / D / NO_GO / 3-9-2-1`，未执行 S18-P3、Stage 18 review、GitHub upload 或 app reinstall。
+
 ## 0.1.4-s18-p1-post-remediation-precision-stress - 2026-07-12
 
 - 完成 `V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS`：实际执行 5 类 public-safe synthetic 精度/压力场景，acceptance=`19/19 PASS`。
