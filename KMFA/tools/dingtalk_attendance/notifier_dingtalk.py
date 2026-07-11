@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""DingTalk robot notification boundary for KMFA S19."""
+"""DingTalk robot notification boundary for the KMFA DingTalk attendance skill."""
 
 from __future__ import annotations
 

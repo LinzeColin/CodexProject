@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run KMFA S19 DingTalk attendance collection and reporting."""
+"""Run KMFA 钉钉考勤 skill collection and reporting."""
 
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ if __package__ in {None, ""}:
 from KMFA.tools.dingtalk_attendance import (
     AUTOMATION_NAME,
     ONEDRIVE_ROOT,
-    STAGE_ID,
+    SKILL_ID,
     TIMEZONE,
     ZHANG_LINZE_USER_ID,
 )
@@ -34,6 +34,14 @@ from KMFA.tools.dingtalk_attendance.dws_attendance import (
     write_private_outputs,
 )
 from KMFA.tools.dingtalk_attendance.healthcheck import build_config_status
+from KMFA.tools.dingtalk_attendance.identity import (
+    IdentityConflictError,
+    archive_manifest_paths,
+    archive_raw_paths,
+    build_run_id,
+    run_type_from_run_id,
+    validate_manifest_identity,
+)
 from KMFA.tools.dingtalk_attendance.notifier_dingtalk import send_group_robot_markdown
 from KMFA.tools.dingtalk_attendance.notification_targets import dispatch_reports_to_targets
 from KMFA.tools.dingtalk_attendance.notification_template import (
@@ -63,10 +71,10 @@ def build_run_plan(
     if run_type not in RUN_TYPES:
         raise ValueError(f"run_type must be one of {RUN_TYPES}")
     now = run_datetime or datetime.now(ZoneInfo(timezone))
-    effective_run_id = run_id or f"s19_{run_type}_{now.strftime('%Y%m%d_%H%M%S')}"
+    effective_run_id = run_id or build_run_id(run_type, now.strftime("%Y%m%d_%H%M%S"))
     return {
         "project_id": "KMFA",
-        "stage_id": STAGE_ID,
+        "skill_id": SKILL_ID,
         "automation_name": AUTOMATION_NAME,
         "run_id": effective_run_id,
         "run_type": run_type,
@@ -447,7 +455,9 @@ def _date_ordinal(value: str) -> int:
 
 def _monthly_attendance_records(month_dir: Path) -> list[dict[str, Any]]:
     records: list[dict[str, Any]] = []
-    for raw_path in sorted(month_dir.glob("s19_*.raw.jsonl.gz")):
+    for raw_path in archive_raw_paths(month_dir):
+        if not raw_path.name.endswith(".raw.jsonl.gz"):
+            continue
         run_id = raw_path.name.removesuffix(".raw.jsonl.gz")
         work_date = work_date_from_run_id(raw_path.name)
         try:
@@ -679,8 +689,13 @@ def run_attendance(
 
 def find_latest_report_manifest(*, run_type: str, onedrive_root: str = ONEDRIVE_ROOT) -> Path | None:
     root = Path(onedrive_root)
-    pattern = f"20[0-9][0-9][0-9][0-9]/s19_{run_type}_*.manifest.json"
-    candidates = [path for path in root.glob(pattern) if path.is_file()]
+    candidates = [
+        path
+        for month_dir in root.glob("20[0-9][0-9][0-9][0-9]")
+        if month_dir.is_dir()
+        for path in archive_manifest_paths(month_dir)
+        if run_type_from_run_id(path.name.removesuffix(".manifest.json")) == run_type
+    ]
     if not candidates:
         return None
     return sorted(candidates, key=lambda path: path.name, reverse=True)[0]
@@ -701,6 +716,20 @@ def send_latest_report_only(run_type: str, timezone: str) -> dict[str, Any]:
         }
 
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    try:
+        validate_manifest_identity(manifest)
+    except IdentityConflictError as exc:
+        cleanup_status.update(cleanup_runtime())
+        return {
+            "status": "MANIFEST_IDENTITY_CONFLICT",
+            "mode": "send_latest_report_only",
+            "run_type": run_type,
+            "timezone": timezone,
+            "manifest": str(manifest_path),
+            "notification_status": "NOT_SENT_MANIFEST_IDENTITY_CONFLICT",
+            "failure_reason": str(exc),
+            "cleanup_status": cleanup_status,
+        }
     manifest_stats = manifest.get("stats", {})
     parity_failure = official_report_parity_failure_reason(
         manifest_stats if isinstance(manifest_stats, Mapping) else {}
@@ -782,7 +811,7 @@ def result_exit_code(result: Mapping[str, Any]) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Run KMFA S19 DingTalk attendance automation.")
+    parser = argparse.ArgumentParser(description="Run the KMFA DingTalk attendance skill automation.")
     parser.add_argument("--run-type", required=True, choices=RUN_TYPES)
     parser.add_argument("--timezone", default=TIMEZONE)
     parser.add_argument("--work-date", help="YYYY-MM-DD business date override for controlled reruns/tests.")

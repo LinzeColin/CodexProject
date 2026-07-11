@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Anomaly rule names and safety labels for KMFA S19."""
+"""Anomaly rule names and safety labels for the KMFA DingTalk attendance skill."""
 
 from __future__ import annotations
 

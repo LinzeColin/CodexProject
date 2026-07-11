@@ -1,5 +1,5 @@
 project_id: KMFA
-stage_id: S19
+skill_id: kmfa-dingtalk-attendance-skill
 automation_name: 每日早晚钉钉考勤检查
 root: /Users/linzezhang/OneDrive/dingtalk_attendance
 month_folder_pattern: YYYYMM

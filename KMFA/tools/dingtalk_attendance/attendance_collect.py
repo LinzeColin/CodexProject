@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Attendance collection boundary for KMFA S19."""
+"""Attendance collection boundary for the KMFA DingTalk attendance skill."""
 
 from __future__ import annotations
 

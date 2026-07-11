@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Unified KMFA S19 attendance notification template."""
+"""Unified notification template for the KMFA 钉钉考勤 skill."""
 
 from __future__ import annotations
 
@@ -9,6 +9,7 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 from KMFA.tools.dingtalk_attendance import TIMEZONE
+from KMFA.tools.dingtalk_attendance.identity import run_type_from_run_id, work_date_from_run_id
 
 
 REST_REQUIRED_THRESHOLD_DAYS = 23
@@ -294,20 +295,6 @@ def _coerce_nonnegative_int(value: Any) -> int:
     except (TypeError, ValueError):
         return 0
     return max(result, 0)
-
-
-def work_date_from_run_id(run_id: str) -> str | None:
-    parts = run_id.split("_")
-    if len(parts) >= 3 and len(parts[2]) == 8 and parts[2].isdigit():
-        return f"{parts[2][:4]}-{parts[2][4:6]}-{parts[2][6:8]}"
-    return None
-
-
-def run_type_from_run_id(run_id: str) -> str | None:
-    parts = run_id.split("_")
-    if len(parts) >= 2 and parts[1] in {"morning", "evening"}:
-        return parts[1]
-    return None
 
 
 def display_run_type(run_type: str) -> str:

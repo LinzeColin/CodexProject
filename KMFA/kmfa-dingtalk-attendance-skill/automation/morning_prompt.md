@@ -14,7 +14,7 @@ Run slot: morning.
 Scheduled Beijing time: 10:35.
 Timezone: Asia/Shanghai. All business dates, run slots, and stage gates are Beijing time.
 
-Goal: execute the KMFA S19 DingTalk attendance morning workflow through the repo-scoped skill, preserving current production safety and GitHub-synced automation state.
+Goal: execute the KMFA 钉钉考勤 skill morning workflow through the repo-scoped skill, preserving current production safety and GitHub-synced automation state.
 
 Required steps:
 1. Switch to `/Users/linzezhang/CodexProject`, then confirm branch is `main`, `HEAD == origin/main`, and no extra worktree is active.
@@ -24,8 +24,8 @@ Required steps:
 5. Run `KMFA/kmfa-dingtalk-attendance-skill/scripts/inspect_runtime.sh`.
 6. Run `KMFA/kmfa-dingtalk-attendance-skill/scripts/validate_offline.sh`.
 7. Run `KMFA/kmfa-dingtalk-attendance-skill/scripts/month_gate.py --run-slot morning --print-json`.
-8. Run existing S19 config-only healthcheck: `python3 KMFA/tools/dingtalk_attendance/healthcheck.py --config-only`.
-9. Run the existing S19 morning entry only if current local authorization permits it; otherwise fail closed and report `DWS_AUTH_REQUIRED` / config blocker. Do not fabricate data. The entry must use current DingTalk attendance-group members plus exact `attendance report columns/query-data` values as the only business-statistics source. `record get`, two-punch inference, and personal `summary` are diagnostics only.
+8. Run existing attendance skill config-only healthcheck: `python3 KMFA/tools/dingtalk_attendance/healthcheck.py --config-only`.
+9. Run the existing attendance skill morning entry only if current local authorization through `KMFA_DINGTALK_ATTENDANCE_ALLOW_DWS_COMMANDS` permits it; otherwise fail closed and report `DWS_AUTH_REQUIRED` / config blocker. Do not fabricate data. The entry must use current DingTalk attendance-group members plus exact `attendance report columns/query-data` values as the only business-statistics source. `record get`, two-punch inference, and personal `summary` are diagnostics only.
 10. Require `official_report_parity_status=PASS`, exact Beijing business-date coverage, and `official_report_coverage_count == member_count` before any conclusion or notification. On `OFFICIAL_ATTENDANCE_PARITY_FAILED`, stop without sending and never fall back to record/summary guesses.
 10a. The production official collector intentionally skips the legacy per-member record/summary sweep. Do not run that sweep before or after the entry.
 10b. Do not interrupt the entry while its process is still inside the runner's bounded DWS timeout/retry budget.

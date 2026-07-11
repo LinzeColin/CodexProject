@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Send the latest KMFA S19 private reports without collecting attendance again."""
+"""Send the latest private KMFA 钉钉考勤 skill reports without recollecting."""
 
 from __future__ import annotations
 
@@ -17,6 +17,11 @@ if __package__ in {None, ""}:
 
 from KMFA.tools.dingtalk_attendance import ONEDRIVE_ROOT, TIMEZONE
 from KMFA.tools.dingtalk_attendance.cleanup_runtime import cleanup_runtime
+from KMFA.tools.dingtalk_attendance.identity import (
+    IdentityConflictError,
+    archive_manifest_paths,
+    validate_manifest_identity,
+)
 from KMFA.tools.dingtalk_attendance.notifier_dws_personal_chat import (
     RESOLVED_CHANNEL_PATH,
     send_text_with_resolved_channel,
@@ -38,7 +43,12 @@ from KMFA.tools.dingtalk_attendance.secrets_loader import merged_runtime_env
 
 
 def find_latest_manifest(onedrive_root: Path = Path(ONEDRIVE_ROOT)) -> Path | None:
-    candidates = [path for path in onedrive_root.glob("20[0-9][0-9][0-9][0-9]/s19_*_*.manifest.json") if path.is_file()]
+    candidates = [
+        path
+        for month_dir in onedrive_root.glob("20[0-9][0-9][0-9][0-9]")
+        if month_dir.is_dir()
+        for path in archive_manifest_paths(month_dir)
+    ]
     if not candidates:
         return None
     return sorted(candidates, key=lambda path: (path.parent.name, path.name), reverse=True)[0]
@@ -73,6 +83,19 @@ def send_latest_report(
         }
 
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    try:
+        validate_manifest_identity(manifest)
+    except IdentityConflictError as exc:
+        cleanup_status.update(cleanup_runtime())
+        return {
+            "status": "MANIFEST_IDENTITY_CONFLICT",
+            "mode": "send_latest_report",
+            "targets": targets,
+            "manifest": str(manifest_path),
+            "notification_status": "NOT_SENT_MANIFEST_IDENTITY_CONFLICT",
+            "failure_reason": str(exc),
+            "cleanup_status": cleanup_status,
+        }
     manifest_stats = manifest.get("stats", {})
     parity_failure = official_report_parity_failure_reason(
         manifest_stats if isinstance(manifest_stats, Mapping) else {}
@@ -153,7 +176,7 @@ def send_latest_report(
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Send latest KMFA S19 private reports.")
+    parser = argparse.ArgumentParser(description="Send latest private KMFA DingTalk attendance reports.")
     parser.add_argument("--channel", default="auto", choices=("auto",))
     parser.add_argument("--targets", default="all", choices=("all", "personal", "group"))
     args = parser.parse_args(argv)

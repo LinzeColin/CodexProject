@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Optional WeCom fallback boundary for KMFA S19."""
+"""Optional WeCom fallback boundary for the KMFA DingTalk attendance skill."""
 
 from __future__ import annotations
 

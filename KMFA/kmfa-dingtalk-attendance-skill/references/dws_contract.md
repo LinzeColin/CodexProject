@@ -42,6 +42,6 @@ The live acquisition adapter must collect:
 If official report columns/values are missing, ambiguous, delayed, partial, wrong-date, or permission-blocked, the operational run must return `OFFICIAL_ATTENDANCE_PARITY_FAILED` and send no attendance conclusion. It must not downgrade to record-count or personal-summary inference. Stage-2 quality also remains below Q4 until a later run proves completeness.
 
 For stage-2 automation, live DWS source resolution must fail closed before any
-command unless `KMFA_S19_ALLOW_DWS_COMMANDS=1` and the browser policy status is
+command unless `KMFA_DINGTALK_ATTENDANCE_ALLOW_DWS_COMMANDS=1` and the browser policy status is
 READY. The resolver must write `source_adapter_status.json` with
 `live_dws_performed=false` when blocked.

@@ -1,5 +1,7 @@
 # Codex Task Pack - kmfa-dingtalk-attendance
 
+legacy_classification: `historical_identifier`; retained legacy names and seed examples document old inputs only.
+
 ## Conclusion
 
 Implement `kmfa-dingtalk-attendance-skill` as a repo-scoped Codex Skill plus deterministic scripts, PostgreSQL schema, automation prompts, and stage-2 consensus protocol. The target is direct v0.3-grade operation with database and payroll-baseline readiness.

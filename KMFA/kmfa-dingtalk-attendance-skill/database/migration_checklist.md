@@ -1,5 +1,7 @@
 # Database Migration Checklist
 
+legacy_classification: `historical_identifier`; retained legacy seed examples are read-only migration evidence.
+
 ## Phase -1 - Offline contract dry-run
 
 - [x] Validate required PostgreSQL tables, enums, and payroll baseline views exist in repo SQL.
