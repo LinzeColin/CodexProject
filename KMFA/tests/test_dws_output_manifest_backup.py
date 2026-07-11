@@ -185,6 +185,46 @@ class DwsOutputManifestBackupTests(unittest.TestCase):
             after = _run("git", "rev-parse", "refs/heads/main", cwd=remote).stdout.strip()
             self.assertEqual(after, before)
 
+    def test_default_timestamp_uses_run_end_and_retry_is_idempotent(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            repo, remote = _init_git_main(root)
+            dws, package, summary, validation = _write_dws_fixture(root)
+            command = (
+                "python3",
+                str(SCRIPT),
+                "--dws-project",
+                str(dws),
+                "--repo-root",
+                str(repo),
+                "--source-package",
+                str(package),
+                "--summary-json",
+                str(summary),
+                "--validation-json",
+                str(validation),
+                "--notion-status",
+                "pending",
+                "--push",
+            )
+
+            first = _run(*command, cwd=dws)
+            self.assertEqual(first.returncode, 0, first.stderr or first.stdout)
+            first_payload = json.loads(first.stdout)
+            self.assertTrue(first_payload["committed"])
+            first_head = _run("git", "rev-parse", "refs/heads/main", cwd=remote).stdout.strip()
+
+            second = _run(*command, cwd=dws)
+            self.assertEqual(second.returncode, 0, second.stderr or second.stdout)
+            second_payload = json.loads(second.stdout)
+            self.assertFalse(second_payload["committed"])
+            second_head = _run("git", "rev-parse", "refs/heads/main", cwd=remote).stdout.strip()
+            self.assertEqual(second_head, first_head)
+            self.assertEqual(
+                _run("git", "log", "-1", "--pretty=%s", cwd=repo).stdout.strip(),
+                "KMFA metadata: backup DWS output manifest 2026-07-11 1903",
+            )
+
     def test_tracked_prompt_makes_notion_non_blocking_and_preserves_schedule_ownership(self) -> None:
         self.assertTrue(PROMPT.is_file())
         prompt = PROMPT.read_text(encoding="utf-8")
