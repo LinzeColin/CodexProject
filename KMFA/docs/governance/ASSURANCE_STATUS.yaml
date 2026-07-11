@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260711-V014-S13-POST-REMEDIATION-STAGE-REVIEW"
+as_of_event_id: "DEV-KMFA-20260711-V014-S14-P1-POST-REMEDIATION-FUND-CASH-LOAN-PLAN"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "ed499c6be35df76d1f5a924d92130c7536a9f4ea"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S13_POST_REMEDIATION_STAGE_REVIEW_COMMIT"
-snapshot_event_time: "2026-07-11T15:48:28+10:00"
-generator_version: "manual-0.1.4-s13-post-remediation-stage-review"
+source_base_commit: "666babaaa793ccd44cea046010a0d06ab1971d38"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S14_P1_POST_REMEDIATION_FUND_CASH_LOAN_PLAN_COMMIT"
+snapshot_event_time: "2026-07-11T16:40:53+10:00"
+generator_version: "manual-0.1.4-s14-p1-post-remediation-fund-cash-loan-plan"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1367
-    total_active_formulas: 294
+    total_active_parameters: 1371
+    total_active_formulas: 295
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -37,6 +37,9 @@ dimensions:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     evidence_refs:
+      - "KMFA/stage_artifacts/V014_S14_P1_POST_REMEDIATION_FUND_CASH_LOAN_PLAN/human/test_results_zh.md"
+      - "KMFA/tools/check_v014_s14_p1_post_remediation_fund_cash_loan_plan.py"
+      - "KMFA/stage_artifacts/V014_S14_P1_POST_REMEDIATION_FUND_CASH_LOAN_PLAN/machine/fund_cash_loan_plan_manifest.json"
       - "KMFA/stage_artifacts/V014_S13_POST_REMEDIATION_STAGE_REVIEW/human/test_results_zh.md"
       - "KMFA/tools/check_v014_s13_post_remediation_stage_review.py"
       - "KMFA/stage_artifacts/V014_S13_POST_REMEDIATION_STAGE_REVIEW/machine/stage13_post_remediation_review_manifest.json"
@@ -959,6 +962,46 @@ dimensions:
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
+kmfa_v014_s14_p1_post_remediation_fund_cash_loan_plan:
+  status: completed_validated_local_only_s14_p1_structure_method_no_go_upload_deferred
+  phase_id: V014_S14_P1_POST_REMEDIATION_FUND_CASH_LOAN_PLAN
+  task_id: KMFA-V014-S14-P1-POST-REMEDIATION-FUND-CASH-LOAN-PLAN-20260711
+  acceptance_id: ACC-V014-S14-P1-POST-REMEDIATION-FUND-CASH-LOAN-PLAN
+  formula_ref: FORM-KMFA-V014-S14P1-POST-REMEDIATION-FUND-CASH-LOAN-PLAN-001
+  parameter_refs:
+    - PARAM-KMFA-1750
+    - PARAM-KMFA-1751
+    - PARAM-KMFA-1752
+    - PARAM-KMFA-1753
+  decision: NO_GO
+  evidence_ref: KMFA/stage_artifacts/V014_S14_P1_POST_REMEDIATION_FUND_CASH_LOAN_PLAN/machine/fund_cash_loan_plan_manifest.json
+  validator: KMFA/tools/check_v014_s14_p1_post_remediation_fund_cash_loan_plan.py
+  counts:
+    source_lane_count: 4
+    private_parseable_lane_count: 4
+    row_level_binding_proven_lane_count: 0
+    value_binding_proven_lane_count: 0
+    planning_method_definition_count: 3
+    identified_business_item_count: 0
+    private_unique_candidate_sheet_count: 180
+    private_probe_roundtrip_mismatch_count: 0
+    browser_viewport_check_count: 2
+    method_interaction_check_count: 6
+    dependency_navigation_check_count: 4
+    raw_source_file_count: 5
+  gates:
+    current_data_quality_grade: Q4
+    current_report_grade: D
+    cash_forecast_decision_allowed: false
+    formal_report_allowed: false
+    business_decision_basis_allowed: false
+    s14_p2_performed: false
+    s14_p3_performed: false
+    stage14_review_performed: false
+    github_upload_performed: false
+    app_reinstall_performed: false
+    business_execution_performed: false
+
 kmfa_v014_s13_post_remediation_stage_review:
   status: completed_validated_local_only_stage13_review_no_go_upload_deferred
   phase_id: V014_S13_POST_REMEDIATION_STAGE_REVIEW

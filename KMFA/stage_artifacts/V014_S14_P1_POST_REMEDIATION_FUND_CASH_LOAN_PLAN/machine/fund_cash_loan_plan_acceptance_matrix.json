@@ -1,0 +1,19 @@
+{
+  "checks": {
+    "browser_pass": true,
+    "current_stage13_dependency": true,
+    "four_private_candidate_lanes": true,
+    "four_structure_lanes": true,
+    "no_later_scope": true,
+    "private_probe_roundtrip_exact": true,
+    "quality_locked": true,
+    "raw_exact": true,
+    "three_method_definitions": true,
+    "zero_business_items": true,
+    "zero_row_value_bindings": true
+  },
+  "decision": "NO_GO",
+  "fail_count": 0,
+  "pass_count": 11,
+  "schema_version": "kmfa.v014.s14_p1_acceptance_matrix.v1"
+}

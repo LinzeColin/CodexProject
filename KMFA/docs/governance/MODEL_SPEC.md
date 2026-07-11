@@ -1,3 +1,19 @@
+## FORM-KMFA-V014-S14P1-POST-REMEDIATION-FUND-CASH-LOAN-PLAN-001
+
+- phase: `V014_S14_P1_POST_REMEDIATION_FUND_CASH_LOAN_PLAN`
+- version: `0.1.4-s14-p1-post-remediation-fund-cash-loan-plan`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: 接入账户清单、月度现金、资金计划和贷款明细结构，执行私有只读候选解析并定义三类复核方法，不生成未经证明的业务金额、事项或动作。
+- rule: `fund_cash_loan_valid = source_lane_count == 4 AND structure_connected_lane_count == 4 AND private_parseable_lane_count == 4 AND row_level_binding_proven_lane_count == 0 AND value_binding_proven_lane_count == 0 AND planning_method_definition_count == 3 AND identified_business_item_count == 0 AND private_probe_roundtrip_mismatch_count == 0 AND raw_exact == true AND current_grade == D AND decision == NO_GO`。
+- source gate: public-safe 结构、私有候选可解析、权威行绑定和权威数值绑定分别计数，不得相互替代。
+- probe gate: 数组公式按 `type/ref/text` 内容稳定序列化；同一候选工作表两次只读探针指纹必须完全一致。
+- output gate: 现金压力、贷款到期、账户余额汇总仅定义方法；当前已证明业务事项和公开业务金额均为 0。
+- money gate: 未完成权威账户、期间、合同和数值绑定前，不推断、不平均、不补零，不忽略 0.01 元。
+- private gate: raw 文件名、成员、工作表、命中词、表头预览、候选值和指纹只保存在 ignored private runtime。
+- downstream gate: S14-P2/P3、Stage 14 review、付款审批、银行/贷款动作、GitHub upload、app reinstall、formal report、difference closure 与 business execution=false。
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s14_p1_post_remediation_fund_cash_loan_plan.py --require-private-evidence --require-browser-evidence --require-final-evidence`
+- evidence: `KMFA/stage_artifacts/V014_S14_P1_POST_REMEDIATION_FUND_CASH_LOAN_PLAN/machine/fund_cash_loan_plan_manifest.json`
+
 ## FORM-KMFA-V014-S13-POST-REMEDIATION-STAGE-REVIEW-001
 
 - phase: `V014_S13_POST_REMEDIATION_STAGE_REVIEW`

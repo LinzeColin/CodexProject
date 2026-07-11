@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-s13-post-remediation-stage-review"
-product_version_status: "completed_validated_local_only_stage13_review_no_go_upload_deferred"
-version_file_value: "0.1.4-s13-post-remediation-stage-review"
+product_version: "0.1.4-s14-p1-post-remediation-fund-cash-loan-plan"
+product_version_status: "completed_validated_local_only_s14_p1_structure_method_no_go_upload_deferred"
+version_file_value: "0.1.4-s14-p1-post-remediation-fund-cash-loan-plan"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-s13-post-remediation-stage-review"
+  MOD-KMFA-GOV-001: "0.1.4-s14-p1-post-remediation-fund-cash-loan-plan"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_s14_p1_post_remediation_fund_cash_loan_plan: "0.1.4-s14-p1-post-remediation-fund-cash-loan-plan"
   kmfa_v014_s13_post_remediation_stage_review: "0.1.4-s13-post-remediation-stage-review"
   kmfa_v014_s13_p3_post_remediation_cross_table_review: "0.1.4-s13-p3-post-remediation-cross-table-review"
   kmfa_v014_s13_p2_post_remediation_collection_receivable_aging: "0.1.4-s13-p2-post-remediation-collection-receivable-aging"
@@ -427,12 +428,65 @@ parameter_profile_versions:
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_blocked_handoff_final_threshold_recheck_after_reminder: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-final-threshold-recheck-after-reminder"
   kmfa_project_cost_mvp: "blocked_no_go_owner_scope_required"
 data_snapshot_version: "not_applicable_no_raw_data_committed"
-current_iteration: "ITER-20260711-KMFA-V014-S13-POST-REMEDIATION-STAGE-REVIEW"
-current_phase: "V014_S13_POST_REMEDIATION_STAGE_REVIEW"
-current_task_id: "KMFA-V014-S13-POST-REMEDIATION-STAGE-REVIEW-20260711"
-current_acceptance_id: "ACC-V014-S13-POST-REMEDIATION-STAGE-REVIEW"
-current_gate: "NO_GO_S14_P1_NEXT_SEPARATE_RUN_UPLOAD_DEFERRED"
+current_iteration: "ITER-20260711-KMFA-V014-S14-P1-POST-REMEDIATION-FUND-CASH-LOAN-PLAN"
+current_phase: "V014_S14_P1_POST_REMEDIATION_FUND_CASH_LOAN_PLAN"
+current_task_id: "KMFA-V014-S14-P1-POST-REMEDIATION-FUND-CASH-LOAN-PLAN-20260711"
+current_acceptance_id: "ACC-V014-S14-P1-POST-REMEDIATION-FUND-CASH-LOAN-PLAN"
+current_gate: "NO_GO_S14_P2_NEXT_SEPARATE_RUN_UPLOAD_DEFERRED"
 
+
+kmfa_v014_s14_p1_post_remediation_fund_cash_loan_plan:
+  status: completed_validated_local_only_s14_p1_structure_method_no_go_upload_deferred
+  phase: V014_S14_P1_POST_REMEDIATION_FUND_CASH_LOAN_PLAN
+  evidence_dir: KMFA/stage_artifacts/V014_S14_P1_POST_REMEDIATION_FUND_CASH_LOAN_PLAN
+  validator: KMFA/tools/check_v014_s14_p1_post_remediation_fund_cash_loan_plan.py
+  focused_test: KMFA/tests/test_v014_s14_p1_post_remediation_fund_cash_loan_plan.py
+  github_upload: blocked_no_go_upload_deferred
+  counts:
+    source_lane_count: 4
+    structure_connected_lane_count: 4
+    unique_public_source_ref_count: 4
+    lane_source_binding_count: 5
+    unique_structure_candidate_count: 20
+    lane_structure_candidate_association_count: 25
+    private_parseable_lane_count: 4
+    row_level_binding_proven_lane_count: 0
+    value_binding_proven_lane_count: 0
+    planning_method_definition_count: 3
+    identified_business_item_count: 0
+    raw_source_file_count: 5
+    private_xlsx_container_count: 48
+    private_parseable_xlsx_count: 25
+    private_unparseable_xlsx_count: 23
+    private_unique_candidate_sheet_count: 180
+    private_probe_roundtrip_mismatch_count: 0
+  private_candidate_sheet_count_by_lane:
+    account_list: 12
+    monthly_cash: 23
+    fund_plan: 4
+    loan_detail: 154
+  browser:
+    baseline_pass_count: 54
+    current_pass_count: 11
+    viewport_check_count: 2
+    method_interaction_check_count: 6
+    dependency_http_count: 4
+    dependency_navigation_count: 4
+    console_error_count: 0
+    horizontal_overflow_count: 0
+  quality:
+    data_quality_grade: Q4
+    report_grade: D
+    decision: NO_GO
+    cash_forecast_decision_allowed: false
+    formal_report_allowed: false
+    business_decision_basis_allowed: false
+    s14_p2_performed: false
+    s14_p3_performed: false
+    stage14_review_performed: false
+    github_upload_performed: false
+    app_reinstall_performed: false
+    business_execution_performed: false
 
 kmfa_v014_s13_post_remediation_stage_review:
   status: completed_validated_local_only_stage13_review_no_go_upload_deferred

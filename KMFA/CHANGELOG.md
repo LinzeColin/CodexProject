@@ -1,3 +1,11 @@
+## 0.1.4-s14-p1-post-remediation-fund-cash-loan-plan - 2026-07-11
+
+- 完成 `V014_S14_P1_POST_REMEDIATION_FUND_CASH_LOAN_PLAN` 本地 phase：账户清单、月度现金、资金计划、贷款明细 4 条 public-safe 结构与私有候选解析链接入。
+- 只读探针覆盖 5 个 raw 文件、48 个 XLSX 容器；25 个可解析、23 个保留不可解析诊断，180 个唯一候选工作表二次指纹不一致为 0。
+- 现金压力、贷款到期、账户余额汇总 3 类方法定义完成；因权威行、期间、账户、合同与数值绑定均未证明，已证明业务事项和公开业务金额保持 0。
+- v1.4 基线 `54/54 PASS`、当前页 `11/11 PASS`；2 视口、6 次方法交互、4 条依赖 HTTP 与 4 次真实导航通过，console error 与横向溢出为 0。
+- 保持 `Q4 / D / NO_GO / 3-9-2-1`；未执行 S14-P2/P3、Stage 14 review、付款审批、银行/贷款动作、GitHub upload、app reinstall、正式报告、差异关闭或 business execution。
+
 ## 0.1.4-s13-post-remediation-stage-review - 2026-07-11
 
 - 完成 `V014_S13_POST_REMEDIATION_STAGE_REVIEW` 本地整体复审：当前 S13-P1/P2/P3 focused tests 与 strict validators 通过，`9 fixed / 0 open`。
