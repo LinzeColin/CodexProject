@@ -458,8 +458,8 @@ def _validate_private(errors: list[str], require_browser_evidence: bool) -> None
             "candidate_event_checks": 2,
             "reverse_event_checks": 2,
             "reload_reset_checks": 2,
-            "return_link_http_checks": 3,
-            "actual_navigation_checks": 3,
+            "return_link_http_checks": 5,
+            "actual_navigation_checks": 5,
         }
         for key, count in expected_lengths.items():
             rows = browser.get(key, [])

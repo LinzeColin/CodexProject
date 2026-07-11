@@ -12,31 +12,31 @@
     "source_ref": "KMFA/stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS/machine/manual_resolution_events_manifest.json"
   },
   "browser_review": {
-    "actual_navigation_check_count": 3,
+    "actual_navigation_check_count": 5,
     "baseline_control_row_count": 54,
     "baseline_fail_count": 0,
     "baseline_file_count": 6,
     "baseline_pass_count": 54,
     "candidate_event_check_count": 2,
     "console_error_count": 0,
-    "current_html_control_row_count": 13,
+    "current_html_control_row_count": 15,
     "current_html_fail_count": 0,
     "current_html_file_count": 1,
-    "current_html_pass_count": 13,
+    "current_html_pass_count": 15,
     "horizontal_overflow_count": 0,
     "kind_filter_check_count": 2,
     "reload_reset_check_count": 2,
-    "return_link_http_check_count": 3,
+    "return_link_http_check_count": 5,
     "reverse_event_check_count": 2,
     "row_selection_check_count": 2,
     "search_check_count": 2,
     "status_filter_check_count": 2,
     "viewport_check_count": 2
   },
-  "generated_at": "2026-07-11T10:04:53+10:00",
+  "generated_at": "2026-07-11T12:01:48+10:00",
   "git": {
     "branch": "codex/kmfa",
-    "head": "8bd4e51a353f8d8e4ffaaf49acadf890de501fcf",
+    "head": "8f2430d30539421bddf14e5e21c6415e686e42dc",
     "remote": "git@github.com:LinzeColin/CodexProject.git"
   },
   "manual_event_templates": [

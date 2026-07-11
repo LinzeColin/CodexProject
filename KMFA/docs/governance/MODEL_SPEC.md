@@ -1,3 +1,17 @@
+## FORM-KMFA-V014-S12-POST-REMEDIATION-STAGE-REVIEW-001
+
+- phase: `V014_S12_POST_REMEDIATION_STAGE_REVIEW`
+- version: `0.1.4-s12-post-remediation-stage-review`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: 复审当前 S12-P1/P2/P3，修复三页前向导航与阶段状态 finding，隔离历史动态状态，并锁定 raw 不变、持久执行为零和下游 gate。
+- rule: `stage12_review_valid = phase_pass_count == 3 AND pending_action_group_count == 6 AND impact_preview_definition_count == 6 AND rerun_plan_definition_count == 6 AND planned_rerun_step_count == 24 AND persistent_rerun_step_count == 0 AND cross_page_link_count == 6 AND broken_cross_page_link_count == 0 AND fixed_review_finding_count == 7 AND open_review_finding_count == 0 AND current_grade == D AND decision == NO_GO AND project_specific_attributed_difference_count == 0 AND potential_affected_project_slot_count == 4 AND raw_exact == true`。
+- historical gate: 旧 `5 manual events / 2 eligible / 8 rerun steps` 只作策略夹具，不是当前动态事实。
+- execution gate: 当前 approved/published=`0/0`，persistent invalidation/rerun/consistency=`0/0/0`；24 只是 session-only 计划步骤。
+- navigation gate: pending、impact、rerun 三页形成 6 条有向边，desktop/mobile HTTP 与真实导航均通过。
+- quality gate: `Q4 / D / NO_GO / 3-9-2-1`，0 条可证明项目归属、4 个潜在槽位保持 unknown。
+- raw gate: review 前后、跨 S12-P3 与当前只读快照一致；raw/private 明文不得进入 Git。
+- downstream gate: S13-P1、GitHub upload、app reinstall、formal report、persistent business write 与 business execution 均为 false。
+
 ## FORM-KMFA-V014-S12P3-POST-REMEDIATION-RERUN-MECHANISM-001
 
 - phase: `V014_S12_P3_POST_REMEDIATION_RERUN_MECHANISM`

@@ -1,0 +1,128 @@
+{
+  "check_count": 30,
+  "check_fail_count": 0,
+  "check_pass_count": 30,
+  "checks": [
+    {
+      "check_id": "app_not_reinstalled",
+      "passed": true
+    },
+    {
+      "check_id": "business_not_executed",
+      "passed": true
+    },
+    {
+      "check_id": "cross_page_graph_connected",
+      "passed": true
+    },
+    {
+      "check_id": "cross_page_links_unbroken",
+      "passed": true
+    },
+    {
+      "check_id": "current_differences",
+      "passed": true
+    },
+    {
+      "check_id": "findings_closed",
+      "passed": true
+    },
+    {
+      "check_id": "five_high_risk_previews",
+      "passed": true
+    },
+    {
+      "check_id": "five_second_confirmations",
+      "passed": true
+    },
+    {
+      "check_id": "four_event_templates",
+      "passed": true
+    },
+    {
+      "check_id": "four_rerun_layers",
+      "passed": true
+    },
+    {
+      "check_id": "no_approved_or_published_event",
+      "passed": true
+    },
+    {
+      "check_id": "no_decision_basis",
+      "passed": true
+    },
+    {
+      "check_id": "no_formal_report",
+      "passed": true
+    },
+    {
+      "check_id": "no_persistent_rerun",
+      "passed": true
+    },
+    {
+      "check_id": "project_attribution_unknown",
+      "passed": true
+    },
+    {
+      "check_id": "q4_d_no_go",
+      "passed": true
+    },
+    {
+      "check_id": "raw_cross_phase_exact",
+      "passed": true
+    },
+    {
+      "check_id": "raw_exact",
+      "passed": true
+    },
+    {
+      "check_id": "s13_not_performed",
+      "passed": true
+    },
+    {
+      "check_id": "six_cross_page_links",
+      "passed": true
+    },
+    {
+      "check_id": "six_http_checks",
+      "passed": true
+    },
+    {
+      "check_id": "six_impact_previews",
+      "passed": true
+    },
+    {
+      "check_id": "six_navigation_checks",
+      "passed": true
+    },
+    {
+      "check_id": "six_pending_groups",
+      "passed": true
+    },
+    {
+      "check_id": "six_rerun_plans",
+      "passed": true
+    },
+    {
+      "check_id": "six_viewports",
+      "passed": true
+    },
+    {
+      "check_id": "three_current_pages",
+      "passed": true
+    },
+    {
+      "check_id": "three_phases_pass",
+      "passed": true
+    },
+    {
+      "check_id": "twenty_four_planned_steps",
+      "passed": true
+    },
+    {
+      "check_id": "upload_not_performed",
+      "passed": true
+    }
+  ],
+  "schema_version": "kmfa.v014.s12_post_remediation_review_matrix.v1"
+}

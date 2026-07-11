@@ -141,8 +141,8 @@ class TestV014S12P1PostRemediationPendingActions(unittest.TestCase):
         self.assertEqual(browser["candidate_event_check_count"], 2)
         self.assertEqual(browser["reverse_event_check_count"], 2)
         self.assertEqual(browser["reload_reset_check_count"], 2)
-        self.assertEqual(browser["return_link_http_check_count"], 3)
-        self.assertEqual(browser["actual_navigation_check_count"], 3)
+        self.assertEqual(browser["return_link_http_check_count"], 5)
+        self.assertEqual(browser["actual_navigation_check_count"], 5)
         self.assertEqual(browser["console_error_count"], 0)
         self.assertEqual(browser["horizontal_overflow_count"], 0)
 

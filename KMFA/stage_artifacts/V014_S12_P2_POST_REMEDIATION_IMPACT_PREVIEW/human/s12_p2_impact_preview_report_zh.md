@@ -11,7 +11,7 @@
 - high risk / second confirmation required: `5 / 5`
 - potential project slots: `4`；仅表示潜在影响，不证明归属。
 - current approved / published business events: `0 / 0`
-- browser: baseline `54/54 PASS`；current `14/14 PASS`；desktop/mobile、二次确认和发布阻断均通过。
+- browser: baseline `54/54 PASS`；current `15/15 PASS`；desktop/mobile、二次确认和发布阻断均通过。
 
 ## 边界
 
