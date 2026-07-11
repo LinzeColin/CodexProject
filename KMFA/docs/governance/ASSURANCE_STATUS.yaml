@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260711-V014-S15-P3-POST-REMEDIATION-SALARY-BOUNDARY"
+as_of_event_id: "DEV-KMFA-20260711-V014-S15-POST-REMEDIATION-STAGE-REVIEW"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "7900e53439b2a47b7c02871adc21ed14dc1b3f9e"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY_COMMIT"
-snapshot_event_time: "2026-07-11T22:24:06+10:00"
-generator_version: "manual-0.1.4-s15-p3-post-remediation-salary-boundary"
+source_base_commit: "9d7f5d85937cb91c57dfea0445c5dcee549d4e3b"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S15_POST_REMEDIATION_STAGE_REVIEW_COMMIT"
+snapshot_event_time: "2026-07-11T23:05:37+10:00"
+generator_version: "manual-0.1.4-s15-post-remediation-stage-review"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1394
-    total_active_formulas: 301
+    total_active_parameters: 1397
+    total_active_formulas: 302
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -37,6 +37,9 @@ dimensions:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     evidence_refs:
+      - "KMFA/stage_artifacts/V014_S15_POST_REMEDIATION_STAGE_REVIEW/human/test_results_zh.md"
+      - "KMFA/tools/check_v014_s15_post_remediation_stage_review.py"
+      - "KMFA/stage_artifacts/V014_S15_POST_REMEDIATION_STAGE_REVIEW/machine/stage15_post_remediation_review_manifest.json"
       - "KMFA/stage_artifacts/V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY/human/test_results_zh.md"
       - "KMFA/tools/check_v014_s15_p3_post_remediation_salary_boundary.py"
       - "KMFA/stage_artifacts/V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY/machine/salary_boundary_manifest.json"
@@ -971,6 +974,63 @@ dimensions:
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
+kmfa_v014_s15_post_remediation_stage_review:
+  status: completed_validated_local_only_stage15_review_no_go_upload_deferred
+  phase_id: V014_S15_POST_REMEDIATION_STAGE_REVIEW
+  task_id: KMFA-V014-S15-POST-REMEDIATION-STAGE-REVIEW-20260711
+  acceptance_id: ACC-V014-S15-POST-REMEDIATION-STAGE-REVIEW
+  formula_ref: FORM-KMFA-V014-S15-POST-REMEDIATION-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1777
+    - PARAM-KMFA-1778
+    - PARAM-KMFA-1779
+  decision: NO_GO
+  evidence_ref: KMFA/stage_artifacts/V014_S15_POST_REMEDIATION_STAGE_REVIEW/machine/stage15_post_remediation_review_manifest.json
+  validator: KMFA/tools/check_v014_s15_post_remediation_stage_review.py
+  counts:
+    phase_pass_count: 3
+    phase_focused_test_pass_count: 24
+    phase_strict_validator_pass_count: 3
+    fixed_review_finding_count: 10
+    open_review_finding_count: 0
+    required_field_count: 6
+    manual_review_required_field_count: 6
+    authoritative_value_binding_count: 0
+    performance_fact_row_count: 0
+    actual_abnormal_project_count: 0
+    field_review_item_count: 6
+    interface_payload_record_count: 0
+    future_salary_readiness_record_count: 0
+    human_boundary_checkpoint_count: 4
+    salary_numeric_value_count: 0
+    cross_page_link_count: 6
+    browser_viewport_check_count: 6
+  quality:
+    current_data_quality_grade: Q4
+    current_report_grade: D
+    decision: NO_GO
+    open_final_difference_accepted_count: 3
+    nonzero_delta_reconciliation_count: 9
+    zero_delta_reconciliation_count: 2
+    incomplete_reconciliation_count: 1
+  boundaries:
+    s15_p1_performed: true
+    s15_p2_performed: true
+    s15_p3_performed: true
+    stage15_review_performed: true
+    s16_p1_performed: false
+    salary_calculation_performed: false
+    bonus_approval_performed: false
+    payroll_export_performed: false
+    final_compensation_decision_performed: false
+    final_payment_performed: false
+    payment_execution_performed: false
+    github_upload_performed: false
+    app_reinstall_performed: false
+    formal_report_release_performed: false
+    difference_closure_performed: false
+    business_execution_performed: false
+
 kmfa_v014_s15_p3_post_remediation_salary_boundary:
   status: completed_validated_local_only_s15_p3_schema_only_zero_salary_records_no_go_upload_deferred
   phase_id: V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY

@@ -1,0 +1,385 @@
+{
+  "acceptance_id": "ACC-V014-S15-POST-REMEDIATION-STAGE-REVIEW",
+  "acceptance_matrix": {
+    "acceptance_id": "ACC-V014-S15-POST-REMEDIATION-STAGE-REVIEW",
+    "check_count": 11,
+    "check_fail_count": 0,
+    "check_pass_count": 11,
+    "checks": [
+      {
+        "check_id": "V014-S15-REVIEW-ACC-001",
+        "name": "phase_chain",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S15-REVIEW-ACC-002",
+        "name": "phase_tests",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S15-REVIEW-ACC-003",
+        "name": "zero_fact_rows",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S15-REVIEW-ACC-004",
+        "name": "six_review_items",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S15-REVIEW-ACC-005",
+        "name": "zero_salary_records",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S15-REVIEW-ACC-006",
+        "name": "human_boundary",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S15-REVIEW-ACC-007",
+        "name": "findings_closed",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S15-REVIEW-ACC-008",
+        "name": "navigation",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S15-REVIEW-ACC-009",
+        "name": "browser",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S15-REVIEW-ACC-010",
+        "name": "raw_exact",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S15-REVIEW-ACC-011",
+        "name": "downstream_closed",
+        "status": "PASS"
+      }
+    ],
+    "schema_version": "kmfa.v014.s15_post_remediation_review_matrix.v1"
+  },
+  "branch": "codex/kmfa",
+  "browser_review": {
+    "baseline_control_row_count": 54,
+    "baseline_fail_count": 0,
+    "baseline_file_count": 6,
+    "baseline_pass_count": 54,
+    "baseline_warn_count": 0,
+    "console_error_count": 0,
+    "cross_page_link_http_check_count": 6,
+    "cross_page_navigation_check_count": 6,
+    "current_control_row_count": 45,
+    "current_fail_count": 0,
+    "current_page_audits": {
+      "p1": {
+        "control_row_count": 16,
+        "fail_count": 0,
+        "file_count": 1,
+        "pass_count": 16,
+        "warn_count": 0
+      },
+      "p2": {
+        "control_row_count": 15,
+        "fail_count": 0,
+        "file_count": 1,
+        "pass_count": 15,
+        "warn_count": 0
+      },
+      "p3": {
+        "control_row_count": 14,
+        "fail_count": 0,
+        "file_count": 1,
+        "pass_count": 14,
+        "warn_count": 0
+      }
+    },
+    "current_page_count": 3,
+    "current_pass_count": 45,
+    "current_warn_count": 0,
+    "horizontal_overflow_count": 0,
+    "representative_interaction_check_count": 6,
+    "status": "PASS",
+    "viewport_check_count": 6
+  },
+  "current_s15_chain_validated": true,
+  "decision": "NO_GO",
+  "formula_id": "FORM-KMFA-V014-S15-POST-REMEDIATION-STAGE-REVIEW-001",
+  "generated_at": "2026-07-11T23:05:37+10:00",
+  "go_no_go": {
+    "app_reinstall_allowed": false,
+    "bonus_approval_allowed": false,
+    "business_execution_allowed": false,
+    "decision": "NO_GO",
+    "final_payment_allowed": false,
+    "github_upload_allowed": false,
+    "payment_execution_allowed": false,
+    "payroll_export_allowed": false,
+    "phase_id": "V014_S15_POST_REMEDIATION_STAGE_REVIEW",
+    "project_id": "KMFA",
+    "s16_p1_allowed_in_this_run": false,
+    "salary_calculation_allowed": false,
+    "schema_version": "kmfa.v014.s15_post_remediation_review_go_no_go.v1",
+    "stage15_review_validated": true,
+    "stage_id": "S15"
+  },
+  "historical_four_fact_rows_quarantined": true,
+  "historical_four_readiness_rows_quarantined": true,
+  "historical_s15_review_dynamic_state_is_authoritative": false,
+  "historical_s15_review_validated": true,
+  "historical_sixteen_review_items_quarantined": true,
+  "model_registry_key": "kmfa_v014_s15_post_remediation_stage_review",
+  "next_phase": "S16-P1",
+  "next_required_step": "下一轮仅执行 S16-P1；不得执行 S16-P2/P3、Stage 16 整体复审、GitHub upload、app reinstall、正式报告、差异关闭或业务执行。",
+  "parameter_ids": [
+    "PARAM-KMFA-1777",
+    "PARAM-KMFA-1778",
+    "PARAM-KMFA-1779"
+  ],
+  "phase_id": "V014_S15_POST_REMEDIATION_STAGE_REVIEW",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "business_amount_committed": false,
+    "credential_or_secret_committed": false,
+    "final_payment_payload_committed": false,
+    "payroll_payload_committed": false,
+    "private_runtime_committed": false,
+    "project_or_employee_plaintext_committed": false,
+    "raw_business_data_committed": false,
+    "raw_file_names_committed": false,
+    "raw_schema_or_header_committed": false,
+    "salary_or_bonus_value_committed": false,
+    "zip_excel_pdf_private_csv_committed": false
+  },
+  "quality_gate": {
+    "current_data_quality_grade": "Q4",
+    "current_report_grade": "D",
+    "decision": "NO_GO",
+    "incomplete_reconciliation_count": 1,
+    "nonzero_delta_reconciliation_count": 9,
+    "one_cent_tolerance_minor_unit": 0,
+    "open_final_difference_accepted_count": 3,
+    "zero_delta_reconciliation_count": 2
+  },
+  "raw_boundary": {
+    "raw_delete_performed": false,
+    "raw_move_performed": false,
+    "raw_mutation_performed": false,
+    "raw_overwrite_performed": false,
+    "raw_read_authorized": true,
+    "raw_rename_performed": false,
+    "raw_snapshot_validation_performed": true,
+    "raw_write_performed": false
+  },
+  "remote": "git@github.com:LinzeColin/CodexProject.git",
+  "review_boundaries": {
+    "app_reinstall_performed": false,
+    "bonus_approval_performed": false,
+    "business_execution_performed": false,
+    "difference_closure_performed": false,
+    "final_compensation_decision_performed": false,
+    "final_payment_performed": false,
+    "formal_report_release_performed": false,
+    "github_upload_performed": false,
+    "payment_execution_performed": false,
+    "payroll_export_performed": false,
+    "s15_p1_performed": true,
+    "s15_p2_performed": true,
+    "s15_p3_performed": true,
+    "s16_p1_performed": false,
+    "salary_calculation_performed": false,
+    "stage15_review_performed": true
+  },
+  "review_findings": [
+    {
+      "finding_id": "KMFA-V014-S15-REV-F01",
+      "fix": "将旧 review 仅作为历史夹具，当前动态事实改为 0/0/6",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "旧 Stage 15 review 使用 4 条合成绩效事实、4 条工资就绪记录和 16 项复核"
+    },
+    {
+      "finding_id": "KMFA-V014-S15-REV-F02",
+      "fix": "增加三页六边、六视口、六交互、HTTP 与真实导航整体复验",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "三个 phase 的浏览器证据各自独立，未证明 Stage 15 三页互通"
+    },
+    {
+      "finding_id": "KMFA-V014-S15-REV-F03",
+      "fix": "增加绩效复核清单和工资项目边界入口",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "P1 缺少 P2 与 P3 当前阶段入口"
+    },
+    {
+      "finding_id": "KMFA-V014-S15-REV-F04",
+      "fix": "更新为三个 phase 与整体复审完成且 S16 仅可下一 run",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "P1 footer 仍显示只完成 S15-P1"
+    },
+    {
+      "finding_id": "KMFA-V014-S15-REV-F05",
+      "fix": "增加固定布局、紧凑间距和自动断词",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "P1 五列表格缺少明确移动端断词保护"
+    },
+    {
+      "finding_id": "KMFA-V014-S15-REV-F06",
+      "fix": "增加工资项目边界入口并纳入双向导航复验",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "P2 缺少 P3 当前阶段入口"
+    },
+    {
+      "finding_id": "KMFA-V014-S15-REV-F07",
+      "fix": "更新为 Stage 15 review 完成且薪资动作继续阻断",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "P2 footer 仍显示 S15-P3 和整体复审未执行"
+    },
+    {
+      "finding_id": "KMFA-V014-S15-REV-F08",
+      "fix": "移除移动端最小宽度并启用固定布局与断词",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "P2 六列和四列表格在移动端发生裁切"
+    },
+    {
+      "finding_id": "KMFA-V014-S15-REV-F09",
+      "fix": "更新为 Stage 15 review 完成且最终审批发放继续人工阻断",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "P3 footer 仍显示整体复审未执行"
+    },
+    {
+      "finding_id": "KMFA-V014-S15-REV-F10",
+      "fix": "移除移动端最小宽度并启用固定布局与断词",
+      "severity": "P2",
+      "status": "fixed",
+      "summary": "P3 两张四列表格在移动端发生裁切"
+    }
+  ],
+  "review_scope": "v014_s15_post_remediation_stage_review_only",
+  "reviewed_head": "9d7f5d85937cb91c57dfea0445c5dcee549d4e3b",
+  "reviewed_phase_manifests": {
+    "S15-P1": "KMFA/stage_artifacts/V014_S15_P1_POST_REMEDIATION_PERFORMANCE_FACT_FIELDS/machine/performance_fact_fields_manifest.json",
+    "S15-P2": "KMFA/stage_artifacts/V014_S15_P2_POST_REMEDIATION_PERFORMANCE_REVIEW_LIST/machine/performance_review_manifest.json",
+    "S15-P3": "KMFA/stage_artifacts/V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY/machine/salary_boundary_manifest.json",
+    "historical_S15_review": "KMFA/stage_artifacts/V014_S15_STAGE_REVIEW/machine/stage15_review_manifest.json"
+  },
+  "roadmap_phase_id": "STAGE-REVIEW",
+  "schema_version": "kmfa.v014.s15_post_remediation_review_manifest.v1",
+  "stage_id": "S15",
+  "status": "completed_validated_local_only_stage15_review_no_go_upload_deferred",
+  "summary": {
+    "acceptance_id": "ACC-V014-S15-POST-REMEDIATION-STAGE-REVIEW",
+    "actual_abnormal_project_count": 0,
+    "app_reinstall_performed": false,
+    "authoritative_row_binding_count": 0,
+    "authoritative_value_binding_count": 0,
+    "baseline_html_control_row_count": 54,
+    "baseline_html_pass_count": 54,
+    "bonus_approval_performed": false,
+    "broken_cross_page_link_count": 0,
+    "browser_status": "PASS",
+    "browser_viewport_check_count": 6,
+    "business_execution_performed": false,
+    "console_error_count": 0,
+    "cross_page_link_count": 6,
+    "cross_page_link_http_check_count": 6,
+    "cross_page_navigation_check_count": 6,
+    "cross_page_navigation_strongly_connected": true,
+    "current_data_quality_grade": "Q4",
+    "current_html_control_row_count": 45,
+    "current_html_pass_count": 45,
+    "current_report_grade": "D",
+    "current_stage_page_count": 3,
+    "decision": "NO_GO",
+    "difference_closure_performed": false,
+    "fact_output_interface_contract_count": 1,
+    "fact_output_interface_field_count": 6,
+    "field_review_item_count": 6,
+    "final_compensation_decision_performed": false,
+    "final_payment_performed": false,
+    "fixed_review_finding_count": 10,
+    "formal_report_release_performed": false,
+    "future_salary_field_mapping_count": 6,
+    "future_salary_read_draft_count": 1,
+    "future_salary_readiness_record_count": 0,
+    "github_upload_performed": false,
+    "horizontal_overflow_count": 0,
+    "human_approval_completed_count": 0,
+    "human_boundary_checkpoint_count": 4,
+    "incomplete_reconciliation_count": 1,
+    "interface_payload_record_count": 0,
+    "manual_review_required_field_count": 6,
+    "nonzero_delta_reconciliation_count": 9,
+    "open_final_difference_accepted_count": 3,
+    "open_review_finding_count": 0,
+    "payment_execution_performed": false,
+    "payroll_export_performed": false,
+    "performance_fact_row_count": 0,
+    "performance_fact_table_column_count": 6,
+    "performance_fact_table_schema_count": 1,
+    "phase_focused_test_count": 24,
+    "phase_focused_test_pass_count": 24,
+    "phase_id": "V014_S15_POST_REMEDIATION_STAGE_REVIEW",
+    "phase_results": {
+      "S15-P1": "PASS",
+      "S15-P2": "PASS",
+      "S15-P3": "PASS"
+    },
+    "phase_strict_validator_count": 3,
+    "phase_strict_validator_pass_count": 3,
+    "private_unique_candidate_sheet_count": 13,
+    "project_id": "KMFA",
+    "public_business_value_count": 0,
+    "raw_cross_phase_snapshot_exact_match": true,
+    "raw_snapshot_exact_match": true,
+    "raw_source_file_count": 5,
+    "representative_interaction_check_count": 6,
+    "required_field_count": 6,
+    "review_finding_count": 10,
+    "roadmap_phase_id": "STAGE-REVIEW",
+    "s15_p1_performed": true,
+    "s15_p2_performed": true,
+    "s15_p3_performed": true,
+    "s16_p1_performed": false,
+    "salary_calculation_performed": false,
+    "salary_numeric_value_count": 0,
+    "schema_version": "kmfa.v014.s15_post_remediation_review_summary.v1",
+    "stage15_review_performed": true,
+    "stage_id": "S15",
+    "status": "completed_validated_local_only_stage15_review_no_go_upload_deferred",
+    "task_id": "KMFA-V014-S15-POST-REMEDIATION-STAGE-REVIEW-20260711",
+    "version": "0.1.4-s15-post-remediation-stage-review",
+    "zero_delta_reconciliation_count": 2
+  },
+  "task_id": "KMFA-V014-S15-POST-REMEDIATION-STAGE-REVIEW-20260711",
+  "taskpack_contract": {
+    "raw_read_only_contract_applied": true,
+    "roadmap_read": true,
+    "salary_final_approval_and_payment_remain_human": true,
+    "stage15_three_phase_contract_reviewed": true,
+    "taskpack_read": true
+  },
+  "validation_summary": {
+    "browser_desktop_mobile": "PASS",
+    "final_validation_recorded": true,
+    "governance_and_safety_scans": "PASS",
+    "phase_focused_tests": "PASS",
+    "phase_strict_validators": "PASS",
+    "raw_alignment": "PASS",
+    "review_focused_test": "PASS",
+    "review_strict_validator": "PASS"
+  },
+  "version": "0.1.4-s15-post-remediation-stage-review"
+}

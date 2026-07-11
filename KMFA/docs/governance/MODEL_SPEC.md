@@ -1,3 +1,18 @@
+## FORM-KMFA-V014-S15-POST-REMEDIATION-STAGE-REVIEW-001
+
+- phase: V014_S15_POST_REMEDIATION_STAGE_REVIEW
+- version: 0.1.4-s15-post-remediation-stage-review
+- model_id: MOD-KMFA-GOV-001
+- scope: 复跑当前 Stage 15 三个 phase，隔离旧合成事实与工资就绪语义，修复三页互链、状态和移动端 findings，并保持薪资及上传门禁关闭。
+- rule: stage15_review_valid = phase_pass_count == 3 AND performance_fact_row_count == 0 AND field_review_item_count == 6 AND future_salary_readiness_record_count == 0 AND human_boundary_checkpoint_count == 4 AND fixed_review_finding_count == 10 AND open_review_finding_count == 0 AND cross_page_link_count == 6 AND raw_exact == true AND current_grade == D AND decision == NO_GO。
+- fact gate: 六字段全部人工复核；权威值、事实行、实际异常项目、接口 payload、就绪记录和薪资数值均为 0。
+- history gate: 旧 review 的 4 条合成事实、4 条就绪记录和 16 项复核仅作历史夹具，不具有当前动态权威性。
+- browser gate: 三页六边强连通，6 视口、6 交互、6 HTTP 与 6 次真实导航必须通过，console 和 overflow 为 0。
+- raw gate: review 前后、跨 S15-P3 和当前只读快照一致；raw/private 明文不得进入 Git。
+- downstream gate: S16-P1、salary、bonus、payroll、final payment、upload、reinstall、formal report、difference closure 与 business execution=false。
+- validator: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s15_post_remediation_stage_review.py --require-private-evidence --require-browser-evidence --require-final-evidence
+- evidence: KMFA/stage_artifacts/V014_S15_POST_REMEDIATION_STAGE_REVIEW/machine/stage15_post_remediation_review_manifest.json
+
 ## FORM-KMFA-V014-S15P3-POST-REMEDIATION-SALARY-BOUNDARY-001
 
 - phase: V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY

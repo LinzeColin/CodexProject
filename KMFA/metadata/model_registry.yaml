@@ -1,3 +1,18 @@
+kmfa_v014_s15_post_remediation_stage_review:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s15-post-remediation-stage-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S15-POST-REMEDIATION-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1777
+    - PARAM-KMFA-1778
+    - PARAM-KMFA-1779
+  evidence_dir: KMFA/stage_artifacts/V014_S15_POST_REMEDIATION_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s15_post_remediation_stage_review.py
+  scope: Current Stage 15 three-phase replay ten fixed findings six strongly connected page links mobile-safe tables zero performance and salary records raw immutability and Q4 D NO_GO 3-9-2-1; S16 salary bonus payroll final payment upload reinstall formal release difference closure and business execution remain closed.
+
 kmfa_v014_s15_p3_post_remediation_salary_boundary:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-s15-p3-post-remediation-salary-boundary"

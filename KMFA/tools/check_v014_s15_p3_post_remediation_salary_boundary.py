@@ -316,7 +316,7 @@ def _validate_html(errors: list[str]) -> None:
         "4 项均未执行",
         "6 项值不可用",
         "最终审批和发放必须由人工完成",
-        "Stage 15 整体复审",
+        "Stage 15 三个 phase 与整体复审均已完成",
         "table-layout:fixed",
         "overflow-x:auto",
     ):
@@ -332,6 +332,10 @@ def _validate_html(errors: list[str]) -> None:
     _require(text.count("data-field-button=") == 6, "field button count drift", errors)
     _require(text.count("data-field-panel=") == 6, "field panel count drift", errors)
     _require(text.count("data-dependency-link=") == 8, "dependency link count drift", errors)
+    _require("Stage 15 三个 phase 与整体复审均已完成" in text, "Stage 15 review status missing", errors)
+    _require("Stage 15 当前完成 S15-P1/P2/P3" not in text, "stale S15-P3 footer remains", errors)
+    _require("table{min-width:0;table-layout:fixed}" in text, "mobile table layout guard missing", errors)
+    _require("word-break:break-word" in text, "mobile table wrapping guard missing", errors)
 
 
 def _expected_parameter_values(manifest: dict[str, Any]) -> dict[str, str]:
