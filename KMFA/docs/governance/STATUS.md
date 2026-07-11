@@ -1,16 +1,16 @@
 # KMFA Status
 
-更新时间: 2026-07-11
+更新时间: 2026-07-12
 
 ## 最新状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s12-p3-post-remediation-rerun-mechanism`
-- current_stage: `S12`
-- current_phase: `V014_S12_P3_POST_REMEDIATION_RERUN_MECHANISM`
-- status: `completed_validated_local_only_s12_p3_no_go_upload_deferred`
+- version: `0.1.4-s17-p1-post-remediation-access-security`
+- current_stage: `S17`
+- current_phase: `V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY`
+- status: `completed_validated_local_only_s17_p1_access_security_policy_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `Stage_12_overall_review_as_separate_run`
+- next_required_input: `S17-P2_notification_policy_as_separate_run_without_live_delivery`
 - production_ready: `false`
 - github_upload_ready: `false`
 - raw_snapshot_exact_match: `true`
@@ -19,12 +19,12 @@
 ## 前序状态（上一 phase）
 
 - project_id: `KMFA`
-- version: `0.1.4-s12-p2-post-remediation-impact-preview`
-- current_stage: `S12`
-- current_phase: `V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW`
-- status: `completed_validated_local_only_s12_p2_no_go_upload_deferred`
+- version: `0.1.4-s16-post-remediation-stage-review`
+- current_stage: `S16`
+- current_phase: `V014_S16_POST_REMEDIATION_STAGE_REVIEW`
+- status: `completed_validated_local_only_stage16_review_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `S12-P3_derived_rerun_as_separate_run`
+- next_required_input: `S17-P1_access_security_as_separate_run`
 - raw_snapshot_exact_match: `true`
 - decision: `NO_GO`
 
@@ -44,6 +44,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 S17-P1 post-remediation access security completed local-only：4 角色、14 项显式授权、9 项关键拒绝动作和 deny-by-default 已锁定；16 项授权探针=`8 ALLOW / 8 DENY / 0 mismatch`。15 类敏感材料全部禁止公开仓库、Git 上传和明文保存，tracked 禁止后缀/private runtime=`0/0`。导入、处理、报告、导出、通知五类审计契约各要求 7 个 public-safe 字段，5 个 schema 探针 PASS；真实用户、凭据、身份提供方、持久授权/审计事件、通知、完整报告正文和业务执行均为 0。raw phase 前后、跨 Stage 16 review 和当前快照一致；当前 `Q4 / D / NO_GO / 3-9-2-1`；next_required_input=`S17-P2_notification_policy_as_separate_run_without_live_delivery`。
 
 - v0.1.4 S12-P3 post-remediation rerun mechanism completed local-only：`6` 个 current public-safe 重跑计划覆盖 S12-P2 全部影响定义，每份 `4` 层，共 `24` 个计划步骤；`5` 个高风险计划要求二次确认。当前 approved/published business events=`0/0`，persistent cache invalidation/rerun/consistency=`0/0/0`，页面仅执行 session-only 模拟。四层共享同一 source anchor，旧版本保留、新版本追加，0.01 元差异不得忽略。v1.4 baseline `54/54 PASS`、current HTML `12/12 PASS`；desktop/mobile 全流程与 4 条返回链接通过。raw 前后、跨 S12-P2 与当前快照一致；Stage 12 review、upload、reinstall、正式报告、持久业务写入和 business execution 均未执行。next_required_input=`Stage_12_overall_review_as_separate_run`。
 

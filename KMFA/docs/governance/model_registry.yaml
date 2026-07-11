@@ -4022,3 +4022,18 @@ kmfa_v014_s16_post_remediation_stage_review:
   evidence_dir: KMFA/stage_artifacts/V014_S16_POST_REMEDIATION_STAGE_REVIEW
   validator: KMFA/tools/check_v014_s16_post_remediation_stage_review.py
   scope: Current Stage 16 three-phase replay nine fixed findings six strongly connected page links zero project matches lifecycle records customer summaries rankings and public business values raw immutability and Q4 D NO_GO 3-9-2-1; S17 customer contact collection legal site signature invoice payment bank upload reinstall formal release difference closure persistent write and business execution remain closed.
+kmfa_v014_s17_p1_post_remediation_access_security:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s17-p1-post-remediation-access-security"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S17-P1-POST-REMEDIATION-ACCESS-SECURITY-001
+  parameter_refs:
+    - PARAM-KMFA-1792
+    - PARAM-KMFA-1793
+    - PARAM-KMFA-1794
+    - PARAM-KMFA-1795
+  evidence_dir: KMFA/stage_artifacts/V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY
+  validator: KMFA/tools/check_v014_s17_p1_post_remediation_access_security.py
+  scope: Four-role deny-by-default public-safe access policy fifteen sensitive-category public-repository denials five schema-only audit contracts sixteen authorization probes raw immutability and Q4 D NO_GO 3-9-2-1; live identity credentials persistent events notifications S17-P2 P3 review upload reinstall formal release difference closure persistent write and business execution remain closed.

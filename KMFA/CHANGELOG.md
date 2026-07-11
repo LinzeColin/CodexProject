@@ -1,3 +1,11 @@
+## 0.1.4-s17-p1-post-remediation-access-security - 2026-07-12
+
+- 完成 `V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY` 本地 phase，建立管理层、财务、复核、只读四角色最小权限策略，14 项显式授权与 9 项关键拒绝动作均采用 deny-by-default。
+- 16 项授权探针得到 `8 ALLOW / 8 DENY / 0 mismatch`；未知角色与未知动作均拒绝，未创建真实用户、凭据、身份提供方或持久授权记录。
+- 15 类敏感数据全部禁止公开仓库、Git 上传和明文保存，仅允许 public-safe hash、引用或状态元数据；tracked 禁止后缀与 private runtime 路径均为 0。
+- 锁定导入、处理、报告、导出、通知五类审计事件契约及 7 个必填字段；5 项 schema 探针全部通过，真实业务审计事件、通知和完整报告正文均为 0。
+- raw phase 前后、跨 Stage 16 review 与当前快照一致；保持 `Q4 / D / NO_GO / 3-9-2-1`，未执行 S17-P2/P3、Stage 17 复审、GitHub upload、app reinstall、正式报告、差异关闭、持久业务写入或 business execution。
+
 ## 0.1.4-s16-p3-post-remediation-customer-business-analysis - 2026-07-12
 
 - 完成 `V014_S16_P3_POST_REMEDIATION_CUSTOMER_BUSINESS_ANALYSIS` 本地 phase：只读接入客户价值、项目毛利、回款质量和账龄风险 4 类结构。

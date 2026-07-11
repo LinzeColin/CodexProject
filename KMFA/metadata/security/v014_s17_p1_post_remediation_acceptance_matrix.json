@@ -1,0 +1,69 @@
+{
+  "acceptance_id": "ACC-V014-S17-P1-POST-REMEDIATION-ACCESS-SECURITY",
+  "check_count": 12,
+  "check_fail_count": 0,
+  "check_pass_count": 12,
+  "checks": [
+    {
+      "check_id": "V014-S17-P1-ACC-001",
+      "name": "current_dependency",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P1-ACC-002",
+      "name": "four_roles",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P1-ACC-003",
+      "name": "authorization_probe",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P1-ACC-004",
+      "name": "deny_by_default",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P1-ACC-005",
+      "name": "sensitive_policy",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P1-ACC-006",
+      "name": "repo_tracking",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P1-ACC-007",
+      "name": "audit_contract",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P1-ACC-008",
+      "name": "audit_probe",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P1-ACC-009",
+      "name": "raw_exact",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P1-ACC-010",
+      "name": "quality",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P1-ACC-011",
+      "name": "downstream_closed",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P1-ACC-012",
+      "name": "public_safety",
+      "status": "PASS"
+    }
+  ],
+  "schema_version": "kmfa.v014.s17_p1_post_remediation_access_security_matrix.v1"
+}
