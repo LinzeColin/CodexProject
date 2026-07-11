@@ -1,5 +1,7 @@
 # Implementation README
 
+legacy_classification: `historical_identifier`; retained legacy archive examples are historical/read-only inputs, not current identity.
+
 ## Install
 
 ```bash

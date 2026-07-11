@@ -1,4 +1,4 @@
-# KMFA S19 DingTalk Attendance Configuration
+# KMFA 钉钉考勤 skill Configuration
 
 ## Public Config And Metadata
 
@@ -47,8 +47,8 @@ DINGTALK_APP_CREDENTIAL
 DINGTALK_CORP_ID
 DINGTALK_AGENT_ID
 DWS_BIN
-KMFA_S19_ALLOW_DWS_COMMANDS
-KMFA_S19_DWS_BROWSER_POLICY_PATH
+KMFA_DINGTALK_ATTENDANCE_ALLOW_DWS_COMMANDS
+KMFA_DINGTALK_ATTENDANCE_DWS_BROWSER_POLICY_PATH
 KMFA_WORK_DATE_OVERRIDE
 KMFA_TODAY_OVERRIDE
 ```
@@ -56,7 +56,7 @@ KMFA_TODAY_OVERRIDE
 Default live gate:
 
 ```text
-KMFA_S19_ALLOW_DWS_COMMANDS=0
+KMFA_DINGTALK_ATTENDANCE_ALLOW_DWS_COMMANDS=0
 ```
 
 Only set it to `1` for a user-authorized live run after healthcheck and process checks.
@@ -79,11 +79,11 @@ DWS is a local CLI dependency. The automation assumes the user has already authe
 
 Live collection commands fail closed unless:
 
-- `KMFA_S19_ALLOW_DWS_COMMANDS=1`
+- `KMFA_DINGTALK_ATTENDANCE_ALLOW_DWS_COMMANDS=1`
 - browser policy is ready
 - `default.openBrowser=false`
 
-The policy check reads `KMFA_S19_DWS_BROWSER_POLICY_PATH` or defaults to:
+The policy check reads `KMFA_DINGTALK_ATTENDANCE_DWS_BROWSER_POLICY_PATH` or defaults to:
 
 ```text
 ~/.dws/pat_policy.json

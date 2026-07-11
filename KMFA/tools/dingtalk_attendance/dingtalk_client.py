@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Minimal live-only DingTalk client boundary for KMFA S19."""
+"""Minimal live-only DingTalk client boundary for KMFA DingTalk attendance."""
 
 from __future__ import annotations
 

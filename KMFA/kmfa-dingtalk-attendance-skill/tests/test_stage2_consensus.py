@@ -255,7 +255,7 @@ def test_evening_live_source_adapter_fails_closed_without_dws_authorization():
             "KMFA_RUN_SLOT": "evening",
             "KMFA_TODAY_OVERRIDE": "2026-08-01",
             "KMFA_STAGE2_SOURCE_MODE": "dws_live",
-            "KMFA_S19_ALLOW_DWS_COMMANDS": "0",
+            "KMFA_DINGTALK_ATTENDANCE_ALLOW_DWS_COMMANDS": "0",
         })
         env.pop("KMFA_STAGE2_SOURCE_JSON", None)
         p = subprocess.run(

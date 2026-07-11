@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Cleanup helpers for KMFA S19 private runtime files."""
+"""Cleanup helpers for KMFA DingTalk attendance private runtime files."""
 
 from __future__ import annotations
 

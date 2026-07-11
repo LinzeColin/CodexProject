@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only queries for the private KMFA S19 attendance ledger."""
+"""Read-only queries for the private KMFA DingTalk attendance ledger."""
 
 from __future__ import annotations
 
@@ -176,7 +176,7 @@ def _assert_canonical_month_ready(conn: sqlite3.Connection, *, month: str) -> No
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Query the private KMFA S19 attendance ledger.")
+    parser = argparse.ArgumentParser(description="Query the private KMFA DingTalk attendance ledger.")
     parser.add_argument("--db-path", default=str(DEFAULT_LEDGER_PATH))
     parser.add_argument("--month")
     parser.add_argument("--employee")

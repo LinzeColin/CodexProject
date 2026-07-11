@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Health checks for KMFA S19 DingTalk attendance automation."""
+"""Health checks for the KMFA DingTalk attendance skill."""
 
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ from typing import Any
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
-from KMFA.tools.dingtalk_attendance import AUTOMATION_NAME, ONEDRIVE_ROOT, STAGE_ID, TIMEZONE
+from KMFA.tools.dingtalk_attendance import AUTOMATION_NAME, ONEDRIVE_ROOT, SKILL_ID, TIMEZONE
 from KMFA.tools.dingtalk_attendance.dws_auth_guard import dws_command_safety_status
 from KMFA.tools.dingtalk_attendance.notifier_dingtalk import robot_notification_status
 from KMFA.tools.dingtalk_attendance.notifier_dws_personal_chat import RESOLVED_CHANNEL_PATH
@@ -44,7 +44,7 @@ def build_config_status(env: Mapping[str, str] | None = None) -> dict[str, Any]:
     status = "READY" if notification_ready else "NOTIFIER_CONFIG_MISSING"
     return {
         "project_id": "KMFA",
-        "stage_id": STAGE_ID,
+        "skill_id": SKILL_ID,
         "automation_name": AUTOMATION_NAME,
         "status": status,
         "timezone": TIMEZONE,
@@ -145,7 +145,7 @@ def _missing_resolved_personal_status() -> dict[str, Any]:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Check KMFA S19 DingTalk attendance configuration.")
+    parser = argparse.ArgumentParser(description="Check KMFA DingTalk attendance skill configuration.")
     parser.add_argument("--config-only", action="store_true", help="Only inspect local configuration readiness.")
     args = parser.parse_args(argv)
 

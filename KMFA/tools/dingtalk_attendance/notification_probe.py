@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Probe and persist the first usable KMFA S19 DingTalk notification channel."""
+"""Probe and persist the first usable KMFA DingTalk attendance notification channel."""
 
 from __future__ import annotations
 
@@ -67,8 +67,8 @@ def probe_notification_channels(
             f"收件人：{recipient_name}",
             f"userId：{recipient}",
             f"北京时间：{current.strftime('%Y-%m-%d %H:%M:%S')}",
-            "KMFA S19 通知通道：<待探测>",
-            "说明：这是 KMFA S19 钉钉个人通知通道自动验证消息。",
+            "KMFA 钉钉考勤 skill 通知通道：<待探测>",
+            "说明：这是 KMFA 钉钉考勤 skill 个人通知通道自动验证消息。",
         ]
     )
     attempts: list[dict[str, Any]] = []
@@ -375,7 +375,7 @@ def _redact_private_channel(channel: Mapping[str, Any] | None) -> dict[str, Any]
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Probe KMFA S19 DingTalk notification channels.")
+    parser = argparse.ArgumentParser(description="Probe KMFA DingTalk attendance notification channels.")
     parser.add_argument("--recipient", default=ZHANG_LINZE_USER_ID)
     parser.add_argument("--recipient-name", default=RECIPIENT_NAME)
     parser.add_argument("--all-targets", action="store_true", help="Probe every enabled target in notification_targets.local.json.")

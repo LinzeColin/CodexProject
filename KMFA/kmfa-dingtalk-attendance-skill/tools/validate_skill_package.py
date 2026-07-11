@@ -50,7 +50,7 @@ REQUIRED_TEXT = {
         "REST_REQUIRED_THRESHOLD_DAYS = 23",
         "丁春法",
         "李永占",
-        "KMFA_S19_ALLOW_DWS_COMMANDS",
+        "KMFA_DINGTALK_ATTENDANCE_ALLOW_DWS_COMMANDS",
         "attendance_ledger.sqlite",
     ],
     "references/runbook.md": [
@@ -61,7 +61,7 @@ REQUIRED_TEXT = {
     ],
     "references/configuration.md": [
         "DINGTALK_ROBOT_URL",
-        "KMFA_S19_ALLOW_DWS_COMMANDS=0",
+        "KMFA_DINGTALK_ATTENDANCE_ALLOW_DWS_COMMANDS=0",
         "salary_basis_allowed=false",
     ],
     "references/decision-impact.md": [

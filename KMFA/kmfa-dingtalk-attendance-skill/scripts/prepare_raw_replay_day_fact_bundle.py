@@ -17,6 +17,8 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPT_DIR))
 
 from inspect_raw_archive_month import (  # noqa: E402
+    archive_manifest_paths,
+    archive_raw_paths,
     get_record_list,
     has_location_evidence,
     inspect_month,
@@ -95,8 +97,8 @@ def raw_files_for_replay(
     allow_seed_raw_without_manifest: bool,
 ) -> list[tuple[str, Path, str]]:
     month_dir = archive_root / target_month
-    manifests = sorted(month_dir.glob("s19_*.manifest.json"))
-    raw_files = sorted(month_dir.glob("s19_*.raw.jsonl.gz")) + sorted(month_dir.glob("s19_*.raw.jsonl"))
+    manifests = archive_manifest_paths(month_dir)
+    raw_files = archive_raw_paths(month_dir)
     manifest_run_ids = {run_id_from_manifest(path) for path in manifests}
     selected: list[tuple[str, Path, str]] = []
     for manifest_path in manifests:

@@ -1,5 +1,5 @@
 project_id: KMFA
-stage_id: S19
+skill_id: kmfa-dingtalk-attendance-skill
 automation_name: 每日早晚钉钉考勤检查
 operational_cache_retention_days: 3
 private_runtime_path: KMFA/metadata/dingtalk_attendance/private_runtime

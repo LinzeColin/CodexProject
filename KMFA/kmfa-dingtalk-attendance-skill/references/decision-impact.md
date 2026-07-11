@@ -4,7 +4,7 @@
 
 Strengths:
 
-- Gives any future agent one public-safe entrypoint for KMFA S19 attendance work.
+- Gives any future agent one public-safe entrypoint for KMFA 钉钉考勤 skill work.
 - Reduces repeated context loading by pointing to exact files and commands.
 - Captures live-run guardrails, DWS browser policy, OneDrive private archive shape, and notification rules in one place.
 - Keeps private data out of Git while still preserving enough setup templates for a new machine.
