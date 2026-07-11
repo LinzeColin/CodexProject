@@ -1,0 +1,85 @@
+{
+  "captured_at": "2026-07-11T23:28:15Z",
+  "delivery_context": {
+    "cloudflare_live_verified": true,
+    "local_apps_verified": true,
+    "single_push_pending": true
+  },
+  "evidence": {
+    "final_acceptance": "机器治理/证据与日志/remediation/v1_2_r8/final_acceptance.json",
+    "requirements_gap_delta": "机器治理/证据与日志/remediation/v1_2_r8/requirements_gap_delta.csv",
+    "stage_pass_gate_status": "机器治理/证据与日志/stage_pass_gates/stage_pass_gate_status.v1_2_r8.json"
+  },
+  "four_line_coverage": [
+    {
+      "failed_or_missing_gate_ids": [],
+      "gate_ids": [
+        "unit_tests",
+        "visual_workflows",
+        "report_contract_audit"
+      ],
+      "line_id": "L1_BEHAVIOR_INTELLIGENCE",
+      "name_zh": "行为智能与洞察",
+      "status": "PASS"
+    },
+    {
+      "failed_or_missing_gate_ids": [],
+      "gate_ids": [
+        "frontend_build",
+        "chinese_ux_audit",
+        "rendered_chinese_ux",
+        "visual_roi_audit",
+        "visual_workflows",
+        "stage7_visual",
+        "stage7_performance"
+      ],
+      "line_id": "L2_INFO_ROI_CHINESE_VISUALS",
+      "name_zh": "信息 ROI、中文与多维可视化",
+      "status": "PASS"
+    },
+    {
+      "failed_or_missing_gate_ids": [],
+      "gate_ids": [
+        "github_backup_modes",
+        "tracked_only_recovery",
+        "raw_append_only_audit",
+        "stage7_privacy_accessibility",
+        "credential_audit"
+      ],
+      "line_id": "L3_GITHUB_BACKUP_RECOVERY",
+      "name_zh": "ChatGPT、Codex 与后续 Agent 的 GitHub 备份恢复",
+      "status": "PASS"
+    },
+    {
+      "failed_or_missing_gate_ids": [],
+      "gate_ids": [
+        "frontend_build",
+        "rendered_chinese_ux",
+        "command_workflows",
+        "proposal_e2e",
+        "owner_daily_e2e",
+        "stage7_privacy_accessibility"
+      ],
+      "line_id": "L4_UIUX_GOVERNED_ACTIONS",
+      "name_zh": "UIUX、授权变更与低负担运维",
+      "status": "PASS"
+    }
+  ],
+  "phase": "R8_OVERALL_ACCEPTANCE_AND_SINGLE_FINAL_DELIVERY",
+  "requirements": {
+    "failed": 0,
+    "not_verified": 0,
+    "partial": 0,
+    "remaining_non_verified": [],
+    "total": 58,
+    "verified": 58
+  },
+  "runtime_commit": "12734c10bf37ee7afc86d62f72e70369a1bcd732",
+  "schema_version": "memory_atlas.remediation_r8_status.v1",
+  "single_push_rule": {
+    "final_push_must_publish_the_immediate_record_child": true,
+    "post_push_remote_clone_verification_is_external_and_rerunnable": true,
+    "push_count_before_this_record": 0
+  },
+  "status": "R8_ACCEPTANCE_AND_LIVE_DELIVERY_VERIFIED_PENDING_SINGLE_FINAL_PUSH"
+}
