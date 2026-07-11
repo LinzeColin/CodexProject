@@ -416,22 +416,26 @@ def _validate_governance(manifest: dict[str, Any], errors: list[str]) -> None:
         _require(row.get("extracted_value") == expected, f"parameter extracted value drift: {parameter_id}", errors)
         _require(row.get("status") == "active", f"parameter status drift: {parameter_id}", errors)
 
+    version_matrix_path = Path("KMFA/docs/governance/VERSION_MATRIX.yaml")
+    version_matrix = version_matrix_path.read_text(encoding="utf-8")
+    _require(phase.MODEL_REGISTRY_KEY in version_matrix, "VERSION_MATRIX profile missing", errors)
+    _require(phase.VERSION in version_matrix, "VERSION_MATRIX version missing", errors)
     text_checks = (
         (Path("KMFA/docs/governance/TRACEABILITY_MATRIX.csv"), phase.ACCEPTANCE_ID),
-        (Path("KMFA/docs/governance/VERSION_MATRIX.yaml"), f'current_phase: "{phase.PHASE_ID}"'),
         (Path("KMFA/docs/governance/delivery_tasks.yaml"), phase.TASK_ID),
         (Path("KMFA/docs/governance/DEVELOPMENT_LEDGER.md"), phase.PHASE_ID),
         (Path("KMFA/docs/governance/MODEL_SPEC.md"), phase.FORMULA_ID),
-        (Path("KMFA/AGENTS.md"), phase.PHASE_ID),
         (Path("KMFA/功能清单.md"), phase.PHASE_ID),
         (Path("KMFA/开发记录.md"), phase.TASK_ID),
         (Path("KMFA/模型参数文件.md"), phase.FORMULA_ID),
-        (Path("KMFA/HANDOFF.md"), phase.PHASE_ID),
         (Path("KMFA/CHANGELOG.md"), phase.PHASE_ID),
     )
     for path, marker in text_checks:
         _require(path.is_file() and marker in path.read_text(encoding="utf-8"), f"governance marker missing: {path}", errors)
-    _require(Path("KMFA/VERSION").read_text(encoding="utf-8").strip() == phase.VERSION, "VERSION drift", errors)
+    if f'current_phase: "{phase.PHASE_ID}"' in version_matrix:
+        _require(Path("KMFA/VERSION").read_text(encoding="utf-8").strip() == phase.VERSION, "VERSION drift", errors)
+        _require(phase.PHASE_ID in Path("KMFA/AGENTS.md").read_text(encoding="utf-8"), "AGENTS phase drift", errors)
+        _require(phase.PHASE_ID in Path("KMFA/HANDOFF.md").read_text(encoding="utf-8"), "HANDOFF phase drift", errors)
 
     event_rows = _read_jsonl(phase.DEVELOPMENT_EVENTS_PATH)
     stage_rows = _read_jsonl(phase.STAGE_STATUS_PATH)

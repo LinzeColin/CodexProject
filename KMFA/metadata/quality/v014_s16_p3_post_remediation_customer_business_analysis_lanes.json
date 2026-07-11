@@ -1,0 +1,58 @@
+{
+  "schema_version": "kmfa.v014.s16_p3.source_lanes.v1",
+  "source_lane_count": 4,
+  "source_lanes": [
+    {
+      "authoritative_customer_row_binding_count": 0,
+      "authoritative_project_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "candidate_sheet_count": 270,
+      "current_status": "structure_candidates_observed_customer_project_binding_unproven",
+      "lane_id": "customer_value",
+      "manual_review_required": true,
+      "materialized_signal_count": 0,
+      "purpose": "识别客户身份与价值分析结构；没有权威客户及项目绑定时不形成客户价值事实。",
+      "structure_candidate_observed": true,
+      "visible_label": "客户价值"
+    },
+    {
+      "authoritative_customer_row_binding_count": 0,
+      "authoritative_project_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "candidate_sheet_count": 1833,
+      "current_status": "structure_candidates_observed_customer_project_binding_unproven",
+      "lane_id": "project_margin",
+      "manual_review_required": true,
+      "materialized_signal_count": 0,
+      "purpose": "识别项目收入、成本和毛利结构；不继承未完成归属的项目金额或利润。",
+      "structure_candidate_observed": true,
+      "visible_label": "项目毛利"
+    },
+    {
+      "authoritative_customer_row_binding_count": 0,
+      "authoritative_project_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "candidate_sheet_count": 1625,
+      "current_status": "structure_candidates_observed_customer_project_binding_unproven",
+      "lane_id": "collection_quality",
+      "manual_review_required": true,
+      "materialized_signal_count": 0,
+      "purpose": "识别回款与应收结构；仅形成复核契约，不触发客户联络或催收。",
+      "structure_candidate_observed": true,
+      "visible_label": "回款质量"
+    },
+    {
+      "authoritative_customer_row_binding_count": 0,
+      "authoritative_project_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "candidate_sheet_count": 44,
+      "current_status": "structure_candidates_observed_customer_project_binding_unproven",
+      "lane_id": "aging_risk",
+      "manual_review_required": true,
+      "materialized_signal_count": 0,
+      "purpose": "识别账龄和逾期风险结构；无权威行证据时不生成客户风险判断。",
+      "structure_candidate_observed": true,
+      "visible_label": "账龄风险"
+    }
+  ]
+}

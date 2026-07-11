@@ -1,0 +1,70 @@
+{
+  "risk_rule_count": 4,
+  "rules": [
+    {
+      "authoritative_customer_project_binding_required": true,
+      "authoritative_value_binding_required": true,
+      "automatic_customer_ranking_allowed": false,
+      "collection_action_allowed": false,
+      "condition": "权威客户身份与客户价值所需事实均完成绑定后，才允许形成价值复核信号",
+      "current_status": "rule_ready_item_materialization_blocked",
+      "customer_contact_action_allowed": false,
+      "label": "客户价值复核",
+      "legal_decision_allowed": false,
+      "manual_review_required": true,
+      "materialized_risk_item_count": 0,
+      "required_lane": "customer_value",
+      "rule_id": "customer_value_review",
+      "visible_label": "客户价值复核"
+    },
+    {
+      "authoritative_customer_project_binding_required": true,
+      "authoritative_value_binding_required": true,
+      "automatic_customer_ranking_allowed": false,
+      "collection_action_allowed": false,
+      "condition": "权威客户、项目、收入和成本事实均完成绑定后，才允许形成毛利复核信号",
+      "current_status": "rule_ready_item_materialization_blocked",
+      "customer_contact_action_allowed": false,
+      "label": "项目毛利复核",
+      "legal_decision_allowed": false,
+      "manual_review_required": true,
+      "materialized_risk_item_count": 0,
+      "required_lane": "project_margin",
+      "rule_id": "project_margin_review",
+      "visible_label": "项目毛利复核"
+    },
+    {
+      "authoritative_customer_project_binding_required": true,
+      "authoritative_value_binding_required": true,
+      "automatic_customer_ranking_allowed": false,
+      "collection_action_allowed": false,
+      "condition": "权威客户、项目、应收和回款事实均完成绑定后，才允许形成回款质量信号",
+      "current_status": "rule_ready_item_materialization_blocked",
+      "customer_contact_action_allowed": false,
+      "label": "回款质量复核",
+      "legal_decision_allowed": false,
+      "manual_review_required": true,
+      "materialized_risk_item_count": 0,
+      "required_lane": "collection_quality",
+      "rule_id": "collection_quality_review",
+      "visible_label": "回款质量复核"
+    },
+    {
+      "authoritative_customer_project_binding_required": true,
+      "authoritative_value_binding_required": true,
+      "automatic_customer_ranking_allowed": false,
+      "collection_action_allowed": false,
+      "condition": "权威客户、应收期间和账龄事实均完成绑定后，才允许形成账龄风险信号",
+      "current_status": "rule_ready_item_materialization_blocked",
+      "customer_contact_action_allowed": false,
+      "label": "账龄风险复核",
+      "legal_decision_allowed": false,
+      "manual_review_required": true,
+      "materialized_risk_item_count": 0,
+      "required_lane": "aging_risk",
+      "rule_id": "aging_risk_review",
+      "visible_label": "账龄风险复核"
+    }
+  ],
+  "schema_version": "kmfa.v014.s16_p3.risk_rules.v1"
+}

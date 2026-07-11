@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-s16-p2-post-remediation-project-status-lifecycle"
-product_version_status: "completed_validated_local_only_s16_p2_structure_candidates_zero_lifecycle_materialization_no_go_upload_deferred"
-version_file_value: "0.1.4-s16-p2-post-remediation-project-status-lifecycle"
+product_version: "0.1.4-s16-p3-post-remediation-customer-business-analysis"
+product_version_status: "completed_validated_local_only_s16_p3_structure_candidates_zero_customer_summary_materialization_no_go_upload_deferred"
+version_file_value: "0.1.4-s16-p3-post-remediation-customer-business-analysis"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-s16-p2-post-remediation-project-status-lifecycle"
+  MOD-KMFA-GOV-001: "0.1.4-s16-p3-post-remediation-customer-business-analysis"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_s16_p3_post_remediation_customer_business_analysis: "0.1.4-s16-p3-post-remediation-customer-business-analysis"
   kmfa_v014_s16_p2_post_remediation_project_status_lifecycle: "0.1.4-s16-p2-post-remediation-project-status-lifecycle"
   kmfa_v014_s16_p1_post_remediation_subcontract_procurement: "0.1.4-s16-p1-post-remediation-subcontract-procurement"
   kmfa_v014_s15_post_remediation_stage_review: "0.1.4-s15-post-remediation-stage-review"
@@ -437,11 +438,73 @@ parameter_profile_versions:
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_blocked_handoff_final_threshold_recheck_after_reminder: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-final-threshold-recheck-after-reminder"
   kmfa_project_cost_mvp: "blocked_no_go_owner_scope_required"
 data_snapshot_version: "not_applicable_no_raw_data_committed"
-current_iteration: "ITER-20260712-KMFA-V014-S16-P2-POST-REMEDIATION-PROJECT-STATUS-LIFECYCLE"
-current_phase: "V014_S16_P2_POST_REMEDIATION_PROJECT_STATUS_LIFECYCLE"
-current_task_id: "KMFA-V014-S16-P2-POST-REMEDIATION-PROJECT-STATUS-LIFECYCLE-20260712"
-current_acceptance_id: "ACC-V014-S16-P2-POST-REMEDIATION-PROJECT-STATUS-LIFECYCLE"
-current_gate: "NO_GO_S16_P3_NEXT_SEPARATE_RUN_UPLOAD_REINSTALL_DEFERRED"
+current_iteration: "ITER-20260712-KMFA-V014-S16-P3-POST-REMEDIATION-CUSTOMER-BUSINESS-ANALYSIS"
+current_phase: "V014_S16_P3_POST_REMEDIATION_CUSTOMER_BUSINESS_ANALYSIS"
+current_task_id: "KMFA-V014-S16-P3-POST-REMEDIATION-CUSTOMER-BUSINESS-ANALYSIS-20260712"
+current_acceptance_id: "ACC-V014-S16-P3-POST-REMEDIATION-CUSTOMER-BUSINESS-ANALYSIS"
+current_gate: "NO_GO_STAGE16_REVIEW_NEXT_SEPARATE_RUN_UPLOAD_REINSTALL_DEFERRED"
+
+kmfa_v014_s16_p3_post_remediation_customer_business_analysis:
+  status: completed_validated_local_only_s16_p3_structure_candidates_zero_customer_summary_materialization_no_go_upload_deferred
+  phase: V014_S16_P3_POST_REMEDIATION_CUSTOMER_BUSINESS_ANALYSIS
+  evidence_dir: KMFA/stage_artifacts/V014_S16_P3_POST_REMEDIATION_CUSTOMER_BUSINESS_ANALYSIS
+  validator: KMFA/tools/check_v014_s16_p3_post_remediation_customer_business_analysis.py
+  focused_test: KMFA/tests/test_v014_s16_p3_post_remediation_customer_business_analysis.py
+  github_upload: blocked_no_go_upload_deferred
+  counts:
+    source_lane_count: 4
+    raw_source_file_count: 5
+    private_xlsx_container_count: 48
+    private_parseable_xlsx_count: 25
+    private_unparseable_xlsx_count: 23
+    private_parseable_sheet_count: 4198
+    private_unique_candidate_sheet_count: 3342
+    private_candidate_lane_association_count: 3772
+    private_multi_lane_candidate_sheet_count: 374
+    private_probe_roundtrip_mismatch_count: 0
+    customer_binding_contract_count: 1
+    customer_binding_component_count: 4
+    analysis_dimension_count: 4
+    authoritative_customer_row_binding_count: 0
+    authoritative_project_row_binding_count: 0
+    authoritative_value_binding_count: 0
+    materialized_customer_summary_count: 0
+    customer_risk_rule_count: 4
+    customer_risk_item_count: 0
+    handoff_guard_count: 4
+    public_business_value_count: 0
+  gates:
+    raw_snapshot_exact_match: true
+    raw_cross_phase_snapshot_exact_match: true
+    processed_private_structure_alignment_exact: true
+    s16_p1_performed: true
+    s16_p2_performed: true
+    s16_p3_performed: true
+    stage16_review_performed: false
+    automatic_customer_ranking_performed: false
+    customer_contact_action_performed: false
+    collection_action_performed: false
+    legal_decision_performed: false
+    invoice_issuance_performed: false
+    payment_execution_performed: false
+    bank_operation_performed: false
+    github_upload_performed: false
+    app_reinstall_performed: false
+    formal_report_release_performed: false
+    difference_closure_performed: false
+    business_execution_performed: false
+  forbidden_scope:
+    raw_inbox_write: false
+    raw_inbox_delete: false
+    raw_inbox_move: false
+    raw_inbox_rename: false
+    automatic_customer_ranking: false
+    customer_contact: false
+    collection_action: false
+    legal_decision: false
+    github_upload: false
+    app_reinstall: false
+    business_execution: false
 
 kmfa_v014_s16_p2_post_remediation_project_status_lifecycle:
   status: completed_validated_local_only_s16_p2_structure_candidates_zero_lifecycle_materialization_no_go_upload_deferred

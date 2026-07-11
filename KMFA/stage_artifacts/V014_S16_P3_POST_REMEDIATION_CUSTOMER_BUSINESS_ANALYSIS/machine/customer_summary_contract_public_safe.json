@@ -1,0 +1,39 @@
+{
+  "analysis_dimension_count": 4,
+  "analysis_dimensions": [
+    {
+      "authoritative_value_required": true,
+      "dimension_id": "customer_value",
+      "visible_label": "客户价值"
+    },
+    {
+      "authoritative_value_required": true,
+      "dimension_id": "project_margin",
+      "visible_label": "项目毛利"
+    },
+    {
+      "authoritative_value_required": true,
+      "dimension_id": "collection_quality",
+      "visible_label": "回款质量"
+    },
+    {
+      "authoritative_value_required": true,
+      "dimension_id": "aging_risk",
+      "visible_label": "账龄风险"
+    }
+  ],
+  "automatic_customer_ranking_count": 0,
+  "automatic_ranking_allowed": false,
+  "business_decision_basis_allowed": false,
+  "materialized_customer_summary_count": 0,
+  "missing_evidence_policy": "publish_schema_and_review_status_only",
+  "public_business_value_count": 0,
+  "record_materialization_allowed": false,
+  "required_binding_components": [
+    "customer_identity_ref",
+    "project_identity_ref",
+    "reporting_period_ref",
+    "source_fingerprint_ref"
+  ],
+  "schema_version": "kmfa.v014.s16_p3.customer_summary_contract.v1"
+}

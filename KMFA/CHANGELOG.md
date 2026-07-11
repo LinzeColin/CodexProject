@@ -1,3 +1,12 @@
+## 0.1.4-s16-p3-post-remediation-customer-business-analysis - 2026-07-12
+
+- 完成 `V014_S16_P3_POST_REMEDIATION_CUSTOMER_BUSINESS_ANALYSIS` 本地 phase：只读接入客户价值、项目毛利、回款质量和账龄风险 4 类结构。
+- 双次探针覆盖 5 个 raw、48 个 XLSX 容器、25 可解析、23 不可解析、4,198 个工作表、3,342 个唯一候选、3,772 个结构关联和 374 个跨维候选，探针不一致为 0。
+- 锁定客户/项目/期间/来源 4 组件绑定契约、4 维客户摘要契约及 4 类风险规则；当前权威客户/项目/值绑定、客户摘要、风险事项、自动排名和公开业务值均为 0。
+- 隔离旧 S16-P3 的 7 条来源线、4 条价值信号、4 条风险信号、4 条客户摘要和 4 项交接门禁；旧 S11 的 4 条未归属项目行不作为客户事实。
+- baseline/current HTML `54/54 / 12/12 PASS`；2 视口、8 次维度交互、8 次规则交互、4 条 HTTP 与 4 次真实导航通过，console/overflow 为 0。
+- raw phase 前后、跨 S16-P2 与当前快照一致；保持 Q4 / D / NO_GO / 3-9-2-1，未执行 Stage 16 review、客户排名、客户联络、催收、法律决策、开票、付款、银行、GitHub upload、app reinstall、正式报告、差异关闭或 business execution。
+
 ## 0.1.4-s16-p2-post-remediation-project-status-lifecycle - 2026-07-12
 
 - 完成 `V014_S16_P2_POST_REMEDIATION_PROJECT_STATUS_LIFECYCLE` 本地 phase：只读接入生产项目状态、开工、完工、结算、开票和回款 6 类结构。
