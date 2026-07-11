@@ -1,3 +1,11 @@
+## 0.1.4-s12-p2-post-remediation-impact-preview - 2026-07-11
+
+- 完成 `V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW` 本地 phase：6 个公开安全影响定义覆盖 S12-P1 全部待办，并展示潜在项目范围、16 类指标状态和 6 类报告入口影响。
+- 5 个高风险定义必须完成 session-only 二次确认；中风险预览可直接形成会话预览通过状态，但所有批准和发布仍被 `Q4 / D / NO_GO` 阻断。
+- 4 个项目仅作为潜在影响槽位，不公开项目名、金额或归属结论；预览通过不代表业务批准，当前批准/发布业务事件均为 0。
+- v1.4 基线 `54/54 PASS`、当前页 `14/14 PASS`；桌面/移动完成搜索、风险筛选、中/高风险预览、确认前阻断、二次确认、确认后发布阻断、刷新清空和 4 个返回链接，console error 与横向溢出均为 0。
+- 5 个 raw 文件在 phase 前后、跨 S12-P1 和当前复核一致；未执行 S12-P3 重跑、Stage 12 review、持久业务写入、GitHub upload、app reinstall、正式报告或 business execution。
+
 ## 0.1.4-s12-p1-post-remediation-pending-actions - 2026-07-11
 
 - 完成 `V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS` 本地 phase：以 6 个公开安全、不可相加的待处理分组覆盖当前 `Q4 / D / NO_GO / 3-9-2-1`、4 个未公开归属项目槽位和 13 行来源状态。

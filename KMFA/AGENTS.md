@@ -9,7 +9,7 @@
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
 - 当前 Stage: `v0.1.4 Stage 12 post-remediation replay`
-- 当前 Phase: `V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS 已本地完成并通过最终验证；6 个 public-safe 聚合待办覆盖 3/9/2/1、4 个未知项目归属和 13 条数据源状态，4 类事件模板覆盖字段映射、项目匹配、差异处理和备注。页面只生成 session-only 候选事件，刷新即清空；当前批准业务事件=0，旧 approved/reverse chain 仅作策略 fixture。desktop/mobile 搜索、筛选、选择、候选、反向候选、刷新清空和 3 条返回链接均有证据；raw 前后、跨 Stage 11 与当前快照一致。下一步只能另起 run work 执行 S12-P2，不执行 GitHub upload、正式报告、app reinstall 或业务执行。历史 Stage 12-18 产物仅作 legacy 证据，不是当前 active gate。`
+- 当前 Phase: `V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW 已本地完成并通过最终验证；6 个 public-safe 影响定义覆盖 S12-P1 全部待办，5 个高风险定义必须二次确认，4 个项目仅作为潜在影响槽位且不形成归属结论。页面在 session 内展示受影响项目范围、指标和报告；未生成预览、未完成高风险确认以及当前 Q4 / D / NO_GO 均阻止发布，批准和发布业务事件始终为 0。desktop/mobile 搜索、风险筛选、中/高风险预览、二次确认、发布阻断、刷新清空和 4 条返回链接均有证据；raw 前后、跨 S12-P1 与当前快照一致。下一步只能另起 run work 执行 S12-P3，不执行 GitHub upload、正式报告、app reinstall 或业务执行。历史 Stage 12-18 产物仅作 legacy 证据，不是当前 active gate。`
 
 ## Execution Rules
 
@@ -41,7 +41,7 @@
 
 ## Current Non-Goals
 
-- v0.1.4 S12-P1 本轮完成；下一轮只能单独执行 S12-P2 影响预览。不得顺手执行 S12-P3、Stage 12 review、GitHub upload、protected source matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合、客户联络、催收、法务、开票、付款、银行或任何业务动作。
+- v0.1.4 S12-P2 本轮完成；下一轮只能单独执行 S12-P3 派生重跑。不得顺手执行 Stage 12 review、GitHub upload、protected source matching、lineage full check、正式报告、live connector、app reinstall、OpMe 深度耦合、客户联络、催收、法务、开票、付款、银行或任何业务动作。
 - 以下 Stage 15/16/17/18 final upload 相关表述是 legacy/Post-S18 历史证据，不是当前 v0.1.4 active gate。当前 v0.1.4 GitHub main upload 仍延期到 Stage 1-18 全部完成并整体复审修复后一次性执行；不得直接进入 lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。

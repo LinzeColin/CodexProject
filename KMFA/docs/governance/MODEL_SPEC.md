@@ -1,3 +1,18 @@
+## FORM-KMFA-V014-S12P2-POST-REMEDIATION-IMPACT-PREVIEW-001
+
+- phase: `V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW`
+- version: `0.1.4-s12-p2-post-remediation-impact-preview`
+- model_id: `MOD-KMFA-GOV-001`
+- scope: 以当前 S12-P1 六个待办生成项目范围、指标和报告影响预览，并验证高风险二次确认和发布阻断。
+- rule: `impact_preview_valid = definition_count == 6 AND high_risk_count == 5 AND confirmation_required_count == 5 AND potential_project_slots == 4 AND approved == 0 AND published == 0 AND grade == D AND decision == NO_GO AND raw_exact == true`。
+- attribution gate: 四个项目只表示潜在影响槽位；项目归属未证明时必须保持 `potential_impact_not_attribution`，不得公开项目名、金额或建立归属。
+- confirmation gate: 高风险预览必须在当前会话勾选影响范围并完成二次确认；刷新后确认清空。
+- publication gate: 未预览或未确认时直接阻断；预览通过后仍由 `Q4 / D / NO_GO` 阻断批准和发布。
+- raw gate: phase 前后、跨 S12-P1 和当前快照必须一致；不一致立即停止并仅在 private runtime 保留中文差异报告。
+- release gate: `s12_p3=false`、`stage12_review=false`、`persistent_write=false`、`github_upload=false`、`app_reinstall=false`、`formal_report=false`、`business_execution=false`。
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s12_p2_post_remediation_impact_preview.py --require-private-evidence --require-browser-evidence --require-final-evidence`
+- evidence: `KMFA/stage_artifacts/V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW/machine/impact_preview_manifest.json`
+
 ## FORM-KMFA-V014-S12P1-POST-REMEDIATION-PENDING-ACTIONS-001
 
 - phase: `V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS`
