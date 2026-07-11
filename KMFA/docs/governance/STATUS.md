@@ -5,12 +5,12 @@
 ## 最新状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s18-p2-post-remediation-full-regression-acceptance`
+- version: `0.1.4-s18-p3-post-remediation-integration-preparation`
 - current_stage: `S18`
-- current_phase: `V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE`
-- status: `completed_validated_local_only_s18_p2_full_regression_no_go_upload_deferred`
+- current_phase: `V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION`
+- status: `completed_validated_local_only_s18_p3_integration_prepared_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `S18-P3_integration_preparation_as_separate_run`
+- next_required_input: `Stage_18_overall_review_and_finding_fix_as_separate_run`
 - production_ready: `false`
 - github_upload_ready: `false`
 - raw_snapshot_exact_match: `true`
@@ -19,12 +19,12 @@
 ## 前序状态（上一 phase）
 
 - project_id: `KMFA`
-- version: `0.1.4-s18-p1-post-remediation-precision-stress`
+- version: `0.1.4-s18-p2-post-remediation-full-regression-acceptance`
 - current_stage: `S18`
-- current_phase: `V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS`
-- status: `completed_validated_local_only_s18_p1_precision_stress_no_go_upload_deferred`
+- current_phase: `V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE`
+- status: `completed_validated_local_only_s18_p2_full_regression_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `S18-P2_full_regression_and_acceptance_as_separate_run`
+- next_required_input: `S18-P3_integration_preparation_as_separate_run`
 - raw_snapshot_exact_match: `true`
 - decision: `NO_GO`
 
@@ -45,9 +45,11 @@
 
 ## 已完成
 
+- v0.1.4 S18-P3 post-remediation integration preparation completed local-only：redcircle/kingdee/wps=`3/3 read-only proposals`，全部未授权、未连接、未调用，writeback/credential=`0/0`。OpMe=`4 light-entry surfaces` 且 shared database/runtime=`false/false`；Backlog=`6/6 unstarted`。raw phase 前后、跨 S18-P2 和当前快照一致，raw 业务内容未用于方案；当前 `Q4 / D / NO_GO / 3-9-2-1`；next_required_input=`Stage_18_overall_review_and_finding_fix_as_separate_run`。
+
 - v0.1.4 S18-P2 post-remediation full regression acceptance completed local-only：no-omission、zero-delta、schema、lineage、UI 五类 checks=`5/5 executed / 4 PASS / 1 BLOCKED_SAFE / 0 command failure`。S01-S17 current review evidence=`17/17`，S18 current P1/P2 complete；Playwright=`6 files / 54 rows / 54 PASS / 0 WARN / 0 FAIL`。lineage full=false，raw phase 前后、跨 S18-P1 和当前快照一致；当前 `Q4 / D / NO_GO / 3-9-2-1`；next_required_input=`S18-P3_integration_preparation_as_separate_run`。
 
-- v0.1.4 S18-P1 post-remediation precision stress completed local-only：5/5 scenarios，amount=`9/9 + 9/9 rejected`，zero-delta exact PASS，1 分 mismatch blocked。连续 3 次 final-state hash 一致；1200 synthetic file metadata / 1198 valid / 2 blocking errors，actual max elapsed <=1500ms。raw phase 前后、跨 Stage 17 review 和当前快照一致；当前 `Q4 / D / NO_GO / 3-9-2-1`；next_required_input=`S18-P2_full_regression_and_acceptance_as_separate_run`。
+- `V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS`（v0.1.4 S18-P1 post-remediation precision stress）completed local-only：5/5 scenarios，amount=`9/9 + 9/9 rejected`，zero-delta exact PASS，1 分 mismatch blocked。连续 3 次 final-state hash 一致；1200 synthetic file metadata / 1198 valid / 2 blocking errors，actual max elapsed <=1500ms。raw phase 前后、跨 Stage 17 review 和当前快照一致；当前 `Q4 / D / NO_GO / 3-9-2-1`；next_required_input=`S18-P2_full_regression_and_acceptance_as_separate_run`。
 
 - `V014_S17_POST_REMEDIATION_STAGE_REVIEW`（v0.1.4 Stage 17 post-remediation review）completed local-only：当前三 phase focused tests=`30/30 PASS`、strict validators=`3/3 PASS`。修复 P3 canonical finance role、4 个 runbook audit action/7字段、P1 notification scope 过期时态、P2 test/checker、P3 test active-phase 耦合及 review 证据引用断链。11 findings=`7 fixed / 4 passed / 0 open`，6 cross-phase contracts mismatch=0，acceptance=`16/16 PASS`。raw review 前后、跨 S17-P3 和当前快照一致；当前 `Q4 / D / NO_GO / 3-9-2-1`；next_required_input=`S18-P1_precision_and_stress_testing_as_separate_run`。
 

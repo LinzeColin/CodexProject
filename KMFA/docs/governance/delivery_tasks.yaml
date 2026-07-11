@@ -1,6 +1,50 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "KMFA-V014-S18-P3-POST-REMEDIATION-INTEGRATION-PREPARATION-20260712"
+    phase: "V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION"
+    objective: "Lock three future read-only connector plans one OpMe light-entry plan and an ordered unstarted backlog without opening delivery gates."
+    scope:
+      - "RedCircle Kingdee and WPS proposal-only read-only connector contracts"
+      - "OpMe public-safe entry and status-index integration without deep coupling"
+      - "six unstarted next-stage backlog items and final delivery gate sequence"
+      - "read-only raw snapshot alignment public safety and governance evidence"
+    non_scope:
+      - "Stage 18 or final overall review"
+      - "live connector calls credentials endpoints shared databases or writeback"
+      - "GitHub upload app reinstall formal report difference closure persistent writes or business execution"
+    status: "completed"
+    completed_version: "0.1.4-s18-p3-post-remediation-integration-preparation"
+    dependencies:
+      - "V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE"
+      - "V014_S18_P3_INTEGRATION_PREPARATION historical structural fixture only"
+      - "v1.4 roadmap and taskpack"
+    required_files:
+      - "KMFA/stage_artifacts/V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION/machine/integration_preparation_manifest.json"
+      - "KMFA/stage_artifacts/V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION/human/integration_preparation_report_zh.md"
+      - "KMFA/tools/check_v014_s18_p3_post_remediation_integration_preparation.py"
+    acceptance_ids:
+      - "ACC-V014-S18-P3-POST-REMEDIATION-INTEGRATION-PREPARATION"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s18_p3_post_remediation_integration_preparation"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s18_p3_post_remediation_integration_preparation.py --require-private-evidence --require-final-evidence"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_no_float_money.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/no_omission_check.py"
+    test_results:
+      - "PASS: three read-only proposals with zero calls writebacks credentials and source mutations"
+      - "PASS: four OpMe light-entry surfaces without shared database or runtime"
+      - "PASS: six backlog items all unstarted and thirty-four acceptance checks"
+      - "PASS: raw snapshots exact and all review delivery and business gates closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION/human/integration_preparation_report_zh.md"
+      - "KMFA/stage_artifacts/V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION/machine/integration_preparation_manifest.json"
+    risk: "A future integration proposal can be misread as authorization or a completed live connection."
+    rollback: "Revert the local phase commit and current public-safe evidence restore S18-P2 as current and leave raw untouched."
+    remaining_work:
+      - "Stage 18 overall review and finding repair"
+      - "v1.4 final whole-project review and finding repair"
+      - "one-time GitHub main upload and app reinstall parity verification"
+
   - task_id: "KMFA-V014-S18-P2-POST-REMEDIATION-FULL-REGRESSION-ACCEPTANCE-20260712"
     phase: "V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE"
     objective: "Execute five current regression checks confirm eighteen Stage evidence records and lock the current fail-closed Go/No-Go decision."

@@ -8,8 +8,8 @@
 - 中文名: 经营分析系统
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
-- 当前 Stage: `v0.1.4 Stage 18 P2 complete`
-- 当前 Phase: `V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE 已实际执行 no-omission、zero-delta、schema、lineage、UI 五类检查：4 PASS + 1 BLOCKED_SAFE，command failure=0；S01-S17 current review evidence 17/17 有效，S18 已完成 P1/P2 且 P3/review 待执行；本轮 Playwright 6 files / 54 rows / 54 PASS / 0 WARN / 0 FAIL。lineage full=false，raw phase 前后、跨 S18-P1 与当前快照一致；当前仍为 Q4 / D / NO_GO / 3-9-2-1。下一步只能另起 run work 执行 S18-P3，不得执行 Stage 18 review、GitHub upload、app reinstall、正式报告、外部连接器、生产恢复、差异关闭、持久业务写入或业务执行。历史 S18-P1/P2/P3/review/upload 产物仅作 legacy 证据，不是当前 active gate。`
+- 当前 Stage: `v0.1.4 Stage 18 P3 complete, Stage 18 review pending`
+- 当前 Phase: `V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION 已完成红圈、金蝶、WPS 三类后续只读 connector 方案、OpMe 四入口轻集成方案和 6 条未启动 Backlog。三类 connector 均为 proposal-only、未授权、未连接、未调用，写回和源修改全部关闭；OpMe 不共享数据库或业务运行时。raw phase 前后、跨 S18-P2 与当前快照一致，raw 内容未用于方案。当前仍为 Q4 / D / NO_GO / 3-9-2-1。下一步只能另起 run work 执行 Stage 18 整体复审并修复 findings，不得执行最终整体复审、GitHub upload、app reinstall、正式报告、真实连接器、凭据处理、差异关闭、持久业务写入或业务执行。历史 S18-P1/P2/P3/review/upload 产物仅作 legacy 证据，不是当前 active gate。`
 
 ## Execution Rules
 
@@ -41,7 +41,7 @@
 
 ## Current Non-Goals
 
-- v0.1.4 `V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE` 本轮完成；下一轮只能单独执行 S18-P3。不得顺手执行 Stage 18 review、生产恢复、raw 复制或备份、真实通知、外部连接器、客户联络、催收、法务、施工、签署、开票、采购执行、支付审批、支付执行、银行、工资计算、奖金审批、薪资导出、最终发放、GitHub upload、protected source matching、lineage full check completion、正式报告、差异关闭、app reinstall、纳税申报、贷款管理或任何业务动作。
+- v0.1.4 `V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION` 本轮完成；下一轮只能单独执行 Stage 18 整体复审并修复 findings。不得顺手执行最终整体复审、生产恢复、raw 复制或备份、真实通知、真实连接器、凭据处理、客户联络、催收、法务、施工、签署、开票、采购执行、支付审批、支付执行、银行、工资计算、奖金审批、薪资导出、最终发放、GitHub upload、protected source matching、lineage full check completion、正式报告、差异关闭、app reinstall、纳税申报、贷款管理或任何业务动作。
 - 以下 Stage 15/16/17/18 final upload 相关表述是 legacy/Post-S18 历史证据，不是当前 v0.1.4 active gate。当前 v0.1.4 GitHub main upload 仍延期到 Stage 1-18 全部完成并整体复审修复后一次性执行；不得直接进入 lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。

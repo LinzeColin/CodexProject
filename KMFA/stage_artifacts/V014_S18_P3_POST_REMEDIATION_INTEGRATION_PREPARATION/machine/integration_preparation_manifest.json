@@ -1,0 +1,363 @@
+{
+  "acceptance_id": "ACC-V014-S18-P3-POST-REMEDIATION-INTEGRATION-PREPARATION",
+  "acceptance_matrix": {
+    "acceptance_id": "ACC-V014-S18-P3-POST-REMEDIATION-INTEGRATION-PREPARATION",
+    "check_count": 34,
+    "check_fail_count": 0,
+    "check_pass_count": 34,
+    "checks": [
+      {
+        "check_id": "taskpack_contract",
+        "result": "PASS"
+      },
+      {
+        "check_id": "current_s18_p2_dependency",
+        "result": "PASS"
+      },
+      {
+        "check_id": "historical_s18_p3_structural_only",
+        "result": "PASS"
+      },
+      {
+        "check_id": "connector_count",
+        "result": "PASS"
+      },
+      {
+        "check_id": "connector_ids",
+        "result": "PASS"
+      },
+      {
+        "check_id": "connector_read_only",
+        "result": "PASS"
+      },
+      {
+        "check_id": "connector_not_authorized",
+        "result": "PASS"
+      },
+      {
+        "check_id": "connector_not_connected",
+        "result": "PASS"
+      },
+      {
+        "check_id": "connector_no_writeback",
+        "result": "PASS"
+      },
+      {
+        "check_id": "connector_no_external_call",
+        "result": "PASS"
+      },
+      {
+        "check_id": "connector_no_credential",
+        "result": "PASS"
+      },
+      {
+        "check_id": "connector_private_runtime_only",
+        "result": "PASS"
+      },
+      {
+        "check_id": "connector_contract_controls",
+        "result": "PASS"
+      },
+      {
+        "check_id": "opme_surface_count",
+        "result": "PASS"
+      },
+      {
+        "check_id": "opme_light_entry",
+        "result": "PASS"
+      },
+      {
+        "check_id": "opme_public_safe_exchange_only",
+        "result": "PASS"
+      },
+      {
+        "check_id": "opme_no_shared_database",
+        "result": "PASS"
+      },
+      {
+        "check_id": "opme_no_shared_runtime",
+        "result": "PASS"
+      },
+      {
+        "check_id": "backlog_count",
+        "result": "PASS"
+      },
+      {
+        "check_id": "backlog_not_started",
+        "result": "PASS"
+      },
+      {
+        "check_id": "completion_sequence",
+        "result": "PASS"
+      },
+      {
+        "check_id": "raw_phase_exact",
+        "result": "PASS"
+      },
+      {
+        "check_id": "raw_cross_phase_exact",
+        "result": "PASS"
+      },
+      {
+        "check_id": "raw_not_used_for_plan",
+        "result": "PASS"
+      },
+      {
+        "check_id": "reconciliation_truth_preserved",
+        "result": "PASS"
+      },
+      {
+        "check_id": "quality_stays_q4",
+        "result": "PASS"
+      },
+      {
+        "check_id": "report_stays_d",
+        "result": "PASS"
+      },
+      {
+        "check_id": "decision_stays_no_go",
+        "result": "PASS"
+      },
+      {
+        "check_id": "s18_p3_complete",
+        "result": "PASS"
+      },
+      {
+        "check_id": "stage18_review_pending",
+        "result": "PASS"
+      },
+      {
+        "check_id": "final_review_pending",
+        "result": "PASS"
+      },
+      {
+        "check_id": "github_upload_deferred",
+        "result": "PASS"
+      },
+      {
+        "check_id": "app_reinstall_deferred",
+        "result": "PASS"
+      },
+      {
+        "check_id": "business_execution_closed",
+        "result": "PASS"
+      }
+    ],
+    "phase_id": "V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION",
+    "project_id": "KMFA",
+    "record_type": "v014_s18_p3_post_remediation_acceptance_matrix",
+    "schema_version": "kmfa.v014.s18_p3_post_remediation_acceptance_matrix.v1",
+    "stage_id": "S18"
+  },
+  "artifact_refs": {
+    "acceptance": "KMFA/stage_artifacts/V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION/machine/acceptance_matrix_public_safe.json",
+    "backlog": "KMFA/stage_artifacts/V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION/machine/next_stage_backlog_public_safe.jsonl",
+    "connector_plan": "KMFA/stage_artifacts/V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION/machine/read_only_connector_plan_public_safe.jsonl",
+    "go_no_go": "KMFA/stage_artifacts/V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION/machine/go_no_go_report.json",
+    "manifest": "KMFA/stage_artifacts/V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION/machine/integration_preparation_manifest.json",
+    "opme_plan": "KMFA/stage_artifacts/V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION/machine/opme_light_entry_plan_public_safe.json",
+    "report": "KMFA/stage_artifacts/V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION/human/integration_preparation_report_zh.md",
+    "test_results": "KMFA/stage_artifacts/V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION/human/test_results_zh.md"
+  },
+  "branch": "codex/kmfa",
+  "completion_gate_sequence": [
+    "S18_STAGE_REVIEW_AND_FINDING_FIX",
+    "V014_FINAL_OVERALL_REVIEW_AND_FINDING_FIX",
+    "ONE_TIME_GITHUB_MAIN_UPLOAD",
+    "APP_ENTRY_REINSTALL_AND_PARITY_VERIFICATION"
+  ],
+  "content_hash": "sha256:a10bec4efa407b8284a5ee1af8c3cd0702362e8a082894c6c77d4efd4293cebe",
+  "decision": "NO_GO",
+  "formula_id": "FORM-KMFA-V014-S18-P3-POST-REMEDIATION-INTEGRATION-PREPARATION-001",
+  "generated_at": "2026-07-12T08:29:38+10:00",
+  "git_head": "4b1b19b2e1339b42b90ca7c383229d3459e14819",
+  "go_no_go": {
+    "app_reinstall_allowed": false,
+    "app_reinstall_performed": false,
+    "blocker_ids": [
+      "LINEAGE_FULL_CHECK_NOT_COMPLETE",
+      "OPEN_RECONCILIATION_REMAINS",
+      "OFFICIAL_REPORT_RELEASE_NOT_ALLOWED",
+      "STAGE18_REVIEW_PENDING",
+      "FINAL_OVERALL_REVIEW_PENDING",
+      "GITHUB_MAIN_UPLOAD_DEFERRED",
+      "APP_REINSTALL_DEFERRED"
+    ],
+    "business_decision_basis_allowed": false,
+    "business_execution_allowed": false,
+    "business_execution_performed": false,
+    "decision": "NO_GO",
+    "delivery_allowed": false,
+    "external_connector_allowed": false,
+    "external_connector_performed": false,
+    "final_overall_review_performed": false,
+    "github_upload_allowed": false,
+    "github_upload_performed": false,
+    "maximum_report_grade": "D",
+    "next_required_phase": "S18_STAGE_REVIEW",
+    "official_report_release_allowed": false,
+    "persistent_business_write_allowed": false,
+    "phase_id": "V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION",
+    "project_id": "KMFA",
+    "record_type": "v014_s18_p3_post_remediation_go_no_go",
+    "roadmap_phase_id": "S18-P3",
+    "s18_p3_pending": false,
+    "schema_version": "kmfa.v014.s18_p3_post_remediation_go_no_go.v1",
+    "stage18_review_performed": false,
+    "stage_id": "S18"
+  },
+  "historical_s18_p3_baseline": {
+    "backlog_item_count": 6,
+    "connector_count": 3,
+    "dynamic_state_authoritative": false,
+    "legacy_artifact_ref": "KMFA/stage_artifacts/V014_S18_P3_INTEGRATION_PREPARATION/machine/integration_preparation_manifest.json",
+    "legacy_artifact_validated_as_current": false,
+    "opme_entry_surface_count": 4,
+    "structural_fixture_ref": "KMFA/tools/integration_preparation.py",
+    "validated": true
+  },
+  "historical_s18_p3_dynamic_state_authoritative": false,
+  "historical_s18_p3_structural_baseline_validated": true,
+  "model_registry_key": "kmfa_v014_s18_p3_post_remediation_integration_preparation",
+  "next_phase": "S18_STAGE_REVIEW",
+  "next_required_step": "Run Stage 18 overall review and finding fixes separately; do not execute final overall review, GitHub upload, app reinstall, live connector calls, credential handling, formal report release, difference closure, persistent business writes, or business execution in S18-P3.",
+  "parameter_ids": [
+    "PARAM-KMFA-1813",
+    "PARAM-KMFA-1814",
+    "PARAM-KMFA-1815"
+  ],
+  "phase_boundaries": {
+    "app_reinstall_scope_included": false,
+    "business_execution_scope_included": false,
+    "credential_handling_scope_included": false,
+    "difference_closure_scope_included": false,
+    "final_overall_review_scope_included": false,
+    "formal_report_scope_included": false,
+    "github_upload_scope_included": false,
+    "historical_s18_p3_structural_baseline_reused": true,
+    "lineage_full_check_scope_included": false,
+    "live_connector_scope_included": false,
+    "persistent_business_write_scope_included": false,
+    "private_raw_snapshot_validation_performed": true,
+    "s18_p2_dependency_reused": true,
+    "s18_p3_integration_preparation_performed": true,
+    "stage18_review_scope_included": false
+  },
+  "phase_id": "V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "credential_committed": false,
+    "field_plaintext_committed": false,
+    "private_runtime_committed": false,
+    "private_tabular_material_committed": false,
+    "raw_business_data_committed": false,
+    "raw_file_hash_committed": false,
+    "raw_file_name_committed": false,
+    "source_document_committed": false,
+    "true_account_committed": false,
+    "true_customer_project_committed": false,
+    "true_money_committed": false
+  },
+  "record_type": "v014_s18_p3_post_remediation_integration_preparation_manifest",
+  "required_backlog_ids": [
+    "BL-KMFA-NEXT-001",
+    "BL-KMFA-NEXT-002",
+    "BL-KMFA-NEXT-003",
+    "BL-KMFA-NEXT-004",
+    "BL-KMFA-NEXT-005",
+    "BL-KMFA-NEXT-006"
+  ],
+  "required_connector_ids": [
+    "redcircle",
+    "kingdee",
+    "wps"
+  ],
+  "required_opme_entry_surfaces": [
+    "read_only_entry",
+    "report_index",
+    "run_status",
+    "handoff_link"
+  ],
+  "required_opme_exchange_refs": [
+    "public_safe_status_summary",
+    "report_index_pointer",
+    "handoff_pointer",
+    "validator_command_pointer"
+  ],
+  "roadmap_phase_id": "S18-P3",
+  "s18_p2_dependency": {
+    "decision": "NO_GO",
+    "evidence_ref": "KMFA/stage_artifacts/V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE/machine/full_regression_acceptance_manifest.json",
+    "evidence_sha256": "sha256:38522308295afe946b0b5e2c7e4bbd96fdc7caa521d545c53f5289b2081e8865",
+    "phase_id": "V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE",
+    "status": "completed_validated_local_only_s18_p2_full_regression_no_go_upload_deferred",
+    "validated": true
+  },
+  "schema_version": "kmfa.v014.s18_p3_post_remediation_integration_preparation_manifest.v1",
+  "stage_id": "S18",
+  "status": "completed_validated_local_only_s18_p3_integration_prepared_no_go_upload_deferred",
+  "summary": {
+    "acceptance_id": "ACC-V014-S18-P3-POST-REMEDIATION-INTEGRATION-PREPARATION",
+    "app_reinstall_performed": false,
+    "backlog_item_count": 6,
+    "business_execution_performed": false,
+    "connector_plan_count": 3,
+    "current_data_quality_grade": "Q4",
+    "current_report_grade": "D",
+    "decision": "NO_GO",
+    "external_service_call_count": 0,
+    "final_overall_review_performed": false,
+    "github_upload_performed": false,
+    "historical_s18_p3_structural_baseline_validated": true,
+    "incomplete_reconciliation_count": 1,
+    "live_connector_call_count": 0,
+    "nonzero_delta_reconciliation_count": 9,
+    "open_final_difference_accepted_count": 3,
+    "opme_entry_surface_count": 4,
+    "phase_id": "V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION",
+    "project_id": "KMFA",
+    "raw_business_content_used_for_integration_plan": false,
+    "raw_cross_phase_snapshot_exact_match": true,
+    "raw_snapshot_exact_match": true,
+    "raw_source_file_count": 5,
+    "read_only_connector_count": 3,
+    "roadmap_phase_id": "S18-P3",
+    "s18_p1_performed": true,
+    "s18_p2_dependency_validated": true,
+    "s18_p2_performed": true,
+    "s18_p3_performed": true,
+    "schema_version": "kmfa.v014.s18_p3_post_remediation_integration_preparation_summary.v1",
+    "source_mutation_allowed_count": 0,
+    "stage18_review_performed": false,
+    "stage_id": "S18",
+    "status": "completed_validated_local_only_s18_p3_integration_prepared_no_go_upload_deferred",
+    "task_id": "KMFA-V014-S18-P3-POST-REMEDIATION-INTEGRATION-PREPARATION-20260712",
+    "taskpack_contract_validated": true,
+    "version": "0.1.4-s18-p3-post-remediation-integration-preparation",
+    "zero_delta_reconciliation_count": 2
+  },
+  "task_id": "KMFA-V014-S18-P3-POST-REMEDIATION-INTEGRATION-PREPARATION-20260712",
+  "taskpack_contract": {
+    "next_stage_backlog_contract_locked": true,
+    "opme_light_entry_contract_locked": true,
+    "read_only_connector_contract_locked": true,
+    "roadmap_phase_id": "S18-P3",
+    "roadmap_read": true,
+    "source_refs": [
+      "KMFA/taskpack/v1_4/taskpack/01_KMFA_Codex_TaskPack_v1_4_public_safe.md",
+      "KMFA/taskpack/v1_4/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_4.md"
+    ],
+    "task_count": 3,
+    "taskpack_read": true
+  },
+  "validation_summary": {
+    "connector_opme_backlog_validation": "PASS",
+    "final_validation_recorded": true,
+    "focused_tests": "PASS",
+    "governance_and_safety_scans": "PASS",
+    "raw_alignment": "PASS",
+    "s18_p2_dependency_validator": "PASS",
+    "strict_validator": "PASS"
+  },
+  "version": "0.1.4-s18-p3-post-remediation-integration-preparation"
+}

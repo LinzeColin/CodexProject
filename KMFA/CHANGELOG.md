@@ -1,3 +1,11 @@
+## 0.1.4-s18-p3-post-remediation-integration-preparation - 2026-07-12
+
+- 完成 `V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION`：锁定红圈、金蝶、WPS 三类后续只读 connector 方案，全部为 proposal-only、未授权、未连接、未调用。
+- 完成 OpMe 轻入口方案：4 个入口面仅交换公开安全状态与索引指针，不共享数据库或业务运行时。
+- 发布 6 条下一阶段 Backlog，全部未启动；交付顺序固定为 Stage 18 复审及修复、v1.4 最终整体复审及修复、一次性 GitHub main upload、App 入口重装与一致性验证。
+- raw phase 前后、跨 S18-P2 与当前快照一致；raw 业务内容未用于方案，未修改、复制或备份 raw。
+- 当前保持 `Q4 / D / NO_GO / 3-9-2-1`；Stage 18 review、最终整体复审、upload、reinstall、真实连接器、凭据处理、正式报告与业务执行均未执行。
+
 ## 0.1.4-s18-p2-post-remediation-full-regression-acceptance - 2026-07-12
 
 - 完成 `V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE`：实际执行 no-omission、zero-delta、schema、lineage、UI 五类 current checks，command failure=0。

@@ -4,19 +4,19 @@
 
 ## 一句话状态
 
-KMFA 已完成 `V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE`：五类 current checks、18 Stage 证据索引和 Playwright 54/54 通过；lineage full 仍未完成，状态保持 `Q4 / D / NO_GO`。
+KMFA 已完成 `V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION`：3 类 future connectors、4 个 OpMe 轻入口面和 6 条未启动 Backlog 已锁定；真实连接器、写回、凭据和外部调用均为 0，状态保持 `Q4 / D / NO_GO`。
 
 ## 当前可信任范围
 
-- 可以信任：current S18-P2 五类命令执行结果、S01-S17 review evidence 索引、当前 Playwright 54/54 和 raw 一致性证据。
+- 可以信任：current S18-P3 三类只读接入边界、OpMe 轻入口边界、未启动 Backlog、S18-P2 严格依赖和 raw 一致性证据。
 - 必须保留：9 条非零差异，不得通过覆盖、四舍五入、空白兼容层或替换权威值消除。
 - 不能信任：3 条缺可证明数值的现金槽位、1 条未完成现金比较、任何完整业务一致性或正式经营决策结论。
 - 不能误读：lineage validator PASS 只证明安全阻断契约有效，不证明 full lineage 已完成；D级受限预览不是正式报告。
-- 下一步只做 S18-P3；不得顺手推进 Stage 18 review、GitHub upload、app reinstall 或 business execution。
+- 下一步只做 Stage 18 整体复审并修复 findings；不得顺手推进最终整体复审、GitHub upload、app reinstall 或 business execution。
 
 ## 前序一句话状态（上一 phase）
 
-KMFA 已完成 `V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS`：5 类实际 synthetic controls、3 次一致性导入、1200 条压力输入和 2 类阻断错误通过。
+KMFA 已完成 `V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE`：五类 current checks、18 Stage 证据索引和 Playwright 54/54 通过；lineage full 仍未完成。
 
 ## 前序一句话状态（历史）
 
@@ -24,9 +24,11 @@ KMFA 当前版本 `0.1.4-residual-difference-authorized-source-reference-or-excl
 
 ## 你现在能信任什么
 
+- v0.1.4 S18-P3 post-remediation integration preparation 已通过本地验证：redcircle/kingdee/wps=3 类只读 proposal，OpMe=4 个轻入口面，Backlog=6 条且全部未启动；live connector/external service/writeback/credential=0/0/0/0。raw 前后、跨 S18-P2 和当前快照一致；下一步只能 Stage 18 整体复审并修复 findings。
+
 - v0.1.4 S18-P2 post-remediation full regression 已通过本地验证：5/5 checks executed，4 PASS + 1 BLOCKED_SAFE，S01-S17 review evidence=17/17，S18 current P1/P2 complete，Playwright=54/54 PASS，lineage full=false。raw 前后、跨 S18-P1 和当前快照一致；下一步只能 S18-P3。
 
-- v0.1.4 S18-P1 post-remediation precision stress 已通过本地验证：5/5 scenarios，amount=`9/9 + 9/9 rejected`，zero-delta exact PASS，1 分 mismatch blocked，3 次 final-state hash 一致，1200 batch / 1198 valid / 2 blocking errors，actual elapsed <=1500ms。raw 前后、跨 Stage 17 review 和当前快照一致；下一步只能 S18-P2。
+- `V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS`（v0.1.4 S18-P1 post-remediation precision stress）已通过本地验证：5/5 scenarios，amount=`9/9 + 9/9 rejected`，zero-delta exact PASS，1 分 mismatch blocked，3 次 final-state hash 一致，1200 batch / 1198 valid / 2 blocking errors，actual elapsed <=1500ms。raw 前后、跨 Stage 17 review 和当前快照一致；下一步只能 S18-P2。
 
 - `V014_S17_POST_REMEDIATION_STAGE_REVIEW`（v0.1.4 Stage 17 post-remediation review）已通过本地验证：S17-P1/P2/P3 focused tests=`30/30`，strict validators=`3/3`。修复 canonical role、runbook audit action/7字段、notification scope 时态、P2 测试/checker 与 P3 测试的状态文档时态耦合及 review 证据引用断链；11 findings=`7 fixed / 4 passed / 0 open`，6 项跨 phase 合同 mismatch=0。raw review 前后、跨 S17-P3 和当前快照一致；下一步只能 S18-P1。
 

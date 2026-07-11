@@ -1,3 +1,15 @@
+## FORM-KMFA-V014-S18-P3-POST-REMEDIATION-INTEGRATION-PREPARATION-001
+
+- phase: V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION
+- version: 0.1.4-s18-p3-post-remediation-integration-preparation
+- model_id: MOD-KMFA-GOV-001
+- parameters: PARAM-KMFA-1813, PARAM-KMFA-1814, PARAM-KMFA-1815
+- expression: `s18_p3_valid = connector_plan_count == 3 AND read_only_connector_count == 3 AND live_connector_call_count == 0 AND source_mutation_allowed_count == 0 AND opme_entry_surface_count == 4 AND shared_database_allowed == false AND backlog_item_count == 6 AND backlog_started_count == 0 AND raw_exact == true AND current_grade == D AND decision == NO_GO AND stage18_review_performed == false AND github_upload_performed == false`
+- rationale: S18-P3 只准备未来只读接入、OpMe 轻入口和未启动 Backlog，不把方案状态误报为已授权、已连接或已交付。
+- source: v1.4 S18-P3 roadmap/taskpack、current S18-P2 strict evidence、legacy S18-P3 structural fixture 和只读 raw 快照。
+- missing_policy: 任一 connector 写回/调用/凭据出现、OpMe 深耦合、Backlog 启动、raw 漂移或下游门禁打开均 fail closed。
+- evidence: KMFA/stage_artifacts/V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION/machine/integration_preparation_manifest.json
+
 ## FORM-KMFA-V014-S18-P2-POST-REMEDIATION-FULL-REGRESSION-ACCEPTANCE-001
 
 - phase: V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE
