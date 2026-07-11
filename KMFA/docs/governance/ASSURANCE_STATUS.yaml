@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260711-V014-S15-POST-REMEDIATION-STAGE-REVIEW"
+as_of_event_id: "DEV-KMFA-20260712-V014-S16-P1-POST-REMEDIATION-SUBCONTRACT-PROCUREMENT"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "9d7f5d85937cb91c57dfea0445c5dcee549d4e3b"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S15_POST_REMEDIATION_STAGE_REVIEW_COMMIT"
-snapshot_event_time: "2026-07-11T23:05:37+10:00"
-generator_version: "manual-0.1.4-s15-post-remediation-stage-review"
+source_base_commit: "66554b849d721f240a239664f62fdee9481aafeb"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT_COMMIT"
+snapshot_event_time: "2026-07-12T00:12:08+10:00"
+generator_version: "manual-0.1.4-s16-p1-post-remediation-subcontract-procurement"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1397
-    total_active_formulas: 302
+    total_active_parameters: 1400
+    total_active_formulas: 303
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -974,6 +974,61 @@ dimensions:
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
+kmfa_v014_s16_p1_post_remediation_subcontract_procurement:
+  status: completed_validated_local_only_s16_p1_structure_candidates_zero_transaction_materialization_no_go_upload_deferred
+  phase_id: V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT
+  task_id: KMFA-V014-S16-P1-POST-REMEDIATION-SUBCONTRACT-PROCUREMENT-20260712
+  acceptance_id: ACC-V014-S16-P1-POST-REMEDIATION-SUBCONTRACT-PROCUREMENT
+  formula_ref: FORM-KMFA-V014-S16-P1-POST-REMEDIATION-SUBCONTRACT-PROCUREMENT-001
+  parameter_refs:
+    - PARAM-KMFA-1780
+    - PARAM-KMFA-1781
+    - PARAM-KMFA-1782
+  decision: NO_GO
+  evidence_ref: KMFA/stage_artifacts/V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT/machine/subcontract_procurement_manifest.json
+  validator: KMFA/tools/check_v014_s16_p1_post_remediation_subcontract_procurement.py
+  counts:
+    source_lane_count: 5
+    raw_source_file_count: 5
+    private_xlsx_container_count: 48
+    private_parseable_xlsx_count: 25
+    private_unparseable_xlsx_count: 23
+    private_parseable_sheet_count: 4198
+    private_unique_candidate_sheet_count: 1335
+    private_candidate_lane_association_count: 1647
+    private_multi_lane_candidate_sheet_count: 274
+    private_probe_roundtrip_mismatch_count: 0
+    project_matching_contract_count: 1
+    project_matching_component_count: 6
+    authoritative_row_binding_count: 0
+    materialized_transaction_record_count: 0
+    project_match_record_count: 0
+    unallocated_cost_pool_item_count: 0
+    detection_rule_count: 4
+    anomaly_candidate_count: 0
+  quality:
+    current_data_quality_grade: Q4
+    current_report_grade: D
+    decision: NO_GO
+    open_final_difference_accepted_count: 3
+    nonzero_delta_reconciliation_count: 9
+    zero_delta_reconciliation_count: 2
+    incomplete_reconciliation_count: 1
+  boundaries:
+    s16_p1_performed: true
+    s16_p2_performed: false
+    s16_p3_performed: false
+    stage16_review_performed: false
+    procurement_execution_performed: false
+    payment_approval_performed: false
+    payment_execution_performed: false
+    bank_operation_performed: false
+    github_upload_performed: false
+    app_reinstall_performed: false
+    formal_report_release_performed: false
+    difference_closure_performed: false
+    business_execution_performed: false
+
 kmfa_v014_s15_post_remediation_stage_review:
   status: completed_validated_local_only_stage15_review_no_go_upload_deferred
   phase_id: V014_S15_POST_REMEDIATION_STAGE_REVIEW

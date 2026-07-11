@@ -1,3 +1,19 @@
+## FORM-KMFA-V014-S16-P1-POST-REMEDIATION-SUBCONTRACT-PROCUREMENT-001
+
+- phase: V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT
+- version: 0.1.4-s16-p1-post-remediation-subcontract-procurement
+- model_id: MOD-KMFA-GOV-001
+- scope: 只读接入外协合同、采购订单、付款申请、发票和项目归属五类结构，锁定项目匹配、未归集成本池和四类异常检测规则，不生成未证明的交易或金额事实。
+- rule: s16_p1_valid = source_lane_count == 5 AND private_candidate_covered_lane_count == 5 AND private_probe_roundtrip_mismatch_count == 0 AND processed_private_structure_alignment_exact == true AND authoritative_row_binding_count == 0 AND project_match_record_count == 0 AND detection_rule_count == 4 AND anomaly_candidate_count == 0 AND raw_exact == true AND current_grade == D AND decision == NO_GO。
+- probe gate: 5 raw / 48 XLSX / 25 parseable / 23 unparseable / 4,198 sheets / 1,335 unique candidates / 1,647 lane associations / 274 multi-lane / 0 mismatch。
+- fact gate: authoritative row/value bindings, materialized transactions, project matches, unallocated items and anomaly candidates all remain 0。
+- history gate: legacy 5 project matches / 2 unallocated items / 4 anomaly candidates are non-authoritative fixtures only。
+- browser gate: baseline 54/54、current 13/13、2 viewports、10 lane interactions、8 rule interactions、4 HTTP、4 navigation、0 console、0 overflow。
+- raw gate: phase 前后、跨 Stage 15 review 和当前只读快照一致；raw/private 明文不得进入 Git。
+- downstream gate: S16-P2/P3、Stage 16 review、procurement、payment approval/execution、bank、upload、reinstall、formal report、difference closure 与 business execution=false。
+- validator: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s16_p1_post_remediation_subcontract_procurement.py --require-private-evidence --require-browser-evidence --require-final-evidence
+- evidence: KMFA/stage_artifacts/V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT/machine/subcontract_procurement_manifest.json
+
 ## FORM-KMFA-V014-S15-POST-REMEDIATION-STAGE-REVIEW-001
 
 - phase: V014_S15_POST_REMEDIATION_STAGE_REVIEW

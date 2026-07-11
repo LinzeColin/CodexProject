@@ -1,3 +1,18 @@
+kmfa_v014_s16_p1_post_remediation_subcontract_procurement:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s16-p1-post-remediation-subcontract-procurement"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S16-P1-POST-REMEDIATION-SUBCONTRACT-PROCUREMENT-001
+  parameter_refs:
+    - PARAM-KMFA-1780
+    - PARAM-KMFA-1781
+    - PARAM-KMFA-1782
+  evidence_dir: KMFA/stage_artifacts/V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT
+  validator: KMFA/tools/check_v014_s16_p1_post_remediation_subcontract_procurement.py
+  scope: Current read-only five-lane subcontract procurement payment invoice and project-attribution structure candidates with exact processed/private aggregate alignment zero authoritative transactions project matches pool items and anomaly candidates raw immutability browser evidence and Q4 D NO_GO 3-9-2-1; S16-P2 P3 Stage 16 review procurement payment bank upload reinstall formal release difference closure and business execution remain closed.
+
 kmfa_v014_s15_post_remediation_stage_review:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-s15-post-remediation-stage-review"
