@@ -1,3 +1,18 @@
+## FORM-KMFA-V014-S15P2-POST-REMEDIATION-PERFORMANCE-REVIEW-LIST-001
+
+- phase: V014_S15_P2_POST_REMEDIATION_PERFORMANCE_REVIEW_LIST
+- version: 0.1.4-s15-p2-post-remediation-performance-review-list
+- model_id: MOD-KMFA-GOV-001
+- scope: 输出六字段零行业绩效事实表结构、异常项目判定方法和六项字段级复核事项，不生成项目占位行、业务值或薪资结论。
+- rule: performance_review_valid = performance_fact_table_column_count == 6 AND performance_fact_row_count == 0 AND authoritative_project_row_count == 0 AND authoritative_value_binding_count == 0 AND actual_abnormal_project_count == 0 AND field_review_item_count == 6 AND public_business_value_count == 0 AND raw_exact == true AND current_grade == D AND decision == NO_GO。
+- fact gate: 事实表只有结构；权威项目行、权威值、合成项目行、公开业务值和实际异常项目均为 0。
+- review gate: 六项均为字段级、待权威绑定且不含 project_ref；不得升级为项目异常或绩效分数。
+- history gate: 旧 S15-P2 的 4 条合成事实行和 16 条事项仅作历史结构夹具，不具有当前动态权威性。
+- raw gate: phase 前后、跨 S15-P1 和当前只读快照一致；raw/private 明文不得进入 Git。
+- downstream gate: S15-P3、Stage 15 review、salary、bonus、payroll、upload、reinstall、formal report、difference closure 与 business execution=false。
+- validator: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s15_p2_post_remediation_performance_review_list.py --require-private-evidence --require-browser-evidence --require-final-evidence
+- evidence: KMFA/stage_artifacts/V014_S15_P2_POST_REMEDIATION_PERFORMANCE_REVIEW_LIST/machine/performance_review_manifest.json
+
 ## FORM-KMFA-V014-S15P1-POST-REMEDIATION-PERFORMANCE-FACT-FIELDS-001
 
 - phase: V014_S15_P1_POST_REMEDIATION_PERFORMANCE_FACT_FIELDS

@@ -9,7 +9,7 @@
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
 - 当前 Stage: `v0.1.4 Stage 15 phase delivery`
-- 当前 Phase: `V014_S15_P1_POST_REMEDIATION_PERFORMANCE_FACT_FIELDS 已按 Roadmap 定义开票金额、毛利率、结算速度、回款速度、审计偏差、客情费率 6 个字段，连接 6/6 项目成本与回款 public-safe 结构引用，并对 5 个只读 raw、48 个 XLSX 容器和 4,198 个可解析工作表执行双次候选探针。六字段候选为 9/1/2/4/2/2，覆盖 13 个唯一工作表且指纹不一致为 0；权威行/值绑定和绩效事实物化均为 0，6/6 字段保持人工复核。当前仍为 Q4 / D / NO_GO / 3-9-2-1，raw 前后、跨 Stage 14 review 与当前快照一致。下一步只能另起 run work 执行 S15-P2，不得执行 S15-P3、Stage 15 整体复审、工资奖金、薪资导出、GitHub upload、app reinstall、正式报告、差异关闭或业务执行。历史 Stage 12-18 产物仅作 legacy 证据，不是当前 active gate。`
+- 当前 Phase: `V014_S15_P2_POST_REMEDIATION_PERFORMANCE_REVIEW_LIST 已按 Roadmap 输出 1 个 public-safe 绩效事实表结构、6 个字段、0 条权威或合成项目事实行、1 个含 6 条规则的异常项目判定方法，以及 6 项不含 project_ref 的字段级复核事项。旧 S15-P2 的 4 条合成事实行和 16 条事项已隔离为历史夹具；实际异常项目、公开业务值、绩效分数均为 0。当前仍为 Q4 / D / NO_GO / 3-9-2-1，raw 前后、跨 S15-P1 与当前快照一致。下一步只能另起 run work 执行 S15-P3，不得执行 Stage 15 整体复审、工资奖金、薪资导出、GitHub upload、app reinstall、正式报告、差异关闭或业务执行。历史 Stage 12-18 产物仅作 legacy 证据，不是当前 active gate。`
 
 ## Execution Rules
 
@@ -41,7 +41,7 @@
 
 ## Current Non-Goals
 
-- v0.1.4 S15-P1 本轮完成；下一轮只能单独执行 S15-P2。不得顺手执行 S15-P3、Stage 15 整体复审、工资计算、奖金审批、薪资导出、最终发放、GitHub upload、protected source matching、lineage full check、正式报告、差异关闭、live connector、app reinstall、OpMe 深度耦合、客户联络、催收、法务、发票开具、纳税申报、付款、银行、贷款管理或任何业务动作。
+- v0.1.4 S15-P2 本轮完成；下一轮只能单独执行 S15-P3。不得顺手执行 Stage 15 整体复审、工资计算、奖金审批、薪资导出、最终发放、GitHub upload、protected source matching、lineage full check、正式报告、差异关闭、live connector、app reinstall、OpMe 深度耦合、客户联络、催收、法务、发票开具、纳税申报、付款、银行、贷款管理或任何业务动作。
 - 以下 Stage 15/16/17/18 final upload 相关表述是 legacy/Post-S18 历史证据，不是当前 v0.1.4 active gate。当前 v0.1.4 GitHub main upload 仍延期到 Stage 1-18 全部完成并整体复审修复后一次性执行；不得直接进入 lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。

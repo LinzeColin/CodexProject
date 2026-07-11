@@ -1,3 +1,19 @@
+kmfa_v014_s15_p2_post_remediation_performance_review_list:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s15-p2-post-remediation-performance-review-list"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S15P2-POST-REMEDIATION-PERFORMANCE-REVIEW-LIST-001
+  parameter_refs:
+    - PARAM-KMFA-1769
+    - PARAM-KMFA-1770
+    - PARAM-KMFA-1771
+    - PARAM-KMFA-1772
+  evidence_dir: KMFA/stage_artifacts/V014_S15_P2_POST_REMEDIATION_PERFORMANCE_REVIEW_LIST
+  validator: KMFA/tools/check_v014_s15_p2_post_remediation_performance_review_list.py
+  scope: Current six-column zero-row performance fact table one abnormal-project method six field-level review items zero actual abnormal projects and business values raw immutability browser evidence and Q4 D NO_GO 3-9-2-1; S15-P3 Stage 15 review salary bonus payroll upload reinstall formal release and business execution remain closed.
+
 kmfa_v014_s15_p1_post_remediation_performance_fact_fields:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-s15-p1-post-remediation-performance-fact-fields"
