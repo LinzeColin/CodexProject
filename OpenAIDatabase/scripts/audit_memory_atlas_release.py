@@ -63,6 +63,8 @@ SOURCE_SCAN_EXCLUDED_DIRS = {".git", ".local_keys", "node_modules", "dist", "__p
 PUBLIC_RAW_PREFIX = "data/public_raw/"
 PUBLIC_RAW_IGNORED_NAMES = {".DS_Store", ".gitkeep", "README.md"}
 RAW_MANIFEST_DIR = Path("机器治理/证据与日志/raw_archive_manifests")
+FAILED_SESSION_HISTORY_PART_COUNT = "0"
+FAILED_SESSION_HISTORY_RISK_SCAN = "SENSITIVE_SCAN_BLOCKED"
 
 
 class AuditError(RuntimeError):
@@ -95,6 +97,23 @@ def forbidden_name_pattern(relative: str, allow_public_raw_sessions: bool = Fals
         if pattern.search(relative):
             return pattern
     return None
+
+
+def is_failed_zero_part_session_history_manifest(path: Path) -> bool:
+    if path.name != "MANIFEST.txt":
+        return False
+    try:
+        fields = dict(
+            line.split("=", 1)
+            for line in path.read_text(encoding="utf-8").splitlines()
+            if "=" in line
+        )
+    except OSError:
+        return False
+    return (
+        fields.get("part_count") == FAILED_SESSION_HISTORY_PART_COUNT
+        and fields.get("risk_scan") == FAILED_SESSION_HISTORY_RISK_SCAN
+    )
 
 
 def _run_json_audit(command: list[str]) -> dict[str, Any]:
@@ -298,7 +317,11 @@ def audit_tracked_files(repo_root: Path) -> list[str]:
 
     problems: list[str] = []
     for line in result.stdout.splitlines():
-        if line in ALLOWED_TRACKED_FILES or is_allowed_managed_session_history_file(line):
+        if is_allowed_managed_session_history_file(line):
+            if is_failed_zero_part_session_history_manifest(repo_root / line):
+                problems.append(f"failed zero-part session history metadata: {line}")
+            continue
+        if line in ALLOWED_TRACKED_FILES:
             continue
         if forbidden_name_pattern(line, allow_public_raw_sessions=True):
             problems.append(f"forbidden tracked filename: {line}")
@@ -317,7 +340,11 @@ def audit_source_workspace_files(repo_root: Path) -> list[str]:
         relative = relative_path.as_posix()
         if any(part in SOURCE_SCAN_EXCLUDED_DIRS for part in relative_path.parts):
             continue
-        if relative in ALLOWED_TRACKED_FILES or is_allowed_managed_session_history_file(relative):
+        if is_allowed_managed_session_history_file(relative):
+            if is_failed_zero_part_session_history_manifest(path):
+                problems.append(f"failed zero-part session history metadata: {relative}")
+            continue
+        if relative in ALLOWED_TRACKED_FILES:
             continue
         if forbidden_name_pattern(relative, allow_public_raw_sessions=True):
             problems.append(f"forbidden source workspace filename: {relative}")

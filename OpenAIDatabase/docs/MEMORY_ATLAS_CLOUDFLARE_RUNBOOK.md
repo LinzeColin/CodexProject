@@ -10,6 +10,7 @@ Official references used by this runbook:
 - Cloudflare Pages Direct Upload: https://developers.cloudflare.com/pages/get-started/direct-upload/
 - Direct Upload with CI: https://developers.cloudflare.com/pages/how-to/use-direct-upload-with-continuous-integration/
 - Pages Wrangler configuration: https://developers.cloudflare.com/pages/functions/wrangler-configuration/
+- Workers Static Assets: https://developers.cloudflare.com/workers/static-assets/
 - Wrangler Pages commands: https://developers.cloudflare.com/workers/wrangler/commands/pages/
 - Access self-hosted public app: https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/self-hosted-public-app/
 - Access policies: https://developers.cloudflare.com/cloudflare-one/access-controls/policies/
@@ -72,6 +73,13 @@ python3 scripts/preflight_cloudflare_pages_access.py \
 The token must not be committed. Do not store it in `.env` inside the repo.
 
 ## 3. Pages Direct Upload
+
+Production uses mode
+`pages_direct_upload_with_workers_migration_ready_config`: the helper performs
+an explicit Pages Direct Upload with `wrangler pages deploy`. The root
+`wrangler.jsonc` is a Workers Static Assets migration-ready config and is not
+consumed by this Pages command. Do not run `wrangler deploy` or claim a Workers
+migration unless that separate migration is explicitly approved and verified.
 
 Only after the authorization gate:
 

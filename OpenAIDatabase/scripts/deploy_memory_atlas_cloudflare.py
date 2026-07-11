@@ -23,14 +23,18 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from audit_memory_atlas_goal_completion import current_git_commit  # noqa: E402
+from memory_atlas_cloudflare_contract import (  # noqa: E402
+    DEPLOYMENT_MODE,
+    PAGES_DEPLOY_COMMAND,
+    PROJECT_NAME,
+    PUBLISH_DIR_ARG,
+)
 
 
 AUTH_ENV = "MEMORY_ATLAS_CLOUDFLARE_AUTHORIZED"
 AUTH_VALUE = "I_AUTHORIZE_THIS_DEPLOY"
 LOCAL_RUNTIME_ENV = "MEMORY_ATLAS_LOCAL_RUNTIME_CANDIDATE"
-PROJECT_NAME = "openai-memory-atlas"
-PUBLISH_DIR = Path("apps/memory-atlas/dist")
-PUBLISH_DIR_ARG = PUBLISH_DIR.as_posix()
+PUBLISH_DIR = Path(PUBLISH_DIR_ARG)
 
 
 class DeploymentError(RuntimeError):
@@ -138,7 +142,7 @@ def deploy(args: argparse.Namespace) -> dict[str, Any]:
         ["python3", "scripts/audit_memory_atlas_visual_acceptance.py"],
         ["python3", "scripts/audit_memory_atlas_acceptance.py", "--publish-dir", PUBLISH_DIR_ARG],
         ["python3", "scripts/preflight_cloudflare_pages_access.py", "--publish-dir", PUBLISH_DIR_ARG, "--require-live-env"],
-        ["npx", "wrangler", "pages", "deploy", PUBLISH_DIR_ARG, "--project-name", PROJECT_NAME],
+        PAGES_DEPLOY_COMMAND,
     ]
 
     results: list[dict[str, Any]] = []
@@ -162,6 +166,7 @@ def deploy(args: argparse.Namespace) -> dict[str, Any]:
         "authorization_required_for_execute": f"export {AUTH_ENV}={AUTH_VALUE!r}",
         "project_name": PROJECT_NAME,
         "publish_dir": PUBLISH_DIR_ARG,
+        "deployment_mode": DEPLOYMENT_MODE,
         "commands": results,
         "deployment_url": deployment_url,
         "evidence_out": portable_output_path(args.evidence_out, repo_root),

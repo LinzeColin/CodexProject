@@ -28,8 +28,10 @@ class MemoryAtlasDeploymentTests(unittest.TestCase):
         self.assertIn("wrangler pages deploy apps/memory-atlas/dist", runbook)
         self.assertIn("明确授权", runbook)
 
-        deploy_script = (ROOT / "scripts/deploy_memory_atlas_cloudflare.py").read_text(encoding="utf-8")
-        self.assertIn('"pages", "deploy", PUBLISH_DIR_ARG', deploy_script)
+        contract = (ROOT / "scripts/memory_atlas_cloudflare_contract.py").read_text(encoding="utf-8")
+        self.assertIn('DEPLOYMENT_MODE = "pages_direct_upload_with_workers_migration_ready_config"', contract)
+        self.assertIn('"pages",', contract)
+        self.assertIn('"deploy",', contract)
 
         pages_template = json.loads((ROOT / "config/cloudflare/pages_direct_upload.template.json").read_text(encoding="utf-8"))
         access_template = json.loads((ROOT / "config/cloudflare/access_self_hosted_application.template.json").read_text(encoding="utf-8"))
