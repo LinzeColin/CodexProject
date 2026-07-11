@@ -221,6 +221,7 @@ REQUIRED_FILES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_ENTRY_CONTRACT.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE1_SCOPE_BOUNDARY.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE2_JOB_STATE_MODEL_SLICE.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE3_ADVERSARIAL_SCENARIOS.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/job_state_model/stage037_job_state_model_index.json",
     "KM_IDSystem/scripts/check_job_state_model.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_quality_constraints/stage036_database_quality_constraints_index.json",
@@ -394,6 +395,7 @@ REQUIRED_EVENT_IDS = (
     "EVT-IDS-V0_1-STAGE036-REVIEW-20260711-001",
     "EVT-IDS-V0_1-STAGE037-P1-20260711-001",
     "EVT-IDS-V0_1-STAGE037-P2-20260711-001",
+    "EVT-IDS-V0_1-STAGE037-P3-20260711-001",
 )
 
 FORBIDDEN_RUNTIME_PREFIXES = (
@@ -777,6 +779,24 @@ def evaluate_required_event_semantics(events: list[dict]) -> list[str]:
                 "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage037_job_state_model.py",
             },
         },
+        "EVT-IDS-V0_1-STAGE037-P3-20260711-001": {
+            "event_type": "validation",
+            "task_id": "IDS-V0_1-STAGE037-P3",
+            "acceptance_id": "ACC-STAGE-037",
+            "required_changed_files": {
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE3_ADVERSARIAL_SCENARIOS.md",
+                "KM_IDSystem/scripts/check_job_state_model.py",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml",
+                "KM_IDSystem/docs/governance/roadmap.yaml",
+                "KM_IDSystem/docs/governance/events.jsonl",
+            },
+            "required_refs": {
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE3_ADVERSARIAL_SCENARIOS.md",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/job_state_model/stage037_job_state_model_index.json",
+                "KM_IDSystem/scripts/check_job_state_model.py#build_stage037_scenario_validation_report",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage037_job_state_model.py",
+            },
+        },
     }
 
     errors: list[str] = []
@@ -960,12 +980,22 @@ def evaluate_current_state_consistency(
         current_stage_id == "IDS-STAGE037"
         and roadmap_phase == "IDS-STAGE037-P2"
     )
-    stage037_current = stage037_phase1_current or stage037_phase2_current
+    stage037_phase3_current = (
+        current_stage_id == "IDS-STAGE037"
+        and roadmap_phase == "IDS-STAGE037-P3"
+    )
+    stage037_current = (
+        stage037_phase1_current
+        or stage037_phase2_current
+        or stage037_phase3_current
+    )
 
     completed_phases = stage_node.get("completed_phases")
-    expected_completed_phase = (
-        "Phase 1" if stage037_phase1_current else "Phase 2"
-    )
+    expected_completed_phase = {
+        "IDS-STAGE037-P1": "Phase 1",
+        "IDS-STAGE037-P2": "Phase 2",
+        "IDS-STAGE037-P3": "Phase 3",
+    }.get(roadmap_phase)
     batch_current_phase_completed = not stage037_current or (
         isinstance(completed_phases, list)
         and expected_completed_phase in completed_phases
@@ -1025,11 +1055,20 @@ def evaluate_current_state_consistency(
         "Stage026-030 75 tests OK, full IDS v0.1 discovery 541 tests OK, "
         "checker contract_valid=true, Stage005 validator valid=true"
     )
-    expected_stage037_result_block = (
-        expected_stage037_phase1_result_block
-        if stage037_phase1_current
-        else expected_stage037_phase2_result_block
+    expected_stage037_phase3_result_block = (
+        "GREEN: Stage037 Phase3 6 tests OK, Stage037 aggregate 22 tests OK, "
+        "Stage005 136 tests OK, Stage031-037 aggregate 152 tests OK, "
+        "Stage026-030 75 tests OK, full IDS v0.1 discovery 548 tests OK, "
+        "checker scenario_validation_valid=true, Stage005 validator valid=true; "
+        "independent Phase 3 review found 0 Critical and 6 Important issues, "
+        "all six were repaired, and final re-review found 0 Critical, "
+        "0 Important, and 0 Minor issues with Ready for local commit=Yes"
     )
+    expected_stage037_result_block = {
+        "IDS-STAGE037-P1": expected_stage037_phase1_result_block,
+        "IDS-STAGE037-P2": expected_stage037_phase2_result_block,
+        "IDS-STAGE037-P3": expected_stage037_phase3_result_block,
+    }.get(roadmap_phase)
     roadmap_current_task_results_recorded = not stage037_current or (
         task_results == expected_stage037_result_block
     )
@@ -1049,11 +1088,21 @@ def evaluate_current_state_consistency(
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage037_job_state_model.py",
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md",
     }
-    required_stage037_evidence = (
-        required_stage037_phase1_evidence
-        if stage037_phase1_current
-        else required_stage037_phase2_evidence
-    )
+    required_stage037_phase3_evidence = {
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE1_SCOPE_BOUNDARY.md",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE2_JOB_STATE_MODEL_SLICE.md",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE3_ADVERSARIAL_SCENARIOS.md",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/job_state_model/stage037_job_state_model_index.json",
+        "KM_IDSystem/scripts/check_job_state_model.py",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage037_job_state_model.py",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md",
+    }
+    required_stage037_evidence = {
+        "IDS-STAGE037-P1": required_stage037_phase1_evidence,
+        "IDS-STAGE037-P2": required_stage037_phase2_evidence,
+        "IDS-STAGE037-P3": required_stage037_phase3_evidence,
+    }.get(roadmap_phase, set())
     task_evidence = roadmap_task_node.get("evidence_refs")
     roadmap_current_task_evidence_recorded = not stage037_current or (
         isinstance(task_evidence, list)
@@ -2409,6 +2458,22 @@ def evaluate_phase_state(
         and 'current_task_id: "IDS-V0_1-STAGE037-P2"' in roadmap_text
         and 'next_gate_id: "IDS-STAGE037-P3-GATE"' in roadmap_text
     )
+    stage037_phase3_active = (
+        'batch_id: "IDS-V0_1-BATCH-031-040"' in batch_text
+        and 'status: "stage037_phase3_in_progress"' in batch_text
+        and 'current_task_id: "IDS-V0_1-STAGE037-P3"' in batch_text
+        and 'acceptance_id: "ACC-STAGE-037"' in batch_text
+        and 'acceptance_status: "phase3_adversarial_scenarios_passed"'
+        in batch_text
+        and 'next_phase: "Phase 4"' in batch_text
+        and 'next_gate: "IDS-STAGE037-P4-GATE"' in batch_text
+        and 'next_allowed_task_id: "IDS-V0_1-STAGE037-P4"' in batch_text
+        and 'push_allowed: false' in batch_text
+        and 'current_stage_id: "IDS-STAGE037"' in roadmap_text
+        and 'current_phase_id: "IDS-STAGE037-P3"' in roadmap_text
+        and 'current_task_id: "IDS-V0_1-STAGE037-P3"' in roadmap_text
+        and 'next_gate_id: "IDS-STAGE037-P4-GATE"' in roadmap_text
+    )
     batch_terminal_state = batch_upload_gate_active or batch_uploaded_to_main
     later_stage_state = (
         batch_terminal_state
@@ -2529,6 +2594,7 @@ def evaluate_phase_state(
         or stage036_reviewed_local
         or stage037_phase1_active
         or stage037_phase2_active
+        or stage037_phase3_active
     )
     phase2_completed = '      - "Phase 2"' in batch_text
     stage005_active_or_complete = (
