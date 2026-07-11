@@ -1,3 +1,18 @@
+## FORM-KMFA-V014-S15P1-POST-REMEDIATION-PERFORMANCE-FACT-FIELDS-001
+
+- phase: V014_S15_P1_POST_REMEDIATION_PERFORMANCE_FACT_FIELDS
+- version: 0.1.4-s15-p1-post-remediation-performance-fact-fields
+- model_id: MOD-KMFA-GOV-001
+- scope: 定义六个绩效事实字段，连接当前项目成本与回款结构引用，执行私有只读候选探针，并将所有缺少权威行和值绑定的字段保留人工复核。
+- rule: performance_fact_fields_valid = required_field_count == 6 AND manual_review_required_field_count == 6 AND project_cost_structure_reference_connected_field_count == 6 AND collection_structure_reference_connected_field_count == 6 AND authoritative_row_binding_proven_field_count == 0 AND authoritative_value_binding_proven_field_count == 0 AND materialized_performance_fact_count == 0 AND private_probe_roundtrip_mismatch_count == 0 AND raw_exact == true AND current_grade == D AND decision == NO_GO。
+- source gate: public-safe 结构引用、私有候选、权威行绑定、权威值绑定与已物化事实分别计数，不得相互替代。
+- manual gate: 开票金额、毛利率、结算速度、回款速度、审计偏差和客情费率 6/6 均为人工复核。
+- history gate: 旧 S15-P1 的两个非人工复核字段仅作历史结构夹具，不具有当前动态权威性。
+- raw gate: phase 前后、跨 Stage 14 review 和当前只读快照一致；raw/private 明文不得进入 Git。
+- downstream gate: S15-P2/P3、Stage 15 review、salary、bonus、payroll、upload、reinstall、formal report、difference closure 与 business execution=false。
+- validator: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s15_p1_post_remediation_performance_fact_fields.py --require-private-evidence --require-browser-evidence --require-final-evidence
+- evidence: KMFA/stage_artifacts/V014_S15_P1_POST_REMEDIATION_PERFORMANCE_FACT_FIELDS/machine/performance_fact_fields_manifest.json
+
 ## FORM-KMFA-V014-S14-POST-REMEDIATION-STAGE-REVIEW-001
 
 - phase: V014_S14_POST_REMEDIATION_STAGE_REVIEW

@@ -1,6 +1,48 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "KMFA-V014-S15-P1-POST-REMEDIATION-PERFORMANCE-FACT-FIELDS-20260711"
+    phase: "V014_S15_P1_POST_REMEDIATION_PERFORMANCE_FACT_FIELDS"
+    objective: "Define six current performance fact field structures connect project-cost and collection references and keep every unproven field in manual review."
+    scope:
+      - "six roadmap performance fact field definitions"
+      - "current project-cost collection invoice and cross-table structure references"
+      - "read-only deterministic private candidate probe"
+      - "public-safe field workbench and manual-review evidence"
+    non_scope:
+      - "S15-P2 P3 or Stage 15 review"
+      - "performance values salary bonus payroll final payment or business action"
+      - "GitHub upload app reinstall raw private Excel PDF CSV database or secret material"
+    status: "completed"
+    completed_version: "0.1.4-s15-p1-post-remediation-performance-fact-fields"
+    dependencies:
+      - "V014_S14_POST_REMEDIATION_STAGE_REVIEW current validated dependency"
+      - "current Stage 9 project-cost Stage 13 collection and cross-table and Stage 14 invoice evidence"
+      - "V014_S15_P1_PERFORMANCE_FACT_FIELDS historical fixture only"
+      - "v1.4 roadmap taskpack and full-flow baseline"
+    required_files:
+      - "KMFA/stage_artifacts/V014_S15_P1_POST_REMEDIATION_PERFORMANCE_FACT_FIELDS/machine/performance_fact_fields_manifest.json"
+      - "KMFA/stage_artifacts/V014_S15_P1_POST_REMEDIATION_PERFORMANCE_FACT_FIELDS/exports/html/performance_fact_fields_workbench.html"
+      - "KMFA/tools/check_v014_s15_p1_post_remediation_performance_fact_fields.py"
+    acceptance_ids:
+      - "ACC-V014-S15-P1-POST-REMEDIATION-PERFORMANCE-FACT-FIELDS"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s15_p1_post_remediation_performance_fact_fields.py --require-private-evidence --require-browser-evidence --require-final-evidence"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s15_p1_post_remediation_performance_fact_fields"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_no_float_money.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/no_omission_check.py"
+    test_results:
+      - "PASS: six fields defined and all six marked manual review"
+      - "PASS: project-cost and collection structures connected with zero authoritative rows values or materialized facts"
+      - "PASS: six candidate groups thirteen unique sheets and zero roundtrip mismatch"
+      - "PASS: raw snapshots exact and private names headers values diagnostics and screenshots remain ignored"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S15_P1_POST_REMEDIATION_PERFORMANCE_FACT_FIELDS/human/performance_fact_fields_report_zh.md"
+      - "KMFA/stage_artifacts/V014_S15_P1_POST_REMEDIATION_PERFORMANCE_FACT_FIELDS/machine/performance_fact_fields_manifest.json"
+    risk: "Candidate structures or historical bindings can be mistaken for authoritative performance facts."
+    rollback: "Revert only this S15-P1 local commit and ignored private evidence; never mutate the raw inbox."
+    target_version: "0.1.4-s15-p1-post-remediation-performance-fact-fields"
+
   - task_id: "KMFA-V014-S14-POST-REMEDIATION-STAGE-REVIEW-20260711"
     phase: "V014_S14_POST_REMEDIATION_STAGE_REVIEW"
     objective: "Review the current Stage 14 P1 P2 P3 chain fix all findings and preserve zero unproven business policy outputs under Q4 D NO_GO."

@@ -1,3 +1,17 @@
+## 2026-07-11 - V014 S15-P1 post-remediation performance fact fields
+
+- phase: V014_S15_P1_POST_REMEDIATION_PERFORMANCE_FACT_FIELDS
+- task: KMFA-V014-S15-P1-POST-REMEDIATION-PERFORMANCE-FACT-FIELDS-20260711
+- product_version: 0.1.4-s15-p1-post-remediation-performance-fact-fields
+- result: completed_validated_local_only_s15_p1_all_fields_manual_review_no_go_upload_deferred / NO_GO
+- field model: 开票金额、毛利率、结算速度、回款速度、审计偏差、客情费率 6/6 定义；项目成本与回款结构引用均 6/6 连接。
+- private probe: 5 raw、48 XLSX、25 可解析、23 不可解析、4,198 可解析工作表；候选=9/1/2/4/2/2，唯一/跨字段=13/3，双次指纹不一致=0。
+- output gate: 权威行/值绑定、绩效事实物化与公开业务值=0/0/0；六字段全部人工复核。
+- browser: v1.4 baseline 54/54 PASS、current 14/14 PASS；viewports/fields/HTTP/navigation=2/12/4/4，console/overflow=0/0。
+- raw proof: 5 个文件在 phase 前后、跨 Stage 14 review 和当前快照一致；raw/private 明文与截图保持 ignored。
+- boundary: S15-P2/P3、Stage 15 review、工资、奖金、薪资导出、GitHub upload、app reinstall、formal report、difference closure 和 business execution 均未执行；下一步只能 S15-P2。
+- evidence: KMFA/stage_artifacts/V014_S15_P1_POST_REMEDIATION_PERFORMANCE_FACT_FIELDS/machine/performance_fact_fields_manifest.json
+
 ## 2026-07-11 - V014 Stage 14 post-remediation review
 
 - phase: V014_S14_POST_REMEDIATION_STAGE_REVIEW

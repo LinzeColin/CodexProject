@@ -1,3 +1,11 @@
+## 0.1.4-s15-p1-post-remediation-performance-fact-fields - 2026-07-11
+
+- 完成 V014_S15_P1_POST_REMEDIATION_PERFORMANCE_FACT_FIELDS 本地 phase：定义开票金额、毛利率、结算速度、回款速度、审计偏差、客情费率 6 个必需字段。
+- 连接 6/6 项目成本与回款 public-safe 结构引用；当前权威行/值绑定、已物化绩效事实和公开业务值均为 0，六字段全部进入人工复核。
+- 只读双次探针覆盖 5 个 raw、48 个 XLSX 容器、25 可解析、23 不可解析和 4,198 个可解析工作表；六字段候选为 9/1/2/4/2/2，唯一候选 13、跨字段 3、指纹不一致 0。
+- v1.4 baseline 54/54 PASS、当前页 14/14 PASS；2 视口、12 次字段交互、4 条依赖 HTTP 与 4 次真实导航通过，console error 与横向溢出为 0。
+- 保持 Q4 / D / NO_GO / 3-9-2-1；未执行 S15-P2/P3、Stage 15 review、工资奖金、薪资导出、GitHub upload、app reinstall、正式报告、差异关闭或 business execution。
+
 ## 0.1.4-s14-post-remediation-stage-review - 2026-07-11
 
 - 完成 `V014_S14_POST_REMEDIATION_STAGE_REVIEW` 本地整体复审：当前 S14-P1/P2/P3 focused tests 共 `26/26 PASS`，strict validators `3/3 PASS`，`11 fixed / 0 open`。
