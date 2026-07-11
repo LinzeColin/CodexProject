@@ -1,3 +1,11 @@
+## 0.1.4-s18-post-remediation-stage-review - 2026-07-12
+
+- 完成 `V014_S18_POST_REMEDIATION_STAGE_REVIEW`：复跑 S18-P1/P2/P3 focused tests=`30/30 PASS`、strict validators=`3/3 PASS`。
+- 修复 3 个 active-phase 时态耦合 findings：P2 test、P3 test、P3 checker；复审汇总为 `3 fixed / 9 passed / 0 open`。
+- 18 个跨 phase contracts 全部 PASS：P1->P2->P3->review 路由、Q4/D/NO_GO、3-9-2-1、raw、交付门禁和 completion sequence 一致。
+- P1 精度/压力、P2 五类回归/54 UI、P3 三类 connectors/4 OpMe/6 backlog 均保持通过，lineage full=false。
+- raw review 前后、跨 S18-P3 和 fresh current 快照一致；最终整体复审、upload、reinstall、真实连接器、凭据、正式报告与业务执行均未执行。
+
 ## 0.1.4-s18-p3-post-remediation-integration-preparation - 2026-07-12
 
 - 完成 `V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION`：锁定红圈、金蝶、WPS 三类后续只读 connector 方案，全部为 proposal-only、未授权、未连接、未调用。

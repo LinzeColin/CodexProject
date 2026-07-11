@@ -1,3 +1,15 @@
+## FORM-KMFA-V014-S18-POST-REMEDIATION-STAGE-REVIEW-001
+
+- phase: V014_S18_POST_REMEDIATION_STAGE_REVIEW
+- version: 0.1.4-s18-post-remediation-stage-review
+- model_id: MOD-KMFA-GOV-001
+- parameters: PARAM-KMFA-1816, PARAM-KMFA-1817, PARAM-KMFA-1818
+- expression: `s18_review_valid = phase_pass_count == 3 AND phase_focused_test_pass_count == 30 AND phase_strict_validator_pass_count == 3 AND fixed_review_finding_count == 3 AND open_review_finding_count == 0 AND cross_phase_contract_mismatch_count == 0 AND raw_exact == true AND lineage_full_check_complete == false AND final_overall_review_performed == false AND github_upload_performed == false AND decision == NO_GO`
+- rationale: Stage 18 复审只在 current P1/P2/P3 重放、finding 闭环、跨 phase 合同与 raw 边界同时通过时成立；它不等同于 v1.4 最终整体复审或发布授权。
+- source: v1.4 Stage 18 roadmap/taskpack、current S18-P1/P2/P3 strict evidence、current review execution 和只读 raw 快照。
+- missing_policy: 任一 phase 失败、finding 未关闭、合同不一致、raw 漂移或下游门禁打开均 fail closed。
+- evidence: KMFA/stage_artifacts/V014_S18_POST_REMEDIATION_STAGE_REVIEW/machine/stage18_post_remediation_review_manifest.json
+
 ## FORM-KMFA-V014-S18-P3-POST-REMEDIATION-INTEGRATION-PREPARATION-001
 
 - phase: V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION

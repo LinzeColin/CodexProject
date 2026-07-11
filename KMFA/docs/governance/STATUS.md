@@ -5,12 +5,12 @@
 ## 最新状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s18-p3-post-remediation-integration-preparation`
+- version: `0.1.4-s18-post-remediation-stage-review`
 - current_stage: `S18`
-- current_phase: `V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION`
-- status: `completed_validated_local_only_s18_p3_integration_prepared_no_go_upload_deferred`
+- current_phase: `V014_S18_POST_REMEDIATION_STAGE_REVIEW`
+- status: `completed_validated_local_only_stage18_review_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `Stage_18_overall_review_and_finding_fix_as_separate_run`
+- next_required_input: `v1.4_final_whole_project_review_and_finding_fix_as_separate_run`
 - production_ready: `false`
 - github_upload_ready: `false`
 - raw_snapshot_exact_match: `true`
@@ -19,14 +19,20 @@
 ## 前序状态（上一 phase）
 
 - project_id: `KMFA`
-- version: `0.1.4-s18-p2-post-remediation-full-regression-acceptance`
+- version: `0.1.4-s18-p3-post-remediation-integration-preparation`
 - current_stage: `S18`
-- current_phase: `V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE`
-- status: `completed_validated_local_only_s18_p2_full_regression_no_go_upload_deferred`
+- current_phase: `V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION`
+- status: `completed_validated_local_only_s18_p3_integration_prepared_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `S18-P3_integration_preparation_as_separate_run`
+- next_required_input: `Stage_18_overall_review_and_finding_fix_as_separate_run`
 - raw_snapshot_exact_match: `true`
 - decision: `NO_GO`
+
+## Stage 18 canonical phase 索引
+
+- `V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS`: `completed_validated_local_only_s18_p1_precision_stress_no_go_upload_deferred`
+- `V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE`: `completed_validated_local_only_s18_p2_full_regression_no_go_upload_deferred`
+- `V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION`: `completed_validated_local_only_s18_p3_integration_prepared_no_go_upload_deferred`
 
 ## 前序状态（历史）
 

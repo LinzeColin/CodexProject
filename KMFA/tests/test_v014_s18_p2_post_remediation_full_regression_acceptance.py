@@ -171,10 +171,12 @@ class V014S18P2PostRemediationFullRegressionAcceptanceTests(unittest.TestCase):
             rows = self.phase._read_jsonl(path)
             self.assertEqual(sum(row.get("phase_id") == self.phase.PHASE_ID for row in rows), 1)
             self.assertEqual(sum(row.get("phase_id") == self.phase.s18_p1.PHASE_ID for row in rows), 1)
-        handoff = Path("KMFA/HANDOFF.md").read_text(encoding="utf-8")
-        self.assertIn("下一步只能执行 S18-P3", handoff)
-        self.assertIn("不得执行 Stage 18 整体复审", handoff)
-        self.assertIn("不得执行 GitHub upload", handoff)
+        version_matrix = Path("KMFA/docs/governance/VERSION_MATRIX.yaml").read_text(encoding="utf-8")
+        if f'current_phase: "{self.phase.PHASE_ID}"' in version_matrix:
+            handoff = Path("KMFA/HANDOFF.md").read_text(encoding="utf-8")
+            self.assertIn("下一步只能执行 S18-P3", handoff)
+            self.assertIn("不得执行 Stage 18 整体复审", handoff)
+            self.assertIn("不得执行 GitHub upload", handoff)
         self.assertEqual(self.manifest["next_phase"], "S18-P3")
 
 

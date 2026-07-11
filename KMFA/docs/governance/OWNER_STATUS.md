@@ -4,25 +4,33 @@
 
 ## 一句话状态
 
-KMFA 已完成 `V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION`：3 类 future connectors、4 个 OpMe 轻入口面和 6 条未启动 Backlog 已锁定；真实连接器、写回、凭据和外部调用均为 0，状态保持 `Q4 / D / NO_GO`。
+KMFA 已完成 `V014_S18_POST_REMEDIATION_STAGE_REVIEW`：current S18-P1/P2/P3 的 30/30 focused tests、3/3 strict validators 和 18/18 跨 phase contracts 全部通过；3 个复审 findings 已修复，open=0，状态保持 `Q4 / D / NO_GO`。
 
 ## 当前可信任范围
 
-- 可以信任：current S18-P3 三类只读接入边界、OpMe 轻入口边界、未启动 Backlog、S18-P2 严格依赖和 raw 一致性证据。
+- 可以信任：current Stage 18 三 phase 的复跑结果、3 个 active-phase 时态修复、18 个跨 phase 合同、P1/P2/P3 门禁和 raw 一致性证据。
 - 必须保留：9 条非零差异，不得通过覆盖、四舍五入、空白兼容层或替换权威值消除。
 - 不能信任：3 条缺可证明数值的现金槽位、1 条未完成现金比较、任何完整业务一致性或正式经营决策结论。
 - 不能误读：lineage validator PASS 只证明安全阻断契约有效，不证明 full lineage 已完成；D级受限预览不是正式报告。
-- 下一步只做 Stage 18 整体复审并修复 findings；不得顺手推进最终整体复审、GitHub upload、app reinstall 或 business execution。
+- 下一步只做 v1.4 最终整体复审并修复 findings；不得顺手推进 GitHub upload、App 重装或 business execution。
 
 ## 前序一句话状态（上一 phase）
 
-KMFA 已完成 `V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE`：五类 current checks、18 Stage 证据索引和 Playwright 54/54 通过；lineage full 仍未完成。
+KMFA 已完成 `V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION`：3 类 future connectors、4 个 OpMe 轻入口面和 6 条未启动 Backlog 已锁定；真实连接器、写回、凭据和外部调用均为 0。
+
+## Stage 18 canonical phase 索引
+
+- `V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS`: completed，current review dependency。
+- `V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE`: completed，current review dependency。
+- `V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION`: completed，current review dependency。
 
 ## 前序一句话状态（历史）
 
 KMFA 当前版本 `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-actionability-recheck` 已完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_ACTIONABILITY_RECHECK` 本地单 phase：Codex 未读取 raw inbox，只复核上一 phase 48 条有效 generated diagnostic responses 的 actionability。公开证据只显示 aggregate counts：source valid diagnostic responses=48、source non-actionable diagnostic responses=48、actionability recheck items=48、actionability ready=0、actionability blockers=48、40/8 诊断分流、unresolved differences=72。系统仍是 `NO_GO`，因为这些诊断响应不能直接用于 authoritative binding 或 raw-to-processed value comparison。next_required_input=`actionable_source_reference_owner_exclusion_formula_mapping_or_non_numeric_mapping_required_before_binding_or_value_comparison`。
 
 ## 你现在能信任什么
+
+- `V014_S18_POST_REMEDIATION_STAGE_REVIEW` 已通过本地验证：S18-P1/P2/P3 focused tests=`30/30`，strict validators=`3/3`，18 contracts=`18/18`。P2 test、P3 test、P3 checker 三个 active-phase 时态耦合 findings 已修复；12 findings=`3 fixed / 9 passed / 0 open`。raw review 前后、跨 S18-P3 和当前快照一致；下一步只能 v1.4 最终整体复审。
 
 - v0.1.4 S18-P3 post-remediation integration preparation 已通过本地验证：redcircle/kingdee/wps=3 类只读 proposal，OpMe=4 个轻入口面，Backlog=6 条且全部未启动；live connector/external service/writeback/credential=0/0/0/0。raw 前后、跨 S18-P2 和当前快照一致；下一步只能 Stage 18 整体复审并修复 findings。
 
