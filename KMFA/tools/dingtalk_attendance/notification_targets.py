@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Multi-target DingTalk notification routing for KMFA S19."""
+"""Multi-target DingTalk notification routing for the KMFA DingTalk attendance skill."""
 
 from __future__ import annotations
 
@@ -800,8 +800,8 @@ def _probe_message(*, label: str, now: datetime, channel_hint: str) -> tuple[str
             "开明考勤通知目标验证",
             f"目标：{label}",
             f"北京时间：{now.strftime('%Y-%m-%d %H:%M:%S')}",
-            f"KMFA S19 通知通道：{channel_hint}",
-            "说明：这是 KMFA S19 多目标通知路由自动验证消息。",
+            f"KMFA 钉钉考勤 skill 通知通道：{channel_hint}",
+            "说明：这是 KMFA 钉钉考勤 skill 多目标通知路由自动验证消息。",
         ]
     )
     return title, text

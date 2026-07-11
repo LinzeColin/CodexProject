@@ -1,13 +1,13 @@
 ---
 name: kmfa-dingtalk-attendance-skill
-description: Use when operating, reviewing, migrating, automating, or modifying KMFA S19 DingTalk attendance automation, DWS attendance, OneDrive/private runtime attendance archives, repo-scoped attendance skill files, stage-2 shadow payroll consensus, PostgreSQL attendance schema, payroll-baseline preparation, or Codex automation prompts in LinzeColin/CodexProject.
+description: Use when operating, reviewing, migrating, automating, or modifying KMFA 钉钉考勤 skill, DWS attendance, OneDrive/private runtime attendance archives, repo-scoped attendance skill files, stage-2 shadow payroll consensus, PostgreSQL attendance schema, payroll-baseline preparation, or Codex automation prompts in LinzeColin/CodexProject.
 ---
 
 # KMFA DingTalk Attendance Skill
 
 ## Use First
 
-This skill is the portable, public-safe operating entry for KMFA S19 DingTalk attendance automation.
+This skill is the portable, public-safe operating entry for KMFA 钉钉考勤 skill.
 Use it only with a clone of `LinzeColin/CodexProject` and start from `main`.
 
 Canonical GitHub path:
@@ -31,7 +31,7 @@ Before acting, read:
 - Do not create branches, PRs, issues, or worktrees unless the user explicitly changes this rule.
 - Do not commit `.env.local`, webhook URLs, signing keys, app secrets, token values, DWS resolved IDs, SQLite, raw JSON/JSONL/GZ, employee attendance plaintext, report bodies, or OneDrive raw archives.
 - Do not run DWS live commands or send DingTalk messages without explicit user authorization in the current thread.
-- Live DWS gate env: `KMFA_S19_ALLOW_DWS_COMMANDS`.
+- Live DWS gate env: `KMFA_DINGTALK_ATTENDANCE_ALLOW_DWS_COMMANDS`.
 - Use `python3 KMFA/tools/dingtalk_attendance/healthcheck.py --config-only` before any live consideration.
 - If changing behavior, use tests first and keep the change narrowly scoped.
 - Any skill or automation prompt change must be committed and pushed to GitHub `main` in the same run unless validation fails.
@@ -86,9 +86,9 @@ If the current agent cannot auto-resolve repo-scoped skills, it must read this f
 
 ## Stage-2 / Payroll-Baseline Direction
 
-The v0.3 task pack extends the current S19 system toward database and shadow payroll readiness:
+The v0.3 task pack extends the current attendance skill toward database and shadow payroll readiness:
 
-1. Keep daily S19 attendance automation stable.
+1. Keep daily attendance skill automation stable.
 2. Add PostgreSQL-compatible schema and deterministic import contracts.
 3. Preserve result/detail/location/trajectory evidence when available.
 4. Generate canonical monthly snapshots.

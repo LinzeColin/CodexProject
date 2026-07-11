@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Manage local KMFA S19 DingTalk notification targets."""
+"""Manage local KMFA DingTalk attendance notification targets."""
 
 from __future__ import annotations
 
@@ -67,7 +67,7 @@ def add_group_target(
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Manage KMFA S19 DingTalk notification targets.")
+    parser = argparse.ArgumentParser(description="Manage KMFA DingTalk attendance notification targets.")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     add_person = subparsers.add_parser("add-person")

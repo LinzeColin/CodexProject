@@ -93,6 +93,11 @@ def write_archive_run(month_dir: Path, *, run_id: str, work_date: str, manifest_
     digest = hashlib.sha256(raw_path.read_bytes()).hexdigest()
     manifest = {
         "run_id": run_id,
+        **(
+            {"stage_id": "S19"}  # legacy_read_only fixture
+            if run_id.startswith("s19_")  # legacy_read_only fixture
+            else {"skill_id": "kmfa-dingtalk-attendance-skill"}
+        ),
         "backend": "dws",
         "raw_jsonl_gz": str(raw_path),
         "raw_jsonl_gz_sha256": digest,
@@ -164,8 +169,8 @@ def test_raw_archive_month_replay_manifest_is_public_safe_and_stable():
     with tempfile.TemporaryDirectory() as td:
         archive_root = Path(td) / "private_onedrive"
         month_dir = archive_root / "202607"
-        write_archive_run(month_dir, run_id="s19_evening_20260701_181500", work_date="2026-07-01")
-        write_archive_run(month_dir, run_id="s19_evening_20260702_181500", work_date="2026-07-02")
+        write_archive_run(month_dir, run_id="dingtalk_attendance_evening_20260701_181500", work_date="2026-07-01")
+        write_archive_run(month_dir, run_id="dingtalk_attendance_evening_20260702_181500", work_date="2026-07-02")
         cmd = [
             sys.executable,
             str(SCRIPT_DIR / "inspect_raw_archive_month.py"),
@@ -205,11 +210,42 @@ def test_raw_archive_month_replay_manifest_is_public_safe_and_stable():
         assert str(archive_root) not in payload
 
 
+def test_raw_archive_month_replay_dual_reads_new_and_legacy_prefixes():
+    with tempfile.TemporaryDirectory() as td:
+        archive_root = Path(td) / "private_onedrive"
+        month_dir = archive_root / "202607"
+        write_archive_run(
+            month_dir,
+            run_id="dingtalk_attendance_evening_20260712_200000",
+            work_date="2026-07-12",
+        )
+        write_archive_run(
+            month_dir,
+            run_id="s19_evening_20260711_200000",  # legacy_read_only
+            work_date="2026-07-11",
+        )
+        cmd = [
+            sys.executable,
+            str(SCRIPT_DIR / "inspect_raw_archive_month.py"),
+            "--archive-root",
+            str(archive_root),
+            "--target-month",
+            "202607",
+            "--print-json",
+        ]
+
+        result = json.loads(run(cmd).stdout)
+
+        assert result["status"] == "pass"
+        assert result["manifest_count"] == 2
+        assert result["raw_file_count"] == 2
+
+
 def test_raw_archive_month_replay_manifest_fails_on_manifest_count_mismatch():
     with tempfile.TemporaryDirectory() as td:
         archive_root = Path(td) / "private_onedrive"
         month_dir = archive_root / "202607"
-        write_archive_run(month_dir, run_id="s19_evening_20260701_181500", work_date="2026-07-01", manifest_member_count=3)
+        write_archive_run(month_dir, run_id="dingtalk_attendance_evening_20260701_181500", work_date="2026-07-01", manifest_member_count=3)
         p = run([
             sys.executable,
             str(SCRIPT_DIR / "inspect_raw_archive_month.py"),
@@ -222,7 +258,7 @@ def test_raw_archive_month_replay_manifest_fails_on_manifest_count_mismatch():
         assert p.returncode == 1
         data = json.loads(p.stdout)
         assert data["status"] == "fail"
-        assert "manifest_count_mismatch:s19_evening_20260701_181500:member_count" in data["failures"]
+        assert "manifest_count_mismatch:dingtalk_attendance_evening_20260701_181500:member_count" in data["failures"]
         assert data["checks"]["raw_counts_match_manifest"] is False
         assert data["postgres_connection_used"] is False
         assert data["database_mutation_performed"] is False
@@ -233,8 +269,8 @@ def test_raw_archive_month_replay_can_index_seed_raw_separately_and_enforce_loca
     with tempfile.TemporaryDirectory() as td:
         archive_root = Path(td) / "private_onedrive"
         month_dir = archive_root / "202607"
-        write_archive_run(month_dir, run_id="s19_evening_20260701_181500", work_date="2026-07-01")
-        write_seed_record_only_raw(month_dir, run_id="s19_seed_20260702_000000", work_date="2026-07-02")
+        write_archive_run(month_dir, run_id="dingtalk_attendance_evening_20260701_181500", work_date="2026-07-01")
+        write_seed_record_only_raw(month_dir, run_id="dingtalk_attendance_seed_20260702_000000", work_date="2026-07-02")
 
         base_cmd = [
             sys.executable,
@@ -248,7 +284,7 @@ def test_raw_archive_month_replay_can_index_seed_raw_separately_and_enforce_loca
         blocked = run(base_cmd, check=False)
         assert blocked.returncode == 1
         blocked_data = json.loads(blocked.stdout)
-        assert "raw_without_manifest:s19_seed_20260702_000000" in blocked_data["failures"]
+        assert "raw_without_manifest:dingtalk_attendance_seed_20260702_000000" in blocked_data["failures"]
         assert blocked_data["seed_raw_without_manifest_count"] == 1
 
         allowed = json.loads(run(base_cmd + ["--allow-seed-raw-without-manifest"]).stdout)
@@ -283,9 +319,9 @@ def test_raw_archive_replay_materializes_day_facts_with_raw_linkage_public_safe(
         archive_root = Path(td) / "private_onedrive"
         month_dir = archive_root / "202607"
         out_dir = Path(td) / "private_runtime" / "raw_replay_day_fact" / "202607"
-        write_archive_run(month_dir, run_id="s19_evening_20260701_181500", work_date="2026-07-01")
-        write_archive_run(month_dir, run_id="s19_evening_20260702_181500", work_date="2026-07-02")
-        write_seed_record_only_raw(month_dir, run_id="s19_seed_20260703_000000", work_date="2026-07-03")
+        write_archive_run(month_dir, run_id="dingtalk_attendance_evening_20260701_181500", work_date="2026-07-01")
+        write_archive_run(month_dir, run_id="dingtalk_attendance_evening_20260702_181500", work_date="2026-07-02")
+        write_seed_record_only_raw(month_dir, run_id="dingtalk_attendance_seed_20260703_000000", work_date="2026-07-03")
 
         p = run([
             sys.executable,
@@ -343,8 +379,8 @@ def test_raw_archive_replay_skips_empty_record_rows_without_unlinked_day_facts()
         archive_root = Path(td) / "private_onedrive"
         month_dir = archive_root / "202607"
         out_dir = Path(td) / "private_runtime" / "raw_replay_day_fact" / "202607"
-        write_archive_run(month_dir, run_id="s19_evening_20260701_181500", work_date="2026-07-01")
-        write_seed_raw_with_empty_record_row(month_dir, run_id="s19_seed_20260702_000000", work_date="2026-07-02")
+        write_archive_run(month_dir, run_id="dingtalk_attendance_evening_20260701_181500", work_date="2026-07-01")
+        write_seed_raw_with_empty_record_row(month_dir, run_id="dingtalk_attendance_seed_20260702_000000", work_date="2026-07-02")
 
         p = run([
             sys.executable,

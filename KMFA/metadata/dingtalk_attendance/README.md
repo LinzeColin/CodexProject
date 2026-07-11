@@ -1,6 +1,6 @@
-# KMFA S19 DingTalk Attendance
+# KMFA 钉钉考勤 skill
 
-S19 adds the public-safe structure for `每日早晚钉钉考勤检查`.
+The KMFA 钉钉考勤 skill provides the public-safe structure for `每日早晚钉钉考勤检查`.
 
 The module is live-only and uses the local `dws` CLI as its current DingTalk attendance backend. It does not create sample employees, sample punches, or fixture attendance records. When DWS is unavailable, scripts return `DWS_UNAVAILABLE`.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate that KMFA S19 tracked files do not contain private runtime material."""
+"""Validate that KMFA DingTalk attendance tracked files contain no private runtime material."""
 
 from __future__ import annotations
 
@@ -78,7 +78,7 @@ def validate_paths(paths: list[str]) -> list[Finding]:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Scan tracked Git files for KMFA S19 sensitive material.")
+    parser = argparse.ArgumentParser(description="Scan tracked Git files for KMFA DingTalk attendance sensitive material.")
     parser.add_argument("--scope", choices=("tracked",), default="tracked")
     parser.add_argument("--pathspec", default="KMFA", help="Git pathspec to scan. Defaults to KMFA-only.")
     args = parser.parse_args(argv)
@@ -89,7 +89,7 @@ def main(argv: list[str] | None = None) -> int:
         for finding in findings:
             print(f"FAIL: {finding.path}: {finding.reason}")
         return 1
-    print(f"PASS: no sensitive KMFA S19 material found in tracked files (pathspec={args.pathspec}, files={len(paths)})")
+    print(f"PASS: no sensitive KMFA DingTalk attendance material found in tracked files (pathspec={args.pathspec}, files={len(paths)})")
     return 0
 
 

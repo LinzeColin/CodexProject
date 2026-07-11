@@ -84,6 +84,6 @@
     "scheduler_timezone_configured": false,
     "summary_datetime_source": "actual_run_datetime_in_business_date_timezone"
   },
-  "stage_id": "S19",
+  "skill_id": "kmfa-dingtalk-attendance-skill",
   "sqlite_committed": false
 }

@@ -6,7 +6,7 @@ Canonical path:
 KMFA/kmfa-dingtalk-attendance-skill/
 ```
 
-This folder packages the public-safe operating instructions, automation prompts, configuration templates, validators, PostgreSQL schema, stage-2 consensus protocol, and handoff rules for KMFA S19 DingTalk attendance automation.
+This folder packages the public-safe operating instructions, automation prompts, configuration templates, validators, PostgreSQL schema, stage-2 consensus protocol, and handoff rules for KMFA 钉钉考勤 skill.
 
 It intentionally excludes private runtime data, DingTalk credentials, DWS resolved identifiers, SQLite, raw OneDrive archives, and report bodies.
 

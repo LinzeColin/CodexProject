@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Resolved DingTalk notification channels for KMFA S19."""
+"""Resolved DingTalk notification channels for the KMFA DingTalk attendance skill."""
 
 from __future__ import annotations
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Sync KMFA S19 OneDrive attendance archives into a private SQLite ledger."""
+"""Sync attendance archives into the private KMFA 钉钉考勤 skill ledger."""
 
 from __future__ import annotations
 
@@ -23,6 +23,14 @@ from KMFA.tools.dingtalk_attendance.dws_attendance import (
     SUMMARY_TODAY_ANOMALY_TOKENS,
     _record_list_has_morning_and_evening,
     attendance_run_sort_key,
+)
+from KMFA.tools.dingtalk_attendance.identity import (
+    IdentityConflictError,
+    archive_manifest_paths,
+    archive_raw_paths,
+    run_type_from_run_id,
+    validate_manifest_identity,
+    work_date_from_run_id,
 )
 from KMFA.tools.dingtalk_attendance.notification_template import REST_REQUIRED_EXCLUDED_NAMES, REST_REQUIRED_THRESHOLD_DAYS
 from KMFA.tools.dingtalk_attendance.secrets_loader import ROOT
@@ -53,8 +61,13 @@ def sync_archives_to_ledger(
 ) -> dict[str, Any]:
     root = Path(onedrive_root)
     months = _selected_month_dirs(root=root, month=month, all_months=all_months)
-    manifests = [manifest for month_dir in months for manifest in sorted(month_dir.glob("s19_*.manifest.json"))]
-    raw_files = [raw for month_dir in months for raw in sorted(month_dir.glob("s19_*.raw.jsonl.gz"))]
+    manifests = [manifest for month_dir in months for manifest in archive_manifest_paths(month_dir)]
+    raw_files = [
+        raw
+        for month_dir in months
+        for raw in archive_raw_paths(month_dir)
+        if raw.name.endswith(".raw.jsonl.gz")
+    ]
     manifest_run_ids = {_run_id_from_archive_path(path, ".manifest.json") for path in manifests}
     raw_without_manifest = [
         raw
@@ -415,6 +428,19 @@ def _sync_one_manifest(conn: sqlite3.Connection, manifest_path: Path) -> dict[st
         _audit(conn, run_id=None, event_type="MANIFEST_READ_FAILED", status="ERROR", message=str(exc), source_path=manifest_path)
         return {"indexed": False, "warning_count": 0, "error_count": 1}
     run_id = str(manifest.get("run_id") or _run_id_from_archive_path(manifest_path, ".manifest.json"))
+    try:
+        identity = validate_manifest_identity(manifest)
+    except IdentityConflictError as exc:
+        _audit(
+            conn,
+            run_id=run_id,
+            event_type="MANIFEST_IDENTITY_CONFLICT",
+            status="ERROR",
+            message=str(exc),
+            source_path=manifest_path,
+        )
+        return {"indexed": False, "warning_count": 0, "error_count": 1, "month": _month_from_run_id(run_id)}
+    manifest = {**manifest, "skill_id": identity["skill_id"], "identity_source": identity["identity_source"]}
     raw_path = _resolve_archive_path(manifest_path.parent, manifest.get("raw_jsonl_gz"))
     dispatch_path = _resolve_archive_path(manifest_path.parent, manifest.get("dispatch_receipt"))
     cleanup_path = _resolve_archive_path(manifest_path.parent, manifest.get("cleanup_audit"))
@@ -947,11 +973,7 @@ def _run_id_from_archive_path(path: Path, suffix: str) -> str:
 
 
 def _work_date_from_run_id(run_id: str) -> str | None:
-    parts = run_id.split("_")
-    for part in parts:
-        if len(part) == 8 and part.isdigit():
-            return f"{part[:4]}-{part[4:6]}-{part[6:8]}"
-    return None
+    return work_date_from_run_id(run_id)
 
 
 def _month_from_run_id(run_id: str) -> str:
@@ -960,8 +982,7 @@ def _month_from_run_id(run_id: str) -> str:
 
 
 def _run_type_from_run_id(run_id: str) -> str:
-    parts = run_id.split("_")
-    return parts[1] if len(parts) >= 2 and parts[1] in {"morning", "evening"} else ""
+    return run_type_from_run_id(run_id) or ""
 
 
 def _summary_child_date(child: Mapping[str, Any]) -> str | None:
@@ -1024,7 +1045,7 @@ def _now_iso() -> str:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Sync KMFA S19 OneDrive attendance archives into a private SQLite ledger.")
+    parser = argparse.ArgumentParser(description="Sync KMFA DingTalk attendance archives into a private SQLite ledger.")
     scope = parser.add_mutually_exclusive_group()
     scope.add_argument("--all", action="store_true", help="Sync every YYYYMM archive directory.")
     scope.add_argument("--month", help="Sync one YYYYMM archive directory.")

@@ -1,53 +1,55 @@
-# 每日早晚钉钉考勤检查｜晨报
-
 Use $kmfa-dingtalk-attendance-skill.
 
-如果当前 Codex agent 不能自动解析 repo-scoped skill，读取并遵守：
+If the current Codex agent cannot auto-resolve repo-scoped skills, read and follow:
 
 ```text
-KMFA/kmfa-dingtalk-attendance-skill/SKILL.md
+/Users/linzezhang/CodexProject/KMFA/kmfa-dingtalk-attendance-skill/SKILL.md
 ```
 
-每天北京时间 10:35 在 KMFA local main checkout 执行。当前部署 cwd 为 `/Users/linzezhang/CodexProject`；迁移到新电脑时使用同一 GitHub repo 的 `main` checkout。
-
-统一工作区规则：本 automation 与上游每日钉钉DWS归档、钉钉工作检查、KMFA资金周报日报自动化使用同一组 Codex cwds：
-- DWS 归档项目：`/Users/linzezhang/Documents/Codex/2026-07-04/392b1a986ba680338068ddc1c2a0fd0e-https-app-notion-com-p`
+统一工作区规则：本 KMFA automation 只使用 KMFA/CodexProject 工作间：
 - KMFA/CodexProject：`/Users/linzezhang/CodexProject`
-本 automation 的实际执行目录必须切到 `/Users/linzezhang/CodexProject` 后再运行 KMFA git、skill、test 或脚本命令；DWS 归档项目只作为上游输出和诊断可见工作区。若发现这些上游/下游 automation 的 cwds 不一致，先修正 automation 配置并报告。
+本 automation 的实际执行目录必须切到 `/Users/linzezhang/CodexProject` 后再运行 KMFA git、skill、test 或脚本命令；上游 DWS 归档是独立 automation，只提供已生成的 OneDrive/DWS 输出。若发现本 automation 的 cwd 不是 `/Users/linzezhang/CodexProject`，先修正 automation 配置并报告。
 
-运行约束：
-1. 切到 `/Users/linzezhang/CodexProject`，再确认 branch 为 `main`，且 `HEAD == origin/main`。
-2. 确认 `KMFA/kmfa-dingtalk-attendance-skill/SKILL.md` 存在。
-3. 设置 `TZ=Asia/Shanghai` 和 `KMFA_RUN_SLOT=morning`。
-4. 运行 `KMFA/kmfa-dingtalk-attendance-skill/scripts/preflight.sh`。
-5. 运行 `KMFA/kmfa-dingtalk-attendance-skill/scripts/inspect_runtime.sh`。
-6. 运行 `KMFA/kmfa-dingtalk-attendance-skill/scripts/validate_offline.sh`。
-7. 运行 `KMFA/kmfa-dingtalk-attendance-skill/scripts/month_gate.py --run-slot morning --print-json`。
-8. 运行 `python3 KMFA/tools/dingtalk_attendance/healthcheck.py --config-only`。
-9. 只有在本机授权允许时才执行晨报入口；否则 fail closed，报告 `DWS_AUTH_REQUIRED` 或配置 blocker。Do not fabricate data。入口必须以当前钉钉考勤组成员为统计范围，并以精确的 `attendance report columns/query-data` 官方列值作为唯一业务统计源；`record get`、两卡推断和个人 `summary` 只能作为诊断证据。
-10. 发送任何结论前必须满足 `official_report_parity_status=PASS`、北京时间目标业务日完全覆盖且 `official_report_coverage_count == member_count`。出现 `OFFICIAL_ATTENDANCE_PARITY_FAILED` 时停止且不发送，禁止回退到 record/summary 猜数。
+Run slot: morning.
+Scheduled Beijing time: 10:35.
+Timezone: Asia/Shanghai. All business dates, run slots, and stage gates are Beijing time.
+
+Goal: execute the KMFA 钉钉考勤 skill morning workflow through the repo-scoped skill, preserving current production safety and GitHub-synced automation state.
+
+Required steps:
+1. Switch to `/Users/linzezhang/CodexProject`, then confirm branch is `main`, `HEAD == origin/main`, and no extra worktree is active.
+2. Confirm canonical skill path exists: `KMFA/kmfa-dingtalk-attendance-skill/SKILL.md`.
+3. Set `TZ=Asia/Shanghai` and `KMFA_RUN_SLOT=morning`.
+4. Run `KMFA/kmfa-dingtalk-attendance-skill/scripts/preflight.sh`.
+5. Run `KMFA/kmfa-dingtalk-attendance-skill/scripts/inspect_runtime.sh`.
+6. Run `KMFA/kmfa-dingtalk-attendance-skill/scripts/validate_offline.sh`.
+7. Run `KMFA/kmfa-dingtalk-attendance-skill/scripts/month_gate.py --run-slot morning --print-json`.
+8. Run existing attendance skill config-only healthcheck: `python3 KMFA/tools/dingtalk_attendance/healthcheck.py --config-only`.
+9. Run the existing attendance skill morning entry only if current local authorization through `KMFA_DINGTALK_ATTENDANCE_ALLOW_DWS_COMMANDS` permits it; otherwise fail closed and report `DWS_AUTH_REQUIRED` / config blocker. Do not fabricate data. The entry must use current DingTalk attendance-group members plus exact `attendance report columns/query-data` values as the only business-statistics source. `record get`, two-punch inference, and personal `summary` are diagnostics only.
+10. Require `official_report_parity_status=PASS`, exact Beijing business-date coverage, and `official_report_coverage_count == member_count` before any conclusion or notification. On `OFFICIAL_ATTENDANCE_PARITY_FAILED`, stop without sending and never fall back to record/summary guesses.
 10a. The production official collector intentionally skips the legacy per-member record/summary sweep. Do not run that sweep before or after the entry.
 10b. Do not interrupt the entry while its process is still inside the runner's bounded DWS timeout/retry budget.
 10c. When the authoritative healthcheck is READY, a running process or later timeout must never be reported as DWS_AUTH_REQUIRED; report the entry's exact final JSON status and exit code.
-11. 晨报不执行 stage-2 acceptance，不提升 Q5，不生成 payroll baseline。
-12. 休息提醒规则必须来自 skill：`REST_REQUIRED_THRESHOLD_DAYS = 23`；`丁春法` 和 `李永占` 只排除出 `需要休息`，其他状态照常统计。
-13. 如果用户明确要求指定日期测试且只发张霖泽个人，入口必须加 `--work-date YYYY-MM-DD --notification-targets personal`；不得发送生产管理群。
-14. 如果本次 run 修改 skill、automation prompt、metadata、validator 或相关配置，必须完成验证、commit，并 push 到 GitHub `main` 后再报告完成。
+11. Do not perform stage-2 acceptance in the morning run.
+12. Do not promote Q5 or payroll baseline in the morning run.
+13. Preserve rest reminder rules from the skill: `REST_REQUIRED_THRESHOLD_DAYS = 23`; `丁春法` and `李永占` are excluded only from `需要休息`, while all other statuses are counted normally.
+14. If the owner explicitly requests a date-specific personal-only test, run the entry with `--work-date YYYY-MM-DD --notification-targets personal`; do not send the production management group.
+15. If this run changes any skill or automation prompt file, run validators, commit, and push to GitHub `main` before reporting completion.
 
-```bash
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/dingtalk_attendance/run_attendance.py --run-type morning --timezone Asia/Shanghai
+Hard boundaries:
+- Do not commit secrets, `.env.local`, resolved DWS IDs, SQLite, raw JSON/JSONL/GZ, employee plaintext, OneDrive raw archives, or report bodies.
+- Do not create branch, PR, issue, or worktree.
+- Treat tracked `KMFA/metadata` as public metadata/config source; private DingTalk raw payloads stay private.
+- Do not modify upstream DWS archive outputs.
+
+Final response format:
+
+```text
+status: passed|warning|failed
+run_slot: morning
+target_month: YYYYMM
+stage2_eligible: false
+freshness: ok|warning|failed
+P0/P1 unresolved: N/N
+next_action: ...
 ```
-
-指定日期个人测试示例（仅 owner 明确要求时使用）：
-
-```bash
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/dingtalk_attendance/run_attendance.py --run-type morning --timezone Asia/Shanghai --work-date 2026-07-06 --notification-targets personal
-```
-
-硬边界：
-- 不提交 secrets、`.env.local`、resolved DWS IDs、SQLite、raw JSON/JSONL/GZ、员工明文、OneDrive raw archives 或 report bodies。
-- 不创建 branch、PR、issue 或 worktree。
-- `KMFA/metadata` 只保存 public metadata/config；private runtime 和 DingTalk raw payloads 必须保持 ignored/private。
-- 不修改上游 DWS 归档输出。
-
-输出中文摘要：取数状态、异常人数、管理报告状态、HR 报告状态、通知状态、OneDrive 归档状态、清理状态、数据库大小、泄密风险。

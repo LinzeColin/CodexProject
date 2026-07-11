@@ -15,7 +15,7 @@ Scheduled local wall-clock time: 20:00.
 Scheduler timezone: none. Keep one pure RRULE and never convert 20:00 for UTC offset or daylight-saving changes.
 Business-date timezone passed to the runner: Asia/Shanghai. All business dates, run slots, month gates, and stage-2 windows use Beijing dates; this must not shift the scheduler time.
 
-Goal: execute the KMFA S19 DingTalk attendance evening workflow through the repo-scoped skill, preserving existing production safety while enabling v0.3 database/stage-2 readiness.
+Goal: execute the KMFA 钉钉考勤 skill evening workflow through the repo-scoped skill, preserving existing production safety while enabling v0.3 database/stage-2 readiness.
 
 Required steps:
 1. Switch to `/Users/linzezhang/CodexProject`, then confirm branch is `main`, `HEAD == origin/main`, and no extra worktree is active.
@@ -24,8 +24,8 @@ Required steps:
 4. Run `KMFA/kmfa-dingtalk-attendance-skill/scripts/preflight.sh`.
 5. Run `KMFA/kmfa-dingtalk-attendance-skill/scripts/inspect_runtime.sh` as advisory diagnostics only.
 6. Run `KMFA/kmfa-dingtalk-attendance-skill/scripts/validate_offline.sh`.
-7. Run existing S19 config-only healthcheck: `python3 KMFA/tools/dingtalk_attendance/healthcheck.py --config-only`. The config-only healthcheck is authoritative for current DWS PAT/runtime readiness; a stale App Key warning from `inspect_runtime.sh` alone is not a blocker.
-8. Only when the authoritative healthcheck is `READY` and current local authorization permits DWS commands, run this exact S19 evening entry once; otherwise fail closed and report `DWS_AUTH_REQUIRED` / config blocker. Do not fabricate data.
+7. Run existing attendance skill config-only healthcheck: `python3 KMFA/tools/dingtalk_attendance/healthcheck.py --config-only`. The config-only healthcheck is authoritative for current DWS PAT/runtime readiness; a stale App Key warning from `inspect_runtime.sh` alone is not a blocker.
+8. Only when the authoritative healthcheck is `READY` and current local authorization through `KMFA_DINGTALK_ATTENDANCE_ALLOW_DWS_COMMANDS` permits DWS commands, run this exact attendance skill evening entry once; otherwise fail closed and report `DWS_AUTH_REQUIRED` / config blocker. Do not fabricate data.
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/dingtalk_attendance/run_attendance.py --run-type evening --timezone Asia/Shanghai
@@ -36,7 +36,7 @@ Treat every nonzero command exit code as a failed automation run; do not report 
 9a. The production official collector intentionally skips the legacy per-member record/summary sweep. Do not run that sweep before or after the entry.
 9b. Do not interrupt the entry while its process is still inside the runner's bounded DWS timeout/retry budget.
 9c. When the authoritative healthcheck is READY, a running process or later timeout must never be reported as DWS_AUTH_REQUIRED; report the entry's exact final JSON status and exit code.
-10. Acquire or replay DingTalk attendance result/detail evidence only through approved local S19/DWS paths.
+10. Acquire or replay DingTalk attendance result/detail evidence only through approved local attendance/DWS paths.
 11. Store public-safe metadata under `KMFA/metadata`; keep private raw payloads in ignored private runtime or OneDrive.
 12. Run `KMFA/kmfa-dingtalk-attendance-skill/scripts/month_gate.py --run-slot evening --print-json`.
 13. If day 1-5 of the following month, run `KMFA/kmfa-dingtalk-attendance-skill/scripts/run_stage2_evening.sh`.

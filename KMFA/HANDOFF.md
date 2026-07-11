@@ -2,7 +2,7 @@
 
 更新时间: 2026-07-11
 
-## S19 当前状态
+## KMFA 钉钉考勤 skill 当前状态
 
 - `每日早晚钉钉考勤检查` 已切换为 DWS live backend；2026-07-11 起，用户可见统计唯一真值源为钉钉管理员官方报表 `attendance report columns/query-data`，不再由 `record get + summary` 推断。
 - 当前业务统计范围为 8 个钉钉考勤组的 42 名唯一成员；组织通讯录 44 人只用于姓名映射/诊断，不再作为官方统计分母。考勤组成员和官方字段 ID 每次运行动态读取，不硬编码。
@@ -12,15 +12,17 @@
 - 官方报表完整时，`record get` / personal `summary` 的单独权限或调用失败只记录为私有 diagnostic failure，不再阻断或改写官方结论；legacy collector 仍保持原 PAT fail-fast。
 - 私有归档目录仍为 `/Users/linzezhang/OneDrive/dingtalk_attendance/YYYYMM/`；新 raw JSONL 会额外保存一条 `official_report_evidence`，Git 不保存真实人员、report row 或 DWS ID。
 - Git 只保存 DWS backend 代码、报告模板、路径/统计证据和安全扫描；不保存真实员工考勤明文、raw JSONL、SQLite、机器人地址、应用密钥或访问凭证。
-- S19 钉钉通知已升级为多目标路由表：`notification_targets.local.json` / `notification_targets_resolved.json` 仅保存在 ignored private runtime，公开 `notification_targets_manifest.json` 只保留脱敏状态；旧 `notification_channel_resolved.json` 仍兼容迁移。
+- 考勤 skill 钉钉通知已升级为多目标路由表：`notification_targets.local.json` / `notification_targets_resolved.json` 仅保存在 ignored private runtime，公开 `notification_targets_manifest.json` 只保留脱敏状态；旧 `notification_channel_resolved.json` 仍兼容迁移。
 - 张霖泽目标已迁移并验证为 `dws_open_dingtalk_id_chat` 个人单聊：`notification_probe.py --all-targets` 已发送验证消息 `SENT`；DWS userId 单聊历史失败为 `chat/business_error/系统错误`，openDingTalkId fallback 保持生效。
-- S19 通知发送已统一到唯一“考勤通知模板”：`send_latest_report.py --channel auto --targets all` 不重新取考勤，通过多目标路由发送一条 `attendance_notification`；钉钉正文只展示官方当日报表命中的“今日异常 / 无考勤”、连续异常和需要休息人员，`缺卡/未打卡/旷工/迟到/早退` 只由目标日官方列值决定；当前自然月累计次数只作为今天命中人员注释，不反向制造今天异常；空板块完全不渲染；当天无异常且官方 parity 完整时输出 `本次 N 人全部考勤正常`；`待审批 / 待补卡 / 待核查` 用户可见板块已删除。
+- 考勤 skill 通知发送已统一到唯一“考勤通知模板”：`send_latest_report.py --channel auto --targets all` 不重新取考勤，通过多目标路由发送一条 `attendance_notification`；钉钉正文只展示官方当日报表命中的“今日异常 / 无考勤”、连续异常和需要休息人员，`缺卡/未打卡/旷工/迟到/早退` 只由目标日官方列值决定；当前自然月累计次数只作为今天命中人员注释，不反向制造今天异常；空板块完全不渲染；当天无异常且官方 parity 完整时输出 `本次 N 人全部考勤正常`；`待审批 / 待补卡 / 待核查` 用户可见板块已删除。
 - 指定日期个人测试必须使用 `run_attendance.py --work-date YYYY-MM-DD --notification-targets personal`，不得触达生产管理群；默认生产发送目标仍为 `all`。
 - 2026-07-08 指定日期测试结果：`2026-07-06` 晨报用 personal target 发送张霖泽成功，dispatch 只含个人目标，正文无 pending 板块和后台诊断；`2026-07-06` 晚报被 DWS gateway timeout/code 6 阻断在 department discovery，未生成报告、未发送个人或群，recovery event `evt_1783485085139817000` 已 finalize failed。
 - run_id、北京时间、OneDrive 报告路径和后台取数/权限诊断只保留在 dispatch receipt / manifest / automation JSON，不进入钉钉正文或用户面向管理/HR 报告；automation JSON 输出 `notification_template_text` 和 `notification_delivery_table`。
-- S19 需要休息口径：自然月第 23 个有效考勤日开始提醒；丁春法、李永占只从“需要休息人员”和私有 ledger `rest_required_snapshots` 中排除，其他状态仍照常统计。
+- 考勤 skill 需要休息口径：自然月第 23 个有效考勤日开始提醒；丁春法、李永占只从“需要休息人员”和私有 ledger `rest_required_snapshots` 中排除，其他状态仍照常统计。
 
-### S19 官方统计一致性修复 - 2026-07-11
+### 历史公开记录：官方统计一致性修复 - 2026-07-11
+
+- legacy_classification: `historical_identifier`；以下事件原文与旧 run-id 仅作历史证据，不代表当前身份或新写入协议。
 
 - root_cause: 旧实现用整个组织 44 人作为分母，并把“当天没有同时出现上班+下班两条记录”直接判异常；晨报因此把尚未到下班时间的正常晨卡误报。个人 month summary 还出现过 `success=true` 但没有目标日 children 的空壳响应，旧代码将其 fail-open 为无异常。
 - date_root_cause: 旧 DWS `record get/summary` 使用进程 `time.Local` 转 epoch；历史 `s19_morning_20260710_103500` 的 target work_date 为 07-10，但 record 计划/实际时间全部落在北京时间 07-09，同一 run 又混入 07-10 summary。
@@ -29,7 +31,7 @@
 - implementation: `collect_official_org_attendance` 先解析考勤组范围和 9 个精确官方列，再做当天 5 人批次查询；官方结果独占业务异常/应考勤/有效出勤。通知、月累计和 SQLite 同步均优先 `official_report_anomaly` / `official_effective_day`；旧 archive 仍兼容回放。
 - mixed_archive_precedence: 月累计和 private SQLite v2 均先按 `(user_id, work_date)` 归并；同日存在 official row 时完全忽略 legacy 业务分类，多个 official snapshot 取时间最新一条。异常累计、连续异常、有效出勤和休息提醒使用同一 canonical user-day。
 - automation_state: live `kmfa` 与 `kmfa-3` prompt 已同步官方 parity 门禁，readback hash 与 repo canonical prompt 一致；两张卡均 ACTIVE、无 timezone 字段，晚报仍为本机墙钟 20:00，未改调度。
-- verification: 91 项 `test_dingtalk_attendance`、9 项 automation schedule contract、17 项 auth keepalive regression、Python compile、S19 file/prompt contract、skill validator、no-sensitive scan 和真实只读官方对账通过。现存 private ledger 已先备份再从全部 raw manifests 重建为 schema v2，19/19 runs 的 canonical version 与 sort key 完整，validate/query 均 PASS。2026-07-11 full collector readback 为 42/42、异常 11、应考勤 39、有效出勤 28、delivery gate PASS、diagnostic command failure=0。剩余唯一生产证据是下一次自然触发后确认通知正文与当时钉钉 UI 快照一致。
+- verification: 91 项 `test_dingtalk_attendance`、9 项 automation schedule contract、17 项 auth keepalive regression、Python compile、旧 file/prompt contract、skill validator、no-sensitive scan 和真实只读官方对账通过。现存 private ledger 已先备份再从全部 raw manifests 重建为 schema v2，19/19 runs 的 canonical version 与 sort key 完整，validate/query 均 PASS。2026-07-11 full collector readback 为 42/42、异常 11、应考勤 39、有效出勤 28、delivery gate PASS、diagnostic command failure=0。剩余唯一生产证据是下一次自然触发后确认通知正文与当时钉钉 UI 快照一致。
 - runtime_stability_fix: 2026-07-11 晚报失败并非授权缺失；healthcheck 为 `READY`，官方链路后进入 42 人逐个 `record/summary` legacy sweep，约 292 秒后被 automation 中断并误报 `DWS_AUTH_REQUIRED`。scheduled official collector 已移除该非权威 sweep，真实只读 DWS 验收 65.1 秒完成 42/42、parity PASS、异常 11、command failure 0、legacy diagnostic skipped 42；未发送通知。
 
 ## S20 当前状态｜钉钉工作检查 daily routine check
