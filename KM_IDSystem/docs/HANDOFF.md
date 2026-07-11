@@ -99,13 +99,14 @@ Commit/PR summaries must include:
 
 - Canonical worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS`
 - Project scope: `KM_IDSystem/` only.
-- Current local state: `STAGE-038 · Worker 队列基线` has only Phase 1 complete; STAGE-037 remains `completed_reviewed_local`.
-- Current task: `IDS-V0_1-STAGE038-P1`; acceptance: `ACC-STAGE-038`.
-- Phase 1 records only reviewed STAGE-037 envelope/state constraints, STAGE-022 priority vocabulary, STAGE-030 bounded-ref safety, downstream ownership, and the queue/claim dimensions still awaiting source approval. Exact ordering, idempotency, dependency, queue-entry, and claim contracts remain unassigned; no queue or worker runtime exists.
-- Exact source status: `P0 source verification: EXTERNAL_TASKPACK_ABSENT`; `P0 SHA-256: UNKNOWN_UNDER_IDS-V0_1-STAGE038-P1`; `source_reverification_required_before_phase2=true`.
-- `phase2_entry_authorized=false`. The next allowed run is only `IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY`; it must reattach and truthfully hash the exact approved Stage038 taskpack, reconcile P1, and pass an independent gate before P2 can be authorized.
+- Current local state: `STAGE-038 · Worker 队列基线` has Phase 1 plus its exact-source reverification complete; STAGE-037 remains `completed_reviewed_local`.
+- Current task: `IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY`; acceptance: `ACC-STAGE-038`.
+- Exact source status: `SOURCE_VERIFIED`; the unique Stage038 member SHA-256 is `613acde3cc8f9b8fdc267eb1b0f3076fbce6e858a0d00c3840a2bd730faa7634`. Archive, roadmap, and instruction hashes are recorded in `STAGE038_PHASE1_SOURCE_REVERIFICATION.md`.
+- Corrected Phase 1 defines queue/worker separation, envelope idempotency, retry/dead-letter, backpressure, lock granularity, automatic lifecycle, crash-recovery checkpoint, and cleanup allowlist interfaces. STAGE-039..044 retain dedicated runtime policy and implementation ownership.
+- A six-surface finite-state check binds batch, roadmap, entry, Phase 1, source evidence, and review evidence. Independent review repaired `1 Critical / 1 Important / 0 Minor` and ended at `0 / 0 / 0`.
+- `phase2_entry_authorized=true`; only `IDS-V0_1-STAGE038-P2` may run next, in a separate run. Phase 2 has not started and no queue or worker runtime exists.
 - `BATCH031_040` remains locked with `push_allowed=false`; do not upload, merge, reinstall app entries, or run batch gates before all ten stages are complete and reviewed.
-- Current review evidence: `docs/pursuing_goal/ids_v0_1/STAGE037_STAGE_REVIEW.md`; Phase 4 remains historical closeout evidence.
+- Current source-review evidence: `docs/pursuing_goal/ids_v0_1/STAGE038_PHASE1_SOURCE_REVERIFICATION_REVIEW.md`; this is not the later whole-stage review.
 - The real metadata root `/Users/linzezhang/Downloads/IDS_MetaData` is path-only governance context. Do not read, list, hash, open, copy, move, delete, modify, dump, scan, normalize, or commit its contents.
 - Do not use fake IDS business data, fake database rows, placeholder corpus, fabricated profiles, dumps, execution logs, or evidence.
 
@@ -127,4 +128,4 @@ These are recoverable from source, scripts, and GitHub.
 - macOS may reject the ad-hoc `.app` bundle through Gatekeeper/LaunchServices. The `.command` launcher is the current reliable click path.
 - Real MQTT/OPC-UA/Modbus device ingestion is not implemented in this version.
 - Model providers are configurable, but no plaintext API keys should be committed.
-- STAGE-038 Phase 1 is a source-limited static boundary only. Phase 2 artifacts, queue/worker runtime, claim persistence, retry/dead-letter, backpressure, lock/lease/fencing runtime, automatic lifecycle, crash recovery, cleanup, PostgreSQL actions, raw source reads, and real job execution remain disabled.
+- STAGE-038 Phase 1 is a source-verified engineering boundary only. Phase 2 artifacts, queue/worker runtime, claim persistence, retry/dead-letter, backpressure, lock/lease/fencing runtime, automatic lifecycle, crash recovery, cleanup, PostgreSQL actions, raw source reads, and real job execution remain absent in the current checkout.

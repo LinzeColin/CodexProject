@@ -56,6 +56,10 @@ class Stage005GovernanceRegressionTests(unittest.TestCase):
         self.assertEqual(report["forbidden_changed_paths"], [])
         self.assertEqual(report["tracked_forbidden_runtime_files"], [])
         self.assertTrue(all(report["data_boundary_checks"].values()), report["data_boundary_checks"])
+        self.assertTrue(
+            all(report["source_reverification_checks"].values()),
+            report["source_reverification_checks"],
+        )
         self.assertGreaterEqual(report["surface_counts"]["governance"], 1)
         self.assertGreaterEqual(report["surface_counts"]["scripts"], 1)
         self.assertGreaterEqual(report["accepted_name_hits"]["IDS / Industrial Data System"], 1)
@@ -8333,6 +8337,250 @@ stages:
         ):
             with self.subTest(unauthorized_path=unauthorized_path):
                 self.assertFalse(module._is_allowed_changed_path(unauthorized_path))
+
+    def test_phase_state_allows_stage038_source_reverified_state(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-031-040"
+status: "stage038_phase1_source_reverified"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-038:
+    status: "stage038_phase1_source_reverified"
+    completed_phases:
+      - "Phase 1"
+    next_phase: "Phase 2"
+    next_gate: "IDS-STAGE038-P2-GATE"
+    current_task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
+    acceptance_id: "ACC-STAGE-038"
+    acceptance_status: "phase1_source_reverified_phase2_authorized"
+    source_verification_status: "SOURCE_VERIFIED"
+    source_reverification_gate_status: "passed"
+    phase2_entry_authorized: true
+decision:
+  current_task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
+  next_allowed_task_id: "IDS-V0_1-STAGE038-P2"
+  github_upload_allowed: false
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE038"
+current_phase_id: "IDS-STAGE038-P1"
+current_task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
+next_gate_id: "IDS-STAGE038-P2-GATE"
+stages:
+  -
+    stage_id: "IDS-STAGE005"
+    phases:
+      -
+        phase_id: "IDS-STAGE005-P2"
+        status: "passed_with_local_evidence"
+  -
+    stage_id: "IDS-STAGE038"
+    source_reverification_gate:
+      gate_id: "IDS-STAGE038-P1-SOURCE-REVERIFY-GATE"
+      status: "passed"
+      task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
+      source_verification_status: "SOURCE_VERIFIED"
+      source_member_match_count: 1
+      source_member_sha256: "613acde3cc8f9b8fdc267eb1b0f3076fbce6e858a0d00c3840a2bd730faa7634"
+      reconciliation_status: "passed"
+      independent_review_status: "passed"
+      phase2_entry_authorized: true
+    phases:
+      -
+        phase_id: "IDS-STAGE038-P1"
+        status: "passed_with_local_evidence"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
+            status: "completed"
+            test_results: "GREEN: Stage038 8 tests OK, Stage005 142 tests OK, Stage031-038 aggregate 177 tests OK, Stage026-030 75 tests OK, full IDS v0.1 discovery 579 tests OK, Stage005 validator valid=true"
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE1_WORKER_QUEUE_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE1_SOURCE_REVERIFICATION.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE1_SOURCE_REVERIFICATION_REVIEW.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_baseline.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+      -
+        phase_id: "IDS-STAGE038-P2"
+        status: "planned"
+        entry_authorized: true
+"""
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+        self.assertTrue(all(checks.values()), checks)
+        structured = module.evaluate_current_state_consistency(
+            batch_text, roadmap_text
+        )
+        self.assertTrue(all(structured.values()), structured)
+        for tampered_batch in (
+            batch_text.replace(
+                'phase2_entry_authorized: true',
+                'phase2_entry_authorized: false',
+            ),
+            batch_text.replace(
+                'source_verification_status: "SOURCE_VERIFIED"',
+                'source_verification_status: "EXTERNAL_TASKPACK_ABSENT"',
+            ),
+            batch_text.replace(
+                'next_allowed_task_id: "IDS-V0_1-STAGE038-P2"',
+                'next_allowed_task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"',
+            ),
+        ):
+            with self.subTest(tampered_batch=tampered_batch):
+                checks = module.evaluate_phase_state(tampered_batch, roadmap_text)
+                self.assertFalse(all(checks.values()), checks)
+        self.assertTrue(
+            module._is_allowed_changed_path(
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
+                "STAGE038_PHASE1_SOURCE_REVERIFICATION.md"
+            )
+        )
+
+    def test_stage038_source_reverification_rejects_cross_file_mixed_states(self):
+        module = self._load_module()
+        archive_path = (
+            "/Users/linzezhang/Downloads/"
+            "IDS_Taskpack_v0_1_only_中文修订版.zip"
+        )
+        archive_sha = (
+            "55b782e338610aab6361b7945bb5e290b"
+            "a60038a06cc765c7c2da801734db6d3"
+        )
+        member = (
+            "IDS_v0_1_Final_Chinese_Revised/stages/"
+            "STAGE-038_Worker队列基线.md"
+        )
+        member_sha = (
+            "613acde3cc8f9b8fdc267eb1b0f3076f"
+            "bce6e858a0d00c3840a2bd730faa7634"
+        )
+        roadmap_sha = (
+            "a193fd2c44c51d634bf7887a1a6baf7"
+            "e5199d9a8535e4211e35e97588e2e21a6"
+        )
+        instructions_sha = (
+            "ce456e06136d5ecc56cd7c9dc926abb5"
+            "894817dda87bf7667588bf85211794f8"
+        )
+        batch_text = f"""
+batch_id: "IDS-V0_1-BATCH-031-040"
+status: "stage038_phase1_source_reverified"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-038:
+    status: "stage038_phase1_source_reverified"
+    current_task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
+    next_phase: "Phase 2"
+    next_gate: "IDS-STAGE038-P2-GATE"
+    source_verification_status: "SOURCE_VERIFIED"
+    source_reverification_gate_status: "passed"
+    source_archive_path: "{archive_path}"
+    source_archive_sha256: "{archive_sha}"
+    source_member: "{member}"
+    source_member_match_count: 1
+    source_member_integrity: "OK"
+    source_member_sha256: "{member_sha}"
+    roadmap_sha256: "{roadmap_sha}"
+    instructions_sha256: "{instructions_sha}"
+    reconciliation_status: "passed"
+    source_reverification_required_before_phase2: false
+    independent_review_status: "passed"
+    phase2_entry_authorized: true
+decision:
+  current_task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
+  next_allowed_task_id: "IDS-V0_1-STAGE038-P2"
+  github_upload_allowed: false
+"""
+        roadmap_text = f"""
+current_stage_id: "IDS-STAGE038"
+current_phase_id: "IDS-STAGE038-P1"
+current_task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
+next_gate_id: "IDS-STAGE038-P2-GATE"
+stages:
+  -
+    stage_id: "IDS-STAGE038"
+    source_reverification_gate:
+      gate_id: "IDS-STAGE038-P1-SOURCE-REVERIFY-GATE"
+      status: "passed"
+      task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
+      source_verification_status: "SOURCE_VERIFIED"
+      source_archive_path: "{archive_path}"
+      source_archive_sha256: "{archive_sha}"
+      source_member: "{member}"
+      source_member_match_count: 1
+      source_member_integrity: "OK"
+      source_member_sha256: "{member_sha}"
+      roadmap_sha256: "{roadmap_sha}"
+      instructions_sha256: "{instructions_sha}"
+      reconciliation_status: "passed"
+      source_reverification_required_before_phase2: false
+      independent_review_status: "passed"
+      phase2_entry_authorized: true
+    phases:
+      -
+        phase_id: "IDS-STAGE038-P2"
+        status: "planned"
+        entry_authorized: true
+"""
+        markdown = "\n".join(
+            (
+                f"`source_archive_path={archive_path}`",
+                f"`source_archive_sha256={archive_sha}`",
+                f"`source_member={member}`",
+                "`source_member_match_count=1`",
+                "`source_member_integrity=OK`",
+                f"`source_member_sha256={member_sha}`",
+                f"`roadmap_sha256={roadmap_sha}`",
+                f"`instructions_sha256={instructions_sha}`",
+                "`source_verification_status=SOURCE_VERIFIED`",
+                "`reconciliation_status=passed`",
+                "`source_reverification_required_before_phase2=false`",
+                "`independent_review_status=passed`",
+                "`phase2_entry_authorized=true`",
+            )
+        )
+        base_args = [
+            batch_text,
+            roadmap_text,
+            markdown,
+            markdown,
+            markdown,
+            markdown,
+        ]
+        checks = module.evaluate_stage038_source_reverification(*base_args)
+        self.assertTrue(all(checks.values()), checks)
+
+        mutations = (
+            (0, archive_sha, "0" * 64),
+            (0, 'independent_review_status: "passed"', 'independent_review_status: "pending"'),
+            (1, "source_member_match_count: 1", "source_member_match_count: 2"),
+            (1, "phase2_entry_authorized: true", "phase2_entry_authorized: false"),
+            (2, member_sha, "1" * 64),
+            (3, "source_reverification_required_before_phase2=false", "source_reverification_required_before_phase2=true"),
+            (4, "source_member_integrity=OK", "source_member_integrity=FAILED"),
+            (4, "independent_review_status=passed", "independent_review_status=PENDING"),
+            (5, roadmap_sha, "2" * 64),
+            (5, "phase2_entry_authorized=true", "phase2_entry_authorized=false"),
+        )
+        for index, old, new in mutations:
+            tampered = list(base_args)
+            tampered[index] = tampered[index].replace(old, new)
+            self.assertNotEqual(base_args[index], tampered[index], (index, old))
+            with self.subTest(index=index, old=old, new=new):
+                checks = module.evaluate_stage038_source_reverification(*tampered)
+                self.assertFalse(all(checks.values()), checks)
 
     def test_structured_state_rejects_stage035_node_contradictions(self):
         module = self._load_module()

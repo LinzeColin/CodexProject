@@ -1,10 +1,14 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-031-040"
 created_at_utc: "2026-07-03T08:32:56Z"
-updated_at_utc: "2026-07-11T06:53:26Z"
-status: "stage038_phase1_in_progress"
+updated_at_utc: "2026-07-11T09:44:39Z"
+status: "stage038_phase1_source_reverified"
 
 transition_history:
+  stage038_source_limited_state:
+    status: "stage038_phase1_in_progress"
+    current_task_id: "IDS-V0_1-STAGE038-P1"
+    next_allowed_task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
   previous_state:
     status: "stage037_completed_reviewed_local"
     current_task_id: "IDS-V0_1-STAGE037-REVIEW"
@@ -223,28 +227,41 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
   STAGE-038:
-    status: "stage038_phase1_in_progress"
+    status: "stage038_phase1_source_reverified"
     completed_phases:
       - "Phase 1"
     review_status: "not_started"
-    next_phase: "Phase 1 source reverification"
-    next_gate: "IDS-STAGE038-P1-SOURCE-REVERIFY-GATE"
-    current_task_id: "IDS-V0_1-STAGE038-P1"
+    next_phase: "Phase 2"
+    next_gate: "IDS-STAGE038-P2-GATE"
+    current_task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
     acceptance_id: "ACC-STAGE-038"
-    acceptance_status: "phase1_scope_boundary_defined_source_reverification_required"
-    source_verification_status: "EXTERNAL_TASKPACK_ABSENT"
-    source_reverification_gate_status: "blocked_external_taskpack_absent"
-    phase2_entry_authorized: false
+    acceptance_status: "phase1_source_reverified_phase2_authorized"
+    source_verification_status: "SOURCE_VERIFIED"
+    source_reverification_gate_status: "passed"
+    phase2_entry_authorized: true
+    source_archive_path: "/Users/linzezhang/Downloads/IDS_Taskpack_v0_1_only_中文修订版.zip"
+    source_archive_sha256: "55b782e338610aab6361b7945bb5e290ba60038a06cc765c7c2da801734db6d3"
+    source_member: "IDS_v0_1_Final_Chinese_Revised/stages/STAGE-038_Worker队列基线.md"
+    source_member_match_count: 1
+    source_member_integrity: "OK"
+    source_member_sha256: "613acde3cc8f9b8fdc267eb1b0f3076fbce6e858a0d00c3840a2bd730faa7634"
+    roadmap_sha256: "a193fd2c44c51d634bf7887a1a6baf7e5199d9a8535e4211e35e97588e2e21a6"
+    instructions_sha256: "ce456e06136d5ecc56cd7c9dc926abb5894817dda87bf7667588bf85211794f8"
+    reconciliation_status: "passed"
+    source_reverification_required_before_phase2: false
+    independent_review_status: "passed"
     evidence_refs:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_ENTRY_CONTRACT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE1_WORKER_QUEUE_SCOPE_BOUNDARY.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE1_SOURCE_REVERIFICATION.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE1_SOURCE_REVERIFICATION_REVIEW.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_baseline.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
-  current_task_id: "IDS-V0_1-STAGE038-P1"
-  next_allowed_task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
+  current_task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
+  next_allowed_task_id: "IDS-V0_1-STAGE038-P2"
   github_upload_allowed: false
-  current_run: "STAGE-038 Phase 1 records only inherited STAGE-037/022/030 constraints, source-gated queue/claim decision dimensions, raw and real-data boundaries, and downstream ownership. Exact ordering, idempotency, dependency, queue-entry, and claim-transport contracts remain unassigned. The external taskpack is absent, Phase 2 entry is unauthorized, and only a P1 source-reverification task may run next; no queue/worker runtime, raw metadata access, PostgreSQL action, real/fake IDS data, GitHub upload, PR, merge, issue mutation, app reinstall, stage review, batch review, or upload gate occurs."
-  no_upload_reason: "BATCH031_040 has STAGE-031 through STAGE-037 completed and reviewed locally; STAGE-038 has only Phase 1 complete with source reverification required, and STAGE-039..040 remain incomplete. The tenth-stage review and separate batch upload gates have not run, so push_allowed stays false."
+  current_run: "STAGE-038 Phase 1 exact taskpack source is uniquely reverified, the earlier source-limited boundary is corrected, and independent review repairs are complete: STAGE-038 defines queue/worker, retry/dead-letter, backpressure, lock, automatic-lifecycle, crash-recovery, idempotency, and cleanup interfaces while STAGE-039..044 retain runtime ownership. Only the next separate Phase 2 run is authorized. No Phase 2, queue/worker runtime, raw metadata access, PostgreSQL action, real/fake IDS data, GitHub upload, PR, merge, issue mutation, app reinstall, stage review, batch review, or upload gate occurs."
+  no_upload_reason: "BATCH031_040 has STAGE-031 through STAGE-037 completed and reviewed locally; STAGE-038 has only Phase 1 plus source-reverification evidence complete, while Phase 2-4 and STAGE-039..040 remain incomplete. The tenth-stage review and separate batch upload gates have not run, so push_allowed stays false."

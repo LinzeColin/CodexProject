@@ -1,5 +1,13 @@
 # Changelog
 
+## IDS v0.1 STAGE-038 Phase 1 Source Reverification - 2026-07-11
+
+- Reverified the unique approved Stage038 taskpack member and recorded the exact archive, member, roadmap, and instruction SHA-256 values under `ACC-STAGE-038`.
+- Reconciled Phase 1 with the restored source: STAGE-038 now defines queue/worker separation, idempotency, retry/dead-letter, backpressure, lock, lifecycle, crash-recovery, and cleanup interfaces while STAGE-039..044 retain dedicated runtime ownership.
+- Added a six-surface finite-state validator and negative cross-file mutations so mixed hashes, counts, review states, or Phase 2 authorization fail closed.
+- Repaired the Phase 2/3 plan to allow a separate isolated non-production queue/worker slice and the exact source scenarios without raw metadata, fake IDS data, production activation, or runtime-ownership takeover.
+- Independent review progressed from `1 Critical / 1 Important / 0 Minor` to `0 / 0 / 0`; only the next separate Phase 2 run is authorized. No Phase 2, GitHub upload, app reinstall, stage review, or batch gate ran.
+
 ## IDS v0.1 STAGE-038 Phase 1 - 2026-07-11
 
 - Recorded the source-limited Worker queue boundary under `ACC-STAGE-038`: inherited STAGE-037/022/030 constraints and STAGE-039..044 ownership are fixed, while exact ordering, idempotency, dependency, queue-entry, and claim contracts remain unassigned.
