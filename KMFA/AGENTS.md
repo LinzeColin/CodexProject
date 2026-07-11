@@ -9,7 +9,7 @@
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
 - 当前 Stage: `v0.1.4 Stage 13 post-remediation replay`
-- 当前 Phase: `V014_S13_POST_REMEDIATION_STAGE_REVIEW 已完成 Stage 13 整体复审：S13-P1/P2/P3 当前链 3/3 PASS，9 个 findings 已修复、open=0；周报、月报、应收工作台和跨表工作台形成 12 条边强连通。当前仍为 4 NOT_COMPARABLE / 0 exact / 4 non-additive queue / Q4 / D / NO_GO / 3-9-2-1，raw 前后、跨 S13-P3 与当前快照一致。下一步只能另起 run work 执行 S14-P1，不执行 S14-P2/P3、Stage 14 整体复审、GitHub upload、正式报告、差异关闭、app reinstall 或业务执行。历史 Stage 12-18 产物仅作 legacy 证据，不是当前 active gate。`
+- 当前 Phase: `V014_S14_P1_POST_REMEDIATION_FUND_CASH_LOAN_PLAN 已完成账户、月度现金、资金计划、贷款 4 条结构主题和 3 类复核方法；只读探针覆盖 48 个 XLSX 容器、180 个唯一候选工作表，二次指纹不一致为 0。权威行/数值绑定和业务事项保持 0/0/0，当前仍为 Q4 / D / NO_GO / 3-9-2-1。raw 前后、跨 Stage 13 review 与当前快照一致。下一步只能另起 run work 执行 S14-P2，不执行 S14-P3、Stage 14 整体复审、付款/银行/贷款动作、GitHub upload、正式报告、差异关闭、app reinstall 或业务执行。历史 Stage 12-18 产物仅作 legacy 证据，不是当前 active gate。`
 
 ## Execution Rules
 
@@ -41,7 +41,7 @@
 
 ## Current Non-Goals
 
-- v0.1.4 Stage 13 整体复审本轮完成；下一轮只能单独执行 S14-P1。不得顺手执行 S14-P2/P3、Stage 14 整体复审、GitHub upload、protected source matching、lineage full check、正式报告、差异关闭、live connector、app reinstall、OpMe 深度耦合、客户联络、催收、法务、开票、付款、银行或任何业务动作。
+- v0.1.4 S14-P1 本轮完成；下一轮只能单独执行 S14-P2。不得顺手执行 S14-P3、Stage 14 整体复审、GitHub upload、protected source matching、lineage full check、正式报告、差异关闭、live connector、app reinstall、OpMe 深度耦合、客户联络、催收、法务、发票开具、纳税申报、付款、银行、贷款管理或任何业务动作。
 - 以下 Stage 15/16/17/18 final upload 相关表述是 legacy/Post-S18 历史证据，不是当前 v0.1.4 active gate。当前 v0.1.4 GitHub main upload 仍延期到 Stage 1-18 全部完成并整体复审修复后一次性执行；不得直接进入 lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。
