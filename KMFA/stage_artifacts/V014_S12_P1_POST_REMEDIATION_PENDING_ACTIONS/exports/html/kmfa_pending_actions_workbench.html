@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KMFA 待处理事项工作台</title>
+  <style>
+    :root { --navy:#102d4f; --blue:#1769aa; --blue-soft:#eaf3fb; --surface:#fff; --page:#f4f7f9; --line:#d7e0e7; --ink:#182634; --muted:#637282; --danger:#a92d25; --danger-soft:#fff0ee; --green:#16754b; --green-soft:#eaf7f1; --purple:#6b4ca1; --purple-soft:#f2edfa; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--page); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",Arial,sans-serif; font-size:14px; line-height:1.55; }
+    button,input,select,textarea { font:inherit; letter-spacing:0; }
+    button,a { -webkit-tap-highlight-color:transparent; }
+    .app { min-height:100vh; display:grid; grid-template-rows:auto 1fr; }
+    .topbar { display:flex; align-items:center; gap:18px; min-height:68px; padding:10px 24px; background:var(--navy); color:#fff; border-bottom:4px solid #2f81bd; }
+    .brand { display:flex; align-items:center; gap:10px; min-width:210px; }
+    .brand-mark { width:40px; height:40px; display:grid; place-items:center; border-radius:6px; background:#fff; color:var(--navy); font-weight:900; }
+    .brand strong,.brand span { display:block; } .brand span { color:#c9dbee; font-size:12px; }
+    .top-links { display:flex; gap:6px; flex-wrap:wrap; }
+    .top-links a { color:#e5f0fa; text-decoration:none; border:1px solid rgba(255,255,255,.24); border-radius:6px; padding:7px 10px; }
+    .top-links a:hover,.top-links a:focus-visible { background:rgba(255,255,255,.12); }
+    .gate { margin-left:auto; text-align:right; } .gate span { display:block; color:#c9dbee; font-size:12px; } .gate strong { color:#fff; }
+    main { min-width:0; width:min(1500px,100%); margin:0 auto; padding:22px 24px 40px; }
+    .page-head { display:flex; align-items:flex-start; justify-content:space-between; gap:20px; margin-bottom:16px; }
+    .page-head h1 { margin:0; color:var(--navy); font-size:27px; } .page-head p { margin:6px 0 0; color:var(--muted); }
+    .boundary { max-width:430px; border-left:4px solid var(--danger); background:var(--danger-soft); padding:10px 12px; color:#6b2a25; }
+    .metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); border:1px solid var(--line); background:var(--surface); margin-bottom:16px; }
+    .metric { min-width:0; padding:13px 15px; border-right:1px solid var(--line); } .metric:last-child { border-right:0; }
+    .metric span { display:block; color:var(--muted); font-size:12px; } .metric strong { display:block; color:var(--navy); font-size:22px; margin-top:3px; }
+    .panel { min-width:0; border:1px solid var(--line); border-radius:7px; background:var(--surface); }
+    .panel-head { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:14px 16px; border-bottom:1px solid var(--line); }
+    .panel-head h2 { margin:0; color:var(--navy); font-size:18px; }
+    .filters { display:grid; grid-template-columns:minmax(220px,1fr) 180px 180px auto; gap:8px; padding:12px 16px; border-bottom:1px solid var(--line); background:#f8fafb; }
+    .control { display:block; width:100%; min-height:40px; border:1px solid #bfcbd5; border-radius:6px; background:#fff; color:var(--ink); padding:8px 10px; }
+    .button { min-height:40px; border:1px solid var(--blue); border-radius:6px; padding:8px 12px; background:var(--blue); color:#fff; cursor:pointer; font-weight:700; }
+    .button:hover,.button:focus-visible { background:#12568c; }
+    .button-secondary { background:#fff; color:var(--blue); } .button-secondary:hover,.button-secondary:focus-visible { background:var(--blue-soft); }
+    .button-muted { border-color:#aab7c2; background:#fff; color:#3e4e5b; }
+    .table-wrap { max-width:100%; overflow:auto; }
+    table { width:100%; min-width:1120px; border-collapse:collapse; }
+    th,td { padding:11px 12px; border-bottom:1px solid #e8edf1; text-align:left; vertical-align:top; }
+    th { position:sticky; top:0; background:#eef4f8; color:#36516a; font-size:12px; white-space:nowrap; }
+    td strong { color:var(--navy); } .subline { display:block; margin-top:2px; color:var(--muted); font-size:11px; }
+    tr[hidden] { display:none; }
+    tr.selected td { background:#f1f7fc; }
+    .status { display:inline-flex; border-radius:999px; padding:3px 8px; font-size:12px; font-weight:700; white-space:nowrap; }
+    .status-pending_review,.status-comparison_incomplete,.status-source_not_ready { color:var(--danger); background:var(--danger-soft); }
+    .status-evidence_ready { color:var(--green); background:var(--green-soft); }
+    .status-accepted_global_only,.status-unknown_attribution { color:var(--purple); background:var(--purple-soft); }
+    .workbench { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(340px,.95fr); margin-top:16px; }
+    .editor,.ledger { padding:17px; } .ledger { border-left:1px solid var(--line); background:#fbfcfd; }
+    .editor h2,.ledger h2 { margin:0 0 12px; color:var(--navy); font-size:18px; }
+    .field-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    label { display:block; color:#3d5265; font-size:12px; font-weight:700; } label .control { margin-top:4px; font-size:14px; font-weight:400; }
+    textarea.control { min-height:86px; resize:vertical; }
+    .selected-summary { min-height:76px; margin:12px 0; padding:10px 12px; border-left:3px solid var(--blue); background:var(--blue-soft); color:#28455f; }
+    .actions { display:flex; flex-wrap:wrap; gap:8px; }
+    .feedback { min-height:44px; margin-top:12px; padding:10px 12px; border:1px solid var(--line); background:#fff; color:#31465a; }
+    .event-count { display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); padding-bottom:10px; margin-bottom:10px; }
+    .event-count strong { font-size:22px; color:var(--navy); }
+    .event-log { display:grid; gap:8px; min-height:190px; max-height:330px; overflow:auto; }
+    .event-row { border:1px solid var(--line); border-radius:6px; background:#fff; padding:10px; }
+    .event-row strong,.event-row span { display:block; } .event-row span { margin-top:3px; color:var(--muted); font-size:12px; overflow-wrap:anywhere; }
+    .empty { color:var(--muted); padding:28px 10px; text-align:center; border:1px dashed #c7d3dc; border-radius:6px; }
+    .flow { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:16px; border:1px solid var(--line); background:#fff; }
+    .flow div { padding:12px 14px; border-right:1px solid var(--line); } .flow div:last-child { border-right:0; }
+    .flow span { display:block; color:var(--muted); font-size:12px; } .flow strong { color:var(--navy); }
+    footer { margin-top:14px; color:var(--muted); font-size:12px; }
+    @media(max-width:980px) { .metrics { grid-template-columns:repeat(2,minmax(0,1fr)); } .metric:nth-child(2) { border-right:0; } .metric:nth-child(-n+2) { border-bottom:1px solid var(--line); } .filters { grid-template-columns:1fr 1fr; } .workbench { grid-template-columns:1fr; } .ledger { border-left:0; border-top:1px solid var(--line); } }
+    @media(max-width:640px) { .topbar { align-items:flex-start; padding:10px 12px; flex-wrap:wrap; } .brand { min-width:0; } .gate { margin-left:0; text-align:left; width:100%; } main { padding:16px 12px 30px; } .page-head { display:block; } .boundary { margin-top:12px; max-width:none; } .metrics,.filters,.field-grid,.flow { grid-template-columns:1fr; } .metric { border-right:0; border-bottom:1px solid var(--line); } .metric:last-child { border-bottom:0; } .filters { padding:10px; } .panel-head { padding:12px; } .editor,.ledger { padding:13px; } .table-wrap { overflow:visible; padding:10px; } table,tbody { display:block; width:100%; min-width:0; } thead { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; } tbody { display:grid; gap:8px; } tr[data-pending-row] { display:grid; grid-template-columns:minmax(0,1fr) auto 70px; gap:6px 10px; align-items:center; padding:10px; border:1px solid var(--line); border-radius:6px; background:#fff; } tr[data-pending-row][hidden] { display:none; } tr[data-pending-row].selected { background:#f1f7fc; } tr[data-pending-row] td { min-width:0; padding:0; border:0; background:transparent; } tr[data-pending-row] td:first-child { grid-column:1; grid-row:1 / 3; } tr[data-pending-row] td:nth-child(2) { grid-column:2; grid-row:1; white-space:nowrap; } tr[data-pending-row] td:nth-child(2)::before { content:"数量 "; color:var(--muted); font-size:11px; } tr[data-pending-row] td:nth-child(3) { grid-column:2; grid-row:2; } tr[data-pending-row] td:nth-child(4),tr[data-pending-row] td:nth-child(6),tr[data-pending-row] td:nth-child(7) { display:none; } tr[data-pending-row] td:nth-child(5) { grid-column:1 / 3; grid-row:3; } tr[data-pending-row] td:last-child { grid-column:3; grid-row:1 / 4; } }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark">KM</div><div><strong>KMFA</strong><span>经营分析系统</span></div></div>
+      <nav class="top-links" aria-label="返回当前页面"><a data-return-link="home" href="../../../V014_S11_P1_POST_REMEDIATION_HOME_NAVIGATION/exports/html/kmfa_home_navigation.html#pending_actions">经营首页</a><a data-return-link="source" href="../../../V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD/exports/html/kmfa_source_check_board.html">数据源检查</a><a data-return-link="project" href="../../../V014_S11_P3_POST_REMEDIATION_PROJECT_COST_PAGE/exports/html/kmfa_project_cost_page.html">项目成本</a></nav>
+      <div class="gate"><span>当前可信状态</span><strong>Q4 / D · NO_GO</strong></div>
+    </header>
+    <main>
+      <section class="page-head"><div><h1>待处理事项</h1><p>按责任、状态、影响和下一步形成公开安全复核入口。</p></div><div class="boundary"><strong>当前仅生成候选事件。</strong> 不写原始数据，不批准业务结论，不执行影响预览或重跑。</div></section>
+      <section class="metrics" aria-label="当前待处理概况"><div class="metric"><span>待处理分组</span><strong>6</strong></div><div class="metric"><span>非零差异</span><strong>9</strong></div><div class="metric"><span>未知项目归属</span><strong>4</strong></div><div class="metric"><span>当前会话候选</span><strong id="session-event-count">0</strong></div></section>
+      <section class="panel">
+        <div class="panel-head"><h2>待处理事项列表</h2><span id="visible-count">6 项</span></div>
+        <div class="filters"><input class="control" type="search" data-pending-search aria-label="搜索待处理事项" placeholder="搜索事项、影响或下一步"><select class="control" data-kind-filter aria-label="按处理类型筛选"><option value="">全部处理类型</option><option value="field_mapping">字段映射</option><option value="project_matching">项目匹配</option><option value="difference_handling">差异处理</option><option value="note">备注</option></select><select class="control" data-status-filter aria-label="按状态筛选"><option value="">全部状态</option><option value="pending_review">待复核</option><option value="evidence_ready">证据待确认</option><option value="comparison_incomplete">比较未完成</option><option value="accepted_global_only">仅全局接受</option><option value="unknown_attribution">归属未知</option><option value="source_not_ready">来源未就绪</option></select><button class="button button-muted" type="button" data-reset-filters>重置</button></div>
+        <div class="table-wrap"><table><thead><tr><th>事项</th><th>数量</th><th>处理类型</th><th>处理人</th><th>状态</th><th>影响</th><th>下一步</th><th>操作</th></tr></thead><tbody><tr data-pending-row data-group-id="PEND-S12P1-001" data-kind="difference_handling" data-status="pending_review" data-search-text="非零差异复核 差异处理 待复核 D级报告与经营结论继续阻断 选择差异处理意见并生成仅当前会话候选事件">
+              <td><strong>非零差异复核</strong><span class="subline">PEND-S12P1-001</span></td>
+              <td>9</td><td>差异处理</td><td>所有者或授权代理</td>
+              <td><span class="status status-pending_review">待复核</span></td>
+              <td>D级报告与经营结论继续阻断</td><td>选择差异处理意见并生成仅当前会话候选事件</td>
+              <td><button class="button button-secondary" type="button" data-select-group="PEND-S12P1-001">选择</button></td>
+            </tr><tr data-pending-row data-group-id="PEND-S12P1-002" data-kind="note" data-status="evidence_ready" data-search-text="零差异证据复核 备注 证据待确认 零差异结果仍需保留来源证据与复核说明 追加公开安全复核备注候选">
+              <td><strong>零差异证据复核</strong><span class="subline">PEND-S12P1-002</span></td>
+              <td>2</td><td>备注</td><td>所有者或授权代理</td>
+              <td><span class="status status-evidence_ready">证据待确认</span></td>
+              <td>零差异结果仍需保留来源证据与复核说明</td><td>追加公开安全复核备注候选</td>
+              <td><button class="button button-secondary" type="button" data-select-group="PEND-S12P1-002">选择</button></td>
+            </tr><tr data-pending-row data-group-id="PEND-S12P1-003" data-kind="difference_handling" data-status="comparison_incomplete" data-search-text="未完成比较补全 差异处理 比较未完成 现金与项目成本链路仍有未完成比较 记录待补证原因，不执行影响预览或重跑">
+              <td><strong>未完成比较补全</strong><span class="subline">PEND-S12P1-003</span></td>
+              <td>1</td><td>差异处理</td><td>所有者或授权代理</td>
+              <td><span class="status status-comparison_incomplete">比较未完成</span></td>
+              <td>现金与项目成本链路仍有未完成比较</td><td>记录待补证原因，不执行影响预览或重跑</td>
+              <td><button class="button button-secondary" type="button" data-select-group="PEND-S12P1-003">选择</button></td>
+            </tr><tr data-pending-row data-group-id="PEND-S12P1-004" data-kind="note" data-status="accepted_global_only" data-search-text="最终差异接受说明 备注 仅全局接受 仅保留全局接受状态，不证明项目级归属 追加限制说明，禁止改写为项目归属结论">
+              <td><strong>最终差异接受说明</strong><span class="subline">PEND-S12P1-004</span></td>
+              <td>3</td><td>备注</td><td>所有者或授权代理</td>
+              <td><span class="status status-accepted_global_only">仅全局接受</span></td>
+              <td>仅保留全局接受状态，不证明项目级归属</td><td>追加限制说明，禁止改写为项目归属结论</td>
+              <td><button class="button button-secondary" type="button" data-select-group="PEND-S12P1-004">选择</button></td>
+            </tr><tr data-pending-row data-group-id="PEND-S12P1-005" data-kind="project_matching" data-status="unknown_attribution" data-search-text="项目归属复核 项目匹配 归属未知 项目成本页面继续显示未知归属 生成项目匹配候选事件，不自动合并或归属">
+              <td><strong>项目归属复核</strong><span class="subline">PEND-S12P1-005</span></td>
+              <td>4</td><td>项目匹配</td><td>所有者或授权代理</td>
+              <td><span class="status status-unknown_attribution">归属未知</span></td>
+              <td>项目成本页面继续显示未知归属</td><td>生成项目匹配候选事件，不自动合并或归属</td>
+              <td><button class="button button-secondary" type="button" data-select-group="PEND-S12P1-005">选择</button></td>
+            </tr><tr data-pending-row data-group-id="PEND-S12P1-006" data-kind="field_mapping" data-status="source_not_ready" data-search-text="数据源映射与状态复核 字段映射 来源未就绪 数据源检查板状态继续影响报告可用性 生成字段映射候选事件，不改原始字段或表头">
+              <td><strong>数据源映射与状态复核</strong><span class="subline">PEND-S12P1-006</span></td>
+              <td>13</td><td>字段映射</td><td>所有者或授权代理</td>
+              <td><span class="status status-source_not_ready">来源未就绪</span></td>
+              <td>数据源检查板状态继续影响报告可用性</td><td>生成字段映射候选事件，不改原始字段或表头</td>
+              <td><button class="button button-secondary" type="button" data-select-group="PEND-S12P1-006">选择</button></td>
+            </tr></tbody></table></div>
+      </section>
+      <section class="panel workbench">
+        <div class="editor"><h2>候选事件</h2><div class="selected-summary" id="selected-summary">请选择一个待处理分组。</div><div class="field-grid"><label>处理类型<select class="control" id="event-kind"><option value="field_mapping">字段映射</option><option value="project_matching">项目匹配</option><option value="difference_handling">差异处理</option><option value="note">备注</option></select></label><label>处理人<span class="control" id="event-actor" role="status">所有者或授权代理</span></label></div><label style="margin-top:10px">原因与备注<textarea class="control" id="event-reason" placeholder="填写公开安全原因，不输入业务金额、原始字段或明细"></textarea></label><label style="margin-top:10px">影响范围<span class="control" id="event-impact" role="status">待选择事项</span></label><div class="actions" style="margin-top:12px"><button class="button" type="button" data-create-event>生成候选事件</button><button class="button button-secondary" type="button" data-reverse-approved>追加反向事件候选</button></div><div class="feedback" id="event-feedback" aria-live="polite">候选事件只存在于当前页面内存，刷新页面后清空。</div></div>
+        <div class="ledger"><h2>当前会话事件</h2><div class="event-count"><span>append-only 草案</span><strong id="ledger-count">0</strong></div><div class="event-log" id="event-log"><div class="empty">尚未生成候选事件</div></div></div>
+      </section>
+      <section class="flow" aria-label="阶段边界"><div><span>当前 phase</span><strong>S12-P1 · 候选事件</strong></div><div><span>后续独立 phase</span><strong>S12-P2 · 影响预览</strong></div><div><span>后续独立 phase</span><strong>S12-P3 · 派生重跑</strong></div></section>
+      <footer>公开页面只含聚合计数、状态与候选事件模板，不含原始文件身份、表头、业务金额、项目或客户明文。</footer>
+    </main>
+  </div>
+  <script>
+    const groups=[{"schema_version":"kmfa.v014.s12_p1.pending_action_group.v1","record_type":"public_safe_pending_action_group","group_id":"PEND-S12P1-001","visible_title":"非零差异复核","manual_action_kind":"difference_handling","item_count":9,"count_semantics":"aggregate_non_additive","responsible_role":"owner_or_authorized_delegate","status":"pending_review","impact_summary":"D级报告与经营结论继续阻断","next_step":"选择差异处理意见并生成仅当前会话候选事件","project_attribution":"unknown_or_not_applicable","session_candidate_only":true,"persistent_business_write_allowed":false,"raw_layer_write_allowed":false,"public_amount_values_committed":false,"source_evidence_refs":["KMFA/stage_artifacts/V014_S11_POST_REMEDIATION_STAGE_REVIEW/machine/stage11_post_remediation_review_manifest.json"]},{"schema_version":"kmfa.v014.s12_p1.pending_action_group.v1","record_type":"public_safe_pending_action_group","group_id":"PEND-S12P1-002","visible_title":"零差异证据复核","manual_action_kind":"note","item_count":2,"count_semantics":"aggregate_non_additive","responsible_role":"owner_or_authorized_delegate","status":"evidence_ready","impact_summary":"零差异结果仍需保留来源证据与复核说明","next_step":"追加公开安全复核备注候选","project_attribution":"unknown_or_not_applicable","session_candidate_only":true,"persistent_business_write_allowed":false,"raw_layer_write_allowed":false,"public_amount_values_committed":false,"source_evidence_refs":["KMFA/stage_artifacts/V014_S11_POST_REMEDIATION_STAGE_REVIEW/machine/stage11_post_remediation_review_manifest.json"]},{"schema_version":"kmfa.v014.s12_p1.pending_action_group.v1","record_type":"public_safe_pending_action_group","group_id":"PEND-S12P1-003","visible_title":"未完成比较补全","manual_action_kind":"difference_handling","item_count":1,"count_semantics":"aggregate_non_additive","responsible_role":"owner_or_authorized_delegate","status":"comparison_incomplete","impact_summary":"现金与项目成本链路仍有未完成比较","next_step":"记录待补证原因，不执行影响预览或重跑","project_attribution":"unknown_or_not_applicable","session_candidate_only":true,"persistent_business_write_allowed":false,"raw_layer_write_allowed":false,"public_amount_values_committed":false,"source_evidence_refs":["KMFA/stage_artifacts/V014_S11_POST_REMEDIATION_STAGE_REVIEW/machine/stage11_post_remediation_review_manifest.json"]},{"schema_version":"kmfa.v014.s12_p1.pending_action_group.v1","record_type":"public_safe_pending_action_group","group_id":"PEND-S12P1-004","visible_title":"最终差异接受说明","manual_action_kind":"note","item_count":3,"count_semantics":"aggregate_non_additive","responsible_role":"owner_or_authorized_delegate","status":"accepted_global_only","impact_summary":"仅保留全局接受状态，不证明项目级归属","next_step":"追加限制说明，禁止改写为项目归属结论","project_attribution":"unknown_or_not_applicable","session_candidate_only":true,"persistent_business_write_allowed":false,"raw_layer_write_allowed":false,"public_amount_values_committed":false,"source_evidence_refs":["KMFA/stage_artifacts/V014_S11_POST_REMEDIATION_STAGE_REVIEW/machine/stage11_post_remediation_review_manifest.json"]},{"schema_version":"kmfa.v014.s12_p1.pending_action_group.v1","record_type":"public_safe_pending_action_group","group_id":"PEND-S12P1-005","visible_title":"项目归属复核","manual_action_kind":"project_matching","item_count":4,"count_semantics":"aggregate_non_additive","responsible_role":"owner_or_authorized_delegate","status":"unknown_attribution","impact_summary":"项目成本页面继续显示未知归属","next_step":"生成项目匹配候选事件，不自动合并或归属","project_attribution":"unknown_or_not_applicable","session_candidate_only":true,"persistent_business_write_allowed":false,"raw_layer_write_allowed":false,"public_amount_values_committed":false,"source_evidence_refs":["KMFA/stage_artifacts/V014_S11_POST_REMEDIATION_STAGE_REVIEW/machine/stage11_post_remediation_review_manifest.json"]},{"schema_version":"kmfa.v014.s12_p1.pending_action_group.v1","record_type":"public_safe_pending_action_group","group_id":"PEND-S12P1-006","visible_title":"数据源映射与状态复核","manual_action_kind":"field_mapping","item_count":13,"count_semantics":"aggregate_non_additive","responsible_role":"owner_or_authorized_delegate","status":"source_not_ready","impact_summary":"数据源检查板状态继续影响报告可用性","next_step":"生成字段映射候选事件，不改原始字段或表头","project_attribution":"unknown_or_not_applicable","session_candidate_only":true,"persistent_business_write_allowed":false,"raw_layer_write_allowed":false,"public_amount_values_committed":false,"source_evidence_refs":["KMFA/stage_artifacts/V014_S11_POST_REMEDIATION_STAGE_REVIEW/machine/stage11_post_remediation_review_manifest.json"]}];
+    const templates=[{"schema_version":"kmfa.v014.s12_p1.manual_event_template.v1","record_type":"public_safe_session_event_template","event_id":"CAND-EVT-S12P1-001","event_type":"mapping_rule","manual_action_kind":"field_mapping","event_action":"propose_field_mapping_rule","actor_ref":"actor_ref://owner_or_authorized_delegate/session-only","event_time_policy":"browser_session_clock_at_creation","reason_code":"FIELD_MAPPING_REVIEW_REQUIRED","impact_scope":["source_check_matrix","field_mapping_catalog"],"event_version":"SESSION-CANDIDATE-S12P1-001.001","approval_state":"draft","append_only":true,"session_candidate_only":true,"silent_update_allowed":false,"persistent_business_write_allowed":false,"raw_layer_write_allowed":false,"public_amount_values_committed":false},{"schema_version":"kmfa.v014.s12_p1.manual_event_template.v1","record_type":"public_safe_session_event_template","event_id":"CAND-EVT-S12P1-002","event_type":"approval_event","manual_action_kind":"project_matching","event_action":"propose_project_match_review","actor_ref":"actor_ref://owner_or_authorized_delegate/session-only","event_time_policy":"browser_session_clock_at_creation","reason_code":"PROJECT_MATCH_REVIEW_REQUIRED","impact_scope":["project_identity_review_queue","project_cost_pending_actions"],"event_version":"SESSION-CANDIDATE-S12P1-001.002","approval_state":"draft","append_only":true,"session_candidate_only":true,"silent_update_allowed":false,"persistent_business_write_allowed":false,"raw_layer_write_allowed":false,"public_amount_values_committed":false},{"schema_version":"kmfa.v014.s12_p1.manual_event_template.v1","record_type":"public_safe_session_event_template","event_id":"CAND-EVT-S12P1-003","event_type":"resolution_event","manual_action_kind":"difference_handling","event_action":"propose_difference_handling","actor_ref":"actor_ref://owner_or_authorized_delegate/session-only","event_time_policy":"browser_session_clock_at_creation","reason_code":"DIFFERENCE_HANDLING_REVIEW_REQUIRED","impact_scope":["scope_reconciliation_queue","restricted_report_grade"],"event_version":"SESSION-CANDIDATE-S12P1-001.003","approval_state":"draft","append_only":true,"session_candidate_only":true,"silent_update_allowed":false,"persistent_business_write_allowed":false,"raw_layer_write_allowed":false,"public_amount_values_committed":false},{"schema_version":"kmfa.v014.s12_p1.manual_event_template.v1","record_type":"public_safe_session_event_template","event_id":"CAND-EVT-S12P1-004","event_type":"comment","manual_action_kind":"note","event_action":"add_review_note_candidate","actor_ref":"actor_ref://owner_or_authorized_delegate/session-only","event_time_policy":"browser_session_clock_at_creation","reason_code":"OWNER_NOTE_DRAFTED","impact_scope":["manual_resolution_workbench","review_note_log"],"event_version":"SESSION-CANDIDATE-S12P1-001.004","approval_state":"draft","append_only":true,"session_candidate_only":true,"silent_update_allowed":false,"persistent_business_write_allowed":false,"raw_layer_write_allowed":false,"public_amount_values_committed":false}];
+    const kindLabels={"field_mapping":"字段映射","project_matching":"项目匹配","difference_handling":"差异处理","note":"备注"};
+    const state={selectedGroupId:null,events:[],sequence:0};
+    const rows=Array.from(document.querySelectorAll('[data-pending-row]'));
+    const search=document.querySelector('[data-pending-search]');
+    const kindFilter=document.querySelector('[data-kind-filter]');
+    const statusFilter=document.querySelector('[data-status-filter]');
+    const selectedSummary=document.getElementById('selected-summary');
+    const eventKind=document.getElementById('event-kind');
+    const eventReason=document.getElementById('event-reason');
+    const eventImpact=document.getElementById('event-impact');
+    const feedback=document.getElementById('event-feedback');
+    const eventLog=document.getElementById('event-log');
+    function record(action,message){state.sequence+=1;document.body.dataset.lastAction=`${action}:${state.sequence}`;feedback.textContent=message;}
+    function applyFilters(){const term=search.value.trim().toLowerCase();let visible=0;rows.forEach(row=>{const show=(!term||row.dataset.searchText.toLowerCase().includes(term))&&(!kindFilter.value||row.dataset.kind===kindFilter.value)&&(!statusFilter.value||row.dataset.status===statusFilter.value);row.hidden=!show;if(show)visible+=1;});document.getElementById('visible-count').textContent=`${visible} 项`;document.body.dataset.visibleRows=String(visible);record('filter',`筛选完成，当前显示 ${visible} 项。`);}
+    function resetFilters(){search.value='';kindFilter.value='';statusFilter.value='';applyFilters();record('reset','筛选条件已重置。');}
+    function selectGroup(groupId){const group=groups.find(item=>item.group_id===groupId);if(!group)return;state.selectedGroupId=groupId;rows.forEach(row=>row.classList.toggle('selected',row.dataset.groupId===groupId));eventKind.value=group.manual_action_kind;eventImpact.textContent=group.impact_summary;selectedSummary.textContent=`${group.visible_title}｜${group.item_count} 项｜${group.next_step}`;document.body.dataset.selectedGroup=groupId;record('select',`已选择 ${group.visible_title}。`);}
+    function renderEvents(){document.getElementById('session-event-count').textContent=String(state.events.length);document.getElementById('ledger-count').textContent=String(state.events.length);document.body.dataset.sessionEventCount=String(state.events.length);eventLog.replaceChildren();if(!state.events.length){const empty=document.createElement('div');empty.className='empty';empty.textContent='尚未生成候选事件';eventLog.appendChild(empty);return;}state.events.slice().reverse().forEach(event=>{const row=document.createElement('div');row.className='event-row';const title=document.createElement('strong');title.textContent=`${event.event_id}｜${kindLabels[event.manual_action_kind]||'反向事件'}`;const detail=document.createElement('span');detail.textContent=`${event.event_time}｜${event.event_version}｜${event.reason}`;row.append(title,detail);eventLog.appendChild(row);});}
+    function createCandidate(){if(!state.selectedGroupId){record('blocked','请先选择待处理事项。');return;}const reason=eventReason.value.trim();if(!reason){record('blocked','请填写公开安全原因。');return;}const template=templates.find(item=>item.manual_action_kind===eventKind.value);const group=groups.find(item=>item.group_id===state.selectedGroupId);const next=state.events.length+1;state.events.push({event_id:`SESSION-EVT-${String(next).padStart(3,'0')}`,manual_action_kind:template.manual_action_kind,actor_ref:template.actor_ref,event_time:new Date().toISOString(),reason,impact_scope:group.impact_summary,event_version:`${template.event_version}-S${next}`,approval_state:'draft',append_only:true,session_candidate_only:true,silent_update_allowed:false});renderEvents();record('candidate',`已生成 ${kindLabels[template.manual_action_kind]}候选事件，仅当前会话可见。`);}
+    function createReverseCandidate(){const next=state.events.length+1;state.events.push({event_id:`SESSION-EVT-${String(next).padStart(3,'0')}`,manual_action_kind:'reverse_event',actor_ref:'actor_ref://owner_or_authorized_delegate/session-only',event_time:new Date().toISOString(),reason:'已批准事件变更只能追加反向事件候选',impact_scope:'historical_approved_event_policy_fixture',event_version:`SESSION-REVERSAL-S12P1-001.${String(next).padStart(3,'0')}`,approval_state:'draft',append_only:true,session_candidate_only:true,silent_update_allowed:false,reverses_event_id:'HISTORICAL-APPROVED-FIXTURE'});renderEvents();record('reverse','已追加反向事件候选；原已批准记录未被改写。');}
+    search.addEventListener('input',applyFilters);kindFilter.addEventListener('change',applyFilters);statusFilter.addEventListener('change',applyFilters);document.querySelector('[data-reset-filters]').addEventListener('click',resetFilters);document.querySelectorAll('[data-select-group]').forEach(button=>button.addEventListener('click',()=>selectGroup(button.dataset.selectGroup)));document.querySelector('[data-create-event]').addEventListener('click',createCandidate);document.querySelector('[data-reverse-approved]').addEventListener('click',createReverseCandidate);eventKind.addEventListener('change',()=>record('kind',`处理类型已切换为 ${kindLabels[eventKind.value]}。`));renderEvents();document.body.dataset.uiReady='true';record('ready','工作台已就绪；所有候选事件仅保留在当前会话。');
+  </script>
+</body>
+</html>

@@ -5,12 +5,12 @@
 ## 最新状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s11-post-remediation-stage-review`
-- current_stage: `S11`
-- current_phase: `V014_S11_POST_REMEDIATION_STAGE_REVIEW`
-- status: `completed_validated_local_only_stage11_review_no_go_upload_deferred`
+- version: `0.1.4-s12-p1-post-remediation-pending-actions`
+- current_stage: `S12`
+- current_phase: `V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS`
+- status: `completed_validated_local_only_s12_p1_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `S12-P1_as_separate_run`
+- next_required_input: `S12-P2_impact_preview_as_separate_run`
 - production_ready: `false`
 - github_upload_ready: `false`
 - raw_snapshot_exact_match: `true`
@@ -44,6 +44,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 S12-P1 post-remediation pending actions completed local-only：建立 `6` 个 public-safe 聚合待办和 `4` 类 append-only 事件模板；当前批准业务事件=`0`，页面只生成 session-only 草案并在刷新后清空。旧 approved/reverse event chain 仅作不变式 fixture，不应用当前业务决策。v1.4 baseline `54/54 PASS`，当前 HTML audit PASS；desktop/mobile 搜索、类型/状态筛选、事项选择、候选事件、反向候选和刷新清空均通过，3 条返回链接 HTTP/真实导航均通过。当前保持 `Q4 / D / NO_GO / 3-9-2-1`、4 个项目归属 unknown/null；raw 前后、跨 Stage 11 和当前快照一致。S12-P2/P3、Stage 12 review、GitHub upload、app reinstall、正式报告、持久业务写入和 business execution 均未执行。next_required_input=`S12-P2_impact_preview_as_separate_run`。
 
 - v0.1.4 Stage 11 post-remediation review completed local-only：S11-P1/P2/P3 strict validators 与 focused tests PASS，`7 fixed / 0 open`；修复 P1/P2 时态耦合、首页/检查板前向链接、旧 12 pending review、移动端 NO_GO 可见性和 icon-only 链接可访问名称。三页形成 `6` 条有向边，desktop/mobile `6/6`、HTTP `6/6`、真实导航 `6/6`，console/overflow=`0/0`。项目级归属保持 `0 attributed / 4 unknown/null`，当前 `Q4 / D / NO_GO / 3-9-2-1`。raw 前后、跨 S11-P3 与当前快照一致；S12-P1、GitHub upload、app reinstall 和 business execution 均未执行。next_required_input=`S12-P1_as_separate_run`。
 
