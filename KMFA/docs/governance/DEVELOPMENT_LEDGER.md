@@ -1,3 +1,17 @@
+## 2026-07-12 - V014 S18-P1 post-remediation precision and stress
+
+- phase: V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS
+- task: KMFA-V014-S18-P1-POST-REMEDIATION-PRECISION-STRESS-20260712
+- product_version: 0.1.4-s18-p1-post-remediation-precision-stress
+- result: completed_validated_local_only_s18_p1_precision_stress_no_go_upload_deferred / NO_GO
+- TDD: current generator/checker missing produced 1 failure + 9 skipped before implementation.
+- actual controls: amount 9/9 pass plus 9/9 unsafe-input rejection; zero-delta exact pass plus one-cent mismatch rejection; 5/5 scenarios.
+- import stress: three actual in-memory 1200-item synthetic metadata runs converge to one final-state hash; first insert=1198 and later duplicate detections=2396 with no later inserts.
+- error/performance: bad-file and missing-field produce two blocking reports; actual integer-millisecond elapsed remains under the 1500ms budget.
+- raw proof: phase before/after, cross-Stage17-review and current snapshots exact; raw copy backup mutation and production restore all remain zero.
+- boundary: S18-P2/P3、Stage 18 review、GitHub upload、app reinstall、formal report、external connector、difference closure and business execution were not performed; next step is S18-P2 only.
+- evidence: KMFA/stage_artifacts/V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS/machine/precision_stress_manifest.json
+
 ## 2026-07-12 - V014 Stage 17 post-remediation review
 
 - phase: V014_S17_POST_REMEDIATION_STAGE_REVIEW

@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260712-V014-S17-POST-REMEDIATION-STAGE-REVIEW"
+as_of_event_id: "DEV-KMFA-20260712-V014-S18-P1-POST-REMEDIATION-PRECISION-STRESS"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "c19df2f67ae288e741cdbce45c12c2fd689c4f17"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S17_POST_REMEDIATION_STAGE_REVIEW_COMMIT"
-snapshot_event_time: "2026-07-12T05:59:42+10:00"
-generator_version: "manual-0.1.4-s17-post-remediation-stage-review"
+source_base_commit: "fa59f3e3354073dbee5c6859a9fdb3e159851181"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS_COMMIT"
+snapshot_event_time: "2026-07-12T06:43:15+10:00"
+generator_version: "manual-0.1.4-s18-p1-post-remediation-precision-stress"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1424
-    total_active_formulas: 310
+    total_active_parameters: 1427
+    total_active_formulas: 311
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -37,6 +37,9 @@ dimensions:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
     evidence_refs:
+      - "KMFA/stage_artifacts/V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS/human/test_results_zh.md"
+      - "KMFA/tools/check_v014_s18_p1_post_remediation_precision_stress.py"
+      - "KMFA/stage_artifacts/V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS/machine/precision_stress_manifest.json"
       - "KMFA/stage_artifacts/V014_S15_POST_REMEDIATION_STAGE_REVIEW/human/test_results_zh.md"
       - "KMFA/tools/check_v014_s15_post_remediation_stage_review.py"
       - "KMFA/stage_artifacts/V014_S15_POST_REMEDIATION_STAGE_REVIEW/machine/stage15_post_remediation_review_manifest.json"
@@ -974,6 +977,45 @@ dimensions:
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
+kmfa_v014_s18_p1_post_remediation_precision_stress:
+  status: completed_validated_local_only_s18_p1_precision_stress_no_go_upload_deferred
+  phase_id: V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS
+  task_id: KMFA-V014-S18-P1-POST-REMEDIATION-PRECISION-STRESS-20260712
+  acceptance_id: ACC-V014-S18-P1-POST-REMEDIATION-PRECISION-STRESS
+  formula_ref: FORM-KMFA-V014-S18-P1-POST-REMEDIATION-PRECISION-STRESS-001
+  parameter_refs:
+    - PARAM-KMFA-1807
+    - PARAM-KMFA-1808
+    - PARAM-KMFA-1809
+  decision: NO_GO
+  evidence_ref: KMFA/stage_artifacts/V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS/machine/precision_stress_manifest.json
+  validator: KMFA/tools/check_v014_s18_p1_post_remediation_precision_stress.py
+  counts:
+    scenario_pass_count: 5
+    amount_case_pass_count: 9
+    amount_rejection_pass_count: 9
+    import_run_count: 3
+    unique_final_state_hash_count: 1
+    synthetic_batch_item_count: 1200
+    valid_synthetic_record_count: 1198
+    blocking_error_report_count: 2
+    performance_budget_ms: 1500
+    raw_source_file_count: 5
+  boundaries:
+    raw_snapshot_exact_match: true
+    raw_cross_phase_snapshot_exact_match: true
+    s18_p1_performed: true
+    s18_p2_performed: false
+    s18_p3_performed: false
+    stage18_review_performed: false
+    github_upload_performed: false
+    app_reinstall_performed: false
+    business_execution_performed: false
+  quality:
+    current_data_quality_grade: Q4
+    current_report_grade: D
+    decision: NO_GO
+
 kmfa_v014_s17_post_remediation_stage_review:
   status: completed_validated_local_only_stage17_review_no_go_upload_deferred
   phase_id: V014_S17_POST_REMEDIATION_STAGE_REVIEW

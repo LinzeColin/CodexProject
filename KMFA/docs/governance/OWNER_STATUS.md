@@ -4,19 +4,19 @@
 
 ## 一句话状态
 
-KMFA 已完成 `V014_S17_POST_REMEDIATION_STAGE_REVIEW`：当前三 phase 的 30 个测试与 3 个 validator 通过，11 项 findings 全部关闭，6 项跨 phase 合同无 mismatch；状态保持 `Q4 / D / NO_GO`。
+KMFA 已完成 `V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS`：5 类实际 synthetic controls、3 次一致性导入、1200 条压力输入和 2 类阻断错误通过；状态保持 `Q4 / D / NO_GO`。
 
 ## 当前可信任范围
 
-- 可以信任：Stage 17 当前 P1/P2/P3 的本地验证结果、canonical role 与审计合同矩阵、11 项已关闭 findings 和 raw 一致性证据。
+- 可以信任：current S18-P1 金额/zero-delta/幂等/错误/性能合成控制结果、实际 elapsed、三次 final-state hash 和 raw 一致性证据。
 - 必须保留：9 条非零差异，不得通过覆盖、四舍五入、空白兼容层或替换权威值消除。
 - 不能信任：3 条缺可证明数值的现金槽位、1 条未完成现金比较、任何完整业务一致性或正式经营决策结论。
-- 不能误读：人工 SOP 不是生产执行授权，合成备份恢复不是生产恢复证明，D级受限预览不是正式报告。
-- 下一步只做 S18-P1；不得顺手推进 S18-P2/P3、Stage 18 review、GitHub upload、app reinstall 或 business execution。
+- 不能误读：1200 条内存 synthetic metadata 不是生产吞吐或真实 raw 导入证明，D级受限预览不是正式报告。
+- 下一步只做 S18-P2；不得顺手推进 S18-P3、Stage 18 review、GitHub upload、app reinstall 或 business execution。
 
 ## 前序一句话状态（上一 phase）
 
-KMFA 已完成 `V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP`：4 类人工手册、2 项知识索引、2 个无效候选拒绝和 1 个 byte-exact 合成备份恢复演练通过；raw 复制/备份、生产恢复和业务执行均为 0。
+KMFA 已完成 `V014_S17_POST_REMEDIATION_STAGE_REVIEW`：当前三 phase 的 30 个测试与 3 个 validator 通过，11 项 findings 全部关闭，6 项跨 phase 合同无 mismatch。
 
 ## 前序一句话状态（历史）
 
@@ -24,9 +24,11 @@ KMFA 当前版本 `0.1.4-residual-difference-authorized-source-reference-or-excl
 
 ## 你现在能信任什么
 
+- v0.1.4 S18-P1 post-remediation precision stress 已通过本地验证：5/5 scenarios，amount=`9/9 + 9/9 rejected`，zero-delta exact PASS，1 分 mismatch blocked，3 次 final-state hash 一致，1200 batch / 1198 valid / 2 blocking errors，actual elapsed <=1500ms。raw 前后、跨 Stage 17 review 和当前快照一致；下一步只能 S18-P2。
+
 - v0.1.4 Stage 17 post-remediation review 已通过本地验证：S17-P1/P2/P3 focused tests=`30/30`，strict validators=`3/3`。修复 canonical role、runbook audit action/7字段、notification scope 时态、P2 测试/checker 与 P3 测试的状态文档时态耦合及 review 证据引用断链；11 findings=`7 fixed / 4 passed / 0 open`，6 项跨 phase 合同 mismatch=0。raw review 前后、跨 S17-P3 和当前快照一致；下一步只能 S18-P1。
 
-- v0.1.4 S17-P3 post-remediation operations SOP 已通过本地验证：4 runbooks / 20 steps / 2 knowledge indexes / 12 checklist items。ignored private runtime 的 2 个无效合成候选全部拒绝，1 个合成夹具完成备份、损坏检测和 byte-exact 恢复；raw copy/backup、production restore、external service、business execution=`0/0/0/0`。raw 前后、跨 S17-P2 和当前快照一致；下一步只能 Stage 17 整体复审。
+- `V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP`（v0.1.4 S17-P3 post-remediation operations SOP）已通过本地验证：4 runbooks / 20 steps / 2 knowledge indexes / 12 checklist items。ignored private runtime 的 2 个无效合成候选全部拒绝，1 个合成夹具完成备份、损坏检测和 byte-exact 恢复；raw copy/backup、production restore、external service、business execution=`0/0/0/0`。raw 前后、跨 S17-P2 和当前快照一致；下一步只能 Stage 17 整体复审。
 
 - v0.1.4 S17-P2 post-remediation notification 已通过本地验证：3 rules / 3 evaluations / 3 eligible / 0 mismatch，当前触发来源为 2 份 D级受限预览、12 个 hard block 和 4 个数据源未决指标。3 条全中文短提醒均不超过 120 字，绑定 3 个已存在应用内链接；3 条 metadata outbox 各含 7 个 S17-P1 审计字段，并采用 append-only、dedupe、idempotency。真实投递、完整正文、附件、地址明文和连接器=`0/0/0/0/0`；raw 前后、跨 S17-P1 和当前快照一致；下一步只能 S17-P3。
 

@@ -5,12 +5,12 @@
 ## 最新状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s17-post-remediation-stage-review`
-- current_stage: `S17`
-- current_phase: `V014_S17_POST_REMEDIATION_STAGE_REVIEW`
-- status: `completed_validated_local_only_stage17_review_no_go_upload_deferred`
+- version: `0.1.4-s18-p1-post-remediation-precision-stress`
+- current_stage: `S18`
+- current_phase: `V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS`
+- status: `completed_validated_local_only_s18_p1_precision_stress_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `S18-P1_precision_and_stress_testing_as_separate_run`
+- next_required_input: `S18-P2_full_regression_and_acceptance_as_separate_run`
 - production_ready: `false`
 - github_upload_ready: `false`
 - raw_snapshot_exact_match: `true`
@@ -19,12 +19,12 @@
 ## 前序状态（上一 phase）
 
 - project_id: `KMFA`
-- version: `0.1.4-s17-p3-post-remediation-operations-sop`
+- version: `0.1.4-s17-post-remediation-stage-review`
 - current_stage: `S17`
-- current_phase: `V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP`
-- status: `completed_validated_local_only_s17_p3_operations_sop_no_go_upload_deferred`
+- current_phase: `V014_S17_POST_REMEDIATION_STAGE_REVIEW`
+- status: `completed_validated_local_only_stage17_review_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `Stage_17_overall_review_as_separate_run`
+- next_required_input: `S18-P1_precision_and_stress_testing_as_separate_run`
 - raw_snapshot_exact_match: `true`
 - decision: `NO_GO`
 
@@ -45,9 +45,11 @@
 
 ## 已完成
 
+- v0.1.4 S18-P1 post-remediation precision stress completed local-only：5/5 scenarios，amount=`9/9 + 9/9 rejected`，zero-delta exact PASS，1 分 mismatch blocked。连续 3 次 final-state hash 一致；1200 synthetic file metadata / 1198 valid / 2 blocking errors，actual max elapsed <=1500ms。raw phase 前后、跨 Stage 17 review 和当前快照一致；当前 `Q4 / D / NO_GO / 3-9-2-1`；next_required_input=`S18-P2_full_regression_and_acceptance_as_separate_run`。
+
 - v0.1.4 Stage 17 post-remediation review completed local-only：当前三 phase focused tests=`30/30 PASS`、strict validators=`3/3 PASS`。修复 P3 canonical finance role、4 个 runbook audit action/7字段、P1 notification scope 过期时态、P2 test/checker、P3 test active-phase 耦合及 review 证据引用断链。11 findings=`7 fixed / 4 passed / 0 open`，6 cross-phase contracts mismatch=0，acceptance=`16/16 PASS`。raw review 前后、跨 S17-P3 和当前快照一致；当前 `Q4 / D / NO_GO / 3-9-2-1`；next_required_input=`S18-P1_precision_and_stress_testing_as_separate_run`。
 
-- v0.1.4 S17-P3 post-remediation operations SOP completed local-only：4 类人工 runbook / 20 个步骤 / 2 项 public-safe 知识索引 / 12 个检查点。2 个无效合成候选全部拒绝；1 个合成夹具完成备份、损坏检测和 byte-exact 恢复。raw copy/backup、production restore、external service、persistent business write 和 business execution 全部为 0。raw phase 前后、跨 S17-P2 和当前快照一致；当前 `Q4 / D / NO_GO / 3-9-2-1`；next_required_input=`Stage_17_overall_review_as_separate_run`。
+- `V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP`（v0.1.4 S17-P3 post-remediation operations SOP）completed local-only：4 类人工 runbook / 20 个步骤 / 2 项 public-safe 知识索引 / 12 个检查点。2 个无效合成候选全部拒绝；1 个合成夹具完成备份、损坏检测和 byte-exact 恢复。raw copy/backup、production restore、external service、persistent business write 和 business execution 全部为 0。raw phase 前后、跨 S17-P2 和当前快照一致；当前 `Q4 / D / NO_GO / 3-9-2-1`；next_required_input=`Stage_17_overall_review_as_separate_run`。
 
 - v0.1.4 S17-P2 post-remediation notification completed local-only：三类规则与当前触发评估=`3/3/3 eligible/0 mismatch`，来源为 2 份 D级受限报告预览、12 个 hard block 和 4 个数据源未决指标。生成 3 条全中文短提醒、3 个已存在应用内链接和 3 条 append-only metadata outbox；每条含 7 个审计必填字段及 dedupe/idempotency。篡改门禁拒绝完整正文、附件、地址明文、外部连接器、真实投递和缺失链接；实际计数=`0/0/0/0/0`。raw phase 前后、跨 S17-P1 和当前快照一致；当前 `Q4 / D / NO_GO / 3-9-2-1`；next_required_input=`S17-P3_operations_and_SOP_as_separate_run`。
 

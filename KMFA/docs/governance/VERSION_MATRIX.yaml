@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-s17-post-remediation-stage-review"
-product_version_status: "completed_validated_local_only_stage17_review_no_go_upload_deferred"
-version_file_value: "0.1.4-s17-post-remediation-stage-review"
+product_version: "0.1.4-s18-p1-post-remediation-precision-stress"
+product_version_status: "completed_validated_local_only_s18_p1_precision_stress_no_go_upload_deferred"
+version_file_value: "0.1.4-s18-p1-post-remediation-precision-stress"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-s17-post-remediation-stage-review"
+  MOD-KMFA-GOV-001: "0.1.4-s18-p1-post-remediation-precision-stress"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_s18_p1_post_remediation_precision_stress: "0.1.4-s18-p1-post-remediation-precision-stress"
   kmfa_v014_s17_post_remediation_stage_review: "0.1.4-s17-post-remediation-stage-review"
   kmfa_v014_s17_p3_post_remediation_operations_sop: "0.1.4-s17-p3-post-remediation-operations-sop"
   kmfa_v014_s17_p2_post_remediation_notification: "0.1.4-s17-p2-post-remediation-notification"
@@ -443,11 +444,29 @@ parameter_profile_versions:
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_blocked_handoff_final_threshold_recheck_after_reminder: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-final-threshold-recheck-after-reminder"
   kmfa_project_cost_mvp: "blocked_no_go_owner_scope_required"
 data_snapshot_version: "not_applicable_no_raw_data_committed"
-current_iteration: "ITER-20260712-KMFA-V014-S17-POST-REMEDIATION-STAGE-REVIEW"
-current_phase: "V014_S17_POST_REMEDIATION_STAGE_REVIEW"
-current_task_id: "KMFA-V014-S17-POST-REMEDIATION-STAGE-REVIEW-20260712"
-current_acceptance_id: "ACC-V014-S17-POST-REMEDIATION-STAGE-REVIEW"
-current_gate: "NO_GO_STAGE17_REVIEW_COMPLETE_S18P1_NEXT_SEPARATE_RUN_UPLOAD_REINSTALL_DEFERRED"
+current_iteration: "ITER-20260712-KMFA-V014-S18-P1-POST-REMEDIATION-PRECISION-STRESS"
+current_phase: "V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS"
+current_task_id: "KMFA-V014-S18-P1-POST-REMEDIATION-PRECISION-STRESS-20260712"
+current_acceptance_id: "ACC-V014-S18-P1-POST-REMEDIATION-PRECISION-STRESS"
+current_gate: "NO_GO_S18P1_COMPLETE_S18P2_NEXT_SEPARATE_RUN_UPLOAD_REINSTALL_DEFERRED"
+
+kmfa_v014_s18_p1_post_remediation_precision_stress:
+  status: completed_validated_local_only_s18_p1_precision_stress_no_go_upload_deferred
+  phase: V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS
+  evidence_dir: KMFA/stage_artifacts/V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS
+  formula_ref: FORM-KMFA-V014-S18-P1-POST-REMEDIATION-PRECISION-STRESS-001
+  parameter_refs:
+    - PARAM-KMFA-1807
+    - PARAM-KMFA-1808
+    - PARAM-KMFA-1809
+  validator: KMFA/tools/check_v014_s18_p1_post_remediation_precision_stress.py
+  next_phase: S18-P2
+  scenario_pass_count: 5
+  import_run_count: 3
+  synthetic_batch_item_count: 1200
+  blocking_error_report_count: 2
+  upload_performed: false
+  app_reinstall_performed: false
 
 kmfa_v014_s17_post_remediation_stage_review:
   status: completed_validated_local_only_stage17_review_no_go_upload_deferred

@@ -1,3 +1,18 @@
+## FORM-KMFA-V014-S18-P1-POST-REMEDIATION-PRECISION-STRESS-001
+
+- phase: V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS
+- version: 0.1.4-s18-p1-post-remediation-precision-stress
+- model_id: MOD-KMFA-GOV-001
+- scope: 实际执行 public-safe synthetic 金额精度、zero-delta、重复导入、坏文件、缺字段、三次一致性和 1200 条内存 metadata 压力测试；不把历史固定 348ms 当作当前事实。
+- rule: s18_p1_valid = scenario_pass_count == 5 AND amount_case_pass_count == 9 AND amount_rejection_pass_count == 9 AND zero_delta_exact_passed == true AND one_cent_mismatch_rejected == true AND import_run_count == 3 AND unique_final_state_hash_count == 1 AND synthetic_batch_item_count == 1200 AND blocking_error_report_count == 2 AND max_elapsed_ms <= performance_budget_ms AND raw_exact == true AND current_grade == D AND decision == NO_GO。
+- precision gate: 9 个有效金额 case PASS，9 个 float/非整分/空白/异常输入拒绝；1 分差异必须失败并进入差异队列。
+- consistency gate: 首次 inserted=1198，后两次 inserted=0/duplicate=1198，三次 final-state hash 唯一数=1。
+- performance gate: 1200 条 synthetic file metadata，2 类 blocking errors；elapsed 由 `perf_counter_ns` 实际测量并必须 <=1500ms。
+- raw gate: 5 个原始文件的 phase 前后、跨 Stage 17 review 和当前快照一致；公开证据不含 raw/private 明文。
+- release gate: S18-P1=true；S18-P2/P3、Stage 18 review、upload、reinstall、formal report、external connector、production restore、difference closure、persistent write 和 business execution=false。
+- validator: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s18_p1_post_remediation_precision_stress.py --require-private-evidence --require-final-evidence
+- evidence: KMFA/stage_artifacts/V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS/machine/precision_stress_manifest.json
+
 ## FORM-KMFA-V014-S17-POST-REMEDIATION-STAGE-REVIEW-001
 
 - phase: V014_S17_POST_REMEDIATION_STAGE_REVIEW
