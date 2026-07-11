@@ -28,10 +28,10 @@
     "baseline_pass_count": 54,
     "baseline_warn_count": 0,
     "console_error_count": 0,
-    "current_control_row_count": 11,
+    "current_control_row_count": 12,
     "current_fail_count": 0,
     "current_page_count": 1,
-    "current_pass_count": 11,
+    "current_pass_count": 12,
     "current_warn_count": 0,
     "dependency_link_http_check_count": 4,
     "dependency_navigation_check_count": 4,
@@ -101,7 +101,7 @@
     }
   ],
   "decision": "NO_GO",
-  "generated_at": "2026-07-11T17:56:55+10:00",
+  "generated_at": "2026-07-11T19:23:52+10:00",
   "historical_quarantine": {
     "current_identified_issue_candidate_count": 0,
     "current_materialized_cash_summary_count": 0,
@@ -249,7 +249,7 @@
     "current_s14_p1": "KMFA/stage_artifacts/V014_S14_P1_POST_REMEDIATION_FUND_CASH_LOAN_PLAN/machine/fund_cash_loan_plan_manifest.json",
     "historical_s14_p2_policy_fixture": "KMFA/stage_artifacts/V014_S14_P2_INVOICE_TAX_PLAN/machine/invoice_tax_plan_manifest.json"
   },
-  "reviewed_head": "59ec950b5acf4f7776fcd2675c2da14eecc6637a",
+  "reviewed_head": "f12cef1bc4b062258899f0f50d9c53b3a69bf985",
   "roadmap_phase_id": "S14-P2",
   "s14_p1_post_remediation_dependency_validated": true,
   "schema_version": "kmfa.v014.s14_p2_post_remediation_manifest.v1",

@@ -1,3 +1,11 @@
+## 0.1.4-s14-post-remediation-stage-review - 2026-07-11
+
+- 完成 `V014_S14_POST_REMEDIATION_STAGE_REVIEW` 本地整体复审：当前 S14-P1/P2/P3 focused tests 共 `26/26 PASS`，strict validators `3/3 PASS`，`11 fixed / 0 open`。
+- 隔离旧 pre-remediation 的 pending、静态资金/税务/政策输出和 upload-ready 语义；修复 P1/P2/P3 阶段互链、过期状态与 P1/P2 移动端表格。
+- 当前资金业务事项、开票纳税问题候选/已物化汇总、政策权威绑定/正式资格结论均为 0；3 页形成 6 条强连通有向边。
+- v1.4 基线 `54/54 PASS`；当前页面 `13/13 + 12/12 + 13/13 PASS`，6 视口、6 次代表性交互、6 条 HTTP 与 6 次真实导航通过，console error 与横向溢出为 0。
+- 5 个 raw 文件在 review 前后、跨 S14-P3 和当前快照一致；保持 `Q4 / D / NO_GO / 3-9-2-1`，未执行 S15、GitHub upload、app reinstall、正式报告、差异关闭、财务/政策动作或 business execution。
+
 ## 0.1.4-s14-p3-post-remediation-policy-evidence-plan - 2026-07-11
 
 - 完成 V014_S14_P3_POST_REMEDIATION_POLICY_EVIDENCE_PLAN 本地 phase：登记科小、高新、专精特新、小巨人和研发费用 5 类 public-safe 证据目录及 23 类必需证据。
@@ -11,7 +19,7 @@
 - 完成 V014_S14_P2_POST_REMEDIATION_INVOICE_TAX_PLAN 本地 phase：开票计划、纳税明细、开票纳税资金汇总 3 条 public-safe 结构接入。
 - 只读探针覆盖 5 个 raw 文件、48 个 XLSX 容器；25 个可解析、23 个保留不可解析诊断，4,198 个可解析工作表中识别 612 个唯一开票/税务结构候选，二次指纹不一致为 0。
 - 待开票、已开票未回款、税率异常候选 3 类问题方法和 3 类资金汇总方法定义完成；因权威行、期间、发票、项目、客户、回款、税率与数值绑定均未证明，业务候选、已物化汇总和公开金额保持 0。
-- v1.4 基线 54/54 PASS、当前页 11/11 PASS；2 视口、6 次方法交互、4 条依赖 HTTP 与 4 次真实导航通过，console error 与横向溢出为 0。
+- v1.4 基线 54/54 PASS、复审后当前页 12/12 PASS；2 视口、6 次方法交互、4 条依赖 HTTP 与 4 次真实导航通过，console error 与横向溢出为 0。
 - 保持 Q4 / D / NO_GO / 3-9-2-1；未执行 S14-P3、Stage 14 review、发票开具、纳税申报、付款/银行动作、GitHub upload、app reinstall、正式报告、差异关闭或 business execution。
 
 ## 0.1.4-s14-p1-post-remediation-fund-cash-loan-plan - 2026-07-11
@@ -19,7 +27,7 @@
 - 完成 `V014_S14_P1_POST_REMEDIATION_FUND_CASH_LOAN_PLAN` 本地 phase：账户清单、月度现金、资金计划、贷款明细 4 条 public-safe 结构与私有候选解析链接入。
 - 只读探针覆盖 5 个 raw 文件、48 个 XLSX 容器；25 个可解析、23 个保留不可解析诊断，180 个唯一候选工作表二次指纹不一致为 0。
 - 现金压力、贷款到期、账户余额汇总 3 类方法定义完成；因权威行、期间、账户、合同与数值绑定均未证明，已证明业务事项和公开业务金额保持 0。
-- v1.4 基线 `54/54 PASS`、当前页 `11/11 PASS`；2 视口、6 次方法交互、4 条依赖 HTTP 与 4 次真实导航通过，console error 与横向溢出为 0。
+- v1.4 基线 `54/54 PASS`、复审后当前页 `13/13 PASS`；2 视口、6 次方法交互、4 条依赖 HTTP 与 4 次真实导航通过，console error 与横向溢出为 0。
 - 保持 `Q4 / D / NO_GO / 3-9-2-1`；未执行 S14-P2/P3、Stage 14 review、付款审批、银行/贷款动作、GitHub upload、app reinstall、正式报告、差异关闭或 business execution。
 
 ## 0.1.4-s13-post-remediation-stage-review - 2026-07-11

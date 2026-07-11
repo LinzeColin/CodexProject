@@ -3,7 +3,7 @@
 - focused tests：PASS
 - strict validator：PASS
 - baseline HTML audit：54/54 PASS
-- current HTML audit：11/11 PASS
+- current HTML audit：13/13 PASS
 - desktop/mobile：2/2 PASS
 - 三类方法交互：6/6 PASS
 - Stage 13 链接 HTTP / 真实导航：4/4 / 4/4 PASS

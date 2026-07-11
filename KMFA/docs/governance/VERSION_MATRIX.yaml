@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-s14-p3-post-remediation-policy-evidence-plan"
-product_version_status: "completed_validated_local_only_s14_p3_evidence_gap_risk_no_go_upload_deferred"
-version_file_value: "0.1.4-s14-p3-post-remediation-policy-evidence-plan"
+product_version: "0.1.4-s14-post-remediation-stage-review"
+product_version_status: "completed_validated_local_only_stage14_review_no_go_upload_deferred"
+version_file_value: "0.1.4-s14-post-remediation-stage-review"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-s14-p3-post-remediation-policy-evidence-plan"
+  MOD-KMFA-GOV-001: "0.1.4-s14-post-remediation-stage-review"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_s14_post_remediation_stage_review: "0.1.4-s14-post-remediation-stage-review"
   kmfa_v014_s14_p3_post_remediation_policy_evidence_plan: "0.1.4-s14-p3-post-remediation-policy-evidence-plan"
   kmfa_v014_s14_p2_post_remediation_invoice_tax_plan: "0.1.4-s14-p2-post-remediation-invoice-tax-plan"
   kmfa_v014_s14_p1_post_remediation_fund_cash_loan_plan: "0.1.4-s14-p1-post-remediation-fund-cash-loan-plan"
@@ -430,11 +431,56 @@ parameter_profile_versions:
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_blocked_handoff_final_threshold_recheck_after_reminder: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-final-threshold-recheck-after-reminder"
   kmfa_project_cost_mvp: "blocked_no_go_owner_scope_required"
 data_snapshot_version: "not_applicable_no_raw_data_committed"
-current_iteration: "ITER-20260711-KMFA-V014-S14-P3-POST-REMEDIATION-POLICY-EVIDENCE-PLAN"
-current_phase: "V014_S14_P3_POST_REMEDIATION_POLICY_EVIDENCE_PLAN"
-current_task_id: "KMFA-V014-S14-P3-POST-REMEDIATION-POLICY-EVIDENCE-PLAN-20260711"
-current_acceptance_id: "ACC-V014-S14-P3-POST-REMEDIATION-POLICY-EVIDENCE-PLAN"
-current_gate: "NO_GO_STAGE14_REVIEW_NEXT_SEPARATE_RUN_S15_UPLOAD_REINSTALL_DEFERRED"
+current_iteration: "ITER-20260711-KMFA-V014-S14-POST-REMEDIATION-STAGE-REVIEW"
+current_phase: "V014_S14_POST_REMEDIATION_STAGE_REVIEW"
+current_task_id: "KMFA-V014-S14-POST-REMEDIATION-STAGE-REVIEW-20260711"
+current_acceptance_id: "ACC-V014-S14-POST-REMEDIATION-STAGE-REVIEW"
+current_gate: "NO_GO_S15_P1_NEXT_SEPARATE_RUN_UPLOAD_REINSTALL_DEFERRED"
+
+kmfa_v014_s14_post_remediation_stage_review:
+  status: completed_validated_local_only_stage14_review_no_go_upload_deferred
+  phase: V014_S14_POST_REMEDIATION_STAGE_REVIEW
+  evidence_dir: KMFA/stage_artifacts/V014_S14_POST_REMEDIATION_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s14_post_remediation_stage_review.py
+  focused_test: KMFA/tests/test_v014_s14_post_remediation_stage_review.py
+  github_upload: blocked_no_go_upload_deferred
+  phase_results:
+    S14-P1: PASS
+    S14-P2: PASS
+    S14-P3: PASS
+  counts:
+    fund_source_lane_count: 4
+    fund_private_unique_candidate_sheet_count: 180
+    fund_identified_business_item_count: 0
+    invoice_tax_source_lane_count: 3
+    invoice_tax_private_unique_candidate_sheet_count: 612
+    invoice_tax_identified_issue_candidate_count: 0
+    invoice_tax_materialized_cash_summary_count: 0
+    policy_program_count: 5
+    policy_required_evidence_category_count: 23
+    policy_private_unique_lexical_candidate_sheet_count: 3830
+    policy_authoritative_evidence_bound_program_count: 0
+    policy_formal_qualification_conclusion_count: 0
+    current_stage_page_count: 3
+    cross_page_link_count: 6
+    fixed_review_finding_count: 11
+    open_review_finding_count: 0
+    raw_source_file_count: 5
+  quality:
+    current_data_quality_grade: Q4
+    current_report_grade: D
+    decision: NO_GO
+    open_final_difference_accepted_count: 3
+    nonzero_delta_reconciliation_count: 9
+    zero_delta_reconciliation_count: 2
+    incomplete_reconciliation_count: 1
+  boundaries:
+    stage14_review_performed: true
+    s15_p1_performed: false
+    financial_policy_actions_performed: false
+    github_upload_performed: false
+    app_reinstall_performed: false
+    business_execution_performed: false
 
 kmfa_v014_s14_p3_post_remediation_policy_evidence_plan:
   status: completed_validated_local_only_s14_p3_evidence_gap_risk_no_go_upload_deferred

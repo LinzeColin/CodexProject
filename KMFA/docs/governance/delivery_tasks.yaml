@@ -1,6 +1,49 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "KMFA-V014-S14-POST-REMEDIATION-STAGE-REVIEW-20260711"
+    phase: "V014_S14_POST_REMEDIATION_STAGE_REVIEW"
+    objective: "Review the current Stage 14 P1 P2 P3 chain fix all findings and preserve zero unproven business policy outputs under Q4 D NO_GO."
+    scope:
+      - "current S14-P1 P2 P3 focused tests and strict validators"
+      - "eleven review findings covering historical state navigation status and mobile tables"
+      - "three-page six-edge strongly connected desktop and mobile browser flow"
+      - "ignored private review diagnostics and raw immutability snapshots"
+    non_scope:
+      - "S15-P1 or later phases"
+      - "financial policy salary report difference closure or business actions"
+      - "GitHub upload app reinstall raw private Excel PDF CSV database policy material or secret material"
+    status: "completed"
+    completed_version: "0.1.4-s14-post-remediation-stage-review"
+    dependencies:
+      - "V014_S14_P1_POST_REMEDIATION_FUND_CASH_LOAN_PLAN current frozen dependency"
+      - "V014_S14_P2_POST_REMEDIATION_INVOICE_TAX_PLAN current frozen dependency"
+      - "V014_S14_P3_POST_REMEDIATION_POLICY_EVIDENCE_PLAN current frozen dependency"
+      - "V014_S14_STAGE_REVIEW historical review fixture only"
+      - "v1.4 roadmap taskpack and full-flow baseline"
+    required_files:
+      - "KMFA/stage_artifacts/V014_S14_POST_REMEDIATION_STAGE_REVIEW/machine/stage14_post_remediation_review_manifest.json"
+      - "KMFA/stage_artifacts/V014_S14_POST_REMEDIATION_STAGE_REVIEW/human/stage14_post_remediation_review_report_zh.md"
+      - "KMFA/tools/check_v014_s14_post_remediation_stage_review.py"
+    acceptance_ids:
+      - "ACC-V014-S14-POST-REMEDIATION-STAGE-REVIEW"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s14_post_remediation_stage_review.py --require-private-evidence --require-browser-evidence --require-final-evidence"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s14_post_remediation_stage_review"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_no_float_money.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/no_omission_check.py"
+    test_results:
+      - "PASS: current S14-P1 P2 P3 focused tests and strict validators"
+      - "PASS: eleven findings fixed with zero open"
+      - "PASS: three pages form six unbroken strongly connected links on desktop and mobile"
+      - "PASS: raw snapshots exact and private identities terms values and diagnostics remain ignored"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S14_POST_REMEDIATION_STAGE_REVIEW/human/stage14_post_remediation_review_report_zh.md"
+      - "KMFA/stage_artifacts/V014_S14_POST_REMEDIATION_STAGE_REVIEW/machine/stage14_post_remediation_review_manifest.json"
+    risk: "Historical static business policy and upload-ready semantics can re-enter unless current post-remediation evidence remains the only dynamic chain."
+    rollback: "Revert only this Stage 14 review local commit and ignored private evidence; never mutate the raw inbox."
+    target_version: "0.1.4-s14-post-remediation-stage-review"
+
   - task_id: "KMFA-V014-S14-P3-POST-REMEDIATION-POLICY-EVIDENCE-PLAN-20260711"
     phase: "V014_S14_P3_POST_REMEDIATION_POLICY_EVIDENCE_PLAN"
     objective: "Register five public-safe policy evidence directories and expose only evidence gaps and risk tips while preserving zero authoritative binding and zero policy conclusions or actions."

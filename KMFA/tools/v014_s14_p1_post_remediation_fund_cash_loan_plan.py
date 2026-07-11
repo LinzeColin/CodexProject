@@ -113,6 +113,14 @@ DEPENDENCY_LINKS = {
         "跨表复核质量工作台",
     ),
 }
+P2_HREF = (
+    "../../../V014_S14_P2_POST_REMEDIATION_INVOICE_TAX_PLAN/exports/html/"
+    "invoice_tax_plan_workbench.html"
+)
+P3_HREF = (
+    "../../../V014_S14_P3_POST_REMEDIATION_POLICY_EVIDENCE_PLAN/exports/html/"
+    "policy_evidence_workbench.html"
+)
 
 LANE_SPECS = (
     {
@@ -600,6 +608,10 @@ def _render_html(lanes: list[dict[str, Any]], methods: list[dict[str, Any]]) -> 
         f'<a data-dependency-link="{link_id}" href="{href}">{label}</a>'
         for link_id, (href, label) in DEPENDENCY_LINKS.items()
     )
+    stage_links = (
+        f'<a data-stage-link="invoice-tax" href="{P2_HREF}">开票纳税计划工作台</a>'
+        f'<a data-stage-link="policy-evidence" href="{P3_HREF}">政策证据工作台</a>'
+    )
     return f"""<!doctype html>
 <html lang="zh-CN">
 <head>
@@ -619,18 +631,18 @@ def _render_html(lanes: list[dict[str, Any]], methods: list[dict[str, Any]]) -> 
     .method-layout{{display:grid;grid-template-columns:210px minmax(0,1fr)}} .method-nav{{padding:12px;background:#f4f7f6;border-right:1px solid #d9e1de}} .method-nav button{{display:block;width:100%;min-height:42px;text-align:left;border:1px solid transparent;background:transparent;padding:9px 10px;color:#1c322c;cursor:pointer;border-radius:4px}} .method-nav button.active{{background:#fff;border-color:#78ae9d;color:#116b51;font-weight:700}}
     .method-panels{{padding:20px}} .panel-head{{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}} .panel-head span{{font-size:12px;color:#6a7d77}} dl{{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}} dl div{{border-left:3px solid #8ebfaf;padding-left:10px}} dt{{font-size:12px;color:#6a7d77}} dd{{margin:4px 0 0;font-weight:700}} .method-panels p{{line-height:1.7}} .limit{{border:1px solid #edb5b0;background:#fff2f0;color:#8d342f;padding:12px}}
     .footer-band{{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:13px 16px;background:#f6f8f7;border-top:1px solid #d9e1de}} .footer-band p{{margin:0;color:#5b6e68;font-size:13px}} .footer-band a{{color:#136c94;text-decoration:none;margin-left:12px;font-size:13px}} footer{{color:#687b75;font-size:12px;line-height:1.7}}
-    @media(max-width:720px){{.topbar-inner,.headline,.footer-band{{display:block}} .top-links{{justify-content:flex-start;margin-top:12px}} main{{padding:18px 12px 36px}} h1{{font-size:24px}} .badges{{margin-top:12px}} .metrics{{grid-template-columns:1fr 1fr}} .metric:nth-child(2){{border-right:0}} .metric:nth-child(-n+2){{border-bottom:1px solid #cfd9d6}} .method-layout{{grid-template-columns:1fr}} .method-nav{{border-right:0;border-bottom:1px solid #d9e1de;display:grid;grid-template-columns:repeat(3,1fr);gap:5px}} .method-nav button{{text-align:center;padding:7px 4px}} dl{{grid-template-columns:1fr}} .footer-band .links{{margin-top:10px}} .footer-band a{{display:inline-block;margin:4px 10px 4px 0}}}}
+    @media(max-width:720px){{.topbar-inner,.headline,.footer-band{{display:block}} .top-links{{justify-content:flex-start;margin-top:12px}} main{{padding:18px 12px 36px}} h1{{font-size:24px}} .badges{{margin-top:12px}} .metrics{{grid-template-columns:1fr 1fr}} .metric:nth-child(2){{border-right:0}} .metric:nth-child(-n+2){{border-bottom:1px solid #cfd9d6}} table{{min-width:0;table-layout:fixed}} th,td{{padding:9px 6px;font-size:11px;word-break:break-word}} .method-layout{{grid-template-columns:1fr}} .method-nav{{border-right:0;border-bottom:1px solid #d9e1de;display:grid;grid-template-columns:repeat(3,1fr);gap:5px}} .method-nav button{{text-align:center;padding:7px 4px}} dl{{grid-template-columns:1fr}} .footer-band .links{{margin-top:10px}} .footer-band a{{display:inline-block;margin:4px 10px 4px 0}}}}
   </style>
 </head>
 <body data-page-id="s14-p1-fund-cash-loan" data-active-method="cash_pressure" data-ui-ready="false">
-  <header class="topbar"><div class="topbar-inner"><div class="brand"><div class="mark">KM</div><div><strong>KMFA 经营分析系统</strong><span>S14-P1 · 财务资金</span></div></div><nav class="top-links" aria-label="阶段页面导航">{links}</nav></div></header>
+  <header class="topbar"><div class="topbar-inner"><div class="brand"><div class="mark">KM</div><div><strong>KMFA 经营分析系统</strong><span>S14-P1 · 财务资金</span></div></div><nav class="top-links" aria-label="阶段页面导航">{links}{stage_links}</nav></div></header>
   <main>
     <section class="headline"><div><h1>资金现金贷款工作台</h1><p class="subtitle">原始候选结构已只读解析；当前仅展示结构状态与复核方法，不展示账户、金额或贷款明细。</p></div><div class="badges"><span class="tag ok">Q4 / D</span><span class="tag blocked">NO_GO</span><span class="tag">内部复核</span></div></section>
     <div class="notice"><strong>门禁：</strong> 4 条主题均缺权威行级与数值绑定；现金压力、贷款到期和账户余额均不得形成业务结论。</div>
     <section class="metrics" aria-label="状态摘要"><div class="metric"><strong>4 / 4</strong><span>结构主题已接入</span></div><div class="metric"><strong>4 / 4</strong><span>私有候选可解析</span></div><div class="metric"><strong>0 / 4</strong><span>行级绑定已证明</span></div><div class="metric"><strong>0</strong><span>已证明业务事项</span></div></section>
     <section class="band"><div class="band-header"><h2>资金来源主题</h2><span class="tag blocked">不含业务金额</span></div><div class="table-wrap"><table><thead><tr><th>主题</th><th>公开结构</th><th>私有候选表</th><th>行级绑定</th></tr></thead><tbody>{lane_rows}</tbody></table></div></section>
     <section class="band"><div class="band-header"><h2>三类复核方法</h2><span class="tag blocked">0 项已证明</span></div><div class="method-layout"><nav class="method-nav" aria-label="复核方法">{buttons}</nav><div class="method-panels">{panels}</div></div><div class="footer-band"><p id="interaction-status" aria-live="polite">已显示“现金压力”复核方法；当前不形成业务结论。</p><div class="links">{links}</div></div></section>
-    <footer>本 phase 仅完成 S14-P1；S14-P2、S14-P3、Stage 14 整体复审、GitHub upload、app reinstall、正式报告、差异关闭和业务执行均未执行。</footer>
+    <footer>Stage 14 三个 phase 均已完成；整体复审保持 Q4 / D · NO_GO，不执行付款、银行或贷款动作、GitHub upload、app reinstall、正式报告、差异关闭或业务执行。</footer>
   </main>
   <script>
     const labels={json.dumps({row['method_id']: row['visible_name'] for row in methods}, ensure_ascii=False, separators=(',', ':'))};

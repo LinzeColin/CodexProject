@@ -1,3 +1,18 @@
+kmfa_v014_s14_post_remediation_stage_review:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s14-post-remediation-stage-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S14-POST-REMEDIATION-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1762
+    - PARAM-KMFA-1763
+    - PARAM-KMFA-1764
+  evidence_dir: KMFA/stage_artifacts/V014_S14_POST_REMEDIATION_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s14_post_remediation_stage_review.py
+  scope: Current Stage 14 review over P1 P2 P3 with zero fund business items zero invoice tax issue candidates and summaries zero authoritative policy bindings eleven fixed findings three strongly connected pages six links fresh browser and raw evidence and Q4 D NO_GO 3-9-2-1; S15 financial policy upload reinstall formal release and business execution remain closed.
+
 kmfa_v014_s14_p3_post_remediation_policy_evidence_plan:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-s14-p3-post-remediation-policy-evidence-plan"
