@@ -1,3 +1,11 @@
+## 0.1.4-s15-p2-post-remediation-performance-review-list - 2026-07-11
+
+- 完成 `V014_S15_P2_POST_REMEDIATION_PERFORMANCE_REVIEW_LIST` 本地 phase：输出 1 个六字段绩效事实表结构，权威/合成项目事实行与公开业务值均为 0。
+- 输出 1 个含 6 条字段规则的异常项目判定方法和 6 项字段级复核事项；实际异常项目、项目级复核事项和绩效分数均为 0。
+- 隔离旧 S15-P2 的 4 条合成项目事实和 16 条事项，当前证据不含 project_ref、项目/人员明文、金额、比率或日期明细。
+- v1.4 baseline 54/54 PASS、当前页 14/14 PASS；2 视口、12 次事项交互、4 条依赖 HTTP 与 4 次真实导航通过，console error 与横向溢出为 0。
+- raw phase 前后、跨 S15-P1 与当前快照一致；保持 Q4 / D / NO_GO / 3-9-2-1，未执行 S15-P3、Stage 15 review、工资奖金、薪资导出、GitHub upload、app reinstall、正式报告、差异关闭或 business execution。
+
 ## 0.1.4-s15-p1-post-remediation-performance-fact-fields - 2026-07-11
 
 - 完成 V014_S15_P1_POST_REMEDIATION_PERFORMANCE_FACT_FIELDS 本地 phase：定义开票金额、毛利率、结算速度、回款速度、审计偏差、客情费率 6 个必需字段。

@@ -426,7 +426,8 @@ def _validate_governance(manifest: dict[str, Any], errors: list[str]) -> None:
     version_matrix = Path("KMFA/docs/governance/VERSION_MATRIX.yaml").read_text(encoding="utf-8")
     _require(phase.MODEL_REGISTRY_KEY in version_matrix, "VERSION_MATRIX profile missing", errors)
     _require(phase.VERSION in version_matrix, "VERSION_MATRIX version missing", errors)
-    if f'current_phase: "{phase.PHASE_ID}"' in version_matrix:
+    current_phase_is_s15_p1 = f'current_phase: "{phase.PHASE_ID}"' in version_matrix
+    if current_phase_is_s15_p1:
         _require(Path("KMFA/VERSION").read_text(encoding="utf-8").strip() == phase.VERSION, "VERSION drift", errors)
         handoff = Path("KMFA/HANDOFF.md").read_text(encoding="utf-8")
         _require(phase.PHASE_ID in handoff, "HANDOFF phase drift", errors)
@@ -441,11 +442,12 @@ def _validate_governance(manifest: dict[str, Any], errors: list[str]) -> None:
     assurance = Path("KMFA/docs/governance/ASSURANCE_STATUS.yaml").read_text(encoding="utf-8")
     _require(phase.TASK_ID in trace and phase.ACCEPTANCE_ID in trace, "traceability missing", errors)
     _require(phase.TASK_ID in delivery and phase.ACCEPTANCE_ID in delivery, "delivery missing", errors)
-    _require(
-        f'snapshot_event_time: "{manifest["generated_at"]}"' in assurance,
-        "assurance snapshot time drift",
-        errors,
-    )
+    if current_phase_is_s15_p1:
+        _require(
+            f'snapshot_event_time: "{manifest["generated_at"]}"' in assurance,
+            "assurance snapshot time drift",
+            errors,
+        )
     _require(phase.FORMULA_ID in assurance, "assurance formula missing", errors)
     for parameter_id in phase.PARAMETER_IDS:
         _require(parameter_id in assurance, f"assurance parameter missing: {parameter_id}", errors)

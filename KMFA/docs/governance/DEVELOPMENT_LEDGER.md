@@ -1,3 +1,18 @@
+## 2026-07-11 - V014 S15-P2 post-remediation performance review list
+
+- phase: V014_S15_P2_POST_REMEDIATION_PERFORMANCE_REVIEW_LIST
+- task: KMFA-V014-S15-P2-POST-REMEDIATION-PERFORMANCE-REVIEW-LIST-20260711
+- product_version: 0.1.4-s15-p2-post-remediation-performance-review-list
+- result: completed_validated_local_only_s15_p2_zero_authoritative_fact_rows_six_review_items_no_go_upload_deferred / NO_GO
+- fact table: 1 public-safe schema / 6 columns / 0 authoritative rows / 0 synthetic rows / 0 public business values.
+- abnormal method: 1 method / 6 field rules / 0 actual abnormal projects.
+- review list: 6 field-level items / 6 manual review / 0 project-specific items; no project_ref or business values.
+- history gate: legacy 4 synthetic fact rows and 16 review items remain quarantined as non-authoritative fixtures.
+- browser: v1.4 baseline 54/54 PASS、current 14/14 PASS；viewports/reviews/HTTP/navigation=2/12/4/4，console/overflow=0/0。
+- raw proof: phase before/after, cross-S15-P1 and current snapshots exact; raw/private details and screenshots remain ignored.
+- boundary: S15-P3、Stage 15 review、salary、bonus、payroll、GitHub upload、app reinstall、formal report、difference closure 和 business execution 均未执行；下一步只能 S15-P3。
+- evidence: KMFA/stage_artifacts/V014_S15_P2_POST_REMEDIATION_PERFORMANCE_REVIEW_LIST/machine/performance_review_manifest.json
+
 ## 2026-07-11 - V014 S15-P1 post-remediation performance fact fields
 
 - phase: V014_S15_P1_POST_REMEDIATION_PERFORMANCE_FACT_FIELDS
