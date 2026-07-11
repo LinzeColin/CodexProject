@@ -16,6 +16,11 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from audit_memory_atlas_acceptance import AcceptanceError, audit_acceptance  # noqa: E402
+from memory_atlas_r8_acceptance import (  # noqa: E402
+    FINAL_RECORD_PATHS,
+    AcceptanceHistoryError,
+    audit_final_records,
+)
 from preflight_cloudflare_pages_access import PreflightError, preflight as cloudflare_preflight  # noqa: E402
 
 
@@ -62,6 +67,7 @@ POST_DEPLOY_RECORD_PATHS = frozenset(
         "模型参数文件.md",
         CANONICAL_LIVE_EVIDENCE_PATH.as_posix(),
         "机器治理/证据与日志/final_delivery/v1_2_final_delivery_cleanup_status.json",
+        *(path.as_posix() for path in FINAL_RECORD_PATHS),
     }
 )
 
@@ -277,11 +283,25 @@ def audit_goal_completion(
     else:
         add_check(checks, "cloudflare_preflight", "PASS", f"{len(preflight['checks'])} Cloudflare preflight checks passed")
 
+    try:
+        r8_acceptance = audit_final_records(repo_root)
+    except (AcceptanceHistoryError, OSError, json.JSONDecodeError) as exc:
+        add_check(checks, "r8_final_acceptance", "INCOMPLETE", str(exc))
+        r8_ok = False
+    else:
+        add_check(
+            checks,
+            "r8_final_acceptance",
+            "PASS",
+            f"{r8_acceptance['verified_requirement_count']}/58 requirements and {r8_acceptance['stage_count']} stages verified",
+        )
+        r8_ok = True
+
     live_ok = audit_live_evidence(repo_root, live_evidence, checks)
     hard_failures = [check for check in checks if check["status"] == "FAIL"]
     if hard_failures:
         status = "FAIL"
-    elif live_ok:
+    elif live_ok and r8_ok:
         status = "COMPLETE_WITH_OPERATOR_EVIDENCE"
     else:
         status = "LOCAL_PASS_EXTERNAL_AUTHORIZATION_REQUIRED"

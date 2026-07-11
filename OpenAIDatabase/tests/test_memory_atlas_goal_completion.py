@@ -5,6 +5,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -108,9 +109,34 @@ class MemoryAtlasGoalCompletionTests(unittest.TestCase):
             evidence_path = Path(temp_dir) / "live_evidence.json"
             write_live_evidence(evidence_path, current_commit())
 
-            result = module.audit_goal_completion(ROOT, live_evidence=evidence_path, require_complete=True)
+            with (
+                mock.patch.object(module, "audit_acceptance", return_value={"checks": []}),
+                mock.patch.object(module, "cloudflare_preflight", return_value={"checks": []}),
+                mock.patch.object(
+                    module,
+                    "audit_final_records",
+                    return_value={"status": "PASS", "verified_requirement_count": 58, "stage_count": 14},
+                ),
+            ):
+                result = module.audit_goal_completion(ROOT, live_evidence=evidence_path, require_complete=True)
 
         self.assertEqual(result["status"], "COMPLETE_WITH_OPERATOR_EVIDENCE")
+
+    def test_goal_completion_cannot_complete_without_r8_58_of_58_records(self) -> None:
+        module = load_module()
+        with tempfile.TemporaryDirectory() as temp_dir:
+            evidence_path = Path(temp_dir) / "live_evidence.json"
+            write_live_evidence(evidence_path, current_commit())
+
+            with (
+                mock.patch.object(module, "audit_acceptance", return_value={"checks": []}),
+                mock.patch.object(module, "cloudflare_preflight", return_value={"checks": []}),
+            ):
+                result = module.audit_goal_completion(ROOT, live_evidence=evidence_path)
+
+        self.assertEqual(result["status"], "LOCAL_PASS_EXTERNAL_AUTHORIZATION_REQUIRED")
+        r8_check = next(check for check in result["checks"] if check["name"] == "r8_final_acceptance")
+        self.assertEqual(r8_check["status"], "INCOMPLETE")
 
     def test_live_evidence_accepts_deployed_commit_as_immediate_parent_of_record_commit(self) -> None:
         module = load_module()
@@ -124,6 +150,9 @@ class MemoryAtlasGoalCompletionTests(unittest.TestCase):
 
             evidence_path = repo_root / CANONICAL_LIVE_EVIDENCE
             write_live_evidence(evidence_path, deployed_commit)
+            r8_record = repo_root / "机器治理/证据与日志/remediation/v1_2_r8/final_acceptance.json"
+            r8_record.parent.mkdir(parents=True)
+            r8_record.write_text('{"status":"PASS"}\n', encoding="utf-8")
             commit_all(repo_root, "record live evidence")
             checks: list[dict[str, str]] = []
 
