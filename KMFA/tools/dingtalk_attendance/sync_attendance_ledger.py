@@ -22,6 +22,7 @@ from KMFA.tools.dingtalk_attendance import ONEDRIVE_ROOT
 from KMFA.tools.dingtalk_attendance.dws_attendance import (
     SUMMARY_TODAY_ANOMALY_TOKENS,
     _record_list_has_morning_and_evening,
+    attendance_run_sort_key,
 )
 from KMFA.tools.dingtalk_attendance.notification_template import REST_REQUIRED_EXCLUDED_NAMES, REST_REQUIRED_THRESHOLD_DAYS
 from KMFA.tools.dingtalk_attendance.secrets_loader import ROOT
@@ -29,7 +30,7 @@ from KMFA.tools.dingtalk_attendance.secrets_loader import ROOT
 
 PRIVATE_RUNTIME_DIR = ROOT / "metadata" / "dingtalk_attendance" / "private_runtime"
 DEFAULT_LEDGER_PATH = PRIVATE_RUNTIME_DIR / "attendance_ledger.sqlite"
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 
 
 def initialize_ledger(db_path: Path = DEFAULT_LEDGER_PATH) -> dict[str, Any]:
@@ -131,24 +132,77 @@ def validate_ledger(db_path: Path = DEFAULT_LEDGER_PATH) -> dict[str, Any]:
             for row in conn.execute("select name from sqlite_master where type='table' and name not like 'sqlite_%'")
         }
         missing = sorted(expected - tables)
-        hash_mismatches = conn.execute("select count(*) from runs where hash_status='MISMATCH'").fetchone()[0]
-        error_audits = conn.execute("select count(*) from sync_audit where status='ERROR'").fetchone()[0]
-        warning_audits = conn.execute("select count(*) from sync_audit where status='WARNING'").fetchone()[0]
-        run_count = conn.execute("select count(*) from runs").fetchone()[0]
+        run_columns = {row[1] for row in conn.execute("pragma table_info(runs)").fetchall()}
+        daily_columns = {row[1] for row in conn.execute("pragma table_info(daily_attendance)").fetchall()}
+        canonical_view_present = bool(
+            conn.execute(
+                "select 1 from sqlite_master where type='view' and name='canonical_daily_attendance'"
+            ).fetchone()
+        )
+        required_run_columns = {"canonical_schema_version", "canonical_run_sort_key"}
+        required_daily_columns = {"attendance_anomaly_day", "official_report_present"}
+        missing_run_columns = sorted(required_run_columns - run_columns)
+        missing_daily_columns = sorted(required_daily_columns - daily_columns)
+        stale_canonical_runs = (
+            conn.execute(
+                "select count(*) from runs where canonical_schema_version < ?",
+                (SCHEMA_VERSION,),
+            ).fetchone()[0]
+            if "runs" in tables and not missing_run_columns
+            else 0
+        )
+        hash_mismatches = (
+            conn.execute("select count(*) from runs where hash_status='MISMATCH'").fetchone()[0]
+            if "runs" in tables and "hash_status" in run_columns
+            else 0
+        )
+        error_audits = (
+            conn.execute("select count(*) from sync_audit where status='ERROR'").fetchone()[0]
+            if "sync_audit" in tables
+            else 0
+        )
+        warning_audits = (
+            conn.execute("select count(*) from sync_audit where status='WARNING'").fetchone()[0]
+            if "sync_audit" in tables
+            else 0
+        )
+        run_count = conn.execute("select count(*) from runs").fetchone()[0] if "runs" in tables else 0
     errors = []
     if missing:
         errors.append(f"missing tables: {', '.join(missing)}")
     if hash_mismatches:
         errors.append(f"hash mismatches: {hash_mismatches}")
-    status = "PASS" if not errors else "FAIL"
+    if missing_run_columns:
+        errors.append(f"missing runs columns: {', '.join(missing_run_columns)}")
+    if missing_daily_columns:
+        errors.append(f"missing daily_attendance columns: {', '.join(missing_daily_columns)}")
+    if not canonical_view_present:
+        errors.append("missing view: canonical_daily_attendance")
+    if stale_canonical_runs:
+        errors.append(f"canonical rebuild required for {stale_canonical_runs} run(s)")
+    migration_required = bool(
+        missing_run_columns
+        or missing_daily_columns
+        or not canonical_view_present
+        or stale_canonical_runs
+    )
+    status = "PASS" if not errors else ("MIGRATION_REQUIRED" if migration_required else "FAIL")
+    actual_schema_version = SCHEMA_VERSION if not migration_required else 1
     return {
         "status": status,
         "db_path": str(db_path),
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": actual_schema_version,
+        "target_schema_version": SCHEMA_VERSION,
+        "migration_required": migration_required,
         "run_count": run_count,
         "warning_audit_count": warning_audits,
         "error_audit_count": error_audits,
         "errors": errors,
+        "recommended_action": (
+            "python3 KMFA/tools/dingtalk_attendance/sync_attendance_ledger.py --all"
+            if migration_required
+            else None
+        ),
     }
 
 
@@ -176,6 +230,8 @@ def _create_schema(conn: sqlite3.Connection) -> None:
             summary_failure_count integer not null default 0,
             command_failure_count integer not null default 0,
             attendance_anomaly_count integer not null default 0,
+            canonical_schema_version integer not null default 2,
+            canonical_run_sort_key text not null default '',
             synced_at text not null
         );
         create table if not exists employees (
@@ -195,6 +251,8 @@ def _create_schema(conn: sqlite3.Connection) -> None:
             record_count integer not null default 0,
             record_has_full_day integer not null default 0,
             effective_attendance_day integer not null default 0,
+            attendance_anomaly_day integer not null default 0,
+            official_report_present integer not null default 0,
             known_no_record integer not null default 0,
             record_failure_reason text,
             summary_failure_reason text,
@@ -283,6 +341,69 @@ def _ensure_schema_migrations(conn: sqlite3.Connection) -> None:
     }
     if "notification_template_text" not in dispatch_columns:
         conn.execute("alter table dispatch_receipts add column notification_template_text text")
+    run_columns = {
+        row[1]
+        for row in conn.execute("pragma table_info(runs)").fetchall()
+    }
+    if "canonical_schema_version" not in run_columns:
+        conn.execute("alter table runs add column canonical_schema_version integer not null default 1")
+    if "canonical_run_sort_key" not in run_columns:
+        conn.execute("alter table runs add column canonical_run_sort_key text not null default ''")
+    daily_columns = {
+        row[1]
+        for row in conn.execute("pragma table_info(daily_attendance)").fetchall()
+    }
+    if "attendance_anomaly_day" not in daily_columns:
+        conn.execute("alter table daily_attendance add column attendance_anomaly_day integer not null default 0")
+        conn.execute(
+            """
+            update daily_attendance
+            set attendance_anomaly_day = 1
+            where exists (
+                select 1
+                from anomalies a
+                where a.run_id = daily_attendance.run_id
+                  and a.user_id = daily_attendance.user_id
+                  and a.anomaly_type in ('OFFICIAL_REPORT_ANOMALY', 'RECORD_ANOMALY', 'SUMMARY_TODAY_ANOMALY')
+            )
+            """
+        )
+    if "official_report_present" not in daily_columns:
+        conn.execute("alter table daily_attendance add column official_report_present integer not null default 0")
+        conn.execute(
+            """
+            update daily_attendance
+            set official_report_present = 1
+            where exists (
+                select 1
+                from anomalies a
+                where a.run_id = daily_attendance.run_id
+                  and a.user_id = daily_attendance.user_id
+                  and a.anomaly_type = 'OFFICIAL_REPORT_ANOMALY'
+            )
+            """
+        )
+    conn.execute("drop view if exists canonical_daily_attendance")
+    conn.execute(
+        """
+        create view canonical_daily_attendance as
+        select *
+        from (
+            select
+                da.*,
+                row_number() over (
+                    partition by da.user_id, da.work_date
+                    order by
+                        da.official_report_present desc,
+                        r.canonical_run_sort_key desc,
+                        da.run_id desc
+                ) as canonical_rank
+            from daily_attendance da
+            join runs r on r.run_id = da.run_id
+        )
+        where canonical_rank = 1
+        """
+    )
 
 
 def _sync_one_manifest(conn: sqlite3.Connection, manifest_path: Path) -> dict[str, Any]:
@@ -384,9 +505,10 @@ def _upsert_run_from_manifest(
             run_id, run_type, work_date, month, backend, sync_status, hash_status,
             raw_path, raw_sha256_manifest, raw_sha256_actual, manifest_path, dispatch_path, cleanup_path,
             member_count, record_success_count, summary_success_count, record_failure_count,
-            summary_failure_count, command_failure_count, attendance_anomaly_count, synced_at
+            summary_failure_count, command_failure_count, attendance_anomaly_count,
+            canonical_schema_version, canonical_run_sort_key, synced_at
         )
-        values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         on conflict(run_id) do update set
             run_type=excluded.run_type,
             work_date=excluded.work_date,
@@ -407,6 +529,8 @@ def _upsert_run_from_manifest(
             summary_failure_count=excluded.summary_failure_count,
             command_failure_count=excluded.command_failure_count,
             attendance_anomaly_count=excluded.attendance_anomaly_count,
+            canonical_schema_version=excluded.canonical_schema_version,
+            canonical_run_sort_key=excluded.canonical_run_sort_key,
             synced_at=excluded.synced_at
         """,
         (
@@ -430,6 +554,8 @@ def _upsert_run_from_manifest(
             _int(stats.get("summary_failure_count")),
             _int(stats.get("command_failure_count")),
             _int(stats.get("attendance_anomaly_count")),
+            SCHEMA_VERSION,
+            attendance_run_sort_key(run_id),
             _now_iso(),
         ),
     )
@@ -470,17 +596,32 @@ def _insert_employee_row(conn: sqlite3.Connection, *, run_id: str, work_date: st
     record_status = "SUCCESS" if record_success else "FAILED"
     summary_status = "SUCCESS" if summary_success else "FAILED"
     record_has_full_day = _record_list_has_morning_and_evening(record_list)
-    effective_day = bool(record_success and record_has_full_day)
     derived = row.get("derived", {}) if isinstance(row.get("derived"), Mapping) else {}
+    official_report_present = (
+        "official_report_anomaly" in derived
+        or "official_effective_day" in derived
+        or derived.get("official_report_covered") is True
+    )
+    effective_day = (
+        bool(derived.get("official_effective_day"))
+        if "official_effective_day" in derived
+        else bool(record_success and record_has_full_day)
+    )
+    attendance_anomaly_day = (
+        bool(derived.get("official_report_anomaly"))
+        if official_report_present
+        else bool(derived.get("record_anomaly") or derived.get("summary_today_anomaly"))
+    )
     known_no_record = bool(derived.get("known_no_record"))
     conn.execute(
         """
         insert into daily_attendance (
             run_id, user_id, work_date, month, record_status, summary_status, record_count,
-            record_has_full_day, effective_attendance_day, known_no_record,
+            record_has_full_day, effective_attendance_day, attendance_anomaly_day,
+            official_report_present, known_no_record,
             record_failure_reason, summary_failure_reason
         )
-        values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             run_id,
@@ -492,6 +633,8 @@ def _insert_employee_row(conn: sqlite3.Connection, *, run_id: str, work_date: st
             len(record_list),
             int(record_has_full_day),
             int(effective_day),
+            int(attendance_anomaly_day),
+            int(official_report_present),
             int(known_no_record),
             None if record_success else _failure_reason(row.get("record")),
             None if summary_success else _failure_reason(row.get("summary")),
@@ -606,9 +749,16 @@ def _insert_anomalies(
         anomalies.append(("SYSTEM_RECORD_FAILURE", _failure_reason(row.get("record")) or "record failed"))
     if not _summary_success(row):
         anomalies.append(("SYSTEM_SUMMARY_FAILURE", _failure_reason(row.get("summary")) or "summary failed"))
-    if bool(derived.get("record_anomaly")):
+    if "official_report_anomaly" in derived:
+        if bool(derived.get("official_report_anomaly")):
+            issues = derived.get("official_report_issues", [])
+            if isinstance(issues, list) and issues:
+                anomalies.extend(("OFFICIAL_REPORT_ANOMALY", str(issue)) for issue in issues)
+            else:
+                anomalies.append(("OFFICIAL_REPORT_ANOMALY", "official report marks the day as abnormal"))
+    elif bool(derived.get("record_anomaly")):
         anomalies.append(("RECORD_ANOMALY", "record empty or missing required punches"))
-    if bool(derived.get("summary_today_anomaly")):
+    if "official_report_anomaly" not in derived and bool(derived.get("summary_today_anomaly")):
         issues = derived.get("summary_today_issues", [])
         if isinstance(issues, list) and issues:
             anomalies.extend(("SUMMARY_TODAY_ANOMALY", str(issue)) for issue in issues)
@@ -683,7 +833,7 @@ def _rebuild_rest_required_snapshots(conn: sqlite3.Connection, month: str) -> No
             count = conn.execute(
                 """
                 select count(distinct work_date)
-                from daily_attendance
+                from canonical_daily_attendance
                 where month = ?
                   and user_id = ?
                   and work_date <= ?

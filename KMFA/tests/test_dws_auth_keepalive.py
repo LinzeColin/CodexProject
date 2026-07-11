@@ -184,7 +184,7 @@ class DwsAuthKeepaliveTests(unittest.TestCase):
             commands = log.read_text(encoding="utf-8").splitlines() if log.exists() else []
             return completed, commands
 
-    def test_healthy_access_token_does_not_login(self) -> None:
+    def test_healthy_session_credential_does_not_login(self) -> None:
         completed, commands = self.run_scenario("healthy")
 
         self.assertEqual(completed.returncode, 0, completed.stderr or completed.stdout)
@@ -200,7 +200,7 @@ class DwsAuthKeepaliveTests(unittest.TestCase):
             ],
         )
 
-    def test_expired_access_token_is_refreshed_by_status_retry_without_login(self) -> None:
+    def test_expired_session_credential_is_refreshed_by_status_retry_without_login(self) -> None:
         completed, commands = self.run_scenario("refresh_success")
 
         self.assertEqual(completed.returncode, 0, completed.stderr or completed.stdout)

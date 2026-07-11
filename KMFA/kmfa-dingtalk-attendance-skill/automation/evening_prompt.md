@@ -32,21 +32,22 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/dingtalk_attendance/ru
 ```
 
 Treat every nonzero command exit code as a failed automation run; do not report success from partial collection or failed notification delivery.
-9. Acquire or replay DingTalk attendance result/detail evidence only through approved local S19/DWS paths.
-10. Store public-safe metadata under `KMFA/metadata`; keep private raw payloads in ignored private runtime or OneDrive.
-11. Run `KMFA/kmfa-dingtalk-attendance-skill/scripts/month_gate.py --run-slot evening --print-json`.
-12. If day 1-5 of the following month, run `KMFA/kmfa-dingtalk-attendance-skill/scripts/run_stage2_evening.sh`.
-13. `run_stage2_evening.sh` must write stage-2 artifacts only from an approved source adapter, explicit `KMFA_STAGE2_SOURCE_JSON` replay snapshot, or `KMFA_STAGE2_SOURCE_MODE=raw_replay_day_fact` with `KMFA_STAGE2_RAW_REPLAY_DAY_FACT_DIR` pointing to a private raw replay day-fact/linkage bundle.
-14. Raw replay day-fact sources may prove raw-to-derived reconciliation and location evidence, but must keep database commit/verification gates false until approved non-production PostgreSQL execution and state verification proofs exist.
-15. If an approved non-production DB target is configured, generate a pre-consensus DB landing bundle, guard-execute the PostgreSQL load plan, run read-only post-load row-count verification with `verify_postgres_landing_state.py`, and apply both proofs with `apply_stage2_database_proof.py` before writing Stage-2 run artifacts.
-16. If no DB execution proof or state verification proof is available, keep DB gates false; day-5 consensus must fail closed rather than fabricate database proof.
-17. If no approved source is configured, treat `STAGE2_ADAPTER_SOURCE_MISSING` as a fail-closed blocker; do not fabricate data.
-18. If this is day 5, `run_stage2_evening.sh` must run `KMFA/kmfa-dingtalk-attendance-skill/scripts/stage2_consensus_gate.py`.
-19. If five canonical hashes match exactly and P0/P1 unresolved counts are zero, generate stage-2 consensus certificate and payroll baseline candidate.
-20. If they do not match, generate divergence report and stop promotion.
-21. Preserve rest reminder rules from the skill: `REST_REQUIRED_THRESHOLD_DAYS = 23`; `丁春法` and `李永占` are excluded only from `需要休息`, while all other statuses are counted normally.
-22. If the owner explicitly requests a date-specific personal-only test, run the entry with `--work-date YYYY-MM-DD --notification-targets personal`; do not send the production management group.
-23. If this run changes any skill or automation prompt file, run validators, commit, and push to GitHub `main` before reporting completion.
+9. The entry must use current DingTalk attendance-group members plus exact `attendance report columns/query-data` values as the only business-statistics source. Require `official_report_parity_status=PASS`, exact Beijing business-date coverage, and `official_report_coverage_count == member_count` before any conclusion or notification. `record get`, two-punch inference, and personal `summary` are diagnostics only. On `OFFICIAL_ATTENDANCE_PARITY_FAILED`, stop without sending and never fall back to record/summary guesses.
+10. Acquire or replay DingTalk attendance result/detail evidence only through approved local S19/DWS paths.
+11. Store public-safe metadata under `KMFA/metadata`; keep private raw payloads in ignored private runtime or OneDrive.
+12. Run `KMFA/kmfa-dingtalk-attendance-skill/scripts/month_gate.py --run-slot evening --print-json`.
+13. If day 1-5 of the following month, run `KMFA/kmfa-dingtalk-attendance-skill/scripts/run_stage2_evening.sh`.
+14. `run_stage2_evening.sh` must write stage-2 artifacts only from an approved source adapter, explicit `KMFA_STAGE2_SOURCE_JSON` replay snapshot, or `KMFA_STAGE2_SOURCE_MODE=raw_replay_day_fact` with `KMFA_STAGE2_RAW_REPLAY_DAY_FACT_DIR` pointing to a private raw replay day-fact/linkage bundle.
+15. Raw replay day-fact sources may prove raw-to-derived reconciliation and location evidence, but must keep database commit/verification gates false until approved non-production PostgreSQL execution and state verification proofs exist.
+16. If an approved non-production DB target is configured, generate a pre-consensus DB landing bundle, guard-execute the PostgreSQL load plan, run read-only post-load row-count verification with `verify_postgres_landing_state.py`, and apply both proofs with `apply_stage2_database_proof.py` before writing Stage-2 run artifacts.
+17. If no DB execution proof or state verification proof is available, keep DB gates false; day-5 consensus must fail closed rather than fabricate database proof.
+18. If no approved source is configured, treat `STAGE2_ADAPTER_SOURCE_MISSING` as a fail-closed blocker; do not fabricate data.
+19. If this is day 5, `run_stage2_evening.sh` must run `KMFA/kmfa-dingtalk-attendance-skill/scripts/stage2_consensus_gate.py`.
+20. If five canonical hashes match exactly and P0/P1 unresolved counts are zero, generate stage-2 consensus certificate and payroll baseline candidate.
+21. If they do not match, generate divergence report and stop promotion.
+22. Preserve rest reminder rules from the skill: `REST_REQUIRED_THRESHOLD_DAYS = 23`; `丁春法` and `李永占` are excluded only from `需要休息`, while all other statuses are counted normally.
+23. If the owner explicitly requests a date-specific personal-only test, run the entry with `--work-date YYYY-MM-DD --notification-targets personal`; do not send the production management group.
+24. If this run changes any skill or automation prompt file, run validators, commit, and push to GitHub `main` before reporting completion.
 
 Hard boundaries:
 - Do not commit secrets, `.env.local`, resolved DWS IDs, SQLite, raw JSON/JSONL/GZ, employee plaintext, OneDrive raw archives, or report bodies.

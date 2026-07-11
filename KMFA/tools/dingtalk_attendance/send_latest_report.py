@@ -28,7 +28,11 @@ from KMFA.tools.dingtalk_attendance.notification_targets import (
     migrate_legacy_resolved_channel,
     probe_notification_targets,
 )
-from KMFA.tools.dingtalk_attendance.notification_template import run_type_from_run_id, work_date_from_run_id
+from KMFA.tools.dingtalk_attendance.notification_template import (
+    official_report_parity_failure_reason,
+    run_type_from_run_id,
+    work_date_from_run_id,
+)
 from KMFA.tools.dingtalk_attendance.run_attendance import build_stats_with_rest_required_people
 from KMFA.tools.dingtalk_attendance.secrets_loader import merged_runtime_env
 
@@ -57,6 +61,34 @@ def send_latest_report(
         return {"status": "FAILED", "failure_reason": f"unsupported channel selector: {channel}"}
     if targets not in {"all", "personal", "group"}:
         return {"status": "FAILED", "failure_reason": f"unsupported targets selector: {targets}"}
+
+    manifest_path = find_latest_manifest(onedrive_root)
+    if manifest_path is None:
+        cleanup_status.update(cleanup_runtime())
+        return {
+            "status": "NO_LATEST_REPORT",
+            "mode": "send_latest_report",
+            "notification_status": "FAILED",
+            "cleanup_status": cleanup_status,
+        }
+
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest_stats = manifest.get("stats", {})
+    parity_failure = official_report_parity_failure_reason(
+        manifest_stats if isinstance(manifest_stats, Mapping) else {}
+    )
+    if parity_failure:
+        cleanup_status.update(cleanup_runtime())
+        return {
+            "status": "OFFICIAL_ATTENDANCE_PARITY_FAILED",
+            "mode": "send_latest_report",
+            "targets": targets,
+            "manifest": str(manifest_path),
+            "notification_status": "NOT_SENT_OFFICIAL_ATTENDANCE_PARITY_FAILED",
+            "failure_reason": parity_failure,
+            "cleanup_status": cleanup_status,
+        }
+
     if not targets_resolved_path.exists():
         migrate_legacy_resolved_channel(
             legacy_path=resolved_path,
@@ -79,17 +111,6 @@ def send_latest_report(
                 "cleanup_status": cleanup_status,
             }
 
-    manifest_path = find_latest_manifest(onedrive_root)
-    if manifest_path is None:
-        cleanup_status.update(cleanup_runtime())
-        return {
-            "status": "NO_LATEST_REPORT",
-            "mode": "send_latest_report",
-            "notification_status": "FAILED",
-            "cleanup_status": cleanup_status,
-        }
-
-    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     work_date = manifest.get("work_date") or work_date_from_run_id(str(manifest["run_id"]))
     output_status = {
         "run_id": manifest["run_id"],
@@ -97,7 +118,7 @@ def send_latest_report(
         "work_date": work_date,
         "current_time": datetime.now(ZoneInfo(TIMEZONE)).strftime("%Y-%m-%d %H:%M:%S"),
         "stats": build_stats_with_rest_required_people(
-            manifest.get("stats", {}),
+            manifest_stats,
             month_dir=manifest_path.parent,
             work_date=work_date,
         ),

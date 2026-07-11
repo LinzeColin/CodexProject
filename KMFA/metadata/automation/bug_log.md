@@ -1,5 +1,75 @@
 # KMFA Automation Bug Log
 
+## 2026-07-11 S19 Attendance Official-Statistics Parity Failure
+
+Scope: `kmfa` morning and `kmfa-3` evening attendance content. No schedule was
+changed in this repair.
+
+Root causes:
+
+- The automation used all 44 organization-directory users, while the current 8
+  DingTalk attendance groups contain 42 unique members.
+- It treated fewer than two raw punch rows as an attendance anomaly. This made
+  every normal morning punch look incomplete before the evening punch existed.
+- It derived daily business status from personal `record get + month summary`
+  instead of the DingTalk admin attendance report.
+- A successful but detail-empty summary response was treated as proof of no
+  anomaly.
+- Legacy date arguments were converted through the Mac's Sydney `time.Local`;
+  archived evidence showed a 2026-07-10 run whose record timestamps all belonged
+  to Beijing 2026-07-09.
+
+Evidence:
+
+- 2026-07-10 old evening output: 14 automation anomalies versus 4 official
+  `旷工`; the extra 10 had normal raw records and no official summary anomaly.
+- 2026-07-11 old morning output: 28 automation anomalies, all with one normal
+  morning record. The official report snapshot returned 11 `未打卡`, 22
+  `上班外勤`, 3 `休息`, and 6 `正常` for 42/42 scoped members.
+
+Repair:
+
+- Attendance-group membership is now the denominator.
+- Exact dynamic `report columns/query-data` values are the sole business truth;
+  9 required columns are fetched 5 users per batch.
+- Full user/date/status coverage is mandatory. Any mismatch is
+  `OFFICIAL_ATTENDANCE_PARITY_FAILED`, with no notification or legacy fallback.
+- Every live or resend notification now passes one exact official-delivery gate
+  before target probing or sender invocation. Legacy/partial manifests, including
+  `stats: {}`, are rejected with zero attendance-message sends.
+- Raw records and personal summaries remain diagnostic evidence only.
+- Once official parity passes, a separate record/summary permission or call
+  failure is retained as private diagnostic evidence and cannot block or alter
+  the official notification.
+- The DWS subprocess receives `TZ=Asia/Shanghai`; scheduler records retain no
+  timezone field.
+- Notification, monthly rollups, and private ledger prefer official anomaly and
+  effective-day fields. Raw archives retain private official report evidence.
+- Mixed archives are canonicalized per `(user_id, work_date)`: the latest official
+  row overrides every legacy row and earlier official snapshot for that day. The
+  private SQLite v2 canonical view applies the same rule to anomaly, effective-day,
+  rest-reminder, and month-summary queries.
+
+Validation:
+
+- 91 S19 unit/integration tests、9 automation schedule contract tests 和 17 auth keepalive regression tests passed.
+- S19 file/prompt contract, skill validator, Python compile, no-sensitive scan,
+  and focused evening automation contract passed.
+- New collector live readback for 2026-07-10: 42/42 coverage, 4 official
+  anomalies, 42 required, 38 effective, zero command failures.
+- Full production-collector live readback for 2026-07-11: 42/42 coverage, 11
+  anomalies, 39 required, 28 effective, exact delivery gate PASS, zero diagnostic
+  command failures.
+- The existing private v1 ledger was backed up, then rebuilt from all raw
+  manifests. Validation now reports schema v2 PASS; all 19 indexed runs have the
+  v2 canonical version and a non-empty shared run sort key.
+- Both live attendance prompts match their repo canonical hashes and include
+  the parity fail-closed contract.
+
+Open acceptance gate: the next natural trigger must be compared with the same
+moment's DingTalk official UI/export. Do not close the long-term production gate
+before that one natural-run parity check.
+
 ## 2026-07-11 `dws-auth-keepalive-2` False Keepalive And Login Fallback
 
 Scope: only the DWS authentication keepalive automation. The original contract
@@ -42,11 +112,11 @@ Repair:
 
 Open acceptance gate:
 
-- The current token pair cannot obtain a new access token even though the local
-  refresh expiry metadata is still in the future. A one-time owner-authorized
-  `dws auth login --device` is required. Long-term closure additionally requires
-  a later natural scheduled run after access-token expiry to report
-  `refreshed=true` and `token_valid=true` with a newer expiry.
+- After the owner-authorized login, current `dws doctor --json` is 5 pass / 0
+  warn / 0 fail and real read-only attendance queries succeed. This proves only
+  current authentication. Long-term closure still requires a later natural
+  scheduled run after access-token expiry to report `refreshed=true` and
+  `token_valid=true` with a newer expiry.
 
 ## 2026-07-10 `kmfa-3` Owner-Fixed 20:00 Stability Repair
 

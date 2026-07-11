@@ -48,7 +48,8 @@ Before acting, read:
 - Rest reminder excluded names: `丁春法`, `李永占`; they are excluded only from `需要休息` and private ledger `rest_required_snapshots`, while all other statuses are still counted normally.
 - Effective attendance day: the same natural day has both morning and evening punches.
 - Monthly notification rollups reset by natural month.
-- Notification `今日异常 / 无考勤` is same-day only: `缺卡`, `未打卡`, `旷工`, `迟到`, and `早退` are shown only when the detail child row matches today's work date.
+- Notification `今日异常 / 无考勤` is same-day only and must use the exact official report row for current attendance-group members. `缺卡`, `未打卡`, `旷工`, `迟到`, and `早退` are shown only when official `考勤结果` or official count columns mark the target work date. Raw record counts, two-punch inference, and personal summary children are diagnostics only and must never override the official report.
+- `OFFICIAL_ATTENDANCE_PARITY_FAILED` is a hard stop: missing/ambiguous official columns, incomplete attendance-group coverage, wrong business date, unknown status, or any official query failure must prevent report conclusions and notification delivery. Never fall back to `record get + summary` guesses.
 - Current natural-month counts are annotations for today's displayed names; they must not create a today no-record/anomaly row by themselves.
 - Empty notification sections render nothing. When collection is complete and today's anomaly list is empty, output `本次 N 人全部考勤正常`.
 - Do not render a user-visible `待审批 / 待补卡 / 待核查` section; keep those details only in private/internal machine state if present.

@@ -14,6 +14,7 @@ from KMFA.tools.dingtalk_attendance.notifier_dingtalk import send_group_robot_ma
 from KMFA.tools.dingtalk_attendance.notification_template import (
     build_notification_message,
     notification_context_from_output_status,
+    official_report_parity_failure_reason,
 )
 from KMFA.tools.dingtalk_attendance.secrets_loader import merged_runtime_env
 
@@ -238,6 +239,18 @@ def dispatch_reports_with_resolved_channel(
     sender: Callable[..., dict[str, Any]] = send_text_with_resolved_channel,
 ) -> dict[str, Any]:
     receipt_path = Path(str(output_status["dispatch_receipt"]))
+    stats = output_status.get("stats", {})
+    parity_failure = official_report_parity_failure_reason(stats if isinstance(stats, Mapping) else {})
+    if parity_failure:
+        receipt = _receipt(
+            status="NOT_SENT_OFFICIAL_ATTENDANCE_PARITY_FAILED",
+            channel="unresolved",
+            output_status=output_status,
+            messages=[],
+            failure_reason=parity_failure,
+        )
+        _write_receipt(receipt_path, receipt)
+        return receipt
     if not resolved_path.exists():
         receipt = _receipt(
             status="NOTIFIER_CONFIG_MISSING",
