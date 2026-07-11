@@ -142,21 +142,21 @@ def _expected_parameters() -> dict[str, str]:
 
 def _check_current_governance(manifest: dict[str, Any], errors: list[str]) -> None:
     version_matrix = Path("KMFA/docs/governance/VERSION_MATRIX.yaml").read_text(encoding="utf-8")
-    _require(f'current_phase: "{phase.PHASE_ID}"' in version_matrix, "VERSION_MATRIX current phase drift", errors)
     _require(phase.MODEL_REGISTRY_KEY in version_matrix, "VERSION_MATRIX profile missing", errors)
     _require(phase.VERSION in version_matrix, "VERSION_MATRIX version missing", errors)
-    _require(Path("KMFA/VERSION").read_text(encoding="utf-8").strip() == phase.VERSION, "VERSION drift", errors)
-
-    handoff = Path("KMFA/HANDOFF.md").read_text(encoding="utf-8")
-    for token in (
-        phase.PHASE_ID,
-        "下一步只能执行 Stage 18 整体复审",
-        "不得执行最终整体复审",
-        "不得执行 GitHub upload",
-    ):
-        _require(token in handoff, f"HANDOFF token missing: {token}", errors)
-    agents = Path("KMFA/AGENTS.md").read_text(encoding="utf-8")
-    _require(phase.PHASE_ID in agents and "Stage 18 整体复审" in agents, "AGENTS scope drift", errors)
+    current = f'current_phase: "{phase.PHASE_ID}"' in version_matrix
+    if current:
+        _require(Path("KMFA/VERSION").read_text(encoding="utf-8").strip() == phase.VERSION, "VERSION drift", errors)
+        handoff = Path("KMFA/HANDOFF.md").read_text(encoding="utf-8")
+        for token in (
+            phase.PHASE_ID,
+            "下一步只能执行 Stage 18 整体复审",
+            "不得执行最终整体复审",
+            "不得执行 GitHub upload",
+        ):
+            _require(token in handoff, f"HANDOFF token missing: {token}", errors)
+        agents = Path("KMFA/AGENTS.md").read_text(encoding="utf-8")
+        _require(phase.PHASE_ID in agents and "Stage 18 整体复审" in agents, "AGENTS scope drift", errors)
 
     trace = Path("KMFA/docs/governance/TRACEABILITY_MATRIX.csv").read_text(encoding="utf-8")
     delivery = Path("KMFA/docs/governance/delivery_tasks.yaml").read_text(encoding="utf-8")
@@ -201,11 +201,15 @@ def _check_current_governance(manifest: dict[str, Any], errors: list[str]) -> No
         phase.TASK_ID,
         phase.ACCEPTANCE_ID,
         phase.FORMULA_ID,
-        f'snapshot_event_time: "{manifest["generated_at"]}"',
-        "total_active_parameters: 1433",
-        "total_active_formulas: 313",
     ):
         _require(token in assurance, f"assurance token missing: {token}", errors)
+    if current:
+        for token in (
+            f'snapshot_event_time: "{manifest["generated_at"]}"',
+            "total_active_parameters: 1433",
+            "total_active_formulas: 313",
+        ):
+            _require(token in assurance, f"current assurance token missing: {token}", errors)
     for parameter_id in phase.PARAMETER_IDS:
         _require(parameter_id in assurance, f"assurance parameter missing: {parameter_id}", errors)
 

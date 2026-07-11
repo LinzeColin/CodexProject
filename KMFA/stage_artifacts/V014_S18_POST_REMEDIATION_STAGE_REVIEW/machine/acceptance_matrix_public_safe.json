@@ -1,0 +1,168 @@
+{
+  "acceptance_id": "ACC-V014-S18-POST-REMEDIATION-STAGE-REVIEW",
+  "check_count": 31,
+  "check_fail_count": 0,
+  "check_pass_count": 31,
+  "checks": [
+    {
+      "check_id": "V014-S18-REVIEW-ACC-001",
+      "name": "phase_chain",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-002",
+      "name": "focused_tests",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-003",
+      "name": "strict_validators",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-004",
+      "name": "review_fixes",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-005",
+      "name": "findings_closed",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-006",
+      "name": "cross_phase_contracts",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-007",
+      "name": "historical_quarantine",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-008",
+      "name": "p1_scenarios",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-009",
+      "name": "p1_import_runs",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-010",
+      "name": "p1_batch",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-011",
+      "name": "p1_errors",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-012",
+      "name": "p2_checks",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-013",
+      "name": "p2_stages",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-014",
+      "name": "p2_ui",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-015",
+      "name": "lineage_blocked",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-016",
+      "name": "p3_connectors",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-017",
+      "name": "p3_opme",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-018",
+      "name": "p3_backlog",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-019",
+      "name": "no_live_connector",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-020",
+      "name": "no_source_mutation",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-021",
+      "name": "raw_exact",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-022",
+      "name": "raw_cross_exact",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-023",
+      "name": "fresh_raw",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-024",
+      "name": "difference_truth",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-025",
+      "name": "quality",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-026",
+      "name": "decision",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-027",
+      "name": "review_performed",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-028",
+      "name": "final_review_pending",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-029",
+      "name": "upload_closed",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-030",
+      "name": "reinstall_closed",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S18-REVIEW-ACC-031",
+      "name": "business_closed",
+      "status": "PASS"
+    }
+  ],
+  "phase_id": "V014_S18_POST_REMEDIATION_STAGE_REVIEW",
+  "project_id": "KMFA",
+  "record_type": "v014_s18_post_remediation_acceptance_matrix",
+  "schema_version": "kmfa.v014.s18_post_remediation_acceptance_matrix.v1",
+  "stage_id": "S18"
+}
