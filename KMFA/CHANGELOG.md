@@ -1,3 +1,11 @@
+## 0.1.4-s17-p2-post-remediation-notification - 2026-07-12
+
+- 完成 `V014_S17_P2_POST_REMEDIATION_NOTIFICATION` 本地 phase：报告生成完成、重大风险、数据源缺失三类规则与当前触发评估均为 `3/3 PASS`。
+- 当前触发证据分别绑定 2 份 D级受限报告预览、12 个 hard block 和 4 个数据源未决指标；历史 S17-P2 的三条规则/事件/dispatch 只作结构夹具。
+- 生成 3 条全中文短提醒、3 个已存在应用内链接和 3 条 append-only metadata outbox；每条包含 S17-P1 通知审计契约规定的 7 个字段。
+- 篡改门禁拒绝完整报告正文、附件、收件地址明文、外部连接器、真实投递或缺失链接；真实投递/完整正文/附件/地址/连接器=`0/0/0/0/0`。
+- raw phase 前后、跨 S17-P1 与当前快照一致；保持 `Q4 / D / NO_GO / 3-9-2-1`，未执行 S17-P3、Stage 17 review、GitHub upload、app reinstall、正式报告、差异关闭、持久业务写入或 business execution。
+
 ## 0.1.4-s17-p1-post-remediation-access-security - 2026-07-12
 
 - 完成 `V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY` 本地 phase，建立管理层、财务、复核、只读四角色最小权限策略，14 项显式授权与 9 项关键拒绝动作均采用 deny-by-default。

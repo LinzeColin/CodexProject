@@ -5,12 +5,12 @@
 ## 最新状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s17-p1-post-remediation-access-security`
+- version: `0.1.4-s17-p2-post-remediation-notification`
 - current_stage: `S17`
-- current_phase: `V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY`
-- status: `completed_validated_local_only_s17_p1_access_security_policy_no_go_upload_deferred`
+- current_phase: `V014_S17_P2_POST_REMEDIATION_NOTIFICATION`
+- status: `completed_validated_local_only_s17_p2_metadata_reminders_no_delivery_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `S17-P2_notification_policy_as_separate_run_without_live_delivery`
+- next_required_input: `S17-P3_operations_and_SOP_as_separate_run`
 - production_ready: `false`
 - github_upload_ready: `false`
 - raw_snapshot_exact_match: `true`
@@ -19,12 +19,12 @@
 ## 前序状态（上一 phase）
 
 - project_id: `KMFA`
-- version: `0.1.4-s16-post-remediation-stage-review`
-- current_stage: `S16`
-- current_phase: `V014_S16_POST_REMEDIATION_STAGE_REVIEW`
-- status: `completed_validated_local_only_stage16_review_no_go_upload_deferred`
+- version: `0.1.4-s17-p1-post-remediation-access-security`
+- current_stage: `S17`
+- current_phase: `V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY`
+- status: `completed_validated_local_only_s17_p1_access_security_policy_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `S17-P1_access_security_as_separate_run`
+- next_required_input: `S17-P2_notification_policy_as_separate_run_without_live_delivery`
 - raw_snapshot_exact_match: `true`
 - decision: `NO_GO`
 
@@ -44,6 +44,8 @@
 - persistent_raw_data_rule: `read_only_for_codex_no_modify_delete_move_or_write`
 
 ## 已完成
+
+- v0.1.4 S17-P2 post-remediation notification completed local-only：三类规则与当前触发评估=`3/3/3 eligible/0 mismatch`，来源为 2 份 D级受限报告预览、12 个 hard block 和 4 个数据源未决指标。生成 3 条全中文短提醒、3 个已存在应用内链接和 3 条 append-only metadata outbox；每条含 7 个审计必填字段及 dedupe/idempotency。篡改门禁拒绝完整正文、附件、地址明文、外部连接器、真实投递和缺失链接；实际计数=`0/0/0/0/0`。raw phase 前后、跨 S17-P1 和当前快照一致；当前 `Q4 / D / NO_GO / 3-9-2-1`；next_required_input=`S17-P3_operations_and_SOP_as_separate_run`。
 
 - v0.1.4 S17-P1 post-remediation access security completed local-only：4 角色、14 项显式授权、9 项关键拒绝动作和 deny-by-default 已锁定；16 项授权探针=`8 ALLOW / 8 DENY / 0 mismatch`。15 类敏感材料全部禁止公开仓库、Git 上传和明文保存，tracked 禁止后缀/private runtime=`0/0`。导入、处理、报告、导出、通知五类审计契约各要求 7 个 public-safe 字段，5 个 schema 探针 PASS；真实用户、凭据、身份提供方、持久授权/审计事件、通知、完整报告正文和业务执行均为 0。raw phase 前后、跨 Stage 16 review 和当前快照一致；当前 `Q4 / D / NO_GO / 3-9-2-1`；next_required_input=`S17-P2_notification_policy_as_separate_run_without_live_delivery`。
 
