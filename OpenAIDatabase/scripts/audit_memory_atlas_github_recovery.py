@@ -305,9 +305,19 @@ def build_recovery_plan(repo_root: Path, commit: str) -> list[list[str]]:
         raise RecoveryAuditError("EXACT_COMMIT_REQUIRED", "A full hexadecimal commit ID is required.")
     if not (Path(repo_root) / ".git").exists():
         raise RecoveryAuditError("GIT_REPOSITORY_REQUIRED", "repo_root must be a non-bare Git working tree.")
+    extractor_script = Path("scripts/audit_memory_atlas_github_recovery.py")
+    if (Path(repo_root) / "OpenAIDatabase").is_dir():
+        extractor_script = Path("OpenAIDatabase") / extractor_script
     return [
         ["git", "rev-parse", "--verify", f"{commit}^{{commit}}"],
         ["git", "archive", "--format=tar", commit],
+        [
+            "python3",
+            extractor_script.as_posix(),
+            "--extract-stream",
+            "--destination",
+            "recovered",
+        ],
         ["python3", PUBLIC_RAW_AUDITOR_PATH.as_posix(), "--database-dir", "."],
         ["npm", "ci", "--ignore-scripts", "--no-audit", "--no-fund"],
         ["npm", "run", "build"],
@@ -317,8 +327,6 @@ def build_recovery_plan(repo_root: Path, commit: str) -> list[list[str]]:
 def _extract_archive_safely(
     archive_stream: BinaryIO,
     destination: Path,
-    *,
-    deadline: float | None = None,
 ) -> int:
     destination.mkdir(parents=True, exist_ok=False)
     seen: set[str] = set()
@@ -329,8 +337,6 @@ def _extract_archive_safely(
         raise RecoveryAuditError("GIT_ARCHIVE_INVALID", "git archive did not produce a valid tar file.") from exc
     with archive:
         for member in archive:
-            if deadline is not None and time.monotonic() >= deadline:
-                raise RecoveryAuditError("GIT_ARCHIVE_TIMEOUT", "Streaming git archive extraction timed out.")
             pure = PurePosixPath(member.name)
             if pure.is_absolute() or any(part in {"", ".", ".."} for part in pure.parts):
                 raise RecoveryAuditError("GIT_ARCHIVE_UNSAFE", "git archive contains an unsafe path.")
@@ -359,6 +365,121 @@ def _extract_archive_safely(
     return file_count
 
 
+class _BoundedPipeCapture:
+    """Drain a child pipe without writing diagnostics to disk or retaining it unbounded."""
+
+    def __init__(self, stream: BinaryIO, max_bytes: int, retain_bytes: int = OUTPUT_TAIL_BYTES) -> None:
+        self.stream = stream
+        self.max_bytes = max(1, int(max_bytes))
+        self.retain_bytes = min(self.max_bytes, max(1, int(retain_bytes)))
+        self.total_bytes = 0
+        self._tail = bytearray()
+        self._lock = threading.Lock()
+        self.overflow = threading.Event()
+        self._thread = threading.Thread(target=self._drain, daemon=True)
+
+    def start(self) -> None:
+        self._thread.start()
+
+    def _drain(self) -> None:
+        try:
+            while True:
+                chunk = os.read(self.stream.fileno(), 64 * 1024)
+                if not chunk:
+                    return
+                with self._lock:
+                    self.total_bytes += len(chunk)
+                    if self.total_bytes > self.max_bytes:
+                        self.overflow.set()
+                    self._tail.extend(chunk)
+                    if len(self._tail) > self.retain_bytes:
+                        del self._tail[: len(self._tail) - self.retain_bytes]
+        except OSError:
+            return
+
+    def join(self, timeout: float = 3.0) -> bool:
+        self._thread.join(timeout=timeout)
+        return not self._thread.is_alive()
+
+    def text(self) -> str:
+        with self._lock:
+            return bytes(self._tail).decode("utf-8", errors="replace")
+
+    @property
+    def retained_bytes(self) -> int:
+        with self._lock:
+            return len(self._tail)
+
+    @property
+    def observed_bytes(self) -> int:
+        with self._lock:
+            return self.total_bytes
+
+
+def _stream_extractor_command(destination: Path) -> list[str]:
+    return [
+        sys.executable,
+        str(Path(__file__).resolve()),
+        "--extract-stream",
+        "--destination",
+        str(destination),
+    ]
+
+
+def _stream_extractor_main(destination: Path) -> int:
+    try:
+        tracked_file_count = _extract_archive_safely(sys.stdin.buffer, destination)
+        payload: dict[str, Any] = {
+            "status": "PASS",
+            "tracked_file_count": tracked_file_count,
+        }
+        returncode = 0
+    except RecoveryAuditError as exc:
+        payload = {
+            "status": "FAIL",
+            "failure": {"code": exc.code, "message": exc.message},
+        }
+        returncode = 2
+    except OSError as exc:
+        payload = {
+            "status": "FAIL",
+            "failure": {
+                "code": "RECOVERY_IO_FAILED",
+                "message": "Streaming archive extraction failed during isolated filesystem processing.",
+                "errno": exc.errno,
+            },
+        }
+        returncode = 2
+    except tarfile.TarError:
+        payload = {
+            "status": "FAIL",
+            "failure": {
+                "code": "GIT_ARCHIVE_INVALID",
+                "message": "git archive did not produce a valid tar stream.",
+            },
+        }
+        returncode = 2
+    except Exception:
+        payload = {
+            "status": "FAIL",
+            "failure": {
+                "code": "GIT_ARCHIVE_EXTRACTOR_FAILED",
+                "message": "Streaming archive extractor stopped on an unexpected internal error.",
+            },
+        }
+        returncode = 2
+    print(json.dumps(payload, ensure_ascii=False, sort_keys=True), flush=True)
+    return returncode
+
+
+def _extractor_payload(text: str) -> dict[str, Any] | None:
+    try:
+        payload = json.loads(text.strip())
+    except (json.JSONDecodeError, TypeError):
+        return None
+    return payload if isinstance(payload, dict) else None
+
+
 def _stream_git_archive_safely(
     repo_root: Path,
     commit: str,
@@ -367,139 +488,211 @@ def _stream_git_archive_safely(
     env: dict[str, str],
     display_argv: list[str],
 ) -> int:
-    argv = ["git", "archive", "--format=tar", commit]
+    git_argv = ["git", "archive", "--format=tar", commit]
+    extractor_argv = _stream_extractor_command(destination)
     deadline = time.monotonic() + COMMAND_TIMEOUT_SECONDS
-    extraction_error: Exception | None = None
-    terminated_for_extraction_error = False
-    with tempfile.TemporaryFile() as stderr_file:
-        try:
-            process = subprocess.Popen(
-                argv,
-                cwd=str(repo_root),
-                env=env,
-                stdin=subprocess.DEVNULL,
-                stdout=subprocess.PIPE,
-                stderr=stderr_file,
-                shell=False,
-                start_new_session=os.name == "posix",
-            )
-        except OSError as exc:
-            raise RecoveryAuditError(
-                "GIT_ARCHIVE_FAILED",
-                "git archive could not be started for the exact candidate commit.",
-                command=display_argv,
-                stderr_tail=_bounded_tail(exc, (repo_root, destination)),
-            ) from exc
+    git_process: subprocess.Popen[bytes] | None = None
+    extractor_process: subprocess.Popen[bytes] | None = None
+    captures: list[_BoundedPipeCapture] = []
+    diagnostic_captures: list[_BoundedPipeCapture] = []
+    failure_reason = ""
+    git_failed_first = False
+    extractor_failed_first = False
+    try:
+        git_process = subprocess.Popen(
+            git_argv,
+            cwd=str(repo_root),
+            env=env,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=False,
+            start_new_session=os.name == "posix",
+        )
+        if git_process.stdout is None or git_process.stderr is None:
+            raise OSError("git archive pipes were unavailable")
+        git_stderr = _BoundedPipeCapture(git_process.stderr, MAX_COMMAND_OUTPUT_BYTES)
+        captures.append(git_stderr)
+        diagnostic_captures.append(git_stderr)
+        git_stderr.start()
 
-        if process.stdout is None:
-            _terminate_process(process)
-            raise RecoveryAuditError("GIT_ARCHIVE_FAILED", "git archive stdout pipe was unavailable.")
+        extractor_process = subprocess.Popen(
+            extractor_argv,
+            cwd=str(repo_root),
+            env=env,
+            stdin=git_process.stdout,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=False,
+            start_new_session=os.name == "posix",
+        )
+        git_process.stdout.close()
+        if extractor_process.stdout is None or extractor_process.stderr is None:
+            raise OSError("streaming extractor pipes were unavailable")
+        extractor_stdout = _BoundedPipeCapture(
+            extractor_process.stdout,
+            64 * 1024,
+            retain_bytes=64 * 1024,
+        )
+        extractor_stderr = _BoundedPipeCapture(extractor_process.stderr, MAX_COMMAND_OUTPUT_BYTES)
+        captures.extend([extractor_stdout, extractor_stderr])
+        diagnostic_captures.append(extractor_stderr)
+        extractor_stdout.start()
+        extractor_stderr.start()
 
-        watchdog_stop = threading.Event()
-        watchdog_failure: list[str] = []
-        terminate_lock = threading.Lock()
-
-        def terminate_once() -> None:
-            with terminate_lock:
+        while True:
+            if (
+                any(capture.overflow.is_set() for capture in captures)
+                or sum(capture.observed_bytes for capture in diagnostic_captures)
+                > MAX_COMMAND_OUTPUT_BYTES
+            ):
+                failure_reason = "OUTPUT_LIMIT"
+                break
+            git_returncode = git_process.poll()
+            extractor_returncode = extractor_process.poll()
+            if (
+                extractor_returncode is not None
+                and extractor_returncode != 0
+                and (git_returncode is None or git_returncode == 0)
+            ):
+                if git_returncode is None:
+                    extractor_failed_first = True
+                    _terminate_process(git_process)
+                elif git_returncode == 0:
+                    extractor_failed_first = True
+                break
+            if git_returncode is not None and git_returncode != 0:
+                git_failed_first = True
+                if extractor_returncode is None:
+                    _terminate_process(extractor_process)
+                break
+            if git_returncode is not None and extractor_returncode is not None:
+                break
+            if time.monotonic() >= deadline:
+                failure_reason = "TIMEOUT"
+                break
+            time.sleep(0.01)
+    except OSError as exc:
+        raise RecoveryAuditError(
+            "GIT_ARCHIVE_FAILED",
+            "git archive or its streaming extractor could not be started.",
+            command=display_argv,
+            stderr_tail=_bounded_tail(exc, (repo_root, destination)),
+        ) from exc
+    finally:
+        for process in (extractor_process, git_process):
+            if process is not None and process.poll() is None:
                 _terminate_process(process)
-
-        def watch_process() -> None:
-            while not watchdog_stop.wait(0.01):
-                if process.poll() is not None:
-                    return
-                if os.fstat(stderr_file.fileno()).st_size > MAX_COMMAND_OUTPUT_BYTES:
-                    watchdog_failure.append("OUTPUT_LIMIT")
-                    terminate_once()
-                    return
-                if time.monotonic() >= deadline:
-                    watchdog_failure.append("TIMEOUT")
-                    terminate_once()
-                    return
-
-        watchdog = threading.Thread(
-            target=watch_process,
-            name="memory-atlas-git-archive-watchdog",
-            daemon=True,
-        )
-        watchdog.start()
-        tracked_file_count = 0
-        try:
-            tracked_file_count = _extract_archive_safely(
-                process.stdout,
-                destination,
-                deadline=deadline,
-            )
-        except (OSError, RecoveryAuditError, tarfile.TarError) as exc:
-            extraction_error = exc
-            if process.poll() is None and not watchdog_failure:
-                terminated_for_extraction_error = True
-                terminate_once()
-        finally:
-            process.stdout.close()
-
-        if process.poll() is None:
-            remaining = max(0.0, deadline - time.monotonic())
+        for capture in captures:
+            if not capture.join():
+                try:
+                    capture.stream.close()
+                except OSError:
+                    pass
+                capture.join()
             try:
-                process.wait(timeout=remaining)
-            except subprocess.TimeoutExpired:
-                if not watchdog_failure:
-                    watchdog_failure.append("TIMEOUT")
-                terminate_once()
-        watchdog_stop.set()
-        watchdog.join(timeout=3)
-        if watchdog.is_alive():
-            terminate_once()
-            raise RecoveryAuditError(
-                "GIT_ARCHIVE_WATCHDOG_FAILED",
-                "git archive watchdog did not stop after the child process ended.",
-                command=display_argv,
-            )
+                capture.stream.close()
+            except OSError:
+                pass
 
-        stderr_size = os.fstat(stderr_file.fileno()).st_size
-        stderr_file.seek(max(0, stderr_size - OUTPUT_TAIL_BYTES))
-        stderr_tail = _bounded_tail(
-            stderr_file.read(OUTPUT_TAIL_BYTES).decode("utf-8", errors="replace"),
-            (repo_root, destination),
+    if git_process is None or extractor_process is None:
+        raise RecoveryAuditError("GIT_ARCHIVE_FAILED", "Streaming archive processes were not created.")
+    if (
+        any(capture.overflow.is_set() for capture in captures)
+        or sum(capture.observed_bytes for capture in diagnostic_captures)
+        > MAX_COMMAND_OUTPUT_BYTES
+    ):
+        failure_reason = "OUTPUT_LIMIT"
+    git_stderr_text = captures[0].text() if len(captures) >= 1 else ""
+    extractor_stdout_text = captures[1].text() if len(captures) >= 2 else ""
+    extractor_stderr_text = captures[2].text() if len(captures) >= 3 else ""
+    stderr_tail = _bounded_tail(
+        "\n".join(text for text in [git_stderr_text, extractor_stderr_text] if text),
+        (repo_root, destination),
+    )
+    retained_stderr_bytes = sum(
+        capture.retained_bytes for capture in captures[::2]
+    )
+    if failure_reason == "TIMEOUT":
+        raise RecoveryAuditError(
+            "GIT_ARCHIVE_TIMEOUT",
+            "Streaming git archive extraction timed out.",
+            command=display_argv,
+            stderr_tail=stderr_tail,
+            stderr_bytes_retained=retained_stderr_bytes,
         )
-        watchdog_reason = watchdog_failure[0] if watchdog_failure else ""
-        if watchdog_reason == "TIMEOUT":
+    if failure_reason == "OUTPUT_LIMIT":
+        raise RecoveryAuditError(
+            "GIT_ARCHIVE_OUTPUT_LIMIT",
+            "Streaming archive diagnostics exceeded the bounded output limit.",
+            command=display_argv,
+            stderr_tail=stderr_tail,
+            stderr_bytes_retained=retained_stderr_bytes,
+        )
+
+    payload = _extractor_payload(extractor_stdout_text)
+    if payload and payload.get("status") == "FAIL":
+        failure = payload.get("failure")
+        if isinstance(failure, dict):
+            code = str(failure.get("code") or "GIT_ARCHIVE_EXTRACTOR_FAILED")
+            message = str(failure.get("message") or "Streaming archive extractor failed.")
+            if (
+                code == "GIT_ARCHIVE_INVALID"
+                and git_process.returncode != 0
+                and not extractor_failed_first
+            ):
+                code = "GIT_ARCHIVE_FAILED"
+                message = "git archive failed for the exact candidate commit."
             raise RecoveryAuditError(
-                "GIT_ARCHIVE_TIMEOUT",
-                "Streaming git archive extraction timed out.",
+                code,
+                message,
                 command=display_argv,
                 stderr_tail=stderr_tail,
             )
-        if watchdog_reason == "OUTPUT_LIMIT" or stderr_size > MAX_COMMAND_OUTPUT_BYTES:
-            raise RecoveryAuditError(
-                "GIT_ARCHIVE_OUTPUT_LIMIT",
-                "git archive stderr exceeded the bounded output limit.",
-                command=display_argv,
-                stderr_tail=stderr_tail,
-            )
-        if extraction_error is not None and terminated_for_extraction_error:
-            if isinstance(extraction_error, RecoveryAuditError):
-                raise extraction_error
-            if isinstance(extraction_error, OSError):
-                raise extraction_error
-            raise RecoveryAuditError(
-                "GIT_ARCHIVE_INVALID",
-                "git archive could not be extracted safely.",
-            ) from extraction_error
-        if process.returncode != 0:
-            raise RecoveryAuditError(
-                "GIT_ARCHIVE_FAILED",
-                "git archive failed for the exact candidate commit.",
-                command=display_argv,
-                stderr_tail=stderr_tail,
-            )
-        if extraction_error is not None:
-            if isinstance(extraction_error, RecoveryAuditError):
-                raise extraction_error
-            raise RecoveryAuditError(
-                "GIT_ARCHIVE_INVALID",
-                "git archive could not be extracted safely.",
-            ) from extraction_error
-        return tracked_file_count
+    if git_failed_first:
+        raise RecoveryAuditError(
+            "GIT_ARCHIVE_FAILED",
+            "git archive failed for the exact candidate commit.",
+            command=display_argv,
+            stderr_tail=stderr_tail,
+        )
+    if extractor_failed_first:
+        raise RecoveryAuditError(
+            "GIT_ARCHIVE_EXTRACTOR_FAILED",
+            "Streaming archive extractor exited without a valid failure payload.",
+            command=display_argv,
+            stderr_tail=stderr_tail,
+        )
+    if extractor_process.returncode != 0:
+        raise RecoveryAuditError(
+            "GIT_ARCHIVE_EXTRACTOR_FAILED",
+            "Streaming archive extractor exited without a valid failure payload.",
+            command=display_argv,
+            stderr_tail=stderr_tail,
+        )
+    if git_process.returncode != 0:
+        raise RecoveryAuditError(
+            "GIT_ARCHIVE_FAILED",
+            "git archive failed for the exact candidate commit.",
+            command=display_argv,
+            stderr_tail=stderr_tail,
+        )
+    if not payload or payload.get("status") != "PASS":
+        raise RecoveryAuditError(
+            "GIT_ARCHIVE_INVALID",
+            "Streaming archive extractor did not report an exact PASS payload.",
+        )
+    tracked_file_count = payload.get("tracked_file_count")
+    if (
+        isinstance(tracked_file_count, bool)
+        or not isinstance(tracked_file_count, int)
+        or tracked_file_count <= 0
+    ):
+        raise RecoveryAuditError(
+            "GIT_ARCHIVE_INVALID",
+            "Streaming archive extractor did not report a positive tracked file count.",
+        )
+    return tracked_file_count
 
 
 def _find_database_dir(recovered_root: Path) -> tuple[Path, str]:
@@ -1217,8 +1410,18 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def build_stream_extractor_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument("--destination", required=True)
+    return parser
+
+
 def main(argv: list[str] | None = None) -> int:
-    args = build_parser().parse_args(argv)
+    arguments = list(sys.argv[1:] if argv is None else argv)
+    if arguments and arguments[0] == "--extract-stream":
+        extractor_args = build_stream_extractor_parser().parse_args(arguments[1:])
+        return _stream_extractor_main(Path(extractor_args.destination))
+    args = build_parser().parse_args(arguments)
     result = rehearse_recovery(Path(args.repo_root), args.commit, Path(args.output_dir))
     if args.status_output:
         _write_json_atomic(Path(args.status_output), result)
