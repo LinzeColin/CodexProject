@@ -1,6 +1,47 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "KMFA-V014-S15-P3-POST-REMEDIATION-SALARY-BOUNDARY-20260711"
+    phase: "V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY"
+    objective: "Reserve a schema-only six-field performance fact interface and future salary read draft with mandatory human approval and payment boundaries and zero salary records."
+    scope:
+      - "current S15-P2 six-column zero-row fact table dependency"
+      - "public-safe schema-only interface and future salary read draft"
+      - "four mandatory human approval and release checkpoints"
+      - "read-only raw snapshots and desktop mobile browser evidence"
+    non_scope:
+      - "Stage 15 review S16 or any later phase"
+      - "salary calculation bonus approval payroll export final compensation decision or payment"
+      - "GitHub upload app reinstall raw private Excel PDF CSV database or secret material"
+    status: "completed"
+    completed_version: "0.1.4-s15-p3-post-remediation-salary-boundary"
+    dependencies:
+      - "V014_S15_P2_POST_REMEDIATION_PERFORMANCE_REVIEW_LIST current validated dependency"
+      - "V014_S15_P3_SALARY_BOUNDARY historical fixture only"
+      - "v1.4 roadmap taskpack and full-flow baseline"
+    required_files:
+      - "KMFA/stage_artifacts/V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY/machine/salary_boundary_manifest.json"
+      - "KMFA/stage_artifacts/V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY/exports/html/salary_boundary_workbench.html"
+      - "KMFA/tools/check_v014_s15_p3_post_remediation_salary_boundary.py"
+    acceptance_ids:
+      - "ACC-V014-S15-P3-POST-REMEDIATION-SALARY-BOUNDARY"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s15_p3_post_remediation_salary_boundary.py --require-private-evidence --require-browser-evidence --require-final-evidence"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s15_p3_post_remediation_salary_boundary"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_no_float_money.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/no_omission_check.py"
+    test_results:
+      - "PASS: one six-field schema-only interface with zero source and payload records"
+      - "PASS: one six-mapping future salary read draft with zero readiness records and salary values"
+      - "PASS: four mandatory human checkpoints with zero approvals releases or payment execution"
+      - "PASS: raw snapshots exact and private diagnostics and screenshots remain ignored"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY/human/salary_boundary_report_zh.md"
+      - "KMFA/stage_artifacts/V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY/machine/salary_boundary_manifest.json"
+    risk: "A schema-only draft can be mistaken for a live payroll integration or an approved salary decision."
+    rollback: "Revert only this S15-P3 local commit and ignored private evidence; never mutate the raw inbox."
+    target_version: "0.1.4-s15-p3-post-remediation-salary-boundary"
+
   - task_id: "KMFA-V014-S15-P2-POST-REMEDIATION-PERFORMANCE-REVIEW-LIST-20260711"
     phase: "V014_S15_P2_POST_REMEDIATION_PERFORMANCE_REVIEW_LIST"
     objective: "Output a current six-column zero-row performance fact table structure one abnormal-project method and six field-level review items without inventing projects values scores salary or bonus decisions."

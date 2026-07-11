@@ -1,0 +1,109 @@
+{
+  "acceptance_id": "ACC-V014-S15-P3-POST-REMEDIATION-SALARY-BOUNDARY",
+  "check_count": 20,
+  "check_fail_count": 0,
+  "check_pass_count": 20,
+  "checks": [
+    {
+      "check_id": "V014-S15P3-POST-ACC-001",
+      "name": "s15_p2_current_dependency",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15P3-POST-ACC-002",
+      "name": "taskpack_contract",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15P3-POST-ACC-003",
+      "name": "legacy_fixture",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15P3-POST-ACC-004",
+      "name": "legacy_rows_quarantined",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15P3-POST-ACC-005",
+      "name": "interface_contract",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15P3-POST-ACC-006",
+      "name": "six_interface_fields",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15P3-POST-ACC-007",
+      "name": "zero_source_rows",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15P3-POST-ACC-008",
+      "name": "zero_payload_records",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15P3-POST-ACC-009",
+      "name": "read_draft",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15P3-POST-ACC-010",
+      "name": "six_mappings",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15P3-POST-ACC-011",
+      "name": "zero_readiness_records",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15P3-POST-ACC-012",
+      "name": "four_human_boundaries",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15P3-POST-ACC-013",
+      "name": "zero_approvals",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15P3-POST-ACC-014",
+      "name": "zero_salary_values",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15P3-POST-ACC-015",
+      "name": "raw_exact",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15P3-POST-ACC-016",
+      "name": "raw_cross_phase",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15P3-POST-ACC-017",
+      "name": "browser",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15P3-POST-ACC-018",
+      "name": "quality_block",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15P3-POST-ACC-019",
+      "name": "downstream_closed",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15P3-POST-ACC-020",
+      "name": "upload_deferred",
+      "status": "PASS"
+    }
+  ],
+  "schema_version": "kmfa.v014.s15_p3.post_remediation.acceptance_matrix.v1"
+}
