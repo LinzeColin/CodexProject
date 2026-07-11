@@ -4,25 +4,27 @@
 
 ## 一句话状态
 
-KMFA 已完成 `V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY`：四角色 deny-by-default 权限、15 类敏感数据公开仓库禁止策略和五类审计事件契约已通过本地验证；未创建 live 身份、凭据、持久事件或通知，状态保持 `Q4 / D / NO_GO`。
+KMFA 已完成 `V014_S17_P2_POST_REMEDIATION_NOTIFICATION`：三类当前触发生成 3 条中文短提醒、3 个已存在应用内链接和 3 条 metadata outbox；真实投递、完整正文、附件、地址和连接器均为 0，状态保持 `Q4 / D / NO_GO`。
 
 ## 当前可信任范围
 
-- 可以信任：S17-P1 public-safe 四角色最小权限、deny-by-default 授权决策、15 类敏感数据禁止公开规则、五类审计 schema 和只读 raw 对齐证据。
+- 可以信任：S17-P2 三类触发评估、中文短提醒、现有应用内链接、七字段通知审计记录和 fail-closed metadata outbox。
 - 必须保留：9 条非零差异，不得通过覆盖、四舍五入、空白兼容层或替换权威值消除。
 - 不能信任：3 条缺可证明数值的现金槽位、1 条未完成现金比较、任何完整业务一致性或正式经营决策结论。
-- 不能误读：当前静态策略不是 live 身份、用户、凭据、session、持久审计或通知系统。
-- 下一步只做 S17-P2；不得顺手推进 S17-P3、Stage 17 review、GitHub upload、app reinstall 或 business execution。
+- 不能误读：metadata outbox 不是已发送邮件，D级受限预览不是正式报告，角色引用不是收件地址。
+- 下一步只做 S17-P3；不得顺手推进 Stage 17 review、GitHub upload、app reinstall 或 business execution。
 
 ## 前序一句话状态（上一 phase）
 
-KMFA 已完成 `V014_S16_POST_REMEDIATION_STAGE_REVIEW`：当前 S16-P1/P2/P3 复跑、9 项 finding 修复、三页强连通与 raw 对齐均通过，当前业务事实物化保持 0。
+KMFA 已完成 `V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY`：四角色最小权限、15 类敏感数据公开禁止策略和五类审计事件契约均通过，未创建 live 身份、凭据或持久业务事件。
 
 ## 前序一句话状态（历史）
 
 KMFA 当前版本 `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-actionability-recheck` 已完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_ACTIONABILITY_RECHECK` 本地单 phase：Codex 未读取 raw inbox，只复核上一 phase 48 条有效 generated diagnostic responses 的 actionability。公开证据只显示 aggregate counts：source valid diagnostic responses=48、source non-actionable diagnostic responses=48、actionability recheck items=48、actionability ready=0、actionability blockers=48、40/8 诊断分流、unresolved differences=72。系统仍是 `NO_GO`，因为这些诊断响应不能直接用于 authoritative binding 或 raw-to-processed value comparison。next_required_input=`actionable_source_reference_owner_exclusion_formula_mapping_or_non_numeric_mapping_required_before_binding_or_value_comparison`。
 
 ## 你现在能信任什么
+
+- v0.1.4 S17-P2 post-remediation notification 已通过本地验证：3 rules / 3 evaluations / 3 eligible / 0 mismatch，当前触发来源为 2 份 D级受限预览、12 个 hard block 和 4 个数据源未决指标。3 条全中文短提醒均不超过 120 字，绑定 3 个已存在应用内链接；3 条 metadata outbox 各含 7 个 S17-P1 审计字段，并采用 append-only、dedupe、idempotency。真实投递、完整正文、附件、地址明文和连接器=`0/0/0/0/0`；raw 前后、跨 S17-P1 和当前快照一致；下一步只能 S17-P3。
 
 - v0.1.4 S17-P1 post-remediation access security 已通过本地验证：4 角色、14 项显式授权、9 项关键拒绝动作、16 项授权探针=`8 ALLOW / 8 DENY / 0 mismatch`；15 类敏感材料全部 public/git/plaintext=false；5 类审计契约各有 7 个必填字段，5 个 schema 探针 PASS。tracked 禁止后缀/private runtime=`0/0`；真实用户、凭据、身份提供方、持久授权/审计事件、通知和完整报告正文均为 0。raw 前后、跨 Stage 16 review 和当前快照一致；下一步只能 S17-P2，upload/reinstall/formal report/business execution 均未执行。
 

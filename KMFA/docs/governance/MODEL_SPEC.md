@@ -2667,3 +2667,19 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - downstream gate: S17-P2/P3、Stage 17 review、live identity、users/credentials、persistent auth/audit、notification、external connector、upload、reinstall、formal report、difference closure、persistent write 与 business execution=false。
 - validator: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s17_p1_post_remediation_access_security.py --require-private-evidence --require-final-evidence
 - evidence: KMFA/stage_artifacts/V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY/machine/access_security_manifest.json
+## FORM-KMFA-V014-S17-P2-POST-REMEDIATION-NOTIFICATION-001
+
+- phase: V014_S17_P2_POST_REMEDIATION_NOTIFICATION
+- version: 0.1.4-s17-p2-post-remediation-notification
+- model_id: MOD-KMFA-GOV-001
+- scope: 对报告生成完成、重大风险、数据源缺失三类当前状态做确定性评估，生成短中文提醒、现有应用内链接和 metadata-only outbox。
+- rule: s17_p2_valid = notification_rule_count == 3 AND trigger_evaluation_mismatch_count == 0 AND metadata_outbox_log_count == 3 AND in_app_link_count == 3 AND real_notification_delivery_count == 0 AND full_report_body_count == 0 AND external_connector_count == 0 AND raw_exact == true AND current_grade == D AND decision == NO_GO。
+- trigger gate: 2 份受限预览、12 个 hard block、4 个数据源未决指标分别驱动三条 eligible reminder，mismatch=0。
+- content gate: 全中文短提醒最多 120 字；链接只能指向已存在的仓库内应用页面；收件人只保存角色引用。
+- audit gate: 每条 outbox 满足 S17-P1 通知契约的 7 个字段，并锁定 append-only、dedupe 和 idempotency。
+- fail-closed gate: 完整正文、附件、收件地址明文、外部连接器、真实投递或缺失链接均拒绝。
+- history gate: 旧 S17-P2 的规则、事件和 dispatch log 只作结构夹具，不提供当前触发事实。
+- raw gate: phase 前后、跨 S17-P1 和当前只读快照一致；raw/private 明文不得进入 Git。
+- downstream gate: S17-P3、Stage 17 review、upload、reinstall、formal report、difference closure、persistent business write 与 business execution=false。
+- validator: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s17_p2_post_remediation_notification.py --require-private-evidence --require-final-evidence
+- evidence: KMFA/stage_artifacts/V014_S17_P2_POST_REMEDIATION_NOTIFICATION/machine/notification_manifest.json

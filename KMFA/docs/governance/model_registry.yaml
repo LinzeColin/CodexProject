@@ -4037,3 +4037,18 @@ kmfa_v014_s17_p1_post_remediation_access_security:
   evidence_dir: KMFA/stage_artifacts/V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY
   validator: KMFA/tools/check_v014_s17_p1_post_remediation_access_security.py
   scope: Four-role deny-by-default public-safe access policy fifteen sensitive-category public-repository denials five schema-only audit contracts sixteen authorization probes raw immutability and Q4 D NO_GO 3-9-2-1; live identity credentials persistent events notifications S17-P2 P3 review upload reinstall formal release difference closure persistent write and business execution remain closed.
+kmfa_v014_s17_p2_post_remediation_notification:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s17-p2-post-remediation-notification"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S17-P2-POST-REMEDIATION-NOTIFICATION-001
+  parameter_refs:
+    - PARAM-KMFA-1796
+    - PARAM-KMFA-1797
+    - PARAM-KMFA-1798
+    - PARAM-KMFA-1799
+  evidence_dir: KMFA/stage_artifacts/V014_S17_P2_POST_REMEDIATION_NOTIFICATION
+  validator: KMFA/tools/check_v014_s17_p2_post_remediation_notification.py
+  scope: Three current notification triggers short Chinese reminder and existing in-app link metadata outbox rows seven audit fields fail-closed tamper checks raw immutability and Q4 D NO_GO 3-9-2-1; real delivery full body attachment address connector S17-P3 review upload reinstall formal release difference closure persistent write and business execution remain closed.

@@ -3272,3 +3272,17 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - raw gate: phase 前后、跨 Stage 16 review 与当前快照一致；raw/private 明文未进入 Git。
 - downstream gate: S17-P2/P3、Stage 17 review、live identity、credentials、persistent auth/audit、notification、external connector、upload、reinstall、formal report、difference closure、persistent write 和 business execution=false。
 - evidence: KMFA/stage_artifacts/V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY/machine/access_security_manifest.json
+## 2026-07-12 - V014 S17-P2 post-remediation notification
+
+- phase: V014_S17_P2_POST_REMEDIATION_NOTIFICATION
+- task: KMFA-V014-S17-P2-POST-REMEDIATION-NOTIFICATION-20260712
+- product_version: 0.1.4-s17-p2-post-remediation-notification
+- status: completed_validated_local_only_s17_p2_metadata_reminders_no_delivery_no_go_upload_deferred
+- scope: 绑定三类当前触发证据，生成全中文短提醒、现有应用内链接和 public-safe metadata outbox，不做真实投递。
+- trigger gate: 3 rules / 3 evaluations / 3 eligible / 0 mismatch；source counts=2 / 12 / 4。
+- content gate: 3 short Chinese reminders / 3 existing links / max 120 chars / 7 audit fields。
+- fail-closed gate: real delivery / full body / attachment / address / connector=`0/0/0/0/0`。
+- history gate: legacy 3 rules / 3 events / 3 dispatch logs quarantined and non-authoritative。
+- raw gate: phase 前后、跨 S17-P1 与当前只读快照一致；raw/private 明文未进入 Git。
+- downstream gate: S17-P3、Stage 17 review、real delivery、full body、attachment、connector、upload、reinstall、formal report、difference closure、persistent business write 和 business execution=false。
+- evidence: KMFA/stage_artifacts/V014_S17_P2_POST_REMEDIATION_NOTIFICATION/machine/notification_manifest.json
