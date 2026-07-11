@@ -1,12 +1,17 @@
 schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
-current_stage_id: "IDS-STAGE037"
-current_phase_id: "IDS-STAGE037-REVIEW"
-current_task_id: "IDS-V0_1-STAGE037-REVIEW"
-next_gate_id: "IDS-STAGE038-P1-GATE"
+current_stage_id: "IDS-STAGE038"
+current_phase_id: "IDS-STAGE038-P1"
+current_task_id: "IDS-V0_1-STAGE038-P1"
+next_gate_id: "IDS-STAGE038-P1-SOURCE-REVERIFY-GATE"
 current_transition_history:
   previous_state:
+    current_stage_id: "IDS-STAGE037"
+    current_phase_id: "IDS-STAGE037-REVIEW"
+    current_task_id: "IDS-V0_1-STAGE037-REVIEW"
+    next_gate_id: "IDS-STAGE038-P1-GATE"
+  stage037_closeout_state:
     current_stage_id: "IDS-STAGE037"
     current_phase_id: "IDS-STAGE037-P4"
     current_task_id: "IDS-V0_1-STAGE037-P4"
@@ -9187,3 +9192,110 @@ stages:
         - "KM_IDSystem/docs/governance/events.jsonl"
       test_results: "TDD RED reproduced the paused-retry eligibility bypass, absent structured review binding, absent Git-index binding, and stale F1..F8 event count before repair. GREEN: Stage037 39 tests OK; Stage005 139 tests OK; Stage031-037 aggregate 169 tests OK; Stage026-030 compatibility 75 tests OK; full IDS v0.1 discovery 568 tests OK. Checker returned 17/17 delivery, 14/14 Phase4, 22/22 Phase2, 10/10 scenario, and 8/8 review-governance checks true; delivery/review sources matched the Git index. Stage005 validator valid=true with no event semantic, missing-file, forbidden/unexpected-path, tracked-runtime, or raw-boundary issue; 176 events parsed with zero duplicate ids; 10 changed Python files compiled in memory; owner render drift/reference counts zero; git diff check passed; changed-only governance errors=0 and warnings=0; full semantic validation returned only the expected 29 sparse-worktree missing root/unrelated-project paths. Independent review progressed from 1 Critical/2 Important/0 Minor to 0 Critical/0 Important/1 Minor, then final narrow re-review returned 0 Critical/0 Important/0 Minor and Ready for local commit=Yes."
       decision: "ACC-STAGE-037 completed_reviewed_local after eleven documented review repairs; push_allowed=false, no app reinstall, and no STAGE-038 work in this run."
+  -
+    stage_id: "IDS-STAGE038"
+    name: "STAGE-038 · Worker 队列基线"
+    person_goal: "在不运行队列或 worker 的前提下，定义与 STAGE-037 状态模型兼容的 Worker 队列基线；外部 taskpack 必须在 Phase 2 前重新验证。"
+    status: "in_progress"
+    stop_conditions:
+      - "一次 run 试图完成多个 phase"
+      - "外部 Stage038 taskpack 未重新验证即进入 Phase 2"
+      - "创建或运行 queue、worker、claim persistence、retry/dead-letter、backpressure、lock/lease/fencing、automatic lifecycle、crash recovery 或 cleanup"
+      - "连接 PostgreSQL、修改 schema/registry、写真实 job/queue row 或 runtime output"
+      - "读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
+      - "使用虚构 IDS 业务数据、虚构数据库行、placeholder corpus、fabricated jobs/logs/evidence"
+      - "进入 STAGE-039、GitHub upload、PR、merge、issue mutation、app reinstall、stage review、batch review 或 upload gate"
+    stop_gate:
+      gate_id: "IDS-STAGE038-P1-GATE"
+      status: "passed_with_source_reverification_required"
+      pass_conditions:
+        - "Tracked STAGE-038 identity, ACC-STAGE-038, domain, entrance, and taskpack reference are recorded without a fabricated SHA-256"
+        - "Only inherited STAGE-037, STAGE-022, and STAGE-030 constraints are fixed; exact queue and claim contracts remain unassigned"
+        - "STAGE-039..044 ownership remains explicit and no numeric policy or runtime implementation is invented"
+        - "Phase 2 has phase2_entry_authorized=false until source_reverification_required_before_phase2 is satisfied"
+        - "Raw metadata remains path-only, fake IDS data remains forbidden, and push_allowed=false"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_ENTRY_CONTRACT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE1_WORKER_QUEUE_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_baseline.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+    source_reverification_gate:
+      gate_id: "IDS-STAGE038-P1-SOURCE-REVERIFY-GATE"
+      status: "blocked_external_taskpack_absent"
+      task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
+      phase2_entry_authorized: false
+      pass_conditions:
+        - "The exact approved STAGE-038 taskpack exists at the declared path"
+        - "A truthful SHA-256 is recorded from that exact file"
+        - "P1 is reconciled against the source and every conflict is repaired"
+        - "An independent gate confirms Phase 2 may start without runtime or data access"
+    phases:
+      -
+        phase_id: "IDS-STAGE038-P1"
+        name: "Worker 队列基线 范围、输入输出与边界确认"
+        objective: "基于 tracked index 和已复审上游合同，仅记录 inherited constraints、待 source 验证的 queue/claim decision dimensions 与 downstream ownership；不发明 ordering、idempotency、dependency、schema、claim sequence 或 taskpack hash。"
+        status: "passed_with_local_evidence"
+        stop_conditions:
+          - "实现 Phase 2 machine contract/checker 或 deterministic evaluator"
+          - "运行 queue/worker、持久化 claim、连接数据库、写 schema/runtime output 或访问 raw metadata"
+          - "使用 fake IDS business data 或将静态合同误报为 runtime evidence"
+          - "进入 STAGE-039、stage review、batch gate、GitHub upload 或 app reinstall"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE038-P1"
+            name: "Source-limited worker queue boundary"
+            objective: "记录 reviewed job envelope/state model、owner-governed priority vocabulary、bounded-ref safety floor、unassigned queue/claim decisions 和 Stage041 ownership，保持 Phase 2 与所有 runtime actions disabled。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "14.29%"
+            dependencies:
+              - "IDS-V0_1-STAGE037-REVIEW"
+              - "IDS-V0_1-STAGE022-P2"
+              - "IDS-V0_1-STAGE030-P2"
+            acceptance_ids:
+              - "ACC-STAGE-038"
+            test_commands:
+              - "RED/GREEN: python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage038_worker_queue_baseline -q"
+              - "RED/GREEN: python3 -B -m unittest KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression.Stage005GovernanceRegressionTests.test_phase_state_allows_stage038_phase1_worker_queue_boundary -q"
+              - "python3 -B KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "python3 -B scripts/lean_governance.py check-render --project KM_IDSystem"
+              - "events.jsonl parse and duplicate-id check"
+              - "git diff --check"
+              - "python3 -B scripts/validate_governance_sync.py --changed-only --base-ref HEAD --semantic --drift-report"
+            test_results: "GREEN: Stage038 8 tests OK, Stage005 140 tests OK, Stage031-038 aggregate 177 tests OK, Stage026-030 75 tests OK, full IDS v0.1 discovery 577 tests OK, Stage005 validator valid=true"
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE1_WORKER_QUEUE_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_baseline.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+            risk: "The absent exact taskpack means P1 cannot approve an exact queue contract. Any invented ordering, idempotency, dependency, queue-entry, claim, or runtime rule, or any Phase 2 work before reverification, could encode a false acceptance contract and block future evolution."
+            rollback: "Revert Stage038 P1 entry/scope documents, focused test, Stage005 validator/test support, batch/roadmap/event changes, handoff/changelog, and rendered owner views only; preserve prior stages, raw metadata, databases, source/runtime data, reports, app entries, and GitHub state."
+      -
+        phase_id: "IDS-STAGE038-P2"
+        name: "Worker 队列基线 确定性静态切片"
+        objective: "After source_reverification_required_before_phase2 is satisfied, implement a machine-readable worker-queue contract/checker and metadata-only deterministic queue candidate evaluation with no queue/worker runtime."
+        status: "planned"
+        entry_authorized: false
+        entry_blocker: "source_reverification_required_before_phase2"
+        stop_conditions:
+          - "Exact approved Stage038 taskpack source and truthful SHA-256 have not been reverified and reconciled against Phase 1"
+          - "Implementation would enqueue, claim, run a worker, persist lease/lock/fencing, access raw source content, connect to a database, or create real/fake IDS data"
+      -
+        phase_id: "IDS-STAGE038-P3"
+        name: "Worker 队列基线 专项验证与异常场景"
+        objective: "Validate only the approved Phase 2 static contract against deterministic bounded-metadata scenarios in a separate run."
+        status: "planned"
+        stop_conditions:
+          - "Phase 2 has not passed its independent gate"
+          - "A scenario requires runtime queue/worker execution, raw source content, or fabricated IDS business data"
+      -
+        phase_id: "IDS-STAGE038-P4"
+        name: "Worker 队列基线 交付证据、回滚与中文反馈"
+        objective: "Close the stage phases with machine-checked delivery evidence while keeping whole-stage review as a later independent run."
+        status: "planned"
+        stop_conditions:
+          - "Phase 3 has not passed"
+          - "The run attempts whole-stage review, batch upload, GitHub upload, or app reinstall"

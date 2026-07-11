@@ -8223,6 +8223,117 @@ stages:
         )
         self.assertTrue(all(structured.values()), structured)
 
+    def test_phase_state_allows_stage038_phase1_worker_queue_boundary(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-031-040"
+status: "stage038_phase1_in_progress"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-038:
+    status: "stage038_phase1_in_progress"
+    completed_phases:
+      - "Phase 1"
+    next_phase: "Phase 1 source reverification"
+    next_gate: "IDS-STAGE038-P1-SOURCE-REVERIFY-GATE"
+    current_task_id: "IDS-V0_1-STAGE038-P1"
+    acceptance_id: "ACC-STAGE-038"
+    acceptance_status: "phase1_scope_boundary_defined_source_reverification_required"
+    source_verification_status: "EXTERNAL_TASKPACK_ABSENT"
+    source_reverification_gate_status: "blocked_external_taskpack_absent"
+    phase2_entry_authorized: false
+decision:
+  current_task_id: "IDS-V0_1-STAGE038-P1"
+  next_allowed_task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
+  github_upload_allowed: false
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE038"
+current_phase_id: "IDS-STAGE038-P1"
+current_task_id: "IDS-V0_1-STAGE038-P1"
+next_gate_id: "IDS-STAGE038-P1-SOURCE-REVERIFY-GATE"
+stages:
+  -
+    stage_id: "IDS-STAGE005"
+    phases:
+      -
+        phase_id: "IDS-STAGE005-P2"
+        status: "passed_with_local_evidence"
+  -
+    stage_id: "IDS-STAGE038"
+    source_reverification_gate:
+      gate_id: "IDS-STAGE038-P1-SOURCE-REVERIFY-GATE"
+      status: "blocked_external_taskpack_absent"
+      task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
+      phase2_entry_authorized: false
+    phases:
+      -
+        phase_id: "IDS-STAGE038-P1"
+        status: "passed_with_local_evidence"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE038-P1"
+            status: "completed"
+            test_results: "GREEN: Stage038 8 tests OK, Stage005 140 tests OK, Stage031-038 aggregate 177 tests OK, Stage026-030 75 tests OK, full IDS v0.1 discovery 577 tests OK, Stage005 validator valid=true"
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE1_WORKER_QUEUE_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_baseline.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+      -
+        phase_id: "IDS-STAGE038-P2"
+        status: "planned"
+        entry_authorized: false
+        entry_blocker: "source_reverification_required_before_phase2"
+"""
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+        self.assertTrue(all(checks.values()), checks)
+        structured = module.evaluate_current_state_consistency(
+            batch_text, roadmap_text
+        )
+        self.assertTrue(all(structured.values()), structured)
+        for tampered_batch in (
+            batch_text.replace(
+                'phase2_entry_authorized: false',
+                'phase2_entry_authorized: true',
+            ),
+            batch_text.replace(
+                'source_verification_status: "EXTERNAL_TASKPACK_ABSENT"',
+                'source_verification_status: "SOURCE_VERIFIED"',
+            ),
+            batch_text.replace(
+                'next_allowed_task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"',
+                'next_allowed_task_id: "IDS-V0_1-STAGE038-P2"',
+            ),
+        ):
+            with self.subTest(tampered_batch=tampered_batch):
+                checks = module.evaluate_phase_state(tampered_batch, roadmap_text)
+                self.assertFalse(all(checks.values()), checks)
+        self.assertTrue(
+            module._is_allowed_changed_path(
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
+                "STAGE038_PHASE1_WORKER_QUEUE_SCOPE_BOUNDARY.md"
+            )
+        )
+        for unauthorized_path in (
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE2_QUEUE.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE3_SCENARIOS.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/"
+            "test_stage038_phase2_queue.py",
+        ):
+            with self.subTest(unauthorized_path=unauthorized_path):
+                self.assertFalse(module._is_allowed_changed_path(unauthorized_path))
+
     def test_structured_state_rejects_stage035_node_contradictions(self):
         module = self._load_module()
         self.assertTrue(

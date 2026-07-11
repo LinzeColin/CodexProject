@@ -99,10 +99,11 @@ Commit/PR summaries must include:
 
 - Canonical worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS`
 - Project scope: `KM_IDSystem/` only.
-- Current local state: `STAGE-037 · 任务状态模型` is `completed_reviewed_local` after Phase 1 through Phase 4 and whole-stage remediation.
-- Current task: `IDS-V0_1-STAGE037-REVIEW`; acceptance: `ACC-STAGE-037`.
-- Review repairs: direct and paused retry admission require `next_eligible_at`, eligibility evidence, and the reached guard; cancellation requires `stop_reason`; `ids.job_control_envelope.v1` locks long-term fields; `PAUSE_REQUESTED` is “暂停中”; reviewed-local projection requires structured governance and Git-index-bound delivery/review sources; unknown Stage037 events fail closed.
-- Next allowed run: `IDS-V0_1-STAGE038-P1` from `IDS-STAGE038-P1-GATE`; this review did not enter STAGE-038.
+- Current local state: `STAGE-038 · Worker 队列基线` has only Phase 1 complete; STAGE-037 remains `completed_reviewed_local`.
+- Current task: `IDS-V0_1-STAGE038-P1`; acceptance: `ACC-STAGE-038`.
+- Phase 1 records only reviewed STAGE-037 envelope/state constraints, STAGE-022 priority vocabulary, STAGE-030 bounded-ref safety, downstream ownership, and the queue/claim dimensions still awaiting source approval. Exact ordering, idempotency, dependency, queue-entry, and claim contracts remain unassigned; no queue or worker runtime exists.
+- Exact source status: `P0 source verification: EXTERNAL_TASKPACK_ABSENT`; `P0 SHA-256: UNKNOWN_UNDER_IDS-V0_1-STAGE038-P1`; `source_reverification_required_before_phase2=true`.
+- `phase2_entry_authorized=false`. The next allowed run is only `IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY`; it must reattach and truthfully hash the exact approved Stage038 taskpack, reconcile P1, and pass an independent gate before P2 can be authorized.
 - `BATCH031_040` remains locked with `push_allowed=false`; do not upload, merge, reinstall app entries, or run batch gates before all ten stages are complete and reviewed.
 - Current review evidence: `docs/pursuing_goal/ids_v0_1/STAGE037_STAGE_REVIEW.md`; Phase 4 remains historical closeout evidence.
 - The real metadata root `/Users/linzezhang/Downloads/IDS_MetaData` is path-only governance context. Do not read, list, hash, open, copy, move, delete, modify, dump, scan, normalize, or commit its contents.
@@ -126,4 +127,4 @@ These are recoverable from source, scripts, and GitHub.
 - macOS may reject the ad-hoc `.app` bundle through Gatekeeper/LaunchServices. The `.command` launcher is the current reliable click path.
 - Real MQTT/OPC-UA/Modbus device ingestion is not implemented in this version.
 - Model providers are configurable, but no plaintext API keys should be committed.
-- STAGE-037 currently provides a static machine-checked job-state contract only; queue, worker, retry/dead-letter, backpressure, lock, automatic lifecycle, crash recovery, cleanup, PostgreSQL state writes, and real job execution remain downstream and disabled.
+- STAGE-038 Phase 1 is a source-limited static boundary only. Phase 2 artifacts, queue/worker runtime, claim persistence, retry/dead-letter, backpressure, lock/lease/fencing runtime, automatic lifecycle, crash recovery, cleanup, PostgreSQL actions, raw source reads, and real job execution remain disabled.
