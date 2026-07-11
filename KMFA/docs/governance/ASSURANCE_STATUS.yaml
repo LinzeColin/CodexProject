@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260712-V014-S16-POST-REMEDIATION-STAGE-REVIEW"
+as_of_event_id: "DEV-KMFA-20260712-V014-S17-P1-POST-REMEDIATION-ACCESS-SECURITY"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "92d2904a1d7e0be8e26330585382a816fc7a4876"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S16_POST_REMEDIATION_STAGE_REVIEW_COMMIT"
-snapshot_event_time: "2026-07-12T02:46:11+10:00"
-generator_version: "manual-0.1.4-s16-post-remediation-stage-review"
+source_base_commit: "8f449e97ebef40991b1907a98fcd7969c6c3f71b"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY_COMMIT"
+snapshot_event_time: "2026-07-12T03:34:03+10:00"
+generator_version: "manual-0.1.4-s17-p1-post-remediation-access-security"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1409
-    total_active_formulas: 306
+    total_active_parameters: 1413
+    total_active_formulas: 307
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -974,6 +974,53 @@ dimensions:
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
+kmfa_v014_s17_p1_post_remediation_access_security:
+  status: completed_validated_local_only_s17_p1_access_security_policy_no_go_upload_deferred
+  phase_id: V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY
+  task_id: KMFA-V014-S17-P1-POST-REMEDIATION-ACCESS-SECURITY-20260712
+  acceptance_id: ACC-V014-S17-P1-POST-REMEDIATION-ACCESS-SECURITY
+  formula_ref: FORM-KMFA-V014-S17-P1-POST-REMEDIATION-ACCESS-SECURITY-001
+  parameter_refs:
+    - PARAM-KMFA-1792
+    - PARAM-KMFA-1793
+    - PARAM-KMFA-1794
+    - PARAM-KMFA-1795
+  decision: NO_GO
+  evidence_ref: KMFA/stage_artifacts/V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY/machine/access_security_manifest.json
+  validator: KMFA/tools/check_v014_s17_p1_post_remediation_access_security.py
+  counts:
+    role_count: 4
+    allowed_action_assignment_count: 14
+    critical_denied_action_count: 9
+    authorization_probe_count: 16
+    authorization_probe_allow_count: 8
+    authorization_probe_deny_count: 8
+    authorization_probe_mismatch_count: 0
+    sensitive_policy_category_count: 15
+    tracked_forbidden_suffix_count: 0
+    tracked_private_runtime_path_count: 0
+    audit_action_type_count: 5
+    audit_contract_probe_count: 5
+    audit_contract_probe_pass_count: 5
+    actual_business_audit_event_count: 0
+    notification_delivery_count: 0
+    full_report_notification_body_count: 0
+    raw_source_file_count: 5
+  release_boundary:
+    s17_p1_performed: true
+    s17_p2_performed: false
+    s17_p3_performed: false
+    stage17_review_performed: false
+    live_identity_provider_configured: false
+    credential_or_user_record_created: false
+    persistent_authorization_event_write_performed: false
+    persistent_audit_event_write_performed: false
+    notification_delivery_performed: false
+    github_upload_performed: false
+    app_reinstall_performed: false
+    persistent_business_write_performed: false
+    business_execution_performed: false
+
 kmfa_v014_s16_post_remediation_stage_review:
   status: completed_validated_local_only_stage16_review_no_go_upload_deferred
   phase_id: V014_S16_POST_REMEDIATION_STAGE_REVIEW

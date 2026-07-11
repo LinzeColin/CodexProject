@@ -3259,3 +3259,16 @@ version_matrix_product_version_reference: 0.1.3-s09p1-project-cost-fact-layer-re
 - raw gate: review 前后、跨 S16-P3 和当前只读快照一致；raw/private 明文未进入 Git。
 - downstream gate: S17、客户/现场/法律/开票/付款/银行、upload、reinstall、formal report、difference closure、persistent write 和 business execution=false。
 - evidence: KMFA/stage_artifacts/V014_S16_POST_REMEDIATION_STAGE_REVIEW/machine/stage16_post_remediation_review_manifest.json
+## 2026-07-12 - V014 S17-P1 post-remediation access security
+
+- phase: V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY
+- task: KMFA-V014-S17-P1-POST-REMEDIATION-ACCESS-SECURITY-20260712
+- product_version: 0.1.4-s17-p1-post-remediation-access-security
+- status: completed_validated_local_only_s17_p1_access_security_policy_no_go_upload_deferred
+- scope: 锁定四角色 deny-by-default 权限、15 类敏感数据 public-repository deny 和五类 public-safe 审计事件契约。
+- access gate: 4 roles / 14 grants / 9 critical denies / 16 probes / 8 ALLOW / 8 DENY / 0 mismatch。
+- sensitive gate: 15 categories 全部 public/git/plaintext=false；tracked forbidden suffix/private runtime=0/0。
+- audit gate: 5 contracts / 7 required fields / 5 probes PASS / 0 persistent events / 0 notification / 0 full report body。
+- raw gate: phase 前后、跨 Stage 16 review 与当前快照一致；raw/private 明文未进入 Git。
+- downstream gate: S17-P2/P3、Stage 17 review、live identity、credentials、persistent auth/audit、notification、external connector、upload、reinstall、formal report、difference closure、persistent write 和 business execution=false。
+- evidence: KMFA/stage_artifacts/V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY/machine/access_security_manifest.json

@@ -2652,3 +2652,18 @@ product_version: 0.1.4-s16p3-customer-business-analysis
 - downstream gate: S17、customer/site/legal/invoice/payment/bank、upload、reinstall、formal report、difference closure、persistent write 与 business execution=false。
 - validator: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s16_post_remediation_stage_review.py --require-private-evidence --require-browser-evidence --require-final-evidence
 - evidence: KMFA/stage_artifacts/V014_S16_POST_REMEDIATION_STAGE_REVIEW/machine/stage16_post_remediation_review_manifest.json
+## FORM-KMFA-V014-S17-P1-POST-REMEDIATION-ACCESS-SECURITY-001
+
+- phase: V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY
+- version: 0.1.4-s17-p1-post-remediation-access-security
+- model_id: MOD-KMFA-GOV-001
+- scope: 建立管理层、财务、复核、只读四角色最小权限策略，锁定敏感材料公开仓库禁止规则和导入、处理、报告、导出、通知五类审计事件 schema。
+- rule: s17_p1_valid = role_count == 4 AND authorization_probe_mismatch_count == 0 AND sensitive_policy_category_count == 15 AND tracked_forbidden_suffix_count == 0 AND audit_action_type_count == 5 AND audit_contract_probe_mismatch_count == 0 AND raw_exact == true AND current_grade == D AND decision == NO_GO。
+- access gate: 14 项显式授权、9 项关键拒绝动作、16 项探针为 8 ALLOW / 8 DENY / 0 mismatch；未知角色和动作 fail closed。
+- sensitive gate: 15 类全部禁止 public repo、Git upload 和 plaintext，只允许 hash/ref/status metadata；禁止 tracked suffix 和 private runtime 路径必须为 0。
+- audit gate: 5 类事件各要求 7 个 public-safe 字段和 append-only；探针只验证 schema，不写持久事件、不发送通知或完整报告正文。
+- history gate: 旧 S17-P1 仅作结构夹具，不提供当前动态权限、敏感策略或审计状态。
+- raw gate: phase 前后、跨 Stage 16 review 和当前只读快照一致；raw/private 明文不得进入 Git。
+- downstream gate: S17-P2/P3、Stage 17 review、live identity、users/credentials、persistent auth/audit、notification、external connector、upload、reinstall、formal report、difference closure、persistent write 与 business execution=false。
+- validator: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s17_p1_post_remediation_access_security.py --require-private-evidence --require-final-evidence
+- evidence: KMFA/stage_artifacts/V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY/machine/access_security_manifest.json

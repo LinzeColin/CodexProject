@@ -1,27 +1,30 @@
 # KMFA Owner Status
 
-更新时间: 2026-07-11
+更新时间: 2026-07-12
 
 ## 一句话状态
 
-KMFA 已完成 `V014_S12_P3_POST_REMEDIATION_RERUN_MECHANISM`：6 个公开安全重跑计划覆盖 24 个四层计划步骤；当前没有已批准或已发布业务事件，所有真实持久重跑仍被 `Q4 / D / NO_GO` 阻断并保持 0。
+KMFA 已完成 `V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY`：四角色 deny-by-default 权限、15 类敏感数据公开仓库禁止策略和五类审计事件契约已通过本地验证；未创建 live 身份、凭据、持久事件或通知，状态保持 `Q4 / D / NO_GO`。
 
 ## 当前可信任范围
 
-- 可以信任：S12-P3 public-safe 缓存失效计划、四层重跑顺序、同源 anchor、仅追加版本规则、会话内二次确认和持久执行阻断行为；桌面/移动无页面溢出或真实脚本错误。
+- 可以信任：S17-P1 public-safe 四角色最小权限、deny-by-default 授权决策、15 类敏感数据禁止公开规则、五类审计 schema 和只读 raw 对齐证据。
 - 必须保留：9 条非零差异，不得通过覆盖、四舍五入、空白兼容层或替换权威值消除。
 - 不能信任：3 条缺可证明数值的现金槽位、1 条未完成现金比较、任何完整业务一致性或正式经营决策结论。
-- 下一步只做 Stage 12 整体复审并修复 findings；不得顺手推进 S13、GitHub upload、app reinstall 或 business execution。
+- 不能误读：当前静态策略不是 live 身份、用户、凭据、session、持久审计或通知系统。
+- 下一步只做 S17-P2；不得顺手推进 S17-P3、Stage 17 review、GitHub upload、app reinstall 或 business execution。
 
 ## 前序一句话状态（上一 phase）
 
-KMFA 已完成 `V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW`：6 个公开安全影响定义覆盖项目范围、指标和报告，5 个高风险定义要求会话内二次确认；批准和发布业务事件均为 0。
+KMFA 已完成 `V014_S16_POST_REMEDIATION_STAGE_REVIEW`：当前 S16-P1/P2/P3 复跑、9 项 finding 修复、三页强连通与 raw 对齐均通过，当前业务事实物化保持 0。
 
 ## 前序一句话状态（历史）
 
 KMFA 当前版本 `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-actionability-recheck` 已完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_ACTIONABILITY_RECHECK` 本地单 phase：Codex 未读取 raw inbox，只复核上一 phase 48 条有效 generated diagnostic responses 的 actionability。公开证据只显示 aggregate counts：source valid diagnostic responses=48、source non-actionable diagnostic responses=48、actionability recheck items=48、actionability ready=0、actionability blockers=48、40/8 诊断分流、unresolved differences=72。系统仍是 `NO_GO`，因为这些诊断响应不能直接用于 authoritative binding 或 raw-to-processed value comparison。next_required_input=`actionable_source_reference_owner_exclusion_formula_mapping_or_non_numeric_mapping_required_before_binding_or_value_comparison`。
 
 ## 你现在能信任什么
+
+- v0.1.4 S17-P1 post-remediation access security 已通过本地验证：4 角色、14 项显式授权、9 项关键拒绝动作、16 项授权探针=`8 ALLOW / 8 DENY / 0 mismatch`；15 类敏感材料全部 public/git/plaintext=false；5 类审计契约各有 7 个必填字段，5 个 schema 探针 PASS。tracked 禁止后缀/private runtime=`0/0`；真实用户、凭据、身份提供方、持久授权/审计事件、通知和完整报告正文均为 0。raw 前后、跨 Stage 16 review 和当前快照一致；下一步只能 S17-P2，upload/reinstall/formal report/business execution 均未执行。
 
 - v0.1.4 S12-P3 post-remediation rerun mechanism 已通过本地实现验证：`6` 个计划、`24` 个四层计划步骤，字段映射、事实层、指标和报告引用共享同一 public-safe source anchor；旧版本保留、新版本仅追加，金额容忍度为 0 分。当前 approved/published=`0/0`，persistent invalidation/rerun/consistency=`0/0/0`；浏览器只做 session-only 模拟。Stage 12 review、正式报告、GitHub upload、app reinstall 和 business execution 均未执行。
 

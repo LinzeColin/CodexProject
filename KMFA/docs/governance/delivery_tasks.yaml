@@ -1,6 +1,47 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "KMFA-V014-S17-P1-POST-REMEDIATION-ACCESS-SECURITY-20260712"
+    phase: "V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY"
+    objective: "Lock four-role deny-by-default access, public-repository sensitive-data denial, and five public-safe audit event contracts after the current Stage 16 review."
+    scope:
+      - "management finance reviewer readonly least-privilege role policy"
+      - "sixteen deterministic authorization probes and unknown-input denial"
+      - "fifteen sensitive categories and tracked-path public safety scan"
+      - "five schema-only audit contract probes and read-only raw alignment"
+    non_scope:
+      - "S17-P2 S17-P3 or Stage 17 review"
+      - "live identity provider users credentials persistent authorization audit writes or notifications"
+      - "external connectors GitHub upload app reinstall formal reports raw private business data or business execution"
+    status: "completed"
+    completed_version: "0.1.4-s17-p1-post-remediation-access-security"
+    dependencies:
+      - "V014_S16_POST_REMEDIATION_STAGE_REVIEW"
+      - "V014_S17_P1_ACCESS_SECURITY historical fixture only"
+      - "v1.4 roadmap and taskpack"
+    required_files:
+      - "KMFA/stage_artifacts/V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY/machine/access_security_manifest.json"
+      - "KMFA/stage_artifacts/V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY/human/access_security_report_zh.md"
+      - "KMFA/tools/check_v014_s17_p1_post_remediation_access_security.py"
+    acceptance_ids:
+      - "ACC-V014-S17-P1-POST-REMEDIATION-ACCESS-SECURITY"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s17_p1_post_remediation_access_security"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s17_p1_post_remediation_access_security.py --require-private-evidence --require-final-evidence"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_no_float_money.py"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/no_omission_check.py"
+    test_results:
+      - "PASS: four roles fourteen grants nine critical denies and sixteen authorization probes"
+      - "PASS: fifteen public-repository sensitive-data denials and clean tracked-path scan"
+      - "PASS: five audit contracts and schema probes with zero persistent events or notifications"
+      - "PASS: raw snapshots exact and all later phases and business actions closed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY/human/access_security_report_zh.md"
+      - "KMFA/stage_artifacts/V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY/machine/access_security_manifest.json"
+    risk: "Static public-safe policy may be mistaken for a live identity, credential, session, audit, or notification system."
+    rollback: "Revert only this S17-P1 local commit and ignored private evidence; never mutate the raw inbox."
+    target_version: "0.1.4-s17-p1-post-remediation-access-security"
+
   - task_id: "KMFA-V014-S16-POST-REMEDIATION-STAGE-REVIEW-20260712"
     phase: "V014_S16_POST_REMEDIATION_STAGE_REVIEW"
     objective: "Replay the current Stage 16 three-phase chain, quarantine legacy dynamic fixtures, fix all review findings, and lock public-safe cross-page raw and governance evidence."
