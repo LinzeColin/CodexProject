@@ -1,3 +1,15 @@
+## FORM-KMFA-V014-S18-P2-POST-REMEDIATION-FULL-REGRESSION-ACCEPTANCE-001
+
+- phase: V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE
+- version: 0.1.4-s18-p2-post-remediation-full-regression-acceptance
+- model_id: MOD-KMFA-GOV-001
+- parameters: PARAM-KMFA-1810, PARAM-KMFA-1811, PARAM-KMFA-1812
+- expression: `s18_p2_valid = executed_check_count == 5 AND command_failure_count == 0 AND zero_delta_check_passed == true AND lineage_full_check_complete == false AND stage_evidence_count == 18 AND stage_review_validated_count == 17 AND html_audit_fail_count == 0 AND raw_exact == true AND current_grade == D AND decision == NO_GO`
+- rationale: current regression execution and evidence coverage pass, while incomplete full lineage remains an explicit safe delivery blocker.
+- source: v1.4 S18-P2 roadmap/taskpack, current S18-P1 dependency, current S01-S17 review manifests and local HTML human-flow audit.
+- missing_policy: any command failure, missing Stage evidence, upload-record substitution, UI FAIL/WARN, raw drift or opened delivery gate fails closed.
+- evidence: KMFA/stage_artifacts/V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE/machine/full_regression_acceptance_manifest.json
+
 ## FORM-KMFA-V014-S18-P1-POST-REMEDIATION-PRECISION-STRESS-001
 
 - phase: V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS
