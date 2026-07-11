@@ -19,7 +19,7 @@ import time
 import zipfile
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
-from typing import Any, Iterable
+from typing import Any, BinaryIO, Iterable
 
 
 SCHEMA_VERSION = "memory_atlas.github_recovery_audit.v1_2_r7"
@@ -306,23 +306,30 @@ def build_recovery_plan(repo_root: Path, commit: str) -> list[list[str]]:
         raise RecoveryAuditError("GIT_REPOSITORY_REQUIRED", "repo_root must be a non-bare Git working tree.")
     return [
         ["git", "rev-parse", "--verify", f"{commit}^{{commit}}"],
-        ["git", "archive", "--format=tar", "--output=recovery.tar", commit],
+        ["git", "archive", "--format=tar", commit],
         ["python3", PUBLIC_RAW_AUDITOR_PATH.as_posix(), "--database-dir", "."],
         ["npm", "ci", "--ignore-scripts", "--no-audit", "--no-fund"],
         ["npm", "run", "build"],
     ]
 
 
-def _extract_archive_safely(archive_path: Path, destination: Path) -> int:
+def _extract_archive_safely(
+    archive_stream: BinaryIO,
+    destination: Path,
+    *,
+    deadline: float | None = None,
+) -> int:
     destination.mkdir(parents=True, exist_ok=False)
     seen: set[str] = set()
     file_count = 0
     try:
-        archive = tarfile.open(archive_path, mode="r:")
+        archive = tarfile.open(fileobj=archive_stream, mode="r|")
     except (OSError, tarfile.TarError) as exc:
         raise RecoveryAuditError("GIT_ARCHIVE_INVALID", "git archive did not produce a valid tar file.") from exc
     with archive:
-        for member in archive.getmembers():
+        for member in archive:
+            if deadline is not None and time.monotonic() >= deadline:
+                raise RecoveryAuditError("GIT_ARCHIVE_TIMEOUT", "Streaming git archive extraction timed out.")
             pure = PurePosixPath(member.name)
             if pure.is_absolute() or any(part in {"", ".", ".."} for part in pure.parts):
                 raise RecoveryAuditError("GIT_ARCHIVE_UNSAFE", "git archive contains an unsafe path.")
@@ -349,6 +356,100 @@ def _extract_archive_safely(archive_path: Path, destination: Path) -> int:
     if file_count <= 0:
         raise RecoveryAuditError("GIT_ARCHIVE_EMPTY", "git archive contains no tracked files.")
     return file_count
+
+
+def _stream_git_archive_safely(
+    repo_root: Path,
+    commit: str,
+    destination: Path,
+    *,
+    env: dict[str, str],
+    display_argv: list[str],
+) -> int:
+    argv = ["git", "archive", "--format=tar", commit]
+    deadline = time.monotonic() + COMMAND_TIMEOUT_SECONDS
+    extraction_error: BaseException | None = None
+    timed_out = False
+    with tempfile.TemporaryFile() as stderr_file:
+        try:
+            process = subprocess.Popen(
+                argv,
+                cwd=str(repo_root),
+                env=env,
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.PIPE,
+                stderr=stderr_file,
+                shell=False,
+                start_new_session=os.name == "posix",
+            )
+        except OSError as exc:
+            raise RecoveryAuditError(
+                "GIT_ARCHIVE_FAILED",
+                "git archive could not be started for the exact candidate commit.",
+                command=display_argv,
+                stderr_tail=_bounded_tail(exc, (repo_root, destination)),
+            ) from exc
+
+        if process.stdout is None:
+            _terminate_process(process)
+            raise RecoveryAuditError("GIT_ARCHIVE_FAILED", "git archive stdout pipe was unavailable.")
+
+        tracked_file_count = 0
+        try:
+            tracked_file_count = _extract_archive_safely(
+                process.stdout,
+                destination,
+                deadline=deadline,
+            )
+        except (OSError, RecoveryAuditError, tarfile.TarError) as exc:
+            extraction_error = exc
+            _terminate_process(process)
+        finally:
+            process.stdout.close()
+
+        if process.poll() is None:
+            remaining = max(0.0, deadline - time.monotonic())
+            try:
+                process.wait(timeout=remaining)
+            except subprocess.TimeoutExpired:
+                timed_out = True
+                _terminate_process(process)
+
+        stderr_size = os.fstat(stderr_file.fileno()).st_size
+        stderr_file.seek(max(0, stderr_size - OUTPUT_TAIL_BYTES))
+        stderr_tail = _bounded_tail(
+            stderr_file.read(OUTPUT_TAIL_BYTES).decode("utf-8", errors="replace"),
+            (repo_root, destination),
+        )
+        if timed_out:
+            raise RecoveryAuditError(
+                "GIT_ARCHIVE_TIMEOUT",
+                "Streaming git archive extraction timed out.",
+                command=display_argv,
+                stderr_tail=stderr_tail,
+            )
+        if stderr_size > MAX_COMMAND_OUTPUT_BYTES:
+            raise RecoveryAuditError(
+                "GIT_ARCHIVE_OUTPUT_LIMIT",
+                "git archive stderr exceeded the bounded output limit.",
+                command=display_argv,
+                stderr_tail=stderr_tail,
+            )
+        if process.returncode != 0:
+            raise RecoveryAuditError(
+                "GIT_ARCHIVE_FAILED",
+                "git archive failed for the exact candidate commit.",
+                command=display_argv,
+                stderr_tail=stderr_tail,
+            )
+        if extraction_error is not None:
+            if isinstance(extraction_error, RecoveryAuditError):
+                raise extraction_error
+            raise RecoveryAuditError(
+                "GIT_ARCHIVE_INVALID",
+                "git archive could not be extracted safely.",
+            ) from extraction_error
+        return tracked_file_count
 
 
 def _find_database_dir(recovered_root: Path) -> tuple[Path, str]:
@@ -964,23 +1065,14 @@ def rehearse_recovery(repo_root: Path, commit: str, output_dir: Path) -> dict[st
 
         output_dir.mkdir(parents=True, exist_ok=False)
         created_workspace = True
-        archive_path = output_dir / "recovery.tar"
         recovered_root = output_dir / "recovered"
-        git_result = run_bounded_command(
-            ["git", "archive", "--format=tar", f"--output={archive_path}", commit],
-            cwd=repo_root,
+        tracked_file_count = _stream_git_archive_safely(
+            repo_root,
+            commit,
+            recovered_root,
             env=_safe_environment(output_dir),
             display_argv=plan[1],
-            sensitive_roots=(repo_root, output_dir),
         )
-        if git_result["status"] != "PASS":
-            raise RecoveryAuditError(
-                "GIT_ARCHIVE_FAILED",
-                "git archive failed for the exact candidate commit.",
-                stderr_tail=git_result.get("stderr_tail", ""),
-            )
-        tracked_file_count = _extract_archive_safely(archive_path, recovered_root)
-        archive_path.unlink()
         database_dir, database_relative = _find_database_dir(recovered_root)
 
         tree_audit = audit_recovered_tree(database_dir)
@@ -997,6 +1089,8 @@ def rehearse_recovery(repo_root: Path, commit: str, output_dir: Path) -> dict[st
                     "status": "PASS",
                     "source": "git_tracked_files_only",
                     "format": "tar",
+                    "streamed": True,
+                    "intermediate_archive_written": False,
                     "tracked_file_count": tracked_file_count,
                     "working_tree_files_copied": 0,
                 },
