@@ -168,6 +168,88 @@ REF_SCALAR_FIELDS = {
     "transition_actor_ref",
     "cleanup_manifest_ref",
 }
+INDEX_FIELDS = {
+    "schema_version",
+    "stage",
+    "phase",
+    "task_id",
+    "acceptance_id",
+    "pursuing_goal",
+    "source_bindings",
+    "worker_queue_contract",
+    "reference_policy",
+    "operation_contract",
+    "runtime_ownership",
+    "truth_contract",
+}
+QUEUE_CONTRACT_FIELDS = {
+    "schema_version",
+    "queue_mode",
+    "submission_mode",
+    "ordering_policy",
+    "job_control_envelope_schema",
+    "job_state_model_version",
+    "state_transition_owner",
+    "worker_count",
+    "default_isolated_capacity",
+    "maximum_isolated_capacity",
+    "capacity_backpressure_result",
+    "duplicate_admission_result",
+    "resource_conflict_result",
+    "identity_derivation",
+    "lock_key_derivation",
+    "dependency_policy",
+    "claim_mode",
+    "operation_contract_version",
+    "runtime_persistence_performed",
+    "production_runtime_activation_allowed",
+    "same_operation_terminal_resubmission_available",
+    "same_operation_terminal_resubmission_owner",
+}
+REFERENCE_POLICY_FIELDS = {
+    "payload_size_bytes_maximum",
+    "maximum_text_length",
+    "maximum_refs_per_field",
+    "input_ref_count",
+    "input_ref_prefix",
+    "input_must_be_git_tracked",
+    "absolute_path_allowed",
+    "parent_path_segment_allowed",
+    "raw_body_fields_allowed",
+    "plaintext_secrets_allowed",
+    "raw_metadata_content_access_allowed",
+}
+OPERATION_CONTRACT_FIELDS = {
+    "schema_version",
+    "operation",
+    "allowed_repository_prefix",
+    "output_ref_format",
+    "checkpoint_ref_format",
+    "writes_runtime_output",
+    "reads_ids_business_data",
+    "calls_external_api",
+}
+TRUTH_CONTRACT_FIELDS = {
+    "execution_mode",
+    "isolated_non_production_runtime_allowed",
+    "queue_runtime_performed_by_phase2_smoke",
+    "worker_runtime_performed_by_phase2_smoke",
+    "isolated_control_job_created_by_phase2_smoke",
+    "production_runtime_activation_performed",
+    "claim_persistence_performed",
+    "persistent_queue_write_performed",
+    "database_connection_performed",
+    "schema_change_performed",
+    "state_registry_write_performed",
+    "runtime_output_written",
+    "ids_business_source_read_performed",
+    "external_api_call_performed",
+    "raw_metadata_content_accessed",
+    "fake_ids_business_data_used",
+    "real_ids_business_job_created",
+    "github_upload_allowed",
+    "app_reinstall_allowed",
+}
 
 _STAGE037_MODULE: Any = None
 _GOVERNANCE_MODULE: Any = None
@@ -254,6 +336,13 @@ def _contract_checks(index: Mapping[str, Any]) -> dict[str, bool]:
         stage037_report = {}
 
     return {
+        "contract_shape_exact": (
+            set(index) == INDEX_FIELDS
+            and set(queue_contract) == QUEUE_CONTRACT_FIELDS
+            and set(reference) == REFERENCE_POLICY_FIELDS
+            and set(operation) == OPERATION_CONTRACT_FIELDS
+            and set(truth) == TRUTH_CONTRACT_FIELDS
+        ),
         "identity_exact": (
             index.get("schema_version") == INDEX_SCHEMA_VERSION
             and index.get("stage") == "STAGE-038"
@@ -295,6 +384,10 @@ def _contract_checks(index: Mapping[str, Any]) -> dict[str, bool]:
             == OPERATION_SCHEMA_VERSION
             and queue_contract.get("runtime_persistence_performed") is False
             and queue_contract.get("production_runtime_activation_allowed") is False
+            and queue_contract.get("same_operation_terminal_resubmission_available")
+            is False
+            and queue_contract.get("same_operation_terminal_resubmission_owner")
+            == "STAGE-039"
         ),
         "reference_policy_exact": (
             reference.get("payload_size_bytes_maximum") == PAYLOAD_SIZE_MAXIMUM
@@ -324,7 +417,8 @@ def _contract_checks(index: Mapping[str, Any]) -> dict[str, bool]:
             index.get("runtime_ownership") == EXPECTED_RUNTIME_OWNERSHIP
         ),
         "truth_contract_exact": (
-            truth.get("execution_mode") == EXECUTION_MODE
+            set(truth) == TRUTH_CONTRACT_FIELDS
+            and truth.get("execution_mode") == EXECUTION_MODE
             and truth.get("isolated_non_production_runtime_allowed") is True
             and truth.get("queue_runtime_performed_by_phase2_smoke") is True
             and truth.get("worker_runtime_performed_by_phase2_smoke") is True

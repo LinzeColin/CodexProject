@@ -11,7 +11,7 @@
 
 ## Scope And Source
 
-Phase 3 implements and validates the six required scenarios from the uniquely
+Phase 3 implements and validates the seven required scenarios from the uniquely
 verified Stage038 taskpack member. The machine contract binds the repaired
 Phase 2 checker, index, and evidence by SHA-256 before any scenario runs.
 
@@ -35,20 +35,23 @@ second queue record. Terminal records release that admission conflict.
 
 ## Scenario Matrix
 
-The checker executes six required scenarios and returns `PASS` only when every
+The checker executes seven required scenarios and returns `PASS` only when every
 assertion is true:
 
 | Scenario | Real action | Required result |
 |---|---|---|
 | `duplicate_click_one_execution` | Two actual in-memory submissions and one worker operation | The second click returns the existing entry; one operation runs. |
-| `worker_crash_exception_and_lock_release` | One actual worker operation raises `RuntimeError`; a same-source follow-up then runs | First record is `FAILED`, output/checkpoint stay empty, lock is released, follow-up succeeds. |
+| `worker_crash_exception_and_lock_release` | One actual worker operation raises `RuntimeError`; same-operation replay and a different same-source follow-up are then submitted | First record is `FAILED`; same-operation replay returns `EXISTING_QUEUE_ENTRY` without rerun; the lock is released and a different operation succeeds. |
 | `external_drive_offline_pause_before_queue` | Control-gate input only; no hardware event is claimed | `PAUSED_EXTERNAL_DRIVE_OFFLINE`, Chinese `已暂停`, zero queue records. |
 | `actual_low_disk_boundary_pause_without_allocation` | Reads actual project-volume free bytes and requests exactly free bytes plus one | `PAUSED_LOW_DISK`, zero queue records, zero allocation. |
+| `external_api_budget_insufficient_pause_before_queue` | Evaluates an API-required control gate with budget unavailable; no API call is made | `PAUSED_EXTERNAL_API_BUDGET_INSUFFICIENT`, Chinese `已暂停`, zero queue records. |
 | `same_source_cross_operation_lock` | Submits `ARCHIVE`, `PARSE`, `INDEX`, and `REPORT` against one real tracked ref | One shared key, one accepted record, three `RESOURCE_CONFLICT_ACTIVE` results, one operation. |
 | `protected_cleanup_denied` | Evaluates four real Git-tracked refs without calling delete | Fact source, evidence ledger, report snapshot, and audit log all return `PROTECTED_ARTIFACT`. |
 
 The worker-crash case is an actual exception path inside the isolated worker;
 it is not a process-kill or STAGE-043 crash-recovery implementation.
+The deterministic Phase 2 identity means a terminal same-operation submission
+is duplicate replay, not a new attempt. STAGE-039 owns retry/new-attempt policy.
 `physical_drive_removal_performed=false`: the removable-drive case validates
 the required fail-closed admission gate and does not claim that hardware was
 physically removed. `disk_allocation_performed=false` and
@@ -124,8 +127,8 @@ runtime data, reports, app entries, and GitHub state.
 
 ## 中文 Owner 反馈
 
-Stage 38 Phase 3 已完成六类隔离场景验证。同源处理、解压、索引和报告任务共享
+Stage 38 Phase 3 已完成七类隔离场景验证。同源处理、解压、索引和报告任务共享
 一个资源冲突键；重复点击只执行一次；worker 异常进入失败终态并释放锁；移动介质
-离线和磁盘不足在入队前暂停；事实源、证据账本、报告快照和审计日志均禁止后台
+离线、磁盘不足和外部 API 预算不足在入队前暂停；事实源、证据账本、报告快照和审计日志均禁止后台
 清理。生产队列、原始资料访问和 GitHub 上传继续禁用，下一步只能进入独立
 `IDS-STAGE038-P4-GATE`。

@@ -1,5 +1,11 @@
 # Changelog
 
+## IDS v0.1 STAGE-038 Review - 2026-07-13
+
+- Completed the local whole-stage review under `ACC-STAGE-038` and repaired four Important findings: exact contract-shape enforcement, the missing external-API-budget pause proof, false same-operation resubmission guidance, and absent Git-index-bound review evidence.
+- Added a seventh isolated Phase 3 scenario that returns `PAUSED_EXTERNAL_API_BUDGET_INSUFFICIENT` without calling an API; terminal same-operation replay now remains explicitly unavailable until STAGE-039 defines retry/new-attempt policy.
+- Added the Stage038 review checker, structured Stage005 review governance, reviewed-local batch/roadmap/event evidence, and the next gate `IDS-STAGE039-P1-GATE`. Production runtime, raw metadata access, fake IDS data, GitHub upload, batch gates, and app reinstall remain disabled.
+
 ## IDS v0.1 STAGE-038 Phase 4 - 2026-07-13
 
 - Added a hash-bound Phase 4 delivery contract and stdout-only checker that expose the exact STAGE-037 job-state graph, the actual isolated failure record, capacity/resource/lock backpressure proofs, and orderly isolated shutdown evidence.

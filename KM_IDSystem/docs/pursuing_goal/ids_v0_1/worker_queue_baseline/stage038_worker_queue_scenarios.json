@@ -7,15 +7,15 @@
   "source_bindings": {
     "phase2_checker_ref": {
       "path": "scripts/check_worker_queue_baseline.py",
-      "sha256": "2705e114df040ae3c6121d20be9e6d8b217d85464a36d452eefd9438cf1bfd9d"
+      "sha256": "88a29aff19ee2465d6d5192c4fd9c352f85240689fede3a2216a754a1853e0f9"
     },
     "phase2_index_ref": {
       "path": "docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_baseline_index.json",
-      "sha256": "339f7bb3cc4d2cf513f0c973b2899368d3d6963b144ead23190e907c83afbe29"
+      "sha256": "68513591996a51fea90cd2ea863f42f910c0c3a45b70fd1611655bb6d95911ab"
     },
     "phase2_evidence_ref": {
       "path": "docs/pursuing_goal/ids_v0_1/STAGE038_PHASE2_ASYNC_WORKER_QUEUE_SLICE.md",
-      "sha256": "46dc200409706e81b29a89ec8ab5857b861b0cff153a2729ac0f9904d2333cc4"
+      "sha256": "14ba679970ba5d56ab12874ecb4cd63f160c726c281bc952eb67db342fd13073"
     }
   },
   "scenario_contract": {
@@ -25,6 +25,7 @@
       "worker_crash_exception_and_lock_release",
       "external_drive_offline_pause_before_queue",
       "actual_low_disk_boundary_pause_without_allocation",
+      "external_api_budget_insufficient_pause_before_queue",
       "same_source_cross_operation_lock",
       "protected_cleanup_denied"
     ],
@@ -49,9 +50,11 @@
   "resource_gate_contract": {
     "external_drive_offline_result": "PAUSED_EXTERNAL_DRIVE_OFFLINE",
     "low_disk_result": "PAUSED_LOW_DISK",
+    "external_api_budget_insufficient_result": "PAUSED_EXTERNAL_API_BUDGET_INSUFFICIENT",
     "pause_before_queue_record": true,
     "actual_disk_observation_required": true,
-    "physical_drive_removal_claim_allowed": false
+    "physical_drive_removal_claim_allowed": false,
+    "external_api_call_required": false
   },
   "cleanup_contract": {
     "protected_artifacts": {

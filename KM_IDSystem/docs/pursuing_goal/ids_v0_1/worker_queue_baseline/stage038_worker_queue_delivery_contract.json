@@ -11,23 +11,23 @@
     },
     "phase2_index_ref": {
       "path": "docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_baseline_index.json",
-      "sha256": "339f7bb3cc4d2cf513f0c973b2899368d3d6963b144ead23190e907c83afbe29"
+      "sha256": "68513591996a51fea90cd2ea863f42f910c0c3a45b70fd1611655bb6d95911ab"
     },
     "phase2_evidence_ref": {
       "path": "docs/pursuing_goal/ids_v0_1/STAGE038_PHASE2_ASYNC_WORKER_QUEUE_SLICE.md",
-      "sha256": "46dc200409706e81b29a89ec8ab5857b861b0cff153a2729ac0f9904d2333cc4"
+      "sha256": "14ba679970ba5d56ab12874ecb4cd63f160c726c281bc952eb67db342fd13073"
     },
     "phase3_checker_ref": {
       "path": "scripts/check_worker_queue_scenarios.py",
-      "sha256": "81559d624132c2f245125da16f4f430f5736c9ed9611f7b13e1974775fd0eba5"
+      "sha256": "b7e335039ecf65e4fe91df39e91cddd296296852bd3be8923237b8616db9517c"
     },
     "phase3_index_ref": {
       "path": "docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_scenarios.json",
-      "sha256": "e9ebf1f03f87b0347007547c6c3c072ce2219ec57ccfbc99c44eeb1397ac5ef7"
+      "sha256": "0ec9f1a0de6ec24d64d4108214ea426f9171b15eebdd6c3c60693fade62f2961"
     },
     "phase3_evidence_ref": {
       "path": "docs/pursuing_goal/ids_v0_1/STAGE038_PHASE3_WORKER_QUEUE_SCENARIOS.md",
-      "sha256": "be7cd3d22ed1cc122fe3ad37b90212c465b034c1455c665af1c8302d8693b2ef"
+      "sha256": "8cc8c205aaca316a7abf1cbd714a13aac3463bc5dc004ceba43b9078250fcbe3"
     }
   },
   "delivery_contract": {
@@ -43,6 +43,7 @@
     "failure_retry_log_mode": "ACTUAL_ISOLATED_FAILURE_NO_RETRY_RUNTIME",
     "baseline_max_retries": 0,
     "capacity_backpressure_result": "QUEUE_CAPACITY_REACHED",
+    "external_api_budget_insufficient_result": "PAUSED_EXTERNAL_API_BUDGET_INSUFFICIENT",
     "resource_conflict_result": "RESOURCE_CONFLICT_ACTIVE"
   },
   "cleanup_allowlist": {
@@ -91,6 +92,8 @@
     ],
     "persistent_recovery_available": false,
     "automatic_resume_allowed": false,
+    "same_operation_resubmission_available": false,
+    "same_operation_resubmission_owner": "STAGE-039",
     "crash_recovery_runtime_owner": "STAGE-043",
     "automatic_lifecycle_runtime_owner": "STAGE-042"
   },

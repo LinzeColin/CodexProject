@@ -73,6 +73,22 @@ class Stage038WorkerQueuePhase4DeliveryTests(unittest.TestCase):
         )
         self.assertEqual("IDS-STAGE038-P4-GATE", blocked["next_gate"])
 
+        for mutation in ("root", "nested"):
+            injected = json.loads(json.dumps(index))
+            if mutation == "root":
+                injected["production_runtime_activation_allowed"] = True
+            else:
+                injected["recovery_boundary"][
+                    "same_operation_resubmission_available"
+                ] = True
+            with self.subTest(mutation=mutation):
+                rejected = module.build_stage038_phase4_delivery_report(
+                    index=injected,
+                    execute_delivery_checks=False,
+                )
+                self.assertFalse(rejected["contract_valid"], rejected)
+                self.assertFalse(rejected["delivery_contract_valid"], rejected)
+
     def test_job_state_graph_is_exact_and_has_renderable_mermaid(self):
         report = self._load_checker().build_stage038_phase4_delivery_report()
         graph = report["job_state_graph"]
@@ -109,7 +125,15 @@ class Stage038WorkerQueuePhase4DeliveryTests(unittest.TestCase):
             "NOT_AVAILABLE_BASELINE_MAX_RETRIES_ZERO_STAGE039_OWNED",
             log["retry_disposition"],
         )
-        self.assertEqual("MANUAL_REVIEW_AND_NEW_JOB", log["owner_action"])
+        self.assertEqual(
+            "REVIEW_ERROR_NO_SAME_OPERATION_RESUBMISSION_UNTIL_STAGE039",
+            log["owner_action"],
+        )
+        self.assertFalse(log["same_operation_resubmission_available"])
+        self.assertEqual(
+            "EXISTING_QUEUE_ENTRY",
+            log["same_operation_resubmission_result"],
+        )
         self.assertFalse(log["automatic_retry_performed"])
         self.assertFalse(log["retry_scheduler_performed"])
         self.assertFalse(log["dead_letter_runtime_performed"])
@@ -130,6 +154,10 @@ class Stage038WorkerQueuePhase4DeliveryTests(unittest.TestCase):
             proof["external_drive_offline"]["result_code"],
         )
         self.assertEqual("PAUSED_LOW_DISK", proof["low_disk"]["result_code"])
+        self.assertEqual(
+            "PAUSED_EXTERNAL_API_BUDGET_INSUFFICIENT",
+            proof["external_api_budget_insufficient"]["result_code"],
+        )
         self.assertEqual(
             "RESOURCE_CONFLICT_ACTIVE",
             proof["same_source_conflict"]["result_code"],
@@ -183,6 +211,11 @@ class Stage038WorkerQueuePhase4DeliveryTests(unittest.TestCase):
         )
         self.assertFalse(handling["crash_recovery_runtime_performed"])
         self.assertFalse(handling["persistent_recovery_available"])
+        self.assertFalse(handling["same_operation_resubmission_available"])
+        self.assertEqual(
+            "STAGE-039",
+            handling["same_operation_resubmission_owner"],
+        )
 
         self.assertEqual(
             [
@@ -234,6 +267,7 @@ class Stage038WorkerQueuePhase4DeliveryTests(unittest.TestCase):
             "stateDiagram-v2",
             "failure_retry_log",
             "QUEUE_CAPACITY_REACHED",
+            "PAUSED_EXTERNAL_API_BUDGET_INSUFFICIENT",
             "TEMPORARY_PARTIAL_OUTPUT",
             "automatic_recovery_cases=[]",
             "STOP_NEW_ADMISSION",
@@ -249,18 +283,18 @@ class Stage038WorkerQueuePhase4DeliveryTests(unittest.TestCase):
         batch = module._parse_yaml_text(BATCH_LOCK.read_text(encoding="utf-8"))
         roadmap = module._parse_yaml_text(ROADMAP.read_text(encoding="utf-8"))
         stage = batch["stage_progress"]["STAGE-038"]
-        self.assertEqual("stage038_phase4_completed_review_pending", batch["status"])
+        self.assertEqual("stage038_completed_reviewed_local", batch["status"])
         self.assertEqual(
             ["Phase 1", "Phase 2", "Phase 3", "Phase 4"],
             stage["completed_phases"],
         )
-        self.assertEqual("pending", stage["review_status"])
-        self.assertEqual("stage_review", stage["next_phase"])
-        self.assertEqual("IDS-STAGE038-REVIEW-GATE", stage["next_gate"])
-        self.assertEqual("IDS-V0_1-STAGE038-P4", stage["current_task_id"])
+        self.assertEqual("passed", stage["review_status"])
+        self.assertEqual("STAGE-039", stage["next_stage"])
+        self.assertEqual("IDS-STAGE039-P1-GATE", stage["next_gate"])
+        self.assertEqual("IDS-V0_1-STAGE038-REVIEW", stage["current_task_id"])
         self.assertFalse(batch["upload_gate"]["push_allowed"])
         self.assertEqual(
-            "IDS-V0_1-STAGE038-REVIEW",
+            "IDS-V0_1-STAGE039-P1",
             batch["decision"]["next_allowed_task_id"],
         )
 
@@ -272,7 +306,7 @@ class Stage038WorkerQueuePhase4DeliveryTests(unittest.TestCase):
             "passed_with_local_evidence",
             phases["IDS-STAGE038-P4"]["status"],
         )
-        self.assertEqual("IDS-STAGE038-REVIEW-GATE", roadmap["next_gate_id"])
+        self.assertEqual("IDS-STAGE039-P1-GATE", roadmap["next_gate_id"])
 
         events = [
             json.loads(line)

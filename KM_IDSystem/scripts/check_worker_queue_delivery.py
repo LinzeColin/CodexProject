@@ -49,32 +49,32 @@ EXPECTED_SOURCE_BINDINGS = {
             "docs/pursuing_goal/ids_v0_1/worker_queue_baseline/"
             "stage038_worker_queue_baseline_index.json"
         ),
-        "sha256": "339f7bb3cc4d2cf513f0c973b2899368d3d6963b144ead23190e907c83afbe29",
+        "sha256": "68513591996a51fea90cd2ea863f42f910c0c3a45b70fd1611655bb6d95911ab",
     },
     "phase2_evidence_ref": {
         "path": (
             "docs/pursuing_goal/ids_v0_1/"
             "STAGE038_PHASE2_ASYNC_WORKER_QUEUE_SLICE.md"
         ),
-        "sha256": "46dc200409706e81b29a89ec8ab5857b861b0cff153a2729ac0f9904d2333cc4",
+        "sha256": "14ba679970ba5d56ab12874ecb4cd63f160c726c281bc952eb67db342fd13073",
     },
     "phase3_checker_ref": {
         "path": "scripts/check_worker_queue_scenarios.py",
-        "sha256": "81559d624132c2f245125da16f4f430f5736c9ed9611f7b13e1974775fd0eba5",
+        "sha256": "b7e335039ecf65e4fe91df39e91cddd296296852bd3be8923237b8616db9517c",
     },
     "phase3_index_ref": {
         "path": (
             "docs/pursuing_goal/ids_v0_1/worker_queue_baseline/"
             "stage038_worker_queue_scenarios.json"
         ),
-        "sha256": "e9ebf1f03f87b0347007547c6c3c072ce2219ec57ccfbc99c44eeb1397ac5ef7",
+        "sha256": "0ec9f1a0de6ec24d64d4108214ea426f9171b15eebdd6c3c60693fade62f2961",
     },
     "phase3_evidence_ref": {
         "path": (
             "docs/pursuing_goal/ids_v0_1/"
             "STAGE038_PHASE3_WORKER_QUEUE_SCENARIOS.md"
         ),
-        "sha256": "be7cd3d22ed1cc122fe3ad37b90212c465b034c1455c665af1c8302d8693b2ef",
+        "sha256": "8cc8c205aaca316a7abf1cbd714a13aac3463bc5dc004ceba43b9078250fcbe3",
     },
 }
 ELIGIBLE_ARTIFACT_CLASSES = ["TEMPORARY_PARTIAL_OUTPUT", "REBUILDABLE_CACHE"]
@@ -151,6 +151,56 @@ ZERO_SIDE_EFFECT_FIELDS = (
     "github_upload_allowed",
     "app_reinstall_allowed",
 )
+INDEX_FIELDS = {
+    "schema_version",
+    "stage",
+    "phase",
+    "task_id",
+    "acceptance_id",
+    "source_bindings",
+    "delivery_contract",
+    "cleanup_allowlist",
+    "recovery_boundary",
+    "rollback_contract",
+    "known_limits",
+    "truth_contract",
+}
+DELIVERY_CONTRACT_FIELDS = {
+    "schema_version",
+    "execution_mode",
+    "valid_result",
+    "stage_review_status",
+    "next_gate",
+    "state_model_version",
+    "required_job_type_count",
+    "required_job_state_count",
+    "required_transition_count",
+    "failure_retry_log_mode",
+    "baseline_max_retries",
+    "capacity_backpressure_result",
+    "external_api_budget_insufficient_result",
+    "resource_conflict_result",
+}
+CLEANUP_ALLOWLIST_FIELDS = {
+    "eligible_artifact_classes",
+    "protected_artifact_classes",
+    "cleanup_manifest_required",
+    "required_preconditions",
+    "runtime_owner",
+    "delete_execution_allowed",
+}
+RECOVERY_BOUNDARY_FIELDS = {
+    "automatic_recovery_cases",
+    "manual_action_required_cases",
+    "safe_shutdown_steps",
+    "persistent_recovery_available",
+    "automatic_resume_allowed",
+    "same_operation_resubmission_available",
+    "same_operation_resubmission_owner",
+    "crash_recovery_runtime_owner",
+    "automatic_lifecycle_runtime_owner",
+}
+ROLLBACK_CONTRACT_FIELDS = {"steps", "destructive_rollback_allowed"}
 
 _SCENARIO_MODULE: Any = None
 
@@ -231,6 +281,14 @@ def _contract_checks(index: Mapping[str, Any]) -> dict[str, bool]:
     except (OSError, RuntimeError, ValueError, json.JSONDecodeError):
         phase3_contract = {}
     return {
+        "contract_shape_exact": (
+            set(index) == INDEX_FIELDS
+            and set(delivery) == DELIVERY_CONTRACT_FIELDS
+            and set(cleanup) == CLEANUP_ALLOWLIST_FIELDS
+            and set(recovery) == RECOVERY_BOUNDARY_FIELDS
+            and set(rollback) == ROLLBACK_CONTRACT_FIELDS
+            and set(truth) == set(ZERO_SIDE_EFFECT_FIELDS)
+        ),
         "identity_exact": (
             index.get("schema_version") == INDEX_SCHEMA_VERSION
             and index.get("stage") == "STAGE-038"
@@ -255,6 +313,8 @@ def _contract_checks(index: Mapping[str, Any]) -> dict[str, bool]:
             and delivery.get("baseline_max_retries") == 0
             and delivery.get("capacity_backpressure_result")
             == "QUEUE_CAPACITY_REACHED"
+            and delivery.get("external_api_budget_insufficient_result")
+            == "PAUSED_EXTERNAL_API_BUDGET_INSUFFICIENT"
             and delivery.get("resource_conflict_result")
             == "RESOURCE_CONFLICT_ACTIVE"
         ),
@@ -274,6 +334,8 @@ def _contract_checks(index: Mapping[str, Any]) -> dict[str, bool]:
             and recovery.get("safe_shutdown_steps") == SAFE_SHUTDOWN_STEPS
             and recovery.get("persistent_recovery_available") is False
             and recovery.get("automatic_resume_allowed") is False
+            and recovery.get("same_operation_resubmission_available") is False
+            and recovery.get("same_operation_resubmission_owner") == "STAGE-039"
             and recovery.get("crash_recovery_runtime_owner") == "STAGE-043"
             and recovery.get("automatic_lifecycle_runtime_owner") == "STAGE-042"
         ),
@@ -386,7 +448,15 @@ def _failure_retry_log(phase3_report: Mapping[str, Any]) -> dict[str, Any]:
         "retry_disposition": (
             "NOT_AVAILABLE_BASELINE_MAX_RETRIES_ZERO_STAGE039_OWNED"
         ),
-        "owner_action": "MANUAL_REVIEW_AND_NEW_JOB",
+        "owner_action": (
+            "REVIEW_ERROR_NO_SAME_OPERATION_RESUBMISSION_UNTIL_STAGE039"
+        ),
+        "same_operation_resubmission_available": scenario[
+            "same_operation_resubmission_available"
+        ],
+        "same_operation_resubmission_result": scenario[
+            "same_operation_resubmission_decision"
+        ]["result_code"],
         "automatic_retry_performed": False,
         "retry_scheduler_performed": False,
         "dead_letter_runtime_performed": False,
@@ -406,6 +476,9 @@ def _backpressure_trigger_proof(
         ),
         "low_disk": copy.deepcopy(
             scenarios["actual_low_disk_boundary_pause_without_allocation"]
+        ),
+        "external_api_budget_insufficient": copy.deepcopy(
+            scenarios["external_api_budget_insufficient_pause_before_queue"]
         ),
         "same_source_conflict": copy.deepcopy(conflict["decisions"][1]),
         "measured_backpressure_runtime_performed": False,
@@ -441,7 +514,9 @@ def _recovery_handling() -> dict[str, Any]:
         "automatic_recovery_cases": [],
         "manual_action_required_cases": copy.deepcopy(MANUAL_ACTION_CASES),
         "manual_action_contract": {
-            "WORKER_EXCEPTION": "REVIEW_ERROR_AND_CREATE_NEW_JOB",
+            "WORKER_EXCEPTION": (
+                "REVIEW_ERROR_NO_SAME_OPERATION_RESUBMISSION_UNTIL_STAGE039"
+            ),
             "EXTERNAL_DRIVE_OFFLINE": "RECONNECT_AND_OWNER_REVALIDATE",
             "LOW_DISK": "RESTORE_CAPACITY_AND_OWNER_REVALIDATE",
             "QUEUE_CAPACITY_REACHED": "WAIT_AND_RESUBMIT_AFTER_CAPACITY_REVIEW",
@@ -450,6 +525,8 @@ def _recovery_handling() -> dict[str, Any]:
         },
         "persistent_recovery_available": False,
         "automatic_resume_allowed": False,
+        "same_operation_resubmission_available": False,
+        "same_operation_resubmission_owner": "STAGE-039",
         "crash_recovery_runtime_performed": False,
         "automatic_lifecycle_runtime_performed": False,
         "crash_recovery_runtime_owner": "STAGE-043",
@@ -485,6 +562,9 @@ def _delivery_checks(
         "failure_retry_log_truthful": (
             failure.get("actual_isolated_worker_exception_observed") is True
             and failure.get("error_ref") == "error:RuntimeError"
+            and failure.get("same_operation_resubmission_available") is False
+            and failure.get("same_operation_resubmission_result")
+            == "EXISTING_QUEUE_ENTRY"
             and failure.get("automatic_retry_performed") is False
         ),
         "capacity_backpressure_proved": (
@@ -497,6 +577,10 @@ def _delivery_checks(
             == "PAUSED_EXTERNAL_DRIVE_OFFLINE"
             and backpressure.get("low_disk", {}).get("result_code")
             == "PAUSED_LOW_DISK"
+            and backpressure.get("external_api_budget_insufficient", {}).get(
+                "result_code"
+            )
+            == "PAUSED_EXTERNAL_API_BUDGET_INSUFFICIENT"
             and backpressure.get("same_source_conflict", {}).get("result_code")
             == "RESOURCE_CONFLICT_ACTIVE"
         ),
@@ -511,6 +595,8 @@ def _delivery_checks(
             and recovery.get("manual_action_required_cases")
             == MANUAL_ACTION_CASES
             and recovery.get("persistent_recovery_available") is False
+            and recovery.get("same_operation_resubmission_available") is False
+            and recovery.get("same_operation_resubmission_owner") == "STAGE-039"
         ),
         "orderly_shutdown_proved": (
             shutdown.get("final_record", {}).get("machine_state") == "SUCCEEDED"

@@ -133,6 +133,8 @@ def evaluate_stage038_source_reverification(
         ),
         {},
     )
+    stage_review = roadmap_stage.get("review")
+    stage_review = stage_review if isinstance(stage_review, dict) else {}
 
     expected_yaml_values: dict[str, Any] = {
         key: (
@@ -270,6 +272,23 @@ def evaluate_stage038_source_reverification(
                 and decision.get("next_allowed_task_id")
                 == "IDS-V0_1-STAGE038-REVIEW"
             )
+            or (
+                batch.get("status") == "stage038_completed_reviewed_local"
+                and batch_stage.get("status") == "completed_reviewed_local"
+                and batch_stage.get("completed_phases")
+                == ["Phase 1", "Phase 2", "Phase 3", "Phase 4"]
+                and batch_stage.get("review_status") == "passed"
+                and batch_stage.get("next_stage") == "STAGE-039"
+                and batch_stage.get("next_gate") == "IDS-STAGE039-P1-GATE"
+                and batch_stage.get("current_task_id")
+                == "IDS-V0_1-STAGE038-REVIEW"
+                and batch_stage.get("acceptance_status")
+                == "reviewed_local_passed"
+                and decision.get("current_task_id")
+                == "IDS-V0_1-STAGE038-REVIEW"
+                and decision.get("next_allowed_task_id")
+                == "IDS-V0_1-STAGE039-P1"
+            )
         )
         and batch_stage.get("source_reverification_gate_status") == "passed"
         and decision.get("github_upload_allowed") is False
@@ -333,6 +352,21 @@ def evaluate_stage038_source_reverification(
                         and task.get("status") == "completed"
                         for task in phase4.get("tasks", [])
                     )
+                )
+                or (
+                    roadmap.get("current_phase_id") == "IDS-STAGE038-REVIEW"
+                    and roadmap.get("current_task_id")
+                    == "IDS-V0_1-STAGE038-REVIEW"
+                    and roadmap.get("next_gate_id") == "IDS-STAGE039-P1-GATE"
+                    and phase2.get("status") == "passed_with_local_evidence"
+                    and phase3.get("status") == "passed_with_local_evidence"
+                    and phase4.get("status") == "passed_with_local_evidence"
+                    and stage_review.get("review_id") == "IDS-STAGE038-REVIEW"
+                    and stage_review.get("task_id")
+                    == "IDS-V0_1-STAGE038-REVIEW"
+                    and stage_review.get("status") == "completed"
+                    and "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_STAGE_REVIEW.md"
+                    in stage_review.get("evidence_refs", [])
                 )
             )
         ),
@@ -543,15 +577,18 @@ REQUIRED_FILES = (
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE2_ASYNC_WORKER_QUEUE_SLICE.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE3_WORKER_QUEUE_SCENARIOS.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE4_CLOSEOUT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_STAGE_REVIEW.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_baseline_index.json",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_scenarios.json",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_delivery_contract.json",
     "KM_IDSystem/scripts/check_worker_queue_baseline.py",
     "KM_IDSystem/scripts/check_worker_queue_scenarios.py",
     "KM_IDSystem/scripts/check_worker_queue_delivery.py",
+    "KM_IDSystem/scripts/check_worker_queue_stage_review.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_runtime.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_scenarios.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_delivery.py",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_review.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_quality_constraints/stage036_database_quality_constraints_index.json",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_quality_constraints/002_database_quality_constraints.sql",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_quality_constraints/stage036_quality_profile_queries.json",
@@ -732,6 +769,7 @@ REQUIRED_EVENT_IDS = (
     "EVT-IDS-V0_1-STAGE038-P2-20260713-001",
     "EVT-IDS-V0_1-STAGE038-P3-20260713-001",
     "EVT-IDS-V0_1-STAGE038-P4-20260713-001",
+    "EVT-IDS-V0_1-STAGE038-REVIEW-20260713-001",
 )
 
 FORBIDDEN_RUNTIME_PREFIXES = (
@@ -824,15 +862,18 @@ ALLOWED_CHANGED_PATHS = {
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE2_ASYNC_WORKER_QUEUE_SLICE.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE3_WORKER_QUEUE_SCENARIOS.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE4_CLOSEOUT.md",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_STAGE_REVIEW.md",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_baseline_index.json",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_scenarios.json",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_delivery_contract.json",
     "KM_IDSystem/scripts/check_worker_queue_baseline.py",
     "KM_IDSystem/scripts/check_worker_queue_scenarios.py",
     "KM_IDSystem/scripts/check_worker_queue_delivery.py",
+    "KM_IDSystem/scripts/check_worker_queue_stage_review.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_runtime.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_scenarios.py",
     "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_delivery.py",
+    "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_review.py",
     "KM_IDSystem/功能清单.md",
     "KM_IDSystem/开发记录.md",
     "KM_IDSystem/模型参数文件.md",
@@ -1422,6 +1463,40 @@ def evaluate_required_event_semantics(events: list[dict]) -> list[str]:
                 "raw_metadata_content_accessed": "false",
                 "fake_ids_business_data_used": "false",
                 "whole_stage_review_performed": "false",
+            },
+        },
+        "EVT-IDS-V0_1-STAGE038-REVIEW-20260713-001": {
+            "event_type": "stage_review",
+            "task_id": "IDS-V0_1-STAGE038-REVIEW",
+            "acceptance_id": "ACC-STAGE-038",
+            "required_changed_files": {
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_STAGE_REVIEW.md",
+                "KM_IDSystem/scripts/check_worker_queue_stage_review.py",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml",
+                "KM_IDSystem/docs/governance/roadmap.yaml",
+                "KM_IDSystem/docs/governance/events.jsonl",
+            },
+            "required_refs": {
+                "KM_IDSystem/scripts/check_worker_queue_stage_review.py#build_stage038_review_report",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_STAGE_REVIEW.md",
+            },
+            "required_note_assignments": {
+                "review_valid": "true",
+                "stage_review_status": "completed_reviewed_local",
+                "contract_shape_repairs": "3",
+                "external_api_budget_gate_proved": "true",
+                "same_operation_resubmission_available": "false",
+                "production_runtime_activation_performed": "false",
+                "persistent_queue_write_performed": "false",
+                "retry_scheduler_performed": "false",
+                "automatic_lifecycle_runtime_performed": "false",
+                "crash_recovery_runtime_performed": "false",
+                "cleanup_runtime_performed": "false",
+                "database_connection_performed": "false",
+                "raw_metadata_content_accessed": "false",
+                "fake_ids_business_data_used": "false",
+                "github_upload_allowed": "false",
+                "app_reinstall_allowed": "false",
             },
         },
     }
@@ -3616,6 +3691,57 @@ def evaluate_phase_state(
         and "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_STAGE_REVIEW.md"
         in roadmap_stage037_review.get("evidence_refs", [])
     )
+    stage038_node = stage_progress.get("STAGE-038")
+    stage038_node = stage038_node if isinstance(stage038_node, dict) else {}
+    roadmap_stage038 = next(
+        (
+            item
+            for item in roadmap_stages
+            if isinstance(item, dict) and item.get("stage_id") == "IDS-STAGE038"
+        ),
+        {},
+    )
+    roadmap_stage038 = (
+        roadmap_stage038 if isinstance(roadmap_stage038, dict) else {}
+    )
+    roadmap_stage038_review = roadmap_stage038.get("review")
+    roadmap_stage038_review = (
+        roadmap_stage038_review
+        if isinstance(roadmap_stage038_review, dict)
+        else {}
+    )
+    stage038_reviewed_local = (
+        batch_document.get("batch_id") == "IDS-V0_1-BATCH-031-040"
+        and batch_document.get("status") == "stage038_completed_reviewed_local"
+        and upload_gate.get("push_allowed") is False
+        and stage038_node.get("status") == "completed_reviewed_local"
+        and stage038_node.get("completed_phases")
+        == ["Phase 1", "Phase 2", "Phase 3", "Phase 4"]
+        and stage038_node.get("review_status") == "passed"
+        and stage038_node.get("next_stage") == "STAGE-039"
+        and stage038_node.get("next_gate") == "IDS-STAGE039-P1-GATE"
+        and stage038_node.get("current_task_id")
+        == "IDS-V0_1-STAGE038-REVIEW"
+        and stage038_node.get("acceptance_id") == "ACC-STAGE-038"
+        and stage038_node.get("acceptance_status") == "reviewed_local_passed"
+        and decision_node.get("current_task_id")
+        == "IDS-V0_1-STAGE038-REVIEW"
+        and decision_node.get("next_allowed_task_id")
+        == "IDS-V0_1-STAGE039-P1"
+        and decision_node.get("github_upload_allowed") is False
+        and roadmap_document.get("current_stage_id") == "IDS-STAGE038"
+        and roadmap_document.get("current_phase_id") == "IDS-STAGE038-REVIEW"
+        and roadmap_document.get("current_task_id")
+        == "IDS-V0_1-STAGE038-REVIEW"
+        and roadmap_document.get("next_gate_id") == "IDS-STAGE039-P1-GATE"
+        and roadmap_stage038_review.get("review_id")
+        == "IDS-STAGE038-REVIEW"
+        and roadmap_stage038_review.get("task_id")
+        == "IDS-V0_1-STAGE038-REVIEW"
+        and roadmap_stage038_review.get("status") == "completed"
+        and "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_STAGE_REVIEW.md"
+        in roadmap_stage038_review.get("evidence_refs", [])
+    )
     batch_terminal_state = batch_upload_gate_active or batch_uploaded_to_main
     later_stage_state = (
         batch_terminal_state
@@ -3744,6 +3870,7 @@ def evaluate_phase_state(
         or stage038_phase2_active
         or stage038_phase3_active
         or stage038_phase4_closeout
+        or stage038_reviewed_local
     )
     phase2_completed = '      - "Phase 2"' in batch_text
     stage005_active_or_complete = (
@@ -3902,6 +4029,75 @@ def build_stage037_review_governance_report(root: Path | None = None) -> dict:
         issues.append("Stage037 review event governance is invalid")
     if not all(phase_state_checks.values()):
         issues.append("Stage037 reviewed-local state is inconsistent")
+    if not all(data_boundary_checks.values()):
+        issues.append("IDS raw or real-data-only boundary is incomplete")
+    if tracked_forbidden_runtime_files:
+        issues.append("forbidden runtime files are tracked")
+    return {
+        "acceptance_id": ACCEPTANCE_ID,
+        "data_boundary_checks": data_boundary_checks,
+        "event_json_errors": event_json_errors,
+        "event_semantic_errors": event_semantic_errors,
+        "issues": issues,
+        "missing_event_ids": missing_event_ids,
+        "missing_required_files": missing_required_files,
+        "phase_state_checks": phase_state_checks,
+        "stage": STAGE,
+        "tracked_forbidden_runtime_files": tracked_forbidden_runtime_files,
+        "valid": not issues,
+    }
+
+
+def build_stage038_review_governance_report(root: Path | None = None) -> dict:
+    """Return structured governance evidence for the Stage038 review gate."""
+    root = (root or Path(__file__).resolve().parents[3]).resolve()
+    required_paths = {
+        "review_artifact": root
+        / "docs/pursuing_goal/ids_v0_1/STAGE038_STAGE_REVIEW.md",
+        "review_checker": root / "scripts/check_worker_queue_stage_review.py",
+        "batch_lock": root
+        / "docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml",
+        "roadmap": root / "docs/governance/roadmap.yaml",
+        "events": root / "docs/governance/events.jsonl",
+        "root_lock": root / "docs/pursuing_goal/ids_v0_1/V0_1_ROOT_LOCK.yaml",
+        "raw_boundary": root
+        / "docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md",
+        "validator": Path(__file__).resolve(),
+    }
+    missing_required_files = [
+        name for name, path in required_paths.items() if not path.is_file()
+    ]
+
+    def read_text(name: str) -> str:
+        path = required_paths[name]
+        return path.read_text(encoding="utf-8") if path.is_file() else ""
+
+    events, event_json_errors = _parse_events(required_paths["events"])
+    event_ids = {
+        event.get("event_id") for event in events if isinstance(event, dict)
+    }
+    missing_event_ids = [
+        event_id for event_id in REQUIRED_EVENT_IDS if event_id not in event_ids
+    ]
+    event_semantic_errors = evaluate_required_event_semantics(events)
+    batch_text = read_text("batch_lock")
+    roadmap_text = read_text("roadmap")
+    phase_state_checks = evaluate_phase_state(
+        batch_text, roadmap_text, require_structured=True
+    )
+    data_boundary_checks = evaluate_data_boundary(
+        read_text("root_lock"), batch_text, read_text("raw_boundary")
+    )
+    tracked_forbidden_runtime_files = [
+        path for path in _git_ls_files(root) if is_forbidden_runtime_path(path)
+    ]
+    issues: list[str] = []
+    if missing_required_files:
+        issues.append("missing Stage038 review governance files")
+    if event_json_errors or event_semantic_errors or missing_event_ids:
+        issues.append("Stage038 review event governance is invalid")
+    if not all(phase_state_checks.values()):
+        issues.append("Stage038 reviewed-local state is inconsistent")
     if not all(data_boundary_checks.values()):
         issues.append("IDS raw or real-data-only boundary is incomplete")
     if tracked_forbidden_runtime_files:
