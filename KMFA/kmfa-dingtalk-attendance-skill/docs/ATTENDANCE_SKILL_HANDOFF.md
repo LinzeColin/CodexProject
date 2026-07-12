@@ -1,8 +1,8 @@
 # KMFA 钉钉考勤 skill 交接
 
-roadmap_progress: R3 / R3.2
+roadmap_progress: R3 / R3.3
 
-status: READY_FOR_OWNER_REVIEW
+status: EVIDENCE_MISSING
 
 r2_close_commit: b5b06437dfb15bfb0e302c4e735fe2978ddcd579
 
@@ -17,6 +17,42 @@ production_acceptance: NOT_EVALUATED
 owner_usability_status: NOT_ACCEPTED
 
 current_availability: UNAVAILABLE
+
+## R3.3 撤回与证据判定
+
+- `R3.2 真实工作日验收已完成` 声明正式撤回。
+- R3.2 的 fresh DWS official-report query 与内部 parity 只能证明 DWS 读取链自洽，不能替代独立钉钉官方导出原件。
+- 本机已找到 2 份对应 2026-07-10 的 DWS raw；员工集合一致，42 名员工的 9 个官方字段共 378 个单元格，内部差异为 0。
+- 本机未找到可独立冻结的 2026-07-10 钉钉官方 XLS/XLSX/CSV 导出原件，因此 official-export-vs-DWS 逐员工逐字段对账无法执行。
+- 完整对账列应包含员工唯一键、工作日、考勤结果、应出勤天数、出勤天数、休息天数、迟到次数、早退次数、上班缺卡次数、下班缺卡次数和旷工天数；当前只能确认 DWS 侧字段，不能伪造官方导出列映射。
+- 官方原件、预期结果和对账标准均未创建、修改或替换。
+- 因 `EVIDENCE_MISSING`，本轮未进入唯一一次代码修正，也未消耗唯一一次复核。
+- 未运行新 live DWS、未发送、未修改 schedule/time/timezone、未修改 automation、未触碰其他 skill。
+
+r3_3_initial_reconciliation:
+
+- independent_official_export: MISSING
+- dws_raw_count: 2
+- dws_employee_set_match: PASS
+- dws_employee_count: 42
+- dws_official_field_count: 9
+- dws_cell_comparison_count: 378
+- dws_internal_difference_count: 0
+- official_export_vs_dws: NOT_RUN_EVIDENCE_MISSING
+- code_correction: NOT_RUN
+- review: NOT_RUN
+- production_acceptance: NOT_EVALUATED
+- owner_usability_status: NOT_ACCEPTED
+
+r3_3_validation:
+
+- package_validator: PASS
+- sensitive_data_validator: PASS
+- git_whitespace_validation: PASS
+- changed_path_audit: PASS
+- live_dws_run: NO
+- dingtalk_send: NO
+- automation_change: NO
 
 ## R3.2 实施结果
 
