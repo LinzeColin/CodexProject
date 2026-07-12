@@ -1,0 +1,104 @@
+version = 1
+scheduler_policy = "pure_rrule_local_wall_clock_no_explicit_timezone"
+host_clock_snapshot = "Australia/Sydney AEST UTC+10"
+review_when_host_utc_offset_changes = true
+
+[[automations]]
+id = "dws-auth-keepalive-2"
+name = "DWS Auth Keepalive｜钉钉认证自动保活"
+kind = "cron"
+status = "ACTIVE"
+rrule = "RRULE:FREQ=DAILY;BYHOUR=0,4,8,12,16,20;BYMINUTE=20"
+prompt_sha256 = "ea7aa7cea3eb95a5ff43044bdda80b6eb7b57ee15a9f83c0c9a43d3ecc6048be"
+project_id = "cbf3c45e-f4ad-47d7-b397-faf7e3dea35e"
+local_wall_clock_times = ["00:20", "04:20", "08:20", "12:20", "16:20", "20:20"]
+execution_environment = "local"
+cwds = ["/Users/linzezhang/Documents/Codex/2026-07-04/392b1a986ba680338068ddc1c2a0fd0e-https-app-notion-com-p"]
+model = "gpt-5.3-codex-spark"
+reasoning_effort = "xhigh"
+profile_selection = "machine_private_pinned_profile"
+success_gate = "success_and_authenticated_and_token_valid_and_refresh_token_valid_and_profile_match_and_future_expiries_and_doctor_no_fail"
+dws_timeout_seconds = 20
+outer_timeout_seconds = 25
+automatic_login_allowed = false
+ledger_owner = "deterministic_wrapper"
+
+[[automations]]
+id = "kmfa"
+name = "KMFA｜每日钉钉考勤检查｜晨报"
+kind = "cron"
+status = "ACTIVE"
+rrule = "RRULE:FREQ=DAILY;BYHOUR=12;BYMINUTE=35"
+prompt_sha256 = "3257b41aa5a64cc6323caa33df0cc1646d679d13f426833e29b94edf01f95a4a"
+business_clock = "Asia/Shanghai"
+business_time = "10:35"
+local_wall_clock_time = "12:35"
+execution_environment = "local"
+cwds = ["/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa"]
+model = "gpt-5.3-codex-spark"
+reasoning_effort = "xhigh"
+
+[[automations]]
+id = "kmfa-3"
+name = "KMFA｜每日钉钉考勤检查｜晚报"
+kind = "cron"
+status = "ACTIVE"
+rrule = "RRULE:FREQ=WEEKLY;BYHOUR=20;BYMINUTE=0;BYDAY=SU,MO,TU,WE,TH,FR,SA"
+prompt_sha256 = "550ace42ec612e88e05fb705592cfedbd403e4e0a8b479422f504258db68be26"
+project_id = "40dd52a0-b6eb-4528-9577-0cb5f4f86e3e"
+business_clock = "Asia/Shanghai"
+local_wall_clock_time = "20:00"
+summary_datetime_source = "actual_run_datetime_in_business_clock"
+fixed_local_wall_clock = true
+offset_conversion_allowed = false
+execution_environment = "local"
+cwds = ["/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa"]
+model = "gpt-5.3-codex-spark"
+reasoning_effort = "xhigh"
+
+[[automations]]
+id = "kmfa-4"
+name = "KMFA｜钉钉工作检查"
+kind = "cron"
+status = "ACTIVE"
+rrule = "RRULE:FREQ=DAILY;BYHOUR=13,19;BYMINUTE=5,35;BYSETPOS=2,3"
+prompt_sha256 = "2686367acd2661fd5f38e57f60039f62d2dd52945504b59e9bc452780b022a19"
+project_id = "40dd52a0-b6eb-4528-9577-0cb5f4f86e3e"
+business_clock = "Asia/Shanghai"
+business_times = ["11:35", "17:05"]
+local_wall_clock_times = ["13:35", "19:05"]
+execution_environment = "local"
+cwds = ["/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa"]
+model = "gpt-5.3-codex-spark"
+reasoning_effort = "xhigh"
+
+[[automations]]
+id = "kmfa-5"
+name = "KMFA｜资金周报自动化"
+kind = "cron"
+status = "ACTIVE"
+rrule = "RRULE:FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0"
+business_clock = "Australia/Sydney"
+business_times = ["Monday 11:00", "Saturday 11:00"]
+local_wall_clock_times = ["Monday 11:00", "Saturday 11:00"]
+execution_environment = "local"
+cwds = ["/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa"]
+model = "gpt-5.3-codex-spark"
+reasoning_effort = "xhigh"
+
+[[automations]]
+id = "kmfa-dws"
+name = "KMFA｜上游每日钉钉DWS归档"
+kind = "cron"
+status = "ACTIVE"
+rrule = "RRULE:FREQ=WEEKLY;BYHOUR=11;BYMINUTE=0;BYDAY=SU,MO,TU,WE,TH,FR,SA"
+prompt_sha256 = "f1746f7551d640ede455475c391b2c4d60e1b44f20f0bd0eab07e34bc20c7e79"
+schedule_owner = "user"
+schedule_management_scope = "readback_only"
+business_clock = "Australia/Sydney"
+business_times = ["11:00"]
+local_wall_clock_times = ["11:00"]
+execution_environment = "local"
+cwds = ["/Users/linzezhang/Documents/Codex/2026-07-04/392b1a986ba680338068ddc1c2a0fd0e-https-app-notion-com-p"]
+model = "gpt-5.3-codex-spark"
+reasoning_effort = "xhigh"

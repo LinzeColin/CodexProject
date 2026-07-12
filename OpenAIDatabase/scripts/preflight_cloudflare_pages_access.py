@@ -18,16 +18,27 @@ if str(SCRIPT_DIR) not in sys.path:
 
 from audit_memory_atlas_release import AuditError as ReleaseAuditError  # noqa: E402
 from audit_memory_atlas_release import audit_release  # noqa: E402
+from memory_atlas_cloudflare_contract import (  # noqa: E402
+    DEPLOYMENT_MODE,
+    PAGES_DEPLOY_COMMAND,
+    PROJECT_NAME,
+    PUBLISH_DIR_ARG,
+)
 
 
 DOC_URLS = {
     "cloudflare_pages_direct_upload": "https://developers.cloudflare.com/pages/get-started/direct-upload/",
     "cloudflare_pages_ci_direct_upload": "https://developers.cloudflare.com/pages/how-to/use-direct-upload-with-continuous-integration/",
     "cloudflare_pages_configuration": "https://developers.cloudflare.com/pages/functions/wrangler-configuration/",
+    "cloudflare_workers_static_assets": "https://developers.cloudflare.com/workers/static-assets/",
     "cloudflare_access_self_hosted": "https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/self-hosted-public-app/",
     "cloudflare_access_policies": "https://developers.cloudflare.com/cloudflare-one/access-controls/policies/",
     "wrangler_pages_commands": "https://developers.cloudflare.com/workers/wrangler/commands/pages/",
 }
+
+WRANGLER_PAGES_CONFIG = "pages_config"
+WRANGLER_WORKERS_MIGRATION_CONFIG = "workers_assets_migration_ready"
+WRANGLER_UNSUPPORTED_CONFIG = "unsupported_or_ambiguous"
 
 FORBIDDEN_TEMPLATE_PATTERNS = [
     re.compile(pattern, re.IGNORECASE)
@@ -51,6 +62,30 @@ def load_json(path: Path) -> Any:
 
 def add_check(checks: list[dict[str, str]], name: str, status: str, evidence: str) -> None:
     checks.append({"name": name, "status": status, "evidence": evidence})
+
+
+def static_output_directory(config: dict[str, Any]) -> str:
+    pages_directory = config.get("pages_build_output_dir")
+    if isinstance(pages_directory, str) and pages_directory.strip():
+        return pages_directory.strip().removeprefix("./")
+    assets = config.get("assets")
+    assets_directory = assets.get("directory") if isinstance(assets, dict) else None
+    if isinstance(assets_directory, str) and assets_directory.strip():
+        return assets_directory.strip().removeprefix("./")
+    return ""
+
+
+def wrangler_config_mode(config: dict[str, Any]) -> str:
+    pages_directory = config.get("pages_build_output_dir")
+    assets = config.get("assets")
+    assets_directory = assets.get("directory") if isinstance(assets, dict) else None
+    has_pages_config = isinstance(pages_directory, str) and bool(pages_directory.strip())
+    has_workers_config = isinstance(assets_directory, str) and bool(assets_directory.strip())
+    if has_pages_config == has_workers_config:
+        return WRANGLER_UNSUPPORTED_CONFIG
+    if has_pages_config:
+        return WRANGLER_PAGES_CONFIG
+    return WRANGLER_WORKERS_MIGRATION_CONFIG
 
 
 def require(checks: list[dict[str, str]], name: str, condition: bool, success: str, failure: str) -> None:
@@ -124,22 +159,69 @@ def audit_docs(repo_root: Path, checks: list[dict[str, str]]) -> None:
     )
 
 
-def audit_wrangler(repo_root: Path, checks: list[dict[str, str]]) -> None:
+def audit_delivery_mode(
+    repo_root: Path,
+    wrangler_mode: str,
+    checks: list[dict[str, str]],
+) -> None:
+    expected_command = [
+        "npx",
+        "wrangler",
+        "pages",
+        "deploy",
+        PUBLISH_DIR_ARG,
+        "--project-name",
+        PROJECT_NAME,
+    ]
+    docs = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in [
+            repo_root / "docs/MEMORY_ATLAS_DEPLOYMENT.md",
+            repo_root / "docs/MEMORY_ATLAS_CLOUDFLARE_RUNBOOK.md",
+        ]
+        if path.exists()
+    )
+    documented = all(
+        marker in docs
+        for marker in [
+            DEPLOYMENT_MODE,
+            "Pages Direct Upload",
+            "Workers Static Assets",
+            "wrangler pages deploy",
+            "wrangler deploy",
+        ]
+    )
+    require(
+        checks,
+        "cloudflare_delivery_mode_contract",
+        DEPLOYMENT_MODE == "pages_direct_upload_with_workers_migration_ready_config"
+        and wrangler_mode == WRANGLER_WORKERS_MIGRATION_CONFIG
+        and PAGES_DEPLOY_COMMAND == expected_command
+        and documented,
+        "production uses explicit Pages Direct Upload while wrangler.jsonc remains Workers Static Assets migration-ready",
+        "deployment helper, wrangler mode, or dual-mode documentation does not match the approved delivery contract",
+    )
+
+
+def audit_wrangler(repo_root: Path, checks: list[dict[str, str]]) -> str:
     config_path = repo_root / "wrangler.jsonc"
     require(checks, "wrangler_config_present", config_path.exists(), "wrangler.jsonc exists", "missing wrangler.jsonc")
     if not config_path.exists():
-        return
+        return WRANGLER_UNSUPPORTED_CONFIG
     config = load_json(config_path)
+    mode = wrangler_config_mode(config)
     require(
         checks,
-        "wrangler_pages_config",
+        "wrangler_static_output_config",
         config.get("name") == "openai-memory-atlas"
-        and config.get("pages_build_output_dir") == "apps/memory-atlas/dist"
+        and static_output_directory(config) == "apps/memory-atlas/dist"
+        and mode in {WRANGLER_PAGES_CONFIG, WRANGLER_WORKERS_MIGRATION_CONFIG}
         and isinstance(config.get("compatibility_date"), str)
         and bool(config.get("compatibility_date")),
-        "wrangler.jsonc names Pages project and build output",
-        "wrangler.jsonc missing name, pages_build_output_dir, or compatibility_date",
+        f"wrangler.jsonc names the Memory Atlas project and static output in {mode} mode",
+        "wrangler.jsonc has an unsupported or ambiguous static output mode",
     )
+    return mode
 
 
 def audit_live_env(checks: list[dict[str, str]]) -> None:
@@ -156,7 +238,8 @@ def audit_live_env(checks: list[dict[str, str]]) -> None:
 def preflight(repo_root: Path, publish_dir: Path | None = None, require_live_env: bool = False) -> dict[str, Any]:
     repo_root = repo_root.resolve()
     checks: list[dict[str, str]] = []
-    audit_wrangler(repo_root, checks)
+    wrangler_mode = audit_wrangler(repo_root, checks)
+    audit_delivery_mode(repo_root, wrangler_mode, checks)
     audit_templates(repo_root, checks)
     audit_docs(repo_root, checks)
 
@@ -176,8 +259,20 @@ def preflight(repo_root: Path, publish_dir: Path | None = None, require_live_env
 
     failed = [check for check in checks if check["status"] == "FAIL"]
     if failed:
-        raise PreflightError(json.dumps({"status": "FAIL", "checks": checks}, ensure_ascii=False, indent=2))
-    return {"status": "PASS", "checks": checks, "docs": DOC_URLS}
+        raise PreflightError(
+            json.dumps(
+                {"status": "FAIL", "deployment_mode": DEPLOYMENT_MODE, "checks": checks},
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
+    return {
+        "status": "PASS",
+        "deployment_mode": DEPLOYMENT_MODE,
+        "wrangler_config_mode": wrangler_mode,
+        "checks": checks,
+        "docs": DOC_URLS,
+    }
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:

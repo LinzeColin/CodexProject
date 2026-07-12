@@ -1,0 +1,6 @@
+requirement_id,before_status,after_status,r5_evidence,remaining_gap,next_remediation_phase
+S14-AC01,VERIFIED,VERIFIED,"Shared fixed runner executes all eight no-write steps through atlasctl, the exact loopback API and the rendered local product workspace","None for this criterion",R8
+S14-AC02,FAILED,FAILED,"R5 reruns the historical S14 P1 validator but does not integrate the new browser gates into the aggregate final audit","Final audit must include current R1-R7 browser, runtime, parity and recovery gates",R8
+S14-AC03,VERIFIED,VERIFIED,"R5 current-state report, status, development ledger and handoff remain Chinese-first and supersede historical completion text","R8 must preserve current-state supersession in final records",R8
+S14-AC04,PARTIAL,VERIFIED,"Rendered Owner Daily entry gives an explicit start, human conclusion, eight ordered results and fixed retry for only the failed step across three viewports","None for this criterion",R8
+S14-AC05,FAILED,FAILED,"R5 records its local phase truth without changing invalid historical aggregate PASS markers","R8 must rebuild queryable aggregate stage-gate truth from corrected acceptance evidence",R8

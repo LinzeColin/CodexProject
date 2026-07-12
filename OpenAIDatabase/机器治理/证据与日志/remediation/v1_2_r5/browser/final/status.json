@@ -1,0 +1,108 @@
+{
+  "status": "PASS",
+  "phase": "R5_OWNER_DAILY_PRODUCT_ENTRY",
+  "owner_daily_api_version": "memory_atlas_owner_daily_api.v1_2_r5",
+  "local_url": "http://127.0.0.1:4185",
+  "static_url": "http://127.0.0.1:4186",
+  "layout": {
+    "desktop-low-height": {
+      "documentClientWidth": 1470,
+      "documentScrollWidth": 1470,
+      "surface": {
+        "left": 215,
+        "right": 1255,
+        "top": 16,
+        "bottom": 645
+      },
+      "bodyClientWidth": 1038,
+      "bodyScrollWidth": 1038,
+      "summaryBottom": 237.4375,
+      "stepListTop": 249.4375,
+      "stepOverflow": 0,
+      "screenshot": "owner-daily-partial-desktop-low-height-1470x661.png"
+    },
+    "desktop-standard": {
+      "documentClientWidth": 1440,
+      "documentScrollWidth": 1440,
+      "surface": {
+        "left": 200,
+        "right": 1240,
+        "top": 70,
+        "bottom": 830
+      },
+      "bodyClientWidth": 1038,
+      "bodyScrollWidth": 1038,
+      "summaryBottom": 291.4375,
+      "stepListTop": 303.4375,
+      "stepOverflow": 0,
+      "screenshot": "owner-daily-partial-desktop-standard-1440x900.png"
+    },
+    "mobile": {
+      "documentClientWidth": 390,
+      "documentScrollWidth": 390,
+      "surface": {
+        "left": 8,
+        "right": 382,
+        "top": 8,
+        "bottom": 836
+      },
+      "bodyClientWidth": 372,
+      "bodyScrollWidth": 372,
+      "summaryBottom": 352.75,
+      "stepListTop": 361.75,
+      "stepOverflow": 0,
+      "screenshot": "owner-daily-partial-mobile-390x844.png"
+    }
+  },
+  "workflow": {
+    "initial_status": "PARTIAL_FAILURE",
+    "initial_completed_count": 7,
+    "initial_failed_count": 1,
+    "failed_step_id": "audit",
+    "retry_status": "PASS",
+    "merged_completed_count": 8,
+    "merged_failed_count": 0,
+    "child_call_count": 9,
+    "fixed_retry_only": true,
+    "human_conclusion_before_machine_details": true
+  },
+  "security": {
+    "remote_origin_rejected": true,
+    "extra_argv_rejected": true,
+    "unknown_step_rejected": true,
+    "exact_browser_request_bodies": [
+      {
+        "action": "run"
+      },
+      {
+        "action": "retry",
+        "step_id": "audit"
+      }
+    ],
+    "source_unchanged": true,
+    "runtime_unchanged": true,
+    "audit_metadata_only": true,
+    "canonical_repo_mutation": false,
+    "remote_push": false
+  },
+  "hosted_static": {
+    "owner_daily_post_count": 0,
+    "local_handoff": "http://127.0.0.1:4177",
+    "executable_button_exposed": false,
+    "fake_workspace_opened": false
+  },
+  "artifacts": {
+    "source_sha256_before": "d554213d9bdf3779869cfe510029f8a5b390c90486c19d73dc31a67016ee5aac",
+    "source_sha256_after": "d554213d9bdf3779869cfe510029f8a5b390c90486c19d73dc31a67016ee5aac",
+    "runtime_sha256_before": "85b0360445a16e50bba551c732f2507423bafa76a2a4c401ce73cbde420502d4",
+    "runtime_sha256_after": "85b0360445a16e50bba551c732f2507423bafa76a2a4c401ce73cbde420502d4",
+    "owner_daily_audit_row_count": 2
+  },
+  "screenshots": [
+    "owner-daily-partial-desktop-low-height-1470x661.png",
+    "owner-daily-partial-desktop-standard-1440x900.png",
+    "owner-daily-partial-mobile-390x844.png",
+    "owner-daily-pass-after-fixed-retry.png",
+    "owner-daily-hosted-static-read-only.png"
+  ]
+}

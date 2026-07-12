@@ -1,0 +1,43 @@
+{
+  "schema_version": "chatgpt_deep_explore.v1_2_s12_p3",
+  "task_id": "MA-V12-S12P3",
+  "acceptance_id": "ACC-MA-V12-S12P3",
+  "status": "phase_s12_p3_chatgpt_deep_explore_completed_pending_s12_review",
+  "default_mode": "prefill_only",
+  "allowed_modes": [
+    "prefill_only",
+    "auto_submit"
+  ],
+  "chatgpt_base_url": "https://chatgpt.com/",
+  "max_prefill_chars": 6000,
+  "auto_submit_enabled": false,
+  "auto_submit_requires_explicit_config": true,
+  "auto_submit_requires_explicit_user_confirmation": true,
+  "source_reports": [
+    "data/derived/personalization/personalization_export.json",
+    "data/derived/personalization/personalization_prompt_human_zh.md",
+    "data/derived/behavior_intelligence/latent_signals.json",
+    "data/derived/behavior_intelligence/self_iteration_suggestions.json",
+    "data/derived/behavior_intelligence/decision_debt_ledger.json",
+    "data/derived/agent_collaboration/agent_collaboration_quality_report.json"
+  ],
+  "outputs": {
+    "prompt": "data/derived/chatgpt_deep_explore/latest_memory_analysis_prompt.md",
+    "machine": "data/derived/chatgpt_deep_explore/chatgpt_deep_explore_export.json"
+  },
+  "boundaries": {
+    "user_trigger_required": true,
+    "no_silent_send": true,
+    "no_cookie_token_secret_export": true,
+    "raw_mutation": false,
+    "proposal_apply_execution": false,
+    "github_main_upload": false,
+    "remote_push": false
+  },
+  "failure_explanations_zh": {
+    "auto_submit_not_enabled": "auto_submit 未开启：S12 P3 默认只允许 prefill_only，需要配置和显式确认后才可发送。",
+    "open_failed": "无法自动打开 ChatGPT，请复制机器可复制文本后手动粘贴。",
+    "send_failed": "发送失败：本阶段必须保留中文失败原因，并保持 No silent send。"
+  },
+  "next_phase": "S12 Review"
+}

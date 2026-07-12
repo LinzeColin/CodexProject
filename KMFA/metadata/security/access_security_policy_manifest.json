@@ -1,5 +1,5 @@
 {
-  "content_hash": "sha256:ed370b4715bf1f82a1322d00add1d73a8db5b289f4befa9fddff709689edb95b",
+  "content_hash": "sha256:cf5520fc752af300fbf6dcf71372db93b885c704842996c5146b016cfa2202fc",
   "evidence_refs": [
     "KMFA/tools/access_security_policy.py",
     "KMFA/tools/check_s17_p1_access_security.py",
@@ -7,7 +7,7 @@
     "KMFA/stage_artifacts/S17_P1_access_security/human/s17_p1_completion_record.md",
     "KMFA/stage_artifacts/S17_P1_access_security/human/test_results.md"
   ],
-  "generated_at": "2026-07-01T23:55:00+10:00",
+  "generated_at": "2026-07-08T09:35:00+10:00",
   "output_refs": {
     "audit_policy": "KMFA/metadata/security/audit_log_policy.jsonl",
     "manifest": "KMFA/metadata/security/access_security_policy_manifest.json",
@@ -15,8 +15,38 @@
     "sensitive_policy": "KMFA/metadata/security/public_repo_sensitive_data_policy.jsonl",
     "stage_manifest": "KMFA/stage_artifacts/S17_P1_access_security/machine/s17_p1_manifest.json"
   },
+  "owner_authorized_plaintext_github_policy": {
+    "actual_plaintext_files_committed_by_this_manifest": false,
+    "allowed": true,
+    "allowed_categories": [
+      "raw_business_data",
+      "zip_archive",
+      "excel_workbook",
+      "pdf_document",
+      "private_csv",
+      "sqlite_database",
+      "bank_statement",
+      "contract_document",
+      "payroll_salary",
+      "tax_filing",
+      "field_plaintext",
+      "true_account_identifier",
+      "true_money_amount",
+      "true_customer_or_project_name"
+    ],
+    "credential_secret_public_repo_allowed": false,
+    "denied_categories": [
+      "credential_secret"
+    ],
+    "owner_authorization_source": "current_thread_owner_instruction_or_signed_upload_manifest",
+    "policy_mode": "owner_authorized_plaintext_github_upload",
+    "policy_version": "SEC-KMFA-S17P1-PUBLIC-REPO-OWNER-PLAINTEXT-002",
+    "requires_explicit_owner_authorization": true,
+    "requires_upload_manifest": true,
+    "tracked_upload_manifest": "KMFA/metadata/security/owner_authorized_plaintext_upload_manifest.jsonl"
+  },
   "phase": "P1",
-  "policy_version": "KMFA-S17P1-ACCESS-SECURITY-PUBLIC-SAFE-001",
+  "policy_version": "KMFA-S17P1-ACCESS-SECURITY-OWNER-PLAINTEXT-002",
   "project_id": "KMFA",
   "public_repo_safety": {
     "contract_payroll_tax_material_committed": false,
@@ -32,15 +62,16 @@
     "audit_log_policy_complete": true,
     "business_decision_basis_allowed": false,
     "business_execution_allowed": false,
+    "credential_secret_public_repo_allowed": false,
     "external_connector_allowed": false,
     "formal_report_allowed": false,
-    "github_upload_allowed": false,
+    "github_upload_allowed": true,
     "lineage_full_check_allowed": false,
     "notification_delivery_allowed": false,
     "notification_full_report_body_allowed": false,
-    "phase_completion_upload_allowed": false,
-    "raw_sensitive_public_repo_allowed": false,
-    "release_block_reason": "s17_p1_is_local_access_security_policy_only",
+    "phase_completion_upload_allowed": true,
+    "raw_sensitive_public_repo_allowed": true,
+    "release_block_reason": "owner_authorized_plaintext_github_policy_only_not_business_release",
     "role_permission_matrix_complete": true,
     "sensitive_public_repo_policy_enforced": true,
     "stage17_review_allowed": false
@@ -93,7 +124,7 @@
   "summary": {
     "audit_action_type_count": 5,
     "notification_scope": "log_policy_only_no_delivery_in_s17_p1",
-    "public_repo_safety_status": "enforced_hash_or_ref_only",
+    "public_repo_safety_status": "owner_authorized_plaintext_github_allowed_except_credentials",
     "role_count": 4,
     "sensitive_policy_category_count": 15
   },

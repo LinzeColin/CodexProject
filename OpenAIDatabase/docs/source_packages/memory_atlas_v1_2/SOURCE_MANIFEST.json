@@ -1,0 +1,37 @@
+{
+  "schema_version": "memory_atlas.source_package_manifest.v1",
+  "source_package_id": "memory-atlas-v1.2-four-line-14-stage",
+  "restored_at": "2026-07-10T07:52:10Z",
+  "historical_evidence": {
+    "codex_task_id": "019f3b5f-b76a-7df2-bc43-706f89ce3820",
+    "observed_at": "2026-07-07T21:27:54Z",
+    "archive_file_count": 32,
+    "archive_uncompressed_bytes": 83145,
+    "manifest_payload_count": 30,
+    "manifest_payload_failures": 0
+  },
+  "files": [
+    {
+      "original_name": "v1.2_四线14Stage升级_Roadmap.md",
+      "storage_name": "v1.2_四线14Stage升级_Roadmap.md",
+      "size": 22261,
+      "sha256": "699a8fe5f99a5edc88fec1f8940c4339f7b9b291bd31830f946f521f80904a71",
+      "restore_mode": "copy"
+    },
+    {
+      "original_name": "Memory_Atlas_v1.2_四线14Stage升级_TaskPack.zip",
+      "storage_name": "Memory_Atlas_v1.2_四线14Stage升级_TaskPack.zip.part",
+      "size": 48133,
+      "sha256": "38e21ae3e94d860e6a40c70a629c8f7048f889164358df7b184bd8caf7bf2472",
+      "restore_mode": "copy_part_to_original_name"
+    }
+  ],
+  "roadmap_matches_taskpack_path": "v1.2_四线14Stage升级_TaskPack/02_Stage_Phase_Task_Roadmap_含PursuingGoal.md",
+  "inner_zip_sha256_metadata": {
+    "value": "6b1951ebddd53c18adf72a7128ceee172aca301b1fc9d49aafd418c4f5c10e43",
+    "authoritative": false,
+    "reason": "Does not match the historically observed containing ZIP hash."
+  },
+  "contains_credentials": false,
+  "github_push_permitted_in_r0": false
+}

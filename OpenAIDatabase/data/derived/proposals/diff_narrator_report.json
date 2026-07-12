@@ -1,0 +1,149 @@
+{
+  "acceptance_id": "ACC-MA-V12-S13P2",
+  "applies_proposals": false,
+  "as_of": "2026-07-08T08:18:30Z",
+  "config_path": "机器治理/运行门禁/diff_narrator.v1_2_s13_p2.json",
+  "contract_version": "diff_narrator.v1_2_s13_p2",
+  "dry_run": false,
+  "human_homepage_policy": {
+    "no_full_machine_diff": true,
+    "summary_only": true
+  },
+  "machine_diff_evidence_path": "机器治理/证据与日志/proposal_diffs/diff_narrator_machine_diff.v1_2_s13_p2.json",
+  "narrations": [
+    {
+      "affected_surfaces_zh": "影响什么：影响 memory 范围内的 .codex/memories/extensions/ad_hoc/notes/；不影响 data/public_raw、data/raw、credentials、cookies 或 tokens。",
+      "apply_execution_allowed": false,
+      "current_state": "pending_human_review",
+      "how_to_rollback_zh": "如何回滚：当前 phase 未写目标文件；若后续 proposal 被采纳，使用对应 commit 的 git revert 或 proposal rollback。",
+      "how_to_verify_zh": "如何验证：运行 python OpenAIDatabase/scripts/atlasctl.py audit --check self-iteration-safety；pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:v1.2-s09-p2。",
+      "machine_diff_inline_in_human_summary": false,
+      "machine_diff_ref": "机器治理/证据与日志/proposal_diffs/diff_narrator_machine_diff.v1_2_s13_p2.json",
+      "proposal_id": "proposal_774984d13e58",
+      "raw_apply_target_allowed": false,
+      "risk_level": "medium",
+      "target_files": [
+        ".codex/memories/extensions/ad_hoc/notes/"
+      ],
+      "target_type": "memory",
+      "what_changed_zh": "改了什么：如果后续采纳，将把 .codex/memories/extensions/ad_hoc/notes/ 从「当前 phase 不修改目标文件。」推进到「若后续人类批准，再在对应 phase 生成最小 diff。」。S13 P2 只解释 diff，不写文件。",
+      "why_changed_zh": "为什么改：来自 latent signal latent_asset_compounding_b40981a7787e 的自我迭代候选；需要人类确认后才可转为 apply。 预期收益是：下一次交接时可更快恢复 可能存在把「AI 记忆与 agent 工作流、经营与管理决策」固化为可恢复资产的复利空间。，但只有通过复跑证据后才写入长期记忆。"
+    },
+    {
+      "affected_surfaces_zh": "影响什么：影响 config 范围内的 OpenAIDatabase/scripts/、OpenAIDatabase/apps/memory-atlas/scripts/；不影响 data/public_raw、data/raw、credentials、cookies 或 tokens。",
+      "apply_execution_allowed": false,
+      "current_state": "pending_human_review",
+      "how_to_rollback_zh": "如何回滚：当前 phase 未写目标文件；若后续 proposal 被采纳，使用对应 commit 的 git revert 或 proposal rollback。",
+      "how_to_verify_zh": "如何验证：运行 python OpenAIDatabase/scripts/atlasctl.py audit --check self-iteration-safety；pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:v1.2-s09-p2。",
+      "machine_diff_inline_in_human_summary": false,
+      "machine_diff_ref": "机器治理/证据与日志/proposal_diffs/diff_narrator_machine_diff.v1_2_s13_p2.json",
+      "proposal_id": "proposal_23b186877463",
+      "raw_apply_target_allowed": false,
+      "risk_level": "medium",
+      "target_files": [
+        "OpenAIDatabase/scripts/",
+        "OpenAIDatabase/apps/memory-atlas/scripts/"
+      ],
+      "target_type": "config",
+      "what_changed_zh": "改了什么：如果后续采纳，将把 OpenAIDatabase/scripts/、OpenAIDatabase/apps/memory-atlas/scripts/ 从「当前 phase 不修改目标文件。」推进到「若后续人类批准，再在对应 phase 生成最小 diff。」。S13 P2 只解释 diff，不写文件。",
+      "why_changed_zh": "为什么改：来自 latent signal latent_automation_reuse_ef89cc773c20 的自我迭代候选；需要人类确认后才可转为 apply。 预期收益是：若 下一轮只选一个最高分候选，验证是否能用一个 dry-run 命令减少重复操作；若不能，就降级为记录项。 成立，可减少重复操作；若不成立，proposal 到期后归档。"
+    },
+    {
+      "affected_surfaces_zh": "影响什么：影响 AGENTS 范围内的 AGENTS.md、OpenAIDatabase/开发记录.md；不影响 data/public_raw、data/raw、credentials、cookies 或 tokens。",
+      "apply_execution_allowed": false,
+      "current_state": "pending_human_review",
+      "how_to_rollback_zh": "如何回滚：当前 phase 未写目标文件；若后续 proposal 被采纳，使用对应 commit 的 git revert 或 proposal rollback。",
+      "how_to_verify_zh": "如何验证：运行 python OpenAIDatabase/scripts/atlasctl.py audit --check self-iteration-safety；pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:v1.2-s09-p2。",
+      "machine_diff_inline_in_human_summary": false,
+      "machine_diff_ref": "机器治理/证据与日志/proposal_diffs/diff_narrator_machine_diff.v1_2_s13_p2.json",
+      "proposal_id": "proposal_7bd8a6c96e61",
+      "raw_apply_target_allowed": false,
+      "risk_level": "medium",
+      "target_files": [
+        "AGENTS.md",
+        "OpenAIDatabase/开发记录.md"
+      ],
+      "target_type": "AGENTS",
+      "what_changed_zh": "改了什么：如果后续采纳，将把 AGENTS.md、OpenAIDatabase/开发记录.md 从「当前 phase 不修改目标文件。」推进到「若后续人类批准，再在对应 phase 生成最小 diff。」。S13 P2 只解释 diff，不写文件。",
+      "why_changed_zh": "为什么改：来自 latent signal latent_scope_contract_faa8ed208720 的自我迭代候选；需要人类确认后才可转为 apply。 预期收益是：下一次同类 run 可更早锁定非目标列表，但不会在本 phase 改写 AGENTS。"
+    },
+    {
+      "affected_surfaces_zh": "影响什么：影响 style 范围内的 OpenAIDatabase/人类可读/；不影响 data/public_raw、data/raw、credentials、cookies 或 tokens。",
+      "apply_execution_allowed": false,
+      "current_state": "pending_human_review",
+      "how_to_rollback_zh": "如何回滚：当前 phase 未写目标文件；若后续 proposal 被采纳，使用对应 commit 的 git revert 或 proposal rollback。",
+      "how_to_verify_zh": "如何验证：运行 python OpenAIDatabase/scripts/atlasctl.py audit --check self-iteration-safety；pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:v1.2-s09-p2。",
+      "machine_diff_inline_in_human_summary": false,
+      "machine_diff_ref": "机器治理/证据与日志/proposal_diffs/diff_narrator_machine_diff.v1_2_s13_p2.json",
+      "proposal_id": "proposal_113e7e6167df",
+      "raw_apply_target_allowed": false,
+      "risk_level": "low",
+      "target_files": [
+        "OpenAIDatabase/人类可读/"
+      ],
+      "target_type": "style",
+      "what_changed_zh": "改了什么：如果后续采纳，将把 OpenAIDatabase/人类可读/ 从「当前 phase 不修改目标文件。」推进到「若后续人类批准，再在对应 phase 生成最小 diff。」。S13 P2 只解释 diff，不写文件。",
+      "why_changed_zh": "为什么改：来自 latent signal latent_quality_ceiling_38f9e3b406ca 的自我迭代候选；需要人类确认后才可转为 apply。 预期收益是：人类页面应更短、更可读；若影响验收可追溯性，则不采纳。"
+    },
+    {
+      "affected_surfaces_zh": "影响什么：影响 personalization 范围内的 OpenAIDatabase/人类可读/、OpenAIDatabase/docs/reviews/；不影响 data/public_raw、data/raw、credentials、cookies 或 tokens。",
+      "apply_execution_allowed": false,
+      "current_state": "pending_human_review",
+      "how_to_rollback_zh": "如何回滚：当前 phase 未写目标文件；若后续 proposal 被采纳，使用对应 commit 的 git revert 或 proposal rollback。",
+      "how_to_verify_zh": "如何验证：运行 python OpenAIDatabase/scripts/atlasctl.py audit --check self-iteration-safety；pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:v1.2-s09-p2。",
+      "machine_diff_inline_in_human_summary": false,
+      "machine_diff_ref": "机器治理/证据与日志/proposal_diffs/diff_narrator_machine_diff.v1_2_s13_p2.json",
+      "proposal_id": "proposal_a751d74b38e1",
+      "raw_apply_target_allowed": false,
+      "risk_level": "low",
+      "target_files": [
+        "OpenAIDatabase/人类可读/",
+        "OpenAIDatabase/docs/reviews/"
+      ],
+      "target_type": "personalization",
+      "what_changed_zh": "改了什么：如果后续采纳，将把 OpenAIDatabase/人类可读/、OpenAIDatabase/docs/reviews/ 从「当前 phase 不修改目标文件。」推进到「若后续人类批准，再在对应 phase 生成最小 diff。」。S13 P2 只解释 diff，不写文件。",
+      "why_changed_zh": "为什么改：来自 latent signal latent_discussion_artifact_e73037ee7630 的自我迭代候选；需要人类确认后才可转为 apply。 预期收益是：后续对话可更快形成可验收产物；若没有复用价值，proposal 到期归档。"
+    }
+  ],
+  "output_contract": {
+    "machine_config": "机器治理/运行门禁/diff_narrator.v1_2_s13_p2.json",
+    "machine_diff_evidence": "机器治理/证据与日志/proposal_diffs/diff_narrator_machine_diff.v1_2_s13_p2.json",
+    "next_phase": "S13 P3",
+    "report": "data/derived/proposals/diff_narrator_report.json"
+  },
+  "output_path": "data/derived/proposals/diff_narrator_report.json",
+  "phase_boundary": {
+    "does_not_apply_proposals": true,
+    "does_not_execute_rollback": true,
+    "does_not_modify_raw": true,
+    "does_not_push_remote": true,
+    "does_not_upload_github_main": true,
+    "next_phase": "S13 P3"
+  },
+  "raw_mutation": false,
+  "required_human_sections": [
+    "what_changed_zh",
+    "why_changed_zh",
+    "affected_surfaces_zh",
+    "how_to_verify_zh",
+    "how_to_rollback_zh"
+  ],
+  "schema_version": "openai_database.diff_narrator.v1_2_s13_p2",
+  "source_reports": [
+    "data/derived/proposals/proposal_state_machine_report.json",
+    "data/derived/behavior_intelligence/self_iteration_suggestions.json"
+  ],
+  "status": "phase_s13_p2_diff_narrator_completed_pending_s13_p3",
+  "summary": {
+    "all_narrations_have_required_sections": true,
+    "machine_diff_count": 5,
+    "machine_diff_kept_out_of_human_homepage": true,
+    "missing_source_count": 0,
+    "missing_sources": [],
+    "narration_count": 5,
+    "proposal_apply_execution": false,
+    "raw_mutation": false
+  },
+  "task_id": "MA-V12-S13P2",
+  "writes_files": true
+}

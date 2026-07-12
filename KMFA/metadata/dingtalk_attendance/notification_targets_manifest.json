@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "automation_name": "每日早晚钉钉考勤检查",
+  "delivery_enabled": false,
+  "delivery_disabled_status": "NOT_SENT_OWNER_DISABLED",
+  "updated_at": "2026-07-07T13:28:33.184109+08:00",
+  "sensitive_values_committed": false,
+  "targets": [
+    {
+      "label": "张霖泽",
+      "type": "personal",
+      "enabled": true,
+      "reports": [
+        "management",
+        "hr"
+      ],
+      "resolved_channel": "dws_open_dingtalk_id_chat",
+      "last_probe_status": "SENT",
+      "last_probe_at": "2026-07-07T12:02:35.107869+08:00",
+      "sensitive_values_committed": false
+    },
+    {
+      "label": "生产管理群",
+      "type": "group",
+      "enabled": true,
+      "reports": [
+        "management",
+        "hr"
+      ],
+      "resolved_channel": "dingtalk_group_robot_env",
+      "last_probe_status": "SENT",
+      "last_probe_at": "2026-07-07T13:28:33.184109+08:00",
+      "sensitive_values_committed": false
+    }
+  ]
+}

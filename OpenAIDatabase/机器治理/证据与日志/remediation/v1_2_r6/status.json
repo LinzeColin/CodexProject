@@ -1,0 +1,181 @@
+{
+  "schema_version": "memory_atlas.remediation_r6_status.v1",
+  "phase": "R6",
+  "captured_at": "2026-07-10T15:22:57Z",
+  "status": "R6_COMPLETE_LOCAL_ONLY",
+  "release_status": "FAIL_REMEDIATION_REQUIRED",
+  "base_commit": "2295074a200f7b4ccd10b1eff8222746a51cd60e",
+  "design_commit": "78e67369a1bc663a7894a2bc16d3fbe33577108c",
+  "implementation_commits": [
+    "77c9b1d94b6b9330c9a51bc16268afe11c031bb7",
+    "7d079ea94d6192d62bd49cfa646864470fd68f88",
+    "9ac67025b79fff013632d74796c03fb9993dedb7",
+    "fc32969ddeea9ea239992cb71762daed732762cc",
+    "a89ac2ece1cb2044da6c9635bdcbb3e0d2589404",
+    "7c5b64ccc99aaf993420a6d2f3f2f2ce965ff416",
+    "974b068da60beed2610e7c4dd47f537e4d663f06",
+    "3be60ff10c840d754d60bdca43b33fb905d14da7",
+    "1b3b8d24e393ec14bbdfdbd2a55e7cfd3267a86e",
+    "3d7952b47c6b9f1f31f47ee0d5f7bbe5fbcff3ac",
+    "cf47e65f9b956da0730f4a200d5452af46d138aa"
+  ],
+  "origin_main_at_phase_start": "07a6e50d593c7b9c74b8f3870b614be86a87160d",
+  "origin_main_at_close": "07a6e50d593c7b9c74b8f3870b614be86a87160d",
+  "snapshot_contract": {
+    "schema_version": "memory_atlas_visual_workflows.v1_2_r6",
+    "p0_visual_count": 12,
+    "facet_event_count": 217,
+    "facet_event_cap": 1000,
+    "filter_dimensions": [
+      "source",
+      "time",
+      "project",
+      "task"
+    ],
+    "normalized_unknown_value": "未标注",
+    "bounded_evidence_refs_per_event": 3,
+    "tracked_web_snapshot": {
+      "active_memories": 278,
+      "nodes": 340,
+      "edges": 1771,
+      "conversations": 201
+    },
+    "raw_mutation": false,
+    "credential_or_transcript_export": false,
+    "absolute_path_export": false
+  },
+  "visual_workbench": {
+    "visual_ids": [
+      "cluster_tree",
+      "bubble_map",
+      "topic_cluster_explorer",
+      "task_treemap",
+      "automation_vs_augmentation",
+      "roi_scatter",
+      "opportunity_radar",
+      "agent_decision_sankey",
+      "friction_heatmap",
+      "latent_radar",
+      "evidence_timeline",
+      "formula_explorer"
+    ],
+    "literal_native_filter_count": 4,
+    "shared_evidence_workspace": true,
+    "keyboard_operable_visual_count": 12,
+    "opportunity_exact_evidence_join": true,
+    "formula_no_write_preview": true,
+    "r2_route_count_unchanged": 10,
+    "r3_command_count_unchanged": 6
+  },
+  "browser_acceptance": {
+    "validator": "validate:v1.2-visual-workflows",
+    "status": "PASS",
+    "viewports": [
+      "1470x661",
+      "1440x900",
+      "390x844"
+    ],
+    "visual_inventory_count_per_viewport": 12,
+    "evidence_interaction_count_per_viewport": 12,
+    "content_changed_visual_count_per_axis": {
+      "source": 11,
+      "time": 10,
+      "project": 11,
+      "task": 11
+    },
+    "all_event_backed_visuals_changed_on_at_least_one_axis": true,
+    "opportunity_matched_and_rendered_event_ids_equal": true,
+    "formula_baseline": 80,
+    "formula_changed": 84,
+    "formula_reset": 80,
+    "non_get_request_count": 0,
+    "overlap_count": 0,
+    "clipped_card_count": 0,
+    "horizontal_overflow_count": 0,
+    "screenshot_count": 3,
+    "visual_inspection": "PASS"
+  },
+  "requirements_after_r6": {
+    "requirement_count": 58,
+    "verified": 48,
+    "partial": 5,
+    "failed": 4,
+    "not_verified": 1,
+    "promoted_to_verified": [
+      "S06-AC03",
+      "S07-AC02",
+      "S07-AC04",
+      "S11-AC01",
+      "S11-AC02",
+      "S11-AC03",
+      "S11-AC04"
+    ],
+    "kept_verified_with_stronger_evidence": [
+      "S06-AC04",
+      "S07-AC01",
+      "S08-AC01",
+      "S08-AC04",
+      "S09-AC01",
+      "S09-AC03"
+    ]
+  },
+  "regression": {
+    "python_visual_snapshot_tests": "PASS_4_OF_4",
+    "typescript_visual_model_validator": "PASS",
+    "typescript_lint": "PASS",
+    "production_build": "PASS_WITH_EXISTING_CHUNK_SIZE_WARNING",
+    "r6_visual_workflows": "PASS_3_OF_3_FULL_INTERACTION_MATRIX",
+    "r5_owner_daily_e2e": "PASS",
+    "r4_proposal_e2e": "PASS",
+    "r3_command_workflows": "PASS",
+    "r1_home_multiviewport": "PASS_3_OF_3",
+    "stage7_full_acceptance": "PASS",
+    "historical_s06_s07_s08_s09_s11_reviews": "PASS_REGRESSION_ONLY",
+    "visual_source_audit": "PASS_39_CHECKS",
+    "privacy_guard_high_risk_secret_hits": 0,
+    "privacy_guard_tracked_raw_private_files": 0,
+    "preview_ports_released": true
+  },
+  "review": {
+    "independent_reviewer": "completed",
+    "high_findings_initial": 1,
+    "medium_findings_initial": 3,
+    "low_findings_initial": 2,
+    "high_findings_final": 0,
+    "medium_findings_final": 0,
+    "resolved_findings": [
+      "Opportunity Radar is joined to the filtered facet-event evidence set",
+      "The full interaction suite runs at every target viewport",
+      "Per-card content/count/datum changes cannot pass through a global signature alone",
+      "Implementation-plan selectors are preserved",
+      "Formula delta and proxy safety wording are explicit"
+    ]
+  },
+  "evidence": {
+    "browser": "机器治理/证据与日志/remediation/v1_2_r6/browser/final/status.json",
+    "requirement_delta": "机器治理/证据与日志/remediation/v1_2_r6/requirements_gap_delta.csv",
+    "human_record": "docs/remediation/memory_atlas_v1_2/R6_P0_VISUALIZATION_AND_FILTERING.md"
+  },
+  "git_state_before_record_commit": {
+    "origin_main": "07a6e50d593c7b9c74b8f3870b614be86a87160d",
+    "origin_main_changed_during_phase": false,
+    "local_ahead_of_origin": 33,
+    "local_behind_origin": 12,
+    "local_branch_count": 1,
+    "local_stash_count": 0,
+    "merge_performed": false,
+    "rebase_performed": false,
+    "remote_push": false,
+    "reconciliation_action": "DEFER_TO_R8_PRESERVE_BOTH_HISTORIES"
+  },
+  "github_main_upload_allowed": false,
+  "remote_push": false,
+  "deployment": false,
+  "app_reinstall": false,
+  "online_site_changed": false,
+  "installed_app_changed": false,
+  "snapshot_parity_completed": false,
+  "github_clean_recovery_completed": false,
+  "raw_mutation": false,
+  "next_phase": "R7_DATA_PARITY_RAW_EVIDENCE_AND_RECOVERY"
+}

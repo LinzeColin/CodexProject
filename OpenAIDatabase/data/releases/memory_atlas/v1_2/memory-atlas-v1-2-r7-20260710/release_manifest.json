@@ -1,0 +1,45 @@
+{
+  "created_at": "2026-07-10T22:05:02Z",
+  "raw_manifest": {
+    "relative_path": "机器治理/证据与日志/raw_archive_manifests/raw_manifest.v1_2_r7_final.jsonl",
+    "sha256": "1a4fa71303903ca896c82640f7b4550cee47f3cc8ec600f81d03f7603e120c96",
+    "size_bytes": 128209
+  },
+  "release_id": "memory-atlas-v1-2-r7-20260710",
+  "schema_version": "memory_atlas.release_manifest.v1",
+  "snapshot": {
+    "counts": {
+      "active_memory_count": 278,
+      "codex_session_count": 128,
+      "conversation_count": 379,
+      "edge_count": 2325,
+      "memory_node_count": 396,
+      "node_count": 435,
+      "theme_node_count": 9
+    },
+    "relative_path": "data/releases/memory_atlas/v1_2/memory-atlas-v1-2-r7-20260710/memory_atlas.json",
+    "sha256": "b608631fded9e116d350895be20e6e61be3c7e42ba651ccdf7fc52afd8fefcbc",
+    "size_bytes": 1905337
+  },
+  "source_packages": {
+    "files": [
+      {
+        "original_name": "v1.2_四线14Stage升级_Roadmap.md",
+        "relative_path": "docs/source_packages/memory_atlas_v1_2/v1.2_四线14Stage升级_Roadmap.md",
+        "sha256": "699a8fe5f99a5edc88fec1f8940c4339f7b9b291bd31830f946f521f80904a71",
+        "size_bytes": 22261,
+        "verified": true
+      },
+      {
+        "original_name": "Memory_Atlas_v1.2_四线14Stage升级_TaskPack.zip",
+        "relative_path": "docs/source_packages/memory_atlas_v1_2/Memory_Atlas_v1.2_四线14Stage升级_TaskPack.zip.part",
+        "sha256": "38e21ae3e94d860e6a40c70a629c8f7048f889164358df7b184bd8caf7bf2472",
+        "size_bytes": 48133,
+        "verified": true
+      }
+    ],
+    "manifest_path": "docs/source_packages/memory_atlas_v1_2/SOURCE_MANIFEST.json",
+    "manifest_sha256": "7cd930d2d312904b062378229532747483724e2af254a859ca65ba2cd135e1aa",
+    "manifest_size_bytes": 1477
+  }
+}

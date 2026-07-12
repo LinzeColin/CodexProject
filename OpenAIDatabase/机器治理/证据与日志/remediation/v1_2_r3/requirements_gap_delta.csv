@@ -1,0 +1,6 @@
+requirement_id,before_status,after_status,r3_evidence,remaining_gap,next_remediation_phase
+S04-AC01,PARTIAL,VERIFIED,"Rendered local UI executes real redacted ChatGPT and Codex fixture syncs through the fixed loopback API and refreshes the runtime snapshot","None for this criterion",R8
+S12-AC01,PARTIAL,VERIFIED,"Rendered Command Palette exposes exactly six selectors plus an explicit Execute path; all six complete through the temporary installer-shaped runtime","None for this criterion",R8
+S12-AC02,PARTIAL,VERIFIED,"Rendered workflow generates ChatGPT, Codex and other-agent personalization artifacts in the installed-copy fixture and returns relative outputs","None for this criterion",R8
+S12-AC03,FAILED,VERIFIED,"Explicit click generates prefill_only artifacts and performs one validated ChatGPT GET with no automatic submit","None for this criterion",R8
+S12-AC04,VERIFIED,VERIFIED,"Browser evidence records no_silent_send=true, external_request_methods=[GET], hosted static command_post_count=0 and no auto-submit path","None for this criterion",R8

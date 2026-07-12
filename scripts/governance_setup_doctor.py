@@ -130,7 +130,7 @@ def workflow_entry_gate_status() -> dict[str, Any]:
             and "github.event_name == 'workflow_dispatch' && inputs.scope == 'all'" in text
         ),
         "ci_attestation_uploaded_as_artifact": (
-            "actions/upload-artifact@v4" in text
+            re.search(r"actions/upload-artifact@v[4-9]", text) is not None
             and "project-governance-ci-attestation-" in text
             and "if-no-files-found: error" in text
             and "github.event_name == 'workflow_dispatch' && inputs.scope == 'all'" in text

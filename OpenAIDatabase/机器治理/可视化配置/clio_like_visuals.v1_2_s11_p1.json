@@ -1,0 +1,74 @@
+{
+  "schema_version": "clio_like_visuals.v1_2_s11_p1",
+  "task_id": "MA-V12-S11P1",
+  "acceptance_id": "ACC-MA-V12-S11P1",
+  "status": "phase_s11_p1_clio_like_visuals_completed_pending_s11_p2",
+  "purpose_zh": "把 S07 已准入的 cluster_tree 与 bubble_map 变成运行时可交互图谱，并补一个 Topic/Cluster Explorer，确保每个图都有中文 insight、问题和行动价值。",
+  "source_scope": "redacted_derived_runtime_nodes",
+  "filter_dimensions": [
+    "source",
+    "time",
+    "project",
+    "task"
+  ],
+  "visuals": [
+    {
+      "id": "cluster_tree",
+      "title_zh": "层级簇树",
+      "insight_header_zh": "主导主题先看树干，不从散点开始",
+      "human_question_zh": "我最近主要在关注哪些主题层级？",
+      "action_value_zh": "先定位主题重心，再决定进入搜索、星图还是后续 ROI 图谱。",
+      "filter_dimensions": [
+        "source",
+        "time",
+        "project",
+        "task"
+      ],
+      "interaction": "select_cluster_and_open_galaxy",
+      "visual_roi_gate_source": "机器治理/可视化配置/visual_roi_gate.v1_2_s07_p2.json",
+      "visual_roi_gate_pass": true,
+      "static_decoration": false
+    },
+    {
+      "id": "bubble_map",
+      "title_zh": "Bubble Map",
+      "insight_header_zh": "大气泡显示高频和高 ROI 的交汇点",
+      "human_question_zh": "高频、机会、风险如何分布？",
+      "action_value_zh": "优先打开高 ROI 且近期活跃的簇，低 ROI 高频簇进入降噪复盘。",
+      "filter_dimensions": [
+        "source",
+        "time",
+        "project",
+        "task"
+      ],
+      "interaction": "select_bubble_and_open_galaxy",
+      "visual_roi_gate_source": "机器治理/可视化配置/visual_roi_gate.v1_2_s07_p2.json",
+      "visual_roi_gate_pass": true,
+      "static_decoration": false
+    },
+    {
+      "id": "topic_cluster_explorer",
+      "title_zh": "Topic/Cluster Explorer",
+      "insight_header_zh": "先打开证据最多的簇再行动",
+      "human_question_zh": "哪个主题簇最值得继续追问？",
+      "action_value_zh": "用代表记录进入搜索视图，复核证据后再生成下一步 proposal。",
+      "filter_dimensions": [
+        "source",
+        "time",
+        "project",
+        "task"
+      ],
+      "interaction": "select_cluster_and_open_search",
+      "visual_roi_gate_source": "机器治理/可视化配置/visual_roi_gate.v1_2_s07_p2.json",
+      "visual_roi_gate_pass": true,
+      "static_decoration": false
+    }
+  ],
+  "phase_boundary": {
+    "does_not_implement_s11_p2_economic_visuals": true,
+    "does_not_implement_s11_p3_workflow_latent_governance_visuals": true,
+    "does_not_complete_full_s11_p4_human_question_map": true,
+    "does_not_modify_raw": true,
+    "does_not_upload_github_main": true
+  }
+}

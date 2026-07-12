@@ -947,7 +947,8 @@ def render_project_files(project_root: Path, *, write: bool = False, view: str |
             previous = path.read_text(encoding="utf-8") if path.exists() else None
             changed = previous != text
             if changed:
-                path.write_text(text, encoding="utf-8", newline="\n")
+                with path.open("w", encoding="utf-8", newline="\n") as f:
+                    f.write(text)
             file_results.append(
                 {
                     "path": rel_path,

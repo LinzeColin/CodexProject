@@ -1,0 +1,15 @@
+name: mgmt-monthly-report-skill
+description: KMFA management monthly report skill for seven-slot input mapping, v6 Excel/PDF generation governance, validation, backup registration, and local cleanup.
+entrypoint: SKILL.md
+language: zh-CN
+owner_project: KMFA
+metadata_root: KMFA/metadata/mgmt-monthly-report-skill
+public_safe: true
+forbidden_committed_data:
+  - raw_sensitive_excel
+  - contract_plaintext
+  - bank_tax_payroll_plaintext
+  - api_tokens_or_secrets
+  - sqlite_runtime_database
+  - local_cache
+

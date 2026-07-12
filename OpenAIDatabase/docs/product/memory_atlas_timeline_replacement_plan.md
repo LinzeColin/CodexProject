@@ -1,5 +1,30 @@
 # Memory Atlas v1.1.5 Stage 2.3 Timeline Replacement Plan
 
+## v1.1.7 Stage 5 Phase 5.3 Timeline Integration Addendum
+
+- Task ID: `MA-V117-S5P03`
+- Acceptance ID: `ACC-MA-V117-S5P03`
+- Status: `phase_5_3_timeline_integration_completed_pending_stage5_review`
+- Integration version: `memory_river_integration.v1_1_7_stage5_phase3`
+- Validator: `validate:v1.1.7-stage5-phase3`
+- Browser validator: `validate:memory-river-integration-browser`
+
+Phase 5.3 completes the production Timeline replacement point by making the
+new page default enabled with default memory-river while retaining old Timeline
+rollback available through legacy rollback controls. The stable rollback paths
+are the in-app `Legacy` toggle, `timelineRenderer=legacy`, `timeline=legacy`,
+`memory-atlas.timeline-renderer=legacy`, and
+`VITE_MEMORY_ATLAS_TIMELINE_RENDERER=legacy`.
+
+The production board exposes `window.__memoryAtlasStage5Phase3()` for browser
+acceptance. That hook reports active renderer, default renderer, selected
+range, evidence layers, level counts, feedback defaults and the safety boundary
+that raw/private data and direct active-memory writeback are false.
+
+Boundary: No Stage 5 review, No Stage 6, No raw/private data read, No direct
+active-memory writeback, No agent apply, No deploy and No GitHub main upload
+before the whole Stage 0-10 project is complete.
+
 - Date: 2026-06-30
 - Stage source: `memory_atlas_final_taskpack_v1.md` Stage 2 / Task 2.3
 - Run mode: integration planning only

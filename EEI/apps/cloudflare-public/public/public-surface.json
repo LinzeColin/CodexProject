@@ -1,0 +1,12 @@
+{
+  "schema_version": "cloudflare_public_surface.v1",
+  "project_id": "eei",
+  "compatibility_level": "L2",
+  "surface_type": "public_explorer",
+  "data_classification": "illustrative_demo_only",
+  "data_sources": [],
+  "private_data_allowed_in_dist": false,
+  "external_actions_enabled": false,
+  "production_database_connected": false,
+  "production_release_claimed": false
+}

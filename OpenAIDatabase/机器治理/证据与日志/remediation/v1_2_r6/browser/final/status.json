@@ -1,0 +1,1179 @@
+{
+  "status": "PASS",
+  "gate": "memory_atlas_v1_2_r6_visual_workflows",
+  "targetUrl": "http://127.0.0.1:4187",
+  "outputDir": "机器治理/证据与日志/remediation/v1_2_r6/browser/final",
+  "visualIds": [
+    "cluster_tree",
+    "bubble_map",
+    "topic_cluster_explorer",
+    "task_treemap",
+    "automation_vs_augmentation",
+    "roi_scatter",
+    "opportunity_radar",
+    "agent_decision_sankey",
+    "friction_heatmap",
+    "latent_radar",
+    "evidence_timeline",
+    "formula_explorer"
+  ],
+  "viewports": [
+    {
+      "name": "desktop-low-height",
+      "width": 1470,
+      "height": 661
+    },
+    {
+      "name": "desktop-standard",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "checks": [
+    "exact twelve approved P0 visual workflows",
+    "literal source/time/project/task filters alter the event-backed signature",
+    "each visual has a keyboard-operable datum and updates inline evidence",
+    "opportunity drill-down exposes evidence, next step, half-life, defer reason and boundary",
+    "Formula score changes and resets without a write request",
+    "three target viewports have no overlap, clipping or horizontal overflow",
+    "nonblank screenshots and clean browser console"
+  ],
+  "results": [
+    {
+      "status": "PASS",
+      "viewport": {
+        "name": "desktop-low-height",
+        "width": 1470,
+        "height": 661
+      },
+      "inventory": [
+        {
+          "contentSignature": "all|all|all|all|21|59c5b51e",
+          "dataEventCount": 21,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|21|59c5b51e",
+          "id": "cluster_tree",
+          "title": "层级簇树",
+          "question": "我最近主要在关注哪些主题层级？",
+          "action": "先定位主题重心，再决定进入搜索、星图还是后续 ROI 图谱。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|217|53663f03",
+          "dataEventCount": 217,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|217|53663f03",
+          "id": "bubble_map",
+          "title": "主题气泡分布",
+          "question": "高频、机会、风险如何分布？",
+          "action": "优先打开高 ROI 且近期活跃的簇，低 ROI 高频簇进入降噪复盘。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|21|59c5b51e",
+          "dataEventCount": 21,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|21|59c5b51e",
+          "id": "topic_cluster_explorer",
+          "title": "主题簇探索",
+          "question": "哪个主题簇最值得继续追问？",
+          "action": "用代表记录进入搜索视图，复核证据后再生成下一步提案。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|214|ef4c5eee",
+          "dataEventCount": 214,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|214|ef4c5eee",
+          "id": "task_treemap",
+          "title": "任务构成",
+          "question": "我的 AI 使用集中在哪些任务？",
+          "action": "把最大面积任务先和 ROI 对齐，避免把时间继续投给低回报任务。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|207|edde0871",
+          "dataEventCount": 207,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|207|edde0871",
+          "id": "automation_vs_augmentation",
+          "title": "自动化与增强",
+          "question": "哪些任务是 AI 自动化，哪些只是增强？",
+          "action": "自动化高的任务优先固化流程；增强高的任务保留人工判断和复盘入口。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|217|53663f03",
+          "dataEventCount": 217,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|217|53663f03",
+          "id": "roi_scatter",
+          "title": "投入回报分布",
+          "question": "哪些任务最值得继续？",
+          "action": "优先打开高 ROI 且近期活跃的任务；低 ROI 高频任务进入停止或降噪判断。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|6|df0bcfa3",
+          "dataEventCount": 6,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|6|df0bcfa3",
+          "id": "opportunity_radar",
+          "title": "机会雷达",
+          "question": "哪些方向有机会但还需要证据？",
+          "action": "用雷达缺口选择下一步验证问题，不把机会清单变成压力清单。",
+          "datumCount": 5
+        },
+        {
+          "contentSignature": "all|all|all|all|214|92ce0999",
+          "dataEventCount": 214,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|214|92ce0999",
+          "id": "agent_decision_sankey",
+          "title": "Agent 决策流",
+          "question": "Codex/Agent 执行路径哪里失真？",
+          "action": "把断点转成下一轮执行合同、验收门禁或人工授权判断。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|217|53663f03",
+          "dataEventCount": 217,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|217|53663f03",
+          "id": "friction_heatmap",
+          "title": "摩擦热区",
+          "question": "我在哪些地方反复浪费时间？",
+          "action": "把高热区转成停止条件、验收门禁或降噪规则。",
+          "datumCount": 2
+        },
+        {
+          "contentSignature": "all|all|all|all|207|edde0871",
+          "dataEventCount": 207,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|207|edde0871",
+          "id": "latent_radar",
+          "title": "潜在线索雷达",
+          "question": "哪些潜在信号正在增强？",
+          "action": "只继续验证可反驳、有证据标记、有下一步的问题。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|6|c14a1368",
+          "dataEventCount": 6,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|6|c14a1368",
+          "id": "evidence_timeline",
+          "title": "证据时间线",
+          "question": "这个结论从哪些记录来？",
+          "action": "打开时间线复核证据新鲜度，避免旧结论继续驱动行动。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "memory_atlas_formula_what_if_display.v1_2_r6",
+          "dataEventCount": 217,
+          "dataSignature": "all|all|all|all|217|53663f03:memory_atlas_formula_what_if_display.v1_2_r6",
+          "id": "formula_explorer",
+          "title": "公式与参数",
+          "question": "这个分数为什么这样算？",
+          "action": "检查参数、边界和“只提案、不直接写入”规则，再决定是否进入后续治理流程。",
+          "datumCount": 1
+        }
+      ],
+      "layout": {
+        "cardRects": [
+          {
+            "id": "cluster_tree",
+            "top": -822.90625,
+            "right": 692,
+            "bottom": -381.40625,
+            "left": 263,
+            "width": 429,
+            "height": 441.5
+          },
+          {
+            "id": "bubble_map",
+            "top": -822.90625,
+            "right": 1131,
+            "bottom": -381.40625,
+            "left": 702,
+            "width": 429,
+            "height": 441.5
+          },
+          {
+            "id": "topic_cluster_explorer",
+            "top": -371.40625,
+            "right": 692,
+            "bottom": 70.09375,
+            "left": 263,
+            "width": 429,
+            "height": 441.5
+          },
+          {
+            "id": "task_treemap",
+            "top": -371.40625,
+            "right": 1131,
+            "bottom": 70.09375,
+            "left": 702,
+            "width": 429,
+            "height": 441.5
+          },
+          {
+            "id": "automation_vs_augmentation",
+            "top": 80.09375,
+            "right": 692,
+            "bottom": 521.59375,
+            "left": 263,
+            "width": 429,
+            "height": 441.5
+          },
+          {
+            "id": "roi_scatter",
+            "top": 80.09375,
+            "right": 1131,
+            "bottom": 521.59375,
+            "left": 702,
+            "width": 429,
+            "height": 441.5
+          },
+          {
+            "id": "opportunity_radar",
+            "top": 531.59375,
+            "right": 692,
+            "bottom": 973.09375,
+            "left": 263,
+            "width": 429,
+            "height": 441.5
+          },
+          {
+            "id": "agent_decision_sankey",
+            "top": 531.59375,
+            "right": 1131,
+            "bottom": 973.09375,
+            "left": 702,
+            "width": 429,
+            "height": 441.5
+          },
+          {
+            "id": "friction_heatmap",
+            "top": 983.09375,
+            "right": 692,
+            "bottom": 1358.59375,
+            "left": 263,
+            "width": 429,
+            "height": 375.5
+          },
+          {
+            "id": "latent_radar",
+            "top": 983.09375,
+            "right": 1131,
+            "bottom": 1358.59375,
+            "left": 702,
+            "width": 429,
+            "height": 375.5
+          },
+          {
+            "id": "evidence_timeline",
+            "top": 1368.59375,
+            "right": 692,
+            "bottom": 1812.09375,
+            "left": 263,
+            "width": 429,
+            "height": 443.5
+          },
+          {
+            "id": "formula_explorer",
+            "top": 1368.59375,
+            "right": 1131,
+            "bottom": 1812.09375,
+            "left": 702,
+            "width": 429,
+            "height": 443.5
+          }
+        ],
+        "clipped": [],
+        "documentClientWidth": 1470,
+        "documentScrollWidth": 1470,
+        "overlaps": [],
+        "workbenchClientWidth": 1192,
+        "workbenchScrollWidth": 1192
+      },
+      "interactions": {
+        "evidence": [
+          "cluster_tree",
+          "bubble_map",
+          "topic_cluster_explorer",
+          "task_treemap",
+          "automation_vs_augmentation",
+          "roi_scatter",
+          "opportunity_radar",
+          "agent_decision_sankey",
+          "friction_heatmap",
+          "latent_radar",
+          "evidence_timeline",
+          "formula_explorer"
+        ],
+        "filters": {
+          "baseline": "all|all|all|all|217|53663f03",
+          "results": {
+            "source": {
+              "choice": "chatgpt",
+              "count": "201",
+              "signature": "chatgpt|all|all|all|201|6056faa6",
+              "changedVisualCount": 12,
+              "contentChangedVisualCount": 11,
+              "contentChangedVisualIds": [
+                "cluster_tree",
+                "bubble_map",
+                "topic_cluster_explorer",
+                "task_treemap",
+                "automation_vs_augmentation",
+                "roi_scatter",
+                "opportunity_radar",
+                "agent_decision_sankey",
+                "friction_heatmap",
+                "latent_radar",
+                "evidence_timeline"
+              ],
+              "zeroVisualIds": []
+            },
+            "time": {
+              "choice": "30d",
+              "count": "127",
+              "signature": "all|30d|all|all|127|442f7cf7",
+              "changedVisualCount": 12,
+              "contentChangedVisualCount": 10,
+              "contentChangedVisualIds": [
+                "cluster_tree",
+                "bubble_map",
+                "topic_cluster_explorer",
+                "task_treemap",
+                "automation_vs_augmentation",
+                "roi_scatter",
+                "opportunity_radar",
+                "agent_decision_sankey",
+                "friction_heatmap",
+                "latent_radar"
+              ],
+              "zeroVisualIds": []
+            },
+            "project": {
+              "choice": "未标注",
+              "count": "189",
+              "signature": "all|all|未标注|all|189|fb72fc34",
+              "changedVisualCount": 12,
+              "contentChangedVisualCount": 11,
+              "contentChangedVisualIds": [
+                "cluster_tree",
+                "bubble_map",
+                "topic_cluster_explorer",
+                "task_treemap",
+                "automation_vs_augmentation",
+                "roi_scatter",
+                "opportunity_radar",
+                "agent_decision_sankey",
+                "friction_heatmap",
+                "latent_radar",
+                "evidence_timeline"
+              ],
+              "zeroVisualIds": []
+            },
+            "task": {
+              "choice": "未标注",
+              "count": "171",
+              "signature": "all|all|all|未标注|171|3496c38b",
+              "changedVisualCount": 12,
+              "contentChangedVisualCount": 11,
+              "contentChangedVisualIds": [
+                "cluster_tree",
+                "bubble_map",
+                "topic_cluster_explorer",
+                "task_treemap",
+                "automation_vs_augmentation",
+                "roi_scatter",
+                "opportunity_radar",
+                "agent_decision_sankey",
+                "friction_heatmap",
+                "latent_radar",
+                "evidence_timeline"
+              ],
+              "zeroVisualIds": []
+            }
+          }
+        },
+        "opportunity": {
+          "evidence": 3,
+          "halfLife": "30 天",
+          "next": "选一个最小重复步骤，写成只读试运行脚本或验收门禁，不做大范围平台化。",
+          "reason": "为什么不是现在：先验证最小下一步是否能形成可复用产物；没有 owner、验收命令或明确收益前不扩大投入。",
+          "boundary": "不进入压力清单；等触发信号后再评估。",
+          "matchedEventIds": [
+            "chatgpt_b76f05967f0407e0",
+            "chatgpt_6861827f6188afa0"
+          ],
+          "renderedEventIds": [
+            "chatgpt_b76f05967f0407e0",
+            "chatgpt_6861827f6188afa0"
+          ]
+        },
+        "formula": {
+          "baseline": "80",
+          "changed": "84",
+          "reset": "80",
+          "safety": "内部 proxy，仅用于方向比较；不是收入预测，也不是财务建议。"
+        }
+      },
+      "screenshot": {
+        "path": "visual-workflows-desktop-low-height-1470x661.png",
+        "bytes": 292059
+      }
+    },
+    {
+      "status": "PASS",
+      "viewport": {
+        "name": "desktop-standard",
+        "width": 1440,
+        "height": 900
+      },
+      "inventory": [
+        {
+          "contentSignature": "all|all|all|all|21|59c5b51e",
+          "dataEventCount": 21,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|21|59c5b51e",
+          "id": "cluster_tree",
+          "title": "层级簇树",
+          "question": "我最近主要在关注哪些主题层级？",
+          "action": "先定位主题重心，再决定进入搜索、星图还是后续 ROI 图谱。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|217|53663f03",
+          "dataEventCount": 217,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|217|53663f03",
+          "id": "bubble_map",
+          "title": "主题气泡分布",
+          "question": "高频、机会、风险如何分布？",
+          "action": "优先打开高 ROI 且近期活跃的簇，低 ROI 高频簇进入降噪复盘。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|21|59c5b51e",
+          "dataEventCount": 21,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|21|59c5b51e",
+          "id": "topic_cluster_explorer",
+          "title": "主题簇探索",
+          "question": "哪个主题簇最值得继续追问？",
+          "action": "用代表记录进入搜索视图，复核证据后再生成下一步提案。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|214|ef4c5eee",
+          "dataEventCount": 214,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|214|ef4c5eee",
+          "id": "task_treemap",
+          "title": "任务构成",
+          "question": "我的 AI 使用集中在哪些任务？",
+          "action": "把最大面积任务先和 ROI 对齐，避免把时间继续投给低回报任务。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|207|edde0871",
+          "dataEventCount": 207,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|207|edde0871",
+          "id": "automation_vs_augmentation",
+          "title": "自动化与增强",
+          "question": "哪些任务是 AI 自动化，哪些只是增强？",
+          "action": "自动化高的任务优先固化流程；增强高的任务保留人工判断和复盘入口。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|217|53663f03",
+          "dataEventCount": 217,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|217|53663f03",
+          "id": "roi_scatter",
+          "title": "投入回报分布",
+          "question": "哪些任务最值得继续？",
+          "action": "优先打开高 ROI 且近期活跃的任务；低 ROI 高频任务进入停止或降噪判断。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|6|df0bcfa3",
+          "dataEventCount": 6,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|6|df0bcfa3",
+          "id": "opportunity_radar",
+          "title": "机会雷达",
+          "question": "哪些方向有机会但还需要证据？",
+          "action": "用雷达缺口选择下一步验证问题，不把机会清单变成压力清单。",
+          "datumCount": 5
+        },
+        {
+          "contentSignature": "all|all|all|all|214|92ce0999",
+          "dataEventCount": 214,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|214|92ce0999",
+          "id": "agent_decision_sankey",
+          "title": "Agent 决策流",
+          "question": "Codex/Agent 执行路径哪里失真？",
+          "action": "把断点转成下一轮执行合同、验收门禁或人工授权判断。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|217|53663f03",
+          "dataEventCount": 217,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|217|53663f03",
+          "id": "friction_heatmap",
+          "title": "摩擦热区",
+          "question": "我在哪些地方反复浪费时间？",
+          "action": "把高热区转成停止条件、验收门禁或降噪规则。",
+          "datumCount": 2
+        },
+        {
+          "contentSignature": "all|all|all|all|207|edde0871",
+          "dataEventCount": 207,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|207|edde0871",
+          "id": "latent_radar",
+          "title": "潜在线索雷达",
+          "question": "哪些潜在信号正在增强？",
+          "action": "只继续验证可反驳、有证据标记、有下一步的问题。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|6|c14a1368",
+          "dataEventCount": 6,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|6|c14a1368",
+          "id": "evidence_timeline",
+          "title": "证据时间线",
+          "question": "这个结论从哪些记录来？",
+          "action": "打开时间线复核证据新鲜度，避免旧结论继续驱动行动。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "memory_atlas_formula_what_if_display.v1_2_r6",
+          "dataEventCount": 217,
+          "dataSignature": "all|all|all|all|217|53663f03:memory_atlas_formula_what_if_display.v1_2_r6",
+          "id": "formula_explorer",
+          "title": "公式与参数",
+          "question": "这个分数为什么这样算？",
+          "action": "检查参数、边界和“只提案、不直接写入”规则，再决定是否进入后续治理流程。",
+          "datumCount": 1
+        }
+      ],
+      "layout": {
+        "cardRects": [
+          {
+            "id": "cluster_tree",
+            "top": -693.875,
+            "right": 677,
+            "bottom": -252.375,
+            "left": 263,
+            "width": 414,
+            "height": 441.5
+          },
+          {
+            "id": "bubble_map",
+            "top": -693.875,
+            "right": 1101,
+            "bottom": -252.375,
+            "left": 687,
+            "width": 414,
+            "height": 441.5
+          },
+          {
+            "id": "topic_cluster_explorer",
+            "top": -242.375,
+            "right": 677,
+            "bottom": 199.125,
+            "left": 263,
+            "width": 414,
+            "height": 441.5
+          },
+          {
+            "id": "task_treemap",
+            "top": -242.375,
+            "right": 1101,
+            "bottom": 199.125,
+            "left": 687,
+            "width": 414,
+            "height": 441.5
+          },
+          {
+            "id": "automation_vs_augmentation",
+            "top": 209.125,
+            "right": 677,
+            "bottom": 650.625,
+            "left": 263,
+            "width": 414,
+            "height": 441.5
+          },
+          {
+            "id": "roi_scatter",
+            "top": 209.125,
+            "right": 1101,
+            "bottom": 650.625,
+            "left": 687,
+            "width": 414,
+            "height": 441.5
+          },
+          {
+            "id": "opportunity_radar",
+            "top": 660.625,
+            "right": 677,
+            "bottom": 1102.125,
+            "left": 263,
+            "width": 414,
+            "height": 441.5
+          },
+          {
+            "id": "agent_decision_sankey",
+            "top": 660.625,
+            "right": 1101,
+            "bottom": 1102.125,
+            "left": 687,
+            "width": 414,
+            "height": 441.5
+          },
+          {
+            "id": "friction_heatmap",
+            "top": 1112.125,
+            "right": 677,
+            "bottom": 1487.625,
+            "left": 263,
+            "width": 414,
+            "height": 375.5
+          },
+          {
+            "id": "latent_radar",
+            "top": 1112.125,
+            "right": 1101,
+            "bottom": 1487.625,
+            "left": 687,
+            "width": 414,
+            "height": 375.5
+          },
+          {
+            "id": "evidence_timeline",
+            "top": 1497.625,
+            "right": 677,
+            "bottom": 1941.125,
+            "left": 263,
+            "width": 414,
+            "height": 443.5
+          },
+          {
+            "id": "formula_explorer",
+            "top": 1497.625,
+            "right": 1101,
+            "bottom": 1941.125,
+            "left": 687,
+            "width": 414,
+            "height": 443.5
+          }
+        ],
+        "clipped": [],
+        "documentClientWidth": 1440,
+        "documentScrollWidth": 1440,
+        "overlaps": [],
+        "workbenchClientWidth": 1162,
+        "workbenchScrollWidth": 1162
+      },
+      "interactions": {
+        "evidence": [
+          "cluster_tree",
+          "bubble_map",
+          "topic_cluster_explorer",
+          "task_treemap",
+          "automation_vs_augmentation",
+          "roi_scatter",
+          "opportunity_radar",
+          "agent_decision_sankey",
+          "friction_heatmap",
+          "latent_radar",
+          "evidence_timeline",
+          "formula_explorer"
+        ],
+        "filters": {
+          "baseline": "all|all|all|all|217|53663f03",
+          "results": {
+            "source": {
+              "choice": "chatgpt",
+              "count": "201",
+              "signature": "chatgpt|all|all|all|201|6056faa6",
+              "changedVisualCount": 12,
+              "contentChangedVisualCount": 11,
+              "contentChangedVisualIds": [
+                "cluster_tree",
+                "bubble_map",
+                "topic_cluster_explorer",
+                "task_treemap",
+                "automation_vs_augmentation",
+                "roi_scatter",
+                "opportunity_radar",
+                "agent_decision_sankey",
+                "friction_heatmap",
+                "latent_radar",
+                "evidence_timeline"
+              ],
+              "zeroVisualIds": []
+            },
+            "time": {
+              "choice": "30d",
+              "count": "127",
+              "signature": "all|30d|all|all|127|442f7cf7",
+              "changedVisualCount": 12,
+              "contentChangedVisualCount": 10,
+              "contentChangedVisualIds": [
+                "cluster_tree",
+                "bubble_map",
+                "topic_cluster_explorer",
+                "task_treemap",
+                "automation_vs_augmentation",
+                "roi_scatter",
+                "opportunity_radar",
+                "agent_decision_sankey",
+                "friction_heatmap",
+                "latent_radar"
+              ],
+              "zeroVisualIds": []
+            },
+            "project": {
+              "choice": "未标注",
+              "count": "189",
+              "signature": "all|all|未标注|all|189|fb72fc34",
+              "changedVisualCount": 12,
+              "contentChangedVisualCount": 11,
+              "contentChangedVisualIds": [
+                "cluster_tree",
+                "bubble_map",
+                "topic_cluster_explorer",
+                "task_treemap",
+                "automation_vs_augmentation",
+                "roi_scatter",
+                "opportunity_radar",
+                "agent_decision_sankey",
+                "friction_heatmap",
+                "latent_radar",
+                "evidence_timeline"
+              ],
+              "zeroVisualIds": []
+            },
+            "task": {
+              "choice": "未标注",
+              "count": "171",
+              "signature": "all|all|all|未标注|171|3496c38b",
+              "changedVisualCount": 12,
+              "contentChangedVisualCount": 11,
+              "contentChangedVisualIds": [
+                "cluster_tree",
+                "bubble_map",
+                "topic_cluster_explorer",
+                "task_treemap",
+                "automation_vs_augmentation",
+                "roi_scatter",
+                "opportunity_radar",
+                "agent_decision_sankey",
+                "friction_heatmap",
+                "latent_radar",
+                "evidence_timeline"
+              ],
+              "zeroVisualIds": []
+            }
+          }
+        },
+        "opportunity": {
+          "evidence": 3,
+          "halfLife": "30 天",
+          "next": "选一个最小重复步骤，写成只读试运行脚本或验收门禁，不做大范围平台化。",
+          "reason": "为什么不是现在：先验证最小下一步是否能形成可复用产物；没有 owner、验收命令或明确收益前不扩大投入。",
+          "boundary": "不进入压力清单；等触发信号后再评估。",
+          "matchedEventIds": [
+            "chatgpt_b76f05967f0407e0",
+            "chatgpt_6861827f6188afa0"
+          ],
+          "renderedEventIds": [
+            "chatgpt_b76f05967f0407e0",
+            "chatgpt_6861827f6188afa0"
+          ]
+        },
+        "formula": {
+          "baseline": "80",
+          "changed": "84",
+          "reset": "80",
+          "safety": "内部 proxy，仅用于方向比较；不是收入预测，也不是财务建议。"
+        }
+      },
+      "screenshot": {
+        "path": "visual-workflows-desktop-standard-1440x900.png",
+        "bytes": 356834
+      }
+    },
+    {
+      "status": "PASS",
+      "viewport": {
+        "name": "mobile",
+        "width": 390,
+        "height": 844
+      },
+      "inventory": [
+        {
+          "contentSignature": "all|all|all|all|21|59c5b51e",
+          "dataEventCount": 21,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|21|59c5b51e",
+          "id": "cluster_tree",
+          "title": "层级簇树",
+          "question": "我最近主要在关注哪些主题层级？",
+          "action": "先定位主题重心，再决定进入搜索、星图还是后续 ROI 图谱。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|217|53663f03",
+          "dataEventCount": 217,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|217|53663f03",
+          "id": "bubble_map",
+          "title": "主题气泡分布",
+          "question": "高频、机会、风险如何分布？",
+          "action": "优先打开高 ROI 且近期活跃的簇，低 ROI 高频簇进入降噪复盘。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|21|59c5b51e",
+          "dataEventCount": 21,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|21|59c5b51e",
+          "id": "topic_cluster_explorer",
+          "title": "主题簇探索",
+          "question": "哪个主题簇最值得继续追问？",
+          "action": "用代表记录进入搜索视图，复核证据后再生成下一步提案。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|214|ef4c5eee",
+          "dataEventCount": 214,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|214|ef4c5eee",
+          "id": "task_treemap",
+          "title": "任务构成",
+          "question": "我的 AI 使用集中在哪些任务？",
+          "action": "把最大面积任务先和 ROI 对齐，避免把时间继续投给低回报任务。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|207|edde0871",
+          "dataEventCount": 207,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|207|edde0871",
+          "id": "automation_vs_augmentation",
+          "title": "自动化与增强",
+          "question": "哪些任务是 AI 自动化，哪些只是增强？",
+          "action": "自动化高的任务优先固化流程；增强高的任务保留人工判断和复盘入口。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|217|53663f03",
+          "dataEventCount": 217,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|217|53663f03",
+          "id": "roi_scatter",
+          "title": "投入回报分布",
+          "question": "哪些任务最值得继续？",
+          "action": "优先打开高 ROI 且近期活跃的任务；低 ROI 高频任务进入停止或降噪判断。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|6|df0bcfa3",
+          "dataEventCount": 6,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|6|df0bcfa3",
+          "id": "opportunity_radar",
+          "title": "机会雷达",
+          "question": "哪些方向有机会但还需要证据？",
+          "action": "用雷达缺口选择下一步验证问题，不把机会清单变成压力清单。",
+          "datumCount": 5
+        },
+        {
+          "contentSignature": "all|all|all|all|214|92ce0999",
+          "dataEventCount": 214,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|214|92ce0999",
+          "id": "agent_decision_sankey",
+          "title": "Agent 决策流",
+          "question": "Codex/Agent 执行路径哪里失真？",
+          "action": "把断点转成下一轮执行合同、验收门禁或人工授权判断。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|217|53663f03",
+          "dataEventCount": 217,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|217|53663f03",
+          "id": "friction_heatmap",
+          "title": "摩擦热区",
+          "question": "我在哪些地方反复浪费时间？",
+          "action": "把高热区转成停止条件、验收门禁或降噪规则。",
+          "datumCount": 2
+        },
+        {
+          "contentSignature": "all|all|all|all|207|edde0871",
+          "dataEventCount": 207,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|207|edde0871",
+          "id": "latent_radar",
+          "title": "潜在线索雷达",
+          "question": "哪些潜在信号正在增强？",
+          "action": "只继续验证可反驳、有证据标记、有下一步的问题。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "all|all|all|all|6|c14a1368",
+          "dataEventCount": 6,
+          "dataSignature": "all|all|all|all|217|53663f03:all|all|all|all|6|c14a1368",
+          "id": "evidence_timeline",
+          "title": "证据时间线",
+          "question": "这个结论从哪些记录来？",
+          "action": "打开时间线复核证据新鲜度，避免旧结论继续驱动行动。",
+          "datumCount": 6
+        },
+        {
+          "contentSignature": "memory_atlas_formula_what_if_display.v1_2_r6",
+          "dataEventCount": 217,
+          "dataSignature": "all|all|all|all|217|53663f03:memory_atlas_formula_what_if_display.v1_2_r6",
+          "id": "formula_explorer",
+          "title": "公式与参数",
+          "question": "这个分数为什么这样算？",
+          "action": "检查参数、边界和“只提案、不直接写入”规则，再决定是否进入后续治理流程。",
+          "datumCount": 1
+        }
+      ],
+      "layout": {
+        "cardRects": [
+          {
+            "id": "cluster_tree",
+            "top": -2442.859375,
+            "right": 375,
+            "bottom": -2001.359375,
+            "left": 15,
+            "width": 360,
+            "height": 441.5
+          },
+          {
+            "id": "bubble_map",
+            "top": -1991.359375,
+            "right": 375,
+            "bottom": -1393.859375,
+            "left": 15,
+            "width": 360,
+            "height": 597.5
+          },
+          {
+            "id": "topic_cluster_explorer",
+            "top": -1383.859375,
+            "right": 375,
+            "bottom": -942.359375,
+            "left": 15,
+            "width": 360,
+            "height": 441.5
+          },
+          {
+            "id": "task_treemap",
+            "top": -932.359375,
+            "right": 375,
+            "bottom": -490.859375,
+            "left": 15,
+            "width": 360,
+            "height": 441.5
+          },
+          {
+            "id": "automation_vs_augmentation",
+            "top": -480.859375,
+            "right": 375,
+            "bottom": -39.359375,
+            "left": 15,
+            "width": 360,
+            "height": 441.5
+          },
+          {
+            "id": "roi_scatter",
+            "top": -29.359375,
+            "right": 375,
+            "bottom": 582.640625,
+            "left": 15,
+            "width": 360,
+            "height": 612
+          },
+          {
+            "id": "opportunity_radar",
+            "top": 592.640625,
+            "right": 375,
+            "bottom": 1066.140625,
+            "left": 15,
+            "width": 360,
+            "height": 473.5
+          },
+          {
+            "id": "agent_decision_sankey",
+            "top": 1076.140625,
+            "right": 375,
+            "bottom": 1517.640625,
+            "left": 15,
+            "width": 360,
+            "height": 441.5
+          },
+          {
+            "id": "friction_heatmap",
+            "top": 1527.640625,
+            "right": 375,
+            "bottom": 1839.640625,
+            "left": 15,
+            "width": 360,
+            "height": 312
+          },
+          {
+            "id": "latent_radar",
+            "top": 1849.640625,
+            "right": 375,
+            "bottom": 2447.140625,
+            "left": 15,
+            "width": 360,
+            "height": 597.5
+          },
+          {
+            "id": "evidence_timeline",
+            "top": 2457.140625,
+            "right": 375,
+            "bottom": 2898.640625,
+            "left": 15,
+            "width": 360,
+            "height": 441.5
+          },
+          {
+            "id": "formula_explorer",
+            "top": 2908.640625,
+            "right": 375,
+            "bottom": 3366.640625,
+            "left": 15,
+            "width": 360,
+            "height": 458
+          }
+        ],
+        "clipped": [],
+        "documentClientWidth": 390,
+        "documentScrollWidth": 390,
+        "overlaps": [],
+        "workbenchClientWidth": 360,
+        "workbenchScrollWidth": 360
+      },
+      "interactions": {
+        "evidence": [
+          "cluster_tree",
+          "bubble_map",
+          "topic_cluster_explorer",
+          "task_treemap",
+          "automation_vs_augmentation",
+          "roi_scatter",
+          "opportunity_radar",
+          "agent_decision_sankey",
+          "friction_heatmap",
+          "latent_radar",
+          "evidence_timeline",
+          "formula_explorer"
+        ],
+        "filters": {
+          "baseline": "all|all|all|all|217|53663f03",
+          "results": {
+            "source": {
+              "choice": "chatgpt",
+              "count": "201",
+              "signature": "chatgpt|all|all|all|201|6056faa6",
+              "changedVisualCount": 12,
+              "contentChangedVisualCount": 11,
+              "contentChangedVisualIds": [
+                "cluster_tree",
+                "bubble_map",
+                "topic_cluster_explorer",
+                "task_treemap",
+                "automation_vs_augmentation",
+                "roi_scatter",
+                "opportunity_radar",
+                "agent_decision_sankey",
+                "friction_heatmap",
+                "latent_radar",
+                "evidence_timeline"
+              ],
+              "zeroVisualIds": []
+            },
+            "time": {
+              "choice": "30d",
+              "count": "127",
+              "signature": "all|30d|all|all|127|442f7cf7",
+              "changedVisualCount": 12,
+              "contentChangedVisualCount": 10,
+              "contentChangedVisualIds": [
+                "cluster_tree",
+                "bubble_map",
+                "topic_cluster_explorer",
+                "task_treemap",
+                "automation_vs_augmentation",
+                "roi_scatter",
+                "opportunity_radar",
+                "agent_decision_sankey",
+                "friction_heatmap",
+                "latent_radar"
+              ],
+              "zeroVisualIds": []
+            },
+            "project": {
+              "choice": "未标注",
+              "count": "189",
+              "signature": "all|all|未标注|all|189|fb72fc34",
+              "changedVisualCount": 12,
+              "contentChangedVisualCount": 11,
+              "contentChangedVisualIds": [
+                "cluster_tree",
+                "bubble_map",
+                "topic_cluster_explorer",
+                "task_treemap",
+                "automation_vs_augmentation",
+                "roi_scatter",
+                "opportunity_radar",
+                "agent_decision_sankey",
+                "friction_heatmap",
+                "latent_radar",
+                "evidence_timeline"
+              ],
+              "zeroVisualIds": []
+            },
+            "task": {
+              "choice": "未标注",
+              "count": "171",
+              "signature": "all|all|all|未标注|171|3496c38b",
+              "changedVisualCount": 12,
+              "contentChangedVisualCount": 11,
+              "contentChangedVisualIds": [
+                "cluster_tree",
+                "bubble_map",
+                "topic_cluster_explorer",
+                "task_treemap",
+                "automation_vs_augmentation",
+                "roi_scatter",
+                "opportunity_radar",
+                "agent_decision_sankey",
+                "friction_heatmap",
+                "latent_radar",
+                "evidence_timeline"
+              ],
+              "zeroVisualIds": []
+            }
+          }
+        },
+        "opportunity": {
+          "evidence": 3,
+          "halfLife": "30 天",
+          "next": "选一个最小重复步骤，写成只读试运行脚本或验收门禁，不做大范围平台化。",
+          "reason": "为什么不是现在：先验证最小下一步是否能形成可复用产物；没有 owner、验收命令或明确收益前不扩大投入。",
+          "boundary": "不进入压力清单；等触发信号后再评估。",
+          "matchedEventIds": [
+            "chatgpt_b76f05967f0407e0",
+            "chatgpt_6861827f6188afa0"
+          ],
+          "renderedEventIds": [
+            "chatgpt_b76f05967f0407e0",
+            "chatgpt_6861827f6188afa0"
+          ]
+        },
+        "formula": {
+          "baseline": "80",
+          "changed": "84",
+          "reset": "80",
+          "safety": "内部 proxy，仅用于方向比较；不是收入预测，也不是财务建议。"
+        }
+      },
+      "screenshot": {
+        "path": "visual-workflows-mobile-390x844.png",
+        "bytes": 124457
+      }
+    }
+  ]
+}

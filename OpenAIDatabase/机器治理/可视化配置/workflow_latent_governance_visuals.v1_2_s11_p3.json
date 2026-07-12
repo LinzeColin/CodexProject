@@ -1,0 +1,113 @@
+{
+  "schema_version": "workflow_latent_governance_visuals.v1_2_s11_p3",
+  "task_id": "MA-V12-S11P3",
+  "acceptance_id": "ACC-MA-V12-S11P3",
+  "status": "phase_s11_p3_workflow_latent_governance_visuals_completed_pending_s11_p4",
+  "stage": "S11",
+  "phase": "P3",
+  "name": "Workflow/latent/governance visuals",
+  "source_policy": {
+    "uses_raw": false,
+    "uses_private_imports": false,
+    "uses_external_economic_database": false,
+    "derived_inputs": [
+      "data/derived/agent_collaboration/agent_collaboration_quality_report.json",
+      "data/derived/agent_collaboration/stage_flight_recorder.json",
+      "data/derived/behavior_intelligence/latent_signals.json",
+      "data/derived/behavior_intelligence/decision_debt_ledger.json",
+      "data/derived/economic_proxy/formula_what_if_preview.json"
+    ]
+  },
+  "filter_dimensions": [
+    "source",
+    "time",
+    "project",
+    "task"
+  ],
+  "visuals": [
+    {
+      "id": "agent_decision_sankey",
+      "title": "Codex/Agent Decision Sankey",
+      "insight_header_zh": "Agent 路径要看入口、验收和回滚是否连起来",
+      "human_question_zh": "Codex/Agent 执行路径哪里失真？",
+      "action_value_zh": "把断点转成下一轮 run contract、validator 或人工授权判断。",
+      "filter_dimensions": [
+        "source",
+        "time",
+        "project",
+        "task"
+      ],
+      "visual_roi_gate_pass": true,
+      "static_decoration": false
+    },
+    {
+      "id": "friction_heatmap",
+      "title": "Friction Heatmap",
+      "insight_header_zh": "返工热区优先处理证据缺口和 scope creep",
+      "human_question_zh": "我在哪些地方反复浪费时间？",
+      "action_value_zh": "把高热区转成停止条件、验收门禁或降噪规则。",
+      "filter_dimensions": [
+        "source",
+        "time",
+        "project",
+        "task"
+      ],
+      "visual_roi_gate_pass": true,
+      "static_decoration": false
+    },
+    {
+      "id": "latent_radar",
+      "title": "Latent Radar",
+      "insight_header_zh": "潜在信号必须能被证据验证或降权",
+      "human_question_zh": "哪些潜在信号正在增强？",
+      "action_value_zh": "只继续验证可反驳、有证据 badge、有下一步的问题。",
+      "filter_dimensions": [
+        "source",
+        "time",
+        "project",
+        "task"
+      ],
+      "visual_roi_gate_pass": true,
+      "static_decoration": false
+    },
+    {
+      "id": "evidence_timeline",
+      "title": "Evidence Timeline",
+      "insight_header_zh": "结论要能沿时间线追到证据来源",
+      "human_question_zh": "这个结论从哪些记录来？",
+      "action_value_zh": "打开时间线复核证据新鲜度，避免旧结论继续驱动行动。",
+      "filter_dimensions": [
+        "source",
+        "time",
+        "project",
+        "task"
+      ],
+      "visual_roi_gate_pass": true,
+      "static_decoration": false
+    },
+    {
+      "id": "formula_explorer",
+      "title": "Formula Explorer/Parameter Inspector",
+      "insight_header_zh": "公式权重只解释 proxy，不直接代表真实收益",
+      "human_question_zh": "这个分数为什么这样算？",
+      "action_value_zh": "检查参数、边界和 proposal-only 规则，再决定是否进入 S12/S13。",
+      "filter_dimensions": [
+        "source",
+        "time",
+        "project",
+        "task"
+      ],
+      "visual_roi_gate_pass": true,
+      "static_decoration": false
+    }
+  ],
+  "phase_boundary": {
+    "no_github_main_upload_in_this_phase": true,
+    "no_remote_push_in_this_phase": true,
+    "no_raw_mutation": true,
+    "no_proposal_apply_execution": true,
+    "no_s11_p4_human_question_map_completion": true,
+    "no_app_reinstall": true,
+    "next_gate": "pending S11 P4"
+  }
+}

@@ -23,12 +23,13 @@
 
 ## Data And Privacy
 
-- 禁止提交原始敏感经营数据、银行流水、合同、工资、税务申报、账号密码、token、API key。
-- 公开仓库只允许保存结构、hash、manifest、状态、证据索引、脱敏 fixture 和治理记录。
+- 经 owner 在当前线程或签名上传 manifest 明确授权后，原始敏感经营文件、银行流水、合同、工资、税务申报、SQLite/数据库导出、明文报告正文等非凭据类敏感材料允许以明文提交到 GitHub，但必须放在 `KMFA/metadata/` 下并登记到 `KMFA/metadata/security/owner_authorized_plaintext_upload_manifest.jsonl`。
+- 账号密码、token、API key、webhook secret、signing key、私钥等 credential/secret 仍禁止提交 GitHub；如原始文件内含 credential/secret，必须先移除或更换源文件。
+- 未经 owner 明确授权和 manifest 登记的敏感材料仍按历史规则处理：公开仓库只保存结构、hash、manifest、状态、证据索引、脱敏 fixture 和治理记录。
 - 本机 KMFA raw data inbox 固定为 `/Users/linzezhang/Downloads/KMFA_MetaData`；该目录属于用户原始财务数据，只读，不得修改、删除、移动、重命名、覆盖或写入生成文件。
 - Codex 私有 inventory、schema/header diagnostic、mapping diagnostic、scratch files 或本地报告只能写入项目受控且 Git 忽略的位置，例如 `KMFA/.codex_private_runtime/`，或另一个明确加入 `.gitignore` 的额外工作目录。
-- `90_用户原始上传数据_仅本地私有_禁止提交GitHub/` 只允许作为本地私有源包存在；公开仓库只保存其 SHA256 登记和禁止提交规则。
-- metadata 只保存索引、hash、状态、证据，不保存明文敏感数据。
+- `90_用户原始上传数据_仅本地私有_禁止提交GitHub/` 属于历史任务包命名；新规则下只有完成 owner 授权、secret 扫描和 upload manifest 登记后，才可把对应明文副本放入 `KMFA/metadata/`。
+- metadata 默认保存索引、hash、状态、证据；经 owner 授权的明文敏感文件例外必须集中放入 `KMFA/metadata/`，不得散落到项目代码、测试或 stage artifact 目录。
 - 前端后续只允许写控制事件、字段映射规则、项目匹配确认、差异处理意见、人工确认记录、备注和报告发布审批。
 - 前端和后端都不得修改原始上传文件、原始 hash、原始抽取值、已发布历史报告和已批准历史处理事件。
 

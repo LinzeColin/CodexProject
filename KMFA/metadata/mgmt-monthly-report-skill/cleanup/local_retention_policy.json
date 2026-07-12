@@ -1,0 +1,21 @@
+{
+  "policy_id": "mgmt_monthly_report_local_retention_v1",
+  "local_target_state": "keep_official_xlsx_and_pdf_reports_only_in_report_output_dir",
+  "cleanup_scope": [
+    "skill_created_temp_files",
+    "skill_created_cache_files",
+    "skill_created_runtime_logs",
+    "skill_created_runtime_database"
+  ],
+  "never_auto_delete_without_owner_confirmation": [
+    "user_original_input_files",
+    "raw_sensitive_excel",
+    "contracts",
+    "bank_tax_payroll_files"
+  ],
+  "official_local_outputs": [
+    "经营管理分析报表 YYYYMM.xlsx",
+    "董事会经营分析摘要 YYYYMM.pdf"
+  ]
+}
+

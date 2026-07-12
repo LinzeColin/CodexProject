@@ -1,0 +1,22 @@
+{
+  "content_sha256": "e67c8d322dafeb7e02f94d9ae51cf731c140b04d702e4db9b653ed41eae2379a",
+  "conversation_id": "6a3402b2-496c-83ec-8fac-53111119455f",
+  "created_at": "2026-06-18T14:37:38Z",
+  "credential_boundary": "credentials_not_transcript",
+  "message_count": 1,
+  "messages": [
+    {
+      "created_at": "2026-06-18T14:37:22Z",
+      "message_id": "714bbae3-3c05-4f58-89c5-f9d68f0b0ecc",
+      "role": "assistant",
+      "text": "Here’s a quick, practical orientation to the new “agentic AI” wave—what it is, what it changes, and how to judge it fast.\n\n---\n\n### What “agentic AI” means (plain English)\n- **Agents don’t just chat; they act.** They plan multi‑step tasks, use tools/apps, and take actions with minimal supervision. Think “from prompts to actions.” citeturn0search0  \n- Major platforms now ship agent features (OpenAI’s Operator/ChatGPT agent; Google’s Gemini agentic updates; Microsoft’s Agent Framework). citeturn0search1turn0search5turn0search2turn0search6turn0search3  \n- Under the hood: planning + task decomposition + iterative perception‑reasoning‑action loops. citeturn0search12turn0search24turn0search16\n\n---\n\n### Core capabilities to look for\n1) **Proactivity** – monitors context and surfaces next actions (alerts, drafts, bookings) rather than waiting for prompts. citeturn0search28  \n2) **Tool use** – can browse, operate apps/sites, call APIs, or run in managed environments (VMs/workspaces). citeturn0search13turn0search18  \n3) **Multi‑step planning** – breaks big goals into steps, executes, checks results, and adjusts. citeturn0search12turn0search24\n\n---\n\n### What this changes for workflow automation\n- **From scripts to outcomes.** Instead of hardcoding flows, you specify goals and guardrails; the agent handles the sequence and app glue. citeturn0search3  \n- **Cheaper, broader automation** as ecosystems standardize on agent frameworks/managed agents (Gemini, Microsoft Agent Framework). citeturn0search6turn0search3  \n- **Reality check:** today’s agents still fail on a chunk of real computer‑use tasks; they need oversight and narrow scopes. citeturn0search17turn0news39\n\n---\n\n### A 30‑second due‑diligence test (ask these before letting an agent touch valuable data)\n1) **Scope & permissions:** *Exactly* which apps, files, and actions can it access? Is there least‑privilege + human‑in‑the‑loop for high‑risk steps? citeturn0search3  \n2) **Reliability & auditability:** How does it plan/evaluate steps? Can you review logs, replays, and explanations when something goes wrong? citeturn0search3turn0search18  \n3) **Containment & failure modes:** Where does it run (sandbox/VM)? What are rollback/approval gates and quotas to cap damage or costs? citeturn0search13\n\n---\n\n### If you want to build or pilot one next\n- **Pick a mature framework** (Microsoft Agent Framework; managed Gemini agents) and start with a *single, high‑ROI narrow workflow* (e.g., compile a daily brief + file it; triage tickets + draft replies). citeturn0search3turn0search6  \n- **Operationalize guardrails** (role‑based scopes, human approvals on money/PII, runbooks, monitoring). citeturn0news39  \n- **Measure by task completion & cost per completed task,** not tokens—price wars and model swaps make this the durable metric. citeturn0news38\n\nIf you want, tell me one workflow you’re eyeing (e.g., market intel digests, Notion updates, vendor bid triage), and I’ll sketch an agent plan with scopes, guardrails, and a build path."
+    }
+  ],
+  "redact_for_public_backup": true,
+  "redaction_counts": {},
+  "schema_version": "memory_atlas_public_raw_chatgpt.v1",
+  "source_id": "chatgpt",
+  "sync_mode": "official_export_fallback",
+  "title": "A Plain-English Agentic AI Primer",
+  "updated_at": "2026-06-19T12:15:30Z"
+}

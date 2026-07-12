@@ -1,0 +1,53 @@
+# Taskpack: fund-weekly-analysis-skill
+
+Deliverables:
+
+1. Public-safe workbook contract: `templates/excel_sheet_spec.yaml`
+2. Skill instructions: `SKILL.md`
+3. Automation prompt: `automation/weekly_mon_sat_1100_sydney.prompt.md`
+4. macOS launchd template: `automation/launchd/com.kmfa.fund-weekly-analysis.plist`
+5. Deterministic runner, source readiness gate, source materializer, and validators under `tools/`
+6. Governance references under `references/`
+7. Owner review checklist: `references/excel_master_review_checklist.md`
+8. Owner review handoff rules: `references/owner_review_handoff.md`
+9. Successful run user deliverables: native `资金与税费管理母版_<run_id>.xlsx` and human-readable `资金与税费管理报告_<run_id>.pdf`
+10. Delivery acceptance checker: `tools/check_delivery_acceptance.py`
+
+Install:
+
+```bash
+export KMFA_REPO_ROOT=/path/to/CodexProject
+bash tools/install_to_kmfa_main.sh
+```
+
+After install, replace `__REPO_ROOT__` in the launchd plist with the actual repo path, copy it to `~/Library/LaunchAgents/`, then run:
+
+```bash
+launchctl load ~/Library/LaunchAgents/com.kmfa.fund-weekly-analysis.plist
+```
+
+The installer does not commit raw financial evidence. It tracks only skill/governance/config files and a gitignored metadata private_runtime boundary.
+
+Private template prerequisite: install the authoritative editable workbook locally at `KMFA/metadata/fund_weekly_analysis/private_runtime/templates/fund_weekly_template.xlsx`, or set `KMFA_FUND_TEMPLATE_PATH` to another ignored local path. The runner exits with `PRIVATE_TEMPLATE_MISSING` before reading sources when no private template is available. Excel templates and generated workbooks must never be included in the public task-pack ZIP or committed to Git.
+
+User-facing report rule: every successful runner package must emit `资金与税费管理报告_<run_id>.pdf` next to the native Excel workbook. The PDF is a readable run summary and gate-status report only; OCR raw text, logs, audit sidecars, screenshots, private authorization manifests, and generated OCR sidecars remain private validation materials and are not user deliverables.
+
+Delivery acceptance rule: run `tools/check_delivery_acceptance.py --run-id <run_id>` after a real runner/OCR/package validation. The checker must verify git main/origin/remote parity, public-safe taskpack zip contents, tracked and live weekly Monday/Saturday 11:00 Sydney automation, OneDrive source readiness, native Excel structure, human-readable PDF, OCR reuse/candidates, no generated hallucinated financial amounts, owner review all-packet readiness, and fail-closed owner blockers. `DELIVERY_ACCEPTANCE_READY_WITH_OWNER_BLOCKERS` is acceptable only when engineering delivery is ready and the remaining blocker is missing owner-reviewed values/manifest; it must not release formal ledger rows or management conclusions.
+
+Runtime package rule: `ocr_fact_candidate_owner_decision_progress_summary.csv` is emitted from owner decision preview status for all OCR fact candidates and per metric. It is progress evidence only; it must keep `fund_ledger_write_allowed=false`, `financial_fact_promoted=false`, and `management_conclusion_allowed=false`.
+
+Objective completion audit rule: `goal_completion_audit.csv` is a final-objective audit, not a success badge. Missing reviewed company-bank matrix facts, missing real internal-transfer rows, missing cashflow validation rows, and missing known due-date forecast rows must keep their rows `blocking=true` until real reviewed evidence exists. This prevents scheduled-readiness or workbook-quality success from being mistaken for full objective completion.
+
+Owner decision readiness rule: `owner_decision_readiness_gate.csv` is emitted from `ocr_fact_candidate_owner_decision_preview.csv` as a one-row run-level blocker summary. It shows whether the next step is still owner workbook/manifest completion or whether a no-write authorization update preview is ready. It must keep `owner_decision_manifest_write_allowed=false`, `fund_ledger_write_allowed=false`, `financial_fact_promoted=false`, and `management_conclusion_allowed=false`.
+
+Owner decision intake rule: `tools/install_owner_decision_manifest.py --draft-csv-path <reviewed.csv>` or `--draft-xlsx-path <reviewed.xlsx>` may validate spreadsheet-edited owner decisions, but it remains dry-run by default and never promotes facts, writes ledgers, mutates source files, or releases management conclusions.
+
+Owner decision validation report rule: every valid JSON/CSV/XLSX intake writes private `ocr_fact_candidate_owner_decision_intake_validation_report.csv` with row-level missing-field or ready statuses plus owner-fill context such as evidence id, OCR text path, OCR excerpt, focus status, sidecar line range/focus line/match value, business date, amount, and currency. It is review guidance only and keeps every write/promotion/conclusion flag false.
+
+Owner decision intake summary rule: every valid JSON/CSV/XLSX intake also writes private `ocr_fact_candidate_owner_decision_intake_summary.csv` with one `all` row, one row per `candidate_metric`, and one row per `source_ocr_excerpt_focus_status`, summarizing candidate count, ready count, blocking count, missing owner values, not-approved rows, missing fields, and top recommended owner action. It is summary guidance only and keeps every write/promotion/conclusion flag false.
+
+Owner review export rule: `tools/export_owner_decision_review_csv.py` may export a small `ocr_fact_candidate_owner_decision_review_batch.csv` and, with `--xlsx`, a native `ocr_fact_candidate_owner_decision_review_batch.xlsx` from the private owner worklist for spreadsheet review. It may include `source_ocr_text_excerpt` copied from repo-local private OCR sidecars, preferring lines around the candidate amount or business date, and must include `source_ocr_excerpt_focus_status` so reviewers can distinguish amount hits, business-date hits, file-start fallback, missing OCR path/sidecar, empty sidecar, and unreadable sidecar. It must also include `source_ocr_excerpt_line_range`, `source_ocr_excerpt_focus_line_number`, and `source_ocr_excerpt_match_value` for sidecar-level traceability. The workbook must include a sheet-protected `Owner Review` sheet whose owner input columns are unlocked, with formula-backed row-level `owner_review_completion_status` and `missing_owner_fields_current` guidance, plus a sheet-protected read-only `Review Summary` sheet that summarizes the exported batch by `all`, `candidate_metric`, and `source_ocr_excerpt_focus_status`. It only prepares pending-review review files and must keep every write/promotion/conclusion flag false.
+
+Owner review all-packet rule: when the runner emits nonempty `ocr_fact_candidate_owner_worklist.csv`, it must also emit private `ocr_fact_candidate_owner_decision_review_all.csv` and `ocr_fact_candidate_owner_decision_review_all.xlsx` covering every owner worklist row. The all workbook follows the same protection, unlocked owner-input, formula, OCR excerpt, summary, validator, and no-write/no-promote/no-conclusion rules as the batch export. It never writes the private owner decision manifest; owner intake must still run validation-only first.
+
+Owner review workbook validation rule: `tools/validate_owner_review_workbook.py --workbook-path <xlsx>` must pass before a native review workbook is treated as ready for owner intake. It emits `OWNER_REVIEW_WORKBOOK_READY` only when `Owner Review` and `Review Summary` are present and protected, owner input cells are unlocked, evidence/status cells remain locked, owner decision validation is present, row counts are nonzero, and all write/promotion/conclusion flags remain false.

@@ -7,6 +7,7 @@ import argparse
 import json
 import re
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -59,6 +60,11 @@ ALLOWED_TRACKED_FILES = {
     "data/derived/codex/codex_behavior_report.md",
 }
 SOURCE_SCAN_EXCLUDED_DIRS = {".git", ".local_keys", "node_modules", "dist", "__pycache__", ".pytest_cache", ".mypy_cache"}
+PUBLIC_RAW_PREFIX = "data/public_raw/"
+PUBLIC_RAW_IGNORED_NAMES = {".DS_Store", ".gitkeep", "README.md"}
+RAW_MANIFEST_DIR = Path("机器治理/证据与日志/raw_archive_manifests")
+FAILED_SESSION_HISTORY_PART_COUNT = "0"
+FAILED_SESSION_HISTORY_RISK_SCAN = "SENSITIVE_SCAN_BLOCKED"
 
 
 class AuditError(RuntimeError):
@@ -78,6 +84,118 @@ def is_allowed_managed_session_history_file(relative: str) -> bool:
     if relative_path.suffix.lower() in {".app", ".key", ".pem", ".env"}:
         return False
     return True
+
+
+def forbidden_name_pattern(relative: str, allow_public_raw_sessions: bool = False) -> re.Pattern[str] | None:
+    for pattern in FORBIDDEN_NAME_PATTERNS:
+        if (
+            allow_public_raw_sessions
+            and relative.startswith(PUBLIC_RAW_PREFIX)
+            and pattern.pattern == r"sessions?"
+        ):
+            continue
+        if pattern.search(relative):
+            return pattern
+    return None
+
+
+def is_failed_zero_part_session_history_manifest(path: Path) -> bool:
+    if path.name != "MANIFEST.txt":
+        return False
+    try:
+        fields = dict(
+            line.split("=", 1)
+            for line in path.read_text(encoding="utf-8").splitlines()
+            if "=" in line
+        )
+    except OSError:
+        return False
+    return (
+        fields.get("part_count") == FAILED_SESSION_HISTORY_PART_COUNT
+        and fields.get("risk_scan") == FAILED_SESSION_HISTORY_RISK_SCAN
+    )
+
+
+def _run_json_audit(command: list[str]) -> dict[str, Any]:
+    try:
+        completed = subprocess.run(command, text=True, capture_output=True, check=False)
+        payload = json.loads(completed.stdout)
+    except (OSError, json.JSONDecodeError) as exc:
+        return {"status": "FAIL", "reason": f"audit command failed: {type(exc).__name__}"}
+    if not isinstance(payload, dict):
+        return {"status": "FAIL", "reason": "audit command returned a non-object result"}
+    return payload
+
+
+def audit_governed_public_raw(repo_root: Path) -> tuple[dict[str, Any], list[str]]:
+    raw_root = repo_root / "data/public_raw"
+    raw_files = (
+        sorted(
+            path
+            for path in raw_root.rglob("*")
+            if path.is_file()
+            and path.name not in PUBLIC_RAW_IGNORED_NAMES
+            and not any(part.startswith(".") for part in path.relative_to(raw_root).parts)
+        )
+        if raw_root.exists()
+        else []
+    )
+    if not raw_files:
+        return {"status": "NOT_APPLICABLE", "file_count": 0}, []
+
+    scripts_dir = Path(__file__).resolve().parent
+    content_audit = _run_json_audit(
+        [
+            sys.executable,
+            str(scripts_dir / "audit_memory_atlas_public_raw.py"),
+            "--database-dir",
+            str(repo_root),
+        ]
+    )
+    append_only_audit = _run_json_audit(
+        [
+            sys.executable,
+            str(scripts_dir / "raw_archive_manifest.py"),
+            "audit",
+            "--database-dir",
+            str(repo_root),
+        ]
+    )
+
+    problems: list[str] = []
+    if content_audit.get("status") != "PASS":
+        problems.append("public raw content audit failed")
+    if append_only_audit.get("status") != "PASS":
+        problems.append("public raw append-only audit failed")
+    if int(append_only_audit.get("new_raw_file_count", -1)) != 0:
+        problems.append("public raw contains files missing from the hash ledger")
+    if int(append_only_audit.get("current_raw_file_count", -1)) != len(raw_files):
+        problems.append("public raw inventory count does not match the append-only audit")
+    if int(append_only_audit.get("ledger_entry_count", -1)) != len(raw_files):
+        problems.append("public raw hash ledger is not an exact current inventory")
+
+    ledger_path = repo_root / RAW_MANIFEST_DIR / "raw_hash_ledger.jsonl"
+    manifest_paths = sorted((repo_root / RAW_MANIFEST_DIR).glob("raw_manifest.*.jsonl"))
+    matching_manifest = None
+    if ledger_path.is_file():
+        ledger_payload = ledger_path.read_bytes()
+        matching_manifest = next(
+            (path for path in manifest_paths if path.read_bytes() == ledger_payload),
+            None,
+        )
+    if matching_manifest is None:
+        problems.append("public raw has no immutable manifest matching the hash ledger")
+
+    result = {
+        "status": "PASS" if not problems else "FAIL",
+        "file_count": len(raw_files),
+        "content_audit": content_audit,
+        "append_only_audit": append_only_audit,
+        "matching_manifest": (
+            matching_manifest.relative_to(repo_root).as_posix() if matching_manifest else None
+        ),
+    }
+    return result, problems
 
 
 def audit_release(repo_root: Path, publish_dir: Path) -> dict[str, Any]:
@@ -100,7 +218,7 @@ def audit_release(repo_root: Path, publish_dir: Path) -> dict[str, Any]:
             problems.append(f"forbidden publish suffix: {relative}")
         if suffix and suffix not in ALLOWED_PUBLISH_SUFFIXES:
             problems.append(f"unexpected publish suffix: {relative}")
-        if any(pattern.search(relative) for pattern in FORBIDDEN_NAME_PATTERNS):
+        if forbidden_name_pattern(relative):
             problems.append(f"forbidden publish filename: {relative}")
 
         if suffix in {".html", ".css", ".js", ".json", ".svg", ".txt", ".webmanifest"}:
@@ -115,8 +233,14 @@ def audit_release(repo_root: Path, publish_dir: Path) -> dict[str, Any]:
     else:
         audit_memory_atlas_json(atlas_path, problems)
 
+    # A rejected publish artifact cannot become safer by scanning the source tree.
+    if problems:
+        raise AuditError("\n".join(problems))
+
     tracked_problems = audit_tracked_files(repo_root)
     problems.extend(tracked_problems)
+    public_raw_audit, public_raw_problems = audit_governed_public_raw(repo_root)
+    problems.extend(public_raw_problems)
 
     if problems:
         raise AuditError("\n".join(problems))
@@ -126,6 +250,7 @@ def audit_release(repo_root: Path, publish_dir: Path) -> dict[str, Any]:
         "publish_dir": str(publish_dir),
         "file_count": len(files),
         "atlas": str(atlas_path),
+        "public_raw": public_raw_audit,
     }
 
 
@@ -192,9 +317,13 @@ def audit_tracked_files(repo_root: Path) -> list[str]:
 
     problems: list[str] = []
     for line in result.stdout.splitlines():
-        if line in ALLOWED_TRACKED_FILES or is_allowed_managed_session_history_file(line):
+        if is_allowed_managed_session_history_file(line):
+            if is_failed_zero_part_session_history_manifest(repo_root / line):
+                problems.append(f"failed zero-part session history metadata: {line}")
             continue
-        if any(pattern.search(line) for pattern in FORBIDDEN_NAME_PATTERNS):
+        if line in ALLOWED_TRACKED_FILES:
+            continue
+        if forbidden_name_pattern(line, allow_public_raw_sessions=True):
             problems.append(f"forbidden tracked filename: {line}")
         suffix = Path(line).suffix.lower()
         if suffix in {".app", ".key", ".pem", ".env"}:
@@ -211,9 +340,13 @@ def audit_source_workspace_files(repo_root: Path) -> list[str]:
         relative = relative_path.as_posix()
         if any(part in SOURCE_SCAN_EXCLUDED_DIRS for part in relative_path.parts):
             continue
-        if relative in ALLOWED_TRACKED_FILES or is_allowed_managed_session_history_file(relative):
+        if is_allowed_managed_session_history_file(relative):
+            if is_failed_zero_part_session_history_manifest(path):
+                problems.append(f"failed zero-part session history metadata: {relative}")
             continue
-        if any(pattern.search(relative) for pattern in FORBIDDEN_NAME_PATTERNS):
+        if relative in ALLOWED_TRACKED_FILES:
+            continue
+        if forbidden_name_pattern(relative, allow_public_raw_sessions=True):
             problems.append(f"forbidden source workspace filename: {relative}")
         suffix = path.suffix.lower()
         if suffix in {".app", ".key", ".pem", ".env"}:

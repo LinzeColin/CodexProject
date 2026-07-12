@@ -22,4 +22,3 @@
 - This phase did not read, list, fingerprint, write, delete, move, rename, overwrite, normalize or copy the raw inbox.
 - Later raw-to-processed cross-validation must reconcile derived outputs to the owner raw source. If repeated validation still diverges, final goal delivery must include a difference report.
 - This phase did not replay materialization, compare raw with processed values, complete lineage, publish a formal report, upload, reinstall the app or execute business actions.
-

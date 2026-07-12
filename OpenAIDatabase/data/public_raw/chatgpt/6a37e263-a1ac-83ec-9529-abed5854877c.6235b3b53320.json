@@ -1,0 +1,139 @@
+{
+  "content_sha256": "6235b3b5332083bdbab04ee21b048becd2df1992fe23206a71e8dde4a6fae5f7",
+  "conversation_id": "6a37e263-a1ac-83ec-9529-abed5854877c",
+  "created_at": "2026-06-21T13:08:52Z",
+  "credential_boundary": "credentials_not_transcript",
+  "message_count": 20,
+  "messages": [
+    {
+      "created_at": "2026-06-21T21:50:34Z",
+      "message_id": "08a508d0-3582-4f2d-be63-ece1a9d7beb6",
+      "role": "assistant",
+      "text": "I found a major contamination source: editorial prefaces, notes, and book-title text inflate “唐,” so the main analysis must strip non-poem text before counting."
+    },
+    {
+      "created_at": "2026-06-21T22:58:02Z",
+      "message_id": "2be347b9-d226-4864-902a-113f330bb406",
+      "role": "assistant",
+      "text": "# 已完成：结论\n\n清洗、去重和统计检验后，唐诗正文中：\n\n- “漢/汉”3,152次，“唐”432次，二者比例为 **7.30∶1**。\n- 在二字合计出现次数中，“漢/汉”占 **87.95%**，“唐”占 **12.05%**。\n- 作者所处年代每后移100年，“漢/汉”字频平均下降约 **37.8%**。\n- “唐”字频没有检出显著的线性升降趋势。\n- 因而，**汉/唐比例在唐代后期下降，主要是“漢/汉”减少造成的，不是“唐”增加造成的。**\n\n但这只能解释为“不同活动年代作者的存世诗歌用字差异”，不能解释为唐代社会逐年情绪变化，也不能据此证明安史之乱等事件产生了因果影响。\n\n## 核心结果\n\n| 指标 | 结果 |\n|---|---:|\n| 原始记录 | 57,607条 |\n| 清洗、正文精确去重后 | 56,532条 |\n| 清洗后正文汉字 | 2,867,578字 |\n| “漢/汉” | 3,152次，10.99次/万字 |\n| “唐” | 432次，1.51次/万字 |\n| “漢/汉”每100年发生率比 | 0.622，95% CI 0.531–0.728，p=3.45×10⁻⁹ |\n| “唐”每100年发生率比 | 1.017，95% CI 0.793–1.305，p=0.894 |\n| 二者时间斜率差异 | p=0.00104 |\n| 时间线主样本 | 830位作者、31,521首、覆盖59.37%正文字符 |\n\n一个非常重要的清洗发现是：原始数据库中“唐”出现 **2,021次**，清洗后只剩 **432次**，减少 **78.62%**。大量被删计数来自现代编者前言、考释、来源说明、书名和附注，例如“全唐诗”“唐人”“唐代”等，而不是诗歌正文。若直接统计原始JSON，会把汉/唐比例错误地算成约 **1.62∶1**。\n\n固定50年分箱显示，汉/唐比例不是从618年开始机械地单调下降，而是先在盛唐附近达到较高值，随后明显降低：\n\n| 作者代理年代 | 漢/汉每万字 | 唐每万字 | 漢/唐 |\n|---|---:|---:|---:|\n| 618–669 | 10.81 | 1.69 | 6.40 |\n| 670–719 | 20.05 | 2.14 | 9.36 |\n| 720–769 | 15.70 | 1.38 | 11.40 |\n| 770–819 | 8.47 | 1.56 | 5.41 |\n| 820–869 | 9.83 | 1.53 | 6.43 |\n| 870–907 | 6.87 | 1.78 | 3.86 |\n\n以765年作描述性分界，“漢/汉”的后期/前期字频比为 **0.553**，而“唐”为 **1.039**。这再次说明比例下降来自“漢/汉”减少；但该比较不是安史之乱的因果检验。\n\n稳健性检验包括作者聚类自助法、5,000次置换检验、年代误差模拟、排除高产作者、只保留核心卷段、限制作者最低文本量以及保守语义分类，主要结论均未改变。\n\n本研究固定使用 `chinese-poetry@2.0.1`。上游项目明确将其描述为来源于互联网、以JSON服务开发应用的古诗词数据，因此本研究把它当作可复现工程语料，而不是权威校勘本。citeturn534254search0turn534254search1\n\n## 交付文件\n\n- [PDF完整研究报告](sandbo[REDACTED_LOCAL_PATH]\n- [Markdown完整研究报告](sandbo[REDACTED_LOCAL_PATH]\n- [完整可复现研究包 ZIP](sandbo[REDACTED_LOCAL_PATH]\n- [核心结果 CSV](sandbo[REDACTED_LOCAL_PATH]\n\n研究包包含逐记录清洗审计、去重组、作者年代证据、上下文样本、全部模型结果、稳健性检验、图表、源版本校验、代码和一键复现脚本。"
+    },
+    {
+      "created_at": "2026-06-21T13:08:51Z",
+      "message_id": "2f6eb485-0d52-4a1e-ae50-7696904f9fae",
+      "role": "user",
+      "text": "详细专业全面深度讲解7.46 复制打开抖音，看看【难炎Nanyan的作品】量化分析57607首全唐诗后，我发现了唐朝的三个异... http[REDACTED_LOCAL_PATH] ufB:/ 01/10 :2pm [REDACTED_EMAIL] ，这是真的还是假的"
+    },
+    {
+      "created_at": "2026-06-21T19:50:27Z",
+      "message_id": "44f41e42-fd49-4c6b-9d1c-ee7e50e76095",
+      "role": "assistant",
+      "text": "I’ve pinned a reproducible corpus snapshot matching 57,607 Tang records across 58 JSON shards, and I’ll count only poem bodies, excluding titles, punctuation, notes, placeholders, and duplicate text."
+    },
+    {
+      "created_at": "2026-06-21T20:35:13Z",
+      "message_id": "456cae4d-7eaf-4e65-9fbb-53c26909820c",
+      "role": "user",
+      "text": "那你做一个，相同数据来源，根据你的标准进行数据清理和处理，再进行统计检验和大数据量化分析，只看唐诗中汉唐二字出现比例和唐朝时间线的关系"
+    },
+    {
+      "created_at": "2026-06-21T21:41:25Z",
+      "message_id": "4bef7301-b96a-415e-b8f3-210c0560260c",
+      "role": "assistant",
+      "text": "I’ve also fixed the corpus versioning check: I’ll compare the pinned commit with the latest package, cluster by author, and separate ambiguous “汉” usages."
+    },
+    {
+      "created_at": "2026-06-21T13:27:36Z",
+      "message_id": "50275d62-4088-44ae-a3ca-de7e1c0ef970",
+      "role": "assistant",
+      "text": "# 结论\n\n**这条视频应判定为“半真半假”：数据分析可能真实做过，但标题把“数据库现象”升级成了“唐朝历史事实”。**\n\n更准确地概括：\n\n> **57,607这个数字很可能是真的；把它称为57,607首彼此独立、真伪可靠、年代明确的“全唐诗”，不准确；由其中的统计异常直接推断唐朝社会或历史因果，目前证据不足。**\n\n这不等于作者故意造假，更像是**数据口径不严谨、统计推断越级、短视频标题强化结论**。\n\n由于抖音页面限制，我目前没有取得完整字幕，无法对视频所说的“三个异常”逐句核验；但已经可以对它最核心的数据基础和论证方法作出判断。\n\n## 一、快速裁决表\n\n| 视频可能表达的命题 | 判定 | 说明 |\n|---|---:|---|\n| 程序处理了57,607条记录 | 大概率真 | 与常用开源唐诗语料库的记录数高度吻合 |\n| 这57,607条都是独立且可靠的唐诗 | **不真** | 包含重收、异文、误收、作者归属争议等问题 |\n| 统计图中确实出现了三个异常 | 可能真 | 至少可以是该数据库内部的真实计算结果 |\n| 异常反映了唐朝诗歌传播史 | 尚待验证 | 需清洗版本、控制作者和年代偏差 |\n| 异常反映整个唐朝社会真实状况 | 证据不足 | 存世诗歌不是唐代社会的随机样本 |\n| 某历史事件造成了该异常 | 不能据此证明 | 时间相关不等于历史因果 |\n\n---\n\n# 二、57,607究竟是什么\n\n## 1. 它不是传统《全唐诗》的公认篇数\n\n康熙年间编成的《全唐诗》，通常被概括为收诗约4.9万首。现代文献研究发现，其中存在大量：\n\n- 同一首诗重复收录；\n- 同一首诗分别归到两个或三个作者名下；\n- 唐以前、五代以后作品误收；\n- 后人伪作或错误归属；\n- 诗、残句、组诗分篇口径不一致。\n\n陈尚君等学者估计，仅重复、异名重收和非唐五代作品等，传统《全唐诗》大约就要减去四千首，其中误收的非唐五代作品有六百多首。citeturn761005view2\n\n另一方面，《全唐诗》又确实漏收了大量作品。经《全唐诗补编》等长期辑佚整理，有研究将现存唐诗统计为**55,730首另3,060条残句**。注意这里仍然区分“完整诗”和“残句”，不能简单合并成一个“诗歌篇数”。citeturn761005view1\n\n因此，历史上不存在一个无争议的：\n\n> “唐朝真实存在且保存下来的唐诗，恰好就是57,607首。”\n\n---\n\n## 2. 57,607高度吻合一个开源工程语料库\n\n这个数字与 GitHub 上广泛使用的 `chinese-poetry` 开源古诗词数据库高度吻合。\n\n该项目的总说明明确写道：\n\n- 收录约5.5万首唐诗；\n- 数据“来源于互联网”；\n- 主要目的，是把诗词整理成JSON格式，方便开发者构建应用；\n- 部分有争议的数据可能通过社区讨论决定是否纳入。\n\n换言之，它首先是一个**开发者友好的工程数据集**，而不是经过完整校勘、辨伪、定年和版本批注的权威学术语料库。citeturn761005view5\n\n更关键的是，该项目《全唐诗》目录自己的README同时承认：\n\n> “目前此诗集还有大量错误需要更改。”\n\n项目说明一边注明传统《全唐诗》约4.89万首，一边把唐诗JSON文件扩展到 `poet.tang.[0-57000].json`。citeturn609971view0\n\n公开代码教程在读取这套数据后，得到的数量恰好是**57,607条**。这与视频标题中的数字完全相同，因而高度提示视频使用了这套数据或其衍生版本；不过，在作者没有公开代码、数据版本和commit哈希前，还不能百分之百确认。citeturn737910search1turn761005view5\n\n所以最准确的表述应当是：\n\n> **分析了某个开源唐诗数据库中的57,607条JSON记录。**\n\n而不是：\n\n> **分析了57,607首已完成学术辨伪的全部唐诗。**\n\n---\n\n# 三、最大的问题：把三种“真实”混成了一种\n\n量化文学研究至少包含三个证据层级。\n\n## 第一层：计算真实\n\n例如：\n\n- 数据库中某个字出现了多少次；\n- 某作者名下有多少条作品；\n- 某类词语在某些记录中出现峰值；\n- 算法聚类形成了几个主题。\n\n只要代码正确，这些结果可以是**计算真实**。\n\n但它只能证明：\n\n> 在这份特定数据、特定清洗方式、特定算法下，输出了这样的结果。\n\n---\n\n## 第二层：文本史真实\n\n还要证明该结果不是由以下问题制造的：\n\n- 同诗重收；\n- 异文重复；\n- 伪诗误收；\n- 作者错署；\n- 残句当完整诗；\n- 组诗拆分口径不同；\n- 唐前、五代、宋代作品混入；\n- 简繁转换和标点处理错误。\n\n只有清理这些问题后，才能比较有把握地说：\n\n> 这是现存唐诗文献中的稳定现象。\n\n视频若只使用原始JSON直接计数，通常还没有完成这一层。\n\n---\n\n## 第三层：历史真实\n\n即使某个词在唐诗中真实增加，也不等于：\n\n- 唐代现实生活中相应事物增加；\n- 当时普通百姓更关注它；\n- 整个唐朝社会发生了相同变化；\n- 某一历史事件必然造成了这个变化。\n\n诗歌文本是经过文学传统、作者身份、题材惯例、传播过程和后世保存机制共同过滤的结果。\n\n因此：\n\n> **唐诗语料更接近“后世保存下来的唐代文人表达”，而不是“唐朝全社会的随机抽样调查”。**\n\n数字人文研究本身也承认，计算方法能够帮助检索、发现模式和提出问题，但尚不足以脱离文献学和历史研究，直接建立深层人文结论。citeturn761005view3turn399810view0\n\n---\n\n# 四、为什么57,607看起来很大，却未必可靠\n\n## 1. 大样本不等于低偏差\n\n统计学中，大样本主要减少随机波动，却不能自动消除系统偏差。\n\n假设一把秤永远多称两公斤：\n\n- 称一次，结果偏两公斤；\n- 称五万次，平均结果仍然偏两公斤；\n- 而且会非常“稳定地错误”。\n\n同样，若语料库系统性包含重诗、误收和作者年代偏差，样本越大，只会让错误模式显得越稳定。\n\n这是典型的：\n\n> **高精度地测量了一个有偏样本。**\n\n---\n\n## 2. 57,607条记录不是57,607个独立观察\n\n唐诗数据高度聚集在少数高产、保存完整的诗人名下。\n\n例如某位诗人留下上千首诗，这上千首作品：\n\n- 具有相近语言习惯；\n- 受同一人生经历影响；\n- 使用相似题材；\n- 可能来自同一别集；\n- 并不等于上千名独立唐人的意见。\n\n统计上应把作者视为一个重要的聚类单位。否则，一个高产诗人的个人偏好就可能被误判成“全唐朝趋势”。\n\n至少需要做：\n\n1. 删除某位高产诗人后重新计算；\n2. 删除前10名高产作者后重新计算；\n3. 按作者等权，而不是按诗篇等权；\n4. 分别比较不同作者群体。\n\n如果异常在删除杜甫、白居易、元稹等高产作者后消失，那么它主要是**作者结构效应**，而不是唐朝总体效应。\n\n---\n\n## 3. 大量唐诗没有精确创作年份\n\n很多唐诗只有：\n\n- 作者生卒年；\n- 大致活动年代；\n- 某次任官或旅行的可能时期；\n- 初唐、盛唐、中唐、晚唐之类粗略标签。\n\n若分析者把作者所有作品都分配到：\n\n- 作者出生年份；\n- 生卒年中点；\n- 某个代表性年份；\n- 按生卒区间平均摊开；\n\n就会人为制造时间曲线。\n\n例如一个诗人活了七十岁，其作品可能主要写于三十至五十岁。把全部作品均匀分散到七十年，会产生并不存在的早年和晚年数据。\n\n所以凡是视频展示“逐年变化”“某一年突然异常”，都必须先回答：\n\n> 每首诗的创作年份是怎么确定的？有明确系年证据的诗占多少？\n\n答不出来，逐年曲线就不能承担精确历史解释。\n\n---\n\n## 4. 原始次数没有分母，容易制造假异常\n\n假设某时期“战争”一词出现：\n\n- 前期100次；\n- 后期200次。\n\n看起来翻倍了。\n\n但如果后期保存下来的诗歌总字数也从10万字增加到30万字，那么真实频率其实从：\n\n- 100/100,000 = 0.1%\n- 200/300,000 ≈ 0.067%\n\n反而下降了。\n\n因此不能只看“出现次数”，至少要按照以下分母归一化：\n\n- 每万字出现次数；\n- 每千首诗出现次数；\n- 使用该词的作者比例；\n- 有效活跃作者人数；\n- 每个时期保存下来的语料总量。\n\n还要分别报告绝对数和相对频率。\n\n---\n\n## 5. 古汉语词义不能简单按现代词汇理解\n\n单字和短词在古典诗歌中经常多义。例如：\n\n- “胡”可能指胡人、胡地、胡笳、胡马，也可能出现在人名和器物名中；\n- “京”可能指京城，也可能进入地名或典故；\n- “兵”可能指士兵、兵器、战争、军事权力；\n- “春”既可以是季节，也可以指年华、青春、恩泽或政治修辞；\n- “宫”可以是实际宫殿，也可以是宫怨题材和典故意象。\n\n直接按字符计数，无法区分：\n\n- 字面叙事；\n- 历史典故；\n- 想象场景；\n- 咏史诗；\n- 宫体诗；\n- 模拟古人；\n- 否定句；\n- 转喻和象征。\n\n所以“某词增加”不等于对应现实事物增加。\n\n---\n\n## 6. “先看所有数据，再挑三个异常”有多重检验问题\n\n假设分析者检查了：\n\n- 几千个常用字；\n- 几百个词；\n- 几百个年份；\n- 数十种作者分类；\n- 多种图表与窗口长度。\n\n即使数据完全随机，也几乎必然能找到几个非常显眼的峰值。\n\n这叫：\n\n- 多重比较问题；\n- 数据窥探；\n- 事后假设；\n- “德州神枪手效应”。\n\n正确做法应当是：\n\n1. 先提出明确假设；\n2. 再选择指标；\n3. 对多重检验进行校正；\n4. 用未参与探索的数据复验；\n5. 报告所有检验，而不是只展示最戏剧化的三个。\n\n否则，“三个异常”可能只是从大量随机波动中挑出的三个故事性最强的结果。\n\n---\n\n# 五、什么情况下视频结论才值得相信\n\n一项比较可靠的“全唐诗量化研究”，至少要公开以下内容。\n\n| 验证项目 | 最低要求 |\n|---|---|\n| 数据来源 | 明确版本、下载日期、commit哈希 |\n| 统计单位 | 区分诗、组诗、残句、异文和数据库记录 |\n| 去重 | 精确去重与近似文本去重 |\n| 真伪处理 | 标注误收、伪作、作者争议 |\n| 时间信息 | 公布有明确系年的作品比例 |\n| 归一化 | 按总字数、诗篇数和作者数计算频率 |\n| 作者控制 | 删除高产作者并重新分析 |\n| 类型控制 | 区分边塞诗、宫怨诗、咏史诗等 |\n| 稳健性 | 更换语料版本、时间窗口后仍出现异常 |\n| 统计检验 | 置信区间、多重比较校正、效应量 |\n| 外部验证 | 与史书、墓志、制度史或考古材料交叉验证 |\n| 可复现性 | 开放代码、清洗规则和中间数据 |\n\n数字人文中的“远读”确实有价值，它可以发现传统细读不容易注意到的大尺度模式；但正规的相关研究会明确讨论数据的选择性和文学史建模限制，而不会把模型输出自动当成历史事实。citeturn761005view4\n\n---\n\n# 六、最终裁定\n\n## 可以相信的部分\n\n- 作者可能确实对57,607条唐诗数据运行了程序；\n- 代码可能确实生成了三个异常图形；\n- 这些异常可以作为进一步研究的线索；\n- 量化方法本身不是伪科学。\n\n## 不能直接相信的部分\n\n- 57,607等于57,607首可靠、独立、无争议的唐诗；\n- 每条记录都有准确作者和准确创作时间；\n- 数据中的峰值就是唐代社会真实变化；\n- 时间重合就证明某历史事件造成了峰值；\n- 三个异常是第一次发现或已经成为历史学定论。\n\n## 一句话总结\n\n> **数可能是真的，数据名称不严谨；图可能是真的，历史解释没有被证明。**\n\n因此，这条视频适合作为**探索性的数据可视化或历史兴趣内容**观看，不宜直接当成已经成立的唐史研究结论。\n\n要对视频中的“三个异常”逐项判定，请直接上传7分46秒的视频、录屏或字幕；届时可以按时间戳分别给出“真、半真、假、证据缺失”的逐句核验表。"
+    },
+    {
+      "created_at": "2026-06-21T21:33:03Z",
+      "message_id": "63d6a4b0-89f8-4a67-8f7a-1255571a7967",
+      "role": "user",
+      "text": "那你做一个，相同数据来源，根据你的标准进行数据清理和处理，再进行统计检验和大数据量化分析，只看唐诗中汉唐二字出现比例和唐朝时间线的关系"
+    },
+    {
+      "created_at": "2026-06-21T20:17:36Z",
+      "message_id": "64b8df62-2e1d-4ea7-8090-ccfb46608a67",
+      "role": "assistant",
+      "text": "Full-run results are now stable after fixing a major contamination source: modern prefaces, collation notes, and cross-paragraph annotations had inflated “唐.” The main signal is a significant body-text decline in the 汉/唐 composition, driven mostly by falling 汉 frequency, while title-inclusive results lose significance."
+    },
+    {
+      "created_at": "2026-06-21T20:47:52Z",
+      "message_id": "684cf7c7-b405-4d20-91f8-cf54dc98e0e2",
+      "role": "assistant",
+      "text": "Data access is now resolved, with the version pinned to the 57,607-record package; a major contamination source emerged: many “唐” hits come from editorial notes, prefaces, and repeated corpus titles, so I’ll strip those before modeling."
+    },
+    {
+      "created_at": "2026-06-21T19:38:08Z",
+      "message_id": "7e2efa0a-0dfa-444a-8278-bff6251a79bb",
+      "role": "assistant",
+      "text": "I’ll treat this as a reproducible mini-study: lock the dataset version, clean duplicates and anomalies, map authors to time periods, then test “汉/唐” frequencies and poem-level proportions against the Tang timeline."
+    },
+    {
+      "created_at": "2026-06-21T20:35:30Z",
+      "message_id": "812853ae-63f5-4eb1-a5e2-2536f26c803f",
+      "role": "assistant",
+      "text": "I’ll build this as a reproducible empirical analysis: same GitHub corpus, cleaned Han/Tang character frequencies, conservative author-based dating, robustness checks, significance tests, and deliverable code, tables, charts, and report."
+    },
+    {
+      "created_at": "2026-06-21T13:21:30Z",
+      "message_id": "8f09ecb1-b242-4582-bc93-45d31f269e4a",
+      "role": "assistant",
+      "text": "The exact source now appears to be GitHub’s `chinese-poetry` corpus, whose 57,607 records are internet-collected entries; next I’ll test whether the video overreads word frequencies as Tang social facts."
+    },
+    {
+      "created_at": "2026-06-21T13:12:21Z",
+      "message_id": "93504051-6161-4635-a658-f9f9112e459e",
+      "role": "assistant",
+      "text": "I’ve found the video link but Douyin limits direct access; the “57,607 poems” count likely comes from an open dataset, not the canonical Qing Quan Tangshi count."
+    },
+    {
+      "created_at": "2026-06-21T19:37:51Z",
+      "message_id": "b20ba628-d507-4a09-b863-d4c961466f4f",
+      "role": "user",
+      "text": "那你做一个，相同数据来源，根据你的标准进行数据清理和处理，再进行统计检验和大数据量化分析，只看唐诗中汉唐二字出现比例和唐朝时间线的关系"
+    },
+    {
+      "created_at": "2026-06-21T13:09:07Z",
+      "message_id": "cecfe5d1-f953-4eab-876f-e40fc5af79f4",
+      "role": "assistant",
+      "text": "I’ll verify the video’s claims by checking its data source, Quan Tangshi edition and counts, statistical method, and historical interpretation, then separate data facts from exaggerated or unproven conclusions."
+    },
+    {
+      "created_at": "2026-06-21T22:17:47Z",
+      "message_id": "cf096bd6-cdb8-4f07-8026-2402741f7068",
+      "role": "assistant",
+      "text": "The main result is now stable: after stricter dating, core-file checks, deduplication, and author exclusions, “汉” declines over time while “唐” shows no confirmed linear trend."
+    },
+    {
+      "created_at": "2026-06-21T19:41:17Z",
+      "message_id": "dba9abae-5dd9-4194-afec-5a35c27f71c6",
+      "role": "assistant",
+      "text": "One caveat is now central: the corpus lacks reliable poem-level dates, so I’ll avoid yearly curves and use author-period modeling plus dynasty-stage sensitivity checks."
+    },
+    {
+      "created_at": "2026-06-21T21:38:10Z",
+      "message_id": "f4827932-69f5-4185-b589-fb9d6fa8d969",
+      "role": "assistant",
+      "text": "I’ve confirmed the key limitation: the 57,607 records lack poem-level composition years, so I’ll use author active-period probability allocation plus 20-year windows."
+    },
+    {
+      "created_at": "2026-06-21T20:38:42Z",
+      "message_id": "f72659d5-1dfb-4752-95ae-6c621b6a6663",
+      "role": "assistant",
+      "text": "I’ve confirmed the corpus has 57,607 records across 58 JSON shards, but lacks poem-level dates and admits many errors. I’ll separate corpus-wide frequency facts from author-datable timeline inferences."
+    }
+  ],
+  "redact_for_public_backup": true,
+  "redaction_counts": {
+    "email": 1,
+    "local_absolute_path": 5
+  },
+  "schema_version": "memory_atlas_public_raw_chatgpt.v1",
+  "source_id": "chatgpt",
+  "sync_mode": "official_export_fallback",
+  "title": "真假分析请求",
+  "updated_at": "2026-06-21T22:59:00Z"
+}

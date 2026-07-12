@@ -1,9 +1,7 @@
-command: python3 scripts/build_personalization_exports.py --database-dir .
-exit_code: 0
-observed_result: PASS
-observed_at: 2026-06-21T06:34:23Z
-outputs:
-- data/derived/personalization/chatgpt_personalization.md
-- data/derived/personalization/codex_personalization.md
-- data/derived/personalization/personalization_export.json
-log: data/run_logs/export_runs/2026-06-21.jsonl
+task_id=TASK-OAI-D-001
+task=build_personalization_exports
+result=PASS
+prompt_version=personalization_prompt.v1_2_s12_p2
+outputs=data/derived/personalization/personalization_prompt_human_zh.md, data/derived/personalization/chatgpt_personalization.md, data/derived/personalization/codex_personalization.md, data/derived/personalization/other_agent_personalization.md, data/derived/personalization/personalization_export.json
+raw_private_data_included=false
+plaintext_secrets_included=false

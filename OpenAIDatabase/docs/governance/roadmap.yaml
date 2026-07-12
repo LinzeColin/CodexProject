@@ -1,12 +1,12 @@
 schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "OpenAIDatabase"
-current_stage_id: "S5"
-current_phase_id: "S5PB"
-current_task_id: "S5PBT03"
-next_gate_id: "S5PB-GATE-IN-PROGRESS"
-total_estimated_hours: 4
-completed_estimated_hours: 4
+current_stage_id: "CF-L2"
+current_phase_id: "CF-L2-P1"
+current_task_id: "CF-L2-20260710"
+next_gate_id: "ACC-CF-L2-20260710-PASSED"
+total_estimated_hours: 7
+completed_estimated_hours: 6
 stages:
   -
     stage_id: "S5"
@@ -70,3 +70,94 @@ stages:
               - "governance/run_manifests/GOV-REVIEW9-S5PBT03-OPENAIDATABASE-CANONICAL-RENDER-20260624.json"
             risk: "范围扩张、事实失真或治理回归"
             rollback: "Revert only this task commit; retain the read-only audit evidence."
+          -
+            task_id: "MACDATA-PROM2-SETUP-20260705"
+            name: "proM2 MacData 归档与清理自动化设置"
+            objective: "安装 OpenAIDatabase/macdata/proM2 任务包，按本机 M2 Max 覆盖设备预期，生成 owner confirmations，配置 GitHub 归档分支，并固定远程验证后受控清理策略。"
+            status: "in_progress"
+            estimated_hours: 1
+            total_hours_percent: "0.51%"
+            dependencies:
+              - "S5PBT03"
+            acceptance_ids:
+              - "ACC-MACDATA-PROM2-SETUP-20260705"
+            test_commands:
+              - "python3 -m unittest OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py -q"
+              - "python3 OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py --repo-root . --preflight-only"
+              - "git ls-remote origin refs/heads/macdata-proM2"
+            evidence_refs:
+              - "OpenAIDatabase/macdata/proM2/config/device_config.json"
+              - "OpenAIDatabase/macdata/proM2/config/owner_confirmations.json"
+              - "OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py"
+            risks: "Docker/Homebrew/系统缓存/项目缓存清理必须受远程验证和白名单约束；不得读取凭证、Time Machine、iCloud、Keychain、shell history、完整环境变量或 .env 原文。"
+            rollback: "Revert setup commit；删除远程 macdata-proM2 分支前必须确认不再需要其历史。"
+  - stage_id: "CF-L2"
+    name: "MemoryAtlas Cloudflare 安全 L2 派生数据查看器"
+    person_goal: "Owner 能通过公开安全的产品表面理解项目能力与边界，同时私密核心保持离线。"
+    status: "completed"
+    estimated_hours: 2
+    estimated_pct: 100
+    stop_conditions:
+      - "raw archive、private import、cookie、session、本机数据库和明文 secret 不得进入 public surface。"
+      - "public dist 出现 secret、private/raw/export 数据或本机绝对路径"
+      - "只有 dry-run、Access 登录页或旧 live 页面却宣称当前 commit 已部署"
+    stop_gate:
+      gate_id: "ACC-CF-L2-20260710"
+      pass_criteria:
+        - "安全 L2 adapter build 通过"
+        - "private distribution scan 通过"
+        - "Wrangler dry-run 通过"
+        - "永久 Cloudflare deploy 返回可访问 URL 且 HTTP smoke check 通过"
+      evidence:
+        - "apps/memory-atlas"
+        - "docs/governance/development_events.jsonl"
+        - "docs/governance/project.yaml"
+      failure_action: "blocked"
+    phases:
+      - phase_id: "CF-L2-P1"
+        name: "安全 adapter、验证与永久部署"
+        objective: "交付只读取 redacted derived snapshot 的 MemoryAtlas L2 viewer，私密 core 保持 L1。"
+        status: "completed"
+        estimated_hours: 2
+        estimated_pct: 100
+        stop_conditions:
+          - "安全边界或真实性 gate 失败"
+          - "Cloudflare Workers 永久授权不可用"
+        stop_gate:
+          gate_id: "ACC-CF-L2-20260710"
+          pass_criteria:
+            - "repo 配置、build、scan、dry-run 和真实 URL 证据完整"
+          evidence:
+            - "docs/governance/development_events.jsonl"
+            - "docs/governance/project.yaml"
+          failure_action: "remain_blocked"
+        tasks:
+          - task_id: "CF-L2-20260710"
+            name: "Cloudflare Compatibility Envelope L2"
+            objective: "交付只读取 redacted derived snapshot 的 MemoryAtlas L2 viewer，私密 core 保持 L1。"
+            status: "completed"
+            estimated_hours: 2
+            estimated_pct: 100
+            dependencies: []
+            acceptance_ids:
+              - "ACC-CF-L2-20260710"
+            acceptance:
+              - acceptance_id: "ACC-CF-L2-20260710"
+                description: "安全 L2 surface 必须永久部署并经 HTTP 验证；不得暴露私密核心或伪造 deploy。"
+                evidence_refs:
+                  - "docs/governance/development_events.jsonl"
+                  - "docs/governance/project.yaml"
+            test_commands:
+              - "npm run build；privacy/accessibility gate；private dist scan；Wrangler 4.110.0 dry-run"
+            test_results:
+              - "Vite build、privacy/accessibility、private scan、desktop/mobile QA 与 dry-run PASS；Cloudflare Pages deployment 82988d29 从 clean commit 5a24333e 部署，owner-allowlist Access challenge、allowed-user app load、runtime JSON fetch 和 artifact safety 已验证。"
+            evidence_refs:
+              - "apps/memory-atlas"
+              - "docs/governance/development_events.jsonl"
+              - "docs/governance/project.yaml"
+            risks:
+              - "raw archive、private import、cookie、session、本机数据库和明文 secret 不得进入 public surface。"
+              - "从 Pages 迁移到 Workers 时必须先为每个可达 hostname 保持 owner-allowlist Access，禁止重复出现短暂公开暴露。"
+            rollback: "删除隔离的 L2 adapter 并回滚本任务治理记录；私密 core 不需要恢复。"
+            current_result: "deployed_custom_domain_verified_access_protected"
+            completed_version: "0.2.0"

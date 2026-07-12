@@ -1,5 +1,8 @@
 {
   "name": "openai-memory-atlas",
-  "pages_build_output_dir": "apps/memory-atlas/dist",
-  "compatibility_date": "2026-06-16"
+  "compatibility_date": "2026-07-10",
+  "assets": {
+    "directory": "./apps/memory-atlas/dist",
+    "not_found_handling": "single-page-application"
+  }
 }

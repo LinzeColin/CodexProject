@@ -3,10 +3,10 @@
 task_id: TASK-OAI-C-002
 evidence_level: EXTRACTED unless marked otherwise
 governance_spec_version: 1.0.0
-model_count: 11
-formula_count: 11
-parameter_count: 94
-task_count: 13
+model_count: 12
+formula_count: 12
+parameter_count: 99
+task_count: 16
 
 ## A. Model Overview
 
@@ -27,6 +27,7 @@ parameter, task, version, and traceability counts.
 | MOD-009 | Data source registry and public snapshot gate | deterministic_rule_engine | active | source-registry-v0 | `scripts/audit_memory_atlas_acceptance.py:86` |
 | MOD-010 | Writeback proposal version chain | deterministic_workflow_model | active | writeback-proposal-v0 | `apps/memory-atlas/src/App.tsx:2328` |
 | MOD-011 | Personalization export and resource routing | deterministic_workflow_model | active | personalization-routing-v0 | `scripts/build_personalization_exports.py:1` |
+| MOD-MACDATA-PROM2-001 | Device preflight and archive cleanup policy | deterministic_workflow_model | active | macdata-prom2-v1 | `macdata/proM2/scripts/run_controlled_cycle.py:1` |
 
 Non-use cases:
 
@@ -65,6 +66,7 @@ Summary:
 - FORM-009: Data source registry, homepage source gate, and static summary privacy policy.
 - FORM-010: Writeback proposal revision, diff, rollback, and controlled apply gate.
 - FORM-011: Three-layer context to ChatGPT/Codex personalization export, route selection, evaluation, and run logging.
+- FORM-MACDATA-PROM2-001: proM2 MacData preflight, GitHub archive verification, and post-upload cleanup gate.
 
 ## D. Parameters
 

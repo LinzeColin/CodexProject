@@ -1,0 +1,43 @@
+{
+  "project": "KMFA",
+  "skill_name": "kmfa-dingtalk-attendance-skill",
+  "attendance_timezone": "Asia/Shanghai",
+  "month_boundary": "natural_month",
+  "stage2": {
+    "enabled": true,
+    "run_slot": "evening",
+    "window_days": [1, 2, 3, 4, 5],
+    "required_exact_matches": 5,
+    "min_quality_per_run": "Q4",
+    "acceptance_quality": "Q5",
+    "compare_mode": "exact_canonical_sha256"
+  },
+  "evidence": {
+    "require_attendance_result": true,
+    "require_attendance_detail": true,
+    "require_location_fields": true,
+    "require_trajectory_points": true,
+    "store_full_raw_payload": true,
+    "do_not_infer_missing_coordinates": true
+  },
+  "database": {
+    "target": "postgresql",
+    "schema": "kmfa_attendance",
+    "write_mode": "transactional_idempotent",
+    "raw_payload_storage": "jsonb",
+    "stage2_tables_required": true
+  },
+  "quality_thresholds": {
+    "employee_map_coverage": 1.0,
+    "raw_result_parse_rate": 1.0,
+    "raw_detail_parse_rate": 1.0,
+    "p0_unresolved_max": 0,
+    "p1_unresolved_max": 0,
+    "location_required_for_payroll_sensitive_events": true
+  },
+  "policy": {
+    "special_personnel_rules_source": "repo_and_database_policy_version",
+    "rest_reminder_threshold": "natural_month_23rd_effective_attendance_day",
+    "rule_drift_blocks_stage2": true
+  }
+}

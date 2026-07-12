@@ -354,3 +354,38 @@ formulas:
     evidence_hash: "sha256:03243dd481474c2151822cc7b05e296f17f1d2fc034a3c239d6989c10a8d31d2"
     semantic_status: "MACHINE_VERIFIED"
     semantic_review_task_ids: ""
+  - formula_id: "FORM-MACDATA-PROM2-001"
+    model_id: "MOD-MACDATA-PROM2-001"
+    assumption_ids: ["ASM-001"]
+    status: "active"
+    expression: "Preflight passes only on macOS when model contains MacBook Pro, chip contains the owner-confirmed M2 Max keyword, memory is at least 32GB, and owner_confirmations.confirmed_device_key is proM2. The full cycle writes metrics and report files, scans staged files for credential patterns, commits and pushes to macdata-proM2, verifies the remote hash, and only then runs retention cleanup plus owner-confirmed Docker Homebrew system cache and project-cache cleanup. If upload or remote verification fails, cleanup is not executed."
+    variables:
+      - name: "chip_keyword"
+        data_type: "string"
+        unit: "hardware preflight keyword"
+        input_domain: "configured expected_chip_keywords"
+      - name: "memory_gb"
+        data_type: "integer"
+        unit: "GB"
+        input_domain: "physical_memory_gb >= expected_memory_gb_min"
+      - name: "remote_hash_verified"
+        data_type: "boolean"
+        unit: "gate"
+        input_domain: "true only after git show on the remote archive branch matches local record hash"
+      - name: "cleanup_policy"
+        data_type: "object"
+        unit: "owner-confirmed cleanup switches"
+        input_domain: "post_upload_cleanup_policy from device_config.json"
+    constraints: ["Time Machine and iCloud are not collected.", "Plaintext API keys, tokens, passwords, cookies, sessions, Keychain data, shell history, full environment dumps, and .env raw content are out of scope.", "Development cleanup is gated behind successful remote hash verification."]
+    missing_policy: "Missing owner confirmations, wrong device, failed credential scan, failed push, or failed remote verification stops before cleanup."
+    output_range: "PASS or fail-closed run status; cleanup report is present only after verified upload."
+    code_refs: ["OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py:1"]
+    test_refs: ["OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py:1"]
+    evidence_refs: ["OpenAIDatabase/macdata/proM2/config/device_config.json:1", "OpenAIDatabase/macdata/proM2/config/owner_confirmations.json:1"]
+    implementation_refs: []
+    implementation_fingerprint: "HUMAN_REVIEW_REQUIRED"
+    last_verified_commit: "NOT_APPLICABLE - HUMAN_REVIEW_REQUIRED"
+    verified_at: "NOT_APPLICABLE - HUMAN_REVIEW_REQUIRED"
+    evidence_hash: "NOT_APPLICABLE - HUMAN_REVIEW_REQUIRED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: "MACDATA-PROM2-SETUP-20260705"

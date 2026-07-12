@@ -33,6 +33,16 @@
 | KMFA high-signal secret pattern scan | PASS: no matches |
 | stale S17-P1 next-step scan | PASS: no stale S17-P1 next-step text found |
 
+## 2026-07-08 Owner Plaintext GitHub Policy Amendment
+
+| Command | Result |
+|---|---|
+| `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/access_security_policy.py --generated-at 2026-07-08T09:35:00+10:00` | PASS: owner-authorized plaintext GitHub policy generated; credential_secret=false |
+| `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_access_security_policy -q` | PASS: 6 tests |
+| `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s17_p1_access_security.py` | PASS: owner_authorized_plaintext_github=true, credential_secret=false |
+| `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_s17_stage_review.py` | PASS: Stage 17 review validator remains compatible |
+| `PYTHONDONTWRITEBYTECODE=1 python3 KMFA/tools/no_omission_check.py` | PASS: owner-authorized upload manifest gate and registered template exception validated |
+
 ## Scope Boundaries
 
 - Stage 17 review was not executed.

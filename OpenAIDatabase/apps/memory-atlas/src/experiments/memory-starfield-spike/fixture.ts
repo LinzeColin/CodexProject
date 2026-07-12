@@ -5,6 +5,11 @@ export type MemoryClusterFixture = {
   label: string;
   kind: MemoryClusterKind;
   summary: string;
+  importance: number;
+  priority: "high" | "medium" | "low";
+  terrainClass: "long_term_theme" | "growth_band" | "migration_flow" | "relic" | "black_hole" | "opportunity";
+  flowInfluence: number;
+  orbitStability: number;
   mass: number;
   confidence: number;
   evidenceCount: number;
@@ -13,7 +18,7 @@ export type MemoryClusterFixture = {
 };
 
 export const memoryStarfieldFixture = {
-  schemaVersion: "memory_starfield_spike_fixture.v1",
+  schemaVersion: "memory_starfield_spike_fixture.v1_1_7_stage4_phase2",
   source: "redacted derived sample",
   rawPrivateDataIncluded: false,
   plaintextSecretsIncluded: false,
@@ -24,6 +29,11 @@ export const memoryStarfieldFixture = {
       label: "长期记忆连续性",
       kind: "dominant",
       summary: "核心主题稳定，持续连接 Memory Atlas、RAG 和 agent personalization。",
+      importance: 0.94,
+      priority: "high",
+      terrainClass: "long_term_theme",
+      flowInfluence: 0.72,
+      orbitStability: 0.91,
       mass: 1.0,
       confidence: 0.92,
       evidenceCount: 128,
@@ -35,6 +45,11 @@ export const memoryStarfieldFixture = {
       label: "Codex 工作流",
       kind: "dominant",
       summary: "开发节奏、验证习惯、路径约束和 GitHub 交付规则高度集中。",
+      importance: 0.9,
+      priority: "high",
+      terrainClass: "long_term_theme",
+      flowInfluence: 0.78,
+      orbitStability: 0.88,
       mass: 0.92,
       confidence: 0.9,
       evidenceCount: 112,
@@ -46,6 +61,11 @@ export const memoryStarfieldFixture = {
       label: "可视化体验升级",
       kind: "rising",
       summary: "记忆星系、时间河、Universe State 的可视化需求正在升温。",
+      importance: 0.83,
+      priority: "high",
+      terrainClass: "growth_band",
+      flowInfluence: 0.92,
+      orbitStability: 0.67,
       mass: 0.74,
       confidence: 0.82,
       evidenceCount: 54,
@@ -57,6 +77,11 @@ export const memoryStarfieldFixture = {
       label: "Agent 治理",
       kind: "rising",
       summary: "任务边界、验收证据、参数登记和复审流程成为稳定治理层。",
+      importance: 0.78,
+      priority: "medium",
+      terrainClass: "growth_band",
+      flowInfluence: 0.7,
+      orbitStability: 0.72,
       mass: 0.68,
       confidence: 0.78,
       evidenceCount: 46,
@@ -68,6 +93,11 @@ export const memoryStarfieldFixture = {
       label: "旧导入路径降温",
       kind: "declining",
       summary: "旧电脑路径、standalone repo、shadow checkout 已被明确降权。",
+      importance: 0.56,
+      priority: "low",
+      terrainClass: "relic",
+      flowInfluence: 0.38,
+      orbitStability: 0.58,
       mass: 0.46,
       confidence: 0.76,
       evidenceCount: 33,
@@ -79,6 +109,11 @@ export const memoryStarfieldFixture = {
       label: "范围漂移黑洞",
       kind: "black_hole",
       summary: "若跳过 phase 边界，容易把合同、spike 与生产集成混在一起。",
+      importance: 0.81,
+      priority: "high",
+      terrainClass: "black_hole",
+      flowInfluence: 0.48,
+      orbitStability: 0.34,
       mass: 0.82,
       confidence: 0.86,
       evidenceCount: 39,
@@ -90,6 +125,11 @@ export const memoryStarfieldFixture = {
       label: "Universe State 原型机会",
       kind: "proto_star",
       summary: "共享状态层可成为记忆总览、星系、时间河联动的第一颗新星。",
+      importance: 0.73,
+      priority: "medium",
+      terrainClass: "opportunity",
+      flowInfluence: 0.88,
+      orbitStability: 0.49,
       mass: 0.58,
       confidence: 0.7,
       evidenceCount: 24,
@@ -101,6 +141,11 @@ export const memoryStarfieldFixture = {
       label: "复审山脊",
       kind: "terrain",
       summary: "复审、证据和回滚形成稳定高地，适合在 Analysis Mode 解释。",
+      importance: 0.69,
+      priority: "medium",
+      terrainClass: "migration_flow",
+      flowInfluence: 0.63,
+      orbitStability: 0.76,
       mass: 0.52,
       confidence: 0.74,
       evidenceCount: 29,

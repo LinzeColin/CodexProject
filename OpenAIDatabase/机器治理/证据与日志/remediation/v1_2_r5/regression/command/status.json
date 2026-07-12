@@ -1,0 +1,107 @@
+{
+  "status": "PASS",
+  "phase": "R3_REAL_COMMAND_PALETTE_WORKFLOWS",
+  "command_api_version": "memory_atlas_command_api.v1_2_r3",
+  "local_url": "http://127.0.0.1:4181",
+  "static_url": "http://127.0.0.1:4182",
+  "command_results": {
+    "sync_chatgpt": {
+      "inputHint": "",
+      "message": "官方导出已在本地安装副本中完成脱敏同步，页面数据已刷新。",
+      "outputs": [],
+      "status": "success",
+      "title": "ChatGPT 同步完成"
+    },
+    "sync_codex": {
+      "inputHint": "",
+      "message": "Codex sessions 已在内存中脱敏汇总，本地页面数据已刷新。",
+      "outputs": [],
+      "status": "success",
+      "title": "Codex 同步完成"
+    },
+    "generate_weekly_report": {
+      "inputHint": "data/derived/weekly/2026-07-06.memory_atlas_weekly_report.md",
+      "message": "已从当前脱敏派生快照生成本周报告，并保存在本地安装副本。",
+      "outputs": [
+        "data/derived/weekly/2026-07-06.memory_atlas_weekly_report.md"
+      ],
+      "status": "success",
+      "title": "本周报告已生成"
+    },
+    "view_pending_proposals": {
+      "inputHint": "",
+      "message": "已读取 5 条提案状态；请核对中文 diff、精确目标、验证与回滚范围后再决定是否授权。",
+      "outputs": [],
+      "status": "success",
+      "title": "待授权提案已读取"
+    },
+    "generate_personalization_prompt": {
+      "inputHint": "data/derived/personalization/personalization_prompt_human_zh.md",
+      "message": "ChatGPT、Codex 和其他 agent 的最新提示已生成；没有自动发送。",
+      "outputs": [
+        "data/derived/personalization/personalization_prompt_human_zh.md",
+        "data/derived/personalization/chatgpt_personalization.md",
+        "data/derived/personalization/codex_personalization.md",
+        "data/derived/personalization/other_agent_personalization.md",
+        "data/derived/personalization/personalization_export.json"
+      ],
+      "status": "success",
+      "title": "个性化提示已生成"
+    },
+    "chatgpt_deep_explore": {
+      "message": "已打开仅预填的 ChatGPT 页面；请检查内容后由你决定是否发送。",
+      "outputs": [
+        "data/derived/chatgpt_deep_explore/latest_memory_analysis_prompt.md",
+        "data/derived/chatgpt_deep_explore/chatgpt_deep_explore_export.json"
+      ],
+      "status": "success",
+      "title": "ChatGPT 深度探索已准备"
+    }
+  },
+  "security": {
+    "allowlisted_command_count": 6,
+    "remote_origin_rejected": true,
+    "remote_lifecycle_origin_rejected": true,
+    "extra_fields_rejected": true,
+    "cors_enabled": false,
+    "no_silent_send": true,
+    "external_request_methods": [
+      "GET"
+    ],
+    "audit_metadata_only": true,
+    "canonical_repo_mutation": false,
+    "remote_push": false
+  },
+  "hosted_static": {
+    "command_post_count": 0,
+    "result": {
+      "handoff": "http://127.0.0.1:4177",
+      "message": "此操作仅在本地 Memory Atlas app 执行。",
+      "status": "local_required"
+    }
+  },
+  "artifacts": {
+    "chatgpt_sync": true,
+    "codex_sync": true,
+    "weekly_report": true,
+    "personalization_chatgpt": true,
+    "personalization_codex": true,
+    "personalization_other_agent": true,
+    "deep_explore_prompt": true,
+    "deep_explore_machine": true,
+    "runtime_snapshot": true
+  },
+  "command_request_ids": [
+    "sync_chatgpt",
+    "sync_codex",
+    "generate_weekly_report",
+    "view_pending_proposals",
+    "generate_personalization_prompt",
+    "chatgpt_deep_explore"
+  ],
+  "screenshots": [
+    "local-six-command-surface.png",
+    "local-deep-explore-result.png",
+    "hosted-static-read-only-handoff.png"
+  ]
+}

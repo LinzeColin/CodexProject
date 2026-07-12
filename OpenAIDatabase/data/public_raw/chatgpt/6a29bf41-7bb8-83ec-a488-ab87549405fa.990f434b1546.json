@@ -1,0 +1,24 @@
+{
+  "content_sha256": "990f434b1546ee20fffa08b90981827366e4f715988003336ff4852eeee1013c",
+  "conversation_id": "6a29bf41-7bb8-83ec-a488-ab87549405fa",
+  "created_at": "2026-06-10T19:47:13Z",
+  "credential_boundary": "credentials_not_transcript",
+  "message_count": 1,
+  "messages": [
+    {
+      "created_at": "2026-06-10T19:46:51Z",
+      "message_id": "f67ad3aa-4269-4947-bb89-38ad043a5a5c",
+      "role": "assistant",
+      "text": "Here’s a fast, practical way to get **private, low‑latency AI on your own machine**—great for note‑taking, code help, and small‑doc RAG—without cloud costs or data leaving your laptop.\n\n# What this is\n“Local LLM runtime” = running a small model (4–8B params) on your PC using a CPU/GPU. Use **GGUF** model files (optimized for CPU/GPU inference). It’s quick to set up, snappy for everyday tasks, and perfect for retrieval‑augmented generation (RAG) over your own notes.\n\n# The simplest stack (Windows/Lenovo‑friendly)\n- **Runner:** Ollama (easiest CLI) or LM Studio (GUI).\n- **Model (pick one):** Phi‑4‑mini‑4B, Qwen2.5‑7B/8B, Llama‑3.1‑8B (GGUF, Q4_K_M or Q5_K_M).\n- **RAG add‑on:** AnythingLLM, LlamaIndex, or local “ollama + llama.cpp server” with an embeddings plugin.\n\n# One‑shot setup (5–10 min)\n1) Install **Ollama** → open terminal:\n```\nollama run qwen2.5:7b-instruct-q4_K_M\n```\n2) Add RAG (quick demo):\n```\nollama serve\n```\nThen point a lightweight RAG UI (e.g., AnythingLLM) at `htt[REDACTED_LOCAL_PATH] drop a folder of PDFs/Markdown, and chat over them.\n\n# What you get\n- **Latency:** ~30–150 ms/token on 4–8B with CPU/GPU quantized GGUF (feels instant for snippets).\n- **Privacy:** Documents never leave your device.\n- **Cost:** $0 variable; only your hardware power.\n\n# Good defaults (choose one)\n- **Fastest general writing:** Phi‑4‑mini‑4B‑q4 (summaries, drafting).\n- **Coding help & reasoning:** Qwen2.5‑7B/8B‑instruct‑q4/q5.\n- **Balanced generalist:** Llama‑3.1‑8B‑instruct‑q4/q5.\n\n# Tiny RAG workflow (repeatable)\n1) Drop notes/PDFs into a “knowledge” folder.  \n2) Embed/index once in your RAG UI.  \n3) Ask: “Summarize today’s notes and propose 3 action items.”  \n4) Copy results to Obsidian/Notion.\n\n# Tips for your setup\n- **Windows/Lenovo:** Start with Q4_K_M quantization; enable GPU if you have NVIDIA (CUDA) for extra speed.  \n- **Obsidian/Notion loop:** Export daily notes to a folder your RAG watches.  \n- **Coding:** Point the model at a repo folder; ask for diffs, tests, or quick snippets.\n\n# If you want me to, I can\n- Give you **exact install commands for Windows** (CPU‑only or CUDA).  \n- Pick the **best 4–8B model** for your tasks.  \n- Wire a **one‑click Notion/Obsidian → local RAG** pipeline.  \n- Create ready‑to‑paste **Ollama prompts** for summarization and code reviews."
+    }
+  ],
+  "redact_for_public_backup": true,
+  "redaction_counts": {
+    "local_absolute_path": 1
+  },
+  "schema_version": "memory_atlas_public_raw_chatgpt.v1",
+  "source_id": "chatgpt",
+  "sync_mode": "official_export_fallback",
+  "title": "What Local LLMs Feel Useful For",
+  "updated_at": "2026-06-10T23:49:24Z"
+}

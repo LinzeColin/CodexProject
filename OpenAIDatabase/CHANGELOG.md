@@ -1,5 +1,1907 @@
 # Changelog
 
+## Unreleased - Memory Atlas v1.2 Remediation R7
+
+- Added sanitized public raw connectors for a real ChatGPT official export, a frozen
+  Codex snapshot and a real reviewer-agent event, with deterministic omission markers.
+- Hardened privacy handling for structured identifiers, encrypted content, mapping keys
+  and boundary-free hook-shaped token candidates.
+- Materialized 512 public raw files plus immutable 512-entry manifest and hash ledger;
+  full audit reports zero credential/private-text, binary-marker or JSON findings.
+- Added one pinned immutable release and exact derived/local/Pages snapshot parity using
+  SHA-256 `b608631f...fefcbc`.
+- Changed app install and Cloudflare candidate assembly to consume the pinned release by
+  default; explicit refresh remains separate.
+- Added tracked-files-only recovery rehearsal with source-package restoration, fresh
+  dependency install/build, raw integrity and Pages parity checks.
+- Preserved R1-R6 browser/runtime/security regressions; independent review reports
+  0 High / 0 Medium and one documented Low about candidate/evidence ordering.
+- Preserved the R7 boundary: no R8 overall acceptance, merge/rebase, push, app reinstall,
+  Cloudflare deployment, remote-clone claim or overall completion claim.
+
+## Unreleased - Memory Atlas v1.2 Remediation R6
+
+- Added an exact twelve-item P0 visual workflow registry, 217 bounded/redacted facet
+  events and the tracked Formula what-if preview to the public derived snapshot.
+- Added pure deterministic source/time/project/task filtering, option/signature models,
+  opportunity-to-event evidence joining and bounded Formula score computation.
+- Replaced duplicated stage-labelled Home panels with one question-led visual workbench
+  containing native filters, keyboard data, shared inline evidence, opportunity details
+  and no-write Formula controls.
+- Added a self-building Playwright gate that runs all twelve interactions and the full
+  four-axis content matrix at 1470x661, 1440x900 and 390x844.
+- Hardened acceptance so global filter signatures cannot mask unchanged card content;
+  every event-backed visual must change content/count/datum IDs or reach zero.
+- Preserved R1 Home, R3 command, R4 proposal, R5 Owner Daily and Stage 7 regressions;
+  independent review closed all High/Medium findings.
+- Preserved the R6 boundary: no R7 parity/recovery, R8 overall acceptance, merge/rebase,
+  push, app reinstall, Cloudflare deployment, active-config write or raw mutation.
+
+## Unreleased - Memory Atlas v1.2 Remediation R5
+
+- Added one shared eight-step Owner Daily no-write runner for `atlasctl`, the local
+  loopback API and the rendered product workspace.
+- Added sequential continue-on-failure results and fixed allowlisted retry for only the
+  failed step; browser callers cannot provide argv, paths, environment or modes.
+- Added recursive rejection of unsafe `true` child fields, bounded output/results,
+  process-group cleanup and exact loopback Host/Origin matching.
+- Added a compact maintenance entry beside the exact six R3 cards, explicit Start,
+  human-first summary, eight ordered results, failed-step retry and dialog focus trap.
+- Added a self-building Playwright gate for partial failure, audit-only retry, three
+  viewports, static zero-POST fallback and source/runtime SHA-256 invariance.
+- Added committed npm/pnpm recovery metadata for Playwright `1.61.1`; fresh `npm ci`,
+  build and Owner Daily E2E pass without a machine-specific bundled browser path.
+- Preserved R3 command, R4 proposal apply/rollback, Home, Stage 7, sync, launcher and
+  privacy regressions; independent review closed all High/Medium findings.
+- Preserved the R5 boundary: no R6 work, parity/recovery final, merge/rebase, push, app
+  reinstall, Cloudflare deployment, canonical repo write or raw mutation.
+
+## Unreleased - Memory Atlas v1.2 Remediation R4
+
+- Added a dedicated same-origin proposal action API beside the exact six R3 commands.
+- Added apply-ready bundle parsing with one-use digest-bound review tokens, fixed target
+  roots, expected hashes and fixed UTF-8/JSON validation IDs.
+- Added descriptor-relative no-follow target writes, durable transaction snapshots,
+  validation-failure rollback and interrupted transaction recovery.
+- Added a rendered three-viewport proposal workspace with five Chinese diff sections,
+  exact scope, separate apply/rollback acknowledgements and persistent rollback points
+  visible after closing and reopening the workspace.
+- Added real browser proof for authorized file changes, automatic/manual rollback, raw
+  review-only behavior and hosted-static zero-POST behavior.
+- Preserved existing R3 command, Home, Stage 7, launcher, sync, personalization and
+  privacy gates; independent review closed all High/Medium findings.
+- Preserved the R4 boundary: no owner-daily, final parity/recovery, merge/rebase, push,
+  app reinstall, Cloudflare deployment, canonical repo write or raw mutation.
+
+## Unreleased - Memory Atlas v1.2 Remediation R3
+
+- Added the tracked loopback runtime server and exact six-command bridge with fixed
+  argv, `shell=false`, scrubbed child environments and one-command locking.
+- Enforced installer-shaped source/runtime boundaries, exact same-origin requests,
+  bounded JSON, no CORS, metadata-only audit and process-group timeout cleanup.
+- Made all six Command Palette workflows executable only after an explicit Execute
+  click; sync refreshes the snapshot and results remain visible before navigation.
+- Added real redacted ChatGPT/Codex sync paths, a derived-only deterministic weekly
+  report, read-only proposal status, all-target personalization generation and
+  ChatGPT `prefill_only` deep explore with no auto-submit.
+- Added a self-building Playwright gate that executes all commands in a temporary
+  installer-shaped runtime and separately proves hosted static emits zero command
+  POSTs with the exact local-app handoff.
+- Added focused runtime, launcher and workflow regressions; resolved reviewer findings
+  for descendant timeout cleanup, symlink escape, lifecycle same-origin and stale
+  frontend acceptance.
+- Preserved the R3 boundary: no proposal apply/rollback, owner-daily, merge/rebase,
+  push, app reinstall, Cloudflare deployment, canonical repo write or raw mutation.
+
+## Unreleased - Memory Atlas v1.2 Remediation R2
+
+- Added the `Memory Atlas / 记忆决策台 · v1.2` release identity and question-led
+  navigation while preserving all ten route keys.
+- Folded snapshot/runtime, shared-focus, command CLI/safety and formula source fields
+  behind keyboard-operable technical disclosures.
+- Replaced default Stage/Phase, internal visual, raw filter and machine-evidence copy
+  with Chinese decision language.
+- Extended the real-browser gate across 1470x661, 1440x900 and 390x844 for identity,
+  copy exclusions, disclosures, keyboard order, responsive hierarchy and mobile nav.
+- Fixed keyboard-focused mobile routes being partially clipped; forward and reverse
+  traversal now require full focus geometry inside the navigation scrollport.
+- Preserved the R2 boundary: no command execution, proposal apply, push, app reinstall,
+  Cloudflare deployment or raw mutation.
+
+## Cloudflare L2 MemoryAtlas public viewer — 2026-07-10
+
+- 将现有 MemoryAtlas 构建配置迁到 Workers Static Assets，并加入返回 LinzeHomeHub 的只读入口。
+- 继续只发布 redacted derived snapshot；raw archives、private imports、cookies、sessions、secrets 和直接写回保持禁止。
+- build、release privacy/accessibility、private scan、响应式浏览器验收和 Wrangler dry-run 已通过；远端 main 进一步证明 Pages deployment `82988d29` 来自 clean commit `5a24333e`，custom、production Pages 与 preview Pages 均受 owner-allowlist Access 保护，授权用户 app/JSON 加载已验证；不将其误写成匿名 public。
+
+## Unreleased - Memory Atlas v1.2 Final Review
+
+- Added `validate:v1.2-final-review` for `MA-V12-FINAL-REVIEW` /
+  `ACC-MA-V12-FINAL-REVIEW`.
+- Registered status
+  `v1_2_final_review_passed_pending_github_main_sync_no_upload_yet`.
+- Added `docs/reviews/memory_atlas_v1_2_final_review.md`.
+- Added machine status
+  `机器治理/证据与日志/final_review/v1_2_final_review_status.json`.
+- Completed the v1.2 Final Review for the 四线14Stage S01-S14 Review chain.
+- Confirmed acceptance themes: raw append-only, credential audit, Chinese UX,
+  visual ROI, report contract, proposal apply, owner-daily and final audit.
+- Preserved boundaries: No GitHub main upload, No remote push, No raw mutation,
+  no app reinstall and no local deep clean.
+- Marked the next gate as pending GitHub main sync, app reinstall and local
+  cleanup after remote branch reconciliation.
+
+## Unreleased - Memory Atlas v1.2 S14 Review
+
+- Added `validate:v1.2-s14-review` for `MA-V12-S14-REVIEW` /
+  `ACC-MA-V12-S14-REVIEW`.
+- Registered status
+  `stage_s14_review_passed_pending_v1_2_final_review_no_github_main_upload`.
+- Added `docs/reviews/memory_atlas_v1_2_s14_review.md`.
+- Reviewed `S14 P1`, `S14 P2` and `S14 P3` together: `owner-daily`,
+  `atlasctl_unified_cli.v1_2_s14_p1`, `atlasctl_final_audit.v1_2_s14_p2`,
+  `stage_pass_gate_status.v1_2_s14_p3.json`.
+- Confirmed 开发记录中文可读, 维护命令少而清晰, 所有 stage pass gate 状态可查.
+- Preserved boundaries: No GitHub main upload, No remote push, No raw mutation,
+  no app reinstall and no local deep clean.
+- Marked the next gate as pending v1.2 Final Review.
+
+## Unreleased - Memory Atlas v1.2 S14 P3 Development Records
+
+- Added `validate:v1.2-s14-p3` for `MA-V12-S14P3` /
+  `ACC-MA-V12-S14P3`.
+- Registered status
+  `phase_s14_p3_development_record_completed_pending_s14_review`.
+- Added the Chinese runbook `人类可读/09_验收标准与运行手册.md`.
+- Added machine evidence
+  `机器治理/证据与日志/stage_pass_gates/stage_pass_gate_status.v1_2_s14_p3.json`.
+- Preserved the S14 P3 acceptance language: 开发记录中文可读, 维护命令少而清晰,
+  所有 stage pass gate 状态可查.
+- Kept S14 P3 boundaries: No GitHub main upload, No remote push, No raw mutation,
+  no app reinstall and no local deep clean.
+- Marked the next gate as pending S14 Review.
+
+## Unreleased - Memory Atlas v1.2 S14 P2 Final Audit Gate
+
+- Added `validate:v1.2-s14-p2` for `MA-V12-S14P2` /
+  `ACC-MA-V12-S14P2`.
+- Registered status
+  `phase_s14_p2_final_audit_gate_completed_pending_s14_p3`.
+- Added `atlasctl_final_audit.v1_2_s14_p2` through
+  `python3 scripts/atlasctl.py audit`.
+- Integrated final audit gates: `unit_tests`, `frontend_build`, Chinese UX,
+  visual ROI, raw append-only, credential audit and report contract.
+- Added concise Chinese explanations for every final audit gate failure.
+- Kept output bounded with short stdout/stderr tails and
+  `high_token_auto_summary=false`.
+- Preserved S14 P2 boundaries: No GitHub main upload, No remote push,
+  No raw mutation, no app reinstall and no local deep clean.
+- Marked the next gate as pending S14 P3.
+
+## Unreleased - Memory Atlas v1.2 S14 P1 Unified CLI
+
+- Added `validate:v1.2-s14-p1` for `MA-V12-S14P1` /
+  `ACC-MA-V12-S14P1`.
+- Registered status
+  `phase_s14_p1_unified_cli_completed_pending_s14_p2`.
+- Added `atlasctl_unified_cli.v1_2_s14_p1` dry-run profile support through
+  `python3 scripts/atlasctl.py run --profile owner-daily --dry-run`.
+- Unified the owner-daily dry-run command set: `sync`, `analyze`,
+  `build-atlas`, `audit`, `push`, `proposals`,
+  `generate-personalization-prompt` and `deep-explore`.
+- Added `atlasctl.py audit --dry-run` as a lightweight command-surface check;
+  S14 P2 remains responsible for the final audit gate integration.
+- Added `deep-explore` as the unified alias for the existing
+  `chatgpt-deep-explore` dry-run contract.
+- Preserved S14 P1 boundaries: No GitHub main upload, No remote push,
+  No raw mutation, no app reinstall and no local deep clean.
+- Marked the next gate as pending S14 P2.
+
+## Unreleased - Memory Atlas v1.2 S13 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s13_review.md`.
+- Added `validate:v1.2-s13-review` for `MA-V12-S13-REVIEW` /
+  `ACC-MA-V12-S13-REVIEW`.
+- Registered status
+  `stage_s13_review_passed_pending_s14_no_github_main_upload`.
+- Confirmed S13 P1 Proposal 状态机, S13 P2 Diff narrator and S13 P3
+  Apply 与回滚 pass as a stage chain.
+- Confirmed `proposal_state_machine.v1_2_s13_p1`,
+  `diff_narrator.v1_2_s13_p2` and `proposal_apply.v1_2_s13_p3` jointly enforce
+  human authorization before apply.
+- Confirmed `sample_unauthorized` remains `FAIL_CLOSED`, `sample` authorized
+  dry-run preserves `validation_after_apply` and rollback point evidence, and
+  validation failure enters `rollback_or_needs_revision`.
+- Preserved S13 Review boundaries: No GitHub main upload, No remote push,
+  No raw mutation and no real pending proposal apply without human approval.
+- Marked the next gate as pending S14 P1.
+
+## Unreleased - Memory Atlas v1.2 S13 P3 Apply 与回滚
+
+- Added `proposal_apply.v1_2_s13_p3` for `MA-V12-S13P3` /
+  `ACC-MA-V12-S13P3`.
+- Registered status
+  `phase_s13_p3_apply_rollback_completed_pending_s13_review`.
+- Added `scripts/build_memory_atlas_proposal_apply.py`.
+- Added `data/derived/proposals/proposal_apply_report.json`.
+- Added machine apply evidence at
+  `机器治理/证据与日志/proposal_apply/proposal_apply_evidence.v1_2_s13_p3.json`.
+- Added `atlasctl.py apply --proposal ... --dry-run`.
+- Added `validate:v1.2-s13-p3`.
+- Confirmed `sample_unauthorized` fails closed and `sample` can enter the
+  authorized dry-run apply path with validation and rollback point evidence.
+- Preserved S13 P3 boundaries: No GitHub main upload, No remote push and
+  No raw mutation.
+- Marked the next gate as pending S13 Review.
+
+## Unreleased - Memory Atlas v1.2 S13 P2 Diff narrator
+
+- Added `diff_narrator.v1_2_s13_p2` for `MA-V12-S13P2` /
+  `ACC-MA-V12-S13P2`.
+- Registered status
+  `phase_s13_p2_diff_narrator_completed_pending_s13_p3`.
+- Added `scripts/build_memory_atlas_diff_narrator.py`.
+- Added `data/derived/proposals/diff_narrator_report.json`.
+- Added machine diff evidence at
+  `机器治理/证据与日志/proposal_diffs/diff_narrator_machine_diff.v1_2_s13_p2.json`.
+- Added `atlasctl.py proposals --view diff-narrator --dry-run` as a no-write/no-apply
+  Diff narrator contract.
+- Added `validate:v1.2-s13-p2`.
+- Confirmed every proposal narrator explains 改了什么、为什么改、影响什么、如何验证、如何回滚.
+- Kept full 机器 diff out of the human homepage and inside governance evidence.
+- Preserved S13 P2 boundaries: No GitHub main upload, No remote push,
+  No raw mutation and No proposal apply execution.
+- Marked the next gate as pending S13 P3.
+
+## Unreleased - Memory Atlas v1.2 S13 P1 Proposal State Machine
+
+- Added `proposal_state_machine.v1_2_s13_p1` for `MA-V12-S13P1` /
+  `ACC-MA-V12-S13P1`.
+- Registered status
+  `phase_s13_p1_proposal_state_machine_completed_pending_s13_p2`.
+- Added `scripts/build_memory_atlas_proposal_state_machine.py`.
+- Added `data/derived/proposals/proposal_state_machine_report.json`.
+- Added `atlasctl.py proposals --dry-run` as a no-write/no-apply state-machine
+  contract.
+- Added `validate:v1.2-s13-p1`.
+- Confirmed Proposal 状态机 states: `draft`, `pending_human_review`,
+  `approved_by_human`, `applying`, `applied`, `validated`, `committed`,
+  `failed_validation` and `rollback_or_needs_revision`.
+- Integrated proposal expiry while keeping current phase no-apply.
+- Preserved S13 P1 boundaries: No GitHub main upload, No remote push,
+  No raw mutation and No proposal apply execution.
+- Marked the next gate as pending S13 P2.
+
+## Unreleased - Memory Atlas v1.2 S12 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s12_review.md`.
+- Added `validate:v1.2-s12-review` for `MA-V12-S12-REVIEW` /
+  `ACC-MA-V12-S12-REVIEW`.
+- Registered status
+  `stage_s12_review_passed_pending_s13_no_github_main_upload`.
+- Confirmed S12 P1 Command Palette, S12 P2 Personalization Prompt and S12 P3
+  ChatGPT 深度探索 pass as a stage chain.
+- Confirmed accepted command ids remain `sync_chatgpt`, `sync_codex`,
+  `generate_weekly_report`, `view_pending_proposals`,
+  `generate_personalization_prompt` and `chatgpt_deep_explore`.
+- Confirmed `prefill_only` remains no-send and `auto_submit` defaults to
+  FAIL_CLOSED with Chinese failure explanation.
+- Preserved S12 Review boundaries: No silent send,
+  No cookie/token/secret export, No GitHub main upload, No remote push,
+  No raw mutation, No proposal apply execution, No app reinstall and
+  no local deep clean.
+- Marked the next gate as pending S13 P1.
+
+## Unreleased - Memory Atlas v1.2 S12 P3 ChatGPT Deep Exploration
+
+- Added `chatgpt_deep_explore.v1_2_s12_p3` for `MA-V12-S12P3` /
+  `ACC-MA-V12-S12P3`.
+- Registered status
+  `phase_s12_p3_chatgpt_deep_explore_completed_pending_s12_review`.
+- Added the user-triggered `chatgpt_deep_explore` command to the Memory Atlas
+  command palette with visible ChatGPT 深度探索 copy.
+- Added `scripts/build_chatgpt_deep_explore_prompt.py` and
+  `atlasctl.py chatgpt-deep-explore`.
+- Default mode is `prefill_only`; `auto_submit` is present only as a gated
+  configuration mode and fails closed without explicit confirmation.
+- Added `validate:v1.2-s12-p3`.
+- Preserved S12 P3 boundaries: 用户触发, No silent send,
+  No cookie/token/secret export, No GitHub main upload, No remote push,
+  No raw mutation and No proposal apply execution.
+- Marked the next gate as pending S12 Review.
+
+## Unreleased - Memory Atlas v1.2 S12 P2 Personalization Prompt
+
+- Added `personalization_prompt.v1_2_s12_p2` prompt-generation contract for
+  `MA-V12-S12P2` / `ACC-MA-V12-S12P2`.
+- Generated latest ChatGPT, Codex and other agent personalization prompts from
+  latest memory, behavior, latent and self_iteration derived reports.
+- Added `data/derived/personalization/personalization_prompt_human_zh.md` as
+  中文人类说明 and `data/derived/personalization/other_agent_personalization.md`
+  as the third machine-copyable target.
+- Upgraded `data/derived/personalization/personalization_export.json` to record
+  `source_report_freshness`, target prompts, safety boundaries and 机器可复制文本.
+- Added `机器治理/运行门禁/personalization_prompt.v1_2_s12_p2.json`.
+- Added `validate:v1.2-s12-p2`.
+- Registered status
+  `phase_s12_p2_personalization_prompt_completed_pending_s12_p3`.
+- Preserved S12 P2 boundaries: No automatic send, No GitHub main upload,
+  No remote push, No raw mutation, No proposal apply execution and
+  No S12 P3 ChatGPT deep explore execution.
+- Marked the next gate as pending S12 P3.
+
+## Unreleased - Memory Atlas v1.2 S12 P1 Command Palette
+
+- Added `command_palette.v1_2_s12_p1` runtime contract to the Memory Atlas
+  home screen.
+- Added a command palette with only the accepted S12 P1 commands:
+  `sync_chatgpt`, `sync_codex`, `generate_weekly_report`,
+  `view_pending_proposals` and `generate_personalization_prompt`.
+- The visible command labels are 同步 ChatGPT, 同步 Codex, 生成本周报告,
+  查看待授权 proposal and 生成 personalization prompt.
+- Added safe `atlasctl.py generate-personalization-prompt --dry-run` support
+  for ChatGPT, Codex and other agent prompt targets without writing files or
+  sending to ChatGPT.
+- Added `机器治理/运行门禁/command_palette.v1_2_s12_p1.json`.
+- Added `validate:v1.2-s12-p1` for `MA-V12-S12P1` /
+  `ACC-MA-V12-S12P1`.
+- Registered status
+  `phase_s12_p1_command_palette_completed_pending_s12_p2`.
+- Preserved S12 P1 boundaries: No automatic send, No GitHub main upload,
+  No remote push, No raw mutation, No proposal apply execution,
+  No S12 P2 Personalization Prompt completion and
+  No S12 P3 ChatGPT deep explore execution.
+- Marked the next gate as pending S12 P2.
+
+## Unreleased - Memory Atlas v1.2 S11 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s11_review.md`.
+- Added `validate:v1.2-s11-review` for `MA-V12-S11-REVIEW` /
+  `ACC-MA-V12-S11-REVIEW`.
+- Registered status
+  `stage_s11_review_passed_pending_s12_no_github_main_upload`.
+- Confirmed S11 P1, S11 P2, S11 P3 and S11 P4 together provide a P0 图谱集合
+  with Chinese questions, action values and `source/time/project/task` filters.
+- Confirmed the S11 pass gate: multidimensional visuals support behavior, ROI,
+  collaboration, latent signal, evidence and governance decision reading.
+- Preserved S11 Review boundaries: No GitHub main upload, No remote push,
+  No raw mutation, No proposal apply execution, No S12 implementation and
+  No app reinstall.
+- Marked the next gate as pending S12 P1.
+
+## Unreleased - Memory Atlas v1.2 S11 P4 Human Question Map
+
+- Added `human_question_map.v1_2_s11_p4` runtime contract to the Memory Atlas
+  home screen.
+- Added the Human Question Map panel across 12 S11 P0 visuals:
+  `cluster_tree`, `bubble_map`, `topic_cluster_explorer`, `task_treemap`,
+  `automation_vs_augmentation`, `roi_scatter`, `opportunity_radar`,
+  `agent_decision_sankey`, `friction_heatmap`, `latent_radar`,
+  `evidence_timeline` and `formula_explorer`.
+- Bound every mapped visual to Chinese human question, action value, insight
+  header, `source/time/project/task` filters and explicit Visual ROI Gate
+  state.
+- Added `机器治理/可视化配置/human_question_map.v1_2_s11_p4.json`.
+- Added `validate:v1.2-s11-p4` for `MA-V12-S11P4` /
+  `ACC-MA-V12-S11P4`.
+- Hardened the S11 P3 validator phase-boundary check so S11 P4 completion is
+  not mistaken for P3 scope drift.
+- Registered status
+  `phase_s11_p4_human_question_map_completed_pending_s11_review`.
+- Preserved S11 P4 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, No proposal apply execution,
+  No S11 Review completion and No app reinstall.
+- Marked the next gate as pending S11 Review.
+
+## Unreleased - Memory Atlas v1.2 S11 P3 Workflow/latent/governance Visuals
+
+- Added `workflow_latent_governance_visuals.v1_2_s11_p3` runtime contract to the
+  Memory Atlas home screen.
+- Added Workflow/latent/governance `agent_decision_sankey`,
+  `friction_heatmap`, `latent_radar`, `evidence_timeline` and
+  `formula_explorer` visuals with Chinese insight headers, human questions and
+  action values.
+- Bound the S11 P3 visuals to active `source/time/project/task` filter state
+  through redacted derived runtime nodes and existing governance outputs.
+- Added `机器治理/可视化配置/workflow_latent_governance_visuals.v1_2_s11_p3.json`.
+- Added `validate:v1.2-s11-p3` for `MA-V12-S11P3` /
+  `ACC-MA-V12-S11P3`.
+- Hardened S11 P1/P2 validator phase-boundary checks so later completed S11
+  visuals are not mistaken for earlier phase scope drift.
+- Registered status
+  `phase_s11_p3_workflow_latent_governance_visuals_completed_pending_s11_p4`.
+- Preserved S11 P3 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, No proposal apply execution,
+  No S11 P4 Human Question Map completion and No app reinstall.
+- Marked the next gate as pending S11 P4.
+
+## Unreleased - Memory Atlas v1.2 S11 P2 Economic-like Visuals
+
+- Added `economic_like_visuals.v1_2_s11_p2` runtime contract to the Memory
+  Atlas home screen.
+- Added Economic-like `task_treemap`, `automation_vs_augmentation`,
+  `roi_scatter` and `opportunity_radar` visuals with Chinese insight headers,
+  human questions and action values.
+- Bound the S11 P2 visuals to active `source/time/project/task` filter state
+  through redacted derived runtime nodes.
+- Added `机器治理/可视化配置/economic_like_visuals.v1_2_s11_p2.json`.
+- Added `validate:v1.2-s11-p2` for `MA-V12-S11P2` /
+  `ACC-MA-V12-S11P2`.
+- Registered status
+  `phase_s11_p2_economic_like_visuals_completed_pending_s11_p3`.
+- Preserved S11 P2 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, No proposal apply execution,
+  No S11 P3/P4 work and No app reinstall.
+- Marked the next gate as pending S11 P3.
+
+## Unreleased - Memory Atlas v1.2 S11 P1 Clio-like Visuals
+
+- Added `clio_like_visuals.v1_2_s11_p1` runtime contract to the Memory Atlas
+  home screen.
+- Added Clio-like `cluster_tree`, `bubble_map` and `topic_cluster_explorer`
+  visuals with Chinese insight headers, human questions and action values.
+- Bound the S11 P1 visuals to active `source/time/project/task` filter state
+  through redacted derived runtime nodes.
+- Added `机器治理/可视化配置/clio_like_visuals.v1_2_s11_p1.json`.
+- Added `validate:v1.2-s11-p1` for `MA-V12-S11P1` /
+  `ACC-MA-V12-S11P1`.
+- Registered status `phase_s11_p1_clio_like_visuals_completed_pending_s11_p2`.
+- Preserved S11 P1 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, No proposal apply execution,
+  No S11 P2/P3/P4 work and No app reinstall.
+- Marked the next gate as pending S11 P2.
+
+## Unreleased - Memory Atlas v1.2 S10 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s10_review.md`.
+- Added `validate:v1.2-s10-review` for `MA-V12-S10-REVIEW` /
+  `ACC-MA-V12-S10-REVIEW`.
+- Registered status `stage_s10_review_passed_pending_s11_no_github_main_upload`.
+- Confirmed S10 P1 homepage arrival briefing, S10 P2 global Chinese UX and
+  S10 P3 machine detail folding satisfy the S10 stage gate together.
+- Confirmed the S10 pass gate: homepage answers what changed since last visit,
+  core UI defaults to Chinese, machine fields default folded and Chinese UX
+  linter passes.
+- Preserved S10 Review boundaries: No GitHub main upload, No remote push,
+  No raw mutation, No proposal apply execution, No S11 implementation and
+  No app reinstall.
+- Marked the next gate as pending S11 P1.
+
+## Unreleased - Memory Atlas v1.2 S10 P3 Machine Detail Folding
+
+- Added `machine_detail_folding.v1_2_s10_p3` runtime contract to the Memory
+  Atlas app shell.
+- Folded machine fields behind Chinese “高级详情” entries for home arrival,
+  Search 2.0 session/result details, Review/Summary session output, Summary
+  Closure and Inspector Agent fields.
+- Replaced default-visible machine labels such as `search_session_summary`,
+  `Review session output`, `change_comparison`, `proposal_candidates`,
+  `jump_to_starfield` and `open_inspector` with Chinese-first visible labels.
+- Enhanced `scripts/atlasctl.py audit --check chinese-ux` into the S10 P3
+  machine-detail folding gate while preserving S10 P1/P2 checks.
+- Added `validate:v1.2-s10-p3` for `MA-V12-S10P3` /
+  `ACC-MA-V12-S10P3`.
+- Registered status
+  `phase_s10_p3_machine_detail_folding_completed_pending_s10_review`.
+- Preserved S10 P3 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, No proposal apply execution,
+  No S10 Review work and No S11 work.
+- Marked the next gate as pending S10 Review.
+
+## Unreleased - Memory Atlas v1.2 S10 P2 Global Chinese UX
+
+- Added `global_chinese_ux.v1_2_s10_p2` runtime contract to the Memory Atlas app shell.
+- Converted core homepage titles and insight headers to Chinese-first labels:
+  记忆天气、轻量星图、时间脉冲、下一步行动 and 证据入口.
+- Replaced known English-first visible homepage fragments such as Stable,
+  Momentum, Risk, Opportunity, top actions, assets, themes, Value, Strength,
+  records and day half-life with Chinese labels.
+- Enhanced `scripts/atlasctl.py audit --check chinese-ux` into the S10 P2
+  Chinese UX linter while preserving S10 P1 arrival briefing checks.
+- Added `validate:v1.2-s10-p2` for `MA-V12-S10P2` /
+  `ACC-MA-V12-S10P2`.
+- Registered status `phase_s10_p2_global_chinese_ux_completed_pending_s10_p3`.
+- Preserved S10 P2 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, No proposal apply execution,
+  No S10 P3 work and No S10 Review work.
+- Marked the next gate as pending S10 P3.
+
+## Unreleased - Memory Atlas v1.2 S10 P1 Home Arrival Briefing
+
+- Added `home_arrival_briefing.v1_2_s10_p1` to the Memory Atlas home screen.
+- Added a Chinese-first “上次来以后发生了什么” section before the older weather
+  and visual entry sections.
+- Covered new important material, strengthened conclusions, weakened/stale
+  conclusions, pending proposal candidates and sync failures.
+- Added folded machine details for the S10 P1 contract, snapshot and no-apply
+  boundary.
+- Extended `scripts/atlasctl.py` with `audit --check chinese-ux`.
+- Added `validate:v1.2-s10-p1` for `MA-V12-S10P1` /
+  `ACC-MA-V12-S10P1`.
+- Registered status `phase_s10_p1_home_arrival_briefing_completed_pending_s10_p2`.
+- Preserved S10 P1 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, No proposal apply execution,
+  No S10 P2/P3 work and No S13 apply state machine work.
+- Marked the next gate as pending S10 P2.
+
+## Unreleased - Memory Atlas v1.2 S09 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s09_review.md`.
+- Added `validate:v1.2-s09-review` for `MA-V12-S09-REVIEW` /
+  `ACC-MA-V12-S09-REVIEW`.
+- Registered status `stage_s09_review_passed_pending_s10_no_github_main_upload`.
+- Confirmed S09 P1 latent signals, S09 P2 self-iteration suggestions and
+  S09 P3 Decision Debt Ledger satisfy the S09 stage gate.
+- Confirmed latent signals keep supporting evidence, contradicting evidence,
+  alternative explanations, confidence, Evidence Strength Badge and next
+  validation.
+- Confirmed self-iteration suggestions keep proposal expiry, action half-life,
+  pending human review and no-apply boundaries.
+- Confirmed decision debt remains minimal next steps and does not generate a
+  pressure list.
+- Preserved S09 Review boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, No proposal apply execution,
+  No pressure list, No psychological diagnosis output, No personality label
+  output and No S10 work.
+- Marked the next gate as pending S10 P1.
+
+## Unreleased - Memory Atlas v1.2 Main Reconciliation Validator Compatibility
+
+- Updated S09 P1/P2/P3 validators to accept either the local v1.2 stage branch
+  or `main` for final reconciliation, matching S01-S08 validator behavior.
+- Preserved the no-remote-development-branch gate for
+  `codex/memory-atlas-v12-stage0-14-local`.
+- Scope is governance compatibility only: no S09 Review work, no model output
+  regeneration, no raw mutation and no proposal apply execution.
+
+## Unreleased - Memory Atlas v1.2 S09 P3 Decision Debt
+
+- Added `机器治理/行为智能模型/decision_debt.v1_2_s09_p3.json`.
+- Added `scripts/build_memory_atlas_decision_debt.py` and
+  `data/derived/behavior_intelligence/decision_debt_ledger.json`.
+- Extended `scripts/atlasctl.py` with `analyze --stage decision-debt` and
+  `audit --check decision-debt-safety`.
+- Added `docs/reviews/memory_atlas_v1_2_s09_p3_decision_debt.md`.
+- Added `人类可读/23_决策债说明.md`.
+- Added `validate:v1.2-s09-p3` for `MA-V12-S09P3` /
+  `ACC-MA-V12-S09P3`.
+- Registered status `phase_s09_p3_decision_debt_completed_pending_s09_review`.
+- Generated 8 evidence-backed decision debt candidates with minimal next
+  step, expected artifact and stop condition.
+- Preserved S09 P3 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, no proposal apply execution,
+  no pressure list, no psychological diagnosis output and no personality label
+  output.
+- Marked the next gate as pending S09 Review.
+
+## Unreleased - Memory Atlas v1.2 S09 P2 Self Iteration
+
+- Added `机器治理/行为智能模型/self_iteration.v1_2_s09_p2.json`.
+- Added `scripts/build_memory_atlas_self_iteration.py` and
+  `data/derived/behavior_intelligence/self_iteration_suggestions.json`.
+- Extended `scripts/atlasctl.py` with `analyze --stage self-iteration` and
+  `audit --check self-iteration-safety`.
+- Added `docs/reviews/memory_atlas_v1_2_s09_p2_self_iteration.md`.
+- Added `人类可读/22_自我迭代建议说明.md`.
+- Added `validate:v1.2-s09-p2` for `MA-V12-S09P2` /
+  `ACC-MA-V12-S09P2`.
+- Registered status `phase_s09_p2_self_iteration_completed_pending_s09_p3`.
+- Generated 5 evidence-backed self-iteration suggestions across memory,
+  config, AGENTS, style and personalization targets.
+- Added proposal expiry with warn/stale/archive thresholds and explicit
+  `expires_at` values so no proposal can remain permanently pending.
+- Added action half-life fields for every suggestion.
+- Preserved S09 P2 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, no proposal apply execution,
+  no credential target, no psychological diagnosis output and no decision debt
+  ledger.
+- Marked the next gate as pending S09 P3.
+
+## Unreleased - Memory Atlas v1.2 S09 P1 Latent Signals
+
+- Added `机器治理/行为智能模型/latent_signals.v1_2_s09_p1.json`.
+- Added `scripts/build_memory_atlas_latent_signals.py` and
+  `data/derived/behavior_intelligence/latent_signals.json`.
+- Extended `scripts/atlasctl.py` with `analyze --stage latent` and
+  `audit --check latent-safety`.
+- Added `docs/reviews/memory_atlas_v1_2_s09_p1_latent_signals.md`.
+- Added `人类可读/21_潜性信号说明.md`.
+- Added `validate:v1.2-s09-p1` for `MA-V12-S09P1` /
+  `ACC-MA-V12-S09P1`.
+- Registered status `phase_s09_p1_latent_signals_completed_pending_s09_p2`.
+- Generated 5 evidence-backed latent signal candidates with claim,
+  supporting evidence, contradicting evidence, alternative explanation,
+  confidence, Evidence Strength Badge and next validation.
+- Preserved S09 P1 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, no psychological diagnosis
+  output, no personality label output, no self-iteration suggestions and no
+  decision debt ledger.
+- Marked the next gate as pending S09 P2.
+
+## Unreleased - Memory Atlas v1.2 S08 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s08_review.md`.
+- Added `validate:v1.2-s08-review` for `MA-V12-S08-REVIEW` /
+  `ACC-MA-V12-S08-REVIEW`.
+- Registered status `stage_s08_review_passed_pending_s09_no_github_main_upload`.
+- Confirmed S08 P1 Codex/Agent collaboration quality, S08 P2 authorization
+  boundary and S08 P3 lightweight stage flight recorder satisfy the S08 stage
+  gate.
+- Confirmed the system can explain ChatGPT/Codex/other agent collaboration
+  quality and boundaries without a high-burden governance framework.
+- Preserved S08 Review boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, No multi-agent system,
+  No complex Delegation Contract UI, No proposal apply execution and No S09 work.
+- Marked the next gate as pending S09 P1.
+
+## Unreleased - Memory Atlas v1.2 S08 P3 Stage Flight Recorder
+
+- Added `机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json`
+  for lightweight stage flight recorder fields.
+- Added `scripts/build_memory_atlas_stage_flight.py` and
+  `data/derived/agent_collaboration/stage_flight_recorder.json`.
+- Extended `scripts/atlasctl.py` with `analyze --stage stage-flight`
+  and `audit --check stage-flight`.
+- Added `validate:v1.2-s08-p3` for `MA-V12-S08P3` /
+  `ACC-MA-V12-S08P3`.
+- Registered status `phase_s08_p3_stage_flight_recorder_completed_pending_s08_review`.
+- Kept S08 P3 lightweight: 10 required fields, 3 phase records, evidence refs
+  and validation refs only.
+- Preserved S08 P3 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, no raw/transcript payloads,
+  no bulky human documentation, no complex Delegation Contract UI and no
+  multi-agent system implementation.
+- Marked the next gate as pending S08 Review.
+
+## Unreleased - Memory Atlas v1.2 S08 P2 Agent Authorization Boundary
+
+- Added `机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json`
+  for lightweight Agent authorization boundary configuration.
+- Added `scripts/build_memory_atlas_agent_authorization.py` and
+  `data/derived/agent_collaboration/agent_authorization_boundary_report.json`.
+- Extended `scripts/atlasctl.py` with `analyze --stage agent-authorization`
+  and `audit --check agent-authorization`.
+- Added `docs/reviews/memory_atlas_v1_2_s08_p2_authorization_boundary.md`.
+- Added `人类可读/20_Agent授权边界说明.md`.
+- Added `validate:v1.2-s08-p2` for `MA-V12-S08P2` /
+  `ACC-MA-V12-S08P2`.
+- Registered status `phase_s08_p2_authorization_boundary_completed_pending_s08_p3`.
+- Fixed the S08 P2 boundary: raw cannot be modified, raw cannot be an apply
+  target, proposal apply requires human approval and `approved_by_human`.
+- Preserved S08 P2 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, no complex Delegation
+  Contract UI, no multi-agent system implementation, no proposal apply
+  execution and no stage flight recorder.
+- Marked the next gate as pending S08 P3.
+
+## Unreleased - Memory Atlas v1.2 S08 P1 Agent Collaboration Metrics
+
+- Added `机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json`
+  for Codex/Agent collaboration quality metrics.
+- Added `scripts/build_memory_atlas_agent_collaboration.py` and
+  `data/derived/agent_collaboration/agent_collaboration_quality_report.json`.
+- Extended `scripts/atlasctl.py` with `analyze --stage agent-collaboration`
+  and `audit --check agent-collaboration`.
+- Added `docs/reviews/memory_atlas_v1_2_s08_p1_agent_collaboration.md`.
+- Added `人类可读/19_Agent协作质量指标说明.md`.
+- Added `validate:v1.2-s08-p1` for `MA-V12-S08P1` /
+  `ACC-MA-V12-S08P1`.
+- Registered status `phase_s08_p1_collaboration_metrics_completed_pending_s08_p2`.
+- Covered `planning_clarity`, `execution_clarity`, `review_burden`,
+  `rework_count`, `scope_clarity`, `testability` and `rollbackability`.
+- Preserved S08 P1 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, no complex Delegation
+  Contract UI, no multi-agent system implementation, no authorization apply
+  boundary and no stage flight recorder.
+- Marked the next gate as pending S08 P2.
+
+## Unreleased - Memory Atlas v1.2 S07 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s07_review.md`.
+- Added `validate:v1.2-s07-review` for `MA-V12-S07-REVIEW` /
+  `ACC-MA-V12-S07-REVIEW`.
+- Registered status `stage_s07_review_passed_pending_s08_no_github_main_upload`.
+- Confirmed S07 P1 Personal Economic Proxy, S07 P2 Information ROI and
+  Visual ROI Gate, and S07 P3 Formula What-if satisfy the S07 stage gate.
+- Confirmed Personal Economic Proxy can generate formula-backed score cards
+  with Chinese explanations and parameter refs.
+- Confirmed Formula What-if is configurable/viewable and proposal-only.
+- Preserved S07 Review boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation, No external economic
+  database, No precise income prediction, No financial advice and No S08 work.
+- Marked the next gate as pending S08 P1.
+
+## Unreleased - Memory Atlas v1.2 S07 P3 Formula What-if
+
+- Added `机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`
+  for Formula What-if configurable proxy preview.
+- Added `scripts/build_memory_atlas_formula_what_if.py` and
+  `data/derived/economic_proxy/formula_what_if_preview.json`.
+- Extended `scripts/atlasctl.py` with `analyze --stage formula-what-if` and
+  `audit --check formula-what-if`.
+- Added `docs/reviews/memory_atlas_v1_2_s07_p3_formula_what_if.md`.
+- Added `人类可读/18_FormulaWhatIf配置预览说明.md`.
+- Added `validate:v1.2-s07-p3` for `MA-V12-S07P3` /
+  `ACC-MA-V12-S07P3`.
+- Registered status `phase_s07_p3_formula_what_if_completed_pending_s07_review`.
+- Preserved S07 P3 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation in this phase, No external
+  economic database, No precise income prediction, No financial advice,
+  no active formula config mutation and no runtime UI implementation.
+- Marked the next gate as pending S07 Review.
+
+## Unreleased - Memory Atlas v1.2 S07 P2 Information ROI
+
+- Added `机器治理/参数与公式/information_roi.v1_2_s07_p2.json` for Information ROI formulas.
+- Added `机器治理/可视化配置/visual_roi_gate.v1_2_s07_p2.json` for Visual ROI Gate.
+- Added `scripts/build_memory_atlas_information_roi.py` and
+  `data/derived/information_roi/information_roi_gate.json` for insight/card/chart ROI evaluation.
+- Added `docs/reviews/memory_atlas_v1_2_s07_p2_information_roi.md`.
+- Added `人类可读/17_InformationROI与VisualROIGate说明.md`.
+- Added `validate:v1.2-s07-p2` for `MA-V12-S07P2` /
+  `ACC-MA-V12-S07P2`.
+- Registered status `phase_s07_p2_information_roi_completed_pending_s07_p3`.
+- Preserved S07 P2 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation in this phase, No external
+  economic database, No precise income prediction and No S07 P3 what-if UI.
+- Marked the next gate as pending S07 P3.
+
+## Unreleased - Memory Atlas v1.2 S07 P1 Personal Economic Proxy
+
+- Added `机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json`.
+- Added `scripts/build_memory_atlas_economic_proxy.py` and
+  `data/derived/economic_proxy/personal_economic_proxy.json`.
+- Extended `scripts/atlasctl.py` with `analyze --stage economic-proxy` and
+  `audit --check formulas`.
+- Added `人类可读/16_PersonalEconomicProxy公式说明.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s07_p1_economic_proxy.md`.
+- Added `validate:v1.2-s07-p1` for `MA-V12-S07P1` /
+  `ACC-MA-V12-S07P1`.
+- Registered status `phase_s07_p1_economic_proxy_completed_pending_s07_p2`.
+- Preserved S07 P1 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation in this phase, No external
+  economic database in this phase, No precise income prediction, No financial
+  advice, No S07 P2 information ROI gate and No S07 P3 what-if UI.
+- Marked the next gate as pending S07 P2.
+
+## Unreleased - Memory Atlas v1.2 S06 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s06_review.md`.
+- Added `validate:v1.2-s06-review` for `MA-V12-S06-REVIEW` /
+  `ACC-MA-V12-S06-REVIEW`.
+- Registered status `stage_s06_review_passed_pending_s07_no_github_main_upload`.
+- Added S06 `behavior_intelligence` display summary to
+  `data/derived/visualization/memory_atlas.json`.
+- Added the Memory Atlas home display section for behavior clusters, low-value
+  loops and opportunity clues.
+- Confirmed S06 outputs cover 160 clusters, 23 low-value loops and 12
+  opportunities with evidence-backed Chinese summaries.
+- Preserved S06 Review boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No app reinstall, No raw mutation, No
+  psychological diagnosis, No external economic database and No infinite
+  pressure list.
+- Marked the next gate as pending S07 P1.
+
+## Unreleased - Memory Atlas v1.2 S06 P3 Opportunity Discovery
+
+- Added `scripts/build_memory_atlas_opportunities.py` for deterministic
+  opportunity discovery from S05 events, S06 P1 clusters and S06 P2 low-value loops.
+- Extended `scripts/atlasctl.py` with `analyze --stage opportunities` and expanded
+  `audit --check insight-evidence` to include opportunities and why-not-now cards.
+- Added `data/derived/behavior_intelligence/opportunities.json` with 12 opportunity
+  candidates and 12 why-not-now cards.
+- Added `人类可读/15_机会发现与为什么不是现在卡片.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s06_p3_opportunity_discovery.md`.
+- Added `validate:v1.2-s06-p3` for `MA-V12-S06P3` /
+  `ACC-MA-V12-S06P3`.
+- Registered status `phase_s06_p3_opportunity_discovery_completed_pending_s06_review`.
+- Preserved S06 P3 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation in this phase, No external
+  economic database in this phase, No psychological diagnosis in this phase and
+  No infinite pressure list in this phase.
+- Marked the next gate as pending S06 Review.
+
+## Unreleased - Memory Atlas v1.2 S06 P2 Low-Value Loops
+
+- Added `scripts/build_memory_atlas_low_value_loops.py` for deterministic low-value loop candidate generation.
+- Extended `scripts/atlasctl.py` with `analyze --stage low-value-loops` and expanded
+  `audit --check insight-evidence` to include low-value loops, Decision Debt Ledger and Action Half-Life.
+- Added `data/derived/behavior_intelligence/low_value_loops.json` with loop candidates,
+  decision debt records and action half-life records.
+- Added `人类可读/14_低价值循环与DecisionDebt说明.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s06_p2_low_value_loops.md`.
+- Added `validate:v1.2-s06-p2` for `MA-V12-S06P2` /
+  `ACC-MA-V12-S06P2`.
+- Registered status `phase_s06_p2_low_value_loops_completed_pending_s06_p3`.
+- Preserved S06 P2 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation in this phase, No psychological
+  diagnosis in this phase and No opportunity cards in this phase.
+- Marked the next gate as pending S06 P3.
+
+## Unreleased - Memory Atlas v1.2 S06 P1 Cluster Builder
+
+- Added `scripts/build_memory_atlas_clusters.py` for deterministic behavior cluster generation.
+- Extended `scripts/atlasctl.py` with `analyze --stage clusters` and
+  `audit --check insight-evidence`.
+- Added `data/derived/behavior_intelligence/clusters.json` with topic and
+  hierarchy clusters built from S05 canonical events.
+- Added `人类可读/13_行为簇与层级簇说明.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s06_p1_cluster_builder.md`.
+- Added `validate:v1.2-s06-p1` for `MA-V12-S06P1` /
+  `ACC-MA-V12-S06P1`.
+- Registered status `phase_s06_p1_cluster_builder_completed_pending_s06_p2`.
+- Preserved S06 P1 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation in this phase, No low-value
+  loop detection in this phase and No opportunity cards in this phase.
+- Marked the next gate as pending S06 P2.
+
+## Unreleased - Memory Atlas v1.2 S05 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s05_review.md`.
+- Added `validate:v1.2-s05-review` for `MA-V12-S05-REVIEW` /
+  `ACC-MA-V12-S05-REVIEW`.
+- Registered status `stage_s05_review_passed_pending_s06_no_github_main_upload`.
+- Marked S05 Review as passed after covering S05 P1, S05 P2 and S05 P3.
+- Confirmed canonical events cover ChatGPT/Codex/future agent, every event has
+  evidence refs or missing reasons, human docs explain facets, and first screen
+  is not a machine-field dump.
+- Marked the next gate as pending S06 P1.
+- Preserved S05 Review boundaries: No GitHub main upload in this review,
+  No remote push in this review, No app reinstall, No raw mutation and No fake events.
+
+## Unreleased - Memory Atlas v1.2 S05 P3 Evidence Refs
+
+- Added lightweight `evidence_refs` to `data/derived/behavior_intelligence/events.json`.
+- Updated `scripts/extract_memory_atlas_facets.py` and
+  `scripts/atlasctl.py analyze --stage facets` for `MA-V12-S05P3` /
+  `ACC-MA-V12-S05P3`.
+- Added `validate:v1.2-s05-p3` and
+  `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s05_p3.cjs`.
+- Added `docs/reviews/memory_atlas_v1_2_s05_p3_evidence_refs.md`.
+- Registered status `phase_s05_p3_evidence_refs_completed_pending_s05_review`.
+- Preserved S05 P3 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation in this phase and No fake events.
+- Marked the next gate as pending S05 Review.
+
+## Unreleased - Memory Atlas v1.2 S05 P2 Facet Extractor
+
+- Added `scripts/extract_memory_atlas_facets.py` for canonical behavior-event extraction.
+- Extended `scripts/atlasctl.py` with `analyze --stage facets`.
+- Added `data/derived/behavior_intelligence/events.json` with 217 extracted events.
+- Added `docs/reviews/memory_atlas_v1_2_s05_p2_facet_extractor.md`.
+- Added `validate:v1.2-s05-p2` for `MA-V12-S05P2` /
+  `ACC-MA-V12-S05P2`.
+- Registered status `phase_s05_p2_facet_extractor_completed_pending_s05_p3`.
+- Preserved S05 P2 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No raw mutation in this phase and No fake events.
+- Marked the next gate as pending S05 P3.
+
+## Unreleased - Memory Atlas v1.2 S05 P1 Facet Schema
+
+- Added `机器治理/数据契约/facet_event_schema.v1_2_s05_p1.json`.
+- Added `人类可读/12_Facet字段与事件语义说明.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s05_p1_facet_schema.md`.
+- Added `validate:v1.2-s05-p1` for `MA-V12-S05P1` /
+  `ACC-MA-V12-S05P1`.
+- Registered status `phase_s05_p1_facet_schema_completed_pending_s05_p2`.
+- Defined English facet fields and Chinese human explanations for S05 P1.
+- Covered ChatGPT, Codex and future agent source contracts.
+- Preserved S05 P1 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, No extractor in this phase, No fake events
+  in this phase and No raw mutation in this phase.
+- Marked the next gate as pending S05 P2.
+
+## Unreleased - Memory Atlas v1.2 S04 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s04_review.md`.
+- Added `validate:v1.2-s04-review` for `MA-V12-S04-REVIEW` /
+  `ACC-MA-V12-S04-REVIEW`.
+- Registered status `stage_s04_review_passed_pending_s05_no_github_main_upload`.
+- Marked S04 Review as passed after covering S04 P1, S04 P2 and S04 P3.
+- Confirmed ChatGPT read-only sync, Codex local sync, future-agent minimal
+  adapter, build-atlas dry-run and GitHub backup dry-run/apply are verifiable.
+- Marked the next gate as pending S05 P1.
+- Preserved S04 Review boundaries: No GitHub main upload in this review,
+  No remote push in this review, No app reinstall, No ChatGPT mutation,
+  No credential capture and No fake sync data.
+
+## Unreleased - Memory Atlas v1.2 S04 P3 GitHub Backup
+
+- Added `scripts/github_backup.py` for S04 P3 local GitHub backup dry-run and apply.
+- Extended `scripts/atlasctl.py` with `push --dry-run` and `push --apply`.
+- Covered `data/public_raw`, `data/derived`, `data/run_logs`, `docs/reviews`
+  and `reports` as the S04 P3 backup target set.
+- Added Chinese failure reason and fallback suggestions for missing Git worktree
+  and no-change backup states.
+- Added `机器治理/同步与备份/github_backup_policy.v1_2_s04_p3.json`.
+- Added `人类可读/11_GitHub备份DryRun与Apply.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s04_p3_github_backup.md`.
+- Added `validate:v1.2-s04-p3` for `MA-V12-S04P3` /
+  `ACC-MA-V12-S04P3`.
+- Registered status `phase_s04_p3_github_backup_completed_pending_s04_review`.
+- Preserved S04 P3 boundaries: No GitHub main upload in this phase,
+  No remote push in this phase, no app reinstall and no ChatGPT mutation.
+- Marked the next gate as pending S04 Review.
+
+## Unreleased - Memory Atlas v1.2 S04 P2 Codex/Future Agent Sync
+
+- Added `机器治理/同步与备份/codex_agent_sync_policy.v1_2_s04_p2.json`.
+- Added `scripts/sync_future_agent_data.py`.
+- Extended `scripts/sync_codex_memory_data.py` with S04 P2 dry-run and
+  append-only public raw snapshot output.
+- Extended `scripts/atlasctl.py` with `sync --source codex --dry-run`,
+  `sync --source future-agent --dry-run` and `build-atlas --dry-run`.
+- Added `人类可读/10_Codex与FutureAgent同步.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s04_p2_codex_agent_sync.md`.
+- Added `validate:v1.2-s04-p2` for `MA-V12-S04P2` /
+  `ACC-MA-V12-S04P2`.
+- Registered status `phase_s04_p2_codex_agent_sync_completed_pending_s04_p3`.
+- Marked the next gate as pending S04 P3.
+- Preserved S04 P2 boundaries: No GitHub main upload in this phase,
+  No GitHub backup apply, No browser mutation and No credential storage.
+
+## Unreleased - Memory Atlas v1.2 S04 P1 ChatGPT Sync
+
+- Added `机器治理/同步与备份/chatgpt_readonly_sync_policy.v1_2_s04_p1.json`.
+- Added `scripts/sync_chatgpt_memory_data.py`.
+- Added `scripts/atlasctl.py` with `sync --source chatgpt --dry-run`.
+- Added `人类可读/09_ChatGPT只读同步与官方导出Fallback.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s04_p1_chatgpt_sync.md`.
+- Added `validate:v1.2-s04-p1` for `MA-V12-S04P1` /
+  `ACC-MA-V12-S04P1`.
+- Registered status `phase_s04_p1_chatgpt_sync_completed_pending_s04_p2`.
+- Implemented official export ZIP/conversations.json fallback, credential
+  fail-closed behavior and append-only public raw writes for ChatGPT apply mode.
+- Marked the next gate as pending S04 P2.
+- Preserved S04 P1 boundaries: No GitHub main upload in this phase,
+  No Codex local sync, No future-agent adapter and No GitHub backup apply.
+
+## Unreleased - Memory Atlas v1.2 S03 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s03_review.md`.
+- Added `validate:v1.2-s03-review` for `MA-V12-S03-REVIEW` /
+  `ACC-MA-V12-S03-REVIEW`.
+- Registered status `stage_s03_review_passed_pending_s04_no_github_main_upload`.
+- Marked S03 Review as passed after covering S03 P1, S03 P2 and S03 P3.
+- Confirmed raw 可公开备份, append-only, credential exclusion and
+  raw manifest/hash are verifiable together.
+- Marked the next gate as pending S04 P1.
+- Preserved S03 Review boundaries: No GitHub main upload in this review,
+  No connector implementation, No real transcript ingestion, No UI work and
+  No public raw file mutation.
+
+## Unreleased - Memory Atlas v1.2 S03 P3 Machine Ledger
+
+- Added `scripts/raw_archive_manifest.py`.
+- Added `机器治理/同步与备份/raw_manifest_ledger_policy.v1_2_s03_p3.json`.
+- Added `机器治理/证据与日志/raw_archive_manifests/raw_manifest.s03_p3_baseline.jsonl`.
+- Added `机器治理/证据与日志/raw_archive_manifests/raw_hash_ledger.jsonl`.
+- Added `人类可读/08_Raw机器账本说明.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s03_p3_machine_ledger.md`.
+- Added `validate:v1.2-s03-p3` for `MA-V12-S03P3` /
+  `ACC-MA-V12-S03P3`.
+- Registered status `phase_s03_p3_machine_ledger_completed_pending_s03_review`.
+- Implemented raw manifest/hash generation and append-only audit for
+  source/file/hash/imported_at machine rows.
+- Marked the next gate as pending S03 Review.
+- Preserved S03 P3 boundaries: No GitHub main upload in this phase,
+  No connector implementation, No real transcript ingestion, No UI work and
+  No public raw file mutation.
+
+## Unreleased - Memory Atlas v1.2 S03 P2 Credential Exclusion
+
+- Added `机器治理/同步与备份/credential_exclusion_policy.v1_2_s03_p2.json`.
+- Added `人类可读/07_凭证排除说明.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s03_p2_credential_exclusion.md`.
+- Added `validate:v1.2-s03-p2` for `MA-V12-S03P2` /
+  `ACC-MA-V12-S03P2`.
+- Registered status `phase_s03_p2_credential_exclusion_completed_pending_s03_p3`.
+- Implemented credential is not memory through shared `privacy_guard.py`
+  scanner, assertion, redaction and repo audit integration.
+- Integrated Codex sync redaction with the shared credential exclusion entry
+  while preserving ordinary transcript as memory through `credentials_not_transcript`.
+- Marked the next gate as pending S03 P3.
+- Preserved S03 P2 boundaries: No GitHub main upload in this phase,
+  No S03 P3 manifest generation, No connector implementation, No complex UI,
+  No real transcript ingestion and No public raw file mutation.
+
+## Unreleased - Memory Atlas v1.2 S03 P1 Public Raw Path
+
+- Added `机器治理/同步与备份/raw_public_archive_policy.v1_2_s03_p1.json`.
+- Added `data/public_raw/README.md`.
+- Added `人类可读/06_Raw明文公开与只读归档说明.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s03_p1_public_raw_path.md`.
+- Added `validate:v1.2-s03-p1` for `MA-V12-S03P1` /
+  `ACC-MA-V12-S03P1`.
+- Registered status `phase_s03_p1_public_raw_path_defined_pending_s03_p2`.
+- Defined public raw archive paths, raw manifest/hash file contract,
+  append-only rule and hash drift fail rule.
+- Marked the next gate as pending S03 P2.
+- Preserved S03 P1 boundaries: No GitHub main upload in this phase,
+  No S03 P2 credential gate, No S03 P3 manifest generation,
+  No connector implementation and No transcript ingestion in this phase.
+
+## Unreleased - Memory Atlas v1.2 S02 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s02_review.md`.
+- Added `validate:v1.2-s02-review` for `MA-V12-S02-REVIEW` /
+  `ACC-MA-V12-S02-REVIEW`.
+- Registered status `stage_s02_review_passed_pending_s03_no_github_main_upload`.
+- Marked S02 Review as passed after covering S02 P1, S02 P2 and S02 P3.
+- Confirmed the source registry is not only ChatGPT/Codex hardcoded and includes
+  `future_agent_template`, `public_backup_mode` and transcript/credential
+  boundary coverage.
+- Marked the next gate as pending S03 P1.
+- Preserved S02 Review boundaries: No GitHub main upload in this review,
+  No connector implementation and No raw archive change.
+
+## Unreleased - Memory Atlas v1.2 S02 P3 Human Sync Explanation
+
+- Added `人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md`.
+- Added `docs/reviews/memory_atlas_v1_2_s02_p3_human_sync_explanation.md`.
+- Added `validate:v1.2-s02-p3` for `MA-V12-S02P3` /
+  `ACC-MA-V12-S02P3`.
+- Registered status `phase_s02_p3_human_sync_explanation_completed_pending_s02_review`.
+- Marked S02 P3 as completed and pending S02 Review.
+- Explained that ChatGPT、Codex、后续其他 agent 数据备份进 GitHub through
+  source registry and later raw append-only gates.
+- Preserved S02 P3 boundaries: No connector implementation,
+  No GitHub main upload in this phase and No raw archive change.
+
+## Unreleased - Memory Atlas v1.2 S02 P2 Source Registry
+
+- Added `机器治理/同步与备份/sync_source_registry.json`.
+- Added `docs/reviews/memory_atlas_v1_2_s02_p2_source_registry.md`.
+- Added `validate:v1.2-s02-p2` for `MA-V12-S02P2` /
+  `ACC-MA-V12-S02P2`.
+- Registered status `phase_s02_p2_source_registry_completed_pending_s02_p3`.
+- Added ChatGPT browser connector with official export fallback, Codex local
+  sync, and `future_agent_template` / `other_agent` future adapter coverage.
+- Marked S02 P2 as completed and pending S02 P3.
+- Preserved S02 P2 boundaries: No human sync page in this phase, No connector
+  implementation in this phase, No GitHub main upload in this phase and No raw
+  archive change.
+
+## Unreleased - Memory Atlas v1.2 S02 P1 Source Data Model
+
+- Added `机器治理/数据契约/source_data_model.v1_2_s02_p1.json`.
+- Added `docs/reviews/memory_atlas_v1_2_s02_p1_source_data_model.md`.
+- Added `validate:v1.2-s02-p1` for `MA-V12-S02P1` /
+  `ACC-MA-V12-S02P1`.
+- Registered status `phase_s02_p1_source_data_model_completed_pending_s02_p2`.
+- Marked S02 P1 as completed and pending S02 P2.
+- Defined source fields `source_id`, `source_type`, `agent_name`, `raw_root`,
+  `sync_mode`, `public_backup_mode` and `connector_capability`.
+- Defined source types `chatgpt`, `codex` and `other_agent`, plus the
+  transcript/credential boundary.
+- Preserved S02 P1 boundaries: No source registry file in this phase, No human
+  sync page in this phase, No connector implementation, No GitHub main upload in this phase and No raw archive change.
+
+## Unreleased - Memory Atlas v1.2 S01 Review
+
+- Added `docs/reviews/memory_atlas_v1_2_s01_review.md`.
+- Added `validate:v1.2-s01-review` for `MA-V12-S01-REVIEW` /
+  `ACC-MA-V12-S01-REVIEW`.
+- Registered status `stage_s01_review_passed_pending_s02_no_github_main_upload`.
+- Marked S01 Review as passed after covering S01 P1, S01 P2 and S01 P3.
+- Updated human entry and machine run gate to show pending S02 P1 while
+  preserving the one-phase-per-run rule and final-only GitHub main upload.
+- Preserved S01 Review boundaries: No S02 work, No GitHub main upload in this
+  review, No app reinstall, No raw archive change and No runtime directory move.
+
+## Unreleased - Memory Atlas v1.2 S01 P3 Requirements Freeze
+
+- Added `机器治理/运行门禁/v1.2需求冻结清单.json` for the v1.2 four-line /
+  14-stage requirements freeze.
+- Added `docs/reviews/memory_atlas_v1_2_s01_p3_requirements_freeze.md`.
+- Added `validate:v1.2-s01-p3` for `MA-V12-S01P3` / `ACC-MA-V12-S01P3`.
+- Registered status `phase_s01_p3_requirements_freeze_completed_pending_s01_review`.
+- Bridged README, AGENTS, human entry and run-gate docs so old raw/private
+  boundaries are replaced by user-authorized raw/transcript public GitHub
+  backup, raw append-only rules and credential exclusion.
+- Preserved S01 P3 boundaries: No GitHub main upload in this phase, No S01
+  review, No S02, No app reinstall, No apps/scripts/tests/config move and No
+  raw archive change.
+
+## Unreleased - Memory Atlas v1.2 S01 P2 Double Plane Creation
+
+- Added `OpenAIDatabase/人类可读/` with `00_快速入口.md` and
+  `01_v1.2四线14Stage升级总览.md`.
+- Added `OpenAIDatabase/机器治理/` with machine-plane README files for
+  parameters/formulas, data contracts, sync/backup, visualization config,
+  behavioral intelligence models, run gates, tests/acceptance and evidence/logs.
+- Added `docs/reviews/memory_atlas_v1_2_s01_p2_double_plane_creation.md`.
+- Added `validate:v1.2-s01-p2` for `MA-V12-S01P2` / `ACC-MA-V12-S01P2`.
+- Registered status `phase_s01_p2_double_plane_created_pending_s01_p3`.
+- Preserved S01 P2 boundaries: No GitHub main upload in this phase, No S01 P3,
+  No v1.2 requirements freeze config in this phase, No apps/scripts/tests/config
+  move and No raw archive change.
+
+## Unreleased - Memory Atlas v1.2 S01 P1 Current State Audit
+
+- Added `docs/reviews/memory_atlas_v1_2_s01_p1_current_state_audit.md`.
+- Added `validate:v1.2-s01-p1` for `MA-V12-S01P1` /
+  `ACC-MA-V12-S01P1`.
+- Registered status `phase_s01_p1_current_state_audited_pending_s01_p2`.
+- Audited the current `OpenAIDatabase` structure, v1.2 TaskPack/Roadmap
+  inputs, root owner three files, Memory Atlas entry, missing double-plane
+  directories before S01 P2, and v1.1.x raw/private boundaries that v1.2 must
+  replace or bridge.
+- Preserved S01 P1 boundaries: No GitHub main upload in this phase, No S01 P2,
+  No S01 P3, No apps/scripts/tests/config move, No AGENTS taskpack dump and No
+  raw archive change.
+
+## Unreleased - Memory Atlas v1.1.7 Final GitHub Main Upload
+
+- Added `docs/reviews/memory_atlas_v1_1_7_final_github_main_upload.md`.
+- Added `validate:v1.1.7-final-upload` for `MA-V117-FINAL-UPLOAD` /
+  `ACC-MA-V117-FINAL-GITHUB-MAIN`.
+- Registered status `final_github_main_upload_completed`.
+- Recorded that GitHub main points at the final upload commit for Memory Atlas
+  v1.1.7 Stage 0-10 and that `LinzeColin/CodexProject/OpenAIDatabase` is the
+  recovery source for future agents.
+- Preserved No remote development branch, No open pull request, No Cloudflare
+  live deploy, No raw/private/cookie/session/secret data access, No direct
+  active-memory writeback and No proposal queue write boundaries.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 10 Review
+
+- Added `docs/reviews/memory_atlas_v1_1_7_stage10_review.md` to pin the
+  completed Stage 10 review gate.
+- Added `validate:v1.1.7-stage10` for `MA-V117-S10-REVIEW` /
+  `ACC-MA-V117-S10-REVIEW`.
+- Registered status
+  `stage_10_review_passed_pending_final_github_main_upload`.
+- The Stage 10 Review covers Stage 10 Phase 10.1 Final hardening upload readiness,
+  `validate:v1.1.7-stage10-phase1`, `validate:whole-project`,
+  `validate:part2-stage1`, schema compatibility hardening,
+  legacy whole-project validator hardening, Chinese-first copy hardening,
+  `memory_starfield_spike_fixture.v1_1_7_stage4_phase2` and
+  `memory_river_spike_fixture.v1_1_7_stage5_phase2`.
+- Hardened legacy final validators so Part 3/4 accept the current
+  `DEFAULT_MEMORY_ATLAS_VIEW` default-home marker and Part 9 defers local app
+  reinstall unless `MEMORY_ATLAS_PART9_REINSTALL_LOCAL_APP=1` is set.
+- Review evidence preserves `No intermediate GitHub upload`,
+  `No GitHub main upload in this review`, `No remote development branch` and
+  `pending final one-time GitHub main upload`.
+
+Stage 10 Review only. App runtime change is limited to Chinese-first copy
+hardening. No production runtime logic/CSS change, No raw/private data read,
+No direct active-memory writeback, No proposal queue write, No agent apply, No
+deploy, No intermediate GitHub upload and No GitHub main upload in this review
+was added.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 10 Phase 10.1 Final Hardening Upload Readiness
+
+- Added `docs/product/memory_atlas_v1_1_7_final_hardening_upload_readiness_contract.md`.
+- Added `docs/acceptance/memory_atlas_v1_1_7_stage10_phase1_final_hardening_upload_readiness_acceptance.md`.
+- Added `validate:v1.1.7-stage10-phase1` for `MA-V117-S10P01` / `ACC-MA-V117-S10P01`.
+- Registered `memory_atlas_v1_1_7_final_hardening_upload_readiness_contract` with status
+  `phase_10_1_final_hardening_upload_readiness_contract_created_pending_stage10_review`.
+- The readiness contract covers `performance_safety_accessibility_matrix`,
+  `release_rollback_matrix`, `final_validation_matrix`,
+  `github_main_upload_matrix`, `governance_sync_matrix` and
+  `new_machine_recovery_matrix`, including desktop target 45-60 FPS and
+  reduced-motion fallback proof requirements.
+
+Stage 10 Phase 10.1 only. No intermediate GitHub upload, No GitHub main upload in this phase,
+No production runtime change, No raw/private data read, No
+direct active-memory writeback, No proposal queue write, No agent apply, No
+local app install and No deploy was added; pending Stage 10 review.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 9 Review
+
+- Added `docs/reviews/memory_atlas_v1_1_7_stage9_review.md` to pin the
+  completed Stage 9 review gate.
+- Added `validate:v1.1.7-stage9` to validate Phase 9.1 Cross-board shared
+  state, records, package script and no-upload boundary.
+- Registered `MA-V117-S9-REVIEW` / `ACC-MA-V117-S9-REVIEW` with status
+  `stage_9_review_passed_pending_stage10_no_github_main_upload`.
+- Marked Stage 9 as review-passed and pending Stage 10 while preserving
+  `No GitHub main upload` before the whole Stage 0-10 project is complete.
+
+Phase 9.1 only. Cross-board shared state, synchronized filters and Inspector
+explanation layer are reviewed with `cross_board_shared_state.v1_1_7_stage9_phase1`,
+`inspector_explanation_layer.v1_1_7_stage9_phase1`, `shared_state_filters`,
+`synchronized_filters` and `inspector_explanation_layer`. No Stage 10 work,
+raw/private data read, direct active-memory writeback, proposal queue write,
+agent apply, local app install, deploy or GitHub main upload was added.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 9 Phase 9.1 Cross-board Shared State
+
+- Implemented the Stage 9.1 cross-board shared-state runtime marker with
+  `cross_board_shared_state.v1_1_7_stage9_phase1`.
+- Exposed the Inspector explanation layer marker
+  `inspector_explanation_layer.v1_1_7_stage9_phase1`.
+- This phase covers Cross-board shared state, synchronized filters and
+  Inspector explanation layer only.
+- Added `window.__memoryAtlasStage9Phase1()` to report shared surfaces,
+  `shared_state_filters`, `synchronized_filters`, focus state, Inspector
+  explanation coverage and no-write safety flags.
+- Added `validate:v1.1.7-stage9-phase1` and
+  `validate:cross-board-shared-state-browser`.
+- Registered `MA-V117-S9P01` / `ACC-MA-V117-S9P01` with status
+  `phase_9_1_cross_board_shared_state_completed_pending_stage9_review`.
+
+Stage 9 Phase 9.1 Cross-board shared state only. No Stage 9 review, No Stage
+10, No raw/private data read, No direct active-memory writeback, No proposal
+queue write, No agent apply, No deploy or No GitHub main upload was added.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 8 Review
+
+- Added `docs/reviews/memory_atlas_v1_1_7_stage8_review.md` to pin the
+  completed Stage 8 review gate.
+- Added `validate:v1.1.7-stage8` to validate Phase 8.1 Summary and iteration
+  closure, records, package script and no-upload boundary.
+- Registered `MA-V117-S8-REVIEW` / `ACC-MA-V117-S8-REVIEW` with status
+  `stage_8_review_passed_pending_stage9_no_github_main_upload`.
+- Marked Stage 8 as review-passed and pending Stage 9 while preserving
+  `No GitHub main upload` before the whole Stage 0-10 project is complete.
+
+Phase 8.1 only. No Stage 9 work, raw/private data read, direct active-memory
+writeback, proposal queue write, agent apply, local app install, deploy or
+GitHub main upload was added.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 8 Phase 8.1 Summary Iteration Closure
+
+- Implemented the production Summary and iteration closure runtime slice with
+  `summary_iteration_closure_runtime.v1_1_7_stage8_phase1`.
+- Added `memory_atlas_summary_closure.v1_1_7_stage8_phase1` for
+  `change_comparison`, `stale_conflict_signals` and `proposal_candidates`.
+- Added closure UI panels in the production `summary` view, reusing the
+  Stage 7.2 redacted review output as the source review schema.
+- Added `validate:v1.1.7-stage8-phase1` and
+  `validate:summary-iteration-closure-browser`.
+- Registered `MA-V117-S8P01` / `ACC-MA-V117-S8P01` with status
+  `phase_8_1_summary_iteration_closure_runtime_completed_pending_stage8_review`.
+
+Stage 8 Phase 8.1 Summary and iteration closure only. No Stage 8 review,
+No raw/private data read, No direct active-memory writeback, No proposal queue
+write, No agent apply, No deploy or No GitHub main upload was added.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 7 Review
+
+- Added `docs/reviews/memory_atlas_v1_1_7_stage7_review.md` to pin the
+  completed Stage 7 review gate.
+- Added `validate:v1.1.7-stage7` to validate Stage 6 continuity, Phase 7.1
+  Search 2.0, Phase 7.2 Review / Summary / Iteration, records, package script
+  and no-upload boundary.
+- Registered `MA-V117-S7-REVIEW` / `ACC-MA-V117-S7-REVIEW` with status
+  `stage_7_review_passed_pending_stage8_no_github_main_upload`.
+- Marked Stage 7 as review-passed and pending Stage 8 while preserving
+  `No GitHub main upload` before the whole Stage 0-10 project is complete.
+
+Phase 7.1 and Phase 7.2 only. No Stage 8 work, raw/private data read, direct
+active-memory writeback, agent apply, local app install, deploy or GitHub main
+upload was added.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 7 Phase 7.2 Review Summary Iteration Runtime
+
+- Implemented the production Review / Summary / Iteration runtime slice with
+  `review_summary_iteration_runtime.v1_1_7_stage7_phase2`.
+- Added `memory_atlas_review_summary.v1_1_7_stage7_phase2` for the visible
+  schema output, eight review questions, `proposal_candidate`, `evidence_refs`
+  and `iteration_backlog`.
+- Added a review period selector, theme change, opportunity, low-value loop,
+  decision change, next action, proposal decision and iteration backlog panels.
+- Added `validate:v1.1.7-stage7-phase2` and
+  `validate:review-summary-iteration-browser`.
+- Registered `MA-V117-S7P02` / `ACC-MA-V117-S7P02` with status
+  `phase_7_2_review_summary_iteration_runtime_completed_pending_stage7_review`.
+
+Phase 7.2 Review / Summary / Iteration only. No Stage 8 summary closure,
+No raw/private data read, No direct active-memory writeback, No proposal queue
+write, No agent apply, No deploy or No GitHub main upload was added.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 7 Phase 7.1 Search 2.0 Runtime
+
+- Implemented the production Search 2.0 runtime slice with
+  `search_2_0_runtime.v1_1_7_stage7_phase1`.
+- Added `search_2_0_session_summary.v1_1_7_stage7_phase1` for query,
+  dominant topics, high-importance hits, stale/archive hits, missing evidence,
+  next step and `proposal_candidate`.
+- Search results now expose `matched_reason`, `evidence_refs`,
+  `proposal_candidate`, and actions for `jump_to_starfield`, `jump_to_river`
+  and `open_inspector`.
+- Added `zero_result_recovery` for broaden query, remove filter, related topic,
+  stale/archive and later review hint.
+- Added `validate:v1.1.7-stage7-phase1` and `validate:search-2-0-browser`.
+- Registered `MA-V117-S7P01` / `ACC-MA-V117-S7P01` with status
+  `phase_7_1_search_2_0_runtime_completed_pending_stage7_review`.
+
+Phase 7.1 Search 2.0 only. No Review / Summary / Iteration runtime, No
+raw/private data read, No direct active-memory writeback, No agent apply, No
+deploy or No GitHub main upload was added.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 6 Review
+
+- Added `docs/reviews/memory_atlas_v1_1_7_stage6_review.md` to pin the
+  completed Stage 6 review gate.
+- Added `validate:v1.1.7-stage6` to validate Stage 5 continuity, Phase 6.1
+  Structure Model, Phase 6.2 Details & Editing, records, package script and
+  no-upload boundary.
+- Hardened the Stage 6.1 Data Guide browser gate and CSS click surface so
+  relation paths are clicked at actual SVG geometry points instead of being
+  overlapped by the detail panels.
+- Registered `MA-V117-S6-REVIEW` / `ACC-MA-V117-S6-REVIEW` with status
+  `stage_6_review_passed_pending_stage7_no_github_main_upload`.
+- Marked Stage 6 as review-passed and pending Stage 7 while preserving
+  `No GitHub main upload` before the whole Stage 0-10 project is complete.
+
+No Stage 7 work, Search 2.0 work, Review / Summary / Iteration runtime work,
+raw/private data read, direct active-memory writeback, agent apply, local app
+install, deploy or GitHub main upload was added.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 6 Phase 6.2 Details & Editing
+
+- Added the production Data Guide `数据导图详情面板` with
+  `data_map_detail_panel.v1_1_7_stage6_phase2`.
+- Added the `数据导图 proposal 入口` with
+  `data_map_proposal_entry.v1_1_7_stage6_phase2`.
+- The detail panel exposes asset, theme, suggested action, importance and
+  priority for the selected node.
+- The proposal entry stays proposal-only and exports a proposal instead of
+  applying edits or writing active memory.
+- Added `validate:v1.1.7-stage6-phase2` and
+  `validate:data-map-detail-proposal-browser`.
+- Registered `MA-V117-S6P02` / `ACC-MA-V117-S6P02` with status
+  `phase_6_2_data_map_detail_proposal_completed_pending_stage6_review`.
+
+Phase 6.2 Details & Editing only. No Stage 6 review, No GitHub main upload, No
+raw/private data read, No direct active-memory writeback, No agent apply or No
+deploy was added.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 6 Phase 6.1 Structure Model
+
+- Added `docs/product/data_map_iteration_contract.md` with the Stage 6 Phase
+  6.1 Data Map Structure Model contract.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage6_phase1_data_map_structure_acceptance.md`.
+- Integrated the production Data Guide with
+  `data_map_structure_model.v1_1_7_stage6_phase1` and
+  `data_map_relation_explanation.v1_1_7_stage6_phase1`.
+- Reframed the Data Guide into four layers: `source_layer`, `profile_layer`,
+  `project_decision_layer` and `action_opportunity_layer`.
+- Added clickable relation explanation UI for source, strength, evidence and
+  time, with `window.__memoryAtlasStage6Phase1()` safety metadata.
+- Added `validate:v1.1.7-stage6-phase1` and
+  `validate:data-map-structure-browser`.
+- Registered `MA-V117-S6P01` / `ACC-MA-V117-S6P01` with status
+  `phase_6_1_data_map_structure_model_completed_pending_stage6_review`.
+
+Phase 6.1 Structure Model and Relation Explanation only. No Phase 6.2, No
+proposal editing, No raw/private data read, No direct active-memory writeback,
+No agent apply, No deploy or No GitHub main upload was added.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 5 Review
+
+- Added `docs/reviews/memory_atlas_v1_1_7_stage5_review.md` to pin the
+  completed Stage 5 review gate.
+- Added `validate:v1.1.7-stage5` to validate Stage 4 continuity, Phase 5.1
+  Interaction Contract, Phase 5.2 C3 River Spike, Phase 5.3 Timeline
+  Integration, records, package script and no-upload boundary.
+- Registered `MA-V117-S5-REVIEW` / `ACC-MA-V117-S5-REVIEW` with status
+  `stage_5_review_passed_pending_stage6_no_github_main_upload`.
+- Marked Stage 5 as review-passed and pending Stage 6 while preserving
+  `No GitHub main upload` before the whole Stage 0-10 project is complete.
+
+No Stage 6 work, Data Map work, raw/private data read, direct active-memory
+writeback, agent apply, local app install, deploy or GitHub main upload was
+added.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 5 Phase 5.3 Timeline Integration
+
+- Integrated the production Timeline board with
+  `memory_river_integration.v1_1_7_stage5_phase3`.
+- Kept `memory-river` as the default memory-river renderer and preserved
+  legacy rollback through the in-app toggle, `timelineRenderer=legacy`,
+  `timeline=legacy`, localStorage and env override.
+- Added runtime integration metadata through
+  `window.__memoryAtlasStage5Phase3()`.
+- Added DOM hooks for the active renderer, Stage 5.3 integration version,
+  old Timeline rollback and Memory River evidence layers.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage5_phase3_timeline_integration_acceptance.md`.
+- Added `validate:v1.1.7-stage5-phase3` and
+  `validate:memory-river-integration-browser`.
+- Registered `MA-V117-S5P03` / `ACC-MA-V117-S5P03` with status
+  `phase_5_3_timeline_integration_completed_pending_stage5_review`.
+
+Phase 5.3 Timeline Integration only. No Stage 5 review, No Stage 6, No
+raw/private data read, No direct active-memory writeback, No agent apply, No
+deploy or No GitHub main upload was added.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 5 Phase 5.2
+
+- Upgraded the isolated Memory River C3 spike to
+  `memory_river_c3_spike.v1_1_7_stage5_phase2`.
+- Added year, month, week and day time scale levels with D3 UTC ticks.
+- Added brush-driven selected range themes, selected range events and selected
+  Black Hole / Proto-Star signal output.
+- Added trend lanes for `rising`, `declining`, `stable` and `conflict`.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage5_phase2_c3_river_spike_acceptance.md`.
+- Added `validate:v1.1.7-stage5-phase2` and
+  `validate:memory-river-spike-browser`.
+- Registered `MA-V117-S5P02` / `ACC-MA-V117-S5P02` with status
+  `phase_5_2_c3_river_spike_completed_pending_stage5_review`.
+
+Phase 5.2 C3 River Spike only. No production Timeline replacement, production
+route, navigation change, feature flag default switch, raw/private data read,
+direct active-memory writeback, agent apply, Stage 5.3, deploy or GitHub main
+upload was added.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 5 Phase 5.1
+
+- Added the v1.1.7 Stage 5 Phase 5.1 Interaction Contract addendum to
+  `docs/product/memory_river_interaction_contract.md`.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage5_phase1_interaction_contract_acceptance.md`.
+- Added `validate:v1.1.7-stage5-phase1`.
+- Registered `MA-V117-S5P01` / `ACC-MA-V117-S5P01` with status
+  `phase_5_1_interaction_contract_completed_pending_stage5_review`.
+- Interaction contract version:
+  `memory_river_interaction_contract.v1_1_7_stage5_phase1`.
+- Feedback contract version:
+  `memory_river_feedback_contract.v1_1_7_stage5_phase1`.
+
+Interaction Contract only. No C3 River Spike, Timeline replacement, Stage 5.2,
+runtime UI, CSS change, browser screenshot, raw/private data read, direct
+active-memory writeback, agent apply, deploy or GitHub main upload was added.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 4 Review
+
+- Added `docs/reviews/memory_atlas_v1_1_7_stage4_review.md` to pin the
+  completed Stage 4 review gate.
+- Added `validate:v1.1.7-stage4` to validate Stage 3 continuity, Phase 4.1
+  Visual Contract Update, Phase 4.2 C3 Starfield Spike, Phase 4.3 Integration,
+  records, package script and no-upload boundary.
+- Registered `MA-V117-S4-REVIEW` / `ACC-MA-V117-S4-REVIEW` with status
+  `stage_4_review_passed_pending_stage5_no_github_main_upload`.
+- Marked Stage 4 as review-passed and pending Stage 5 while preserving
+  `No GitHub main upload` before the whole Stage 0-10 project is complete.
+
+No Stage 5 work, Memory River work, raw/private data read, direct active-memory
+writeback, agent apply, local app install, deploy or GitHub main upload was
+added.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 4 Phase 4.3 Integration
+
+- Integrated production Galaxy with
+  `memory_starfield_integration.v1_1_7_stage4_phase3`.
+- Kept the `legacy` renderer as a feature flag rollback while preserving the
+  default `memory-starfield` entry.
+- Added `apps/memory-atlas/src/models/starfieldMapping.ts` with
+  `memory_starfield_snapshot_mapping.v1_1_7_stage4_phase3`.
+- Mapped redacted `universe_state.sample.json` fields into mass, color,
+  brightness and trail formulas, with atlas-node fallback defaults.
+- Added runtime debug metadata through `window.__memoryAtlasStage4Phase3()` and
+  `window.__memoryAtlasGalaxySignal()`.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage4_phase3_integration_acceptance.md`.
+- Added `validate:v1.1.7-stage4-phase3` and
+  `validate:memory-starfield-integration-browser`.
+- Registered `MA-V117-S4P03` / `ACC-MA-V117-S4P03` with status
+  `phase_4_3_integration_completed_pending_stage4_review`.
+
+Feature Flag and Snapshot Mapping integration only. No Stage 5, raw/private
+data read, direct active-memory writeback, agent apply, deployment or GitHub
+main upload was added.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 4 Phase 4.2
+
+- Upgraded the isolated Memory Starfield C3 Starfield Spike to
+  `memory_starfield_c3_spike.v1_1_7_stage4_phase2`.
+- Added `apps/memory-atlas/src/experiments/memory-starfield-spike/shaders/flowField.ts`
+  for the `curl_noise_shader` Flow Field / Curl Noise contract.
+- Switched the isolated spike particles to a WebGL `ShaderMaterial`, preserved
+  the default `mid=10000` particle path and added visible particle trails.
+- Added Cluster Gravity damping/minimum-distance behavior and Hover Cards B2
+  fields for topic, redacted summary, importance and priority.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage4_phase2_c3_starfield_spike_acceptance.md`.
+- Added `validate:v1.1.7-stage4-phase2` and
+  `validate:memory-starfield-spike-browser`.
+- Registered `MA-V117-S4P02` / `ACC-MA-V117-S4P02` with status
+  `phase_4_2_c3_starfield_spike_completed_pending_stage4_review`.
+
+C3 Starfield Spike only. No production Galaxy replacement, production route,
+feature flag default switch, raw/private data read, direct active-memory
+writeback, agent apply, Stage 4 review or GitHub main upload was added.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 4 Phase 4.1
+
+- Added the v1.1.7 Stage 4 Phase 4.1 Visual Contract Update to
+  `docs/product/memory_starfield_visual_contract.md`.
+- Added `docs/architecture/memory_terrain_layer.md` with
+  `memory_terrain_layer.v1_1_7_stage4_phase1` and terrain semantic registry.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage4_phase1_visual_contract_acceptance.md`.
+- Added `validate:v1.1.7-stage4-phase1`.
+- Registered `MA-V117-S4P01` / `ACC-MA-V117-S4P01` with status
+  `phase_4_1_visual_contract_update_completed_pending_stage4_review`.
+- Visual contract version:
+  `memory_starfield_visual_contract.v1_1_7_stage4_phase1`.
+- Terrain contract version: `memory_terrain_layer.v1_1_7_stage4_phase1`.
+
+Visual Contract Update only. No Phase 4.2, runtime renderer replacement,
+browser screenshot, production build, raw/private data read, direct
+active-memory writeback, agent apply or GitHub main upload was added.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 3 Review
+
+- Added `docs/reviews/memory_atlas_v1_1_7_stage3_review.md` to pin the
+  completed Stage 3 review gate.
+- Added `validate:v1.1.7-stage3` to validate Stage 2 continuity, Phase 3.1
+  Default Home Structure, Phase 3.2 Home Detail Operations, records, package
+  script and no-upload boundary.
+- Registered `MA-V117-S3-REVIEW` / `ACC-MA-V117-S3-REVIEW` with status
+  `stage_3_review_passed_pending_stage4_no_github_main_upload`.
+- Marked Stage 3 as review-passed and pending Stage 4 while preserving
+  `No GitHub main upload` before the whole Stage 0-10 project is complete.
+
+No Stage 4 work, Search 2.0 runtime, Review workflow runtime, Data Map 2.0
+runtime, raw/private data read, direct active-memory writeback, agent apply,
+production build, local app install, browser screenshot, deploy or GitHub main
+upload was added.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 3 Phase 3.2
+
+- Added the versioned Home Detail Operations contract
+  `memory_overview_detail_operations.v1_1_7_stage3_phase2`.
+- Added explicit operation section versions for Top Actions Section
+  `top_actions_section.v1_1_7_stage3_phase2`, Level Assets Section
+  `level_assets_section.v1_1_7_stage3_phase2` and Theme Categories Section
+  `theme_categories_section.v1_1_7_stage3_phase2`.
+- Updated Memory Overview so each top action shows suggestion, reason,
+  priority, status, ROI, urgency, evidence count and next step before opening
+  `ActionDetailDrawer`.
+- Added home-level group chips for `core_profile`, `project`, `decision`,
+  `temporary` and `stale`, and clickable `AssetDetailPanel` entries.
+- Added theme category chips for `rising`, `declining`, `conflict`,
+  `opportunity` and `stable`, and clickable `ThemeDetailPanel` entries.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage3_phase2_home_detail_operations_acceptance.md`
+  and `validate:v1.1.7-stage3-phase2`.
+- Registered `MA-V117-S3P02` / `ACC-MA-V117-S3P02` with status
+  `phase_3_2_home_detail_operations_completed_pending_stage3_review`.
+
+No Stage 3 Review, Search 2.0 runtime, Review workflow runtime, Data Map 2.0
+runtime, raw/private data read, direct active-memory writeback, agent apply,
+production build, local app install, deploy or GitHub main upload was added.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 3 Phase 3.1
+
+- Added the versioned Default Home Structure contract
+  `memory_overview_default_home.v1_1_7_stage3_phase1`.
+- Made the default Memory Atlas route explicit through
+  `DEFAULT_MEMORY_ATLAS_VIEW = "home"` and machine-readable default-route
+  markers.
+- Added a compact Memory Overview structure rail covering status summary,
+  suggested actions, weather, black holes, proto-stars, assets, themes and
+  entry points without turning the page into a pile of cards.
+- Added `docs/product/memory_overview_product_contract.md`,
+  `docs/acceptance/memory_atlas_v1_1_7_stage3_phase1_default_home_acceptance.md`
+  and `validate:v1.1.7-stage3-phase1`.
+- Registered `MA-V117-S3P01` / `ACC-MA-V117-S3P01` with status
+  `phase_3_1_default_home_structure_completed_pending_stage3_review`.
+
+No Stage 3 Phase 3.2, Search 2.0 runtime, Review workflow runtime, Data Map
+2.0 runtime, raw/private data read, direct active-memory writeback, agent apply,
+production build, local app install, deploy or GitHub main upload was added.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 2 Review
+
+- Added `docs/reviews/memory_atlas_v1_1_7_stage2_review.md` to pin the
+  completed Stage 2 review gate.
+- Added `validate:v1.1.7-stage2` to validate Stage 1 continuity, Phase 2.1
+  Editable Draft Model, Phase 2.2 Proposal UI, records, package script and
+  no-upload boundary.
+- Registered `MA-V117-S2-REVIEW` / `ACC-MA-V117-S2-REVIEW` with status
+  `stage_2_review_passed_pending_stage3_no_github_main_upload`.
+- Marked Stage 2 as review-passed and pending Stage 3 while preserving
+  `No GitHub main upload` before the whole Stage 0-10 project is complete.
+
+No Stage 3 work, Search 2.0 runtime, Review workflow runtime, Data Map 2.0
+runtime, raw/private data read, direct active-memory writeback, agent apply,
+production build, local app install, browser screenshot, deploy or GitHub main
+upload was added.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 2 Phase 2.2
+
+- Added `apps/memory-atlas/src/components/ProposalEditor.tsx` to expose the
+  first proposal UI controls for `importance` and `priority`.
+- Added `apps/memory-atlas/src/components/ProposalDiffPreview.tsx` to show
+  `original_value`, `proposed_value`, `impact_summary` and `rollback_metadata`.
+- Integrated `ProposalEditor` into the existing Inspector writeback panel while
+  preserving `proposal_only`, no direct writeback and human/agent apply gates.
+- Updated `docs/architecture/proposal_edit_model.md` with
+  `proposal_ui_v1_1_7_stage2_phase2`, `memory_atlas_proposal_export.v1` and the
+  Export / Rollback Contract.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage2_phase2_proposal_ui_acceptance.md`.
+- Added `validate:v1.1.7-stage2-phase2` and registered
+  `MA-V117-S2P02` / `ACC-MA-V117-S2P02` with status
+  `phase_2_2_proposal_ui_completed_pending_stage2_review`.
+
+No Search 2.0 runtime, Review workflow runtime, Data Map 2.0 runtime,
+raw/private data read, direct writeback, agent apply, production build, local
+app install, browser screenshot, deploy or GitHub main upload was added.
+
+Machine-readable boundary summary: Proposal UI; ProposalEditor;
+ProposalDiffPreview; Export / Rollback Contract; No GitHub main upload before
+whole Stage 0-10 completion.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 2 Phase 2.1
+
+- Added `docs/architecture/proposal_edit_model.md` with the
+  `proposal_edit_model_v1_1_7_stage2_phase1` contract for Editable Draft Model.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage2_phase1_editable_draft_acceptance.md`.
+- Added `apps/memory-atlas/src/state/proposalDraftStore.ts` with the
+  `memory_atlas_proposal_draft.v1` schema, `memory-atlas.proposal-drafts.v1`
+  local draft store key, refresh warning helper, undo draft change helper and
+  proposal-only safety metadata.
+- Updated `config/visualization/model_parameters.universe_state.yaml` to
+  register `MA-V117-S2P01` / `ACC-MA-V117-S2P01`, the editable whitelist
+  `importance`, `priority`, `status`, `theme_override`, `action_state`, `note`,
+  draft target types and draft statuses.
+- Added `validate:v1.1.7-stage2-phase1` to verify the Editable Draft Model,
+  Draft State Store, records, package script and changed-path boundary.
+- Registered status
+  `phase_2_1_editable_draft_model_completed_pending_stage2_review`.
+
+No Proposal UI, Proposal Diff Preview, proposal JSON export, Search 2.0
+runtime, Review workflow runtime, Data Map 2.0 runtime, raw/private data read,
+direct writeback, agent apply, production build, local app install, browser
+screenshot, deploy or GitHub main upload was added.
+
+Machine-readable boundary summary: Editable Draft Model; Draft State Store; No
+Proposal UI; No GitHub main upload before whole Stage 0-10 completion.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 1 Review
+
+- Added `docs/reviews/memory_atlas_v1_1_7_stage1_review.md` to pin the
+  completed Stage 1 review gate.
+- Added `validate:v1.1.7-stage1` to validate Stage 0 review continuity, Phase
+  1.1 Universe State, Phase 1.2 Next Action, Phase 1.3 Level Asset, Phase 1.4
+  Topic Classification, records, package script and no-upload boundary.
+- Registered `MA-V117-S1-REVIEW` / `ACC-MA-V117-S1-REVIEW` with status
+  `stage_1_review_passed_pending_stage2_no_github_main_upload`.
+- Marked Stage 1 as review-passed and pending Stage 2 while preserving
+  `No GitHub main upload` before the whole Stage 0-10 project is complete.
+
+No Stage 2 work, proposal editor, Search 2.0 runtime, Review workflow runtime,
+Data Map 2.0 runtime, raw/private data read, direct writeback, proposal write,
+agent apply, production build, local app install, browser screenshot, deploy or
+GitHub main upload was added.
+
+## Unreleased - Memory Atlas Phase 1 Live URL Readiness Repair
+
+- Added the `validate:stage8-local-app-packaging` alias for the canonical local app packaging gate.
+- Repaired Stage 3, Stage 6, whole-project, and visual audit validators so local readiness gates do not fail on known false positives.
+- Removed a tracked encrypted session-history key from the release branch and recorded the governance boundary for the repair.
+- Re-ran local lint, build, Stage 8 release safety, local app, packaging, whole-project, offline Cloudflare Pages + Access preflight, and changed-only governance gates.
+
+No Cloudflare live deploy, Access policy mutation, memoryatlas.linzezhang.com publish, raw export ingestion, plaintext secret persistence, dist commit, or node_modules commit was added.
+
+## Unreleased - macdata proM2 Controlled Archive
+
+- Added `OpenAIDatabase/macdata/proM2` as a controlled Codex Automation task pack for this MacBook Pro.
+- Updated the device preflight to use the owner-confirmed local hardware truth: MacBook Pro / Mac14,5 / Apple M2 Max / 32GB.
+- Added owner confirmations for GitHub upload, plaintext non-credential device metrics, no Time Machine, no iCloud, and verified-upload-before-cleanup.
+- Added remote-verified cleanup policy for Docker, Homebrew, system cache best-effort purge, and project cache whitelist deletion.
+- Added focused package tests and governance records for the macdata setup.
+- Fixed `last_run_status.json` so it records raw archive, report archive, top-level `ok`, archive branch, and final remote verification after the report upload completes.
+- Added post-run GitHub/Codex hygiene so verified runs can close/delete managed, merged temporary PRs/branches/issues while protecting `main` and `macdata-proM2`.
+- Restored proM2 MacData Chinese report artifacts to Markdown `.md` files for latest, draft, and final reports per owner instruction.
+
+No API key, token, password, cookie, session, Keychain item, shell history, full environment dump, `.env` raw content, Time Machine data, or iCloud data is collected.
+## Unreleased - Memory Atlas v1.1.7 Stage 1 Phase 1.4
+
+- Added `docs/architecture/theme_category_model.md` with the
+  `theme_category_model_v1_1_7_stage1_phase4` model contract for concrete
+  Topic Classification details.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage1_phase4_topic_classification_acceptance.md`.
+- Added `apps/memory-atlas/src/components/ThemeDetailPanel.tsx` and updated
+  `App.tsx` / `styles.css` so Home Overview renders Topic Classification cards
+  and a `ThemeDetailPanel` with `topic_strength`, `trend`, `roi_score`,
+  `conflict_score`, `matched_reason`, representative records, evidence,
+  linked assets/actions, Starfield handoff, River handoff and `proposal_only`
+  safety hints.
+- Updated `config/visualization/model_parameters.universe_state.yaml` to
+  register `MA-V117-S1P04` / `ACC-MA-V117-S1P04`, required topic fields,
+  `topic_classification_sort_weights`, `top_topic_limit: 10` and proposal-only
+  gates.
+- Added `validate:v1.1.7-stage1-phase4` to verify the model contract,
+  runtime implementation, panel, styles, records and changed-path boundary.
+- Registered status
+  `phase_1_4_topic_classification_detail_completed_pending_stage1_review`.
+
+No Stage 1 review, Stage 2 proposal editor, Search 2.0 runtime, Review
+workflow runtime, Data Map 2.0 runtime, raw/private data read, direct
+writeback, proposal write, agent apply, production build, local app install,
+browser screenshot, deploy or GitHub main upload was added.
+
+Machine-readable boundary summary: Topic Classification runtime detail only;
+ThemeDetailPanel is proposal_only; No direct writeback; No GitHub main upload
+before whole Stage 0-8 completion.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 1 Phase 1.3
+
+- Added `docs/architecture/level_asset_model.md` with the
+  `level_asset_model_v1_1_7_stage1_phase3` model contract for concrete
+  Level Asset details.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage1_phase3_tier_asset_acceptance.md`.
+- Added `apps/memory-atlas/src/components/AssetDetailPanel.tsx` and updated
+  `App.tsx` / `styles.css` so Home Overview renders Level Asset cards and an
+  `AssetDetailPanel` with `value_score`, `staleness_status`, theme, updated
+  time, evidence, linked actions/topics, recommended asset action and
+  `proposal_only` safety hints.
+- Updated `config/visualization/model_parameters.universe_state.yaml` to
+  register `MA-V117-S1P03` / `ACC-MA-V117-S1P03`, required asset fields,
+  `tier_asset_sort_weights`, `top_asset_limit: 7` and proposal-only gates.
+- Added `validate:v1.1.7-stage1-phase3` to verify the model contract,
+  runtime implementation, panel, styles, records and changed-path boundary.
+- Registered status
+  `phase_1_3_tier_asset_detail_completed_pending_stage1_review`.
+
+No Phase 1.4 topic classification model, proposal editor, raw/private data
+read, direct writeback, proposal write, agent apply, production build, local
+app install, browser screenshot, deploy or GitHub main upload was added.
+
+Machine-readable boundary summary: Level Asset runtime detail only;
+AssetDetailPanel is proposal_only; No direct writeback; No GitHub main upload
+before whole Stage 0-8 completion.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 1 Phase 1.2
+
+- Added `docs/architecture/next_action_model.md` with the
+  `next_action_model_v1_1_7_stage1_phase2` model contract for sortable
+  Next Action details.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage1_phase2_next_action_acceptance.md`.
+- Added `apps/memory-atlas/src/components/ActionDetailDrawer.tsx` and updated
+  `App.tsx` / `styles.css` so Home Overview renders Top 5 Next Action cards
+  and an Action Detail Drawer with `roi_score`, effort cost, `urgency`,
+  source, evidence, status, linked context, next step and `proposal_only`
+  safety hints.
+- Updated `config/visualization/model_parameters.universe_state.yaml` to
+  register `MA-V117-S1P02` / `ACC-MA-V117-S1P02`, required action fields,
+  `next_action_sort_weights`, `top_action_limit: 5` and proposal-only gates.
+- Added `validate:v1.1.7-stage1-phase2` to verify the model contract,
+  runtime implementation, drawer, styles, records and changed-path boundary.
+- Registered status
+  `phase_1_2_next_action_detail_completed_pending_stage1_review`.
+
+No Phase 1.3 tier asset model, Phase 1.4 topic classification model,
+proposal editor, raw/private data read, direct writeback, proposal write,
+agent apply, production build, local app install, browser screenshot, deploy or
+GitHub main upload was added.
+
+Machine-readable boundary summary: Next Action runtime detail only; Action
+Detail Drawer is proposal_only; No direct writeback; No GitHub main upload
+before whole Stage 0-8 completion.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 1 Phase 1
+
+- Updated `docs/architecture/universe_state_snapshot.md` with the v1.1.7
+  Stage 1 Phase 1 Universe State schema and consumer-map addendum.
+- Updated `config/visualization/model_parameters.universe_state.yaml` to
+  register `MA-V117-S1P01` / `ACC-MA-V117-S1P01`, required state fields,
+  required consumers and deferred later-phase work.
+- Updated `apps/memory-atlas/src/models/universeState.ts`,
+  `apps/memory-atlas/src/fixtures/universe_state.schema.json` and
+  `apps/memory-atlas/src/fixtures/universe_state.sample.json` so the
+  deterministic Universe State fixture exposes `data_map_2_0`,
+  `search_2_0` and `review_summary_iteration` consumer maps.
+- Added
+  `docs/acceptance/memory_atlas_v1_1_7_stage1_phase1_universe_state_acceptance.md`.
+- Added `validate:v1.1.7-stage1-phase1` to rerun the Universe State spike
+  validator, check proposal-only actions, privacy flags, sample/schema/model
+  alignment, records and changed-path boundaries.
+- Registered status
+  `phase_1_1_universe_state_schema_completed_pending_stage1_review`.
+
+No Phase 1.2 suggested-action UI, tier asset model, topic model, runtime UI,
+CSS, browser screenshot, production build, local app install, raw/private data
+read, direct writeback, proposal write, agent apply, deploy or GitHub main
+upload was added.
+
+Machine-readable boundary summary: No Phase 1.2 work; No raw/private data read;
+No direct writeback; No proposal write; No GitHub main upload before whole
+Stage 0-8 completion.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 0 Review
+
+- Added `docs/reviews/memory_atlas_v1_1_7_stage0_review.md`.
+- Added `validate:v1.1.7-stage0` to run Phase 0.1, Phase 0.2 and Phase 0.3
+  validators, verify the Stage 0 review artifact, confirm canonical remote /
+  sparse boundary and check governance records.
+- Registered `MA-V117-S0-REVIEW` / `ACC-MA-V117-S0-REVIEW` with status
+  `stage_0_review_passed_pending_stage1_no_github_main_upload`.
+
+No Stage 1 work, runtime UI implementation, screenshot, production build, local
+app install, Cloudflare deploy, Access policy change, raw/private data read,
+direct writeback, proposal write, agent apply or GitHub main upload was added.
+
+Machine-readable boundary summary: No Stage 1 work; No raw/private data read;
+No direct writeback; No proposal write; No GitHub main upload before whole
+Stage 0-8 completion.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 0 Phase 3
+
+- Added `docs/product/detail_visibility_contract.md` for the v1.1.7 Stage 0
+  Phase 0.3 detail visibility field contract.
+- Added `docs/acceptance/memory_atlas_v1_1_7_stage0_phase3_detail_visibility_acceptance.md`.
+- Added `validate:v1.1.7-stage0-phase3` to verify the suggested action, tier
+  asset and topic classification field contract, source/display/edit permission
+  columns, proposal-only boundary, fallback policy, package script and
+  governance records.
+- Registered `MA-V117-S0P03` / `ACC-MA-V117-S0P03` with status
+  `phase_0_3_detail_visibility_contract_completed_pending_stage0_review`.
+
+No runtime UI, CSS, data generation, Search 2.0, Review workflow, Data Map 2.0,
+Memory River, Memory Starfield, screenshot, production build, local app install,
+Cloudflare deploy, Access policy change, raw/private data read, direct
+writeback, proposal write, agent apply or GitHub main upload was added.
+
+Machine-readable boundary summary: No runtime UI; No raw/private data read; No
+direct writeback; No proposal write; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 0 Phase 2
+
+- Added `docs/product/memory_atlas_v1_1_7_stage0_phase2_usage_help_contract.md`.
+- Added `docs/acceptance/memory_atlas_v1_1_7_stage0_phase2_usage_help_acceptance.md`.
+- Added `docs/product/memory_atlas_usage_guide.md`.
+- Added `apps/memory-atlas/src/components/help/MemoryAtlasHelpPanel.tsx`.
+- Added `apps/memory-atlas/src/components/EmptyState.tsx` and
+  `apps/memory-atlas/src/components/ErrorState.tsx`.
+- Added `validate:v1.1.7-stage0-phase2` to verify the Help panel, 3-minute
+  usage path, empty snapshot state, no-filtered-results state, load error
+  state, WebGL fallback explanation, proposal-not-writable explanation,
+  contract/acceptance/guide and governance records.
+- Updated `App.tsx` to expose the Help entry, render empty/error states and
+  explain unsafe proposal writeback policy.
+- Updated `GalaxyScene.tsx` to use Chinese registry copy for WebGL fallback
+  recovery guidance.
+- Registered `MA-V117-S0P02` / `ACC-MA-V117-S0P02` with status
+  `phase_0_2_usage_help_completed_pending_stage0_review`.
+
+No Stage 0.3 detail visibility contract, Stage 1 schema, Search 2.0, Review
+workflow, Data Map 2.0, Memory River replacement, Memory Starfield replacement,
+browser screenshot, production build, local app install, Cloudflare deploy,
+Access policy change, raw/private data read, direct writeback, proposal write,
+agent apply or GitHub main upload was added.
+
+Machine-readable boundary summary: No raw/private data read; No direct
+writeback; No proposal write; No GitHub main upload.
+
+## Unreleased - Memory Atlas v1.1.7 Stage 0 Phase 1
+
+- Added `docs/product/memory_atlas_v1_1_7_stage0_phase1_chinese_display_contract.md`.
+- Added `docs/acceptance/memory_atlas_v1_1_7_stage0_phase1_chinese_display_acceptance.md`.
+- Added `apps/memory-atlas/src/i18n/types.ts` and `apps/memory-atlas/src/i18n/zh-CN.ts`.
+- Added `validate:v1.1.7-stage0-phase1` to scan selected UTF-8 text surfaces,
+  verify the Chinese UI copy registry, confirm runtime registry usage and check
+  Chinese font/layout tolerance.
+- Updated `App.tsx` to consume the registry for navigation, filters, load
+  states, overview, Inspector and proposal labels.
+- Updated `styles.css` with Chinese font fallback and long-text layout
+  tolerance.
+- Registered `MA-V117-S0P01` / `ACC-MA-V117-S0P01` with status
+  `phase_0_1_chinese_display_foundation_completed_pending_stage0_review`.
+
+No Help panel, empty/error workflow implementation, detail visibility workbench,
+browser screenshot, production build, local app install, Cloudflare deploy,
+Access policy change, raw/private data read, direct writeback, proposal write,
+agent apply or GitHub main upload was added.
+
+Machine-readable boundary summary: No raw/private data read; No direct
+writeback; No proposal write; No GitHub main upload.
+
 ## Unreleased - Memory Atlas v1.1.7 Pre Stage 0
 
 - Added `docs/product/memory_atlas_v1_1_7_gap_remediation_upgrade_contract.md`.

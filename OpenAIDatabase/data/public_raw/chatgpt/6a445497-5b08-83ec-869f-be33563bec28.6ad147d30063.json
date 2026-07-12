@@ -1,0 +1,42 @@
+{
+  "content_sha256": "6ad147d300632d11148b6bd274dd20af9bf9c2146ef6748c5dd75cda21a7f0d1",
+  "conversation_id": "6a445497-5b08-83ec-869f-be33563bec28",
+  "created_at": "2026-06-30T23:43:33Z",
+  "credential_boundary": "credentials_not_transcript",
+  "message_count": 4,
+  "messages": [
+    {
+      "created_at": "2026-06-30T23:43:48Z",
+      "message_id": "06c48135-7392-4d9d-bd62-6613b10e5513",
+      "role": "assistant",
+      "text": "I’ll first verify the current official OpenAI/ChatGPT Codex guidance so I don’t mix up Codex, desktop ChatGPT, CLI, or older Copilot features. Then I’ll turn it into a visual step-by-step tutorial, with video/source links if available and a practical screen-recording script plus prompt templates if not."
+    },
+    {
+      "created_at": "2026-06-30T23:43:18Z",
+      "message_id": "68713508-cccb-4bdf-91e4-71b434951694",
+      "role": "user",
+      "text": "你能不能给我找一些视频或者找一些教程,或者你来教我,但是你最好是用图片或者视频的方式来教我,我应该怎么用Codex的那个Capture Screen,就是说我录屏给他,然后他来帮我做的那个功能。"
+    },
+    {
+      "created_at": "2026-06-30T23:50:10Z",
+      "message_id": "dc961f1c-2266-4d57-b335-8008e71512e9",
+      "role": "assistant",
+      "text": "iturn366457image0\n\n结论：你说的“我录屏给它，然后它学会并帮我做”的功能，官方名称更接近 **Record & Replay**，不是单纯的 “Capture Screen”。最推荐的学习路线是：先看官方 Record & Replay 视频，再照下面的 7 步图文流程做一次最小练习。Record & Replay 目前官方说明是 **macOS 可用**，并且需要 **Computer Use 可用且已启用**；如果你只是想把当前窗口截图给 Codex 看，那是 **Appshots**。citeturn203344view0turn203344view2\n\n## 1. 先看这几个视频/教程\n\n| 优先级 | 资源 | 你应该看什么 |\n|---|---|---|\n| 1 | **Record & Replay in Codex** 官方 YouTube 视频 | 这是最贴近你说的“录一遍，让 Codex 学会”的演示。搜索结果显示它的说明是“Show Codex a workflow once. Reuse it as a skill.” citeturn592614search2 |\n| 2 | **Record & Replay 官方文档** | 按步骤教你从 Plugins 里 Record a skill、录制、停止、生成 skill、再 replay。citeturn203344view0 |\n| 3 | **Introducing Appshots in Codex** 官方 YouTube 视频 | 适合学“截图/抓当前窗口给 Codex 当上下文”，不是录制完整流程。citeturn794308search1 |\n| 4 | **Appshots 官方文档** | 学会按两个 Command 键把当前最前面的窗口发给 Codex。citeturn203344view2 |\n| 5 | **Computer Use in Codex** 官方 YouTube 视频 | 学会让 Codex 看屏幕、点按钮、操作应用。citeturn794308search12 |\n| 6 | **Computer Use 官方文档** | 配权限、装插件、理解 macOS/Windows 差异。citeturn203344view3 |\n\n## 2. 先分清三个很像的功能\n\n| 你想做什么 | 应该用哪个 | 一句话理解 |\n|---|---|---|\n| “我给它看当前窗口，让它根据画面帮我分析/写代码/修问题” | **Appshots** | 截当前最前面的窗口，附到 Codex thread。 |\n| “我操作一遍流程，让它以后重复执行” | **Record & Replay** | 录制你的操作流程，Codex 生成一个可复用的 skill。 |\n| “我让它直接去点浏览器/桌面 app/设置界面” | **Computer Use** | 给 Codex 眼睛和手，让它看屏幕并操作 GUI。 |\n\n你的描述“我录屏给它，然后它来帮我做”优先对应 **Record & Replay**。官方文档说它适合重复、依赖个人偏好、或者比写 prompt 更容易“做给它看”的流程，例如报销、订停车位、创建 issue、发布视频、下载周期性报告等。citeturn203344view0\n\n## 3. 使用前检查表\n\n| 检查项 | 结果 |\n|---|---|\n| 设备 | 最好是 Mac。Record & Replay 官方当前说明是 macOS 可用，且初始可用范围不包括 EEA、英国和瑞士。citeturn203344view0 |\n| Codex App | 安装 Codex 桌面 app。官方文档说明 Codex app 可在 macOS 和 Windows 使用，但不同功能有平台差异。citeturn661524view0 |\n| 账号 | ChatGPT Plus、Pro、Business、Edu、Enterprise 计划包含 Codex。citeturn661524view0 |\n| 插件 | 打开 Codex settings → Computer Use → Install。Computer Use 是 Record & Replay 的前置条件。citeturn203344view3turn203344view0 |\n| macOS 权限 | 允许 Screen Recording / Screen & System Audio Recording，以及 Accessibility。Screen Recording 让 Codex 看见目标 app，Accessibility 让它点击、输入、导航。citeturn203344view3turn203344view2 |\n| 隐私 | 录制前关闭密码、银行卡、私密聊天、客户数据等窗口。官方建议使用真实但非敏感的输入。citeturn203344view1 |\n\n## 4. 图文流程：Record & Replay 怎么用\n\n```text\n目标：教 Codex 学会一个重复流程\n例子：每次把某个文件上传到后台、填写标题、选择分类、提交\n```\n\n### Step 1：打开 Codex App\n\n```text\nCodex App\n└── 左侧栏\n    ├── Projects\n    ├── Threads\n    ├── Plugins  ← 先去这里\n    └── Settings\n```\n\n先确认你已经在 Codex App 里登录，并且 Computer Use 已安装。官方说明 Computer Use 可以让 Codex 看见并操作 macOS 或 Windows 的图形界面；macOS 需要 Screen Recording 和 Accessibility 权限。citeturn203344view3\n\n### Step 2：进入 Plugins\n\n```text\nCodex App\n└── Plugins\n    └── + 菜单\n        └── Record a skill\n```\n\n官方 Record & Replay 的启动路径是：打开 Codex app 的 Plugins，打开 “+” 菜单，选择 **Record a skill**。citeturn203344view0\n\n### Step 3：先告诉 Codex 你要录什么\n\n你可以直接填这段：\n\n```text\n我要录制一个可复用流程：把一个视频上传到后台，并按我的固定规则填写标题、描述、分类和发布设置。\n\n请你在录制时重点学习：\n1. 哪些字段每次都固定；\n2. 哪些字段每次需要我提供新值；\n3. 提交前如何检查是否成功；\n4. 哪些步骤需要人工确认。\n```\n\n这一步很关键。官方建议在录制前告诉 Codex 目标，以及以后可能变化的输入值，例如文件、issue、日期范围等。citeturn203344view1\n\n### Step 4：批准录制\n\n```text\nCodex 请求录制权限\n        ↓\n确认没有敏感内容\n        ↓\nApprove / Allow\n```\n\n当 Codex 请求录制你的操作时，准备好再批准。官方说明：Codex 会在你准备演示时请求权限，录制期间会观察完成流程所需的动作和窗口内容。citeturn203344view0\n\n### Step 5：你正常做一遍流程\n\n```text\n你来操作：\n打开目标网站/app\n→ 选择文件\n→ 填字段\n→ 选择选项\n→ 点击提交\n→ 检查成功页面/成功提示\n```\n\n这里不要边录边乱逛。官方建议录制要短、完整、聚焦；完成后立刻停止，不要继续做无关清理。citeturn203344view1\n\n### Step 6：停止录制，让 Codex 生成 Skill\n\n```text\n停止录制\n→ Codex 检查刚才的流程\n→ 生成 Skill\n→ Skill 里通常会写：\n   - 什么时候用\n   - 需要哪些输入\n   - 执行步骤\n   - 如何验证成功\n```\n\n官方说明：停止录制后，Codex 会检查捕获到的 workflow，并草拟一个 skill；这个 skill 会说明何时使用、需要什么输入、步骤是什么，以及怎么验证结果。citeturn203344view0\n\n### Step 7：新开一个 thread，让它 Replay\n\n你可以这样叫它：\n\n```text\n请使用刚才生成的上传视频 skill。\n\n这次的输入是：\n- 视频文件：[REDACTED_LOCAL_PATH]\n- 标题：Codex Record Replay 测试\n- 描述：这是一次测试上传\n- 分类：Tutorial\n- 发布状态：Private\n\n执行前先复述你的计划；涉及发布/提交/付款/删除/发邮件等动作时，必须先停下来让我确认。\n```\n\n官方说明：Replay 时，新开一个 thread，让 Codex 使用生成的 skill，并给它这次不同的值，比如要上传的文件、要创建的 issue、报告日期范围等。citeturn203344view1\n\n## 5. 如果你说的其实是“Capture Screen/截图给 Codex 看”\n\n那应该用 **Appshots**，流程更短：\n\n```text\n打开 Codex App\n→ 打开你想给 Codex 看的窗口\n→ 按两个 Command 键，或你自己设置的 Appshots 快捷键\n→ Codex 把当前最前面的窗口附到 thread\n→ 你问它：“根据这个窗口，帮我……”\n```\n\nAppshots 只捕获最前面的窗口，可以包含可见窗口图片，以及该窗口可用的文本；官方说明它适合分享 API 文档页、邮件/日历视图、图片编辑器/设计/预览窗口、错误信息、设置面板等。citeturn203344view2\n\n可直接用的 prompt：\n\n```text\n我刚刚用 Appshots 发给你当前窗口。\n请先描述你看到了什么，再判断我下一步应该怎么操作。\n不要直接执行破坏性操作；先给我 A/B/C 方案。\n```\n\n## 6. 第一次练习建议：不要从复杂任务开始\n\n建议你第一次用一个低风险任务练手：\n\n| 练习任务 | 为什么适合 |\n|---|---|\n| 打开一个测试网页，填写非敏感表单，然后不提交 | 安全、容易验证 |\n| 在本地 demo app 里复现一个 UI bug | 很适合 Computer Use |\n| 上传一个测试文件到测试后台 | 接近真实工作，但风险可控 |\n| 根据一个错误窗口让 Codex 帮你定位问题 | 适合 Appshots |\n\n不建议第一次就录这些：付款、发正式邮件、删文件、改生产环境、修改账号安全设置、客户数据录入。官方安全建议也强调要保持任务范围窄、对敏感流程保持在场、关闭不必要的敏感 app、对权限请求进行审查。citeturn254148view3\n\n## 7. 推荐的最小实战模板\n\n你可以照着这个练：\n\n```text\n任务：教 Codex 学会“从 Downloads 文件夹选择一个 CSV，上传到测试后台，并检查是否出现 Success”。\n\n录制前给 Codex 的说明：\n\n我要录制一个可复用 skill：上传 CSV 到测试后台。\n每次变化的输入：\n1. CSV 文件路径；\n2. 上传说明文字；\n3. 是否点击最终提交。\n\n固定规则：\n1. 只使用测试后台；\n2. 不处理真实客户数据；\n3. 点击最终 Submit 前必须请求我确认；\n4. 成功标准是页面出现 Success 或 Uploaded successfully。\n请在录制后生成一个清晰的 skill，并列出你认为以后需要我提供的参数。\n```\n\nReplay 时：\n\n```text\n请使用“上传 CSV 到测试后台”的 skill。\n本次输入：\n- CSV：[REDACTED_LOCAL_PATH]\n- 上传说明：Codex 测试\n- 最终提交：先不要点 Submit，停下来等我确认\n\n开始前先给我执行计划。\n```\n\n## 8. 常见问题快速排查\n\n| 问题 | 处理 |\n|---|---|\n| 找不到 Record & Replay | 先确认你在 macOS、Computer Use 可用且已启用；如果组织用 `requirements.toml` 管理 Codex，`computer_use = false` 会让 Record & Replay 不可用。citeturn203344view0 |\n| Codex 看不到窗口 | macOS 去 System Settings → Privacy & Security → Screen Recording / Accessibility，确认 Codex 或 Codex Computer Use 已允许。citeturn203344view2turn203344view3 |\n| Codex 能看不能点 | 多半是 Accessibility 没给。citeturn203344view3 |\n| Windows 上想用录制学习 | Computer Use 支持 Windows 的前台桌面操作，但 Record & Replay 官方当前写的是 macOS 可用；Windows 上不要默认期待“录一遍生成 skill”的完整体验。citeturn203344view0turn203344view3 |\n| 它操作错窗口 | 立刻停止任务。官方建议如果 Codex 开始和错误窗口交互，应取消任务。citeturn254148view3 |\n\n## 9. 最佳下一步\n\n按这个顺序做：先看 **Record & Replay in Codex** 官方视频；然后打开 Codex App → Settings → Computer Use → Install；确认权限；最后用“上传测试 CSV”这种低风险流程录一次。你的目标不是第一次就自动化复杂工作，而是先确认：能录、能生成 skill、能 replay、能在关键步骤停下来等你批准。"
+    },
+    {
+      "created_at": "2026-06-30T23:47:03Z",
+      "message_id": "df67d9e5-13f4-4bc3-b26c-97ba395c0114",
+      "role": "assistant",
+      "text": "I’ve found the key distinction: your “record my screen so it can do it later” use case is closer to Record & Replay, while Capture Screen/Appshots is more about giving visual context."
+    }
+  ],
+  "redact_for_public_backup": true,
+  "redaction_counts": {
+    "local_absolute_path": 2
+  },
+  "schema_version": "memory_atlas_public_raw_chatgpt.v1",
+  "source_id": "chatgpt",
+  "sync_mode": "official_export_fallback",
+  "title": "Codex Capture Screen 教程",
+  "updated_at": "2026-06-30T23:50:11Z"
+}

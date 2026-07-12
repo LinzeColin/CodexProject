@@ -1,0 +1,163 @@
+{
+  "schema_version": "memory_atlas_formula_what_if_defaults.v1_2_s07_p3",
+  "task_id": "MA-V12-S07P3",
+  "acceptance_id": "ACC-MA-V12-S07P3",
+  "status": "phase_s07_p3_formula_what_if_config_active_pending_s07_review",
+  "purpose_zh": "为 Personal Economic Proxy 提供 Formula What-if Simulator 的配置预览，支持查看不同权重下的 proxy 变化，但不直接写入 active formula config。",
+  "simulator_mode": "config_preview_only",
+  "active_config_write": false,
+  "proposal_required_before_apply": true,
+  "active_formula_config_path": "机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json",
+  "input_sources": [
+    "data/derived/economic_proxy/personal_economic_proxy.json",
+    "data/derived/information_roi/information_roi_gate.json"
+  ],
+  "output_path": "data/derived/economic_proxy/formula_what_if_preview.json",
+  "scope_boundary": {
+    "uses_internal_proxy_only": true,
+    "external_economic_database_dependency": false,
+    "external_economic_database_v2_interface": "reserved_not_implemented",
+    "precise_income_prediction": false,
+    "financial_advice": false,
+    "raw_mutation": false,
+    "runtime_ui": false,
+    "active_config_mutation": false
+  },
+  "parameters": {
+    "epsilon": 0.05,
+    "score_floor": 0,
+    "score_ceiling": 100,
+    "neutral_rework_score": 50,
+    "rework_penalty_scale": 0.35,
+    "default_weights": {
+      "time_saved_weight": 1.0,
+      "reuse_value_weight": 1.0,
+      "opportunity_value_weight": 1.0,
+      "skill_compounding_weight": 1.0,
+      "automation_alignment_weight": 1.0,
+      "rework_cost_weight": 1.0,
+      "low_value_loop_penalty_weight": 1.0
+    },
+    "adjustable_weight_bounds": {
+      "time_saved_weight": {
+        "min": 0.25,
+        "max": 2.0,
+        "step": 0.05,
+        "explanation_zh": "调整时间节省信号对 what-if 分数的影响。"
+      },
+      "reuse_value_weight": {
+        "min": 0.25,
+        "max": 2.0,
+        "step": 0.05,
+        "explanation_zh": "调整复用价值信号对 what-if 分数的影响。"
+      },
+      "opportunity_value_weight": {
+        "min": 0.25,
+        "max": 2.0,
+        "step": 0.05,
+        "explanation_zh": "调整候选机会信号对 what-if 分数的影响。"
+      },
+      "skill_compounding_weight": {
+        "min": 0.25,
+        "max": 2.0,
+        "step": 0.05,
+        "explanation_zh": "调整长期复利信号对 what-if 分数的影响。"
+      },
+      "automation_alignment_weight": {
+        "min": 0.25,
+        "max": 2.0,
+        "step": 0.05,
+        "explanation_zh": "调整自动化/增强比例信号对 what-if 分数的影响。"
+      },
+      "rework_cost_weight": {
+        "min": 0.25,
+        "max": 2.0,
+        "step": 0.05,
+        "explanation_zh": "调整返工成本信号对 what-if 分数的惩罚影响。"
+      },
+      "low_value_loop_penalty_weight": {
+        "min": 0.25,
+        "max": 2.0,
+        "step": 0.05,
+        "explanation_zh": "调整低价值循环惩罚对 what-if 分数的影响。"
+      }
+    }
+  },
+  "formulas": [
+    {
+      "formula_id": "FORM-MA-V12-S07P3-001",
+      "score_key": "formula_what_if_proxy_score",
+      "name_zh": "Formula What-if proxy 分",
+      "expression_zh": "What-if 分 = clamp(加权正向 proxy 分 - max(0, 返工成本 proxy - neutral_rework_score) * rework_cost_weight * low_value_loop_penalty_weight * rework_penalty_scale, score_floor, score_ceiling)",
+      "parameter_refs": [
+        "score_floor",
+        "score_ceiling",
+        "neutral_rework_score",
+        "rework_penalty_scale",
+        "default_weights",
+        "adjustable_weight_bounds"
+      ],
+      "interpretation_zh": "用于比较不同参数权重下的内部 proxy 方向，不是精确收入预测，也不是财务建议。"
+    },
+    {
+      "formula_id": "FORM-MA-V12-S07P3-002",
+      "score_key": "what_if_parameter_proposal",
+      "name_zh": "What-if 参数变更 proposal",
+      "expression_zh": "每个 scenario 只生成参数变更预览；active_config_write 必须为 false，proposal_required_before_apply 必须为 true。",
+      "parameter_refs": [
+        "default_weights",
+        "adjustable_weight_bounds"
+      ],
+      "interpretation_zh": "用户可以查看或配置权重，但参数变更不直接写入 active formula config。"
+    }
+  ],
+  "scenarios": [
+    {
+      "scenario_id": "baseline",
+      "name_zh": "基线权重",
+      "description_zh": "保持当前默认权重，用于和其他 what-if 场景比较。",
+      "weights": {}
+    },
+    {
+      "scenario_id": "time_saved_first",
+      "name_zh": "时间节省优先",
+      "description_zh": "提高时间节省权重，观察自动化和重复工作节省信号是否值得前置。",
+      "weights": {
+        "time_saved_weight": 1.35,
+        "automation_alignment_weight": 1.15,
+        "reuse_value_weight": 0.95,
+        "skill_compounding_weight": 0.9
+      }
+    },
+    {
+      "scenario_id": "reuse_asset_first",
+      "name_zh": "复用资产优先",
+      "description_zh": "提高复用价值和长期复利权重，观察模板、脚本、validator 和产品入口是否更值得沉淀。",
+      "weights": {
+        "reuse_value_weight": 1.4,
+        "skill_compounding_weight": 1.2,
+        "time_saved_weight": 0.95
+      }
+    },
+    {
+      "scenario_id": "long_term_compounding_first",
+      "name_zh": "长期复利优先",
+      "description_zh": "提高长期复利权重，观察跨时间重复出现的能力和工作流是否更值得固化。",
+      "weights": {
+        "skill_compounding_weight": 1.5,
+        "reuse_value_weight": 1.15,
+        "opportunity_value_weight": 1.05
+      }
+    },
+    {
+      "scenario_id": "rework_reduction_first",
+      "name_zh": "返工降低优先",
+      "description_zh": "提高返工成本和低价值循环惩罚，观察边界收口、减少 scope creep 的优先级。",
+      "weights": {
+        "rework_cost_weight": 1.35,
+        "low_value_loop_penalty_weight": 1.25,
+        "time_saved_weight": 1.1
+      }
+    }
+  ]
+}

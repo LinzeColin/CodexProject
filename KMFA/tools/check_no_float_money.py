@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -19,6 +20,43 @@ DEFAULT_EXCLUDES = {
     "__pycache__",
 }
 NON_MONEY_FLOAT_DICT_KEYS = {"derived_percent"}
+MONEY_CONTEXT_TOKENS = {
+    "amount",
+    "balance",
+    "cash",
+    "cents",
+    "cost",
+    "expense",
+    "fee",
+    "fund",
+    "loan",
+    "money",
+    "payable",
+    "price",
+    "receivable",
+    "revenue",
+    "salary",
+    "tax",
+    "wage",
+    "yuan",
+}
+NON_MONEY_CONTEXT_TOKENS = {
+    "confidence",
+    "duration",
+    "height",
+    "interval",
+    "mtime",
+    "opacity",
+    "percent",
+    "probability",
+    "ratio",
+    "score",
+    "seconds",
+    "timestamp",
+    "timeout",
+    "weight",
+    "width",
+}
 
 
 @dataclass(frozen=True)
@@ -52,10 +90,76 @@ def _call_name(node: ast.Call) -> str:
 
 
 class FloatMoneyVisitor(ast.NodeVisitor):
-    def __init__(self, path: Path) -> None:
+    def __init__(self, path: Path, tree: ast.AST) -> None:
         self.path = path
         self.findings: list[FloatFinding] = []
         self.non_money_nodes: set[int] = set()
+        self.parents: dict[int, ast.AST] = {}
+        for parent in ast.walk(tree):
+            for child in ast.iter_child_nodes(parent):
+                self.parents[id(child)] = parent
+
+    @staticmethod
+    def _tokens(value: str) -> set[str]:
+        expanded = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", value)
+        return {part.lower() for part in re.findall(r"[A-Za-z]+", expanded)}
+
+    @classmethod
+    def _binding_tokens(cls, node: ast.AST) -> set[str]:
+        tokens: set[str] = set()
+        if isinstance(node, ast.Name):
+            tokens.update(cls._tokens(node.id))
+        elif isinstance(node, ast.Attribute):
+            tokens.update(cls._tokens(node.attr))
+        elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            tokens.update(cls._tokens(node.name))
+        elif isinstance(node, ast.arg):
+            tokens.update(cls._tokens(node.arg))
+        elif isinstance(node, ast.keyword) and node.arg:
+            tokens.update(cls._tokens(node.arg))
+        elif isinstance(node, ast.Constant) and isinstance(node.value, str):
+            tokens.update(cls._tokens(node.value))
+        return tokens
+
+    def _context_tokens(self, node: ast.AST) -> tuple[set[str], set[str]]:
+        local: set[str] = self._binding_tokens(node)
+        if isinstance(node, ast.AnnAssign):
+            for child in ast.walk(node.target):
+                local.update(self._binding_tokens(child))
+        outer: set[str] = set()
+        current: ast.AST | None = node
+        while current is not None:
+            parent = self.parents.get(id(current))
+            if parent is None:
+                break
+            if isinstance(parent, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                outer.update(self._binding_tokens(parent))
+            elif isinstance(parent, ast.Assign):
+                for target in parent.targets:
+                    for child in ast.walk(target):
+                        local.update(self._binding_tokens(child))
+            elif isinstance(parent, ast.AnnAssign):
+                for child in ast.walk(parent.target):
+                    local.update(self._binding_tokens(child))
+            elif isinstance(parent, ast.keyword):
+                local.update(self._binding_tokens(parent))
+            elif isinstance(parent, ast.Call):
+                for child in ast.walk(parent):
+                    if isinstance(child, (ast.Name, ast.Attribute, ast.keyword)):
+                        local.update(self._binding_tokens(child))
+            elif isinstance(parent, ast.Dict):
+                for key, value in zip(parent.keys, parent.values):
+                    if value is current and key is not None:
+                        local.update(self._binding_tokens(key))
+                        break
+            current = parent
+        return local, outer
+
+    def _is_money_context(self, node: ast.AST) -> bool:
+        local, outer = self._context_tokens(node)
+        if local & NON_MONEY_CONTEXT_TOKENS:
+            return False
+        return bool((local | outer) & MONEY_CONTEXT_TOKENS)
 
     def add(self, node: ast.AST, message: str) -> None:
         self.findings.append(
@@ -68,7 +172,11 @@ class FloatMoneyVisitor(ast.NodeVisitor):
         )
 
     def visit_Constant(self, node: ast.Constant) -> None:
-        if isinstance(node.value, float) and id(node) not in self.non_money_nodes:
+        if (
+            isinstance(node.value, float)
+            and id(node) not in self.non_money_nodes
+            and self._is_money_context(node)
+        ):
             self.add(node, "float literal is forbidden for KMFA business money")
         self.generic_visit(node)
 
@@ -79,17 +187,17 @@ class FloatMoneyVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
     def visit_Call(self, node: ast.Call) -> None:
-        if _call_name(node) == "float":
+        if _call_name(node) == "float" and self._is_money_context(node):
             self.add(node, "float() conversion is forbidden for KMFA business money")
         self.generic_visit(node)
 
     def visit_arg(self, node: ast.arg) -> None:
-        if _is_float_annotation(node.annotation):
+        if _is_float_annotation(node.annotation) and self._is_money_context(node):
             self.add(node, "float annotation is forbidden for KMFA business money")
         self.generic_visit(node)
 
     def visit_AnnAssign(self, node: ast.AnnAssign) -> None:
-        if _is_float_annotation(node.annotation):
+        if _is_float_annotation(node.annotation) and self._is_money_context(node):
             self.add(node, "float annotation is forbidden for KMFA business money")
         self.generic_visit(node)
 
@@ -115,7 +223,7 @@ def scan_file(path: Path) -> list[FloatFinding]:
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
     except SyntaxError as exc:
         return [FloatFinding(path, exc.lineno or 0, exc.offset or 0, f"syntax error blocks float scan: {exc.msg}")]
-    visitor = FloatMoneyVisitor(path)
+    visitor = FloatMoneyVisitor(path, tree)
     visitor.visit(tree)
     return visitor.findings
 

@@ -1,0 +1,65 @@
+{
+  "task_name": "v1.2 四线14Stage升级",
+  "stage_count": 14,
+  "single_integrated_taskpack": true,
+  "four_lines": [
+    "Anthropic化行为智能",
+    "信息ROI_全中文_多维可视化",
+    "ChatGPT_Codex_后续其他agent自动同步备份进GitHub",
+    "UIUX多模态交互_参数公式模型治理_维护简化"
+  ],
+  "raw_public_authorization": {
+    "chatgpt": true,
+    "codex": true,
+    "future_other_agents": true,
+    "plaintext_public_github_allowed": true,
+    "raw_readonly": true,
+    "append_only": true,
+    "no_overwrite": true,
+    "no_delete_or_modify_existing_raw": true
+  },
+  "credentials_exclusion": [
+    "cookies",
+    "session_tokens",
+    "passwords",
+    "api_keys",
+    "private_keys",
+    "oauth_tokens",
+    "browser_credential_store"
+  ],
+  "source_registry_extension": {
+    "supports_chatgpt": true,
+    "supports_codex": true,
+    "supports_future_other_agents": true,
+    "required_fields": [
+      "source_id",
+      "source_type",
+      "agent_name",
+      "connector_type",
+      "raw_root",
+      "public_backup_mode",
+      "transcript_schema",
+      "credential_boundary",
+      "sync_frequency",
+      "derived_outputs"
+    ]
+  },
+  "external_economics": "defer_to_v2",
+  "stage_execution": "one_phase_per_run_stage_review_after_all_phases_final_upload_after_overall_review",
+  "github_main_upload": "after_overall_review_and_fix_only",
+  "app_entry_reinstall": "after_overall_review_and_github_main_sync_only",
+  "language_policy": "human_facing_files_and_ui_default_zh_CN",
+  "not_codex_tasks": [
+    "task_entropy_score",
+    "codex_delegation_contract",
+    "current_stage_context_pack_generation"
+  ],
+  "rejected_surprises": [
+    "public_repository_self_check",
+    "sync_failure_story",
+    "memory_atlas_quality_score",
+    "raw_public_consent_stamp",
+    "insight_conflict_resolver",
+    "atlas_review_board"
+  ]
+}

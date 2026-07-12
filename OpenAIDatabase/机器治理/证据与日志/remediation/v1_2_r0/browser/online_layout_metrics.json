@@ -1,0 +1,317 @@
+{
+  "captured_at": "2026-07-10T07:45:25.819Z",
+  "live_url": "https://memoryatlas.linzezhang.com/",
+  "live_data": {
+    "snapshot_generated_at": "2026-07-10T16:52:07+10:00",
+    "observed_dom": {
+      "memories": 278,
+      "nodes": 340,
+      "edges": 1771,
+      "activities": 201
+    },
+    "assets": [
+      {
+        "kind": "script",
+        "name": "index-Boo-hAit.js",
+        "url": "https://memoryatlas.linzezhang.com/assets/index-Boo-hAit.js"
+      },
+      {
+        "kind": "stylesheet",
+        "name": "index-SpnzXgRc.css",
+        "url": "https://memoryatlas.linzezhang.com/assets/index-SpnzXgRc.css"
+      },
+      {
+        "kind": "other",
+        "name": "memory_atlas.json",
+        "url": "https://memoryatlas.linzezhang.com/memory_atlas.json?snapshot=1783669339569"
+      },
+      {
+        "kind": "other",
+        "name": "__memory_atlas_runtime_state",
+        "url": "https://memoryatlas.linzezhang.com/__memory_atlas_runtime_state"
+      },
+      {
+        "kind": "other",
+        "name": "rum",
+        "url": "https://memoryatlas.linzezhang.com/cdn-cgi/rum?"
+      },
+      {
+        "kind": "other",
+        "name": "__memory_atlas_heartbeat",
+        "url": "https://memoryatlas.linzezhang.com/__memory_atlas_heartbeat"
+      }
+    ]
+  },
+  "viewports": {
+    "1470x661": {
+      "doc": {
+        "clientHeight": 661,
+        "clientWidth": 1470,
+        "scrollHeight": 661,
+        "scrollWidth": 1470
+      },
+      "mainItems": [
+        {
+          "aria": "",
+          "cls": "topbar",
+          "height": 55.5,
+          "i": 0,
+          "overflowY": "visible",
+          "role": "",
+          "scrollHeight": 56,
+          "tag": "HEADER",
+          "text": "本地记忆 / 使用行为 / 后续动作记忆总览记忆278节点340连接1,771活动201使用说明",
+          "width": 1194,
+          "x": 262,
+          "y": 14
+        },
+        {
+          "aria": "星图筛选器",
+          "cls": "controls",
+          "height": 36,
+          "i": 1,
+          "overflowY": "visible",
+          "role": "",
+          "scrollHeight": 36,
+          "tag": "SECTION",
+          "text": "分析对象总数据源ChatGPTCodex层级全部核心画像临时一般分类全部answering_rulecodex_agent_metadatacodex_deve",
+          "width": 1194,
+          "x": 262,
+          "y": 77.5
+        },
+        {
+          "aria": "当前交互焦点",
+          "cls": "interaction-lens",
+          "height": 44.5,
+          "i": 2,
+          "overflowY": "visible",
+          "role": "",
+          "scrollHeight": 43,
+          "tag": "SECTION",
+          "text": "记忆总览回答规则：长期记忆库 / RAG先于执行核心画像 / 回答规则 / 2026-06-071/301聚焦主题重置筛选宇宙状态（Universe State",
+          "width": 1194,
+          "x": 262,
+          "y": 121.5
+        },
+        {
+          "aria": "Memory Atlas 命令面板",
+          "cls": "command-palette",
+          "height": 26,
+          "i": 3,
+          "overflowY": "visible",
+          "role": "",
+          "scrollHeight": 361,
+          "tag": "SECTION",
+          "text": "S12 P1命令面板6 个采纳命令同步 ChatGPT278 条 ChatGPT/Memory Atlas 节点可复核同步 Codex23 条 Codex 节点",
+          "width": 1194,
+          "x": 262,
+          "y": 174
+        },
+        {
+          "aria": "",
+          "cls": "content-grid wide-view",
+          "height": 465,
+          "i": 4,
+          "overflowY": "hidden",
+          "role": "",
+          "scrollHeight": 465,
+          "tag": "DIV",
+          "text": "记忆总览 / 宇宙状态（Universe State） / 下一步行动打开后先判断当前认知天气、主题趋势、机会、风险和建议动作301 条筛选记忆 · 默认入口上",
+          "width": 1194,
+          "x": 262,
+          "y": 182
+        }
+      ],
+      "overlaps": [
+        {
+          "a": 3,
+          "area": 21492,
+          "b": 4,
+          "height": 18,
+          "width": 1194
+        }
+      ],
+      "viewport": {
+        "height": 661,
+        "width": 1470
+      }
+    },
+    "1440x900": {
+      "doc": {
+        "clientHeight": 900,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "scrollWidth": 1440
+      },
+      "mainItems": [
+        {
+          "aria": "",
+          "cls": "topbar",
+          "height": 55.5,
+          "i": 0,
+          "overflowY": "visible",
+          "scrollHeight": 56,
+          "tag": "HEADER",
+          "text": "本地记忆 / 使用行为 / 后续动作记忆总览记忆278节点340连接1,771活动201使用说明",
+          "width": 1164,
+          "x": 262,
+          "y": 14
+        },
+        {
+          "aria": "星图筛选器",
+          "cls": "controls",
+          "height": 36,
+          "i": 1,
+          "overflowY": "visible",
+          "scrollHeight": 36,
+          "tag": "SECTION",
+          "text": "分析对象总数据源ChatGPTCodex层级全部核心画像临时一般分类全部answering_rulecodex_agen",
+          "width": 1164,
+          "x": 262,
+          "y": 77.5
+        },
+        {
+          "aria": "当前交互焦点",
+          "cls": "interaction-lens",
+          "height": 44.5,
+          "i": 2,
+          "overflowY": "visible",
+          "scrollHeight": 43,
+          "tag": "SECTION",
+          "text": "记忆总览回答规则：长期记忆库 / RAG先于执行核心画像 / 回答规则 / 2026-06-071/301聚焦主题重置筛",
+          "width": 1164,
+          "x": 262,
+          "y": 121.5
+        },
+        {
+          "aria": "Memory Atlas 命令面板",
+          "cls": "command-palette",
+          "height": 26,
+          "i": 3,
+          "overflowY": "visible",
+          "scrollHeight": 380,
+          "tag": "SECTION",
+          "text": "S12 P1命令面板6 个采纳命令同步 ChatGPT278 条 ChatGPT/Memory Atlas 节点可复核同",
+          "width": 1164,
+          "x": 262,
+          "y": 174
+        },
+        {
+          "aria": "",
+          "cls": "content-grid wide-view",
+          "height": 704,
+          "i": 4,
+          "overflowY": "hidden",
+          "scrollHeight": 704,
+          "tag": "DIV",
+          "text": "记忆总览 / 宇宙状态（Universe State） / 下一步行动打开后先判断当前认知天气、主题趋势、机会、风险和建",
+          "width": 1164,
+          "x": 262,
+          "y": 182
+        }
+      ],
+      "overlaps": [
+        {
+          "a": 3,
+          "area": 20952,
+          "b": 4,
+          "height": 18,
+          "width": 1164
+        }
+      ],
+      "viewport": {
+        "height": 900,
+        "width": 1440
+      }
+    },
+    "390x844": {
+      "doc": {
+        "clientHeight": 844,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "scrollWidth": 390
+      },
+      "mainItems": [
+        {
+          "aria": "",
+          "cls": "topbar",
+          "height": 166.3984375,
+          "i": 0,
+          "overflowY": "visible",
+          "scrollHeight": 166,
+          "tag": "HEADER",
+          "text": "本地记忆 / 使用行为 / 后续动作记忆总览记忆278节点340连接1,771活动201使用说明",
+          "width": 362,
+          "x": 14,
+          "y": 99
+        },
+        {
+          "aria": "星图筛选器",
+          "cls": "controls",
+          "height": 124,
+          "i": 1,
+          "overflowY": "visible",
+          "scrollHeight": 124,
+          "tag": "SECTION",
+          "text": "分析对象总数据源ChatGPTCodex层级全部核心画像临时一般分类全部answering_rulecodex_agen",
+          "width": 362,
+          "x": 14,
+          "y": 273.3984375
+        },
+        {
+          "aria": "当前交互焦点",
+          "cls": "interaction-lens",
+          "height": 117.5,
+          "i": 2,
+          "overflowY": "visible",
+          "scrollHeight": 116,
+          "tag": "SECTION",
+          "text": "记忆总览回答规则：长期记忆库 / RAG先于执行核心画像 / 回答规则 / 2026-06-071/301聚焦主题重置筛",
+          "width": 362,
+          "x": 14,
+          "y": 405.3984375
+        },
+        {
+          "aria": "Memory Atlas 命令面板",
+          "cls": "command-palette",
+          "height": 26,
+          "i": 3,
+          "overflowY": "visible",
+          "scrollHeight": 891,
+          "tag": "SECTION",
+          "text": "S12 P1命令面板6 个采纳命令同步 ChatGPT278 条 ChatGPT/Memory Atlas 节点可复核同",
+          "width": 362,
+          "x": 14,
+          "y": 530.8984375
+        },
+        {
+          "aria": "",
+          "cls": "content-grid wide-view",
+          "height": 321.1015625,
+          "i": 4,
+          "overflowY": "hidden",
+          "scrollHeight": 334,
+          "tag": "DIV",
+          "text": "记忆总览 / 宇宙状态（Universe State） / 下一步行动打开后先判断当前认知天气、主题趋势、机会、风险和建",
+          "width": 362,
+          "x": 14,
+          "y": 538.8984375
+        }
+      ],
+      "overlaps": [
+        {
+          "a": 3,
+          "area": 6516,
+          "b": 4,
+          "height": 18,
+          "width": 362
+        }
+      ],
+      "viewport": {
+        "height": 844,
+        "width": 390
+      }
+    }
+  },
+  "finding": "command-palette has 26px client height with 361-891px scrollHeight and overlaps content-grid in every tested viewport"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": "cloudflare_public_surface.v1",
+  "project_id": "serenity-alipay",
+  "compatibility_level": "L2",
+  "surface_type": "dry_run_public_cockpit",
+  "data_classification": "illustrative_redacted_only",
+  "data_sources": [],
+  "private_data_allowed_in_dist": false,
+  "external_actions_enabled": false,
+  "mail_enabled": false,
+  "broker_enabled": false,
+  "scheduler_enabled": false
+}

@@ -1,0 +1,23 @@
+project_id: KMFA
+skill_id: kmfa-dingtalk-attendance-skill
+automation_name: 每日早晚钉钉考勤检查
+timezone: Asia/Shanghai
+management_report:
+  title_template: 开明考勤管理报告｜晨报/晚报｜YYYY-MM-DD HH:mm｜北京时间
+  sections:
+    - 一、总体情况
+    - 二、今日异常人员
+    - 三、建议动作
+    - 四、系统运行状态
+  forbidden_section_titles:
+    - 关键人员风险
+  private_archive_only: true
+hr_report:
+  title_template: 开明考勤 HR 报告｜晨报/晚报｜YYYY-MM-DD HH:mm｜北京时间
+  sections:
+    - 一、异常明细
+    - 二、连续异常人员
+    - 三、数据质量与系统运行状态
+  private_archive_only: true
+morning_absence_policy: 待确认异常
+public_repo_report_body_allowed: false

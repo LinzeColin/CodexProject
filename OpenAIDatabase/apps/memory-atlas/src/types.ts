@@ -77,6 +77,165 @@ export interface AtlasMetric {
   values: Record<string, number>;
 }
 
+export interface BehaviorEvidenceRef {
+  ref_id: string;
+  ref_type?: string;
+  source_id?: string;
+  evidence_level?: string;
+  path?: string;
+  reason?: string;
+}
+
+export interface VisualFacetEvent {
+  readonly event_id: string;
+  readonly occurred_at: string;
+  readonly source_id: string;
+  readonly project: string;
+  readonly task_type: string;
+  readonly topic: string;
+  readonly intent: string;
+  readonly friction: readonly string[];
+  readonly value_signal: readonly string[];
+  readonly evidence_refs: readonly BehaviorEvidenceRef[];
+}
+
+export interface VisualFacetFilterOptions {
+  readonly source: readonly string[];
+  readonly project: readonly string[];
+  readonly task: readonly string[];
+}
+
+export interface VisualWorkflow {
+  readonly id: string;
+  readonly family: string;
+  readonly title_zh: string;
+  readonly insight_header_zh: string;
+  readonly human_question_zh: string;
+  readonly action_value_zh: string;
+  readonly visual_roi_gate_pass: boolean;
+  readonly p0_included: boolean;
+}
+
+export interface VisualWorkflowRegistry {
+  readonly schema_version: string;
+  readonly p0_visual_count: number;
+  readonly filter_dimensions: readonly string[];
+  readonly visuals: readonly VisualWorkflow[];
+  readonly excluded_candidates: readonly {
+    id: string;
+    title_zh: string;
+    reason_zh: string;
+    visual_roi_gate_pass: boolean;
+    p0_included: boolean;
+  }[];
+}
+
+export interface FormulaWhatIfPreview {
+  readonly schema_version: string;
+  readonly simulator_mode: string;
+  readonly base_score: number;
+  readonly summary_zh: string;
+  readonly default_weights: Readonly<Record<string, number>>;
+  readonly adjustable_weight_bounds: Readonly<Record<string, { min: number; max: number; step: number }>>;
+  readonly baseline_signals: Readonly<Record<string, number>>;
+  readonly rework_score: number;
+  readonly score_floor: number;
+  readonly score_ceiling: number;
+  readonly neutral_rework_score: number;
+  readonly rework_penalty_scale: number;
+  readonly formula_source: string;
+  readonly scenarios: readonly {
+    scenario_id: string;
+    name_zh: string;
+    description_zh: string;
+    weighted_proxy_score: number;
+    score_delta_vs_baseline: number;
+    adjustable_weights: Readonly<Record<string, number>>;
+    formula_source: string;
+  }[];
+  readonly safety: {
+    active_config_write: false;
+    proposal_required_before_apply: true;
+    raw_mutation: false;
+    financial_advice: false;
+    precise_income_prediction: false;
+  };
+}
+
+export interface BehaviorClusterSummary {
+  cluster_id: string;
+  cluster_type: string;
+  label_zh: string;
+  summary_zh: string;
+  event_count: number;
+  evidence_refs: BehaviorEvidenceRef[];
+  representative_event_ids?: string[];
+  filter_dimensions?: Record<string, unknown>;
+}
+
+export interface LowValueLoopSummary {
+  loop_id: string;
+  loop_type: string;
+  label_zh: string;
+  summary_zh: string;
+  score: number;
+  event_count: number;
+  evidence_refs: BehaviorEvidenceRef[];
+  decision_debt?: {
+    debt_id?: string;
+    decision_area?: string;
+    suggested_closure_question?: string;
+    status?: string;
+  };
+  action_half_life_days?: number;
+  action_half_life_note?: string;
+}
+
+export interface OpportunitySummary {
+  opportunity_id: string;
+  opportunity_type: string;
+  label_zh: string;
+  summary_zh: string;
+  score: number;
+  confidence?: string;
+  next_step_zh: string;
+  opportunity_half_life_days?: number;
+  defer_reason_zh?: string;
+  evidence_refs: BehaviorEvidenceRef[];
+  why_not_now_card?: {
+    card_id?: string;
+    reason_zh?: string;
+    defer_until_signal_zh?: string;
+    not_pressure_list?: boolean;
+  };
+}
+
+export interface BehaviorIntelligenceSummary {
+  schema_version: string;
+  stage: "S06" | string;
+  status: string;
+  task_ids: string[];
+  acceptance_ids: string[];
+  source_files?: Record<string, string>;
+  counts: {
+    topic_clusters: number;
+    hierarchy_clusters: number;
+    clusters: number;
+    low_value_loops: number;
+    decision_debt: number;
+    action_half_life: number;
+    opportunities: number;
+    defer_cards: number;
+  };
+  clusters: BehaviorClusterSummary[];
+  facet_event_count?: number;
+  facet_events?: VisualFacetEvent[];
+  facet_filter_options?: VisualFacetFilterOptions;
+  low_value_loops: LowValueLoopSummary[];
+  opportunities: OpportunitySummary[];
+  phase_boundary?: Record<string, unknown>;
+}
+
 export interface MemoryAtlas {
   schema_version: string;
   overview: {
@@ -150,6 +309,9 @@ export interface MemoryAtlas {
   };
   metrics: AtlasMetric[];
   data_sources?: DataSourceSummary[];
+  behavior_intelligence?: BehaviorIntelligenceSummary;
+  visual_workflows?: VisualWorkflowRegistry;
+  formula_what_if?: FormulaWhatIfPreview;
   agent_recommendations?: AgentRecommendations;
 }
 

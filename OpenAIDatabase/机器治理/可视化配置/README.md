@@ -1,0 +1,128 @@
+# 可视化配置
+
+用于放置 human question map、visual ROI gate、多维图谱和图表绑定行动价值的配置。
+
+当前 S11 Review 已完成。任务 ID 为 `MA-V12-S11-REVIEW`，验收 ID 为
+`ACC-MA-V12-S11-REVIEW`，validator 为 `validate:v1.2-s11-review`，状态为
+`stage_s11_review_passed_pending_s12_no_github_main_upload`。复审确认 S11 P1、S11 P2、
+S11 P3 和 S11 P4 的 P0 图谱集合满足中文问题和行动说明、Visual ROI Gate、
+`source/time/project/task` 过滤，以及不是静态装饰图的要求。下一步是 S12 P1。
+
+历史复验兼容记录：当前 S11 P4 已完成。Human Question Map 配置已写入
+`机器治理/可视化配置/human_question_map.v1_2_s11_p4.json`，运行时首页已把
+`cluster_tree`、`bubble_map`、`topic_cluster_explorer`、`task_treemap`、
+`automation_vs_augmentation`、`roi_scatter`、`opportunity_radar`、
+`agent_decision_sankey`、`friction_heatmap`、`latent_radar`、`evidence_timeline`
+和 `formula_explorer` 统一绑定到中文 human question、action value 和 Visual ROI Gate。
+下一步是 S11 Review。
+
+历史复验兼容记录：S11 P3 已完成。Workflow/latent/governance visuals 配置已写入
+`机器治理/可视化配置/workflow_latent_governance_visuals.v1_2_s11_p3.json`，运行时首页已提供
+`agent_decision_sankey`、`friction_heatmap`、`latent_radar`、`evidence_timeline` 和
+`formula_explorer`，并跟随 `source/time/project/task` 过滤。
+
+历史复验兼容记录：S11 P2 已完成。Economic-like visuals 配置已写入
+`机器治理/可视化配置/economic_like_visuals.v1_2_s11_p2.json`，运行时首页已提供
+`task_treemap`、`automation_vs_augmentation`、`roi_scatter` 和 `opportunity_radar`，
+并跟随 `source/time/project/task` 过滤。
+
+历史复验兼容记录：S11 P1 已完成。Clio-like visuals 配置已写入
+`机器治理/可视化配置/clio_like_visuals.v1_2_s11_p1.json`，运行时首页已提供
+`cluster_tree`、`bubble_map` 和 `topic_cluster_explorer`，并跟随
+`source/time/project/task` 过滤。
+
+Visual ROI Gate 配置已写入
+`机器治理/可视化配置/visual_roi_gate.v1_2_s07_p2.json`，并由
+`data/derived/information_roi/information_roi_gate.json` 生成可审计 gate 输出。
+S07 P3 没有实现运行时 UI，仅通过
+`data/derived/economic_proxy/formula_what_if_preview.json` 提供 Formula What-if
+配置预览。S07 Review 确认 Visual ROI Gate 与 Formula What-if 都是轻量治理入口，
+没有引入运行时 UI scope 膨胀。S08 P1 只生成 Codex/Agent 协作质量报告，不新增
+visual config，不修改运行时 UI，也不创建复杂 Delegation Contract UI。S08 P2 定义
+Agent 授权边界，输出 `data/derived/agent_collaboration/agent_authorization_boundary_report.json`，
+但不新增 visual config，不修改运行时 UI，也不创建复杂 Delegation Contract UI。S08 P3 生成
+`data/derived/agent_collaboration/stage_flight_recorder.json`，只记录轻量运行证据，不新增
+visual config，不修改运行时 UI。S08 Review 已复审 S08 P1/P2/P3，不新增 visual config，
+不修改运行时 UI，不创建复杂 Delegation Contract UI。S11 P4 只新增
+Human Question Map，不实现 S11 Review 完成态。
+
+S11 Review 任务 ID：`MA-V12-S11-REVIEW`。
+
+S11 Review 验收 ID：`ACC-MA-V12-S11-REVIEW`。
+
+S11 Review Validator：`validate:v1.2-s11-review`。
+
+历史复验兼容记录：S11 P4 任务 ID：`MA-V12-S11P4`。验收 ID：
+`ACC-MA-V12-S11P4`。Validator：`validate:v1.2-s11-p4`。
+
+## S11 P4 Human Question Map
+
+S11 P4 当前图谱集合覆盖 S11 P1-P3 的 12 张 P0 图谱。每个图必须有中文 insight
+header、human question、action value，并声明 `visual_roi_gate_pass=true`、
+`p0_included=true` 和 `static_decoration=false`。Visual ROI Gate 不通过的候选不能进入 P0。
+
+## S11 P3 Workflow/latent/governance Visuals
+
+S11 P3 当前图谱集合：
+
+- `agent_decision_sankey`
+- `friction_heatmap`
+- `latent_radar`
+- `evidence_timeline`
+- `formula_explorer`
+
+每个图必须有中文 insight header、human question、action value，并声明
+`visual_roi_gate_pass=true` 和 `static_decoration=false`。图谱跟随
+`source/time/project/task` 过滤。
+
+## S11 P2 Economic-like Visuals
+
+S11 P2 当前图谱集合：
+
+- `task_treemap`
+- `automation_vs_augmentation`
+- `roi_scatter`
+- `opportunity_radar`
+
+每个图必须有中文 insight header、human question、action value，并声明
+`visual_roi_gate_pass=true` 和 `static_decoration=false`。图谱跟随
+`source/time/project/task` 过滤。
+
+## S11 P1 Clio-like Visuals
+
+S11 P1 当前图谱集合：
+
+- `cluster_tree`
+- `bubble_map`
+- `topic_cluster_explorer`
+
+每个图必须有中文 insight header、human question、action value，并声明
+`visual_roi_gate_pass=true` 和 `static_decoration=false`。图谱跟随
+`source/time/project/task` 过滤。
+
+## S07 P2 Visual ROI Gate
+
+Visual ROI Gate 固定 P0 图表准入规则：没有决策价值的图表不进 P0。每个 P0 visual
+必须有：
+
+- human question
+- action
+- evidence refs
+- information ROI score
+- `visual_roi_gate_pass=true`
+
+当前 P0 visual 包含 `cluster_tree`、`bubble_map`、`task_treemap`、
+`automation_augmentation`、`roi_scatter`、`agent_decision_sankey`、
+`friction_heatmap`、`latent_radar`、`evidence_timeline` 和 `formula_explorer`。
+
+被排除示例包括 `decorative_word_cloud` 和 `raw_schema_table`，它们不能进入 P0。
+
+## 边界
+
+- 不接入外部经济数据库。
+- 不是精确收入预测。
+- Formula What-if 仅为配置预览。
+- 不修改 raw。
+- No GitHub main upload in this phase。
+
+下一步是 S11 P4。

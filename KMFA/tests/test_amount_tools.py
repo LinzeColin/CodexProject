@@ -46,6 +46,29 @@ class AmountToolsTests(unittest.TestCase):
             findings = scan_paths([bad])
         self.assertGreaterEqual(len(findings), 2)
 
+    def test_check_no_float_money_allows_operational_float_contexts(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            safe = Path(tmp) / "operational_metrics.py"
+            safe.write_text(
+                "latest_mtime: float | None = None\n"
+                "confidence = max(0.0, 0.85)\n"
+                "timeout_seconds = float('1.5')\n",
+                encoding="utf-8",
+            )
+            findings = scan_paths([safe])
+        self.assertEqual(findings, [])
+
+    def test_check_no_float_money_uses_enclosing_money_context(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            bad = Path(tmp) / "money_context.py"
+            bad.write_text(
+                "def normalize_money(value: float):\n"
+                "    return float(value) + 1.25\n",
+                encoding="utf-8",
+            )
+            findings = scan_paths([bad])
+        self.assertEqual(len(findings), 3)
+
     def test_no_float_scan_ignores_non_money_progress_and_directory_only_test_inputs(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

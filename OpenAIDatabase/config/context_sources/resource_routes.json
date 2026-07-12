@@ -32,6 +32,21 @@
       ]
     },
     {
+      "intent": "maintenance",
+      "description": "Daily automation and maintenance bootstrap path.",
+      "read_order": [
+        "AGENTS.md",
+        "data/derived/personalization/codex_personalization.md"
+      ],
+      "update_targets": [
+        "profile",
+        "preference",
+        "taste",
+        "history",
+        "pattern"
+      ]
+    },
+    {
       "intent": "chatgpt_personalization",
       "description": "Compact export for ChatGPT Project / custom instructions style personalization.",
       "read_order": [

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import plistlib
@@ -17,6 +18,13 @@ import tempfile
 import time
 import zlib
 from pathlib import Path
+
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+from materialize_memory_atlas_release import verify_current_release  # noqa: E402
 
 
 APP_NAME = "Memory Atlas.app"
@@ -173,8 +181,26 @@ def git_commit_count(repo_root: Path) -> str:
     return result.stdout.strip() or "1"
 
 
-def write_runtime_build_info(repo_root: Path, runtime_dir: Path) -> None:
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def write_runtime_build_info(
+    repo_root: Path,
+    runtime_dir: Path,
+    *,
+    snapshot_source: str = "unknown",
+    release_id: str = "",
+    snapshot_sha256: str = "",
+) -> None:
     snapshot_path = runtime_dir / "memory_atlas.json"
+    actual_snapshot_sha256 = sha256_file(snapshot_path) if snapshot_path.exists() else ""
+    if snapshot_sha256 and snapshot_sha256 != actual_snapshot_sha256:
+        raise RuntimeError("runtime snapshot SHA-256 does not match the verified release candidate")
     snapshot_generated_at = ""
     if snapshot_path.exists():
         try:
@@ -187,6 +213,9 @@ def write_runtime_build_info(repo_root: Path, runtime_dir: Path) -> None:
         "built_at_epoch": int(time.time()),
         "snapshot_generated_at": snapshot_generated_at,
         "snapshot_mtime_epoch": int(snapshot_path.stat().st_mtime) if snapshot_path.exists() else None,
+        "snapshot_source": snapshot_source,
+        "release_id": release_id,
+        "snapshot_sha256": actual_snapshot_sha256,
     }
     (runtime_dir / "memory_atlas_build.json").write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
@@ -217,6 +246,7 @@ def stop_existing_runtime_server() -> None:
             command = ""
         if (
             ("python3 -m http.server" in command and "OpenAIDatabase/MemoryAtlas" in command)
+            or ("memory_atlas_runtime_server.py" in command and "OpenAIDatabase/MemoryAtlas" in command)
             or ("memory_atlas_server.py" in command and "OpenAIDatabase/MemoryAtlas" in command)
         ):
             subprocess.run(["kill", str(pid)], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -301,6 +331,36 @@ def refresh_memory_atlas_snapshot(repo_root: Path) -> None:
         ],
         cwd=repo_root,
     )
+
+
+def resolve_runtime_snapshot(repo_root: Path, *, explicit_refresh: bool = False) -> dict[str, object]:
+    repo_root = repo_root.expanduser().resolve()
+    release = verify_current_release(repo_root)
+    if release["status"] != "PASS":
+        details = "; ".join(release.get("errors") or ["unknown verification failure"])
+        raise RuntimeError(f"current immutable release verification failed: {details}")
+
+    if explicit_refresh:
+        refresh_memory_atlas_snapshot(repo_root)
+        snapshot_path = repo_root / "data/derived/visualization/memory_atlas.json"
+        if not snapshot_path.is_file():
+            raise RuntimeError("explicit local refresh did not create memory_atlas.json")
+        return {
+            "path": snapshot_path,
+            "source": "explicit_local_refresh",
+            "release_id": release["release_id"],
+            "snapshot_sha256": sha256_file(snapshot_path),
+        }
+
+    snapshot_path = repo_root / str(release["snapshot_path"])
+    if not snapshot_path.is_file():
+        raise RuntimeError("verified immutable release snapshot is missing")
+    return {
+        "path": snapshot_path,
+        "source": "pinned_release",
+        "release_id": release["release_id"],
+        "snapshot_sha256": release["snapshot_sha256"],
+    }
 
 
 def create_icon_image():
@@ -447,13 +507,19 @@ def create_fallback_icns(resources_dir: Path) -> bool:
     return True
 
 
-def prepare_static_runtime(repo_root: Path, keep_build_cache: bool = False, build_info_repo_root: Path | None = None) -> Path:
+def prepare_static_runtime(
+    repo_root: Path,
+    keep_build_cache: bool = False,
+    build_info_repo_root: Path | None = None,
+    *,
+    explicit_refresh: bool = False,
+) -> Path:
     app_dir = repo_root / "apps" / "memory-atlas"
     runtime_dir = runtime_root() / "runtime"
     staging_dir = runtime_root() / "runtime.next"
     build_info_repo_root = build_info_repo_root or repo_root
     try:
-        refresh_memory_atlas_snapshot(repo_root)
+        snapshot_selection = resolve_runtime_snapshot(repo_root, explicit_refresh=explicit_refresh)
         if not frontend_dependencies_ready(app_dir):
             clean_frontend_dependencies(app_dir)
             install_frontend_dependencies(repo_root, app_dir)
@@ -469,10 +535,17 @@ def prepare_static_runtime(repo_root: Path, keep_build_cache: bool = False, buil
         runtime_dir.parent.mkdir(parents=True, exist_ok=True)
         shutil.copytree(dist_dir, staging_dir)
 
-        atlas_data = repo_root / "data" / "derived" / "visualization" / "memory_atlas.json"
-        if atlas_data.exists():
-            shutil.copy2(atlas_data, staging_dir / "memory_atlas.json")
-        write_runtime_build_info(build_info_repo_root, staging_dir)
+        atlas_data = snapshot_selection["path"]
+        if not isinstance(atlas_data, Path) or not atlas_data.is_file():
+            raise RuntimeError("selected Memory Atlas runtime snapshot is missing")
+        shutil.copy2(atlas_data, staging_dir / "memory_atlas.json")
+        write_runtime_build_info(
+            build_info_repo_root,
+            staging_dir,
+            snapshot_source=str(snapshot_selection["source"]),
+            release_id=str(snapshot_selection["release_id"]),
+            snapshot_sha256=str(snapshot_selection["snapshot_sha256"]),
+        )
 
         run_command(
             [
@@ -527,8 +600,13 @@ BUILD_INFO="$RUNTIME_DIR/memory_atlas_build.json"
 STATUS_FILE="$APP_SUPPORT/launching.html"
 PID_FILE="$APP_SUPPORT/server.pid"
 WATCHDOG_PID_FILE="$APP_SUPPORT/server_watchdog.pid"
-SERVER_SCRIPT="$APP_SUPPORT/memory_atlas_server.py"
+SERVER_SOURCE="$REPO_ROOT/scripts/memory_atlas_runtime_server.py"
+SERVER_SCRIPT="$APP_SUPPORT/memory_atlas_runtime_server.py"
 SNAPSHOT="$REPO_ROOT/data/derived/visualization/memory_atlas.json"
+CURRENT_RELEASE_POINTER="$REPO_ROOT/机器治理/发布快照/memory_atlas_current_release.json"
+PINNED_SNAPSHOT=""
+PINNED_RELEASE_ID=""
+PINNED_SNAPSHOT_SHA256=""
 LOG_DIR="$HOME/Library/Logs/OpenAIDatabase"
 LOG_FILE="$LOG_DIR/memory-atlas-launcher.log"
 PORT="${{MEMORY_ATLAS_PORT:-{DEFAULT_PORT}}}"
@@ -589,7 +667,7 @@ write_status_page() {{
   <main>
     <div class="mark" aria-hidden="true"></div>
     <h1>记忆星图启动中</h1>
-    <p>正在刷新最新脱敏数据快照并打开本地运行环境。服务准备好后，此页面会自动跳转到记忆星图。</p>
+    <p>正在验证发布快照并打开本地运行环境。服务准备好后，此页面会自动跳转到记忆星图。</p>
     <p><a href="$URL">打开记忆星图</a></p>
   </main>
   <script>
@@ -629,205 +707,16 @@ is_managed_server() {{
   local pid="$1"
   local command_line
   command_line="$(ps -p "$pid" -o command= 2>/dev/null || true)"
-  [[ ( "$command_line" == *"memory_atlas_server.py"* && "$command_line" == *"$RUNTIME_DIR"* ) || ( "$command_line" == *"-m http.server"* && "$command_line" == *"$RUNTIME_DIR"* ) ]]
+  [[ ( "$command_line" == *"memory_atlas_runtime_server.py"* && "$command_line" == *"$RUNTIME_DIR"* ) || ( "$command_line" == *"memory_atlas_server.py"* && "$command_line" == *"$RUNTIME_DIR"* ) || ( "$command_line" == *"-m http.server"* && "$command_line" == *"$RUNTIME_DIR"* ) ]]
 }}
 
 write_runtime_server() {{
   mkdir -p "$APP_SUPPORT"
-  cat > "$SERVER_SCRIPT" <<'PY'
-#!/usr/bin/env python3
-from __future__ import annotations
-
-import json
-import os
-import sys
-import threading
-import time
-from functools import partial
-from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
-from pathlib import Path
-from urllib.parse import urlparse
-
-
-runtime_dir = Path(sys.argv[1]).resolve()
-port = int(sys.argv[2])
-ttl_seconds = int(sys.argv[3])
-idle_seconds = int(sys.argv[4])
-started_at = time.time()
-last_seen_at = started_at
-had_client = False
-release_requested = False
-released_at: float | None = None
-shutdown_timer: threading.Timer | None = None
-state_lock = threading.Lock()
-httpd: ThreadingHTTPServer | None = None
-pid_file = os.environ.get("MEMORY_ATLAS_PID_FILE", "")
-
-
-def touch(client: bool = True) -> None:
-    global had_client, last_seen_at
-    with state_lock:
-        last_seen_at = time.time()
-        if client:
-            had_client = True
-
-
-def snapshot_mtime() -> int | None:
-    snapshot = runtime_dir / "memory_atlas.json"
-    if not snapshot.exists():
-        return None
-    return int(snapshot.stat().st_mtime)
-
-
-def request_shutdown(reason: str) -> None:
-    global had_client, last_seen_at, release_requested, released_at, shutdown_timer
-    start_timer = False
-    with state_lock:
-        had_client = True
-        last_seen_at = time.time()
-        release_requested = True
-        released_at = last_seen_at
-        if shutdown_timer is None:
-            start_timer = True
-    if not start_timer:
-        return
-    sys.stderr.write("Memory Atlas server release requested (%s); shutting down.\\n" % reason)
-
-    def shutdown_later() -> None:
-        if httpd is not None:
-            httpd.shutdown()
-
-    timer = threading.Timer(0.2, shutdown_later)
-    timer.daemon = True
-    with state_lock:
-        shutdown_timer = timer
-    timer.start()
-
-
-class MemoryAtlasHTTPServer(ThreadingHTTPServer):
-    daemon_threads = True
-    allow_reuse_address = True
-
-    def handle_error(self, request: object, client_address: object) -> None:
-        exc_type, exc, _traceback = sys.exc_info()
-        if exc_type in {{BrokenPipeError, ConnectionResetError}} or isinstance(exc, (BrokenPipeError, ConnectionResetError)):
-            return
-        super().handle_error(request, client_address)
-
-
-class Handler(SimpleHTTPRequestHandler):
-    def end_headers(self) -> None:
-        if self.path.startswith("/memory_atlas.json") or self.path.startswith("/__memory_atlas"):
-            self.send_header("Cache-Control", "no-store")
-        else:
-            self.send_header("Cache-Control", "no-cache")
-        super().end_headers()
-
-    def log_message(self, fmt: str, *args: object) -> None:
-        sys.stderr.write("%s - - [%s] %s\\n" % (self.client_address[0], self.log_date_time_string(), fmt % args))
-
-    def send_json(self, payload: dict[str, object], status: int = 200) -> None:
-        body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
-        self.send_response(status)
-        self.send_header("Content-Type", "application/json; charset=utf-8")
-        self.send_header("Content-Length", str(len(body)))
-        self.end_headers()
-        self.wfile.write(body)
-
-    def send_empty(self, status: int = 204) -> None:
-        self.send_response(status)
-        self.send_header("Content-Length", "0")
-        self.end_headers()
-
-    def do_GET(self) -> None:
-        path = urlparse(self.path).path
-        if path == "/__memory_atlas_runtime_state":
-            with state_lock:
-                last_seen = int(last_seen_at)
-                active = had_client
-                released = release_requested
-                release_epoch = int(released_at) if released_at else None
-            self.send_json({{
-                "status": "running",
-                "pid": os.getpid(),
-                "started_at_epoch": int(started_at),
-                "last_seen_epoch": last_seen,
-                "had_client": active,
-                "release_requested": released,
-                "released_at_epoch": release_epoch,
-                "active_thread_count": threading.active_count(),
-                "idle_seconds": idle_seconds,
-                "ttl_seconds": ttl_seconds,
-                "snapshot_mtime_epoch": snapshot_mtime(),
-            }})
-            return
-        if path == "/memory_atlas.json":
-            touch(True)
-        super().do_GET()
-
-    def do_POST(self) -> None:
-        path = urlparse(self.path).path
-        if path == "/__memory_atlas_heartbeat":
-            touch(True)
-            self.send_empty()
-            return
-        if path == "/__memory_atlas_release":
-            request_shutdown("page_release")
-            self.send_empty()
-            return
-        self.send_error(404, "Not found")
-
-
-def monitor_idle() -> None:
-    while True:
-        time.sleep(2)
-        now = time.time()
-        with state_lock:
-            idle_for = now - last_seen_at
-            client_seen = had_client
-            release_seen = release_requested
-        if release_seen:
-            sys.stderr.write("Memory Atlas server release flag observed; shutting down.\\n")
-            if httpd is not None:
-                httpd.shutdown()
-            return
-        if ttl_seconds > 0 and now - started_at >= ttl_seconds:
-            sys.stderr.write("Memory Atlas server reached TTL; shutting down.\\n")
-            if httpd is not None:
-                httpd.shutdown()
-            return
-        if client_seen and idle_seconds > 0 and idle_for >= idle_seconds:
-            sys.stderr.write("Memory Atlas server idle after page close; shutting down.\\n")
-            if httpd is not None:
-                httpd.shutdown()
-            return
-
-
-def main() -> int:
-    global httpd
-    if not runtime_dir.exists():
-        sys.stderr.write("runtime directory missing: %s\\n" % runtime_dir)
-        return 1
-    handler = partial(Handler, directory=str(runtime_dir))
-    httpd = MemoryAtlasHTTPServer(("127.0.0.1", port), handler)
-    threading.Thread(target=monitor_idle, daemon=True).start()
-    try:
-        httpd.serve_forever()
-    finally:
-        httpd.server_close()
-        if pid_file:
-            try:
-                path = Path(pid_file)
-                if path.exists() and path.read_text(encoding="utf-8").strip() == str(os.getpid()):
-                    path.unlink()
-            except Exception:
-                pass
-    return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
-PY
+  if [[ ! -f "$SERVER_SOURCE" ]]; then
+    notify_error "Memory Atlas 本地命令服务缺失。请重新安装运行副本。"
+    return 1
+  fi
+  cp "$SERVER_SOURCE" "$SERVER_SCRIPT"
   chmod 700 "$SERVER_SCRIPT"
 }}
 
@@ -901,7 +790,30 @@ runtime_is_stale() {{
   local runtime_commit
   current_commit="$(current_git_commit)"
   runtime_commit="$(runtime_git_commit)"
-  [[ "$current_commit" != "unknown" && "$runtime_commit" != "$current_commit" ]]
+  if [[ "$current_commit" != "unknown" && "$runtime_commit" != "$current_commit" ]]; then
+    return 0
+  fi
+  python3 - "$BUILD_INFO" "$RUNTIME_DIR/memory_atlas.json" "$PINNED_RELEASE_ID" "$PINNED_SNAPSHOT_SHA256" <<'PY'
+import hashlib
+import json
+import sys
+from pathlib import Path
+
+try:
+    build_info = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+    snapshot = Path(sys.argv[2])
+    actual_sha256 = hashlib.sha256(snapshot.read_bytes()).hexdigest()
+except Exception:
+    sys.exit(0)
+
+stale = (
+    build_info.get("snapshot_source") != "pinned_release"
+    or build_info.get("release_id") != sys.argv[3]
+    or build_info.get("snapshot_sha256") != sys.argv[4]
+    or actual_sha256 != sys.argv[4]
+)
+sys.exit(0 if stale else 1)
+PY
 }}
 
 stop_managed_server() {{
@@ -983,6 +895,34 @@ build_frontend() {{
   return 1
 }}
 
+resolve_pinned_release() {{
+  ensure_repo_access
+  local relative_snapshot
+  if ! relative_snapshot="$(python3 scripts/materialize_memory_atlas_release.py verify \\
+    --database-dir . \\
+    --snapshot-path-only)"; then
+    notify_error "Memory Atlas 当前发布快照验证失败。请重新获取完整的 GitHub 发布资料。"
+    return 1
+  fi
+  PINNED_SNAPSHOT="$REPO_ROOT/$relative_snapshot"
+  local release_metadata
+  release_metadata="$(python3 - "$CURRENT_RELEASE_POINTER" <<'PY'
+import json
+import sys
+from pathlib import Path
+payload = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+print(str(payload.get("release_id") or ""))
+print(str(payload.get("snapshot_sha256") or ""))
+PY
+)"
+  PINNED_RELEASE_ID="$(printf '%s\\n' "$release_metadata" | sed -n '1p')"
+  PINNED_SNAPSHOT_SHA256="$(printf '%s\\n' "$release_metadata" | sed -n '2p')"
+  if [[ ! -f "$PINNED_SNAPSHOT" || -z "$PINNED_RELEASE_ID" || -z "$PINNED_SNAPSHOT_SHA256" ]]; then
+    notify_error "Memory Atlas 当前发布快照资料不完整。请重新获取完整的 GitHub 发布资料。"
+    return 1
+  fi
+}}
+
 refresh_latest_snapshot() {{
   ensure_repo_access
   notify_status "正在刷新最新 Memory Atlas 数据快照..."
@@ -1038,6 +978,8 @@ PY
 write_runtime_build_info() {{
   local target_build_info="${{1:-$BUILD_INFO}}"
   local target_snapshot="${{2:-$RUNTIME_DIR/memory_atlas.json}}"
+  local snapshot_source="${{3:-unknown}}"
+  local release_id="${{4:-}}"
   local snapshot_generated_at
   snapshot_generated_at="$(python3 - "$target_snapshot" <<'PY'
 import json
@@ -1051,18 +993,23 @@ PY
 )"
   local current_commit
   current_commit="$INSTALLED_GIT_COMMIT"
-  python3 - "$target_build_info" "$current_commit" "$snapshot_generated_at" "$target_snapshot" <<'PY'
+  python3 - "$target_build_info" "$current_commit" "$snapshot_generated_at" "$target_snapshot" "$snapshot_source" "$release_id" <<'PY'
+import hashlib
 import json
 import sys
 import time
 from pathlib import Path
 snapshot = Path(sys.argv[4])
+digest = hashlib.sha256(snapshot.read_bytes()).hexdigest() if snapshot.exists() else ""
 Path(sys.argv[1]).write_text(json.dumps({{
     "schema_version": "memory_atlas_build.v1",
     "git_commit": sys.argv[2],
     "built_at_epoch": int(time.time()),
     "snapshot_generated_at": sys.argv[3],
     "snapshot_mtime_epoch": int(snapshot.stat().st_mtime) if snapshot.exists() else None,
+    "snapshot_source": sys.argv[5],
+    "release_id": sys.argv[6],
+    "snapshot_sha256": digest,
 }}, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
 PY
 }}
@@ -1076,7 +1023,7 @@ copy_latest_snapshot_to_runtime() {{
     return 1
   fi
   cp "$SNAPSHOT" "$RUNTIME_DIR/memory_atlas.json"
-  write_runtime_build_info
+  write_runtime_build_info "$BUILD_INFO" "$RUNTIME_DIR/memory_atlas.json" "explicit_local_refresh" "$PINNED_RELEASE_ID"
   if ! python3 scripts/audit_memory_atlas_release.py \\
     --repo-root . \\
     --publish-dir "$RUNTIME_DIR"; then
@@ -1092,10 +1039,18 @@ copy_latest_snapshot_to_runtime() {{
 }}
 
 prepare_runtime() {{
+  local snapshot_source="${{1:-pinned_release}}"
+  local runtime_snapshot="$PINNED_SNAPSHOT"
   notify_status "正在准备本地运行环境，首次启动可能需要几分钟。"
   ensure_repo_access
-  if ! refresh_latest_snapshot; then
-    notify_error "Memory Atlas 无法刷新最新数据快照。请从终端重新安装运行副本：cd $ORIGINAL_REPO_ROOT && python3 scripts/install_memory_atlas_app.py"
+  if [[ "$snapshot_source" == "explicit_local_refresh" ]]; then
+    if ! refresh_latest_snapshot; then
+      notify_error "Memory Atlas 无法刷新最新数据快照。请从终端重新安装运行副本：cd $ORIGINAL_REPO_ROOT && python3 scripts/install_memory_atlas_app.py"
+      exit 1
+    fi
+    runtime_snapshot="$SNAPSHOT"
+  elif [[ ! -f "$runtime_snapshot" ]]; then
+    notify_error "Memory Atlas 已验证发布快照缺失。请重新获取完整的 GitHub 发布资料。"
     exit 1
   fi
   if ! frontend_dependencies_ready; then
@@ -1117,8 +1072,8 @@ prepare_runtime() {{
   rm -rf "$staged_runtime"
   mkdir -p "$APP_SUPPORT"
   cp -R "$APP_DIR/dist" "$staged_runtime"
-  cp "$SNAPSHOT" "$staged_runtime/memory_atlas.json"
-  write_runtime_build_info "$staged_runtime/memory_atlas_build.json" "$staged_runtime/memory_atlas.json"
+  cp "$runtime_snapshot" "$staged_runtime/memory_atlas.json"
+  write_runtime_build_info "$staged_runtime/memory_atlas_build.json" "$staged_runtime/memory_atlas.json" "$snapshot_source" "$PINNED_RELEASE_ID"
   if ! python3 scripts/audit_memory_atlas_release.py \\
     --repo-root . \\
     --publish-dir "$staged_runtime"; then
@@ -1150,13 +1105,21 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 1
 fi
 
-if runtime_is_stale || [[ "${{MEMORY_ATLAS_REFRESH:-0}}" == "1" ]]; then
-  prepare_runtime
-else
-  if ! copy_latest_snapshot_to_runtime; then
+if ! resolve_pinned_release; then
+  exit 1
+fi
+
+if [[ "${{MEMORY_ATLAS_REFRESH:-0}}" == "1" ]]; then
+  if runtime_is_stale; then
+    prepare_runtime "explicit_local_refresh"
+  elif ! copy_latest_snapshot_to_runtime; then
     echo "Using existing Memory Atlas runtime snapshot after refresh fallback."
     notify_status "Memory Atlas 将先使用现有快照打开；最新快照刷新未完成。"
   fi
+elif runtime_is_stale; then
+  prepare_runtime "pinned_release"
+else
+  echo "Using existing verified Memory Atlas runtime snapshot."
 fi
 
 if [[ ! -f "$RUNTIME_DIR/memory_atlas.json" ]]; then
@@ -1176,7 +1139,7 @@ fi
 
 echo "Starting Memory Atlas on $URL"
 write_runtime_server
-  MEMORY_ATLAS_PID_FILE="$PID_FILE" nohup python3 "$SERVER_SCRIPT" "$RUNTIME_DIR" "$PORT" "$TTL_SECONDS" "$IDLE_SECONDS" >> "$LOG_FILE" 2>&1 &
+PYTHONDONTWRITEBYTECODE=1 MEMORY_ATLAS_PID_FILE="$PID_FILE" nohup python3 "$SERVER_SCRIPT" "$RUNTIME_DIR" "$PORT" "$TTL_SECONDS" "$IDLE_SECONDS" "$REPO_ROOT" >> "$LOG_FILE" 2>&1 &
 SERVER_PID=$!
 echo "$SERVER_PID" > "$PID_FILE"
 
@@ -1299,6 +1262,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Keep node_modules, dist, and tsbuildinfo after preparing the static runtime.",
     )
+    parser.add_argument(
+        "--refresh-snapshot",
+        action="store_true",
+        help="Explicitly sync local source data instead of installing the pinned immutable release snapshot.",
+    )
     return parser.parse_args()
 
 
@@ -1312,7 +1280,12 @@ def main() -> int:
     targets = args.target or default_targets()
     installed = [install_app(target, source_repo_root, repo_root) for target in targets]
     if not args.skip_runtime:
-        runtime_dir = prepare_static_runtime(source_repo_root, keep_build_cache=args.keep_build_cache, build_info_repo_root=repo_root)
+        runtime_dir = prepare_static_runtime(
+            source_repo_root,
+            keep_build_cache=args.keep_build_cache,
+            build_info_repo_root=repo_root,
+            explicit_refresh=args.refresh_snapshot,
+        )
         print(runtime_dir)
     for path in installed:
         print(path)

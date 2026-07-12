@@ -1,0 +1,37 @@
+{
+  "content_sha256": "49c67387880cf2c950742155c4cbfca1ede2005cf11c2cf66f2e68b39f678958",
+  "conversation_id": "6a301594-01dc-83ec-bc83-6746431c20b9",
+  "created_at": "2026-06-15T15:09:09Z",
+  "credential_boundary": "credentials_not_transcript",
+  "message_count": 3,
+  "messages": [
+    {
+      "created_at": "2026-06-15T15:11:00Z",
+      "message_id": "859183bd-1919-46c2-ba5d-700872cb47c6",
+      "role": "assistant",
+      "text": "结论：你要的不是“模仿某个博主”，而是让 agent 复用这种**商业现象拆解逻辑**：反常识开场 → 冲突案例 → 底层机制 → 谁赚钱/谁亏钱 → 为什么现在爆发 → 可迁移机会 → 金句结论。公开视频搜索片段能确认你提到的作品主题是“男粉经济大败局 / 得女粉者得天下”，同一账号也有“科技消费更需要心智”“识人先看鞋”等商业消费现象类选题，所以适合抽象成“商业洞察型解说模板”。citeturn452332search3turn452332search4\n\n你可以直接复制这个短 prompt：\n\n```text\n用商业洞察型短视频解说逻辑，帮我拆解【领域/赛道】的高经济价值、高 ROI 选题。结构按：反常识结论开场 → 典型现象/案例 → 表面逻辑为什么错 → 底层商业机制 → 谁获利谁被收割 → 趋势拐点 → 普通人/创业者/投资者的机会 → 一句锋利总结。不要娱乐八卦，不要空泛励志，重点分析变现路径、成本结构、需求强度、竞争壁垒、风险和执行入口。输出 10 个选题，每个给标题、核心观点、讲解大纲和可行动建议。\n```\n\n更强一点的 agent 版：\n\n```text\n你是一个商业机会拆解 Agent。请用“反常识、强冲突、讲人话、拆机制、给机会”的短视频解说风格，分析【领域/赛道】中经济价值高、ROI 高、可落地的内容板块。\n\n输出规则：\n1. 先给一个颠覆直觉的总判断。\n2. 再用 3-5 个现实案例说明这个判断。\n3. 拆解背后的商业机制：需求、付费意愿、成本、渠道、复购、壁垒、监管/风险。\n4. 明确谁在赚钱、谁在亏钱、谁被误导。\n5. 提炼普通人、创业者、内容创作者、投资者分别能抓住的机会。\n6. 最后给 10 个可做成内容的选题，每个包含：标题、核心冲突、讲解逻辑、变现方式、执行难度、ROI 评分。\n\n限制：不要写泛泛的行业科普，不要鸡汤，不要娱乐八卦，不要只列概念。必须给商业判断、机会入口和风险提示。\n```\n\n你要填的变量只有一个：\n\n```text\n【领域/赛道】= AI Agent、跨境电商、银发经济、职业教育、企业软件、个人 IP、短剧出海、本地生活、知识付费、B2B 服务、自动化工具、医疗健康、宠物经济、低空经济、机器人、AI 硬件、数据服务、私域运营、企业降本、海外华人服务\n```\n\n我建议你默认用这个版本，最短但很准：\n\n```text\n用“反常识开场—案例冲突—底层商业机制—赢家输家—变现机会—风险—金句总结”的逻辑，帮我拆解【领域/赛道】里高经济价值、高 ROI 的内容选题。输出 10 个选题，每个给标题、核心观点、讲解大纲、变现路径、执行难度和 ROI 评分。不要八卦，不要空泛科普，重点讲需求、成本、渠道、壁垒和机会入口。\n```\n\n可直接替换成：\n\n```text\n用“反常识开场—案例冲突—底层商业机制—赢家输家—变现机会—风险—金句总结”的逻辑，帮我拆解 AI Agent 里高经济价值、高 ROI 的内容选题。输出 10 个选题，每个给标题、核心观点、讲解大纲、变现路径、执行难度和 ROI 评分。不要八卦，不要空泛科普，重点讲需求、成本、渠道、壁垒和机会入口。\n```"
+    },
+    {
+      "created_at": "2026-06-15T15:09:35Z",
+      "message_id": "ad7b5a2e-ac31-4f52-8da3-d4bfc2147193",
+      "role": "assistant",
+      "text": "I’ll treat this as a request for a legal high-ROI content-analysis prompt, extracting the explanation structure rather than copying the creator’s exact wording. I’ll give a short copy-ready version plus a steadier version focused on style skeleton, topic selection, and output format."
+    },
+    {
+      "created_at": "2026-06-15T15:09:07Z",
+      "message_id": "d4d02939-1baf-4f6f-9486-045fc647f2fe",
+      "role": "user",
+      "text": "1.76 复制打开抖音，看看【约翰啥都懂的作品】男粉经济大败局 得女粉者得天下，得男粉者得屏保。一... http[REDACTED_LOCAL_PATH] 02/04 :1pm [REDACTED_EMAIL] xFu:/ 我很喜欢这种讲解风格，但不要是这种内容，而是一些重要的经济价值高的ROi高的领域内容板块，如果我想让agent用这种风格这种思路，这种逻辑来给我抢劫，我想要的目标我应该怎么写prompt，简短准确一点prompt"
+    }
+  ],
+  "redact_for_public_backup": true,
+  "redaction_counts": {
+    "email": 1,
+    "local_absolute_path": 1
+  },
+  "schema_version": "memory_atlas_public_raw_chatgpt.v1",
+  "source_id": "chatgpt",
+  "sync_mode": "official_export_fallback",
+  "title": "简短高效的prompt编写",
+  "updated_at": "2026-06-15T15:11:00Z"
+}

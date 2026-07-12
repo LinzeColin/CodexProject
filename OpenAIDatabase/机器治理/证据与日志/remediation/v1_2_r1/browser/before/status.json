@@ -1,0 +1,281 @@
+{
+  "status": "FAIL",
+  "gate": "memory_atlas_v1_2_home_multiviewport",
+  "message": "One or more v1.2 home viewport contracts failed",
+  "details": {
+    "failures": [
+      {
+        "status": "FAIL",
+        "viewport": {
+          "name": "desktop-low-height",
+          "width": 1470,
+          "height": 661
+        },
+        "message": "Workspace sections overlap",
+        "details": {
+          "overlaps": [
+            {
+              "first": "commandPalette",
+              "second": "contentGrid",
+              "overlapWidth": 1194,
+              "overlapHeight": 18
+            }
+          ],
+          "sections": {
+            "topbar": {
+              "x": 262,
+              "y": 14,
+              "top": 14,
+              "right": 1456,
+              "bottom": 70,
+              "left": 262,
+              "width": 1194,
+              "height": 56
+            },
+            "controls": {
+              "x": 262,
+              "y": 78,
+              "top": 78,
+              "right": 1456,
+              "bottom": 114,
+              "left": 262,
+              "width": 1194,
+              "height": 36
+            },
+            "interactionLens": {
+              "x": 262,
+              "y": 122,
+              "top": 122,
+              "right": 1456,
+              "bottom": 167,
+              "left": 262,
+              "width": 1194,
+              "height": 45
+            },
+            "commandPalette": {
+              "x": 262,
+              "y": 175,
+              "top": 175,
+              "right": 1456,
+              "bottom": 201,
+              "left": 262,
+              "width": 1194,
+              "height": 26
+            },
+            "contentGrid": {
+              "x": 262,
+              "y": 183,
+              "top": 183,
+              "right": 1456,
+              "bottom": 647,
+              "left": 262,
+              "width": 1194,
+              "height": 464
+            }
+          }
+        },
+        "screenshot": {
+          "path": "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject/OpenAIDatabase/机器治理/证据与日志/remediation/v1_2_r1/browser/before/home-desktop-low-height-1470x661-failure.png",
+          "bytes": 497950
+        },
+        "consoleErrors": [
+          "Failed to load resource: the server responded with a status of 404 (Not Found)"
+        ],
+        "failedResponses": [
+          {
+            "status": 404,
+            "url": "http://127.0.0.1:4178/__memory_atlas_heartbeat"
+          }
+        ]
+      },
+      {
+        "status": "FAIL",
+        "viewport": {
+          "name": "desktop-standard",
+          "width": 1440,
+          "height": 900
+        },
+        "message": "Workspace sections overlap",
+        "details": {
+          "overlaps": [
+            {
+              "first": "commandPalette",
+              "second": "contentGrid",
+              "overlapWidth": 1164,
+              "overlapHeight": 18
+            }
+          ],
+          "sections": {
+            "topbar": {
+              "x": 262,
+              "y": 14,
+              "top": 14,
+              "right": 1426,
+              "bottom": 70,
+              "left": 262,
+              "width": 1164,
+              "height": 56
+            },
+            "controls": {
+              "x": 262,
+              "y": 78,
+              "top": 78,
+              "right": 1426,
+              "bottom": 114,
+              "left": 262,
+              "width": 1164,
+              "height": 36
+            },
+            "interactionLens": {
+              "x": 262,
+              "y": 122,
+              "top": 122,
+              "right": 1426,
+              "bottom": 167,
+              "left": 262,
+              "width": 1164,
+              "height": 45
+            },
+            "commandPalette": {
+              "x": 262,
+              "y": 175,
+              "top": 175,
+              "right": 1426,
+              "bottom": 201,
+              "left": 262,
+              "width": 1164,
+              "height": 26
+            },
+            "contentGrid": {
+              "x": 262,
+              "y": 183,
+              "top": 183,
+              "right": 1426,
+              "bottom": 886,
+              "left": 262,
+              "width": 1164,
+              "height": 703
+            }
+          }
+        },
+        "screenshot": {
+          "path": "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject/OpenAIDatabase/机器治理/证据与日志/remediation/v1_2_r1/browser/before/home-desktop-standard-1440x900-failure.png",
+          "bytes": 596703
+        },
+        "consoleErrors": [
+          "Failed to load resource: the server responded with a status of 404 (Not Found)"
+        ],
+        "failedResponses": [
+          {
+            "status": 404,
+            "url": "http://127.0.0.1:4178/__memory_atlas_heartbeat"
+          }
+        ]
+      },
+      {
+        "status": "FAIL",
+        "viewport": {
+          "name": "mobile",
+          "width": 390,
+          "height": 844
+        },
+        "message": "Workspace sections overlap",
+        "details": {
+          "overlaps": [
+            {
+              "first": "commandPalette",
+              "second": "contentGrid",
+              "overlapWidth": 362,
+              "overlapHeight": 18
+            }
+          ],
+          "sections": {
+            "topbar": {
+              "x": 14,
+              "y": 99,
+              "top": 99,
+              "right": 376,
+              "bottom": 266.4,
+              "left": 14,
+              "width": 362,
+              "height": 167.4
+            },
+            "controls": {
+              "x": 14,
+              "y": 274.4,
+              "top": 274.4,
+              "right": 376,
+              "bottom": 398.4,
+              "left": 14,
+              "width": 362,
+              "height": 124
+            },
+            "interactionLens": {
+              "x": 14,
+              "y": 406.4,
+              "top": 406.4,
+              "right": 376,
+              "bottom": 526.4,
+              "left": 14,
+              "width": 362,
+              "height": 120
+            },
+            "commandPalette": {
+              "x": 14,
+              "y": 534.4,
+              "top": 534.4,
+              "right": 376,
+              "bottom": 560.4,
+              "left": 14,
+              "width": 362,
+              "height": 26
+            },
+            "contentGrid": {
+              "x": 14,
+              "y": 542.4,
+              "top": 542.4,
+              "right": 376,
+              "bottom": 860,
+              "left": 14,
+              "width": 362,
+              "height": 317.6
+            }
+          }
+        },
+        "screenshot": {
+          "path": "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject/OpenAIDatabase/机器治理/证据与日志/remediation/v1_2_r1/browser/before/home-mobile-390x844-failure.png",
+          "bytes": 181572
+        },
+        "consoleErrors": [
+          "Failed to load resource: the server responded with a status of 404 (Not Found)"
+        ],
+        "failedResponses": [
+          {
+            "status": 404,
+            "url": "http://127.0.0.1:4178/__memory_atlas_heartbeat"
+          }
+        ]
+      }
+    ]
+  },
+  "targetUrl": "http://127.0.0.1:4178",
+  "outputDir": "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject/OpenAIDatabase/apps/memory-atlas/../../机器治理/证据与日志/remediation/v1_2_r1/browser/before",
+  "viewports": [
+    {
+      "name": "desktop-low-height",
+      "width": 1470,
+      "height": 661
+    },
+    {
+      "name": "desktop-standard",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "serverLogs": "  ➜  Local:   http://127.0.0.1:4178/\n"
+}

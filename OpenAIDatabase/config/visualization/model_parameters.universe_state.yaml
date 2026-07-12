@@ -67,3 +67,1128 @@ validation_hints:
     - no generator implementation in Stage 0
     - no raw transcript access
     - no writeback
+final_github_main_upload:
+  task_id: MA-V117-FINAL-UPLOAD
+  acceptance_id: ACC-MA-V117-FINAL-GITHUB-MAIN
+  status: final_github_main_upload_completed
+  required_validator: validate:v1.1.7-final-upload
+  prerequisite_validator: validate:v1.1.7-stage10
+  artifact: docs/reviews/memory_atlas_v1_1_7_final_github_main_upload.md
+  remote: LinzeColin/CodexProject
+  project_tree: OpenAIDatabase
+  proof: GitHub main points at the final upload commit
+  upload_boundary:
+    - No remote development branch
+    - No open pull request
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundaries:
+    - no_remote_development_branch
+    - no_open_pull_request
+    - no_cloudflare_live_deploy
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_proposal_queue_write
+    - no_agent_apply
+stage10_review:
+  task_id: MA-V117-S10-REVIEW
+  acceptance_id: ACC-MA-V117-S10-REVIEW
+  status: stage_10_review_passed_pending_final_github_main_upload
+  required_validator: validate:v1.1.7-stage10
+  review_artifact: docs/reviews/memory_atlas_v1_1_7_stage10_review.md
+  phase_label: Stage 10 Review
+  phase_coverage:
+    - Stage 10 Phase 10.1
+    - Final hardening upload readiness
+  clean_tree_validators:
+    - validate:v1.1.7-stage10-phase1
+    - validate:whole-project
+  regression_validators:
+    - validate:part2-stage1
+  schema_compatibility_hardening:
+    - schema compatibility hardening
+    - legacy whole-project validator hardening
+    - Chinese-first copy hardening
+    - memory_starfield_spike_fixture.v1_1_7_stage4_phase2
+    - memory_river_spike_fixture.v1_1_7_stage5_phase2
+  next_gate: pending final one-time GitHub main upload
+  upload_boundary:
+    - No intermediate GitHub upload
+    - No GitHub main upload in this review
+    - No remote development branch
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundaries:
+    - no_intermediate_github_upload
+    - no_github_main_upload_in_this_review
+    - no_remote_development_branch
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_proposal_queue_write
+    - no_agent_apply
+    - no_deploy
+stage10_phase1_final_hardening_upload_readiness:
+  task_id: MA-V117-S10P01
+  acceptance_id: ACC-MA-V117-S10P01
+  status: phase_10_1_final_hardening_upload_readiness_contract_created_pending_stage10_review
+  contract_id: memory_atlas_v1_1_7_final_hardening_upload_readiness_contract
+  required_validator: validate:v1.1.7-stage10-phase1
+  phase_label: Stage 10 Phase 10.1
+  next_gate: pending Stage 10 review
+  entry_condition: Stage 9 review must be complete
+  hardening_matrices:
+    - performance_safety_accessibility_matrix
+    - release_rollback_matrix
+    - final_validation_matrix
+    - github_main_upload_matrix
+    - governance_sync_matrix
+    - new_machine_recovery_matrix
+  performance_target:
+    desktop: desktop target 45-60 FPS
+    reduced_motion: reduced-motion fallback
+  upload_boundary:
+    - No intermediate GitHub upload
+    - No GitHub main upload in this phase
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundaries:
+    - no_intermediate_github_upload
+    - no_github_main_upload_in_this_phase
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_proposal_queue_write
+    - no_agent_apply
+    - no_deploy
+stage9_review:
+  task_id: MA-V117-S9-REVIEW
+  acceptance_id: ACC-MA-V117-S9-REVIEW
+  status: stage_9_review_passed_pending_stage10_no_github_main_upload
+  required_validator: validate:v1.1.7-stage9
+  review_artifact: docs/reviews/memory_atlas_v1_1_7_stage9_review.md
+  phase_coverage:
+    - Phase 9.1
+    - Cross-board shared state
+    - synchronized filters
+    - Inspector explanation layer
+  phase_validators:
+    - validate:v1.1.7-stage9-phase1
+  browser_validators:
+    - validate:cross-board-shared-state-browser
+  runtime_versions:
+    - cross_board_shared_state.v1_1_7_stage9_phase1
+    - inspector_explanation_layer.v1_1_7_stage9_phase1
+  output_fields:
+    - shared_state_filters
+    - synchronized_filters
+    - inspector_explanation_layer
+  next_gate: pending Stage 10
+  boundary_label: "No Stage 10 work; No GitHub main upload"
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundaries:
+    - no_stage10_work
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_proposal_queue_write
+    - no_agent_apply
+    - no_deploy
+    - no_github_main_upload
+stage9_phase1_cross_board_shared_state:
+  task_id: MA-V117-S9P01
+  phase_label: Phase 9.1
+  feature_label: Cross-board shared state
+  acceptance_id: ACC-MA-V117-S9P01
+  status: phase_9_1_cross_board_shared_state_completed_pending_stage9_review
+  runtime_version: cross_board_shared_state.v1_1_7_stage9_phase1
+  inspector_layer_version: inspector_explanation_layer.v1_1_7_stage9_phase1
+  required_validator: validate:v1.1.7-stage9-phase1
+  browser_validator: validate:cross-board-shared-state-browser
+  runtime_hook: window.__memoryAtlasStage9Phase1
+  source_dependency: stage_8_review_passed_pending_stage9_no_github_main_upload
+  feature_summary:
+    - Cross-board shared state
+    - synchronized filters
+    - Inspector explanation layer
+    - No Stage 9 review
+  output_fields:
+    - shared_state_filters
+    - synchronized_filters
+    - inspector_explanation_layer
+  surfaces:
+    - home
+    - galaxy
+    - notion
+    - roi
+    - obsidian
+    - timeline
+    - contribution
+    - wordcloud
+    - search
+    - summary
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundaries:
+    - no_stage9_review
+    - no_stage10
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_proposal_queue_write
+    - no_agent_apply
+    - no_deploy
+    - no_github_main_upload
+stage8_review:
+  task_id: MA-V117-S8-REVIEW
+  acceptance_id: ACC-MA-V117-S8-REVIEW
+  status: stage_8_review_passed_pending_stage9_no_github_main_upload
+  required_validator: validate:v1.1.7-stage8
+  review_artifact: docs/reviews/memory_atlas_v1_1_7_stage8_review.md
+  phase_coverage:
+    - Phase 8.1
+    - Summary and iteration closure
+  phase_validators:
+    - validate:v1.1.7-stage8-phase1
+  browser_validators:
+    - validate:summary-iteration-closure-browser
+  runtime_versions:
+    - summary_iteration_closure_runtime.v1_1_7_stage8_phase1
+  closure_schema_version: memory_atlas_summary_closure.v1_1_7_stage8_phase1
+  next_gate: pending Stage 9
+  boundary_label: "No Stage 9 work; No GitHub main upload"
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundaries:
+    - no_stage9_work
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_proposal_queue_write
+    - no_agent_apply
+    - no_deploy
+    - no_github_main_upload
+stage8_phase1_summary_iteration_closure:
+  task_id: MA-V117-S8P01
+  phase_label: Phase 8.1
+  feature_label: Summary and iteration closure
+  acceptance_id: ACC-MA-V117-S8P01
+  status: phase_8_1_summary_iteration_closure_runtime_completed_pending_stage8_review
+  runtime_version: summary_iteration_closure_runtime.v1_1_7_stage8_phase1
+  closure_schema_version: memory_atlas_summary_closure.v1_1_7_stage8_phase1
+  source_review_schema_version: memory_atlas_review_summary.v1_1_7_stage7_phase2
+  required_validator: validate:v1.1.7-stage8-phase1
+  browser_validator: validate:summary-iteration-closure-browser
+  runtime_hook: window.__memoryAtlasStage8Phase1
+  source_dependency: stage_7_review_passed_pending_stage8_no_github_main_upload
+  output_fields:
+    - change_comparison
+    - stale_conflict_signals
+    - proposal_candidates
+  panels:
+    - change_comparison
+    - stale_conflict_signals
+    - proposal_candidates
+  proposal_controls:
+    proposal_only: true
+    requires_conflict_check: true
+    requires_agent_or_human_apply: true
+  browser_checks:
+    - runtime_root
+    - change_comparison
+    - stale_conflict_signals
+    - proposal_candidates
+    - debug_signal
+    - screenshot
+    - console_safety
+  next_gate: pending Stage 8 review
+  boundary_label: "No Stage 8 review; No GitHub main upload"
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundaries:
+    - no_stage8_review
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_proposal_queue_write
+    - no_agent_apply
+    - no_deploy
+    - no_github_main_upload
+stage7_phase1_search_2_0_runtime:
+  task_id: MA-V117-S7P01
+  phase_label: Phase 7.1
+  feature_label: Search 2.0
+  acceptance_id: ACC-MA-V117-S7P01
+  status: phase_7_1_search_2_0_runtime_completed_pending_stage7_review
+  runtime_version: search_2_0_runtime.v1_1_7_stage7_phase1
+  session_summary_version: search_2_0_session_summary.v1_1_7_stage7_phase1
+  required_validator: validate:v1.1.7-stage7-phase1
+  browser_validator: validate:search-2-0-browser
+  runtime_hook: window.__memoryAtlasStage7Phase1
+  result_fields:
+    - matched_reason
+    - evidence_refs
+    - proposal_candidate
+  result_actions:
+    - jump_to_starfield
+    - jump_to_river
+    - open_inspector
+  workflow_surfaces:
+    - query_input
+    - filter_state
+    - result_list
+    - search_session_summary
+    - zero_result_recovery
+  browser_checks:
+    - result_fields
+    - debug_signal
+    - zero_result_recovery
+    - jump_to_starfield
+    - jump_to_river
+    - open_inspector
+    - screenshot
+    - console_safety
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundary_label: "No Review / Summary / Iteration runtime; No GitHub main upload"
+  boundaries:
+    - no_review_summary_iteration_runtime
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_agent_apply
+    - no_deploy
+    - no_github_main_upload
+stage7_phase2_review_summary_iteration_runtime:
+  task_id: MA-V117-S7P02
+  phase_label: Phase 7.2
+  feature_label: Review / Summary / Iteration
+  acceptance_id: ACC-MA-V117-S7P02
+  status: phase_7_2_review_summary_iteration_runtime_completed_pending_stage7_review
+  runtime_version: review_summary_iteration_runtime.v1_1_7_stage7_phase2
+  review_schema_version: memory_atlas_review_summary.v1_1_7_stage7_phase2
+  required_validator: validate:v1.1.7-stage7-phase2
+  browser_validator: validate:review-summary-iteration-browser
+  runtime_hook: window.__memoryAtlasStage7Phase2
+  required_panels:
+    - review_period_selector
+    - theme_change_panel
+    - opportunity_panel
+    - low_value_loop_panel
+    - decision_change_panel
+    - next_action_panel
+    - proposal_decision_panel
+    - iteration_backlog
+  output_fields:
+    - proposal_candidate
+    - evidence_refs
+    - iteration_backlog
+  browser_checks:
+    - runtime_root
+    - eight_questions
+    - schema_output
+    - debug_signal
+    - screenshot
+    - console_safety
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundary_label: "No Stage 8 summary closure; No GitHub main upload"
+  boundaries:
+    - no_stage8_summary_closure
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_agent_apply
+    - no_deploy
+    - no_github_main_upload
+stage7_review:
+  task_id: MA-V117-S7-REVIEW
+  acceptance_id: ACC-MA-V117-S7-REVIEW
+  status: stage_7_review_passed_pending_stage8_no_github_main_upload
+  required_validator: validate:v1.1.7-stage7
+  review_artifact: docs/reviews/memory_atlas_v1_1_7_stage7_review.md
+  phase_coverage:
+    - Phase 7.1
+    - Phase 7.2
+    - Search 2.0
+    - Review / Summary / Iteration
+  phase_validators:
+    - validate:v1.1.7-stage7-phase1
+    - validate:v1.1.7-stage7-phase2
+  browser_validators:
+    - validate:search-2-0-browser
+    - validate:review-summary-iteration-browser
+  next_gate: pending Stage 8
+  boundary_label: "No Stage 8 work; No GitHub main upload"
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundaries:
+    - no_stage8_work
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_agent_apply
+    - no_deploy
+    - no_github_main_upload
+stage6_phase1_data_map_structure:
+  task_id: MA-V117-S6P01
+  phase_label: Phase 6.1
+  acceptance_id: ACC-MA-V117-S6P01
+  status: phase_6_1_data_map_structure_model_completed_pending_stage6_review
+  structure_model_version: data_map_structure_model.v1_1_7_stage6_phase1
+  relation_explanation_version: data_map_relation_explanation.v1_1_7_stage6_phase1
+  required_validator: validate:v1.1.7-stage6-phase1
+  browser_validator: validate:data-map-structure-browser
+  feature_label: Structure Model
+  relation_label: Relation Explanation
+  structure_layers:
+    - source_layer
+    - profile_layer
+    - project_decision_layer
+    - action_opportunity_layer
+  relation_fields:
+    - source
+    - strength
+    - evidence
+    - time
+  layer_requirements:
+    - node_types
+    - fields
+    - interaction
+    - detail_entry
+  runtime_hook: window.__memoryAtlasStage6Phase1
+  browser_checks:
+    - four_layers
+    - relation_click
+    - debug_signal
+    - screenshot
+    - console_safety
+  fallback: default_collapsed_available_explanation
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundary_label: "No Phase 6.2; No GitHub main upload"
+  boundaries:
+    - no_phase_6_2
+    - no_proposal_editing
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_agent_apply
+    - no_deploy
+    - no_github_main_upload
+stage6_phase2_data_map_detail_proposal:
+  task_id: MA-V117-S6P02
+  phase_label: Phase 6.2
+  feature_label: Details & Editing
+  acceptance_id: ACC-MA-V117-S6P02
+  status: phase_6_2_data_map_detail_proposal_completed_pending_stage6_review
+  detail_panel_version: data_map_detail_panel.v1_1_7_stage6_phase2
+  proposal_entry_version: data_map_proposal_entry.v1_1_7_stage6_phase2
+  required_validator: validate:v1.1.7-stage6-phase2
+  browser_validator: validate:data-map-detail-proposal-browser
+  detail_panel_label: 数据导图详情面板
+  proposal_entry_label: 数据导图 proposal 入口
+  detail_fields:
+    - asset
+    - theme
+    - suggested action
+    - importance
+    - priority
+  proposal_mode: proposal-only
+  runtime_hook: window.__memoryAtlasStage6Phase2
+  source_surface: data_guide_detail_panel
+  browser_checks:
+    - node_click
+    - detail_panel_fields
+    - proposal_export
+    - debug_signal
+    - screenshot
+    - console_safety
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundary_label: "No Stage 6 review; No GitHub main upload"
+  boundaries:
+    - no_stage_6_review
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_agent_apply
+    - no_deploy
+    - no_github_main_upload
+stage6_review_data_map_gate:
+  task_id: MA-V117-S6-REVIEW
+  acceptance_id: ACC-MA-V117-S6-REVIEW
+  status: stage_6_review_passed_pending_stage7_no_github_main_upload
+  required_validator: validate:v1.1.7-stage6
+  phase_label: Stage 6 Review
+  covered_phases:
+    - Phase 6.1
+    - Phase 6.2
+  next_gate_label: pending Stage 7
+  phase_validators:
+    - validate:v1.1.7-stage6-phase1
+    - validate:v1.1.7-stage6-phase2
+  browser_validators:
+    - validate:data-map-structure-browser
+    - validate:data-map-detail-proposal-browser
+  review_artifact: docs/reviews/memory_atlas_v1_1_7_stage6_review.md
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundary_label: "No GitHub main upload"
+  boundaries:
+    - no_stage_7_work
+    - no_search_2_0_work
+    - no_review_summary_iteration_runtime_work
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_agent_apply
+    - no_deploy
+    - no_github_main_upload
+stage4_phase3_integration:
+  task_id: MA-V117-S4P03
+  acceptance_id: ACC-MA-V117-S4P03
+  status: phase_4_3_integration_completed_pending_stage4_review
+  integration_version: memory_starfield_integration.v1_1_7_stage4_phase3
+  mapping_version: memory_starfield_snapshot_mapping.v1_1_7_stage4_phase3
+  required_validator: validate:v1.1.7-stage4-phase3
+  browser_validator: validate:memory-starfield-integration-browser
+  default_renderer_mode: memory-starfield
+  legacy_renderer_mode: legacy
+  mapping_source_priority:
+    - redacted_snapshot
+    - atlas_nodes_fallback
+  required_browser_proof:
+    - default_new_memory_starfield
+    - legacy_rollback
+    - snapshot_mapping
+    - formula_panel
+    - screenshot
+  data_boundary:
+    redacted_snapshot: src/fixtures/universe_state.sample.json
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    writeback_allowed: false
+  boundaries:
+    - no_stage5
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_agent_apply
+    - no_deploy
+    - no_github_main_upload
+stage5_phase3_timeline_integration:
+  task_id: MA-V117-S5P03
+  phase_label: Phase 5.3
+  acceptance_id: ACC-MA-V117-S5P03
+  status: phase_5_3_timeline_integration_completed_pending_stage5_review
+  integration_version: memory_river_integration.v1_1_7_stage5_phase3
+  required_validator: validate:v1.1.7-stage5-phase3
+  browser_validator: validate:memory-river-integration-browser
+  default_renderer: default memory-river
+  legacy_renderer: legacy
+  rollback_label: legacy rollback
+  rollback_paths:
+    - in_app_legacy_toggle
+    - timelineRenderer=legacy
+    - timeline=legacy
+    - localStorage_memory_atlas_timeline_renderer_legacy
+    - VITE_MEMORY_ATLAS_TIMELINE_RENDERER=legacy
+  required_browser_checks:
+    - default_memory_river
+    - legacy_rollback
+    - url_rollback
+    - brush_interaction
+    - selected_range_metadata
+    - evidence_layers
+    - screenshot
+    - console_safety
+  runtime_hook: window.__memoryAtlasStage5Phase3
+  data_boundary:
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    direct_active_memory_writeback: false
+    proposal_write: false
+  boundary_label: "No GitHub main upload; No Stage 5 review; No Stage 6"
+  boundaries:
+    - no_stage5_review
+    - no_stage6
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_agent_apply
+    - no_deploy
+    - no_github_main_upload
+stage5_phase1_interaction_contract:
+  task_id: MA-V117-S5P01
+  acceptance_id: ACC-MA-V117-S5P01
+  status: phase_5_1_interaction_contract_completed_pending_stage5_review
+  interaction_contract_version: memory_river_interaction_contract.v1_1_7_stage5_phase1
+  feedback_contract_version: memory_river_feedback_contract.v1_1_7_stage5_phase1
+  required_validator: validate:v1.1.7-stage5-phase1
+  required_interactions:
+    - zoom
+    - brush
+    - theme_lanes
+    - event_points
+    - status_bands
+    - detail_panel
+  required_feedback_controls:
+    - visual_feedback
+    - optional_audio
+    - pseudo_haptic
+    - reduced_motion
+    - feedback_disable_control
+    - audio_default_off
+    - vibration_not_required
+  anti_regression:
+    - not_date_list
+    - not_table
+    - not_static_scatter
+  boundaries:
+    - no_c3_river_spike
+    - no_timeline_replacement
+    - no_stage5_2
+    - no_runtime_ui
+    - no_css_change
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_agent_apply
+    - no_deploy
+    - no_github_main_upload
+stage5_phase2_c3_river_spike:
+  task_id: MA-V117-S5P02
+  phase_label: Phase 5.2
+  acceptance_id: ACC-MA-V117-S5P02
+  status: phase_5_2_c3_river_spike_completed_pending_stage5_review
+  spike_version: memory_river_c3_spike.v1_1_7_stage5_phase2
+  required_validator: validate:v1.1.7-stage5-phase2
+  browser_validator: validate:memory-river-spike-browser
+  time_scale_levels:
+    - year
+    - month
+    - week
+    - day
+  required_runtime_controls:
+    - zoom
+    - brush_selection
+    - selected_range_summary
+    - theme_lanes
+    - black_hole_band
+    - proto_star_marker
+    - reduced_motion
+  required_theme_trends:
+    - rising
+    - declining
+    - stable
+    - conflict
+  data_boundary:
+    fixture: apps/memory-atlas/src/experiments/memory-river-spike/fixture.ts
+    raw_private_data_allowed: false
+    plaintext_secrets_allowed: false
+    local_absolute_paths_allowed: false
+    writeback_allowed: false
+  browser_evidence:
+    url: /src/experiments/memory-river-spike/index.html?smoke=1
+    checks:
+      - year_month_week_day_levels
+      - zoom_scale_change
+      - selected_range_theme_events
+      - black_hole_proto_star_positioning
+      - reduced_motion
+      - screenshot
+  boundary_label: "No production Timeline replacement; No GitHub main upload"
+  boundaries:
+    - no_production_timeline_replacement
+    - no_production_route_or_navigation_change
+    - no_feature_flag_default_switch
+    - no_raw_private_read
+    - no_direct_active_memory_writeback
+    - no_agent_apply
+    - no_stage5_3
+    - no_github_main_upload
+v1_1_7_stage1_phase1:
+  task_id: MA-V117-S1P01
+  acceptance_id: ACC-MA-V117-S1P01
+  status: phase_1_1_universe_state_schema_completed_pending_stage1_review
+  required_validator: validate:v1.1.7-stage1-phase1
+  schema_version_retained: universe_state_snapshot.v1
+  required_state_fields:
+    - memory_weather
+    - dominant_clusters
+    - rising_clusters
+    - declining_clusters
+    - conflict_zones
+    - black_holes
+    - proto_stars
+    - stale_orbits
+    - memory_terrain
+    - river_pulse
+    - mini_starfield
+    - recommended_next_actions
+  required_consumer_maps:
+    - memory_overview
+    - memory_starfield
+    - memory_river
+    - data_map_2_0
+    - search_2_0
+    - review_summary_iteration
+    - inspector
+    - roi_dashboard
+  proposal_only_required: true
+  deferred_to_later_phases:
+    - suggested_action_detail_runtime
+    - tier_asset_detail_model
+    - topic_classification_detail_model
+    - proposal_editor
+    - production_ui_replacement
+    - browser_screenshot_acceptance
+v1_1_7_stage1_phase2:
+  task_id: MA-V117-S1P02
+  acceptance_id: ACC-MA-V117-S1P02
+  status: phase_1_2_next_action_detail_completed_pending_stage1_review
+  required_validator: validate:v1.1.7-stage1-phase2
+  top_action_limit: 5
+  next_action_sort_weights:
+    roi_weight: 0.40
+    urgency_weight: 0.25
+    confidence_weight: 0.25
+    effort_penalty_weight: 0.10
+  required_action_fields:
+    - action_id
+    - title
+    - action_type
+    - reason
+    - roi_score
+    - effort_cost
+    - urgency
+    - confidence
+    - source
+    - status
+    - evidence_count
+    - evidence_refs
+    - matched_reason
+    - linked_topic_ids
+    - linked_asset_ids
+    - next_step
+    - recommended_time_window
+    - proposal_hint
+    - rollback_hint
+    - proposal_only
+  proposal_only_required: true
+  no_direct_writeback: true
+  no_proposal_write_in_phase: true
+  deferred_to_later_phases:
+    - tier_asset_detail_model
+    - topic_classification_detail_model
+    - proposal_editor
+    - browser_screenshot_acceptance
+    - final_app_reinstall
+    - github_main_upload
+v1_1_7_stage1_phase3:
+  task_id: MA-V117-S1P03
+  acceptance_id: ACC-MA-V117-S1P03
+  status: phase_1_3_tier_asset_detail_completed_pending_stage1_review
+  required_validator: validate:v1.1.7-stage1-phase3
+  top_asset_limit: 7
+  asset_tier_values:
+    - core_profile
+    - project
+    - decision
+    - workflow
+    - knowledge
+    - opportunity
+    - stale
+  tier_asset_sort_weights:
+    value_weight: 0.35
+    importance_weight: 0.25
+    confidence_weight: 0.25
+    staleness_penalty_weight: 0.15
+  required_asset_fields:
+    - asset_id
+    - asset_tier
+    - title
+    - summary
+    - theme
+    - value_score
+    - updated_at
+    - importance
+    - priority
+    - confidence
+    - staleness_status
+    - last_seen_range
+    - evidence_count
+    - evidence_refs
+    - source_scope
+    - linked_action_ids
+    - linked_topic_ids
+    - recommended_asset_action
+    - proposal_hint
+    - rollback_hint
+    - proposal_only
+  proposal_only_required: true
+  no_direct_writeback: true
+  no_proposal_write_in_phase: true
+  deferred_to_later_phases:
+    - topic_classification_detail_model
+    - proposal_editor
+    - search_2_0_runtime
+    - review_workflow_runtime
+    - data_map_2_0_runtime
+    - browser_screenshot_acceptance
+    - final_app_reinstall
+    - github_main_upload
+v1_1_7_stage1_phase4:
+  task_id: MA-V117-S1P04
+  acceptance_id: ACC-MA-V117-S1P04
+  status: phase_1_4_topic_classification_detail_completed_pending_stage1_review
+  required_validator: validate:v1.1.7-stage1-phase4
+  top_topic_limit: 10
+  topic_state_values:
+    - dominant
+    - rising
+    - declining
+    - emerging
+    - conflict
+    - black_hole
+    - stale
+  topic_classification_sort_weights:
+    strength_weight: 0.38
+    trend_weight: 0.24
+    confidence_weight: 0.22
+    conflict_penalty_weight: 0.16
+  required_topic_fields:
+    - topic_id
+    - topic_label
+    - parent_topic
+    - category
+    - topic_state
+    - topic_strength
+    - trend
+    - roi_score
+    - conflict_score
+    - confidence
+    - record_count
+    - recent_count
+    - representative_record_ids
+    - evidence_refs
+    - matched_reason
+    - linked_asset_ids
+    - linked_action_ids
+    - starfield_handoff
+    - river_handoff
+    - proposal_hint
+    - rollback_hint
+    - proposal_only
+  proposal_only_required: true
+  no_direct_writeback: true
+  no_proposal_write_in_phase: true
+  deferred_to_later_phases:
+    - proposal_editor
+    - search_2_0_runtime
+    - review_workflow_runtime
+    - data_map_2_0_runtime
+    - browser_screenshot_acceptance
+    - final_app_reinstall
+    - github_main_upload
+v1_1_7_stage2_phase1:
+  task_id: MA-V117-S2P01
+  acceptance_id: ACC-MA-V117-S2P01
+  status: phase_2_1_editable_draft_model_completed_pending_stage2_review
+  required_validator: validate:v1.1.7-stage2-phase1
+  draft_schema_version: memory_atlas_proposal_draft.v1
+  draft_store_key: memory-atlas.proposal-drafts.v1
+  editable_field_whitelist:
+    - importance
+    - priority
+    - status
+    - theme_override
+    - action_state
+    - note
+  draft_target_types:
+    - memory_node
+    - suggested_action
+    - tier_asset
+    - topic_classification
+  draft_status_values:
+    - draft_local
+    - needs_review
+    - ready_for_agent_apply
+    - reverted
+  required_draft_fields:
+    - draft_id
+    - schema_version
+    - parent_snapshot_id
+    - source_surface
+    - target_type
+    - target_id
+    - field
+    - old_value
+    - proposed_value
+    - reason
+    - evidence_refs
+    - confidence
+    - status
+    - created_at
+    - updated_at
+    - proposal_only
+    - requires_conflict_check
+    - requires_agent_or_human_apply
+    - rollback_hint
+  proposal_only_required: true
+  no_direct_writeback: true
+  no_agent_apply_in_phase: true
+  no_proposal_ui_in_phase: true
+  refresh_warning_required: true
+  undo_draft_change_required: true
+  deferred_to_later_phases:
+    - proposal_ui
+    - proposal_diff_preview
+    - proposal_json_export
+    - search_2_0_runtime
+    - review_workflow_runtime
+    - data_map_2_0_runtime
+    - browser_screenshot_acceptance
+    - final_app_reinstall
+    - github_main_upload
+v1_1_7_stage2_phase2:
+  task_id: MA-V117-S2P02
+  acceptance_id: ACC-MA-V117-S2P02
+  status: phase_2_2_proposal_ui_completed_pending_stage2_review
+  required_validator: validate:v1.1.7-stage2-phase2
+  draft_schema_version: memory_atlas_proposal_draft.v1
+  export_schema_version: memory_atlas_proposal_export.v1
+  draft_store_key: memory-atlas.proposal-drafts.v1
+  proposal_ui_required_components:
+    - ProposalEditor
+    - ProposalDiffPreview
+  proposal_ui_fields:
+    - importance
+    - priority
+  export_required_fields:
+    - draft_id
+    - parent_snapshot_id
+    - source_surface
+    - target_ref
+    - original_value
+    - proposed_value
+    - changes
+    - rollback_metadata
+    - proposal_only
+    - requires_conflict_check
+    - requires_agent_or_human_apply
+  export_rollback_required: true
+  proposal_only_required: true
+  no_direct_writeback: true
+  no_agent_apply_in_phase: true
+  no_search_review_data_map_in_phase: true
+  deferred_to_later_phases:
+    - stage2_review
+    - search_2_0_runtime
+    - review_workflow_runtime
+    - data_map_2_0_runtime
+    - browser_screenshot_acceptance
+    - final_app_reinstall
+    - github_main_upload
+v1_1_7_stage3_phase1:
+  task_id: MA-V117-S3P01
+  acceptance_id: ACC-MA-V117-S3P01
+  status: phase_3_1_default_home_structure_completed_pending_stage3_review
+  required_validator: validate:v1.1.7-stage3-phase1
+  default_home_structure: memory_overview_default_home.v1_1_7_stage3_phase1
+  default_view: home
+  structure_sections:
+    - status_summary
+    - suggested_actions
+    - weather
+    - black_holes
+    - proto_stars
+    - assets
+    - themes
+    - entry_points
+  rollback_core_sections:
+    - status_summary
+    - suggested_actions
+    - weather
+    - entry_points
+  ux_rule: not a pile of cards
+  no_stage3_phase2_in_phase: true
+  no_direct_writeback: true
+  no_agent_apply_in_phase: true
+  deferred_to_later_phases:
+    - Stage 3 Phase 3.2
+    - search_2_0_runtime
+    - review_workflow_runtime
+    - data_map_2_0_runtime
+    - browser_screenshot_acceptance
+    - final_app_reinstall
+    - github_main_upload
+v1_1_7_stage3_phase2:
+  task_id: MA-V117-S3P02
+  acceptance_id: ACC-MA-V117-S3P02
+  status: phase_3_2_home_detail_operations_completed_pending_stage3_review
+  required_validator: validate:v1.1.7-stage3-phase2
+  home_detail_operations: memory_overview_detail_operations.v1_1_7_stage3_phase2
+  operation_sections:
+    - top_actions
+    - level_assets
+    - theme_categories
+  section_versions:
+    top_actions: top_actions_section.v1_1_7_stage3_phase2
+    level_assets: level_assets_section.v1_1_7_stage3_phase2
+    theme_categories: theme_categories_section.v1_1_7_stage3_phase2
+  top_actions_required_fields:
+    - suggestion
+    - reason
+    - priority
+    - status
+    - roi_score
+    - urgency
+    - evidence_count
+    - next_step
+  asset_groups:
+    - core_profile
+    - project
+    - decision
+    - temporary
+    - stale
+  theme_category_states:
+    - rising
+    - declining
+    - conflict
+    - opportunity
+    - stable
+  detail_entries:
+    - ActionDetailDrawer
+    - AssetDetailPanel
+    - ThemeDetailPanel
+  proposal_only_required: true
+  no_stage3_review_in_phase: true
+  no_direct_writeback: true
+  no_agent_apply_in_phase: true
+  deferred_to_later_phases:
+    - Stage 3 Review
+    - search_2_0_runtime
+    - review_workflow_runtime
+    - data_map_2_0_runtime
+    - browser_screenshot_acceptance
+    - final_app_reinstall
+    - github_main_upload
+v1_1_7_stage4_phase1:
+  task_id: MA-V117-S4P01
+  acceptance_id: ACC-MA-V117-S4P01
+  status: phase_4_1_visual_contract_update_completed_pending_stage4_review
+  required_validator: validate:v1.1.7-stage4-phase1
+  visual_contract_version: memory_starfield_visual_contract.v1_1_7_stage4_phase1
+  terrain_contract_version: memory_terrain_layer.v1_1_7_stage4_phase1
+  stage4_phase1_required_visual_primitives:
+    - nebula_field
+    - flow_field
+    - particle_trails
+    - gravity_sources
+    - black_hole_core
+    - proto_star_cloud
+    - memory_terrain_layer
+  stage4_phase1_required_terrain_classes:
+    - long_term_theme
+    - growth_band
+    - migration_flow
+    - relic
+    - black_hole
+    - opportunity
+  stage4_phase1_forbidden_visual_regressions:
+    - dots_only
+    - node_link_only
+    - plain_scatterplot
+    - obsidian_like_graph
+    - blank_canvas_fallback
+    - chart_like_network
+  stage4_phase1_boundary:
+    - Visual Contract Update
+    - No Phase 4.2
+    - No runtime renderer replacement
+    - No browser screenshot
+    - No production build
+    - No raw/private read
+    - No direct active-memory writeback
+    - No agent apply
+    - No GitHub main upload
+  future_proving_ground: C3 Starfield Spike
+  no_phase4_phase2_in_phase: true
+  no_runtime_renderer_replacement: true
+  no_direct_writeback: true
+  no_agent_apply_in_phase: true
+v1_1_7_stage4_phase2:
+  task_id: MA-V117-S4P02
+  acceptance_id: ACC-MA-V117-S4P02
+  status: phase_4_2_c3_starfield_spike_completed_pending_stage4_review
+  required_validator: validate:v1.1.7-stage4-phase2
+  stage4_phase2_browser_validator: validate:memory-starfield-spike-browser
+  spike_version: memory_starfield_c3_spike.v1_1_7_stage4_phase2
+  stage4_phase2_particle_floor: 10000
+  stage4_phase2_desktop_min_fps: 30
+  stage4_phase2_required_runtime_features:
+    - GPU particle spike
+    - Flow Field / Curl Noise
+    - Cluster Gravity
+    - Hover Cards B2
+    - screenshot
+  stage4_phase2_browser_metrics:
+    - particleCount >= 10000
+    - fps >= 30
+    - flowFieldMode == curl_noise_shader
+    - trajectoryTrailCount >= 256
+    - gravitySourceCount >= 6
+    - hoverCardMode == B2
+  stage4_phase2_boundary:
+    - C3 Starfield Spike
+    - No production Galaxy replacement
+    - No production route/navigation change
+    - No feature flag default switch
+    - No raw/private read
+    - No direct active-memory writeback
+    - No agent apply
+    - No GitHub main upload
+  no_production_galaxy_replacement: true
+  no_direct_writeback: true
+  no_agent_apply_in_phase: true

@@ -2,22 +2,22 @@
 
 ## Snapshot Metadata
 
-- source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
+- source_base_commit: `ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:0c8fa2276365a67eeaa586422882b54b549ffb3c852114d6eaded719ca79f491`
-- snapshot_event_time: `2026-06-24T23:20:00+10:00`
-- generator_version: `4.0.0`
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- source_snapshot_hash: `sha256:bf98509632bca5f764251c736c8d8e6368ef9ab5f53e523768cbff0f4b28c6dc`
+- snapshot_event_time: `2026-07-10T19:46:00+10:00`
+- generator_version: `4.0.1`
+- final_commit_binding: `COMMIT_BOUND:ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935`
 
 ## Current State
 
 - Project: `Serenity-Alipay`
 - Path: `Serenity-Alipay`
 - Product version: `0.1.0`
-- Phase/Gate: `B / GOV-REVIEW6-B-SEMANTIC-EXTRACT; OTHER8-S3PC-LIFECYCLE-IN-PROGRESS`
-- Models/Formulas/Parameters total: `5 / 12 / 49`
-- Active formulas/parameters: `12 / 49`
-- Machine checked formulas/parameters: `12 / 49`
+- Phase/Gate: `CF-L2 / ACC-CF-L2-20260710-PASSED`
+- Models/Formulas/Parameters total: `5 / 12 / 50`
+- Active formulas/parameters: `12 / 50`
+- Machine checked formulas/parameters: `12 / 50`
 
 ## Assurance
 
@@ -35,10 +35,10 @@
 ## Delivery
 
 - Readiness: `UNVERIFIED`
-- Release gate: `GOV-REVIEW6-B-SEMANTIC-EXTRACT; OTHER8-S3PC-LIFECYCLE-IN-PROGRESS`
+- Release gate: `ACC-CF-L2-20260710-PASSED`
 - Next executable task: `NONE`
-- Pending/stale events: `5`
+- Pending/stale events: `7`
 - Tree-bound events: `0`
-- Commit-bound events: `1`
+- Commit-bound events: `4`
 - Legacy unbound events: `3`
 - Unresolved fact IDs: `2`

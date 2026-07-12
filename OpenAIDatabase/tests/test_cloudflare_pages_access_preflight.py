@@ -43,6 +43,18 @@ def valid_atlas() -> dict:
 
 
 class CloudflarePagesAccessPreflightTests(unittest.TestCase):
+    def test_static_output_directory_accepts_pages_and_workers_assets_configs(self) -> None:
+        module = load_module()
+
+        self.assertEqual(
+            module.static_output_directory({"pages_build_output_dir": "apps/memory-atlas/dist"}),
+            "apps/memory-atlas/dist",
+        )
+        self.assertEqual(
+            module.static_output_directory({"assets": {"directory": "./apps/memory-atlas/dist"}}),
+            "apps/memory-atlas/dist",
+        )
+
     def test_preflight_passes_for_repo_without_live_env(self) -> None:
         module = load_module()
 
@@ -50,6 +62,12 @@ class CloudflarePagesAccessPreflightTests(unittest.TestCase):
 
         self.assertEqual(result["status"], "PASS")
         names = {check["name"] for check in result["checks"]}
+        self.assertEqual(
+            result["deployment_mode"],
+            "pages_direct_upload_with_workers_migration_ready_config",
+        )
+        self.assertIn("cloudflare_delivery_mode_contract", names)
+        self.assertIn("wrangler_static_output_config", names)
         self.assertIn("cloudflare_pages_template_contract", names)
         self.assertIn("cloudflare_access_template_contract", names)
         self.assertIn("cloudflare_live_deploy_authorization", names)

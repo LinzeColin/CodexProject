@@ -1,0 +1,53 @@
+{
+  "schema_version": "memory_atlas.remediation_r0_status.v1",
+  "phase": "R0",
+  "captured_at": "2026-07-10T07:52:10Z",
+  "status": "R0_COMPLETE_RELEASE_REOPENED",
+  "release_status": "FAIL_REMEDIATION_REQUIRED",
+  "supersedes_completion_claims": [
+    "v1_2_final_delivery_completed_with_protected_cloudflare_live_evidence",
+    "v1_2_final_review_passed_pending_github_main_sync_no_upload_yet",
+    "COMPLETE_WITH_OPERATOR_EVIDENCE"
+  ],
+  "source_recovery": {
+    "status": "PASS_EXACT_BYTE_RECOVERY",
+    "roadmap_sha256": "699a8fe5f99a5edc88fec1f8940c4339f7b9b291bd31830f946f521f80904a71",
+    "taskpack_sha256": "38e21ae3e94d860e6a40c70a629c8f7048f889164358df7b184bd8caf7bf2472",
+    "manifest_payload_count": 30,
+    "manifest_payload_failures": 0
+  },
+  "gap_matrix": {
+    "requirement_count": 58,
+    "verified": 28,
+    "partial": 19,
+    "failed": 9,
+    "not_verified": 2,
+    "release_blocking_failures": true
+  },
+  "browser_baseline": {
+    "viewports": [
+      "1470x661",
+      "1440x900",
+      "390x844"
+    ],
+    "all_viewports_have_command_palette_content_overlap": true,
+    "command_palette_client_height_px": 26,
+    "command_palette_scroll_height_px_range": [
+      361,
+      891
+    ],
+    "local_and_online_bundle_names_match": true,
+    "local_nodes": 403,
+    "local_edges": 2134,
+    "online_nodes": 340,
+    "online_edges": 1771,
+    "snapshot_parity": false
+  },
+  "user_visual_acceptance_required": false,
+  "automated_multiviewport_acceptance_authorized": true,
+  "github_main_upload_allowed": false,
+  "remote_push": false,
+  "deployment": false,
+  "app_reinstall": false,
+  "next_phase": "R1_LAYOUT_AND_MULTIVIEWPORT_GATE"
+}

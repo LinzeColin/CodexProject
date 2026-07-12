@@ -1,0 +1,101 @@
+{
+  "automation_name": "每日早晚钉钉考勤检查",
+  "backend": "dws",
+  "known_recipients": {
+    "boss": {
+      "dingtalk_user_id": "CONFIG_REQUIRED",
+      "name": "老板"
+    },
+    "zhang_linze": {
+      "dingtalk_user_id": "1iv-1t2oesv2yd",
+      "name": "张霖泽"
+    }
+  },
+  "live_only": true,
+  "notification_backend": {
+    "current_mode": "dingtalk_group_robot",
+    "dispatch_status_enum": [
+      "SENT",
+      "FAILED",
+      "NOTIFIER_CONFIG_MISSING",
+      "DINGTALK_ROBOT_ERROR"
+    ],
+    "latest_report_only_supported": true,
+    "local_config_path": "KMFA/metadata/dingtalk_attendance/private_runtime/.env.local",
+    "local_config_tracked": false,
+    "required_message_keyword": "开明考勤"
+  },
+  "onedrive_month_folder_pattern": "YYYYMM",
+  "onedrive_root": "/Users/linzezhang/OneDrive/dingtalk_attendance",
+  "official_statistics_source": {
+    "anomaly_source": "attendance_report_exact_columns",
+    "batch_size": 5,
+    "business_date_timezone": "Asia/Shanghai",
+    "coverage_gate": "official_report_coverage_count_equals_attendance_group_member_count",
+    "failure_status": "OFFICIAL_ATTENDANCE_PARITY_FAILED",
+    "legacy_record_and_summary_role": "diagnostic_only",
+    "membership_scope": "current_attendance_groups",
+    "required_columns": [
+      "考勤结果",
+      "应出勤天数",
+      "出勤天数",
+      "休息天数",
+      "迟到次数",
+      "早退次数",
+      "上班缺卡次数",
+      "下班缺卡次数",
+      "旷工天数"
+    ]
+  },
+  "private_archive_file_types": [
+    "raw.jsonl.gz",
+    "management.md",
+    "hr.md",
+    "dispatch.json",
+    "manifest.json",
+    "cleanup.json"
+  ],
+  "ledger_index": {
+    "canonical_user_day_precedence": "latest_official_then_latest_legacy",
+    "enabled": true,
+    "private_sqlite_path": "KMFA/metadata/dingtalk_attendance/private_runtime/attendance_ledger.sqlite",
+    "rebuild_command": "python tools/dingtalk_attendance/sync_attendance_ledger.py --all",
+    "salary_basis_allowed": false,
+    "schema_version": 2,
+    "source_of_truth": "OneDrive raw/manifest/dispatch/cleanup archives",
+    "tracked_in_git": false,
+    "validate_command": "python tools/dingtalk_attendance/sync_attendance_ledger.py --validate"
+  },
+  "notification_monthly_rollup": {
+    "eligible_identity": "canonical_skill_id",
+    "eligible_run_type": "final",
+    "legacy_archives_allowed": false,
+    "temporary_reminder_archives_allowed": false
+  },
+  "result_lifecycle": {
+    "morning": "TEMPORARY_REMINDER",
+    "evening": "TEMPORARY_REMINDER",
+    "final": "OFFICIAL_FINAL_RECONCILIATION",
+    "delivery_enabled": false
+  },
+  "private_runtime_sqlite": true,
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "credential_committed": false,
+    "employee_plaintext_committed": false,
+    "raw_api_response_committed": false,
+    "report_body_committed": false,
+    "sqlite_committed": false
+  },
+  "schedule": {
+    "business_date_timezone": "Asia/Shanghai",
+    "evening": "20:00",
+    "evening_clock": "local_wall_clock",
+    "morning": "10:35",
+    "morning_clock": "business_clock",
+    "scheduler_timezone_configured": false,
+    "summary_datetime_source": "actual_run_datetime_in_business_date_timezone"
+  },
+  "skill_id": "kmfa-dingtalk-attendance-skill",
+  "sqlite_committed": false
+}

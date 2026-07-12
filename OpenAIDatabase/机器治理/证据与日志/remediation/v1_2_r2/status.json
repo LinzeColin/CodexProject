@@ -1,0 +1,149 @@
+{
+  "schema_version": "memory_atlas.remediation_r2_status.v1",
+  "phase": "R2",
+  "captured_at": "2026-07-10T09:36:04Z",
+  "status": "R2_COMPLETE_LOCAL_ONLY",
+  "release_status": "FAIL_REMEDIATION_REQUIRED",
+  "base_commit": "27c316a685126dddf9690d6344de8e69592cdb62",
+  "origin_main_at_phase_start": "00f4187f43960a3b25fc696ae2a15951f4431763",
+  "product_identity": {
+    "brand": "Memory Atlas",
+    "product_line": "记忆决策台 · v1.2",
+    "home_route_label": "发生了什么",
+    "topbar_context": "先看变化，再核对证据，最后决定下一步",
+    "navigation_group_count": 3,
+    "navigation_route_count": 10,
+    "navigation_groups": [
+      "judgment",
+      "exploration",
+      "reflection"
+    ]
+  },
+  "browser_acceptance": {
+    "validator": "validate:v1.2-home-multiviewport",
+    "viewports": [
+      "1470x661",
+      "1440x900",
+      "390x844"
+    ],
+    "before_pass_count": 0,
+    "before_failure_count": 3,
+    "final_pass_count": 3,
+    "final_failure_count": 0,
+    "final_pairwise_overlap_count": 0,
+    "final_horizontal_overflow_count": 0,
+    "final_viewport_escape_count": 0,
+    "default_internal_copy_match_count_per_viewport": 0,
+    "folded_technical_detail_classes": 4,
+    "technical_disclosure_keyboard_open_close": true,
+    "mobile_navigation_tab_forward_count": 10,
+    "mobile_navigation_shift_tab_reverse_count": 9,
+    "mobile_navigation_route_activation_count": 10,
+    "mobile_navigation_full_geometry_step_count": 19,
+    "mobile_navigation_max_focus_clip_px": 0,
+    "nested_home_targets_checked_per_viewport": 27,
+    "nested_home_children_checked_per_viewport": 70,
+    "nested_home_issue_count": 0,
+    "s06_behavior_category_count": 3,
+    "s06_chinese_summary_count": 9,
+    "s06_chinese_summaries_reachable": true,
+    "final_topbar_height_px": {
+      "1470x661": 56,
+      "1440x900": 56,
+      "390x844": 46
+    },
+    "final_lens_height_px": {
+      "1470x661": 45,
+      "1440x900": 45,
+      "390x844": 78
+    },
+    "final_command_palette_height_px": {
+      "1470x661": 119,
+      "1440x900": 152,
+      "390x844": 140
+    },
+    "final_content_viewport_height_px": {
+      "1470x661": 345,
+      "1440x900": 551,
+      "390x844": 311
+    },
+    "preview_ports_released": true
+  },
+  "requirements_after_r2": {
+    "requirement_count": 58,
+    "verified": 34,
+    "partial": 16,
+    "failed": 6,
+    "not_verified": 2,
+    "promoted_to_verified": [
+      "S05-AC04",
+      "S09-AC04",
+      "S10-AC02",
+      "S10-AC03"
+    ],
+    "kept_partial": [
+      "S03-AC05"
+    ]
+  },
+  "regression": {
+    "python_focused_tests": "9 passed",
+    "typescript_lint": "PASS",
+    "production_build": "PASS",
+    "chinese_ux_audit": "PASS_BAD_ITEMS_0",
+    "historical_contract_validators": {
+      "validate:v1.2-s10-review": "PASS_45_CHECKS",
+      "validate:v1.2-s11-review": "PASS_55_CHECKS",
+      "validate:v1.2-s12-p1": "PASS_46_CHECKS"
+    },
+    "stage7_visual": "PASS",
+    "galaxy_lit_pixel_samples": 67161,
+    "galaxy_points": 11828,
+    "memory_river_markers": 64,
+    "memory_river_density_bands": 48,
+    "actionable_console_errors": 0,
+    "actionable_failed_responses": 0
+  },
+  "review": {
+    "independent_reviewer": "completed",
+    "critical_findings": 0,
+    "important_findings_initial": 2,
+    "important_findings_final": 0,
+    "resolution": [
+      "static UI terminology was further localized and now has exact rendered DOM assertions",
+      "a stronger keyboard gate caught a real 36px right clip at the obsidian route before the focus behavior was fixed",
+      "mobile navigation now uses real Tab, Enter and Shift+Tab traversal with full scrollport containment and zero clip at all 19 forward and reverse steps",
+      "accepted product terms remain allowed only with Chinese context per the approved R2 design"
+    ]
+  },
+  "evidence": {
+    "before": "机器治理/证据与日志/remediation/v1_2_r2/browser/before/status.json",
+    "final": "机器治理/证据与日志/remediation/v1_2_r2/browser/after/status.json",
+    "stage7": "机器治理/证据与日志/remediation/v1_2_r2/regression/stage7/status.json",
+    "requirement_delta": "机器治理/证据与日志/remediation/v1_2_r2/requirements_gap_delta.csv",
+    "human_record": "docs/remediation/memory_atlas_v1_2/R2_PRODUCT_IDENTITY_AND_INFORMATION_ARCHITECTURE.md"
+  },
+  "git_state_at_close": {
+    "origin_main": "b864009c657c6a9cebbf451e30389c1aa5809700",
+    "origin_main_changed_during_phase": true,
+    "local_ahead_of_origin": 4,
+    "local_behind_origin": 7,
+    "local_branch_count": 1,
+    "local_stash_count": 0,
+    "open_pull_request_count": 0,
+    "preview_ports_released": true,
+    "overlapping_remote_surfaces": [
+      "OpenAIDatabase/apps/memory-atlas/src/App.tsx: HomeHub return link",
+      "OpenAIDatabase/apps/memory-atlas/src/styles.css: HomeHub return link styles",
+      "OpenAIDatabase/apps/memory-atlas/scripts/validate_stage7_visual_acceptance.cjs: stable timeline selector"
+    ],
+    "reconciliation_action": "DEFER_TO_R8_PRESERVE_BOTH_HISTORIES_NO_MERGE_REBASE_OR_PUSH_IN_R2"
+  },
+  "github_main_upload_allowed": false,
+  "remote_push": false,
+  "deployment": false,
+  "app_reinstall": false,
+  "command_execution_added": false,
+  "proposal_apply_added": false,
+  "raw_mutation": false,
+  "next_phase": "R3_REAL_COMMAND_PALETTE_WORKFLOWS"
+}

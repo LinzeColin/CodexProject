@@ -1,0 +1,63 @@
+{
+  "acceptance_id": "ACC-MA-V12-S09P1",
+  "blocked_output_terms": [
+    "心理诊断",
+    "人格诊断",
+    "人格标签",
+    "抑郁",
+    "焦虑症"
+  ],
+  "confidence_policy": {
+    "badge_max_confidence": {
+      "A": 0.85,
+      "B": 0.75,
+      "C": 0.6,
+      "D": 0.45
+    },
+    "high_confidence_requires_badge": [
+      "A",
+      "B"
+    ],
+    "max_confidence": 0.85,
+    "no_high_confidence_without_evidence": true
+  },
+  "evidence_strength_badges": [
+    {
+      "badge": "A",
+      "definition_zh": "多来源、多时间点、多证据一致"
+    },
+    {
+      "badge": "B",
+      "definition_zh": "单来源但多次出现"
+    },
+    {
+      "badge": "C",
+      "definition_zh": "新兴信号，证据较少"
+    },
+    {
+      "badge": "D",
+      "definition_zh": "假设，需要验证"
+    }
+  ],
+  "latent_signal_mode": "evidence_backed_falsifiable_candidate",
+  "required_signal_fields": [
+    "claim_zh",
+    "supporting_evidence_refs",
+    "contradicting_evidence_refs",
+    "alternative_explanation_zh",
+    "confidence",
+    "evidence_strength_badge",
+    "next_validation_zh"
+  ],
+  "scope_boundary": {
+    "decision_debt_ledger": "deferred_to_s09_p3",
+    "github_main_upload": false,
+    "personality_label": false,
+    "proposal_expiry": "deferred_to_s09_p2",
+    "psychological_diagnosis": false,
+    "raw_mutation": false,
+    "self_iteration_suggestions": "deferred_to_s09_p2"
+  },
+  "schema_version": "memory_atlas_latent_signals_config.v1_2_s09_p1",
+  "task_id": "MA-V12-S09P1"
+}

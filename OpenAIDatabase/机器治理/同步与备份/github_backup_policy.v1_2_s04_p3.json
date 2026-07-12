@@ -1,0 +1,44 @@
+{
+  "acceptance_id": "ACC-MA-V12-S04P3",
+  "automation_support": {
+    "local_apply_command": "python scripts/atlasctl.py push --apply",
+    "manual_push_command": "git push origin HEAD:main",
+    "scheduled_mode": "local_commit_then_human_or_final_workflow_push"
+  },
+  "backup_targets": [
+    "data/public_raw",
+    "data/derived",
+    "data/run_logs",
+    "docs/reviews",
+    "reports"
+  ],
+  "command_contracts": {
+    "apply": {
+      "command": "python scripts/atlasctl.py push --apply",
+      "commits_locally": true,
+      "pushes_remote": false,
+      "writes_files": true
+    },
+    "dry_run": {
+      "command": "python scripts/atlasctl.py push --dry-run",
+      "pushes_remote": false,
+      "writes_files": false
+    }
+  },
+  "failure_contract": {
+    "chinese_reason_required": true,
+    "fallback_suggestion_required": true,
+    "missing_git_worktree_reason": "not_git_worktree",
+    "no_fake_backup": true
+  },
+  "phase_boundary": {
+    "does_not_push_github_main": true,
+    "does_not_reinstall_app": true,
+    "does_not_delete_raw": true,
+    "does_not_modify_chatgpt_state": true,
+    "next_gate": "S04 Review"
+  },
+  "policy_id": "memory_atlas_github_backup_policy_v1_2_s04_p3",
+  "status": "phase_s04_p3_github_backup_completed_pending_s04_review",
+  "task_id": "MA-V12-S04P3"
+}
