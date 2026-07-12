@@ -2,7 +2,7 @@
 
 roadmap_progress: R4 / R4.3
 
-status: BLOCKED
+status: R4_OFFICIAL_DATA_RECONSTRUCTION_PASS
 
 r2_close_commit: b5b06437dfb15bfb0e302c4e735fe2978ddcd579
 
@@ -22,13 +22,15 @@ current_availability: UNAVAILABLE
 
 - 已冻结 2026-07-09 与 2026-07-10 两份独立官方工作簿；本轮只对这两个日期执行授权的只读钉钉/DWS 查询，未修改钉钉数据、配置、规则或人员范围。
 - 企业实际报表为 49 列，不再使用预设九列替代完整官方报表。
-- 两天官方与 DWS 均为 44 人，按文本 UserId 对齐后缺少人员 0、多出人员 0；比较总量为 4,312 个单元格。
-- 初始对账：未映射列 8、无来源单元格 704、仅格式不同 242、真实值差异 1,498。
-- 先前缺失的 22 个统计/审批列已全部绑定真实 DWS 来源；2026-07-09 使用补卡审批结算后的最终打卡结果。
-- 唯一一次修正后复核：真实值差异 0、仅格式不同 0，但“部门”仍有 1 个未映射列和 8 个无来源单元格。
-- 多部门员工资料没有可验证的主部门字段；为避免按数组顺序猜测，状态保持 `BLOCKED`，不再继续修改还原逻辑。
+- Owner 已裁决“部门”为可选展示字段：不参与人员匹配、异常判断、月累计、通知或官方验收；无可靠主部门时记录 `UNVERIFIED`，不得猜值。
+- 正式必需字段为其余 48 列。两天官方/DWS/UserId 匹配均为 44/44/44，每天比较 2,112 格，两天合计 4,224 格。
+- 最终复核达到：缺人 0、多出 0、必需列缺失 0、必需单元格缺失 0、真实值差异 0。
+- 两个工作日均生成包含官方文件指纹、工作日期和聚合门槛的统一正式凭证；`final_reconciliation.py` 无转换直接读回 `PASS`。
+- R4 官方考勤数据还原通过；整个 skill 仍为 `UNAVAILABLE` / `NOT_ACCEPTED`，必须等待下一阶段真实无发送运行。
 - 公开脱敏一页结果：`docs/R4_OFFICIAL_RECONCILIATION_RESULT.md`。官方原件、指纹明细、员工数据和逐格差异仅保存在本机私有证据目录。
 - 本轮执行了明确授权范围内的只读钉钉/DWS 查询；未发送钉钉消息，未修改 automation、schedule、time、timezone、cwd、目标或通知文案，未触碰其他 skill。
+
+next_action: complete one real no-send attendance run before any usability reassessment
 
 ## R3.3 撤回与证据判定
 

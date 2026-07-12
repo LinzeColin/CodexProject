@@ -39,12 +39,15 @@ from KMFA.tools.dingtalk_attendance.identity import (
     validate_manifest_identity,
 )
 from KMFA.tools.dingtalk_attendance.notification_template import official_report_parity_failure_reason
+from KMFA.tools.dingtalk_attendance.official_report_reconstruction import (
+    INDEPENDENT_EVIDENCE_KIND,
+    validate_reconciliation_certificate,
+)
 from KMFA.tools.dingtalk_attendance.onedrive_archive import archive_paths_for_run
 from KMFA.tools.dingtalk_attendance.run_attendance import build_run_plan
 
 
 FINAL_RESULT_KIND = "OFFICIAL_FINAL_RECONCILIATION"
-INDEPENDENT_EVIDENCE_KIND = "INDEPENDENT_OFFICIAL_EXPORT_VS_DWS"
 
 
 def build_one_page_result(
@@ -82,7 +85,7 @@ def build_one_page_result(
         "- production acceptance：NOT_EVALUATED",
         "- owner usability：NOT_ACCEPTED",
         "",
-        "只有独立官方导出原件与对应 DWS raw 完成逐员工、逐官方列零差异对账时，本页才可标记 PASS；DWS 内部检查不能替代该证据。",
+        "只有独立官方导出原件与对应 DWS raw 完成逐员工、48 个必需列零缺失零差异对账时，本页才可标记 PASS；部门仅为可选展示字段，DWS 内部检查不能替代该证据。",
         "",
     ]
     return "\n".join(lines)
@@ -224,30 +227,13 @@ def _load_independent_reconciliation_evidence(path: Path | None, *, work_date: s
             "evidence_status": "EVIDENCE_MISSING",
             "failure_reason": "independent reconciliation evidence is missing or unreadable",
         }
-    required_zero_fields = ("missing_people", "extra_people", "missing_columns", "differing_cells")
-    counts_are_zero = all(evidence.get(key) == 0 or evidence.get(key) == [] for key in required_zero_fields)
-    people_match = (
-        isinstance(evidence.get("official_people"), int)
-        and evidence.get("official_people") > 0
-        and evidence.get("official_people") == evidence.get("dws_people") == evidence.get("matched_people")
-    )
-    columns_complete = isinstance(evidence.get("compared_columns"), int) and evidence.get("compared_columns") > 0
-    fingerprint = str(evidence.get("official_sha256") or "")
-    valid_pass = (
-        evidence.get("evidence_kind") == INDEPENDENT_EVIDENCE_KIND
-        and evidence.get("work_date") == work_date
-        and evidence.get("status") == "PASS"
-        and counts_are_zero
-        and people_match
-        and columns_complete
-        and len(fingerprint) == 64
-        and all(char in "0123456789abcdef" for char in fingerprint.lower())
-    )
-    if not valid_pass:
+    validation_errors = validate_reconciliation_certificate(evidence, expected_work_date=work_date)
+    if validation_errors:
         return {
             "status": "OFFICIAL_FINAL_RECONCILIATION_BLOCKED",
             "evidence_status": "BLOCKED",
-            "failure_reason": "independent official-export reconciliation is incomplete or has differences",
+            "failure_reason": "independent official-export reconciliation certificate is invalid: "
+            + ", ".join(validation_errors),
         }
     return {"status": "PASS", "evidence_status": "PASS", "failure_reason": ""}
 
