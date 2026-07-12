@@ -516,8 +516,28 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
         self.assertIn("晨间提醒—晚间提醒—官方最终核对", page)
         self.assertIn("发送状态：关闭", page)
-        self.assertIn("官方最终核对：PASS", page)
+        self.assertIn("官方最终核对：EVIDENCE_MISSING", page)
+        self.assertIn("INDEPENDENT_OFFICIAL_EXPORT_REQUIRED", page)
+        self.assertNotIn("REAL_DINGTALK_OFFICIAL_REPORT", page)
         self.assertNotIn("employee", page.lower())
+
+    def test_r4_final_reconciliation_fails_closed_without_independent_export(self) -> None:
+        from KMFA.tools.dingtalk_attendance.final_reconciliation import run_final_reconciliation
+
+        def collector(**_: object) -> dict:
+            raise AssertionError("DWS collector must not run without independent official export evidence")
+
+        result = run_final_reconciliation(
+            work_date="2026-07-10",
+            timezone="Asia/Shanghai",
+            collector=collector,
+            cleanup=lambda: {"status": "PASS"},
+            now=datetime(2026, 7, 12, 9, 0, tzinfo=ZoneInfo("Asia/Shanghai")),
+        )
+
+        self.assertEqual(result["status"], "OFFICIAL_EVIDENCE_MISSING")
+        self.assertEqual(result["independent_evidence_status"], "EVIDENCE_MISSING")
+        self.assertEqual(result["notification_status"], "NOT_SENT_OWNER_DISABLED")
 
     def test_identity_migration_new_writer_and_legacy_reader_contract(self) -> None:
         identity = importlib.import_module("KMFA.tools.dingtalk_attendance.identity")
