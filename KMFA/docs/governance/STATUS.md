@@ -5,26 +5,26 @@
 ## 最新状态
 
 - project_id: `KMFA`
-- version: `0.1.4-s18-post-remediation-stage-review`
-- current_stage: `S18`
-- current_phase: `V014_S18_POST_REMEDIATION_STAGE_REVIEW`
-- status: `completed_validated_local_only_stage18_review_no_go_upload_deferred`
+- version: `0.1.4-final-overall-review`
+- current_stage: `S01-S18 final overall review`
+- current_phase: `V014_FINAL_OVERALL_REVIEW`
+- status: `completed_validated_local_only_final_overall_review_no_go_code_upload_ready`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `v1.4_final_whole_project_review_and_finding_fix_as_separate_run`
+- next_required_input: `one_time_public_safe_github_main_upload_as_separate_run`
 - production_ready: `false`
-- github_upload_ready: `false`
+- github_upload_ready: `true_public_safe_code_only_not_performed`
 - raw_snapshot_exact_match: `true`
 - decision: `NO_GO`
 
 ## 前序状态（上一 phase）
 
 - project_id: `KMFA`
-- version: `0.1.4-s18-p3-post-remediation-integration-preparation`
+- version: `0.1.4-s18-post-remediation-stage-review`
 - current_stage: `S18`
-- current_phase: `V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION`
-- status: `completed_validated_local_only_s18_p3_integration_prepared_no_go_upload_deferred`
+- current_phase: `V014_S18_POST_REMEDIATION_STAGE_REVIEW`
+- status: `completed_validated_local_only_stage18_review_no_go_upload_deferred`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `Stage_18_overall_review_and_finding_fix_as_separate_run`
+- next_required_input: `v1.4_final_whole_project_review_and_finding_fix_as_separate_run`
 - raw_snapshot_exact_match: `true`
 - decision: `NO_GO`
 

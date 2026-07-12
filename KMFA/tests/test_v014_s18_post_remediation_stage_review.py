@@ -182,10 +182,12 @@ class V014S18PostRemediationStageReviewTests(unittest.TestCase):
             rows = self.review._read_jsonl(path)
             self.assertEqual(sum(row.get("phase_id") == self.review.PHASE_ID for row in rows), 1)
             self.assertEqual(sum(row.get("phase_id") == self.review.p3.PHASE_ID for row in rows), 1)
-        handoff = Path("KMFA/HANDOFF.md").read_text(encoding="utf-8")
-        self.assertIn("下一步只能执行 v1.4 最终整体复审", handoff)
-        self.assertIn("不得执行 GitHub upload", handoff)
-        self.assertIn("不得执行 App 重装", handoff)
+        version_matrix = Path("KMFA/docs/governance/VERSION_MATRIX.yaml").read_text(encoding="utf-8")
+        if f'current_phase: "{self.review.PHASE_ID}"' in version_matrix:
+            handoff = Path("KMFA/HANDOFF.md").read_text(encoding="utf-8")
+            self.assertIn("下一步只能执行 v1.4 最终整体复审", handoff)
+            self.assertIn("不得执行 GitHub upload", handoff)
+            self.assertIn("不得执行 App 重装", handoff)
         self.assertEqual(self.manifest["next_phase"], "V014_FINAL_OVERALL_REVIEW")
 
 

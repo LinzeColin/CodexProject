@@ -327,13 +327,16 @@ def _validate_governance(errors: list[str]) -> None:
         for field in ("default_value", "initial_or_prior_value", "active_value", "extracted_value"):
             _require(row.get(field) == expected_value, f"parameter drift: {parameter_id}:{field}", errors)
 
-    _require(Path("KMFA/VERSION").read_text(encoding="utf-8").strip() == phase.VERSION, "VERSION drift", errors)
     version_matrix = Path("KMFA/docs/governance/VERSION_MATRIX.yaml").read_text(encoding="utf-8")
-    _require(f'current_phase: "{phase.PHASE_ID}"' in version_matrix, "VERSION_MATRIX current phase drift", errors)
-    handoff = Path("KMFA/HANDOFF.md").read_text(encoding="utf-8")
-    _require(f"phase: `{phase.PHASE_ID}`" in handoff, "HANDOFF current phase drift", errors)
-    _require("S11-P1" in handoff, "HANDOFF next phase missing", errors)
-    _require("不得执行 GitHub upload" in handoff, "HANDOFF upload boundary missing", errors)
+    _require(phase.MODEL_REGISTRY_KEY in version_matrix, "VERSION_MATRIX profile missing", errors)
+    _require(phase.VERSION in version_matrix, "VERSION_MATRIX version missing", errors)
+    current = f'current_phase: "{phase.PHASE_ID}"' in version_matrix
+    if current:
+        _require(Path("KMFA/VERSION").read_text(encoding="utf-8").strip() == phase.VERSION, "VERSION drift", errors)
+        handoff = Path("KMFA/HANDOFF.md").read_text(encoding="utf-8")
+        _require(f"phase: `{phase.PHASE_ID}`" in handoff, "HANDOFF current phase drift", errors)
+        _require("S11-P1" in handoff, "HANDOFF next phase missing", errors)
+        _require("不得执行 GitHub upload" in handoff, "HANDOFF upload boundary missing", errors)
 
 
 def _read_audit(path: Path, errors: list[str], expected_files: int) -> None:

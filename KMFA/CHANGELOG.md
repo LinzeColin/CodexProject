@@ -1,3 +1,11 @@
+## 0.1.4-final-overall-review - 2026-07-12
+
+- 完成 v1.4 Stage 1-18 current evidence 最终整体复审：S01-S08 original 与 S09-S18 post-remediation validators 18/18 PASS。
+- bundled Python 全量回归通过；修复 S10 checker、S17 test、S18 review checker/test 的历史 active-phase 耦合，S14 generator-backed test 固定证据污染，并清理历史 tracked raw 文件名引用。
+- 14 findings=`6 fixed / 8 passed / 0 open`，cross-stage contracts mismatch=0，HTML 人类流程=`54 PASS / 0 WARN / 0 FAIL`，tracked actual raw filename hits=0。
+- raw 最终复审前后与跨 S18 review 快照一致；私有中文差异报告保留 `3/9/2/1` 未关闭状态。
+- 业务保持 `Q4 / D / NO_GO`、lineage full=false、delivery=false；仅将下一独立 public-safe GitHub main upload 标记为 ready，本轮未上传且未重装 App。
+
 ## 0.1.4-s18-post-remediation-stage-review - 2026-07-12
 
 - 完成 `V014_S18_POST_REMEDIATION_STAGE_REVIEW`：复跑 S18-P1/P2/P3 focused tests=`30/30 PASS`、strict validators=`3/3 PASS`。

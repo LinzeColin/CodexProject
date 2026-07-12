@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-s18-post-remediation-stage-review"
-product_version_status: "completed_validated_local_only_stage18_review_no_go_upload_deferred"
-version_file_value: "0.1.4-s18-post-remediation-stage-review"
+product_version: "0.1.4-final-overall-review"
+product_version_status: "completed_validated_local_only_final_overall_review_no_go_code_upload_ready"
+version_file_value: "0.1.4-final-overall-review"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-s18-post-remediation-stage-review"
+  MOD-KMFA-GOV-001: "0.1.4-final-overall-review"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_final_overall_review: "0.1.4-final-overall-review"
   kmfa_v014_s18_post_remediation_stage_review: "0.1.4-s18-post-remediation-stage-review"
   kmfa_v014_s18_p3_post_remediation_integration_preparation: "0.1.4-s18-p3-post-remediation-integration-preparation"
   kmfa_v014_s18_p2_post_remediation_full_regression_acceptance: "0.1.4-s18-p2-post-remediation-full-regression-acceptance"
@@ -447,11 +448,38 @@ parameter_profile_versions:
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_blocked_handoff_final_threshold_recheck_after_reminder: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-final-threshold-recheck-after-reminder"
   kmfa_project_cost_mvp: "blocked_no_go_owner_scope_required"
 data_snapshot_version: "not_applicable_no_raw_data_committed"
-current_iteration: "ITER-20260712-KMFA-V014-S18-POST-REMEDIATION-STAGE-REVIEW"
-current_phase: "V014_S18_POST_REMEDIATION_STAGE_REVIEW"
-current_task_id: "KMFA-V014-S18-POST-REMEDIATION-STAGE-REVIEW-20260712"
-current_acceptance_id: "ACC-V014-S18-POST-REMEDIATION-STAGE-REVIEW"
-current_gate: "NO_GO_STAGE18_REVIEW_COMPLETE_FINAL_OVERALL_REVIEW_NEXT_UPLOAD_REINSTALL_DEFERRED"
+current_iteration: "ITER-20260712-KMFA-V014-FINAL-OVERALL-REVIEW"
+current_phase: "V014_FINAL_OVERALL_REVIEW"
+current_task_id: "KMFA-V014-FINAL-OVERALL-REVIEW-20260712"
+current_acceptance_id: "ACC-V014-FINAL-OVERALL-REVIEW"
+current_gate: "NO_GO_FINAL_OVERALL_REVIEW_COMPLETE_CODE_UPLOAD_READY_NOT_PERFORMED_APP_REINSTALL_DEFERRED"
+next_phase: "V014_ONE_TIME_GITHUB_MAIN_UPLOAD"
+
+kmfa_v014_final_overall_review:
+  status: completed_validated_local_only_final_overall_review_no_go_code_upload_ready
+  phase: V014_FINAL_OVERALL_REVIEW
+  evidence_dir: KMFA/stage_artifacts/V014_FINAL_OVERALL_REVIEW
+  formula_ref: FORM-KMFA-V014-FINAL-OVERALL-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1819
+    - PARAM-KMFA-1820
+    - PARAM-KMFA-1821
+  validator: KMFA/tools/check_v014_final_overall_review.py
+  next_phase: V014_ONE_TIME_GITHUB_MAIN_UPLOAD
+  current_stage_review_count: 18
+  current_stage_validator_pass_count: 18
+  full_suite_test_count: 1515
+  full_suite_test_pass_count: 1515
+  fixed_review_finding_count: 6
+  open_review_finding_count: 0
+  cross_stage_contract_mismatch_count: 0
+  tracked_raw_filename_leak_count: 0
+  raw_snapshot_exact_match: true
+  lineage_full_check_complete: false
+  github_main_upload_ready: true
+  github_upload_performed: false
+  app_reinstall_performed: false
+  decision: NO_GO
 
 kmfa_v014_s18_post_remediation_stage_review:
   status: completed_validated_local_only_stage18_review_no_go_upload_deferred

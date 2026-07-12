@@ -1,10 +1,10 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260712-V014-S18-POST-REMEDIATION-STAGE-REVIEW"
+as_of_event_id: "DEV-KMFA-20260712-V014-FINAL-OVERALL-REVIEW"
 source_snapshot_hash: "sha256:precommit-pending"
 source_base_commit: "91a6370bcf6d4cad134a4acf86903c2d0f161d0c"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_S18_POST_REMEDIATION_STAGE_REVIEW_COMMIT"
-snapshot_event_time: "2026-07-12T09:17:33+10:00"
-generator_version: "manual-0.1.4-s18-post-remediation-stage-review"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_FINAL_OVERALL_REVIEW_COMMIT"
+snapshot_event_time: "2026-07-12T19:24:07+10:00"
+generator_version: "manual-0.1.4-final-overall-review"
 final_commit_binding: "local_commit_pending_before_git_commit"
 dimensions:
   structural_completeness:
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1436
-    total_active_formulas: 314
+    total_active_parameters: 1439
+    total_active_formulas: 315
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -986,6 +986,45 @@ dimensions:
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
+kmfa_v014_final_overall_review:
+  status: completed_validated_local_only_final_overall_review_no_go_code_upload_ready
+  phase_id: V014_FINAL_OVERALL_REVIEW
+  task_id: KMFA-V014-FINAL-OVERALL-REVIEW-20260712
+  decision: NO_GO
+  evidence_ref: KMFA/stage_artifacts/V014_FINAL_OVERALL_REVIEW/machine/final_overall_review_manifest.json
+  validator: KMFA/tools/check_v014_final_overall_review.py
+  counts:
+    current_stage_review_count: 18
+    current_stage_review_pass_count: 18
+    current_stage_validator_pass_count: 18
+    full_suite_test_count: 1515
+    full_suite_test_pass_count: 1515
+    review_finding_count: 14
+    fixed_review_finding_count: 6
+    passed_review_finding_count: 8
+    open_review_finding_count: 0
+    cross_stage_contract_count: 30
+    cross_stage_contract_mismatch_count: 0
+    tracked_raw_filename_leak_count: 0
+    html_audit_pass_count: 54
+    html_audit_warn_count: 0
+    html_audit_fail_count: 0
+    open_final_difference_accepted_count: 3
+    nonzero_delta_reconciliation_count: 9
+    zero_delta_reconciliation_count: 2
+    incomplete_reconciliation_count: 1
+  gates:
+    final_overall_review_performed: true
+    raw_snapshot_exact_match: true
+    raw_cross_phase_snapshot_exact_match: true
+    lineage_full_check_complete: false
+    github_main_upload_ready: true
+    github_upload_performed: false
+    app_reinstall_performed: false
+    delivery_allowed: false
+    official_report_release_allowed: false
+    business_execution_performed: false
+
 kmfa_v014_s18_post_remediation_stage_review:
   status: completed_validated_local_only_stage18_review_no_go_upload_deferred
   phase_id: V014_S18_POST_REMEDIATION_STAGE_REVIEW

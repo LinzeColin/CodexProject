@@ -1,3 +1,15 @@
+## FORM-KMFA-V014-FINAL-OVERALL-REVIEW-001
+
+- phase: V014_FINAL_OVERALL_REVIEW
+- version: 0.1.4-final-overall-review
+- model_id: MOD-KMFA-GOV-001
+- parameters: PARAM-KMFA-1819, PARAM-KMFA-1820, PARAM-KMFA-1821
+- expression: `final_review_valid = current_stage_validator_pass_count == 18 AND full_suite_test_pass_count == full_suite_test_count AND fixed_review_finding_count == 6 AND open_review_finding_count == 0 AND cross_stage_contract_mismatch_count == 0 AND raw_exact == true AND tracked_raw_filename_leak_count == 0 AND html_audit_fail_count == 0 AND github_main_upload_ready == true AND github_upload_performed == false AND lineage_full_check_complete == false AND delivery_allowed == false AND decision == NO_GO`
+- rationale: 最终整体复审将代码验收与业务 release 分开；18 个 current Stage、全量测试、findings、contracts、UI、raw 和 public safety 均通过后，只允许下一独立代码上传 phase ready。
+- source: v1.4 Task Pack/Roadmap、current Stage review evidence、bundled Python 回归和只读 raw 快照。
+- missing_policy: 任一 Stage/test/finding/contract/raw/public-safety 失败均 fail closed；不得把 code upload readiness 解释为业务 GO。
+- evidence: KMFA/stage_artifacts/V014_FINAL_OVERALL_REVIEW/machine/final_overall_review_manifest.json
+
 ## FORM-KMFA-V014-S18-POST-REMEDIATION-STAGE-REVIEW-001
 
 - phase: V014_S18_POST_REMEDIATION_STAGE_REVIEW

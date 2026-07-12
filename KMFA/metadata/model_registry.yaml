@@ -2253,6 +2253,21 @@ kmfa_v014_s17_post_remediation_stage_review:
   evidence_dir: KMFA/stage_artifacts/V014_S17_POST_REMEDIATION_STAGE_REVIEW
   validator: KMFA/tools/check_v014_s17_post_remediation_stage_review.py
   scope: Current Stage 17 three-phase replay thirty focused tests three strict validators eleven closed findings and six cross-phase contract checks with raw immutability and Q4 D NO_GO 3-9-2-1; S18 notification production restore external operations upload reinstall formal release difference closure persistent write and business execution remain closed.
+kmfa_v014_final_overall_review:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-final-overall-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-FINAL-OVERALL-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1819
+    - PARAM-KMFA-1820
+    - PARAM-KMFA-1821
+  evidence_dir: KMFA/stage_artifacts/V014_FINAL_OVERALL_REVIEW
+  validator: KMFA/tools/check_v014_final_overall_review.py
+  scope: Current S01-S08 original and S09-S18 post-remediation review validation bundled Python full suite fourteen closed findings thirty cross-stage contracts HTML 54 of 54 raw immutability zero tracked actual raw filenames and Q4 D NO_GO 3-9-2-1; only the next public-safe GitHub main upload phase is ready while upload reinstall lineage formal release difference closure persistent writes and business execution remain unperformed.
+
 kmfa_v014_s18_post_remediation_stage_review:
   model_id: MOD-KMFA-GOV-001
   version: "0.1.4-s18-post-remediation-stage-review"
