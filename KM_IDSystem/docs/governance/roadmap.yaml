@@ -2,10 +2,15 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE038"
-current_phase_id: "IDS-STAGE038-P1"
-current_task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
-next_gate_id: "IDS-STAGE038-P2-GATE"
+current_phase_id: "IDS-STAGE038-P2"
+current_task_id: "IDS-V0_1-STAGE038-P2"
+next_gate_id: "IDS-STAGE038-P3-GATE"
 current_transition_history:
+  stage038_source_reverified_state:
+    current_stage_id: "IDS-STAGE038"
+    current_phase_id: "IDS-STAGE038-P1"
+    current_task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
+    next_gate_id: "IDS-STAGE038-P2-GATE"
   stage038_source_limited_state:
     current_stage_id: "IDS-STAGE038"
     current_phase_id: "IDS-STAGE038-P1"
@@ -9200,32 +9205,31 @@ stages:
   -
     stage_id: "IDS-STAGE038"
     name: "STAGE-038 · Worker 队列基线"
-    person_goal: "建立异步 worker 队列，避免长任务阻塞前端和 API；本轮只校正已验证来源对应的 Phase 1 工程边界，不运行队列或 worker。"
+    person_goal: "建立异步 worker 队列，避免长任务阻塞前端和 API；Phase 2 已完成一个仅处理真实 Git-tracked control reference 的隔离非生产异步切片，生产运行继续禁用。"
     status: "in_progress"
     stop_conditions:
       - "一次 run 试图完成多个 phase"
-      - "来源重验证独立复审未通过即进入 Phase 2"
-      - "创建或运行 queue、worker、claim persistence、retry/dead-letter、backpressure、lock/lease/fencing、automatic lifecycle、crash recovery 或 cleanup"
-      - "连接 PostgreSQL、修改 schema/registry、写真实 job/queue row 或 runtime output"
+      - "Phase 2 入口未通过 source reverification gate"
+      - "激活生产 queue/worker、持久化 claim、retry/dead-letter scheduler、measured backpressure、production lock/lease/fencing、automatic lifecycle、crash recovery 或 cleanup"
+      - "连接 PostgreSQL、修改 schema/registry、写真实 IDS business job/queue row 或 runtime output"
       - "读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
       - "使用虚构 IDS 业务数据、虚构数据库行、placeholder corpus、fabricated jobs/logs/evidence"
       - "进入 STAGE-039、GitHub upload、PR、merge、issue mutation、app reinstall、stage review、batch review 或 upload gate"
     stop_gate:
-      gate_id: "IDS-STAGE038-P1-GATE"
-      status: "passed_with_source_reverification"
+      gate_id: "IDS-STAGE038-P2-GATE"
+      status: "passed_with_local_evidence"
       pass_conditions:
-        - "The exact STAGE-038 archive member is uniquely identified and its truthful SHA-256 plus archive/roadmap/instructions hashes are recorded"
-        - "P1 defines the source-required queue/worker, idempotency, retry/dead-letter, backpressure, lock, lifecycle, recovery, and cleanup boundaries"
-        - "STAGE-039..044 runtime ownership remains explicit and no numeric policy or runtime implementation is invented"
-        - "Independent source-reverification review has passed and only the next separate Phase 2 run is authorized"
-        - "Raw metadata remains path-only, fake IDS data remains forbidden, and push_allowed=false"
+        - "A synchronous acknowledgement returns before the isolated worker completes"
+        - "The worker uses STAGE-037 QUEUED -> CLAIMED -> RUNNING -> SUCCEEDED or FAILED transitions and reviewed Chinese projections"
+        - "One real Git-tracked control reference produces bounded input/output/error/checkpoint records without persistence"
+        - "Duplicate admission and bounded capacity backpressure fail closed while STAGE-039..044 retain dedicated runtime ownership"
+        - "Production runtime, raw metadata, fake IDS business data, GitHub upload, and app reinstall remain disabled"
       evidence_refs:
-        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_ENTRY_CONTRACT.md"
-        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE1_WORKER_QUEUE_SCOPE_BOUNDARY.md"
-        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE1_SOURCE_REVERIFICATION.md"
-        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE1_SOURCE_REVERIFICATION_REVIEW.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE2_ASYNC_WORKER_QUEUE_SLICE.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_baseline_index.json"
+        - "KM_IDSystem/scripts/check_worker_queue_baseline.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
-        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_baseline.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_runtime.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
     source_reverification_gate:
       gate_id: "IDS-STAGE038-P1-SOURCE-REVERIFY-GATE"
@@ -9327,7 +9331,7 @@ stages:
         phase_id: "IDS-STAGE038-P2"
         name: "Worker 队列基线 最小异步队列切片"
         objective: "In a separate run, implement the approved minimal asynchronous worker queue slice so long tasks do not block frontend or API request lifecycles; exercise STAGE-037 state transitions; implement at least one retry, backpressure, or automatic-run slice; map machine state to restrained Chinese owner status; and record bounded input/output/error/checkpoint refs with no raw metadata access or fake IDS business data. STAGE-039..044 retain runtime ownership for their dedicated policies and production mechanisms."
-        status: "planned"
+        status: "passed_with_local_evidence"
         entry_authorized: true
         isolated_non_production_runtime_allowed: true
         production_runtime_activation_allowed: false
@@ -9335,6 +9339,41 @@ stages:
           - "The source-reverification independent review has not passed or the run did not enter from IDS-STAGE038-P2-GATE"
           - "The slice would access raw metadata, create fake IDS business data, connect to a production database, or activate a production queue/worker service"
           - "The slice would replace STAGE-039..044 dedicated runtime ownership instead of exercising only a bounded baseline integration"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE038-P2"
+            name: "Isolated asynchronous worker queue slice"
+            objective: "Implement one in-memory asyncio queue and worker that acknowledges submission before completion, processes a real Git-tracked control reference through STAGE-037 transitions, records bounded task refs and Chinese status, and leaves production mechanisms disabled."
+            status: "completed"
+            estimated_hours: 4
+            total_hours_percent: "28.57%"
+            dependencies:
+              - "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
+              - "IDS-V0_1-STAGE037-REVIEW"
+              - "IDS-V0_1-STAGE022-P2"
+              - "IDS-V0_1-STAGE030-P2"
+            acceptance_ids:
+              - "ACC-STAGE-038"
+            test_commands:
+              - "RED/GREEN: python3 -B -m unittest -q KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage038_worker_queue_runtime"
+              - "RED/GREEN: python3 -B -m unittest -q KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression.Stage005GovernanceRegressionTests.test_phase_state_allows_stage038_phase2_async_worker_queue_slice"
+              - "python3 -B KM_IDSystem/scripts/check_worker_queue_baseline.py"
+              - "python3 -B KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "python3 -B scripts/lean_governance.py check-render --project KM_IDSystem"
+              - "events.jsonl parse and duplicate-id check"
+              - "git diff --check"
+              - "python3 -B scripts/validate_governance_sync.py --changed-only --base-ref HEAD --semantic --drift-report"
+            test_results: "GREEN: Stage038 17 tests OK, Stage005 143 tests OK, Stage031-038 aggregate 186 tests OK, Stage026-030 75 tests OK, full IDS v0.1 discovery 589 tests OK, checker contract_valid=true slice_valid=true, Stage005 validator valid=true"
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE2_ASYNC_WORKER_QUEUE_SLICE.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_baseline_index.json"
+              - "KM_IDSystem/scripts/check_worker_queue_baseline.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_runtime.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+            risk: "An in-memory baseline could be mislabeled as production readiness, accept raw/untracked refs, block the request path, or take over Stage039-044 policy ownership."
+            rollback: "Revert the Phase 2 checker, index, evidence, focused tests, Stage005 support, batch/roadmap/event projection, handoff/changelog, and rendered owner views only; preserve Phase 1, prior stages, user-owned dirty files, raw metadata, databases, reports, app entries, and GitHub state."
       -
         phase_id: "IDS-STAGE038-P3"
         name: "Worker 队列基线 专项验证与异常场景"
