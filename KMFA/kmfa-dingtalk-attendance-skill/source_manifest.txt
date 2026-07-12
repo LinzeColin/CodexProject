@@ -10,6 +10,7 @@ database/postgres_schema.sql
 database/sqlite_transition_notes.md
 database/views_payroll_baseline.sql
 docs/ATTENDANCE_SKILL_HANDOFF.md
+docs/R4_OFFICIAL_RECONCILIATION_RESULT.md
 docs/acceptance_criteria.md
 docs/accuracy_robustness_design.md
 docs/codex_task_pack.md

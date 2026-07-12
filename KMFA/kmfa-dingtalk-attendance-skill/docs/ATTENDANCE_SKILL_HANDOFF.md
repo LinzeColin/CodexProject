@@ -1,8 +1,8 @@
 # KMFA 钉钉考勤 skill 交接
 
-roadmap_progress: R3 / R3.3
+roadmap_progress: R4 / R4.3
 
-status: EVIDENCE_MISSING
+status: BLOCKED
 
 r2_close_commit: b5b06437dfb15bfb0e302c4e735fe2978ddcd579
 
@@ -18,12 +18,23 @@ owner_usability_status: NOT_ACCEPTED
 
 current_availability: UNAVAILABLE
 
+## R4.1–R4.3 独立官方原件对账
+
+- 已使用 owner 现有钉钉登录状态只读导出并冻结 2026-07-10 独立官方工作簿；未修改钉钉数据、配置、规则或人员范围。
+- 企业实际报表为 49 列，不再使用预设九列替代完整官方报表。
+- 官方与 DWS 均为 44 人，按 UserId 匹配 44 人，缺少人员 0，多出人员 0。
+- 初始逐格差异为 1482：DWS 字段不可用 980，值不一致 502；22 列缺少完整 DWS 映射。
+- 唯一代码修正已废止 DWS 内部检查单独产生官方 PASS 的路径；无独立原件时 fail closed，独立证据有差异时 BLOCKED。
+- 唯一一次复核仍为 44 人、49 列、1482 个差异单元格，因此状态保持 `BLOCKED`，不再继续循环。
+- 公开脱敏一页结果：`docs/R4_OFFICIAL_RECONCILIATION_RESULT.md`。官方原件、指纹明细、员工数据和逐格差异仅保存在本机私有证据目录。
+- 本轮未运行新的 live DWS，未发送钉钉消息，未修改 automation、schedule、time、timezone、cwd、目标或通知文案，未触碰其他 skill。
+
 ## R3.3 撤回与证据判定
 
 - `R3.2 真实工作日验收已完成` 声明正式撤回。
 - R3.2 的 fresh DWS official-report query 与内部 parity 只能证明 DWS 读取链自洽，不能替代独立钉钉官方导出原件。
-- 本机已找到 2 份对应 2026-07-10 的 DWS raw；员工集合一致，42 名员工的 9 个官方字段共 378 个单元格，内部差异为 0。
-- 本机未找到可独立冻结的 2026-07-10 钉钉官方 XLS/XLSX/CSV 导出原件，因此 official-export-vs-DWS 逐员工逐字段对账无法执行。
+- R3.3 当时仅找到 2 份对应 2026-07-10 的 DWS raw；其内部一致不构成独立官方证据。
+- R4 已取得可独立冻结的 2026-07-10 钉钉官方 XLSX 导出原件，并以企业实际 49 列执行逐员工逐字段对账。
 - 完整对账列应包含员工唯一键、工作日、考勤结果、应出勤天数、出勤天数、休息天数、迟到次数、早退次数、上班缺卡次数、下班缺卡次数和旷工天数；当前只能确认 DWS 侧字段，不能伪造官方导出列映射。
 - 官方原件、预期结果和对账标准均未创建、修改或替换。
 - 因 `EVIDENCE_MISSING`，本轮未进入唯一一次代码修正，也未消耗唯一一次复核。
@@ -68,8 +79,8 @@ r3_3_validation:
 real_work_date_evidence:
 
 - work_date: 2026-07-10
-- source: REAL_DINGTALK_OFFICIAL_REPORT
-- official_final_parity: PASS
+- source: DWS_INTERNAL_CHECK_ONLY
+- official_final_parity: WITHDRAWN
 - reminder_binding: LEGACY_UNVERIFIED
 - notification_status: NOT_SENT_OWNER_DISABLED
 - one_page_result: PRIVATE_ARCHIVE_ONLY

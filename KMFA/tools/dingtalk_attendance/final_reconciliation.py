@@ -44,6 +44,7 @@ from KMFA.tools.dingtalk_attendance.run_attendance import build_run_plan
 
 
 FINAL_RESULT_KIND = "OFFICIAL_FINAL_RECONCILIATION"
+INDEPENDENT_EVIDENCE_KIND = "INDEPENDENT_OFFICIAL_EXPORT_VS_DWS"
 
 
 def build_one_page_result(
@@ -53,17 +54,17 @@ def build_one_page_result(
     evening: Mapping[str, Any],
     final_stats: Mapping[str, Any],
     final_run_id: str,
+    independent_evidence_status: str = "EVIDENCE_MISSING",
 ) -> str:
     """Render an aggregate-only page; names and report bodies stay out of this artifact."""
-    parity = "PASS" if official_report_parity_failure_reason(final_stats) is None else "FAIL"
     lines = [
         "# 晨间提醒—晚间提醒—官方最终核对",
         "",
         f"- 工作日：{work_date}",
         "- 当前可用性：UNAVAILABLE",
-        "- 结果依据：REAL_DINGTALK_OFFICIAL_REPORT",
+        "- 结果依据：INDEPENDENT_OFFICIAL_EXPORT_REQUIRED",
         "- 发送状态：关闭",
-        f"- 官方最终核对：{parity}",
+        f"- 官方最终核对：{independent_evidence_status}",
         f"- final run：{final_run_id}",
         "",
         "| 阶段 | 证据状态 | 身份类别 | official parity | 与最终核对关系 |",
@@ -81,7 +82,7 @@ def build_one_page_result(
         "- production acceptance：NOT_EVALUATED",
         "- owner usability：NOT_ACCEPTED",
         "",
-        "本页只证明该真实工作日的官方最终报表已完成完整覆盖核对；不把临时提醒、发送状态或测试 PASS 当作生产可用。",
+        "只有独立官方导出原件与对应 DWS raw 完成逐员工、逐官方列零差异对账时，本页才可标记 PASS；DWS 内部检查不能替代该证据。",
         "",
     ]
     return "\n".join(lines)
@@ -97,9 +98,20 @@ def run_final_reconciliation(
     collector: Callable[..., dict[str, Any]] = collect_official_org_attendance,
     cleanup: Callable[[], dict[str, Any]] = cleanup_runtime,
     now: datetime | None = None,
+    independent_evidence_path: Path | None = None,
 ) -> dict[str, Any]:
     current = now or datetime.now(ZoneInfo(timezone))
     target = _validated_final_work_date(work_date, timezone=timezone, current=current)
+    evidence = _load_independent_reconciliation_evidence(independent_evidence_path, work_date=work_date)
+    if evidence["status"] != "PASS":
+        return {
+            "status": evidence["status"],
+            "work_date": work_date,
+            "notification_status": DELIVERY_DISABLED_STATUS,
+            "independent_evidence_status": evidence["evidence_status"],
+            "failure_reason": evidence["failure_reason"],
+            "cleanup_status": cleanup(),
+        }
     safety = dws_command_safety_status(env=env, allow_override=allow_dws_commands)
     if safety["status"] != "READY":
         return {
@@ -162,6 +174,7 @@ def run_final_reconciliation(
         evening=evening,
         final_stats=collection["stats"],
         final_run_id=plan["run_id"],
+        independent_evidence_status="PASS",
     )
     page_path = Path(plan["archive_paths"]["one_page_result"])
     page_path.write_text(page, encoding="utf-8")
@@ -189,10 +202,54 @@ def run_final_reconciliation(
         "one_page_result": str(page_path),
         "archive_manifest": str(manifest_path),
         "official_report_parity_status": collection["stats"]["official_report_parity_status"],
+        "independent_evidence_status": "PASS",
         "morning_evidence_status": morning["evidence_status"],
         "evening_evidence_status": evening["evidence_status"],
         "cleanup_status": cleanup_status,
     }
+
+
+def _load_independent_reconciliation_evidence(path: Path | None, *, work_date: str) -> dict[str, str]:
+    if path is None:
+        return {
+            "status": "OFFICIAL_EVIDENCE_MISSING",
+            "evidence_status": "EVIDENCE_MISSING",
+            "failure_reason": "an independently exported DingTalk attendance workbook and full-column reconciliation evidence are required",
+        }
+    try:
+        evidence = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {
+            "status": "OFFICIAL_EVIDENCE_MISSING",
+            "evidence_status": "EVIDENCE_MISSING",
+            "failure_reason": "independent reconciliation evidence is missing or unreadable",
+        }
+    required_zero_fields = ("missing_people", "extra_people", "missing_columns", "differing_cells")
+    counts_are_zero = all(evidence.get(key) == 0 or evidence.get(key) == [] for key in required_zero_fields)
+    people_match = (
+        isinstance(evidence.get("official_people"), int)
+        and evidence.get("official_people") > 0
+        and evidence.get("official_people") == evidence.get("dws_people") == evidence.get("matched_people")
+    )
+    columns_complete = isinstance(evidence.get("compared_columns"), int) and evidence.get("compared_columns") > 0
+    fingerprint = str(evidence.get("official_sha256") or "")
+    valid_pass = (
+        evidence.get("evidence_kind") == INDEPENDENT_EVIDENCE_KIND
+        and evidence.get("work_date") == work_date
+        and evidence.get("status") == "PASS"
+        and counts_are_zero
+        and people_match
+        and columns_complete
+        and len(fingerprint) == 64
+        and all(char in "0123456789abcdef" for char in fingerprint.lower())
+    )
+    if not valid_pass:
+        return {
+            "status": "OFFICIAL_FINAL_RECONCILIATION_BLOCKED",
+            "evidence_status": "BLOCKED",
+            "failure_reason": "independent official-export reconciliation is incomplete or has differences",
+        }
+    return {"status": "PASS", "evidence_status": "PASS", "failure_reason": ""}
 
 
 def find_reminder_evidence(
@@ -325,6 +382,7 @@ def main(argv: list[str] | None = None) -> int:
     selection.add_argument("--latest-pending", action="store_true")
     parser.add_argument("--timezone", default=TIMEZONE)
     parser.add_argument("--allow-dws-commands", action="store_true")
+    parser.add_argument("--independent-reconciliation-evidence", type=Path)
     args = parser.parse_args(argv)
     work_date = args.work_date
     if args.latest_pending:
@@ -336,6 +394,7 @@ def main(argv: list[str] | None = None) -> int:
         work_date=str(work_date),
         timezone=args.timezone,
         allow_dws_commands=args.allow_dws_commands,
+        independent_evidence_path=args.independent_reconciliation_evidence,
     )
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
     return 0 if result.get("status") == "OFFICIAL_FINAL_RECONCILIATION_PASS" else 1
