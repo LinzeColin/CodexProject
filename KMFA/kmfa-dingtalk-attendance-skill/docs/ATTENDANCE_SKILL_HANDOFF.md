@@ -1,8 +1,8 @@
 # KMFA 钉钉考勤 skill 交接
 
-roadmap_progress: R4 / R4.3
+roadmap_progress: R6 / R6.1
 
-status: NO_SEND_RUNTIME_VERIFIED
+status: READY_FOR_OWNER_PREVIEW_DECISION
 
 r2_close_commit: b5b06437dfb15bfb0e302c4e735fe2978ddcd579
 
@@ -17,6 +17,14 @@ production_acceptance: NOT_EVALUATED
 owner_usability_status: NOT_ACCEPTED
 
 current_availability: NO_SEND_RUNTIME_VERIFIED
+
+## R6.1 实际通知预览
+
+- 已使用通过真实无发送验收的 2026-07-10 evening 与凭证绑定 final 私有结果生成一份本机私有《实际通知预览》。
+- 预览按现有模板原样展示晚间暂时提醒、官方最终核对和月累计文字；未修改代码、规则、模板、时间、时区或 automation。
+- 预览正文、员工明细和本机私有路径均未提交 GitHub。
+- 发送状态保持 `NOT_SENT_OWNER_DISABLED`；消息数 0、目标调用数 0。
+- 当前等待 owner 仅回复“能用”或指出具体不能使用的句子。
 
 ## R4.1–R4.3 独立官方原件对账
 
