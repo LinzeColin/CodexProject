@@ -47,7 +47,7 @@ def _run_id_body(run_id: str) -> tuple[str, str]:
 def run_type_from_run_id(run_id: str) -> str | None:
     body, _ = _run_id_body(str(run_id))
     parts = body.split("_")
-    return parts[0] if parts and parts[0] in {"morning", "evening"} else None
+    return parts[0] if parts and parts[0] in {"morning", "evening", "final"} else None
 
 
 def work_date_from_run_id(run_id: str) -> str | None:
@@ -90,3 +90,8 @@ def archive_manifest_paths(month_dir: Path) -> list[Path]:
 
 def archive_raw_paths(month_dir: Path) -> list[Path]:
     return _archive_paths(month_dir, (*CURRENT_RAW_GLOBS, *LEGACY_RAW_GLOBS))
+
+
+def current_archive_raw_paths(month_dir: Path) -> list[Path]:
+    """Return only canonical attendance archives; legacy files remain audit-only."""
+    return _archive_paths(month_dir, CURRENT_RAW_GLOBS)

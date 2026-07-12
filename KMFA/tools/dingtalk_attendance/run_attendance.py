@@ -26,6 +26,10 @@ from KMFA.tools.dingtalk_attendance import (
 )
 from KMFA.tools.dingtalk_attendance.cleanup_runtime import cleanup_runtime
 from KMFA.tools.dingtalk_attendance.dws_auth_guard import DWS_COMMAND_ALLOW_ENV, dws_command_safety_status
+from KMFA.tools.dingtalk_attendance.delivery_policy import (
+    DELIVERY_DISABLED_STATUS,
+    write_delivery_disabled_receipt,
+)
 from KMFA.tools.dingtalk_attendance.dws_attendance import (
     DwsAttendanceError,
     OfficialAttendanceParityError,
@@ -37,7 +41,7 @@ from KMFA.tools.dingtalk_attendance.healthcheck import build_config_status
 from KMFA.tools.dingtalk_attendance.identity import (
     IdentityConflictError,
     archive_manifest_paths,
-    archive_raw_paths,
+    current_archive_raw_paths,
     build_run_id,
     run_type_from_run_id,
     validate_manifest_identity,
@@ -59,6 +63,7 @@ from KMFA.tools.dingtalk_attendance.secrets_loader import merged_runtime_env
 
 
 RUN_TYPES = ("morning", "evening")
+PLAN_RUN_TYPES = (*RUN_TYPES, "final")
 SCHEDULE = {"morning": "10:35", "evening": "20:00"}
 
 
@@ -68,8 +73,8 @@ def build_run_plan(
     run_id: str | None = None,
     run_datetime: datetime | None = None,
 ) -> dict[str, Any]:
-    if run_type not in RUN_TYPES:
-        raise ValueError(f"run_type must be one of {RUN_TYPES}")
+    if run_type not in PLAN_RUN_TYPES:
+        raise ValueError(f"run_type must be one of {PLAN_RUN_TYPES}")
     now = run_datetime or datetime.now(ZoneInfo(timezone))
     effective_run_id = run_id or build_run_id(run_type, now.strftime("%Y%m%d_%H%M%S"))
     return {
@@ -78,6 +83,7 @@ def build_run_plan(
         "automation_name": AUTOMATION_NAME,
         "run_id": effective_run_id,
         "run_type": run_type,
+        "result_kind": "OFFICIAL_FINAL_RECONCILIATION" if run_type == "final" else "TEMPORARY_REMINDER",
         "timezone": timezone,
         "business_date_timezone": timezone,
         "scheduler_timezone_configured": False,
@@ -455,10 +461,12 @@ def _date_ordinal(value: str) -> int:
 
 def _monthly_attendance_records(month_dir: Path) -> list[dict[str, Any]]:
     records: list[dict[str, Any]] = []
-    for raw_path in archive_raw_paths(month_dir):
+    for raw_path in current_archive_raw_paths(month_dir):
         if not raw_path.name.endswith(".raw.jsonl.gz"):
             continue
         run_id = raw_path.name.removesuffix(".raw.jsonl.gz")
+        if run_type_from_run_id(run_id) != "final":
+            continue
         work_date = work_date_from_run_id(raw_path.name)
         try:
             with gzip.open(raw_path, "rt", encoding="utf-8") as handle:
@@ -650,7 +658,7 @@ def run_attendance(
         }
     )
     try:
-        dispatch_receipt = dispatch_reports_to_targets(output_status=output_status, target_filter=notification_target_filter)
+        dispatch_receipt = write_delivery_disabled_receipt(output_status)
     finally:
         cleanup_status.update(cleanup())
         _write_cleanup_audit(output_status, cleanup_status)
@@ -702,6 +710,18 @@ def find_latest_report_manifest(*, run_type: str, onedrive_root: str = ONEDRIVE_
 
 
 def send_latest_report_only(run_type: str, timezone: str) -> dict[str, Any]:
+    return {
+        "status": DELIVERY_DISABLED_STATUS,
+        "mode": "send_latest_report_only",
+        "run_type": run_type,
+        "timezone": timezone,
+        "notification_status": DELIVERY_DISABLED_STATUS,
+        "delivery_enabled": False,
+        "cleanup_status": cleanup_runtime(),
+    }
+
+
+def _legacy_send_latest_report_only(run_type: str, timezone: str) -> dict[str, Any]:
     manifest_path = find_latest_report_manifest(run_type=run_type)
     cleanup_status: dict[str, Any] = {"status": "NOT_RUN"}
     if manifest_path is None:
@@ -798,7 +818,7 @@ def result_exit_code(result: Mapping[str, Any]) -> int:
     if status == "SENT":
         return 0 if notification_status == "SENT" else 5
     if status == "COMPLETED":
-        return 0 if notification_status == "SENT" else 5
+        return 0 if notification_status in {"SENT", DELIVERY_DISABLED_STATUS} else 5
     if status in {"DWS_AUTH_REQUIRED", "DWS_BROWSER_POLICY_REQUIRED"}:
         return 2
     if status in {"DWS_UNAVAILABLE", "NO_LATEST_REPORT"}:

@@ -39,6 +39,11 @@ Before acting, read:
 
 ## Current Attendance Rules
 
+- Current owner usability status is `UNAVAILABLE` / `NOT_ACCEPTED`.
+- Morning and evening outputs are `TEMPORARY_REMINDER` snapshots, not final daily conclusions.
+- A completed prior work date becomes final only after a fresh exact-parity official report read writes an `OFFICIAL_FINAL_RECONCILIATION` archive and aggregate-only one-page result.
+- New monthly notification rollups read canonical `final` archives only. Legacy, morning, and evening archives are audit-only and never enter the new monthly cumulative values.
+- Attendance delivery is owner-disabled. Production and resend entries must return `NOT_SENT_OWNER_DISABLED` without resolving targets or invoking a sender.
 - Automation name: `每日早晚钉钉考勤检查`.
 - Business-date timezone: `Asia/Shanghai`; this is not a scheduler timezone field.
 - Morning run: 10:35. Evening run: fixed local wall-clock 20:00.

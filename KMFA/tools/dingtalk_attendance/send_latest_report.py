@@ -17,6 +17,7 @@ if __package__ in {None, ""}:
 
 from KMFA.tools.dingtalk_attendance import ONEDRIVE_ROOT, TIMEZONE
 from KMFA.tools.dingtalk_attendance.cleanup_runtime import cleanup_runtime
+from KMFA.tools.dingtalk_attendance.delivery_policy import DELIVERY_DISABLED_STATUS
 from KMFA.tools.dingtalk_attendance.identity import (
     IdentityConflictError,
     archive_manifest_paths,
@@ -64,7 +65,16 @@ def send_latest_report(
     public_targets_manifest_path: Path = PUBLIC_TARGETS_MANIFEST_PATH,
     env: Mapping[str, str] | None = None,
     sender: Callable[..., dict[str, Any]] = send_text_with_resolved_channel,
+    delivery_enabled: bool = False,
 ) -> dict[str, Any]:
+    if not delivery_enabled:
+        return {
+            "status": DELIVERY_DISABLED_STATUS,
+            "mode": "send_latest_report",
+            "notification_status": DELIVERY_DISABLED_STATUS,
+            "delivery_enabled": False,
+            "cleanup_status": cleanup_runtime(),
+        }
     values = merged_runtime_env() if env is None else dict(env)
     cleanup_status: dict[str, Any] = {"status": "NOT_RUN"}
     if channel != "auto":

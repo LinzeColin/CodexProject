@@ -1,6 +1,8 @@
 project_id: KMFA
 skill_id: kmfa-dingtalk-attendance-skill
 automation_name: 每日早晚钉钉考勤检查
+delivery_enabled: false
+delivery_disabled_status: NOT_SENT_OWNER_DISABLED
 recipient_policy:
   zhang_linze_dingtalk_user_id: 1iv-1t2oesv2yd
   boss_dingtalk_user_id: CONFIG_REQUIRED

@@ -2,6 +2,8 @@
 
 The KMFA 钉钉考勤 skill provides the public-safe structure for `每日早晚钉钉考勤检查`.
 
+Current owner usability status is `UNAVAILABLE`. Morning and evening results are temporary reminders. A completed work date receives a separate official final reconciliation, and new monthly notification rollups use only canonical final archives. Legacy and temporary-reminder archives remain audit-only. Attendance delivery is owner-disabled.
+
 The module is live-only and uses the local `dws` CLI as its current DingTalk attendance backend. It does not create sample employees, sample punches, or fixture attendance records. When DWS is unavailable, scripts return `DWS_UNAVAILABLE`.
 
 The live DWS backend uses DingTalk attendance-group membership as the reporting scope. It resolves the current official report column IDs with `dws attendance report columns`, then reads the target Beijing business date with `dws attendance report query-data` in batches of 5 users. The exact official `考勤结果` and official count columns are the only source for user-visible attendance totals and anomaly classification.
@@ -30,7 +32,7 @@ Private runtime data belongs outside Git:
 
 The OneDrive month folder stores raw JSONL gzip, management report, HR report, dispatch receipt, manifest, and cleanup audit directly under `YYYYMM`. `--send-latest-report-only` can resend the newest private reports without another DWS collection run.
 
-Monthly rollups and the private SQLite schema v2 canonicalize one row per `(user_id, work_date)`. Any official row overrides all legacy rows for that user/day; when multiple official snapshots exist, the latest run timestamp wins. Anomaly counts, effective attendance, consecutive anomalies, and rest reminders all use that same canonical user-day.
+New monthly notification rollups read canonical `final` archives only. Legacy archives and canonical morning/evening temporary reminders are audit-only and never enter new monthly cumulative values. The private SQLite transition ledger retains its separate replay/audit role and is not the notification monthly source.
 
 An existing v1 ledger is not considered valid after code upgrade. `--validate` reports `MIGRATION_REQUIRED`, and read-only month queries fail closed until `sync_attendance_ledger.py --all` has replayed every private raw manifest and marked every indexed run with schema v2 plus the shared parsed run sort key. This replay is required because an old SQLite row alone cannot distinguish an official-normal snapshot from a legacy-normal inference.
 

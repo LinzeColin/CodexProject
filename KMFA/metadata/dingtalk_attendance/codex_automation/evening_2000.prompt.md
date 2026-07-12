@@ -15,7 +15,7 @@ Scheduled local wall-clock time: 20:00.
 Scheduler timezone: none. Keep one pure RRULE and never convert 20:00 for UTC offset or daylight-saving changes.
 Business-date timezone passed to the runner: Asia/Shanghai. All business dates, run slots, month gates, and stage-2 windows use Beijing dates; this must not shift the scheduler time.
 
-Goal: execute the KMFA 钉钉考勤 skill evening workflow through the repo-scoped skill, preserving existing production safety while enabling v0.3 database/stage-2 readiness.
+Goal: execute the KMFA 钉钉考勤 skill evening result as a `TEMPORARY_REMINDER`. Attendance delivery remains disabled; the official final reconciliation occurs only after the report is finalized.
 
 Required steps:
 1. Switch to `/Users/linzezhang/CodexProject`, then confirm branch is `main`, `HEAD == origin/main`, and no extra worktree is active.
@@ -32,6 +32,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/dingtalk_attendance/ru
 ```
 
 Treat every nonzero command exit code as a failed automation run; do not report success from partial collection or failed notification delivery.
+The successful temporary-reminder result must report `notification_status=NOT_SENT_OWNER_DISABLED`; do not probe targets, resend, or invoke any sender.
 9. The entry must use current DingTalk attendance-group members plus exact `attendance report columns/query-data` values as the only business-statistics source. Require `official_report_parity_status=PASS`, exact Beijing business-date coverage, and `official_report_coverage_count == member_count` before any conclusion or notification. `record get`, two-punch inference, and personal `summary` are diagnostics only. On `OFFICIAL_ATTENDANCE_PARITY_FAILED`, stop without sending and never fall back to record/summary guesses.
 9a. The production official collector intentionally skips the legacy per-member record/summary sweep. Do not run that sweep before or after the entry.
 9b. Do not interrupt the entry while its process is still inside the runner's bounded DWS timeout/retry budget.

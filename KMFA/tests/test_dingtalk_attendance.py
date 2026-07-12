@@ -445,6 +445,80 @@ class OfficialParityFixtureRunner:
 
 
 class DingTalkAttendanceContractTests(unittest.TestCase):
+    def test_r32_monthly_rollup_reads_only_current_final_reconciliation_archives(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            month_dir = Path(tmpdir)
+            for run_id, marker in (
+                ("s19_evening_20260710_200000", "legacy"),
+                ("dingtalk_attendance_morning_20260710_104500", "morning"),
+                ("dingtalk_attendance_evening_20260710_200000", "evening"),
+                ("dingtalk_attendance_final_20260711_090000", "final"),
+            ):
+                with gzip.open(month_dir / f"{run_id}.raw.jsonl.gz", "wt", encoding="utf-8") as handle:
+                    handle.write(json.dumps({"type": "metadata", "run_plan": {"run_id": run_id}}) + "\n")
+                    handle.write(
+                        json.dumps(
+                            {
+                                "type": "employee_attendance",
+                                "member": {"name": marker, "userId": marker},
+                                "work_date": "2026-07-10",
+                                "derived": {
+                                    "official_report_covered": marker != "legacy",
+                                    "official_report_anomaly": False,
+                                },
+                            }
+                        )
+                        + "\n"
+                    )
+
+            records = ATTENDANCE_RUNNER._monthly_attendance_records(month_dir)
+
+        self.assertEqual([record["member"]["name"] for record in records], ["final"])
+
+    def test_r32_morning_and_evening_are_labeled_temporary_reminders(self) -> None:
+        morning = build_notification_message(
+            work_date="2026-07-10",
+            run_type="morning",
+            current_time="10:45",
+            unexpected_empty_record_names=[],
+            known_no_record_names=[],
+            member_count=2,
+        )
+        evening = build_notification_message(
+            work_date="2026-07-10",
+            run_type="evening",
+            current_time="20:00",
+            unexpected_empty_record_names=[],
+            known_no_record_names=[],
+            member_count=2,
+        )
+
+        self.assertIn("晨间暂时提醒", morning)
+        self.assertIn("晚间暂时提醒", evening)
+
+    def test_r32_delivery_is_disabled_at_production_entry(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = send_latest_report(onedrive_root=Path(tmpdir))
+
+        self.assertEqual(result["status"], "NOT_SENT_OWNER_DISABLED")
+        self.assertEqual(result["notification_status"], "NOT_SENT_OWNER_DISABLED")
+
+    def test_r32_final_reconciliation_page_is_aggregate_and_send_disabled(self) -> None:
+        from KMFA.tools.dingtalk_attendance.final_reconciliation import build_one_page_result
+
+        page = build_one_page_result(
+            work_date="2026-07-10",
+            morning={"evidence_status": "FOUND", "official_parity": "UNKNOWN"},
+            evening={"evidence_status": "FOUND", "official_parity": "UNKNOWN"},
+            final_stats=_official_pass_stats(member_count=2, anomaly_names=[]),
+            final_run_id="dingtalk_attendance_final_20260711_090000",
+        )
+
+        self.assertIn("晨间提醒—晚间提醒—官方最终核对", page)
+        self.assertIn("发送状态：关闭", page)
+        self.assertIn("官方最终核对：PASS", page)
+        self.assertNotIn("employee", page.lower())
+
     def test_identity_migration_new_writer_and_legacy_reader_contract(self) -> None:
         identity = importlib.import_module("KMFA.tools.dingtalk_attendance.identity")
         plan = build_run_plan(
@@ -2164,8 +2238,8 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             self.assertNotIn("林全意", report)
             self.assertNotIn("morning", report)
             self.assertNotIn("evening", report)
-        self.assertIn("# 开明考勤管理报告｜2026-07-07｜晨报", management)
-        self.assertIn("# 开明考勤 HR 报告｜2026-07-07｜晨报", hr)
+        self.assertIn("# 开明考勤管理报告｜2026-07-07｜晨间暂时提醒", management)
+        self.assertIn("# 开明考勤 HR 报告｜2026-07-07｜晨间暂时提醒", hr)
         self.assertIn("今日异常人员 / 无考勤人员：无。", management)
         self.assertIn("无考勤记录人员：无。", management)
         self.assertIn("打卡记录不完整人员：无。", management)
@@ -2379,7 +2453,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             self.assertEqual(len(receipt_payload["messages"]), 1)
             self.assertEqual(receipt_payload["notification_template_text"], sent_bodies[0])
             self.assertEqual(receipt_payload["notification_delivery_table"], "| 发送对象 | 是否成功 |\n|---|---|\n| 钉钉群机器人 | 是 |")
-            self.assertIn("开明考勤提醒｜2026-07-07｜晚报", sent_bodies[0])
+            self.assertIn("开明考勤提醒｜2026-07-07｜晚间暂时提醒", sent_bodies[0])
             self.assertNotIn("evening", sent_bodies[0])
             self.assertNotIn("morning", sent_bodies[0])
             self.assertIn("截止 18:15", sent_bodies[0])
@@ -2404,7 +2478,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
         self.assertEqual(
             message,
-            "# 开明考勤提醒｜2026-07-07｜晨报\n\n截止 08:35\n\n本次41人全部考勤正常\n",
+            "# 开明考勤提醒｜2026-07-07｜晨间暂时提醒\n\n截止 08:35\n\n本次41人全部考勤正常\n",
         )
         self.assertNotIn("morning", message)
         self.assertNotIn("evening", message)
@@ -2529,11 +2603,11 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmpdir:
             month_dir = Path(tmpdir)
             for day in range(1, 24):
-                raw_path = month_dir / f"dingtalk_attendance_evening_202607{day:02d}_181500.raw.jsonl.gz"
+                raw_path = month_dir / f"dingtalk_attendance_final_202607{day:02d}_181500.raw.jsonl.gz"
                 with gzip.open(raw_path, "wt", encoding="utf-8") as handle:
                     handle.write(
                         json.dumps(
-                            {"type": "metadata", "run_plan": {"run_id": f"dingtalk_attendance_evening_202607{day:02d}_181500"}},
+                            {"type": "metadata", "run_plan": {"run_id": f"dingtalk_attendance_final_202607{day:02d}_181500"}},
                             ensure_ascii=False,
                         )
                         + "\n"
@@ -2553,11 +2627,11 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                     )
             for exempt_name, exempt_user_id in (("丁春法", "u3"), ("李永占", "u4")):
                 for day in range(1, 24):
-                    raw_path = month_dir / f"dingtalk_attendance_evening_{exempt_user_id}_202607{day:02d}_181500.raw.jsonl.gz"
+                    raw_path = month_dir / f"dingtalk_attendance_final_202607{day:02d}_181500_{exempt_user_id}.raw.jsonl.gz"
                     with gzip.open(raw_path, "wt", encoding="utf-8") as handle:
                         handle.write(
                             json.dumps(
-                                {"type": "metadata", "run_plan": {"run_id": f"dingtalk_attendance_evening_{exempt_user_id}_202607{day:02d}_181500"}},
+                                {"type": "metadata", "run_plan": {"run_id": f"dingtalk_attendance_final_202607{day:02d}_181500_{exempt_user_id}"}},
                                 ensure_ascii=False,
                             )
                             + "\n"
@@ -2576,11 +2650,11 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                             + "\n"
                         )
             for day in (1, 23):
-                raw_path = month_dir / f"dingtalk_attendance_morning_202607{day:02d}_083500.raw.jsonl.gz"
+                raw_path = month_dir / f"dingtalk_attendance_final_202607{day:02d}_181500_u2.raw.jsonl.gz"
                 with gzip.open(raw_path, "wt", encoding="utf-8") as handle:
                     handle.write(
                         json.dumps(
-                            {"type": "metadata", "run_plan": {"run_id": f"dingtalk_attendance_morning_202607{day:02d}_083500"}},
+                            {"type": "metadata", "run_plan": {"run_id": f"dingtalk_attendance_final_202607{day:02d}_181500_u2"}},
                             ensure_ascii=False,
                         )
                         + "\n"
@@ -2983,14 +3057,14 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmpdir:
             month_dir = Path(tmpdir)
             for day in ("20260701", "20260702", "20260703"):
-                raw_path = month_dir / f"dingtalk_attendance_evening_{day}_181500.raw.jsonl.gz"
+                raw_path = month_dir / f"dingtalk_attendance_final_{day}_181500.raw.jsonl.gz"
                 record_list = [{"checkTypeDesc": "上班"}, {"checkTypeDesc": "下班"}]
                 if day == "20260702":
                     record_list = [{"checkTypeDesc": "上班"}]
                 with gzip.open(raw_path, "wt", encoding="utf-8") as handle:
                     handle.write(
                         json.dumps(
-                            {"type": "metadata", "run_plan": {"run_id": f"dingtalk_attendance_evening_{day}_181500"}},
+                            {"type": "metadata", "run_plan": {"run_id": f"dingtalk_attendance_final_{day}_181500"}},
                             ensure_ascii=False,
                         )
                         + "\n"
@@ -3146,7 +3220,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
             self.assertEqual(result["notification_status"], "SENT")
             self.assertEqual([title for title, _ in sent], ["开明考勤提醒"])
-            self.assertIn("开明考勤提醒｜2026-07-07｜晚报", sent[0][1])
+            self.assertIn("开明考勤提醒｜2026-07-07｜晚间暂时提醒", sent[0][1])
             self.assertNotIn("evening", sent[0][1])
             self.assertNotIn("morning", sent[0][1])
             self.assertIn("今日异常 / 无考勤\n张三（本月累计1次）", sent[0][1])
@@ -3226,13 +3300,14 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 public_targets_manifest_path=runtime_dir / "notification_targets_manifest.json",
                 env={},
                 sender=fake_sender,
+                delivery_enabled=True,
             )
 
             self.assertEqual(result["status"], "SENT")
             self.assertEqual(result["manifest"], str(manifest))
             self.assertEqual([item["title"] for item in sent], ["开明考勤提醒"])
             self.assertEqual(result["notification_template_text"], sent[0]["text"])
-            self.assertIn("开明考勤提醒｜2026-07-07｜晚报", result["notification_template_text"])
+            self.assertIn("开明考勤提醒｜2026-07-07｜晚间暂时提醒", result["notification_template_text"])
             self.assertNotIn("evening", result["notification_template_text"])
             self.assertNotIn("morning", result["notification_template_text"])
             self.assertNotIn("run_id：", str(sent[0]["text"]))
@@ -3302,6 +3377,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 public_targets_manifest_path=runtime_dir / "notification_targets_manifest.json",
                 env={},
                 sender=lambda **kwargs: sent.append(dict(kwargs)) or {"status": "SENT"},
+                delivery_enabled=True,
             )
 
             self.assertEqual(result["status"], "OFFICIAL_ATTENDANCE_PARITY_FAILED")
@@ -3340,8 +3416,8 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             ):
                 result = ATTENDANCE_RUNNER.send_latest_report_only("morning", "Asia/Shanghai")
 
-            self.assertEqual(result["status"], "OFFICIAL_ATTENDANCE_PARITY_FAILED")
-            self.assertEqual(result["notification_status"], "NOT_SENT_OFFICIAL_ATTENDANCE_PARITY_FAILED")
+            self.assertEqual(result["status"], "NOT_SENT_OWNER_DISABLED")
+            self.assertEqual(result["notification_status"], "NOT_SENT_OWNER_DISABLED")
 
     def test_legacy_resolved_channel_migrates_to_multitarget_registry(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -3449,7 +3525,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
             self.assertEqual([item[1] for item in sent], ["开明考勤提醒", "开明考勤提醒"])
             self.assertEqual([item[0] for item in sent], ["dws_userid_chat", "dws_group_chat"])
             for _, _, body in sent:
-                self.assertIn("开明考勤提醒｜2026-07-07｜晚报", body)
+                self.assertIn("开明考勤提醒｜2026-07-07｜晚间暂时提醒", body)
                 self.assertNotIn("evening", body)
                 self.assertNotIn("morning", body)
                 self.assertNotIn("run_id：", body)

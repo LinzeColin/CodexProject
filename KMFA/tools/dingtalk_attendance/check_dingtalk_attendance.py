@@ -39,6 +39,8 @@ REQUIRED_METADATA_FILES = (
 REQUIRED_TOOL_FILES = (
     "__init__.py",
     "run_attendance.py",
+    "final_reconciliation.py",
+    "delivery_policy.py",
     "dws_auth_guard.py",
     "dws_attendance.py",
     "dingtalk_client.py",

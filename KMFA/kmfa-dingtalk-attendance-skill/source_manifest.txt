@@ -75,3 +75,6 @@ tests/test_raw_archive_replay.py
 tests/test_stage2_consensus.py
 tests/test_stage2_source_from_raw_replay.py
 tools/validate_skill_package.py
+任务清单.md
+功能清单.md
+运行清单.md
