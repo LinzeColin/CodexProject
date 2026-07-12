@@ -539,6 +539,77 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(result["independent_evidence_status"], "EVIDENCE_MISSING")
         self.assertEqual(result["notification_status"], "NOT_SENT_OWNER_DISABLED")
 
+    def test_official_reconstruction_preserves_49_column_semantics(self) -> None:
+        from KMFA.tools.dingtalk_attendance.official_report_reconstruction import (
+            COLUMN_SOURCES,
+            OFFICIAL_COLUMNS,
+            VALUE_DIFFERENT,
+            build_reconstructed_rows,
+            classify_cell,
+        )
+
+        report_values = {name: "" for name in OFFICIAL_COLUMNS[8:37] + OFFICIAL_COLUMNS[45:49]}
+        report_values.update({"班次": "测试班次 08:00-17:30", "迟到次数": "0"})
+        column_ids = {name: str(index + 1000) for index, name in enumerate(report_values)}
+        snapshot = {
+            "report_column_names": list(report_values),
+            "report_column_ids": [column_ids[name] for name in report_values],
+            "report_query_data": {
+                "2026-07-09": [{
+                    "result": [{
+                        "userId": "00123",
+                        "workDate": "2026-07-09",
+                        "values": [
+                            {"termId": column_ids[name], "value": value, "type": "DYNAMIC"}
+                            for name, value in report_values.items()
+                        ],
+                    }]
+                }]
+            },
+            "report_query_leave": {
+                "2026-07-09": [{
+                    "result": [{
+                        "userId": "00123",
+                        "leaveVals": [
+                            {"leaveName": name, "date": "1783526400000", "value": "0.0"}
+                            for name in ("事假", "病假", "年假", "调休", "婚假", "产假", "陪产假", "路途假")
+                        ],
+                    }]
+                }]
+            },
+            "user_profiles": [{
+                "result": [{
+                    "orgEmployeeModel": {
+                        "orgUserId": "00123",
+                        "orgUserName": "测试员工",
+                        "depts": [{"deptId": "10", "deptName": "测试部门"}],
+                        "jobNumber": "0007",
+                        "orgTitle": "测试职位",
+                    }
+                }]
+            }],
+            "attendance_groups": [
+                {"result": {"items": [{"id": 1, "name": "测试组"}]}},
+                {"result": {"id": 1, "name": "测试组", "memberUsers": ["00123"]}},
+            ],
+            "department_directory": {"10": {"name": "测试部门", "path": ["技术部", "测试部门"]}},
+        }
+
+        rows = build_reconstructed_rows(snapshot, work_date="2026-07-09")
+        values = rows["00123"]
+
+        self.assertEqual(len(OFFICIAL_COLUMNS), 49)
+        self.assertEqual(len(COLUMN_SOURCES), 49)
+        self.assertEqual(len(values), 49)
+        self.assertEqual(values[5], "00123")
+        self.assertEqual(values[6], "26-07-09 星期四")
+        self.assertEqual(values[7], "1783526400000")
+        self.assertEqual(values[2], "技术部-测试部门")
+        self.assertIsNone(values[25])
+        self.assertIsNone(values[37])
+        self.assertIsNone(values[30])
+        self.assertEqual(classify_cell(None, "0", column_name="迟到次数"), VALUE_DIFFERENT)
+
     def test_identity_migration_new_writer_and_legacy_reader_contract(self) -> None:
         identity = importlib.import_module("KMFA.tools.dingtalk_attendance.identity")
         plan = build_run_plan(
