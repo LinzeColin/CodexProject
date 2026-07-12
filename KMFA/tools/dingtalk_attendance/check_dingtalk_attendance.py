@@ -38,6 +38,7 @@ REQUIRED_METADATA_FILES = (
 
 REQUIRED_TOOL_FILES = (
     "__init__.py",
+    "automatic_closure.py",
     "run_attendance.py",
     "final_reconciliation.py",
     "delivery_policy.py",
@@ -169,8 +170,9 @@ def validate_dingtalk_attendance_files(root: Path) -> dict[str, Any]:
         or schedule.get("summary_datetime_source") != "actual_run_datetime_in_business_date_timezone"
     ):
         errors.append("automation schedule drift")
-    if (metadata_root / "codex_automation" / "morning_1035.prompt.md").read_text(encoding="utf-8").find("10:35") < 0:
-        errors.append("morning prompt schedule drift")
+    morning_prompt = (metadata_root / "codex_automation" / "morning_1035.prompt.md").read_text(encoding="utf-8")
+    if "do not alter the scheduler" not in morning_prompt:
+        errors.append("morning prompt scheduler freeze drift")
     if (metadata_root / "codex_automation" / "evening_2000.prompt.md").read_text(encoding="utf-8").find("20:00") < 0:
         errors.append("evening prompt schedule drift")
     if manifest.get("onedrive_root") != ONEDRIVE_ROOT:

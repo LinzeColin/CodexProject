@@ -1,57 +1,42 @@
-Use $kmfa-dingtalk-attendance-skill.
+Use $kmfa-dingtalk-attendance-skill. If browser export is required, also use $chrome:control-chrome.
 
-If the current Codex agent cannot auto-resolve repo-scoped skills, read and follow:
+Work only in `/Users/linzezhang/CodexProject` on `main`. This is the natural morning run for automation `kmfa`. Business dates use `Asia/Shanghai`; do not alter the scheduler or its timezone configuration.
 
-```text
-/Users/linzezhang/CodexProject/KMFA/kmfa-dingtalk-attendance-skill/SKILL.md
+This automation prompt file preserves the existing REST rules; it does not redefine notification text.
+
+Goal: run the morning temporary reminder and automatically close the latest pending completed work date with an independent DingTalk official XLS/XLSX export. Delivery is hard-disabled.
+
+Required sequence:
+
+1. Confirm branch `main`, `HEAD == origin/main`, no extra worktree, canonical skill present, and tracked files clean. Do not touch the five unrelated pre-existing untracked files.
+2. Run the package preflight, runtime inspection, offline validation, month gate, and attendance config-only healthcheck. Fail closed if current read-only DWS authorization is not ready.
+3. Run exactly:
+
+```bash
+TZ=Asia/Shanghai PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/dingtalk_attendance/automatic_closure.py --run-slot morning --trigger-source automation --automation-id kmfa --allow-dws-commands
 ```
 
-统一工作区规则：本 KMFA automation 只使用 KMFA/CodexProject 工作间：
-- KMFA/CodexProject：`/Users/linzezhang/CodexProject`
-本 automation 的实际执行目录必须切到 `/Users/linzezhang/CodexProject` 后再运行 KMFA git、skill、test 或脚本命令；上游 DWS 归档是独立 automation，只提供已生成的 OneDrive/DWS 输出。若发现本 automation 的 cwd 不是 `/Users/linzezhang/CodexProject`，先修正 automation 配置并报告。
+4. The coordinator must deduplicate by work date plus run slot, recover completed artifacts after interruption, keep final/monthly writes exactly once, and update the private Chinese `运行状态`. Never bypass its state or artifact probes.
+5. If the returned final status is `WAITING_OFFICIAL_REPORT`, use the existing logged-in DingTalk browser state read-only. Open the enterprise attendance daily-statistics report, select only the exact pending work date reported by the coordinator, and export the complete official XLS/XLSX. Do not inspect browser cookies/storage and do not modify DingTalk data, personnel scope, attendance groups, rules, schedules, configuration, or messages.
+6. If the official report is not yet generated or cannot yet be exported, preserve `WAITING_OFFICIAL_REPORT` and stop successfully without asking the owner for a file. The next natural morning run must repeat the same automatic lookup.
+7. If an official workbook is exported, leave it in the browser download location and run exactly once:
 
-Run slot: morning.
-Scheduled Beijing time: 10:35.
-Timezone: Asia/Shanghai. All business dates, run slots, and stage gates are Beijing time.
-
-Goal: execute the KMFA 钉钉考勤 skill morning temporary-reminder workflow and finalize the latest pending completed work date from DingTalk's official report. Attendance delivery remains disabled.
-
-Required steps:
-1. Switch to `/Users/linzezhang/CodexProject`, then confirm branch is `main`, `HEAD == origin/main`, and no extra worktree is active.
-2. Confirm canonical skill path exists: `KMFA/kmfa-dingtalk-attendance-skill/SKILL.md`.
-3. Set `TZ=Asia/Shanghai` and `KMFA_RUN_SLOT=morning`.
-4. Run `KMFA/kmfa-dingtalk-attendance-skill/scripts/preflight.sh`.
-5. Run `KMFA/kmfa-dingtalk-attendance-skill/scripts/inspect_runtime.sh`.
-6. Run `KMFA/kmfa-dingtalk-attendance-skill/scripts/validate_offline.sh`.
-7. Run `KMFA/kmfa-dingtalk-attendance-skill/scripts/month_gate.py --run-slot morning --print-json`.
-8. Run existing attendance skill config-only healthcheck: `python3 KMFA/tools/dingtalk_attendance/healthcheck.py --config-only`.
-9. When DWS is authorized, first run `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/dingtalk_attendance/final_reconciliation.py --latest-pending --timezone Asia/Shanghai --allow-dws-commands`. `NO_PENDING_FINAL_RECONCILIATION` is a valid no-op. Any pending work date must reach exact official parity or fail closed. Do not fabricate data or a final result.
-9a. Then run the existing attendance skill morning entry as a `TEMPORARY_REMINDER` only if current local authorization through `KMFA_DINGTALK_ATTENDANCE_ALLOW_DWS_COMMANDS` permits it; otherwise fail closed and report `DWS_AUTH_REQUIRED` / config blocker. The entry must use current DingTalk attendance-group members plus exact `attendance report columns/query-data` values as the only business-statistics source. `record get`, two-punch inference, and personal `summary` are diagnostics only.
-10. Require `official_report_parity_status=PASS`, exact Beijing business-date coverage, and `official_report_coverage_count == member_count` before any temporary reminder or final reconciliation. On `OFFICIAL_ATTENDANCE_PARITY_FAILED`, stop without sending and never fall back to record/summary guesses.
-10d. Attendance delivery is owner-disabled. Require `notification_status=NOT_SENT_OWNER_DISABLED`; do not probe targets, resend, or invoke any sender.
-10a. The production official collector intentionally skips the legacy per-member record/summary sweep. Do not run that sweep before or after the entry.
-10b. Do not interrupt the entry while its process is still inside the runner's bounded DWS timeout/retry budget.
-10c. When the authoritative healthcheck is READY, a running process or later timeout must never be reported as DWS_AUTH_REQUIRED; report the entry's exact final JSON status and exit code.
-11. Do not perform stage-2 acceptance in the morning run.
-12. Do not promote Q5 or payroll baseline in the morning run.
-13. Preserve rest reminder rules from the skill: `REST_REQUIRED_THRESHOLD_DAYS = 23`; `丁春法` and `李永占` are excluded only from `需要休息`, while all other statuses are counted normally.
-14. If the owner explicitly requests a date-specific personal-only test, run the entry with `--work-date YYYY-MM-DD --notification-targets personal`; do not send the production management group.
-15. If this run changes any skill or automation prompt file, run validators, commit, and push to GitHub `main` before reporting completion.
-
-Hard boundaries:
-- Do not commit secrets, `.env.local`, resolved DWS IDs, SQLite, raw JSON/JSONL/GZ, employee plaintext, OneDrive raw archives, or report bodies.
-- Do not create branch, PR, issue, or worktree.
-- Treat tracked `KMFA/metadata` as public metadata/config source; private DingTalk raw payloads stay private.
-- Do not modify upstream DWS archive outputs.
-
-Final response format:
-
-```text
-status: passed|warning|failed
-run_slot: morning
-target_month: YYYYMM
-stage2_eligible: false
-freshness: ok|warning|failed
-P0/P1 unresolved: N/N
-next_action: ...
+```bash
+TZ=Asia/Shanghai PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/dingtalk_attendance/automatic_closure.py --run-slot morning --trigger-source automation --automation-id kmfa --resume-final-only --allow-dws-commands
 ```
+
+8. The automatic chain must freeze the workbook fingerprint privately, reconstruct all 48 required fields, generate the formal certificate, and pass that certificate directly to `final_reconciliation.py`. Never request or supply manual `--independent-reconciliation-evidence`.
+9. Official final PASS requires 44/44/44 people, 48 compared columns, 2,112 compared cells, missing/extra/required-missing/true-difference all zero; `部门` remains optional and unverified when no reliable source exists.
+10. Require `notification_status=NOT_SENT_OWNER_DISABLED`; message count and target calls must stay zero. Do not probe, resend, or invoke any sender.
+
+Contract preservation: `DWS_AUTH_REQUIRED` remains the fail-closed authorization result. Do not fabricate data. The reminder still requires exact `attendance report columns/query-data`, `official_report_parity_status=PASS`, and fail-closed `OFFICIAL_ATTENDANCE_PARITY_FAILED`. Any changed prompt must be committed and pushed to GitHub `main`. Protect `.env.local`, SQLite, raw JSON, private runtime, and report bodies.
+
+Frozen boundaries:
+
+- Do not modify notification templates or any notification text.
+- Do not modify schedule, time, timezone, automation ID, cwd, sending targets, or another skill.
+- Do not create a branch, worktree, PR, Draft PR, or issue.
+- Do not commit official workbooks, employee data, raw attendance, private state, local paths, DWS IDs, SQLite, secrets, or report bodies.
+- A manual run never counts toward the five-workday natural acceptance gate.
+
+Report only the exact coordinator status, current natural completed workday count out of five, and any precise fail-closed blocker. Do not claim production acceptance before five natural workdays complete.
