@@ -189,6 +189,7 @@ def run_final_reconciliation(
             "one_page_result": str(page_path),
             "notification_status": receipt["notification_status"],
             "monthly_rollup_eligible": True,
+            "official_reconciliation_certificate": evidence["certificate"],
         }
     )
     manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -235,7 +236,12 @@ def _load_independent_reconciliation_evidence(path: Path | None, *, work_date: s
             "failure_reason": "independent official-export reconciliation certificate is invalid: "
             + ", ".join(validation_errors),
         }
-    return {"status": "PASS", "evidence_status": "PASS", "failure_reason": ""}
+    return {
+        "status": "PASS",
+        "evidence_status": "PASS",
+        "failure_reason": "",
+        "certificate": evidence,
+    }
 
 
 def find_reminder_evidence(

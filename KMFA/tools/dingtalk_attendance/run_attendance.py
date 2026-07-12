@@ -58,6 +58,9 @@ from KMFA.tools.dingtalk_attendance.notification_template import (
     official_report_parity_failure_reason,
     work_date_from_run_id,
 )
+from KMFA.tools.dingtalk_attendance.official_report_reconstruction import (
+    validate_reconciliation_certificate,
+)
 from KMFA.tools.dingtalk_attendance.onedrive_archive import archive_paths_for_run
 from KMFA.tools.dingtalk_attendance.secrets_loader import merged_runtime_env
 
@@ -461,13 +464,37 @@ def _date_ordinal(value: str) -> int:
 
 def _monthly_attendance_records(month_dir: Path) -> list[dict[str, Any]]:
     records: list[dict[str, Any]] = []
+    eligible_by_work_date: dict[str, tuple[tuple[Any, ...], Path, dict[str, Any]]] = {}
     for raw_path in current_archive_raw_paths(month_dir):
         if not raw_path.name.endswith(".raw.jsonl.gz"):
             continue
         run_id = raw_path.name.removesuffix(".raw.jsonl.gz")
         if run_type_from_run_id(run_id) != "final":
             continue
-        work_date = work_date_from_run_id(raw_path.name)
+        manifest_path = raw_path.with_name(f"{run_id}.manifest.json")
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            identity = validate_manifest_identity(manifest)
+            work_date = str(manifest.get("work_date") or "")
+            certificate = manifest.get("official_reconciliation_certificate")
+            if (
+                identity["identity_source"] != "skill_id"
+                or manifest.get("result_kind") != "OFFICIAL_FINAL_RECONCILIATION"
+                or manifest.get("monthly_rollup_eligible") is not True
+                or not isinstance(certificate, Mapping)
+                or validate_reconciliation_certificate(certificate, expected_work_date=work_date)
+            ):
+                continue
+            sort_key = attendance_run_sort_key(str(manifest.get("run_id") or run_id))
+        except (OSError, json.JSONDecodeError, IdentityConflictError, ValueError):
+            continue
+        current = eligible_by_work_date.get(work_date)
+        if current is None or sort_key > current[0]:
+            eligible_by_work_date[work_date] = (sort_key, raw_path, manifest)
+
+    for work_date in sorted(eligible_by_work_date):
+        _, raw_path, manifest = eligible_by_work_date[work_date]
+        run_id = str(manifest.get("run_id") or raw_path.name.removesuffix(".raw.jsonl.gz"))
         try:
             with gzip.open(raw_path, "rt", encoding="utf-8") as handle:
                 for line in handle:
@@ -480,12 +507,11 @@ def _monthly_attendance_records(month_dir: Path) -> list[dict[str, Any]]:
                         run_plan = payload.get("run_plan", {})
                         if isinstance(run_plan, Mapping):
                             run_id = str(run_plan.get("run_id") or run_id)
-                            work_date = work_date_from_run_id(run_id)
                         continue
                     if payload.get("type") != "employee_attendance":
                         continue
                     row = dict(payload)
-                    row["work_date"] = str(row.get("work_date") or work_date or "")
+                    row["work_date"] = work_date
                     row["_archive_run_id"] = run_id
                     records.append(row)
         except (OSError, EOFError, json.JSONDecodeError):

@@ -101,6 +101,47 @@ def _official_pass_stats(
     }
 
 
+def _write_certificate_bound_final_manifest(
+    month_dir: Path,
+    *,
+    run_id: str,
+    work_date: str,
+    people: int,
+) -> None:
+    certificate = {
+        "schema": "kmfa.dingtalk_attendance.official_reconciliation.v1",
+        "evidence_kind": "INDEPENDENT_OFFICIAL_EXPORT_VS_DWS",
+        "official_sha256": "d" * 64,
+        "work_date": work_date,
+        "status": "PASS",
+        "official_people": people,
+        "dws_people": people,
+        "matched_people": people,
+        "compared_columns": 48,
+        "compared_cells": people * 48,
+        "missing_people": 0,
+        "extra_people": 0,
+        "missing_required_columns": 0,
+        "missing_required_cells": 0,
+        "differing_required_cells": 0,
+        "optional_unverified_fields": ["部门"],
+    }
+    (month_dir / f"{run_id}.manifest.json").write_text(
+        json.dumps(
+            {
+                "skill_id": "kmfa-dingtalk-attendance-skill",
+                "run_id": run_id,
+                "work_date": work_date,
+                "result_kind": "OFFICIAL_FINAL_RECONCILIATION",
+                "monthly_rollup_eligible": True,
+                "official_reconciliation_certificate": certificate,
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+
+
 def _write_ledger_fixture_run(
     root: Path,
     *,
@@ -446,6 +487,10 @@ class OfficialParityFixtureRunner:
 
 class DingTalkAttendanceContractTests(unittest.TestCase):
     def test_r32_monthly_rollup_reads_only_current_final_reconciliation_archives(self) -> None:
+        from KMFA.tools.dingtalk_attendance.official_report_reconstruction import (
+            RECONCILIATION_CERTIFICATE_SCHEMA,
+        )
+
         with tempfile.TemporaryDirectory() as tmpdir:
             month_dir = Path(tmpdir)
             for run_id, marker in (
@@ -453,6 +498,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 ("dingtalk_attendance_morning_20260710_104500", "morning"),
                 ("dingtalk_attendance_evening_20260710_200000", "evening"),
                 ("dingtalk_attendance_final_20260711_090000", "final"),
+                ("dingtalk_attendance_final_20260712_090000", "unbound-final"),
             ):
                 with gzip.open(month_dir / f"{run_id}.raw.jsonl.gz", "wt", encoding="utf-8") as handle:
                     handle.write(json.dumps({"type": "metadata", "run_plan": {"run_id": run_id}}) + "\n")
@@ -470,10 +516,43 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                         )
                         + "\n"
                     )
+            valid_run_id = "dingtalk_attendance_final_20260711_090000"
+            certificate = {
+                "schema": RECONCILIATION_CERTIFICATE_SCHEMA,
+                "evidence_kind": "INDEPENDENT_OFFICIAL_EXPORT_VS_DWS",
+                "official_sha256": "c" * 64,
+                "work_date": "2026-07-10",
+                "status": "PASS",
+                "official_people": 44,
+                "dws_people": 44,
+                "matched_people": 44,
+                "compared_columns": 48,
+                "compared_cells": 2112,
+                "missing_people": 0,
+                "extra_people": 0,
+                "missing_required_columns": 0,
+                "missing_required_cells": 0,
+                "differing_required_cells": 0,
+                "optional_unverified_fields": ["部门"],
+            }
+            (month_dir / f"{valid_run_id}.manifest.json").write_text(
+                json.dumps(
+                    {
+                        "skill_id": "kmfa-dingtalk-attendance-skill",
+                        "run_id": valid_run_id,
+                        "work_date": "2026-07-10",
+                        "result_kind": "OFFICIAL_FINAL_RECONCILIATION",
+                        "monthly_rollup_eligible": True,
+                        "official_reconciliation_certificate": certificate,
+                    }
+                ),
+                encoding="utf-8",
+            )
 
             records = ATTENDANCE_RUNNER._monthly_attendance_records(month_dir)
 
         self.assertEqual([record["member"]["name"] for record in records], ["final"])
+        self.assertEqual(records[0]["work_date"], "2026-07-10")
 
     def test_r32_morning_and_evening_are_labeled_temporary_reminders(self) -> None:
         morning = build_notification_message(
@@ -710,6 +789,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
         self.assertEqual(loaded["status"], "PASS")
         self.assertEqual(loaded["evidence_status"], "PASS")
+        self.assertEqual(loaded["certificate"], certificate)
 
     def test_required_official_field_still_blocks_reconciliation(self) -> None:
         from KMFA.tools.dingtalk_attendance.official_report_reconstruction import (
@@ -2819,79 +2899,49 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmpdir:
             month_dir = Path(tmpdir)
             for day in range(1, 24):
-                raw_path = month_dir / f"dingtalk_attendance_final_202607{day:02d}_181500.raw.jsonl.gz"
+                run_id = f"dingtalk_attendance_final_202607{day:02d}_181500"
+                work_date = f"2026-07-{day:02d}"
+                raw_path = month_dir / f"{run_id}.raw.jsonl.gz"
                 with gzip.open(raw_path, "wt", encoding="utf-8") as handle:
                     handle.write(
                         json.dumps(
-                            {"type": "metadata", "run_plan": {"run_id": f"dingtalk_attendance_final_202607{day:02d}_181500"}},
+                            {"type": "metadata", "run_plan": {"run_id": run_id}},
                             ensure_ascii=False,
                         )
                         + "\n"
                     )
-                    handle.write(
-                        json.dumps(
-                            {
-                                "type": "employee_attendance",
-                                "member": {"name": "张三", "userId": "u1"},
-                                "work_date": f"2026-07-{day:02d}",
-                                "record_list": [{"checkTypeDesc": "上班"}, {"checkTypeDesc": "下班"}],
-                                "derived": {"record_success": True, "summary_success": True},
-                            },
-                            ensure_ascii=False,
-                        )
-                        + "\n"
-                    )
-            for exempt_name, exempt_user_id in (("丁春法", "u3"), ("李永占", "u4")):
-                for day in range(1, 24):
-                    raw_path = month_dir / f"dingtalk_attendance_final_202607{day:02d}_181500_{exempt_user_id}.raw.jsonl.gz"
-                    with gzip.open(raw_path, "wt", encoding="utf-8") as handle:
-                        handle.write(
-                            json.dumps(
-                                {"type": "metadata", "run_plan": {"run_id": f"dingtalk_attendance_final_202607{day:02d}_181500_{exempt_user_id}"}},
-                                ensure_ascii=False,
-                            )
-                            + "\n"
-                        )
+                    employees = [("张三", "u1"), ("丁春法", "u3"), ("李永占", "u4")]
+                    if day in (1, 23):
+                        employees.append(("李四", "u2"))
+                    for name, user_id in employees:
+                        is_anomaly = name == "李四" or (day == 23 and name in {"丁春法", "李永占"})
                         handle.write(
                             json.dumps(
                                 {
                                     "type": "employee_attendance",
-                                    "member": {"name": exempt_name, "userId": exempt_user_id},
-                                    "work_date": f"2026-07-{day:02d}",
-                                    "record_list": [{"checkTypeDesc": "上班"}, {"checkTypeDesc": "下班"}],
-                                    "derived": {"record_success": True, "summary_success": True},
+                                    "member": {"name": name, "userId": user_id},
+                                    "work_date": work_date,
+                                    "record_list": (
+                                        []
+                                        if name == "李四"
+                                        else [{"checkTypeDesc": "上班"}, {"checkTypeDesc": "下班"}]
+                                    ),
+                                    "derived": {
+                                        "record_success": True,
+                                        "summary_success": True,
+                                        "record_anomaly": is_anomaly,
+                                    },
                                 },
                                 ensure_ascii=False,
                             )
                             + "\n"
                         )
-            for day in (1, 23):
-                raw_path = month_dir / f"dingtalk_attendance_final_202607{day:02d}_181500_u2.raw.jsonl.gz"
-                with gzip.open(raw_path, "wt", encoding="utf-8") as handle:
-                    handle.write(
-                        json.dumps(
-                            {"type": "metadata", "run_plan": {"run_id": f"dingtalk_attendance_final_202607{day:02d}_181500_u2"}},
-                            ensure_ascii=False,
-                        )
-                        + "\n"
-                    )
-                    handle.write(
-                        json.dumps(
-                            {
-                                "type": "employee_attendance",
-                                "member": {"name": "李四", "userId": "u2"},
-                                "work_date": f"2026-07-{day:02d}",
-                                "record_list": [],
-                                "derived": {
-                                    "record_success": True,
-                                    "summary_success": True,
-                                    "record_anomaly": True,
-                                },
-                            },
-                            ensure_ascii=False,
-                        )
-                        + "\n"
-                    )
+                _write_certificate_bound_final_manifest(
+                    month_dir,
+                    run_id=run_id,
+                    work_date=work_date,
+                    people=len(employees),
+                )
 
             stats = build_stats_with_rest_required_people(
                 {"member_count": 4, "attendance_anomaly_names": ["李四", "丁春法", "李永占"]},
@@ -3273,14 +3323,16 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmpdir:
             month_dir = Path(tmpdir)
             for day in ("20260701", "20260702", "20260703"):
-                raw_path = month_dir / f"dingtalk_attendance_final_{day}_181500.raw.jsonl.gz"
+                run_id = f"dingtalk_attendance_final_{day}_181500"
+                work_date = f"{day[:4]}-{day[4:6]}-{day[6:]}"
+                raw_path = month_dir / f"{run_id}.raw.jsonl.gz"
                 record_list = [{"checkTypeDesc": "上班"}, {"checkTypeDesc": "下班"}]
                 if day == "20260702":
                     record_list = [{"checkTypeDesc": "上班"}]
                 with gzip.open(raw_path, "wt", encoding="utf-8") as handle:
                     handle.write(
                         json.dumps(
-                            {"type": "metadata", "run_plan": {"run_id": f"dingtalk_attendance_final_{day}_181500"}},
+                            {"type": "metadata", "run_plan": {"run_id": run_id}},
                             ensure_ascii=False,
                         )
                         + "\n"
@@ -3302,6 +3354,12 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                         )
                         + "\n"
                     )
+                _write_certificate_bound_final_manifest(
+                    month_dir,
+                    run_id=run_id,
+                    work_date=work_date,
+                    people=1,
+                )
 
             stats = build_stats_with_rest_required_people({}, month_dir=month_dir, threshold_days=2)
 
