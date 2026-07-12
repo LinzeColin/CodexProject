@@ -1,28 +1,7 @@
 import { X } from "lucide-react";
+import type { TierAssetDetail } from "../shared/atlas/contracts";
 
-export interface TierAssetDetail {
-  asset_id: string;
-  asset_tier: "core_profile" | "project" | "decision" | "workflow" | "knowledge" | "opportunity" | "stale";
-  title: string;
-  summary: string;
-  theme: string;
-  value_score: number;
-  updated_at: string;
-  importance: "high" | "medium" | "low";
-  priority: "p0" | "p1" | "p2" | "p3" | "watch";
-  confidence: number;
-  staleness_status: "current" | "needs_review" | "stale" | "unknown";
-  last_seen_range: string;
-  evidence_count: number;
-  evidence_refs: string[];
-  source_scope: string;
-  linked_action_ids: string[];
-  linked_topic_ids: string[];
-  recommended_asset_action: "keep" | "review" | "consolidate" | "lower_priority" | "validate" | "defer";
-  proposal_hint: "proposal_recommended" | "proposal_not_needed";
-  rollback_hint: string;
-  proposal_only: true;
-}
+export type { TierAssetDetail } from "../shared/atlas/contracts";
 
 interface AssetDetailPanelProps {
   asset: TierAssetDetail | null;

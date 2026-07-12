@@ -198,6 +198,11 @@ function startProcess(command, args, options = {}) {
 }
 
 
+function processExited(processHandle) {
+  return processHandle.child.exitCode !== null || processHandle.child.signalCode !== null;
+}
+
+
 function httpRequest(url, options = {}, body = "") {
   return new Promise((resolve, reject) => {
     const target = new URL(url);
@@ -231,8 +236,8 @@ async function waitForHttp(url, processHandle, timeoutMs = 30000) {
   const started = Date.now();
   let lastError = null;
   while (Date.now() - started < timeoutMs) {
-    if (processHandle.child.exitCode !== null) {
-      throw new Error(`Server exited before readiness with code ${processHandle.child.exitCode}: ${processHandle.logs.join("").slice(-3000)}`);
+    if (processExited(processHandle)) {
+      throw new Error(`Server exited before readiness with code ${processHandle.child.exitCode} and signal ${processHandle.child.signalCode}: ${processHandle.logs.join("").slice(-3000)}`);
     }
     try {
       const response = await httpRequest(url, { timeoutMs: 1200 });
@@ -247,15 +252,23 @@ async function waitForHttp(url, processHandle, timeoutMs = 30000) {
 
 
 async function stopProcess(processHandle) {
-  if (!processHandle || processHandle.child.exitCode !== null) return;
+  if (!processHandle || processExited(processHandle)) return;
+  let exitPromise = new Promise((resolve) => processHandle.child.once("exit", resolve));
   processHandle.child.kill("SIGTERM");
   await Promise.race([
-    new Promise((resolve) => processHandle.child.once("exit", resolve)),
+    exitPromise,
     new Promise((resolve) => setTimeout(resolve, 2500)),
   ]);
-  if (processHandle.child.exitCode === null) {
+  if (!processExited(processHandle)) {
+    exitPromise = new Promise((resolve) => processHandle.child.once("exit", resolve));
     processHandle.child.kill("SIGKILL");
-    await new Promise((resolve) => processHandle.child.once("exit", resolve));
+    await Promise.race([
+      exitPromise,
+      new Promise((resolve) => setTimeout(resolve, 2500)),
+    ]);
+  }
+  if (!processExited(processHandle)) {
+    throw new Error(`Unable to stop validation server process ${processHandle.child.pid}`);
   }
 }
 
@@ -477,10 +490,37 @@ async function main() {
     assertCondition(commandRequests.every((item) => Object.keys(item).length === 1), "Browser sent fields outside command_id", commandRequests);
     assertCondition(pageErrors.length === 0, "Local command page emitted browser errors", { pageErrors });
 
+    const chatgptSummary = JSON.parse(fs.readFileSync(
+      path.join(fixture.sourceRoot, "data/derived/chatgpt/chatgpt_sync_summary.json"),
+      "utf8",
+    ));
+    const chatgptManifestRows = readJsonLines(
+      path.join(fixture.sourceRoot, "data/processed/conversations/conversation_manifest.jsonl"),
+    );
+    const chatgptManifestRow = chatgptManifestRows.find(
+      (row) => row.conversation_id === "r3_browser_chatgpt",
+    );
+    const chatgptRawRoot = path.resolve(fixture.sourceRoot, "data/public_raw/chatgpt");
+    const chatgptRawPath = chatgptManifestRow?.raw_ref
+      ? path.resolve(fixture.sourceRoot, chatgptManifestRow.raw_ref)
+      : "";
+    const chatgptRaw = chatgptRawPath && chatgptRawPath.startsWith(`${chatgptRawRoot}${path.sep}`)
+      && fs.existsSync(chatgptRawPath)
+      ? JSON.parse(fs.readFileSync(chatgptRawPath, "utf8"))
+      : null;
+    const chatgptArtifactValid = Boolean(
+      chatgptSummary.schema_version === "memory_atlas_chatgpt_sync_summary.v1"
+      && chatgptSummary.conversation_count === 1
+      && chatgptSummary.conversation_ids?.includes("r3_browser_chatgpt")
+      && chatgptManifestRow
+      && chatgptRaw
+      && chatgptRaw.conversation_id === "r3_browser_chatgpt"
+      && chatgptRaw.content_sha256 === chatgptManifestRow.content_sha256,
+    );
     const weeklyOutputs = fs.readdirSync(path.join(fixture.sourceRoot, "data/derived/weekly"))
       .filter((name) => name.endsWith(".memory_atlas_weekly_report.md"));
     const expectedArtifacts = {
-      chatgpt_sync: pathExists(fixture.sourceRoot, "data/public_raw/chatgpt/r3_browser_chatgpt.json"),
+      chatgpt_sync: chatgptArtifactValid,
       codex_sync: pathExists(fixture.sourceRoot, "data/processed/codex/codex_session_manifest.jsonl"),
       weekly_report: weeklyOutputs.length > 0,
       personalization_chatgpt: pathExists(fixture.sourceRoot, "data/derived/personalization/chatgpt_personalization.md"),
@@ -514,6 +554,37 @@ async function main() {
       fullPage: false,
       animations: "disabled",
     });
+
+    const reloadFailurePage = await context.newPage();
+    let snapshotRequestCount = 0;
+    await reloadFailurePage.route("**/memory_atlas.json?**", async (route) => {
+      snapshotRequestCount += 1;
+      if (snapshotRequestCount === 1) {
+        await route.continue();
+        return;
+      }
+      await route.fulfill({
+        status: 503,
+        contentType: "application/json",
+        body: JSON.stringify({ error: "reload failure fixture" }),
+      });
+    });
+    await reloadFailurePage.goto(localUrl, { waitUntil: "networkidle", timeout: 60000 });
+    await reloadFailurePage.waitForSelector('[data-view="home"]', { timeout: 30000 });
+    await reloadFailurePage.waitForFunction(() => window.__memoryAtlasR3CommandWorkflows?.().runtimeAvailable === true, null, { timeout: 15000 });
+    const snapshotTextBeforeReload = await reloadFailurePage.locator(".stat-strip").innerText();
+    const reloadFailureResult = await executeCommand(reloadFailurePage, "sync_codex");
+    assertCondition(reloadFailureResult.status === "error", "Reload failure did not surface as a command error", reloadFailureResult);
+    assertCondition(await reloadFailurePage.locator('[data-view="home"]').isVisible(), "Reload failure removed the mounted Home route");
+    assertCondition(await reloadFailurePage.locator(".stat-strip").innerText() === snapshotTextBeforeReload, "Reload failure replaced the existing snapshot metrics");
+    assertCondition(await reloadFailurePage.locator('[data-state="load-failed-banner"]').count() === 0, "Reload failure promoted to a global load failure banner");
+    status.reload_failure = {
+      command_status: reloadFailureResult.status,
+      existing_snapshot_preserved: true,
+      global_load_failure: false,
+      snapshot_request_count: snapshotRequestCount,
+    };
+    await reloadFailurePage.close();
     await context.close();
     await browser.close();
     browser = null;
@@ -612,5 +683,5 @@ async function main() {
 
 main().catch((error) => {
   console.error(error.stack || error.message || String(error));
-  process.exitCode = 1;
+  process.exit(1);
 });

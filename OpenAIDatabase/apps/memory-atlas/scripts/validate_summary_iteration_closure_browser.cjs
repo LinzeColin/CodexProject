@@ -85,7 +85,7 @@ async function runtimeSnapshot(page) {
       hasProposalHint: /proposal/i.test(outputText),
       hasRequiresConflictCheck: outputText.includes("requires_conflict_check=true"),
       hasRequiresAgentOrHumanApply: outputText.includes("requires_agent_or_human_apply=true"),
-      hasProposalOnly: outputText.includes("proposal_only: true"),
+      hasProposalOnly: outputText.includes("仅生成提案：是"),
       text: outputText.slice(0, 1600),
     };
   });
@@ -130,11 +130,11 @@ async function main() {
       root.panels.includes("change_comparison") &&
         requiredPanelSelectors.includes('data-summary-closure-panel="change_comparison"') &&
         root.text.includes("change_comparison") &&
-        root.text.includes("current") &&
-        root.text.includes("previous") &&
+        root.text.includes("当前") &&
+        root.text.includes("上期") &&
         root.text.includes("evidence_refs"),
       "stage8_phase1_browser_change_comparison",
-      "Runtime shows change_comparison with current/previous counts and evidence refs",
+      "Runtime shows change_comparison with current/previous Chinese counts and evidence refs",
       "Runtime change_comparison panel is incomplete",
       root,
     );

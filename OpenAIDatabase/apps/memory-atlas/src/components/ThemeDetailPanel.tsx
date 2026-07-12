@@ -1,29 +1,7 @@
 import { X } from "lucide-react";
+import type { TopicClassificationDetail } from "../shared/atlas/contracts";
 
-export interface TopicClassificationDetail {
-  topic_id: string;
-  topic_label: string;
-  parent_topic: string;
-  category: string;
-  topic_state: "dominant" | "rising" | "declining" | "emerging" | "conflict" | "black_hole" | "stale";
-  topic_strength: number;
-  trend: "up" | "stable" | "down";
-  roi_score: number;
-  conflict_score: number;
-  confidence: number;
-  record_count: number;
-  recent_count: number;
-  representative_record_ids: string[];
-  evidence_refs: string[];
-  matched_reason: string;
-  linked_asset_ids: string[];
-  linked_action_ids: string[];
-  starfield_handoff: string;
-  river_handoff: string;
-  proposal_hint: "proposal_recommended" | "proposal_not_needed";
-  rollback_hint: string;
-  proposal_only: true;
-}
+export type { TopicClassificationDetail } from "../shared/atlas/contracts";
 
 interface ThemeDetailPanelProps {
   topic: TopicClassificationDetail | null;
