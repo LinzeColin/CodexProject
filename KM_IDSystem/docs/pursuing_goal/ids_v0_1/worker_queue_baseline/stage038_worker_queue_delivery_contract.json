@@ -1,0 +1,140 @@
+{
+  "schema_version": "ids.stage038.worker_queue_baseline.phase4.index.v1",
+  "stage": "STAGE-038",
+  "phase": "Phase 4",
+  "task_id": "IDS-V0_1-STAGE038-P4",
+  "acceptance_id": "ACC-STAGE-038",
+  "source_bindings": {
+    "stage037_state_index_ref": {
+      "path": "docs/pursuing_goal/ids_v0_1/job_state_model/stage037_job_state_model_index.json",
+      "sha256": "b70bf72ebe4212f45d380c13fbfe429791e1f4a5c73dccbba81211b7adc1c2d3"
+    },
+    "phase2_index_ref": {
+      "path": "docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_baseline_index.json",
+      "sha256": "339f7bb3cc4d2cf513f0c973b2899368d3d6963b144ead23190e907c83afbe29"
+    },
+    "phase2_evidence_ref": {
+      "path": "docs/pursuing_goal/ids_v0_1/STAGE038_PHASE2_ASYNC_WORKER_QUEUE_SLICE.md",
+      "sha256": "46dc200409706e81b29a89ec8ab5857b861b0cff153a2729ac0f9904d2333cc4"
+    },
+    "phase3_checker_ref": {
+      "path": "scripts/check_worker_queue_scenarios.py",
+      "sha256": "81559d624132c2f245125da16f4f430f5736c9ed9611f7b13e1974775fd0eba5"
+    },
+    "phase3_index_ref": {
+      "path": "docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_scenarios.json",
+      "sha256": "e9ebf1f03f87b0347007547c6c3c072ce2219ec57ccfbc99c44eeb1397ac5ef7"
+    },
+    "phase3_evidence_ref": {
+      "path": "docs/pursuing_goal/ids_v0_1/STAGE038_PHASE3_WORKER_QUEUE_SCENARIOS.md",
+      "sha256": "be7cd3d22ed1cc122fe3ad37b90212c465b034c1455c665af1c8302d8693b2ef"
+    }
+  },
+  "delivery_contract": {
+    "schema_version": "ids.stage038.worker_queue_baseline.delivery.v1",
+    "execution_mode": "ISOLATED_NON_PRODUCTION_CLOSEOUT_EVIDENCE",
+    "valid_result": "PASS_ISOLATED_CLOSEOUT_PRODUCTION_DISABLED",
+    "stage_review_status": "pending_next_run",
+    "next_gate": "IDS-STAGE038-REVIEW-GATE",
+    "state_model_version": "ids.job_state.v1",
+    "required_job_type_count": 8,
+    "required_job_state_count": 11,
+    "required_transition_count": 21,
+    "failure_retry_log_mode": "ACTUAL_ISOLATED_FAILURE_NO_RETRY_RUNTIME",
+    "baseline_max_retries": 0,
+    "capacity_backpressure_result": "QUEUE_CAPACITY_REACHED",
+    "resource_conflict_result": "RESOURCE_CONFLICT_ACTIVE"
+  },
+  "cleanup_allowlist": {
+    "eligible_artifact_classes": [
+      "TEMPORARY_PARTIAL_OUTPUT",
+      "REBUILDABLE_CACHE"
+    ],
+    "protected_artifact_classes": [
+      "ORIGINAL_RAW_DATA",
+      "FACT_SOURCE",
+      "MANIFEST",
+      "EVIDENCE_LEDGER",
+      "REPORT_SNAPSHOT",
+      "AUDIT_LOG",
+      "ACTIVE_INDEX",
+      "REQUIRED_CHECKPOINT"
+    ],
+    "cleanup_manifest_required": true,
+    "required_preconditions": [
+      "APPROVED_ROOT_IDENTITY",
+      "ROOT_RELATIVE_PATH",
+      "IMMUTABLE_LSTAT_IDENTITY",
+      "SYMLINK_BLOCKED",
+      "EXCLUSIVE_NAMESPACE_LOCK",
+      "WRITER_QUIESCENCE",
+      "NO_FOLLOW_TRAVERSAL"
+    ],
+    "runtime_owner": "STAGE-044",
+    "delete_execution_allowed": false
+  },
+  "recovery_boundary": {
+    "automatic_recovery_cases": [],
+    "manual_action_required_cases": [
+      "WORKER_EXCEPTION",
+      "EXTERNAL_DRIVE_OFFLINE",
+      "LOW_DISK",
+      "QUEUE_CAPACITY_REACHED",
+      "SAME_SOURCE_CONFLICT",
+      "PROCESS_RESTART"
+    ],
+    "safe_shutdown_steps": [
+      "STOP_NEW_ADMISSION",
+      "DRAIN_ACCEPTED_CONTROL_WORK",
+      "VERIFY_TERMINAL_STATE_AND_RELEASED_LOCKS",
+      "STOP_ISOLATED_WORKER"
+    ],
+    "persistent_recovery_available": false,
+    "automatic_resume_allowed": false,
+    "crash_recovery_runtime_owner": "STAGE-043",
+    "automatic_lifecycle_runtime_owner": "STAGE-042"
+  },
+  "rollback_contract": {
+    "steps": [
+      "STOP_ON_INVALID_DELIVERY_CONTRACT",
+      "REVERT_PHASE4_FILES_ONLY",
+      "PRESERVE_PHASE1_PHASE3_EVIDENCE",
+      "PRESERVE_RAW_DATA_AND_DURABLE_EVIDENCE"
+    ],
+    "destructive_rollback_allowed": false
+  },
+  "known_limits": [
+    "NO_PERSISTENT_QUEUE_OR_CLAIM",
+    "NO_AUTOMATIC_RETRY_OR_DEAD_LETTER_RUNTIME",
+    "NO_MEASURED_BACKPRESSURE_OR_FAIRNESS_RUNTIME",
+    "NO_PRODUCTION_LOCK_LEASE_OR_FENCING",
+    "NO_AUTOMATIC_LIFECYCLE_OR_PROCESS_RECOVERY",
+    "NO_CLEANUP_RUNTIME",
+    "NO_DATABASE_OR_RAW_SOURCE_ACCESS",
+    "STATIC_CLOSEOUT_IS_NOT_PRODUCTION_READINESS"
+  ],
+  "truth_contract": {
+    "production_runtime_activation_performed": false,
+    "claim_persistence_performed": false,
+    "persistent_queue_write_performed": false,
+    "retry_scheduler_performed": false,
+    "dead_letter_runtime_performed": false,
+    "measured_backpressure_runtime_performed": false,
+    "production_lock_runtime_performed": false,
+    "automatic_lifecycle_runtime_performed": false,
+    "crash_recovery_runtime_performed": false,
+    "cleanup_runtime_performed": false,
+    "database_connection_performed": false,
+    "schema_change_performed": false,
+    "state_registry_write_performed": false,
+    "runtime_output_written": false,
+    "ids_business_source_read_performed": false,
+    "external_api_call_performed": false,
+    "raw_metadata_content_accessed": false,
+    "fake_ids_business_data_used": false,
+    "real_ids_business_job_created": false,
+    "whole_stage_review_performed": false,
+    "github_upload_allowed": false,
+    "app_reinstall_allowed": false
+  }
+}

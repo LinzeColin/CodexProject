@@ -188,7 +188,7 @@ class Stage038WorkerQueuePhase3ScenarioTests(unittest.TestCase):
         self.assertEqual(0, result["delete_attempt_count"])
         self.assertEqual(0, result["deleted_ref_count"])
 
-    def test_phase3_docs_governance_event_and_cli_advance_only_to_phase4(self):
+    def test_phase3_docs_and_event_remain_valid_after_phase4_closeout(self):
         self.assertTrue(PHASE3.is_file(), f"missing evidence: {PHASE3}")
         text = PHASE3.read_text(encoding="utf-8")
         for term in (
@@ -210,21 +210,31 @@ class Stage038WorkerQueuePhase3ScenarioTests(unittest.TestCase):
         batch = scenarios._parse_yaml_text(BATCH_LOCK.read_text(encoding="utf-8"))
         roadmap = scenarios._parse_yaml_text(ROADMAP.read_text(encoding="utf-8"))
         stage = batch["stage_progress"]["STAGE-038"]
-        self.assertEqual("stage038_phase3_completed", batch["status"])
-        self.assertEqual(["Phase 1", "Phase 2", "Phase 3"], stage["completed_phases"])
-        self.assertEqual("IDS-V0_1-STAGE038-P3", stage["current_task_id"])
-        self.assertEqual("Phase 4", stage["next_phase"])
-        self.assertEqual("IDS-STAGE038-P4-GATE", stage["next_gate"])
+        self.assertEqual("stage038_phase4_completed_review_pending", batch["status"])
+        self.assertEqual(
+            ["Phase 1", "Phase 2", "Phase 3", "Phase 4"],
+            stage["completed_phases"],
+        )
+        self.assertEqual("IDS-V0_1-STAGE038-P4", stage["current_task_id"])
+        self.assertEqual("pending", stage["review_status"])
+        self.assertEqual("stage_review", stage["next_phase"])
+        self.assertEqual("IDS-STAGE038-REVIEW-GATE", stage["next_gate"])
         self.assertFalse(batch["upload_gate"]["push_allowed"])
-        self.assertEqual("IDS-V0_1-STAGE038-P4", batch["decision"]["next_allowed_task_id"])
+        self.assertEqual(
+            "IDS-V0_1-STAGE038-REVIEW",
+            batch["decision"]["next_allowed_task_id"],
+        )
 
         roadmap_stage = next(
             item for item in roadmap["stages"] if item.get("stage_id") == "IDS-STAGE038"
         )
         phases = {item["phase_id"]: item for item in roadmap_stage["phases"]}
         self.assertEqual("passed_with_local_evidence", phases["IDS-STAGE038-P3"]["status"])
-        self.assertEqual("planned", phases["IDS-STAGE038-P4"]["status"])
-        self.assertEqual("IDS-STAGE038-P4-GATE", roadmap["next_gate_id"])
+        self.assertEqual(
+            "passed_with_local_evidence",
+            phases["IDS-STAGE038-P4"]["status"],
+        )
+        self.assertEqual("IDS-STAGE038-REVIEW-GATE", roadmap["next_gate_id"])
 
         events = [
             json.loads(line)
