@@ -8,8 +8,8 @@
 - 中文名: 经营分析系统
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
-- 当前 Stage: `v0.1.4 Stage 1-18 complete, final overall review complete, one-time code upload pending`
-- 当前 Phase: `V014_FINAL_OVERALL_REVIEW 已复跑 18/18 current Stage validators，并使用 bundled Python 完成全量回归。复审修复 S10 checker、S17 test 与 S18 review checker/test 的 active-phase 时态耦合、S14 generator-backed tests 固定公共证据污染、system runtime 无效验收基线及历史 tracked raw 文件名引用；raw-name remediation 同时保持 development events append-only 并完整登记 files_changed。14 findings=6 fixed / 8 passed / 0 open，raw 前后与跨 S18 review 快照一致，actual raw filename tracked hits=0。业务仍为 Q4 / D / NO_GO / 3-9-2-1，lineage full=false。下一步只能另起 run work 执行一次性 public-safe GitHub main upload；本轮未执行 upload，不得执行 App 重装、正式报告、差异关闭、真实连接器、凭据处理、持久业务写入或业务执行。历史 overall review/upload 产物仅作 legacy 证据，不是当前 active gate。`
+- 当前 Stage: `v0.1.4 Stage 1-18 complete, final overall review complete, one-time public-safe GitHub main upload closure`
+- 当前 Phase: `V014_ONE_TIME_GITHUB_MAIN_UPLOAD 只上传经最终复审的 public-safe 代码、治理、validator、测试和证据。origin/main 集成后的回归发现并修复 S17 v1.4 锁定生成器受后续 owner 明文策略污染、考勤 prompt 镜像漂移；最终门禁和一次非 force push/remote parity 共同构成验收。业务仍为 Q4 / D / NO_GO / 3-9-2-1，lineage full=false。本 phase 不执行 App 重装、正式报告、差异关闭、真实连接器、凭据处理、持久业务写入或业务执行。下一 phase 只能是 V014_APP_REINSTALL_AND_PARITY。`
 
 ## Execution Rules
 
@@ -23,7 +23,8 @@
 
 ## Data And Privacy
 
-- 经 owner 在当前线程或签名上传 manifest 明确授权后，原始敏感经营文件、银行流水、合同、工资、税务申报、SQLite/数据库导出、明文报告正文等非凭据类敏感材料允许以明文提交到 GitHub，但必须放在 `KMFA/metadata/` 下并登记到 `KMFA/metadata/security/owner_authorized_plaintext_upload_manifest.jsonl`。
+- 当前 `V014_ONE_TIME_GITHUB_MAIN_UPLOAD` 明确排除所有 raw/private 明文、压缩包、工作簿、PDF、私有表格、数据库、银行流水、合同、工资和税务材料；此前 owner 授权策略不适用于本次上传。
+- owner 授权明文上传只保留为历史/未来独立治理能力，必须另立 phase、重新授权和复审，不得被当前 upload closure 继承。
 - 账号密码、token、API key、webhook secret、signing key、私钥等 credential/secret 仍禁止提交 GitHub；如原始文件内含 credential/secret，必须先移除或更换源文件。
 - 未经 owner 明确授权和 manifest 登记的敏感材料仍按历史规则处理：公开仓库只保存结构、hash、manifest、状态、证据索引、脱敏 fixture 和治理记录。
 - 本机 KMFA raw data inbox 固定为 `/Users/linzezhang/Downloads/KMFA_MetaData`；该目录属于用户原始财务数据，只读，不得修改、删除、移动、重命名、覆盖或写入生成文件。
@@ -42,7 +43,7 @@
 
 ## Current Non-Goals
 
-- v0.1.4 `V014_FINAL_OVERALL_REVIEW` 本轮完成；下一轮只能单独执行一次性 public-safe GitHub main upload。不得顺手执行 App 重装、生产恢复、raw 复制或备份、真实通知、真实连接器、凭据处理、客户联络、催收、法务、施工、签署、开票、采购执行、支付审批、支付执行、银行、工资计算、奖金审批、薪资导出、最终发放、protected source matching、lineage full check completion、正式报告、差异关闭、纳税申报、贷款管理或任何业务动作。
+- v0.1.4 当前只执行 `V014_ONE_TIME_GITHUB_MAIN_UPLOAD`；不得顺手执行 App 重装、生产恢复、raw 复制或备份、真实通知、真实连接器、凭据处理、客户联络、催收、法务、施工、签署、开票、采购执行、支付审批、支付执行、银行、工资计算、奖金审批、薪资导出、最终发放、protected source matching、lineage full check completion、正式报告、差异关闭、纳税申报、贷款管理或任何业务动作。
 - 以下 Stage 15/16/17/18 final upload 相关表述是 legacy/Post-S18 历史证据，不是当前 v0.1.4 active gate。当前 v0.1.4 GitHub main upload 仍延期到 Stage 1-18 全部完成并整体复审修复后一次性执行；不得直接进入 lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。

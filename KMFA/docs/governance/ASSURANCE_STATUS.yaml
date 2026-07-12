@@ -1,11 +1,11 @@
 project_id: "KMFA"
-as_of_event_id: "DEV-KMFA-20260712-V014-FINAL-OVERALL-REVIEW"
+as_of_event_id: "DEV-KMFA-20260713-V014-ONE-TIME-GITHUB-MAIN-UPLOAD"
 source_snapshot_hash: "sha256:precommit-pending"
-source_base_commit: "91a6370bcf6d4cad134a4acf86903c2d0f161d0c"
-source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_FINAL_OVERALL_REVIEW_COMMIT"
-snapshot_event_time: "2026-07-12T19:24:07+10:00"
-generator_version: "manual-0.1.4-final-overall-review"
-final_commit_binding: "local_commit_pending_before_git_commit"
+source_base_commit: "4789ddbea5ad113d207e2c4caa860c7521c42b41"
+source_tree_hash: "PRECOMMIT_TREE_BOUND_PENDING_V014_ONE_TIME_GITHUB_MAIN_UPLOAD_COMMIT"
+snapshot_event_time: "2026-07-13T03:02:37+10:00"
+generator_version: "manual-0.1.4-one-time-github-main-upload"
+final_commit_binding: "recorded_by_commit_containing_upload_evidence"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -15,8 +15,8 @@ dimensions:
   implementation_congruence:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    total_active_parameters: 1439
-    total_active_formulas: 315
+    total_active_parameters: 1442
+    total_active_formulas: 316
     evidence_refs:
       - "KMFA/docs/governance/parameter_registry.csv"
       - "KMFA/docs/governance/formula_registry.yaml"
@@ -986,6 +986,35 @@ dimensions:
     fact_level: "EXTRACTED"
     evidence_refs:
       - "KMFA/docs/governance/development_events.jsonl"
+kmfa_v014_one_time_github_main_upload:
+  status: uploaded_to_github_main_public_safe
+  phase_id: V014_ONE_TIME_GITHUB_MAIN_UPLOAD
+  task_id: KMFA-V014-ONE-TIME-GITHUB-MAIN-UPLOAD-20260713
+  acceptance_id: ACC-V014-ONE-TIME-GITHUB-MAIN-UPLOAD
+  decision: NO_GO
+  evidence_ref: KMFA/stage_artifacts/V014_ONE_TIME_GITHUB_MAIN_UPLOAD/machine/one_time_github_main_upload_manifest.json
+  validator: KMFA/tools/check_v014_one_time_github_main_upload.py
+  counts:
+    current_stage_validator_pass_count: 18
+    open_review_finding_count: 0
+    integration_full_suite_test_count: 1767
+    integration_full_suite_pass_count: 1767
+    integration_finding_count: 2
+    fixed_integration_finding_count: 2
+    authorized_push_count: 1
+    force_push_count: 0
+    public_safety_fail_count: 0
+  gates:
+    final_overall_review_validated: true
+    origin_main_integrated: true
+    github_main_upload_performed: true
+    post_push_remote_parity_required: true
+    app_reinstall_performed: false
+    lineage_full_check_complete: false
+    delivery_allowed: false
+    official_report_release_allowed: false
+    business_execution_performed: false
+
 kmfa_v014_final_overall_review:
   status: completed_validated_local_only_final_overall_review_no_go_code_upload_ready
   phase_id: V014_FINAL_OVERALL_REVIEW

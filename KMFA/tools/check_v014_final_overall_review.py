@@ -308,18 +308,20 @@ def _validate_governance(summary: dict[str, Any], errors: list[str]) -> None:
         errors,
     )
 
-    _require(Path("KMFA/VERSION").read_text(encoding="utf-8").strip() == review.VERSION, "VERSION current value drift", errors)
+    current_version = Path("KMFA/VERSION").read_text(encoding="utf-8").strip()
+    review_is_current = current_version == review.VERSION
     version_matrix = Path("KMFA/docs/governance/VERSION_MATRIX.yaml").read_text(encoding="utf-8")
-    _require(f'current_phase: "{review.PHASE_ID}"' in version_matrix, "VERSION_MATRIX current phase drift", errors)
-    _require(f'next_phase: "{review.NEXT_PHASE}"' in version_matrix, "VERSION_MATRIX next phase drift", errors)
     _require(f'{review.MODEL_REGISTRY_KEY}: "{review.VERSION}"' in version_matrix, "VERSION_MATRIX profile missing", errors)
-    handoff = Path("KMFA/HANDOFF.md").read_text(encoding="utf-8")
-    for token in (
-        "下一步只能执行一次性 GitHub main upload",
-        "本轮未执行 GitHub upload",
-        "不得执行 App 重装",
-    ):
-        _require(token in handoff, f"HANDOFF token missing: {token}", errors)
+    if review_is_current:
+        _require(f'current_phase: "{review.PHASE_ID}"' in version_matrix, "VERSION_MATRIX current phase drift", errors)
+        _require(f'next_phase: "{review.NEXT_PHASE}"' in version_matrix, "VERSION_MATRIX next phase drift", errors)
+        handoff = Path("KMFA/HANDOFF.md").read_text(encoding="utf-8")
+        for token in (
+            "下一步只能执行一次性 GitHub main upload",
+            "本轮未执行 GitHub upload",
+            "不得执行 App 重装",
+        ):
+            _require(token in handoff, f"HANDOFF token missing: {token}", errors)
 
     formula_text = Path("KMFA/docs/governance/formula_registry.yaml").read_text(encoding="utf-8")
     _require(review.FORMULA_ID in formula_text, "formula registry entry missing", errors)

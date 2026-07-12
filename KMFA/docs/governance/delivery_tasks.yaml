@@ -1,6 +1,46 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "KMFA-V014-ONE-TIME-GITHUB-MAIN-UPLOAD-20260713"
+    phase: "V014_ONE_TIME_GITHUB_MAIN_UPLOAD"
+    objective: "Upload the final-reviewed KMFA v0.1.4 public-safe stack to GitHub main exactly once and prove remote commit parity."
+    scope:
+      - "final overall review source validation and origin main merge integration"
+      - "public-safe upload manifest validator tests governance and security scans"
+      - "one non-force HEAD to main push plus post-push remote parity"
+    non_scope:
+      - "raw or private plaintext binary documents credentials or secrets"
+      - "App reinstall or local runtime parity in this phase"
+      - "lineage completion formal report difference closure persistent writes or business execution"
+    status: "completed"
+    completed_version: "0.1.4-one-time-github-main-upload"
+    dependencies:
+      - "V014_FINAL_OVERALL_REVIEW"
+      - "origin/main integration commit 4789ddbea5ad113d207e2c4caa860c7521c42b41"
+    required_files:
+      - "KMFA/stage_artifacts/V014_ONE_TIME_GITHUB_MAIN_UPLOAD/machine/one_time_github_main_upload_manifest.json"
+      - "KMFA/stage_artifacts/V014_ONE_TIME_GITHUB_MAIN_UPLOAD/human/github_upload_record_zh.md"
+      - "KMFA/tools/check_v014_one_time_github_main_upload.py"
+    acceptance_ids:
+      - "ACC-V014-ONE-TIME-GITHUB-MAIN-UPLOAD"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. <bundled-python> -m unittest KMFA.tests.test_v014_one_time_github_main_upload"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. <bundled-python> KMFA/tools/check_v014_one_time_github_main_upload.py --require-final-validation"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. <bundled-python> KMFA/tools/check_v014_one_time_github_main_upload.py --require-remote-parity"
+    test_results:
+      - "PASS: final overall review source and eighteen current Stage validators"
+      - "PASS: integration findings fixed and final clean-tree full suite"
+      - "PASS: public-safe governance raw secret binary and diff gates"
+      - "PASS: exactly one non-force main push and remote commit parity"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_ONE_TIME_GITHUB_MAIN_UPLOAD/human/github_upload_record_zh.md"
+      - "KMFA/stage_artifacts/V014_ONE_TIME_GITHUB_MAIN_UPLOAD/machine/one_time_github_main_upload_manifest.json"
+    risk: "A successful code upload can be mistaken for business release or App parity."
+    rollback: "Stop before push on any failed gate; never force push; use a separately reviewed repair commit for post-upload regressions."
+    remaining_work:
+      - "App reinstall and local runtime versus GitHub parity"
+      - "business differences lineage and formal reporting remain separately blocked"
+
   - task_id: "KMFA-V014-FINAL-OVERALL-REVIEW-20260712"
     phase: "V014_FINAL_OVERALL_REVIEW"
     objective: "Validate all current Stage 1-18 reviews, repair final-review findings, and authorize only the next public-safe code upload phase."

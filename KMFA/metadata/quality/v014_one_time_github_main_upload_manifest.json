@@ -1,0 +1,16 @@
+{
+  "schema_version": "kmfa.v014.one_time_github_main_upload_quality_mirror.v1",
+  "record_type": "v014_one_time_github_main_upload_quality_mirror",
+  "project_id": "KMFA",
+  "phase_id": "V014_ONE_TIME_GITHUB_MAIN_UPLOAD",
+  "task_id": "KMFA-V014-ONE-TIME-GITHUB-MAIN-UPLOAD-20260713",
+  "status": "uploaded_to_github_main_public_safe",
+  "canonical_evidence_ref": "KMFA/stage_artifacts/V014_ONE_TIME_GITHUB_MAIN_UPLOAD/machine/one_time_github_main_upload_manifest.json",
+  "github_main_upload_performed": true,
+  "remote_parity_required": true,
+  "raw_business_data_committed": false,
+  "credential_or_secret_committed": false,
+  "app_reinstall_performed": false,
+  "business_release_decision": "NO_GO",
+  "next_phase": "V014_APP_REINSTALL_AND_PARITY"
+}

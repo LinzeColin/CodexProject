@@ -1,3 +1,15 @@
+## FORM-KMFA-V014-ONE-TIME-GITHUB-MAIN-UPLOAD-001
+
+- phase: V014_ONE_TIME_GITHUB_MAIN_UPLOAD
+- version: 0.1.4-one-time-github-main-upload
+- model_id: MOD-KMFA-GOV-001
+- parameters: PARAM-KMFA-1822, PARAM-KMFA-1823, PARAM-KMFA-1824
+- expression: `upload_valid = final_review_valid == true AND current_stage_validator_pass_count == 18 AND open_review_finding_count == 0 AND integration_full_suite_pass_count == integration_full_suite_test_count AND public_safety_fail_count == 0 AND authorized_push_count == 1 AND force_push_allowed == false AND remote_parity_required == true AND app_reinstall_performed == false AND lineage_full_check_complete == false AND delivery_allowed == false AND decision == NO_GO`
+- rationale: 代码上传与业务 release、App parity 分开；只有最终复审、集成回归、公开安全扫描、唯一非 force push 和远端 commit parity 全部成立时，本 phase 才完成。
+- source: V014_FINAL_OVERALL_REVIEW、origin/main integration commit、bundled Python 回归、治理与安全扫描、Git remote parity。
+- missing_policy: 任一测试、复审、扫描、远端移动、push 或 parity 失败均 fail closed；不得 force push 或把代码上传解释为业务 GO。
+- evidence: KMFA/stage_artifacts/V014_ONE_TIME_GITHUB_MAIN_UPLOAD/machine/one_time_github_main_upload_manifest.json
+
 ## FORM-KMFA-V014-FINAL-OVERALL-REVIEW-001
 
 - phase: V014_FINAL_OVERALL_REVIEW
