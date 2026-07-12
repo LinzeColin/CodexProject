@@ -7,10 +7,11 @@ status = "ACTIVE"
 rrule = "RRULE:FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0"
 timezone = "Australia/Sydney"
 execution_environment = "local"
-cwds = ["/Users/linzezhang/CodexProject"]
+cwds = ["/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa"]
 model = "gpt-5.3-codex-spark"
 reasoning_effort = "xhigh"
 prompt_file = "automation/weekly_mon_sat_1100_sydney.prompt.md"
 input_dir = "/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群"
 source_readiness_gate = "tools/check_source_readiness.py"
-branch_policy = "main_only_no_branch_no_pr_no_worktree"
+branch_policy = "canonical_project_worktree_no_new_branch_no_pr_no_extra_worktree"
+live_parity_phase = "V014_APP_REINSTALL_AND_PARITY"

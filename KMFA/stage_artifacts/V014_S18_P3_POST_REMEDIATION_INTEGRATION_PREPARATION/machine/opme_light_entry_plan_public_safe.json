@@ -1,0 +1,52 @@
+{
+  "acceptance_id": "ACC-V014-S18-P3-POST-REMEDIATION-INTEGRATION-PREPARATION",
+  "allowed_exchange_refs": [
+    "public_safe_status_summary",
+    "report_index_pointer",
+    "handoff_pointer",
+    "validator_command_pointer"
+  ],
+  "business_execution_allowed": false,
+  "coupling_level": "light_entry_only",
+  "credential_material_present": false,
+  "deep_coupling_allowed": false,
+  "entry_surfaces": [
+    "read_only_entry",
+    "report_index",
+    "run_status",
+    "handoff_link"
+  ],
+  "external_service_called": false,
+  "failure_policy": "entry_unavailable_when_public_safe_status_contract_is_invalid",
+  "field_plaintext_exposed": false,
+  "generated_at": "2026-07-12T08:29:38+10:00",
+  "github_upload_allowed": false,
+  "integration_mode": "entry_link_and_status_index_only",
+  "kmfa_controls_opme_service_logic": false,
+  "next_gate": "opme_shell_design_after_stage18_and_final_overall_review",
+  "opme_controls_kmfa_business_logic": false,
+  "phase_id": "V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION",
+  "project_id": "KMFA",
+  "raw_business_data_exposed": false,
+  "record_type": "v014_s18_p3_post_remediation_opme_light_entry_plan",
+  "responsibility_split": {
+    "kmfa_owner": "KMFA 业务逻辑、质量门禁与证据",
+    "opme_owner": "入口导航与公开安全状态索引"
+  },
+  "roadmap_phase_id": "S18-P3",
+  "schema_version": "kmfa.v014.s18_p3_post_remediation_opme_light_entry_plan.v1",
+  "sensitive_data_mixing_allowed": false,
+  "shared_database_allowed": false,
+  "shared_runtime_logic_allowed": false,
+  "stage_id": "S18",
+  "status_contract_fields": [
+    "project_id",
+    "version",
+    "phase_id",
+    "decision",
+    "data_quality_grade",
+    "report_grade",
+    "public_safe_evidence_pointer"
+  ],
+  "task_id": "S18P3T02"
+}

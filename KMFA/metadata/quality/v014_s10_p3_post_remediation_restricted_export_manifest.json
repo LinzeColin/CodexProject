@@ -1,0 +1,321 @@
+{
+  "acceptance_id": "ACC-V014-S10-P3-POST-REMEDIATION-RESTRICTED-EXPORT",
+  "artifact_refs": {
+    "csv_outputs": [
+      "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/exports/csv/project_cost_special_report_appendix.csv",
+      "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/exports/csv/business_overview_report_appendix.csv"
+    ],
+    "go_no_go": "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/machine/restricted_export_go_no_go_report.json",
+    "html_outputs": [
+      "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/exports/html/project_cost_special_report.html",
+      "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/exports/html/business_overview_report.html"
+    ],
+    "management_readme": "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/human/restricted_export_readme_zh.md",
+    "policy": "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/machine/export_policy_public_safe.json",
+    "records": "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/machine/restricted_export_records_public_safe.json",
+    "summary": "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/machine/restricted_export_summary.json",
+    "test_results": "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/human/test_results_zh.md",
+    "validator": "KMFA/tools/check_v014_s10_p3_post_remediation_restricted_export.py"
+  },
+  "branch": "codex/kmfa",
+  "decision": "NO_GO",
+  "dependencies": {
+    "current_s10_p1_entry_validated": true,
+    "current_s10_p2_grade_lock_validated": true,
+    "current_s10_p2_state_authoritative": true,
+    "historical_dynamic_state_reused": false,
+    "historical_s10_p3_export_framework_validated": true,
+    "human_flow_baseline_validated": true,
+    "human_flow_sample_business_values_reused": false,
+    "human_flow_sample_dynamic_state_reused": false
+  },
+  "export_policy": {
+    "business_decision_basis_allowed": false,
+    "complete_trusted_report_display_allowed": false,
+    "csv_restricted_appendix_allowed": true,
+    "delivery_allowed": false,
+    "excel_compatible_csv_download_allowed": true,
+    "excel_download_mode": "excel_compatible_csv_no_workbook",
+    "formal_report_export_allowed": false,
+    "html_restricted_preview_allowed": true,
+    "pdf_export_performed": false,
+    "pdf_private_runtime_only": true,
+    "pdf_private_runtime_policy_available": true,
+    "phase_id": "V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT",
+    "project_id": "KMFA",
+    "schema_version": "kmfa.v014.s10_p3.post_remediation_export_policy_public_safe.v1"
+  },
+  "export_records": [
+    {
+      "business_decision_basis_allowed": false,
+      "complete_trusted_report_display_allowed": false,
+      "csv_appendix_schema_version": "CSV-KMFA-V014-S10P3-RESTRICTED-v1",
+      "current_data_quality_grade": "Q4",
+      "export_formats": {
+        "csv": {
+          "artifact_ref": "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/exports/csv/project_cost_special_report_appendix.csv",
+          "status": "restricted_public_safe_download"
+        },
+        "excel": {
+          "download_ref": "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/exports/csv/project_cost_special_report_appendix.csv",
+          "status": "excel_compatible_csv_only",
+          "workbook_committed": false
+        },
+        "html": {
+          "artifact_ref": "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/exports/html/project_cost_special_report.html",
+          "status": "restricted_public_safe_preview"
+        },
+        "pdf": {
+          "export_performed": false,
+          "file_committed": false,
+          "private_runtime_only": true,
+          "status": "private_runtime_policy_available_not_executed"
+        }
+      },
+      "export_mode": "restricted_internal_review_preview",
+      "field_mapping_version": "MAP-KMFA-S10P1-PUBLIC-SAFE-v1",
+      "formal_report_allowed": false,
+      "formula_version": "FORM-KMFA-V014-S10-P3-POST-REMEDIATION-RESTRICTED-EXPORT-001",
+      "generated_at": "2026-07-11T01:38:20+10:00",
+      "hard_blocks": [
+        "zero_delta_failed",
+        "unresolved_critical_difference",
+        "incomplete_reconciliation",
+        "missing_required_lineage",
+        "missing_human_confirmation_for_A",
+        "full_business_value_consistency_not_verified"
+      ],
+      "html_template_version": "HTML-KMFA-V014-S10P3-RESTRICTED-v1",
+      "limitations": [
+        "关键现金数据缺失，不能显示为完整可信报告。",
+        "九项非零差异和一项未完成比较继续阻断发布。",
+        "仅供内部复核，不作为正式经营决策依据。"
+      ],
+      "mapping_version": "MAP-KMFA-V014-S10P3-POST-REMEDIATION-PUBLIC-SAFE-v1",
+      "pdf_export_policy_version": "PDF-KMFA-V014-S10P3-PRIVATE-RUNTIME-v1",
+      "phase_id": "V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT",
+      "project_id": "KMFA",
+      "public_repo_safety": {
+        "aggregate_only": true,
+        "business_values_included": false,
+        "excel_workbook_committed": false,
+        "field_or_header_plaintext_included": false,
+        "pdf_file_committed": false,
+        "private_csv_committed": false,
+        "raw_identity_included": false
+      },
+      "record_type": "post_remediation_restricted_export_record",
+      "release_permission": "blocked_decision_use",
+      "report_entry_id": "project_cost_special_report",
+      "report_entry_version": "0.1.4-s10-p1-post-remediation-report-entry",
+      "report_export_id": "S10P3-POST-EXPORT-PROJECT-COST-SPECIAL-REPORT",
+      "report_export_version": "RPTEXP-KMFA-V014-S10P3-POST-REMEDIATION-001",
+      "report_grade": "D",
+      "report_grade_record_version": "RPTREC-KMFA-V014-S10P2-POST-REMEDIATION-001",
+      "restricted_preview_export_allowed": true,
+      "schema_version": "kmfa.v014.s10_p3.post_remediation_restricted_export_record.v1",
+      "stage_id": "S10",
+      "template_version": "TPL-KMFA-S10P1-REPORT-TEMPLATES-001",
+      "visible_report_title": "项目成本专题报告",
+      "visible_sections": [
+        "经营摘要",
+        "项目毛利",
+        "成本结构",
+        "风险事项"
+      ],
+      "visible_status_label": "D级（未放行）"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "complete_trusted_report_display_allowed": false,
+      "csv_appendix_schema_version": "CSV-KMFA-V014-S10P3-RESTRICTED-v1",
+      "current_data_quality_grade": "Q4",
+      "export_formats": {
+        "csv": {
+          "artifact_ref": "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/exports/csv/business_overview_report_appendix.csv",
+          "status": "restricted_public_safe_download"
+        },
+        "excel": {
+          "download_ref": "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/exports/csv/business_overview_report_appendix.csv",
+          "status": "excel_compatible_csv_only",
+          "workbook_committed": false
+        },
+        "html": {
+          "artifact_ref": "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/exports/html/business_overview_report.html",
+          "status": "restricted_public_safe_preview"
+        },
+        "pdf": {
+          "export_performed": false,
+          "file_committed": false,
+          "private_runtime_only": true,
+          "status": "private_runtime_policy_available_not_executed"
+        }
+      },
+      "export_mode": "restricted_internal_review_preview",
+      "field_mapping_version": "MAP-KMFA-S10P1-PUBLIC-SAFE-v1",
+      "formal_report_allowed": false,
+      "formula_version": "FORM-KMFA-V014-S10-P3-POST-REMEDIATION-RESTRICTED-EXPORT-001",
+      "generated_at": "2026-07-11T01:38:20+10:00",
+      "hard_blocks": [
+        "zero_delta_failed",
+        "unresolved_critical_difference",
+        "incomplete_reconciliation",
+        "missing_required_lineage",
+        "missing_human_confirmation_for_A",
+        "full_business_value_consistency_not_verified"
+      ],
+      "html_template_version": "HTML-KMFA-V014-S10P3-RESTRICTED-v1",
+      "limitations": [
+        "关键现金数据缺失，不能显示为完整可信报告。",
+        "九项非零差异和一项未完成比较继续阻断发布。",
+        "仅供内部复核，不作为正式经营决策依据。"
+      ],
+      "mapping_version": "MAP-KMFA-V014-S10P3-POST-REMEDIATION-PUBLIC-SAFE-v1",
+      "pdf_export_policy_version": "PDF-KMFA-V014-S10P3-PRIVATE-RUNTIME-v1",
+      "phase_id": "V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT",
+      "project_id": "KMFA",
+      "public_repo_safety": {
+        "aggregate_only": true,
+        "business_values_included": false,
+        "excel_workbook_committed": false,
+        "field_or_header_plaintext_included": false,
+        "pdf_file_committed": false,
+        "private_csv_committed": false,
+        "raw_identity_included": false
+      },
+      "record_type": "post_remediation_restricted_export_record",
+      "release_permission": "blocked_decision_use",
+      "report_entry_id": "business_overview_report",
+      "report_entry_version": "0.1.4-s10-p1-post-remediation-report-entry",
+      "report_export_id": "S10P3-POST-EXPORT-BUSINESS-OVERVIEW-REPORT",
+      "report_export_version": "RPTEXP-KMFA-V014-S10P3-POST-REMEDIATION-001",
+      "report_grade": "D",
+      "report_grade_record_version": "RPTREC-KMFA-V014-S10P2-POST-REMEDIATION-001",
+      "restricted_preview_export_allowed": true,
+      "schema_version": "kmfa.v014.s10_p3.post_remediation_restricted_export_record.v1",
+      "stage_id": "S10",
+      "template_version": "TPL-KMFA-S10P1-REPORT-TEMPLATES-001",
+      "visible_report_title": "经营总览报告",
+      "visible_sections": [
+        "经营总览",
+        "收入",
+        "开票",
+        "回款",
+        "现金",
+        "项目",
+        "税务"
+      ],
+      "visible_status_label": "D级（未放行）"
+    }
+  ],
+  "generated_at": "2026-07-11T01:38:20+10:00",
+  "next_required_phase": "Stage 10 overall review",
+  "phase_boundaries": {
+    "app_reinstall_performed": false,
+    "business_execution_performed": false,
+    "github_upload_performed": false,
+    "s10_p1_performed": true,
+    "s10_p2_performed": true,
+    "s10_p3_performed": true,
+    "stage10_review_performed": false
+  },
+  "phase_id": "V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "aggregate_only": true,
+    "business_value_committed": false,
+    "credential_or_secret_committed": false,
+    "excel_workbook_committed": false,
+    "field_or_header_plaintext_committed": false,
+    "pdf_file_committed": false,
+    "private_csv_committed": false,
+    "private_runtime_committed": false,
+    "project_or_customer_plaintext_committed": false,
+    "raw_file_committed": false,
+    "raw_filename_committed": false,
+    "raw_hash_committed": false
+  },
+  "raw_boundary": {
+    "raw_delete_performed": false,
+    "raw_move_performed": false,
+    "raw_mutation_performed": false,
+    "raw_overwrite_performed": false,
+    "raw_read_authorized": true,
+    "raw_rename_performed": false,
+    "raw_snapshot_validation_performed": true,
+    "raw_write_performed": false
+  },
+  "reviewed_head": "3515712d265eef08807579cc05eb7a843aa34a0c",
+  "roadmap_phase_id": "S10-P3",
+  "schema_version": "kmfa.v014.s10_p3.post_remediation_restricted_export_manifest.v1",
+  "source_evidence_refs": {
+    "current_s10_p1": "KMFA/stage_artifacts/V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY/machine/report_entry_manifest.json",
+    "current_s10_p2": "KMFA/stage_artifacts/V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK/machine/trust_grade_manifest.json",
+    "historical_framework_status": "completed_validated_local_only_no_go_upload_deferred_report_export_locked",
+    "historical_s10_p3_framework": "KMFA/stage_artifacts/V014_S10_P3_REPORT_EXPORT/machine/report_export_manifest.json",
+    "human_flow_baseline": "KMFA/taskpack/v1_4/html_uiux/KMFA_经营分析报告可点击预览_v1_4.html",
+    "roadmap": "KMFA/taskpack/v1_4/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_4.md"
+  },
+  "stage_id": "S10",
+  "status": "completed_validated_local_only_restricted_exports_d_no_go_upload_deferred",
+  "summary": {
+    "business_decision_basis_allowed_count": 0,
+    "committed_excel_workbook_count": 0,
+    "committed_pdf_file_count": 0,
+    "committed_public_export_artifact_count": 4,
+    "csv_restricted_appendix_count": 2,
+    "current_data_quality_grade": "Q4",
+    "current_report_grade": "D",
+    "decision": "NO_GO",
+    "excel_compatible_csv_download_count": 2,
+    "formal_report_count": 0,
+    "grade_distribution": {
+      "D": 2
+    },
+    "hard_block_count": 12,
+    "html_restricted_preview_count": 2,
+    "incomplete_reconciliation_count": 1,
+    "nonzero_delta_reconciliation_count": 9,
+    "open_final_difference_accepted_count": 3,
+    "phase_id": "V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT",
+    "project_id": "KMFA",
+    "raw_cross_phase_snapshot_exact_match": true,
+    "raw_snapshot_exact_match": true,
+    "raw_source_file_count": 5,
+    "report_export_record_count": 2,
+    "report_template_count": 2,
+    "roadmap_phase_id": "S10-P3",
+    "schema_version": "kmfa.v014.s10_p3.post_remediation_restricted_export_summary.v1",
+    "stage_id": "S10",
+    "status": "completed_validated_local_only_restricted_exports_d_no_go_upload_deferred",
+    "zero_delta_reconciliation_count": 2
+  },
+  "task_id": "KMFA-V014-S10-P3-POST-REMEDIATION-RESTRICTED-EXPORT-20260711",
+  "validation_summary": {
+    "browser_desktop_mobile": "PASS",
+    "current_s10_p1_dependency": "PASS",
+    "current_s10_p2_dependency": "PASS",
+    "final_validation_recorded": true,
+    "focused_tests": "PASS",
+    "governance_and_safety_scans": "PASS",
+    "historical_s10_p3_framework": "PASS",
+    "human_flow_baseline": "PASS",
+    "raw_snapshot_exact": "PASS",
+    "red_test_observed": true,
+    "strict_validator": "PASS"
+  },
+  "version": "0.1.4-s10-p3-post-remediation-restricted-export",
+  "version_binding_requirements": {
+    "csv_appendix_schema_version": "CSV-KMFA-V014-S10P3-RESTRICTED-v1",
+    "field_mapping_version": "MAP-KMFA-S10P1-PUBLIC-SAFE-v1",
+    "formula_version": "FORM-KMFA-V014-S10-P3-POST-REMEDIATION-RESTRICTED-EXPORT-001",
+    "html_template_version": "HTML-KMFA-V014-S10P3-RESTRICTED-v1",
+    "mapping_version": "MAP-KMFA-V014-S10P3-POST-REMEDIATION-PUBLIC-SAFE-v1",
+    "pdf_export_policy_version": "PDF-KMFA-V014-S10P3-PRIVATE-RUNTIME-v1",
+    "record_version_binding_count": 2,
+    "report_entry_version": "0.1.4-s10-p1-post-remediation-report-entry",
+    "report_export_version": "RPTEXP-KMFA-V014-S10P3-POST-REMEDIATION-001",
+    "report_grade_record_version": "RPTREC-KMFA-V014-S10P2-POST-REMEDIATION-001",
+    "template_version": "TPL-KMFA-S10P1-REPORT-TEMPLATES-001"
+  }
+}

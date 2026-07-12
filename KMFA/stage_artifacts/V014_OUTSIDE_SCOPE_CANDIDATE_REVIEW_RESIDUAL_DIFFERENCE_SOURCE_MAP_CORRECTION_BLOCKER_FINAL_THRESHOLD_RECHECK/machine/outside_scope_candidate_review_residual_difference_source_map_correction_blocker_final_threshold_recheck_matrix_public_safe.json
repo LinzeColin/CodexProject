@@ -1,0 +1,71 @@
+{
+  "check_count": 14,
+  "check_fail_count": 0,
+  "check_pass_count": 14,
+  "checks": [
+    {
+      "check_code": "source_threshold_recheck_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_threshold_recheck_valid",
+      "status": "PASS"
+    },
+    {
+      "check_code": "missing_response_blocker_still_cleared",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_map_blockers_present",
+      "status": "PASS"
+    },
+    {
+      "check_code": "prior_observation_count_two",
+      "status": "PASS"
+    },
+    {
+      "check_code": "current_observation_count_three",
+      "status": "PASS"
+    },
+    {
+      "check_code": "threshold_met_on_third_observation",
+      "status": "PASS"
+    },
+    {
+      "check_code": "valid_responses_preserved",
+      "status": "PASS"
+    },
+    {
+      "check_code": "all_responses_non_actionable",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_source_map_actionability",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_discrepancy_closure",
+      "status": "PASS"
+    },
+    {
+      "check_code": "track_counts_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_gates_closed",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "phase_id": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_FINAL_THRESHOLD_RECHECK",
+  "project_id": "KMFA",
+  "record_type": "v014_residual_difference_source_map_correction_blocker_final_threshold_recheck_matrix_public_safe",
+  "schema_version": "kmfa.v014_residual_difference_source_map_correction_blocker_final_threshold_recheck_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-SOURCE-MAP-CORRECTION-BLOCKER-FINAL-THRESHOLD-RECHECK-20260707",
+  "version": "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-blocker-final-threshold-recheck"
+}

@@ -1,0 +1,168 @@
+{
+  "export_records": [
+    {
+      "business_decision_basis_allowed": false,
+      "complete_trusted_report_display_allowed": false,
+      "csv_appendix_schema_version": "CSV-KMFA-V014-S10P3-RESTRICTED-v1",
+      "current_data_quality_grade": "Q4",
+      "export_formats": {
+        "csv": {
+          "artifact_ref": "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/exports/csv/project_cost_special_report_appendix.csv",
+          "status": "restricted_public_safe_download"
+        },
+        "excel": {
+          "download_ref": "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/exports/csv/project_cost_special_report_appendix.csv",
+          "status": "excel_compatible_csv_only",
+          "workbook_committed": false
+        },
+        "html": {
+          "artifact_ref": "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/exports/html/project_cost_special_report.html",
+          "status": "restricted_public_safe_preview"
+        },
+        "pdf": {
+          "export_performed": false,
+          "file_committed": false,
+          "private_runtime_only": true,
+          "status": "private_runtime_policy_available_not_executed"
+        }
+      },
+      "export_mode": "restricted_internal_review_preview",
+      "field_mapping_version": "MAP-KMFA-S10P1-PUBLIC-SAFE-v1",
+      "formal_report_allowed": false,
+      "formula_version": "FORM-KMFA-V014-S10-P3-POST-REMEDIATION-RESTRICTED-EXPORT-001",
+      "generated_at": "2026-07-11T01:38:20+10:00",
+      "hard_blocks": [
+        "zero_delta_failed",
+        "unresolved_critical_difference",
+        "incomplete_reconciliation",
+        "missing_required_lineage",
+        "missing_human_confirmation_for_A",
+        "full_business_value_consistency_not_verified"
+      ],
+      "html_template_version": "HTML-KMFA-V014-S10P3-RESTRICTED-v1",
+      "limitations": [
+        "关键现金数据缺失，不能显示为完整可信报告。",
+        "九项非零差异和一项未完成比较继续阻断发布。",
+        "仅供内部复核，不作为正式经营决策依据。"
+      ],
+      "mapping_version": "MAP-KMFA-V014-S10P3-POST-REMEDIATION-PUBLIC-SAFE-v1",
+      "pdf_export_policy_version": "PDF-KMFA-V014-S10P3-PRIVATE-RUNTIME-v1",
+      "phase_id": "V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT",
+      "project_id": "KMFA",
+      "public_repo_safety": {
+        "aggregate_only": true,
+        "business_values_included": false,
+        "excel_workbook_committed": false,
+        "field_or_header_plaintext_included": false,
+        "pdf_file_committed": false,
+        "private_csv_committed": false,
+        "raw_identity_included": false
+      },
+      "record_type": "post_remediation_restricted_export_record",
+      "release_permission": "blocked_decision_use",
+      "report_entry_id": "project_cost_special_report",
+      "report_entry_version": "0.1.4-s10-p1-post-remediation-report-entry",
+      "report_export_id": "S10P3-POST-EXPORT-PROJECT-COST-SPECIAL-REPORT",
+      "report_export_version": "RPTEXP-KMFA-V014-S10P3-POST-REMEDIATION-001",
+      "report_grade": "D",
+      "report_grade_record_version": "RPTREC-KMFA-V014-S10P2-POST-REMEDIATION-001",
+      "restricted_preview_export_allowed": true,
+      "schema_version": "kmfa.v014.s10_p3.post_remediation_restricted_export_record.v1",
+      "stage_id": "S10",
+      "template_version": "TPL-KMFA-S10P1-REPORT-TEMPLATES-001",
+      "visible_report_title": "项目成本专题报告",
+      "visible_sections": [
+        "经营摘要",
+        "项目毛利",
+        "成本结构",
+        "风险事项"
+      ],
+      "visible_status_label": "D级（未放行）"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "complete_trusted_report_display_allowed": false,
+      "csv_appendix_schema_version": "CSV-KMFA-V014-S10P3-RESTRICTED-v1",
+      "current_data_quality_grade": "Q4",
+      "export_formats": {
+        "csv": {
+          "artifact_ref": "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/exports/csv/business_overview_report_appendix.csv",
+          "status": "restricted_public_safe_download"
+        },
+        "excel": {
+          "download_ref": "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/exports/csv/business_overview_report_appendix.csv",
+          "status": "excel_compatible_csv_only",
+          "workbook_committed": false
+        },
+        "html": {
+          "artifact_ref": "KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT/exports/html/business_overview_report.html",
+          "status": "restricted_public_safe_preview"
+        },
+        "pdf": {
+          "export_performed": false,
+          "file_committed": false,
+          "private_runtime_only": true,
+          "status": "private_runtime_policy_available_not_executed"
+        }
+      },
+      "export_mode": "restricted_internal_review_preview",
+      "field_mapping_version": "MAP-KMFA-S10P1-PUBLIC-SAFE-v1",
+      "formal_report_allowed": false,
+      "formula_version": "FORM-KMFA-V014-S10-P3-POST-REMEDIATION-RESTRICTED-EXPORT-001",
+      "generated_at": "2026-07-11T01:38:20+10:00",
+      "hard_blocks": [
+        "zero_delta_failed",
+        "unresolved_critical_difference",
+        "incomplete_reconciliation",
+        "missing_required_lineage",
+        "missing_human_confirmation_for_A",
+        "full_business_value_consistency_not_verified"
+      ],
+      "html_template_version": "HTML-KMFA-V014-S10P3-RESTRICTED-v1",
+      "limitations": [
+        "关键现金数据缺失，不能显示为完整可信报告。",
+        "九项非零差异和一项未完成比较继续阻断发布。",
+        "仅供内部复核，不作为正式经营决策依据。"
+      ],
+      "mapping_version": "MAP-KMFA-V014-S10P3-POST-REMEDIATION-PUBLIC-SAFE-v1",
+      "pdf_export_policy_version": "PDF-KMFA-V014-S10P3-PRIVATE-RUNTIME-v1",
+      "phase_id": "V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT",
+      "project_id": "KMFA",
+      "public_repo_safety": {
+        "aggregate_only": true,
+        "business_values_included": false,
+        "excel_workbook_committed": false,
+        "field_or_header_plaintext_included": false,
+        "pdf_file_committed": false,
+        "private_csv_committed": false,
+        "raw_identity_included": false
+      },
+      "record_type": "post_remediation_restricted_export_record",
+      "release_permission": "blocked_decision_use",
+      "report_entry_id": "business_overview_report",
+      "report_entry_version": "0.1.4-s10-p1-post-remediation-report-entry",
+      "report_export_id": "S10P3-POST-EXPORT-BUSINESS-OVERVIEW-REPORT",
+      "report_export_version": "RPTEXP-KMFA-V014-S10P3-POST-REMEDIATION-001",
+      "report_grade": "D",
+      "report_grade_record_version": "RPTREC-KMFA-V014-S10P2-POST-REMEDIATION-001",
+      "restricted_preview_export_allowed": true,
+      "schema_version": "kmfa.v014.s10_p3.post_remediation_restricted_export_record.v1",
+      "stage_id": "S10",
+      "template_version": "TPL-KMFA-S10P1-REPORT-TEMPLATES-001",
+      "visible_report_title": "经营总览报告",
+      "visible_sections": [
+        "经营总览",
+        "收入",
+        "开票",
+        "回款",
+        "现金",
+        "项目",
+        "税务"
+      ],
+      "visible_status_label": "D级（未放行）"
+    }
+  ],
+  "phase_id": "V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT",
+  "project_id": "KMFA",
+  "schema_version": "kmfa.v014.s10_p3.post_remediation_restricted_export_records.v1"
+}

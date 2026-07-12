@@ -1,0 +1,96 @@
+{
+  "allowed_decision_codes": [
+    "confirm_current_container_as_authoritative",
+    "register_corrected_source_package",
+    "keep_pending"
+  ],
+  "basis_summary": {
+    "blocker_ids_inherited": [
+      "RAW_CONTAINER_HASH_SIZE_MISMATCH",
+      "RAW_SOURCE_IDENTITY_OWNER_DECISION_REQUIRED",
+      "PUBLIC_MEMBER_HASH_BACKFILL_BLOCKED",
+      "LINEAGE_FULL_CHECK_BLOCKED_BY_RAW_IDENTITY",
+      "GITHUB_UPLOAD_BLOCKED_BY_RAW_ALIGNMENT",
+      "APP_REINSTALL_BLOCKED_BY_RAW_ALIGNMENT"
+    ],
+    "business_member_count": 9,
+    "business_shape_matches_expected_a0": true,
+    "package_hash_matches_registered": false,
+    "package_size_matches_registered": false,
+    "private_member_hashes_recorded": true,
+    "public_member_hash_backfill_allowed": false,
+    "raw_alignment_complete": false,
+    "raw_root_archive_count": 3,
+    "raw_root_file_count": 5,
+    "raw_root_spreadsheet_count": 2,
+    "selected_candidate_count": 1,
+    "source_decision": "NO_GO",
+    "source_phase_id": "V014_RAW_ALIGNMENT_REMEDIATION",
+    "source_status": "raw_alignment_remediation_reported_no_go_owner_source_identity_required",
+    "source_task_id": "KMFA-V014-RAW-ALIGNMENT-REMEDIATION-20260705"
+  },
+  "current_gate": "KMFA-V014-RAW-SOURCE-IDENTITY-OWNER-GATE",
+  "decision_options": [
+    {
+      "decision_code": "confirm_current_container_as_authoritative",
+      "effect": "Allows a later separate public-safe application phase to consider hash backfill and lineage checks.",
+      "meaning": "Owner confirms the current private raw container is the authoritative source despite registered container mismatch.",
+      "this_phase_unlocks_anything": false
+    },
+    {
+      "decision_code": "register_corrected_source_package",
+      "effect": "Keeps current NO_GO until corrected package registry and validation are run.",
+      "meaning": "Owner supplies or identifies a corrected private source package to replace the mismatched registered source identity.",
+      "this_phase_unlocks_anything": false
+    },
+    {
+      "decision_code": "keep_pending",
+      "effect": "Keeps public hash backfill, lineage, report, upload and app gates blocked.",
+      "meaning": "Owner keeps raw source identity unresolved.",
+      "this_phase_unlocks_anything": false
+    }
+  ],
+  "decision_record_status": "no_owner_decision_recorded",
+  "generated_at": "2026-07-05T22:30:00+10:00",
+  "owner_action_required": true,
+  "packet_status": "ready_for_owner_or_authorized_decision",
+  "phase_id": "V014_OWNER_RAW_SOURCE_IDENTITY_DECISION",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "business_values_committed": false,
+    "compressed_raw_package_committed": false,
+    "credential_or_secret_committed": false,
+    "directory_tree_plaintext_committed": false,
+    "field_or_header_plaintext_committed": false,
+    "local_database_committed": false,
+    "office_workbook_committed": false,
+    "private_diagnostic_committed": false,
+    "public_safe_decision_codes_only": true,
+    "raw_business_data_committed": false,
+    "raw_filenames_committed": false,
+    "raw_hashes_committed": false,
+    "raw_or_private_table_committed": false,
+    "row_or_cell_values_committed": false,
+    "sheet_names_committed": false,
+    "source_document_committed": false,
+    "zip_member_names_committed": false
+  },
+  "raw_boundary": {
+    "raw_inbox_hash_by_this_phase": false,
+    "raw_inbox_list_by_this_phase": false,
+    "raw_inbox_mutated_by_this_phase": false,
+    "raw_inbox_read_by_this_phase": false,
+    "raw_inbox_stat_by_this_phase": false
+  },
+  "record_type": "v014_raw_source_identity_owner_decision_packet",
+  "safe_response_fields": [
+    "decision_code",
+    "actor_role",
+    "actor_ref",
+    "decision_time",
+    "reason_or_confirmation_scope"
+  ],
+  "schema_version": "kmfa.v014_raw_source_identity_owner_decision_packet.v1",
+  "task_id": "KMFA-V014-OWNER-RAW-SOURCE-IDENTITY-DECISION-20260705",
+  "version": "0.1.4"
+}

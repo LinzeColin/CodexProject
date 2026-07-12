@@ -1,0 +1,81 @@
+{
+  "schema_version": "kmfa.v014.s16_p1.source_lanes.v1",
+  "source_lane_count": 5,
+  "source_lanes": [
+    {
+      "authoritative_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "business_value_display_allowed": false,
+      "candidate_sheet_count": 283,
+      "current_status": "structure_candidates_observed_row_binding_unproven",
+      "lane_id": "subcontract_contract",
+      "manual_review_required": true,
+      "materialized_transaction_record_count": 0,
+      "payment_execution_allowed": false,
+      "procurement_execution_allowed": false,
+      "purpose": "连接外协或分包合同结构与项目归属，缺少行级证据时不形成成本事实。",
+      "structure_candidate_observed": true,
+      "visible_label": "外协合同结构"
+    },
+    {
+      "authoritative_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "business_value_display_allowed": false,
+      "candidate_sheet_count": 296,
+      "current_status": "structure_candidates_observed_row_binding_unproven",
+      "lane_id": "procurement_order",
+      "manual_review_required": true,
+      "materialized_transaction_record_count": 0,
+      "payment_execution_allowed": false,
+      "procurement_execution_allowed": false,
+      "purpose": "连接采购结构与项目、合同和对手方锚点，不触发采购动作。",
+      "structure_candidate_observed": true,
+      "visible_label": "采购订单结构"
+    },
+    {
+      "authoritative_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "business_value_display_allowed": false,
+      "candidate_sheet_count": 391,
+      "current_status": "structure_candidates_observed_row_binding_unproven",
+      "lane_id": "payment_application",
+      "manual_review_required": true,
+      "materialized_transaction_record_count": 0,
+      "payment_execution_allowed": false,
+      "procurement_execution_allowed": false,
+      "purpose": "连接付款申请或登记结构，仅生成复核信号，不执行审批或付款。",
+      "structure_candidate_observed": true,
+      "visible_label": "付款申请结构"
+    },
+    {
+      "authoritative_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "business_value_display_allowed": false,
+      "candidate_sheet_count": 672,
+      "current_status": "structure_candidates_observed_row_binding_unproven",
+      "lane_id": "invoice",
+      "manual_review_required": true,
+      "materialized_transaction_record_count": 0,
+      "payment_execution_allowed": false,
+      "procurement_execution_allowed": false,
+      "purpose": "连接发票结构与合同、采购和付款候选，不形成开票或税务动作。",
+      "structure_candidate_observed": true,
+      "visible_label": "发票结构"
+    },
+    {
+      "authoritative_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "business_value_display_allowed": false,
+      "candidate_sheet_count": 5,
+      "current_status": "structure_candidates_observed_row_binding_unproven",
+      "lane_id": "project_attribution",
+      "manual_review_required": true,
+      "materialized_transaction_record_count": 0,
+      "payment_execution_allowed": false,
+      "procurement_execution_allowed": false,
+      "purpose": "提供项目归属候选；没有权威行绑定时不生成项目匹配。",
+      "structure_candidate_observed": true,
+      "visible_label": "项目归属结构"
+    }
+  ]
+}

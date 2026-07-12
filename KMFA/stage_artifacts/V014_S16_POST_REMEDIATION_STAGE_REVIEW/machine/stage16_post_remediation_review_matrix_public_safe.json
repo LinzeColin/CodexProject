@@ -1,0 +1,64 @@
+{
+  "acceptance_id": "ACC-V014-S16-POST-REMEDIATION-STAGE-REVIEW",
+  "check_count": 11,
+  "check_fail_count": 0,
+  "check_pass_count": 11,
+  "checks": [
+    {
+      "check_id": "V014-S16-REVIEW-ACC-001",
+      "name": "phase_chain",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S16-REVIEW-ACC-002",
+      "name": "phase_tests",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S16-REVIEW-ACC-003",
+      "name": "zero_business_rows",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S16-REVIEW-ACC-004",
+      "name": "zero_project_matches",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S16-REVIEW-ACC-005",
+      "name": "zero_lifecycle_records",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S16-REVIEW-ACC-006",
+      "name": "zero_customer_outputs",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S16-REVIEW-ACC-007",
+      "name": "findings_closed",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S16-REVIEW-ACC-008",
+      "name": "navigation",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S16-REVIEW-ACC-009",
+      "name": "browser",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S16-REVIEW-ACC-010",
+      "name": "raw_exact",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S16-REVIEW-ACC-011",
+      "name": "downstream_closed",
+      "status": "PASS"
+    }
+  ],
+  "schema_version": "kmfa.v014.s16_post_remediation_review_matrix.v1"
+}

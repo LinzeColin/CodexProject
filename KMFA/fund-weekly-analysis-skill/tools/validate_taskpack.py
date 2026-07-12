@@ -32,7 +32,6 @@ REQUIRED = [
     "tools/export_owner_decision_review_csv.py",
     "tools/validate_owner_review_workbook.py",
     "tools/install_to_kmfa_main.sh",
-    "templates/资金与税费管理母版_真实数据预览_v2.xlsx",
 ]
 REQUIRED_SKILL_STRINGS = [
     "Do not create branches",
@@ -154,7 +153,7 @@ REQUIRED_SKILL_STRINGS = [
     "automation_readiness.csv",
     "schedule_ready",
     "CODEX_AUTOMATION_CONTRACT_INVALID",
-    "main_only_no_branch_no_pr_no_worktree",
+    "canonical_project_worktree_no_new_branch_no_pr_no_extra_worktree",
     "management_conclusion_gate.csv",
     "owner_action_queue.csv",
     "fact_promotion_review_packet.csv",
@@ -215,9 +214,8 @@ EXPECTED_SHEETS = [
 ]
 
 
-def validate_template(root: Path) -> list[str]:
+def validate_template(template: Path) -> list[str]:
     errors: list[str] = []
-    template = root / "templates/资金与税费管理母版_真实数据预览_v2.xlsx"
     ns_sheet = {"x": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
     ns_chart = {"c": "http://schemas.openxmlformats.org/drawingml/2006/chart"}
     ns_draw = {"xdr": "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"}
@@ -314,12 +312,25 @@ def main() -> int:
     if miss:
         print("missing required SKILL strings:", miss)
         return 3
-    template_errors = validate_template(root)
-    if template_errors:
-        print("template validation errors:")
-        for error in template_errors:
-            print("-", error)
+    tracked_templates = sorted(root.glob("templates/*.xlsx"))
+    if tracked_templates:
+        print("tracked Excel templates are forbidden:", [path.name for path in tracked_templates])
         return 4
+    private_template = (
+        root.parent
+        / "metadata"
+        / "fund_weekly_analysis"
+        / "private_runtime"
+        / "templates"
+        / "fund_weekly_template.xlsx"
+    )
+    if private_template.is_file():
+        template_errors = validate_template(private_template)
+        if template_errors:
+            print("private template validation errors:")
+            for error in template_errors:
+                print("-", error)
+            return 4
     print("PASS: taskpack static validation")
     return 0
 

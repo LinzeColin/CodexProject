@@ -1,0 +1,142 @@
+{
+  "schema_version": "kmfa.v014_s02_p3_quality_gate_lock.v1",
+  "project_id": "KMFA",
+  "version": "0.1.4",
+  "stage_id": "S02",
+  "phase_id": "S02-P3",
+  "stage_phase": "S02-P3",
+  "task_id": "KMFA-V014-S02-P3-QUALITY-GATE-20260703",
+  "acceptance_id": "ACC-V014-S02-P3-QUALITY-GATE",
+  "status": "completed_validated_local_only_no_go_upload_deferred",
+  "dependency": {
+    "required_phase": "S02-P2",
+    "dependency_manifest": "KMFA/stage_artifacts/V014_S02_P2_IMMUTABILITY_POLICY/machine/s02_p2_immutability_policy_manifest.json",
+    "dependency_expected_status": "completed_validated_local_only_no_go_upload_deferred"
+  },
+  "quality_grade_contract": {
+    "policy_ref": "KMFA/metadata/quality/quality_grade_policy.yaml",
+    "allowed_quality_grades": [
+      "Q0",
+      "Q1",
+      "Q2",
+      "Q3",
+      "Q4",
+      "Q5"
+    ],
+    "quality_grade_count": 6,
+    "minimum_preview_quality_grade": "Q3",
+    "minimum_internal_review_quality_grade": "Q4",
+    "minimum_formal_internal_report_quality_grade": "Q5",
+    "q0_q2_release_permission": "blocked",
+    "q3_release_permission": "preview_only",
+    "q4_release_permission": "internal_review_report",
+    "q5_release_permission": "formal_internal_report",
+    "runtime_quality_result_generated_by_this_phase": false
+  },
+  "report_grade_contract": {
+    "policy_ref": "KMFA/metadata/reports/report_grade_policy.yaml",
+    "release_gate_ref": "KMFA/metadata/reports/report_release_gate.yaml",
+    "allowed_report_grades": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "report_grade_count": 4,
+    "grade_a_minimum_quality_grade": "Q5",
+    "grade_a_zero_delta_required": true,
+    "grade_a_critical_differences_closed_required": true,
+    "grade_a_human_confirmation_required": true,
+    "grade_b_minimum_quality_grade": "Q4",
+    "grade_c_minimum_quality_grade": "Q3",
+    "grade_d_release_permission": "blocked_decision_use"
+  },
+  "release_gate_contract": {
+    "quality_to_report_gate_count": 6,
+    "hard_blocks": [
+      "unresolved_critical_difference",
+      "zero_delta_failed",
+      "missing_required_lineage",
+      "missing_human_confirmation_for_A",
+      "stale_or_expired_input",
+      "raw_data_mutation_detected"
+    ],
+    "missing_gate_evidence_policy": "block_release",
+    "report_generation_requires_quality_gate": true,
+    "formal_internal_report_requires_q5": true,
+    "business_decision_basis_requires_grade_a": true,
+    "runtime_release_evaluation_performed_by_this_phase": false
+  },
+  "raw_data_boundary": {
+    "raw_inbox_path": "/Users/linzezhang/Downloads/KMFA_MetaData",
+    "raw_inbox_read_by_this_phase": false,
+    "raw_inbox_listed_by_this_phase": false,
+    "raw_inbox_inventory_by_this_phase": false,
+    "raw_inbox_modified_by_this_phase": false,
+    "raw_inbox_deleted_by_this_phase": false,
+    "raw_inbox_moved_by_this_phase": false,
+    "raw_inbox_renamed_by_this_phase": false,
+    "raw_inbox_overwritten_by_this_phase": false,
+    "raw_inbox_written_by_this_phase": false,
+    "raw_filenames_committed": false,
+    "raw_hashes_committed": false,
+    "field_or_header_plaintext_committed": false,
+    "row_or_cell_values_committed": false,
+    "business_values_committed": false
+  },
+  "phase_scope": {
+    "current_phase_only": true,
+    "quality_gate_policy_only": true,
+    "metadata_protocol_dependency_reused": true,
+    "immutability_policy_dependency_reused": true,
+    "stage2_review_performed": false,
+    "github_upload_performed": false,
+    "raw_inventory_performed": false,
+    "raw_value_matching_performed": false,
+    "lineage_full_check_performed": false,
+    "formal_report_performed": false,
+    "live_connector_called": false,
+    "opme_deep_coupling_performed": false,
+    "business_execution_performed": false,
+    "next_phase": "S02-STAGE-REVIEW",
+    "next_phase_started": false
+  },
+  "release_state": {
+    "delivery_allowed": false,
+    "formal_report_allowed": false,
+    "business_decision_basis_allowed": false,
+    "business_execution_allowed": false,
+    "github_main_upload_allowed": false,
+    "current_go_no_go": "NO_GO",
+    "current_data_quality_grade": "Q0",
+    "current_report_grade": "D",
+    "release_permission": "blocked"
+  },
+  "public_repo_safety": {
+    "raw_business_data_committed": false,
+    "zip_committed": false,
+    "excel_workbook_committed": false,
+    "pdf_committed": false,
+    "private_csv_committed": false,
+    "sqlite_or_db_committed": false,
+    "credentials_committed": false,
+    "raw_filenames_committed": false,
+    "raw_hashes_committed": false,
+    "field_plaintext_committed": false,
+    "normalized_business_values_committed": false
+  },
+  "evidence_refs": [
+    "KMFA/stage_artifacts/V014_S02_P3_QUALITY_GATE/human/s02_p3_completion_record.md",
+    "KMFA/stage_artifacts/V014_S02_P3_QUALITY_GATE/human/test_results.md",
+    "KMFA/stage_artifacts/V014_S02_P3_QUALITY_GATE/human/risk_register.md",
+    "KMFA/stage_artifacts/V014_S02_P3_QUALITY_GATE/human/rollback_plan.md",
+    "KMFA/stage_artifacts/V014_S02_P3_QUALITY_GATE/machine/s02_p3_quality_gate_manifest.json",
+    "KMFA/metadata/protocol/quality_gate_lock_v1_4.json",
+    "KMFA/docs/governance/QUALITY_GATE_POLICY.md",
+    "KMFA/tools/check_report_grade_gate.py",
+    "KMFA/tools/check_v014_s02_p3_quality_gate.py",
+    "KMFA/tests/test_v014_s02_p3_quality_gate.py"
+  ],
+  "next_recommended_phase": "S02-STAGE-REVIEW",
+  "next_phase_instruction": "Start Stage 2 overall review in a separate run only after user instruction; keep GitHub upload deferred until v1.4 Stage 1-18 complete overall review."
+}

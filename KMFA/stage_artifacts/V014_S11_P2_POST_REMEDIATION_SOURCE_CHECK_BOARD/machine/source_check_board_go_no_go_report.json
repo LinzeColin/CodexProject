@@ -1,0 +1,13 @@
+{
+  "business_decision_basis_allowed": false,
+  "decision": "NO_GO",
+  "formal_report_allowed": false,
+  "github_upload_performed": false,
+  "persistent_status_write_allowed": false,
+  "phase_id": "V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD",
+  "project_id": "KMFA",
+  "s11_p3_performed": false,
+  "schema_version": "kmfa.v014.s11_p2.post_remediation_source_check_board_go_no_go.v1",
+  "source_check_board_display_allowed": true,
+  "stage11_review_performed": false
+}

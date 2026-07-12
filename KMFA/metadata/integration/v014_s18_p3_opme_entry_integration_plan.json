@@ -1,0 +1,45 @@
+{
+  "acceptance_id": "ACC-V014-S18-P3-INTEGRATION-PREPARATION",
+  "allowed_exchange_refs": [
+    "public_safe_status_summary",
+    "report_index_pointer",
+    "handoff_pointer",
+    "validator_command_pointer"
+  ],
+  "business_execution_allowed": false,
+  "coupling_level": "light_entry_only",
+  "credential_committed": false,
+  "deep_coupling_allowed": false,
+  "entry_surfaces": [
+    "read_only_entry",
+    "report_index",
+    "run_status",
+    "handoff_link"
+  ],
+  "external_service_called": false,
+  "field_plaintext_committed": false,
+  "generated_at": "2026-07-05T18:20:00+10:00",
+  "github_upload_allowed": false,
+  "integration_mode": "entry_link_and_status_index_only",
+  "kmfa_controls_opme_service_logic": false,
+  "legacy_policy_version": "KMFA-S18P3-INTEGRATION-PREPARATION-001",
+  "next_gate": "opme_shell_design_after_stage18_review",
+  "opme_controls_kmfa_business_logic": false,
+  "phase_id": "S18-P3",
+  "policy_lock_version": "LOCK-KMFA-V014-S18P3-INTEGRATION-PREPARATION-PUBLIC-SAFE-001",
+  "policy_version": "KMFA-S18P3-INTEGRATION-PREPARATION-001",
+  "project_id": "KMFA",
+  "raw_business_data_committed": false,
+  "record_type": "v014_s18_p3_opme_entry_integration_plan",
+  "responsibility_split": {
+    "kmfa_owner": "project_finance_operation",
+    "opme_owner": "technical_service_entry_and_status"
+  },
+  "schema_version": "kmfa.v014_s18_p3_opme_entry_integration_plan.v1",
+  "sensitive_data_mixing_allowed": false,
+  "shared_database_allowed": false,
+  "stage_id": "S18",
+  "stage_phase": "S18-P3",
+  "task_id": "S18P3T02",
+  "version": "0.1.4"
+}

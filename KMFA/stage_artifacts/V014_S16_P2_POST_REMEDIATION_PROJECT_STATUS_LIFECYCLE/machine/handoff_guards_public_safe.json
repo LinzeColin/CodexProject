@@ -1,0 +1,33 @@
+{
+  "guards": [
+    {
+      "delegated_to_system": false,
+      "guard_id": "site_construction",
+      "human_authority_required": true,
+      "operation_execution_allowed": false,
+      "requirement": "现场施工组织与指令必须由有权人员处理",
+      "signature_authority_allowed": false,
+      "visible_label": "现场施工"
+    },
+    {
+      "delegated_to_system": false,
+      "guard_id": "safety_signature",
+      "human_authority_required": true,
+      "operation_execution_allowed": false,
+      "requirement": "安全确认与签字必须由具备资格和授权的人员处理",
+      "signature_authority_allowed": false,
+      "visible_label": "安全签字"
+    },
+    {
+      "delegated_to_system": false,
+      "guard_id": "technical_signature",
+      "human_authority_required": true,
+      "operation_execution_allowed": false,
+      "requirement": "技术验收与签字必须由具备资格和授权的人员处理",
+      "signature_authority_allowed": false,
+      "visible_label": "技术签字"
+    }
+  ],
+  "handoff_guard_count": 3,
+  "schema_version": "kmfa.v014.s16_p2.handoff_guards.v1"
+}

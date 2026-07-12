@@ -1,0 +1,11 @@
+{
+  "business_execution_allowed": false,
+  "data_quality_grade": "Q4",
+  "decision": "NO_GO",
+  "github_upload_allowed": false,
+  "phase_id": "V014_S14_P1_POST_REMEDIATION_FUND_CASH_LOAN_PLAN",
+  "reason": "authoritative row period account contract and value bindings remain unproven",
+  "report_grade": "D",
+  "s14_p2_allowed_in_this_run": false,
+  "schema_version": "kmfa.v014.s14_p1_go_no_go.v1"
+}

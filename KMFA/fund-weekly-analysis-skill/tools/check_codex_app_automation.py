@@ -24,11 +24,12 @@ CHECK_FIELDS = [
 EXPECTED_CONTRACT_FIELDS = {
     "rrule": "RRULE:FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0",
     "timezone": "Australia/Sydney",
-    "cwds": ["/Users/linzezhang/CodexProject"],
+    "cwds": ["/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa"],
     "prompt_file": "automation/weekly_mon_sat_1100_sydney.prompt.md",
     "input_dir": "/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群",
     "source_readiness_gate": "tools/check_source_readiness.py",
-    "branch_policy": "main_only_no_branch_no_pr_no_worktree",
+    "branch_policy": "canonical_project_worktree_no_new_branch_no_pr_no_extra_worktree",
+    "live_parity_phase": "V014_APP_REINSTALL_AND_PARITY",
 }
 
 
@@ -44,6 +45,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo-root", default=os.environ.get("KMFA_REPO_ROOT", "."))
     parser.add_argument("--automation-root", default=str(Path.home() / ".codex" / "automations"))
+    parser.add_argument("--contract-only", action="store_true")
     args = parser.parse_args()
 
     repo_root = Path(args.repo_root).expanduser().resolve()
@@ -67,6 +69,15 @@ def main() -> int:
             "invalid_contract_fields": invalid_contract_fields,
         })
         return 3
+
+    if args.contract_only:
+        emit({
+            "status": "CODEX_AUTOMATION_CONTRACT_READY_APP_PARITY_DEFERRED",
+            "automation_id": contract["id"],
+            "contract_path": str(contract_path),
+            "live_parity_phase": contract["live_parity_phase"],
+        })
+        return 0
 
     automation_path = Path(args.automation_root).expanduser() / contract["id"] / "automation.toml"
     if not automation_path.exists():

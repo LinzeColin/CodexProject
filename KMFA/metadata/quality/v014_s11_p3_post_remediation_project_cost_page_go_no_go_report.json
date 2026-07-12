@@ -1,0 +1,13 @@
+{
+  "business_decision_basis_allowed": false,
+  "decision": "NO_GO",
+  "formal_report_allowed": false,
+  "github_upload_performed": false,
+  "phase_id": "V014_S11_P3_POST_REMEDIATION_PROJECT_COST_PAGE",
+  "project_cost_page_display_allowed": true,
+  "project_id": "KMFA",
+  "project_level_difference_attribution_allowed": false,
+  "restricted_internal_preview_allowed": true,
+  "schema_version": "kmfa.v014.s11_p3.post_remediation_project_cost_page_go_no_go.v1",
+  "stage11_review_performed": false
+}

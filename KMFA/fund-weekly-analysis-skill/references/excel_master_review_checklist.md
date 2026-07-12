@@ -6,7 +6,7 @@ Current evidence snapshot from the latest mother workbook:
 
 | Item | Observed State |
 |---|---|
-| Workbook | `资金与税费管理母版_真实数据预览_v2.xlsx` |
+| Workbook | ignored private runtime template (`fund_weekly_template.xlsx`) |
 | Sheet count and order | 12 sheets; `01_首页总览` first, `02_资金趋势预测` second |
 | Visible row 2 | Blank on visible report sheets `01` through `06` |
 | Hidden audit row 2 | Preserved on hidden `H01` through `H06`; hidden rows may contain data/header values and are not cleared by the visible-report rule |
@@ -19,7 +19,7 @@ Current evidence snapshot from the latest mother workbook:
 
 | Rule | Required State | Evidence |
 |---|---|---|
-| Latest mother workbook | `templates/资金与税费管理母版_真实数据预览_v2.xlsx` is the authoritative editable native Excel template | `validate_taskpack.py` and workbook template inspection |
+| Latest mother workbook | ignored `metadata/fund_weekly_analysis/private_runtime/templates/fund_weekly_template.xlsx` is the local authoritative editable template; no workbook is tracked or packaged | `validate_taskpack.py` and private workbook inspection |
 | Visible sheet row 2 | Row 2 on every visible report sheet is blank; hidden audit/data sheets keep their row 2 data unless separately authorized | `workbook_quality_checks.csv` and template validator |
 | Sheet order | `01_首页总览` is first and `02_资金趋势预测` is second | Template validator and workbook quality gate |
 | Hidden audit sheets | `H01` through `H06` stay hidden | Template validator and workbook quality gate |

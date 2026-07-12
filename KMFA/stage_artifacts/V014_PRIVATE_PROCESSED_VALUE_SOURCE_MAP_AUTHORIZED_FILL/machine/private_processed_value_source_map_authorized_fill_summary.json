@@ -1,0 +1,17 @@
+{
+  "authorized_filled_item_count": 36,
+  "authorized_filled_unique_ref_count": 36,
+  "authorized_unfilled_item_count": 113,
+  "authorized_unfilled_unique_ref_count": 101,
+  "business_value_consistency_verified": false,
+  "comparable_value_pair_count": 0,
+  "duplicate_private_ref_item_count": 12,
+  "fill_request_item_count": 149,
+  "metadata_hash_sibling_record_count": 36,
+  "metadata_hash_sibling_source_file_count": 1,
+  "raw_to_processed_value_comparison_performed": false,
+  "source_map_authorized_fill_complete": false,
+  "source_map_authorized_fill_status": "partial_authorized_fill_remaining_source_map_gaps",
+  "source_map_records_written_count": 36,
+  "unique_private_ref_count": 137
+}

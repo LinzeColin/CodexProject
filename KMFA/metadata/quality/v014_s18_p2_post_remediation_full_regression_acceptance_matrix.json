@@ -1,0 +1,114 @@
+{
+  "acceptance_id": "ACC-V014-S18-P2-POST-REMEDIATION-FULL-REGRESSION-ACCEPTANCE",
+  "check_count": 21,
+  "check_fail_count": 0,
+  "check_pass_count": 21,
+  "checks": [
+    {
+      "check_id": "S18P2-ACC-01",
+      "check_name": "s18_p1_dependency",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P2-ACC-02",
+      "check_name": "historical_structure",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P2-ACC-03",
+      "check_name": "taskpack",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P2-ACC-04",
+      "check_name": "five_categories",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P2-ACC-05",
+      "check_name": "five_commands",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P2-ACC-06",
+      "check_name": "no_omission",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P2-ACC-07",
+      "check_name": "zero_delta",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P2-ACC-08",
+      "check_name": "schema",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P2-ACC-09",
+      "check_name": "lineage_ran",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P2-ACC-10",
+      "check_name": "lineage_blocked",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P2-ACC-11",
+      "check_name": "ui",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P2-ACC-12",
+      "check_name": "stage_count",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P2-ACC-13",
+      "check_name": "stage_reviews",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P2-ACC-14",
+      "check_name": "s18_progress",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P2-ACC-15",
+      "check_name": "s18_pending",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P2-ACC-16",
+      "check_name": "no_upload_refs",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P2-ACC-17",
+      "check_name": "raw_exact",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P2-ACC-18",
+      "check_name": "raw_cross",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P2-ACC-19",
+      "check_name": "repo_safety",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P2-ACC-20",
+      "check_name": "no_go",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S18P2-ACC-21",
+      "check_name": "downstream_closed",
+      "status": "PASS"
+    }
+  ],
+  "schema_version": "kmfa.v014.s18_p2_post_remediation_acceptance_matrix.v1"
+}

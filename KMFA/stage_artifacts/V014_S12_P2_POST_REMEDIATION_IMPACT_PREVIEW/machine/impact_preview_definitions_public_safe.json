@@ -1,0 +1,268 @@
+{
+  "phase_id": "V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW",
+  "preview_count": 6,
+  "previews": [
+    {
+      "affected_metrics": [
+        "差异状态",
+        "报告可信等级",
+        "待处理状态"
+      ],
+      "affected_project_scope": [
+        "四个未证明归属的潜在项目槽位"
+      ],
+      "affected_project_slot_count": 4,
+      "affected_reports": [
+        "项目成本受限预览",
+        "经营总览受限预览"
+      ],
+      "business_event_approval_allowed": false,
+      "business_value_committed": false,
+      "derived_rerun_allowed": false,
+      "impact_reason": "非零差异处理可能改变差异状态和报告可信等级，必须二次确认。",
+      "manual_action_kind": "difference_handling",
+      "persistent_business_write_allowed": false,
+      "preview_id": "IMPREV-S12P2-POST-001",
+      "preview_passed_persistently": false,
+      "preview_status": "definition_ready_session_preview_required",
+      "preview_version": "IMPACT-PREVIEW-S12P2-POST-001.001",
+      "project_attribution": "unproven_or_not_applicable",
+      "project_scope_semantics": "potential_impact_not_attribution",
+      "publish_allowed": false,
+      "raw_layer_write_allowed": false,
+      "record_type": "public_safe_session_impact_preview_definition",
+      "risk_level": "high",
+      "schema_version": "kmfa.v014.s12_p2.impact_preview_definition.v1",
+      "second_confirmation_required": true,
+      "second_confirmation_status": "required_in_session",
+      "session_preview_allowed": true,
+      "source_event_template_id": "CAND-EVT-S12P1-003",
+      "source_evidence_refs": [
+        "KMFA/stage_artifacts/V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS/machine/pending_actions_manifest.json",
+        "KMFA/taskpack/v1_4/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_4.md"
+      ],
+      "source_group_id": "PEND-S12P1-001",
+      "source_group_item_count": 9,
+      "source_group_title": "非零差异复核"
+    },
+    {
+      "affected_metrics": [
+        "零差异证据状态",
+        "复核说明完整性"
+      ],
+      "affected_project_scope": [
+        "不形成项目级归属；仅影响全局证据范围"
+      ],
+      "affected_project_slot_count": 0,
+      "affected_reports": [
+        "待处理事项工作台",
+        "数据质量证据摘要"
+      ],
+      "business_event_approval_allowed": false,
+      "business_value_committed": false,
+      "derived_rerun_allowed": false,
+      "impact_reason": "公开安全复核备注只影响证据说明，不改变业务值或项目归属。",
+      "manual_action_kind": "note",
+      "persistent_business_write_allowed": false,
+      "preview_id": "IMPREV-S12P2-POST-002",
+      "preview_passed_persistently": false,
+      "preview_status": "definition_ready_session_preview_required",
+      "preview_version": "IMPACT-PREVIEW-S12P2-POST-001.002",
+      "project_attribution": "unproven_or_not_applicable",
+      "project_scope_semantics": "potential_impact_not_attribution",
+      "publish_allowed": false,
+      "raw_layer_write_allowed": false,
+      "record_type": "public_safe_session_impact_preview_definition",
+      "risk_level": "medium",
+      "schema_version": "kmfa.v014.s12_p2.impact_preview_definition.v1",
+      "second_confirmation_required": false,
+      "second_confirmation_status": "not_required",
+      "session_preview_allowed": true,
+      "source_event_template_id": "CAND-EVT-S12P1-004",
+      "source_evidence_refs": [
+        "KMFA/stage_artifacts/V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS/machine/pending_actions_manifest.json",
+        "KMFA/taskpack/v1_4/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_4.md"
+      ],
+      "source_group_id": "PEND-S12P1-002",
+      "source_group_item_count": 2,
+      "source_group_title": "零差异证据复核"
+    },
+    {
+      "affected_metrics": [
+        "未完成比较状态",
+        "现金链路完整性",
+        "报告可信等级"
+      ],
+      "affected_project_scope": [
+        "四个未证明归属的潜在项目槽位"
+      ],
+      "affected_project_slot_count": 4,
+      "affected_reports": [
+        "项目成本受限预览",
+        "经营总览受限预览"
+      ],
+      "business_event_approval_allowed": false,
+      "business_value_committed": false,
+      "derived_rerun_allowed": false,
+      "impact_reason": "补全未完成比较可能影响现金链路和报告等级，必须二次确认。",
+      "manual_action_kind": "difference_handling",
+      "persistent_business_write_allowed": false,
+      "preview_id": "IMPREV-S12P2-POST-003",
+      "preview_passed_persistently": false,
+      "preview_status": "definition_ready_session_preview_required",
+      "preview_version": "IMPACT-PREVIEW-S12P2-POST-001.003",
+      "project_attribution": "unproven_or_not_applicable",
+      "project_scope_semantics": "potential_impact_not_attribution",
+      "publish_allowed": false,
+      "raw_layer_write_allowed": false,
+      "record_type": "public_safe_session_impact_preview_definition",
+      "risk_level": "high",
+      "schema_version": "kmfa.v014.s12_p2.impact_preview_definition.v1",
+      "second_confirmation_required": true,
+      "second_confirmation_status": "required_in_session",
+      "session_preview_allowed": true,
+      "source_event_template_id": "CAND-EVT-S12P1-003",
+      "source_evidence_refs": [
+        "KMFA/stage_artifacts/V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS/machine/pending_actions_manifest.json",
+        "KMFA/taskpack/v1_4/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_4.md"
+      ],
+      "source_group_id": "PEND-S12P1-003",
+      "source_group_item_count": 1,
+      "source_group_title": "未完成比较补全"
+    },
+    {
+      "affected_metrics": [
+        "最终接受状态",
+        "差异说明完整性",
+        "报告限制状态"
+      ],
+      "affected_project_scope": [
+        "四个未证明归属的潜在项目槽位"
+      ],
+      "affected_project_slot_count": 4,
+      "affected_reports": [
+        "项目成本受限预览",
+        "经营总览受限预览",
+        "待处理事项工作台"
+      ],
+      "business_event_approval_allowed": false,
+      "business_value_committed": false,
+      "derived_rerun_allowed": false,
+      "impact_reason": "最终差异接受说明可能被误读为项目归属或放行结论，必须二次确认。",
+      "manual_action_kind": "note",
+      "persistent_business_write_allowed": false,
+      "preview_id": "IMPREV-S12P2-POST-004",
+      "preview_passed_persistently": false,
+      "preview_status": "definition_ready_session_preview_required",
+      "preview_version": "IMPACT-PREVIEW-S12P2-POST-001.004",
+      "project_attribution": "unproven_or_not_applicable",
+      "project_scope_semantics": "potential_impact_not_attribution",
+      "publish_allowed": false,
+      "raw_layer_write_allowed": false,
+      "record_type": "public_safe_session_impact_preview_definition",
+      "risk_level": "high",
+      "schema_version": "kmfa.v014.s12_p2.impact_preview_definition.v1",
+      "second_confirmation_required": true,
+      "second_confirmation_status": "required_in_session",
+      "session_preview_allowed": true,
+      "source_event_template_id": "CAND-EVT-S12P1-004",
+      "source_evidence_refs": [
+        "KMFA/stage_artifacts/V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS/machine/pending_actions_manifest.json",
+        "KMFA/taskpack/v1_4/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_4.md"
+      ],
+      "source_group_id": "PEND-S12P1-004",
+      "source_group_item_count": 3,
+      "source_group_title": "最终差异接受说明"
+    },
+    {
+      "affected_metrics": [
+        "项目匹配状态",
+        "项目毛利槽位绑定",
+        "回款槽位绑定"
+      ],
+      "affected_project_scope": [
+        "四个未证明归属的潜在项目槽位"
+      ],
+      "affected_project_slot_count": 4,
+      "affected_reports": [
+        "项目成本页面",
+        "经营总览受限预览",
+        "待处理事项工作台"
+      ],
+      "business_event_approval_allowed": false,
+      "business_value_committed": false,
+      "derived_rerun_allowed": false,
+      "impact_reason": "项目匹配可能改变分组和报告汇总口径，必须二次确认且不得自动归属。",
+      "manual_action_kind": "project_matching",
+      "persistent_business_write_allowed": false,
+      "preview_id": "IMPREV-S12P2-POST-005",
+      "preview_passed_persistently": false,
+      "preview_status": "definition_ready_session_preview_required",
+      "preview_version": "IMPACT-PREVIEW-S12P2-POST-001.005",
+      "project_attribution": "unproven_or_not_applicable",
+      "project_scope_semantics": "potential_impact_not_attribution",
+      "publish_allowed": false,
+      "raw_layer_write_allowed": false,
+      "record_type": "public_safe_session_impact_preview_definition",
+      "risk_level": "high",
+      "schema_version": "kmfa.v014.s12_p2.impact_preview_definition.v1",
+      "second_confirmation_required": true,
+      "second_confirmation_status": "required_in_session",
+      "session_preview_allowed": true,
+      "source_event_template_id": "CAND-EVT-S12P1-002",
+      "source_evidence_refs": [
+        "KMFA/stage_artifacts/V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS/machine/pending_actions_manifest.json",
+        "KMFA/taskpack/v1_4/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_4.md"
+      ],
+      "source_group_id": "PEND-S12P1-005",
+      "source_group_item_count": 4,
+      "source_group_title": "项目归属复核"
+    },
+    {
+      "affected_metrics": [
+        "来源就绪状态",
+        "字段映射状态",
+        "报告可用性"
+      ],
+      "affected_project_scope": [
+        "四个未证明归属的潜在项目槽位"
+      ],
+      "affected_project_slot_count": 4,
+      "affected_reports": [
+        "数据源检查板",
+        "项目成本受限预览",
+        "经营总览受限预览"
+      ],
+      "business_event_approval_allowed": false,
+      "business_value_committed": false,
+      "derived_rerun_allowed": false,
+      "impact_reason": "字段映射可能影响来源状态和报告可用性，必须二次确认。",
+      "manual_action_kind": "field_mapping",
+      "persistent_business_write_allowed": false,
+      "preview_id": "IMPREV-S12P2-POST-006",
+      "preview_passed_persistently": false,
+      "preview_status": "definition_ready_session_preview_required",
+      "preview_version": "IMPACT-PREVIEW-S12P2-POST-001.006",
+      "project_attribution": "unproven_or_not_applicable",
+      "project_scope_semantics": "potential_impact_not_attribution",
+      "publish_allowed": false,
+      "raw_layer_write_allowed": false,
+      "record_type": "public_safe_session_impact_preview_definition",
+      "risk_level": "high",
+      "schema_version": "kmfa.v014.s12_p2.impact_preview_definition.v1",
+      "second_confirmation_required": true,
+      "second_confirmation_status": "required_in_session",
+      "session_preview_allowed": true,
+      "source_event_template_id": "CAND-EVT-S12P1-001",
+      "source_evidence_refs": [
+        "KMFA/stage_artifacts/V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS/machine/pending_actions_manifest.json",
+        "KMFA/taskpack/v1_4/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_4.md"
+      ],
+      "source_group_id": "PEND-S12P1-006",
+      "source_group_item_count": 13,
+      "source_group_title": "数据源映射与状态复核"
+    }
+  ],
+  "project_scope_semantics": "potential impact only; no project attribution is asserted",
+  "schema_version": "kmfa.v014.s12_p2.impact_preview_definitions.v1"
+}

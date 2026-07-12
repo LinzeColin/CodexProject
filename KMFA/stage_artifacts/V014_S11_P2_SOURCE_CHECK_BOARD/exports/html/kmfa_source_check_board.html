@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KMFA 数据源检查板</title>
+  <style>
+    :root { --navy:#0b1f3a; --blue:#1d4ed8; --soft:#eff6ff; --bg:#f7faff; --card:#fff; --line:#d8e7ff; --text:#172033; --muted:#64748b; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:linear-gradient(180deg,#f8fbff 0%,#eef5ff 100%); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif; }
+    .header { background:linear-gradient(135deg,#071a33,#0f3b74); color:#fff; padding:28px 36px; }
+    .brand { display:flex; align-items:center; gap:14px; }
+    .logo { width:54px; height:54px; border:1px solid rgba(255,255,255,.35); border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:800; background:rgba(255,255,255,.08); }
+    h1 { margin:0; font-size:26px; letter-spacing:0; }
+    .header p { margin:8px 0 0; color:#c7ddff; line-height:1.6; }
+    .wrap { padding:24px 36px 38px; }
+    .summary { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:18px; }
+    .summary-card { background:rgba(255,255,255,.94); border:1px solid var(--line); border-radius:8px; padding:16px; }
+    .summary-card b { display:block; font-size:25px; color:#0b376d; }
+    .summary-card span { color:var(--muted); font-size:13px; }
+    .controls { display:grid; grid-template-columns:1.3fr .8fr auto; gap:12px; align-items:end; margin-bottom:14px; }
+    label { display:grid; gap:6px; color:#334155; font-size:13px; font-weight:700; }
+    input, select { height:38px; border:1px solid #bfdbfe; border-radius:8px; padding:0 11px; color:#172033; background:#fff; }
+    .grade { border:1px solid #bfdbfe; background:#fff; color:var(--blue); border-radius:999px; padding:10px 12px; font-size:12px; font-weight:800; white-space:nowrap; }
+    .feedback { margin:-4px 0 14px; color:#475569; line-height:1.7; }
+    .matrix-wrap { overflow:auto; border:1px solid var(--line); border-radius:8px; background:#fff; box-shadow:0 14px 38px rgba(15,54,113,.08); }
+    table { width:100%; min-width:1280px; border-collapse:separate; border-spacing:0; }
+    th { position:sticky; top:0; background:#0f2f5f; color:#fff; font-size:13px; text-align:left; padding:12px; border-bottom:1px solid #244d86; }
+    td { font-size:13px; padding:11px 12px; border-bottom:1px solid #e7f0ff; vertical-align:top; line-height:1.55; }
+    tr:hover td { background:#f8fbff; }
+    .status-badge, [data-status-option] { border:1px solid transparent; border-radius:999px; padding:5px 10px; font-size:12px; font-weight:800; white-space:nowrap; cursor:pointer; }
+    .ready { color:#065f46; background:#dcfce7; }
+    .partial { color:#1d4ed8; background:#eff6ff; border-color:#bfdbfe; }
+    .failed { color:#991b1b; background:#fee2e2; }
+    .review { color:#5b21b6; background:#f3e8ff; }
+    .outdated { color:#111827; background:#e5e7eb; }
+    .detail { margin-top:16px; background:#fff; border:1px solid var(--line); border-radius:8px; padding:16px; display:grid; gap:10px; }
+    .detail h2 { margin:0; color:#0b2b59; font-size:18px; letter-spacing:0; }
+    .detail p { margin:0; color:#475569; line-height:1.7; }
+    .status-actions { display:flex; flex-wrap:wrap; gap:8px; }
+    .event-log { background:#f8fbff; border:1px solid #dbeafe; border-radius:8px; padding:10px; color:#475569; min-height:40px; }
+    .footer { margin-top:16px; color:#64748b; font-size:12px; line-height:1.6; }
+    @media(max-width:1000px) { .wrap { padding:18px; } .summary { grid-template-columns:repeat(2,1fr); } .controls { grid-template-columns:1fr; } }
+    @media(max-width:560px) { .summary { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="brand"><div class="logo">KM</div><div><h1>KMFA 数据源检查板</h1><p>按来源系统、业务板块、文件包、公司主体、账户分组和状态进行矩阵检查；搜索、状态变更和详情预览均只写页面控制事件，不污染原始数据。</p></div></div>
+  </header>
+  <main class="wrap">
+    <section class="summary" aria-label="状态汇总"><div class="summary-card"><b data-count-for="已就绪">4</b><span>已就绪</span></div>
+<div class="summary-card"><b data-count-for="部分/阻塞">4</b><span>部分/阻塞</span></div>
+<div class="summary-card"><b data-count-for="失败/不适用">1</b><span>失败/不适用</span></div>
+<div class="summary-card"><b data-count-for="已过期">2</b><span>已过期</span></div>
+<div class="summary-card"><b data-count-for="人工复核">2</b><span>人工复核</span></div></section>
+    <section class="controls" aria-label="检查板操作">
+      <label>搜索来源或板块<input id="sourceSearch" type="search" placeholder="输入来源系统、业务板块、文件包或状态"></label>
+      <label>状态筛选<select id="statusFilter"><option value="">全部状态</option><option value="已就绪">已就绪</option>
+<option value="部分/阻塞">部分/阻塞</option>
+<option value="失败/不适用">失败/不适用</option>
+<option value="已过期">已过期</option>
+<option value="人工复核">人工复核</option></select></label>
+      <span class="grade">报告等级 D</span>
+    </section>
+    <p id="filterFeedback" class="feedback" aria-live="polite">当前显示 13 条来源检查记录。</p>
+    <section class="matrix-wrap" aria-label="数据源检查矩阵">
+      <table>
+        <thead><tr><th>来源系统</th><th>业务板块</th><th>文件包</th><th>公司主体</th><th>银行或系统账户</th><th>账户或报表</th><th>频率</th><th>状态</th><th>影响报告</th><th>处理规则</th><th>下一步</th></tr></thead>
+        <tbody><tr data-row-id="SCB-001" data-status="已就绪" data-search="财务支撑源 经营总览 财务经营摘要包 主体分组：全部 系统报表组 经营指标组 每月 已就绪">
+<td>财务支撑源</td>
+<td>经营总览</td>
+<td>财务经营摘要包</td>
+<td>主体分组：全部</td>
+<td>系统报表组</td>
+<td>经营指标组</td>
+<td>每月</td>
+<td><button type="button" class="status-badge ready" data-row-id="SCB-001" data-impact="经营总览可预览，但仍受报告等级约束。" data-rule="只展示汇总状态，不展示原始明细。" data-next="继续保留来源指纹和字段合同复核。">已就绪</button></td>
+<td>经营总览可预览，但仍受报告等级约束。</td>
+<td>只展示汇总状态，不展示原始明细。</td>
+<td>继续保留来源指纹和字段合同复核。</td>
+</tr>
+<tr data-row-id="SCB-002" data-status="已就绪" data-search="财务支撑源 项目成本 成本汇总支撑包 主体分组：多主体 系统报表组 成本结构组 每月 已就绪">
+<td>财务支撑源</td>
+<td>项目成本</td>
+<td>成本汇总支撑包</td>
+<td>主体分组：多主体</td>
+<td>系统报表组</td>
+<td>成本结构组</td>
+<td>每月</td>
+<td><button type="button" class="status-badge ready" data-row-id="SCB-002" data-impact="项目成本报告只能以 D 级预览进入报告中心。" data-rule="不得绕过待复核差异和追溯完整性阻断。" data-next="等待下一阶段项目成本页面展示详情入口。">已就绪</button></td>
+<td>项目成本报告只能以 D 级预览进入报告中心。</td>
+<td>不得绕过待复核差异和追溯完整性阻断。</td>
+<td>等待下一阶段项目成本页面展示详情入口。</td>
+</tr>
+<tr data-row-id="SCB-003" data-status="已就绪" data-search="财务支撑源 现金资金 现金流支撑包 主体分组：全部 账户分组 现金摘要组 每周或每月 已就绪">
+<td>财务支撑源</td>
+<td>现金资金</td>
+<td>现金流支撑包</td>
+<td>主体分组：全部</td>
+<td>账户分组</td>
+<td>现金摘要组</td>
+<td>每周或每月</td>
+<td><button type="button" class="status-badge ready" data-row-id="SCB-003" data-impact="现金安全摘要可预览，账户明细不公开展示。" data-rule="账户只能使用分组引用，不能展示真实账号。" data-next="保持账户脱敏和公开仓库禁止提交规则。">已就绪</button></td>
+<td>现金安全摘要可预览，账户明细不公开展示。</td>
+<td>账户只能使用分组引用，不能展示真实账号。</td>
+<td>保持账户脱敏和公开仓库禁止提交规则。</td>
+</tr>
+<tr data-row-id="SCB-004" data-status="已就绪" data-search="表格文档支撑源 回款应收 回款与应收支撑包 主体分组：全部 工作表分组 回款应收组 每周或每月 已就绪">
+<td>表格文档支撑源</td>
+<td>回款应收</td>
+<td>回款与应收支撑包</td>
+<td>主体分组：全部</td>
+<td>工作表分组</td>
+<td>回款应收组</td>
+<td>每周或每月</td>
+<td><button type="button" class="status-badge ready" data-row-id="SCB-004" data-impact="回款应收摘要可预览，催收结论需人工复核。" data-rule="不得输出客户明细、合同明细或真实金额。" data-next="继续使用指纹、引用和状态证据绑定。">已就绪</button></td>
+<td>回款应收摘要可预览，催收结论需人工复核。</td>
+<td>不得输出客户明细、合同明细或真实金额。</td>
+<td>继续使用指纹、引用和状态证据绑定。</td>
+</tr>
+<tr data-row-id="SCB-005" data-status="部分/阻塞" data-search="表格文档支撑源 项目状态 项目状态支撑包 主体分组：全部 工作表分组 项目状态组 每周 部分/阻塞">
+<td>表格文档支撑源</td>
+<td>项目状态</td>
+<td>项目状态支撑包</td>
+<td>主体分组：全部</td>
+<td>工作表分组</td>
+<td>项目状态组</td>
+<td>每周</td>
+<td><button type="button" class="status-badge partial" data-row-id="SCB-005" data-impact="项目状态只能提示，不得形成完整履约结论。" data-rule="结构不完整时进入人工复核，不参与自动报告解锁。" data-next="补齐标准导出或确认字段映射规则。">部分/阻塞</button></td>
+<td>项目状态只能提示，不得形成完整履约结论。</td>
+<td>结构不完整时进入人工复核，不参与自动报告解锁。</td>
+<td>补齐标准导出或确认字段映射规则。</td>
+</tr>
+<tr data-row-id="SCB-006" data-status="部分/阻塞" data-search="红圈预留源 经营数据 经营导出预留包 主体分组：全部 系统账户组 经营对象组 每周 部分/阻塞">
+<td>红圈预留源</td>
+<td>经营数据</td>
+<td>经营导出预留包</td>
+<td>主体分组：全部</td>
+<td>系统账户组</td>
+<td>经营对象组</td>
+<td>每周</td>
+<td><button type="button" class="status-badge partial" data-row-id="SCB-006" data-impact="缺少只读导出时经营结论保持降级。" data-rule="本阶段不接自动接口，只保留后置策略。" data-next="后续需负责人授权只读导出模板。">部分/阻塞</button></td>
+<td>缺少只读导出时经营结论保持降级。</td>
+<td>本阶段不接自动接口，只保留后置策略。</td>
+<td>后续需负责人授权只读导出模板。</td>
+</tr>
+<tr data-row-id="SCB-007" data-status="部分/阻塞" data-search="红圈预留源 合同数据 合同导出预留包 主体分组：全部 系统账户组 合同对象组 每周 部分/阻塞">
+<td>红圈预留源</td>
+<td>合同数据</td>
+<td>合同导出预留包</td>
+<td>主体分组：全部</td>
+<td>系统账户组</td>
+<td>合同对象组</td>
+<td>每周</td>
+<td><button type="button" class="status-badge partial" data-row-id="SCB-007" data-impact="合同口径完整性不能作为正式结论。" data-rule="缺失时必须标注替代来源和质量等级。" data-next="后续确认只读导出模板与回滚计划。">部分/阻塞</button></td>
+<td>合同口径完整性不能作为正式结论。</td>
+<td>缺失时必须标注替代来源和质量等级。</td>
+<td>后续确认只读导出模板与回滚计划。</td>
+</tr>
+<tr data-row-id="SCB-008" data-status="部分/阻塞" data-search="金蝶预留源 总账凭证 账务核验预留包 账套分组：多主体 账套分组 科目与凭证组 每月 部分/阻塞">
+<td>金蝶预留源</td>
+<td>总账凭证</td>
+<td>账务核验预留包</td>
+<td>账套分组：多主体</td>
+<td>账套分组</td>
+<td>科目与凭证组</td>
+<td>每月</td>
+<td><button type="button" class="status-badge partial" data-row-id="SCB-008" data-impact="账务核验缺失时成本与费用结论继续降级。" data-rule="未提供标准只读导出前不得标记为已核验。" data-next="确认版本、模板和只读导出边界。">部分/阻塞</button></td>
+<td>账务核验缺失时成本与费用结论继续降级。</td>
+<td>未提供标准只读导出前不得标记为已核验。</td>
+<td>确认版本、模板和只读导出边界。</td>
+</tr>
+<tr data-row-id="SCB-009" data-status="人工复核" data-search="银行支撑源 银行流水 账户流水支撑包 主体分组：多主体 账户分组 流水摘要组 每日或每周 人工复核">
+<td>银行支撑源</td>
+<td>银行流水</td>
+<td>账户流水支撑包</td>
+<td>主体分组：多主体</td>
+<td>账户分组</td>
+<td>流水摘要组</td>
+<td>每日或每周</td>
+<td><button type="button" class="status-badge review" data-row-id="SCB-009" data-impact="现金与付款核销只能提示风险，不能解锁正式报告。" data-rule="真实账号、对手方和流水明细不得进入公开仓库。" data-next="人工确认脱敏账户映射和只读抽取边界。">人工复核</button></td>
+<td>现金与付款核销只能提示风险，不能解锁正式报告。</td>
+<td>真实账号、对手方和流水明细不得进入公开仓库。</td>
+<td>人工确认脱敏账户映射和只读抽取边界。</td>
+</tr>
+<tr data-row-id="SCB-010" data-status="人工复核" data-search="税务支撑源 开票纳税 税务票据支撑包 主体分组：多主体 系统报表组 票据摘要组 每月 人工复核">
+<td>税务支撑源</td>
+<td>开票纳税</td>
+<td>税务票据支撑包</td>
+<td>主体分组：多主体</td>
+<td>系统报表组</td>
+<td>票据摘要组</td>
+<td>每月</td>
+<td><button type="button" class="status-badge review" data-row-id="SCB-010" data-impact="税务风险只能提示，不能形成税务申报结论。" data-rule="税务申报和开票执行不在 KMFA 自动范围内。" data-next="人工确认政策证据和发票摘要映射。">人工复核</button></td>
+<td>税务风险只能提示，不能形成税务申报结论。</td>
+<td>税务申报和开票执行不在 KMFA 自动范围内。</td>
+<td>人工确认政策证据和发票摘要映射。</td>
+</tr>
+<tr data-row-id="SCB-011" data-status="已过期" data-search="政策证据源 研发费用 政策证据支撑包 主体分组：相关主体 证据分组 政策证据组 每月或季度 已过期">
+<td>政策证据源</td>
+<td>研发费用</td>
+<td>政策证据支撑包</td>
+<td>主体分组：相关主体</td>
+<td>证据分组</td>
+<td>政策证据组</td>
+<td>每月或季度</td>
+<td><button type="button" class="status-badge outdated" data-row-id="SCB-011" data-impact="政策准备度只能显示过期提示。" data-rule="过期证据不能参与正式报告或税务判断。" data-next="补充最新证据并重新锁定来源状态。">已过期</button></td>
+<td>政策准备度只能显示过期提示。</td>
+<td>过期证据不能参与正式报告或税务判断。</td>
+<td>补充最新证据并重新锁定来源状态。</td>
+</tr>
+<tr data-row-id="SCB-012" data-status="失败/不适用" data-search="外部接口源 自动接口 接口接入预留包 主体分组：不适用 系统账户组 接口预留组 不适用 失败/不适用">
+<td>外部接口源</td>
+<td>自动接口</td>
+<td>接口接入预留包</td>
+<td>主体分组：不适用</td>
+<td>系统账户组</td>
+<td>接口预留组</td>
+<td>不适用</td>
+<td><button type="button" class="status-badge failed" data-row-id="SCB-012" data-impact="本阶段不因接口缺失阻断公开安全页面，但正式报告仍阻断。" data-rule="S11-P2 不接自动接口，不保存凭证。" data-next="保持文件型最小版本和后续授权接入边界。">失败/不适用</button></td>
+<td>本阶段不因接口缺失阻断公开安全页面，但正式报告仍阻断。</td>
+<td>S11-P2 不接自动接口，不保存凭证。</td>
+<td>保持文件型最小版本和后续授权接入边界。</td>
+</tr>
+<tr data-row-id="SCB-013" data-status="已过期" data-search="合同证据源 验收结算 项目证据支撑包 项目分组：证据项 证据分组 验收结算组 按项目 已过期">
+<td>合同证据源</td>
+<td>验收结算</td>
+<td>项目证据支撑包</td>
+<td>项目分组：证据项</td>
+<td>证据分组</td>
+<td>验收结算组</td>
+<td>按项目</td>
+<td><button type="button" class="status-badge outdated" data-row-id="SCB-013" data-impact="验收结算证据过期时项目状态保持提示。" data-rule="证据附件只登记指纹和引用，不做全文公开展示。" data-next="补充有效证据并进入人工确认。">已过期</button></td>
+<td>验收结算证据过期时项目状态保持提示。</td>
+<td>证据附件只登记指纹和引用，不做全文公开展示。</td>
+<td>补充有效证据并进入人工确认。</td>
+</tr></tbody>
+      </table>
+    </section>
+    <section class="detail" aria-live="polite">
+      <h2>状态详情</h2>
+      <p><strong>影响报告：</strong><span id="impactText">经营总览可预览，但仍受报告等级约束。</span></p>
+      <p><strong>处理规则：</strong><span id="ruleText">只展示汇总状态，不展示原始明细。</span></p>
+      <p><strong>下一步：</strong><span id="nextText">继续保留来源指纹和字段合同复核。</span></p>
+      <div class="status-actions" aria-label="状态变更控制事件"><button type="button" data-status-option="已就绪">已就绪</button>
+<button type="button" data-status-option="部分/阻塞">部分/阻塞</button>
+<button type="button" data-status-option="失败/不适用">失败/不适用</button>
+<button type="button" data-status-option="已过期">已过期</button>
+<button type="button" data-status-option="人工复核">人工复核</button></div>
+      <div id="controlEventLog" class="event-log" aria-live="polite">状态变更只记录页面控制事件，不写原始层。</div>
+    </section>
+    <div class="footer">KMFA 经营分析系统 · S11-P2 数据源检查板 · 本页面不解锁项目成本详情、第十一阶段复审、正式报告或上传。</div>
+  </main>
+  <script>
+    const rows = Array.from(document.querySelectorAll("tbody tr"));
+    const search = document.getElementById("sourceSearch");
+    const statusFilter = document.getElementById("statusFilter");
+    const filterFeedback = document.getElementById("filterFeedback");
+    const detail = {
+      impact: document.getElementById("impactText"),
+      rule: document.getElementById("ruleText"),
+      next: document.getElementById("nextText")
+    };
+    let activeRow = rows[0];
+    const controlEvents = [];
+    function filterRows() {
+      const keyword = search.value.trim();
+      const status = statusFilter.value;
+      let visible = 0;
+      rows.forEach((row) => {
+        const keywordMatch = !keyword || row.dataset.search.includes(keyword);
+        const statusMatch = !status || row.dataset.status === status;
+        const show = keywordMatch && statusMatch;
+        row.hidden = !show;
+        if (show) visible += 1;
+      });
+      filterFeedback.textContent = "当前显示 " + visible + " 条来源检查记录。";
+    }
+    function showDetail(button) {
+      activeRow = button.closest("tr");
+      detail.impact.textContent = button.dataset.impact;
+      detail.rule.textContent = button.dataset.rule;
+      detail.next.textContent = button.dataset.next;
+    }
+    function applyStatus(status) {
+      if (!activeRow) return;
+      activeRow.dataset.status = status;
+      const badge = activeRow.querySelector(".status-badge");
+      badge.textContent = status;
+      badge.className = "status-badge " + {
+        "已就绪":"ready", "部分/阻塞":"partial", "失败/不适用":"failed", "已过期":"outdated", "人工复核":"review"
+      }[status];
+      controlEvents.push({ rowId: activeRow.dataset.rowId, status: status, rawLayerWrite: false });
+      document.getElementById("controlEventLog").textContent = "已记录控制事件：" + activeRow.dataset.rowId + " -> " + status + "；未写原始层。";
+      filterRows();
+    }
+    search.addEventListener("input", filterRows);
+    statusFilter.addEventListener("change", filterRows);
+    document.querySelectorAll(".status-badge").forEach((button) => button.addEventListener("click", () => showDetail(button)));
+    document.querySelectorAll("[data-status-option]").forEach((button) => button.addEventListener("click", () => applyStatus(button.dataset.statusOption)));
+  </script>
+</body>
+</html>

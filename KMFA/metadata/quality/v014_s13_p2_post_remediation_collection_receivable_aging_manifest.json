@@ -1,0 +1,465 @@
+{
+  "acceptance_id": "ACC-V014-S13-P2-POST-REMEDIATION-COLLECTION-RECEIVABLE-AGING",
+  "acceptance_matrix": {
+    "check_count": 26,
+    "check_fail_count": 0,
+    "check_pass_count": 26,
+    "checks": [
+      {
+        "check_id": "browser_pass",
+        "passed": true
+      },
+      {
+        "check_id": "decision_no_go",
+        "passed": true
+      },
+      {
+        "check_id": "dependency_validated",
+        "passed": true
+      },
+      {
+        "check_id": "five_lanes",
+        "passed": true
+      },
+      {
+        "check_id": "five_raw_sources",
+        "passed": true
+      },
+      {
+        "check_id": "five_structures",
+        "passed": true
+      },
+      {
+        "check_id": "four_issue_definitions",
+        "passed": true
+      },
+      {
+        "check_id": "grade_q4",
+        "passed": true
+      },
+      {
+        "check_id": "no_business_execution",
+        "passed": true
+      },
+      {
+        "check_id": "no_console_errors",
+        "passed": true
+      },
+      {
+        "check_id": "no_decision_basis",
+        "passed": true
+      },
+      {
+        "check_id": "no_formal_report",
+        "passed": true
+      },
+      {
+        "check_id": "no_overflow",
+        "passed": true
+      },
+      {
+        "check_id": "no_reinstall",
+        "passed": true
+      },
+      {
+        "check_id": "no_s13_p3",
+        "passed": true
+      },
+      {
+        "check_id": "no_upload",
+        "passed": true
+      },
+      {
+        "check_id": "private_differences_recorded",
+        "passed": true
+      },
+      {
+        "check_id": "raw_cross_phase_exact",
+        "passed": true
+      },
+      {
+        "check_id": "raw_exact",
+        "passed": true
+      },
+      {
+        "check_id": "report_grade_d",
+        "passed": true
+      },
+      {
+        "check_id": "three_private_parseable",
+        "passed": true
+      },
+      {
+        "check_id": "two_wps_private_containers",
+        "passed": true
+      },
+      {
+        "check_id": "zero_actionable_priorities",
+        "passed": true
+      },
+      {
+        "check_id": "zero_assigned_responsibilities",
+        "passed": true
+      },
+      {
+        "check_id": "zero_identified_items",
+        "passed": true
+      },
+      {
+        "check_id": "zero_row_bindings",
+        "passed": true
+      }
+    ],
+    "schema_version": "kmfa.v014.s13_p2_post_remediation.acceptance_matrix.v1"
+  },
+  "branch": "codex/kmfa",
+  "browser_review": {
+    "baseline_control_row_count": 54,
+    "baseline_fail_count": 0,
+    "baseline_file_count": 6,
+    "baseline_pass_count": 54,
+    "baseline_warn_count": 0,
+    "console_error_count": 0,
+    "current_control_row_count": 7,
+    "current_fail_count": 0,
+    "current_page_count": 1,
+    "current_pass_count": 7,
+    "current_warn_count": 0,
+    "dependency_link_http_check_count": 3,
+    "dependency_navigation_check_count": 3,
+    "horizontal_overflow_count": 0,
+    "issue_interaction_check_count": 4,
+    "status": "PASS",
+    "viewport_check_count": 2
+  },
+  "decision": "NO_GO",
+  "generated_at": "2026-07-11T15:30:11+10:00",
+  "historical_pending_twelve_quarantined": true,
+  "historical_s13_p2_dynamic_state_is_authoritative": false,
+  "historical_s13_p2_policy_fixture_validated": true,
+  "historical_static_priority_and_responsibility_quarantined": true,
+  "issue_definitions": [
+    {
+      "business_priority_allowed": false,
+      "collection_action_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "identification_status": "definition_locked_row_level_evidence_unproven",
+      "identified_item_count": 0,
+      "issue_id": "S13P2-ISSUE-01",
+      "issue_type": "invoiced_not_collected",
+      "legal_collection_decision_allowed": false,
+      "priority_status": "method_only_not_business_priority",
+      "required_lane_ids": [
+        "invoice_plan",
+        "collection_table",
+        "journal"
+      ],
+      "responsibility_assignment_allowed": false,
+      "responsibility_role_definition": "财务复核角色",
+      "responsibility_status": "role_definition_only_unassigned",
+      "review_sequence": 1,
+      "supplemental_structure_requirement": "none",
+      "visible_name": "已开票未回款"
+    },
+    {
+      "business_priority_allowed": false,
+      "collection_action_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "identification_status": "definition_locked_row_level_evidence_unproven",
+      "identified_item_count": 0,
+      "issue_id": "S13P2-ISSUE-02",
+      "issue_type": "completed_not_settled",
+      "legal_collection_decision_allowed": false,
+      "priority_status": "method_only_not_business_priority",
+      "required_lane_ids": [
+        "journal",
+        "invoice_plan"
+      ],
+      "responsibility_assignment_allowed": false,
+      "responsibility_role_definition": "项目与财务联合复核角色",
+      "responsibility_status": "role_definition_only_unassigned",
+      "review_sequence": 2,
+      "supplemental_structure_requirement": "production_project_status",
+      "visible_name": "完工未结算"
+    },
+    {
+      "business_priority_allowed": false,
+      "collection_action_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "identification_status": "definition_locked_row_level_evidence_unproven",
+      "identified_item_count": 0,
+      "issue_id": "S13P2-ISSUE-03",
+      "issue_type": "settled_not_invoiced",
+      "legal_collection_decision_allowed": false,
+      "priority_status": "method_only_not_business_priority",
+      "required_lane_ids": [
+        "invoice_plan",
+        "journal"
+      ],
+      "responsibility_assignment_allowed": false,
+      "responsibility_role_definition": "开票复核角色",
+      "responsibility_status": "role_definition_only_unassigned",
+      "review_sequence": 3,
+      "supplemental_structure_requirement": "none",
+      "visible_name": "结算未开票"
+    },
+    {
+      "business_priority_allowed": false,
+      "collection_action_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "identification_status": "definition_locked_row_level_evidence_unproven",
+      "identified_item_count": 0,
+      "issue_id": "S13P2-ISSUE-04",
+      "issue_type": "overdue_receivable",
+      "legal_collection_decision_allowed": false,
+      "priority_status": "method_only_not_business_priority",
+      "required_lane_ids": [
+        "receivable_aging",
+        "customer_aging",
+        "collection_table"
+      ],
+      "responsibility_assignment_allowed": false,
+      "responsibility_role_definition": "应收复核角色",
+      "responsibility_status": "role_definition_only_unassigned",
+      "review_sequence": 4,
+      "supplemental_structure_requirement": "none",
+      "visible_name": "超期应收"
+    }
+  ],
+  "next_phase": "S13-P3",
+  "next_required_step": "Execute S13-P3 cross-table review as a separate run after S13-P2 local validation and commit.",
+  "phase_boundaries": {
+    "app_reinstall_performed": false,
+    "business_execution_performed": false,
+    "formal_report_release_performed": false,
+    "github_upload_performed": false,
+    "persistent_business_write_performed": false,
+    "s13_p1_performed": true,
+    "s13_p2_performed": true,
+    "s13_p3_performed": false,
+    "stage13_review_performed": false
+  },
+  "phase_id": "V014_S13_P2_POST_REMEDIATION_COLLECTION_RECEIVABLE_AGING",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "bank_statement_committed": false,
+    "business_amount_values_committed": false,
+    "contract_committed": false,
+    "credential_or_secret_committed": false,
+    "excel_committed": false,
+    "field_plaintext_committed": false,
+    "pdf_committed": false,
+    "private_csv_committed": false,
+    "project_or_customer_plaintext_committed": false,
+    "raw_business_data_committed": false,
+    "raw_file_hashes_committed": false,
+    "raw_file_names_committed": false,
+    "salary_material_committed": false,
+    "source_header_plaintext_committed": false,
+    "tax_filing_material_committed": false,
+    "zip_committed": false
+  },
+  "quality_gate": {
+    "app_reinstall_allowed": false,
+    "business_decision_basis_allowed": false,
+    "business_execution_allowed": false,
+    "business_priority_allowed": false,
+    "collection_action_allowed": false,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "invoice_issuance_allowed": false,
+    "legal_collection_decision_allowed": false,
+    "method_definition_allowed": true,
+    "payment_or_bank_operation_allowed": false,
+    "private_readonly_probe_allowed": true,
+    "public_safe_status_workbench_allowed": true,
+    "responsibility_assignment_allowed": false,
+    "s13_p3_allowed": false,
+    "stage13_review_allowed": false
+  },
+  "raw_boundary": {
+    "private_difference_report_generated": true,
+    "private_readonly_probe_performed": true,
+    "private_workbook_structure_profile_performed": true,
+    "raw_delete_performed": false,
+    "raw_move_performed": false,
+    "raw_mutation_performed": false,
+    "raw_overwrite_performed": false,
+    "raw_read_authorized": true,
+    "raw_rename_performed": false,
+    "raw_snapshot_validation_performed": true,
+    "raw_write_performed": false
+  },
+  "remote": "git@github.com:LinzeColin/CodexProject.git",
+  "reviewed_dependencies": {
+    "current_finance_structure_registry": "KMFA/metadata/imports/v014_s07_p1_finance_support_source_registry.json",
+    "current_s13_p1": "KMFA/stage_artifacts/V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT/machine/financial_operating_report_manifest.json",
+    "current_wps_structure_registry": "KMFA/metadata/imports/v014_s07_p2_wps_export_source_registry.json",
+    "historical_s13_p2_policy_fixture": "KMFA/stage_artifacts/V014_S13_P2_COLLECTION_RECEIVABLE_AGING/machine/collection_receivable_aging_manifest.json"
+  },
+  "reviewed_head": "ed499c6be35df76d1f5a924d92130c7536a9f4ea",
+  "roadmap_phase_id": "S13-P2",
+  "s13_p1_dependency_validated": true,
+  "schema_version": "kmfa.v014.s13_p2_post_remediation.manifest.v1",
+  "source_lane_status": [
+    {
+      "business_decision_basis_allowed": false,
+      "business_priority_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "data_status": "structure_connected_native_wps_conversion_required",
+      "lane_id": "collection_table",
+      "private_raw_parseable": false,
+      "public_structure_source_ref": "SRC-WPS-COLLECTION-001",
+      "responsibility_assignment_allowed": false,
+      "row_level_binding_proven": false,
+      "structure_connected": true,
+      "visible_lane_name": "回款表"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "business_priority_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "data_status": "structure_connected_native_wps_conversion_required",
+      "lane_id": "receivable_aging",
+      "private_raw_parseable": false,
+      "public_structure_source_ref": "SRC-WPS-AGING-001",
+      "responsibility_assignment_allowed": false,
+      "row_level_binding_proven": false,
+      "structure_connected": true,
+      "visible_lane_name": "应收账龄"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "business_priority_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "data_status": "structure_and_private_container_parseable_row_binding_unproven",
+      "lane_id": "customer_aging",
+      "private_raw_parseable": true,
+      "public_structure_source_ref": "SRC-FIN-AGING-001",
+      "responsibility_assignment_allowed": false,
+      "row_level_binding_proven": false,
+      "structure_connected": true,
+      "visible_lane_name": "客户账龄"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "business_priority_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "data_status": "structure_and_private_container_parseable_row_binding_unproven",
+      "lane_id": "journal",
+      "private_raw_parseable": true,
+      "public_structure_source_ref": "SRC-FIN-JOURNAL-001",
+      "responsibility_assignment_allowed": false,
+      "row_level_binding_proven": false,
+      "structure_connected": true,
+      "visible_lane_name": "日记账"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "business_priority_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "data_status": "structure_and_private_container_parseable_row_binding_unproven",
+      "lane_id": "invoice_plan",
+      "private_raw_parseable": true,
+      "public_structure_source_ref": "SRC-FIN-INVOICE-001",
+      "responsibility_assignment_allowed": false,
+      "row_level_binding_proven": false,
+      "structure_connected": true,
+      "visible_lane_name": "开票计划"
+    }
+  ],
+  "stage_id": "S13",
+  "status": "completed_validated_local_only_s13_p2_method_locked_business_items_unproven_upload_deferred",
+  "summary": {
+    "acceptance_id": "ACC-V014-S13-P2-POST-REMEDIATION-COLLECTION-RECEIVABLE-AGING",
+    "actionable_collection_priority_item_count": 0,
+    "app_reinstall_performed": false,
+    "archive_pdf_member_count": 8,
+    "archive_workbook_member_count": 26,
+    "assigned_responsibility_item_count": 0,
+    "browser_status": "PASS",
+    "browser_viewport_check_count": 2,
+    "business_decision_basis_count": 0,
+    "business_execution_performed": false,
+    "console_error_count": 0,
+    "current_data_quality_grade": "Q4",
+    "current_report_grade": "D",
+    "decision": "NO_GO",
+    "dependency_link_http_check_count": 3,
+    "dependency_navigation_check_count": 3,
+    "formal_report_count": 0,
+    "github_upload_performed": false,
+    "horizontal_overflow_count": 0,
+    "identified_business_item_count": 0,
+    "incomplete_reconciliation_count": 1,
+    "issue_definition_count": 4,
+    "issue_interaction_check_count": 4,
+    "nonzero_delta_reconciliation_count": 9,
+    "open_final_difference_accepted_count": 3,
+    "openable_archive_pdf_member_count": 8,
+    "openable_archive_workbook_member_count": 25,
+    "phase_id": "V014_S13_P2_POST_REMEDIATION_COLLECTION_RECEIVABLE_AGING",
+    "priority_review_definition_count": 4,
+    "private_difference_item_count": 4,
+    "private_raw_parseable_lane_count": 3,
+    "private_workbook_structure_profile_performed": true,
+    "project_id": "KMFA",
+    "raw_cross_phase_snapshot_exact_match": true,
+    "raw_snapshot_exact_match": true,
+    "raw_source_file_count": 5,
+    "required_issue_type_count": 4,
+    "responsibility_role_definition_count": 4,
+    "roadmap_phase_id": "S13-P2",
+    "row_level_binding_proven_lane_count": 0,
+    "s13_p1_dependency_validated": true,
+    "s13_p3_performed": false,
+    "schema_version": "kmfa.v014.s13_p2_post_remediation.summary.v1",
+    "source_lane_count": 5,
+    "stage_id": "S13",
+    "status": "completed_validated_local_only_s13_p2_method_locked_business_items_unproven_upload_deferred",
+    "structure_connected_lane_count": 5,
+    "task_id": "KMFA-V014-S13-P2-POST-REMEDIATION-COLLECTION-RECEIVABLE-AGING-20260711",
+    "version": "0.1.4-s13-p2-post-remediation-collection-receivable-aging",
+    "workbench_html_count": 1,
+    "wps_private_container_count": 2,
+    "zero_delta_reconciliation_count": 2
+  },
+  "task_id": "KMFA-V014-S13-P2-POST-REMEDIATION-COLLECTION-RECEIVABLE-AGING-20260711",
+  "taskpack_contract": {
+    "roadmap_read": true,
+    "roadmap_s13_p2_contract_locked": true,
+    "source_refs": {
+      "roadmap": "KMFA/taskpack/v1_4/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_4.md",
+      "taskpack": "KMFA/taskpack/v1_4/taskpack/01_KMFA_Codex_TaskPack_v1_4_public_safe.md"
+    },
+    "taskpack_read": true,
+    "taskpack_receivable_line_locked": true
+  },
+  "validation_summary": {
+    "browser_desktop_mobile": "PASS",
+    "final_validation_recorded": true,
+    "focused_test": "PASS",
+    "governance_and_safety_scans": "PASS",
+    "raw_alignment": "PASS",
+    "strict_validator": "PASS"
+  },
+  "version": "0.1.4-s13-p2-post-remediation-collection-receivable-aging"
+}

@@ -7,6 +7,7 @@ import csv
 import json
 import re
 import zipfile
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from xml.sax.saxutils import escape
 
@@ -131,8 +132,8 @@ def amount_needles(amount: str) -> list[str]:
         return []
     needles = {raw, raw.replace(",", "")}
     try:
-        value = float(raw.replace(",", ""))
-    except ValueError:
+        value = Decimal(raw.replace(",", ""))
+    except InvalidOperation:
         return [item for item in needles if item]
     needles.add(f"{value:.2f}")
     needles.add(f"{value:,.2f}")

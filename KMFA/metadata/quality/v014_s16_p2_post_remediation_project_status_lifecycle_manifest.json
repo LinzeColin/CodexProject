@@ -1,0 +1,550 @@
+{
+  "acceptance_id": "ACC-V014-S16-P2-POST-REMEDIATION-PROJECT-STATUS-LIFECYCLE",
+  "acceptance_matrix": {
+    "check_count": 15,
+    "check_fail_count": 0,
+    "check_pass_count": 15,
+    "checks": [
+      {
+        "check_id": "s16_p1_dependency",
+        "status": "PASS"
+      },
+      {
+        "check_id": "six_lanes",
+        "status": "PASS"
+      },
+      {
+        "check_id": "candidate_coverage",
+        "status": "PASS"
+      },
+      {
+        "check_id": "parser_coverage",
+        "status": "PASS"
+      },
+      {
+        "check_id": "probe_repeatability",
+        "status": "PASS"
+      },
+      {
+        "check_id": "processed_private_alignment",
+        "status": "PASS"
+      },
+      {
+        "check_id": "lifecycle_contract",
+        "status": "PASS"
+      },
+      {
+        "check_id": "zero_lifecycle_records",
+        "status": "PASS"
+      },
+      {
+        "check_id": "four_exception_rules",
+        "status": "PASS"
+      },
+      {
+        "check_id": "zero_exception_items",
+        "status": "PASS"
+      },
+      {
+        "check_id": "three_handoff_guards",
+        "status": "PASS"
+      },
+      {
+        "check_id": "browser",
+        "status": "PASS"
+      },
+      {
+        "check_id": "raw_exact",
+        "status": "PASS"
+      },
+      {
+        "check_id": "quality_gate",
+        "status": "PASS"
+      },
+      {
+        "check_id": "no_downstream",
+        "status": "PASS"
+      }
+    ],
+    "schema_version": "kmfa.v014.s16_p2.acceptance_matrix.v1"
+  },
+  "branch": "codex/kmfa",
+  "browser_review": {
+    "baseline_control_row_count": 54,
+    "baseline_fail_count": 0,
+    "baseline_file_count": 6,
+    "baseline_pass_count": 54,
+    "baseline_warn_count": 0,
+    "console_error_count": 0,
+    "current_control_row_count": 14,
+    "current_fail_count": 0,
+    "current_file_count": 1,
+    "current_pass_count": 14,
+    "current_warn_count": 0,
+    "dependency_link_http_check_count": 4,
+    "dependency_navigation_check_count": 4,
+    "horizontal_overflow_count": 0,
+    "lane_interaction_check_count": 12,
+    "rule_interaction_check_count": 8,
+    "status": "PASS",
+    "viewport_check_count": 2
+  },
+  "decision": "NO_GO",
+  "exception_rules": [
+    {
+      "authoritative_lifecycle_record_required": true,
+      "automatic_business_action_allowed": false,
+      "condition": "权威开工状态存在，但权威完工状态尚未形成",
+      "current_status": "rule_ready_item_materialization_blocked",
+      "from_state": "commenced",
+      "label": "开工未完工",
+      "manual_review_required": true,
+      "materialized_exception_item_count": 0,
+      "missing_state": "completed",
+      "rule_id": "commenced_not_completed",
+      "visible_label": "开工未完工"
+    },
+    {
+      "authoritative_lifecycle_record_required": true,
+      "automatic_business_action_allowed": false,
+      "condition": "权威完工状态存在，但权威结算状态尚未形成",
+      "current_status": "rule_ready_item_materialization_blocked",
+      "from_state": "completed",
+      "label": "完工未结算",
+      "manual_review_required": true,
+      "materialized_exception_item_count": 0,
+      "missing_state": "settled",
+      "rule_id": "completed_not_settled",
+      "visible_label": "完工未结算"
+    },
+    {
+      "authoritative_lifecycle_record_required": true,
+      "automatic_business_action_allowed": false,
+      "condition": "权威结算状态存在，但权威开票状态尚未形成",
+      "current_status": "rule_ready_item_materialization_blocked",
+      "from_state": "settled",
+      "label": "结算未开票",
+      "manual_review_required": true,
+      "materialized_exception_item_count": 0,
+      "missing_state": "invoiced",
+      "rule_id": "settled_not_invoiced",
+      "visible_label": "结算未开票"
+    },
+    {
+      "authoritative_lifecycle_record_required": true,
+      "automatic_business_action_allowed": false,
+      "condition": "权威开票状态存在，但权威回款状态尚未形成",
+      "current_status": "rule_ready_item_materialization_blocked",
+      "from_state": "invoiced",
+      "label": "开票未回款",
+      "manual_review_required": true,
+      "materialized_exception_item_count": 0,
+      "missing_state": "collected",
+      "rule_id": "invoiced_not_collected",
+      "visible_label": "开票未回款"
+    }
+  ],
+  "formula_id": "FORM-KMFA-V014-S16-P2-POST-REMEDIATION-PROJECT-STATUS-LIFECYCLE-001",
+  "generated_at": "2026-07-12T01:33:50+10:00",
+  "go_no_go": {
+    "bank_operation_allowed": false,
+    "business_execution_allowed": false,
+    "collection_action_allowed": false,
+    "decision": "NO_GO",
+    "exception_item_materialization_allowed": false,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "invoice_issuance_allowed": false,
+    "lifecycle_record_materialization_allowed": false,
+    "payment_execution_allowed": false,
+    "phase_id": "V014_S16_P2_POST_REMEDIATION_PROJECT_STATUS_LIFECYCLE",
+    "project_id": "KMFA",
+    "s16_p3_allowed_in_this_run": false,
+    "safety_signature_allowed": false,
+    "schema_version": "kmfa.v014.s16_p2.go_no_go.v1",
+    "site_construction_allowed": false,
+    "stage16_review_allowed_in_this_run": false,
+    "stage_id": "S16",
+    "structure_candidate_review_allowed": true,
+    "technical_signature_allowed": false
+  },
+  "handoff_guards": [
+    {
+      "delegated_to_system": false,
+      "guard_id": "site_construction",
+      "human_authority_required": true,
+      "operation_execution_allowed": false,
+      "requirement": "现场施工组织与指令必须由有权人员处理",
+      "signature_authority_allowed": false,
+      "visible_label": "现场施工"
+    },
+    {
+      "delegated_to_system": false,
+      "guard_id": "safety_signature",
+      "human_authority_required": true,
+      "operation_execution_allowed": false,
+      "requirement": "安全确认与签字必须由具备资格和授权的人员处理",
+      "signature_authority_allowed": false,
+      "visible_label": "安全签字"
+    },
+    {
+      "delegated_to_system": false,
+      "guard_id": "technical_signature",
+      "human_authority_required": true,
+      "operation_execution_allowed": false,
+      "requirement": "技术验收与签字必须由具备资格和授权的人员处理",
+      "signature_authority_allowed": false,
+      "visible_label": "技术签字"
+    }
+  ],
+  "historical_four_lifecycle_records_quarantined": true,
+  "historical_s16_p2_dynamic_state_is_authoritative": false,
+  "historical_s16_p2_fixture_validated": true,
+  "historical_three_exception_items_quarantined": true,
+  "historical_three_handoff_guards_quarantined": true,
+  "lifecycle_contract": {
+    "authoritative_row_binding_required": true,
+    "chronology_validation_required": true,
+    "materialized_project_lifecycle_record_count": 0,
+    "missing_evidence_policy": "keep_unmaterialized_and_route_to_manual_review",
+    "project_identity_binding_required": true,
+    "record_materialization_allowed": false,
+    "schema_version": "kmfa.v014.s16_p2.lifecycle_contract.v1",
+    "state_count": 6,
+    "states": [
+      {
+        "authoritative_evidence_required": true,
+        "state_id": "not_started",
+        "visible_label": "未开工"
+      },
+      {
+        "authoritative_evidence_required": true,
+        "state_id": "commenced",
+        "visible_label": "已开工"
+      },
+      {
+        "authoritative_evidence_required": true,
+        "state_id": "completed",
+        "visible_label": "已完工"
+      },
+      {
+        "authoritative_evidence_required": true,
+        "state_id": "settled",
+        "visible_label": "已结算"
+      },
+      {
+        "authoritative_evidence_required": true,
+        "state_id": "invoiced",
+        "visible_label": "已开票"
+      },
+      {
+        "authoritative_evidence_required": true,
+        "state_id": "collected",
+        "visible_label": "已回款"
+      }
+    ],
+    "transition_count": 5,
+    "transitions": [
+      {
+        "automatic_transition_allowed": false,
+        "from_state": "not_started",
+        "manual_review_required": true,
+        "to_state": "commenced",
+        "transition_id": "not_started_to_commenced"
+      },
+      {
+        "automatic_transition_allowed": false,
+        "from_state": "commenced",
+        "manual_review_required": true,
+        "to_state": "completed",
+        "transition_id": "commenced_to_completed"
+      },
+      {
+        "automatic_transition_allowed": false,
+        "from_state": "completed",
+        "manual_review_required": true,
+        "to_state": "settled",
+        "transition_id": "completed_to_settled"
+      },
+      {
+        "automatic_transition_allowed": false,
+        "from_state": "settled",
+        "manual_review_required": true,
+        "to_state": "invoiced",
+        "transition_id": "settled_to_invoiced"
+      },
+      {
+        "automatic_transition_allowed": false,
+        "from_state": "invoiced",
+        "manual_review_required": true,
+        "to_state": "collected",
+        "transition_id": "invoiced_to_collected"
+      }
+    ]
+  },
+  "model_registry_key": "kmfa_v014_s16_p2_post_remediation_project_status_lifecycle",
+  "next_phase": "S16-P3",
+  "next_required_step": "Execute S16-P3 customer operating analysis only as a separate run; do not execute Stage 16 review, site construction, safety or technical signatures, invoice issuance, collection actions, payment or bank operations, GitHub upload, app reinstall, formal report, difference closure, persistent business write, or business execution.",
+  "parameter_ids": [
+    "PARAM-KMFA-1783",
+    "PARAM-KMFA-1784",
+    "PARAM-KMFA-1785"
+  ],
+  "phase_boundaries": {
+    "app_reinstall_scope_included": false,
+    "business_execution_scope_included": false,
+    "collection_action_scope_included": false,
+    "difference_closure_scope_included": false,
+    "formal_report_scope_included": false,
+    "github_upload_scope_included": false,
+    "invoice_issuance_scope_included": false,
+    "payment_or_bank_scope_included": false,
+    "s16_p1_dependency_reused": true,
+    "s16_p2_project_status_scope_included": true,
+    "s16_p3_customer_analysis_scope_included": false,
+    "safety_signature_scope_included": false,
+    "site_construction_scope_included": false,
+    "stage16_review_scope_included": false,
+    "technical_signature_scope_included": false
+  },
+  "phase_id": "V014_S16_P2_POST_REMEDIATION_PROJECT_STATUS_LIFECYCLE",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "aggregate_counts_only": true,
+    "amount_or_business_value_exposed": false,
+    "counterparty_plaintext_exposed": false,
+    "field_or_header_plaintext_exposed": false,
+    "invoice_or_collection_detail_exposed": false,
+    "private_diagnostics_committed": false,
+    "project_plaintext_exposed": false,
+    "raw_filename_exposed": false,
+    "raw_hash_exposed": false,
+    "sheet_name_exposed": false
+  },
+  "quality_gate": {
+    "bank_operation_allowed": false,
+    "business_decision_basis_allowed": false,
+    "business_execution_allowed": false,
+    "collection_action_allowed": false,
+    "exception_item_materialization_allowed": false,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "invoice_issuance_allowed": false,
+    "lifecycle_record_materialization_allowed": false,
+    "lifecycle_signal_allowed_after_authoritative_binding": true,
+    "owner_or_authorized_delegate_review_required": true,
+    "payment_execution_allowed": false,
+    "safety_signature_allowed": false,
+    "settlement_confirmation_allowed": false,
+    "site_construction_instruction_allowed": false,
+    "site_operation_allowed": false,
+    "structure_candidate_review_allowed": true,
+    "technical_signature_allowed": false
+  },
+  "raw_boundary": {
+    "private_runtime_commit_allowed": false,
+    "raw_copy_into_public_repo_allowed": false,
+    "raw_delete_allowed": false,
+    "raw_hash_allowed_private_only": true,
+    "raw_inbox_read_only": true,
+    "raw_list_allowed": true,
+    "raw_move_allowed": false,
+    "raw_mutation_allowed": false,
+    "raw_parse_allowed": true,
+    "raw_read_allowed": true,
+    "raw_rename_allowed": false,
+    "raw_write_allowed": false
+  },
+  "remote": "git@github.com:LinzeColin/CodexProject.git",
+  "reviewed_dependencies": {
+    "historical_s16_p2_fixture": "KMFA/stage_artifacts/V014_S16_P2_PROJECT_STATUS_LIFECYCLE/machine/project_status_lifecycle_manifest.json",
+    "s16_p1_post_remediation": "KMFA/stage_artifacts/V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT/machine/subcontract_procurement_manifest.json"
+  },
+  "reviewed_head": "2d85a5f2eb3b7cb0dd67ee01952488bc6b504bf5",
+  "roadmap_phase_id": "S16-P2",
+  "s16_p1_post_remediation_dependency_validated": true,
+  "schema_version": "kmfa.v014.s16_p2.post_remediation.manifest.v1",
+  "source_lanes": [
+    {
+      "authoritative_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "candidate_sheet_count": 16,
+      "current_status": "structure_candidates_observed_row_binding_unproven",
+      "lane_id": "project_status",
+      "manual_review_required": true,
+      "materialized_lifecycle_record_count": 0,
+      "purpose": "识别生产或工程项目状态结构；没有权威项目行绑定时不生成项目状态事实。",
+      "structure_candidate_observed": true,
+      "visible_label": "生产项目状态"
+    },
+    {
+      "authoritative_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "candidate_sheet_count": 18,
+      "current_status": "structure_candidates_observed_row_binding_unproven",
+      "lane_id": "commencement",
+      "manual_review_required": true,
+      "materialized_lifecycle_record_count": 0,
+      "purpose": "识别开工、进场或启动结构；不签发现场施工指令。",
+      "structure_candidate_observed": true,
+      "visible_label": "开工"
+    },
+    {
+      "authoritative_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "candidate_sheet_count": 33,
+      "current_status": "structure_candidates_observed_row_binding_unproven",
+      "lane_id": "completion",
+      "manual_review_required": true,
+      "materialized_lifecycle_record_count": 0,
+      "purpose": "识别完工、竣工或验收结构；不替代安全或技术签字。",
+      "structure_candidate_observed": true,
+      "visible_label": "完工"
+    },
+    {
+      "authoritative_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "candidate_sheet_count": 36,
+      "current_status": "structure_candidates_observed_row_binding_unproven",
+      "lane_id": "settlement",
+      "manual_review_required": true,
+      "materialized_lifecycle_record_count": 0,
+      "purpose": "识别项目结算结构；没有权威绑定时不形成结算确认。",
+      "structure_candidate_observed": true,
+      "visible_label": "结算"
+    },
+    {
+      "authoritative_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "candidate_sheet_count": 553,
+      "current_status": "structure_candidates_observed_row_binding_unproven",
+      "lane_id": "invoice",
+      "manual_review_required": true,
+      "materialized_lifecycle_record_count": 0,
+      "purpose": "识别项目开票结构；仅供状态复核，不执行发票开具。",
+      "structure_candidate_observed": true,
+      "visible_label": "开票"
+    },
+    {
+      "authoritative_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "candidate_sheet_count": 1621,
+      "current_status": "structure_candidates_observed_row_binding_unproven",
+      "lane_id": "collection",
+      "manual_review_required": true,
+      "materialized_lifecycle_record_count": 0,
+      "purpose": "识别回款或应收结构；仅供状态复核，不执行催收或资金动作。",
+      "structure_candidate_observed": true,
+      "visible_label": "回款"
+    }
+  ],
+  "stage_id": "S16",
+  "status": "completed_validated_local_only_s16_p2_structure_candidates_zero_lifecycle_materialization_no_go_upload_deferred",
+  "summary": {
+    "acceptance_id": "ACC-V014-S16-P2-POST-REMEDIATION-PROJECT-STATUS-LIFECYCLE",
+    "app_reinstall_performed": false,
+    "authoritative_row_binding_count": 0,
+    "authoritative_value_binding_count": 0,
+    "bank_operation_performed": false,
+    "baseline_html_control_row_count": 54,
+    "baseline_html_file_count": 6,
+    "baseline_html_pass_count": 54,
+    "browser_status": "PASS",
+    "browser_viewport_check_count": 2,
+    "business_execution_performed": false,
+    "collection_action_performed": false,
+    "commenced_not_completed_count": 0,
+    "completed_not_settled_count": 0,
+    "console_error_count": 0,
+    "current_data_quality_grade": "Q4",
+    "current_html_control_row_count": 14,
+    "current_html_file_count": 1,
+    "current_html_pass_count": 14,
+    "current_report_grade": "D",
+    "decision": "NO_GO",
+    "dependency_link_http_check_count": 4,
+    "dependency_navigation_check_count": 4,
+    "difference_closure_performed": false,
+    "formal_report_release_performed": false,
+    "github_upload_performed": false,
+    "handoff_guard_count": 3,
+    "horizontal_overflow_count": 0,
+    "incomplete_reconciliation_count": 1,
+    "invoice_issuance_performed": false,
+    "invoiced_not_collected_count": 0,
+    "lane_interaction_check_count": 12,
+    "lifecycle_exception_item_count": 0,
+    "lifecycle_exception_rule_count": 4,
+    "lifecycle_state_count": 6,
+    "lifecycle_transition_count": 5,
+    "materialized_project_lifecycle_record_count": 0,
+    "nonzero_delta_reconciliation_count": 9,
+    "open_final_difference_accepted_count": 3,
+    "payment_execution_performed": false,
+    "phase_id": "V014_S16_P2_POST_REMEDIATION_PROJECT_STATUS_LIFECYCLE",
+    "private_candidate_covered_lane_count": 6,
+    "private_candidate_lane_association_count": 2277,
+    "private_candidate_sheet_count_by_lane": {
+      "collection": 1621,
+      "commencement": 18,
+      "completion": 33,
+      "invoice": 553,
+      "project_status": 16,
+      "settlement": 36
+    },
+    "private_multi_lane_candidate_sheet_count": 224,
+    "private_parseable_sheet_count": 4198,
+    "private_parseable_xlsx_count": 25,
+    "private_probe_roundtrip_mismatch_count": 0,
+    "private_unique_candidate_sheet_count": 2021,
+    "private_unparseable_xlsx_count": 23,
+    "private_xlsx_container_count": 48,
+    "processed_candidate_lane_association_count": 2277,
+    "processed_candidate_sheet_count": 2021,
+    "processed_private_structure_alignment_exact": true,
+    "project_id": "KMFA",
+    "public_business_value_count": 0,
+    "raw_cross_phase_snapshot_exact_match": true,
+    "raw_snapshot_exact_match": true,
+    "raw_source_file_count": 5,
+    "roadmap_phase_id": "S16-P2",
+    "rule_interaction_check_count": 8,
+    "s16_p1_performed": true,
+    "s16_p1_post_remediation_dependency_validated": true,
+    "s16_p2_performed": true,
+    "s16_p3_performed": false,
+    "safety_signature_performed": false,
+    "schema_version": "kmfa.v014.s16_p2.post_remediation.summary.v1",
+    "settled_not_invoiced_count": 0,
+    "site_construction_performed": false,
+    "source_lane_count": 6,
+    "stage16_review_performed": false,
+    "stage_id": "S16",
+    "status": "completed_validated_local_only_s16_p2_structure_candidates_zero_lifecycle_materialization_no_go_upload_deferred",
+    "task_id": "KMFA-V014-S16-P2-POST-REMEDIATION-PROJECT-STATUS-LIFECYCLE-20260712",
+    "technical_signature_performed": false,
+    "version": "0.1.4-s16-p2-post-remediation-project-status-lifecycle",
+    "workbench_html_count": 1,
+    "zero_delta_reconciliation_count": 2
+  },
+  "task_id": "KMFA-V014-S16-P2-POST-REMEDIATION-PROJECT-STATUS-LIFECYCLE-20260712",
+  "taskpack_contract": {
+    "four_exception_rules_locked": true,
+    "raw_read_only_contract_applied": true,
+    "roadmap_read": true,
+    "six_current_structure_lanes_locked": true,
+    "six_state_lifecycle_contract_locked": true,
+    "taskpack_read": true,
+    "three_human_handoff_guards_locked": true
+  },
+  "validation_summary": {
+    "browser_desktop_mobile": "PASS",
+    "final_validation_recorded": true,
+    "focused_test": "PASS",
+    "governance_and_safety_scans": "PASS",
+    "processed_private_structure_alignment": "PASS",
+    "raw_alignment": "PASS",
+    "strict_validator": "PASS"
+  },
+  "version": "0.1.4-s16-p2-post-remediation-project-status-lifecycle"
+}

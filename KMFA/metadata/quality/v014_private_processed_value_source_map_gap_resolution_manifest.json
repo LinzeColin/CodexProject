@@ -1,0 +1,203 @@
+{
+  "acceptance_ids": [
+    "ACC-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-AUTHORIZED-FILL-GAP-RESOLUTION"
+  ],
+  "app_reinstall_performed": false,
+  "branch": "codex/kmfa",
+  "business_execution_performed": false,
+  "dependencies": {
+    "authorized_fill_manifest": "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL/machine/private_processed_value_source_map_authorized_fill_manifest.json",
+    "authorized_fill_status": "completed_validated_local_only_no_go_partial_authorized_processed_value_source_map_fill",
+    "private_authorized_fill_runtime": "private_runtime_previous_phase",
+    "private_capture_runtime": "private_runtime_previous_phase",
+    "private_source_map_runtime": "private_runtime_previous_phase"
+  },
+  "evidence_refs": [
+    "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/human/private_processed_value_source_map_gap_resolution_report.md",
+    "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/human/go_no_go_record.md",
+    "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/human/test_results.md",
+    "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/human/risk_register.md",
+    "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/human/rollback_plan.md",
+    "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/machine/private_processed_value_source_map_gap_resolution_manifest.json",
+    "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/machine/private_processed_value_source_map_gap_resolution_go_no_go_report.json",
+    "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/machine/private_processed_value_source_map_gap_resolution_summary.json",
+    "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/machine/private_processed_value_source_map_gap_resolution_matrix.json",
+    "KMFA/metadata/quality/v014_private_processed_value_source_map_gap_resolution_manifest.json",
+    "KMFA/metadata/quality/v014_private_processed_value_source_map_gap_resolution_go_no_go_report.json",
+    "KMFA/metadata/quality/v014_private_processed_value_source_map_gap_resolution_summary.json",
+    "KMFA/metadata/quality/v014_private_processed_value_source_map_gap_resolution_matrix.json"
+  ],
+  "formal_report_performed": false,
+  "gap_resolution_matrix": {
+    "blocked_follow_on_actions": {
+      "app_reinstall_allowed": false,
+      "business_execution_allowed": false,
+      "formal_report_allowed": false,
+      "github_upload_allowed": false,
+      "lineage_full_check_allowed": false,
+      "processed_value_materialization_replay_allowed": false,
+      "raw_to_processed_value_comparison_allowed": false
+    },
+    "bucket_counts": {
+      "context_group_bucket_count": 22,
+      "private_ref_shape_bucket_count": 16,
+      "source_root_bucket_count": 1
+    },
+    "gap_reason_buckets": [
+      {
+        "auto_fill_allowed": false,
+        "gap_item_count": 113,
+        "gap_reason": "authorized_metadata_hash_sibling_not_found",
+        "raw_value_extraction_allowed_by_this_phase": false,
+        "resolution_lane": "owner_authorized_private_value_source_intake"
+      }
+    ],
+    "phase_id": "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION",
+    "project_id": "KMFA",
+    "public_commit_policy": "aggregate_counts_only_no_private_refs_or_values",
+    "record_type": "v014_private_processed_value_source_map_gap_resolution_matrix",
+    "resolution_lanes": [
+      {
+        "gap_item_count": 113,
+        "lane_id": "PVSMAF-GAP-LANE-001",
+        "lane_name": "owner_authorized_private_value_source_intake",
+        "owner_or_authorized_delegate_required": true,
+        "public_value_commit_allowed": false
+      },
+      {
+        "gap_item_count": 113,
+        "lane_id": "PVSMAF-GAP-LANE-002",
+        "lane_name": "metadata_hash_sibling_backfill_after_authorized_intake",
+        "owner_or_authorized_delegate_required": true,
+        "public_value_commit_allowed": false
+      },
+      {
+        "gap_item_count": 113,
+        "lane_id": "PVSMAF-GAP-LANE-003",
+        "lane_name": "materialization_replay_after_complete_private_source_map",
+        "owner_or_authorized_delegate_required": false,
+        "public_value_commit_allowed": false
+      }
+    ],
+    "schema_version": "kmfa.v014_private_processed_value_source_map_gap_resolution_matrix.v1",
+    "task_id": "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-AUTHORIZED-FILL-GAP-RESOLUTION-20260705",
+    "version": "0.1.4"
+  },
+  "gap_resolution_summary": {
+    "additional_source_map_records_written_count": 0,
+    "business_value_consistency_verified": false,
+    "context_group_bucket_count": 22,
+    "duplicate_unresolved_gap_item_count": 12,
+    "existing_source_map_record_count": 36,
+    "gap_reason_count": 1,
+    "gap_resolution_status": "blocked_owner_authorized_private_value_sources_required",
+    "metadata_hash_sibling_backfill_required": true,
+    "new_authorized_fingerprint_count": 0,
+    "owner_authorized_fill_intake_required": true,
+    "previous_authorized_filled_item_count": 36,
+    "previous_authorized_unfilled_item_count": 113,
+    "previous_fill_request_item_count": 149,
+    "private_owner_worklist_item_count": 113,
+    "private_ref_shape_bucket_count": 16,
+    "processed_value_materialization_replay_ready": false,
+    "raw_to_processed_value_comparison_ready": false,
+    "source_map_gap_resolution_complete": false,
+    "source_root_bucket_count": 1,
+    "unresolved_gap_item_count": 113,
+    "unresolved_unique_private_ref_count": 101
+  },
+  "generated_at": "2026-07-05T23:59:59+10:00",
+  "github_upload_performed": false,
+  "go_no_go": {
+    "app_reinstall_allowed": false,
+    "blocker_ids": [
+      "OWNER_AUTHORIZED_PRIVATE_VALUE_SOURCE_INTAKE_REQUIRED",
+      "AUTHORIZED_PROCESSED_VALUE_SOURCE_MAP_INCOMPLETE",
+      "PROCESSED_VALUE_MATERIALIZATION_REPLAY_BLOCKED",
+      "RAW_TO_PROCESSED_VALUE_COMPARISON_BLOCKED",
+      "BUSINESS_VALUE_CONSISTENCY_NOT_VERIFIED",
+      "LINEAGE_FULL_CHECK_NOT_COMPLETE",
+      "FORMAL_REPORT_BLOCKED",
+      "GITHUB_UPLOAD_DEFERRED",
+      "APP_REINSTALL_BLOCKED",
+      "BUSINESS_EXECUTION_BLOCKED"
+    ],
+    "business_execution_allowed": false,
+    "business_value_consistency_verified": false,
+    "decision": "NO_GO",
+    "decision_reason": "remaining authorized-fill gaps require owner-authorized private value source intake before replay or comparison",
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "lineage_full_check_complete": false,
+    "next_recommended_phase": "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE",
+    "owner_authorized_fill_intake_required": true,
+    "phase_id": "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION",
+    "processed_value_materialization_replay_allowed": false,
+    "project_id": "KMFA",
+    "raw_to_processed_value_comparison_allowed": false,
+    "record_type": "v014_private_processed_value_source_map_gap_resolution_go_no_go_report",
+    "resolved_blocker_ids": [
+      "AUTHORIZED_FILL_GAPS_CLASSIFIED_PUBLIC_SAFE",
+      "PRIVATE_OWNER_WORKLIST_PREPARED",
+      "RAW_INBOX_MUTATION_NOT_PERFORMED_BY_THIS_PHASE"
+    ],
+    "schema_version": "kmfa.v014_private_processed_value_source_map_gap_resolution_go_no_go.v1",
+    "source_map_gap_resolution_complete": false,
+    "task_id": "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-AUTHORIZED-FILL-GAP-RESOLUTION-20260705",
+    "unresolved_gap_item_count": 113,
+    "unresolved_unique_private_ref_count": 101,
+    "version": "0.1.4"
+  },
+  "next_recommended_phase": "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE",
+  "phase_id": "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION",
+  "phase_name": "KMFA v0.1.4 authorized private processed value source-map gap resolution",
+  "phase_scope_controls": {
+    "app_reinstall_performed": false,
+    "business_execution_performed": false,
+    "current_phase_only": true,
+    "formal_report_performed": false,
+    "gap_resolution_only": true,
+    "github_upload_performed": false,
+    "lineage_full_check_performed": false,
+    "new_fingerprints_materialized": false,
+    "next_phase_started": false,
+    "previous_authorized_fill_consumed": true,
+    "previous_capture_diagnostic_consumed": true,
+    "private_owner_worklist_written": true,
+    "processed_data_reconciliation_performed": false,
+    "processed_value_materialization_replay_performed": false,
+    "public_gap_matrix_written": true,
+    "raw_to_processed_value_comparison_performed": false
+  },
+  "private_owner_worklist_ref": "private_runtime_only_not_committed",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "business_value_committed": false,
+    "credential_or_secret_committed": false,
+    "field_header_plaintext_committed": false,
+    "private_owner_worklist_committed": false,
+    "private_processed_ref_committed": false,
+    "public_safe_aggregate_only": true,
+    "raw_file_committed": false,
+    "raw_filename_committed": false,
+    "raw_sheet_name_committed": false,
+    "row_value_committed": false
+  },
+  "raw_readonly_boundary": {
+    "raw_inbox_delete_performed_by_this_phase": false,
+    "raw_inbox_hash_or_value_fingerprint_performed_by_this_phase": false,
+    "raw_inbox_list_performed_by_this_phase": false,
+    "raw_inbox_move_performed_by_this_phase": false,
+    "raw_inbox_mutation_performed_by_this_phase": false,
+    "raw_inbox_read_performed_by_this_phase": false,
+    "raw_inbox_rename_performed_by_this_phase": false,
+    "raw_inbox_stat_performed_by_this_phase": false,
+    "raw_inbox_write_performed_by_this_phase": false
+  },
+  "record_type": "v014_private_processed_value_source_map_gap_resolution_manifest",
+  "schema_version": "kmfa.v014_private_processed_value_source_map_gap_resolution.v1",
+  "source_commit": "1a2b9cd800005b78aeb53ce83a33619f576d7928",
+  "status": "completed_validated_local_only_no_go_authorized_fill_gap_resolution_locked",
+  "task_id": "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-AUTHORIZED-FILL-GAP-RESOLUTION-20260705",
+  "version": "0.1.4"
+}

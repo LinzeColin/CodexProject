@@ -1,0 +1,13 @@
+{
+  "authoritative_transaction_row_count": 0,
+  "automatic_project_assignment_allowed": false,
+  "contract_id": "POOL-KMFA-V014-S16P1-CURRENT-001",
+  "cost_allocation_execution_allowed": false,
+  "current_status": "blocked_no_authoritative_transaction_rows",
+  "eligible_unmatched_transaction_count": 0,
+  "entry_condition": "transaction_row_proven_and_project_assignment_unmatched",
+  "forced_zero_amount_allowed": false,
+  "manual_review_required": true,
+  "materialized_pool_item_count": 0,
+  "schema_version": "kmfa.v014.s16_p1.unallocated_cost_pool_contract.v1"
+}

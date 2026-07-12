@@ -1,0 +1,22 @@
+{
+  "bank_operation_allowed": false,
+  "business_execution_allowed": false,
+  "collection_action_allowed": false,
+  "decision": "NO_GO",
+  "exception_item_materialization_allowed": false,
+  "formal_report_allowed": false,
+  "github_upload_allowed": false,
+  "invoice_issuance_allowed": false,
+  "lifecycle_record_materialization_allowed": false,
+  "payment_execution_allowed": false,
+  "phase_id": "V014_S16_P2_POST_REMEDIATION_PROJECT_STATUS_LIFECYCLE",
+  "project_id": "KMFA",
+  "s16_p3_allowed_in_this_run": false,
+  "safety_signature_allowed": false,
+  "schema_version": "kmfa.v014.s16_p2.go_no_go.v1",
+  "site_construction_allowed": false,
+  "stage16_review_allowed_in_this_run": false,
+  "stage_id": "S16",
+  "structure_candidate_review_allowed": true,
+  "technical_signature_allowed": false
+}

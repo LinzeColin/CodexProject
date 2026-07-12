@@ -23,7 +23,7 @@
   "record_type": "stage_phase_manifest",
   "schema_version": "kmfa.stage_phase_manifest.v1",
   "source_package_hash": "sha256:8c952f81409663ab862c42fb8ec91f2e9bbe30bc62b6fee9714f95cd689c36d1",
-  "source_package_name": "销售绩效考核.zip",
+  "source_package_name": "PRIVATE_RAW_SOURCE_005.zip",
   "stage_id": "S05",
   "status": "completed_validated_local_only_with_private_member_sha256_pending",
   "test_commands": [

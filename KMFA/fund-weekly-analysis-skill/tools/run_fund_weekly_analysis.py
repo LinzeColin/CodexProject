@@ -31,7 +31,7 @@ from zoneinfo import ZoneInfo
 
 DISALLOWED_PRODUCTION_MARKERS = ("sample", "demo", "fake", "synthetic", "模拟", "测试数据")
 PRIVATE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".xlsx", ".xls", ".csv", ".pdf", ".doc", ".docx", ".zip"}
-TEMPLATE_NAME = "资金与税费管理母版_真实数据预览_v2.xlsx"
+PRIVATE_TEMPLATE_NAME = "fund_weekly_template.xlsx"
 PRIVATE_OCR_ROOT = Path("KMFA/metadata/fund_weekly_analysis/private_runtime/ocr_sidecars")
 OCR_GENERATION_PLAN_NAME = "screenshot_ocr_sidecar_generation_plan.csv"
 EXPECTED_AUTOMATION_RRULE = "RRULE:FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0"
@@ -3803,7 +3803,7 @@ def build_goal_completion_audit_rows(cross_review: dict) -> list[dict]:
             "pass" if automation_ready else "external_check_required",
             (
                 f"automation_readiness_status={automation_status}; "
-                "branch_policy=main_only_no_branch_no_pr_no_worktree"
+                "branch_policy=canonical_project_worktree_no_new_branch_no_pr_no_extra_worktree"
             ),
             not automation_ready,
             "Keep committing validated skill/automation changes directly to GitHub main" if automation_ready else "Restore automation readiness before claiming main sync",
@@ -6205,6 +6205,7 @@ def write_no_hallucination_outputs(
     input_dir: Path,
     repo_root: Path,
     automation_root: Path,
+    template_path: Path,
 ) -> None:
     evidence = write_evidence_index_stub(manifest, run_dir)
     screenshot_ocr_coverage_rows = collect_screenshot_ocr_coverage(manifest, repo_root, run_dir, evidence)
@@ -6684,10 +6685,8 @@ def write_no_hallucination_outputs(
         ["evidence_id", "relative_path", "kind", "sha256", "size_bytes", "review_status"],
         evidence,
     )
-    skill_root = Path(__file__).resolve().parents[1]
-    template = skill_root / "templates" / TEMPLATE_NAME
     workbook_path = run_dir / f"资金与税费管理母版_{manifest['run_id']}.xlsx"
-    shutil.copyfile(template, workbook_path)
+    shutil.copyfile(template_path, workbook_path)
     write_structured_facts_to_workbook(workbook_path, structured, evidence, input_dir, manifest["run_id"])
     write_metadata_signals_to_workbook(workbook_path, metadata_signals, len(structured["risk_rows"]))
     automation_readiness_rows = build_automation_readiness_rows(repo_root, automation_root)
@@ -8842,6 +8841,7 @@ def main() -> int:
     parser.add_argument("--run-id", default=None)
     parser.add_argument("--timezone", default="Australia/Sydney")
     parser.add_argument("--automation-root", default=str(Path.home() / ".codex" / "automations"))
+    parser.add_argument("--template-path", default=os.environ.get("KMFA_FUND_TEMPLATE_PATH"))
     args = parser.parse_args()
 
     repo_root = Path(args.repo_root).expanduser().resolve()
@@ -8850,6 +8850,34 @@ def main() -> int:
     run_id = args.run_id or dt.datetime.now(timezone).strftime("%Y%m%dT%H%M%S%z")
     run_dir = repo_root / "KMFA" / "metadata" / "fund_weekly_analysis" / "private_runtime" / "runs" / run_id
     run_dir.mkdir(parents=True, exist_ok=True)
+
+    default_template = (
+        Path(__file__).resolve().parents[2]
+        / "metadata"
+        / "fund_weekly_analysis"
+        / "private_runtime"
+        / "templates"
+        / PRIVATE_TEMPLATE_NAME
+    )
+    template_path = Path(args.template_path).expanduser().resolve() if args.template_path else default_template
+
+    if not template_path.is_file():
+        payload = {
+            "project_id": "KMFA",
+            "skill_name": "fund-weekly-analysis-skill",
+            "run_id": run_id,
+            "timezone": args.timezone,
+            "status": "PRIVATE_TEMPLATE_MISSING",
+            "source_read_performed": False,
+            "workbook_generated": False,
+            "management_conclusion_allowed": False,
+        }
+        (run_dir / "run_manifest.json").write_text(
+            json.dumps(payload, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        print(json.dumps({"run_id": run_id, "status": payload["status"]}, ensure_ascii=False))
+        return 6
 
     if not input_dir.exists():
         write_source_missing_artifacts(input_dir, run_dir, args.timezone)
@@ -8861,7 +8889,14 @@ def main() -> int:
         write_source_unreadable_artifacts(manifest, run_dir)
         print(json.dumps({"run_id": run_id, "run_dir": str(run_dir), "status": "SOURCE_UNREADABLE", "unreadable_count": manifest["unreadable_count"]}, ensure_ascii=False))
         return 5
-    write_no_hallucination_outputs(manifest, run_dir, input_dir, repo_root, Path(args.automation_root))
+    write_no_hallucination_outputs(
+        manifest,
+        run_dir,
+        input_dir,
+        repo_root,
+        Path(args.automation_root),
+        template_path,
+    )
     (run_dir / "run_manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
     (run_dir / "run_summary.md").write_text(
         f"# Fund weekly analysis run {run_id}\n\n"

@@ -1,12 +1,12 @@
 # KMFA Metadata Protocol
 
-product_version: `0.1.0-s02p1`
+product_version: `0.1.4-s02p1-metadata-protocol`
 stage_phase: `S02-P1`
 status: `active`
 
 ## Purpose
 
-S02-P1 建立 metadata 目录协议。当前只定义目录、标识符、文件形态和隐私边界，不导入任何原始经营数据，不解析业务金额，不生成正式报告。
+S02-P1 建立 metadata 目录协议。当前只定义目录、标识符、文件形态、raw/private 根目录协议和隐私边界，不导入任何原始经营数据，不解析业务金额，不生成正式报告。
 
 ## Required Directories
 
@@ -19,6 +19,14 @@ S02-P1 建立 metadata 目录协议。当前只定义目录、标识符、文件
 | `KMFA/metadata/lineage/` | 字段、指标、报告 lineage 协议 | 只保存引用链和版本，不保存原始值 |
 | `KMFA/metadata/reports/` | 报告 manifest 协议 | 只保存报告版本、质量等级、输入版本 |
 | `KMFA/metadata/approvals/` | 人工处理和签核事件协议 | 只追加事件，不改写原始事实 |
+
+## v1.4 Raw Root Boundary
+
+- local raw/private inbox: `/Users/linzezhang/Downloads/KMFA_MetaData`
+- public-safe protocol file: `KMFA/metadata/protocol/raw_data_roots_v1_4.json`
+- current S02-P1 access: no read, no list, no inventory, no mutation
+- private runtime target: `KMFA/.codex_private_runtime/`
+- public repo rule: metadata may record only protocol, status, evidence refs, and authorized aggregate/hash refs; it must not record raw filenames, unapproved raw hashes, field/header plaintext, row values, business amount values, ZIP/Excel/PDF/private CSV/SQLite/db files, credentials, bank statements, contracts, payroll, or tax filings.
 
 ## Identifier Contract
 
@@ -55,4 +63,4 @@ S02-P1 建立 metadata 目录协议。当前只定义目录、标识符、文件
 - 不实现 raw manifest 登记器；这是 S02-P2。
 - 不实现 Q0-Q5 或 A/B/C/D 报告门禁；这是 S02-P3。
 - 不实现文件导入、金额工具、zero-delta、lineage 完整检查或 UI。
-- 不上传 GitHub；Stage 2 全部 Phase 完成并复审修复后再整体上传。
+- 不上传 GitHub；v1.4 GitHub main upload 延期到 Stage 1-18 全部完成整体复审并修复 findings 后一次性执行。

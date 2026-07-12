@@ -1,0 +1,149 @@
+{
+  "acceptance_id": "ACC-V014-S18-P3-POST-REMEDIATION-INTEGRATION-PREPARATION",
+  "check_count": 34,
+  "check_fail_count": 0,
+  "check_pass_count": 34,
+  "checks": [
+    {
+      "check_id": "taskpack_contract",
+      "result": "PASS"
+    },
+    {
+      "check_id": "current_s18_p2_dependency",
+      "result": "PASS"
+    },
+    {
+      "check_id": "historical_s18_p3_structural_only",
+      "result": "PASS"
+    },
+    {
+      "check_id": "connector_count",
+      "result": "PASS"
+    },
+    {
+      "check_id": "connector_ids",
+      "result": "PASS"
+    },
+    {
+      "check_id": "connector_read_only",
+      "result": "PASS"
+    },
+    {
+      "check_id": "connector_not_authorized",
+      "result": "PASS"
+    },
+    {
+      "check_id": "connector_not_connected",
+      "result": "PASS"
+    },
+    {
+      "check_id": "connector_no_writeback",
+      "result": "PASS"
+    },
+    {
+      "check_id": "connector_no_external_call",
+      "result": "PASS"
+    },
+    {
+      "check_id": "connector_no_credential",
+      "result": "PASS"
+    },
+    {
+      "check_id": "connector_private_runtime_only",
+      "result": "PASS"
+    },
+    {
+      "check_id": "connector_contract_controls",
+      "result": "PASS"
+    },
+    {
+      "check_id": "opme_surface_count",
+      "result": "PASS"
+    },
+    {
+      "check_id": "opme_light_entry",
+      "result": "PASS"
+    },
+    {
+      "check_id": "opme_public_safe_exchange_only",
+      "result": "PASS"
+    },
+    {
+      "check_id": "opme_no_shared_database",
+      "result": "PASS"
+    },
+    {
+      "check_id": "opme_no_shared_runtime",
+      "result": "PASS"
+    },
+    {
+      "check_id": "backlog_count",
+      "result": "PASS"
+    },
+    {
+      "check_id": "backlog_not_started",
+      "result": "PASS"
+    },
+    {
+      "check_id": "completion_sequence",
+      "result": "PASS"
+    },
+    {
+      "check_id": "raw_phase_exact",
+      "result": "PASS"
+    },
+    {
+      "check_id": "raw_cross_phase_exact",
+      "result": "PASS"
+    },
+    {
+      "check_id": "raw_not_used_for_plan",
+      "result": "PASS"
+    },
+    {
+      "check_id": "reconciliation_truth_preserved",
+      "result": "PASS"
+    },
+    {
+      "check_id": "quality_stays_q4",
+      "result": "PASS"
+    },
+    {
+      "check_id": "report_stays_d",
+      "result": "PASS"
+    },
+    {
+      "check_id": "decision_stays_no_go",
+      "result": "PASS"
+    },
+    {
+      "check_id": "s18_p3_complete",
+      "result": "PASS"
+    },
+    {
+      "check_id": "stage18_review_pending",
+      "result": "PASS"
+    },
+    {
+      "check_id": "final_review_pending",
+      "result": "PASS"
+    },
+    {
+      "check_id": "github_upload_deferred",
+      "result": "PASS"
+    },
+    {
+      "check_id": "app_reinstall_deferred",
+      "result": "PASS"
+    },
+    {
+      "check_id": "business_execution_closed",
+      "result": "PASS"
+    }
+  ],
+  "phase_id": "V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION",
+  "project_id": "KMFA",
+  "record_type": "v014_s18_p3_post_remediation_acceptance_matrix",
+  "schema_version": "kmfa.v014.s18_p3_post_remediation_acceptance_matrix.v1",
+  "stage_id": "S18"
+}

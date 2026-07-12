@@ -1,0 +1,64 @@
+{
+  "active_mapping_rule_version": "MAP-SRC-kmfa-wps-file-adapter-s07p2-v0.1.0",
+  "conversion_guidance_ref": "KMFA/stage_artifacts/V014_S07_P2_WPS_FILE_ADAPTER/machine/wps_conversion_guidance.jsonl",
+  "field_mappings_ref": "KMFA/metadata/schema_maps/v014_s07_p2_wps_field_mappings.jsonl",
+  "field_report_ref": "KMFA/stage_artifacts/V014_S07_P2_WPS_FILE_ADAPTER/machine/wps_readonly_field_report.jsonl",
+  "generated_at": "2026-07-04T10:30:00+10:00",
+  "mapping_rule_versions_ref": "KMFA/metadata/schema_maps/v014_s07_p2_wps_mapping_rule_versions.json",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "credentials_committed": false,
+    "field_plaintext_committed": false,
+    "pdf_committed": false,
+    "private_csv_committed": false,
+    "source_file_committed": false,
+    "source_header_plaintext_committed": false,
+    "source_payload_values_committed": false,
+    "wps_native_file_committed": false,
+    "xlsx_committed": false,
+    "zip_committed": false
+  },
+  "quality_gate": {
+    "candidate_quality_grade": "Q2_structure_candidate",
+    "current_data_quality_grade": "Q4",
+    "current_report_grade": "D",
+    "formal_report_allowed_count": 0,
+    "q4_human_confirmed_count": 0,
+    "q5_calculation_baseline_allowed_count": 0,
+    "release_permission": "blocked",
+    "requires_stage7_review_before_downstream_use": true
+  },
+  "record_type": "v014_wps_file_adapter_metadata_manifest",
+  "schema_version": "kmfa.v014_wps_file_adapter_metadata.v1",
+  "source_registry_ref": "KMFA/metadata/imports/v014_s07_p2_wps_export_source_registry.json",
+  "stage_phase": "S07-P2",
+  "stage_scope": {
+    "external_connector_included": false,
+    "facts_layer_write_included": false,
+    "finance_scope_included": false,
+    "formal_report_generation_included": false,
+    "github_upload_included": false,
+    "lineage_full_check_included": false,
+    "redcircle_scope_included": false,
+    "stage7_review_included": false,
+    "wps_file_adapter": true
+  },
+  "summary": {
+    "active_mapping_rule_version": "MAP-SRC-kmfa-wps-file-adapter-s07p2-v0.1.0",
+    "conversion_guidance_count": 4,
+    "field_mapping_count": 20,
+    "field_report_count": 4,
+    "hash_only_field_mapping_count": 20,
+    "mapping_rule_version_count": 1,
+    "native_conversion_required_count": 4,
+    "source_export_type_count": 4,
+    "source_header_fingerprint_count": 20,
+    "source_registry_count": 4
+  },
+  "wps_export_types": [
+    "collection",
+    "receivable_aging",
+    "production_project_status",
+    "deposit"
+  ]
+}

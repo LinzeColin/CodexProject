@@ -62,7 +62,7 @@ Dry-run:
 
 ```bash
 python3 KMFA/fund-weekly-analysis-skill/tools/materialize_fund_source.py \
-  --repo-root /Users/linzezhang/CodexProject \
+  --repo-root /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa \
   --source-dir /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Archive/付款请示群 \
   --target-dir /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群
 ```
@@ -71,7 +71,7 @@ Apply after checking the dry-run manifest:
 
 ```bash
 python3 KMFA/fund-weekly-analysis-skill/tools/materialize_fund_source.py \
-  --repo-root /Users/linzezhang/CodexProject \
+  --repo-root /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa \
   --source-dir /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Archive/付款请示群 \
   --target-dir /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群 \
   --apply
@@ -85,7 +85,7 @@ ZIP dry-run:
 
 ```bash
 python3 KMFA/fund-weekly-analysis-skill/tools/materialize_fund_source.py \
-  --repo-root /Users/linzezhang/CodexProject \
+  --repo-root /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa \
   --source-zip /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip \
   --zip-prefix 付款请示群 \
   --target-dir /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群
@@ -95,7 +95,7 @@ ZIP apply after checking the dry-run manifest:
 
 ```bash
 python3 KMFA/fund-weekly-analysis-skill/tools/materialize_fund_source.py \
-  --repo-root /Users/linzezhang/CodexProject \
+  --repo-root /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa \
   --source-zip /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip \
   --zip-prefix 付款请示群 \
   --target-dir /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群 \

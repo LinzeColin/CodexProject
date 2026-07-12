@@ -1,0 +1,20 @@
+{
+  "app_reinstall_allowed": false,
+  "business_execution_allowed": false,
+  "credential_creation_allowed": false,
+  "decision": "NO_GO",
+  "difference_closure_allowed": false,
+  "external_connector_allowed": false,
+  "formal_report_release_allowed": false,
+  "full_report_notification_body_allowed": false,
+  "github_upload_allowed": false,
+  "live_identity_provider_allowed": false,
+  "notification_delivery_allowed": false,
+  "persistent_business_write_allowed": false,
+  "phase_id": "V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY",
+  "project_id": "KMFA",
+  "s17_p1_validated": true,
+  "s17_p2_allowed_in_this_run": false,
+  "schema_version": "kmfa.v014.s17_p1_post_remediation_access_security_go_no_go.v1",
+  "stage_id": "S17"
+}

@@ -1,0 +1,66 @@
+{
+  "business_value_consistency_verified": false,
+  "checks": [
+    {
+      "check_code": "full_materialized_records_available",
+      "observed_public_safe": 149,
+      "required": 149,
+      "status": "PASS"
+    },
+    {
+      "check_code": "candidate_catalog_available",
+      "observed_public_safe": 366,
+      "required": 366,
+      "status": "PASS"
+    },
+    {
+      "check_code": "linked_records_prechecked",
+      "observed_public_safe": 77,
+      "required": 77,
+      "status": "PASS"
+    },
+    {
+      "check_code": "outside_scope_candidate_coverage_blocked",
+      "observed_public_safe": 72,
+      "required": 0,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "full_precheck_unblocked",
+      "observed_public_safe": 72,
+      "required": 0,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "full_comparison_not_claimed",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_no_go_preserved",
+      "observed_public_safe": "NO_GO",
+      "required": "NO_GO",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "full_materialized_record_count": 149,
+  "full_precheck_check_count": 7,
+  "full_precheck_fail_count": 2,
+  "full_precheck_pass_count": 5,
+  "full_raw_to_processed_value_comparison_complete": false,
+  "full_raw_to_processed_value_comparison_ready": false,
+  "full_scope_exact_fingerprint_match_count": 77,
+  "full_scope_missing_candidate_count": 72,
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "github_upload_performed": false,
+  "outside_scope_missing_candidate_count": 72,
+  "phase_id": "V014_FULL_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_FULL_MATERIALIZATION",
+  "processed_target_slot_count": 149,
+  "project_id": "KMFA",
+  "record_type": "v014_full_comparison_precheck_matrix_public_safe",
+  "schema_version": "kmfa.v014_full_comparison_precheck_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-FULL-RAW-TO-PROCESSED-COMPARISON-PRECHECK-AFTER-FULL-MATERIALIZATION-20260707",
+  "version": "0.1.4-full-raw-to-processed-comparison-precheck-after-full-materialization"
+}

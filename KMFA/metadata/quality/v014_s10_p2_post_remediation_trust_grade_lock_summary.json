@@ -1,0 +1,40 @@
+{
+  "automatic_grade_promotion_performed": false,
+  "business_decision_basis_allowed_count": 0,
+  "current_data_quality_grade": "Q4",
+  "current_report_grade": "D",
+  "decision": "NO_GO",
+  "export_artifact_count": 0,
+  "formal_report_count": 0,
+  "full_trusted_report_allowed_count": 0,
+  "grade_distribution": {
+    "D": 2
+  },
+  "grade_recalculation_performed_by_this_phase": true,
+  "hard_block_count": 12,
+  "hard_block_counts": {
+    "full_business_value_consistency_not_verified": 2,
+    "incomplete_reconciliation": 2,
+    "missing_human_confirmation_for_A": 2,
+    "missing_required_lineage": 2,
+    "unresolved_critical_difference": 2,
+    "zero_delta_failed": 2
+  },
+  "incomplete_reconciliation_count": 1,
+  "maximum_report_grade_before_hard_blocks": "B",
+  "nonzero_delta_reconciliation_count": 9,
+  "open_final_difference_accepted_count": 3,
+  "phase_id": "V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK",
+  "project_id": "KMFA",
+  "raw_cross_phase_snapshot_exact_match": true,
+  "raw_snapshot_exact_match": true,
+  "raw_source_file_count": 5,
+  "record_version_binding_count": 2,
+  "report_grade_record_count": 2,
+  "report_template_count": 2,
+  "roadmap_phase_id": "S10-P2",
+  "schema_version": "kmfa.v014.s10_p2.post_remediation_trust_grade_summary.v1",
+  "stage_id": "S10",
+  "status": "completed_validated_local_only_report_grade_recomputed_d_locked_no_go_upload_deferred",
+  "zero_delta_reconciliation_count": 2
+}

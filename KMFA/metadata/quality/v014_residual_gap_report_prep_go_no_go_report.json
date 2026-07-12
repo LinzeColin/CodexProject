@@ -1,0 +1,21 @@
+{
+  "acceptance_id": "ACC-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-RESIDUAL-GAP-REPORT-PREP",
+  "app_reinstall_allowed": false,
+  "blocked_until": "corrected_source_package_or_owner_authorized_private_raw_comparison_scope",
+  "business_execution_allowed": false,
+  "decision": "NO_GO",
+  "delivery_allowed": false,
+  "diagnostic_conclusion": "residual_gap_report_prepared_delivery_still_blocked",
+  "gap_category_count": 4,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "github_upload_allowed": false,
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_RESIDUAL_GAP_REPORT_PREP",
+  "previous_required_input_resolved_by_this_phase": true,
+  "project_id": "KMFA",
+  "record_type": "v014_residual_gap_report_prep_go_no_go_report",
+  "residual_gap_report_ready": true,
+  "schema_version": "kmfa.v014_residual_gap_report_prep_go_no_go.v1",
+  "status": "completed_validated_local_only_residual_gap_report_prep_no_go",
+  "task_id": "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-RESIDUAL-GAP-REPORT-PREP-20260706",
+  "version": "0.1.4-residual-gap-report-prep"
+}

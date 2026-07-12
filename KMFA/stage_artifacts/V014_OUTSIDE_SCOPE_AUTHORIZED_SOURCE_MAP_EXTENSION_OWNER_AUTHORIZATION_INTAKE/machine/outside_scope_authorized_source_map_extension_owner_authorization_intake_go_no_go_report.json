@@ -1,0 +1,22 @@
+{
+  "app_reinstall_performed": false,
+  "business_execution_performed": false,
+  "decision": "NO_GO",
+  "diagnostic_conclusion": "owner_direct_authorization_intaken_private_extension_ready_for_application_phase",
+  "full_raw_to_processed_value_comparison_complete": false,
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "github_upload_performed": false,
+  "next_required_input": "run_outside_scope_source_map_extension_application_readiness_before_any_full_comparison",
+  "owner_direct_authorization_present": true,
+  "phase_id": "V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_OWNER_AUTHORIZATION_INTAKE",
+  "processed_consistency_verified": false,
+  "project_id": "KMFA",
+  "record_type": "v014_outside_scope_owner_authorization_intake_go_no_go",
+  "schema_version": "kmfa.v014_outside_scope_owner_authorization_intake_go_no_go.v1",
+  "source_map_extension_application_ready": true,
+  "source_map_extension_written_by_this_phase": false,
+  "status": "completed_validated_local_only_outside_scope_authorized_extension_owner_authorization_intake_no_go",
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-OWNER-AUTHORIZATION-INTAKE-20260707",
+  "valid_authorized_extension_record_count": 72,
+  "version": "0.1.4-outside-scope-authorized-source-map-extension-owner-authorization-intake"
+}

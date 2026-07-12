@@ -1,0 +1,15 @@
+{
+  "business_decision_basis_allowed": false,
+  "business_execution_allowed": false,
+  "comparable_dimension_count": 0,
+  "comparison_completion_ratio_bps": 0,
+  "cross_table_review_status": "insufficient_row_level_evidence",
+  "current_data_quality_grade": "Q4",
+  "current_report_grade": "D",
+  "decision": "NO_GO",
+  "difference_closure_allowed": false,
+  "formal_report_allowed": false,
+  "not_comparable_dimension_count": 4,
+  "review_dimension_count": 4,
+  "schema_version": "kmfa.v014.s13_p3_post_remediation.quality_report.v1"
+}

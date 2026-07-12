@@ -1,0 +1,64 @@
+{
+  "acceptance_id": "ACC-V014-S15-POST-REMEDIATION-STAGE-REVIEW",
+  "check_count": 11,
+  "check_fail_count": 0,
+  "check_pass_count": 11,
+  "checks": [
+    {
+      "check_id": "V014-S15-REVIEW-ACC-001",
+      "name": "phase_chain",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15-REVIEW-ACC-002",
+      "name": "phase_tests",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15-REVIEW-ACC-003",
+      "name": "zero_fact_rows",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15-REVIEW-ACC-004",
+      "name": "six_review_items",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15-REVIEW-ACC-005",
+      "name": "zero_salary_records",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15-REVIEW-ACC-006",
+      "name": "human_boundary",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15-REVIEW-ACC-007",
+      "name": "findings_closed",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15-REVIEW-ACC-008",
+      "name": "navigation",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15-REVIEW-ACC-009",
+      "name": "browser",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15-REVIEW-ACC-010",
+      "name": "raw_exact",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S15-REVIEW-ACC-011",
+      "name": "downstream_closed",
+      "status": "PASS"
+    }
+  ],
+  "schema_version": "kmfa.v014.s15_post_remediation_review_matrix.v1"
+}

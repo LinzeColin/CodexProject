@@ -1,0 +1,15 @@
+{
+  "schema_version": "kmfa.v014.global_residual_replay_go_no_go.v1",
+  "project_id": "KMFA",
+  "phase_id": "V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION",
+  "decision": "NO_GO",
+  "queue_closed_or_excluded_count": 61,
+  "open_residual_difference_count": 11,
+  "nonzero_delta_reconciliation_count": 9,
+  "blocking_reason_codes": [
+    "eight_cost_component_slots_lack_unique_authoritative_source",
+    "three_cash_slots_remain_final_accepted_differences_without_proven_values",
+    "nine_nonzero_scope_differences_remain_preserved"
+  ],
+  "github_upload_performed": false
+}

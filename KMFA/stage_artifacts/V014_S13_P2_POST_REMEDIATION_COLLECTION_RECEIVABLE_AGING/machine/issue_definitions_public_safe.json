@@ -1,0 +1,99 @@
+{
+  "issues": [
+    {
+      "business_priority_allowed": false,
+      "collection_action_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "identification_status": "definition_locked_row_level_evidence_unproven",
+      "identified_item_count": 0,
+      "issue_id": "S13P2-ISSUE-01",
+      "issue_type": "invoiced_not_collected",
+      "legal_collection_decision_allowed": false,
+      "priority_status": "method_only_not_business_priority",
+      "required_lane_ids": [
+        "invoice_plan",
+        "collection_table",
+        "journal"
+      ],
+      "responsibility_assignment_allowed": false,
+      "responsibility_role_definition": "财务复核角色",
+      "responsibility_status": "role_definition_only_unassigned",
+      "review_sequence": 1,
+      "supplemental_structure_requirement": "none",
+      "visible_name": "已开票未回款"
+    },
+    {
+      "business_priority_allowed": false,
+      "collection_action_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "identification_status": "definition_locked_row_level_evidence_unproven",
+      "identified_item_count": 0,
+      "issue_id": "S13P2-ISSUE-02",
+      "issue_type": "completed_not_settled",
+      "legal_collection_decision_allowed": false,
+      "priority_status": "method_only_not_business_priority",
+      "required_lane_ids": [
+        "journal",
+        "invoice_plan"
+      ],
+      "responsibility_assignment_allowed": false,
+      "responsibility_role_definition": "项目与财务联合复核角色",
+      "responsibility_status": "role_definition_only_unassigned",
+      "review_sequence": 2,
+      "supplemental_structure_requirement": "production_project_status",
+      "visible_name": "完工未结算"
+    },
+    {
+      "business_priority_allowed": false,
+      "collection_action_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "identification_status": "definition_locked_row_level_evidence_unproven",
+      "identified_item_count": 0,
+      "issue_id": "S13P2-ISSUE-03",
+      "issue_type": "settled_not_invoiced",
+      "legal_collection_decision_allowed": false,
+      "priority_status": "method_only_not_business_priority",
+      "required_lane_ids": [
+        "invoice_plan",
+        "journal"
+      ],
+      "responsibility_assignment_allowed": false,
+      "responsibility_role_definition": "开票复核角色",
+      "responsibility_status": "role_definition_only_unassigned",
+      "review_sequence": 3,
+      "supplemental_structure_requirement": "none",
+      "visible_name": "结算未开票"
+    },
+    {
+      "business_priority_allowed": false,
+      "collection_action_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "identification_status": "definition_locked_row_level_evidence_unproven",
+      "identified_item_count": 0,
+      "issue_id": "S13P2-ISSUE-04",
+      "issue_type": "overdue_receivable",
+      "legal_collection_decision_allowed": false,
+      "priority_status": "method_only_not_business_priority",
+      "required_lane_ids": [
+        "receivable_aging",
+        "customer_aging",
+        "collection_table"
+      ],
+      "responsibility_assignment_allowed": false,
+      "responsibility_role_definition": "应收复核角色",
+      "responsibility_status": "role_definition_only_unassigned",
+      "review_sequence": 4,
+      "supplemental_structure_requirement": "none",
+      "visible_name": "超期应收"
+    }
+  ],
+  "schema_version": "kmfa.v014.s13_p2.issue_definitions.v1"
+}

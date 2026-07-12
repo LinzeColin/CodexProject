@@ -1,0 +1,57 @@
+{
+  "authority_summary": {
+    "authority_record_count": 45,
+    "excel_excluded_field_count": 5,
+    "excluded_cross_source_support_only_count": 5,
+    "field_candidate_count": 45,
+    "formal_report_allowed_count": 0,
+    "lineage_full_check_completed_count": 0,
+    "lock_status_counts": {
+      "excluded_cross_source_support_only": 5,
+      "q5_calculation_baseline_locked_public_safe": 40
+    },
+    "pdf_locked_field_count": 40,
+    "q4_human_confirmed_count": 40,
+    "q5_calculation_baseline_allowed_count": 40,
+    "q5_calculation_baseline_locked_count": 40,
+    "q5_full_quality_grade_allowed_count": 0,
+    "source_format_counts": {
+      "pdf": 40,
+      "xlsx": 5
+    },
+    "zero_delta_validated_count": 0
+  },
+  "baseline_content_hash": "sha256:1d9e663870917d82add8342fd8f06e60d18e192d1205e023c41a90561dcd88b8",
+  "baseline_version": "KMFA-V014-A0-AUTHORITY-BASELINE-S05P3-PUBLIC-SAFE-20260704",
+  "locked_at": "2026-07-04T04:01:35+10:00",
+  "locked_by_ref": "codex_v014_s05p3_public_safe_authority_baseline_lock",
+  "locked_by_role": "authorized_delegate",
+  "phase_id": "S05-P3",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "business_values_committed": false,
+    "credentials_committed": false,
+    "directory_tree_plaintext_committed": false,
+    "excel_workbook_committed": false,
+    "pdf_committed": false,
+    "private_csv_committed": false,
+    "raw_business_data_committed": false,
+    "raw_filenames_committed": false,
+    "raw_hashes_committed": false,
+    "row_or_cell_values_committed": false,
+    "sheet_names_committed": false,
+    "source_header_plaintext_committed": false,
+    "source_or_normalized_values_committed": false,
+    "sqlite_or_db_committed": false,
+    "zip_committed": false,
+    "zip_member_names_committed": false
+  },
+  "schema_version": "kmfa.v014_s05_p3_public_authority_baseline.v1",
+  "source_refs": {
+    "s05_p2_manifest": "KMFA/stage_artifacts/V014_S05_P2_FIELD_GOLDEN_BASELINE/machine/field_golden_baseline_manifest.json",
+    "s05_p2_public_field_candidates": "KMFA/metadata/baseline/v014_s05_p2_field_candidates.jsonl",
+    "s05_p2_public_field_contracts": "KMFA/metadata/baseline/v014_s05_p2_field_contracts.json"
+  },
+  "stage_id": "S05",
+  "version": "0.1.4"
+}

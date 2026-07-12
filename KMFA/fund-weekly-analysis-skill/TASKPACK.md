@@ -2,7 +2,7 @@
 
 Deliverables:
 
-1. Optimized Excel template: `templates/资金与税费管理母版_真实数据预览_v2.xlsx`
+1. Public-safe workbook contract: `templates/excel_sheet_spec.yaml`
 2. Skill instructions: `SKILL.md`
 3. Automation prompt: `automation/weekly_mon_sat_1100_sydney.prompt.md`
 4. macOS launchd template: `automation/launchd/com.kmfa.fund-weekly-analysis.plist`
@@ -27,6 +27,8 @@ launchctl load ~/Library/LaunchAgents/com.kmfa.fund-weekly-analysis.plist
 ```
 
 The installer does not commit raw financial evidence. It tracks only skill/governance/config files and a gitignored metadata private_runtime boundary.
+
+Private template prerequisite: install the authoritative editable workbook locally at `KMFA/metadata/fund_weekly_analysis/private_runtime/templates/fund_weekly_template.xlsx`, or set `KMFA_FUND_TEMPLATE_PATH` to another ignored local path. The runner exits with `PRIVATE_TEMPLATE_MISSING` before reading sources when no private template is available. Excel templates and generated workbooks must never be included in the public task-pack ZIP or committed to Git.
 
 User-facing report rule: every successful runner package must emit `资金与税费管理报告_<run_id>.pdf` next to the native Excel workbook. The PDF is a readable run summary and gate-status report only; OCR raw text, logs, audit sidecars, screenshots, private authorization manifests, and generated OCR sidecars remain private validation materials and are not user deliverables.
 

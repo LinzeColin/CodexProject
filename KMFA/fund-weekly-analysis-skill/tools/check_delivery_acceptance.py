@@ -19,6 +19,7 @@ EXPECTED_CHART_TITLES = ["最近15天资金余额折线图", "最近30天资金�
 ZIP_REQUIRED = [
     "SKILL.md",
     "TASKPACK.md",
+    "templates/excel_sheet_spec.yaml",
     "tools/run_fund_weekly_analysis.py",
     "tools/check_delivery_acceptance.py",
     "tools/check_codex_app_automation.py",
@@ -197,15 +198,17 @@ def validate_zip(zip_path: Path, checks: list[dict]) -> None:
     with zipfile.ZipFile(zip_path) as archive:
         names = archive.namelist()
     missing = [name for name in ZIP_REQUIRED if name not in names]
-    template_entries = [
+    binary_workbook_entries = [
         name for name in names
-        if name.startswith("templates/") and name.endswith("_v2.xlsx")
+        if name.lower().endswith((".xls", ".xlsx"))
     ]
-    if not template_entries:
-        missing.append("templates/*_v2.xlsx")
     disallowed = [
         name for name in names
-        if "__pycache__" in name or name.endswith(".pyc") or "private_runtime" in name or "daily_1130" in name
+        if "__pycache__" in name
+        or name.endswith(".pyc")
+        or "private_runtime" in name
+        or "daily_1130" in name
+        or name.lower().endswith((".xls", ".xlsx"))
     ]
     generated_reports = [
         name for name in names
@@ -213,7 +216,7 @@ def validate_zip(zip_path: Path, checks: list[dict]) -> None:
     ]
     add_check(checks, "taskpack_zip_required_files", not missing, {
         "missing": missing,
-        "template_entries": template_entries,
+        "binary_workbook_entries": binary_workbook_entries,
         "entry_count": len(names),
     })
     add_check(checks, "taskpack_zip_public_safe", not disallowed and not generated_reports, {

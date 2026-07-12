@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime, date, time
+from decimal import Decimal
 from typing import Any
 
 
@@ -66,9 +67,9 @@ class RoutineCheckResult:
 class CashRiskResult:
     report_date: date
     risk_level: str
-    total_available_cash: float | None
-    hard_threshold: float
-    soft_threshold: float
+    total_available_cash: Decimal | None
+    hard_threshold: Decimal
+    soft_threshold: Decimal
     source_message_id: str | None = None
     source_file_sha256: str | None = None
     confidence: float = 0.0

@@ -1,0 +1,75 @@
+{
+  "check_count": 15,
+  "check_fail_count": 0,
+  "check_pass_count": 15,
+  "checks": [
+    {
+      "check_code": "source_authorization_readiness_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_authorization_readiness_valid",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_matrix_clean",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_readiness_item_count_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_readiness_blockers_clear",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_private_readiness_ignored",
+      "status": "PASS"
+    },
+    {
+      "check_code": "preparation_queue_complete",
+      "status": "PASS"
+    },
+    {
+      "check_code": "preparation_blockers_clear",
+      "status": "PASS"
+    },
+    {
+      "check_code": "track_counts_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_preparation_ignored",
+      "status": "PASS"
+    },
+    {
+      "check_code": "owner_authorized_anchor_confirmation_next_phase_allowed",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_anchor_confirmation_this_phase",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_raw_comparison_this_phase",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "status": "PASS"
+    },
+    {
+      "check_code": "public_safe_aggregate_only",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "phase_id": "V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_PREPARATION",
+  "project_id": "KMFA",
+  "record_type": "v014_owner_authorized_anchor_confirmation_preparation_matrix_public_safe",
+  "schema_version": "kmfa.v014_owner_authorized_anchor_confirmation_preparation_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-PREPARATION-20260707",
+  "version": "0.1.4-residual-difference-owner-authorized-anchor-confirmation-preparation"
+}
