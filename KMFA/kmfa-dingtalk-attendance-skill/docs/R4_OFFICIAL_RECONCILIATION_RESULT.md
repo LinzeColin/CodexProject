@@ -6,7 +6,7 @@ status: PASS
 
 scope_status: OFFICIAL_DATA_RECONSTRUCTION_PASS
 
-current_availability: UNAVAILABLE
+current_availability: NO_SEND_RUNTIME_VERIFIED
 
 production_acceptance: NOT_EVALUATED
 
@@ -47,5 +47,12 @@ owner_usability_status: NOT_ACCEPTED
 
 - R4 官方考勤数据还原通过：4,224 个必需单元格达到零缺失、零真实差异门槛。
 - 该结论不等于整个 skill 可用，不证明自然 automation、真实无发送运行或未来日期稳定性。
-- skill 继续保持 `UNAVAILABLE`；钉钉发送继续关闭，下一阶段必须完成一次真实无发送运行后才能重新评估可用性。
-- 本轮未运行 live DWS、未发送钉钉消息，未修改 automation、schedule、time、timezone 或通知文案。
+- 后续真实无发送运行已完成，当前状态晋升为 `NO_SEND_RUNTIME_VERIFIED`；钉钉发送继续关闭，owner usability 仍未验收。
+- R4 数据还原阶段未运行 live DWS；Post-R4 仅执行获授权的只读 DWS 无发送验收。全程未发送钉钉消息，未修改 automation、schedule、time、timezone 或通知文案。
+
+## Post-R4 运行验收
+
+- 2026-07-10 evening 临时提醒按实际考勤组完成 42/42 覆盖，不强行等同官方 Excel 44 行。
+- 随后使用冻结正式凭证完成 final：44/44/44 人、48 列、2,112 格、零必需缺失、零真实差异。
+- 月累计只接受最新凭证绑定的 canonical final；未绑定凭证的旧 final、legacy、morning、evening 均排除。
+- evening/final 发送状态均为 `NOT_SENT_OWNER_DISABLED`，消息数 0、目标调用数 0。

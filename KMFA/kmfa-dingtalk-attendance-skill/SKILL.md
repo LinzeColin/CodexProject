@@ -39,12 +39,12 @@ Before acting, read:
 
 ## Current Attendance Rules
 
-- Current owner usability status is `UNAVAILABLE` / `NOT_ACCEPTED`.
+- Current operating status is `NO_SEND_RUNTIME_VERIFIED`; owner usability remains `NOT_ACCEPTED` and delivery remains disabled.
 - The official daily export has 49 columns, but `部门` is optional display-only. It never participates in person matching, anomaly classification, monthly rollups, notifications, or official attendance acceptance. The other 48 columns are required; an unreliable primary department is recorded as `UNVERIFIED` and never guessed.
-- R4 official data reconstruction is `PASS` for the frozen 2026-07-09 and 2026-07-10 evidence. This does not make the skill production-usable: delivery remains disabled until a later real no-send run is accepted.
+- R4 official data reconstruction is `PASS` for the frozen 2026-07-09 and 2026-07-10 evidence. A real 2026-07-10 evening no-send run and certificate-bound final reconciliation have also passed; delivery remains owner-disabled.
 - Morning and evening outputs are `TEMPORARY_REMINDER` snapshots, not final daily conclusions.
 - A completed prior work date becomes final only after a fresh exact-parity official report read writes an `OFFICIAL_FINAL_RECONCILIATION` archive and aggregate-only one-page result.
-- New monthly notification rollups read canonical `final` archives only. Legacy, morning, and evening archives are audit-only and never enter the new monthly cumulative values.
+- New monthly notification rollups read only canonical `final` archives with a valid official reconciliation certificate. Unbound historical final, legacy, morning, and evening archives are audit-only and never enter the new monthly cumulative values.
 - Attendance delivery is owner-disabled. Production and resend entries must return `NOT_SENT_OWNER_DISABLED` without resolving targets or invoking a sender.
 - Automation name: `每日早晚钉钉考勤检查`.
 - Business-date timezone: `Asia/Shanghai`; this is not a scheduler timezone field.

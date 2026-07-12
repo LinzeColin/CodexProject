@@ -2,7 +2,7 @@
 
 roadmap_progress: R4 / R4.3
 
-status: R4_OFFICIAL_DATA_RECONSTRUCTION_PASS
+status: NO_SEND_RUNTIME_VERIFIED
 
 r2_close_commit: b5b06437dfb15bfb0e302c4e735fe2978ddcd579
 
@@ -16,7 +16,7 @@ production_acceptance: NOT_EVALUATED
 
 owner_usability_status: NOT_ACCEPTED
 
-current_availability: UNAVAILABLE
+current_availability: NO_SEND_RUNTIME_VERIFIED
 
 ## R4.1–R4.3 独立官方原件对账
 
@@ -30,7 +30,16 @@ current_availability: UNAVAILABLE
 - 公开脱敏一页结果：`docs/R4_OFFICIAL_RECONCILIATION_RESULT.md`。官方原件、指纹明细、员工数据和逐格差异仅保存在本机私有证据目录。
 - 本轮执行了明确授权范围内的只读钉钉/DWS 查询；未发送钉钉消息，未修改 automation、schedule、time、timezone、cwd、目标或通知文案，未触碰其他 skill。
 
-next_action: complete one real no-send attendance run before any usability reassessment
+## Post-R4 真实无发送验收
+
+- 2026-07-10 evening live DWS 按实际考勤组完成 42/42 official coverage，parity PASS，command failure 0。
+- 冻结 2026-07-10 正式凭证完成 final：官方/DWS/UserId 44/44/44，48 列、2,112 格，缺人/多人/必需缺失/真实差异均为 0。
+- 初次 final 暴露 manifest 未绑定凭证、monthly reader 误收旧 final 且从 run_id 推断错误 work_date；唯一修正后，月累计只接受最新有效凭证绑定 final，并使用 manifest work_date。
+- 最终月累计来源为本次凭证绑定 final 的 42 条 2026-07-10 正式记录；旧 final、legacy、morning、evening 均排除。
+- evening/final receipt 均为 `NOT_SENT_OWNER_DISABLED`，消息 0、目标调用 0。
+- 未修改 automation、schedule、time、timezone、cwd、发送目标或通知文案；未触碰其他 skill。
+
+next_action: owner decides whether and when to evaluate any delivery-enabled stage
 
 ## R3.3 撤回与证据判定
 
