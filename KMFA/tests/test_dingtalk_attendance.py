@@ -815,6 +815,217 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(result["missing_required_columns"], ["出勤天数"])
         self.assertEqual(result["required_missing_cells"], 1)
 
+    def test_r6_date_slot_idempotency_and_interruption_recovery(self) -> None:
+        from KMFA.tools.dingtalk_attendance.automatic_closure import R6Coordinator
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            coordinator = R6Coordinator(root)
+            calls: list[str] = []
+
+            def successful_runner() -> dict[str, object]:
+                calls.append("evening")
+                return {
+                    "status": "COMPLETED",
+                    "notification_status": "NOT_SENT_OWNER_DISABLED",
+                    "member_count": 42,
+                }
+
+            first = coordinator.ensure_slot(
+                work_date="2026-07-13",
+                run_slot="evening",
+                trigger_source="automation",
+                runner=successful_runner,
+                completed_probe=lambda: None,
+            )
+            duplicate = coordinator.ensure_slot(
+                work_date="2026-07-13",
+                run_slot="evening",
+                trigger_source="automation",
+                runner=successful_runner,
+                completed_probe=lambda: None,
+            )
+
+            marker = root / "morning-complete"
+
+            def interrupted_runner() -> dict[str, object]:
+                calls.append("morning")
+                marker.write_text("complete", encoding="utf-8")
+                raise InterruptedError("simulated process interruption")
+
+            interrupted = coordinator.ensure_slot(
+                work_date="2026-07-14",
+                run_slot="morning",
+                trigger_source="automation",
+                runner=interrupted_runner,
+                completed_probe=lambda: ({"member_count": 42} if marker.exists() else None),
+            )
+            recovered = coordinator.ensure_slot(
+                work_date="2026-07-14",
+                run_slot="morning",
+                trigger_source="automation",
+                runner=lambda: (_ for _ in ()).throw(AssertionError("must not rerun after artifact recovery")),
+                completed_probe=lambda: ({"member_count": 42} if marker.exists() else None),
+            )
+
+            self.assertEqual(first["status"], "COMPLETED")
+            self.assertEqual(duplicate["status"], "IDEMPOTENT_SKIP")
+            self.assertEqual(interrupted["status"], "INTERRUPTED")
+            self.assertEqual(recovered["status"], "RECOVERED_COMPLETE")
+            self.assertEqual(calls, ["evening", "morning"])
+            self.assertTrue((root / "运行状态.md").is_file())
+
+    def test_r6_final_waits_then_commits_certificate_bound_result_once(self) -> None:
+        from KMFA.tools.dingtalk_attendance.automatic_closure import R6Coordinator
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            coordinator = R6Coordinator(root)
+            export_path = root / "official.xlsx"
+            certificate_path = root / "official.certificate.json"
+            final_marker = root / "final.complete"
+            calls = {"certificate": 0, "final": 0}
+
+            waiting = coordinator.advance_final(
+                work_date="2026-07-13",
+                export_finder=lambda: None,
+                certificate_builder=lambda _: certificate_path,
+                final_runner=lambda _: {"status": "OFFICIAL_FINAL_RECONCILIATION_PASS"},
+                completed_probe=lambda: None,
+            )
+            export_path.write_text("frozen", encoding="utf-8")
+
+            def build_certificate(_: Path) -> Path:
+                calls["certificate"] += 1
+                certificate_path.write_text("{}", encoding="utf-8")
+                return certificate_path
+
+            def run_final(_: Path) -> dict[str, object]:
+                calls["final"] += 1
+                final_marker.write_text("complete", encoding="utf-8")
+                return {
+                    "status": "OFFICIAL_FINAL_RECONCILIATION_PASS",
+                    "monthly_written": True,
+                }
+
+            completed = coordinator.advance_final(
+                work_date="2026-07-13",
+                export_finder=lambda: export_path,
+                certificate_builder=build_certificate,
+                final_runner=run_final,
+                completed_probe=lambda: ({"monthly_written": True} if final_marker.exists() else None),
+            )
+            duplicate = coordinator.advance_final(
+                work_date="2026-07-13",
+                export_finder=lambda: export_path,
+                certificate_builder=build_certificate,
+                final_runner=run_final,
+                completed_probe=lambda: ({"monthly_written": True} if final_marker.exists() else None),
+            )
+
+            self.assertEqual(waiting["status"], "WAITING_OFFICIAL_REPORT")
+            self.assertEqual(completed["status"], "OFFICIAL_FINAL_RECONCILIATION_PASS")
+            self.assertEqual(duplicate["status"], "IDEMPOTENT_SKIP")
+            self.assertEqual(calls, {"certificate": 1, "final": 1})
+
+    def test_r6_natural_acceptance_excludes_manual_runs(self) -> None:
+        from KMFA.tools.dingtalk_attendance.automatic_closure import R6Coordinator
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            coordinator = R6Coordinator(Path(tmpdir))
+            for work_date, trigger_source in (
+                ("2026-07-13", "automation"),
+                ("2026-07-14", "manual"),
+                ("2026-07-18", "automation"),
+            ):
+                for slot in ("morning", "evening"):
+                    coordinator.ensure_slot(
+                        work_date=work_date,
+                        run_slot=slot,
+                        trigger_source=trigger_source,
+                        runner=lambda: {
+                            "status": "COMPLETED",
+                            "notification_status": "NOT_SENT_OWNER_DISABLED",
+                            "member_count": 42,
+                        },
+                        completed_probe=lambda: None,
+                    )
+                coordinator.record_final_success(
+                    work_date=work_date,
+                    trigger_source=trigger_source,
+                    result={
+                        "status": "OFFICIAL_FINAL_RECONCILIATION_PASS",
+                        "differing_required_cells": 0,
+                        "monthly_written": True,
+                        "actual_workday": work_date != "2026-07-18",
+                    },
+                )
+
+            summary = coordinator.acceptance_summary()
+
+        self.assertEqual(summary["natural_completed_work_days"], 1)
+        self.assertEqual(summary["natural_completed_dates"], ["2026-07-13"])
+
+    def test_r6_official_csv_parser_preserves_49_columns_and_user_id_text(self) -> None:
+        import csv
+
+        from KMFA.tools.dingtalk_attendance.automatic_closure import parse_official_csv
+        from KMFA.tools.dingtalk_attendance.official_report_reconstruction import OFFICIAL_COLUMNS
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "official.csv"
+            rows = [
+                ["每日统计 统计日期：2026-07-15 至 2026-07-15"],
+                ["报表生成时间：2026-07-16 10:00"],
+                list(OFFICIAL_COLUMNS),
+                [""] * 49,
+            ]
+            for index in range(44):
+                row = [""] * 49
+                row[0] = f"测试员工{index + 1}"
+                row[5] = f"00{index + 1:04d}"
+                row[6] = "26-07-15 星期三"
+                row[7] = "1784044800000"
+                rows.append(row)
+            with path.open("w", encoding="utf-8-sig", newline="") as handle:
+                csv.writer(handle).writerows(rows)
+
+            standard = parse_official_csv(path, work_date="2026-07-15")
+
+        self.assertEqual(len(standard["values"]), 48)
+        self.assertTrue(all(len(row) == 49 for row in standard["values"]))
+        self.assertEqual(standard["values"][4][5], "000001")
+        self.assertEqual(standard["values"][-1][5], "000044")
+        self.assertIsNone(standard["values"][4][2])
+
+    def test_r6_official_export_selection_rejects_ambiguous_fingerprints(self) -> None:
+        from KMFA.tools.dingtalk_attendance.automatic_closure import (
+            OfficialExportAmbiguousError,
+            find_official_export,
+        )
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            first = root / "企业_每日统计_20260715-20260715.xlsx"
+            duplicate = root / "企业_每日统计_20260715-20260715 (1).xlsx"
+            first.write_bytes(b"same official workbook")
+            duplicate.write_bytes(first.read_bytes())
+
+            selected = find_official_export(
+                work_date="2026-07-15",
+                search_roots=[root],
+                validator=lambda _: True,
+            )
+            duplicate.write_bytes(b"different official workbook")
+            with self.assertRaises(OfficialExportAmbiguousError):
+                find_official_export(
+                    work_date="2026-07-15",
+                    search_roots=[root],
+                    validator=lambda _: True,
+                )
+
+        self.assertEqual(selected, duplicate)
+
     def test_identity_migration_new_writer_and_legacy_reader_contract(self) -> None:
         identity = importlib.import_module("KMFA.tools.dingtalk_attendance.identity")
         plan = build_run_plan(

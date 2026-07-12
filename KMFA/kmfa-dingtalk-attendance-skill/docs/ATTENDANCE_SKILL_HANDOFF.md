@@ -1,8 +1,8 @@
 # KMFA 钉钉考勤 skill 交接
 
-roadmap_progress: R6 / R6.1
+roadmap_progress: R6 / implementation and natural acceptance
 
-status: READY_FOR_OWNER_PREVIEW_DECISION
+status: AUTO_CLOSURE_IMPLEMENTED_AWAITING_NATURAL_RUNS
 
 r2_close_commit: b5b06437dfb15bfb0e302c4e735fe2978ddcd579
 
@@ -16,15 +16,21 @@ production_acceptance: NOT_EVALUATED
 
 owner_usability_status: NOT_ACCEPTED
 
-current_availability: NO_SEND_RUNTIME_VERIFIED
+current_availability: NO_SEND_RUNTIME_VERIFIED_NOT_PRODUCTION_ACCEPTED
 
-## R6.1 实际通知预览
+## R6 自动闭环
 
-- 已使用通过真实无发送验收的 2026-07-10 evening 与凭证绑定 final 私有结果生成一份本机私有《实际通知预览》。
-- 预览按现有模板原样展示晚间暂时提醒、官方最终核对和月累计文字；未修改代码、规则、模板、时间、时区或 automation。
-- 预览正文、员工明细和本机私有路径均未提交 GitHub。
-- 发送状态保持 `NOT_SENT_OWNER_DISABLED`；消息数 0、目标调用数 0。
-- 当前等待 owner 仅回复“能用”或指出具体不能使用的句子。
+- “通知预览”已取消，不再是验收项；现有群通知模板及相关模板代码完全冻结。
+- 新自动协调器按“工作日期 + run slot”去重，并通过私有原子状态与既有完整 artifact probe 支持进程中断后的安全续跑。
+- 晨间自然运行自动识别 latest pending work date；先查找已下载官方 XLS/XLSX，无文件时使用现有钉钉登录态只读导出。官方报告尚未生成时记录 `WAITING_OFFICIAL_REPORT`，下一次自然晨间运行自动继续。
+- 官方原件冻结 SHA-256 后，现有 48 列还原器生成统一正式凭证；协调器把凭证直接传给 `final_reconciliation.py`，不再要求人工提供 `--independent-reconciliation-evidence`。
+- final 与月累计均由 artifact-bound probe 和 canonical writer 保证只写一次；旧历史、morning、evening 与未绑定凭证的 final 不进入新月累计。
+- 本机私有层生成中文《运行状态》；GitHub 只记录聚合状态，不提交官方原件、员工明细、逐格差异、运行状态正文或私有路径。
+- 离线真实冻结原件回归：48×49 表格与既有冻结标准精确一致；同日还原为 44 人、48 个必需字段、2,112 格、零真实差异。
+- 防重复与中断恢复的 focused regression 已通过；连续 5 个实际工作日自然无发送验收从 `0/5` 开始，人工触发不计数。
+- 发送继续硬关闭：`NOT_SENT_OWNER_DISABLED`，消息数与目标调用数必须为 0。
+
+next_action: existing morning/evening natural automations accumulate five qualifying workdays; fail closed on the first unresolved real breakpoint
 
 ## R4.1–R4.3 独立官方原件对账
 
@@ -47,7 +53,7 @@ current_availability: NO_SEND_RUNTIME_VERIFIED
 - evening/final receipt 均为 `NOT_SENT_OWNER_DISABLED`，消息 0、目标调用 0。
 - 未修改 automation、schedule、time、timezone、cwd、发送目标或通知文案；未触碰其他 skill。
 
-next_action: owner decides whether and when to evaluate any delivery-enabled stage
+delivery_enablement: OUT_OF_SCOPE
 
 ## R3.3 撤回与证据判定
 
