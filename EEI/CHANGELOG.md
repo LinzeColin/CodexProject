@@ -1,5 +1,16 @@
 # Changelog
 
+## T101/A005 PostgreSQL clean environment - 2026-07-13
+
+- Added an isolated PostgreSQL 16 Compose clean-start validator using a dedicated
+  project, container, localhost port and disposable volume.
+- The first probe correctly failed its cleanup contract after the temporary
+  override expired before `compose down`; only the isolated container, volume and
+  network were removed manually, while the active A209 PostgreSQL and worker IDs,
+  start times and health remained unchanged.
+- The corrected probe passes clean-start, health, SQL identity and full teardown,
+  closes T101/A005 locally, and keeps A209 plus MVP release readiness open.
+
 ## Cloudflare L2 public explorer — 2026-07-10
 
 - 新增隔离的 `apps/cloudflare-public` 静态 explorer、Workers Static Assets 配置、隐私扫描和兼容性回归。

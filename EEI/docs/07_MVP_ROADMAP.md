@@ -19,6 +19,14 @@ This section is a pursuing-goal reference for future bounded Run Contracts, not 
 - Phase 1.5：后台调度、自动唤醒、幂等、重试、dead-letter。
 - Phase 1.6：服务端保存视图、冲突控制、恢复。
 
+Phase 1.1 status (2026-07-13): `DONE_FOR_IMPLEMENTATION`. `T101/A005` proves an
+isolated PostgreSQL 16 Compose clean start, health, SQL identity and full teardown
+without restarting the active A209 PostgreSQL/worker containers. Existing
+`T200-T208/A011-A028`, `T905/A119-A120` and `T1300/A201` evidence covers reversible
+migrations, schema invariants and deterministic seed/fixture strategy. A026/A027
+remain separate T904 production gold-set release-quality gates and do not become
+PASS through Phase 1.1 closure. This status does not imply MVP release readiness.
+
 每个 task 必须绑定已有 Acceptance IDs；如果 `acceptance_traceability` 没有映射，先记录 gap，不直接开发。
 
 ### Stage 2 - Frontend, Scale, and Operational Evidence

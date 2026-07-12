@@ -3,7 +3,7 @@ A001,P0,planning,"Plan lists scope, files, commands, tests, risks, rollback and 
 A002,P0,planning,"ADRs cover graph budget, URL state, score versioning, append-only logs and 14-day calibration",ADR review,NOT STARTED
 A003,P0,planning,Prototype/MVP/robust tracks cannot silently change P0 Definition of Done,Plan review,NOT STARTED
 A004,P0,bootstrap,Runtime and dependencies pinned with lockfiles,Clean bootstrap + lock inspection,NOT STARTED
-A005,P0,bootstrap,Docker Compose PostgreSQL and health checks work from clean environment,Integration test,NOT STARTED
+A005,P0,bootstrap,Docker Compose PostgreSQL and health checks work from clean environment,Integration test,DONE
 A006,P0,bootstrap,Makefile exposes required non-interactive commands,Command smoke,NOT STARTED
 A007,P0,bootstrap,make verify fails on skipped or failed required suites,Negative test,NOT STARTED
 A008,P0,bootstrap,Network is off by default and secrets are absent,Config/secret scan,NOT STARTED

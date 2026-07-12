@@ -1,0 +1,101 @@
+{
+  "schema_version": "eei-a005-postgres-clean-environment-v1",
+  "status": "PASS",
+  "task_id": "T101",
+  "acceptance_ids": [
+    "A005"
+  ],
+  "generated_at": "2026-07-12T23:22:13+00:00",
+  "source_commit": "69ff0412",
+  "release_scope": {
+    "a005_closed_by_validator": true,
+    "mvp_release_ready": false
+  },
+  "runtime": {
+    "docker_server_version": "29.6.1",
+    "docker_compose_version": "5.3.0",
+    "postgres_image": "postgres:16"
+  },
+  "isolation": {
+    "project_name": "eei-a005-t101",
+    "container_name": "eei-a005-postgres",
+    "host": "127.0.0.1",
+    "host_port": 55432,
+    "container_port": 5432,
+    "volume_name": "eei-a005-t101-postgres-data",
+    "healthcheck_present": true
+  },
+  "checks": {
+    "clean_container_precondition": true,
+    "clean_volume_precondition": true,
+    "host_port_available_precondition": true,
+    "merged_compose_config_isolated": true,
+    "container_running": true,
+    "container_healthy": true,
+    "host_sql_identity": {
+      "database": "eei",
+      "user": "eei",
+      "server_version_num": "160014",
+      "select_one": 1
+    }
+  },
+  "protected_resources": {
+    "before": {
+      "eei-postgres": {
+        "id": "31d2f53d14afd7b69a02d2d0420d09d39b296917421f50158fdcca6eaf00e8c1",
+        "name": "eei-postgres",
+        "image": "postgres:16",
+        "state": "running",
+        "health": "healthy",
+        "started_at": "2026-07-12T22:49:45.160917544Z",
+        "compose_project": "eei",
+        "compose_service": "postgres"
+      },
+      "eei-worker": {
+        "id": "967fcabf9fa7a02b52f2307aefeb080980d0c5688d5015732b93e2e37bc8809f",
+        "name": "eei-worker",
+        "image": "eei-worker",
+        "state": "running",
+        "health": "healthy",
+        "started_at": "2026-07-12T22:49:44.851580169Z",
+        "compose_project": "eei",
+        "compose_service": "worker"
+      }
+    },
+    "after": {
+      "eei-postgres": {
+        "id": "31d2f53d14afd7b69a02d2d0420d09d39b296917421f50158fdcca6eaf00e8c1",
+        "name": "eei-postgres",
+        "image": "postgres:16",
+        "state": "running",
+        "health": "healthy",
+        "started_at": "2026-07-12T22:49:45.160917544Z",
+        "compose_project": "eei",
+        "compose_service": "postgres"
+      },
+      "eei-worker": {
+        "id": "967fcabf9fa7a02b52f2307aefeb080980d0c5688d5015732b93e2e37bc8809f",
+        "name": "eei-worker",
+        "image": "eei-worker",
+        "state": "running",
+        "health": "healthy",
+        "started_at": "2026-07-12T22:49:44.851580169Z",
+        "compose_project": "eei",
+        "compose_service": "worker"
+      }
+    }
+  },
+  "cleanup": {
+    "down_exit_code": 0,
+    "container_absent": true,
+    "volume_absent": true,
+    "network_absent": true,
+    "protected_containers_unchanged": true
+  },
+  "rollback": [
+    "docker compose --project-name eei-a005-t101 down -v --remove-orphans",
+    "docker rm -f eei-a005-postgres only if the isolated container remains",
+    "docker volume rm eei-a005-t101-postgres-data only if the isolated volume remains",
+    "Do not stop, recreate or remove eei-postgres or eei-worker during A209."
+  ]
+}

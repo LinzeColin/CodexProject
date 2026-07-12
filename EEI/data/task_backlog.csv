@@ -5,7 +5,7 @@ T002,G0,P0,"Write ADRs for recursion, URL state, scoring, logs and calibration",
 T003,G0,P0,Map every P0 acceptance to tasks and tests,T002,"A001,A003",NOT STARTED
 T004,G0,P0,"Record exact file scope, commands, risks and rollback",T003,A001,NOT STARTED
 T100,G1,P0,Create pnpm/uv monorepo skeleton,T004,"A004,A010",NOT STARTED
-T101,G1,P0,Add Docker Compose PostgreSQL and health checks,T100,A005,NOT STARTED
+T101,G1,P0,Add Docker Compose PostgreSQL and health checks,T100,A005,DONE
 T102,G1,P0,Add Makefile and deterministic make verify,T100,"A006,A007",NOT STARTED
 T103,G1,P0,Create FastAPI and Next.js health shells,T101,A005,NOT STARTED
 T104,G1,P0,Add contract/static validation and secret scan,T102,"A008,A009",NOT STARTED
