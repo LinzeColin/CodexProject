@@ -1,5 +1,20 @@
 # Changelog
 
+## T701/A098/A099 SEC retry and hash cache - 2026-07-13
+
+- Added a 10-second default/30-second maximum timeout and at most three attempts
+  for SEC requests, with bounded exponential backoff, bounded jitter, Retry-After
+  capping, and explicit timeout/429/503 retry behavior.
+- Every retry remains subject to the existing 8 request starts/second limiter;
+  non-retryable statuses fail immediately and exhausted retries preserve the final
+  HTTPX exception/status error.
+- Added per-canonical-URL SHA-256 tracking of successful raw JSON response bytes.
+  Unchanged responses set `processing_required=false`; failed or invalid JSON does
+  not replace the last successful hash. The in-memory cache does not skip network
+  retrieval and does not claim persistent ingestion state.
+- Added mock/repeated-fixture A098/A099 artifacts. T702-T706, T1301/A202, A209 and
+  MVP release readiness remain open.
+
 ## T700/A096/A097 SEC client foundation - 2026-07-13
 
 - Added a fail-closed async SEC EDGAR client with descriptive contact-bearing

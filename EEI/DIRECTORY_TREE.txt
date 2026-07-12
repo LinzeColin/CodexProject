@@ -20,6 +20,9 @@ Enterprise_Ecosystem_Intelligence_release
 ├── apps
 │   ├── api
 │   │   ├── app
+│   │   │   ├── ingest
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── sec_client.py
 │   │   │   ├── __init__.py
 │   │   │   ├── db_health.py
 │   │   │   ├── domain.py
@@ -92,6 +95,10 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   └── t501_structure_type_separation.json
 │   │   ├── a063
 │   │   │   └── t501_commercial_empire_not_control.json
+│   │   ├── a096
+│   │   │   └── t700_sec_client_allowlist_contract.json
+│   │   ├── a097
+│   │   │   └── t700_sec_client_rate_limit_contract.json
 │   │   ├── a119
 │   │   │   └── t905_migration_rollback_rehearsal.json
 │   │   ├── a120
@@ -451,6 +458,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── validate_prototype_parity.py
 │   ├── validate_release_decision_bundle.py
 │   ├── validate_release_manager_activation.py
+│   ├── validate_sec_client_contract.py
 │   ├── validate_t905_release_rehearsal.py
 │   ├── validate_task_pack.py
 │   ├── validate_ui_copy.py
@@ -512,7 +520,8 @@ Enterprise_Ecosystem_Intelligence_release
 │       ├── test_release_decision_bundle.py
 │       ├── test_release_manager_activation.py
 │       ├── test_scale_benchmarks.py
-│       └── test_scoring.py
+│       ├── test_scoring.py
+│       └── test_sec_client.py
 ├── wireframes
 │   ├── README.md
 │   ├── dashboard_wireframe.png

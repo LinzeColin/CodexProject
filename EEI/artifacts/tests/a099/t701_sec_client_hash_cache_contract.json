@@ -1,0 +1,34 @@
+{
+  "schema_version": "eei-a099-sec-client-hash-cache-contract-v1",
+  "status": "PASS",
+  "acceptance_ids": [
+    "A099"
+  ],
+  "task_id": "T701",
+  "generated_at": "2026-07-12T23:44:30Z",
+  "source_commit": "01c47d34",
+  "release_scope": {
+    "live_sec_request_performed": false,
+    "a202_closed_by_contract": false,
+    "a209_closed_by_contract": false,
+    "mvp_release_ready": false
+  },
+  "test_evidence": [
+    "tests/unit/test_sec_client.py",
+    "httpx.MockTransport",
+    "repeated in-memory response fixtures"
+  ],
+  "contract": {
+    "hash_algorithm": "sha256",
+    "hash_input": "raw successful response bytes",
+    "cache_key": "canonical request URL",
+    "cache_lifetime": "in_memory_client_or_injected_cache_instance",
+    "cache_updates_after_successful_json_parse_only": true,
+    "first_or_changed_content_processing_required": true,
+    "unchanged_content_processing_required": false,
+    "failed_or_invalid_responses_replace_last_successful_hash": false,
+    "network_fetch_skipped_by_hash_cache": false,
+    "duplicate_downstream_processing_skipped": true,
+    "repeated_fixture_validation": true
+  }
+}

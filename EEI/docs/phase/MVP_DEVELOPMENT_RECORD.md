@@ -1,5 +1,58 @@
 # MVP Development Record
 
+## 2026-07-13 - T701/A098/A099 SEC retry and hash-cache contract
+
+Status: LOCAL FOCUSED VALIDATED; REMOTE CI PENDING; PHASE 1.2 IN PROGRESS; MVP RELEASE BLOCKED
+
+### Goal and Scope
+
+- Add bounded timeout and retry semantics to the T700 SEC client without weakening
+  the A096 host/User-Agent controls or A097 request-start limiter.
+- Retry only `httpx.TimeoutException`, HTTP 429 and HTTP 503 by default, with at
+  most three total attempts. Each attempt remains rate limited.
+- Add bounded exponential backoff (`0.25s` base, `2.0s` cap), bounded jitter
+  (`0.125s` cap), and bounded numeric `Retry-After` handling.
+- Hash successful raw JSON response bytes with SHA-256 per canonical URL. First or
+  changed content requires processing; unchanged content skips duplicate downstream
+  processing. Network retrieval still occurs and cache state is in-memory only.
+
+### Acceptance and Evidence
+
+- `T701 -> A098`: `apps/api/app/ingest/sec_client.py`, mock timeout/429/503 tests,
+  `scripts/validate_sec_client_contract.py`, and
+  `artifacts/tests/a098/t701_sec_client_retry_contract.json`.
+- `T701 -> A099`: repeated/changed/invalid JSON fixture tests and
+  `artifacts/tests/a099/t701_sec_client_hash_cache_contract.json`.
+- Contract evidence records `live_sec_request_performed=false`,
+  `a202_closed_by_contract=false`, `a209_closed_by_contract=false`, and
+  `mvp_release_ready=false`.
+
+### Parameters and Model Boundary
+
+- Runtime timeout: default `10s`, hard maximum `30s`.
+- Retry attempts: maximum `3`; statuses `429,503`; base/cap/jitter `0.25/2.0/0.125s`.
+- Hash algorithm: SHA-256 over successful raw response bytes, keyed by canonical URL.
+- These are ingestion reliability parameters, not scoring/model weights or an
+  active model version change. No database, API route, publication or release gate
+  behavior is claimed complete by this task.
+
+### Validation
+
+- `.venv/bin/pytest -q tests/unit/test_sec_client.py`: PASS, `23/23`.
+- `.venv/bin/pytest -q tests/unit`: PASS, `164/164` with one third-party
+  Starlette/httpx deprecation warning.
+- Focused Ruff: PASS.
+- SEC contract generate/validate: PASS for A096-A099 without live network access.
+- Governance/artifact/checksum fixed-point validation remains required before commit.
+
+### Risk, Rollback, and Stop Conditions
+
+- Risk: retry amplification or cache truth overstatement. Hard attempt/delay caps,
+  per-attempt rate limiting and explicit network-fetch/cache boundaries mitigate it.
+- Rollback: revert only the T701 commit and A098/A099 artifacts; T700 remains intact.
+- Stop on A209 failure, unbounded retry behavior, failed-response cache mutation,
+  traceability drift, governance failure or checksum mismatch.
+
 ## 2026-07-13 - T700/A096/A097 SEC EDGAR client foundation
 
 Status: LOCAL FOCUSED VALIDATED; REMOTE CI PENDING; PHASE 1.2 IN PROGRESS; MVP RELEASE BLOCKED

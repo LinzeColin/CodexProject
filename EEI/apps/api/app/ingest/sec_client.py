@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
+import math
+import random
 import re
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
@@ -16,6 +19,13 @@ SEC_MIN_REQUEST_INTERVAL_SECONDS = 1 / SEC_MAX_REQUESTS_PER_SECOND
 SEC_DATA_BASE_URL = "https://data.sec.gov/"
 SEC_SUBMISSIONS_PATH = "submissions/CIK{cik}.json"
 SEC_COMPANY_FACTS_PATH = "api/xbrl/companyfacts/CIK{cik}.json"
+SEC_DEFAULT_TIMEOUT_SECONDS = 10.0
+SEC_MAX_TIMEOUT_SECONDS = 30.0
+SEC_MAX_ATTEMPTS = 3
+SEC_RETRY_BACKOFF_BASE_SECONDS = 0.25
+SEC_RETRY_BACKOFF_CAP_SECONDS = 2.0
+SEC_RETRY_JITTER_CAP_SECONDS = 0.125
+SEC_RETRYABLE_STATUS_CODES = frozenset({429, 503})
 
 _CONTACT_EMAIL_PATTERN = re.compile(
     r"(?i)(?<![\w.+-])[a-z0-9.!#$%&'*+/=?^_`{|}~-]+"
@@ -25,6 +35,7 @@ _CONTACT_EMAIL_PATTERN = re.compile(
 
 Clock = Callable[[], float]
 Sleeper = Callable[[float], Awaitable[None]]
+Jitter = Callable[[float], float]
 
 
 class SecClientConfigurationError(ValueError):
@@ -33,6 +44,10 @@ class SecClientConfigurationError(ValueError):
 
 class SecUrlNotAllowedError(ValueError):
     """Raised when a request is outside the governed SEC host boundary."""
+
+
+def random_jitter(maximum_seconds: float) -> float:
+    return random.uniform(0.0, maximum_seconds)
 
 
 def validate_sec_user_agent(value: str) -> str:
@@ -130,11 +145,107 @@ class DeterministicRateLimiter:
 
 
 @dataclass(frozen=True)
+class SecRetryPolicy:
+    max_attempts: int = SEC_MAX_ATTEMPTS
+    backoff_base_seconds: float = SEC_RETRY_BACKOFF_BASE_SECONDS
+    backoff_cap_seconds: float = SEC_RETRY_BACKOFF_CAP_SECONDS
+    jitter_cap_seconds: float = SEC_RETRY_JITTER_CAP_SECONDS
+    retryable_status_codes: frozenset[int] = SEC_RETRYABLE_STATUS_CODES
+
+    def __post_init__(self) -> None:
+        if not 1 <= self.max_attempts <= SEC_MAX_ATTEMPTS:
+            raise ValueError(f"max_attempts must be between 1 and {SEC_MAX_ATTEMPTS}")
+        if self.backoff_base_seconds <= 0:
+            raise ValueError("backoff_base_seconds must be positive")
+        if self.backoff_cap_seconds < self.backoff_base_seconds:
+            raise ValueError("backoff_cap_seconds must be >= backoff_base_seconds")
+        if not 0 <= self.jitter_cap_seconds <= self.backoff_cap_seconds:
+            raise ValueError("jitter_cap_seconds must be between 0 and backoff_cap_seconds")
+        if not SEC_RETRYABLE_STATUS_CODES.issubset(self.retryable_status_codes):
+            raise ValueError("retryable_status_codes must include HTTP 429 and 503")
+
+    def delay_seconds(
+        self,
+        *,
+        failed_attempt: int,
+        retry_after_seconds: float | None,
+        jitter: Jitter,
+    ) -> float:
+        if not 1 <= failed_attempt < self.max_attempts:
+            raise ValueError("failed_attempt must identify a retryable non-final attempt")
+        exponential = self.backoff_base_seconds * (2 ** (failed_attempt - 1))
+        base_delay = min(self.backoff_cap_seconds, exponential)
+        if retry_after_seconds is not None:
+            base_delay = min(
+                self.backoff_cap_seconds,
+                max(base_delay, retry_after_seconds),
+            )
+        jitter_seconds = jitter(self.jitter_cap_seconds)
+        if (
+            not math.isfinite(jitter_seconds)
+            or jitter_seconds < 0
+            or jitter_seconds > self.jitter_cap_seconds
+        ):
+            raise SecClientConfigurationError("retry jitter returned an out-of-range value")
+        return min(self.backoff_cap_seconds, base_delay + jitter_seconds)
+
+
+def parse_retry_after_seconds(value: str | None) -> float | None:
+    if value is None:
+        return None
+    try:
+        parsed = float(value.strip())
+    except ValueError:
+        return None
+    if not math.isfinite(parsed) or parsed < 0:
+        return None
+    return parsed
+
+
+@dataclass(frozen=True)
+class ContentHashDecision:
+    content_sha256: str
+    previous_content_sha256: str | None
+    processing_required: bool
+
+    @property
+    def cache_hit(self) -> bool:
+        return not self.processing_required
+
+
+class ContentHashCache:
+    """Track the last successful raw-response hash per canonical request URL."""
+
+    def __init__(self) -> None:
+        self._hashes: dict[str, str] = {}
+        self._lock = asyncio.Lock()
+
+    async def observe(self, *, url: str, content: bytes) -> ContentHashDecision:
+        content_sha256 = hashlib.sha256(content).hexdigest()
+        async with self._lock:
+            previous = self._hashes.get(url)
+            processing_required = previous != content_sha256
+            if processing_required:
+                self._hashes[url] = content_sha256
+        return ContentHashDecision(
+            content_sha256=content_sha256,
+            previous_content_sha256=previous,
+            processing_required=processing_required,
+        )
+
+
+@dataclass(frozen=True)
 class SecJsonResponse:
     url: str
     status_code: int
     payload: Any
     request_id: str | None
+    attempt_count: int
+    retry_delays_seconds: tuple[float, ...]
+    content_sha256: str
+    previous_content_sha256: str | None
+    processing_required: bool
+    cache_hit: bool
 
 
 class SecEdgarClient:
@@ -143,13 +254,23 @@ class SecEdgarClient:
         *,
         user_agent: str,
         limiter: DeterministicRateLimiter | None = None,
-        timeout_seconds: float = 10.0,
+        retry_policy: SecRetryPolicy | None = None,
+        content_hash_cache: ContentHashCache | None = None,
+        timeout_seconds: float = SEC_DEFAULT_TIMEOUT_SECONDS,
+        retry_sleep: Sleeper = asyncio.sleep,
+        jitter: Jitter = random_jitter,
         transport: httpx.AsyncBaseTransport | None = None,
     ) -> None:
-        if timeout_seconds <= 0:
-            raise ValueError("timeout_seconds must be positive")
+        if not 0 < timeout_seconds <= SEC_MAX_TIMEOUT_SECONDS:
+            raise ValueError(
+                f"timeout_seconds must be > 0 and <= {SEC_MAX_TIMEOUT_SECONDS}"
+            )
         self.user_agent = validate_sec_user_agent(user_agent)
         self.limiter = limiter or DeterministicRateLimiter()
+        self.retry_policy = retry_policy or SecRetryPolicy()
+        self.content_hash_cache = content_hash_cache or ContentHashCache()
+        self._retry_sleep = retry_sleep
+        self._jitter = jitter
         self._client = httpx.AsyncClient(
             headers={
                 "Accept": "application/json",
@@ -171,16 +292,59 @@ class SecEdgarClient:
         await self._client.aclose()
 
     async def get_json(self, url: str) -> SecJsonResponse:
-        request_url = validate_sec_url(url)
-        await self.limiter.acquire()
-        response = await self._client.get(request_url)
-        response.raise_for_status()
-        return SecJsonResponse(
-            url=str(response.url),
-            status_code=response.status_code,
-            payload=response.json(),
-            request_id=response.headers.get("x-amzn-requestid"),
-        )
+        request_url = str(httpx.URL(validate_sec_url(url)))
+        retry_delays: list[float] = []
+        for attempt in range(1, self.retry_policy.max_attempts + 1):
+            await self.limiter.acquire()
+            try:
+                response = await self._client.get(request_url)
+            except httpx.TimeoutException:
+                if attempt == self.retry_policy.max_attempts:
+                    raise
+                delay = self.retry_policy.delay_seconds(
+                    failed_attempt=attempt,
+                    retry_after_seconds=None,
+                    jitter=self._jitter,
+                )
+                retry_delays.append(delay)
+                await self._retry_sleep(delay)
+                continue
+
+            if (
+                response.status_code in self.retry_policy.retryable_status_codes
+                and attempt < self.retry_policy.max_attempts
+            ):
+                delay = self.retry_policy.delay_seconds(
+                    failed_attempt=attempt,
+                    retry_after_seconds=parse_retry_after_seconds(
+                        response.headers.get("retry-after")
+                    ),
+                    jitter=self._jitter,
+                )
+                retry_delays.append(delay)
+                await response.aclose()
+                await self._retry_sleep(delay)
+                continue
+
+            response.raise_for_status()
+            payload = response.json()
+            cache = await self.content_hash_cache.observe(
+                url=request_url,
+                content=response.content,
+            )
+            return SecJsonResponse(
+                url=str(response.url),
+                status_code=response.status_code,
+                payload=payload,
+                request_id=response.headers.get("x-amzn-requestid"),
+                attempt_count=attempt,
+                retry_delays_seconds=tuple(retry_delays),
+                content_sha256=cache.content_sha256,
+                previous_content_sha256=cache.previous_content_sha256,
+                processing_required=cache.processing_required,
+                cache_hit=cache.cache_hit,
+            )
+        raise AssertionError("SEC retry loop exhausted without returning or raising")
 
     async def get_submissions(self, cik: str | int) -> SecJsonResponse:
         return await self.get_json(SEC_SUBMISSIONS_PATH.format(cik=normalize_cik(cik)))

@@ -1,0 +1,41 @@
+{
+  "schema_version": "eei-a098-sec-client-retry-contract-v1",
+  "status": "PASS",
+  "acceptance_ids": [
+    "A098"
+  ],
+  "task_id": "T701",
+  "generated_at": "2026-07-12T23:44:30Z",
+  "source_commit": "01c47d34",
+  "release_scope": {
+    "live_sec_request_performed": false,
+    "a202_closed_by_contract": false,
+    "a209_closed_by_contract": false,
+    "mvp_release_ready": false
+  },
+  "test_evidence": [
+    "tests/unit/test_sec_client.py",
+    "httpx.MockTransport",
+    "repeated in-memory response fixtures"
+  ],
+  "contract": {
+    "default_timeout_seconds": 10.0,
+    "timeout_upper_bound_seconds": 30.0,
+    "max_attempts": 3,
+    "retryable_exceptions": [
+      "httpx.TimeoutException"
+    ],
+    "retryable_status_codes": [
+      429,
+      503
+    ],
+    "backoff_algorithm": "bounded_exponential_with_jitter",
+    "backoff_base_seconds": 0.25,
+    "backoff_cap_seconds": 2.0,
+    "jitter_cap_seconds": 0.125,
+    "retry_after_delta_seconds_honored": true,
+    "retry_after_bounded_by_backoff_cap": true,
+    "rate_limiter_applies_to_every_attempt": true,
+    "mock_http_validation": true
+  }
+}
