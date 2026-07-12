@@ -1,5 +1,12 @@
 # Changelog
 
+## IDS v0.1 STAGE-038 Phase 2 - 2026-07-13
+
+- Added a standard-library `asyncio` in-memory queue and one isolated worker that returns submission acknowledgement before completion and processes only real Git-tracked control references.
+- Reused STAGE-037 `QUEUED -> CLAIMED -> RUNNING -> SUCCEEDED/FAILED` transitions and Chinese owner projections; records now carry bounded input, output, error, checkpoint, state-history, and audit refs.
+- Added idempotent duplicate admission, bounded capacity backpressure, fail-closed raw/untracked/secret rejection, and an actual worker-failure path without persisting runtime files.
+- Pinned the Stage037 checker/index and Phase1 source evidence hashes in a machine contract. Production queue activation, database/schema writes, IDS_MetaData access, fake business data, GitHub, app reinstall, Phase 3, and whole-stage review remain disabled.
+
 ## IDS v0.1 STAGE-038 Phase 1 Source Reverification - 2026-07-11
 
 - Reverified the unique approved Stage038 taskpack member and recorded the exact archive, member, roadmap, and instruction SHA-256 values under `ACC-STAGE-038`.

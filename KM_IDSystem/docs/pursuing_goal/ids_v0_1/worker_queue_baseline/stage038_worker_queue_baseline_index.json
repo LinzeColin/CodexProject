@@ -1,0 +1,100 @@
+{
+  "schema_version": "ids.stage038.worker_queue_baseline.index.v1",
+  "stage": "STAGE-038",
+  "phase": "Phase 2",
+  "task_id": "IDS-V0_1-STAGE038-P2",
+  "acceptance_id": "ACC-STAGE-038",
+  "pursuing_goal": "建立异步 worker 队列，避免长任务阻塞前端和 API。",
+  "source_bindings": {
+    "stage037_job_state_index_ref": {
+      "path": "docs/pursuing_goal/ids_v0_1/job_state_model/stage037_job_state_model_index.json",
+      "sha256": "b70bf72ebe4212f45d380c13fbfe429791e1f4a5c73dccbba81211b7adc1c2d3"
+    },
+    "stage037_job_state_checker_ref": {
+      "path": "scripts/check_job_state_model.py",
+      "sha256": "7de8746b70ca1eaba78b672deebd9973113cedeacf3edbba09d2afb90407f404"
+    },
+    "stage038_phase1_boundary_ref": {
+      "path": "docs/pursuing_goal/ids_v0_1/STAGE038_PHASE1_WORKER_QUEUE_SCOPE_BOUNDARY.md",
+      "sha256": "d8930c3c3c9551afb2801952bb42d135247847352838aeb37b988d6c283f6e76"
+    },
+    "stage038_source_reverification_ref": {
+      "path": "docs/pursuing_goal/ids_v0_1/STAGE038_PHASE1_SOURCE_REVERIFICATION.md",
+      "sha256": "e5806522985fe06cb0c09af8c15da310af643b338a4cc2b60baca1bfcb3e04d9"
+    }
+  },
+  "worker_queue_contract": {
+    "schema_version": "ids.worker_queue_baseline.v0_1.p2",
+    "queue_mode": "ASYNCIO_IN_MEMORY_ISOLATED_NON_PRODUCTION",
+    "submission_mode": "SYNCHRONOUS_ACK_ASYNC_WORKER",
+    "ordering_policy": "FIFO_ADMISSION_SEQUENCE_NO_PRIORITY_REORDERING",
+    "job_control_envelope_schema": "ids.job_control_envelope.v1",
+    "job_state_model_version": "ids.job_state.v1",
+    "state_transition_owner": "STAGE-037",
+    "worker_count": 1,
+    "default_isolated_capacity": 1,
+    "maximum_isolated_capacity": 16,
+    "capacity_backpressure_result": "QUEUE_CAPACITY_REACHED",
+    "duplicate_admission_result": "EXISTING_QUEUE_ENTRY",
+    "identity_derivation": "SHA256_TASK_INPUT_JOB_TYPE",
+    "lock_key_derivation": "SAME_INPUT_SAME_RESOURCE_CONFLICT_KEY",
+    "dependency_policy": "NONEMPTY_DEPENDENCY_REFS_FAIL_CLOSED_IN_BASELINE",
+    "claim_mode": "IN_PROCESS_RESOURCE_LOCK_AND_FENCING_ONLY",
+    "operation_contract_version": "ids.worker.operation.hash_tracked_control_ref.v1",
+    "runtime_persistence_performed": false,
+    "production_runtime_activation_allowed": false
+  },
+  "reference_policy": {
+    "payload_size_bytes_maximum": 1048576,
+    "maximum_text_length": 512,
+    "maximum_refs_per_field": 64,
+    "input_ref_count": 1,
+    "input_ref_prefix": "repo:KM_IDSystem/",
+    "input_must_be_git_tracked": true,
+    "absolute_path_allowed": false,
+    "parent_path_segment_allowed": false,
+    "raw_body_fields_allowed": false,
+    "plaintext_secrets_allowed": false,
+    "raw_metadata_content_access_allowed": false
+  },
+  "operation_contract": {
+    "schema_version": "ids.worker.operation.hash_tracked_control_ref.v1",
+    "operation": "SHA256_GIT_TRACKED_CONTROL_FILE",
+    "allowed_repository_prefix": "KM_IDSystem/",
+    "output_ref_format": "sha256:<64-lower-hex>",
+    "checkpoint_ref_format": "checkpoint:sha256:<64-lower-hex>",
+    "writes_runtime_output": false,
+    "reads_ids_business_data": false,
+    "calls_external_api": false
+  },
+  "runtime_ownership": {
+    "queue_and_claim_transport_baseline": "STAGE-038",
+    "retry_and_dead_letter_policy": "STAGE-039",
+    "measured_backpressure_and_fairness": "STAGE-040",
+    "production_lock_lease_and_fencing": "STAGE-041",
+    "production_automatic_lifecycle": "STAGE-042",
+    "worker_crash_recovery": "STAGE-043",
+    "half_product_cleanup": "STAGE-044"
+  },
+  "truth_contract": {
+    "execution_mode": "ISOLATED_NON_PRODUCTION_ASYNC_CONTROL_METADATA_SLICE",
+    "isolated_non_production_runtime_allowed": true,
+    "queue_runtime_performed_by_phase2_smoke": true,
+    "worker_runtime_performed_by_phase2_smoke": true,
+    "isolated_control_job_created_by_phase2_smoke": true,
+    "production_runtime_activation_performed": false,
+    "claim_persistence_performed": false,
+    "persistent_queue_write_performed": false,
+    "database_connection_performed": false,
+    "schema_change_performed": false,
+    "state_registry_write_performed": false,
+    "runtime_output_written": false,
+    "ids_business_source_read_performed": false,
+    "external_api_call_performed": false,
+    "raw_metadata_content_accessed": false,
+    "fake_ids_business_data_used": false,
+    "real_ids_business_job_created": false,
+    "github_upload_allowed": false,
+    "app_reinstall_allowed": false
+  }
+}
