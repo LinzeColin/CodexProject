@@ -1,3 +1,10 @@
+## 0.1.4-one-time-github-main-upload - 2026-07-13
+
+- 建立 `V014_ONE_TIME_GITHUB_MAIN_UPLOAD` public-safe closure evidence、validator、focused tests 和治理链，目标为唯一非 force `HEAD -> refs/heads/main` 推送及远端 commit parity。
+- 合并 `origin/main` 后修复两组集成回归：v1.4 S17 public-safe 锁定不再继承后续 owner 明文授权策略；考勤 canonical prompt 与 metadata 镜像统一到项目级 worktree 和 bounded runner 边界。
+- 本次上传明确排除 raw/private 明文、压缩包、Excel、PDF、私有 CSV、数据库、银行流水、合同、工资、税务材料、凭据和 secret。
+- 代码上传不改变业务门禁：`Q4 / D / NO_GO / 3-9-2-1`、lineage full=false、delivery=false；App 重装延期到下一独立 phase。
+
 ## 0.1.4-final-overall-review - 2026-07-12
 
 - 完成 v1.4 Stage 1-18 current evidence 最终整体复审：S01-S08 original 与 S09-S18 post-remediation validators 18/18 PASS。

@@ -1,11 +1,11 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
-product_version: "0.1.4-final-overall-review"
-product_version_status: "completed_validated_local_only_final_overall_review_no_go_code_upload_ready"
-version_file_value: "0.1.4-final-overall-review"
+product_version: "0.1.4-one-time-github-main-upload"
+product_version_status: "uploaded_to_github_main_public_safe"
+version_file_value: "0.1.4-one-time-github-main-upload"
 schema_version: "1.0.0"
 model_versions:
-  MOD-KMFA-GOV-001: "0.1.4-final-overall-review"
+  MOD-KMFA-GOV-001: "0.1.4-one-time-github-main-upload"
   MOD-KMFA-METADATA-001: "0.1.4-s02p1-metadata-protocol"
   MOD-KMFA-IMMUTABILITY-001: "0.1.4-s02p2-immutability-policy"
   MOD-KMFA-QUALITY-GATE-001: "0.1.4-s02p3-quality-gate"
@@ -14,6 +14,7 @@ model_versions:
   MOD-KMFA-SOURCE-PRIORITY-001: "0.1.4-s03p3-source-priority"
   MOD-KMFA-COST-001: "0.1.4-s16-stage-review"
 parameter_profile_versions:
+  kmfa_v014_one_time_github_main_upload: "0.1.4-one-time-github-main-upload"
   kmfa_v014_final_overall_review: "0.1.4-final-overall-review"
   kmfa_v014_s18_post_remediation_stage_review: "0.1.4-s18-post-remediation-stage-review"
   kmfa_v014_s18_p3_post_remediation_integration_preparation: "0.1.4-s18-p3-post-remediation-integration-preparation"
@@ -446,14 +447,41 @@ parameter_profile_versions:
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_external_action_readiness_after_final_threshold: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-blocker-blocked-handoff-external-action-readiness-after-final-threshold"
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_blocked_handoff_after_external_action_readiness: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-after-external-action-readiness"
   kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_blocked_handoff_final_threshold_recheck_after_reminder: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-final-threshold-recheck-after-reminder"
+  kmfa_v014_one_time_github_main_upload: "0.1.4-one-time-github-main-upload"
   kmfa_project_cost_mvp: "blocked_no_go_owner_scope_required"
 data_snapshot_version: "not_applicable_no_raw_data_committed"
-current_iteration: "ITER-20260712-KMFA-V014-FINAL-OVERALL-REVIEW"
-current_phase: "V014_FINAL_OVERALL_REVIEW"
-current_task_id: "KMFA-V014-FINAL-OVERALL-REVIEW-20260712"
-current_acceptance_id: "ACC-V014-FINAL-OVERALL-REVIEW"
-current_gate: "NO_GO_FINAL_OVERALL_REVIEW_COMPLETE_CODE_UPLOAD_READY_NOT_PERFORMED_APP_REINSTALL_DEFERRED"
-next_phase: "V014_ONE_TIME_GITHUB_MAIN_UPLOAD"
+current_iteration: "ITER-20260713-KMFA-V014-ONE-TIME-GITHUB-MAIN-UPLOAD"
+current_phase: "V014_ONE_TIME_GITHUB_MAIN_UPLOAD"
+current_task_id: "KMFA-V014-ONE-TIME-GITHUB-MAIN-UPLOAD-20260713"
+current_acceptance_id: "ACC-V014-ONE-TIME-GITHUB-MAIN-UPLOAD"
+current_gate: "NO_GO_PUBLIC_SAFE_GITHUB_MAIN_UPLOAD_COMPLETE_APP_REINSTALL_PARITY_PENDING"
+next_phase: "V014_APP_REINSTALL_AND_PARITY"
+
+kmfa_v014_one_time_github_main_upload:
+  status: uploaded_to_github_main_public_safe
+  phase: V014_ONE_TIME_GITHUB_MAIN_UPLOAD
+  evidence_dir: KMFA/stage_artifacts/V014_ONE_TIME_GITHUB_MAIN_UPLOAD
+  formula_ref: FORM-KMFA-V014-ONE-TIME-GITHUB-MAIN-UPLOAD-001
+  parameter_refs:
+    - PARAM-KMFA-1822
+    - PARAM-KMFA-1823
+    - PARAM-KMFA-1824
+  validator: KMFA/tools/check_v014_one_time_github_main_upload.py
+  next_phase: V014_APP_REINSTALL_AND_PARITY
+  current_stage_validator_pass_count: 18
+  open_review_finding_count: 0
+  integration_full_suite_test_count: 1767
+  integration_full_suite_pass_count: 1767
+  integration_finding_count: 2
+  fixed_integration_finding_count: 2
+  authorized_push_count: 1
+  force_push_allowed: false
+  github_main_upload_performed: true
+  post_push_remote_parity_required: true
+  app_reinstall_performed: false
+  lineage_full_check_complete: false
+  delivery_allowed: false
+  decision: NO_GO
 
 kmfa_v014_final_overall_review:
   status: completed_validated_local_only_final_overall_review_no_go_code_upload_ready

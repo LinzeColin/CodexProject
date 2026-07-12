@@ -1,10 +1,10 @@
 # KMFA Owner Status
 
-更新时间: 2026-07-12
+更新时间: 2026-07-13
 
 ## 一句话状态
 
-KMFA 已完成 `V014_FINAL_OVERALL_REVIEW`：18/18 current Stage validators 和 bundled Python 全量回归通过；14 个 findings=`6 fixed / 8 passed / 0 open`，tracked actual raw filename hits=0。代码可进入下一独立 public-safe GitHub main upload phase，但本轮未上传；业务仍为 `Q4 / D / NO_GO / 3-9-2-1`。
+KMFA 已完成 `V014_ONE_TIME_GITHUB_MAIN_UPLOAD` public-safe closure：最终复审 18/18 current Stage validators、open findings=0；origin main 安全集成后修复 S17 public-safe lock 和考勤 prompt mirror 两组回归，唯一 closure commit 只允许一次非 force main push并要求 post-push remote parity。业务仍为 `Q4 / D / NO_GO / 3-9-2-1`，App 重装未执行。
 
 ## 当前可信任范围
 
@@ -12,7 +12,7 @@ KMFA 已完成 `V014_FINAL_OVERALL_REVIEW`：18/18 current Stage validators 和 
 - 必须保留：9 条非零差异，不得通过覆盖、四舍五入、空白兼容层或替换权威值消除。
 - 不能信任：3 条缺可证明数值的现金槽位、1 条未完成现金比较、任何完整业务一致性或正式经营决策结论。
 - 不能误读：lineage validator PASS 只证明安全阻断契约有效，不证明 full lineage 已完成；D级受限预览不是正式报告。
-- 下一步只做一次性 public-safe GitHub main upload；不得顺手推进 App 重装、正式报告、差异关闭、lineage full completion 或 business execution。
+- 下一步只做 `V014_APP_REINSTALL_AND_PARITY`；不得重复上传或顺手推进正式报告、差异关闭、lineage full completion 或 business execution。
 
 ## 前序一句话状态（上一 phase）
 

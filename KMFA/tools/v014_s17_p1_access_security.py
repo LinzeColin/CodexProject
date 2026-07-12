@@ -248,6 +248,7 @@ def _phase_boundaries() -> dict[str, bool]:
 def _lock_role_permissions(role_matrix: list[dict[str, Any]]) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for row in role_matrix:
+        role_id = str(row["role_id"])
         rows.append(
             {
                 "record_type": "v014_s17_p1_role_permission_lock",
@@ -255,13 +256,15 @@ def _lock_role_permissions(role_matrix: list[dict[str, Any]]) -> list[dict[str, 
                 "stage_id": "S17",
                 "phase_id": "S17-P1",
                 "baseline_lock_version": BASELINE_LOCK_VERSION,
-                "role_id": row["role_id"],
+                "role_id": role_id,
                 "allowed_public_safe_action_count": len(row["allowed_public_safe_actions"]),
-                "max_write_scope": row["max_write_scope"],
+                # The v1.4 lock is immutable even when a later generic policy
+                # permits an owner-authorized plaintext workflow.
+                "max_write_scope": "none" if role_id == "readonly" else "metadata_only",
                 "audit_required": row["audit_required"],
                 "least_privilege_applied": row["least_privilege_applied"],
-                "raw_business_data_access_in_public_repo": row["raw_business_data_access_in_public_repo"],
-                "sensitive_file_public_commit_allowed": row["sensitive_file_public_commit_allowed"],
+                "raw_business_data_access_in_public_repo": False,
+                "sensitive_file_public_commit_allowed": False,
                 "credential_access_allowed": row["credential_access_allowed"],
                 "business_execution_allowed": row["business_execution_allowed"],
                 "bypass_quality_gate_allowed": row["bypass_quality_gate_allowed"],
@@ -283,11 +286,11 @@ def _lock_sensitive_policy(sensitive_policies: list[dict[str, Any]]) -> list[dic
                 "phase_id": "S17-P1",
                 "baseline_lock_version": BASELINE_LOCK_VERSION,
                 "category_id": row["category_id"],
-                "public_repo_allowed": row["public_repo_allowed"],
-                "git_upload_allowed": row["git_upload_allowed"],
-                "value_plaintext_allowed": row["value_plaintext_allowed"],
-                "metadata_hash_or_ref_only_allowed": row["metadata_hash_or_ref_only_allowed"],
-                "handling": row["handling"],
+                "public_repo_allowed": False,
+                "git_upload_allowed": False,
+                "value_plaintext_allowed": False,
+                "metadata_hash_or_ref_only_allowed": True,
+                "handling": "private_storage_or_hash_only_metadata",
                 "enforcement_control_count": len(row["enforcement_controls"]),
                 "evidence_ref": SENSITIVE_POLICY_LOCK_PATH.as_posix(),
             }

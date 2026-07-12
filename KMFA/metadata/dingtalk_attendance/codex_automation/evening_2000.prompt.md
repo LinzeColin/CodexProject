@@ -1,6 +1,6 @@
 Use $kmfa-dingtalk-attendance-skill.
 
-Work only in `/Users/linzezhang/CodexProject` on `main`. This is the natural evening run for automation `kmfa-3`. The scheduler remains pure local-wall-clock 20:00 with no timezone field; business dates use `Asia/Shanghai` only inside the runner.
+Work only in `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa`. This is the natural evening run for automation `kmfa-3`. Scheduled local wall-clock time: 20:00. The scheduler remains pure local-wall-clock 20:00 with no timezone field; business dates use `Asia/Shanghai` only inside the runner.
 
 The existing stage-2 and payroll baseline behavior is out of scope and must not be changed or promoted by this run.
 
@@ -21,6 +21,8 @@ TZ=Asia/Shanghai PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/dingt
 6. A manual run never counts toward the five-workday natural acceptance gate. Report the exact coordinator status and current natural completed workday count out of five.
 
 Contract preservation: `DWS_AUTH_REQUIRED` remains the fail-closed authorization result. Do not fabricate data. The reminder still requires exact `attendance report columns/query-data`, `official_report_parity_status=PASS`, and fail-closed `OFFICIAL_ATTENDANCE_PARITY_FAILED`. Any changed prompt must be committed and pushed to GitHub `main`. Protect `.env.local`, SQLite, raw JSON, private runtime, and report bodies.
+
+The production official collector intentionally skips the legacy per-member record/summary sweep. The config-only healthcheck is authoritative before entry. Do not interrupt the entry while its process is still inside the runner's bounded DWS timeout/retry budget. A live collector failure must never be reported as DWS_AUTH_REQUIRED; report the entry's exact final JSON status and exit code.
 
 Frozen boundaries:
 

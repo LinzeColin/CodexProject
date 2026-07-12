@@ -1,3 +1,19 @@
+## 2026-07-13 - V014 one-time GitHub main upload
+
+- phase: V014_ONE_TIME_GITHUB_MAIN_UPLOAD
+- task: KMFA-V014-ONE-TIME-GITHUB-MAIN-UPLOAD-20260713
+- product_version: 0.1.4-one-time-github-main-upload
+- result: uploaded_to_github_main_public_safe / business NO_GO
+- TDD: missing upload checker produced the expected import failure before implementation.
+- source: final overall review 18/18 current Stage validators and zero open findings.
+- integration: origin main merged at commit 4789ddbea5ad113d207e2c4caa860c7521c42b41 without force or history rewrite.
+- fixes: v1.4 S17 public-safe lock no longer inherits later owner plaintext permissions; attendance package and metadata prompts now match the canonical worktree and bounded runner contract.
+- validation: final clean-tree full suite plus focused upload final-review governance no-float no-omission raw secret binary parse and diff gates.
+- upload: one non-force HEAD to refs/heads/main; closure commit is self-bound and requires post-push local-tracking-remote parity.
+- boundary: no raw private binary business plaintext credential or secret; App reinstall lineage formal release difference closure persistent writes and business execution remain closed.
+- evidence: KMFA/stage_artifacts/V014_ONE_TIME_GITHUB_MAIN_UPLOAD/machine/one_time_github_main_upload_manifest.json
+- validator: KMFA/tools/check_v014_one_time_github_main_upload.py
+
 ## 2026-07-12 - V014 final overall review
 
 - phase: V014_FINAL_OVERALL_REVIEW

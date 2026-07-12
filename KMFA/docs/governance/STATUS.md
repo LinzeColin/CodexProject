@@ -1,18 +1,18 @@
 # KMFA Status
 
-更新时间: 2026-07-12
+更新时间: 2026-07-13
 
 ## 最新状态
 
 - project_id: `KMFA`
-- version: `0.1.4-final-overall-review`
-- current_stage: `S01-S18 final overall review`
-- current_phase: `V014_FINAL_OVERALL_REVIEW`
-- status: `completed_validated_local_only_final_overall_review_no_go_code_upload_ready`
+- version: `0.1.4-one-time-github-main-upload`
+- current_stage: `S01-S18 final review one-time upload closure`
+- current_phase: `V014_ONE_TIME_GITHUB_MAIN_UPLOAD`
+- status: `uploaded_to_github_main_public_safe`
 - current_blocker: `3_cash_slots_remain_final_accepted_without_proven_values_9_nonzero_differences_preserved_full_business_consistency_not_verified`
-- next_required_input: `one_time_public_safe_github_main_upload_as_separate_run`
+- next_required_input: `app_reinstall_and_local_github_parity_as_separate_run`
 - production_ready: `false`
-- github_upload_ready: `true_public_safe_code_only_not_performed`
+- github_upload_ready: `completed_public_safe_code_only_remote_parity_required`
 - raw_snapshot_exact_match: `true`
 - decision: `NO_GO`
 

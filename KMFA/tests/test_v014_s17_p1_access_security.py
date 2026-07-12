@@ -1,7 +1,11 @@
 import unittest
 
-from KMFA.tools.check_v014_s17_p1_access_security import validate_v014_s17_p1_access_security
-from KMFA.tools.v014_s17_p1_access_security import generate
+from KMFA.tools.check_v014_s17_p1_access_security import read_jsonl, validate_v014_s17_p1_access_security
+from KMFA.tools.v014_s17_p1_access_security import (
+    ROLE_PERMISSION_LOCK_PATH,
+    SENSITIVE_POLICY_LOCK_PATH,
+    generate,
+)
 
 
 class V014S17P1AccessSecurityTests(unittest.TestCase):
@@ -20,6 +24,21 @@ class V014S17P1AccessSecurityTests(unittest.TestCase):
         self.assertEqual(validated["completed_task_ids"], ["S17P1T01", "S17P1T02", "S17P1T03"])
         self.assertTrue(validated["s16_stage_review_dependency_validated"])
         self.assertTrue(validated["historical_s17_p1_public_safe_baseline_validated"])
+
+        role_locks = read_jsonl(ROLE_PERMISSION_LOCK_PATH)
+        for row in role_locks:
+            expected_scope = "none" if row["role_id"] == "readonly" else "metadata_only"
+            self.assertEqual(row["max_write_scope"], expected_scope)
+            self.assertFalse(row["raw_business_data_access_in_public_repo"])
+            self.assertFalse(row["sensitive_file_public_commit_allowed"])
+
+        sensitive_locks = read_jsonl(SENSITIVE_POLICY_LOCK_PATH)
+        for row in sensitive_locks:
+            self.assertFalse(row["public_repo_allowed"])
+            self.assertFalse(row["git_upload_allowed"])
+            self.assertFalse(row["value_plaintext_allowed"])
+            self.assertTrue(row["metadata_hash_or_ref_only_allowed"])
+            self.assertEqual(row["handling"], "private_storage_or_hash_only_metadata")
 
         progress = validated["stage17_phase_progress"]
         self.assertEqual(progress["completed_phase_count"], 1)
