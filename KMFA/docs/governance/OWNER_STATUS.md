@@ -4,19 +4,19 @@
 
 ## 一句话状态
 
-KMFA 已完成 `V014_S18_POST_REMEDIATION_STAGE_REVIEW`：current S18-P1/P2/P3 的 30/30 focused tests、3/3 strict validators 和 18/18 跨 phase contracts 全部通过；3 个复审 findings 已修复，open=0，状态保持 `Q4 / D / NO_GO`。
+KMFA 已完成 `V014_FINAL_OVERALL_REVIEW`：18/18 current Stage validators 和 bundled Python 全量回归通过；14 个 findings=`6 fixed / 8 passed / 0 open`，tracked actual raw filename hits=0。代码可进入下一独立 public-safe GitHub main upload phase，但本轮未上传；业务仍为 `Q4 / D / NO_GO / 3-9-2-1`。
 
 ## 当前可信任范围
 
-- 可以信任：current Stage 18 三 phase 的复跑结果、3 个 active-phase 时态修复、18 个跨 phase 合同、P1/P2/P3 门禁和 raw 一致性证据。
+- 可以信任：S01-S08 original 与 S09-S18 post-remediation current review 选择、18/18 validators、bundled Python 全量回归、6 个修复、30 个跨 Stage 合同、raw 一致性及 tracked raw 名称清零证据。
 - 必须保留：9 条非零差异，不得通过覆盖、四舍五入、空白兼容层或替换权威值消除。
 - 不能信任：3 条缺可证明数值的现金槽位、1 条未完成现金比较、任何完整业务一致性或正式经营决策结论。
 - 不能误读：lineage validator PASS 只证明安全阻断契约有效，不证明 full lineage 已完成；D级受限预览不是正式报告。
-- 下一步只做 v1.4 最终整体复审并修复 findings；不得顺手推进 GitHub upload、App 重装或 business execution。
+- 下一步只做一次性 public-safe GitHub main upload；不得顺手推进 App 重装、正式报告、差异关闭、lineage full completion 或 business execution。
 
 ## 前序一句话状态（上一 phase）
 
-KMFA 已完成 `V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION`：3 类 future connectors、4 个 OpMe 轻入口面和 6 条未启动 Backlog 已锁定；真实连接器、写回、凭据和外部调用均为 0。
+KMFA 已完成 `V014_S18_POST_REMEDIATION_STAGE_REVIEW`：current S18-P1/P2/P3 的 30/30 focused tests、3/3 strict validators 和 18/18 contracts 全部通过；最终整体复审当时仍待执行。
 
 ## Stage 18 canonical phase 索引
 

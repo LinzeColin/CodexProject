@@ -77,7 +77,7 @@ class A0FileRegisterTests(unittest.TestCase):
                 ["file", "bytes", "sha256", "rule"],
                 [
                     {
-                        "file": "销售绩效考核.zip",
+                        "file": "PRIVATE_RAW_SOURCE_005.zip",
                         "bytes": "100",
                         "sha256": "0" * 64,
                         "rule": "private source zip; public repo metadata only",
@@ -107,7 +107,7 @@ class A0FileRegisterTests(unittest.TestCase):
             root = Path(tmp)
             inventory = root / "inventory.csv"
             source_manifest = root / "source.csv"
-            zip_path = root / "销售绩效考核.zip"
+            zip_path = root / "PRIVATE_RAW_SOURCE_005.zip"
             rows = inventory_rows()
             write_csv(
                 inventory,
@@ -134,7 +134,7 @@ class A0FileRegisterTests(unittest.TestCase):
                 ["file", "bytes", "sha256", "rule"],
                 [
                     {
-                        "file": "销售绩效考核.zip",
+                        "file": "PRIVATE_RAW_SOURCE_005.zip",
                         "bytes": str(zip_path.stat().st_size),
                         "sha256": zip_hash,
                         "rule": "private source zip; public repo metadata only",
@@ -181,7 +181,7 @@ class A0FileRegisterTests(unittest.TestCase):
                 ["file", "bytes", "sha256", "rule"],
                 [
                     {
-                        "file": "销售绩效考核.zip",
+                        "file": "PRIVATE_RAW_SOURCE_005.zip",
                         "bytes": "100",
                         "sha256": "0" * 64,
                         "rule": "private source zip; public repo metadata only",

@@ -52,5 +52,5 @@
 - Excel owner decision templates 只是三种允许决策的 public-safe 非决策模板；active owner/授权降级决策另存在 `owner_decision_records/`。
 - Excel owner decision application preview 只预演 active decision 的 public-safe 应用路径；当前 no-decision preview 返回 blocked，active downgrade decision preview 返回 ready。
 - Excel completion gate 是关闭 S05-P2 的硬门：无 decision 时仍返回 BLOCKED；使用 active owner/授权降级决策时返回 ready，允许 S05-P2 本地关闭但不进入 Q4/Q5。
-- 本机提供的 `销售绩效考核.zip` 整包 hash/size 与登记 source package 不匹配；真实 9 个业务成员 hash 与 Stage2 Ring4 registry 匹配。
+- 本机提供的 `PRIVATE_RAW_SOURCE_005.zip` 整包 hash/size 与登记 source package 不匹配；真实 9 个业务成员 hash 与 Stage2 Ring4 registry 匹配。
 - 未提交 raw PDF、Excel、zip、私有 CSV、合同额、支出合计、毛利、毛利率、成本分类明文、银行流水、合同、薪资、税务申报或业务明细。

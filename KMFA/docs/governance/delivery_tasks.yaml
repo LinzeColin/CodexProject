@@ -1,6 +1,48 @@
 governance_spec_version: "1.0.0"
 project_id: "KMFA"
 tasks:
+  - task_id: "KMFA-V014-FINAL-OVERALL-REVIEW-20260712"
+    phase: "V014_FINAL_OVERALL_REVIEW"
+    objective: "Validate all current Stage 1-18 reviews, repair final-review findings, and authorize only the next public-safe code upload phase."
+    scope:
+      - "S01-S08 original and S09-S18 post-remediation strict Stage validators"
+      - "bundled Python full suite, final-review findings, cross-stage contracts and HTML human-flow evidence"
+      - "read-only raw snapshot alignment, public safety and governance evidence"
+    non_scope:
+      - "GitHub upload or App reinstall in this phase"
+      - "lineage full-check completion formal report or difference closure"
+      - "live connectors credentials persistent business writes or business execution"
+    status: "completed"
+    completed_version: "0.1.4-final-overall-review"
+    dependencies:
+      - "V014_S18_POST_REMEDIATION_STAGE_REVIEW"
+      - "v1.4 Stage 1-18 roadmap and taskpack"
+    required_files:
+      - "KMFA/stage_artifacts/V014_FINAL_OVERALL_REVIEW/machine/final_overall_review_manifest.json"
+      - "KMFA/stage_artifacts/V014_FINAL_OVERALL_REVIEW/human/final_overall_review_report_zh.md"
+      - "KMFA/tools/check_v014_final_overall_review.py"
+    acceptance_ids:
+      - "ACC-V014-FINAL-OVERALL-REVIEW"
+    test_commands:
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. <bundled-python> -m unittest KMFA.tests.test_v014_final_overall_review"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. <bundled-python> KMFA/tools/check_v014_final_overall_review.py --require-private-evidence --require-final-evidence --rerun-stage-validators"
+      - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. <bundled-python> -m unittest discover -s KMFA/tests -p test_*.py"
+    test_results:
+      - "PASS: eighteen of eighteen current Stage validators"
+      - "PASS: bundled Python full suite"
+      - "PASS: fourteen findings closed with six fixed and eight passed"
+      - "PASS: tracked actual raw filename hits are zero"
+      - "PASS: raw snapshots exact and code upload ready but not performed"
+    evidence_refs:
+      - "KMFA/stage_artifacts/V014_FINAL_OVERALL_REVIEW/human/final_overall_review_report_zh.md"
+      - "KMFA/stage_artifacts/V014_FINAL_OVERALL_REVIEW/machine/final_overall_review_manifest.json"
+    risk: "Code upload readiness can be misread as business release authorization."
+    rollback: "Revert the local final-review commit, restore Stage 18 review as current, and leave raw untouched."
+    remaining_work:
+      - "one-time public-safe GitHub main upload"
+      - "App reinstall and local GitHub parity verification"
+      - "business differences and lineage remain blocked separately"
+
   - task_id: "KMFA-V014-S18-POST-REMEDIATION-STAGE-REVIEW-20260712"
     phase: "V014_S18_POST_REMEDIATION_STAGE_REVIEW"
     objective: "Replay all current Stage 18 phases, repair review findings, and lock a public-safe Stage 18 NO_GO review record."

@@ -3,10 +3,15 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from KMFA.tests._artifact_snapshot import ArtifactSnapshot
 from KMFA.tools.check_v014_s14_p2_post_remediation_invoice_tax_plan import (
     validate_v014_s14_p2_post_remediation_invoice_tax_plan,
 )
-from KMFA.tools.v014_s14_p2_post_remediation_invoice_tax_plan import _upsert_jsonl, generate
+from KMFA.tools.v014_s14_p2_post_remediation_invoice_tax_plan import (
+    _phase_public_files,
+    _upsert_jsonl,
+    generate,
+)
 
 
 class TestPhaseLocalJsonlUpsert(unittest.TestCase):
@@ -23,11 +28,20 @@ class TestPhaseLocalJsonlUpsert(unittest.TestCase):
 class TestV014S14P2PostRemediationInvoiceTaxPlan(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.generated = generate(final_validation=False, write_governance=False)
-        cls.validated = validate_v014_s14_p2_post_remediation_invoice_tax_plan(
-            require_private_evidence=True,
-            require_browser_evidence=True,
-        )
+        cls.artifact_snapshot = ArtifactSnapshot(_phase_public_files())
+        try:
+            cls.generated = generate(final_validation=False, write_governance=False)
+            cls.validated = validate_v014_s14_p2_post_remediation_invoice_tax_plan(
+                require_private_evidence=True,
+                require_browser_evidence=True,
+            )
+        except BaseException:
+            cls.artifact_snapshot.restore()
+            raise
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.artifact_snapshot.restore()
 
     def test_identity_and_current_dependency(self) -> None:
         self.assertEqual(self.generated, self.validated)

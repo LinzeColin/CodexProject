@@ -21,7 +21,7 @@
 
 ## 说明
 
-- `member_sha256_pending=9` 是预期结果：本机没有私有 `销售绩效考核.zip`，公开仓库只记录 source package SHA256、public-safe inventory 指纹和待补状态。
+- `member_sha256_pending=9` 是预期结果：本机没有私有 `PRIVATE_RAW_SOURCE_005.zip`，公开仓库只记录 source package SHA256、public-safe inventory 指纹和待补状态。
 - 未提交 raw PDF、Excel、zip、银行流水、合同、薪资、税务申报或业务明细。
 - 首次跨阶段测试发现 `a0_file_register.py` 使用 `float()` 转换 inventory KB，触发 `check_no_float_money.py`；已改为保留 CSV 字符串并复跑通过。
 - 当前 KMFA worktree 为 sparse checkout。治理 validator 首次因缺少 root governance 模板和注册项目入口路径失败；已把 sparse checkout 精确扩展到 validator 必要 root 文件和其他项目最小入口文件后复跑通过，未读取或修改其他项目业务内容。

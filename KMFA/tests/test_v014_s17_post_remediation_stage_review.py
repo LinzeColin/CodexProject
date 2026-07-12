@@ -117,13 +117,15 @@ class V014S17PostRemediationStageReviewTests(unittest.TestCase):
         self.assertFalse(self.manifest["go_no_go"]["github_upload_allowed"])
         formula = Path("KMFA/docs/governance/formula_registry.yaml").read_text(encoding="utf-8")
         parameters = Path("KMFA/docs/governance/parameter_registry.csv").read_text(encoding="utf-8")
-        handoff = Path("KMFA/HANDOFF.md").read_text(encoding="utf-8")
         self.assertIn(self.review.FORMULA_ID, formula)
         for parameter_id in self.review.PARAMETER_IDS:
             self.assertIn(parameter_id, parameters)
-        self.assertIn("下一步只能执行 S18-P1", handoff)
-        self.assertIn("不得执行 S18-P2", handoff)
-        self.assertIn("不得执行 GitHub upload", handoff)
+        version_matrix = Path("KMFA/docs/governance/VERSION_MATRIX.yaml").read_text(encoding="utf-8")
+        if f'current_phase: "{self.review.PHASE_ID}"' in version_matrix:
+            handoff = Path("KMFA/HANDOFF.md").read_text(encoding="utf-8")
+            self.assertIn("下一步只能执行 S18-P1", handoff)
+            self.assertIn("不得执行 S18-P2", handoff)
+            self.assertIn("不得执行 GitHub upload", handoff)
 
 
 if __name__ == "__main__":

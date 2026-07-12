@@ -132,20 +132,20 @@ def _check_governance(manifest: dict[str, Any], errors: list[str]) -> None:
         _require(event.get("open_review_finding_count") == 0, "review event open finding drift", errors)
 
     version_matrix = Path("KMFA/docs/governance/VERSION_MATRIX.yaml").read_text(encoding="utf-8")
-    _require(f'current_phase: "{review.PHASE_ID}"' in version_matrix, "VERSION_MATRIX current review drift", errors)
     _require(review.MODEL_REGISTRY_KEY in version_matrix and review.VERSION in version_matrix, "VERSION_MATRIX review profile missing", errors)
-    _require(Path("KMFA/VERSION").read_text(encoding="utf-8").strip() == review.VERSION, "VERSION review drift", errors)
-
-    handoff = Path("KMFA/HANDOFF.md").read_text(encoding="utf-8")
-    for token in (
-        review.PHASE_ID,
-        "下一步只能执行 v1.4 最终整体复审",
-        "不得执行 GitHub upload",
-        "不得执行 App 重装",
-    ):
-        _require(token in handoff, f"HANDOFF review token missing: {token}", errors)
-    agents = Path("KMFA/AGENTS.md").read_text(encoding="utf-8")
-    _require(review.PHASE_ID in agents and "最终整体复审" in agents, "AGENTS review scope drift", errors)
+    current = f'current_phase: "{review.PHASE_ID}"' in version_matrix
+    if current:
+        _require(Path("KMFA/VERSION").read_text(encoding="utf-8").strip() == review.VERSION, "VERSION review drift", errors)
+        handoff = Path("KMFA/HANDOFF.md").read_text(encoding="utf-8")
+        for token in (
+            review.PHASE_ID,
+            "下一步只能执行 v1.4 最终整体复审",
+            "不得执行 GitHub upload",
+            "不得执行 App 重装",
+        ):
+            _require(token in handoff, f"HANDOFF review token missing: {token}", errors)
+        agents = Path("KMFA/AGENTS.md").read_text(encoding="utf-8")
+        _require(review.PHASE_ID in agents and "最终整体复审" in agents, "AGENTS review scope drift", errors)
 
     trace = Path("KMFA/docs/governance/TRACEABILITY_MATRIX.csv").read_text(encoding="utf-8")
     delivery = Path("KMFA/docs/governance/delivery_tasks.yaml").read_text(encoding="utf-8")
@@ -185,15 +185,20 @@ def _check_governance(manifest: dict[str, Any], errors: list[str]) -> None:
         _require(row.get("status") == "active", f"review parameter status drift: {parameter_id}", errors)
 
     assurance = review.ASSURANCE_STATUS_PATH.read_text(encoding="utf-8")
-    for token in (
+    permanent_assurance_tokens = (
         review.TASK_ID,
         review.ACCEPTANCE_ID,
         review.FORMULA_ID,
-        f'snapshot_event_time: "{manifest["generated_at"]}"',
-        "total_active_parameters: 1436",
-        "total_active_formulas: 314",
-    ):
+    )
+    for token in permanent_assurance_tokens:
         _require(token in assurance, f"review assurance token missing: {token}", errors)
+    if current:
+        for token in (
+            f'snapshot_event_time: "{manifest["generated_at"]}"',
+            "total_active_parameters: 1436",
+            "total_active_formulas: 314",
+        ):
+            _require(token in assurance, f"review assurance token missing: {token}", errors)
     for parameter_id in review.PARAMETER_IDS:
         _require(parameter_id in assurance, f"review assurance parameter missing: {parameter_id}", errors)
 
