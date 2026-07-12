@@ -610,6 +610,131 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertIsNone(values[30])
         self.assertEqual(classify_cell(None, "0", column_name="迟到次数"), VALUE_DIFFERENT)
 
+    def test_official_reconciliation_treats_department_as_optional_display_only(self) -> None:
+        from KMFA.tools.dingtalk_attendance.official_report_reconstruction import (
+            NO_SOURCE,
+            PASS,
+            REQUIRED_COLUMNS,
+            build_reconciliation_certificate,
+            compare_standard_entry,
+            validate_reconciliation_certificate,
+            write_reconciliation_certificate,
+        )
+
+        official_row = [None] * 49
+        official_row[0] = "测试员工"
+        official_row[2] = "生产部-测试组"
+        official_row[5] = "00123"
+        rebuilt_row = list(official_row)
+        rebuilt_row[2] = NO_SOURCE
+        standard = {
+            "values": [
+                ["2026-07-09 每日统计"],
+                [],
+                [],
+                [],
+                official_row,
+            ]
+        }
+
+        result = compare_standard_entry(
+            standard,
+            {"00123": rebuilt_row},
+            work_date="2026-07-09",
+        )
+        certificate = build_reconciliation_certificate(
+            result,
+            official_sha256="a" * 64,
+        )
+
+        self.assertEqual(len(REQUIRED_COLUMNS), 48)
+        self.assertEqual(result["status"], PASS)
+        self.assertEqual(result["compared_cells"], 48)
+        self.assertEqual(result["missing_required_columns"], [])
+        self.assertEqual(result["required_missing_cells"], 0)
+        self.assertEqual(result["true_differences"], 0)
+        self.assertEqual(result["optional_unverified_fields"], ["部门"])
+        self.assertEqual(certificate["official_people"], 1)
+        self.assertEqual(certificate["dws_people"], 1)
+        self.assertEqual(certificate["matched_people"], 1)
+        self.assertEqual(certificate["compared_columns"], 48)
+        self.assertEqual(certificate["compared_cells"], 48)
+        self.assertEqual(certificate["missing_people"], 0)
+        self.assertEqual(certificate["extra_people"], 0)
+        self.assertEqual(certificate["missing_required_columns"], 0)
+        self.assertEqual(certificate["missing_required_cells"], 0)
+        self.assertEqual(certificate["differing_required_cells"], 0)
+        self.assertEqual(certificate["optional_unverified_fields"], ["部门"])
+        self.assertEqual(validate_reconciliation_certificate(certificate), [])
+        with tempfile.TemporaryDirectory() as tmpdir:
+            certificate_path = write_reconciliation_certificate(certificate, Path(tmpdir))
+            self.assertEqual(
+                certificate_path.name,
+                "official_reconciliation_2026-07-09.certificate.json",
+            )
+            self.assertEqual(
+                json.loads(certificate_path.read_text(encoding="utf-8")),
+                certificate,
+            )
+
+    def test_final_reconciliation_reads_the_canonical_certificate_without_conversion(self) -> None:
+        from KMFA.tools.dingtalk_attendance.final_reconciliation import (
+            _load_independent_reconciliation_evidence,
+        )
+        from KMFA.tools.dingtalk_attendance.official_report_reconstruction import (
+            RECONCILIATION_CERTIFICATE_SCHEMA,
+        )
+
+        certificate = {
+            "schema": RECONCILIATION_CERTIFICATE_SCHEMA,
+            "evidence_kind": "INDEPENDENT_OFFICIAL_EXPORT_VS_DWS",
+            "official_sha256": "b" * 64,
+            "work_date": "2026-07-10",
+            "status": "PASS",
+            "official_people": 44,
+            "dws_people": 44,
+            "matched_people": 44,
+            "compared_columns": 48,
+            "compared_cells": 2112,
+            "missing_people": 0,
+            "extra_people": 0,
+            "missing_required_columns": 0,
+            "missing_required_cells": 0,
+            "differing_required_cells": 0,
+            "optional_unverified_fields": ["部门"],
+        }
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "official_reconciliation_2026-07-10.certificate.json"
+            path.write_text(json.dumps(certificate, ensure_ascii=False), encoding="utf-8")
+            loaded = _load_independent_reconciliation_evidence(path, work_date="2026-07-10")
+
+        self.assertEqual(loaded["status"], "PASS")
+        self.assertEqual(loaded["evidence_status"], "PASS")
+
+    def test_required_official_field_still_blocks_reconciliation(self) -> None:
+        from KMFA.tools.dingtalk_attendance.official_report_reconstruction import (
+            BLOCKED,
+            NO_SOURCE,
+            compare_standard_entry,
+        )
+
+        official_row = [None] * 49
+        official_row[0] = "测试员工"
+        official_row[5] = "00123"
+        rebuilt_row = list(official_row)
+        rebuilt_row[22] = NO_SOURCE
+        standard = {"values": [["2026-07-09 每日统计"], [], [], [], official_row]}
+
+        result = compare_standard_entry(
+            standard,
+            {"00123": rebuilt_row},
+            work_date="2026-07-09",
+        )
+
+        self.assertEqual(result["status"], BLOCKED)
+        self.assertEqual(result["missing_required_columns"], ["出勤天数"])
+        self.assertEqual(result["required_missing_cells"], 1)
+
     def test_identity_migration_new_writer_and_legacy_reader_contract(self) -> None:
         identity = importlib.import_module("KMFA.tools.dingtalk_attendance.identity")
         plan = build_run_plan(

@@ -40,6 +40,8 @@ Before acting, read:
 ## Current Attendance Rules
 
 - Current owner usability status is `UNAVAILABLE` / `NOT_ACCEPTED`.
+- The official daily export has 49 columns, but `部门` is optional display-only. It never participates in person matching, anomaly classification, monthly rollups, notifications, or official attendance acceptance. The other 48 columns are required; an unreliable primary department is recorded as `UNVERIFIED` and never guessed.
+- R4 official data reconstruction is `PASS` for the frozen 2026-07-09 and 2026-07-10 evidence. This does not make the skill production-usable: delivery remains disabled until a later real no-send run is accepted.
 - Morning and evening outputs are `TEMPORARY_REMINDER` snapshots, not final daily conclusions.
 - A completed prior work date becomes final only after a fresh exact-parity official report read writes an `OFFICIAL_FINAL_RECONCILIATION` archive and aggregate-only one-page result.
 - New monthly notification rollups read canonical `final` archives only. Legacy, morning, and evening archives are audit-only and never enter the new monthly cumulative values.
