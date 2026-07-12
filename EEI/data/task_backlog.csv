@@ -53,7 +53,7 @@ T605,G6,P0,Implement 14-day scheduler and manual calibration,T604,"A090,A091",NO
 T606,G6,P0,Implement calibration coverage/drift/quality/proposal,T605,"A092,A093,A095",NOT STARTED
 T607,G6,P0,Implement calibration accept/reject and rollback linkage,T606,A094,NOT STARTED
 T608,G6,P0,Add custom-profile/audit/two-calibration E2E,"T603,T607","A082,A087,A091,A094,A095",NOT STARTED
-T700,G7,P0,Implement SEC client User-Agent allowlist and limiter,T208,"A096,A097",NOT STARTED
+T700,G7,P0,Implement SEC client User-Agent allowlist and limiter,T208,"A096,A097",DONE
 T701,G7,P0,Implement timeout retry jitter cache and hash,T700,"A098,A099",NOT STARTED
 T702,G7,P0,Normalize submissions and Company Facts,T701,"A100,A101",NOT STARTED
 T703,G7,P0,Implement dry-run fixture idempotent upsert and report,T702,"A102,A103",NOT STARTED

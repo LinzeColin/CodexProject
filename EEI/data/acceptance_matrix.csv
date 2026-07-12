@@ -94,8 +94,8 @@ A092,P0,calibration,"Calibration reports coverage, drift, quality, Top-N stabili
 A093,P0,calibration,Proposal is never automatically activated,Negative/integration,NOT STARTED
 A094,P0,calibration,Accept/reject proposal writes log and preserves rollback,E2E,NOT STARTED
 A095,P0,calibration,Calibration failure leaves active profile and last successful scores unchanged,Failure injection,NOT STARTED
-A096,P0,ingest,SEC client uses descriptive User-Agent and domain allowlist,Mock HTTP,NOT STARTED
-A097,P0,ingest,SEC client rate is <=8 requests/sec,Deterministic limiter,NOT STARTED
+A096,P0,ingest,SEC client uses descriptive User-Agent and domain allowlist,Mock HTTP,DONE
+A097,P0,ingest,SEC client rate is <=8 requests/sec,Deterministic limiter,DONE
 A098,P0,ingest,"Timeout, bounded retry/backoff/jitter and 429/503 handling work",Mock HTTP,NOT STARTED
 A099,P0,ingest,Hash/cache prevent unchanged duplicate processing,Repeated fixture,NOT STARTED
 A100,P0,ingest,"Submissions preserve accession, form, filed, report, accepted and document",Golden test,NOT STARTED

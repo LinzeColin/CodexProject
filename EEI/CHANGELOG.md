@@ -1,5 +1,15 @@
 # Changelog
 
+## T700/A096/A097 SEC client foundation - 2026-07-13
+
+- Added a fail-closed async SEC EDGAR client with descriptive contact-bearing
+  `User-Agent` validation, exact HTTPS SEC host allowlisting, canonical CIK URL
+  construction and redirects disabled.
+- Added a serialized fixed-interval limiter capped at 8 request starts per second,
+  with deterministic fake-clock tests and no burst allowance.
+- Added mock-only A096/A097 contract artifacts and validators. No live SEC request
+  was performed; T701-T706, T1301/A202, A209 and MVP release readiness remain open.
+
 ## T101/A005 PostgreSQL clean environment - 2026-07-13
 
 - Added an isolated PostgreSQL 16 Compose clean-start validator using a dedicated

@@ -27,6 +27,15 @@ migrations, schema invariants and deterministic seed/fixture strategy. A026/A027
 remain separate T904 production gold-set release-quality gates and do not become
 PASS through Phase 1.1 closure. This status does not imply MVP release readiness.
 
+Phase 1.2 status (2026-07-13): `IN_PROGRESS`. `T700/A096/A097` is implemented
+locally with a fail-closed SEC EDGAR client that requires a descriptive application
+identity and operator contact email, allows only exact HTTPS SEC hosts, does not
+follow redirects, and serializes request starts at a fixed `0.125s` interval
+(`<=8 requests/sec`). Validation uses `httpx.MockTransport` and an injected fake
+clock; no live SEC request is part of the acceptance evidence. `T701-T706` remain
+open, and this task does not close `T1301/A202`, production ingestion, external
+source/legal/owner clearance, A209, or MVP release readiness. Remote CI is pending.
+
 每个 task 必须绑定已有 Acceptance IDs；如果 `acceptance_traceability` 没有映射，先记录 gap，不直接开发。
 
 ### Stage 2 - Frontend, Scale, and Operational Evidence

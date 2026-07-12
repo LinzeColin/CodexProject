@@ -1,5 +1,52 @@
 # MVP Development Record
 
+## 2026-07-13 - T700/A096/A097 SEC EDGAR client foundation
+
+Status: LOCAL FOCUSED VALIDATED; REMOTE CI PENDING; PHASE 1.2 IN PROGRESS; MVP RELEASE BLOCKED
+
+### Goal and Scope
+
+- Implement the first bounded live-source client foundation for SEC EDGAR.
+- Require an explicit descriptive application identity and operator contact email.
+- Allow only exact `https://data.sec.gov` and `https://www.sec.gov` request hosts,
+  reject URL credentials/non-standard ports/fragments, and do not follow redirects.
+- Serialize request starts with a fixed `0.125s` interval and no burst allowance,
+  enforcing `SEC_MAX_REQUESTS_PER_SECOND = 8`.
+- Keep validation offline with `httpx.MockTransport` and an injected fake clock.
+
+### Acceptance and Evidence
+
+- `T700 -> A096`: `apps/api/app/ingest/sec_client.py`,
+  `tests/unit/test_sec_client.py`, and
+  `artifacts/tests/a096/t700_sec_client_allowlist_contract.json`.
+- `T700 -> A097`: the same client/test surface plus
+  `artifacts/tests/a097/t700_sec_client_rate_limit_contract.json`.
+- `scripts/validate_sec_client_contract.py` generates and validates both artifacts
+  while recording that no live SEC request was performed and no release gate closed.
+
+### Parameters and Boundaries
+
+- Operational parameter: `SEC_MAX_REQUESTS_PER_SECOND = 8`.
+- Derived fixed interval: `SEC_MIN_REQUEST_INTERVAL_SECONDS = 0.125` seconds.
+- These are ingestion safety parameters, not scoring/model weights. They do not
+  change active model versions or imply source freshness, ingestion completeness,
+  legal clearance, A202 closure, A209 closure, or MVP release readiness.
+
+### Validation
+
+- `.venv/bin/pytest -q tests/unit/test_sec_client.py`: PASS, `15/15`.
+- `.venv/bin/python scripts/validate_sec_client_contract.py generate`: PASS.
+- `.venv/bin/python scripts/validate_sec_client_contract.py validate`: PASS.
+- Focused Ruff and full unit/governance validation remain required before commit.
+
+### Risk, Rollback, and Stop Conditions
+
+- Risk: a future caller could weaken identity/host/rate controls or mistake mock
+  evidence for live ingestion evidence; contract artifacts fail closed on those fields.
+- Rollback: revert the T700 commit and remove only A096/A097 generated artifacts.
+- Stop on contract/test/governance failure, unexpected external worktree changes,
+  A209 failed-window evidence, or dead operator/watchdog processes.
+
 ## 2026-06-25 - T1301/A202 operator review packet freshness remote CI binding
 
 Status: REMOTE CI ATTESTED FOR COMMIT `236d25354db7d8f9774d1f91981ae30d69b0234e`; A202 STILL IN PROGRESS; A209 WAS RUNNING AT CI-BINDING TIME BUT WAS SUPERSEDED BY THE 2026-06-26 `7/288` FAILURE; DOWNSTREAM RELEASE GATES STILL BLOCKED

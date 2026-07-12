@@ -1,0 +1,35 @@
+{
+  "schema_version": "eei-a096-sec-client-allowlist-contract-v1",
+  "status": "PASS",
+  "acceptance_ids": [
+    "A096"
+  ],
+  "task_id": "T700",
+  "generated_at": "2026-07-12T23:34:20Z",
+  "source_commit": "ada8a68b",
+  "release_scope": {
+    "live_sec_request_performed": false,
+    "a202_closed_by_contract": false,
+    "a209_closed_by_contract": false,
+    "mvp_release_ready": false
+  },
+  "test_evidence": [
+    "tests/unit/test_sec_client.py",
+    "httpx.MockTransport"
+  ],
+  "contract": {
+    "descriptive_user_agent_required": true,
+    "operator_contact_email_required": true,
+    "allowed_schemes": [
+      "https"
+    ],
+    "allowed_hosts": [
+      "data.sec.gov",
+      "www.sec.gov"
+    ],
+    "standard_https_port_only": true,
+    "url_credentials_allowed": false,
+    "redirects_followed": false,
+    "mock_http_validation": true
+  }
+}

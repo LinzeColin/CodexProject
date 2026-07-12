@@ -1,0 +1,28 @@
+{
+  "schema_version": "eei-a097-sec-client-rate-limit-contract-v1",
+  "status": "PASS",
+  "acceptance_ids": [
+    "A097"
+  ],
+  "task_id": "T700",
+  "generated_at": "2026-07-12T23:34:20Z",
+  "source_commit": "ada8a68b",
+  "release_scope": {
+    "live_sec_request_performed": false,
+    "a202_closed_by_contract": false,
+    "a209_closed_by_contract": false,
+    "mvp_release_ready": false
+  },
+  "test_evidence": [
+    "tests/unit/test_sec_client.py",
+    "httpx.MockTransport"
+  ],
+  "contract": {
+    "algorithm": "serialized_fixed_interval_no_burst",
+    "max_requests_per_second": 8,
+    "minimum_interval_seconds": 0.125,
+    "clock_is_injectable": true,
+    "sleep_is_injectable": true,
+    "deterministic_fake_clock_validation": true
+  }
+}

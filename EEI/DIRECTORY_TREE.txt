@@ -74,6 +74,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   └── __init__.py
 ├── artifacts
 │   ├── tests
+│   │   ├── a005
+│   │   │   └── t101_postgres_compose_clean_environment.json
 │   │   ├── a026
 │   │   │   ├── t904_a026_a027_operator_labeling_packet.json
 │   │   │   ├── t904_a026_a027_production_gold_label_intake_template.json
@@ -444,6 +446,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── validate_model_config.py
 │   ├── validate_mvp_release_gate.py
 │   ├── validate_operator_soak_evidence.py
+│   ├── validate_postgres_compose_clean_environment.py
 │   ├── validate_production_api_release_preflight.py
 │   ├── validate_prototype_parity.py
 │   ├── validate_release_decision_bundle.py
@@ -504,6 +507,7 @@ Enterprise_Ecosystem_Intelligence_release
 │       ├── test_official_source_live_capture.py
 │       ├── test_operator_soak_evidence.py
 │       ├── test_operator_soak_finalization.py
+│       ├── test_postgres_compose_clean_environment.py
 │       ├── test_production_api_release_preflight.py
 │       ├── test_release_decision_bundle.py
 │       ├── test_release_manager_activation.py
