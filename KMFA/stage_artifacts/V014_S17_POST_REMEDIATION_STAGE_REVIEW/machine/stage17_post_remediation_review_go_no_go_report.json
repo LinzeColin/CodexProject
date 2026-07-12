@@ -1,0 +1,21 @@
+{
+  "app_reinstall_allowed": false,
+  "business_execution_allowed": false,
+  "decision": "NO_GO",
+  "difference_closure_allowed": false,
+  "external_connector_allowed": false,
+  "formal_report_release_allowed": false,
+  "github_upload_allowed": false,
+  "notification_delivery_allowed": false,
+  "persistent_business_write_allowed": false,
+  "phase_id": "V014_S17_POST_REMEDIATION_STAGE_REVIEW",
+  "production_restore_allowed": false,
+  "project_id": "KMFA",
+  "s18_p1_allowed_in_this_run": false,
+  "s18_p2_allowed": false,
+  "s18_p3_allowed": false,
+  "schema_version": "kmfa.v014.s17_post_remediation_stage_review_go_no_go.v1",
+  "stage17_review_validated": true,
+  "stage18_review_allowed": false,
+  "stage_id": "S17"
+}

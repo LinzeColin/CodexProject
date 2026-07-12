@@ -1,0 +1,19 @@
+{
+  "approved_private_processed_target_slot_count": 149,
+  "excluded_private_ref_count": 12,
+  "private_processed_value_fingerprint_count": 0,
+  "private_ref_candidate_count": 161,
+  "processed_artifact_files_scanned": 132,
+  "processed_business_values_committed_publicly": false,
+  "processed_records_scanned": 411,
+  "processed_target_slot_count": 149,
+  "processed_target_slots_staged": true,
+  "processed_value_materialization_complete": false,
+  "staging_status": "processed_target_slots_staged_value_fingerprints_missing",
+  "target_slot_private_refs_committed_publicly": false,
+  "target_slots_by_context_group_count": 25,
+  "target_slots_by_root": {
+    "metadata_lineage": 113,
+    "metadata_quality": 36
+  }
+}

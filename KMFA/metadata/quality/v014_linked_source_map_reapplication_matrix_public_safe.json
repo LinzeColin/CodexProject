@@ -1,0 +1,81 @@
+{
+  "checks": [
+    {
+      "check_code": "post_resolution_candidate_queue_available",
+      "observed_public_safe": 77,
+      "required": 77,
+      "status": "PASS"
+    },
+    {
+      "check_code": "linked_groups_matched",
+      "observed_public_safe": 15,
+      "required": 15,
+      "status": "PASS"
+    },
+    {
+      "check_code": "linked_records_applied",
+      "observed_public_safe": 77,
+      "required": 77,
+      "status": "PASS"
+    },
+    {
+      "check_code": "linked_records_unblocked",
+      "observed_public_safe": 0,
+      "required": 0,
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_source_map_written",
+      "observed_public_safe": true,
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_materialization_input_staged",
+      "observed_public_safe": true,
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "check_code": "materialization_not_performed",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_comparison_not_performed",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_no_go_preserved",
+      "observed_public_safe": "NO_GO",
+      "required": "NO_GO",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "full_reconciliation_allowed": false,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "github_upload_performed": false,
+  "linked_reapplication_applied_group_count": 15,
+  "linked_reapplication_applied_record_count": 77,
+  "linked_reapplication_blocked_record_count": 0,
+  "linked_reapplication_candidate_group_count": 15,
+  "linked_reapplication_candidate_record_count": 77,
+  "linked_reapplication_check_count": 9,
+  "linked_reapplication_fail_count": 0,
+  "linked_reapplication_pass_count": 9,
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_LINKED_REAPPLICATION",
+  "private_materialization_source_map_record_count": 77,
+  "processed_value_materialization_replay_performed": false,
+  "processed_value_materialization_replay_ready": true,
+  "project_id": "KMFA",
+  "raw_to_processed_value_comparison_performed_by_this_phase": false,
+  "record_type": "v014_linked_source_map_reapplication_matrix_public_safe",
+  "schema_version": "kmfa.v014_linked_source_map_reapplication_matrix_public_safe.v1",
+  "source_map_records_applied_count": 77,
+  "task_id": "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-LINKED-REAPPLICATION-20260706",
+  "version": "0.1.4-linked-source-map-reapplication"
+}

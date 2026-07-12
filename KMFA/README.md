@@ -7,14 +7,16 @@ KMFA 是面向 C-level management / board 的经营分析系统。当前优先�
 | 项目 | 内容 |
 |---|---|
 | project_id | `KMFA` |
-| 当前版本 | `0.1.3-stage1-10-github-upload` |
-| 当前 Stage | `v0.1.3 Stage 1-10 GitHub upload gate` |
-| 当前 Phase | `Stage 1-10 GitHub upload gate validated on latest origin/main; push proof required as terminal evidence` |
-| 当前 Task | `KMFA-V013-STAGE1-10-GITHUB-UPLOAD-20260703` |
+| 当前版本 | `0.1.4-one-time-github-main-upload` |
+| 当前 Stage | `v0.1.4 Stage 1-18 最终整体复审后一次性上传` |
+| 当前 Phase | `V014_ONE_TIME_GITHUB_MAIN_UPLOAD uploaded_to_github_main_public_safe` |
+| 当前 Task | `KMFA-V014-ONE-TIME-GITHUB-MAIN-UPLOAD-20260713` |
+| 当前验收链 | `S01-S18 current reviews -> V014_FINAL_OVERALL_REVIEW -> V014_ONE_TIME_GITHUB_MAIN_UPLOAD` |
+| 前序 Stage 18 验收链 | `V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS -> V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE -> V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION -> V014_S18_POST_REMEDIATION_STAGE_REVIEW` |
 | 风险等级 | `T3`，涉及经营数据、金额、税务、隐私和公开仓库边界 |
 | GitHub 目录 | `LinzeColin/CodexProject/KMFA` |
-| 当前基线 | `KMFA/taskpack/v1_2`，源包 SHA256 `3bb2ebf16fb4ad8b9d198484e9d80ea2aed3c19c54c483efebe023b772ad0e66` |
-| Stage 上传规则 | v0.1.3 不按单个 Stage 做 GitHub upload gate；Stage 1-10 已完成 batch overall review 并修复/关闭本轮 findings，10 个 v0.1.3 stage review manifest 全部 PASS、open stage review findings=0、open batch findings=0，历史单 Stage upload artifacts 均非当前 gate；本 gate 已在最新 `origin/main` 基底上复跑 validators/scans 并生成 public-safe upload evidence，允许本轮一次性 push GitHub main；2 条报告仍均为 `D`，12 条 pending reconciliation、zero-delta=false、缺少完整 lineage 和人工确认继续阻断完整可信报告、正式报告和经营决策依据；未执行 raw value matching、lineage full check、正式报告、live connector 或业务执行；当前 Go/No-Go 仍为 `NO_GO`，`delivery_allowed=false` |
+| 当前基线 | v1.4 HUMAN_FLOW_VERIFIED 修补包；源包 SHA256 `2d5fa2a64ae72d5a5a8810e13444529b10eca358e368bac57611283827608356`，9 个 public-safe source 已同步到 `KMFA/taskpack/v1_4/` 并登记 `metadata/baseline/source_package_v1_4.json`；私有 raw payload 未抽取、未提交 |
+| Stage 上传规则 | v0.1.4 不按单个 Stage 上传。当前 phase 将最终复审通过的 public-safe 代码栈以唯一 closure commit 一次性推送到 GitHub main，并用 post-push remote parity 验证；不含 raw/private/凭据。业务仍为 `Q4 / D / NO_GO / 3-9-2-1`，`delivery_allowed=false`，App 重装和业务动作均未执行；下一 phase 只能是 `V014_APP_REINSTALL_AND_PARITY` |
 
 ## 双平面结构
 
@@ -39,8 +41,60 @@ KMFA 是面向 C-level management / board 的经营分析系统。当前优先�
 | `metadata/project/project.yaml` | KMFA 内部项目配置草案 |
 | `metadata/stage_status.jsonl` | Stage/Phase/Task 状态登记草案 |
 | `metadata/model_registry.yaml` | KMFA 内部模型参数机器镜像草案 |
+| `metadata/protocol/immutability_policy_lock_v1_4.json` | v0.1.4 S02-P2 不可污染原则锁定；raw manifest append-only、derived version append-only、control event no-raw-write 与 raw inbox 不读不列不改边界 |
+| `metadata/protocol/quality_gate_lock_v1_4.json` | v0.1.4 S02-P3 数据质量等级锁定；Q0-Q5、A/B/C/D、quality-to-release 门禁、NO_GO 和 upload-deferred 边界 |
+| `metadata/protocol/raw_data_roots_v1_4_s03_p1.json` | v0.1.4 S03-P1 raw root read-only 登记协议；记录 list/stat/read/hash 已授权执行且 write/delete/move/rename/overwrite 均为 false |
+| `metadata/imports/v014_s03_p1_public_raw_file_register.json` | v0.1.4 S03-P1 public-safe raw file register；只保存聚合计数、类型、大小、状态和 private refs，不保存 raw 文件明细或内容 hash |
 | `metadata/imports/file_import_policy.yaml` | S03-P1 文件型导入登记、安全解包、WPS/OLE 提示和公开仓库禁止项 |
 | `metadata/sources/source_check_matrix_policy.yaml` | S03-P2 数据源检查矩阵维度、状态枚举和 metadata-only 状态事件策略 |
+| `metadata/protocol/source_check_matrix_v1_4_s03_p2.json` | v0.1.4 S03-P2 数据源检查矩阵协议；锁定 required dimensions、allowed statuses、metadata-only append-only status events 和 no raw read/no upload 边界 |
+| `KMFA/metadata/protocol/source_priority_v1_4_s03_p3.json` | v0.1.4 S03-P3 源优先级协议；锁定 raw/authorized/processed 优先级、同源失效重跑、跨源人工差异队列、no auto-selection 和 no raw read/no upload 边界 |
+| `KMFA/metadata/sources/v014_s03_p3_source_priority_records.jsonl` | v0.1.4 S03-P3 public-safe source priority records；只保存 public file ids、matrix refs、source class refs、priority ranks、manual-review status 和安全边界，不保存 raw 文件名、raw hash、字段明文或业务值 |
+| `KMFA/metadata/sources/v014_s03_p3_same_source_rerun_events.jsonl` | v0.1.4 S03-P3 same-source rerun policy event；policy fixture only，失效派生缓存并请求重跑，不写 raw 层 |
+| `KMFA/metadata/quality/v014_s03_p3_cross_source_difference_queue.jsonl` | v0.1.4 S03-P3 cross-source manual difference queue；policy fixture only，跨源冲突进入人工复核队列，不自动选边 |
+| `KMFA/stage_artifacts/V014_S03_STAGE_REVIEW/machine/stage3_review_manifest.json` | v0.1.4 Stage 3 整体复审 manifest；复跑 S03-P1/P2/P3 validators，锁定 findings=0、NO_GO/Q2/D/blocked 和 upload-deferred 边界 |
+| `KMFA/stage_artifacts/V014_S04_P1_AMOUNT_PRECISION/machine/amount_precision_manifest.json` | v0.1.4 S04-P1 金额精度 manifest；锁定 9 个金额标准化 cases、9 个拒绝 cases、3 个 forbidden-float fixture findings、no-float 全仓扫描和 no raw/no upload 边界 |
+| `KMFA/stage_artifacts/V014_S04_P2_FIELD_STANDARDIZATION/machine/field_standardization_manifest.json` | v0.1.4 S04-P2 字段标准化 manifest；锁定 6 个 canonical fields、32 条 alias dictionary、6/6 字段标准化 case、5 条缺失/异常质量状态和 no raw/no upload 边界 |
+| `KMFA/stage_artifacts/V014_S04_P3_BASIC_TOOL_REPORT/machine/basic_tool_report_manifest.json` | v0.1.4 S04-P3 基础工具测试 manifest；锁定 22/22 个 synthetic amount/date/period boundary cases、11 个金额 case、11 个日期/期间 case、JSON/Markdown 工具报告和 no raw/no upload/no Stage 4 review 边界 |
+| `KMFA/stage_artifacts/V014_S04_STAGE_REVIEW/machine/stage4_review_manifest.json` | v0.1.4 Stage 4 整体复审 manifest；复跑 S04-P1/S04-P2/S04-P3 validators，锁定 findings=0、NO_GO/Q2/D/blocked、no raw/no upload/no S05 和 upload-deferred 边界 |
+| `KMFA/stage_artifacts/V014_S05_P1_A0_FILE_REGISTRATION/machine/a0_file_registration_manifest.json` | v0.1.4 S05-P1 A0 文件登记 manifest；锁定 A0 文件聚合计数 9、PDF 8、Excel 1、private member hash diagnostic 9、Q3 candidates 9、Q4/Q5 0、public raw hash/member name 0 和 upload-deferred/no-go 边界 |
+| `metadata/baseline/v014_s05_p1_a0_file_register.json` | v0.1.4 S05-P1 public-safe A0 file register；只保存聚合计数、状态、private refs 和 no-public-raw-hash 边界，不保存 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文或业务值 |
+| `metadata/baseline/v014_s05_p1_a0_project_candidates.jsonl` | v0.1.4 S05-P1 public-safe A0 project candidates；只保存 candidate refs、质量等级和后续 phase 状态，不保存 raw 名称、字段明文、sheet name、ZIP member name、row values 或业务值 |
+| `KMFA/stage_artifacts/V014_S05_P2_FIELD_GOLDEN_BASELINE/machine/field_golden_baseline_manifest.json` | v0.1.4 S05-P2 字段级黄金基准 manifest；锁定 5 个 field contracts、45 条 field candidates、40 条 PDF private-only anchor/hash recorded、5 条 Excel field candidates owner-downgraded cross-source support only、Q4/Q5 0 和 upload-deferred/no-go 边界 |
+| `metadata/baseline/v014_s05_p2_field_contracts.json` | v0.1.4 S05-P2 public-safe field contracts；只保存 canonical field role、quality gate、source-anchor/hash 状态要求和 public repo safety flags，不保存字段来源表头明文或业务值 |
+| `metadata/baseline/v014_s05_p2_field_candidates.jsonl` | v0.1.4 S05-P2 public-safe field candidates；只保存 candidate refs、field role、private-only locator/hash status、owner downgrade status 和质量状态，不保存 raw 文件名、raw hash、sheet name、ZIP member name、row/cell values 或真实业务值 |
+| `KMFA/stage_artifacts/V014_S05_P3_AUTHORITY_BASELINE_LOCK/machine/authority_baseline_lock_manifest.json` | v0.1.4 S05-P3 权威基准锁定 manifest；锁定 45 条 authority records、40 条 PDF 字段为 Q5 calculation baseline、5 条 Excel 字段排除、formal report 0、zero-delta 0、lineage full check 0 和 upload-deferred/no-go 边界 |
+| `KMFA/stage_artifacts/V014_S05_STAGE_REVIEW/machine/stage5_review_manifest.json` | v0.1.4 Stage 5 整体复审 manifest；复跑 S05-P1/S05-P2/S05-P3 validators，锁定 phase_results 全部 PASS、open findings=0、A0 files 9、field candidates 45、authority records 45、Q5 calculation baseline locked 40、excluded fields 5、NO_GO/Q4/D/blocked、no raw/no upload/no S06 和 upload-deferred 边界 |
+| `KMFA/stage_artifacts/V014_S06_P1_ZERO_DELTA_VALIDATOR/machine/zero_delta_validator_manifest.json` | v0.1.4 S06-P1 zero-delta validator manifest；复用 public-safe synthetic fixture 锁定整数分逐字段比较、1 cent mismatch fail、mismatch report required columns、NO_GO/Q4/D/blocked、no raw/no upload/no S06-P2/S06-P3/Stage 6 review 边界 |
+| `KMFA/stage_artifacts/V014_S06_P2_DIFFERENCE_QUEUE/machine/difference_queue_manifest.json` | v0.1.4 S06-P2 difference queue manifest；复用 public-safe PDF/Excel conflict fixture 锁定 1 cent 跨源差异进入人工队列、禁止自动处理、未关闭差异阻断 A 级报告、NO_GO/Q4/D/blocked、no raw/no upload/no S06-P3/Stage 6 review 边界 |
+| `KMFA/stage_artifacts/V014_S06_P3_VALIDATION_EVIDENCE/machine/validation_evidence_manifest.json` | v0.1.4 S06-P3 validation evidence manifest；复用 S06-P1/S06-P2 public-safe evidence 输出 sanitized zero-delta、mismatch report、project validation status，并写入 `metadata/quality`，锁定 Q5/A 级报告仍为 0、NO_GO/Q4/D/blocked、no raw/no upload/no Stage 6 review 边界 |
+| `KMFA/stage_artifacts/V014_S06_STAGE_REVIEW/machine/stage6_review_manifest.json` | v0.1.4 Stage 6 整体复审 manifest；复跑 S06-P1/S06-P2/S06-P3 validators，锁定 phase_results 全部 PASS、open findings=0、queue_items=1、blocked statuses=2、Q5/A 级报告仍为 0、NO_GO/Q4/D/blocked、no raw/no upload/no S07 边界 |
+| `KMFA/stage_artifacts/V014_S07_P1_FINANCE_FILE_ADAPTER/machine/finance_file_adapter_manifest.json` | v0.1.4 S07-P1 财务文件适配 manifest；复用 public-safe baseline 锁定 9 类财务支撑源、45 条 hash-only 字段候选、9 条只读字段报告、Q4/Q5/formal report allowed=0 和 no raw/no S07-P2/no Stage 7 review/no upload 边界 |
+| `metadata/schema_maps/v014_s07_p1_finance_file_adapter_manifest.json` | v0.1.4 S07-P1 public-safe 财务适配 manifest 机器镜像；不保存来源字段/表头明文、真实业务值或 raw 文件信息 |
+| `metadata/schema_maps/v014_s07_p1_finance_field_candidates.jsonl` | v0.1.4 S07-P1 public-safe 财务字段候选；只保存候选 refs、hash/fingerprint refs、quality status 和 evidence refs，不保存字段/表头明文或真实业务值 |
+| `metadata/imports/v014_s07_p1_finance_support_source_registry.json` | v0.1.4 S07-P1 public-safe 财务支撑源登记；只保存 source refs、结构 fingerprint refs、private refs、只读报告 refs 和 scope boundary |
+| `KMFA/stage_artifacts/V014_S07_P2_WPS_FILE_ADAPTER/machine/wps_file_adapter_manifest.json` | v0.1.4 S07-P2 WPS 文件适配 manifest；复用 public-safe baseline 锁定 4 类 WPS 导出、20 条 hash-only 字段映射、4 条转换提示、4 条只读字段报告、1 个映射规则版本、Q4/Q5/formal report allowed=0 和 no raw/no S07-P3/no Stage 7 review/no upload 边界 |
+| `metadata/schema_maps/v014_s07_p2_wps_file_adapter_manifest.json` | v0.1.4 S07-P2 public-safe WPS 适配 manifest 机器镜像；不保存来源字段/表头明文、tab label、真实业务值或 raw 文件信息 |
+| `metadata/schema_maps/v014_s07_p2_wps_field_mappings.jsonl` | v0.1.4 S07-P2 public-safe WPS 字段映射；只保存 mapping refs、hash/fingerprint refs、quality status 和 rule version refs，不保存字段/表头明文或真实业务值 |
+| `metadata/schema_maps/v014_s07_p2_wps_mapping_rule_versions.json` | v0.1.4 S07-P2 public-safe WPS 映射规则版本；锁定 active mapping rule version 和 no source payload/no native WPS file committed 边界 |
+| `metadata/imports/v014_s07_p2_wps_export_source_registry.json` | v0.1.4 S07-P2 public-safe WPS 导出源登记；只保存 source refs、转换结构 fingerprint refs、private refs、转换状态和 scope boundary |
+| `KMFA/stage_artifacts/V014_S07_P3_REDCIRCLE_POSTPONEMENT_POLICY/machine/redcircle_postponement_manifest.json` | v0.1.4 S07-P3 红圈导出后置策略 manifest；复用 public-safe baseline 锁定 4 类红圈预留导出、4 条模板、4 条 registry source、4 条 rollback plan、1 条 connector policy、D15 automatic connector allowed=false 和 no raw/no Stage 7 review/no upload 边界 |
+| `metadata/schema_maps/v014_s07_p3_redcircle_postponement_manifest.json` | v0.1.4 S07-P3 public-safe 红圈后置 manifest 机器镜像；不保存来源字段/表头明文、sheet/tab label、真实业务值、接口凭证或 raw 文件信息 |
+| `metadata/schema_maps/v014_s07_p3_redcircle_reserved_export_templates.jsonl` | v0.1.4 S07-P3 public-safe 红圈预留导出模板；只保存 template refs、source refs、template contract hash refs、private refs 和控制状态，不保存字段/表头明文或真实业务值 |
+| `metadata/schema_maps/v014_s07_p3_redcircle_postponement_policy.yaml` | v0.1.4 S07-P3 红圈后置策略；固化 D15 文件型 MVP 不接自动接口以及未来接入必须只读、留 hash、可回滚、需人工授权 |
+| `metadata/imports/v014_s07_p3_redcircle_export_source_registry.json` | v0.1.4 S07-P3 红圈导出源预留登记；不保存红圈原始导出文件、来源字段明文、接口凭证或真实业务值 |
+| `KMFA/stage_artifacts/V014_S07_STAGE_REVIEW/machine/stage7_review_manifest.json` | v0.1.4 Stage 7 整体复审 manifest；复跑 S07-P1/S07-P2/S07-P3 validators 和 legacy S07 validators，锁定 findings=0/fixed=1、NO_GO/Q4/D/blocked、no raw/no S08/no upload 和 upload-deferred 边界 |
+| `KMFA/stage_artifacts/V014_S08_P1_PROJECT_COMPOSITE_KEY/machine/project_composite_key_manifest.json` | v0.1.4 S08-P1 项目组合键 manifest；复用 public-safe legacy S08-P1 能力锁定 8 个 hash-only 身份组件、整数权重、阈值、匹配数量、人工复核队列和 no raw/no S08-P2/no Stage 8 review/no upload 边界 |
+| `KMFA/stage_artifacts/V014_S08_P2_BUSINESS_ENTITY_MODEL/machine/business_entity_model_manifest.json` | v0.1.4 S08-P2 业务实体模型 manifest；复用 public-safe legacy S08-P2 能力锁定 8 类实体、14 条 schema-only 关系、32 条生命周期状态、每类实体 4 个状态和 no raw/no S08-P3/no Stage 8 review/no upload 边界 |
+| `KMFA/stage_artifacts/V014_S08_P3_ENTITY_MATCHING_QUALITY/machine/entity_matching_quality_manifest.json` | v0.1.4 S08-P3 实体匹配质量 manifest；复用 public-safe legacy S08-P3 能力锁定 4 类匹配质量场景、4 条 quality cases、3 条 manual review queue、1 份 quality report 和 no raw/no Stage 8 review/no upload 边界 |
+| `KMFA/stage_artifacts/V014_S08_STAGE_REVIEW/machine/stage8_review_manifest.json` | v0.1.4 Stage 8 整体复审 manifest；复跑 S08-P1/S08-P2/S08-P3 validators 和 legacy Stage 8 review validator，锁定 open findings=0、fixed findings=1、NO_GO/Q4/D/blocked、no raw/no S09-P1/no upload 和 upload-deferred 边界 |
+| `KMFA/stage_artifacts/V014_S09_P1_PROJECT_COST_FACT_LAYER/machine/project_cost_fact_layer_manifest.json` | v0.1.4 S09-P1 项目成本事实层 manifest；验证 v0.1.4 Stage 8 review dependency 并复用 legacy public-safe S09-P1 证据，锁定 6 个指标、9 类成本、4 条 fact records、9 条 unallocated pool、3 条 manual review queue、1 条 unresolved difference、NO_GO/Q4/D/blocked、no raw/no S09-P2/no S09-P3/no Stage 9 review/no upload 边界 |
+| `KMFA/stage_artifacts/V014_S09_P2_MARGIN_CASH_MARGIN/machine/margin_cash_margin_manifest.json` | v0.1.4 S09-P2 毛利与现金毛利 manifest；验证 v0.1.4 S09-P1 dependency 并复用 legacy public-safe S09-P2 证据，锁定 4 个 margin metrics、4 条 margin records、12 条 scope difference summary、8 个 authority field groups、NO_GO/Q4/D/blocked、no raw/no S09-P3/no Stage 9 review/no upload 边界 |
+| `KMFA/stage_artifacts/V014_S09_P3_SCOPE_RECONCILIATION/machine/scope_reconciliation_manifest.json` | v0.1.4 S09-P3 口径转换与差异核对 manifest；验证 v0.1.4 S09-P2 dependency 并复用 legacy public-safe S09-P3 证据，锁定 12 条 reconciliation records、6 条 domain controls、0 条 confirmed resolution、12 条 pending resolution、NO_GO/Q4/D/blocked、no raw/no Stage 9 review/no upload 边界 |
+| `metadata/baseline/v014_s05_p3_authority_baseline_manifest.json` | v0.1.4 S05-P3 public-safe authority baseline manifest；只保存 baseline version、content hash、锁定角色/时间、聚合计数、release gate 和 public safety flags，不保存 raw 文件名、raw hash、字段/表头明文、sheet name、ZIP member name、row/cell values 或业务值 |
+| `metadata/baseline/v014_s05_p3_authority_baseline_records.jsonl` | v0.1.4 S05-P3 public-safe authority baseline records；只保存 authority refs、field role、lock/exclusion status、private-only anchor/hash status 和 public hashes，不保存真实字段值或来源表头明文 |
+| `metadata/sources/v014_s03_p2_source_check_matrix.jsonl` | v0.1.4 S03-P2 public-safe source check matrix；只保存 public file ids、维度、状态、private refs 和安全边界，不保存 raw 文件名、raw hash、字段明文或业务值 |
+| `metadata/sources/v014_s03_p2_source_status_events.jsonl` | v0.1.4 S03-P2 metadata-only append-only status events；状态变更目标层为 metadata，不写 raw 层 |
 | `metadata/sources/source_priority_policy.yaml` | S03-P3 原始/授权/处理后数据优先级、同源失效重跑和跨源差异队列策略 |
 | `metadata/schema_maps/field_standardization_policy.yaml` | S04-P2 字段标准化、缺字段质量状态和 no-raw-write 策略 |
 | `metadata/schema_maps/field_alias_dictionary.csv` | S04-P2 通用字段别名字典和中文字段映射 |
@@ -69,6 +123,7 @@ KMFA 是面向 C-level management / board 的经营分析系统。当前优先�
 | `metadata/quality/entity_matching_review_queue.jsonl` | S08-P3 中高风险匹配人工复核队列，`auto_merge_allowed=false`、`raw_layer_write_allowed=false` |
 | `metadata/quality/field_quality_status.jsonl` | S04-P2 缺字段/无效字段质量状态协议 |
 | `metadata/baseline/source_package_v1_2.json` | v1.2 完整任务包机器清单、源包 hash、复制/排除策略 |
+| `metadata/baseline/source_package_v1_4.json` | v1.4 HUMAN_FLOW_VERIFIED public-safe baseline manifest；只同步 9 个公开 source，不提交 raw/private payload 或 ZIP member path |
 | `metadata/baseline/html_acceptance_samples_v1_2.json` | 45 个 HTML 样板与 7 个核心样板的机器清单 |
 | `metadata/baseline/a0_authority_baseline_manifest.json` | S05-P3 A0 权威基准锁定 manifest，记录版本、hash、锁定角色、锁定时间和报告/upload gate |
 | `metadata/baseline/a0_authority_baseline_records.jsonl` | S05-P3 public-safe field lock/exclusion 记录，不保存字段明文 |
@@ -107,6 +162,8 @@ KMFA 是面向 C-level management / board 的经营分析系统。当前优先�
 | `stage_artifacts/S17_GITHUB_UPLOAD/` | Stage 17 final GitHub upload 证据，记录 rebase、validators、安全扫描、dry-run push、push 和 post-push parity |
 | `stage_artifacts/S18_GITHUB_UPLOAD/` | Stage 18 final GitHub upload 证据，记录 rebase、validators、安全扫描、dry-run push、push 和 post-push parity |
 | `metadata/traceability/requirements.csv` | 完整需求追溯矩阵，P0/P1 绑定任务、验收、测试、证据 |
+| `metadata/traceability/v1_4_no_omission_requirements.csv` | v1.4 补丁需求追溯 overlay，绑定 raw-root、raw inventory、HTML 人类流程、质量时间规则和 S18 全链路核验 |
+| `metadata/traceability/v1_4_stage_phase_task_status.jsonl` | v1.4 roadmap 结构登记，锁定 18 Stage / 54 Phase / 162 Task |
 | `tools/no_omission_check.py` | 正式防遗漏检查脚本，可在 CI/本地运行 |
 | `tools/check_required_html.py` | v1.2 HTML/UIUX/报告样板强制门禁 |
 | `tools/file_import_register.py` | S03-P1 文件登记、hash/manifest、私有 storage ref 和 zip 安全解包工具 |
@@ -130,6 +187,16 @@ KMFA 是面向 C-level management / board 的经营分析系统。当前优先�
 | `tools/operations_sop.py` | S17-P3 public-safe 运维手册、知识索引和演练日志生成器 |
 | `tools/check_s17_p3_operations_sop.py` | S17-P3 运维与 SOP validator |
 | `tools/check_s17_stage_review.py` | Stage 17 review validator，验证 S17-P1/P2/P3 evidence、通知/运维/安全门禁、D 级阻断、no upload/S18/formal/lineage/live connector gate |
+| `tools/v014_s04_p1_amount_precision.py` | v0.1.4 S04-P1 金额精度与 no-float public-safe evidence 生成器 |
+| `tools/check_v014_s04_p1_amount_precision.py` | v0.1.4 S04-P1 金额精度 validator，验证 amount cases、rejections、no-float、raw boundary 和 GitHub upload deferred |
+| `tools/v014_s04_p2_field_standardization.py` | v0.1.4 S04-P2 字段标准化 public-safe evidence 生成器 |
+| `tools/check_v014_s04_p2_field_standardization.py` | v0.1.4 S04-P2 字段标准化 validator，验证 canonical fields、alias dictionary、quality status、raw boundary 和 GitHub upload deferred |
+| `tools/v014_s04_p3_basic_tool_report.py` | v0.1.4 S04-P3 基础工具测试 public-safe evidence 生成器 |
+| `tools/check_v014_s04_p3_basic_tool_report.py` | v0.1.4 S04-P3 基础工具测试 validator，验证 22/22 synthetic cases、S04-P1/S04-P2 dependencies、raw boundary 和 GitHub upload deferred |
+| `tools/v014_s04_stage_review.py` | v0.1.4 Stage 4 整体复审 public-safe evidence 生成器，复跑 S04-P1/S04-P2/S04-P3 validators 并记录 no-go/upload-deferred 边界 |
+| `tools/check_v014_s04_stage_review.py` | v0.1.4 Stage 4 review validator，验证三阶段结果、findings=0、no raw/no upload/no S05 和 NO_GO release state |
+| `tools/v014_s05_p1_a0_file_registration.py` | v0.1.4 S05-P1 A0 文件登记生成器，只读扫描授权 raw inbox 中匹配 public shape 的 A0 私有 zip，并把真实 hash diagnostic 写入 git-ignored private runtime |
+| `tools/check_v014_s05_p1_a0_file_registration.py` | v0.1.4 S05-P1 A0 文件登记 validator，验证 public-safe 聚合计数、private diagnostic 存在/ignored、无 raw 明文/hash 提交、no-go/upload-deferred 和下一 phase 边界 |
 | `tools/finance_file_adapter.py` | S07-P1 财务支撑源只读解析、字段候选和 public-safe evidence 生成工具 |
 | `tools/check_s07_p1_finance_file_adapter.py` | S07-P1 财务文件适配 validator |
 | `stage_artifacts/S07_P1_finance_file_adapter/` | S07-P1 完成记录、测试结果、只读字段报告和 machine manifest |
@@ -143,6 +210,9 @@ KMFA 是面向 C-level management / board 的经营分析系统。当前优先�
 | `tools/project_composite_key.py` | S08-P1 项目组合键生成器和匹配评分工具，使用 hash-only 组件与整数 basis points 权重 |
 | `tools/check_s08_p1_project_composite_key.py` | S08-P1 项目组合键 validator，验证组件、权重、阈值、人工复核队列和公开仓库安全边界 |
 | `stage_artifacts/S08_P1_project_composite_key/` | S08-P1 完成记录、测试结果和 machine manifest；不包含 Stage 8 review 或 GitHub upload |
+| `tools/v014_s08_p1_project_composite_key.py` | v0.1.4 S08-P1 项目组合键证据生成器，验证 Stage 7 review dependency 并重放 legacy public-safe 组合键能力 |
+| `tools/check_v014_s08_p1_project_composite_key.py` | v0.1.4 S08-P1 validator，验证组合键计数、weighted matching、manual review、NO_GO、no raw、no S08-P2/S08-P3/Stage 8 review/no upload 边界 |
+| `stage_artifacts/V014_S08_P1_PROJECT_COMPOSITE_KEY/` | v0.1.4 S08-P1 public-safe evidence；包含 manifest、report、test results、risk register 和 rollback plan |
 | `tools/business_entity_model.py` | S08-P2 业务实体模型生成器，定义实体、关系、生命周期和 public-safe schema |
 | `tools/check_s08_p2_business_entity_model.py` | S08-P2 业务实体模型 validator，验证 8 类实体、14 条关系、32 条生命周期状态和 scope boundary |
 | `stage_artifacts/S08_P2_business_entity_model/` | S08-P2 完成记录、测试结果和 machine manifest；不包含 S08-P3、Stage 8 review 或 GitHub upload |
@@ -155,6 +225,9 @@ KMFA 是面向 C-level management / board 的经营分析系统。当前优先�
 | `tools/v013_s08_stage_review.py` | v0.1.3 Stage 8 overall review 证据生成器，复跑 S08-P1/S08-P2/S08-P3 replay validators 并记录 upload deferred / no-go 边界 |
 | `tools/check_v013_s08_stage_review.py` | v0.1.3 Stage 8 review validator，验证 phase results、legacy upload 非当前 gate、raw boundary、S09-P1 false 和 GitHub upload deferred |
 | `stage_artifacts/V013_S08_STAGE_REVIEW/` | v0.1.3 Stage 8 overall review public-safe 证据包；不包含 GitHub upload、S09-P1、raw value matching、lineage full check 或正式报告 |
+| `tools/v014_s08_stage_review.py` | v0.1.4 Stage 8 overall review 证据生成器，复跑 S08-P1/S08-P2/S08-P3 validators 和 legacy Stage 8 review validator 并记录 upload deferred / no-go 边界 |
+| `tools/check_v014_s08_stage_review.py` | v0.1.4 Stage 8 review validator，验证 phase results、review findings、legacy upload 非当前 gate、raw boundary、S09-P1 false 和 GitHub upload deferred |
+| `stage_artifacts/V014_S08_STAGE_REVIEW/` | v0.1.4 Stage 8 overall review public-safe 证据包；不包含 GitHub upload、S09-P1、raw value matching、lineage full check 或正式报告 |
 | `tools/v013_s09_p1_project_cost_fact_layer_replay.py` | v0.1.3 S09-P1 project cost fact layer replay 证据生成器，复用既有 public-safe S09-P1 事实层并记录 upload deferred / no-go 边界 |
 | `tools/check_v013_s09_p1_project_cost_fact_layer_replay.py` | v0.1.3 S09-P1 replay validator，验证 Stage 8 review dependency、6 个 fact metrics、9 类成本分类、4 条 fact records、9 条 unallocated pool 和 raw/upload/report 边界 |
 | `stage_artifacts/V013_S09_P1_PROJECT_COST_FACT_LAYER_REPLAY/` | v0.1.3 S09-P1 replay public-safe 证据包；不包含 S09-P2、S09-P3、Stage 9 review、GitHub upload、raw value matching、lineage full check 或正式报告 |
@@ -193,10 +266,18 @@ KMFA 是面向 C-level management / board 的经营分析系统。当前优先�
 | `stage_artifacts/V013_S10_STAGE_REVIEW/` | v0.1.3 Stage 10 review public-safe 证据包；不包含 GitHub upload、Stage 1-10 batch overall review、raw value matching、lineage full check 或正式报告 |
 | `tools/v013_stage1_10_batch_review.py` | v0.1.3 Stage 1-10 batch overall review 证据生成器，复核 S01-S10 stage review manifests、关闭 batch findings，并把单 Stage upload artifacts 标记为非当前 gate |
 | `tools/check_v013_stage1_10_batch_review.py` | v0.1.3 Stage 1-10 batch review validator，验证 10 个 stage results 全 PASS、open findings=0、GitHub upload 未执行、raw boundary 和 NO_GO 阻断仍有效 |
+| `stage_artifacts/V014_S11_STAGE_REVIEW/` | v0.1.4 Stage 11 整体复审 public-safe 证据包；GitHub upload deferred，下一步只能 S12-P1 |
+| `stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS/` | v0.1.4 S12-P1 public-safe 人工处理事件证据包；锁定 5 条 append-only 事件、4 类动作、1 条 approved event、1 条 reverse event、1 个 HTML 工作台；GitHub upload deferred，已由 S12-P2 承接 |
+| `stage_artifacts/V014_S12_P2_MANUAL_IMPACT_PREVIEW/` | v0.1.4 S12-P2 public-safe 影响预览证据包；锁定 5 条 impact previews、8 个受影响项目引用、11 个受影响指标引用、5 个受影响报告引用、3 条高风险二次确认阻断和 2 条可发布预览；GitHub upload deferred，下一步只能 S12-P3 |
+| `stage_artifacts/V014_S12_P3_MANUAL_RERUN_MECHANISM/` | v0.1.4 S12-P3 public-safe 重跑机制证据包；锁定 2 条 cache invalidation、8 条四层重跑步骤、2 条同源引用一致性检查和 append-only 版本策略；GitHub upload deferred，下一步只能 Stage 12 整体复审 |
+| `stage_artifacts/V014_S12_STAGE_REVIEW/` | v0.1.4 Stage 12 整体复审 public-safe 证据包；复跑 S12-P1/S12-P2/S12-P3 validators 和 legacy Stage 12 review，open findings=0、fixed findings=1；GitHub upload deferred，下一步只能 S13-P1 |
 | `stage_artifacts/V013_STAGE1_10_BATCH_REVIEW/` | v0.1.3 Stage 1-10 batch overall review public-safe 证据包；GitHub main 未上传，下一步只能进入独立 Stage 1-10 upload gate |
 | `tools/home_navigation_runtime.py` | S11-P1 public-safe 首页导航 runtime，生成 8 个模块、HTML 首页样张、manifest 和 records |
 | `tools/check_s11_p1_home_navigation.py` | S11-P1 首页导航 validator，验证 required modules、KM 标识、蓝色商务风、全中文可见入口、public-safe 边界和 scope gate |
 | `stage_artifacts/S11_P1_home_navigation/` | S11-P1 完成记录、测试结果、machine manifest 和 public-safe HTML 首页样张 |
+| `tools/v014_s11_p1_home_navigation.py` | v0.1.4 S11-P1 首页导航证据生成器，复用 public-safe legacy S11-P1 与 v1.4 human-flow baseline，不读取 raw inbox |
+| `tools/check_v014_s11_p1_home_navigation.py` | v0.1.4 S11-P1 validator，验证 8 个中文首页模块、导航/动作按钮、可见反馈、v1.4 baseline、no raw/no next-scope/no upload |
+| `stage_artifacts/V014_S11_P1_HOME_NAVIGATION/` | v0.1.4 S11-P1 public-safe 首页导航证据包；不包含 S11-P2/S11-P3、Stage 11 review、GitHub upload、raw value matching、lineage full check 或正式报告 |
 | `tools/source_check_board_runtime.py` | S11-P2 public-safe 数据源检查板 runtime，生成 13 行矩阵、HTML 检查板样张、manifest 和 rows |
 | `tools/check_s11_p2_source_check_board.py` | S11-P2 数据源检查板 validator，验证固定列、状态枚举、状态详情点击、蓝灰低干扰样式、public-safe 边界和 scope gate |
 | `stage_artifacts/S11_P2_source_check_board/` | S11-P2 完成记录、测试结果、machine manifest 和 public-safe HTML 数据源检查板样张 |

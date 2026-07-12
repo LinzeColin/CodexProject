@@ -179,8 +179,9 @@ class KmfaAutomationScheduleContractTests(unittest.TestCase):
 
         self.assertIn("Scheduled local wall-clock time: 20:00.", prompt)
         self.assertIn(
-            "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 "
-            "KMFA/tools/dingtalk_attendance/run_attendance.py --run-type evening --timezone Asia/Shanghai",
+            "TZ=Asia/Shanghai PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 "
+            "KMFA/tools/dingtalk_attendance/automatic_closure.py --run-slot evening "
+            "--trigger-source automation --automation-id kmfa-3 --allow-dws-commands",
             prompt,
         )
         self.assertIn("config-only healthcheck is authoritative", prompt)

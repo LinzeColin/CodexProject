@@ -4,6 +4,7 @@ import argparse
 import json
 import re
 from datetime import datetime, date
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
@@ -75,15 +76,33 @@ def build_run_summary(
     }
 
 
-def extract_configured_cash_amount(text: str, markers: list[str] | tuple[str, ...]) -> float | None:
+def extract_configured_cash_amount(text: str, markers: list[str] | tuple[str, ...]) -> Decimal | None:
     text = text or ""
     for marker in markers:
         if not marker:
             continue
         match = re.search(rf"{re.escape(marker)}\s*[:：]?\s*([0-9][0-9,]*(?:\.[0-9]+)?)", text)
         if match:
-            return float(match.group(1).replace(",", ""))
+            return Decimal(match.group(1).replace(",", ""))
     return None
+
+
+def parse_money_decimal(value: Any, *, field_name: str) -> Decimal:
+    try:
+        parsed = Decimal(str(value).replace(",", ""))
+    except (InvalidOperation, ValueError) as exc:
+        raise ValueError(f"{field_name} must be a finite decimal amount") from exc
+    if not parsed.is_finite():
+        raise ValueError(f"{field_name} must be a finite decimal amount")
+    return parsed
+
+
+def money_payload_value(value: Decimal | None) -> int | str | None:
+    if value is None:
+        return None
+    if value == value.to_integral_value():
+        return int(value)
+    return format(value, "f")
 
 
 def evaluate_cash_risk(
@@ -97,8 +116,8 @@ def evaluate_cash_risk(
     extraction = cash_config.get("extraction") or {}
     group_name = scope.get("group_name", "付款请示群")
     sender_name = scope.get("sender_name", "杨婷")
-    hard_threshold = float(thresholds.get("hard_threshold", 500000))
-    soft_threshold = float(thresholds.get("soft_threshold", 1000000))
+    hard_threshold = parse_money_decimal(thresholds.get("hard_threshold", 500000), field_name="hard_threshold")
+    soft_threshold = parse_money_decimal(thresholds.get("soft_threshold", 1000000), field_name="soft_threshold")
     account_family = scope.get("account_statement_document_family", "cash_account_statement")
     markers = extraction.get("total_available_cash_markers", []) or []
 
@@ -269,9 +288,9 @@ def build_notification_events(
                 "payload": {
                     "report_date": cash_result.report_date.isoformat(),
                     "risk_level": cash_result.risk_level,
-                    "total_available_cash": cash_result.total_available_cash,
-                    "hard_threshold": cash_result.hard_threshold,
-                    "soft_threshold": cash_result.soft_threshold,
+                    "total_available_cash": money_payload_value(cash_result.total_available_cash),
+                    "hard_threshold": money_payload_value(cash_result.hard_threshold),
+                    "soft_threshold": money_payload_value(cash_result.soft_threshold),
                     "source_message_id": cash_result.source_message_id,
                     "source_file_sha256": cash_result.source_file_sha256,
                     "confidence": cash_result.confidence,
@@ -309,9 +328,9 @@ def cash_result_to_payload(result: CashRiskResult | None) -> dict[str, Any] | No
     return {
         "report_date": result.report_date.isoformat(),
         "risk_level": result.risk_level,
-        "total_available_cash": result.total_available_cash,
-        "hard_threshold": result.hard_threshold,
-        "soft_threshold": result.soft_threshold,
+        "total_available_cash": money_payload_value(result.total_available_cash),
+        "hard_threshold": money_payload_value(result.hard_threshold),
+        "soft_threshold": money_payload_value(result.soft_threshold),
         "source_message_id": result.source_message_id,
         "source_file_sha256": result.source_file_sha256,
         "confidence": result.confidence,

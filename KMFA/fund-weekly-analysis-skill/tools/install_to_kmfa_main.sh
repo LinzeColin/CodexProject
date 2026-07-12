@@ -55,7 +55,6 @@ fi
 python3 "$TARGET_DIR/tools/validate_taskpack.py"
 
 git add KMFA/fund-weekly-analysis-skill KMFA/metadata/fund_weekly_analysis/.gitignore KMFA/metadata/fund_weekly_analysis/README.md
-git add -f KMFA/fund-weekly-analysis-skill/templates/资金与税费管理母版_真实数据预览_v2.xlsx
 if git diff --cached --quiet; then
   echo "No tracked changes to commit."
 else

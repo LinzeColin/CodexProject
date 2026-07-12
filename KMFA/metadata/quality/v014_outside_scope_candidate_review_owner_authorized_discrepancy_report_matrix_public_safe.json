@@ -1,0 +1,51 @@
+{
+  "check_count": 9,
+  "check_fail_count": 0,
+  "check_pass_count": 9,
+  "checks": [
+    {
+      "check_code": "owner_latest_authorization_captured",
+      "status": "PASS"
+    },
+    {
+      "check_code": "all_review_items_classified",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_safe_exact_match_found",
+      "status": "PASS"
+    },
+    {
+      "check_code": "ambiguous_candidates_tied",
+      "status": "PASS"
+    },
+    {
+      "check_code": "unmatched_items_reported",
+      "status": "PASS"
+    },
+    {
+      "check_code": "non_numeric_or_calculation_items_reported",
+      "status": "PASS"
+    },
+    {
+      "check_code": "discrepancy_queue_written",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_gates_closed",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "phase_id": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_OWNER_AUTHORIZED_DISCREPANCY_REPORT",
+  "project_id": "KMFA",
+  "record_type": "v014_outside_scope_candidate_review_owner_authorized_discrepancy_report_matrix_public_safe",
+  "schema_version": "kmfa.v014_outside_scope_candidate_review_owner_authorized_discrepancy_report_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-OWNER-AUTHORIZED-DISCREPANCY-REPORT-20260707",
+  "version": "0.1.4-outside-scope-candidate-review-owner-authorized-discrepancy-report"
+}

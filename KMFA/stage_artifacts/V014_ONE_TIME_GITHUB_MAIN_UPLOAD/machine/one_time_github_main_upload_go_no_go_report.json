@@ -1,0 +1,29 @@
+{
+  "schema_version": "kmfa.v014.one_time_github_main_upload_go_no_go.v1",
+  "record_type": "v014_one_time_github_main_upload_go_no_go",
+  "project_id": "KMFA",
+  "phase_id": "V014_ONE_TIME_GITHUB_MAIN_UPLOAD",
+  "code_upload_decision": "GO_PUBLIC_SAFE_CODE_ONLY",
+  "business_release_decision": "NO_GO",
+  "github_main_upload_performed": true,
+  "post_push_remote_parity_required": true,
+  "app_reinstall_performed": false,
+  "lineage_full_check_complete": false,
+  "delivery_allowed": false,
+  "official_report_release_allowed": false,
+  "business_execution_allowed": false,
+  "current_data_quality_grade": "Q4",
+  "current_report_grade": "D",
+  "difference_state": "3-9-2-1",
+  "next_required_phase": "V014_APP_REINSTALL_AND_PARITY",
+  "blocker_ids": [
+    "OPEN_RECONCILIATION_REMAINS",
+    "LINEAGE_FULL_CHECK_NOT_COMPLETE",
+    "OFFICIAL_REPORT_RELEASE_NOT_ALLOWED",
+    "APP_REINSTALL_AND_PARITY_PENDING"
+  ],
+  "resolved_blocker_ids": [
+    "FINAL_OVERALL_REVIEW_PENDING",
+    "ONE_TIME_GITHUB_MAIN_UPLOAD_PENDING"
+  ]
+}

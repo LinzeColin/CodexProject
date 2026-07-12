@@ -1,0 +1,78 @@
+{
+  "schema_version": "kmfa.v014.s16_p2.source_lanes.v1",
+  "source_lane_count": 6,
+  "source_lanes": [
+    {
+      "authoritative_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "candidate_sheet_count": 16,
+      "current_status": "structure_candidates_observed_row_binding_unproven",
+      "lane_id": "project_status",
+      "manual_review_required": true,
+      "materialized_lifecycle_record_count": 0,
+      "purpose": "识别生产或工程项目状态结构；没有权威项目行绑定时不生成项目状态事实。",
+      "structure_candidate_observed": true,
+      "visible_label": "生产项目状态"
+    },
+    {
+      "authoritative_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "candidate_sheet_count": 18,
+      "current_status": "structure_candidates_observed_row_binding_unproven",
+      "lane_id": "commencement",
+      "manual_review_required": true,
+      "materialized_lifecycle_record_count": 0,
+      "purpose": "识别开工、进场或启动结构；不签发现场施工指令。",
+      "structure_candidate_observed": true,
+      "visible_label": "开工"
+    },
+    {
+      "authoritative_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "candidate_sheet_count": 33,
+      "current_status": "structure_candidates_observed_row_binding_unproven",
+      "lane_id": "completion",
+      "manual_review_required": true,
+      "materialized_lifecycle_record_count": 0,
+      "purpose": "识别完工、竣工或验收结构；不替代安全或技术签字。",
+      "structure_candidate_observed": true,
+      "visible_label": "完工"
+    },
+    {
+      "authoritative_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "candidate_sheet_count": 36,
+      "current_status": "structure_candidates_observed_row_binding_unproven",
+      "lane_id": "settlement",
+      "manual_review_required": true,
+      "materialized_lifecycle_record_count": 0,
+      "purpose": "识别项目结算结构；没有权威绑定时不形成结算确认。",
+      "structure_candidate_observed": true,
+      "visible_label": "结算"
+    },
+    {
+      "authoritative_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "candidate_sheet_count": 553,
+      "current_status": "structure_candidates_observed_row_binding_unproven",
+      "lane_id": "invoice",
+      "manual_review_required": true,
+      "materialized_lifecycle_record_count": 0,
+      "purpose": "识别项目开票结构；仅供状态复核，不执行发票开具。",
+      "structure_candidate_observed": true,
+      "visible_label": "开票"
+    },
+    {
+      "authoritative_row_binding_count": 0,
+      "authoritative_value_binding_count": 0,
+      "candidate_sheet_count": 1621,
+      "current_status": "structure_candidates_observed_row_binding_unproven",
+      "lane_id": "collection",
+      "manual_review_required": true,
+      "materialized_lifecycle_record_count": 0,
+      "purpose": "识别回款或应收结构；仅供状态复核，不执行催收或资金动作。",
+      "structure_candidate_observed": true,
+      "visible_label": "回款"
+    }
+  ]
+}

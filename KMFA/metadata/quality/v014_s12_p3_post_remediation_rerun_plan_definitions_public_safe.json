@@ -1,0 +1,635 @@
+{
+  "persistent_execution_semantics": "all records are session-only plans; persistent counts remain zero",
+  "phase_id": "V014_S12_P3_POST_REMEDIATION_RERUN_MECHANISM",
+  "plan_count": 6,
+  "plans": [
+    {
+      "affected_metrics": [
+        "差异状态",
+        "报告可信等级",
+        "待处理状态"
+      ],
+      "affected_project_scope": [
+        "四个未证明归属的潜在项目槽位"
+      ],
+      "affected_reports": [
+        "项目成本受限预览",
+        "经营总览受限预览"
+      ],
+      "business_value_committed": false,
+      "cache_invalidation_plan_status": "planned_session_simulation_only",
+      "eligibility_status": "blocked_no_approved_published_event",
+      "manual_action_kind": "difference_handling",
+      "persistent_business_write_allowed": false,
+      "persistent_cache_invalidation_allowed": false,
+      "persistent_rerun_allowed": false,
+      "plan_id": "RERUNPLAN-S12P3-POST-001",
+      "plan_version": "RERUN-PLAN-S12P3-POST-001.001",
+      "project_attribution": "unproven_or_not_applicable",
+      "project_scope_semantics": "potential_impact_not_attribution",
+      "raw_layer_write_allowed": false,
+      "record_type": "public_safe_session_rerun_plan_definition",
+      "rerun_steps": [
+        {
+          "layer": "field_mapping",
+          "layer_label": "字段映射",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-001-01",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 1,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-001-01",
+          "source_anchor_id": "PUBSRC-S12P3-POST-001",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-001-01"
+        },
+        {
+          "layer": "fact_layer",
+          "layer_label": "事实层",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-001-02",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 2,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-001-02",
+          "source_anchor_id": "PUBSRC-S12P3-POST-001",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-001-02"
+        },
+        {
+          "layer": "derived_metric",
+          "layer_label": "指标",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-001-03",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 3,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-001-03",
+          "source_anchor_id": "PUBSRC-S12P3-POST-001",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-001-03"
+        },
+        {
+          "layer": "report_reference",
+          "layer_label": "报告引用",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-001-04",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 4,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-001-04",
+          "source_anchor_id": "PUBSRC-S12P3-POST-001",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-001-04"
+        }
+      ],
+      "risk_level": "high",
+      "same_source_consistency_simulation_allowed": true,
+      "schema_version": "kmfa.v014.s12_p3.rerun_plan_definition.v1",
+      "second_confirmation_required": true,
+      "session_rerun_simulation_allowed": true,
+      "source_anchor_id": "PUBSRC-S12P3-POST-001",
+      "source_event_template_id": "CAND-EVT-S12P1-003",
+      "source_evidence_refs": [
+        "KMFA/stage_artifacts/V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW/machine/impact_preview_manifest.json",
+        "KMFA/taskpack/v1_4/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_4.md"
+      ],
+      "source_group_id": "PEND-S12P1-001",
+      "source_group_title": "非零差异复核",
+      "source_preview_id": "IMPREV-S12P2-POST-001"
+    },
+    {
+      "affected_metrics": [
+        "零差异证据状态",
+        "复核说明完整性"
+      ],
+      "affected_project_scope": [
+        "不形成项目级归属；仅影响全局证据范围"
+      ],
+      "affected_reports": [
+        "待处理事项工作台",
+        "数据质量证据摘要"
+      ],
+      "business_value_committed": false,
+      "cache_invalidation_plan_status": "planned_session_simulation_only",
+      "eligibility_status": "blocked_no_approved_published_event",
+      "manual_action_kind": "note",
+      "persistent_business_write_allowed": false,
+      "persistent_cache_invalidation_allowed": false,
+      "persistent_rerun_allowed": false,
+      "plan_id": "RERUNPLAN-S12P3-POST-002",
+      "plan_version": "RERUN-PLAN-S12P3-POST-001.002",
+      "project_attribution": "unproven_or_not_applicable",
+      "project_scope_semantics": "potential_impact_not_attribution",
+      "raw_layer_write_allowed": false,
+      "record_type": "public_safe_session_rerun_plan_definition",
+      "rerun_steps": [
+        {
+          "layer": "field_mapping",
+          "layer_label": "字段映射",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-002-01",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 1,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-002-01",
+          "source_anchor_id": "PUBSRC-S12P3-POST-002",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-002-01"
+        },
+        {
+          "layer": "fact_layer",
+          "layer_label": "事实层",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-002-02",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 2,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-002-02",
+          "source_anchor_id": "PUBSRC-S12P3-POST-002",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-002-02"
+        },
+        {
+          "layer": "derived_metric",
+          "layer_label": "指标",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-002-03",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 3,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-002-03",
+          "source_anchor_id": "PUBSRC-S12P3-POST-002",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-002-03"
+        },
+        {
+          "layer": "report_reference",
+          "layer_label": "报告引用",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-002-04",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 4,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-002-04",
+          "source_anchor_id": "PUBSRC-S12P3-POST-002",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-002-04"
+        }
+      ],
+      "risk_level": "medium",
+      "same_source_consistency_simulation_allowed": true,
+      "schema_version": "kmfa.v014.s12_p3.rerun_plan_definition.v1",
+      "second_confirmation_required": false,
+      "session_rerun_simulation_allowed": true,
+      "source_anchor_id": "PUBSRC-S12P3-POST-002",
+      "source_event_template_id": "CAND-EVT-S12P1-004",
+      "source_evidence_refs": [
+        "KMFA/stage_artifacts/V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW/machine/impact_preview_manifest.json",
+        "KMFA/taskpack/v1_4/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_4.md"
+      ],
+      "source_group_id": "PEND-S12P1-002",
+      "source_group_title": "零差异证据复核",
+      "source_preview_id": "IMPREV-S12P2-POST-002"
+    },
+    {
+      "affected_metrics": [
+        "未完成比较状态",
+        "现金链路完整性",
+        "报告可信等级"
+      ],
+      "affected_project_scope": [
+        "四个未证明归属的潜在项目槽位"
+      ],
+      "affected_reports": [
+        "项目成本受限预览",
+        "经营总览受限预览"
+      ],
+      "business_value_committed": false,
+      "cache_invalidation_plan_status": "planned_session_simulation_only",
+      "eligibility_status": "blocked_no_approved_published_event",
+      "manual_action_kind": "difference_handling",
+      "persistent_business_write_allowed": false,
+      "persistent_cache_invalidation_allowed": false,
+      "persistent_rerun_allowed": false,
+      "plan_id": "RERUNPLAN-S12P3-POST-003",
+      "plan_version": "RERUN-PLAN-S12P3-POST-001.003",
+      "project_attribution": "unproven_or_not_applicable",
+      "project_scope_semantics": "potential_impact_not_attribution",
+      "raw_layer_write_allowed": false,
+      "record_type": "public_safe_session_rerun_plan_definition",
+      "rerun_steps": [
+        {
+          "layer": "field_mapping",
+          "layer_label": "字段映射",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-003-01",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 1,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-003-01",
+          "source_anchor_id": "PUBSRC-S12P3-POST-003",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-003-01"
+        },
+        {
+          "layer": "fact_layer",
+          "layer_label": "事实层",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-003-02",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 2,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-003-02",
+          "source_anchor_id": "PUBSRC-S12P3-POST-003",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-003-02"
+        },
+        {
+          "layer": "derived_metric",
+          "layer_label": "指标",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-003-03",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 3,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-003-03",
+          "source_anchor_id": "PUBSRC-S12P3-POST-003",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-003-03"
+        },
+        {
+          "layer": "report_reference",
+          "layer_label": "报告引用",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-003-04",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 4,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-003-04",
+          "source_anchor_id": "PUBSRC-S12P3-POST-003",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-003-04"
+        }
+      ],
+      "risk_level": "high",
+      "same_source_consistency_simulation_allowed": true,
+      "schema_version": "kmfa.v014.s12_p3.rerun_plan_definition.v1",
+      "second_confirmation_required": true,
+      "session_rerun_simulation_allowed": true,
+      "source_anchor_id": "PUBSRC-S12P3-POST-003",
+      "source_event_template_id": "CAND-EVT-S12P1-003",
+      "source_evidence_refs": [
+        "KMFA/stage_artifacts/V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW/machine/impact_preview_manifest.json",
+        "KMFA/taskpack/v1_4/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_4.md"
+      ],
+      "source_group_id": "PEND-S12P1-003",
+      "source_group_title": "未完成比较补全",
+      "source_preview_id": "IMPREV-S12P2-POST-003"
+    },
+    {
+      "affected_metrics": [
+        "最终接受状态",
+        "差异说明完整性",
+        "报告限制状态"
+      ],
+      "affected_project_scope": [
+        "四个未证明归属的潜在项目槽位"
+      ],
+      "affected_reports": [
+        "项目成本受限预览",
+        "经营总览受限预览",
+        "待处理事项工作台"
+      ],
+      "business_value_committed": false,
+      "cache_invalidation_plan_status": "planned_session_simulation_only",
+      "eligibility_status": "blocked_no_approved_published_event",
+      "manual_action_kind": "note",
+      "persistent_business_write_allowed": false,
+      "persistent_cache_invalidation_allowed": false,
+      "persistent_rerun_allowed": false,
+      "plan_id": "RERUNPLAN-S12P3-POST-004",
+      "plan_version": "RERUN-PLAN-S12P3-POST-001.004",
+      "project_attribution": "unproven_or_not_applicable",
+      "project_scope_semantics": "potential_impact_not_attribution",
+      "raw_layer_write_allowed": false,
+      "record_type": "public_safe_session_rerun_plan_definition",
+      "rerun_steps": [
+        {
+          "layer": "field_mapping",
+          "layer_label": "字段映射",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-004-01",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 1,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-004-01",
+          "source_anchor_id": "PUBSRC-S12P3-POST-004",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-004-01"
+        },
+        {
+          "layer": "fact_layer",
+          "layer_label": "事实层",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-004-02",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 2,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-004-02",
+          "source_anchor_id": "PUBSRC-S12P3-POST-004",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-004-02"
+        },
+        {
+          "layer": "derived_metric",
+          "layer_label": "指标",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-004-03",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 3,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-004-03",
+          "source_anchor_id": "PUBSRC-S12P3-POST-004",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-004-03"
+        },
+        {
+          "layer": "report_reference",
+          "layer_label": "报告引用",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-004-04",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 4,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-004-04",
+          "source_anchor_id": "PUBSRC-S12P3-POST-004",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-004-04"
+        }
+      ],
+      "risk_level": "high",
+      "same_source_consistency_simulation_allowed": true,
+      "schema_version": "kmfa.v014.s12_p3.rerun_plan_definition.v1",
+      "second_confirmation_required": true,
+      "session_rerun_simulation_allowed": true,
+      "source_anchor_id": "PUBSRC-S12P3-POST-004",
+      "source_event_template_id": "CAND-EVT-S12P1-004",
+      "source_evidence_refs": [
+        "KMFA/stage_artifacts/V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW/machine/impact_preview_manifest.json",
+        "KMFA/taskpack/v1_4/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_4.md"
+      ],
+      "source_group_id": "PEND-S12P1-004",
+      "source_group_title": "最终差异接受说明",
+      "source_preview_id": "IMPREV-S12P2-POST-004"
+    },
+    {
+      "affected_metrics": [
+        "项目匹配状态",
+        "项目毛利槽位绑定",
+        "回款槽位绑定"
+      ],
+      "affected_project_scope": [
+        "四个未证明归属的潜在项目槽位"
+      ],
+      "affected_reports": [
+        "项目成本页面",
+        "经营总览受限预览",
+        "待处理事项工作台"
+      ],
+      "business_value_committed": false,
+      "cache_invalidation_plan_status": "planned_session_simulation_only",
+      "eligibility_status": "blocked_no_approved_published_event",
+      "manual_action_kind": "project_matching",
+      "persistent_business_write_allowed": false,
+      "persistent_cache_invalidation_allowed": false,
+      "persistent_rerun_allowed": false,
+      "plan_id": "RERUNPLAN-S12P3-POST-005",
+      "plan_version": "RERUN-PLAN-S12P3-POST-001.005",
+      "project_attribution": "unproven_or_not_applicable",
+      "project_scope_semantics": "potential_impact_not_attribution",
+      "raw_layer_write_allowed": false,
+      "record_type": "public_safe_session_rerun_plan_definition",
+      "rerun_steps": [
+        {
+          "layer": "field_mapping",
+          "layer_label": "字段映射",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-005-01",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 1,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-005-01",
+          "source_anchor_id": "PUBSRC-S12P3-POST-005",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-005-01"
+        },
+        {
+          "layer": "fact_layer",
+          "layer_label": "事实层",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-005-02",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 2,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-005-02",
+          "source_anchor_id": "PUBSRC-S12P3-POST-005",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-005-02"
+        },
+        {
+          "layer": "derived_metric",
+          "layer_label": "指标",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-005-03",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 3,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-005-03",
+          "source_anchor_id": "PUBSRC-S12P3-POST-005",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-005-03"
+        },
+        {
+          "layer": "report_reference",
+          "layer_label": "报告引用",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-005-04",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 4,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-005-04",
+          "source_anchor_id": "PUBSRC-S12P3-POST-005",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-005-04"
+        }
+      ],
+      "risk_level": "high",
+      "same_source_consistency_simulation_allowed": true,
+      "schema_version": "kmfa.v014.s12_p3.rerun_plan_definition.v1",
+      "second_confirmation_required": true,
+      "session_rerun_simulation_allowed": true,
+      "source_anchor_id": "PUBSRC-S12P3-POST-005",
+      "source_event_template_id": "CAND-EVT-S12P1-002",
+      "source_evidence_refs": [
+        "KMFA/stage_artifacts/V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW/machine/impact_preview_manifest.json",
+        "KMFA/taskpack/v1_4/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_4.md"
+      ],
+      "source_group_id": "PEND-S12P1-005",
+      "source_group_title": "项目归属复核",
+      "source_preview_id": "IMPREV-S12P2-POST-005"
+    },
+    {
+      "affected_metrics": [
+        "来源就绪状态",
+        "字段映射状态",
+        "报告可用性"
+      ],
+      "affected_project_scope": [
+        "四个未证明归属的潜在项目槽位"
+      ],
+      "affected_reports": [
+        "数据源检查板",
+        "项目成本受限预览",
+        "经营总览受限预览"
+      ],
+      "business_value_committed": false,
+      "cache_invalidation_plan_status": "planned_session_simulation_only",
+      "eligibility_status": "blocked_no_approved_published_event",
+      "manual_action_kind": "field_mapping",
+      "persistent_business_write_allowed": false,
+      "persistent_cache_invalidation_allowed": false,
+      "persistent_rerun_allowed": false,
+      "plan_id": "RERUNPLAN-S12P3-POST-006",
+      "plan_version": "RERUN-PLAN-S12P3-POST-001.006",
+      "project_attribution": "unproven_or_not_applicable",
+      "project_scope_semantics": "potential_impact_not_attribution",
+      "raw_layer_write_allowed": false,
+      "record_type": "public_safe_session_rerun_plan_definition",
+      "rerun_steps": [
+        {
+          "layer": "field_mapping",
+          "layer_label": "字段映射",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-006-01",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 1,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-006-01",
+          "source_anchor_id": "PUBSRC-S12P3-POST-006",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-006-01"
+        },
+        {
+          "layer": "fact_layer",
+          "layer_label": "事实层",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-006-02",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 2,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-006-02",
+          "source_anchor_id": "PUBSRC-S12P3-POST-006",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-006-02"
+        },
+        {
+          "layer": "derived_metric",
+          "layer_label": "指标",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-006-03",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 3,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-006-03",
+          "source_anchor_id": "PUBSRC-S12P3-POST-006",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-006-03"
+        },
+        {
+          "layer": "report_reference",
+          "layer_label": "报告引用",
+          "new_version_append_required": true,
+          "old_version_ref": "DERIVED-PRIOR-S12P3-POST-006-04",
+          "old_version_retained": true,
+          "persistent_write_performed": false,
+          "same_source_reference_required": true,
+          "schema_version": "kmfa.v014.s12_p3.rerun_step_plan.v1",
+          "sequence": 4,
+          "simulated_new_version_ref": "DERIVED-SIM-S12P3-POST-006-04",
+          "source_anchor_id": "PUBSRC-S12P3-POST-006",
+          "status": "planned_session_simulation_only",
+          "step_id": "RERUNSTEP-S12P3-POST-006-04"
+        }
+      ],
+      "risk_level": "high",
+      "same_source_consistency_simulation_allowed": true,
+      "schema_version": "kmfa.v014.s12_p3.rerun_plan_definition.v1",
+      "second_confirmation_required": true,
+      "session_rerun_simulation_allowed": true,
+      "source_anchor_id": "PUBSRC-S12P3-POST-006",
+      "source_event_template_id": "CAND-EVT-S12P1-001",
+      "source_evidence_refs": [
+        "KMFA/stage_artifacts/V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW/machine/impact_preview_manifest.json",
+        "KMFA/taskpack/v1_4/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_4.md"
+      ],
+      "source_group_id": "PEND-S12P1-006",
+      "source_group_title": "数据源映射与状态复核",
+      "source_preview_id": "IMPREV-S12P2-POST-006"
+    }
+  ],
+  "project_scope_semantics": "potential impact only; no project attribution is asserted",
+  "required_rerun_chain": [
+    "field_mapping",
+    "fact_layer",
+    "derived_metric",
+    "report_reference"
+  ],
+  "schema_version": "kmfa.v014.s12_p3.rerun_plan_definitions.v1"
+}

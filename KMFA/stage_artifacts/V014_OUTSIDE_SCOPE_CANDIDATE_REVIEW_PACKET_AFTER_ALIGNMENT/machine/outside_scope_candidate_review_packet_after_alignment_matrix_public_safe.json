@@ -1,0 +1,69 @@
+{
+  "business_value_consistency_verified": false,
+  "check_count": 8,
+  "checks": [
+    {
+      "check_code": "source_alignment_available",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_review_packet_written",
+      "observed_public_safe": true,
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "check_code": "review_packet_item_coverage",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "owner_review_response_absent",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "direct_source_ref_coverage",
+      "observed_public_safe": 0,
+      "required": 72,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "direct_processed_fingerprint_coverage",
+      "observed_public_safe": 0,
+      "required": 72,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "full_comparison_not_claimed",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_no_go_preserved",
+      "observed_public_safe": "NO_GO",
+      "required": "NO_GO",
+      "status": "PASS"
+    }
+  ],
+  "fail_count": 2,
+  "full_raw_to_processed_value_comparison_complete": false,
+  "full_raw_to_processed_value_comparison_ready": false,
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "owner_review_required_item_count": 72,
+  "pass_count": 6,
+  "phase_id": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_PACKET_AFTER_ALIGNMENT",
+  "project_id": "KMFA",
+  "record_type": "v014_outside_scope_candidate_review_packet_matrix_public_safe",
+  "review_packet_item_count": 72,
+  "schema_version": "kmfa.v014_outside_scope_candidate_review_packet_matrix_public_safe.v1",
+  "source_direct_processed_fingerprint_match_count": 0,
+  "source_direct_source_record_ref_match_count": 0,
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-PACKET-AFTER-ALIGNMENT-20260707",
+  "version": "0.1.4-outside-scope-candidate-review-packet-after-alignment"
+}

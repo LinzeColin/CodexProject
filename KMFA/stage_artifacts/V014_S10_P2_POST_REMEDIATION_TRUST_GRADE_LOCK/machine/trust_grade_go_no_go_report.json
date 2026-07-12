@@ -1,0 +1,21 @@
+{
+  "blocking_reason_codes": [
+    "zero_delta_failed",
+    "unresolved_critical_difference",
+    "incomplete_reconciliation",
+    "missing_required_lineage",
+    "missing_human_confirmation_for_A",
+    "full_business_value_consistency_not_verified"
+  ],
+  "current_data_quality_grade": "Q4",
+  "current_report_grade": "D",
+  "decision": "NO_GO",
+  "formal_report_allowed": false,
+  "github_upload_performed": false,
+  "maximum_report_grade_before_hard_blocks": "B",
+  "phase_id": "V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK",
+  "project_id": "KMFA",
+  "s10_p3_export_allowed": false,
+  "schema_version": "kmfa.v014.s10_p2.post_remediation_trust_grade_go_no_go.v1",
+  "stage_id": "S10"
+}

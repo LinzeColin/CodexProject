@@ -1,0 +1,63 @@
+{
+  "check_count": 12,
+  "check_fail_count": 0,
+  "check_pass_count": 12,
+  "checks": [
+    {
+      "check_code": "source_business_execution_blocked_follow_up_continuation_phase_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_go_no_go_preserved",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_matrix_clean",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_business_execution_blocked_follow_up_continuation_blockers_complete",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_private_business_execution_blocked_follow_up_continuation_queue_read",
+      "status": "PASS"
+    },
+    {
+      "check_code": "business_execution_blocked_follow_up_continuation_recheck_queue_complete",
+      "status": "PASS"
+    },
+    {
+      "check_code": "business_execution_blocked_follow_up_continuation_recheck_blockers_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "diagnostic_kind_business_execution_blocked_follow_up_continuation_recheck_counts_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "blocked_goal_preserved",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_gates_closed",
+      "status": "PASS"
+    },
+    {
+      "check_code": "public_safety_locked",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-08T00:00:00+10:00",
+  "phase_id": "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK",
+  "project_id": "KMFA",
+  "record_type": "v014_owner_agent_business_execution_blocked_follow_up_continuation_recheck_matrix_public_safe",
+  "schema_version": "kmfa.v014_owner_agent_business_execution_blocked_follow_up_continuation_recheck_matrix.v1",
+  "task_id": "KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-BLOCKED-FOLLOW-UP-CONTINUATION-RECHECK-20260708",
+  "version": "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-blocked-follow-up-continuation-recheck"
+}

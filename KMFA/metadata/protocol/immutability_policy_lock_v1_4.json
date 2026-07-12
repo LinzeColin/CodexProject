@@ -1,0 +1,140 @@
+{
+  "schema_version": "kmfa.v014_s02_p2_immutability_policy_lock.v1",
+  "project_id": "KMFA",
+  "version": "0.1.4",
+  "stage_id": "S02",
+  "phase_id": "S02-P2",
+  "stage_phase": "S02-P2",
+  "task_id": "KMFA-V014-S02-P2-IMMUTABILITY-POLICY-20260703",
+  "acceptance_id": "ACC-V014-S02-P2-IMMUTABILITY-POLICY",
+  "status": "completed_validated_local_only_no_go_upload_deferred",
+  "dependency": {
+    "required_phase": "S02-P1",
+    "dependency_manifest": "KMFA/stage_artifacts/V014_S02_P1_METADATA_PROTOCOL/machine/s02_p1_metadata_protocol_manifest.json",
+    "dependency_expected_status": "completed_validated_local_only_no_go_upload_deferred"
+  },
+  "raw_manifest_contract": {
+    "schema_ref": "KMFA/metadata/imports/raw_manifest_schema.json",
+    "policy_ref": "KMFA/metadata/imports/raw_manifest_policy.yaml",
+    "manifest_ref": "KMFA/metadata/imports/raw_file_manifest.jsonl",
+    "append_only": true,
+    "immutable_fields": [
+      "import_run_id",
+      "source_id",
+      "file_hash",
+      "storage_ref",
+      "original_filename_hash"
+    ],
+    "mutates_original_file": false,
+    "mutates_original_extracted_value": false,
+    "raw_file_bytes_public_repo_allowed": false,
+    "raw_extracted_values_public_repo_allowed": false,
+    "raw_manifest_write_service_implemented": false
+  },
+  "derived_version_contract": {
+    "policy_ref": "KMFA/metadata/lineage/derived_data_policy.yaml",
+    "version_ref": "KMFA/metadata/lineage/derived_data_versions.jsonl",
+    "append_only": true,
+    "overwrite_old_version_allowed": false,
+    "allowed_actions": [
+      "create_version",
+      "invalidate_version",
+      "rerun_version",
+      "compare_versions"
+    ],
+    "raw_layer_write_allowed": false,
+    "derived_calculation_implemented_by_this_phase": false
+  },
+  "control_event_contract": {
+    "policy_ref": "KMFA/metadata/approvals/control_event_policy.yaml",
+    "event_ref": "KMFA/metadata/approvals/control_events.jsonl",
+    "append_only": true,
+    "raw_layer_write_allowed": false,
+    "allowed_event_types": [
+      "mapping_rule",
+      "resolution_event",
+      "approval_event",
+      "comment",
+      "rerun_request",
+      "invalidation_request"
+    ],
+    "forbidden_target_layers": [
+      "raw",
+      "raw_file_manifest_immutable_fields",
+      "original_extracted_values"
+    ],
+    "frontend_or_workbench_raw_write_allowed": false
+  },
+  "raw_data_boundary": {
+    "raw_inbox_path": "/Users/linzezhang/Downloads/KMFA_MetaData",
+    "raw_roots_policy": "KMFA/metadata/protocol/raw_data_roots_v1_4.json",
+    "raw_inbox_read_by_this_phase": false,
+    "raw_inbox_listed_by_this_phase": false,
+    "raw_inbox_inventory_by_this_phase": false,
+    "raw_inbox_modified_by_this_phase": false,
+    "raw_inbox_deleted_by_this_phase": false,
+    "raw_inbox_moved_by_this_phase": false,
+    "raw_inbox_renamed_by_this_phase": false,
+    "raw_inbox_overwritten_by_this_phase": false,
+    "raw_inbox_written_by_this_phase": false,
+    "raw_filenames_committed": false,
+    "raw_hashes_committed": false,
+    "field_or_header_plaintext_committed": false,
+    "row_or_cell_values_committed": false,
+    "business_values_committed": false
+  },
+  "phase_scope": {
+    "current_phase_only": true,
+    "immutability_policy_only": true,
+    "metadata_protocol_dependency_reused": true,
+    "s02_p3_started": false,
+    "stage2_review_performed": false,
+    "github_upload_performed": false,
+    "raw_inventory_performed": false,
+    "raw_value_matching_performed": false,
+    "lineage_full_check_performed": false,
+    "formal_report_performed": false,
+    "live_connector_called": false,
+    "opme_deep_coupling_performed": false,
+    "business_execution_performed": false,
+    "next_phase": "S02-P3",
+    "next_phase_started": false
+  },
+  "release_state": {
+    "delivery_allowed": false,
+    "formal_report_allowed": false,
+    "business_decision_basis_allowed": false,
+    "business_execution_allowed": false,
+    "github_main_upload_allowed": false,
+    "current_go_no_go": "NO_GO",
+    "current_report_grade": "D",
+    "release_permission": "blocked"
+  },
+  "public_repo_safety": {
+    "raw_business_data_committed": false,
+    "zip_committed": false,
+    "excel_workbook_committed": false,
+    "pdf_committed": false,
+    "private_csv_committed": false,
+    "sqlite_or_db_committed": false,
+    "credentials_committed": false,
+    "raw_filenames_committed": false,
+    "raw_hashes_committed": false,
+    "field_plaintext_committed": false,
+    "normalized_business_values_committed": false
+  },
+  "evidence_refs": [
+    "KMFA/stage_artifacts/V014_S02_P2_IMMUTABILITY_POLICY/human/s02_p2_completion_record.md",
+    "KMFA/stage_artifacts/V014_S02_P2_IMMUTABILITY_POLICY/human/test_results.md",
+    "KMFA/stage_artifacts/V014_S02_P2_IMMUTABILITY_POLICY/human/risk_register.md",
+    "KMFA/stage_artifacts/V014_S02_P2_IMMUTABILITY_POLICY/human/rollback_plan.md",
+    "KMFA/stage_artifacts/V014_S02_P2_IMMUTABILITY_POLICY/machine/s02_p2_immutability_policy_manifest.json",
+    "KMFA/metadata/protocol/immutability_policy_lock_v1_4.json",
+    "KMFA/docs/governance/IMMUTABILITY_POLICY.md",
+    "KMFA/tools/immutability_policy_check.py",
+    "KMFA/tools/check_v014_s02_p2_immutability_policy.py",
+    "KMFA/tests/test_v014_s02_p2_immutability_policy.py"
+  ],
+  "next_recommended_phase": "S02-P3",
+  "next_phase_instruction": "Start S02-P3 in a separate run only after user instruction; keep GitHub upload deferred until v1.4 Stage 1-18 complete overall review."
+}

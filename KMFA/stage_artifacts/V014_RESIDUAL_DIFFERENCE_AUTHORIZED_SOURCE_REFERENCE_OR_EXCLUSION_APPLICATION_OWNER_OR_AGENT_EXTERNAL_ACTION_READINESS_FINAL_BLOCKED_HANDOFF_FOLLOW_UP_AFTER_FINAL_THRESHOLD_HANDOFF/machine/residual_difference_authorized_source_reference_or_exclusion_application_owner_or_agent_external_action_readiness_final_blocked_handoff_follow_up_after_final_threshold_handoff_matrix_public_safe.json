@@ -1,0 +1,63 @@
+{
+  "check_count": 12,
+  "check_fail_count": 0,
+  "check_pass_count": 12,
+  "checks": [
+    {
+      "check_code": "source_readiness_phase_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_go_no_go_preserved",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_matrix_clean",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_readiness_blockers_complete",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_private_readiness_records_read",
+      "status": "PASS"
+    },
+    {
+      "check_code": "follow_up_queue_complete",
+      "status": "PASS"
+    },
+    {
+      "check_code": "follow_up_blockers_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "diagnostic_kind_follow_up_counts_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "blocked_goal_preserved",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_gates_closed",
+      "status": "PASS"
+    },
+    {
+      "check_code": "public_safety_locked",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-08T00:00:00+10:00",
+  "phase_id": "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_READINESS_FINAL_BLOCKED_HANDOFF_FOLLOW_UP_AFTER_FINAL_THRESHOLD_HANDOFF",
+  "project_id": "KMFA",
+  "record_type": "v014_authorized_source_reference_owner_agent_external_action_follow_up_matrix_public_safe",
+  "schema_version": "kmfa.v014_authorized_source_reference_owner_agent_external_action_follow_up_matrix.v1",
+  "task_id": "KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-READINESS-FINAL-BLOCKED-HANDOFF-FOLLOW-UP-AFTER-FINAL-THRESHOLD-HANDOFF-20260708",
+  "version": "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-readiness-final-blocked-handoff-follow-up-after-final-threshold-handoff"
+}

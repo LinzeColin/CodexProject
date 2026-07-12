@@ -1,0 +1,67 @@
+{
+  "business_conflict_observed_count": 0,
+  "cross_source_conflict_policy": {
+    "auto_correction_allowed": false,
+    "auto_selection_allowed": false,
+    "difference_queue": true,
+    "manual_review_required": true,
+    "target_layer": "metadata"
+  },
+  "difference_queue_file": "KMFA/metadata/quality/v014_s03_p3_cross_source_difference_queue.jsonl",
+  "generated_at": "2026-07-03T14:21:47Z",
+  "non_scope": {
+    "business_execution_performed": false,
+    "field_mapping_performed": false,
+    "formal_report_performed": false,
+    "github_upload_performed": false,
+    "raw_value_matching_performed": false,
+    "stage3_review_performed": false
+  },
+  "policy_fixture_only": true,
+  "priority_records_file": "KMFA/metadata/sources/v014_s03_p3_source_priority_records.jsonl",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "business_values_committed": false,
+    "credentials_committed": false,
+    "directory_tree_plaintext_committed": false,
+    "excel_workbook_committed": false,
+    "field_or_header_plaintext_committed": false,
+    "pdf_committed": false,
+    "private_csv_committed": false,
+    "raw_business_data_committed": false,
+    "raw_filenames_committed": false,
+    "raw_hashes_committed": false,
+    "raw_or_normalized_values_committed": false,
+    "sqlite_or_db_committed": false,
+    "zip_committed": false,
+    "zip_member_names_committed": false
+  },
+  "raw_layer_write_allowed": false,
+  "raw_or_authorized_priority_over_processed_data": true,
+  "raw_root_mutation_performed": false,
+  "raw_root_read_performed_by_this_phase": false,
+  "raw_source_mutation_allowed": false,
+  "same_source_events_file": "KMFA/metadata/sources/v014_s03_p3_same_source_rerun_events.jsonl",
+  "same_source_inconsistency_policy": {
+    "actions": [
+      "invalidate_derived_cache",
+      "request_rerun"
+    ],
+    "cache_reuse_allowed": false,
+    "raw_source_mutation_allowed": false,
+    "target_layer": "metadata"
+  },
+  "schema_version": "kmfa.source_priority.v1_4.s03_p3",
+  "source_priority_order": [
+    "raw_upload",
+    "authorized_export",
+    "raw_extracted_value",
+    "staging_structured_row",
+    "canonical_fact",
+    "derived_metric",
+    "report_reference",
+    "frontend_display",
+    "processed_data"
+  ],
+  "stage_phase": "S03-P3"
+}

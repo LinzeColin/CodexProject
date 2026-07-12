@@ -1,0 +1,72 @@
+{
+  "business_value_consistency_verified": false,
+  "checks": [
+    {
+      "check_code": "full_source_map_input_available",
+      "observed_public_safe": 149,
+      "required": 149,
+      "status": "PASS"
+    },
+    {
+      "check_code": "processed_target_slots_available",
+      "observed_public_safe": 149,
+      "required": 149,
+      "status": "PASS"
+    },
+    {
+      "check_code": "full_records_materialized",
+      "observed_public_safe": 149,
+      "required": 149,
+      "status": "PASS"
+    },
+    {
+      "check_code": "linked_records_preserved",
+      "observed_public_safe": 77,
+      "required": 77,
+      "status": "PASS"
+    },
+    {
+      "check_code": "outside_scope_records_materialized",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "full_materialization_unblocked",
+      "observed_public_safe": 0,
+      "required": 0,
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_comparison_not_performed",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_no_go_preserved",
+      "observed_public_safe": "NO_GO",
+      "required": "NO_GO",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "full_materialization_check_count": 8,
+  "full_materialization_fail_count": 0,
+  "full_materialization_pass_count": 8,
+  "full_materialization_source_map_record_count": 149,
+  "full_materialized_record_count": 149,
+  "full_processed_value_materialization_complete": true,
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "github_upload_performed": false,
+  "linked_materialized_record_count": 77,
+  "outside_scope_materialized_record_count": 72,
+  "phase_id": "V014_FULL_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_OUTSIDE_SCOPE_APPLICATION",
+  "processed_target_slot_count": 149,
+  "project_id": "KMFA",
+  "raw_to_processed_value_comparison_performed_by_this_phase": false,
+  "record_type": "v014_full_materialization_replay_matrix_public_safe",
+  "schema_version": "kmfa.v014_full_materialization_replay_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-FULL-PROCESSED-VALUE-MATERIALIZATION-REPLAY-AFTER-OUTSIDE-SCOPE-APPLICATION-20260707",
+  "version": "0.1.4-full-materialization-replay-after-outside-scope-application"
+}

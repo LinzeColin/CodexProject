@@ -1,0 +1,19 @@
+{
+  "active_authorized_fill_record_created": false,
+  "allowed_actor_role_count": 2,
+  "allowed_intake_action_count": 3,
+  "business_value_consistency_verified": false,
+  "intake_status": "ready_no_active_owner_authorized_fill_record",
+  "lineage_full_check_complete": false,
+  "new_authorized_fingerprint_count": 0,
+  "owner_authorized_fill_intake_ready": true,
+  "owner_authorized_fill_record_supplied": false,
+  "private_intake_request_item_count": 113,
+  "processed_value_materialization_replay_ready": false,
+  "raw_to_processed_value_comparison_ready": false,
+  "source_duplicate_unresolved_gap_item_count": 12,
+  "source_existing_source_map_record_count": 36,
+  "source_map_gap_resolution_complete": false,
+  "source_unresolved_gap_item_count": 113,
+  "source_unresolved_unique_private_ref_count": 101
+}

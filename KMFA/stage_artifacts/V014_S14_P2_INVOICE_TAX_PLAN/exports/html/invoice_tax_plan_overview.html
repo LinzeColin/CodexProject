@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KMFA 开票纳税</title>
+  <style>
+    :root { --ink:#172033; --muted:#66758a; --line:#d7e3f2; --blue:#2367d1; --navy:#10233f; --soft:#e8f3ff; --warn:#a16207; --stop:#b91c1c; --card:#ffffff; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#f5f8fc; color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif; }
+    header { background:linear-gradient(135deg,var(--navy),#18517f); color:#fff; padding:28px 34px; }
+    .brand { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+    .logo { width:48px; height:48px; border-radius:8px; background:#2563eb; display:flex; align-items:center; justify-content:center; font-weight:800; }
+    h1 { margin:0 0 8px; font-size:28px; letter-spacing:0; }
+    h2 { margin:0 0 10px; font-size:20px; }
+    .sub { color:#dbeafe; line-height:1.65; max-width:980px; }
+    main { max-width:1120px; margin:0 auto; padding:22px; }
+    .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:-34px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:18px; box-shadow:0 12px 26px rgba(15,23,42,.07); }
+    .label { color:var(--muted); font-size:13px; }
+    .num { font-size:24px; font-weight:800; color:var(--blue); margin-top:6px; }
+    .stop { color:var(--stop); }
+    table { width:100%; border-collapse:collapse; margin-top:12px; background:white; border:1px solid var(--line); }
+    th,td { text-align:left; border-bottom:1px solid var(--line); padding:11px 12px; line-height:1.55; }
+    th { background:var(--soft); color:#153e75; }
+    ul { margin:10px 0 0; padding:0; display:grid; grid-template-columns:repeat(3,1fr); gap:10px; list-style:none; }
+    li { border:1px solid var(--line); border-radius:8px; padding:12px; background:#fbfdff; font-weight:700; }
+    li span { display:block; color:var(--muted); font-size:13px; font-weight:400; margin-top:5px; }
+    .notice { border-left:4px solid var(--warn); background:#fff7ed; padding:12px 14px; line-height:1.65; }
+    @media(max-width:900px) { .cards, ul { grid-template-columns:1fr; } header, main { padding-left:16px; padding-right:16px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand"><div class="logo">KM</div><div><strong>KMFA 经营分析系统</strong><div class="sub">S14-P2 · 公开安全 · 开票纳税</div></div></div>
+    <h1>KMFA 开票纳税</h1>
+    <div class="sub">接入开票计划、纳税明细和开票纳税资金汇总结构，只输出待开票、已开票未回款和税率异常候选。页面不展示真实金额、税率值、客户明细、项目明文、账号或原始文件信息。</div>
+  </header>
+  <main>
+    <section class="cards">
+      <div class="card"><div class="label">报告等级</div><div class="num">报告等级 D</div><div class="label">正式税务或经营依据仍被阻断</div></div>
+      <div class="card"><div class="label">未关闭差异</div><div class="num stop">12 项</div><div class="label">需要 owner 或授权复核</div></div>
+      <div class="card"><div class="label">操作边界</div><div class="num stop">只读</div><div class="label">不做纳税申报和发票开具</div></div>
+    </section>
+    <section class="card" style="margin-top:16px">
+      <h2>候选类型</h2>
+      <ul>
+<li>待开票<span>候选信号，需人工复核</span></li>
+<li>已开票未回款<span>候选信号，需人工复核</span></li>
+<li>税率异常候选<span>候选信号，需人工复核</span></li>
+      </ul>
+    </section>
+    <section class="card" style="margin-top:16px">
+      <h2>开票纳税候选</h2>
+      <table>
+        <thead><tr><th>候选</th><th>复核角色</th><th>复核动作</th><th>边界</th></tr></thead>
+        <tbody>
+<tr><td>待开票</td><td>finance_tax_owner</td><td>confirm_invoice_basis</td><td>只作候选复核，不触发外部动作</td></tr>
+<tr><td>已开票未回款</td><td>finance_owner</td><td>verify_collection_status</td><td>只作候选复核，不触发外部动作</td></tr>
+<tr><td>税率异常候选</td><td>finance_tax_owner</td><td>review_tax_rate_basis</td><td>只作候选复核，不触发外部动作</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="card" style="margin-top:16px">
+      <h2>资金汇总</h2>
+      <table>
+        <thead><tr><th>汇总项</th><th>状态</th><th>公开显示</th></tr></thead>
+        <tbody>
+<tr><td>开票预计现金流入</td><td>结构可查看，金额值隐藏</td><td>金额值隐藏</td></tr>
+<tr><td>纳税预计现金流出</td><td>结构可查看，不生成申报金额</td><td>金额值隐藏</td></tr>
+<tr><td>开票纳税净资金压力</td><td>仅提示压力，不触发付款或银行操作</td><td>金额值隐藏</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="card" style="margin-top:16px">
+      <h2>使用限制</h2>
+      <div class="notice">S14-P2 只生成公开安全开票纳税候选证据。不做纳税申报和发票开具，不调用外部接口，不生成正式税务结论，不作为经营决策依据。</div>
+    </section>
+  </main>
+</body>
+</html>

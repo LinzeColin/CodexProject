@@ -1,0 +1,80 @@
+{
+  "check_count": 18,
+  "check_fail_count": 0,
+  "check_pass_count": 18,
+  "checks": [
+    {
+      "check_id": "stage14_dependency",
+      "passed": true
+    },
+    {
+      "check_id": "taskpack_contract",
+      "passed": true
+    },
+    {
+      "check_id": "six_fields_defined",
+      "passed": true
+    },
+    {
+      "check_id": "all_candidates_covered",
+      "passed": true
+    },
+    {
+      "check_id": "all_manual_review",
+      "passed": true
+    },
+    {
+      "check_id": "project_cost_structure_connected",
+      "passed": true
+    },
+    {
+      "check_id": "collection_structure_connected",
+      "passed": true
+    },
+    {
+      "check_id": "zero_authoritative_rows",
+      "passed": true
+    },
+    {
+      "check_id": "zero_authoritative_values",
+      "passed": true
+    },
+    {
+      "check_id": "zero_materialized_facts",
+      "passed": true
+    },
+    {
+      "check_id": "deterministic_probe",
+      "passed": true
+    },
+    {
+      "check_id": "raw_exact",
+      "passed": true
+    },
+    {
+      "check_id": "raw_cross_phase_exact",
+      "passed": true
+    },
+    {
+      "check_id": "browser_pass",
+      "passed": true
+    },
+    {
+      "check_id": "quality_locked",
+      "passed": true
+    },
+    {
+      "check_id": "no_s15_p2",
+      "passed": true
+    },
+    {
+      "check_id": "no_upload",
+      "passed": true
+    },
+    {
+      "check_id": "no_salary_business_action",
+      "passed": true
+    }
+  ],
+  "schema_version": "kmfa.v014.s15_p1.performance_fact_fields_acceptance_matrix.v1"
+}

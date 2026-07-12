@@ -1,0 +1,43 @@
+{
+  "amount_only_match_allowed": false,
+  "authoritative_row_binding_required": true,
+  "automatic_project_assignment_allowed": false,
+  "candidate_materialization_allowed": false,
+  "component_count": 6,
+  "components": [
+    {
+      "component_id": "project_anchor_ref",
+      "current_binding_status": "unproven",
+      "visible_label": "项目锚点"
+    },
+    {
+      "component_id": "contract_anchor_ref",
+      "current_binding_status": "unproven",
+      "visible_label": "合同锚点"
+    },
+    {
+      "component_id": "counterparty_anchor_ref",
+      "current_binding_status": "unproven",
+      "visible_label": "对手方锚点"
+    },
+    {
+      "component_id": "transaction_period_ref",
+      "current_binding_status": "unproven",
+      "visible_label": "期间锚点"
+    },
+    {
+      "component_id": "amount_signature_ref",
+      "current_binding_status": "unproven",
+      "visible_label": "金额签名"
+    },
+    {
+      "component_id": "source_fingerprint_ref",
+      "current_binding_status": "unproven",
+      "visible_label": "来源指纹"
+    }
+  ],
+  "contract_id": "MATCH-KMFA-V014-S16P1-CURRENT-ROW-BINDING-REQUIRED-001",
+  "missing_component_policy": "manual_review_no_project_assignment",
+  "project_match_record_count": 0,
+  "schema_version": "kmfa.v014.s16_p1.project_matching_contract.v1"
+}

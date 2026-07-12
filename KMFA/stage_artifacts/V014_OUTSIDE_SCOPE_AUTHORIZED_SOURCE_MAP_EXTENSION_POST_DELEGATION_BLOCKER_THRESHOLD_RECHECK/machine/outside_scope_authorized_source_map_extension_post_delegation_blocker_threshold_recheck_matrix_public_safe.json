@@ -1,0 +1,51 @@
+{
+  "checks": [
+    {
+      "check_code": "prior_phase_is_post_delegation_blocker_audit",
+      "status": "PASS"
+    },
+    {
+      "check_code": "prior_observation_count_two",
+      "status": "PASS"
+    },
+    {
+      "check_code": "current_observation_count_three",
+      "status": "PASS"
+    },
+    {
+      "check_code": "blocked_threshold_met",
+      "status": "PASS"
+    },
+    {
+      "check_code": "delegated_keep_pending_still_complete",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_delegated_authorization",
+      "status": "PASS"
+    },
+    {
+      "check_code": "application_not_ready",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_gates_closed",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "phase_id": "V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_POST_DELEGATION_BLOCKER_THRESHOLD_RECHECK",
+  "post_delegation_blocker_threshold_recheck_check_count": 9,
+  "post_delegation_blocker_threshold_recheck_check_fail_count": 0,
+  "post_delegation_blocker_threshold_recheck_check_pass_count": 9,
+  "project_id": "KMFA",
+  "record_type": "v014_outside_scope_authorized_source_map_extension_post_delegation_blocker_threshold_recheck_matrix_public_safe",
+  "schema_version": "kmfa.v014_outside_scope_post_delegation_blocker_threshold_recheck_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-POST-DELEGATION-BLOCKER-THRESHOLD-RECHECK-20260706",
+  "version": "0.1.4-outside-scope-authorized-source-map-extension-post-delegation-blocker-threshold-recheck"
+}

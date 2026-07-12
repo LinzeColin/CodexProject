@@ -1,0 +1,19 @@
+{
+  "authorized_fill_required_slot_count": 149,
+  "business_value_consistency_verified": false,
+  "captured_processed_value_fingerprint_count": 0,
+  "comparable_value_pair_count": 0,
+  "direct_processed_value_literal_count": 0,
+  "existing_processed_value_fingerprint_count": 0,
+  "existing_source_map_candidate_present_count": 0,
+  "existing_usable_private_processed_value_source_map_record_count": 0,
+  "path_only_private_ref_slot_count": 149,
+  "private_processed_ref_shape_count": 18,
+  "private_ref_value_semantic_word_count": 141,
+  "private_source_map_write_performed": false,
+  "processed_target_slot_count": 149,
+  "raw_to_processed_value_comparison_performed": false,
+  "source_map_capture_complete": false,
+  "source_map_capture_status": "blocked_path_only_private_refs_authorized_fill_required",
+  "usable_private_processed_value_source_map_record_count": 0
+}

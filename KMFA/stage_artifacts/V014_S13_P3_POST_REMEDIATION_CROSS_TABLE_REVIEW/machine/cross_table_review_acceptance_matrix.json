@@ -1,0 +1,56 @@
+{
+  "check_count": 12,
+  "check_fail_count": 0,
+  "check_pass_count": 12,
+  "checks": [
+    {
+      "check_id": "s13_p2_dependency",
+      "passed": true
+    },
+    {
+      "check_id": "four_dimensions",
+      "passed": true
+    },
+    {
+      "check_id": "zero_comparable",
+      "passed": true
+    },
+    {
+      "check_id": "zero_exact_comparisons",
+      "passed": true
+    },
+    {
+      "check_id": "four_not_comparable",
+      "passed": true
+    },
+    {
+      "check_id": "four_non_additive_queue_items",
+      "passed": true
+    },
+    {
+      "check_id": "quality_report",
+      "passed": true
+    },
+    {
+      "check_id": "q4_d_no_go",
+      "passed": true
+    },
+    {
+      "check_id": "raw_exact",
+      "passed": true
+    },
+    {
+      "check_id": "browser_pass",
+      "passed": true
+    },
+    {
+      "check_id": "stage_review_closed",
+      "passed": true
+    },
+    {
+      "check_id": "upload_closed",
+      "passed": true
+    }
+  ],
+  "schema_version": "kmfa.v014.s13_p3_post_remediation.acceptance_matrix.v1"
+}

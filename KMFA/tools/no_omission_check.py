@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import csv
 import json
+import subprocess
 import sys
 from collections import Counter
 from pathlib import Path
@@ -54,9 +55,6 @@ PUBLIC_REPO_FORBIDDEN_SUFFIXES = {
     ".sqlite-wal",
 }
 OWNER_AUTHORIZED_UPLOAD_RECORD_TYPE = "owner_authorized_plaintext_upload_file"
-PUBLIC_REPO_ALLOWED_BINARY_TEMPLATE_PATHS = {
-    "KMFA/fund-weekly-analysis-skill/templates/资金与税费管理母版_真实数据预览_v2.xlsx",
-}
 
 REQUIRED_V12_BASELINE_FILES = [
     "01_KMFA_Codex_TaskPack_v1_2_完整防遗漏_含HTML验收样板.md",
@@ -89,6 +87,27 @@ def fail(message: str) -> None:
 
 def split_values(value: str) -> list[str]:
     return [item.strip() for item in str(value or "").replace(",", ";").split(";") if item.strip()]
+
+
+def is_ignored_untracked_private_runtime(path: Path) -> bool:
+    parts = path.relative_to(ROOT).parts
+    if ".codex_private_runtime" not in parts and "private_runtime" not in parts:
+        return False
+    repo_root = ROOT.parent
+    repo_rel = path.relative_to(repo_root).as_posix()
+    ignored = subprocess.run(
+        ["git", "check-ignore", "-q", "--", repo_rel],
+        cwd=repo_root,
+        check=False,
+    ).returncode == 0
+    tracked = subprocess.run(
+        ["git", "ls-files", "--error-unmatch", "--", repo_rel],
+        cwd=repo_root,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    ).returncode == 0
+    return ignored and not tracked
 
 
 def load_requirements() -> list[dict[str, str]]:
@@ -206,12 +225,16 @@ def check_no_raw_sensitive_files() -> None:
             continue
         rel = path.relative_to(ROOT).as_posix()
         repo_rel = f"KMFA/{rel}"
-        if repo_rel in owner_authorized_paths or repo_rel in PUBLIC_REPO_ALLOWED_BINARY_TEMPLATE_PATHS:
+        if repo_rel in owner_authorized_paths:
             continue
         if "90_用户原始上传数据_仅本地私有_禁止提交GitHub/" in rel:
+            if is_ignored_untracked_private_runtime(path):
+                continue
             matches.append(rel)
             continue
         if path.suffix.lower() in PUBLIC_REPO_FORBIDDEN_SUFFIXES:
+            if is_ignored_untracked_private_runtime(path):
+                continue
             matches.append(rel)
     if matches:
         fail("forbidden raw/sensitive file-like artifacts under KMFA: " + ", ".join(matches[:20]))

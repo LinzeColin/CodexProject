@@ -36,7 +36,7 @@ DEFAULT_SOURCE_MANIFEST = ROOT / "taskpack" / "v1_2" / "source_manifests" / "用
 DEFAULT_OUTPUT_MANIFEST = ROOT / "metadata" / "baseline" / "a0_file_manifest.json"
 DEFAULT_OUTPUT_CANDIDATES = ROOT / "metadata" / "baseline" / "a0_project_candidates.jsonl"
 
-PACKAGE_NAME = "销售绩效考核.zip"
+PACKAGE_NAME = "PRIVATE_RAW_SOURCE_005.zip"
 PACKAGE_LABEL = "销售绩效考核"
 EXPECTED_PDF_COUNT = 8
 EXPECTED_EXCEL_COUNT = 1

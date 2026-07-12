@@ -1,0 +1,36 @@
+{
+  "app_reinstall_allowed": false,
+  "authoritative_raw_baseline_locked": true,
+  "blocker_ids": [
+    "BUSINESS_VALUE_CONSISTENCY_NOT_PERFORMED",
+    "LINEAGE_FULL_CHECK_BLOCKED_BY_VALUE_CONSISTENCY_SCOPE",
+    "FORMAL_REPORT_RELEASE_BLOCKED_BY_LINEAGE",
+    "GITHUB_UPLOAD_BLOCKED_BY_RAW_LINEAGE_RELEASE_GATES",
+    "APP_REINSTALL_BLOCKED_BY_RAW_LINEAGE_RELEASE_GATES",
+    "BUSINESS_EXECUTION_BLOCKED_BY_NO_GO"
+  ],
+  "business_execution_allowed": false,
+  "business_value_consistency_verified": false,
+  "decision": "NO_GO",
+  "decision_reason": "Owner-confirmed current container source identity and private hash profile are locked public-safely, but business-value consistency, lineage full check, formal report release, GitHub upload, app reinstall and business execution remain blocked.",
+  "formal_report_allowed": false,
+  "github_upload_allowed": false,
+  "lineage_full_check_complete": false,
+  "next_recommended_phase": "V014_LINEAGE_FULL_CHECK_SCOPE_OR_VALUE_CONSISTENCY_AUTHORIZATION",
+  "phase_id": "V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE",
+  "project_id": "KMFA",
+  "public_member_hash_backfill_allowed": false,
+  "raw_alignment_complete": false,
+  "raw_consistency_cross_validation_complete": true,
+  "raw_source_identity_owner_resolved": true,
+  "record_type": "v014_raw_consistency_cross_validation_go_no_go_report",
+  "resolved_blocker_ids": [
+    "RAW_SOURCE_IDENTITY_OWNER_DECISION_REQUIRED",
+    "RAW_SOURCE_IDENTITY_OWNER_CONFIRMATION_APPLIED",
+    "CURRENT_CONTAINER_PRIVATE_HASH_PROFILE_LOCKED",
+    "RAW_SOURCE_CONTAINER_CROSS_RUN_HASH_PROFILE_CONFIRMED"
+  ],
+  "schema_version": "kmfa.v014_raw_consistency_cross_validation_go_no_go.v1",
+  "task_id": "KMFA-V014-RAW-CONSISTENCY-CROSS-VALIDATION-GATE-20260705",
+  "version": "0.1.4"
+}

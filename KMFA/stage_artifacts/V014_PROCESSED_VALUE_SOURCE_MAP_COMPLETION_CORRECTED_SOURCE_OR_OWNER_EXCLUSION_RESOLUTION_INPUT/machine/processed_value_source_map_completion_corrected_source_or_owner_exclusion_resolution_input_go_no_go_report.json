@@ -1,0 +1,20 @@
+{
+  "app_reinstall_performed": false,
+  "blocked_until": "owner_or_authorized_delegate_supplies_36_corrected_source_or_exclusion_resolution_items",
+  "business_execution_performed": false,
+  "decision": "NO_GO",
+  "diagnostic_conclusion": "private_36_unlinked_blocker_resolution_input_template_prepared_no_owner_resolution_supplied",
+  "full_reconciliation_allowed": false,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "github_upload_performed": false,
+  "owner_resolution_input_present": false,
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT",
+  "private_resolution_item_count": 36,
+  "project_id": "KMFA",
+  "record_type": "v014_corrected_source_or_owner_exclusion_resolution_input_go_no_go",
+  "resolution_application_allowed": false,
+  "schema_version": "kmfa.v014_corrected_source_or_owner_exclusion_resolution_input_go_no_go.v1",
+  "status": "completed_validated_local_only_corrected_source_or_owner_exclusion_resolution_input_no_go",
+  "task_id": "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-CORRECTED-SOURCE-OR-OWNER-EXCLUSION-RESOLUTION-INPUT-20260706",
+  "version": "0.1.4-corrected-source-or-owner-exclusion-resolution-input"
+}

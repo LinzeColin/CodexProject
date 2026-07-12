@@ -30,10 +30,10 @@ when the host UTC offset or daylight-saving state changes.
 Current local Codex cwd list for both automations:
 
 ```text
-/Users/linzezhang/CodexProject
+/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa
 ```
 
-Run KMFA git, skill, tests, and scripts from `/Users/linzezhang/CodexProject`.
+Run KMFA git, skill, tests, and scripts from `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa`.
 The upstream DWS archive has its own separate automation and is not part of the
 KMFA attendance automation cwd list.
 

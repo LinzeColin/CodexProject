@@ -1,6 +1,6 @@
 ﻿source_id,文件名,存在,大小_bytes,SHA256,使用方式,是否允许提交GitHub
-SRC-001,销售绩效考核.zip,True,1434787,8c952f81409663ab862c42fb8ec91f2e9bbe30bc62b6fee9714f95cd689c36d1,仅作为私有输入或需求依据；正式代码库只保存hash、manifest、字段合同和脱敏样例,否
-SRC-002,财务.zip,True,38758851,55e6b856552c37c6c6d976df0bb5e724f956b289ed1dcbe8b7a638ecf498a9cc,仅作为私有输入或需求依据；正式代码库只保存hash、manifest、字段合同和脱敏样例,否
+SRC-001,PRIVATE_RAW_SOURCE_005.zip,True,1434787,8c952f81409663ab862c42fb8ec91f2e9bbe30bc62b6fee9714f95cd689c36d1,仅作为私有输入或需求依据；正式代码库只保存hash、manifest、字段合同和脱敏样例,否
+SRC-002,PRIVATE_RAW_SOURCE_004.zip,True,38758851,55e6b856552c37c6c6d976df0bb5e724f956b289ed1dcbe8b7a638ecf498a9cc,仅作为私有输入或需求依据；正式代码库只保存hash、manifest、字段合同和脱敏样例,否
 SRC-003,WPS.zip,True,11750582,9c6fc6af89cf5823491176ced091fc3eaf91da17dec1395dfbfc617d69ccf1a0,仅作为私有输入或需求依据；正式代码库只保存hash、manifest、字段合同和脱敏样例,否
 SRC-004,Screen Recording 2026-06-29 at 12.32.30.mov,True,53182795,2e545b9d6daba9fcff3b2ac720129d161a0534a2339a6fdc80c4291a8670f1e1,仅作为私有输入或需求依据；正式代码库只保存hash、manifest、字段合同和脱敏样例,否
 SRC-005,Pasted markdown.md,True,21850,ed3765dec8a232444f5534518724ba17c8f5402b0639508d4eb49f15c3925dcf,仅作为私有输入或需求依据；正式代码库只保存hash、manifest、字段合同和脱敏样例,可保存摘要但不保存敏感原文

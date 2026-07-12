@@ -1,0 +1,51 @@
+{
+  "check_count": 9,
+  "check_fail_count": 0,
+  "check_pass_count": 9,
+  "checks": [
+    {
+      "check_code": "source_closure_readiness_summary_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_closure_blocked_count_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_blocking_queue_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "residual_blocker_queue_written",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_discrepancy_closed",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_newly_actionable_closure",
+      "status": "PASS"
+    },
+    {
+      "check_code": "residual_bucket_counts_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_gates_closed",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "phase_id": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_BLOCKER_AUDIT",
+  "project_id": "KMFA",
+  "record_type": "v014_outside_scope_candidate_review_discrepancy_closure_blocker_audit_matrix_public_safe",
+  "schema_version": "kmfa.v014_outside_scope_candidate_review_discrepancy_closure_blocker_audit_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-DISCREPANCY-CLOSURE-BLOCKER-AUDIT-20260707",
+  "version": "0.1.4-outside-scope-candidate-review-discrepancy-closure-blocker-audit"
+}

@@ -1,0 +1,75 @@
+{
+  "check_count": 15,
+  "check_fail_count": 0,
+  "check_pass_count": 15,
+  "checks": [
+    {
+      "check_code": "source_confirmation_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_confirmation_valid",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_matrix_clean",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_confirmation_count_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_anchor_blockers_clear",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_private_confirmation_ignored",
+      "status": "PASS"
+    },
+    {
+      "check_code": "precheck_item_count_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "precheck_ready_count_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "precheck_blockers_clear",
+      "status": "PASS"
+    },
+    {
+      "check_code": "track_counts_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_precheck_ignored",
+      "status": "PASS"
+    },
+    {
+      "check_code": "formal_comparison_next_phase_allowed",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_formal_comparison_this_phase",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "status": "PASS"
+    },
+    {
+      "check_code": "public_safe_aggregate_only",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "phase_id": "V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION",
+  "project_id": "KMFA",
+  "record_type": "v014_raw_comparison_precheck_after_owner_anchor_confirmation_matrix_public_safe",
+  "schema_version": "kmfa.v014_raw_comparison_precheck_after_owner_anchor_confirmation_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-RESIDUAL-DIFFERENCE-RAW-TO-PROCESSED-COMPARISON-PRECHECK-AFTER-OWNER-ANCHOR-CONFIRMATION-20260707",
+  "version": "0.1.4-residual-difference-raw-to-processed-comparison-precheck-after-owner-anchor-confirmation"
+}

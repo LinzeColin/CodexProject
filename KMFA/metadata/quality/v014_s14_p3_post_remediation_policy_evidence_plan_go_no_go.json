@@ -1,0 +1,14 @@
+{
+  "business_execution_allowed": false,
+  "data_quality_grade": "Q4",
+  "decision": "NO_GO",
+  "formal_policy_qualification_conclusion_allowed": false,
+  "github_upload_allowed": false,
+  "phase_id": "V014_S14_P3_POST_REMEDIATION_POLICY_EVIDENCE_PLAN",
+  "policy_application_submission_allowed": false,
+  "reason": "authoritative policy evidence identity completeness validity applicability and binding remain unproven",
+  "report_grade": "D",
+  "schema_version": "kmfa.v014.s14_p3_go_no_go.v1",
+  "stage14_review_allowed_in_this_run": false,
+  "subsidy_application_allowed": false
+}

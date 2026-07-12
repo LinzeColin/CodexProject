@@ -1,4 +1,661 @@
-version: "0.1.0-s18-github-upload"
+kmfa_v014_s16_p3_post_remediation_customer_business_analysis:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s16-p3-post-remediation-customer-business-analysis"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S16-P3-POST-REMEDIATION-CUSTOMER-BUSINESS-ANALYSIS-001
+  parameter_refs:
+    - PARAM-KMFA-1786
+    - PARAM-KMFA-1787
+    - PARAM-KMFA-1788
+  evidence_dir: KMFA/stage_artifacts/V014_S16_P3_POST_REMEDIATION_CUSTOMER_BUSINESS_ANALYSIS
+  validator: KMFA/tools/check_v014_s16_p3_post_remediation_customer_business_analysis.py
+  scope: Current read-only four-lane customer value project margin collection quality and aging risk structure candidates with one four-component binding contract one four-dimension summary contract four risk rules four human decision guards zero authoritative customer summaries zero risk items raw immutability browser evidence and Q4 D NO_GO 3-9-2-1; Stage 16 review ranking contact collection legal invoice payment bank upload reinstall formal release difference closure and business execution remain closed.
+
+kmfa_v014_s16_p2_post_remediation_project_status_lifecycle:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s16-p2-post-remediation-project-status-lifecycle"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S16-P2-POST-REMEDIATION-PROJECT-STATUS-LIFECYCLE-001
+  parameter_refs:
+    - PARAM-KMFA-1783
+    - PARAM-KMFA-1784
+    - PARAM-KMFA-1785
+  evidence_dir: KMFA/stage_artifacts/V014_S16_P2_POST_REMEDIATION_PROJECT_STATUS_LIFECYCLE
+  validator: KMFA/tools/check_v014_s16_p2_post_remediation_project_status_lifecycle.py
+  scope: Current read-only six-lane project status commencement completion settlement invoice and collection structure candidates with a six-state lifecycle contract four exception rules three human handoff guards zero authoritative lifecycle records zero exception items raw immutability browser evidence and Q4 D NO_GO 3-9-2-1; S16-P3 Stage 16 review site or signature actions invoice issuance collection payment bank upload reinstall formal release difference closure and business execution remain closed.
+
+kmfa_v014_s16_p1_post_remediation_subcontract_procurement:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s16-p1-post-remediation-subcontract-procurement"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S16-P1-POST-REMEDIATION-SUBCONTRACT-PROCUREMENT-001
+  parameter_refs:
+    - PARAM-KMFA-1780
+    - PARAM-KMFA-1781
+    - PARAM-KMFA-1782
+  evidence_dir: KMFA/stage_artifacts/V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT
+  validator: KMFA/tools/check_v014_s16_p1_post_remediation_subcontract_procurement.py
+  scope: Current read-only five-lane subcontract procurement payment invoice and project-attribution structure candidates with exact processed/private aggregate alignment zero authoritative transactions project matches pool items and anomaly candidates raw immutability browser evidence and Q4 D NO_GO 3-9-2-1; S16-P2 P3 Stage 16 review procurement payment bank upload reinstall formal release difference closure and business execution remain closed.
+
+kmfa_v014_s15_post_remediation_stage_review:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s15-post-remediation-stage-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S15-POST-REMEDIATION-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1777
+    - PARAM-KMFA-1778
+    - PARAM-KMFA-1779
+  evidence_dir: KMFA/stage_artifacts/V014_S15_POST_REMEDIATION_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s15_post_remediation_stage_review.py
+  scope: Current Stage 15 three-phase replay ten fixed findings six strongly connected page links mobile-safe tables zero performance and salary records raw immutability and Q4 D NO_GO 3-9-2-1; S16 salary bonus payroll final payment upload reinstall formal release difference closure and business execution remain closed.
+
+kmfa_v014_s15_p3_post_remediation_salary_boundary:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s15-p3-post-remediation-salary-boundary"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S15P3-POST-REMEDIATION-SALARY-BOUNDARY-001
+  parameter_refs:
+    - PARAM-KMFA-1773
+    - PARAM-KMFA-1774
+    - PARAM-KMFA-1775
+    - PARAM-KMFA-1776
+  evidence_dir: KMFA/stage_artifacts/V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY
+  validator: KMFA/tools/check_v014_s15_p3_post_remediation_salary_boundary.py
+  scope: Current six-field schema-only fact output interface and future salary read draft with zero source payload readiness project employee and salary records four mandatory human checkpoints raw immutability browser evidence and Q4 D NO_GO 3-9-2-1; Stage 15 review S16 salary bonus payroll final payment upload reinstall formal release and business execution remain closed.
+
+kmfa_v014_s15_p2_post_remediation_performance_review_list:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s15-p2-post-remediation-performance-review-list"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S15P2-POST-REMEDIATION-PERFORMANCE-REVIEW-LIST-001
+  parameter_refs:
+    - PARAM-KMFA-1769
+    - PARAM-KMFA-1770
+    - PARAM-KMFA-1771
+    - PARAM-KMFA-1772
+  evidence_dir: KMFA/stage_artifacts/V014_S15_P2_POST_REMEDIATION_PERFORMANCE_REVIEW_LIST
+  validator: KMFA/tools/check_v014_s15_p2_post_remediation_performance_review_list.py
+  scope: Current six-column zero-row performance fact table one abnormal-project method six field-level review items zero actual abnormal projects and business values raw immutability browser evidence and Q4 D NO_GO 3-9-2-1; S15-P3 Stage 15 review salary bonus payroll upload reinstall formal release and business execution remain closed.
+
+kmfa_v014_s15_p1_post_remediation_performance_fact_fields:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s15-p1-post-remediation-performance-fact-fields"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S15P1-POST-REMEDIATION-PERFORMANCE-FACT-FIELDS-001
+  parameter_refs:
+    - PARAM-KMFA-1765
+    - PARAM-KMFA-1766
+    - PARAM-KMFA-1767
+    - PARAM-KMFA-1768
+  evidence_dir: KMFA/stage_artifacts/V014_S15_P1_POST_REMEDIATION_PERFORMANCE_FACT_FIELDS
+  validator: KMFA/tools/check_v014_s15_p1_post_remediation_performance_fact_fields.py
+  scope: Current six-field performance fact structure and manual-review gate with project-cost and collection references six private candidate groups thirteen unique sheets zero authoritative row or value binding zero materialized facts raw immutability browser evidence and Q4 D NO_GO 3-9-2-1; S15-P2 P3 salary bonus payroll upload reinstall formal release and business execution remain closed.
+
+kmfa_v014_s14_post_remediation_stage_review:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s14-post-remediation-stage-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S14-POST-REMEDIATION-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1762
+    - PARAM-KMFA-1763
+    - PARAM-KMFA-1764
+  evidence_dir: KMFA/stage_artifacts/V014_S14_POST_REMEDIATION_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s14_post_remediation_stage_review.py
+  scope: Current Stage 14 review over P1 P2 P3 with zero fund business items zero invoice tax issue candidates and summaries zero authoritative policy bindings eleven fixed findings three strongly connected pages six links fresh browser and raw evidence and Q4 D NO_GO 3-9-2-1; S15 financial policy upload reinstall formal release and business execution remain closed.
+
+kmfa_v014_s14_p3_post_remediation_policy_evidence_plan:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s14-p3-post-remediation-policy-evidence-plan"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S14P3-POST-REMEDIATION-POLICY-EVIDENCE-PLAN-001
+  parameter_refs:
+    - PARAM-KMFA-1758
+    - PARAM-KMFA-1759
+    - PARAM-KMFA-1760
+    - PARAM-KMFA-1761
+  evidence_dir: KMFA/stage_artifacts/V014_S14_P3_POST_REMEDIATION_POLICY_EVIDENCE_PLAN
+  validator: KMFA/tools/check_v014_s14_p3_post_remediation_policy_evidence_plan.py
+  scope: Current public-safe policy evidence directory workbench for five programs with twenty-three required categories four unique public source refs twenty structure candidates five gaps five risk tips private deterministic lexical probes zero authoritative evidence-bound or complete programs zero qualification conclusions scores applications subsidies and amounts raw immutability browser evidence and Q4 D NO_GO 3-9-2-1; Stage 14 review S15 upload reinstall formal release and business execution remain closed.
+
+kmfa_v014_s14_p2_post_remediation_invoice_tax_plan:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s14-p2-post-remediation-invoice-tax-plan"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S14P2-POST-REMEDIATION-INVOICE-TAX-PLAN-001
+  parameter_refs:
+    - PARAM-KMFA-1754
+    - PARAM-KMFA-1755
+    - PARAM-KMFA-1756
+    - PARAM-KMFA-1757
+  evidence_dir: KMFA/stage_artifacts/V014_S14_P2_POST_REMEDIATION_INVOICE_TAX_PLAN
+  validator: KMFA/tools/check_v014_s14_p2_post_remediation_invoice_tax_plan.py
+  scope: Current public-safe invoice tax structure and method workbench with three connected lanes two private direct candidate-parseable lanes zero proven row or value bindings three issue methods three cash summary methods zero business candidates zero materialized summaries deterministic private probes raw immutability browser evidence and Q4 D NO_GO 3-9-2-1; S14-P3 review invoice issuance tax filing upload reinstall formal release and business execution remain closed.
+
+kmfa_v014_s14_p1_post_remediation_fund_cash_loan_plan:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s14-p1-post-remediation-fund-cash-loan-plan"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S14P1-POST-REMEDIATION-FUND-CASH-LOAN-PLAN-001
+  parameter_refs:
+    - PARAM-KMFA-1750
+    - PARAM-KMFA-1751
+    - PARAM-KMFA-1752
+    - PARAM-KMFA-1753
+  evidence_dir: KMFA/stage_artifacts/V014_S14_P1_POST_REMEDIATION_FUND_CASH_LOAN_PLAN
+  validator: KMFA/tools/check_v014_s14_p1_post_remediation_fund_cash_loan_plan.py
+  scope: Current public-safe fund cash loan structure and method workbench with four connected lanes four private candidate-parseable lanes zero proven row or value bindings three methods zero business items deterministic private probes raw immutability browser evidence and Q4 D NO_GO 3-9-2-1; S14-P2 P3 review upload reinstall formal release payment bank loan actions and business execution remain closed.
+
+kmfa_v014_s13_post_remediation_stage_review:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s13-post-remediation-stage-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S13-POST-REMEDIATION-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1747
+    - PARAM-KMFA-1748
+    - PARAM-KMFA-1749
+  evidence_dir: KMFA/stage_artifacts/V014_S13_POST_REMEDIATION_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s13_post_remediation_stage_review.py
+  scope: Current Stage 13 post-remediation review with three phase passes nine fixed findings four strongly connected pages twelve links fresh browser and raw evidence and Q4 D NO_GO 3-9-2-1; S14 upload reinstall formal report difference closure and business execution remain closed.
+
+kmfa_v014_s13_p3_post_remediation_cross_table_review:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s13-p3-post-remediation-cross-table-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S13P3-POST-REMEDIATION-CROSS-TABLE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1743
+    - PARAM-KMFA-1744
+    - PARAM-KMFA-1745
+    - PARAM-KMFA-1746
+  evidence_dir: KMFA/stage_artifacts/V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW
+  validator: KMFA/tools/check_v014_s13_p3_post_remediation_cross_table_review.py
+  scope: Current public-safe project customer amount and time evidence sufficiency review with four not-comparable dimensions four non-additive queue items one quality report browser and raw evidence and Q4 D NO_GO; Stage 13 review S14 upload reinstall formal report difference closure and business execution remain closed.
+
+kmfa_v014_s13_p2_post_remediation_collection_receivable_aging:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s13-p2-post-remediation-collection-receivable-aging"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S13P2-POST-REMEDIATION-COLLECTION-RECEIVABLE-AGING-001
+  parameter_refs:
+    - PARAM-KMFA-1739
+    - PARAM-KMFA-1740
+    - PARAM-KMFA-1741
+    - PARAM-KMFA-1742
+  evidence_dir: KMFA/stage_artifacts/V014_S13_P2_POST_REMEDIATION_COLLECTION_RECEIVABLE_AGING
+  validator: KMFA/tools/check_v014_s13_p2_post_remediation_collection_receivable_aging.py
+  scope: Current public-safe five-lane collection and receivable workbench with three parseable private containers zero proven row bindings four method definitions zero business items browser and raw evidence and Q4 D NO_GO; S13-P3 review upload reinstall formal report and business execution remain closed.
+
+kmfa_v014_s13_p1_post_remediation_financial_operating_report:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s13-p1-post-remediation-financial-operating-report"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S13P1-POST-REMEDIATION-FINANCIAL-OPERATING-REPORT-001
+  parameter_refs:
+    - PARAM-KMFA-1735
+    - PARAM-KMFA-1736
+    - PARAM-KMFA-1737
+    - PARAM-KMFA-1738
+  evidence_dir: KMFA/stage_artifacts/V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT
+  validator: KMFA/tools/check_v014_s13_p1_post_remediation_financial_operating_report.py
+  scope: Current public-safe four-theme weekly and monthly financial operating drafts with seven unique structure sources thirty-five unique candidates zero proven current raw-value bindings browser and raw evidence and Q4 D NO_GO; S13-P2 P3 review upload reinstall formal report and business execution remain closed.
+
+kmfa_v014_s12_post_remediation_stage_review:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s12-post-remediation-stage-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S12-POST-REMEDIATION-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1732
+    - PARAM-KMFA-1733
+    - PARAM-KMFA-1734
+  evidence_dir: KMFA/stage_artifacts/V014_S12_POST_REMEDIATION_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s12_post_remediation_stage_review.py
+  scope: Current Stage 12 post-remediation review with seven fixed findings three frozen phase validators six cross-page links six desktop-mobile viewports historical 5 2 8 state quarantined zero persistent execution fresh raw evidence and Q4 D NO_GO; S13 upload reinstall formal report and business execution remain closed.
+
+kmfa_v014_s12_p3_post_remediation_rerun_mechanism:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s12-p3-post-remediation-rerun-mechanism"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S12P3-POST-REMEDIATION-RERUN-MECHANISM-001
+  parameter_refs:
+    - PARAM-KMFA-1728
+    - PARAM-KMFA-1729
+    - PARAM-KMFA-1730
+    - PARAM-KMFA-1731
+  evidence_dir: KMFA/stage_artifacts/V014_S12_P3_POST_REMEDIATION_RERUN_MECHANISM
+  validator: KMFA/tools/check_v014_s12_p3_post_remediation_rerun_mechanism.py
+  scope: Current public-safe six-plan twenty-four-step four-layer rerun simulation with high-risk confirmation same-source anchors append-only versions zero persistent execution desktop mobile evidence and Q4 D NO_GO; Stage 12 review upload reinstall formal report and business execution remain closed.
+
+kmfa_v014_s12_p2_post_remediation_impact_preview:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s12-p2-post-remediation-impact-preview"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S12P2-POST-REMEDIATION-IMPACT-PREVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1724
+    - PARAM-KMFA-1725
+    - PARAM-KMFA-1726
+    - PARAM-KMFA-1727
+  evidence_dir: KMFA/stage_artifacts/V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW
+  validator: KMFA/tools/check_v014_s12_p2_post_remediation_impact_preview.py
+  scope: Current public-safe six-definition project metric report impact preview with five high-risk session confirmations zero business approvals or publications desktop mobile evidence and Q4 D NO_GO; rerun persistent write Stage 12 review upload reinstall formal report and business execution remain closed.
+
+kmfa_v014_s12_p1_post_remediation_pending_actions:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s12-p1-post-remediation-pending-actions"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S12P1-POST-REMEDIATION-PENDING-ACTIONS-001
+  parameter_refs:
+    - PARAM-KMFA-1720
+    - PARAM-KMFA-1721
+    - PARAM-KMFA-1722
+    - PARAM-KMFA-1723
+  evidence_dir: KMFA/stage_artifacts/V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS
+  validator: KMFA/tools/check_v014_s12_p1_post_remediation_pending_actions.py
+  scope: Current public-safe six-group pending-action workbench with four session-only append-only event templates approved-event reversal policy desktop mobile evidence and Q4 D NO_GO; impact preview rerun persistent business write Stage 12 review upload reinstall formal report and business execution remain closed.
+
+kmfa_v014_s11_p3_post_remediation_project_cost_page:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s11-p3-post-remediation-project-cost-page"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S11-P3-POST-REMEDIATION-PROJECT-COST-PAGE-001
+  parameter_refs:
+    - PARAM-KMFA-1714
+    - PARAM-KMFA-1715
+    - PARAM-KMFA-1716
+  evidence_dir: KMFA/stage_artifacts/V014_S11_P3_POST_REMEDIATION_PROJECT_COST_PAGE
+  validator: KMFA/tools/check_v014_s11_p3_post_remediation_project_cost_page.py
+  scope: Current public-safe four-slot project cost page with seven required columns unknown-null project attribution current evidence pending items D-grade restricted report preview desktop mobile evidence and Q4 D NO_GO; Stage 11 review S12 upload reinstall formal report and business execution remain closed.
+
+kmfa_v014_s11_p2_post_remediation_source_check_board:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s11-p2-post-remediation-source-check-board"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S11-P2-POST-REMEDIATION-SOURCE-CHECK-BOARD-001
+  parameter_refs:
+    - PARAM-KMFA-1711
+    - PARAM-KMFA-1712
+    - PARAM-KMFA-1713
+  evidence_dir: KMFA/stage_artifacts/V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD
+  validator: KMFA/tools/check_v014_s11_p2_post_remediation_source_check_board.py
+  scope: Current public-safe thirteen-row source check matrix with eleven required columns current status overlay search filters row details session-only preview controls current home and project-cost links desktop mobile evidence and Q4 D NO_GO; review persistent write upload reinstall formal report and business execution remain closed.
+
+kmfa_v014_s11_p1_post_remediation_home_navigation:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s11-p1-post-remediation-home-navigation"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S11-P1-POST-REMEDIATION-HOME-NAVIGATION-001
+  parameter_refs:
+    - PARAM-KMFA-1708
+    - PARAM-KMFA-1709
+    - PARAM-KMFA-1710
+  evidence_dir: KMFA/stage_artifacts/V014_S11_P1_POST_REMEDIATION_HOME_NAVIGATION
+  validator: KMFA/tools/check_v014_s11_p1_post_remediation_home_navigation.py
+  scope: Current public-safe eight-module single-page home navigation with visible actions current S10 restricted report links current S11-P2/P3 page links desktop mobile keyboard evidence and Q4 D NO_GO; review upload reinstall formal report and business execution remain closed.
+
+kmfa_v014_s10_post_remediation_stage_review:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s10-post-remediation-stage-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S10-POST-REMEDIATION-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1705
+    - PARAM-KMFA-1706
+    - PARAM-KMFA-1707
+  evidence_dir: KMFA/stage_artifacts/V014_S10_POST_REMEDIATION_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s10_post_remediation_stage_review.py
+  scope: Current Stage 10 post-remediation chain review with six fixed findings fresh raw snapshots four browser viewport checks two byte-exact downloads and Q4 D NO_GO; S11 upload reinstall formal report and business execution remain closed.
+
+kmfa_v014_s10_p3_post_remediation_restricted_export:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s10-p3-post-remediation-restricted-export"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S10-P3-POST-REMEDIATION-RESTRICTED-EXPORT-001
+  parameter_refs:
+    - PARAM-KMFA-1702
+    - PARAM-KMFA-1703
+    - PARAM-KMFA-1704
+  evidence_dir: KMFA/stage_artifacts/V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT
+  validator: KMFA/tools/check_v014_s10_p3_post_remediation_restricted_export.py
+  scope: Two restricted HTML previews and two Chinese CSV appendices bound to current Q4 D NO_GO and 3 9 2 1 reconciliation state; PDF is private policy only and formal report review upload app reinstall and business execution remain closed.
+
+kmfa_v014_s10_p2_post_remediation_trust_grade_lock:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s10-p2-post-remediation-trust-grade-lock"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S10-P2-POST-REMEDIATION-TRUST-GRADE-LOCK-001
+  parameter_refs:
+    - PARAM-KMFA-1699
+    - PARAM-KMFA-1700
+    - PARAM-KMFA-1701
+  evidence_dir: KMFA/stage_artifacts/V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK
+  validator: KMFA/tools/check_v014_s10_p2_post_remediation_trust_grade_lock.py
+  scope: Current S10-P2 A B C D trust-grade recomputation with two version-bound records; Q4 has a theoretical B ceiling but six hard blocks per record force D NO_GO and keep export formal release upload app reinstall and business execution closed.
+
+kmfa_v014_s10_p1_post_remediation_report_entry:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s10-p1-post-remediation-report-entry"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S10-P1-POST-REMEDIATION-REPORT-ENTRY-001
+  parameter_refs:
+    - PARAM-KMFA-1696
+    - PARAM-KMFA-1697
+    - PARAM-KMFA-1698
+  evidence_dir: KMFA/stage_artifacts/V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY
+  validator: KMFA/tools/check_v014_s10_p1_post_remediation_report_entry.py
+  scope: Management-readable S10-P1 report entries bound to current Stage 9 Q4 D NO_GO and 69/3 disposition; no grade calculation export formal report upload app reinstall or business execution.
+
+kmfa_v014_s09_post_remediation_stage_review:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s09-post-remediation-stage-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S09-POST-REMEDIATION-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1693
+    - PARAM-KMFA-1694
+    - PARAM-KMFA-1695
+  evidence_dir: KMFA/stage_artifacts/V014_S09_POST_REMEDIATION_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s09_post_remediation_stage_review.py
+  scope: Stage 9 post-remediation review with fresh phase and residual replay, no-float/no-omission repair, public-safe evidence and immutable raw snapshots; S10 upload app reinstall and business execution remain closed.
+
+kmfa_v014_remaining_eleven_residual_difference_source_trace_or_final_acceptance:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-remaining-eleven-residual-difference-source-trace-or-final-acceptance"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-REMAINING-ELEVEN-RESIDUAL-DIFFERENCE-SOURCE-TRACE-OR-FINAL-ACCEPTANCE-001
+  parameter_refs:
+    - PARAM-KMFA-1690
+    - PARAM-KMFA-1691
+    - PARAM-KMFA-1692
+  evidence_dir: KMFA/stage_artifacts/V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE
+  validator: KMFA/tools/check_v014_remaining_eleven_residual_difference_source_trace_or_final_acceptance.py
+  scope: Private unique authority PDF cost-component trace with integer materialization and final accepted unproven cash differences; no Stage review GitHub upload app reinstall or business execution.
+
+kmfa_v014_global_residual_difference_queue_replay_or_authoritative_exclusion:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-global-residual-difference-queue-replay-or-authoritative-exclusion"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-GLOBAL-RESIDUAL-DIFFERENCE-QUEUE-REPLAY-OR-AUTHORITATIVE-EXCLUSION-001
+  parameter_refs:
+    - PARAM-KMFA-1687
+    - PARAM-KMFA-1688
+    - PARAM-KMFA-1689
+  evidence_dir: KMFA/stage_artifacts/V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION
+  validator: KMFA/tools/check_v014_global_residual_difference_queue_replay_or_authoritative_exclusion.py
+  scope: Private 72-item residual replay with unique integer evidence owner-authorized non-numeric exclusions preserved nonzero differences and eleven explicit open differences; no Stage review GitHub upload app reinstall or business execution.
+
+kmfa_v014_remaining_two_project_cash_collection_evidence_or_final_difference_acceptance:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-remaining-two-project-cash-collection-evidence-or-final-difference-acceptance"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-REMAINING-TWO-PROJECT-CASH-COLLECTION-EVIDENCE-OR-FINAL-DIFFERENCE-ACCEPTANCE-001
+  parameter_refs:
+    - PARAM-KMFA-1684
+    - PARAM-KMFA-1685
+    - PARAM-KMFA-1686
+  evidence_dir: KMFA/stage_artifacts/V014_REMAINING_TWO_PROJECT_CASH_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE
+  validator: KMFA/tools/check_v014_remaining_two_project_cash_collection_evidence_or_final_difference_acceptance.py
+  scope: Private raw project/customer collection evidence, balanced bank-receivable voucher links, integer-only materialization and final Chinese difference acceptance; no Stage review, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_remaining_cash_source_private_trace_or_difference_acceptance:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-remaining-cash-source-private-trace-or-difference-acceptance"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-REMAINING-CASH-SOURCE-PRIVATE-TRACE-OR-DIFFERENCE-ACCEPTANCE-001
+  parameter_refs:
+    - PARAM-KMFA-1681
+    - PARAM-KMFA-1682
+    - PARAM-KMFA-1683
+  evidence_dir: KMFA/stage_artifacts/V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE
+  validator: KMFA/tools/check_v014_remaining_cash_source_private_trace_or_difference_acceptance.py
+  scope: Private payable note and bank settlement trace plus explicit difference acceptance for unreadable secure WPS content and missing collection evidence; no Stage review, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_cash_source_private_disambiguation_and_remaining_value_materialization:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-cash-source-private-disambiguation-and-remaining-value-materialization"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-CASH-SOURCE-PRIVATE-DISAMBIGUATION-AND-REMAINING-VALUE-MATERIALIZATION-001
+  parameter_refs:
+    - PARAM-KMFA-1678
+    - PARAM-KMFA-1679
+    - PARAM-KMFA-1680
+  evidence_dir: KMFA/stage_artifacts/V014_CASH_SOURCE_PRIVATE_DISAMBIGUATION_AND_REMAINING_VALUE_MATERIALIZATION
+  validator: KMFA/tools/check_v014_cash_source_private_disambiguation_and_remaining_value_materialization.py
+  scope: Private composite-identity cash-source disambiguation and integer-only remaining value materialization; missing evidence is never forced to zero; no Stage review, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_real_project_identity_private_rebinding_and_processed_value_materialization:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-real-project-identity-private-rebinding-and-processed-value-materialization"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-REAL-PROJECT-IDENTITY-PRIVATE-REBINDING-AND-PROCESSED-VALUE-MATERIALIZATION-001
+  parameter_refs:
+    - PARAM-KMFA-1675
+    - PARAM-KMFA-1676
+    - PARAM-KMFA-1677
+  evidence_dir: KMFA/stage_artifacts/V014_REAL_PROJECT_IDENTITY_PRIVATE_REBINDING_AND_PROCESSED_VALUE_MATERIALIZATION
+  validator: KMFA/tools/check_v014_real_project_identity_private_rebinding_and_processed_value_materialization.py
+  scope: Private real-project identity rebinding and integer-only proven S09 value materialization; unresolved cash sources and nonzero differences stay open; no Stage review, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_authorized_agent_private_resolution_application_after_blocked_handoff:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-authorized-agent-private-resolution-application-after-blocked-handoff"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-AUTHORIZED-AGENT-PRIVATE-RESOLUTION-AFTER-BLOCKED-HANDOFF-001
+  parameter_refs:
+    - PARAM-KMFA-1672
+    - PARAM-KMFA-1673
+    - PARAM-KMFA-1674
+  evidence_dir: KMFA/stage_artifacts/V014_AUTHORIZED_AGENT_PRIVATE_RESOLUTION_APPLICATION_AFTER_BLOCKED_HANDOFF
+  validator: KMFA/tools/check_v014_authorized_agent_private_resolution_application_after_blocked_handoff.py
+  scope: Authorized-agent private resolution application only; reads operator raw data read-only; resolves deterministic structure; reports unresolved business values privately; no Stage review, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_residual_difference_raw_comparison_after_alignment_precheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-raw-to-processed-comparison-precheck-after-alignment"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-COMPARISON-AFTER-ALIGNMENT-PRECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1450
+    - PARAM-KMFA-1451
+    - PARAM-KMFA-1452
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_ALIGNMENT
+  validator: KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_precheck_after_alignment.py
+  scope: Residual-difference raw comparison precheck after alignment only; confirms 72 post-alignment residual records still lack owner-authorized comparison anchors; public evidence aggregate-only; no raw inbox access, formal raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_residual_difference_raw_candidate_alignment_after_precheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-raw-candidate-alignment-after-precheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-CANDIDATE-ALIGNMENT-AFTER-PRECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1438
+    - PARAM-KMFA-1439
+    - PARAM-KMFA-1440
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_ALIGNMENT_AFTER_PRECHECK
+  validator: KMFA/tools/check_v014_residual_difference_raw_candidate_alignment_after_precheck.py
+  scope: Residual-difference raw candidate alignment after precheck only; reads authorized raw inbox read-only and writes ignored private alignment diagnostics plus anchor draft while keeping owner authorization, formal comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_raw_to_processed_comparison_precheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-raw-to-processed-comparison-precheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-TO-PROCESSED-COMPARISON-PRECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1435
+    - PARAM-KMFA-1436
+    - PARAM-KMFA-1437
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK
+  validator: KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_precheck.py
+  scope: Residual-difference raw-to-processed comparison precheck only; writes ignored private precheck blocker records while keeping raw inbox access, formal comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_private_resolution_materialization_replay:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-private-resolution-materialization-replay"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-PRIVATE-RESOLUTION-MATERIALIZATION-REPLAY-001
+  parameter_refs:
+    - PARAM-KMFA-1432
+    - PARAM-KMFA-1433
+    - PARAM-KMFA-1434
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_PRIVATE_RESOLUTION_MATERIALIZATION_REPLAY
+  validator: KMFA/tools/check_v014_residual_difference_private_resolution_materialization_replay.py
+  scope: Residual-difference private resolution materialization replay only; writes ignored private materialized records and raw-comparison input while keeping formal raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_outside_scope_candidate_review_residual_difference_source_map_correction_blocker_final_threshold_recheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-blocker-final-threshold-recheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-SOURCE-MAP-CORRECTION-BLOCKER-FINAL-THRESHOLD-RECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1420
+    - PARAM-KMFA-1421
+    - PARAM-KMFA-1422
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_FINAL_THRESHOLD_RECHECK
+  validator: KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_source_map_correction_blocker_final_threshold_recheck.py
+  scope: Outside-scope candidate review residual-difference source-map correction blocker final threshold recheck only; records the third source-map correction blocker observation after threshold recheck, marks the strict blocked threshold met, and keeps all downstream gates closed; public evidence aggregate-only; no raw inbox access, discrepancy closure, source-map correction, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_outside_scope_candidate_review_residual_difference_source_map_correction_blocker_threshold_recheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-blocker-threshold-recheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-SOURCE-MAP-CORRECTION-BLOCKER-THRESHOLD-RECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1417
+    - PARAM-KMFA-1418
+    - PARAM-KMFA-1419
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_THRESHOLD_RECHECK
+  validator: KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_source_map_correction_blocker_threshold_recheck.py
+  scope: Outside-scope candidate review residual-difference source-map correction blocker threshold recheck only; records the second source-map correction blocker observation after blocker audit while 72 valid responses remain non-actionable; public evidence aggregate-only; no raw inbox access, discrepancy closure, source-map correction, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_outside_scope_candidate_review_residual_difference_response_import_readiness_recheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-blocker-audit"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-RESPONSE-IMPORT-READINESS-RECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1411
+    - PARAM-KMFA-1412
+    - PARAM-KMFA-1413
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK
+  validator: KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_response_import_readiness_recheck.py
+  scope: Outside-scope candidate review residual-difference response import readiness recheck only; confirms 72 valid responses clear the missing-response blocker while all responses remain non-actionable and source-map correction blocked; public evidence aggregate-only; no raw inbox access, discrepancy closure, source-map correction, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_response_import:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-candidate-review-residual-difference-response-import-readiness-recheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-OWNER-OR-AGENT-DIAGNOSTIC-RESPONSE-IMPORT-001
+  parameter_refs:
+    - PARAM-KMFA-1408
+    - PARAM-KMFA-1409
+    - PARAM-KMFA-1410
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_RESPONSE_IMPORT
+  validator: KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_response_import.py
+  scope: Outside-scope candidate review residual-difference owner or agent diagnostic response import only; imports 72 valid diagnostic responses from existing ignored private owner-authorized discrepancy report while all responses remain non-actionable; public evidence aggregate-only; no raw inbox access, discrepancy closure, source-map correction, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_outside_scope_candidate_review_residual_difference_source_map_correction_blocker_audit:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-blocker-audit"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-SOURCE-MAP-CORRECTION-BLOCKER-AUDIT-001
+  parameter_refs:
+    - PARAM-KMFA-1414
+    - PARAM-KMFA-1415
+    - PARAM-KMFA-1416
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_AUDIT
+  validator: KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_source_map_correction_blocker_audit.py
+  scope: Outside-scope candidate review residual-difference source-map correction blocker audit only; records the first source-map correction blocker observation after response-import readiness recheck while 72 valid responses remain non-actionable; public evidence aggregate-only; no raw inbox access, discrepancy closure, source-map correction, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+version: "0.1.4-outside-scope-candidate-review-residual-difference-response-import-readiness-recheck"
 project: "KMFA"
 active_model_ids:
   - "MOD-KMFA-GOV-001"
@@ -8,10 +665,55 @@ active_model_ids:
   - "MOD-KMFA-FILE-IMPORT-001"
   - "MOD-KMFA-SOURCE-CHECK-001"
   - "MOD-KMFA-SOURCE-PRIORITY-001"
-planned_model_ids:
   - "MOD-KMFA-COST-001"
+planned_model_ids: []
 active_formula_ids:
+  - "FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-RESPONSE-IMPORT-READINESS-RECHECK-001"
+  - "FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-OWNER-OR-AGENT-DIAGNOSTIC-RESPONSE-IMPORT-001"
   - "FORM-KMFA-AMOUNT-001"
+  - "FORM-KMFA-V014-S04P1-AMOUNT-PRECISION-001"
+  - "FORM-KMFA-V014-S04P2-FIELD-STANDARDIZATION-001"
+  - "FORM-KMFA-V014-S04P3-BASIC-TOOL-REPORT-001"
+  - "FORM-KMFA-V014-S04-STAGE-REVIEW-001"
+  - "FORM-KMFA-V014-S05P1-A0-FILE-REGISTRATION-001"
+  - "FORM-KMFA-V014-S05P2-FIELD-GOLDEN-BASELINE-001"
+  - "FORM-KMFA-V014-S05P3-AUTHORITY-BASELINE-LOCK-001"
+  - "FORM-KMFA-V014-S05-STAGE-REVIEW-001"
+  - "FORM-KMFA-V014-S06P1-ZERO-DELTA-VALIDATOR-001"
+  - "FORM-KMFA-V014-S06P2-DIFFERENCE-QUEUE-001"
+  - "FORM-KMFA-V014-S06P3-VALIDATION-EVIDENCE-001"
+  - "FORM-KMFA-V014-S06-STAGE-REVIEW-001"
+  - "FORM-KMFA-V014-S07P1-FINANCE-FILE-ADAPTER-001"
+  - "FORM-KMFA-V014-S07P2-WPS-FILE-ADAPTER-001"
+  - "FORM-KMFA-V014-S07P3-REDCIRCLE-POSTPONEMENT-001"
+  - "FORM-KMFA-V014-S07-STAGE-REVIEW-001"
+  - "FORM-KMFA-V014-S08P1-PROJECT-COMPOSITE-KEY-001"
+  - "FORM-KMFA-V014-S08P2-BUSINESS-ENTITY-MODEL-001"
+  - "FORM-KMFA-V014-S08P3-ENTITY-MATCHING-QUALITY-001"
+  - "FORM-KMFA-V014-S08-STAGE-REVIEW-001"
+  - "FORM-KMFA-V014-S09P1-PROJECT-COST-FACT-LAYER-001"
+  - "FORM-KMFA-V014-S09P2-MARGIN-CASH-MARGIN-001"
+  - "FORM-KMFA-V014-S09P3-SCOPE-RECONCILIATION-001"
+  - "FORM-KMFA-V014-S09-STAGE-REVIEW-001"
+  - "FORM-KMFA-V014-S10P1-REPORT-TEMPLATES-001"
+  - "FORM-KMFA-V014-S10P2-REPORT-TRUST-GRADE-001"
+  - "FORM-KMFA-V014-S10P3-REPORT-EXPORT-001"
+  - "FORM-KMFA-V014-S10-STAGE-REVIEW-001"
+  - "FORM-KMFA-V014-S11P2-SOURCE-CHECK-BOARD-001"
+  - "FORM-KMFA-V014-S11P3-PROJECT-COST-PAGE-001"
+  - "FORM-KMFA-V014-S11-STAGE-REVIEW-001"
+  - "FORM-KMFA-V014-S12P1-MANUAL-RESOLUTION-EVENTS-001"
+  - "FORM-KMFA-V014-S12P2-MANUAL-IMPACT-PREVIEW-001"
+  - "FORM-KMFA-V014-S12P3-MANUAL-RERUN-MECHANISM-001"
+  - "FORM-KMFA-V014-S12-STAGE-REVIEW-001"
+  - "FORM-KMFA-V014-S13P1-FINANCIAL-OPERATING-REPORT-001"
+  - "FORM-KMFA-V014-S13P2-COLLECTION-RECEIVABLE-AGING-001"
+  - "FORM-KMFA-V014-S13P3-CROSS-TABLE-REVIEW-001"
+  - "FORM-KMFA-V014-S13-STAGE-REVIEW-001"
+  - "FORM-KMFA-V014-S15P2-PERFORMANCE-REVIEW-LIST-001"
+  - "FORM-KMFA-V014-S15P3-SALARY-BOUNDARY-001"
+  - "FORM-KMFA-V014-S15-STAGE-REVIEW-001"
+  - "FORM-KMFA-V014-S16-STAGE-REVIEW-001"
   - "FORM-KMFA-FIELD-STANDARDIZATION-001"
   - "FORM-KMFA-A0-FILE-REGISTRATION-001"
   - "FORM-KMFA-A0-GOLDEN-FIXTURE-001"
@@ -56,9 +758,1587 @@ active_formula_ids:
   - "FORM-KMFA-S18P2-FULL-REGRESSION-ACCEPTANCE-001"
   - "FORM-KMFA-S18P3-INTEGRATION-PREPARATION-001"
   - "FORM-KMFA-S18-STAGE-REVIEW-001"
+  - "FORM-KMFA-V014-S01P3-NO-OMISSION-BASELINE-001"
+  - "FORM-KMFA-V014-S01-STAGE-REVIEW-001"
+  - "FORM-KMFA-V014-S02P1-METADATA-PROTOCOL-001"
+  - "FORM-KMFA-V014-S02P2-IMMUTABILITY-POLICY-001"
+  - "FORM-KMFA-V014-S02P3-QUALITY-GATE-001"
+  - "FORM-KMFA-V014-S02-STAGE-REVIEW-001"
+  - "FORM-KMFA-V014-S03P1-FILE-REGISTRATION-001"
+  - "FORM-KMFA-V014-S03P2-SOURCE-CHECK-MATRIX-001"
+  - "FORM-KMFA-V014-S03P3-SOURCE-PRIORITY-001"
+  - "FORM-KMFA-V014-S03-STAGE-REVIEW-001"
 source_of_truth:
   - "KMFA/docs/governance/model_registry.yaml"
   - "KMFA/docs/governance/formula_registry.yaml"
   - "KMFA/docs/governance/parameter_registry.csv"
 notes:
   - "This file is a machine-readable mirror for KMFA internal metadata; root governance remains under docs/governance."
+
+
+v014_s11p1_home_navigation_registry_note:
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S11P1-HOME-NAVIGATION-001
+  evidence_dir: KMFA/stage_artifacts/V014_S11_P1_HOME_NAVIGATION
+  validator: KMFA/tools/check_v014_s11_p1_home_navigation.py
+  scope: S11-P1 home navigation only; no S11-P2/S11-P3/review/upload/raw inbox access.
+
+v014_s11p2_source_check_board_registry_note:
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S11P2-SOURCE-CHECK-BOARD-001
+  evidence_dir: KMFA/stage_artifacts/V014_S11_P2_SOURCE_CHECK_BOARD
+  validator: KMFA/tools/check_v014_s11_p2_source_check_board.py
+  scope: S11-P2 source check board only; no S11-P3/review/upload/raw inbox access.
+
+v014_s11p3_project_cost_page_registry_note:
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S11P3-PROJECT-COST-PAGE-001
+  evidence_dir: KMFA/stage_artifacts/V014_S11_P3_PROJECT_COST_PAGE
+  validator: KMFA/tools/check_v014_s11_p3_project_cost_page.py
+  scope: S11-P3 project cost page only; no stage review/upload/raw inbox access.
+
+v014_s11_stage_review_registry_note:
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S11-STAGE-REVIEW-001
+  evidence_dir: KMFA/stage_artifacts/V014_S11_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s11_stage_review.py
+  scope: Stage 11 review only; no S12/upload/raw inbox access/raw matching/lineage/formal report/business execution.
+
+
+v014_s12p1_manual_resolution_events_registry_note:
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S12P1-MANUAL-RESOLUTION-EVENTS-001
+  evidence_dir: KMFA/stage_artifacts/V014_S12_P1_MANUAL_RESOLUTION_EVENTS
+  validator: KMFA/tools/check_v014_s12_p1_manual_resolution_events.py
+  scope: S12-P1 manual resolution events only; no S12-P2/S12-P3/review/upload/raw inbox access.
+
+
+v014_s12p2_manual_impact_preview_registry_note:
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S12P2-MANUAL-IMPACT-PREVIEW-001
+  evidence_dir: KMFA/stage_artifacts/V014_S12_P2_MANUAL_IMPACT_PREVIEW
+  validator: KMFA/tools/check_v014_s12_p2_manual_impact_preview.py
+  scope: S12-P2 manual impact preview only; no S12-P3/review/upload/raw inbox access/formal report/business execution.
+
+v014_s12p3_manual_rerun_mechanism_registry_note:
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S12P3-MANUAL-RERUN-MECHANISM-001
+  evidence_dir: KMFA/stage_artifacts/V014_S12_P3_MANUAL_RERUN_MECHANISM
+  validator: KMFA/tools/check_v014_s12_p3_manual_rerun_mechanism.py
+  scope: S12-P3 manual rerun mechanism only; no Stage 12 review/upload/raw inbox access/formal report/business execution.
+
+v014_s12_stage_review_registry_note:
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S12-STAGE-REVIEW-001
+  evidence_dir: KMFA/stage_artifacts/V014_S12_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s12_stage_review.py
+  scope: Stage 12 review only; no S13/upload/raw inbox access/raw matching/lineage/formal report/business execution.
+
+v014_s13p1_financial_operating_report_registry_note:
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S13P1-FINANCIAL-OPERATING-REPORT-001
+  evidence_dir: KMFA/stage_artifacts/V014_S13_P1_FINANCIAL_OPERATING_REPORT
+  validator: KMFA/tools/check_v014_s13_p1_financial_operating_report.py
+  scope: S13-P1 financial operating report only; no S13-P2/S13-P3/Stage 13 review/upload/raw inbox access/raw matching/lineage/formal report/business execution.
+
+v014_s13p2_collection_receivable_aging_registry_note:
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S13P2-COLLECTION-RECEIVABLE-AGING-001
+  evidence_dir: KMFA/stage_artifacts/V014_S13_P2_COLLECTION_RECEIVABLE_AGING
+  validator: KMFA/tools/check_v014_s13_p2_collection_receivable_aging.py
+  scope: S13-P2 collection receivable aging only; no S13-P3/Stage 13 review/upload/raw inbox access/raw matching/lineage/formal report/legal collection/payment/invoice/tax/business execution.
+
+v014_s13p3_cross_table_review_registry_note:
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S13P3-CROSS-TABLE-REVIEW-001
+  evidence_dir: KMFA/stage_artifacts/V014_S13_P3_CROSS_TABLE_REVIEW
+  validator: KMFA/tools/check_v014_s13_p3_cross_table_review.py
+  scope: S13-P3 cross table review only; no Stage 13 review, S14, upload, raw inbox access, raw matching, lineage, formal report, difference closure or business execution.
+
+v014_s13_stage_review_registry_note:
+  version: "0.1.4-s13-stage-review"
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S13-STAGE-REVIEW-001
+  evidence_dir: KMFA/stage_artifacts/V014_S13_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s13_stage_review.py
+  scope: Stage 13 overall review only; no S14, upload, raw inbox access, raw matching, lineage, formal report, difference closure or business execution.
+
+v014_s14p1_fund_cash_loan_plan_registry_note:
+  version: "0.1.4-s14p1-fund-cash-loan-plan"
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S14P1-FUND-CASH-LOAN-PLAN-001
+  evidence_dir: KMFA/stage_artifacts/V014_S14_P1_FUND_CASH_LOAN_PLAN
+  validator: KMFA/tools/check_v014_s14_p1_fund_cash_loan_plan.py
+  scope: S14-P1 fund cash loan plan only; no S14-P2, S14-P3, Stage 14 review, upload, raw inbox access, raw matching, lineage, formal report, payment, bank, loan management, invoice, tax, policy, subsidy or business execution.
+
+v014_s14p2_invoice_tax_plan_registry_note:
+  version: "0.1.4-s14p2-invoice-tax-plan"
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S14P2-INVOICE-TAX-PLAN-001
+  evidence_dir: KMFA/stage_artifacts/V014_S14_P2_INVOICE_TAX_PLAN
+  validator: KMFA/tools/check_v014_s14_p2_invoice_tax_plan.py
+  scope: S14-P2 invoice tax plan only; no S14-P3, Stage 14 review, upload, raw inbox access, raw matching, lineage, formal report, tax filing, invoice issuance, payment, bank, loan management, policy, subsidy or business execution.
+
+v014_s14p3_policy_evidence_plan_registry_note:
+  version: "0.1.4-s14p3-policy-evidence-plan"
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S14P3-POLICY-EVIDENCE-PLAN-001
+  evidence_dir: KMFA/stage_artifacts/V014_S14_P3_POLICY_EVIDENCE_PLAN
+  validator: KMFA/tools/check_v014_s14_p3_policy_evidence_plan.py
+  scope: S14-P3 policy evidence plan only; no Stage 14 review, upload, raw inbox access, raw matching, lineage, formal report, policy eligibility conclusion, policy filing, subsidy application, tax filing, invoice issuance, payment, bank, loan management or business execution.
+
+v014_s14_stage_review_registry_note:
+  version: "0.1.4-s14-stage-review"
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S14-STAGE-REVIEW-001
+  evidence_dir: KMFA/stage_artifacts/V014_S14_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s14_stage_review.py
+  scope: Stage 14 overall review only; no S15-P1, upload, raw inbox access, raw matching, lineage, formal report, policy filing, tax filing, invoice issuance, payment, bank, loan management, salary, bonus, payroll export, final payment or business execution.
+
+v014_s15p1_performance_fact_fields_registry_note:
+  version: "0.1.4-s15p1-performance-fact-fields"
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S15P1-PERFORMANCE-FACT-FIELDS-001
+  evidence_dir: KMFA/stage_artifacts/V014_S15_P1_PERFORMANCE_FACT_FIELDS
+  validator: KMFA/tools/check_v014_s15_p1_performance_fact_fields.py
+  scope: S15-P1 performance fact fields only; no S15-P2 review list, S15-P3 salary boundary, Stage 15 review, upload, raw inbox access, raw matching, lineage, formal report, salary calculation, bonus approval, payroll export, final payment, payment execution or business execution.
+v014_s15p2_performance_review_list_registry_note:
+  version: "0.1.4-s15p2-performance-review-list"
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S15P2-PERFORMANCE-REVIEW-LIST-001
+  evidence_dir: KMFA/stage_artifacts/V014_S15_P2_PERFORMANCE_REVIEW_LIST
+  validator: KMFA/tools/check_v014_s15_p2_performance_review_list.py
+  scope: S15-P2 performance review list only; no S15-P3 salary boundary, Stage 15 review, upload, raw inbox access, raw matching, lineage, formal report, salary calculation, bonus approval, payroll export, final compensation, final payment, payment execution or business execution.
+
+v014_s15p3_salary_boundary_registry_note:
+  version: "0.1.4-s15p3-salary-boundary"
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S15P3-SALARY-BOUNDARY-001
+  evidence_dir: KMFA/stage_artifacts/V014_S15_P3_SALARY_BOUNDARY
+  validator: KMFA/tools/check_v014_s15_p3_salary_boundary.py
+  scope: S15-P3 salary boundary only; reserve fact output interface and future salary-system readiness draft only; no Stage 15 review, upload, raw inbox access, raw matching, lineage, formal report, live salary integration, salary calculation, wage calculation, bonus approval, payroll export, final compensation, final payment, payment execution or business execution.
+
+v014_s15_stage_review_registry_note:
+  version: "0.1.4-outside-scope-candidate-review-residual-difference-response-import-readiness-recheck"
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S15-STAGE-REVIEW-001
+  evidence_dir: KMFA/stage_artifacts/V014_S15_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s15_stage_review.py
+  scope: Stage 15 overall review only; no S16-P1, upload, raw inbox access, raw matching, lineage, formal report, live salary integration, salary calculation, wage calculation, bonus approval, payroll export, final compensation, final payment, payment execution or business execution.
+
+v014_s16p1_subcontract_procurement_registry_note:
+  version: "0.1.4-s16p1-subcontract-procurement"
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S16P1-SUBCONTRACT-PROCUREMENT-001
+  evidence_dir: KMFA/stage_artifacts/V014_S16_P1_SUBCONTRACT_PROCUREMENT
+  validator: KMFA/tools/check_v014_s16_p1_subcontract_procurement.py
+  scope: S16-P1 subcontract procurement only; no S16-P2, S16-P3, Stage 16 review, upload, raw inbox access, raw matching, lineage, formal report, procurement execution, payment approval, payment execution, bank operation, collection action, legal action or business execution.
+
+v014_s16p2_project_status_lifecycle_registry_note:
+  version: "0.1.4-s16p2-project-status-lifecycle"
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S16P2-PROJECT-STATUS-LIFECYCLE-001
+  evidence_dir: KMFA/stage_artifacts/V014_S16_P2_PROJECT_STATUS_LIFECYCLE
+  validator: KMFA/tools/check_v014_s16_p2_project_status_lifecycle.py
+  scope: S16-P2 project status lifecycle only; read-only raw/private aggregate alignment allowed with no public raw names hashes headers or values; no S16-P3, Stage 16 review, upload, raw matching, lineage, formal report, site construction, safety signature, technical signature, invoice issuance, collection action, payment execution, bank operation, legal action or business execution.
+
+v014_s16p3_customer_business_analysis_registry_note:
+  version: "0.1.4-s16p3-customer-business-analysis"
+  status: active
+  model_id: MOD-KMFA-COST-001
+  formula_id: FORM-KMFA-V014-S16P3-CUSTOMER-BUSINESS-ANALYSIS-001
+  evidence_dir: KMFA/stage_artifacts/V014_S16_P3_CUSTOMER_BUSINESS_ANALYSIS
+  validator: KMFA/tools/check_v014_s16_p3_customer_business_analysis.py
+  scope: S16-P3 customer business analysis only; read-only raw/private aggregate alignment allowed with no public raw names hashes headers customer project or values; no Stage 16 review, upload, raw matching, lineage, formal report, customer contact, collection action, legal decision, invoice issuance, payment execution, bank operation or business execution.
+
+
+v014_s16_stage_review_registry_note:
+  version: "0.1.4-s16-stage-review"
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S16-STAGE-REVIEW-001
+  evidence_dir: KMFA/stage_artifacts/V014_S16_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s16_stage_review.py
+  scope: Stage 16 overall review only; no S17-P1, upload, raw inbox access by review, raw matching, lineage, formal report, procurement execution, payment approval, payment execution, bank operation, site operation, signature operation, invoice issuance, customer contact, collection action, legal decision, tax filing or business execution.
+
+
+v014_s17p1_access_security_registry_note:
+  version: "0.1.4-s17p1-access-security"
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S17P1-ACCESS-SECURITY-001
+  evidence_dir: KMFA/stage_artifacts/V014_S17_P1_ACCESS_SECURITY
+  validator: KMFA/tools/check_v014_s17_p1_access_security.py
+  scope: S17-P1 access/security only; public-safe role permissions, sensitive public repository policy and audit-log policy; no S17-P2 notification delivery, S17-P3 operations, Stage17 review, upload, raw inbox access, raw matching, lineage, full report email body, formal report, external connector, app reinstall or business execution.
+
+
+v014_s17p2_notification_policy_registry_note:
+  version: "0.1.4-s17p2-notification-policy"
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S17P2-NOTIFICATION-POLICY-001
+  evidence_dir: KMFA/stage_artifacts/V014_S17_P2_NOTIFICATION_POLICY
+  validator: KMFA/tools/check_v014_s17_p2_notification_policy.py
+  scope: "S17-P2 notification policy only; metadata outbox/log evidence for report-ready, risk and missing-source reminders; no S17-P3, Stage17 review, upload, raw inbox access, raw matching, lineage, full report email body, report attachment, recipient address plaintext, real notification delivery, external connector, app reinstall, formal report or business execution."
+
+v014_s17p3_operations_sop_registry_note:
+  version: "0.1.4-s17p3-operations-sop"
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S17P3-OPERATIONS-SOP-001
+  evidence_dir: KMFA/stage_artifacts/V014_S17_P3_OPERATIONS_SOP
+  validator: KMFA/tools/check_v014_s17_p3_operations_sop.py
+  scope: S17-P3 operations SOP only; public-safe operation runbooks, finance SOP knowledge refs and error/backup drill evidence; no Stage17 review, upload, raw inbox access, raw matching, lineage, production restore, external service call, live connector, full report email, formal report, app reinstall or business execution.
+
+v014_s18p2_full_regression_acceptance_registry_note:
+  version: "0.1.4-s18p2-full-regression-acceptance"
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S18P2-FULL-REGRESSION-ACCEPTANCE-001
+  evidence_dir: KMFA/stage_artifacts/V014_S18_P2_FULL_REGRESSION_ACCEPTANCE
+  validator: KMFA/tools/check_v014_s18_p2_full_regression_acceptance.py
+  scope: S18-P2 full regression acceptance only; public-safe checks, 18-stage evidence index, HTML human-flow audit and Go/No-Go lock; no S18-P3, Stage18 review, upload, raw inbox access, raw matching, lineage full check, formal report, production restore, external connector, app reinstall or business execution.
+
+v014_s18p3_integration_preparation_registry_note:
+  version: "0.1.4-s18p3-integration-preparation"
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S18P3-INTEGRATION-PREPARATION-001
+  evidence_dir: KMFA/stage_artifacts/V014_S18_P3_INTEGRATION_PREPARATION
+  validator: KMFA/tools/check_v014_s18_p3_integration_preparation.py
+  scope: S18-P3 integration preparation only; public-safe read-only future connector plans for redcircle kingdee wps, OpMe light entry plan and next-stage backlog; no Stage18 review, upload, raw inbox access, raw matching, lineage full check, formal report, production restore, external connector call, live connector call, app reinstall, OpMe deep coupling or business execution.
+
+v014_s18_stage_review_registry_note:
+  version: "0.1.4-s18-stage-review"
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-S18-STAGE-REVIEW-001
+  evidence_dir: KMFA/stage_artifacts/V014_S18_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s18_stage_review.py
+  scope: Stage 18 overall review only; public-safe replay of S18-P1 S18-P2 and S18-P3 validators, fixed stale S18-P3 validation-summary finding, NO_GO remains locked; no GitHub upload, raw inbox access, raw matching, lineage full check completion, formal report, production restore, external service call, live connector, app reinstall, OpMe deep coupling or business execution.
+
+v014_stage1_18_overall_review_registry_note:
+  version: "0.1.4-stage1-18-overall-review"
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-STAGE1-18-OVERALL-REVIEW-001
+  parameter_ids:
+    - PARAM-KMFA-1218
+    - PARAM-KMFA-1219
+    - PARAM-KMFA-1220
+  evidence_dir: KMFA/stage_artifacts/V014_STAGE1_18_OVERALL_REVIEW
+  validator: KMFA/tools/check_v014_stage1_18_overall_review.py
+  scope: Stage 1-18 overall review only; public-safe replay and validation of 18 v0.1.4 stage review validators with NO_GO locked by raw alignment, lineage, official report release and pending reconciliation blockers; no GitHub upload, app reinstall, raw inbox access, raw matching completion, formal report, production restore, external service, live connector, OpMe deep coupling or business execution.
+
+v014_raw_alignment_remediation_registry_note:
+  version: "0.1.4-raw-alignment-remediation"
+  status: active
+  model_id: MOD-KMFA-GOV-001
+  formula_id: FORM-KMFA-V014-RAW-ALIGNMENT-REMEDIATION-001
+  parameter_ids:
+    - PARAM-KMFA-1221
+    - PARAM-KMFA-1222
+    - PARAM-KMFA-1223
+  evidence_dir: KMFA/stage_artifacts/V014_RAW_ALIGNMENT_REMEDIATION
+  validator: KMFA/tools/check_v014_raw_alignment_remediation.py
+  scope: Raw alignment remediation only; public-safe aggregate source identity counts and NO_GO owner decision gate; private hashes remain ignored; no public hash backfill, lineage full check completion, GitHub upload, app reinstall, formal report or business execution.
+
+kmfa_v014_owner_raw_source_identity_decision:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-owner-raw-source-identity-decision"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OWNER-RAW-SOURCE-IDENTITY-DECISION-001
+  parameter_refs:
+    - PARAM-KMFA-1224
+    - PARAM-KMFA-1225
+    - PARAM-KMFA-1226
+  evidence_dir: KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION
+  validator: KMFA/tools/check_v014_owner_raw_source_identity_decision.py
+  scope: Owner raw source identity decision intake only; public-safe decision packet and templates; no active owner decision, raw inbox access, public hash backfill, lineage full check, GitHub upload, app reinstall, formal report or business execution.
+
+kmfa_v014_raw_source_identity_decision_application:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-raw-source-identity-decision-application"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RAW-SOURCE-IDENTITY-DECISION-APPLICATION-001
+  parameter_refs:
+    - PARAM-KMFA-1227
+    - PARAM-KMFA-1228
+    - PARAM-KMFA-1229
+  evidence_dir: KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION
+  validator: KMFA/tools/check_v014_raw_source_identity_decision_application.py
+  scope: Raw source identity decision application gate only; no active owner decision supplied, decision_applied=false, no raw inbox access, public hash backfill, lineage full check, GitHub upload, app reinstall, formal report or business execution.
+
+kmfa_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_intake:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-intake"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-OWNER-OR-AGENT-DIAGNOSTIC-INTAKE-001
+  parameter_refs:
+    - PARAM-KMFA-1396
+    - PARAM-KMFA-1397
+    - PARAM-KMFA-1398
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_INTAKE
+  validator: KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_intake.py
+  scope: Outside-scope candidate review residual-difference owner or agent diagnostic intake only; prepares ignored private response template and pending queue for 72 residual differences; public evidence aggregate-only; no raw inbox access, valid diagnostic response, discrepancy closure, source-map correction, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_readiness_recheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-readiness-recheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-OWNER-OR-AGENT-DIAGNOSTIC-READINESS-RECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1399
+    - PARAM-KMFA-1400
+    - PARAM-KMFA-1401
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_READINESS_RECHECK
+  validator: KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_readiness_recheck.py
+  scope: Outside-scope candidate review residual-difference owner or agent diagnostic readiness recheck only; confirms 72 residual differences still lack valid diagnostic responses and all remain blocked; public evidence aggregate-only; no raw inbox access, valid response intake, discrepancy closure, source-map correction, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_blocker_audit:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-blocker-audit"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-OWNER-OR-AGENT-DIAGNOSTIC-BLOCKER-AUDIT-001
+  parameter_refs:
+    - PARAM-KMFA-1402
+    - PARAM-KMFA-1403
+    - PARAM-KMFA-1404
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_BLOCKER_AUDIT
+  validator: KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_blocker_audit.py
+  scope: Outside-scope candidate review residual-difference owner or agent diagnostic blocker audit only; records the second diagnostic blocker observation after readiness recheck while 72 residual differences remain blocked; public evidence aggregate-only; no raw inbox access, valid diagnostic response, discrepancy closure, source-map correction, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_blocker_threshold_recheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-blocker-threshold-recheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-OWNER-OR-AGENT-DIAGNOSTIC-BLOCKER-THRESHOLD-RECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1405
+    - PARAM-KMFA-1406
+    - PARAM-KMFA-1407
+  evidence_dir: KMFA/stage_artifacts/V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_BLOCKER_THRESHOLD_RECHECK
+  validator: KMFA/tools/check_v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_blocker_threshold_recheck.py
+  scope: Outside-scope candidate review residual-difference owner or agent diagnostic blocker threshold recheck only; records the third diagnostic blocker observation and recommends blocked goal status while 72 residual differences remain blocked; public evidence aggregate-only; no raw inbox access, valid diagnostic response, discrepancy closure, source-map correction, full raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_residual_difference_owner_authorized_anchor_confirmation_authorization_intake:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-owner-authorized-anchor-confirmation-authorization-intake"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-AUTHORIZATION-INTAKE-001
+  parameter_refs:
+    - PARAM-KMFA-1468
+    - PARAM-KMFA-1469
+    - PARAM-KMFA-1470
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_AUTHORIZATION_INTAKE
+  validator: KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation_authorization_intake.py
+  scope: Residual difference owner-authorized anchor confirmation authorization intake only; records owner current-thread authorization for private anchor-confirmation preparation while 72 residual differences remain unresolved; public evidence aggregate-only; no raw inbox access, anchor confirmation, raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_residual_difference_owner_authorized_anchor_confirmation_authorization_readiness:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-owner-authorized-anchor-confirmation-authorization-readiness"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-AUTHORIZATION-READINESS-001
+  parameter_refs:
+    - PARAM-KMFA-1471
+    - PARAM-KMFA-1472
+    - PARAM-KMFA-1473
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_AUTHORIZATION_READINESS
+  validator: KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation_authorization_readiness.py
+  scope: Residual difference owner-authorized anchor confirmation authorization readiness only; confirms the prior authorization queue is complete for a later private preparation phase while 72 residual differences remain unresolved; public evidence aggregate-only; no raw inbox access, anchor confirmation, raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_residual_difference_owner_authorized_anchor_confirmation_preparation:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-owner-authorized-anchor-confirmation-preparation"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-PREPARATION-001
+  parameter_refs:
+    - PARAM-KMFA-1474
+    - PARAM-KMFA-1475
+    - PARAM-KMFA-1476
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_PREPARATION
+  validator: KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation_preparation.py
+  scope: Residual difference owner-authorized anchor confirmation preparation only; prepares the ignored private confirmation queue for a later owner-authorized anchor confirmation phase while 72 residual differences remain unresolved; public evidence aggregate-only; no raw inbox access, anchor confirmation, raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_residual_difference_owner_authorized_anchor_confirmation:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-owner-authorized-anchor-confirmation"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-OWNER-AUTHORIZED-ANCHOR-CONFIRMATION-001
+  parameter_refs:
+    - PARAM-KMFA-1477
+    - PARAM-KMFA-1478
+    - PARAM-KMFA-1479
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION
+  validator: KMFA/tools/check_v014_residual_difference_owner_authorized_anchor_confirmation.py
+  scope: Residual difference owner-authorized anchor confirmation only; converts 72 ignored private preparation items into confirmed private anchor handles and records readiness for a later raw-to-processed comparison precheck while 72 residual differences remain unresolved; public evidence aggregate-only; no raw inbox access, formal raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_residual_difference_raw_comparison_precheck_after_owner_anchor_confirmation:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-raw-to-processed-comparison-precheck-after-owner-anchor-confirmation"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-COMPARISON-PRECHECK-AFTER-OWNER-ANCHOR-CONFIRMATION-001
+  parameter_refs:
+    - PARAM-KMFA-1480
+    - PARAM-KMFA-1481
+    - PARAM-KMFA-1482
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION
+  validator: KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_precheck_after_owner_anchor_confirmation.py
+  scope: Residual difference raw-to-processed comparison precheck after owner anchor confirmation only; marks 72 confirmed private anchor handles ready for a later formal comparison while 72 residual differences remain unresolved; public evidence aggregate-only; no raw inbox access, formal raw-to-processed comparison, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+kmfa_v014_residual_difference_raw_comparison_after_owner_anchor_confirmation:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-raw-to-processed-comparison-after-owner-anchor-confirmation"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-COMPARISON-AFTER-OWNER-ANCHOR-CONFIRMATION-001
+  parameter_refs:
+    - PARAM-KMFA-1483
+    - PARAM-KMFA-1484
+    - PARAM-KMFA-1485
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_AFTER_OWNER_ANCHOR_CONFIRMATION
+  validator: KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_after_owner_anchor_confirmation.py
+  scope: Residual difference raw-to-processed comparison after owner anchor confirmation only; attempts formal comparison across 72 prechecked private anchor handles but blocks all 72 because complete private fingerprint pairs are missing; public evidence aggregate-only; no raw inbox access, value consistency claim, reconciliation, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+kmfa_v014_residual_difference_raw_comparison_fingerprint_pair_completion_after_owner_anchor_confirmation:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-raw-to-processed-comparison-fingerprint-pair-completion-after-owner-anchor-confirmation"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-COMPARISON-FINGERPRINT-PAIR-COMPLETION-AFTER-OWNER-ANCHOR-CONFIRMATION-001
+  parameter_refs:
+    - PARAM-KMFA-1486
+    - PARAM-KMFA-1487
+    - PARAM-KMFA-1488
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_AFTER_OWNER_ANCHOR_CONFIRMATION
+  validator: KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_fingerprint_pair_completion_after_owner_anchor_confirmation.py
+  scope: Residual difference raw-to-processed comparison fingerprint pair completion after owner anchor confirmation only; completes 24 evidence-supported private fingerprint pairs and leaves 48 blocked by missing raw candidate fingerprints while value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution remain closed.
+
+kmfa_v014_residual_difference_raw_comparison_fingerprint_pair_completion_blocker_audit_after_owner_anchor_confirmation:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-raw-to-processed-comparison-fingerprint-pair-completion-blocker-audit-after-owner-anchor-confirmation"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-COMPARISON-FINGERPRINT-PAIR-COMPLETION-BLOCKER-AUDIT-AFTER-OWNER-ANCHOR-CONFIRMATION-001
+  parameter_refs:
+    - PARAM-KMFA-1489
+    - PARAM-KMFA-1490
+    - PARAM-KMFA-1491
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_AUDIT_AFTER_OWNER_ANCHOR_CONFIRMATION
+  validator: KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_fingerprint_pair_completion_blocker_audit_after_owner_anchor_confirmation.py
+  scope: Residual difference raw-to-processed comparison fingerprint pair completion blocker audit after owner anchor confirmation only; confirms all 48 remaining pair-completion blockers are missing raw candidate fingerprints while value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution remain closed.
+
+kmfa_v014_residual_difference_raw_comparison_fingerprint_pair_completion_blocker_threshold_recheck_after_owner_anchor_confirmation:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-raw-to-processed-comparison-fingerprint-pair-completion-blocker-threshold-recheck-after-owner-anchor-confirmation"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-COMPARISON-FINGERPRINT-PAIR-COMPLETION-BLOCKER-THRESHOLD-RECHECK-AFTER-OWNER-ANCHOR-CONFIRMATION-001
+  parameter_refs:
+    - PARAM-KMFA-1492
+    - PARAM-KMFA-1493
+    - PARAM-KMFA-1494
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_THRESHOLD_RECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION
+  validator: KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_fingerprint_pair_completion_blocker_threshold_recheck_after_owner_anchor_confirmation.py
+  scope: Residual difference raw-to-processed comparison fingerprint pair completion blocker threshold recheck after owner anchor confirmation only; records observation 2 for 48 missing-raw-candidate-fingerprint blockers while value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution remain closed.
+
+kmfa_v014_residual_difference_raw_comparison_fingerprint_pair_completion_blocker_final_threshold_recheck_after_owner_anchor_confirmation:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-raw-to-processed-comparison-fingerprint-pair-completion-blocker-final-threshold-recheck-after-owner-anchor-confirmation"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-COMPARISON-FINGERPRINT-PAIR-COMPLETION-BLOCKER-FINAL-THRESHOLD-RECHECK-AFTER-OWNER-ANCHOR-CONFIRMATION-001
+  parameter_refs:
+    - PARAM-KMFA-1495
+    - PARAM-KMFA-1496
+    - PARAM-KMFA-1497
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_FINAL_THRESHOLD_RECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION
+  validator: KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_fingerprint_pair_completion_blocker_final_threshold_recheck_after_owner_anchor_confirmation.py
+  scope: Residual difference raw-to-processed comparison fingerprint pair completion blocker final threshold recheck after owner anchor confirmation only; records observation 3 and strict threshold met for 48 missing-raw-candidate-fingerprint blockers while comparison retry, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution remain closed.
+
+kmfa_v014_residual_difference_raw_candidate_fingerprint_resolution_attempt_after_final_threshold:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-raw-candidate-fingerprint-resolution-attempt-after-final-threshold"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-CANDIDATE-FINGERPRINT-RESOLUTION-ATTEMPT-AFTER-FINAL-THRESHOLD-001
+  parameter_refs:
+    - PARAM-KMFA-1498
+    - PARAM-KMFA-1499
+    - PARAM-KMFA-1500
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_FINGERPRINT_RESOLUTION_ATTEMPT_AFTER_FINAL_THRESHOLD
+  validator: KMFA/tools/check_v014_residual_difference_raw_candidate_fingerprint_resolution_attempt_after_final_threshold.py
+  scope: Residual difference raw candidate fingerprint resolution attempt after final threshold only; current ignored private candidate evidence recovers zero of 48 missing raw candidate fingerprints, keeps 48 blockers open, and keeps value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_raw_candidate_fingerprint_evidence_refresh_after_final_threshold:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-raw-candidate-fingerprint-evidence-refresh-after-final-threshold"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-RAW-CANDIDATE-FINGERPRINT-EVIDENCE-REFRESH-AFTER-FINAL-THRESHOLD-001
+  parameter_refs:
+    - PARAM-KMFA-1501
+    - PARAM-KMFA-1502
+    - PARAM-KMFA-1503
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_FINGERPRINT_EVIDENCE_REFRESH_AFTER_FINAL_THRESHOLD
+  validator: KMFA/tools/check_v014_residual_difference_raw_candidate_fingerprint_evidence_refresh_after_final_threshold.py
+  scope: Residual difference raw candidate fingerprint evidence refresh after final threshold only; refreshes authorized read-only raw numeric fingerprint evidence, leaves 48 blockers unbound, and keeps value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_intake_after_raw_refresh:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-intake-after-raw-refresh"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-INTAKE-AFTER-RAW-REFRESH-001
+  parameter_refs:
+    - PARAM-KMFA-1504
+    - PARAM-KMFA-1505
+    - PARAM-KMFA-1506
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_INTAKE_AFTER_RAW_REFRESH
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_intake_after_raw_refresh.py
+  scope: Authorized source reference or owner exclusion intake after raw refresh only; prepares ignored private intake for 48 still-blocked raw candidate fingerprint items, applies zero authoritative bindings, produces zero comparison-ready records, and keeps value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_readiness_after_raw_refresh:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-readiness-after-raw-refresh"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-READINESS-AFTER-RAW-REFRESH-001
+  parameter_refs:
+    - PARAM-KMFA-1507
+    - PARAM-KMFA-1508
+    - PARAM-KMFA-1509
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_READINESS_AFTER_RAW_REFRESH
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_readiness_after_raw_refresh.py
+  scope: Authorized source reference or owner exclusion application readiness after raw refresh only; checks 48 ignored private intake items, finds zero application-ready records and 48 blockers, and keeps authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_blocker_audit_after_raw_refresh:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-blocker-audit-after-raw-refresh"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-BLOCKER-AUDIT-AFTER-RAW-REFRESH-001
+  parameter_refs:
+    - PARAM-KMFA-1510
+    - PARAM-KMFA-1511
+    - PARAM-KMFA-1512
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_BLOCKER_AUDIT_AFTER_RAW_REFRESH
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_blocker_audit_after_raw_refresh.py
+  scope: Authorized source reference or owner exclusion application blocker audit after raw refresh only; audits 48 ignored private application blockers, finds zero application-ready or binding-ready records, and keeps authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_blocker_threshold_recheck_after_raw_refresh:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-blocker-threshold-recheck-after-raw-refresh"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-BLOCKER-THRESHOLD-RECHECK-AFTER-RAW-REFRESH-001
+  parameter_refs:
+    - PARAM-KMFA-1513
+    - PARAM-KMFA-1514
+    - PARAM-KMFA-1515
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_BLOCKER_THRESHOLD_RECHECK_AFTER_RAW_REFRESH
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_blocker_threshold_recheck_after_raw_refresh.py
+  scope: Authorized source reference or owner exclusion application blocker threshold recheck after raw refresh only; records observation 2 for 48 ignored private application blockers, finds zero binding-ready records, and keeps authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_blocker_final_threshold_recheck_after_raw_refresh:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-blocker-final-threshold-recheck-after-raw-refresh"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-BLOCKER-FINAL-THRESHOLD-RECHECK-AFTER-RAW-REFRESH-001
+  parameter_refs:
+    - PARAM-KMFA-1516
+    - PARAM-KMFA-1517
+    - PARAM-KMFA-1518
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_BLOCKER_FINAL_THRESHOLD_RECHECK_AFTER_RAW_REFRESH
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_blocker_final_threshold_recheck_after_raw_refresh.py
+  scope: Authorized source reference or owner exclusion application blocker final threshold recheck after raw refresh only; records observation 3 for 48 ignored private application blockers, marks the strict threshold met, finds zero binding-ready records, and keeps authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_resolution_attempt_after_final_threshold:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-resolution-attempt-after-final-threshold"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-RESOLUTION-ATTEMPT-AFTER-FINAL-THRESHOLD-001
+  parameter_refs:
+    - PARAM-KMFA-1519
+    - PARAM-KMFA-1520
+    - PARAM-KMFA-1521
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_RESOLUTION_ATTEMPT_AFTER_FINAL_THRESHOLD
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_resolution_attempt_after_final_threshold.py
+  scope: Authorized source reference or owner exclusion application resolution attempt after final threshold only; finds zero active authoritative resolution applications for 48 ignored private blockers and keeps authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_blocked_handoff_after_resolution_attempt:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-blocked-handoff-after-resolution-attempt"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-BLOCKED-HANDOFF-AFTER-RESOLUTION-ATTEMPT-001
+  parameter_refs:
+    - PARAM-KMFA-1522
+    - PARAM-KMFA-1523
+    - PARAM-KMFA-1524
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_BLOCKED_HANDOFF_AFTER_RESOLUTION_ATTEMPT
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_blocked_handoff_after_resolution_attempt.py
+  scope: Authorized source reference or owner exclusion application blocked handoff after resolution attempt only; prepares ignored private owner-action handoff for 48 unresolved blockers and keeps authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_diagnostic_packet_after_blocked_handoff:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-diagnostic-packet-after-blocked-handoff"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-DIAGNOSTIC-PACKET-AFTER-BLOCKED-HANDOFF-001
+  parameter_refs:
+    - PARAM-KMFA-1525
+    - PARAM-KMFA-1526
+    - PARAM-KMFA-1527
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_DIAGNOSTIC_PACKET_AFTER_BLOCKED_HANDOFF
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_diagnostic_packet_after_blocked_handoff.py
+  scope: Authorized source reference or owner exclusion application diagnostic packet after blocked handoff only; prepares ignored private diagnostic packet and queue for 48 unresolved blockers and keeps authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_diagnostic_intake_after_packet:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-diagnostic-intake-after-packet"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-DIAGNOSTIC-INTAKE-AFTER-PACKET-001
+  parameter_refs:
+    - PARAM-KMFA-1528
+    - PARAM-KMFA-1529
+    - PARAM-KMFA-1530
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_DIAGNOSTIC_INTAKE_AFTER_PACKET
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_diagnostic_intake_after_packet.py
+  scope: Authorized source reference or owner exclusion application owner/agent diagnostic intake after packet only; prepares ignored private response template and pending queue for 48 diagnostic-packet items and keeps valid response import, binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_diagnostic_readiness_recheck_after_intake:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-diagnostic-readiness-recheck-after-intake"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-DIAGNOSTIC-READINESS-RECHECK-AFTER-INTAKE-001
+  parameter_refs:
+    - PARAM-KMFA-1531
+    - PARAM-KMFA-1532
+    - PARAM-KMFA-1533
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_DIAGNOSTIC_READINESS_RECHECK_AFTER_INTAKE
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_diagnostic_readiness_recheck_after_intake.py
+  scope: Authorized source reference or owner exclusion application owner/agent diagnostic readiness recheck after intake only; proves all 48 pending diagnostic responses remain blocked and keeps valid response import, binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_diagnostic_blocker_audit_after_readiness_recheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-diagnostic-blocker-audit-after-readiness-recheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-DIAGNOSTIC-BLOCKER-AUDIT-AFTER-READINESS-RECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1534
+    - PARAM-KMFA-1535
+    - PARAM-KMFA-1536
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_DIAGNOSTIC_BLOCKER_AUDIT_AFTER_READINESS_RECHECK
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_diagnostic_blocker_audit_after_readiness_recheck.py
+  scope: Authorized source reference or owner exclusion application owner/agent diagnostic blocker audit after readiness recheck only; records second blocked observation for all 48 pending responses and keeps valid response import, binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_diagnostic_blocker_threshold_recheck_after_readiness_recheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-diagnostic-blocker-threshold-recheck-after-readiness-recheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-DIAGNOSTIC-BLOCKER-THRESHOLD-RECHECK-AFTER-READINESS-RECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1537
+    - PARAM-KMFA-1538
+    - PARAM-KMFA-1539
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_DIAGNOSTIC_BLOCKER_THRESHOLD_RECHECK_AFTER_READINESS_RECHECK
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_diagnostic_blocker_threshold_recheck_after_readiness_recheck.py
+  scope: Authorized source reference or owner exclusion application owner/agent diagnostic blocker threshold recheck after readiness recheck only; records third blocked observation for all 48 pending responses, marks blocked threshold true, and keeps valid response import, binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_import_after_blocker_threshold:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-import-after-blocker-threshold"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-GENERATED-DIAGNOSTIC-RESPONSE-IMPORT-AFTER-BLOCKER-THRESHOLD-001
+  parameter_refs:
+    - PARAM-KMFA-1540
+    - PARAM-KMFA-1541
+    - PARAM-KMFA-1542
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_IMPORT_AFTER_BLOCKER_THRESHOLD
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_import_after_blocker_threshold.py
+  scope: Authorized source reference or owner exclusion application owner/agent generated diagnostic response import after blocker threshold only; imports 48 authorized delegate generated private diagnostic responses while keeping actionable resolution, authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_actionability_recheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-actionability-recheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-GENERATED-DIAGNOSTIC-RESPONSE-ACTIONABILITY-RECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1543
+    - PARAM-KMFA-1544
+    - PARAM-KMFA-1545
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_ACTIONABILITY_RECHECK
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_actionability_recheck.py
+  scope: Authorized source reference or owner exclusion application owner/agent generated diagnostic response actionability recheck only; proves all 48 valid generated diagnostic responses remain non-actionable while keeping authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_actionability_blocker_audit:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-actionability-blocker-audit"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-GENERATED-DIAGNOSTIC-RESPONSE-ACTIONABILITY-BLOCKER-AUDIT-001
+  parameter_refs:
+    - PARAM-KMFA-1546
+    - PARAM-KMFA-1547
+    - PARAM-KMFA-1548
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_ACTIONABILITY_BLOCKER_AUDIT
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_actionability_blocker_audit.py
+  scope: Authorized source reference or owner exclusion application owner/agent generated diagnostic response actionability blocker audit only; records first blocker observation for all 48 non-actionable generated diagnostic responses while keeping authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_actionability_blocker_threshold_recheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-actionability-blocker-threshold-recheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-GENERATED-DIAGNOSTIC-RESPONSE-ACTIONABILITY-BLOCKER-THRESHOLD-RECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1549
+    - PARAM-KMFA-1550
+    - PARAM-KMFA-1551
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_ACTIONABILITY_BLOCKER_THRESHOLD_RECHECK
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_actionability_blocker_threshold_recheck.py
+  scope: Authorized source reference or owner exclusion application owner/agent generated diagnostic response actionability blocker threshold recheck only; records second blocker observation for all 48 non-actionable generated diagnostic responses, keeps the blocked threshold false, and keeps authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_actionability_blocker_final_threshold_recheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-actionability-blocker-final-threshold-recheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-GENERATED-DIAGNOSTIC-RESPONSE-ACTIONABILITY-BLOCKER-FINAL-THRESHOLD-RECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1552
+    - PARAM-KMFA-1553
+    - PARAM-KMFA-1554
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_ACTIONABILITY_BLOCKER_FINAL_THRESHOLD_RECHECK
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_actionability_blocker_final_threshold_recheck.py
+  scope: Authorized source reference or owner exclusion application owner/agent generated diagnostic response actionability blocker final threshold recheck only; records third blocker observation for all 48 non-actionable generated diagnostic responses, marks the blocked threshold true, and keeps authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_blocked_handoff_after_final_threshold:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-blocked-handoff-after-final-threshold"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-GENERATED-DIAGNOSTIC-RESPONSE-BLOCKED-HANDOFF-AFTER-FINAL-THRESHOLD-001
+  parameter_refs:
+    - PARAM-KMFA-1555
+    - PARAM-KMFA-1556
+    - PARAM-KMFA-1557
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_BLOCKED_HANDOFF_AFTER_FINAL_THRESHOLD
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_generated_diagnostic_response_blocked_handoff_after_final_threshold.py
+  scope: Authorized source reference or owner exclusion application owner/agent generated diagnostic response blocked handoff after final threshold only; prepares 48 blocked handoff items and 48 owner-action items after final threshold, keeps goal recommendation blocked, and keeps authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_readiness_after_blocked_handoff:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-readiness-after-blocked-handoff"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-ACTION-READINESS-AFTER-BLOCKED-HANDOFF-001
+  parameter_refs:
+    - PARAM-KMFA-1558
+    - PARAM-KMFA-1559
+    - PARAM-KMFA-1560
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_READINESS_AFTER_BLOCKED_HANDOFF
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_readiness_after_blocked_handoff.py
+  scope: Authorized source reference or owner exclusion application owner/agent action readiness after blocked handoff only; checks 48 owner-action items, records all 48 as blocked, writes ignored private blocker records and question list, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_after_blocked_handoff:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-after-blocked-handoff"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-ACTION-INTAKE-AFTER-BLOCKED-HANDOFF-001
+  parameter_refs:
+    - PARAM-KMFA-1561
+    - PARAM-KMFA-1562
+    - PARAM-KMFA-1563
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_AFTER_BLOCKED_HANDOFF
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_after_blocked_handoff.py
+  scope: Authorized source reference or owner exclusion application owner/agent action intake after blocked handoff only; consumes prior action-readiness evidence and ignored private readiness blocker records, records all 48 items as blocked with no executable owner/authorized-agent action, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_audit_after_blocked_handoff:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-blocker-audit-after-blocked-handoff"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-ACTION-INTAKE-BLOCKER-AUDIT-AFTER-BLOCKED-HANDOFF-001
+  parameter_refs:
+    - PARAM-KMFA-1564
+    - PARAM-KMFA-1565
+    - PARAM-KMFA-1566
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_BLOCKER_AUDIT_AFTER_BLOCKED_HANDOFF
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_audit_after_blocked_handoff.py
+  scope: Authorized source reference or owner exclusion application owner/agent action-intake blocker audit after blocked handoff only; records first blocker observation for all 48 blocked action-intake records, keeps threshold false, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_final_threshold_recheck_after_blocked_handoff:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-blocker-final-threshold-recheck-after-blocked-handoff"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-ACTION-INTAKE-BLOCKER-FINAL-THRESHOLD-RECHECK-AFTER-BLOCKED-HANDOFF-001
+  parameter_refs:
+    - PARAM-KMFA-1570
+    - PARAM-KMFA-1571
+    - PARAM-KMFA-1572
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_BLOCKER_FINAL_THRESHOLD_RECHECK_AFTER_BLOCKED_HANDOFF
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_final_threshold_recheck_after_blocked_handoff.py
+  scope: Authorized source reference or owner exclusion application owner/agent action-intake blocker final threshold recheck after blocked handoff only; records third blocker observation for all 48 blocked action-intake threshold records, marks threshold true and goal recommendation blocked, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_after_final_threshold:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-blocker-blocked-handoff-after-final-threshold"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-ACTION-INTAKE-BLOCKER-BLOCKED-HANDOFF-AFTER-FINAL-THRESHOLD-001
+  parameter_refs:
+    - PARAM-KMFA-1573
+    - PARAM-KMFA-1574
+    - PARAM-KMFA-1575
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_AFTER_FINAL_THRESHOLD
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_after_final_threshold.py
+  scope: Authorized source reference or owner exclusion application owner/agent action-intake blocker blocked handoff after final threshold only; prepares 48 blocked handoff items and 48 owner-action items after the final action-intake blocker threshold, keeps goal recommendation blocked, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_external_action_readiness_after_final_threshold:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-blocker-blocked-handoff-external-action-readiness-after-final-threshold"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-ACTION-INTAKE-BLOCKER-BLOCKED-HANDOFF-EXTERNAL-ACTION-READINESS-AFTER-FINAL-THRESHOLD-001
+  parameter_refs:
+    - PARAM-KMFA-1576
+    - PARAM-KMFA-1577
+    - PARAM-KMFA-1578
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_EXTERNAL_ACTION_READINESS_AFTER_FINAL_THRESHOLD
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_action_intake_blocker_blocked_handoff_external_action_readiness_after_final_threshold.py
+  scope: Authorized source reference or owner exclusion application owner/agent action-intake blocker blocked handoff external action readiness after final threshold only; checks 48 owner-action items from the ignored private queue, records all 48 as still blocked with no executable external owner/authorized-agent action, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_blocked_handoff_after_external_action_readiness:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-after-external-action-readiness"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-BLOCKED-HANDOFF-AFTER-EXTERNAL-ACTION-READINESS-001
+  parameter_refs:
+    - PARAM-KMFA-1579
+    - PARAM-KMFA-1580
+    - PARAM-KMFA-1581
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_BLOCKED_HANDOFF_AFTER_EXTERNAL_ACTION_READINESS
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_blocked_handoff_after_external_action_readiness.py
+  scope: Authorized source reference or owner exclusion application owner/agent external action blocked handoff after external action readiness only; converts 48 readiness blockers into 48 blocked handoff items and 48 owner-action reminders, keeps goal recommendation blocked, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_blocked_handoff_final_threshold_recheck_after_reminder:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-final-threshold-recheck-after-reminder"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-BLOCKED-HANDOFF-FINAL-THRESHOLD-RECHECK-AFTER-REMINDER-001
+  parameter_refs:
+    - PARAM-KMFA-1582
+    - PARAM-KMFA-1583
+    - PARAM-KMFA-1584
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_BLOCKED_HANDOFF_FINAL_THRESHOLD_RECHECK_AFTER_REMINDER
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_blocked_handoff_final_threshold_recheck_after_reminder.py
+  scope: Authorized source reference or owner exclusion application owner/agent external action blocked handoff final threshold recheck after reminder only; records the third external-action blocker observation after owner-action reminder, marks threshold true and goal recommendation blocked, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_final_threshold_blocked_handoff_after_reminder:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-final-threshold-blocked-handoff-after-reminder"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-FINAL-THRESHOLD-BLOCKED-HANDOFF-AFTER-REMINDER-001
+  parameter_refs:
+    - PARAM-KMFA-1585
+    - PARAM-KMFA-1586
+    - PARAM-KMFA-1587
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_FINAL_THRESHOLD_BLOCKED_HANDOFF_AFTER_REMINDER
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_final_threshold_blocked_handoff_after_reminder.py
+  scope: Authorized source reference or owner exclusion application owner/agent external action final-threshold blocked handoff after reminder only; converts 48 final-threshold external action blockers into 48 blocked handoff items and 48 owner-action packet items, keeps owner/authorized-agent action required, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_final_threshold_blocked_handoff_action_readiness_after_final_threshold_handoff:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-final-threshold-blocked-handoff-action-readiness-after-final-threshold-handoff"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-FINAL-THRESHOLD-BLOCKED-HANDOFF-ACTION-READINESS-AFTER-FINAL-THRESHOLD-HANDOFF-001
+  parameter_refs:
+    - PARAM-KMFA-1588
+    - PARAM-KMFA-1589
+    - PARAM-KMFA-1590
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_FINAL_THRESHOLD_BLOCKED_HANDOFF_ACTION_READINESS_AFTER_FINAL_THRESHOLD_HANDOFF
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_final_threshold_blocked_handoff_action_readiness_after_final_threshold_handoff.py
+  scope: Authorized source reference or owner exclusion application owner/agent external action final-threshold blocked handoff action readiness after final-threshold handoff only; checks 48 owner-action packet items and confirms 0 ready actions and 48 blockers, keeps raw inbox access, authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_readiness_final_blocked_handoff_follow_up_after_final_threshold_handoff:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-readiness-final-blocked-handoff-follow-up-after-final-threshold-handoff"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-READINESS-FINAL-BLOCKED-HANDOFF-FOLLOW-UP-AFTER-FINAL-THRESHOLD-HANDOFF-001
+  parameter_refs:
+    - PARAM-KMFA-1591
+    - PARAM-KMFA-1592
+    - PARAM-KMFA-1593
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_READINESS_FINAL_BLOCKED_HANDOFF_FOLLOW_UP_AFTER_FINAL_THRESHOLD_HANDOFF
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_readiness_final_blocked_handoff_follow_up_after_final_threshold_handoff.py
+  scope: Authorized source reference or owner exclusion application owner/agent external action readiness final blocked handoff follow-up after final-threshold handoff only; converts 48 source readiness blockers into a private follow-up queue, records 0 ready external actions and 48 blockers, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_authoritative_binding:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-authoritative-binding"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-AUTHORITATIVE-BINDING-001
+  parameter_refs:
+    - PARAM-KMFA-1594
+    - PARAM-KMFA-1595
+    - PARAM-KMFA-1596
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_AUTHORITATIVE_BINDING
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_authoritative_binding.py
+  scope: Authorized source reference or owner exclusion application owner/agent external action required before authoritative binding only; converts 48 source follow-up blockers into an ignored private binding-requirement queue, records 0 ready actions and 48 blockers, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_raw_to_processed_value_comparison:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-raw-to-processed-value-comparison"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-RAW-TO-PROCESSED-VALUE-COMPARISON-001
+  parameter_refs:
+    - PARAM-KMFA-1597
+    - PARAM-KMFA-1598
+    - PARAM-KMFA-1599
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_RAW_TO_PROCESSED_VALUE_COMPARISON
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_raw_to_processed_value_comparison.py
+  scope: Authorized source reference or owner exclusion application owner/agent external action required before raw-to-processed value comparison only; converts 48 source binding-requirement blockers into an ignored private raw-comparison requirement queue, records 0 ready actions and 48 blockers, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_processed_data_reconciliation:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-processed-data-reconciliation"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-PROCESSED-DATA-RECONCILIATION-001
+  parameter_refs:
+    - PARAM-KMFA-1600
+    - PARAM-KMFA-1601
+    - PARAM-KMFA-1602
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_PROCESSED_DATA_RECONCILIATION
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_processed_data_reconciliation.py
+  scope: Authorized source reference or owner exclusion application owner/agent external action required before processed-data reconciliation only; converts 48 source raw-comparison requirement blockers into an ignored private processed-data reconciliation requirement queue, records 0 ready actions and 48 blockers, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_value_consistency:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-business-value-consistency"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-BUSINESS-VALUE-CONSISTENCY-001
+  parameter_refs:
+    - PARAM-KMFA-1603
+    - PARAM-KMFA-1604
+    - PARAM-KMFA-1605
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_BUSINESS_VALUE_CONSISTENCY
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_value_consistency.py
+  scope: Authorized source reference or owner exclusion application owner/agent external action required before business-value consistency only; converts 48 source processed-data reconciliation requirement blockers into an ignored private business-value consistency requirement queue, records 0 ready actions and 48 blockers, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, business consistency, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_lineage_full_check:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-lineage-full-check"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-LINEAGE-FULL-CHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1606
+    - PARAM-KMFA-1607
+    - PARAM-KMFA-1608
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_LINEAGE_FULL_CHECK
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_lineage_full_check.py
+  scope: Owner or authorized-agent external action required before lineage full check only; converts 48 source business-value consistency requirement blockers into an ignored private lineage full check requirement queue, records 0 ready actions and 48 blockers, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, business consistency, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_formal_report:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-formal-report"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-FORMAL-REPORT-001
+  parameter_refs:
+    - PARAM-KMFA-1609
+    - PARAM-KMFA-1610
+    - PARAM-KMFA-1611
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_FORMAL_REPORT
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_formal_report.py
+  scope: Owner or authorized-agent external action required before formal report only; converts 48 source lineage full check requirement blockers into an ignored private formal report requirement queue, records 0 ready actions and 48 blockers, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, business consistency, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_github_upload:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-github-upload"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-GITHUB-UPLOAD-001
+  parameter_refs:
+    - PARAM-KMFA-1612
+    - PARAM-KMFA-1613
+    - PARAM-KMFA-1614
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_GITHUB_UPLOAD
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_github_upload.py
+  scope: Owner or authorized-agent external action required before GitHub upload only; converts 48 source formal report requirement blockers into an ignored private GitHub upload requirement queue, records 0 ready actions and 48 blockers, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, business consistency, lineage, formal report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_app_reinstall:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-app-reinstall"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-APP-REINSTALL-001
+  parameter_refs:
+    - PARAM-KMFA-1615
+    - PARAM-KMFA-1616
+    - PARAM-KMFA-1617
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_APP_REINSTALL
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_app_reinstall.py
+  scope: Owner or authorized-agent external action required before app reinstall only; converts 48 source GitHub upload requirement blockers into an ignored private app reinstall requirement queue, records 0 ready actions and 48 blockers, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, business consistency, lineage, formal report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_execution:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-business-execution"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-REQUIRED-BEFORE-BUSINESS-EXECUTION-001
+  parameter_refs:
+    - PARAM-KMFA-1618
+    - PARAM-KMFA-1619
+    - PARAM-KMFA-1620
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_BUSINESS_EXECUTION
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_execution.py
+  scope: Owner or authorized-agent external action required before business execution only; converts 48 source app reinstall requirement blockers into an ignored private business execution requirement queue, records 0 ready actions and 48 blockers, and keeps raw inbox access, authoritative binding, value comparison, reconciliation, business consistency, lineage, formal report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_required_before_business_execution:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-actionable-resolution-required-before-business-execution"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-ACTIONABLE-RESOLUTION-REQUIRED-BEFORE-BUSINESS-EXECUTION-001
+  parameter_refs:
+    - PARAM-KMFA-1621
+    - PARAM-KMFA-1622
+    - PARAM-KMFA-1623
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTIONABLE_RESOLUTION_REQUIRED_BEFORE_BUSINESS_EXECUTION
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_required_before_business_execution.py
+  scope: Owner or authorized-agent actionable resolution required before business execution only; consumes 48 source business execution requirement blockers, records 0 actionable owner resolutions and 48 blockers, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, report, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_blocker_audit_before_business_execution:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-actionable-resolution-blocker-audit-before-business-execution"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-ACTIONABLE-RESOLUTION-BLOCKER-AUDIT-BEFORE-BUSINESS-EXECUTION-001
+  parameter_refs:
+    - PARAM-KMFA-1624
+    - PARAM-KMFA-1625
+    - PARAM-KMFA-1626
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTIONABLE_RESOLUTION_BLOCKER_AUDIT_BEFORE_BUSINESS_EXECUTION
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_blocker_audit_before_business_execution.py
+  scope: Owner or authorized-agent actionable resolution blocker audit before business execution only; consumes 48 source actionable-resolution requirement blockers, records 0 actionable owner resolutions and 48 blocker audit items, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_final_blocker_recheck_before_business_execution:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-actionable-resolution-final-blocker-recheck-before-business-execution"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-ACTIONABLE-RESOLUTION-FINAL-BLOCKER-RECHECK-BEFORE-BUSINESS-EXECUTION-001
+  parameter_refs:
+    - PARAM-KMFA-1627
+    - PARAM-KMFA-1628
+    - PARAM-KMFA-1629
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTIONABLE_RESOLUTION_FINAL_BLOCKER_RECHECK_BEFORE_BUSINESS_EXECUTION
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_final_blocker_recheck_before_business_execution.py
+  scope: Owner or authorized-agent actionable resolution final blocker recheck before business execution only; consumes 48 source actionable-resolution blocker audit items, records 0 actionable owner resolutions and 48 final recheck blockers, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.
+
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_readiness_gate_after_actionable_resolution_final_blocker_recheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-readiness-gate-after-actionable-resolution-final-blocker-recheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-READINESS-GATE-AFTER-ACTIONABLE-RESOLUTION-FINAL-BLOCKER-RECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1630
+    - PARAM-KMFA-1631
+    - PARAM-KMFA-1632
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_READINESS_GATE_AFTER_ACTIONABLE_RESOLUTION_FINAL_BLOCKER_RECHECK
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_readiness_gate_after_actionable_resolution_final_blocker_recheck.py
+  scope: Business execution readiness gate after actionable resolution final blocker recheck only; consumes 48 source final blocker recheck items, records 0 business-execution-ready items and 48 readiness gate blockers, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_final_readiness_recheck_after_readiness_gate:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-final-readiness-recheck-after-readiness-gate"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-FINAL-READINESS-RECHECK-AFTER-READINESS-GATE-001
+  parameter_refs:
+    - PARAM-KMFA-1633
+    - PARAM-KMFA-1634
+    - PARAM-KMFA-1635
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_FINAL_READINESS_RECHECK_AFTER_READINESS_GATE
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_final_readiness_recheck_after_readiness_gate.py
+  scope: Business execution final readiness recheck after readiness gate only; consumes 48 source business-execution readiness gate items, records 0 business-execution-ready items and 48 final readiness blockers, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_handoff_after_final_readiness_recheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-blocked-handoff-after-final-readiness-recheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-BLOCKED-HANDOFF-AFTER-FINAL-READINESS-RECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1636
+    - PARAM-KMFA-1637
+    - PARAM-KMFA-1638
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_HANDOFF_AFTER_FINAL_READINESS_RECHECK
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_handoff_after_final_readiness_recheck.py
+  scope: Business execution blocked handoff after final readiness recheck only; consumes 48 source final-readiness recheck items, records 0 business-execution-ready items and 48 blocked handoff blockers, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_after_blocked_handoff:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-blocked-follow-up-after-blocked-handoff"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-BLOCKED-FOLLOW-UP-AFTER-BLOCKED-HANDOFF-001
+  parameter_refs:
+    - PARAM-KMFA-1639
+    - PARAM-KMFA-1640
+    - PARAM-KMFA-1641
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_AFTER_BLOCKED_HANDOFF
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_after_blocked_handoff.py
+  scope: Business execution blocked follow-up after blocked handoff only; consumes 48 source blocked handoff items, records 0 business-execution-ready items and 48 follow-up blockers, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-blocked-follow-up-continuation"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-BLOCKED-FOLLOW-UP-CONTINUATION-001
+  parameter_refs:
+    - PARAM-KMFA-1642
+    - PARAM-KMFA-1643
+    - PARAM-KMFA-1644
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation.py
+  scope: Business execution blocked follow-up continuation only; consumes 48 source blocked follow-up items, records 0 business-execution-ready items and 48 continuation blockers, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.
+
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-blocked-follow-up-continuation-recheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-BLOCKED-FOLLOW-UP-CONTINUATION-RECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1645
+    - PARAM-KMFA-1646
+    - PARAM-KMFA-1647
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck.py
+  scope: Business execution blocked follow-up continuation recheck only; consumes 48 source continuation blockers, records 0 business-execution-ready items and 48 continuation recheck blockers, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.
+
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-blocked-follow-up-continuation-recheck-follow-up"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-BLOCKED-FOLLOW-UP-CONTINUATION-RECHECK-FOLLOW-UP-001
+  parameter_refs:
+    - PARAM-KMFA-1648
+    - PARAM-KMFA-1649
+    - PARAM-KMFA-1650
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK_FOLLOW_UP
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up.py
+  scope: Business execution blocked follow-up continuation recheck follow-up only; consumes 48 source continuation recheck blockers, records 0 business-execution-ready items and 48 continuation recheck follow-up blockers, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.
+
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_final_check:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-blocked-follow-up-continuation-recheck-follow-up-final-check"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-BLOCKED-FOLLOW-UP-CONTINUATION-RECHECK-FOLLOW-UP-FINAL-CHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1651
+    - PARAM-KMFA-1652
+    - PARAM-KMFA-1653
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK_FOLLOW_UP_FINAL_CHECK
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_final_check.py
+  scope: Business execution blocked follow-up continuation recheck follow-up final check only; consumes 48 source follow-up blockers, records 0 business-execution-ready items and 48 final-check blockers, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.
+
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_final_check_closure:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-blocked-follow-up-continuation-recheck-follow-up-final-check-closure"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-BUSINESS-EXECUTION-BLOCKED-FOLLOW-UP-CONTINUATION-RECHECK-FOLLOW-UP-FINAL-CHECK-CLOSURE-001
+  parameter_refs:
+    - PARAM-KMFA-1654
+    - PARAM-KMFA-1655
+    - PARAM-KMFA-1656
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK_FOLLOW_UP_FINAL_CHECK_CLOSURE
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_final_check_closure.py
+  scope: Business execution blocked follow-up continuation recheck follow-up final check closure only; consumes 48 source final-check blockers, records 0 business-execution-ready items and 48 closure blockers, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.
+
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_after_final_check_closure:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-after-final-check-closure"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-RESOLUTION-INTAKE-AFTER-FINAL-CHECK-CLOSURE-001
+  parameter_refs:
+    - PARAM-KMFA-1657
+    - PARAM-KMFA-1658
+    - PARAM-KMFA-1659
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_AFTER_FINAL_CHECK_CLOSURE
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_after_final_check_closure.py
+  scope: Owner or authorized-agent resolution intake after final-check closure only; consumes 48 source closure blockers, records 0 completed owner/authorized-agent resolutions and 48 intake blockers, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.
+
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_audit_after_final_check_closure:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-audit-after-final-check-closure"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-RESOLUTION-INTAKE-BLOCKER-AUDIT-AFTER-FINAL-CHECK-CLOSURE-001
+  parameter_refs:
+    - PARAM-KMFA-1660
+    - PARAM-KMFA-1661
+    - PARAM-KMFA-1662
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_AUDIT_AFTER_FINAL_CHECK_CLOSURE
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_audit_after_final_check_closure.py
+  scope: Owner or authorized-agent resolution-intake blocker audit after final-check closure only; consumes 48 source intake blockers, records first blocker observation, records 0 completed owner/authorized-agent resolutions and 48 audit blockers, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.
+
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_recheck_after_final_check_closure:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-recheck-after-final-check-closure"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-RESOLUTION-INTAKE-BLOCKER-RECHECK-AFTER-FINAL-CHECK-CLOSURE-001
+  parameter_refs:
+    - PARAM-KMFA-1663
+    - PARAM-KMFA-1664
+    - PARAM-KMFA-1665
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_RECHECK_AFTER_FINAL_CHECK_CLOSURE
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_recheck_after_final_check_closure.py
+  scope: Owner or authorized-agent resolution-intake blocker recheck after final-check closure only; consumes 48 source audit blockers, records second blocker observation, records 0 completed owner/authorized-agent resolutions and 48 recheck blockers, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.
+
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_final_recheck_after_final_check_closure:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-final-recheck-after-final-check-closure"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-RESOLUTION-INTAKE-BLOCKER-FINAL-RECHECK-AFTER-FINAL-CHECK-CLOSURE-001
+  parameter_refs:
+    - PARAM-KMFA-1666
+    - PARAM-KMFA-1667
+    - PARAM-KMFA-1668
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_FINAL_RECHECK_AFTER_FINAL_CHECK_CLOSURE
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_final_recheck_after_final_check_closure.py
+  scope: Owner or authorized-agent resolution-intake blocker final recheck after final-check closure only; consumes 48 source recheck blockers, records the final blocker observation and marks the blocked threshold met, records 0 completed owner/authorized-agent resolutions and 48 final-recheck blockers, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.
+
+
+kmfa_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_blocked_handoff_after_final_recheck:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-blocked-handoff-after-final-recheck"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-RESOLUTION-INTAKE-BLOCKER-BLOCKED-HANDOFF-AFTER-FINAL-RECHECK-001
+  parameter_refs:
+    - PARAM-KMFA-1669
+    - PARAM-KMFA-1670
+    - PARAM-KMFA-1671
+  evidence_dir: KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_AFTER_FINAL_RECHECK
+  validator: KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_blocked_handoff_after_final_recheck.py
+  scope: Owner or authorized-agent resolution-intake blocker blocked handoff after final recheck only; consumes 48 final-recheck blockers, writes 48 ignored private handoff records and 48 owner-resolution queue items, records 0 completed resolutions, and keeps raw inbox access, binding, value comparison, reconciliation, business consistency, lineage, GitHub upload, app reinstall and business execution closed.
+kmfa_v014_s11_post_remediation_stage_review:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s11-post-remediation-stage-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S11-POST-REMEDIATION-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1717
+    - PARAM-KMFA-1718
+    - PARAM-KMFA-1719
+  evidence_dir: KMFA/stage_artifacts/V014_S11_POST_REMEDIATION_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s11_post_remediation_stage_review.py
+  scope: Current Stage 11 post-remediation review with seven fixed findings three frozen phase validators six cross-page links six desktop-mobile viewports accessible mobile icon links unattributed-null project state fresh raw evidence and Q4 D NO_GO; S12 upload reinstall formal report and business execution remain closed.
+kmfa_v014_s16_post_remediation_stage_review:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s16-post-remediation-stage-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S16-POST-REMEDIATION-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1789
+    - PARAM-KMFA-1790
+    - PARAM-KMFA-1791
+  evidence_dir: KMFA/stage_artifacts/V014_S16_POST_REMEDIATION_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s16_post_remediation_stage_review.py
+  scope: Current Stage 16 three-phase replay nine fixed findings six strongly connected page links zero project matches lifecycle records customer summaries rankings and public business values raw immutability and Q4 D NO_GO 3-9-2-1; S17 customer contact collection legal site signature invoice payment bank upload reinstall formal release difference closure persistent write and business execution remain closed.
+kmfa_v014_s17_p1_post_remediation_access_security:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s17-p1-post-remediation-access-security"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S17-P1-POST-REMEDIATION-ACCESS-SECURITY-001
+  parameter_refs:
+    - PARAM-KMFA-1792
+    - PARAM-KMFA-1793
+    - PARAM-KMFA-1794
+    - PARAM-KMFA-1795
+  evidence_dir: KMFA/stage_artifacts/V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY
+  validator: KMFA/tools/check_v014_s17_p1_post_remediation_access_security.py
+  scope: Four-role deny-by-default public-safe access policy fifteen sensitive-category public-repository denials five schema-only audit contracts sixteen authorization probes raw immutability and Q4 D NO_GO 3-9-2-1; live identity credentials persistent events notifications S17-P2 P3 review upload reinstall formal release difference closure persistent write and business execution remain closed.
+kmfa_v014_s17_p2_post_remediation_notification:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s17-p2-post-remediation-notification"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S17-P2-POST-REMEDIATION-NOTIFICATION-001
+  parameter_refs:
+    - PARAM-KMFA-1796
+    - PARAM-KMFA-1797
+    - PARAM-KMFA-1798
+    - PARAM-KMFA-1799
+  evidence_dir: KMFA/stage_artifacts/V014_S17_P2_POST_REMEDIATION_NOTIFICATION
+  validator: KMFA/tools/check_v014_s17_p2_post_remediation_notification.py
+  scope: Three current notification triggers short Chinese reminder and existing in-app link metadata outbox rows seven audit fields fail-closed tamper checks raw immutability and Q4 D NO_GO 3-9-2-1; real delivery full body attachment address connector S17-P3 review upload reinstall formal release difference closure persistent write and business execution remain closed.
+kmfa_v014_s17_p3_post_remediation_operations_sop:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s17-p3-post-remediation-operations-sop"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S17-P3-POST-REMEDIATION-OPERATIONS-SOP-001
+  parameter_refs:
+    - PARAM-KMFA-1800
+    - PARAM-KMFA-1801
+    - PARAM-KMFA-1802
+    - PARAM-KMFA-1803
+  evidence_dir: KMFA/stage_artifacts/V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP
+  validator: KMFA/tools/check_v014_s17_p3_post_remediation_operations_sop.py
+  scope: Four manual operations runbooks two public-safe knowledge indexes two rejected synthetic error cases and one byte-exact synthetic backup restore with raw immutability and Q4 D NO_GO 3-9-2-1; production restore raw copy external services Stage 17 review Stage 18 upload reinstall formal release difference closure persistent write and business execution remain closed.
+kmfa_v014_s17_post_remediation_stage_review:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s17-post-remediation-stage-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S17-POST-REMEDIATION-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1804
+    - PARAM-KMFA-1805
+    - PARAM-KMFA-1806
+  evidence_dir: KMFA/stage_artifacts/V014_S17_POST_REMEDIATION_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s17_post_remediation_stage_review.py
+  scope: Current Stage 17 three-phase replay thirty focused tests three strict validators eleven closed findings and six cross-phase contract checks with raw immutability and Q4 D NO_GO 3-9-2-1; S18 notification production restore external operations upload reinstall formal release difference closure persistent write and business execution remain closed.
+kmfa_v014_one_time_github_main_upload:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-one-time-github-main-upload"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-ONE-TIME-GITHUB-MAIN-UPLOAD-001
+  parameter_refs:
+    - PARAM-KMFA-1822
+    - PARAM-KMFA-1823
+    - PARAM-KMFA-1824
+  evidence_dir: KMFA/stage_artifacts/V014_ONE_TIME_GITHUB_MAIN_UPLOAD
+  validator: KMFA/tools/check_v014_one_time_github_main_upload.py
+  scope: Final-reviewed v0.1.4 public-safe stack integrated with origin main exactly one non-force main push remote commit parity and zero raw private binary credential or business plaintext findings; App reinstall lineage formal release difference closure persistent writes and business execution remain closed at Q4 D NO_GO 3-9-2-1.
+
+kmfa_v014_final_overall_review:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-final-overall-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-FINAL-OVERALL-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1819
+    - PARAM-KMFA-1820
+    - PARAM-KMFA-1821
+  evidence_dir: KMFA/stage_artifacts/V014_FINAL_OVERALL_REVIEW
+  validator: KMFA/tools/check_v014_final_overall_review.py
+  scope: Current S01-S08 original and S09-S18 post-remediation review validation bundled Python full suite fourteen closed findings thirty cross-stage contracts HTML 54 of 54 raw immutability zero tracked actual raw filenames and Q4 D NO_GO 3-9-2-1; only the next public-safe GitHub main upload phase is ready while upload reinstall lineage formal release difference closure persistent writes and business execution remain unperformed.
+
+kmfa_v014_s18_post_remediation_stage_review:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s18-post-remediation-stage-review"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S18-POST-REMEDIATION-STAGE-REVIEW-001
+  parameter_refs:
+    - PARAM-KMFA-1816
+    - PARAM-KMFA-1817
+    - PARAM-KMFA-1818
+  evidence_dir: KMFA/stage_artifacts/V014_S18_POST_REMEDIATION_STAGE_REVIEW
+  validator: KMFA/tools/check_v014_s18_post_remediation_stage_review.py
+  scope: Current Stage 18 three-phase replay thirty focused tests three strict validators twelve closed findings and eighteen cross-phase contracts with raw immutability and Q4 D NO_GO 3-9-2-1; final overall review lineage completion upload reinstall formal release difference closure persistent writes and business execution remain closed.
+
+kmfa_v014_s18_p3_post_remediation_integration_preparation:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s18-p3-post-remediation-integration-preparation"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S18-P3-POST-REMEDIATION-INTEGRATION-PREPARATION-001
+  parameter_refs:
+    - PARAM-KMFA-1813
+    - PARAM-KMFA-1814
+    - PARAM-KMFA-1815
+  evidence_dir: KMFA/stage_artifacts/V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION
+  validator: KMFA/tools/check_v014_s18_p3_post_remediation_integration_preparation.py
+  scope: Three read-only future connector proposals four OpMe light-entry surfaces and six unstarted backlog items with raw immutability Q4 D NO_GO 3-9-2-1; authorization live calls writeback credentials shared database runtime Stage 18 review final overall review upload reinstall formal release difference closure persistent writes and business execution remain closed.
+
+kmfa_v014_s18_p2_post_remediation_full_regression_acceptance:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s18-p2-post-remediation-full-regression-acceptance"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S18-P2-POST-REMEDIATION-FULL-REGRESSION-ACCEPTANCE-001
+  parameter_refs:
+    - PARAM-KMFA-1810
+    - PARAM-KMFA-1811
+    - PARAM-KMFA-1812
+  evidence_dir: KMFA/stage_artifacts/V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE
+  validator: KMFA/tools/check_v014_s18_p2_post_remediation_full_regression_acceptance.py
+  scope: Current no-omission zero-delta schema lineage and UI execution with seventeen validated Stage reviews one current S18 in-progress record current Playwright 54 of 54 raw immutability and Q4 D NO_GO 3-9-2-1; historical upload evidence is excluded and S18-P3 review upload reinstall formal release and business execution remain closed.
+
+kmfa_v014_s18_p1_post_remediation_precision_stress:
+  model_id: MOD-KMFA-GOV-001
+  version: "0.1.4-s18-p1-post-remediation-precision-stress"
+  status: active
+  fact_level: EXTRACTED
+  formula_refs:
+    - FORM-KMFA-V014-S18-P1-POST-REMEDIATION-PRECISION-STRESS-001
+  parameter_refs:
+    - PARAM-KMFA-1807
+    - PARAM-KMFA-1808
+    - PARAM-KMFA-1809
+  evidence_dir: KMFA/stage_artifacts/V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS
+  validator: KMFA/tools/check_v014_s18_p1_post_remediation_precision_stress.py
+  scope: Current actual public-safe synthetic amount zero-delta duplicate bad-file missing-field three-run consistency and 1200-item stress execution with two blocking errors raw immutability and Q4 D NO_GO 3-9-2-1; historical S18 dynamic state is non-authoritative and S18-P2 P3 review upload reinstall formal release and business execution remain closed.

@@ -1,0 +1,63 @@
+{
+  "check_count": 12,
+  "check_fail_count": 0,
+  "check_pass_count": 12,
+  "checks": [
+    {
+      "check_code": "source_diagnostic_intake_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_private_template_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_private_pending_queue_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "readiness_recheck_performed",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_ready_diagnostic_response",
+      "status": "PASS"
+    },
+    {
+      "check_code": "all_residual_differences_blocked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_valid_diagnostic_response",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_actionable_resolution",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_discrepancy_closed",
+      "status": "PASS"
+    },
+    {
+      "check_code": "diagnostic_track_counts_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_gates_closed",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "phase_id": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_READINESS_RECHECK",
+  "project_id": "KMFA",
+  "record_type": "v014_outside_scope_candidate_review_residual_difference_owner_or_agent_diagnostic_readiness_recheck_matrix_public_safe",
+  "schema_version": "kmfa.v014_residual_difference_owner_or_agent_diagnostic_readiness_recheck_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-OWNER-OR-AGENT-DIAGNOSTIC-READINESS-RECHECK-20260707",
+  "version": "0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-readiness-recheck"
+}

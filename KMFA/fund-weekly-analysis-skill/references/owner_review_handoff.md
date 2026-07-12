@@ -20,7 +20,7 @@ Use the latest run id with OCR coverage. For a full workbook, do not pass `--met
 
 ```bash
 python3 KMFA/fund-weekly-analysis-skill/tools/export_owner_decision_review_csv.py \
-  --repo-root /Users/linzezhang/CodexProject \
+  --repo-root /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa \
   --run-id <run_id> \
   --limit-per-metric 0 \
   --xlsx \
@@ -42,7 +42,7 @@ Validate the XLSX before handoff:
 
 ```bash
 python3 KMFA/fund-weekly-analysis-skill/tools/validate_owner_review_workbook.py \
-  --workbook-path /Users/linzezhang/CodexProject/KMFA/metadata/fund_weekly_analysis/private_runtime/runs/<run_id>/ocr_fact_candidate_owner_decision_review_all.xlsx
+  --workbook-path /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa/KMFA/metadata/fund_weekly_analysis/private_runtime/runs/<run_id>/ocr_fact_candidate_owner_decision_review_all.xlsx
 ```
 
 Required ready status:
@@ -89,9 +89,9 @@ After the owner saves the reviewed workbook, run dry-run intake first:
 
 ```bash
 python3 KMFA/fund-weekly-analysis-skill/tools/install_owner_decision_manifest.py \
-  --repo-root /Users/linzezhang/CodexProject \
+  --repo-root /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa \
   --run-id <run_id> \
-  --draft-xlsx-path /Users/linzezhang/CodexProject/KMFA/metadata/fund_weekly_analysis/private_runtime/runs/<run_id>/ocr_fact_candidate_owner_decision_review_all.xlsx
+  --draft-xlsx-path /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa/KMFA/metadata/fund_weekly_analysis/private_runtime/runs/<run_id>/ocr_fact_candidate_owner_decision_review_all.xlsx
 ```
 
 Expected blocked status before owner values are complete:
@@ -115,9 +115,9 @@ Only after the dry-run is ready may an operator intentionally run:
 
 ```bash
 python3 KMFA/fund-weekly-analysis-skill/tools/install_owner_decision_manifest.py \
-  --repo-root /Users/linzezhang/CodexProject \
+  --repo-root /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa \
   --run-id <run_id> \
-  --draft-xlsx-path /Users/linzezhang/CodexProject/KMFA/metadata/fund_weekly_analysis/private_runtime/runs/<run_id>/ocr_fact_candidate_owner_decision_review_all.xlsx \
+  --draft-xlsx-path /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa/KMFA/metadata/fund_weekly_analysis/private_runtime/runs/<run_id>/ocr_fact_candidate_owner_decision_review_all.xlsx \
   --apply \
   --acknowledge-owner-reviewed-values
 ```

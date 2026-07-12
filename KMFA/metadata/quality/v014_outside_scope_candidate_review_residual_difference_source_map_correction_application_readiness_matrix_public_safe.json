@@ -1,0 +1,87 @@
+{
+  "authoritative_value_resolution_application_allowed_next_phase": true,
+  "check_count": 10,
+  "check_fail_count": 0,
+  "check_pass_count": 10,
+  "checks": [
+    {
+      "check_code": "source_authorization_intake_valid",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_active_record_count",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_authorization_queue_count",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "track_counts_match_expected",
+      "observed_public_safe": {
+        "owner_select_one_authoritative_candidate": 24,
+        "provide_authoritative_source_reference_or_owner_exclusion": 40,
+        "provide_formula_or_non_numeric_mapping": 8
+      },
+      "required": {
+        "owner_select_one_authoritative_candidate": 24,
+        "provide_authoritative_source_reference_or_owner_exclusion": 40,
+        "provide_formula_or_non_numeric_mapping": 8
+      },
+      "status": "PASS"
+    },
+    {
+      "check_code": "application_ready_record_count",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "application_blocker_count_zero",
+      "observed_public_safe": 0,
+      "required": 0,
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_resolution_application_ready_true",
+      "observed_public_safe": true,
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_map_correction_not_written",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "full_comparison_not_performed",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "project_go_no_go_preserved",
+      "observed_public_safe": "NO_GO",
+      "required": "NO_GO",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "full_reconciliation_allowed_after_application": false,
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "phase_id": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_APPLICATION_READINESS",
+  "private_resolution_application_ready": true,
+  "project_id": "KMFA",
+  "record_type": "v014_residual_difference_source_map_correction_application_readiness_matrix_public_safe",
+  "schema_version": "kmfa.v014_residual_difference_source_map_correction_application_readiness_matrix_public_safe.v1",
+  "source_map_correction_application_allowed_next_phase": true,
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-RESIDUAL-DIFFERENCE-SOURCE-MAP-CORRECTION-APPLICATION-READINESS-20260707",
+  "version": "0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-application-readiness"
+}

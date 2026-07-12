@@ -1,0 +1,18 @@
+{
+  "app_reinstall_performed": false,
+  "business_decision_basis_allowed": false,
+  "business_execution_performed": false,
+  "candidate_event_creation_allowed": true,
+  "current_business_event_approval_allowed": false,
+  "decision": "NO_GO",
+  "derived_rerun_allowed": false,
+  "formal_report_allowed": false,
+  "github_upload_performed": false,
+  "impact_preview_publish_allowed": false,
+  "phase_id": "V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS",
+  "s12_p1_validated": true,
+  "s12_p2_performed": false,
+  "s12_p3_performed": false,
+  "schema_version": "kmfa.v014.s12_p1.pending_actions_go_no_go.v1",
+  "stage12_review_performed": false
+}

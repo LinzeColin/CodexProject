@@ -1,0 +1,20 @@
+{
+  "api_endpoint_allowed": false,
+  "bonus_approval_allowed": false,
+  "business_execution_allowed": false,
+  "connector_allowed": false,
+  "decision": "NO_GO",
+  "fact_output_interface_schema_allowed": true,
+  "file_export_allowed": false,
+  "final_payment_allowed": false,
+  "future_salary_read_draft_allowed": true,
+  "github_upload_allowed": false,
+  "human_boundary_registration_allowed": true,
+  "live_salary_integration_allowed": false,
+  "payroll_export_allowed": false,
+  "phase_id": "V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY",
+  "project_id": "KMFA",
+  "salary_calculation_allowed": false,
+  "schema_version": "kmfa.v014.s15_p3.post_remediation.go_no_go.v1",
+  "stage_id": "S15"
+}

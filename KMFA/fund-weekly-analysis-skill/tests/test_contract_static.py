@@ -11,7 +11,6 @@ def test_required_files_exist():
         "templates/excel_sheet_spec.yaml",
         "tools/check_delivery_acceptance.py",
         "automation/weekly_mon_sat_1100_sydney.prompt.md",
-        "templates/资金与税费管理母版_真实数据预览_v2.xlsx",
     ]:
         assert (ROOT / rel).exists(), rel
 
@@ -30,4 +29,7 @@ def test_skill_has_no_branch_rule():
     assert "DELIVERY_ACCEPTANCE_READY_WITH_OWNER_BLOCKERS" in text
 
 def test_excel_template_exists():
-    assert (ROOT / "templates/资金与税费管理母版_真实数据预览_v2.xlsx").exists()
+    assert not list((ROOT / "templates").glob("*.xlsx"))
+    runner = (ROOT / "tools/run_fund_weekly_analysis.py").read_text(encoding="utf-8")
+    assert "PRIVATE_TEMPLATE_MISSING" in runner
+    assert "KMFA_FUND_TEMPLATE_PATH" in runner

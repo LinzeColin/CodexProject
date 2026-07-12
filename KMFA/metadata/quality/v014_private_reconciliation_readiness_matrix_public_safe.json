@@ -1,0 +1,65 @@
+{
+  "checks": [
+    {
+      "check_code": "source_decision_intake_completed",
+      "public_safe_observed_value": true,
+      "required_value": true,
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_decision_intake_go",
+      "public_safe_observed_value": "NO_GO",
+      "required_value": "GO",
+      "status": "FAIL"
+    },
+    {
+      "check_code": "corrected_private_source_provided",
+      "public_safe_observed_value": false,
+      "required_value": true,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "owner_resolution_or_disambiguation_provided",
+      "public_safe_observed_value": false,
+      "required_value": true,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "resolution_applied",
+      "public_safe_observed_value": 0,
+      "required_value": "greater_than_zero_and_all_required_blockers_resolved",
+      "status": "FAIL"
+    },
+    {
+      "check_code": "private_decision_queue_unblocked",
+      "public_safe_observed_value": 113,
+      "required_value": 0,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "private_queue_allows_full_reconciliation",
+      "public_safe_observed_value": 0,
+      "required_value": "all_required_private_decisions_allow_full_reconciliation",
+      "status": "FAIL"
+    },
+    {
+      "check_code": "confirmed_value_mismatch_absent",
+      "public_safe_observed_value": 0,
+      "required_value": 0,
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "full_reconciliation_allowed": false,
+  "full_reconciliation_ready": false,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_PRIVATE_RECONCILIATION_READINESS_RECHECK",
+  "project_id": "KMFA",
+  "readiness_check_count": 8,
+  "readiness_fail_count": 6,
+  "readiness_pass_count": 2,
+  "record_type": "v014_processed_value_source_map_completion_private_reconciliation_readiness_matrix_public_safe",
+  "schema_version": "kmfa.v014_private_reconciliation_readiness_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-PRIVATE-RECONCILIATION-READINESS-RECHECK-20260706",
+  "version": "0.1.4-private-reconciliation-readiness-recheck"
+}

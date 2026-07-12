@@ -1,0 +1,54 @@
+{
+  "phase_id": "V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY",
+  "project_id": "KMFA",
+  "report_entries": [
+    {
+      "authority_value_overwrite_allowed": false,
+      "business_decision_basis_allowed": false,
+      "business_values_included": false,
+      "entry_id": "project_cost_special_report",
+      "formal_report_allowed": false,
+      "internal_technical_title_visible": false,
+      "missing_value_rendered_as_zero": false,
+      "visible_management_summary": [
+        "九类成本结构已覆盖，差旅和利息已有唯一权威分项来源。",
+        "权威显示与系统复算保持分离，禁止互相覆盖。",
+        "九项非零差异和一项未完成比较继续保留。"
+      ],
+      "visible_sections": [
+        "经营摘要",
+        "项目毛利",
+        "成本结构",
+        "风险事项"
+      ],
+      "visible_title": "项目成本专题报告",
+      "visible_trust_status": "当前可信等级 Q4 / D，状态 NO_GO（未放行），仅供内部复核。"
+    },
+    {
+      "authority_value_overwrite_allowed": false,
+      "business_decision_basis_allowed": false,
+      "business_values_included": false,
+      "entry_id": "business_overview_report",
+      "formal_report_allowed": false,
+      "internal_technical_title_visible": false,
+      "missing_value_rendered_as_zero": false,
+      "visible_management_summary": [
+        "收入、开票、回款、现金、项目和税务按管理章节组织。",
+        "十二项口径差异均保留可读原因、依据、责任和状态。",
+        "三项现金口径缺少唯一权威数值来源，保持未决且不补零。"
+      ],
+      "visible_sections": [
+        "经营总览",
+        "收入",
+        "开票",
+        "回款",
+        "现金",
+        "项目",
+        "税务"
+      ],
+      "visible_title": "经营总览报告",
+      "visible_trust_status": "当前可信等级 Q4 / D，状态 NO_GO（未放行），仅供内部复核。"
+    }
+  ],
+  "schema_version": "kmfa.v014.s10_p1.post_remediation_report_entries_public_safe.v1"
+}

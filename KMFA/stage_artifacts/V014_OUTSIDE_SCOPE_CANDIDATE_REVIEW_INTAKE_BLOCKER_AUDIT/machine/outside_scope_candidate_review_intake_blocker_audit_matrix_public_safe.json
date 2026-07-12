@@ -1,0 +1,51 @@
+{
+  "blocker_audit_check_count": 9,
+  "blocker_audit_check_fail_count": 0,
+  "blocker_audit_check_pass_count": 9,
+  "checks": [
+    {
+      "check_code": "prior_phase_is_candidate_review_intake_readiness_recheck",
+      "status": "PASS"
+    },
+    {
+      "check_code": "prior_observation_count_one",
+      "status": "PASS"
+    },
+    {
+      "check_code": "current_observation_count_two",
+      "status": "PASS"
+    },
+    {
+      "check_code": "blocked_threshold_not_met",
+      "status": "PASS"
+    },
+    {
+      "check_code": "delegated_response_count_complete",
+      "status": "PASS"
+    },
+    {
+      "check_code": "all_delegated_responses_keep_pending",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_actionable_source_map_response",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_gates_closed",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "phase_id": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_BLOCKER_AUDIT",
+  "project_id": "KMFA",
+  "record_type": "v014_outside_scope_candidate_review_intake_blocker_audit_matrix_public_safe",
+  "schema_version": "kmfa.v014_outside_scope_candidate_review_intake_blocker_audit_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-INTAKE-BLOCKER-AUDIT-20260707",
+  "version": "0.1.4-outside-scope-candidate-review-intake-blocker-audit"
+}

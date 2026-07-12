@@ -1,0 +1,72 @@
+{
+  "application_readiness_check_count": 9,
+  "application_readiness_check_fail_count": 0,
+  "application_readiness_check_pass_count": 9,
+  "checks": [
+    {
+      "check_code": "source_owner_authorization_intake_valid",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_active_authorization_record_count",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_authorization_queue_count",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "application_ready_record_count",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "application_blocker_count_zero",
+      "observed_public_safe": 0,
+      "required": 0,
+      "status": "PASS"
+    },
+    {
+      "check_code": "application_ready_true",
+      "observed_public_safe": true,
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_map_not_written",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "full_comparison_not_performed",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "project_go_no_go_preserved",
+      "observed_public_safe": "NO_GO",
+      "required": "NO_GO",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "full_reconciliation_allowed_after_application": false,
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "phase_id": "V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_APPLICATION_READINESS",
+  "project_id": "KMFA",
+  "record_type": "v014_outside_scope_source_map_extension_application_readiness_matrix_public_safe",
+  "schema_version": "kmfa.v014_outside_scope_source_map_extension_application_readiness_matrix_public_safe.v1",
+  "source_map_extension_application_allowed_next_phase": true,
+  "source_map_extension_application_ready": true,
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-APPLICATION-READINESS-20260707",
+  "version": "0.1.4-outside-scope-authorized-source-map-extension-application-readiness"
+}

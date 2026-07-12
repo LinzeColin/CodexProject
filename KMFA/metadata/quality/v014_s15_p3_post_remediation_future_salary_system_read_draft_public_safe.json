@@ -1,0 +1,69 @@
+{
+  "bonus_approval_allowed": false,
+  "current_status": "draft_blocked_no_authoritative_fact_rows",
+  "draft_count": 1,
+  "employee_reference_count": 0,
+  "field_mapping_count": 6,
+  "field_mappings": [
+    {
+      "automatic_compensation_use_allowed": false,
+      "current_mapping_status": "defined_but_value_unavailable",
+      "future_target_slot": "performance_fact.invoice_amount",
+      "mapping_id": "V014-S15P3-POST-MAP-001",
+      "source_field_key": "invoice_amount",
+      "visible_field_label": "开票金额"
+    },
+    {
+      "automatic_compensation_use_allowed": false,
+      "current_mapping_status": "defined_but_value_unavailable",
+      "future_target_slot": "performance_fact.gross_margin_rate",
+      "mapping_id": "V014-S15P3-POST-MAP-002",
+      "source_field_key": "gross_margin_rate",
+      "visible_field_label": "毛利率"
+    },
+    {
+      "automatic_compensation_use_allowed": false,
+      "current_mapping_status": "defined_but_value_unavailable",
+      "future_target_slot": "performance_fact.settlement_speed",
+      "mapping_id": "V014-S15P3-POST-MAP-003",
+      "source_field_key": "settlement_speed",
+      "visible_field_label": "结算速度"
+    },
+    {
+      "automatic_compensation_use_allowed": false,
+      "current_mapping_status": "defined_but_value_unavailable",
+      "future_target_slot": "performance_fact.collection_speed",
+      "mapping_id": "V014-S15P3-POST-MAP-004",
+      "source_field_key": "collection_speed",
+      "visible_field_label": "回款速度"
+    },
+    {
+      "automatic_compensation_use_allowed": false,
+      "current_mapping_status": "defined_but_value_unavailable",
+      "future_target_slot": "performance_fact.audit_variance",
+      "mapping_id": "V014-S15P3-POST-MAP-005",
+      "source_field_key": "audit_variance",
+      "visible_field_label": "审计偏差"
+    },
+    {
+      "automatic_compensation_use_allowed": false,
+      "current_mapping_status": "defined_but_value_unavailable",
+      "future_target_slot": "performance_fact.customer_relationship_rate",
+      "mapping_id": "V014-S15P3-POST-MAP-006",
+      "source_field_key": "customer_relationship_rate",
+      "visible_field_label": "客情费率"
+    }
+  ],
+  "final_compensation_decision_allowed": false,
+  "final_payment_allowed": false,
+  "future_read_enabled": false,
+  "payment_execution_allowed": false,
+  "payroll_export_allowed": false,
+  "project_reference_count": 0,
+  "readiness_record_count": 0,
+  "readiness_records": [],
+  "record_type": "public_safe_future_salary_read_draft",
+  "salary_calculation_allowed": false,
+  "salary_numeric_value_count": 0,
+  "schema_version": "kmfa.v014.s15_p3.post_remediation.future_salary_read_draft.v1"
+}

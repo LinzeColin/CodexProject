@@ -1,0 +1,16 @@
+# KMFA v0.1.4 S18-P2 Full Regression Acceptance Test Results
+
+- py_compile: PASS (`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m py_compile KMFA/tools/v014_s18_p2_full_regression_acceptance.py KMFA/tools/check_v014_s18_p2_full_regression_acceptance.py KMFA/tests/test_v014_s18_p2_full_regression_acceptance.py`)
+- focused_unittest: PASS (`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_s18_p2_full_regression_acceptance -q`)
+- s18_p1_dependency_validator: PASS (`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s18_p1_precision_stress.py`)
+- s18_p2_validator: PASS (`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_s18_p2_full_regression_acceptance.py`)
+- html_human_flow_audit: PASS (`files=6`, `rows=54`, `pass=54`, `warn=0`, `fail=0`)
+- governance_validation: PASS (`validate_project_governance.py`, `lean_governance.py`, `validate_governance_sync.py --changed-only --enforce-sync`)
+- no_float_money_check: PASS (`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_no_float_money.py`)
+- no_omission_check: PASS (`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/no_omission_check.py`)
+- structured_parse: PASS (`changed/untracked JSON/JSONL/CSV parse`, `Ruby YAML parse`)
+- raw_private_suffix_scan: PASS (`changed/untracked forbidden raw/private suffix hits=0`)
+- high_signal_secret_scan: PASS (`changed/untracked text files hits=0`)
+- public_artifact_boundary_scan: PASS (`S18-P2 public artifact forbidden token hits=0`)
+- diff_check: PASS (`git diff --check -- KMFA scripts`)
+- blocked_actions: PASS (`S18-P3`, `Stage18 review`, `GitHub upload`, `lineage full check`, `formal report`, `production restore`, `external connector`, `app reinstall`, `business execution`, and raw inbox access were not performed)

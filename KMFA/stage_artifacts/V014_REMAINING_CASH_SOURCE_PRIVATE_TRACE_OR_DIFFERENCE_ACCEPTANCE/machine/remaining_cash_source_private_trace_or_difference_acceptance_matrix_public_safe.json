@@ -1,0 +1,100 @@
+{
+  "check_count": 18,
+  "check_fail_count": 0,
+  "check_pass_count": 18,
+  "checks": [
+    {
+      "check_id": "RCST-01",
+      "check_name": "source_private_inputs_unchanged",
+      "passed": true
+    },
+    {
+      "check_id": "RCST-02",
+      "check_name": "raw_snapshot_exact_match",
+      "passed": true
+    },
+    {
+      "check_id": "RCST-03",
+      "check_name": "three_payable_traces",
+      "passed": true
+    },
+    {
+      "check_id": "RCST-04",
+      "check_name": "one_later_bank_payment",
+      "passed": true
+    },
+    {
+      "check_id": "RCST-05",
+      "check_name": "one_note_settlement",
+      "passed": true
+    },
+    {
+      "check_id": "RCST-06",
+      "check_name": "one_unpaid_cutoff",
+      "passed": true
+    },
+    {
+      "check_id": "RCST-07",
+      "check_name": "two_cash_projects_resolved",
+      "passed": true
+    },
+    {
+      "check_id": "RCST-08",
+      "check_name": "two_cash_projects_unresolved",
+      "passed": true
+    },
+    {
+      "check_id": "RCST-09",
+      "check_name": "three_new_targets",
+      "passed": true
+    },
+    {
+      "check_id": "RCST-10",
+      "check_name": "six_targets_remain",
+      "passed": true
+    },
+    {
+      "check_id": "RCST-11",
+      "check_name": "ten_comparisons_complete",
+      "passed": true
+    },
+    {
+      "check_id": "RCST-12",
+      "check_name": "eight_nonzero_preserved",
+      "passed": true
+    },
+    {
+      "check_id": "RCST-13",
+      "check_name": "office_compatibility_unlock_two",
+      "passed": true
+    },
+    {
+      "check_id": "RCST-14",
+      "check_name": "secure_wps_content_not_claimed",
+      "passed": true
+    },
+    {
+      "check_id": "RCST-15",
+      "check_name": "forced_zero_prohibited",
+      "passed": true
+    },
+    {
+      "check_id": "RCST-16",
+      "check_name": "business_consistency_not_claimed",
+      "passed": true
+    },
+    {
+      "check_id": "RCST-17",
+      "check_name": "github_not_uploaded",
+      "passed": true
+    },
+    {
+      "check_id": "RCST-18",
+      "check_name": "stage_review_not_performed",
+      "passed": true
+    }
+  ],
+  "phase_id": "V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE",
+  "project_id": "KMFA",
+  "schema_version": "kmfa.v014.remaining_cash_trace_matrix.v1"
+}

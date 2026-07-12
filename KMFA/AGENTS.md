@@ -8,8 +8,8 @@
 - 中文名: 经营分析系统
 - GitHub 目录: `LinzeColin/CodexProject/KMFA`
 - 形态: 独立项目，稳定后再作为入口或模块接入 OpMe
-- 当前 Stage: `v0.1.3 Stage 1-10 GitHub upload gate`
-- 当前 Phase: `v0.1.3 Stage 1-10 GitHub upload gate 已完成本地验证并准备一次性上传 GitHub main；本 gate 不改变 NO_GO、D 级报告、12 条 pending reconciliation 或 business execution 阻断`
+- 当前 Stage: `v0.1.4 Stage 1-18 complete, final overall review complete, one-time public-safe GitHub main upload closure`
+- 当前 Phase: `V014_ONE_TIME_GITHUB_MAIN_UPLOAD 只上传经最终复审的 public-safe 代码、治理、validator、测试和证据。origin/main 集成后的回归发现并修复 S17 v1.4 锁定生成器受后续 owner 明文策略污染、考勤 prompt 镜像漂移；最终门禁和一次非 force push/remote parity 共同构成验收。业务仍为 Q4 / D / NO_GO / 3-9-2-1，lineage full=false。本 phase 不执行 App 重装、正式报告、差异关闭、真实连接器、凭据处理、持久业务写入或业务执行。下一 phase 只能是 V014_APP_REINSTALL_AND_PARITY。`
 
 ## Execution Rules
 
@@ -17,12 +17,14 @@
 - 每次 run work 最多解决一个 Phase。
 - 中间 Phase 完成不上传 GitHub。
 - v1.3 本轮目标下，GitHub main upload 统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；不得按单个 Stage 做 GitHub upload gate。
+- v1.4 本轮目标下，GitHub main upload 统一延期到 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行；不得按单个 Stage 做 GitHub upload gate。
 - 时间是资源参考，不是质量豁免；质量门禁通过可以提前交付，未通过不得交付。
-- 后续开发基线必须读取 `KMFA/taskpack/v1_2/`；涉及 UI、报告、前端或验收时必须读取 `20_HTML_UIUX_报告预览/`。
+- 后续开发基线必须读取 `KMFA/taskpack/v1_4/`；涉及 UI、报告、前端或验收时必须读取 v1.4 HTML/UIUX 人类流程验收样板。
 
 ## Data And Privacy
 
-- 经 owner 在当前线程或签名上传 manifest 明确授权后，原始敏感经营文件、银行流水、合同、工资、税务申报、SQLite/数据库导出、明文报告正文等非凭据类敏感材料允许以明文提交到 GitHub，但必须放在 `KMFA/metadata/` 下并登记到 `KMFA/metadata/security/owner_authorized_plaintext_upload_manifest.jsonl`。
+- 当前 `V014_ONE_TIME_GITHUB_MAIN_UPLOAD` 明确排除所有 raw/private 明文、压缩包、工作簿、PDF、私有表格、数据库、银行流水、合同、工资和税务材料；此前 owner 授权策略不适用于本次上传。
+- owner 授权明文上传只保留为历史/未来独立治理能力，必须另立 phase、重新授权和复审，不得被当前 upload closure 继承。
 - 账号密码、token、API key、webhook secret、signing key、私钥等 credential/secret 仍禁止提交 GitHub；如原始文件内含 credential/secret，必须先移除或更换源文件。
 - 未经 owner 明确授权和 manifest 登记的敏感材料仍按历史规则处理：公开仓库只保存结构、hash、manifest、状态、证据索引、脱敏 fixture 和治理记录。
 - 本机 KMFA raw data inbox 固定为 `/Users/linzezhang/Downloads/KMFA_MetaData`；该目录属于用户原始财务数据，只读，不得修改、删除、移动、重命名、覆盖或写入生成文件。
@@ -41,10 +43,11 @@
 
 ## Current Non-Goals
 
-- Stage 15 已完成 S15-P1/S15-P2/S15-P3、整体复审和 final GitHub upload；S16-P1/S16-P2/S16-P3、Stage 16 整体复审和 final GitHub upload 已完成；S17-P1/S17-P2/S17-P3、Stage 17 整体复审和 final GitHub upload 已完成；S18-P1 精度与压力测试、S18-P2 全量回归验收、S18-P3 后续接入准备、Stage 18 整体复审和 Stage 18 final GitHub upload 均已完成。Stage 18 review-level Go/No-Go 仍为 `NO_GO`；不得直接进入 lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
+- v0.1.4 当前只执行 `V014_ONE_TIME_GITHUB_MAIN_UPLOAD`；不得顺手执行 App 重装、生产恢复、raw 复制或备份、真实通知、真实连接器、凭据处理、客户联络、催收、法务、施工、签署、开票、采购执行、支付审批、支付执行、银行、工资计算、奖金审批、薪资导出、最终发放、protected source matching、lineage full check completion、正式报告、差异关闭、纳税申报、贷款管理或任何业务动作。
+- 以下 Stage 15/16/17/18 final upload 相关表述是 legacy/Post-S18 历史证据，不是当前 v0.1.4 active gate。当前 v0.1.4 GitHub main upload 仍延期到 Stage 1-18 全部完成并整体复审修复后一次性执行；不得直接进入 lineage full check、正式报告、完整报告邮件正文、外部邮件连接器、live connector、OpMe 深度耦合、采购执行、付款审批、付款执行、银行操作、现场施工、安全签字、技术签字、开票、催收、法律决策、工资计算、奖金审批、薪资导出、最终发放或外部接口。
 - 不生成正式可信经营报告。
 - 不关闭 S09-P3 pending owner/授权复核差异。
-- 不把 Stage 12 GitHub upload 视为 lineage full check、差异关闭、正式报告或业务 release。
+- 不把 Stage 12 review 或历史 Stage 12 GitHub upload 视为当前 v1.4 GitHub upload gate、lineage full check、差异关闭、正式报告或业务 release。
 - 不在未读取 v1.2 HTML/UIUX 样板前实现 S11 前端。
 - 不接红圈、金蝶、WPS、银行、税务自动接口。
 - 不做付款、报税、开票、工资或奖金审批执行。

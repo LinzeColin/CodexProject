@@ -1,0 +1,73 @@
+{
+  "detection_rule_count": 4,
+  "rules": [
+    {
+      "action_execution_allowed": false,
+      "authoritative_transaction_row_count": 0,
+      "candidate_close_without_owner_review_allowed": false,
+      "condition": "外协或采购交易存在且项目归属为空或未通过权威复核",
+      "current_status": "rule_ready_candidate_materialization_blocked",
+      "manual_review_required": true,
+      "materialized_candidate_count": 0,
+      "required_lanes": [
+        "subcontract_contract",
+        "procurement_order",
+        "project_attribution"
+      ],
+      "rule_definition_complete": true,
+      "rule_id": "unallocated_cost",
+      "visible_label": "未归集成本"
+    },
+    {
+      "action_execution_allowed": false,
+      "authoritative_transaction_row_count": 0,
+      "candidate_close_without_owner_review_allowed": false,
+      "condition": "同一对手方、金额签名、期间和付款引用出现重复组合",
+      "current_status": "rule_ready_candidate_materialization_blocked",
+      "manual_review_required": true,
+      "materialized_candidate_count": 0,
+      "required_lanes": [
+        "payment_application",
+        "project_attribution"
+      ],
+      "rule_definition_complete": true,
+      "rule_id": "duplicate_payment",
+      "visible_label": "重复付款"
+    },
+    {
+      "action_execution_allowed": false,
+      "authoritative_transaction_row_count": 0,
+      "candidate_close_without_owner_review_allowed": false,
+      "condition": "付款交易存在但无法连接合同锚点",
+      "current_status": "rule_ready_candidate_materialization_blocked",
+      "manual_review_required": true,
+      "materialized_candidate_count": 0,
+      "required_lanes": [
+        "payment_application",
+        "subcontract_contract"
+      ],
+      "rule_definition_complete": true,
+      "rule_id": "payment_without_contract",
+      "visible_label": "无合同付款"
+    },
+    {
+      "action_execution_allowed": false,
+      "authoritative_transaction_row_count": 0,
+      "candidate_close_without_owner_review_allowed": false,
+      "condition": "同一交易签名连接多个冲突项目锚点",
+      "current_status": "rule_ready_candidate_materialization_blocked",
+      "manual_review_required": true,
+      "materialized_candidate_count": 0,
+      "required_lanes": [
+        "subcontract_contract",
+        "procurement_order",
+        "payment_application",
+        "project_attribution"
+      ],
+      "rule_definition_complete": true,
+      "rule_id": "cross_project_cost",
+      "visible_label": "跨项目费用"
+    }
+  ],
+  "schema_version": "kmfa.v014.s16_p1.detection_rules.v1"
+}
