@@ -262,7 +262,10 @@ class Stage038WorkerQueueBaselinePhase1Tests(unittest.TestCase):
             "passed_with_local_evidence",
             phases["IDS-STAGE038-P3"]["status"],
         )
-        self.assertEqual("planned", phases["IDS-STAGE038-P4"]["status"])
+        self.assertEqual(
+            "passed_with_local_evidence",
+            phases["IDS-STAGE038-P4"]["status"],
+        )
         phase2 = json.dumps(phases["IDS-STAGE038-P2"], ensure_ascii=False)
         for term in (
             "minimal asynchronous worker queue slice",
@@ -298,34 +301,38 @@ class Stage038WorkerQueueBaselinePhase1Tests(unittest.TestCase):
         batch, roadmap = self._parsed_governance()
         stage = batch["stage_progress"]["STAGE-038"]
         decision = batch["decision"]
-        self.assertEqual("stage038_phase3_completed", batch["status"])
+        self.assertEqual("stage038_phase4_completed_review_pending", batch["status"])
         self.assertEqual(
-            ["Phase 1", "Phase 2", "Phase 3"],
+            ["Phase 1", "Phase 2", "Phase 3", "Phase 4"],
             stage["completed_phases"],
         )
         self.assertEqual("SOURCE_VERIFIED", stage["source_verification_status"])
         self.assertEqual("passed", stage["source_reverification_gate_status"])
         self.assertIs(True, stage["phase2_entry_authorized"])
-        self.assertEqual("Phase 4", stage["next_phase"])
-        self.assertEqual("IDS-STAGE038-P4-GATE", stage["next_gate"])
+        self.assertEqual("pending", stage["review_status"])
+        self.assertEqual("stage_review", stage["next_phase"])
+        self.assertEqual("IDS-STAGE038-REVIEW-GATE", stage["next_gate"])
         self.assertEqual(
-            "IDS-V0_1-STAGE038-P3", stage["current_task_id"]
+            "IDS-V0_1-STAGE038-P4", stage["current_task_id"]
         )
         self.assertEqual("ACC-STAGE-038", stage["acceptance_id"])
         self.assertEqual(
-            "phase3_isolated_scenarios_passed",
+            "phase4_closeout_passed_review_pending",
             stage["acceptance_status"],
         )
-        self.assertEqual("IDS-V0_1-STAGE038-P4", decision["next_allowed_task_id"])
+        self.assertEqual(
+            "IDS-V0_1-STAGE038-REVIEW",
+            decision["next_allowed_task_id"],
+        )
         self.assertIs(False, decision["github_upload_allowed"])
         self.assertIs(False, batch["upload_gate"]["push_allowed"])
 
         self.assertEqual("IDS-STAGE038", roadmap["current_stage_id"])
-        self.assertEqual("IDS-STAGE038-P3", roadmap["current_phase_id"])
+        self.assertEqual("IDS-STAGE038-P4", roadmap["current_phase_id"])
         self.assertEqual(
-            "IDS-V0_1-STAGE038-P3", roadmap["current_task_id"]
+            "IDS-V0_1-STAGE038-P4", roadmap["current_task_id"]
         )
-        self.assertEqual("IDS-STAGE038-P4-GATE", roadmap["next_gate_id"])
+        self.assertEqual("IDS-STAGE038-REVIEW-GATE", roadmap["next_gate_id"])
         roadmap_stage = next(
             item for item in roadmap["stages"] if item.get("stage_id") == "IDS-STAGE038"
         )

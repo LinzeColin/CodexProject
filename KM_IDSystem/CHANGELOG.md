@@ -1,5 +1,11 @@
 # Changelog
 
+## IDS v0.1 STAGE-038 Phase 4 - 2026-07-13
+
+- Added a hash-bound Phase 4 delivery contract and stdout-only checker that expose the exact STAGE-037 job-state graph, the actual isolated failure record, capacity/resource/lock backpressure proofs, and orderly isolated shutdown evidence.
+- Delivered a cleanup allowlist limited to temporary partial output and rebuildable cache, with original data, facts, manifests, evidence, report snapshots, audit logs, active indexes, and required checkpoints protected.
+- Recorded `automatic_recovery_cases=[]`, six manual-action conditions, rollback steps, known limits, restrained Chinese feedback, and `PASS_ISOLATED_CLOSEOUT_PRODUCTION_DISABLED`. Whole-stage review, STAGE-039, production runtime, raw metadata access, fake IDS data, cleanup execution, GitHub, and app reinstall remain disabled.
+
 ## IDS v0.1 STAGE-038 Phase 3 - 2026-07-13
 
 - Repaired the resource conflict identity so archive, parse, index, and report jobs over one tracked input share one lock key; active conflicts now return `RESOURCE_CONFLICT_ACTIVE` before a second queue record is created.

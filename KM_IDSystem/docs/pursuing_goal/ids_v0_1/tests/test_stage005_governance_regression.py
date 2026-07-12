@@ -8712,6 +8712,132 @@ stages:
             with self.subTest(allowed_path=allowed_path):
                 self.assertTrue(module._is_allowed_changed_path(allowed_path))
 
+    def test_phase_state_allows_stage038_phase4_closeout_review_pending(self):
+        module = self._load_module()
+        result_block = (
+            "GREEN: Stage038 33 tests OK, Stage005 145 tests OK, "
+            "Stage031-038 aggregate 202 tests OK, Stage026-030 75 tests OK, "
+            "full IDS v0.1 discovery 607 tests OK, "
+            "checker contract_valid=true delivery_contract_valid=true, "
+            "scoped Stage005 validator valid=true; direct workspace report blocked "
+            "only by four pre-existing owner dirty paths"
+        )
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-031-040"
+status: "stage038_phase4_completed_review_pending"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-038:
+    status: "stage038_phase4_completed_review_pending"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    review_status: "pending"
+    next_phase: "stage_review"
+    next_gate: "IDS-STAGE038-REVIEW-GATE"
+    current_task_id: "IDS-V0_1-STAGE038-P4"
+    acceptance_id: "ACC-STAGE-038"
+    acceptance_status: "phase4_closeout_passed_review_pending"
+    source_verification_status: "SOURCE_VERIFIED"
+    source_reverification_gate_status: "passed"
+    phase2_entry_authorized: true
+decision:
+  current_task_id: "IDS-V0_1-STAGE038-P4"
+  next_allowed_task_id: "IDS-V0_1-STAGE038-REVIEW"
+  github_upload_allowed: false
+"""
+        roadmap_text = f"""
+current_stage_id: "IDS-STAGE038"
+current_phase_id: "IDS-STAGE038-P4"
+current_task_id: "IDS-V0_1-STAGE038-P4"
+next_gate_id: "IDS-STAGE038-REVIEW-GATE"
+stages:
+  -
+    stage_id: "IDS-STAGE005"
+    phases:
+      -
+        phase_id: "IDS-STAGE005-P2"
+        status: "passed_with_local_evidence"
+  -
+    stage_id: "IDS-STAGE038"
+    source_reverification_gate:
+      gate_id: "IDS-STAGE038-P1-SOURCE-REVERIFY-GATE"
+      status: "passed"
+      task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
+      source_verification_status: "SOURCE_VERIFIED"
+      source_member_match_count: 1
+      source_member_sha256: "613acde3cc8f9b8fdc267eb1b0f3076fbce6e858a0d00c3840a2bd730faa7634"
+      reconciliation_status: "passed"
+      independent_review_status: "passed"
+      phase2_entry_authorized: true
+    phases:
+      -
+        phase_id: "IDS-STAGE038-P2"
+        status: "passed_with_local_evidence"
+        entry_authorized: true
+      -
+        phase_id: "IDS-STAGE038-P3"
+        status: "passed_with_local_evidence"
+      -
+        phase_id: "IDS-STAGE038-P4"
+        status: "passed_with_local_evidence"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE038-P4"
+            status: "completed"
+            test_results: "{result_block}"
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE2_ASYNC_WORKER_QUEUE_SLICE.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE3_WORKER_QUEUE_SCENARIOS.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_baseline_index.json"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_scenarios.json"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_delivery_contract.json"
+              - "KM_IDSystem/scripts/check_worker_queue_baseline.py"
+              - "KM_IDSystem/scripts/check_worker_queue_scenarios.py"
+              - "KM_IDSystem/scripts/check_worker_queue_delivery.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_runtime.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_scenarios.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_delivery.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+"""
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+        self.assertTrue(all(checks.values()), checks)
+        structured = module.evaluate_current_state_consistency(
+            batch_text, roadmap_text
+        )
+        self.assertTrue(all(structured.values()), structured)
+
+        skipped_review = batch_text.replace(
+            'next_allowed_task_id: "IDS-V0_1-STAGE038-REVIEW"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE039-P1"',
+        )
+        self.assertFalse(
+            all(module.evaluate_phase_state(skipped_review, roadmap_text).values())
+        )
+        for allowed_path in (
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE4_CLOSEOUT.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/worker_queue_baseline/"
+            "stage038_worker_queue_delivery_contract.json",
+            "KM_IDSystem/scripts/check_worker_queue_delivery.py",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/"
+            "test_stage038_worker_queue_delivery.py",
+        ):
+            with self.subTest(allowed_path=allowed_path):
+                self.assertTrue(module._is_allowed_changed_path(allowed_path))
+
     def test_stage038_source_reverification_rejects_cross_file_mixed_states(self):
         module = self._load_module()
         archive_path = (
