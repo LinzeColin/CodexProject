@@ -1,4 +1,5 @@
 import gzip
+import hashlib
 import importlib
 import json
 import tempfile
@@ -932,17 +933,30 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         from KMFA.tools.dingtalk_attendance.automatic_closure import R6Coordinator
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            coordinator = R6Coordinator(Path(tmpdir))
-            for work_date, trigger_source in (
-                ("2026-07-13", "automation"),
-                ("2026-07-14", "manual"),
-                ("2026-07-18", "automation"),
+            runtime_identity = {
+                "git_commit": "a" * 40,
+                "morning_prompt_sha256": "b" * 64,
+                "evening_prompt_sha256": "c" * 64,
+            }
+            coordinator = R6Coordinator(Path(tmpdir), runtime_identity=runtime_identity)
+            for work_date, verified, actual_workday in (
+                ("2026-07-13", True, True),
+                ("2026-07-14", False, True),
+                ("2026-07-18", True, False),
             ):
                 for slot in ("morning", "evening"):
                     coordinator.ensure_slot(
                         work_date=work_date,
                         run_slot=slot,
-                        trigger_source=trigger_source,
+                        trigger_source="automation",
+                        task_evidence={
+                            "verified": verified,
+                            "task_id": f"task-{work_date}-{slot}",
+                            "thread_source": "automation" if verified else "manual",
+                            "automation_id": "kmfa" if slot == "morning" else "kmfa-3",
+                            "triggered_at": f"{work_date}T00:00:00Z",
+                            "prompt_sha256": runtime_identity[f"{slot}_prompt_sha256"],
+                        },
                         runner=lambda: {
                             "status": "COMPLETED",
                             "notification_status": "NOT_SENT_OWNER_DISABLED",
@@ -952,12 +966,20 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                     )
                 coordinator.record_final_success(
                     work_date=work_date,
-                    trigger_source=trigger_source,
+                    trigger_source="automation",
+                    task_evidence={
+                        "verified": verified,
+                        "task_id": f"task-{work_date}-final",
+                        "thread_source": "automation" if verified else "manual",
+                        "automation_id": "kmfa",
+                        "triggered_at": f"{work_date}T01:00:00Z",
+                        "prompt_sha256": runtime_identity["morning_prompt_sha256"],
+                    },
                     result={
                         "status": "OFFICIAL_FINAL_RECONCILIATION_PASS",
                         "differing_required_cells": 0,
                         "monthly_written": True,
-                        "actual_workday": work_date != "2026-07-18",
+                        "actual_workday": actual_workday,
                     },
                 )
 
@@ -965,6 +987,281 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
         self.assertEqual(summary["natural_completed_work_days"], 1)
         self.assertEqual(summary["natural_completed_dates"], ["2026-07-13"])
+
+    def test_r6_morning_reminder_completes_before_and_survives_final_failure(self) -> None:
+        from KMFA.tools.dingtalk_attendance.automatic_closure import (
+            OfficialExportAmbiguousError,
+            run_automatic_cycle,
+        )
+
+        runtime_identity = {
+            "git_commit": "a" * 40,
+            "morning_prompt_sha256": "b" * 64,
+            "evening_prompt_sha256": "c" * 64,
+        }
+        task_evidence = {
+            "verified": True,
+            "task_id": "natural-morning-task",
+            "thread_source": "automation",
+            "automation_id": "kmfa",
+            "triggered_at": "2026-07-15T02:45:00Z",
+            "prompt_sha256": runtime_identity["morning_prompt_sha256"],
+        }
+        order: list[str] = []
+        with (
+            tempfile.TemporaryDirectory() as tmpdir,
+            patch(
+                "KMFA.tools.dingtalk_attendance.automatic_closure.find_latest_pending_work_date",
+                return_value="2026-07-14",
+            ),
+            patch(
+                "KMFA.tools.dingtalk_attendance.automatic_closure._slot_runner",
+                side_effect=lambda **_: order.append("reminder") or {
+                    "status": "COMPLETED",
+                    "notification_status": "NOT_SENT_OWNER_DISABLED",
+                    "member_count": 45,
+                },
+            ),
+            patch(
+                "KMFA.tools.dingtalk_attendance.automatic_closure._completed_reminder_probe",
+                return_value=None,
+            ),
+            patch(
+                "KMFA.tools.dingtalk_attendance.automatic_closure._completed_final_probe",
+                return_value=None,
+            ),
+            patch(
+                "KMFA.tools.dingtalk_attendance.automatic_closure.find_official_export",
+                side_effect=lambda **_: order.append("final")
+                or (_ for _ in ()).throw(OfficialExportAmbiguousError("conflict")),
+            ),
+        ):
+            result = run_automatic_cycle(
+                run_slot="morning",
+                trigger_source="automation",
+                task_evidence=task_evidence,
+                runtime_identity=runtime_identity,
+                private_root=Path(tmpdir) / "private",
+                archive_root=Path(tmpdir) / "archive",
+                now=datetime(2026, 7, 15, 10, 45, tzinfo=ZoneInfo("Asia/Shanghai")),
+            )
+
+        self.assertEqual(order, ["reminder", "final"])
+        self.assertEqual(result["reminder"]["status"], "COMPLETED")
+        self.assertEqual(result["final"]["status"], "FAILED")
+        self.assertEqual(result["status"], "REMINDER_COMPLETED_FINAL_FAILED")
+
+    def test_r6_manual_artifact_recovery_keeps_original_source_and_is_not_natural(self) -> None:
+        from KMFA.tools.dingtalk_attendance.automatic_closure import R6Coordinator
+
+        runtime_identity = {
+            "git_commit": "a" * 40,
+            "morning_prompt_sha256": "b" * 64,
+            "evening_prompt_sha256": "c" * 64,
+        }
+        manual_evidence = {
+            "verified": False,
+            "task_id": "manual-task",
+            "thread_source": "manual",
+            "automation_id": "kmfa",
+            "triggered_at": "2026-07-15T02:45:00Z",
+            "prompt_sha256": runtime_identity["morning_prompt_sha256"],
+        }
+        natural_evidence = {
+            **manual_evidence,
+            "verified": True,
+            "task_id": "natural-task",
+            "thread_source": "automation",
+        }
+        with tempfile.TemporaryDirectory() as tmpdir:
+            coordinator = R6Coordinator(Path(tmpdir), runtime_identity=runtime_identity)
+            coordinator.ensure_slot(
+                work_date="2026-07-15",
+                run_slot="morning",
+                trigger_source="manual",
+                task_evidence=manual_evidence,
+                runner=lambda: (_ for _ in ()).throw(InterruptedError("manual interrupted")),
+                completed_probe=lambda: None,
+            )
+            recovered = coordinator.ensure_slot(
+                work_date="2026-07-15",
+                run_slot="morning",
+                trigger_source="automation",
+                task_evidence=natural_evidence,
+                runner=lambda: (_ for _ in ()).throw(AssertionError("must recover")),
+                completed_probe=lambda: {"member_count": 45, "trigger_source": "manual"},
+            )
+            saved = coordinator.state["work_dates"]["2026-07-15"]["slots"]["morning"]
+
+        self.assertEqual(recovered["status"], "RECOVERED_COMPLETE")
+        self.assertEqual(saved["task_evidence"]["thread_source"], "manual")
+        self.assertFalse(saved["task_evidence"]["verified"])
+
+    def test_r6_commit_or_prompt_change_resets_natural_acceptance(self) -> None:
+        from KMFA.tools.dingtalk_attendance.automatic_closure import R6Coordinator
+
+        first_identity = {
+            "git_commit": "a" * 40,
+            "morning_prompt_sha256": "b" * 64,
+            "evening_prompt_sha256": "c" * 64,
+        }
+        changed_identities = (
+            {**first_identity, "git_commit": "d" * 40},
+            {**first_identity, "morning_prompt_sha256": "e" * 64},
+        )
+        for changed_identity in changed_identities:
+            with self.subTest(changed_identity=changed_identity), tempfile.TemporaryDirectory() as tmpdir:
+                root = Path(tmpdir)
+                first = R6Coordinator(root, runtime_identity=first_identity)
+                first.state["work_dates"]["2026-07-15"] = {"slots": {"morning": {"status": "COMPLETED"}}}
+                first._write()
+                reset = R6Coordinator(root, runtime_identity=changed_identity)
+                self.assertEqual(reset.acceptance_summary()["natural_completed_work_days"], 0)
+                self.assertEqual(reset.state["runtime_identity"], changed_identity)
+                self.assertEqual(reset.state["work_dates"], {})
+
+    def test_r6_task_evidence_requires_real_automation_session_metadata(self) -> None:
+        from KMFA.tools.dingtalk_attendance.automatic_closure import read_automation_task_evidence
+
+        prompt = "Use $kmfa-dingtalk-attendance-skill.\nAutomation ID bound prompt."
+        prompt_sha = hashlib.sha256(prompt.encode()).hexdigest()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            automation_path = root / "automation.jsonl"
+            manual_path = root / "manual.jsonl"
+            wrapped = "Automation: test\nAutomation ID: kmfa\nLast run: none\n\n" + prompt
+            for path, source in ((automation_path, "automation"), (manual_path, "manual")):
+                path.write_text(
+                    "\n".join(
+                        json.dumps(row, ensure_ascii=False)
+                        for row in (
+                            {
+                                "type": "session_meta",
+                                "payload": {
+                                    "id": f"task-{source}",
+                                    "timestamp": "2026-07-15T02:45:00Z",
+                                    "cwd": "/Users/linzezhang/CodexProject",
+                                    "thread_source": source,
+                                },
+                            },
+                            {
+                                "type": "response_item",
+                                "payload": {
+                                    "type": "message",
+                                    "role": "user",
+                                    "content": [{"type": "input_text", "text": wrapped}],
+                                },
+                            },
+                        )
+                    )
+                    + "\n",
+                    encoding="utf-8",
+                )
+            verified = read_automation_task_evidence(
+                automation_path,
+                expected_automation_id="kmfa",
+                expected_prompt_sha256=prompt_sha,
+                expected_cwd=Path("/Users/linzezhang/CodexProject"),
+            )
+            rejected = read_automation_task_evidence(
+                manual_path,
+                expected_automation_id="kmfa",
+                expected_prompt_sha256=prompt_sha,
+                expected_cwd=Path("/Users/linzezhang/CodexProject"),
+            )
+
+        self.assertTrue(verified["verified"])
+        self.assertEqual(verified["thread_source"], "automation")
+        self.assertFalse(rejected["verified"])
+
+    def test_r6_task_discovery_requires_current_codex_thread_id(self) -> None:
+        from KMFA.tools.dingtalk_attendance.automatic_closure import discover_automation_task_evidence
+
+        prompt = "Use $kmfa-dingtalk-attendance-skill.\nCurrent task only."
+        prompt_sha = hashlib.sha256(prompt.encode()).hexdigest()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            codex_home = Path(tmpdir)
+            session_dir = codex_home / "sessions"
+            session_dir.mkdir()
+            session = session_dir / "automation.jsonl"
+            wrapped = "Automation: test\nAutomation ID: kmfa\nLast run: none\n\n" + prompt
+            session.write_text(
+                "\n".join(
+                    json.dumps(row)
+                    for row in (
+                        {
+                            "type": "session_meta",
+                            "payload": {
+                                "id": "natural-task-id",
+                                "timestamp": "2026-07-15T02:45:00Z",
+                                "cwd": "/Users/linzezhang/CodexProject",
+                                "thread_source": "automation",
+                            },
+                        },
+                        {
+                            "type": "response_item",
+                            "payload": {
+                                "type": "message",
+                                "role": "user",
+                                "content": [{"type": "input_text", "text": wrapped}],
+                            },
+                        },
+                    )
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            with patch.dict(
+                "os.environ",
+                {"CODEX_HOME": str(codex_home), "CODEX_THREAD_ID": "manual-other-task"},
+                clear=False,
+            ):
+                rejected = discover_automation_task_evidence(
+                    automation_id="kmfa",
+                    prompt_sha256=prompt_sha,
+                    now=datetime(2026, 7, 15, 2, 50, tzinfo=ZoneInfo("UTC")),
+                )
+
+        self.assertFalse(rejected["verified"])
+
+    def test_r6_official_csv_parser_supports_45_dynamic_people(self) -> None:
+        import csv
+
+        from KMFA.tools.dingtalk_attendance.automatic_closure import parse_official_csv
+        from KMFA.tools.dingtalk_attendance.official_report_reconstruction import (
+            OFFICIAL_COLUMNS,
+            compare_standard_entry,
+        )
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "official.csv"
+            primary = list(OFFICIAL_COLUMNS)
+            secondary = [""] * 49
+            primary[37:45] = ["请假", "", "", "", "", "", "", ""]
+            secondary[37:45] = list(OFFICIAL_COLUMNS[37:45])
+            primary[46:49] = ["加班时长（转调休）", "", ""]
+            secondary[46:49] = list(OFFICIAL_COLUMNS[46:49])
+            rows = [["每日统计 统计日期：2026-07-15 至 2026-07-15"], ["报表生成时间"], primary, secondary]
+            for index in range(45):
+                row = [""] * 49
+                row[0] = f"测试员工{index + 1}"
+                row[5] = f"00{index + 1:04d}"
+                rows.append(row)
+            with path.open("w", encoding="utf-8-sig", newline="") as handle:
+                csv.writer(handle).writerows(rows)
+            standard = parse_official_csv(path, work_date="2026-07-15")
+            comparison = compare_standard_entry(
+                standard,
+                {str(row[5]): list(row) for row in standard["values"][4:]},
+                work_date="2026-07-15",
+            )
+
+        self.assertEqual(len(standard["values"]), 49)
+        self.assertEqual(comparison["official_people"], 45)
+        self.assertEqual(comparison["matched_people"], 45)
+        self.assertEqual(comparison["compared_columns"], 48)
+        self.assertEqual(comparison["compared_cells"], 45 * 48)
+        self.assertEqual(comparison["status"], "PASS")
 
     def test_r6_official_csv_parser_preserves_49_columns_and_user_id_text(self) -> None:
         import csv
@@ -997,6 +1294,34 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(standard["values"][4][5], "000001")
         self.assertEqual(standard["values"][-1][5], "000044")
         self.assertIsNone(standard["values"][4][2])
+
+    def test_r6_two_row_merged_header_resolves_exact_official_columns(self) -> None:
+        from KMFA.tools.dingtalk_attendance.automatic_closure import merge_official_header_rows
+        from KMFA.tools.dingtalk_attendance.official_report_reconstruction import OFFICIAL_COLUMNS
+
+        primary = list(OFFICIAL_COLUMNS)
+        secondary = [""] * 49
+        primary[37:45] = ["请假", "", "", "", "", "", "", ""]
+        secondary[37:45] = [
+            "事假(天)",
+            "病假(天)",
+            "年假(天)",
+            "调休(天)",
+            "婚假(天)",
+            "产假(天)",
+            "陪产假(天)",
+            "路途假(天)",
+        ]
+        primary[46:49] = ["加班时长（转调休）", "", ""]
+        secondary[46:49] = ["工作日（转调休）", "休息日（转调休）", "节假日（转调休）"]
+
+        resolved = merge_official_header_rows(primary, secondary)
+
+        self.assertEqual(tuple(resolved), OFFICIAL_COLUMNS)
+        self.assertEqual(resolved[37:45], list(OFFICIAL_COLUMNS[37:45]))
+        self.assertEqual(resolved[46:49], list(OFFICIAL_COLUMNS[46:49]))
+        self.assertNotIn("请假", resolved)
+        self.assertNotIn("加班时长（转调休）", resolved)
 
     def test_r6_official_export_selection_rejects_ambiguous_fingerprints(self) -> None:
         from KMFA.tools.dingtalk_attendance.automatic_closure import (

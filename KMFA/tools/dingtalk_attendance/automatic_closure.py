@@ -8,11 +8,13 @@ import os
 import csv
 import fcntl
 import hashlib
+import re
 import shutil
 import subprocess
 import tempfile
+import tomllib
 from collections.abc import Callable, Mapping
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
@@ -43,6 +45,12 @@ from KMFA.tools.dingtalk_attendance.run_attendance import run_attendance
 DELIVERY_DISABLED_STATUS = "NOT_SENT_OWNER_DISABLED"
 COMPLETE_STATUSES = {"COMPLETED", "RECOVERED_COMPLETE"}
 PRIVATE_R6_ROOT = Path("KMFA/metadata/dingtalk_attendance/private_runtime/r6")
+REPO_ROOT = Path(__file__).resolve().parents[3]
+PROMPT_PATHS = {
+    "morning": REPO_ROOT / "KMFA/kmfa-dingtalk-attendance-skill/automation/morning_prompt.md",
+    "evening": REPO_ROOT / "KMFA/kmfa-dingtalk-attendance-skill/automation/evening_prompt.md",
+}
+AUTOMATION_IDS = {"morning": "kmfa", "evening": "kmfa-3"}
 REPORT_NAMES = tuple(OFFICIAL_COLUMNS[index] for index in [*range(8, 37), *range(45, 49)])
 LEAVE_NAMES = ("事假", "病假", "年假", "调休", "婚假", "产假", "陪产假", "路途假")
 
@@ -55,15 +63,167 @@ class OfficialExportInvalidError(RuntimeError):
     pass
 
 
+def _sha256_text(value: str) -> str:
+    return hashlib.sha256(value.rstrip("\n").encode("utf-8")).hexdigest()
+
+
+def current_runtime_identity(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
+    commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_root, text=True).strip()
+    tracked_clean = subprocess.run(
+        ["git", "diff", "--quiet", "HEAD", "--"], cwd=repo_root, check=False
+    ).returncode == 0
+    identity: dict[str, Any] = {
+        "git_commit": commit,
+        "tracked_tree_state": "CLEAN" if tracked_clean else "DIRTY",
+    }
+    mirrors_match = True
+    for slot, automation_id in AUTOMATION_IDS.items():
+        repo_prompt = PROMPT_PATHS[slot].read_text(encoding="utf-8").rstrip("\n")
+        config_path = Path.home() / ".codex" / "automations" / automation_id / "automation.toml"
+        live_prompt = repo_prompt
+        try:
+            live_prompt = str(tomllib.loads(config_path.read_text(encoding="utf-8"))["prompt"]).rstrip("\n")
+        except (OSError, KeyError, tomllib.TOMLDecodeError):
+            mirrors_match = False
+        mirrors_match = mirrors_match and live_prompt == repo_prompt
+        identity[f"{slot}_prompt_sha256"] = _sha256_text(live_prompt)
+    identity["prompt_mirrors_match"] = mirrors_match
+    return identity
+
+
+def _message_text(payload: Mapping[str, Any]) -> str:
+    return "".join(
+        str(part.get("text") or part.get("input_text") or "")
+        for part in (payload.get("content") or [])
+        if isinstance(part, Mapping)
+    )
+
+
+def read_automation_task_evidence(
+    path: Path,
+    *,
+    expected_automation_id: str,
+    expected_prompt_sha256: str,
+    expected_cwd: Path,
+) -> dict[str, Any]:
+    rejected = {
+        "verified": False,
+        "task_id": "",
+        "thread_source": "unknown",
+        "automation_id": expected_automation_id,
+        "triggered_at": "",
+        "prompt_sha256": "",
+    }
+    try:
+        with path.open(encoding="utf-8") as handle:
+            first = json.loads(next(handle))
+            meta = first.get("payload") or {}
+            evidence = {
+                **rejected,
+                "task_id": str(meta.get("id") or meta.get("session_id") or ""),
+                "thread_source": str(meta.get("thread_source") or "unknown"),
+                "triggered_at": str(meta.get("timestamp") or ""),
+            }
+            wrapped_prompt = ""
+            wrapper_automation_id = ""
+            marker = "Use $kmfa-dingtalk-attendance-skill."
+            for line in handle:
+                row = json.loads(line)
+                payload = row.get("payload") or {}
+                if row.get("type") == "response_item" and payload.get("type") == "message" and payload.get("role") == "user":
+                    text = _message_text(payload)
+                    match = re.search(r"(?m)^Automation ID:\s*([^\s]+)\s*$", text)
+                    if marker in text and match:
+                        wrapper_automation_id = match.group(1)
+                        wrapped_prompt = text[text.index(marker) :].rstrip("\n")
+                        break
+    except (OSError, StopIteration, json.JSONDecodeError, TypeError):
+        return rejected
+    evidence["automation_id"] = wrapper_automation_id or expected_automation_id
+    evidence["prompt_sha256"] = _sha256_text(wrapped_prompt) if wrapped_prompt else ""
+    evidence["verified"] = bool(
+        first.get("type") == "session_meta"
+        and evidence["task_id"]
+        and evidence["thread_source"] == "automation"
+        and evidence["automation_id"] == expected_automation_id
+        and Path(str(meta.get("cwd") or "")) == expected_cwd
+        and evidence["prompt_sha256"] == expected_prompt_sha256
+        and evidence["triggered_at"]
+    )
+    return evidence
+
+
+def discover_automation_task_evidence(
+    *,
+    automation_id: str,
+    prompt_sha256: str,
+    expected_cwd: Path = REPO_ROOT,
+    now: datetime | None = None,
+) -> dict[str, Any]:
+    current = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
+    codex_home = Path(os.environ.get("CODEX_HOME", Path.home() / ".codex"))
+    current_thread_id = str(os.environ.get("CODEX_THREAD_ID") or "")
+    if not current_thread_id:
+        return {
+            "verified": False,
+            "task_id": "",
+            "thread_source": "unverified",
+            "automation_id": automation_id,
+            "triggered_at": "",
+            "prompt_sha256": prompt_sha256,
+        }
+    candidates: list[Path] = []
+    for root in (codex_home / "sessions", codex_home / "archived_sessions"):
+        if root.is_dir():
+            candidates.extend(root.rglob("*.jsonl"))
+    candidates.sort(key=lambda item: item.stat().st_mtime_ns, reverse=True)
+    for path in candidates[:200]:
+        evidence = read_automation_task_evidence(
+            path,
+            expected_automation_id=automation_id,
+            expected_prompt_sha256=prompt_sha256,
+            expected_cwd=expected_cwd,
+        )
+        if not evidence["verified"]:
+            continue
+        if evidence["task_id"] != current_thread_id:
+            continue
+        try:
+            triggered = datetime.fromisoformat(evidence["triggered_at"].replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        age = current - triggered.astimezone(timezone.utc)
+        if -timedelta(minutes=5) <= age <= timedelta(hours=6):
+            return evidence
+    return {
+        "verified": False,
+        "task_id": "",
+        "thread_source": "unverified",
+        "automation_id": automation_id,
+        "triggered_at": "",
+        "prompt_sha256": prompt_sha256,
+    }
+
+
 class R6Coordinator:
     """Persist only aggregate, private R6 state and recover from artifact-complete interruptions."""
 
-    def __init__(self, root: Path) -> None:
+    def __init__(self, root: Path, *, runtime_identity: Mapping[str, Any] | None = None) -> None:
         self.root = root
         self.state_path = root / "state.json"
         self.status_path = root / "运行状态.md"
         self.root.mkdir(parents=True, exist_ok=True)
         self.state = self._load()
+        self.runtime_identity = dict(runtime_identity or self.state.get("runtime_identity") or {})
+        if runtime_identity is not None and self.state.get("runtime_identity") != self.runtime_identity:
+            self.state = {
+                "schema_version": 2,
+                "runtime_identity": self.runtime_identity,
+                "work_dates": {},
+                "events": [],
+            }
+        else:
+            self.state["runtime_identity"] = self.runtime_identity
         self._write()
 
     def ensure_slot(
@@ -72,6 +232,7 @@ class R6Coordinator:
         work_date: str,
         run_slot: str,
         trigger_source: str,
+        task_evidence: Mapping[str, Any] | None = None,
         runner: Callable[[], Mapping[str, Any]],
         completed_probe: Callable[[], Mapping[str, Any] | None],
     ) -> dict[str, Any]:
@@ -82,18 +243,28 @@ class R6Coordinator:
         if isinstance(existing, Mapping) and existing.get("status") in COMPLETE_STATUSES:
             return {"status": "IDEMPOTENT_SKIP", "work_date": work_date, "run_slot": run_slot}
 
+        current_evidence = self._normalize_task_evidence(task_evidence, trigger_source=trigger_source)
         recovered = completed_probe()
         if recovered is not None:
+            original_evidence = self._recovery_evidence(existing, recovered, fallback=current_evidence)
             day["slots"][run_slot] = {
                 "status": "RECOVERED_COMPLETE",
-                "trigger_source": trigger_source,
+                "trigger_source": original_evidence["thread_source"],
+                "task_evidence": original_evidence,
+                "runtime_identity": self.runtime_identity,
                 **self._aggregate(recovered),
             }
             self._event(work_date, run_slot, "RECOVERED_COMPLETE")
             self._write()
             return {"status": "RECOVERED_COMPLETE", "work_date": work_date, "run_slot": run_slot}
 
-        day["slots"][run_slot] = {"status": "RUNNING", "trigger_source": trigger_source}
+        day["slots"][run_slot] = {
+            "status": "RUNNING",
+            "trigger_source": current_evidence["thread_source"],
+            "declared_trigger_source": trigger_source,
+            "task_evidence": current_evidence,
+            "runtime_identity": self.runtime_identity,
+        }
         self._event(work_date, run_slot, "RUNNING")
         self._write()
         try:
@@ -101,7 +272,10 @@ class R6Coordinator:
         except Exception as exc:
             day["slots"][run_slot] = {
                 "status": "INTERRUPTED",
-                "trigger_source": trigger_source,
+                "trigger_source": current_evidence["thread_source"],
+                "declared_trigger_source": trigger_source,
+                "task_evidence": current_evidence,
+                "runtime_identity": self.runtime_identity,
                 "error_type": exc.__class__.__name__,
             }
             self._event(work_date, run_slot, "INTERRUPTED")
@@ -115,7 +289,10 @@ class R6Coordinator:
         status = "COMPLETED" if valid else "FAILED"
         day["slots"][run_slot] = {
             "status": status,
-            "trigger_source": trigger_source,
+            "trigger_source": current_evidence["thread_source"],
+            "declared_trigger_source": trigger_source,
+            "task_evidence": current_evidence,
+            "runtime_identity": self.runtime_identity,
             **self._aggregate(result),
         }
         self._event(work_date, run_slot, status)
@@ -131,6 +308,7 @@ class R6Coordinator:
         final_runner: Callable[[Path], Mapping[str, Any]],
         completed_probe: Callable[[], Mapping[str, Any] | None],
         trigger_source: str = "automation",
+        task_evidence: Mapping[str, Any] | None = None,
     ) -> dict[str, Any]:
         day = self._day(work_date)
         existing = day.get("final")
@@ -140,11 +318,23 @@ class R6Coordinator:
         }:
             return {"status": "IDEMPOTENT_SKIP", "work_date": work_date}
 
-        recovered = completed_probe()
+        current_evidence = self._normalize_task_evidence(task_evidence, trigger_source=trigger_source)
+        try:
+            recovered = completed_probe()
+        except Exception as exc:
+            return self.record_final_failure(
+                work_date=work_date,
+                trigger_source=trigger_source,
+                task_evidence=current_evidence,
+                error_type=exc.__class__.__name__,
+            )
         if recovered is not None:
+            original_evidence = self._recovery_evidence(existing, recovered, fallback=current_evidence)
             result = {
                 "status": "RECOVERED_COMPLETE",
-                "trigger_source": trigger_source,
+                "trigger_source": original_evidence["thread_source"],
+                "task_evidence": original_evidence,
+                "runtime_identity": self.runtime_identity,
                 "monthly_written": True,
                 **self._aggregate(recovered),
             }
@@ -153,9 +343,24 @@ class R6Coordinator:
             self._write()
             return {"status": "RECOVERED_COMPLETE", "work_date": work_date}
 
-        export_path = export_finder()
+        try:
+            export_path = export_finder()
+        except Exception as exc:
+            day["official_export"] = {"status": "FAILED", "error_type": exc.__class__.__name__}
+            return self.record_final_failure(
+                work_date=work_date,
+                trigger_source=trigger_source,
+                task_evidence=current_evidence,
+                error_type=exc.__class__.__name__,
+            )
         if export_path is None:
             day["official_export"] = {"status": "WAITING_OFFICIAL_REPORT"}
+            day["final"] = {
+                "status": "WAITING_OFFICIAL_REPORT",
+                "trigger_source": current_evidence["thread_source"],
+                "task_evidence": current_evidence,
+                "runtime_identity": self.runtime_identity,
+            }
             self._event(work_date, "final", "WAITING_OFFICIAL_REPORT")
             self._write()
             return {
@@ -165,28 +370,38 @@ class R6Coordinator:
             }
 
         day["official_export"] = {"status": "FOUND", "file_name": export_path.name}
-        day["final"] = {"status": "BUILDING_CERTIFICATE", "trigger_source": trigger_source}
+        day["final"] = {
+            "status": "BUILDING_CERTIFICATE",
+            "trigger_source": current_evidence["thread_source"],
+            "task_evidence": current_evidence,
+            "runtime_identity": self.runtime_identity,
+        }
         self._write()
         try:
             certificate_path = certificate_builder(export_path)
-            day["final"] = {"status": "RUNNING_FINAL", "trigger_source": trigger_source}
+            day["final"] = {
+                "status": "RUNNING_FINAL",
+                "trigger_source": current_evidence["thread_source"],
+                "task_evidence": current_evidence,
+                "runtime_identity": self.runtime_identity,
+            }
             self._write()
             result = dict(final_runner(certificate_path))
         except Exception as exc:
-            day["final"] = {
-                "status": "INTERRUPTED",
-                "trigger_source": trigger_source,
-                "error_type": exc.__class__.__name__,
-            }
-            self._event(work_date, "final", "INTERRUPTED")
-            self._write()
-            return {"status": "INTERRUPTED", "work_date": work_date}
+            return self.record_final_failure(
+                work_date=work_date,
+                trigger_source=trigger_source,
+                task_evidence=current_evidence,
+                error_type=exc.__class__.__name__,
+            )
 
         valid = result.get("status") == "OFFICIAL_FINAL_RECONCILIATION_PASS"
         final_status = "OFFICIAL_FINAL_RECONCILIATION_PASS" if valid else "FAILED"
         day["final"] = {
             "status": final_status,
-            "trigger_source": trigger_source,
+            "trigger_source": current_evidence["thread_source"],
+            "task_evidence": current_evidence,
+            "runtime_identity": self.runtime_identity,
             "monthly_written": bool(result.get("monthly_written", valid)),
             **self._aggregate(result),
         }
@@ -199,36 +414,68 @@ class R6Coordinator:
         *,
         work_date: str,
         trigger_source: str,
+        task_evidence: Mapping[str, Any] | None = None,
         result: Mapping[str, Any],
     ) -> None:
+        current_evidence = self._normalize_task_evidence(task_evidence, trigger_source=trigger_source)
         self._day(work_date)["final"] = {
             "status": "OFFICIAL_FINAL_RECONCILIATION_PASS",
-            "trigger_source": trigger_source,
+            "trigger_source": current_evidence["thread_source"],
+            "task_evidence": current_evidence,
+            "runtime_identity": self.runtime_identity,
             **self._aggregate(result),
         }
         self._event(work_date, "final", "OFFICIAL_FINAL_RECONCILIATION_PASS")
         self._write()
 
+    def record_final_failure(
+        self,
+        *,
+        work_date: str,
+        trigger_source: str,
+        task_evidence: Mapping[str, Any] | None,
+        error_type: str,
+    ) -> dict[str, Any]:
+        current_evidence = self._normalize_task_evidence(task_evidence, trigger_source=trigger_source)
+        self._day(work_date)["final"] = {
+            "status": "FAILED",
+            "trigger_source": current_evidence["thread_source"],
+            "task_evidence": current_evidence,
+            "runtime_identity": self.runtime_identity,
+            "error_type": error_type,
+        }
+        self._event(work_date, "final", "FAILED")
+        self._write()
+        return {"status": "FAILED", "work_date": work_date, "error_type": error_type}
+
     def acceptance_summary(self) -> dict[str, Any]:
         completed: list[str] = []
+        used_task_ids: set[str] = set()
         for work_date, day in sorted(self.state["work_dates"].items()):
             slots = day.get("slots", {})
             final = day.get("final", {})
             if not isinstance(slots, Mapping) or not isinstance(final, Mapping):
                 continue
-            if all(
+            slots_are_natural = all(
                 isinstance(slots.get(slot), Mapping)
                 and slots[slot].get("status") in COMPLETE_STATUSES
-                and slots[slot].get("trigger_source") == "automation"
+                and self._is_natural_record(slots[slot], run_slot=slot)
                 for slot in ("morning", "evening")
-            ) and (
+            )
+            task_ids = {
+                str((slots[slot].get("task_evidence") or {}).get("task_id") or "")
+                for slot in ("morning", "evening")
+                if isinstance(slots.get(slot), Mapping)
+            }
+            if slots_are_natural and task_ids and not (task_ids & used_task_ids) and (
                 final.get("status") in {"OFFICIAL_FINAL_RECONCILIATION_PASS", "RECOVERED_COMPLETE"}
-                and final.get("trigger_source") == "automation"
+                and self._is_natural_record(final, run_slot="morning")
                 and int(final.get("differing_required_cells", 0)) == 0
                 and final.get("monthly_written") is True
                 and final.get("actual_workday") is True
             ):
                 completed.append(work_date)
+                used_task_ids.update(task_ids)
         return {
             "natural_completed_work_days": len(completed),
             "natural_completed_dates": completed,
@@ -243,11 +490,68 @@ class R6Coordinator:
         try:
             payload = json.loads(self.state_path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
-            return {"schema_version": 1, "work_dates": {}, "events": []}
+            return {"schema_version": 2, "runtime_identity": {}, "work_dates": {}, "events": []}
         if not isinstance(payload, dict) or not isinstance(payload.get("work_dates"), dict):
-            return {"schema_version": 1, "work_dates": {}, "events": []}
+            return {"schema_version": 2, "runtime_identity": {}, "work_dates": {}, "events": []}
         payload.setdefault("events", [])
+        payload.setdefault("runtime_identity", {})
         return payload
+
+    def _normalize_task_evidence(
+        self,
+        evidence: Mapping[str, Any] | None,
+        *,
+        trigger_source: str,
+    ) -> dict[str, Any]:
+        source = dict(evidence or {})
+        return {
+            "verified": source.get("verified") is True,
+            "task_id": str(source.get("task_id") or ""),
+            "thread_source": str(source.get("thread_source") or trigger_source or "unknown"),
+            "automation_id": str(source.get("automation_id") or ""),
+            "triggered_at": str(source.get("triggered_at") or ""),
+            "prompt_sha256": str(source.get("prompt_sha256") or ""),
+        }
+
+    def _recovery_evidence(
+        self,
+        existing: Any,
+        recovered: Mapping[str, Any],
+        *,
+        fallback: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        if isinstance(existing, Mapping) and isinstance(existing.get("task_evidence"), Mapping):
+            return self._normalize_task_evidence(
+                existing["task_evidence"], trigger_source=str(existing.get("trigger_source") or "unknown")
+            )
+        if isinstance(recovered.get("task_evidence"), Mapping):
+            return self._normalize_task_evidence(
+                recovered["task_evidence"], trigger_source=str(recovered.get("trigger_source") or "unknown")
+            )
+        if recovered.get("trigger_source"):
+            return self._normalize_task_evidence(
+                {"thread_source": recovered["trigger_source"], "verified": False},
+                trigger_source=str(recovered["trigger_source"]),
+            )
+        return self._normalize_task_evidence(
+            {"thread_source": "unknown", "verified": False},
+            trigger_source="unknown",
+        )
+
+    def _is_natural_record(self, record: Mapping[str, Any], *, run_slot: str) -> bool:
+        evidence = record.get("task_evidence") or {}
+        return bool(
+            record.get("runtime_identity") == self.runtime_identity
+            and self.runtime_identity.get("tracked_tree_state", "CLEAN") == "CLEAN"
+            and self.runtime_identity.get("prompt_mirrors_match", True) is True
+            and isinstance(evidence, Mapping)
+            and evidence.get("verified") is True
+            and evidence.get("thread_source") == "automation"
+            and evidence.get("automation_id") == AUTOMATION_IDS[run_slot]
+            and evidence.get("prompt_sha256") == self.runtime_identity.get(f"{run_slot}_prompt_sha256")
+            and evidence.get("task_id")
+            and evidence.get("triggered_at")
+        )
 
     def _event(self, work_date: str, phase: str, status: str) -> None:
         self.state["events"].append(
@@ -316,11 +620,31 @@ class R6Coordinator:
         os.replace(status_temp, self.status_path)
 
 
+def merge_official_header_rows(primary: list[str], secondary: list[str]) -> list[str]:
+    if len(primary) != len(OFFICIAL_COLUMNS) or len(secondary) != len(OFFICIAL_COLUMNS):
+        raise OfficialExportInvalidError("official merged header must contain exactly 49 columns")
+    resolved = [
+        str(secondary[index]).strip() or str(primary[index]).strip()
+        for index in range(len(OFFICIAL_COLUMNS))
+    ]
+    if tuple(resolved) != OFFICIAL_COLUMNS:
+        mismatches = [
+            OFFICIAL_COLUMNS[index]
+            for index, value in enumerate(resolved)
+            if value != OFFICIAL_COLUMNS[index]
+        ]
+        raise OfficialExportInvalidError(
+            "official merged header does not match required fields: " + ", ".join(mismatches)
+        )
+    return resolved
+
+
 def parse_official_csv(path: Path, *, work_date: str) -> dict[str, Any]:
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
         rows = [list(row) for row in csv.reader(handle)]
-    if len(rows) != 48 or max((len(row) for row in rows), default=0) != 49:
-        raise OfficialExportInvalidError("official workbook must contain 48 rows and 49 columns")
+    if len(rows) < 5 or max((len(row) for row in rows), default=0) != 49:
+        raise OfficialExportInvalidError("official workbook must contain the complete 49-column report")
+    merge_official_header_rows(rows[2], rows[3])
     normalized: list[list[Any]] = []
     for row in rows:
         padded = [*row, *([""] * (49 - len(row)))]
@@ -328,12 +652,12 @@ def parse_official_csv(path: Path, *, work_date: str) -> dict[str, Any]:
     if work_date not in str(normalized[0][0] or ""):
         raise OfficialExportInvalidError("official workbook title does not match target work date")
     user_ids = [str(row[5]) for row in normalized[4:] if row[5] not in (None, "")]
-    if len(user_ids) != 44 or len(set(user_ids)) != 44:
-        raise OfficialExportInvalidError("official workbook must contain 44 unique UserId rows")
+    if not user_ids or len(set(user_ids)) != len(user_ids):
+        raise OfficialExportInvalidError("official workbook must contain a non-empty unique UserId set")
     return {
         "input_name": path.name,
         "sheet_name": "每日统计",
-        "address": "A1:AW48",
+        "address": f"A1:AW{len(normalized)}",
         "values": normalized,
         "formulas": [[None] * 49 for _ in normalized],
     }
@@ -432,9 +756,13 @@ def collect_reconstruction_source(
     rows = standard.get("values")
     if not isinstance(rows, list):
         raise OfficialExportInvalidError("official standard values are missing")
-    users = [str(row[5]) for row in rows[4:] if isinstance(row, list) and len(row) == 49]
-    if len(users) != 44 or len(set(users)) != 44:
-        raise OfficialExportInvalidError("official standard must contain 44 unique users")
+    users = [
+        str(row[5])
+        for row in rows[4:]
+        if isinstance(row, list) and len(row) == 49 and row[5] not in (None, "")
+    ]
+    if not users or len(set(users)) != len(users):
+        raise OfficialExportInvalidError("official standard must contain a non-empty unique user set")
 
     columns_payload = runner(["attendance", "report", "columns"])
     column_rows = columns_payload.get("result") or []
@@ -685,6 +1013,8 @@ def run_automatic_cycle(
     *,
     run_slot: str,
     trigger_source: str,
+    task_evidence: Mapping[str, Any] | None = None,
+    runtime_identity: Mapping[str, Any] | None = None,
     resume_final_only: bool = False,
     private_root: Path = PRIVATE_R6_ROOT,
     archive_root: Path = Path(ONEDRIVE_ROOT),
@@ -692,15 +1022,51 @@ def run_automatic_cycle(
 ) -> dict[str, Any]:
     current = now or datetime.now(ZoneInfo(TIMEZONE))
     today = current.date().isoformat()
-    coordinator = R6Coordinator(private_root)
-    results: dict[str, Any] = {"run_slot": run_slot, "trigger_source": trigger_source}
+    identity = dict(runtime_identity or current_runtime_identity())
+    evidence = dict(
+        task_evidence
+        or discover_automation_task_evidence(
+            automation_id=AUTOMATION_IDS[run_slot],
+            prompt_sha256=str(identity[f"{run_slot}_prompt_sha256"]),
+            now=current,
+        )
+    )
+    coordinator = R6Coordinator(private_root, runtime_identity=identity)
+    results: dict[str, Any] = {
+        "run_slot": run_slot,
+        "declared_trigger_source": trigger_source,
+        "verified_trigger_source": evidence.get("thread_source", "unverified"),
+    }
+    if not resume_final_only:
+        results["reminder"] = coordinator.ensure_slot(
+            work_date=today,
+            run_slot=run_slot,
+            trigger_source=trigger_source,
+            task_evidence=evidence,
+            runner=lambda: _slot_runner(run_slot=run_slot),
+            completed_probe=lambda: _completed_reminder_probe(
+                work_date=today,
+                run_slot=run_slot,
+                archive_root=archive_root,
+            ),
+        )
     if run_slot == "morning":
-        pending = find_latest_pending_work_date(onedrive_root=archive_root, timezone=TIMEZONE, now=current)
+        try:
+            pending = find_latest_pending_work_date(onedrive_root=archive_root, timezone=TIMEZONE, now=current)
+        except Exception as exc:
+            pending = None
+            results["final"] = coordinator.record_final_failure(
+                work_date=today,
+                trigger_source=trigger_source,
+                task_evidence=evidence,
+                error_type=exc.__class__.__name__,
+            )
         if pending:
             search_roots = [Path.home() / "Downloads", private_root / "export_inbox"]
             results["final"] = coordinator.advance_final(
                 work_date=pending,
                 trigger_source=trigger_source,
+                task_evidence=evidence,
                 export_finder=lambda: find_official_export(
                     work_date=pending,
                     search_roots=search_roots,
@@ -717,20 +1083,8 @@ def run_automatic_cycle(
                 ),
                 completed_probe=lambda: _completed_final_probe(work_date=pending, archive_root=archive_root),
             )
-        else:
+        elif "final" not in results:
             results["final"] = {"status": "NO_PENDING_FINAL_RECONCILIATION"}
-    if not resume_final_only:
-        results["reminder"] = coordinator.ensure_slot(
-            work_date=today,
-            run_slot=run_slot,
-            trigger_source=trigger_source,
-            runner=lambda: _slot_runner(run_slot=run_slot),
-            completed_probe=lambda: _completed_reminder_probe(
-                work_date=today,
-                run_slot=run_slot,
-                archive_root=archive_root,
-            ),
-        )
     results["acceptance"] = coordinator.acceptance_summary()
     results["status"] = _cycle_status(results)
     return results
@@ -742,15 +1096,21 @@ def _workbook_is_valid(path: Path, *, work_date: str) -> bool:
 
 
 def _cycle_status(results: Mapping[str, Any]) -> str:
-    statuses = [
-        value.get("status")
-        for key, value in results.items()
-        if key in {"final", "reminder"} and isinstance(value, Mapping)
-    ]
-    if any(status in {"FAILED", "INTERRUPTED"} for status in statuses):
+    reminder = results.get("reminder") if isinstance(results.get("reminder"), Mapping) else None
+    final = results.get("final") if isinstance(results.get("final"), Mapping) else None
+    reminder_status = reminder.get("status") if reminder else None
+    final_status = final.get("status") if final else None
+    if reminder_status in {"FAILED", "INTERRUPTED"}:
         return "FAILED"
-    if "WAITING_OFFICIAL_REPORT" in statuses:
-        return "WAITING_OFFICIAL_REPORT"
+    reminder_completed = reminder_status in COMPLETE_STATUSES or reminder_status == "IDEMPOTENT_SKIP"
+    if reminder_completed and final_status in {"FAILED", "INTERRUPTED"}:
+        return "REMINDER_COMPLETED_FINAL_FAILED"
+    if reminder_completed and final_status == "WAITING_OFFICIAL_REPORT":
+        return "REMINDER_COMPLETED_FINAL_WAITING"
+    if reminder is None and final_status in {"FAILED", "INTERRUPTED"}:
+        return "FINAL_FAILED"
+    if reminder is None and final_status == "WAITING_OFFICIAL_REPORT":
+        return "FINAL_WAITING"
     return "COMPLETED"
 
 
