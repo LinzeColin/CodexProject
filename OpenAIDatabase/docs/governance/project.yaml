@@ -307,6 +307,17 @@ features:
     fact_level: "EXTRACTED"
     evidence_refs:
       - "EVID-OAIDB-DEVELOPMENT-EVENTS"
+  - feature_id: "FEAT-OAIDB-RUN0A-001"
+    name: "OpenAIDatabase canonical human-view 收敛"
+    description: "使用根 Lean v2 renderer 从 project.yaml、roadmap.yaml 与 events.jsonl 确定性生成三份中文 human views，移除与 machine canonical 重复的可编辑历史前缀。"
+    status: "active"
+    fact_level: "EXTRACTED"
+    code_refs:
+      - "scripts/lean_governance.py:922"
+    test_refs:
+      - "python3.12 -B scripts/lean_governance.py check-render --project OpenAIDatabase"
+    evidence_refs:
+      - "EVID-OAIDB-RUN0A-CHECK-RENDER"
 models:
   -
     model_id: "MOD-001"
@@ -2931,3 +2942,8 @@ evidence_refs:
     kind: "manifest"
     ref: "governance/run_manifests/GOV-REVIEW9-S5PBT03-OPENAIDATABASE-CANONICAL-RENDER-20260624.json"
     fact_level: "PROPOSED"
+  -
+    evidence_id: "EVID-OAIDB-RUN0A-CHECK-RENDER"
+    kind: "test"
+    ref: "python3.12 -B scripts/lean_governance.py check-render --project OpenAIDatabase"
+    fact_level: "EXTRACTED"
