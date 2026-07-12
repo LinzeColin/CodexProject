@@ -43,7 +43,9 @@
     "claim_mode": "IN_PROCESS_RESOURCE_LOCK_AND_FENCING_ONLY",
     "operation_contract_version": "ids.worker.operation.hash_tracked_control_ref.v1",
     "runtime_persistence_performed": false,
-    "production_runtime_activation_allowed": false
+    "production_runtime_activation_allowed": false,
+    "same_operation_terminal_resubmission_available": false,
+    "same_operation_terminal_resubmission_owner": "STAGE-039"
   },
   "reference_policy": {
     "payload_size_bytes_maximum": 1048576,

@@ -39,6 +39,9 @@ external API, connect to a database, or write a runtime artifact.
 - Submission mode: `SYNCHRONOUS_ACK_ASYNC_WORKER`
 - Ordering: `FIFO_ADMISSION_SEQUENCE_NO_PRIORITY_REORDERING`
 - Duplicate admission returns the existing queue-entry reference.
+- A terminal duplicate for the same input and job type also returns the existing
+  entry. Same-operation resubmission is not available in this baseline;
+  STAGE-039 owns retry or new-attempt policy.
 - `job_id`, `idempotency_key`, and admission request ID are deterministically
   derived from `task_id + input_ref + job_type`; `lock_key` is derived only
   from `task_id + input_ref`. Distinct processing, extraction, indexing, and

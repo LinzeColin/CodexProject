@@ -71,7 +71,10 @@ The checker reuses the actual isolated Phase 3 worker exception:
 - `baseline_max_retries=0`;
 - retry disposition:
   `NOT_AVAILABLE_BASELINE_MAX_RETRIES_ZERO_STAGE039_OWNED`;
-- owner action: `MANUAL_REVIEW_AND_NEW_JOB`.
+- owner action:
+  `REVIEW_ERROR_NO_SAME_OPERATION_RESUBMISSION_UNTIL_STAGE039`;
+- same-operation replay result: `EXISTING_QUEUE_ENTRY` with no second
+  invocation; STAGE-039 owns retry/new-attempt policy.
 
 This is a real isolated exception record, not a fabricated failure log.
 `automatic_retry_performed=false`, `retry_scheduler_performed=false`, and
@@ -80,7 +83,7 @@ runtime ownership.
 
 ## Backpressure Trigger Proof
 
-The report delivers four bounded signals:
+The report delivers five bounded signals:
 
 1. Capacity: a capacity-one queue accepts one real control reference and
    returns `QUEUE_CAPACITY_REACHED` with Chinese `已暂停` for a second distinct
@@ -89,7 +92,10 @@ The report delivers four bounded signals:
    no physical drive event is claimed.
 3. Low disk: actual project-volume free bytes are observed and a required-byte
    boundary of free plus one returns `PAUSED_LOW_DISK` without allocation.
-4. Same source: a second active archive/parse/index/report operation returns
+4. External API budget: an API-required control gate with budget unavailable
+   returns `PAUSED_EXTERNAL_API_BUDGET_INSUFFICIENT` before queue admission;
+   no API call is made.
+5. Same source: a second active archive/parse/index/report operation returns
    `RESOURCE_CONFLICT_ACTIVE` before creating another queue record.
 
 These are admission and resource signals, not measured throughput or fairness.
@@ -130,7 +136,7 @@ manual action or later-stage runtime:
 
 | Condition | Required action |
 |---|---|
-| `WORKER_EXCEPTION` | Review the bounded error and create a new job. |
+| `WORKER_EXCEPTION` | Review the bounded error. Same-operation resubmission is unavailable until STAGE-039 defines retry/new-attempt policy. |
 | `EXTERNAL_DRIVE_OFFLINE` | Reconnect, then complete owner and resource revalidation. |
 | `LOW_DISK` | Restore capacity, then complete owner and resource revalidation. |
 | `QUEUE_CAPACITY_REACHED` | Wait and resubmit only after capacity review. |
@@ -140,6 +146,8 @@ manual action or later-stage runtime:
 There is no persistent recovery after process exit. STAGE-042 owns automatic
 lifecycle; STAGE-043 owns crash recovery. This Phase does not auto-resume,
 recover a process, or rewrite terminal history.
+`same_operation_resubmission_available=false` and
+`same_operation_resubmission_owner=STAGE-039`.
 
 ## Safe Shutdown
 
@@ -224,7 +232,7 @@ python3 -B scripts/validate_governance_sync.py --changed-only --base-ref HEAD --
 ## 中文 Owner 反馈
 
 Stage 38 四个 Phase 的本地交付证据已齐备。隔离队列可以在请求返回后处理真实
-Git-tracked 控制引用，并已验证异常、容量、资源暂停、同源冲突和顺序关闭；但当前
+Git-tracked 控制引用，并已验证异常、容量、移动介质、磁盘、API 预算、同源冲突和顺序关闭；但当前
 没有自动重试、持久恢复、生产锁或清理运行时。任何失败、设备离线、磁盘不足、
 容量满、同源冲突或进程重启都需要人工复核。下一轮只能执行整阶段复审，复审和
 修复完成前不得进入 STAGE-039、GitHub 或 app 重装。

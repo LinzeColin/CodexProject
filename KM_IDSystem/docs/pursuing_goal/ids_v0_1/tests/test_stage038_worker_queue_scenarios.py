@@ -101,13 +101,30 @@ class Stage038WorkerQueuePhase3ScenarioTests(unittest.TestCase):
         self.assertFalse(blocked["scenario_validation_valid"], blocked)
         self.assertFalse(blocked["scenario_runtime_performed"])
 
-    def test_six_required_scenarios_pass_with_truthful_side_effect_flags(self):
+        for mutation in ("root", "nested"):
+            injected = json.loads(json.dumps(index))
+            if mutation == "root":
+                injected["production_runtime_activation_allowed"] = True
+            else:
+                injected["resource_gate_contract"][
+                    "external_api_budget_bypass_allowed"
+                ] = True
+            with self.subTest(mutation=mutation):
+                rejected = self._scenarios().build_stage038_phase3_report(
+                    index=injected,
+                    execute_scenarios=False,
+                )
+                self.assertFalse(rejected["contract_valid"], rejected)
+                self.assertFalse(rejected["scenario_validation_valid"], rejected)
+
+    def test_seven_required_scenarios_pass_with_truthful_side_effect_flags(self):
         report = self._scenarios().build_stage038_phase3_report()
         expected = (
             "duplicate_click_one_execution",
             "worker_crash_exception_and_lock_release",
             "external_drive_offline_pause_before_queue",
             "actual_low_disk_boundary_pause_without_allocation",
+            "external_api_budget_insufficient_pause_before_queue",
             "same_source_cross_operation_lock",
             "protected_cleanup_denied",
         )
@@ -144,6 +161,14 @@ class Stage038WorkerQueuePhase3ScenarioTests(unittest.TestCase):
         self.assertIsNone(result["failed_record"]["checkpoint_ref"])
         self.assertEqual("error:RuntimeError", result["failed_record"]["error_ref"])
         self.assertTrue(result["lock_released_after_failure"])
+        self.assertFalse(result["same_operation_resubmission_available"])
+        self.assertEqual(
+            "EXISTING_QUEUE_ENTRY",
+            result["same_operation_resubmission_decision"]["result_code"],
+        )
+        self.assertTrue(
+            result["same_operation_resubmission_decision"]["duplicate"]
+        )
         self.assertTrue(result["followup_same_source_admitted"])
         self.assertEqual("SUCCEEDED", result["followup_record"]["machine_state"])
         self.assertFalse(result["process_termination_performed"])
@@ -155,6 +180,9 @@ class Stage038WorkerQueuePhase3ScenarioTests(unittest.TestCase):
         ]
         low_disk = report["scenario_results"][
             "actual_low_disk_boundary_pause_without_allocation"
+        ]
+        api_budget = report["scenario_results"][
+            "external_api_budget_insufficient_pause_before_queue"
         ]
 
         self.assertEqual("PAUSED_EXTERNAL_DRIVE_OFFLINE", offline["result_code"])
@@ -171,6 +199,14 @@ class Stage038WorkerQueuePhase3ScenarioTests(unittest.TestCase):
         self.assertEqual("PAUSED_LOW_DISK", low_disk["result_code"])
         self.assertEqual(0, low_disk["queue_records_created"])
         self.assertFalse(low_disk["allocation_performed"])
+
+        self.assertEqual(
+            "PAUSED_EXTERNAL_API_BUDGET_INSUFFICIENT",
+            api_budget["result_code"],
+        )
+        self.assertEqual("已暂停", api_budget["owner_status"]["label_zh"])
+        self.assertEqual(0, api_budget["queue_records_created"])
+        self.assertFalse(api_budget["external_api_call_performed"])
 
     def test_cleanup_evaluator_denies_every_protected_artifact_class(self):
         result = self._scenarios().build_stage038_phase3_report()[
@@ -194,7 +230,8 @@ class Stage038WorkerQueuePhase3ScenarioTests(unittest.TestCase):
         for term in (
             "IDS-V0_1-STAGE038-P3",
             "ACC-STAGE-038",
-            "six required scenarios",
+            "seven required scenarios",
+            "PAUSED_EXTERNAL_API_BUDGET_INSUFFICIENT",
             "RESOURCE_CONFLICT_ACTIVE",
             "physical_drive_removal_performed=false",
             "cleanup_runtime_performed=false",
@@ -210,18 +247,18 @@ class Stage038WorkerQueuePhase3ScenarioTests(unittest.TestCase):
         batch = scenarios._parse_yaml_text(BATCH_LOCK.read_text(encoding="utf-8"))
         roadmap = scenarios._parse_yaml_text(ROADMAP.read_text(encoding="utf-8"))
         stage = batch["stage_progress"]["STAGE-038"]
-        self.assertEqual("stage038_phase4_completed_review_pending", batch["status"])
+        self.assertEqual("stage038_completed_reviewed_local", batch["status"])
         self.assertEqual(
             ["Phase 1", "Phase 2", "Phase 3", "Phase 4"],
             stage["completed_phases"],
         )
-        self.assertEqual("IDS-V0_1-STAGE038-P4", stage["current_task_id"])
-        self.assertEqual("pending", stage["review_status"])
-        self.assertEqual("stage_review", stage["next_phase"])
-        self.assertEqual("IDS-STAGE038-REVIEW-GATE", stage["next_gate"])
+        self.assertEqual("IDS-V0_1-STAGE038-REVIEW", stage["current_task_id"])
+        self.assertEqual("passed", stage["review_status"])
+        self.assertEqual("STAGE-039", stage["next_stage"])
+        self.assertEqual("IDS-STAGE039-P1-GATE", stage["next_gate"])
         self.assertFalse(batch["upload_gate"]["push_allowed"])
         self.assertEqual(
-            "IDS-V0_1-STAGE038-REVIEW",
+            "IDS-V0_1-STAGE039-P1",
             batch["decision"]["next_allowed_task_id"],
         )
 
@@ -234,7 +271,7 @@ class Stage038WorkerQueuePhase3ScenarioTests(unittest.TestCase):
             "passed_with_local_evidence",
             phases["IDS-STAGE038-P4"]["status"],
         )
-        self.assertEqual("IDS-STAGE038-REVIEW-GATE", roadmap["next_gate_id"])
+        self.assertEqual("IDS-STAGE039-P1-GATE", roadmap["next_gate_id"])
 
         events = [
             json.loads(line)

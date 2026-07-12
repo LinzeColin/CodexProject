@@ -38,6 +38,7 @@ EXPECTED_SCENARIOS = (
     "worker_crash_exception_and_lock_release",
     "external_drive_offline_pause_before_queue",
     "actual_low_disk_boundary_pause_without_allocation",
+    "external_api_budget_insufficient_pause_before_queue",
     "same_source_cross_operation_lock",
     "protected_cleanup_denied",
 )
@@ -45,21 +46,21 @@ CONFLICTING_JOB_TYPES = ("ARCHIVE", "PARSE", "INDEX", "REPORT")
 EXPECTED_SOURCE_BINDINGS = {
     "phase2_checker_ref": {
         "path": "scripts/check_worker_queue_baseline.py",
-        "sha256": "2705e114df040ae3c6121d20be9e6d8b217d85464a36d452eefd9438cf1bfd9d",
+        "sha256": "88a29aff19ee2465d6d5192c4fd9c352f85240689fede3a2216a754a1853e0f9",
     },
     "phase2_index_ref": {
         "path": (
             "docs/pursuing_goal/ids_v0_1/worker_queue_baseline/"
             "stage038_worker_queue_baseline_index.json"
         ),
-        "sha256": "339f7bb3cc4d2cf513f0c973b2899368d3d6963b144ead23190e907c83afbe29",
+        "sha256": "68513591996a51fea90cd2ea863f42f910c0c3a45b70fd1611655bb6d95911ab",
     },
     "phase2_evidence_ref": {
         "path": (
             "docs/pursuing_goal/ids_v0_1/"
             "STAGE038_PHASE2_ASYNC_WORKER_QUEUE_SLICE.md"
         ),
-        "sha256": "46dc200409706e81b29a89ec8ab5857b861b0cff153a2729ac0f9904d2333cc4",
+        "sha256": "14ba679970ba5d56ab12874ecb4cd63f160c726c281bc952eb67db342fd13073",
     },
 }
 EXPECTED_PROTECTED_ARTIFACTS = {
@@ -93,6 +94,50 @@ ZERO_SIDE_EFFECT_FIELDS = (
     "github_upload_allowed",
     "app_reinstall_allowed",
 )
+INDEX_FIELDS = {
+    "schema_version",
+    "stage",
+    "phase",
+    "task_id",
+    "acceptance_id",
+    "source_bindings",
+    "scenario_contract",
+    "lock_contract",
+    "resource_gate_contract",
+    "cleanup_contract",
+    "truth_contract",
+}
+SCENARIO_CONTRACT_FIELDS = {
+    "execution_mode",
+    "scenario_ids",
+    "control_input_ref",
+    "physical_drive_event_required",
+    "disk_allocation_allowed",
+    "cleanup_execution_allowed",
+}
+LOCK_CONTRACT_FIELDS = {
+    "resource_identity_derivation",
+    "job_identity_derivation",
+    "conflicting_job_types",
+    "resource_conflict_result",
+    "terminal_record_releases_admission_conflict",
+    "production_lock_runtime_owner",
+}
+RESOURCE_GATE_CONTRACT_FIELDS = {
+    "external_drive_offline_result",
+    "low_disk_result",
+    "external_api_budget_insufficient_result",
+    "pause_before_queue_record",
+    "actual_disk_observation_required",
+    "physical_drive_removal_claim_allowed",
+    "external_api_call_required",
+}
+CLEANUP_CONTRACT_FIELDS = {
+    "protected_artifacts",
+    "protected_result",
+    "delete_attempt_allowed",
+    "runtime_owner",
+}
 
 _BASELINE_MODULE: Any = None
 
@@ -169,6 +214,14 @@ def _contract_checks(index: Mapping[str, Any]) -> dict[str, bool]:
     except (OSError, RuntimeError, ValueError, json.JSONDecodeError):
         baseline_report = {}
     return {
+        "contract_shape_exact": (
+            set(index) == INDEX_FIELDS
+            and set(scenario) == SCENARIO_CONTRACT_FIELDS
+            and set(lock) == LOCK_CONTRACT_FIELDS
+            and set(resource) == RESOURCE_GATE_CONTRACT_FIELDS
+            and set(cleanup) == CLEANUP_CONTRACT_FIELDS
+            and set(truth) == set(ZERO_SIDE_EFFECT_FIELDS)
+        ),
         "identity_exact": (
             index.get("schema_version") == INDEX_SCHEMA_VERSION
             and index.get("stage") == "STAGE-038"
@@ -200,9 +253,12 @@ def _contract_checks(index: Mapping[str, Any]) -> dict[str, bool]:
             resource.get("external_drive_offline_result")
             == "PAUSED_EXTERNAL_DRIVE_OFFLINE"
             and resource.get("low_disk_result") == "PAUSED_LOW_DISK"
+            and resource.get("external_api_budget_insufficient_result")
+            == "PAUSED_EXTERNAL_API_BUDGET_INSUFFICIENT"
             and resource.get("pause_before_queue_record") is True
             and resource.get("actual_disk_observation_required") is True
             and resource.get("physical_drive_removal_claim_allowed") is False
+            and resource.get("external_api_call_required") is False
         ),
         "cleanup_contract_exact": (
             cleanup.get("protected_artifacts") == EXPECTED_PROTECTED_ARTIFACTS
@@ -229,9 +285,15 @@ def evaluate_resource_gate(
     external_drive_ready: bool,
     available_bytes: int,
     required_bytes: int,
+    external_api_required: bool = False,
+    external_api_budget_available: bool = True,
 ) -> dict[str, Any]:
     valid_bytes = (
-        not isinstance(available_bytes, bool)
+        isinstance(external_drive_required, bool)
+        and isinstance(external_drive_ready, bool)
+        and isinstance(external_api_required, bool)
+        and isinstance(external_api_budget_available, bool)
+        and not isinstance(available_bytes, bool)
         and isinstance(available_bytes, int)
         and available_bytes >= 0
         and not isinstance(required_bytes, bool)
@@ -256,6 +318,13 @@ def evaluate_resource_gate(
         return {
             "accepted": False,
             "result_code": "PAUSED_LOW_DISK",
+            "owner_status": _paused_status(),
+            "queue_records_created": 0,
+        }
+    if external_api_required and not external_api_budget_available:
+        return {
+            "accepted": False,
+            "result_code": "PAUSED_EXTERNAL_API_BUDGET_INSUFFICIENT",
             "owner_status": _paused_status(),
             "queue_records_created": 0,
         }
@@ -344,6 +413,9 @@ async def _worker_exception_scenario(index: Mapping[str, Any]) -> dict[str, Any]
     lock_key = failed_record["lock_key"]
     lock = queue._resource_locks.get(lock_key)
     lock_released = lock is not None and not lock.locked()
+    same_operation_resubmission = queue.submit(
+        baseline.build_control_envelope(CONTROL_INPUT_REF, job_type="PARSE")
+    )
     followup_ack = queue.submit(
         baseline.build_control_envelope(CONTROL_INPUT_REF, job_type="REPORT")
     )
@@ -356,6 +428,9 @@ async def _worker_exception_scenario(index: Mapping[str, Any]) -> dict[str, Any]
         and failed_record.get("output_refs") == []
         and failed_record.get("checkpoint_ref") is None
         and lock_released
+        and same_operation_resubmission.get("result_code")
+        == "EXISTING_QUEUE_ENTRY"
+        and same_operation_resubmission.get("duplicate") is True
         and followup_ack.get("accepted") is True
         and followup_record.get("machine_state") == "SUCCEEDED"
         and invocation_count == 2
@@ -364,6 +439,8 @@ async def _worker_exception_scenario(index: Mapping[str, Any]) -> dict[str, Any]
         "status": "PASS" if passed else "FAIL",
         "failed_record": failed_record,
         "lock_released_after_failure": lock_released,
+        "same_operation_resubmission_available": False,
+        "same_operation_resubmission_decision": same_operation_resubmission,
         "followup_same_source_admitted": followup_ack.get("accepted") is True,
         "followup_decision": followup_ack,
         "followup_record": followup_record,
@@ -413,6 +490,29 @@ def _low_disk_scenario() -> dict[str, Any]:
         "observed_free_bytes": observed_free,
         "required_bytes": required,
         "allocation_performed": False,
+    }
+
+
+def _external_api_budget_scenario() -> dict[str, Any]:
+    decision = evaluate_resource_gate(
+        external_drive_required=False,
+        external_drive_ready=True,
+        available_bytes=1,
+        required_bytes=1,
+        external_api_required=True,
+        external_api_budget_available=False,
+    )
+    passed = (
+        decision.get("accepted") is False
+        and decision.get("result_code")
+        == "PAUSED_EXTERNAL_API_BUDGET_INSUFFICIENT"
+        and decision.get("queue_records_created") == 0
+    )
+    return {
+        "status": "PASS" if passed else "FAIL",
+        **decision,
+        "scenario_mode": "CONTROL_GATE_INPUT_ONLY",
+        "external_api_call_performed": False,
     }
 
 
@@ -487,6 +587,9 @@ async def _run_scenarios(index: Mapping[str, Any]) -> dict[str, Any]:
         ),
         "external_drive_offline_pause_before_queue": _external_drive_scenario(),
         "actual_low_disk_boundary_pause_without_allocation": _low_disk_scenario(),
+        "external_api_budget_insufficient_pause_before_queue": (
+            _external_api_budget_scenario()
+        ),
         "same_source_cross_operation_lock": await _same_source_lock_scenario(index),
         "protected_cleanup_denied": _protected_cleanup_scenario(),
     }
@@ -576,8 +679,8 @@ def build_stage038_phase3_report(
                 else "BLOCKED_PHASE3_SCENARIO_INVALID"
             ),
             "owner_feedback_zh": (
-                "Worker 队列 Phase 3 六类隔离场景已通过；同源任务冲突、异常终态、"
-                "资源暂停和受保护清理均失败关闭，生产运行继续禁用。"
+                "Worker 队列 Phase 3 七类隔离场景已通过；同源任务冲突、异常终态、"
+                "磁盘、移动硬盘及 API 预算暂停和受保护清理均失败关闭，生产运行继续禁用。"
                 if scenario_run["scenario_validation_valid"]
                 else "Worker 队列 Phase 3 未通过全部场景；生产运行继续禁用。"
             ),

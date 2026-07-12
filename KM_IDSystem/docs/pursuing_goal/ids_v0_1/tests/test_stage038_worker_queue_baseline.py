@@ -301,7 +301,7 @@ class Stage038WorkerQueueBaselinePhase1Tests(unittest.TestCase):
         batch, roadmap = self._parsed_governance()
         stage = batch["stage_progress"]["STAGE-038"]
         decision = batch["decision"]
-        self.assertEqual("stage038_phase4_completed_review_pending", batch["status"])
+        self.assertEqual("stage038_completed_reviewed_local", batch["status"])
         self.assertEqual(
             ["Phase 1", "Phase 2", "Phase 3", "Phase 4"],
             stage["completed_phases"],
@@ -309,30 +309,30 @@ class Stage038WorkerQueueBaselinePhase1Tests(unittest.TestCase):
         self.assertEqual("SOURCE_VERIFIED", stage["source_verification_status"])
         self.assertEqual("passed", stage["source_reverification_gate_status"])
         self.assertIs(True, stage["phase2_entry_authorized"])
-        self.assertEqual("pending", stage["review_status"])
-        self.assertEqual("stage_review", stage["next_phase"])
-        self.assertEqual("IDS-STAGE038-REVIEW-GATE", stage["next_gate"])
+        self.assertEqual("passed", stage["review_status"])
+        self.assertEqual("STAGE-039", stage["next_stage"])
+        self.assertEqual("IDS-STAGE039-P1-GATE", stage["next_gate"])
         self.assertEqual(
-            "IDS-V0_1-STAGE038-P4", stage["current_task_id"]
+            "IDS-V0_1-STAGE038-REVIEW", stage["current_task_id"]
         )
         self.assertEqual("ACC-STAGE-038", stage["acceptance_id"])
         self.assertEqual(
-            "phase4_closeout_passed_review_pending",
+            "reviewed_local_passed",
             stage["acceptance_status"],
         )
         self.assertEqual(
-            "IDS-V0_1-STAGE038-REVIEW",
+            "IDS-V0_1-STAGE039-P1",
             decision["next_allowed_task_id"],
         )
         self.assertIs(False, decision["github_upload_allowed"])
         self.assertIs(False, batch["upload_gate"]["push_allowed"])
 
         self.assertEqual("IDS-STAGE038", roadmap["current_stage_id"])
-        self.assertEqual("IDS-STAGE038-P4", roadmap["current_phase_id"])
+        self.assertEqual("IDS-STAGE038-REVIEW", roadmap["current_phase_id"])
         self.assertEqual(
-            "IDS-V0_1-STAGE038-P4", roadmap["current_task_id"]
+            "IDS-V0_1-STAGE038-REVIEW", roadmap["current_task_id"]
         )
-        self.assertEqual("IDS-STAGE038-REVIEW-GATE", roadmap["next_gate_id"])
+        self.assertEqual("IDS-STAGE039-P1-GATE", roadmap["next_gate_id"])
         roadmap_stage = next(
             item for item in roadmap["stages"] if item.get("stage_id") == "IDS-STAGE038"
         )
