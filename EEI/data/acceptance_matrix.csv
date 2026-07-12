@@ -98,8 +98,8 @@ A096,P0,ingest,SEC client uses descriptive User-Agent and domain allowlist,Mock 
 A097,P0,ingest,SEC client rate is <=8 requests/sec,Deterministic limiter,DONE
 A098,P0,ingest,"Timeout, bounded retry/backoff/jitter and 429/503 handling work",Mock HTTP,DONE
 A099,P0,ingest,Hash/cache prevent unchanged duplicate processing,Repeated fixture,DONE
-A100,P0,ingest,"Submissions preserve accession, form, filed, report, accepted and document",Golden test,NOT STARTED
-A101,P0,ingest,"Company Facts preserve concept, unit, period, form, filed and frame",Golden test,NOT STARTED
+A100,P0,ingest,"Submissions preserve accession, form, filed, report, accepted and document",Golden test,DONE
+A101,P0,ingest,"Company Facts preserve concept, unit, period, form, filed and frame",Golden test,DONE
 A102,P0,ingest,"Connector supports fixture, dry-run and idempotent upsert",CLI/integration,NOT STARTED
 A103,P0,ingest,"Ingestion report includes checkpoint, counts, status and error class",Integration,NOT STARTED
 A104,P0,freshness,API/UI show attempt/success/failure and document/report dates,API/E2E,NOT STARTED

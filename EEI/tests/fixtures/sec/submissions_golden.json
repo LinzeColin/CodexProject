@@ -1,0 +1,49 @@
+{
+  "_fixture_metadata": {
+    "record_mode": "fixture",
+    "synthetic": true,
+    "purpose": "T702/A100 SEC submissions normalization contract",
+    "schema_reference": "https://www.sec.gov/search-filings/edgar-application-programming-interfaces"
+  },
+  "cik": "1",
+  "name": "EEI SEC Golden Fixture Corp",
+  "filings": {
+    "recent": {
+      "accessionNumber": [
+        "0000000001-25-000001",
+        "0000000001-25-000002"
+      ],
+      "form": [
+        "10-K",
+        "10-K/A"
+      ],
+      "filingDate": [
+        "2025-02-01",
+        "2025-02-10"
+      ],
+      "reportDate": [
+        "2024-12-31",
+        ""
+      ],
+      "acceptanceDateTime": [
+        "2025-02-01T18:30:00.000Z",
+        "2025-02-10T19:45:30.000Z"
+      ],
+      "primaryDocument": [
+        "fixture-2024-10k.htm",
+        "fixture-2024-10ka.htm"
+      ],
+      "primaryDocDescription": [
+        "Synthetic annual filing fixture",
+        "Synthetic amended annual filing fixture"
+      ]
+    },
+    "files": [
+      {
+        "name": "CIK0000000001-submissions-001.json",
+        "filingFrom": "2020-01-01",
+        "filingTo": "2023-12-31"
+      }
+    ]
+  }
+}

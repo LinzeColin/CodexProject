@@ -110,6 +110,8 @@ artifacts/tests/a062/t501_structure_type_separation.json
 artifacts/tests/a063/t501_commercial_empire_not_control.json
 artifacts/tests/a096/t700_sec_client_allowlist_contract.json
 artifacts/tests/a097/t700_sec_client_rate_limit_contract.json
+artifacts/tests/a098/t701_sec_client_retry_contract.json
+artifacts/tests/a099/t701_sec_client_hash_cache_contract.json
 artifacts/tests/a119/t905_migration_rollback_rehearsal.json
 artifacts/tests/a120/t905_clean_start_operator_rehearsal.json
 artifacts/tests/a182/t1212_governance_consistency_workflow.json

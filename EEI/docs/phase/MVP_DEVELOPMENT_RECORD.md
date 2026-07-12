@@ -1,5 +1,62 @@
 # MVP Development Record
 
+## 2026-07-13 - T702/A100/A101 SEC normalization contract
+
+Status: LOCAL FOCUSED VALIDATED; REMOTE CI PENDING; PHASE 1.2 IN PROGRESS; MVP RELEASE BLOCKED
+
+### Goal and Scope
+
+- Normalize SEC Submissions compact columnar arrays into typed filing records while
+  preserving accession, form, filed/report dates, accepted timestamp and document.
+- Normalize Company Facts taxonomy/concept/unit arrays into typed fact records while
+  preserving duration/instant period, form, filed date and optional frame.
+- Preserve original and `/A` same-period facts as separate records. Do not infer a
+  restatement when the source payload does not explicitly express that semantic.
+- Require the caller to supply `fixture`, `curated_official_fixture`, `dry_run` or
+  `live` record mode; synthetic fixtures cannot be relabeled as live data.
+
+### Acceptance and Evidence
+
+- `T702 -> A100`: `apps/api/app/ingest/sec_normalizer.py`,
+  `tests/fixtures/sec/submissions_golden.json`, `tests/unit/test_sec_normalizer.py`,
+  `scripts/validate_sec_normalization_contract.py`, and
+  `artifacts/tests/a100/t702_sec_submissions_normalization_contract.json`.
+- `T702 -> A101`: the same implementation/test surface plus
+  `tests/fixtures/sec/companyfacts_golden.json` and
+  `artifacts/tests/a101/t702_sec_companyfacts_normalization_contract.json`.
+- Official schema reference:
+  `https://www.sec.gov/search-filings/edgar-application-programming-interfaces`.
+
+### Data and Model Boundary
+
+- Submissions parallel arrays must have equal length; blank report/accepted/document
+  values remain `None`, and accepted timestamps must include a timezone.
+- Company Facts preserve scalar values, taxonomy, concept, unit, start/end period,
+  accession, fiscal context, form, filed date and frame; invalid/inverted periods fail.
+- This task adds deterministic parser versions only. It changes no scoring model,
+  formula, weight, active model version, database schema, API route or publication gate.
+- Evidence is fixture-only and records no live network access or database write.
+
+### Validation
+
+- `.venv/bin/pytest -q tests/unit/test_sec_normalizer.py`: PASS, `10/10`.
+- `.venv/bin/pytest -q tests/unit`: PASS, `174/174` with one third-party
+  Starlette/httpx deprecation warning.
+- Focused Ruff and compile: PASS.
+- A100/A101 contract generate/validate: PASS with fixture hashes and fail-closed
+  `mvp_release_ready=false` scope.
+- Task Pack, catalog, contract and governance validation: PASS before fixed-point
+  artifact refresh; generated artifact/checksum validation remains required.
+
+### Risk, Rollback, and Stop Conditions
+
+- Risk: column misalignment, revision collapse or fixture/live contamination. Equal-
+  length validation, explicit source mode and one-output-per-source-entry mitigate it.
+- Rollback: revert only the T702 commit and remove A100/A101 artifacts/fixtures;
+  T700-T701 client behavior remains intact.
+- Stop on A209 failure, field loss, source-mode bypass, inferred restatement,
+  traceability drift, governance failure or checksum mismatch.
+
 ## 2026-07-13 - T701/A098/A099 SEC retry and hash-cache contract
 
 Status: LOCAL FOCUSED VALIDATED; REMOTE CI PENDING; PHASE 1.2 IN PROGRESS; MVP RELEASE BLOCKED

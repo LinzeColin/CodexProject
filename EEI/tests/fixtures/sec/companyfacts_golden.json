@@ -1,0 +1,61 @@
+{
+  "_fixture_metadata": {
+    "record_mode": "fixture",
+    "synthetic": true,
+    "purpose": "T702/A101 SEC Company Facts normalization contract",
+    "schema_reference": "https://www.sec.gov/search-filings/edgar-application-programming-interfaces"
+  },
+  "cik": 1,
+  "entityName": "EEI SEC Golden Fixture Corp",
+  "facts": {
+    "us-gaap": {
+      "Assets": {
+        "label": "Assets",
+        "description": "Synthetic instant fact for normalization tests.",
+        "units": {
+          "USD": [
+            {
+              "end": "2024-12-31",
+              "val": 250,
+              "accn": "0000000001-25-000001",
+              "fy": 2024,
+              "fp": "FY",
+              "form": "10-K",
+              "filed": "2025-02-01",
+              "frame": "CY2024Q4I"
+            }
+          ]
+        }
+      },
+      "RevenueFromContractWithCustomerExcludingAssessedTax": {
+        "label": "Revenue",
+        "description": "Synthetic duration facts preserving original and amended filings.",
+        "units": {
+          "USD": [
+            {
+              "start": "2024-01-01",
+              "end": "2024-12-31",
+              "val": 100,
+              "accn": "0000000001-25-000001",
+              "fy": 2024,
+              "fp": "FY",
+              "form": "10-K",
+              "filed": "2025-02-01",
+              "frame": "CY2024"
+            },
+            {
+              "start": "2024-01-01",
+              "end": "2024-12-31",
+              "val": 105,
+              "accn": "0000000001-25-000002",
+              "fy": 2024,
+              "fp": "FY",
+              "form": "10-K/A",
+              "filed": "2025-02-10"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

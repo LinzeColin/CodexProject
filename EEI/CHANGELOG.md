@@ -1,5 +1,19 @@
 # Changelog
 
+## T702/A100/A101 SEC normalization - 2026-07-13
+
+- Added typed SEC Submissions normalization for compact parallel filing arrays,
+  preserving accession, form, filed/report dates, accepted timestamp, primary
+  document, amendment semantics and historical file references.
+- Added typed Company Facts normalization across taxonomy/concept/unit arrays,
+  preserving scalar value, duration/instant period, accession, fiscal context,
+  form, filed date and optional frame without collapsing same-period revisions.
+- Added synthetic fixture-only golden payloads with fail-closed source-mode guards;
+  fixtures cannot be relabeled `live`, invalid array alignment/dates/values fail,
+  and no restatement is inferred without source evidence.
+- Added A100/A101 fixture-hashed artifacts. T703-T706, T1301/A202, A209 and MVP
+  release readiness remain open.
+
 ## T701/A098/A099 SEC retry and hash cache - 2026-07-13
 
 - Added a 10-second default/30-second maximum timeout and at most three attempts

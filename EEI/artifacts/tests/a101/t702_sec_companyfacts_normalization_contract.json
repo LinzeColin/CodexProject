@@ -1,0 +1,130 @@
+{
+  "schema_version": "eei-a101-sec-companyfacts-normalization-contract-v1",
+  "status": "PASS",
+  "acceptance_ids": [
+    "A101"
+  ],
+  "task_id": "T702",
+  "generated_at": "2026-07-12T23:53:00Z",
+  "source_commit": "da0e1046",
+  "schema_reference": "https://www.sec.gov/search-filings/edgar-application-programming-interfaces",
+  "release_scope": {
+    "fixture_only": true,
+    "live_sec_request_performed": false,
+    "database_write_performed": false,
+    "a202_closed_by_contract": false,
+    "a209_closed_by_contract": false,
+    "mvp_release_ready": false
+  },
+  "test_evidence": [
+    "tests/unit/test_sec_normalizer.py",
+    "tests/fixtures/sec/submissions_golden.json",
+    "tests/fixtures/sec/companyfacts_golden.json"
+  ],
+  "fixture": {
+    "path": "tests/fixtures/sec/companyfacts_golden.json",
+    "sha256": "1fba38ca2756e22e119774931d7fe8bc9cd96d0826c7f90e74d8fc9baf6bf7dd",
+    "record_mode": "fixture",
+    "synthetic": true
+  },
+  "contract": {
+    "normalizer_version": "sec-companyfacts-normalizer-v1",
+    "fields_preserved": [
+      "concept",
+      "unit",
+      "period",
+      "form",
+      "filed",
+      "frame"
+    ],
+    "taxonomy_count": 1,
+    "concept_count": 2,
+    "unit_count": 1,
+    "fact_count": 3,
+    "duration_fact_count": 2,
+    "instant_fact_count": 1,
+    "amendment_count": 1,
+    "missing_frame_preserved_as_null_count": 1,
+    "same_period_revision_group_count": 1,
+    "same_period_revisions_preserved_without_collapse": true,
+    "restatement_inferred_without_source_evidence": false,
+    "fixture_cannot_be_relabeled_live": true
+  },
+  "samples": [
+    {
+      "record_mode": "fixture",
+      "cik": "0000000001",
+      "entity_name": "EEI SEC Golden Fixture Corp",
+      "taxonomy": "us-gaap",
+      "concept": "Assets",
+      "label": "Assets",
+      "description": "Synthetic instant fact for normalization tests.",
+      "unit": "USD",
+      "value": 250,
+      "period": {
+        "start": null,
+        "end": "2024-12-31",
+        "kind": "instant"
+      },
+      "accession_number": "0000000001-25-000001",
+      "fiscal_year": 2024,
+      "fiscal_period": "FY",
+      "form": "10-K",
+      "base_form": "10-K",
+      "is_amendment": false,
+      "filed_date": "2025-02-01",
+      "frame": "CY2024Q4I",
+      "source_index": 0
+    },
+    {
+      "record_mode": "fixture",
+      "cik": "0000000001",
+      "entity_name": "EEI SEC Golden Fixture Corp",
+      "taxonomy": "us-gaap",
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Revenue",
+      "description": "Synthetic duration facts preserving original and amended filings.",
+      "unit": "USD",
+      "value": 100,
+      "period": {
+        "start": "2024-01-01",
+        "end": "2024-12-31",
+        "kind": "duration"
+      },
+      "accession_number": "0000000001-25-000001",
+      "fiscal_year": 2024,
+      "fiscal_period": "FY",
+      "form": "10-K",
+      "base_form": "10-K",
+      "is_amendment": false,
+      "filed_date": "2025-02-01",
+      "frame": "CY2024",
+      "source_index": 0
+    },
+    {
+      "record_mode": "fixture",
+      "cik": "0000000001",
+      "entity_name": "EEI SEC Golden Fixture Corp",
+      "taxonomy": "us-gaap",
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "label": "Revenue",
+      "description": "Synthetic duration facts preserving original and amended filings.",
+      "unit": "USD",
+      "value": 105,
+      "period": {
+        "start": "2024-01-01",
+        "end": "2024-12-31",
+        "kind": "duration"
+      },
+      "accession_number": "0000000001-25-000002",
+      "fiscal_year": 2024,
+      "fiscal_period": "FY",
+      "form": "10-K/A",
+      "base_form": "10-K",
+      "is_amendment": true,
+      "filed_date": "2025-02-10",
+      "frame": null,
+      "source_index": 1
+    }
+  ]
+}

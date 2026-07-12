@@ -1,0 +1,64 @@
+{
+  "schema_version": "eei-a100-sec-submissions-normalization-contract-v1",
+  "status": "PASS",
+  "acceptance_ids": [
+    "A100"
+  ],
+  "task_id": "T702",
+  "generated_at": "2026-07-12T23:53:00Z",
+  "source_commit": "da0e1046",
+  "schema_reference": "https://www.sec.gov/search-filings/edgar-application-programming-interfaces",
+  "release_scope": {
+    "fixture_only": true,
+    "live_sec_request_performed": false,
+    "database_write_performed": false,
+    "a202_closed_by_contract": false,
+    "a209_closed_by_contract": false,
+    "mvp_release_ready": false
+  },
+  "test_evidence": [
+    "tests/unit/test_sec_normalizer.py",
+    "tests/fixtures/sec/submissions_golden.json",
+    "tests/fixtures/sec/companyfacts_golden.json"
+  ],
+  "fixture": {
+    "path": "tests/fixtures/sec/submissions_golden.json",
+    "sha256": "3022371de1dd8ff3c8c7559e5796ca2af16953e983b1bdebe6257dd03e02620a",
+    "record_mode": "fixture",
+    "synthetic": true
+  },
+  "contract": {
+    "normalizer_version": "sec-submissions-normalizer-v1",
+    "fields_preserved": [
+      "accession",
+      "form",
+      "filed",
+      "report",
+      "accepted",
+      "document"
+    ],
+    "columnar_arrays_require_equal_length": true,
+    "cik_zero_padded_to_ten_digits": true,
+    "filing_count": 2,
+    "amendment_count": 1,
+    "unknown_report_date_count": 1,
+    "accepted_timestamps_are_utc": true,
+    "additional_history_file_count": 1,
+    "fixture_cannot_be_relabeled_live": true
+  },
+  "sample": {
+    "record_mode": "fixture",
+    "cik": "0000000001",
+    "entity_name": "EEI SEC Golden Fixture Corp",
+    "accession_number": "0000000001-25-000001",
+    "form": "10-K",
+    "base_form": "10-K",
+    "is_amendment": false,
+    "filed_date": "2025-02-01",
+    "report_date": "2024-12-31",
+    "accepted_at": "2025-02-01T18:30:00Z",
+    "primary_document": "fixture-2024-10k.htm",
+    "primary_document_description": "Synthetic annual filing fixture",
+    "source_index": 0
+  }
+}

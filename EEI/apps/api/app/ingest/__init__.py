@@ -17,6 +17,17 @@ from .sec_client import (
     validate_sec_url,
     validate_sec_user_agent,
 )
+from .sec_normalizer import (
+    SEC_COMPANY_FACTS_NORMALIZER_VERSION,
+    SEC_SUBMISSIONS_NORMALIZER_VERSION,
+    NormalizedCompanyFact,
+    NormalizedSecCompanyFacts,
+    NormalizedSecFiling,
+    NormalizedSecSubmissions,
+    SecNormalizationError,
+    normalize_sec_company_facts,
+    normalize_sec_submissions,
+)
 
 __all__ = [
     "SEC_ALLOWED_HOSTS",
@@ -34,4 +45,13 @@ __all__ = [
     "normalize_cik",
     "validate_sec_url",
     "validate_sec_user_agent",
+    "SEC_COMPANY_FACTS_NORMALIZER_VERSION",
+    "SEC_SUBMISSIONS_NORMALIZER_VERSION",
+    "NormalizedCompanyFact",
+    "NormalizedSecCompanyFacts",
+    "NormalizedSecFiling",
+    "NormalizedSecSubmissions",
+    "SecNormalizationError",
+    "normalize_sec_company_facts",
+    "normalize_sec_submissions",
 ]
