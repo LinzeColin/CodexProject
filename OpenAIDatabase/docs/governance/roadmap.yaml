@@ -1,12 +1,12 @@
 schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "OpenAIDatabase"
-current_stage_id: "CF-L2"
-current_phase_id: "CF-L2-P1"
-current_task_id: "CF-L2-20260710"
-next_gate_id: "ACC-CF-L2-20260710-PASSED"
-total_estimated_hours: 7
-completed_estimated_hours: 6
+current_stage_id: "SM-P0"
+current_phase_id: "SM-P0-RUN0A"
+current_task_id: "OAIDB-RUN0A-20260713"
+next_gate_id: "ACC-OAIDB-RUN0A-20260713-PASSED"
+total_estimated_hours: 7.5
+completed_estimated_hours: 6.5
 stages:
   -
     stage_id: "S5"
@@ -161,3 +161,74 @@ stages:
             rollback: "删除隔离的 L2 adapter 并回滚本任务治理记录；私密 core 不需要恢复。"
             current_result: "deployed_custom_domain_verified_access_protected"
             completed_version: "0.2.0"
+  - stage_id: "SM-P0"
+    name: "跨 Agent 共享记忆 P0 前置治理"
+    person_goal: "在实现 Codex、Claude、ChatGPT 共享记忆前，先让 OpenAIDatabase 只有一套可机器重建的当前治理事实。"
+    status: "completed"
+    estimated_hours: 0.5
+    estimated_pct: 100
+    stop_conditions:
+      - "任一 human view 无法由 canonical governance 确定性重建"
+      - "修复需要读取 raw/private、修改其他项目或改变产品运行行为"
+      - "check-render、changed-scope governance 或 diff check 失败"
+    stop_gate:
+      gate_id: "ACC-OAIDB-RUN0A-20260713"
+      pass_criteria:
+        - "三份 human views 与 canonical render 完全一致"
+        - "仅 OpenAIDatabase governance/human files 发生变化"
+        - "未改变 model、formula、parameter 或记忆运行行为"
+      evidence:
+        - "EVID-OAIDB-RUN0A-CHECK-RENDER"
+        - "OpenAIDatabase/docs/governance/project.yaml"
+        - "OpenAIDatabase/docs/governance/roadmap.yaml"
+        - "OpenAIDatabase/docs/governance/events.jsonl"
+      failure_action: "remain_blocked_before_run1"
+    phases:
+      - phase_id: "SM-P0-RUN0A"
+        name: "RUN 0A canonical human-view 收敛"
+        objective: "删除重复可编辑的历史前缀，并从 machine canonical facts 重建三份中文 owner 入口。"
+        status: "completed"
+        estimated_hours: 0.5
+        estimated_pct: 100
+        stop_conditions:
+          - "任何历史只能通过新建第二事实源才能保留"
+          - "renderer 输出无法通过当前治理 schema"
+        stop_gate:
+          gate_id: "ACC-OAIDB-RUN0A-20260713"
+          pass_criteria:
+            - "check-render drift_count=0"
+            - "reference_issue_count=0"
+          evidence:
+            - "EVID-OAIDB-RUN0A-CHECK-RENDER"
+          failure_action: "remain_blocked_before_run1"
+        tasks:
+          - task_id: "OAIDB-RUN0A-20260713"
+            name: "收敛 OpenAIDatabase 三份 human views"
+            objective: "以 project.yaml、roadmap.yaml、events.jsonl 为唯一机器事实源，确定性重建三份中文 human views。"
+            status: "completed"
+            estimated_hours: 0.5
+            estimated_pct: 100
+            dependencies:
+              - "S5PBT03"
+            acceptance_ids:
+              - "ACC-OAIDB-RUN0A-20260713"
+            acceptance:
+              - acceptance_id: "ACC-OAIDB-RUN0A-20260713"
+                description: "三份 human views 必须与 canonical render 完全一致，且不修改其他项目或产品运行行为。"
+                evidence_refs:
+                  - "EVID-OAIDB-RUN0A-CHECK-RENDER"
+            test_commands:
+              - "python3.12 -B scripts/lean_governance.py check-render --project OpenAIDatabase"
+              - "python3.12 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main"
+              - "git diff --check -- OpenAIDatabase"
+            test_results:
+              - "check-render drift_count=0 reference_issue_count=0"
+            evidence_refs:
+              - "EVID-OAIDB-RUN0A-CHECK-RENDER"
+              - "OpenAIDatabase/docs/governance/project.yaml"
+              - "OpenAIDatabase/docs/governance/roadmap.yaml"
+              - "OpenAIDatabase/docs/governance/events.jsonl"
+            risks:
+              - "详细历史不再作为当前 human-view 可编辑事实；需要时从 Git commit 历史恢复。"
+            rollback: "Revert RUN 0A commit to restore the prior human views and governance state."
+            current_result: "canonical_human_views_converged_pending_run0_rerun"
