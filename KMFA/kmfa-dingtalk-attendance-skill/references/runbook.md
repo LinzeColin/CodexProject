@@ -73,6 +73,9 @@ Source of truth is the current code and tests, but the expected rules are:
 - Top 10 ordering: monthly count or days descending, latest date descending, then stable name sort.
 - DWS collection logic must not be changed when only notification wording or ledger indexing is requested.
 - Scheduled production uses the exact official report collector only. Do not add a per-member `record get` / `summary` sweep before or after it; that legacy diagnostic path is non-authoritative and can multiply the run into hours.
+- Morning and evening outputs are temporary reminders. The later official final reconciliation is the only daily result eligible for new monthly notification rollups.
+- Legacy, morning, and evening archives remain audit-only for monthly notification values.
+- Delivery is owner-disabled. Production and resend entries return `NOT_SENT_OWNER_DISABLED` and must not invoke a sender.
 
 ## 5. Safe Offline Commands
 

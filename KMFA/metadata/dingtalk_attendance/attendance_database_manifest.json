@@ -66,6 +66,18 @@
     "tracked_in_git": false,
     "validate_command": "python tools/dingtalk_attendance/sync_attendance_ledger.py --validate"
   },
+  "notification_monthly_rollup": {
+    "eligible_identity": "canonical_skill_id",
+    "eligible_run_type": "final",
+    "legacy_archives_allowed": false,
+    "temporary_reminder_archives_allowed": false
+  },
+  "result_lifecycle": {
+    "morning": "TEMPORARY_REMINDER",
+    "evening": "TEMPORARY_REMINDER",
+    "final": "OFFICIAL_FINAL_RECONCILIATION",
+    "delivery_enabled": false
+  },
   "private_runtime_sqlite": true,
   "project_id": "KMFA",
   "public_repo_safety": {

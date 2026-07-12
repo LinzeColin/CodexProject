@@ -16,8 +16,9 @@ REST_REQUIRED_THRESHOLD_DAYS = 23
 REST_REQUIRED_EXCLUDED_NAMES = frozenset({"丁春法", "李永占"})
 NOTIFICATION_HIDDEN_NAMES = frozenset()
 RUN_TYPE_DISPLAY_LABELS = {
-    "morning": "晨报",
-    "evening": "晚报",
+    "morning": "晨间暂时提醒",
+    "evening": "晚间暂时提醒",
+    "final": "官方最终核对",
 }
 
 

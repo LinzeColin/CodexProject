@@ -27,6 +27,8 @@ For user-visible daily totals and classifications, the official DingTalk attenda
 
 If the official report is unavailable, incomplete, ambiguous, or returns a different date/scope, the run must stop as `OFFICIAL_ATTENDANCE_PARITY_FAILED` and must not send an attendance conclusion.
 
+Morning and evening reads are temporary reminders. The final daily truth is a later fresh official-report read for a completed prior work date. Only canonical `final` archives may feed new monthly notification rollups; legacy and temporary-reminder archives are audit-only.
+
 The pipeline must store full source payloads even when the normalized columns cover the known fields. Unknown fields are not discarded; they remain available in `raw_payload` JSONB.
 
 ## Required location and trajectory evidence

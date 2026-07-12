@@ -1,8 +1,8 @@
 # KMFA 钉钉考勤 skill 交接
 
-roadmap_progress: R3 / R3.1
+roadmap_progress: R3 / R3.2
 
-status: READY_FOR_OWNER_DECISION
+status: READY_FOR_OWNER_REVIEW
 
 r2_close_commit: b5b06437dfb15bfb0e302c4e735fe2978ddcd579
 
@@ -15,6 +15,38 @@ canonical_skill_id: kmfa-dingtalk-attendance-skill
 production_acceptance: NOT_EVALUATED
 
 owner_usability_status: NOT_ACCEPTED
+
+current_availability: UNAVAILABLE
+
+## R3.2 实施结果
+
+- 晨间和晚间结果已固定为 `TEMPORARY_REMINDER`，不再表示当日最终结论。
+- 新增 completed prior work date 的 `OFFICIAL_FINAL_RECONCILIATION`；exact official parity 通过后生成 aggregate-only 一页结果。
+- 新月累计只读取 canonical `final` archive。legacy、morning、evening archive 均为 audit-only，不进入新累计。
+- production 和 resend entry 的发送保持关闭，固定返回 `NOT_SENT_OWNER_DISABLED`，不解析目标、不调用 sender。
+- 两个 automation 只更新 prompt；scheduler、time、timezone、automation ID、cwd 和发送目标均未修改。
+- 已对一个真实工作日执行 fresh live DingTalk official report 核对：parity PASS，morning/evening evidence 均存在，但历史提醒为 legacy 且 parity UNKNOWN，因此页面诚实标为 `UNVERIFIED_REMINDER`。
+- 真实完成依据不是 synthetic fixture；fixture 仅用于回归测试。
+- production acceptance 仍为 `NOT_EVALUATED`，owner usability 仍为 `NOT_ACCEPTED`，整体保持 `UNAVAILABLE`。
+
+real_work_date_evidence:
+
+- work_date: 2026-07-10
+- source: REAL_DINGTALK_OFFICIAL_REPORT
+- official_final_parity: PASS
+- reminder_binding: LEGACY_UNVERIFIED
+- notification_status: NOT_SENT_OWNER_DISABLED
+- one_page_result: PRIVATE_ARCHIVE_ONLY
+
+validation_performed:
+
+- focused_attendance_tests: 101/101 PASS
+- attendance_checker: PASS
+- skill_package_validator: PASS
+- sensitive_data_validator: PASS
+- git_whitespace_validation: PASS
+- prompt_mirror_and_live_readback: PASS
+- real_monthly_source_check: FINAL_ONLY / LEGACY_FALSE / TEMPORARY_FALSE
 
 ## R3.1 结论
 
