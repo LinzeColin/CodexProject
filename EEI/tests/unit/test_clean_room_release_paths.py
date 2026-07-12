@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import hashlib
+
 from scripts import manage_clean_room_release as release
 from scripts import manage_release_artifacts as release_artifacts
 
@@ -47,11 +49,13 @@ def test_t1211_release_artifact_paths_are_posix_for_cross_platform_governance() 
     )
 
 
-def test_t1211_release_canonical_file_bytes_normalize_crlf_text(tmp_path) -> None:
+def test_t1211_release_checksum_uses_raw_file_bytes(tmp_path) -> None:
     sample = tmp_path / "sample.txt"
-    sample.write_bytes(b"alpha\r\nbeta\r\n")
+    payload = b"alpha\r\nbeta\r\n"
+    sample.write_bytes(payload)
 
-    assert release_artifacts.canonical_file_bytes(sample) == b"alpha\nbeta\n"
+    assert release_artifacts.raw_file_bytes(sample) == payload
+    assert release_artifacts.sha256_file(sample) == hashlib.sha256(payload).hexdigest()
 
 
 def test_canonical_file_bytes_normalize_crlf_text(tmp_path) -> None:

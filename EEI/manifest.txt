@@ -56,6 +56,13 @@ apps/api/app/healthcheck.py
 apps/api/app/main.py
 apps/api/app/scoring.py
 apps/api/app/settings.py
+apps/cloudflare-public/.gitignore
+apps/cloudflare-public/package-lock.json
+apps/cloudflare-public/package.json
+apps/cloudflare-public/public/index.html
+apps/cloudflare-public/public/public-surface.json
+apps/cloudflare-public/public/styles.css
+apps/cloudflare-public/wrangler.jsonc
 apps/web/next.config.ts
 apps/web/package.json
 apps/web/public/apple-touch-icon.png

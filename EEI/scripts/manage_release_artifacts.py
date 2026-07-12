@@ -17,11 +17,10 @@ DIRECTORY_TREE = Path("DIRECTORY_TREE.txt")
 CHECKSUMS = Path("CHECKSUMS.sha256")
 RELEASE_EVIDENCE = Path("artifacts/release_evidence_t1211.json")
 OPERATION_LOG = Path("artifacts/release_operation_log_t1211.jsonl")
-BINARY_SUFFIXES = {".gif", ".gz", ".ico", ".jpg", ".jpeg", ".pdf", ".png", ".webp", ".zip"}
 
 
-def path_id(path: Path) -> str:
-    return path.as_posix()
+def path_id(path: str | Path) -> str:
+    return Path(path).as_posix()
 
 
 REQUIRED_RELEASE_PATHS = {
@@ -54,15 +53,8 @@ def run_git_bytes(*args: str) -> bytes:
     return completed.stdout
 
 
-def path_id(path: str | Path) -> str:
-    return Path(path).as_posix()
-
-
-def canonical_file_bytes(path: Path) -> bytes:
-    payload = path.read_bytes()
-    if path.suffix.lower() in BINARY_SUFFIXES or b"\0" in payload:
-        return payload
-    return payload.replace(b"\r\n", b"\n")
+def raw_file_bytes(path: Path) -> bytes:
+    return path.read_bytes()
 
 
 def tracked_paths() -> list[str]:
@@ -74,7 +66,7 @@ def tracked_paths() -> list[str]:
 
 
 def sha256_file(path: Path) -> str:
-    return hashlib.sha256(canonical_file_bytes(path)).hexdigest()
+    return hashlib.sha256(raw_file_bytes(path)).hexdigest()
 
 
 def write_text(path: Path, content: str) -> None:
