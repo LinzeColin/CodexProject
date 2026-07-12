@@ -1,0 +1,805 @@
+{
+  "delivery_context": {
+    "cloudflare_live_verified": true,
+    "local_apps_verified": true,
+    "single_push_pending": true
+  },
+  "evidence_model": "runtime commit plus immediate final-record child commit",
+  "failed_gate_ids": [],
+  "four_line_coverage": [
+    {
+      "failed_or_missing_gate_ids": [],
+      "gate_ids": [
+        "unit_tests",
+        "visual_workflows",
+        "report_contract_audit"
+      ],
+      "line_id": "L1_BEHAVIOR_INTELLIGENCE",
+      "name_zh": "行为智能与洞察",
+      "status": "PASS"
+    },
+    {
+      "failed_or_missing_gate_ids": [],
+      "gate_ids": [
+        "frontend_build",
+        "chinese_ux_audit",
+        "rendered_chinese_ux",
+        "visual_roi_audit",
+        "visual_workflows",
+        "stage7_visual",
+        "stage7_performance"
+      ],
+      "line_id": "L2_INFO_ROI_CHINESE_VISUALS",
+      "name_zh": "信息 ROI、中文与多维可视化",
+      "status": "PASS"
+    },
+    {
+      "failed_or_missing_gate_ids": [],
+      "gate_ids": [
+        "github_backup_modes",
+        "tracked_only_recovery",
+        "raw_append_only_audit",
+        "stage7_privacy_accessibility",
+        "credential_audit"
+      ],
+      "line_id": "L3_GITHUB_BACKUP_RECOVERY",
+      "name_zh": "ChatGPT、Codex 与后续 Agent 的 GitHub 备份恢复",
+      "status": "PASS"
+    },
+    {
+      "failed_or_missing_gate_ids": [],
+      "gate_ids": [
+        "frontend_build",
+        "rendered_chinese_ux",
+        "command_workflows",
+        "proposal_e2e",
+        "owner_daily_e2e",
+        "stage7_privacy_accessibility"
+      ],
+      "line_id": "L4_UIUX_GOVERNED_ACTIONS",
+      "name_zh": "UIUX、授权变更与低负担运维",
+      "status": "PASS"
+    }
+  ],
+  "generated_at": "2026-07-11T23:28:15Z",
+  "missing_gate_ids": [],
+  "passed_gate_ids": [
+    "chinese_ux_audit",
+    "command_workflows",
+    "credential_audit",
+    "frontend_build",
+    "github_backup_modes",
+    "owner_daily_e2e",
+    "proposal_e2e",
+    "raw_append_only_audit",
+    "rendered_chinese_ux",
+    "report_contract_audit",
+    "stage7_performance",
+    "stage7_privacy_accessibility",
+    "stage7_visual",
+    "tracked_only_recovery",
+    "unit_tests",
+    "visual_roi_audit",
+    "visual_workflows"
+  ],
+  "phase": "R8_OVERALL_ACCEPTANCE_AND_SINGLE_FINAL_DELIVERY",
+  "required_gate_ids": [
+    "unit_tests",
+    "frontend_build",
+    "chinese_ux_audit",
+    "rendered_chinese_ux",
+    "visual_roi_audit",
+    "visual_workflows",
+    "command_workflows",
+    "proposal_e2e",
+    "owner_daily_e2e",
+    "stage7_visual",
+    "stage7_performance",
+    "stage7_privacy_accessibility",
+    "raw_append_only_audit",
+    "credential_audit",
+    "github_backup_modes",
+    "tracked_only_recovery",
+    "report_contract_audit"
+  ],
+  "requirements": {
+    "failed": 0,
+    "not_verified": 0,
+    "partial": 0,
+    "remaining_non_verified": [],
+    "rows": [
+      {
+        "evidence": "人类可读/00_快速入口.md exists",
+        "evidence_phase": "R0",
+        "requirement": "仓库内存在全中文 人类可读/00_快速入口.md",
+        "requirement_id": "S01-AC01",
+        "stage_id": "S01",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "机器治理/运行门禁/v1.2需求冻结清单.json exists",
+        "evidence_phase": "R0",
+        "requirement": "机器治理/ 中存在 v1.2 需求冻结配置",
+        "requirement_id": "S01-AC02",
+        "stage_id": "S01",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "功能清单.md; 开发记录.md; 模型参数文件.md exist and contain substantive records",
+        "evidence_phase": "R0",
+        "requirement": "根目录三件套未被删除或降级",
+        "requirement_id": "S01-AC03",
+        "stage_id": "S01",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "README.md and 人类可读/01_v1.2四线14Stage升级总览.md describe the boundary",
+        "evidence_phase": "R0",
+        "requirement": "README/人类入口能说明 v1.2 边界变更",
+        "requirement_id": "S01-AC04",
+        "stage_id": "S01",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "机器治理/同步与备份/sync_source_registry.json includes future-agent adapter",
+        "evidence_phase": "R0",
+        "requirement": "source registry 不是仅 chatgpt/codex 硬编码",
+        "requirement_id": "S02-AC01",
+        "stage_id": "S02",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md",
+        "evidence_phase": "R0",
+        "requirement": "人类说明明确写出 ChatGPT、Codex、后续其他 agent 数据备份进 GitHub",
+        "requirement_id": "S02-AC02",
+        "stage_id": "S02",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "source registry and credential exclusion policy declare the boundary",
+        "evidence_phase": "R0",
+        "requirement": "每个 source 都有 transcript/credential 边界",
+        "requirement_id": "S02-AC03",
+        "stage_id": "S02",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "512 sanitized public transcript files from ChatGPT, Codex and reviewer-agent source families passed full byte-wise public audit with zero credential/private-text files, zero unmarked binary files and deterministic omission markers",
+        "evidence_phase": "R7",
+        "requirement": "raw transcript 可明文进入公开路径",
+        "requirement_id": "S03-AC01",
+        "stage_id": "S03",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "The accepted 512-row immutable manifest has SHA-256 1a4fa71303903ca896c82640f7b4550cee47f3cc8ec600f81d03f7603e120c96; the 512-row hash ledger reports zero drift, deletion or unledgered files and requires non-empty source families",
+        "evidence_phase": "R7",
+        "requirement": "raw manifest/hash 可生成",
+        "requirement_id": "S03-AC02",
+        "stage_id": "S03",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "tests/test_s03p3_raw_manifest.py covers hash drift and delete",
+        "evidence_phase": "R0",
+        "requirement": "修改已有 raw 文件导致 validation fail",
+        "requirement_id": "S03-AC03",
+        "stage_id": "S03",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "tests/test_s3pdt01_privacy.py covers cookies passwords API keys private keys and tokens",
+        "evidence_phase": "R0",
+        "requirement": "凭证 pattern 导致提交 gate fail",
+        "requirement_id": "S03-AC04",
+        "stage_id": "S03",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Three rendered viewports contain no raw manifest/hash/path/import timestamp details, while the 512-file sanitized public-raw manifest and append-only ledger pass independently.",
+        "evidence_phase": "R8",
+        "gate_ids": [
+          "rendered_chinese_ux",
+          "stage7_privacy_accessibility",
+          "raw_append_only_audit"
+        ],
+        "requirement": "人类文件不被 raw manifest 细节污染",
+        "requirement_id": "S03-AC05",
+        "stage_id": "S03",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Rendered local UI executes real redacted ChatGPT and Codex fixture syncs through the fixed loopback API and refreshes the runtime snapshot",
+        "evidence_phase": "R3",
+        "requirement": "可运行 sync chatgpt/codex/future-agent 占位接口",
+        "requirement_id": "S04-AC01",
+        "stage_id": "S04",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "A frozen 1,473,421,021-byte official ChatGPT export ZIP was processed through the declared fallback into 379 conversations and 3,433 messages with explicit sanitization and no browser mutation",
+        "evidence_phase": "R7",
+        "requirement": "official export fallback 可用",
+        "requirement_id": "S04-AC02",
+        "stage_id": "S04",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "One immutable snapshot is byte-identical across derived, release, temporary local-runtime and Pages build candidates: SHA-256 b608631fded9e116d350895be20e6e61be3c7e42ba651ccdf7fc52afd8fefcbc with 379 conversations, 128 Codex sessions, 435 nodes and 2,325 edges",
+        "evidence_phase": "R7",
+        "requirement": "derived visualization 数据能更新",
+        "requirement_id": "S04-AC03",
+        "stage_id": "S04",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "The final tracked recovery set passes exact-commit recovery, and isolated dry-run/apply backup-mode tests prove local commit behavior with zero remote push.",
+        "evidence_phase": "R8",
+        "gate_ids": [
+          "github_backup_modes",
+          "tracked_only_recovery"
+        ],
+        "requirement": "GitHub 备份命令有 dry-run 和 apply 模式",
+        "requirement_id": "S04-AC04",
+        "stage_id": "S04",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "491 canonical events contain 379 ChatGPT, 111 Codex and 1 real reviewer-agent event; every event has bounded raw evidence references and the future-agent event is sourced from the R6 independent review artifact",
+        "evidence_phase": "R7",
+        "requirement": "canonical event 可覆盖 ChatGPT/Codex/future agent",
+        "requirement_id": "S05-AC01",
+        "stage_id": "S05",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "event extractor enforces raw ref manifest ref or missing reason",
+        "evidence_phase": "R0",
+        "requirement": "每条 event 有 evidence ref 或缺失原因",
+        "requirement_id": "S05-AC02",
+        "stage_id": "S05",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "人类可读/12_Facet字段与事件语义说明.md",
+        "evidence_phase": "R0",
+        "requirement": "人类文件能解释 facet 含义",
+        "requirement_id": "S05-AC03",
+        "stage_id": "S05",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Three-view browser gate proves the default Home has zero visible machine/internal-copy matches and all four technical disclosures are closed",
+        "evidence_phase": "R2",
+        "requirement": "不输出纯机器字段给首屏",
+        "requirement_id": "S05-AC04",
+        "stage_id": "S05",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "derived behavior_intelligence includes clusters low_value_loops opportunities",
+        "evidence_phase": "R0",
+        "requirement": "至少有行为簇/低价值循环/机会三类输出",
+        "requirement_id": "S06-AC01",
+        "stage_id": "S06",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Three-view final browser gate finds all three behavior categories and proves all 9 rendered summaries are non-empty Chinese-readable and individually scroll-reachable",
+        "evidence_phase": "R1",
+        "requirement": "中文摘要可读",
+        "requirement_id": "S06-AC02",
+        "stage_id": "S06",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Rendered Opportunity Radar joins filtered event evidence by exact ref_id and exposes evidence, next step, half-life, Why Not Now/defer reason and the no-pressure-list boundary across three viewports",
+        "evidence_phase": "R6",
+        "requirement": "每条机会有证据、下一步、半衰期或暂缓理由",
+        "requirement_id": "S06-AC03",
+        "stage_id": "S06",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "cluster output includes hierarchy counts evidence and narrative",
+        "evidence_phase": "R0",
+        "requirement": "cluster 不只是关键词列表",
+        "requirement_id": "S06-AC04",
+        "stage_id": "S06",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "formula config and derived economic output exist",
+        "evidence_phase": "R0",
+        "requirement": "Personal Economic Proxy 可生成",
+        "requirement_id": "S07-AC01",
+        "stage_id": "S07",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Formula Explorer renders Chinese interpretation, tracked formula source disclosure, bounded parameters, proxy score and explicit non-financial safety wording",
+        "evidence_phase": "R6",
+        "requirement": "每个分数有中文解释和公式来源",
+        "requirement_id": "S07-AC02",
+        "stage_id": "S07",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "requirements freeze and formula docs explicitly defer external economics to v2",
+        "evidence_phase": "R0",
+        "requirement": "外部经济数据库只预留不深做",
+        "requirement_id": "S07-AC03",
+        "stage_id": "S07",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Formula sliders change the rendered proxy score 80 to 84 and Reset restores 80 with zero non-GET requests on all three viewports",
+        "evidence_phase": "R6",
+        "requirement": "Formula what-if 可查看或配置",
+        "requirement_id": "S07-AC04",
+        "stage_id": "S07",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "builder and derived agent collaboration report exist",
+        "evidence_phase": "R0",
+        "requirement": "Codex/agent 协作质量报告可生成",
+        "requirement_id": "S08-AC01",
+        "stage_id": "S08",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "requirements and source omit a Delegation Contract product UI",
+        "evidence_phase": "R0",
+        "requirement": "不会要求 Codex 实现复杂 Delegation Contract UI",
+        "requirement_id": "S08-AC02",
+        "stage_id": "S08",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json",
+        "evidence_phase": "R0",
+        "requirement": "stage flight recorder 是轻量运行证据",
+        "requirement_id": "S08-AC03",
+        "stage_id": "S08",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "人类可读/19_Agent协作质量指标说明.md and generated report contract",
+        "evidence_phase": "R0",
+        "requirement": "协作报告中文可读",
+        "requirement_id": "S08-AC04",
+        "stage_id": "S08",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "latent signal builder and derived report contain required fields",
+        "evidence_phase": "R0",
+        "requirement": "潜性报告有证据、反证、替代解释、置信度",
+        "requirement_id": "S09-AC01",
+        "stage_id": "S09",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "proposal state-machine output has expires_at and expiry buckets",
+        "evidence_phase": "R0",
+        "requirement": "proposal 有有效期",
+        "requirement_id": "S09-AC02",
+        "stage_id": "S09",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "decision debt derived output and human doc exist",
+        "evidence_phase": "R0",
+        "requirement": "decision debt 有最小下一步",
+        "requirement_id": "S09-AC03",
+        "stage_id": "S09",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Product identity, navigation, headings, filters and default Home copy are Chinese decision language; internal analytical names are absent",
+        "evidence_phase": "R2",
+        "requirement": "人类文件不过度堆叠分析术语",
+        "requirement_id": "S09-AC04",
+        "stage_id": "S09",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Three-view final browser gate proves arrival briefing is uncovered and scroll-reachable",
+        "evidence_phase": "R1",
+        "requirement": "首页能回答上次来以后发生了什么",
+        "requirement_id": "S10-AC01",
+        "stage_id": "S10",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Exact Chinese-first v1.2 identity and question-led navigation render at all three viewports; category and action labels are humanized",
+        "evidence_phase": "R2",
+        "requirement": "核心 UI 默认中文",
+        "requirement_id": "S10-AC02",
+        "stage_id": "S10",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Sidebar runtime data, focus signal/revision, command CLI/safety and formula ids/paths are folded by default and keyboard-operable",
+        "evidence_phase": "R2",
+        "requirement": "机器字段默认折叠",
+        "requirement_id": "S10-AC03",
+        "stage_id": "S10",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "A real three-viewport browser gate checks zh-CN language, Chinese decision labels, untranslated-label denylist, layout containment, reachability and console/network health.",
+        "evidence_phase": "R8",
+        "gate_ids": [
+          "rendered_chinese_ux"
+        ],
+        "requirement": "Chinese UX linter 或等价检查通过",
+        "requirement_id": "S10-AC04",
+        "stage_id": "S10",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Exact twelve-entry P0 inventory is snapshot-backed and rendered as one decision workbench; decorative candidates remain excluded",
+        "evidence_phase": "R6",
+        "requirement": "至少实现 P0 图谱集合或分阶段可用版本",
+        "requirement_id": "S11-AC01",
+        "stage_id": "S11",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Every one of the twelve cards renders a non-empty Chinese human question, action and keyboard-operable evidence interaction",
+        "evidence_phase": "R6",
+        "requirement": "每个图有中文问题和行动说明",
+        "requirement_id": "S11-AC02",
+        "stage_id": "S11",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Literal source/time/project/task selects use 217 safe facet events; per-axis real content changes are 11/10/11/11 event-backed cards at each viewport",
+        "evidence_phase": "R6",
+        "requirement": "图表可按 source/time/project/task 过滤",
+        "requirement_id": "S11-AC03",
+        "stage_id": "S11",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "All twelve cards are interacted with at 1470x661, 1440x900 and 390x844; each event-backed card changes content/count/datum IDs or reaches zero on at least one axis and Formula changes/resets",
+        "evidence_phase": "R6",
+        "requirement": "不是静态装饰图",
+        "requirement_id": "S11-AC04",
+        "stage_id": "S11",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Rendered Command Palette exposes exactly six selectors plus an explicit Execute path; all six complete through the temporary installer-shaped runtime",
+        "evidence_phase": "R3",
+        "requirement": "命令面板只有采纳命令和新增 personalization/ChatGPT 深度探索功能",
+        "requirement_id": "S12-AC01",
+        "stage_id": "S12",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Rendered workflow generates ChatGPT, Codex and other-agent personalization artifacts in the installed-copy fixture and returns relative outputs",
+        "evidence_phase": "R3",
+        "requirement": "可生成 ChatGPT/Codex/其他 agent personalization prompt",
+        "requirement_id": "S12-AC02",
+        "stage_id": "S12",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Explicit click generates prefill_only artifacts and performs one validated ChatGPT GET with no automatic submit",
+        "evidence_phase": "R3",
+        "requirement": "能跳转 ChatGPT 并填入/发送报告",
+        "requirement_id": "S12-AC03",
+        "stage_id": "S12",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Browser evidence records no_silent_send=true, external_request_methods=[GET], hosted static command_post_count=0 and no auto-submit path",
+        "evidence_phase": "R3",
+        "requirement": "不会静默发送，必须由用户动作触发",
+        "requirement_id": "S12-AC04",
+        "stage_id": "S12",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Rendered UI and loopback API reject missing authorization, remote Origin, extra fields, wrong confirmation, stale/digest-mismatched and replayed tokens before write",
+        "evidence_phase": "R4",
+        "requirement": "未授权 proposal 不会 apply",
+        "requirement_id": "S13-AC01",
+        "stage_id": "S13",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Rendered proposal workspace requires explicit acknowledgement and one-use token, then changes an exact allowlisted fixture target and passes fixed validation",
+        "evidence_phase": "R4",
+        "requirement": "授权后可以自动 apply",
+        "requirement_id": "S13-AC02",
+        "stage_id": "S13",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Product modal renders five Chinese diff sections plus exact target, risk, expiry, validator and rollback scope in all required viewports",
+        "evidence_phase": "R4",
+        "requirement": "diff narrator 中文可读",
+        "requirement_id": "S13-AC03",
+        "stage_id": "S13",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Validation failure automatically restores exact bytes; committed rollback survives workspace reopen; interrupted applying/applied transactions auto-recover or expose a manually authorized rollback",
+        "evidence_phase": "R4",
+        "requirement": "失败可回滚",
+        "requirement_id": "S13-AC04",
+        "stage_id": "S13",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Raw-target bundle is review-only, no apply control is rendered, raw sentinel hash remains unchanged and audit reports raw_mutation=false",
+        "evidence_phase": "R4",
+        "requirement": "raw 不被修改",
+        "requirement_id": "S13-AC05",
+        "stage_id": "S13",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Shared fixed runner executes all eight no-write steps through atlasctl, the exact loopback API and the rendered local product workspace",
+        "evidence_phase": "R5",
+        "requirement": "owner-daily 可 dry-run",
+        "requirement_id": "S14-AC01",
+        "stage_id": "S14",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "The aggregate final audit executes and passes explicit gates for all four v1.2 upgrade lines.",
+        "evidence_phase": "R8",
+        "gate_ids": [
+          "unit_tests",
+          "frontend_build",
+          "chinese_ux_audit",
+          "rendered_chinese_ux",
+          "visual_roi_audit",
+          "visual_workflows",
+          "command_workflows",
+          "proposal_e2e",
+          "owner_daily_e2e",
+          "stage7_visual",
+          "stage7_performance",
+          "stage7_privacy_accessibility",
+          "raw_append_only_audit",
+          "credential_audit",
+          "github_backup_modes",
+          "tracked_only_recovery",
+          "report_contract_audit"
+        ],
+        "requirement": "audit 能覆盖四线核心 gate",
+        "requirement_id": "S14-AC02",
+        "stage_id": "S14",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "R5 current-state report, status, development ledger and handoff remain Chinese-first and supersede historical completion text",
+        "evidence_phase": "R5",
+        "requirement": "开发记录中文可读",
+        "requirement_id": "S14-AC03",
+        "stage_id": "S14",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "Rendered Owner Daily entry gives an explicit start, human conclusion, eight ordered results and fixed retry for only the failed step across three viewports",
+        "evidence_phase": "R5",
+        "requirement": "维护命令少而清晰",
+        "requirement_id": "S14-AC04",
+        "stage_id": "S14",
+        "status": "VERIFIED"
+      },
+      {
+        "evidence": "The corrected R0-R8 ledger replays without gaps and exposes current requirement counts plus S01-S14 status instead of historical marker-only PASS claims.",
+        "evidence_phase": "R8",
+        "gate_ids": [
+          "unit_tests",
+          "frontend_build",
+          "chinese_ux_audit",
+          "rendered_chinese_ux",
+          "visual_roi_audit",
+          "visual_workflows",
+          "command_workflows",
+          "proposal_e2e",
+          "owner_daily_e2e",
+          "stage7_visual",
+          "stage7_performance",
+          "stage7_privacy_accessibility",
+          "raw_append_only_audit",
+          "credential_audit",
+          "github_backup_modes",
+          "tracked_only_recovery",
+          "report_contract_audit"
+        ],
+        "requirement": "所有 stage pass gate 状态可查",
+        "requirement_id": "S14-AC05",
+        "stage_id": "S14",
+        "status": "VERIFIED"
+      }
+    ],
+    "total": 58,
+    "verified": 58
+  },
+  "runtime_commit": "12734c10bf37ee7afc86d62f72e70369a1bcd732",
+  "schema_version": "memory_atlas.r8_acceptance.v1",
+  "stage_pass_gates": [
+    {
+      "requirement_count": 4,
+      "requirement_ids": [
+        "S01-AC01",
+        "S01-AC02",
+        "S01-AC03",
+        "S01-AC04"
+      ],
+      "stage_id": "S01",
+      "status": "VERIFIED",
+      "verified_requirement_count": 4
+    },
+    {
+      "requirement_count": 3,
+      "requirement_ids": [
+        "S02-AC01",
+        "S02-AC02",
+        "S02-AC03"
+      ],
+      "stage_id": "S02",
+      "status": "VERIFIED",
+      "verified_requirement_count": 3
+    },
+    {
+      "requirement_count": 5,
+      "requirement_ids": [
+        "S03-AC01",
+        "S03-AC02",
+        "S03-AC03",
+        "S03-AC04",
+        "S03-AC05"
+      ],
+      "stage_id": "S03",
+      "status": "VERIFIED",
+      "verified_requirement_count": 5
+    },
+    {
+      "requirement_count": 4,
+      "requirement_ids": [
+        "S04-AC01",
+        "S04-AC02",
+        "S04-AC03",
+        "S04-AC04"
+      ],
+      "stage_id": "S04",
+      "status": "VERIFIED",
+      "verified_requirement_count": 4
+    },
+    {
+      "requirement_count": 4,
+      "requirement_ids": [
+        "S05-AC01",
+        "S05-AC02",
+        "S05-AC03",
+        "S05-AC04"
+      ],
+      "stage_id": "S05",
+      "status": "VERIFIED",
+      "verified_requirement_count": 4
+    },
+    {
+      "requirement_count": 4,
+      "requirement_ids": [
+        "S06-AC01",
+        "S06-AC02",
+        "S06-AC03",
+        "S06-AC04"
+      ],
+      "stage_id": "S06",
+      "status": "VERIFIED",
+      "verified_requirement_count": 4
+    },
+    {
+      "requirement_count": 4,
+      "requirement_ids": [
+        "S07-AC01",
+        "S07-AC02",
+        "S07-AC03",
+        "S07-AC04"
+      ],
+      "stage_id": "S07",
+      "status": "VERIFIED",
+      "verified_requirement_count": 4
+    },
+    {
+      "requirement_count": 4,
+      "requirement_ids": [
+        "S08-AC01",
+        "S08-AC02",
+        "S08-AC03",
+        "S08-AC04"
+      ],
+      "stage_id": "S08",
+      "status": "VERIFIED",
+      "verified_requirement_count": 4
+    },
+    {
+      "requirement_count": 4,
+      "requirement_ids": [
+        "S09-AC01",
+        "S09-AC02",
+        "S09-AC03",
+        "S09-AC04"
+      ],
+      "stage_id": "S09",
+      "status": "VERIFIED",
+      "verified_requirement_count": 4
+    },
+    {
+      "requirement_count": 4,
+      "requirement_ids": [
+        "S10-AC01",
+        "S10-AC02",
+        "S10-AC03",
+        "S10-AC04"
+      ],
+      "stage_id": "S10",
+      "status": "VERIFIED",
+      "verified_requirement_count": 4
+    },
+    {
+      "requirement_count": 4,
+      "requirement_ids": [
+        "S11-AC01",
+        "S11-AC02",
+        "S11-AC03",
+        "S11-AC04"
+      ],
+      "stage_id": "S11",
+      "status": "VERIFIED",
+      "verified_requirement_count": 4
+    },
+    {
+      "requirement_count": 4,
+      "requirement_ids": [
+        "S12-AC01",
+        "S12-AC02",
+        "S12-AC03",
+        "S12-AC04"
+      ],
+      "stage_id": "S12",
+      "status": "VERIFIED",
+      "verified_requirement_count": 4
+    },
+    {
+      "requirement_count": 5,
+      "requirement_ids": [
+        "S13-AC01",
+        "S13-AC02",
+        "S13-AC03",
+        "S13-AC04",
+        "S13-AC05"
+      ],
+      "stage_id": "S13",
+      "status": "VERIFIED",
+      "verified_requirement_count": 5
+    },
+    {
+      "requirement_count": 5,
+      "requirement_ids": [
+        "S14-AC01",
+        "S14-AC02",
+        "S14-AC03",
+        "S14-AC04",
+        "S14-AC05"
+      ],
+      "stage_id": "S14",
+      "status": "VERIFIED",
+      "verified_requirement_count": 5
+    }
+  ],
+  "status": "PASS",
+  "verified_commit": "12734c10bf37ee7afc86d62f72e70369a1bcd732"
+}

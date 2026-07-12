@@ -1,7 +1,16 @@
 import * as THREE from "three";
 import { memoryStarfieldFixture, type MemoryClusterFixture } from "./fixture";
+import {
+  FLOW_FIELD_SHADER_CONTRACT,
+  STARFIELD_FRAGMENT_SHADER,
+  STARFIELD_VERTEX_SHADER,
+  buildFlowFieldVector,
+} from "./shaders/flowField";
 
 type Quality = "high" | "mid" | "low";
+
+const STAGE4_PHASE2_SPIKE_VERSION = "memory_starfield_c3_spike.v1_1_7_stage4_phase2";
+const TRAJECTORY_TRAIL_COUNT = 384;
 
 type ParticleSystemState = {
   positions: Float32Array;
@@ -13,11 +22,17 @@ type ParticleSystemState = {
 };
 
 type SpikeMetrics = {
+  spikeVersion: typeof STAGE4_PHASE2_SPIKE_VERSION;
   particleCount: number;
   fps: number;
   quality: Quality;
   hoveredClusterId: string | null;
   consoleErrors: number;
+  flowFieldMode: "curl_noise_shader";
+  trajectoryTrailCount: number;
+  gravitySourceCount: number;
+  hoverCardMode: "B2";
+  smokeComplete: boolean;
 };
 
 declare global {
@@ -25,6 +40,7 @@ declare global {
     __memoryStarfieldSpike?: {
       metrics: SpikeMetrics;
       fixture: typeof memoryStarfieldFixture;
+      getClusterScreenPosition: (clusterId: string) => { x: number; y: number } | null;
     };
   }
 }
@@ -42,22 +58,33 @@ const qualityReadoutElement = requireElement<HTMLElement>("qualityReadout");
 const qualityControl = requireElement<HTMLSelectElement>("qualityControl");
 const flowControl = requireElement<HTMLInputElement>("flowControl");
 const reducedMotionControl = requireElement<HTMLInputElement>("reducedMotionControl");
+const particleTrailCountElement = requireElement<HTMLElement>("particleTrailCount");
+const gravitySourceCountElement = requireElement<HTMLElement>("gravitySourceCount");
+const hoverCardModeElement = requireElement<HTMLElement>("hoverCardMode");
 const hoverCard = requireElement<HTMLElement>("hoverCard");
 const smokeStatus = requireElement<HTMLElement>("smokeStatus");
 const smokeMode = new URLSearchParams(window.location.search).get("smoke") === "1";
 const smokeMaxFrames = 96;
+const clusters = memoryStarfieldFixture.clusters;
 
 const metrics: SpikeMetrics = {
+  spikeVersion: STAGE4_PHASE2_SPIKE_VERSION,
   particleCount: PARTICLE_COUNTS.mid,
   fps: 0,
   quality: "mid",
   hoveredClusterId: null,
   consoleErrors: 0,
+  flowFieldMode: "curl_noise_shader",
+  trajectoryTrailCount: TRAJECTORY_TRAIL_COUNT,
+  gravitySourceCount: clusters.filter((cluster) => cluster.mass >= 0.5).length,
+  hoverCardMode: "B2",
+  smokeComplete: false,
 };
 
 window.__memoryStarfieldSpike = {
   metrics,
   fixture: memoryStarfieldFixture,
+  getClusterScreenPosition: screenPositionForCluster,
 };
 
 window.addEventListener("error", () => {
@@ -80,7 +107,6 @@ const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2(99, 99);
 const clock = new THREE.Clock();
 const clusterObjects: THREE.Mesh[] = [];
-const clusters = memoryStarfieldFixture.clusters;
 
 const ambientLight = new THREE.AmbientLight(0xc8e6ff, 0.78);
 scene.add(ambientLight);
@@ -104,6 +130,9 @@ for (const cluster of clusters) {
 
 const nebula = createNebulaDust(1800);
 scene.add(nebula);
+
+const trajectoryTrails = createParticleTrailLines(TRAJECTORY_TRAIL_COUNT);
+scene.add(trajectoryTrails);
 
 let particleSystem = createParticleSystem(metrics.particleCount);
 scene.add(particleSystem.points);
@@ -137,9 +166,10 @@ function animate() {
   const reducedMotion = reducedMotionControl.checked;
   const flowScale = Number(flowControl.value) * (reducedMotion ? 0.25 : 1);
 
+  updateParticleShaderUniforms(particleSystem, elapsed, flowScale, reducedMotion);
   simulationFrame += 1;
   if (simulationFrame % 2 === 0) {
-    updateParticles(particleSystem, elapsed, delta * 2, flowScale);
+    updateParticles(particleSystem, elapsed, delta * 2, flowScale, reducedMotion);
   }
   updateSceneMotion(elapsed, reducedMotion);
   updateHover();
@@ -150,6 +180,7 @@ function animate() {
   if (smokeMode && totalFrames >= smokeMaxFrames) {
     const elapsedMs = Math.max(1, performance.now() - animationStart);
     metrics.fps = Math.max(metrics.fps, Math.round((totalFrames / elapsedMs) * 1000));
+    metrics.smokeComplete = true;
     syncMetrics();
     return;
   }
@@ -164,6 +195,7 @@ function createParticleSystem(count: number): ParticleSystemState {
   const positions = new Float32Array(count * 3);
   const velocities = new Float32Array(count * 3);
   const colors = new Float32Array(count * 3);
+  const particlePhases = new Float32Array(count);
   const clusterIndexes = new Uint16Array(count);
   const phases = new Float32Array(count);
   const totalMass = clusters.reduce((sum, cluster) => sum + cluster.mass, 0);
@@ -192,29 +224,57 @@ function createParticleSystem(count: number): ParticleSystemState {
     colors[index * 3 + 2] = color.b;
     clusterIndexes[index] = clusterIndex;
     phases[index] = seededRandom(index, 31) * Math.PI * 2;
+    particlePhases[index] = phases[index];
   }
 
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3).setUsage(THREE.DynamicDrawUsage));
   geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+  geometry.setAttribute("particlePhase", new THREE.BufferAttribute(particlePhases, 1));
 
-  const material = new THREE.PointsMaterial({
-    size: 0.028,
-    sizeAttenuation: true,
-    vertexColors: true,
+  const material = new THREE.ShaderMaterial({
+    uniforms: {
+      uTime: { value: 0 },
+      uFlowStrength: { value: 1 },
+      uReducedMotion: { value: 0 },
+      uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
+    },
+    vertexShader: STARFIELD_VERTEX_SHADER,
+    fragmentShader: STARFIELD_FRAGMENT_SHADER,
     transparent: true,
-    opacity: 0.86,
     depthWrite: false,
     blending: THREE.AdditiveBlending,
+    vertexColors: true,
   });
 
   const points = new THREE.Points(geometry, material);
-  points.name = "Memory starfield particles";
+  points.name = "Memory starfield particles · GPU particle spike · Flow Field / Curl Noise";
 
   return { positions, velocities, clusterIndexes, phases, geometry, points };
 }
 
-function updateParticles(state: ParticleSystemState, elapsed: number, delta: number, flowScale: number) {
+function updateParticleShaderUniforms(
+  state: ParticleSystemState,
+  elapsed: number,
+  flowScale: number,
+  reducedMotion: boolean,
+) {
+  const material = state.points.material;
+  if (material instanceof THREE.ShaderMaterial) {
+    material.uniforms.uTime.value = elapsed;
+    material.uniforms.uFlowStrength.value = flowScale;
+    material.uniforms.uReducedMotion.value = reducedMotion ? 1 : 0;
+    material.uniforms.uPixelRatio.value = Math.min(window.devicePixelRatio, 2);
+  }
+}
+
+function updateParticles(
+  state: ParticleSystemState,
+  elapsed: number,
+  delta: number,
+  flowScale: number,
+  reducedMotion: boolean,
+) {
   const positions = state.positions;
   const velocities = state.velocities;
   const speed = 18 * delta;
@@ -232,15 +292,17 @@ function updateParticles(state: ParticleSystemState, elapsed: number, delta: num
     const distSq = Math.max(0.12, dx * dx + dy * dy + dz * dz);
     const gravity = (0.00038 + cluster.mass * 0.00019) / distSq;
     const phase = state.phases[index] + elapsed * 0.42;
-    const curlX = Math.sin(py * 1.7 + phase) * 0.0009;
-    const curlY = Math.cos((px + pz) * 1.3 + phase) * 0.00042;
-    const curlZ = Math.sin(px * 1.5 - phase) * 0.0009;
+    const flowVector = buildFlowFieldVector({ x: px, y: py, z: pz }, phase, elapsed, flowScale, reducedMotion);
     const blackHoleFactor = cluster.kind === "black_hole" ? 1.9 : 1;
     const protoFactor = cluster.kind === "proto_star" ? 1.35 : 1;
+    const gravityCaptureRadius = 0.12;
+    const orbitDamping = 0.992 * (0.94 + cluster.orbitStability * 0.06);
+    const minGravityDistance = Math.max(gravityCaptureRadius, distSq);
 
-    velocities[offset] = (velocities[offset] + dx * gravity * blackHoleFactor + curlX * flowScale * protoFactor) * 0.992;
-    velocities[offset + 1] = (velocities[offset + 1] + dy * gravity * 0.6 + curlY * flowScale) * 0.992;
-    velocities[offset + 2] = (velocities[offset + 2] + dz * gravity * blackHoleFactor + curlZ * flowScale * protoFactor) * 0.992;
+    // Cluster Gravity: clamp the minimum distance so particles orbit instead of collapsing into a source.
+    velocities[offset] = (velocities[offset] + (dx * gravity * blackHoleFactor) / minGravityDistance + flowVector.x * protoFactor) * orbitDamping;
+    velocities[offset + 1] = (velocities[offset + 1] + (dy * gravity * 0.6) / minGravityDistance + flowVector.y) * orbitDamping;
+    velocities[offset + 2] = (velocities[offset + 2] + (dz * gravity * blackHoleFactor) / minGravityDistance + flowVector.z * protoFactor) * orbitDamping;
     positions[offset] += velocities[offset] * speed;
     positions[offset + 1] += velocities[offset + 1] * speed;
     positions[offset + 2] += velocities[offset + 2] * speed;
@@ -282,6 +344,46 @@ function createClusterMarker(cluster: MemoryClusterFixture) {
   }
 
   return mesh;
+}
+
+function createParticleTrailLines(trailCount: number) {
+  const positions = new Float32Array(trailCount * 2 * 3);
+  const colors = new Float32Array(trailCount * 2 * 3);
+
+  for (let index = 0; index < trailCount; index += 1) {
+    const cluster = clusters[index % clusters.length];
+    const clusterPosition = new THREE.Vector3().fromArray(cluster.position);
+    const angle = seededRandom(index, 53) * Math.PI * 2;
+    const radius = 0.35 + seededRandom(index, 59) * (1.1 + cluster.mass);
+    const arc = 0.18 + cluster.flowInfluence * 0.32;
+    const start = new THREE.Vector3(
+      clusterPosition.x + Math.cos(angle) * radius,
+      clusterPosition.y + (seededRandom(index, 61) - 0.5) * 0.38,
+      clusterPosition.z + Math.sin(angle) * radius * 0.68,
+    );
+    const end = new THREE.Vector3(
+      clusterPosition.x + Math.cos(angle + arc) * radius,
+      start.y + (seededRandom(index, 67) - 0.5) * 0.08,
+      clusterPosition.z + Math.sin(angle + arc) * radius * 0.68,
+    );
+    const color = new THREE.Color(cluster.color).lerp(new THREE.Color("#dff7ff"), 0.22);
+    const offset = index * 6;
+    positions.set([start.x, start.y, start.z, end.x, end.y, end.z], offset);
+    colors.set([color.r, color.g, color.b, color.r, color.g, color.b], offset);
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+  const material = new THREE.LineBasicMaterial({
+    transparent: true,
+    opacity: 0.28,
+    vertexColors: true,
+    blending: THREE.AdditiveBlending,
+  });
+  const lines = new THREE.LineSegments(geometry, material);
+  lines.name = "particle_trails · Flow Field / Curl Noise trajectories";
+  return lines;
 }
 
 function createGravitationalDisk() {
@@ -337,6 +439,7 @@ function updateSceneMotion(elapsed: number, reducedMotion: boolean) {
   const motion = reducedMotion ? 0.08 : 1;
   disk.rotation.z = elapsed * 0.025 * motion;
   nebula.rotation.y = elapsed * 0.012 * motion;
+  trajectoryTrails.rotation.y = elapsed * 0.016 * motion;
   particleSystem.points.rotation.y = Math.sin(elapsed * 0.08) * 0.04 * motion;
   for (const marker of clusterObjects) {
     marker.rotation.y += 0.004 * motion;
@@ -348,7 +451,8 @@ function updateSceneMotion(elapsed: number, reducedMotion: boolean) {
 function updateHover() {
   raycaster.setFromCamera(pointer, camera);
   const hits = raycaster.intersectObjects(clusterObjects, true);
-  const clusterId = hits.find((hit) => findClusterByChild(hit.object))?.object ? findClusterByChild(hits[0].object)?.userData.clusterId as string | undefined : undefined;
+  const hitCluster = hits.map((hit) => findClusterByChild(hit.object)).find((item): item is THREE.Mesh => Boolean(item));
+  const clusterId = hitCluster?.userData.clusterId as string | undefined;
   const cluster = clusterId ? clusters.find((item) => item.id === clusterId) : null;
 
   if (!cluster) {
@@ -360,7 +464,7 @@ function updateHover() {
 
   metrics.hoveredClusterId = cluster.id;
   hoverCard.dataset.empty = "false";
-  hoverCard.innerHTML = `<h2>${cluster.label}</h2><p>${cluster.summary}</p><p>Kind: ${cluster.kind} · Confidence: ${Math.round(cluster.confidence * 100)}% · Evidence: ${cluster.evidenceCount}</p>`;
+  hoverCard.innerHTML = `<h2>${cluster.label}</h2><p>${cluster.summary}</p><p>Kind: ${cluster.kind} · Confidence: ${Math.round(cluster.confidence * 100)}% · Evidence: ${cluster.evidenceCount}</p><p>Importance: ${Math.round(cluster.importance * 100)}% · Priority: ${cluster.priority} · Terrain: ${cluster.terrainClass}</p>`;
 }
 
 function findClusterByChild(object: THREE.Object3D): THREE.Mesh | null {
@@ -403,13 +507,27 @@ function syncMetrics() {
   particleCountElement.textContent = String(metrics.particleCount);
   fpsReadoutElement.textContent = String(metrics.fps);
   qualityReadoutElement.textContent = metrics.quality;
+  particleTrailCountElement.textContent = String(metrics.trajectoryTrailCount);
+  gravitySourceCountElement.textContent = String(metrics.gravitySourceCount);
+  hoverCardModeElement.textContent = metrics.hoverCardMode;
   smokeStatus.textContent = JSON.stringify({
     ...metrics,
+    flowFieldShaderContract: FLOW_FIELD_SHADER_CONTRACT,
     fixtureSchemaVersion: memoryStarfieldFixture.schemaVersion,
     rawPrivateDataIncluded: memoryStarfieldFixture.rawPrivateDataIncluded,
     plaintextSecretsIncluded: memoryStarfieldFixture.plaintextSecretsIncluded,
     localAbsolutePathsIncluded: memoryStarfieldFixture.localAbsolutePathsIncluded,
   });
+}
+
+function screenPositionForCluster(clusterId: string) {
+  const marker = clusterObjects.find((item) => item.userData.clusterId === clusterId);
+  if (!marker) return null;
+  const projected = marker.getWorldPosition(new THREE.Vector3()).project(camera);
+  return {
+    x: (projected.x * 0.5 + 0.5) * window.innerWidth,
+    y: (-projected.y * 0.5 + 0.5) * window.innerHeight,
+  };
 }
 
 function weightedClusterIndex(unitValue: number, totalMass: number) {

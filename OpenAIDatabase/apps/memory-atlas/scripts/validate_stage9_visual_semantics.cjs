@@ -231,7 +231,7 @@ async function validateBrowserVisualSemantics() {
       galaxyState,
     );
 
-    await page.getByRole("button", { name: /时间轴/ }).click({ timeout: 5000 });
+    await page.locator('[data-nav-view="timeline"]').click({ timeout: 5000 });
     await page.waitForSelector('.content-grid[data-view="timeline"]', { timeout: 20000 });
     await page.waitForSelector('.memory-river-canvas[data-roi-gradient="capability-growth"]', { timeout: 20000 });
     const riverState = await page.evaluate(() => ({

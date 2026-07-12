@@ -140,6 +140,7 @@ def build_v024_data_source_scan(
         "phase_id": PHASE_ID,
         "status": _map_status(audit.get("status")),
         "source_type": audit.get("source_type"),
+        "storage_mode": audit.get("storage_mode"),
         "data_root": audit.get("data_root"),
         "transactions_path": audit.get("transactions_path"),
         "manifest_path": audit.get("manifest_path"),
@@ -172,6 +173,7 @@ def build_v024_read_model_status(
         "source": {
             "type": scan["source_type"],
             "status": scan["status"],
+            "storage_mode": scan["storage_mode"],
             "data_root": scan["data_root"],
             "transactions_path": scan["transactions_path"],
             "manifest_path": scan["manifest_path"],

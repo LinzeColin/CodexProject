@@ -1,0 +1,499 @@
+{
+  "acceptance_id": "ACC-MA-V12-S13P1",
+  "applies_proposals": false,
+  "as_of": "2026-07-08T08:43:29Z",
+  "config_path": "机器治理/运行门禁/proposal_state_machine.v1_2_s13_p1.json",
+  "contract_version": "proposal_state_machine.v1_2_s13_p1",
+  "decision_debt_links": [
+    {
+      "decision_area_zh": "项目：Finance",
+      "decision_debt_id": "s09p3_debt_565687d8fce6",
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一条包含 owner、交付件、验收标准和归档条件的记录。",
+        "owner_role": "human_owner",
+        "step_zh": "为「项目：Finance」写一条最小交付件定义，并决定继续推进或归档。",
+        "stop_condition_zh": "如果 30 分钟内无法写出交付件和验收标准，则标记为暂不推进。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "proposal_id": "proposal_113e7e6167df"
+    },
+    {
+      "decision_area_zh": "项目：Finance",
+      "decision_debt_id": "s09p3_debt_565687d8fce6",
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一条包含 owner、交付件、验收标准和归档条件的记录。",
+        "owner_role": "human_owner",
+        "step_zh": "为「项目：Finance」写一条最小交付件定义，并决定继续推进或归档。",
+        "stop_condition_zh": "如果 30 分钟内无法写出交付件和验收标准，则标记为暂不推进。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "proposal_id": "proposal_a751d74b38e1"
+    },
+    {
+      "decision_area_zh": "自动化与流程治理",
+      "decision_debt_id": "s09p3_debt_fb7e2d9bb46c",
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一条包含 owner、交付件、验收标准和归档条件的记录。",
+        "owner_role": "human_owner",
+        "step_zh": "为「自动化与流程治理」写一条最小交付件定义，并决定继续推进或归档。",
+        "stop_condition_zh": "如果 30 分钟内无法写出交付件和验收标准，则标记为暂不推进。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "proposal_id": "proposal_113e7e6167df"
+    },
+    {
+      "decision_area_zh": "自动化与流程治理",
+      "decision_debt_id": "s09p3_debt_fb7e2d9bb46c",
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一条包含 owner、交付件、验收标准和归档条件的记录。",
+        "owner_role": "human_owner",
+        "step_zh": "为「自动化与流程治理」写一条最小交付件定义，并决定继续推进或归档。",
+        "stop_condition_zh": "如果 30 分钟内无法写出交付件和验收标准，则标记为暂不推进。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "proposal_id": "proposal_a751d74b38e1"
+    },
+    {
+      "decision_area_zh": "风险、合规与治理",
+      "decision_debt_id": "s09p3_debt_8cbee88deee3",
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一条包含 owner、交付件、验收标准和归档条件的记录。",
+        "owner_role": "human_owner",
+        "step_zh": "为「风险、合规与治理」写一条最小交付件定义，并决定继续推进或归档。",
+        "stop_condition_zh": "如果 30 分钟内无法写出交付件和验收标准，则标记为暂不推进。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "proposal_id": "proposal_113e7e6167df"
+    },
+    {
+      "decision_area_zh": "风险、合规与治理",
+      "decision_debt_id": "s09p3_debt_8cbee88deee3",
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一条包含 owner、交付件、验收标准和归档条件的记录。",
+        "owner_role": "human_owner",
+        "step_zh": "为「风险、合规与治理」写一条最小交付件定义，并决定继续推进或归档。",
+        "stop_condition_zh": "如果 30 分钟内无法写出交付件和验收标准，则标记为暂不推进。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "proposal_id": "proposal_a751d74b38e1"
+    },
+    {
+      "decision_area_zh": "项目：Notion",
+      "decision_debt_id": "s09p3_debt_9862822d9e17",
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一条包含 owner、交付件、验收标准和归档条件的记录。",
+        "owner_role": "human_owner",
+        "step_zh": "为「项目：Notion」写一条最小交付件定义，并决定继续推进或归档。",
+        "stop_condition_zh": "如果 30 分钟内无法写出交付件和验收标准，则标记为暂不推进。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "proposal_id": "proposal_113e7e6167df"
+    },
+    {
+      "decision_area_zh": "项目：Notion",
+      "decision_debt_id": "s09p3_debt_9862822d9e17",
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一条包含 owner、交付件、验收标准和归档条件的记录。",
+        "owner_role": "human_owner",
+        "step_zh": "为「项目：Notion」写一条最小交付件定义，并决定继续推进或归档。",
+        "stop_condition_zh": "如果 30 分钟内无法写出交付件和验收标准，则标记为暂不推进。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "proposal_id": "proposal_a751d74b38e1"
+    },
+    {
+      "decision_area_zh": "财务与价值分析",
+      "decision_debt_id": "s09p3_debt_d98218e06b5a",
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一条包含 owner、交付件、验收标准和归档条件的记录。",
+        "owner_role": "human_owner",
+        "step_zh": "为「财务与价值分析」写一条最小交付件定义，并决定继续推进或归档。",
+        "stop_condition_zh": "如果 30 分钟内无法写出交付件和验收标准，则标记为暂不推进。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "proposal_id": "proposal_113e7e6167df"
+    },
+    {
+      "decision_area_zh": "财务与价值分析",
+      "decision_debt_id": "s09p3_debt_d98218e06b5a",
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一条包含 owner、交付件、验收标准和归档条件的记录。",
+        "owner_role": "human_owner",
+        "step_zh": "为「财务与价值分析」写一条最小交付件定义，并决定继续推进或归档。",
+        "stop_condition_zh": "如果 30 分钟内无法写出交付件和验收标准，则标记为暂不推进。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "proposal_id": "proposal_a751d74b38e1"
+    },
+    {
+      "decision_area_zh": "经营与管理决策",
+      "decision_debt_id": "s09p3_debt_d3c51495b3de",
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一条包含 owner、交付件、验收标准和归档条件的记录。",
+        "owner_role": "human_owner",
+        "step_zh": "为「经营与管理决策」写一条最小交付件定义，并决定继续推进或归档。",
+        "stop_condition_zh": "如果 30 分钟内无法写出交付件和验收标准，则标记为暂不推进。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "proposal_id": "proposal_113e7e6167df"
+    },
+    {
+      "decision_area_zh": "经营与管理决策",
+      "decision_debt_id": "s09p3_debt_d3c51495b3de",
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一条包含 owner、交付件、验收标准和归档条件的记录。",
+        "owner_role": "human_owner",
+        "step_zh": "为「经营与管理决策」写一条最小交付件定义，并决定继续推进或归档。",
+        "stop_condition_zh": "如果 30 分钟内无法写出交付件和验收标准，则标记为暂不推进。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "proposal_id": "proposal_a751d74b38e1"
+    },
+    {
+      "decision_area_zh": "产品、设计与可视化",
+      "decision_debt_id": "s09p3_debt_227436b527ca",
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一个可复用入口或完成标准片段。",
+        "owner_role": "human_owner",
+        "step_zh": "为「产品、设计与可视化」补一条完成标准和复用入口，避免下一轮重复返工。",
+        "stop_condition_zh": "如果找不到可复用入口，只保留一次性完成标准，不继续扩展。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "proposal_id": "proposal_774984d13e58"
+    },
+    {
+      "decision_area_zh": "产品、设计与可视化",
+      "decision_debt_id": "s09p3_debt_227436b527ca",
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一个可复用入口或完成标准片段。",
+        "owner_role": "human_owner",
+        "step_zh": "为「产品、设计与可视化」补一条完成标准和复用入口，避免下一轮重复返工。",
+        "stop_condition_zh": "如果找不到可复用入口，只保留一次性完成标准，不继续扩展。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "proposal_id": "proposal_23b186877463"
+    },
+    {
+      "decision_area_zh": "风险、合规与治理",
+      "decision_debt_id": "s09p3_debt_5c5e3982713e",
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一个可复用入口或完成标准片段。",
+        "owner_role": "human_owner",
+        "step_zh": "为「风险、合规与治理」补一条完成标准和复用入口，避免下一轮重复返工。",
+        "stop_condition_zh": "如果找不到可复用入口，只保留一次性完成标准，不继续扩展。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "proposal_id": "proposal_774984d13e58"
+    },
+    {
+      "decision_area_zh": "风险、合规与治理",
+      "decision_debt_id": "s09p3_debt_5c5e3982713e",
+      "minimal_next_step": {
+        "effort_minutes_max": 30,
+        "expected_artifact_zh": "一个可复用入口或完成标准片段。",
+        "owner_role": "human_owner",
+        "step_zh": "为「风险、合规与治理」补一条完成标准和复用入口，避免下一轮重复返工。",
+        "stop_condition_zh": "如果找不到可复用入口，只保留一次性完成标准，不继续扩展。",
+        "validation_zh": "下一轮只检查该最小交付件是否存在，不展开为压力清单。"
+      },
+      "proposal_id": "proposal_23b186877463"
+    }
+  ],
+  "dry_run": false,
+  "output_contract": {
+    "machine_config": "机器治理/运行门禁/proposal_state_machine.v1_2_s13_p1.json",
+    "next_phase": "S13 P2",
+    "report": "data/derived/proposals/proposal_state_machine_report.json"
+  },
+  "output_path": "data/derived/proposals/proposal_state_machine_report.json",
+  "phase_boundary": {
+    "does_not_apply_proposals": true,
+    "does_not_execute_rollback": true,
+    "does_not_generate_diff_narrator": true,
+    "does_not_modify_raw": true,
+    "does_not_push_remote": true,
+    "does_not_upload_github_main": true,
+    "next_phase": "S13 P2"
+  },
+  "proposal_expiry": {
+    "archive_after_days": 90,
+    "expired_proposals_cannot_enter_applying": true,
+    "integrated": true,
+    "stale_after_days": 30,
+    "warn_after_days": 7
+  },
+  "proposals": [
+    {
+      "action_half_life_days": 45,
+      "allowed_next_states": [
+        "approved_by_human",
+        "rollback_or_needs_revision"
+      ],
+      "apply_execution_allowed": false,
+      "approval_status": "not_approved",
+      "current_state": "pending_human_review",
+      "expires_at": "2026-08-07T08:18:30Z",
+      "expiry_bucket": "active",
+      "forbidden_target_hits": [],
+      "proposal_id": "proposal_774984d13e58",
+      "raw_apply_target_allowed": false,
+      "requires_human_approval_before_applying": true,
+      "rollback_plan_zh": "当前 phase 未写目标文件；若后续 proposal 被采纳，使用对应 commit 的 git revert 或 proposal rollback。",
+      "source": "self_iteration_suggestions",
+      "source_suggestion_id": "self_iter_memory_a39afeb2bc01",
+      "target_files": [
+        ".codex/memories/extensions/ad_hoc/notes/"
+      ],
+      "target_type": "memory",
+      "unauthorized_apply_blocked": true,
+      "validation_commands": [
+        "python OpenAIDatabase/scripts/atlasctl.py audit --check self-iteration-safety",
+        "pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:v1.2-s09-p2"
+      ]
+    },
+    {
+      "action_half_life_days": 30,
+      "allowed_next_states": [
+        "approved_by_human",
+        "rollback_or_needs_revision"
+      ],
+      "apply_execution_allowed": false,
+      "approval_status": "not_approved",
+      "current_state": "pending_human_review",
+      "expires_at": "2026-08-07T08:18:30Z",
+      "expiry_bucket": "active",
+      "forbidden_target_hits": [],
+      "proposal_id": "proposal_23b186877463",
+      "raw_apply_target_allowed": false,
+      "requires_human_approval_before_applying": true,
+      "rollback_plan_zh": "当前 phase 未写目标文件；若后续 proposal 被采纳，使用对应 commit 的 git revert 或 proposal rollback。",
+      "source": "self_iteration_suggestions",
+      "source_suggestion_id": "self_iter_config_452697c82264",
+      "target_files": [
+        "OpenAIDatabase/scripts/",
+        "OpenAIDatabase/apps/memory-atlas/scripts/"
+      ],
+      "target_type": "config",
+      "unauthorized_apply_blocked": true,
+      "validation_commands": [
+        "python OpenAIDatabase/scripts/atlasctl.py audit --check self-iteration-safety",
+        "pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:v1.2-s09-p2"
+      ]
+    },
+    {
+      "action_half_life_days": 21,
+      "allowed_next_states": [
+        "approved_by_human",
+        "rollback_or_needs_revision"
+      ],
+      "apply_execution_allowed": false,
+      "approval_status": "not_approved",
+      "current_state": "pending_human_review",
+      "expires_at": "2026-08-07T08:18:30Z",
+      "expiry_bucket": "active",
+      "forbidden_target_hits": [],
+      "proposal_id": "proposal_7bd8a6c96e61",
+      "raw_apply_target_allowed": false,
+      "requires_human_approval_before_applying": true,
+      "rollback_plan_zh": "当前 phase 未写目标文件；若后续 proposal 被采纳，使用对应 commit 的 git revert 或 proposal rollback。",
+      "source": "self_iteration_suggestions",
+      "source_suggestion_id": "self_iter_agents_5ac6261d70fe",
+      "target_files": [
+        "AGENTS.md",
+        "OpenAIDatabase/开发记录.md"
+      ],
+      "target_type": "AGENTS",
+      "unauthorized_apply_blocked": true,
+      "validation_commands": [
+        "python OpenAIDatabase/scripts/atlasctl.py audit --check self-iteration-safety",
+        "pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:v1.2-s09-p2"
+      ]
+    },
+    {
+      "action_half_life_days": 14,
+      "allowed_next_states": [
+        "approved_by_human",
+        "rollback_or_needs_revision"
+      ],
+      "apply_execution_allowed": false,
+      "approval_status": "not_approved",
+      "current_state": "pending_human_review",
+      "expires_at": "2026-08-07T08:18:30Z",
+      "expiry_bucket": "active",
+      "forbidden_target_hits": [],
+      "proposal_id": "proposal_113e7e6167df",
+      "raw_apply_target_allowed": false,
+      "requires_human_approval_before_applying": true,
+      "rollback_plan_zh": "当前 phase 未写目标文件；若后续 proposal 被采纳，使用对应 commit 的 git revert 或 proposal rollback。",
+      "source": "self_iteration_suggestions",
+      "source_suggestion_id": "self_iter_style_bacfc2ea0ab5",
+      "target_files": [
+        "OpenAIDatabase/人类可读/"
+      ],
+      "target_type": "style",
+      "unauthorized_apply_blocked": true,
+      "validation_commands": [
+        "python OpenAIDatabase/scripts/atlasctl.py audit --check self-iteration-safety",
+        "pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:v1.2-s09-p2"
+      ]
+    },
+    {
+      "action_half_life_days": 21,
+      "allowed_next_states": [
+        "approved_by_human",
+        "rollback_or_needs_revision"
+      ],
+      "apply_execution_allowed": false,
+      "approval_status": "not_approved",
+      "current_state": "pending_human_review",
+      "expires_at": "2026-08-07T08:18:30Z",
+      "expiry_bucket": "active",
+      "forbidden_target_hits": [],
+      "proposal_id": "proposal_a751d74b38e1",
+      "raw_apply_target_allowed": false,
+      "requires_human_approval_before_applying": true,
+      "rollback_plan_zh": "当前 phase 未写目标文件；若后续 proposal 被采纳，使用对应 commit 的 git revert 或 proposal rollback。",
+      "source": "self_iteration_suggestions",
+      "source_suggestion_id": "self_iter_personalization_0ffe0fc24ec9",
+      "target_files": [
+        "OpenAIDatabase/人类可读/",
+        "OpenAIDatabase/docs/reviews/"
+      ],
+      "target_type": "personalization",
+      "unauthorized_apply_blocked": true,
+      "validation_commands": [
+        "python OpenAIDatabase/scripts/atlasctl.py audit --check self-iteration-safety",
+        "pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:v1.2-s09-p2"
+      ]
+    }
+  ],
+  "raw_mutation": false,
+  "schema_version": "openai_database.proposal_state_machine.v1_2_s13_p1",
+  "source_reports": [
+    "data/derived/behavior_intelligence/self_iteration_suggestions.json",
+    "data/derived/behavior_intelligence/decision_debt_ledger.json",
+    "data/derived/agent_collaboration/agent_authorization_boundary_report.json"
+  ],
+  "state_machine": {
+    "apply_execution_deferred_to": "S13 P3",
+    "current_phase_executes_apply": false,
+    "diff_narrator_deferred_to": "S13 P2",
+    "failure_path": [
+      "failed_validation",
+      "rollback_or_needs_revision"
+    ],
+    "human_approval_required_before_applying": true,
+    "states": [
+      "draft",
+      "pending_human_review",
+      "approved_by_human",
+      "applying",
+      "applied",
+      "validated",
+      "committed",
+      "failed_validation",
+      "rollback_or_needs_revision"
+    ],
+    "terminal_states": [
+      "committed",
+      "rollback_or_needs_revision"
+    ],
+    "transitions": [
+      {
+        "from": "draft",
+        "requires": "proposal_required_fields_complete",
+        "to": "pending_human_review"
+      },
+      {
+        "from": "pending_human_review",
+        "requires": "human_approval",
+        "to": "approved_by_human"
+      },
+      {
+        "from": "pending_human_review",
+        "requires": "human_rejects_or_expiry_archive",
+        "to": "rollback_or_needs_revision"
+      },
+      {
+        "from": "approved_by_human",
+        "requires": "S13_P3_apply_command_and_clean_rollback_point",
+        "to": "applying"
+      },
+      {
+        "from": "applying",
+        "requires": "patch_applied_to_allowed_targets",
+        "to": "applied"
+      },
+      {
+        "from": "applied",
+        "requires": "validation_commands_pass",
+        "to": "validated"
+      },
+      {
+        "from": "validated",
+        "requires": "local_commit_created",
+        "to": "committed"
+      },
+      {
+        "from": "applying",
+        "requires": "apply_or_validation_failure",
+        "to": "failed_validation"
+      },
+      {
+        "from": "applied",
+        "requires": "validation_failure",
+        "to": "failed_validation"
+      },
+      {
+        "from": "failed_validation",
+        "requires": "rollback_or_revision_decision",
+        "to": "rollback_or_needs_revision"
+      }
+    ]
+  },
+  "state_machine_version": "proposal_state_machine.v1_2_s13_p1",
+  "status": "phase_s13_p1_proposal_state_machine_completed_pending_s13_p2",
+  "summary": {
+    "all_proposals_have_expiry": true,
+    "current_phase_executes_apply": false,
+    "decision_debt_link_count": 16,
+    "expiry_counts": {
+      "active": 5
+    },
+    "expiry_integrated": true,
+    "forbidden_target_hit_count": 0,
+    "forbidden_target_hits": [],
+    "proposal_apply_execution": false,
+    "proposal_count": 5,
+    "raw_apply_target_allowed": false,
+    "state_counts": {
+      "applied": 0,
+      "applying": 0,
+      "approved_by_human": 0,
+      "committed": 0,
+      "draft": 0,
+      "failed_validation": 0,
+      "pending_human_review": 5,
+      "rollback_or_needs_revision": 0,
+      "validated": 0
+    },
+    "unauthorized_apply_blocked": true
+  },
+  "task_id": "MA-V12-S13P1",
+  "writes_files": true
+}

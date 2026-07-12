@@ -1,12 +1,18 @@
 schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "PFI"
-total_estimated_hours: 20
-completed_estimated_hours: 20
-current_stage_id: "S6"
-current_phase_id: "S6P"
-current_task_id: "S6PZT01"
-next_gate_id: "POST-V0.2-FOLLOW-UP-GATE"
+total_estimated_hours: 25
+completed_estimated_hours: 24
+current_stage_id: "V024-FD"
+current_phase_id: "V024-FD-P1"
+current_task_id: "PFI-V024-FINAL-DELIVERY-20260710"
+next_gate_id: "PFI-V024-FINAL-DELIVERY"
+completion_predicate:
+  evidence_commit_contains_final_records: true
+  product_commit_is_direct_parent: true
+  single_push_required: true
+  post_push_verifier_gate_result: "pass"
+  second_closeout_commit_allowed: false
 stages:
   - stage_id: "S2"
     name: "数据源与低操作自动同步 MVP"
@@ -78,6 +84,76 @@ stages:
             rollback: "Revert this PR."
             current_result: "PFI 根三基入口已改为 .md。"
             completed_version: "0.2.0"
+  - stage_id: "CF-L2"
+    name: "PFI Cloudflare 安全 L2 脱敏财务产品壳"
+    person_goal: "Owner 能通过公开安全的产品表面理解项目能力与边界，同时私密核心保持离线。"
+    status: "completed"
+    estimated_hours: 2
+    estimated_pct: 100
+    stop_conditions:
+      - "真实账户、组合数值、broker credential、order、payment 和 private report 不得进入 public surface。"
+      - "public dist 出现 secret、private/raw/export 数据或本机绝对路径"
+      - "只有 dry-run、Access 登录页或旧 live 页面却宣称当前 commit 已部署"
+    stop_gate:
+      gate_id: "ACC-CF-L2-20260710"
+      pass_criteria:
+        - "安全 L2 adapter build 通过"
+        - "private distribution scan 通过"
+        - "Wrangler dry-run 通过"
+        - "永久 Cloudflare deploy 返回可访问 URL 且 HTTP smoke check 通过"
+      evidence:
+        - "web/cloudflare-public"
+        - "docs/governance/development_events.jsonl"
+        - "docs/governance/project.yaml"
+      failure_action: "blocked"
+    phases:
+      - phase_id: "CF-L2-P1"
+        name: "安全 adapter、验证与永久部署"
+        objective: "交付不读取真实账户、不暴露组合数值、不支持交易或支付的定性 L2 shell。"
+        status: "completed"
+        estimated_hours: 2
+        estimated_pct: 100
+        stop_conditions:
+          - "安全边界或真实性 gate 失败"
+          - "Cloudflare Workers 永久授权不可用"
+        stop_gate:
+          gate_id: "ACC-CF-L2-20260710"
+          pass_criteria:
+            - "repo 配置、build、scan、dry-run 和真实 URL 证据完整"
+          evidence:
+            - "docs/governance/development_events.jsonl"
+            - "docs/governance/project.yaml"
+          failure_action: "remain_blocked"
+        tasks:
+          - task_id: "CF-L2-20260710"
+            name: "Cloudflare Compatibility Envelope L2"
+            objective: "交付不读取真实账户、不暴露组合数值、不支持交易或支付的定性 L2 shell。"
+            status: "completed"
+            estimated_hours: 2
+            estimated_pct: 100
+            dependencies: []
+            acceptance_ids:
+              - "ACC-CF-L2-20260710"
+            acceptance:
+              - acceptance_id: "ACC-CF-L2-20260710"
+                description: "安全 L2 surface 必须永久部署并经 HTTP 验证；不得暴露私密核心或伪造 deploy。"
+                evidence_refs:
+                  - "docs/governance/development_events.jsonl"
+                  - "docs/governance/project.yaml"
+            test_commands:
+              - "npm run build；private dist scan；Wrangler 4.110.0 dry-run；compatibility tests 13/13"
+            test_results:
+              - "adapter build、private scan、desktop/mobile QA、dry-run 与永久 deploy PASS；workers.dev 根页面和 public-surface.json 均为 HTTP 200。"
+            evidence_refs:
+              - "web/cloudflare-public"
+              - "docs/governance/development_events.jsonl"
+              - "docs/governance/project.yaml"
+            risks:
+              - "真实账户、组合数值、broker credential、order、payment 和 private report 不得进入 public surface。"
+              - "认证阻塞期间不得填入虚假 actual_url。"
+            rollback: "删除隔离的 L2 adapter 并回滚本任务治理记录；私密 core 不需要恢复。"
+            current_result: "deployed_workers_dev_domain_pending + http_verified"
+            completed_version: "v0.2.1 前端优化"
           - task_id: "S2PZT01"
             name: "Stage 2 closeout 与本地入口验收"
             objective: "证明 Stage 2 2A-2H acceptance、stop condition、validation、入口和缓存清理均完成。"
@@ -475,3 +551,261 @@ stages:
             rollback: "Revert the Stage 6 closeout commit; keep external repositories untouched and QBVS runtime path unchanged."
             current_result: "Stage 6 local E2E stabilization acceptance complete; production readiness not claimed."
             completed_version: "0.2.0"
+  - stage_id: "V024-R1"
+    name: "v0.2.4 post-overall consistency remediation"
+    person_goal: "在不展开 sparse 私密数据路径的前提下，恢复 v0.2.4 closeout 历史、真实数据 read model 与最新 owner 入口的一致性。"
+    status: "completed"
+    estimated_hours: 1
+    estimated_pct: 100
+    stop_conditions:
+      - "任何修复削弱真实数据验收或使用 mock/sample/synthetic/fixture/demo/fake 财务数据"
+      - "需要展开 MetaDatabase sparse 路径或改写真实财务数据"
+      - "共享治理 renderer 或无关项目产生行为变更"
+      - "执行 GitHub upload 或 app reinstall"
+    stop_gate:
+      gate_id: "ACC-PFI-V024-R1"
+      pass_criteria:
+        - "v0.2.4 closeout facts 由 canonical governance 生成到三份 owner 入口"
+        - "sparse worktree 从当前 Git tree 只读加载 4 个 raw 文件与 8815 条 processed 记录"
+        - "focused v0.2.3/v0.2.4 tests 与全部 test_v024 回归通过"
+        - "check-render drift_count=0 且 reference_issue_count=0"
+      evidence:
+        - "PFI/docs/pfi_v024/POST_OVERALL_CONSISTENCY_REMEDIATION.md"
+        - "PFI/tests/test_v023_stage6_core_metrics.py"
+        - "PFI/tests/test_v024_stage4_phase42_read_model_link.py"
+        - "PFI/tests/test_v024_overall_project_review.py"
+      failure_action: "fix_and_rerun"
+    phases:
+      - phase_id: "V024-R1-P1"
+        name: "canonical history and sparse real-data consistency"
+        objective: "修复 Cloudflare L2 canonical render 覆盖 v0.2.4 owner history，以及 sparse checkout 将 tracked MetaDatabase 误判为缺失的问题。"
+        status: "completed"
+        estimated_hours: 1
+        estimated_pct: 100
+        stop_conditions:
+          - "owner entry 通过手工补写而不是 canonical render"
+          - "真实数据被复制到 PFI/data 或项目工作树"
+          - "Git blob fallback 用于显式自定义 data_root"
+        stop_gate:
+          gate_id: "ACC-PFI-V024-R1"
+          pass_criteria:
+            - "canonical project/roadmap 是 owner render 唯一修改源"
+            - "filesystem 与 git_tree 两种 storage mode 均保持同一 read-model 合同"
+            - "本轮只完成 Phase R1，不执行 overall re-review、upload 或 app reinstall"
+          evidence:
+            - "PFI/docs/pfi_v024/POST_OVERALL_CONSISTENCY_REMEDIATION.md"
+            - "PFI/src/pfi_v02/stage_v023_read_model.py"
+            - "PFI/src/pfi_os/application/read_model_status.py"
+          failure_action: "fix_and_rerun"
+        tasks:
+          - task_id: "PFI-V024-R1-20260710"
+            name: "v0.2.4 overall project review post-closeout consistency remediation"
+            objective: "恢复 v0.2.4 historical closeout owner facts，并让 sparse PFI worktree 只读使用当前 Git tree 中的真实 MetaDatabase/PFI 数据。"
+            status: "completed"
+            estimated_hours: 1
+            estimated_pct: 100
+            dependencies:
+              - "CF-L2-20260710"
+            acceptance_ids:
+              - "ACC-PFI-V024-R1"
+            acceptance:
+              - acceptance_id: "ACC-PFI-V024-R1"
+                description: "owner history、真实数据 read model、v0.2.4 regression 与 check-render 同时通过，且不执行 upload/app reinstall。"
+                evidence_refs:
+                  - "PFI/docs/pfi_v024/POST_OVERALL_CONSISTENCY_REMEDIATION.md"
+                  - "PFI/tests/test_v024_overall_project_review.py"
+                  - "PFI/tests/test_v024_stage4_phase42_read_model_link.py"
+            test_commands:
+              - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v023_stage6_core_metrics.py PFI/tests/test_v024_stage4_phase42_read_model_link.py PFI/tests/test_v024_overall_project_review.py -q"
+              - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_*.py -q"
+              - "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 -B scripts/lean_governance.py check-render --project PFI"
+            test_results:
+              - "v0.2.4 overall project review historical closeout remains pass."
+              - "Stage 8.3 用户验收已由用户回复 `1` 确认。"
+              - "Stage 9.3 用户验收已由用户回复 `1` 确认。"
+              - "future version 未开始。"
+              - "Focused remediation tests: 33 passed."
+              - "v0.2.3 compatibility regression: 200 passed."
+              - "v0.2.4 regression: 219 passed."
+              - "check-render: drift_count=0 / reference_issue_count=0."
+              - "Python compile, Node syntax and git diff --check: pass."
+              - "Independent read-only review: APPROVED / no findings."
+            evidence_refs:
+              - "PFI/docs/pfi_v024/OVERALL_PROJECT_REVIEW.md"
+              - "PFI/docs/pfi_v024/POST_OVERALL_CONSISTENCY_REMEDIATION.md"
+              - "PFI/reports/pfi_v024/overall_project_review/evidence.json"
+            risks:
+              - "Git-tree fallback 仅适用于默认 tracked MetaDatabase/PFI；显式 data_root 继续只读取调用方指定文件系统路径。"
+              - "本轮不证明 app 入口已重装，也不关闭最终交付 goal。"
+            rollback: "回退 Phase R1 canonical governance 与 Git-tree adapter；不修改真实数据或 app bundle。"
+            current_result: "Phase R1 complete locally: canonical v0.2.4 history restored and sparse tracked real-data read model verified; overall re-review/upload/app reinstall remain separate gates."
+            completed_version: "v0.2.4"
+  - stage_id: "V024-RR"
+    name: "v0.2.4 overall re-review"
+    person_goal: "按原 v0.2.3-repair Task Pack/Roadmap 复核 Stage 0-9、Phase R1、真实数据与最终 GitHub/app/local delivery 边界。"
+    status: "completed"
+    estimated_hours: 1
+    estimated_pct: 100
+    stop_conditions:
+      - "Stage 0-9 evidence unit 缺失或 JSON 无法解析"
+      - "真实数据 read flow 非 ready、出现假零或正式 fake financial data"
+      - "把历史 overall upload 误写成当前最终交付完成"
+      - "本轮执行 GitHub upload、app reinstall 或 future version"
+    stop_gate:
+      gate_id: "ACC-PFI-V024-OVERALL-REREVIEW"
+      pass_criteria:
+        - "40 个 Stage 0-9 phase/whole-stage evidence unit 四件套完整且 JSON 可解析"
+        - "v0.2.3/v0.2.4 完整回归、真实数据 audit 与 check-render 通过"
+        - "历史 upload 与当前 final delivery 分离，product goal 未完成"
+        - "最终 GitHub upload、app reinstall 与 GitHub/app/local 三方一致性统一保留到单一 PFI-V024-FINAL-DELIVERY"
+      evidence:
+        - "PFI/docs/pfi_v024/OVERALL_REREVIEW.md"
+        - "PFI/tests/test_v024_overall_rereview.py"
+      failure_action: "fix_and_rerun_without_upload_or_app_reinstall"
+    phases:
+      - phase_id: "V024-RR-P1"
+        name: "Stage 0-9 and final-delivery boundary re-review"
+        objective: "完成当前 package 的本地 overall re-review，并修复历史 closeout 与当前 final delivery 的状态混淆。"
+        status: "completed"
+        estimated_hours: 1
+        estimated_pct: 100
+        stop_conditions:
+          - "修改 PFI/reports、PFI/data、PFI/.venv 或真实财务数据"
+          - "执行 upload、app reinstall 或 future version"
+        stop_gate:
+          gate_id: "ACC-PFI-V024-OVERALL-REREVIEW"
+          pass_criteria:
+            - "machine audit fail closed"
+            - "re-review docs 与 canonical governance 不宣称 product complete"
+            - "独立只读复核无 Critical/Important finding"
+          evidence:
+            - "PFI/docs/pfi_v024/OVERALL_REREVIEW.md"
+            - "PFI/src/pfi_v02/stage_v024_overall_project_review.py"
+          failure_action: "fix_and_rerun"
+        tasks:
+          - task_id: "PFI-V024-OVERALL-REREVIEW-20260710"
+            name: "v0.2.4 overall re-review"
+            objective: "复核 Stage 0-9 与 Phase R1，并将 final upload/app parity 明确保留到独立 final-delivery gate。"
+            status: "completed"
+            estimated_hours: 1
+            estimated_pct: 100
+            dependencies:
+              - "PFI-V024-R1-20260710"
+            acceptance_ids:
+              - "ACC-PFI-V024-OVERALL-REREVIEW"
+            acceptance:
+              - acceptance_id: "ACC-PFI-V024-OVERALL-REREVIEW"
+                description: "Stage evidence、用户确认、完整回归、真实数据和 delivery boundary 同时通过，且本轮不执行 upload/app reinstall。"
+                evidence_refs:
+                  - "PFI/docs/pfi_v024/OVERALL_REREVIEW.md"
+                  - "PFI/tests/test_v024_overall_rereview.py"
+            test_commands:
+              - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_overall_rereview.py -q"
+              - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v023_*.py -q"
+              - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_*.py -q"
+              - "/Users/linzezhang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 -B scripts/lean_governance.py check-render --project PFI"
+            test_results:
+              - "Re-review focused tests: 12 passed."
+              - "v0.2.3 compatibility regression: 200 passed."
+              - "v0.2.4 regression: 231 passed."
+              - "40/40 semantic evidence units and 10/10 whole-stage acceptance checks passed."
+              - "11/11 UI validation manifests and 46/46 PNG decodes passed."
+              - "Real data contract: 4 raw / 8815 processed / 2026-06-03 / canonical hash / Git ref == current HEAD."
+              - "check-render: drift_count=0 / reference_issue_count=0."
+              - "Python compile, Node syntax and git diff --check: pass."
+              - "Independent read-only review: APPROVED / no findings."
+            evidence_refs:
+              - "PFI/docs/pfi_v024/OVERALL_REREVIEW.md"
+              - "PFI/docs/pfi_v024/POST_OVERALL_CONSISTENCY_REMEDIATION.md"
+            risks:
+              - "历史 app/upload evidence 不证明当前 Phase R1/re-review diff 已交付。"
+              - "本 gate 通过也不等于 product goal 完成。"
+            rollback: "回退 re-review contract/tests/governance；保留 Phase R1，不修改真实数据、app 或历史 evidence。"
+            current_result: "Overall re-review pass locally; product goal 未完成，唯一下一 gate 为 PFI-V024-FINAL-DELIVERY。"
+            target_version: "v0.2.4"
+            completed_version: "v0.2.4"
+  - stage_id: "V024-FD"
+    name: "v0.2.4 final delivery"
+    person_goal: "执行当前 repair package 唯一最终 GitHub main upload，重装 app，并证明 GitHub/app/local 一致。"
+    status: "in_progress"
+    estimated_hours: 1
+    estimated_pct: 95
+    stop_conditions:
+      - "origin/main 在 push 前前移或无法 fast-forward"
+      - "任一 app entry 的 codesign、binding、dry-run、full hash 或 code-section hash 不一致"
+      - "runtime app/localhost/disk 或 filename-bound asset hash 不一致"
+      - "PFI/.venv、PFI/data、PFI/reports metadata 发生变化"
+      - "future version、交易密码、券商订单、支付或自动真钱动作"
+    stop_gate:
+      gate_id: "ACC-PFI-V024-FINAL-DELIVERY"
+      pass_criteria:
+        - "product commit 是 evidence commit 的直接父提交"
+        - "v0.2.3/v0.2.4 回归、renderer、compile、Node 和 diff checks 通过"
+        - "三处 app entry 重装，codesign/binding/dry-run 与 deterministic launcher code-section hash 通过"
+        - "只读 current-code browser probe 证明 app/localhost/disk 与 filename-bound assets 一致且无 errors"
+        - "唯一 push 后 HEAD == origin/main == live remote main，worktree clean"
+      evidence:
+        - "PFI/docs/pfi_v024/FINAL_DELIVERY.md"
+        - "PFI/docs/pfi_v024/FINAL_DELIVERY_EVIDENCE.json"
+      failure_action: "stop_without_second_delivery_or_future_version"
+    phases:
+      - phase_id: "V024-FD-P1"
+        name: "single final upload and app parity"
+        objective: "在不修改 PFI/.venv、PFI/data、PFI/reports 的前提下完成唯一最终交付。"
+        status: "in_progress"
+        estimated_hours: 1
+        estimated_pct: 95
+        stop_conditions:
+          - "任何 final-delivery proof 只能由布尔参数或静态自报伪造"
+          - "需要第二次 push 才能修正 tracked records"
+        stop_gate:
+          gate_id: "ACC-PFI-V024-FINAL-DELIVERY"
+          pass_criteria:
+            - "live fail-closed verifier pass"
+            - "independent read-only review APPROVED"
+            - "product goal complete 且 next gate NONE"
+          evidence:
+            - "PFI/src/pfi_v02/stage_v024_final_delivery.py"
+            - "PFI/tests/test_v024_final_delivery.py"
+          failure_action: "fix_locally_before_the_single_push"
+        tasks:
+          - task_id: "PFI-V024-FINAL-DELIVERY-20260710"
+            name: "v0.2.4 final delivery"
+            objective: "冻结 product commit、重装 app、固化 evidence commit，并唯一一次 push 到 GitHub main。"
+            status: "in_progress"
+            estimated_hours: 1
+            estimated_pct: 95
+            dependencies:
+              - "PFI-V024-OVERALL-REREVIEW-20260710"
+            acceptance_ids:
+              - "ACC-PFI-V024-FINAL-DELIVERY"
+            acceptance:
+              - acceptance_id: "ACC-PFI-V024-FINAL-DELIVERY"
+                description: "GitHub main、canonical local PFI 与三处 app entry 由 live git/app/runtime audit 证明一致。"
+                evidence_refs:
+                  - "PFI/docs/pfi_v024/FINAL_DELIVERY.md"
+                  - "PFI/docs/pfi_v024/FINAL_DELIVERY_EVIDENCE.json"
+            test_commands:
+              - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_final_delivery.py -q"
+              - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v023_*.py -q"
+              - "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pytest -p no:cacheprovider PFI/tests/test_v024_*.py -q"
+              - "PFI/scripts/macosAppAcceptanceLite.sh --summary-json"
+              - "node PFI/scripts/validate_v024_final_delivery_read_only.js"
+              - "PYTHONPATH=PFI/src PFI/.venv/bin/python -B -m pfi_v02.stage_v024_final_delivery"
+            test_results:
+              - "Final-delivery focused tests: 11 passed."
+              - "v0.2.3 compatibility regression: 200 passed."
+              - "v0.2.4 regression: 242 passed."
+              - "macOS app acceptance lite: 29 pass / 0 fail / 2 info."
+              - "Read-only runtime probe: 8 pass / 0 fail; console/page/http errors 0."
+              - "Protected-path metadata: unchanged before/after."
+              - "check-render: drift_count=0 / reference_issue_count=0."
+              - "Independent read-only review: APPROVED / no Critical or Important findings."
+            evidence_refs:
+              - "PFI/docs/pfi_v024/FINAL_DELIVERY.md"
+              - "PFI/docs/pfi_v024/FINAL_DELIVERY_EVIDENCE.json"
+            risks:
+              - "最终交付只证明本机 app entry 与 GitHub/local 代码一致，不证明生产券商联通或实盘能力。"
+            rollback: "Revert evidence/product commits and reinstall app from the reverted canonical PFI; never mutate financial data."
+            current_result: "Final-delivery transaction ready; product goal remains pending until the single push and post-push live verifier pass; no second closeout commit."
+            target_version: "v0.2.4"

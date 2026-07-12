@@ -1,0 +1,15 @@
+{
+  "content_sha256": "07c7f8212a578e171329cd38d6f0c672c30a2b23685b5b87b33231a9b2e5be1f",
+  "conversation_id": "6942349c-47cc-832d-9287-de5ad702ff15",
+  "created_at": "2025-12-17T04:42:38Z",
+  "credential_boundary": "credentials_not_transcript",
+  "message_count": 0,
+  "messages": [],
+  "redact_for_public_backup": true,
+  "redaction_counts": {},
+  "schema_version": "memory_atlas_public_raw_chatgpt.v1",
+  "source_id": "chatgpt",
+  "sync_mode": "official_export_fallback",
+  "title": "公司施工地点挑战",
+  "updated_at": "2025-12-17T04:53:23Z"
+}

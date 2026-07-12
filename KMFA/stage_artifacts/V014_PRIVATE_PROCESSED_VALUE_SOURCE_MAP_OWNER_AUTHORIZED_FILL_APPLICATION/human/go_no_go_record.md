@@ -13,4 +13,3 @@
 - app_reinstall_allowed: `false`
 - business_execution_allowed: `false`
 - next_required_input: `owner_or_authorized_delegate_supplies_authorized_processed_value_sources`
-

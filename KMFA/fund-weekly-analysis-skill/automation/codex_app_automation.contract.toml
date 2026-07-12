@@ -1,0 +1,17 @@
+# Public-safe mirror of the local Codex App automation.
+# The live automation state is stored under ~/.codex/automations/kmfa-5/automation.toml.
+id = "kmfa-5"
+name = "KMFA｜资金周报自动化"
+kind = "cron"
+status = "ACTIVE"
+rrule = "RRULE:FREQ=WEEKLY;BYDAY=MO,SA;BYHOUR=11;BYMINUTE=0"
+timezone = "Australia/Sydney"
+execution_environment = "local"
+cwds = ["/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa"]
+model = "gpt-5.3-codex-spark"
+reasoning_effort = "xhigh"
+prompt_file = "automation/weekly_mon_sat_1100_sydney.prompt.md"
+input_dir = "/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs/付款请示群"
+source_readiness_gate = "tools/check_source_readiness.py"
+branch_policy = "canonical_project_worktree_no_new_branch_no_pr_no_extra_worktree"
+live_parity_phase = "V014_APP_REINSTALL_AND_PARITY"

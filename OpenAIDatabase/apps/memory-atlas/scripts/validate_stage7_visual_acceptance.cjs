@@ -129,7 +129,7 @@ function isIgnoredRuntimeProbe(response) {
 }
 
 async function validateGalaxyVisualAcceptance(page) {
-  await page.getByRole("button", { name: /银河星云/ }).click({ timeout: 5000 });
+  await page.locator('[data-nav-view="galaxy"]').click({ timeout: 5000 });
   await page.waitForSelector(".galaxy-webgl-canvas", { timeout: 25000 });
   await page.waitForFunction(() => {
     const signal = window.__memoryAtlasGalaxySignal?.();
@@ -154,7 +154,7 @@ async function validateGalaxyVisualAcceptance(page) {
 }
 
 async function validateMemoryRiverVisualAcceptance(page) {
-  await page.getByRole("button", { name: /时间轴/ }).click({ timeout: 5000 });
+  await page.locator('[data-nav-view="timeline"]').click({ timeout: 5000 });
   await page.waitForSelector(".timeline-map", { timeout: 15000 });
   const renderer = await page.locator(".timeline-map").getAttribute("data-timeline-renderer");
   if (renderer !== "memory-river") {

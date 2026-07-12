@@ -4,19 +4,22 @@
 
 - product version: 0.2.0
 - product version status: provisional
-- current phase: D - Memory Atlas local release acceptance
-- current gate: MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED
-- confirmed iterations: 7
-- reconstructed development events: 16
-- current task: TASK-OAI-D-002 blocked by Cloudflare authentication/env; latest completed task TASK-OAI-D-001 local release acceptance
-- blockers: live Wrangler authentication, Cloudflare account/token/hostname/allowed-email env, remaining complex branch rules, TypeScript writeback semantics, heuristic calibration evidence, owner privacy signoff, and production memory safety are HUMAN_REVIEW_REQUIRED or UNKNOWN; S3PDT01 is synthetic privacy-boundary evidence only
+- current phase: CF-L2 - MemoryAtlas public-safe deployment
+- current gate: ACC-CF-L2-20260710-PASSED-ACCESS-PROTECTED
+- confirmed iterations: 12
+- reconstructed development events: 19
+- current task: CF-L2-20260710 completed by protected MemoryAtlas Pages deployment evidence; current Workers Static Assets config remains reproducible but is not required to relabel the verified Pages surface
+- blockers: remaining complex branch rules, TypeScript writeback semantics, heuristic calibration evidence, owner privacy signoff, and production memory safety are HUMAN_REVIEW_REQUIRED or UNKNOWN; S3PDT01 is synthetic privacy-boundary evidence only
 
 Confirmed iterations are not inferred from commit count. This ledger currently
-records eight confirmed iterations: the baseline run, three TASK-OAI-C-002
+records twelve confirmed iterations: the baseline run, three TASK-OAI-C-002
 follow-up governance and personalization hardening runs, the semantic
 extractor rollout run, the S3PDT01 synthetic privacy-boundary run, the
 TASK-OAI-D-001 Memory Atlas local release/preflight run, and the TASK-OAI-D-003
-OpenAIDatabase CI evidence-schema repair run.
+OpenAIDatabase CI evidence-schema repair run, the macdata proM2 setup run, and
+the TASK-OAI-D-004 Memory Atlas Phase 1 live URL readiness gate repair run, plus
+the CF-L2 public-safe build/privacy/dry-run iteration, and the protected
+MemoryAtlas live-evidence reconciliation from remote main.
 
 ## Phase Matrix
 
@@ -25,7 +28,7 @@ OpenAIDatabase CI evidence-schema repair run.
 | A | Discovery and baseline | completed | `MODEL_SPEC.md`, registries, scoped git log |
 | B | Model and data specification | in_progress | `GOV-SEMANTIC-OAIDB-001` partial machine semantic coverage; `TASK-OAI-B-001` calibration evidence gap |
 | C | Implementation | completed | Existing app implementation plus TASK-OAI-C-002 personalization architecture, route, export, evaluation harness, and non-empty four-category run-log evidence |
-| D | Verification and hardening | in_progress | TASK-OAI-D-001 local release/visual/acceptance/Cloudflare preflight passed; TASK-OAI-D-002 live Cloudflare deploy remains auth-blocked |
+| D | Verification and hardening | in_progress | TASK-OAI-D-001 local release/visual/acceptance/Cloudflare preflight passed; TASK-OAI-D-004 local readiness gate repair passed; TASK-OAI-D-002 protected Cloudflare Pages deploy and Access verification passed |
 | E | Delivery and operation | completed for governance baseline | OpenAIDatabase project validator passed and `governance/projects.yaml` ci_mode is required |
 
 ## Iteration Record
@@ -222,6 +225,55 @@ OpenAIDatabase CI evidence-schema repair run.
 - rollback: revert TASK-OAI-D-003 script and governance changes; OpenAIDatabase CI would return to the known failing state.
 - next step: rerun changed-only governance and push main; confirm GitHub OpenAIDatabase CI passes on the new commit.
 
+### ITER-20260705-MACDATA-PROM2-SETUP
+
+- date: 2026-07-05
+- fact level: EXTRACTED
+- version before: 0.2.0 provisional
+- version after: 0.2.0 provisional
+- result commit: PENDING
+- task IDs: MACDATA-PROM2-SETUP-20260705, ACC-MACDATA-PROM2-SETUP-20260705
+- objective: install the proM2 macdata controlled archive task pack, align device preflight with the local Apple M2 Max MacBook Pro, and set up GitHub archive branch behavior with verified-upload-before-cleanup.
+- assumptions: the user explicitly confirmed that local hardware truth overrides the original task pack's M2 Pro expectation and that user commands override the task pack where cleanup policy conflicted.
+- files read: root/OpenAIDatabase AGENTS, route output, task pack files, hardware profile, Git remote and worktree state.
+- files changed: `OpenAIDatabase/macdata/proM2/**`, OpenAIDatabase canonical governance files, rendered owner files, and `scripts/lean_governance.py` newline compatibility fix.
+- follow-up status fix: `run_controlled_cycle.py` now rewrites `last_run_status.json` after report archive upload so top-level `ok`, `archive_branch`, `remote_verified`, and `report_archive` are present; `test_macdata_package.py` covers this shape.
+- follow-up hygiene fix: verified runs now run GitHub/Codex hygiene for managed temporary PRs, merged `codex/*macdata*proM2*` branches, and managed-marker issues; `main` and `macdata-proM2` are protected.
+- follow-up report format restore: the full Chinese MacData report writes Markdown `.md` artifacts at `reports/latest/latest_report.md` plus current-day `*_draft.md` and `*_final.md` files per owner instruction, while keeping the same GitHub archive and remote hash verification gates.
+- model changes: added `MOD-MACDATA-PROM2-001` for device preflight and archive cleanup policy.
+- parameter changes: added `PARAM-MACDATA-PROM2-001` through `PARAM-MACDATA-PROM2-004`.
+- commands: `python3 -m unittest OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py -q`; `python3 OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py --repo-root . --preflight-only`; `python3 -B scripts/lean_governance.py check-render --project OpenAIDatabase`.
+- test results: package unittest PASS with 8 tests OK; preflight PASS on MacBook Pro / Mac14,5 / Apple M2 Max / 32GB; check-render PASS with drift_count 0; `.md` report path policy covered by the package test.
+- successes: owner confirmations created without credentials; task pack now fails closed on chip mismatch unless local M2 Max truth is present; cleanup remains gated behind successful remote upload verification.
+- failures: full archive cycle and remote branch verification are pending until setup commit is pushed and the script is executed.
+- decisions: keep product version at 0.2.0 and do not promote OpenAIDatabase delivery readiness; macdata is a controlled archive sub-workflow.
+- remaining risks: Docker/Homebrew/system/project cache cleanup must stay within the configured whitelist and command boundaries.
+- rollback: revert this setup commit; delete the remote `macdata-proM2` branch only after confirming its history is no longer needed.
+- next step: commit and push setup, then run the full controlled cycle to create and verify the archive branch.
+
+### ITER-20260707-OAIDB-D004
+
+- date: 2026-07-07
+- fact level: EXTRACTED
+- version before: 0.2.0 provisional
+- version after: 0.2.0 provisional
+- result commit: PENDING
+- task IDs: TASK-OAI-D-004, ACC-OAI-D-004
+- objective: repair Memory Atlas Phase 1 local live URL readiness gates before any protected Cloudflare Pages + Access deployment.
+- assumptions: the deploy boundary remains explicit; local build, release-safety, local-app, packaging, whole-project, and offline Cloudflare preflight can pass without executing live upload or mutating Access policy.
+- files read: Memory Atlas package scripts, Stage 3/Stage 6/Stage 8 validators, whole-project validator, visual acceptance audit, release-safety output, and current OpenAIDatabase governance records.
+- files changed: `OpenAIDatabase/apps/memory-atlas/package.json`, Memory Atlas validator scripts, `OpenAIDatabase/scripts/audit_memory_atlas_visual_acceptance.py`, removal of the tracked encrypted session-history key, and OpenAIDatabase governance records.
+- model changes: no memory extraction, retrieval, scoring, writeback, personalization, or production data model changed.
+- parameter changes: added `PARAM-095` to record the Stage 8 local app packaging gate alias and its release-validation boundary.
+- commands: `pnpm --dir OpenAIDatabase/apps/memory-atlas run lint`; `pnpm --dir OpenAIDatabase/apps/memory-atlas run build`; `pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:stage8-release-safety`; `pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:stage8-local-app`; `pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:stage8-local-app-packaging`; `pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:whole-project`; `cd OpenAIDatabase && python3 scripts/preflight_cloudflare_pages_access.py --publish-dir apps/memory-atlas/dist`; `python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main`.
+- test results: lint PASS; build PASS; Stage 8 release safety PASS; Stage 8 local app PASS; Stage 8 local app packaging PASS; whole-project PASS; Cloudflare Pages + Access offline preflight PASS; changed-only governance CI PASS.
+- successes: canonical local readiness gates now include the Stage 8 packaging alias and validator false positives are repaired while keeping raw/private/session artifacts out of the PR.
+- failures: GitHub Actions governance initially failed because the clean PR lacked required OpenAIDatabase governance records; this iteration adds those records and reruns the gate locally.
+- decisions: keep product version 0.2.0 and delivery readiness FAILED; do not claim Cloudflare live deployment, Access verification, or production readiness from this local repair.
+- remaining risks: live Cloudflare upload, Access challenge verification, allowed-user app load, and custom-domain reachability remain unverified until the protected deployment phase.
+- rollback: revert TASK-OAI-D-004 package, validator, encrypted-key removal, and governance record changes; rerun release-safety and changed-only governance after rollback.
+- next step: wait for PR checks to pass, squash merge to main, pull main, and rerun smoke build plus offline Cloudflare preflight without live deploy.
+
 ## Reconstructed Development Events
 
 Scoped git history reviewed with:
@@ -237,3 +289,15 @@ RECONSTRUCTED development events only, not confirmed iterations.
 
 - Work before the monorepo import on 2026-06-19 is not reconstructable from the scoped path log in this checkout.
 - Earlier standalone repository iterations, if any, are UNKNOWN unless supported by durable records outside this scoped audit.
+
+### ITER-20260710-OAIDB-CF-L2
+
+- Date: 2026-07-10
+- Fact level: VERIFIED for build, privacy/accessibility, scan, responsive rendering, dry-run, protected deployment, Access challenge, allowed-user load, runtime JSON fetch, and published-artifact safety.
+- Version before/after: `0.2.0` / `0.2.0`.
+- Task / Acceptance: `CF-L2-20260710` / `ACC-CF-L2-20260710`.
+- Goal: deploy the existing MemoryAtlas redacted derived viewer as an L2 surface while the raw/private database core stays local.
+- Result: Vite build, release privacy/accessibility gate, private dist scan, desktop/mobile QA, and Wrangler 4.110.0 dry-run passed. Remote main records Pages deployment `82988d29-504a-437e-a8b5-621a59e701af` from clean commit `5a24333e`; owner-allowlist Access protects custom, production Pages and preview Pages hostnames, and allowed-user app/JSON loading was verified.
+- Model and parameter boundary: no memory formula, model, derived snapshot, raw archive, import, session, cookie, secret, or writeback behavior changed.
+- Rollback: restore the prior Wrangler config and remove the HomeHub return link while preserving Access and all private data boundaries.
+- Next gate: if migrating the verified Pages surface to the current Workers Static Assets config, preserve owner-allowlist Access on every reachable hostname and re-run challenge plus allowed-user smoke checks before cutover.

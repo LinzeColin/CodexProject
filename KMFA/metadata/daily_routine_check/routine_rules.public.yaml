@@ -1,0 +1,250 @@
+version: 0.2.0
+project_id: KMFA
+automation_name: Dingtalk-routine-check
+chinese_name: 钉钉工作检查
+timezone: Asia/Shanghai
+input_zip_default: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
+input_policy:
+  mode: zip_only
+  disk_folder_probe_allowed: false
+  disk_folder_create_or_materialize_allowed: false
+  extract_or_copy_zip_members_allowed: false
+  stream_required_members_only: true
+  auto_evict_after_run: false
+notify_target_label: 张霖泽
+
+automation_triggers:
+  - trigger_window: morning_1135
+    run_time_beijing: "11:35"
+    timezone: Asia/Shanghai
+    scope: 付款请示群每日项、杨婷现金OCR风险监控、周一项
+  - trigger_window: evening_1705
+    run_time_beijing: "17:05"
+    timezone: Asia/Shanghai
+    scope: 生产管理群每日/周四/周五项、每月第三周周五付款请示群月度项
+
+behavior:
+  no_excel_summary: true
+  write_sqlite_ledger: true
+  write_jsonl_logs: true
+  notify_missing: true
+  notify_late: true
+  notify_wrong: true
+  notify_merged: true
+  notify_low_confidence: true
+  idempotent_notifications: true
+  allow_same_message_to_satisfy_multiple_independent_rules: false
+
+matching_defaults:
+  min_text_confidence: 0.70
+  min_ocr_confidence: 0.78
+  min_document_classification_confidence: 0.80
+  message_window_start: "00:00"
+  timezone: Asia/Shanghai
+  image_ocr_allowed: true
+  llm_allowed: true
+
+rules:
+  - rule_id: PAY_DAILY_CASH_ACCOUNT
+    trigger_window: morning_1135
+    group_name: 付款请示群
+    frequency: daily
+    due_time: "10:30"
+    required_senders:
+      any_of: [杨婷]
+    artifact_name: 资金账户明细表
+    document_family: cash_account_statement
+    independent_required_artifact: true
+    keywords:
+      positive: [资金账户明细表, 资金账户明细, 账户明细表]
+      negative: [资金流水明细, 资金明细, 流水明细]
+    ocr_feature_profile_ref: cash_account_statement
+    notify_on_missing: true
+
+  - rule_id: PAY_DAILY_CASH_FLOW
+    trigger_window: morning_1135
+    group_name: 付款请示群
+    frequency: daily
+    due_time: "10:30"
+    required_senders:
+      any_of: [杨婷]
+    artifact_name: 资金流水明细
+    aliases: [资金明细, 资金流水, 流水明细]
+    document_family: cash_flow_detail
+    independent_required_artifact: true
+    keywords:
+      positive: [资金流水明细, 资金明细, 资金流水, 流水明细]
+      negative: [资金账户明细表]
+    ocr_feature_profile_ref: cash_flow_detail
+    notify_on_missing: true
+
+  - rule_id: PAY_MON_EXISTING_BILLS
+    trigger_window: morning_1135
+    group_name: 付款请示群
+    frequency: weekly
+    weekdays: [monday]
+    due_time: "11:30"
+    required_senders:
+      any_of: [杨婷]
+    artifact_name: 现存票据
+    document_family: existing_bills
+    keywords:
+      positive: [现存票据, 票据明细, 承兑明细]
+    notify_on_missing: true
+
+  - rule_id: PAY_MON_DEPOSIT_COLLECTION
+    trigger_window: morning_1135
+    group_name: 付款请示群
+    frequency: weekly
+    weekdays: [monday]
+    due_time: "11:30"
+    required_senders:
+      any_of: [杨婷]
+    artifact_name: 保证金回款表
+    document_family: deposit_collection
+    keywords:
+      positive: [保证金回款表, 保证金回款, 保证金退回, 保证金明细]
+    notify_on_missing: true
+
+  - rule_id: PAY_MON_COLLECTION_DETAIL
+    trigger_window: morning_1135
+    group_name: 付款请示群
+    frequency: weekly
+    weekdays: [monday]
+    due_time: "11:30"
+    required_senders:
+      any_of: [杨婷]
+    artifact_name: 回款明细表
+    document_family: collection_detail
+    keywords:
+      positive: [回款明细表, 回款明细, 回款表]
+    notify_on_missing: true
+
+  - rule_id: PAY_MONTHLY_TAX_RETURN
+    trigger_window: evening_1705
+    group_name: 付款请示群
+    frequency: monthly_third_week_friday
+    due_time: "17:00"
+    required_senders:
+      any_of: [吴云霞]
+    artifact_name: 纳税申报表
+    document_family: tax_return
+    keywords:
+      positive: [纳税申报表, 纳税申报, 税务申报, 申报表]
+    notify_on_missing: true
+
+  - rule_id: PAY_MONTHLY_TAX_SETTLEMENT
+    trigger_window: evening_1705
+    group_name: 付款请示群
+    frequency: monthly_third_week_friday
+    due_time: "17:00"
+    required_senders:
+      any_of: [吴云霞]
+    artifact_name: 汇算清缴
+    document_family: tax_settlement
+    keywords:
+      positive: [汇算清缴, 企业所得税汇算, 所得税汇算]
+    notify_on_missing: true
+
+  - rule_id: PROD_DAILY_PERSONNEL
+    trigger_window: evening_1705
+    group_name: 生产管理群
+    frequency: daily
+    due_time: "17:00"
+    required_senders:
+      any_of: [黄婷, 李权智]
+    artifact_name: 每日人员表
+    document_family: daily_personnel
+    keywords:
+      positive: [每日人员表, 人员表, 今日人员, 现场人员, 施工人员]
+    notify_on_missing: true
+
+  - rule_id: PROD_THU_FUND_PLAN
+    trigger_window: evening_1705
+    group_name: 生产管理群
+    frequency: weekly
+    weekdays: [thursday]
+    due_time: "17:30"
+    required_senders:
+      any_of: [黄婷, 李权智]
+    artifact_name: 资金计划
+    document_family: production_fund_plan
+    keywords:
+      positive: [资金计划, 用款计划, 项目资金计划]
+    notify_on_missing: true
+
+  - rule_id: PROD_FRI_WORKER_HOURS
+    trigger_window: evening_1705
+    group_name: 生产管理群
+    frequency: weekly
+    weekdays: [friday]
+    due_time: "17:30"
+    required_senders:
+      any_of: [黄婷]
+    artifact_name: 工人工时表
+    document_family: worker_hours
+    keywords:
+      positive: [工人工时表, 工时表, 工人工时, 工时统计]
+    notify_on_missing: true
+
+  - rule_id: PROD_FRI_PAYABLES
+    trigger_window: evening_1705
+    group_name: 生产管理群
+    frequency: weekly
+    weekdays: [friday]
+    due_time: "17:30"
+    required_senders:
+      any_of: [黄婷]
+    artifact_name: 应付表
+    document_family: payables
+    keywords:
+      positive: [应付表, 应付明细, 应付款, 应付账款]
+    notify_on_missing: true
+
+ocr_feature_profiles:
+  cash_account_statement:
+    title_weight: 4
+    header_weight: 3
+    message_text_weight: 2
+    strong_positive_features:
+      - 资金账户明细表
+      - 昨日余额
+      - 今日收入
+      - 今日支出
+      - 今日余额
+      - 银行存款
+      - 现金
+      - 承兑
+      - 票据
+      - 合计
+    strong_negative_features:
+      - 事由
+      - 收付款人
+      - 收支类别
+      - 逐笔流水
+    required_extraction_schema: cash_account_snapshot
+
+  cash_flow_detail:
+    title_weight: 4
+    header_weight: 3
+    message_text_weight: 2
+    strong_positive_features:
+      - 资金流水明细
+      - 资金明细
+      - 流水明细
+      - 日期
+      - 事由
+      - 收付款人
+      - 收款人
+      - 付款人
+      - 收支类别
+      - 收入
+      - 支出
+      - 转出
+      - 银行
+      - 备注
+    strong_negative_features:
+      - 昨日余额
+      - 今日余额
+      - 账户明细表
+    required_extraction_schema: cash_flow_entries

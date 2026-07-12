@@ -24,6 +24,10 @@ def read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def read_optional_text(path: Path) -> str:
+    return path.read_text(encoding="utf-8") if path.exists() else ""
+
+
 def pass_check(checks: list[dict[str, str]], name: str, evidence: str) -> None:
     checks.append({"name": name, "status": "PASS", "evidence": evidence})
 
@@ -55,6 +59,8 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     checks: list[dict[str, str]] = []
 
     app_source = read_text(repo_root / "apps/memory-atlas/src/App.tsx")
+    i18n_source = read_optional_text(repo_root / "apps/memory-atlas/src/i18n/zh-CN.ts")
+    ui_source = app_source + "\n" + i18n_source
     galaxy_source = read_text(repo_root / "apps/memory-atlas/src/components/GalaxyScene.tsx")
     starfield_params_source = read_text(repo_root / "apps/memory-atlas/src/config/memoryStarfieldParameters.ts")
     obsidian_source = read_text(repo_root / "apps/memory-atlas/src/components/ObsidianGraphScene.tsx")
@@ -64,6 +70,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     memory_river_params_source = read_text(repo_root / "config/visualization/model_parameters.memory_river.yaml")
     data_builder_source = read_text(repo_root / "scripts/build_memory_atlas_data.py")
     installer_source = read_text(repo_root / "scripts/install_memory_atlas_app.py")
+    runtime_server_source = read_text(repo_root / "scripts/memory_atlas_runtime_server.py")
     stage7_visual_source = read_text(repo_root / "apps/memory-atlas/scripts/validate_stage7_visual_acceptance.cjs")
     stage7_performance_source = read_text(repo_root / "apps/memory-atlas/scripts/validate_stage7_performance_acceptance.cjs")
     stage7_privacy_accessibility_source = read_text(repo_root / "apps/memory-atlas/scripts/validate_stage7_privacy_accessibility.cjs")
@@ -77,16 +84,18 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
 
     require(
         checks,
-        '{ key: "home", label: "记忆总览", icon: Home }' in app_source
+        ('{ key: "home", label: "记忆总览", icon: Home }' in app_source
+         or ('{ key: "home", label: uiCopy.navigation.views.home, icon: Home }' in app_source
+             and ('home: "记忆总览"' in i18n_source or 'home: "发生了什么"' in i18n_source)))
         and ('const [activeView, setActiveView] = useState<ViewKey>("home")' in app_source or "const activeView = sharedState.mode.activeView" in app_source)
         and 'if (activeView === "home")' in app_source
         and "function HomeOverviewView" in app_source
         and "function buildHomeOverviewModel" in app_source
-        and "Memory Weather" in app_source
-        and "Next Best Actions" in app_source
+        and ("Memory Weather" in ui_source or "记忆天气" in ui_source)
+        and ("Next Best Actions" in ui_source or "下一步行动" in ui_source)
         and "Black Hole 风险" in app_source
         and "Proto-Star 机会" in app_source
-        and "proposal-only，不直接写长期记忆" in app_source
+        and ("proposal-only，不直接写长期记忆" in ui_source or "仅生成提案，不直接写长期记忆" in ui_source)
         and ".home-overview-view" in css_source
         and ".home-status-grid" in css_source
         and ".home-action-list" in css_source
@@ -98,9 +107,9 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
 
     require(
         checks,
-        "Mini Starfield" in app_source
-        and "River Pulse" in app_source
-        and "Inspector Deep Link" in app_source
+        ("Mini Starfield" in ui_source or "轻量星图" in ui_source)
+        and ("River Pulse" in ui_source or "时间脉冲" in ui_source)
+        and ("Inspector Deep Link" in app_source or "证据入口" in ui_source)
         and "function buildMiniStarfieldPreview" in app_source
         and "function buildRiverPulsePreview" in app_source
         and "function buildHomeInspectorLinks" in app_source
@@ -400,7 +409,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and 'proposalIdPrefix: "atlas_preview"' in app_source
         and 'data-proposal-only="true"' in app_source
         and 'data-active-memory-mutation="false"' in app_source
-        and "JSON 提案预览" in app_source
+        and "JSON 提案预览" in ui_source
         and "direct_frontend_mutation_of_active_memory: false" in app_source
         and "requires_agent_or_human_apply: true" in app_source
         and ".inspector-explanation-panel" in css_source
@@ -484,7 +493,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "function buildProposalReview" in app_source
         and 'className="writeback-diff-grid"' in app_source
         and 'className="writeback-version-chain"' in app_source
-        and "生成回滚提案" in app_source
+        and "生成回滚提案" in ui_source
         and ".writeback-diff-grid" in css_source
         and ".writeback-version-chain" in css_source
         and "版本链" in readme
@@ -632,7 +641,8 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     require(
         checks,
         '"wordcloud"' in app_source
-        and 'label: "词云洞察"' in app_source
+        and ('label: "词云洞察"' in app_source or ('label: uiCopy.navigation.views.wordcloud' in app_source
+             and ('wordcloud: "词云洞察"' in i18n_source or 'wordcloud: "反复出现什么"' in i18n_source)))
         and "function WordCloudView" in app_source
         and "buildSemanticInsights" in app_source
         and "SemanticInsight" in app_source
@@ -696,23 +706,34 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and "dedupeDisplayItems" in app_source
         and "humanNodeDisplayTitle" in app_source
         and "未来回答需要遵守的一条长期规则" not in app_source
-        and "这条记忆说明了什么" in app_source
+        and "这条记忆说明了什么" in ui_source
         and "为什么重要" in app_source
-        and "未来应该怎么用" in app_source
-        and ("Agent 结构化字段 / 原始摘要" in app_source or "Debug / Agent Inspector" in app_source)
+        and "未来应该怎么用" in ui_source
+        and (
+            "Agent 结构化字段 / 原始摘要" in ui_source
+            or "Debug / Agent Inspector" in ui_source
+            or (
+                "高级详情 / Agent Inspector" in ui_source
+                and "显示高级详情" in ui_source
+                and "默认折叠，仅用于核验字段" in ui_source
+                and 'data-s10-p3-machine-fields="collapsed-by-default"' in app_source
+                and 'data-s10-p3-advanced-details-entry="inspector"' in app_source
+            )
+        )
         and "Memory / Personalization" in app_source
         and "Agents.md / 执行规则" in app_source
         and "降权/不再默认使用" in app_source
         and ".human-overview" in css_source
         and ".human-node-card" in css_source,
         "memory_atlas_has_human_facing_summary",
-        "Inspector and search views expose human-readable topics, actions, reminders, opportunities, folded agent/source summaries, deduped display rows, and recommendation buckets",
+        "Inspector and search views expose human-readable topics, actions, reminders, opportunities, folded advanced agent/source summaries, deduped display rows, and recommendation buckets",
         "Memory Atlas may still expose repeated template text or mostly agent/internal metadata instead of human-facing memory conclusions",
     )
     require(
         checks,
         '"summary"' in app_source
-        and 'label: "总结与迭代"' in app_source
+        and ('label: "总结与迭代"' in app_source or ('label: uiCopy.navigation.views.summary' in app_source
+             and ('summary: "总结与迭代"' in i18n_source or 'summary: "决定下一步"' in i18n_source)))
         and "function SummaryIterationView" in app_source
         and "function ConfigMemoryPanel" in app_source
         and "Personalization / Agents.md 建议" in app_source
@@ -788,12 +809,12 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
         and 'window.addEventListener("pagehide", handlePageRelease)' in app_source
         and 'window.addEventListener("beforeunload", handlePageRelease)' in app_source
         and 'release("react_unmount")' in app_source
-        and "request_shutdown" in installer_source
-        and "release_requested" in installer_source
-        and "active_thread_count" in installer_source
-        and "allow_reuse_address = True" in installer_source
+        and "request_shutdown" in runtime_server_source
+        and "release_requested" in runtime_server_source
+        and "active_thread_count" in runtime_server_source
+        and "allow_reuse_address = True" in runtime_server_source
         and '"-m http.server"' in installer_source
-        and "last_seen_at = time.time() - max" not in installer_source
+        and "last_seen_at = time.time() - max" not in runtime_server_source
         and "关闭 tab" in readme
         and "清理临时浏览器缓存" in readme,
         "runtime_tab_close_cache_cleanup_contract",
@@ -1156,7 +1177,7 @@ def audit_visual_acceptance(repo_root: Path) -> dict[str, Any]:
     require(
         checks,
         '"validate:stage9-visual-semantics": "node scripts/validate_stage9_visual_semantics.cjs"' in read_text(repo_root / "apps/memory-atlas/package.json")
-        and "Memory Weather v2" in app_source
+        and ("Memory Weather v2" in app_source or "记忆天气 v2" in ui_source)
         and "data-memory-weather-v2" in app_source
         and "buildMemoryWeatherV2" in app_source
         and "memory-river-roi-gradient" in app_source

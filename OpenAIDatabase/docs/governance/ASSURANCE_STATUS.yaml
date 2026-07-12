@@ -1,11 +1,11 @@
 project_id: "OpenAIDatabase"
-as_of_event_id: "ITER-20260626-OAIDB-D001"
-source_snapshot_hash: "sha256:bbec5b8736622a8f1e07d68e21e6d78e4c05d1ac941d8664304a25c5fa98c84e"
-source_base_commit: "738887de4034ad42d90347d0fa0db6c0f3ed966f"
+as_of_event_id: "EVENT-20260710-OAIDB-CF-L2-REMOTE-LIVE"
+source_snapshot_hash: "sha256:95810479060b9ee632413b4c1fc501a0a5350cc64736cc81a880cd28a09b952e"
+source_base_commit: "00f4187f43960a3b25fc696ae2a15951f4431763"
 source_tree_hash: "6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f"
-snapshot_event_time: "2026-06-26T21:56:00+10:00"
-generator_version: "4.0.0"
-final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+snapshot_event_time: "2026-07-10T18:53:05+10:00"
+generator_version: "4.0.1"
+final_commit_binding: "COMMIT_BOUND:00f4187f43960a3b25fc696ae2a15951f4431763"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -17,9 +17,9 @@ dimensions:
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
     checked_active_parameters: 28
-    total_active_parameters: 94
+    total_active_parameters: 99
     checked_active_formulas: 10
-    total_active_formulas: 11
+    total_active_formulas: 12
     unresolved_fact_ids:
       - "FACT-OpenAIDatabase-IMPLEMENTATION-FORMULA-REVIEW"
       - "FACT-OpenAIDatabase-IMPLEMENTATION-PARAMETER-REVIEW"
@@ -30,7 +30,7 @@ dimensions:
     status: "PARTIAL"
     fact_level: "UNKNOWN"
     checked_active_parameters: 28
-    total_active_parameters: 94
+    total_active_parameters: 99
     evidence_refs:
       - "OpenAIDatabase/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -64,20 +64,21 @@ dimensions:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     tree_bound_events: 0
-    commit_bound_events: 1
+    commit_bound_events: 3
     legacy_unbound_events: 6
-    precommit_pending_events: 2
+    precommit_pending_events: 10
     evidence_refs:
       - "OpenAIDatabase/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "S5PB-GATE-IN-PROGRESS; MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED"
+  release_gate: "ACC-CF-L2-20260710-PASSED-ACCESS-PROTECTED"
   blocker_ids:
     - "FACT-OpenAIDatabase-EMPIRICAL-EVIDENCE"
     - "FACT-OpenAIDatabase-IMPLEMENTATION-FORMULA-REVIEW"
     - "FACT-OpenAIDatabase-IMPLEMENTATION-PARAMETER-REVIEW"
     - "FACT-OpenAIDatabase-OPERATIONAL-EVIDENCE"
     - "GOV-SEMANTIC-OAIDB-001"
+    - "MACDATA-PROM2-SETUP-20260705"
     - "TASK-OAI-B-001"
     - "TASK-OAI-D-001"
 next_executable_task:

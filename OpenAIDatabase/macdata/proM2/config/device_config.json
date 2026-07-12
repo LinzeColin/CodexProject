@@ -1,0 +1,112 @@
+{
+  "codex_model": "gpt-5.3-codex-spark",
+  "collect_air_ladder_status": false,
+  "collect_brew": true,
+  "collect_development_load": true,
+  "collect_docker": true,
+  "default_archive_branch": "macdata-proM2",
+  "default_remote": "origin",
+  "device_key": "proM2",
+  "device_label_cn": "M2 Max MacBook Pro",
+  "device_role_cn": "主开发电脑",
+  "du_repo_timeout_seconds": 30,
+  "expected_chip_keywords": [
+    "M2 Max"
+  ],
+  "expected_memory_gb_min": 32,
+  "expected_model_keywords": [
+    "MacBook Pro"
+  ],
+  "forbidden_auto_schedulers": [
+    "launchd",
+    "cron",
+    "background daemon",
+    "login item"
+  ],
+  "forbidden_secret_sources": [
+    "API key",
+    "token",
+    "password",
+    "cookies",
+    "sessions",
+    "Keychain",
+    "shell history",
+    "full environment dump",
+    ".env raw content"
+  ],
+  "local_relative_dir": "OpenAIDatabase/macdata/proM2",
+  "no_automatic_local_scheduler": true,
+  "post_upload_cleanup_policy": {
+    "enabled": true,
+    "docker": {
+      "enabled": true,
+      "prune_all_images": false,
+      "prune_volumes": false
+    },
+    "homebrew": {
+      "enabled": true
+    },
+    "system_cache": {
+      "enabled": true,
+      "mode": "purge_best_effort"
+    },
+    "project_cache": {
+      "enabled": true,
+      "whitelist_dir_names": [
+        "__pycache__",
+        ".pytest_cache",
+        ".mypy_cache",
+        ".ruff_cache",
+        ".tox",
+        ".nox",
+        ".vite"
+      ],
+      "whitelist_relative_suffixes": [
+        "node_modules/.cache",
+        ".next/cache",
+        "dist/.vite"
+      ],
+      "skip_dir_names": [
+        ".git",
+        ".hg",
+        ".svn",
+        ".venv",
+        "venv",
+        "env",
+        ".env"
+      ]
+    }
+  },
+  "post_run_hygiene_policy": {
+    "enabled": true,
+    "git_fetch_prune": true,
+    "default_main_branch": "main",
+    "protected_branches": [
+      "main",
+      "macdata-proM2"
+    ],
+    "temporary_branch_prefixes": [
+      "codex/"
+    ],
+    "temporary_branch_required_substrings": [
+      "macdata",
+      "proM2"
+    ],
+    "delete_remote_temporary_branches_after_merged": true,
+    "close_open_prs_for_merged_temporary_branches": true,
+    "close_managed_issues": true,
+    "managed_issue_title_markers": [
+      "[macdata-proM2 automation]"
+    ],
+    "github_cli_best_effort": true
+  },
+  "reasoning_effort": "xhigh",
+  "retention_days": 3,
+  "schedule_cron": "10 1 * * *",
+  "schema_version": "macdata-device-config-v1",
+  "storage_red_free_gb": 100,
+  "storage_yellow_free_gb": 200,
+  "swap_red_gb": 8,
+  "swap_yellow_gb": 2,
+  "timezone": "Australia/Sydney"
+}

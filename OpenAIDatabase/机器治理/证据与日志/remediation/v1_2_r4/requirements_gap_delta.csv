@@ -1,0 +1,6 @@
+requirement_id,before_status,after_status,r4_evidence,remaining_gap,next_remediation_phase
+S13-AC01,VERIFIED,VERIFIED,"Rendered UI and loopback API reject missing authorization, remote Origin, extra fields, wrong confirmation, stale/digest-mismatched and replayed tokens before write","None for this criterion",R8
+S13-AC02,PARTIAL,VERIFIED,"Rendered proposal workspace requires explicit acknowledgement and one-use token, then changes an exact allowlisted fixture target and passes fixed validation","None for this criterion",R8
+S13-AC03,VERIFIED,VERIFIED,"Product modal renders five Chinese diff sections plus exact target, risk, expiry, validator and rollback scope in all required viewports","None for this criterion",R8
+S13-AC04,PARTIAL,VERIFIED,"Validation failure automatically restores exact bytes; committed rollback survives workspace reopen; interrupted applying/applied transactions auto-recover or expose a manually authorized rollback","None for this criterion",R8
+S13-AC05,VERIFIED,VERIFIED,"Raw-target bundle is review-only, no apply control is rendered, raw sentinel hash remains unchanged and audit reports raw_mutation=false","None for this criterion",R8

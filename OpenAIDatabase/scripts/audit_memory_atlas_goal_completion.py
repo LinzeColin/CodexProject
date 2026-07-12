@@ -16,6 +16,11 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from audit_memory_atlas_acceptance import AcceptanceError, audit_acceptance  # noqa: E402
+from memory_atlas_r8_acceptance import (  # noqa: E402
+    FINAL_RECORD_PATHS,
+    AcceptanceHistoryError,
+    audit_final_records,
+)
 from preflight_cloudflare_pages_access import PreflightError, preflight as cloudflare_preflight  # noqa: E402
 
 
@@ -50,6 +55,22 @@ FORBIDDEN_EVIDENCE_KEYS = {
     "account_id",
 }
 
+CANONICAL_LIVE_EVIDENCE_PATH = Path(
+    "机器治理/证据与日志/final_delivery/memory_atlas_cloudflare_live_evidence.json"
+)
+
+POST_DEPLOY_RECORD_PATHS = frozenset(
+    {
+        "docs/MEMORY_ATLAS_DELIVERY_RECORD.md",
+        "功能清单.md",
+        "开发记录.md",
+        "模型参数文件.md",
+        CANONICAL_LIVE_EVIDENCE_PATH.as_posix(),
+        "机器治理/证据与日志/final_delivery/v1_2_final_delivery_cleanup_status.json",
+        *(path.as_posix() for path in FINAL_RECORD_PATHS),
+    }
+)
+
 
 def add_check(checks: list[dict[str, str]], name: str, status: str, evidence: str) -> None:
     checks.append({"name": name, "status": status, "evidence": evidence})
@@ -71,6 +92,65 @@ def current_git_commit(repo_root: Path) -> str | None:
     except (OSError, subprocess.CalledProcessError):
         return None
     return result.stdout.strip() or None
+
+
+def git_output(repo_root: Path, *args: str) -> str:
+    result = subprocess.run(
+        ["git", *args],
+        cwd=repo_root,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return result.stdout.strip()
+
+
+def validate_live_git_commit(repo_root: Path, evidence_path: Path, deployed_commit: str) -> tuple[bool, str]:
+    head = current_git_commit(repo_root)
+    if not head:
+        return False, "could not determine current Git HEAD"
+    if deployed_commit == head:
+        return True, "live evidence git commit matches current HEAD"
+
+    try:
+        parent = git_output(repo_root, "rev-parse", "HEAD^")
+    except (OSError, subprocess.CalledProcessError):
+        return False, "deployed commit must match current HEAD or its immediate parent"
+    if deployed_commit != parent:
+        return False, "deployed commit must match current HEAD or its immediate parent"
+
+    try:
+        evidence_relative_path = evidence_path.resolve().relative_to(repo_root.resolve()).as_posix()
+    except ValueError:
+        return False, "parent-commit evidence must use the canonical repository path"
+    if evidence_relative_path != CANONICAL_LIVE_EVIDENCE_PATH.as_posix():
+        return False, "parent-commit evidence must use the canonical repository path"
+
+    try:
+        changed_paths = {
+            path
+            for path in git_output(
+                repo_root,
+                "-c",
+                "core.quotePath=false",
+                "diff",
+                "--name-only",
+                "--relative",
+                f"{deployed_commit}..HEAD",
+                "--",
+                ".",
+            ).splitlines()
+            if path
+        }
+    except (OSError, subprocess.CalledProcessError):
+        return False, "could not inspect the post-deploy evidence commit"
+
+    if evidence_relative_path not in changed_paths:
+        return False, "final evidence commit does not contain the canonical evidence file"
+    disallowed_paths = sorted(changed_paths.difference(POST_DEPLOY_RECORD_PATHS))
+    if disallowed_paths:
+        return False, f"post-deploy commit contains non-record paths: {disallowed_paths}"
+    return True, "deployed commit is the immediate parent and HEAD only adds final-delivery records"
 
 
 def collect_json_keys(value: Any) -> list[str]:
@@ -137,16 +217,20 @@ def audit_live_evidence(repo_root: Path, evidence_path: Path | None, checks: lis
         add_check(checks, "cloudflare_live_access_evidence", "FAIL", f"live verification fields are not true: {false_fields}")
         return False
 
-    current_commit = current_git_commit(repo_root)
-    if current_commit and evidence.get("git_commit") != current_commit:
+    git_commit_ok, git_commit_evidence = validate_live_git_commit(
+        repo_root,
+        evidence_path,
+        str(evidence.get("git_commit", "")),
+    )
+    if not git_commit_ok:
         add_check(
             checks,
             "cloudflare_live_git_commit_matches",
             "FAIL",
-            f"evidence git_commit {evidence.get('git_commit')} does not match current HEAD {current_commit}",
+            git_commit_evidence,
         )
         return False
-    add_check(checks, "cloudflare_live_git_commit_matches", "PASS", "live evidence git commit matches current HEAD")
+    add_check(checks, "cloudflare_live_git_commit_matches", "PASS", git_commit_evidence)
 
     deployment_url = str(evidence.get("deployment_url", ""))
     if not deployment_url.startswith("https://"):
@@ -199,11 +283,25 @@ def audit_goal_completion(
     else:
         add_check(checks, "cloudflare_preflight", "PASS", f"{len(preflight['checks'])} Cloudflare preflight checks passed")
 
+    try:
+        r8_acceptance = audit_final_records(repo_root)
+    except (AcceptanceHistoryError, OSError, json.JSONDecodeError) as exc:
+        add_check(checks, "r8_final_acceptance", "INCOMPLETE", str(exc))
+        r8_ok = False
+    else:
+        add_check(
+            checks,
+            "r8_final_acceptance",
+            "PASS",
+            f"{r8_acceptance['verified_requirement_count']}/58 requirements and {r8_acceptance['stage_count']} stages verified",
+        )
+        r8_ok = True
+
     live_ok = audit_live_evidence(repo_root, live_evidence, checks)
     hard_failures = [check for check in checks if check["status"] == "FAIL"]
     if hard_failures:
         status = "FAIL"
-    elif live_ok:
+    elif live_ok and r8_ok:
         status = "COMPLETE_WITH_OPERATOR_EVIDENCE"
     else:
         status = "LOCAL_PASS_EXTERNAL_AUTHORIZATION_REQUIRED"

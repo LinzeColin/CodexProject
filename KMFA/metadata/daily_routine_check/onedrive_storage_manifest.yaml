@@ -1,0 +1,41 @@
+version: 0.2.0
+input_zip: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip
+private_output_root: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check
+private_runtime_root: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime
+active_sqlite_path: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime/daily_routine_check.sqlite
+notification_targets_path: /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/KMFA/daily_routine_check/private_runtime/notification_targets.local.json
+
+monthly_layout:
+  root_pattern: "{private_output_root}/{YYYYMM}"
+  files:
+    - run_log_{YYYYMM}.jsonl
+    - routine_check_results_{YYYYMM}.jsonl
+    - ocr_jobs_{YYYYMM}.jsonl
+    - ocr_extractions_{YYYYMM}.jsonl
+    - cash_account_snapshots_{YYYYMM}.jsonl
+    - cash_flow_entries_{YYYYMM}.jsonl
+    - cash_risk_results_{YYYYMM}.jsonl
+    - notification_events_{YYYYMM}.jsonl
+    - data_quality_issues_{YYYYMM}.jsonl
+  folders:
+    - private_runtime
+    - db_snapshots
+    - cleanup
+    - ocr_cache
+    - diagnostics
+
+policy:
+  source_dws_outputs_read_only: true
+  zip_input_only: true
+  disk_dws_outputs_folder_absent_is_normal: true
+  probe_disk_dws_outputs_folder: false
+  create_or_materialize_disk_dws_outputs_folder: false
+  stream_zip_without_extracting: true
+  copy_zip_or_members_to_cache: false
+  auto_evict_zip_after_run: false
+  do_not_delete_source_dws_outputs: true
+  active_sqlite_in_onedrive: true
+  keep_sqlite_out_of_repo_package: true
+  mirror_sqlite_to_onedrive: false
+  compress_old_jsonl: true
+  write_cleanup_report: true

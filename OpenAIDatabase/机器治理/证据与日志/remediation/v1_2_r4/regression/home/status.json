@@ -1,0 +1,1473 @@
+{
+  "status": "PASS",
+  "gate": "memory_atlas_v1_2_home_multiviewport",
+  "targetUrl": "http://127.0.0.1:4178",
+  "outputDir": "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject/OpenAIDatabase/机器治理/证据与日志/remediation/v1_2_r4/regression/home",
+  "viewports": [
+    {
+      "name": "desktop-low-height",
+      "width": 1470,
+      "height": 661
+    },
+    {
+      "name": "desktop-standard",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "checks": [
+    "five workspace sections have no pairwise overlap",
+    "document and workspace sections have no horizontal overflow",
+    "workspace and sections remain inside the visible viewport",
+    "Memory Atlas v1.2 release identity and question-led navigation are visible",
+    "default Home copy hides stage, machine, CLI, path, and internal visual terminology",
+    "sidebar, lens, command, and formula machine details are folded and keyboard-operable",
+    "default keyboard scan follows navigation, help, filters, focus, actions, and Home evidence",
+    "mobile Tab and Shift+Tab keep every traversed navigation route fully visible and activate all ten routes",
+    "desktop-low, desktop-standard, and mobile preserve a compact product hierarchy",
+    "command palette heading and all six user actions are scroll-reachable",
+    "home overview first and final sections are scroll-reachable",
+    "home direct sections and key nested containers have no horizontal clipping",
+    "S06 behavior summaries are Chinese-readable and scroll-reachable",
+    "screenshots are nonblank",
+    "preview server is released after validation"
+  ],
+  "results": [
+    {
+      "status": "PASS",
+      "viewport": {
+        "name": "desktop-low-height",
+        "width": 1470,
+        "height": 661
+      },
+      "layout": {
+        "document": {
+          "clientHeight": 661,
+          "clientWidth": 1470,
+          "scrollHeight": 661,
+          "scrollWidth": 1470
+        },
+        "sections": {
+          "topbar": {
+            "x": 262,
+            "y": 14,
+            "top": 14,
+            "right": 1456,
+            "bottom": 70,
+            "left": 262,
+            "width": 1194,
+            "height": 56
+          },
+          "controls": {
+            "x": 262,
+            "y": 78,
+            "top": 78,
+            "right": 1456,
+            "bottom": 114,
+            "left": 262,
+            "width": 1194,
+            "height": 36
+          },
+          "interactionLens": {
+            "x": 262,
+            "y": 122,
+            "top": 122,
+            "right": 1456,
+            "bottom": 167,
+            "left": 262,
+            "width": 1194,
+            "height": 45
+          },
+          "commandPalette": {
+            "x": 262,
+            "y": 175,
+            "top": 175,
+            "right": 1456,
+            "bottom": 294,
+            "left": 262,
+            "width": 1194,
+            "height": 119
+          },
+          "contentGrid": {
+            "x": 262,
+            "y": 302,
+            "top": 302,
+            "right": 1456,
+            "bottom": 647,
+            "left": 262,
+            "width": 1194,
+            "height": 345
+          }
+        },
+        "workspace": {
+          "x": 248,
+          "y": 0,
+          "top": 0,
+          "right": 1470,
+          "bottom": 661,
+          "left": 248,
+          "width": 1222,
+          "height": 661
+        }
+      },
+      "releaseIdentity": {
+        "shellPresent": true,
+        "brandTitle": "Memory Atlas",
+        "productName": "记忆决策台 · v1.2",
+        "groups": [
+          {
+            "id": "judgment",
+            "label": "判断",
+            "question": "我现在应该先判断什么",
+            "views": [
+              "home",
+              "summary"
+            ]
+          },
+          {
+            "id": "exploration",
+            "label": "探索",
+            "question": "我需要从哪里找证据",
+            "views": [
+              "galaxy",
+              "notion",
+              "timeline",
+              "search"
+            ]
+          },
+          {
+            "id": "reflection",
+            "label": "复盘",
+            "question": "哪里值得投入或降噪",
+            "views": [
+              "roi",
+              "obsidian",
+              "contribution",
+              "wordcloud"
+            ]
+          }
+        ],
+        "activeHomeLabel": "发生了什么",
+        "homeTitle": "发生了什么",
+        "metricLabels": [
+          "记忆",
+          "图谱项",
+          "关联",
+          "活动"
+        ],
+        "commandLabels": [
+          "同步 ChatGPT",
+          "同步 Codex",
+          "生成本周报告",
+          "查看待授权提案",
+          "生成个性化提示",
+          "打开 ChatGPT 深度探索"
+        ],
+        "pendingProposalLabel": "待授权提案",
+        "weatherTitle": "记忆天气"
+      },
+      "defaultSurfaceCopy": {
+        "matches": [],
+        "textLength": 11736,
+        "textSample": "Memory Atlas 记忆决策台 · v1.2 判断 我现在应该先判断什么 发生了什么 决定下一步 探索 我需要从哪里找证据 哪些主题在变化 资料如何关联 变化何时发生 查找与核对 复盘 哪里值得投入或降噪 哪里值得投入 关系网络 投入节奏 反复出现什么 数据状态 先看变化，再核对证据，最后决定下一步 发生了什么 记忆 278 图谱项 340 关联 1,771 活动 201 使用说明 分析对象 总数据源 ChatGPT Codex 层级 全部 核心画像 临时 一般 分类 全部 回答规则 Codex agent 元数据 Codex 开发记录 Codex 个性化上下文 Codex 使用记录 重要决策 历史/可能过时信息 事实资料 个人偏好 项目上下文 安全边界 短期/敏感背景 工作流 主题 全部 回转窑 / 工业服务 / 动态测量调整 金融 / 交易 / FIFA / 概率决策 课程 / 公司报告 / 可持续报告 其他待人工归类主题 学习系统 / Notion / 仪表盘 长期记忆库 / RAG / Agent 连续性 AI 时代 / 社会影响 / 个人能力突破 Codex / Agent 工作流 / Token ROI EVA OS / 系统开发 / Task Pack 发生了什么 回答规则：长期记忆库 / RAG先于执行 核心画像 / 回答规则 / 2026-06-07 1/301 聚焦主题 重置筛选 焦点技术详情 全部数据 快捷操作 接下来可以做什么 6 个可选动作 同步 ChatGPT 278 条 ChatGPT/Memory Atlas 节点可复核 同步 Codex 23 条 Codex 节点可复核 生成本周报告 16 条近周/近期节点 · 最新 2026 年 7 月 1 日 查看待授权提案 215 条候选线索需要人工判断 生成个性化提示 覆盖 ChatGPT / Codex / 其他代理 · 运行状态 已同步 打开 ChatGPT 深度探索 默认仅预填 · 自动发送受控 同步 ChatGPT 从固定本地导入箱读取一个官方导出，并刷新脱敏后的页面数据。 执行此操作 运行边界与技术详情 变化结论 / 证据 / 下一步 先判断哪些变化值得关注，再选择证据和行动 301 条筛选记忆 · 默认入口 上次来以后发生了什么 上次来以后发生了什么 先看新增资料、增强/减弱结论、待授权提案和同步失败，再决定是否进入星图、时间轴或复盘。 查看复盘 新增重要资料 166 条 最近新增或活跃的高价值线索是「回答规则：长期记忆库 / RAG先于执行」。 近 30 天 166 条，上一窗口 23 条。 下一步： 打开星图核对证据和关联主题 增强结论 长期记忆库 / RAG 这个结论在近期窗口增强 +84 条。 近期 111 条，对比窗口 27 条。 下一步： 进入时间轴查看"
+      },
+      "machineDetails": [
+        {
+          "selector": ".sidebar-data-status",
+          "count": 1,
+          "allClosed": true,
+          "text": "数据状态快照生成时间2026/7/10 16:52:07本次读取时间2026/7/10 22:08:43运行状态已同步 / 检测中"
+        },
+        {
+          "selector": ".lens-technical-details",
+          "count": 1,
+          "allClosed": true,
+          "text": "焦点技术详情宇宙状态（Universe State）信号 record来源 startup · r1"
+        },
+        {
+          "selector": ".command-technical-details",
+          "count": 1,
+          "allClosed": true,
+          "text": "运行边界与技术详情只接受 Application Support 导入箱中的一个官方 ZIP；不读取浏览器 cookies、tokens 或登录状态。python3 scripts/atlasctl.py sync --source chatgpt --official-export <fixed-local-inbox>No automatic sendNo silent sendNo canonical repo mutationApplication Support source copy onlyNo proposal apply executionNo cookie/token/secret exportChatGPT / Codex / other agent personalization promptprefill_only / auto_submit"
+        },
+        {
+          "selector": ".formula-technical-details",
+          "count": 1,
+          "allClosed": true,
+          "text": "查看公式参数与来源time_saved_weight27% proxy时间节省权重来自内部信息 ROI proxy，不是精确收入预测。机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.jsonreuse_value_weightA badge复用价值要能被 GitHub 可恢复资产或 handoff 证据支撑。data/derived/economic_proxy/formula_what_if_preview.jsonrework_cost_weight2 hits返工成本用于扣减 proxy 分，帮助识别需要降噪的工作流。data/derived/behavior_intelligence/decision_debt_ledger.jsonproposal_required_before_applytrue参数变化只进入 proposal，不直接写 active config 或 raw。data/derived/agent_collaboration/agent_authorization_boundary_report.json"
+        }
+      ],
+      "scanOrder": {
+        "found": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "focusableIndexes": [
+          0,
+          11,
+          12,
+          19,
+          21,
+          29
+        ],
+        "domOrder": true
+      },
+      "mobileNavigationKeyboard": {
+        "skipped": true
+      },
+      "responsiveHierarchy": {
+        "contentHeight": 345,
+        "lensHeight": 45,
+        "minimumContentHeight": 300,
+        "mobileNavigation": {
+          "itemCount": 10,
+          "items": [
+            {
+              "iconColor": "rgb(255, 255, 255)",
+              "iconHeight": 18,
+              "iconLeft": 25,
+              "iconOpacity": "1",
+              "iconTop": 122,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "home"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 25,
+              "iconOpacity": "1",
+              "iconTop": 162,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "summary"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 25,
+              "iconOpacity": "1",
+              "iconTop": 248,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "galaxy"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 25,
+              "iconOpacity": "1",
+              "iconTop": 288,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "notion"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 25,
+              "iconOpacity": "1",
+              "iconTop": 328,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "timeline"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 25,
+              "iconOpacity": "1",
+              "iconTop": 368,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "search"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 25,
+              "iconOpacity": "1",
+              "iconTop": 454,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "roi"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 25,
+              "iconOpacity": "1",
+              "iconTop": 494,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "obsidian"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 25,
+              "iconOpacity": "1",
+              "iconTop": 534,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "contribution"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 25,
+              "iconOpacity": "1",
+              "iconTop": 574,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "wordcloud"
+            }
+          ],
+          "sidebar": {
+            "bottom": 661,
+            "left": 0,
+            "right": 248,
+            "top": 0
+          }
+        },
+        "paletteHeight": 119,
+        "titleLayout": {
+          "height": 26.390625,
+          "lineHeight": 26.4,
+          "width": 216
+        },
+        "topbarHeight": 56
+      },
+      "palette": {
+        "actionCount": 6,
+        "clientHeight": 117,
+        "lastActionVisible": true,
+        "maxScroll": 57,
+        "movedToBottom": 57,
+        "overflowY": "auto",
+        "scrollHeight": 174,
+        "topVisible": true
+      },
+      "criticalContent": {
+        "bottomVisible": true,
+        "clientHeight": 343,
+        "contentGridHeight": 345.03125,
+        "homeContainedBySurface": true,
+        "maxScroll": 4886,
+        "movedToBottom": 4886,
+        "movedToLastSection": 4480,
+        "overflowY": "auto",
+        "scrollHeight": 5229,
+        "surfaceContainedByGrid": true,
+        "surfaceHeight": 345.03125,
+        "topVisible": true
+      },
+      "nestedHomeContent": {
+        "inspectedChildren": 70,
+        "inspectedTargets": 27,
+        "issueCount": 0,
+        "issues": []
+      },
+      "behaviorSummaries": {
+        "cardCount": 3,
+        "cardSummaryCounts": [
+          3,
+          3,
+          3
+        ],
+        "chineseSummaryCount": 9,
+        "reachableSummaryCount": 9,
+        "summaries": [
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "该层级簇把 77 个主题簇汇总到「chatgpt / 未标注项目 / 未标注任务 / zh」下，共覆盖 104 条有证据事件。它用于按 source/project/task/language 交叉探索，不替代后续低价值循环或机会判断。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "该层级簇把 26 个主题簇汇总到「chatgpt / 未标注项目 / 未标注任务 / mixed」下，共覆盖 32 条有证据事件。它用于按 source/project/task/language 交叉探索，不替代后续低价值循环或机会判断。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "该层级簇把 19 个主题簇汇总到「chatgpt / 未标注项目 / 未标注任务 / en」下，共覆盖 24 条有证据事件。它用于按 source/project/task/language 交叉探索，不替代后续低价值循环或机会判断。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选低价值循环：经营与管理决策。依据 23 条事件和 10 条证据引用，检测到 多月多次出现，可能存在重复返工候选。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选低价值循环：项目：Memory Atlas。依据 15 条事件和 10 条证据引用，检测到 多月多次出现，可能存在重复返工候选。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选低价值循环：AI 记忆与 agent 工作流。依据 18 条事件和 10 条证据引用，检测到 多月多次出现，可能存在重复返工候选。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选机会：AI 记忆与 agent 工作流。依据低价值循环 scope_creep、18 条事件和 10 条证据引用，识别为 automation 方向。该线索只用于探索排序，不是必须执行任务。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选机会：项目：Memory Atlas。依据低价值循环 over_optimization、15 条事件和 10 条证据引用，识别为 automation 方向。该线索只用于探索排序，不是必须执行任务。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选机会：项目：Memory Atlas。依据低价值循环 repeated_rework、15 条事件和 10 条证据引用，识别为 automation 方向。该线索只用于探索排序，不是必须执行任务。"
+          }
+        ],
+        "summaryCount": 9
+      },
+      "screenshot": {
+        "path": "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject/OpenAIDatabase/机器治理/证据与日志/remediation/v1_2_r4/regression/home/home-desktop-low-height-1470x661.png",
+        "bytes": 423272
+      },
+      "consoleErrors": [],
+      "failedResponses": [],
+      "actionableConsoleErrors": [],
+      "actionableFailedResponses": []
+    },
+    {
+      "status": "PASS",
+      "viewport": {
+        "name": "desktop-standard",
+        "width": 1440,
+        "height": 900
+      },
+      "layout": {
+        "document": {
+          "clientHeight": 900,
+          "clientWidth": 1440,
+          "scrollHeight": 900,
+          "scrollWidth": 1440
+        },
+        "sections": {
+          "topbar": {
+            "x": 262,
+            "y": 14,
+            "top": 14,
+            "right": 1426,
+            "bottom": 70,
+            "left": 262,
+            "width": 1164,
+            "height": 56
+          },
+          "controls": {
+            "x": 262,
+            "y": 78,
+            "top": 78,
+            "right": 1426,
+            "bottom": 114,
+            "left": 262,
+            "width": 1164,
+            "height": 36
+          },
+          "interactionLens": {
+            "x": 262,
+            "y": 122,
+            "top": 122,
+            "right": 1426,
+            "bottom": 167,
+            "left": 262,
+            "width": 1164,
+            "height": 45
+          },
+          "commandPalette": {
+            "x": 262,
+            "y": 175,
+            "top": 175,
+            "right": 1426,
+            "bottom": 327,
+            "left": 262,
+            "width": 1164,
+            "height": 152
+          },
+          "contentGrid": {
+            "x": 262,
+            "y": 335,
+            "top": 335,
+            "right": 1426,
+            "bottom": 886,
+            "left": 262,
+            "width": 1164,
+            "height": 551
+          }
+        },
+        "workspace": {
+          "x": 248,
+          "y": 0,
+          "top": 0,
+          "right": 1440,
+          "bottom": 900,
+          "left": 248,
+          "width": 1192,
+          "height": 900
+        }
+      },
+      "releaseIdentity": {
+        "shellPresent": true,
+        "brandTitle": "Memory Atlas",
+        "productName": "记忆决策台 · v1.2",
+        "groups": [
+          {
+            "id": "judgment",
+            "label": "判断",
+            "question": "我现在应该先判断什么",
+            "views": [
+              "home",
+              "summary"
+            ]
+          },
+          {
+            "id": "exploration",
+            "label": "探索",
+            "question": "我需要从哪里找证据",
+            "views": [
+              "galaxy",
+              "notion",
+              "timeline",
+              "search"
+            ]
+          },
+          {
+            "id": "reflection",
+            "label": "复盘",
+            "question": "哪里值得投入或降噪",
+            "views": [
+              "roi",
+              "obsidian",
+              "contribution",
+              "wordcloud"
+            ]
+          }
+        ],
+        "activeHomeLabel": "发生了什么",
+        "homeTitle": "发生了什么",
+        "metricLabels": [
+          "记忆",
+          "图谱项",
+          "关联",
+          "活动"
+        ],
+        "commandLabels": [
+          "同步 ChatGPT",
+          "同步 Codex",
+          "生成本周报告",
+          "查看待授权提案",
+          "生成个性化提示",
+          "打开 ChatGPT 深度探索"
+        ],
+        "pendingProposalLabel": "待授权提案",
+        "weatherTitle": "记忆天气"
+      },
+      "defaultSurfaceCopy": {
+        "matches": [],
+        "textLength": 11736,
+        "textSample": "Memory Atlas 记忆决策台 · v1.2 判断 我现在应该先判断什么 发生了什么 决定下一步 探索 我需要从哪里找证据 哪些主题在变化 资料如何关联 变化何时发生 查找与核对 复盘 哪里值得投入或降噪 哪里值得投入 关系网络 投入节奏 反复出现什么 数据状态 先看变化，再核对证据，最后决定下一步 发生了什么 记忆 278 图谱项 340 关联 1,771 活动 201 使用说明 分析对象 总数据源 ChatGPT Codex 层级 全部 核心画像 临时 一般 分类 全部 回答规则 Codex agent 元数据 Codex 开发记录 Codex 个性化上下文 Codex 使用记录 重要决策 历史/可能过时信息 事实资料 个人偏好 项目上下文 安全边界 短期/敏感背景 工作流 主题 全部 回转窑 / 工业服务 / 动态测量调整 金融 / 交易 / FIFA / 概率决策 课程 / 公司报告 / 可持续报告 其他待人工归类主题 学习系统 / Notion / 仪表盘 长期记忆库 / RAG / Agent 连续性 AI 时代 / 社会影响 / 个人能力突破 Codex / Agent 工作流 / Token ROI EVA OS / 系统开发 / Task Pack 发生了什么 回答规则：长期记忆库 / RAG先于执行 核心画像 / 回答规则 / 2026-06-07 1/301 聚焦主题 重置筛选 焦点技术详情 全部数据 快捷操作 接下来可以做什么 6 个可选动作 同步 ChatGPT 278 条 ChatGPT/Memory Atlas 节点可复核 同步 Codex 23 条 Codex 节点可复核 生成本周报告 16 条近周/近期节点 · 最新 2026 年 7 月 1 日 查看待授权提案 215 条候选线索需要人工判断 生成个性化提示 覆盖 ChatGPT / Codex / 其他代理 · 运行状态 已同步 打开 ChatGPT 深度探索 默认仅预填 · 自动发送受控 同步 ChatGPT 从固定本地导入箱读取一个官方导出，并刷新脱敏后的页面数据。 执行此操作 运行边界与技术详情 变化结论 / 证据 / 下一步 先判断哪些变化值得关注，再选择证据和行动 301 条筛选记忆 · 默认入口 上次来以后发生了什么 上次来以后发生了什么 先看新增资料、增强/减弱结论、待授权提案和同步失败，再决定是否进入星图、时间轴或复盘。 查看复盘 新增重要资料 166 条 最近新增或活跃的高价值线索是「回答规则：长期记忆库 / RAG先于执行」。 近 30 天 166 条，上一窗口 23 条。 下一步： 打开星图核对证据和关联主题 增强结论 长期记忆库 / RAG 这个结论在近期窗口增强 +84 条。 近期 111 条，对比窗口 27 条。 下一步： 进入时间轴查看"
+      },
+      "machineDetails": [
+        {
+          "selector": ".sidebar-data-status",
+          "count": 1,
+          "allClosed": true,
+          "text": "数据状态快照生成时间2026/7/10 16:52:07本次读取时间2026/7/10 22:08:44运行状态已同步 / 检测中"
+        },
+        {
+          "selector": ".lens-technical-details",
+          "count": 1,
+          "allClosed": true,
+          "text": "焦点技术详情宇宙状态（Universe State）信号 record来源 startup · r1"
+        },
+        {
+          "selector": ".command-technical-details",
+          "count": 1,
+          "allClosed": true,
+          "text": "运行边界与技术详情只接受 Application Support 导入箱中的一个官方 ZIP；不读取浏览器 cookies、tokens 或登录状态。python3 scripts/atlasctl.py sync --source chatgpt --official-export <fixed-local-inbox>No automatic sendNo silent sendNo canonical repo mutationApplication Support source copy onlyNo proposal apply executionNo cookie/token/secret exportChatGPT / Codex / other agent personalization promptprefill_only / auto_submit"
+        },
+        {
+          "selector": ".formula-technical-details",
+          "count": 1,
+          "allClosed": true,
+          "text": "查看公式参数与来源time_saved_weight27% proxy时间节省权重来自内部信息 ROI proxy，不是精确收入预测。机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.jsonreuse_value_weightA badge复用价值要能被 GitHub 可恢复资产或 handoff 证据支撑。data/derived/economic_proxy/formula_what_if_preview.jsonrework_cost_weight2 hits返工成本用于扣减 proxy 分，帮助识别需要降噪的工作流。data/derived/behavior_intelligence/decision_debt_ledger.jsonproposal_required_before_applytrue参数变化只进入 proposal，不直接写 active config 或 raw。data/derived/agent_collaboration/agent_authorization_boundary_report.json"
+        }
+      ],
+      "scanOrder": {
+        "found": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "focusableIndexes": [
+          0,
+          11,
+          12,
+          19,
+          21,
+          29
+        ],
+        "domOrder": true
+      },
+      "mobileNavigationKeyboard": {
+        "skipped": true
+      },
+      "responsiveHierarchy": {
+        "contentHeight": 551,
+        "lensHeight": 45,
+        "minimumContentHeight": 500,
+        "mobileNavigation": {
+          "itemCount": 10,
+          "items": [
+            {
+              "iconColor": "rgb(255, 255, 255)",
+              "iconHeight": 18,
+              "iconLeft": 25,
+              "iconOpacity": "1",
+              "iconTop": 122,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "home"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 25,
+              "iconOpacity": "1",
+              "iconTop": 162,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "summary"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 25,
+              "iconOpacity": "1",
+              "iconTop": 248,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "galaxy"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 25,
+              "iconOpacity": "1",
+              "iconTop": 288,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "notion"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 25,
+              "iconOpacity": "1",
+              "iconTop": 328,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "timeline"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 25,
+              "iconOpacity": "1",
+              "iconTop": 368,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "search"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 25,
+              "iconOpacity": "1",
+              "iconTop": 454,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "roi"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 25,
+              "iconOpacity": "1",
+              "iconTop": 494,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "obsidian"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 25,
+              "iconOpacity": "1",
+              "iconTop": 534,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "contribution"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 25,
+              "iconOpacity": "1",
+              "iconTop": 574,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "wordcloud"
+            }
+          ],
+          "sidebar": {
+            "bottom": 900,
+            "left": 0,
+            "right": 248,
+            "top": 0
+          }
+        },
+        "paletteHeight": 152,
+        "titleLayout": {
+          "height": 26.390625,
+          "lineHeight": 26.4,
+          "width": 216
+        },
+        "topbarHeight": 56
+      },
+      "palette": {
+        "actionCount": 6,
+        "clientHeight": 150,
+        "lastActionVisible": true,
+        "maxScroll": 24,
+        "movedToBottom": 24,
+        "overflowY": "auto",
+        "scrollHeight": 174,
+        "topVisible": true
+      },
+      "criticalContent": {
+        "bottomVisible": true,
+        "clientHeight": 549,
+        "contentGridHeight": 551,
+        "homeContainedBySurface": true,
+        "maxScroll": 4714,
+        "movedToBottom": 4714,
+        "movedToLastSection": 4377,
+        "overflowY": "auto",
+        "scrollHeight": 5263,
+        "surfaceContainedByGrid": true,
+        "surfaceHeight": 551,
+        "topVisible": true
+      },
+      "nestedHomeContent": {
+        "inspectedChildren": 70,
+        "inspectedTargets": 27,
+        "issueCount": 0,
+        "issues": []
+      },
+      "behaviorSummaries": {
+        "cardCount": 3,
+        "cardSummaryCounts": [
+          3,
+          3,
+          3
+        ],
+        "chineseSummaryCount": 9,
+        "reachableSummaryCount": 9,
+        "summaries": [
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "该层级簇把 77 个主题簇汇总到「chatgpt / 未标注项目 / 未标注任务 / zh」下，共覆盖 104 条有证据事件。它用于按 source/project/task/language 交叉探索，不替代后续低价值循环或机会判断。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "该层级簇把 26 个主题簇汇总到「chatgpt / 未标注项目 / 未标注任务 / mixed」下，共覆盖 32 条有证据事件。它用于按 source/project/task/language 交叉探索，不替代后续低价值循环或机会判断。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "该层级簇把 19 个主题簇汇总到「chatgpt / 未标注项目 / 未标注任务 / en」下，共覆盖 24 条有证据事件。它用于按 source/project/task/language 交叉探索，不替代后续低价值循环或机会判断。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选低价值循环：经营与管理决策。依据 23 条事件和 10 条证据引用，检测到 多月多次出现，可能存在重复返工候选。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选低价值循环：项目：Memory Atlas。依据 15 条事件和 10 条证据引用，检测到 多月多次出现，可能存在重复返工候选。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选低价值循环：AI 记忆与 agent 工作流。依据 18 条事件和 10 条证据引用，检测到 多月多次出现，可能存在重复返工候选。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选机会：AI 记忆与 agent 工作流。依据低价值循环 scope_creep、18 条事件和 10 条证据引用，识别为 automation 方向。该线索只用于探索排序，不是必须执行任务。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选机会：项目：Memory Atlas。依据低价值循环 over_optimization、15 条事件和 10 条证据引用，识别为 automation 方向。该线索只用于探索排序，不是必须执行任务。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选机会：项目：Memory Atlas。依据低价值循环 repeated_rework、15 条事件和 10 条证据引用，识别为 automation 方向。该线索只用于探索排序，不是必须执行任务。"
+          }
+        ],
+        "summaryCount": 9
+      },
+      "screenshot": {
+        "path": "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject/OpenAIDatabase/机器治理/证据与日志/remediation/v1_2_r4/regression/home/home-desktop-standard-1440x900.png",
+        "bytes": 510014
+      },
+      "consoleErrors": [],
+      "failedResponses": [],
+      "actionableConsoleErrors": [],
+      "actionableFailedResponses": []
+    },
+    {
+      "status": "PASS",
+      "viewport": {
+        "name": "mobile",
+        "width": 390,
+        "height": 844
+      },
+      "layout": {
+        "document": {
+          "clientHeight": 844,
+          "clientWidth": 390,
+          "scrollHeight": 844,
+          "scrollWidth": 390
+        },
+        "sections": {
+          "topbar": {
+            "x": 14,
+            "y": 99,
+            "top": 99,
+            "right": 376,
+            "bottom": 145,
+            "left": 14,
+            "width": 362,
+            "height": 46
+          },
+          "controls": {
+            "x": 14,
+            "y": 153,
+            "top": 153,
+            "right": 376,
+            "bottom": 277,
+            "left": 14,
+            "width": 362,
+            "height": 124
+          },
+          "interactionLens": {
+            "x": 14,
+            "y": 285,
+            "top": 285,
+            "right": 376,
+            "bottom": 363,
+            "left": 14,
+            "width": 362,
+            "height": 78
+          },
+          "commandPalette": {
+            "x": 14,
+            "y": 371,
+            "top": 371,
+            "right": 376,
+            "bottom": 511,
+            "left": 14,
+            "width": 362,
+            "height": 140
+          },
+          "contentGrid": {
+            "x": 14,
+            "y": 519,
+            "top": 519,
+            "right": 376,
+            "bottom": 830,
+            "left": 14,
+            "width": 362,
+            "height": 311
+          }
+        },
+        "workspace": {
+          "x": 0,
+          "y": 85,
+          "top": 85,
+          "right": 390,
+          "bottom": 844,
+          "left": 0,
+          "width": 390,
+          "height": 759
+        }
+      },
+      "releaseIdentity": {
+        "shellPresent": true,
+        "brandTitle": "Memory Atlas",
+        "productName": "记忆决策台 · v1.2",
+        "groups": [
+          {
+            "id": "judgment",
+            "label": "判断",
+            "question": "我现在应该先判断什么",
+            "views": [
+              "home",
+              "summary"
+            ]
+          },
+          {
+            "id": "exploration",
+            "label": "探索",
+            "question": "我需要从哪里找证据",
+            "views": [
+              "galaxy",
+              "notion",
+              "timeline",
+              "search"
+            ]
+          },
+          {
+            "id": "reflection",
+            "label": "复盘",
+            "question": "哪里值得投入或降噪",
+            "views": [
+              "roi",
+              "obsidian",
+              "contribution",
+              "wordcloud"
+            ]
+          }
+        ],
+        "activeHomeLabel": "发生了什么",
+        "homeTitle": "发生了什么",
+        "metricLabels": [
+          "记忆",
+          "图谱项",
+          "关联",
+          "活动"
+        ],
+        "commandLabels": [
+          "同步 ChatGPT",
+          "同步 Codex",
+          "生成本周报告",
+          "查看待授权提案",
+          "生成个性化提示",
+          "打开 ChatGPT 深度探索"
+        ],
+        "pendingProposalLabel": "待授权提案",
+        "weatherTitle": "记忆天气"
+      },
+      "defaultSurfaceCopy": {
+        "matches": [],
+        "textLength": 11566,
+        "textSample": "发生了什么 记忆 278 图谱项 340 关联 1,771 活动 201 分析对象 总数据源 ChatGPT Codex 层级 全部 核心画像 临时 一般 分类 全部 回答规则 Codex agent 元数据 Codex 开发记录 Codex 个性化上下文 Codex 使用记录 重要决策 历史/可能过时信息 事实资料 个人偏好 项目上下文 安全边界 短期/敏感背景 工作流 主题 全部 回转窑 / 工业服务 / 动态测量调整 金融 / 交易 / FIFA / 概率决策 课程 / 公司报告 / 可持续报告 其他待人工归类主题 学习系统 / Notion / 仪表盘 长期记忆库 / RAG / Agent 连续性 AI 时代 / 社会影响 / 个人能力突破 Codex / Agent 工作流 / Token ROI EVA OS / 系统开发 / Task Pack 发生了什么 回答规则：长期记忆库 / RAG先于执行 核心画像 / 回答规则 / 2026-06-07 聚焦主题 重置筛选 焦点技术详情 快捷操作 接下来可以做什么 6 个可选动作 同步 ChatGPT 278 条 ChatGPT/Memory Atlas 节点可复核 同步 Codex 23 条 Codex 节点可复核 生成本周报告 16 条近周/近期节点 · 最新 2026 年 7 月 1 日 查看待授权提案 215 条候选线索需要人工判断 生成个性化提示 覆盖 ChatGPT / Codex / 其他代理 · 运行状态 已同步 打开 ChatGPT 深度探索 默认仅预填 · 自动发送受控 同步 ChatGPT 从固定本地导入箱读取一个官方导出，并刷新脱敏后的页面数据。 执行此操作 运行边界与技术详情 变化结论 / 证据 / 下一步 先判断哪些变化值得关注，再选择证据和行动 301 条筛选记忆 · 默认入口 上次来以后发生了什么 上次来以后发生了什么 先看新增资料、增强/减弱结论、待授权提案和同步失败，再决定是否进入星图、时间轴或复盘。 查看复盘 新增重要资料 166 条 最近新增或活跃的高价值线索是「回答规则：长期记忆库 / RAG先于执行」。 近 30 天 166 条，上一窗口 23 条。 下一步： 打开星图核对证据和关联主题 增强结论 长期记忆库 / RAG 这个结论在近期窗口增强 +84 条。 近期 111 条，对比窗口 27 条。 下一步： 进入时间轴查看增强发生在哪些记录上 减弱或过期结论 215 215 条风险循环或过期候选需要保留在复盘视野里。 根据时效和低价值循环信号综合判断。 下一步： 先复核，不直接降权或删除 待授权提案 5 项 有代理建议或下一步行动可转成提案候选，仍需人工授权。 代理建议 2 项，行动建议 5 项。 下一步： 进入决定下一步，逐项人工判断 同步失败 0 个 "
+      },
+      "machineDetails": [
+        {
+          "selector": ".sidebar-data-status",
+          "count": 1,
+          "allClosed": true,
+          "text": "数据状态快照生成时间2026/7/10 16:52:07本次读取时间2026/7/10 22:08:45运行状态已同步 / 检测中"
+        },
+        {
+          "selector": ".lens-technical-details",
+          "count": 1,
+          "allClosed": true,
+          "text": "焦点技术详情宇宙状态（Universe State）信号 record来源 startup · r1"
+        },
+        {
+          "selector": ".command-technical-details",
+          "count": 1,
+          "allClosed": true,
+          "text": "运行边界与技术详情只接受 Application Support 导入箱中的一个官方 ZIP；不读取浏览器 cookies、tokens 或登录状态。python3 scripts/atlasctl.py sync --source chatgpt --official-export <fixed-local-inbox>No automatic sendNo silent sendNo canonical repo mutationApplication Support source copy onlyNo proposal apply executionNo cookie/token/secret exportChatGPT / Codex / other agent personalization promptprefill_only / auto_submit"
+        },
+        {
+          "selector": ".formula-technical-details",
+          "count": 1,
+          "allClosed": true,
+          "text": "查看公式参数与来源time_saved_weight27% proxy时间节省权重来自内部信息 ROI proxy，不是精确收入预测。机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.jsonreuse_value_weightA badge复用价值要能被 GitHub 可恢复资产或 handoff 证据支撑。data/derived/economic_proxy/formula_what_if_preview.jsonrework_cost_weight2 hits返工成本用于扣减 proxy 分，帮助识别需要降噪的工作流。data/derived/behavior_intelligence/decision_debt_ledger.jsonproposal_required_before_applytrue参数变化只进入 proposal，不直接写 active config 或 raw。data/derived/agent_collaboration/agent_authorization_boundary_report.json"
+        }
+      ],
+      "scanOrder": {
+        "found": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "focusableIndexes": [
+          0,
+          11,
+          12,
+          19,
+          21,
+          29
+        ],
+        "domOrder": true
+      },
+      "mobileNavigationKeyboard": {
+        "forward": [
+          {
+            "view": "home",
+            "fullyVisibleAfterFocus": true,
+            "clippedByPx": {
+              "left": 0,
+              "right": 0,
+              "top": 0,
+              "bottom": 0
+            },
+            "focusRingExtentPx": 0
+          },
+          {
+            "view": "summary",
+            "fullyVisibleAfterFocus": true,
+            "clippedByPx": {
+              "left": 0,
+              "right": 0,
+              "top": 0,
+              "bottom": 0
+            },
+            "focusRingExtentPx": 0
+          },
+          {
+            "view": "galaxy",
+            "fullyVisibleAfterFocus": true,
+            "clippedByPx": {
+              "left": 0,
+              "right": 0,
+              "top": 0,
+              "bottom": 0
+            },
+            "focusRingExtentPx": 0
+          },
+          {
+            "view": "notion",
+            "fullyVisibleAfterFocus": true,
+            "clippedByPx": {
+              "left": 0,
+              "right": 0,
+              "top": 0,
+              "bottom": 0
+            },
+            "focusRingExtentPx": 0
+          },
+          {
+            "view": "timeline",
+            "fullyVisibleAfterFocus": true,
+            "clippedByPx": {
+              "left": 0,
+              "right": 0,
+              "top": 0,
+              "bottom": 0
+            },
+            "focusRingExtentPx": 0
+          },
+          {
+            "view": "search",
+            "fullyVisibleAfterFocus": true,
+            "clippedByPx": {
+              "left": 0,
+              "right": 0,
+              "top": 0,
+              "bottom": 0
+            },
+            "focusRingExtentPx": 0
+          },
+          {
+            "view": "roi",
+            "fullyVisibleAfterFocus": true,
+            "clippedByPx": {
+              "left": 0,
+              "right": 0,
+              "top": 0,
+              "bottom": 0
+            },
+            "focusRingExtentPx": 0
+          },
+          {
+            "view": "obsidian",
+            "fullyVisibleAfterFocus": true,
+            "clippedByPx": {
+              "left": 0,
+              "right": 0,
+              "top": 0,
+              "bottom": 0
+            },
+            "focusRingExtentPx": 0
+          },
+          {
+            "view": "contribution",
+            "fullyVisibleAfterFocus": true,
+            "clippedByPx": {
+              "left": 0,
+              "right": 0,
+              "top": 0,
+              "bottom": 0
+            },
+            "focusRingExtentPx": 0
+          },
+          {
+            "view": "wordcloud",
+            "fullyVisibleAfterFocus": true,
+            "clippedByPx": {
+              "left": 0,
+              "right": 0,
+              "top": 0,
+              "bottom": 0
+            },
+            "focusRingExtentPx": 0
+          }
+        ],
+        "reverse": [
+          {
+            "view": "contribution",
+            "fullyVisibleAfterFocus": true,
+            "clippedByPx": {
+              "left": 0,
+              "right": 0,
+              "top": 0,
+              "bottom": 0
+            },
+            "focusRingExtentPx": 0
+          },
+          {
+            "view": "obsidian",
+            "fullyVisibleAfterFocus": true,
+            "clippedByPx": {
+              "left": 0,
+              "right": 0,
+              "top": 0,
+              "bottom": 0
+            },
+            "focusRingExtentPx": 0
+          },
+          {
+            "view": "roi",
+            "fullyVisibleAfterFocus": true,
+            "clippedByPx": {
+              "left": 0,
+              "right": 0,
+              "top": 0,
+              "bottom": 0
+            },
+            "focusRingExtentPx": 0
+          },
+          {
+            "view": "search",
+            "fullyVisibleAfterFocus": true,
+            "clippedByPx": {
+              "left": 0,
+              "right": 0,
+              "top": 0,
+              "bottom": 0
+            },
+            "focusRingExtentPx": 0
+          },
+          {
+            "view": "timeline",
+            "fullyVisibleAfterFocus": true,
+            "clippedByPx": {
+              "left": 0,
+              "right": 0,
+              "top": 0,
+              "bottom": 0
+            },
+            "focusRingExtentPx": 0
+          },
+          {
+            "view": "notion",
+            "fullyVisibleAfterFocus": true,
+            "clippedByPx": {
+              "left": 0,
+              "right": 0,
+              "top": 0,
+              "bottom": 0
+            },
+            "focusRingExtentPx": 0
+          },
+          {
+            "view": "galaxy",
+            "fullyVisibleAfterFocus": true,
+            "clippedByPx": {
+              "left": 0,
+              "right": 0,
+              "top": 0,
+              "bottom": 0
+            },
+            "focusRingExtentPx": 0
+          },
+          {
+            "view": "summary",
+            "fullyVisibleAfterFocus": true,
+            "clippedByPx": {
+              "left": 0,
+              "right": 0,
+              "top": 0,
+              "bottom": 0
+            },
+            "focusRingExtentPx": 0
+          },
+          {
+            "view": "home",
+            "fullyVisibleAfterFocus": true,
+            "clippedByPx": {
+              "left": 0,
+              "right": 0,
+              "top": 0,
+              "bottom": 0
+            },
+            "focusRingExtentPx": 0
+          }
+        ],
+        "skipped": false
+      },
+      "responsiveHierarchy": {
+        "contentHeight": 311,
+        "lensHeight": 78,
+        "minimumContentHeight": 240,
+        "mobileNavigation": {
+          "itemCount": 10,
+          "items": [
+            {
+              "iconColor": "rgb(255, 255, 255)",
+              "iconHeight": 18,
+              "iconLeft": 58,
+              "iconOpacity": "1",
+              "iconTop": 33,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "home"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 106,
+              "iconOpacity": "1",
+              "iconTop": 33,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "summary"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 154,
+              "iconOpacity": "1",
+              "iconTop": 33,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "galaxy"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 202,
+              "iconOpacity": "1",
+              "iconTop": 33,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "notion"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 250,
+              "iconOpacity": "1",
+              "iconTop": 33,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "timeline"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 298,
+              "iconOpacity": "1",
+              "iconTop": 33,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "search"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 346,
+              "iconOpacity": "1",
+              "iconTop": 33,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "roi"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 394,
+              "iconOpacity": "1",
+              "iconTop": 33,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "obsidian"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 442,
+              "iconOpacity": "1",
+              "iconTop": 33,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "contribution"
+            },
+            {
+              "iconColor": "rgb(217, 212, 202)",
+              "iconHeight": 18,
+              "iconLeft": 490,
+              "iconOpacity": "1",
+              "iconTop": 33,
+              "iconVisibility": "visible",
+              "iconWidth": 18,
+              "view": "wordcloud"
+            }
+          ],
+          "sidebar": {
+            "bottom": 85,
+            "left": 0,
+            "right": 390,
+            "top": 0
+          }
+        },
+        "paletteHeight": 140,
+        "titleLayout": {
+          "height": 19.796875,
+          "lineHeight": 19.8,
+          "width": 96
+        },
+        "topbarHeight": 46
+      },
+      "palette": {
+        "actionCount": 6,
+        "clientHeight": 138,
+        "lastActionVisible": true,
+        "maxScroll": 364,
+        "movedToBottom": 364,
+        "overflowY": "auto",
+        "scrollHeight": 502,
+        "topVisible": true
+      },
+      "criticalContent": {
+        "bottomVisible": true,
+        "clientHeight": 309,
+        "contentGridHeight": 311,
+        "homeContainedBySurface": true,
+        "maxScroll": 14206,
+        "movedToBottom": 14206,
+        "movedToLastSection": 12633,
+        "overflowY": "auto",
+        "scrollHeight": 14515,
+        "surfaceContainedByGrid": true,
+        "surfaceHeight": 311,
+        "topVisible": true
+      },
+      "nestedHomeContent": {
+        "inspectedChildren": 70,
+        "inspectedTargets": 27,
+        "issueCount": 0,
+        "issues": []
+      },
+      "behaviorSummaries": {
+        "cardCount": 3,
+        "cardSummaryCounts": [
+          3,
+          3,
+          3
+        ],
+        "chineseSummaryCount": 9,
+        "reachableSummaryCount": 9,
+        "summaries": [
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "该层级簇把 77 个主题簇汇总到「chatgpt / 未标注项目 / 未标注任务 / zh」下，共覆盖 104 条有证据事件。它用于按 source/project/task/language 交叉探索，不替代后续低价值循环或机会判断。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "该层级簇把 26 个主题簇汇总到「chatgpt / 未标注项目 / 未标注任务 / mixed」下，共覆盖 32 条有证据事件。它用于按 source/project/task/language 交叉探索，不替代后续低价值循环或机会判断。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "该层级簇把 19 个主题簇汇总到「chatgpt / 未标注项目 / 未标注任务 / en」下，共覆盖 24 条有证据事件。它用于按 source/project/task/language 交叉探索，不替代后续低价值循环或机会判断。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选低价值循环：经营与管理决策。依据 23 条事件和 10 条证据引用，检测到 多月多次出现，可能存在重复返工候选。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选低价值循环：项目：Memory Atlas。依据 15 条事件和 10 条证据引用，检测到 多月多次出现，可能存在重复返工候选。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选低价值循环：AI 记忆与 agent 工作流。依据 18 条事件和 10 条证据引用，检测到 多月多次出现，可能存在重复返工候选。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选机会：AI 记忆与 agent 工作流。依据低价值循环 scope_creep、18 条事件和 10 条证据引用，识别为 automation 方向。该线索只用于探索排序，不是必须执行任务。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选机会：项目：Memory Atlas。依据低价值循环 over_optimization、15 条事件和 10 条证据引用，识别为 automation 方向。该线索只用于探索排序，不是必须执行任务。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选机会：项目：Memory Atlas。依据低价值循环 repeated_rework、15 条事件和 10 条证据引用，识别为 automation 方向。该线索只用于探索排序，不是必须执行任务。"
+          }
+        ],
+        "summaryCount": 9
+      },
+      "screenshot": {
+        "path": "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject/OpenAIDatabase/机器治理/证据与日志/remediation/v1_2_r4/regression/home/home-mobile-390x844.png",
+        "bytes": 152434
+      },
+      "consoleErrors": [],
+      "failedResponses": [],
+      "actionableConsoleErrors": [],
+      "actionableFailedResponses": []
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "version": "0.1.0",
+  "automation_id": "kmfa-4",
+  "automation_name": "Dingtalk-routine-check / 钉钉工作检查",
+  "status": "ACTIVE",
+  "kind": "cron",
+  "business_clock": "Asia/Shanghai",
+  "scheduler_policy": "pure_rrule_local_wall_clock_no_explicit_timezone",
+  "host_clock_snapshot": "Australia/Sydney AEST UTC+10",
+  "execution_environment": "local",
+  "cwd": "/Users/linzezhang/CodexProject",
+  "skill_path": "KMFA/daily_routine_check_skill/SKILL.md",
+  "rrule": "RRULE:FREQ=DAILY;BYHOUR=13,19;BYMINUTE=5,35;BYSETPOS=2,3",
+  "rrule_policy": "One pure local-wall-clock RRULE. BYSETPOS selects the paired 13:35 and 19:05 runs. No DTSTART, TZID, explicit scheduler timezone, or multiple RRULE lines.",
+  "trigger_windows": [
+    {
+      "trigger_window": "morning_1135",
+      "run_time_beijing": "11:35",
+      "run_time_local_wall_clock": "13:35 AEST",
+      "command": "python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window morning_1135 --input-zip /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip --send"
+    },
+    {
+      "trigger_window": "evening_1705",
+      "run_time_beijing": "17:05",
+      "run_time_local_wall_clock": "19:05 AEST",
+      "command": "python3 -m KMFA.tools.daily_routine_check.main --date today --timezone Asia/Shanghai --trigger-window evening_1705 --input-zip /Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip --send"
+    }
+  ],
+  "single_automation_only": true,
+  "do_not_create_one_automation_per_rule": true,
+  "trigger_execution_policy": "exactly_one_matching_window_once_per_scheduled_trigger",
+  "scheduled_cleanup": false,
+  "required_run_log_fields": [
+    "run_at_beijing",
+    "check_date",
+    "trigger_window",
+    "rules_evaluated",
+    "rules_blocked_by_source",
+    "rules_skipped"
+  ],
+  "cash_monitor_fields": [
+    "cash_risk_result",
+    "risk_level",
+    "total_available_cash"
+  ],
+  "source_quality_events": [
+    "SOURCE_MISSING",
+    "SOURCE_STALE",
+    "ZIP_INPUT_UNREADABLE"
+  ],
+  "zip_input_only": true,
+  "zip_input_path": "/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip",
+  "zip_required_members": [
+    "DWS_Outputs/付款请示群/chat_records/chat_records.csv",
+    "DWS_Outputs/付款请示群/_manifest/manifest.csv",
+    "DWS_Outputs/生产管理群/chat_records/chat_records.csv",
+    "DWS_Outputs/生产管理群/_manifest/manifest.csv"
+  ],
+  "disk_folder_policy": "DWS_Outputs/ on disk is normally absent; never probe, create, materialize, extract, copy, or use it as fallback",
+  "cache_policy": "stream required ZIP members in place; no source copy or extraction; no automatic per-run eviction",
+  "private_runtime_policy": "Do not commit notification targets, SQLite, raw DWS output, OCR raw bodies, webhook URLs, tokens, resolved DingTalk IDs, screenshots, or notification receipts."
+}

@@ -1215,6 +1215,31 @@ version_matrix_product_version_reference: 0.1.4-s18-stage-review
 
 # Changelog
 
+## 0.1.5-s19-official-only-runtime - 2026-07-11
+
+- 修复 S19 晚报在官方报表已完成后仍串行执行 42 人 × `record/summary` 的架构问题；旧诊断最多可形成数小时等待并被 automation 错误中断为 `DWS_AUTH_REQUIRED`。
+- scheduled production collector 现在在 42/42 官方 parity 后直接生成 official-only rows；旧逐人接口只保留给显式 legacy/diagnostic collector。
+- automation prompt 禁止在 runner 自身有界 timeout/retry 内中断进程，并禁止在 healthcheck `READY` 后把运行中或后续 timeout 误报为授权失败。
+- 真实只读 DWS 验收：42/42 覆盖、parity `PASS`、command failure 0、legacy diagnostic skipped 42、总耗时 65.1 秒；未发送通知。
+
+## 0.1.4-s19-dingtalk-attendance - 2026-07-07
+
+- 新增 `S19｜每日早晚钉钉考勤检查` public-safe 自动化结构，固定每日北京时间 08:35 晨报和 18:15 晚报。
+- 新增 S19 多目标通知路由表：ignored `notification_targets.local.json` / `notification_targets_resolved.json` 保存个人和群聊目标，public `notification_targets_manifest.json` 只保存脱敏状态；张霖泽目标已从旧单通道 resolved 兼容迁移到 `dws_open_dingtalk_id_chat`。
+- 新增 S19 钉钉个人通知通道探针：按 DWS userId 单聊、openDingTalkId 单聊、DING、工作通知、群机器人顺序自动 fallback；当前 userId 单聊失败原因记录为 `chat/business_error/系统错误`，openDingTalkId 单聊已验证 `SENT`。
+- 新增 `send_latest_report.py --channel auto --targets all|personal|group`：不重新取考勤，读取最新 OneDrive manifest，用多目标 resolved 路由发送唯一“考勤通知模板”；automation JSON 输出 `notification_template_text` 和 `notification_delivery_table`，内部 `management/hr` 仅作为报告选择和 receipt 兼容字段。
+- 新增 `KMFA/tools/dingtalk_attendance/` 与 `KMFA/metadata/dingtalk_attendance/`，覆盖 DWS live-only 运行、管理报告/HR 报告模板、OneDrive 月度私有归档和三天 operational cache 清理。
+- 新增 DWS 考勤后端：递归枚举组织部门成员，逐人调用 `dws attendance record get` 和 `dws attendance summary`，遇到 transient attendance error 仅 verbose 重试一次。
+- 启用本地钉钉小群机器人通知补丁：从 ignored `private_runtime/.env.local` 读取通知配置，按 HmacSHA256 + Base64 + URL encode 加签发送 markdown；报告写入 OneDrive 后发送统一“考勤通知模板”，dispatch receipt 写真实发送状态。
+- 新增 `--send-latest-report-only`，可只重发最新 OneDrive 私有报告对应的统一考勤通知、不重新调用 DWS；2026-07-07 已验证最新晚报统一考勤通知发送成功，cleanup 随后执行。
+- 统一用户可见模板 run type 展示：内部 `morning/evening` 仅保留作 CLI、run_id 和归档文件名，钉钉通知正文、automation `notification_template_text`、management/hr 报告标题均显示 `晨报/晚报`。
+- 修复 S19 resolved-channel/latest resend 通知模板回归：抽出 `notification_template.py` 作为群通知、个人通知、正常 run 和 latest resend 的唯一正文模板；通知里新增“需要休息的人员”板块，钉钉正文不包含 run_id、北京时间或 OneDrive 报告路径，这些机器追溯字段只保留在 dispatch receipt / manifest。
+- 调整 S19 需要休息口径：休息提醒从自然月第 23 个有效考勤日开始；丁春法、李永占只从“需要休息人员”和私有 ledger `rest_required_snapshots` 中排除，其他异常、连续异常、待审批/待补卡/待核查和月累计状态仍照常统计。
+- 修复 S19 考勤异常判定：张霖泽、林全意作为已知无需考勤人员只用于豁免自身，不再作为全局隐藏名单；`recordList=[]`、缺少上下班打卡、summary 当天 `缺卡/未打卡/旷工/迟到/早退` 均进入用户可见异常名单。
+- 已完成 2026-07-07 live 验证：当前可见组织 44 人，record 成功 44 人，summary 成功 44 人；summary 当天覆盖应考勤 41 人，当天缺卡异常 2 人；钉钉通知不再发送错误的“今天一切良好”，具体员工考勤姓名仅保留在私有 OneDrive 归档。
+- OneDrive 私有归档固定为 `/Users/linzezhang/OneDrive/dingtalk_attendance/YYYYMM/`，当月目录下直接保存运行文件，不再展开深层目录。
+- 新增 `KMFA/tests/test_dingtalk_attendance.py`、`check_s19_dingtalk_attendance.py` 和 `validate_no_sensitive_git.py`，验证 S19 文件合同、配置缺失失败、报告章节边界和 tracked 文件安全扫描。
+- 未提交真实员工考勤明文、SQLite、raw API response、报告正文、机器人地址、signing key、token 或凭据材料；真实 raw JSONL gzip 和管理/HR 报告只写入私有 OneDrive；未创建 PR、issue、branch 或 worktree。
 ## 0.1.4-s10-stage-review - 2026-07-04
 
 - 完成 `v0.1.4 Stage 10 整体复审`。

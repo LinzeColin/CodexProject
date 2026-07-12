@@ -1,0 +1,251 @@
+{
+  "schema_version": "memory_atlas.cloudflare_live_evidence.v1",
+  "deployment_url": "https://memoryatlas.linzezhang.com/",
+  "git_commit": "12734c10bf37ee7afc86d62f72e70369a1bcd732",
+  "cloudflare_pages_project": "openai-memory-atlas",
+  "access_hostname": "openai-memory-atlas.pages.dev",
+  "allowed_email": "linzezhang35@gmail.com",
+  "verified_at": "2026-07-11T23:27:41Z",
+  "operator": "Codex R8 automated acceptance",
+  "access_challenge_verified": true,
+  "allowed_user_app_load_verified": true,
+  "memory_atlas_json_fetch_verified": true,
+  "published_artifact_audited": true,
+  "no_raw_sensitive_artifacts_verified": true,
+  "notes": "Sanitized operator evidence only. No Cloudflare tokens, account IDs, cookies, sessions, or private keys.",
+  "production_deployment": {
+    "id": "e0cb0004-d6c6-4182-965c-5b09cbab10c1",
+    "preview_url": "https://e0cb0004.openai-memory-atlas.pages.dev",
+    "source_commit": "12734c10bf37ee7afc86d62f72e70369a1bcd732"
+  },
+  "browser_acceptance": {
+    "schema_version": "memory_atlas.online_browser_acceptance.v1_2_r8",
+    "status": "PASS",
+    "authenticated_url": "https://memoryatlas.linzezhang.com/",
+    "deployment_id": "e0cb0004-d6c6-4182-965c-5b09cbab10c1",
+    "runtime_commit": "12734c10bf37ee7afc86d62f72e70369a1bcd732",
+    "access_identity_path_verified": true,
+    "document_language": "zh-CN",
+    "asset_paths": [
+      "/assets/index-yJX_yGS1.js",
+      "/assets/index-m5_9wN8p.css",
+      "/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496"
+    ],
+    "online_json": {
+      "bytes": 1905337,
+      "contentType": "application/json",
+      "counts": {
+        "edges": 2325,
+        "nodes": 435,
+        "timeline": 401
+      },
+      "schemaVersion": "memory_atlas.v1",
+      "sha256": "b608631fded9e116d350895be20e6e61be3c7e42ba651ccdf7fc52afd8fefcbc",
+      "status": 200
+    },
+    "viewports": [
+      {
+        "name": "desktop-low-height",
+        "requested": {
+          "width": 1470,
+          "height": 661
+        },
+        "actual": {
+          "clientHeight": 661,
+          "clientWidth": 1470,
+          "innerHeight": 661,
+          "innerWidth": 1470
+        },
+        "title": "记忆星图",
+        "product_name": "记忆决策台 · v1.2",
+        "home_title": "发生了什么",
+        "command_count": 6,
+        "sections": {
+          "commandPalette": {
+            "bottom": 292.9765625,
+            "height": 118.9765625,
+            "left": 262,
+            "right": 1456,
+            "top": 174,
+            "width": 1194
+          },
+          "contentGrid": {
+            "bottom": 647,
+            "height": 346.0234375,
+            "left": 262,
+            "right": 1456,
+            "top": 300.9765625,
+            "width": 1194
+          },
+          "controls": {
+            "bottom": 113.5,
+            "height": 36,
+            "left": 262,
+            "right": 1456,
+            "top": 77.5,
+            "width": 1194
+          },
+          "interactionLens": {
+            "bottom": 166,
+            "height": 44.5,
+            "left": 262,
+            "right": 1456,
+            "top": 121.5,
+            "width": 1194
+          },
+          "topbar": {
+            "bottom": 69.5,
+            "height": 55.5,
+            "left": 262,
+            "right": 1456,
+            "top": 14,
+            "width": 1194
+          }
+        },
+        "overlap_count": 0,
+        "horizontal_overflow_px": 0,
+        "workspace_contained": true,
+        "sections_contained": true,
+        "implementation_copy_visible": false,
+        "console_issue_count": 0,
+        "screenshot_bytes": 139110,
+        "screenshot_sha256": "90ed2e3bef8784d06e6aee756398bb6a72b6631f7cec2f670b4acfac1a3ae8d0"
+      },
+      {
+        "name": "desktop-standard",
+        "requested": {
+          "width": 1440,
+          "height": 900
+        },
+        "actual": {
+          "clientHeight": 900,
+          "clientWidth": 1440,
+          "innerHeight": 900,
+          "innerWidth": 1440
+        },
+        "title": "记忆星图",
+        "product_name": "记忆决策台 · v1.2",
+        "home_title": "发生了什么",
+        "command_count": 6,
+        "sections": {
+          "commandPalette": {
+            "bottom": 326,
+            "height": 152,
+            "left": 262,
+            "right": 1426,
+            "top": 174,
+            "width": 1164
+          },
+          "contentGrid": {
+            "bottom": 886,
+            "height": 552,
+            "left": 262,
+            "right": 1426,
+            "top": 334,
+            "width": 1164
+          },
+          "controls": {
+            "bottom": 113.5,
+            "height": 36,
+            "left": 262,
+            "right": 1426,
+            "top": 77.5,
+            "width": 1164
+          },
+          "interactionLens": {
+            "bottom": 166,
+            "height": 44.5,
+            "left": 262,
+            "right": 1426,
+            "top": 121.5,
+            "width": 1164
+          },
+          "topbar": {
+            "bottom": 69.5,
+            "height": 55.5,
+            "left": 262,
+            "right": 1426,
+            "top": 14,
+            "width": 1164
+          }
+        },
+        "overlap_count": 0,
+        "horizontal_overflow_px": 0,
+        "workspace_contained": true,
+        "sections_contained": true,
+        "implementation_copy_visible": false,
+        "console_issue_count": 0,
+        "screenshot_bytes": 168763,
+        "screenshot_sha256": "9946f173169a7aee837b19141c3ebca914fcaa5a5a9006f8b29c51ad59e9ddf0"
+      },
+      {
+        "name": "mobile",
+        "requested": {
+          "width": 390,
+          "height": 844
+        },
+        "actual": {
+          "clientHeight": 844,
+          "clientWidth": 390,
+          "innerHeight": 844,
+          "innerWidth": 390
+        },
+        "title": "记忆星图",
+        "product_name": "记忆决策台 · v1.2",
+        "home_title": "发生了什么",
+        "command_count": 6,
+        "sections": {
+          "commandPalette": {
+            "bottom": 510.5,
+            "height": 140,
+            "left": 14,
+            "right": 376,
+            "top": 370.5,
+            "width": 362
+          },
+          "contentGrid": {
+            "bottom": 830,
+            "height": 311.5,
+            "left": 14,
+            "right": 376,
+            "top": 518.5,
+            "width": 362
+          },
+          "controls": {
+            "bottom": 277,
+            "height": 124,
+            "left": 14,
+            "right": 376,
+            "top": 153,
+            "width": 362
+          },
+          "interactionLens": {
+            "bottom": 362.5,
+            "height": 77.5,
+            "left": 14,
+            "right": 376,
+            "top": 285,
+            "width": 362
+          },
+          "topbar": {
+            "bottom": 145,
+            "height": 46,
+            "left": 14,
+            "right": 376,
+            "top": 99,
+            "width": 362
+          }
+        },
+        "overlap_count": 0,
+        "horizontal_overflow_px": 0,
+        "workspace_contained": true,
+        "sections_contained": true,
+        "implementation_copy_visible": false,
+        "console_issue_count": 0,
+        "screenshot_bytes": 52675,
+        "screenshot_sha256": "f2999ac68706af2d06c0edac9847763c618b2eba15e3f8ba0bbe91f475fc1309"
+      }
+    ],
+    "notes": "Authenticated Chrome CDP read-only acceptance on the current production deployment. Screenshot files are ephemeral; hashes and the rerunnable viewport contract are retained."
+  }
+}

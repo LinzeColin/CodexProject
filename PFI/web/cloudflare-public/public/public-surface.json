@@ -1,0 +1,12 @@
+{
+  "schema_version": "cloudflare_public_surface.v1",
+  "project_id": "pfi",
+  "compatibility_level": "L2",
+  "surface_type": "redacted_public_dashboard",
+  "data_classification": "qualitative_illustrative_only",
+  "data_sources": [],
+  "private_data_allowed_in_dist": false,
+  "external_actions_enabled": false,
+  "financial_accounts_connected": false,
+  "broker_connections_enabled": false
+}

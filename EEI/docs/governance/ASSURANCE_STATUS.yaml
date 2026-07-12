@@ -1,11 +1,11 @@
 project_id: "EEI"
-as_of_event_id: "EVENT-20260627-010"
-source_snapshot_hash: "sha256:d3cdd49fd2633da88e616b04320e5b9ba5dff5f313c7efc3bfa21b6a51ef4def"
-source_base_commit: "0175e2b9616fa77d50ae06bcf0cd68ce9d015f7d"
+as_of_event_id: "EVENT-20260710-EEI-CF-L2-DEPLOYMENT-BINDING"
+source_snapshot_hash: "sha256:56124c632cd26ffba6d80a5fe301291a6d4ea499157244616f8ef00bb65346d8"
+source_base_commit: "ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935"
 source_tree_hash: "356fcd0bb5d3b892b331d28351fe9e99a64c8457"
-snapshot_event_time: "2026-06-27T21:27:32+10:00"
-generator_version: "4.0.0"
-final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
+snapshot_event_time: "2026-07-10T19:46:00+10:00"
+generator_version: "4.0.1"
+final_commit_binding: "COMMIT_BOUND:ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935"
 dimensions:
   structural_completeness:
     status: "VERIFIED"
@@ -16,8 +16,8 @@ dimensions:
     status: "VERIFIED"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 92
-    total_active_parameters: 92
+    checked_active_parameters: 93
+    total_active_parameters: 93
     checked_active_formulas: 11
     total_active_formulas: 11
     unresolved_fact_ids: []
@@ -27,8 +27,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 92
-    total_active_parameters: 92
+    checked_active_parameters: 93
+    total_active_parameters: 93
     evidence_refs:
       - "EEI/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -62,14 +62,14 @@ dimensions:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
     tree_bound_events: 0
-    commit_bound_events: 18
+    commit_bound_events: 21
     legacy_unbound_events: 19
-    precommit_pending_events: 92
+    precommit_pending_events: 94
     evidence_refs:
       - "EEI/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "FAILED"
-  release_gate: "TASK-T1301-A202-LIVE-OFFICIAL-CAPTURE-FRESHNESS"
+  release_gate: "ACC-CF-L2-20260710-PASSED"
   blocker_ids:
     - "FACT-EEI-EMPIRICAL-EVIDENCE"
     - "FACT-EEI-OPERATIONAL-EVIDENCE"

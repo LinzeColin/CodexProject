@@ -286,6 +286,12 @@ features:
     evidence_refs:
       - "EVID-EEI-APP-ICON"
       - "EVID-EEI-DEVELOPMENT-EVENTS"
+  - feature_id: "FEAT-EEI-CF-L2-001"
+    name: "Cloudflare 安全 L2 公共关系探索器"
+    status: "active"
+    fact_level: "EXTRACTED"
+    evidence_refs:
+      - "EVID-EEI-DEVELOPMENT-EVENTS"
 models:
   -
     model_id: "MOD-001"

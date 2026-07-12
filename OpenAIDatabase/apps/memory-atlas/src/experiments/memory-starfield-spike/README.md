@@ -1,5 +1,38 @@
 # Memory Starfield Spike
 
+## v1.1.7 Stage 4 Phase 4.2 C3 Starfield Spike
+
+- Task ID: `MA-V117-S4P02`
+- Acceptance ID: `ACC-MA-V117-S4P02`
+- Status: `phase_4_2_c3_starfield_spike_completed_pending_stage4_review`
+- Spike version: `memory_starfield_c3_spike.v1_1_7_stage4_phase2`
+- Static validator: `validate:v1.1.7-stage4-phase2`
+- Browser validator: `validate:memory-starfield-spike-browser`
+
+This phase upgrades the isolated prototype against the v1.1.7 Stage 4.1 Visual
+Contract. It remains an experiment-only C3 Starfield Spike and does not replace
+the production Galaxy renderer.
+
+Stage 4.2 task coverage:
+
+1. GPU particle spike: the default `mid` quality keeps `10000` particles and
+   uses a WebGL `ShaderMaterial`.
+2. Flow Field / Curl Noise: `shaders/flowField.ts` defines
+   `FLOW_FIELD_SHADER_CONTRACT`, CPU fallback vectors and shader snippets.
+3. Cluster Gravity: particle updates use cluster mass, minimum distance clamp
+   and orbit damping so particles orbit instead of collapsing.
+4. Hover Cards B2: cluster hover shows topic, redacted summary, importance,
+   priority, terrain class, confidence and evidence count.
+
+Browser acceptance for this phase requires `>=10k particles`, `>=30 FPS`,
+`curl_noise_shader`, at least `256` particle trails, at least six gravity
+sources, Hover Cards B2 and a screenshot from the standalone experiment page.
+
+Boundary: No production Galaxy replacement, No production route/navigation
+change, No feature flag default switch, No raw/private/cookie/session/secret
+data read, No direct active-memory writeback, No agent apply, No Stage 4 review
+and No GitHub main upload before the whole Stage 0-10 project is complete.
+
 - Product target: Memory Atlas v1.1.5
 - Stage: 1 C3 isolated prototypes
 - Current phase contribution: Task 1.1 记忆星系 Spike

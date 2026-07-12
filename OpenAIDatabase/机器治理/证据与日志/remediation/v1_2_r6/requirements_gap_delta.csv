@@ -1,0 +1,8 @@
+requirement_id,before_status,after_status,r6_evidence,remaining_gap,next_remediation_phase
+S06-AC03,PARTIAL,VERIFIED,"Rendered Opportunity Radar joins filtered event evidence by exact ref_id and exposes evidence, next step, half-life, Why Not Now/defer reason and the no-pressure-list boundary across three viewports","None for this criterion",R8
+S07-AC02,PARTIAL,VERIFIED,"Formula Explorer renders Chinese interpretation, tracked formula source disclosure, bounded parameters, proxy score and explicit non-financial safety wording","None for this criterion",R8
+S07-AC04,PARTIAL,VERIFIED,"Formula sliders change the rendered proxy score 80 to 84 and Reset restores 80 with zero non-GET requests on all three viewports","None for this criterion",R8
+S11-AC01,PARTIAL,VERIFIED,"Exact twelve-entry P0 inventory is snapshot-backed and rendered as one decision workbench; decorative candidates remain excluded","None for this criterion",R8
+S11-AC02,PARTIAL,VERIFIED,"Every one of the twelve cards renders a non-empty Chinese human question, action and keyboard-operable evidence interaction","None for this criterion",R8
+S11-AC03,FAILED,VERIFIED,"Literal source/time/project/task selects use 217 safe facet events; per-axis real content changes are 11/10/11/11 event-backed cards at each viewport","None for this criterion",R8
+S11-AC04,NOT_VERIFIED,VERIFIED,"All twelve cards are interacted with at 1470x661, 1440x900 and 390x844; each event-backed card changes content/count/datum IDs or reaches zero on at least one axis and Formula changes/resets","None for this criterion",R8

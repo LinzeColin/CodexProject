@@ -1,0 +1,27 @@
+{
+  "period": "202607",
+  "run_id": "mgmt-monthly-report-202607-20260707T225131Z",
+  "outputs": {
+    "excel": {
+      "output_type": "excel",
+      "expected_file_name": "经营管理分析报表 202607.xlsx",
+      "output_dir_sha256": "84b967ed794543a507b2f85facf2f575f96e25f7615813a5ac6f8ae65f49a382",
+      "exists": true,
+      "file_sha256": "01a9ffb3f59ff9ffa4383ff5ce5b7a1819699eab4a2a95957f4153360f02db82",
+      "file_size_bytes": 102975,
+      "retained_locally": true,
+      "committed_plaintext_to_git": false
+    },
+    "pdf": {
+      "output_type": "pdf",
+      "expected_file_name": "董事会经营分析摘要 202607.pdf",
+      "output_dir_sha256": "84b967ed794543a507b2f85facf2f575f96e25f7615813a5ac6f8ae65f49a382",
+      "exists": true,
+      "file_sha256": "589f47daf7e7365d60741929497a6391bcc5276c1d55e9896562fe97f65bc33b",
+      "file_size_bytes": 340989,
+      "retained_locally": true,
+      "committed_plaintext_to_git": false
+    }
+  },
+  "plaintext_reports_committed_to_git": false
+}

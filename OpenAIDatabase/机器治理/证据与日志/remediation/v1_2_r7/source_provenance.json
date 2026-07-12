@@ -1,0 +1,103 @@
+{
+  "schema_version": "memory_atlas.r7_source_provenance.v1",
+  "phase": "R7_DATA_PARITY_RAW_EVIDENCE_AND_RECOVERY",
+  "captured_at": "2026-07-10T21:42:12Z",
+  "source_packages": {
+    "roadmap_sha256": "699a8fe5f99a5edc88fec1f8940c4339f7b9b291bd31830f946f521f80904a71",
+    "taskpack_sha256": "38e21ae3e94d860e6a40c70a629c8f7048f889164358df7b184bd8caf7bf2472"
+  },
+  "chatgpt_official_export": {
+    "sha256": "52f204dd8d78b76a79c6fc37e3e09987d3ab682c87098da017b894dd88c3a868",
+    "size_bytes": 1473421021,
+    "conversation_chunk_count": 4,
+    "conversation_count": 379,
+    "message_count": 3433,
+    "connector_mode": "official_export_fallback_redacted_public_backup",
+    "browser_mutation": false
+  },
+  "codex_point_in_time_snapshot": {
+    "inventory_sha256": "a0fba71aaf3761a93abc4c8a802ba49ed8400e73cc4325c5e26f215bec06736d",
+    "source_size_bytes": 654725175,
+    "source_file_count": 128,
+    "session_count": 128,
+    "canonical_session_count": 111,
+    "message_count": 17963,
+    "tool_call_count": 80075,
+    "json_event_count": 258282,
+    "public_chunk_count": 131
+  },
+  "reviewer_agent": {
+    "agent_id": "codex-reviewer",
+    "event_id": "r6-independent-review",
+    "source_sha256": "4de0b032088e5183a570ef10f212b7020df341f67204829f5fb034e24c5ac79f",
+    "event_count": 1,
+    "source_type": "other_agent"
+  },
+  "public_raw_result": {
+    "status": "PASS",
+    "file_count": 512,
+    "total_bytes": 452781632,
+    "binary_omission_marker_count": 23893,
+    "encrypted_content_omission_count": 23620,
+    "git_hook_openai_candidate_redaction_count": 2,
+    "credential_or_private_text_file_count": 0,
+    "unmarked_binary_file_count": 0,
+    "invalid_json_file_count": 0,
+    "oversize_file_count": 0,
+    "manifest_sha256": "1a4fa71303903ca896c82640f7b4550cee47f3cc8ec600f81d03f7603e120c96"
+  },
+  "derived_result": {
+    "canonical_event_count": 491,
+    "chatgpt_event_count": 379,
+    "codex_event_count": 111,
+    "future_agent_event_count": 1,
+    "active_memory_count": 278,
+    "conversation_count": 379,
+    "codex_session_count": 128,
+    "node_count": 435,
+    "edge_count": 2325
+  },
+  "materialization_attempts": [
+    {
+      "attempt": 1,
+      "status": "REJECTED_BEFORE_MANIFEST",
+      "private_text_file_count": 111,
+      "correction": "preserve structured identifiers and sanitize mapping keys"
+    },
+    {
+      "attempt": 2,
+      "status": "REJECTED_BEFORE_MANIFEST",
+      "private_text_file_count": 23,
+      "correction": "make collision keys idempotent and sanitize the aggregate Codex snapshot"
+    },
+    {
+      "attempt": 3,
+      "status": "REJECTED_BY_PRECOMMIT_AFTER_MANIFEST",
+      "private_text_file_count": 0,
+      "rejected_manifest_sha256": "1d5662c1e1e689540131a4c6f9fba39ff977ec6863c11928ea7b2c9fad19acac",
+      "rejected_manifest_evidence": "机器治理/证据与日志/remediation/v1_2_r7/rejected_raw_manifest.v1_2_r7.precommit.jsonl",
+      "correction": "omit short encrypted_content fields as non-text binary bodies"
+    },
+    {
+      "attempt": 4,
+      "status": "REJECTED_BY_PRECOMMIT_AFTER_FULL_AUDIT",
+      "private_text_file_count": 0,
+      "rejected_manifest_sha256": "879a595bc6321b9d78574dc01ee4cf5b0c187a9f2faadcbfac017a1f03471649",
+      "rejected_manifest_evidence": "机器治理/证据与日志/remediation/v1_2_r7/rejected_raw_manifest.v1_2_r7.hook-candidate.jsonl",
+      "correction": "mirror the repository hook's boundary-free OpenAI-key candidate redaction for nested ciphertext and executable string-table noise"
+    },
+    {
+      "attempt": 5,
+      "status": "PASS",
+      "private_text_file_count": 0
+    }
+  ],
+  "recovery_boundary": {
+    "github_recovers_sanitized_text_transcripts": true,
+    "github_recovers_source_package_bytes": true,
+    "github_recovers_derived_and_release_artifacts": true,
+    "original_credentials_recoverable": false,
+    "original_binary_attachment_bodies_recoverable": false,
+    "private_source_locations_recorded": false
+  }
+}

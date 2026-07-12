@@ -1,0 +1,183 @@
+{
+  "schema_version": "memory_atlas.remediation_r5_status.v1",
+  "phase": "R5",
+  "captured_at": "2026-07-10T13:36:48Z",
+  "status": "R5_COMPLETE_LOCAL_ONLY",
+  "release_status": "FAIL_REMEDIATION_REQUIRED",
+  "base_commit": "47d32d59d18f396ec07bfab3e01ce325a0ef2644",
+  "design_commit": "121e9c292",
+  "implementation_commits": [
+    "ea8915872",
+    "e5b5f18ce",
+    "acb1ab117",
+    "75e02962b",
+    "dc79328835f3b641be6a5bb6c5f5093330bd1bbd"
+  ],
+  "origin_main_at_phase_start": "07a6e50d593c7b9c74b8f3870b614be86a87160d",
+  "origin_main_at_close": "07a6e50d593c7b9c74b8f3870b614be86a87160d",
+  "owner_daily_runner": {
+    "api_version": "memory_atlas_owner_daily_api.v1_2_r5",
+    "result_version": "memory_atlas_owner_daily_result.v1_2_r5",
+    "step_count": 8,
+    "step_ids": [
+      "sync",
+      "analyze",
+      "build-atlas",
+      "audit",
+      "push",
+      "proposals",
+      "generate-personalization-prompt",
+      "deep-explore"
+    ],
+    "fixed_argv": true,
+    "shell": false,
+    "scrubbed_environment": true,
+    "continue_after_failure": true,
+    "fixed_failed_step_retry_only": true,
+    "max_child_output_bytes": 1048576,
+    "max_result_bytes": 65536,
+    "recursive_unsafe_true_scan": true,
+    "non_dry_run_allowed": false
+  },
+  "owner_daily_api": {
+    "endpoint": "/__memory_atlas_owner_daily",
+    "bind_host": "127.0.0.1",
+    "same_origin_required": true,
+    "exact_host_origin_spelling_required": true,
+    "cors_enabled": false,
+    "shared_r3_r4_r5_lock": true,
+    "accepted_run_body": {
+      "action": "run"
+    },
+    "accepted_retry_keys": [
+      "action",
+      "step_id"
+    ],
+    "browser_supplied_argv_path_environment_mode": false,
+    "audit_metadata_only": true
+  },
+  "product_entry": {
+    "r3_command_card_count": 6,
+    "owner_daily_as_seventh_command": false,
+    "extra_workspace_grid_row": false,
+    "explicit_start_required": true,
+    "human_conclusion_before_machine_details": true,
+    "ordered_step_count": 8,
+    "failed_step_retry_actionable": true,
+    "retry_merged_into_result": true,
+    "initial_focus_set": true,
+    "dialog_focus_trap": true,
+    "static_handoff": "http://127.0.0.1:4177"
+  },
+  "browser_acceptance": {
+    "validator": "validate:v1.2-owner-daily-e2e",
+    "status": "PASS",
+    "initial_status": "PARTIAL_FAILURE",
+    "initial_completed_count": 7,
+    "initial_failed_count": 1,
+    "failed_step_id": "audit",
+    "retry_status": "PASS",
+    "merged_completed_count": 8,
+    "merged_failed_count": 0,
+    "child_call_count": 9,
+    "fixed_retry_only": true,
+    "remote_origin_rejected": true,
+    "extra_argv_rejected": true,
+    "unknown_step_rejected": true,
+    "source_unchanged": true,
+    "runtime_unchanged": true,
+    "canonical_repo_mutation": false,
+    "remote_push": false,
+    "hosted_static_owner_daily_post_count": 0,
+    "hosted_static_fake_workspace_opened": false,
+    "audit_metadata_only": true,
+    "screenshot_count": 5,
+    "viewports": [
+      "1470x661",
+      "1440x900",
+      "390x844"
+    ],
+    "horizontal_overflow_count": 0
+  },
+  "requirements_after_r5": {
+    "requirement_count": 58,
+    "verified": 41,
+    "partial": 10,
+    "failed": 5,
+    "not_verified": 2,
+    "promoted_to_verified": [
+      "S14-AC04"
+    ],
+    "kept_verified_with_stronger_evidence": [
+      "S14-AC01",
+      "S14-AC03"
+    ],
+    "kept_failed_for_r8": [
+      "S14-AC02",
+      "S14-AC05"
+    ]
+  },
+  "regression": {
+    "python_owner_daily_runtime_tests": "39 passed",
+    "python_broad_r3_r5_tests": "74 passed",
+    "s14_p1_executed_step_validator": "PASS_8_OF_8",
+    "typescript_lint": "PASS",
+    "production_build": "PASS_WITH_EXISTING_CHUNK_SIZE_WARNING",
+    "r5_owner_daily_e2e": "PASS_7_OF_8_THEN_FIXED_RETRY_8_OF_8",
+    "r4_proposal_e2e": "PASS_APPLY_AND_ROLLBACK",
+    "r3_command_workflows": "PASS_6_COMMANDS_STATIC_POST_0",
+    "home_multiviewport": "PASS_3_OF_3",
+    "stage7_visual": "PASS",
+    "galaxy_lit_pixel_samples": 67239,
+    "galaxy_points": 11828,
+    "memory_river_markers": 64,
+    "memory_river_density_bands": 48,
+    "privacy_guard_high_risk_secret_hits": 0,
+    "privacy_guard_tracked_raw_private_files": 0,
+    "npm_ci_playwright_version": "1.61.1",
+    "preview_ports_released": true
+  },
+  "review": {
+    "independent_reviewer": "completed",
+    "high_findings_initial": 0,
+    "medium_findings_initial_across_passes": 3,
+    "low_findings_initial": 1,
+    "high_findings_final": 0,
+    "medium_findings_final": 0,
+    "resolved_findings": [
+      "Host and Origin spellings must match exactly on mutating loopback endpoints",
+      "an explicit unsafe true child field cannot be overwritten by a safe top-level field",
+      "unsafe true fields are rejected at arbitrary nested dictionary or list depth",
+      "Owner Daily dialog receives initial focus and traps Tab and Shift+Tab"
+    ]
+  },
+  "evidence": {
+    "browser": "机器治理/证据与日志/remediation/v1_2_r5/browser/final/status.json",
+    "command_regression": "机器治理/证据与日志/remediation/v1_2_r5/regression/command/status.json",
+    "proposal_regression": "机器治理/证据与日志/remediation/v1_2_r5/regression/proposal/status.json",
+    "home_regression": "机器治理/证据与日志/remediation/v1_2_r5/regression/home/status.json",
+    "stage7_regression": "机器治理/证据与日志/remediation/v1_2_r5/regression/stage7/",
+    "requirement_delta": "机器治理/证据与日志/remediation/v1_2_r5/requirements_gap_delta.csv",
+    "human_record": "docs/remediation/memory_atlas_v1_2/R5_OWNER_DAILY_PRODUCT_ENTRY.md"
+  },
+  "git_state_before_record_commit": {
+    "origin_main": "07a6e50d593c7b9c74b8f3870b614be86a87160d",
+    "origin_main_changed_during_phase": false,
+    "local_ahead_of_origin": 20,
+    "local_behind_origin": 12,
+    "local_branch_count": 1,
+    "local_stash_count": 0,
+    "merge_performed": false,
+    "rebase_performed": false,
+    "remote_push": false,
+    "reconciliation_action": "DEFER_TO_R8_PRESERVE_BOTH_HISTORIES"
+  },
+  "github_main_upload_allowed": false,
+  "remote_push": false,
+  "deployment": false,
+  "app_reinstall": false,
+  "owner_daily_added_to_local_candidate": true,
+  "p0_visual_filter_closure_added": false,
+  "raw_mutation": false,
+  "next_phase": "R6_P0_VISUALIZATION_AND_FILTERING"
+}

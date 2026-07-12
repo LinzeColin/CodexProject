@@ -39,7 +39,7 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `VERIFIED` (92/92 active parameters, 11/11 active formulas)
+- implementation_congruence: `VERIFIED` (93/93 active parameters, 11/11 active formulas)
 - parameter_source_quality: `VERIFIED`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `PARTIAL`
@@ -71,23 +71,26 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 - model_count: `12`
 - total_formulas: `12`
 - active_formulas: `11`
-- total_parameters: `92`
-- active_parameters: `92`
+- total_parameters: `93`
+- active_parameters: `93`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `TASK-T1301-A202-LIVE-OFFICIAL-CAPTURE-FRESHNESS`
+- release_gate: `ACC-CF-L2-20260710-PASSED`
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
+- final_commit_binding: `COMMIT_BOUND:ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935`
 - tree_bound_events: `0`
-- commit_bound_events: `18`
+- commit_bound_events: `21`
 - legacy_unbound_events: `19`
-- precommit_pending_events: `92`
-- pending_or_stale_events: `113`
+- precommit_pending_events: `94`
+- pending_or_stale_events: `115`
+- freshness_counts: `pending_or_stale_events=115; legacy_unbound_events=19`
+- freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+- current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
 
 ## 15. UNKNOWN
 
@@ -95,13 +98,13 @@ EEI remains FAILED/PARTIAL and publication readiness stays blocked.
 
 ## 16. 技术元数据
 
-- source_base_commit: `0175e2b9616fa77d50ae06bcf0cd68ce9d015f7d`
+- source_base_commit: `ed0fe3a3e8f2f0f46d0f4f442c23fed5ed093935`
 - source_tree_hash: `356fcd0bb5d3b892b331d28351fe9e99a64c8457`
-- source_snapshot_hash: `sha256:d3cdd49fd2633da88e616b04320e5b9ba5dff5f313c7efc3bfa21b6a51ef4def`
-- snapshot_event_time: `2026-06-27T21:27:32+10:00`
-- generator_version: `4.0.0`
+- source_snapshot_hash: `sha256:56124c632cd26ffba6d80a5fe301291a6d4ea499157244616f8ef00bb65346d8`
+- snapshot_event_time: `2026-07-10T19:46:00+10:00`
+- generator_version: `4.0.1`
 - version: `0.1.0`
-- phase/gate: `D / TASK-T1301-A202-LIVE-OFFICIAL-CAPTURE-FRESHNESS`
+- phase/gate: `CF-L2 / ACC-CF-L2-20260710-PASSED`
 
 ## 17. Next Unique Task
 

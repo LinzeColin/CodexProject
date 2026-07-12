@@ -1,0 +1,339 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import sys
+import zipfile
+from pathlib import Path
+from xml.etree import ElementTree as ET
+
+REQUIRED = [
+    "README.md",
+    "SKILL.md",
+    "references/runbook.md",
+    "references/configuration.md",
+    "references/operating_contract.md",
+    "references/source_of_truth_contract.md",
+    "references/validation_checks.md",
+    "references/excel_master_review_checklist.md",
+    "references/owner_review_handoff.md",
+    "templates/excel_sheet_spec.yaml",
+    "templates/fund_weekly_analysis_config.yaml",
+    "automation/codex_app_automation.contract.toml",
+    "automation/weekly_mon_sat_1100_sydney.prompt.md",
+    "tools/check_codex_app_automation.py",
+    "tools/check_source_readiness.py",
+    "tools/check_delivery_acceptance.py",
+    "tools/run_daily_local.sh",
+    "tools/generate_screenshot_ocr_sidecars.py",
+    "tools/ocr_with_vision.swift",
+    "tools/run_fund_weekly_analysis.py",
+    "tools/materialize_fund_source.py",
+    "tools/install_owner_decision_manifest.py",
+    "tools/export_owner_decision_review_csv.py",
+    "tools/validate_owner_review_workbook.py",
+    "tools/install_to_kmfa_main.sh",
+]
+REQUIRED_SKILL_STRINGS = [
+    "Do not create branches",
+    "main",
+    "Australia/Sydney",
+    "11:00",
+    "Monday",
+    "Saturday",
+    "No simulation",
+    "01_首页总览",
+    "05_公司银行矩阵",
+    "hidden",
+    "资金与税费管理报告_<run_id>.pdf",
+    "user-facing deliverables",
+    "private validation material only",
+    "1728",
+    "--source-zip",
+    "screenshot_ocr_coverage.csv",
+    "generate_screenshot_ocr_sidecars.py",
+    "ocr_with_vision.swift",
+    "vision",
+    "private Vision OCR sidecars",
+    "same `run_id`",
+    "matching, non-empty private OCR sidecars",
+    "KMFA_FUND_RUN_ID",
+    "KMFA_SKIP_CODEX_EXEC=1",
+    "--retry-timeout-seconds 30",
+    "--retry-max-rows 64",
+    "KMFA_FUND_VISION_RETRY_TIMEOUT_SECONDS",
+    "KMFA_FUND_VISION_RETRY_BATCH_SIZE",
+    "ocr_text_candidates.csv",
+    "ocr_value_candidates.csv",
+    "ocr_financial_fact_candidates.csv",
+    "ocr_fact_cross_review.csv",
+    "ocr_fact_ledger_staging_preview.csv",
+    "ocr_fact_review_apply_gate.csv",
+    "ocr_fact_review_authorization_template.json",
+    "ocr_fact_review_authorization_preview.csv",
+    "ocr_fact_review_authorizations",
+    "authorization_scope=ocr_financial_fact_review_validation_only",
+    "ocr_fact_owner_decision_correction_evidence_packet.csv",
+    "ready_for_owner_field_review_no_write",
+    "owner decision JSON fragment",
+    "ocr_fact_owner_decision_correction_ocr_line_context.csv",
+    "ready_ocr_line_context_no_write",
+    "ocr_line_context_radius=3",
+    "ocr_fact_owner_decision_correction_chat_context.csv",
+    "ready_chat_context_no_write",
+    "ocr_fact_owner_decision_correction_chat_neighbor_context.csv",
+    "ready_neighbor_context_no_write",
+    "neighbor_context_radius=2",
+    "ocr_fact_owner_decision_correction_owner_review_packet.csv",
+    "ready_for_owner_field_decision_no_write",
+    "owner_field_autofill_allowed=false",
+    "ocr_fact_owner_decision_correction_manifest_readiness.csv",
+    "ready_for_owner_decision_manifest_validation_no_write",
+    "blocked_missing_owner_decision_manifest",
+    "install_owner_decision_manifest.py",
+    "--draft-csv-path",
+    "--draft-xlsx-path",
+    "owner_decision_xlsx_intake",
+    "ocr_fact_candidate_owner_decision_intake_validation_report.csv",
+    "ocr_fact_candidate_owner_decision_intake_summary.csv",
+    "owner_decision_readiness_gate.csv",
+    "ready_for_private_ocr_fact_authorization_update_no_write",
+    "owner_decision_manifest_write_allowed=false",
+    "candidate_metric",
+    "blocking_count",
+    "blocked_missing_owner_values",
+    "source_evidence_id",
+    "business_date",
+    "export_owner_decision_review_csv.py",
+    "validate_owner_review_workbook.py",
+    "owner_review_handoff.md",
+    "OWNER_REVIEW_WORKBOOK_READY",
+    "BLOCKED_OWNER_VALUES_MISSING",
+    "OWNER_REVIEW_WORKBOOK_READY",
+    "owner_input_cells_unlocked",
+    "check_delivery_acceptance.py",
+    "DELIVERY_ACCEPTANCE_READY_WITH_OWNER_BLOCKERS",
+    "owner_blockers_fail_closed",
+    "ocr_fact_candidate_owner_decision_review_batch.csv",
+    "ocr_fact_candidate_owner_decision_review_batch.xlsx",
+    "ocr_fact_candidate_owner_decision_review_all.csv",
+    "ocr_fact_candidate_owner_decision_review_all.xlsx",
+    "ocr_fact_candidate_owner_decision_review_all_count",
+    "--xlsx",
+    "Owner Review",
+    "source_ocr_text_excerpt",
+    "source_ocr_excerpt_focus_status",
+    "source_ocr_excerpt_line_range",
+    "source_ocr_excerpt_focus_line_number",
+    "source_ocr_excerpt_match_value",
+    "focused_amount",
+    "focused_business_date",
+    "fallback_file_start",
+    "missing_ocr_sidecar",
+    "candidate amount or business date",
+    "owner_review_completion_status",
+    "missing_owner_fields_current",
+    "TEXTJOIN",
+    "ready_for_private_owner_decision_manifest_no_write",
+    "--acknowledge-owner-reviewed-values",
+    "BLOCKED_OWNER_VALUES_MISSING",
+    "ocr_fact_owner_decision_correction_roundtrip_audit.csv",
+    "owner_correction_resolved_apply_gate_ready_no_write",
+    "owner_correction_present_apply_gate_still_blocked",
+    "chat_text_candidates.csv",
+    "chat_value_candidates.csv",
+    "chat_evidence_links.csv",
+    "attachment_evidence_reconciliation.csv",
+    "attachment_reconciliation_remediation.csv",
+    "attachment_remediation_dry_run.csv",
+    "attachment_repair_plan.csv",
+    "attachment_repair_apply_gate.csv",
+    "attachment_repair_authorization_template.json",
+    "attachment_repair_authorization_preview.csv",
+    "goal_completion_audit.csv",
+    "automation_readiness.csv",
+    "schedule_ready",
+    "CODEX_AUTOMATION_CONTRACT_INVALID",
+    "canonical_project_worktree_no_new_branch_no_pr_no_extra_worktree",
+    "management_conclusion_gate.csv",
+    "owner_action_queue.csv",
+    "fact_promotion_review_packet.csv",
+    "fact_promotion_owner_review_batch.csv",
+    "owner_review_status",
+    "ready_for_owner_review_no_promotion",
+    "financial_fact_promotion_allowed=false",
+    "fact_promotion_authorization_template.json",
+    "fact_promotion_authorization_preview.csv",
+    "fact_promotion_execution_gate.csv",
+    "fact_promotion_execution_dry_run.csv",
+    "fact_promotion_execution_plan.csv",
+    "fact_promotion_execution_authorization_template.json",
+    "fact_promotion_execution_authorization_preview.csv",
+    "fact_promotion_execution_apply_gate.csv",
+    "fact_promotion_execution_authorizations",
+    "fact_promotion_authorizations",
+    "authorization_scope=fact_promotion_review_packet_validation_only",
+    "ready_for_owner_review_no_fact_promotion",
+    "ready_for_controlled_fact_promotion_execution",
+    "ready_for_controlled_execution_preview_no_write",
+    "dry_run_impact_count",
+    "ready_for_owner_execution_authorization_no_write",
+    "controlled_fact_promotion_execution",
+    "ready_for_controlled_execution_run_no_write",
+    "blocked_incomplete_execution_authorization_coverage",
+    "ready_for_controlled_execution_apply_no_write",
+    "planned_apply_count",
+    "source_mutation_allowed=false",
+    "authorization_not_required",
+    "not_required_no_candidate_facts",
+    "not_required_review_area_ready",
+    "source_input_dir",
+    "schedule_rrule",
+    "no_hallucinated_data_policy",
+    "pending_owner_action",
+    "automation_safe=false",
+    "management_conclusion_allowed=false",
+    "attachment_repair_authorizations",
+    "authorization_scope=attachment_repair_plan_validation_only",
+    "authorized=false",
+    "valid_manifest_validation_only",
+    "ready_for_operator_review_no_apply",
+]
+EXPECTED_SHEETS = [
+    "01_首页总览",
+    "02_资金趋势预测",
+    "03_三层净流余额",
+    "04_税费融资风险",
+    "05_公司银行矩阵",
+    "06_CodexSkill流程",
+    "H01_资金事实主表",
+    "H02_异常任务池",
+    "H03_钉钉证据索引",
+    "H04_客户合同辅助",
+    "H05_复审检查",
+    "H06_配置规则",
+]
+
+
+def validate_template(template: Path) -> list[str]:
+    errors: list[str] = []
+    ns_sheet = {"x": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
+    ns_chart = {"c": "http://schemas.openxmlformats.org/drawingml/2006/chart"}
+    ns_draw = {"xdr": "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"}
+
+    try:
+        with zipfile.ZipFile(template) as workbook:
+            workbook_xml = ET.fromstring(workbook.read("xl/workbook.xml"))
+            sheets = workbook_xml.findall(".//x:sheet", ns_sheet)
+            names = [sheet.attrib["name"] for sheet in sheets]
+            if names != EXPECTED_SHEETS:
+                errors.append(f"sheet order mismatch: {names}")
+            if not all(sheet.attrib.get("state") == "hidden" for sheet in sheets[6:]):
+                errors.append("hidden audit/review sheets are not hidden")
+
+            for sheet_number in range(1, 7):
+                visible_sheet = ET.fromstring(workbook.read(f"xl/worksheets/sheet{sheet_number}.xml"))
+                row2_values = [
+                    value.text or ""
+                    for value in visible_sheet.findall(".//x:row[@r='2']/x:c/x:v", ns_sheet)
+                    if value.text
+                ]
+                if row2_values:
+                    errors.append(f"visible sheet{sheet_number} row 2 is not blank: {row2_values[:3]}")
+
+            sheet1 = ET.fromstring(workbook.read("xl/worksheets/sheet1.xml"))
+
+            def cell_text(ref: str) -> str:
+                cell = sheet1.find(f".//x:c[@r='{ref}']", ns_sheet)
+                if cell is None:
+                    return ""
+                value = cell.find("x:v", ns_sheet)
+                return value.text or "" if value is not None else ""
+
+            expected_cards = {
+                "B4": "可用现金占比",
+                "E4": "银行存款",
+                "H4": "票据/电子汇票",
+                "K4": "期末总资金",
+                "B8": "保证金可释放",
+                "E8": "外部净流出",
+                "H8": "内部调拨净额",
+                "K8": "资金缺口",
+            }
+            if cell_text("A2"):
+                errors.append("visible homepage row 2 text is not cleared")
+            for ref, phrase in expected_cards.items():
+                if phrase not in cell_text(ref):
+                    errors.append(f"homepage card mismatch at {ref}: expected {phrase!r}, got {cell_text(ref)!r}")
+
+            drawing = ET.fromstring(workbook.read("xl/drawings/drawing1.xml"))
+            anchors = drawing.findall("xdr:oneCellAnchor", ns_draw)
+            if len(anchors) != 2:
+                errors.append(f"homepage chart count mismatch: {len(anchors)}")
+            for anchor in anchors:
+                ext = anchor.find("xdr:ext", ns_draw)
+                width_in = int(ext.attrib["cx"]) / 914400
+                height_in = int(ext.attrib["cy"]) / 914400
+                if width_in > 18 or height_in > 9:
+                    errors.append(f"chart exceeds size limit: {width_in:.2f}x{height_in:.2f} in")
+
+            for chart_path, expected_title, expected_points in (
+                ("xl/drawings/charts/chart1.xml", "最近15天资金余额折线图", "15"),
+                ("xl/drawings/charts/chart7.xml", "最近30天资金余额折线图", "30"),
+            ):
+                chart = ET.fromstring(workbook.read(chart_path))
+                title = "".join(
+                    node.text or ""
+                    for node in chart.findall(".//{http://schemas.openxmlformats.org/drawingml/2006/main}t")
+                )
+                if expected_title not in title:
+                    errors.append(f"chart title mismatch in {chart_path}: {title}")
+                series = chart.findall(".//c:lineChart/c:ser", ns_chart)
+                if len(series) != 3:
+                    errors.append(f"chart series count mismatch in {chart_path}: {len(series)}")
+                counts = [
+                    ser.find("c:cat/c:strLit/c:ptCount", ns_chart).attrib["val"]
+                    for ser in series
+                ]
+                if counts != [expected_points, expected_points, expected_points]:
+                    errors.append(f"chart point count mismatch in {chart_path}: {counts}")
+    except Exception as exc:
+        errors.append(f"template validation failed: {exc}")
+    return errors
+
+
+def main() -> int:
+    root = Path(__file__).resolve().parents[1]
+    missing = [p for p in REQUIRED if not (root / p).exists()]
+    if missing:
+        print("missing files:", missing)
+        return 2
+    skill = (root / "SKILL.md").read_text(encoding="utf-8")
+    miss = [s for s in REQUIRED_SKILL_STRINGS if s not in skill]
+    if miss:
+        print("missing required SKILL strings:", miss)
+        return 3
+    tracked_templates = sorted(root.glob("templates/*.xlsx"))
+    if tracked_templates:
+        print("tracked Excel templates are forbidden:", [path.name for path in tracked_templates])
+        return 4
+    private_template = (
+        root.parent
+        / "metadata"
+        / "fund_weekly_analysis"
+        / "private_runtime"
+        / "templates"
+        / "fund_weekly_template.xlsx"
+    )
+    if private_template.is_file():
+        template_errors = validate_template(private_template)
+        if template_errors:
+            print("private template validation errors:")
+            for error in template_errors:
+                print("-", error)
+            return 4
+    print("PASS: taskpack static validation")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
