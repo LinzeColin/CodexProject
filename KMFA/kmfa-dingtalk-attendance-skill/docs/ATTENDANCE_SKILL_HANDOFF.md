@@ -1,10 +1,10 @@
-roadmap_progress: R2 / R2.2
+roadmap_progress: R2 / R2.3
 
-status: IMPLEMENTED_PENDING_EXTERNAL_REVIEW
+status: COMPLETE
 
-base_commit: 2c91c22f3d334f82aa111245e452f8a35ac51cc6
+verified_implementation_commit: 5f64a154c417275ca08cf327614fdbce59a650ba
 
-implementation_commit: commit containing this handoff file
+verification_base_commit: 7102e8b8494608ba99528a633c865e591ddb5a8b
 
 canonical_name: KMFA 钉钉考勤 skill
 
@@ -16,54 +16,48 @@ allowed_legacy_matches:
   historical_identifier: 79
   legacy_read_only: 23
   deprecated_compatibility: 4
-  counting_method: case-insensitive non-overlapping content occurrences plus the retained deprecated wrapper path
 
-new_writer_contract:
-  - 新运行只写 `skill_id: kmfa-dingtalk-attendance-skill`。
-  - 新 run ID、archive 文件名和 seed 只使用 `dingtalk_attendance_` 语义前缀。
-  - 新 writer 不写旧身份字段、旧阶段值或旧文件名前缀。
+repo_prompt_sha256:
+  morning: 32bba4910dcb29b8baa2c21eaaa770572d37b9dcabc78c885072fd7243508b41
+  evening: 02fff9a42201a08b7d622ec433e19b688ed937d53f3085ce11d976dbc2f7300f
 
-legacy_reader_contract:
-  - archive、monthly rollup、ledger、replay 和 send-latest 通过集中式 identity compatibility 定义双读新旧 manifest、run ID、archive glob 与 seed。
-  - 旧身份仅作 `legacy_read_only` 输入；新旧身份同时存在且冲突时 fail closed。
-  - 既有公开历史、私有旧归档和 automation memory 不移动、不重命名、不改写。
+live_prompt_readback_sha256:
+  morning: 32bba4910dcb29b8baa2c21eaaa770572d37b9dcabc78c885072fd7243508b41
+  evening: 02fff9a42201a08b7d622ec433e19b688ed937d53f3085ce11d976dbc2f7300f
 
-environment_key_migration:
-  - 当前授权、browser policy 路径和 timeout 均使用 `KMFA_DINGTALK_ATTENDANCE_*` 命名。
-  - deprecated key 仅作只读 fallback；新旧 key 值冲突时 fail closed。
-  - 未读取、修改或暴露本机授权值、policy 内容、credential 或 secret。
+prompt_mirror_verification: PASS
 
-checker_migration:
-  - 正式入口为 `check_dingtalk_attendance.py` 和 `validate_dingtalk_attendance_files`。
-  - 保留一个 `deprecated_compatibility` 薄 wrapper，仅转发到正式实现；当前文档、prompt 与正式 required-file contract 不调用它。
-  - 回归测试证明 wrapper 与正式函数为同一对象，不含第二套验证逻辑。
+schedule_time_timezone_unchanged: PASS
 
-repo_prompt_hashes:
-  morning_sha256: 32bba4910dcb29b8baa2c21eaaa770572d37b9dcabc78c885072fd7243508b41
-  evening_sha256: 02fff9a42201a08b7d622ec433e19b688ed937d53f3085ce11d976dbc2f7300f
-  normalization: exactly one trailing newline
+automation_memory_classification: EXPECTED_MUTABLE_RUNTIME_STATE
 
-live_prompt_readback:
-  - repo push 成功后才允许仅更新两个 live prompt。
-  - 实际 readback hash 和 repo mirror 一致性由本轮最终返回提供，并留给 R2.3 外部复核。
+automation_memory_classification_basis:
+  - memory 是 mutable runtime state，不是 immutable configuration。
+  - 本轮只读语义检查确认增量限于运行记录、状态摘要、时间信息和执行说明。
+  - 未发现 prompt、schedule、timezone、cwd、automation ID、发送目标或其他活动配置被 memory 覆盖。
+  - 未发现本阶段未经授权的 live DWS、automation 触发或钉钉发送证据。
+  - 未发现旧阶段编号被重新引入为活动身份。
+  - 不提交 memory 正文、私有路径、员工信息或敏感运行数据。
 
-validation_performed:
-  focused_attendance_tests: PASS, 97 tests
-  current_checker: PASS
+focused_tests: 97/97 PASS
+
+governance_validation:
   skill_package_validator: PASS
   sensitive_data_validator: PASS
-  git_diff_check: PASS
+  git_whitespace_validation: PASS
   changed_path_audit: PASS
-  prompt_mirror_check: PASS
-  source_manifest_and_checksums: PASS
 
-unchanged_business_contract:
-  - 未修改考勤业务规则、通知模板、发送目标、晨报/晚报产品规则、automation schedule、时间或 timezone。
-  - 未运行 live DWS，未触发 automation，未发送任何钉钉消息。
-  - 未读取或修改另外三个 KMFA skill。
+task_branch_count: 0
 
-blockers:
-  - 私有旧归档数量保持 UNKNOWN；本轮按边界不读取、不枚举、不移动或重命名私有历史归档。
-  - 新命名的生产自然触发证据属于后续验收，不由离线测试或 prompt readback 代替。
+open_pr_count: 0
 
-next_action: R2.3 external verification
+production_acceptance: NOT_EVALUATED
+
+owner_usability_status: NOT_ACCEPTED
+
+r2_close_statement:
+  - R2 关闭只代表当前人类名称、机器身份、新 writer、新 run/file prefix、新环境变量和正式 checker 入口的身份迁移完成。
+  - R2 不证明考勤结果正确、与钉钉官方报告一致、生产可用或已获 owner 接受。
+  - 6 天 20 个历史运行证据、官方一致性、晨报文档与实际 scheduler 时间矛盾、legacy archive 对月累计的影响、晨晚报产品口径和生产发送可用性均未在 R2 解决。
+
+next_action: R3.1 read-only attendance fact baseline
