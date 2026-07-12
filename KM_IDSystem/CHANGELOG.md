@@ -1,5 +1,11 @@
 # Changelog
 
+## IDS v0.1 STAGE-038 Phase 3 - 2026-07-13
+
+- Repaired the resource conflict identity so archive, parse, index, and report jobs over one tracked input share one lock key; active conflicts now return `RESOURCE_CONFLICT_ACTIVE` before a second queue record is created.
+- Added six isolated scenarios for duplicate clicks, an actual worker exception and lock release, external-drive-offline gating, actual low-disk boundary observation without allocation, same-source cross-operation locking, and protected cleanup denial.
+- Added a hash-bound Phase 3 machine contract, stdout-only checker, focused tests, and governance evidence. No physical drive removal, process termination, cleanup execution, raw metadata access, fake IDS data, production activation, GitHub upload, app reinstall, Phase 4, or whole-stage review occurred.
+
 ## IDS v0.1 STAGE-038 Phase 2 - 2026-07-13
 
 - Added a standard-library `asyncio` in-memory queue and one isolated worker that returns submission acknowledgement before completion and processes only real Git-tracked control references.

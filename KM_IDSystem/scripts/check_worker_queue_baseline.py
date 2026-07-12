@@ -281,6 +281,8 @@ def _contract_checks(index: Mapping[str, Any]) -> dict[str, bool]:
             == "QUEUE_CAPACITY_REACHED"
             and queue_contract.get("duplicate_admission_result")
             == "EXISTING_QUEUE_ENTRY"
+            and queue_contract.get("resource_conflict_result")
+            == "RESOURCE_CONFLICT_ACTIVE"
             and queue_contract.get("identity_derivation")
             == "SHA256_TASK_INPUT_JOB_TYPE"
             and queue_contract.get("lock_key_derivation")
@@ -400,6 +402,9 @@ def build_control_envelope(
     priority_ref: str = "P1_HIGH_VALUE_ENGINEERING_DATA",
 ) -> dict[str, Any]:
     seed = hashlib.sha256(f"{TASK_ID}|{input_ref}|{job_type}".encode("utf-8")).hexdigest()
+    resource_seed = hashlib.sha256(
+        f"{TASK_ID}|{input_ref}".encode("utf-8")
+    ).hexdigest()
     return {
         "job_id": f"control:stage038:{seed[:24]}",
         "job_type": job_type,
@@ -421,7 +426,7 @@ def build_control_envelope(
         "lease_owner_ref": None,
         "lease_expires_at": None,
         "fencing_token": 0,
-        "lock_key": f"resource:stage038:{seed}",
+        "lock_key": f"resource:stage038:{resource_seed}",
         "priority_ref": priority_ref,
         "pause_reason_code": None,
         "stop_reason": None,
@@ -450,11 +455,14 @@ def _expected_envelope_identity(envelope: Mapping[str, Any]) -> dict[str, str]:
     seed = hashlib.sha256(
         f"{TASK_ID}|{input_ref}|{job_type}".encode("utf-8")
     ).hexdigest()
+    resource_seed = hashlib.sha256(
+        f"{TASK_ID}|{input_ref}".encode("utf-8")
+    ).hexdigest()
     return {
         "job_id": f"control:stage038:{seed[:24]}",
         "idempotency_key": f"idempotency:stage038:{seed}",
         "transition_request_id": f"admission:stage038:{seed}",
-        "lock_key": f"resource:stage038:{seed}",
+        "lock_key": f"resource:stage038:{resource_seed}",
     }
 
 
@@ -717,6 +725,24 @@ class IsolatedWorkerQueue:
                 queue_entry_ref=existing_ref,
                 duplicate=True,
                 state=record["machine_state"],
+            )
+        active_conflict_ref = next(
+            (
+                queue_entry_ref
+                for queue_entry_ref, record in self._records.items()
+                if record["lock_key"] == envelope["lock_key"]
+                and record["machine_state"]
+                not in set(self._stage037.TERMINAL_STATES)
+            ),
+            None,
+        )
+        if active_conflict_ref is not None:
+            return self._decision(
+                accepted=False,
+                result_code="RESOURCE_CONFLICT_ACTIVE",
+                queue_entry_ref=active_conflict_ref,
+                duplicate=False,
+                state="PAUSED",
             )
         queue_full = (
             len(self._pending_refs) >= self._capacity

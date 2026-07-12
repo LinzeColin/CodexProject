@@ -39,9 +39,12 @@ external API, connect to a database, or write a runtime artifact.
 - Submission mode: `SYNCHRONOUS_ACK_ASYNC_WORKER`
 - Ordering: `FIFO_ADMISSION_SEQUENCE_NO_PRIORITY_REORDERING`
 - Duplicate admission returns the existing queue-entry reference.
-- `job_id`, `idempotency_key`, admission request ID, and `lock_key` are
-  deterministically derived from `task_id + input_ref + job_type`. The same
-  tracked input therefore cannot choose a different resource-conflict key.
+- `job_id`, `idempotency_key`, and admission request ID are deterministically
+  derived from `task_id + input_ref + job_type`; `lock_key` is derived only
+  from `task_id + input_ref`. Distinct processing, extraction, indexing, and
+  reporting jobs over the same tracked input therefore share one conflict key.
+- An existing non-terminal record with that key returns
+  `RESOURCE_CONFLICT_ACTIVE` before a second queue record is created.
 - Non-empty dependency refs fail closed because dependency qualification is
   not implemented by this baseline.
 - Queue-full admission returns `QUEUE_CAPACITY_REACHED` with the reviewed

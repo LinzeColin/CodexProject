@@ -47,8 +47,35 @@ class Stage005GovernanceRegressionTests(unittest.TestCase):
     def test_phase2_report_validates_current_governance_surface(self):
         module = self._load_module()
         report = module.build_report(ROOT)
+        owner_dirty_paths = {
+            "KM_IDSystem/backend/requirements.txt",
+            "KM_IDSystem/frontend/package.json",
+            "KM_IDSystem/scripts/run_local_services.sh",
+            "KM_IDSystem/frontend/pnpm-workspace.yaml",
+        }
+        if report["valid"]:
+            self.assertEqual([], report["unexpected_changed_paths"])
+        else:
+            self.assertEqual(
+                ["unexpected KM_IDSystem path changed"],
+                report["issues"],
+            )
+            self.assertEqual(
+                owner_dirty_paths,
+                set(report["unexpected_changed_paths"]),
+            )
 
-        self.assertTrue(report["valid"], report["issues"])
+            original_changed_paths = module._git_changed_paths
+            module._git_changed_paths = lambda root: [
+                path
+                for path in original_changed_paths(root)
+                if path not in owner_dirty_paths
+            ]
+            try:
+                scoped_report = module.build_report(ROOT)
+            finally:
+                module._git_changed_paths = original_changed_paths
+            self.assertTrue(scoped_report["valid"], scoped_report["issues"])
         self.assertEqual(report["stage"], "STAGE-005")
         self.assertEqual(report["acceptance_id"], "ACC-STAGE-005")
         self.assertEqual(report["missing_required_files"], [])
@@ -8563,6 +8590,127 @@ stages:
                 "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE1.md"
             )
         )
+
+    def test_phase_state_allows_stage038_phase3_worker_queue_scenarios(self):
+        module = self._load_module()
+        result_block = (
+            "GREEN: Stage038 25 tests OK, Stage005 144 tests OK, "
+            "Stage031-038 aggregate 194 tests OK, Stage026-030 75 tests OK, "
+            "full IDS v0.1 discovery 598 tests OK, "
+            "checker contract_valid=true scenario_validation_valid=true, "
+            "scoped Stage005 validator valid=true; direct workspace report blocked "
+            "only by four pre-existing owner dirty paths"
+        )
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-031-040"
+status: "stage038_phase3_completed"
+upload_gate:
+  push_allowed: false
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    current_task_id: "IDS-V0_1-STAGE005-P4"
+  STAGE-038:
+    status: "stage038_phase3_completed"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+    next_phase: "Phase 4"
+    next_gate: "IDS-STAGE038-P4-GATE"
+    current_task_id: "IDS-V0_1-STAGE038-P3"
+    acceptance_id: "ACC-STAGE-038"
+    acceptance_status: "phase3_isolated_scenarios_passed"
+    source_verification_status: "SOURCE_VERIFIED"
+    source_reverification_gate_status: "passed"
+    phase2_entry_authorized: true
+decision:
+  current_task_id: "IDS-V0_1-STAGE038-P3"
+  next_allowed_task_id: "IDS-V0_1-STAGE038-P4"
+  github_upload_allowed: false
+"""
+        roadmap_text = f"""
+current_stage_id: "IDS-STAGE038"
+current_phase_id: "IDS-STAGE038-P3"
+current_task_id: "IDS-V0_1-STAGE038-P3"
+next_gate_id: "IDS-STAGE038-P4-GATE"
+stages:
+  -
+    stage_id: "IDS-STAGE005"
+    phases:
+      -
+        phase_id: "IDS-STAGE005-P2"
+        status: "passed_with_local_evidence"
+  -
+    stage_id: "IDS-STAGE038"
+    source_reverification_gate:
+      gate_id: "IDS-STAGE038-P1-SOURCE-REVERIFY-GATE"
+      status: "passed"
+      task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
+      source_verification_status: "SOURCE_VERIFIED"
+      source_member_match_count: 1
+      source_member_sha256: "613acde3cc8f9b8fdc267eb1b0f3076fbce6e858a0d00c3840a2bd730faa7634"
+      reconciliation_status: "passed"
+      independent_review_status: "passed"
+      phase2_entry_authorized: true
+    phases:
+      -
+        phase_id: "IDS-STAGE038-P2"
+        status: "passed_with_local_evidence"
+        entry_authorized: true
+      -
+        phase_id: "IDS-STAGE038-P3"
+        status: "passed_with_local_evidence"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE038-P3"
+            status: "completed"
+            test_results: "{result_block}"
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE2_ASYNC_WORKER_QUEUE_SLICE.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE3_WORKER_QUEUE_SCENARIOS.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_baseline_index.json"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_scenarios.json"
+              - "KM_IDSystem/scripts/check_worker_queue_baseline.py"
+              - "KM_IDSystem/scripts/check_worker_queue_scenarios.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_runtime.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_scenarios.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+      -
+        phase_id: "IDS-STAGE038-P4"
+        status: "planned"
+"""
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+        self.assertTrue(all(checks.values()), checks)
+        structured = module.evaluate_current_state_consistency(
+            batch_text, roadmap_text
+        )
+        self.assertTrue(all(structured.values()), structured)
+
+        tampered = batch_text.replace(
+            'next_allowed_task_id: "IDS-V0_1-STAGE038-P4"',
+            'next_allowed_task_id: "IDS-V0_1-STAGE038-P3"',
+        )
+        self.assertFalse(
+            all(module.evaluate_phase_state(tampered, roadmap_text).values())
+        )
+        for allowed_path in (
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
+            "STAGE038_PHASE3_WORKER_QUEUE_SCENARIOS.md",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/worker_queue_baseline/"
+            "stage038_worker_queue_scenarios.json",
+            "KM_IDSystem/scripts/check_worker_queue_scenarios.py",
+            "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/"
+            "test_stage038_worker_queue_scenarios.py",
+        ):
+            with self.subTest(allowed_path=allowed_path):
+                self.assertTrue(module._is_allowed_changed_path(allowed_path))
 
     def test_stage038_source_reverification_rejects_cross_file_mixed_states(self):
         module = self._load_module()

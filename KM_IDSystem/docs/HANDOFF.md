@@ -99,16 +99,18 @@ Commit/PR summaries must include:
 
 - Canonical worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS`
 - Project scope: `KM_IDSystem/` only.
-- Current local state: `STAGE-038 · Worker 队列基线` has Phase 1 and Phase 2 complete; STAGE-037 remains `completed_reviewed_local`.
-- Current task: `IDS-V0_1-STAGE038-P2`; acceptance: `ACC-STAGE-038`.
+- Current local state: `STAGE-038 · Worker 队列基线` has Phase 1 through Phase 3 complete; STAGE-037 remains `completed_reviewed_local`.
+- Current task: `IDS-V0_1-STAGE038-P3`; acceptance: `ACC-STAGE-038`.
 - Exact source status: `SOURCE_VERIFIED`; the unique Stage038 member SHA-256 is `613acde3cc8f9b8fdc267eb1b0f3076fbce6e858a0d00c3840a2bd730faa7634`. Archive, roadmap, and instruction hashes are recorded in `STAGE038_PHASE1_SOURCE_REVERIFICATION.md`.
 - Corrected Phase 1 defines queue/worker separation, envelope idempotency, retry/dead-letter, backpressure, lock granularity, automatic lifecycle, crash-recovery checkpoint, and cleanup allowlist interfaces. STAGE-039..044 retain dedicated runtime policy and implementation ownership.
 - A six-surface finite-state check binds batch, roadmap, entry, Phase 1, source evidence, and review evidence. Independent review repaired `1 Critical / 1 Important / 0 Minor` and ended at `0 / 0 / 0`.
 - Phase 2 implements one `asyncio` in-memory queue and worker over a real Git-tracked Phase 1 control document. Submission returns before completion; STAGE-037 transitions, Chinese status, duplicate admission, bounded-capacity backpressure, and input/output/error/checkpoint fields are exercised without persistence.
 - The Phase 2 smoke runs only in `ISOLATED_NON_PRODUCTION_ASYNC_CONTROL_METADATA_SLICE` mode. It creates one real isolated control job, not an IDS business job, and does not activate a production service.
-- Only `IDS-V0_1-STAGE038-P3` may run next, in a separate run. Phase 3, Phase 4, and whole-stage review have not started.
+- Phase 3 repairs the resource conflict domain so `ARCHIVE`, `PARSE`, `INDEX`, and `REPORT` over one input share one lock key. Active conflicts pause before queue admission; terminal records permit a later same-source job.
+- The six Phase 3 scenarios validate duplicate click, an actual isolated worker exception, external-drive-offline control gating, actual project-volume free-space insufficiency, same-source cross-operation conflict, and protected cleanup denial. Physical drive removal, disk allocation, process termination, cleanup execution, and production runtime are not claimed.
+- Only `IDS-V0_1-STAGE038-P4` may run next, in a separate run. Phase 4 and whole-stage review have not started.
 - `BATCH031_040` remains locked with `push_allowed=false`; do not upload, merge, reinstall app entries, or run batch gates before all ten stages are complete and reviewed.
-- Current Phase 2 evidence: `docs/pursuing_goal/ids_v0_1/STAGE038_PHASE2_ASYNC_WORKER_QUEUE_SLICE.md`; this is not the later whole-stage review.
+- Current Phase 3 evidence: `docs/pursuing_goal/ids_v0_1/STAGE038_PHASE3_WORKER_QUEUE_SCENARIOS.md`; this is not the later whole-stage review.
 - The real metadata root `/Users/linzezhang/Downloads/IDS_MetaData` is path-only governance context. Do not read, list, hash, open, copy, move, delete, modify, dump, scan, normalize, or commit its contents.
 - Do not use fake IDS business data, fake database rows, placeholder corpus, fabricated profiles, dumps, execution logs, or evidence.
 
@@ -130,4 +132,4 @@ These are recoverable from source, scripts, and GitHub.
 - macOS may reject the ad-hoc `.app` bundle through Gatekeeper/LaunchServices. The `.command` launcher is the current reliable click path.
 - Real MQTT/OPC-UA/Modbus device ingestion is not implemented in this version.
 - Model providers are configurable, but no plaintext API keys should be committed.
-- STAGE-038 Phase 2 is an isolated in-process baseline, not production readiness. Persistent queue/claim state, retry/dead-letter policy, measured backpressure/fairness, production lock/lease/fencing, automatic lifecycle, crash recovery, cleanup, PostgreSQL actions, raw source reads, and IDS business job execution remain absent.
+- STAGE-038 Phase 3 remains an isolated in-process validation baseline, not production readiness. Persistent queue/claim state, retry/dead-letter policy, measured backpressure/fairness, production lock/lease/fencing, automatic lifecycle, process crash recovery, cleanup execution, PostgreSQL actions, raw source reads, and IDS business job execution remain absent.
