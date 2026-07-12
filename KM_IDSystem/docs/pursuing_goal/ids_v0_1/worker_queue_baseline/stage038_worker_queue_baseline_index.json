@@ -36,6 +36,7 @@
     "maximum_isolated_capacity": 16,
     "capacity_backpressure_result": "QUEUE_CAPACITY_REACHED",
     "duplicate_admission_result": "EXISTING_QUEUE_ENTRY",
+    "resource_conflict_result": "RESOURCE_CONFLICT_ACTIVE",
     "identity_derivation": "SHA256_TASK_INPUT_JOB_TYPE",
     "lock_key_derivation": "SAME_INPUT_SAME_RESOURCE_CONFLICT_KEY",
     "dependency_policy": "NONEMPTY_DEPENDENCY_REFS_FAIL_CLOSED_IN_BASELINE",
