@@ -1,0 +1,171 @@
+{
+  "schema_version": "eei-a103-sec-ingestion-report-contract-v1",
+  "acceptance_ids": [
+    "A103"
+  ],
+  "task_id": "T703",
+  "generated_at": "2026-07-13T00:02:15Z",
+  "source_commit": "ed862bd7",
+  "status": "PASS",
+  "isolated_postgresql": {
+    "image": "postgres:16",
+    "container": {
+      "id": "0c9833a555e2922fb3a4e0142e9706f90d06b325be1bdc7e9ae65ae98f94b684",
+      "name": "eei-t703-postgres",
+      "image": "postgres:16",
+      "state": "running",
+      "health": "healthy",
+      "started_at": "2026-07-13T00:02:13.388031376Z"
+    },
+    "host": "127.0.0.1",
+    "port": 55433,
+    "migration_versions": [
+      "0001",
+      "0002",
+      "0003",
+      "0004",
+      "0005",
+      "0006",
+      "0007",
+      "0008",
+      "0009",
+      "0010",
+      "0011"
+    ]
+  },
+  "protected_resources": {
+    "before": {
+      "eei-postgres": {
+        "id": "31d2f53d14afd7b69a02d2d0420d09d39b296917421f50158fdcca6eaf00e8c1",
+        "name": "eei-postgres",
+        "image": "postgres:16",
+        "state": "running",
+        "health": "healthy",
+        "started_at": "2026-07-12T22:49:45.160917544Z"
+      },
+      "eei-worker": {
+        "id": "967fcabf9fa7a02b52f2307aefeb080980d0c5688d5015732b93e2e37bc8809f",
+        "name": "eei-worker",
+        "image": "eei-worker",
+        "state": "running",
+        "health": "healthy",
+        "started_at": "2026-07-12T22:49:44.851580169Z"
+      }
+    },
+    "after": {
+      "eei-postgres": {
+        "id": "31d2f53d14afd7b69a02d2d0420d09d39b296917421f50158fdcca6eaf00e8c1",
+        "name": "eei-postgres",
+        "image": "postgres:16",
+        "state": "running",
+        "health": "healthy",
+        "started_at": "2026-07-12T22:49:45.160917544Z"
+      },
+      "eei-worker": {
+        "id": "967fcabf9fa7a02b52f2307aefeb080980d0c5688d5015732b93e2e37bc8809f",
+        "name": "eei-worker",
+        "image": "eei-worker",
+        "state": "running",
+        "health": "healthy",
+        "started_at": "2026-07-12T22:49:44.851580169Z"
+      }
+    }
+  },
+  "cleanup": {
+    "container_remove_exit_code": 0,
+    "volume_remove_exit_code": 0,
+    "container_absent": true,
+    "volume_absent": true,
+    "protected_containers_unchanged": true
+  },
+  "release_scope": {
+    "fixture_only": true,
+    "live_sec_request_performed": false,
+    "active_a209_database_touched": false,
+    "a202_closed_by_contract": false,
+    "a209_closed_by_contract": false,
+    "mvp_release_ready": false
+  },
+  "contract": {
+    "required_fields": [
+      "checkpoint",
+      "counts",
+      "status",
+      "error_class"
+    ],
+    "status_values": [
+      "succeeded",
+      "failed"
+    ],
+    "successful_error_class": null,
+    "failed_error_class_is_exception_type": true,
+    "checkpoint_includes": [
+      "stage",
+      "cik",
+      "entity_name",
+      "fixture_hashes",
+      "connector_version"
+    ],
+    "counts_include": [
+      "normalized_facts",
+      "normalized_filings",
+      "raw_snapshots_inserted",
+      "raw_snapshots_planned",
+      "raw_snapshots_reused",
+      "source_documents_inserted",
+      "source_documents_planned",
+      "source_documents_reused"
+    ],
+    "dry_run_database_write_performed": false
+  },
+  "sample_report": {
+    "schema_version": "eei-sec-fixture-ingestion-report-v1",
+    "task_id": "T703",
+    "acceptance_ids": [
+      "A102",
+      "A103"
+    ],
+    "execution_mode": "fixture",
+    "record_mode": "fixture",
+    "started_at": "2026-07-13T00:02:15.214086Z",
+    "finished_at": "2026-07-13T00:02:15.223492Z",
+    "status": "succeeded",
+    "checkpoint": {
+      "stage": "completed",
+      "cik": "0000000001",
+      "entity_name": "EEI SEC Golden Fixture Corp",
+      "fixture_hashes": {
+        "submissions": "f69ad47dd4910c90743c0f6ab5e2ed90eed3872112512af9343f8cc6267cab91",
+        "companyfacts": "3c959c7cb3ff96a313ad8fdebbec5b54546f4366f1b1e5ae7e477e6d0331399f"
+      },
+      "connector_version": "sec-fixture-ingestion-v1"
+    },
+    "counts": {
+      "normalized_filings": 2,
+      "normalized_facts": 3,
+      "source_documents_planned": 2,
+      "raw_snapshots_planned": 2,
+      "source_documents_inserted": 0,
+      "source_documents_reused": 2,
+      "raw_snapshots_inserted": 0,
+      "raw_snapshots_reused": 2
+    },
+    "error_class": null,
+    "error_message": null,
+    "database_write_performed": true,
+    "ingestion_run_id": "0a8f8807-e8df-47ad-b19d-701924e23e30",
+    "release_scope": {
+      "fixture_only": true,
+      "live_sec_request_performed": false,
+      "a202_closed_by_report": false,
+      "a209_closed_by_report": false,
+      "mvp_release_ready": false
+    }
+  },
+  "test_evidence": [
+    "tests/unit/test_sec_fixture_ingestion.py",
+    "fixture mode success report",
+    "dry-run success report",
+    "unit failure report assertion"
+  ]
+}

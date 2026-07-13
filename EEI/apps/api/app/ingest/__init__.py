@@ -17,6 +17,14 @@ from .sec_client import (
     validate_sec_url,
     validate_sec_user_agent,
 )
+from .sec_fixture_ingestion import (
+    SEC_FIXTURE_CONNECTOR_VERSION,
+    SEC_FIXTURE_REPORT_VERSION,
+    SecFixtureDocument,
+    SecFixturePlan,
+    build_sec_fixture_plan,
+    run_sec_fixture_ingestion,
+)
 from .sec_normalizer import (
     SEC_COMPANY_FACTS_NORMALIZER_VERSION,
     SEC_SUBMISSIONS_NORMALIZER_VERSION,
@@ -54,4 +62,10 @@ __all__ = [
     "SecNormalizationError",
     "normalize_sec_company_facts",
     "normalize_sec_submissions",
+    "SEC_FIXTURE_CONNECTOR_VERSION",
+    "SEC_FIXTURE_REPORT_VERSION",
+    "SecFixtureDocument",
+    "SecFixturePlan",
+    "build_sec_fixture_plan",
+    "run_sec_fixture_ingestion",
 ]

@@ -1,0 +1,154 @@
+{
+  "schema_version": "eei-a102-sec-fixture-idempotent-upsert-contract-v1",
+  "acceptance_ids": [
+    "A102"
+  ],
+  "task_id": "T703",
+  "generated_at": "2026-07-13T00:02:15Z",
+  "source_commit": "ed862bd7",
+  "status": "PASS",
+  "isolated_postgresql": {
+    "image": "postgres:16",
+    "container": {
+      "id": "0c9833a555e2922fb3a4e0142e9706f90d06b325be1bdc7e9ae65ae98f94b684",
+      "name": "eei-t703-postgres",
+      "image": "postgres:16",
+      "state": "running",
+      "health": "healthy",
+      "started_at": "2026-07-13T00:02:13.388031376Z"
+    },
+    "host": "127.0.0.1",
+    "port": 55433,
+    "migration_versions": [
+      "0001",
+      "0002",
+      "0003",
+      "0004",
+      "0005",
+      "0006",
+      "0007",
+      "0008",
+      "0009",
+      "0010",
+      "0011"
+    ]
+  },
+  "protected_resources": {
+    "before": {
+      "eei-postgres": {
+        "id": "31d2f53d14afd7b69a02d2d0420d09d39b296917421f50158fdcca6eaf00e8c1",
+        "name": "eei-postgres",
+        "image": "postgres:16",
+        "state": "running",
+        "health": "healthy",
+        "started_at": "2026-07-12T22:49:45.160917544Z"
+      },
+      "eei-worker": {
+        "id": "967fcabf9fa7a02b52f2307aefeb080980d0c5688d5015732b93e2e37bc8809f",
+        "name": "eei-worker",
+        "image": "eei-worker",
+        "state": "running",
+        "health": "healthy",
+        "started_at": "2026-07-12T22:49:44.851580169Z"
+      }
+    },
+    "after": {
+      "eei-postgres": {
+        "id": "31d2f53d14afd7b69a02d2d0420d09d39b296917421f50158fdcca6eaf00e8c1",
+        "name": "eei-postgres",
+        "image": "postgres:16",
+        "state": "running",
+        "health": "healthy",
+        "started_at": "2026-07-12T22:49:45.160917544Z"
+      },
+      "eei-worker": {
+        "id": "967fcabf9fa7a02b52f2307aefeb080980d0c5688d5015732b93e2e37bc8809f",
+        "name": "eei-worker",
+        "image": "eei-worker",
+        "state": "running",
+        "health": "healthy",
+        "started_at": "2026-07-12T22:49:44.851580169Z"
+      }
+    }
+  },
+  "cleanup": {
+    "container_remove_exit_code": 0,
+    "volume_remove_exit_code": 0,
+    "container_absent": true,
+    "volume_absent": true,
+    "protected_containers_unchanged": true
+  },
+  "release_scope": {
+    "fixture_only": true,
+    "live_sec_request_performed": false,
+    "active_a209_database_touched": false,
+    "a202_closed_by_contract": false,
+    "a209_closed_by_contract": false,
+    "mvp_release_ready": false
+  },
+  "contract": {
+    "execution_modes": [
+      "fixture",
+      "dry_run"
+    ],
+    "database_write_requires_explicit_opt_in": true,
+    "fixture_scheme_required": "fixture://sec/",
+    "record_mode": "fixture",
+    "content_hash_algorithm": "sha256",
+    "idempotency_key_source_document": [
+      "source_id",
+      "external_id",
+      "content_hash"
+    ],
+    "idempotency_key_raw_snapshot": [
+      "anchor_id",
+      "content_hash"
+    ],
+    "first_write_counts": {
+      "normalized_filings": 2,
+      "normalized_facts": 3,
+      "source_documents_planned": 2,
+      "raw_snapshots_planned": 2,
+      "source_documents_inserted": 2,
+      "source_documents_reused": 0,
+      "raw_snapshots_inserted": 2,
+      "raw_snapshots_reused": 0
+    },
+    "second_write_counts": {
+      "normalized_filings": 2,
+      "normalized_facts": 3,
+      "source_documents_planned": 2,
+      "raw_snapshots_planned": 2,
+      "source_documents_inserted": 0,
+      "source_documents_reused": 2,
+      "raw_snapshots_inserted": 0,
+      "raw_snapshots_reused": 2
+    },
+    "dry_run_counts": {
+      "normalized_filings": 2,
+      "normalized_facts": 3,
+      "source_documents_planned": 2,
+      "raw_snapshots_planned": 2,
+      "source_documents_inserted": 0,
+      "source_documents_reused": 0,
+      "raw_snapshots_inserted": 0,
+      "raw_snapshots_reused": 0
+    },
+    "database_fixed_point": {
+      "sources": 1,
+      "source_documents": 2,
+      "raw_snapshots": 2,
+      "ingestion_runs": 2,
+      "fixture_mode_snapshots": 2,
+      "distinct_snapshot_hashes": 2,
+      "ingestion_run_statuses": {
+        "succeeded": 2
+      }
+    }
+  },
+  "test_evidence": [
+    "tests/unit/test_sec_fixture_ingestion.py",
+    "scripts/load_sec_normalized_fixtures.py",
+    "isolated PostgreSQL 16 double-upsert probe"
+  ]
+}

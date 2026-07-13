@@ -56,7 +56,7 @@ T608,G6,P0,Add custom-profile/audit/two-calibration E2E,"T603,T607","A082,A087,A
 T700,G7,P0,Implement SEC client User-Agent allowlist and limiter,T208,"A096,A097",DONE
 T701,G7,P0,Implement timeout retry jitter cache and hash,T700,"A098,A099",DONE
 T702,G7,P0,Normalize submissions and Company Facts,T701,"A100,A101",DONE
-T703,G7,P0,Implement dry-run fixture idempotent upsert and report,T702,"A102,A103",NOT STARTED
+T703,G7,P0,Implement dry-run fixture idempotent upsert and report,T702,"A102,A103",DONE
 T704,G7,P0,Implement freshness and failure status,T703,A104,NOT STARTED
 T705,G7,P0,Implement transactional derive/score/change pipeline,"T703,T600","A105,A106,A107",NOT STARTED
 T706,G7,P0,Add fixture tests and optional live smoke,T705,"A096,A098,A102",NOT STARTED

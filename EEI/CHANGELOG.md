@@ -1,5 +1,16 @@
 # Changelog
 
+## T703/A102/A103 SEC fixture ingestion - 2026-07-13
+
+- Added explicit fixture and dry-run SEC ingestion over the T702 typed normalizers.
+- Added SHA-256 keyed idempotent PostgreSQL upsert for synthetic fixture source
+  documents and raw snapshots; database writes require an explicit CLI opt-in.
+- Added structured ingestion reports containing checkpoint, counts, status and error
+  class, with failure reporting and fixture/live separation kept fail closed.
+- Added an isolated PostgreSQL 16 double-upsert validator. It removes its temporary
+  container/volume and proves the active A209 PostgreSQL/worker identities are unchanged.
+- T704-T706, T1301/A202, A209 and MVP release readiness remain open.
+
 ## T702/A100/A101 SEC normalization - 2026-07-13
 
 - Added typed SEC Submissions normalization for compact parallel filing arrays,

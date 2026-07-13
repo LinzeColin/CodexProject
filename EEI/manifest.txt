@@ -55,6 +55,8 @@ apps/api/app/health.py
 apps/api/app/healthcheck.py
 apps/api/app/ingest/__init__.py
 apps/api/app/ingest/sec_client.py
+apps/api/app/ingest/sec_fixture_ingestion.py
+apps/api/app/ingest/sec_normalizer.py
 apps/api/app/main.py
 apps/api/app/scoring.py
 apps/api/app/settings.py
@@ -112,6 +114,10 @@ artifacts/tests/a096/t700_sec_client_allowlist_contract.json
 artifacts/tests/a097/t700_sec_client_rate_limit_contract.json
 artifacts/tests/a098/t701_sec_client_retry_contract.json
 artifacts/tests/a099/t701_sec_client_hash_cache_contract.json
+artifacts/tests/a100/t702_sec_submissions_normalization_contract.json
+artifacts/tests/a101/t702_sec_companyfacts_normalization_contract.json
+artifacts/tests/a102/t703_sec_fixture_idempotent_upsert_contract.json
+artifacts/tests/a103/t703_sec_ingestion_report_contract.json
 artifacts/tests/a119/t905_migration_rollback_rehearsal.json
 artifacts/tests/a120/t905_clean_start_operator_rehearsal.json
 artifacts/tests/a182/t1212_governance_consistency_workflow.json
@@ -372,6 +378,7 @@ scripts/job_scheduler.py
 scripts/load_curated_ingestion_anchors.py
 scripts/load_live_official_captures.py
 scripts/load_operator_source_captures.py
+scripts/load_sec_normalized_fixtures.py
 scripts/load_seed_catalogs.py
 scripts/load_synthetic_fixtures.py
 scripts/manage_clean_room_release.py
@@ -411,6 +418,8 @@ scripts/validate_prototype_parity.py
 scripts/validate_release_decision_bundle.py
 scripts/validate_release_manager_activation.py
 scripts/validate_sec_client_contract.py
+scripts/validate_sec_fixture_ingestion_contract.py
+scripts/validate_sec_normalization_contract.py
 scripts/validate_t905_release_rehearsal.py
 scripts/validate_task_pack.py
 scripts/validate_ui_copy.py
@@ -443,6 +452,8 @@ tests/fixtures/official_source_full_text/nvidia_official_full_text_dry_run.json
 tests/fixtures/operator_source_captures/nvidia_operator_source_captures.json
 tests/fixtures/release_decision_bundle/a202_a210_release_decision_bundle_template.json
 tests/fixtures/release_decision_bundle/a202_a210_signed_decision_bundle_contract_test.json
+tests/fixtures/sec/companyfacts_golden.json
+tests/fixtures/sec/submissions_golden.json
 tests/integration/README.md
 tests/integration/test_database_migrations.py
 tests/unit/test_a202_signed_intake_preflight.py
@@ -463,6 +474,8 @@ tests/unit/test_release_manager_activation.py
 tests/unit/test_scale_benchmarks.py
 tests/unit/test_scoring.py
 tests/unit/test_sec_client.py
+tests/unit/test_sec_fixture_ingestion.py
+tests/unit/test_sec_normalizer.py
 uv.lock
 wireframes/README.md
 wireframes/dashboard_wireframe.png

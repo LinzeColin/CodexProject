@@ -22,7 +22,9 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── app
 │   │   │   ├── ingest
 │   │   │   │   ├── __init__.py
-│   │   │   │   └── sec_client.py
+│   │   │   │   ├── sec_client.py
+│   │   │   │   ├── sec_fixture_ingestion.py
+│   │   │   │   └── sec_normalizer.py
 │   │   │   ├── __init__.py
 │   │   │   ├── db_health.py
 │   │   │   ├── domain.py
@@ -103,6 +105,14 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   └── t701_sec_client_retry_contract.json
 │   │   ├── a099
 │   │   │   └── t701_sec_client_hash_cache_contract.json
+│   │   ├── a100
+│   │   │   └── t702_sec_submissions_normalization_contract.json
+│   │   ├── a101
+│   │   │   └── t702_sec_companyfacts_normalization_contract.json
+│   │   ├── a102
+│   │   │   └── t703_sec_fixture_idempotent_upsert_contract.json
+│   │   ├── a103
+│   │   │   └── t703_sec_ingestion_report_contract.json
 │   │   ├── a119
 │   │   │   └── t905_migration_rollback_rehearsal.json
 │   │   ├── a120
@@ -424,6 +434,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── load_curated_ingestion_anchors.py
 │   ├── load_live_official_captures.py
 │   ├── load_operator_source_captures.py
+│   ├── load_sec_normalized_fixtures.py
 │   ├── load_seed_catalogs.py
 │   ├── load_synthetic_fixtures.py
 │   ├── manage_clean_room_release.py
@@ -463,6 +474,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── validate_release_decision_bundle.py
 │   ├── validate_release_manager_activation.py
 │   ├── validate_sec_client_contract.py
+│   ├── validate_sec_fixture_ingestion_contract.py
+│   ├── validate_sec_normalization_contract.py
 │   ├── validate_t905_release_rehearsal.py
 │   ├── validate_task_pack.py
 │   ├── validate_ui_copy.py
@@ -501,6 +514,9 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── release_decision_bundle
 │   │   │   ├── a202_a210_release_decision_bundle_template.json
 │   │   │   └── a202_a210_signed_decision_bundle_contract_test.json
+│   │   ├── sec
+│   │   │   ├── companyfacts_golden.json
+│   │   │   └── submissions_golden.json
 │   │   ├── README.md
 │   │   ├── golden_vertical_owner_signoff_decisions.json
 │   │   └── golden_vertical_review_decisions.json
@@ -525,7 +541,9 @@ Enterprise_Ecosystem_Intelligence_release
 │       ├── test_release_manager_activation.py
 │       ├── test_scale_benchmarks.py
 │       ├── test_scoring.py
-│       └── test_sec_client.py
+│       ├── test_sec_client.py
+│       ├── test_sec_fixture_ingestion.py
+│       └── test_sec_normalizer.py
 ├── wireframes
 │   ├── README.md
 │   ├── dashboard_wireframe.png

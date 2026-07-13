@@ -1,5 +1,61 @@
 # MVP Development Record
 
+## 2026-07-13 - T703/A102/A103 SEC fixture ingestion contract
+
+Status: LOCAL FOCUSED VALIDATED; REMOTE CI PENDING; PHASE 1.2 IN PROGRESS; MVP RELEASE BLOCKED
+
+### Goal and Scope
+
+- Add explicit `fixture` and `dry_run` execution over the T702 synthetic SEC fixtures.
+- Persist fixture source documents and raw snapshots with SHA-256 idempotency keys while
+  preserving `record_mode=fixture`, `fixture://` URLs and non-publishable evidence scope.
+- Emit a structured report with checkpoint, counts, status and error class on success or
+  failure. Fixture writes require `--allow-database-write` and an explicit database URL.
+- Perform no live SEC request, schema migration, scoring/model activation, publication or
+  A209 evidence mutation.
+
+### Acceptance and Evidence
+
+- `T703 -> A102`: `apps/api/app/ingest/sec_fixture_ingestion.py`,
+  `scripts/load_sec_normalized_fixtures.py`, `tests/unit/test_sec_fixture_ingestion.py`,
+  `scripts/validate_sec_fixture_ingestion_contract.py`, and
+  `artifacts/tests/a102/t703_sec_fixture_idempotent_upsert_contract.json`.
+- `T703 -> A103`: the same implementation/test surface plus
+  `artifacts/tests/a103/t703_sec_ingestion_report_contract.json`.
+- Isolated PostgreSQL 16 probe: first run inserted 2 source documents and 2 raw
+  snapshots; second run inserted 0 and reused all 4; dry-run produced no database write
+  and no ingestion run. Database fixed point was 1 fixture source, 2 documents, 2 raw
+  snapshots and 2 succeeded ingestion runs.
+
+### Data and Model Boundary
+
+- Source-document key: `(source_id, external_id, content_hash)`; raw-snapshot key:
+  `(anchor_id, content_hash)`. Content hash is SHA-256 over canonical source JSON.
+- Synthetic fixture source tier is 5 and carries explicit non-live/non-publishable labels.
+- Report release scope explicitly keeps `A202`, `A209` and MVP release readiness open.
+- No schema, scoring formula, model weight, threshold or active model version changed.
+
+### Validation
+
+- Focused unit, compile and Ruff validation: PASS.
+- A102/A103 contract generation and static validation: PASS against an isolated
+  PostgreSQL 16 container; temporary container and volume cleanup: PASS.
+- Active A209 `eei-postgres` and `eei-worker` container IDs/start times remained unchanged.
+- Full unit suite: PASS, `180/180` with one third-party Starlette/httpx deprecation
+  warning. Complete Ruff, Task Pack, catalog, contract, governance consistency and V5
+  readiness validation: PASS. Derived artifact and checksum fixed-point validation is
+  completed immediately before commit.
+
+### Risk, Rollback, and Stop Conditions
+
+- Risk: fixture/live contamination, duplicate rows, dry-run writes or accidental A209
+  database access. Explicit fixture metadata, write opt-in, deterministic keys and
+  before/after protected-container identity checks mitigate these risks.
+- Rollback: revert only the T703 commit and remove A102/A103 artifacts; T700-T702 client,
+  resilience and normalization behavior remains intact.
+- Stop on A209 failure, protected-container change, non-idempotent second write, dry-run
+  persistence, fixture relabeling, report-field loss, governance drift or checksum failure.
+
 ## 2026-07-13 - T702/A100/A101 SEC normalization contract
 
 Status: LOCAL FOCUSED VALIDATED; REMOTE CI PENDING; PHASE 1.2 IN PROGRESS; MVP RELEASE BLOCKED
