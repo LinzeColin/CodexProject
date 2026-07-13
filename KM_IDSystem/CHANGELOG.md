@@ -1,5 +1,11 @@
 # Changelog
 
+## IDS v0.1 STAGE-040 Phase 2 - 2026-07-13
+
+- Added `ids.backpressure_policy.v0_1.stage040.p2`, a versioned isolated decision contract and standard-library checker covering queue depth, admission rate, same-type concurrency, actual project-filesystem free space, external-drive availability, API budget, observation TTL, and hysteresis.
+- Registered `MOD-009`, `FORM-009`, and `PARAM-056..064` as `planned` / `PROPOSED`, linked production calibration to `TASK-OPME-B-001`, and updated total registry counts to `9/9/64` while preserving active counts `7/7/49`.
+- Implemented deterministic fail-closed admit/throttle/deny/legal-pause/manual-review decisions, in-memory idempotent replay, immutable terminal handling, bounded refs, Chinese owner status, and a Phase3-only route. No queue, worker, retry scheduler, lock, resume, cleanup, persistence, database, raw metadata, fake IDS data, external API, production activation, GitHub action, batch gate, or app reinstall ran.
+
 ## IDS v0.1 STAGE-040 Phase 1 - 2026-07-13
 
 - Bound the unique approved Stage040 taskpack member and reviewed Stage037-039 control sources into an exact-shaped metadata-only backpressure engineering contract and stdout-only checker under `ACC-STAGE-040`.

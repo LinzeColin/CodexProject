@@ -229,3 +229,35 @@ formulas:
     implementation_refs: ["KM_IDSystem/scripts/check_retry_dead_letter_runtime.py::deterministic_delay_seconds", "KM_IDSystem/scripts/check_retry_dead_letter_runtime.py::evaluate_failure", "KM_IDSystem/scripts/check_retry_dead_letter_runtime.py::admit_due_retry"]
     semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
     semantic_review_task_ids: ""
+  - formula_id: "FORM-009"
+    model_id: "MOD-009"
+    assumption_ids: ["ASM-005"]
+    status: "planned"
+    expression: "usable_free_bytes=max(0,disk_free_bytes-disk_reserve_bytes); stale or invalid observations fail closed; resource gates precede queue gates; queue_depth>=hard_capacity denies; admissions_in_window>=rate_limit or active_job_type_count>=concurrency_limit throttles; queue_depth>=soft_threshold or prior_throttled and queue_depth>low_watermark throttles; otherwise admit."
+    variables:
+      - name: "queue_depth"
+        data_type: "integer"
+        unit: "control references"
+        input_domain: "0 or greater"
+      - name: "usable_free_bytes"
+        data_type: "integer"
+        unit: "bytes"
+        input_domain: "0 or greater"
+      - name: "admissions_in_window"
+        data_type: "integer"
+        unit: "admissions per policy window"
+        input_domain: "0 or greater"
+      - name: "active_job_type_count"
+        data_type: "integer"
+        unit: "jobs"
+        input_domain: "0 or greater"
+    constraints: ["Isolated non-production decision metadata only.", "Unknown, malformed, or stale observations never admit.", "Resource pause decisions are legal pause candidates only.", "Production calibration is required before production activation."]
+    missing_policy: "REQUIRE_MANUAL_REVIEW with no new admission."
+    output_range: "ADMIT, THROTTLE_ADMISSION, DENY_NEW_ADMISSION, PAUSE_RESOURCE_GATE, REQUEST_SAFE_PAUSE, or REQUIRE_MANUAL_REVIEW; no persistent state mutation."
+    open_task_ids: ["TASK-OPME-B-001"]
+    code_refs: ["KM_IDSystem/scripts/check_backpressure_runtime.py"]
+    test_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_runtime.py"]
+    evidence_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE2_BACKPRESSURE_DECISION_SLICE.md", "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_runtime_contract.json"]
+    implementation_refs: ["KM_IDSystem/scripts/check_backpressure_runtime.py::evaluate_backpressure", "KM_IDSystem/scripts/check_backpressure_runtime.py::build_stage040_phase2_report"]
+    semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
+    semantic_review_task_ids: ""

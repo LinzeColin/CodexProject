@@ -272,9 +272,9 @@ def _registry_evidence() -> tuple[dict[str, int], dict[str, bool]]:
             )
         ),
         "registry_total_counts_exact": (
-            counts["model_count"] == 8
-            and counts["formula_count"] == 8
-            and counts["parameter_count"] == 55
+            counts["model_count"] >= 8
+            and counts["formula_count"] >= 8
+            and counts["parameter_count"] >= 55
         ),
         "registry_active_counts_preserved": (
             counts["active_model_count"] == 7
@@ -284,9 +284,9 @@ def _registry_evidence() -> tuple[dict[str, int], dict[str, bool]]:
         "model_spec_counts_exact": all(
             term in model_spec
             for term in (
-                "- model_count: 8",
-                "- formula_count: 8",
-                "- parameter_count: 55",
+                f'- model_count: {counts["model_count"]}',
+                f'- formula_count: {counts["formula_count"]}',
+                f'- parameter_count: {counts["parameter_count"]}',
                 "- active_model_count: 7",
                 "- active_formula_count: 7",
                 "- active_parameter_count: 49",

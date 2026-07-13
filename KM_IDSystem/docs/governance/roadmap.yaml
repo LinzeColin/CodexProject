@@ -2,10 +2,15 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE040"
-current_phase_id: "IDS-STAGE040-P1"
-current_task_id: "IDS-V0_1-STAGE040-P1"
-next_gate_id: "IDS-STAGE040-P2-GATE"
+current_phase_id: "IDS-STAGE040-P2"
+current_task_id: "IDS-V0_1-STAGE040-P2"
+next_gate_id: "IDS-STAGE040-P3-GATE"
 current_transition_history:
+  stage040_phase2_state:
+    current_stage_id: "IDS-STAGE040"
+    current_phase_id: "IDS-STAGE040-P2"
+    current_task_id: "IDS-V0_1-STAGE040-P2"
+    next_gate_id: "IDS-STAGE040-P3-GATE"
   stage040_phase1_state:
     current_stage_id: "IDS-STAGE040"
     current_phase_id: "IDS-STAGE040-P1"
@@ -9854,13 +9859,13 @@ stages:
       - "一次 run 试图完成多个 phase"
       - "未知、缺失、过期或未版本化的压力观测仍允许新任务准入"
       - "优先级绕过安全门、资源暂停消耗 retry budget 或直接修改终态"
-      - "在 Phase 1 编造 queue、disk、API、TTL、watermark、concurrency 或 rate limit 数值"
+      - "使用隐式、无界、无版本、无回滚或冒充生产校准值的 queue、disk、API、TTL、watermark、concurrency 或 rate limit 参数"
       - "吸收 STAGE-041 lock、STAGE-042 automatic resume、STAGE-043 crash recovery 或 STAGE-044 cleanup runtime"
       - "连接 PostgreSQL、修改 schema/state registry、控制真实 worker 或写真实 job/queue row"
       - "读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
       - "移动、删除、覆盖原始资料、manifest、evidence ledger、audit log、report snapshot 或 active index"
       - "使用虚构 IDS 业务数据、数据库行、jobs、logs、evidence 或 placeholder corpus"
-      - "在 Phase 1 run 内进入 Phase 2、GitHub upload、PR、merge、app reinstall、stage review 或 batch gate"
+      - "在 Phase 2 run 内进入 Phase 3、GitHub upload、PR、merge、app reinstall、stage review 或 batch gate"
     stop_gate:
       gate_id: "IDS-STAGE040-REVIEW-GATE"
       status: "pending"
@@ -9875,6 +9880,10 @@ stages:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_policy_contract.json"
         - "KM_IDSystem/scripts/check_backpressure_policy.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_policy.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE2_BACKPRESSURE_DECISION_SLICE.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_runtime_contract.json"
+        - "KM_IDSystem/scripts/check_backpressure_runtime.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_runtime.py"
     phases:
       -
         phase_id: "IDS-STAGE040-P1"
@@ -9943,25 +9952,34 @@ stages:
         phase_id: "IDS-STAGE040-P2"
         name: "反压策略 实现、接入与最小可运行切片"
         objective: "In a separate run, select and evidence explicit versioned queue, disk, API, TTL, watermark, concurrency and admission-rate parameters, then implement an isolated non-production backpressure decision slice with restrained Chinese status and bounded references."
-        status: "planned"
+        status: "passed_with_local_evidence"
         stop_conditions:
           - "Phase 1 contract or upstream hashes are invalid"
           - "Numeric policy is implicit, unbounded, unversioned or lacks rationale and rollback"
           - "Implementation activates production, connects PostgreSQL, reads raw metadata, uses fake IDS data or absorbs STAGE-041..044"
         stop_gate:
           gate_id: "IDS-STAGE040-P2-GATE"
-          status: "pending"
+          status: "passed_with_local_evidence"
           pass_conditions:
             - "Versioned parameters and high/low watermarks are explicit and validated"
             - "Isolated decision slice is deterministic, idempotent, bounded and fail closed"
             - "No production, database, raw-source, fake-data or downstream-stage side effect occurs"
-          evidence_refs: []
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE2_BACKPRESSURE_DECISION_SLICE.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_runtime_contract.json"
+            - "KM_IDSystem/scripts/check_backpressure_runtime.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_runtime.py"
+            - "KM_IDSystem/docs/governance/model_registry.yaml"
+            - "KM_IDSystem/docs/governance/formula_registry.yaml"
+            - "KM_IDSystem/docs/governance/parameter_registry.csv"
+            - "KM_IDSystem/docs/governance/MODEL_SPEC.md"
+            - "KM_IDSystem/docs/governance/project.yaml"
         tasks:
           -
             task_id: "IDS-V0_1-STAGE040-P2"
             name: "实现隔离反压策略最小切片"
             objective: "Implement only the approved Phase 2 slice in a separate run."
-            status: "planned"
+            status: "completed"
             estimated_hours: 4
             total_hours_percent: "40.00%"
             dependencies:
@@ -9969,9 +9987,29 @@ stages:
             acceptance_ids:
               - "ACC-STAGE-040"
             test_commands:
-              - "TDD commands must be recorded in the separate Phase 2 run"
-            test_results: "not_run"
-            evidence_refs: []
+              - "python3 -B KM_IDSystem/scripts/check_backpressure_runtime.py"
+              - "python3 -B -m unittest -q KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage040_backpressure_runtime"
+              - "python3 -B -m unittest -q KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -p 'test_stage03[1-9]*.py' -q"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -p 'test_stage040*.py' -q"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "python3 -B scripts/lean_governance.py check-render --project KM_IDSystem"
+              - "events.jsonl parse and duplicate-id check"
+              - "git diff --check"
+              - "python3 -B scripts/validate_governance_sync.py --changed-only --base-ref HEAD --semantic --drift-report"
+            test_results: "TDD RED: Stage040 Phase2 15 tests produced 17 failures and 1 error because the contract, checker, evidence, registry entries, and governance transition did not exist. GREEN: checker 18/18 contract checks and 8/8 slice checks true; Stage040 Phase2 15 tests OK; Stage040 aggregate 25 tests OK; Stage005 147 tests OK; Stage037 39 tests OK; Stage038 review 5 tests OK; Stage039 review 6 tests OK; Stage031-039 aggregate 254 tests OK; Stage026-030 compatibility 75 tests OK; full IDS v0.1 discovery 687 tests OK. Stage004 legacy scan valid=true after repairing one active-display identifier construction; direct Stage005 failed closed only on the four preserved owner dirty paths while scoped Stage005 valid=true; 189 events parsed with zero duplicate ids and one Stage040 Phase2 event; owner render drift/reference counts zero; git diff checks passed; changed-only governance errors=0 and warnings=0. The repository-wide semantic HEAD baseline also returned errors=0 and warnings=0 but reported changed_files:none, so it is not used as staged-change proof. Self-review repaired Stage039 planned-registry growth/current-phase compatibility and the resulting hash chain. No queue, worker, retry scheduler, lock, resume, cleanup, persistence, database, raw metadata, fake IDS business data, external API, production, GitHub, app reinstall, Phase3, stage review, or batch gate ran."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE2_BACKPRESSURE_DECISION_SLICE.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_runtime_contract.json"
+              - "KM_IDSystem/scripts/check_backpressure_runtime.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_runtime.py"
+              - "KM_IDSystem/docs/governance/MODEL_SPEC.md"
+              - "KM_IDSystem/docs/governance/project.yaml"
+              - "KM_IDSystem/docs/governance/model_registry.yaml"
+              - "KM_IDSystem/docs/governance/formula_registry.yaml"
+              - "KM_IDSystem/docs/governance/parameter_registry.csv"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
             risk: "A wrong threshold or hysteresis policy can oscillate, starve jobs or permit unsafe work."
             rollback: "Revert only Phase 2 artifacts while preserving the approved Phase 1 contract."
       -
