@@ -2,10 +2,15 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE039"
-current_phase_id: "IDS-STAGE039-P2"
-current_task_id: "IDS-V0_1-STAGE039-P2"
-next_gate_id: "IDS-STAGE039-P3-GATE"
+current_phase_id: "IDS-STAGE039-P3"
+current_task_id: "IDS-V0_1-STAGE039-P3"
+next_gate_id: "IDS-STAGE039-P4-GATE"
 current_transition_history:
+  stage039_phase2_state:
+    current_stage_id: "IDS-STAGE039"
+    current_phase_id: "IDS-STAGE039-P2"
+    current_task_id: "IDS-V0_1-STAGE039-P2"
+    next_gate_id: "IDS-STAGE039-P3-GATE"
   stage039_phase1_state:
     current_stage_id: "IDS-STAGE039"
     current_phase_id: "IDS-STAGE039-P1"
@@ -9552,6 +9557,10 @@ stages:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_runtime_contract.json"
         - "KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE3_SCENARIO_VALIDATION.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_scenarios.json"
+        - "KM_IDSystem/scripts/check_retry_dead_letter_scenarios.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_scenarios.py"
     phases:
       -
         phase_id: "IDS-STAGE039-P1"
@@ -9685,33 +9694,55 @@ stages:
         phase_id: "IDS-STAGE039-P3"
         name: "重试与死信策略 专项验证与异常场景"
         objective: "In a separate run, validate duplicate click, worker crash boundary, removable-drive offline, low disk, API budget insufficiency, same-source concurrency, retry exhaustion, terminal replay and protected cleanup denial without physical destructive action."
-        status: "planned"
+        status: "passed_with_local_evidence"
         stop_conditions:
           - "Phase 2 has not passed its independent gate"
           - "A scenario requires raw metadata, fake IDS business data, destructive drive/disk/cleanup behavior or production activation"
           - "A test absorbs STAGE-040..044 runtime ownership"
         stop_gate:
           gate_id: "IDS-STAGE039-P3-GATE"
-          status: "planned"
+          status: "passed_with_local_evidence"
           pass_conditions:
             - "Retry, pause, exhaustion, dead-letter, duplicate and terminal-rerun scenarios are deterministic and fail closed"
             - "Protected evidence remains immutable"
-          evidence_refs: []
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE3_SCENARIO_VALIDATION.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_scenarios.json"
+            - "KM_IDSystem/scripts/check_retry_dead_letter_scenarios.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_scenarios.py"
         tasks:
           -
             task_id: "IDS-V0_1-STAGE039-P3"
             name: "验证重试与死信异常场景"
             objective: "Run only Phase 3 scenarios in a separate run."
-            status: "planned"
+            status: "completed"
             estimated_hours: 2
             total_hours_percent: "20.00%"
             dependencies:
               - "IDS-V0_1-STAGE039-P2"
             acceptance_ids:
               - "ACC-STAGE-039"
-            test_commands: []
-            test_results: "Not run; Phase 3 is outside the current run."
-            evidence_refs: []
+            test_commands:
+              - "python3 -B KM_IDSystem/scripts/check_retry_dead_letter_scenarios.py"
+              - "python3 -B -m unittest -q KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage039_retry_dead_letter_policy KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage039_retry_dead_letter_runtime KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage039_retry_dead_letter_scenarios"
+              - "python3 -B -m unittest -q KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -p 'test_stage03[1-9]*.py' -q"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -p 'test_stage02[6-9]*.py' -q"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "python3 -B scripts/lean_governance.py check-render --project KM_IDSystem"
+              - "events.jsonl parse and duplicate-id check"
+              - "git diff --check"
+              - "python3 -B scripts/validate_governance_sync.py --changed-only --base-ref HEAD --semantic --drift-report"
+            test_results: "TDD RED: Stage039 Phase3 11 tests failed because the contract, checker, evidence, and governance route did not exist. GREEN: checker 14/14 contract checks true and 10/10 scenarios passed; Stage039 31 tests OK; Stage005 146 tests OK; Stage031-039 aggregate 238 tests OK; Stage026-030 compatibility 75 tests OK; full IDS v0.1 discovery 644 tests OK. Actual isolated worker exception and actual disk-free observation reused the reviewed Stage038 boundary; process termination, physical drive removal, disk allocation, external API call, cleanup/delete, persistence, database, raw metadata, fake IDS business data, production, GitHub, app reinstall, Phase4, Stage040, stage review, and batch gates were not executed. Scoped Stage005 validator valid=true. Pre-commit self-review repaired one Important ambiguity by changing a candidate-only manual rerun from job_state=CREATED to proposed_initial_state=CREATED. Final layered validation details are recorded in the Phase3 evidence and event."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE1_RETRY_DEAD_LETTER_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE2_RETRY_DEAD_LETTER_SLICE.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE3_SCENARIO_VALIDATION.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_scenarios.json"
+              - "KM_IDSystem/scripts/check_retry_dead_letter_scenarios.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_scenarios.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
             risk: "Scenario evidence can overclaim physical or production behavior that was not executed."
             rollback: "Revert Phase 3 evidence/test changes only."
       -
