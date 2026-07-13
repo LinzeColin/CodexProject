@@ -1,5 +1,11 @@
 # Changelog
 
+## IDS v0.1 STAGE-040 Phase 1 - 2026-07-13
+
+- Bound the unique approved Stage040 taskpack member and reviewed Stage037-039 control sources into an exact-shaped metadata-only backpressure engineering contract and stdout-only checker under `ACC-STAGE-040`.
+- Defined fail-closed queue soft/hard pressure, external-drive, disk, and API-budget decisions; legal pause paths; retry/idempotency/fairness invariants; restrained Chinese status; and protected partial-output cleanup boundaries.
+- Deferred all numeric thresholds and scheduling parameters to a separately evidenced Phase 2, while preserving STAGE-041 lock, STAGE-042 automatic-resume, STAGE-043 crash-recovery, and STAGE-044 cleanup ownership. No runtime, database, raw metadata, fake IDS data, GitHub action, batch gate, or app reinstall ran.
+
 ## IDS v0.1 STAGE-039 Review - 2026-07-13
 
 - Completed the local whole-stage review under `ACC-STAGE-039` and repaired four Important findings: invalid governance status/fact enums and missing calibration-task links, total registry count drift, overclaimed terminal manual-rerun job creation wording, and absent Git-index-bound review evidence.

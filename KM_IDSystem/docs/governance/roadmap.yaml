@@ -1,11 +1,21 @@
 schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
-current_stage_id: "IDS-STAGE039"
-current_phase_id: "IDS-STAGE039-REVIEW"
-current_task_id: "IDS-V0_1-STAGE039-REVIEW"
-next_gate_id: "IDS-STAGE040-P1-GATE"
+current_stage_id: "IDS-STAGE040"
+current_phase_id: "IDS-STAGE040-P1"
+current_task_id: "IDS-V0_1-STAGE040-P1"
+next_gate_id: "IDS-STAGE040-P2-GATE"
 current_transition_history:
+  stage040_phase1_state:
+    current_stage_id: "IDS-STAGE040"
+    current_phase_id: "IDS-STAGE040-P1"
+    current_task_id: "IDS-V0_1-STAGE040-P1"
+    next_gate_id: "IDS-STAGE040-P2-GATE"
+  stage040_entry_state:
+    current_stage_id: "IDS-STAGE039"
+    current_phase_id: "IDS-STAGE039-REVIEW"
+    current_task_id: "IDS-V0_1-STAGE039-REVIEW"
+    next_gate_id: "IDS-STAGE040-P1-GATE"
   stage039_phase4_state:
     current_stage_id: "IDS-STAGE039"
     current_phase_id: "IDS-STAGE039-P4"
@@ -9835,3 +9845,207 @@ stages:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
       test_results: "TDD review RED failed 6/6 tests because the review checker and artifact were absent. Review repaired four Important findings covering governance enum/task-link validity, total versus active registry counts, manual-rerun candidate truth, and the missing durable review gate. Final layered validation is recorded in STAGE039_STAGE_REVIEW.md and the review event."
       decision: "ACC-STAGE-039 completed_reviewed_local after all four Important findings were repaired; next gate is IDS-STAGE040-P1-GATE, push_allowed=false, and this run did not enter STAGE-040."
+  -
+    stage_id: "IDS-STAGE040"
+    name: "STAGE-040 · 反压策略"
+    person_goal: "当磁盘不足、队列过长、外部 API 预算不足或外接盘离线时，自动限制新任务准入或请求安全暂停受影响任务。"
+    status: "in_progress"
+    stop_conditions:
+      - "一次 run 试图完成多个 phase"
+      - "未知、缺失、过期或未版本化的压力观测仍允许新任务准入"
+      - "优先级绕过安全门、资源暂停消耗 retry budget 或直接修改终态"
+      - "在 Phase 1 编造 queue、disk、API、TTL、watermark、concurrency 或 rate limit 数值"
+      - "吸收 STAGE-041 lock、STAGE-042 automatic resume、STAGE-043 crash recovery 或 STAGE-044 cleanup runtime"
+      - "连接 PostgreSQL、修改 schema/state registry、控制真实 worker 或写真实 job/queue row"
+      - "读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
+      - "移动、删除、覆盖原始资料、manifest、evidence ledger、audit log、report snapshot 或 active index"
+      - "使用虚构 IDS 业务数据、数据库行、jobs、logs、evidence 或 placeholder corpus"
+      - "在 Phase 1 run 内进入 Phase 2、GitHub upload、PR、merge、app reinstall、stage review 或 batch gate"
+    stop_gate:
+      gate_id: "IDS-STAGE040-REVIEW-GATE"
+      status: "pending"
+      pass_conditions:
+        - "Phase 1 through Phase 4 each pass in separate runs"
+        - "Backpressure decisions preserve ids.job_state.v1, retry budget and idempotency"
+        - "Queue, disk, drive and API pressure gates are measurable, versioned, auditable and fail closed"
+        - "Whole-stage review completes and repairs all Critical and Important findings"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_ENTRY_CONTRACT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE1_BACKPRESSURE_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_policy_contract.json"
+        - "KM_IDSystem/scripts/check_backpressure_policy.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_policy.py"
+    phases:
+      -
+        phase_id: "IDS-STAGE040-P1"
+        name: "反压策略 范围、输入输出与边界确认"
+        objective: "基于唯一批准的 Stage040 taskpack、STAGE-037 状态模型、STAGE-038 reviewed queue baseline 与 STAGE-039 reviewed retry policy，定义 queue/disk/drive/API 压力观测、准入/限流/暂停决策、retry/idempotency/fairness、lock/cleanup ownership 和中文状态；不执行 runtime。"
+        status: "passed_with_local_evidence"
+        stop_conditions:
+          - "实现或执行 Phase 2 backpressure decision runtime"
+          - "为任何压力阈值、TTL、watermark、concurrency 或 rate limit 编造无来源值"
+          - "弱化 terminal immutability、resource pause、idempotency、audit 或 evidence protection"
+          - "连接数据库、读取 raw metadata、写 runtime output 或创建真实/虚构 IDS job"
+          - "进入 Phase 2、stage review、batch gate、GitHub 或 app reinstall"
+        stop_gate:
+          gate_id: "IDS-STAGE040-P1-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "Exact Stage040 source tuple and upstream hashes are recorded and machine checked"
+            - "Unknown or stale pressure denies admission and requires manual review"
+            - "Resource pause uses only legal ids.job_state.v1 paths and consumes no retry budget"
+            - "Numeric parameters and STAGE-041..044 runtime ownership remain deferred"
+            - "Phase 2 is the only next task and must run separately"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_ENTRY_CONTRACT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE1_BACKPRESSURE_SCOPE_BOUNDARY.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_policy_contract.json"
+            - "KM_IDSystem/scripts/check_backpressure_policy.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_policy.py"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE040-P1"
+            name: "定义反压策略 Phase 1 工程合同"
+            objective: "定义可执行、可测试、可回滚的 backpressure 决策边界，同时不执行队列、worker、lock、resume 或 cleanup runtime。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "20.00%"
+            dependencies:
+              - "IDS-V0_1-STAGE039-REVIEW"
+              - "ids.job_state.v1"
+              - "ids.stage038.worker_queue_baseline.stage_review.v1"
+              - "ids.stage039.retry_dead_letter.stage_review.v1"
+            acceptance_ids:
+              - "ACC-STAGE-040"
+            test_commands:
+              - "python3 -B KM_IDSystem/scripts/check_backpressure_policy.py"
+              - "python3 -B -m unittest -q KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage040_backpressure_policy"
+              - "python3 -B -m unittest -q KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -p 'test_stage03[1-9]*.py' -q"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -p 'test_stage040*.py' -q"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "python3 -B scripts/lean_governance.py check-render --project KM_IDSystem"
+              - "events.jsonl parse and duplicate-id check"
+              - "git diff --check"
+              - "python3 -B scripts/validate_governance_sync.py --changed-only --base-ref HEAD --semantic --drift-report"
+            test_results: "TDD RED: Stage040 10 tests produced 12 failures and 1 error because the Phase1 contract, checker, documents, and governance route did not exist. GREEN: checker 20/20 contract checks true; Stage040 10 tests OK; Stage005 146 tests OK; Stage037 39 tests OK; Stage038 review 5 tests OK; Stage039 review 6 tests OK; Stage026-030 compatibility 75 tests OK; full IDS v0.1 discovery 671 tests OK. Direct Stage005 failed closed only on the four preserved owner dirty paths while scoped Stage005 valid=true; 188 events parsed with zero duplicate ids and one Stage040 Phase1 event; owner render drift/reference counts zero; git diff checks passed; changed-only governance errors=0 and warnings=0. Full semantic validation returned only the expected 29 sparse-worktree missing root/unrelated-project paths, so sparse scope was not expanded. No backpressure/queue/worker/lock/resume/cleanup runtime, database, raw metadata, fake IDS business data, GitHub, app reinstall, Phase2, stage review, or batch gate ran."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE1_BACKPRESSURE_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_policy_contract.json"
+              - "KM_IDSystem/scripts/check_backpressure_policy.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_policy.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+            risk: "无来源阈值、过期观测、优先级绕过安全门或跨 Stage ownership 会使反压策略失去 fail-closed 保证。"
+            rollback: "只回滚 Stage040 Phase1 contract/checker/tests/governance/event/handoff/changelog/owner-view 变更；保留先前 stages、用户 dirty files、raw data、database、runtime outputs、GitHub 与 app 状态。"
+      -
+        phase_id: "IDS-STAGE040-P2"
+        name: "反压策略 实现、接入与最小可运行切片"
+        objective: "In a separate run, select and evidence explicit versioned queue, disk, API, TTL, watermark, concurrency and admission-rate parameters, then implement an isolated non-production backpressure decision slice with restrained Chinese status and bounded references."
+        status: "planned"
+        stop_conditions:
+          - "Phase 1 contract or upstream hashes are invalid"
+          - "Numeric policy is implicit, unbounded, unversioned or lacks rationale and rollback"
+          - "Implementation activates production, connects PostgreSQL, reads raw metadata, uses fake IDS data or absorbs STAGE-041..044"
+        stop_gate:
+          gate_id: "IDS-STAGE040-P2-GATE"
+          status: "pending"
+          pass_conditions:
+            - "Versioned parameters and high/low watermarks are explicit and validated"
+            - "Isolated decision slice is deterministic, idempotent, bounded and fail closed"
+            - "No production, database, raw-source, fake-data or downstream-stage side effect occurs"
+          evidence_refs: []
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE040-P2"
+            name: "实现隔离反压策略最小切片"
+            objective: "Implement only the approved Phase 2 slice in a separate run."
+            status: "planned"
+            estimated_hours: 4
+            total_hours_percent: "40.00%"
+            dependencies:
+              - "IDS-V0_1-STAGE040-P1"
+            acceptance_ids:
+              - "ACC-STAGE-040"
+            test_commands:
+              - "TDD commands must be recorded in the separate Phase 2 run"
+            test_results: "not_run"
+            evidence_refs: []
+            risk: "A wrong threshold or hysteresis policy can oscillate, starve jobs or permit unsafe work."
+            rollback: "Revert only Phase 2 artifacts while preserving the approved Phase 1 contract."
+      -
+        phase_id: "IDS-STAGE040-P3"
+        name: "反压策略 场景验证与保护"
+        objective: "In a separate run, validate duplicate click, worker exception boundary, drive offline, disk pressure, API budget pressure and same-source concurrency while preserving lock and cleanup ownership."
+        status: "planned"
+        stop_conditions:
+          - "Phase 2 is not complete or its policy is invalid"
+          - "Scenario mutates raw data, executes destructive cleanup, performs physical drive removal or fabricates IDS evidence"
+        stop_gate:
+          gate_id: "IDS-STAGE040-P3-GATE"
+          status: "pending"
+          pass_conditions:
+            - "Required scenarios are isolated, truthful and repeatable"
+            - "Idempotency, legal pause paths, lock boundary and evidence protection hold"
+          evidence_refs: []
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE040-P3"
+            name: "验证反压策略对抗场景"
+            objective: "Run only the approved Phase 3 scenario validation in a separate run."
+            status: "planned"
+            estimated_hours: 2.5
+            total_hours_percent: "25.00%"
+            dependencies:
+              - "IDS-V0_1-STAGE040-P2"
+            acceptance_ids:
+              - "ACC-STAGE-040"
+            test_commands:
+              - "TDD commands must be recorded in the separate Phase 3 run"
+            test_results: "not_run"
+            evidence_refs: []
+            risk: "A simulated control gate can be overstated as a physical or production pressure event."
+            rollback: "Revert only Phase 3 scenario evidence and governance transition."
+      -
+        phase_id: "IDS-STAGE040-P4"
+        name: "反压策略 证据、回滚与关闭"
+        objective: "In a separate run, produce state/decision graphs, safe logs, pressure evidence, allowlists, shutdown/recovery/rollback instructions and close Phase 4 before whole-stage review."
+        status: "planned"
+        stop_conditions:
+          - "Phase 3 is incomplete or evidence is not truthful"
+          - "Closeout claims production readiness, automatic resume, lock runtime, crash recovery or cleanup execution without evidence"
+        stop_gate:
+          gate_id: "IDS-STAGE040-P4-GATE"
+          status: "pending"
+          pass_conditions:
+            - "ACC-STAGE-040 delivery evidence is complete, truthful and rollback-ready"
+            - "Next task is only IDS-V0_1-STAGE040-REVIEW"
+          evidence_refs: []
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE040-P4"
+            name: "关闭反压策略 Phase 4"
+            objective: "Complete only the approved Phase 4 closeout in a separate run."
+            status: "planned"
+            estimated_hours: 1.5
+            total_hours_percent: "15.00%"
+            dependencies:
+              - "IDS-V0_1-STAGE040-P3"
+            acceptance_ids:
+              - "ACC-STAGE-040"
+            test_commands:
+              - "TDD commands must be recorded in the separate Phase 4 run"
+            test_results: "not_run"
+            evidence_refs: []
+            risk: "Closeout may be misread as whole-stage or production approval."
+            rollback: "Revert only Phase 4 artifacts and keep Stage040 review pending."
+    review:
+      review_id: "IDS-STAGE040-REVIEW"
+      task_id: "IDS-V0_1-STAGE040-REVIEW"
+      status: "pending"
+      acceptance_ids:
+        - "ACC-STAGE-040"
+      evidence_refs: []
+      test_results: "not_run"
+      decision: "Pending separate Phase 2-4 runs and a later whole-stage review; push_allowed=false."

@@ -8590,7 +8590,7 @@ stages:
                 "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE1.md"
             )
         )
-        self.assertFalse(
+        self.assertTrue(
             module._is_allowed_changed_path(
                 "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE1.md"
             )
