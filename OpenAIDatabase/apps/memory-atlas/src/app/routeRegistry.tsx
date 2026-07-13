@@ -8,22 +8,15 @@ import { DataGuideMap } from "../features/topics";
 import { SearchReview } from "../features/search-review";
 import { SummaryIterationView } from "../features/summary-iteration";
 import type {
-  ClioLikeVisualModel,
   ContributionPeriodDetail,
-  EconomicLikeVisualModel,
   FilteredAtlasSlice,
-  HumanQuestionMapModel,
   TimelineTimeRangeSelection,
-  WorkflowLatentGovernanceVisualModel,
 } from "../shared/atlas/contracts";
 
 export interface FeatureRouteProps {
   activeView: ViewKey;
   atlas: MemoryAtlas;
-  clioLikeVisualModel: ClioLikeVisualModel;
-  economicLikeVisualModel: EconomicLikeVisualModel;
   filters: AtlasFilters;
-  humanQuestionMapModel: HumanQuestionMapModel;
   nodeMap: Map<string, AtlasNode>;
   onClearTimelineRange: () => void;
   onSelectContributionPeriod: (detail: ContributionPeriodDetail) => void;
@@ -35,7 +28,6 @@ export interface FeatureRouteProps {
   slice: FilteredAtlasSlice;
   starfieldMapping: StarfieldMappingResult;
   timelineTimeRange: TimelineTimeRangeSelection | null;
-  workflowLatentGovernanceVisualModel: WorkflowLatentGovernanceVisualModel;
 }
 
 export type RouteComponent = ComponentType<FeatureRouteProps>;
@@ -46,10 +38,6 @@ export const ROUTE_REGISTRY = {
       atlas={props.atlas}
       nodes={props.slice.memoryNodes}
       graphEdges={props.slice.graphEdges}
-      clioLikeVisualModel={props.clioLikeVisualModel}
-      economicLikeVisualModel={props.economicLikeVisualModel}
-      workflowLatentGovernanceVisualModel={props.workflowLatentGovernanceVisualModel}
-      humanQuestionMapModel={props.humanQuestionMapModel}
       deltaStats={props.slice.deltaStats}
       selectedNode={props.selectedNode}
       sharedState={props.sharedState}

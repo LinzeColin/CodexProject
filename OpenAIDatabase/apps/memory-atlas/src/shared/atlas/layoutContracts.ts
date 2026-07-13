@@ -2,39 +2,6 @@ import type { AtlasNode } from "../../types";
 
 
 
-export interface LayoutNode {
-  node: AtlasNode;
-  x: number;
-  y: number;
-  r: number;
-  color: string;
-  label: string;
-  degree: number;
-}
-
-
-
-export interface LayoutEdge {
-  id: string;
-  source: LayoutNode;
-  target: LayoutNode;
-  weight: number;
-  color: string;
-}
-
-
-
-export interface LayoutGroup {
-  id: string;
-  label: string;
-  x: number;
-  y: number;
-  r: number;
-  color: string;
-}
-
-
-
 export type DataGuideFrameId = "source" | "profile" | "project" | "action";
 
 
