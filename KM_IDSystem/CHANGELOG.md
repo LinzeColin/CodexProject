@@ -1,5 +1,11 @@
 # Changelog
 
+## IDS v0.1 STAGE-039 Phase 4 - 2026-07-13
+
+- Added a hash-bound Phase 4 delivery contract and stdout-only checker that expose the exact Stage037 8-type/11-state/21-transition graph, six failure decisions, and the actual isolated three-attempt retry/dead-letter history ending at `DEAD_LETTERED` with `retry_count=2`.
+- Delivered five bounded capacity/resource/conflict signals, a two-class cleanup allowlist with eight protected classes, two automatically retry-eligible safe codes, zero observed successful automatic recoveries, eight manual-action cases, reviewed orderly transport shutdown, and fail-closed recovery/rollback instructions.
+- Routed the only next task to the separate `IDS-V0_1-STAGE039-REVIEW` run. Production, persistence, database, raw metadata, fake IDS business data, Stage040-044 runtime ownership, whole-stage review, GitHub upload, and app reinstall remain disabled.
+
 ## IDS v0.1 STAGE-039 Phase 3 - 2026-07-13
 
 - Added an exact-hash-bound ten-scenario contract and stdout-only checker for duplicate retry requests, worker-exception/crash boundary, drive/disk/API resource pauses, same-source cross-operation locking, retry exhaustion, immutable terminal replay, owner-authorized manual-rerun lineage, and protected cleanup denial.

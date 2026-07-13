@@ -2,10 +2,15 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE039"
-current_phase_id: "IDS-STAGE039-P3"
-current_task_id: "IDS-V0_1-STAGE039-P3"
-next_gate_id: "IDS-STAGE039-P4-GATE"
+current_phase_id: "IDS-STAGE039-P4"
+current_task_id: "IDS-V0_1-STAGE039-P4"
+next_gate_id: "IDS-STAGE039-REVIEW-GATE"
 current_transition_history:
+  stage039_phase3_state:
+    current_stage_id: "IDS-STAGE039"
+    current_phase_id: "IDS-STAGE039-P3"
+    current_task_id: "IDS-V0_1-STAGE039-P3"
+    next_gate_id: "IDS-STAGE039-P4-GATE"
   stage039_phase2_state:
     current_stage_id: "IDS-STAGE039"
     current_phase_id: "IDS-STAGE039-P2"
@@ -9561,6 +9566,10 @@ stages:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_scenarios.json"
         - "KM_IDSystem/scripts/check_retry_dead_letter_scenarios.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_scenarios.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE4_CLOSEOUT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_delivery_contract.json"
+        - "KM_IDSystem/scripts/check_retry_dead_letter_delivery.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_delivery.py"
     phases:
       -
         phase_id: "IDS-STAGE039-P1"
@@ -9749,33 +9758,56 @@ stages:
         phase_id: "IDS-STAGE039-P4"
         name: "重试与死信策略 交付证据、回滚与中文反馈"
         objective: "In a separate run, deliver the state/decision graph, failure-retry/dead-letter logs, resource/backpressure proof, protected cleanup boundary, automatic-versus-manual matrix, safe shutdown/recovery and rollback evidence, then stop at the whole-stage review gate."
-        status: "planned"
+        status: "passed_with_local_evidence"
         stop_conditions:
           - "Phase 3 has not passed"
           - "Closeout claims production readiness, database persistence, raw-data execution or later-stage ownership"
           - "Closeout enters whole-stage review in the same run"
         stop_gate:
           gate_id: "IDS-STAGE039-P4-GATE"
-          status: "planned"
+          status: "passed_with_local_evidence"
           pass_conditions:
             - "ACC-STAGE-039 delivery evidence is complete, truthful and rollback-ready"
             - "Next task is only IDS-V0_1-STAGE039-REVIEW"
-          evidence_refs: []
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE4_CLOSEOUT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_delivery_contract.json"
+            - "KM_IDSystem/scripts/check_retry_dead_letter_delivery.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_delivery.py"
         tasks:
           -
             task_id: "IDS-V0_1-STAGE039-P4"
             name: "关闭 Stage039 delivery evidence"
             objective: "Complete only Phase 4 in a separate run and route to review."
-            status: "planned"
+            status: "completed"
             estimated_hours: 2
             total_hours_percent: "20.00%"
             dependencies:
               - "IDS-V0_1-STAGE039-P3"
             acceptance_ids:
               - "ACC-STAGE-039"
-            test_commands: []
-            test_results: "Not run; Phase 4 is outside the current run."
-            evidence_refs: []
+            test_commands:
+              - "python3 -B KM_IDSystem/scripts/check_retry_dead_letter_delivery.py"
+              - "python3 -B -m unittest -q KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage039_retry_dead_letter_policy KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage039_retry_dead_letter_runtime KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage039_retry_dead_letter_scenarios KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage039_retry_dead_letter_delivery"
+              - "python3 -B -m unittest -q KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -p 'test_stage03[1-9]*.py' -q"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -p 'test_stage02[6-9]*.py' -q"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "python3 -B scripts/lean_governance.py check-render --project KM_IDSystem"
+              - "events.jsonl parse and duplicate-id check"
+              - "git diff --check"
+              - "python3 -B scripts/validate_governance_sync.py --changed-only --base-ref HEAD --semantic --drift-report"
+            test_results: "TDD RED: Stage039 Phase4 10/10 tests failed because the delivery contract, checker, closeout, and governance route did not exist. GREEN: checker 14/14 contract checks and 7/7 delivery checks true; Stage039 41 tests OK; Stage005 146 tests OK; Stage031-039 aggregate 248 tests OK; Stage026-030 compatibility 75 tests OK; full IDS v0.1 discovery 654 tests OK. The report binds the exact 8-type/11-state/21-transition graph, actual three-attempt retry/dead-letter log, five backpressure signals, two-class cleanup allowlist, zero observed successful automatic recovery cases, eight manual-action cases, reviewed transport shutdown, and fail-closed rollback. No production, persistence, database, raw metadata, fake IDS business data, Stage040-044 runtime ownership, whole-stage review, GitHub, or app reinstall ran. Scoped Stage005 validator valid=true and changed-only governance returned errors=0/warnings=0. Project-wide Lean semantic validation retained 29 sparse root/unrelated-path diagnostics and 21 pre-existing Stage039 Phase2 registry/schema/count diagnostics; these are mandatory whole-stage review inputs, and sparse scope was not expanded. Pre-commit implementation review repaired one Important fail-closed gap so non-object delivery_contract tampering returns a structured blocked report. Final layered validation details are recorded in the Phase4 evidence and event."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE1_RETRY_DEAD_LETTER_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE2_RETRY_DEAD_LETTER_SLICE.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE3_SCENARIO_VALIDATION.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_delivery_contract.json"
+              - "KM_IDSystem/scripts/check_retry_dead_letter_delivery.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_delivery.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
             risk: "Closeout may be misread as reviewed or production-ready before the separate whole-stage review."
             rollback: "Revert Phase 4 closeout files only."
     review:
@@ -9786,4 +9818,4 @@ stages:
         - "ACC-STAGE-039"
       evidence_refs: []
       test_results: "Not run; whole-stage review follows Phase 4 in a separate run."
-      decision: "Pending Phase 2, Phase 3, Phase 4 and separate whole-stage review."
+      decision: "Phase 1 through Phase 4 have local evidence; separate whole-stage review and repair remain pending and must run next."
