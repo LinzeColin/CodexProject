@@ -1,6 +1,6 @@
 {
   "schema_version": "openai_database.three_layer_context.v1",
-  "purpose": "Canonical private structured context source map for future ChatGPT, Codex, and agent personalization.",
+  "purpose": "Canonical private structured context source map for ChatGPT, Codex, Claude, and future-agent personalization.",
   "privacy_contract": {
     "repository_policy": "GitHub stores redacted derived context, schemas, templates, and audit logs only.",
     "raw_private_policy": "Raw exports, full transcripts, browser state, cookies, and plaintext secrets stay local or encrypted and are referenced by secret_ref/local_ref only.",
@@ -113,6 +113,8 @@
     "data/derived/agent_context/AGENT_CONTEXT.md",
     "data/derived/personalization/chatgpt_personalization.md",
     "data/derived/personalization/codex_personalization.md",
+    "data/derived/personalization/claude_personalization.md",
+    "data/derived/personalization/memory_bundle_manifest.json",
     "data/derived/personalization/personalization_export.json"
   ],
   "run_log_categories": [

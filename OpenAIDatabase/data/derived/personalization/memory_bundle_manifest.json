@@ -1,0 +1,258 @@
+{
+  "artifact_contract": "Derived / Read-only / Regenerate, do not hand edit",
+  "bundle_id": "sha256:8d2988a20e3c5301072256683083dc583ad7dcabb098a961910dc0638eb5e151",
+  "canonical_source_hash": "sha256:b401739571bcd68832a32c8b7e2585b75434ebb301dc5140dd497b9bceb1ce5b",
+  "generated_at": "2026-07-13T00:06:53Z",
+  "generator_version": "openai_database.shared_memory_bundle.v2",
+  "local_absolute_paths_included": false,
+  "plaintext_secrets_included": false,
+  "projection_input_files": [
+    "config/context_sources/resource_routes.json",
+    "config/context_sources/three_layer_context.json",
+    "config/data_sources/source_registry.json",
+    "data/derived/agent_collaboration/agent_collaboration_quality_report.json",
+    "data/derived/behavior_intelligence/clusters.json",
+    "data/derived/behavior_intelligence/decision_debt_ledger.json",
+    "data/derived/behavior_intelligence/events.json",
+    "data/derived/behavior_intelligence/latent_signals.json",
+    "data/derived/behavior_intelligence/self_iteration_suggestions.json",
+    "data/derived/codex/codex_agent_recommendations.json",
+    "data/derived/decision_log/DECISION_LOG.md",
+    "data/derived/monthly/2026-06.monthly_memory_pack.md",
+    "data/derived/profile/CORE_PROFILE.md",
+    "data/derived/project_index/PROJECT_INDEX.md",
+    "data/derived/timeline/TIMELINE.md",
+    "data/derived/visualization/memory_atlas.json",
+    "data/derived/weekly/2026-06-15.weekly_memory_pack.md",
+    "data/memory/active/active_memory.jsonl",
+    "data/memory/active/active_memory.md",
+    "data/memory/curation/core_profile_review.json",
+    "data/processed/codex/codex_activity_snapshot.json",
+    "data/processed/codex/codex_daily_activity.jsonl",
+    "data/processed/codex/codex_session_manifest.jsonl"
+  ],
+  "projection_input_hash": "sha256:101744d06257e126de6f6f7231767f65b016bb81ee352106740a2a7e9e083d6b",
+  "projection_input_records": [
+    {
+      "content_hash": "sha256:5940767d58bf30958e5284b549c2346a97873f0673defb8ecf22f7d3ed62df07",
+      "exists": true,
+      "path": "config/context_sources/resource_routes.json"
+    },
+    {
+      "content_hash": "sha256:d2d20a9cd4699c84e4655bc6d238a9ee009374320216ece91310d483de669327",
+      "exists": true,
+      "path": "config/context_sources/three_layer_context.json"
+    },
+    {
+      "content_hash": "sha256:99e54ec070dfd2d4531fab42bc43e7f7f5913fa14380fe9bf3e0a6f88a77a6aa",
+      "exists": true,
+      "path": "config/data_sources/source_registry.json"
+    },
+    {
+      "content_hash": "sha256:1b81bd15b17e64ad7fbbce5c04f80f17234192e81dad6f3e0062c47dafa89689",
+      "exists": true,
+      "path": "data/derived/agent_collaboration/agent_collaboration_quality_report.json"
+    },
+    {
+      "content_hash": "sha256:53d4a6fcef2d93d3b1e457f5848de91ac973e02fdee3d8eeafd5b0c54abbd98e",
+      "exists": true,
+      "path": "data/derived/behavior_intelligence/clusters.json"
+    },
+    {
+      "content_hash": "sha256:0d8dafb4f604944adf23ba694705c7b9b66b89fbf0f71e6d199cdd323507a8d5",
+      "exists": true,
+      "path": "data/derived/behavior_intelligence/decision_debt_ledger.json"
+    },
+    {
+      "content_hash": "sha256:89d3eb8540cabfeeb951b54fa2d3e31a77438f476c026f44c75b76258766ad2a",
+      "exists": true,
+      "path": "data/derived/behavior_intelligence/events.json"
+    },
+    {
+      "content_hash": "sha256:24eb5b1f3cc36bd0a938abede7aeb99a56a5536ad21873ca66fe266bd006a03c",
+      "exists": true,
+      "path": "data/derived/behavior_intelligence/latent_signals.json"
+    },
+    {
+      "content_hash": "sha256:fcb38add9395fda93c05f1a52bf5d9abbc12b01e82697101205ad8f815b78b70",
+      "exists": true,
+      "path": "data/derived/behavior_intelligence/self_iteration_suggestions.json"
+    },
+    {
+      "content_hash": "sha256:4adbc9492a9275c69513c5eaba6c7c12479e982668a17054013530c0ea4fed15",
+      "exists": true,
+      "path": "data/derived/codex/codex_agent_recommendations.json"
+    },
+    {
+      "content_hash": "sha256:b8f2d9feaa984347a23ca03832bc0b8d9891e5123ed2ba0ea431f5b8660c0ae3",
+      "exists": true,
+      "path": "data/derived/decision_log/DECISION_LOG.md"
+    },
+    {
+      "content_hash": "sha256:9fa2a78203acd43e2a4db12a9912f11f06ed4f7c8aca2d12cd9d8892f431035a",
+      "exists": true,
+      "path": "data/derived/monthly/2026-06.monthly_memory_pack.md"
+    },
+    {
+      "content_hash": "sha256:afed32fec69fdc400abeabab01508306fcf38c0892b89e02675254e67c37f00b",
+      "exists": true,
+      "path": "data/derived/profile/CORE_PROFILE.md"
+    },
+    {
+      "content_hash": "sha256:e11b18def4701b4ac8a71d4cbaf9b14e69999f7c1abf065386607feb6af3e5b8",
+      "exists": true,
+      "path": "data/derived/project_index/PROJECT_INDEX.md"
+    },
+    {
+      "content_hash": "sha256:034eb443abdbc7043df6bb25a7df0267256ec0e1b76aa547827de4f6e2083125",
+      "exists": true,
+      "path": "data/derived/timeline/TIMELINE.md"
+    },
+    {
+      "content_hash": "sha256:b608631fded9e116d350895be20e6e61be3c7e42ba651ccdf7fc52afd8fefcbc",
+      "exists": true,
+      "path": "data/derived/visualization/memory_atlas.json"
+    },
+    {
+      "content_hash": "sha256:ceef5bdaa244483e6d6362b80a7aae030fca6be7ca240d5e50a5b8c006c2d2e3",
+      "exists": true,
+      "path": "data/derived/weekly/2026-06-15.weekly_memory_pack.md"
+    },
+    {
+      "content_hash": "sha256:24bd880e7dbe9c9a8caa52f39b6bdc49a7da931c097b2b003a50d1fafd6d5fb7",
+      "exists": true,
+      "path": "data/memory/active/active_memory.jsonl"
+    },
+    {
+      "content_hash": "sha256:fcf9e4bd19233ddb62f3d9d26c2a9a204ab6fc7c1aa079e94081e69499833b93",
+      "exists": true,
+      "path": "data/memory/active/active_memory.md"
+    },
+    {
+      "content_hash": "sha256:ac0ef2dfa9c23652cc635d88d3010aab20c0bd0d457aa28b23d9b5ed94fd5446",
+      "exists": true,
+      "path": "data/memory/curation/core_profile_review.json"
+    },
+    {
+      "content_hash": "sha256:22cbf2ae5859b779da070ecaf4949864f7500cbc665880f19a41dc1237b464cb",
+      "exists": true,
+      "path": "data/processed/codex/codex_activity_snapshot.json"
+    },
+    {
+      "content_hash": "sha256:492ba54b5f71029f427c045eb80619a7467e91f530f9b7f8a3ad49a11d0f4371",
+      "exists": true,
+      "path": "data/processed/codex/codex_daily_activity.jsonl"
+    },
+    {
+      "content_hash": "sha256:bb672737aed7da7ff3a761134cec8ddf99ae1cd93109c33295ea9f9274fc8f31",
+      "exists": true,
+      "path": "data/processed/codex/codex_session_manifest.jsonl"
+    }
+  ],
+  "projections": {
+    "chatgpt": {
+      "path": "data/derived/personalization/chatgpt_personalization.md",
+      "projection_hash": "sha256:0ebb29e64338f472bbef007ebf506b78f863bb053731bdccae8896d438784083"
+    },
+    "claude": {
+      "path": "data/derived/personalization/claude_personalization.md",
+      "projection_hash": "sha256:3a42026f45735596e6c5d525ccaf72ac089f88035471bc751d5463188bf79ea3"
+    },
+    "codex": {
+      "path": "data/derived/personalization/codex_personalization.md",
+      "projection_hash": "sha256:6526d836f3a853d9776582779b245f8cdd588798979faadad805e9b2c185a7ab"
+    }
+  },
+  "raw_private_data_included": false,
+  "repo_head": "7ddd1853f808095bb937e14417c630f1bf94dc10",
+  "schema_version": "openai_database.memory_bundle_manifest.v2",
+  "source_files": [
+    "config/context_sources/three_layer_context.json",
+    "data/derived/codex/codex_agent_recommendations.json",
+    "data/derived/decision_log/DECISION_LOG.md",
+    "data/derived/monthly/2026-06.monthly_memory_pack.md",
+    "data/derived/profile/CORE_PROFILE.md",
+    "data/derived/project_index/PROJECT_INDEX.md",
+    "data/derived/timeline/TIMELINE.md",
+    "data/derived/weekly/2026-06-15.weekly_memory_pack.md",
+    "data/memory/active/active_memory.jsonl",
+    "data/memory/active/active_memory.md",
+    "data/memory/curation/core_profile_review.json",
+    "data/processed/codex/codex_activity_snapshot.json",
+    "data/processed/codex/codex_daily_activity.jsonl",
+    "data/processed/codex/codex_session_manifest.jsonl"
+  ],
+  "source_records": [
+    {
+      "content_hash": "sha256:d2d20a9cd4699c84e4655bc6d238a9ee009374320216ece91310d483de669327",
+      "exists": true,
+      "path": "config/context_sources/three_layer_context.json"
+    },
+    {
+      "content_hash": "sha256:4adbc9492a9275c69513c5eaba6c7c12479e982668a17054013530c0ea4fed15",
+      "exists": true,
+      "path": "data/derived/codex/codex_agent_recommendations.json"
+    },
+    {
+      "content_hash": "sha256:b8f2d9feaa984347a23ca03832bc0b8d9891e5123ed2ba0ea431f5b8660c0ae3",
+      "exists": true,
+      "path": "data/derived/decision_log/DECISION_LOG.md"
+    },
+    {
+      "content_hash": "sha256:9fa2a78203acd43e2a4db12a9912f11f06ed4f7c8aca2d12cd9d8892f431035a",
+      "exists": true,
+      "path": "data/derived/monthly/2026-06.monthly_memory_pack.md"
+    },
+    {
+      "content_hash": "sha256:afed32fec69fdc400abeabab01508306fcf38c0892b89e02675254e67c37f00b",
+      "exists": true,
+      "path": "data/derived/profile/CORE_PROFILE.md"
+    },
+    {
+      "content_hash": "sha256:e11b18def4701b4ac8a71d4cbaf9b14e69999f7c1abf065386607feb6af3e5b8",
+      "exists": true,
+      "path": "data/derived/project_index/PROJECT_INDEX.md"
+    },
+    {
+      "content_hash": "sha256:034eb443abdbc7043df6bb25a7df0267256ec0e1b76aa547827de4f6e2083125",
+      "exists": true,
+      "path": "data/derived/timeline/TIMELINE.md"
+    },
+    {
+      "content_hash": "sha256:ceef5bdaa244483e6d6362b80a7aae030fca6be7ca240d5e50a5b8c006c2d2e3",
+      "exists": true,
+      "path": "data/derived/weekly/2026-06-15.weekly_memory_pack.md"
+    },
+    {
+      "content_hash": "sha256:24bd880e7dbe9c9a8caa52f39b6bdc49a7da931c097b2b003a50d1fafd6d5fb7",
+      "exists": true,
+      "path": "data/memory/active/active_memory.jsonl"
+    },
+    {
+      "content_hash": "sha256:fcf9e4bd19233ddb62f3d9d26c2a9a204ab6fc7c1aa079e94081e69499833b93",
+      "exists": true,
+      "path": "data/memory/active/active_memory.md"
+    },
+    {
+      "content_hash": "sha256:ac0ef2dfa9c23652cc635d88d3010aab20c0bd0d457aa28b23d9b5ed94fd5446",
+      "exists": true,
+      "path": "data/memory/curation/core_profile_review.json"
+    },
+    {
+      "content_hash": "sha256:22cbf2ae5859b779da070ecaf4949864f7500cbc665880f19a41dc1237b464cb",
+      "exists": true,
+      "path": "data/processed/codex/codex_activity_snapshot.json"
+    },
+    {
+      "content_hash": "sha256:492ba54b5f71029f427c045eb80619a7467e91f530f9b7f8a3ad49a11d0f4371",
+      "exists": true,
+      "path": "data/processed/codex/codex_daily_activity.jsonl"
+    },
+    {
+      "content_hash": "sha256:bb672737aed7da7ff3a761134cec8ddf99ae1cd93109c33295ea9f9274fc8f31",
+      "exists": true,
+      "path": "data/processed/codex/codex_session_manifest.jsonl"
+    }
+  ],
+  "working_tree_dirty": true
+}

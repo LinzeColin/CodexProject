@@ -1,6 +1,6 @@
 # OpenAIDatabase Delivery Plan
 
-task_count: 16
+task_count: 17
 
 ## Phase A - Discovery and Baseline
 
@@ -131,6 +131,24 @@ task_count: 16
 - evidence: personalization export PASS, startup route PASS, evaluation harness PASS with no failures, focused unittest added.
 - risk: generated export is redacted derived context but pattern scan is not a full secret scanner.
 - rollback: remove `TASK-OAI-C-002` files and revert VERSION, CHANGELOG, and governance entries to 0.1.0.
+- target version: 0.2.0
+- completed version: 0.2.0
+
+### OAIDB-SM-P0-R1
+
+- task_id: OAIDB-SM-P0-R1
+- phase: C
+- objective: Generate deterministic ChatGPT, Codex, and Claude projections from the existing OpenAIDatabase canonical source set with one shared provider-neutral bundle identity.
+- scope: shared bundle/source identity, three generated projections, Claude 4096-byte cap, minimal Claude route, manifest hashes, privacy/determinism tests, and redacted agent-run evidence.
+- non_scope: root adapters, RUN 2-3, independent real-agent cold-start acceptance, raw/private data, external services, commit, or push.
+- status: completed
+- dependencies: TASK-OAI-C-002
+- required files: `data/derived/personalization/{chatgpt,codex,claude}_personalization.md`, `data/derived/personalization/memory_bundle_manifest.json`, `config/context_sources/resource_routes.json`, `tests/test_cross_agent_memory_adapter.py`, `data/run_logs/agent_runs/2026-07-13.shared-memory-run1.jsonl`
+- acceptance_ids: ACC-OAIDB-SM-P0-R1
+- test commands: generator double-run and SHA-256 comparison; 22 targeted unittests; evaluator; Claude route; official renderer and check-render; changed-only semantic validation; changed-only CI; diff check.
+- evidence: the premature acceptance was revoked after two P1 findings; v2 provenance and evaluator recomputation fixes passed two deterministic generator runs, 22 targeted tests, evaluator, route, renderer, governance, CI and diff gates, and second independent review found no remaining P0/P1.
+- risk: provider files are derived/read-only projections, not a second canonical memory source; real agent consumption belongs to RUN 2-3.
+- rollback: remove the Claude projection, manifest, route, focused test, and RUN 1 evidence, then regenerate the pre-RUN 1 personalization outputs.
 - target version: 0.2.0
 - completed version: 0.2.0
 

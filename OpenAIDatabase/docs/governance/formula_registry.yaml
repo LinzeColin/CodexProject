@@ -323,7 +323,7 @@ formulas:
     model_id: "MOD-011"
     assumption_ids: ["ASM-001", "ASM-004", "ASM-007"]
     status: "active"
-    expression: "build_export_payload loads agent_context_pack plus three_layer_context and resource_routes. It copies layer metadata, sync_required_targets, run_log_categories, startup/chatgpt/codex/project/taste routes, profile, memory, preferences, meta_data, behavior, data_sources, and safety flags. render_chatgpt writes Core Profile, Preferences And Taste, History And Patterns, Project And Decision Context, Future Agent Sync Rules, and Meta Rules. render_codex writes Startup Read Order, Codex Route, Required Sync Targets, Four Run Log Categories, and Agent Rules. route_resources selects exactly one route by intent or fails with valid_intents. evaluate checks required files, required export sections, sync targets, run log categories, and forbidden plaintext patterns. sync_codex_memory_data --build-atlas now rebuilds agent context and personalization exports after Codex-derived data refresh."
+    expression: "canonical_source_hash is SHA-256 over stable JSON records for sorted canonical sources. projection_input_hash is SHA-256 over stable records for every file whose state can affect a provider projection, including canonical, route, agent-context, behavior-intelligence, decision-debt, self-iteration, and collaboration inputs. bundle_id binds both hashes, exact stable path sets, schema/generator versions, and exact providers. The evaluator independently recomputes all records and hashes before comparing provider metadata and projection content hashes."
     variables:
       - name: "sync_required_targets"
         data_type: "list[string]"
@@ -332,7 +332,7 @@ formulas:
       - name: "intent"
         data_type: "string"
         unit: "routing key"
-        input_domain: "startup/chatgpt_personalization/codex_personalization/project_history/taste_profile/evaluation"
+        input_domain: "startup/maintenance/chatgpt_personalization/codex_personalization/claude_personalization/project_history/taste_profile/evaluation"
       - name: "run_log_categories"
         data_type: "list[string]"
         unit: "log category"
@@ -341,19 +341,19 @@ formulas:
         data_type: "list[string]"
         unit: "Markdown section title"
         input_domain: "evaluation harness required sections"
-    constraints: ["Exports are redacted derived context only.", "Future agents must update mapped source files before regenerating exports.", "Evaluation fails when required files or sections are missing.", "Run logs must be JSONL and redacted."]
-    missing_policy: "Missing optional source data yields empty sections; missing route intent returns FAIL with valid intents; missing required files or sections fails evaluation."
-    output_range: "PASS/FAIL JSON; Markdown exports; machine export JSON; JSONL log rows."
+    constraints: ["Exports are redacted derived context only.", "Canonical and projection-input paths must be repository-relative and outside raw/private prefixes.", "All actual provider inputs must appear in projection_input_records.", "Evaluator must recompute rather than trust manifest self-report.", "Claude projection must not exceed 4096 bytes.", "Run logs must be JSONL and redacted."]
+    missing_policy: "Missing optional input files are recorded with exists=false; missing route intent returns FAIL with valid intents; stale/tampered source records, input records, hashes, bundle identity, provider metadata, projection hashes, or required fields fail evaluation."
+    output_range: "PASS/FAIL JSON; ChatGPT/Codex/Claude Markdown projections; machine export JSON; recomputable provider-neutral manifest JSON; JSONL log rows."
     code_refs: ["OpenAIDatabase/scripts/build_personalization_exports.py:1", "OpenAIDatabase/scripts/route_agent_resources.py:1", "OpenAIDatabase/scripts/evaluate_personalization_context.py:1", "OpenAIDatabase/scripts/sync_codex_memory_data.py:407"]
-    test_refs: ["OpenAIDatabase/tests/test_personalization_architecture.py:1"]
-    evidence_refs: ["OpenAIDatabase/docs/PERSONAL_CONTEXT_ARCHITECTURE.md:1", "OpenAIDatabase/config/evaluation/personalization_harness.json:1"]
-    implementation_refs: ["OpenAIDatabase/scripts/build_personalization_exports.py::build_export_payload", "OpenAIDatabase/scripts/build_personalization_exports.py::render_chatgpt", "OpenAIDatabase/scripts/build_personalization_exports.py::render_codex", "OpenAIDatabase/scripts/route_agent_resources.py::route_resources", "OpenAIDatabase/scripts/evaluate_personalization_context.py::evaluate", "OpenAIDatabase/scripts/sync_codex_memory_data.py::sync_codex_data"]
-    implementation_fingerprint: "sha256:0df0bb02deed96c836221fcf81b743cd8f56a60d2947353bcaa4c124df8c021e"
-    last_verified_commit: "074295212402b6dfd1f807a567c5a18fc6e1558d"
-    verified_at: "2026-06-21T13:09:57Z"
-    evidence_hash: "sha256:03243dd481474c2151822cc7b05e296f17f1d2fc034a3c239d6989c10a8d31d2"
-    semantic_status: "MACHINE_VERIFIED"
-    semantic_review_task_ids: ""
+    test_refs: ["OpenAIDatabase/tests/test_personalization_architecture.py:1", "OpenAIDatabase/tests/test_cross_agent_memory_adapter.py:1"]
+    evidence_refs: ["OpenAIDatabase/config/evaluation/personalization_harness.json:1", "OpenAIDatabase/data/derived/personalization/memory_bundle_manifest.json"]
+    implementation_refs: []
+    implementation_fingerprint: "HUMAN_REVIEW_REQUIRED"
+    last_verified_commit: "NOT_APPLICABLE - HUMAN_REVIEW_REQUIRED"
+    verified_at: "NOT_APPLICABLE - HUMAN_REVIEW_REQUIRED"
+    evidence_hash: "NOT_APPLICABLE - HUMAN_REVIEW_REQUIRED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    semantic_review_task_ids: "OAIDB-SM-P0-R1"
   - formula_id: "FORM-MACDATA-PROM2-001"
     model_id: "MOD-MACDATA-PROM2-001"
     assumption_ids: ["ASM-001"]
