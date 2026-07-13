@@ -737,6 +737,11 @@ def list_changes(
     return repository.list_changes(since=since, change_type=change_type)
 
 
+@router.get("/sources/freshness")
+def source_freshness(repository: RepositoryDependency) -> dict[str, Any]:
+    return repository.source_freshness()
+
+
 @router.get("/audit-logs")
 def list_audit_logs(
     repository: RepositoryDependency,

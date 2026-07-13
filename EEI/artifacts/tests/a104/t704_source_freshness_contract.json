@@ -1,0 +1,54 @@
+{
+  "schema_version": "eei-a104-source-freshness-contract-v1",
+  "task_id": "T704",
+  "acceptance_ids": [
+    "A104"
+  ],
+  "generated_at": "2026-07-13T00:18:57Z",
+  "source_commit": "b257ddee",
+  "status": "PASS",
+  "contract": {
+    "api_path": "/v1/sources/freshness",
+    "response_schema": "SourceFreshnessResponse",
+    "source_required_fields": [
+      "last_attempt_at",
+      "last_attempt_status",
+      "last_success_at",
+      "last_failure_at",
+      "last_error_class",
+      "latest_document_date",
+      "latest_report_period_start",
+      "latest_report_period_end"
+    ],
+    "status_precedence": [
+      "latest_failure",
+      "running",
+      "never_attempted",
+      "missing_documents",
+      "fixture",
+      "available"
+    ],
+    "attempt_time_is_document_time": false,
+    "attempt_time_is_report_period": false,
+    "document_date_source": "source_documents.document_date",
+    "report_period_source": "validated_raw_source_snapshot_payload",
+    "fixture_report_period_start": "2024-01-01",
+    "fixture_report_period_end": "2024-12-31",
+    "frontend_api_binding": "apps/web/src/app/production-data-client.ts",
+    "frontend_surface": "home-freshness",
+    "server_error_falls_back_to_fixture_success": false
+  },
+  "test_evidence": [
+    "tests/unit/test_source_freshness.py",
+    "tests/integration/test_database_migrations.py",
+    "tests/e2e/home.spec.ts",
+    "tests/e2e/saved-view-live.spec.ts"
+  ],
+  "release_scope": {
+    "fixture_and_database_freshness_only": true,
+    "live_sec_request_performed": false,
+    "a202_closed_by_contract": false,
+    "a209_closed_by_contract": false,
+    "mvp_release_ready": false
+  }
+}

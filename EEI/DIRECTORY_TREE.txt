@@ -113,6 +113,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   └── t703_sec_fixture_idempotent_upsert_contract.json
 │   │   ├── a103
 │   │   │   └── t703_sec_ingestion_report_contract.json
+│   │   ├── a104
+│   │   │   └── t704_source_freshness_contract.json
 │   │   ├── a119
 │   │   │   └── t905_migration_rollback_rehearsal.json
 │   │   ├── a120
@@ -476,6 +478,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── validate_sec_client_contract.py
 │   ├── validate_sec_fixture_ingestion_contract.py
 │   ├── validate_sec_normalization_contract.py
+│   ├── validate_source_freshness_contract.py
 │   ├── validate_t905_release_rehearsal.py
 │   ├── validate_task_pack.py
 │   ├── validate_ui_copy.py
@@ -543,7 +546,8 @@ Enterprise_Ecosystem_Intelligence_release
 │       ├── test_scoring.py
 │       ├── test_sec_client.py
 │       ├── test_sec_fixture_ingestion.py
-│       └── test_sec_normalizer.py
+│       ├── test_sec_normalizer.py
+│       └── test_source_freshness.py
 ├── wireframes
 │   ├── README.md
 │   ├── dashboard_wireframe.png

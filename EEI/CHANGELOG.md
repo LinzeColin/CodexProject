@@ -1,5 +1,16 @@
 # Changelog
 
+## T704/A104 source freshness - 2026-07-13
+
+- Added PostgreSQL-backed `/v1/sources/freshness` status with per-source attempt,
+  success, failure, error, document and report-period fields.
+- Kept connector attempt time, source-document date and SEC report period as separate
+  semantics; latest report start/end remain paired to the same period.
+- Connected the homepage freshness surface to the production API with explicit fixture,
+  hydrated and server-error states instead of masking failed server requests.
+- Added isolated PostgreSQL success/failure API integration and browser E2E coverage.
+- T705-T706, T1301/A202, A209 and MVP release readiness remain open.
+
 ## T703/A102/A103 SEC fixture ingestion - 2026-07-13
 
 - Added explicit fixture and dry-run SEC ingestion over the T702 typed normalizers.

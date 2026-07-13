@@ -51,10 +51,109 @@ test("shows user-oriented home contract entry points and model freshness", async
   );
   await expect(page.getByTestId("home-changes")).toContainText("Capital/control signal refreshed");
   await expect(page.getByTestId("home-freshness")).toContainText("synthetic_fixture");
-  await expect(page.getByTestId("home-freshness")).toContainText("3 sources");
+  await expect(page.getByTestId("home-freshness")).toContainText("Attempt none");
+  await expect(page.getByTestId("home-freshness")).toContainText("Success none");
+  await expect(page.getByTestId("home-freshness")).toContainText("Failure none");
+  await expect(page.getByTestId("home-freshness")).toContainText("1 sources");
+  await expect(page.getByTestId("home-freshness")).toContainText("3 documents");
   await expect(page.getByTestId("home-model-status")).toContainText("Balanced v2");
   await expect(page.getByTestId("home-model-status")).toContainText("scheduled / 14d");
   await expect(page.getByTestId("home-model-status")).toContainText("2026-07-03");
+});
+
+test("A104 hydrates connector and content freshness without conflating dates", async ({ page }) => {
+  await page.addInitScript(() => {
+    window.localStorage.setItem(
+      "eei.productionDataApiBaseUrl.v1",
+      "http://eei-a104.test"
+    );
+  });
+  await page.route("http://eei-a104.test/**", async (route) => {
+    if (!route.request().url().endsWith("/v1/sources/freshness")) {
+      await route.fulfill({ status: 404, contentType: "application/json", body: "{}" });
+      return;
+    }
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        schema_version: "source-freshness-v1",
+        as_of: "2026-07-13T00:10:00Z",
+        summary: {
+          status: "degraded",
+          source_count: 1,
+          available_source_count: 0,
+          failed_source_count: 1,
+          running_source_count: 0,
+          attempt_count: 3,
+          success_count: 2,
+          failure_count: 1,
+          document_count: 2,
+          last_attempt_at: "2026-07-13T00:09:00Z",
+          last_success_at: "2026-07-13T00:05:00Z",
+          last_failure_at: "2026-07-13T00:09:01Z",
+          latest_document_date: "2025-02-10T00:00:00Z",
+          latest_report_period_end: "2024-12-31"
+        },
+        sources: [
+          {
+            source_id: "00000000-0000-4000-8000-000000000104",
+            source_code: "sec_edgar_synthetic_fixture",
+            source_name: "SEC EDGAR synthetic fixtures",
+            source_tier: 5,
+            expected_cadence: "fixture-only",
+            typical_disclosure_lag: "not-applicable",
+            last_verified_at: null,
+            record_modes: ["fixture"],
+            data_mode: "fixture",
+            freshness_status: "failed",
+            attempt_count: 3,
+            success_count: 2,
+            failure_count: 1,
+            last_attempt_at: "2026-07-13T00:09:00Z",
+            last_attempt_finished_at: "2026-07-13T00:09:01Z",
+            last_attempt_status: "failed",
+            last_success_at: "2026-07-13T00:05:00Z",
+            last_failure_at: "2026-07-13T00:09:01Z",
+            last_error_class: "TimeoutError",
+            last_error_message: "deterministic A104 browser fixture",
+            document_count: 2,
+            latest_document_date: "2025-02-10T00:00:00Z",
+            latest_report_period_start: "2024-01-01",
+            latest_report_period_end: "2024-12-31",
+            latest_observed_at: "2025-02-10T00:00:00Z",
+            latest_retrieved_at: "2026-07-13T00:05:00Z"
+          }
+        ],
+        semantics: {
+          attempt_time_is_document_time: false,
+          attempt_time_is_report_period: false,
+          document_date_source: "source_documents.document_date",
+          report_period_source: "validated_raw_source_snapshot_payload"
+        }
+      })
+    });
+  });
+
+  await page.goto("/");
+  const freshness = page.getByTestId("home-freshness");
+  await expect(freshness).toHaveAttribute("data-sync-mode", "server");
+  await expect(freshness).toHaveAttribute(
+    "data-endpoint",
+    "http://eei-a104.test/v1/sources/freshness"
+  );
+  await expect(freshness).toHaveAttribute("data-last-attempt-at", "2026-07-13T00:09:00Z");
+  await expect(freshness).toHaveAttribute("data-last-success-at", "2026-07-13T00:05:00Z");
+  await expect(freshness).toHaveAttribute("data-last-failure-at", "2026-07-13T00:09:01Z");
+  await expect(freshness).toHaveAttribute("data-document-date", "2025-02-10T00:00:00Z");
+  await expect(freshness).toHaveAttribute("data-report-period-end", "2024-12-31");
+  await expect(freshness).toContainText("degraded");
+  await expect(freshness).toContainText("sec_edgar_synthetic_fixture");
+  await expect(freshness).toContainText("Attempt 2026-07-13T00:09:00Z");
+  await expect(freshness).toContainText("Success 2026-07-13T00:05:00Z");
+  await expect(freshness).toContainText("Failure 2026-07-13T00:09:01Z");
+  await expect(freshness).toContainText("Document 2025-02-10T00:00:00Z");
+  await expect(freshness).toContainText("Report 2024-12-31");
 });
 
 test("A211 exposes WorkspaceContext routes controls disabled entries and persisted query wiring", async ({

@@ -46,9 +46,11 @@ import {
   loadCatalogInventory,
   loadEvidenceDetail,
   loadScoreExplanation,
+  loadSourceFreshness,
   type CatalogInventoryRecord,
   type EvidenceDetailRecord,
-  type ScoreExplanationRecord
+  type ScoreExplanationRecord,
+  type SourceFreshnessRecord
 } from "./production-data-client";
 import { useAnalysisContext } from "./use-analysis-context";
 import {
@@ -623,10 +625,20 @@ const homeChanges: HomeChangeEntry[] = [
 
 const homeFreshness = {
   status: "synthetic_fixture",
-  latestRelationshipObservedAt: ACTIVE_ANALYSIS_CONTEXT.defaultAsOf,
+  sourceCode: "synthetic_workspace",
+  lastAttemptAt: null,
+  lastSuccessAt: null,
+  lastFailureAt: null,
+  latestDocumentDate: ACTIVE_ANALYSIS_CONTEXT.defaultAsOf,
+  latestReportPeriodEnd: ACTIVE_ANALYSIS_CONTEXT.defaultAsOf,
+  sourceCount: 1,
   sourceDocumentCount: 3,
   coverage: ACTIVE_ANALYSIS_CONTEXT.dataSnapshot
 };
+
+function freshnessValue(value: string | null | undefined) {
+  return value || "none";
+}
 
 const homeModelStatus = {
   profile: ACTIVE_ANALYSIS_CONTEXT.profileLabel,
@@ -1454,6 +1466,16 @@ export default function Home() {
   const [productionEvidenceEndpoint, setProductionEvidenceEndpoint] = useState("");
   const [productionEvidenceDetail, setProductionEvidenceDetail] =
     useState<EvidenceDetailRecord | null>(null);
+  const [productionFreshnessStatus, setProductionFreshnessStatus] =
+    useState<ProductionDataStatus>("local-fixture");
+  const [productionFreshnessSyncMode, setProductionFreshnessSyncMode] = useState<
+    "server" | "local_fallback"
+  >("local_fallback");
+  const [productionFreshnessSyncReason, setProductionFreshnessSyncReason] =
+    useState("not_synced");
+  const [productionFreshnessEndpoint, setProductionFreshnessEndpoint] = useState("");
+  const [productionFreshness, setProductionFreshness] =
+    useState<SourceFreshnessRecord | null>(null);
   const [selectedProductionNodeKey, setSelectedProductionNodeKey] = useState("");
   const [modelContextSyncMode, setModelContextSyncMode] = useState<"server" | "local_fallback">(
     "local_fallback"
@@ -1581,6 +1603,41 @@ export default function Home() {
   const productionPublishedRelationships =
     productionContext?.record_modes?.published_relationships;
   const productionGraphBudget = productionGraph?.query.budget ?? productionGraphRequest.budget;
+  const primaryFreshnessSource =
+    productionFreshness?.sources.find(
+      (source) => source.source_code === "sec_edgar_synthetic_fixture"
+    ) ?? productionFreshness?.sources[0];
+  const freshnessServerError = productionFreshnessStatus === "server-error";
+  const freshnessDisplay = {
+    status: freshnessServerError
+      ? "server_error"
+      : (productionFreshness?.summary.status ?? homeFreshness.status),
+    sourceCode: freshnessServerError
+      ? "unavailable"
+      : (primaryFreshnessSource?.source_code ?? homeFreshness.sourceCode),
+    lastAttemptAt: freshnessServerError
+      ? null
+      : (primaryFreshnessSource?.last_attempt_at ?? homeFreshness.lastAttemptAt),
+    lastSuccessAt: freshnessServerError
+      ? null
+      : (primaryFreshnessSource?.last_success_at ?? homeFreshness.lastSuccessAt),
+    lastFailureAt: freshnessServerError
+      ? null
+      : (primaryFreshnessSource?.last_failure_at ?? homeFreshness.lastFailureAt),
+    latestDocumentDate: freshnessServerError
+      ? null
+      : (primaryFreshnessSource?.latest_document_date ?? homeFreshness.latestDocumentDate),
+    latestReportPeriodEnd: freshnessServerError
+      ? null
+      : (primaryFreshnessSource?.latest_report_period_end ??
+        homeFreshness.latestReportPeriodEnd),
+    sourceCount: freshnessServerError
+      ? 0
+      : (productionFreshness?.summary.source_count ?? homeFreshness.sourceCount),
+    sourceDocumentCount: freshnessServerError
+      ? 0
+      : (productionFreshness?.summary.document_count ?? homeFreshness.sourceDocumentCount)
+  };
   const tableEdges = useMemo(
     () =>
       tableLensFilter === "all"
@@ -1797,7 +1854,8 @@ export default function Home() {
     setProductionCatalogStatus("loading-production-data");
     setProductionScoreStatus(candidateId ? "loading-production-data" : "local-fixture");
     setProductionEvidenceStatus(candidateId ? "loading-production-data" : "local-fixture");
-    const [catalogResult, scoreResult, evidenceResult] = await Promise.all([
+    setProductionFreshnessStatus("loading-production-data");
+    const [catalogResult, scoreResult, evidenceResult, freshnessResult] = await Promise.all([
       loadCatalogInventory(),
       loadScoreExplanation({
         objectType: "relationship_fact_candidate",
@@ -1808,7 +1866,8 @@ export default function Home() {
         objectType: "relationship_fact_candidate",
         objectId: candidateId,
         limit: 20
-      })
+      }),
+      loadSourceFreshness()
     ]);
 
     if (catalogResult.mode === "local_fallback") {
@@ -1870,6 +1929,26 @@ export default function Home() {
       setProductionEvidenceSyncReason(reason);
       setProductionEvidenceEndpoint(evidenceResult.endpoint);
       setProductionEvidenceStatus("server-hydrated");
+    }
+
+    if (freshnessResult.mode === "local_fallback") {
+      setProductionFreshnessSyncMode("local_fallback");
+      setProductionFreshnessSyncReason(freshnessResult.reason);
+      setProductionFreshnessEndpoint("");
+      setProductionFreshness(null);
+      setProductionFreshnessStatus("local-fixture");
+    } else if (freshnessResult.status === "error") {
+      setProductionFreshnessSyncMode("server");
+      setProductionFreshnessSyncReason(freshnessResult.reason);
+      setProductionFreshnessEndpoint(freshnessResult.endpoint);
+      setProductionFreshness(null);
+      setProductionFreshnessStatus("server-error");
+    } else {
+      setProductionFreshnessSyncMode("server");
+      setProductionFreshnessSyncReason(reason);
+      setProductionFreshnessEndpoint(freshnessResult.endpoint);
+      setProductionFreshness(freshnessResult.record);
+      setProductionFreshnessStatus("server-hydrated");
     }
   }
 
@@ -2931,10 +3010,37 @@ export default function Home() {
           </div>
         </section>
 
-        <div className="freshnessGrid" data-testid="home-freshness">
-          <span>{homeFreshness.status}</span>
-          <span>{homeFreshness.latestRelationshipObservedAt}</span>
-          <span>{homeFreshness.sourceDocumentCount} sources</span>
+        <div
+          className="freshnessGrid"
+          data-document-date={freshnessValue(freshnessDisplay.latestDocumentDate)}
+          data-endpoint={productionFreshnessEndpoint || "local"}
+          data-last-attempt-at={freshnessValue(freshnessDisplay.lastAttemptAt)}
+          data-last-failure-at={freshnessValue(freshnessDisplay.lastFailureAt)}
+          data-last-success-at={freshnessValue(freshnessDisplay.lastSuccessAt)}
+          data-report-period-end={freshnessValue(freshnessDisplay.latestReportPeriodEnd)}
+          data-sync-mode={productionFreshnessSyncMode}
+          data-sync-reason={productionFreshnessSyncReason}
+          data-testid="home-freshness"
+        >
+          <span data-testid="source-freshness-status">{freshnessDisplay.status}</span>
+          <span data-testid="source-freshness-code">{freshnessDisplay.sourceCode}</span>
+          <span data-testid="source-freshness-attempt">
+            Attempt {freshnessValue(freshnessDisplay.lastAttemptAt)}
+          </span>
+          <span data-testid="source-freshness-success">
+            Success {freshnessValue(freshnessDisplay.lastSuccessAt)}
+          </span>
+          <span data-testid="source-freshness-failure">
+            Failure {freshnessValue(freshnessDisplay.lastFailureAt)}
+          </span>
+          <span data-testid="source-freshness-document-date">
+            Document {freshnessValue(freshnessDisplay.latestDocumentDate)}
+          </span>
+          <span data-testid="source-freshness-report-period">
+            Report {freshnessValue(freshnessDisplay.latestReportPeriodEnd)}
+          </span>
+          <span>{freshnessDisplay.sourceCount} sources</span>
+          <span>{freshnessDisplay.sourceDocumentCount} documents</span>
           <span>{analysisContext.dataSnapshot}</span>
         </div>
       </section>

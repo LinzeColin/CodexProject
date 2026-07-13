@@ -1,5 +1,68 @@
 # MVP Development Record
 
+## 2026-07-13 - T704/A104 source freshness contract
+
+Status: LOCAL API/E2E VALIDATED; REMOTE CI PENDING; PHASE 1.2 IN PROGRESS; MVP RELEASE BLOCKED
+
+### Goal and Scope
+
+- Add a production API and connected homepage surface for connector last attempt,
+  success, failure/error, latest document date and latest report period.
+- Aggregate only existing `sources`, `source_documents`, `raw_source_snapshots` and
+  `ingestion_runs`; add no migration or write path.
+- Keep attempt/retrieval, document and report-period times semantically separate.
+- Perform no live SEC request, scoring/model change, fact publication, T705 change
+  pipeline work or A209 evidence mutation.
+
+### Acceptance and Evidence
+
+- `T704 -> A104`: `apps/api/app/domain_repository.py`, `apps/api/app/domain.py`,
+  `specs/api_contract.yaml`, `apps/web/src/app/production-data-client.ts`,
+  `apps/web/src/app/page.tsx`, `tests/unit/test_source_freshness.py`,
+  `tests/integration/test_database_migrations.py`, `tests/e2e/home.spec.ts`,
+  `tests/e2e/saved-view-live.spec.ts`, `scripts/validate_source_freshness_contract.py`,
+  and `artifacts/tests/a104/t704_source_freshness_contract.json`.
+- API status precedence is latest failure, running, never attempted, missing documents,
+  fixture, then available. Older failed attempts remain counted but do not override a
+  newer successful attempt.
+- Server fetch failures remain visible as `server_error`; the UI does not relabel them
+  as fixture success.
+
+### Data and Model Boundary
+
+- `last_attempt_at`, `last_success_at` and `last_failure_at` derive from
+  `ingestion_runs`; `latest_document_date` derives from `source_documents.document_date`.
+- SEC report period derives only from validated raw snapshot report/end values. The
+  latest start and end are selected from the same period and historical starts cannot
+  leak into a newer report period.
+- Record modes remain explicit (`fixture`, `curated_official_fixture`, `dry_run`,
+  `live`). No score formula, weight, threshold or active model version changed.
+
+### Validation
+
+- Focused Python compile/Ruff and API unit tests: PASS, `21/21`.
+- Isolated PostgreSQL 16 full migration/loader/API integration: PASS, `2/2`; success
+  fields and deterministic latest `TimeoutError` failure injection both validated.
+- Browser E2E: PASS, `33/33`; TypeScript/Next route typecheck and OpenAPI validation:
+  PASS. Temporary PostgreSQL container/volume cleanup and protected A209 container
+  identity checks: PASS.
+- Full unit suite: PASS, `182/182` with one third-party Starlette/httpx deprecation
+  warning. Complete Ruff, Task Pack, catalog, contract, governance consistency and V5
+  readiness validation: PASS. Derived artifact and checksum fixed-point validation is
+  completed immediately before commit.
+
+### Risk, Rollback, and Stop Conditions
+
+- Risk: stale failures override recovery, retrieval time is presented as fact time,
+  historical report starts pair with newer ends, or server errors are hidden by fixture
+  fallback. Latest-attempt precedence, explicit time sources, paired report periods and
+  visible server error state mitigate these risks.
+- Rollback: revert only the T704 commit and A104 artifact/status mappings; T700-T703 SEC
+  client, normalization and fixture ingestion remain intact.
+- Stop on A209 failure, protected-container change, missing API/UI status or date fields,
+  time-semantic conflation, server-error masking, integration/E2E failure, governance
+  drift or checksum mismatch.
+
 ## 2026-07-13 - T703/A102/A103 SEC fixture ingestion contract
 
 Status: LOCAL FOCUSED VALIDATED; REMOTE CI PENDING; PHASE 1.2 IN PROGRESS; MVP RELEASE BLOCKED

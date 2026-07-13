@@ -188,6 +188,22 @@ def test_core_domain_migration_seed_idempotency_and_rollback() -> None:
     run_script("scripts/check_database_schema.py", "--expect-seeds", "--expect-fixtures")
     run_script("scripts/load_curated_ingestion_anchors.py")
     run_script("scripts/load_curated_ingestion_anchors.py")
+    run_script(
+        "scripts/load_sec_normalized_fixtures.py",
+        "--mode",
+        "fixture",
+        "--database-url",
+        database_url(),
+        "--allow-database-write",
+    )
+    run_script(
+        "scripts/load_sec_normalized_fixtures.py",
+        "--mode",
+        "fixture",
+        "--database-url",
+        database_url(),
+        "--allow-database-write",
+    )
     run_script("scripts/fetch_official_source_full_text.py")
     run_script("scripts/fetch_official_source_full_text.py")
     run_script("scripts/load_operator_source_captures.py")
@@ -224,6 +240,7 @@ def test_core_domain_migration_seed_idempotency_and_rollback() -> None:
     exercise_official_full_text_dry_run_contracts()
     exercise_operator_source_capture_contracts()
     exercise_live_official_capture_postgres_contracts()
+    exercise_source_freshness_contracts()
     exercise_production_fact_version_contracts()
     exercise_domain_api_and_repository_contracts()
     exercise_reviewed_relationship_source_withdrawal_fail_closed_contracts()
@@ -796,6 +813,84 @@ def exercise_live_official_capture_postgres_contracts() -> None:
             (parser_version,),
         ).fetchone()[0]
         assert live_fact_candidates == 0
+
+
+def exercise_source_freshness_contracts() -> None:
+    client = TestClient(app)
+    response = client.get("/v1/sources/freshness")
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["schema_version"] == "source-freshness-v1"
+    assert payload["summary"]["status"] == "available"
+    assert payload["summary"]["attempt_count"] >= 1
+    assert payload["summary"]["success_count"] >= 1
+    assert payload["semantics"] == {
+        "attempt_time_is_document_time": False,
+        "attempt_time_is_report_period": False,
+        "document_date_source": "source_documents.document_date",
+        "report_period_source": "validated_raw_source_snapshot_payload",
+    }
+
+    sec_source = next(
+        source
+        for source in payload["sources"]
+        if source["source_code"] == "sec_edgar_synthetic_fixture"
+    )
+    assert sec_source["freshness_status"] == "fixture"
+    assert sec_source["last_attempt_status"] == "succeeded"
+    assert sec_source["last_attempt_at"]
+    assert sec_source["last_success_at"]
+    assert sec_source["last_failure_at"] is None
+    assert sec_source["latest_document_date"] == "2025-02-10T00:00:00Z"
+    assert sec_source["latest_report_period_start"] == "2024-01-01"
+    assert sec_source["latest_report_period_end"] == "2024-12-31"
+    assert sec_source["record_modes"] == ["fixture"]
+
+    failure_run_id: UUID | None = None
+    try:
+        with connect_database() as connection:
+            failure_run_id = connection.execute(
+                """
+                INSERT INTO ingestion_runs(
+                  source_id, connector_version, mode, checkpoint, started_at,
+                  finished_at, status, counts, error_class, error_message
+                )
+                SELECT id, 'source-freshness-failure-probe-v1', 'fixture', %s,
+                       now() + interval '1 second', now() + interval '1 second',
+                       'failed', %s, 'TimeoutError', 'A104 deterministic failure probe'
+                FROM sources
+                WHERE code = 'sec_edgar_synthetic_fixture'
+                RETURNING id
+                """,
+                (
+                    Jsonb({"stage": "failed", "acceptance_id": "A104"}),
+                    Jsonb({"documents": 0}),
+                ),
+            ).fetchone()[0]
+
+        failed_response = client.get("/v1/sources/freshness")
+        assert failed_response.status_code == 200
+        failed_payload = failed_response.json()
+        assert failed_payload["summary"]["status"] == "degraded"
+        failed_sec_source = next(
+            source
+            for source in failed_payload["sources"]
+            if source["source_code"] == "sec_edgar_synthetic_fixture"
+        )
+        assert failed_sec_source["freshness_status"] == "failed"
+        assert failed_sec_source["last_attempt_status"] == "failed"
+        assert failed_sec_source["last_failure_at"]
+        assert failed_sec_source["last_error_class"] == "TimeoutError"
+        assert failed_sec_source["last_error_message"] == "A104 deterministic failure probe"
+        assert failed_sec_source["latest_document_date"] == "2025-02-10T00:00:00Z"
+        assert failed_sec_source["latest_report_period_end"] == "2024-12-31"
+    finally:
+        if failure_run_id is not None:
+            with connect_database() as connection:
+                connection.execute(
+                    "DELETE FROM ingestion_runs WHERE id = %s",
+                    (failure_run_id,),
+                )
 
 
 def exercise_production_fact_version_contracts() -> None:

@@ -118,6 +118,7 @@ artifacts/tests/a100/t702_sec_submissions_normalization_contract.json
 artifacts/tests/a101/t702_sec_companyfacts_normalization_contract.json
 artifacts/tests/a102/t703_sec_fixture_idempotent_upsert_contract.json
 artifacts/tests/a103/t703_sec_ingestion_report_contract.json
+artifacts/tests/a104/t704_source_freshness_contract.json
 artifacts/tests/a119/t905_migration_rollback_rehearsal.json
 artifacts/tests/a120/t905_clean_start_operator_rehearsal.json
 artifacts/tests/a182/t1212_governance_consistency_workflow.json
@@ -420,6 +421,7 @@ scripts/validate_release_manager_activation.py
 scripts/validate_sec_client_contract.py
 scripts/validate_sec_fixture_ingestion_contract.py
 scripts/validate_sec_normalization_contract.py
+scripts/validate_source_freshness_contract.py
 scripts/validate_t905_release_rehearsal.py
 scripts/validate_task_pack.py
 scripts/validate_ui_copy.py
@@ -476,6 +478,7 @@ tests/unit/test_scoring.py
 tests/unit/test_sec_client.py
 tests/unit/test_sec_fixture_ingestion.py
 tests/unit/test_sec_normalizer.py
+tests/unit/test_source_freshness.py
 uv.lock
 wireframes/README.md
 wireframes/dashboard_wireframe.png

@@ -101,6 +101,69 @@ export type EvidenceDetailRecord = {
   production_context: Record<string, unknown>;
 };
 
+export type SourceFreshnessItem = {
+  source_id: string;
+  source_code: string;
+  source_name: string;
+  source_tier: number;
+  expected_cadence: string | null;
+  typical_disclosure_lag: string | null;
+  last_verified_at: string | null;
+  record_modes: string[];
+  data_mode: "fixture" | "live" | "mixed" | "missing";
+  freshness_status:
+    | "available"
+    | "failed"
+    | "running"
+    | "never_attempted"
+    | "missing_documents"
+    | "fixture";
+  attempt_count: number;
+  success_count: number;
+  failure_count: number;
+  last_attempt_at: string | null;
+  last_attempt_finished_at: string | null;
+  last_attempt_status: string | null;
+  last_success_at: string | null;
+  last_failure_at: string | null;
+  last_error_class: string | null;
+  last_error_message: string | null;
+  document_count: number;
+  latest_document_date: string | null;
+  latest_report_period_start: string | null;
+  latest_report_period_end: string | null;
+  latest_observed_at: string | null;
+  latest_retrieved_at: string | null;
+};
+
+export type SourceFreshnessRecord = {
+  schema_version: "source-freshness-v1";
+  as_of: string;
+  summary: {
+    status: "available" | "degraded" | "running" | "never_attempted" | "missing";
+    source_count: number;
+    available_source_count: number;
+    failed_source_count: number;
+    running_source_count: number;
+    attempt_count: number;
+    success_count: number;
+    failure_count: number;
+    document_count: number;
+    last_attempt_at: string | null;
+    last_success_at: string | null;
+    last_failure_at: string | null;
+    latest_document_date: string | null;
+    latest_report_period_end: string | null;
+  };
+  sources: SourceFreshnessItem[];
+  semantics: {
+    attempt_time_is_document_time: false;
+    attempt_time_is_report_period: false;
+    document_date_source: string;
+    report_period_source: string;
+  };
+};
+
 export type CatalogInventorySyncResult =
   | {
       mode: "server";
@@ -161,6 +224,26 @@ export type EvidenceDetailSyncResult =
       reason: "api_base_missing" | "object_id_missing";
     };
 
+export type SourceFreshnessSyncResult =
+  | {
+      mode: "server";
+      status: "hydrated";
+      endpoint: string;
+      record: SourceFreshnessRecord;
+    }
+  | {
+      mode: "server";
+      status: "error";
+      endpoint: string;
+      reason: string;
+      detail?: unknown;
+    }
+  | {
+      mode: "local_fallback";
+      status: "fixture";
+      reason: "api_base_missing";
+    };
+
 export function readProductionDataApiBaseUrl() {
   const override = window.localStorage.getItem(PRODUCTION_DATA_API_BASE_STORAGE_KEY)?.trim();
   const sharedOverride = window.localStorage.getItem(SHARED_API_BASE_STORAGE_KEY)?.trim();
@@ -190,6 +273,31 @@ export async function loadCatalogInventory(): Promise<CatalogInventorySyncResult
     return { mode: "server", status: "hydrated", endpoint, record: payload };
   } catch (error) {
     return fetchCatalogErrorResult(endpoint, error);
+  }
+}
+
+export async function loadSourceFreshness(): Promise<SourceFreshnessSyncResult> {
+  const apiBaseUrl = readProductionDataApiBaseUrl();
+  if (!apiBaseUrl) {
+    return { mode: "local_fallback", status: "fixture", reason: "api_base_missing" };
+  }
+
+  const endpoint = `${apiBaseUrl}/v1/sources/freshness`;
+  try {
+    const response = await window.fetch(endpoint);
+    const payload = (await response.json().catch(() => null)) as unknown;
+    if (!response.ok || !isSourceFreshnessRecord(payload)) {
+      return {
+        mode: "server",
+        status: "error",
+        endpoint,
+        reason: `http_${response.status}`,
+        detail: payload
+      };
+    }
+    return { mode: "server", status: "hydrated", endpoint, record: payload };
+  } catch (error) {
+    return fetchSourceFreshnessErrorResult(endpoint, error);
   }
 }
 
@@ -338,6 +446,49 @@ function isEvidenceDetailRecord(value: unknown): value is EvidenceDetailRecord {
   );
 }
 
+function isSourceFreshnessRecord(value: unknown): value is SourceFreshnessRecord {
+  if (!isRecord(value) || !isRecord(value.summary) || !isRecord(value.semantics)) {
+    return false;
+  }
+  return (
+    value.schema_version === "source-freshness-v1" &&
+    typeof value.as_of === "string" &&
+    typeof value.summary.status === "string" &&
+    typeof value.summary.source_count === "number" &&
+    typeof value.summary.attempt_count === "number" &&
+    typeof value.summary.success_count === "number" &&
+    typeof value.summary.failure_count === "number" &&
+    typeof value.summary.document_count === "number" &&
+    Array.isArray(value.sources) &&
+    value.sources.every(isSourceFreshnessItem) &&
+    value.semantics.attempt_time_is_document_time === false &&
+    value.semantics.attempt_time_is_report_period === false
+  );
+}
+
+function isSourceFreshnessItem(value: unknown): value is SourceFreshnessItem {
+  if (!isRecord(value)) return false;
+  return (
+    typeof value.source_id === "string" &&
+    typeof value.source_code === "string" &&
+    typeof value.source_name === "string" &&
+    typeof value.source_tier === "number" &&
+    typeof value.freshness_status === "string" &&
+    typeof value.data_mode === "string" &&
+    Array.isArray(value.record_modes) &&
+    typeof value.attempt_count === "number" &&
+    typeof value.success_count === "number" &&
+    typeof value.failure_count === "number" &&
+    typeof value.document_count === "number" &&
+    isNullableString(value.last_attempt_at) &&
+    isNullableString(value.last_success_at) &&
+    isNullableString(value.last_failure_at) &&
+    isNullableString(value.latest_document_date) &&
+    isNullableString(value.latest_report_period_start) &&
+    isNullableString(value.latest_report_period_end)
+  );
+}
+
 function isEvidenceDetailItem(value: unknown): value is EvidenceDetailItem {
   if (!isRecord(value) || !isRecord(value.snippet)) return false;
   return (
@@ -382,6 +533,23 @@ function fetchEvidenceErrorResult(endpoint: string, error: unknown): EvidenceDet
     reason: error instanceof Error ? error.name : "fetch_failed",
     detail: error instanceof Error ? error.message : String(error)
   };
+}
+
+function fetchSourceFreshnessErrorResult(
+  endpoint: string,
+  error: unknown
+): SourceFreshnessSyncResult {
+  return {
+    mode: "server",
+    status: "error",
+    endpoint,
+    reason: error instanceof Error ? error.name : "fetch_failed",
+    detail: error instanceof Error ? error.message : String(error)
+  };
+}
+
+function isNullableString(value: unknown): value is string | null {
+  return typeof value === "string" || value === null;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

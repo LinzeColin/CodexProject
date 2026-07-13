@@ -191,6 +191,7 @@ test("A211 live production routes and data controls hydrate from FastAPI Postgre
 
   const graphPanel = page.getByTestId("production-graph-context");
   const dataPanel = page.getByTestId("production-data-context");
+  const freshnessPanel = page.getByTestId("home-freshness");
 
   await expect(page.getByTestId("workspace-context-contract")).toHaveAttribute(
     "data-context-version",
@@ -224,6 +225,14 @@ test("A211 live production routes and data controls hydrate from FastAPI Postgre
   await expect(page.getByTestId("production-score-candidate")).toContainText("GV-FACT-001");
   await expect(page.getByTestId("production-score-candidate")).toContainText("ready_for_review");
   await expect(page.getByTestId("production-evidence-snippets")).toContainText("SEC EDGAR");
+  await expect(freshnessPanel).toHaveAttribute("data-sync-mode", "server");
+  await expect(freshnessPanel).toHaveAttribute("data-endpoint", /\/v1\/sources\/freshness$/);
+  await expect(freshnessPanel).toHaveAttribute("data-last-attempt-at", /T/);
+  await expect(freshnessPanel).toHaveAttribute("data-last-success-at", /T/);
+  await expect(freshnessPanel).toHaveAttribute("data-last-failure-at", "none");
+  await expect(freshnessPanel).toHaveAttribute("data-document-date", "2025-02-10T00:00:00Z");
+  await expect(freshnessPanel).toHaveAttribute("data-report-period-end", "2024-12-31");
+  await expect(freshnessPanel).toContainText("sec_edgar_synthetic_fixture");
 
   await page.getByTestId("main-nav-supply_chain").click();
   await expect(page.getByTestId("workspace-shell")).toHaveAttribute(

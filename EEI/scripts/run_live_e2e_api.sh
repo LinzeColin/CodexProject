@@ -24,5 +24,9 @@ fi
 .venv/bin/python scripts/load_seed_catalogs.py
 .venv/bin/python scripts/load_synthetic_fixtures.py
 .venv/bin/python scripts/load_curated_ingestion_anchors.py
+.venv/bin/python scripts/load_sec_normalized_fixtures.py \
+  --mode fixture \
+  --database-url "${DATABASE_URL}" \
+  --allow-database-write
 
 exec .venv/bin/python -m uvicorn apps.api.app.main:app --host 127.0.0.1 --port 8000

@@ -72,6 +72,45 @@ def _escape_like(value: str) -> str:
     return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
 
 
+def _parse_report_date(value: Any) -> date | None:
+    if not isinstance(value, str) or not value.strip():
+        return None
+    try:
+        return date.fromisoformat(value.strip())
+    except ValueError:
+        return None
+
+
+def _report_period_bounds(
+    submissions_report_dates: Any,
+    companyfacts_periods: Any,
+) -> tuple[date | None, date | None]:
+    periods: list[tuple[date | None, date]] = []
+    if isinstance(submissions_report_dates, list):
+        periods.extend(
+            (None, parsed)
+            for value in submissions_report_dates
+            if (parsed := _parse_report_date(value)) is not None
+        )
+    if isinstance(companyfacts_periods, list):
+        for period in companyfacts_periods:
+            if not isinstance(period, dict):
+                continue
+            period_end = _parse_report_date(period.get("end"))
+            if period_end is None:
+                continue
+            periods.append((_parse_report_date(period.get("start")), period_end))
+    if not periods:
+        return None, None
+    latest_end = max(period_end for _, period_end in periods)
+    matching_starts = [
+        period_start
+        for period_start, period_end in periods
+        if period_end == latest_end and period_start is not None
+    ]
+    return (min(matching_starts) if matching_starts else None, latest_end)
+
+
 ROOT = Path(__file__).resolve().parents[3]
 EXPLORATION_STATE_VERSION = "exploration-state-v1"
 SAVED_VIEW_SCHEMA_VERSION = "saved-view-v1"
@@ -3600,27 +3639,211 @@ class DomainRepository:
             }
         )
 
+    def source_freshness(self) -> dict[str, Any]:
+        with self.connect() as connection:
+            return self.source_freshness_for_connection(connection)
+
+    def source_freshness_for_connection(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+    ) -> dict[str, Any]:
+        source_rows = connection.execute(
+            """
+            SELECT
+              s.id AS source_id,
+              s.code AS source_code,
+              s.name AS source_name,
+              s.source_tier,
+              s.expected_cadence,
+              s.typical_disclosure_lag,
+              s.last_verified_at,
+              COALESCE(documents.document_count, 0)::int AS document_count,
+              documents.latest_document_date,
+              documents.latest_observed_at,
+              documents.latest_retrieved_at,
+              COALESCE(modes.record_modes, ARRAY[]::text[]) AS record_modes,
+              COALESCE(runs.attempt_count, 0)::int AS attempt_count,
+              COALESCE(runs.success_count, 0)::int AS success_count,
+              COALESCE(runs.failure_count, 0)::int AS failure_count,
+              runs.last_success_at,
+              runs.last_failure_at,
+              latest.started_at AS last_attempt_at,
+              latest.finished_at AS last_attempt_finished_at,
+              latest.status AS last_attempt_status,
+              latest.error_class AS last_error_class,
+              latest.error_message AS last_error_message
+            FROM sources s
+            LEFT JOIN LATERAL (
+              SELECT
+                count(*)::int AS document_count,
+                max(document_date) AS latest_document_date,
+                max(observed_at) AS latest_observed_at,
+                max(retrieved_at) AS latest_retrieved_at
+              FROM source_documents sd
+              WHERE sd.source_id = s.id
+            ) documents ON true
+            LEFT JOIN LATERAL (
+              SELECT array_agg(DISTINCT rss.record_mode ORDER BY rss.record_mode) AS record_modes
+              FROM raw_source_snapshots rss
+              JOIN source_documents sd ON sd.id = rss.source_document_id
+              WHERE sd.source_id = s.id
+            ) modes ON true
+            LEFT JOIN LATERAL (
+              SELECT
+                count(*)::int AS attempt_count,
+                count(*) FILTER (WHERE status = 'succeeded')::int AS success_count,
+                count(*) FILTER (WHERE status IN ('failed', 'error'))::int AS failure_count,
+                max(COALESCE(finished_at, started_at))
+                  FILTER (WHERE status = 'succeeded') AS last_success_at,
+                max(COALESCE(finished_at, started_at))
+                  FILTER (WHERE status IN ('failed', 'error')) AS last_failure_at
+              FROM ingestion_runs ir
+              WHERE ir.source_id = s.id
+            ) runs ON true
+            LEFT JOIN LATERAL (
+              SELECT started_at, finished_at, status, error_class, error_message
+              FROM ingestion_runs ir
+              WHERE ir.source_id = s.id
+              ORDER BY started_at DESC, id DESC
+              LIMIT 1
+            ) latest ON true
+            WHERE s.active = true
+            ORDER BY s.code
+            """
+        ).fetchall()
+        report_rows = connection.execute(
+            """
+            SELECT
+              sd.source_id,
+              rss.raw_payload #> '{filings,recent,reportDate}' AS submissions_report_dates,
+              jsonb_path_query_array(
+                rss.raw_payload,
+                '$.facts.*.*.units.*[*]'
+              ) AS companyfacts_periods
+            FROM raw_source_snapshots rss
+            JOIN source_documents sd ON sd.id = rss.source_document_id
+            """
+        ).fetchall()
+
+        report_bounds: dict[UUID, tuple[date | None, date | None]] = {}
+        for row in report_rows:
+            period_start, period_end = _report_period_bounds(
+                row["submissions_report_dates"],
+                row["companyfacts_periods"],
+            )
+            current_start, current_end = report_bounds.get(row["source_id"], (None, None))
+            if current_end is None or (period_end is not None and period_end > current_end):
+                report_bounds[row["source_id"]] = (period_start, period_end)
+            elif period_end == current_end:
+                matching_starts = [
+                    value for value in (current_start, period_start) if value is not None
+                ]
+                report_bounds[row["source_id"]] = (
+                    min(matching_starts) if matching_starts else None,
+                    current_end,
+                )
+
+        sources: list[dict[str, Any]] = []
+        for row in source_rows:
+            record_modes = list(row["record_modes"] or [])
+            fixture_modes = {"fixture", "curated_official_fixture", "dry_run"}
+            if not record_modes:
+                data_mode = "missing"
+            elif set(record_modes) <= fixture_modes:
+                data_mode = "fixture"
+            elif "live" in record_modes and set(record_modes) - {"live"}:
+                data_mode = "mixed"
+            else:
+                data_mode = "live"
+
+            latest_status = row["last_attempt_status"]
+            last_failure = row["last_failure_at"]
+            last_success = row["last_success_at"]
+            if latest_status in {"failed", "error"} and (
+                last_success is None or last_failure is None or last_failure >= last_success
+            ):
+                freshness_status = "failed"
+            elif latest_status == "running":
+                freshness_status = "running"
+            elif row["attempt_count"] == 0:
+                freshness_status = "never_attempted"
+            elif row["document_count"] == 0:
+                freshness_status = "missing_documents"
+            elif data_mode == "fixture":
+                freshness_status = "fixture"
+            else:
+                freshness_status = "available"
+
+            report_start, report_end = report_bounds.get(row["source_id"], (None, None))
+            sources.append(
+                {
+                    **dict(row),
+                    "record_modes": record_modes,
+                    "data_mode": data_mode,
+                    "freshness_status": freshness_status,
+                    "latest_report_period_start": report_start,
+                    "latest_report_period_end": report_end,
+                }
+            )
+
+        def latest_value(field: str) -> Any:
+            values = [source[field] for source in sources if source.get(field) is not None]
+            return max(values) if values else None
+
+        failed_sources = sum(source["freshness_status"] == "failed" for source in sources)
+        running_sources = sum(source["freshness_status"] == "running" for source in sources)
+        available_sources = sum(
+            source["freshness_status"] in {"available", "fixture"} for source in sources
+        )
+        if failed_sources:
+            summary_status = "degraded"
+        elif running_sources:
+            summary_status = "running"
+        elif available_sources:
+            summary_status = "available"
+        elif sources:
+            summary_status = "never_attempted"
+        else:
+            summary_status = "missing"
+
+        return _jsonable(
+            {
+                "schema_version": "source-freshness-v1",
+                "as_of": _now(),
+                "summary": {
+                    "status": summary_status,
+                    "source_count": len(sources),
+                    "available_source_count": available_sources,
+                    "failed_source_count": failed_sources,
+                    "running_source_count": running_sources,
+                    "attempt_count": sum(source["attempt_count"] for source in sources),
+                    "success_count": sum(source["success_count"] for source in sources),
+                    "failure_count": sum(source["failure_count"] for source in sources),
+                    "document_count": sum(source["document_count"] for source in sources),
+                    "last_attempt_at": latest_value("last_attempt_at"),
+                    "last_success_at": latest_value("last_success_at"),
+                    "last_failure_at": latest_value("last_failure_at"),
+                    "latest_document_date": latest_value("latest_document_date"),
+                    "latest_report_period_end": latest_value("latest_report_period_end"),
+                },
+                "sources": sources,
+                "semantics": {
+                    "attempt_time_is_document_time": False,
+                    "attempt_time_is_report_period": False,
+                    "document_date_source": "source_documents.document_date",
+                    "report_period_source": "validated_raw_source_snapshot_payload",
+                },
+            }
+        )
+
     def home_freshness(self, connection: psycopg.Connection[dict[str, Any]]) -> dict[str, Any]:
+        source_freshness = self.source_freshness_for_connection(connection)
+        source_summary = source_freshness["summary"]
         row = connection.execute(
             """
             SELECT
-              (SELECT count(*)::int FROM source_documents) AS source_document_count,
-              (SELECT max(observed_at) FROM source_documents) AS latest_source_observed_at,
-              (SELECT max(retrieved_at) FROM source_documents) AS latest_source_retrieved_at,
               (SELECT max(observed_at) FROM relationships) AS latest_relationship_observed_at,
               (SELECT max(observed_at) FROM events) AS latest_event_observed_at,
-              (SELECT max(finished_at) FROM ingestion_runs) AS latest_ingestion_finished_at,
-              (
-                SELECT status
-                FROM ingestion_runs
-                ORDER BY started_at DESC
-                LIMIT 1
-              ) AS latest_ingestion_status,
-              (
-                SELECT count(*)::int
-                FROM ingestion_runs
-                WHERE status IN ('failed', 'error')
-              ) AS failed_ingestion_count,
               (SELECT count(*)::int FROM fixture_entity_notices) AS synthetic_fixture_entities
             """
         ).fetchone()
@@ -3629,9 +3852,9 @@ class DomainRepository:
             if row["synthetic_fixture_entities"] > 0
             else "live_or_seed"
         )
-        if row["source_document_count"] == 0:
+        if source_summary["document_count"] == 0:
             status_value = "missing"
-        elif row["failed_ingestion_count"] > 0:
+        elif source_summary["failed_source_count"] > 0:
             status_value = "ingestion_failed"
         elif data_mode == "synthetic_fixture":
             status_value = "synthetic_fixture"
@@ -3640,6 +3863,29 @@ class DomainRepository:
         return _jsonable(
             {
                 **dict(row),
+                "source_document_count": source_summary["document_count"],
+                "latest_source_observed_at": max(
+                    (
+                        source["latest_observed_at"]
+                        for source in source_freshness["sources"]
+                        if source["latest_observed_at"] is not None
+                    ),
+                    default=None,
+                ),
+                "latest_source_retrieved_at": max(
+                    (
+                        source["latest_retrieved_at"]
+                        for source in source_freshness["sources"]
+                        if source["latest_retrieved_at"] is not None
+                    ),
+                    default=None,
+                ),
+                "latest_ingestion_finished_at": source_summary["last_success_at"],
+                "latest_ingestion_status": source_summary["status"],
+                "failed_ingestion_count": source_summary["failure_count"],
+                "latest_document_date": source_summary["latest_document_date"],
+                "latest_report_period_end": source_summary["latest_report_period_end"],
+                "connector_summary": source_summary,
                 "status": status_value,
                 "data_mode": data_mode,
                 "source_mode": (
