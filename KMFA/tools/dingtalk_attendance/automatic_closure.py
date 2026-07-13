@@ -53,6 +53,28 @@ PROMPT_PATHS = {
     "morning": REPO_ROOT / "KMFA/kmfa-dingtalk-attendance-skill/automation/morning_prompt.md",
     "evening": REPO_ROOT / "KMFA/kmfa-dingtalk-attendance-skill/automation/evening_prompt.md",
 }
+PROMPT_RELATIVE_PATHS = {
+    "morning": Path("KMFA/kmfa-dingtalk-attendance-skill/automation/morning_prompt.md"),
+    "evening": Path("KMFA/kmfa-dingtalk-attendance-skill/automation/evening_prompt.md"),
+}
+ATTENDANCE_RUNTIME_STATIC_PATHS = (
+    Path("KMFA/kmfa-dingtalk-attendance-skill/规则清单.md"),
+    PROMPT_RELATIVE_PATHS["morning"],
+    PROMPT_RELATIVE_PATHS["evening"],
+    Path("KMFA/metadata/dingtalk_attendance/attendance_database_manifest.json"),
+    Path("KMFA/metadata/dingtalk_attendance/codex_automation/morning_1035.prompt.md"),
+    Path("KMFA/metadata/dingtalk_attendance/codex_automation/evening_2000.prompt.md"),
+    Path("KMFA/metadata/dingtalk_attendance/notification_channel_manifest.json"),
+    Path("KMFA/metadata/dingtalk_attendance/notification_policy.yaml"),
+    Path("KMFA/metadata/dingtalk_attendance/notification_targets_manifest.json"),
+    Path("KMFA/metadata/dingtalk_attendance/onedrive_storage_manifest.yaml"),
+    Path("KMFA/metadata/dingtalk_attendance/report_policy.yaml"),
+    Path("KMFA/metadata/dingtalk_attendance/retention_policy.yaml"),
+)
+ATTENDANCE_RUNTIME_SCOPE_PATHS = (
+    Path("KMFA/tools/dingtalk_attendance"),
+    *ATTENDANCE_RUNTIME_STATIC_PATHS,
+)
 AUTOMATION_IDS = {"morning": "kmfa", "evening": "kmfa-3"}
 REPORT_NAMES = tuple(OFFICIAL_COLUMNS[index] for index in [*range(8, 37), *range(45, 49)])
 LEAVE_NAMES = ("事假", "病假", "年假", "调休", "婚假", "产假", "陪产假", "路途假")
@@ -70,6 +92,52 @@ def _sha256_text(value: str) -> str:
     return hashlib.sha256(value.rstrip("\n").encode("utf-8")).hexdigest()
 
 
+def _default_attendance_runtime_paths(repo_root: Path) -> tuple[Path, ...]:
+    tool_root = repo_root / "KMFA/tools/dingtalk_attendance"
+    tool_paths = sorted(
+        path.relative_to(repo_root)
+        for path in tool_root.rglob("*.py")
+        if "__pycache__" not in path.parts
+    )
+    return tuple(sorted({*tool_paths, *ATTENDANCE_RUNTIME_STATIC_PATHS}, key=lambda path: path.as_posix()))
+
+
+def attendance_runtime_fingerprint(
+    *,
+    repo_root: Path = REPO_ROOT,
+    live_prompts: Mapping[str, str],
+    relative_paths: tuple[str | Path, ...] | None = None,
+) -> str:
+    """Hash only attendance runtime code, rules/config, and active prompts."""
+
+    selected = (
+        tuple(Path(path) for path in relative_paths)
+        if relative_paths is not None
+        else _default_attendance_runtime_paths(repo_root)
+    )
+    digest = hashlib.sha256(b"kmfa-attendance-runtime-fingerprint-v1\0")
+    for relative in sorted(selected, key=lambda path: path.as_posix()):
+        if relative.is_absolute() or ".." in relative.parts:
+            raise ValueError(f"attendance runtime path must be repo-relative: {relative}")
+        path = repo_root / relative
+        if not path.is_file():
+            raise FileNotFoundError(f"attendance runtime input is missing: {relative.as_posix()}")
+        digest.update(b"repo-file\0")
+        digest.update(relative.as_posix().encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(path.read_bytes())
+        digest.update(b"\0")
+    for slot in ("morning", "evening"):
+        if slot not in live_prompts:
+            raise ValueError(f"live prompt is missing for {slot}")
+        digest.update(b"live-prompt\0")
+        digest.update(slot.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(str(live_prompts[slot]).rstrip("\n").encode("utf-8"))
+        digest.update(b"\0")
+    return digest.hexdigest()
+
+
 def current_runtime_identity(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_root, text=True).strip()
     tracked_clean = subprocess.run(
@@ -80,8 +148,9 @@ def current_runtime_identity(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
         "tracked_tree_state": "CLEAN" if tracked_clean else "DIRTY",
     }
     mirrors_match = True
+    live_prompts: dict[str, str] = {}
     for slot, automation_id in AUTOMATION_IDS.items():
-        repo_prompt = PROMPT_PATHS[slot].read_text(encoding="utf-8").rstrip("\n")
+        repo_prompt = (repo_root / PROMPT_RELATIVE_PATHS[slot]).read_text(encoding="utf-8").rstrip("\n")
         config_path = Path.home() / ".codex" / "automations" / automation_id / "automation.toml"
         live_prompt = repo_prompt
         try:
@@ -89,8 +158,19 @@ def current_runtime_identity(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
         except (OSError, KeyError, tomllib.TOMLDecodeError):
             mirrors_match = False
         mirrors_match = mirrors_match and live_prompt == repo_prompt
+        live_prompts[slot] = live_prompt
         identity[f"{slot}_prompt_sha256"] = _sha256_text(live_prompt)
     identity["prompt_mirrors_match"] = mirrors_match
+    attendance_status = subprocess.check_output(
+        ["git", "status", "--porcelain", "--", *(path.as_posix() for path in ATTENDANCE_RUNTIME_SCOPE_PATHS)],
+        cwd=repo_root,
+        text=True,
+    )
+    identity["attendance_runtime_tree_state"] = "CLEAN" if not attendance_status.strip() else "DIRTY"
+    identity["attendance_runtime_fingerprint"] = attendance_runtime_fingerprint(
+        repo_root=repo_root,
+        live_prompts=live_prompts,
+    )
     return identity
 
 
@@ -218,9 +298,17 @@ class R6Coordinator:
         self.root.mkdir(parents=True, exist_ok=True)
         self.state = self._load()
         self.runtime_identity = dict(runtime_identity or self.state.get("runtime_identity") or {})
-        if runtime_identity is not None and self.state.get("runtime_identity") != self.runtime_identity:
+        previous_identity = self.state.get("runtime_identity") or {}
+        previous_fingerprint = str(previous_identity.get("attendance_runtime_fingerprint") or "")
+        current_fingerprint = str(self.runtime_identity.get("attendance_runtime_fingerprint") or "")
+        should_reset = bool(
+            runtime_identity is not None
+            and previous_identity
+            and previous_fingerprint != current_fingerprint
+        )
+        if should_reset:
             self.state = {
-                "schema_version": 2,
+                "schema_version": 3,
                 "runtime_identity": self.runtime_identity,
                 "work_dates": {},
                 "events": [],
@@ -543,9 +631,15 @@ class R6Coordinator:
 
     def _is_natural_record(self, record: Mapping[str, Any], *, run_slot: str) -> bool:
         evidence = record.get("task_evidence") or {}
+        record_identity = record.get("runtime_identity") or {}
+        current_fingerprint = str(self.runtime_identity.get("attendance_runtime_fingerprint") or "")
         return bool(
-            record.get("runtime_identity") == self.runtime_identity
-            and self.runtime_identity.get("tracked_tree_state", "CLEAN") == "CLEAN"
+            current_fingerprint
+            and isinstance(record_identity, Mapping)
+            and record_identity.get("attendance_runtime_fingerprint") == current_fingerprint
+            and record_identity.get("attendance_runtime_tree_state") == "CLEAN"
+            and self.runtime_identity.get("attendance_runtime_tree_state") == "CLEAN"
+            and record_identity.get("prompt_mirrors_match") is True
             and self.runtime_identity.get("prompt_mirrors_match", True) is True
             and isinstance(evidence, Mapping)
             and evidence.get("verified") is True
@@ -598,6 +692,8 @@ class R6Coordinator:
         lines = [
             "# KMFA 钉钉考勤 R6 运行状态",
             "",
+            f"- 当前 Git commit：{self.runtime_identity.get('git_commit') or 'UNKNOWN'}",
+            f"- Attendance runtime fingerprint：{self.runtime_identity.get('attendance_runtime_fingerprint') or 'UNKNOWN'}",
             f"- 自然运行已完成工作日：{summary['natural_completed_work_days']} / {summary['target_work_days']}",
             f"- 已完成日期：{', '.join(summary['natural_completed_dates']) or '无'}",
             "- 发送状态：硬关闭",
