@@ -972,6 +972,10 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmpdir:
             runtime_identity = {
                 "git_commit": "a" * 40,
+                "attendance_runtime_fingerprint": "f" * 64,
+                "attendance_runtime_tree_state": "CLEAN",
+                "tracked_tree_state": "DIRTY",
+                "prompt_mirrors_match": True,
                 "morning_prompt_sha256": "b" * 64,
                 "evening_prompt_sha256": "c" * 64,
             }
@@ -1194,28 +1198,114 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(saved["task_evidence"]["thread_source"], "manual")
         self.assertFalse(saved["task_evidence"]["verified"])
 
-    def test_r6_commit_or_prompt_change_resets_natural_acceptance(self) -> None:
+    def test_attendance_runtime_fingerprint_ignores_unrelated_files_and_detects_runtime_or_prompt_changes(self) -> None:
+        from KMFA.tools.dingtalk_attendance.automatic_closure import attendance_runtime_fingerprint
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            relative_paths = ("runtime.py", "rules.yaml", "morning.md", "evening.md")
+            for rel, content in zip(relative_paths, ("runtime-v1", "rules-v1", "morning-v1", "evening-v1")):
+                (root / rel).write_text(content, encoding="utf-8")
+            live_prompts = {"morning": "morning-v1", "evening": "evening-v1"}
+
+            baseline = attendance_runtime_fingerprint(
+                repo_root=root,
+                live_prompts=live_prompts,
+                relative_paths=relative_paths,
+            )
+            (root / "unrelated.txt").write_text("other project commit", encoding="utf-8")
+            after_unrelated = attendance_runtime_fingerprint(
+                repo_root=root,
+                live_prompts=live_prompts,
+                relative_paths=relative_paths,
+            )
+            (root / "runtime.py").write_text("runtime-v2", encoding="utf-8")
+            after_runtime = attendance_runtime_fingerprint(
+                repo_root=root,
+                live_prompts=live_prompts,
+                relative_paths=relative_paths,
+            )
+            (root / "runtime.py").write_text("runtime-v1", encoding="utf-8")
+            after_prompt = attendance_runtime_fingerprint(
+                repo_root=root,
+                live_prompts={**live_prompts, "evening": "evening-v2"},
+                relative_paths=relative_paths,
+            )
+
+        self.assertEqual(after_unrelated, baseline)
+        self.assertNotEqual(after_runtime, baseline)
+        self.assertNotEqual(after_prompt, baseline)
+
+    def test_r6_unrelated_commit_preserves_state_but_attendance_fingerprint_change_resets(self) -> None:
         from KMFA.tools.dingtalk_attendance.automatic_closure import R6Coordinator
 
         first_identity = {
             "git_commit": "a" * 40,
+            "attendance_runtime_fingerprint": "f" * 64,
+            "attendance_runtime_tree_state": "CLEAN",
+            "tracked_tree_state": "CLEAN",
+            "prompt_mirrors_match": True,
             "morning_prompt_sha256": "b" * 64,
             "evening_prompt_sha256": "c" * 64,
         }
-        changed_identities = (
-            {**first_identity, "git_commit": "d" * 40},
-            {**first_identity, "morning_prompt_sha256": "e" * 64},
-        )
-        for changed_identity in changed_identities:
-            with self.subTest(changed_identity=changed_identity), tempfile.TemporaryDirectory() as tmpdir:
-                root = Path(tmpdir)
-                first = R6Coordinator(root, runtime_identity=first_identity)
-                first.state["work_dates"]["2026-07-15"] = {"slots": {"morning": {"status": "COMPLETED"}}}
-                first._write()
-                reset = R6Coordinator(root, runtime_identity=changed_identity)
-                self.assertEqual(reset.acceptance_summary()["natural_completed_work_days"], 0)
-                self.assertEqual(reset.state["runtime_identity"], changed_identity)
-                self.assertEqual(reset.state["work_dates"], {})
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            first = R6Coordinator(root, runtime_identity=first_identity)
+            for slot in ("morning", "evening"):
+                first.ensure_slot(
+                    work_date="2026-07-15",
+                    run_slot=slot,
+                    trigger_source="automation",
+                    task_evidence={
+                        "verified": True,
+                        "task_id": f"task-2026-07-15-{slot}",
+                        "thread_source": "automation",
+                        "automation_id": "kmfa" if slot == "morning" else "kmfa-3",
+                        "triggered_at": "2026-07-15T00:00:00Z",
+                        "prompt_sha256": first_identity[f"{slot}_prompt_sha256"],
+                    },
+                    runner=lambda: {
+                        "status": "COMPLETED",
+                        "notification_status": "NOT_SENT_OWNER_DISABLED",
+                        "member_count": 42,
+                    },
+                    completed_probe=lambda: None,
+                )
+            first.record_final_success(
+                work_date="2026-07-15",
+                trigger_source="automation",
+                task_evidence={
+                    "verified": True,
+                    "task_id": "task-2026-07-15-final",
+                    "thread_source": "automation",
+                    "automation_id": "kmfa",
+                    "triggered_at": "2026-07-15T01:00:00Z",
+                    "prompt_sha256": first_identity["morning_prompt_sha256"],
+                },
+                result={
+                    "status": "OFFICIAL_FINAL_RECONCILIATION_PASS",
+                    "differing_required_cells": 0,
+                    "monthly_written": True,
+                    "actual_workday": True,
+                },
+            )
+            self.assertEqual(first.acceptance_summary()["natural_completed_work_days"], 1)
+
+            unrelated_commit_identity = {**first_identity, "git_commit": "d" * 40}
+            preserved = R6Coordinator(root, runtime_identity=unrelated_commit_identity)
+            self.assertIn("2026-07-15", preserved.state["work_dates"])
+            self.assertEqual(preserved.state["runtime_identity"], unrelated_commit_identity)
+            self.assertEqual(preserved.acceptance_summary()["natural_completed_work_days"], 1)
+
+            changed_fingerprint_identity = {
+                **unrelated_commit_identity,
+                "attendance_runtime_fingerprint": "e" * 64,
+                "evening_prompt_sha256": "9" * 64,
+            }
+            reset = R6Coordinator(root, runtime_identity=changed_fingerprint_identity)
+            self.assertEqual(reset.acceptance_summary()["natural_completed_work_days"], 0)
+            self.assertEqual(reset.state["runtime_identity"], changed_fingerprint_identity)
+            self.assertEqual(reset.state["work_dates"], {})
 
     def test_r6_task_evidence_requires_real_automation_session_metadata(self) -> None:
         from KMFA.tools.dingtalk_attendance.automatic_closure import read_automation_task_evidence
@@ -2178,7 +2268,9 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertTrue(result["automation_prompt_contracts"]["all_prompts_use_beijing_time"])
         self.assertTrue(result["automation_prompt_contracts"]["all_prompts_preserve_github_sync"])
         self.assertTrue(result["automation_prompt_contracts"]["all_prompts_fail_closed_for_dws"])
-        self.assertTrue(result["automation_prompt_contracts"]["all_prompts_use_official_report_parity"])
+        self.assertTrue(result["automation_prompt_contracts"]["temporary_prompts_use_realtime_integrity"])
+        self.assertTrue(result["automation_prompt_contracts"]["temporary_prompts_reject_final_parity_gate"])
+        self.assertTrue(result["automation_prompt_contracts"]["final_prompts_keep_official_report_parity"])
         self.assertTrue(result["automation_prompt_contracts"]["all_prompts_protect_private_runtime"])
 
     def test_official_collector_uses_attendance_group_scope_and_official_report_as_business_truth(self) -> None:
