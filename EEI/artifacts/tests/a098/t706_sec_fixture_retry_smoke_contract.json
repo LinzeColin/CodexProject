@@ -1,0 +1,50 @@
+{
+  "task_id": "T706",
+  "acceptance_ids": [
+    "A098"
+  ],
+  "generated_at": "2026-07-13T01:00:21Z",
+  "source_commit": "24e6d13d0",
+  "status": "PASS",
+  "implementation": [
+    "apps/api/app/ingest/sec_smoke.py",
+    "scripts/run_sec_connector_smoke.py"
+  ],
+  "test_evidence": [
+    "tests/unit/test_sec_smoke.py",
+    "tests/unit/test_sec_client.py",
+    "tests/unit/test_sec_fixture_ingestion.py",
+    "tests/integration/test_database_migrations.py"
+  ],
+  "optional_live_smoke": {
+    "performed_by_contract_generation": false,
+    "explicit_network_opt_in_required": true,
+    "explicit_cik_required": true,
+    "sec_user_agent_environment_required": true,
+    "database_write_performed": false,
+    "production_publication_performed": false
+  },
+  "release_scope": {
+    "fixture_mock_transport_only": true,
+    "live_network_performed": false,
+    "a202_closed_by_contract": false,
+    "a209_closed_by_contract": false,
+    "mvp_release_ready": false
+  },
+  "schema_version": "eei-a098-t706-fixture-retry-smoke-v1",
+  "contract": {
+    "submissions_attempt_count": 2,
+    "submissions_retry_delays_seconds": [
+      0.25
+    ],
+    "companyfacts_attempt_count": 2,
+    "companyfacts_retry_delays_seconds": [
+      0.25
+    ],
+    "transient_statuses_exercised": [
+      429,
+      503
+    ],
+    "limiter_applies_to_retries": true
+  }
+}

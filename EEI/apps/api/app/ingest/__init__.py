@@ -36,6 +36,14 @@ from .sec_normalizer import (
     normalize_sec_company_facts,
     normalize_sec_submissions,
 )
+from .sec_smoke import (
+    SEC_FIXTURE_SMOKE_USER_AGENT,
+    SEC_SMOKE_REPORT_VERSION,
+    SecSmokeConfigurationError,
+    run_fixture_smoke,
+    run_live_smoke,
+    validate_live_smoke_inputs,
+)
 from .transactional_pipeline import (
     PIPELINE_VERSION,
     InjectedPipelineFailure,
@@ -80,4 +88,10 @@ __all__ = [
     "TransactionalPipelineError",
     "classify_change_types",
     "execute_transactional_pipeline",
+    "SEC_FIXTURE_SMOKE_USER_AGENT",
+    "SEC_SMOKE_REPORT_VERSION",
+    "SecSmokeConfigurationError",
+    "run_fixture_smoke",
+    "run_live_smoke",
+    "validate_live_smoke_inputs",
 ]

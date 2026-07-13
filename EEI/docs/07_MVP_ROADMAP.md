@@ -27,7 +27,7 @@ migrations, schema invariants and deterministic seed/fixture strategy. A026/A027
 remain separate T904 production gold-set release-quality gates and do not become
 PASS through Phase 1.1 closure. This status does not imply MVP release readiness.
 
-Phase 1.2 status (2026-07-13): `IN_PROGRESS`. `T700-T703/A096-A103` are
+Phase 1.2 status (2026-07-13): `IN_PROGRESS`. `T700-T706/A096-A107` are
 implemented locally with a fail-closed SEC EDGAR client that requires a descriptive
 application identity and operator contact email, allows only exact HTTPS SEC hosts,
 does not follow redirects, and serializes every request attempt at a fixed `0.125s`
@@ -50,8 +50,12 @@ for connector attempt/success/failure, document date and report period. Latest r
 period start/end stay paired to the same SEC fact period; retrieval time is never
 substituted for document or report time. Isolated PostgreSQL integration covers a
 latest-failure injection and cleanup, while browser E2E proves server hydration and
-visible server-error behavior. No live SEC request is part of the acceptance evidence.
-`T705/A105-A107` is locally PostgreSQL validated; `T706` remains open. This does not close `T1301/A202`, production ingestion, external source/
+visible server-error behavior. T705 adds atomic source-document fact/score/change
+publication and rollback evidence. T706 combines allowlist, transient retry and dry-run
+into a default zero-network fixture smoke; its optional live path requires explicit
+network opt-in, CIK and `SEC_USER_AGENT`, performs no database write, and was not run for
+the acceptance artifact. No live SEC request is part of the acceptance evidence.
+The T700-T706 implementation sequence is locally validated, but this does not close `T1301/A202`, production ingestion, external source/
 legal/owner clearance, A209, or MVP release readiness. Remote CI is pending.
 
 每个 task 必须绑定已有 Acceptance IDs；如果 `acceptance_traceability` 没有映射，先记录 gap，不直接开发。

@@ -24,7 +24,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   │   ├── __init__.py
 │   │   │   │   ├── sec_client.py
 │   │   │   │   ├── sec_fixture_ingestion.py
-│   │   │   │   └── sec_normalizer.py
+│   │   │   │   ├── sec_normalizer.py
+│   │   │   │   └── transactional_pipeline.py
 │   │   │   ├── __init__.py
 │   │   │   ├── db_health.py
 │   │   │   ├── domain.py
@@ -115,6 +116,12 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   └── t703_sec_ingestion_report_contract.json
 │   │   ├── a104
 │   │   │   └── t704_source_freshness_contract.json
+│   │   ├── a105
+│   │   │   └── t705_transactional_failure_rollback_contract.json
+│   │   ├── a106
+│   │   │   └── t705_change_type_coverage_contract.json
+│   │   ├── a107
+│   │   │   └── t705_change_provenance_api_contract.json
 │   │   ├── a119
 │   │   │   └── t905_migration_rollback_rehearsal.json
 │   │   ├── a120
@@ -454,6 +461,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── run_operator_soak.mjs
 │   ├── run_scale_benchmarks.py
 │   ├── run_soak_smoke.mjs
+│   ├── run_transactional_ingestion_pipeline.py
 │   ├── secret_scan.py
 │   ├── smoke_test_prototype.py
 │   ├── supervise_operator_soak.py
@@ -481,6 +489,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── validate_source_freshness_contract.py
 │   ├── validate_t905_release_rehearsal.py
 │   ├── validate_task_pack.py
+│   ├── validate_transactional_ingestion_pipeline_contract.py
 │   ├── validate_ui_copy.py
 │   ├── validate_v5_production_readiness_sync.py
 │   ├── validate_visual_coverage.py
@@ -547,7 +556,8 @@ Enterprise_Ecosystem_Intelligence_release
 │       ├── test_sec_client.py
 │       ├── test_sec_fixture_ingestion.py
 │       ├── test_sec_normalizer.py
-│       └── test_source_freshness.py
+│       ├── test_source_freshness.py
+│       └── test_transactional_pipeline.py
 ├── wireframes
 │   ├── README.md
 │   ├── dashboard_wireframe.png

@@ -1,5 +1,16 @@
 # Changelog
 
+## T706/A096/A098/A102 SEC connector smoke - 2026-07-13
+
+- Added a combined default fixture smoke covering governed SEC host/User-Agent requests,
+  deterministic 503/429 recovery and zero-write fixture dry-run normalization.
+- Added an optional live fetch/normalize path that fails closed unless network opt-in,
+  CIK and `SEC_USER_AGENT` preflight all pass; raw User-Agent values are not reported.
+- Live smoke never writes PostgreSQL or publishes facts, and no live request was used as
+  T706 acceptance evidence.
+- Added T706 unit/CLI/artifact validation and clean PostgreSQL regression. T1301/A202,
+  A209 and MVP release readiness remain open.
+
 ## T705/A105-A107 transactional ingestion publication - 2026-07-13
 
 - Added one PostgreSQL transaction for source-document fact/evidence derivation, scoring,

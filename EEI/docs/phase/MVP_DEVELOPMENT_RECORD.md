@@ -1,5 +1,59 @@
 # MVP Development Record
 
+## 2026-07-13 - T706/A096/A098/A102 SEC connector smoke
+
+Status: LOCAL FIXTURE/POSTGRESQL VALIDATED; REMOTE CI PENDING; PHASE 1.2 IN PROGRESS; MVP RELEASE BLOCKED
+
+### Goal and Scope
+
+- Combine the governed SEC request boundary, transient retry behavior and fixture
+  dry-run into one executable T706 smoke instead of relying only on isolated unit slices.
+- Default to `httpx.MockTransport`; optional live mode requires `--allow-live-network`,
+  an explicit CIK and a contact-bearing `SEC_USER_AGENT` environment value.
+- Fetch and normalize only in optional live mode. Add no database write, fact publication,
+  migration, model parameter, scoring formula, A202 closure or A209 evidence mutation.
+
+### Acceptance and Evidence
+
+- `T706 -> A096`: all four fixture attempts use exact allowlisted SEC HTTPS hosts, the
+  governed User-Agent, no Authorization/Cookie headers, and no raw User-Agent artifact.
+- `T706 -> A098`: deterministic fixture transport injects one `503` and one `429`; each
+  recovers on attempt two with bounded `0.25s` retry evidence under the existing limiter.
+- `T706 -> A102`: recovered payloads enter the existing fixture normalizer/ingestion
+  path in `dry_run`, planning two source documents and two raw snapshots with zero writes.
+- Evidence artifacts:
+  `artifacts/tests/a096/t706_sec_fixture_allowlist_smoke_contract.json`,
+  `artifacts/tests/a098/t706_sec_fixture_retry_smoke_contract.json`, and
+  `artifacts/tests/a102/t706_sec_fixture_dry_run_smoke_contract.json`.
+
+### Live and Data Boundary
+
+- Acceptance generation performs no live network request. Live preflight completes
+  before the CLI marks network-started, so missing opt-in/CIK/User-Agent remains a true
+  zero-network failure while post-request errors remain auditable as network attempts.
+- Fixture metadata cannot be relabeled `live`. Injected live-path tests remove fixture
+  metadata only to exercise structural normalization and still perform no external request.
+- No raw User-Agent is emitted; only a SHA-256 and boolean policy evidence are reported.
+
+### Validation
+
+- T706 focused SEC unit regression: PASS, `33/33`; full unit suite: PASS, `190/190`
+  with one third-party Starlette/httpx deprecation warning.
+- Fixture CLI: PASS with four mock requests, attempts `2+2`, planned rows `2+2`, zero
+  database writes and `live_network_performed=false`. Live CLI without opt-in: expected
+  structured failure with exit code `1` before network use.
+- Isolated PostgreSQL 16 full migration/seed/loader/API integration: PASS, `2/2`.
+  Temporary container/volume cleanup and protected A209 container identity: PASS.
+
+### Risk, Rollback, and Stop Conditions
+
+- Risk: accidental live network, fixture/live relabeling, User-Agent disclosure, retry
+  bypass or dry-run persistence. Explicit preflight, mock default, source-mode validation,
+  hashed identity evidence and integration regression mitigate these risks.
+- Rollback: revert only the T706 commit/artifacts/status; T700-T705 remain intact.
+- Stop on any unexpected network request, A209 failure, protected-container change,
+  fixture/live drift, credential/header leakage, database write or governance failure.
+
 ## 2026-07-13 - T705/A105-A107 transactional ingestion publication
 
 Status: LOCAL POSTGRESQL VALIDATED; REMOTE CI PENDING; PHASE 1.2 IN PROGRESS; MVP RELEASE BLOCKED

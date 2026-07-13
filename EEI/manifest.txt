@@ -57,6 +57,7 @@ apps/api/app/ingest/__init__.py
 apps/api/app/ingest/sec_client.py
 apps/api/app/ingest/sec_fixture_ingestion.py
 apps/api/app/ingest/sec_normalizer.py
+apps/api/app/ingest/transactional_pipeline.py
 apps/api/app/main.py
 apps/api/app/scoring.py
 apps/api/app/settings.py
@@ -119,6 +120,9 @@ artifacts/tests/a101/t702_sec_companyfacts_normalization_contract.json
 artifacts/tests/a102/t703_sec_fixture_idempotent_upsert_contract.json
 artifacts/tests/a103/t703_sec_ingestion_report_contract.json
 artifacts/tests/a104/t704_source_freshness_contract.json
+artifacts/tests/a105/t705_transactional_failure_rollback_contract.json
+artifacts/tests/a106/t705_change_type_coverage_contract.json
+artifacts/tests/a107/t705_change_provenance_api_contract.json
 artifacts/tests/a119/t905_migration_rollback_rehearsal.json
 artifacts/tests/a120/t905_clean_start_operator_rehearsal.json
 artifacts/tests/a182/t1212_governance_consistency_workflow.json
@@ -397,6 +401,7 @@ scripts/run_live_e2e_api.sh
 scripts/run_operator_soak.mjs
 scripts/run_scale_benchmarks.py
 scripts/run_soak_smoke.mjs
+scripts/run_transactional_ingestion_pipeline.py
 scripts/secret_scan.py
 scripts/smoke_test_prototype.py
 scripts/supervise_operator_soak.py
@@ -424,6 +429,7 @@ scripts/validate_sec_normalization_contract.py
 scripts/validate_source_freshness_contract.py
 scripts/validate_t905_release_rehearsal.py
 scripts/validate_task_pack.py
+scripts/validate_transactional_ingestion_pipeline_contract.py
 scripts/validate_ui_copy.py
 scripts/validate_v5_production_readiness_sync.py
 scripts/validate_visual_coverage.py
@@ -479,6 +485,7 @@ tests/unit/test_sec_client.py
 tests/unit/test_sec_fixture_ingestion.py
 tests/unit/test_sec_normalizer.py
 tests/unit/test_source_freshness.py
+tests/unit/test_transactional_pipeline.py
 uv.lock
 wireframes/README.md
 wireframes/dashboard_wireframe.png
