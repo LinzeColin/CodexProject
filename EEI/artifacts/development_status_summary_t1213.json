@@ -18,22 +18,22 @@
     "implementation_status": {
       "DONE": 5,
       "N/A": 8,
-      "NOT_STARTED": 14,
-      "PARTIAL": 19
+      "NOT_STARTED": 13,
+      "PARTIAL": 20
     },
     "validation_status": {
       "CATALOG_VALIDATED": 11,
       "CI_VALIDATED": 14,
       "LOCAL_E2E_VALIDATED": 3,
-      "LOCAL_VALIDATED": 7,
-      "SPEC_VALIDATED": 3,
+      "LOCAL_VALIDATED": 8,
+      "SPEC_VALIDATED": 2,
       "VALIDATED": 8
     },
     "lane_counts": {
-      "resolved": 32,
+      "resolved": 33,
       "prototyped": 21,
-      "specified": 14,
-      "not_started_tasks": 53,
+      "specified": 13,
+      "not_started_tasks": 52,
       "blocked_tasks": 0,
       "out_of_scope_tasks": 8
     },
@@ -109,7 +109,7 @@
       "traceability_rows": "7",
       "done_traceability_rows": "0",
       "test_types": "API/UI;E2E;UI/data test;Unit/UI;catalog validation",
-      "evidence_paths": "artifacts/tests/a069/;artifacts/tests/a070/;artifacts/tests/a071/;artifacts/tests/a108/;artifacts/tests/a109/;artifacts/tests/a110/;artifacts/tests/a191/",
+      "evidence_paths": "apps/api/app/amount_semantics.py;apps/api/app/domain.py;apps/api/app/domain_repository.py;artifacts/tests/a069/;artifacts/tests/a070/;artifacts/tests/a071/;artifacts/tests/a108/t800_unreported_amount_semantics_contract.json;artifacts/tests/a109/t800_incomparable_amount_aggregation_contract.json;artifacts/tests/a110/;artifacts/tests/a191/;scripts/validate_event_amount_semantics_contract.py;specs/api_contract.yaml;tests/integration/test_database_migrations.py;tests/unit/test_amount_semantics.py",
       "missing_task_ids": "",
       "missing_acceptance_ids": "",
       "source_doc": "docs/31_DOMAIN_OBJECT_SCOPE_CATALOG.md"

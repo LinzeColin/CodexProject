@@ -1,5 +1,16 @@
 # Changelog
 
+## T800 event and amount semantic services - 2026-07-13
+
+- Implemented evidence-bearing `/v1/events` queries with entity, theme, time, type and
+  bounded-limit filters plus explicit per-event amount semantics.
+- Added `/v1/events/amount-summary`, grouping only identical currency, amount kind and
+  period; incomparable buckets never receive a synthetic cross-bucket total.
+- Unreported amounts remain null with no display amount, visual weight, width eligibility
+  or aggregate eligibility. Numeric but unclassified semantics are also excluded from width.
+- Added A108/A109 backend artifacts, unit and PostgreSQL integration. Acceptance remains
+  `IN PROGRESS` pending T801/T805 UI/cross-view validation; A209 remains open.
+
 ## T706/A096/A098/A102 SEC connector smoke - 2026-07-13
 
 - Added a combined default fixture smoke covering governed SEC host/User-Agent requests,

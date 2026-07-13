@@ -175,6 +175,13 @@ paths:
         in: query
         schema:
           type: string
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 500
+          default: 100
       responses:
         '200':
           description: Capital and strategic events
@@ -184,6 +191,48 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Event'
+  /v1/events/amount-summary:
+    get:
+      operationId: summarizeEventAmounts
+      parameters:
+      - name: entity
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - name: theme
+        in: query
+        schema:
+          type: string
+          format: uuid
+      - name: from
+        in: query
+        schema:
+          type: string
+          format: date-time
+      - name: to
+        in: query
+        schema:
+          type: string
+          format: date-time
+      - name: event_type
+        in: query
+        schema:
+          type: string
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 500
+          default: 100
+      responses:
+        '200':
+          description: Amount totals partitioned by comparable currency, kind and period
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventAmountSummary'
   /v1/themes:
     get:
       operationId: listThemeSignals
@@ -2168,7 +2217,12 @@ components:
       - title
       - status
       - observed_at
+      - amount
+      - currency
+      - amount_kind
+      - amount_semantics
       - evidence_count
+      - participants
       properties:
         id:
           type: string
@@ -2201,12 +2255,230 @@ components:
           type:
           - string
           - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        qualifiers:
+          type: object
+          additionalProperties: true
         observed_at:
           type: string
           format: date-time
         evidence_count:
           type: integer
           minimum: 1
+        participants:
+          type: array
+          items:
+            type: object
+            required:
+            - entity_id
+            - role
+            - direction
+            properties:
+              entity_id:
+                type: string
+                format: uuid
+              role:
+                type: string
+              direction:
+                type:
+                - string
+                - 'null'
+        amount_semantics:
+          $ref: '#/components/schemas/EventAmountSemantics'
+    AmountAggregationKey:
+      type: object
+      required:
+      - currency
+      - amount_kind
+      - period_start
+      - period_end
+      properties:
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+        amount_kind:
+          type: string
+        period_start:
+          type:
+          - string
+          - 'null'
+          format: date
+        period_end:
+          type:
+          - string
+          - 'null'
+          format: date
+    EventAmountSemantics:
+      type: object
+      required:
+      - schema_version
+      - state
+      - amount
+      - display_amount
+      - currency
+      - amount_kind
+      - period_start
+      - period_end
+      - visual_weight
+      - width_eligible
+      - aggregate_eligible
+      - aggregation_key
+      - non_aggregation_reason
+      properties:
+        schema_version:
+          type: string
+          const: event-amount-semantics-v1
+        state:
+          type: string
+          enum:
+          - unreported
+          - reported
+          - reported_unclassified
+        amount:
+          type:
+          - number
+          - 'null'
+        display_amount:
+          type:
+          - number
+          - 'null'
+        currency:
+          type:
+          - string
+          - 'null'
+        amount_kind:
+          type:
+          - string
+          - 'null'
+        period_start:
+          type:
+          - string
+          - 'null'
+          format: date
+        period_end:
+          type:
+          - string
+          - 'null'
+          format: date
+        visual_weight:
+          type:
+          - number
+          - 'null'
+        width_eligible:
+          type: boolean
+        aggregate_eligible:
+          type: boolean
+        aggregation_key:
+          oneOf:
+          - $ref: '#/components/schemas/AmountAggregationKey'
+          - type: 'null'
+        non_aggregation_reason:
+          type:
+          - string
+          - 'null'
+    EventAmountBucket:
+      allOf:
+      - $ref: '#/components/schemas/AmountAggregationKey'
+      - type: object
+        required:
+        - total_amount
+        - visual_weight_total
+        - event_count
+        - event_ids
+        properties:
+          total_amount:
+            type: number
+          visual_weight_total:
+            type: number
+          event_count:
+            type: integer
+            minimum: 1
+          event_ids:
+            type: array
+            items:
+              type: string
+              format: uuid
+    EventAmountSummary:
+      type: object
+      required:
+      - schema_version
+      - event_count
+      - reported_event_count
+      - unreported_event_count
+      - unclassified_event_count
+      - bucket_count
+      - buckets
+      - unreported_event_ids
+      - unclassified_event_ids
+      - incomparable_dimensions
+      - cross_bucket_summation_performed
+      - comparable_reported_total_available
+      - comparable_reported_total
+      - comparable_reported_total_complete
+      - semantics
+      - filters
+      properties:
+        schema_version:
+          type: string
+          const: event-amount-semantics-v1
+        event_count:
+          type: integer
+          minimum: 0
+        reported_event_count:
+          type: integer
+          minimum: 0
+        unreported_event_count:
+          type: integer
+          minimum: 0
+        unclassified_event_count:
+          type: integer
+          minimum: 0
+        bucket_count:
+          type: integer
+          minimum: 0
+        buckets:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventAmountBucket'
+        unreported_event_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        unclassified_event_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        incomparable_dimensions:
+          type: array
+          items:
+            type: string
+            enum:
+            - currency
+            - amount_kind
+            - period
+        cross_bucket_summation_performed:
+          type: boolean
+          const: false
+        comparable_reported_total_available:
+          type: boolean
+        comparable_reported_total:
+          type:
+          - number
+          - 'null'
+        comparable_reported_total_complete:
+          type: boolean
+        semantics:
+          type: object
+          additionalProperties: true
+        filters:
+          type: object
+          additionalProperties: true
     EntityDossier:
       allOf:
       - $ref: '#/components/schemas/EntitySummary'

@@ -1,0 +1,51 @@
+{
+  "task_id": "T800",
+  "acceptance_ids": [
+    "A108"
+  ],
+  "generated_at": "2026-07-13T01:19:12Z",
+  "source_commit": "4d521e59f",
+  "status": "PASS",
+  "implementation": [
+    "apps/api/app/amount_semantics.py",
+    "apps/api/app/domain_repository.py",
+    "apps/api/app/domain.py",
+    "specs/api_contract.yaml"
+  ],
+  "test_evidence": [
+    "tests/unit/test_amount_semantics.py",
+    "tests/integration/test_database_migrations.py"
+  ],
+  "acceptance_closure": {
+    "backend_service_validated": true,
+    "api_validated": true,
+    "ui_validation_complete": false,
+    "cross_view_validation_complete": false,
+    "acceptance_status_required": "IN PROGRESS",
+    "remaining_tasks": [
+      "T801",
+      "T805"
+    ]
+  },
+  "release_scope": {
+    "fixture_postgres_validation_only": true,
+    "a209_closed_by_contract": false,
+    "mvp_release_ready": false
+  },
+  "schema_version": "eei-a108-t800-unreported-amount-semantics-v1",
+  "contract": {
+    "schema_version": "event-amount-semantics-v1",
+    "state": "unreported",
+    "amount": null,
+    "display_amount": null,
+    "currency": null,
+    "amount_kind": null,
+    "period_start": null,
+    "period_end": null,
+    "visual_weight": null,
+    "width_eligible": false,
+    "aggregate_eligible": false,
+    "aggregation_key": null,
+    "non_aggregation_reason": "amount_unreported"
+  }
+}

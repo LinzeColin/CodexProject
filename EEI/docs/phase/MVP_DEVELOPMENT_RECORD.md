@@ -1,5 +1,57 @@
 # MVP Development Record
 
+## 2026-07-13 - T800/A108-A109 event and amount semantic services
+
+Status: LOCAL API/POSTGRESQL VALIDATED; A108-A109 IN PROGRESS; REMOTE CI PENDING; MVP RELEASE BLOCKED
+
+### Goal and Scope
+
+- Implement the existing `/v1/events` contract against PostgreSQL with evidence-bearing
+  entity, theme, time, type and bounded-limit filtering.
+- Add explicit amount semantics and a summary service that only aggregates identical
+  `currency + amount_kind + period_start + period_end` buckets.
+- Reuse existing event schema and fixtures. Add no migration, UI, Sankey, model weight,
+  scoring formula, T801-T805 behavior or A209 evidence mutation.
+
+### Acceptance and Evidence
+
+- `T800 -> A108`: unreported amount returns `amount=null`, `display_amount=null`,
+  `visual_weight=null`, `width_eligible=false` and `aggregate_eligible=false`.
+- `T800 -> A109`: `period_capex` and `award_ceiling` remain separate buckets;
+  `cross_bucket_summation_performed=false` and `comparable_reported_total=null`.
+- Backend service/API evidence is PASS, but A108/A109 remain `IN PROGRESS` because
+  T801/T805 still own Capital River UI and cross-view verification.
+- Evidence artifacts:
+  `artifacts/tests/a108/t800_unreported_amount_semantics_contract.json` and
+  `artifacts/tests/a109/t800_incomparable_amount_aggregation_contract.json`.
+
+### Data and Calculation Boundary
+
+- PostgreSQL `Decimal` values are aggregated before JSON conversion to avoid float
+  precision loss. Unknown values never enter a numeric bucket as zero.
+- Numeric amounts with placeholder/unknown kind or currency remain visible as
+  `reported_unclassified` but receive no visual weight or aggregation eligibility.
+- Evidence-less, superseded and revoked events are excluded from the production list.
+  No new score formula or model parameter was introduced.
+
+### Validation
+
+- Amount semantics unit tests: PASS, `6/6`; full unit suite: PASS, `196/196` with one
+  third-party Starlette/httpx deprecation warning.
+- OpenAPI/contract and Ruff validation: PASS.
+- Isolated PostgreSQL 16 migration/seed/loader/API integration: PASS, `2/2`, including
+  unknown/no-width, two incomparable buckets, comparable entity summary and filters.
+- Temporary container/volume cleanup and protected A209 container identity: PASS.
+
+### Risk, Rollback, and Stop Conditions
+
+- Risks: unknown-to-zero coercion, mixed amount-kind/currency/period sums, float precision
+  loss or evidence-less events. Explicit semantics, Decimal-first aggregation, bucket keys
+  and evidence joins mitigate these risks; R007/R039 remain OPEN pending UI closure.
+- Rollback: revert only the T800 commit/artifacts/status; T700-T706 remain intact.
+- Stop on silent cross-bucket totals, non-null unknown width, API/schema drift, A209
+  failure, protected-container change, integration failure or governance drift.
+
 ## 2026-07-13 - T706/A096/A098/A102 SEC connector smoke
 
 Status: LOCAL FIXTURE/POSTGRESQL VALIDATED; REMOTE CI PENDING; PHASE 1.2 IN PROGRESS; MVP RELEASE BLOCKED

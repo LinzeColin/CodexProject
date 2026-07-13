@@ -24,6 +24,11 @@
 
 实际支付、交易价值、承诺上限、估值和未披露金额不能静默相加。金额必须携带币种、期间、amount_kind 和证据。
 
+T800 将该边界落实为 `/v1/events` 和 `/v1/events/amount-summary`：未披露金额
+保持 `null` 且 `visual_weight=null`、`width_eligible=false`；已披露金额只能在
+`currency + amount_kind + period_start + period_end` 完全一致的 bucket 内求和。
+跨 bucket 总额保持 `null`。T801/T805 仍需证明 Capital River UI 和跨视图行为。
+
 ## 公司目录边界
 
 140 个对象是研究宇宙，不代表所有关系已经验证。`fact_status` 为事实核验状态；真实关系必须在 Build/ingestion 阶段逐条接入来源。

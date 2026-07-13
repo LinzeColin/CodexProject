@@ -14,6 +14,7 @@ import psycopg
 from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 
+from .amount_semantics import aggregate_event_amounts, event_amount_semantics
 from .scoring import (
     CANDIDATE_SOURCE_THRESHOLD_MIN,
     ENTITY_SOURCE_THRESHOLD_MIN,
@@ -1118,6 +1119,179 @@ class DomainRepository:
             (entity_id, limit),
         ).fetchall()
         return _jsonable(rows)
+
+    def list_events(
+        self,
+        *,
+        entity_id: UUID | None = None,
+        theme_id: UUID | None = None,
+        from_time: datetime | None = None,
+        to_time: datetime | None = None,
+        event_type: str | None = None,
+        limit: int = 100,
+    ) -> list[dict[str, Any]]:
+        with self.connect() as connection:
+            return self.list_events_for_connection(
+                connection,
+                entity_id=entity_id,
+                theme_id=theme_id,
+                from_time=from_time,
+                to_time=to_time,
+                event_type=event_type,
+                limit=limit,
+            )
+
+    def _event_rows_for_connection(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        *,
+        entity_id: UUID | None = None,
+        theme_id: UUID | None = None,
+        from_time: datetime | None = None,
+        to_time: datetime | None = None,
+        event_type: str | None = None,
+        limit: int = 100,
+    ) -> list[dict[str, Any]]:
+        rows = connection.execute(
+            """
+            SELECT
+              ev.id, ev.event_type, ev.title, ev.status, ev.announced_at,
+              ev.effective_at, ev.period_start, ev.period_end, ev.observed_at,
+              ev.amount, ev.currency, ev.amount_kind, ev.description, ev.qualifiers,
+              evidence.evidence_count,
+              COALESCE(participants.participants, '[]'::jsonb) AS participants
+            FROM events ev
+            JOIN LATERAL (
+              SELECT count(*)::int AS evidence_count
+              FROM event_evidence ee
+              WHERE ee.event_id = ev.id
+            ) evidence ON evidence.evidence_count > 0
+            LEFT JOIN LATERAL (
+              SELECT jsonb_agg(
+                jsonb_build_object(
+                  'entity_id', ep.entity_id,
+                  'role', ep.role,
+                  'direction', ep.direction
+                )
+                ORDER BY ep.role, ep.entity_id
+              ) AS participants
+              FROM event_participants ep
+              WHERE ep.event_id = ev.id
+            ) participants ON true
+            WHERE ev.status NOT IN ('superseded', 'revoked')
+              AND (
+                %s::uuid IS NULL
+                OR EXISTS (
+                  SELECT 1 FROM event_participants ep
+                  WHERE ep.event_id = ev.id AND ep.entity_id = %s::uuid
+                )
+              )
+              AND (
+                %s::uuid IS NULL
+                OR EXISTS (
+                  SELECT 1 FROM event_participants ep
+                  WHERE ep.event_id = ev.id
+                    AND ep.entity_id = %s::uuid
+                    AND ep.role = 'theme'
+                )
+              )
+              AND (
+                %s::timestamptz IS NULL
+                OR COALESCE(ev.effective_at, ev.announced_at, ev.observed_at)
+                  >= %s::timestamptz
+              )
+              AND (
+                %s::timestamptz IS NULL
+                OR COALESCE(ev.effective_at, ev.announced_at, ev.observed_at)
+                  <= %s::timestamptz
+              )
+              AND (%s::text IS NULL OR ev.event_type = %s::text)
+            ORDER BY
+              COALESCE(ev.effective_at, ev.announced_at, ev.observed_at) DESC,
+              ev.observed_at DESC,
+              ev.id
+            LIMIT %s
+            """,
+            (
+                entity_id,
+                entity_id,
+                theme_id,
+                theme_id,
+                from_time,
+                from_time,
+                to_time,
+                to_time,
+                event_type,
+                event_type,
+                limit,
+            ),
+        ).fetchall()
+        events: list[dict[str, Any]] = []
+        for row in rows:
+            event = dict(row)
+            event["amount_semantics"] = event_amount_semantics(
+                amount=event["amount"],
+                currency=event["currency"],
+                amount_kind=event["amount_kind"],
+                period_start=event["period_start"],
+                period_end=event["period_end"],
+            )
+            events.append(event)
+        return events
+
+    def list_events_for_connection(
+        self,
+        connection: psycopg.Connection[dict[str, Any]],
+        *,
+        entity_id: UUID | None = None,
+        theme_id: UUID | None = None,
+        from_time: datetime | None = None,
+        to_time: datetime | None = None,
+        event_type: str | None = None,
+        limit: int = 100,
+    ) -> list[dict[str, Any]]:
+        return _jsonable(
+            self._event_rows_for_connection(
+                connection,
+                entity_id=entity_id,
+                theme_id=theme_id,
+                from_time=from_time,
+                to_time=to_time,
+                event_type=event_type,
+                limit=limit,
+            )
+        )
+
+    def event_amount_summary(
+        self,
+        *,
+        entity_id: UUID | None = None,
+        theme_id: UUID | None = None,
+        from_time: datetime | None = None,
+        to_time: datetime | None = None,
+        event_type: str | None = None,
+        limit: int = 100,
+    ) -> dict[str, Any]:
+        with self.connect() as connection:
+            events = self._event_rows_for_connection(
+                connection,
+                entity_id=entity_id,
+                theme_id=theme_id,
+                from_time=from_time,
+                to_time=to_time,
+                event_type=event_type,
+                limit=limit,
+            )
+        summary = aggregate_event_amounts(events)
+        summary["filters"] = {
+            "entity_id": entity_id,
+            "theme_id": theme_id,
+            "from": from_time,
+            "to": to_time,
+            "event_type": event_type,
+            "limit": limit,
+        }
+        return _jsonable(summary)
 
     def corporate_structure_relationships_for_entity(
         self,

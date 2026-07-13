@@ -241,6 +241,7 @@ def test_core_domain_migration_seed_idempotency_and_rollback() -> None:
     exercise_operator_source_capture_contracts()
     exercise_live_official_capture_postgres_contracts()
     exercise_source_freshness_contracts()
+    exercise_event_amount_semantics_contracts()
     exercise_transactional_ingestion_pipeline_contracts()
     exercise_production_fact_version_contracts()
     exercise_domain_api_and_repository_contracts()
@@ -892,6 +893,89 @@ def exercise_source_freshness_contracts() -> None:
                     "DELETE FROM ingestion_runs WHERE id = %s",
                     (failure_run_id,),
                 )
+
+
+def exercise_event_amount_semantics_contracts() -> None:
+    client = TestClient(app)
+    response = client.get("/v1/events")
+    assert response.status_code == 200
+    events = response.json()
+    assert len(events) == 3
+    assert all(event["evidence_count"] >= 1 for event in events)
+
+    unknown = next(
+        event for event in events if event["id"] == "30000000-0000-4000-8000-000000000001"
+    )
+    assert unknown["amount"] is None
+    assert unknown["amount_semantics"]["state"] == "unreported"
+    assert unknown["amount_semantics"]["display_amount"] is None
+    assert unknown["amount_semantics"]["visual_weight"] is None
+    assert unknown["amount_semantics"]["width_eligible"] is False
+    assert unknown["amount_semantics"]["aggregate_eligible"] is False
+    assert unknown["amount_semantics"]["non_aggregation_reason"] == "amount_unreported"
+
+    capex = next(event for event in events if event["id"] == NVIDIA_CAPEX_EVENT_ID)
+    assert capex["amount_semantics"]["state"] == "reported"
+    assert capex["amount_semantics"]["display_amount"] == 1000000000
+    assert capex["amount_semantics"]["visual_weight"] == 1000000000
+    assert capex["amount_semantics"]["width_eligible"] is True
+    assert capex["amount_semantics"]["aggregation_key"] == {
+        "currency": "USD",
+        "amount_kind": "period_capex",
+        "period_start": "2026-01-01",
+        "period_end": "2026-12-31",
+    }
+
+    summary_response = client.get("/v1/events/amount-summary")
+    assert summary_response.status_code == 200
+    summary = summary_response.json()
+    assert summary["schema_version"] == "event-amount-semantics-v1"
+    assert summary["event_count"] == 3
+    assert summary["reported_event_count"] == 2
+    assert summary["unreported_event_count"] == 1
+    assert summary["bucket_count"] == 2
+    assert {bucket["amount_kind"] for bucket in summary["buckets"]} == {
+        "period_capex",
+        "award_ceiling",
+    }
+    assert summary["incomparable_dimensions"] == ["amount_kind", "period"]
+    assert summary["cross_bucket_summation_performed"] is False
+    assert summary["comparable_reported_total_available"] is False
+    assert summary["comparable_reported_total"] is None
+    assert summary["semantics"]["unknown_amount_is_zero"] is False
+    assert summary["semantics"]["unknown_amount_has_visual_weight"] is False
+    assert unknown["id"] in summary["unreported_event_ids"]
+
+    capex_entity_id = next(
+        participant["entity_id"]
+        for participant in capex["participants"]
+        if participant["role"] == "spender"
+    )
+    capex_summary = client.get(
+        "/v1/events/amount-summary",
+        params={"entity": capex_entity_id},
+    ).json()
+    assert capex_summary["event_count"] == 1
+    assert capex_summary["bucket_count"] == 1
+    assert capex_summary["comparable_reported_total_available"] is True
+    assert capex_summary["comparable_reported_total"] == 1000000000
+    assert capex_summary["comparable_reported_total_complete"] is True
+
+    openai_events = client.get("/v1/events", params={"entity": OPENAI_GROUP_ID}).json()
+    assert [event["id"] for event in openai_events] == [unknown["id"]]
+    theme_events = client.get("/v1/events", params={"theme": THEME_AI_INFRA_ID}).json()
+    assert [event["id"] for event in theme_events] == [NVIDIA_CAPEX_EVENT_ID]
+    recent_events = client.get(
+        "/v1/events",
+        params={"from": "2026-02-01T00:00:00Z"},
+    ).json()
+    assert [event["id"] for event in recent_events] == [unknown["id"]]
+    award_events = client.get(
+        "/v1/events",
+        params={"event_type": "contract_award"},
+    ).json()
+    assert [event["event_type"] for event in award_events] == ["contract_award"]
+    assert client.get("/v1/events", params={"limit": 0}).status_code == 422
 
 
 def exercise_transactional_ingestion_pipeline_contracts() -> None:

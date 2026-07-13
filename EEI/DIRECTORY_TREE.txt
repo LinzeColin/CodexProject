@@ -25,6 +25,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   │   ├── sec_client.py
 │   │   │   │   ├── sec_fixture_ingestion.py
 │   │   │   │   ├── sec_normalizer.py
+│   │   │   │   ├── sec_smoke.py
 │   │   │   │   └── transactional_pipeline.py
 │   │   │   ├── __init__.py
 │   │   │   ├── db_health.py
@@ -99,11 +100,13 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── a063
 │   │   │   └── t501_commercial_empire_not_control.json
 │   │   ├── a096
-│   │   │   └── t700_sec_client_allowlist_contract.json
+│   │   │   ├── t700_sec_client_allowlist_contract.json
+│   │   │   └── t706_sec_fixture_allowlist_smoke_contract.json
 │   │   ├── a097
 │   │   │   └── t700_sec_client_rate_limit_contract.json
 │   │   ├── a098
-│   │   │   └── t701_sec_client_retry_contract.json
+│   │   │   ├── t701_sec_client_retry_contract.json
+│   │   │   └── t706_sec_fixture_retry_smoke_contract.json
 │   │   ├── a099
 │   │   │   └── t701_sec_client_hash_cache_contract.json
 │   │   ├── a100
@@ -111,7 +114,8 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   ├── a101
 │   │   │   └── t702_sec_companyfacts_normalization_contract.json
 │   │   ├── a102
-│   │   │   └── t703_sec_fixture_idempotent_upsert_contract.json
+│   │   │   ├── t703_sec_fixture_idempotent_upsert_contract.json
+│   │   │   └── t706_sec_fixture_dry_run_smoke_contract.json
 │   │   ├── a103
 │   │   │   └── t703_sec_ingestion_report_contract.json
 │   │   ├── a104
@@ -460,6 +464,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── run_live_e2e_api.sh
 │   ├── run_operator_soak.mjs
 │   ├── run_scale_benchmarks.py
+│   ├── run_sec_connector_smoke.py
 │   ├── run_soak_smoke.mjs
 │   ├── run_transactional_ingestion_pipeline.py
 │   ├── secret_scan.py
@@ -484,6 +489,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── validate_release_decision_bundle.py
 │   ├── validate_release_manager_activation.py
 │   ├── validate_sec_client_contract.py
+│   ├── validate_sec_connector_smoke_contract.py
 │   ├── validate_sec_fixture_ingestion_contract.py
 │   ├── validate_sec_normalization_contract.py
 │   ├── validate_source_freshness_contract.py
@@ -556,6 +562,7 @@ Enterprise_Ecosystem_Intelligence_release
 │       ├── test_sec_client.py
 │       ├── test_sec_fixture_ingestion.py
 │       ├── test_sec_normalizer.py
+│       ├── test_sec_smoke.py
 │       ├── test_source_freshness.py
 │       └── test_transactional_pipeline.py
 ├── wireframes

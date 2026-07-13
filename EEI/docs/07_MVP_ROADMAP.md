@@ -58,6 +58,13 @@ the acceptance artifact. No live SEC request is part of the acceptance evidence.
 The T700-T706 implementation sequence is locally validated, but this does not close `T1301/A202`, production ingestion, external source/
 legal/owner clearance, A209, or MVP release readiness. Remote CI is pending.
 
+Phase 1.3 status (2026-07-13): `IN_PROGRESS`. T800 implements evidence-bearing event
+queries and amount-semantic aggregation. Unreported amount remains null/no-width, and
+reported amounts aggregate only inside identical currency/kind/period buckets. A108/A109
+remain `IN PROGRESS` until T801/T805 prove Capital River UI and cross-view behavior.
+Recursive graph, score and production context APIs remain available from prior tasks;
+T801-T805 and remaining production-data gates are still open.
+
 每个 task 必须绑定已有 Acceptance IDs；如果 `acceptance_traceability` 没有映射，先记录 gap，不直接开发。
 
 ### Stage 2 - Frontend, Scale, and Operational Evidence

@@ -57,6 +57,7 @@ apps/api/app/ingest/__init__.py
 apps/api/app/ingest/sec_client.py
 apps/api/app/ingest/sec_fixture_ingestion.py
 apps/api/app/ingest/sec_normalizer.py
+apps/api/app/ingest/sec_smoke.py
 apps/api/app/ingest/transactional_pipeline.py
 apps/api/app/main.py
 apps/api/app/scoring.py
@@ -112,12 +113,15 @@ artifacts/tests/a061/t501_company_workspace_layers.json
 artifacts/tests/a062/t501_structure_type_separation.json
 artifacts/tests/a063/t501_commercial_empire_not_control.json
 artifacts/tests/a096/t700_sec_client_allowlist_contract.json
+artifacts/tests/a096/t706_sec_fixture_allowlist_smoke_contract.json
 artifacts/tests/a097/t700_sec_client_rate_limit_contract.json
 artifacts/tests/a098/t701_sec_client_retry_contract.json
+artifacts/tests/a098/t706_sec_fixture_retry_smoke_contract.json
 artifacts/tests/a099/t701_sec_client_hash_cache_contract.json
 artifacts/tests/a100/t702_sec_submissions_normalization_contract.json
 artifacts/tests/a101/t702_sec_companyfacts_normalization_contract.json
 artifacts/tests/a102/t703_sec_fixture_idempotent_upsert_contract.json
+artifacts/tests/a102/t706_sec_fixture_dry_run_smoke_contract.json
 artifacts/tests/a103/t703_sec_ingestion_report_contract.json
 artifacts/tests/a104/t704_source_freshness_contract.json
 artifacts/tests/a105/t705_transactional_failure_rollback_contract.json
@@ -400,6 +404,7 @@ scripts/run_codex_autonomous.sh
 scripts/run_live_e2e_api.sh
 scripts/run_operator_soak.mjs
 scripts/run_scale_benchmarks.py
+scripts/run_sec_connector_smoke.py
 scripts/run_soak_smoke.mjs
 scripts/run_transactional_ingestion_pipeline.py
 scripts/secret_scan.py
@@ -424,6 +429,7 @@ scripts/validate_prototype_parity.py
 scripts/validate_release_decision_bundle.py
 scripts/validate_release_manager_activation.py
 scripts/validate_sec_client_contract.py
+scripts/validate_sec_connector_smoke_contract.py
 scripts/validate_sec_fixture_ingestion_contract.py
 scripts/validate_sec_normalization_contract.py
 scripts/validate_source_freshness_contract.py
@@ -484,6 +490,7 @@ tests/unit/test_scoring.py
 tests/unit/test_sec_client.py
 tests/unit/test_sec_fixture_ingestion.py
 tests/unit/test_sec_normalizer.py
+tests/unit/test_sec_smoke.py
 tests/unit/test_source_freshness.py
 tests/unit/test_transactional_pipeline.py
 uv.lock

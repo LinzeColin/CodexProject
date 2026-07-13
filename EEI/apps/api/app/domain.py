@@ -737,6 +737,46 @@ def list_changes(
     return repository.list_changes(since=since, change_type=change_type)
 
 
+@router.get("/events/amount-summary")
+def event_amount_summary(
+    repository: RepositoryDependency,
+    entity: UUID | None = None,
+    theme: UUID | None = None,
+    from_: Annotated[datetime | None, Query(alias="from")] = None,
+    to_: Annotated[datetime | None, Query(alias="to")] = None,
+    event_type: str | None = None,
+    limit: int = Query(default=100, ge=1, le=500),
+) -> dict[str, Any]:
+    return repository.event_amount_summary(
+        entity_id=entity,
+        theme_id=theme,
+        from_time=from_,
+        to_time=to_,
+        event_type=event_type,
+        limit=limit,
+    )
+
+
+@router.get("/events")
+def list_events(
+    repository: RepositoryDependency,
+    entity: UUID | None = None,
+    theme: UUID | None = None,
+    from_: Annotated[datetime | None, Query(alias="from")] = None,
+    to_: Annotated[datetime | None, Query(alias="to")] = None,
+    event_type: str | None = None,
+    limit: int = Query(default=100, ge=1, le=500),
+) -> list[dict[str, Any]]:
+    return repository.list_events(
+        entity_id=entity,
+        theme_id=theme,
+        from_time=from_,
+        to_time=to_,
+        event_type=event_type,
+        limit=limit,
+    )
+
+
 @router.get("/sources/freshness")
 def source_freshness(repository: RepositoryDependency) -> dict[str, Any]:
     return repository.source_freshness()

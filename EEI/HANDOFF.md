@@ -8,7 +8,8 @@ Updated: 2026-07-13 Australia/Sydney
 
 ## Current Status
 
-- Canonical development worktree is `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/eei`, branch `codex/eei`, with latest `origin/main` merged. T706/A096/A098/A102 is locally validated; remote sync/CI is pending.
+- Canonical development worktree is `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/eei`, branch `codex/eei`, with latest `origin/main` merged. T800 backend service is locally validated; remote sync/CI is pending.
+- T800 adds evidence-bearing `/v1/events` filters and `/v1/events/amount-summary`. Unknown amounts stay null with no width; reported values aggregate only within identical currency/kind/period buckets. Unit `196/196` and isolated PostgreSQL integration `2/2` pass locally. A108/A109 remain `IN PROGRESS` pending T801/T805 UI and cross-view validation.
 - T706 adds a default mock-only SEC fixture smoke that combines allowlist/User-Agent, 503/429 retry and zero-write dry-run. Optional live mode requires explicit network opt-in, CIK and `SEC_USER_AGENT`, never writes PostgreSQL, and was not used for acceptance evidence. Full unit `190/190`, focused SEC `33/33`, and isolated PostgreSQL integration `2/2` pass locally.
 - T705 remains locally validated with a scope/mode-isolated transactional source-document publication pipeline, atomic data/scoring pointer switch, fixture-only rollback injection, seven change types, and `/v1/changes` trigger provenance.
 - Current A209 release-valid rerun is external to this worktree under `/Users/linzezhang/Documents/Codex/runtime_evidence/EEI/a209-rerun-20260713-originmain-d6f379ad-caffeinated`; it remains `IN_PROGRESS` until `288/288`, `0 FAIL` validates. Do not edit or promote partial evidence.
