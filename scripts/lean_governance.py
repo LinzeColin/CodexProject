@@ -26,6 +26,12 @@ if hasattr(sys.stdout, "reconfigure"):
 ROOT = governance.ROOT
 PROJECTS_FILE = governance.PROJECTS_FILE
 HUMAN_ENTRY_FILES = ["功能清单.md", "开发记录.md", "模型参数文件.md", "VERSION", "CHANGELOG.md"]
+
+
+class RetiredProjectError(ValueError):
+    """Raised when a command targets preserved history outside the active registry."""
+
+
 RENDER_VIEW_ALIASES = {
     "feature-list": "功能清单.md",
     "功能清单": "功能清单.md",
@@ -336,6 +342,16 @@ def registered_project(config: dict[str, Any], project_selector: str) -> dict[st
     for project in [item for item in governance.as_list(config.get("projects")) if isinstance(item, dict)]:
         if project_selector in {str(project.get("project_id") or ""), str(project.get("path") or "").replace("\\", "/")}:
             return project
+    for project in [
+        item for item in governance.as_list(config.get("retired_projects")) if isinstance(item, dict)
+    ]:
+        if project_selector in {
+            str(project.get("project_id") or ""),
+            str(project.get("path") or "").replace("\\", "/"),
+        }:
+            raise RetiredProjectError(
+                f"Retired project requires an explicit Owner-authorized reactivation task: {project_selector}"
+            )
     raise ValueError(f"Unknown project: {project_selector}")
 
 
@@ -2004,6 +2020,13 @@ def build_changed_scope(base_ref: str | None = None, root: Path = ROOT, projects
     changed = git_content_changed_files(base_ref, root=root)
     projects = [item for item in governance.as_list(config.get("projects")) if isinstance(item, dict)]
     selection = governance.changed_scope_selection(config, changed)
+    if selection["retired_changed_files"]:
+        raise governance.GovernanceDiffError(
+            "RETIRED_PROJECT_CHANGE",
+            "Retired project paths changed without Owner-authorized reactivation: "
+            + ", ".join(selection["retired_changed_files"]),
+            base_ref=base_ref or "",
+        )
     selected = list(selection["projects"])
     return {
         "schema_version": 1,
@@ -2013,6 +2036,8 @@ def build_changed_scope(base_ref: str | None = None, root: Path = ROOT, projects
         "changed_files": changed,
         "root_governance_changed": bool(selection["root_governance_changed"]),
         "unknown_changed_files": list(selection["unknown_changed_files"]),
+        "retired_changed_files": list(selection["retired_changed_files"]),
+        "retired_project_ids": list(selection["retired_project_ids"]),
         "full_scope_required": bool(selection["full_scope_required"]),
         "all_projects_required": bool(selection["all_required_projects_covered"]),
         "configured_root_scope_excluded_projects": list(selection["configured_root_scope_excluded_projects"]),
@@ -2882,6 +2907,16 @@ def main(argv: list[str] | None = None) -> int:
                 root=ROOT,
                 projects_file=PROJECTS_FILE,
             )
+        except RetiredProjectError as exc:
+            print(
+                json.dumps(
+                    compact_error("RETIRED_PROJECT", str(exc), command="render"),
+                    ensure_ascii=False,
+                    sort_keys=False,
+                    separators=(",", ":"),
+                )
+            )
+            return 1
         except ValueError as exc:
             print(
                 json.dumps(
@@ -2897,6 +2932,16 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "check-render":
         try:
             summary = check_render_registered_project(args.project, view=args.view, root=ROOT, projects_file=PROJECTS_FILE)
+        except RetiredProjectError as exc:
+            print(
+                json.dumps(
+                    compact_error("RETIRED_PROJECT", str(exc), command="check-render"),
+                    ensure_ascii=False,
+                    sort_keys=False,
+                    separators=(",", ":"),
+                )
+            )
+            return 1
         except ValueError as exc:
             print(
                 json.dumps(

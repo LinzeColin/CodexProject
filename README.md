@@ -56,7 +56,6 @@ worktree 根目录：/Users/linzezhang/Documents/Codex/main_worktree/CodexProjec
 | `EEI` | `EEI` | https://github.com/LinzeColin/CodexProject/tree/main/EEI |
 | `FIFA` | `FIFA` | https://github.com/LinzeColin/CodexProject/FIFA |
 | `KM_IDSystem` | `KM_IDSystem` | https://github.com/LinzeColin/CodexProject/tree/main/KM_IDSystem |
-| `WDA` | `WDA` | https://github.com/LinzeColin/CodexProject/tree/main/WDA |
 | `OpenAIDatabase` | `OpenAIDatabase` | https://github.com/LinzeColin/CodexProject/tree/main/OpenAIDatabase |
 | `MetaDatabase` | `MetaDatabase` | https://github.com/LinzeColin/CodexProject/tree/main/MetaDatabase |
 | `KMFA` | `KMFA` | https://github.com/LinzeColin/CodexProject/tree/main/KMFA |
@@ -65,6 +64,12 @@ worktree 根目录：/Users/linzezhang/Documents/Codex/main_worktree/CodexProjec
 | `Serenity-Alipay` | `Serenity-Alipay` | https://github.com/LinzeColin/CodexProject/Serenity-Alipay |
 | `whkmSalary` | `whkmSalary` | https://github.com/LinzeColin/CodexProject/whkmSalary |
 | `arxiv-daily-push` | `arxiv-daily-push` | https://github.com/LinzeColin/CodexProject/tree/main/arxiv-daily-push |
+
+## Retired projects
+
+- `WDA` is retired by Owner decision on 2026-07-13. Its tracked history stays in
+  `WDA/`, but it is not an active/required governance project and cannot be changed
+  without an explicit Owner-authorized reactivation task.
 
 ## Required Checks
 
