@@ -41,11 +41,16 @@ from KMFA.tools.dingtalk_attendance.report_renderer import (
 from KMFA.tools.dingtalk_attendance.dws_attendance import (
     DwsAttendanceError,
     OfficialAttendanceParityError,
+    RealtimeReminderIntegrityError,
     _query_official_report,
     collect_official_org_attendance,
     collect_org_attendance,
+    collect_realtime_reminder_attendance,
     run_dws_json,
     write_private_outputs,
+)
+from KMFA.tools.dingtalk_attendance.collection_integrity import (
+    realtime_reminder_integrity_failure_reason,
 )
 from KMFA.tools.dingtalk_attendance.run_attendance import (
     build_monthly_notification_rollups,
@@ -484,6 +489,38 @@ class OfficialParityFixtureRunner:
                 )
             return {"returncode": 0, "payload": {"success": True, "result": {"records": rows}}}
         raise AssertionError(f"unexpected dws args: {args}")
+
+
+class RealtimeMorningReplayRunner(OfficialParityFixtureRunner):
+    """Public-safe replay shape for the saved 2026-07-13 morning failure."""
+
+    def __init__(self, *, omit_user: str | None = None, query_failure: bool = False) -> None:
+        super().__init__(
+            omit_user=omit_user,
+            date_overrides={"u-normal": "2026-07-13", "u-anomaly": "2026-07-13"},
+        )
+        self.query_failure = query_failure
+
+    def __call__(self, args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict:
+        result = super().__call__(args, timeout=timeout, verbose=verbose)
+        if args[:3] != ["attendance", "report", "query-data"]:
+            return result
+        if self.query_failure:
+            return {
+                "returncode": 1,
+                "payload": {
+                    "success": False,
+                    "code": "request_timeout",
+                    "reason": "saved replay query failure",
+                    "error": {"retryable": False},
+                },
+            }
+        records = result["payload"]["result"]["records"]
+        for record in records:
+            for entry in record["values"]:
+                if entry["termId"] != self.column_ids["考勤结果"]:
+                    entry["value"] = ""
+        return result
 
 
 class DingTalkAttendanceContractTests(unittest.TestCase):
@@ -1051,6 +1088,66 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(result["final"]["status"], "FAILED")
         self.assertEqual(result["status"], "REMINDER_COMPLETED_FINAL_FAILED")
 
+    def test_r6_saved_morning_failure_replay_completes_while_prior_final_keeps_waiting(self) -> None:
+        from KMFA.tools.dingtalk_attendance.automatic_closure import run_automatic_cycle
+
+        runtime_identity = {
+            "git_commit": "a" * 40,
+            "morning_prompt_sha256": "b" * 64,
+            "evening_prompt_sha256": "c" * 64,
+        }
+        task_evidence = {
+            "verified": True,
+            "task_id": "saved-2026-07-13-natural-morning-task",
+            "thread_source": "automation",
+            "automation_id": "kmfa",
+            "triggered_at": "2026-07-13T00:46:38.292Z",
+            "prompt_sha256": runtime_identity["morning_prompt_sha256"],
+        }
+        with (
+            tempfile.TemporaryDirectory() as tmpdir,
+            patch(
+                "KMFA.tools.dingtalk_attendance.automatic_closure.find_latest_pending_work_date",
+                return_value="2026-07-12",
+            ),
+            patch(
+                "KMFA.tools.dingtalk_attendance.automatic_closure._slot_runner",
+                return_value={
+                    "status": "COMPLETED",
+                    "notification_status": "NOT_SENT_OWNER_DISABLED",
+                    "member_count": 2,
+                    "run_id": "dingtalk_attendance_morning_20260713_085450",
+                },
+            ),
+            patch(
+                "KMFA.tools.dingtalk_attendance.automatic_closure._completed_reminder_probe",
+                return_value=None,
+            ),
+            patch(
+                "KMFA.tools.dingtalk_attendance.automatic_closure._completed_final_probe",
+                return_value=None,
+            ),
+            patch(
+                "KMFA.tools.dingtalk_attendance.automatic_closure.find_official_export",
+                return_value=None,
+            ),
+        ):
+            result = run_automatic_cycle(
+                run_slot="morning",
+                trigger_source="automation",
+                task_evidence=task_evidence,
+                runtime_identity=runtime_identity,
+                private_root=Path(tmpdir) / "private",
+                archive_root=Path(tmpdir) / "archive",
+                now=datetime(2026, 7, 13, 10, 45, tzinfo=ZoneInfo("Asia/Shanghai")),
+            )
+
+        self.assertEqual(result["reminder"]["status"], "COMPLETED")
+        self.assertEqual(result["reminder"]["notification_status"], "NOT_SENT_OWNER_DISABLED")
+        self.assertEqual(result["final"]["work_date"], "2026-07-12")
+        self.assertEqual(result["final"]["status"], "WAITING_OFFICIAL_REPORT")
+        self.assertEqual(result["status"], "REMINDER_COMPLETED_FINAL_WAITING")
+
     def test_r6_manual_artifact_recovery_keeps_original_source_and_is_not_natural(self) -> None:
         from KMFA.tools.dingtalk_attendance.automatic_closure import R6Coordinator
 
@@ -1514,9 +1611,10 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
     def test_live_evening_summary_uses_actual_beijing_time_not_scheduler_wall_clock(self) -> None:
         captured: dict[str, str] = {}
 
-        def capture_then_stop(*, work_date: str, summary_datetime: str) -> dict:
+        def capture_then_stop(*, work_date: str, summary_datetime: str, run_type: str) -> dict:
             captured["work_date"] = work_date
             captured["summary_datetime"] = summary_datetime
+            captured["run_type"] = run_type
             raise DwsAttendanceError("stop after summary datetime capture")
 
         actual_beijing_time = datetime(2026, 7, 10, 18, 0, tzinfo=ZoneInfo("Asia/Shanghai"))
@@ -1535,6 +1633,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(result["status"], "DWS_UNAVAILABLE")
         self.assertEqual(captured["work_date"], "2026-07-10")
         self.assertEqual(captured["summary_datetime"], "2026-07-10 18:00:00")
+        self.assertEqual(captured["run_type"], "evening")
 
     def test_run_plan_supports_controlled_work_date_rerun_datetime(self) -> None:
         plan = build_run_plan(
@@ -2153,6 +2252,50 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(collection["stats"]["legacy_diagnostic_skipped_count"], 2)
         self.assertEqual(collection["stats"]["command_failure_count"], 0)
 
+    def test_realtime_morning_replay_accepts_unsettled_final_metrics_with_exact_live_coverage(self) -> None:
+        runner = RealtimeMorningReplayRunner()
+
+        collection = collect_realtime_reminder_attendance(
+            work_date="2026-07-13",
+            summary_datetime="2026-07-13 08:54:50",
+            run_type="morning",
+            runner=runner,
+        )
+
+        stats = collection["stats"]
+        self.assertEqual(stats["realtime_reminder_integrity_status"], "PASS")
+        self.assertEqual(stats["realtime_reminder_run_type"], "morning")
+        self.assertEqual(stats["realtime_reminder_expected_count"], 2)
+        self.assertEqual(stats["realtime_reminder_coverage_count"], 2)
+        self.assertEqual(stats["realtime_reminder_query_failure_count"], 0)
+        self.assertEqual(stats["realtime_reminder_parse_failure_count"], 0)
+        self.assertEqual(stats["attendance_anomaly_names"], ["异常员工"])
+        self.assertNotIn("official_report_parity_status", stats)
+        self.assertIsNone(realtime_reminder_integrity_failure_reason(stats, run_type="morning"))
+        self.assertFalse(any(call[:2] in (("attendance", "record"), ("attendance", "summary")) for call in runner.calls))
+
+    def test_realtime_morning_replay_fails_closed_when_current_member_is_missing(self) -> None:
+        runner = RealtimeMorningReplayRunner(omit_user="u-normal")
+
+        with self.assertRaisesRegex(RealtimeReminderIntegrityError, "REALTIME_REMINDER_COVERAGE_MISMATCH"):
+            collect_realtime_reminder_attendance(
+                work_date="2026-07-13",
+                summary_datetime="2026-07-13 08:54:50",
+                run_type="morning",
+                runner=runner,
+            )
+
+    def test_realtime_morning_replay_fails_closed_when_live_query_fails(self) -> None:
+        runner = RealtimeMorningReplayRunner(query_failure=True)
+
+        with self.assertRaisesRegex(RealtimeReminderIntegrityError, "REALTIME_REMINDER_QUERY_FAILED"):
+            collect_realtime_reminder_attendance(
+                work_date="2026-07-13",
+                summary_datetime="2026-07-13 08:54:50",
+                run_type="morning",
+                runner=runner,
+            )
+
     def test_official_collector_fails_closed_when_report_coverage_is_incomplete(self) -> None:
         runner = OfficialParityFixtureRunner(omit_user="u-normal")
 
@@ -2410,8 +2553,94 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 cleanup=lambda: {"status": "OK"},
             )
 
-        self.assertEqual(result["status"], "OFFICIAL_ATTENDANCE_PARITY_FAILED")
-        self.assertEqual(result["notification_status"], "NOT_SENT_OFFICIAL_ATTENDANCE_PARITY_FAILED")
+        self.assertEqual(result["status"], "REALTIME_REMINDER_INTEGRITY_FAILED")
+        self.assertEqual(result["notification_status"], "NOT_SENT_REALTIME_REMINDER_INTEGRITY_FAILED")
+
+    def test_run_attendance_passes_run_type_and_uses_realtime_reminder_gate(self) -> None:
+        captured: dict[str, object] = {}
+        runner = RealtimeMorningReplayRunner()
+
+        def realtime_collector(**kwargs: object) -> dict[str, object]:
+            captured.update(kwargs)
+            return collect_realtime_reminder_attendance(
+                work_date=str(kwargs["work_date"]),
+                summary_datetime=str(kwargs["summary_datetime"]),
+                run_type=str(kwargs["run_type"]),
+                runner=runner,
+            )
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            archive_root = Path(tmpdir)
+            plan = ATTENDANCE_RUNNER.build_run_plan(
+                "morning",
+                run_datetime=datetime(2026, 7, 13, 8, 54, 50, tzinfo=ZoneInfo("Asia/Shanghai")),
+            )
+            plan["archive_paths"] = {
+                "month_dir": str(archive_root),
+                "raw_jsonl_gz": str(archive_root / "raw.jsonl.gz"),
+                "management_report": str(archive_root / "management.md"),
+                "hr_report": str(archive_root / "hr.md"),
+                "dispatch_receipt": str(archive_root / "receipt.json"),
+                "archive_manifest": str(archive_root / "manifest.json"),
+                "cleanup_audit": str(archive_root / "cleanup.json"),
+            }
+            with (
+                patch.object(ATTENDANCE_RUNNER, "build_run_plan", return_value=plan),
+                patch.object(ATTENDANCE_RUNNER, "dws_command_safety_status", return_value={"status": "READY"}),
+                patch.object(ATTENDANCE_RUNNER, "build_stats_with_rest_required_people", side_effect=lambda stats, **_: stats),
+            ):
+                result = run_attendance(
+                    run_type="morning",
+                    timezone="Asia/Shanghai",
+                    work_date="2026-07-13",
+                    collector=realtime_collector,
+                    cleanup=lambda: {"status": "OK"},
+                )
+            receipt = json.loads((archive_root / "receipt.json").read_text(encoding="utf-8"))
+
+        self.assertEqual(captured["run_type"], "morning")
+        self.assertEqual(result["status"], "COMPLETED")
+        self.assertEqual(result["notification_status"], "NOT_SENT_OWNER_DISABLED")
+        self.assertEqual(receipt["notification_status"], "NOT_SENT_OWNER_DISABLED")
+        self.assertEqual(receipt["messages"], [])
+        self.assertEqual(receipt["target_results"], [])
+
+    def test_run_attendance_realtime_incomplete_payload_fails_before_archive(self) -> None:
+        def incomplete_collector(**kwargs: object) -> dict[str, object]:
+            return {
+                "stats": {
+                    "realtime_reminder_integrity_status": "PASS",
+                    "realtime_reminder_run_type": kwargs["run_type"],
+                    "attendance_group_member_count": 2,
+                    "member_count": 2,
+                    "realtime_reminder_expected_count": 2,
+                    "realtime_reminder_coverage_count": 1,
+                    "realtime_reminder_query_failure_count": 0,
+                    "realtime_reminder_parse_failure_count": 0,
+                    "realtime_reminder_anomaly_count": 0,
+                    "realtime_reminder_anomaly_names": [],
+                },
+                "results": [],
+            }
+
+        with (
+            patch.object(ATTENDANCE_RUNNER, "dws_command_safety_status", return_value={"status": "READY"}),
+            patch.object(
+                ATTENDANCE_RUNNER,
+                "write_private_outputs",
+                side_effect=AssertionError("must not archive an incomplete realtime reminder"),
+            ),
+        ):
+            result = run_attendance(
+                run_type="morning",
+                timezone="Asia/Shanghai",
+                work_date="2026-07-13",
+                collector=incomplete_collector,
+                cleanup=lambda: {"status": "OK"},
+            )
+
+        self.assertEqual(result["status"], "REALTIME_REMINDER_INTEGRITY_FAILED")
+        self.assertEqual(result["notification_status"], "NOT_SENT_REALTIME_REMINDER_INTEGRITY_FAILED")
 
     def test_dws_attendance_collects_org_records_and_summaries_without_mock_data(self) -> None:
         runner = FakeDwsRunner()
