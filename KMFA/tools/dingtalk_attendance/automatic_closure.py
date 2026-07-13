@@ -20,6 +20,9 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 from KMFA.tools.dingtalk_attendance import ONEDRIVE_ROOT, TIMEZONE
+from KMFA.tools.dingtalk_attendance.collection_integrity import (
+    realtime_reminder_integrity_failure_reason,
+)
 from KMFA.tools.dingtalk_attendance.final_reconciliation import (
     FINAL_RESULT_KIND,
     find_latest_pending_work_date,
@@ -919,7 +922,7 @@ def _completed_reminder_probe(*, work_date: str, run_slot: str, archive_root: Pa
             identity["identity_source"] == "skill_id"
             and run_type_from_run_id(run_id) == run_slot
             and str(manifest.get("work_date") or "") == work_date
-            and stats.get("official_report_parity_status") == "PASS"
+            and realtime_reminder_integrity_failure_reason(stats, run_type=run_slot) is None
             and receipt.get("notification_status") == DELIVERY_DISABLED_STATUS
         ):
             return {"member_count": int(stats.get("member_count") or 0), "run_id": run_id}

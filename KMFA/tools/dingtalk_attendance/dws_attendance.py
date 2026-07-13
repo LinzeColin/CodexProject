@@ -160,6 +160,15 @@ class OfficialAttendanceParityError(DwsAttendanceError):
         super().__init__(f"{code}: {detail}")
 
 
+class RealtimeReminderIntegrityError(DwsAttendanceError):
+    """Raised when live reminder evidence is incomplete or cannot be parsed."""
+
+    def __init__(self, code: str, detail: str) -> None:
+        self.code = code
+        self.detail = detail
+        super().__init__(f"{code}: {detail}")
+
+
 def run_dws_json(args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict[str, Any]:
     safety = dws_command_safety_status()
     if safety["status"] != "READY":
@@ -378,9 +387,16 @@ def collect_official_org_attendance(
     *,
     work_date: str,
     summary_datetime: str,
+    run_type: str = "final",
     runner: Callable[..., dict[str, Any]] = run_dws_json,
 ) -> dict[str, Any]:
     """Collect attendance with DingTalk's admin report as the sole business truth."""
+
+    if run_type != "final":
+        raise OfficialAttendanceParityError(
+            "OFFICIAL_REPORT_RUN_TYPE_INVALID",
+            f"final reconciliation requires run_type='final', received {run_type!r}",
+        )
 
     try:
         parsed_work_date = datetime.strptime(work_date, "%Y-%m-%d")
@@ -458,6 +474,153 @@ def collect_official_org_attendance(
         "stats": stats,
         "official_report_evidence": official_report_evidence,
     }
+
+
+def collect_realtime_reminder_attendance(
+    *,
+    work_date: str,
+    summary_datetime: str,
+    run_type: str,
+    runner: Callable[..., dict[str, Any]] = run_dws_json,
+) -> dict[str, Any]:
+    """Collect a current-day reminder without applying final-report metric gates."""
+
+    if run_type not in {"morning", "evening"}:
+        raise RealtimeReminderIntegrityError(
+            "REALTIME_REMINDER_RUN_TYPE_INVALID",
+            f"expected morning or evening, received {run_type!r}",
+        )
+    try:
+        parsed_work_date = datetime.strptime(work_date, "%Y-%m-%d")
+    except (TypeError, ValueError) as exc:
+        raise RealtimeReminderIntegrityError(
+            "REALTIME_REMINDER_WORK_DATE_INVALID",
+            f"expected YYYY-MM-DD, received {work_date!r}",
+        ) from exc
+    if parsed_work_date.strftime("%Y-%m-%d") != work_date:
+        raise RealtimeReminderIntegrityError(
+            "REALTIME_REMINDER_WORK_DATE_INVALID",
+            f"expected canonical YYYY-MM-DD, received {work_date!r}",
+        )
+
+    dept_ids = discover_department_ids(runner=runner)
+    org_members = list_org_members(runner=runner, dept_ids=dept_ids)
+    try:
+        group_scope = _collect_attendance_group_scope(runner=runner)
+        report_columns = _resolve_official_report_columns(runner=runner)
+    except OfficialAttendanceParityError as exc:
+        raise RealtimeReminderIntegrityError(
+            "REALTIME_REMINDER_SCOPE_OR_COLUMNS_FAILED",
+            exc.detail,
+        ) from exc
+    scoped_user_ids = set(group_scope["member_user_ids"])
+    org_by_user_id = {member["userId"]: member for member in org_members}
+    missing_from_org = scoped_user_ids - set(org_by_user_id)
+    if missing_from_org:
+        raise RealtimeReminderIntegrityError(
+            "REALTIME_REMINDER_SCOPE_MAPPING_FAILED",
+            f"{len(missing_from_org)} attendance-group member(s) lack an organization name mapping",
+        )
+    members = [member for member in org_members if member["userId"] in scoped_user_ids]
+    if not members:
+        raise RealtimeReminderIntegrityError(
+            "REALTIME_REMINDER_SCOPE_EMPTY",
+            "no organization member belongs to an attendance group",
+        )
+
+    realtime_by_user, query_evidence = _query_realtime_reminder_report(
+        runner=runner,
+        members=members,
+        work_date=work_date,
+        run_type=run_type,
+        column_ids=report_columns["column_ids"],
+    )
+    rows = _build_realtime_reminder_rows(members=members, realtime_by_user=realtime_by_user)
+    anomaly_rows = [row for row in rows if row["derived"]["realtime_reminder_anomaly"] is True]
+    anomaly_names = [row["member"]["name"] for row in anomaly_rows]
+    stats = {
+        "realtime_reminder_integrity_status": "PASS",
+        "realtime_reminder_run_type": run_type,
+        "attendance_group_count": len(group_scope["group_ids"]),
+        "attendance_group_member_count": len(members),
+        "member_count": len(members),
+        "attendance_required_count": len(members),
+        "record_nonempty_count": len(members),
+        "unexpected_empty_record_count": 0,
+        "unexpected_empty_record_names": [],
+        "incomplete_record_names": [],
+        "realtime_reminder_expected_count": len(members),
+        "realtime_reminder_coverage_count": len(rows),
+        "realtime_reminder_query_failure_count": 0,
+        "realtime_reminder_parse_failure_count": 0,
+        "realtime_reminder_anomaly_count": len(anomaly_rows),
+        "realtime_reminder_anomaly_names": anomaly_names,
+        "attendance_anomaly_count": len(anomaly_rows),
+        "attendance_anomaly_names": anomaly_names,
+        "command_failure_count": 0,
+        "legacy_diagnostic_mode": "SKIPPED_REALTIME_REPORT_AUTHORITATIVE",
+        "legacy_diagnostic_skipped_count": len(members),
+    }
+    return {
+        "dws_live": True,
+        "uses_mock_data": False,
+        "work_date": work_date,
+        "summary_datetime": summary_datetime,
+        "run_type": run_type,
+        "dept_ids": dept_ids,
+        "member_count": len(members),
+        "results": rows,
+        "stats": stats,
+        "realtime_reminder_evidence": {
+            "private": True,
+            "source": "dws attendance report query-data realtime reminder",
+            "run_type": run_type,
+            "work_date": work_date,
+            "query_start": f"{work_date} 00:00:00",
+            "query_end": f"{work_date} 23:59:59",
+            "attendance_group_scope": group_scope,
+            "report_columns": report_columns,
+            "query_batches": query_evidence,
+        },
+    }
+
+
+def _build_realtime_reminder_rows(
+    *,
+    members: list[dict[str, str]],
+    realtime_by_user: Mapping[str, dict[str, Any]],
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for member in members:
+        user_id = member["userId"]
+        skipped = {
+            "final": {
+                "returncode": None,
+                "payload": {
+                    "success": False,
+                    "code": "DIAGNOSTIC_SKIPPED_REALTIME_REPORT_AUTHORITATIVE",
+                },
+            },
+            "attempts": [],
+        }
+        rows.append(
+            {
+                "member": member,
+                "record": skipped,
+                "summary": skipped,
+                "derived": {
+                    "record_success": False,
+                    "summary_success": False,
+                    "record_count": 0,
+                    "record_anomaly": False,
+                    "summary_today_anomaly": False,
+                    "known_no_record": False,
+                    "legacy_diagnostic_skipped": True,
+                    **realtime_by_user[user_id],
+                },
+            }
+        )
+    return rows
 
 
 def _build_official_only_rows(
@@ -830,6 +993,205 @@ def _query_official_report(
     return parsed_by_user, evidence
 
 
+def _query_realtime_reminder_report(
+    *,
+    runner: Callable[..., dict[str, Any]],
+    members: list[dict[str, str]],
+    work_date: str,
+    run_type: str,
+    column_ids: Mapping[str, str],
+) -> tuple[dict[str, dict[str, Any]], list[dict[str, Any]]]:
+    expected_user_ids = [member["userId"] for member in members]
+    expected_user_id_set = set(expected_user_ids)
+    parsed_by_user: dict[str, dict[str, Any]] = {}
+    evidence: list[dict[str, Any]] = []
+    ordered_column_ids = [column_ids[name] for name in OFFICIAL_REPORT_REQUIRED_COLUMNS]
+    for offset in range(0, len(expected_user_ids), OFFICIAL_REPORT_USER_BATCH_SIZE):
+        user_batch = expected_user_ids[offset : offset + OFFICIAL_REPORT_USER_BATCH_SIZE]
+        user_batch_set = set(user_batch)
+        args = [
+            "attendance",
+            "report",
+            "query-data",
+            "--users",
+            ",".join(user_batch),
+            "--columns",
+            ",".join(ordered_column_ids),
+            "--start",
+            f"{work_date} 00:00:00",
+            "--end",
+            f"{work_date} 23:59:59",
+        ]
+        final = _run_with_retry(
+            runner,
+            args,
+            timeout=DEFAULT_DWS_TIMEOUT_SECONDS,
+        )["final"]
+        result = _realtime_success_result(final, code="REALTIME_REMINDER_QUERY_FAILED", args=args)
+        try:
+            records = _extract_report_record_array(result, purpose="query-data")
+        except OfficialAttendanceParityError as exc:
+            raise RealtimeReminderIntegrityError(
+                "REALTIME_REMINDER_PARSE_FAILED",
+                exc.detail,
+            ) from exc
+        evidence.append(
+            {
+                "requested_user_ids": user_batch,
+                "response": final.get("payload", {}),
+            }
+        )
+        returned_batch_user_ids: set[str] = set()
+        for record in records:
+            user_id_value = _first_nonempty_value(record, ("userId", "userid", "user_id", "targetUserId"))
+            if user_id_value is None:
+                raise RealtimeReminderIntegrityError(
+                    "REALTIME_REMINDER_PARSE_FAILED",
+                    "query-data record is missing userId",
+                )
+            user_id = str(user_id_value).strip()
+            if user_id not in expected_user_id_set or user_id not in user_batch_set:
+                raise RealtimeReminderIntegrityError(
+                    "REALTIME_REMINDER_SCOPE_MISMATCH",
+                    "query-data returned a user outside the requested attendance-group batch",
+                )
+            record_date = _official_record_work_date(record)
+            if record_date != work_date:
+                raise RealtimeReminderIntegrityError(
+                    "REALTIME_REMINDER_DATE_MISMATCH",
+                    f"expected {work_date}, received {record_date or 'missing date'}",
+                )
+            if user_id in parsed_by_user:
+                raise RealtimeReminderIntegrityError(
+                    "REALTIME_REMINDER_COVERAGE_MISMATCH",
+                    "query-data returned duplicate rows for a scoped user/date",
+                )
+            parsed_by_user[user_id] = _parse_realtime_reminder_record(
+                record=record,
+                column_ids=column_ids,
+                work_date=work_date,
+                run_type=run_type,
+            )
+            returned_batch_user_ids.add(user_id)
+        if returned_batch_user_ids != user_batch_set:
+            raise RealtimeReminderIntegrityError(
+                "REALTIME_REMINDER_COVERAGE_MISMATCH",
+                f"batch expected {len(user_batch_set)} users, received {len(returned_batch_user_ids)}",
+            )
+
+    missing_users = expected_user_id_set - set(parsed_by_user)
+    if missing_users or len(parsed_by_user) != len(expected_user_ids):
+        raise RealtimeReminderIntegrityError(
+            "REALTIME_REMINDER_COVERAGE_MISMATCH",
+            f"expected {len(expected_user_ids)} users, received {len(parsed_by_user)}",
+        )
+    return parsed_by_user, evidence
+
+
+def _parse_realtime_reminder_record(
+    *,
+    record: Mapping[str, Any],
+    column_ids: Mapping[str, str],
+    work_date: str,
+    run_type: str,
+) -> dict[str, Any]:
+    if run_type not in {"morning", "evening"}:
+        raise RealtimeReminderIntegrityError(
+            "REALTIME_REMINDER_RUN_TYPE_INVALID",
+            f"expected morning or evening, received {run_type!r}",
+        )
+    values = record.get("values")
+    if not isinstance(values, list):
+        raise RealtimeReminderIntegrityError(
+            "REALTIME_REMINDER_PARSE_FAILED",
+            "query-data record values must be a list",
+        )
+    values_by_id: dict[str, Any] = {}
+    for entry in values:
+        if not isinstance(entry, Mapping):
+            raise RealtimeReminderIntegrityError(
+                "REALTIME_REMINDER_PARSE_FAILED",
+                "query-data values contains a non-object entry",
+            )
+        term_id = _first_nonempty_value(entry, ("termId", "columnId", "id"))
+        if term_id is None:
+            raise RealtimeReminderIntegrityError(
+                "REALTIME_REMINDER_PARSE_FAILED",
+                "query-data value is missing termId",
+            )
+        term_id_text = str(term_id).strip()
+        if term_id_text in values_by_id:
+            raise RealtimeReminderIntegrityError(
+                "REALTIME_REMINDER_PARSE_FAILED",
+                "query-data contains a duplicate termId",
+            )
+        values_by_id[term_id_text] = entry.get("value", entry.get("data"))
+    missing_value_names = [name for name, column_id in column_ids.items() if column_id not in values_by_id]
+    if missing_value_names:
+        raise RealtimeReminderIntegrityError(
+            "REALTIME_REMINDER_PARSE_FAILED",
+            f"query-data row lacks required field(s): {', '.join(missing_value_names)}",
+        )
+
+    status_value = values_by_id[column_ids["考勤结果"]]
+    if not isinstance(status_value, str) or not status_value.strip():
+        raise RealtimeReminderIntegrityError(
+            "REALTIME_REMINDER_PARSE_FAILED",
+            "query-data row has no non-empty realtime 考勤结果",
+        )
+    status_text = status_value.strip()
+    try:
+        status_category = _classify_official_status(status_text)
+    except OfficialAttendanceParityError as exc:
+        raise RealtimeReminderIntegrityError(
+            "REALTIME_REMINDER_PARSE_FAILED",
+            exc.detail,
+        ) from exc
+
+    metrics: dict[str, float | None] = {}
+    for name in OFFICIAL_REPORT_REQUIRED_COLUMNS:
+        if name == "考勤结果":
+            continue
+        raw_value = values_by_id[column_ids[name]]
+        if raw_value is None or (isinstance(raw_value, str) and not raw_value.strip()):
+            metrics[name] = None
+            continue
+        try:
+            metrics[name] = _parse_official_nonnegative_number(raw_value, column_name=name)
+        except OfficialAttendanceParityError as exc:
+            raise RealtimeReminderIntegrityError(
+                "REALTIME_REMINDER_PARSE_FAILED",
+                exc.detail,
+            ) from exc
+
+    metrics_anomaly = any(
+        metrics[name] is not None and metrics[name] > 0
+        for name in OFFICIAL_REPORT_ANOMALY_COLUMNS
+    )
+    if status_category == "rest" and metrics_anomaly:
+        raise RealtimeReminderIntegrityError(
+            "REALTIME_REMINDER_PARSE_FAILED",
+            "休息 status conflicts with non-zero realtime anomaly columns",
+        )
+    realtime_anomaly = status_category == "anomaly" or metrics_anomaly
+    issues = [f"考勤结果={status_text}"] if status_category == "anomaly" else []
+    for column_name in OFFICIAL_REPORT_ANOMALY_COLUMNS:
+        metric_value = metrics[column_name]
+        if metric_value is not None and metric_value > 0:
+            display_value = str(int(metric_value)) if metric_value.is_integer() else str(metric_value)
+            issues.append(f"{column_name}={display_value}")
+    return {
+        "realtime_reminder_covered": True,
+        "realtime_reminder_run_type": run_type,
+        "realtime_work_date": work_date,
+        "realtime_status_text": status_text,
+        "realtime_status_category": status_category,
+        "realtime_reminder_anomaly": realtime_anomaly,
+        "realtime_reminder_issues": issues,
+        "realtime_report_metrics": metrics,
+    }
+
+
 def _parse_official_report_record(
     *,
     record: Mapping[str, Any],
@@ -1029,6 +1391,27 @@ def _official_success_result(
     if not isinstance(payload, Mapping) or "result" not in payload:
         raise OfficialAttendanceParityError(
             "OFFICIAL_REPORT_STRUCTURE_UNKNOWN",
+            "successful DWS response is missing result",
+        )
+    return payload["result"]
+
+
+def _realtime_success_result(
+    result: dict[str, Any],
+    *,
+    code: str,
+    args: list[str],
+) -> Any:
+    try:
+        _raise_if_pat_auth_required(result, args=args)
+    except OfficialAttendanceParityError as exc:
+        raise RealtimeReminderIntegrityError(code, exc.detail) from exc
+    if not _is_success(result):
+        raise RealtimeReminderIntegrityError(code, _failure_label(result))
+    payload = result.get("payload", {})
+    if not isinstance(payload, Mapping) or "result" not in payload:
+        raise RealtimeReminderIntegrityError(
+            "REALTIME_REMINDER_PARSE_FAILED",
             "successful DWS response is missing result",
         )
     return payload["result"]
@@ -1430,6 +1813,15 @@ def write_private_outputs(
             handle.write(
                 json.dumps(
                     {"type": "official_report_evidence", **official_report_evidence},
+                    ensure_ascii=False,
+                )
+                + "\n"
+            )
+        realtime_reminder_evidence = collection.get("realtime_reminder_evidence")
+        if isinstance(realtime_reminder_evidence, Mapping):
+            handle.write(
+                json.dumps(
+                    {"type": "realtime_reminder_evidence", **realtime_reminder_evidence},
                     ensure_ascii=False,
                 )
                 + "\n"
