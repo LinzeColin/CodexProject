@@ -1,0 +1,200 @@
+{
+  "schema_version": "ids.stage039.retry_dead_letter.phase2.v1",
+  "stage": "STAGE-039",
+  "phase": "Phase 2",
+  "task_id": "IDS-V0_1-STAGE039-P2",
+  "acceptance_id": "ACC-STAGE-039",
+  "execution_mode": "ISOLATED_NON_PRODUCTION_RETRY_DEAD_LETTER_METADATA_SLICE",
+  "policy_contract_id": "ids.retry_dead_letter.v0_1.p2",
+  "contract_state": "PHASE2_ISOLATED_SLICE_ENABLED_PRODUCTION_DISABLED",
+  "next_gate": "IDS-STAGE039-P3-GATE",
+  "source_binding": {
+    "source_archive_path": "/Users/linzezhang/Downloads/IDS_Taskpack_v0_1_only_中文修订版.zip",
+    "source_archive_sha256": "55b782e338610aab6361b7945bb5e290ba60038a06cc765c7c2da801734db6d3",
+    "source_member": "IDS_v0_1_Final_Chinese_Revised/stages/STAGE-039_重试与死信策略.md",
+    "source_member_match_count": 1,
+    "source_member_sha256": "504caf72a6aeab67a650b4b096e728f03269f6ca8798f6e8a5c51210c8ddd7d9",
+    "roadmap_sha256": "a193fd2c44c51d634bf7887a1a6baf7e5199d9a8535e4211e35e97588e2e21a6",
+    "instructions_sha256": "ce456e06136d5ecc56cd7c9dc926abb5894817dda87bf7667588bf85211794f8",
+    "source_verification_status": "SOURCE_VERIFIED"
+  },
+  "identity_contract": {
+    "stage038_admission_role": "ISOLATED_TRANSPORT_PREREQUISITE_ONLY",
+    "stage039_policy_job_id_derivation": "sha256(stage038_job_id|policy_version|acceptance_id)",
+    "stage038_and_stage039_job_ids_must_differ": true,
+    "stage038_queue_entry_ref_preserved": true,
+    "max_retries_bound_at_stage039_job_creation": true,
+    "max_retries_mutation_after_stage039_job_creation_allowed": false
+  },
+  "upstream_bindings": {
+    "phase1_policy_contract": {
+      "ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_policy_contract.json",
+      "sha256": "d9b1a1dc2d05eaf02cdc2a6ead6d46d6f1c469186b68106639f5bc48347d53e8"
+    },
+    "phase1_scope_boundary": {
+      "ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE1_RETRY_DEAD_LETTER_SCOPE_BOUNDARY.md",
+      "sha256": "4c647ad0bf200326f15d9aa5c339a41c14f9c0fb70bf1ff9b1e3ec699a8c44b4"
+    },
+    "stage037_state_checker": {
+      "ref": "KM_IDSystem/scripts/check_job_state_model.py",
+      "sha256": "7de8746b70ca1eaba78b672deebd9973113cedeacf3edbba09d2afb90407f404"
+    },
+    "stage038_queue_checker": {
+      "ref": "KM_IDSystem/scripts/check_worker_queue_baseline.py",
+      "sha256": "88a29aff19ee2465d6d5192c4fd9c352f85240689fede3a2216a754a1853e0f9"
+    },
+    "stage038_queue_index": {
+      "ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_baseline_index.json",
+      "sha256": "68513591996a51fea90cd2ea863f42f910c0c3a45b70fd1611655bb6d95911ab"
+    }
+  },
+  "policy": {
+    "policy_version": "ids.retry_policy.v0_1.stage039.p2",
+    "max_retries": 2,
+    "total_attempt_limit": 3,
+    "backoff_schedule_seconds": [5, 30],
+    "jitter_policy": "DETERMINISTIC_BOUNDED_HASH_JITTER_V1",
+    "jitter_formula": "lower=max(1,ceil(base_delay/2)); delay=lower+(sha256(policy_version|job_id|retry_ordinal) mod (base_delay-lower+1))",
+    "retryable_safe_error_codes": [
+      "TRANSIENT_DEPENDENCY_UNAVAILABLE",
+      "TRANSIENT_OPERATION_TIMEOUT"
+    ],
+    "permanent_safe_error_codes": [
+      "INVALID_CONTROL_METADATA",
+      "UNSUPPORTED_CONTROL_OPERATION"
+    ],
+    "resource_pause_reason_codes": [
+      "external_drive_offline",
+      "disk_space_insufficient",
+      "external_api_budget_insufficient"
+    ],
+    "unknown_code_behavior": "NO_AUTOMATIC_RETRY",
+    "parameter_source": "STAGE039_PHASE2_LOCAL_ENGINEERING_SAFETY_BOUNDARY",
+    "selection_rationale": "Two retries cap one logical job at three attempts; 5 and 30 second ceilings separate short and sustained transient conditions while bounded hash jitter prevents synchronized immediate retry in the isolated slice.",
+    "fact_level": "ASSUMPTION",
+    "production_calibrated": false,
+    "production_calibration_required": true,
+    "rollback_policy_version": "NO_AUTOMATIC_RETRY"
+  },
+  "classification": {
+    "retryable_allowlist_match": "TRANSIENT_RETRYABLE",
+    "permanent_allowlist_match": "PERMANENT_NON_RETRYABLE",
+    "resource_pause_match": "RESOURCE_CONDITION_PAUSE",
+    "retry_budget_exhausted": "RETRY_EXHAUSTED",
+    "unknown_or_missing_code": "INDETERMINATE_UNSAFE",
+    "classification_source": "SAFE_ERROR_CODE_EXACT_MATCH_ONLY",
+    "message_substring_classification_allowed": false,
+    "default_allow": false
+  },
+  "retry_budget": {
+    "definition": "max_retries counts attempts after the initial attempt",
+    "total_attempt_formula": "1 + max_retries",
+    "reservation_increments_retry_count": false,
+    "due_admission_increments_retry_count": true,
+    "admission_compare_and_set_required": true,
+    "duplicate_request_increments_retry_count": false,
+    "resource_pause_increments_retry_count": false,
+    "exhausted_requeue_allowed": false
+  },
+  "scheduler_contract": {
+    "clock_input": "explicit observed_at_epoch_seconds",
+    "sleep_or_wait_performed": false,
+    "next_eligible_encoding": "epoch:<nonnegative integer>",
+    "early_admission_behavior": "RETRY_NOT_YET_ELIGIBLE",
+    "admission_transition": "RETRY_WAIT->QUEUED",
+    "reservation_transition": "RUNNING->RETRY_WAIT",
+    "resource_gates_required": true,
+    "idempotent_transition_request_required": true
+  },
+  "dead_letter_contract": {
+    "transition_path": ["RUNNING", "RETRY_WAIT", "DEAD_LETTERED"],
+    "required_exhaustion_expression": "retry_count == max_retries",
+    "raw_payload_copy_allowed": false,
+    "automatic_replay_allowed": false,
+    "manual_review_required": true,
+    "required_record_fields": [
+      "job_id",
+      "attempt_id",
+      "retry_count",
+      "max_retries",
+      "input_refs",
+      "output_refs",
+      "safe_error_code",
+      "error_ref",
+      "checkpoint_ref",
+      "audit_ref",
+      "policy_version"
+    ]
+  },
+  "runtime_boundary": {
+    "stage038_queue_admission_allowed": true,
+    "stage037_candidate_transition_allowed": true,
+    "in_memory_only": true,
+    "production_activation_allowed": false,
+    "database_allowed": false,
+    "persistent_queue_write_allowed": false,
+    "runtime_output_write_allowed": false,
+    "external_api_allowed": false,
+    "raw_metadata_access_allowed": false,
+    "ids_business_job_allowed": false,
+    "fake_ids_business_data_allowed": false,
+    "measured_backpressure_owner": "STAGE-040",
+    "lock_lease_fencing_owner": "STAGE-041",
+    "automatic_resume_owner": "STAGE-042",
+    "worker_crash_recovery_owner": "STAGE-043",
+    "cleanup_execution_owner": "STAGE-044"
+  },
+  "control_metadata_contract": {
+    "input_ref": "repo:KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE1_RETRY_DEAD_LETTER_SCOPE_BOUNDARY.md",
+    "input_ref_must_be_git_tracked": true,
+    "raw_body_in_control_record_allowed": false,
+    "output_refs_on_controlled_failure": [],
+    "checkpoint_ref_format": "checkpoint:sha256:<tracked-control-input-digest>",
+    "error_ref_format": "error:<safe_error_code>",
+    "audit_ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE2_RETRY_DEAD_LETTER_SLICE.md#Controlled-Evidence"
+  },
+  "human_status_projection": {
+    "RETRY_WAIT": {
+      "label_zh": "等待重试",
+      "owner_action_zh": "查看安全错误与下次资格时间",
+      "owner_attention_required": false
+    },
+    "PAUSED": {
+      "label_zh": "已暂停",
+      "owner_action_zh": "恢复资源并完成复核",
+      "owner_attention_required": true
+    },
+    "FAILED": {
+      "label_zh": "处理失败",
+      "owner_action_zh": "人工复核后可创建新的关联任务",
+      "owner_attention_required": true
+    },
+    "DEAD_LETTERED": {
+      "label_zh": "需要人工处理",
+      "owner_action_zh": "人工复核，不自动继续",
+      "owner_attention_required": true
+    }
+  },
+  "rollback": {
+    "trigger": "INVALID_CONTRACT_OR_POLICY_OR_UPSTREAM_BINDING",
+    "action": "DISABLE_AUTOMATIC_RETRY_AND_REVERT_PHASE2_FILES_ONLY",
+    "preserve_phase1": true,
+    "preserve_stage037_stage038": true,
+    "preserve_source_and_evidence": true,
+    "github_action_allowed": false
+  },
+  "truth_flags": {
+    "taskpack_source_read_performed": true,
+    "ids_business_source_read_performed": false,
+    "raw_metadata_content_accessed": false,
+    "fake_ids_business_data_used": false,
+    "real_ids_business_job_created": false,
+    "database_connection_performed": false,
+    "persistent_queue_write_performed": false,
+    "runtime_output_written": false,
+    "external_api_call_performed": false,
+    "production_runtime_activation_performed": false,
+    "github_upload_allowed": false,
+    "app_reinstall_allowed": false
+  }
+}

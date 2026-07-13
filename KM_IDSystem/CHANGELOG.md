@@ -1,5 +1,11 @@
 # Changelog
 
+## IDS v0.1 STAGE-039 Phase 2 - 2026-07-13
+
+- Added `ids.retry_policy.v0_1.stage039.p2` with `max_retries=2`, bounded `[5, 30]` backoff ceilings, deterministic nonzero hash jitter, an exact two-code retry allowlist, default-deny unknown errors, explicit `ASSUMPTION` fact level, and production calibration still required.
+- Composed the reviewed Stage038 in-memory transport admission with a separately derived Stage039 policy job and Stage037 CAS transitions, so the Stage038 `max_retries=0` job is never mutated into the Stage039 `max_retries=2` job. Retry reservation consumes no budget; failure/admission replays are idempotent; due admission increments exactly once; resource pause preserves pending retry; exhaustion follows `RUNNING -> RETRY_WAIT -> DEAD_LETTERED`.
+- Recorded the tracked control input, empty failure output refs, safe error, actual checkpoint digest, Chinese owner status, rollback, and no-side-effect flags. No production service, persistence, database, raw metadata, fake IDS data, API, runtime output, GitHub action, app reinstall, Phase 3, or Stage040+ runtime ran.
+
 ## IDS v0.1 STAGE-039 Phase 1 - 2026-07-13
 
 - Bound the unique approved Stage039 taskpack member and the reviewed Stage037/038 state/queue sources into an exact-shaped metadata-only retry/dead-letter engineering contract and stdout-only checker under `ACC-STAGE-039`; unknown root or nested contract fields fail closed.

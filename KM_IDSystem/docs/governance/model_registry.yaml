@@ -14,6 +14,10 @@ assumptions:
     fact_level: "UNKNOWN"
     unknown_task_ids: ["TASK-OPME-B-001"]
     evidence_refs: ["KM_IDSystem/backend/app/services/analysis.py"]
+  - assumption_id: "ASM-004"
+    statement: "The Stage039 retry values are a bounded isolated engineering safety selection and are not production calibrated."
+    fact_level: "ASSUMPTION"
+    evidence_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE2_RETRY_DEAD_LETTER_SLICE.md", "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_runtime_contract.json"]
 models:
   - model_id: "MOD-001"
     name: "Dynamic kiln risk rule"
@@ -127,3 +131,19 @@ models:
     code_refs: ["KM_IDSystem/backend/app/services/model_router.py:15"]
     test_refs: ["KM_IDSystem/backend/tests/test_api.py:31"]
     evidence_refs: ["KM_IDSystem/README.md:5"]
+  - model_id: "MOD-008"
+    name: "Retry and dead-letter control policy"
+    kind: "deterministic_control_policy"
+    purpose: "Classify bounded safe error codes and produce deterministic retry eligibility or dead-letter metadata without production activation."
+    owner: "KM_IDSystem"
+    status: "isolated_non_production"
+    fact_level: "ASSUMPTION"
+    model_version: "ids.retry_policy.v0_1.stage039.p2"
+    assumptions: ["ASM-004"]
+    formula_ids: ["FORM-008"]
+    parameter_ids: ["PARAM-050", "PARAM-051", "PARAM-052", "PARAM-053", "PARAM-054", "PARAM-055"]
+    inputs: ["safe_error_code", "job_id", "retry_count", "max_retries", "observed_at_epoch_seconds"]
+    outputs: ["failure_class", "decision_action", "next_eligible_at", "machine_state", "owner_status"]
+    code_refs: ["KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"]
+    test_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py"]
+    evidence_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE2_RETRY_DEAD_LETTER_SLICE.md", "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_runtime_contract.json"]

@@ -2,10 +2,15 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE039"
-current_phase_id: "IDS-STAGE039-P1"
-current_task_id: "IDS-V0_1-STAGE039-P1"
-next_gate_id: "IDS-STAGE039-P2-GATE"
+current_phase_id: "IDS-STAGE039-P2"
+current_task_id: "IDS-V0_1-STAGE039-P2"
+next_gate_id: "IDS-STAGE039-P3-GATE"
 current_transition_history:
+  stage039_phase1_state:
+    current_stage_id: "IDS-STAGE039"
+    current_phase_id: "IDS-STAGE039-P1"
+    current_task_id: "IDS-V0_1-STAGE039-P1"
+    next_gate_id: "IDS-STAGE039-P2-GATE"
   stage039_entry_state:
     current_stage_id: "IDS-STAGE038"
     current_phase_id: "IDS-STAGE038-REVIEW"
@@ -9523,7 +9528,7 @@ stages:
       - "重新打开 FAILED、DEAD_LETTERED、SUCCEEDED 或 CANCELLED 终态"
       - "把资源暂停计入 retry budget，或允许 exhausted retry 再次入队"
       - "未版本化策略、未知错误或缺失证据触发自动重试"
-      - "创建或执行 retry scheduler、dead-letter processor、queue、worker、lock、automatic lifecycle、crash recovery 或 cleanup runtime"
+      - "创建或执行 production/persistent retry scheduler、dead-letter processor、queue、worker、lock、automatic lifecycle、crash recovery 或 cleanup runtime"
       - "连接 PostgreSQL、修改 schema/state registry 或写真实 job/dead-letter row"
       - "读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
       - "移动、删除、覆盖原始资料、manifest、evidence ledger、audit log、report snapshot 或 active index"
@@ -9543,6 +9548,10 @@ stages:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_policy_contract.json"
         - "KM_IDSystem/scripts/check_retry_dead_letter_policy.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_policy.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE2_RETRY_DEAD_LETTER_SLICE.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_runtime_contract.json"
+        - "KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py"
     phases:
       -
         phase_id: "IDS-STAGE039-P1"
@@ -9609,7 +9618,7 @@ stages:
         phase_id: "IDS-STAGE039-P2"
         name: "重试与死信策略 实现、接入与最小可运行切片"
         objective: "In a separate run, select and evidence explicit versioned policy parameters, then implement an isolated non-production failure-classification, retry-eligibility/scheduling and dead-letter metadata slice integrated with the reviewed Stage038 control queue; map machine decisions to Chinese owner status and record bounded refs."
-        status: "planned"
+        status: "passed_with_local_evidence"
         stop_conditions:
           - "Phase 1 contract or upstream hashes are invalid"
           - "Numeric policy is implicit, unbounded, unversioned or lacks rationale and rollback"
@@ -9617,27 +9626,59 @@ stages:
           - "Implementation activates production, connects PostgreSQL, reads raw metadata, uses fake IDS data, or takes over STAGE-040..044"
         stop_gate:
           gate_id: "IDS-STAGE039-P2-GATE"
-          status: "planned"
+          status: "passed_with_local_evidence"
           pass_conditions:
             - "Versioned policy parameters and safe-error allowlist are explicit and validated"
             - "Isolated retry and dead-letter slice is deterministic, idempotent and bounded"
             - "No production, database, raw-source, fake-data or downstream-stage side effect occurs"
-          evidence_refs: []
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE2_RETRY_DEAD_LETTER_SLICE.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_runtime_contract.json"
+            - "KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py"
+            - "KM_IDSystem/docs/governance/project.yaml"
+            - "KM_IDSystem/docs/governance/model_registry.yaml"
+            - "KM_IDSystem/docs/governance/formula_registry.yaml"
+            - "KM_IDSystem/docs/governance/parameter_registry.csv"
         tasks:
           -
             task_id: "IDS-V0_1-STAGE039-P2"
             name: "实现隔离重试与死信最小切片"
             objective: "Implement only the approved Phase 2 slice in a separate run."
-            status: "planned"
+            status: "completed"
             estimated_hours: 4
             total_hours_percent: "40.00%"
             dependencies:
               - "IDS-V0_1-STAGE039-P1"
             acceptance_ids:
               - "ACC-STAGE-039"
-            test_commands: []
-            test_results: "Not run; Phase 2 is outside the current run."
-            evidence_refs: []
+            test_commands:
+              - "python3 -B KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"
+              - "python3 -B -m unittest -q KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage039_retry_dead_letter_policy KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage039_retry_dead_letter_runtime"
+              - "python3 -B -m unittest -q KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -p 'test_stage03[1-9]*.py' -q"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -p 'test_stage02[6-9]*.py' -q"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "python3 -B scripts/lean_governance.py check-render --project KM_IDSystem"
+              - "events.jsonl parse and duplicate-id check"
+              - "git diff --check"
+              - "python3 -B scripts/validate_governance_sync.py --changed-only --base-ref HEAD --semantic --drift-report"
+            test_results: "TDD RED: Stage039 Phase2 10 tests failed because the runtime checker and contract did not exist. GREEN: Stage039 20 tests OK; Stage005 146 tests OK; Stage031-039 aggregate 227 tests OK; Stage026-030 compatibility 75 tests OK; full IDS v0.1 discovery 633 tests OK; checker returned contract_valid=true and slice_valid=true. The isolated metadata path completed two retry admissions with exact idempotent replay and then DEAD_LETTERED at retry_count=2. Production runtime, persistence, database, raw metadata, fake IDS business data, runtime output, external API, GitHub, app reinstall, Phase3, Stage040, stage review, and batch gates were not executed. Scoped Stage005 validator valid=true; final layered validation details are recorded in the Phase2 evidence and event."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE1_RETRY_DEAD_LETTER_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE2_RETRY_DEAD_LETTER_SLICE.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_policy_contract.json"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_runtime_contract.json"
+              - "KM_IDSystem/scripts/check_retry_dead_letter_policy.py"
+              - "KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_policy.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py"
+              - "KM_IDSystem/docs/governance/project.yaml"
+              - "KM_IDSystem/docs/governance/model_registry.yaml"
+              - "KM_IDSystem/docs/governance/formula_registry.yaml"
+              - "KM_IDSystem/docs/governance/parameter_registry.csv"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
             risk: "Retry runtime can duplicate side effects or create unbounded load if policy and identity gates are incomplete."
             rollback: "Revert Phase 2 files only and preserve the Phase 1 contract."
       -

@@ -1,10 +1,14 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-031-040"
 created_at_utc: "2026-07-03T08:32:56Z"
-updated_at_utc: "2026-07-12T23:44:47Z"
-status: "stage039_phase1_completed"
+updated_at_utc: "2026-07-13T00:19:18Z"
+status: "stage039_phase2_completed"
 
 transition_history:
+  stage039_phase1_state:
+    status: "stage039_phase1_completed"
+    current_task_id: "IDS-V0_1-STAGE039-P1"
+    next_allowed_task_id: "IDS-V0_1-STAGE039-P2"
   stage039_entry_state:
     status: "stage038_completed_reviewed_local"
     current_task_id: "IDS-V0_1-STAGE038-REVIEW"
@@ -285,17 +289,19 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_review.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
   STAGE-039:
-    status: "stage039_phase1_completed"
+    status: "stage039_phase2_completed"
     completed_phases:
       - "Phase 1"
+      - "Phase 2"
     review_status: "pending"
-    next_phase: "Phase 2"
-    next_gate: "IDS-STAGE039-P2-GATE"
-    current_task_id: "IDS-V0_1-STAGE039-P1"
+    next_phase: "Phase 3"
+    next_gate: "IDS-STAGE039-P3-GATE"
+    current_task_id: "IDS-V0_1-STAGE039-P2"
     acceptance_id: "ACC-STAGE-039"
-    acceptance_status: "phase1_scope_boundary_complete"
+    acceptance_status: "phase2_isolated_slice_complete"
     source_verification_status: "SOURCE_VERIFIED"
     phase2_entry_authorized: true
+    phase3_entry_authorized: true
     source_archive_path: "/Users/linzezhang/Downloads/IDS_Taskpack_v0_1_only_中文修订版.zip"
     source_archive_sha256: "55b782e338610aab6361b7945bb5e290ba60038a06cc765c7c2da801734db6d3"
     source_member: "IDS_v0_1_Final_Chinese_Revised/stages/STAGE-039_重试与死信策略.md"
@@ -304,21 +310,41 @@ stage_progress:
     source_member_sha256: "504caf72a6aeab67a650b4b096e728f03269f6ca8798f6e8a5c51210c8ddd7d9"
     roadmap_sha256: "a193fd2c44c51d634bf7887a1a6baf7e5199d9a8535e4211e35e97588e2e21a6"
     instructions_sha256: "ce456e06136d5ecc56cd7c9dc926abb5894817dda87bf7667588bf85211794f8"
-    retry_policy_contract_id: "ids.retry_dead_letter.v0_1.p1"
-    contract_state: "PHASE1_ENGINEERING_CONTRACT_RUNTIME_DISABLED"
-    numeric_policy_values_assigned: false
+    retry_policy_contract_id: "ids.retry_dead_letter.v0_1.p2"
+    policy_version: "ids.retry_policy.v0_1.stage039.p2"
+    contract_state: "PHASE2_ISOLATED_SLICE_ENABLED_PRODUCTION_DISABLED"
+    numeric_policy_values_assigned: true
+    max_retries: 2
+    backoff_schedule_seconds:
+      - 5
+      - 30
+    jitter_policy: "DETERMINISTIC_BOUNDED_HASH_JITTER_V1"
+    isolated_slice_valid: true
+    production_runtime_activation_performed: false
+    persistent_queue_write_performed: false
+    database_connection_performed: false
+    raw_metadata_content_accessed: false
+    fake_ids_business_data_used: false
     evidence_refs:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_ENTRY_CONTRACT.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE1_RETRY_DEAD_LETTER_SCOPE_BOUNDARY.md"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_policy_contract.json"
       - "KM_IDSystem/scripts/check_retry_dead_letter_policy.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_policy.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE2_RETRY_DEAD_LETTER_SLICE.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_runtime_contract.json"
+      - "KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py"
+      - "KM_IDSystem/docs/governance/project.yaml"
+      - "KM_IDSystem/docs/governance/model_registry.yaml"
+      - "KM_IDSystem/docs/governance/formula_registry.yaml"
+      - "KM_IDSystem/docs/governance/parameter_registry.csv"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
-  current_task_id: "IDS-V0_1-STAGE039-P1"
-  next_allowed_task_id: "IDS-V0_1-STAGE039-P2"
+  current_task_id: "IDS-V0_1-STAGE039-P2"
+  next_allowed_task_id: "IDS-V0_1-STAGE039-P3"
   github_upload_allowed: false
-  current_run: "STAGE-039 Phase 1 defines the retry/dead-letter engineering contract, failure taxonomy, retry-budget and identity invariants, resource-pause behavior, terminal manual-rerun lineage, protected evidence, and downstream ownership. No scheduler, dead-letter runtime, queue/worker execution, database action, raw metadata access, fake IDS business data, GitHub action, app reinstall, or later phase ran."
-  no_upload_reason: "BATCH031_040 has STAGE-031 through STAGE-038 completed and reviewed locally; STAGE-039 has only Phase 1 complete and STAGE-040 remains incomplete. The tenth-stage review and separate batch upload gates have not run, so push_allowed stays false."
+  current_run: "STAGE-039 Phase 2 selects an explicit versioned bounded policy and executes only an isolated in-memory retry/dead-letter metadata slice over a real Git-tracked control reference. Two retry admissions increment budget exactly once, duplicate admission replay is idempotent, resource pause consumes no budget, and exhaustion reaches DEAD_LETTERED. No production, persistence, database, raw metadata, fake IDS business data, external API, runtime output, GitHub action, app reinstall, Phase 3, or later-stage runtime ran."
+  no_upload_reason: "BATCH031_040 has STAGE-031 through STAGE-038 completed and reviewed locally; STAGE-039 has only Phase 1 and Phase 2 complete and STAGE-040 remains incomplete. The tenth-stage review and separate batch upload gates have not run, so push_allowed stays false."
