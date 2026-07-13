@@ -3,11 +3,10 @@ import { useMemo } from "react";
 import type { AtlasNode } from "../../types";
 import { DATA_MAP_DETAIL_PANEL_VERSION, uiCopy } from "../atlas/constants";
 import { DeltaStats } from "../atlas/contracts";
-import { isGraphParentNode } from "../atlas/contributionModels";
 import { dataMapPriorityForNode } from "../atlas/dataGuideModels";
-import { DataGuideNode, LayoutNode } from "../atlas/layoutContracts";
+import { DataGuideNode } from "../atlas/layoutContracts";
 import { buildHumanOverview } from "../atlas/sourceSlice";
-import { formatSigned, isActivationKey, translateKind } from "../atlas/utils";
+import { formatSigned, isActivationKey } from "../atlas/utils";
 
 
 
@@ -125,37 +124,6 @@ export function HumanBulletList({ title, items }: { title: string; items: string
         ))}
       </ul>
     </div>
-  );
-}
-
-
-
-export function GraphSvgNode({
-  item,
-  selected,
-  onSelectNode,
-}: {
-  item: LayoutNode;
-  selected: boolean;
-  onSelectNode: (node: AtlasNode) => void;
-}) {
-  const radius = selected ? item.r + 5 : item.r;
-  const isParent = isGraphParentNode(item.node);
-  return (
-    <g
-      className={`${selected ? "graph-node selected" : "graph-node"}${isParent ? " parent-node" : ""}`}
-      aria-label={`${translateKind(item.node.kind)} · ${item.node.label}`}
-      role="button"
-      tabIndex={0}
-      onClick={() => onSelectNode(item.node)}
-      onKeyDown={(event) => {
-        if (isActivationKey(event)) onSelectNode(item.node);
-      }}
-    >
-      <title>{`${translateKind(item.node.kind)} · ${item.node.label}`}</title>
-      <circle className="graph-node-halo" cx={item.x} cy={item.y} r={radius + (isParent ? 8 : 5)} fill={item.color} opacity={isParent ? 0.1 : 0.045} />
-      <circle className="graph-node-core" cx={item.x} cy={item.y} r={radius} fill={item.color} filter="url(#softGlow)" />
-    </g>
   );
 }
 

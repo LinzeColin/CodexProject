@@ -7,10 +7,10 @@ import { ActionDetailDrawer } from "../../components/ActionDetailDrawer";
 import { AssetDetailPanel } from "../../components/AssetDetailPanel";
 import { ThemeDetailPanel } from "../../components/ThemeDetailPanel";
 import { VisualWorkflowWorkbench } from "../../components/VisualWorkflowWorkbench";
-import { BehaviorIntelligencePanel } from "./BehaviorClioEconomicPanels";
+import { BehaviorIntelligencePanel } from "./BehaviorIntelligencePanel";
 import { buildHomeActionStatusChips, buildLevelAssetGroupChips, buildThemeCategoryChips, humanActionStatusLabel, humanEffortLabel, humanPriorityLabel, humanUrgencyLabel } from "./homePresentation";
 import { HOME_ACTION_SECTION_VERSION, HOME_ARRIVAL_BRIEFING_VERSION, HOME_LEVEL_ASSET_SECTION_VERSION, HOME_THEME_CATEGORY_SECTION_VERSION, MEMORY_OVERVIEW_OPERATION_VERSION, MEMORY_OVERVIEW_SECTION_ORDER, MEMORY_OVERVIEW_STRUCTURE_VERSION, uiCopy } from "../../shared/atlas/constants";
-import { ClioLikeVisualModel, DeltaStats, EconomicLikeVisualModel, HomeAction, HomeActionDetail, HomeTierAsset, HomeTopicDetail, HumanQuestionMapModel, TierAssetDetail, TimelineTimeRangeSelection, TopicClassificationDetail, WorkflowLatentGovernanceVisualModel } from "../../shared/atlas/contracts";
+import { DeltaStats, HomeAction, HomeActionDetail, HomeTierAsset, HomeTopicDetail, TierAssetDetail, TimelineTimeRangeSelection, TopicClassificationDetail } from "../../shared/atlas/contracts";
 import { buildHomeArrivalBriefing, buildHomeOverviewModel } from "../../shared/atlas/homeOverviewModels";
 import { humanNodeDisplayTitle } from "../../shared/atlas/semanticHuman";
 import { timelineRangeSummary } from "../../shared/atlas/timelineInteraction";
@@ -24,10 +24,6 @@ export function HomeOverviewView({
   atlas,
   nodes,
   graphEdges,
-  clioLikeVisualModel,
-  economicLikeVisualModel,
-  workflowLatentGovernanceVisualModel,
-  humanQuestionMapModel,
   deltaStats,
   selectedNode,
   sharedState,
@@ -38,10 +34,6 @@ export function HomeOverviewView({
   atlas: MemoryAtlas;
   nodes: AtlasNode[];
   graphEdges: AtlasEdge[];
-  clioLikeVisualModel: ClioLikeVisualModel;
-  economicLikeVisualModel: EconomicLikeVisualModel;
-  workflowLatentGovernanceVisualModel: WorkflowLatentGovernanceVisualModel;
-  humanQuestionMapModel: HumanQuestionMapModel;
   deltaStats: DeltaStats;
   selectedNode: AtlasNode | null;
   sharedState: SharedAtlasState;

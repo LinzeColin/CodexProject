@@ -170,10 +170,7 @@ export function FeatureRouter() {
     <Route
       activeView={activeView}
       atlas={scopedAtlas}
-      clioLikeVisualModel={clioLikeVisualModel}
-      economicLikeVisualModel={economicLikeVisualModel}
       filters={filters}
-      humanQuestionMapModel={humanQuestionMapModel}
       nodeMap={nodeMap}
       onClearTimelineRange={clearTimelineRange}
       onSelectContributionPeriod={selectContributionPeriod}
@@ -185,7 +182,6 @@ export function FeatureRouter() {
       slice={slice}
       starfieldMapping={starfieldMapping}
       timelineTimeRange={timelineTimeRange}
-      workflowLatentGovernanceVisualModel={workflowLatentGovernanceVisualModel}
     />
   );
 }

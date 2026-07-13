@@ -14,7 +14,17 @@ const scriptDir = dirname(fileURLToPath(import.meta.url));
 const appRoot = resolve(scriptDir, "..");
 const repoRoot = resolve(appRoot, "../..");
 
-const appSource = readFileSync(resolve(appRoot, "src/App.tsx"), "utf8");
+const runtimeSourcePaths = [
+  "src/providers/AtlasWorkspaceProvider.tsx",
+  "src/features/settings/InteractionLens.tsx",
+  "src/features/settings/InspectorWorkspace.tsx",
+  "src/features/overview/HomeOverviewView.tsx",
+  "src/features/assets/GalaxyView.tsx",
+  "src/features/assets/TimelineView.tsx",
+];
+const appSource = runtimeSourcePaths
+  .map((relativePath) => readFileSync(resolve(appRoot, relativePath), "utf8"))
+  .join("\n");
 const stateSource = readFileSync(resolve(appRoot, "src/state/sharedAtlasState.ts"), "utf8");
 const cssSource = readFileSync(resolve(appRoot, "src/styles.css"), "utf8");
 const packageSource = readFileSync(resolve(appRoot, "package.json"), "utf8");
@@ -39,7 +49,7 @@ console.log(JSON.stringify({
     "selection schema keeps node, cluster, record, time range and signal",
     "filter schema clears one filter without mutating source data",
     "sync actions share focus across home, galaxy, timeline, inspector and ROI dashboard",
-    "App surfaces shared-state data attributes for interaction verification",
+    "Runtime surfaces expose shared-state data attributes for interaction verification",
   ],
 }, null, 2));
 
@@ -123,7 +133,7 @@ function validateSourceContracts(failures) {
     ".home-shared-focus-strip",
   ];
   if (!hasAll(stateSource, requiredStateNeedles)) failures.push("shared-state source lacks required schema/reducer/filter contracts");
-  if (!hasAll(appSource, requiredAppNeedles)) failures.push("App does not expose all shared-state sync bindings");
+  if (!hasAll(appSource, requiredAppNeedles)) failures.push("Runtime modules do not expose all shared-state sync bindings");
   if (!hasAll(cssSource, requiredCssNeedles)) failures.push("shared-state UI status styles are missing");
   if (!packageSource.includes('"validate:shared-state": "node --experimental-strip-types scripts/validate_shared_state_store.mjs"')) {
     failures.push("package.json lacks validate:shared-state script");

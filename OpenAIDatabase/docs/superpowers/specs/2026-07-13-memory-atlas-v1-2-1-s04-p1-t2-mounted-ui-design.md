@@ -31,10 +31,16 @@ The current graph has three non-experiment runtime orphans:
 - `shared/runtime/evidence.ts` is not runtime code. It is an ambient `Window` type
   contract and will become `evidence.d.ts` so its compile-time role is explicit.
 
-The first two modules will be deleted. `HomeOverviewView` will stop accepting the two
-unused workflow/question model props. No live component will be moved solely to make
-the directory tree look cleaner, especially the large scene renderers whose split is
-outside this Task.
+The first two modules will be deleted. `HomeOverviewView` and the route shell will stop
+accepting four unused visual-model props. The models themselves remain in
+`FeatureRouter` because the established runtime evidence hooks still consume them. No
+live component will be moved solely to make the directory tree look cleaner,
+especially the large scene renderers whose split is outside this Task.
+
+The test-first RED run also found three symbol-level component orphans inside reachable
+modules: `ClioLikeVisualPanel`, `EconomicLikeVisualPanel` and `GraphSvgNode`. The first
+two are removed by reducing the old overview module to its only mounted export,
+`BehaviorIntelligencePanel`; the primitive is deleted directly.
 
 ## ProposalEditor contract
 
@@ -56,10 +62,16 @@ must fail when:
 
 - a non-declaration production source module is unreachable from `src/main.tsx`;
 - production imports an isolated experiment;
-- an uppercase top-level TSX component has no runtime use;
+- an uppercase top-level TSX component has no JSX mount;
 - `ProposalEditor` has more than one implementation or differs from its two approved
   mount files/source-surface values;
 - `ProposalDiffPreview` is mounted outside `ProposalEditor`.
+
+Existing proposal validators must read the split implementation modules rather than
+the compatibility `App.tsx` shell. The browser validator must navigate by stable route
+attributes and prove both approved ProposalEditor surfaces in the real app.
+The shared-state source validator must likewise inspect its provider and mounted views,
+not the compatibility shell left by `S04-P1-T1`.
 
 The validator must first fail against the current three orphan modules. After cleanup,
 it must report the reachable module and mounted component counts.
