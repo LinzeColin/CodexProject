@@ -9179,6 +9179,34 @@ next_gate_id: "IDS-STAGE035-REVIEW-GATE"
         self.assertEqual(1, len(stage_event))
         self.assertEqual([], module.evaluate_required_event_semantics(stage_event))
 
+    def test_stage040_phase3_current_state_and_event_are_governed(self):
+        module = self._load_module()
+        batch_text = (
+            ROOT
+            / "docs"
+            / "pursuing_goal"
+            / "ids_v0_1"
+            / "BATCH031_040_UPLOAD_LOCK.yaml"
+        ).read_text(encoding="utf-8")
+        roadmap_text = (ROOT / "docs" / "governance" / "roadmap.yaml").read_text(
+            encoding="utf-8"
+        )
+        checks = module.evaluate_current_state_consistency(batch_text, roadmap_text)
+        self.assertTrue(all(checks.values()), checks)
+
+        events, parse_errors = module._parse_events(
+            ROOT / "docs" / "governance" / "events.jsonl"
+        )
+        self.assertEqual([], parse_errors)
+        stage_event = [
+            event
+            for event in events
+            if event.get("event_id")
+            == "EVT-IDS-V0_1-STAGE040-P3-20260713-001"
+        ]
+        self.assertEqual(1, len(stage_event))
+        self.assertEqual([], module.evaluate_required_event_semantics(stage_event))
+
 
 if __name__ == "__main__":
     unittest.main()

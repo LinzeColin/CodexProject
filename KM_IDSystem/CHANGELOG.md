@@ -1,5 +1,11 @@
 # Changelog
 
+## IDS v0.1 STAGE-040 Phase 3 - 2026-07-13
+
+- Added an exact-hash-bound eight-scenario contract and stdout-only checker for duplicate decisions, actual isolated worker-exception boundaries, drive/disk/API pressure, same-source cross-operation concurrency, reviewed lock conflicts, and protected cleanup denial.
+- Reused the reviewed Stage038/039 isolated worker and lock evidence while keeping production locks with STAGE-041, crash recovery with STAGE-043, and cleanup execution with STAGE-044. Actual project free space is observed read-only; low disk is tested at a deterministic boundary without allocation.
+- Verified fail-closed idempotency, legal pause paths, zero retry-budget consumption, zero job creation under throttle, one control lock invocation with three conflicts, and five Git-tracked protected refs with no delete path. No physical drive removal, process termination, disk allocation, API call, cleanup, persistence, database, raw metadata, fake IDS data, production, GitHub, batch gate, Phase 4, review, or app reinstall ran.
+
 ## IDS v0.1 STAGE-040 Phase 2 - 2026-07-13
 
 - Added `ids.backpressure_policy.v0_1.stage040.p2`, a versioned isolated decision contract and standard-library checker covering queue depth, admission rate, same-type concurrency, actual project-filesystem free space, external-drive availability, API budget, observation TTL, and hysteresis.

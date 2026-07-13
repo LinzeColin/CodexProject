@@ -99,8 +99,8 @@ Commit/PR summaries must include:
 
 - Canonical worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS`
 - Project scope: `KM_IDSystem/` only.
-- Current local state: `STAGE-040 · 反压策略` Phase 2 is complete with local evidence; Stage040 remains `in_progress` and has not entered Phase 3.
-- Current task: `IDS-V0_1-STAGE040-P2`; acceptance: `ACC-STAGE-040`; next separate gate: `IDS-STAGE040-P3-GATE`.
+- Current local state: `STAGE-040 · 反压策略` Phase 3 is complete with local evidence; Stage040 remains `in_progress` and has not entered Phase 4.
+- Current task: `IDS-V0_1-STAGE040-P3`; acceptance: `ACC-STAGE-040`; next separate gate: `IDS-STAGE040-P4-GATE`.
 - Exact source status: `SOURCE_VERIFIED`; the unique Stage040 member is `IDS_v0_1_Final_Chinese_Revised/stages/STAGE-040_反压策略.md` with SHA-256 `f0ef128467300d7541796f8d51caca673f838cac2552eba2e415a94a07af614d`.
 - Corrected Phase 1 defines queue/worker separation, envelope idempotency, retry/dead-letter, backpressure, lock granularity, automatic lifecycle, crash-recovery checkpoint, and cleanup allowlist interfaces. STAGE-039..044 retain dedicated runtime policy and implementation ownership.
 - A six-surface finite-state check binds batch, roadmap, entry, Phase 1, source evidence, and review evidence. Independent review repaired `1 Critical / 1 Important / 0 Minor` and ended at `0 / 0 / 0`.
@@ -132,10 +132,14 @@ Commit/PR summaries must include:
 - The decision engine is deterministic and in-memory: healthy observations admit, soft pressure/rate/concurrency throttle, hard capacity denies without a job, and drive/disk/API gates return legal pause candidates. Invalid or stale observations require manual review; terminal states remain immutable; duplicate decisions replay idempotently.
 - Phase 2 observes actual free space only for the project filesystem and writes no runtime output. It performs no queue/worker/retry scheduler/lock/resume/cleanup/database/raw-source/API/production action and creates no IDS business job.
 - Final Phase 2 validation: checker `18/18` contract and `8/8` slice checks; focused `15/15`; Stage040 `25/25`; Stage005 `147/147`; Stage031-039 `254/254`; Stage026-030 `75/75`; full IDS v0.1 discovery `687/687`; changed-only governance `0` errors / `0` warnings; `189` events with no duplicate ID; owner render drift/reference issues `0/0`.
+- Stage040 Phase 3 validates eight isolated scenarios: duplicate decision replay, actual isolated worker exception boundary, external-drive-offline pause, actual project-filesystem disk observation plus a no-allocation low-disk boundary, API-budget pause, same-source cross-operation throttling, reviewed one-execution/three-conflict lock proof, and five-class protected cleanup denial.
+- The worker exception and project free-space observation are actual isolated observations. Drive/API/low-disk boundary inputs are control metadata; no physical drive removal, disk allocation, process termination, external API call, cleanup/delete, Stage040 queue/worker runtime, production lock, crash recovery, persistence, database action, or production activation occurred.
+- Phase 3 replays the reviewed Stage038/039 in-memory lock proof but keeps production lock/lease/fencing with STAGE-041. It verifies Git-tracked fact source, manifest, evidence ledger, report snapshot, and audit log refs without exposing a delete path; cleanup runtime remains owned by STAGE-044.
+- Final Phase 3 validation: checker `18/18` contract and `8/8` scenario checks; focused `11/11`; Stage040 `36/36`; Stage005 `148/148`; Stage031-039 `254/254`; Stage026-030 `75/75`; full IDS v0.1 discovery `699/699`; changed-only governance `0` errors / `0` warnings; `190` events with no duplicate ID; owner render drift/reference issues `0/0`.
 - STAGE-038 retains queue/worker transport; STAGE-039 retry/dead-letter; STAGE-041 locks/leases/fencing; STAGE-042 automatic resume; STAGE-043 crash recovery; STAGE-044 cleanup execution. Phase 1 executed none of these runtimes.
-- Only `IDS-V0_1-STAGE040-P3` may run next, in a separate run. Do not start Stage040 whole-stage review or the batch review/upload gates before Phase 3-4 complete in separate runs.
+- Only `IDS-V0_1-STAGE040-P4` may run next, in a separate run. Do not start Stage040 whole-stage review or the batch review/upload gates before Phase 4 completes in its own run.
 - `BATCH031_040` remains locked with `push_allowed=false`; do not upload, merge, reinstall app entries, or run batch gates before all ten stages are complete and reviewed.
-- Current Phase 2 evidence adds `STAGE040_PHASE2_BACKPRESSURE_DECISION_SLICE.md`, `backpressure_policy/stage040_backpressure_runtime_contract.json`, `scripts/check_backpressure_runtime.py`, and `tests/test_stage040_backpressure_runtime.py`, plus the planned governance registrations.
+- Current Phase 3 evidence adds `STAGE040_PHASE3_SCENARIO_VALIDATION.md`, `backpressure_policy/stage040_backpressure_scenarios.json`, `scripts/check_backpressure_scenarios.py`, and `tests/test_stage040_backpressure_scenarios.py`.
 - The real metadata root `/Users/linzezhang/Downloads/IDS_MetaData` is path-only governance context. Do not read, list, hash, open, copy, move, delete, modify, dump, scan, normalize, or commit its contents.
 - Do not use fake IDS business data, fake database rows, placeholder corpus, fabricated profiles, dumps, execution logs, or evidence.
 
@@ -165,4 +169,4 @@ These are recoverable from source, scripts, and GitHub.
 - Real MQTT/OPC-UA/Modbus device ingestion is not implemented in this version.
 - Model providers are configurable, but no plaintext API keys should be committed.
 - STAGE-039 is locally reviewed, not production-ready. Persistent retry/dead-letter state, measured backpressure/fairness, production lock/lease/fencing, automatic lifecycle, process crash recovery, cleanup execution, PostgreSQL actions, raw source reads, and IDS business job execution remain absent. The selected Phase 2 values remain uncalibrated proposals and production automatic retry remains disabled.
-- STAGE-040 Phase 2 is an isolated decision engine and actual project-filesystem free-space observation only. Its values are uncalibrated proposals; no queue/worker transport, retry scheduler, production lock, automatic resume, crash recovery, cleanup execution, database action, raw-source read, IDS business job, GitHub action, or app reinstall has occurred.
+- STAGE-040 Phase 3 provides isolated scenario evidence, not production or physical fault proof. Its values remain uncalibrated proposals; production lock/lease/fencing, automatic resume, crash recovery, cleanup execution, database action, raw-source read, IDS business jobs, GitHub actions, and app reinstall remain absent.
