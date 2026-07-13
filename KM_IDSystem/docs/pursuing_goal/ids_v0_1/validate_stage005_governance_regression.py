@@ -291,7 +291,11 @@ def evaluate_stage038_source_reverification(
             )
             or (
                 batch.get("status")
-                in {"stage039_phase1_completed", "stage039_phase2_completed"}
+                in {
+                    "stage039_phase1_completed",
+                    "stage039_phase2_completed",
+                    "stage039_phase3_completed",
+                }
                 and batch_stage.get("status") == "completed_reviewed_local"
                 and batch_stage.get("completed_phases")
                 == ["Phase 1", "Phase 2", "Phase 3", "Phase 4"]
@@ -316,6 +320,13 @@ def evaluate_stage038_source_reverification(
                         == "IDS-V0_1-STAGE039-P2"
                         and decision.get("next_allowed_task_id")
                         == "IDS-V0_1-STAGE039-P3"
+                    )
+                    or (
+                        batch.get("status") == "stage039_phase3_completed"
+                        and decision.get("current_task_id")
+                        == "IDS-V0_1-STAGE039-P3"
+                        and decision.get("next_allowed_task_id")
+                        == "IDS-V0_1-STAGE039-P4"
                     )
                 )
             )
@@ -417,6 +428,13 @@ def evaluate_stage038_source_reverification(
                         == "IDS-V0_1-STAGE039-P2"
                         and roadmap.get("next_gate_id")
                         == "IDS-STAGE039-P3-GATE"
+                    )
+                    or (
+                        roadmap.get("current_phase_id") == "IDS-STAGE039-P3"
+                        and roadmap.get("current_task_id")
+                        == "IDS-V0_1-STAGE039-P3"
+                        and roadmap.get("next_gate_id")
+                        == "IDS-STAGE039-P4-GATE"
                     )
                 )
                 and source_gate.get("gate_id")
@@ -847,6 +865,7 @@ REQUIRED_EVENT_IDS = (
     "EVT-IDS-V0_1-STAGE038-REVIEW-20260713-001",
     "EVT-IDS-V0_1-STAGE039-P1-20260713-001",
     "EVT-IDS-V0_1-STAGE039-P2-20260713-001",
+    "EVT-IDS-V0_1-STAGE039-P3-20260713-001",
 )
 
 FORBIDDEN_RUNTIME_PREFIXES = (
@@ -949,6 +968,7 @@ ALLOWED_CHANGED_PATHS = {
     "KM_IDSystem/scripts/check_worker_queue_stage_review.py",
     "KM_IDSystem/scripts/check_retry_dead_letter_policy.py",
     "KM_IDSystem/scripts/check_retry_dead_letter_runtime.py",
+    "KM_IDSystem/scripts/check_retry_dead_letter_scenarios.py",
     "KM_IDSystem/docs/governance/project.yaml",
     "KM_IDSystem/docs/governance/model_registry.yaml",
     "KM_IDSystem/docs/governance/formula_registry.yaml",
@@ -1680,6 +1700,51 @@ def evaluate_required_event_semantics(events: list[dict]) -> list[str]:
                 "app_reinstall_allowed": "false",
             },
         },
+        "EVT-IDS-V0_1-STAGE039-P3-20260713-001": {
+            "event_type": "phase_completed",
+            "task_id": "IDS-V0_1-STAGE039-P3",
+            "acceptance_id": "ACC-STAGE-039",
+            "required_changed_files": {
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE3_SCENARIO_VALIDATION.md",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_scenarios.json",
+                "KM_IDSystem/scripts/check_retry_dead_letter_scenarios.py",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_scenarios.py",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml",
+                "KM_IDSystem/docs/governance/roadmap.yaml",
+                "KM_IDSystem/docs/governance/events.jsonl",
+            },
+            "required_refs": {
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE3_SCENARIO_VALIDATION.md",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_scenarios.json",
+                "KM_IDSystem/scripts/check_retry_dead_letter_scenarios.py#build_stage039_phase3_report",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_scenarios.py",
+            },
+            "required_note_assignments": {
+                "policy_version_id": "IDS_RETRY_POLICY_V0_1_STAGE039_P2",
+                "contract_valid": "true",
+                "scenario_validation_valid": "true",
+                "scenario_count": "10",
+                "passed_scenario_count": "10",
+                "actual_worker_exception_performed": "true",
+                "actual_disk_observation_performed": "true",
+                "process_termination_performed": "false",
+                "physical_drive_removal_performed": "false",
+                "disk_allocation_performed": "false",
+                "external_api_call_performed": "false",
+                "cleanup_runtime_performed": "false",
+                "protected_ref_delete_performed": "false",
+                "persistent_queue_write_performed": "false",
+                "database_connection_performed": "false",
+                "runtime_output_written": "false",
+                "ids_business_source_read_performed": "false",
+                "raw_metadata_content_accessed": "false",
+                "fake_ids_business_data_used": "false",
+                "real_ids_business_job_created": "false",
+                "production_runtime_activation_performed": "false",
+                "github_upload_allowed": "false",
+                "app_reinstall_allowed": "false",
+            },
+        },
     }
 
     errors: list[str] = []
@@ -1977,6 +2042,10 @@ def evaluate_current_state_consistency(
         current_stage_id == "IDS-STAGE039"
         and roadmap_phase == "IDS-STAGE039-P2"
     )
+    stage039_phase3_current = (
+        current_stage_id == "IDS-STAGE039"
+        and roadmap_phase == "IDS-STAGE039-P3"
+    )
     governed_current = (
         stage037_current
         or stage038_phase1_current
@@ -1985,6 +2054,7 @@ def evaluate_current_state_consistency(
         or stage038_phase4_current
         or stage039_phase1_current
         or stage039_phase2_current
+        or stage039_phase3_current
     )
 
     completed_phases = stage_node.get("completed_phases")
@@ -1999,6 +2069,7 @@ def evaluate_current_state_consistency(
         "IDS-STAGE038-P4": "Phase 4",
         "IDS-STAGE039-P1": "Phase 1",
         "IDS-STAGE039-P2": "Phase 2",
+        "IDS-STAGE039-P3": "Phase 3",
     }.get(roadmap_phase)
     batch_current_phase_completed = not governed_current or (
         isinstance(completed_phases, list)
@@ -2233,6 +2304,23 @@ def evaluate_current_state_consistency(
         "validator valid=true; final layered validation details are recorded "
         "in the Phase2 evidence and event."
     )
+    expected_stage039_phase3_result_block = (
+        "TDD RED: Stage039 Phase3 11 tests failed because the contract, "
+        "checker, evidence, and governance route did not exist. GREEN: "
+        "checker 14/14 contract checks true and 10/10 scenarios passed; "
+        "Stage039 31 tests OK; Stage005 146 tests OK; Stage031-039 aggregate "
+        "238 tests OK; Stage026-030 compatibility 75 tests OK; full IDS v0.1 "
+        "discovery 644 tests OK. Actual isolated worker exception and actual "
+        "disk-free observation reused the reviewed Stage038 boundary; process "
+        "termination, physical drive removal, disk allocation, external API "
+        "call, cleanup/delete, persistence, database, raw metadata, fake IDS "
+        "business data, production, GitHub, app reinstall, Phase4, Stage040, "
+        "stage review, and batch gates were not executed. Scoped Stage005 "
+        "validator valid=true. Pre-commit self-review repaired one Important "
+        "ambiguity by changing a candidate-only manual rerun from "
+        "job_state=CREATED to proposed_initial_state=CREATED. Final layered "
+        "validation details are recorded in the Phase3 evidence and event."
+    )
     expected_governed_result_block = {
         "IDS-STAGE037-P1": expected_stage037_phase1_result_block,
         "IDS-STAGE037-P2": expected_stage037_phase2_result_block,
@@ -2244,6 +2332,7 @@ def evaluate_current_state_consistency(
         "IDS-STAGE038-P4": expected_stage038_phase4_result_block,
         "IDS-STAGE039-P1": expected_stage039_phase1_result_block,
         "IDS-STAGE039-P2": expected_stage039_phase2_result_block,
+        "IDS-STAGE039-P3": expected_stage039_phase3_result_block,
     }.get(roadmap_phase)
     if roadmap_task == "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY":
         expected_governed_result_block = (
@@ -2362,6 +2451,16 @@ def evaluate_current_state_consistency(
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py",
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md",
     }
+    required_stage039_phase3_evidence = {
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE1_RETRY_DEAD_LETTER_SCOPE_BOUNDARY.md",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE2_RETRY_DEAD_LETTER_SLICE.md",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE3_SCENARIO_VALIDATION.md",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_scenarios.json",
+        "KM_IDSystem/scripts/check_retry_dead_letter_scenarios.py",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_scenarios.py",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md",
+    }
     required_governed_evidence = {
         "IDS-STAGE037-P1": required_stage037_phase1_evidence,
         "IDS-STAGE037-P2": required_stage037_phase2_evidence,
@@ -2373,6 +2472,7 @@ def evaluate_current_state_consistency(
         "IDS-STAGE038-P4": required_stage038_phase4_evidence,
         "IDS-STAGE039-P1": required_stage039_phase1_evidence,
         "IDS-STAGE039-P2": required_stage039_phase2_evidence,
+        "IDS-STAGE039-P3": required_stage039_phase3_evidence,
     }.get(roadmap_phase, set())
     if roadmap_task == "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY":
         required_governed_evidence = (
@@ -4053,6 +4153,19 @@ def evaluate_phase_state(
         if isinstance(roadmap_stage039_phase2, dict)
         else {}
     )
+    roadmap_stage039_phase3 = next(
+        (
+            item
+            for item in roadmap_stage039_phases
+            if isinstance(item, dict) and item.get("phase_id") == "IDS-STAGE039-P3"
+        ),
+        {},
+    )
+    roadmap_stage039_phase3 = (
+        roadmap_stage039_phase3
+        if isinstance(roadmap_stage039_phase3, dict)
+        else {}
+    )
     stage039_phase2_active = (
         batch_document.get("batch_id") == "IDS-V0_1-BATCH-031-040"
         and batch_document.get("status") == "stage039_phase2_completed"
@@ -4087,6 +4200,53 @@ def evaluate_phase_state(
         and roadmap_document.get("current_task_id") == "IDS-V0_1-STAGE039-P2"
         and roadmap_document.get("next_gate_id") == "IDS-STAGE039-P3-GATE"
         and roadmap_stage039_phase2.get("status") == "passed_with_local_evidence"
+    )
+    stage039_phase3_active = (
+        batch_document.get("batch_id") == "IDS-V0_1-BATCH-031-040"
+        and batch_document.get("status") == "stage039_phase3_completed"
+        and upload_gate.get("push_allowed") is False
+        and stage039_node.get("status") == "stage039_phase3_completed"
+        and stage039_node.get("completed_phases")
+        == ["Phase 1", "Phase 2", "Phase 3"]
+        and stage039_node.get("review_status") == "pending"
+        and stage039_node.get("next_phase") == "Phase 4"
+        and stage039_node.get("next_gate") == "IDS-STAGE039-P4-GATE"
+        and stage039_node.get("current_task_id") == "IDS-V0_1-STAGE039-P3"
+        and stage039_node.get("acceptance_id") == "ACC-STAGE-039"
+        and stage039_node.get("acceptance_status")
+        == "phase3_scenarios_complete"
+        and stage039_node.get("source_verification_status") == "SOURCE_VERIFIED"
+        and stage039_node.get("source_member_match_count") == 1
+        and stage039_node.get("source_member_sha256")
+        == "504caf72a6aeab67a650b4b096e728f03269f6ca8798f6e8a5c51210c8ddd7d9"
+        and stage039_node.get("phase4_entry_authorized") is True
+        and stage039_node.get("policy_version")
+        == "ids.retry_policy.v0_1.stage039.p2"
+        and stage039_node.get("phase2_contract_state")
+        == "PHASE2_ISOLATED_SLICE_ENABLED_PRODUCTION_DISABLED"
+        and stage039_node.get("contract_state")
+        == "PHASE3_SCENARIOS_ENABLED_PRODUCTION_DISABLED"
+        and stage039_node.get("scenario_contract_id")
+        == "ids.retry_dead_letter.v0_1.p3.scenarios"
+        and stage039_node.get("scenario_validation_valid") is True
+        and stage039_node.get("scenario_count") == 10
+        and stage039_node.get("passed_scenario_count") == 10
+        and stage039_node.get("actual_worker_exception_performed") is True
+        and stage039_node.get("actual_disk_observation_performed") is True
+        and stage039_node.get("process_termination_performed") is False
+        and stage039_node.get("physical_drive_removal_performed") is False
+        and stage039_node.get("disk_allocation_performed") is False
+        and stage039_node.get("external_api_call_performed") is False
+        and stage039_node.get("cleanup_runtime_performed") is False
+        and stage039_node.get("protected_ref_delete_performed") is False
+        and decision_node.get("current_task_id") == "IDS-V0_1-STAGE039-P3"
+        and decision_node.get("next_allowed_task_id") == "IDS-V0_1-STAGE039-P4"
+        and decision_node.get("github_upload_allowed") is False
+        and roadmap_document.get("current_stage_id") == "IDS-STAGE039"
+        and roadmap_document.get("current_phase_id") == "IDS-STAGE039-P3"
+        and roadmap_document.get("current_task_id") == "IDS-V0_1-STAGE039-P3"
+        and roadmap_document.get("next_gate_id") == "IDS-STAGE039-P4-GATE"
+        and roadmap_stage039_phase3.get("status") == "passed_with_local_evidence"
     )
     batch_terminal_state = batch_upload_gate_active or batch_uploaded_to_main
     later_stage_state = (
@@ -4219,6 +4379,7 @@ def evaluate_phase_state(
         or stage038_reviewed_local
         or stage039_phase1_active
         or stage039_phase2_active
+        or stage039_phase3_active
     )
     phase2_completed = '      - "Phase 2"' in batch_text
     stage005_active_or_complete = (

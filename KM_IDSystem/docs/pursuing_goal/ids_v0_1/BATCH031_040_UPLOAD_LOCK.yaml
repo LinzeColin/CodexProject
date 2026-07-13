@@ -1,10 +1,14 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-031-040"
 created_at_utc: "2026-07-03T08:32:56Z"
-updated_at_utc: "2026-07-13T00:19:18Z"
-status: "stage039_phase2_completed"
+updated_at_utc: "2026-07-13T00:52:09Z"
+status: "stage039_phase3_completed"
 
 transition_history:
+  stage039_phase2_state:
+    status: "stage039_phase2_completed"
+    current_task_id: "IDS-V0_1-STAGE039-P2"
+    next_allowed_task_id: "IDS-V0_1-STAGE039-P3"
   stage039_phase1_state:
     status: "stage039_phase1_completed"
     current_task_id: "IDS-V0_1-STAGE039-P1"
@@ -289,19 +293,21 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_review.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
   STAGE-039:
-    status: "stage039_phase2_completed"
+    status: "stage039_phase3_completed"
     completed_phases:
       - "Phase 1"
       - "Phase 2"
+      - "Phase 3"
     review_status: "pending"
-    next_phase: "Phase 3"
-    next_gate: "IDS-STAGE039-P3-GATE"
-    current_task_id: "IDS-V0_1-STAGE039-P2"
+    next_phase: "Phase 4"
+    next_gate: "IDS-STAGE039-P4-GATE"
+    current_task_id: "IDS-V0_1-STAGE039-P3"
     acceptance_id: "ACC-STAGE-039"
-    acceptance_status: "phase2_isolated_slice_complete"
+    acceptance_status: "phase3_scenarios_complete"
     source_verification_status: "SOURCE_VERIFIED"
     phase2_entry_authorized: true
     phase3_entry_authorized: true
+    phase4_entry_authorized: true
     source_archive_path: "/Users/linzezhang/Downloads/IDS_Taskpack_v0_1_only_中文修订版.zip"
     source_archive_sha256: "55b782e338610aab6361b7945bb5e290ba60038a06cc765c7c2da801734db6d3"
     source_member: "IDS_v0_1_Final_Chinese_Revised/stages/STAGE-039_重试与死信策略.md"
@@ -312,7 +318,8 @@ stage_progress:
     instructions_sha256: "ce456e06136d5ecc56cd7c9dc926abb5894817dda87bf7667588bf85211794f8"
     retry_policy_contract_id: "ids.retry_dead_letter.v0_1.p2"
     policy_version: "ids.retry_policy.v0_1.stage039.p2"
-    contract_state: "PHASE2_ISOLATED_SLICE_ENABLED_PRODUCTION_DISABLED"
+    phase2_contract_state: "PHASE2_ISOLATED_SLICE_ENABLED_PRODUCTION_DISABLED"
+    contract_state: "PHASE3_SCENARIOS_ENABLED_PRODUCTION_DISABLED"
     numeric_policy_values_assigned: true
     max_retries: 2
     backoff_schedule_seconds:
@@ -320,6 +327,18 @@ stage_progress:
       - 30
     jitter_policy: "DETERMINISTIC_BOUNDED_HASH_JITTER_V1"
     isolated_slice_valid: true
+    scenario_contract_id: "ids.retry_dead_letter.v0_1.p3.scenarios"
+    scenario_validation_valid: true
+    scenario_count: 10
+    passed_scenario_count: 10
+    actual_worker_exception_performed: true
+    actual_disk_observation_performed: true
+    process_termination_performed: false
+    physical_drive_removal_performed: false
+    disk_allocation_performed: false
+    external_api_call_performed: false
+    cleanup_runtime_performed: false
+    protected_ref_delete_performed: false
     production_runtime_activation_performed: false
     persistent_queue_write_performed: false
     database_connection_performed: false
@@ -335,6 +354,10 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_runtime_contract.json"
       - "KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE3_SCENARIO_VALIDATION.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_scenarios.json"
+      - "KM_IDSystem/scripts/check_retry_dead_letter_scenarios.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_scenarios.py"
       - "KM_IDSystem/docs/governance/project.yaml"
       - "KM_IDSystem/docs/governance/model_registry.yaml"
       - "KM_IDSystem/docs/governance/formula_registry.yaml"
@@ -343,8 +366,8 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
-  current_task_id: "IDS-V0_1-STAGE039-P2"
-  next_allowed_task_id: "IDS-V0_1-STAGE039-P3"
+  current_task_id: "IDS-V0_1-STAGE039-P3"
+  next_allowed_task_id: "IDS-V0_1-STAGE039-P4"
   github_upload_allowed: false
-  current_run: "STAGE-039 Phase 2 selects an explicit versioned bounded policy and executes only an isolated in-memory retry/dead-letter metadata slice over a real Git-tracked control reference. Two retry admissions increment budget exactly once, duplicate admission replay is idempotent, resource pause consumes no budget, and exhaustion reaches DEAD_LETTERED. No production, persistence, database, raw metadata, fake IDS business data, external API, runtime output, GitHub action, app reinstall, Phase 3, or later-stage runtime ran."
-  no_upload_reason: "BATCH031_040 has STAGE-031 through STAGE-038 completed and reviewed locally; STAGE-039 has only Phase 1 and Phase 2 complete and STAGE-040 remains incomplete. The tenth-stage review and separate batch upload gates have not run, so push_allowed stays false."
+  current_run: "STAGE-039 Phase 3 validates ten isolated retry/dead-letter scenarios. Duplicate requests, resource pauses, same-source conflicts, retry exhaustion, terminal replay, owner-authorized manual-rerun candidates, and protected cleanup denial are deterministic and fail closed. Stage038 supplies an actual isolated worker exception and actual disk-free observation; no process termination, physical drive removal, disk allocation, API call, cleanup/delete, production runtime, persistence, database, raw metadata, fake IDS business data, GitHub action, app reinstall, Phase 4, or later-stage runtime ran."
+  no_upload_reason: "BATCH031_040 has STAGE-031 through STAGE-038 completed and reviewed locally; STAGE-039 has only Phase 1 through Phase 3 complete and STAGE-040 remains incomplete. The Stage039 Phase 4, whole-stage review, tenth-stage review, and separate batch upload gates have not run, so push_allowed stays false."

@@ -1,5 +1,11 @@
 # Changelog
 
+## IDS v0.1 STAGE-039 Phase 3 - 2026-07-13
+
+- Added an exact-hash-bound ten-scenario contract and stdout-only checker for duplicate retry requests, worker-exception/crash boundary, drive/disk/API resource pauses, same-source cross-operation locking, retry exhaustion, immutable terminal replay, owner-authorized manual-rerun lineage, and protected cleanup denial.
+- Reused the reviewed Stage038 isolated queue evidence for one actual worker exception and one actual local free-space observation. No process termination, physical drive removal, disk allocation, external API call, cleanup/delete, production runtime, persistence, or database action was performed.
+- Verified that resource pauses consume no retry budget, duplicate reservation/admission replay is idempotent, exhaustion stops at `retry_count=2`, terminal jobs are not reopened, manual rerun creates only a new in-memory candidate, and five protected evidence classes remain Git-tracked and undeleted. Phase 4, Stage040+, whole-stage review, GitHub upload, and app reinstall remain separate and disabled.
+
 ## IDS v0.1 STAGE-039 Phase 2 - 2026-07-13
 
 - Added `ids.retry_policy.v0_1.stage039.p2` with `max_retries=2`, bounded `[5, 30]` backoff ceilings, deterministic nonzero hash jitter, an exact two-code retry allowlist, default-deny unknown errors, explicit `ASSUMPTION` fact level, and production calibration still required.

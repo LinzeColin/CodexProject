@@ -293,15 +293,15 @@ class Stage039RetryDeadLetterPolicyTests(unittest.TestCase):
         ):
             with self.subTest(term=term):
                 self.assertIn(term, combined)
-        self.assertIn('status: "stage039_phase2_completed"', batch)
+        self.assertIn('status: "stage039_phase3_completed"', batch)
         self.assertIn('      - "Phase 1"', batch)
         self.assertIn('      - "Phase 2"', batch)
-        self.assertIn('current_task_id: "IDS-V0_1-STAGE039-P2"', batch)
-        self.assertIn('next_gate: "IDS-STAGE039-P3-GATE"', batch)
+        self.assertIn('current_task_id: "IDS-V0_1-STAGE039-P3"', batch)
+        self.assertIn('next_gate: "IDS-STAGE039-P4-GATE"', batch)
         self.assertIn('current_stage_id: "IDS-STAGE039"', roadmap)
         self.assertIn('current_phase_id: "IDS-STAGE039-P2"', roadmap)
-        self.assertIn('current_task_id: "IDS-V0_1-STAGE039-P2"', roadmap)
-        self.assertIn('next_gate_id: "IDS-STAGE039-P3-GATE"', roadmap)
+        self.assertIn('current_task_id: "IDS-V0_1-STAGE039-P3"', roadmap)
+        self.assertIn('next_gate_id: "IDS-STAGE039-P4-GATE"', roadmap)
         self.assertIn('push_allowed: false', batch)
 
 
