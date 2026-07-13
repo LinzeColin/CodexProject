@@ -2,10 +2,15 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE040"
-current_phase_id: "IDS-STAGE040-P2"
-current_task_id: "IDS-V0_1-STAGE040-P2"
-next_gate_id: "IDS-STAGE040-P3-GATE"
+current_phase_id: "IDS-STAGE040-P3"
+current_task_id: "IDS-V0_1-STAGE040-P3"
+next_gate_id: "IDS-STAGE040-P4-GATE"
 current_transition_history:
+  stage040_phase3_state:
+    current_stage_id: "IDS-STAGE040"
+    current_phase_id: "IDS-STAGE040-P3"
+    current_task_id: "IDS-V0_1-STAGE040-P3"
+    next_gate_id: "IDS-STAGE040-P4-GATE"
   stage040_phase2_state:
     current_stage_id: "IDS-STAGE040"
     current_phase_id: "IDS-STAGE040-P2"
@@ -9865,7 +9870,7 @@ stages:
       - "读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
       - "移动、删除、覆盖原始资料、manifest、evidence ledger、audit log、report snapshot 或 active index"
       - "使用虚构 IDS 业务数据、数据库行、jobs、logs、evidence 或 placeholder corpus"
-      - "在 Phase 2 run 内进入 Phase 3、GitHub upload、PR、merge、app reinstall、stage review 或 batch gate"
+      - "在 Phase 3 run 内进入 Phase 4、GitHub upload、PR、merge、app reinstall、stage review 或 batch gate"
     stop_gate:
       gate_id: "IDS-STAGE040-REVIEW-GATE"
       status: "pending"
@@ -9884,6 +9889,10 @@ stages:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_runtime_contract.json"
         - "KM_IDSystem/scripts/check_backpressure_runtime.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_runtime.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE3_SCENARIO_VALIDATION.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_scenarios.json"
+        - "KM_IDSystem/scripts/check_backpressure_scenarios.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_scenarios.py"
     phases:
       -
         phase_id: "IDS-STAGE040-P1"
@@ -10016,23 +10025,28 @@ stages:
         phase_id: "IDS-STAGE040-P3"
         name: "反压策略 场景验证与保护"
         objective: "In a separate run, validate duplicate click, worker exception boundary, drive offline, disk pressure, API budget pressure and same-source concurrency while preserving lock and cleanup ownership."
-        status: "planned"
+        status: "passed_with_local_evidence"
         stop_conditions:
           - "Phase 2 is not complete or its policy is invalid"
           - "Scenario mutates raw data, executes destructive cleanup, performs physical drive removal or fabricates IDS evidence"
         stop_gate:
           gate_id: "IDS-STAGE040-P3-GATE"
-          status: "pending"
+          status: "passed_with_local_evidence"
           pass_conditions:
             - "Required scenarios are isolated, truthful and repeatable"
             - "Idempotency, legal pause paths, lock boundary and evidence protection hold"
-          evidence_refs: []
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE3_SCENARIO_VALIDATION.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_scenarios.json"
+            - "KM_IDSystem/scripts/check_backpressure_scenarios.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_scenarios.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
         tasks:
           -
             task_id: "IDS-V0_1-STAGE040-P3"
             name: "验证反压策略对抗场景"
             objective: "Run only the approved Phase 3 scenario validation in a separate run."
-            status: "planned"
+            status: "completed"
             estimated_hours: 2.5
             total_hours_percent: "25.00%"
             dependencies:
@@ -10040,9 +10054,24 @@ stages:
             acceptance_ids:
               - "ACC-STAGE-040"
             test_commands:
-              - "TDD commands must be recorded in the separate Phase 3 run"
-            test_results: "not_run"
-            evidence_refs: []
+              - "python3 -B KM_IDSystem/scripts/check_backpressure_scenarios.py"
+              - "python3 -B -m unittest -q KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage040_backpressure_scenarios"
+              - "python3 -B -m unittest -q KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -p 'test_stage03[1-9]*.py' -q"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -p 'test_stage040*.py' -q"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "python3 -B scripts/lean_governance.py check-render --project KM_IDSystem"
+              - "events.jsonl parse and duplicate-id check"
+              - "git diff --check"
+              - "python3 -B scripts/validate_governance_sync.py --changed-only --base-ref HEAD --semantic --drift-report"
+            test_results: "TDD RED: Stage040 Phase3 11/11 tests failed because the scenario contract, checker, evidence, and governance transition did not exist. GREEN: checker 18/18 contract checks and 8/8 scenarios true; Stage040 Phase3 11 tests OK; Stage040 aggregate 36 tests OK; Stage005 148 tests OK; Stage037 39 tests OK; Stage038 review 5 tests OK; Stage039 review 6 tests OK; Stage031-039 aggregate 254 tests OK; Stage026-030 compatibility 75 tests OK; full IDS v0.1 discovery 699 tests OK. Stage004 legacy scan valid=true; direct Stage005 failed closed only on the four preserved owner dirty paths while scoped Stage005 valid=true; 190 events parsed with zero duplicate ids and one Stage040 Phase3 event; owner render drift/reference counts zero; git diff checks passed; changed-only governance errors=0 and warnings=0. Self-review repaired one Important machine-truth gap by exposing the Stage038 worker-exception replay and reviewed lock-proof replay flags in the Phase3 report. No Stage040 queue/worker runtime, process termination, physical drive removal, disk allocation, external API call, cleanup/delete, production lock, crash recovery, persistence, database, raw metadata, fake IDS business data, production, GitHub, app reinstall, Phase4, stage review, or batch gate ran."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE3_SCENARIO_VALIDATION.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_scenarios.json"
+              - "KM_IDSystem/scripts/check_backpressure_scenarios.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_scenarios.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
             risk: "A simulated control gate can be overstated as a physical or production pressure event."
             rollback: "Revert only Phase 3 scenario evidence and governance transition."
       -
