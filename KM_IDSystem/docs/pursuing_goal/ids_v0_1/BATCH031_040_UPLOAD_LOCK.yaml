@@ -1,10 +1,18 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-031-040"
 created_at_utc: "2026-07-03T08:32:56Z"
-updated_at_utc: "2026-07-13T02:17:00Z"
-status: "stage039_completed_reviewed_local"
+updated_at_utc: "2026-07-13T02:32:04Z"
+status: "stage040_phase1_completed"
 
 transition_history:
+  stage040_phase1_state:
+    status: "stage040_phase1_completed"
+    current_task_id: "IDS-V0_1-STAGE040-P1"
+    next_allowed_task_id: "IDS-V0_1-STAGE040-P2"
+  stage040_entry_state:
+    status: "stage039_completed_reviewed_local"
+    current_task_id: "IDS-V0_1-STAGE039-REVIEW"
+    next_allowed_task_id: "IDS-V0_1-STAGE040-P1"
   stage039_phase4_state:
     status: "stage039_phase4_completed_review_pending"
     current_task_id: "IDS-V0_1-STAGE039-P4"
@@ -393,10 +401,50 @@ stage_progress:
       - "KM_IDSystem/docs/governance/parameter_registry.csv"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+  STAGE-040:
+    status: "stage040_phase1_completed"
+    completed_phases:
+      - "Phase 1"
+    review_status: "pending"
+    next_phase: "Phase 2"
+    next_gate: "IDS-STAGE040-P2-GATE"
+    current_task_id: "IDS-V0_1-STAGE040-P1"
+    acceptance_id: "ACC-STAGE-040"
+    acceptance_status: "phase1_engineering_contract_complete"
+    source_verification_status: "SOURCE_VERIFIED"
+    phase2_entry_authorized: true
+    source_archive_path: "/Users/linzezhang/Downloads/IDS_Taskpack_v0_1_only_中文修订版.zip"
+    source_archive_sha256: "55b782e338610aab6361b7945bb5e290ba60038a06cc765c7c2da801734db6d3"
+    source_member: "IDS_v0_1_Final_Chinese_Revised/stages/STAGE-040_反压策略.md"
+    source_member_match_count: 1
+    source_member_integrity: "OK"
+    source_member_sha256: "f0ef128467300d7541796f8d51caca673f838cac2552eba2e415a94a07af614d"
+    roadmap_sha256: "a193fd2c44c51d634bf7887a1a6baf7e5199d9a8535e4211e35e97588e2e21a6"
+    instructions_sha256: "ce456e06136d5ecc56cd7c9dc926abb5894817dda87bf7667588bf85211794f8"
+    backpressure_policy_contract_id: "ids.backpressure_policy.v0_1.p1"
+    contract_state: "PHASE1_ENGINEERING_CONTRACT_RUNTIME_DISABLED"
+    numeric_policy_values_assigned: false
+    backpressure_runtime_performed: false
+    queue_runtime_performed: false
+    worker_runtime_performed: false
+    lock_runtime_performed: false
+    automatic_resume_performed: false
+    cleanup_runtime_performed: false
+    database_connection_performed: false
+    raw_metadata_content_accessed: false
+    fake_ids_business_data_used: false
+    evidence_refs:
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_ENTRY_CONTRACT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE1_BACKPRESSURE_SCOPE_BOUNDARY.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_policy_contract.json"
+      - "KM_IDSystem/scripts/check_backpressure_policy.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_policy.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
-  current_task_id: "IDS-V0_1-STAGE039-REVIEW"
-  next_allowed_task_id: "IDS-V0_1-STAGE040-P1"
+  current_task_id: "IDS-V0_1-STAGE040-P1"
+  next_allowed_task_id: "IDS-V0_1-STAGE040-P2"
   github_upload_allowed: false
-  current_run: "STAGE-039 whole-stage review repaired governance enums, registry counts, calibration-task links, and manual-rerun implementation truth; all four Phases remain isolated and production-disabled. No Stage040, batch gate, GitHub action, or app reinstall ran."
-  no_upload_reason: "BATCH031_040 has STAGE-031 through STAGE-039 completed and reviewed locally, but STAGE-040 remains incomplete. The tenth-stage review and separate batch upload gates have not run, so push_allowed stays false."
+  current_run: "STAGE-040 Phase 1 defined the source-bound fail-closed backpressure engineering contract and stopped before Phase 2 runtime, numeric thresholds, batch review/upload, GitHub action, or app reinstall."
+  no_upload_reason: "BATCH031_040 has STAGE-040 Phase 1 complete, but Phase 2-4, the Stage040 whole-stage review, the tenth-stage batch review, and the separate upload gate have not run, so push_allowed stays false."

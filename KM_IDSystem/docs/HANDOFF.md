@@ -99,9 +99,9 @@ Commit/PR summaries must include:
 
 - Canonical worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS`
 - Project scope: `KM_IDSystem/` only.
-- Current local state: `STAGE-039 · 重试与死信策略` Phase 1 through Phase 4 and the separate whole-stage review are complete as `completed_reviewed_local`.
-- Current task: `IDS-V0_1-STAGE039-REVIEW`; acceptance: `ACC-STAGE-039`; next separate gate: `IDS-STAGE040-P1-GATE`.
-- Exact source status: `SOURCE_VERIFIED`; the unique Stage039 member is `IDS_v0_1_Final_Chinese_Revised/stages/STAGE-039_重试与死信策略.md` with SHA-256 `504caf72a6aeab67a650b4b096e728f03269f6ca8798f6e8a5c51210c8ddd7d9`.
+- Current local state: `STAGE-040 · 反压策略` Phase 1 is complete with local evidence; Stage040 remains `in_progress` and has not entered Phase 2.
+- Current task: `IDS-V0_1-STAGE040-P1`; acceptance: `ACC-STAGE-040`; next separate gate: `IDS-STAGE040-P2-GATE`.
+- Exact source status: `SOURCE_VERIFIED`; the unique Stage040 member is `IDS_v0_1_Final_Chinese_Revised/stages/STAGE-040_反压策略.md` with SHA-256 `f0ef128467300d7541796f8d51caca673f838cac2552eba2e415a94a07af614d`.
 - Corrected Phase 1 defines queue/worker separation, envelope idempotency, retry/dead-letter, backpressure, lock granularity, automatic lifecycle, crash-recovery checkpoint, and cleanup allowlist interfaces. STAGE-039..044 retain dedicated runtime policy and implementation ownership.
 - A six-surface finite-state check binds batch, roadmap, entry, Phase 1, source evidence, and review evidence. Independent review repaired `1 Critical / 1 Important / 0 Minor` and ended at `0 / 0 / 0`.
 - Phase 2 implements one `asyncio` in-memory queue and worker over a real Git-tracked Phase 1 control document. Submission returns before completion; STAGE-037 transitions, Chinese status, duplicate admission, bounded-capacity backpressure, and input/output/error/checkpoint fields are exercised without persistence.
@@ -124,9 +124,13 @@ Commit/PR summaries must include:
 - Automatic handling is narrowly stated: two exact safe codes can enter controlled retry only when policy, budget, resource, CAS, and idempotency gates pass. No successful automatic recovery was observed. Eight conditions remain manual-action cases.
 - Safe shutdown reuses reviewed Stage038 isolated transport closure. Stage039 has no persistent scheduler or process-recovery runtime; after exit, only a new linked-job candidate may be revalidated, no job is created, and terminal history remains immutable.
 - Stage039 whole-stage review repaired four Important findings: invalid governance enums/task links, total-count drift, overclaimed terminal-rerun creation wording, and the absent durable review gate. All review sources must match the Git index.
-- Only `IDS-V0_1-STAGE040-P1` may run next, in a separate run. The Stage039 review did not enter STAGE-040.
+- Stage040 Phase 1 publishes `ids.backpressure_policy.v0_1.p1`. Healthy pressure may return `ADMIT`; soft queue pressure throttles admission; hard capacity creates no queue record; drive/disk/API resource pressure uses only legal STAGE-037 pause paths; unknown or stale pressure denies admission and requires manual review.
+- Throttle, denial, and resource pause consume no retry budget. Priority cannot bypass a safety gate, terminal states stay immutable, and active jobs must pass through `PAUSE_REQUESTED` before `PAUSED`.
+- Phase 1 assigns no numeric values. Queue thresholds, disk reserve, API budget window, high/low watermarks, observation TTL, per-job-type concurrency, and admission rate limit require separately sourced, versioned, tested, and rollback-ready Phase 2 selection.
+- STAGE-038 retains queue/worker transport; STAGE-039 retry/dead-letter; STAGE-041 locks/leases/fencing; STAGE-042 automatic resume; STAGE-043 crash recovery; STAGE-044 cleanup execution. Phase 1 executed none of these runtimes.
+- Only `IDS-V0_1-STAGE040-P2` may run next, in a separate run. Do not start Stage040 whole-stage review or the batch review/upload gates before Phase 2-4 complete in separate runs.
 - `BATCH031_040` remains locked with `push_allowed=false`; do not upload, merge, reinstall app entries, or run batch gates before all ten stages are complete and reviewed.
-- Current evidence adds `STAGE039_STAGE_REVIEW.md`, `scripts/check_retry_dead_letter_stage_review.py`, and `tests/test_stage039_retry_dead_letter_review.py` to the Phase 1-4 sources.
+- Current evidence adds `STAGE040_ENTRY_CONTRACT.md`, `STAGE040_PHASE1_BACKPRESSURE_SCOPE_BOUNDARY.md`, `backpressure_policy/stage040_backpressure_policy_contract.json`, `scripts/check_backpressure_policy.py`, and `tests/test_stage040_backpressure_policy.py`.
 - The real metadata root `/Users/linzezhang/Downloads/IDS_MetaData` is path-only governance context. Do not read, list, hash, open, copy, move, delete, modify, dump, scan, normalize, or commit its contents.
 - Do not use fake IDS business data, fake database rows, placeholder corpus, fabricated profiles, dumps, execution logs, or evidence.
 
@@ -155,3 +159,4 @@ These are recoverable from source, scripts, and GitHub.
 - Real MQTT/OPC-UA/Modbus device ingestion is not implemented in this version.
 - Model providers are configurable, but no plaintext API keys should be committed.
 - STAGE-039 is locally reviewed, not production-ready. Persistent retry/dead-letter state, measured backpressure/fairness, production lock/lease/fencing, automatic lifecycle, process crash recovery, cleanup execution, PostgreSQL actions, raw source reads, and IDS business job execution remain absent. The selected Phase 2 values remain uncalibrated proposals and production automatic retry remains disabled.
+- STAGE-040 Phase 1 is an engineering contract only. No measured backpressure runtime, numeric threshold, queue/worker control, lock, automatic resume, crash recovery, cleanup execution, database action, raw-source read, IDS business job, GitHub action, or app reinstall has occurred.
