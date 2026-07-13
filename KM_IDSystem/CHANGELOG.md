@@ -1,5 +1,11 @@
 # Changelog
 
+## IDS v0.1 STAGE-039 Phase 1 - 2026-07-13
+
+- Bound the unique approved Stage039 taskpack member and the reviewed Stage037/038 state/queue sources into an exact-shaped metadata-only retry/dead-letter engineering contract and stdout-only checker under `ACC-STAGE-039`; unknown root or nested contract fields fail closed.
+- Defined immutable terminal states, retry budget and atomic admission semantics, exact failure classes, resource pause without budget consumption, bounded dead-letter evidence, and owner-authorized new linked jobs for terminal manual reruns.
+- Deferred numeric retry/backoff/jitter/error-allowlist values to a separately evidenced Phase 2 and defaulted missing or unversioned policy to no automatic retry. No scheduler, dead-letter runtime, queue/worker, database, raw metadata, fake IDS data, GitHub action, app reinstall, or later phase ran.
+
 ## IDS v0.1 STAGE-038 Review - 2026-07-13
 
 - Completed the local whole-stage review under `ACC-STAGE-038` and repaired four Important findings: exact contract-shape enforcement, the missing external-API-budget pause proof, false same-operation resubmission guidance, and absent Git-index-bound review evidence.

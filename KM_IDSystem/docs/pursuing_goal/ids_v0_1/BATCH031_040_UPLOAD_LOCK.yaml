@@ -1,10 +1,14 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-031-040"
 created_at_utc: "2026-07-03T08:32:56Z"
-updated_at_utc: "2026-07-12T23:30:00Z"
-status: "stage038_completed_reviewed_local"
+updated_at_utc: "2026-07-12T23:44:47Z"
+status: "stage039_phase1_completed"
 
 transition_history:
+  stage039_entry_state:
+    status: "stage038_completed_reviewed_local"
+    current_task_id: "IDS-V0_1-STAGE038-REVIEW"
+    next_allowed_task_id: "IDS-V0_1-STAGE039-P1"
   stage038_source_reverified_state:
     status: "stage038_phase1_source_reverified"
     current_task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
@@ -280,10 +284,41 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_delivery.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_review.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+  STAGE-039:
+    status: "stage039_phase1_completed"
+    completed_phases:
+      - "Phase 1"
+    review_status: "pending"
+    next_phase: "Phase 2"
+    next_gate: "IDS-STAGE039-P2-GATE"
+    current_task_id: "IDS-V0_1-STAGE039-P1"
+    acceptance_id: "ACC-STAGE-039"
+    acceptance_status: "phase1_scope_boundary_complete"
+    source_verification_status: "SOURCE_VERIFIED"
+    phase2_entry_authorized: true
+    source_archive_path: "/Users/linzezhang/Downloads/IDS_Taskpack_v0_1_only_中文修订版.zip"
+    source_archive_sha256: "55b782e338610aab6361b7945bb5e290ba60038a06cc765c7c2da801734db6d3"
+    source_member: "IDS_v0_1_Final_Chinese_Revised/stages/STAGE-039_重试与死信策略.md"
+    source_member_match_count: 1
+    source_member_integrity: "OK"
+    source_member_sha256: "504caf72a6aeab67a650b4b096e728f03269f6ca8798f6e8a5c51210c8ddd7d9"
+    roadmap_sha256: "a193fd2c44c51d634bf7887a1a6baf7e5199d9a8535e4211e35e97588e2e21a6"
+    instructions_sha256: "ce456e06136d5ecc56cd7c9dc926abb5894817dda87bf7667588bf85211794f8"
+    retry_policy_contract_id: "ids.retry_dead_letter.v0_1.p1"
+    contract_state: "PHASE1_ENGINEERING_CONTRACT_RUNTIME_DISABLED"
+    numeric_policy_values_assigned: false
+    evidence_refs:
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_ENTRY_CONTRACT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE1_RETRY_DEAD_LETTER_SCOPE_BOUNDARY.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_policy_contract.json"
+      - "KM_IDSystem/scripts/check_retry_dead_letter_policy.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_policy.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
-  current_task_id: "IDS-V0_1-STAGE038-REVIEW"
-  next_allowed_task_id: "IDS-V0_1-STAGE039-P1"
+  current_task_id: "IDS-V0_1-STAGE039-P1"
+  next_allowed_task_id: "IDS-V0_1-STAGE039-P2"
   github_upload_allowed: false
-  current_run: "STAGE-038 whole-stage review repaired exact contract-shape validation, added the external-API-budget pause proof, corrected same-operation terminal replay guidance, and bound review evidence to structured governance and the Git index. Production queue/runtime, raw metadata, fake IDS business data, GitHub, app reinstall, batch review, and upload remain disabled."
-  no_upload_reason: "BATCH031_040 has STAGE-031 through STAGE-038 completed and reviewed locally, but STAGE-039..040 remain incomplete. The tenth-stage review and separate batch upload gates have not run, so push_allowed stays false."
+  current_run: "STAGE-039 Phase 1 defines the retry/dead-letter engineering contract, failure taxonomy, retry-budget and identity invariants, resource-pause behavior, terminal manual-rerun lineage, protected evidence, and downstream ownership. No scheduler, dead-letter runtime, queue/worker execution, database action, raw metadata access, fake IDS business data, GitHub action, app reinstall, or later phase ran."
+  no_upload_reason: "BATCH031_040 has STAGE-031 through STAGE-038 completed and reviewed locally; STAGE-039 has only Phase 1 complete and STAGE-040 remains incomplete. The tenth-stage review and separate batch upload gates have not run, so push_allowed stays false."

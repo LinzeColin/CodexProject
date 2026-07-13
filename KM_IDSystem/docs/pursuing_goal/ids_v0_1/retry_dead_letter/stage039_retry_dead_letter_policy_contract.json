@@ -1,0 +1,354 @@
+{
+  "schema_version": "ids.stage039.retry_dead_letter.phase1.v1",
+  "stage": "STAGE-039",
+  "phase": "Phase 1",
+  "task_id": "IDS-V0_1-STAGE039-P1",
+  "acceptance_id": "ACC-STAGE-039",
+  "local_code": "D07-S003",
+  "domain": "D07 · 任务编排与机器控制",
+  "entrance": "IDS 系统运营入口",
+  "pursuing_goal": "让失败任务可重试、可终止、可归类、可进入人工复核。",
+  "retry_policy_contract_id": "ids.retry_dead_letter.v0_1.p1",
+  "contract_state": "PHASE1_ENGINEERING_CONTRACT_RUNTIME_DISABLED",
+  "execution_ready": false,
+  "next_gate": "IDS-STAGE039-P2-GATE",
+  "source_binding": {
+    "source_archive_path": "/Users/linzezhang/Downloads/IDS_Taskpack_v0_1_only_中文修订版.zip",
+    "source_archive_sha256": "55b782e338610aab6361b7945bb5e290ba60038a06cc765c7c2da801734db6d3",
+    "source_member": "IDS_v0_1_Final_Chinese_Revised/stages/STAGE-039_重试与死信策略.md",
+    "source_member_match_count": 1,
+    "source_member_integrity": "OK",
+    "source_member_sha256": "504caf72a6aeab67a650b4b096e728f03269f6ca8798f6e8a5c51210c8ddd7d9",
+    "roadmap_sha256": "a193fd2c44c51d634bf7887a1a6baf7e5199d9a8535e4211e35e97588e2e21a6",
+    "instructions_sha256": "ce456e06136d5ecc56cd7c9dc926abb5894817dda87bf7667588bf85211794f8",
+    "source_verification_status": "SOURCE_VERIFIED"
+  },
+  "upstream_bindings": {
+    "stage037_state_index_ref": {
+      "ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/job_state_model/stage037_job_state_model_index.json",
+      "sha256": "b70bf72ebe4212f45d380c13fbfe429791e1f4a5c73dccbba81211b7adc1c2d3"
+    },
+    "stage037_checker_ref": {
+      "ref": "KM_IDSystem/scripts/check_job_state_model.py",
+      "sha256": "7de8746b70ca1eaba78b672deebd9973113cedeacf3edbba09d2afb90407f404"
+    },
+    "stage038_queue_index_ref": {
+      "ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_baseline_index.json",
+      "sha256": "68513591996a51fea90cd2ea863f42f910c0c3a45b70fd1611655bb6d95911ab"
+    },
+    "stage038_delivery_contract_ref": {
+      "ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_delivery_contract.json",
+      "sha256": "a4067c25b46340c33bee5017c286d6867d2b72e8fa208430c005d6b1a342c7e4"
+    },
+    "stage038_review_checker_ref": {
+      "ref": "KM_IDSystem/scripts/check_worker_queue_stage_review.py",
+      "sha256": "b406cb8500b22b62c2d8400b6bfcf24cf1ed1b06990313ee66483a91bf255f96"
+    },
+    "stage038_review_artifact_ref": {
+      "ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_STAGE_REVIEW.md",
+      "sha256": "5bb4cb3382f97ded9228d278c4cfb34fc5f0a65b8858263ed0c9bbd6c035eb04"
+    }
+  },
+  "state_model_inheritance": {
+    "state_model_version": "ids.job_state.v1",
+    "terminal_states": [
+      "SUCCEEDED",
+      "FAILED",
+      "DEAD_LETTERED",
+      "CANCELLED"
+    ],
+    "terminal_state_mutation_allowed": false,
+    "retryable_failure_path": [
+      "RUNNING",
+      "RETRY_WAIT"
+    ],
+    "retry_admission_path": [
+      "RETRY_WAIT",
+      "QUEUED"
+    ],
+    "exhaustion_path": [
+      "RETRY_WAIT",
+      "DEAD_LETTERED"
+    ],
+    "permanent_failure_path": [
+      "RUNNING",
+      "FAILED"
+    ],
+    "running_to_dead_letter_allowed": false,
+    "direct_running_cancel_allowed": false
+  },
+  "input_contract": {
+    "required_fields": [
+      "job_id",
+      "job_type",
+      "job_state",
+      "state_version",
+      "idempotency_key",
+      "attempt_id",
+      "retry_count",
+      "max_retries",
+      "retry_pending",
+      "retry_disposition",
+      "failure_observation_ref",
+      "safe_error_code",
+      "error_ref",
+      "checkpoint_ref",
+      "next_eligible_at",
+      "next_eligible_evidence_ref",
+      "resource_gate_refs",
+      "audit_ref",
+      "transition_request_id",
+      "policy_version"
+    ],
+    "raw_source_body_allowed": false,
+    "plaintext_secret_allowed": false,
+    "untracked_reference_allowed": false,
+    "missing_required_field_behavior": "FAIL_CLOSED_REQUIRE_MANUAL_REVIEW"
+  },
+  "identity_contract": {
+    "job_id_scope": "stable_across_attempts",
+    "attempt_id_scope": "unique_per_execution_attempt",
+    "idempotency_key_scope": "stable_for_one_logical_job",
+    "transition_request_id_scope": "unique_per_state_transition_request",
+    "duplicate_transition_behavior": "RETURN_ORIGINAL_RESULT_NO_DOUBLE_BUDGET_CONSUMPTION",
+    "terminal_manual_rerun": "NEW_LINKED_JOB_REQUIRED",
+    "terminal_manual_rerun_required_fields": [
+      "parent_job_id",
+      "rerun_request_id",
+      "new_job_id",
+      "new_idempotency_key"
+    ],
+    "terminal_rerun_idempotency_scope": "parent_job_id_plus_owner_rerun_request_id",
+    "terminal_manual_rerun_owner_authorization_required": true,
+    "terminal_job_reopen_allowed": false
+  },
+  "retry_budget_contract": {
+    "max_retries_definition": "number_of_retry_attempts_after_initial_attempt",
+    "total_attempt_limit_formula": "1 + max_retries",
+    "initial_retry_count": 0,
+    "max_retries_immutable_after_job_creation": true,
+    "reservation_increments_retry_count": false,
+    "admission_increments_retry_count": true,
+    "admission_increment_atomic_with_requeue": true,
+    "resource_pause_consumes_retry": false,
+    "exhaustion_condition": "retry_count == max_retries",
+    "exhausted_requeue_allowed": false,
+    "missing_policy_behavior": "NO_AUTOMATIC_RETRY"
+  },
+  "policy_parameter_contract": {
+    "numeric_values_assigned_in_phase1": false,
+    "required_before_runtime": [
+      "max_retries",
+      "backoff_schedule_seconds",
+      "jitter_policy",
+      "retryable_safe_error_codes"
+    ],
+    "max_retries_validation": "EXPLICIT_INTEGER_GTE_ZERO_IMMUTABLE_PER_JOB",
+    "backoff_schedule_validation": "EXPLICIT_BOUNDED_NONNEGATIVE_SCHEDULE_COVERS_MAX_RETRIES",
+    "jitter_validation": "EXPLICIT_BOUNDED_NO_NEGATIVE_EFFECTIVE_DELAY",
+    "retryable_error_code_policy": "VERSIONED_ALLOWLIST_DEFAULT_DENY",
+    "unversioned_or_missing_policy_behavior": "NO_AUTOMATIC_RETRY_REQUIRE_MANUAL_REVIEW",
+    "selection_owner": "IDS-V0_1-STAGE039-P2",
+    "selection_evidence_required": true
+  },
+  "failure_classification": {
+    "TRANSIENT_RETRYABLE": {
+      "decision_action": "SCHEDULE_RETRY",
+      "target_state": "RETRY_WAIT",
+      "legal_transition_paths": [
+        ["RUNNING", "RETRY_WAIT"],
+        ["CLAIMED", "RETRY_WAIT"],
+        ["PAUSE_REQUESTED", "RETRY_WAIT"]
+      ],
+      "manual_review_required": false,
+      "retry_budget_consumed": false,
+      "owner_message_zh": "任务暂未完成，已记录安全错误并等待下一次资格时间。"
+    },
+    "PERMANENT_NON_RETRYABLE": {
+      "decision_action": "FAIL_TERMINAL",
+      "target_state": "FAILED",
+      "legal_transition_paths": [
+        ["RUNNING", "FAILED"]
+      ],
+      "manual_review_required": false,
+      "retry_budget_consumed": false,
+      "owner_message_zh": "任务已停止，不会自动重试；可查看原因并决定是否创建关联任务。"
+    },
+    "RESOURCE_CONDITION_PAUSE": {
+      "decision_action": "PAUSE_RESOURCE_GATE",
+      "target_state": "PAUSED",
+      "legal_transition_paths": [
+        ["QUEUED", "PAUSED"],
+        ["RETRY_WAIT", "PAUSED"],
+        ["RUNNING", "PAUSE_REQUESTED", "PAUSED"],
+        ["CLAIMED", "PAUSE_REQUESTED", "PAUSED"]
+      ],
+      "manual_review_required": false,
+      "retry_budget_consumed": false,
+      "owner_message_zh": "相关资源条件未满足，任务已暂停且未消耗重试次数。"
+    },
+    "RETRY_EXHAUSTED": {
+      "decision_action": "DEAD_LETTER",
+      "target_state": "DEAD_LETTERED",
+      "legal_transition_paths": [
+        ["RETRY_WAIT", "DEAD_LETTERED"]
+      ],
+      "manual_review_required": true,
+      "retry_budget_consumed": false,
+      "owner_message_zh": "重试次数已用尽，任务已进入人工复核。"
+    },
+    "POLICY_OR_AUTHORIZATION_BLOCK": {
+      "decision_action": "REQUIRE_MANUAL_REVIEW",
+      "target_state": "FAILED",
+      "legal_transition_paths": [
+        ["RUNNING", "FAILED"]
+      ],
+      "manual_review_required": true,
+      "retry_budget_consumed": false,
+      "owner_message_zh": "缺少有效策略或授权，任务已安全停止并等待人工复核。"
+    },
+    "INDETERMINATE_UNSAFE": {
+      "decision_action": "REQUIRE_MANUAL_REVIEW",
+      "target_state": "FAILED",
+      "legal_transition_paths": [
+        ["RUNNING", "FAILED"]
+      ],
+      "manual_review_required": true,
+      "retry_budget_consumed": false,
+      "owner_message_zh": "失败原因无法安全归类，任务不会自动继续。"
+    }
+  },
+  "retry_eligibility_contract": {
+    "required_source_state": "RETRY_WAIT",
+    "required_retry_disposition": "eligible",
+    "required_retry_pending": true,
+    "required_budget_expression": "retry_count < max_retries",
+    "next_eligible_at_required": true,
+    "next_eligible_evidence_required": true,
+    "versioned_policy_required": true,
+    "resource_gates_must_pass": true,
+    "previous_claim_deactivated": true,
+    "previous_lock_released_or_fenced": true,
+    "checkpoint_compatible_or_restart_safe_required": true,
+    "compare_and_set_required": true,
+    "append_only_audit_required": true,
+    "admission_transition": "RETRY_WAIT_TO_QUEUED",
+    "retry_counter_increment_point": "ATOMIC_RETRY_ADMISSION",
+    "terminal_reopen_allowed": false
+  },
+  "resource_pause_contract": {
+    "pause_reason_codes": [
+      "external_drive_offline",
+      "disk_space_insufficient",
+      "external_api_budget_insufficient"
+    ],
+    "retry_budget_consumed": false,
+    "retry_pending_preserved_when_applicable": true,
+    "automatic_resume_allowed": false,
+    "owner_revalidation_required": true,
+    "resume_runtime_owner": "STAGE-042"
+  },
+  "dead_letter_contract": {
+    "required_source_state": "RETRY_WAIT",
+    "required_failure_class": "RETRY_EXHAUSTED",
+    "required_metadata_refs": [
+      "job_id",
+      "attempt_id",
+      "retry_count",
+      "max_retries",
+      "safe_error_code",
+      "error_ref",
+      "checkpoint_ref",
+      "input_refs",
+      "output_refs",
+      "audit_ref",
+      "policy_version"
+    ],
+    "raw_payload_copy_allowed": false,
+    "plaintext_secret_allowed": false,
+    "automatic_replay_allowed": false,
+    "manual_triage_required": true,
+    "append_only_audit_required": true,
+    "evidence_deletion_allowed": false,
+    "protected_artifact_classes": [
+      "FACT_SOURCE",
+      "MANIFEST",
+      "EVIDENCE_LEDGER",
+      "AUDIT_LOG",
+      "REPORT_SNAPSHOT"
+    ]
+  },
+  "worker_boundary": {
+    "stage039_phase2_owns": [
+      "FAILURE_CLASSIFICATION",
+      "RETRY_DECISION",
+      "RETRY_ELIGIBILITY",
+      "DEAD_LETTER_DECISION",
+      "MANUAL_TRIAGE_METADATA"
+    ],
+    "queue_worker_owner": "STAGE-038",
+    "measured_backpressure_owner": "STAGE-040",
+    "lock_lease_fencing_owner": "STAGE-041",
+    "automatic_lifecycle_owner": "STAGE-042",
+    "worker_crash_recovery_owner": "STAGE-043",
+    "cleanup_execution_owner": "STAGE-044",
+    "production_worker_activation_allowed": false,
+    "database_persistence_allowed_in_phase1": false
+  },
+  "human_status_projection": {
+    "RETRY_WAIT": {
+      "label_zh": "等待重试",
+      "owner_action_zh": "查看安全错误与下次资格时间",
+      "owner_attention_required": false
+    },
+    "PAUSED": {
+      "label_zh": "已暂停",
+      "owner_action_zh": "恢复资源并完成复核",
+      "owner_attention_required": true
+    },
+    "FAILED": {
+      "label_zh": "处理失败",
+      "owner_action_zh": "人工复核后可创建新的关联任务",
+      "owner_attention_required": true
+    },
+    "DEAD_LETTERED": {
+      "label_zh": "需要人工处理",
+      "owner_action_zh": "人工复核，不自动继续",
+      "owner_attention_required": true
+    },
+    "CANCELLED": {
+      "label_zh": "已取消",
+      "owner_action_zh": "查看停止原因与已保留证据",
+      "owner_attention_required": false
+    }
+  },
+  "phase2_entry_gate": {
+    "entry_authorized": true,
+    "must_run_separately": true,
+    "required_task_id": "IDS-V0_1-STAGE039-P2",
+    "required_acceptance_id": "ACC-STAGE-039",
+    "required_contract_state": "PHASE1_ENGINEERING_CONTRACT_RUNTIME_DISABLED",
+    "requires_versioned_policy_parameters": true,
+    "requires_isolated_non_production_execution": true,
+    "production_activation_allowed": false,
+    "next_gate": "IDS-STAGE039-P2-GATE"
+  },
+  "truth_flags": {
+    "taskpack_source_read_performed": true,
+    "ids_business_source_read_performed": false,
+    "raw_metadata_content_accessed": false,
+    "retry_scheduler_performed": false,
+    "dead_letter_runtime_performed": false,
+    "queue_runtime_performed": false,
+    "worker_runtime_performed": false,
+    "database_connection_performed": false,
+    "schema_change_performed": false,
+    "state_registry_write_performed": false,
+    "runtime_output_written": false,
+    "real_ids_business_job_created": false,
+    "fake_ids_business_data_used": false,
+    "external_api_call_performed": false,
+    "github_upload_allowed": false,
+    "app_reinstall_allowed": false
+  }
+}

@@ -1,11 +1,16 @@
 schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
-current_stage_id: "IDS-STAGE038"
-current_phase_id: "IDS-STAGE038-REVIEW"
-current_task_id: "IDS-V0_1-STAGE038-REVIEW"
-next_gate_id: "IDS-STAGE039-P1-GATE"
+current_stage_id: "IDS-STAGE039"
+current_phase_id: "IDS-STAGE039-P1"
+current_task_id: "IDS-V0_1-STAGE039-P1"
+next_gate_id: "IDS-STAGE039-P2-GATE"
 current_transition_history:
+  stage039_entry_state:
+    current_stage_id: "IDS-STAGE038"
+    current_phase_id: "IDS-STAGE038-REVIEW"
+    current_task_id: "IDS-V0_1-STAGE038-REVIEW"
+    next_gate_id: "IDS-STAGE039-P1-GATE"
   stage038_closeout_state:
     current_stage_id: "IDS-STAGE038"
     current_phase_id: "IDS-STAGE038-P4"
@@ -9508,3 +9513,205 @@ stages:
         - "KM_IDSystem/docs/governance/events.jsonl"
       test_results: "TDD RED: 30 review-target tests produced 16 failures and 4 errors matching four Important findings. GREEN: repaired Phase2-4 25 tests OK; Stage038 38 tests OK; review 5 tests OK; Stage005 146 tests OK; Stage031-038 aggregate 207 tests OK; Stage026-030 compatibility 75 tests OK; full IDS v0.1 discovery 613 tests OK. Review checker returned 10/10 review checks and 7/7 governance checks true, review_valid=true, status=completed_reviewed_local, next_gate=IDS-STAGE039-P1-GATE; all review sources were Git tracked and matched the Git index. Direct Stage005 failed closed only on the four preserved owner dirty paths while scoped Stage005 valid=true; 182 events parsed with zero duplicate ids and one review event; 11 staged Python files compiled in memory; owner render drift/reference counts zero; git diff check passed; changed-only governance errors=0 and warnings=0. Full semantic validation returned only the expected 29 sparse-worktree missing root/unrelated-project paths, so sparse scope was not expanded. Post-commit HEAD binding remains the final local check."
       decision: "ACC-STAGE-038 completed_reviewed_local after four documented Important repairs; push_allowed=false, no app reinstall, and no STAGE-039 work in this run."
+  -
+    stage_id: "IDS-STAGE039"
+    name: "STAGE-039 · 重试与死信策略"
+    person_goal: "让失败任务可重试、可终止、可归类、可进入人工复核。"
+    status: "in_progress"
+    stop_conditions:
+      - "一次 run 试图完成多个 phase"
+      - "重新打开 FAILED、DEAD_LETTERED、SUCCEEDED 或 CANCELLED 终态"
+      - "把资源暂停计入 retry budget，或允许 exhausted retry 再次入队"
+      - "未版本化策略、未知错误或缺失证据触发自动重试"
+      - "创建或执行 retry scheduler、dead-letter processor、queue、worker、lock、automatic lifecycle、crash recovery 或 cleanup runtime"
+      - "连接 PostgreSQL、修改 schema/state registry 或写真实 job/dead-letter row"
+      - "读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
+      - "移动、删除、覆盖原始资料、manifest、evidence ledger、audit log、report snapshot 或 active index"
+      - "使用虚构 IDS 业务数据、数据库行、jobs、logs、evidence 或 placeholder corpus"
+      - "进入 STAGE-040、GitHub upload、PR、merge、app reinstall、stage review 或 batch gate"
+    stop_gate:
+      gate_id: "IDS-STAGE039-REVIEW-GATE"
+      status: "pending"
+      pass_conditions:
+        - "Phase 1 through Phase 4 each pass in separate runs"
+        - "Retry scheduling, failure classification, dead-letter and manual-review behavior preserve ids.job_state.v1"
+        - "Retry budget, idempotency, terminal rerun lineage, resource pause and protected evidence remain fail closed"
+        - "Whole-stage review completes and repairs all Critical and Important findings"
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_ENTRY_CONTRACT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE1_RETRY_DEAD_LETTER_SCOPE_BOUNDARY.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_policy_contract.json"
+        - "KM_IDSystem/scripts/check_retry_dead_letter_policy.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_policy.py"
+    phases:
+      -
+        phase_id: "IDS-STAGE039-P1"
+        name: "重试与死信策略 范围、输入输出与边界确认"
+        objective: "基于唯一批准的 Stage039 taskpack、STAGE-037 状态模型和 STAGE-038 reviewed queue baseline，定义失败分类、retry budget、attempt/idempotency、资源暂停、dead-letter、终态人工重跑 lineage、中文状态和 STAGE-040..044 ownership；不执行 runtime。"
+        status: "passed_with_local_evidence"
+        stop_conditions:
+          - "实现或执行 Phase 2 decision engine、scheduler 或 dead-letter runtime"
+          - "为 max_retries、backoff、jitter 或 retryable error allowlist 编造无来源值"
+          - "弱化 terminal immutability、compare-and-set、append-only audit 或 evidence protection"
+          - "连接数据库、读取 raw metadata、写 runtime output 或创建真实/虚构 IDS job"
+          - "进入 Phase 2、STAGE-040、review、GitHub 或 app reinstall"
+        stop_gate:
+          gate_id: "IDS-STAGE039-P1-GATE"
+          status: "passed_with_local_evidence"
+          pass_conditions:
+            - "Exact Stage039 source tuple and upstream hashes are recorded and machine checked"
+            - "Retry and dead-letter state paths preserve ids.job_state.v1 terminal semantics"
+            - "Unknown or unversioned policy defaults to no automatic retry and manual review"
+            - "Resource pause consumes no retry budget and dead-letter metadata preserves protected evidence"
+            - "Phase 2 is the only next task and must run separately"
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_ENTRY_CONTRACT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE1_RETRY_DEAD_LETTER_SCOPE_BOUNDARY.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_policy_contract.json"
+            - "KM_IDSystem/scripts/check_retry_dead_letter_policy.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_policy.py"
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE039-P1"
+            name: "定义重试与死信策略 Phase 1 工程合同"
+            objective: "定义可执行、可测试、可回滚的 retry/dead-letter 边界，解决 Stage038 同操作终态 replay 不可重跑的问题，同时不执行任何 retry/dead-letter runtime。"
+            status: "completed"
+            estimated_hours: 2
+            total_hours_percent: "20.00%"
+            dependencies:
+              - "IDS-V0_1-STAGE038-REVIEW"
+              - "ids.job_state.v1"
+              - "ids.stage038.worker_queue_baseline.stage_review.v1"
+            acceptance_ids:
+              - "ACC-STAGE-039"
+            test_commands:
+              - "python3 -B KM_IDSystem/scripts/check_retry_dead_letter_policy.py"
+              - "python3 -B -m unittest -q KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage039_retry_dead_letter_policy"
+              - "python3 -B -m unittest -q KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -p 'test_stage03[1-9]*.py' -q"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "python3 -B scripts/lean_governance.py check-render --project KM_IDSystem"
+              - "events.jsonl parse and duplicate-id check"
+              - "git diff --check"
+              - "python3 -B scripts/validate_governance_sync.py --changed-only --base-ref HEAD --semantic --drift-report"
+            test_results: "TDD RED: Stage039 10 tests produced 12 failures and 1 error because the Phase1 contract, checker, documents, and governance route did not exist. GREEN: Stage039 10 tests OK; Stage005 146 tests OK; Stage031-039 aggregate 217 tests OK; Stage026-030 compatibility 75 tests OK; full IDS v0.1 discovery 623 tests OK; checker returned 17/17 contract checks true and phase1_contract_valid=true. Retry/dead-letter, queue/worker, database/schema, raw metadata, fake IDS business data, runtime output, GitHub, app reinstall, Phase2, Stage040, stage review, and batch gates were not executed. Direct Stage005 failed closed only on the four preserved owner dirty paths while scoped Stage005 valid=true; 183 events parsed with zero duplicate ids and one Stage039 Phase1 event; 9 staged Python files compiled in memory; owner render drift/reference counts zero; git diff check passed; changed-only governance errors=0 and warnings=0. Full semantic validation returned only the expected 29 sparse-worktree missing root/unrelated-project paths, so sparse scope was not expanded."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_ENTRY_CONTRACT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE1_RETRY_DEAD_LETTER_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_policy_contract.json"
+              - "KM_IDSystem/scripts/check_retry_dead_letter_policy.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_policy.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+            risk: "A policy contract can accidentally reopen terminal jobs, double-consume retry budget, retry unknown failures, or turn dead-letter into a raw-data copy."
+            rollback: "Revert only Stage039 Phase1 contract/checker/tests/governance/event/handoff/changelog/owner-view changes; preserve prior stages, user dirty files, raw data, databases, runtime outputs, GitHub and app state."
+      -
+        phase_id: "IDS-STAGE039-P2"
+        name: "重试与死信策略 实现、接入与最小可运行切片"
+        objective: "In a separate run, select and evidence explicit versioned policy parameters, then implement an isolated non-production failure-classification, retry-eligibility/scheduling and dead-letter metadata slice integrated with the reviewed Stage038 control queue; map machine decisions to Chinese owner status and record bounded refs."
+        status: "planned"
+        stop_conditions:
+          - "Phase 1 contract or upstream hashes are invalid"
+          - "Numeric policy is implicit, unbounded, unversioned or lacks rationale and rollback"
+          - "Implementation reopens a terminal job, bypasses idempotency/CAS, or consumes budget before admission"
+          - "Implementation activates production, connects PostgreSQL, reads raw metadata, uses fake IDS data, or takes over STAGE-040..044"
+        stop_gate:
+          gate_id: "IDS-STAGE039-P2-GATE"
+          status: "planned"
+          pass_conditions:
+            - "Versioned policy parameters and safe-error allowlist are explicit and validated"
+            - "Isolated retry and dead-letter slice is deterministic, idempotent and bounded"
+            - "No production, database, raw-source, fake-data or downstream-stage side effect occurs"
+          evidence_refs: []
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE039-P2"
+            name: "实现隔离重试与死信最小切片"
+            objective: "Implement only the approved Phase 2 slice in a separate run."
+            status: "planned"
+            estimated_hours: 4
+            total_hours_percent: "40.00%"
+            dependencies:
+              - "IDS-V0_1-STAGE039-P1"
+            acceptance_ids:
+              - "ACC-STAGE-039"
+            test_commands: []
+            test_results: "Not run; Phase 2 is outside the current run."
+            evidence_refs: []
+            risk: "Retry runtime can duplicate side effects or create unbounded load if policy and identity gates are incomplete."
+            rollback: "Revert Phase 2 files only and preserve the Phase 1 contract."
+      -
+        phase_id: "IDS-STAGE039-P3"
+        name: "重试与死信策略 专项验证与异常场景"
+        objective: "In a separate run, validate duplicate click, worker crash boundary, removable-drive offline, low disk, API budget insufficiency, same-source concurrency, retry exhaustion, terminal replay and protected cleanup denial without physical destructive action."
+        status: "planned"
+        stop_conditions:
+          - "Phase 2 has not passed its independent gate"
+          - "A scenario requires raw metadata, fake IDS business data, destructive drive/disk/cleanup behavior or production activation"
+          - "A test absorbs STAGE-040..044 runtime ownership"
+        stop_gate:
+          gate_id: "IDS-STAGE039-P3-GATE"
+          status: "planned"
+          pass_conditions:
+            - "Retry, pause, exhaustion, dead-letter, duplicate and terminal-rerun scenarios are deterministic and fail closed"
+            - "Protected evidence remains immutable"
+          evidence_refs: []
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE039-P3"
+            name: "验证重试与死信异常场景"
+            objective: "Run only Phase 3 scenarios in a separate run."
+            status: "planned"
+            estimated_hours: 2
+            total_hours_percent: "20.00%"
+            dependencies:
+              - "IDS-V0_1-STAGE039-P2"
+            acceptance_ids:
+              - "ACC-STAGE-039"
+            test_commands: []
+            test_results: "Not run; Phase 3 is outside the current run."
+            evidence_refs: []
+            risk: "Scenario evidence can overclaim physical or production behavior that was not executed."
+            rollback: "Revert Phase 3 evidence/test changes only."
+      -
+        phase_id: "IDS-STAGE039-P4"
+        name: "重试与死信策略 交付证据、回滚与中文反馈"
+        objective: "In a separate run, deliver the state/decision graph, failure-retry/dead-letter logs, resource/backpressure proof, protected cleanup boundary, automatic-versus-manual matrix, safe shutdown/recovery and rollback evidence, then stop at the whole-stage review gate."
+        status: "planned"
+        stop_conditions:
+          - "Phase 3 has not passed"
+          - "Closeout claims production readiness, database persistence, raw-data execution or later-stage ownership"
+          - "Closeout enters whole-stage review in the same run"
+        stop_gate:
+          gate_id: "IDS-STAGE039-P4-GATE"
+          status: "planned"
+          pass_conditions:
+            - "ACC-STAGE-039 delivery evidence is complete, truthful and rollback-ready"
+            - "Next task is only IDS-V0_1-STAGE039-REVIEW"
+          evidence_refs: []
+        tasks:
+          -
+            task_id: "IDS-V0_1-STAGE039-P4"
+            name: "关闭 Stage039 delivery evidence"
+            objective: "Complete only Phase 4 in a separate run and route to review."
+            status: "planned"
+            estimated_hours: 2
+            total_hours_percent: "20.00%"
+            dependencies:
+              - "IDS-V0_1-STAGE039-P3"
+            acceptance_ids:
+              - "ACC-STAGE-039"
+            test_commands: []
+            test_results: "Not run; Phase 4 is outside the current run."
+            evidence_refs: []
+            risk: "Closeout may be misread as reviewed or production-ready before the separate whole-stage review."
+            rollback: "Revert Phase 4 closeout files only."
+    review:
+      review_id: "IDS-STAGE039-REVIEW"
+      task_id: "IDS-V0_1-STAGE039-REVIEW"
+      status: "pending"
+      acceptance_ids:
+        - "ACC-STAGE-039"
+      evidence_refs: []
+      test_results: "Not run; whole-stage review follows Phase 4 in a separate run."
+      decision: "Pending Phase 2, Phase 3, Phase 4 and separate whole-stage review."
