@@ -1,0 +1,61 @@
+{
+  "task_id": "T705",
+  "acceptance_ids": [
+    "A105"
+  ],
+  "generated_at": "2026-07-13T00:43:58Z",
+  "source_commit": "4dd5dbde",
+  "status": "PASS",
+  "implementation": [
+    "apps/api/app/ingest/transactional_pipeline.py",
+    "scripts/run_transactional_ingestion_pipeline.py",
+    "apps/api/app/domain_repository.py",
+    "specs/api_contract.yaml"
+  ],
+  "test_evidence": [
+    "tests/unit/test_transactional_pipeline.py",
+    "tests/integration/test_database_migrations.py"
+  ],
+  "required_validation_commands": [
+    ".venv/bin/pytest -q tests/unit",
+    "DATABASE_URL=<isolated-postgres-url> .venv/bin/pytest -q tests/integration/test_database_migrations.py",
+    ".venv/bin/python scripts/validate_contracts.py"
+  ],
+  "release_scope": {
+    "fixture_postgres_validation_only": true,
+    "live_sec_request_performed": false,
+    "a202_closed_by_contract": false,
+    "a209_closed_by_contract": false,
+    "mvp_release_ready": false
+  },
+  "schema_version": "eei-a105-transactional-failure-rollback-contract-v1",
+  "contract": {
+    "transaction_boundary": [
+      "data_snapshots",
+      "fact_versions",
+      "fact_version_evidence",
+      "scoring_runs",
+      "score_results",
+      "changes",
+      "active_analysis_contexts",
+      "transactional_outbox"
+    ],
+    "failure_injection_stages": [
+      "after_facts",
+      "after_scores",
+      "after_changes"
+    ],
+    "publication_state_rollback_fields": [
+      "fact_version_count",
+      "scoring_run_count",
+      "score_result_count",
+      "active_data_snapshot_id",
+      "active_scoring_run_id",
+      "refresh_token",
+      "refresh_generation"
+    ],
+    "failure_audit_change_type": "ingestion_failed",
+    "failure_audit_is_separate_transaction": true,
+    "partial_fact_or_score_publication_allowed": false
+  }
+}

@@ -1,5 +1,16 @@
 # Changelog
 
+## T705/A105-A107 transactional ingestion publication - 2026-07-13
+
+- Added one PostgreSQL transaction for source-document fact/evidence derivation, scoring,
+  seven-type change generation, active data/scoring pointer switch, outbox and audit log.
+- Added fixture-only failure injection and a separate review-required failure audit;
+  failed publication leaves fact/score rows, active pointers and refresh state unchanged.
+- Added idempotent replay and scope/record-mode-isolated fact version chains.
+- Extended `/v1/changes` and OpenAPI with old/new values, trigger source and review need.
+- Added full isolated PostgreSQL integration and A105-A107 contract artifacts. T706,
+  T1301/A202, A209 and MVP release readiness remain open.
+
 ## T704/A104 source freshness - 2026-07-13
 
 - Added PostgreSQL-backed `/v1/sources/freshness` status with per-source attempt,

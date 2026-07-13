@@ -1,0 +1,46 @@
+{
+  "task_id": "T705",
+  "acceptance_ids": [
+    "A106"
+  ],
+  "generated_at": "2026-07-13T00:43:58Z",
+  "source_commit": "4dd5dbde",
+  "status": "PASS",
+  "implementation": [
+    "apps/api/app/ingest/transactional_pipeline.py",
+    "scripts/run_transactional_ingestion_pipeline.py",
+    "apps/api/app/domain_repository.py",
+    "specs/api_contract.yaml"
+  ],
+  "test_evidence": [
+    "tests/unit/test_transactional_pipeline.py",
+    "tests/integration/test_database_migrations.py"
+  ],
+  "required_validation_commands": [
+    ".venv/bin/pytest -q tests/unit",
+    "DATABASE_URL=<isolated-postgres-url> .venv/bin/pytest -q tests/integration/test_database_migrations.py",
+    ".venv/bin/python scripts/validate_contracts.py"
+  ],
+  "release_scope": {
+    "fixture_postgres_validation_only": true,
+    "live_sec_request_performed": false,
+    "a202_closed_by_contract": false,
+    "a209_closed_by_contract": false,
+    "mvp_release_ready": false
+  },
+  "schema_version": "eei-a106-change-type-coverage-contract-v1",
+  "contract": {
+    "api_path": "/v1/changes",
+    "change_types": [
+      "created",
+      "updated",
+      "superseded",
+      "revoked",
+      "conflict_detected",
+      "stale",
+      "ingestion_failed"
+    ],
+    "idempotent_replay_emits_changes": false,
+    "failed_publication_emits_only_failure_audit": true
+  }
+}

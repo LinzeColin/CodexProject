@@ -241,6 +241,7 @@ def test_core_domain_migration_seed_idempotency_and_rollback() -> None:
     exercise_operator_source_capture_contracts()
     exercise_live_official_capture_postgres_contracts()
     exercise_source_freshness_contracts()
+    exercise_transactional_ingestion_pipeline_contracts()
     exercise_production_fact_version_contracts()
     exercise_domain_api_and_repository_contracts()
     exercise_reviewed_relationship_source_withdrawal_fail_closed_contracts()
@@ -891,6 +892,212 @@ def exercise_source_freshness_contracts() -> None:
                     "DELETE FROM ingestion_runs WHERE id = %s",
                     (failure_run_id,),
                 )
+
+
+def exercise_transactional_ingestion_pipeline_contracts() -> None:
+    scope = "golden-vertical:sec-fixture-t705-integration"
+    with connect_database() as connection:
+        ingestion_run = connection.execute(
+            """
+            SELECT ir.id, ir.source_id
+            FROM ingestion_runs ir
+            WHERE ir.connector_version = 'sec-fixture-ingestion-v1'
+              AND ir.status = 'succeeded'
+            ORDER BY ir.started_at DESC, ir.id DESC
+            LIMIT 1
+            """
+        ).fetchone()
+        assert ingestion_run is not None
+        ingestion_run_id, source_id = ingestion_run
+        documents = connection.execute(
+            """
+            SELECT DISTINCT sd.id, sd.title
+            FROM raw_source_snapshots rss
+            JOIN source_documents sd ON sd.id = rss.source_document_id
+            WHERE rss.ingestion_run_id = %s
+            ORDER BY sd.id
+            """,
+            (ingestion_run_id,),
+        ).fetchall()
+        assert len(documents) == 2
+        target_document_id, original_title = documents[0]
+
+    common_args = (
+        "scripts/run_transactional_ingestion_pipeline.py",
+        "--database-url",
+        database_url(),
+        "--ingestion-run-id",
+        str(ingestion_run_id),
+        "--scope",
+        scope,
+        "--record-mode",
+        "fixture",
+        "--stale-after-days",
+        "1",
+    )
+    initial = run_script_json(*common_args, "--reason", "A105-A107 initial publication")
+    assert initial["status"] == "succeeded"
+    assert initial["result"]["status"] == "completed"
+    assert initial["result"]["fact_version_count"] == 2
+    assert initial["result"]["score_result_count"] == 2
+    assert {"created", "stale"} <= set(initial["result"]["change_types"])
+
+    replay = run_script_json(*common_args, "--reason", "A105-A107 initial publication")
+    assert replay["status"] == "succeeded"
+    assert replay["result"]["status"] == "idempotent_replay"
+    assert replay["result"]["fact_version_count"] == 0
+    assert replay["result"]["score_result_count"] == 0
+    assert replay["result"]["change_count"] == 0
+
+    with connect_database() as connection:
+        connection.execute(
+            "UPDATE source_documents SET title = %s WHERE id = %s",
+            (f"{original_title} - A106 update", target_document_id),
+        )
+    updated = run_script_json(*common_args, "--reason", "A106 update probe")
+    assert {"updated", "superseded"} <= set(updated["result"]["change_types"])
+
+    with connect_database() as connection:
+        connection.execute(
+            """
+            UPDATE raw_source_snapshots
+            SET review_status = 'disputed'
+            WHERE ingestion_run_id = %s AND source_document_id = %s
+            """,
+            (ingestion_run_id, target_document_id),
+        )
+    conflicted = run_script_json(*common_args, "--reason", "A106 conflict probe")
+    assert "conflict_detected" in conflicted["result"]["change_types"]
+
+    with connect_database() as connection:
+        connection.execute("UPDATE sources SET active = false WHERE id = %s", (source_id,))
+    revoked = run_script_json(*common_args, "--reason", "A106 revoke probe")
+    assert "revoked" in revoked["result"]["change_types"]
+
+    with connect_database() as connection:
+        connection.execute("UPDATE sources SET active = true WHERE id = %s", (source_id,))
+        connection.execute(
+            """
+            UPDATE raw_source_snapshots
+            SET review_status = 'machine_verified'
+            WHERE ingestion_run_id = %s
+            """,
+            (ingestion_run_id,),
+        )
+        connection.execute(
+            "UPDATE source_documents SET title = %s WHERE id = %s",
+            (f"{original_title} - A105 failure probe", target_document_id),
+        )
+        before_failure = connection.execute(
+            """
+            SELECT
+              (SELECT count(*) FROM fact_versions),
+              (SELECT count(*) FROM scoring_runs),
+              (SELECT count(*) FROM score_results),
+              active_data_snapshot_id,
+              active_scoring_run_id,
+              refresh_token,
+              refresh_generation
+            FROM active_analysis_contexts
+            WHERE context_key = 'global'
+            """
+        ).fetchone()
+
+    failed_process = subprocess.run(
+        [
+            sys.executable,
+            *common_args,
+            "--reason",
+            "A105 injected failure probe",
+            "--failure-injection-stage",
+            "after_scores",
+            "--allow-failure-injection",
+        ],
+        check=False,
+        cwd=os.getcwd(),
+        capture_output=True,
+        text=True,
+    )
+    assert failed_process.returncode == 1, failed_process.stderr
+    failed = json.loads(failed_process.stdout)
+    assert failed["status"] == "failed"
+    assert failed["error_class"] == "InjectedPipelineFailure"
+    assert failed["failure_audit"]["publication_rollback_verified"] is True
+
+    with connect_database() as connection:
+        after_failure = connection.execute(
+            """
+            SELECT
+              (SELECT count(*) FROM fact_versions),
+              (SELECT count(*) FROM scoring_runs),
+              (SELECT count(*) FROM score_results),
+              active_data_snapshot_id,
+              active_scoring_run_id,
+              refresh_token,
+              refresh_generation
+            FROM active_analysis_contexts
+            WHERE context_key = 'global'
+            """
+        ).fetchone()
+    assert after_failure == before_failure
+
+    client = TestClient(app)
+    change_response = client.get("/v1/changes")
+    assert change_response.status_code == 200
+    pipeline_changes = [
+        change
+        for change in change_response.json()
+        if change["trigger_source"]
+        and change["trigger_source"]["ingestion_run_id"] == str(ingestion_run_id)
+    ]
+    assert {
+        "created",
+        "updated",
+        "superseded",
+        "revoked",
+        "conflict_detected",
+        "stale",
+        "ingestion_failed",
+    } <= {change["change_type"] for change in pipeline_changes}
+    changed_document = next(
+        change
+        for change in pipeline_changes
+        if change["change_type"] == "updated"
+        and change["object_id"] == str(target_document_id)
+        and change["new_value"]["change_semantics"]["reason"] == "A106 update probe"
+    )
+    assert changed_document["old_value"]["title"] != changed_document["new_value"]["title"]
+    assert changed_document["trigger_source"]["source_document_id"] == str(
+        target_document_id
+    )
+    assert changed_document["trigger_source"]["source_id"] == str(source_id)
+    assert changed_document["trigger_source"]["source_code"] == "sec_edgar_synthetic_fixture"
+    assert changed_document["trigger_source"]["connector_version"] == (
+        "sec-fixture-ingestion-v1"
+    )
+    assert changed_document["review_required"] is False
+    assert any(
+        change["change_type"] == "ingestion_failed" and change["review_required"] is True
+        for change in pipeline_changes
+    )
+
+    recovered = run_script_json(*common_args, "--reason", "A105 recovery publication")
+    assert recovered["status"] == "succeeded"
+    assert recovered["result"]["status"] == "completed"
+
+    with connect_database() as connection:
+        isolated_pipeline_events = connection.execute(
+            """
+            DELETE FROM transactional_outbox
+            WHERE metadata->>'contract' = 'transactional-ingestion-pipeline-v1'
+            RETURNING event_type
+            """
+        ).fetchall()
+    assert len(isolated_pipeline_events) == 10
+    assert {row[0] for row in isolated_pipeline_events} == {
+        "data.snapshot.activated",
+        "score.snapshot.activated",
+    }
 
 
 def exercise_production_fact_version_contracts() -> None:

@@ -222,6 +222,12 @@ paths:
       responses:
         '200':
           description: Change feed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChangeEvent'
   /v1/sources/freshness:
     get:
       operationId: sourceFreshness
@@ -2774,6 +2780,111 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CatalogSummary'
+    ChangeEvent:
+      type: object
+      required:
+      - id
+      - change_type
+      - object_type
+      - object_id
+      - old_value
+      - new_value
+      - review_required
+      - created_at
+      - trigger_source
+      properties:
+        id:
+          type: string
+          format: uuid
+        change_type:
+          type: string
+          enum:
+          - created
+          - updated
+          - superseded
+          - revoked
+          - conflict_detected
+          - stale
+          - ingestion_failed
+        object_type:
+          type: string
+        object_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        old_value:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+        new_value:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+        review_required:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        trigger_source:
+          oneOf:
+          - $ref: '#/components/schemas/ChangeTriggerSource'
+          - type: 'null'
+    ChangeTriggerSource:
+      type: object
+      required:
+      - source_document_id
+      - source_id
+      - source_code
+      - source_document_url
+      - source_document_title
+      - ingestion_run_id
+      - connector_version
+      - record_mode
+      - ingestion_status
+      properties:
+        source_document_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        source_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        source_code:
+          type:
+          - string
+          - 'null'
+        source_document_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+        source_document_title:
+          type:
+          - string
+          - 'null'
+        ingestion_run_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        connector_version:
+          type:
+          - string
+          - 'null'
+        record_mode:
+          type:
+          - string
+          - 'null'
+        ingestion_status:
+          type:
+          - string
+          - 'null'
     SourceFreshnessResponse:
       type: object
       required:

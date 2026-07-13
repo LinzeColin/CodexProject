@@ -51,7 +51,7 @@ period start/end stay paired to the same SEC fact period; retrieval time is neve
 substituted for document or report time. Isolated PostgreSQL integration covers a
 latest-failure injection and cleanup, while browser E2E proves server hydration and
 visible server-error behavior. No live SEC request is part of the acceptance evidence.
-`T705-T706` remain open, and these tasks do not close `T1301/A202`, production ingestion, external source/
+`T705/A105-A107` is locally PostgreSQL validated; `T706` remains open. This does not close `T1301/A202`, production ingestion, external source/
 legal/owner clearance, A209, or MVP release readiness. Remote CI is pending.
 
 每个 task 必须绑定已有 Acceptance IDs；如果 `acceptance_traceability` 没有映射，先记录 gap，不直接开发。

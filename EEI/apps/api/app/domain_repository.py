@@ -6999,12 +6999,30 @@ class DomainRepository:
     ) -> list[dict[str, Any]]:
         rows = connection.execute(
             """
-            SELECT id, change_type, object_type, object_id, old_value, new_value,
-                   review_required, created_at
-            FROM changes
-            WHERE (%s::timestamptz IS NULL OR created_at >= %s::timestamptz)
-              AND (%s::text IS NULL OR change_type = %s)
-            ORDER BY created_at DESC, id DESC
+            SELECT c.id, c.change_type, c.object_type, c.object_id,
+                   c.old_value, c.new_value, c.review_required, c.created_at,
+                   CASE
+                     WHEN c.source_document_id IS NULL AND c.ingestion_run_id IS NULL
+                       THEN NULL
+                     ELSE jsonb_build_object(
+                       'source_document_id', c.source_document_id,
+                       'source_id', sd.source_id,
+                       'source_code', s.code,
+                       'source_document_url', sd.url,
+                       'source_document_title', sd.title,
+                       'ingestion_run_id', c.ingestion_run_id,
+                       'connector_version', ir.connector_version,
+                       'record_mode', ir.mode,
+                       'ingestion_status', ir.status
+                     )
+                   END AS trigger_source
+            FROM changes c
+            LEFT JOIN source_documents sd ON sd.id = c.source_document_id
+            LEFT JOIN sources s ON s.id = sd.source_id
+            LEFT JOIN ingestion_runs ir ON ir.id = c.ingestion_run_id
+            WHERE (%s::timestamptz IS NULL OR c.created_at >= %s::timestamptz)
+              AND (%s::text IS NULL OR c.change_type = %s)
+            ORDER BY c.created_at DESC, c.id DESC
             LIMIT %s
             """,
             (since, since, change_type, change_type, limit),

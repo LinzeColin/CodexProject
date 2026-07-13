@@ -1,5 +1,66 @@
 # MVP Development Record
 
+## 2026-07-13 - T705/A105-A107 transactional ingestion publication
+
+Status: LOCAL POSTGRESQL VALIDATED; REMOTE CI PENDING; PHASE 1.2 IN PROGRESS; MVP RELEASE BLOCKED
+
+### Goal and Scope
+
+- Derive immutable source-document fact versions, score results and change events from
+  one succeeded ingestion run, then atomically activate both data and scoring pointers.
+- Reuse existing PostgreSQL tables and active model/profile configuration; add no
+  migration, score formula, model weight or threshold change.
+- Extend `/v1/changes` with old/new values, source-document/connector/run provenance and
+  review need. Keep T804 frontend change-feed work outside this run.
+- Perform no live SEC request, production relationship publication, A202 closure, A209
+  evidence mutation or release-ready artifact refresh.
+
+### Acceptance and Evidence
+
+- `T705 -> A105`: fixture-only failure injection after facts, scores or changes rolls
+  back the publication transaction; a separate `ingestion_failed` audit change records
+  the failure without changing fact/score counts, active pointers, refresh token or
+  refresh generation.
+- `T705 -> A106`: PostgreSQL E2E covers `created`, `updated`, `superseded`, `revoked`,
+  `conflict_detected`, `stale` and `ingestion_failed`; exact replay writes no new facts,
+  scores or changes.
+- `T705 -> A107`: `/v1/changes` returns `old_value`, `new_value`, `review_required` and a
+  typed trigger source containing source document, source, connector and ingestion run.
+- Evidence artifacts:
+  `artifacts/tests/a105/t705_transactional_failure_rollback_contract.json`,
+  `artifacts/tests/a106/t705_change_type_coverage_contract.json`, and
+  `artifacts/tests/a107/t705_change_provenance_api_contract.json`.
+
+### Transaction and Data Boundary
+
+- A global context row lock serializes publication. Snapshot, fact/evidence, scoring,
+  change, active-context, outbox and operation-log writes share one PostgreSQL transaction.
+- Fact comparison and previous-version links are isolated by `scope + record_mode`.
+  Active and superseded snapshots with the same input hash are idempotent replay evidence.
+- Failure audit is intentionally a second transaction after rollback. It is the only
+  change allowed after a failed publication and is always review-required.
+
+### Validation
+
+- Python compile/Ruff, OpenAPI contract validation and full unit suite: PASS,
+  `186/186` with one third-party Starlette/httpx deprecation warning.
+- Isolated PostgreSQL 16 full migration/seed/loader/API integration: PASS, `2/2`; the
+  failure probe verified exact equality of fact/scoring/result counts, active snapshot/run
+  pointers, refresh token and generation before and after rollback.
+- T705 artifact generation/validation: PASS. Temporary database resource cleanup and
+  protected A209 PostgreSQL/worker identity checks are required before commit.
+
+### Risk, Rollback, and Stop Conditions
+
+- Risk: cross-scope fact chaining, half-published facts/scores, stale active pointers,
+  duplicate replay, missing source provenance or test outbox leakage. Scope/mode filtering,
+  row locking, one transaction, deterministic input hashes, typed API fields and isolated
+  integration cleanup mitigate these risks.
+- Rollback: revert only the T705 commit and A105-A107 status/artifacts; T700-T704 client,
+  normalization, fixture ingestion and freshness behavior remain intact.
+- Stop on A209 failure, protected-container change, transaction drift, any missing change
+  type/provenance field, idempotency failure, integration regression or governance drift.
+
 ## 2026-07-13 - T704/A104 source freshness contract
 
 Status: LOCAL API/E2E VALIDATED; REMOTE CI PENDING; PHASE 1.2 IN PROGRESS; MVP RELEASE BLOCKED

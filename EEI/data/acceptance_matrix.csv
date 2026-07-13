@@ -103,9 +103,9 @@ A101,P0,ingest,"Company Facts preserve concept, unit, period, form, filed and fr
 A102,P0,ingest,"Connector supports fixture, dry-run and idempotent upsert",CLI/integration,DONE
 A103,P0,ingest,"Ingestion report includes checkpoint, counts, status and error class",Integration,DONE
 A104,P0,freshness,API/UI show attempt/success/failure and document/report dates,API/E2E,DONE
-A105,P0,resilience,Failed batch cannot partially publish facts or scores,Failure injection,NOT STARTED
-A106,P0,changes,Change feed covers create/update/supersede/revoke/conflict/stale/fail,E2E,NOT STARTED
-A107,P0,changes,"Change shows old/new, trigger source and review need",API/E2E,NOT STARTED
+A105,P0,resilience,Failed batch cannot partially publish facts or scores,Failure injection,DONE
+A106,P0,changes,Change feed covers create/update/supersede/revoke/conflict/stale/fail,E2E,DONE
+A107,P0,changes,"Change shows old/new, trigger source and review need",API/E2E,DONE
 A108,P0,capital,Unreported amount is not rendered as zero or Sankey width,UI/data test,NOT STARTED
 A109,P0,capital,Incomparable amount kinds are not silently summed,Unit/UI,NOT STARTED
 A110,P0,capital,Capital River filters and opens evidence,E2E,NOT STARTED

@@ -36,6 +36,13 @@ from .sec_normalizer import (
     normalize_sec_company_facts,
     normalize_sec_submissions,
 )
+from .transactional_pipeline import (
+    PIPELINE_VERSION,
+    InjectedPipelineFailure,
+    TransactionalPipelineError,
+    classify_change_types,
+    execute_transactional_pipeline,
+)
 
 __all__ = [
     "SEC_ALLOWED_HOSTS",
@@ -68,4 +75,9 @@ __all__ = [
     "SecFixturePlan",
     "build_sec_fixture_plan",
     "run_sec_fixture_ingestion",
+    "PIPELINE_VERSION",
+    "InjectedPipelineFailure",
+    "TransactionalPipelineError",
+    "classify_change_types",
+    "execute_transactional_pipeline",
 ]
