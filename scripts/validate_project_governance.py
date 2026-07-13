@@ -134,6 +134,16 @@ TRACEABILITY_REQUIRED_COLUMNS = [
     "status",
 ]
 PROJECT_REGISTRY_ALLOWED_FIELDS = {"project_id", "path", "ci_mode", "migration"}
+RETIRED_PROJECT_REGISTRY_ALLOWED_FIELDS = {
+    "project_id",
+    "path",
+    "status",
+    "retired_at",
+    "retirement_reason",
+    "preserve_history",
+    "reactivation_requires_owner_authorization",
+    "evidence_refs",
+}
 PROJECT_REGISTRY_MIGRATION_VERSIONS = {
     "legacy-v1-pending-lean-v2",
     "lean-v2",
@@ -1305,6 +1315,49 @@ def validate_project_registry_entry(validation: Validation, project: dict[str, A
         validation.error(scope, "migration carries non-version fields: " + ", ".join(extra_migration_fields))
 
 
+def retired_project_entries(config: dict[str, Any]) -> list[dict[str, Any]]:
+    return [item for item in as_list(config.get("retired_projects")) if isinstance(item, dict)]
+
+
+def validate_retired_project_registry_entry(
+    validation: Validation,
+    project: dict[str, Any],
+    scope: str,
+) -> None:
+    required_fields = (
+        "project_id",
+        "path",
+        "status",
+        "retired_at",
+        "retirement_reason",
+        "preserve_history",
+        "reactivation_requires_owner_authorization",
+        "evidence_refs",
+    )
+    for field in required_fields:
+        if not value_present(project.get(field)):
+            validation.error(scope, f"governance/projects.yaml retired project entry missing {field}")
+    extra_fields = sorted(set(project) - RETIRED_PROJECT_REGISTRY_ALLOWED_FIELDS)
+    if extra_fields:
+        validation.error(
+            scope,
+            "governance/projects.yaml retired project entry carries non-retirement fields: "
+            + ", ".join(extra_fields),
+        )
+    if str(project.get("status") or "") != "retired":
+        validation.error(scope, "retired project status must be retired")
+    for field in ("preserve_history", "reactivation_requires_owner_authorization"):
+        if project.get(field) is not True:
+            validation.error(scope, f"retired project {field} must be true")
+    evidence_refs = as_list(project.get("evidence_refs"))
+    for evidence_ref in evidence_refs:
+        normalized = str(evidence_ref).replace("\\", "/").strip()
+        if not normalized.startswith("governance/run_manifests/") or not normalized.endswith(".json"):
+            validation.error(scope, f"retired project evidence_ref must be a root run manifest: {normalized}")
+        elif not (ROOT / normalized).is_file():
+            validation.error(scope, f"retired project evidence_ref missing: {normalized}")
+
+
 def validate_readme_project_list(validation: Validation, projects: list[dict[str, Any]]) -> None:
     readme = ROOT / "README.md"
     if not readme.exists():
@@ -1381,10 +1434,16 @@ def validate_root(validation: Validation, config: dict[str, Any]) -> None:
             validation.error("root", f"Invalid JSON schema {rel(schema)}: {exc}")
 
     projects = [p for p in as_list(config.get("projects")) if isinstance(p, dict)]
+    retired_projects = retired_project_entries(config)
     validate_readme_project_list(validation, projects)
     validate_projects_yaml_count_claims(validation, projects)
-    registered_paths = [str(project.get("path") or "").replace("\\", "/").rstrip("/") for project in projects]
-    registered_ids = [str(project.get("project_id") or "") for project in projects]
+    active_paths = [str(project.get("path") or "").replace("\\", "/").rstrip("/") for project in projects]
+    active_ids = [str(project.get("project_id") or "") for project in projects]
+    retired_paths = [
+        str(project.get("path") or "").replace("\\", "/").rstrip("/") for project in retired_projects
+    ]
+    retired_ids = [str(project.get("project_id") or "") for project in retired_projects]
+    registered_paths = active_paths + retired_paths
     actual_project_dirs = discover_project_dirs()
     missing = [path for path in actual_project_dirs if path not in registered_paths]
     if missing:
@@ -1398,10 +1457,20 @@ def validate_root(validation: Validation, config: dict[str, Any]) -> None:
         validate_project_registry_entry(validation, project, scope)
         if path and not (ROOT / path).exists():
             validation.error(scope, f"Registered project path missing: {path}")
-    for value, label in ((registered_paths, "project path"), (registered_ids, "project_id")):
+    for project in retired_projects:
+        scope = project_scope(project)
+        path = str(project.get("path") or "").rstrip("/")
+        validate_retired_project_registry_entry(validation, project, scope)
+        if path and not (ROOT / path).exists():
+            validation.error(scope, f"Retired project path missing: {path}")
+    for value, label in ((registered_paths, "project path"), (active_ids + retired_ids, "project_id")):
         duplicates = sorted({item for item in value if item and value.count(item) > 1})
         for duplicate in duplicates:
             validation.error("root", f"Duplicate {label}: {duplicate}")
+    for duplicate in sorted(set(active_paths) & set(retired_paths)):
+        validation.error("root", f"Project path cannot be both active and retired: {duplicate}")
+    for duplicate in sorted(set(active_ids) & set(retired_ids)):
+        validation.error("root", f"project_id cannot be both active and retired: {duplicate}")
 
 
 def validate_project(
@@ -1574,17 +1643,24 @@ def root_changed_scope_configured_exclusions(config: dict[str, Any]) -> set[str]
 
 def changed_scope_selection(config: dict[str, Any], changed: list[str]) -> dict[str, Any]:
     projects = [p for p in as_list(config.get("projects")) if isinstance(p, dict)]
+    retired_projects = retired_project_entries(config)
     root_changed = any(is_root_governance_change(path, root_required_files(config)) for path in changed)
     configured_excluded = root_changed_scope_configured_exclusions(config) if root_changed else set()
     required_ids = required_project_ids(projects)
     effective_excluded = configured_excluded - required_ids
+    retired_changed = [
+        path
+        for path in changed
+        if any(project_matches_changed(project, [path]) for project in retired_projects)
+    ]
     unknown_changed = [
         path
         for path in changed
         if not is_root_governance_change(path, root_required_files(config))
         and not any(project_matches_changed(project, [path]) for project in projects)
+        and path not in retired_changed
     ]
-    full_scope_required = root_changed or bool(unknown_changed)
+    full_scope_required = root_changed or bool(unknown_changed) or bool(retired_changed)
     selected = (
         [project for project in projects if project_id(project) not in effective_excluded]
         if full_scope_required
@@ -1595,6 +1671,8 @@ def changed_scope_selection(config: dict[str, Any], changed: list[str]) -> dict[
         "changed_files": changed,
         "root_governance_changed": root_changed,
         "unknown_changed_files": unknown_changed,
+        "retired_changed_files": retired_changed,
+        "retired_project_ids": sorted(project_id(project) for project in retired_projects),
         "full_scope_required": full_scope_required,
         "projects": selected,
         "configured_root_scope_excluded_projects": sorted(configured_excluded),
@@ -1611,11 +1689,28 @@ def select_projects(config: dict[str, Any], args: argparse.Namespace) -> list[di
     if args.project:
         selected = [p for p in projects if p.get("project_id") == args.project or p.get("path") == args.project]
         if not selected:
+            retired = [
+                p
+                for p in retired_project_entries(config)
+                if p.get("project_id") == args.project or p.get("path") == args.project
+            ]
+            if retired:
+                raise SystemExit(
+                    f"Retired project requires an explicit Owner-authorized reactivation task: {args.project}"
+                )
             raise SystemExit(f"Unknown project: {args.project}")
         return selected
     if args.changed_only:
         changed = git_changed_files(getattr(args, "base_ref", None))
-        return list(changed_scope_selection(config, changed)["projects"])
+        selection = changed_scope_selection(config, changed)
+        if selection["retired_changed_files"]:
+            raise GovernanceDiffError(
+                "RETIRED_PROJECT_CHANGE",
+                "RETIRED_PROJECT_CHANGE: retired project paths changed without Owner-authorized reactivation: "
+                + ", ".join(selection["retired_changed_files"]),
+                base_ref=getattr(args, "base_ref", None),
+            )
+        return list(selection["projects"])
     return projects
 
 
