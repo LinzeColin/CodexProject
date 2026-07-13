@@ -48,6 +48,7 @@ VERSION
 apps/__init__.py
 apps/api/__init__.py
 apps/api/app/__init__.py
+apps/api/app/amount_semantics.py
 apps/api/app/db_health.py
 apps/api/app/domain.py
 apps/api/app/domain_repository.py
@@ -127,6 +128,8 @@ artifacts/tests/a104/t704_source_freshness_contract.json
 artifacts/tests/a105/t705_transactional_failure_rollback_contract.json
 artifacts/tests/a106/t705_change_type_coverage_contract.json
 artifacts/tests/a107/t705_change_provenance_api_contract.json
+artifacts/tests/a108/t800_unreported_amount_semantics_contract.json
+artifacts/tests/a109/t800_incomparable_amount_aggregation_contract.json
 artifacts/tests/a119/t905_migration_rollback_rehearsal.json
 artifacts/tests/a120/t905_clean_start_operator_rehearsal.json
 artifacts/tests/a182/t1212_governance_consistency_workflow.json
@@ -415,6 +418,7 @@ scripts/validate_a202_signed_intake_preflight.py
 scripts/validate_brand_clearance.py
 scripts/validate_catalog_integrity.py
 scripts/validate_contracts.py
+scripts/validate_event_amount_semantics_contract.py
 scripts/validate_external_release_evidence_bundle.py
 scripts/validate_github_governance.py
 scripts/validate_gold_quality_evaluation.py
@@ -471,6 +475,7 @@ tests/fixtures/sec/submissions_golden.json
 tests/integration/README.md
 tests/integration/test_database_migrations.py
 tests/unit/test_a202_signed_intake_preflight.py
+tests/unit/test_amount_semantics.py
 tests/unit/test_api_health.py
 tests/unit/test_brand_clearance.py
 tests/unit/test_clean_room_release_paths.py

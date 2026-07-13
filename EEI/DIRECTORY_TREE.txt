@@ -28,6 +28,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   │   ├── sec_smoke.py
 │   │   │   │   └── transactional_pipeline.py
 │   │   │   ├── __init__.py
+│   │   │   ├── amount_semantics.py
 │   │   │   ├── db_health.py
 │   │   │   ├── domain.py
 │   │   │   ├── domain_repository.py
@@ -126,6 +127,10 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   │   └── t705_change_type_coverage_contract.json
 │   │   ├── a107
 │   │   │   └── t705_change_provenance_api_contract.json
+│   │   ├── a108
+│   │   │   └── t800_unreported_amount_semantics_contract.json
+│   │   ├── a109
+│   │   │   └── t800_incomparable_amount_aggregation_contract.json
 │   │   ├── a119
 │   │   │   └── t905_migration_rollback_rehearsal.json
 │   │   ├── a120
@@ -475,6 +480,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   ├── validate_brand_clearance.py
 │   ├── validate_catalog_integrity.py
 │   ├── validate_contracts.py
+│   ├── validate_event_amount_semantics_contract.py
 │   ├── validate_external_release_evidence_bundle.py
 │   ├── validate_github_governance.py
 │   ├── validate_gold_quality_evaluation.py
@@ -543,6 +549,7 @@ Enterprise_Ecosystem_Intelligence_release
 │   │   └── test_database_migrations.py
 │   └── unit
 │       ├── test_a202_signed_intake_preflight.py
+│       ├── test_amount_semantics.py
 │       ├── test_api_health.py
 │       ├── test_brand_clearance.py
 │       ├── test_clean_room_release_paths.py

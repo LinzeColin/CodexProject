@@ -27,7 +27,10 @@
 T800 将该边界落实为 `/v1/events` 和 `/v1/events/amount-summary`：未披露金额
 保持 `null` 且 `visual_weight=null`、`width_eligible=false`；已披露金额只能在
 `currency + amount_kind + period_start + period_end` 完全一致的 bucket 内求和。
-跨 bucket 总额保持 `null`。T801/T805 仍需证明 Capital River UI 和跨视图行为。
+跨 bucket 总额保持 `null`。T801 将该契约连接到真实 `/capital` route，并增加
+`/v1/evidence/event/{eventId}`：页面按完整 bucket key 分 lane，未披露金额不生成
+flow track，事件可打开来源、文档与证据片段。A108-A110 仍需 T805 跨视图/export
+验证后才能关闭。
 
 ## 公司目录边界
 

@@ -1,5 +1,17 @@
 # Changelog
 
+## T801 Capital River and event evidence - 2026-07-13
+
+- Added the real `/capital` route with entity, date, event type, currency and amount-kind
+  filters connected to `/v1/events` and `/v1/events/amount-summary`.
+- Rendered comparable amounts in separate currency/kind/period lanes. Unknown amounts
+  have no flow track or width, and incomparable lanes never receive a cross-lane total.
+- Added `/v1/evidence/event/{eventId}` over event evidence, source documents and source
+  metadata, plus an evidence panel opened from each event.
+- Added A108-A110 T801 artifacts, PostgreSQL integration, focused E2E and desktop/mobile
+  visual checks. T801 is DONE; A108-A110 remain `IN PROGRESS` pending T805 cross-view
+  and export validation. A209 and MVP release readiness remain open.
+
 ## T800 event and amount semantic services - 2026-07-13
 
 - Implemented evidence-bearing `/v1/events` queries with entity, theme, time, type and

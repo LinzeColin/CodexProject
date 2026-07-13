@@ -745,6 +745,8 @@ def event_amount_summary(
     from_: Annotated[datetime | None, Query(alias="from")] = None,
     to_: Annotated[datetime | None, Query(alias="to")] = None,
     event_type: str | None = None,
+    currency: Annotated[str | None, Query(min_length=3, max_length=3)] = None,
+    amount_kind: str | None = None,
     limit: int = Query(default=100, ge=1, le=500),
 ) -> dict[str, Any]:
     return repository.event_amount_summary(
@@ -753,6 +755,8 @@ def event_amount_summary(
         from_time=from_,
         to_time=to_,
         event_type=event_type,
+        currency=currency,
+        amount_kind=amount_kind,
         limit=limit,
     )
 
@@ -765,6 +769,8 @@ def list_events(
     from_: Annotated[datetime | None, Query(alias="from")] = None,
     to_: Annotated[datetime | None, Query(alias="to")] = None,
     event_type: str | None = None,
+    currency: Annotated[str | None, Query(min_length=3, max_length=3)] = None,
+    amount_kind: str | None = None,
     limit: int = Query(default=100, ge=1, le=500),
 ) -> list[dict[str, Any]]:
     return repository.list_events(
@@ -773,6 +779,8 @@ def list_events(
         from_time=from_,
         to_time=to_,
         event_type=event_type,
+        currency=currency,
+        amount_kind=amount_kind,
         limit=limit,
     )
 

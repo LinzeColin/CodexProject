@@ -1,0 +1,51 @@
+{
+  "task_id": "T801",
+  "acceptance_ids": [
+    "A108"
+  ],
+  "generated_at": "2026-07-13T01:48:07Z",
+  "source_commit": "f6d22a0da",
+  "status": "PASS",
+  "implementation": [
+    "apps/api/app/domain_repository.py",
+    "apps/api/app/domain.py",
+    "apps/web/src/app/capital/page.tsx",
+    "apps/web/src/app/capital-events-client.ts",
+    "apps/web/src/app/production-data-client.ts",
+    "apps/web/src/app/workspace-context.tsx",
+    "specs/api_contract.yaml"
+  ],
+  "test_evidence": [
+    "tests/e2e/capital-river.spec.ts",
+    "tests/integration/test_database_migrations.py"
+  ],
+  "validated_commands": {
+    "focused_playwright": "2 passed",
+    "postgresql_integration": "2 passed",
+    "web_typecheck": "PASS",
+    "desktop_mobile_visual_check": "PASS"
+  },
+  "acceptance_closure": {
+    "t801_slice_complete": true,
+    "capital_river_ui_validated": true,
+    "event_evidence_validated": true,
+    "cross_view_validation_complete": false,
+    "acceptance_status_required": "IN PROGRESS",
+    "remaining_tasks": [
+      "T805"
+    ]
+  },
+  "release_scope": {
+    "fixture_postgres_and_e2e_validation": true,
+    "production_owner_clearance_claimed": false,
+    "a209_closed_by_contract": false,
+    "mvp_release_ready": false
+  },
+  "schema_version": "eei-a108-t801-unreported-amount-ui-v1",
+  "contract": {
+    "unknown_amount_label": "未披露",
+    "unknown_amount_rendered_as_zero": false,
+    "unknown_amount_has_flow_track": false,
+    "unknown_amount_has_sankey_width": false
+  }
+}

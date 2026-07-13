@@ -61,7 +61,7 @@ T704,G7,P0,Implement freshness and failure status,T703,A104,DONE
 T705,G7,P0,Implement transactional derive/score/change pipeline,"T703,T600","A105,A106,A107",DONE
 T706,G7,P0,Add fixture tests and optional live smoke,T705,"A096,A098,A102",DONE
 T800,G8,P0,Implement event and amount semantic services,T705,"A108,A109",DONE
-T801,G8,P0,Build Capital River and event evidence,T800,A110,NOT STARTED
+T801,G8,P0,Build Capital River and event evidence,T800,A110,DONE
 T802,G8,P0,Build policy/government views,T800,A111,NOT STARTED
 T803,G8,P0,Build Strategic Radar and language guardrails,T800,A112,NOT STARTED
 T804,G8,P0,Build Change Feed and conflict display,T705,"A106,A107",NOT STARTED

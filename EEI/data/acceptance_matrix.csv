@@ -108,7 +108,7 @@ A106,P0,changes,Change feed covers create/update/supersede/revoke/conflict/stale
 A107,P0,changes,"Change shows old/new, trigger source and review need",API/E2E,DONE
 A108,P0,capital,Unreported amount is not rendered as zero or Sankey width,UI/data test,IN PROGRESS
 A109,P0,capital,Incomparable amount kinds are not silently summed,Unit/UI,IN PROGRESS
-A110,P0,capital,Capital River filters and opens evidence,E2E,NOT STARTED
+A110,P0,capital,Capital River filters and opens evidence,E2E,IN PROGRESS
 A111,P0,policy,Policy and government views open evidence and amount semantics,E2E,NOT STARTED
 A112,P0,signals,"No buy/sell, return probability or guaranteed outcome language",Content scan/review,NOT STARTED
 A113,P0,performance,300 nodes/1000 edges first usable render <=2s in recorded environment,Benchmark,NOT STARTED

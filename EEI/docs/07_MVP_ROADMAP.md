@@ -61,9 +61,12 @@ legal/owner clearance, A209, or MVP release readiness. Remote CI is pending.
 Phase 1.3 status (2026-07-13): `IN_PROGRESS`. T800 implements evidence-bearing event
 queries and amount-semantic aggregation. Unreported amount remains null/no-width, and
 reported amounts aggregate only inside identical currency/kind/period buckets. A108/A109
-remain `IN PROGRESS` until T801/T805 prove Capital River UI and cross-view behavior.
-Recursive graph, score and production context APIs remain available from prior tasks;
-T801-T805 and remaining production-data gates are still open.
+now also have T801 UI evidence: the real `/capital` route filters event/summary APIs,
+renders each comparable bucket as a separate lane, gives unknown amounts no flow width,
+and opens `/v1/evidence/event/{eventId}`. T801 is DONE. A108-A110 remain `IN PROGRESS`
+until T805 proves cross-view/export consistency. Recursive graph, score and production
+context APIs remain available from prior tasks; T802-T805 and remaining production-data
+gates are still open.
 
 每个 task 必须绑定已有 Acceptance IDs；如果 `acceptance_traceability` 没有映射，先记录 gap，不直接开发。
 

@@ -975,6 +975,49 @@ def exercise_event_amount_semantics_contracts() -> None:
         params={"event_type": "contract_award"},
     ).json()
     assert [event["event_type"] for event in award_events] == ["contract_award"]
+    usd_events = client.get("/v1/events", params={"currency": "usd"}).json()
+    assert {event["id"] for event in usd_events} == {
+        NVIDIA_CAPEX_EVENT_ID,
+        "30000000-0000-4000-8000-000000000003",
+    }
+    capex_events = client.get(
+        "/v1/events",
+        params={"amount_kind": "period_capex"},
+    ).json()
+    assert [event["id"] for event in capex_events] == [NVIDIA_CAPEX_EVENT_ID]
+    capex_kind_summary = client.get(
+        "/v1/events/amount-summary",
+        params={"currency": "USD", "amount_kind": "period_capex"},
+    ).json()
+    assert capex_kind_summary["event_count"] == 1
+    assert capex_kind_summary["comparable_reported_total"] == 1000000000
+
+    event_evidence_response = client.get(
+        f"/v1/evidence/event/{NVIDIA_CAPEX_EVENT_ID}"
+    )
+    assert event_evidence_response.status_code == 200
+    event_evidence = event_evidence_response.json()
+    assert event_evidence["schema_version"] == "evidence-detail-v1"
+    assert event_evidence["object_type"] == "event"
+    assert event_evidence["object_id"] == NVIDIA_CAPEX_EVENT_ID
+    assert event_evidence["object_summary"]["title"] == (
+        "Synthetic AI infrastructure capex signal"
+    )
+    assert event_evidence["object_summary"]["amount_semantics"]["amount_kind"] == (
+        "period_capex"
+    )
+    assert event_evidence["evidence_count"] == 1
+    assert event_evidence["returned_evidence_count"] == 1
+    assert event_evidence["source_document_count"] == 1
+    assert event_evidence["evidence"][0]["url"].startswith("fixture://event/")
+    assert event_evidence["evidence"][0]["snippet"]["redaction_status"] == "none"
+    assert event_evidence["production_context"]["schema_version"] == (
+        "production-context-v1"
+    )
+    assert client.get(
+        "/v1/evidence/event/30000000-0000-4000-8000-000000000099"
+    ).status_code == 404
+    assert client.get("/v1/events", params={"currency": "US"}).status_code == 422
     assert client.get("/v1/events", params={"limit": 0}).status_code == 422
 
 

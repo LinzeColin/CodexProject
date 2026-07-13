@@ -88,7 +88,7 @@ export type EvidenceDetailItem = {
 
 export type EvidenceDetailRecord = {
   schema_version: "evidence-detail-v1";
-  object_type: "relationship_fact_candidate" | "relationship";
+  object_type: "event" | "relationship_fact_candidate" | "relationship";
   object_id: string;
   object_summary: Record<string, unknown>;
   evidence_count: number;
@@ -335,7 +335,7 @@ export async function loadScoreExplanation(input: {
 }
 
 export async function loadEvidenceDetail(input: {
-  objectType: "relationship_fact_candidate" | "relationship";
+  objectType: "event" | "relationship_fact_candidate" | "relationship";
   objectId?: string | null;
   limit?: number;
 }): Promise<EvidenceDetailSyncResult> {
@@ -431,7 +431,9 @@ function isEvidenceDetailRecord(value: unknown): value is EvidenceDetailRecord {
   if (!isRecord(value)) return false;
   return (
     value.schema_version === "evidence-detail-v1" &&
-    (value.object_type === "relationship_fact_candidate" || value.object_type === "relationship") &&
+    (value.object_type === "event" ||
+      value.object_type === "relationship_fact_candidate" ||
+      value.object_type === "relationship") &&
     typeof value.object_id === "string" &&
     isRecord(value.object_summary) &&
     typeof value.evidence_count === "number" &&

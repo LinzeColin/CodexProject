@@ -1,5 +1,55 @@
 # MVP Development Record
 
+## 2026-07-13 - T801/A108-A110 Capital River and event evidence
+
+Status: LOCAL API/POSTGRESQL/E2E VALIDATED; T801 DONE; A108-A110 IN PROGRESS; REMOTE CI PENDING; MVP RELEASE BLOCKED
+
+### Goal and Scope
+
+- Build the real `/capital` route over the T800 event and amount-summary services with
+  entity, date, event type, currency and amount-kind filters.
+- Render comparable amounts only within identical currency/kind/period lanes. Render
+  unreported or unclassified events without a Sankey/flow width.
+- Add event evidence detail over existing `event_evidence`, `source_documents` and
+  `sources`; add no migration, model formula, production fact claim or A209 mutation.
+
+### Acceptance and Evidence
+
+- `T801 -> A108`: the unknown-amount event has `data-has-flow-width=false`, no flow
+  track and a visible `未披露` label rather than zero.
+- `T801 -> A109`: `award_ceiling` and `period_capex` render in two independently keyed
+  lanes and the cross-bucket total remains disabled.
+- `T801 -> A110`: filters reach both event endpoints and an event opens its source,
+  document and evidence snippet through `/v1/evidence/event/{eventId}`.
+- T801 is DONE, but A108-A110 remain `IN PROGRESS` because T805 still owns cross-view
+  and export consistency validation.
+- Evidence artifacts:
+  `artifacts/tests/a108/t801_unreported_amount_ui_contract.json`,
+  `artifacts/tests/a109/t801_incomparable_amount_ui_contract.json`, and
+  `artifacts/tests/a110/t801_capital_river_e2e_contract.json`.
+
+### Validation
+
+- OpenAPI contract, Ruff and web TypeScript validation: PASS.
+- Full browser E2E: PASS, `35/35` with one worker; focused Capital River Playwright:
+  PASS, `2/2`. An earlier run exposed a missing visible publisher label before correction.
+- Isolated PostgreSQL 16 migration/seed/API integration: PASS, `2/2`, including event
+  evidence, amount filters, summary parity, 404 and invalid-currency behavior.
+- Desktop `1440x900` and mobile `390x844` live API visual checks: nonblank, no body
+  overflow, no unknown-amount flow track, evidence panel hydrated.
+- Temporary PostgreSQL container/volume cleanup and protected A209 container identity:
+  PASS.
+
+### Risk, Rollback, and Stop Conditions
+
+- R007/R039 remain OPEN until T805 cross-view/export tests prove the same semantic
+  boundaries outside Capital River. R011 remains outside this task because no model
+  calibration or price optimization changed.
+- Rollback: revert only the T801 commit, generated artifacts and status rows; T800
+  backend amount semantics remain intact.
+- Stop on unknown-to-zero rendering, cross-lane total, evidence-less events, filter/API
+  mismatch, mobile overflow, A209 failure, protected-container change or validation drift.
+
 ## 2026-07-13 - T800/A108-A109 event and amount semantic services
 
 Status: LOCAL API/POSTGRESQL VALIDATED; A108-A109 IN PROGRESS; REMOTE CI PENDING; MVP RELEASE BLOCKED

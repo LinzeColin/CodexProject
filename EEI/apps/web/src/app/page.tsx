@@ -2471,6 +2471,7 @@ export default function Home() {
           data-score-recompute-status={scoreRecomputeStatus}
           data-target-profile-id={candidateProfile?.id ?? "none"}
           data-testid="model-preview-panel"
+          id="model-preview-panel"
         >
           <div>
             <strong>Model preview</strong>
@@ -2945,7 +2946,12 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="homeSection" aria-label="关注主体" data-testid="home-watchlist">
+        <section
+          className="homeSection"
+          aria-label="关注主体"
+          data-testid="home-watchlist"
+          id="home-watchlist"
+        >
           <header>
             <span>我的关注</span>
             <small>{homeWatchItems.reduce((total, item) => total + item.unread, 0)} unread</small>
@@ -2970,7 +2976,12 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="homeSection" aria-label="最近探索" data-testid="home-recent-explorations">
+        <section
+          className="homeSection"
+          aria-label="最近探索"
+          data-testid="home-recent-explorations"
+          id="home-recent-explorations"
+        >
           <header>
             <span>探索记录</span>
             <small>{homeRecentExplorations.length}</small>
@@ -3092,6 +3103,7 @@ export default function Home() {
           aria-label="时间演变"
           data-active-as-of={asOf}
           data-testid="timeline-controls"
+          id="timeline-controls"
         >
           {timelineItems.map((item) => (
             <button
@@ -3286,7 +3298,12 @@ export default function Home() {
         </section>
       </section>
 
-      <aside className="inspector" aria-label="证据与状态" data-testid="evidence-center">
+      <aside
+        className="inspector"
+        aria-label="证据与状态"
+        data-testid="evidence-center"
+        id="evidence-center"
+      >
         <div className="inspectorHeader">
           <p className="eyebrow">Evidence Center</p>
           <h2>Relationship path</h2>

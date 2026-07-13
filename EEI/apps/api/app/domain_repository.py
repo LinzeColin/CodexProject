@@ -1128,6 +1128,8 @@ class DomainRepository:
         from_time: datetime | None = None,
         to_time: datetime | None = None,
         event_type: str | None = None,
+        currency: str | None = None,
+        amount_kind: str | None = None,
         limit: int = 100,
     ) -> list[dict[str, Any]]:
         with self.connect() as connection:
@@ -1138,6 +1140,8 @@ class DomainRepository:
                 from_time=from_time,
                 to_time=to_time,
                 event_type=event_type,
+                currency=currency,
+                amount_kind=amount_kind,
                 limit=limit,
             )
 
@@ -1150,6 +1154,8 @@ class DomainRepository:
         from_time: datetime | None = None,
         to_time: datetime | None = None,
         event_type: str | None = None,
+        currency: str | None = None,
+        amount_kind: str | None = None,
         limit: int = 100,
     ) -> list[dict[str, Any]]:
         rows = connection.execute(
@@ -1206,6 +1212,8 @@ class DomainRepository:
                   <= %s::timestamptz
               )
               AND (%s::text IS NULL OR ev.event_type = %s::text)
+              AND (%s::text IS NULL OR upper(ev.currency::text) = upper(%s::text))
+              AND (%s::text IS NULL OR ev.amount_kind = %s::text)
             ORDER BY
               COALESCE(ev.effective_at, ev.announced_at, ev.observed_at) DESC,
               ev.observed_at DESC,
@@ -1223,6 +1231,10 @@ class DomainRepository:
                 to_time,
                 event_type,
                 event_type,
+                currency,
+                currency,
+                amount_kind,
+                amount_kind,
                 limit,
             ),
         ).fetchall()
@@ -1248,6 +1260,8 @@ class DomainRepository:
         from_time: datetime | None = None,
         to_time: datetime | None = None,
         event_type: str | None = None,
+        currency: str | None = None,
+        amount_kind: str | None = None,
         limit: int = 100,
     ) -> list[dict[str, Any]]:
         return _jsonable(
@@ -1258,6 +1272,8 @@ class DomainRepository:
                 from_time=from_time,
                 to_time=to_time,
                 event_type=event_type,
+                currency=currency,
+                amount_kind=amount_kind,
                 limit=limit,
             )
         )
@@ -1270,6 +1286,8 @@ class DomainRepository:
         from_time: datetime | None = None,
         to_time: datetime | None = None,
         event_type: str | None = None,
+        currency: str | None = None,
+        amount_kind: str | None = None,
         limit: int = 100,
     ) -> dict[str, Any]:
         with self.connect() as connection:
@@ -1280,6 +1298,8 @@ class DomainRepository:
                 from_time=from_time,
                 to_time=to_time,
                 event_type=event_type,
+                currency=currency,
+                amount_kind=amount_kind,
                 limit=limit,
             )
         summary = aggregate_event_amounts(events)
@@ -1289,6 +1309,8 @@ class DomainRepository:
             "from": from_time,
             "to": to_time,
             "event_type": event_type,
+            "currency": currency,
+            "amount_kind": amount_kind,
             "limit": limit,
         }
         return _jsonable(summary)
@@ -6046,9 +6068,15 @@ class DomainRepository:
                     object_id=object_id,
                     limit=bounded_limit,
                 )
+            if object_type == "event":
+                return self.event_evidence_detail(
+                    connection=connection,
+                    object_id=object_id,
+                    limit=bounded_limit,
+                )
         raise RepositoryError(
-            "Only relationship_fact_candidate and relationship evidence details are implemented "
-            "for the MVP evidence center"
+            "Only relationship_fact_candidate, relationship and event evidence details are "
+            "implemented for the MVP evidence center"
         )
 
     def relationship_fact_candidate_evidence_detail(
@@ -6208,6 +6236,103 @@ class DomainRepository:
             object_type="relationship",
             object_id=object_id,
             object_summary=relationship,
+            evidence_rows=evidence_rows,
+            total_count=total_count,
+            limit=limit,
+            production_context=self.production_context_for_connection(connection, as_of=None),
+        )
+
+    def event_evidence_detail(
+        self,
+        *,
+        connection: psycopg.Connection[dict[str, Any]],
+        object_id: UUID,
+        limit: int,
+    ) -> dict[str, Any]:
+        event = connection.execute(
+            """
+            SELECT
+              ev.id, ev.event_type, ev.title, ev.status, ev.announced_at,
+              ev.effective_at, ev.period_start, ev.period_end, ev.observed_at,
+              ev.amount, ev.currency, ev.amount_kind, ev.description, ev.qualifiers,
+              COALESCE(
+                (
+                  SELECT jsonb_agg(
+                    jsonb_build_object(
+                      'entity_id', ep.entity_id,
+                      'role', ep.role,
+                      'direction', ep.direction
+                    ) ORDER BY ep.role, ep.entity_id
+                  )
+                  FROM event_participants ep
+                  WHERE ep.event_id = ev.id
+                ),
+                '[]'::jsonb
+              ) AS participants
+            FROM events ev
+            WHERE ev.id = %s
+            """,
+            (object_id,),
+        ).fetchone()
+        if event is None:
+            raise NotFoundError(f"Event not found: {object_id}")
+        event = dict(event)
+        event["amount_semantics"] = event_amount_semantics(
+            amount=event["amount"],
+            currency=event["currency"],
+            amount_kind=event["amount_kind"],
+            period_start=event["period_start"],
+            period_end=event["period_end"],
+        )
+        total_count = int(
+            connection.execute(
+                "SELECT count(*) AS count FROM event_evidence WHERE event_id = %s",
+                (object_id,),
+            ).fetchone()["count"]
+        )
+        evidence_rows = connection.execute(
+            """
+            SELECT
+              NULL::uuid AS ingestion_evidence_chain_id,
+              ee.source_document_id,
+              ee.role,
+              ee.locator,
+              ee.support_excerpt,
+              sd.retrieved_at AS created_at,
+              ee.role AS evidence_role,
+              COALESCE(ee.structured_fact, '{}'::jsonb) AS structured_fact,
+              '[]'::jsonb AS counter_evidence,
+              sd.parser_version,
+              NULL::numeric AS confidence,
+              'event_evidence'::text AS chain_review_status,
+              sd.retrieved_at AS chain_created_at,
+              s.code AS source_code,
+              s.name AS source_name,
+              s.source_tier,
+              sd.url,
+              sd.title,
+              sd.publisher,
+              sd.document_date,
+              sd.observed_at,
+              sd.retrieved_at,
+              sd.media_type,
+              sd.content_hash
+            FROM event_evidence ee
+            JOIN source_documents sd ON sd.id = ee.source_document_id
+            JOIN sources s ON s.id = sd.source_id
+            WHERE ee.event_id = %s
+            ORDER BY
+              CASE ee.role WHEN 'supports' THEN 0 WHEN 'context' THEN 1 ELSE 2 END,
+              sd.observed_at DESC,
+              ee.source_document_id
+            LIMIT %s
+            """,
+            (object_id, limit),
+        ).fetchall()
+        return self.evidence_detail_payload(
+            object_type="event",
+            object_id=object_id,
+            object_summary=event,
             evidence_rows=evidence_rows,
             total_count=total_count,
             limit=limit,

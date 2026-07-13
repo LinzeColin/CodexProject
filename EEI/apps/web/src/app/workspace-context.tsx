@@ -116,11 +116,11 @@ export const WORKSPACE_MODULES: readonly WorkspaceModuleDefinition[] = [
     id: "capital_network",
     label: "资本网络",
     subtitle: "股权、投资、融资、基金、回购和资本支出",
-    controlKind: "lens",
-    controlTargetLens: "capital_transactions",
-    routeState: "partial",
-    apiEndpoints: ["/v1/explore"],
-    acceptanceIds: ["A203", "A211"]
+    controlKind: "route",
+    href: "/capital",
+    routeState: "available",
+    apiEndpoints: ["/v1/events", "/v1/events/amount-summary", "/v1/evidence/event/{eventId}"],
+    acceptanceIds: ["A108", "A109", "A110", "A203", "A211"]
   },
   {
     id: "ma_transactions",
