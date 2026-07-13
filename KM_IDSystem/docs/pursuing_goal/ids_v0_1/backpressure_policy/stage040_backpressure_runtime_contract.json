@@ -1,0 +1,286 @@
+{
+  "schema_version": "ids.stage040.backpressure.phase2.v1",
+  "stage": "STAGE-040",
+  "phase": "Phase 2",
+  "task_id": "IDS-V0_1-STAGE040-P2",
+  "acceptance_id": "ACC-STAGE-040",
+  "execution_mode": "ISOLATED_NON_PRODUCTION_BACKPRESSURE_DECISION_SLICE",
+  "policy_contract_id": "ids.backpressure_policy.v0_1.stage040.p2",
+  "contract_state": "PHASE2_ISOLATED_DECISION_SLICE_ENABLED_PRODUCTION_DISABLED",
+  "next_gate": "IDS-STAGE040-P3-GATE",
+  "source_binding": {
+    "source_archive_path": "/Users/linzezhang/Downloads/IDS_Taskpack_v0_1_only_中文修订版.zip",
+    "source_archive_sha256": "55b782e338610aab6361b7945bb5e290ba60038a06cc765c7c2da801734db6d3",
+    "source_member": "IDS_v0_1_Final_Chinese_Revised/stages/STAGE-040_反压策略.md",
+    "source_member_match_count": 1,
+    "source_member_sha256": "f0ef128467300d7541796f8d51caca673f838cac2552eba2e415a94a07af614d",
+    "roadmap_sha256": "a193fd2c44c51d634bf7887a1a6baf7e5199d9a8535e4211e35e97588e2e21a6",
+    "instructions_sha256": "ce456e06136d5ecc56cd7c9dc926abb5894817dda87bf7667588bf85211794f8",
+    "source_verification_status": "SOURCE_VERIFIED"
+  },
+  "upstream_bindings": {
+    "phase1_policy_contract": {
+      "ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_policy_contract.json",
+      "sha256": "9298a248fb8a63d159ceef105b6081ba257086646d296fb0697e6747a0c394b4"
+    },
+    "phase1_checker": {
+      "ref": "KM_IDSystem/scripts/check_backpressure_policy.py",
+      "sha256": "cbba512a16a77be80be9fcfd1f3ac0bc496b753e2cec6904af333f908eab28e3"
+    },
+    "phase1_scope_boundary": {
+      "ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE1_BACKPRESSURE_SCOPE_BOUNDARY.md",
+      "sha256": "80d220ef937ce890e47758f23bf993156c6882b0d3ed4ee2875f0d0766b68cf6"
+    },
+    "stage037_state_index": {
+      "ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/job_state_model/stage037_job_state_model_index.json",
+      "sha256": "b70bf72ebe4212f45d380c13fbfe429791e1f4a5c73dccbba81211b7adc1c2d3"
+    },
+    "stage038_queue_index": {
+      "ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_baseline_index.json",
+      "sha256": "68513591996a51fea90cd2ea863f42f910c0c3a45b70fd1611655bb6d95911ab"
+    },
+    "stage039_runtime_contract": {
+      "ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_runtime_contract.json",
+      "sha256": "5fc9b49b0ede0fdbc87311f3280ffc69e8ec8e59f219b17a04a2ccae1e9124c0"
+    }
+  },
+  "policy": {
+    "policy_version": "ids.backpressure_policy.v0_1.stage040.p2",
+    "parameters": {
+      "queue_soft_pressure_threshold": 2,
+      "queue_hard_capacity_threshold": 4,
+      "disk_free_bytes_threshold": 1073741824,
+      "disk_reserve_bytes": 536870912,
+      "external_api_budget_window_seconds": 60,
+      "queue_low_watermark": 1,
+      "observation_ttl_seconds": 30,
+      "per_job_type_concurrency_limit": 1,
+      "admission_rate_limit_per_window": 4
+    },
+    "queue_high_watermark_alias": "queue_soft_pressure_threshold",
+    "parameter_source": "STAGE040_PHASE2_LOCAL_ENGINEERING_SAFETY_BOUNDARY",
+    "selection_rationale": "The isolated policy uses four real Git-tracked control references: soft pressure starts at two references, hard capacity at four, and hysteresis releases at one. A 1 GiB usable-free guard above a 512 MiB reserve, a 30 second observation TTL inside a 60 second API window, single same-type concurrency, and four admissions per window keep the non-production decision slice finite and fail closed.",
+    "fact_level": "PROPOSED",
+    "production_calibrated": false,
+    "production_calibration_required": true,
+    "rollback_policy": "DENY_NEW_ADMISSION_REQUIRE_MANUAL_REVIEW"
+  },
+  "observation_contract": {
+    "required_fields": [
+      "observed_at_epoch_seconds",
+      "queue_depth",
+      "queued_input_refs",
+      "active_job_type_count",
+      "admissions_in_window",
+      "disk_free_bytes",
+      "external_drive_required",
+      "external_drive_available",
+      "external_api_units_required",
+      "external_api_budget_remaining_units",
+      "external_api_budget_window_seconds",
+      "previous_queue_throttled",
+      "validity_status",
+      "source_refs",
+      "policy_version"
+    ],
+    "validity_status": "VALID",
+    "unknown_or_stale_action": "REQUIRE_MANUAL_REVIEW",
+    "future_timestamp_allowed": false,
+    "raw_observation_body_allowed": false,
+    "external_api_call_required_for_observation": false
+  },
+  "decision_precedence": [
+    "INVALID_OR_STALE_OBSERVATION",
+    "TERMINAL_STATE_GUARD",
+    "EXTERNAL_DRIVE_OFFLINE",
+    "DISK_SPACE_INSUFFICIENT",
+    "EXTERNAL_API_BUDGET_INSUFFICIENT",
+    "QUEUE_HARD_CAPACITY",
+    "ADMISSION_RATE_LIMIT_REACHED",
+    "JOB_TYPE_CONCURRENCY_LIMIT_REACHED",
+    "QUEUE_SOFT_PRESSURE_OR_HYSTERESIS",
+    "HEALTHY"
+  ],
+  "decision_contract": {
+    "HEALTHY": {
+      "decision_action": "ADMIT",
+      "state_effect": "NO_POLICY_STATE_MUTATION",
+      "human_status": "可接收"
+    },
+    "QUEUE_SOFT_PRESSURE": {
+      "decision_action": "THROTTLE_ADMISSION",
+      "state_effect": "NO_LIFECYCLE_MUTATION",
+      "human_status": "限流中"
+    },
+    "QUEUE_HARD_CAPACITY": {
+      "decision_action": "DENY_NEW_ADMISSION",
+      "state_effect": "NO_QUEUE_RECORD_CREATED",
+      "human_status": "暂不接收新任务"
+    },
+    "EXTERNAL_DRIVE_OFFLINE": {
+      "decision_action": "PAUSE_RESOURCE_GATE",
+      "state_effect": "LEGAL_PAUSE_CANDIDATE_ONLY",
+      "human_status": "已暂停"
+    },
+    "DISK_SPACE_INSUFFICIENT": {
+      "decision_action": "PAUSE_RESOURCE_GATE",
+      "state_effect": "LEGAL_PAUSE_CANDIDATE_ONLY",
+      "human_status": "已暂停"
+    },
+    "EXTERNAL_API_BUDGET_INSUFFICIENT": {
+      "decision_action": "PAUSE_RESOURCE_GATE",
+      "state_effect": "LEGAL_PAUSE_CANDIDATE_ONLY",
+      "human_status": "已暂停"
+    },
+    "UNKNOWN_OR_STALE_PRESSURE": {
+      "decision_action": "REQUIRE_MANUAL_REVIEW",
+      "state_effect": "NO_NEW_ADMISSION",
+      "human_status": "等待人工复核"
+    }
+  },
+  "state_transition_contract": {
+    "state_model_version": "ids.job_state.v1",
+    "terminal_states": [
+      "SUCCEEDED",
+      "FAILED",
+      "DEAD_LETTERED",
+      "CANCELLED"
+    ],
+    "terminal_state_mutation_allowed": false,
+    "queued_pause_path": ["QUEUED", "PAUSED"],
+    "retry_wait_pause_path": ["RETRY_WAIT", "PAUSED"],
+    "running_pause_path": ["RUNNING", "PAUSE_REQUESTED", "PAUSED"],
+    "claimed_pause_path": ["CLAIMED", "PAUSE_REQUESTED", "PAUSED"],
+    "candidate_only": true,
+    "persistent_state_write_allowed": false
+  },
+  "idempotency_contract": {
+    "decision_key_formula": "sha256(idempotency_key|policy_version|canonical_pressure_observation)",
+    "ledger_mode": "IN_MEMORY_DECISION_REPLAY_ONLY",
+    "same_decision_returns_original": true,
+    "different_observation_creates_distinct_decision_key": true,
+    "idempotency_key_rotation_allowed": false,
+    "persistent_ledger_allowed": false
+  },
+  "control_metadata_contract": {
+    "input_refs": [
+      "repo:KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE1_BACKPRESSURE_SCOPE_BOUNDARY.md",
+      "repo:KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE1_RETRY_DEAD_LETTER_SCOPE_BOUNDARY.md",
+      "repo:KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE1_WORKER_QUEUE_SCOPE_BOUNDARY.md",
+      "repo:KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE1_SCOPE_BOUNDARY.md"
+    ],
+    "input_refs_must_be_git_tracked": true,
+    "raw_body_allowed": false,
+    "output_refs": [],
+    "checkpoint_ref_format": "checkpoint:sha256:<canonical-decision-digest>",
+    "error_ref_format": "error:<safe-control-reason-code>",
+    "audit_ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE2_BACKPRESSURE_DECISION_SLICE.md#Controlled-Evidence"
+  },
+  "human_status_projection": {
+    "ADMIT": {
+      "label_zh": "可接收",
+      "owner_action_zh": "无需操作",
+      "owner_attention_required": false
+    },
+    "THROTTLE_ADMISSION": {
+      "label_zh": "限流中",
+      "owner_action_zh": "等待队列降至低水位",
+      "owner_attention_required": false
+    },
+    "DENY_NEW_ADMISSION": {
+      "label_zh": "暂不接收新任务",
+      "owner_action_zh": "查看容量与资源状态",
+      "owner_attention_required": true
+    },
+    "PAUSE_RESOURCE_GATE": {
+      "label_zh": "已暂停",
+      "owner_action_zh": "恢复资源并完成复核",
+      "owner_attention_required": true
+    },
+    "REQUEST_SAFE_PAUSE": {
+      "label_zh": "暂停中",
+      "owner_action_zh": "等待当前安全点",
+      "owner_attention_required": true
+    },
+    "REQUIRE_MANUAL_REVIEW": {
+      "label_zh": "等待人工复核",
+      "owner_action_zh": "补齐有效观测或检查任务状态",
+      "owner_attention_required": true
+    }
+  },
+  "ownership_matrix": {
+    "backpressure_decision_policy": "STAGE-040",
+    "queue_and_worker_transport": "STAGE-038",
+    "retry_and_dead_letter_policy": "STAGE-039",
+    "lock_lease_and_fencing_runtime": "STAGE-041",
+    "automatic_resume_runtime": "STAGE-042",
+    "crash_recovery_runtime": "STAGE-043",
+    "cleanup_execution_runtime": "STAGE-044"
+  },
+  "registry_binding": {
+    "model_id": "MOD-009",
+    "formula_id": "FORM-009",
+    "parameter_ids": [
+      "PARAM-056",
+      "PARAM-057",
+      "PARAM-058",
+      "PARAM-059",
+      "PARAM-060",
+      "PARAM-061",
+      "PARAM-062",
+      "PARAM-063",
+      "PARAM-064"
+    ],
+    "production_calibration_task_id": "TASK-OPME-B-001"
+  },
+  "runtime_boundary": {
+    "isolated_decision_runtime_allowed": true,
+    "actual_project_disk_observation_allowed": true,
+    "queue_runtime_allowed": false,
+    "worker_runtime_allowed": false,
+    "retry_scheduler_allowed": false,
+    "lock_runtime_allowed": false,
+    "automatic_resume_allowed": false,
+    "cleanup_runtime_allowed": false,
+    "database_allowed": false,
+    "persistent_queue_write_allowed": false,
+    "runtime_output_write_allowed": false,
+    "external_api_allowed": false,
+    "raw_metadata_access_allowed": false,
+    "ids_business_job_allowed": false,
+    "fake_ids_business_data_allowed": false,
+    "production_activation_allowed": false
+  },
+  "rollback": {
+    "trigger": "INVALID_CONTRACT_OR_PARAMETER_OR_OBSERVATION_OR_UPSTREAM_BINDING",
+    "action": "DENY_NEW_ADMISSION_REQUIRE_MANUAL_REVIEW_AND_REVERT_PHASE2_FILES_ONLY",
+    "preserve_phase1": true,
+    "preserve_stage037_stage039": true,
+    "preserve_source_and_evidence": true,
+    "github_action_allowed": false
+  },
+  "truth_flags": {
+    "parameter_values_assigned": true,
+    "backpressure_decision_runtime_performed": true,
+    "actual_disk_observation_performed": true,
+    "isolated_control_metadata_evaluated": true,
+    "queue_runtime_performed": false,
+    "worker_runtime_performed": false,
+    "retry_scheduler_performed": false,
+    "lock_runtime_performed": false,
+    "automatic_resume_performed": false,
+    "cleanup_runtime_performed": false,
+    "database_connection_performed": false,
+    "persistent_queue_write_performed": false,
+    "state_registry_write_performed": false,
+    "runtime_output_written": false,
+    "external_api_call_performed": false,
+    "ids_business_source_read_performed": false,
+    "raw_metadata_content_accessed": false,
+    "fake_ids_business_data_used": false,
+    "real_ids_business_job_created": false,
+    "production_runtime_activation_performed": false,
+    "github_upload_allowed": false,
+    "app_reinstall_allowed": false
+  }
+}

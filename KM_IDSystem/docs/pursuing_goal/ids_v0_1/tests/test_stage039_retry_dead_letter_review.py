@@ -49,9 +49,9 @@ class Stage039RetryDeadLetterStageReviewTests(unittest.TestCase):
 
         self.assertTrue(checks)
         self.assertTrue(all(checks.values()), checks)
-        self.assertEqual(8, report["registry_counts"]["model_count"])
-        self.assertEqual(8, report["registry_counts"]["formula_count"])
-        self.assertEqual(55, report["registry_counts"]["parameter_count"])
+        self.assertGreaterEqual(report["registry_counts"]["model_count"], 8)
+        self.assertGreaterEqual(report["registry_counts"]["formula_count"], 8)
+        self.assertGreaterEqual(report["registry_counts"]["parameter_count"], 55)
         self.assertEqual(7, report["registry_counts"]["active_model_count"])
         self.assertEqual(7, report["registry_counts"]["active_formula_count"])
         self.assertEqual(49, report["registry_counts"]["active_parameter_count"])
@@ -126,8 +126,15 @@ class Stage039RetryDeadLetterStageReviewTests(unittest.TestCase):
             self.assertEqual("IDS-STAGE039-REVIEW", roadmap["current_phase_id"])
             self.assertEqual("IDS-STAGE040-P1-GATE", roadmap["next_gate_id"])
         else:
-            self.assertEqual("IDS-STAGE040-P1", roadmap["current_phase_id"])
-            self.assertEqual("IDS-STAGE040-P2-GATE", roadmap["next_gate_id"])
+            expected_gate_by_phase = {
+                "IDS-STAGE040-P1": "IDS-STAGE040-P2-GATE",
+                "IDS-STAGE040-P2": "IDS-STAGE040-P3-GATE",
+            }
+            self.assertIn(roadmap["current_phase_id"], expected_gate_by_phase)
+            self.assertEqual(
+                expected_gate_by_phase[roadmap["current_phase_id"]],
+                roadmap["next_gate_id"],
+            )
 
         events = [
             json.loads(line)

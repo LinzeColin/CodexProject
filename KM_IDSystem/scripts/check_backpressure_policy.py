@@ -91,7 +91,7 @@ EXPECTED_UPSTREAM = {
     ),
     "stage039_review_checker_ref": (
         "KM_IDSystem/scripts/check_retry_dead_letter_stage_review.py",
-        "c49f654ff7a1a27e36a79749582066bb348b9e856b716f8411bb3cf2039ae81a",
+        "108bf11a4ec9de8c7d4378da421c75b30568c79e78e5bd368ae1bfb48dccc243",
     ),
     "stage039_review_artifact_ref": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_STAGE_REVIEW.md",
