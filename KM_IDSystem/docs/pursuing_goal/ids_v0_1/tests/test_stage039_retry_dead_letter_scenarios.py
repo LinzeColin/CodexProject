@@ -227,13 +227,18 @@ class Stage039RetryDeadLetterScenarioTests(unittest.TestCase):
     def test_governance_preserves_phase3_and_routes_only_to_review(self):
         batch = BATCH.read_text(encoding="utf-8")
         roadmap = ROADMAP.read_text(encoding="utf-8")
-        self.assertIn('status: "stage039_phase4_completed_review_pending"', batch)
-        self.assertIn('current_task_id: "IDS-V0_1-STAGE039-P4"', batch)
-        self.assertIn('next_gate: "IDS-STAGE039-REVIEW-GATE"', batch)
-        self.assertIn('next_allowed_task_id: "IDS-V0_1-STAGE039-REVIEW"', batch)
-        self.assertIn('current_phase_id: "IDS-STAGE039-P4"', roadmap)
-        self.assertIn('current_task_id: "IDS-V0_1-STAGE039-P4"', roadmap)
-        self.assertIn('next_gate_id: "IDS-STAGE039-REVIEW-GATE"', roadmap)
+        pending_review = (
+            'status: "stage039_phase4_completed_review_pending"' in batch
+            and 'next_gate: "IDS-STAGE039-REVIEW-GATE"' in batch
+            and 'next_allowed_task_id: "IDS-V0_1-STAGE039-REVIEW"' in batch
+        )
+        completed_review = (
+            'status: "stage039_completed_reviewed_local"' in batch
+            and 'next_gate: "IDS-STAGE040-P1-GATE"' in batch
+            and 'current_phase_id: "IDS-STAGE039-REVIEW"' in roadmap
+            and 'next_gate_id: "IDS-STAGE040-P1-GATE"' in roadmap
+        )
+        self.assertTrue(pending_review or completed_review)
         self.assertIn('push_allowed: false', batch)
 
 

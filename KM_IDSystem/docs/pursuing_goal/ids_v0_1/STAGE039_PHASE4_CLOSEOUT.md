@@ -158,13 +158,13 @@ successful automatic recovery: `successful_automatic_recovery_cases_observed=[]`
 | Condition | Required handling |
 |---|---|
 | retry exhausted | Keep `DEAD_LETTERED`; require manual triage. |
-| permanent failure needs continuation | Review evidence and create a new linked job if authorized. |
+| permanent failure needs continuation | Review evidence and prepare an owner-authorized new-lineage candidate; job creation is not implemented. |
 | unknown or missing safe error code | No automatic retry; require manual review. |
 | policy or authorization block | Stop safely and require manual review. |
 | worker process lost | Keep failed evidence; STAGE-043 owns process recovery. |
 | resource gate unavailable | Restore the resource and complete owner revalidation; no automatic resume. |
 | same-source conflict | Wait for a terminal holder and revalidate before new work. |
-| terminal manual rerun | Create only an owner-authorized new-lineage candidate; never reopen history. |
+| terminal manual rerun | Validate only an owner-authorized new-lineage candidate; no job is created and history is never reopened. |
 
 The Phase 3 manual rerun remains `candidate_only=true`, `persisted=false`, and
 `job_created=false`; duplicate owner request replay is idempotent.
@@ -187,7 +187,8 @@ shutdown instructions are:
 
 After process exit, the in-memory retry state is not recoverable. Recovery is
 limited to exact source/policy verification, owner and resource revalidation,
-and a new linked job for a terminal source. Terminal history is never reopened.
+and validation of a new linked-job candidate for a terminal source. This Stage
+does not create that job, and terminal history is never reopened.
 STAGE-043 retains process-crash recovery ownership.
 
 ## Rollback
@@ -216,7 +217,7 @@ indexes, app entries, GitHub state, and Stage037-039 Phase 1-3 evidence.
 - no process-crash recovery;
 - no cleanup runtime;
 - no database or raw-source access;
-- Phase 2 policy values remain uncalibrated `ASSUMPTION` values;
+- Phase 2 policy values remain uncalibrated `PROPOSED` values;
 - static closeout does not prove production readiness.
 
 ## Truth Contract

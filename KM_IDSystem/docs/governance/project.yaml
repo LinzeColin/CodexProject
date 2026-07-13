@@ -178,8 +178,8 @@ features:
     feature_id: "FEAT-OPME-006"
     name: "隔离重试与死信控制策略"
     description: "对安全错误码执行默认拒绝的有限重试、到期原子入队、资源暂停和耗尽死信决策；仅限非生产内存态控制元数据。"
-    status: "isolated_non_production"
-    fact_level: "ASSUMPTION"
+    status: "planned"
+    fact_level: "PROPOSED"
     model_ids:
       - "MOD-008"
     parameter_ids:
@@ -485,8 +485,8 @@ models:
     kind: "deterministic_control_policy"
     purpose: "Classify bounded safe error codes and produce deterministic retry eligibility or dead-letter metadata without production activation."
     owner: "KM_IDSystem"
-    status: "isolated_non_production"
-    fact_level: "ASSUMPTION"
+    status: "planned"
+    fact_level: "PROPOSED"
     model_version: "ids.retry_policy.v0_1.stage039.p2"
     assumptions:
       - "Stage039 values are an isolated engineering safety selection and are not production calibrated."
@@ -724,8 +724,8 @@ formulas:
   -
     formula_id: "FORM-008"
     model_id: "MOD-008"
-    status: "isolated_non_production"
-    fact_level: "ASSUMPTION"
+    status: "planned"
+    fact_level: "PROPOSED"
     semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
     expression: "total_attempt_limit=1+max_retries; lower=max(1,ceil(base_delay/2)); delay=lower+(sha256(policy_version|job_id|retry_ordinal) mod (base_delay-lower+1)); retry_count increments only on due RETRY_WAIT->QUEUED admission; retry_count==max_retries routes RETRY_WAIT->DEAD_LETTERED."
     constraints:
@@ -735,6 +735,7 @@ formulas:
     missing_policy: "NO_AUTOMATIC_RETRY and manual review."
     output_range: "At most three total attempts; retry 1 delay 3..5 seconds; retry 2 delay 15..30 seconds; exhausted state DEAD_LETTERED."
     open_task_ids:
+      - "TASK-OPME-B-001"
     implementation_refs:
       - "KM_IDSystem/scripts/check_retry_dead_letter_runtime.py::deterministic_delay_seconds"
       - "KM_IDSystem/scripts/check_retry_dead_letter_runtime.py::evaluate_failure"
@@ -2122,14 +2123,15 @@ parameters:
     data_type: "integer"
     unit: "retry attempts"
     value: "2"
-    source: "ASSUMPTION from Stage039 Phase2 local engineering safety boundary; not production calibrated"
+    source: "PROPOSED from Stage039 Phase2 local engineering safety boundary; not production calibrated"
     calibration_method: "Required before production activation"
     source_selector: "json_path:stage039_retry_dead_letter_runtime_contract.json:policy.max_retries"
     extracted_value: "2"
     semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
-    status: "isolated_non_production"
-    fact_level: "ASSUMPTION"
+    status: "planned"
+    fact_level: "PROPOSED"
     unknown_task_ids:
+      - "TASK-OPME-B-001"
     code_refs: ["KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"]
     test_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py"]
     evidence_refs: ["EVID-IDS-STAGE039-P2", "EVID-OPME-PARAMETER-REGISTRY"]
@@ -2143,14 +2145,15 @@ parameters:
     data_type: "integer"
     unit: "seconds"
     value: "5"
-    source: "ASSUMPTION from Stage039 Phase2 local engineering safety boundary; not production calibrated"
+    source: "PROPOSED from Stage039 Phase2 local engineering safety boundary; not production calibrated"
     calibration_method: "Required before production activation"
     source_selector: "json_path:stage039_retry_dead_letter_runtime_contract.json:policy.backoff_schedule_seconds[0]"
     extracted_value: "5"
     semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
-    status: "isolated_non_production"
-    fact_level: "ASSUMPTION"
+    status: "planned"
+    fact_level: "PROPOSED"
     unknown_task_ids:
+      - "TASK-OPME-B-001"
     code_refs: ["KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"]
     test_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py"]
     evidence_refs: ["EVID-IDS-STAGE039-P2", "EVID-OPME-PARAMETER-REGISTRY"]
@@ -2164,14 +2167,15 @@ parameters:
     data_type: "integer"
     unit: "seconds"
     value: "30"
-    source: "ASSUMPTION from Stage039 Phase2 local engineering safety boundary; not production calibrated"
+    source: "PROPOSED from Stage039 Phase2 local engineering safety boundary; not production calibrated"
     calibration_method: "Required before production activation"
     source_selector: "json_path:stage039_retry_dead_letter_runtime_contract.json:policy.backoff_schedule_seconds[1]"
     extracted_value: "30"
     semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
-    status: "isolated_non_production"
-    fact_level: "ASSUMPTION"
+    status: "planned"
+    fact_level: "PROPOSED"
     unknown_task_ids:
+      - "TASK-OPME-B-001"
     code_refs: ["KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"]
     test_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py"]
     evidence_refs: ["EVID-IDS-STAGE039-P2", "EVID-OPME-PARAMETER-REGISTRY"]
@@ -2185,14 +2189,15 @@ parameters:
     data_type: "string"
     unit: "policy id"
     value: "DETERMINISTIC_BOUNDED_HASH_JITTER_V1"
-    source: "ASSUMPTION from Stage039 Phase2 local engineering safety boundary; not production calibrated"
+    source: "PROPOSED from Stage039 Phase2 local engineering safety boundary; not production calibrated"
     calibration_method: "Required before production activation"
     source_selector: "json_path:stage039_retry_dead_letter_runtime_contract.json:policy.jitter_policy"
     extracted_value: "DETERMINISTIC_BOUNDED_HASH_JITTER_V1"
     semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
-    status: "isolated_non_production"
-    fact_level: "ASSUMPTION"
+    status: "planned"
+    fact_level: "PROPOSED"
     unknown_task_ids:
+      - "TASK-OPME-B-001"
     code_refs: ["KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"]
     test_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py"]
     evidence_refs: ["EVID-IDS-STAGE039-P2", "EVID-OPME-PARAMETER-REGISTRY"]
@@ -2206,14 +2211,15 @@ parameters:
     data_type: "string_set"
     unit: "safe code set"
     value: "TRANSIENT_DEPENDENCY_UNAVAILABLE|TRANSIENT_OPERATION_TIMEOUT"
-    source: "ASSUMPTION from Stage039 Phase2 local engineering safety boundary; not production calibrated"
+    source: "PROPOSED from Stage039 Phase2 local engineering safety boundary; not production calibrated"
     calibration_method: "Required before production activation"
     source_selector: "json_path:stage039_retry_dead_letter_runtime_contract.json:policy.retryable_safe_error_codes"
     extracted_value: "TRANSIENT_DEPENDENCY_UNAVAILABLE|TRANSIENT_OPERATION_TIMEOUT"
     semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
-    status: "isolated_non_production"
-    fact_level: "ASSUMPTION"
+    status: "planned"
+    fact_level: "PROPOSED"
     unknown_task_ids:
+      - "TASK-OPME-B-001"
     code_refs: ["KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"]
     test_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py"]
     evidence_refs: ["EVID-IDS-STAGE039-P2", "EVID-OPME-PARAMETER-REGISTRY"]
@@ -2227,14 +2233,15 @@ parameters:
     data_type: "string"
     unit: "behavior"
     value: "NO_AUTOMATIC_RETRY"
-    source: "ASSUMPTION from Stage039 Phase2 local engineering safety boundary; not production calibrated"
+    source: "PROPOSED from Stage039 Phase2 local engineering safety boundary; not production calibrated"
     calibration_method: "Required before production activation"
     source_selector: "json_path:stage039_retry_dead_letter_runtime_contract.json:policy.unknown_code_behavior"
     extracted_value: "NO_AUTOMATIC_RETRY"
     semantic_status: "MACHINE_VERIFIED_ISOLATED_NON_PRODUCTION"
-    status: "isolated_non_production"
-    fact_level: "ASSUMPTION"
+    status: "planned"
+    fact_level: "PROPOSED"
     unknown_task_ids:
+      - "TASK-OPME-B-001"
     code_refs: ["KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"]
     test_refs: ["KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py"]
     evidence_refs: ["EVID-IDS-STAGE039-P2", "EVID-OPME-PARAMETER-REGISTRY"]

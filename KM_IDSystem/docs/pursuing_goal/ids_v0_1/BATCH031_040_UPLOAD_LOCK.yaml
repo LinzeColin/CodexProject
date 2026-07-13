@@ -1,10 +1,14 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-031-040"
 created_at_utc: "2026-07-03T08:32:56Z"
-updated_at_utc: "2026-07-13T01:25:55Z"
-status: "stage039_phase4_completed_review_pending"
+updated_at_utc: "2026-07-13T02:17:00Z"
+status: "stage039_completed_reviewed_local"
 
 transition_history:
+  stage039_phase4_state:
+    status: "stage039_phase4_completed_review_pending"
+    current_task_id: "IDS-V0_1-STAGE039-P4"
+    next_allowed_task_id: "IDS-V0_1-STAGE039-REVIEW"
   stage039_phase3_state:
     status: "stage039_phase3_completed"
     current_task_id: "IDS-V0_1-STAGE039-P3"
@@ -297,18 +301,18 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_review.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
   STAGE-039:
-    status: "stage039_phase4_completed_review_pending"
+    status: "completed_reviewed_local"
     completed_phases:
       - "Phase 1"
       - "Phase 2"
       - "Phase 3"
       - "Phase 4"
-    review_status: "pending"
-    next_phase: "stage_review_gate"
-    next_gate: "IDS-STAGE039-REVIEW-GATE"
-    current_task_id: "IDS-V0_1-STAGE039-P4"
+    review_status: "passed"
+    next_stage: "STAGE-040"
+    next_gate: "IDS-STAGE040-P1-GATE"
+    current_task_id: "IDS-V0_1-STAGE039-REVIEW"
     acceptance_id: "ACC-STAGE-039"
-    acceptance_status: "phase4_closeout_complete_review_pending"
+    acceptance_status: "reviewed_local_passed"
     source_verification_status: "SOURCE_VERIFIED"
     phase2_entry_authorized: true
     phase3_entry_authorized: true
@@ -325,7 +329,7 @@ stage_progress:
     policy_version: "ids.retry_policy.v0_1.stage039.p2"
     phase2_contract_state: "PHASE2_ISOLATED_SLICE_ENABLED_PRODUCTION_DISABLED"
     phase3_contract_state: "PHASE3_SCENARIOS_ENABLED_PRODUCTION_DISABLED"
-    contract_state: "PHASE4_CLOSEOUT_EVIDENCE_REVIEW_PENDING"
+    contract_state: "STAGE_REVIEW_COMPLETED_PRODUCTION_DISABLED"
     numeric_policy_values_assigned: true
     max_retries: 2
     backoff_schedule_seconds:
@@ -340,13 +344,14 @@ stage_progress:
     delivery_contract_schema: "ids.stage039.retry_dead_letter.phase4.delivery.v1"
     delivery_contract_valid: true
     delivery_result: "PASS_ISOLATED_CLOSEOUT_PRODUCTION_DISABLED"
-    stage_review_status: "pending_next_run"
+    stage_review_status: "completed_reviewed_local"
     required_job_type_count: 8
     required_job_state_count: 11
     required_transition_count: 21
     automatic_retry_eligible_safe_error_code_count: 2
     successful_automatic_recovery_case_count: 0
-    whole_stage_review_performed: false
+    whole_stage_review_performed: true
+    independent_review_status: "passed"
     actual_worker_exception_performed: true
     actual_disk_observation_performed: true
     process_termination_performed: false
@@ -378,6 +383,10 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_delivery_contract.json"
       - "KM_IDSystem/scripts/check_retry_dead_letter_delivery.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_delivery.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_STAGE_REVIEW.md"
+      - "KM_IDSystem/scripts/check_retry_dead_letter_stage_review.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_review.py"
+      - "KM_IDSystem/docs/governance/MODEL_SPEC.md"
       - "KM_IDSystem/docs/governance/project.yaml"
       - "KM_IDSystem/docs/governance/model_registry.yaml"
       - "KM_IDSystem/docs/governance/formula_registry.yaml"
@@ -386,8 +395,8 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
-  current_task_id: "IDS-V0_1-STAGE039-P4"
-  next_allowed_task_id: "IDS-V0_1-STAGE039-REVIEW"
+  current_task_id: "IDS-V0_1-STAGE039-REVIEW"
+  next_allowed_task_id: "IDS-V0_1-STAGE040-P1"
   github_upload_allowed: false
-  current_run: "STAGE-039 Phase 4 delivers hash-bound state/decision graphs, an actual isolated three-attempt retry/dead-letter log, bounded capacity/resource/conflict evidence, a protected cleanup allowlist, truthful automatic-eligibility versus manual-action handling, and safe shutdown/recovery/rollback instructions. The closeout is not whole-stage review or production readiness; no production runtime, persistence, database, raw metadata, fake IDS business data, process recovery, cleanup, GitHub action, app reinstall, Stage040, or review ran."
-  no_upload_reason: "BATCH031_040 has STAGE-031 through STAGE-038 completed and reviewed locally; STAGE-039 has all four Phases complete but its separate whole-stage review is still pending, and STAGE-040 remains incomplete. The tenth-stage review and separate batch upload gates have not run, so push_allowed stays false."
+  current_run: "STAGE-039 whole-stage review repaired governance enums, registry counts, calibration-task links, and manual-rerun implementation truth; all four Phases remain isolated and production-disabled. No Stage040, batch gate, GitHub action, or app reinstall ran."
+  no_upload_reason: "BATCH031_040 has STAGE-031 through STAGE-039 completed and reviewed locally, but STAGE-040 remains incomplete. The tenth-stage review and separate batch upload gates have not run, so push_allowed stays false."

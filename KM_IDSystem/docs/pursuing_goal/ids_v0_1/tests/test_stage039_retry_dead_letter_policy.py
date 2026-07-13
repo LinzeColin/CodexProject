@@ -293,15 +293,20 @@ class Stage039RetryDeadLetterPolicyTests(unittest.TestCase):
         ):
             with self.subTest(term=term):
                 self.assertIn(term, combined)
-        self.assertIn('status: "stage039_phase4_completed_review_pending"', batch)
+        pending_review = (
+            'status: "stage039_phase4_completed_review_pending"' in batch
+            and 'next_gate: "IDS-STAGE039-REVIEW-GATE"' in batch
+        )
+        completed_review = (
+            'status: "stage039_completed_reviewed_local"' in batch
+            and 'next_gate: "IDS-STAGE040-P1-GATE"' in batch
+            and 'current_phase_id: "IDS-STAGE039-REVIEW"' in roadmap
+            and 'next_gate_id: "IDS-STAGE040-P1-GATE"' in roadmap
+        )
+        self.assertTrue(pending_review or completed_review)
         self.assertIn('      - "Phase 1"', batch)
         self.assertIn('      - "Phase 2"', batch)
-        self.assertIn('current_task_id: "IDS-V0_1-STAGE039-P4"', batch)
-        self.assertIn('next_gate: "IDS-STAGE039-REVIEW-GATE"', batch)
         self.assertIn('current_stage_id: "IDS-STAGE039"', roadmap)
-        self.assertIn('current_phase_id: "IDS-STAGE039-P4"', roadmap)
-        self.assertIn('current_task_id: "IDS-V0_1-STAGE039-P4"', roadmap)
-        self.assertIn('next_gate_id: "IDS-STAGE039-REVIEW-GATE"', roadmap)
         self.assertIn('push_allowed: false', batch)
 
 

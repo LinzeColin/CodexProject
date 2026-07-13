@@ -69,30 +69,30 @@ EXPECTED_UPSTREAM = {
     "stage039_phase1_evidence": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
         "STAGE039_PHASE1_RETRY_DEAD_LETTER_SCOPE_BOUNDARY.md",
-        "4c647ad0bf200326f15d9aa5c339a41c14f9c0fb70bf1ff9b1e3ec699a8c44b4",
+        "8729bbd4fba3657396a38d5244569f4a572d1f82617ee61c7fe0765f4d9a0b79",
     ),
     "stage039_phase2_runtime_contract": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/"
         "stage039_retry_dead_letter_runtime_contract.json",
-        "237812d5fc16cd59e09d7261709d36ba6c98cd64340c98908112dfc85c9a39b9",
+        "5fc9b49b0ede0fdbc87311f3280ffc69e8ec8e59f219b17a04a2ccae1e9124c0",
     ),
     "stage039_phase2_checker": (
         "KM_IDSystem/scripts/check_retry_dead_letter_runtime.py",
-        "f549149e70a532ab61c1d639d9176f1ea9b8a5f0fc5be5dee228fa1a1db032f0",
+        "5f7f47e6710d049177e51911df73f5e5df97fa9097370ebc726009b80ad7557d",
     ),
     "stage039_phase2_evidence": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
         "STAGE039_PHASE2_RETRY_DEAD_LETTER_SLICE.md",
-        "ac505e82d1bd915f4337ea6450d18cdee568c0be9eeb48b801003f74fcd44989",
+        "3fdae965992a815819f1018f6e74036bc41d7c688acfcad16ada911ace4add79",
     ),
     "stage039_phase3_scenario_contract": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/"
         "stage039_retry_dead_letter_scenarios.json",
-        "1799a3c6ca723d6157e86d9134842376f5bbf60ee42ed64c9538c62aa9fcb780",
+        "045cc67295c4918996b8439e0b2ea857edf2f998e836fbc7b4bbcbbedd660b3e",
     ),
     "stage039_phase3_checker": (
         "KM_IDSystem/scripts/check_retry_dead_letter_scenarios.py",
-        "93a05d1c7abe82f88eefb95ad0a08c0da479ca702a1e4edfb94710567c5bc43b",
+        "2502d8fde4016be717c72ad079ec338c80e1ed8fec9a9c27f5494dfb34eef862",
     ),
     "stage039_phase3_evidence": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
@@ -182,7 +182,7 @@ RETRY_SHUTDOWN_STEPS = [
 RECOVERY_STEPS = [
     "VERIFY_EXACT_POLICY_AND_SOURCE_BINDINGS",
     "REVALIDATE_OWNER_AND_RESOURCE_GATES",
-    "CREATE_NEW_LINKED_JOB_FOR_TERMINAL_SOURCE",
+    "VALIDATE_NEW_LINKED_JOB_CANDIDATE_FOR_TERMINAL_SOURCE",
     "DO_NOT_REOPEN_TERMINAL_HISTORY",
     "DEFER_PROCESS_CRASH_RECOVERY_TO_STAGE043",
 ]
@@ -203,7 +203,7 @@ KNOWN_LIMITS = [
     "NO_PROCESS_CRASH_RECOVERY",
     "NO_CLEANUP_RUNTIME",
     "NO_DATABASE_OR_RAW_SOURCE_ACCESS",
-    "POLICY_PARAMETERS_REMAIN_UNCALIBRATED_ASSUMPTIONS",
+    "POLICY_PARAMETERS_REMAIN_UNCALIBRATED_PROPOSALS",
     "STATIC_CLOSEOUT_IS_NOT_PRODUCTION_READINESS",
 ]
 FALSE_TRUTH_FLAGS = {

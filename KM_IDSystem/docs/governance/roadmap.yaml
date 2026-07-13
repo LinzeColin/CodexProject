@@ -2,10 +2,15 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE039"
-current_phase_id: "IDS-STAGE039-P4"
-current_task_id: "IDS-V0_1-STAGE039-P4"
-next_gate_id: "IDS-STAGE039-REVIEW-GATE"
+current_phase_id: "IDS-STAGE039-REVIEW"
+current_task_id: "IDS-V0_1-STAGE039-REVIEW"
+next_gate_id: "IDS-STAGE040-P1-GATE"
 current_transition_history:
+  stage039_phase4_state:
+    current_stage_id: "IDS-STAGE039"
+    current_phase_id: "IDS-STAGE039-P4"
+    current_task_id: "IDS-V0_1-STAGE039-P4"
+    next_gate_id: "IDS-STAGE039-REVIEW-GATE"
   stage039_phase3_state:
     current_stage_id: "IDS-STAGE039"
     current_phase_id: "IDS-STAGE039-P3"
@@ -9532,7 +9537,7 @@ stages:
     stage_id: "IDS-STAGE039"
     name: "STAGE-039 · 重试与死信策略"
     person_goal: "让失败任务可重试、可终止、可归类、可进入人工复核。"
-    status: "in_progress"
+    status: "completed_reviewed_local"
     stop_conditions:
       - "一次 run 试图完成多个 phase"
       - "重新打开 FAILED、DEAD_LETTERED、SUCCEEDED 或 CANCELLED 终态"
@@ -9543,10 +9548,10 @@ stages:
       - "读取、列出、hash、打开、复制、移动、删除、修改、dump 或扫描 /Users/linzezhang/Downloads/IDS_MetaData 内容"
       - "移动、删除、覆盖原始资料、manifest、evidence ledger、audit log、report snapshot 或 active index"
       - "使用虚构 IDS 业务数据、数据库行、jobs、logs、evidence 或 placeholder corpus"
-      - "进入 STAGE-040、GitHub upload、PR、merge、app reinstall、stage review 或 batch gate"
+      - "在 Phase 1-4 run 内提前进入 STAGE-040、GitHub upload、PR、merge、app reinstall、stage review 或 batch gate"
     stop_gate:
       gate_id: "IDS-STAGE039-REVIEW-GATE"
-      status: "pending"
+      status: "passed"
       pass_conditions:
         - "Phase 1 through Phase 4 each pass in separate runs"
         - "Retry scheduling, failure classification, dead-letter and manual-review behavior preserve ids.job_state.v1"
@@ -9570,6 +9575,9 @@ stages:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_delivery_contract.json"
         - "KM_IDSystem/scripts/check_retry_dead_letter_delivery.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_delivery.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_STAGE_REVIEW.md"
+        - "KM_IDSystem/scripts/check_retry_dead_letter_stage_review.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_review.py"
     phases:
       -
         phase_id: "IDS-STAGE039-P1"
@@ -9813,9 +9821,17 @@ stages:
     review:
       review_id: "IDS-STAGE039-REVIEW"
       task_id: "IDS-V0_1-STAGE039-REVIEW"
-      status: "pending"
+      status: "completed"
       acceptance_ids:
         - "ACC-STAGE-039"
-      evidence_refs: []
-      test_results: "Not run; whole-stage review follows Phase 4 in a separate run."
-      decision: "Phase 1 through Phase 4 have local evidence; separate whole-stage review and repair remain pending and must run next."
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_STAGE_REVIEW.md"
+        - "KM_IDSystem/scripts/check_retry_dead_letter_stage_review.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_review.py"
+        - "KM_IDSystem/docs/governance/model_registry.yaml"
+        - "KM_IDSystem/docs/governance/formula_registry.yaml"
+        - "KM_IDSystem/docs/governance/parameter_registry.csv"
+        - "KM_IDSystem/docs/governance/MODEL_SPEC.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+      test_results: "TDD review RED failed 6/6 tests because the review checker and artifact were absent. Review repaired four Important findings covering governance enum/task-link validity, total versus active registry counts, manual-rerun candidate truth, and the missing durable review gate. Final layered validation is recorded in STAGE039_STAGE_REVIEW.md and the review event."
+      decision: "ACC-STAGE-039 completed_reviewed_local after all four Important findings were repaired; next gate is IDS-STAGE040-P1-GATE, push_allowed=false, and this run did not enter STAGE-040."

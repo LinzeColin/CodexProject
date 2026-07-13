@@ -76,12 +76,14 @@ contract, not a claim that persistence or scheduling happened.
 Each actual execution uses a distinct `attempt_id`. The stable
 `idempotency_key` prevents duplicate admission for that logical job.
 
-`FAILED`, `DEAD_LETTERED`, `SUCCEEDED`, and `CANCELLED` are immutable. Manual
-rerun after terminal review creates a new linked job and must include
+`FAILED`, `DEAD_LETTERED`, `SUCCEEDED`, and `CANCELLED` are immutable. The
+manual-rerun contract requires any future implementation, after terminal
+review, to create a new linked job and include
 `parent_job_id`, a unique owner-approved `rerun_request_id`, `new_job_id`, and
 `new_idempotency_key`. The new identity is bound idempotently to
 `parent_job_id + owner-approved rerun_request_id`; replaying either the old job
 key or an already-used rerun request cannot create a duplicate linked job.
+Phase 1 defines this identity contract only; it creates no candidate or job.
 
 ## Policy Parameter Principles
 

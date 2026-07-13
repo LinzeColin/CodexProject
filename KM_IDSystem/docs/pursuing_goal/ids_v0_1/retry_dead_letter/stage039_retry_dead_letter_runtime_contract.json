@@ -33,7 +33,7 @@
     },
     "phase1_scope_boundary": {
       "ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE1_RETRY_DEAD_LETTER_SCOPE_BOUNDARY.md",
-      "sha256": "4c647ad0bf200326f15d9aa5c339a41c14f9c0fb70bf1ff9b1e3ec699a8c44b4"
+      "sha256": "8729bbd4fba3657396a38d5244569f4a572d1f82617ee61c7fe0765f4d9a0b79"
     },
     "stage037_state_checker": {
       "ref": "KM_IDSystem/scripts/check_job_state_model.py",
@@ -71,7 +71,7 @@
     "unknown_code_behavior": "NO_AUTOMATIC_RETRY",
     "parameter_source": "STAGE039_PHASE2_LOCAL_ENGINEERING_SAFETY_BOUNDARY",
     "selection_rationale": "Two retries cap one logical job at three attempts; 5 and 30 second ceilings separate short and sustained transient conditions while bounded hash jitter prevents synchronized immediate retry in the isolated slice.",
-    "fact_level": "ASSUMPTION",
+    "fact_level": "PROPOSED",
     "production_calibrated": false,
     "production_calibration_required": true,
     "rollback_policy_version": "NO_AUTOMATIC_RETRY"
