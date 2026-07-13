@@ -85,6 +85,37 @@
       ]
     },
     {
+      "intent": "claude_personalization",
+      "description": "Minimal Claude Code startup projection generated from the shared provider-neutral memory bundle.",
+      "read_order": [
+        "data/derived/personalization/claude_personalization.md"
+      ],
+      "conditional_resources": [
+        {
+          "path": "data/derived/agent_context/AGENT_CONTEXT.md",
+          "condition": "Load only when the task needs deeper cross-agent context than the compact Claude projection."
+        },
+        {
+          "path": "data/derived/profile/CORE_PROFILE.md",
+          "condition": "Load only when the task needs stable profile detail beyond the compact projection."
+        },
+        {
+          "path": "data/derived/project_index/PROJECT_INDEX.md",
+          "condition": "Load only for explicit project-continuity intent; project status remains in project governance."
+        },
+        {
+          "path": "data/derived/decision_log/DECISION_LOG.md",
+          "condition": "Load only for explicit durable-decision intent."
+        }
+      ],
+      "update_targets": [
+        "profile",
+        "preference",
+        "history",
+        "pattern"
+      ]
+    },
+    {
       "intent": "project_history",
       "description": "Project continuity, decisions, and prior work.",
       "read_order": [

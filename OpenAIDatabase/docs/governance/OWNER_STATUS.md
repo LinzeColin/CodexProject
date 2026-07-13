@@ -39,7 +39,7 @@ OpenAIDatabase remains FAILED for delivery readiness and cannot claim safe memor
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `PARTIAL` (28/99 active parameters, 10/12 active formulas)
+- implementation_congruence: `PARTIAL` (27/99 active parameters, 9/12 active formulas)
 - parameter_source_quality: `PARTIAL`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `UNVERIFIED`
@@ -78,33 +78,33 @@ OpenAIDatabase remains FAILED for delivery readiness and cannot claim safe memor
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `ACC-CF-L2-20260710-PASSED-ACCESS-PROTECTED`
+- release_gate: `ACC-OAIDB-SM-P0-R1-PASSED-LOCAL`
 
 ## 14. Evidence Freshness
 
-- final_commit_binding: `COMMIT_BOUND:00f4187f43960a3b25fc696ae2a15951f4431763`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
 - commit_bound_events: `3`
 - legacy_unbound_events: `6`
-- precommit_pending_events: `10`
-- pending_or_stale_events: `17`
-- freshness_counts: `pending_or_stale_events=17; legacy_unbound_events=6`
+- precommit_pending_events: `15`
+- pending_or_stale_events: `22`
+- freshness_counts: `pending_or_stale_events=22; legacy_unbound_events=6`
 - freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
 - current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
 
 ## 15. UNKNOWN
 
-- unresolved_fact_ids: `9`
+- unresolved_fact_ids: `10`
 
 ## 16. 技术元数据
 
 - source_base_commit: `00f4187f43960a3b25fc696ae2a15951f4431763`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:95810479060b9ee632413b4c1fc501a0a5350cc64736cc81a880cd28a09b952e`
-- snapshot_event_time: `2026-07-10T18:53:05+10:00`
+- source_snapshot_hash: `sha256:71ff588f5cf2ec841b04e1ffc399d071fe2bee694040fcf243cdec99d54ae30f`
+- snapshot_event_time: `2026-07-13T10:16:00+10:00`
 - generator_version: `4.0.1`
 - version: `0.2.0`
-- phase/gate: `CF-L2 / ACC-CF-L2-20260710-PASSED-ACCESS-PROTECTED`
+- phase/gate: `SM-P0-RUN1 / ACC-OAIDB-SM-P0-R1-PASSED-LOCAL`
 
 ## 17. Next Unique Task
 

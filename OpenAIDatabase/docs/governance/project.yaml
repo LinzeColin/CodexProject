@@ -229,7 +229,7 @@ features:
   -
     feature_id: "FEAT-OAIDB-005"
     name: "Personalization export 与资源路由"
-    description: "生成 ChatGPT/Codex personalization exports、资源路由、evaluation harness 和 run logs；仍受隐私 owner gate 约束。"
+    description: "从 OpenAIDatabase canonical sources 确定性生成 ChatGPT、Codex、Claude 三个 provider projection，并以同一 bundle_id 与 canonical_source_hash 提供可验证共享身份；仍受隐私 owner gate 约束。"
     status: "active"
     fact_level: "EXTRACTED"
     model_ids:
@@ -253,9 +253,11 @@ features:
       - "OpenAIDatabase/scripts/build_personalization_exports.py:1;OpenAIDatabase/scripts/route_agent_resources.py:1;OpenAIDatabase/scripts/evaluate_personalization_context.py:1"
     test_refs:
       - "OpenAIDatabase/tests/test_personalization_architecture.py:1"
+      - "OpenAIDatabase/tests/test_cross_agent_memory_adapter.py:1"
     evidence_refs:
       - "EVID-OAIDB-TRACEABILITY-MATRIX"
       - "EVID-OAIDB-ASSURANCE-STATUS"
+      - "EVID-OAIDB-SHARED-MEMORY-R1"
   -
     feature_id: "FEAT-MACDATA-PROM2-001"
     name: "proM2 每日 MacData 归档"
@@ -594,7 +596,7 @@ models:
   -
     model_id: "MOD-011"
     name: "Personalization export and resource routing"
-    purpose: "Map the three-layer private context source into ChatGPT and Codex personalization exports, route future agents to the smallest sufficient resources, and log sync/export/evaluation/agent runs."
+    purpose: "Map canonical OpenAIDatabase context into deterministic ChatGPT, Codex, and Claude projections that share a provider-neutral bundle_id and canonical_source_hash, route agents to the smallest sufficient resources, and log sync/export/evaluation/agent runs."
     status: "active"
     fact_level: "EXTRACTED"
     semantic_status: "MACHINE_VERIFIED_WITH_HUMAN_REVIEW_CAVEATS"
@@ -618,9 +620,11 @@ models:
       - "OpenAIDatabase/scripts/sync_codex_memory_data.py:407"
     test_refs:
       - "OpenAIDatabase/tests/test_personalization_architecture.py:1"
+      - "OpenAIDatabase/tests/test_cross_agent_memory_adapter.py:1"
     evidence_refs:
       - "EVID-OAIDB-MODEL-REGISTRY"
       - "EVID-SEMANTIC-OAIDB-MANIFEST"
+      - "EVID-OAIDB-SHARED-MEMORY-R1"
   -
     model_id: "MOD-MACDATA-PROM2-001"
     name: "Device preflight and archive cleanup policy"
@@ -818,8 +822,8 @@ formulas:
     model_id: "MOD-011"
     status: "active"
     fact_level: "EXTRACTED"
-    semantic_status: "MACHINE_VERIFIED"
-    expression: "build_export_payload loads agent_context_pack plus three_layer_context and resource_routes. It copies layer metadata, sync_required_targets, run_log_categories, startup/chatgpt/codex/project/taste routes, profile, memory, preferences, meta_data, behavior, data_sources, and safety flags. render_chatgpt writes Core Profile, Preferences And Taste, History And Patterns, Project And Decision Context, Future Agent Sync Rules, and Meta Rules. render_codex writes Startup Read Order, Codex Route, Required Sync Targets, Four Run Log Categories, and Agent Rules. route_resources selects exactly one route by intent or fails with valid_intents. evaluate checks required files, required export sections, sync targets, run log categories, and forbidden plaintext patterns. sync_codex_memory_data --build-atlas now rebuilds agent context and personalization exports after Codex-derived data refresh."
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
+    expression: "canonical_source_hash = SHA256(stable JSON of sorted canonical source records). projection_input_hash = SHA256(stable JSON of every repository-relative file whose state can affect provider projections, including canonical sources, routing, agent-context inputs, and behavior/collaboration reports). bundle_id = SHA256(stable JSON of schema version, generator version, canonical_source_hash, projection_input_hash, exact source/input path sets, and providers chatgpt/codex/claude). Provider projections embed the same identity; the manifest binds exact projection hashes. The evaluator independently recomputes source records, both input hashes, and bundle_id and fails on stale or tampered provenance. generated_at, repo head, dirty state, and run order do not affect shared identity."
     code_refs:
       - "OpenAIDatabase/scripts/build_personalization_exports.py:1"
       - "OpenAIDatabase/scripts/route_agent_resources.py:1"
@@ -827,9 +831,11 @@ formulas:
       - "OpenAIDatabase/scripts/sync_codex_memory_data.py:407"
     test_refs:
       - "OpenAIDatabase/tests/test_personalization_architecture.py:1"
+      - "OpenAIDatabase/tests/test_cross_agent_memory_adapter.py:1"
     evidence_refs:
       - "EVID-OAIDB-FORMULA-REGISTRY"
       - "EVID-SEMANTIC-OAIDB-MANIFEST"
+      - "EVID-OAIDB-SHARED-MEMORY-R1"
   -
     formula_id: "FORM-MACDATA-PROM2-001"
     model_id: "MOD-MACDATA-PROM2-001"
@@ -2631,8 +2637,8 @@ parameters:
     formula_id: "FORM-011"
     symbol: "personalization_export_targets"
     name: "generated personalization output files"
-    value: "chatgpt_personalization.md;codex_personalization.md;personalization_export.json"
-    source: "EXTRACTED from script constants"
+    value: "chatgpt_personalization.md;codex_personalization.md;claude_personalization.md;personalization_export.json;memory_bundle_manifest.json"
+    source: "EXTRACTED from provider export mapping and manifest constant"
     fact_level: "EXTRACTED"
     semantic_status: "HUMAN_REVIEW_REQUIRED"
     unknown_task_ids: []
@@ -2642,9 +2648,11 @@ parameters:
       - "OpenAIDatabase/config/evaluation/personalization_harness.json:1"
     test_refs:
       - "OpenAIDatabase/tests/test_personalization_architecture.py:117"
+      - "OpenAIDatabase/tests/test_cross_agent_memory_adapter.py:1"
     evidence_refs:
       - "EVID-OAIDB-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-OAIDB-MANIFEST"
+      - "EVID-OAIDB-SHARED-MEMORY-R1"
   -
     parameter_id: "PARAM-086"
     model_id: "MOD-011"
@@ -2671,10 +2679,10 @@ parameters:
     formula_id: "FORM-011"
     symbol: "resource_route_intents"
     name: "registered resource routing intents"
-    value: "startup;chatgpt_personalization;codex_personalization;project_history;taste_profile;evaluation"
+    value: "startup;maintenance;chatgpt_personalization;codex_personalization;claude_personalization;project_history;taste_profile;evaluation"
     source: "EXTRACTED from route config"
     fact_level: "EXTRACTED"
-    semantic_status: "MACHINE_VERIFIED"
+    semantic_status: "HUMAN_REVIEW_REQUIRED"
     unknown_task_ids: []
     code_refs:
       - "OpenAIDatabase/scripts/route_agent_resources.py:22"
@@ -2682,6 +2690,7 @@ parameters:
       - "OpenAIDatabase/config/context_sources/resource_routes.json:1"
     test_refs:
       - "OpenAIDatabase/tests/test_personalization_architecture.py:116"
+      - "OpenAIDatabase/tests/test_cross_agent_memory_adapter.py:1"
     evidence_refs:
       - "EVID-OAIDB-PARAMETER-REGISTRY"
       - "EVID-SEMANTIC-OAIDB-MANIFEST"
@@ -2946,4 +2955,14 @@ evidence_refs:
     evidence_id: "EVID-OAIDB-RUN0A-CHECK-RENDER"
     kind: "test"
     ref: "python3.12 -B scripts/lean_governance.py check-render --project OpenAIDatabase"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-OAIDB-SHARED-MEMORY-R1"
+    kind: "generated_manifest"
+    ref: "OpenAIDatabase/data/derived/personalization/memory_bundle_manifest.json"
+    fact_level: "EXTRACTED"
+  -
+    evidence_id: "EVID-OAIDB-SHARED-MEMORY-R1-TEST"
+    kind: "test"
+    ref: "python3.12 -B -m unittest OpenAIDatabase.tests.test_cross_agent_memory_adapter OpenAIDatabase.tests.test_personalization_architecture -q"
     fact_level: "EXTRACTED"

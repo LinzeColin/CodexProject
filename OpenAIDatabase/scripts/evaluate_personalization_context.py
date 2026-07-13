@@ -4,11 +4,19 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+from build_personalization_exports import (
+    BUNDLE_GENERATOR_VERSION,
+    BUNDLE_SCHEMA_VERSION,
+    CONTEXT_CONFIG as BUNDLE_CONTEXT_CONFIG,
+    build_bundle_identity,
+)
 
 
 HARNESS_CONFIG = Path("config/evaluation/personalization_harness.json")
@@ -35,6 +43,51 @@ def read_json(path: Path) -> dict[str, Any]:
 
 def read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8", errors="ignore") if path.exists() else ""
+
+
+def projection_metadata(text: str) -> dict[str, str]:
+    metadata: dict[str, str] = {}
+    for line in text.splitlines():
+        if line.startswith("## "):
+            break
+        if line.startswith("- ") and ": " in line:
+            key, value = line[2:].split(": ", 1)
+            metadata[key] = value
+    return metadata
+
+
+def sha256_text(text: str) -> str:
+    return "sha256:" + hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def validate_bundle_source_proof(database_dir: Path, bundle_manifest: dict[str, Any]) -> list[str]:
+    """Recompute the current bundle identity and fail closed on stale/tampered provenance."""
+    failures: list[str] = []
+    try:
+        context_config = read_json(database_dir / BUNDLE_CONTEXT_CONFIG)
+        expected = build_bundle_identity(database_dir, context_config)
+    except (OSError, ValueError) as exc:
+        return [f"bundle_identity_recompute_failed:{type(exc).__name__}"]
+
+    expected_source_files = [record["path"] for record in expected["source_records"]]
+    expected_projection_input_files = [record["path"] for record in expected["projection_input_records"]]
+    checks = (
+        ("manifest_schema_version_mismatch", bundle_manifest.get("schema_version"), BUNDLE_SCHEMA_VERSION),
+        ("manifest_generator_version_mismatch", bundle_manifest.get("generator_version"), BUNDLE_GENERATOR_VERSION),
+        ("manifest_canonical_source_hash_mismatch", bundle_manifest.get("canonical_source_hash"), expected["canonical_source_hash"]),
+        ("manifest_source_files_mismatch", bundle_manifest.get("source_files"), expected_source_files),
+        ("manifest_source_records_mismatch", bundle_manifest.get("source_records"), expected["source_records"]),
+        ("manifest_projection_input_hash_mismatch", bundle_manifest.get("projection_input_hash"), expected["projection_input_hash"]),
+        ("manifest_projection_input_files_mismatch", bundle_manifest.get("projection_input_files"), expected_projection_input_files),
+        (
+            "manifest_projection_input_records_mismatch",
+            bundle_manifest.get("projection_input_records"),
+            expected["projection_input_records"],
+        ),
+        ("manifest_bundle_id_mismatch", bundle_manifest.get("bundle_id"), expected["bundle_id"]),
+    )
+    failures.extend(label for label, actual, wanted in checks if actual != wanted)
+    return failures
 
 
 def git_head(database_dir: Path) -> str:
@@ -254,6 +307,9 @@ def evaluate(database_dir: Path) -> dict[str, Any]:
     required_sections = harness.get("required_export_sections", [])
     required_targets = harness.get("required_update_targets", [])
     required_logs = harness.get("required_log_categories", [])
+    required_providers = harness.get("required_projection_providers", [])
+    required_bundle_fields = harness.get("required_bundle_fields", [])
+    projection_size_limits = harness.get("projection_size_limits", {})
     forbidden_patterns = harness.get("forbidden_plaintext_patterns", [])
     failures: list[str] = []
 
@@ -265,6 +321,12 @@ def evaluate(database_dir: Path) -> dict[str, Any]:
         required_targets = []
     if not isinstance(required_logs, list):
         required_logs = []
+    if not isinstance(required_providers, list):
+        required_providers = []
+    if not isinstance(required_bundle_fields, list):
+        required_bundle_fields = []
+    if not isinstance(projection_size_limits, dict):
+        projection_size_limits = {}
     if not isinstance(forbidden_patterns, list):
         forbidden_patterns = []
 
@@ -274,13 +336,48 @@ def evaluate(database_dir: Path) -> dict[str, Any]:
 
     chatgpt_export = read_text(database_dir / "data/derived/personalization/chatgpt_personalization.md")
     codex_export = read_text(database_dir / "data/derived/personalization/codex_personalization.md")
-    combined_text = f"{chatgpt_export}\n{codex_export}"
+    claude_export = read_text(database_dir / "data/derived/personalization/claude_personalization.md")
+    provider_exports = {
+        "chatgpt": chatgpt_export,
+        "codex": codex_export,
+        "claude": claude_export,
+    }
+    combined_text = "\n".join(provider_exports.values())
     for section in required_sections:
         if str(section) not in combined_text:
             failures.append(f"missing_export_section:{section}")
     for pattern in forbidden_patterns:
         if pattern and str(pattern) in combined_text:
             failures.append(f"forbidden_plaintext_pattern:{pattern}")
+    for provider, limit in projection_size_limits.items():
+        text = provider_exports.get(str(provider), "")
+        if isinstance(limit, int) and len(text.encode("utf-8")) > limit:
+            failures.append(f"projection_size_exceeded:{provider}:{len(text.encode('utf-8'))}:{limit}")
+
+    bundle_manifest = read_json(database_dir / "data/derived/personalization/memory_bundle_manifest.json")
+    for field in required_bundle_fields:
+        if field not in bundle_manifest:
+            failures.append(f"missing_bundle_field:{field}")
+    manifest_projections = bundle_manifest.get("projections", {})
+    if not isinstance(manifest_projections, dict):
+        manifest_projections = {}
+    failures.extend(validate_bundle_source_proof(database_dir, bundle_manifest))
+    for provider in required_providers:
+        provider_text = provider_exports.get(str(provider), "")
+        metadata = projection_metadata(provider_text)
+        projection = manifest_projections.get(str(provider), {})
+        if not isinstance(projection, dict):
+            projection = {}
+        if str(provider) not in manifest_projections:
+            failures.append(f"missing_bundle_projection:{provider}")
+        if metadata.get("provider") != str(provider):
+            failures.append(f"projection_provider_mismatch:{provider}")
+        if metadata.get("bundle_id") != bundle_manifest.get("bundle_id"):
+            failures.append(f"projection_bundle_id_mismatch:{provider}")
+        if metadata.get("canonical_source_hash") != bundle_manifest.get("canonical_source_hash"):
+            failures.append(f"projection_source_hash_mismatch:{provider}")
+        if projection.get("projection_hash") != sha256_text(provider_text):
+            failures.append(f"projection_content_hash_mismatch:{provider}")
 
     export_payload = read_json(database_dir / "data/derived/personalization/personalization_export.json")
     actual_targets = set(export_payload.get("sync_required_targets", [])) if isinstance(export_payload.get("sync_required_targets"), list) else set()
@@ -329,6 +426,10 @@ def evaluate(database_dir: Path) -> dict[str, Any]:
             "jsonl_parse",
             "task_run_evidence",
             "forbidden_patterns",
+            "provider_bundle_identity",
+            "bundle_source_proof_recomputed",
+            "projection_content_hashes",
+            "projection_size_limits",
         ],
         "tests_run": [
             {

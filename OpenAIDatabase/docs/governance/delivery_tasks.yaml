@@ -146,6 +146,22 @@ tasks:
     target_version: "0.2.0"
     completed_version: "0.2.0"
     completed_commit: "PENDING"
+  - task_id: "OAIDB-SM-P0-R1"
+    phase: "C"
+    objective: "Generate deterministic ChatGPT, Codex, and Claude projections from the existing OpenAIDatabase canonical source set with one shared provider-neutral bundle identity."
+    scope: ["shared bundle_id and canonical_source_hash", "Claude projection capped at 4096 bytes", "minimal claude_personalization route", "projection manifest hashes", "privacy and determinism tests", "redacted agent-run evidence"]
+    non_scope: ["root AGENTS.md or CLAUDE.md adapters", "RUN 2 or RUN 3", "real-agent cold-start acceptance", "raw/private data", "new dependencies or services", "commit or push"]
+    status: "completed"
+    dependencies: ["TASK-OAI-C-002"]
+    required_files: ["OpenAIDatabase/data/derived/personalization/chatgpt_personalization.md", "OpenAIDatabase/data/derived/personalization/codex_personalization.md", "OpenAIDatabase/data/derived/personalization/claude_personalization.md", "OpenAIDatabase/data/derived/personalization/memory_bundle_manifest.json", "OpenAIDatabase/config/context_sources/resource_routes.json", "OpenAIDatabase/tests/test_cross_agent_memory_adapter.py", "OpenAIDatabase/data/run_logs/agent_runs/2026-07-13.shared-memory-run1.jsonl"]
+    acceptance_ids: ["ACC-OAIDB-SM-P0-R1"]
+    test_commands: ["python3.12 -B scripts/build_personalization_exports.py --database-dir .", "python3.12 -B -m unittest OpenAIDatabase.tests.test_s3pdt01_privacy OpenAIDatabase.tests.test_agent_context_pack OpenAIDatabase.tests.test_codex_memory_sync OpenAIDatabase.tests.test_cross_agent_memory_adapter OpenAIDatabase.tests.test_personalization_architecture -q", "python3.12 -B OpenAIDatabase/scripts/evaluate_personalization_context.py --database-dir OpenAIDatabase", "python3.12 -B OpenAIDatabase/scripts/route_agent_resources.py --database-dir OpenAIDatabase --intent claude_personalization", "python3.12 -B scripts/lean_governance.py check-render --project OpenAIDatabase", "python3.12 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main", "python3.12 -B scripts/lean_governance.py ci --changed-only --base-ref origin/main", "git diff --check"]
+    test_results: ["RECOVERED: premature acceptance revoked after two P1 findings", "PASS: v2 bundle identity binds canonical and every actual projection input", "PASS: evaluator independently recomputes and fail-closes on stale/tampered source proof", "PASS: two deterministic generator runs produced identical hashes", "PASS: 22 targeted tests", "PASS: evaluator failures=0 and Claude route", "PASS: renderer/check-render, changed-only semantic validation, CI SHIP, and git diff check", "PASS: second independent review found no new P0/P1"]
+    evidence_refs: ["OpenAIDatabase/data/derived/personalization/memory_bundle_manifest.json", "OpenAIDatabase/tests/test_cross_agent_memory_adapter.py", "OpenAIDatabase/data/run_logs/agent_runs/2026-07-13.shared-memory-run1.jsonl"]
+    risk: "Provider projections and the manifest are derived/read-only rather than canonical truth; real cross-agent consumption and root adapters remain separate RUN 2-3 work."
+    rollback: "Remove the Claude projection, manifest, route, focused test, and RUN 1 governance/evidence, then regenerate the pre-RUN 1 personalization outputs."
+    target_version: "0.2.0"
+    completed_version: "0.2.0"
   - task_id: "CF-L2-20260710"
     phase: "CF-L2"
     objective: "Deliver the redacted derived MemoryAtlas viewer as a public-safe Cloudflare L2 surface while the raw and private OpenAIDatabase core remains local."
