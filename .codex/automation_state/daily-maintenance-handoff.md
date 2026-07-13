@@ -111,3 +111,65 @@
   2. `git pull --rebase --autostash origin main`（按提示手工解决 `OpenAIDatabase/*` 冲突）
   3. `git add <resolved files> && git rebase --continue`
   4. 仅在无阻塞后按 automation 既定规则继续本次 Batch。
+
+# 日常维护交接 · 2026-07-13
+
+- 运行日期：2026-07-13
+- Branch：main
+- Batch ID：AIRM2-20260713-MAINT-001
+- Theme：governance
+- 目标：修复 OpenAIDatabase owner 文件的入口规范并明确下一步 required-scope 收敛路径。
+
+## 本轮结论
+OpenAIDatabase `开发记录.md` 与 `模型参数文件.md` 的一级标题与 owner-readable token 缺失问题已补齐，相关 check-render 报告项消失。`lean_governance` 仍为 `STOP`，当前阻塞已确认转移到 `required_scope_gap` 与 WDA 漂移，不在本批次最小可验证范围内。
+
+## 问题来源
+- 上一轮同样批次中已识别：`开发记录.md` 与 `模型参数文件.md` 违反 owner 文件规范。
+- 本轮改动未覆盖 `docs/governance` 所有 required 文件全集，故 changed-only 仍触发 sync 阻塞。
+
+## 本轮改动
+- 文件：`OpenAIDatabase/开发记录.md`
+  - 标题改为 `# 开发记录`
+  - 增加 `## 摘要`
+  - 增加 `## Stage -> Phase -> Task`
+  - 增加 `## stop_gate`
+- 文件：`OpenAIDatabase/模型参数文件.md`
+  - 标题改为 `# 模型参数文件`
+  - 增加 `## 摘要`
+  - 增加 `## active_model_count`
+  - 增加 `## active_formula_count`
+  - 增加 `## active_parameter_count`
+- 文件：`.codex/automation_state/quality-ledger.md`
+  - 更新本轮评分、验证结果和剩余阻塞。
+- 文件：`.codex/automation_state/daily-maintenance-handoff.md`
+  - 记录可直接接续的交接内容。
+
+## 测试和验证
+1. `python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main`
+   - 结果：退出码 1（`STOP`）
+   - 说明：`OpenAIDatabase/开发记录.md`、`OpenAIDatabase/模型参数文件.md` 的 drift 消失；仍残留 required file 缺失与 WDA 漂移。
+2. `git rev-list --left-right --count HEAD...origin/main`
+   - 结果：`7 0`
+
+## 多维质量影响（本轮）
+- Correctness：+2（owner 文件验收门槛与可读结构修复）
+- Governance：+1（错误类阻塞点缩小）
+- Human Readability：+2（中文交付与可操作字段补齐）
+- Handoff Continuity：+2（明确下一批次优先级）
+- Chinese UX：+1（中文可读条目更完整）
+
+## 剩余问题
+- OpenAIDatabase required scope 文件未补齐：`docs/governance/DEVELOPMENT_LEDGER.md`、`MODEL_SPEC.md`、`OWNER_STATUS.md`、`STATUS.md`、`TRACEABILITY_MATRIX.csv`、`VERSION_MATRIX.yaml`、`delivery_tasks.yaml`、`development_events.jsonl`、`formula_registry.yaml`、`model_registry.yaml`、`parameter_registry.csv`
+- WDA `ASSURANCE_STATUS.yaml` active formula/parameter drift 仍待修。
+
+## NEXT_BATCH_PRIORITY
+1. 首批补齐 `docs/governance` required 文件（至少 OpenAIDatabase 关键项）后重跑 changed-only。
+2. 再处理 WDA `ASSURANCE_STATUS.yaml` 的 active formula/parameter drift。
+
+## 回滚方式
+- 回滚本批次：`git checkout -- OpenAIDatabase/开发记录.md OpenAIDatabase/模型参数文件.md`
+- 同时回退本批次新增 handoff 追加段落。
+
+## 推送与同步说明
+- 本轮变更可提交；推送按 Automation 规则复核后执行。
+- 当前 push 仍可能因为 `required_scope_gap` 被阻断，需记录并留待下一批次修复。

@@ -105,3 +105,53 @@
 ## 备注：推送链路
 - 本轮未提交业务改动，未执行 push。
 - 推送恢复命令见 handoff。
+
+# 质量台账 · 2026-07-13
+
+- 日期：2026-07-13
+- Branch：main
+- Batch ID：AIRM2-20260713-MAINT-001
+- Theme：governance
+- 一致性验真：已修复 OpenAIDatabase owner 文件规范缺失；`lean_governance --changed-only` 仍停在 `required_scope_gap`。
+
+## 批次评分矩阵
+
+- 问题来源：OpenAIDatabase owner 文件缺失中文可读 token 与标题规范。
+
+| 维度 | 分数（0-5） | 说明 |
+|---|---:|---|
+| Correctness | 4 | 修复 `开发记录.md` 与 `模型参数文件.md` 的规范入口，降低本地交付前置失配。 |
+| Build/Test 阻断 | 2 | 执行治理验证，确认本批次非终局阻塞并持续暴露下游问题。 |
+| Stability | 3 | 纯文本修订，无行为回归风险。 |
+| Robustness | 2 | check-render 识别边界更窄，批次目标更可复用。 |
+| Performance | 5 | 本批次为最小文本改动。 |
+| Stress/Concurrency | 1 | 未涉及并发、压测。 |
+| Data Structure | 1 | 无数据结构更改。 |
+| Code Structure | 1 | 无代码结构更改。 |
+| Coupling | 2 | 降低 owner 文件与治理脚本路径误解。 |
+| Interconnection | 3 | 验证链路进一步清晰：owner 文件修正与 required-scope 分离。 |
+| Governance | 4 | 规范化交付层，阻塞定位更精确。 |
+| Human Readability | 5 | owner 文件与 handoff 文案更利于阅读。 |
+| Chinese UX | 5 | 全文中文说明增强。 |
+| Handoff Continuity | 4 | 明确下一批次必修清单。 |
+
+## 结果
+- 本轮处理问题数：2
+- 本轮提交：1（待本次提交）
+- 通过验证项：1（命令真实执行并确认残留阻塞）
+- 阻塞验证项：1（`required_scope_gap`）
+
+## 验证结果明细
+- `python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main`
+  - 结果：`STOP`（`required_scope_gap`）
+  - 说明：OpenAIDatabase 的 `开发记录.md` 与 `模型参数文件.md` drift 消失，仍缺少 OpenAIDatabase 与全局 required governance 文件更新。
+- `git rev-list --left-right --count HEAD...origin/main`
+  - 结果：`7 0`
+
+## 风险与后续
+- 技术债：`required_scope_gap` 未消解，影响本地批次最终 PASS。
+- 运行风险：WDA `ASSURANCE_STATUS.yaml` 与 OpenAIDatabase required governance 文件仍需更新。
+
+## 备注：推送链路
+- 已计划 `git push origin HEAD:main`，但推送前会再次复核 `git fetch --prune origin` 与 `git rev-list`。
+- 本批次预期为阻塞可见型推进，未达验证最终通过。
