@@ -99,8 +99,8 @@ Commit/PR summaries must include:
 
 - Canonical worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS`
 - Project scope: `KM_IDSystem/` only.
-- Current local state: `STAGE-039 · 重试与死信策略` Phase 1 through Phase 3 are complete; STAGE-038 remains `completed_reviewed_local`.
-- Current task: `IDS-V0_1-STAGE039-P3`; acceptance: `ACC-STAGE-039`; next separate gate: `IDS-STAGE039-P4-GATE`.
+- Current local state: `STAGE-039 · 重试与死信策略` Phase 1 through Phase 4 are complete; whole-stage review remains pending and STAGE-038 remains `completed_reviewed_local`.
+- Current task: `IDS-V0_1-STAGE039-P4`; acceptance: `ACC-STAGE-039`; next separate gate: `IDS-STAGE039-REVIEW-GATE`.
 - Exact source status: `SOURCE_VERIFIED`; the unique Stage039 member is `IDS_v0_1_Final_Chinese_Revised/stages/STAGE-039_重试与死信策略.md` with SHA-256 `504caf72a6aeab67a650b4b096e728f03269f6ca8798f6e8a5c51210c8ddd7d9`.
 - Corrected Phase 1 defines queue/worker separation, envelope idempotency, retry/dead-letter, backpressure, lock granularity, automatic lifecycle, crash-recovery checkpoint, and cleanup allowlist interfaces. STAGE-039..044 retain dedicated runtime policy and implementation ownership.
 - A six-surface finite-state check binds batch, roadmap, entry, Phase 1, source evidence, and review evidence. Independent review repaired `1 Critical / 1 Important / 0 Minor` and ended at `0 / 0 / 0`.
@@ -120,9 +120,12 @@ Commit/PR summaries must include:
 - Phase 3 validates exactly ten isolated scenarios: duplicate retry reservation/admission, actual worker exception with process-crash recovery deferred, drive/disk/API resource pauses, same-source cross-operation locking, retry exhaustion, immutable terminal replay, owner-authorized manual-rerun candidate lineage, and five-class protected cleanup denial.
 - Stage038 supplies the actual isolated worker exception and actual local disk-free observation. Phase 3 performs no process termination, physical drive removal, disk allocation, API call, cleanup/delete, production runtime, persistence, database action, raw metadata access, or fake IDS business-data use.
 - Manual rerun is candidate-only and idempotent: it requires owner authorization plus a new linked job ID and idempotency key, but creates no job and writes no queue or database state. Protected cleanup verifies exact Git-tracked refs and exposes no deletion path.
-- Only `IDS-V0_1-STAGE039-P4` may run next, in a separate run. Phase 3 did not enter Phase 4 or STAGE-040.
+- Phase 4 binds the exact Stage037 8-type/11-state/21-transition graph, six failure decisions, the actual isolated three-attempt retry/dead-letter history, five capacity/resource/conflict signals, and the two-class cleanup allowlist into one machine-checked delivery report.
+- Automatic handling is narrowly stated: two exact safe codes can enter controlled retry only when policy, budget, resource, CAS, and idempotency gates pass. No successful automatic recovery was observed. Eight conditions remain manual-action cases.
+- Safe shutdown reuses reviewed Stage038 isolated transport closure. Stage039 has no persistent scheduler or process-recovery runtime; after exit, a new linked job requires exact source/policy, owner, and resource revalidation, and terminal history remains immutable.
+- Only `IDS-V0_1-STAGE039-REVIEW` may run next, in a separate run. Phase 4 did not perform whole-stage review or enter STAGE-040.
 - `BATCH031_040` remains locked with `push_allowed=false`; do not upload, merge, reinstall app entries, or run batch gates before all ten stages are complete and reviewed.
-- Current evidence adds `STAGE039_PHASE3_SCENARIO_VALIDATION.md`, `retry_dead_letter/stage039_retry_dead_letter_scenarios.json`, `scripts/check_retry_dead_letter_scenarios.py`, and `tests/test_stage039_retry_dead_letter_scenarios.py` to the Phase 1-2 sources.
+- Current evidence adds `STAGE039_PHASE4_CLOSEOUT.md`, `retry_dead_letter/stage039_retry_dead_letter_delivery_contract.json`, `scripts/check_retry_dead_letter_delivery.py`, and `tests/test_stage039_retry_dead_letter_delivery.py` to the Phase 1-3 sources.
 - The real metadata root `/Users/linzezhang/Downloads/IDS_MetaData` is path-only governance context. Do not read, list, hash, open, copy, move, delete, modify, dump, scan, normalize, or commit its contents.
 - Do not use fake IDS business data, fake database rows, placeholder corpus, fabricated profiles, dumps, execution logs, or evidence.
 
@@ -140,8 +143,15 @@ These are recoverable from source, scripts, and GitHub.
 
 ## Known Limits
 
+- The separate STAGE-039 whole-stage review must reconcile `21` project-level
+  semantic diagnostics introduced by the Phase 2 isolated policy registry:
+  legacy schema enums reject `isolated_non_production` and `ASSUMPTION`, two
+  unresolved-value records lack accepted task references, and `MODEL_SPEC`
+  still declares 7 models/formulas and 49 parameters while registries contain
+  8/8/55. The remaining `29` project-wide diagnostics are expected sparse root
+  or unrelated-project paths and must not trigger sparse expansion.
 - Docker was not available on this Mac during validation, so Docker Compose syntax could not be executed locally.
 - macOS may reject the ad-hoc `.app` bundle through Gatekeeper/LaunchServices. The `.command` launcher is the current reliable click path.
 - Real MQTT/OPC-UA/Modbus device ingestion is not implemented in this version.
 - Model providers are configurable, but no plaintext API keys should be committed.
-- STAGE-039 Phase 3 is isolated scenario evidence, not production readiness. Persistent queue/claim state, measured backpressure/fairness, production lock/lease/fencing, automatic lifecycle, process crash recovery, cleanup execution, PostgreSQL actions, raw source reads, and IDS business job execution remain absent. The selected Phase 2 values remain uncalibrated assumptions and production automatic retry remains disabled.
+- STAGE-039 Phase 4 is isolated closeout evidence, not whole-stage acceptance or production readiness. Persistent retry/dead-letter state, measured backpressure/fairness, production lock/lease/fencing, automatic lifecycle, process crash recovery, cleanup execution, PostgreSQL actions, raw source reads, and IDS business job execution remain absent. The selected Phase 2 values remain uncalibrated assumptions and production automatic retry remains disabled.
