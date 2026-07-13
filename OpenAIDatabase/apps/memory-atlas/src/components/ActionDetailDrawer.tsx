@@ -1,28 +1,7 @@
 import { X } from "lucide-react";
+import type { HomeActionDetail } from "../shared/atlas/contracts";
 
-export interface HomeActionDetail {
-  action_id: string;
-  title: string;
-  action_type: "continue" | "review" | "consolidate" | "explore" | "defer";
-  priority: string;
-  reason: string;
-  roi_score: number;
-  effort_cost: "low" | "medium" | "high";
-  urgency: "low" | "medium" | "high";
-  confidence: number;
-  source: string;
-  status: "proposed" | "review" | "blocked" | "done_safe";
-  evidence_count: number;
-  evidence_refs: string[];
-  matched_reason: string;
-  linked_topic_ids: string[];
-  linked_asset_ids: string[];
-  next_step: string;
-  recommended_time_window: "now" | "today" | "this_week" | "later";
-  proposal_hint: "proposal_recommended" | "proposal_not_needed";
-  rollback_hint: string;
-  proposal_only: true;
-}
+export type { HomeActionDetail } from "../shared/atlas/contracts";
 
 interface ActionDetailDrawerProps {
   action: HomeActionDetail | null;

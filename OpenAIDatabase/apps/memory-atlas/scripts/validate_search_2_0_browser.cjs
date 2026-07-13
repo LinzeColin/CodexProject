@@ -183,11 +183,11 @@ async function main() {
     });
     assertCondition(
       zeroRecovery.data === "search_2_0" &&
-        ["broaden query", "remove filter", "related topic", "stale/archive", "later review hint"].every((text) =>
+        ["扩大查询", "移除筛选", "相关主题", "过期/归档", "后续复盘提示"].every((text) =>
           zeroRecovery.text.includes(text),
         ),
       "stage7_phase1_browser_zero_recovery",
-      "Zero-result state offers broaden, filter relaxation, related-topic, archive and later-review recovery actions",
+      "Zero-result state offers Chinese query, filter, related-topic, archive and later-review recovery actions",
       "Zero-result recovery is incomplete",
       zeroRecovery,
     );

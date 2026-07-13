@@ -59,7 +59,9 @@ function requirePlaywright() {
 async function openDataMap(page) {
   await page.goto(targetUrl, { waitUntil: "networkidle", timeout: 30_000 });
   await page.evaluate((key) => window.localStorage.removeItem(key), proposalDraftStoreKey);
-  await page.getByRole("button", { name: /数据导图/ }).click({ timeout: 10_000 });
+  const dataMapEntry = page.locator('[data-nav-view="notion"]');
+  await dataMapEntry.waitFor({ state: "visible", timeout: 30_000 });
+  await dataMapEntry.click({ timeout: 10_000 });
   await page.waitForSelector(`[data-data-map-detail-panel="${detailPanelVersion}"]`, { timeout: 30_000 });
 }
 
@@ -229,6 +231,75 @@ async function main() {
       `Browser detail/proposal screenshot captured ${screenshotBytes} bytes`,
       "Browser detail/proposal screenshot is unexpectedly small",
       { screenshotPath, screenshotBytes },
+    );
+
+    await page.locator('[data-nav-view="search"]').click({ timeout: 10_000 });
+    const inspectorEditor = page.locator(".writeback-panel .proposal-editor");
+    await inspectorEditor.waitFor({ state: "visible", timeout: 30_000 });
+    const inspectorMount = await page.evaluate(() => {
+      const panel = document.querySelector(".writeback-panel");
+      const editor = panel?.querySelector(".proposal-editor");
+      return {
+        panelProposalOnly: panel?.getAttribute("data-proposal-only") || null,
+        panelActiveMemoryMutation: panel?.getAttribute("data-active-memory-mutation") || null,
+        editorProposalOnly: editor?.getAttribute("data-proposal-only") || null,
+        editorId: editor?.getAttribute("data-proposal-editor") || null,
+      };
+    });
+    assertCondition(
+      inspectorMount.panelProposalOnly === "true" &&
+        inspectorMount.panelActiveMemoryMutation === "false" &&
+        inspectorMount.editorProposalOnly === "true" &&
+        Boolean(inspectorMount.editorId),
+      "s04_p1_t2_inspector_proposal_editor_mount",
+      "The selected Data Guide node reaches the canonical ProposalEditor through the Search Inspector writeback panel",
+      "The Inspector ProposalEditor mount is missing or unsafe",
+      inspectorMount,
+    );
+
+    const inspectorImportance = inspectorEditor.getByLabel("调整 importance");
+    const inspectorImportanceValue = await inspectorImportance.inputValue();
+    await inspectorImportance.fill(inspectorImportanceValue === "0" ? "2" : "0");
+    await inspectorEditor.getByRole("button", { name: /保存本地 draft/ }).click({ timeout: 10_000 });
+    await page.waitForFunction((key) => {
+      const raw = window.localStorage.getItem(key);
+      if (!raw) return false;
+      const snapshot = JSON.parse(raw);
+      return snapshot.drafts?.some((draft) => draft.source_surface === "inspector_writeback_panel");
+    }, proposalDraftStoreKey, { timeout: 5_000 });
+    const inspectorDraftStore = await page.evaluate((key) => {
+      const raw = window.localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : null;
+    }, proposalDraftStoreKey);
+    const inspectorDraft = inspectorDraftStore?.drafts?.find(
+      (draft) => draft.source_surface === "inspector_writeback_panel",
+    );
+    assertCondition(
+      inspectorDraftStore?.schema_version === "memory_atlas_proposal_draft_store.v1" &&
+        inspectorDraft?.proposal_only === true &&
+        inspectorDraft?.requires_conflict_check === true &&
+        inspectorDraft?.requires_agent_or_human_apply === true &&
+        inspectorDraft?.changes?.some((change) => change.field === "importance"),
+      "s04_p1_t2_inspector_proposal_editor_draft",
+      "The Inspector mount saves a proposal-only draft with its distinct source surface",
+      "The Inspector ProposalEditor did not preserve its source or proposal-only safety contract",
+      {
+        sourceSurface: inspectorDraft?.source_surface,
+        proposalOnly: inspectorDraft?.proposal_only,
+        changeFields: inspectorDraft?.changes?.map((change) => change.field),
+      },
+    );
+    await page.evaluate((key) => window.localStorage.removeItem(key), proposalDraftStoreKey);
+
+    const inspectorScreenshotPath = path.join(outputDir, "inspector-proposal-editor.png");
+    await page.screenshot({ path: inspectorScreenshotPath, fullPage: false });
+    const inspectorScreenshotBytes = fs.statSync(inspectorScreenshotPath).size;
+    assertCondition(
+      inspectorScreenshotBytes > 20_000,
+      "s04_p1_t2_inspector_proposal_editor_screenshot",
+      `Inspector ProposalEditor screenshot captured ${inspectorScreenshotBytes} bytes`,
+      "Inspector ProposalEditor screenshot is unexpectedly small",
+      { screenshotPath: inspectorScreenshotPath, screenshotBytes: inspectorScreenshotBytes },
     );
 
     const actionableFailedResponses = failedResponses.filter((response) => {

@@ -8,7 +8,16 @@ const scriptDir = dirname(fileURLToPath(import.meta.url));
 const appRoot = resolve(scriptDir, "..");
 const repoRoot = resolve(appRoot, "../..");
 
-const appSource = readFileSync(resolve(appRoot, "src/App.tsx"), "utf8");
+const runtimeSourcePaths = [
+  "src/shared/atlas/contracts.ts",
+  "src/shared/atlas/inspectorWriteback.ts",
+  "src/features/settings/InspectorWorkspace.tsx",
+  "src/features/actions/WritebackProposalPanel.tsx",
+  "src/components/ProposalEditor.tsx",
+];
+const appSource = runtimeSourcePaths
+  .map((relativePath) => readFileSync(resolve(appRoot, relativePath), "utf8"))
+  .join("\n");
 const i18nPath = resolve(appRoot, "src/i18n/zh-CN.ts");
 const i18nSource = existsSync(i18nPath) ? readFileSync(i18nPath, "utf8") : "";
 const uiSource = `${appSource}\n${i18nSource}`;
@@ -98,8 +107,8 @@ function validateDebugSeparation(failures) {
     'data-debug-panel="true"',
   ];
   const copyRequired = [
-    "隐藏 Debug",
-    "显示 Debug",
+    "隐藏高级详情",
+    "显示高级详情",
   ];
   if (!hasAll(appSource, runtimeRequired) || !hasAll(uiSource, copyRequired)) failures.push("Debug panel is not default-closed, toggleable, or explicitly marked");
   const debugPanelIndex = appSource.indexOf('data-debug-panel="true"');
