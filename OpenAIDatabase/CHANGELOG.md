@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased - OpenAIDatabase Shared Memory RUN 1
+
+- Extended the existing personalization pipeline to deterministically generate ChatGPT, Codex, and Claude projections from one canonical source set, with a shared `bundle_id`, `canonical_source_hash`, and provider-neutral manifest.
+- Added a minimal `claude_personalization` route, a generated Claude projection capped at 4096 bytes, and focused coverage for shared identity, deterministic reruns, source-change invalidation, generated-only artifacts, and raw/private path rejection.
+- Independent final review found that bundle identity omitted auxiliary projection inputs and evaluator trusted manifest source proof. The premature accepted marker was revoked; v2 projection-input provenance and fail-closed source-proof recomputation were added, 22 targeted tests plus all renderer/governance/CI/diff gates passed, and a second independent review found no remaining P0/P1.
+
+This RUN does not execute RUN 2 or RUN 3, read or write raw/private data, prove independent real-agent consumption, commit, or push.
+
 This file records the current release line. Detailed stage-by-stage history remains
 recoverable from Git and is intentionally not duplicated here.
 

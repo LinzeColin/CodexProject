@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Build ChatGPT and Codex personalization exports from redacted derived data."""
+"""Build ChatGPT, Codex, and Claude personalization exports from redacted derived data."""
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import subprocess
@@ -11,7 +12,15 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from build_agent_context_pack import build_agent_context_pack, write_if_changed
+from build_agent_context_pack import (
+    CODEX_RECOMMENDATIONS,
+    CODEX_SNAPSHOT,
+    CORE_PROFILE,
+    DATA_SOURCE_REGISTRY,
+    MEMORY_ATLAS,
+    build_agent_context_pack,
+    write_if_changed,
+)
 
 
 CONTEXT_CONFIG = Path("config/context_sources/three_layer_context.json")
@@ -19,14 +28,36 @@ ROUTE_CONFIG = Path("config/context_sources/resource_routes.json")
 DEFAULT_OUTPUT_DIR = Path("data/derived/personalization")
 CHATGPT_EXPORT = DEFAULT_OUTPUT_DIR / "chatgpt_personalization.md"
 CODEX_EXPORT = DEFAULT_OUTPUT_DIR / "codex_personalization.md"
+CLAUDE_EXPORT = DEFAULT_OUTPUT_DIR / "claude_personalization.md"
 OTHER_AGENT_EXPORT = DEFAULT_OUTPUT_DIR / "other_agent_personalization.md"
 HUMAN_ZH_EXPORT = DEFAULT_OUTPUT_DIR / "personalization_prompt_human_zh.md"
 MACHINE_EXPORT = DEFAULT_OUTPUT_DIR / "personalization_export.json"
+MEMORY_BUNDLE_MANIFEST = DEFAULT_OUTPUT_DIR / "memory_bundle_manifest.json"
 EXPORT_LOG_DIR = Path("data/run_logs/export_runs")
 S12_P2_PROMPT_VERSION = "personalization_prompt.v1_2_s12_p2"
 S12_P2_TASK_ID = "MA-V12-S12P2"
 S12_P2_ACCEPTANCE_ID = "ACC-MA-V12-S12P2"
 S12_P2_STATUS = "phase_s12_p2_personalization_prompt_completed_pending_s12_p3"
+BUNDLE_SCHEMA_VERSION = "openai_database.memory_bundle_manifest.v2"
+PROJECTION_SCHEMA_VERSION = "openai_database.provider_projection.v1"
+BUNDLE_GENERATOR_VERSION = "openai_database.shared_memory_bundle.v2"
+SHARED_MEMORY_TASK_ID = "OAIDB-SM-P0-R1"
+SHARED_MEMORY_ACCEPTANCE_ID = "ACC-OAIDB-SM-P0-R1"
+CLAUDE_MAX_BYTES = 4096
+PROVIDER_EXPORTS = {
+    "chatgpt": CHATGPT_EXPORT,
+    "codex": CODEX_EXPORT,
+    "claude": CLAUDE_EXPORT,
+}
+FORBIDDEN_CANONICAL_PREFIXES = (
+    "data/raw",
+    "data/private",
+    "data/raw_encrypted",
+    "data/private_imports",
+    "private_exports",
+    "exports/private",
+)
+LOCAL_PATH_MARKERS = ("/Users/", "C:\\Users\\")
 SOURCE_REPORTS = [
     "data/derived/personalization/personalization_export.json",
     "data/derived/behavior_intelligence/events.json",
@@ -36,6 +67,13 @@ SOURCE_REPORTS = [
     "data/derived/behavior_intelligence/decision_debt_ledger.json",
     "data/derived/agent_collaboration/agent_collaboration_quality_report.json",
 ]
+AGENT_CONTEXT_INPUTS = (
+    CORE_PROFILE,
+    CODEX_RECOMMENDATIONS,
+    CODEX_SNAPSHOT,
+    MEMORY_ATLAS,
+    DATA_SOURCE_REGISTRY,
+)
 
 
 def now_utc() -> str:
@@ -86,6 +124,10 @@ def equivalent_payload_without_generated_at(left: dict[str, Any], right: dict[st
     right_copy = dict(right)
     left_copy.pop("generated_at", None)
     right_copy.pop("generated_at", None)
+    left_copy.pop("projection_hashes", None)
+    right_copy.pop("projection_hashes", None)
+    left_copy.pop("memory_bundle_manifest", None)
+    right_copy.pop("memory_bundle_manifest", None)
     return left_copy == right_copy
 
 
@@ -110,6 +152,100 @@ def git_head(database_dir: Path) -> str:
         ).strip()
     except Exception:
         return "UNKNOWN_NO_GIT_HEAD"
+
+
+def git_head_or_none(database_dir: Path) -> str | None:
+    head = git_head(database_dir)
+    return None if head == "UNKNOWN_NO_GIT_HEAD" else head
+
+
+def git_working_tree_dirty(database_dir: Path) -> bool:
+    try:
+        result = subprocess.run(
+            ["git", "status", "--porcelain", "--untracked-files=no", "--", "."],
+            cwd=database_dir,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+    except Exception:
+        return False
+    return result.returncode == 0 and bool(result.stdout.strip())
+
+
+def sha256_value(payload: bytes | str) -> str:
+    data = payload.encode("utf-8") if isinstance(payload, str) else payload
+    return "sha256:" + hashlib.sha256(data).hexdigest()
+
+
+def stable_json(payload: Any) -> str:
+    return json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
+def canonical_source_paths(context_config: dict[str, Any]) -> list[str]:
+    paths = {rel(CONTEXT_CONFIG)}
+    layers = context_config.get("layers", [])
+    if not isinstance(layers, list):
+        layers = []
+    for layer in layers:
+        if not isinstance(layer, dict):
+            continue
+        for value in layer.get("canonical_files", []):
+            if not isinstance(value, str) or not value.strip():
+                continue
+            normalized = Path(value).as_posix()
+            if Path(normalized).is_absolute() or ".." in Path(normalized).parts:
+                raise ValueError(f"canonical source must be repository-relative: {value}")
+            if normalized.startswith(FORBIDDEN_CANONICAL_PREFIXES):
+                raise ValueError(f"raw/private path cannot enter shared memory bundle: {normalized}")
+            paths.add(normalized)
+    return sorted(paths)
+
+
+def projection_input_paths(context_config: dict[str, Any]) -> list[str]:
+    """Return every repository file whose state can affect provider projections."""
+    paths = set(canonical_source_paths(context_config))
+    paths.add(rel(ROUTE_CONFIG))
+    paths.update(rel(path) for path in AGENT_CONTEXT_INPUTS)
+    paths.update(path for path in SOURCE_REPORTS if path != rel(MACHINE_EXPORT))
+    return sorted(paths)
+
+
+def build_source_records(database_dir: Path, paths: list[str]) -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
+    for relative in paths:
+        path = database_dir / relative
+        records.append(
+            {
+                "path": relative,
+                "exists": path.is_file(),
+                "content_hash": sha256_value(path.read_bytes()) if path.is_file() else None,
+            }
+        )
+    return records
+
+
+def build_bundle_identity(database_dir: Path, context_config: dict[str, Any]) -> dict[str, Any]:
+    source_records = build_source_records(database_dir, canonical_source_paths(context_config))
+    canonical_source_hash = sha256_value(stable_json(source_records))
+    projection_input_records = build_source_records(database_dir, projection_input_paths(context_config))
+    projection_input_hash = sha256_value(stable_json(projection_input_records))
+    identity_contract = {
+        "schema_version": BUNDLE_SCHEMA_VERSION,
+        "generator_version": BUNDLE_GENERATOR_VERSION,
+        "canonical_source_hash": canonical_source_hash,
+        "projection_input_hash": projection_input_hash,
+        "source_files": [record["path"] for record in source_records],
+        "projection_input_files": [record["path"] for record in projection_input_records],
+        "providers": sorted(PROVIDER_EXPORTS),
+    }
+    return {
+        "bundle_id": sha256_value(stable_json(identity_contract)),
+        "canonical_source_hash": canonical_source_hash,
+        "source_records": source_records,
+        "projection_input_hash": projection_input_hash,
+        "projection_input_records": projection_input_records,
+    }
 
 
 def compact_item(item: dict[str, Any]) -> str:
@@ -140,6 +276,7 @@ def build_export_payload(database_dir: Path) -> dict[str, Any]:
     pack = build_agent_context_pack(database_dir)
     context_config = read_json(database_dir / CONTEXT_CONFIG)
     route_config = read_json(database_dir / ROUTE_CONFIG)
+    bundle_identity = build_bundle_identity(database_dir, context_config)
     sync_targets = context_config.get("sync_required_targets", [])
     log_categories = context_config.get("run_log_categories", [])
     layers = context_config.get("layers", [])
@@ -159,7 +296,18 @@ def build_export_payload(database_dir: Path) -> dict[str, Any]:
         "prompt_version": S12_P2_PROMPT_VERSION,
         "generated_at": now_utc(),
         "source": "redacted_derived_openai_database_context",
-        "targets": ["chatgpt", "codex", "other_agent"],
+        "targets": ["chatgpt", "codex", "claude", "other_agent"],
+        "bundle_task_id": SHARED_MEMORY_TASK_ID,
+        "bundle_acceptance_id": SHARED_MEMORY_ACCEPTANCE_ID,
+        "bundle_id": bundle_identity["bundle_id"],
+        "canonical_source_hash": bundle_identity["canonical_source_hash"],
+        "projection_input_hash": bundle_identity["projection_input_hash"],
+        "bundle_generator_version": BUNDLE_GENERATOR_VERSION,
+        "bundle_manifest": rel(MEMORY_BUNDLE_MANIFEST),
+        "canonical_source_files": [record["path"] for record in bundle_identity["source_records"]],
+        "canonical_source_records": bundle_identity["source_records"],
+        "projection_input_files": [record["path"] for record in bundle_identity["projection_input_records"]],
+        "projection_input_records": bundle_identity["projection_input_records"],
         "source_reports": SOURCE_REPORTS,
         "source_report_freshness": source_report_freshness(database_dir),
         "source_files": {
@@ -174,6 +322,7 @@ def build_export_payload(database_dir: Path) -> dict[str, Any]:
             "startup": route_by_intent(route_config, "startup"),
             "chatgpt_personalization": route_by_intent(route_config, "chatgpt_personalization"),
             "codex_personalization": route_by_intent(route_config, "codex_personalization"),
+            "claude_personalization": route_by_intent(route_config, "claude_personalization"),
             "project_history": route_by_intent(route_config, "project_history"),
             "taste_profile": route_by_intent(route_config, "taste_profile"),
         },
@@ -323,6 +472,7 @@ def build_prompts(latest_inputs: dict[str, Any]) -> dict[str, dict[str, Any]]:
     targets = {
         "chatgpt": ("ChatGPT", rel(CHATGPT_EXPORT)),
         "codex": ("Codex", rel(CODEX_EXPORT)),
+        "claude": ("Claude Code", rel(CLAUDE_EXPORT)),
         "other_agent": ("other agent", rel(OTHER_AGENT_EXPORT)),
     }
     prompts: dict[str, dict[str, Any]] = {}
@@ -341,15 +491,20 @@ def build_prompts(latest_inputs: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return prompts
 
 
-def markdown_header(title: str, payload: dict[str, Any]) -> list[str]:
+def markdown_header(title: str, payload: dict[str, Any], provider: str = "provider-neutral") -> list[str]:
     return [
         f"# {title}",
         "",
+        f"- schema_version: {PROJECTION_SCHEMA_VERSION}",
+        f"- provider: {provider}",
+        f"- bundle_id: {payload['bundle_id']}",
+        f"- canonical_source_hash: {payload['canonical_source_hash']}",
         f"- task_id: {payload.get('task_id', S12_P2_TASK_ID)}",
         f"- acceptance_id: {payload.get('acceptance_id', S12_P2_ACCEPTANCE_ID)}",
         f"- prompt_version: {payload.get('prompt_version', S12_P2_PROMPT_VERSION)}",
         f"- generated_at: {payload['generated_at']}",
         "- source: OpenAIDatabase redacted derived context",
+        "- artifact_contract: Derived / Read-only / Regenerate, do not hand edit",
         "- raw_private_data_included: false",
         "- plaintext_secrets_included: false",
         "",
@@ -360,7 +515,7 @@ def render_prompt_target(payload: dict[str, Any], target_id: str) -> str:
     prompt = payload.get("prompts", {}).get(target_id, {})
     target_label = str(prompt.get("target_label") or target_id)
     machine_text = str(prompt.get("machine_copyable_text") or "")
-    lines = markdown_header(f"{target_label} Personalization Prompt", payload)
+    lines = markdown_header(f"{target_label} Personalization Prompt", payload, target_id)
     lines.extend(
         [
             "## 中文人类说明",
@@ -431,6 +586,53 @@ def render_codex(payload: dict[str, Any]) -> str:
     return render_prompt_target(payload, "codex")
 
 
+def bounded_text(value: Any, max_chars: int = 240) -> str:
+    text = compact_text(value)
+    return text if len(text) <= max_chars else text[: max_chars - 1].rstrip() + "…"
+
+
+def render_claude(payload: dict[str, Any]) -> str:
+    profile_items = payload.get("profile", {}).get("core_profile_items", [])
+    if not isinstance(profile_items, list):
+        profile_items = []
+    lines = markdown_header("Claude Code Personalization Projection", payload, "claude")
+    lines.extend(
+        [
+            "## 冷启动协议",
+            "",
+            "- 默认中文回复；代码、API、库名、错误和英文项目语境可保留英文。",
+            "- 准确、真实、可执行、证据优先；不把推断、进度或测试写成已验证事实。",
+            "- 每次只处理一个项目、一个 Task、一个 Acceptance；项目状态只读该项目 canonical governance。",
+            "- OpenAIDatabase 是长期用户记忆与 provider projection 的唯一持久控制面。",
+            "- Claude auto memory、聊天上下文和本文件都不是 canonical truth。",
+            "- 普通业务项目 run 不跨项目写 OpenAIDatabase；memory sync 必须独立运行。",
+            "",
+            "## 稳定画像摘要",
+            "",
+            *[f"- {bounded_text(item)}" for item in profile_items[:6]],
+            *([] if profile_items else ["- 当前没有可用的 reviewed core profile 摘要。"]),
+            "",
+            "## Memory Route",
+            "",
+            "- 默认只读：`data/derived/personalization/claude_personalization.md`。",
+            "- 更深画像：按需读取 `data/derived/profile/CORE_PROFILE.md`。",
+            "- 项目连续性：按需读取 `data/derived/project_index/PROJECT_INDEX.md`，并以项目治理文件校验当前状态。",
+            "- 决策上下文：按需读取 `data/derived/decision_log/DECISION_LOG.md`。",
+            "",
+            "## 隐私与写回边界",
+            "",
+            "- 不读取或复制 raw/private、cookie、session、token、browser profile 或 plaintext secret。",
+            "- projection 只读且只能由生成器重建；长期记忆更新必须先修改 mapped canonical source。",
+            "- 未经明确 memory-sync task，不写回 OpenAIDatabase。",
+            "",
+        ]
+    )
+    rendered = "\n".join(lines)
+    if len(rendered.encode("utf-8")) > CLAUDE_MAX_BYTES:
+        raise ValueError(f"Claude projection exceeds {CLAUDE_MAX_BYTES} bytes")
+    return rendered
+
+
 def render_other_agent(payload: dict[str, Any]) -> str:
     return render_prompt_target(payload, "other_agent")
 
@@ -443,7 +645,7 @@ def render_human_zh(payload: dict[str, Any]) -> str:
         [
             "## 结论",
             "",
-            f"S12 P2 已生成 ChatGPT、Codex、other agent 可用的最新 Personalization Prompt。状态为 `{S12_P2_STATUS}`。",
+            f"已生成 ChatGPT、Codex、Claude、other agent 可用的最新 Personalization Prompt；共享 identity 由 `{MEMORY_BUNDLE_MANIFEST.as_posix()}` 证明。",
             "",
             "本文件是中文人类说明；每个目标文件都包含 `机器可复制文本` fenced block，可直接复制到对应 agent 的 personalization 或启动上下文。",
             "",
@@ -469,8 +671,10 @@ def render_human_zh(payload: dict[str, Any]) -> str:
             "",
             f"- ChatGPT: `{CHATGPT_EXPORT.as_posix()}`",
             f"- Codex: `{CODEX_EXPORT.as_posix()}`",
+            f"- Claude: `{CLAUDE_EXPORT.as_posix()}`",
             f"- other agent: `{OTHER_AGENT_EXPORT.as_posix()}`",
             f"- machine: `{MACHINE_EXPORT.as_posix()}`",
+            f"- bundle manifest: `{MEMORY_BUNDLE_MANIFEST.as_posix()}`",
             "",
             "## 机器可复制文本",
             "",
@@ -492,6 +696,76 @@ def render_human_zh(payload: dict[str, Any]) -> str:
         ]
     )
     return "\n".join(lines)
+
+
+def render_provider_outputs(payload: dict[str, Any]) -> dict[str, str]:
+    return {
+        "chatgpt": render_chatgpt(payload),
+        "codex": render_codex(payload),
+        "claude": render_claude(payload),
+    }
+
+
+def build_memory_bundle_manifest(
+    database_dir: Path,
+    payload: dict[str, Any],
+    provider_outputs: dict[str, str],
+) -> dict[str, Any]:
+    projections = {
+        provider: {
+            "path": rel(PROVIDER_EXPORTS[provider]),
+            "projection_hash": sha256_value(provider_outputs[provider]),
+        }
+        for provider in sorted(PROVIDER_EXPORTS)
+    }
+    return {
+        "schema_version": BUNDLE_SCHEMA_VERSION,
+        "bundle_id": payload["bundle_id"],
+        "canonical_source_hash": payload["canonical_source_hash"],
+        "generator_version": BUNDLE_GENERATOR_VERSION,
+        "generated_at": payload["generated_at"],
+        "repo_head": git_head_or_none(database_dir),
+        "working_tree_dirty": git_working_tree_dirty(database_dir),
+        "source_files": payload["canonical_source_files"],
+        "source_records": payload["canonical_source_records"],
+        "projection_input_hash": payload["projection_input_hash"],
+        "projection_input_files": payload["projection_input_files"],
+        "projection_input_records": payload["projection_input_records"],
+        "projections": projections,
+        "artifact_contract": "Derived / Read-only / Regenerate, do not hand edit",
+        "raw_private_data_included": False,
+        "plaintext_secrets_included": False,
+        "local_absolute_paths_included": False,
+    }
+
+
+def forbidden_patterns(database_dir: Path) -> list[str]:
+    harness = read_json(database_dir / "config/evaluation/personalization_harness.json")
+    values = harness.get("forbidden_plaintext_patterns", [])
+    return [str(value) for value in values if isinstance(value, str) and value]
+
+
+def validate_generated_artifacts(
+    database_dir: Path,
+    provider_outputs: dict[str, str],
+    manifest: dict[str, Any],
+) -> None:
+    combined = "\n".join(provider_outputs.values()) + "\n" + stable_json(manifest)
+    for pattern in forbidden_patterns(database_dir):
+        if pattern in combined:
+            raise ValueError(f"forbidden plaintext pattern in generated shared-memory artifacts: {pattern}")
+    for marker in LOCAL_PATH_MARKERS:
+        if marker in combined:
+            raise ValueError(f"local absolute path in generated shared-memory artifacts: {marker}")
+    for relative in [*manifest["source_files"], *manifest["projection_input_files"]]:
+        if Path(relative).is_absolute() or ".." in Path(relative).parts:
+            raise ValueError(f"manifest source path must be repository-relative: {relative}")
+        if relative.startswith(FORBIDDEN_CANONICAL_PREFIXES):
+            raise ValueError(f"manifest cannot reference raw/private source: {relative}")
+    if set(manifest["projections"]) != set(PROVIDER_EXPORTS):
+        raise ValueError("manifest must contain exactly ChatGPT, Codex, and Claude projections")
+    if len(provider_outputs["claude"].encode("utf-8")) > CLAUDE_MAX_BYTES:
+        raise ValueError(f"Claude projection exceeds {CLAUDE_MAX_BYTES} bytes")
 
 
 def append_export_log(database_dir: Path, payload: dict[str, Any], output_files: list[str]) -> Path:
@@ -556,13 +830,32 @@ def append_export_log(database_dir: Path, payload: dict[str, Any], output_files:
 def write_exports(database_dir: Path) -> dict[str, Any]:
     database_dir = database_dir.resolve()
     payload = build_export_payload(database_dir)
-    output_files = [rel(HUMAN_ZH_EXPORT), rel(CHATGPT_EXPORT), rel(CODEX_EXPORT), rel(OTHER_AGENT_EXPORT), rel(MACHINE_EXPORT)]
+    provider_outputs = render_provider_outputs(payload)
+    projection_hashes = {
+        provider: sha256_value(text)
+        for provider, text in sorted(provider_outputs.items())
+    }
+    payload["projection_hashes"] = projection_hashes
+    payload["memory_bundle_manifest"] = rel(MEMORY_BUNDLE_MANIFEST)
+    manifest = build_memory_bundle_manifest(database_dir, payload, provider_outputs)
+    validate_generated_artifacts(database_dir, provider_outputs, manifest)
+    output_files = [
+        rel(HUMAN_ZH_EXPORT),
+        rel(CHATGPT_EXPORT),
+        rel(CODEX_EXPORT),
+        rel(CLAUDE_EXPORT),
+        rel(OTHER_AGENT_EXPORT),
+        rel(MACHINE_EXPORT),
+        rel(MEMORY_BUNDLE_MANIFEST),
+    ]
     changed = [
         write_text_if_changed(database_dir / HUMAN_ZH_EXPORT, render_human_zh(payload)),
-        write_text_if_changed(database_dir / CHATGPT_EXPORT, render_chatgpt(payload)),
-        write_text_if_changed(database_dir / CODEX_EXPORT, render_codex(payload)),
+        write_text_if_changed(database_dir / CHATGPT_EXPORT, provider_outputs["chatgpt"]),
+        write_text_if_changed(database_dir / CODEX_EXPORT, provider_outputs["codex"]),
+        write_text_if_changed(database_dir / CLAUDE_EXPORT, provider_outputs["claude"]),
         write_text_if_changed(database_dir / OTHER_AGENT_EXPORT, render_other_agent(payload)),
         write_text_if_changed(database_dir / MACHINE_EXPORT, json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n"),
+        write_text_if_changed(database_dir / MEMORY_BUNDLE_MANIFEST, json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n"),
     ]
     log_path = None
     if any(changed):
@@ -573,6 +866,9 @@ def write_exports(database_dir: Path) -> dict[str, Any]:
         "acceptance_id": S12_P2_ACCEPTANCE_ID,
         "prompt_version": S12_P2_PROMPT_VERSION,
         "generated_at": payload["generated_at"],
+        "bundle_id": payload["bundle_id"],
+        "canonical_source_hash": payload["canonical_source_hash"],
+        "projection_hashes": projection_hashes,
         "outputs": output_files,
         "sends_to_chatgpt": False,
         "raw_mutation": False,
@@ -581,7 +877,7 @@ def write_exports(database_dir: Path) -> dict[str, Any]:
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Build ChatGPT and Codex personalization exports.")
+    parser = argparse.ArgumentParser(description="Build ChatGPT, Codex, and Claude personalization exports.")
     parser.add_argument("--database-dir", type=Path, default=Path("."), help="OpenAIDatabase repository root.")
     return parser.parse_args(argv)
 

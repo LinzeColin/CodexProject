@@ -4,22 +4,23 @@
 
 - product version: 0.2.0
 - product version status: provisional
-- current phase: CF-L2 - MemoryAtlas public-safe deployment
-- current gate: ACC-CF-L2-20260710-PASSED-ACCESS-PROTECTED
-- confirmed iterations: 12
-- reconstructed development events: 19
-- current task: CF-L2-20260710 completed by protected MemoryAtlas Pages deployment evidence; current Workers Static Assets config remains reproducible but is not required to relabel the verified Pages surface
+- current phase: SM-P0-RUN1 - provider-neutral shared-memory adapter
+- current gate: ACC-OAIDB-SM-P0-R1-PASSED-LOCAL
+- confirmed iterations: 13
+- reconstructed development events: 24
+- current task: OAIDB-SM-P0-R1 is accepted locally after the premature acceptance was revoked, two P1 provenance/evaluator defects were corrected, full state-sensitive gates passed, and a second independent review found no new P0/P1; owner review remains required before any later commit/push or RUN 2
 - blockers: remaining complex branch rules, TypeScript writeback semantics, heuristic calibration evidence, owner privacy signoff, and production memory safety are HUMAN_REVIEW_REQUIRED or UNKNOWN; S3PDT01 is synthetic privacy-boundary evidence only
 
 Confirmed iterations are not inferred from commit count. This ledger currently
-records twelve confirmed iterations: the baseline run, three TASK-OAI-C-002
+records thirteen confirmed iterations: the baseline run, three TASK-OAI-C-002
 follow-up governance and personalization hardening runs, the semantic
 extractor rollout run, the S3PDT01 synthetic privacy-boundary run, the
 TASK-OAI-D-001 Memory Atlas local release/preflight run, and the TASK-OAI-D-003
 OpenAIDatabase CI evidence-schema repair run, the macdata proM2 setup run, and
 the TASK-OAI-D-004 Memory Atlas Phase 1 live URL readiness gate repair run, plus
 the CF-L2 public-safe build/privacy/dry-run iteration, and the protected
-MemoryAtlas live-evidence reconciliation from remote main.
+MemoryAtlas live-evidence reconciliation from remote main, and the corrected
+OAIDB-SM-P0-R1 provider-neutral shared-memory adapter acceptance.
 
 ## Phase Matrix
 
@@ -27,7 +28,7 @@ MemoryAtlas live-evidence reconciliation from remote main.
 | --- | --- | --- | --- |
 | A | Discovery and baseline | completed | `MODEL_SPEC.md`, registries, scoped git log |
 | B | Model and data specification | in_progress | `GOV-SEMANTIC-OAIDB-001` partial machine semantic coverage; `TASK-OAI-B-001` calibration evidence gap |
-| C | Implementation | completed | Existing app implementation plus TASK-OAI-C-002 personalization architecture, route, export, evaluation harness, and non-empty four-category run-log evidence |
+| C | Implementation | completed | OAIDB-SM-P0-R1 complete projection-input provenance, evaluator source-proof recomputation, full local gates, and second independent review passed |
 | D | Verification and hardening | in_progress | TASK-OAI-D-001 local release/visual/acceptance/Cloudflare preflight passed; TASK-OAI-D-004 local readiness gate repair passed; TASK-OAI-D-002 protected Cloudflare Pages deploy and Access verification passed |
 | E | Delivery and operation | completed for governance baseline | OpenAIDatabase project validator passed and `governance/projects.yaml` ci_mode is required |
 
@@ -301,3 +302,26 @@ RECONSTRUCTED development events only, not confirmed iterations.
 - Model and parameter boundary: no memory formula, model, derived snapshot, raw archive, import, session, cookie, secret, or writeback behavior changed.
 - Rollback: restore the prior Wrangler config and remove the HomeHub return link while preserving Access and all private data boundaries.
 - Next gate: if migrating the verified Pages surface to the current Workers Static Assets config, preserve owner-allowlist Access on every reachable hostname and re-run challenge plus allowed-user smoke checks before cutover.
+
+### ITER-20260713-OAIDB-SM-P0-R1
+
+- date: 2026-07-13
+- fact level: VERIFIED for corrected local implementation and gate evidence; prior local acceptance was revoked before corrected acceptance
+- version before/after: `0.2.0 provisional` / `0.2.0 provisional`
+- base commit: `b6f2dc24ff0e49f3174b5a53bf72ed192b9939c8`
+- result commit: `PENDING` because RUN 1 explicitly stops before commit and push
+- task IDs: `OAIDB-SM-P0-R1`, `ACC-OAIDB-SM-P0-R1`
+- objective: deterministically generate ChatGPT, Codex, and Claude provider projections from the existing OpenAIDatabase canonical source set, with one shared bundle identity and a minimal Claude route.
+- assumptions: provider projections and the manifest remain derived/read-only; project status remains in project governance; RUN 2-3 and real-agent cold-start consumption are separate runs.
+- files read: RUN 1 task contract, root/project agent rules, routed Claude resource output, current personalization implementation, targeted tests, and current OpenAIDatabase governance/evidence schemas.
+- files changed: targeted OpenAIDatabase config, generator/evaluator, derived personalization artifacts, focused test, redacted run evidence, canonical governance, generated governance views, and the three rendered Chinese human entry files.
+- model changes: MOD-011 now documents deterministic three-provider projection generation and shared identity; no new model or external service is added.
+- parameter changes: PARAM-085 adds Claude/manifest outputs; PARAM-087 adds the Claude route while retaining the existing maintenance intent. Commit-bound semantic verification remains HUMAN_REVIEW_REQUIRED until a later authorized commit-bound run.
+- commands: generator `--help`; two consecutive corrected generator runs; SHA-256 of three projections and manifest after each run; 22 targeted unittests; evaluator; Claude route; official renderer and check-render; changed-only semantic validation; changed-only CI; `git diff --check`.
+- test results: the premature 20-test acceptance was revoked after independent P1 review. Corrected rerun PASS: identical two-run hashes; 22 tests OK; evaluator failures empty with source proof recomputed; Claude route PASS; check-render drift/reference issues zero; semantic governance errors/warnings zero; CI SHIP; diff check PASS; second independent review found no new P0/P1.
+- successes: bundle identity binds canonical and all 23 actual projection input records; three exact projection hashes are manifest-bound; evaluator independently rejects stale/tampered source proof; Claude projection is 3048 bytes; source-change, auxiliary-input change, privacy path rejection, generated-only, and regression behavior are covered by tests.
+- failures: recovered P1 findings were missing auxiliary-input identity provenance and non-recomputing evaluator source proof. The first corrected full gate attempt also fail-closed on an invalid evidence `PENDING` result enum; the evidence row was corrected and the complete suite reran successfully.
+- decisions: preserve the retraction as append-only history, accept corrected RUN 1 locally only after all state-sensitive gates and independent rereview pass, and stop before commit/push or RUN 2.
+- remaining risks: pattern scans are guardrails rather than complete secret scanners; formal project/roadmap schemas do not fully describe the current Lean canonical IDs; real Codex/Claude/ChatGPT consumption belongs to RUN 2-3.
+- rollback: remove the new Claude projection/manifest/route/test and revert generator, evaluator, derived outputs, and RUN 1 governance evidence to the RUN 0A baseline.
+- next step: owner reviews the uncommitted OpenAIDatabase-only diff and evidence; any commit/push decision or RUN 2 execution is a separate authorized action.
