@@ -164,7 +164,7 @@
     }
   },
   "raw_private_data_included": false,
-  "repo_head": "b6f2dc24ff0e49f3174b5a53bf72ed192b9939c8",
+  "repo_head": "7ddd1853f808095bb937e14417c630f1bf94dc10",
   "schema_version": "openai_database.memory_bundle_manifest.v2",
   "source_files": [
     "config/context_sources/three_layer_context.json",
