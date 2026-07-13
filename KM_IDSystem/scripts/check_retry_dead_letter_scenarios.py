@@ -75,16 +75,16 @@ EXPECTED_UPSTREAM = {
     "stage039_phase2_contract": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/"
         "stage039_retry_dead_letter_runtime_contract.json",
-        "237812d5fc16cd59e09d7261709d36ba6c98cd64340c98908112dfc85c9a39b9",
+        "5fc9b49b0ede0fdbc87311f3280ffc69e8ec8e59f219b17a04a2ccae1e9124c0",
     ),
     "stage039_phase2_checker": (
         "KM_IDSystem/scripts/check_retry_dead_letter_runtime.py",
-        "f549149e70a532ab61c1d639d9176f1ea9b8a5f0fc5be5dee228fa1a1db032f0",
+        "5f7f47e6710d049177e51911df73f5e5df97fa9097370ebc726009b80ad7557d",
     ),
     "stage039_phase2_evidence": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
         "STAGE039_PHASE2_RETRY_DEAD_LETTER_SLICE.md",
-        "ac505e82d1bd915f4337ea6450d18cdee568c0be9eeb48b801003f74fcd44989",
+        "3fdae965992a815819f1018f6e74036bc41d7c688acfcad16ada911ace4add79",
     ),
     "stage038_scenario_contract": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/worker_queue_baseline/"

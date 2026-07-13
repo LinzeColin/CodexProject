@@ -72,7 +72,7 @@ EXPECTED_UPSTREAM_BINDINGS = {
     "phase1_scope_boundary": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
         "STAGE039_PHASE1_RETRY_DEAD_LETTER_SCOPE_BOUNDARY.md",
-        "4c647ad0bf200326f15d9aa5c339a41c14f9c0fb70bf1ff9b1e3ec699a8c44b4",
+        "8729bbd4fba3657396a38d5244569f4a572d1f82617ee61c7fe0765f4d9a0b79",
     ),
     "stage037_state_checker": (
         "KM_IDSystem/scripts/check_job_state_model.py",
@@ -300,7 +300,7 @@ def validate_runtime_contract(contract: Any) -> dict[str, bool]:
             and policy.get("parameter_source")
             == "STAGE039_PHASE2_LOCAL_ENGINEERING_SAFETY_BOUNDARY"
             and bool(policy.get("selection_rationale"))
-            and policy.get("fact_level") == "ASSUMPTION"
+            and policy.get("fact_level") == "PROPOSED"
             and policy.get("production_calibrated") is False
             and policy.get("production_calibration_required") is True
             and policy.get("rollback_policy_version") == "NO_AUTOMATIC_RETRY"

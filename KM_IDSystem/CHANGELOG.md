@@ -1,5 +1,11 @@
 # Changelog
 
+## IDS v0.1 STAGE-039 Review - 2026-07-13
+
+- Completed the local whole-stage review under `ACC-STAGE-039` and repaired four Important findings: invalid governance status/fact enums and missing calibration-task links, total registry count drift, overclaimed terminal manual-rerun job creation wording, and absent Git-index-bound review evidence.
+- Registered the Stage039 policy as `planned` / `PROPOSED`, linked unresolved production calibration to `TASK-OPME-B-001`, and separated total model/formula/parameter counts `8/8/55` from active counts `7/7/49`.
+- Added the fail-closed Stage039 review checker, tests, reviewed-local batch/roadmap/event evidence, and next gate `IDS-STAGE040-P1-GATE`. Production runtime, raw metadata access, fake IDS data, GitHub upload, batch gates, Stage040 execution, and app reinstall remain disabled.
+
 ## IDS v0.1 STAGE-039 Phase 4 - 2026-07-13
 
 - Added a hash-bound Phase 4 delivery contract and stdout-only checker that expose the exact Stage037 8-type/11-state/21-transition graph, six failure decisions, and the actual isolated three-attempt retry/dead-letter history ending at `DEAD_LETTERED` with `retry_count=2`.

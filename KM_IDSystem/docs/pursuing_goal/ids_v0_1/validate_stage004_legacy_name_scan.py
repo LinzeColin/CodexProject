@@ -138,6 +138,13 @@ def classify_hit(rel_path: str, line: str, pattern_name: str) -> str:
         "KM_IDSystem/scripts/generate_app_icon.py",
     } and pattern_name == "legacy_asset_opmeicon":
         return "allowed_legacy_context"
+    if (
+        rel_path
+        == "KM_IDSystem/scripts/check_retry_dead_letter_stage_review.py"
+        and pattern_name == "legacy_opme_word"
+        and re.search(r"\b(?:TASK|FEAT)-OPME-[A-Z0-9-]+\b", line)
+    ):
+        return "allowed_legacy_context"
     return "active_display_debt"
 
 

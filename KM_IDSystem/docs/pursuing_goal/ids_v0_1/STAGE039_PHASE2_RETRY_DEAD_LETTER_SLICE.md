@@ -23,10 +23,10 @@ before the slice can execute.
 
 | Parameter | Value | Reason | Fact level |
 |---|---:|---|---|
-| `max_retries` | `2` | Caps one logical job at three attempts and bounds duplicate load. | `ASSUMPTION` |
-| `backoff_schedule_seconds` | `[5, 30]` | Separates a short transient retry from a sustained transient retry without a busy loop. | `ASSUMPTION` |
-| `jitter_policy` | `DETERMINISTIC_BOUNDED_HASH_JITTER_V1` | Keeps tests and idempotent decisions deterministic while spreading eligibility times. | `ASSUMPTION` |
-| retryable allowlist | `TRANSIENT_DEPENDENCY_UNAVAILABLE`, `TRANSIENT_OPERATION_TIMEOUT` | Exact safe-code matching only; unknown codes default to no automatic retry. | `ASSUMPTION` |
+| `max_retries` | `2` | Caps one logical job at three attempts and bounds duplicate load. | `PROPOSED` |
+| `backoff_schedule_seconds` | `[5, 30]` | Separates a short transient retry from a sustained transient retry without a busy loop. | `PROPOSED` |
+| `jitter_policy` | `DETERMINISTIC_BOUNDED_HASH_JITTER_V1` | Keeps tests and idempotent decisions deterministic while spreading eligibility times. | `PROPOSED` |
+| retryable allowlist | `TRANSIENT_DEPENDENCY_UNAVAILABLE`, `TRANSIENT_OPERATION_TIMEOUT` | Exact safe-code matching only; unknown codes default to no automatic retry. | `PROPOSED` |
 
 These values are a conservative local engineering safety boundary for the
 isolated slice. They are not production-calibrated and are not derived from
@@ -35,10 +35,10 @@ against approved operational evidence is required before any later production
 use. Rollback is `NO_AUTOMATIC_RETRY`.
 
 The policy is registered as `MOD-008`, `FORM-008`, and `PARAM-050..055` in
-the project governance facts and legacy registries. Its status is
-`isolated_non_production`, so the existing `7` active models, `7` active
-formulas, and `49` active parameters remain unchanged. The owner-rendered
-`模型参数文件.md` exposes the six new assumption-level values without
+the project governance facts and legacy registries. Its status is `planned`,
+so the existing `7` active models, `7` active formulas, and `49` active
+parameters remain unchanged. The owner-rendered `模型参数文件.md` exposes the
+six new proposal-level values without
 misrepresenting them as production-active.
 
 The delay formula is:
@@ -62,8 +62,9 @@ The only job input is the Git-tracked control reference
 Stage038 performs one isolated in-memory transport-prerequisite admission with
 its reviewed `max_retries=0` envelope. Stage039 preserves that queue-entry ref
 but derives a different control `job_id` from the Stage038 job ID, policy
-version, and acceptance ID. The Stage039 policy job is therefore created with
-`max_retries=2`; no existing job identity or immutable retry budget is mutated.
+version, and acceptance ID. The isolated Stage039 in-memory policy snapshot is
+therefore initialized with `max_retries=2`; no persistent job is created and no
+existing job identity or immutable retry budget is mutated.
 Stage037 then evaluates candidate-only CAS transitions for:
 
 1. `QUEUED -> CLAIMED -> RUNNING`;
@@ -92,8 +93,8 @@ No source body is copied into retry or dead-letter metadata.
 | exhausted budget | `DEAD_LETTER` | `DEAD_LETTERED` | `需要人工处理` |
 
 Message substrings never classify a failure. Terminal states remain immutable.
-Manual rerun still requires a new linked job under the Phase 1 identity
-contract; this Phase does not implement terminal rerun creation.
+Manual rerun still requires a new linked-job identity under the Phase 1
+contract; this Phase does not create a rerun candidate or terminal rerun job.
 
 ## Scope Proof
 

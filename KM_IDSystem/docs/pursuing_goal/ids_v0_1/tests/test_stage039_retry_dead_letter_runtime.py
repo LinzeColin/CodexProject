@@ -54,7 +54,7 @@ class Stage039RetryDeadLetterRuntimeTests(unittest.TestCase):
             ],
             contract["policy"]["retryable_safe_error_codes"],
         )
-        self.assertEqual("ASSUMPTION", contract["policy"]["fact_level"])
+        self.assertEqual("PROPOSED", contract["policy"]["fact_level"])
         self.assertFalse(contract["policy"]["production_calibrated"])
         self.assertEqual("NO_AUTOMATIC_RETRY", contract["policy"]["unknown_code_behavior"])
 
