@@ -172,31 +172,31 @@ EXPECTED_UPSTREAM = {
     ),
     "stage040_phase1_contract": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_policy_contract.json",
-        "9298a248fb8a63d159ceef105b6081ba257086646d296fb0697e6747a0c394b4",
+        "fe7110d0338de3fcb603e267ecf8995ef93e8db58f401612f322ff06166bd25a",
     ),
     "stage040_phase1_evidence": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE1_BACKPRESSURE_SCOPE_BOUNDARY.md",
-        "80d220ef937ce890e47758f23bf993156c6882b0d3ed4ee2875f0d0766b68cf6",
+        "68826e3b64936568327ac5050bbff7ba8ed9960ae791a69825ed6c6d3ff3aef6",
     ),
     "stage040_phase2_contract": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_runtime_contract.json",
-        "2fb9437f85a8c86cbfc8d6002e031554683bdf9b4a421b06c6b9503c6c40b6c1",
+        "3db2409b082b9f788e061dfbb3a8e33ad8459c8e56a863e21fe0faeca8581b5c",
     ),
     "stage040_phase2_checker": (
         "KM_IDSystem/scripts/check_backpressure_runtime.py",
-        "8442ef6b9ff63e3999205151d5bf8deddbe3085730dc864b5627e6b4ff06da06",
+        "c28493586d2d0982948ce5e968ff756ddf069228382328078c5516c6348c15ad",
     ),
     "stage040_phase2_evidence": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE2_BACKPRESSURE_DECISION_SLICE.md",
-        "5b8f1a030034a6cb9f8becc5e42ee4e354d51fb0ac394366e641ebb90fa31c41",
+        "3a01138928e4fa9c526ab392617464675b30ae42d290e91de942e887b91132b3",
     ),
     "stage040_phase3_contract": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_scenarios.json",
-        "f3f1898cf0fd2b091ccfe0bd1a41253d80e8028990ef29079c69098ef45aa5f4",
+        "59c24c67bf0d8a9a86e44be2634ace9db324a24f9696e8f35974069c1908c530",
     ),
     "stage040_phase3_checker": (
         "KM_IDSystem/scripts/check_backpressure_scenarios.py",
-        "c51afd6fb080e0eddb68f4ce584ec4586ba349ca1716cf9e8d86cac38ab9a051",
+        "378534f960c129a2f96568b45615e4347b0b45f64639a4fe429a3c2b6c54d0a6",
     ),
     "stage040_phase3_evidence": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE3_SCENARIO_VALIDATION.md",

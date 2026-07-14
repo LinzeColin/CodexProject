@@ -74,7 +74,12 @@ Machine state is mapped to restrained Chinese status: `可接收`, `限流中`,
 ## Failure And Stop Behavior
 
 - Missing, malformed, future, stale, unversioned, or untracked observations
-  return `REQUIRE_MANUAL_REVIEW` and admit nothing.
+  return a JSON-serializable `REQUIRE_MANUAL_REVIEW` decision and admit
+  nothing. Non-JSON control metadata is represented only by a fixed invalid
+  digest marker; it is never echoed into the decision.
+- Invalid jobs are evaluated through an empty safe view. Invalid `input_refs`
+  therefore produce `input_refs=[]` and cannot leak unapproved payloads or
+  untracked values into error output.
 - `SUCCEEDED`, `FAILED`, `DEAD_LETTERED`, and `CANCELLED` remain immutable.
 - Active work can request `PAUSE_REQUESTED`; it is not directly forced to
   `PAUSED` and is not automatically resumed.

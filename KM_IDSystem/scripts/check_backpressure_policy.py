@@ -401,17 +401,19 @@ def evaluate_contract(contract: Any, project_root: Path | None = None) -> dict[s
                 fairness,
                 {
                     "priority_cannot_bypass_safety_gate",
-                    "starvation_allowed",
+                    "starvation_prevention_proved",
                     "priority_vocabulary_owner",
                     "scheduler_algorithm",
                     "per_job_type_concurrency",
                 },
             )
             and fairness.get("priority_cannot_bypass_safety_gate") is True
-            and fairness.get("starvation_allowed") is False
+            and fairness.get("starvation_prevention_proved") is False
             and fairness.get("priority_vocabulary_owner") == "STAGE-022"
-            and fairness.get("scheduler_algorithm") == "DEFERRED_TO_PHASE2"
-            and fairness.get("per_job_type_concurrency") == "DEFERRED_TO_PHASE2"
+            and fairness.get("scheduler_algorithm")
+            == "NOT_IMPLEMENTED_IN_STAGE040"
+            and fairness.get("per_job_type_concurrency")
+            == "PHASE2_ADMISSION_GUARD_ONLY"
         ),
         "idempotency_boundary_valid": (
             _keys_exact(
@@ -516,7 +518,10 @@ def evaluate_contract(contract: Any, project_root: Path | None = None) -> dict[s
             "ADMIT": "可接收",
             "THROTTLE_ADMISSION": "限流中",
             "DENY_NEW_ADMISSION": "暂不接收新任务",
-            "PAUSE_RESOURCE_GATE": "已暂停",
+            "PAUSE_RESOURCE_GATE": {
+                "QUEUED_OR_RETRY_WAIT": "已暂停",
+                "CLAIMED_OR_RUNNING": "暂停中",
+            },
             "REQUIRE_MANUAL_REVIEW": "等待人工复核",
         },
         "phase2_gate_valid": phase2

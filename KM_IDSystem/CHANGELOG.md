@@ -1,5 +1,11 @@
 # Changelog
 
+## IDS v0.1 STAGE-040 Review - 2026-07-14
+
+- Completed the independent whole-stage review under `ACC-STAGE-040` and repaired one Critical and two Important findings: non-JSON/non-hashable control metadata could escape fail-closed handling, active pause requests were mislabeled as completed pauses, and scheduler fairness was claimed without an implemented scheduler or measured proof.
+- Added structured invalid-metadata handling with reference redaction, state-aware `已暂停`/`暂停中` projection, truthful `starvation_prevention_proved=false` governance, focused RED/GREEN tests, and a repaired P1→P4 SHA-256 evidence chain.
+- Added the fail-closed Stage040 review checker, reviewed-local batch/roadmap/event evidence, and next gate `IDS-V0_1-BATCH-031-040-REVIEW-GATE`. Batch review, GitHub/upload/issue action, app reinstall, STAGE-041, production runtime, raw metadata access, and fake IDS business data remain disabled.
+
 ## IDS v0.1 STAGE-040 Phase 4 - 2026-07-14
 
 - Added an exact-hash-bound closeout contract and stdout-only checker for the Stage037 job-state graph, seven backpressure signals, reviewed actual Stage039 failure/retry evidence, protected cleanup rules, recovery classification, shutdown, recovery, and rollback.

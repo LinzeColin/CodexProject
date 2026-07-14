@@ -216,9 +216,16 @@ class Stage040BackpressurePolicyTests(unittest.TestCase):
         self.assertFalse(budget["automatic_resume_allowed"])
         self.assertEqual("STAGE-042", budget["automatic_resume_runtime_owner"])
         self.assertTrue(fairness["priority_cannot_bypass_safety_gate"])
-        self.assertFalse(fairness["starvation_allowed"])
+        self.assertFalse(fairness["starvation_prevention_proved"])
+        self.assertNotIn("starvation_allowed", fairness)
         self.assertEqual("STAGE-022", fairness["priority_vocabulary_owner"])
-        self.assertEqual("DEFERRED_TO_PHASE2", fairness["scheduler_algorithm"])
+        self.assertEqual(
+            "NOT_IMPLEMENTED_IN_STAGE040", fairness["scheduler_algorithm"]
+        )
+        self.assertEqual(
+            "PHASE2_ADMISSION_GUARD_ONLY",
+            fairness["per_job_type_concurrency"],
+        )
 
     def test_parameters_lock_and_cleanup_are_deferred_to_owners(self):
         contract = self._contract()

@@ -46,16 +46,16 @@ EXPECTED_UPSTREAM = {
     "phase1_policy_contract": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/"
         "stage040_backpressure_policy_contract.json",
-        "9298a248fb8a63d159ceef105b6081ba257086646d296fb0697e6747a0c394b4",
+        "fe7110d0338de3fcb603e267ecf8995ef93e8db58f401612f322ff06166bd25a",
     ),
     "phase1_checker": (
         "KM_IDSystem/scripts/check_backpressure_policy.py",
-        "cbba512a16a77be80be9fcfd1f3ac0bc496b753e2cec6904af333f908eab28e3",
+        "debf37652e23f4b618739a7eb22ed63fd9fa5dd508dad931ec772031049298d0",
     ),
     "phase1_scope_boundary": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
         "STAGE040_PHASE1_BACKPRESSURE_SCOPE_BOUNDARY.md",
-        "80d220ef937ce890e47758f23bf993156c6882b0d3ed4ee2875f0d0766b68cf6",
+        "68826e3b64936568327ac5050bbff7ba8ed9960ae791a69825ed6c6d3ff3aef6",
     ),
     "stage037_state_index": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
@@ -186,12 +186,15 @@ def _sha256(path: Path) -> str:
 
 
 def _canonical_digest(value: Any) -> str:
-    encoded = json.dumps(
-        value,
-        ensure_ascii=False,
-        sort_keys=True,
-        separators=(",", ":"),
-    ).encode("utf-8")
+    try:
+        encoded = json.dumps(
+            value,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    except (TypeError, ValueError):
+        encoded = b"INVALID_NON_JSON_CONTROL_METADATA"
     return hashlib.sha256(encoded).hexdigest()
 
 
@@ -240,6 +243,7 @@ def _refs_valid(values: Any, *, allow_empty: bool = False) -> bool:
         isinstance(values, list)
         and (allow_empty or bool(values))
         and len(values) <= len(EXPECTED_CONTROL_REFS)
+        and all(isinstance(value, str) for value in values)
         and len(values) == len(set(values))
         and all(_repo_relative_ref(value) is not None for value in values)
     )
@@ -779,8 +783,10 @@ def _decision_result(
         "error_ref": error_ref,
         "checkpoint_ref": f"checkpoint:sha256:{decision_key}",
         "audit_ref": job.get("audit_ref"),
-        "observed_at_epoch_seconds": observation.get(
-            "observed_at_epoch_seconds"
+        "observed_at_epoch_seconds": (
+            observation.get("observed_at_epoch_seconds")
+            if _is_nonnegative_int(observation.get("observed_at_epoch_seconds"))
+            else None
         ),
     }
 
@@ -799,9 +805,10 @@ def evaluate_backpressure(
     safe_job = job if isinstance(job, dict) else {}
     safe_observation = observation if isinstance(observation, dict) else {}
     contract_checks = evaluate_contract(contract_value)
-    if not all(contract_checks.values()) or not _job_valid(safe_job):
+    job_valid = _job_valid(safe_job)
+    if not all(contract_checks.values()) or not job_valid:
         result = _decision_result(
-            safe_job,
+            safe_job if job_valid else {},
             safe_observation,
             contract_value,
             signal_code="UNKNOWN_OR_STALE_PRESSURE",
