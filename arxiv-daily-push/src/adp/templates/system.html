@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>系统与来源</h1>
+
+<div class="card">
+  <h2>运行真相（最近 30 次，人话五态）</h2>
+  <table>
+    <tr><th>运行</th><th>结果</th><th>触发</th><th>计数</th><th>说明</th></tr>
+    {% for m in manifests %}
+    <tr>
+      <td class="mt">{{ m.run_id }}</td>
+      <td>{% if m.result == '正常' %}<span class="badge ok">正常</span>
+          {% elif m.result in ['降级','弃权'] %}<span class="badge info">{{ m.result }}</span>
+          {% elif m.result == '未运行' %}<span class="badge">未运行</span>
+          {% else %}<span class="badge warn">{{ m.result }}</span>{% endif %}</td>
+      <td class="mt">{{ m.trigger }}</td>
+      <td class="mt">扫描 {{ m.counts.get('扫描',0) }} · 过门 {{ m.counts.get('过门',0) }} · 选中 {{ m.counts.get('选中',0) }} · 讲义 {{ m.counts.get('讲义',0) }} · 到期复习 {{ m.counts.get('到期复习',0) }} · 已交付 {{ m.counts.get('已交付',0) }}</td>
+      <td class="mt">{{ m.get('弃权原因') or (m.get('降级项')|join('；') if m.get('降级项') else '') or m.get('note','') }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% if not manifests %}<p class="mt">尚无运行记录。</p>{% endif %}
+</div>
+
+<div class="card">
+  <h2>发送授权</h2>
+  <p>{% if auth.side_effects_authorized %}<span class="badge ok">已授权</span>{% else %}<span class="badge warn">未授权 · 失败关闭</span>{% endif %}
+     {{ auth.explanation }}</p>
+  {% if auth.get('credential') %}
+  <p class="mt">凭证：接收者 {{ auth.credential.recipient }} · 过期 {{ auth.credential.expires_at }} · 状态 {{ auth.credential.status }}</p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h2>数据源与健康</h2>
+  <table>
+    <tr><th>来源</th><th>板块</th><th>健康</th><th>连续失败</th><th>政策快照核验</th></tr>
+    {% for s in sources %}
+    <tr><td>{{ s['name'] }}</td><td>{{ s['board_id'] }}</td>
+        <td><span class="badge {{ 'ok' if s['health']=='active' else 'warn' }}">{{ s['health'] }}</span></td>
+        <td>{{ s['consecutive_failures'] }}</td>
+        <td class="mt">{{ (s['policy_snapshot_json'] | fromjson).get('verified_at','—') if s['policy_snapshot_json'] else '—' }}</td></tr>
+    {% endfor %}
+  </table>
+  <p class="mt">连续 3 天失败自动停用并在此显示（业务规则·来源晋升）。</p>
+</div>
+
+{% if replay %}
+<div class="card">
+  <h2>30 天回放与弃权线重校（R1-3）</h2>
+  <p>覆盖 {{ replay.days_with_data }} 个有数据日 · 新旧头名一致率 {{ '%.0f%%'|format((replay.agreement_rate or 0)*100) }} ·
+     权重总和 {{ replay.weight_total }} → 弃权线由占位 {{ replay.abstain_line_placeholder }} 重校为
+     <b>{{ replay.abstain_line_recalibrated }}</b>（占位线下弃权 {{ replay.abstain_days_at_placeholder }} 天，重校线下弃权 {{ replay.abstain_days_at_recalibrated }} 天）</p>
+  <table>
+    <tr><th>日期</th><th>新头名（v0.3 权重）</th><th>旧头名（V7 近似）</th><th>一致</th></tr>
+    {% for r in replay.rows[-10:] %}
+    <tr><td class="mt">{{ r.date }}</td><td>{{ r.new_top }} <span class="mt">{{ '%.1f'|format(r.new_score) }}</span></td>
+        <td>{{ r.old_top }} <span class="mt">{{ '%.1f'|format(r.old_score) }}</span></td>
+        <td>{{ '✓' if r.same_pick else '✗' }}</td></tr>
+    {% endfor %}
+  </table>
+  <p class="mt">完整对照表在 data/replay_30d.json（{{ replay.rows|length }} 行），抽查任意一行可核对理由。</p>
+</div>
+{% endif %}
+
+<div class="card">
+  <h2>配置版本（六版本域指针）</h2>
+  <table>{% for k, v in versions.items() %}<tr><td>{{ k }}</td><td class="mt">{{ v }}</td></tr>{% endfor %}</table>
+  <p class="mt">参数修改唯一入口：阈值注册表 → 提案 → 30 天回放预览 → 显式应用 → 回执。</p>
+</div>
+
+<div class="card">
+  <h2>数据永不丢失</h2>
+  <p class="mt">事件只增不删；每日备份至 data/backups/（30 份滚动）；一键导出：<code>adp export</code>。</p>
+</div>
+{% endblock %}

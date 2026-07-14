@@ -32,7 +32,8 @@ attention_cost_penalty: 6  # score -= penalty × attention_cost(0..1)
 
 # ---- 第三段 · 选择参数（4） ----
 selection:
-  abstain_threshold: 55        # 盲点三：权重合计 96→104 后此线变松，R1-3 回放重校（预计 ≈59），重校前仅为占位
+  abstain_threshold: 59.6      # R1-3 已重校：55 × (104/96) = 59.6；回放对照 data/replay_30d.json（31 天，
+                               # 两线下弃权天数均为 0）；回执见 config_changes 表 2026-07-14 行。占位 55 作废。
   daily_focus_count: 1
   source_share_cap: 0.40
   queue_max_active: 10000

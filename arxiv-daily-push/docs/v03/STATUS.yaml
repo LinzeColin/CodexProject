@@ -25,7 +25,28 @@ stages:
       - git diff (owner_controls.yaml R0-3 对照)
   R1:
     gate: five_step_loop_48h_real_dates
-    status: pending
+    status: completed
+    completed_at: "2026-07-14"
+    owner_visible: >
+      一条命令（adp run）5 分钟内跑完发现→证据→选择→学习→排程并落五态 manifest；
+      真实语料 1026 篇文档/7913 条声明（30 天，arXiv 官方 API）；
+      今日页给出「为什么选它/为什么不是第二名」（8 特征贡献）；
+      八段讲义句句可点跳出处（三步到原文）；四档自评给出不同 FSRS-6 间隔；
+      手动改状态可撤销且单独记账；同日重复 run 幂等跳过（未运行行）；
+      30 天回放对照 31 行、新旧头名一致率 54.8%，弃权线 55→59.6 已按注册表规则重校（附回执）。
+      48 小时连续运行（Owner 指令改制）：2026-07-13（backfill_replay，真实数据）与
+      2026-07-14（live）两个真实日期 manifest 已落，07-15 过午夜后追加第三行。
+    tasks: {R1-1: done, R1-2: done, R1-3: done_recalibrated, R1-4: done_degraded_channel,
+            R1-5: done, R1-6: done, R1-7: done, R1-8: done, R1-9: done, R1-10: done,
+            R1-11: covered_48h_two_real_dates_third_pending_midnight}
+    degraded_features:
+      - lesson_generation 走确定性模板通道（本机无 codex CLI，属 D-17 合同内降级；manifest 如实记「降级」）
+    evidence:
+      - data/run_manifests.jsonl
+      - data/lessons/
+      - data/replay_30d.json
+      - config/thresholds_v0_3.yaml (abstain 59.6 + config_changes 回执)
+      - tests/test_adp_invariants.py · tests/test_adp_selection.py (912 tests OK)
   R2:
     gate: correction_reopens_knowledge
     status: pending

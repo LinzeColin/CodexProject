@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="warm">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ADP · 个人前沿学习系统</title>
+<style>
+:root, [data-theme="warm"] {
+  --bg:#f3eee1; --pn:#fbf7ec; --ink:#2f2618; --tx:#4a3d28; --mt:#8b7a5c;
+  --ac:#8a5c16; --acS:#6d7f3c; --warn:#a2452f; --bd:#d8cfba; --ok:#4f7942;
+}
+[data-theme="minimal"] { --bg:#fafafa; --pn:#ffffff; --ink:#111; --tx:#333; --mt:#777;
+  --ac:#000; --acS:#444; --warn:#b00020; --bd:#e2e2e2; --ok:#2e7d32; }
+[data-theme="fresh"]   { --bg:#f1f7f4; --pn:#ffffff; --ink:#123f32; --tx:#20574a; --mt:#5e8a7d;
+  --ac:#0e8a6a; --acS:#0b6e55; --warn:#c4552f; --bd:#cfe4dc; --ok:#0e8a6a; }
+[data-theme="techno"]  { --bg:#0b0b12; --pn:#15151f; --ink:#f2f0ff; --tx:#c9c4e4; --mt:#7d77a3;
+  --ac:#9d84ff; --acS:#2fd6a3; --warn:#ff7c6b; --bd:#2a2a3d; --ok:#2fd6a3; }
+[data-theme="cosmos"]  { --bg:#070a18; --pn:#101528; --ink:#e8eeff; --tx:#bcc8e8; --mt:#6e7ba3;
+  --ac:#6ea8ff; --acS:#8fd0ff; --warn:#ff8f6b; --bd:#232c4a; --ok:#63d1a2; }
+[data-theme="forest"]  { --bg:#edf1e4; --pn:#f8faf1; --ink:#22371f; --tx:#3a4f35; --mt:#7c8a6e;
+  --ac:#2e7d5b; --acS:#3c7ea0; --warn:#a2452f; --bd:#d3dcc2; --ok:#2e7d5b; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--tx); font:15px/2.0 -apple-system,"PingFang SC","Hiragino Sans GB",sans-serif; }
+header { display:flex; align-items:center; gap:14px; padding:12px 20px; border-bottom:1px solid var(--bd); background:var(--pn); flex-wrap:wrap; }
+header b { color:var(--ink); font-size:17px; }
+nav a { color:var(--tx); text-decoration:none; padding:8px 12px; border-radius:8px; min-height:44px; display:inline-block; }
+nav a.active { background:var(--bg); color:var(--ac); font-weight:600; }
+main { max-width:860px; margin:0 auto; padding:20px 16px 80px; }
+.card { background:var(--pn); border:1px solid var(--bd); border-radius:12px; padding:18px 20px; margin:14px 0; }
+h1,h2,h3 { color:var(--ink); line-height:1.5; }
+h1 { font-size:20px; } h2 { font-size:17px; } h3 { font-size:15.5px; }
+.mt { color:var(--mt); font-size:13px; }
+.badge { display:inline-block; padding:2px 10px; border-radius:999px; font-size:12.5px; border:1px solid var(--bd); }
+.badge.ok { color:var(--ok); border-color:var(--ok); }
+.badge.warn { color:var(--warn); border-color:var(--warn); }
+.badge.info { color:var(--ac); border-color:var(--ac); }
+button, .btn { min-height:44px; padding:8px 16px; border-radius:10px; border:1px solid var(--bd);
+  background:var(--pn); color:var(--ink); font-size:14.5px; cursor:pointer; }
+button.primary { background:var(--ac); border-color:var(--ac); color:var(--pn); }
+button.picked { outline:3px solid var(--acS); }
+.sentence { cursor:pointer; border-bottom:1px dotted var(--bd); }
+.sentence:hover { color:var(--ac); }
+table { width:100%; border-collapse:collapse; font-size:14px; }
+td, th { padding:8px 10px; border-bottom:1px solid var(--bd); text-align:left; vertical-align:top; }
+#reveal { position:relative; min-height:70px; border-radius:10px; border:1px dashed var(--bd);
+  padding:14px; user-select:none; }
+#reveal .cover { position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  background:var(--bg); border-radius:10px; transition:opacity .2s; }
+#reveal .bar { position:absolute; left:0; bottom:0; height:4px; width:0; background:var(--ac); border-radius:0 0 10px 10px; }
+select { min-height:40px; border-radius:8px; border:1px solid var(--bd); background:var(--pn); color:var(--ink); }
+footer { position:fixed; bottom:0; left:0; right:0; background:var(--pn); border-top:1px solid var(--bd);
+  padding:6px 16px; font-size:12px; color:var(--mt); }
+@media (prefers-reduced-motion: reduce) { * { transition:none !important; animation:none !important; } }
+</style>
+</head>
+<body>
+<header>
+  <b>ADP 前沿学习</b>
+  <nav>
+    <a href="/" class="{{ 'active' if page=='today' }}">今天学什么</a>
+    <a href="/queue" class="{{ 'active' if page=='queue' }}">学习队列</a>
+    <a href="/radar" class="{{ 'active' if page=='radar' }}">前沿雷达</a>
+    <a href="/system" class="{{ 'active' if page=='system' }}">系统与来源</a>
+  </nav>
+  <span style="margin-left:auto">
+    <select id="theme" aria-label="主题">
+      <option value="warm">暖纸学习</option><option value="minimal">简约专注</option>
+      <option value="fresh">清新干净</option><option value="techno">炫技</option>
+      <option value="cosmos">宇宙星河</option><option value="forest">森林河流</option>
+    </select>
+  </span>
+</header>
+<main>
+{% block content %}{% endblock %}
+</main>
+<footer>回执：{{ receipt }} · 本页由运行记录与事件库渲染，无手写状态（不变量 9）</footer>
+<script>
+const themeSel = document.getElementById('theme');
+const saved = localStorage.getItem('adp-theme') || 'warm';
+document.documentElement.dataset.theme = saved; themeSel.value = saved;
+themeSel.onchange = () => { document.documentElement.dataset.theme = themeSel.value;
+  localStorage.setItem('adp-theme', themeSel.value); };
+async function post(url, body) {
+  const res = await fetch(url, {method:'POST', headers:{'Content-Type':'application/json'},
+    body: body ? JSON.stringify(body) : null});
+  return res.json();
+}
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>
