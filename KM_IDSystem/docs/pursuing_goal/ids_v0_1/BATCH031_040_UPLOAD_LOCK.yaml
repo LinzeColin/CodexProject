@@ -1,12 +1,17 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-031-040"
 created_at_utc: "2026-07-03T08:32:56Z"
-updated_at_utc: "2026-07-14T10:44:16Z"
-status: "reviewed_ready_for_upload_no_github_upload"
+updated_at_utc: "2026-07-14T11:26:17Z"
+status: "local_batch_upload_gate_passed_pending_github_merge"
 review_task_id: "IDS-V0_1-BATCH-031-040-REVIEW-GATE"
 review_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_REVIEW_GATE.md"
 
 transition_history:
+  batch_upload_gate_state:
+    status: "local_batch_upload_gate_passed_pending_github_merge"
+    current_task_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
+    next_allowed_task_id: "IDS-V0_1-BATCH-031-040-GITHUB-MERGE"
+    github_upload_allowed: true
   batch_review_state:
     status: "reviewed_ready_for_upload_no_github_upload"
     current_task_id: "IDS-V0_1-BATCH-031-040-REVIEW-GATE"
@@ -92,9 +97,18 @@ data_boundary:
   local_existence_check: "IDS_METADATA_ROOT_EXISTS"
 
 upload_gate:
-  push_allowed: false
+  push_allowed: true
   review_gate: "BATCH031_040_REVIEW_GATE"
   gate_task_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
+  gate_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_GATE.md"
+  precheck_open_prs: 0
+  precheck_open_issues: 0
+  remote_main_precheck_sha: "87825b8429f70cc7c1bc734fcd868c554e14b4ad"
+  local_reviewed_head_sha: "ac07280b03c12a4940491cb595f8a3c6b9d9acc6"
+  merge_base_sha: "387f2bdd1e4cb06d3fced781417f057f854c2901"
+  remote_main_ahead_count: 862
+  local_branch_ahead_count: 52
+  remote_strategy: "push feature branch, create one PR to main, merge, reinstall app entries, verify app/local/GitHub parity, then record terminal main evidence"
   blocked_until:
     - "STAGE-031 through STAGE-040 all completed."
     - "Every completed Stage has durable local evidence."
@@ -550,8 +564,8 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
-  current_task_id: "IDS-V0_1-BATCH-031-040-REVIEW-GATE"
-  next_allowed_task_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
-  github_upload_allowed: false
-  current_run: "Independent BATCH031-040 review reverified the exact ten approved taskpack members, ten whole-stage review artifacts, Stage036-040 interface chain, stage checkers, governance route, and Git index. One Critical and two Important batch-level findings were repaired; no GitHub, PR, issue, merge, app reinstall, raw metadata content access, production runtime, or STAGE-041 action ran."
-  no_upload_reason: "The batch review passed locally, but the separate IDS-V0_1-BATCH-031-040-UPLOAD-GATE has not run; push_allowed remains false."
+  current_task_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
+  next_allowed_task_id: "IDS-V0_1-BATCH-031-040-GITHUB-MERGE"
+  github_upload_allowed: true
+  current_run: "The separate BATCH031-040 upload gate passed locally after confirming the independent review, zero pre-existing open PRs/issues, no KM_IDSystem changes on remote main since the merge base, preserved owner dirty paths, and the path-only raw metadata boundary. The only authorized next action is feature-branch push plus PR merge; app reinstall and terminal evidence remain pending."
+  no_upload_reason: "NONE for the reviewed batch branch; direct pre-merge HEAD:main push remains prohibited and STAGE-041 remains out of scope."

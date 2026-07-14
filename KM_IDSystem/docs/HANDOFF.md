@@ -1,5 +1,14 @@
 # IDS / Industrial Data System Handoff
 
+## Current Gate - 2026-07-14
+
+- Active task: `IDS-V0_1-BATCH-031-040-UPLOAD-GATE`; this run contains no STAGE-041 work.
+- Local gate state: `local_batch_upload_gate_passed_pending_github_merge`; `push_allowed=true` authorizes only the reviewed feature branch to one PR targeting `main`.
+- GitHub precheck: open PRs `0`, open issues `0`; `origin/main...HEAD` was `862 52`, and no remote-main commit in that range touched `KM_IDSystem`.
+- Required next actions: pass the full local validation, push the feature branch, create/merge the PR, reinstall app entries, verify app paths/codesign, verify open PRs/issues return to `0`, then record actual terminal evidence on `main`.
+- Preserve owner dirty paths (`backend/requirements.txt`, `frontend/package.json`, `scripts/run_local_services.sh`, `frontend/pnpm-workspace.yaml`) and root `.DS_Store`; do not stage or commit them.
+- `/Users/linzezhang/Downloads/IDS_MetaData` remains a path-only read-only real-data boundary. Do not read, list, hash, open, scan, copy, move, delete, modify, dump, or normalize its contents.
+
 ## Purpose
 
 IDS / Industrial Data System turns the original industrial-operations CLI prototype into a local Web + PDF industrial data and operations console. It provides dashboard views, module-specific analysis, visualization, report generation, model routing configuration, and recoverable local app launchers.

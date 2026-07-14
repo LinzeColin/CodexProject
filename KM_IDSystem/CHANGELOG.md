@@ -1,5 +1,12 @@
 # Changelog
 
+## IDS v0.1 BATCH-031-040 Upload Gate - 2026-07-14
+
+- Opened the separate upload gate only after the ten-stage independent review and repairs passed; TDD RED captured the missing gate plus pending/terminal state contracts.
+- Confirmed GitHub had zero open PRs and zero open issues, the reviewed branch and `origin/main` diverged by `52/862` commits, and remote-main drift since the merge base did not touch `KM_IDSystem`.
+- Authorized one feature-branch PR targeting `main` while prohibiting direct pre-merge `HEAD:main`, owner dirty-file staging, sparse expansion, unrelated-project work, raw metadata content access, fake IDS business data, and STAGE-041.
+- PR URL, merge SHA, app reinstall, codesign, and post-merge PR/issue counts remain pending real execution and are not represented by placeholders.
+
 ## IDS v0.1 BATCH-031-040 Independent Review - 2026-07-14
 
 - Independently reverified the exact approved Stage031-040 taskpack members, ten whole-stage review artifacts, all Stage checkers, and the Stage036-040 state/interface/hash chain under `ACC-STAGE-031..ACC-STAGE-040`.

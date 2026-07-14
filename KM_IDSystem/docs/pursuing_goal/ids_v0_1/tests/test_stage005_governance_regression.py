@@ -9320,6 +9320,99 @@ next_gate_id: "IDS-STAGE035-REVIEW-GATE"
         )
         self.assertFalse(blocked["batch031_040_review_consistent"], blocked)
 
+    def test_batch031_040_upload_gate_evidence_records_github_main_strategy(self):
+        upload_gate = ROOT / "docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_GATE.md"
+
+        self.assertTrue(upload_gate.exists(), f"missing upload gate: {upload_gate}")
+        text = upload_gate.read_text(encoding="utf-8")
+        required_markers = [
+            "IDS-V0_1-BATCH-031-040-UPLOAD-GATE",
+            "STAGE-031..STAGE-040",
+            "BATCH031_040_REVIEW_GATE.md",
+            "BATCH031_040_UPLOAD_LOCK.yaml",
+            "GitHub open PR/issue precheck",
+            "push_allowed=true",
+            "PR targeting `main`",
+            "No STAGE-041",
+            "/Users/linzezhang/Downloads/IDS_MetaData",
+            "raw database content was not read",
+            "app entry reinstall",
+        ]
+
+        for marker in required_markers:
+            with self.subTest(marker=marker):
+                self.assertIn(marker, text)
+
+    def test_phase_state_allows_batch031_040_upload_gate_pending_github_merge(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-031-040"
+status: "local_batch_upload_gate_passed_pending_github_merge"
+upload_gate:
+  push_allowed: true
+  review_gate: "BATCH031_040_REVIEW_GATE"
+  gate_task_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
+  gate_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_GATE.md"
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE040"
+current_phase_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
+current_task_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
+next_gate_id: "IDS-V0_1-BATCH-031-040-GITHUB-MERGE"
+        phase_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
+          status: "passed_pending_github_merge"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
+    def test_phase_state_allows_batch031_040_uploaded_terminal_state(self):
+        module = self._load_module()
+        batch_text = """
+batch_id: "IDS-V0_1-BATCH-031-040"
+status: "uploaded_to_github_main"
+upload_gate:
+  push_allowed: true
+  review_gate: "BATCH031_040_REVIEW_GATE"
+  gate_task_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
+  gate_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_GATE.md"
+  github_pr: "https://github.com/LinzeColin/CodexProject/pull/999"
+  merged_sha: "0123456789abcdef0123456789abcdef01234567"
+  post_merge_open_prs: 0
+  post_merge_open_issues: 0
+stage_progress:
+  STAGE-005:
+    status: "completed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+"""
+        roadmap_text = """
+current_stage_id: "IDS-STAGE040"
+current_phase_id: "IDS-V0_1-BATCH-031-040-MAIN-MERGED"
+current_task_id: "IDS-V0_1-BATCH-031-040-MAIN-MERGED"
+next_gate_id: "IDS-STAGE041-P1-GATE"
+        phase_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
+          status: "uploaded_to_github_main"
+        phase_id: "IDS-V0_1-BATCH-031-040-MAIN-MERGED"
+          status: "completed"
+"""
+
+        checks = module.evaluate_phase_state(batch_text, roadmap_text)
+
+        self.assertTrue(all(checks.values()), checks)
+
 
 if __name__ == "__main__":
     unittest.main()
