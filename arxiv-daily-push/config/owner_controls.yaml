@@ -1,13 +1,14 @@
 schema_version: 1
 config_version: "owner-controls-v1"
-last_updated: "2026-06-22"
+last_updated: "2026-07-14"
 task_id: "S1-06-SCORING-QUEUE-LEDGER-001"
 
 project:
   display_name: "Multi-Source Daily Intelligence Push"
   display_timezone: "Australia/Sydney"
   production_enabled: false
-  production_auto_enable_after_acceptance: true
+  # R0-3: 验收后自动启用已废止；任何启用必须走显式 owner 授权 artifact（不变量 5）。
+  production_auto_enable_after_acceptance: false
 
 cost_policy:
   paid_data_api_allowed: false
@@ -133,7 +134,8 @@ email:
   enabled: true
   recipients:
     - "linzezhang35@gmail.com"
-  split_mode: "five_independent_messages"
+  # R0-3: 五封信仅保留为模板能力（交付-003）；默认交付形态 = 单讲义镜像（V0.3）。
+  split_mode: "single_lesson_mirror"
   send_order:
     - "B1"
     - "B2"

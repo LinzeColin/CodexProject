@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-07-14 Australia/Sydney - V0.3 rebuild R0: decision freeze and drift repair
+
+- Imported the Owner-accepted V0.3 rebuild task pack as the active development contract at `docs/v03/` (PRD, architecture, delivery roadmap R0-R6, <110 KB total); V7.2 remains the frozen fail-closed machine lock for the legacy runtime.
+- Registered the 38-parameter thresholds registry as the single parameter truth at `config/thresholds_v0_3.yaml` (Owner-decided weights: knowledge_gap 20, evidence_quality 5, diversity 17 with single-board cap 10; abstain threshold 55 is a placeholder until the R1-3 replay recalibration).
+- Cleared legacy config residues: `production_auto_enable_after_acceptance` is now false and the five-message email split is demoted to a template capability (`split_mode: single_lesson_mirror`).
+- Aligned three version pointers (CURRENT.yaml `rebuild_v03`, `docs/v03/STATUS.yaml`, HANDOFF/01 top section) and froze the giant governance documents in place with banners plus `archive/README.md` registry (reading surface 8.1 MB -> ~115 KB).
+- No production side effects: DAILY_OPERATION, SMTP, scheduler, Release, and restore all remain disabled.
+
 ## 2026-07-10 21:50:12 Australia/Sydney - Persistent DAILY_OPERATION authorization prerequisite fail-closed hardening
 
 - Fixed `build_daily_operation_persistent_enablement_authorization_state` so a valid live authorization artifact cannot override failed owner-decision or controlled-run prerequisites.

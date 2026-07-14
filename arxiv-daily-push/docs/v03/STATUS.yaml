@@ -1,0 +1,43 @@
+# R0-7 阶段状态页 —— 每阶段一行真相（人话），与 CURRENT.yaml rebuild_v03 段、HANDOFF/01 顶部指针三处一致
+schema_version: 1
+project: adp-rebuild-v03
+contract: docs/v03/CONTRACT.md
+thresholds: config/thresholds_v0_3.yaml
+timezone: Australia/Sydney
+production_side_effects: none_enabled
+
+stages:
+  R0:
+    gate: repo_single_truth
+    status: completed
+    completed_at: "2026-07-14"
+    owner_visible: >
+      一页决策清单（DECISIONS.md）；38 参数一页看全（config/thresholds_v0_3.yaml）；
+      旧配置自动启用与五封信残留已清除（owner_controls.yaml diff 即改前/改后对照）；
+      三处版本指针一致（CURRENT.yaml rebuild_v03 / 本页 / HANDOFF/01 顶部）；
+      巨型文档原地冻结（archive/README.md，阅读面 8.1MB→115KB ≈70:1）；
+      运行记录五态契约采纳（docs/v03/04_开发记录/RUN_MANIFEST契约.md，R1 实现）。
+    tasks: {R0-1: done, R0-2: done, R0-3: done, R0-4: done, R0-5: contract_adopted_impl_in_R1, R0-6: done_frozen_in_place, R0-7: done, R0-8: done}
+    evidence:
+      - docs/v03/DECISIONS.md
+      - config/thresholds_v0_3.yaml
+      - archive/README.md
+      - git diff (owner_controls.yaml R0-3 对照)
+  R1:
+    gate: five_step_loop_48h_real_dates
+    status: pending
+  R2:
+    gate: correction_reopens_knowledge
+    status: pending
+  R3:
+    gate: idempotent_mirror_and_radar_one_friday
+    status: pending
+  R4:
+    gate: pilot_report_one_friday
+    status: pending
+  R5:
+    gate: per_source_promotion
+    status: deferred_owner_decision
+  R6:
+    gate: phone_access_via_cloudflare_mirror
+    status: deferred_optional_owner_decision

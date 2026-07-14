@@ -1,6 +1,14 @@
 # S3 DAILY_OPERATION 下一 Agent 先读
 
-更新时间：2026-07-10 22:24:22 Australia/Sydney
+更新时间：2026-07-14 Australia/Sydney
+
+## V0.3 重构指针（R0-4 三处对齐之三）
+
+- 当前活动开发合同：**ADP V0.3 重构任务包**（Owner 2026-07-14 goal 指令接受）。新会话只读 `arxiv-daily-push/docs/v03/`（<110 KB），从 `docs/v03/CONTRACT.md` 开始。
+- 参数唯一真相：`arxiv-daily-push/config/thresholds_v0_3.yaml`。
+- 阶段状态：`arxiv-daily-push/docs/v03/STATUS.yaml`。
+- V7.2 保持为旧运行时机器锁（失败关闭不变），本页以下的 S3/DAILY_OPERATION 边界继续有效：新闭环同样零生产副作用，SMTP/scheduler/Release/restore 仍被禁用。
+- 三处指针一致性：本节 / `arxiv-daily-push/docs/pursuing_goal/CURRENT.yaml` 的 `rebuild_v03` 段 / `arxiv-daily-push/docs/v03/STATUS.yaml`。
 
 ## 当前结论
 
