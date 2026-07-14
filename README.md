@@ -88,17 +88,12 @@ worktree 根目录：/Users/linzezhang/Documents/Codex/main_worktree/CodexProjec
 
 | Project | Path | Repository |
 |---|---|---|
-| `Alpha` | `Alpha` | https://github.com/LinzeColin/CodexProject/Alpha |
 | `EEI` | `EEI` | https://github.com/LinzeColin/CodexProject/tree/main/EEI |
-| `FIFA` | `FIFA` | https://github.com/LinzeColin/CodexProject/FIFA |
 | `KM_IDSystem` | `KM_IDSystem` | https://github.com/LinzeColin/CodexProject/tree/main/KM_IDSystem |
 | `OpenAIDatabase` | `OpenAIDatabase` | https://github.com/LinzeColin/CodexProject/tree/main/OpenAIDatabase |
-| `MetaDatabase` | `MetaDatabase` | https://github.com/LinzeColin/CodexProject/tree/main/MetaDatabase |
 | `KMFA` | `KMFA` | https://github.com/LinzeColin/CodexProject/tree/main/KMFA |
 | `PFI` | `PFI` | https://github.com/LinzeColin/CodexProject/tree/main/PFI |
-| `QBVS` | `QBVS` | https://github.com/LinzeColin/CodexProject/tree/main/QBVS |
 | `Serenity-Alipay` | `Serenity-Alipay` | https://github.com/LinzeColin/CodexProject/Serenity-Alipay |
-| `whkmSalary` | `whkmSalary` | https://github.com/LinzeColin/CodexProject/whkmSalary |
 | `arxiv-daily-push` | `arxiv-daily-push` | https://github.com/LinzeColin/CodexProject/tree/main/arxiv-daily-push |
 
 ## Retired projects

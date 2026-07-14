@@ -440,9 +440,30 @@ def base_file_text(base: str | None, path: str) -> str | None:
     return result.stdout if result.returncode == 0 else None
 
 
+def migrated_project_paths() -> tuple[str, ...]:
+    """Paths of projects that have been split out into their own repositories.
+
+    Their governance history lives on in the target repo, so removing it here is
+    a registered migration, not the history destruction the append-only rule
+    exists to prevent.
+    """
+    config = load_projects()
+    paths = []
+    for entry in structural.as_list(config.get("migrated_projects")):
+        if not isinstance(entry, dict):
+            continue
+        path = entry.get("path")
+        if isinstance(path, str) and path:
+            paths.append(path.rstrip("/") + "/")
+    return tuple(paths)
+
+
 def validate_append_only(validation: SyncValidation, changed: list[str], base: str | None) -> None:
+    migrated = migrated_project_paths()
     for path in changed:
         if not path.endswith("docs/governance/development_events.jsonl"):
+            continue
+        if path.startswith(migrated):
             continue
         new_path = ROOT / path
         if not new_path.exists():

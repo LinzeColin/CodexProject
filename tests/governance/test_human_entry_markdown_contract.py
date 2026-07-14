@@ -1,6 +1,7 @@
-import re
 import unittest
 from pathlib import Path
+
+import yaml
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -8,8 +9,17 @@ HUMAN_ENTRY_STEMS = ("功能清单", "开发记录", "模型参数文件")
 
 
 def registered_project_paths() -> list[str]:
-    registry = (ROOT / "governance" / "projects.yaml").read_text(encoding="utf-8")
-    return re.findall(r'^\s+path:\s+"([^"]+)"', registry, flags=re.MULTILINE)
+    """Paths of the active projects only.
+
+    A regex over every `path:` line also swept up retired and migrated
+    projects, whose directories are not required to be present here.
+    """
+    registry = yaml.safe_load((ROOT / "governance" / "projects.yaml").read_text(encoding="utf-8"))
+    return [
+        entry["path"]
+        for entry in registry.get("projects", [])
+        if isinstance(entry, dict) and entry.get("path")
+    ]
 
 
 class HumanEntryMarkdownContractTests(unittest.TestCase):
@@ -24,13 +34,6 @@ class HumanEntryMarkdownContractTests(unittest.TestCase):
                 for stem in HUMAN_ENTRY_STEMS:
                     self.assertFalse((project_root / stem).exists(), f"{project_path}/{stem}")
                     self.assertTrue((project_root / f"{stem}.md").is_file(), f"{project_path}/{stem}.md")
-
-    def test_independent_qbvs_uses_markdown_human_entries(self) -> None:
-        pfi_root = ROOT / "QBVS"
-        self.assertTrue(pfi_root.is_dir())
-        for stem in HUMAN_ENTRY_STEMS:
-            self.assertFalse((pfi_root / stem).exists(), f"QBVS/{stem}")
-            self.assertTrue((pfi_root / f"{stem}.md").is_file(), f"QBVS/{stem}.md")
 
     def test_serenity_three_base_files_are_global_chinese_readable(self) -> None:
         project_root = ROOT / "Serenity-Alipay"

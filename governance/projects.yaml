@@ -67,18 +67,8 @@ project_governance_files:
   - "VERSION"
   - "CHANGELOG.md"
 projects:
-  - project_id: "Alpha"
-    path: "Alpha"
-    ci_mode: "required"
-    migration:
-      version: "lean-v2"
   - project_id: "EEI"
     path: "EEI"
-    ci_mode: "required"
-    migration:
-      version: "lean-v2"
-  - project_id: "FIFA"
-    path: "FIFA"
     ci_mode: "required"
     migration:
       version: "lean-v2"
@@ -92,11 +82,6 @@ projects:
     ci_mode: "required"
     migration:
       version: "lean-v2"
-  - project_id: "MetaDatabase"
-    path: "MetaDatabase"
-    ci_mode: "required"
-    migration:
-      version: "lean-v2"
   - project_id: "KMFA"
     path: "KMFA"
     ci_mode: "required"
@@ -107,18 +92,8 @@ projects:
     ci_mode: "required"
     migration:
       version: "lean-v2"
-  - project_id: "QBVS"
-    path: "QBVS"
-    ci_mode: "required"
-    migration:
-      version: "lean-v2"
   - project_id: "Serenity-Alipay"
     path: "Serenity-Alipay"
-    ci_mode: "required"
-    migration:
-      version: "lean-v2"
-  - project_id: "whkmSalary"
-    path: "whkmSalary"
     ci_mode: "required"
     migration:
       version: "lean-v2"
@@ -137,3 +112,65 @@ retired_projects:
     reactivation_requires_owner_authorization: true
     evidence_refs:
       - "governance/run_manifests/GOV-WDA-RETIREMENT-20260713.json"
+
+migrated_projects:
+  - project_id: "whkmSalary"
+    path: "whkmSalary"
+    status: "migrated"
+    migrated_at: "2026-07-15"
+    migration_reason: "OWNER_DECISION_REPOSITORY_SPLIT_PERMISSION_ISOLATION"
+    target_repo: "LinzeColin/KMOS"
+    target_path: "whkmSalary"
+    source_tree_sha: "d61446c88a6d7f2e6acf3ef6b8eb99d1d904e5cf"
+    history_preserved_in_target: true
+    reactivation_requires_owner_authorization: true
+    evidence_refs:
+      - "governance/run_manifests/GOV-SPLIT-WAVE1-20260715.json"
+  - project_id: "Alpha"
+    path: "Alpha"
+    status: "migrated"
+    migrated_at: "2026-07-15"
+    migration_reason: "OWNER_DECISION_REPOSITORY_SPLIT_PERMISSION_ISOLATION"
+    target_repo: "LinzeColin/MetaDatabase"
+    target_path: "Alpha"
+    source_tree_sha: "72c82e575ba32b990288d8248ad7d35ff28d20c0"
+    history_preserved_in_target: true
+    reactivation_requires_owner_authorization: true
+    evidence_refs:
+      - "governance/run_manifests/GOV-SPLIT-WAVE1-20260715.json"
+  - project_id: "FIFA"
+    path: "FIFA"
+    status: "migrated"
+    migrated_at: "2026-07-15"
+    migration_reason: "OWNER_DECISION_REPOSITORY_SPLIT_PERMISSION_ISOLATION"
+    target_repo: "LinzeColin/MetaDatabase"
+    target_path: "FIFA"
+    source_tree_sha: "cab2846c12899d552643cdf478825e641479ca28"
+    history_preserved_in_target: true
+    reactivation_requires_owner_authorization: true
+    evidence_refs:
+      - "governance/run_manifests/GOV-SPLIT-WAVE1-20260715.json"
+  - project_id: "QBVS"
+    path: "QBVS"
+    status: "migrated"
+    migrated_at: "2026-07-15"
+    migration_reason: "OWNER_DECISION_REPOSITORY_SPLIT_PERMISSION_ISOLATION"
+    target_repo: "LinzeColin/MetaDatabase"
+    target_path: "QBVS"
+    source_tree_sha: "c34c4ecb01949e60ca231a69cf7e8533dfe8dda3"
+    history_preserved_in_target: true
+    reactivation_requires_owner_authorization: true
+    evidence_refs:
+      - "governance/run_manifests/GOV-SPLIT-WAVE1-20260715.json"
+  - project_id: "MetaDatabase"
+    path: "MetaDatabase"
+    status: "migrated"
+    migrated_at: "2026-07-15"
+    migration_reason: "OWNER_DECISION_REPOSITORY_SPLIT_NAME_COLLISION_RESOLVED"
+    target_repo: "LinzeColin/MetaDatabase"
+    target_path: "LinzeDatabase"
+    source_tree_sha: "126665164d808da1468ab84569f16b0555420e71"
+    history_preserved_in_target: true
+    reactivation_requires_owner_authorization: true
+    evidence_refs:
+      - "governance/run_manifests/GOV-SPLIT-WAVE1-20260715.json"

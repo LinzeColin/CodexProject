@@ -1,4 +1,0 @@
-strategy_id,samples,pass_rate,avg_total_gap,avg_annualized_gap,avg_drawdown_improvement,avg_var_5,avg_cvar_5,avg_turnover,avg_trades
-bw99_none_none_ma_trend_full_none,50000,100.0000%,-0.0069%,-0.0072%,0.1400%,-2.8629%,-3.6868%,1.056181653211124,152.35916
-bw99_boll_or_rsi_none_ma_trend_full_none,50000,100.0000%,-0.0263%,-0.0266%,0.0954%,-2.8672%,-3.6923%,1.162861412519765,132.7546
-bw98_boll_or_rsi_none_ma_trend_full_none,50000,99.9720%,-0.0525%,-0.0531%,0.1905%,-2.8549%,-3.6768%,1.3246156603270198,132.7546
