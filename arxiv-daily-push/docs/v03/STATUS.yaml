@@ -86,7 +86,21 @@ stages:
       - deliveries 表（BLOCKED_AUTH + duplicate 拒绝回执）
   R4:
     gate: pilot_report_one_friday
-    status: pending
+    status: completed
+    completed_at: "2026-07-14"
+    owner_visible: >
+      可用版本 + 10 分钟亲手验收清单（docs/v03/FRIDAY_DELIVERY.md 与 /pilot 页）；
+      影子记录常开（每日第二名与弃权随 selections 表落库）；影子对照页实证盲点二：
+      近 15 个数据日放开多样性 10→17 改变 0 天头名（单板块期差异小，机制已验证）；
+      首次参数校准已完成（弃权线 55→59.6，提案→回放预览→应用→回执全链路）；
+      试运行报告四指标由真实事件计算（样本量小如实标注）；问题台账 7 条、
+      「第 2 次修复」条目 0；持久运行决策三键（批准/退回/降级）留给 Owner 当场拍板。
+    tasks: {R4-usable_build: done, R4-shadow: done, R4-calibration: done_abstain_line,
+            R4-pilot_report: done, R4-decision: awaiting_owner_click}
+    evidence:
+      - docs/v03/FRIDAY_DELIVERY.md
+      - docs/v03/04_开发记录/问题台账.md
+      - /pilot 页（四指标+影子对照+决策卡）
   R5:
     gate: per_source_promotion
     status: deferred_owner_decision

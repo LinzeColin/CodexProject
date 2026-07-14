@@ -261,6 +261,33 @@ def api_undo(event_id: int) -> JSONResponse:
         conn.close()
 
 
+@app.get("/pilot", response_class=HTMLResponse)
+def pilot_page() -> HTMLResponse:
+    conn = _conn()
+    try:
+        from .pilot import pilot_report, shadow_compare
+
+        report = pilot_report(conn)
+        shadow = shadow_compare(conn, config.load_thresholds(), days=14)
+        decisions = conn.execute(
+            "SELECT * FROM config_changes WHERE domain='pilot_decision' ORDER BY id DESC LIMIT 5"
+        ).fetchall()
+        return _render("pilot.html", page="pilot", report=report, shadow=shadow, decisions=decisions)
+    finally:
+        conn.close()
+
+
+@app.post("/api/pilot/decision/{decision}")
+def api_pilot_decision(decision: str, payload: dict[str, Any] | None = None) -> JSONResponse:
+    conn = _conn()
+    try:
+        from .pilot import record_decision
+
+        return JSONResponse(record_decision(conn, decision, (payload or {}).get("note", "")))
+    finally:
+        conn.close()
+
+
 @app.post("/api/transfer/{item_id}")
 def api_transfer(item_id: str, payload: dict[str, Any]) -> JSONResponse:
     """迁移练习与结果记录（应用域）——失败也记."""
