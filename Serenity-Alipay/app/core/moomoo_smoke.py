@@ -14,6 +14,9 @@ from app.config import Settings
 from app.core.path_display import display_path, redact_text_for_markdown
 
 
+SYSTEM_APPLICATION_DIRS = [Path("/Applications")]
+
+
 @dataclass(frozen=True)
 class SocketProbe:
     host: str
@@ -146,9 +149,25 @@ def _probe_workbench(path: Path) -> WorkbenchProbe:
     )
 
 
+def _has_workbench_artifact(probe: WorkbenchProbe) -> bool:
+    return any(
+        [
+            probe.start_script,
+            probe.check_script,
+            probe.quote_script,
+            probe.config_path,
+            probe.sdk_vendor_path,
+            probe.opend_vendor_path,
+            probe.moomoo_opend_app_path,
+        ]
+    )
+
+
 def discover_workbenches(settings: Settings, include_user_codex: bool = True) -> list[WorkbenchProbe]:
     candidates: list[Path] = [
         Path.home() / "Applications" / "MoomooOpenD",
+        Path.home() / "Applications",
+        *SYSTEM_APPLICATION_DIRS,
         settings.root_dir / "outputs" / "moomoo-api-workbench",
         Path.home() / "Applications" / "MoomooOpenD" / "moomoo_OpenD_10.6.6608_Mac" / "moomoo_OpenD_10.6.6608_Mac",
         Path.home() / "Applications" / "MoomooOpenD" / "moomoo_OpenD_10.6.6608_Mac" / "moomoo_OpenD-GUI_10.6.6608_Mac",
@@ -165,7 +184,7 @@ def discover_workbenches(settings: Settings, include_user_codex: bool = True) ->
             continue
         seen.add(resolved)
         probe = _probe_workbench(resolved)
-        if probe.exists:
+        if probe.exists and _has_workbench_artifact(probe):
             probes.append(probe)
     return probes
 
@@ -295,9 +314,14 @@ def run_moomoo_smoke(
     }
     if lifecycle is not None:
         result["opend_lifecycle"] = lifecycle_to_dict(lifecycle)
-        if not keep_auto_started_opend and lifecycle.started_by_tool and lifecycle.socket_is_reachable:
+        if not keep_auto_started_opend and lifecycle.started_by_tool:
             cleanup = cleanup_started_processes(lifecycle)
             result["cleanup"] = cleanup
+        elif lifecycle.started_by_tool:
+            result["cleanup"] = {
+                "cleanup_attempted": False,
+                "cleanup_result": "kept_auto_started_opend_to_avoid_launch_close_loop",
+            }
     if write_output:
         output_dir = settings.root_dir / "outputs" / "preflight"
         output_dir.mkdir(parents=True, exist_ok=True)

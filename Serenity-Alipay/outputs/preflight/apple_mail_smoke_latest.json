@@ -1,10 +1,11 @@
 {
-  "generated_at": "2026-06-13T06:43:43+08:00",
+  "generated_at": "2026-06-30T05:59:15+08:00",
   "status": "pass",
   "recipient_email": "linzezhang35@gmail.com",
   "mail_send_enabled": true,
   "draft_ready": true,
-  "draft_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/notifications/mail_smoke_20260613T064343.md",
+  "draft_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity-recovery/Serenity-Alipay/data/notifications/mail_smoke_20260630T055915.md",
+  "html_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity-recovery/Serenity-Alipay/data/notifications/mail_smoke_20260630T055915.html",
   "apple_mail": {
     "osascript": "/usr/bin/osascript",
     "app_scriptable": true,
@@ -15,6 +16,6 @@
   "send_requested": false,
   "send_status": "not_requested",
   "send_error": "",
-  "json_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/apple_mail_smoke_latest.json",
-  "markdown_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/apple_mail_smoke_latest.md"
+  "json_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity-recovery/Serenity-Alipay/outputs/preflight/apple_mail_smoke_latest.json",
+  "markdown_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity-recovery/Serenity-Alipay/outputs/preflight/apple_mail_smoke_latest.md"
 }

@@ -136,12 +136,6 @@ def cleanup_started_processes(lifecycle: OpenDLifecycle) -> dict[str, object]:
             "cleanup_result": "not_started_by_tool",
             "after_processes": [asdict(process) for process in process_snapshot()],
         }
-    if not lifecycle.socket_is_reachable:
-        return {
-            "cleanup_attempted": False,
-            "cleanup_result": "deferred_socket_not_ready",
-            "after_processes": [asdict(process) for process in process_snapshot()],
-        }
     result = _cleanup_processes(lifecycle.started_processes)
     return {
         "cleanup_attempted": True,

@@ -46,6 +46,22 @@ PROTECTED_FILE_PATTERNS = (
     "data/moomoo/**",
 )
 
+LEGACY_COMPATIBLE_COLUMN_SETS = {
+    "notification_log": (
+        (
+            "notification_id",
+            "run_id",
+            "channel",
+            "severity",
+            "title",
+            "body_path",
+            "send_status",
+            "sent_at",
+            "error_message",
+        ),
+    ),
+}
+
 
 @dataclass(frozen=True)
 class IntegrityViolation:
@@ -111,20 +127,33 @@ def _table_manifest(conn, table: str) -> dict[str, object]:
     identity = _identity_columns(columns)
     order_by = ", ".join(f'"{column}"' for column in identity if column in column_names) or "rowid"
     rows: dict[str, str] = {}
+    compatible_rows_by_columns: dict[str, dict[str, str]] = {}
+    compatible_column_sets = LEGACY_COMPATIBLE_COLUMN_SETS.get(table, ())
     for sqlite_row in conn.execute(f'SELECT * FROM "{table}" ORDER BY {order_by}'):
         row = dict(sqlite_row)
         row_id = _row_identity(row, identity)
         if row_id in rows:
             row_id = f"{row_id}|row_hash={_sha256_text(_canonical_json(row))[:12]}"
         rows[row_id] = _sha256_text(_canonical_json(row))
+        for compatible_columns in compatible_column_sets:
+            if not all(column in column_names for column in compatible_columns):
+                continue
+            compatible_row = {column: row.get(column) for column in compatible_columns}
+            compatible_signature = ",".join(compatible_columns)
+            compatible_rows_by_columns.setdefault(compatible_signature, {})[row_id] = _sha256_text(
+                _canonical_json(compatible_row)
+            )
     table_material = "\n".join(f"{row_id}:{row_hash}" for row_id, row_hash in sorted(rows.items()))
-    return {
+    manifest = {
         "columns": column_names,
         "identity_columns": identity,
         "row_count": len(rows),
         "table_hash": _sha256_text(table_material),
         "rows": rows,
     }
+    if compatible_rows_by_columns:
+        manifest["compatible_rows_by_columns"] = compatible_rows_by_columns
+    return manifest
 
 
 def _matches(path: str, patterns: tuple[str, ...]) -> bool:
@@ -186,13 +215,22 @@ def _compare_table_rows(
         ]
     baseline_rows = baseline_table.get("rows") if isinstance(baseline_table.get("rows"), dict) else {}
     current_rows = current_table.get("rows") if isinstance(current_table.get("rows"), dict) else {}
+    baseline_columns = baseline_table.get("columns") if isinstance(baseline_table.get("columns"), list) else []
+    compatible_signature = ",".join(str(column) for column in baseline_columns)
+    compatible_rows = {}
+    compatible_groups = current_table.get("compatible_rows_by_columns")
+    if isinstance(compatible_groups, dict):
+        candidate_rows = compatible_groups.get(compatible_signature)
+        if isinstance(candidate_rows, dict):
+            compatible_rows = candidate_rows
     for row_id, baseline_hash in baseline_rows.items():
         current_hash = current_rows.get(row_id)
+        compatible_hash = compatible_rows.get(row_id)
         if current_hash is None:
             violations.append(
                 IntegrityViolation("sqlite", f"{table}:{row_id}", "row_deleted", "Previously observed history row is missing.")
             )
-        elif current_hash != baseline_hash:
+        elif current_hash != baseline_hash and compatible_hash != baseline_hash:
             violations.append(
                 IntegrityViolation("sqlite", f"{table}:{row_id}", "row_changed", "Previously observed history row hash changed.")
             )

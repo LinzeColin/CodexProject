@@ -47,7 +47,7 @@ def test_healthcheck_defers_cleanup_until_outer_task_finishes(monkeypatch, tmp_p
     assert result.opend_lifecycle_handle is lifecycle
 
 
-def test_healthcheck_does_not_request_cleanup_before_socket_ready(monkeypatch, tmp_path: Path):
+def test_healthcheck_requests_cleanup_for_tool_started_opend_even_before_socket_ready(monkeypatch, tmp_path: Path):
     settings = temp_settings(tmp_path)
 
     lifecycle = OpenDLifecycle(
@@ -67,9 +67,10 @@ def test_healthcheck_does_not_request_cleanup_before_socket_ready(monkeypatch, t
     )
 
     monkeypatch.setattr("app.core.moomoo_lifecycle.ensure_opend", lambda *args, **kwargs: lifecycle)
+    monkeypatch.setattr("socket.create_connection", lambda *args, **kwargs: (_ for _ in ()).throw(OSError("closed")))
 
     result = healthcheck(settings=settings, auto_start_opend=True, keep_auto_started_opend=False)
 
     assert result.available is False
-    assert result.cleanup_required is False
+    assert result.cleanup_required is True
     assert result.opend_lifecycle_handle is lifecycle

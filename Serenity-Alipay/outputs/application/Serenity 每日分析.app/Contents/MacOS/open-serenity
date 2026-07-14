@@ -1,19 +1,22 @@
 #!/bin/sh
-ROOT="/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5"
+ROOT="/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay"
 PYTHON="/opt/anaconda3/bin/python"
-BOOTSTRAP="/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/application/downloads-entry.html"
 PORT="${SERENITY_APP_PORT:-8765}"
-URL="http://127.0.0.1:$PORT/"
 HEALTH="http://127.0.0.1:$PORT/api/health"
 LOG_DIR="$HOME/Library/Logs/SerenityDailyAnalysis"
 LOG_FILE="$LOG_DIR/application-server.log"
-SERVER_PID=""
 mkdir -p "$LOG_DIR"
 cd "$ROOT" || exit 1
-open "$BOOTSTRAP" >/dev/null 2>&1 || true
 is_serenity_health() {
   /usr/bin/curl --connect-timeout 0.2 --max-time 0.5 -fsS "$1" 2>/dev/null | /usr/bin/grep -q '"status": "ok"'
 }
+open_serenity_home() {
+  /usr/bin/open "http://127.0.0.1:$PORT/" >/dev/null 2>&1 || true
+}
+if is_serenity_health "$HEALTH"; then
+  open_serenity_home
+  exit 0
+fi
 if ! is_serenity_health "$HEALTH"; then
   for CANDIDATE in "$PORT" $(seq 8765 8795); do
     CANDIDATE_HEALTH="http://127.0.0.1:$CANDIDATE/api/health"
@@ -26,22 +29,18 @@ if ! is_serenity_health "$HEALTH"; then
       break
     fi
   done
-  URL="http://127.0.0.1:$PORT/"
   HEALTH="http://127.0.0.1:$PORT/api/health"
 fi
 if ! is_serenity_health "$HEALTH"; then
-  "$PYTHON" -m app.cli application-server --host 127.0.0.1 --port "$PORT" --disable-autoscheduler >> "$LOG_FILE" 2>&1 </dev/null &
-  SERVER_PID="$!"
+  nohup "$PYTHON" -m app.core.application_server --host 127.0.0.1 --port "$PORT" --disable-autoscheduler >> "$LOG_FILE" 2>&1 </dev/null &
   for _ in $(seq 1 60); do
     is_serenity_health "$HEALTH" && break
     sleep 0.5
   done
 fi
 if is_serenity_health "$HEALTH"; then
-  open "$URL" >/dev/null 2>&1 || true
+  open_serenity_home
 else
   /usr/bin/osascript -e 'display notification "本地服务启动失败，请查看 ~/Library/Logs/SerenityDailyAnalysis/application-server.log" with title "Serenity 每日分析"' >/dev/null 2>&1 || true
 fi
-if [ -n "$SERVER_PID" ]; then
-  wait "$SERVER_PID"
-fi
+exit 0

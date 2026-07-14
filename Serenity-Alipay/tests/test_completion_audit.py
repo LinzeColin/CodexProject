@@ -7,6 +7,7 @@ from pathlib import Path
 from app.core.completion_audit import run_completion_audit
 from app.core.pipeline import import_alipay_csv, run_slot
 from app.core.risk_gate_regression import run_risk_gate_regression
+from app.db import connect, init_db, insert_row
 from tests.helpers import copy_sample_data, temp_settings
 
 
@@ -334,6 +335,74 @@ def test_completion_audit_accepts_launchd_runtime_status_with_sqlite_int_dry_run
     items = {item["item_id"]: item for item in result["items"]}
     assert items["launchd_runtime_status"]["status"] == "pass"
     assert "dry_run=0" in items["launchd_runtime_status"]["proof"]
+
+
+def test_completion_audit_accepts_ran_tick_when_later_duplicate_and_non_actionable_local_sent(tmp_path: Path):
+    settings = temp_settings(tmp_path)
+    copy_sample_data(settings, Path.cwd())
+    init_db(settings.db_path)
+    report_path = settings.reports_dir / "r10_report.md"
+    html_path = settings.reports_dir / "r10_report.html"
+    report_path.write_text("report", encoding="utf-8")
+    html_path.write_text("<h1>report</h1>", encoding="utf-8")
+    with connect(settings.db_path) as conn:
+        insert_row(
+            conn,
+            "run_log",
+            {
+                "run_id": "r10",
+                "run_time_bj": "2026-06-12T17:30:00+08:00",
+                "run_time_au": "2026-06-12T19:30:00+10:00",
+                "schedule_slot": "R10",
+                "model_profile": settings.model_profile,
+                "status": "success",
+                "data_quality_status": "pass",
+                "notification_status": "sent",
+                "notes": "",
+                "report_path": str(report_path),
+                "offline_html_path": str(html_path),
+                "created_at": "2026-06-12T09:30:00+00:00",
+            },
+        )
+        conn.execute(
+            """
+            INSERT INTO automation_tick_log (
+              tick_time_bj, tick_time_au, due_slot, action, run_id, dry_run, created_at
+            )
+            VALUES
+              ('2026-06-12T17:30:00+08:00', '2026-06-12T19:30:00+10:00', 'R10', 'ran', 'r10', 0, '2026-06-12T09:30:00+00:00'),
+              ('2026-06-12T17:30:00+08:00', '2026-06-12T19:30:00+10:00', 'R10', 'skipped_duplicate', 'r10', 0, '2026-06-12T09:31:00+00:00')
+            """
+        )
+        insert_row(
+            conn,
+            "notification_log",
+            {
+                "notification_id": "r10_alert_notify",
+                "run_id": "r10",
+                "channel": "macos_mail_and_local",
+                "severity": "Alert",
+                "title": "No material action",
+                "body_path": "data/notifications/r10_alert_mail.md",
+                "send_status": "suppressed;local=sent",
+                "sent_at": None,
+                "error_message": "non actionable",
+                "action_signature": "{}",
+                "action_signature_hash": "hash",
+                "notification_kind": "info",
+                "beijing_date": "2026-06-12",
+                "suppress_reason": "non_actionable",
+                "related_run_id": None,
+                "created_at": "2026-06-12T09:30:00+00:00",
+            },
+        )
+
+    result = run_completion_audit(settings)
+
+    items = {item["item_id"]: item for item in result["items"]}
+    assert items["production_slot_backfill_verified"]["status"] == "pass"
+    assert "tick_action=ran" in items["production_slot_backfill_verified"]["proof"]
+    assert "non_actionable_local_notifications=1" in items["production_slot_backfill_verified"]["proof"]
 
 
 def test_completion_audit_accepts_shadow_safe_launchd_schedule_contract(tmp_path: Path):

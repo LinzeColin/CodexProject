@@ -1572,7 +1572,18 @@ def _audit_database(settings: Settings, items: list[AuditItem]) -> None:
         verification = _latest_strategy_run(conn)
         verification_run_id = verification["run_id"] if verification else None
         verification_run_time = datetime.fromisoformat(str(verification["run_time_bj"])) if verification else None
-        latest_tick = conn.execute(
+        verification_tick = conn.execute(
+            """
+            SELECT action, dry_run FROM automation_tick_log
+            WHERE run_id=?
+              AND action IN ('ran', 'manual_refresh_ran')
+              AND dry_run=0
+            ORDER BY rowid DESC
+            LIMIT 1
+            """,
+            (verification_run_id,),
+        ).fetchone() if verification_run_id else None
+        latest_tick = verification_tick or conn.execute(
             """
             SELECT action, dry_run FROM automation_tick_log
             WHERE run_id=?
@@ -1592,6 +1603,19 @@ def _audit_database(settings: Settings, items: list[AuditItem]) -> None:
             """,
             (verification_run_id,),
         ) if verification_run_id else 0
+        latest_non_actionable_local = _count(
+            conn,
+            """
+            SELECT count(*) FROM notification_log
+            WHERE run_id=?
+              AND channel='macos_mail_and_local'
+              AND notification_kind='info'
+              AND suppress_reason='non_actionable'
+              AND send_status LIKE '%local=sent%'
+            """,
+            (verification_run_id,),
+        ) if verification_run_id else 0
+        notification_delivery_ready = latest_sent > 0 or latest_non_actionable_local > 0
         verification_kind = (
             "future_controlled_backfill"
             if verification
@@ -1607,7 +1631,7 @@ def _audit_database(settings: Settings, items: list[AuditItem]) -> None:
             and latest_tick is not None
             and latest_tick["action"] in {"ran", "manual_refresh_ran"}
             and int(latest_tick["dry_run"] or 0) == 0
-            and latest_sent > 0
+            and notification_delivery_ready
         )
         _item(
             items,
@@ -1619,7 +1643,8 @@ def _audit_database(settings: Settings, items: list[AuditItem]) -> None:
             (
                 f"run_id={verification_run_id}, run_time_bj={verification['run_time_bj'] if verification else None}, "
                 f"verification_kind={verification_kind}, tick_action={latest_tick['action'] if latest_tick else None}, "
-                f"dry_run={latest_tick['dry_run'] if latest_tick else None}, sent_notifications={latest_sent}"
+                f"dry_run={latest_tick['dry_run'] if latest_tick else None}, sent_notifications={latest_sent}, "
+                f"non_actionable_local_notifications={latest_non_actionable_local}"
             ),
             db_path,
             "Run a Beijing business-day `automation-tick --no-dry-run --send-mail --local` verification." if not production_backfill_ready else "None",

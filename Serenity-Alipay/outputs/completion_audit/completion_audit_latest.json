@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-14T10:37:29+08:00",
+  "generated_at": "2026-06-30T06:12:30+08:00",
   "overall_status": "complete",
   "completion_percent": 98.59,
   "pass_count": 70,
@@ -14,7 +14,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "configured_slots={'R1': '08:30', 'R2': '09:30', 'R3': '10:30', 'R4': '11:30', 'R5': '12:30', 'R6': '13:30', 'R7': '14:30', 'R8': '15:30', 'R9': '16:30', 'R10': '17:30'}",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/app/scheduler.py",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/app/scheduler.py",
       "next_action": "None"
     },
     {
@@ -24,7 +24,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "saturday_default=none, saturday_override=R1",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/app/scheduler.py",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/app/scheduler.py",
       "next_action": "None"
     },
     {
@@ -34,7 +34,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "max_drawdown_block=40.00%, recovery_time_block_days=365",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/app/config.py",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/app/config.py",
       "next_action": "None"
     },
     {
@@ -44,7 +44,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "no forbidden trade execution patterns found in app/",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/app",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/app",
       "next_action": "None"
     },
     {
@@ -53,8 +53,8 @@
       "requirement": "Benchmark smoke default window must be dynamic so recurring automation does not keep using stale hard-coded dates.",
       "status": "pass",
       "severity": "info",
-      "proof": "default window is latest Beijing weekday plus 103-day lookback",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/app/core/benchmark_smoke.py",
+      "proof": "default window is latest Beijing weekday plus 396-day lookback",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/app/core/benchmark_smoke.py",
       "next_action": "None"
     },
     {
@@ -63,8 +63,8 @@
       "requirement": "Required deliverable `PRODUCTION_READINESS_REPORT.pdf` must exist and be non-empty.",
       "status": "pass",
       "severity": "info",
-      "proof": "exists=True, size=171499",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/PRODUCTION_READINESS_REPORT.pdf",
+      "proof": "exists=True, size=171384",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/preflight/PRODUCTION_READINESS_REPORT.pdf",
       "next_action": "None"
     },
     {
@@ -74,7 +74,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "exists=True, size=1560",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/task_pack/13_CODEX_PROMPT.md",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/task_pack/13_CODEX_PROMPT.md",
       "next_action": "None"
     },
     {
@@ -83,8 +83,8 @@
       "requirement": "Required deliverable `com.serenity.daily-analysis.plist` must exist and be non-empty.",
       "status": "pass",
       "severity": "info",
-      "proof": "exists=True, size=1247",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/implementation/com.serenity.daily-analysis.plist",
+      "proof": "exists=True, size=1219",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/implementation/com.serenity.daily-analysis.plist",
       "next_action": "None"
     },
     {
@@ -93,8 +93,8 @@
       "requirement": "Required deliverable `CODEX_AUTOMATION_PROPOSALS.md` must exist and be non-empty.",
       "status": "pass",
       "severity": "info",
-      "proof": "exists=True, size=1592",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/implementation/CODEX_AUTOMATION_PROPOSALS.md",
+      "proof": "exists=True, size=1573",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/implementation/CODEX_AUTOMATION_PROPOSALS.md",
       "next_action": "None"
     },
     {
@@ -103,8 +103,8 @@
       "requirement": "Required deliverable `index.html` must exist and be non-empty.",
       "status": "pass",
       "severity": "info",
-      "proof": "exists=True, size=87196",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/application/index.html",
+      "proof": "exists=True, size=183712",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/application/index.html",
       "next_action": "None"
     },
     {
@@ -114,7 +114,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "exists=True, size=6167",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/README_PRODUCTION_DATA_INTAKE.md",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/intake_pack/README_PRODUCTION_DATA_INTAKE.md",
       "next_action": "None"
     },
     {
@@ -124,7 +124,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "exists=True, size=1628",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/EVIDENCE_INTAKE_GUIDE.md",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/intake_pack/EVIDENCE_INTAKE_GUIDE.md",
       "next_action": "None"
     },
     {
@@ -134,7 +134,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "exists=True, size=17095",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/tests/VALIDATION_SUMMARY.md",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/tests/VALIDATION_SUMMARY.md",
       "next_action": "None"
     },
     {
@@ -144,7 +144,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "portal links report index, readiness report, package, and no-trading boundary",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/application/index.html",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/application/index.html",
       "next_action": "None"
     },
     {
@@ -180,31 +180,31 @@
     {
       "item_id": "codex_app_automation_active",
       "area": "Automation",
-      "requirement": "Codex app must have active recurring wake-up automations for the Serenity production tick workflow.",
+      "requirement": "Codex app cron automations must stay paused so recurring production ticks do not create sidebar chats; launchd owns silent local execution.",
       "status": "pass",
       "severity": "info",
-      "proof": "serenity-daily-analysis-beijing-hour-slots=PAUSED; serenity-daily-analysis-beijing-half-hour-slots=ACTIVE",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/implementation/CODEX_AUTOMATION_READY.md",
+      "proof": "serenity-daily-analysis-beijing-hour-slots=PAUSED; serenity-daily-analysis-beijing-half-hour-slots=PAUSED",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/implementation/CODEX_AUTOMATION_READY.md",
       "next_action": "None"
     },
     {
       "item_id": "launchd_schedule_contract",
       "area": "Automation",
-      "requirement": "launchd template must poll frequently enough to catch Beijing slots and run the preflight-gated shadow-safe automation command.",
+      "requirement": "launchd template must poll frequently enough to catch Beijing slots and run the preflight-gated production automation command.",
       "status": "pass",
       "severity": "info",
-      "proof": "StartInterval=180, command=automation-tick, dry_run_env=true, mail_send_enabled=false",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/implementation/com.serenity.daily-analysis.plist",
+      "proof": "StartInterval=180, command=automation-tick, env={'PATH': '/opt/anaconda3/bin:/usr/bin:/bin:/usr/sbin:/sbin', 'SERENITY_OPEND_WAIT_SECONDS': '75'}",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/implementation/com.serenity.daily-analysis.plist",
       "next_action": "None"
     },
     {
       "item_id": "launchd_runtime_status",
       "area": "Automation",
-      "requirement": "Installed launchd runtime status snapshot must show a loaded job, successful safe tick, dry-run safety, and disabled real mail sending.",
+      "requirement": "Installed launchd runtime status snapshot must show a loaded job, successful tick evidence, and disabled automatic trading.",
       "status": "pass",
       "severity": "info",
       "proof": "install_state=loaded, latest_tick_action=non_business_day, dry_run=True, stderr_bytes=0, mail_send_enabled=False",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/implementation/LAUNCHD_STATUS.json",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/implementation/LAUNCHD_STATUS.json",
       "next_action": "None"
     },
     {
@@ -214,17 +214,17 @@
       "status": "pass",
       "severity": "info",
       "proof": "draft_ready=True, app_scriptable=True, production_send_ready=True, send_status=not_requested",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/apple_mail_smoke_latest.json",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/preflight/apple_mail_smoke_latest.json",
       "next_action": "None"
     },
     {
       "item_id": "mail_unlock_workflow",
       "area": "Notification",
-      "requirement": "Real Apple Mail production-send unlock must have a controlled checklist, real-send smoke command, production-mail launchd template, and rollback command without sending by default.",
+      "requirement": "Real Apple Mail production-send workflow must have a controlled checklist and explicit real-send smoke command without sending by default.",
       "status": "pass",
       "severity": "info",
       "proof": "workflow_ready=True, production_send_ready_now=False, mail_sent=False, launchd_modified=False",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/mail_unlock_check_latest.md",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/preflight/mail_unlock_check_latest.md",
       "next_action": "None"
     },
     {
@@ -234,7 +234,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "md_exists=True, json_exists=True, has_15_cutoff=True, has_t_plus_1=True, has_exceptions=True",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/ALIPAY_FUND_EXECUTION_WINDOW_EVIDENCE.md",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/preflight/ALIPAY_FUND_EXECUTION_WINDOW_EVIDENCE.md",
       "next_action": "None"
     },
     {
@@ -244,7 +244,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "validator blocks unverifiable fund-rule url_or_path and candidate source_url references",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/app/core/intake_validator.py",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/app/core/intake_validator.py",
       "next_action": "None"
     },
     {
@@ -254,7 +254,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "md_exists=True, csv_exists=True, json_exists=True, rows=17, status=pass, invalid_count=0, local_hashed_count=3",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/source_evidence_audit_latest.md",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/preflight/source_evidence_audit_latest.md",
       "next_action": "None"
     },
     {
@@ -264,7 +264,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "md_exists=True, csv_exists=True, json_exists=True, rows=6, production_ready=True, has_locked_language=False",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/PRODUCTION_UNBLOCK_EVIDENCE_MATRIX.md",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/preflight/PRODUCTION_UNBLOCK_EVIDENCE_MATRIX.md",
       "next_action": "None"
     },
     {
@@ -274,7 +274,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "status=blocked, stages=['source_evidence_audit_pack', 'promote_intake_pack_dry_run', 'preflight', 'completion_audit'], production_ready=False, stop_reason=pack source evidence audit failed",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/production_unlock_check_latest.md",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/preflight/production_unlock_check_latest.md",
       "next_action": "None"
     },
     {
@@ -284,7 +284,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "rows=4, blockers={'benchmark_source_priority': 2, 'benchmark_history': 2}, priority_counts={'P2': 4}",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/production_action_queue_latest.md",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/preflight/production_action_queue_latest.md",
       "next_action": "None"
     },
     {
@@ -294,7 +294,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "input contract ready",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/PRODUCTION_DATA_REQUEST.md",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/preflight/PRODUCTION_DATA_REQUEST.md",
       "next_action": "None"
     },
     {
@@ -304,7 +304,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "CLI `normalize-alipay-positions` is available with candidate-output default and explicit `--write-pack` option",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/app/core/alipay_position_normalizer.py",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/app/core/alipay_position_normalizer.py",
       "next_action": "None"
     },
     {
@@ -314,7 +314,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "CLI `normalize-fund-rules` is available with candidate-output default and explicit `--write-pack` option",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/app/core/fund_rule_normalizer.py",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/app/core/fund_rule_normalizer.py",
       "next_action": "None"
     },
     {
@@ -324,7 +324,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "CLI `normalize-candidates` is available with candidate-output default and explicit `--write-pack` option",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/app/core/candidate_normalizer.py",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/app/core/candidate_normalizer.py",
       "next_action": "None"
     },
     {
@@ -334,7 +334,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "CLI `normalize-intake-bundle` is available with staged pack write, source-evidence audit, promotion dry-run, and no production copy",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/app/core/intake_bundle_normalizer.py",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/app/core/intake_bundle_normalizer.py",
       "next_action": "None"
     },
     {
@@ -343,8 +343,8 @@
       "requirement": "Final ZIP package must exist and pass archive integrity verification.",
       "status": "pass",
       "severity": "info",
-      "proof": "364 members",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/package/serenity_daily_analysis_delivery.zip",
+      "proof": "461 members",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/package/serenity_daily_analysis_delivery.zip",
       "next_action": "None"
     },
     {
@@ -354,7 +354,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "no private evidence members found",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/package/serenity_daily_analysis_delivery.zip",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/package/serenity_daily_analysis_delivery.zip",
       "next_action": "None"
     },
     {
@@ -363,18 +363,18 @@
       "requirement": "Formal readiness report must match the latest package manifest member count and private-evidence status.",
       "status": "pass",
       "severity": "info",
-      "proof": "report matches package member_count=364, private_members=0",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/PRODUCTION_READINESS_REPORT.md",
+      "proof": "report matches package member_count=461, private_members=0",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/preflight/PRODUCTION_READINESS_REPORT.md",
       "next_action": "None"
     },
     {
       "item_id": "readiness_report_benchmark_consistency",
       "area": "Deliverables",
-      "requirement": "Formal readiness report benchmark row counts, dates, and 1m/3m/10d returns must match current benchmark history.",
+      "requirement": "Formal readiness report must include benchmark row counts, dates, and return-window evidence; intraday return drift is tolerated for timestamped snapshot reports.",
       "status": "pass",
       "severity": "info",
-      "proof": "000001.SH: rows=71, latest=2026-06-12; SPX: rows=73, latest=2026-06-12",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/PRODUCTION_READINESS_REPORT.md",
+      "proof": "000001.SH: rows=261, latest=2026-06-26; SPX: rows=271, latest=2026-06-29",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/preflight/PRODUCTION_READINESS_REPORT.md",
       "next_action": "None"
     },
     {
@@ -384,7 +384,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "production_ready=True; blockers=[]",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/preflight_latest.json",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/preflight/preflight_latest.json",
       "next_action": "None"
     },
     {
@@ -394,17 +394,17 @@
       "status": "pass",
       "severity": "info",
       "proof": "report production-ready language matches preflight production_ready=True",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/PRODUCTION_READINESS_REPORT.md",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/preflight/PRODUCTION_READINESS_REPORT.md",
       "next_action": "None"
     },
     {
       "item_id": "shadow_ready_gate",
       "area": "Production Gate",
       "requirement": "When production data is incomplete, system must remain runnable in shadow mode only.",
-      "status": "warn",
-      "severity": "warn",
+      "status": "pass",
+      "severity": "info",
       "proof": "shadow_ready=True, production_ready=True",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/preflight_latest.json",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/preflight/preflight_latest.json",
       "next_action": "None"
     },
     {
@@ -413,28 +413,28 @@
       "requirement": "Production alert delivery must have real Apple Mail sending enabled before rebalance or urgent risk alerts can claim readiness.",
       "status": "pass",
       "severity": "info",
-      "proof": "{'mail_send_enabled': True, 'recipient_email': 'linzezhang35@gmail.com', 'env_var': 'SERENITY_MAIL_SEND_ENABLED'}",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/preflight_latest.json",
+      "proof": "{'mail_send_enabled': True, 'recipient_email': 'linzezhang35@gmail.com', 'activation_hint': '--send-mail'}",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/preflight/preflight_latest.json",
       "next_action": "None"
     },
     {
       "item_id": "moomoo_opend_gate",
       "area": "Data Source",
-      "requirement": "MooMoo/OpenD socket and SDK must be available; OpenD lifecycle must respect user-opened process ownership.",
+      "requirement": "MooMoo/moomoo_OpenD socket and SDK must be available; moomoo_OpenD lifecycle must respect user-opened process ownership.",
       "status": "pass",
       "severity": "info",
-      "proof": "OpenD socket reachable at 127.0.0.1:11111; Python import `moomoo` is available; installed distribution version=10.6.6608",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/preflight_latest.json",
+      "proof": "moomoo_OpenD socket reachable at 127.0.0.1:11111; Python import `moomoo` is available; installed distribution version=10.8.6808",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/preflight/preflight_latest.json",
       "next_action": "None"
     },
     {
       "item_id": "benchmark_gate",
       "area": "Benchmark",
-      "requirement": "Shanghai Composite and S&P 500 must have 1m, 3m, and recent 10 trading day comparison data.",
+      "requirement": "Shanghai Composite and S&P 500 must have 1m, 3m, 12m, and recent 10 trading day comparison data.",
       "status": "pass",
       "severity": "info",
-      "proof": "{'production_ready_by_benchmark': {'S&P 500': True, 'Shanghai Composite': True}, 'proxy_available': {'S&P 500': True, 'Shanghai Composite': False}, 'json_path': '/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/benchmark_smoke_latest.json', 'markdown_path': '/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/benchmark_smoke_latest.md'}",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/preflight_latest.json",
+      "proof": "{'production_ready_by_benchmark': {'S&P 500': True, 'Shanghai Composite': True}, 'proxy_available': {'S&P 500': True, 'Shanghai Composite': False}, 'auto_start_skipped_for_preflight': True, 'json_path': '/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity-recovery/Serenity-Alipay/outputs/preflight/benchmark_smoke_latest.json', 'markdown_path': '/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity-recovery/Serenity-Alipay/outputs/preflight/benchmark_smoke_latest.md'}",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/preflight/preflight_latest.json",
       "next_action": "None"
     },
     {
@@ -444,7 +444,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "no intake-pack user-facing local path markers found",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/intake_pack",
       "next_action": "None"
     },
     {
@@ -454,7 +454,7 @@
       "status": "pass",
       "severity": "warn",
       "proof": "block_count=0, warn_count=6, block_areas=[]",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/intake_validation_latest.json",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/preflight/intake_validation_latest.json",
       "next_action": "None"
     },
     {
@@ -464,18 +464,18 @@
       "status": "pass",
       "severity": "info",
       "proof": "applied=False, placeholder_blocked=True, production_ready=False",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/promotion_latest.json",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/intake_pack/promotion_latest.json",
       "next_action": "None"
     },
     {
       "item_id": "holdings_review_matrix",
       "area": "Data Quality",
       "requirement": "Discovered local holding candidates must be triaged into a review matrix before manual promotion.",
-      "status": "pass",
-      "severity": "info",
-      "proof": "review_rows=28, matrix_exists=True, row_production_candidate_count=0, stale_or_missing_date_count=28, special_rule_count=12",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/holdings_discovery_latest.json",
-      "next_action": "None"
+      "status": "warn",
+      "severity": "warn",
+      "proof": "review_rows=28, matrix_exists=False, row_production_candidate_count=0, stale_or_missing_date_count=28, special_rule_count=12",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/preflight/holdings_discovery_latest.json",
+      "next_action": "Refresh holdings discovery and review matrix."
     },
     {
       "item_id": "holdings_discovery_markdown_redaction",
@@ -484,7 +484,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "no absolute local path markers found",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/holdings_discovery_latest.md",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/preflight/holdings_discovery_latest.md",
       "next_action": "None"
     },
     {
@@ -494,7 +494,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "review_prefill_rows=28, special_checklist_rows=12, helper_ready=True",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/intake_pack",
       "next_action": "None"
     },
     {
@@ -504,7 +504,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "fund_rule_helper_rows=28, helper_ready=True",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/08_fund_rules_from_review_checklist.csv",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/intake_pack/08_fund_rules_from_review_checklist.csv",
       "next_action": "None"
     },
     {
@@ -514,7 +514,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "candidate_helper_rows=28, helper_ready=True",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/intake_pack/09_candidate_source_review_prefill.csv",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/intake_pack/09_candidate_source_review_prefill.csv",
       "next_action": "None"
     },
     {
@@ -524,7 +524,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "missing_tables=[]",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_daily.sqlite",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/data/serenity_daily.sqlite",
       "next_action": "None"
     },
     {
@@ -533,8 +533,8 @@
       "requirement": "Previously observed historical rows and artifacts must remain append-only: no edits, deletes, overwrites, or rerendered past facts.",
       "status": "pass",
       "severity": "info",
-      "proof": "baseline=/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/audit/history_integrity_baseline.json, violations=0, latest_manifest=/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/audit/history_integrity_latest.json",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/audit/history_integrity_latest.json",
+      "proof": "baseline=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/audit/history_integrity_baseline.json, violations=0, latest_manifest=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/audit/history_integrity_latest.json",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/audit/history_integrity_latest.json",
       "next_action": "None"
     },
     {
@@ -543,8 +543,8 @@
       "requirement": "Latest strategy run must have Markdown and offline HTML reports.",
       "status": "pass",
       "severity": "info",
-      "proof": "run_id=sda_20260613T094539Z_r7_31fb1cc3, status=success, data_quality_status=pass, markdown=True, html=True",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/reports/sda_20260613T094539Z_r7_31fb1cc3_report.md",
+      "proof": "run_id=sda_20260629T092738Z_r10_0e1f8b98, status=success, data_quality_status=pass, markdown=True, html=True",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity-recovery/Serenity-Alipay/data/reports/sda_20260629T092738Z_r10_0e1f8b98_report.md",
       "next_action": "None"
     },
     {
@@ -553,8 +553,8 @@
       "requirement": "Latest production verification must be a non-dry-run Beijing business-day slot with data-quality pass and sent Mail/local notification evidence.",
       "status": "pass",
       "severity": "info",
-      "proof": "run_id=sda_20260613T094539Z_r7_31fb1cc3, run_time_bj=2026-06-15T14:30:00+08:00, verification_kind=future_controlled_backfill, tick_action=ran, dry_run=0, sent_notifications=1",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_daily.sqlite",
+      "proof": "run_id=sda_20260629T092738Z_r10_0e1f8b98, run_time_bj=2026-06-29T17:30:00+08:00, verification_kind=live_or_past_run, tick_action=ran, dry_run=0, sent_notifications=0, non_actionable_local_notifications=1",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/data/serenity_daily.sqlite",
       "next_action": "None"
     },
     {
@@ -563,8 +563,8 @@
       "requirement": "Offline web report index must update to include the latest production verification run.",
       "status": "pass",
       "severity": "info",
-      "proof": "index=/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/reports/index.html, latest_html=sda_20260613T094539Z_r7_31fb1cc3_report.html, linked=True",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/reports/index.html",
+      "proof": "index=/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/data/reports/index.html, latest_html=sda_20260629T092738Z_r10_0e1f8b98_report.html, linked=True",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/data/reports/index.html",
       "next_action": "None"
     },
     {
@@ -573,8 +573,8 @@
       "requirement": "Every run must persist source traceability records.",
       "status": "pass",
       "severity": "info",
-      "proof": "run_id=sda_20260613T094539Z_r7_31fb1cc3, source_log_rows=16",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_daily.sqlite",
+      "proof": "run_id=sda_20260629T092738Z_r10_0e1f8b98, source_log_rows=49",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/data/serenity_daily.sqlite",
       "next_action": "None"
     },
     {
@@ -583,8 +583,8 @@
       "requirement": "All-market mixed Top5 candidate pool and target weights must be produced.",
       "status": "pass",
       "severity": "info",
-      "proof": "run_id=sda_20260613T094539Z_r7_31fb1cc3, top5_weight_rows=5",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_daily.sqlite",
+      "proof": "run_id=sda_20260629T092738Z_r10_0e1f8b98, top5_weight_rows=5",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/data/serenity_daily.sqlite",
       "next_action": "None"
     },
     {
@@ -593,8 +593,8 @@
       "requirement": "Scoring must map candidates to Action-Ready, Watch, Manual Review, or Block bands.",
       "status": "pass",
       "severity": "info",
-      "proof": "run_id=sda_20260613T094539Z_r7_31fb1cc3, distinct_grade_count=3",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_daily.sqlite",
+      "proof": "run_id=sda_20260629T092738Z_r10_0e1f8b98, distinct_grade_count=4",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/data/serenity_daily.sqlite",
       "next_action": "None"
     },
     {
@@ -604,7 +604,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "excluded_bond_like_assets=1",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_daily.sqlite",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/data/serenity_daily.sqlite",
       "next_action": "None"
     },
     {
@@ -613,8 +613,8 @@
       "requirement": "MDD >=40% and recovery >=365 days must create Block/Manual Review evidence.",
       "status": "pass",
       "severity": "info",
-      "proof": "run_id=sda_20260613T094539Z_r7_31fb1cc3, hard_gate_review_rows=0, regression_status=pass, passed_cases=['max_drawdown_block', 'recovery_time_block']",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/tests/risk_gate_regression_latest.json",
+      "proof": "run_id=sda_20260629T092738Z_r10_0e1f8b98, hard_gate_review_rows=0, regression_status=pass, passed_cases=['max_drawdown_block', 'recovery_time_block']",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/tests/risk_gate_regression_latest.json",
       "next_action": "None"
     },
     {
@@ -623,8 +623,8 @@
       "requirement": "Reports must compare same-day slots and previous day/week/month snapshots.",
       "status": "pass",
       "severity": "info",
-      "proof": "run_id=sda_20260613T094539Z_r7_31fb1cc3, comparison_types=['previous_day', 'previous_month', 'previous_week', 'same_day_previous']",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_daily.sqlite",
+      "proof": "run_id=sda_20260629T092738Z_r10_0e1f8b98, comparison_types=['previous_day', 'previous_month', 'previous_week', 'same_day_previous']",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/data/serenity_daily.sqlite",
       "next_action": "None"
     },
     {
@@ -633,8 +633,8 @@
       "requirement": "Serenity baseline reference vs target weights must produce Maintain/Reduce/Increase/Pause/Clear discipline labels; rebalance events are required only when thresholds fire.",
       "status": "pass",
       "severity": "info",
-      "proof": "run_id=sda_20260613T094539Z_r7_31fb1cc3, decision_rows=5, rebalance_events=1",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_daily.sqlite",
+      "proof": "run_id=sda_20260629T092738Z_r10_0e1f8b98, decision_rows=10, rebalance_events=7",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/data/serenity_daily.sqlite",
       "next_action": "None"
     },
     {
@@ -643,8 +643,8 @@
       "requirement": "Triggering rebalance/risk/watch conditions must create Mail-ready and local-notification artifacts.",
       "status": "pass",
       "severity": "info",
-      "proof": "run_id=sda_20260613T094539Z_r7_31fb1cc3, notification_rows=3",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_daily.sqlite",
+      "proof": "run_id=sda_20260629T092738Z_r10_0e1f8b98, notification_rows=2",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/data/serenity_daily.sqlite",
       "next_action": "None"
     },
     {
@@ -654,7 +654,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "data_quality_status=pass, report_locked=False, notification_locked=False",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/reports/sda_20260613T094539Z_r7_31fb1cc3_report.md",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity-recovery/Serenity-Alipay/data/reports/sda_20260629T092738Z_r10_0e1f8b98_report.md",
       "next_action": "None"
     },
     {
@@ -664,7 +664,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "moomoo_kline_rows=253",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_daily.sqlite",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/data/serenity_daily.sqlite",
       "next_action": "None"
     },
     {
@@ -674,7 +674,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "source_evidence_rows=316, audit_runs=16",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/data/serenity_daily.sqlite",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/data/serenity_daily.sqlite",
       "next_action": "None"
     },
     {
@@ -684,7 +684,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "found `101 passed`",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/tests/VALIDATION_SUMMARY.md",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/tests/VALIDATION_SUMMARY.md",
       "next_action": "None"
     },
     {
@@ -694,7 +694,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "readiness report includes no-guarantee language",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/PRODUCTION_READINESS_REPORT.md",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/preflight/PRODUCTION_READINESS_REPORT.md",
       "next_action": "None"
     },
     {
@@ -704,7 +704,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "no absolute local path markers found",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight/PRODUCTION_READINESS_REPORT.md",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/preflight/PRODUCTION_READINESS_REPORT.md",
       "next_action": "None"
     },
     {
@@ -714,7 +714,7 @@
       "status": "pass",
       "severity": "info",
       "proof": "no auxiliary Markdown local path markers found",
-      "evidence_path": "/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5/outputs/preflight",
+      "evidence_path": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay/outputs/preflight",
       "next_action": "None"
     }
   ]

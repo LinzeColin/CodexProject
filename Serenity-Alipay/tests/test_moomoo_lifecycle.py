@@ -39,9 +39,11 @@ def test_cleanup_does_not_touch_user_owned_opend(monkeypatch):
     assert result["cleanup_result"] == "not_started_by_tool"
 
 
-def test_cleanup_defers_auto_started_opend_until_socket_ready(monkeypatch):
+def test_cleanup_closes_auto_started_opend_even_when_socket_not_ready(monkeypatch):
     started_process = ProcessInfo(pid="200", command="/Applications/MoomooOpenD/moomoo_OpenD.app/Contents/MacOS/moomoo_OpenD")
+    commands: list[list[str]] = []
     monkeypatch.setattr("app.core.moomoo_lifecycle.process_snapshot", lambda: [started_process])
+    monkeypatch.setattr("app.core.moomoo_lifecycle.subprocess.run", lambda command, **kwargs: commands.append(command))
 
     lifecycle = OpenDLifecycle(
         socket_was_reachable=False,
@@ -61,8 +63,9 @@ def test_cleanup_defers_auto_started_opend_until_socket_ready(monkeypatch):
 
     result = cleanup_started_processes(lifecycle)
 
-    assert result["cleanup_attempted"] is False
-    assert result["cleanup_result"] == "deferred_socket_not_ready"
+    assert result["cleanup_attempted"] is True
+    assert result["cleanup_result"] == "terminated_started_processes:200"
+    assert commands == [["kill", "-TERM", "200"]]
 
 
 def test_ensure_opend_suppresses_duplicate_start_when_existing_process_is_launching(monkeypatch, tmp_path):

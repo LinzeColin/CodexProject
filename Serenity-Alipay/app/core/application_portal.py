@@ -2104,6 +2104,10 @@ def render_application_portal(
     )
     latest_run_time = current_bj
     report_href = _portal_relative_href("data/reports/index.html", "../../data/reports/index.html")
+    package_href = _portal_relative_href(
+        "outputs/package/serenity_daily_analysis_delivery.zip",
+        "../package/serenity_daily_analysis_delivery.zip",
+    )
     snapshot_href = _portal_relative_href(
         current_run.html_path if current_run else None,
         report_href,
@@ -3091,6 +3095,10 @@ def render_application_portal(
         <article class="action-card">
           <div><strong>报告</strong><p>查看最新结果和历史归档。</p></div>
           <a class="action primary" href="{report_href}">查看报告</a>
+        </article>
+        <article class="action-card">
+          <div><strong>交付包</strong><p>下载正式 ZIP 交付归档。</p></div>
+          <a class="action" href="{_escape(package_href)}">下载 ZIP</a>
         </article>
         <article class="action-card">
           <div><strong>当前快照</strong><p>直接打开本轮完整快照。</p></div>

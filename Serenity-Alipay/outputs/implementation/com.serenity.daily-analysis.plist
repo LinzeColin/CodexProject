@@ -6,7 +6,7 @@
   <key>Label</key>
   <string>com.serenity.daily-analysis</string>
   <key>WorkingDirectory</key>
-  <string>/Users/linzezhang/Documents/Codex/2026-06-12/codex-dev-automation-using-model-5</string>
+  <string>/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/serenity/Serenity-Alipay</string>
   <key>ProgramArguments</key>
   <array>
     <string>/opt/anaconda3/bin/python</string>

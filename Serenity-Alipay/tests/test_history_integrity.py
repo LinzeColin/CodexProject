@@ -1,7 +1,8 @@
 from pathlib import Path
 import csv
+import json
 
-from app.core.history_integrity import run_history_integrity
+from app.core.history_integrity import _canonical_json, _sha256_text, run_history_integrity
 from app.db import connect, init_db, insert_row, record_asset_pool_entries, upsert_asset
 from tests.helpers import temp_settings
 
@@ -64,6 +65,75 @@ def test_history_integrity_allows_append_but_blocks_mutation(tmp_path: Path):
     assert any(
         violation["area"] == "sqlite" and violation["violation_type"] == "row_changed"
         for violation in mutated["violations"]
+    )
+
+
+def test_history_integrity_allows_notification_log_appended_schema_columns(tmp_path: Path):
+    settings = temp_settings(tmp_path)
+    init_db(settings.db_path)
+    legacy_columns = [
+        "notification_id",
+        "run_id",
+        "channel",
+        "severity",
+        "title",
+        "body_path",
+        "send_status",
+        "sent_at",
+        "error_message",
+    ]
+    with connect(settings.db_path) as conn:
+        conn.execute(
+            """
+            INSERT INTO notification_log (
+              notification_id, run_id, channel, severity, title,
+              body_path, send_status, sent_at, error_message
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                "n1",
+                "r1",
+                "macos_mail",
+                "Info",
+                "Title",
+                "data/notifications/n1.md",
+                "drafted",
+                None,
+                None,
+            ),
+        )
+        row = dict(conn.execute("SELECT * FROM notification_log WHERE notification_id='n1'").fetchone())
+
+    baseline = run_history_integrity(settings, write_baseline=True)
+    baseline_path = Path(str(baseline["baseline_path"]))
+    baseline_data = json.loads(baseline_path.read_text(encoding="utf-8"))
+    table = baseline_data["sqlite"]["tables"]["notification_log"]
+    table["columns"] = legacy_columns
+    table["rows"] = {
+        "notification_id=n1": _sha256_text(_canonical_json({column: row.get(column) for column in legacy_columns}))
+    }
+    baseline_path.write_text(json.dumps(baseline_data, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    appended_schema = run_history_integrity(settings)
+    assert appended_schema["status"] == "pass"
+    assert appended_schema["violation_count"] == 0
+
+    with connect(settings.db_path) as conn:
+        conn.execute("UPDATE notification_log SET created_at='2026-06-12T06:00:00+00:00' WHERE notification_id='n1'")
+    extra_column_changed = run_history_integrity(settings)
+    assert extra_column_changed["status"] == "pass"
+    assert extra_column_changed["violation_count"] == 0
+
+    with connect(settings.db_path) as conn:
+        conn.execute("UPDATE notification_log SET send_status='sent' WHERE notification_id='n1'")
+    old_column_changed = run_history_integrity(settings)
+    assert old_column_changed["status"] == "block"
+    assert any(
+        violation["area"] == "sqlite"
+        and violation["item"] == "notification_log:notification_id=n1"
+        and violation["violation_type"] == "row_changed"
+        for violation in old_column_changed["violations"]
     )
 
 
