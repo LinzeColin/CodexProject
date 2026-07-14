@@ -194,10 +194,10 @@
   },
   "fairness_contract": {
     "priority_cannot_bypass_safety_gate": true,
-    "starvation_allowed": false,
+    "starvation_prevention_proved": false,
     "priority_vocabulary_owner": "STAGE-022",
-    "scheduler_algorithm": "DEFERRED_TO_PHASE2",
-    "per_job_type_concurrency": "DEFERRED_TO_PHASE2"
+    "scheduler_algorithm": "NOT_IMPLEMENTED_IN_STAGE040",
+    "per_job_type_concurrency": "PHASE2_ADMISSION_GUARD_ONLY"
   },
   "idempotency_contract": {
     "decision_key_formula": "idempotency_key + policy_version + pressure_observation_set_digest",
@@ -252,7 +252,10 @@
     "ADMIT": "可接收",
     "THROTTLE_ADMISSION": "限流中",
     "DENY_NEW_ADMISSION": "暂不接收新任务",
-    "PAUSE_RESOURCE_GATE": "已暂停",
+    "PAUSE_RESOURCE_GATE": {
+      "QUEUED_OR_RETRY_WAIT": "已暂停",
+      "CLAIMED_OR_RUNNING": "暂停中"
+    },
     "REQUIRE_MANUAL_REVIEW": "等待人工复核"
   },
   "phase2_entry_gate": {

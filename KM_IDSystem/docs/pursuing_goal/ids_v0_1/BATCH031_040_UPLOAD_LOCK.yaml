@@ -1,13 +1,18 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-031-040"
 created_at_utc: "2026-07-03T08:32:56Z"
-updated_at_utc: "2026-07-14T09:18:00Z"
-status: "stage040_phase4_completed_review_pending"
+updated_at_utc: "2026-07-14T09:58:18Z"
+status: "stage040_completed_reviewed_local"
 
 transition_history:
+  stage040_review_state:
+    status: "stage040_completed_reviewed_local"
+    current_task_id: "IDS-V0_1-STAGE040-REVIEW"
+    next_allowed_task_id: "IDS-V0_1-BATCH-031-040-REVIEW-GATE"
   stage040_phase4_state:
     status: "stage040_phase4_completed_review_pending"
     current_task_id: "IDS-V0_1-STAGE040-P4"
+    next_gate: "IDS-STAGE040-REVIEW-GATE"
     next_allowed_task_id: "IDS-V0_1-STAGE040-REVIEW"
   stage040_phase3_state:
     status: "stage040_phase3_completed"
@@ -414,18 +419,18 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
   STAGE-040:
-    status: "stage040_phase4_completed_review_pending"
+    status: "stage040_completed_reviewed_local"
     completed_phases:
       - "Phase 1"
       - "Phase 2"
       - "Phase 3"
       - "Phase 4"
-    review_status: "pending"
-    next_phase: "stage_review"
-    next_gate: "IDS-STAGE040-REVIEW-GATE"
-    current_task_id: "IDS-V0_1-STAGE040-P4"
+    review_status: "passed"
+    next_phase: "batch_review_gate"
+    next_gate: "IDS-V0_1-BATCH-031-040-REVIEW-GATE"
+    current_task_id: "IDS-V0_1-STAGE040-REVIEW"
     acceptance_id: "ACC-STAGE-040"
-    acceptance_status: "phase4_delivery_complete_review_pending"
+    acceptance_status: "reviewed_local_passed"
     source_verification_status: "SOURCE_VERIFIED"
     phase2_entry_authorized: true
     phase3_entry_authorized: true
@@ -441,7 +446,7 @@ stage_progress:
     backpressure_policy_contract_id: "ids.backpressure_policy.v0_1.stage040.p2"
     policy_version: "ids.backpressure_policy.v0_1.stage040.p2"
     phase2_contract_state: "PHASE2_ISOLATED_DECISION_SLICE_ENABLED_PRODUCTION_DISABLED"
-    contract_state: "PHASE4_CLOSEOUT_EVIDENCE_REVIEW_PENDING"
+    contract_state: "REVIEWED_LOCAL_PRODUCTION_DISABLED"
     parameter_fact_level: "PROPOSED"
     production_calibrated: false
     production_calibration_task_id: "TASK-OPME-B-001"
@@ -463,7 +468,14 @@ stage_progress:
     delivery_contract_schema: "ids.stage040.backpressure.phase4.delivery.v1"
     delivery_contract_valid: true
     delivery_result: "PASS_ISOLATED_CLOSEOUT_PRODUCTION_DISABLED"
-    stage_review_status: "pending_next_run"
+    stage_review_schema: "ids.stage040.backpressure.stage_review.v1"
+    stage_review_status: "completed_reviewed_local"
+    stage_review_result: "PASS_REVIEWED_LOCAL_PRODUCTION_DISABLED"
+    review_finding_count: 3
+    review_critical_finding_count: 1
+    review_important_finding_count: 2
+    review_minor_finding_count: 0
+    review_findings_repaired: true
     required_job_type_count: 8
     required_job_state_count: 11
     required_terminal_state_count: 4
@@ -494,7 +506,7 @@ stage_progress:
     lock_runtime_performed: false
     automatic_resume_performed: false
     cleanup_runtime_performed: false
-    whole_stage_review_performed: false
+    whole_stage_review_performed: true
     batch_review_performed: false
     database_connection_performed: false
     raw_metadata_content_accessed: false
@@ -517,6 +529,9 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_delivery_contract.json"
       - "KM_IDSystem/scripts/check_backpressure_delivery.py"
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_delivery.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_STAGE_REVIEW.md"
+      - "KM_IDSystem/scripts/check_backpressure_stage_review.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_review.py"
       - "KM_IDSystem/docs/governance/MODEL_SPEC.md"
       - "KM_IDSystem/docs/governance/project.yaml"
       - "KM_IDSystem/docs/governance/model_registry.yaml"
@@ -526,8 +541,8 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
-  current_task_id: "IDS-V0_1-STAGE040-P4"
-  next_allowed_task_id: "IDS-V0_1-STAGE040-REVIEW"
+  current_task_id: "IDS-V0_1-STAGE040-REVIEW"
+  next_allowed_task_id: "IDS-V0_1-BATCH-031-040-REVIEW-GATE"
   github_upload_allowed: false
-  current_run: "STAGE-040 Phase 4 delivered machine-checked state/decision graphs, reviewed failure-retry evidence, seven pressure proofs, the cleanup allowlist, truthful recovery classification, safe shutdown/recovery, rollback, and Chinese feedback, then stopped before whole-stage review."
-  no_upload_reason: "BATCH031_040 has STAGE-040 Phase 1-4 complete, but the Stage040 whole-stage review, review repairs, the tenth-stage batch review, and the separate upload gate have not run, so push_allowed stays false."
+  current_run: "STAGE-040 whole-stage review found one Critical and two Important issues, repaired all three, revalidated Phase 1-4 and external source integrity, and closed ACC-STAGE-040 as completed_reviewed_local without entering the batch review."
+  no_upload_reason: "BATCH031_040 now has STAGE-031 through STAGE-040 completed_reviewed_local, but the separate ten-stage batch review and upload gates have not run, so push_allowed stays false."

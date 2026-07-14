@@ -44,16 +44,16 @@ UPSTREAM_BINDINGS = {
     "phase1_policy_contract": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/"
         "stage040_backpressure_policy_contract.json",
-        "9298a248fb8a63d159ceef105b6081ba257086646d296fb0697e6747a0c394b4",
+        "fe7110d0338de3fcb603e267ecf8995ef93e8db58f401612f322ff06166bd25a",
     ),
     "phase1_checker": (
         "KM_IDSystem/scripts/check_backpressure_policy.py",
-        "cbba512a16a77be80be9fcfd1f3ac0bc496b753e2cec6904af333f908eab28e3",
+        "debf37652e23f4b618739a7eb22ed63fd9fa5dd508dad931ec772031049298d0",
     ),
     "phase1_scope_boundary": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
         "STAGE040_PHASE1_BACKPRESSURE_SCOPE_BOUNDARY.md",
-        "80d220ef937ce890e47758f23bf993156c6882b0d3ed4ee2875f0d0766b68cf6",
+        "68826e3b64936568327ac5050bbff7ba8ed9960ae791a69825ed6c6d3ff3aef6",
     ),
     "stage037_state_index": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
@@ -346,6 +346,40 @@ class Stage040BackpressureRuntimeTests(unittest.TestCase):
         self.assertEqual("TERMINAL_STATE_IMMUTABLE", terminal["reason_code"])
         self.assertIsNone(terminal["requested_state"])
         self.assertIsNone(terminal["candidate_state_version"])
+
+    def test_malformed_control_metadata_is_structured_and_redacted(self):
+        module = self._module()
+        contract = self._contract()
+        valid_job = self._job()
+
+        invalid_observation = module.evaluate_backpressure(
+            valid_job,
+            {"unexpected": object()},
+            contract=contract,
+            now_epoch_seconds=1,
+        )
+        self.assertEqual(
+            "INVALID_PRESSURE_OBSERVATION", invalid_observation["reason_code"]
+        )
+        self.assertIsNone(invalid_observation["observed_at_epoch_seconds"])
+        json.dumps(invalid_observation)
+
+        for invalid_refs in (
+            [{"private_payload": "SENTINEL"}],
+            ["PRIVATE_SENTINEL_NOT_A_REF"],
+        ):
+            with self.subTest(invalid_refs=invalid_refs):
+                invalid_job = copy.deepcopy(valid_job)
+                invalid_job["input_refs"] = invalid_refs
+                result = module.evaluate_backpressure(
+                    invalid_job,
+                    {},
+                    contract=contract,
+                    now_epoch_seconds=1,
+                )
+                self.assertEqual("INVALID_CONTRACT_OR_JOB", result["reason_code"])
+                self.assertEqual([], result["input_refs"])
+                self.assertNotIn("SENTINEL", json.dumps(result))
 
     def test_idempotent_replay_and_checkpoint_are_deterministic(self):
         module = self._module()

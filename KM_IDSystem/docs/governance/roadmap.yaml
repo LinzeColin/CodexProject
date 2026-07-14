@@ -2,10 +2,15 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE040"
-current_phase_id: "IDS-STAGE040-P4"
-current_task_id: "IDS-V0_1-STAGE040-P4"
-next_gate_id: "IDS-STAGE040-REVIEW-GATE"
+current_phase_id: "IDS-STAGE040-REVIEW"
+current_task_id: "IDS-V0_1-STAGE040-REVIEW"
+next_gate_id: "IDS-V0_1-BATCH-031-040-REVIEW-GATE"
 current_transition_history:
+  stage040_review_state:
+    current_stage_id: "IDS-STAGE040"
+    current_phase_id: "IDS-STAGE040-REVIEW"
+    current_task_id: "IDS-V0_1-STAGE040-REVIEW"
+    next_gate_id: "IDS-V0_1-BATCH-031-040-REVIEW-GATE"
   stage040_phase4_state:
     current_stage_id: "IDS-STAGE040"
     current_phase_id: "IDS-STAGE040-P4"
@@ -9864,7 +9869,7 @@ stages:
     stage_id: "IDS-STAGE040"
     name: "STAGE-040 · 反压策略"
     person_goal: "当磁盘不足、队列过长、外部 API 预算不足或外接盘离线时，自动限制新任务准入或请求安全暂停受影响任务。"
-    status: "in_progress"
+    status: "completed_reviewed_local"
     stop_conditions:
       - "一次 run 试图完成多个 phase"
       - "未知、缺失、过期或未版本化的压力观测仍允许新任务准入"
@@ -9878,7 +9883,7 @@ stages:
       - "在 Phase 3 run 内进入 Phase 4、GitHub upload、PR、merge、app reinstall、stage review 或 batch gate"
     stop_gate:
       gate_id: "IDS-STAGE040-REVIEW-GATE"
-      status: "pending"
+      status: "passed"
       pass_conditions:
         - "Phase 1 through Phase 4 each pass in separate runs"
         - "Backpressure decisions preserve ids.job_state.v1, retry budget and idempotency"
@@ -9898,6 +9903,13 @@ stages:
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_scenarios.json"
         - "KM_IDSystem/scripts/check_backpressure_scenarios.py"
         - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_scenarios.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE4_CLOSEOUT.md"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_delivery_contract.json"
+        - "KM_IDSystem/scripts/check_backpressure_delivery.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_delivery.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_STAGE_REVIEW.md"
+        - "KM_IDSystem/scripts/check_backpressure_stage_review.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_review.py"
     phases:
       -
         phase_id: "IDS-STAGE040-P1"
@@ -10137,9 +10149,13 @@ stages:
     review:
       review_id: "IDS-STAGE040-REVIEW"
       task_id: "IDS-V0_1-STAGE040-REVIEW"
-      status: "pending"
+      status: "completed"
       acceptance_ids:
         - "ACC-STAGE-040"
-      evidence_refs: []
-      test_results: "not_run"
-      decision: "Pending separate Phase 2-4 runs and a later whole-stage review; push_allowed=false."
+      evidence_refs:
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_STAGE_REVIEW.md"
+        - "KM_IDSystem/scripts/check_backpressure_stage_review.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_review.py"
+        - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+      test_results: "TDD review RED produced 6 failures and 2 errors across 8 tests. Review repaired one Critical and two Important findings covering malformed control metadata fail-closed behavior, state-aware pause status, and unsupported scheduler fairness claims. Final layered validation is recorded in STAGE040_STAGE_REVIEW.md and the review event."
+      decision: "ACC-STAGE-040 completed_reviewed_local after all three findings were repaired; next gate is the separate IDS-V0_1-BATCH-031-040-REVIEW-GATE, push_allowed=false, and this run did not enter batch review or STAGE-041."

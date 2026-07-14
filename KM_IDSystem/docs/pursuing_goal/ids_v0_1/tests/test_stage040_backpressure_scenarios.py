@@ -47,16 +47,16 @@ EXPECTED_HASHES = {
     "stage040_phase2_contract": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/"
         "stage040_backpressure_runtime_contract.json",
-        "2fb9437f85a8c86cbfc8d6002e031554683bdf9b4a421b06c6b9503c6c40b6c1",
+        "3db2409b082b9f788e061dfbb3a8e33ad8459c8e56a863e21fe0faeca8581b5c",
     ),
     "stage040_phase2_checker": (
         "KM_IDSystem/scripts/check_backpressure_runtime.py",
-        "8442ef6b9ff63e3999205151d5bf8deddbe3085730dc864b5627e6b4ff06da06",
+        "c28493586d2d0982948ce5e968ff756ddf069228382328078c5516c6348c15ad",
     ),
     "stage040_phase2_evidence": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/"
         "STAGE040_PHASE2_BACKPRESSURE_DECISION_SLICE.md",
-        "5b8f1a030034a6cb9f8becc5e42ee4e354d51fb0ac394366e641ebb90fa31c41",
+        "3a01138928e4fa9c526ab392617464675b30ae42d290e91de942e887b91132b3",
     ),
     "stage039_scenario_contract": (
         "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/"

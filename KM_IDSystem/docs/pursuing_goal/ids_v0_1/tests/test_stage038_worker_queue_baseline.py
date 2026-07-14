@@ -332,7 +332,11 @@ class Stage038WorkerQueueBaselinePhase1Tests(unittest.TestCase):
             roadmap["current_stage_id"],
             {"IDS-STAGE038", "IDS-STAGE039", "IDS-STAGE040"},
         )
-        self.assertTrue(roadmap["next_gate_id"].startswith("IDS-STAGE"))
+        self.assertTrue(
+            roadmap["next_gate_id"].startswith("IDS-STAGE")
+            or roadmap["next_gate_id"]
+            == "IDS-V0_1-BATCH-031-040-REVIEW-GATE"
+        )
         roadmap_stage = next(
             item for item in roadmap["stages"] if item.get("stage_id") == "IDS-STAGE038"
         )

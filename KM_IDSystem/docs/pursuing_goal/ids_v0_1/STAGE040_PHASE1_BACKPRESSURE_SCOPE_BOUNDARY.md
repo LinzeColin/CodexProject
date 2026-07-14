@@ -10,13 +10,15 @@ of five actions:
 | All applicable observations valid and healthy | `ADMIT` | no policy state mutation | `可接收` |
 | Queue soft pressure | `THROTTLE_ADMISSION` | defer admission; no lifecycle mutation | `限流中` |
 | Queue hard capacity | `DENY_NEW_ADMISSION` | create no queue record | `暂不接收新任务` |
-| Drive, disk, or API resource unavailable | `PAUSE_RESOURCE_GATE` | use a legal STAGE-037 pause path | `已暂停` |
+| Drive, disk, or API resource unavailable | `PAUSE_RESOURCE_GATE` | queued/retry-wait jobs may reach `PAUSED`; claimed/running jobs only request `PAUSE_REQUESTED` | queued/retry-wait: `已暂停`; claimed/running: `暂停中` |
 | Missing, unknown, stale, or unversioned pressure | `REQUIRE_MANUAL_REVIEW` | no new admission | `等待人工复核` |
 
 `UNKNOWN_OR_STALE_PRESSURE` is fail-closed. Priority cannot bypass a safety
-gate. Throttling cannot silently starve any priority class; STAGE-022 remains
-the priority-vocabulary owner and the scheduling algorithm is deferred to
-Phase 2.
+gate. Stage 040 does not implement or prove scheduler-level starvation
+prevention; STAGE-022 remains the priority-vocabulary owner. Phase 2 provides
+only a per-job-type admission guard, while the scheduling algorithm remains
+`NOT_IMPLEMENTED_IN_STAGE040` and must be introduced by a separately governed
+future owner.
 
 ## Legal Lifecycle Effects
 
