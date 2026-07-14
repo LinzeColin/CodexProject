@@ -99,8 +99,8 @@ Commit/PR summaries must include:
 
 - Canonical worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS`
 - Project scope: `KM_IDSystem/` only.
-- Current local state: `STAGE-040 · 反压策略` Phase 3 is complete with local evidence; Stage040 remains `in_progress` and has not entered Phase 4.
-- Current task: `IDS-V0_1-STAGE040-P3`; acceptance: `ACC-STAGE-040`; next separate gate: `IDS-STAGE040-P4-GATE`.
+- Current local state: `STAGE-040 · 反压策略` Phase 4 is complete with local evidence; Stage040 remains `in_progress` pending a separate whole-stage review.
+- Current task: `IDS-V0_1-STAGE040-P4`; acceptance: `ACC-STAGE-040`; next separate gate: `IDS-STAGE040-REVIEW-GATE`.
 - Exact source status: `SOURCE_VERIFIED`; the unique Stage040 member is `IDS_v0_1_Final_Chinese_Revised/stages/STAGE-040_反压策略.md` with SHA-256 `f0ef128467300d7541796f8d51caca673f838cac2552eba2e415a94a07af614d`.
 - Corrected Phase 1 defines queue/worker separation, envelope idempotency, retry/dead-letter, backpressure, lock granularity, automatic lifecycle, crash-recovery checkpoint, and cleanup allowlist interfaces. STAGE-039..044 retain dedicated runtime policy and implementation ownership.
 - A six-surface finite-state check binds batch, roadmap, entry, Phase 1, source evidence, and review evidence. Independent review repaired `1 Critical / 1 Important / 0 Minor` and ended at `0 / 0 / 0`.
@@ -136,10 +136,15 @@ Commit/PR summaries must include:
 - The worker exception and project free-space observation are actual isolated observations. Drive/API/low-disk boundary inputs are control metadata; no physical drive removal, disk allocation, process termination, external API call, cleanup/delete, Stage040 queue/worker runtime, production lock, crash recovery, persistence, database action, or production activation occurred.
 - Phase 3 replays the reviewed Stage038/039 in-memory lock proof but keeps production lock/lease/fencing with STAGE-041. It verifies Git-tracked fact source, manifest, evidence ledger, report snapshot, and audit log refs without exposing a delete path; cleanup runtime remains owned by STAGE-044.
 - Final Phase 3 validation: checker `18/18` contract and `8/8` scenario checks; focused `11/11`; Stage040 `36/36`; Stage005 `148/148`; Stage031-039 `254/254`; Stage026-030 `75/75`; full IDS v0.1 discovery `699/699`; changed-only governance `0` errors / `0` warnings; `190` events with no duplicate ID; owner render drift/reference issues `0/0`.
+- Stage040 Phase 4 binds the exact Stage037 8-type/11-state/4-terminal/21-transition graph, seven pressure signals, and the reviewed actual Stage039 three-attempt/two-retry/dead-letter history into one fail-closed delivery report.
+- The cleanup allowlist remains limited to temporary staging and incomplete derivative outputs; fact sources, manifests, evidence ledgers, report snapshots, and audit logs are protected. No delete or cleanup runtime runs.
+- Automatic recovery eligibility and observed success are both empty. Healthy new admission is not recovery; eight unknown, terminal, resource, worker, conflict, calibration, contract, and crash cases require manual handling or a downstream gate.
+- Safe shutdown replays reviewed isolated transport closure and records fresh-observation recovery plus P4-only rollback. There is no persistent pressure state, automatic resume, process recovery, production runtime, or production-readiness claim.
+- Final Phase 4 validation: checker `14/14` contract and `8/8` delivery checks; focused `10/10`; Stage040 `46/46`; Stage005 `149/149`; Stage031-039 `254/254`; Stage026-030 `75/75`; full IDS v0.1 discovery `710/710`; changed-only governance `0` errors / `0` warnings; `191` events with no duplicate ID; owner render drift/reference issues `0/0`.
 - STAGE-038 retains queue/worker transport; STAGE-039 retry/dead-letter; STAGE-041 locks/leases/fencing; STAGE-042 automatic resume; STAGE-043 crash recovery; STAGE-044 cleanup execution. Phase 1 executed none of these runtimes.
-- Only `IDS-V0_1-STAGE040-P4` may run next, in a separate run. Do not start Stage040 whole-stage review or the batch review/upload gates before Phase 4 completes in its own run.
+- Only `IDS-V0_1-STAGE040-REVIEW` may run next, in a separate run. Do not start the batch review/upload gates before Stage040 passes that independent whole-stage review.
 - `BATCH031_040` remains locked with `push_allowed=false`; do not upload, merge, reinstall app entries, or run batch gates before all ten stages are complete and reviewed.
-- Current Phase 3 evidence adds `STAGE040_PHASE3_SCENARIO_VALIDATION.md`, `backpressure_policy/stage040_backpressure_scenarios.json`, `scripts/check_backpressure_scenarios.py`, and `tests/test_stage040_backpressure_scenarios.py`.
+- Current Phase 4 evidence adds `STAGE040_PHASE4_CLOSEOUT.md`, `backpressure_policy/stage040_backpressure_delivery_contract.json`, `scripts/check_backpressure_delivery.py`, and `tests/test_stage040_backpressure_delivery.py`.
 - The real metadata root `/Users/linzezhang/Downloads/IDS_MetaData` is path-only governance context. Do not read, list, hash, open, copy, move, delete, modify, dump, scan, normalize, or commit its contents.
 - Do not use fake IDS business data, fake database rows, placeholder corpus, fabricated profiles, dumps, execution logs, or evidence.
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## IDS v0.1 STAGE-040 Phase 4 - 2026-07-14
+
+- Added an exact-hash-bound closeout contract and stdout-only checker for the Stage037 job-state graph, seven backpressure signals, reviewed actual Stage039 failure/retry evidence, protected cleanup rules, recovery classification, shutdown, recovery, and rollback.
+- Recorded three attempts, two retry admissions, terminal `DEAD_LETTERED`, zero eligible or observed automatic-recovery cases, eight manual-action cases, and restrained Chinese owner feedback without inventing persistent logs or successful recovery evidence.
+- Routed the only next task to the separate `IDS-V0_1-STAGE040-REVIEW` run. Production queue/worker, persistence, database, raw metadata, fake IDS business data, lock/resume/crash/cleanup runtimes, whole-stage review, batch gates, GitHub/issue action, and app reinstall remain disabled.
+
 ## IDS v0.1 STAGE-040 Phase 3 - 2026-07-13
 
 - Added an exact-hash-bound eight-scenario contract and stdout-only checker for duplicate decisions, actual isolated worker-exception boundaries, drive/disk/API pressure, same-source cross-operation concurrency, reviewed lock conflicts, and protected cleanup denial.

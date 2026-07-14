@@ -2,10 +2,15 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE040"
-current_phase_id: "IDS-STAGE040-P3"
-current_task_id: "IDS-V0_1-STAGE040-P3"
-next_gate_id: "IDS-STAGE040-P4-GATE"
+current_phase_id: "IDS-STAGE040-P4"
+current_task_id: "IDS-V0_1-STAGE040-P4"
+next_gate_id: "IDS-STAGE040-REVIEW-GATE"
 current_transition_history:
+  stage040_phase4_state:
+    current_stage_id: "IDS-STAGE040"
+    current_phase_id: "IDS-STAGE040-P4"
+    current_task_id: "IDS-V0_1-STAGE040-P4"
+    next_gate_id: "IDS-STAGE040-REVIEW-GATE"
   stage040_phase3_state:
     current_stage_id: "IDS-STAGE040"
     current_phase_id: "IDS-STAGE040-P3"
@@ -10078,23 +10083,27 @@ stages:
         phase_id: "IDS-STAGE040-P4"
         name: "反压策略 证据、回滚与关闭"
         objective: "In a separate run, produce state/decision graphs, safe logs, pressure evidence, allowlists, shutdown/recovery/rollback instructions and close Phase 4 before whole-stage review."
-        status: "planned"
+        status: "passed_with_local_evidence"
         stop_conditions:
           - "Phase 3 is incomplete or evidence is not truthful"
           - "Closeout claims production readiness, automatic resume, lock runtime, crash recovery or cleanup execution without evidence"
         stop_gate:
           gate_id: "IDS-STAGE040-P4-GATE"
-          status: "pending"
+          status: "passed_with_local_evidence"
           pass_conditions:
             - "ACC-STAGE-040 delivery evidence is complete, truthful and rollback-ready"
             - "Next task is only IDS-V0_1-STAGE040-REVIEW"
-          evidence_refs: []
+          evidence_refs:
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE4_CLOSEOUT.md"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_delivery_contract.json"
+            - "KM_IDSystem/scripts/check_backpressure_delivery.py"
+            - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_delivery.py"
         tasks:
           -
             task_id: "IDS-V0_1-STAGE040-P4"
             name: "关闭反压策略 Phase 4"
             objective: "Complete only the approved Phase 4 closeout in a separate run."
-            status: "planned"
+            status: "completed"
             estimated_hours: 1.5
             total_hours_percent: "15.00%"
             dependencies:
@@ -10102,9 +10111,27 @@ stages:
             acceptance_ids:
               - "ACC-STAGE-040"
             test_commands:
-              - "TDD commands must be recorded in the separate Phase 4 run"
-            test_results: "not_run"
-            evidence_refs: []
+              - "python3 -B KM_IDSystem/scripts/check_backpressure_delivery.py"
+              - "python3 -B -m unittest -q KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage040_backpressure_policy KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage040_backpressure_runtime KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage040_backpressure_scenarios KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage040_backpressure_delivery"
+              - "python3 -B -m unittest -q KM_IDSystem.docs.pursuing_goal.ids_v0_1.tests.test_stage005_governance_regression"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -p 'test_stage03[1-9]*.py' -q"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -p 'test_stage040*.py' -q"
+              - "python3 -B -m unittest discover -s KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests -q"
+              - "python3 -B scripts/lean_governance.py check-render --project KM_IDSystem"
+              - "events.jsonl parse and duplicate-id check"
+              - "git diff --check"
+              - "python3 -B scripts/validate_governance_sync.py --changed-only --base-ref HEAD --semantic --drift-report"
+            test_results: "TDD RED: Stage040 Phase4 10/10 tests failed because the checker, contract, closeout evidence, and governance route did not exist. GREEN: checker 14/14 contract checks and 8/8 delivery checks true; Stage040 Phase4 10 tests OK; Stage040 aggregate 46 tests OK; Stage005 149 tests OK; Stage031-039 aggregate 254 tests OK; Stage026-030 compatibility 75 tests OK; full IDS v0.1 discovery 710 tests OK. Direct Stage005 failed closed only on the four preserved owner dirty paths while scoped Stage005 valid=true; 191 events parsed with zero duplicate ids and one Stage040 Phase4 event; owner render drift/reference counts zero; git diff checks passed; changed-only governance errors=0 and warnings=0. Implementation self-review repaired dotted-schema note parsing and the missing checker changed-path allowlist. No Stage040 queue/worker runtime, process termination, physical drive removal, disk allocation, external API call, cleanup/delete, production lock, automatic resume, crash recovery, persistence, database, raw metadata, fake IDS business data, production, GitHub, issue mutation, app reinstall, whole-stage review, or batch gate ran."
+            evidence_refs:
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE1_BACKPRESSURE_SCOPE_BOUNDARY.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE2_BACKPRESSURE_DECISION_SLICE.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE3_SCENARIO_VALIDATION.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE4_CLOSEOUT.md"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_delivery_contract.json"
+              - "KM_IDSystem/scripts/check_backpressure_delivery.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_delivery.py"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+              - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
             risk: "Closeout may be misread as whole-stage or production approval."
             rollback: "Revert only Phase 4 artifacts and keep Stage040 review pending."
     review:
