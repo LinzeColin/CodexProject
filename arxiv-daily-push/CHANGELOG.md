@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-07-15 Australia/Sydney - Return home.linzezhang.com to the homepage; ADP moves to adp.linzezhang.com
+
+- The task pack named home.linzezhang.com but the Owner clarified it is the homepage domain: the worker custom domain was detached (verified no longer resolving) and ADP now serves at adp.linzezhang.com (verified 200). The R6 README explains the mirror's role (local-first architecture) and documents the optional Cloudflare Tunnel upgrade that serves the full local system at the same URL.
+
 ## 2026-07-15 Australia/Sydney - Remove cloud mirror key login per Owner directive
 
 - home.linzezhang.com now opens directly with no key (Owner directive); pages are publicly readable and the tradeoff plus the recommended Cloudflare Access private-mode upgrade are disclosed in deploy/cloudflare/README.md. The /grade endpoint keeps its one-entry-per-lesson-per-day cap and the local pull keeps Sydney-day dedup. Receipt recorded in config_changes; the key scheme remains recoverable from git history (a0a79743).

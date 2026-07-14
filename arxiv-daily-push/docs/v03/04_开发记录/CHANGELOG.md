@@ -52,3 +52,4 @@
 | 2026-07-15 | R5 | bioRxiv 影子源上线：14 天真实影子报表（420 候选/全过线/2 天换头名/0 失败），零入库零干扰，上板卡待 Owner | 绿（影子运行中） |
 | 2026-07-15 | R6 | Cloudflare 混合部署真实上线：home.linzezhang.com Worker+D1 镜像+回传队列+cron，401 拦截与云评分回传实测；R2 快照降级待 Owner 开通 | 绿（已上线） |
 | 2026-07-15 | R6 | 按 Owner 指令取消云端钥匙登录：home.linzezhang.com 直开（公开可读代价+Access 选项披露于 R6 README；回执入 config_changes） | 绿（已实测 200） |
+| 2026-07-15 | R6 | 纠正域名占用：home.linzezhang.com 归还主页（解绑实测无解析），ADP 迁至 adp.linzezhang.com（实测 200）；README 说明镜像定位与完整系统直连（Tunnel）升级路径 | 绿 |
