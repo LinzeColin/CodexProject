@@ -1577,6 +1577,10 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
             self.assertIn(required, text)
         self.assertIn("scripts/lean_governance.py", text)
         self.assertIn("governance/run_manifests", text)
+        self.assertIn("Shared durable context routes through OpenAIDatabase", text)
+        self.assertIn("use `codex_personalization`", text)
+        self.assertIn("load only its `read_order`", text)
+        self.assertIn("never scan raw/private memory paths", text)
 
     def test_s3pct01_adp_a020_gate_decision_is_path_aware_and_fail_closed(self) -> None:
         cli = load_lean_governance_module()
@@ -5015,6 +5019,102 @@ class ProjectGovernanceValidatorTests(unittest.TestCase):
         self.assertIn("must not leave open PRs as their delivery state", text)
         self.assertIn("Stale, conflicting, superseded, or draft PRs", text)
         self.assertIn("re-cut it from current `main` as a clean branch", text)
+
+    def test_shared_memory_root_adapters_use_one_bundle(self) -> None:
+        claude_path = ROOT / "CLAUDE.md"
+        claude_text = claude_path.read_text(encoding="utf-8")
+        claude_lines = claude_text.splitlines()
+        self.assertLessEqual(len(claude_lines), 80)
+        imports = [line[1:] for line in claude_lines if line.startswith("@")]
+        self.assertEqual(
+            imports,
+            [
+                "AGENTS.md",
+                "OpenAIDatabase/data/derived/personalization/claude_personalization.md",
+            ],
+        )
+        for imported in imports:
+            relative = Path(imported)
+            self.assertFalse(relative.is_absolute())
+            self.assertNotIn("..", relative.parts)
+            self.assertFalse({"raw", "private"} & set(relative.parts))
+            self.assertTrue((ROOT / relative).is_file(), imported)
+
+        settings = json.loads((ROOT / ".claude/settings.json").read_text(encoding="utf-8"))
+        self.assertIs(settings["autoMemoryEnabled"], False)
+        self.assertFalse((ROOT / "memory").exists())
+
+        routes = json.loads(
+            (ROOT / "OpenAIDatabase/config/context_sources/resource_routes.json").read_text(encoding="utf-8")
+        )
+        by_intent = {row["intent"]: row for row in routes["routes"]}
+        expected_routes = {
+            "codex": (
+                "codex_personalization",
+                [
+                    "AGENTS.md",
+                    "data/derived/personalization/codex_personalization.md",
+                ],
+            ),
+            "claude": (
+                "claude_personalization",
+                ["data/derived/personalization/claude_personalization.md"],
+            ),
+        }
+        manifest = json.loads(
+            (
+                ROOT
+                / "OpenAIDatabase/data/derived/personalization/memory_bundle_manifest.json"
+            ).read_text(encoding="utf-8")
+        )
+        for provider, (intent, read_order) in expected_routes.items():
+            self.assertEqual(by_intent[intent]["read_order"], read_order)
+            projection = read_order[-1]
+            projection_path = ROOT / "OpenAIDatabase" / projection
+            metadata: dict[str, str] = {}
+            for line in projection_path.read_text(encoding="utf-8").splitlines():
+                if line.startswith("## "):
+                    break
+                if line.startswith("- ") and ": " in line:
+                    key, value = line[2:].split(": ", 1)
+                    metadata[key] = value
+            self.assertEqual(metadata["provider"], provider)
+            self.assertEqual(metadata["bundle_id"], manifest["bundle_id"])
+            self.assertEqual(
+                metadata["canonical_source_hash"],
+                manifest["canonical_source_hash"],
+            )
+            self.assertEqual(manifest["projections"][provider]["path"], projection)
+
+        run_manifest_path = (
+            ROOT
+            / "governance/run_manifests/CODEXPROJECT-SM-P0-R2-20260713.json"
+        )
+        run_manifest = json.loads(run_manifest_path.read_text(encoding="utf-8"))
+        records = run_manifest["content_records"]
+        for record in records:
+            actual = hashlib.sha256((ROOT / record["path"]).read_bytes()).hexdigest()
+            self.assertEqual(actual, record["sha256"], record["path"])
+        record_payload = json.dumps(
+            records,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        self.assertEqual(
+            run_manifest["content_tree_hash"],
+            "sha256-changed-files-excluding-this-manifest:"
+            + hashlib.sha256(record_payload).hexdigest(),
+        )
+        self.assertEqual(
+            set(run_manifest["run2_changed_files"]),
+            {
+                ".claude/settings.json",
+                "AGENTS.md",
+                "CLAUDE.md",
+                "governance/run_manifests/CODEXPROJECT-SM-P0-R2-20260713.json",
+                "tests/governance/test_project_governance_validator.py",
+            },
+        )
 
     def test_review8_manifest_only_root_change_does_not_require_test_marker(self) -> None:
         sync = load_sync_module()

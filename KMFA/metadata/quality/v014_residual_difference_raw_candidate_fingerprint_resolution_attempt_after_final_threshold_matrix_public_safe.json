@@ -1,0 +1,75 @@
+{
+  "check_count": 15,
+  "check_fail_count": 0,
+  "check_pass_count": 15,
+  "checks": [
+    {
+      "check_code": "source_final_threshold_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_threshold_met",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_blocker_count_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_private_final_threshold_records_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "residual_anchor_draft_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "residual_alignment_items_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "outside_scope_alignment_items_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "resolution_attempt_items_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "auto_resolution_zero_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "still_blocked_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "candidate_evidence_zero_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_resolution_outputs_ignored",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_value_comparison_claimed",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_gates_closed",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "phase_id": "V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_FINGERPRINT_RESOLUTION_ATTEMPT_AFTER_FINAL_THRESHOLD",
+  "project_id": "KMFA",
+  "record_type": "v014_raw_candidate_fingerprint_resolution_attempt_after_final_threshold_matrix_public_safe",
+  "schema_version": "kmfa.v014_raw_candidate_fingerprint_resolution_attempt_after_final_threshold_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-RESIDUAL-DIFFERENCE-RAW-CANDIDATE-FINGERPRINT-RESOLUTION-ATTEMPT-AFTER-FINAL-THRESHOLD-20260707",
+  "version": "0.1.4-residual-difference-raw-candidate-fingerprint-resolution-attempt-after-final-threshold"
+}

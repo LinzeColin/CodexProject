@@ -1,8 +1,9 @@
 {
   "schema_version": "kmfa.quality_grade_policy.v1",
   "project_id": "KMFA",
+  "version": "0.1.4-s02p3-quality-gate",
   "stage_phase": "S02-P3",
-  "source_roadmap": "02_KMFA_Codex_Development_Roadmap_18_Stages_v1_1.md:S02-P3",
+  "source_roadmap": "02_KMFA_Codex_Development_Roadmap_18_Stages_v1_4.md:S02-P3",
   "append_only": true,
   "forbidden_plaintext": true,
   "quality_grades": [
@@ -63,5 +64,6 @@
     "stale_input",
     "raw_data_mutation_detected"
   ],
-  "runtime_status": "protocol_defined_no_business_data_committed"
+  "runtime_status": "protocol_defined_no_business_data_committed",
+  "v014_scope": "quality_gate_policy_only_no_raw_read_no_stage_review_no_upload"
 }

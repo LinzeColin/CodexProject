@@ -1,0 +1,162 @@
+{
+  "schema_version": "memory_atlas.remediation_r3_status.v1",
+  "phase": "R3",
+  "captured_at": "2026-07-10T10:39:21Z",
+  "status": "R3_COMPLETE_LOCAL_ONLY",
+  "release_status": "FAIL_REMEDIATION_REQUIRED",
+  "base_commit": "d758c0af871430bee9d736d0d6e09a7028a4e193",
+  "design_commit": "6e831ab843b993784e2bd034d4d3955d25477509",
+  "implementation_commit": "b0c11acb7645bb3a7b65b6e20beb418c77e04bf8",
+  "origin_main_at_phase_start": "b864009c657c6a9cebbf451e30389c1aa5809700",
+  "origin_main_at_close": "bd06ee38c1b8c52bcafd68b3c3b0a752a53cae62",
+  "command_api": {
+    "version": "memory_atlas_command_api.v1_2_r3",
+    "endpoint": "/__memory_atlas_command",
+    "bind_host": "127.0.0.1",
+    "request_keys": [
+      "command_id"
+    ],
+    "max_body_bytes": 1024,
+    "command_timeout_seconds": 180,
+    "allowlisted_command_count": 6,
+    "allowlisted_command_ids": [
+      "sync_chatgpt",
+      "sync_codex",
+      "generate_weekly_report",
+      "view_pending_proposals",
+      "generate_personalization_prompt",
+      "chatgpt_deep_explore"
+    ],
+    "fixed_argv": true,
+    "shell": false,
+    "scrubbed_child_environment": true,
+    "single_command_lock": true,
+    "process_group_timeout_termination": true,
+    "metadata_only_audit": true
+  },
+  "workspace_boundary": {
+    "required_shape": "<app-support>/source + <app-support>/runtime",
+    "manifest_required": true,
+    "direct_symlink_rejected": true,
+    "git_checkout_rejected": true,
+    "canonical_source_manifest_rejected": true,
+    "path_escape_rejected": true,
+    "acceptance_workspace": "temporary_installer_shaped_fixture",
+    "canonical_repo_mutation": false,
+    "installed_app_updated": false
+  },
+  "workflow_acceptance": {
+    "sync_chatgpt": "PASS_REAL_REDACTED_FIXTURE_SYNC_AND_SNAPSHOT_REFRESH",
+    "sync_codex": "PASS_REAL_REDACTED_FIXTURE_SYNC_AND_SNAPSHOT_REFRESH",
+    "generate_weekly_report": "PASS_REAL_DERIVED_WEEKLY_ARTIFACT",
+    "view_pending_proposals": "PASS_REAL_READ_ONLY_STATE_PATH",
+    "generate_personalization_prompt": "PASS_REAL_ALL_TARGET_ARTIFACTS",
+    "chatgpt_deep_explore": "PASS_REAL_PREFILL_ONLY_URL_NO_SUBMIT"
+  },
+  "browser_acceptance": {
+    "validator": "validate:v1.2-command-workflows",
+    "status": "PASS",
+    "command_request_count": 6,
+    "command_result_success_count": 6,
+    "remote_origin_rejected": true,
+    "remote_lifecycle_origin_rejected": true,
+    "extra_fields_rejected": true,
+    "cors_enabled": false,
+    "no_silent_send": true,
+    "external_request_methods": [
+      "GET"
+    ],
+    "hosted_static_command_post_count": 0,
+    "hosted_static_handoff": "http://127.0.0.1:4177",
+    "artifact_checks_passed": 9,
+    "screenshot_count": 3,
+    "screenshots_nonblank": true
+  },
+  "requirements_after_r3": {
+    "requirement_count": 58,
+    "verified": 38,
+    "partial": 13,
+    "failed": 5,
+    "not_verified": 2,
+    "promoted_to_verified": [
+      "S04-AC01",
+      "S12-AC01",
+      "S12-AC02",
+      "S12-AC03"
+    ],
+    "kept_verified_with_stronger_evidence": [
+      "S12-AC04"
+    ]
+  },
+  "regression": {
+    "python_targeted_tests": "36 passed",
+    "typescript_lint": "PASS",
+    "production_build": "PASS_WITH_EXISTING_CHUNK_SIZE_WARNING",
+    "home_multiviewport": {
+      "status": "PASS",
+      "viewports": [
+        "1470x661",
+        "1440x900",
+        "390x844"
+      ],
+      "overlap_count": 0,
+      "horizontal_overflow_count": 0,
+      "viewport_escape_count": 0,
+      "command_actions_reachable": 6,
+      "chinese_behavior_summaries_reachable": 9
+    },
+    "stage7_visual": "PASS",
+    "galaxy_lit_pixel_samples": 67201,
+    "galaxy_points": 11828,
+    "memory_river_markers": 64,
+    "memory_river_density_bands": 48,
+    "privacy_guard_high_risk_secret_hits": 0,
+    "privacy_guard_tracked_raw_private_files": 0,
+    "preview_ports_released": true
+  },
+  "review": {
+    "independent_reviewer": "completed",
+    "high_findings_initial": 1,
+    "medium_findings_initial": 3,
+    "high_findings_final": 0,
+    "medium_findings_final": 0,
+    "resolved_findings": [
+      "timeout now terminates the complete child process group before releasing the command lock",
+      "source workspace symlink and path escape are rejected",
+      "heartbeat and release endpoints enforce the same loopback same-origin contract",
+      "browser validator builds the current frontend before acceptance instead of trusting stale dist"
+    ],
+    "residual_low_risks": [
+      "a future trusted child that deliberately creates a new session or double-forks could escape process-group termination",
+      "workspace trust continues to depend on the installer-created manifest"
+    ]
+  },
+  "evidence": {
+    "browser": "机器治理/证据与日志/remediation/v1_2_r3/browser/final/status.json",
+    "home_regression": "机器治理/证据与日志/remediation/v1_2_r3/regression/home/status.json",
+    "stage7_regression": "机器治理/证据与日志/remediation/v1_2_r3/regression/stage7/status.json",
+    "requirement_delta": "机器治理/证据与日志/remediation/v1_2_r3/requirements_gap_delta.csv",
+    "human_record": "docs/remediation/memory_atlas_v1_2/R3_REAL_COMMAND_PALETTE_WORKFLOWS.md"
+  },
+  "git_state_before_record_commit": {
+    "origin_main": "bd06ee38c1b8c52bcafd68b3c3b0a752a53cae62",
+    "origin_main_changed_during_phase": true,
+    "local_ahead_of_origin": 6,
+    "local_behind_origin": 10,
+    "local_branch_count": 1,
+    "local_stash_count": 0,
+    "merge_performed": false,
+    "rebase_performed": false,
+    "remote_push": false,
+    "reconciliation_action": "DEFER_TO_R8_PRESERVE_BOTH_HISTORIES"
+  },
+  "github_main_upload_allowed": false,
+  "remote_push": false,
+  "deployment": false,
+  "app_reinstall": false,
+  "command_execution_added_to_local_candidate": true,
+  "proposal_apply_added": false,
+  "owner_daily_added": false,
+  "raw_mutation": false,
+  "next_phase": "R4_PROPOSAL_APPROVAL_APPLY_ROLLBACK_WORKFLOW"
+}

@@ -1,6 +1,22 @@
 governance_spec_version: "1.0.0"
 project_id: "OpenAIDatabase"
 tasks:
+  - task_id: "MACDATA-PROM2-SETUP-20260705"
+    phase: "MACDATA"
+    objective: "Install proM2 macdata controlled archive workflow and align preflight/cleanup policy with owner-confirmed local hardware and cleanup requirements."
+    scope: ["OpenAIDatabase/macdata/proM2", "OpenAIDatabase governance records", "GitHub archive branch macdata-proM2"]
+    non_scope: ["Time Machine", "iCloud", "API keys", "tokens", "passwords", "cookies", "sessions", "Keychain", "shell history", "full environment dumps", ".env raw content", "other macdata devices"]
+    status: "in_progress"
+    dependencies: ["S5PBT03"]
+    required_files: ["OpenAIDatabase/macdata/proM2/config/device_config.json", "OpenAIDatabase/macdata/proM2/config/owner_confirmations.json", "OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py", "OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py"]
+    acceptance_ids: ["ACC-MACDATA-PROM2-SETUP-20260705"]
+    test_commands: ["python3 -m unittest OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py -q", "python3 OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py --repo-root . --preflight-only", "git ls-remote origin refs/heads/macdata-proM2"]
+    test_results: ["PASS: package unittest ran 8 tests OK", "PASS: preflight detected MacBook Pro / Mac14,5 / Apple M2 Max / 32GB", "PASS: last_run_status shape covers raw/report archive verification", "PASS: post-run hygiene branch policy protects main and macdata-proM2", "PASS: Chinese report artifacts use Markdown .md paths for latest/draft/final reports", "PENDING: final archive branch verification after md report push"]
+    evidence_refs: ["OpenAIDatabase/macdata/proM2/config/device_config.json", "OpenAIDatabase/macdata/proM2/config/owner_confirmations.json", "OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py", "OpenAIDatabase/macdata/proM2/data/latest/last_run_status.json", "OpenAIDatabase/macdata/proM2/reports/latest/latest_report.md"]
+    risk: "Cleanup must remain remote-verified and whitelist-bound; PR/branch/issue hygiene must only touch managed objects already merged to main."
+    rollback: "Revert setup commit; delete macdata-proM2 remote branch only after confirming archive history is not needed."
+    target_version: "0.2.0"
+    completed_version: ""
   - task_id: "TASK-OAI-A-001"
     phase: "A"
     objective: "Complete P10 read-only audit for OpenAIDatabase."
@@ -130,6 +146,41 @@ tasks:
     target_version: "0.2.0"
     completed_version: "0.2.0"
     completed_commit: "PENDING"
+  - task_id: "OAIDB-SM-P0-R1"
+    phase: "C"
+    objective: "Generate deterministic ChatGPT, Codex, and Claude projections from the existing OpenAIDatabase canonical source set with one shared provider-neutral bundle identity."
+    scope: ["shared bundle_id and canonical_source_hash", "Claude projection capped at 4096 bytes", "minimal claude_personalization route", "projection manifest hashes", "privacy and determinism tests", "redacted agent-run evidence"]
+    non_scope: ["root AGENTS.md or CLAUDE.md adapters", "RUN 2 or RUN 3", "real-agent cold-start acceptance", "raw/private data", "new dependencies or services", "commit or push"]
+    status: "completed"
+    dependencies: ["TASK-OAI-C-002"]
+    required_files: ["OpenAIDatabase/data/derived/personalization/chatgpt_personalization.md", "OpenAIDatabase/data/derived/personalization/codex_personalization.md", "OpenAIDatabase/data/derived/personalization/claude_personalization.md", "OpenAIDatabase/data/derived/personalization/memory_bundle_manifest.json", "OpenAIDatabase/config/context_sources/resource_routes.json", "OpenAIDatabase/tests/test_cross_agent_memory_adapter.py", "OpenAIDatabase/data/run_logs/agent_runs/2026-07-13.shared-memory-run1.jsonl"]
+    acceptance_ids: ["ACC-OAIDB-SM-P0-R1"]
+    test_commands: ["python3.12 -B scripts/build_personalization_exports.py --database-dir .", "python3.12 -B -m unittest OpenAIDatabase.tests.test_s3pdt01_privacy OpenAIDatabase.tests.test_agent_context_pack OpenAIDatabase.tests.test_codex_memory_sync OpenAIDatabase.tests.test_cross_agent_memory_adapter OpenAIDatabase.tests.test_personalization_architecture -q", "python3.12 -B OpenAIDatabase/scripts/evaluate_personalization_context.py --database-dir OpenAIDatabase", "python3.12 -B OpenAIDatabase/scripts/route_agent_resources.py --database-dir OpenAIDatabase --intent claude_personalization", "python3.12 -B scripts/lean_governance.py check-render --project OpenAIDatabase", "python3.12 -B scripts/lean_governance.py validate --changed-only --enforce-sync --semantic --base-ref origin/main", "python3.12 -B scripts/lean_governance.py ci --changed-only --base-ref origin/main", "git diff --check"]
+    test_results: ["RECOVERED: premature acceptance revoked after two P1 findings", "PASS: v2 bundle identity binds canonical and every actual projection input", "PASS: evaluator independently recomputes and fail-closes on stale/tampered source proof", "PASS: two deterministic generator runs produced identical hashes", "PASS: 22 targeted tests", "PASS: evaluator failures=0 and Claude route", "PASS: renderer/check-render, changed-only semantic validation, CI SHIP, and git diff check", "PASS: second independent review found no new P0/P1"]
+    evidence_refs: ["OpenAIDatabase/data/derived/personalization/memory_bundle_manifest.json", "OpenAIDatabase/tests/test_cross_agent_memory_adapter.py", "OpenAIDatabase/data/run_logs/agent_runs/2026-07-13.shared-memory-run1.jsonl"]
+    risk: "Provider projections and the manifest are derived/read-only rather than canonical truth; real cross-agent consumption and root adapters remain separate RUN 2-3 work."
+    rollback: "Remove the Claude projection, manifest, route, focused test, and RUN 1 governance/evidence, then regenerate the pre-RUN 1 personalization outputs."
+    target_version: "0.2.0"
+    completed_version: "0.2.0"
+  - task_id: "CF-L2-20260710"
+    phase: "CF-L2"
+    objective: "Deliver the redacted derived MemoryAtlas viewer as a public-safe Cloudflare L2 surface while the raw and private OpenAIDatabase core remains local."
+    scope: ["MemoryAtlas production build", "Workers Static Assets config", "privacy and accessibility validation", "public deployment evidence"]
+    non_scope: ["raw archives", "private imports", "cookies or sessions", "direct database mutation", "Access policy removal"]
+    status: "completed"
+    dependencies: []
+    required_files: ["OpenAIDatabase/apps/memory-atlas/src/App.tsx", "OpenAIDatabase/apps/memory-atlas/dist", "OpenAIDatabase/wrangler.jsonc", "governance/cloudflare/deployments.json"]
+    acceptance_ids: ["ACC-CF-L2-20260710"]
+    test_commands: ["npm run build", "npm run validate:stage7-privacy-accessibility", "python3 scripts/cloudflare/scan_public_dist.py --path OpenAIDatabase/apps/memory-atlas/dist", "npx wrangler@4.110.0 deploy --dry-run"]
+    test_results: ["PASS: Vite production build", "PASS: release privacy and accessibility gate", "PASS: private distribution scan", "PASS: Wrangler 4.110.0 dry-run", "PASS: Cloudflare Pages deployment 82988d29-504a-437e-a8b5-621a59e701af from clean commit 5a24333e", "PASS: owner-allowlist Access challenge, allowed-user app load, runtime JSON fetch and published-artifact safety verified"]
+    evidence_refs: ["OpenAIDatabase/apps/memory-atlas/src/App.tsx", "governance/cloudflare/deployments.json", "FINAL_ACCEPTANCE_BUNDLE/cloudflare_compatibility_envelope/FINAL_REPORT.md"]
+    risk: "A protected Access sign-in page or redacted viewer could be mislabeled as anonymous public deployment or as the private memory core."
+    rollback: "Restore the previous Wrangler config and HomeHub link while preserving the Access-protected custom domain and local private data."
+    target_version: "0.2.0"
+    completed_version: "0.2.0"
+    completed_commit: "5a24333eb2afa766f5f7416b877a8a560c5302ab"
+    fact_level: "EXTRACTED"
+    unknown_task_ids: []
   - task_id: "TASK-OAI-D-002"
     phase: "D"
     objective: "Execute authorized Cloudflare Pages direct upload and verify Cloudflare Access protection for Memory Atlas."
@@ -160,6 +211,23 @@ tasks:
     evidence_refs: ["OpenAIDatabase/scripts/evaluate_personalization_context.py", "OpenAIDatabase/scripts/sync_codex_memory_data.py", "OpenAIDatabase/scripts/build_agent_context_pack.py", "OpenAIDatabase/scripts/deploy_memory_atlas_cloudflare.py", "OpenAIDatabase/skills/openai-memory-analysis/scripts/openai_memory_analysis.py"]
     risk: "This repairs CI evidence handling only; legacy sync rows remain historical evidence and live Cloudflare delivery remains blocked."
     rollback: "Revert TASK-OAI-D-003 script and governance changes; main would return to the previous OpenAIDatabase CI failure."
+    target_version: "0.2.0"
+    completed_version: "0.2.0"
+    completed_commit: "PENDING"
+  - task_id: "TASK-OAI-D-004"
+    phase: "D"
+    objective: "Repair Memory Atlas Phase 1 live URL readiness gates so local validators correctly reflect the release contract before a protected Cloudflare Pages + Access deployment."
+    scope: ["Memory Atlas package script alias", "Stage 3 and Stage 6 validator drift", "whole-project validator aggregation", "visual acceptance audit validator", "release-safety removal of tracked encrypted session key"]
+    non_scope: ["Cloudflare live upload", "Cloudflare Access policy mutation", "publishing memoryatlas.linzezhang.com", "raw export ingestion", "plaintext secrets", "dist or node_modules commits", "delivery readiness promotion"]
+    status: "completed"
+    dependencies: ["TASK-OAI-D-001", "TASK-OAI-D-002"]
+    required_files: ["OpenAIDatabase/apps/memory-atlas/package.json", "OpenAIDatabase/apps/memory-atlas/scripts/validate_inspector_proposal.mjs", "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_part3_stage2.cjs", "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_part4_stage3.cjs", "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_part7_stage6.cjs", "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_whole_project.cjs", "OpenAIDatabase/scripts/audit_memory_atlas_visual_acceptance.py"]
+    acceptance_ids: ["ACC-OAI-D-004"]
+    test_commands: ["pnpm --dir OpenAIDatabase/apps/memory-atlas run lint", "pnpm --dir OpenAIDatabase/apps/memory-atlas run build", "pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:stage8-release-safety", "pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:stage8-local-app", "pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:stage8-local-app-packaging", "pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:whole-project", "cd OpenAIDatabase && python3 scripts/preflight_cloudflare_pages_access.py --publish-dir apps/memory-atlas/dist", "python3 scripts/lean_governance.py ci --changed-only --base-ref origin/main"]
+    test_results: ["PASS: lint completed", "PASS: build completed", "PASS: stage8 release safety completed", "PASS: stage8 local app completed", "PASS: stage8 local app packaging completed", "PASS: whole-project validator completed", "PASS: Cloudflare Pages + Access offline preflight completed", "PASS: changed-only governance CI decision SHIP"]
+    evidence_refs: ["OpenAIDatabase/apps/memory-atlas/package.json", "OpenAIDatabase/apps/memory-atlas/scripts/validate_memory_atlas_whole_project.cjs", "OpenAIDatabase/scripts/audit_memory_atlas_visual_acceptance.py", "OpenAIDatabase/scripts/preflight_cloudflare_pages_access.py"]
+    risk: "This proves local readiness gates only; live Cloudflare deployment and Access verification remain unexecuted until credentials and explicit deploy authorization are provided."
+    rollback: "Revert TASK-OAI-D-004 validator/package/governance changes and restore the previous release gate behavior."
     target_version: "0.2.0"
     completed_version: "0.2.0"
     completed_commit: "PENDING"

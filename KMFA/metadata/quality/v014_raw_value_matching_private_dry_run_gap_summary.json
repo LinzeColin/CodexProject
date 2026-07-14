@@ -1,0 +1,24 @@
+{
+  "final_goal_closeout_difference_report_required_if_repeated": true,
+  "gap_count": 1,
+  "gaps": [
+    {
+      "business_values_disclosed": false,
+      "gap_id": "V014-RVM-DRYRUN-GAP-001",
+      "mismatch_class": "processed_private_value_targets_missing",
+      "next_action": "V014_PRIVATE_PROCESSED_VALUE_STAGING",
+      "processed_value_targets_available": false,
+      "raw_value_fingerprints_generated": true,
+      "responsible_role": "codex_private_runtime_or_owner_authorized_processed_export",
+      "scope_lane_id": "VC-L04",
+      "severity": "blocking"
+    }
+  ],
+  "phase_id": "V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN",
+  "project_id": "KMFA",
+  "public_raw_or_processed_values_included": false,
+  "record_type": "v014_raw_value_matching_private_dry_run_gap_summary",
+  "repeated_cross_validation_mismatch_confirmed": false,
+  "schema_version": "kmfa.v014_raw_value_matching_private_dry_run_gap_summary.v1",
+  "version": "0.1.4"
+}

@@ -1,0 +1,21 @@
+{
+  "blocking_reason_codes": [
+    "three_final_accepted_cash_differences_without_provable_values",
+    "nine_nonzero_differences_preserved",
+    "one_comparison_incomplete",
+    "full_lineage_and_business_consistency_not_verified"
+  ],
+  "business_decision_basis_allowed": false,
+  "current_data_quality_grade": "Q4",
+  "current_report_grade": "D",
+  "decision": "NO_GO",
+  "fixed_review_finding_count": 6,
+  "formal_report_allowed": false,
+  "github_upload_performed": false,
+  "open_review_finding_count": 0,
+  "phase_id": "V014_S10_POST_REMEDIATION_STAGE_REVIEW",
+  "project_id": "KMFA",
+  "restricted_preview_exports_validated": true,
+  "schema_version": "kmfa.v014.s10_post_remediation_review_go_no_go.v1",
+  "stage_id": "S10"
+}

@@ -1,0 +1,93 @@
+{
+  "actual_abnormal_project_count": 0,
+  "current_output_status": "blocked_no_authoritative_project_rows",
+  "entry_gate_count": 5,
+  "entry_gates": [
+    "authoritative_project_identity",
+    "authoritative_reporting_period",
+    "authoritative_unit_and_definition",
+    "authoritative_row_binding",
+    "authoritative_exact_value_binding"
+  ],
+  "method_count": 1,
+  "performance_score_output_allowed": false,
+  "project_specific_output_allowed": false,
+  "record_type": "public_safe_abnormal_project_method",
+  "rule_count": 6,
+  "rules": [
+    {
+      "actual_abnormal_project_claim_allowed": false,
+      "comparison_method": "exact_integer_decimal_or_date_duration_only_after_authoritative_binding",
+      "current_gate_passed": false,
+      "entry_gate": "authoritative_project_period_unit_definition_and_exact_value_binding_required",
+      "field_key": "invoice_amount",
+      "missing_binding_action": "create_field_level_manual_review_item",
+      "reason_code": "missing_authoritative_project_invoice_period_and_value_binding",
+      "reason_zh": "缺少权威项目、发票、期间与数值绑定",
+      "rule_id": "V014-S15P2-POST-ABNORMAL-RULE-001",
+      "visible_field_label": "开票金额"
+    },
+    {
+      "actual_abnormal_project_claim_allowed": false,
+      "comparison_method": "exact_integer_decimal_or_date_duration_only_after_authoritative_binding",
+      "current_gate_passed": false,
+      "entry_gate": "authoritative_project_period_unit_definition_and_exact_value_binding_required",
+      "field_key": "gross_margin_rate",
+      "missing_binding_action": "create_field_level_manual_review_item",
+      "reason_code": "missing_authoritative_project_revenue_cost_period_and_value_binding",
+      "reason_zh": "缺少权威收入、成本、期间与数值绑定",
+      "rule_id": "V014-S15P2-POST-ABNORMAL-RULE-002",
+      "visible_field_label": "毛利率"
+    },
+    {
+      "actual_abnormal_project_claim_allowed": false,
+      "comparison_method": "exact_integer_decimal_or_date_duration_only_after_authoritative_binding",
+      "current_gate_passed": false,
+      "entry_gate": "authoritative_project_period_unit_definition_and_exact_value_binding_required",
+      "field_key": "settlement_speed",
+      "missing_binding_action": "create_field_level_manual_review_item",
+      "reason_code": "missing_authoritative_completion_settlement_dates_and_shared_project_binding",
+      "reason_zh": "缺少权威完工、结算日期与共享项目绑定",
+      "rule_id": "V014-S15P2-POST-ABNORMAL-RULE-003",
+      "visible_field_label": "结算速度"
+    },
+    {
+      "actual_abnormal_project_claim_allowed": false,
+      "comparison_method": "exact_integer_decimal_or_date_duration_only_after_authoritative_binding",
+      "current_gate_passed": false,
+      "entry_gate": "authoritative_project_period_unit_definition_and_exact_value_binding_required",
+      "field_key": "collection_speed",
+      "missing_binding_action": "create_field_level_manual_review_item",
+      "reason_code": "missing_authoritative_invoice_collection_dates_and_shared_project_binding",
+      "reason_zh": "缺少权威开票、回款日期与共享项目绑定",
+      "rule_id": "V014-S15P2-POST-ABNORMAL-RULE-004",
+      "visible_field_label": "回款速度"
+    },
+    {
+      "actual_abnormal_project_claim_allowed": false,
+      "comparison_method": "exact_integer_decimal_or_date_duration_only_after_authoritative_binding",
+      "current_gate_passed": false,
+      "entry_gate": "authoritative_project_period_unit_definition_and_exact_value_binding_required",
+      "field_key": "audit_variance",
+      "missing_binding_action": "create_field_level_manual_review_item",
+      "reason_code": "cross_table_dimensions_not_comparable_and_exact_variance_not_performed",
+      "reason_zh": "跨表维度不可比较，尚未执行精确偏差核对",
+      "rule_id": "V014-S15P2-POST-ABNORMAL-RULE-005",
+      "visible_field_label": "审计偏差"
+    },
+    {
+      "actual_abnormal_project_claim_allowed": false,
+      "comparison_method": "exact_integer_decimal_or_date_duration_only_after_authoritative_binding",
+      "current_gate_passed": false,
+      "entry_gate": "authoritative_project_period_unit_definition_and_exact_value_binding_required",
+      "field_key": "customer_relationship_rate",
+      "missing_binding_action": "create_field_level_manual_review_item",
+      "reason_code": "missing_authoritative_definition_source_period_denominator_and_value_binding",
+      "reason_zh": "缺少权威定义、来源、期间、分母与数值绑定",
+      "rule_id": "V014-S15P2-POST-ABNORMAL-RULE-006",
+      "visible_field_label": "客情费率"
+    }
+  ],
+  "salary_or_bonus_action_allowed": false,
+  "schema_version": "kmfa.v014.s15_p2.post_remediation.abnormal_project_method.v1"
+}

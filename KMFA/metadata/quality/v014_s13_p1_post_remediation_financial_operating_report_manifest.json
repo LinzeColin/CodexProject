@@ -1,0 +1,412 @@
+{
+  "acceptance_id": "ACC-V014-S13-P1-POST-REMEDIATION-FINANCIAL-OPERATING-REPORT",
+  "acceptance_matrix": {
+    "check_count": 24,
+    "check_fail_count": 0,
+    "check_pass_count": 24,
+    "checks": [
+      {
+        "check_id": "app_not_reinstalled",
+        "passed": true
+      },
+      {
+        "check_id": "business_not_executed",
+        "passed": true
+      },
+      {
+        "check_id": "current_difference_state",
+        "passed": true
+      },
+      {
+        "check_id": "eight_lane_bindings",
+        "passed": true
+      },
+      {
+        "check_id": "forty_lane_candidate_associations",
+        "passed": true
+      },
+      {
+        "check_id": "four_lanes",
+        "passed": true
+      },
+      {
+        "check_id": "four_structure_connected",
+        "passed": true
+      },
+      {
+        "check_id": "four_viewports",
+        "passed": true
+      },
+      {
+        "check_id": "no_browser_error",
+        "passed": true
+      },
+      {
+        "check_id": "no_decision_basis",
+        "passed": true
+      },
+      {
+        "check_id": "no_formal_report",
+        "passed": true
+      },
+      {
+        "check_id": "q4_d_no_go",
+        "passed": true
+      },
+      {
+        "check_id": "raw_cross_phase_exact",
+        "passed": true
+      },
+      {
+        "check_id": "raw_exact",
+        "passed": true
+      },
+      {
+        "check_id": "s13_p2_not_performed",
+        "passed": true
+      },
+      {
+        "check_id": "seven_sections",
+        "passed": true
+      },
+      {
+        "check_id": "seven_unique_sources",
+        "passed": true
+      },
+      {
+        "check_id": "stage12_dependency",
+        "passed": true
+      },
+      {
+        "check_id": "thirty_five_unique_candidates",
+        "passed": true
+      },
+      {
+        "check_id": "twenty_eight_section_checks",
+        "passed": true
+      },
+      {
+        "check_id": "two_cross_draft_links",
+        "passed": true
+      },
+      {
+        "check_id": "two_drafts",
+        "passed": true
+      },
+      {
+        "check_id": "upload_not_performed",
+        "passed": true
+      },
+      {
+        "check_id": "zero_raw_value_bound_lanes",
+        "passed": true
+      }
+    ],
+    "schema_version": "kmfa.v014.s13_p1_post_remediation_report_matrix.v1"
+  },
+  "branch": "codex/kmfa",
+  "browser_review": {
+    "baseline_control_row_count": 54,
+    "baseline_fail_count": 0,
+    "baseline_file_count": 6,
+    "baseline_pass_count": 54,
+    "baseline_warn_count": 0,
+    "console_error_count": 0,
+    "cross_draft_link_http_check_count": 2,
+    "cross_draft_navigation_check_count": 2,
+    "current_control_row_count": 20,
+    "current_fail_count": 0,
+    "current_page_count": 2,
+    "current_pass_count": 20,
+    "current_warn_count": 0,
+    "horizontal_overflow_count": 0,
+    "section_interaction_check_count": 28,
+    "status": "PASS",
+    "viewport_check_count": 4
+  },
+  "decision": "NO_GO",
+  "draft_definitions": [
+    {
+      "business_decision_basis_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "current_data_quality_grade": "Q4",
+      "data_status_and_limitations_visible": true,
+      "decision": "NO_GO",
+      "draft_id": "financial_operating_weekly_draft",
+      "draft_report_allowed": true,
+      "formal_report_allowed": false,
+      "html_ref": "KMFA/stage_artifacts/V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT/exports/html/financial_operating_weekly_draft.html",
+      "incomplete_reconciliation_count": 1,
+      "limitations": [
+        "本页是内部复核初稿，不是正式可信经营报告。",
+        "四类主题只有结构候选接入；当前原始数值到主题的可证明绑定为零。",
+        "差异、现金证据和跨表复核未关闭前，不得填造金额、升级报告等级或作为经营决策依据。",
+        "S13-P1 不执行回款应收账龄、跨表复核、付款、银行、贷款、开票、税务或外部动作。"
+      ],
+      "nonzero_delta_reconciliation_count": 9,
+      "open_final_difference_accepted_count": 3,
+      "raw_value_bound_lane_count": 0,
+      "report_grade_visible": "D",
+      "source_lane_count": 4,
+      "structure_connected_lane_count": 4,
+      "visible_report_name": "经营周报初稿",
+      "visible_section_titles": [
+        "经营摘要",
+        "经营情况",
+        "费用税金资产",
+        "现金情况",
+        "贷款明细",
+        "数据状态与限制",
+        "下一步复核事项"
+      ],
+      "zero_delta_reconciliation_count": 2
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "current_data_quality_grade": "Q4",
+      "data_status_and_limitations_visible": true,
+      "decision": "NO_GO",
+      "draft_id": "financial_operating_monthly_draft",
+      "draft_report_allowed": true,
+      "formal_report_allowed": false,
+      "html_ref": "KMFA/stage_artifacts/V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT/exports/html/financial_operating_monthly_draft.html",
+      "incomplete_reconciliation_count": 1,
+      "limitations": [
+        "本页是内部复核初稿，不是正式可信经营报告。",
+        "四类主题只有结构候选接入；当前原始数值到主题的可证明绑定为零。",
+        "差异、现金证据和跨表复核未关闭前，不得填造金额、升级报告等级或作为经营决策依据。",
+        "S13-P1 不执行回款应收账龄、跨表复核、付款、银行、贷款、开票、税务或外部动作。"
+      ],
+      "nonzero_delta_reconciliation_count": 9,
+      "open_final_difference_accepted_count": 3,
+      "raw_value_bound_lane_count": 0,
+      "report_grade_visible": "D",
+      "source_lane_count": 4,
+      "structure_connected_lane_count": 4,
+      "visible_report_name": "经营月报初稿",
+      "visible_section_titles": [
+        "经营摘要",
+        "经营情况",
+        "费用税金资产",
+        "现金情况",
+        "贷款明细",
+        "数据状态与限制",
+        "下一步复核事项"
+      ],
+      "zero_delta_reconciliation_count": 2
+    }
+  ],
+  "generated_at": "2026-07-11T15:23:55+10:00",
+  "historical_b_grade_sample_quarantined": true,
+  "historical_pending_twelve_quarantined": true,
+  "historical_s13_p1_dynamic_state_is_authoritative": false,
+  "historical_s13_p1_policy_fixture_validated": true,
+  "next_phase": "S13-P2",
+  "next_required_step": "Execute S13-P2 collection and receivable aging as a separate run after S13-P1 local validation and commit.",
+  "phase_boundaries": {
+    "app_reinstall_performed": false,
+    "business_execution_performed": false,
+    "formal_report_release_performed": false,
+    "github_upload_performed": false,
+    "lineage_full_check_performed": false,
+    "live_connector_performed": false,
+    "persistent_business_write_performed": false,
+    "s13_p1_performed": true,
+    "s13_p2_performed": false,
+    "s13_p3_performed": false,
+    "stage12_review_validated": true,
+    "stage13_review_performed": false
+  },
+  "phase_id": "V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "aggregate_only": true,
+    "business_value_committed": false,
+    "credential_or_secret_committed": false,
+    "field_or_header_plaintext_committed": false,
+    "private_runtime_committed": false,
+    "raw_file_committed": false,
+    "raw_filename_committed": false,
+    "raw_hash_committed": false,
+    "source_identity_committed": false,
+    "zip_excel_pdf_private_csv_or_database_committed": false
+  },
+  "quality_gate": {
+    "business_decision_basis_allowed": false,
+    "business_execution_allowed": false,
+    "cash_forecast_decision_allowed": false,
+    "complete_trusted_report_display_allowed": false,
+    "current_data_quality_grade": "Q4",
+    "current_report_grade": "D",
+    "decision": "NO_GO",
+    "derived_amount_calculation_allowed": false,
+    "draft_report_allowed": true,
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "loan_management_action_allowed": false,
+    "monthly_draft_allowed": true,
+    "payment_or_bank_operation_allowed": false,
+    "quality_grade_bypass_allowed": false,
+    "release_permission": "blocked",
+    "report_grade_bypass_allowed": false,
+    "tax_filing_allowed": false,
+    "weekly_draft_allowed": true
+  },
+  "raw_boundary": {
+    "raw_delete_performed": false,
+    "raw_move_performed": false,
+    "raw_mutation_performed": false,
+    "raw_overwrite_performed": false,
+    "raw_read_authorized": true,
+    "raw_rename_performed": false,
+    "raw_snapshot_validation_performed": true,
+    "raw_write_performed": false
+  },
+  "remote": "git@github.com:LinzeColin/CodexProject.git",
+  "reviewed_dependencies": {
+    "current_finance_structure_candidates": "KMFA/metadata/schema_maps/v014_s07_p1_finance_field_candidates.jsonl",
+    "current_finance_structure_registry": "KMFA/metadata/imports/v014_s07_p1_finance_support_source_registry.json",
+    "current_stage12_review": "KMFA/stage_artifacts/V014_S12_POST_REMEDIATION_STAGE_REVIEW/machine/stage12_post_remediation_review_manifest.json",
+    "historical_s13_p1_policy_fixture": "KMFA/stage_artifacts/V014_S13_P1_FINANCIAL_OPERATING_REPORT/machine/financial_operating_report_manifest.json"
+  },
+  "reviewed_head": "ed499c6be35df76d1f5a924d92130c7536a9f4ea",
+  "roadmap_phase_id": "S13-P1",
+  "schema_version": "kmfa.v014.s13_p1_post_remediation_report_manifest.v1",
+  "source_lane_status": [
+    {
+      "business_decision_basis_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "current_raw_value_binding_proven": false,
+      "data_status": "structure_connected_values_unproven",
+      "formal_report_allowed": false,
+      "lane_id": "operating_situation",
+      "readonly_source_count": 1,
+      "source_binding_count": 1,
+      "status_label": "结构候选已接入；当前数值绑定未被证明，不能形成经营金额结论。",
+      "structure_candidate_count": 5,
+      "structure_connected": true,
+      "visible_lane_name": "经营情况"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "current_raw_value_binding_proven": false,
+      "data_status": "structure_connected_values_unproven",
+      "formal_report_allowed": false,
+      "lane_id": "expense_tax_asset",
+      "readonly_source_count": 4,
+      "source_binding_count": 4,
+      "status_label": "费用、税金与资产结构候选已接入；金额、期间与归属仍受复核门禁限制。",
+      "structure_candidate_count": 20,
+      "structure_connected": true,
+      "visible_lane_name": "费用税金资产"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "current_raw_value_binding_proven": false,
+      "data_status": "structure_connected_values_unproven",
+      "formal_report_allowed": false,
+      "lane_id": "cash_situation",
+      "readonly_source_count": 2,
+      "source_binding_count": 2,
+      "status_label": "现金结构候选已接入；现金安全结论缺少可证明的当前数值绑定。",
+      "structure_candidate_count": 10,
+      "structure_connected": true,
+      "visible_lane_name": "现金情况"
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "current_raw_value_binding_proven": false,
+      "data_status": "structure_connected_values_unproven",
+      "formal_report_allowed": false,
+      "lane_id": "loan_detail",
+      "readonly_source_count": 1,
+      "source_binding_count": 1,
+      "status_label": "贷款结构候选已接入；不形成还款、续贷、付款或银行操作建议。",
+      "structure_candidate_count": 5,
+      "structure_connected": true,
+      "visible_lane_name": "贷款明细"
+    }
+  ],
+  "stage12_post_remediation_review_dependency_validated": true,
+  "stage_id": "S13",
+  "status": "completed_validated_local_only_s13_p1_draft_no_go_upload_deferred",
+  "summary": {
+    "acceptance_id": "ACC-V014-S13-P1-POST-REMEDIATION-FINANCIAL-OPERATING-REPORT",
+    "app_reinstall_performed": false,
+    "browser_viewport_check_count": 4,
+    "business_decision_basis_count": 0,
+    "business_execution_performed": false,
+    "console_error_count": 0,
+    "cross_draft_link_http_check_count": 2,
+    "cross_draft_navigation_check_count": 2,
+    "current_data_quality_grade": "Q4",
+    "current_report_grade": "D",
+    "decision": "NO_GO",
+    "draft_report_count": 2,
+    "formal_report_count": 0,
+    "github_upload_performed": false,
+    "hard_block_count": 12,
+    "horizontal_overflow_count": 0,
+    "html_draft_count": 2,
+    "incomplete_reconciliation_count": 1,
+    "lane_source_binding_count": 8,
+    "lane_structure_candidate_association_count": 40,
+    "nonzero_delta_reconciliation_count": 9,
+    "open_final_difference_accepted_count": 3,
+    "phase_id": "V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT",
+    "project_id": "KMFA",
+    "raw_cross_phase_snapshot_exact_match": true,
+    "raw_snapshot_exact_match": true,
+    "raw_source_file_count": 5,
+    "raw_value_bound_lane_count": 0,
+    "required_section_count": 7,
+    "roadmap_phase_id": "S13-P1",
+    "s13_p2_performed": false,
+    "schema_version": "kmfa.v014.s13_p1_post_remediation_report_summary.v1",
+    "section_interaction_check_count": 28,
+    "source_lane_count": 4,
+    "stage12_review_dependency_validated": true,
+    "stage_id": "S13",
+    "status": "completed_validated_local_only_s13_p1_draft_no_go_upload_deferred",
+    "structure_connected_lane_count": 4,
+    "task_id": "KMFA-V014-S13-P1-POST-REMEDIATION-FINANCIAL-OPERATING-REPORT-20260711",
+    "unique_source_count": 7,
+    "unique_structure_candidate_count": 35,
+    "version": "0.1.4-s13-p1-post-remediation-financial-operating-report",
+    "zero_delta_reconciliation_count": 2
+  },
+  "task_id": "KMFA-V014-S13-P1-POST-REMEDIATION-FINANCIAL-OPERATING-REPORT-20260711",
+  "taskpack_contract": {
+    "historical_sample_b_grade_reused": false,
+    "historical_sample_business_values_reused": false,
+    "human_flow_baseline_read": true,
+    "report_human_flow_sample_read": true,
+    "roadmap_read": true,
+    "taskpack_read": true
+  },
+  "validation_summary": {
+    "browser_desktop_mobile": "PASS",
+    "final_validation_recorded": true,
+    "focused_test": "PASS",
+    "governance_and_safety_scans": "PASS",
+    "raw_alignment": "PASS",
+    "strict_validator": "PASS"
+  },
+  "version": "0.1.4-s13-p1-post-remediation-financial-operating-report"
+}

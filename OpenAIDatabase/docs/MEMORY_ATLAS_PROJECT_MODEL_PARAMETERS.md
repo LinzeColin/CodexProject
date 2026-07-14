@@ -1,3 +1,3557 @@
+## 169. Memory Atlas v1.2 Remediation R7 Data And Recovery Parameters
+
+状态：`R7_COMPLETE_LOCAL_ONLY`；release 仍为 `FAIL_REMEDIATION_REQUIRED`。
+
+参数：
+
+- `source_families = chatgpt; codex; agent:codex-reviewer`
+- `chatgpt_export_sha256 = 52f204dd8d78b76a79c6fc37e3e09987d3ab682c87098da017b894dd88c3a868`
+- `chatgpt_export_size_bytes = 1473421021`
+- `codex_inventory_sha256 = a0fba71aaf3761a93abc4c8a802ba49ed8400e73cc4325c5e26f215bec06736d`
+- `public_raw_files = 512`
+- `public_raw_bytes = 452781632`
+- `binary_omission_markers = 23893`
+- `encrypted_content_omissions = 23620`
+- `public_raw_findings = 0`
+- `raw_manifest_entries = 512`
+- `raw_manifest_sha256 = 1a4fa71303903ca896c82640f7b4550cee47f3cc8ec600f81d03f7603e120c96`
+- `raw_ledger_entries = 512`
+- `raw_ledger_drift_deleted_new = 0; 0; 0`
+- `release_id = memory-atlas-v1-2-r7-20260710`
+- `snapshot_sha256 = b608631fded9e116d350895be20e6e61be3c7e42ba651ccdf7fc52afd8fefcbc`
+- `snapshot_size_bytes = 1905337`
+- `snapshot_candidates = derived; release; local_runtime; pages`
+- `snapshot_candidate_status = MATCH; MATCH; MATCH; MATCH`
+- `canonical_events = 491; chatgpt 379; codex 111; future_agent 1`
+- `snapshot_counts = memories 278; conversations 379; codex_sessions 128; nodes 435; edges 2325`
+- `recovery_candidate_commit = f65668b927522641f1a9d0e6fc5b77031908dd68`
+- `recovery_tracked_files = 8372`
+- `recovery_worktree_only_files = 0`
+- `remote_clone_verified = false`
+- `final_reviewer_high_medium_low = 0; 0; 1`
+- `requirements = 53 verified; 2 partial; 3 failed; 0 not_verified`
+
+验证逻辑：R7 必须从冻结 source 生成非空 sanitized public raw；byte-wise audit 必须
+为 0 findings；manifest、ledger、raw count 必须相等且无 drift/deletion/new；唯一 release
+必须让 derived/release/local/Pages 四候选 SHA-256 和 bytes 完全一致；tracked-only recovery
+必须复制 0 个 working-tree-only 文件并在临时树恢复 source package、raw、fresh build 与
+Pages parity。独立 review 必须为 0 High / 0 Medium。
+
+边界：该参数不证明 remote clone、最终 pushed HEAD、installed app 或 online site。
+功能候选与后续 evidence binder 的顺序必须显式记录，不能用本地 archive PASS 冒充
+R8 最终远端恢复。private path、credential、原始 binary body 和 private export bytes
+不进入公开恢复包。
+
+## 168. Memory Atlas v1.2 Remediation R6 Visual Workflow Parameters
+
+状态：`R6_COMPLETE_LOCAL_ONLY`；release 仍为 `FAIL_REMEDIATION_REQUIRED`。
+
+参数：
+
+- `visual_workflow_schema = memory_atlas_visual_workflows.v1_2_r6`
+- `p0_visual_count = 12`
+- `facet_event_count = 217`
+- `facet_event_cap = 1000`
+- `evidence_refs_per_event_max = 3`
+- `filter_dimensions = source; time; project; task`
+- `bounded_time_anchor = latest valid facet event`
+- `unknown_project_task = 未标注`
+- `event_backed_visual_count = 11`
+- `content_changes_by_axis = source 11; time 10; project 11; task 11`
+- `evidence_interactions_per_viewport = 12`
+- `opportunity_join = exact evidence ref_id; matched IDs equal rendered IDs`
+- `formula_adjustable_weights = time_saved; reuse_value; skill_compounding`
+- `formula_bounds = 0.25..2.00; step 0.05`
+- `formula_browser_result = 80; 84; 80 after reset`
+- `formula_non_get_request_count = 0`
+- `target_viewports = 1470x661; 1440x900; 390x844`
+- `layout_failures = overlap 0; clipping 0; horizontal overflow 0`
+- `privacy_guard = high-risk 0; tracked raw/private 0`
+- `final_reviewer_high_medium = 0; 0`
+- `requirements = 48 verified; 5 partial; 4 failed; 1 not_verified`
+
+Formula 预览沿用已跟踪信号：默认可调权重均为 1.0，边界 0.25..2.00、step 0.05；
+`score = clamp(round(weighted_positive - rework_penalty), 0, 100)`，其中 rework penalty
+只在 `rework_score > neutral_rework_score` 时生效。UI 明确标为内部 proxy，不是收入
+预测或财务建议，且 `active_config_write=false`、`proposal_required_before_apply=true`。
+
+验证逻辑：`validate:v1.2-visual-workflows` 必须自行构建 frontend，并在三个目标视口
+逐一验证精确 12 项 inventory、12 项键盘证据交互、四个 literal 轴、逐卡真实内容变化
+或 zero-state、机会 exact evidence join、Formula change/reset、零写请求、零布局失败和
+非空截图。source-level S06/S07/S11 validator 只能作为 regression，不能替代该门禁。
+
+边界：本参数只证明 R6 本地候选的可视化和筛选工作流，不证明 R7 snapshot parity、
+raw/archive recovery、GitHub clean recovery、app 安装、线上部署或 v1.2 最终完成。
+
+## 167. Memory Atlas v1.2 Remediation R5 Owner Daily Parameters
+
+状态：`R5_COMPLETE_LOCAL_ONLY`；release 仍为 `FAIL_REMEDIATION_REQUIRED`。
+
+参数：
+
+- `owner_daily_api_version = memory_atlas_owner_daily_api.v1_2_r5`
+- `owner_daily_result_version = memory_atlas_owner_daily_result.v1_2_r5`
+- `owner_daily_endpoint = /__memory_atlas_owner_daily`
+- `owner_daily_step_count = 8`
+- `owner_daily_step_ids = sync; analyze; build-atlas; audit; push; proposals; generate-personalization-prompt; deep-explore`
+- `execution = fixed argv; dry-run; shell=false; scrubbed environment`
+- `continue_after_failure = true`
+- `retry = one exact allowlisted failed step`
+- `max_child_output_bytes = 1048576`
+- `max_result_bytes = 65536`
+- `unsafe_true_validation = recursive dictionary/list scan`
+- `loopback_origin = exact Host/Origin spelling; no CORS`
+- `hosted_static_owner_daily_post_count = 0`
+- `browser_partial_then_retry = 7/1; audit-only retry; 8/0`
+- `target_viewports = 1470x661; 1440x900; 390x844`
+- `final_reviewer_high_medium = 0; 0`
+- `requirements = 41 verified; 10 partial; 5 failed; 2 not_verified`
+
+验证逻辑：`validate:v1.2-owner-daily-e2e` 必须自行构建当前 frontend，在临时
+installer-shaped runtime 中经渲染 UI 真实执行八项固定步骤，先证明 partial failure
+仍显示全部结果，再证明只重试 failed step 并合并为 PASS；同时拒绝 remote Origin、
+extra argv/body 和 unknown step，证明 source/runtime hash 不变、metadata-only audit、
+static POST=0、三视口无横向溢出和对话框焦点闭环。S14 P1、R3 命令、R4 提案、Home、
+Stage 7、unit、lint、build、privacy 和独立 review 必须继续通过。
+
+边界：本参数只证明 R5 本地候选的 Owner Daily 产品路径，不证明 R6 P0 visuals/filtering、
+线上 parity、GitHub clean recovery、app 安装或 v1.2 最终完成。
+
+## 166. Memory Atlas v1.2 Remediation R4 Proposal Workflow Parameters
+
+状态：`R4_COMPLETE_LOCAL_ONLY`；release 仍为 `FAIL_REMEDIATION_REQUIRED`。
+
+参数：
+
+- `proposal_api_version = memory_atlas_proposal_api.v1_2_r4`
+- `proposal_endpoint = /__memory_atlas_proposal_action`
+- `bundle_schema = memory_atlas_apply_ready_proposal.v1_2_r4`
+- `apply_ready_directory = data/derived/proposals/apply_ready`
+- `review_token_ttl_seconds = 600`
+- `review_token_binding = proposal_id + bundle_digest + one-use`
+- `target_type_count = 7`
+- `fixed_validation_ids = utf8_nonempty; json_document`
+- `max_operations = 8`
+- `max_content_bytes = 524288`
+- `target_parent = existing directory only; O_NOFOLLOW; O_DIRECTORY; held fd`
+- `forbidden_targets = raw; private; credential; archive; Git; executable`
+- `interrupted_recovery_states = applying; applied; failed_validation`
+- `persisted_rollback_visible_after_reopen = true`
+- `hosted_static_command_or_proposal_post_count = 0`
+- `final_reviewer_high_medium = 0; 0`
+- `requirements = 40 verified; 11 partial; 5 failed; 2 not_verified`
+
+验证逻辑：`validate:v1.2-proposal-e2e` 必须自行构建当前 frontend，在临时
+installer-shaped runtime 中通过渲染 UI 验证 unauthorized fail-closed、真实授权写入、
+五段中文 diff、关闭重开后的持久 rollback、validation 失败自动恢复、raw review-only、
+metadata-only audit 和 static POST=0；三个目标视口必须无横向溢出。proposal/runtime、
+launcher、sync/personalization、R3 六命令、Home、Stage 7、lint、build、privacy 和独立
+review 必须继续通过。
+
+边界：本参数只证明 R4 本地候选的 proposal 执行和恢复路径，不证明 owner-daily、
+P0 visuals/filtering、线上 parity、GitHub clean recovery、app 安装或 v1.2 最终完成。
+
+## 165. Memory Atlas v1.2 Remediation R3 Command Workflow Parameters
+
+状态：`R3_COMPLETE_LOCAL_ONLY`；release 仍为 `FAIL_REMEDIATION_REQUIRED`。
+
+参数：
+
+- `command_api_version = memory_atlas_command_api.v1_2_r3`
+- `command_endpoint = /__memory_atlas_command`
+- `bind_host = 127.0.0.1`
+- `command_allowlist_count = 6`
+- `command_ids = sync_chatgpt; sync_codex; generate_weekly_report; view_pending_proposals; generate_personalization_prompt; chatgpt_deep_explore`
+- `request_body_keys = command_id only`
+- `max_command_body_bytes = 1024`
+- `default_command_timeout_seconds = 180`
+- `subprocess = fixed argv; shell=false; scrubbed environment`
+- `timeout_cleanup = process-group SIGTERM then SIGKILL before lock release`
+- `workspace_shape = <app-support>/source + <app-support>/runtime`
+- `hosted_static_command_post_count = 0`
+- `deep_explore_mode = prefill_only`
+- `external_request_methods = GET only`
+- `canonical_repo_mutation = false`
+- `final_reviewer_high_medium = 0; 0`
+- `requirements = 38 verified; 13 partial; 5 failed; 2 not_verified`
+
+验证逻辑：`validate:v1.2-command-workflows` 必须自行构建当前 frontend，在临时
+installer-shaped runtime 中经渲染 UI 真实执行六项命令，检查文件与 snapshot 结果，
+拒绝 remote Origin、lifecycle remote Origin 和 extra fields，证明无 CORS、metadata-only
+audit、静态 POST=0、prefill-only 无静默发送、canonical repo mutation=false 和
+remote push=false。三视口 Home、Stage 7、focused unit tests、lint、build 和 privacy
+scan 必须继续通过。
+
+边界：本参数只证明 R3 本地候选的命令执行路径，不证明 proposal apply/rollback、
+owner-daily、线上 snapshot parity、GitHub clean recovery、app 安装或 v1.2 最终完成。
+
+## 164. Memory Atlas v1.2 Remediation R2 Identity And IA Parameters
+
+状态：`R2_COMPLETE_LOCAL_ONLY`；release 仍为 `FAIL_REMEDIATION_REQUIRED`。
+
+参数：
+
+- `product_identity = Memory Atlas / 记忆决策台 · v1.2`
+- `home_question = 发生了什么`
+- `navigation_groups = judgment; exploration; reflection`
+- `navigation_route_count = 10`
+- `default_internal_copy_match_count = 0`
+- `folded_details = sidebar-data-status; lens-technical-details; command-technical-details; formula-technical-details`
+- `desktop_palette_track = clamp(112px, 18dvh, 152px)`
+- `mobile_palette_track = clamp(124px, 18dvh, 140px)`
+- `content_height = 345px@1470x661; 551px@1440x900; 311px@390x844`
+- `mobile_topbar_height = 46px`
+- `mobile_lens_height = 78px`
+- `mobile_keyboard_focus = 10 forward; 9 reverse; max clip 0px`
+- `command_execution_enabled = false`
+
+验证逻辑：`validate:v1.2-home-multiviewport` 必须逐视口验证精确发行身份、三组问题式
+导航、默认界面无内部文案、四类技术详情默认折叠和键盘可开关、主流程焦点顺序、
+移动端每一步正逆序焦点完整包含于导航 scrollport、
+五区布局、内容滚动、嵌套裁切、移动导航、非空截图和端口释放。Stage 7 Galaxy 与
+Memory River 真实视觉回归必须继续通过。
+
+边界：本参数只证明 R2 本地产品壳层与信息架构，不证明命令执行、proposal 工作流、
+owner-daily、线上数据一致性、GitHub recovery 或 v1.2 最终完成。
+
+## 163. Memory Atlas v1.2 Remediation R1 Layout Parameters
+
+状态：`R1_COMPLETE_LOCAL_ONLY`；release 仍为 `FAIL_REMEDIATION_REQUIRED`。
+
+参数：
+
+- `workspace_visible_row_count = 5`
+- `desktop_palette_track = clamp(160px, 26dvh, 240px)`
+- `mobile_palette_track = clamp(132px, 22dvh, 160px)`
+- `target_viewports = 1470x661; 1440x900; 390x844`
+- `pairwise_overlap_tolerance_px = 1`
+- `horizontal_overflow_tolerance_px = 1`
+- `desktop_min_palette_client_height_px = 156`
+- `mobile_min_palette_client_height_px = 128`
+- `desktop_min_content_grid_height_px = 160`
+- `mobile_min_content_grid_height_px = 120`
+- `screenshot_min_bytes = 15000`
+- `nested_home_min_target_count = 12`
+- `nested_home_min_child_count = 12`
+- `nested_home_observed_per_viewport = 27 targets; 70 children; 0 issues`
+- `s06_required_behavior_categories = 3`
+- `s06_observed_chinese_summaries = 9; all scroll-reachable`
+
+验证逻辑：`validate:v1.2-home-multiviewport` 必须在三个视口逐一证明五个主区块
+无重叠、无横向溢出、无视口逃逸，命令面板首部/详情/末尾安全项可达，首页首尾
+关键区块可达，子 surface 不逃出 content grid，截图非空且 preview 端口释放。
+门禁还必须检查首页直接子区块和关键嵌套网格无横向裁切，并逐条验证 S06 三类
+行为智能的中文摘要可滚动到达。
+
+边界：本参数只证明 R1 本地布局候选，不证明线上版本、已安装 app、命令工作流、
+数据一致性、GitHub recovery 或 v1.2 最终完成。
+
+## 162. Memory Atlas v1.2 Final Review Parameters
+
+状态：`v1_2_final_review_passed_pending_github_main_sync_no_upload_yet`。
+
+验收 ID：`ACC-MA-V12-FINAL-REVIEW`。
+
+v1.2 Final Review 固定以下参数：
+
+- `MA-V12-FINAL-REVIEW`
+- `validate:v1.2-final-review`
+- `docs/reviews/memory_atlas_v1_2_final_review.md`
+- `机器治理/证据与日志/final_review/v1_2_final_review_status.json`
+- v1.2 Final Review
+- 四线14Stage
+- `S01-S14 Review`
+- raw append-only
+- credential audit
+- Chinese UX
+- visual ROI
+- report contract
+- proposal apply
+- owner-daily
+- final audit
+- Final Review 完成后下一步为 pending GitHub main sync、app reinstall 和 local cleanup。
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+
+参数：
+
+- `PARAM-MA-V12-FINAL-REVIEW-001 final_status = v1_2_final_review_passed_pending_github_main_sync_no_upload_yet`
+- `PARAM-MA-V12-FINAL-REVIEW-002 validator = validate:v1.2-final-review`
+- `PARAM-MA-V12-FINAL-REVIEW-003 stage_review_chain = S01-S14 Review`
+- `PARAM-MA-V12-FINAL-REVIEW-004 acceptance_themes = raw append-only; credential audit; Chinese UX; visual ROI; report contract; proposal apply; owner-daily; final audit`
+- `PARAM-MA-V12-FINAL-REVIEW-005 remote_state = main...origin/main [ahead 23, behind 11]`
+- `PARAM-MA-V12-FINAL-REVIEW-006 next_phase = pending GitHub main sync / app reinstall / local cleanup`
+- `PARAM-MA-V12-FINAL-REVIEW-007 remote_reconciliation = remote branch reconciliation required`
+- `PARAM-MA-V12-FINAL-REVIEW-008 phase_boundary = No GitHub main upload; No remote push; No raw mutation`
+
+验证逻辑：
+
+- `validate:v1.2-final-review` checks package registration, final review
+  artifact, machine final status, atlasctl final audit, governance records,
+  S01-S14 review script constants, review artifacts and raw/private safety.
+
+Machine-readable boundary summary: Memory Atlas v1.2 Final Review; MA-V12-FINAL-REVIEW; ACC-MA-V12-FINAL-REVIEW; v1_2_final_review_passed_pending_github_main_sync_no_upload_yet; validate:v1.2-final-review; v1.2 Final Review; 四线14Stage; S01-S14 Review; raw append-only; credential audit; Chinese UX; visual ROI; report contract; proposal apply; owner-daily; final audit; No GitHub main upload; No remote push; No raw mutation; pending GitHub main sync.
+
+## 161. Memory Atlas v1.2 S14 Review Parameters
+
+状态：`stage_s14_review_passed_pending_v1_2_final_review_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S14-REVIEW`。
+
+S14 Review 固定以下参数：
+
+- `MA-V12-S14-REVIEW`
+- `validate:v1.2-s14-review`
+- `docs/reviews/memory_atlas_v1_2_s14_review.md`
+- `S14 Review`
+- `S14 P1`
+- `S14 P2`
+- `S14 P3`
+- `owner-daily`
+- `atlasctl_unified_cli.v1_2_s14_p1`
+- `atlasctl_final_audit.v1_2_s14_p2`
+- `stage_pass_gate_status.v1_2_s14_p3.json`
+- 开发记录中文可读
+- 维护命令少而清晰
+- 所有 stage pass gate 状态可查
+- S14 Review 完成后下一步为 pending v1.2 Final Review。
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+
+参数：
+
+- `PARAM-MA-V12-S14-REVIEW-001 stage_status = stage_s14_review_passed_pending_v1_2_final_review_no_github_main_upload`
+- `PARAM-MA-V12-S14-REVIEW-002 validator = validate:v1.2-s14-review`
+- `PARAM-MA-V12-S14-REVIEW-003 phase_chain = S14 P1; S14 P2; S14 P3`
+- `PARAM-MA-V12-S14-REVIEW-004 owner_daily_contract = owner-daily; atlasctl_unified_cli.v1_2_s14_p1`
+- `PARAM-MA-V12-S14-REVIEW-005 final_audit_contract = atlasctl_final_audit.v1_2_s14_p2`
+- `PARAM-MA-V12-S14-REVIEW-006 development_record_contract = stage_pass_gate_status.v1_2_s14_p3.json`
+- `PARAM-MA-V12-S14-REVIEW-007 next_phase = pending v1.2 Final Review`
+- `PARAM-MA-V12-S14-REVIEW-008 phase_boundary = No GitHub main upload; No remote push; No raw mutation`
+
+验证逻辑：
+
+- `validate:v1.2-s14-review` checks package registration, review artifact,
+  owner-daily dry-run, final audit, S14 P3 stage status evidence, governance
+  records, S14 P1/P2/P3 validators after clean commit and raw/private safety.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S14 Review; MA-V12-S14-REVIEW; ACC-MA-V12-S14-REVIEW; stage_s14_review_passed_pending_v1_2_final_review_no_github_main_upload; validate:v1.2-s14-review; S14 Review; S14 P1; S14 P2; S14 P3; owner-daily; atlasctl_unified_cli.v1_2_s14_p1; atlasctl_final_audit.v1_2_s14_p2; stage_pass_gate_status.v1_2_s14_p3.json; 开发记录中文可读; 维护命令少而清晰; 所有 stage pass gate 状态可查; No GitHub main upload; No remote push; No raw mutation; pending v1.2 Final Review.
+
+## 160. Memory Atlas v1.2 S14 P3 Development Records Parameters
+
+状态：`phase_s14_p3_development_record_completed_pending_s14_review`。
+
+验收 ID：`ACC-MA-V12-S14P3`。
+
+S14 P3 固定以下参数：
+
+- `MA-V12-S14P3`
+- `validate:v1.2-s14-p3`
+- `人类可读/09_验收标准与运行手册.md`
+- `机器治理/证据与日志/stage_pass_gates/stage_pass_gate_status.v1_2_s14_p3.json`
+- 开发记录中文可读
+- 维护命令少而清晰
+- 所有 stage pass gate 状态可查
+- S14 P3 完成后下一步为 pending S14 Review。
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+
+参数：
+
+- `PARAM-MA-V12-S14P3-001 phase_status = phase_s14_p3_development_record_completed_pending_s14_review`
+- `PARAM-MA-V12-S14P3-002 validator = validate:v1.2-s14-p3`
+- `PARAM-MA-V12-S14P3-003 runbook = 人类可读/09_验收标准与运行手册.md`
+- `PARAM-MA-V12-S14P3-004 stage_status_evidence = 机器治理/证据与日志/stage_pass_gates/stage_pass_gate_status.v1_2_s14_p3.json`
+- `PARAM-MA-V12-S14P3-005 maintenance_command_count = 6`
+- `PARAM-MA-V12-S14P3-006 homepage_pollution = false`
+- `PARAM-MA-V12-S14P3-007 next_gate = S14 Review`
+- `PARAM-MA-V12-S14P3-008 phase_boundary = No GitHub main upload; No remote push; No raw mutation`
+
+验证逻辑：
+
+- `validate:v1.2-s14-p3` checks the runbook, machine stage-pass-gate evidence,
+  S01-S13 review validator registration, owner-daily dry-run, final audit, no
+  homepage pollution and governance records.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S14 P3; MA-V12-S14P3; ACC-MA-V12-S14P3; phase_s14_p3_development_record_completed_pending_s14_review; validate:v1.2-s14-p3; 人类可读/09_验收标准与运行手册.md; 机器治理/证据与日志/stage_pass_gates/stage_pass_gate_status.v1_2_s14_p3.json; 开发记录中文可读; 维护命令少而清晰; 所有 stage pass gate 状态可查; No GitHub main upload; No remote push; No raw mutation; pending S14 Review.
+
+## 159. Memory Atlas v1.2 S14 P2 Final Audit Gate Parameters
+
+状态：`phase_s14_p2_final_audit_gate_completed_pending_s14_p3`。
+
+验收 ID：`ACC-MA-V12-S14P2`。
+
+S14 P2 固定以下参数：
+
+- `MA-V12-S14P2`
+- `validate:v1.2-s14-p2`
+- `atlasctl_final_audit.v1_2_s14_p2`
+- `unit_tests`
+- `frontend_build`
+- Chinese UX
+- visual ROI
+- raw append-only
+- credential audit
+- report contract
+- S14 P2 完成后下一步为 pending S14 P3。
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+
+参数：
+
+- `PARAM-MA-V12-S14P2-001 phase_status = phase_s14_p2_final_audit_gate_completed_pending_s14_p3`
+- `PARAM-MA-V12-S14P2-002 validator = validate:v1.2-s14-p2`
+- `PARAM-MA-V12-S14P2-003 contract_version = atlasctl_final_audit.v1_2_s14_p2`
+- `PARAM-MA-V12-S14P2-004 final_gate_ids = unit_tests; frontend_build; Chinese UX; visual ROI; raw append-only; credential audit; report contract`
+- `PARAM-MA-V12-S14P2-005 output_budget = max_output_chars_per_gate=1200; high_token_auto_summary=false`
+- `PARAM-MA-V12-S14P2-006 failure_explanation = Chinese explanation per gate`
+- `PARAM-MA-V12-S14P2-007 next_phase = S14 P3`
+- `PARAM-MA-V12-S14P2-008 phase_boundary = No GitHub main upload; No remote push; No raw mutation`
+
+验证逻辑：
+
+- `validate:v1.2-s14-p2` checks `atlasctl audit`, `audit --dry-run`, all seven
+  gate ids, Chinese failure explanations, bounded output tails, governance
+  records, no raw mutation and no remote upload.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S14 P2; MA-V12-S14P2; ACC-MA-V12-S14P2; phase_s14_p2_final_audit_gate_completed_pending_s14_p3; validate:v1.2-s14-p2; atlasctl_final_audit.v1_2_s14_p2; unit_tests; frontend_build; Chinese UX; visual ROI; raw append-only; credential audit; report contract; No GitHub main upload; No remote push; No raw mutation; pending S14 P3.
+
+## 158. Memory Atlas v1.2 S14 P1 Unified CLI Parameters
+
+状态：`phase_s14_p1_unified_cli_completed_pending_s14_p2`。
+
+验收 ID：`ACC-MA-V12-S14P1`。
+
+S14 P1 固定以下参数：
+
+- `MA-V12-S14P1`
+- `validate:v1.2-s14-p1`
+- `atlasctl_unified_cli.v1_2_s14_p1`
+- `owner-daily`
+- `sync`
+- `analyze`
+- `build-atlas`
+- `audit`
+- `push`
+- `proposals`
+- `generate-personalization-prompt`
+- `deep-explore`
+- S14 P1 完成后下一步为 pending S14 P2。
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+
+参数：
+
+- `PARAM-MA-V12-S14P1-001 phase_status = phase_s14_p1_unified_cli_completed_pending_s14_p2`
+- `PARAM-MA-V12-S14P1-002 validator = validate:v1.2-s14-p1`
+- `PARAM-MA-V12-S14P1-003 contract_version = atlasctl_unified_cli.v1_2_s14_p1`
+- `PARAM-MA-V12-S14P1-004 owner_daily_profile = owner-daily`
+- `PARAM-MA-V12-S14P1-005 core_command_ids = sync; analyze; build-atlas; audit; push; proposals; generate-personalization-prompt; deep-explore`
+- `PARAM-MA-V12-S14P1-006 final_audit_boundary = deferred to S14 P2`
+- `PARAM-MA-V12-S14P1-007 next_phase = S14 P2`
+- `PARAM-MA-V12-S14P1-008 phase_boundary = No GitHub main upload; No remote push; No raw mutation`
+
+验证逻辑：
+
+- `validate:v1.2-s14-p1` checks `owner-daily` profile dry-run, all eight
+  command dry-run paths, `audit --dry-run`, `deep-explore` alias, governance
+  records, no raw mutation and no remote upload.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S14 P1; MA-V12-S14P1; ACC-MA-V12-S14P1; phase_s14_p1_unified_cli_completed_pending_s14_p2; validate:v1.2-s14-p1; atlasctl_unified_cli.v1_2_s14_p1; owner-daily; sync; analyze; build-atlas; audit; push; proposals; generate-personalization-prompt; deep-explore; No GitHub main upload; No remote push; No raw mutation; pending S14 P2.
+
+## 157. Memory Atlas v1.2 S13 Review Parameters
+
+状态：`stage_s13_review_passed_pending_s14_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S13-REVIEW`。
+
+S13 Review 固定以下参数：
+
+- `MA-V12-S13-REVIEW`
+- `validate:v1.2-s13-review`
+- S13 Review
+- S13 P1
+- S13 P2
+- S13 P3
+- `proposal_state_machine.v1_2_s13_p1`
+- `diff_narrator.v1_2_s13_p2`
+- `proposal_apply.v1_2_s13_p3`
+- Proposal 状态机
+- Diff narrator
+- Apply 与回滚
+- `sample_unauthorized`
+- `sample`
+- `FAIL_CLOSED`
+- S13 Review 完成后下一步为 S14 P1。
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+
+参数：
+
+- `PARAM-MA-V12-S13-REVIEW-001 stage_status = stage_s13_review_passed_pending_s14_no_github_main_upload`
+- `PARAM-MA-V12-S13-REVIEW-002 validator = validate:v1.2-s13-review`
+- `PARAM-MA-V12-S13-REVIEW-003 phase_chain = S13 P1; S13 P2; S13 P3`
+- `PARAM-MA-V12-S13-REVIEW-004 state_machine_contract = proposal_state_machine.v1_2_s13_p1`
+- `PARAM-MA-V12-S13-REVIEW-005 diff_narrator_contract = diff_narrator.v1_2_s13_p2`
+- `PARAM-MA-V12-S13-REVIEW-006 apply_contract = proposal_apply.v1_2_s13_p3`
+- `PARAM-MA-V12-S13-REVIEW-007 next_phase = S14 P1`
+- `PARAM-MA-V12-S13-REVIEW-008 phase_boundary = No GitHub main upload; No remote push; No raw mutation`
+
+验证逻辑：
+
+- `validate:v1.2-s13-review` checks S13 P1/P2/P3 validators, Proposal 状态机,
+  Diff narrator, `atlasctl` proposal/diff/apply dry-runs, unauthorized
+  fail-closed behavior, authorized validation and rollback point evidence,
+  governance records, no raw mutation and no remote upload.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S13 Review; MA-V12-S13-REVIEW; ACC-MA-V12-S13-REVIEW; stage_s13_review_passed_pending_s14_no_github_main_upload; validate:v1.2-s13-review; S13 Review; S13 P1; S13 P2; S13 P3; proposal_state_machine.v1_2_s13_p1; diff_narrator.v1_2_s13_p2; proposal_apply.v1_2_s13_p3; Proposal 状态机; Diff narrator; Apply 与回滚; sample_unauthorized; sample; FAIL_CLOSED; No GitHub main upload; No remote push; No raw mutation; pending S14 P1.
+
+## 156. Memory Atlas v1.2 S13 P3 Apply 与回滚 Parameters
+
+状态：`phase_s13_p3_apply_rollback_completed_pending_s13_review`。
+
+验收 ID：`ACC-MA-V12-S13P3`。
+
+S13 P3 固定以下参数：
+
+- `MA-V12-S13P3`
+- `validate:v1.2-s13-p3`
+- `proposal_apply.v1_2_s13_p3`
+- S13 P3
+- Apply 与回滚
+- `sample_unauthorized`
+- `sample`
+- authorization required
+- validation_after_apply
+- rollback_or_needs_revision
+- S13 P3 完成后下一步为 S13 Review。
+- No GitHub main upload。
+- No remote push。
+- No raw mutation。
+
+参数：
+
+- `PARAM-MA-V12-S13P3-001 phase_status = phase_s13_p3_apply_rollback_completed_pending_s13_review`
+- `PARAM-MA-V12-S13P3-002 validator = validate:v1.2-s13-p3`
+- `PARAM-MA-V12-S13P3-003 contract_version = proposal_apply.v1_2_s13_p3`
+- `PARAM-MA-V12-S13P3-004 unauthorized_fixture = sample_unauthorized FAIL_CLOSED`
+- `PARAM-MA-V12-S13P3-005 authorized_fixture = sample would_apply=true`
+- `PARAM-MA-V12-S13P3-006 rollback_path = rollback_or_needs_revision`
+- `PARAM-MA-V12-S13P3-007 next_phase = S13 Review`
+- `PARAM-MA-V12-S13P3-008 phase_boundary = No GitHub main upload; No remote push; No raw mutation`
+
+验证逻辑：
+
+- `validate:v1.2-s13-p3` checks the apply config, builder, `atlasctl apply`
+  unauthorized/authorized/failure dry-runs, apply report, machine evidence,
+  governance records, no raw mutation and no remote upload.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S13 P3; MA-V12-S13P3; ACC-MA-V12-S13P3; phase_s13_p3_apply_rollback_completed_pending_s13_review; validate:v1.2-s13-p3; proposal_apply.v1_2_s13_p3; S13 P3; Apply 与回滚; sample_unauthorized; sample; authorization required; validation_after_apply; rollback_or_needs_revision; No GitHub main upload; No remote push; No raw mutation; pending S13 Review.
+
+## 155. Memory Atlas v1.2 S13 P2 Diff narrator Parameters
+
+状态：`phase_s13_p2_diff_narrator_completed_pending_s13_p3`。
+
+验收 ID：`ACC-MA-V12-S13P2`。
+
+S13 P2 固定以下参数：
+
+- `MA-V12-S13P2`
+- `validate:v1.2-s13-p2`
+- `diff_narrator.v1_2_s13_p2`
+- S13 P2
+- Diff narrator
+- 改了什么
+- 为什么改
+- 影响什么
+- 如何验证
+- 如何回滚
+- 机器 diff
+- S13 P2 完成后下一步为 S13 P3。
+- No GitHub main upload。
+- No remote push。
+
+参数：
+
+- `PARAM-MA-V12-S13P2-001 phase_status = phase_s13_p2_diff_narrator_completed_pending_s13_p3`
+- `PARAM-MA-V12-S13P2-002 validator = validate:v1.2-s13-p2`
+- `PARAM-MA-V12-S13P2-003 contract_version = diff_narrator.v1_2_s13_p2`
+- `PARAM-MA-V12-S13P2-004 required_human_sections = 改了什么; 为什么改; 影响什么; 如何验证; 如何回滚`
+- `PARAM-MA-V12-S13P2-005 machine_diff_evidence_path = 机器治理/证据与日志/proposal_diffs/diff_narrator_machine_diff.v1_2_s13_p2.json`
+- `PARAM-MA-V12-S13P2-006 human_homepage_policy = no full machine diff`
+- `PARAM-MA-V12-S13P2-007 next_phase = S13 P3`
+- `PARAM-MA-V12-S13P2-008 phase_boundary = No GitHub main upload; No remote push; No raw mutation; No proposal apply execution`
+
+验证逻辑：
+
+- `validate:v1.2-s13-p2` checks the Diff narrator config, builder, `atlasctl proposals --view diff-narrator --dry-run`, Chinese narration report, machine diff evidence, governance records, no raw mutation and no proposal apply execution.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S13 P2; MA-V12-S13P2; ACC-MA-V12-S13P2; phase_s13_p2_diff_narrator_completed_pending_s13_p3; validate:v1.2-s13-p2; diff_narrator.v1_2_s13_p2; S13 P2; Diff narrator; 改了什么; 为什么改; 影响什么; 如何验证; 如何回滚; 机器 diff; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution; pending S13 P3.
+
+## 154. Memory Atlas v1.2 S13 P1 Proposal 状态机 Parameters
+
+状态：`phase_s13_p1_proposal_state_machine_completed_pending_s13_p2`。
+
+验收 ID：`ACC-MA-V12-S13P1`。
+
+S13 P1 固定以下参数：
+
+- `MA-V12-S13P1`
+- `validate:v1.2-s13-p1`
+- `proposal_state_machine.v1_2_s13_p1`
+- S13 P1
+- Proposal 状态机
+- `draft`
+- `pending_human_review`
+- `approved_by_human`
+- `applying`
+- `applied`
+- `validated`
+- `committed`
+- `failed_validation`
+- `rollback_or_needs_revision`
+- proposal expiry
+- S13 P1 完成后下一步为 S13 P2。
+- No GitHub main upload。
+- No remote push。
+
+参数：
+
+- `PARAM-MA-V12-S13P1-001 phase_status = phase_s13_p1_proposal_state_machine_completed_pending_s13_p2`
+- `PARAM-MA-V12-S13P1-002 validator = validate:v1.2-s13-p1`
+- `PARAM-MA-V12-S13P1-003 contract_version = proposal_state_machine.v1_2_s13_p1`
+- `PARAM-MA-V12-S13P1-004 state_sequence = draft; pending_human_review; approved_by_human; applying; applied; validated; committed`
+- `PARAM-MA-V12-S13P1-005 failure_path = failed_validation; rollback_or_needs_revision`
+- `PARAM-MA-V12-S13P1-006 proposal_expiry = warn 7 days; stale 30 days; archive 90 days`
+- `PARAM-MA-V12-S13P1-007 next_phase = S13 P2`
+- `PARAM-MA-V12-S13P1-008 phase_boundary = No GitHub main upload; No remote push; No raw mutation; No proposal apply execution`
+
+验证逻辑：
+
+- `validate:v1.2-s13-p1` checks the proposal state-machine config, builder, `atlasctl proposals --dry-run`, normalized proposal report, proposal expiry, no raw apply target, no proposal apply execution, governance records and S12 Review compatibility.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S13 P1; MA-V12-S13P1; ACC-MA-V12-S13P1; phase_s13_p1_proposal_state_machine_completed_pending_s13_p2; validate:v1.2-s13-p1; proposal_state_machine.v1_2_s13_p1; S13 P1; Proposal 状态机; draft; pending_human_review; approved_by_human; applying; applied; validated; committed; failed_validation; rollback_or_needs_revision; proposal expiry; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution; pending S13 P2.
+
+## 153. Memory Atlas v1.2 S12 Review Parameters
+
+状态：`stage_s12_review_passed_pending_s13_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S12-REVIEW`。
+
+S12 Review 固定以下参数：
+
+- `MA-V12-S12-REVIEW`
+- `validate:v1.2-s12-review`
+- S12 Review
+- S12 P1
+- S12 P2
+- S12 P3
+- Command Palette
+- Personalization Prompt
+- ChatGPT 深度探索
+- `prefill_only`
+- `auto_submit`
+- S12 Review 完成后下一步为 S13 P1。
+- No GitHub main upload。
+- No remote push。
+
+参数：
+
+- `PARAM-MA-V12-S12-REVIEW-001 stage_status = stage_s12_review_passed_pending_s13_no_github_main_upload`
+- `PARAM-MA-V12-S12-REVIEW-002 validator = validate:v1.2-s12-review`
+- `PARAM-MA-V12-S12-REVIEW-003 phase_chain = S12 P1; S12 P2; S12 P3`
+- `PARAM-MA-V12-S12-REVIEW-004 accepted_runtime_command_ids = sync_chatgpt; sync_codex; generate_weekly_report; view_pending_proposals; generate_personalization_prompt; chatgpt_deep_explore`
+- `PARAM-MA-V12-S12-REVIEW-005 prompt_boundary = no-write dry-run; no-send`
+- `PARAM-MA-V12-S12-REVIEW-006 chatgpt_boundary = prefill_only; auto_submit FAIL_CLOSED`
+- `PARAM-MA-V12-S12-REVIEW-007 next_phase = S13 P1`
+- `PARAM-MA-V12-S12-REVIEW-008 review_boundary = No silent send; No cookie/token/secret export; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution`
+
+验证逻辑：
+
+- `validate:v1.2-s12-review` checks the S12 P1/P2/P3 validator chain, accepted runtime command ids, Personalization Prompt dry-run, ChatGPT 深度探索 `prefill_only`, `auto_submit` FAIL_CLOSED, governance records, no cookie/token/secret export, no raw mutation and no proposal apply execution.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S12 Review; MA-V12-S12-REVIEW; ACC-MA-V12-S12-REVIEW; stage_s12_review_passed_pending_s13_no_github_main_upload; validate:v1.2-s12-review; S12 Review; S12 P1; S12 P2; S12 P3; Command Palette; Personalization Prompt; ChatGPT 深度探索; prefill_only; auto_submit; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution; pending S13 P1.
+
+## 152. Memory Atlas v1.2 S12 P3 ChatGPT Deep Exploration Parameters
+
+状态：`phase_s12_p3_chatgpt_deep_explore_completed_pending_s12_review`。
+
+验收 ID：`ACC-MA-V12-S12P3`。
+
+S12 P3 固定以下参数：
+
+- `MA-V12-S12P3`
+- `validate:v1.2-s12-p3`
+- `chatgpt_deep_explore.v1_2_s12_p3`
+- ChatGPT 深度探索
+- `prefill_only`
+- `auto_submit`
+- 用户触发
+- pending S12 Review
+- No silent send。
+- No cookie/token/secret export。
+- No GitHub main upload。
+- No remote push。
+
+参数：
+
+- `PARAM-MA-V12-S12P3-001 phase_status = phase_s12_p3_chatgpt_deep_explore_completed_pending_s12_review`
+- `PARAM-MA-V12-S12P3-002 validator = validate:v1.2-s12-p3`
+- `PARAM-MA-V12-S12P3-003 contract_version = chatgpt_deep_explore.v1_2_s12_p3`
+- `PARAM-MA-V12-S12P3-004 default_mode = prefill_only`
+- `PARAM-MA-V12-S12P3-005 allowed_modes = prefill_only; auto_submit`
+- `PARAM-MA-V12-S12P3-006 command_id = chatgpt_deep_explore`
+- `PARAM-MA-V12-S12P3-007 next_phase = S12 Review`
+- `PARAM-MA-V12-S12P3-008 phase_boundary = No silent send; No cookie/token/secret export; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution`
+
+验证逻辑：
+
+- `validate:v1.2-s12-p3` checks command palette runtime, builder and atlasctl contracts, `prefill_only` generation, `auto_submit` gate, machine export, Chinese docs, governance records, no cookie/token/secret export, no raw mutation and previous S12 P2 compatibility.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S12 P3; MA-V12-S12P3; ACC-MA-V12-S12P3; phase_s12_p3_chatgpt_deep_explore_completed_pending_s12_review; validate:v1.2-s12-p3; chatgpt_deep_explore.v1_2_s12_p3; ChatGPT 深度探索; prefill_only; auto_submit; 用户触发; No silent send; No cookie/token/secret export; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution; pending S12 Review.
+
+## 151. Memory Atlas v1.2 S12 P2 Personalization Prompt Parameters
+
+状态：`phase_s12_p2_personalization_prompt_completed_pending_s12_p3`。
+
+验收 ID：`ACC-MA-V12-S12P2`。
+
+S12 P2 固定以下参数：
+
+- `MA-V12-S12P2`
+- `validate:v1.2-s12-p2`
+- `personalization_prompt.v1_2_s12_p2`
+- `ChatGPT`
+- `Codex`
+- `other agent`
+- 中文人类说明
+- 机器可复制文本
+- latest memory
+- behavior
+- latent
+- self_iteration
+- S12 P2 完成后下一步为 S12 P3。
+- No GitHub main upload。
+- No remote push。
+
+参数：
+
+- `PARAM-MA-V12-S12P2-001 phase_status = phase_s12_p2_personalization_prompt_completed_pending_s12_p3`
+- `PARAM-MA-V12-S12P2-002 validator = validate:v1.2-s12-p2`
+- `PARAM-MA-V12-S12P2-003 prompt_version = personalization_prompt.v1_2_s12_p2`
+- `PARAM-MA-V12-S12P2-004 target_ids = ChatGPT; Codex; other agent`
+- `PARAM-MA-V12-S12P2-005 source_reports = latest memory; behavior; latent; self_iteration; decision debt; agent collaboration`
+- `PARAM-MA-V12-S12P2-006 output_contract = 中文人类说明; 机器可复制文本`
+- `PARAM-MA-V12-S12P2-007 next_phase = S12 P3`
+- `PARAM-MA-V12-S12P2-008 phase_boundary = No raw mutation; No proposal apply execution; No GitHub main upload; No remote push; No automatic send; No S12 P3 ChatGPT deep explore execution`
+
+验证逻辑：
+
+- `validate:v1.2-s12-p2` checks prompt builder contracts, atlasctl generation, ChatGPT/Codex/other agent prompt outputs, machine source freshness, Chinese human explanation, machine-copyable text, governance records, no forbidden prompt content, no raw mutation and previous S12 P1 compatibility.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S12 P2; MA-V12-S12P2; ACC-MA-V12-S12P2; phase_s12_p2_personalization_prompt_completed_pending_s12_p3; validate:v1.2-s12-p2; personalization_prompt.v1_2_s12_p2; ChatGPT; Codex; other agent; 中文人类说明; 机器可复制文本; latest memory; behavior; latent; self_iteration; S12 P3; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution.
+
+## 150. Memory Atlas v1.2 S12 P1 Command Palette Parameters
+
+状态：`phase_s12_p1_command_palette_completed_pending_s12_p2`。
+
+验收 ID：`ACC-MA-V12-S12P1`。
+
+S12 P1 固定以下参数：
+
+- `MA-V12-S12P1`
+- `validate:v1.2-s12-p1`
+- `command_palette.v1_2_s12_p1`
+- `sync_chatgpt`
+- `sync_codex`
+- `generate_weekly_report`
+- `view_pending_proposals`
+- `generate_personalization_prompt`
+- `ChatGPT`
+- `Codex`
+- `other agent`
+- S12 P1 完成后下一步为 S12 P2。
+- No GitHub main upload。
+- No remote push。
+
+参数：
+
+- `PARAM-MA-V12-S12P1-001 phase_status = phase_s12_p1_command_palette_completed_pending_s12_p2`
+- `PARAM-MA-V12-S12P1-002 validator = validate:v1.2-s12-p1`
+- `PARAM-MA-V12-S12P1-003 command_palette_version = command_palette.v1_2_s12_p1`
+- `PARAM-MA-V12-S12P1-004 accepted_core_command_ids = sync_chatgpt; sync_codex; generate_weekly_report; view_pending_proposals`
+- `PARAM-MA-V12-S12P1-005 personalization_command_id = generate_personalization_prompt`
+- `PARAM-MA-V12-S12P1-006 personalization_targets = ChatGPT; Codex; other agent`
+- `PARAM-MA-V12-S12P1-007 next_phase = S12 P2`
+- `PARAM-MA-V12-S12P1-008 phase_boundary = No raw mutation; No proposal apply execution; No GitHub main upload; No remote push; No automatic send; No S12 P2 completion; No S12 P3 execution`
+
+验证逻辑：
+
+- `validate:v1.2-s12-p1` checks the runtime command palette contract, exact command ids, prompt dry-run contract, command config, review artifact, records, no raw or secret changes, and S11 Review clean-tree compatibility.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S12 P1; MA-V12-S12P1; ACC-MA-V12-S12P1; phase_s12_p1_command_palette_completed_pending_s12_p2; validate:v1.2-s12-p1; command_palette.v1_2_s12_p1; 同步 ChatGPT; 同步 Codex; 生成本周报告; 查看待授权 proposal; generate_personalization_prompt; ChatGPT; Codex; other agent; S12 P2; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution.
+
+## 149. Memory Atlas v1.2 S11 Review Parameters
+
+状态：`stage_s11_review_passed_pending_s12_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S11-REVIEW`。
+
+S11 Review 固定以下参数：
+
+- `MA-V12-S11-REVIEW`
+- `validate:v1.2-s11-review`
+- `S11 P1`
+- `S11 P2`
+- `S11 P3`
+- `S11 P4`
+- `Visual ROI Gate`
+- `source/time/project/task`
+- `cluster_tree`
+- `bubble_map`
+- `topic_cluster_explorer`
+- `task_treemap`
+- `automation_vs_augmentation`
+- `roi_scatter`
+- `opportunity_radar`
+- `agent_decision_sankey`
+- `friction_heatmap`
+- `latent_radar`
+- `evidence_timeline`
+- `formula_explorer`
+- S11 Review 完成后下一步为 S12 P1。
+- No GitHub main upload。
+- No remote push。
+
+参数：
+
+- `PARAM-MA-V12-S11-REVIEW-001 stage_status = stage_s11_review_passed_pending_s12_no_github_main_upload`
+- `PARAM-MA-V12-S11-REVIEW-002 validator = validate:v1.2-s11-review`
+- `PARAM-MA-V12-S11-REVIEW-003 phase_chain = S11 P1; S11 P2; S11 P3; S11 P4`
+- `PARAM-MA-V12-S11-REVIEW-004 p0_visual_count = 12`
+- `PARAM-MA-V12-S11-REVIEW-005 filter_dimensions = source/time/project/task`
+- `PARAM-MA-V12-S11-REVIEW-006 visual_roi_gate_pass = true`
+- `PARAM-MA-V12-S11-REVIEW-007 next_phase = S12 P1`
+- `PARAM-MA-V12-S11-REVIEW-008 review_boundary = No raw mutation; No proposal apply execution; No GitHub main upload; No remote push; No S12 implementation`
+
+验证逻辑：
+
+- `validate:v1.2-s11-review` checks the S11 P1/P2/P3/P4 validator chain, review
+  artifact, S11 visual configs, runtime contracts, Visual ROI Gate audit,
+  visual acceptance audit, governance records and no raw/secret open changes.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S11 Review; MA-V12-S11-REVIEW; ACC-MA-V12-S11-REVIEW; stage_s11_review_passed_pending_s12_no_github_main_upload; validate:v1.2-s11-review; S11 P1; S11 P2; S11 P3; S11 P4; Visual ROI Gate; source/time/project/task; S12 P1; No GitHub main upload; No remote push; No raw mutation; No proposal apply execution.
+
+## 148. Memory Atlas v1.2 S11 P4 Human Question Map Parameters
+
+状态：`phase_s11_p4_human_question_map_completed_pending_s11_review`。
+
+验收 ID：`ACC-MA-V12-S11P4`。
+
+S11 P4 固定以下参数：
+
+- `MA-V12-S11P4`
+- `validate:v1.2-s11-p4`
+- `human_question_map.v1_2_s11_p4`
+- `Human Question Map`
+- `Visual ROI Gate`
+- `cluster_tree`
+- `bubble_map`
+- `topic_cluster_explorer`
+- `task_treemap`
+- `automation_vs_augmentation`
+- `roi_scatter`
+- `opportunity_radar`
+- `agent_decision_sankey`
+- `friction_heatmap`
+- `latent_radar`
+- `evidence_timeline`
+- `formula_explorer`
+- `source/time/project/task`
+- S11 P4 完成后下一步为 pending S11 Review。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S11P4-001 phase_status = phase_s11_p4_human_question_map_completed_pending_s11_review`
+- `PARAM-MA-V12-S11P4-002 validator = validate:v1.2-s11-p4`
+- `PARAM-MA-V12-S11P4-003 human_question_map_version = human_question_map.v1_2_s11_p4`
+- `PARAM-MA-V12-S11P4-004 visual_ids = cluster_tree; bubble_map; topic_cluster_explorer; task_treemap; automation_vs_augmentation; roi_scatter; opportunity_radar; agent_decision_sankey; friction_heatmap; latent_radar; evidence_timeline; formula_explorer`
+- `PARAM-MA-V12-S11P4-005 filter_dimensions = source/time/project/task`
+- `PARAM-MA-V12-S11P4-006 visual_roi_gate_pass = true`
+- `PARAM-MA-V12-S11P4-007 next_gate = pending S11 Review`
+- `PARAM-MA-V12-S11P4-008 phase_boundary = No raw mutation; No proposal apply execution; No GitHub main upload in this phase; No S11 Review completion`
+
+验证逻辑：
+
+- `validate:v1.2-s11-p4` checks the Human Question Map runtime contract, 12 P0
+  visual ids, Chinese insight headers, human questions, action values,
+  `source/time/project/task` filter binding, visual config, Visual ROI Gate
+  state, excluded non-P0 candidates and governance records.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S11 P4; MA-V12-S11P4; ACC-MA-V12-S11P4; phase_s11_p4_human_question_map_completed_pending_s11_review; validate:v1.2-s11-p4; human_question_map.v1_2_s11_p4; Human Question Map; Visual ROI Gate; source/time/project/task; pending S11 Review; No GitHub main upload in this phase; No raw mutation; No proposal apply execution.
+
+## 147. Memory Atlas v1.2 S11 P3 Workflow/latent/governance Visuals Parameters
+
+状态：`phase_s11_p3_workflow_latent_governance_visuals_completed_pending_s11_p4`。
+
+验收 ID：`ACC-MA-V12-S11P3`。
+
+S11 P3 固定以下参数：
+
+- `MA-V12-S11P3`
+- `validate:v1.2-s11-p3`
+- `workflow_latent_governance_visuals.v1_2_s11_p3`
+- `agent_decision_sankey`
+- `friction_heatmap`
+- `latent_radar`
+- `evidence_timeline`
+- `formula_explorer`
+- `source/time/project/task`
+- `atlasctl.py audit --check visual-roi`
+- S11 P3 完成后下一步为 pending S11 P4。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S11P3-001 phase_status = phase_s11_p3_workflow_latent_governance_visuals_completed_pending_s11_p4`
+- `PARAM-MA-V12-S11P3-002 validator = validate:v1.2-s11-p3`
+- `PARAM-MA-V12-S11P3-003 workflow_latent_governance_visuals_version = workflow_latent_governance_visuals.v1_2_s11_p3`
+- `PARAM-MA-V12-S11P3-004 visual_ids = agent_decision_sankey; friction_heatmap; latent_radar; evidence_timeline; formula_explorer`
+- `PARAM-MA-V12-S11P3-005 filter_dimensions = source/time/project/task`
+- `PARAM-MA-V12-S11P3-006 visual_roi_gate_pass = true`
+- `PARAM-MA-V12-S11P3-007 next_gate = pending S11 P4`
+- `PARAM-MA-V12-S11P3-008 phase_boundary = No raw mutation; No proposal apply execution; No GitHub main upload in this phase; No S11 P4 Human Question Map completion`
+
+验证逻辑：
+
+- `validate:v1.2-s11-p3` checks the runtime visual contract, five P0 visual ids,
+  Chinese insight headers, human questions, action values, `source/time/project/task`
+  filter binding, visual config, derived input availability, Visual ROI audit and
+  governance records.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S11 P3; MA-V12-S11P3; ACC-MA-V12-S11P3; phase_s11_p3_workflow_latent_governance_visuals_completed_pending_s11_p4; validate:v1.2-s11-p3; workflow_latent_governance_visuals.v1_2_s11_p3; agent_decision_sankey; friction_heatmap; latent_radar; evidence_timeline; formula_explorer; source/time/project/task; pending S11 P4; No GitHub main upload in this phase; No raw mutation; No proposal apply execution.
+
+## 146. Memory Atlas v1.2 S11 P2 Economic-like Visuals Parameters
+
+状态：`phase_s11_p2_economic_like_visuals_completed_pending_s11_p3`。
+
+验收 ID：`ACC-MA-V12-S11P2`。
+
+S11 P2 固定以下参数：
+
+- `MA-V12-S11P2`
+- `validate:v1.2-s11-p2`
+- `economic_like_visuals.v1_2_s11_p2`
+- `task_treemap`
+- `automation_vs_augmentation`
+- `roi_scatter`
+- `opportunity_radar`
+- `source/time/project/task`
+- `atlasctl.py audit --check visual-roi`
+- S11 P2 完成后下一步为 pending S11 P3。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S11P2-001 phase_status = phase_s11_p2_economic_like_visuals_completed_pending_s11_p3`
+- `PARAM-MA-V12-S11P2-002 validator = validate:v1.2-s11-p2`
+- `PARAM-MA-V12-S11P2-003 economic_like_visuals_version = economic_like_visuals.v1_2_s11_p2`
+- `PARAM-MA-V12-S11P2-004 visual_ids = task_treemap; automation_vs_augmentation; roi_scatter; opportunity_radar`
+- `PARAM-MA-V12-S11P2-005 filter_dimensions = source/time/project/task`
+- `PARAM-MA-V12-S11P2-006 visual_roi_gate_pass = true`
+- `PARAM-MA-V12-S11P2-007 next_gate = pending S11 P3`
+- `PARAM-MA-V12-S11P2-008 phase_boundary = No raw mutation; No proposal apply execution; No GitHub main upload in this phase; No S11 P3/P4 work`
+
+验证逻辑：
+
+- `validate:v1.2-s11-p2` checks the runtime visual contract, four P0 visual ids,
+  Chinese insight headers, human questions, action values, `source/time/project/task`
+  filter binding, visual config, Visual ROI audit and governance records.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S11 P2; MA-V12-S11P2; ACC-MA-V12-S11P2; phase_s11_p2_economic_like_visuals_completed_pending_s11_p3; validate:v1.2-s11-p2; economic_like_visuals.v1_2_s11_p2; task_treemap; automation_vs_augmentation; roi_scatter; opportunity_radar; source/time/project/task; pending S11 P3; No GitHub main upload in this phase; No raw mutation; No proposal apply execution.
+
+## 145. Memory Atlas v1.2 S11 P1 Clio-like Visuals Parameters
+
+状态：`phase_s11_p1_clio_like_visuals_completed_pending_s11_p2`。
+
+验收 ID：`ACC-MA-V12-S11P1`。
+
+S11 P1 固定以下参数：
+
+- `MA-V12-S11P1`
+- `validate:v1.2-s11-p1`
+- `clio_like_visuals.v1_2_s11_p1`
+- `cluster_tree`
+- `bubble_map`
+- `topic_cluster_explorer`
+- `source/time/project/task`
+- `atlasctl.py audit --check visual-roi`
+- S11 P1 完成后下一步为 pending S11 P2。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S11P1-001 phase_status = phase_s11_p1_clio_like_visuals_completed_pending_s11_p2`
+- `PARAM-MA-V12-S11P1-002 validator = validate:v1.2-s11-p1`
+- `PARAM-MA-V12-S11P1-003 clio_like_visuals_version = clio_like_visuals.v1_2_s11_p1`
+- `PARAM-MA-V12-S11P1-004 visual_ids = cluster_tree; bubble_map; topic_cluster_explorer`
+- `PARAM-MA-V12-S11P1-005 filter_dimensions = source/time/project/task`
+- `PARAM-MA-V12-S11P1-006 visual_roi_gate_pass = true`
+- `PARAM-MA-V12-S11P1-007 next_gate = pending S11 P2`
+- `PARAM-MA-V12-S11P1-008 phase_boundary = No raw mutation; No proposal apply execution; No GitHub main upload in this phase; No S11 P2/P3/P4 work`
+
+验证逻辑：
+
+- `validate:v1.2-s11-p1` checks the runtime visual contract, three P0 visual ids,
+  Chinese insight headers, human questions, action values, `source/time/project/task`
+  filter binding, visual config, Visual ROI audit and governance records.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S11 P1; MA-V12-S11P1; ACC-MA-V12-S11P1; phase_s11_p1_clio_like_visuals_completed_pending_s11_p2; validate:v1.2-s11-p1; clio_like_visuals.v1_2_s11_p1; cluster_tree; bubble_map; topic_cluster_explorer; source/time/project/task; pending S11 P2; No GitHub main upload in this phase; No raw mutation; No proposal apply execution.
+
+## 144. Memory Atlas v1.2 S10 Review Parameters
+
+状态：`stage_s10_review_passed_pending_s11_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S10-REVIEW`。
+
+S10 Review 固定以下参数：
+
+- `MA-V12-S10-REVIEW`
+- `validate:v1.2-s10-review`
+- `validate:v1.2-s10-p1`
+- `validate:v1.2-s10-p2`
+- `validate:v1.2-s10-p3`
+- `atlasctl.py audit --check chinese-ux`
+- `audit_memory_atlas_visual_acceptance.py --repo-root .`
+- 首页能回答上次来以后发生了什么。
+- 核心 UI 默认中文。
+- 机器字段默认折叠。
+- S10 Review 完成后下一步为 S11 P1。
+- No GitHub main upload。
+
+参数：
+
+- `PARAM-MA-V12-S10-REVIEW-001 review_status = stage_s10_review_passed_pending_s11_no_github_main_upload`
+- `PARAM-MA-V12-S10-REVIEW-002 validator = validate:v1.2-s10-review`
+- `PARAM-MA-V12-S10-REVIEW-003 phase_validator_chain = validate:v1.2-s10-p1; validate:v1.2-s10-p2; validate:v1.2-s10-p3`
+- `PARAM-MA-V12-S10-REVIEW-004 chinese_ux_linter = atlasctl audit --check chinese-ux`
+- `PARAM-MA-V12-S10-REVIEW-005 pass_gate = 首页能回答上次来以后发生了什么; 核心 UI 默认中文; 机器字段默认折叠; Chinese UX linter`
+- `PARAM-MA-V12-S10-REVIEW-006 next_gate = pending S11 P1`
+- `PARAM-MA-V12-S10-REVIEW-007 review_boundary = No GitHub main upload; No remote push; No raw mutation; No proposal apply execution; No S11 implementation`
+
+验证逻辑：
+
+- `validate:v1.2-s10-review` runs or verifies S10 P1/P2/P3 validators,
+  `atlasctl audit --check chinese-ux`, visual human-facing summary audit,
+  governance records and raw no-change boundary.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S10 Review; MA-V12-S10-REVIEW; ACC-MA-V12-S10-REVIEW; stage_s10_review_passed_pending_s11_no_github_main_upload; validate:v1.2-s10-review; S10 P1; S10 P2; S10 P3; 首页能回答上次来以后发生了什么; 核心 UI 默认中文; 机器字段默认折叠; Chinese UX linter; S11 P1; No GitHub main upload; No raw mutation; No proposal apply execution.
+
+## 143. Memory Atlas v1.2 S10 P3 Machine Detail Folding Parameters
+
+状态：`phase_s10_p3_machine_detail_folding_completed_pending_s10_review`。
+
+验收 ID：`ACC-MA-V12-S10P3`。
+
+S10 P3 固定以下参数：
+
+- `MA-V12-S10P3`
+- `validate:v1.2-s10-p3`
+- `machine_detail_folding.v1_2_s10_p3`
+- `atlasctl.py audit --check chinese-ux`
+- 机器字段默认折叠。
+- 高级详情入口可见。
+- 默认先显示人类可读解释。
+- S10 P3 完成后下一步为 pending S10 Review。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S10P3-001 phase_status = phase_s10_p3_machine_detail_folding_completed_pending_s10_review`
+- `PARAM-MA-V12-S10P3-002 validator = validate:v1.2-s10-p3`
+- `PARAM-MA-V12-S10P3-003 machine_detail_version = machine_detail_folding.v1_2_s10_p3`
+- `PARAM-MA-V12-S10P3-004 default_human_readable_first = true`
+- `PARAM-MA-V12-S10P3-005 machine_fields_default_collapsed = true`
+- `PARAM-MA-V12-S10P3-006 advanced_details_entry_visible = true`
+- `PARAM-MA-V12-S10P3-007 next_gate = pending S10 Review`
+- `PARAM-MA-V12-S10P3-008 phase_boundary = No raw mutation; No proposal apply execution; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s10-p3` checks frontend runtime contract, folded machine
+  details, advanced details entry copy, `atlasctl audit --check chinese-ux`,
+  records and raw no-change boundary.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S10 P3; MA-V12-S10P3; ACC-MA-V12-S10P3; phase_s10_p3_machine_detail_folding_completed_pending_s10_review; validate:v1.2-s10-p3; machine_detail_folding.v1_2_s10_p3; 机器字段默认折叠; 高级详情入口; pending S10 Review; No GitHub main upload in this phase; No raw mutation; No proposal apply execution.
+
+## 142. Memory Atlas v1.2 S10 P2 Global Chinese UX Parameters
+
+状态：`phase_s10_p2_global_chinese_ux_completed_pending_s10_p3`。
+
+验收 ID：`ACC-MA-V12-S10P2`。
+
+S10 P2 固定以下参数：
+
+- `MA-V12-S10P2`
+- `validate:v1.2-s10-p2`
+- `global_chinese_ux.v1_2_s10_p2`
+- `atlasctl.py audit --check chinese-ux`
+- `Chinese UX linter`
+- 核心 UI 默认中文。
+- 机器术语必须有中文解释。
+- S10 P2 完成后下一步为 pending S10 P3。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S10P2-001 phase_status = phase_s10_p2_global_chinese_ux_completed_pending_s10_p3`
+- `PARAM-MA-V12-S10P2-002 validator = validate:v1.2-s10-p2`
+- `PARAM-MA-V12-S10P2-003 global_chinese_version = global_chinese_ux.v1_2_s10_p2`
+- `PARAM-MA-V12-S10P2-004 core_ui_default_chinese = true`
+- `PARAM-MA-V12-S10P2-005 machine_terms_with_chinese_explanation = true`
+- `PARAM-MA-V12-S10P2-006 next_gate = pending S10 P3`
+- `PARAM-MA-V12-S10P2-007 phase_boundary = No raw mutation; No proposal apply execution; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s10-p2` checks frontend runtime contract, Chinese copy,
+  English-first homepage fragment removal, `atlasctl audit --check chinese-ux`,
+  records and raw no-change boundary.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S10 P2; MA-V12-S10P2; ACC-MA-V12-S10P2; phase_s10_p2_global_chinese_ux_completed_pending_s10_p3; validate:v1.2-s10-p2; global_chinese_ux.v1_2_s10_p2; Chinese UX linter; pending S10 P3; No GitHub main upload in this phase; No raw mutation; No proposal apply execution.
+
+## 141. Memory Atlas v1.2 S10 P1 Home Arrival Briefing Parameters
+
+状态：`phase_s10_p1_home_arrival_briefing_completed_pending_s10_p2`。
+
+验收 ID：`ACC-MA-V12-S10P1`。
+
+S10 P1 固定以下参数：
+
+- `MA-V12-S10P1`
+- `validate:v1.2-s10-p1`
+- `home_arrival_briefing.v1_2_s10_p1`
+- `atlasctl.py audit --check chinese-ux`
+- 首页首屏五类状态：新增重要资料、增强结论、减弱或过期结论、待授权 proposal、同步失败。
+- S10 P1 完成后下一步为 pending S10 P2。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S10P1-001 phase_status = phase_s10_p1_home_arrival_briefing_completed_pending_s10_p2`
+- `PARAM-MA-V12-S10P1-002 validator = validate:v1.2-s10-p1`
+- `PARAM-MA-V12-S10P1-003 arrival_version = home_arrival_briefing.v1_2_s10_p1`
+- `PARAM-MA-V12-S10P1-004 arrival_categories = new_material, strengthened, weakened, pending_proposal, sync_failure`
+- `PARAM-MA-V12-S10P1-005 machine_details = default folded`
+- `PARAM-MA-V12-S10P1-006 next_gate = pending S10 P2`
+- `PARAM-MA-V12-S10P1-007 phase_boundary = No raw mutation; No proposal apply execution; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s10-p1` checks homepage arrival briefing order, Chinese copy,
+  folded machine details, styles, `atlasctl audit --check chinese-ux`, records and
+  raw no-change boundary.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S10 P1; MA-V12-S10P1; ACC-MA-V12-S10P1; phase_s10_p1_home_arrival_briefing_completed_pending_s10_p2; validate:v1.2-s10-p1; home_arrival_briefing.v1_2_s10_p1; pending S10 P2; No GitHub main upload in this phase; No raw mutation; No proposal apply execution.
+
+## 140. Memory Atlas v1.2 S09 Review Parameters
+
+状态：`stage_s09_review_passed_pending_s10_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S09-REVIEW`。
+
+S09 Review 固定以下参数：
+
+- `MA-V12-S09-REVIEW`
+- `validate:v1.2-s09-review`
+- `docs/reviews/memory_atlas_v1_2_s09_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_2_s09_review.cjs`
+- `data/derived/behavior_intelligence/latent_signals.json`
+- `data/derived/behavior_intelligence/self_iteration_suggestions.json`
+- `data/derived/behavior_intelligence/decision_debt_ledger.json`
+- S09 Review 完成后下一步为 pending S10 P1。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S09-REVIEW-001 phase_status = stage_s09_review_passed_pending_s10_no_github_main_upload`
+- `PARAM-MA-V12-S09-REVIEW-002 validator = validate:v1.2-s09-review`
+- `PARAM-MA-V12-S09-REVIEW-003 latent_output = data/derived/behavior_intelligence/latent_signals.json`
+- `PARAM-MA-V12-S09-REVIEW-004 self_iteration_output = data/derived/behavior_intelligence/self_iteration_suggestions.json`
+- `PARAM-MA-V12-S09-REVIEW-005 decision_debt_output = data/derived/behavior_intelligence/decision_debt_ledger.json`
+- `PARAM-MA-V12-S09-REVIEW-006 next_gate = pending S10 P1`
+- `PARAM-MA-V12-S09-REVIEW-007 phase_boundary = No raw mutation; No proposal apply execution; No pressure list; No psychological diagnosis output; No personality label output; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s09-review` checks S09 P3 predecessor, latent signal output,
+  self-iteration output, decision debt output, `atlasctl` S09 dry-runs,
+  S09 safety audits, human/machine records, canonical remote and no raw/no upload
+  boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S09 Review; MA-V12-S09-REVIEW; ACC-MA-V12-S09-REVIEW; stage_s09_review_passed_pending_s10_no_github_main_upload; validate:v1.2-s09-review; S09 Review; latent_signals.json; self_iteration_suggestions.json; decision_debt_ledger.json; pending S10 P1; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No proposal apply execution; No pressure list; No psychological diagnosis output; No personality label output; No S10 work.
+
+## 139. Memory Atlas v1.2 S09 P3 Decision Debt Parameters
+
+状态：`phase_s09_p3_decision_debt_completed_pending_s09_review`。
+
+验收 ID：`ACC-MA-V12-S09P3`。
+
+S09 P3 固定以下参数：
+
+- `MA-V12-S09P3`
+- `validate:v1.2-s09-p3`
+- `机器治理/行为智能模型/decision_debt.v1_2_s09_p3.json`
+- `scripts/build_memory_atlas_decision_debt.py`
+- `atlasctl.py analyze --stage decision-debt`
+- `atlasctl.py audit --check decision-debt-safety`
+- `data/derived/behavior_intelligence/decision_debt_ledger.json`
+- S09 P3 完成后下一步为 pending S09 Review。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S09P3-001 phase_status = phase_s09_p3_decision_debt_completed_pending_s09_review`
+- `PARAM-MA-V12-S09P3-002 validator = validate:v1.2-s09-p3`
+- `PARAM-MA-V12-S09P3-003 config = 机器治理/行为智能模型/decision_debt.v1_2_s09_p3.json`
+- `PARAM-MA-V12-S09P3-004 builder = build_memory_atlas_decision_debt.py`
+- `PARAM-MA-V12-S09P3-005 output = data/derived/behavior_intelligence/decision_debt_ledger.json`
+- `PARAM-MA-V12-S09P3-006 min_entries = 3`
+- `PARAM-MA-V12-S09P3-007 max_entries = 8`
+- `PARAM-MA-V12-S09P3-008 effort_minutes_max = 30`
+- `PARAM-MA-V12-S09P3-009 max_confidence = 0.75`
+- `PARAM-MA-V12-S09P3-010 next_gate = pending S09 Review`
+- `PARAM-MA-V12-S09P3-011 phase_boundary = No raw mutation; No proposal apply execution; No pressure list; No psychological diagnosis output; No personality label output; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s09-p3` checks S09 P2 predecessor, decision debt config,
+  persisted `decision_debt_ledger.json`, `atlasctl analyze --stage decision-debt --dry-run`,
+  `atlasctl audit --check decision-debt-safety`, human/machine records,
+  canonical remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S09 P3 Decision Debt; MA-V12-S09P3; ACC-MA-V12-S09P3; phase_s09_p3_decision_debt_completed_pending_s09_review; validate:v1.2-s09-p3; S09 P3; decision_debt_ledger.json; decision_debt_count=8; pending S09 Review; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No proposal apply execution; No pressure list; No psychological diagnosis output; No personality label output.
+
+## 138. Memory Atlas v1.2 S09 P2 Self Iteration Parameters
+
+状态：`phase_s09_p2_self_iteration_completed_pending_s09_p3`。
+
+验收 ID：`ACC-MA-V12-S09P2`。
+
+S09 P2 固定以下参数：
+
+- `MA-V12-S09P2`
+- `validate:v1.2-s09-p2`
+- `机器治理/行为智能模型/self_iteration.v1_2_s09_p2.json`
+- `scripts/build_memory_atlas_self_iteration.py`
+- `atlasctl.py analyze --stage self-iteration`
+- `atlasctl.py audit --check self-iteration-safety`
+- `data/derived/behavior_intelligence/self_iteration_suggestions.json`
+- S09 P2 完成后下一步为 pending S09 P3。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S09P2-001 phase_status = phase_s09_p2_self_iteration_completed_pending_s09_p3`
+- `PARAM-MA-V12-S09P2-002 validator = validate:v1.2-s09-p2`
+- `PARAM-MA-V12-S09P2-003 config = 机器治理/行为智能模型/self_iteration.v1_2_s09_p2.json`
+- `PARAM-MA-V12-S09P2-004 builder = build_memory_atlas_self_iteration.py`
+- `PARAM-MA-V12-S09P2-005 output = data/derived/behavior_intelligence/self_iteration_suggestions.json`
+- `PARAM-MA-V12-S09P2-006 target_types = memory, config, AGENTS, style, personalization`
+- `PARAM-MA-V12-S09P2-007 proposal_expiry = warn_after_days 7; stale_after_days 30; archive_after_days 90`
+- `PARAM-MA-V12-S09P2-008 action_half_life_days = 14 to 45 by target type`
+- `PARAM-MA-V12-S09P2-009 next_gate = pending S09 P3`
+- `PARAM-MA-V12-S09P2-010 phase_boundary = No raw mutation; No proposal apply execution; No credential target; No permanent pending proposal; No decision debt ledger; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s09-p2` checks S09 P1 predecessor, self-iteration config,
+  persisted `self_iteration_suggestions.json`, `atlasctl analyze --stage self-iteration --dry-run`,
+  `atlasctl audit --check self-iteration-safety`, human/machine records,
+  canonical remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S09 P2 Self Iteration; MA-V12-S09P2; ACC-MA-V12-S09P2; phase_s09_p2_self_iteration_completed_pending_s09_p3; validate:v1.2-s09-p2; S09 P2; self_iteration_suggestions.json; suggestion_count=5; pending S09 P3; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No proposal apply execution; No credential target; No permanent pending proposal; No decision debt ledger.
+
+## 137. Memory Atlas v1.2 S09 P1 Latent Signals Parameters
+
+状态：`phase_s09_p1_latent_signals_completed_pending_s09_p2`。
+
+验收 ID：`ACC-MA-V12-S09P1`。
+
+S09 P1 固定以下参数：
+
+- `MA-V12-S09P1`
+- `validate:v1.2-s09-p1`
+- `机器治理/行为智能模型/latent_signals.v1_2_s09_p1.json`
+- `scripts/build_memory_atlas_latent_signals.py`
+- `atlasctl.py analyze --stage latent`
+- `atlasctl.py audit --check latent-safety`
+- `data/derived/behavior_intelligence/latent_signals.json`
+- S09 P1 完成后下一步为 pending S09 P2。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S09P1-001 phase_status = phase_s09_p1_latent_signals_completed_pending_s09_p2`
+- `PARAM-MA-V12-S09P1-002 validator = validate:v1.2-s09-p1`
+- `PARAM-MA-V12-S09P1-003 config = 机器治理/行为智能模型/latent_signals.v1_2_s09_p1.json`
+- `PARAM-MA-V12-S09P1-004 builder = build_memory_atlas_latent_signals.py`
+- `PARAM-MA-V12-S09P1-005 output = data/derived/behavior_intelligence/latent_signals.json`
+- `PARAM-MA-V12-S09P1-006 required_fields = claim_zh, supporting_evidence_refs, contradicting_evidence_refs, alternative_explanation_zh, confidence, evidence_strength_badge, next_validation_zh`
+- `PARAM-MA-V12-S09P1-007 evidence_strength_badges = A/B/C/D`
+- `PARAM-MA-V12-S09P1-008 max_confidence = 0.85`
+- `PARAM-MA-V12-S09P1-009 next_gate = pending S09 P2`
+- `PARAM-MA-V12-S09P1-010 phase_boundary = No raw mutation; No psychological diagnosis output; No personality label output; No self-iteration suggestions; No decision debt ledger; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s09-p1` checks S08 Review predecessor, latent signal config,
+  persisted `latent_signals.json`, `atlasctl analyze --stage latent --dry-run`,
+  `atlasctl audit --check latent-safety`, human/machine records, canonical
+  remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S09 P1 Latent Signals; MA-V12-S09P1; ACC-MA-V12-S09P1; phase_s09_p1_latent_signals_completed_pending_s09_p2; validate:v1.2-s09-p1; S09 P1; latent_signals.json; signal_count=5; pending S09 P2; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No psychological diagnosis output; No personality label output; No self-iteration suggestions; No decision debt ledger.
+
+## 136. Memory Atlas v1.2 S08 Review Parameters
+
+状态：`stage_s08_review_passed_pending_s09_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S08-REVIEW`。
+
+S08 Review 固定以下参数：
+
+- `MA-V12-S08-REVIEW`
+- `validate:v1.2-s08-review`
+- `docs/reviews/memory_atlas_v1_2_s08_review.md`
+- `data/derived/agent_collaboration/agent_collaboration_quality_report.json`
+- `data/derived/agent_collaboration/agent_authorization_boundary_report.json`
+- `data/derived/agent_collaboration/stage_flight_recorder.json`
+- S08 Review 完成后下一步为 pending S09 P1。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S08-REVIEW-001 stage_status = stage_s08_review_passed_pending_s09_no_github_main_upload`
+- `PARAM-MA-V12-S08-REVIEW-002 validator = validate:v1.2-s08-review`
+- `PARAM-MA-V12-S08-REVIEW-003 collaboration_metric_count = 7 metrics`
+- `PARAM-MA-V12-S08-REVIEW-004 authorization_machine_check_count = 4 checks`
+- `PARAM-MA-V12-S08-REVIEW-005 stage_flight_required_field_count = 10 fields`
+- `PARAM-MA-V12-S08-REVIEW-006 phase_record_count = 3 records`
+- `PARAM-MA-V12-S08-REVIEW-007 next_gate = pending S09 P1`
+- `PARAM-MA-V12-S08-REVIEW-008 stage_boundary = No raw mutation; No multi-agent system; No complex Delegation Contract UI; No proposal apply execution; No S09 work; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s08-review` checks S08 P3 predecessor, S08 P1 collaboration
+  quality output, S08 P2 authorization boundary output, S08 P3 stage flight
+  output, S08 atlasctl dry-runs and audits, human/machine records, canonical
+  remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S08 Review; MA-V12-S08-REVIEW; ACC-MA-V12-S08-REVIEW; stage_s08_review_passed_pending_s09_no_github_main_upload; validate:v1.2-s08-review; S08 Review; pending S09 P1; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No multi-agent system; No complex Delegation Contract UI; No proposal apply execution; No S09 work.
+
+## 135. Memory Atlas v1.2 S08 P3 Stage Flight Recorder Parameters
+
+状态：`phase_s08_p3_stage_flight_recorder_completed_pending_s08_review`。
+
+验收 ID：`ACC-MA-V12-S08P3`。
+
+S08 P3 固定以下参数：
+
+- `MA-V12-S08P3`
+- `validate:v1.2-s08-p3`
+- `机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json`
+- `scripts/build_memory_atlas_stage_flight.py`
+- `atlasctl.py analyze --stage stage-flight`
+- `atlasctl.py audit --check stage-flight`
+- `data/derived/agent_collaboration/stage_flight_recorder.json`
+- S08 P3 完成后下一步为 pending S08 Review。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S08P3-001 phase_status = phase_s08_p3_stage_flight_recorder_completed_pending_s08_review`
+- `PARAM-MA-V12-S08P3-002 validator = validate:v1.2-s08-p3`
+- `PARAM-MA-V12-S08P3-003 config = 机器治理/证据与日志/stage_flight_recorder_fields.v1_2_s08_p3.json`
+- `PARAM-MA-V12-S08P3-004 builder = build_memory_atlas_stage_flight.py`
+- `PARAM-MA-V12-S08P3-005 output = data/derived/agent_collaboration/stage_flight_recorder.json`
+- `PARAM-MA-V12-S08P3-006 required_field_count = 10 fields`
+- `PARAM-MA-V12-S08P3-007 phase_record_count = 3 records`
+- `PARAM-MA-V12-S08P3-008 bulky_human_documentation = false`
+- `PARAM-MA-V12-S08P3-009 next_gate = pending S08 Review`
+- `PARAM-MA-V12-S08P3-010 phase_boundary = No raw mutation; No raw/transcript payloads; No bulky human documentation; No complex Delegation Contract UI; No multi-agent system; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s08-p3` checks S08 P2 predecessor, stage flight config,
+  persisted `stage_flight_recorder.json`, `atlasctl analyze --stage
+  stage-flight --dry-run`, `atlasctl audit --check stage-flight`,
+  human/machine records, canonical remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S08 P3 Stage Flight Recorder; MA-V12-S08P3; ACC-MA-V12-S08P3; phase_s08_p3_stage_flight_recorder_completed_pending_s08_review; validate:v1.2-s08-p3; S08 P3; stage_flight_recorder.json; required_field_count=10; phase_record_count=3; pending S08 Review; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No raw/transcript payloads; No bulky human documentation; No complex Delegation Contract UI; No multi-agent system.
+
+## 134. Memory Atlas v1.2 S08 P2 Agent Authorization Boundary Parameters
+
+状态：`phase_s08_p2_authorization_boundary_completed_pending_s08_p3`。
+
+验收 ID：`ACC-MA-V12-S08P2`。
+
+S08 P2 固定以下参数：
+
+- `MA-V12-S08P2`
+- `validate:v1.2-s08-p2`
+- `机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json`
+- `scripts/build_memory_atlas_agent_authorization.py`
+- `atlasctl.py analyze --stage agent-authorization`
+- `atlasctl.py audit --check agent-authorization`
+- `data/derived/agent_collaboration/agent_authorization_boundary_report.json`
+- `approved_by_human`
+- S08 P2 完成后下一步为 pending S08 P3。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S08P2-001 phase_status = phase_s08_p2_authorization_boundary_completed_pending_s08_p3`
+- `PARAM-MA-V12-S08P2-002 validator = validate:v1.2-s08-p2`
+- `PARAM-MA-V12-S08P2-003 config = 机器治理/行为智能模型/agent_authorization_boundary.v1_2_s08_p2.json`
+- `PARAM-MA-V12-S08P2-004 builder = build_memory_atlas_agent_authorization.py`
+- `PARAM-MA-V12-S08P2-005 output = data/derived/agent_collaboration/agent_authorization_boundary_report.json`
+- `PARAM-MA-V12-S08P2-006 human_approval_required = true; approved_by_human`
+- `PARAM-MA-V12-S08P2-007 current_phase_executes_apply = false`
+- `PARAM-MA-V12-S08P2-008 raw_apply_target_allowed = false`
+- `PARAM-MA-V12-S08P2-009 machine_output_check_count = 4 checks`
+- `PARAM-MA-V12-S08P2-010 next_gate = pending S08 P3`
+- `PARAM-MA-V12-S08P2-011 phase_boundary = No raw mutation; No complex Delegation Contract UI; No multi-agent system; No proposal apply execution; No stage flight recorder; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s08-p2` checks S08 P1 predecessor, authorization boundary
+  config, persisted `agent_authorization_boundary_report.json`, `atlasctl
+  analyze --stage agent-authorization --dry-run`, `atlasctl audit --check
+  agent-authorization`, human/machine records, canonical remote and no raw/no
+  upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S08 P2 Agent Authorization Boundary; MA-V12-S08P2; ACC-MA-V12-S08P2; phase_s08_p2_authorization_boundary_completed_pending_s08_p3; validate:v1.2-s08-p2; S08 P2; agent_authorization_boundary_report.json; approved_by_human; human_approval_required=true; raw_apply_target_allowed=false; current_phase_executes_apply=false; pending S08 P3; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No complex Delegation Contract UI; No multi-agent system; No proposal apply execution; No stage flight recorder.
+
+## 133. Memory Atlas v1.2 S08 P1 Agent Collaboration Metrics Parameters
+
+状态：`phase_s08_p1_collaboration_metrics_completed_pending_s08_p2`。
+
+验收 ID：`ACC-MA-V12-S08P1`。
+
+S08 P1 固定以下参数：
+
+- `MA-V12-S08P1`
+- `validate:v1.2-s08-p1`
+- `机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json`
+- `scripts/build_memory_atlas_agent_collaboration.py`
+- `atlasctl.py analyze --stage agent-collaboration`
+- `atlasctl.py audit --check agent-collaboration`
+- `data/derived/agent_collaboration/agent_collaboration_quality_report.json`
+- S08 P1 完成后下一步为 pending S08 P2。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S08P1-001 phase_status = phase_s08_p1_collaboration_metrics_completed_pending_s08_p2`
+- `PARAM-MA-V12-S08P1-002 validator = validate:v1.2-s08-p1`
+- `PARAM-MA-V12-S08P1-003 config = 机器治理/行为智能模型/agent_collaboration_metrics.v1_2_s08_p1.json`
+- `PARAM-MA-V12-S08P1-004 builder = build_memory_atlas_agent_collaboration.py`
+- `PARAM-MA-V12-S08P1-005 output = data/derived/agent_collaboration/agent_collaboration_quality_report.json`
+- `PARAM-MA-V12-S08P1-006 metric_count = 7 metrics`
+- `PARAM-MA-V12-S08P1-007 metric_keys = planning_clarity; execution_clarity; review_burden; rework_count; scope_clarity; testability; rollbackability`
+- `PARAM-MA-V12-S08P1-008 source_types = chatgpt; codex; other_agent`
+- `PARAM-MA-V12-S08P1-009 next_gate = pending S08 P2`
+- `PARAM-MA-V12-S08P1-010 phase_boundary = No raw mutation; No complex Delegation Contract UI; No multi-agent system; No authorization apply boundary; No stage flight recorder; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s08-p1` checks S07 Review predecessor, collaboration metrics
+  config, persisted `agent_collaboration_quality_report.json`, `atlasctl
+  analyze --stage agent-collaboration --dry-run`, `atlasctl audit --check
+  agent-collaboration`, human/machine records, canonical remote and no raw/no
+  upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S08 P1 Agent Collaboration Metrics; MA-V12-S08P1; ACC-MA-V12-S08P1; phase_s08_p1_collaboration_metrics_completed_pending_s08_p2; validate:v1.2-s08-p1; S08 P1; agent_collaboration_quality_report.json; planning_clarity; execution_clarity; review_burden; rework_count; scope_clarity; testability; rollbackability; pending S08 P2; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No complex Delegation Contract UI; No multi-agent system; No authorization apply boundary; No stage flight recorder.
+
+## 132. Memory Atlas v1.2 S07 Review Parameters
+
+状态：`stage_s07_review_passed_pending_s08_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S07-REVIEW`。
+
+S07 Review 固定以下参数：
+
+- `MA-V12-S07-REVIEW`
+- `validate:v1.2-s07-review`
+- `memory_atlas_v1_2_s07_review.md`
+- `data/derived/economic_proxy/personal_economic_proxy.json`
+- `data/derived/information_roi/information_roi_gate.json`
+- `data/derived/economic_proxy/formula_what_if_preview.json`
+- `atlasctl.py analyze --stage economic-proxy`
+- `atlasctl.py audit --check formulas`
+- `atlasctl.py audit --check visual-roi`
+- `atlasctl.py audit --check formula-what-if`
+- S07 Review 完成后下一步为 pending S08 P1。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S07-REVIEW-001 stage_status = stage_s07_review_passed_pending_s08_no_github_main_upload`
+- `PARAM-MA-V12-S07-REVIEW-002 validator = validate:v1.2-s07-review`
+- `PARAM-MA-V12-S07-REVIEW-003 economic_proxy = data/derived/economic_proxy/personal_economic_proxy.json`
+- `PARAM-MA-V12-S07-REVIEW-004 information_roi = data/derived/information_roi/information_roi_gate.json`
+- `PARAM-MA-V12-S07-REVIEW-005 formula_what_if = data/derived/economic_proxy/formula_what_if_preview.json`
+- `PARAM-MA-V12-S07-REVIEW-006 external_economics = reserved_for_v2 only`
+- `PARAM-MA-V12-S07-REVIEW-007 next_gate = pending S08 P1`
+- `PARAM-MA-V12-S07-REVIEW-008 phase_boundary = No raw mutation; No external economic database; No precise income prediction; No financial advice; No S08 work; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s07-review` checks S07 P3 predecessor, S07 P1/P2/P3 formula
+  configs, persisted economic/ROI/what-if outputs, `atlasctl` economic dry-run
+  and formula/visual/what-if audits, human/machine records, canonical remote
+  and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S07 Review; MA-V12-S07-REVIEW; ACC-MA-V12-S07-REVIEW; stage_s07_review_passed_pending_s08_no_github_main_upload; validate:v1.2-s07-review; Personal Economic Proxy; Information ROI; Formula What-if; pending S08 P1; No GitHub main upload in this phase; No remote push in this phase; No raw mutation; No external economic database; No precise income prediction; No financial advice; No S08 work.
+
+## 131. Memory Atlas v1.2 S07 P3 Formula What-if Parameters
+
+状态：`phase_s07_p3_formula_what_if_completed_pending_s07_review`。
+
+验收 ID：`ACC-MA-V12-S07P3`。
+
+S07 P3 固定以下参数：
+
+- `MA-V12-S07P3`
+- `validate:v1.2-s07-p3`
+- `机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`
+- `scripts/build_memory_atlas_formula_what_if.py`
+- `atlasctl.py analyze --stage formula-what-if`
+- `atlasctl.py audit --check formula-what-if`
+- `data/derived/economic_proxy/formula_what_if_preview.json`
+- S07 P3 完成后下一步为 pending S07 Review。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S07P3-001 phase_status = phase_s07_p3_formula_what_if_completed_pending_s07_review`
+- `PARAM-MA-V12-S07P3-002 validator = validate:v1.2-s07-p3`
+- `PARAM-MA-V12-S07P3-003 config = 机器治理/参数与公式/formula_what_if_defaults.v1_2_s07_p3.json`
+- `PARAM-MA-V12-S07P3-004 builder = build_memory_atlas_formula_what_if.py`
+- `PARAM-MA-V12-S07P3-005 output = data/derived/economic_proxy/formula_what_if_preview.json`
+- `PARAM-MA-V12-S07P3-006 scenario_count = 5 scenarios`
+- `PARAM-MA-V12-S07P3-007 proposal_gate = proposal_required_before_apply=true; active_config_write=false`
+- `PARAM-MA-V12-S07P3-008 next_gate = pending S07 Review`
+- `PARAM-MA-V12-S07P3-009 phase_boundary = No raw mutation; No external economic database; No precise income prediction; No financial advice; No active formula config mutation; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s07-p3` checks S07 P2 predecessor, Formula What-if config,
+  persisted `formula_what_if_preview.json`, `atlasctl analyze --stage
+  formula-what-if --dry-run`, `atlasctl audit --check formula-what-if`,
+  human/machine records, canonical remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S07 P3 Formula What-if; MA-V12-S07P3; ACC-MA-V12-S07P3; phase_s07_p3_formula_what_if_completed_pending_s07_review; validate:v1.2-s07-p3; Formula What-if; pending S07 Review; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No external economic database; No precise income prediction; No financial advice; No active formula config mutation.
+
+## 130. Memory Atlas v1.2 S07 P2 Information ROI Parameters
+
+状态：`phase_s07_p2_information_roi_completed_pending_s07_p3`。
+
+验收 ID：`ACC-MA-V12-S07P2`。
+
+S07 P2 固定以下参数：
+
+- `MA-V12-S07P2`
+- `validate:v1.2-s07-p2`
+- `机器治理/参数与公式/information_roi.v1_2_s07_p2.json`
+- `机器治理/可视化配置/visual_roi_gate.v1_2_s07_p2.json`
+- `scripts/build_memory_atlas_information_roi.py`
+- `atlasctl.py analyze --stage information-roi`
+- `atlasctl.py audit --check visual-roi`
+- `data/derived/information_roi/information_roi_gate.json`
+- S07 P2 完成后下一步为 pending S07 P3。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S07P2-001 phase_status = phase_s07_p2_information_roi_completed_pending_s07_p3`
+- `PARAM-MA-V12-S07P2-002 validator = validate:v1.2-s07-p2`
+- `PARAM-MA-V12-S07P2-003 formula_config = 机器治理/参数与公式/information_roi.v1_2_s07_p2.json`
+- `PARAM-MA-V12-S07P2-004 visual_gate_config = 机器治理/可视化配置/visual_roi_gate.v1_2_s07_p2.json`
+- `PARAM-MA-V12-S07P2-005 builder = build_memory_atlas_information_roi.py`
+- `PARAM-MA-V12-S07P2-006 output = data/derived/information_roi/information_roi_gate.json`
+- `PARAM-MA-V12-S07P2-007 roi_item_count = 31 roi_items`
+- `PARAM-MA-V12-S07P2-008 p0_gate = 10 P0 visuals; failed_p0_count=0`
+- `PARAM-MA-V12-S07P2-009 next_gate = pending S07 P3`
+- `PARAM-MA-V12-S07P2-010 phase_boundary = No raw mutation; No external economic database; No precise income prediction; No S07 P3 what-if UI; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s07-p2` checks S07 P1 predecessor, formula config, Visual ROI Gate
+  config, persisted `information_roi_gate.json`, `atlasctl analyze --stage
+  information-roi --dry-run`, `atlasctl audit --check visual-roi`, human/machine
+  records, canonical remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S07 P2 Information ROI; MA-V12-S07P2; ACC-MA-V12-S07P2; phase_s07_p2_information_roi_completed_pending_s07_p3; validate:v1.2-s07-p2; Information ROI; Visual ROI Gate; pending S07 P3; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No external economic database; No precise income prediction; No S07 P3 what-if UI.
+
+## 129. Memory Atlas v1.2 S07 P1 Personal Economic Proxy Parameters
+
+状态：`phase_s07_p1_economic_proxy_completed_pending_s07_p2`。
+
+验收 ID：`ACC-MA-V12-S07P1`。
+
+S07 P1 固定以下参数：
+
+- `MA-V12-S07P1`
+- `validate:v1.2-s07-p1`
+- `机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json`
+- `scripts/build_memory_atlas_economic_proxy.py`
+- `atlasctl.py analyze --stage economic-proxy`
+- `atlasctl.py audit --check formulas`
+- `data/derived/economic_proxy/personal_economic_proxy.json`
+- S07 P1 完成后下一步为 pending S07 P2。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S07P1-001 phase_status = phase_s07_p1_economic_proxy_completed_pending_s07_p2`
+- `PARAM-MA-V12-S07P1-002 validator = validate:v1.2-s07-p1`
+- `PARAM-MA-V12-S07P1-003 formula_config = 机器治理/参数与公式/personal_economic_proxy.v1_2_s07_p1.json`
+- `PARAM-MA-V12-S07P1-004 builder = build_memory_atlas_economic_proxy.py`
+- `PARAM-MA-V12-S07P1-005 output = data/derived/economic_proxy/personal_economic_proxy.json`
+- `PARAM-MA-V12-S07P1-006 score_count = 6 score cards`
+- `PARAM-MA-V12-S07P1-007 next_gate = pending S07 P2`
+- `PARAM-MA-V12-S07P1-008 phase_boundary = No raw mutation; No external economic database; No precise income prediction; No S07 P2 information ROI gate; No S07 P3 what-if UI; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s07-p1` checks S06 Review predecessor, formula config, builder,
+  persisted `personal_economic_proxy.json`, `atlasctl analyze --stage
+  economic-proxy --dry-run`, `atlasctl audit --check formulas`, human/machine
+  records, canonical remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S07 P1 Personal Economic Proxy; MA-V12-S07P1; ACC-MA-V12-S07P1; phase_s07_p1_economic_proxy_completed_pending_s07_p2; validate:v1.2-s07-p1; Personal Economic Proxy; pending S07 P2; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No external economic database; No precise income prediction; No S07 P2 information ROI gate; No S07 P3 what-if UI.
+
+## 128. Memory Atlas v1.2 S06 Review Parameters
+
+状态：`stage_s06_review_passed_pending_s07_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S06-REVIEW`。
+
+S06 Review 固定以下参数：
+
+- `MA-V12-S06-REVIEW`
+- `validate:v1.2-s06-review`
+- `memory_atlas_v1_2_s06_review.md`
+- `data/derived/visualization/memory_atlas.json`
+- `behavior_intelligence`
+- display marker：`data-s06-review-display`
+- output counts：160 clusters、23 low-value loops、12 opportunities。
+- S06 Review 完成后下一步为 pending S07 P1。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S06-REVIEW-001 stage_status = stage_s06_review_passed_pending_s07_no_github_main_upload`
+- `PARAM-MA-V12-S06-REVIEW-002 validator = validate:v1.2-s06-review`
+- `PARAM-MA-V12-S06-REVIEW-003 display_payload = data/derived/visualization/memory_atlas.json behavior_intelligence`
+- `PARAM-MA-V12-S06-REVIEW-004 display_marker = data-s06-review-display=behavior-clusters-low-value-loops-opportunities`
+- `PARAM-MA-V12-S06-REVIEW-005 output_counts = 160 clusters; 23 low-value loops; 12 opportunities`
+- `PARAM-MA-V12-S06-REVIEW-006 next_gate = pending S07 P1`
+- `PARAM-MA-V12-S06-REVIEW-007 phase_boundary = No raw mutation; No psychological diagnosis; No external economic database; No infinite pressure list; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s06-review` checks S06 P3 predecessor, S06 P1/P2/P3
+  payloads, `behavior_intelligence` display data, App.tsx display markers,
+  status records, canonical remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S06 Review; MA-V12-S06-REVIEW; ACC-MA-V12-S06-REVIEW; stage_s06_review_passed_pending_s07_no_github_main_upload; validate:v1.2-s06-review; memory_atlas_v1_2_s06_review.md; behavior_intelligence; S06 Review; pending S07 P1; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No psychological diagnosis; No external economic database; No infinite pressure list.
+
+## 127. Memory Atlas v1.2 S06 P3 Opportunity Discovery Parameters
+
+状态：`phase_s06_p3_opportunity_discovery_completed_pending_s06_review`。
+
+验收 ID：`ACC-MA-V12-S06P3`。
+
+S06 P3 固定以下参数：
+
+- `MA-V12-S06P3`
+- `validate:v1.2-s06-p3`
+- `build_memory_atlas_opportunities.py`
+- `atlasctl.py analyze --stage opportunities`
+- `data/derived/behavior_intelligence/opportunities.json`
+- opportunity types：`automation`、`productization`、`template`、`compounding`、`defer`。
+- output counts：12 opportunities、12 why-not-now cards。
+- S06 P3 完成后下一步为 pending S06 Review。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S06P3-001 phase_status = phase_s06_p3_opportunity_discovery_completed_pending_s06_review`
+- `PARAM-MA-V12-S06P3-002 validator = validate:v1.2-s06-p3`
+- `PARAM-MA-V12-S06P3-003 builder = build_memory_atlas_opportunities.py`
+- `PARAM-MA-V12-S06P3-004 output = data/derived/behavior_intelligence/opportunities.json`
+- `PARAM-MA-V12-S06P3-005 opportunity_types = automation; productization; template; compounding; defer`
+- `PARAM-MA-V12-S06P3-006 output_counts = 12 opportunities; 12 why-not-now cards`
+- `PARAM-MA-V12-S06P3-007 next_gate = pending S06 Review`
+- `PARAM-MA-V12-S06P3-008 phase_boundary = No raw mutation; No external economic database; No psychological diagnosis; No infinite pressure list; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s06-p3` checks S06 P2 predecessor, atlasctl opportunities
+  dry-run, persisted `opportunities.json`, all five opportunity types,
+  why-not-now cards, insight-evidence audit, human/machine records, canonical
+  remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S06 P3 Opportunity Discovery; MA-V12-S06P3; ACC-MA-V12-S06P3; phase_s06_p3_opportunity_discovery_completed_pending_s06_review; validate:v1.2-s06-p3; build_memory_atlas_opportunities.py; atlasctl.py analyze --stage opportunities; opportunities.json; S06 P3; pending S06 Review; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No external economic database; No psychological diagnosis; No infinite pressure list.
+
+## 126. Memory Atlas v1.2 S06 P2 Low-Value Loops Parameters
+
+状态：`phase_s06_p2_low_value_loops_completed_pending_s06_p3`。
+
+验收 ID：`ACC-MA-V12-S06P2`。
+
+S06 P2 固定以下参数：
+
+- `MA-V12-S06P2`
+- `validate:v1.2-s06-p2`
+- `build_memory_atlas_low_value_loops.py`
+- `atlasctl.py analyze --stage low-value-loops`
+- `data/derived/behavior_intelligence/low_value_loops.json`
+- loop types：`repeated_rework`、`discussion_without_landing`、`over_optimization`、`scope_creep`。
+- output counts：23 loops、23 decision debts、23 action half-life records。
+- S06 P2 完成后下一步为 pending S06 P3。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S06P2-001 phase_status = phase_s06_p2_low_value_loops_completed_pending_s06_p3`
+- `PARAM-MA-V12-S06P2-002 validator = validate:v1.2-s06-p2`
+- `PARAM-MA-V12-S06P2-003 builder = build_memory_atlas_low_value_loops.py`
+- `PARAM-MA-V12-S06P2-004 output = data/derived/behavior_intelligence/low_value_loops.json`
+- `PARAM-MA-V12-S06P2-005 loop_types = repeated_rework; discussion_without_landing; over_optimization; scope_creep`
+- `PARAM-MA-V12-S06P2-006 output_counts = 23 loops; 23 decision debts; 23 action half-life records`
+- `PARAM-MA-V12-S06P2-007 next_gate = pending S06 P3`
+- `PARAM-MA-V12-S06P2-008 phase_boundary = No raw mutation; No psychological diagnosis; No opportunity cards; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s06-p2` checks S06 P1 predecessor, atlasctl low-value-loops
+  dry-run, persisted `low_value_loops.json`, all four loop types, Decision Debt
+  Ledger, Action Half-Life, insight-evidence audit, human/machine records,
+  canonical remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S06 P2 Low-Value Loops; MA-V12-S06P2; ACC-MA-V12-S06P2; phase_s06_p2_low_value_loops_completed_pending_s06_p3; validate:v1.2-s06-p2; build_memory_atlas_low_value_loops.py; atlasctl.py analyze --stage low-value-loops; low_value_loops.json; S06 P2; pending S06 P3; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No psychological diagnosis; No opportunity cards.
+
+## 125. Memory Atlas v1.2 S06 P1 Cluster Builder Parameters
+
+状态：`phase_s06_p1_cluster_builder_completed_pending_s06_p2`。
+
+验收 ID：`ACC-MA-V12-S06P1`。
+
+S06 P1 固定以下参数：
+
+- `MA-V12-S06P1`
+- `validate:v1.2-s06-p1`
+- `build_memory_atlas_clusters.py`
+- `atlasctl.py analyze --stage clusters`
+- `data/derived/behavior_intelligence/clusters.json`
+- filter contract：`source/time/project/task/language`。
+- input event count：217。
+- S06 P1 完成后下一步为 pending S06 P2。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S06P1-001 phase_status = phase_s06_p1_cluster_builder_completed_pending_s06_p2`
+- `PARAM-MA-V12-S06P1-002 validator = validate:v1.2-s06-p1`
+- `PARAM-MA-V12-S06P1-003 builder = build_memory_atlas_clusters.py`
+- `PARAM-MA-V12-S06P1-004 output = data/derived/behavior_intelligence/clusters.json`
+- `PARAM-MA-V12-S06P1-005 input_event_count = 217`
+- `PARAM-MA-V12-S06P1-006 filter_contract = source/time/project/task/language`
+- `PARAM-MA-V12-S06P1-007 next_gate = pending S06 P2`
+- `PARAM-MA-V12-S06P1-008 phase_boundary = No raw mutation; No low-value loop detection; No opportunity cards; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s06-p1` checks S05 Review predecessor, atlasctl clusters
+  dry-run, persisted clusters, source/language filter behavior, insight-evidence
+  audit, human/machine records, canonical remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S06 P1 Cluster Builder; MA-V12-S06P1; ACC-MA-V12-S06P1; phase_s06_p1_cluster_builder_completed_pending_s06_p2; validate:v1.2-s06-p1; build_memory_atlas_clusters.py; atlasctl.py analyze --stage clusters; clusters.json; S06 P1; pending S06 P2; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No low-value loop detection; No opportunity cards.
+
+## 124. Memory Atlas v1.2 S05 Review Parameters
+
+状态：`stage_s05_review_passed_pending_s06_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S05-REVIEW`。
+
+S05 Review 固定以下参数：
+
+- `MA-V12-S05-REVIEW`
+- `validate:v1.2-s05-review`
+- `memory_atlas_v1_2_s05_review.md`
+- S05 P1/P2/P3 validator chain。
+- event count：217。
+- evidence_ref_count：434。
+- S05 Review 完成后下一步为 pending S06 P1。
+- No GitHub main upload in this review。
+
+参数：
+
+- `PARAM-MA-V12-S05-REVIEW-001 stage_status = stage_s05_review_passed_pending_s06_no_github_main_upload`
+- `PARAM-MA-V12-S05-REVIEW-002 validator = validate:v1.2-s05-review`
+- `PARAM-MA-V12-S05-REVIEW-003 review_artifact = memory_atlas_v1_2_s05_review.md`
+- `PARAM-MA-V12-S05-REVIEW-004 event_count = 217`
+- `PARAM-MA-V12-S05-REVIEW-005 evidence_ref_count = 434`
+- `PARAM-MA-V12-S05-REVIEW-006 next_gate = pending S06 P1`
+- `PARAM-MA-V12-S05-REVIEW-007 upload_boundary = No GitHub main upload in this review; No remote push in this review`
+
+验证逻辑：
+
+- `validate:v1.2-s05-review` checks S05 P1/P2/P3 validator chain,
+  atlasctl facets dry-run, events schema/source/evidence coverage, human docs,
+  records, canonical remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S05 Review; MA-V12-S05-REVIEW; ACC-MA-V12-S05-REVIEW; stage_s05_review_passed_pending_s06_no_github_main_upload; validate:v1.2-s05-review; memory_atlas_v1_2_s05_review.md; S05 Review; pending S06 P1; No GitHub main upload in this review; No remote push in this review; No raw mutation in this review; No fake events.
+
+## 123. Memory Atlas v1.2 S05 P3 Evidence Refs Parameters
+
+状态：`phase_s05_p3_evidence_refs_completed_pending_s05_review`。
+
+验收 ID：`ACC-MA-V12-S05P3`。
+
+S05 P3 固定以下参数：
+
+- `MA-V12-S05P3`
+- `validate:v1.2-s05-p3`
+- `extract_memory_atlas_facets.py`
+- `atlasctl.py analyze --stage facets`
+- `data/derived/behavior_intelligence/events.json`
+- evidence mode：`lightweight_evidence_refs`。
+- event count：217。
+- evidence_ref_count：434。
+- S05 P3 完成后下一步为 pending S05 Review。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S05P3-001 phase_status = phase_s05_p3_evidence_refs_completed_pending_s05_review`
+- `PARAM-MA-V12-S05P3-002 validator = validate:v1.2-s05-p3`
+- `PARAM-MA-V12-S05P3-003 extractor = extract_memory_atlas_facets.py`
+- `PARAM-MA-V12-S05P3-004 output = data/derived/behavior_intelligence/events.json`
+- `PARAM-MA-V12-S05P3-005 event_count = 217`
+- `PARAM-MA-V12-S05P3-006 evidence_ref_count = 434`
+- `PARAM-MA-V12-S05P3-007 next_gate = pending S05 Review`
+- `PARAM-MA-V12-S05P3-008 phase_boundary = No raw mutation in this phase; No fake events; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s05-p3` checks extractor runtime, atlasctl dry-run evidence
+  contract, events.json identity, event field completeness, source_id,
+  lightweight evidence_refs, source_status coverage, human/machine records,
+  canonical remote and no raw/no upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S05 P3 Evidence Refs; MA-V12-S05P3; ACC-MA-V12-S05P3; phase_s05_p3_evidence_refs_completed_pending_s05_review; validate:v1.2-s05-p3; extract_memory_atlas_facets.py; atlasctl.py analyze --stage facets; events.json; 217 events; 434 evidence_refs; S05 P3; pending S05 Review; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No fake events.
+
+## 122. Memory Atlas v1.2 S05 P2 Facet Extractor Parameters
+
+状态：`phase_s05_p2_facet_extractor_completed_pending_s05_p3`。
+
+验收 ID：`ACC-MA-V12-S05P2`。
+
+S05 P2 固定以下参数：
+
+- `MA-V12-S05P2`
+- `validate:v1.2-s05-p2`
+- `extract_memory_atlas_facets.py`
+- `atlasctl.py analyze --stage facets`
+- `data/derived/behavior_intelligence/events.json`
+- event count：217。
+- source_status：ChatGPT 201, Codex 16, future_agent missing reason。
+- S05 P2 完成后下一步为 pending S05 P3。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S05P2-001 phase_status = phase_s05_p2_facet_extractor_completed_pending_s05_p3`
+- `PARAM-MA-V12-S05P2-002 validator = validate:v1.2-s05-p2`
+- `PARAM-MA-V12-S05P2-003 extractor = extract_memory_atlas_facets.py`
+- `PARAM-MA-V12-S05P2-004 output = data/derived/behavior_intelligence/events.json`
+- `PARAM-MA-V12-S05P2-005 event_count = 217`
+- `PARAM-MA-V12-S05P2-006 next_gate = pending S05 P3`
+- `PARAM-MA-V12-S05P2-007 phase_boundary = No raw mutation in this phase; No fake events; No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s05-p2` checks extractor runtime, atlasctl dry-run, events.json
+  identity, event field completeness, evidence refs or missing reasons,
+  source_status coverage, human/machine records, canonical remote and no raw/no
+  upload boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S05 P2 Facet Extractor; MA-V12-S05P2; ACC-MA-V12-S05P2; phase_s05_p2_facet_extractor_completed_pending_s05_p3; validate:v1.2-s05-p2; extract_memory_atlas_facets.py; atlasctl.py analyze --stage facets; events.json; 217 events; S05 P2; pending S05 P3; No GitHub main upload in this phase; No remote push in this phase; No raw mutation in this phase; No fake events.
+
+## 121. Memory Atlas v1.2 S05 P1 Facet Schema Parameters
+
+状态：`phase_s05_p1_facet_schema_completed_pending_s05_p2`。
+
+验收 ID：`ACC-MA-V12-S05P1`。
+
+S05 P1 固定以下参数：
+
+- `MA-V12-S05P1`
+- `validate:v1.2-s05-p1`
+- `facet_event_schema.v1_2_s05_p1.json`
+- `12_Facet字段与事件语义说明.md`
+- `memory_atlas_v1_2_s05_p1_facet_schema.md`
+- required fields：`source`, `topic`, `intent`, `task_type`, `project`, `output_type`, `language`, `tool`, `turn_count`, `friction`, `value_signal`, `future_agent_source`。
+- S05 P1 完成后下一步为 pending S05 P2。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S05P1-001 phase_status = phase_s05_p1_facet_schema_completed_pending_s05_p2`
+- `PARAM-MA-V12-S05P1-002 validator = validate:v1.2-s05-p1`
+- `PARAM-MA-V12-S05P1-003 schema = facet_event_schema.v1_2_s05_p1.json`
+- `PARAM-MA-V12-S05P1-004 human_doc = 12_Facet字段与事件语义说明.md`
+- `PARAM-MA-V12-S05P1-005 next_gate = pending S05 P2`
+- `PARAM-MA-V12-S05P1-006 phase_boundary = No extractor in this phase; No fake events in this phase; No raw mutation in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s05-p1` checks S04 Review continuity, required facet fields,
+  English field names, Chinese explanations, ChatGPT/Codex/future-agent coverage,
+  no events.json generation, human/machine state, records, canonical remote and
+  no-upload/no-remote-push/no-extractor/no-raw-mutation boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S05 P1 Facet Schema; MA-V12-S05P1; ACC-MA-V12-S05P1; phase_s05_p1_facet_schema_completed_pending_s05_p2; validate:v1.2-s05-p1; facet_event_schema.v1_2_s05_p1.json; 12_Facet字段与事件语义说明.md; memory_atlas_v1_2_s05_p1_facet_schema.md; S05 P1; pending S05 P2; No GitHub main upload in this phase; No remote push in this phase; No extractor in this phase; No fake events in this phase; No raw mutation in this phase.
+
+## 120. Memory Atlas v1.2 S04 Review Parameters
+
+状态：`stage_s04_review_passed_pending_s05_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S04-REVIEW`。
+
+S04 Review 固定以下参数：
+
+- `MA-V12-S04-REVIEW`
+- `validate:v1.2-s04-review`
+- `memory_atlas_v1_2_s04_review.md`
+- S04 P1/P2/P3 validator chain。
+- ChatGPT/Codex/future-agent sync dry-run。
+- build-atlas dry-run。
+- GitHub backup push dry-run。
+- S04 Review 完成后下一步为 pending S05 P1。
+- No GitHub main upload in this review。
+
+参数：
+
+- `PARAM-MA-V12-S04-REVIEW-001 stage_status = stage_s04_review_passed_pending_s05_no_github_main_upload`
+- `PARAM-MA-V12-S04-REVIEW-002 validator = validate:v1.2-s04-review`
+- `PARAM-MA-V12-S04-REVIEW-003 review_artifact = memory_atlas_v1_2_s04_review.md`
+- `PARAM-MA-V12-S04-REVIEW-004 cli_contract = chatgpt/codex/future-agent sync; build-atlas; push`
+- `PARAM-MA-V12-S04-REVIEW-005 next_gate = pending S05 P1`
+- `PARAM-MA-V12-S04-REVIEW-006 upload_boundary = No GitHub main upload in this review; No remote push in this review`
+
+验证逻辑：
+
+- `validate:v1.2-s04-review` checks S04 P1/P2/P3 continuity, sync dry-runs,
+  build-atlas dry-run, GitHub backup dry-run, human/machine state, records,
+  canonical remote and no-upload/no-remote-push/no-app-reinstall boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S04 Review; MA-V12-S04-REVIEW; ACC-MA-V12-S04-REVIEW; stage_s04_review_passed_pending_s05_no_github_main_upload; validate:v1.2-s04-review; memory_atlas_v1_2_s04_review.md; S04 Review; pending S05 P1; No GitHub main upload in this review; No remote push in this review; No app reinstall; No ChatGPT mutation; No credential capture; No fake sync data.
+
+## 119. Memory Atlas v1.2 S04 P3 GitHub Backup Parameters
+
+状态：`phase_s04_p3_github_backup_completed_pending_s04_review`。
+
+验收 ID：`ACC-MA-V12-S04P3`。
+
+S04 P3 固定以下参数：
+
+- `MA-V12-S04P3`
+- `validate:v1.2-s04-p3`
+- `memory_atlas_v1_2_s04_p3_github_backup.md`
+- `github_backup_policy.v1_2_s04_p3.json`
+- `github_backup.py`
+- `atlasctl.py`
+- backup scope：`data/public_raw`, `data/derived`, `data/run_logs`, `docs/reviews`, `reports`。
+- dry-run 不写文件。
+- apply 只本地 git add/commit，不远端 push。
+- S04 P3 完成后下一步为 pending S04 Review。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S04P3-001 phase_status = phase_s04_p3_github_backup_completed_pending_s04_review`
+- `PARAM-MA-V12-S04P3-002 validator = validate:v1.2-s04-p3`
+- `PARAM-MA-V12-S04P3-003 policy = github_backup_policy.v1_2_s04_p3.json`
+- `PARAM-MA-V12-S04P3-004 backup_script = github_backup.py`
+- `PARAM-MA-V12-S04P3-005 cli = atlasctl.py push --dry-run; atlasctl.py push --apply`
+- `PARAM-MA-V12-S04P3-006 next_gate = pending S04 Review`
+- `PARAM-MA-V12-S04P3-007 upload_boundary = No GitHub main upload in this phase; No remote push in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s04-p3` checks S04 P2 continuity, GitHub backup dry-run/apply,
+  raw/derived/reports/run logs scope, Chinese fallback output, no remote push,
+  human/machine state, records, canonical remote and no-upload/no-app-reinstall
+  boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S04 P3 GitHub Backup; MA-V12-S04P3; ACC-MA-V12-S04P3; phase_s04_p3_github_backup_completed_pending_s04_review; validate:v1.2-s04-p3; memory_atlas_v1_2_s04_p3_github_backup.md; github_backup_policy.v1_2_s04_p3.json; github_backup.py; atlasctl.py; S04 P3; pending S04 Review; No GitHub main upload in this phase; No remote push in this phase; No app reinstall; No ChatGPT mutation.
+
+## 118. Memory Atlas v1.2 S04 P2 Codex/Future Agent Sync Parameters
+
+状态：`phase_s04_p2_codex_agent_sync_completed_pending_s04_p3`。
+
+验收 ID：`ACC-MA-V12-S04P2`。
+
+S04 P2 固定以下参数：
+
+- `MA-V12-S04P2`
+- `validate:v1.2-s04-p2`
+- `memory_atlas_v1_2_s04_p2_codex_agent_sync.md`
+- `codex_agent_sync_policy.v1_2_s04_p2.json`
+- `sync_codex_memory_data.py`
+- `sync_future_agent_data.py`
+- `atlasctl.py`
+- Codex local sync。
+- future-agent minimal adapter。
+- raw + derived + run log 输出合同。
+- S04 P2 完成后下一步为 pending S04 P3。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S04P2-001 phase_status = phase_s04_p2_codex_agent_sync_completed_pending_s04_p3`
+- `PARAM-MA-V12-S04P2-002 validator = validate:v1.2-s04-p2`
+- `PARAM-MA-V12-S04P2-003 policy = codex_agent_sync_policy.v1_2_s04_p2.json`
+- `PARAM-MA-V12-S04P2-004 codex_sync = sync_codex_memory_data.py`
+- `PARAM-MA-V12-S04P2-005 future_agent_sync = sync_future_agent_data.py`
+- `PARAM-MA-V12-S04P2-006 next_gate = pending S04 P3`
+- `PARAM-MA-V12-S04P2-007 upload_boundary = No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s04-p2` checks S04 P1 continuity, Codex local sync dry-run/apply,
+  future-agent minimal adapter dry-run/apply, raw + derived + run log output
+  contracts, atlasctl dry-run, human/machine state, records, canonical remote and
+  no-upload/no-github-backup/no-credential/no-browser-mutation boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S04 P2 Codex/Future Agent Sync; MA-V12-S04P2; ACC-MA-V12-S04P2; phase_s04_p2_codex_agent_sync_completed_pending_s04_p3; validate:v1.2-s04-p2; memory_atlas_v1_2_s04_p2_codex_agent_sync.md; codex_agent_sync_policy.v1_2_s04_p2.json; sync_codex_memory_data.py; sync_future_agent_data.py; atlasctl.py; S04 P2; pending S04 P3; No GitHub main upload in this phase; No GitHub backup apply; No credential storage; No browser mutation.
+
+## 117. Memory Atlas v1.2 S04 P1 ChatGPT Sync Parameters
+
+状态：`phase_s04_p1_chatgpt_sync_completed_pending_s04_p2`。
+
+验收 ID：`ACC-MA-V12-S04P1`。
+
+S04 P1 固定以下参数：
+
+- `MA-V12-S04P1`
+- `validate:v1.2-s04-p1`
+- `memory_atlas_v1_2_s04_p1_chatgpt_sync.md`
+- `chatgpt_readonly_sync_policy.v1_2_s04_p1.json`
+- `sync_chatgpt_memory_data.py`
+- `atlasctl.py`
+- ChatGPT read-only browser contract。
+- official export ZIP/conversations.json fallback。
+- S04 P1 完成后下一步为 pending S04 P2。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S04P1-001 phase_status = phase_s04_p1_chatgpt_sync_completed_pending_s04_p2`
+- `PARAM-MA-V12-S04P1-002 validator = validate:v1.2-s04-p1`
+- `PARAM-MA-V12-S04P1-003 policy = chatgpt_readonly_sync_policy.v1_2_s04_p1.json`
+- `PARAM-MA-V12-S04P1-004 sync_script = sync_chatgpt_memory_data.py`
+- `PARAM-MA-V12-S04P1-005 cli = atlasctl.py sync --source chatgpt --dry-run`
+- `PARAM-MA-V12-S04P1-006 next_gate = pending S04 P2`
+- `PARAM-MA-V12-S04P1-007 upload_boundary = No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s04-p1` checks S03 Review continuity, ChatGPT read-only
+  browser connector contract, official export fallback, credential fail-closed
+  runtime, append-only public raw apply behavior, atlasctl dry-run, human/machine
+  state, records, canonical remote and no-upload/no-codex/no-future-agent/no-github-backup/no-browser-mutation boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S04 P1 ChatGPT Sync; MA-V12-S04P1; ACC-MA-V12-S04P1; phase_s04_p1_chatgpt_sync_completed_pending_s04_p2; validate:v1.2-s04-p1; memory_atlas_v1_2_s04_p1_chatgpt_sync.md; chatgpt_readonly_sync_policy.v1_2_s04_p1.json; sync_chatgpt_memory_data.py; atlasctl.py; S04 P1; pending S04 P2; No GitHub main upload in this phase; No Codex local sync; No future-agent adapter; No GitHub backup apply; No browser mutation.
+
+## 116. Memory Atlas v1.2 S03 Review Parameters
+
+状态：`stage_s03_review_passed_pending_s04_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S03-REVIEW`。
+
+S03 Review 固定以下参数：
+
+- `MA-V12-S03-REVIEW`
+- `validate:v1.2-s03-review`
+- `memory_atlas_v1_2_s03_review.md`
+- S03 Review。
+- raw 可公开备份。
+- append-only。
+- credential exclusion。
+- raw manifest/hash。
+- S03 Review 完成后下一步为 pending S04 P1。
+- No GitHub main upload in this review。
+
+参数：
+
+- `PARAM-MA-V12-S03-REVIEW-001 phase_status = stage_s03_review_passed_pending_s04_no_github_main_upload`
+- `PARAM-MA-V12-S03-REVIEW-002 validator = validate:v1.2-s03-review`
+- `PARAM-MA-V12-S03-REVIEW-003 review_artifact = memory_atlas_v1_2_s03_review.md`
+- `PARAM-MA-V12-S03-REVIEW-004 reviewed_phases = S03 P1;S03 P2;S03 P3`
+- `PARAM-MA-V12-S03-REVIEW-005 next_gate = pending S04 P1`
+- `PARAM-MA-V12-S03-REVIEW-006 upload_boundary = No GitHub main upload in this review`
+
+验证逻辑：
+
+- `validate:v1.2-s03-review` checks S03 P3 continuity, public raw path,
+  append-only audit, credential exclusion scan/runtime, raw manifest/hash
+  ledger, human/machine state, records, canonical remote and
+  no-upload/no-connector/no-real-transcript/no-ui/no-public-raw-mutation
+  boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S03 Review; MA-V12-S03-REVIEW; ACC-MA-V12-S03-REVIEW; stage_s03_review_passed_pending_s04_no_github_main_upload; validate:v1.2-s03-review; memory_atlas_v1_2_s03_review.md; S03 Review; pending S04 P1; No GitHub main upload in this review; No connector implementation; No real transcript ingestion; No UI work; No public raw file mutation.
+
+## 115. Memory Atlas v1.2 S03 P3 Machine Ledger Parameters
+
+状态：`phase_s03_p3_machine_ledger_completed_pending_s03_review`。
+
+验收 ID：`ACC-MA-V12-S03P3`。
+
+S03 P3 固定以下参数：
+
+- `MA-V12-S03P3`
+- `validate:v1.2-s03-p3`
+- `memory_atlas_v1_2_s03_p3_machine_ledger.md`
+- `raw_manifest_ledger_policy.v1_2_s03_p3.json`
+- `raw_archive_manifest.py`
+- `raw_manifest.s03_p3_baseline.jsonl`
+- `raw_hash_ledger.jsonl`
+- raw manifest/hash 机器账本。
+- minimum manifest fields：source_id、relative_path、sha256、imported_at。
+- S03 P3 完成后下一步为 pending S03 Review。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S03P3-001 phase_status = phase_s03_p3_machine_ledger_completed_pending_s03_review`
+- `PARAM-MA-V12-S03P3-002 validator = validate:v1.2-s03-p3`
+- `PARAM-MA-V12-S03P3-003 manifest_policy = raw_manifest_ledger_policy.v1_2_s03_p3.json`
+- `PARAM-MA-V12-S03P3-004 generator = raw_archive_manifest.py`
+- `PARAM-MA-V12-S03P3-005 minimum_fields = source_id;relative_path;sha256;imported_at`
+- `PARAM-MA-V12-S03P3-006 next_gate = pending S03 Review`
+- `PARAM-MA-V12-S03P3-007 upload_boundary = No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s03-p3` checks S03 P2 continuity, raw manifest ledger policy,
+  Python unit tests, repo append-only audit, baseline manifest/hash ledger
+  consistency, human/machine state, records, canonical remote and
+  no-upload/no-connector/no-real-transcript/no-ui/no-public-raw-mutation boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S03 P3 Machine Ledger; MA-V12-S03P3; ACC-MA-V12-S03P3; phase_s03_p3_machine_ledger_completed_pending_s03_review; validate:v1.2-s03-p3; memory_atlas_v1_2_s03_p3_machine_ledger.md; raw_manifest_ledger_policy.v1_2_s03_p3.json; raw_archive_manifest.py; raw_manifest.s03_p3_baseline.jsonl; raw_hash_ledger.jsonl; S03 P3; pending S03 Review; No GitHub main upload in this phase; No connector implementation; No real transcript ingestion; No UI work; No public raw file mutation.
+
+## 114. Memory Atlas v1.2 S03 P2 Credential Exclusion Parameters
+
+状态：`phase_s03_p2_credential_exclusion_completed_pending_s03_p3`。
+
+验收 ID：`ACC-MA-V12-S03P2`。
+
+S03 P2 固定以下参数：
+
+- `MA-V12-S03P2`
+- `validate:v1.2-s03-p2`
+- `memory_atlas_v1_2_s03_p2_credential_exclusion.md`
+- `credential_exclusion_policy.v1_2_s03_p2.json`
+- credential is not memory。
+- `credentials_not_transcript`。
+- credential categories：cookies、session_tokens、passwords、api_keys、private_keys、oauth_tokens、browser_credential_store。
+- S03 P2 完成后下一步为 pending S03 P3。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S03P2-001 phase_status = phase_s03_p2_credential_exclusion_completed_pending_s03_p3`
+- `PARAM-MA-V12-S03P2-002 validator = validate:v1.2-s03-p2`
+- `PARAM-MA-V12-S03P2-003 credential_policy = credential_exclusion_policy.v1_2_s03_p2.json`
+- `PARAM-MA-V12-S03P2-004 scanner_surface = credential_exclusion_hits;assert_no_credentials;redact_credentials_in_text`
+- `PARAM-MA-V12-S03P2-005 credential_boundary = credential is not memory;credentials_not_transcript`
+- `PARAM-MA-V12-S03P2-006 next_gate = pending S03 P3`
+- `PARAM-MA-V12-S03P2-007 upload_boundary = No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s03-p2` checks S03 P1 continuity, credential policy,
+  privacy guard runtime, sync/audit integration, ordinary transcript false-positive
+  guard, records, canonical remote, no-upload/no-ui/no-manifest/no-connector/no-raw
+  boundaries and current repo credential scan.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S03 P2 Credential Exclusion; MA-V12-S03P2; ACC-MA-V12-S03P2; phase_s03_p2_credential_exclusion_completed_pending_s03_p3; validate:v1.2-s03-p2; memory_atlas_v1_2_s03_p2_credential_exclusion.md; credential_exclusion_policy.v1_2_s03_p2.json; credential is not memory; S03 P2; pending S03 P3; No GitHub main upload in this phase; No S03 P3 manifest generation; No connector implementation; No complex UI; No real transcript ingestion; No public raw file mutation.
+
+## 113. Memory Atlas v1.2 S03 P1 Public Raw Path Parameters
+
+状态：`phase_s03_p1_public_raw_path_defined_pending_s03_p2`。
+
+验收 ID：`ACC-MA-V12-S03P1`。
+
+S03 P1 固定以下参数：
+
+- `MA-V12-S03P1`
+- `validate:v1.2-s03-p1`
+- `memory_atlas_v1_2_s03_p1_public_raw_path.md`
+- `raw_public_archive_policy.v1_2_s03_p1.json`
+- `data/public_raw/README.md`
+- public raw paths：`data/public_raw/chatgpt`、`data/public_raw/codex`、`data/public_raw/agents/{agent_id}`。
+- manifest/hash：`raw_manifest.{run_id}.jsonl`、`raw_hash_ledger.jsonl`。
+- integrity：append-only、hash drift fail。
+- S03 P1 完成后下一步为 pending S03 P2。
+- No GitHub main upload in this phase。
+
+参数：
+
+- `PARAM-MA-V12-S03P1-001 phase_status = phase_s03_p1_public_raw_path_defined_pending_s03_p2`
+- `PARAM-MA-V12-S03P1-002 validator = validate:v1.2-s03-p1`
+- `PARAM-MA-V12-S03P1-003 raw_policy = raw_public_archive_policy.v1_2_s03_p1.json`
+- `PARAM-MA-V12-S03P1-004 public_raw_root = data/public_raw`
+- `PARAM-MA-V12-S03P1-005 integrity_rule = append-only;hash drift fail`
+- `PARAM-MA-V12-S03P1-006 next_gate = pending S03 P2`
+- `PARAM-MA-V12-S03P1-007 upload_boundary = No GitHub main upload in this phase`
+
+验证逻辑：
+
+- `validate:v1.2-s03-p1` checks S02 Review continuity, raw policy, public raw README,
+  human raw page, review artifact, records, canonical remote, no-upload/no-credential-gate/
+  no-manifest-generation/no-connector boundaries and open diff raw safety.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S03 P1 Public Raw Path; MA-V12-S03P1; ACC-MA-V12-S03P1; phase_s03_p1_public_raw_path_defined_pending_s03_p2; validate:v1.2-s03-p1; memory_atlas_v1_2_s03_p1_public_raw_path.md; raw_public_archive_policy.v1_2_s03_p1.json; data/public_raw/README.md; S03 P1; pending S03 P2; No GitHub main upload in this phase; No S03 P2 credential gate; No S03 P3 manifest generation; No connector implementation; No transcript ingestion in this phase.
+
+## 112. Memory Atlas v1.2 S02 Review Parameters
+
+状态：`stage_s02_review_passed_pending_s03_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S02-REVIEW`。
+
+S02 Review 固定以下参数：
+
+- `MA-V12-S02-REVIEW`
+- `validate:v1.2-s02-review`
+- `stage_s02_review_passed_pending_s03_no_github_main_upload`
+- `memory_atlas_v1_2_s02_review.md`
+- S02 Review 完成后下一步为 pending S03 P1。
+- No GitHub main upload in this review。
+
+参数：
+
+- `PARAM-MA-V12-S02-REVIEW-001 stage_status = stage_s02_review_passed_pending_s03_no_github_main_upload`
+- `PARAM-MA-V12-S02-REVIEW-002 validator = validate:v1.2-s02-review`
+- `PARAM-MA-V12-S02-REVIEW-003 review_artifact = memory_atlas_v1_2_s02_review.md`
+- `PARAM-MA-V12-S02-REVIEW-004 phase_coverage = S02 P1;S02 P2;S02 P3`
+- `PARAM-MA-V12-S02-REVIEW-005 future_agent_gate = future_agent_template;other_agent;future_agent_adapter`
+- `PARAM-MA-V12-S02-REVIEW-006 next_gate = pending S03 P1`
+- `PARAM-MA-V12-S02-REVIEW-007 upload_boundary = No GitHub main upload in this review`
+
+验证逻辑：
+
+- `validate:v1.2-s02-review` checks S02 P3 continuity, source model, source registry,
+  human sync page, source registry not only ChatGPT/Codex, future_agent_template,
+  public_backup_mode, transcript/credential boundary, records, canonical remote
+  and no-upload/no-connector/no-raw boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S02 Review; MA-V12-S02-REVIEW; ACC-MA-V12-S02-REVIEW; stage_s02_review_passed_pending_s03_no_github_main_upload; validate:v1.2-s02-review; memory_atlas_v1_2_s02_review.md; S02 Review; pending S03 P1; No GitHub main upload in this review; No connector implementation; No raw archive change.
+
+## 111. Memory Atlas v1.2 S02 P3 Human Sync Explanation Parameters
+
+状态：`phase_s02_p3_human_sync_explanation_completed_pending_s02_review`。
+
+验收 ID：`ACC-MA-V12-S02P3`。
+
+S02 P3 固定以下参数：
+
+- `MA-V12-S02P3`
+- `validate:v1.2-s02-p3`
+- `memory_atlas_v1_2_s02_p3_human_sync_explanation.md`
+- `人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md`
+- 人类说明必须写明 ChatGPT、Codex、后续其他 agent 数据备份进 GitHub。
+- 人类说明必须写明 future_agent_template、future_agent_adapter、transcript/credential 和 credentials_not_transcript。
+- S02 P3 完成后下一步为 pending S02 Review。
+- No GitHub main upload in this phase。
+- No connector implementation、No raw archive change。
+
+参数记录：
+
+- `PARAM-MA-V12-S02P3-001 phase_status = phase_s02_p3_human_sync_explanation_completed_pending_s02_review`
+- `PARAM-MA-V12-S02P3-002 validator = validate:v1.2-s02-p3`
+- `PARAM-MA-V12-S02P3-003 human_page = 人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md`
+- `PARAM-MA-V12-S02P3-004 github_backup_sources = ChatGPT;Codex;future_other_agent`
+- `PARAM-MA-V12-S02P3-005 credential_boundary = credentials_not_transcript`
+- `PARAM-MA-V12-S02P3-006 next_gate = pending S02 Review`
+- `PARAM-MA-V12-S02P3-007 upload_boundary = No GitHub main upload in this phase`
+
+验收信号：
+
+- `validate:v1.2-s02-p3` checks S02 P2 continuity, source registry coverage, human sync page, future agent adapter explanation, transcript/credential boundary, records, canonical remote and no-upload/no-connector/no-raw boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S02 P3 Human Sync Explanation; MA-V12-S02P3; ACC-MA-V12-S02P3; phase_s02_p3_human_sync_explanation_completed_pending_s02_review; validate:v1.2-s02-p3; memory_atlas_v1_2_s02_p3_human_sync_explanation.md; 人类可读/05_ChatGPT与Codex及其他Agent自动同步说明.md; S02 P3; pending S02 Review; No GitHub main upload in this phase; No connector implementation; No raw archive change.
+
+## 110. Memory Atlas v1.2 S02 P2 Source Registry Parameters
+
+状态：`phase_s02_p2_source_registry_completed_pending_s02_p3`。
+
+验收 ID：`ACC-MA-V12-S02P2`。
+
+S02 P2 固定以下参数：
+
+- `MA-V12-S02P2`
+- `validate:v1.2-s02-p2`
+- `memory_atlas_v1_2_s02_p2_source_registry.md`
+- `sync_source_registry.json`
+- source IDs：chatgpt、codex、future_agent_template。
+- ChatGPT connector：browser_readonly + official_export_fallback。
+- Codex connector：local_session_sync。
+- future agent：other_agent + future_agent_adapter。
+- S02 P2 完成后下一步为 pending S02 P3。
+- No GitHub main upload in this phase。
+- No human sync page in this phase、No connector implementation、No raw archive change。
+
+参数记录：
+
+- `PARAM-MA-V12-S02P2-001 phase_status = phase_s02_p2_source_registry_completed_pending_s02_p3`
+- `PARAM-MA-V12-S02P2-002 validator = validate:v1.2-s02-p2`
+- `PARAM-MA-V12-S02P2-003 registry_file = sync_source_registry.json`
+- `PARAM-MA-V12-S02P2-004 source_ids = chatgpt;codex;future_agent_template`
+- `PARAM-MA-V12-S02P2-005 future_agent_support = other_agent;future_agent_adapter`
+- `PARAM-MA-V12-S02P2-006 next_gate = pending S02 P3`
+- `PARAM-MA-V12-S02P2-007 upload_boundary = No GitHub main upload in this phase`
+
+验收信号：
+
+- `validate:v1.2-s02-p2` checks S02 P1 continuity, sync_source_registry.json, source IDs, other_agent coverage, ChatGPT browser/export fallback, Codex local sync, future_agent_template, transcript/credential boundary, records, canonical remote and no-upload/no-human-sync/no-raw boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S02 P2 Source Registry; MA-V12-S02P2; ACC-MA-V12-S02P2; phase_s02_p2_source_registry_completed_pending_s02_p3; validate:v1.2-s02-p2; memory_atlas_v1_2_s02_p2_source_registry.md; sync_source_registry.json; S02 P2; pending S02 P3; No GitHub main upload in this phase; No human sync page in this phase; No connector implementation; No raw archive change.
+
+## 109. Memory Atlas v1.2 S02 P1 Source Data Model Parameters
+
+状态：`phase_s02_p1_source_data_model_completed_pending_s02_p2`。
+
+验收 ID：`ACC-MA-V12-S02P1`。
+
+S02 P1 固定以下参数：
+
+- `MA-V12-S02P1`
+- `validate:v1.2-s02-p1`
+- `memory_atlas_v1_2_s02_p1_source_data_model.md`
+- `source_data_model.v1_2_s02_p1.json`
+- 必填字段：source_id、source_type、agent_name、raw_root、sync_mode、public_backup_mode、connector_capability。
+- source_type：chatgpt、codex、other_agent。
+- transcript 与 credential 必须区分。
+- S02 P1 完成后下一步为 pending S02 P2。
+- No GitHub main upload in this phase。
+- No source registry file in this phase、No human sync page in this phase、No connector implementation、No raw archive change。
+
+参数记录：
+
+- `PARAM-MA-V12-S02P1-001 phase_status = phase_s02_p1_source_data_model_completed_pending_s02_p2`
+- `PARAM-MA-V12-S02P1-002 validator = validate:v1.2-s02-p1`
+- `PARAM-MA-V12-S02P1-003 model_file = source_data_model.v1_2_s02_p1.json`
+- `PARAM-MA-V12-S02P1-004 required_fields = source_id;source_type;agent_name;raw_root;sync_mode;public_backup_mode;connector_capability`
+- `PARAM-MA-V12-S02P1-005 source_types = chatgpt;codex;other_agent`
+- `PARAM-MA-V12-S02P1-006 next_gate = pending S02 P2`
+- `PARAM-MA-V12-S02P1-007 upload_boundary = No GitHub main upload in this phase`
+
+验收信号：
+
+- `validate:v1.2-s02-p1` checks S01 Review continuity, source data model fields, three source types, transcript/credential boundary, records, canonical remote and no-upload/no-registry/no-human-sync/no-raw boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S02 P1 Source Data Model; MA-V12-S02P1; ACC-MA-V12-S02P1; phase_s02_p1_source_data_model_completed_pending_s02_p2; validate:v1.2-s02-p1; memory_atlas_v1_2_s02_p1_source_data_model.md; source_data_model.v1_2_s02_p1.json; S02 P1; pending S02 P2; No GitHub main upload in this phase; No source registry file in this phase; No human sync page in this phase; No connector implementation; No raw archive change.
+
+## 108. Memory Atlas v1.2 S01 Review Parameters
+
+状态：`stage_s01_review_passed_pending_s02_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V12-S01-REVIEW`。
+
+S01 Review 固定以下参数：
+
+- `MA-V12-S01-REVIEW`
+- `validate:v1.2-s01-review`
+- `memory_atlas_v1_2_s01_review.md`
+- S01 Review 覆盖 S01 P1、S01 P2、S01 P3。
+- S01 Review 通过后下一步为 pending S02 P1。
+- No GitHub main upload in this review。
+- No S02 work、No app reinstall、No raw archive change、No runtime directory move。
+
+参数记录：
+
+- `PARAM-MA-V12-S01-REVIEW-001 stage_status = stage_s01_review_passed_pending_s02_no_github_main_upload`
+- `PARAM-MA-V12-S01-REVIEW-002 validator = validate:v1.2-s01-review`
+- `PARAM-MA-V12-S01-REVIEW-003 review_artifact = memory_atlas_v1_2_s01_review.md`
+- `PARAM-MA-V12-S01-REVIEW-004 phase_coverage = S01 P1;S01 P2;S01 P3`
+- `PARAM-MA-V12-S01-REVIEW-005 next_gate = pending S02 P1`
+- `PARAM-MA-V12-S01-REVIEW-006 upload_boundary = No GitHub main upload in this review`
+
+验收信号：
+
+- `validate:v1.2-s01-review` checks S01 P1/P2/P3 validators, double plane, requirements freeze, human entry, machine run gate, records, canonical remote and no-upload/no-runtime/no-raw boundaries.
+
+Machine-readable boundary summary: Memory Atlas v1.2 S01 Review; MA-V12-S01-REVIEW; ACC-MA-V12-S01-REVIEW; stage_s01_review_passed_pending_s02_no_github_main_upload; validate:v1.2-s01-review; memory_atlas_v1_2_s01_review.md; S01 Review; pending S02 P1; No GitHub main upload in this review; No S02 work; No app reinstall; No raw archive change; No runtime directory move.
+
+## 107. Memory Atlas v1.2 S01 P3 Requirements Freeze Parameters
+
+状态：`phase_s01_p3_requirements_freeze_completed_pending_s01_review`。
+
+验收 ID：`ACC-MA-V12-S01P3`。
+
+S01 P3 固定以下参数：
+
+- `MA-V12-S01P3`
+- `validate:v1.2-s01-p3`
+- `memory_atlas_v1_2_s01_p3_requirements_freeze.md`
+- `v1.2需求冻结清单.json`
+- 四线范围：Anthropic 化行为智能；信息 ROI / 全中文 / 多维可视化；ChatGPT/Codex/后续其他 agent 自动同步备份进 GitHub；UIUX 多模态交互 / 参数公式模型治理 / 维护简化。
+- raw 公开授权：ChatGPT、Codex、后续其他 agent 的 raw data / transcript 可在用户授权后明文公开进 GitHub。
+- 凭证排除：cookies、session tokens、passwords、API keys、private keys、OAuth tokens 和 browser credential store 不得提交。
+- S01 P3 完成后下一步为 S01 review，不进入 S02。
+- No GitHub main upload in this phase。
+- No app reinstall、No apps/scripts/tests/config move、No raw archive change。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S01 P3 Requirements Freeze; MA-V12-S01P3; ACC-MA-V12-S01P3; phase_s01_p3_requirements_freeze_completed_pending_s01_review; validate:v1.2-s01-p3; memory_atlas_v1_2_s01_p3_requirements_freeze.md; v1.2需求冻结清单.json; S01 P3; No GitHub main upload in this phase; No S01 review; No S02; No app reinstall; No apps/scripts/tests/config move; No raw archive change.
+
+## 106. Memory Atlas v1.2 S01 P2 Double Plane Creation Parameters
+
+状态：`phase_s01_p2_double_plane_created_pending_s01_p3`。
+
+验收 ID：`ACC-MA-V12-S01P2`。
+
+S01 P2 固定以下参数：
+
+- `MA-V12-S01P2`
+- `validate:v1.2-s01-p2`
+- `memory_atlas_v1_2_s01_p2_double_plane_creation.md`
+- `人类可读/00_快速入口.md`
+- `机器治理/README.md`
+- S01 P2 只做双平面创建，下一 phase 为 S01 P3。
+- No GitHub main upload in this phase。
+- No S01 P3、No v1.2 requirements freeze config in this phase、No apps/scripts/tests/config move、No raw archive change。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S01 P2 Double Plane Creation; MA-V12-S01P2; ACC-MA-V12-S01P2; phase_s01_p2_double_plane_created_pending_s01_p3; validate:v1.2-s01-p2; memory_atlas_v1_2_s01_p2_double_plane_creation.md; S01 P2; No GitHub main upload in this phase; No S01 P3; No v1.2 requirements freeze config in this phase; No apps/scripts/tests/config move; No raw archive change.
+
+## 105. Memory Atlas v1.2 S01 P1 Current State Audit Parameters
+
+状态：`phase_s01_p1_current_state_audited_pending_s01_p2`。
+
+验收 ID：`ACC-MA-V12-S01P1`。
+
+S01 P1 固定以下参数：
+
+- `MA-V12-S01P1`
+- `validate:v1.2-s01-p1`
+- `memory_atlas_v1_2_s01_p1_current_state_audit.md`
+- S01 P1 只做现状核验，下一 phase 为 S01 P2。
+- No GitHub main upload in this phase。
+- No S01 P2、No S01 P3、No apps/scripts/tests/config move、No AGENTS taskpack dump、No raw archive change。
+
+Machine-readable boundary summary: Memory Atlas v1.2 S01 P1 Current State Audit; MA-V12-S01P1; ACC-MA-V12-S01P1; phase_s01_p1_current_state_audited_pending_s01_p2; validate:v1.2-s01-p1; memory_atlas_v1_2_s01_p1_current_state_audit.md; S01 P1; No GitHub main upload in this phase; No S01 P2; No S01 P3; No apps/scripts/tests/config move; No AGENTS taskpack dump; No raw archive change.
+
+## 104. Memory Atlas v1.1.7 Final GitHub Main Upload
+
+状态：`final_github_main_upload_completed`。
+
+验收 ID：`ACC-MA-V117-FINAL-GITHUB-MAIN`。
+
+模型参数：
+
+- `validate:v1.1.7-final-upload` 是 final upload 必跑 validator。
+- `validate:v1.1.7-stage10` 是 final upload 前置 validator。
+- Final artifact 固定为 `docs/reviews/memory_atlas_v1_1_7_final_github_main_upload.md`。
+- GitHub main points at the final upload commit。
+- Canonical repository 固定为 `LinzeColin/CodexProject`。
+- Canonical project tree 固定为 `OpenAIDatabase`。
+- No remote development branch。
+- No open pull request。
+
+参数记录：
+
+- `PARAM-MA-V117-FINAL-UPLOAD-001 final_upload_status = final_github_main_upload_completed`
+- `PARAM-MA-V117-FINAL-UPLOAD-002 final_upload_validator = validate:v1.1.7-final-upload`
+- `PARAM-MA-V117-FINAL-UPLOAD-003 final_upload_stage10_validator = validate:v1.1.7-stage10`
+- `PARAM-MA-V117-FINAL-UPLOAD-004 final_upload_artifact = docs/reviews/memory_atlas_v1_1_7_final_github_main_upload.md`
+- `PARAM-MA-V117-FINAL-UPLOAD-005 final_upload_remote = LinzeColin/CodexProject`
+- `PARAM-MA-V117-FINAL-UPLOAD-006 final_upload_project_tree = OpenAIDatabase`
+- `PARAM-MA-V117-FINAL-UPLOAD-007 final_upload_proof = GitHub main points at the final upload commit`
+- `PARAM-MA-V117-FINAL-UPLOAD-008 final_upload_boundary = No remote development branch;No open pull request`
+
+验收信号：
+
+- `MEMORY_ATLAS_REQUIRE_REMOTE_MAIN=1 validate:v1.1.7-final-upload` checks that GitHub main points at the final upload commit and no remote development branch exists.
+
+Machine-readable boundary summary: Final GitHub Main Upload; MA-V117-FINAL-UPLOAD; ACC-MA-V117-FINAL-GITHUB-MAIN; final_github_main_upload_completed; validate:v1.1.7-final-upload; validate:v1.1.7-stage10; GitHub main points at the final upload commit; No remote development branch; No open pull request; No raw/private read; No direct active-memory writeback; No proposal queue write; No agent apply.
+
+## 103. Memory Atlas v1.1.7 Stage 10 Review
+
+状态：`stage_10_review_passed_pending_final_github_main_upload`。
+
+验收 ID：`ACC-MA-V117-S10-REVIEW`。
+
+模型参数：
+
+- `validate:v1.1.7-stage10` 是本 review 必跑 validator。
+- Review artifact 固定为 `docs/reviews/memory_atlas_v1_1_7_stage10_review.md`。
+- Stage 10 Review 覆盖 Stage 10 Phase 10.1 Final hardening upload readiness。
+- Clean-tree gate 固定为 `validate:v1.1.7-stage10-phase1` 和 `validate:whole-project`。
+- Part 2 regression gate 固定为 `validate:part2-stage1`。
+- Legacy whole-project validator hardening 固定 Part 3/4
+  `DEFAULT_MEMORY_ATLAS_VIEW` compatibility 和 Part 9
+  `MEMORY_ATLAS_PART9_REINSTALL_LOCAL_APP=1` explicit reinstall gate。
+- App copy gate 固定为 Chinese-first copy hardening。
+- schema compatibility hardening 固定当前 v1.1.7 fixture schema：
+  `memory_starfield_spike_fixture.v1_1_7_stage4_phase2` 和
+  `memory_river_spike_fixture.v1_1_7_stage5_phase2`。
+- Stage 10 Review 通过后 pending final one-time GitHub main upload。
+- No intermediate GitHub upload。
+- No GitHub main upload in this review。
+- No remote development branch。
+
+参数记录：
+
+- `PARAM-MA-V117-S10-REVIEW-001 stage10_review_status = stage_10_review_passed_pending_final_github_main_upload`
+- `PARAM-MA-V117-S10-REVIEW-002 stage10_review_required_validator = validate:v1.1.7-stage10`
+- `PARAM-MA-V117-S10-REVIEW-003 stage10_review_artifact = docs/reviews/memory_atlas_v1_1_7_stage10_review.md`
+- `PARAM-MA-V117-S10-REVIEW-004 stage10_review_phase_coverage = Stage 10 Phase 10.1;Final hardening upload readiness`
+- `PARAM-MA-V117-S10-REVIEW-005 stage10_review_clean_tree_validators = validate:v1.1.7-stage10-phase1;validate:whole-project`
+- `PARAM-MA-V117-S10-REVIEW-006 part2_schema_compatibility = validate:part2-stage1;schema compatibility hardening;legacy whole-project validator hardening;Chinese-first copy hardening;memory_starfield_spike_fixture.v1_1_7_stage4_phase2;memory_river_spike_fixture.v1_1_7_stage5_phase2`
+- `PARAM-MA-V117-S10-REVIEW-007 stage10_review_next_gate = pending final one-time GitHub main upload`
+- `PARAM-MA-V117-S10-REVIEW-008 upload_boundary = No intermediate GitHub upload;No GitHub main upload in this review;No remote development branch`
+
+验收信号：
+
+- `validate:v1.1.7-stage10` checks Stage 10 Phase 10.1, whole-project validation, Part 2 schema compatibility hardening, records, local branch, no remote branch and no-upload boundary.
+
+Machine-readable boundary summary: Stage 10 Review; MA-V117-S10-REVIEW; ACC-MA-V117-S10-REVIEW; stage_10_review_passed_pending_final_github_main_upload; validate:v1.1.7-stage10; Stage 10 Phase 10.1; Final hardening upload readiness; validate:v1.1.7-stage10-phase1; validate:whole-project; validate:part2-stage1; schema compatibility hardening; legacy whole-project validator hardening; Chinese-first copy hardening; memory_starfield_spike_fixture.v1_1_7_stage4_phase2; memory_river_spike_fixture.v1_1_7_stage5_phase2; pending final one-time GitHub main upload; No intermediate GitHub upload; No GitHub main upload in this review; No remote development branch; No raw/private read; No direct active-memory writeback; No proposal queue write; No agent apply.
+
+## 102. Memory Atlas v1.1.7 Stage 10 Phase 10.1 Final Hardening Upload Readiness
+
+状态：`phase_10_1_final_hardening_upload_readiness_contract_created_pending_stage10_review`。
+
+验收 ID：`ACC-MA-V117-S10P01`。
+
+合同 ID：`memory_atlas_v1_1_7_final_hardening_upload_readiness_contract`。
+
+模型参数：
+
+- `validate:v1.1.7-stage10-phase1` 是本 phase 必跑 validator。
+- Product contract 固定为 `docs/product/memory_atlas_v1_1_7_final_hardening_upload_readiness_contract.md`。
+- Acceptance 固定为 `docs/acceptance/memory_atlas_v1_1_7_stage10_phase1_final_hardening_upload_readiness_acceptance.md`。
+- Stage 10 Phase 10.1 覆盖 `performance_safety_accessibility_matrix`、`release_rollback_matrix`、`final_validation_matrix`、`github_main_upload_matrix`、`governance_sync_matrix` 和 `new_machine_recovery_matrix`。
+- Performance target 固定为 desktop target 45-60 FPS 和 reduced-motion fallback 后续证明。
+- Stage 9 review must be complete。
+- Stage 10 Phase 10.1 完成后 pending Stage 10 review。
+- No intermediate GitHub upload。
+- No GitHub main upload in this phase。
+
+参数记录：
+
+- `PARAM-MA-V117-S10P01-001 stage10_phase1_contract_id = memory_atlas_v1_1_7_final_hardening_upload_readiness_contract`
+- `PARAM-MA-V117-S10P01-002 stage10_phase1_status = phase_10_1_final_hardening_upload_readiness_contract_created_pending_stage10_review`
+- `PARAM-MA-V117-S10P01-003 stage10_phase1_required_validator = validate:v1.1.7-stage10-phase1`
+- `PARAM-MA-V117-S10P01-004 stage10_phase1_hardening_matrices = performance_safety_accessibility_matrix;release_rollback_matrix;final_validation_matrix;github_main_upload_matrix;governance_sync_matrix;new_machine_recovery_matrix`
+- `PARAM-MA-V117-S10P01-005 stage10_phase1_performance_target = desktop target 45-60 FPS;reduced-motion fallback`
+- `PARAM-MA-V117-S10P01-006 stage10_phase1_entry_condition = Stage 9 review must be complete`
+- `PARAM-MA-V117-S10P01-007 stage10_phase1_next_gate = pending Stage 10 review`
+- `PARAM-MA-V117-S10P01-008 upload_boundary = No intermediate GitHub upload;No GitHub main upload in this phase`
+
+验收信号：
+
+- `validate:v1.1.7-stage10-phase1` checks Stage 9 continuity, contracts, records, changed_scope, runtime_boundary, canonical local branch and no remote development branch.
+
+Machine-readable boundary summary: Stage 10 Phase 10.1; MA-V117-S10P01; ACC-MA-V117-S10P01; phase_10_1_final_hardening_upload_readiness_contract_created_pending_stage10_review; memory_atlas_v1_1_7_final_hardening_upload_readiness_contract; validate:v1.1.7-stage10-phase1; performance_safety_accessibility_matrix; release_rollback_matrix; final_validation_matrix; github_main_upload_matrix; governance_sync_matrix; new_machine_recovery_matrix; desktop target 45-60 FPS; reduced-motion fallback; Stage 9 review must be complete; pending Stage 10 review; No intermediate GitHub upload; No GitHub main upload in this phase; No raw/private read; No direct active-memory writeback; No proposal queue write; No agent apply.
+
+## 101. Memory Atlas v1.1.7 Stage 9 Review
+
+状态：`stage_9_review_passed_pending_stage10_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V117-S9-REVIEW`。
+
+模型参数：
+
+- `validate:v1.1.7-stage9` 是本 review 必跑 validator。
+- Review artifact 固定为 `docs/reviews/memory_atlas_v1_1_7_stage9_review.md`。
+- Stage 9 覆盖 Phase 9.1 Cross-board shared state、synchronized filters 和 Inspector explanation layer。
+- Runtime version 固定为 `cross_board_shared_state.v1_1_7_stage9_phase1`。
+- Inspector layer version 固定为 `inspector_explanation_layer.v1_1_7_stage9_phase1`。
+- 同步输出固定为 `shared_state_filters`、`synchronized_filters` 和 `inspector_explanation_layer`。
+- Stage 9 review 通过后 pending Stage 10。
+- No Stage 10 work。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+参数记录：
+
+- `PARAM-MA-V117-S9-REVIEW-001 stage9_review_status = stage_9_review_passed_pending_stage10_no_github_main_upload`
+- `PARAM-MA-V117-S9-REVIEW-002 stage9_review_required_validator = validate:v1.1.7-stage9`
+- `PARAM-MA-V117-S9-REVIEW-003 stage9_review_artifact = docs/reviews/memory_atlas_v1_1_7_stage9_review.md`
+- `PARAM-MA-V117-S9-REVIEW-004 stage9_review_phase_coverage = Phase 9.1;Cross-board shared state;synchronized filters;Inspector explanation layer`
+- `PARAM-MA-V117-S9-REVIEW-005 stage9_review_runtime_versions = cross_board_shared_state.v1_1_7_stage9_phase1;inspector_explanation_layer.v1_1_7_stage9_phase1`
+- `PARAM-MA-V117-S9-REVIEW-006 stage9_review_next_gate = pending Stage 10`
+- `PARAM-MA-V117-S9-REVIEW-007 upload_boundary = No GitHub main upload before whole Stage 0-10 completion`
+
+验收信号：
+
+- `validate:v1.1.7-stage9` checks Phase 9.1, records, canonical local branch and no-upload boundary.
+
+Machine-readable boundary summary: Stage 9 Review; MA-V117-S9-REVIEW; ACC-MA-V117-S9-REVIEW; stage_9_review_passed_pending_stage10_no_github_main_upload; validate:v1.1.7-stage9; Phase 9.1; Cross-board shared state; synchronized filters; Inspector explanation layer; cross_board_shared_state.v1_1_7_stage9_phase1; inspector_explanation_layer.v1_1_7_stage9_phase1; shared_state_filters; synchronized_filters; inspector_explanation_layer; pending Stage 10; No Stage 10 work; No GitHub main upload; No raw/private read; No direct active-memory writeback; No proposal queue write; No agent apply.
+
+## 100. Memory Atlas v1.1.7 Stage 9 Phase 9.1 Cross-board Shared State
+
+状态：`phase_9_1_cross_board_shared_state_completed_pending_stage9_review`。
+
+验收 ID：`ACC-MA-V117-S9P01`。
+
+模型参数：
+
+- Runtime version 固定为 `cross_board_shared_state.v1_1_7_stage9_phase1`。
+- Inspector layer version 固定为 `inspector_explanation_layer.v1_1_7_stage9_phase1`。
+- `validate:v1.1.7-stage9-phase1` 是本 phase 必跑 validator。
+- `validate:cross-board-shared-state-browser` 是本 phase 浏览器 validator。
+- Cross-board shared state 必须覆盖 home、galaxy、notion、roi、obsidian、timeline、contribution、wordcloud、search、summary。
+- synchronized filters 必须包含 `shared_state_filters`、`synchronized_filters` 和 `inspector_explanation_layer`。
+- No Stage 9 review。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage9_phase1.cjs`
+- `apps/memory-atlas/scripts/validate_cross_board_shared_state_browser.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S9P01-001 stage9_phase1_status = phase_9_1_cross_board_shared_state_completed_pending_stage9_review`
+- `PARAM-MA-V117-S9P01-002 stage9_phase1_required_validator = validate:v1.1.7-stage9-phase1`
+- `PARAM-MA-V117-S9P01-003 stage9_phase1_browser_validator = validate:cross-board-shared-state-browser`
+- `PARAM-MA-V117-S9P01-004 shared_state_runtime_version = cross_board_shared_state.v1_1_7_stage9_phase1`
+- `PARAM-MA-V117-S9P01-005 inspector_layer_version = inspector_explanation_layer.v1_1_7_stage9_phase1`
+- `PARAM-MA-V117-S9P01-006 synchronized_outputs = shared_state_filters;synchronized_filters;inspector_explanation_layer`
+- `PARAM-MA-V117-S9P01-007 boundary = No Stage 9 review;No Stage 10;No GitHub main upload;No raw/private read;No direct active-memory writeback;No proposal queue write`
+
+验收信号：
+
+- `window.__memoryAtlasStage9Phase1` reports runtime version, Inspector layer version, surfaces, shared_state_filters, synchronized_filters, focus, revision, Inspector explanation coverage and safety flags.
+- Browser screenshot validates the production runtime after synchronized filter board switching.
+
+Machine-readable boundary summary: Phase 9.1; Cross-board shared state; MA-V117-S9P01; ACC-MA-V117-S9P01; phase_9_1_cross_board_shared_state_completed_pending_stage9_review; validate:v1.1.7-stage9-phase1; validate:cross-board-shared-state-browser; cross_board_shared_state.v1_1_7_stage9_phase1; inspector_explanation_layer.v1_1_7_stage9_phase1; shared_state_filters; synchronized_filters; inspector_explanation_layer; Inspector explanation layer; No Stage 9 review; No Stage 10; No GitHub main upload; No raw/private read; No direct active-memory writeback; No proposal queue write; No agent apply.
+
+## 99. Memory Atlas v1.1.7 Stage 8 Review
+
+状态：`stage_8_review_passed_pending_stage9_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V117-S8-REVIEW`。
+
+模型参数：
+
+- `validate:v1.1.7-stage8` 是本 review 必跑 validator。
+- Review artifact 固定为 `docs/reviews/memory_atlas_v1_1_7_stage8_review.md`。
+- Stage 8 覆盖 Phase 8.1 Summary and iteration closure。
+- Stage 8 review 通过后 pending Stage 9。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+参数记录：
+
+- `PARAM-MA-V117-S8-REVIEW-001 stage8_review_status = stage_8_review_passed_pending_stage9_no_github_main_upload`
+- `PARAM-MA-V117-S8-REVIEW-002 stage8_review_required_validator = validate:v1.1.7-stage8`
+- `PARAM-MA-V117-S8-REVIEW-003 stage8_review_artifact = docs/reviews/memory_atlas_v1_1_7_stage8_review.md`
+- `PARAM-MA-V117-S8-REVIEW-004 stage8_review_phase_coverage = Phase 8.1;Summary and iteration closure`
+- `PARAM-MA-V117-S8-REVIEW-005 stage8_review_next_gate = pending Stage 9`
+- `PARAM-MA-V117-S8-REVIEW-006 upload_boundary = No GitHub main upload before whole Stage 0-10 completion`
+
+验收信号：
+
+- `validate:v1.1.7-stage8` checks Phase 8.1, records, canonical remote, local branch and no-upload boundary.
+
+Machine-readable boundary summary: Stage 8 Review; MA-V117-S8-REVIEW; ACC-MA-V117-S8-REVIEW; stage_8_review_passed_pending_stage9_no_github_main_upload; validate:v1.1.7-stage8; Phase 8.1; Summary and iteration closure; pending Stage 9; No Stage 9 work; No GitHub main upload; No raw/private read; No direct active-memory writeback; No proposal queue write; No agent apply.
+
+## 98. Memory Atlas v1.1.7 Stage 8 Phase 8.1 Summary Iteration Closure
+
+状态：`phase_8_1_summary_iteration_closure_runtime_completed_pending_stage8_review`。
+
+验收 ID：`ACC-MA-V117-S8P01`。
+
+模型参数：
+
+- Runtime version 固定为 `summary_iteration_closure_runtime.v1_1_7_stage8_phase1`。
+- Closure schema version 固定为 `memory_atlas_summary_closure.v1_1_7_stage8_phase1`。
+- Source review schema version 固定为 `memory_atlas_review_summary.v1_1_7_stage7_phase2`。
+- `validate:v1.1.7-stage8-phase1` 是本 phase 必跑 validator。
+- `validate:summary-iteration-closure-browser` 是本 phase 浏览器 validator。
+- Summary and iteration closure 输出必须显示 `change_comparison`、`stale_conflict_signals` 和 `proposal_candidates`。
+- Runtime 必须显示 conflict check、human/agent apply gate、rollback hint 和 proposal-only safety。
+- No Stage 8 review。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage8_phase1.cjs`
+- `apps/memory-atlas/scripts/validate_summary_iteration_closure_browser.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S8P01-001 stage8_phase1_status = phase_8_1_summary_iteration_closure_runtime_completed_pending_stage8_review`
+- `PARAM-MA-V117-S8P01-002 stage8_phase1_required_validator = validate:v1.1.7-stage8-phase1`
+- `PARAM-MA-V117-S8P01-003 stage8_phase1_browser_validator = validate:summary-iteration-closure-browser`
+- `PARAM-MA-V117-S8P01-004 summary_iteration_closure_runtime_version = summary_iteration_closure_runtime.v1_1_7_stage8_phase1`
+- `PARAM-MA-V117-S8P01-005 summary_iteration_closure_schema_version = memory_atlas_summary_closure.v1_1_7_stage8_phase1`
+- `PARAM-MA-V117-S8P01-006 output_fields = change_comparison;stale_conflict_signals;proposal_candidates`
+- `PARAM-MA-V117-S8P01-007 boundary = No Stage 8 review;No GitHub main upload;No raw/private read;No direct active-memory writeback;No proposal queue write`
+
+验收信号：
+
+- `window.__memoryAtlasStage8Phase1` reports runtime version, closure schema version, source review schema version, panel ids, closure counts and safety flags.
+- Browser screenshot validates the production `summary` view.
+
+Machine-readable boundary summary: Phase 8.1; Summary and iteration closure; MA-V117-S8P01; ACC-MA-V117-S8P01; phase_8_1_summary_iteration_closure_runtime_completed_pending_stage8_review; validate:v1.1.7-stage8-phase1; validate:summary-iteration-closure-browser; summary_iteration_closure_runtime.v1_1_7_stage8_phase1; memory_atlas_summary_closure.v1_1_7_stage8_phase1; change_comparison; stale_conflict_signals; proposal_candidates; No Stage 8 review; No GitHub main upload; No raw/private read; No direct active-memory writeback; No agent apply.
+
+## 97. Memory Atlas v1.1.7 Stage 7 Review
+
+状态：`stage_7_review_passed_pending_stage8_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V117-S7-REVIEW`。
+
+模型参数：
+
+- `validate:v1.1.7-stage7` 是本 review 必跑 validator。
+- Review artifact 固定为 `docs/reviews/memory_atlas_v1_1_7_stage7_review.md`。
+- Stage 7 覆盖 Phase 7.1 Search 2.0 和 Phase 7.2 Review / Summary / Iteration。
+- Stage 7 review 通过后 pending Stage 8。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+参数记录：
+
+- `PARAM-MA-V117-S7-REVIEW-001 stage7_review_status = stage_7_review_passed_pending_stage8_no_github_main_upload`
+- `PARAM-MA-V117-S7-REVIEW-002 stage7_review_required_validator = validate:v1.1.7-stage7`
+- `PARAM-MA-V117-S7-REVIEW-003 stage7_review_artifact = docs/reviews/memory_atlas_v1_1_7_stage7_review.md`
+- `PARAM-MA-V117-S7-REVIEW-004 stage7_review_phase_coverage = Phase 7.1;Phase 7.2;Search 2.0;Review / Summary / Iteration`
+- `PARAM-MA-V117-S7-REVIEW-005 stage7_review_next_gate = pending Stage 8`
+- `PARAM-MA-V117-S7-REVIEW-006 upload_boundary = No GitHub main upload before whole Stage 0-10 completion`
+
+验收信号：
+
+- `validate:v1.1.7-stage7` checks Stage 6 continuity, Phase 7.1, Phase 7.2,
+  records, canonical remote, local branch and no-upload boundary.
+
+Machine-readable boundary summary: Stage 7 Review; MA-V117-S7-REVIEW; ACC-MA-V117-S7-REVIEW; stage_7_review_passed_pending_stage8_no_github_main_upload; validate:v1.1.7-stage7; Phase 7.1; Phase 7.2; Search 2.0; Review / Summary / Iteration; pending Stage 8; No GitHub main upload; No raw/private read; No direct active-memory writeback; No agent apply.
+
+## 96. Memory Atlas v1.1.7 Stage 7 Phase 7.2 Review / Summary / Iteration Runtime
+
+状态：`phase_7_2_review_summary_iteration_runtime_completed_pending_stage7_review`。
+
+验收 ID：`ACC-MA-V117-S7P02`。
+
+模型参数：
+
+- Runtime version 固定为 `review_summary_iteration_runtime.v1_1_7_stage7_phase2`。
+- Review schema version 固定为 `memory_atlas_review_summary.v1_1_7_stage7_phase2`。
+- `validate:v1.1.7-stage7-phase2` 是本 phase 必跑 validator。
+- `validate:review-summary-iteration-browser` 是本 phase 浏览器 validator。
+- Review / Summary / Iteration 输出必须显示 `proposal_candidate`、`evidence_refs` 和 `iteration_backlog`。
+- Runtime 必须回答八个复盘问题，并显示 review period、proposal-only 决策和 iteration backlog。
+- No Stage 8 summary closure。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage7_phase2.cjs`
+- `apps/memory-atlas/scripts/validate_review_summary_iteration_browser.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S7P02-001 stage7_phase2_status = phase_7_2_review_summary_iteration_runtime_completed_pending_stage7_review`
+- `PARAM-MA-V117-S7P02-002 stage7_phase2_required_validator = validate:v1.1.7-stage7-phase2`
+- `PARAM-MA-V117-S7P02-003 stage7_phase2_browser_validator = validate:review-summary-iteration-browser`
+- `PARAM-MA-V117-S7P02-004 review_summary_iteration_runtime_version = review_summary_iteration_runtime.v1_1_7_stage7_phase2`
+- `PARAM-MA-V117-S7P02-005 review_summary_iteration_schema_version = memory_atlas_review_summary.v1_1_7_stage7_phase2`
+- `PARAM-MA-V117-S7P02-006 output_fields = proposal_candidate;evidence_refs;iteration_backlog`
+- `PARAM-MA-V117-S7P02-007 boundary = No Stage 8 summary closure;No GitHub main upload;No raw/private read;No direct active-memory writeback`
+
+验收信号：
+
+- `window.__memoryAtlasStage7Phase2` reports runtime version, schema version, question count, panel ids, evidence refs, iteration item count and safety flags.
+- Browser screenshot validates the production `summary` view.
+
+Machine-readable boundary summary: Phase 7.2; Review / Summary / Iteration; MA-V117-S7P02; ACC-MA-V117-S7P02; phase_7_2_review_summary_iteration_runtime_completed_pending_stage7_review; validate:v1.1.7-stage7-phase2; validate:review-summary-iteration-browser; review_summary_iteration_runtime.v1_1_7_stage7_phase2; memory_atlas_review_summary.v1_1_7_stage7_phase2; proposal_candidate; evidence_refs; iteration_backlog; No Stage 8 summary closure; No GitHub main upload; No raw/private read; No direct active-memory writeback; No agent apply.
+
+## 95. Memory Atlas v1.1.7 Stage 7 Phase 7.1 Search 2.0 Runtime
+
+状态：`phase_7_1_search_2_0_runtime_completed_pending_stage7_review`。
+
+验收 ID：`ACC-MA-V117-S7P01`。
+
+模型参数：
+
+- Runtime version 固定为 `search_2_0_runtime.v1_1_7_stage7_phase1`。
+- Session Summary version 固定为 `search_2_0_session_summary.v1_1_7_stage7_phase1`。
+- `validate:v1.1.7-stage7-phase1` 是本 phase 必跑 validator。
+- `validate:search-2-0-browser` 是本 phase 浏览器 validator。
+- Search 2.0 结果必须显示 `matched_reason` 和 `evidence_refs`。
+- Result actions 必须覆盖 `jump_to_starfield`, `jump_to_river`, `open_inspector`。
+- No Review / Summary / Iteration runtime。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage7_phase1.cjs`
+- `apps/memory-atlas/scripts/validate_search_2_0_browser.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S7P01-001 stage7_phase1_status = phase_7_1_search_2_0_runtime_completed_pending_stage7_review`
+- `PARAM-MA-V117-S7P01-002 stage7_phase1_required_validator = validate:v1.1.7-stage7-phase1`
+- `PARAM-MA-V117-S7P01-003 stage7_phase1_browser_validator = validate:search-2-0-browser`
+- `PARAM-MA-V117-S7P01-004 search_2_0_runtime_version = search_2_0_runtime.v1_1_7_stage7_phase1`
+- `PARAM-MA-V117-S7P01-005 search_2_0_session_summary_version = search_2_0_session_summary.v1_1_7_stage7_phase1`
+- `PARAM-MA-V117-S7P01-006 result_fields = matched_reason;evidence_refs;proposal_candidate`
+- `PARAM-MA-V117-S7P01-007 result_actions = jump_to_starfield;jump_to_river;open_inspector`
+
+验收信号：
+
+- Static validator checks Stage 6 continuity, Search 2.0 runtime hooks, browser validator contract, records, canonical remote and no-upload boundary。
+- Browser validator checks result fields, `window.__memoryAtlasStage7Phase1`, zero-result recovery, Starfield/River/Inspector jumps, console cleanliness and screenshot。
+
+Machine-readable boundary summary: Phase 7.1; Search 2.0; MA-V117-S7P01; ACC-MA-V117-S7P01; phase_7_1_search_2_0_runtime_completed_pending_stage7_review; validate:v1.1.7-stage7-phase1; validate:search-2-0-browser; search_2_0_runtime.v1_1_7_stage7_phase1; search_2_0_session_summary.v1_1_7_stage7_phase1; matched_reason; evidence_refs; No Review / Summary / Iteration runtime; No GitHub main upload; No raw/private read; No direct active-memory writeback; No agent apply.
+
+## 94. Memory Atlas v1.1.7 Stage 6 Review
+
+状态：`stage_6_review_passed_pending_stage7_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V117-S6-REVIEW`。
+
+模型参数：
+
+- `validate:v1.1.7-stage6` 是 Stage 6 review 必跑 validator。
+- Review 覆盖 Phase 6.1、Phase 6.2。
+- Phase 6.1 固定 `data_map_structure_model.v1_1_7_stage6_phase1` 和 `data_map_relation_explanation.v1_1_7_stage6_phase1`。
+- Phase 6.2 固定 `data_map_detail_panel.v1_1_7_stage6_phase2` 和 `data_map_proposal_entry.v1_1_7_stage6_phase2`。
+- Next gate 是 pending Stage 7。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage6_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage6.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S6-REVIEW-001 stage6_review_status = stage_6_review_passed_pending_stage7_no_github_main_upload`
+- `PARAM-MA-V117-S6-REVIEW-002 stage6_review_required_validator = validate:v1.1.7-stage6`
+- `PARAM-MA-V117-S6-REVIEW-003 stage6_review_phase_coverage = Phase 6.1;Phase 6.2`
+- `PARAM-MA-V117-S6-REVIEW-004 stage6_review_next_gate = pending Stage 7`
+- `PARAM-MA-V117-S6-REVIEW-005 stage6_review_boundary = No GitHub main upload`
+
+验收信号：
+
+- Static validator checks Stage 5 review continuity, Phase 6.1/6.2 validators, Stage 6 review artifact, records, canonical remote and no-upload boundary。
+
+Machine-readable boundary summary: Stage 6 Review; MA-V117-S6-REVIEW; ACC-MA-V117-S6-REVIEW; stage_6_review_passed_pending_stage7_no_github_main_upload; validate:v1.1.7-stage6; Phase 6.1; Phase 6.2; pending Stage 7; No Stage 7 work; No Search 2.0 work; No Review / Summary / Iteration runtime work; No GitHub main upload; No raw/private read; No direct active-memory writeback; No agent apply.
+
+## 93. Memory Atlas v1.1.7 Stage 6 Phase 6.2 Details & Editing
+
+状态：`phase_6_2_data_map_detail_proposal_completed_pending_stage6_review`。
+
+验收 ID：`ACC-MA-V117-S6P02`。
+
+模型参数：
+
+- Detail Panel version 固定为 `data_map_detail_panel.v1_1_7_stage6_phase2`。
+- Proposal Entry version 固定为 `data_map_proposal_entry.v1_1_7_stage6_phase2`。
+- `validate:v1.1.7-stage6-phase2` 是本 phase 必跑 validator。
+- `validate:data-map-detail-proposal-browser` 是本 phase 浏览器 validator。
+- Phase 6.2 Details & Editing 覆盖 `数据导图详情面板` 和 `数据导图 proposal 入口`。
+- 详情字段：`asset`, `theme`, `suggested action`, `importance`, `priority`。
+- proposal-only。
+- No Stage 6 review。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage6_phase2.cjs`
+- `apps/memory-atlas/scripts/validate_data_map_detail_proposal_browser.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S6P02-001 stage6_phase2_status = phase_6_2_data_map_detail_proposal_completed_pending_stage6_review`
+- `PARAM-MA-V117-S6P02-002 stage6_phase2_required_validator = validate:v1.1.7-stage6-phase2`
+- `PARAM-MA-V117-S6P02-003 stage6_phase2_browser_validator = validate:data-map-detail-proposal-browser`
+- `PARAM-MA-V117-S6P02-004 detail_panel_version = data_map_detail_panel.v1_1_7_stage6_phase2`
+- `PARAM-MA-V117-S6P02-005 proposal_entry_version = data_map_proposal_entry.v1_1_7_stage6_phase2`
+- `PARAM-MA-V117-S6P02-006 detail_fields = asset;theme;suggested action;importance;priority`
+
+验收信号：
+
+- Static validator checks Stage 6 Phase 6.1 continuity, Data Map contract, production runtime hooks, browser validator contract, records, canonical remote and no-upload boundary。
+- Browser validator checks node click, detail fields, proposal export, `window.__memoryAtlasStage6Phase2`, console cleanliness and screenshot。
+
+Machine-readable boundary summary: Phase 6.2; Details & Editing; MA-V117-S6P02; ACC-MA-V117-S6P02; phase_6_2_data_map_detail_proposal_completed_pending_stage6_review; validate:v1.1.7-stage6-phase2; validate:data-map-detail-proposal-browser; data_map_detail_panel.v1_1_7_stage6_phase2; data_map_proposal_entry.v1_1_7_stage6_phase2; 数据导图详情面板; 数据导图 proposal 入口; proposal-only; No Stage 6 review; No GitHub main upload; No raw/private read; No direct active-memory writeback; No agent apply.
+
+## 92. Memory Atlas v1.1.7 Stage 6 Phase 6.1 Structure Model
+
+状态：`phase_6_1_data_map_structure_model_completed_pending_stage6_review`。
+
+验收 ID：`ACC-MA-V117-S6P01`。
+
+模型参数：
+
+- Structure Model version 固定为 `data_map_structure_model.v1_1_7_stage6_phase1`。
+- Relation Explanation version 固定为 `data_map_relation_explanation.v1_1_7_stage6_phase1`。
+- `validate:v1.1.7-stage6-phase1` 是本 phase 必跑 validator。
+- `validate:data-map-structure-browser` 是本 phase 浏览器 validator。
+- 四层结构：`source_layer`, `profile_layer`, `project_decision_layer`, `action_opportunity_layer`。
+- 每层必须声明 node types、fields、interaction、detail entry。
+- Relation fields: `source`, `strength`, `evidence`, `time`。
+- No Phase 6.2。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage6_phase1.cjs`
+- `apps/memory-atlas/scripts/validate_data_map_structure_browser.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S6P01-001 stage6_phase1_status = phase_6_1_data_map_structure_model_completed_pending_stage6_review`
+- `PARAM-MA-V117-S6P01-002 stage6_phase1_required_validator = validate:v1.1.7-stage6-phase1`
+- `PARAM-MA-V117-S6P01-003 stage6_phase1_browser_validator = validate:data-map-structure-browser`
+- `PARAM-MA-V117-S6P01-004 structure_model_version = data_map_structure_model.v1_1_7_stage6_phase1`
+- `PARAM-MA-V117-S6P01-005 relation_explanation_version = data_map_relation_explanation.v1_1_7_stage6_phase1`
+- `PARAM-MA-V117-S6P01-006 structure_layers = source_layer;profile_layer;project_decision_layer;action_opportunity_layer`
+- `PARAM-MA-V117-S6P01-007 relation_fields = source;strength;evidence;time`
+
+验收信号：
+
+- Static validator checks Stage 5 review continuity, Data Map contract, production runtime hooks, browser validator contract, records, canonical remote and no-upload boundary。
+- Browser validator checks four layers, relation click explanation, `window.__memoryAtlasStage6Phase1`, console cleanliness and screenshot。
+
+Machine-readable boundary summary: Phase 6.1; Structure Model; Relation Explanation; MA-V117-S6P01; ACC-MA-V117-S6P01; phase_6_1_data_map_structure_model_completed_pending_stage6_review; validate:v1.1.7-stage6-phase1; validate:data-map-structure-browser; data_map_structure_model.v1_1_7_stage6_phase1; data_map_relation_explanation.v1_1_7_stage6_phase1; source_layer; profile_layer; project_decision_layer; action_opportunity_layer; No Phase 6.2; No GitHub main upload; No raw/private read; No direct active-memory writeback; No agent apply.
+
+## 91. Memory Atlas v1.1.7 Stage 5 Review
+
+状态：`stage_5_review_passed_pending_stage6_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V117-S5-REVIEW`。
+
+模型参数：
+
+- `validate:v1.1.7-stage5` 是 Stage 5 review 必跑 validator。
+- Review 覆盖 Phase 5.1、Phase 5.2、Phase 5.3。
+- Phase 5.1 固定 `memory_river_interaction_contract.v1_1_7_stage5_phase1` 和 `memory_river_feedback_contract.v1_1_7_stage5_phase1`。
+- Phase 5.2 固定 `memory_river_c3_spike.v1_1_7_stage5_phase2`。
+- Phase 5.3 固定 `memory_river_integration.v1_1_7_stage5_phase3`、default memory-river 和 legacy rollback。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage5_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage5.cjs`
+- `apps/memory-atlas/package.json`
+
+参数记录：
+
+- `PARAM-MA-V117-S5-REVIEW-001 stage5_review_status = stage_5_review_passed_pending_stage6_no_github_main_upload`
+- `PARAM-MA-V117-S5-REVIEW-002 stage5_review_required_validator = validate:v1.1.7-stage5`
+- `PARAM-MA-V117-S5-REVIEW-003 stage5_review_phase_coverage = Phase 5.1;Phase 5.2;Phase 5.3`
+- `PARAM-MA-V117-S5-REVIEW-004 stage5_review_next_gate = pending Stage 6`
+
+验收信号：
+
+- Stage validator checks Stage 4 review continuity, Phase 5.1 / Phase 5.2 / Phase 5.3 validators, review artifact, records, canonical remote and no-upload boundary。
+- Browser evidence remains covered by `validate:memory-river-spike-browser` and `validate:memory-river-integration-browser`。
+
+Machine-readable boundary summary: Stage 5 Review; MA-V117-S5-REVIEW; ACC-MA-V117-S5-REVIEW; stage_5_review_passed_pending_stage6_no_github_main_upload; validate:v1.1.7-stage5; Phase 5.1; Phase 5.2; Phase 5.3; pending Stage 6; No GitHub main upload; No Stage 6 work; No Data Map work.
+
+## 90. Memory Atlas v1.1.7 Stage 5 Phase 5.3 Timeline Integration
+
+状态：`phase_5_3_timeline_integration_completed_pending_stage5_review`。
+
+验收 ID：`ACC-MA-V117-S5P03`。
+
+模型参数：
+
+- Integration version 固定为 `memory_river_integration.v1_1_7_stage5_phase3`。
+- `validate:v1.1.7-stage5-phase3` 是本 phase 必跑 validator。
+- `validate:memory-river-integration-browser` 是本 phase 浏览器 validator。
+- Timeline 默认 renderer 为 default memory-river。
+- Legacy renderer 保留为 `legacy`，legacy rollback 路径为 in-app toggle、`timelineRenderer=legacy`、`timeline=legacy`、localStorage 和 env override。
+- Required browser checks: default Memory River, legacy rollback, URL rollback, brush interaction, selected range metadata, evidence layers, screenshot, console safety。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/config/visualFlags.ts`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage5_phase3.cjs`
+- `apps/memory-atlas/scripts/validate_memory_river_integration_browser.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S5P03-001 stage5_phase3_status = phase_5_3_timeline_integration_completed_pending_stage5_review`
+- `PARAM-MA-V117-S5P03-002 stage5_phase3_required_validator = validate:v1.1.7-stage5-phase3`
+- `PARAM-MA-V117-S5P03-003 stage5_phase3_browser_validator = validate:memory-river-integration-browser`
+- `PARAM-MA-V117-S5P03-004 integration_version = memory_river_integration.v1_1_7_stage5_phase3`
+- `PARAM-MA-V117-S5P03-005 timeline_renderer_default = default memory-river`
+- `PARAM-MA-V117-S5P03-006 rollback_mode = legacy rollback`
+
+验收信号：
+
+- Static validator checks Stage 5 Phase 5.2 continuity, feature flag version, runtime hook, plan/acceptance docs, records, canonical remote and no-upload boundary。
+- Browser validator checks default Memory River, legacy rollback, URL rollback, brush interaction, selected range metadata, evidence layers, console cleanliness and screenshot。
+
+Machine-readable boundary summary: Phase 5.3; MA-V117-S5P03; ACC-MA-V117-S5P03; phase_5_3_timeline_integration_completed_pending_stage5_review; validate:v1.1.7-stage5-phase3; validate:memory-river-integration-browser; memory_river_integration.v1_1_7_stage5_phase3; default memory-river; legacy rollback; No GitHub main upload; No Stage 5 review; No Stage 6.
+
+## 89. Memory Atlas v1.1.7 Stage 5 Phase 5.2 C3 River Spike
+
+状态：`phase_5_2_c3_river_spike_completed_pending_stage5_review`。
+
+验收 ID：`ACC-MA-V117-S5P02`。
+
+模型参数：
+
+- Spike version 固定为 `memory_river_c3_spike.v1_1_7_stage5_phase2`。
+- `validate:v1.1.7-stage5-phase2` 是本 phase 必跑 validator。
+- `validate:memory-river-spike-browser` 是本 phase 浏览器 validator。
+- Time scale levels: `year`, `month`, `week`, `day`。
+- Required runtime controls: `zoom`, `brush_selection`, `selected_range_summary`, `theme_lanes`, `black_hole_band`, `proto_star_marker`, `reduced_motion`。
+- Required theme trends: `rising`, `declining`, `stable`, `conflict`。
+- No production Timeline replacement。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/experiments/memory-river-spike/fixture.ts`
+- `apps/memory-atlas/src/experiments/memory-river-spike/main.ts`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage5_phase2.cjs`
+- `apps/memory-atlas/scripts/validate_memory_river_spike_browser.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S5P02-001 stage5_phase2_status = phase_5_2_c3_river_spike_completed_pending_stage5_review`
+- `PARAM-MA-V117-S5P02-002 stage5_phase2_required_validator = validate:v1.1.7-stage5-phase2`
+- `PARAM-MA-V117-S5P02-003 stage5_phase2_browser_validator = validate:memory-river-spike-browser`
+- `PARAM-MA-V117-S5P02-004 spike_version = memory_river_c3_spike.v1_1_7_stage5_phase2`
+- `PARAM-MA-V117-S5P02-005 time_scale_levels = year;month;week;day`
+- `PARAM-MA-V117-S5P02-006 theme_trends = rising;declining;stable;conflict`
+
+验收信号：
+
+- Static validator checks Stage 5 Phase 5.1 continuity, spike files, product/acceptance docs, records, production isolation, canonical remote and no-upload boundary。
+- Browser validator checks year/month/week/day time levels, zoom, brush selected range themes/events, Black Hole / Proto-Star positioning, reduced motion, console cleanliness and screenshot。
+
+Machine-readable boundary summary: Stage 5 Phase 5.2 C3 River Spike; MA-V117-S5P02; ACC-MA-V117-S5P02; phase_5_2_c3_river_spike_completed_pending_stage5_review; validate:v1.1.7-stage5-phase2; validate:memory-river-spike-browser; memory_river_c3_spike.v1_1_7_stage5_phase2; Phase 5.2; No production Timeline replacement; No GitHub main upload; No raw/private read; No direct active-memory writeback; No agent apply; No Stage 5.3.
+
+## 88. Memory Atlas v1.1.7 Stage 5 Phase 5.1 Interaction Contract
+
+状态：`phase_5_1_interaction_contract_completed_pending_stage5_review`。
+
+验收 ID：`ACC-MA-V117-S5P01`。
+
+模型参数：
+
+- Interaction Contract 固定为 `memory_river_interaction_contract.v1_1_7_stage5_phase1`。
+- Feedback Contract 固定为 `memory_river_feedback_contract.v1_1_7_stage5_phase1`。
+- `validate:v1.1.7-stage5-phase1` 是本 phase 必跑 validator。
+- 必备交互：`zoom`, `brush`, `theme_lanes`, `event_points`, `status_bands`, `detail_panel`。
+- 必备反馈控制：`visual_feedback`, `optional_audio`, `pseudo_haptic`, `reduced_motion`, `feedback_disable_control`, `audio_default_off`, `vibration_not_required`。
+- No Stage 5.2。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `docs/product/memory_river_interaction_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage5_phase1_interaction_contract_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage5_phase1.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S5P01-001 stage5_phase1_status = phase_5_1_interaction_contract_completed_pending_stage5_review`
+- `PARAM-MA-V117-S5P01-002 stage5_phase1_required_validator = validate:v1.1.7-stage5-phase1`
+- `PARAM-MA-V117-S5P01-003 interaction_contract_version = memory_river_interaction_contract.v1_1_7_stage5_phase1`
+- `PARAM-MA-V117-S5P01-004 feedback_contract_version = memory_river_feedback_contract.v1_1_7_stage5_phase1`
+- `PARAM-MA-V117-S5P01-005 required_interactions = zoom;brush;theme_lanes;event_points;status_bands;detail_panel`
+- `PARAM-MA-V117-S5P01-006 required_feedback_controls = visual_feedback;optional_audio;pseudo_haptic;reduced_motion;feedback_disable_control;audio_default_off;vibration_not_required`
+
+验收信号：
+
+- Memory River interaction contract addendum。
+- `validate:v1.1.7-stage5-phase1` 检查 Stage 4 review continuity、interaction contract、feedback contract、records、package script 和 no-runtime/no-upload boundary。
+- Boundary includes No GitHub main upload, No Stage 5.2, No C3 River Spike, No Timeline replacement, No runtime UI/CSS, No raw/private read, No direct active-memory writeback and No agent apply。
+
+## 87. Memory Atlas v1.1.7 Stage 4 Review Gate
+
+状态：`stage_4_review_passed_pending_stage5_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V117-S4-REVIEW`。
+
+模型参数：
+
+- Stage 4 Review 覆盖 Phase 4.1 / Phase 4.2 / Phase 4.3，不进入 Stage 5。
+- `validate:v1.1.7-stage4` 是整阶段必跑 validator。
+- Phase 4.1 Visual Contract Update、Phase 4.2 C3 Starfield Spike 和 Phase 4.3 Integration 是本 gate 的完整覆盖范围。
+- Stage 4 review status 固定为 `stage_4_review_passed_pending_stage5_no_github_main_upload`，pending Stage 5。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage4_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage4.cjs`
+- `apps/memory-atlas/package.json`
+
+参数记录：
+
+- `PARAM-MA-V117-S4-REVIEW-001 stage4_review_status = stage_4_review_passed_pending_stage5_no_github_main_upload`
+- `PARAM-MA-V117-S4-REVIEW-002 stage4_review_required_validator = validate:v1.1.7-stage4`
+- `PARAM-MA-V117-S4-REVIEW-003 stage4_review_phase_scope = Phase 4.1;Phase 4.2;Phase 4.3`
+- `PARAM-MA-V117-S4-REVIEW-004 stage4_review_deferred_work = pending Stage 5;Memory River refactor;Stage 6+ hardening;local app packaging;Cloudflare deploy;GitHub main upload`
+
+验收信号：
+
+- Stage 4 review artifact。
+- `validate:v1.1.7-stage4` 检查 Stage 3 continuity、Phase 4.1 / Phase 4.2 / Phase 4.3 validators、records、package script 和 no-upload boundary。
+- Boundary includes No GitHub main upload, No Stage 5 work, No raw/private read, No direct active-memory writeback, No agent apply and No build/deploy/app install。
+
+## 86. Memory Atlas v1.1.7 Stage 4 Phase 4.3 Integration
+
+状态：`phase_4_3_integration_completed_pending_stage4_review`。
+
+验收 ID：`ACC-MA-V117-S4P03`。
+
+模型参数：
+
+- Production Galaxy Integration 固定为 `memory_starfield_integration.v1_1_7_stage4_phase3`。
+- Snapshot Mapping 固定为 `memory_starfield_snapshot_mapping.v1_1_7_stage4_phase3`。
+- `validate:v1.1.7-stage4-phase3` 是本 phase 静态必跑 validator。
+- `validate:memory-starfield-integration-browser` 是本 phase 浏览器必跑 validator。
+- `default_renderer_mode = memory-starfield`。
+- `legacy_renderer_mode = legacy`。
+- `mapping_source_priority = redacted_snapshot -> atlas_nodes_fallback`。
+- No Stage 5。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/components/GalaxyScene.tsx`
+- `apps/memory-atlas/src/config/visualFlags.ts`
+- `apps/memory-atlas/src/models/starfieldMapping.ts`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage4_phase3.cjs`
+- `apps/memory-atlas/scripts/validate_memory_starfield_integration_browser.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S4P03-001 stage4_phase3_status = phase_4_3_integration_completed_pending_stage4_review`
+- `PARAM-MA-V117-S4P03-002 stage4_phase3_required_validator = validate:v1.1.7-stage4-phase3`
+- `PARAM-MA-V117-S4P03-003 stage4_phase3_browser_validator = validate:memory-starfield-integration-browser`
+- `PARAM-MA-V117-S4P03-004 integration_version = memory_starfield_integration.v1_1_7_stage4_phase3`
+- `PARAM-MA-V117-S4P03-005 mapping_version = memory_starfield_snapshot_mapping.v1_1_7_stage4_phase3`
+- `PARAM-MA-V117-S4P03-006 renderer_modes = default=memory-starfield;rollback=legacy`
+
+验收信号：
+
+- Browser validator 证明默认 new memory-starfield、legacy rollback、snapshot mapping、formula panel 和 screenshot。
+- Static validator 检查 Stage 4.2 continuity、Feature Flag、Snapshot Mapping、records、package script 和 no-upload boundary。
+- Boundary includes No Stage 5, No GitHub main upload, No raw/private read, No direct active-memory writeback and No agent apply。
+
+## 85. v1.1.7 Stage 4 Phase 4.2 C3 Starfield Spike
+
+状态：`phase_4_2_c3_starfield_spike_completed_pending_stage4_review`。
+
+验收 ID：`ACC-MA-V117-S4P02`。
+
+模型参数：
+
+- C3 Starfield Spike 版本固定为 `memory_starfield_c3_spike.v1_1_7_stage4_phase2`。
+- `validate:v1.1.7-stage4-phase2` 是本 phase 静态必跑 validator。
+- `validate:memory-starfield-spike-browser` 是本 phase 浏览器必跑 validator。
+- 粒子下限：`>=10k particles`。
+- 桌面浏览器 FPS 下限：`>=30 FPS`。
+- 必备运行特征：GPU particle spike、Flow Field / Curl Noise、Cluster Gravity、Hover Cards B2、screenshot。
+- No production Galaxy replacement。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/experiments/memory-starfield-spike/main.ts`
+- `apps/memory-atlas/src/experiments/memory-starfield-spike/shaders/flowField.ts`
+- `apps/memory-atlas/src/experiments/memory-starfield-spike/fixture.ts`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage4_phase2.cjs`
+- `apps/memory-atlas/scripts/validate_memory_starfield_spike_browser.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S4P02-001 stage4_phase2_status = phase_4_2_c3_starfield_spike_completed_pending_stage4_review`
+- `PARAM-MA-V117-S4P02-002 stage4_phase2_required_validator = validate:v1.1.7-stage4-phase2`
+- `PARAM-MA-V117-S4P02-003 stage4_phase2_browser_validator = validate:memory-starfield-spike-browser`
+- `PARAM-MA-V117-S4P02-004 spike_version = memory_starfield_c3_spike.v1_1_7_stage4_phase2`
+- `PARAM-MA-V117-S4P02-005 runtime_thresholds = >=10k particles;>=30 FPS;trajectoryTrailCount>=256;gravitySourceCount>=6`
+- `PARAM-MA-V117-S4P02-006 required_runtime_features = GPU particle spike;Flow Field / Curl Noise;Cluster Gravity;Hover Cards B2;screenshot`
+
+验收信号：
+
+- Browser validator 证明 `>=10k particles`、`>=30 FPS`、`curl_noise_shader`、particle trails、gravity sources、Hover Cards B2 和 screenshot。
+- Static validator 检查 Stage 4.1 continuity、spike source、fixture safety、production isolation、records、package script 和 no-upload boundary。
+- Boundary includes No production Galaxy replacement, No production route/navigation change, No GitHub main upload, No raw/private read, No direct active-memory writeback and No agent apply。
+
+## 84. v1.1.7 Stage 4 Phase 4.1 Visual Contract Update
+
+状态：`phase_4_1_visual_contract_update_completed_pending_stage4_review`。
+
+验收 ID：`ACC-MA-V117-S4P01`。
+
+模型参数：
+
+- Visual Contract Update 固定 `memory_starfield_visual_contract.v1_1_7_stage4_phase1`。
+- Memory Terrain Layer 固定 `memory_terrain_layer.v1_1_7_stage4_phase1`。
+- `validate:v1.1.7-stage4-phase1` 是本 phase 必跑 validator。
+- 必备视觉原语：`nebula_field`, `flow_field`, `particle_trails`, `gravity_sources`, `black_hole_core`, `proto_star_cloud`, `memory_terrain_layer`。
+- 必备地形语义：`long_term_theme`, `growth_band`, `migration_flow`, `relic`, `black_hole`, `opportunity`。
+- C3 Starfield Spike 是未来生产 renderer replacement 前的验证路径。
+- No Phase 4.2。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `docs/product/memory_starfield_visual_contract.md`
+- `docs/architecture/memory_terrain_layer.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage4_phase1_visual_contract_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage4_phase1.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S4P01-001 stage4_phase1_status = phase_4_1_visual_contract_update_completed_pending_stage4_review`
+- `PARAM-MA-V117-S4P01-002 stage4_phase1_required_validator = validate:v1.1.7-stage4-phase1`
+- `PARAM-MA-V117-S4P01-003 visual_contract_version = memory_starfield_visual_contract.v1_1_7_stage4_phase1`
+- `PARAM-MA-V117-S4P01-004 terrain_contract_version = memory_terrain_layer.v1_1_7_stage4_phase1`
+- `PARAM-MA-V117-S4P01-005 required_visual_primitives = nebula_field;flow_field;particle_trails;gravity_sources;black_hole_core;proto_star_cloud;memory_terrain_layer`
+- `PARAM-MA-V117-S4P01-006 required_terrain_classes = long_term_theme;growth_band;migration_flow;relic;black_hole;opportunity`
+
+验收信号：
+
+- Visual Contract Update product contract。
+- `validate:v1.1.7-stage4-phase1` 检查 Stage 3 continuity、visual contract、terrain layer、records、package script 和 no-upload boundary。
+- Boundary includes No Phase 4.2, No runtime renderer replacement, No GitHub main upload, No raw/private read, No direct active-memory writeback, No agent apply and No build/deploy/app install。
+
+## 83. v1.1.7 Stage 3 Review Gate
+
+状态：`stage_3_review_passed_pending_stage4_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V117-S3-REVIEW`。
+
+模型参数：
+
+- Stage 3 Review 只复审 Phase 3.1 / Phase 3.2，不进入 Stage 4。
+- `validate:v1.1.7-stage3` 是整阶段必跑 validator。
+- Phase 3.1 Default Home Structure 和 Phase 3.2 Home Detail Operations 是本 gate 的完整覆盖范围。
+- Stage 3 review status 固定为 `stage_3_review_passed_pending_stage4_no_github_main_upload`，pending Stage 4。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage3_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage3.cjs`
+- `apps/memory-atlas/package.json`
+
+参数记录：
+
+- `PARAM-MA-V117-S3-REVIEW-001 stage3_review_status = stage_3_review_passed_pending_stage4_no_github_main_upload`
+- `PARAM-MA-V117-S3-REVIEW-002 stage3_review_required_validator = validate:v1.1.7-stage3`
+- `PARAM-MA-V117-S3-REVIEW-003 stage3_review_phase_scope = Phase 3.1;Phase 3.2`
+- `PARAM-MA-V117-S3-REVIEW-004 stage3_review_deferred_work = pending Stage 4;Memory Starfield refactor;Search 2.0;Review workflow;Data Map 2.0;browser screenshot;final app reinstall;GitHub main upload`
+
+验收信号：
+
+- Stage 3 review artifact。
+- `validate:v1.1.7-stage3` 检查 Stage 2 continuity、Phase 3.1 / Phase 3.2 validators、records、package script 和 no-upload boundary。
+- Boundary includes No GitHub main upload, No Stage 4 work, No raw/private read, No direct active-memory writeback, No agent apply and No build/deploy/app install。
+
+## 82. v1.1.7 Stage 3 Phase 3.2 Home Detail Operations
+
+状态：`phase_3_2_home_detail_operations_completed_pending_stage3_review`。
+
+验收 ID：`ACC-MA-V117-S3P02`。
+
+模型参数：
+
+- Stage 3 Phase 3.2 固定 Home Detail Operations，不进入 No Stage 3 Review。
+- `validate:v1.1.7-stage3-phase2` 是本 phase 必跑 validator。
+- Operation version 固定为 `memory_overview_detail_operations.v1_1_7_stage3_phase2`。
+- Operation sections: `top_actions`, `level_assets`, `theme_categories`。
+- Section versions: `top_actions_section.v1_1_7_stage3_phase2`, `level_assets_section.v1_1_7_stage3_phase2`, `theme_categories_section.v1_1_7_stage3_phase2`。
+- Asset groups: `core_profile`, `project`, `decision`, `temporary`, `stale`。
+- Theme category states: `rising`, `declining`, `conflict`, `opportunity`, `stable`。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/product/memory_overview_product_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage3_phase2_home_detail_operations_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage3_phase2.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S3P02-001 stage3_phase2_status = phase_3_2_home_detail_operations_completed_pending_stage3_review`
+- `PARAM-MA-V117-S3P02-002 stage3_phase2_required_validator = validate:v1.1.7-stage3-phase2`
+- `PARAM-MA-V117-S3P02-003 home_detail_operations = memory_overview_detail_operations.v1_1_7_stage3_phase2`
+- `PARAM-MA-V117-S3P02-004 operation_sections = top_actions;level_assets;theme_categories`
+- `PARAM-MA-V117-S3P02-005 asset_groups = core_profile;project;decision;temporary;stale`
+- `PARAM-MA-V117-S3P02-006 theme_category_states = rising;declining;conflict;opportunity;stable`
+
+验收信号：
+
+- Home Detail Operations product contract。
+- `validate:v1.1.7-stage3-phase2` 检查三类首页明细区、records、package script 和 no-upload boundary。
+- Boundary includes No Stage 3 Review, No GitHub main upload, No raw/private read, No direct active-memory writeback, No agent apply and No build/deploy/app install。
+
+## 81. v1.1.7 Stage 3 Phase 3.1 Default Home Structure
+
+状态：`phase_3_1_default_home_structure_completed_pending_stage3_review`。
+
+验收 ID：`ACC-MA-V117-S3P01`。
+
+模型参数：
+
+- Stage 3 Phase 3.1 固定 Default Home Structure，不进入 No Stage 3 Phase 3.2。
+- `validate:v1.1.7-stage3-phase1` 是本 phase 必跑 validator。
+- Structure version 固定为 `memory_overview_default_home.v1_1_7_stage3_phase1`。
+- 默认 route 固定为 `home`。
+- Required sections: `status_summary`, `suggested_actions`, `weather`, `black_holes`, `proto_stars`, `assets`, `themes`, `entry_points`。
+- Rollback core 4 sections: `status_summary`, `suggested_actions`, `weather`, `entry_points`。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/product/memory_overview_product_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage3_phase1_default_home_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage3_phase1.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S3P01-001 stage3_phase1_status = phase_3_1_default_home_structure_completed_pending_stage3_review`
+- `PARAM-MA-V117-S3P01-002 stage3_phase1_required_validator = validate:v1.1.7-stage3-phase1`
+- `PARAM-MA-V117-S3P01-003 default_home_structure_version = memory_overview_default_home.v1_1_7_stage3_phase1`
+- `PARAM-MA-V117-S3P01-004 default_home_sections = status_summary;suggested_actions;weather;black_holes;proto_stars;assets;themes;entry_points`
+- `PARAM-MA-V117-S3P01-005 stage3_phase1_deferred_work = No Stage 3 Phase 3.2;Search 2.0;Review workflow;Data Map 2.0;browser screenshot;final app reinstall;GitHub main upload`
+
+验收信号：
+
+- Default Home Structure product contract。
+- `validate:v1.1.7-stage3-phase1` 检查默认 route、8 个 section marker、records、package script 和 no-upload boundary。
+- Boundary includes No Stage 3 Phase 3.2, No GitHub main upload, No raw/private read, No direct active-memory writeback, No agent apply and No build/deploy/app install。
+
+## 80. v1.1.7 Stage 2 Review Gate
+
+状态：`stage_2_review_passed_pending_stage3_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V117-S2-REVIEW`。
+
+模型参数：
+
+- Stage 2 Review 只复审 Phase 2.1 / Phase 2.2，不进入 Stage 3。
+- `validate:v1.1.7-stage2` 是整阶段必跑 validator。
+- Phase 2.1 Editable Draft Model 和 Phase 2.2 Proposal UI 是本 gate 的完整覆盖范围。
+- Stage 2 review status 固定为 `stage_2_review_passed_pending_stage3_no_github_main_upload`，pending Stage 3。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage2_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage2.cjs`
+- `apps/memory-atlas/package.json`
+
+参数记录：
+
+- `PARAM-MA-V117-S2-REVIEW-001 stage2_review_status = stage_2_review_passed_pending_stage3_no_github_main_upload`
+- `PARAM-MA-V117-S2-REVIEW-002 stage2_review_required_validator = validate:v1.1.7-stage2`
+- `PARAM-MA-V117-S2-REVIEW-003 stage2_review_phase_scope = Phase 2.1;Phase 2.2`
+- `PARAM-MA-V117-S2-REVIEW-004 stage2_review_deferred_work = pending Stage 3;Default Home Structure;Search 2.0;Review workflow;Data Map 2.0;browser screenshot;final app reinstall;GitHub main upload`
+
+验收信号：
+
+- Stage 2 review artifact。
+- `validate:v1.1.7-stage2` 检查 Stage 1 continuity、Phase 2.1 / Phase 2.2 validators、records、package script 和 no-upload boundary。
+- Boundary includes No GitHub main upload, No Stage 3 work, No raw/private read, No direct active-memory writeback, No agent apply and No build/deploy/app install。
+
+## 79. v1.1.7 Stage 2 Phase 2.2 Proposal UI
+
+状态：`phase_2_2_proposal_ui_completed_pending_stage2_review`。
+
+验收 ID：`ACC-MA-V117-S2P02`。
+
+模型参数：
+
+- Stage 2 Phase 2.2 只实现 Proposal UI 初始能力，不进入 Search 2.0、Review workflow 或 Data Map 2.0。
+- Proposal UI 初始字段为 `importance` 和 `priority`。
+- Proposal export schema 固定为 `memory_atlas_proposal_export.v1`。
+- Diff preview 必须显示 `original_value`、`proposed_value`、`impact_summary` 和 `rollback_metadata`。
+- Export / Rollback Contract 必须保留 `proposal_only`、`requires_conflict_check` 和 `requires_agent_or_human_apply`。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `apps/memory-atlas/src/components/ProposalEditor.tsx`
+- `apps/memory-atlas/src/components/ProposalDiffPreview.tsx`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage2_phase2.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S2P02-001 stage2_phase2_status = phase_2_2_proposal_ui_completed_pending_stage2_review`
+- `PARAM-MA-V117-S2P02-002 stage2_phase2_required_validator = validate:v1.1.7-stage2-phase2`
+- `PARAM-MA-V117-S2P02-003 proposal_ui_fields = importance;priority`
+- `PARAM-MA-V117-S2P02-004 proposal_ui_components = ProposalEditor;ProposalDiffPreview`
+- `PARAM-MA-V117-S2P02-005 export_schema_version = memory_atlas_proposal_export.v1`
+- `PARAM-MA-V117-S2P02-006 stage2_phase2_deferred_work = Stage 2 review;Search 2.0;Review workflow;Data Map 2.0;browser screenshot;final app reinstall;GitHub main upload`
+
+验收信号：
+
+- ProposalEditor runtime component。
+- ProposalDiffPreview runtime component。
+- `validate:v1.1.7-stage2-phase2` 检查 UI、合同、参数、记录和改动范围。
+- Boundary includes No GitHub main upload, No raw/private read, No direct writeback, No agent apply and No build/deploy/app install。
+
+## 78. v1.1.7 Stage 2 Phase 2.1 Editable Draft Model
+
+状态：`phase_2_1_editable_draft_model_completed_pending_stage2_review`。
+
+验收 ID：`ACC-MA-V117-S2P01`。
+
+模型参数：
+
+- Stage 2 Phase 2.1 只建立 Editable Draft Model 和 Draft State Store，不进入 Proposal UI。
+- 可编辑字段白名单固定为 `importance`、`priority`、`status`、`theme_override`、`action_state`、`note`。
+- Draft schema version 固定为 `memory_atlas_proposal_draft.v1`。
+- Draft store key 固定为 `memory-atlas.proposal-drafts.v1`。
+- Draft Store 必须支持 refresh warning 和 undo draft change。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `docs/architecture/proposal_edit_model.md`
+- `apps/memory-atlas/src/state/proposalDraftStore.ts`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage2_phase1.cjs`
+- `config/visualization/model_parameters.universe_state.yaml`
+
+参数记录：
+
+- `PARAM-MA-V117-S2P01-001 stage2_phase1_status = phase_2_1_editable_draft_model_completed_pending_stage2_review`
+- `PARAM-MA-V117-S2P01-002 stage2_phase1_required_validator = validate:v1.1.7-stage2-phase1`
+- `PARAM-MA-V117-S2P01-003 editable_field_whitelist = importance;priority;status;theme_override;action_state;note`
+- `PARAM-MA-V117-S2P01-004 draft_schema_version = memory_atlas_proposal_draft.v1`
+- `PARAM-MA-V117-S2P01-005 draft_store_key = memory-atlas.proposal-drafts.v1`
+- `PARAM-MA-V117-S2P01-006 draft_required_behaviors = refresh warning;undo draft change;serialize;parse;load;save;clear`
+- `PARAM-MA-V117-S2P01-007 stage2_phase1_deferred_work = Phase 2.2 Proposal UI;Proposal Diff Preview;proposal JSON export;Search 2.0;Review workflow;Data Map 2.0;browser screenshot;final app reinstall;GitHub main upload`
+
+验收信号：
+
+- Proposal edit model contract。
+- Draft State Store implementation。
+- `validate:v1.1.7-stage2-phase1` 检查模型、store、参数、记录和改动范围。
+- Boundary includes No Proposal UI, No GitHub main upload, No raw/private read, No direct writeback, No agent apply and No build/deploy/app install。
+
+## 77. v1.1.7 Stage 1 Review Gate
+
+状态：`stage_1_review_passed_pending_stage2_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V117-S1-REVIEW`。
+
+模型参数：
+
+- Stage 1 Review 只复审 Phase 1.1 / Phase 1.2 / Phase 1.3 / Phase 1.4，不进入 Stage 2。
+- `validate:v1.1.7-stage1` 是整阶段必跑 validator。
+- Phase 1.1 Universe State、Phase 1.2 Next Action、Phase 1.3 Level Asset、Phase 1.4 Topic Classification 是本 gate 的完整覆盖范围。
+- Stage 1 review status 固定为 `stage_1_review_passed_pending_stage2_no_github_main_upload`，pending Stage 2。
+- No GitHub main upload before whole Stage 0-10 completion。
+
+运行时文件：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage1_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage1.cjs`
+- `apps/memory-atlas/package.json`
+
+参数记录：
+
+- `PARAM-MA-V117-S1-REVIEW-001 stage1_review_status = stage_1_review_passed_pending_stage2_no_github_main_upload`
+- `PARAM-MA-V117-S1-REVIEW-002 stage1_review_required_validator = validate:v1.1.7-stage1`
+- `PARAM-MA-V117-S1-REVIEW-003 stage1_review_phase_scope = Phase 1.1;Phase 1.2;Phase 1.3;Phase 1.4`
+- `PARAM-MA-V117-S1-REVIEW-004 stage1_review_deferred_work = pending Stage 2;Stage 2 proposal editor;Search 2.0;Review workflow;Data Map 2.0;browser screenshot;final app reinstall;GitHub main upload`
+
+验收信号：
+
+- Stage 1 review artifact。
+- Deterministic Stage 1 validator。
+- Records include `MA-V117-S1-REVIEW` / `ACC-MA-V117-S1-REVIEW` / `stage_1_review_passed_pending_stage2_no_github_main_upload`。
+- Boundary includes No GitHub main upload, No Stage 2 work, No raw/private read, No direct writeback, No proposal write, No agent apply and No build/deploy/app install。
+
+## 76. v1.1.7 Stage 1 Phase 1.4 Topic Classification Detail
+
+状态：`phase_1_4_topic_classification_detail_completed_pending_stage1_review`。
+
+验收 ID：`ACC-MA-V117-S1P04`。
+
+模型参数：
+
+- Topic Classification 只从已筛选的 redacted atlas nodes、graph edges、Next Action map 和 Level Asset map 派生。
+- ThemeDetailPanel 是只读解释层；任何主题、优先级、状态或 proposal 调整仍必须进入后续 Stage 2 proposal-only editor。
+- `topic_state` 支持 dominant、rising、declining、emerging、conflict、black_hole、stale。
+- `topic_strength` 使用主题记录数占比、ROI 和 recent_count 派生。
+- `matched_reason` 必须说明主题为何重要或为何需要复盘。
+- `starfield_handoff` 和 `river_handoff` 必须只传递 derived topic focus，不传 raw/private 数据。
+
+运行时文件：
+
+- `docs/architecture/theme_category_model.md`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/components/ThemeDetailPanel.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage1_phase4.cjs`
+
+参数记录：
+
+- `PARAM-MA-V117-S1P04-001 stage1_phase4_status = phase_1_4_topic_classification_detail_completed_pending_stage1_review`
+- `PARAM-MA-V117-S1P04-002 stage1_phase4_required_validator = validate:v1.1.7-stage1-phase4`
+- `PARAM-MA-V117-S1P04-003 topic_required_fields = topic_id;topic_label;parent_topic;category;topic_state;topic_strength;trend;roi_score;conflict_score;confidence;record_count;recent_count;representative_record_ids;evidence_refs;matched_reason;linked_asset_ids;linked_action_ids;starfield_handoff;river_handoff;proposal_hint;rollback_hint;proposal_only`
+- `PARAM-MA-V117-S1P04-004 topic_classification_sort_weights = strength_weight=0.38;trend_weight=0.24;confidence_weight=0.22;conflict_penalty_weight=0.16`
+- `PARAM-MA-V117-S1P04-005 topic_top_limit = Top 10`
+- `PARAM-MA-V117-S1P04-006 theme_detail_panel_fields = topic_state;topic_strength;trend;roi_score;conflict_score;confidence;record_count;recent_count;representative_record_ids;evidence_refs;matched_reason;linked_asset_ids;linked_action_ids;starfield_handoff;river_handoff;proposal_hint;rollback_hint;proposal_only`
+- `PARAM-MA-V117-S1P04-007 stage1_phase4_deferred_work = Stage 1 review;Stage 2 proposal editor;Search 2.0;Review workflow;Data Map 2.0;browser screenshot;final app reinstall;GitHub main upload`
+
+验收信号：
+
+- Topic Classification model contract。
+- ThemeDetailPanel runtime component。
+- Home Overview Topic Classification cards。
+- `validate:v1.1.7-stage1-phase4` 检查模型、实现、样式、记录和改动范围。
+
 # Memory Atlas Project Model Parameters
 
 更新时间：2026-07-01
@@ -3028,6 +6582,411 @@ Stage 9 整体复审已确认：
 - 本 pre-stage 不直接写长期记忆，不写 proposal，不执行 agent apply。
 - 本 pre-stage 不执行 Stage 0 implementation。
 - 本 pre-stage review artifact 不执行 GitHub main 上传。
+
+## 69. v1.1.7 Stage 0 Phase 0.1 Chinese Display Foundation
+
+状态：`phase_0_1_chinese_display_foundation_completed_pending_stage0_review`。
+
+验收 ID：`ACC-MA-V117-S0P01`。
+
+模型假设：
+
+- Stage 0 Phase 0.1 只建立中文显示基础，不证明截图验收、Help 面板、空状态工作流或 Stage 0 整体复审。
+- 中文 copy registry 先覆盖 app shell、navigation、filters、states、overview、Inspector 和 proposal 的关键路径，后续 phase 可继续迁移其余硬编码文案。
+- UTF-8 scan 是静态 gate，不替代浏览器截图。
+
+输入：
+
+- `apps/memory-atlas/src/i18n/types.ts`
+- `apps/memory-atlas/src/i18n/zh-CN.ts`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/product/memory_atlas_v1_1_7_stage0_phase1_chinese_display_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage0_phase1_chinese_display_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage0_phase1.cjs`
+
+处理方法：
+
+- 扫描 selected Memory Atlas text surfaces，确认无 U+FFFD、common mojibake、null bytes、trailing whitespace 和 invalid JSON。
+- 检查 `ChineseUiCopy` 类型和 `zhCNCopy` registry 是否覆盖必备组。
+- 检查 `App.tsx` 是否在 navigation、filters、load state、overview、Inspector 和 proposal 关键路径使用 registry。
+- 检查 `styles.css` 是否包含中文字体 fallback 和长文本布局容错。
+- 使用 `validate:v1.1.7-stage0-phase1` 固定本 phase 边界。
+
+参数与门槛：
+
+- `PARAM-MA-V117-S0P01-001 stage0_phase1_contract_id = memory_atlas_v1_1_7_stage0_phase1_chinese_display_contract`
+- `PARAM-MA-V117-S0P01-002 stage0_phase1_status = phase_0_1_chinese_display_foundation_completed_pending_stage0_review`
+- `PARAM-MA-V117-S0P01-003 stage0_phase1_registry_groups = app;navigation;metrics;filters;states;overview;inspector;proposal`
+- `PARAM-MA-V117-S0P01-004 stage0_phase1_text_scan_scope = apps/memory-atlas/src;docs/product;docs/acceptance;config/visualization;data/derived/visualization/memory_atlas.json;records`
+- `PARAM-MA-V117-S0P01-005 stage0_phase1_layout_tolerance = Chinese font fallback;overflow-wrap:anywhere;word-break:normal;line-break:loose;min-width:0`
+- `PARAM-MA-V117-S0P01-006 stage0_phase1_required_validator = validate:v1.1.7-stage0-phase1`
+
+输出：
+
+- Stage 0 Phase 0.1 product contract。
+- Stage 0 Phase 0.1 acceptance checklist。
+- Chinese UI copy registry。
+- Stage 0 Phase 0.1 deterministic validator。
+
+## 70. v1.1.7 Stage 0 Phase 0.2 Usage Help And Empty/Error States
+
+状态：`phase_0_2_usage_help_completed_pending_stage0_review`。
+
+验收 ID：`ACC-MA-V117-S0P02`。
+
+模型假设：
+
+- Stage 0 Phase 0.2 只解决系统使用说明和关键空错态，不证明截图验收、真实
+  WebGL 失败模拟、Stage 0.3 明细字段合同或 Stage 0 整体复审。
+- Help 面板先覆盖 3 分钟使用路径、Presentation / Analysis、Inspector、
+  Proposal-only 和 Search Review 关键读法。
+- 空错态覆盖 empty-atlas、no-filtered-results、load-failed、webgl-unavailable
+  和 proposal-not-writable；它们解释下一步，但不自动写 memory 或 proposal。
+
+输入：
+
+- `apps/memory-atlas/src/components/help/MemoryAtlasHelpPanel.tsx`
+- `apps/memory-atlas/src/components/EmptyState.tsx`
+- `apps/memory-atlas/src/components/ErrorState.tsx`
+- `apps/memory-atlas/src/i18n/types.ts`
+- `apps/memory-atlas/src/i18n/zh-CN.ts`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/components/GalaxyScene.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/product/memory_atlas_v1_1_7_stage0_phase2_usage_help_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage0_phase2_usage_help_acceptance.md`
+- `docs/product/memory_atlas_usage_guide.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage0_phase2.cjs`
+
+处理方法：
+
+- 检查 Help panel 是否含 3-minute path、读法说明和 workflow notes。
+- 检查 ViewRouter 是否覆盖 empty atlas、no filtered results 和 load failed。
+- 检查 GalaxyScene 是否给 WebGL unavailable 中文恢复路径。
+- 检查 proposal 不可写时是否解释 writeback policy 不满足安全条件。
+- 使用 `validate:v1.1.7-stage0-phase2` 固定本 phase 边界。
+
+参数与门槛：
+
+- `PARAM-MA-V117-S0P02-001 stage0_phase2_contract_id = memory_atlas_v1_1_7_stage0_phase2_usage_help_contract`
+- `PARAM-MA-V117-S0P02-002 stage0_phase2_status = phase_0_2_usage_help_completed_pending_stage0_review`
+- `PARAM-MA-V117-S0P02-003 stage0_phase2_usage_path = 看状态;看建议;看证据;调整 proposal;搜索复盘;导出或回滚`
+- `PARAM-MA-V117-S0P02-004 stage0_phase2_state_cases = empty-atlas;no-filtered-results;load-failed;webgl-unavailable;proposal-not-writable`
+- `PARAM-MA-V117-S0P02-005 stage0_phase2_help_modes = Presentation;Analysis;Inspector;Proposal-only;Search Review`
+- `PARAM-MA-V117-S0P02-006 stage0_phase2_text_scan_scope = apps/memory-atlas/src;docs/product;docs/acceptance;package.json;records`
+- `PARAM-MA-V117-S0P02-007 stage0_phase2_required_validator = validate:v1.1.7-stage0-phase2`
+
+输出：
+
+- Stage 0 Phase 0.2 product contract。
+- Stage 0 Phase 0.2 acceptance checklist。
+- Memory Atlas usage guide。
+- Help panel and empty/error state components。
+- Stage 0 Phase 0.2 deterministic validator。
+
+边界：
+
+- 本 phase 不实现 Stage 0.3 明细字段合同、Stage 1 schema 或运行时数据模型。
+- 本 phase 不运行 production build、本地 app install、browser screenshot 或 Cloudflare deploy。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不直接写长期记忆，不写 proposal，不执行 agent apply。
+- 本 phase 不执行 GitHub main 上传。
+
+## 71. v1.1.7 Stage 0 Phase 0.3 Detail Visibility Field Contract
+
+状态：`phase_0_3_detail_visibility_contract_completed_pending_stage0_review`。
+
+验收 ID：`ACC-MA-V117-S0P03`。
+
+模型假设：
+
+- Stage 0 Phase 0.3 只定义字段合同，不实现运行时明细工作台、生成器、数据
+  schema、Search 2.0、Review workflow 或截图验收。
+- 三类明细对象必须统一说明 required field、source、display surface 和 edit
+  permission，避免后续实现阶段猜字段含义。
+- 可修改字段只能进入 proposal-only 层；合同不得允许前端直接修改 active memory、
+  source snapshot、模型参数或证据引用。
+
+输入：
+
+- `docs/product/detail_visibility_contract.md`
+- `docs/acceptance/memory_atlas_v1_1_7_stage0_phase3_detail_visibility_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage0_phase3.cjs`
+
+处理方法：
+
+- 检查 `suggested_action_detail` 是否覆盖 reason、ROI、effort、urgency、
+  evidence、next step、linked topics/assets、proposal hint 和 rollback hint。
+- 检查 `tier_asset_detail` 是否覆盖 core profile、project、decision、workflow、
+  knowledge、opportunity、stale 资产层级，以及 importance、priority、confidence、
+  staleness、evidence 和 recommended action。
+- 检查 `topic_classification_detail` 是否覆盖 strength、trend、confidence、
+  record_count、evidence_count、linked assets/actions、starfield/river handoff 和
+  recommended action。
+- 检查字段表是否包含 source、display surface 和 edit permission。
+- 使用 `validate:v1.1.7-stage0-phase3` 固定本 phase 边界。
+
+参数与门槛：
+
+- `PARAM-MA-V117-S0P03-001 stage0_phase3_contract_id = memory_atlas_v1_1_7_stage0_phase3_detail_visibility_contract`
+- `PARAM-MA-V117-S0P03-002 stage0_phase3_status = phase_0_3_detail_visibility_contract_completed_pending_stage0_review`
+- `PARAM-MA-V117-S0P03-003 stage0_phase3_detail_objects = suggested_action_detail;tier_asset_detail;topic_classification_detail`
+- `PARAM-MA-V117-S0P03-004 stage0_phase3_field_dimensions = field;required;source;display_surface;edit_permission;fallback_policy;evidence_policy`
+- `PARAM-MA-V117-S0P03-005 stage0_phase3_edit_permissions = read_only;proposal_only;system_generated;no_direct_writeback`
+- `PARAM-MA-V117-S0P03-006 stage0_phase3_required_validator = validate:v1.1.7-stage0-phase3`
+
+输出：
+
+- Stage 0 Phase 0.3 detail visibility field contract。
+- Stage 0 Phase 0.3 acceptance checklist。
+- Stage 0 Phase 0.3 deterministic validator。
+
+边界：
+
+- 本 phase 不实现运行时 UI、CSS、数据生成、Search 2.0、Review workflow、Data Map
+  2.0、Memory River 或 Memory Starfield。
+- 本 phase 不运行 production build、本地 app install、browser screenshot 或 Cloudflare deploy。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不直接写长期记忆，不写 proposal，不执行 agent apply。
+- 本 phase 不执行 GitHub main 上传。
+
+## 72. v1.1.7 Stage 0 Review
+
+状态：`stage_0_review_passed_pending_stage1_no_github_main_upload`。
+
+验收 ID：`ACC-MA-V117-S0-REVIEW`。
+
+模型假设：
+
+- Stage 0 review 只证明 Phase 0.1/0.2/0.3 的合同、运行时轻量修复、validator 和
+  记录链一致，不证明 Stage 1-8。
+- Stage 0 review 不执行 GitHub main 上传；上传必须等整个 Stage 0-8 项目完成后走最终 gate。
+- Stage 0 review 不进入 Stage 1，不读取 raw/private，不写 proposal，不执行 agent apply。
+
+输入：
+
+- `docs/reviews/memory_atlas_v1_1_7_stage0_review.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage0.cjs`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage0_phase1.cjs`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage0_phase2.cjs`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage0_phase3.cjs`
+
+处理方法：
+
+- 执行 Phase 0.1/0.2/0.3 validator chain。
+- 检查 Stage 0 review artifact 是否包含 phase coverage、validation、boundaries、
+  remaining risks 和 next gate。
+- 检查 records 是否登记 `MA-V117-S0-REVIEW`、`ACC-MA-V117-S0-REVIEW`、
+  `stage_0_review_passed_pending_stage1_no_github_main_upload` 和
+  `validate:v1.1.7-stage0`。
+- 检查 canonical remote 和 sparse checkout boundary。
+
+参数与门槛：
+
+- `PARAM-MA-V117-S0-REVIEW-001 stage0_review_status = stage_0_review_passed_pending_stage1_no_github_main_upload`
+- `PARAM-MA-V117-S0-REVIEW-002 stage0_review_required_validator = validate:v1.1.7-stage0`
+- `PARAM-MA-V117-S0-REVIEW-003 stage0_review_phase_validators = validate:v1.1.7-stage0-phase1;validate:v1.1.7-stage0-phase2;validate:v1.1.7-stage0-phase3`
+- `PARAM-MA-V117-S0-REVIEW-004 stage0_review_next_gate = Stage 1 one phase per run`
+- `PARAM-MA-V117-S0-REVIEW-005 stage0_review_upload_boundary = no_github_main_upload_before_whole_stage_0_to_8_completion`
+
+输出：
+
+- Stage 0 review artifact。
+- Stage 0 deterministic validator。
+- Stage 0 review package script。
+
+边界：
+
+- 本 review 不进入 Stage 1。
+- 本 review 不实现运行时 UI、CSS、数据生成、Search 2.0、Review workflow、Data Map
+  2.0、Memory River 或 Memory Starfield。
+- 本 review 不运行 production build、本地 app install、browser screenshot 或 Cloudflare deploy。
+- 本 review 不读取 raw/private/cookie/session/secret 数据。
+- 本 review 不直接写长期记忆，不写 proposal，不执行 agent apply。
+- 本 review 不执行 GitHub main 上传。
+
+## 73. v1.1.7 Stage 1 Phase 1.1 Universe State Schema
+
+状态：`phase_1_1_universe_state_schema_completed_pending_stage1_review`。
+
+验收 ID：`ACC-MA-V117-S1P01`。
+
+模型假设：
+
+- `universe_state_snapshot.v1` 可以继续作为 v1.1.7 Stage 1 的共享状态版本；
+  本 phase 只扩展 consumer_map，不改评分公式。
+- Roadmap v2 后续 Data Map、Search、Review/Summary/Iteration 必须从同一份
+  Universe State 派生，避免每个页面各自计算事实。
+- 所有 recommended next actions 仍是 proposal-only，不表示前端或 agent 可以直接写
+  active memory。
+
+输入：
+
+- `docs/architecture/universe_state_snapshot.md`
+- `config/visualization/model_parameters.universe_state.yaml`
+- `apps/memory-atlas/src/models/universeState.ts`
+- `apps/memory-atlas/src/fixtures/universe_state.schema.json`
+- `apps/memory-atlas/src/fixtures/universe_state.sample.json`
+- `docs/acceptance/memory_atlas_v1_1_7_stage1_phase1_universe_state_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage1_phase1.cjs`
+
+处理方法：
+
+- 扩展 Universe State `consumer_map`，新增 `data_map_2_0`、`search_2_0` 和
+  `review_summary_iteration`。
+- 保留既有 `memory_overview`、`memory_starfield`、`memory_river`、`inspector`
+  和 `roi_dashboard` 映射。
+- 使用 `validate:universe-state-spike` 证明 deterministic sample 与 generator 输出一致。
+- 使用 `validate:v1.1.7-stage1-phase1` 检查 schema、sample、model、参数模板、
+  acceptance、records、proposal-only 和 privacy false gate。
+
+参数与门槛：
+
+- `PARAM-MA-V117-S1P01-001 stage1_phase1_status = phase_1_1_universe_state_schema_completed_pending_stage1_review`
+- `PARAM-MA-V117-S1P01-002 stage1_phase1_required_validator = validate:v1.1.7-stage1-phase1`
+- `PARAM-MA-V117-S1P01-003 stage1_phase1_state_fields = memory_weather;dominant_clusters;rising_clusters;declining_clusters;conflict_zones;black_holes;proto_stars;stale_orbits;memory_terrain;river_pulse;mini_starfield;recommended_next_actions`
+- `PARAM-MA-V117-S1P01-004 stage1_phase1_consumer_map = memory_overview;memory_starfield;memory_river;data_map_2_0;search_2_0;review_summary_iteration;inspector;roi_dashboard`
+- `PARAM-MA-V117-S1P01-005 stage1_phase1_proposal_boundary = recommended_next_actions.proposal_only=true;no_direct_writeback`
+- `PARAM-MA-V117-S1P01-006 stage1_phase1_deferred_work = Phase 1.2 suggested_action_detail;Phase 1.3 tier_asset_detail;Phase 1.4 topic_classification_detail;Stage 2 proposal editor;Stage 7 Search 2.0 UI;Stage 8 summary proposal export`
+
+输出：
+
+- v1.1.7 Universe State architecture addendum。
+- v1.1.7 Universe State parameter gate。
+- Updated deterministic Universe State sample and schema.
+- Stage 1 Phase 1.1 acceptance and validator。
+
+边界：
+
+- 本 phase 不进入 Phase 1.2，不实现 Action Detail Drawer。
+- 本 phase 不实现 tier asset、topic classification、proposal editor、Search 2.0
+  runtime UI、Review workflow、Data Map production UI 或 Summary proposal export。
+- 本 phase 不读取 raw/private/cookie/session/secret 数据。
+- 本 phase 不直接写长期记忆，不写 proposal，不执行 agent apply。
+- 本 phase 不运行 browser screenshot、production build、本地 app install、deploy 或
+  GitHub main 上传。
+
+## 74. v1.1.7 Stage 1 Phase 1.2 Next Action Detail
+
+状态：`phase_1_2_next_action_detail_completed_pending_stage1_review`。
+
+验收 ID：`ACC-MA-V117-S1P02`。
+
+模型假设：
+
+- Next Action 只从已筛选的 redacted atlas nodes、graph edges 和 delta stats 派生；
+  本 phase 不读取 raw/private/cookie/session/secret。
+- `nextActionSortScore` 是展示排序启发式，不是长期记忆写回公式。
+- Action Detail Drawer 是只读解释层；任何重要性、优先级或状态调整仍必须进入后续
+  proposal-only 工作区。
+
+输入：
+
+- `docs/architecture/next_action_model.md`
+- `config/visualization/model_parameters.universe_state.yaml`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/components/ActionDetailDrawer.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/acceptance/memory_atlas_v1_1_7_stage1_phase2_next_action_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage1_phase2.cjs`
+
+处理方法：
+
+- 使用 `buildNextActionDetails` 生成最多 Top 5 Next Action。
+- 使用 `nextActionSortScore = roi_score * 0.40 + urgency_score * 0.25 +
+  confidence * 0.25 - effort_penalty * 0.10` 排序。
+- 在 Home Overview card 上显示 priority、title、reason、`roi_score`、effort
+  cost、`urgency`、evidence count 和 next step。
+- 点击 card 后打开 Action Detail Drawer，展示 source、status、evidence_refs、
+  matched_reason、linked_topic_ids、linked_asset_ids、proposal_hint、rollback_hint
+  和 `proposal_only`。
+- 使用 `validate:v1.1.7-stage1-phase2` 检查模型、实现、样式、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V117-S1P02-001 stage1_phase2_status = phase_1_2_next_action_detail_completed_pending_stage1_review`
+- `PARAM-MA-V117-S1P02-002 stage1_phase2_required_validator = validate:v1.1.7-stage1-phase2`
+- `PARAM-MA-V117-S1P02-003 next_action_required_fields = action_id;title;action_type;reason;roi_score;effort_cost;urgency;confidence;source;status;evidence_count;evidence_refs;matched_reason;linked_topic_ids;linked_asset_ids;next_step;recommended_time_window;proposal_hint;rollback_hint;proposal_only`
+- `PARAM-MA-V117-S1P02-004 next_action_sort_weights = roi_weight=0.40;urgency_weight=0.25;confidence_weight=0.25;effort_penalty_weight=0.10`
+- `PARAM-MA-V117-S1P02-005 next_action_top_limit = Top 5`
+- `PARAM-MA-V117-S1P02-006 action_detail_drawer_fields = reason;roi_score;effort_cost;urgency;source;evidence_refs;status;linked_topic_ids;linked_asset_ids;next_step;proposal_hint;rollback_hint;proposal_only`
+- `PARAM-MA-V117-S1P02-007 stage1_phase2_deferred_work = Phase 1.3 tier_asset_detail;Phase 1.4 topic_classification_detail;Stage 2 proposal editor;Search 2.0;Review workflow;Data Map 2.0;browser screenshot;final app reinstall;GitHub main upload`
+
+输出：
+
+- Next Action model contract。
+- Action Detail Drawer runtime component。
+- Home Overview Top 5 Next Action cards。
+- Stage 1 Phase 1.2 acceptance and validator。
+
+边界：
+
+- 本 phase 不进入 Phase 1.3，不实现 tier asset detail。
+- 本 phase 不进入 Phase 1.4，不实现 topic classification detail。
+- 本 phase 不写 proposal，不直接写 active memory，不执行 agent apply。
+- 本 phase 不运行 browser screenshot、production build、本地 app install、deploy 或
+  GitHub main 上传。
+
+## 75. v1.1.7 Stage 1 Phase 1.3 Level Asset Detail
+
+状态：`phase_1_3_tier_asset_detail_completed_pending_stage1_review`。
+
+验收 ID：`ACC-MA-V117-S1P03`。
+
+模型假设：
+
+- Level Asset 只从已筛选的 redacted atlas nodes、graph edges、Next Action map
+  和 Universe State 派生；本 phase 不读取 raw/private/cookie/session/secret。
+- `tierAssetSortScore` 是展示排序启发式，不是长期记忆写回公式。
+- AssetDetailPanel 是只读解释层；任何资产层级、重要性、优先级或状态调整仍必须进入后续
+  proposal-only 工作区。
+
+输入：
+
+- `docs/architecture/level_asset_model.md`
+- `config/visualization/model_parameters.universe_state.yaml`
+- `apps/memory-atlas/src/App.tsx`
+- `apps/memory-atlas/src/components/AssetDetailPanel.tsx`
+- `apps/memory-atlas/src/styles.css`
+- `docs/acceptance/memory_atlas_v1_1_7_stage1_phase3_tier_asset_acceptance.md`
+- `apps/memory-atlas/scripts/validate_memory_atlas_v1_1_7_stage1_phase3.cjs`
+
+处理方法：
+
+- 使用 `buildTierAssetDetails` 生成最多 Top 7 Level Asset。
+- 使用 `tierAssetSortScore = value_score * 0.35 + importance_score * 0.25 +
+  confidence * 0.25 - staleness_penalty * 0.15` 排序。
+- 在 Home Overview card 上显示 asset_tier、title、theme、`value_score`、
+  importance、`staleness_status`、evidence count 和 recommended asset action。
+- 点击 card 后打开 AssetDetailPanel，展示 summary、source_scope、linked_action_ids、
+  linked_topic_ids、last_seen_range、updated_at、evidence_refs、proposal_hint、
+  rollback_hint 和 `proposal_only`。
+- 使用 `validate:v1.1.7-stage1-phase3` 检查模型、实现、样式、记录和改动范围。
+
+参数与门槛：
+
+- `PARAM-MA-V117-S1P03-001 stage1_phase3_status = phase_1_3_tier_asset_detail_completed_pending_stage1_review`
+- `PARAM-MA-V117-S1P03-002 stage1_phase3_required_validator = validate:v1.1.7-stage1-phase3`
+- `PARAM-MA-V117-S1P03-003 level_asset_required_fields = asset_id;asset_tier;title;summary;theme;value_score;updated_at;importance;priority;confidence;staleness_status;last_seen_range;evidence_count;evidence_refs;source_scope;linked_action_ids;linked_topic_ids;recommended_asset_action;proposal_hint;rollback_hint;proposal_only`
+- `PARAM-MA-V117-S1P03-004 tier_asset_sort_weights = value_weight=0.35;importance_weight=0.25;confidence_weight=0.25;staleness_penalty_weight=0.15`
+- `PARAM-MA-V117-S1P03-005 tier_asset_top_limit = Top 7`
+- `PARAM-MA-V117-S1P03-006 asset_detail_panel_fields = summary;theme;value_score;updated_at;importance;priority;confidence;staleness_status;last_seen_range;evidence_refs;source_scope;linked_action_ids;linked_topic_ids;recommended_asset_action;proposal_hint;rollback_hint;proposal_only`
+- `PARAM-MA-V117-S1P03-007 stage1_phase3_deferred_work = Phase 1.4 topic_classification_detail;Stage 2 proposal editor;Search 2.0;Review workflow;Data Map 2.0;browser screenshot;final app reinstall;GitHub main upload`
+
+输出：
+
+- Level Asset model contract。
+- AssetDetailPanel runtime component。
+- Home Overview Level Asset cards。
+- Stage 1 Phase 1.3 acceptance and validator。
+
+边界：
+
+- 本 phase 不进入 Phase 1.4，不实现 topic classification detail。
+- 本 phase 不写 proposal，不直接写 active memory，不执行 agent apply。
+- 本 phase 不运行 browser screenshot、production build、本地 app install、deploy 或
+  GitHub main 上传。
 
 ## 64. v1.1.6 Stage 9 Phase 4 Universe State Fixture Continuity 参数
 

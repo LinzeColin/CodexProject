@@ -1,0 +1,134 @@
+{
+  "count_semantics": "groups overlap and must not be added into a business total",
+  "group_count": 6,
+  "groups": [
+    {
+      "count_semantics": "aggregate_non_additive",
+      "group_id": "PEND-S12P1-001",
+      "impact_summary": "D级报告与经营结论继续阻断",
+      "item_count": 9,
+      "manual_action_kind": "difference_handling",
+      "next_step": "选择差异处理意见并生成仅当前会话候选事件",
+      "persistent_business_write_allowed": false,
+      "project_attribution": "unknown_or_not_applicable",
+      "public_amount_values_committed": false,
+      "raw_layer_write_allowed": false,
+      "record_type": "public_safe_pending_action_group",
+      "responsible_role": "owner_or_authorized_delegate",
+      "schema_version": "kmfa.v014.s12_p1.pending_action_group.v1",
+      "session_candidate_only": true,
+      "source_evidence_refs": [
+        "KMFA/stage_artifacts/V014_S11_POST_REMEDIATION_STAGE_REVIEW/machine/stage11_post_remediation_review_manifest.json"
+      ],
+      "status": "pending_review",
+      "visible_title": "非零差异复核"
+    },
+    {
+      "count_semantics": "aggregate_non_additive",
+      "group_id": "PEND-S12P1-002",
+      "impact_summary": "零差异结果仍需保留来源证据与复核说明",
+      "item_count": 2,
+      "manual_action_kind": "note",
+      "next_step": "追加公开安全复核备注候选",
+      "persistent_business_write_allowed": false,
+      "project_attribution": "unknown_or_not_applicable",
+      "public_amount_values_committed": false,
+      "raw_layer_write_allowed": false,
+      "record_type": "public_safe_pending_action_group",
+      "responsible_role": "owner_or_authorized_delegate",
+      "schema_version": "kmfa.v014.s12_p1.pending_action_group.v1",
+      "session_candidate_only": true,
+      "source_evidence_refs": [
+        "KMFA/stage_artifacts/V014_S11_POST_REMEDIATION_STAGE_REVIEW/machine/stage11_post_remediation_review_manifest.json"
+      ],
+      "status": "evidence_ready",
+      "visible_title": "零差异证据复核"
+    },
+    {
+      "count_semantics": "aggregate_non_additive",
+      "group_id": "PEND-S12P1-003",
+      "impact_summary": "现金与项目成本链路仍有未完成比较",
+      "item_count": 1,
+      "manual_action_kind": "difference_handling",
+      "next_step": "记录待补证原因，不执行影响预览或重跑",
+      "persistent_business_write_allowed": false,
+      "project_attribution": "unknown_or_not_applicable",
+      "public_amount_values_committed": false,
+      "raw_layer_write_allowed": false,
+      "record_type": "public_safe_pending_action_group",
+      "responsible_role": "owner_or_authorized_delegate",
+      "schema_version": "kmfa.v014.s12_p1.pending_action_group.v1",
+      "session_candidate_only": true,
+      "source_evidence_refs": [
+        "KMFA/stage_artifacts/V014_S11_POST_REMEDIATION_STAGE_REVIEW/machine/stage11_post_remediation_review_manifest.json"
+      ],
+      "status": "comparison_incomplete",
+      "visible_title": "未完成比较补全"
+    },
+    {
+      "count_semantics": "aggregate_non_additive",
+      "group_id": "PEND-S12P1-004",
+      "impact_summary": "仅保留全局接受状态，不证明项目级归属",
+      "item_count": 3,
+      "manual_action_kind": "note",
+      "next_step": "追加限制说明，禁止改写为项目归属结论",
+      "persistent_business_write_allowed": false,
+      "project_attribution": "unknown_or_not_applicable",
+      "public_amount_values_committed": false,
+      "raw_layer_write_allowed": false,
+      "record_type": "public_safe_pending_action_group",
+      "responsible_role": "owner_or_authorized_delegate",
+      "schema_version": "kmfa.v014.s12_p1.pending_action_group.v1",
+      "session_candidate_only": true,
+      "source_evidence_refs": [
+        "KMFA/stage_artifacts/V014_S11_POST_REMEDIATION_STAGE_REVIEW/machine/stage11_post_remediation_review_manifest.json"
+      ],
+      "status": "accepted_global_only",
+      "visible_title": "最终差异接受说明"
+    },
+    {
+      "count_semantics": "aggregate_non_additive",
+      "group_id": "PEND-S12P1-005",
+      "impact_summary": "项目成本页面继续显示未知归属",
+      "item_count": 4,
+      "manual_action_kind": "project_matching",
+      "next_step": "生成项目匹配候选事件，不自动合并或归属",
+      "persistent_business_write_allowed": false,
+      "project_attribution": "unknown_or_not_applicable",
+      "public_amount_values_committed": false,
+      "raw_layer_write_allowed": false,
+      "record_type": "public_safe_pending_action_group",
+      "responsible_role": "owner_or_authorized_delegate",
+      "schema_version": "kmfa.v014.s12_p1.pending_action_group.v1",
+      "session_candidate_only": true,
+      "source_evidence_refs": [
+        "KMFA/stage_artifacts/V014_S11_POST_REMEDIATION_STAGE_REVIEW/machine/stage11_post_remediation_review_manifest.json"
+      ],
+      "status": "unknown_attribution",
+      "visible_title": "项目归属复核"
+    },
+    {
+      "count_semantics": "aggregate_non_additive",
+      "group_id": "PEND-S12P1-006",
+      "impact_summary": "数据源检查板状态继续影响报告可用性",
+      "item_count": 13,
+      "manual_action_kind": "field_mapping",
+      "next_step": "生成字段映射候选事件，不改原始字段或表头",
+      "persistent_business_write_allowed": false,
+      "project_attribution": "unknown_or_not_applicable",
+      "public_amount_values_committed": false,
+      "raw_layer_write_allowed": false,
+      "record_type": "public_safe_pending_action_group",
+      "responsible_role": "owner_or_authorized_delegate",
+      "schema_version": "kmfa.v014.s12_p1.pending_action_group.v1",
+      "session_candidate_only": true,
+      "source_evidence_refs": [
+        "KMFA/stage_artifacts/V014_S11_POST_REMEDIATION_STAGE_REVIEW/machine/stage11_post_remediation_review_manifest.json"
+      ],
+      "status": "source_not_ready",
+      "visible_title": "数据源映射与状态复核"
+    }
+  ],
+  "phase_id": "V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS",
+  "schema_version": "kmfa.v014.s12_p1.pending_action_groups.v1"
+}

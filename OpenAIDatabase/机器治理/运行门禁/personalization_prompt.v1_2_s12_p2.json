@@ -1,0 +1,48 @@
+{
+  "schema_version": "personalization_prompt.v1_2_s12_p2",
+  "task_id": "MA-V12-S12P2",
+  "acceptance_id": "ACC-MA-V12-S12P2",
+  "status": "phase_s12_p2_personalization_prompt_completed_pending_s12_p3",
+  "validator": "validate:v1.2-s12-p2",
+  "targets": [
+    "chatgpt",
+    "codex",
+    "other_agent"
+  ],
+  "source_reports": [
+    "data/derived/personalization/personalization_export.json",
+    "data/derived/behavior_intelligence/events.json",
+    "data/derived/behavior_intelligence/clusters.json",
+    "data/derived/behavior_intelligence/latent_signals.json",
+    "data/derived/behavior_intelligence/self_iteration_suggestions.json",
+    "data/derived/behavior_intelligence/decision_debt_ledger.json",
+    "data/derived/agent_collaboration/agent_collaboration_quality_report.json"
+  ],
+  "outputs": {
+    "human_zh": "data/derived/personalization/personalization_prompt_human_zh.md",
+    "chatgpt": "data/derived/personalization/chatgpt_personalization.md",
+    "codex": "data/derived/personalization/codex_personalization.md",
+    "other_agent": "data/derived/personalization/other_agent_personalization.md",
+    "machine": "data/derived/personalization/personalization_export.json"
+  },
+  "content_contract": {
+    "human_explanation_zh": true,
+    "machine_copyable_text": true,
+    "uses_latest_memory": true,
+    "uses_behavior": true,
+    "uses_latent": true,
+    "uses_self_iteration": true
+  },
+  "boundaries": {
+    "user_trigger_required": true,
+    "no_automatic_send": true,
+    "no_github_main_upload": true,
+    "no_remote_push": true,
+    "no_raw_mutation": true,
+    "no_proposal_apply_execution": true,
+    "no_cookie_token_secret_export": true,
+    "no_s12_p3_chatgpt_deep_explore_execution": true,
+    "chatgpt_deep_explore_deferred_to": "S12 P3"
+  },
+  "next_phase": "S12 P3"
+}

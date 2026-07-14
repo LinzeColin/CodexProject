@@ -1,0 +1,18 @@
+{
+  "blocking_reason_codes": [
+    "one_cash_project_has_final_accepted_missing_collection_evidence",
+    "nonzero_scope_differences_remain",
+    "global_residual_queue_not_replayed",
+    "secure_wps_content_unavailable"
+  ],
+  "cash_project_unresolved_count": 1,
+  "decision": "NO_GO",
+  "final_difference_accepted_project_count": 1,
+  "github_upload_performed": false,
+  "incomplete_cash_reconciliation_count": 1,
+  "nonzero_delta_reconciliation_count": 9,
+  "phase_id": "V014_REMAINING_TWO_PROJECT_CASH_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE",
+  "project_id": "KMFA",
+  "schema_version": "kmfa.v014.final_collection_evidence_go_no_go.v1",
+  "unresolved_cash_value_target_slot_count": 3
+}

@@ -1,6 +1,6 @@
 # OpenAIDatabase Delivery Plan
 
-task_count: 13
+task_count: 17
 
 ## Phase A - Discovery and Baseline
 
@@ -134,6 +134,24 @@ task_count: 13
 - target version: 0.2.0
 - completed version: 0.2.0
 
+### OAIDB-SM-P0-R1
+
+- task_id: OAIDB-SM-P0-R1
+- phase: C
+- objective: Generate deterministic ChatGPT, Codex, and Claude projections from the existing OpenAIDatabase canonical source set with one shared provider-neutral bundle identity.
+- scope: shared bundle/source identity, three generated projections, Claude 4096-byte cap, minimal Claude route, manifest hashes, privacy/determinism tests, and redacted agent-run evidence.
+- non_scope: root adapters, RUN 2-3, independent real-agent cold-start acceptance, raw/private data, external services, commit, or push.
+- status: completed
+- dependencies: TASK-OAI-C-002
+- required files: `data/derived/personalization/{chatgpt,codex,claude}_personalization.md`, `data/derived/personalization/memory_bundle_manifest.json`, `config/context_sources/resource_routes.json`, `tests/test_cross_agent_memory_adapter.py`, `data/run_logs/agent_runs/2026-07-13.shared-memory-run1.jsonl`
+- acceptance_ids: ACC-OAIDB-SM-P0-R1
+- test commands: generator double-run and SHA-256 comparison; 22 targeted unittests; evaluator; Claude route; official renderer and check-render; changed-only semantic validation; changed-only CI; diff check.
+- evidence: the premature acceptance was revoked after two P1 findings; v2 provenance and evaluator recomputation fixes passed two deterministic generator runs, 22 targeted tests, evaluator, route, renderer, governance, CI and diff gates, and second independent review found no remaining P0/P1.
+- risk: provider files are derived/read-only projections, not a second canonical memory source; real agent consumption belongs to RUN 2-3.
+- rollback: remove the Claude projection, manifest, route, focused test, and RUN 1 evidence, then regenerate the pre-RUN 1 personalization outputs.
+- target version: 0.2.0
+- completed version: 0.2.0
+
 ### S3PDT01
 
 - task_id: S3PDT01
@@ -209,6 +227,22 @@ task_count: 13
 - completed version: 0.2.0
 
 ## Phase E - Delivery and Operation
+
+### MACDATA-PROM2-SETUP-20260705
+
+- task_id: MACDATA-PROM2-SETUP-20260705
+- phase: MACDATA
+- objective: Install proM2 MacData controlled archive workflow using the local Apple M2 Max MacBook Pro as device truth.
+- scope: `OpenAIDatabase/macdata/proM2`, OpenAIDatabase governance records, GitHub archive branch `macdata-proM2`.
+- non_scope: Time Machine, iCloud, API keys, tokens, passwords, cookies, sessions, Keychain, shell history, full environment dumps, `.env` raw content, and other macdata devices.
+- status: in_progress
+- dependencies: S5PBT03
+- required files: `device_config.json`, `owner_confirmations.json`, `run_controlled_cycle.py`, `test_macdata_package.py`
+- acceptance_ids: ACC-MACDATA-PROM2-SETUP-20260705
+- test commands: `python3 -m unittest OpenAIDatabase/macdata/proM2/tests/test_macdata_package.py -q`; `python3 OpenAIDatabase/macdata/proM2/scripts/run_controlled_cycle.py --repo-root . --preflight-only`; full `--execute` archive cycle after setup push.
+- evidence: local package tests and preflight pass on MacBook Pro / Mac14,5 / Apple M2 Max / 32GB; full archive branch verification is pending until setup is pushed.
+- risk: Docker/Homebrew/system/project-cache cleanup must remain gated by remote hash verification and project-cache whitelist rules.
+- rollback: revert setup commit; delete remote `macdata-proM2` only after confirming archive history is no longer needed.
 
 ### TASK-OAI-E-001
 

@@ -63,6 +63,33 @@ class HomeNavigationRuntimeTests(unittest.TestCase):
         for forbidden_visible in ("source_ref://", "validator", "manifest", "metadata"):
             self.assertNotIn(forbidden_visible, html_text.lower())
 
+    def test_rendered_home_html_has_icons_and_working_buttons(self) -> None:
+        manifest, records, render_outputs = build_default_home_navigation_artifacts(
+            generated_at="2026-07-01T09:00:00+10:00"
+        )
+        validate_home_navigation_artifacts(manifest, records, render_outputs)
+        html_text = render_outputs["html"]["kmfa_home_navigation"]
+
+        self.assertGreaterEqual(html_text.count('class="ui-icon"'), len(records) * 2)
+        self.assertEqual(html_text.count('class="module-action" data-target='), len(records))
+        self.assertEqual(html_text.count('data-href="../../../'), len(records))
+        self.assertIn('id="module_action_panel"', html_text)
+        self.assertIn("function selectModule", html_text)
+        self.assertIn("function openModulePage", html_text)
+        self.assertIn('addEventListener("click"', html_text)
+        self.assertIn('aria-live="polite"', html_text)
+        for expected_target in (
+            "business_overview_report.html",
+            "kmfa_project_cost_page.html",
+            "collection_receivable_aging_priority.html",
+            "fund_cash_loan_plan_overview.html",
+            "invoice_tax_plan_overview.html",
+            "kmfa_source_check_board.html",
+            "kmfa_manual_resolution_workbench.html",
+            "financial_operating_monthly_draft.html",
+        ):
+            self.assertIn(expected_target, html_text)
+
     def test_public_payload_has_no_raw_values_or_private_files(self) -> None:
         manifest, records, render_outputs = build_default_home_navigation_artifacts(
             generated_at="2026-07-01T09:00:00+10:00"

@@ -38,6 +38,17 @@ STYLE_VERSION = "STYLE-KMFA-S11P1-BLUE-BUSINESS-001"
 BRAND_MARK_VERSION = "BRAND-KMFA-KM-001"
 PUBLIC_SAFETY_VERSION = "SAFE-KMFA-S11P1-PUBLIC-001"
 
+MODULE_ICONS = {
+    "business_overview": '<path d="M4 19h16"/><path d="M7 16V9"/><path d="M12 16V5"/><path d="M17 16v-6"/>',
+    "project_cost": '<path d="M4 7h16v10H4z"/><path d="M8 11h8"/><path d="M8 14h5"/>',
+    "receivable_collection": '<path d="M5 8h14"/><path d="M5 12h14"/><path d="M5 16h10"/><path d="M17 14l2 2 3-4"/>',
+    "financial_cash": '<path d="M4 7h16v10H4z"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/>',
+    "invoice_tax": '<path d="M7 3h10v18l-2-1-2 1-2-1-2 1-2-1z"/><path d="M9 8h6"/><path d="M9 12h6"/><path d="M9 16h3"/>',
+    "source_check": '<path d="M5 7c0-2 14-2 14 0s-14 2-14 0z"/><path d="M5 7v5c0 2 14 2 14 0V7"/><path d="M5 12v5c0 2 14 2 14 0v-5"/>',
+    "pending_actions": '<path d="M5 4h14v16H5z"/><path d="M8 9l2 2 4-4"/><path d="M8 15h7"/>',
+    "report_center": '<path d="M7 3h7l3 3v15H7z"/><path d="M14 3v4h4"/><path d="M9 12h6"/><path d="M9 16h6"/>',
+}
+
 SOURCE_TASKPACK_REFS = {
     "roadmap_s11_p1": "KMFA/taskpack/v1_2/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_2.md:S11-P1",
     "frontend_report_rules": "KMFA/taskpack/v1_2/01_KMFA_Codex_TaskPack_v1_2_完整防遗漏_含HTML验收样板.md:11",
@@ -130,6 +141,7 @@ def _module_records(generated_at: str) -> list[dict[str, Any]]:
             "visible_label": "经营总览",
             "visible_summary": "集中查看经营健康、回款压力、成本风险和本期重点事项。",
             "primary_action": "查看经营概览",
+            "target_href": "../../../S10_P3_report_export/exports/html/business_overview_report.html",
             "status_label": "可预览",
             "badge_style": "blue",
             "warning_badge_count": 0,
@@ -139,6 +151,7 @@ def _module_records(generated_at: str) -> list[dict[str, Any]]:
             "visible_label": "项目成本",
             "visible_summary": "进入项目成本专题入口，保留质量等级和差异阻断提示。",
             "primary_action": "查看成本入口",
+            "target_href": "../../../S11_P3_project_cost_page/exports/html/kmfa_project_cost_page.html",
             "status_label": "受控预览",
             "badge_style": "blue",
             "warning_badge_count": 1,
@@ -148,6 +161,7 @@ def _module_records(generated_at: str) -> list[dict[str, Any]]:
             "visible_label": "回款应收",
             "visible_summary": "展示回款、应收和逾期压力的公开安全摘要入口。",
             "primary_action": "查看回款入口",
+            "target_href": "../../../S13_P2_collection_receivable_aging/exports/html/collection_receivable_aging_priority.html",
             "status_label": "待复核",
             "badge_style": "blue",
             "warning_badge_count": 1,
@@ -157,6 +171,7 @@ def _module_records(generated_at: str) -> list[dict[str, Any]]:
             "visible_label": "财务资金",
             "visible_summary": "查看现金、资金计划和财务口径说明的入口。",
             "primary_action": "查看资金入口",
+            "target_href": "../../../S14_P1_fund_cash_loan_plan/exports/html/fund_cash_loan_plan_overview.html",
             "status_label": "可预览",
             "badge_style": "blue",
             "warning_badge_count": 0,
@@ -166,6 +181,7 @@ def _module_records(generated_at: str) -> list[dict[str, Any]]:
             "visible_label": "开票纳税",
             "visible_summary": "查看开票、税务和合规提醒入口，不执行开票或报税。",
             "primary_action": "查看税务入口",
+            "target_href": "../../../S14_P2_invoice_tax_plan/exports/html/invoice_tax_plan_overview.html",
             "status_label": "提示",
             "badge_style": "warning_tag",
             "warning_badge_count": 1,
@@ -175,6 +191,7 @@ def _module_records(generated_at: str) -> list[dict[str, Any]]:
             "visible_label": "数据源检查",
             "visible_summary": "进入数据源检查板入口；矩阵明细留到 S11-P2。",
             "primary_action": "查看检查入口",
+            "target_href": "../../../S11_P2_source_check_board/exports/html/kmfa_source_check_board.html",
             "status_label": "下一阶段展开",
             "badge_style": "blue",
             "warning_badge_count": 0,
@@ -184,6 +201,7 @@ def _module_records(generated_at: str) -> list[dict[str, Any]]:
             "visible_label": "待处理事项",
             "visible_summary": "汇总差异处理、人工确认和报告发布前的待办入口。",
             "primary_action": "查看待办入口",
+            "target_href": "../../../S12_P1_manual_resolution_events/exports/html/kmfa_manual_resolution_workbench.html",
             "status_label": "受控",
             "badge_style": "blue",
             "warning_badge_count": 0,
@@ -193,6 +211,7 @@ def _module_records(generated_at: str) -> list[dict[str, Any]]:
             "visible_label": "报告中心",
             "visible_summary": "查看报告样张和发布限制，正式报告继续受质量等级阻断。",
             "primary_action": "查看报告入口",
+            "target_href": "../../../S13_P1_financial_operating_report/exports/html/financial_operating_monthly_draft.html",
             "status_label": "报告等级 D",
             "badge_style": "blue",
             "warning_badge_count": 1,
@@ -229,11 +248,20 @@ def _module_records(generated_at: str) -> list[dict[str, Any]]:
 
 
 def _render_html(records: list[dict[str, Any]], manifest: dict[str, Any]) -> str:
+    def render_icon(module_id: str) -> str:
+        paths = MODULE_ICONS[module_id]
+        return (
+            '<svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" '
+            'focusable="false" fill="none" stroke="currentColor" stroke-width="2" '
+            f'stroke-linecap="round" stroke-linejoin="round">{paths}</svg>'
+        )
+
     nav_items = "\n".join(
         (
             f'        <button type="button" data-target="{html.escape(record["module_id"])}"'
-            f'{" class=" + chr(34) + "active" + chr(34) if index == 0 else ""}>'
-            f'{html.escape(record["visible_label"])}</button>'
+            f'{" class=" + chr(34) + "active" + chr(34) + " aria-current=" + chr(34) + "page" + chr(34) if index == 0 else " aria-current=" + chr(34) + "false" + chr(34)}>'
+            f'<span class="nav-button-content">{render_icon(record["module_id"])}'
+            f'<span>{html.escape(record["visible_label"])}</span></span></button>'
         )
         for index, record in enumerate(records)
     )
@@ -244,9 +272,25 @@ def _render_html(records: list[dict[str, Any]], manifest: dict[str, Any]) -> str
             <span class="tag {html.escape(record["badge_style"])}">{html.escape(record["status_label"])}</span>
           </div>
           <p>{html.escape(record["visible_summary"])}</p>
-          <button type="button" class="module-action">{html.escape(record["primary_action"])}</button>
+          <button type="button" class="module-action" data-target="{html.escape(record["module_id"])}" data-href="{html.escape(record["target_href"])}">{render_icon(record["module_id"])}<span>{html.escape(record["primary_action"])}</span></button>
         </article>"""
         for record in records
+    )
+    module_state_json = json.dumps(
+        {
+            record["module_id"]: {
+                "title": f"{record['visible_label']}入口已选中",
+                "body": (
+                    f"当前打开的是{record['visible_label']}的公开安全入口预览。"
+                    f"{record['primary_action']}会打开对应本地页面，不读取或写入原始数据。"
+                ),
+                "href": record["target_href"],
+            }
+            for record in records
+        },
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
     )
     required_labels = "、".join(html.escape(label) for label in REQUIRED_NAVIGATION_LABELS)
     return f"""<!doctype html>
@@ -279,17 +323,23 @@ def _render_html(records: list[dict[str, Any]], manifest: dict[str, Any]) -> str
     aside {{ background:#082143; color:#fff; padding:24px 20px; }}
     .brand {{ display:flex; align-items:center; gap:12px; margin-bottom:24px; }}
     .logo {{
-      width:48px; height:48px; border-radius:8px; display:flex; align-items:center; justify-content:center;
+      width:48px; height:48px; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
       background:#1d4ed8; border:1px solid rgba(255,255,255,.32); font-weight:800; font-size:18px;
     }}
+    .logo .ui-icon {{ width:20px; height:20px; }}
+    .logo-text {{ font-size:12px; line-height:1; letter-spacing:0; }}
     .brand strong {{ display:block; font-size:18px; }}
     .brand span {{ display:block; color:#c7dcff; font-size:13px; margin-top:3px; }}
     nav {{ display:grid; gap:6px; }}
     nav button {{
-      width:100%; border:0; border-radius:8px; padding:12px 12px; color:#dbeafe; background:transparent;
-      text-align:left; font-size:15px; cursor:pointer;
+      width:100%; border:0; border-radius:8px; padding:11px 12px; color:#dbeafe; background:transparent;
+      text-align:left; font-size:15px; cursor:pointer; transition:background .16s ease,color .16s ease,transform .16s ease;
     }}
     nav button.active, nav button:hover {{ background:rgba(255,255,255,.12); color:#fff; }}
+    nav button:active {{ transform:translateY(1px); }}
+    nav button:focus-visible, .module-action:focus-visible {{ outline:3px solid rgba(29,78,216,.35); outline-offset:2px; }}
+    .nav-button-content {{ display:flex; align-items:center; gap:10px; }}
+    .ui-icon {{ width:18px; height:18px; flex:0 0 18px; }}
     main {{ padding:28px 34px 34px; }}
     .topbar {{ display:flex; justify-content:space-between; gap:16px; align-items:flex-start; margin-bottom:18px; }}
     h1 {{ margin:0 0 8px; font-size:28px; color:#0b2b59; letter-spacing:0; }}
@@ -304,14 +354,26 @@ def _render_html(records: list[dict[str, Any]], manifest: dict[str, Any]) -> str
     .metric b {{ display:block; color:#0f2f5f; font-size:22px; margin-bottom:4px; }}
     .metric span {{ color:var(--muted); font-size:13px; }}
     .module-grid {{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }}
-    .module-card {{ background:var(--card); border:1px solid var(--line); border-radius:8px; padding:16px; min-height:184px; }}
+    .module-card {{ background:var(--card); border:1px solid var(--line); border-radius:8px; padding:16px; min-height:184px; transition:border-color .16s ease,box-shadow .16s ease; }}
+    .module-card.active {{ border-color:#93c5fd; box-shadow:0 0 0 3px rgba(29,78,216,.10); }}
     .module-top {{ display:flex; gap:8px; justify-content:space-between; align-items:flex-start; margin-bottom:12px; }}
     h2 {{ margin:0; color:#0b2b59; font-size:18px; letter-spacing:0; }}
     .module-card p {{ margin:0 0 16px; color:#475569; line-height:1.65; min-height:78px; }}
     .tag {{ display:inline-flex; align-items:center; border-radius:999px; padding:4px 8px; font-size:12px; font-weight:700; white-space:nowrap; }}
     .tag.blue {{ color:#1d4ed8; background:#eff6ff; border:1px solid #bfdbfe; }}
     .tag.warning_tag {{ color:var(--warning); background:var(--warning-bg); border:1px solid #fed7aa; }}
-    .module-action {{ border:1px solid #bfdbfe; background:#fff; color:#1d4ed8; border-radius:8px; padding:9px 11px; font-weight:700; cursor:pointer; }}
+    .module-action {{
+      display:inline-flex; align-items:center; gap:8px; border:1px solid #bfdbfe; background:#fff; color:#1d4ed8;
+      border-radius:8px; padding:9px 11px; font-weight:700; cursor:pointer; transition:background .16s ease,border-color .16s ease,transform .16s ease;
+    }}
+    .module-action:hover {{ background:#eff6ff; border-color:#93c5fd; }}
+    .module-action:active {{ transform:translateY(1px); }}
+    .action-panel {{
+      display:flex; justify-content:space-between; gap:18px; align-items:flex-start; margin-top:16px; background:#fff;
+      border:1px solid var(--line); border-radius:8px; padding:16px; line-height:1.7;
+    }}
+    .action-panel h2 {{ margin:0 0 4px; }}
+    .action-panel p {{ margin:0; color:#475569; }}
     .notice {{ margin-top:16px; background:#fff; border:1px solid var(--line); border-radius:8px; padding:16px; line-height:1.7; }}
     .notice b {{ color:#0b2b59; }}
     footer {{ color:var(--muted); font-size:12px; padding:16px 0 0; }}
@@ -322,13 +384,17 @@ def _render_html(records: list[dict[str, Any]], manifest: dict[str, Any]) -> str
       .topbar {{ display:block; }}
       .status-strip {{ justify-content:flex-start; margin-top:12px; }}
       .module-grid,.overview {{ grid-template-columns:1fr; }}
+      .action-panel {{ display:block; }}
+    }}
+    @media(prefers-reduced-motion:reduce) {{
+      nav button, .module-card, .module-action {{ transition:none; }}
     }}
   </style>
 </head>
 <body>
   <div class="app">
     <aside>
-      <div class="brand"><div class="logo">KM</div><div><strong>KMFA</strong><span>经营分析系统</span></div></div>
+      <div class="brand"><div class="logo" aria-hidden="true">{render_icon("business_overview")}<span class="logo-text">KM</span></div><div><strong>KMFA</strong><span>经营分析系统</span></div></div>
       <nav aria-label="首页导航">
 {nav_items}
       </nav>
@@ -354,6 +420,13 @@ def _render_html(records: list[dict[str, Any]], manifest: dict[str, Any]) -> str
       <section class="module-grid" aria-label="业务模块">
 {module_cards}
       </section>
+      <section class="action-panel" id="module_action_panel" aria-live="polite" data-module="business_overview">
+        <div>
+          <h2 id="module_action_title">经营总览入口已选中</h2>
+          <p id="module_action_body">当前打开的是经营总览的公开安全入口预览。查看经营概览会打开对应本地页面，不读取或写入原始数据。</p>
+        </div>
+        <span class="pill">受控入口</span>
+      </section>
       <section class="notice">
         <b>范围说明：</b>S11-P1 只锁定首页与导航，覆盖 {required_labels}。数据源检查矩阵留到 S11-P2，项目成本详情留到 S11-P3；当前页面不提交原始业务数据，不执行外部接口，不绕过质量等级。
       </section>
@@ -361,14 +434,41 @@ def _render_html(records: list[dict[str, Any]], manifest: dict[str, Any]) -> str
     </main>
   </div>
   <script>
-    document.querySelectorAll("nav button").forEach((button) => {{
-      button.addEventListener("click", () => {{
-        document.querySelectorAll("nav button").forEach((item) => item.classList.remove("active"));
-        button.classList.add("active");
-        const target = document.getElementById(button.dataset.target);
-        if (target) target.scrollIntoView({{ behavior:"smooth", block:"nearest" }});
+    const moduleState = {module_state_json};
+    const panel = document.getElementById("module_action_panel");
+    const panelTitle = document.getElementById("module_action_title");
+    const panelBody = document.getElementById("module_action_body");
+
+    function selectModule(moduleId, options = {{ scrollTarget:false, scrollPanel:false }}) {{
+      const target = document.getElementById(moduleId);
+      const state = moduleState[moduleId];
+      if (!target || !state) return;
+      document.querySelectorAll("nav button").forEach((item) => {{
+        const isActive = item.dataset.target === moduleId;
+        item.classList.toggle("active", isActive);
+        item.setAttribute("aria-current", isActive ? "page" : "false");
       }});
+      document.querySelectorAll(".module-card").forEach((card) => card.classList.toggle("active", card.id === moduleId));
+      panel.dataset.module = moduleId;
+      panelTitle.textContent = state.title;
+      panelBody.textContent = state.body;
+      if (options.scrollTarget) target.scrollIntoView({{ behavior:"smooth", block:"center" }});
+      if (options.scrollPanel) panel.scrollIntoView({{ behavior:"smooth", block:"nearest" }});
+    }}
+
+    function openModulePage(moduleId, href) {{
+      selectModule(moduleId, {{ scrollTarget:false, scrollPanel:false }});
+      if (!href) return;
+      window.location.href = href;
+    }}
+
+    document.querySelectorAll("nav button").forEach((button) => {{
+      button.addEventListener("click", () => selectModule(button.dataset.target, {{ scrollTarget:true, scrollPanel:false }}));
     }});
+    document.querySelectorAll(".module-action").forEach((button) => {{
+      button.addEventListener("click", () => openModulePage(button.dataset.target, button.dataset.href));
+    }});
+    selectModule("business_overview");
   </script>
 </body>
 </html>

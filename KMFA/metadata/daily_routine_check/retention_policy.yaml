@@ -1,0 +1,15 @@
+version: 0.2.0
+retention:
+  active_sqlite_months: 3
+  jsonl_logs_months: 24
+  ocr_raw_cache_months: 12
+  image_cache_days: 90
+  notification_logs_months: 24
+  db_snapshots_daily_days: 30
+  db_snapshots_month_end_months: 24
+cleanup:
+  require_dry_run_before_apply: true
+  never_delete_input_zip: true
+  never_delete_git_metadata: true
+  checkpoint_wal_before_backup: true
+  vacuum_after_large_delete: true

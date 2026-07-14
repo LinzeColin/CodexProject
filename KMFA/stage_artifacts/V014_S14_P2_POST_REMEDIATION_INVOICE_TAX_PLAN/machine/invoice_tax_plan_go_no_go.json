@@ -1,0 +1,13 @@
+{
+  "business_execution_allowed": false,
+  "data_quality_grade": "Q4",
+  "decision": "NO_GO",
+  "github_upload_allowed": false,
+  "invoice_issuance_allowed": false,
+  "phase_id": "V014_S14_P2_POST_REMEDIATION_INVOICE_TAX_PLAN",
+  "reason": "authoritative invoice tax period entity row and value bindings remain unproven",
+  "report_grade": "D",
+  "s14_p3_allowed_in_this_run": false,
+  "schema_version": "kmfa.v014.s14_p2_go_no_go.v1",
+  "tax_filing_allowed": false
+}

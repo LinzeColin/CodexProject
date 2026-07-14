@@ -1,0 +1,252 @@
+{
+  "acceptance_id": "ACC-V014-S13-POST-REMEDIATION-STAGE-REVIEW",
+  "branch": "codex/kmfa",
+  "browser_review": {
+    "baseline_control_row_count": 54,
+    "baseline_fail_count": 0,
+    "baseline_file_count": 6,
+    "baseline_pass_count": 54,
+    "baseline_warn_count": 0,
+    "console_error_count": 0,
+    "cross_page_link_http_check_count": 12,
+    "cross_page_navigation_check_count": 12,
+    "current_page_audits": {
+      "p1": {
+        "control_row_count": 20,
+        "fail_count": 0,
+        "file_count": 2,
+        "pass_count": 20,
+        "warn_count": 0
+      },
+      "p2": {
+        "control_row_count": 7,
+        "fail_count": 0,
+        "file_count": 1,
+        "pass_count": 7,
+        "warn_count": 0
+      },
+      "p3": {
+        "control_row_count": 7,
+        "fail_count": 0,
+        "file_count": 1,
+        "pass_count": 7,
+        "warn_count": 0
+      }
+    },
+    "current_page_count": 4,
+    "horizontal_overflow_count": 0,
+    "representative_interaction_check_count": 8,
+    "status": "PASS",
+    "viewport_check_count": 8
+  },
+  "cross_page_navigation_validated": true,
+  "decision": "NO_GO",
+  "generated_at": "2026-07-11T15:53:36+10:00",
+  "historical_cross_table_semantics_quarantined": true,
+  "historical_pending_twelve_quarantined": true,
+  "historical_review_dependency_validated": true,
+  "historical_review_dynamic_state_is_authoritative": false,
+  "historical_static_business_items_quarantined": true,
+  "historical_upload_ready_semantics_quarantined": true,
+  "next_phase": "S14-P1",
+  "next_required_step": "Execute S14-P1 only as a separate run; do not upload or reinstall.",
+  "phase_id": "V014_S13_POST_REMEDIATION_STAGE_REVIEW",
+  "phase_validator_frozen_semantics_validated": true,
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "aggregate_only": true,
+    "business_value_committed": false,
+    "credential_or_secret_committed": false,
+    "field_or_header_plaintext_committed": false,
+    "private_runtime_committed": false,
+    "raw_file_committed": false,
+    "raw_filename_committed": false,
+    "raw_hash_committed": false,
+    "zip_excel_pdf_private_csv_or_database_committed": false
+  },
+  "quality_gate": {
+    "business_decision_basis_allowed": false,
+    "business_execution_allowed": false,
+    "current_data_quality_grade": "Q4",
+    "current_public_safe_pages_allowed": true,
+    "current_report_grade": "D",
+    "decision": "NO_GO",
+    "difference_closure_allowed": false,
+    "formal_report_allowed": false,
+    "quality_grade_bypass_allowed": false,
+    "release_permission": "blocked",
+    "restricted_internal_preview_allowed": true
+  },
+  "raw_boundary": {
+    "raw_delete_performed": false,
+    "raw_move_performed": false,
+    "raw_mutation_performed": false,
+    "raw_overwrite_performed": false,
+    "raw_read_authorized": true,
+    "raw_rename_performed": false,
+    "raw_snapshot_validation_performed": true,
+    "raw_write_performed": false
+  },
+  "remote": "git@github.com:LinzeColin/CodexProject.git",
+  "review_boundaries": {
+    "app_reinstall_performed": false,
+    "business_execution_performed": false,
+    "difference_closure_performed": false,
+    "formal_report_release_performed": false,
+    "github_upload_performed": false,
+    "persistent_business_write_performed": false,
+    "raw_delete_performed": false,
+    "raw_move_performed": false,
+    "raw_overwrite_performed": false,
+    "raw_rename_performed": false,
+    "raw_write_performed": false,
+    "s13_p1_validated": true,
+    "s13_p2_validated": true,
+    "s13_p3_validated": true,
+    "s14_p1_performed": false,
+    "stage13_review_performed": true
+  },
+  "review_findings": [
+    {
+      "finding_id": "S13-POST-REVIEW-F01",
+      "fix": "新 review 只以当前 P1/P2/P3 strict validators 和 manifests 为动态事实",
+      "status": "fixed",
+      "summary": "旧 Stage 13 review 读取 pre-remediation 三份 manifest"
+    },
+    {
+      "finding_id": "S13-POST-REVIEW-F02",
+      "fix": "pending=12 仅作历史夹具，当前继续使用 3 open-final、9 nonzero、2 zero、1 incomplete",
+      "status": "fixed",
+      "summary": "旧 review 的 pending=12 会覆盖当前 3-9-2-1 分类状态"
+    },
+    {
+      "finding_id": "S13-POST-REVIEW-F03",
+      "fix": "当前已证明业务项、可执行优先级和已指派责任事项保持 0/0/0",
+      "status": "fixed",
+      "summary": "旧 P2 的 4 个优先级和 4 个责任事项会被误读为当前业务项"
+    },
+    {
+      "finding_id": "S13-POST-REVIEW-F04",
+      "fix": "锁定 4 not-comparable、0 exact comparison 和 4 non-additive queue items",
+      "status": "fixed",
+      "summary": "旧 P3 队列缺少 NOT_COMPARABLE 与 non-additive 当前语义"
+    },
+    {
+      "finding_id": "S13-POST-REVIEW-F05",
+      "fix": "明确 Stage 13 review 不上传，统一上传继续延期到最终整体复审后",
+      "status": "fixed",
+      "summary": "旧 review 含 upload-ready 语义"
+    },
+    {
+      "finding_id": "S13-POST-REVIEW-F06",
+      "fix": "增加回款应收与跨表复核入口并纳入 HTTP 和真实导航复验",
+      "status": "fixed",
+      "summary": "经营周报缺少 P2/P3 当前阶段入口"
+    },
+    {
+      "finding_id": "S13-POST-REVIEW-F07",
+      "fix": "增加回款应收与跨表复核入口并纳入 HTTP 和真实导航复验",
+      "status": "fixed",
+      "summary": "经营月报缺少 P2/P3 当前阶段入口"
+    },
+    {
+      "finding_id": "S13-POST-REVIEW-F08",
+      "fix": "更新为三个 phase 已完成，同时保持 Q4、D、NO_GO 与 phase frozen semantics",
+      "status": "fixed",
+      "summary": "P1 两页仍显示仅完成 S13-P1 的过期阶段文案"
+    },
+    {
+      "finding_id": "S13-POST-REVIEW-F09",
+      "fix": "增加跨表复核入口，与四页组成 12 边强连通图",
+      "status": "fixed",
+      "summary": "P2 页面缺少通向已完成 P3 的前向入口"
+    }
+  ],
+  "reviewed_head": "ed499c6be35df76d1f5a924d92130c7536a9f4ea",
+  "reviewed_phase_manifests": {
+    "S13-P1": "KMFA/stage_artifacts/V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT/machine/financial_operating_report_manifest.json",
+    "S13-P2": "KMFA/stage_artifacts/V014_S13_P2_POST_REMEDIATION_COLLECTION_RECEIVABLE_AGING/machine/collection_receivable_aging_manifest.json",
+    "S13-P3": "KMFA/stage_artifacts/V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW/machine/cross_table_review_manifest.json",
+    "historical_S13_review": "KMFA/stage_artifacts/V014_S13_STAGE_REVIEW/machine/stage13_review_manifest.json"
+  },
+  "roadmap_phase_id": "STAGE-REVIEW",
+  "schema_version": "kmfa.v014.s13_post_remediation_review_manifest.v1",
+  "stage_id": "S13",
+  "status": "completed_validated_local_only_stage13_review_no_go_upload_deferred",
+  "summary": {
+    "acceptance_id": "ACC-V014-S13-POST-REMEDIATION-STAGE-REVIEW",
+    "app_reinstall_performed": false,
+    "broken_cross_page_link_count": 0,
+    "browser_status": "PASS",
+    "browser_viewport_check_count": 8,
+    "business_decision_basis_count": 0,
+    "business_execution_performed": false,
+    "console_error_count": 0,
+    "cross_page_link_count": 12,
+    "cross_page_link_http_check_count": 12,
+    "cross_page_navigation_check_count": 12,
+    "cross_page_navigation_strongly_connected": true,
+    "cross_table_comparable_dimension_count": 0,
+    "cross_table_difference_queue_count": 4,
+    "cross_table_difference_queue_is_non_additive": true,
+    "cross_table_exact_comparison_count": 0,
+    "cross_table_not_comparable_dimension_count": 4,
+    "cross_table_proven_match_count": 0,
+    "cross_table_proven_mismatch_count": 0,
+    "cross_table_quality_report_count": 1,
+    "cross_table_review_dimension_count": 4,
+    "current_data_quality_grade": "Q4",
+    "current_report_grade": "D",
+    "current_stage_page_count": 4,
+    "decision": "NO_GO",
+    "financial_draft_report_count": 2,
+    "financial_raw_value_bound_lane_count": 0,
+    "financial_source_lane_count": 4,
+    "financial_structure_connected_lane_count": 4,
+    "fixed_review_finding_count": 9,
+    "formal_report_count": 0,
+    "github_upload_performed": false,
+    "horizontal_overflow_count": 0,
+    "incomplete_reconciliation_count": 1,
+    "nonzero_delta_reconciliation_count": 9,
+    "open_final_difference_accepted_count": 3,
+    "open_review_finding_count": 0,
+    "phase_id": "V014_S13_POST_REMEDIATION_STAGE_REVIEW",
+    "phase_results": {
+      "S13-P1": "PASS",
+      "S13-P2": "PASS",
+      "S13-P3": "PASS"
+    },
+    "project_id": "KMFA",
+    "raw_cross_phase_snapshot_exact_match": true,
+    "raw_snapshot_exact_match": true,
+    "raw_source_file_count": 5,
+    "receivable_actionable_priority_count": 0,
+    "receivable_assigned_responsibility_count": 0,
+    "receivable_identified_business_item_count": 0,
+    "receivable_issue_definition_count": 4,
+    "receivable_private_parseable_lane_count": 3,
+    "receivable_row_binding_proven_lane_count": 0,
+    "receivable_source_lane_count": 5,
+    "representative_interaction_check_count": 8,
+    "review_scope": "v014_s13_post_remediation_stage_review_only",
+    "roadmap_phase_id": "STAGE-REVIEW",
+    "s14_p1_performed": false,
+    "schema_version": "kmfa.v014.s13_post_remediation_review_summary.v1",
+    "stage_id": "S13",
+    "status": "completed_validated_local_only_stage13_review_no_go_upload_deferred",
+    "task_id": "KMFA-V014-S13-POST-REMEDIATION-STAGE-REVIEW-20260711",
+    "version": "0.1.4-s13-post-remediation-stage-review",
+    "zero_delta_reconciliation_count": 2
+  },
+  "task_id": "KMFA-V014-S13-POST-REMEDIATION-STAGE-REVIEW-20260711",
+  "validation_summary": {
+    "browser_cross_page_flow": "PASS",
+    "final_validation_recorded": true,
+    "focused_phase_tests": "PASS",
+    "governance_and_safety_scans": "PASS",
+    "review_tests": "PASS",
+    "strict_validator": "PASS"
+  },
+  "version": "0.1.4-s13-post-remediation-stage-review"
+}

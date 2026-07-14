@@ -1,0 +1,69 @@
+{
+  "business_value_consistency_verified": false,
+  "check_count": 8,
+  "checks": [
+    {
+      "check_code": "source_precheck_blockers_available",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_candidate_scan_available",
+      "observed_public_safe": 351453,
+      "required": ">0",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_root_unchanged",
+      "observed_public_safe": true,
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "check_code": "direct_source_ref_coverage",
+      "observed_public_safe": 0,
+      "required": 72,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "direct_processed_fingerprint_coverage",
+      "observed_public_safe": 0,
+      "required": 72,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "owner_review_required_locked",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "full_comparison_not_claimed",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_no_go_preserved",
+      "observed_public_safe": "NO_GO",
+      "required": "NO_GO",
+      "status": "PASS"
+    }
+  ],
+  "direct_processed_fingerprint_match_count": 0,
+  "direct_source_record_ref_match_count": 0,
+  "fail_count": 2,
+  "full_raw_to_processed_value_comparison_complete": false,
+  "full_raw_to_processed_value_comparison_ready": false,
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "outside_scope_blocker_count": 72,
+  "owner_review_required_item_count": 72,
+  "pass_count": 6,
+  "phase_id": "V014_OUTSIDE_SCOPE_RAW_CANDIDATE_ALIGNMENT_AFTER_FULL_PRECHECK",
+  "project_id": "KMFA",
+  "record_type": "v014_outside_scope_raw_candidate_alignment_matrix_public_safe",
+  "schema_version": "kmfa.v014_outside_scope_raw_candidate_alignment_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-RAW-CANDIDATE-ALIGNMENT-AFTER-FULL-PRECHECK-20260707",
+  "version": "0.1.4-outside-scope-raw-candidate-alignment-after-full-precheck"
+}

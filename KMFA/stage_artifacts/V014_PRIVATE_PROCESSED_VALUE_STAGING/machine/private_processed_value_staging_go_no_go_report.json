@@ -1,0 +1,37 @@
+{
+  "app_reinstall_allowed": false,
+  "blocker_ids": [
+    "PRIVATE_PROCESSED_VALUE_FINGERPRINTS_NOT_MATERIALIZED",
+    "COMPARABLE_RAW_PROCESSED_VALUE_PAIRS_ZERO",
+    "BUSINESS_VALUE_CONSISTENCY_NOT_VERIFIED",
+    "LINEAGE_FULL_CHECK_BLOCKED_BY_VALUE_CONSISTENCY",
+    "FORMAL_REPORT_RELEASE_BLOCKED_BY_LINEAGE",
+    "GITHUB_UPLOAD_BLOCKED_BY_NO_GO",
+    "APP_REINSTALL_BLOCKED_BY_NO_GO",
+    "BUSINESS_EXECUTION_BLOCKED_BY_NO_GO"
+  ],
+  "business_execution_allowed": false,
+  "business_value_consistency_verified": false,
+  "comparable_value_pair_count": 0,
+  "decision": "NO_GO",
+  "decision_reason": "Processed private target slots are staged in ignored private runtime, but processed value fingerprints are not materialized, so raw-to-processed value comparison and business consistency cannot be claimed.",
+  "formal_report_allowed": false,
+  "github_upload_allowed": false,
+  "lineage_full_check_complete": false,
+  "next_recommended_phase": "V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION",
+  "phase_id": "V014_PRIVATE_PROCESSED_VALUE_STAGING",
+  "private_processed_value_fingerprint_count": 0,
+  "processed_target_slot_count": 149,
+  "processed_target_slots_staged": true,
+  "project_id": "KMFA",
+  "raw_to_processed_value_comparison_performed": false,
+  "record_type": "v014_private_processed_value_staging_go_no_go_report",
+  "resolved_blocker_ids": [
+    "PROCESSED_PRIVATE_TARGET_SLOTS_STAGED",
+    "PUBLIC_SAFE_AGGREGATE_EVIDENCE_GENERATED",
+    "RAW_INBOX_NOT_ACCESSED_BY_THIS_PHASE"
+  ],
+  "schema_version": "kmfa.v014_private_processed_value_staging_go_no_go.v1",
+  "task_id": "KMFA-V014-PRIVATE-PROCESSED-VALUE-STAGING-20260705",
+  "version": "0.1.4"
+}

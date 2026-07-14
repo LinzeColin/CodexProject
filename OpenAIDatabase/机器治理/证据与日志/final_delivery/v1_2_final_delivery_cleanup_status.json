@@ -1,0 +1,84 @@
+{
+  "schema_version": "memory_atlas.final_delivery_cleanup.v1_2_r8",
+  "historical_record": false,
+  "current_release_claim_valid": true,
+  "task_id": "MA-V12-R8-FINAL-DELIVERY",
+  "acceptance_id": "ACC-MA-V12-R8-FINAL-DELIVERY",
+  "status": "R8_ACCEPTANCE_AND_LIVE_DELIVERY_VERIFIED_PENDING_SINGLE_FINAL_PUSH",
+  "generated_at": "2026-07-11T23:28:15Z",
+  "canonical_repo": "LinzeColin/CodexProject/OpenAIDatabase",
+  "runtime_commit": "12734c10bf37ee7afc86d62f72e70369a1bcd732",
+  "final_record_commit": "pending direct child of runtime_commit",
+  "github_main_verified": false,
+  "github_main_verification": "required after the single final push",
+  "app_reinstall": {
+    "status": "PASS_AT_RUNTIME_COMMIT_FINAL_RECORD_REINSTALL_PENDING",
+    "installed_git_commit": "12734c10bf37ee7afc86d62f72e70369a1bcd732",
+    "applications_bundle_verified": true,
+    "downloads_bundle_verified": true,
+    "runtime_manifest_verified": true,
+    "final_record_commit_reinstall_required": true
+  },
+  "local_cleanup": {
+    "status": "PENDING_POST_PUSH_RECOVERY_VERIFICATION",
+    "reproducible_outputs_only": true,
+    "protected_runtime_and_app_bundles": true,
+    "notes": [
+      "Keep installed app bundles, pinned source, and runtime data available after final cleanup.",
+      "Delete only reproducible build outputs, Cloudflare cache, and temporary verification trees."
+    ]
+  },
+  "cloudflare_live_delivery": {
+    "status": "PASS",
+    "pages_project": "openai-memory-atlas",
+    "deployment_id": "e0cb0004-d6c6-4182-965c-5b09cbab10c1",
+    "deployment_url": "https://e0cb0004.openai-memory-atlas.pages.dev",
+    "custom_url": "https://memoryatlas.linzezhang.com",
+    "deployed_git_commit": "12734c10bf37ee7afc86d62f72e70369a1bcd732",
+    "deployment_status": "success",
+    "published_snapshot_sha256": "b608631fded9e116d350895be20e6e61be3c7e42ba651ccdf7fc52afd8fefcbc",
+    "access_challenge_verified": true,
+    "allowed_user_app_load_verified": true,
+    "memory_atlas_json_fetch_verified": true,
+    "published_artifact_audited": true,
+    "no_raw_sensitive_artifacts_verified": true,
+    "access_policy_changed_in_r8": false,
+    "browser_acceptance": {
+      "status": "PASS",
+      "viewports_passed": 3,
+      "viewports_total": 3,
+      "desktop_low_height": "1470x661",
+      "desktop_standard": "1440x900",
+      "mobile": "390x844",
+      "overlap_failures": 0,
+      "horizontal_overflow_failures": 0,
+      "console_issues": 0
+    }
+  },
+  "validation": {
+    "atlasctl_final_audit": "PASS_17_OF_17",
+    "requirements": "VERIFIED_58_OF_58",
+    "upgrade_lines": "PASS_4_OF_4",
+    "stages": "VERIFIED_14_OF_14",
+    "exact_commit_recovery": "PASS",
+    "fresh_frontend_build": "PASS",
+    "local_app_acceptance": "PASS",
+    "cloudflare_live_browser_acceptance": "PASS",
+    "github_remote_codeload_recovery": "PENDING_POST_PUSH"
+  },
+  "remaining_external_gate": [
+    "create the direct-child final record commit",
+    "reinstall both app bundles at that commit",
+    "perform the single final push to GitHub main",
+    "verify origin/main and GitHub codeload recovery"
+  ],
+  "raw_mutation": false,
+  "secret_or_credential_change": false,
+  "access_policy_change": false,
+  "open_branch_or_pr_created": false,
+  "unrelated_dirty_paths_preserved": [
+    "WDA/docs/governance/TRACEABILITY_MATRIX.csv",
+    "WDA/docs/governance/VERSION_MATRIX.yaml",
+    "WDA/docs/governance/parameter_registry.csv"
+  ]
+}

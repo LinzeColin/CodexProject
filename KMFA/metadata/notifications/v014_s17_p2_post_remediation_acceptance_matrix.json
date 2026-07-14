@@ -1,0 +1,74 @@
+{
+  "acceptance_id": "ACC-V014-S17-P2-POST-REMEDIATION-NOTIFICATION",
+  "check_count": 13,
+  "check_fail_count": 0,
+  "check_pass_count": 13,
+  "checks": [
+    {
+      "check_id": "V014-S17-P2-ACC-001",
+      "name": "current_dependencies",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P2-ACC-002",
+      "name": "three_rules",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P2-ACC-003",
+      "name": "trigger_evaluation",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P2-ACC-004",
+      "name": "metadata_outbox",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P2-ACC-005",
+      "name": "short_chinese_reminders",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P2-ACC-006",
+      "name": "existing_links",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P2-ACC-007",
+      "name": "audit_contract",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P2-ACC-008",
+      "name": "no_real_delivery",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P2-ACC-009",
+      "name": "no_full_report",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P2-ACC-010",
+      "name": "no_address_connector",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P2-ACC-011",
+      "name": "raw_exact",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P2-ACC-012",
+      "name": "quality",
+      "status": "PASS"
+    },
+    {
+      "check_id": "V014-S17-P2-ACC-013",
+      "name": "downstream_closed",
+      "status": "PASS"
+    }
+  ],
+  "schema_version": "kmfa.v014.s17_p2_post_remediation_notification_matrix.v1"
+}

@@ -1,0 +1,156 @@
+{
+  "schema": "PFIV024FinalDeliveryEvidenceV1",
+  "acceptance_id": "ACC-PFI-V024-FINAL-DELIVERY",
+  "target_version": "v0.2.4",
+  "source_package_version": "v0.2.3-repair",
+  "generated_at": "2026-07-11T00:11:26+10:00",
+  "product_commit": "17b9f59794740f927c5f531ba1aa334621a832e5",
+  "delivery_evidence_commit": "SELF",
+  "install_command": "PFI/scripts/installPFIEntryApps.sh --all",
+  "git_delivery": {
+    "branch": "codex/pfi",
+    "upstream": "origin/main",
+    "remote": "git@github.com:LinzeColin/CodexProject.git",
+    "single_push_required": true,
+    "post_push_invariant": "HEAD == refs/remotes/origin/main == git ls-remote origin refs/heads/main",
+    "verification_mode": "live; not self-asserted by this evidence file"
+  },
+  "app_fingerprints": {
+    "launcher_sha256": [
+      "sha256:0b730a19c74cf549b595531b0539eedd6a0f48041e7042e1a8560a6ea690c64d"
+    ],
+    "launcher_code_sha256": [
+      "sha256:ddc6d569f9cce5093c34729b1344a5e9a3d6a87b7d4c299e867071cdc172350c"
+    ],
+    "info_plist_sha256": [
+      "sha256:d4ac2e3f1c94c77378c998a820cdd7c13179b01765ffc0cdbce7b950da4a52dc"
+    ],
+    "compiled_launcher_code_sha256": "sha256:ddc6d569f9cce5093c34729b1344a5e9a3d6a87b7d4c299e867071cdc172350c"
+  },
+  "app_entries": {
+    "applications": {
+      "path": "/Applications/PFI.app",
+      "binding": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI",
+      "codesign_verified": true,
+      "dry_run_verified": true
+    },
+    "downloads": {
+      "path": "/Users/linzezhang/Downloads/PFI.app",
+      "binding": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI",
+      "codesign_verified": true,
+      "dry_run_verified": true
+    },
+    "desktop": {
+      "path": "/Users/linzezhang/Desktop/PFI.app",
+      "resolved_path": "/Applications/PFI.app",
+      "binding": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI",
+      "codesign_verified": true,
+      "dry_run_verified": true
+    }
+  },
+  "app_acceptance": {
+    "schema": "PFIOSMacOSAppAcceptanceLiteV1",
+    "status": "Pass",
+    "summary": {
+      "pass": 29,
+      "fail": 0,
+      "info": 2,
+      "total": 31
+    },
+    "safety_boundary": "read-only launcher dry-run; no app start, broker connection, order, payment, or holdings write"
+  },
+  "runtime_snapshot": {
+    "schema": "PFIV024ReadOnlyRuntimeSnapshotV1",
+    "status": "Pass",
+    "mode": "read_only_no_pfi_data_or_reports_write",
+    "healthy_urls": [
+      "http://127.0.0.1:8503/_stcore/health"
+    ],
+    "disk_web_bundle_hash": "f48b2ce4dacd9bc92087ccff8692bb1d58eb69d731b97fc291220aea35901996",
+    "runtime_web_bundle_hashes": {
+      "app": "f48b2ce4dacd9bc92087ccff8692bb1d58eb69d731b97fc291220aea35901996",
+      "localhost": "f48b2ce4dacd9bc92087ccff8692bb1d58eb69d731b97fc291220aea35901996"
+    },
+    "app_localhost_same_bundle_hash": true,
+    "runtime_disk_bundle_hash_match": true,
+    "loaded_asset_sha256": {
+      "web/styles/tokens.css": "9c11b1d903d4e17639859289a76903837622360ec585f838fae07a8ab61cb7c4",
+      "web/app/version.js": "fae29ef265c841139c5309dd0175d7ad82ba739d92db1841f58e3221e77e65db",
+      "web/app/entry_audit.js": "395fcd584407113e4e87177c470bf6133aefce4045b3fd90d5f118cc68684e39",
+      "web/app/routes.js": "a45e4f978ae7749fa5a655293589444037dd0f1a888442ed758eaa0947a7bbbf",
+      "web/app/shell.js": "75b70795e1146ef18566d0df84b01c8ae7392bded2ea6a8de08bf03a6cf13821"
+    },
+    "loaded_asset_sha256_by_entry": {
+      "app": {
+        "web/styles/tokens.css": "9c11b1d903d4e17639859289a76903837622360ec585f838fae07a8ab61cb7c4",
+        "web/app/version.js": "fae29ef265c841139c5309dd0175d7ad82ba739d92db1841f58e3221e77e65db",
+        "web/app/entry_audit.js": "395fcd584407113e4e87177c470bf6133aefce4045b3fd90d5f118cc68684e39",
+        "web/app/routes.js": "a45e4f978ae7749fa5a655293589444037dd0f1a888442ed758eaa0947a7bbbf",
+        "web/app/shell.js": "75b70795e1146ef18566d0df84b01c8ae7392bded2ea6a8de08bf03a6cf13821"
+      },
+      "localhost": {
+        "web/styles/tokens.css": "9c11b1d903d4e17639859289a76903837622360ec585f838fae07a8ab61cb7c4",
+        "web/app/version.js": "fae29ef265c841139c5309dd0175d7ad82ba739d92db1841f58e3221e77e65db",
+        "web/app/entry_audit.js": "395fcd584407113e4e87177c470bf6133aefce4045b3fd90d5f118cc68684e39",
+        "web/app/routes.js": "a45e4f978ae7749fa5a655293589444037dd0f1a888442ed758eaa0947a7bbbf",
+        "web/app/shell.js": "75b70795e1146ef18566d0df84b01c8ae7392bded2ea6a8de08bf03a6cf13821"
+      }
+    },
+    "loaded_assets_match_disk": true,
+    "project_roots": [
+      "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/pfi/PFI"
+    ],
+    "app_paths": [
+      "/Applications/PFI.app"
+    ],
+    "build_ids": [
+      "pfi-v024-stage2-phase22"
+    ],
+    "ui_contract_versions": [
+      "PFI-V024-STAGE2-ENTRY-CONSISTENCY"
+    ],
+    "repair_labels": [
+      "PFI v0.2.3 Repair"
+    ],
+    "console_errors": [],
+    "page_errors": [],
+    "http_errors": [],
+    "summary": {
+      "pass": 8,
+      "fail": 0,
+      "total": 8
+    }
+  },
+  "protected_paths": {
+    "schema": "PFIV024ProtectedPathMetadataSnapshotV1",
+    "before_metadata_sha256": "sha256:8104c89128f7fb2d68c687af3ca4a0f6e521a703b021a2a8e994dde36db57512",
+    "after_metadata_sha256": "sha256:8104c89128f7fb2d68c687af3ca4a0f6e521a703b021a2a8e994dde36db57512",
+    "entry_counts": {
+      ".venv": 48712,
+      "data": 13,
+      "reports": 809
+    },
+    "content_bytes_read": 0,
+    "mutated": false
+  },
+  "regression": {
+    "v0.2.3": "200 passed",
+    "v0.2.4": "242 passed",
+    "final_delivery_focused": "11 passed",
+    "check_render": "drift_count=0; reference_issue_count=0",
+    "node_syntax": "pass",
+    "python_compile": "pass",
+    "git_diff_check": "pass"
+  },
+  "independent_review": {
+    "status": "approved",
+    "findings": [],
+    "reviewed_scope": "fail-closed git delivery, reproducible launcher code sections, codesign/binding/dry-run, live filename-bound runtime hashes, tests"
+  },
+  "safety_boundary": {
+    "future_version_started": false,
+    "financial_data_mutated": false,
+    "trading_password_requested_or_tested": false,
+    "broker_order_or_payment_submitted": false
+  }
+}

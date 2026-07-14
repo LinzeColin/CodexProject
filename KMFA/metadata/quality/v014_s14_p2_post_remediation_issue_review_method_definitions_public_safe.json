@@ -1,0 +1,66 @@
+{
+  "methods": [
+    {
+      "business_alert_allowed": false,
+      "current_binding_status": "unproven",
+      "current_output_status": "blocked_no_authoritative_row_value_binding",
+      "formal_report_allowed": false,
+      "identified_candidate_count": 0,
+      "invoice_issuance_allowed": false,
+      "method_definition_complete": true,
+      "method_id": "pending_invoice",
+      "method_note": "需权威合同、结算、开票状态、期间和金额逐行绑定后才能识别候选。",
+      "payment_or_bank_operation_allowed": false,
+      "public_business_amount_count": 0,
+      "required_lanes": [
+        "invoice_plan"
+      ],
+      "review_sequence": 1,
+      "row_level_binding_required": true,
+      "tax_filing_allowed": false,
+      "visible_name": "待开票"
+    },
+    {
+      "business_alert_allowed": false,
+      "current_binding_status": "unproven",
+      "current_output_status": "blocked_no_authoritative_row_value_binding",
+      "formal_report_allowed": false,
+      "identified_candidate_count": 0,
+      "invoice_issuance_allowed": false,
+      "method_definition_complete": true,
+      "method_id": "invoiced_not_collected",
+      "method_note": "需权威发票记录、回款记录、客户、项目、期间和金额逐行匹配后才能识别候选。",
+      "payment_or_bank_operation_allowed": false,
+      "public_business_amount_count": 0,
+      "required_lanes": [
+        "invoice_plan",
+        "invoice_tax_cash_summary"
+      ],
+      "review_sequence": 2,
+      "row_level_binding_required": true,
+      "tax_filing_allowed": false,
+      "visible_name": "已开票未回款"
+    },
+    {
+      "business_alert_allowed": false,
+      "current_binding_status": "unproven",
+      "current_output_status": "blocked_no_authoritative_row_value_binding",
+      "formal_report_allowed": false,
+      "identified_candidate_count": 0,
+      "invoice_issuance_allowed": false,
+      "method_definition_complete": true,
+      "method_id": "tax_rate_exception_candidate",
+      "method_note": "需权威税种、适用依据、税率、期间和主体绑定后才能形成异常候选。",
+      "payment_or_bank_operation_allowed": false,
+      "public_business_amount_count": 0,
+      "required_lanes": [
+        "tax_detail"
+      ],
+      "review_sequence": 3,
+      "row_level_binding_required": true,
+      "tax_filing_allowed": false,
+      "visible_name": "税率异常候选"
+    }
+  ],
+  "schema_version": "kmfa.v014.s14_p2_issue_methods.v1"
+}

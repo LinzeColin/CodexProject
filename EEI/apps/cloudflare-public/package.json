@@ -1,0 +1,10 @@
+{
+  "name": "@eei/cloudflare-public",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node ../../../scripts/cloudflare/build_static_surface.mjs --source public --output dist",
+    "validate": "python3 ../../../scripts/cloudflare/scan_public_dist.py --path public"
+  }
+}

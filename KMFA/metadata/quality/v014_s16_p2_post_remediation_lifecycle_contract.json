@@ -1,0 +1,80 @@
+{
+  "authoritative_row_binding_required": true,
+  "chronology_validation_required": true,
+  "materialized_project_lifecycle_record_count": 0,
+  "missing_evidence_policy": "keep_unmaterialized_and_route_to_manual_review",
+  "project_identity_binding_required": true,
+  "record_materialization_allowed": false,
+  "schema_version": "kmfa.v014.s16_p2.lifecycle_contract.v1",
+  "state_count": 6,
+  "states": [
+    {
+      "authoritative_evidence_required": true,
+      "state_id": "not_started",
+      "visible_label": "未开工"
+    },
+    {
+      "authoritative_evidence_required": true,
+      "state_id": "commenced",
+      "visible_label": "已开工"
+    },
+    {
+      "authoritative_evidence_required": true,
+      "state_id": "completed",
+      "visible_label": "已完工"
+    },
+    {
+      "authoritative_evidence_required": true,
+      "state_id": "settled",
+      "visible_label": "已结算"
+    },
+    {
+      "authoritative_evidence_required": true,
+      "state_id": "invoiced",
+      "visible_label": "已开票"
+    },
+    {
+      "authoritative_evidence_required": true,
+      "state_id": "collected",
+      "visible_label": "已回款"
+    }
+  ],
+  "transition_count": 5,
+  "transitions": [
+    {
+      "automatic_transition_allowed": false,
+      "from_state": "not_started",
+      "manual_review_required": true,
+      "to_state": "commenced",
+      "transition_id": "not_started_to_commenced"
+    },
+    {
+      "automatic_transition_allowed": false,
+      "from_state": "commenced",
+      "manual_review_required": true,
+      "to_state": "completed",
+      "transition_id": "commenced_to_completed"
+    },
+    {
+      "automatic_transition_allowed": false,
+      "from_state": "completed",
+      "manual_review_required": true,
+      "to_state": "settled",
+      "transition_id": "completed_to_settled"
+    },
+    {
+      "automatic_transition_allowed": false,
+      "from_state": "settled",
+      "manual_review_required": true,
+      "to_state": "invoiced",
+      "transition_id": "settled_to_invoiced"
+    },
+    {
+      "automatic_transition_allowed": false,
+      "from_state": "invoiced",
+      "manual_review_required": true,
+      "to_state": "collected",
+      "transition_id": "invoiced_to_collected"
+    }
+  ]
+}

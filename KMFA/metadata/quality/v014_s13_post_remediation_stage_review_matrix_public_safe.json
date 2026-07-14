@@ -1,0 +1,64 @@
+{
+  "check_count": 14,
+  "check_fail_count": 0,
+  "check_pass_count": 14,
+  "checks": [
+    {
+      "check_id": "three_phases_pass",
+      "passed": true
+    },
+    {
+      "check_id": "financial_contract",
+      "passed": true
+    },
+    {
+      "check_id": "receivable_contract",
+      "passed": true
+    },
+    {
+      "check_id": "cross_table_contract",
+      "passed": true
+    },
+    {
+      "check_id": "queue_non_additive",
+      "passed": true
+    },
+    {
+      "check_id": "four_pages",
+      "passed": true
+    },
+    {
+      "check_id": "twelve_links",
+      "passed": true
+    },
+    {
+      "check_id": "links_unbroken",
+      "passed": true
+    },
+    {
+      "check_id": "graph_connected",
+      "passed": true
+    },
+    {
+      "check_id": "findings_closed",
+      "passed": true
+    },
+    {
+      "check_id": "browser_pass",
+      "passed": true
+    },
+    {
+      "check_id": "raw_exact",
+      "passed": true
+    },
+    {
+      "check_id": "q4_d_no_go",
+      "passed": true
+    },
+    {
+      "check_id": "no_downstream",
+      "passed": true
+    }
+  ],
+  "schema_version": "kmfa.v014.s13_post_remediation_review_matrix.v1"
+}

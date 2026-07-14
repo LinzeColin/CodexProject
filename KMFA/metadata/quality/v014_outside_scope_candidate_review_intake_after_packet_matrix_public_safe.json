@@ -1,0 +1,68 @@
+{
+  "business_value_consistency_verified": false,
+  "check_count": 8,
+  "checks": [
+    {
+      "check_code": "source_review_packet_available",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_delegated_response_written",
+      "observed_public_safe": true,
+      "required": true,
+      "status": "PASS"
+    },
+    {
+      "check_code": "response_item_coverage",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "delegated_keep_pending_recorded",
+      "observed_public_safe": 72,
+      "required": 72,
+      "status": "PASS"
+    },
+    {
+      "check_code": "actionable_source_map_response_present",
+      "observed_public_safe": 0,
+      "required": 1,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "candidate_selection_present",
+      "observed_public_safe": 0,
+      "required": 1,
+      "status": "FAIL"
+    },
+    {
+      "check_code": "full_comparison_not_claimed",
+      "observed_public_safe": false,
+      "required": false,
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_no_go_preserved",
+      "observed_public_safe": "NO_GO",
+      "required": "NO_GO",
+      "status": "PASS"
+    }
+  ],
+  "delegated_keep_pending_response_count": 72,
+  "fail_count": 2,
+  "full_raw_to_processed_value_comparison_complete": false,
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "intake_response_item_count": 72,
+  "pass_count": 6,
+  "phase_id": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_AFTER_PACKET",
+  "project_id": "KMFA",
+  "record_type": "v014_outside_scope_candidate_review_intake_matrix_public_safe",
+  "schema_version": "kmfa.v014_outside_scope_candidate_review_intake_matrix_public_safe.v1",
+  "source_map_actionable_response_count": 0,
+  "source_map_correction_ready": false,
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-INTAKE-AFTER-PACKET-20260707",
+  "version": "0.1.4-outside-scope-candidate-review-intake-after-packet"
+}

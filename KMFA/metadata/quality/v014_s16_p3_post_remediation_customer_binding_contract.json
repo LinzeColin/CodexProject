@@ -1,0 +1,32 @@
+{
+  "authoritative_customer_row_binding_count": 0,
+  "authoritative_project_row_binding_count": 0,
+  "authoritative_value_binding_count": 0,
+  "component_count": 4,
+  "components": [
+    {
+      "authoritative_evidence_required": true,
+      "component_id": "customer_identity_ref",
+      "visible_label": "客户身份锚点"
+    },
+    {
+      "authoritative_evidence_required": true,
+      "component_id": "project_identity_ref",
+      "visible_label": "项目身份锚点"
+    },
+    {
+      "authoritative_evidence_required": true,
+      "component_id": "reporting_period_ref",
+      "visible_label": "分析期间锚点"
+    },
+    {
+      "authoritative_evidence_required": true,
+      "component_id": "source_fingerprint_ref",
+      "visible_label": "来源指纹锚点"
+    }
+  ],
+  "contract_count": 1,
+  "customer_summary_materialization_allowed": false,
+  "missing_binding_policy": "keep_unmaterialized_and_route_to_manual_review",
+  "schema_version": "kmfa.v014.s16_p3.customer_binding_contract.v1"
+}

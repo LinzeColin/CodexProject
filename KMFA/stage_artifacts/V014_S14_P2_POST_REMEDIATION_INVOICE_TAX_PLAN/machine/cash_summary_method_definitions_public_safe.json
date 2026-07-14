@@ -1,0 +1,63 @@
+{
+  "methods": [
+    {
+      "amount_display_allowed": false,
+      "business_decision_basis_allowed": false,
+      "current_binding_status": "unproven",
+      "current_output_status": "blocked_no_authoritative_period_value_binding",
+      "formal_report_allowed": false,
+      "invoice_issuance_allowed": false,
+      "materialized_summary_count": 0,
+      "method_definition_complete": true,
+      "method_id": "invoice_expected_cash_inflow",
+      "payment_or_bank_operation_allowed": false,
+      "public_business_amount_count": 0,
+      "required_lanes": [
+        "invoice_plan",
+        "invoice_tax_cash_summary"
+      ],
+      "tax_filing_allowed": false,
+      "visible_name": "开票预计现金流入"
+    },
+    {
+      "amount_display_allowed": false,
+      "business_decision_basis_allowed": false,
+      "current_binding_status": "unproven",
+      "current_output_status": "blocked_no_authoritative_period_value_binding",
+      "formal_report_allowed": false,
+      "invoice_issuance_allowed": false,
+      "materialized_summary_count": 0,
+      "method_definition_complete": true,
+      "method_id": "tax_expected_cash_outflow",
+      "payment_or_bank_operation_allowed": false,
+      "public_business_amount_count": 0,
+      "required_lanes": [
+        "tax_detail",
+        "invoice_tax_cash_summary"
+      ],
+      "tax_filing_allowed": false,
+      "visible_name": "纳税预计现金流出"
+    },
+    {
+      "amount_display_allowed": false,
+      "business_decision_basis_allowed": false,
+      "current_binding_status": "unproven",
+      "current_output_status": "blocked_no_authoritative_period_value_binding",
+      "formal_report_allowed": false,
+      "invoice_issuance_allowed": false,
+      "materialized_summary_count": 0,
+      "method_definition_complete": true,
+      "method_id": "invoice_tax_net_pressure",
+      "payment_or_bank_operation_allowed": false,
+      "public_business_amount_count": 0,
+      "required_lanes": [
+        "invoice_plan",
+        "tax_detail",
+        "invoice_tax_cash_summary"
+      ],
+      "tax_filing_allowed": false,
+      "visible_name": "开票纳税净资金压力"
+    }
+  ],
+  "schema_version": "kmfa.v014.s14_p2_cash_methods.v1"
+}

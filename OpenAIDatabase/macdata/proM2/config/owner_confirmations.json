@@ -1,0 +1,16 @@
+{
+  "allow_delete_local_macdata_older_than_3_days_after_verified_upload": true,
+  "allow_development_cache_cleanup_after_verified_upload": true,
+  "allow_github_upload": true,
+  "allow_plaintext_device_metrics_to_github": true,
+  "allow_post_run_github_hygiene_after_verified_upload": true,
+  "archive_branch": "macdata-proM2",
+  "confirmed_at": "2026-07-05T21:32:29+10:00",
+  "confirmed_device_key": "proM2",
+  "device_override_basis_cn": "用户确认芯片配置以本机为主；本机实测为 MacBook Pro / Mac14,5 / Apple M2 Max / 32GB。",
+  "notes_cn": "不要在此文件写入 API key、token、password、cookie、session 或 Keychain 内容。",
+  "repo_remote_name": "origin",
+  "run_full_cycle_confirmed": true,
+  "understand_no_timemachine_no_icloud": true,
+  "understand_scripts_do_not_auto_schedule": true
+}

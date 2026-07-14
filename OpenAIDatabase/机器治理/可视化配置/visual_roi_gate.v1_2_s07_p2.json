@@ -1,0 +1,151 @@
+{
+  "schema_version": "memory_atlas_visual_roi_gate.v1_2_s07_p2",
+  "task_id": "MA-V12-S07P2",
+  "acceptance_id": "ACC-MA-V12-S07P2",
+  "status": "phase_s07_p2_visual_roi_gate_active_pending_s07_p3",
+  "purpose_zh": "为 P0 可视化建立轻量 Visual ROI Gate，确保每个图表绑定人类问题、行动价值、信息 ROI 和证据来源。",
+  "formula_config_path": "机器治理/参数与公式/information_roi.v1_2_s07_p2.json",
+  "p0_visuals": [
+    {
+      "id": "cluster_tree",
+      "human_question": "我最近主要在关注什么？",
+      "action": "识别主题重心和变化",
+      "decision_value": 0.84,
+      "actionability": 0.72,
+      "reuse_value": 0.78,
+      "reading_cost": 1.0,
+      "navigation_cost": 1.0,
+      "misleading_risk": 0.95,
+      "maintenance_cost": 1.0
+    },
+    {
+      "id": "bubble_map",
+      "human_question": "高频、机会、风险如何分布？",
+      "action": "定位高价值簇和低价值循环",
+      "decision_value": 0.86,
+      "actionability": 0.76,
+      "reuse_value": 0.76,
+      "reading_cost": 1.05,
+      "navigation_cost": 1.0,
+      "misleading_risk": 1.0,
+      "maintenance_cost": 1.0
+    },
+    {
+      "id": "task_treemap",
+      "human_question": "我的 AI 使用集中在哪些任务？",
+      "action": "判断是否过度集中或需要扩展",
+      "decision_value": 0.76,
+      "actionability": 0.68,
+      "reuse_value": 0.7,
+      "reading_cost": 1.0,
+      "navigation_cost": 1.0,
+      "misleading_risk": 0.95,
+      "maintenance_cost": 1.0
+    },
+    {
+      "id": "automation_augmentation",
+      "human_question": "哪些任务是自动化，哪些是增强？",
+      "action": "调整人机分工",
+      "decision_value": 0.9,
+      "actionability": 0.82,
+      "reuse_value": 0.86,
+      "reading_cost": 1.0,
+      "navigation_cost": 1.0,
+      "misleading_risk": 1.0,
+      "maintenance_cost": 1.0
+    },
+    {
+      "id": "roi_scatter",
+      "human_question": "哪些任务最值得继续？",
+      "action": "优先投入高 ROI 任务",
+      "decision_value": 0.92,
+      "actionability": 0.84,
+      "reuse_value": 0.84,
+      "reading_cost": 1.0,
+      "navigation_cost": 1.0,
+      "misleading_risk": 1.05,
+      "maintenance_cost": 1.0
+    },
+    {
+      "id": "agent_decision_sankey",
+      "human_question": "Agent 执行路径哪里失真？",
+      "action": "优化 Codex/agent 任务入口和验收",
+      "decision_value": 0.78,
+      "actionability": 0.66,
+      "reuse_value": 0.72,
+      "reading_cost": 1.15,
+      "navigation_cost": 1.1,
+      "misleading_risk": 1.05,
+      "maintenance_cost": 1.1
+    },
+    {
+      "id": "friction_heatmap",
+      "human_question": "我在哪些地方反复浪费时间？",
+      "action": "减少返工和 scope creep",
+      "decision_value": 0.88,
+      "actionability": 0.8,
+      "reuse_value": 0.78,
+      "reading_cost": 1.0,
+      "navigation_cost": 1.0,
+      "misleading_risk": 1.0,
+      "maintenance_cost": 1.0
+    },
+    {
+      "id": "latent_radar",
+      "human_question": "哪些潜在信号正在增强？",
+      "action": "验证或降权潜性结论",
+      "decision_value": 0.74,
+      "actionability": 0.66,
+      "reuse_value": 0.72,
+      "reading_cost": 1.0,
+      "navigation_cost": 1.0,
+      "misleading_risk": 1.05,
+      "maintenance_cost": 1.0
+    },
+    {
+      "id": "evidence_timeline",
+      "human_question": "这个结论从哪些记录来？",
+      "action": "判断证据强度",
+      "decision_value": 0.82,
+      "actionability": 0.7,
+      "reuse_value": 0.74,
+      "reading_cost": 1.0,
+      "navigation_cost": 1.05,
+      "misleading_risk": 0.95,
+      "maintenance_cost": 1.0
+    },
+    {
+      "id": "formula_explorer",
+      "human_question": "这个分数为什么这样算？",
+      "action": "调参和理解限制",
+      "decision_value": 0.8,
+      "actionability": 0.72,
+      "reuse_value": 0.8,
+      "reading_cost": 1.05,
+      "navigation_cost": 1.0,
+      "misleading_risk": 0.95,
+      "maintenance_cost": 1.0
+    }
+  ],
+  "excluded_from_p0_examples": [
+    {
+      "id": "decorative_word_cloud",
+      "reason_zh": "只有装饰或词频展示，没有明确决策问题和行动用途。",
+      "decision_value": 0.25,
+      "actionability": 0.2
+    },
+    {
+      "id": "raw_schema_table",
+      "reason_zh": "只展示机器字段，不回答人类问题，适合治理层，不适合 P0。",
+      "decision_value": 0.28,
+      "actionability": 0.22
+    }
+  ],
+  "scope_boundary": {
+    "does_not_modify_runtime_ui": true,
+    "does_not_generate_what_if_ui": true,
+    "does_not_modify_raw": true,
+    "external_economic_database_dependency": false,
+    "precise_income_prediction": false
+  }
+}

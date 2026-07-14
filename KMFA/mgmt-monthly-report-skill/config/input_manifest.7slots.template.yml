@@ -1,0 +1,68 @@
+# 经营管理月报输入清单模板
+# period 必须为 YYYYMM。所有输入必须显式映射；不要让目录自动决定业务口径。
+period: "YYYYMM"
+input_dir: "./inputs"
+output_dir: "./outputs"
+expected_official_outputs:
+  excel: "经营管理分析报表 YYYYMM.xlsx"
+  pdf: "董事会经营分析摘要 YYYYMM.pdf"
+
+required_input_slots:
+  - id: collection_2026
+    display_name: "WPS 武汉开明 2026年回款表"
+    required: true
+    expected_patterns: ["*2026*回款表*.xlsx", "*2026*回款*.xlsx"]
+    prefer_patterns: ["*销售会计*.xlsx"]
+    matched_files: []
+
+  - id: invoice_tax_cash
+    display_name: "开票纳税资金汇总表"
+    required: true
+    expected_patterns: ["*开票*纳税*资金汇总*.xlsx"]
+    required_sheet_groups:
+      - canonical: "开票纳税汇总"
+        aliases: ["开票纳税汇总", "*开票*纳税*汇总*", "*各个主体*开票*纳税*"]
+      - canonical: "2026年销售回款"
+        aliases: ["2026年销售回款", "*销售回款*", "*回2026年合同款*", "*回款*合同款*"]
+      - canonical: "2026年资金汇总"
+        aliases: ["2026年资金汇总", "*资金汇总*", "*资金流汇总*"]
+    matched_files: []
+
+  - id: receivable_contract
+    display_name: "应收账款合同登记"
+    required: true
+    expected_patterns: ["*应收账款*合同登记*.xlsx", "*合同登记*.xlsx"]
+    matched_files: []
+
+  - id: aging
+    display_name: "应收账龄表"
+    required: true
+    expected_patterns: ["*应收账龄*.xlsx"]
+    matched_files: []
+
+  - id: deposit
+    display_name: "2026年保证金"
+    required: true
+    expected_patterns: ["*保证金2026*.xlsx", "*保证金*.xlsx"]
+    matched_files: []
+
+  - id: three_major_projects
+    display_name: "三大项目"
+    required: true
+    expected_patterns: ["*三大项目*.xlsx"]
+    matched_files: []
+
+  - id: project_status_contracts
+    display_name: "生产项目状态表与红圈主合同"
+    required: true
+    expected_patterns: ["*生产项目状态表*.xlsx", "*红圈主合同*.xlsx"]
+    min_physical_files: 1
+    recommended_physical_files: 2
+    matched_files: []
+
+optional_reference_files:
+  - "2025年回款表.xlsx"
+  - "主营业务描述.doc/docx"
+  - "资质及三类人员情况.docx"
+  - "花名册.xlsx"
+

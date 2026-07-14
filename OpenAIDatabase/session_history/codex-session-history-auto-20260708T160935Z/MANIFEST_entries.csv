@@ -1,0 +1,2 @@
+path,size,mtime,sha256,action,reason,risk_status
+/Users/linzezhang/.codex/archived_sessions/rollout-2026-07-03T05-00-20-019f2434-1238-7d43-8741-6ff4bb98d0e0.jsonl,710106,2026-07-03T05:05:44,86af8c7896484177a9f55b2ee8988ceea7e3a75142fb8eb729c781b87d8fd258,backup_delete,older_than_5_days,safe

@@ -11,6 +11,7 @@ from __future__ import annotations
 import csv
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -207,10 +208,32 @@ def walk_json(value: Any, path: str) -> None:
             walk_json(child, f"{path}[{idx}]")
 
 
+def is_ignored_untracked_private_runtime(path: Path) -> bool:
+    if "private_runtime" not in path.relative_to(METADATA).parts:
+        return False
+    repo_root = ROOT.parent
+    repo_rel = path.relative_to(repo_root).as_posix()
+    ignored = subprocess.run(
+        ["git", "check-ignore", "-q", "--", repo_rel],
+        cwd=repo_root,
+        check=False,
+    ).returncode == 0
+    tracked = subprocess.run(
+        ["git", "ls-files", "--error-unmatch", "--", repo_rel],
+        cwd=repo_root,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    ).returncode == 0
+    return ignored and not tracked
+
+
 def check_privacy_boundary() -> None:
     bad_suffixes = []
     for path in METADATA.rglob("*"):
         if path.is_file() and path.suffix.lower() in FORBIDDEN_SUFFIXES:
+            if is_ignored_untracked_private_runtime(path):
+                continue
             bad_suffixes.append(str(path.relative_to(ROOT)))
     if bad_suffixes:
         fail("forbidden raw/sensitive file-like artifacts: " + ", ".join(bad_suffixes))

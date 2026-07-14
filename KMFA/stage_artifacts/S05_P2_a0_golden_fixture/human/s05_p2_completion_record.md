@@ -22,13 +22,13 @@
 - 新增 `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/owner_decision_templates/`、`KMFA/tools/check_s05_p2_owner_decision_templates.py` 和 `KMFA/tests/test_s05_p2_owner_decision_templates.py`，为三种允许决策提供 public-safe 非决策模板，并验证模板不能被误当成 active owner 决策。
 - 新增 `KMFA/tools/check_s05_p2_completion_gate.py` 和 `KMFA/tests/test_s05_p2_completion_gate.py`，验证 S05-P2 只有在 45/45 hash/source anchor 完整或存在 resolving active owner/授权决策时才可关闭；当前默认 gate 返回 `BLOCKED`，`--expect-blocked` 验证通过。
 - 新增 `KMFA/tools/preview_s05_p2_owner_decision_application.py`、`KMFA/tests/test_s05_p2_owner_decision_application.py` 和 `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/no_owner_decision_application_preview.json`，验证 owner/授权决策如何 public-safe 预览为私有 hash 映射、降级为 cross-source support 或继续 pending；no-decision 路径按预期 blocked，active downgrade decision 路径已验证 ready。
-- 新增 active owner/授权决策记录 `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/owner_decision_records/excel_owner_resolution_decision.json` 和 human record，按 owner 指示只读复核私有 `销售绩效考核.zip`、`财务.zip` 后，将 Excel candidate 降级为 `cross_source_support_only`；application preview 和 completion gate 已验证 ready。
+- 新增 active owner/授权决策记录 `KMFA/stage_artifacts/S05_P2_a0_golden_fixture/machine/owner_decision_records/excel_owner_resolution_decision.json` 和 human record，按 owner 指示只读复核私有 `PRIVATE_RAW_SOURCE_005.zip`、`PRIVATE_RAW_SOURCE_004.zip` 后，将 Excel candidate 降级为 `cross_source_support_only`；application preview 和 completion gate 已验证 ready。
 
 ## 边界
 
-- 未提交 `销售绩效考核.zip`、PDF、Excel 或任何原始业务文件。
+- 未提交 `PRIVATE_RAW_SOURCE_005.zip`、PDF、Excel 或任何原始业务文件。
 - 未提交真实合同额、支出合计、毛利、毛利率、成本分类 raw value 或 normalized value。
-- 本机提供的 `销售绩效考核.zip` 整包 hash/size 与登记 source package 不匹配；但过滤 macOS 隐藏文件后的 9 个真实业务成员 hash 与 Stage2 Ring4 registry 匹配。
+- 本机提供的 `PRIVATE_RAW_SOURCE_005.zip` 整包 hash/size 与登记 source package 不匹配；但过滤 macOS 隐藏文件后的 9 个真实业务成员 hash 与 Stage2 Ring4 registry 匹配。
 - 当前 40 条 PDF 字段候选已记录 hash/source anchor，5 条 Excel 字段候选不写入 A0 baseline；Excel 候选已通过 owner/授权降级决策处理为 `cross_source_support_only`。
 - S05-P2 只生成字段级候选和 private refs；未执行 S05-P3 人工锁定、Q5 计算基准、zero-delta、事实层、报告生成或 UI。
 

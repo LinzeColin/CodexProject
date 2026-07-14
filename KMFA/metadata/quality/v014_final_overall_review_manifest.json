@@ -1,0 +1,498 @@
+{
+  "acceptance_id": "ACC-V014-FINAL-OVERALL-REVIEW",
+  "acceptance_matrix": {
+    "acceptance_id": "ACC-V014-FINAL-OVERALL-REVIEW",
+    "check_count": 39,
+    "check_fail_count": 0,
+    "check_pass_count": 39,
+    "checks": [
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-001",
+        "name": "stage_01_validator_pass",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-002",
+        "name": "stage_02_validator_pass",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-003",
+        "name": "stage_03_validator_pass",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-004",
+        "name": "stage_04_validator_pass",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-005",
+        "name": "stage_05_validator_pass",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-006",
+        "name": "stage_06_validator_pass",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-007",
+        "name": "stage_07_validator_pass",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-008",
+        "name": "stage_08_validator_pass",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-009",
+        "name": "stage_09_validator_pass",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-010",
+        "name": "stage_10_validator_pass",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-011",
+        "name": "stage_11_validator_pass",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-012",
+        "name": "stage_12_validator_pass",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-013",
+        "name": "stage_13_validator_pass",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-014",
+        "name": "stage_14_validator_pass",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-015",
+        "name": "stage_15_validator_pass",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-016",
+        "name": "stage_16_validator_pass",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-017",
+        "name": "stage_17_validator_pass",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-018",
+        "name": "stage_18_validator_pass",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-019",
+        "name": "all_current_stages_selected",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-020",
+        "name": "full_suite_pass",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-021",
+        "name": "findings_closed",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-022",
+        "name": "contracts_pass",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-023",
+        "name": "raw_exact",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-024",
+        "name": "raw_cross_phase_exact",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-025",
+        "name": "tracked_raw_filename_leak_zero",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-026",
+        "name": "html_54_pass",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-027",
+        "name": "html_zero_warn",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-028",
+        "name": "html_zero_fail",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-029",
+        "name": "quality_q4",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-030",
+        "name": "report_d",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-031",
+        "name": "decision_no_go",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-032",
+        "name": "difference_state_preserved",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-033",
+        "name": "lineage_incomplete",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-034",
+        "name": "code_upload_ready",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-035",
+        "name": "upload_not_performed",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-036",
+        "name": "app_reinstall_not_performed",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-037",
+        "name": "delivery_closed",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-038",
+        "name": "official_report_closed",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-FINAL-REVIEW-ACC-039",
+        "name": "business_execution_closed",
+        "status": "PASS"
+      }
+    ],
+    "phase_id": "V014_FINAL_OVERALL_REVIEW",
+    "project_id": "KMFA",
+    "record_type": "v014_final_overall_acceptance_matrix",
+    "schema_version": "kmfa.v014.final_overall_acceptance_matrix.v1",
+    "stage_id": "S01-S18"
+  },
+  "artifact_refs": {
+    "acceptance": "KMFA/stage_artifacts/V014_FINAL_OVERALL_REVIEW/machine/acceptance_matrix_public_safe.json",
+    "contract_matrix": "KMFA/stage_artifacts/V014_FINAL_OVERALL_REVIEW/machine/cross_stage_contract_matrix_public_safe.jsonl",
+    "findings": "KMFA/stage_artifacts/V014_FINAL_OVERALL_REVIEW/human/review_findings_zh.md",
+    "go_no_go": "KMFA/stage_artifacts/V014_FINAL_OVERALL_REVIEW/machine/final_overall_review_go_no_go_report.json",
+    "manifest": "KMFA/stage_artifacts/V014_FINAL_OVERALL_REVIEW/machine/final_overall_review_manifest.json",
+    "report": "KMFA/stage_artifacts/V014_FINAL_OVERALL_REVIEW/human/final_overall_review_report_zh.md",
+    "stage_results": "KMFA/stage_artifacts/V014_FINAL_OVERALL_REVIEW/machine/current_stage_review_validation_results_public_safe.jsonl",
+    "summary": "KMFA/stage_artifacts/V014_FINAL_OVERALL_REVIEW/machine/final_overall_review_summary.json",
+    "test_results": "KMFA/stage_artifacts/V014_FINAL_OVERALL_REVIEW/human/test_results_zh.md"
+  },
+  "branch": "codex/kmfa",
+  "content_hash": "sha256:a658aaf35868761e11a48ac03588481bbc9b731468772adb500b53bd19f8ebba",
+  "decision": "NO_GO",
+  "formula_id": "FORM-KMFA-V014-FINAL-OVERALL-REVIEW-001",
+  "generated_at": "2026-07-12T19:24:07+10:00",
+  "git_head": "4e84ada120a3c4a0fe530b062afd8f69a5312a96",
+  "go_no_go": {
+    "app_reinstall_performed": false,
+    "app_reinstall_ready": false,
+    "blocker_ids": [
+      "OPEN_RECONCILIATION_REMAINS",
+      "LINEAGE_FULL_CHECK_NOT_COMPLETE",
+      "OFFICIAL_REPORT_RELEASE_NOT_ALLOWED",
+      "ONE_TIME_GITHUB_MAIN_UPLOAD_PENDING",
+      "APP_REINSTALL_DEFERRED_UNTIL_GITHUB_PARITY"
+    ],
+    "business_decision_basis_allowed": false,
+    "business_execution_allowed": false,
+    "business_execution_performed": false,
+    "code_validation_status": "PASS",
+    "decision": "NO_GO",
+    "delivery_allowed": false,
+    "github_main_upload_ready": true,
+    "github_upload_performed": false,
+    "lineage_full_check_complete": false,
+    "next_required_phase": "V014_ONE_TIME_GITHUB_MAIN_UPLOAD",
+    "official_report_release_allowed": false,
+    "persistent_business_write_allowed": false,
+    "phase_id": "V014_FINAL_OVERALL_REVIEW",
+    "project_id": "KMFA",
+    "record_type": "v014_final_overall_review_go_no_go",
+    "resolved_blocker_ids": [
+      "FINAL_OVERALL_REVIEW_PENDING",
+      "CURRENT_STAGE_VALIDATOR_REPLAY_PENDING",
+      "FULL_SUITE_VALIDATION_PENDING"
+    ],
+    "schema_version": "kmfa.v014.final_overall_review_go_no_go.v1",
+    "stage_id": "S01-S18"
+  },
+  "historical_overall_review_baseline": {
+    "dynamic_state_authoritative": false,
+    "structural_history_only": true,
+    "upload_state_authoritative": false,
+    "v014_artifact_ref": "KMFA/stage_artifacts/V014_STAGE1_18_OVERALL_REVIEW/machine/stage1_18_overall_review_manifest.json",
+    "v014_artifact_sha256": "sha256:cb80028ceff6c2fb30a7141fe10f9dffd6fd3d2f28eca552d1ce6cf88ecbadc9",
+    "validated": true,
+    "whole_project_artifact_ref": "KMFA/stage_artifacts/WHOLE_PROJECT_FINAL_REVIEW/machine/whole_project_final_review_manifest.json",
+    "whole_project_artifact_sha256": "sha256:bb21a891ec1fe74ba8788295ebf382eb0852faef6ddc10841605b144e519b4c0"
+  },
+  "historical_overall_review_dynamic_state_authoritative": false,
+  "historical_overall_review_structural_baseline_validated": true,
+  "historical_overall_review_upload_state_authoritative": false,
+  "model_registry_key": "kmfa_v014_final_overall_review",
+  "next_phase": "V014_ONE_TIME_GITHUB_MAIN_UPLOAD",
+  "next_required_step": "Run one-time public-safe GitHub main upload separately; do not perform App reinstall, formal report release, difference closure, live connectors, credential handling, persistent business writes, or business execution.",
+  "parameter_ids": [
+    "PARAM-KMFA-1819",
+    "PARAM-KMFA-1820",
+    "PARAM-KMFA-1821"
+  ],
+  "phase_id": "V014_FINAL_OVERALL_REVIEW",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "actual_raw_filenames_tracked": false,
+    "business_value_plaintext_committed": false,
+    "credential_or_secret_committed": false,
+    "private_hash_or_diagnostic_committed": false,
+    "private_runtime_committed": false,
+    "project_customer_or_counterparty_plaintext_committed": false,
+    "raw_business_data_committed": false,
+    "raw_file_hashes_committed": false,
+    "raw_file_names_committed": false,
+    "raw_schema_or_header_committed": false,
+    "zip_excel_pdf_private_csv_database_committed": false
+  },
+  "record_type": "v014_final_overall_review_manifest",
+  "review_boundaries": {
+    "app_reinstall_performed": false,
+    "business_execution_performed": false,
+    "credential_handling_performed": false,
+    "difference_closure_performed": false,
+    "final_overall_review_performed": true,
+    "formal_report_release_performed": false,
+    "github_upload_performed": false,
+    "github_upload_ready": true,
+    "lineage_full_check_completed_by_review": false,
+    "live_connector_performed": false,
+    "persistent_business_write_performed": false,
+    "raw_copy_or_backup_performed": false,
+    "stage1_18_current_reviews_validated": true
+  },
+  "review_findings": [
+    {
+      "finding_id": "V014-FINAL-REVIEW-F01",
+      "issue_zh": "S10 post-review checker 永久要求 VERSION 和 HANDOFF 停在历史 active phase。",
+      "remediation_zh": "永久校验 profile，只有 S10 为 active phase 时才校验当前路由。",
+      "severity": "high",
+      "status": "fixed"
+    },
+    {
+      "finding_id": "V014-FINAL-REVIEW-F02",
+      "issue_zh": "S17 post-review test 永久要求 HANDOFF 下一步为 S18-P1。",
+      "remediation_zh": "只在 S17 review 为 active phase 时校验旧路由。",
+      "severity": "medium",
+      "status": "fixed"
+    },
+    {
+      "finding_id": "V014-FINAL-REVIEW-F03",
+      "issue_zh": "S14 三个 generator-backed test 会覆盖固定公共证据并污染后续测试。",
+      "remediation_zh": "新增公共证据快照 helper，在异常和 tearDown 后恢复原状态。",
+      "severity": "high",
+      "status": "fixed"
+    },
+    {
+      "finding_id": "V014-FINAL-REVIEW-F04",
+      "issue_zh": "system Python 缺少工作簿/PDF依赖且 cryptography ABI 不兼容，形成无效失败基线。",
+      "remediation_zh": "最终全量验收固定使用 Codex bundled Python 3.12 runtime。",
+      "severity": "validation",
+      "status": "fixed"
+    },
+    {
+      "finding_id": "V014-FINAL-REVIEW-F05",
+      "issue_zh": "18 个 current Stage review validator 必须全部复跑。",
+      "remediation_zh": "S01-S08 original 与 S09-S18 post-remediation 双链缓存复跑 18/18 PASS。",
+      "severity": "control",
+      "status": "passed"
+    },
+    {
+      "finding_id": "V014-FINAL-REVIEW-F06",
+      "issue_zh": "完整测试套件必须使用有效 runtime 顺序执行。",
+      "remediation_zh": "bundled Python 顺序全量测试全部通过。",
+      "severity": "control",
+      "status": "passed"
+    },
+    {
+      "finding_id": "V014-FINAL-REVIEW-F07",
+      "issue_zh": "测试生成物不得伪装成最终变更。",
+      "remediation_zh": "全量测试后恢复固定路径副作用，仅保留真实修复。",
+      "severity": "control",
+      "status": "passed"
+    },
+    {
+      "finding_id": "V014-FINAL-REVIEW-F08",
+      "issue_zh": "raw 在最终复审前后必须完全一致。",
+      "remediation_zh": "私有前后、跨 S18 review 和 fresh 快照一致，不复制或修改 raw。",
+      "severity": "control",
+      "status": "passed"
+    },
+    {
+      "finding_id": "V014-FINAL-REVIEW-F09",
+      "issue_zh": "HTML 人类流程审计必须保持无警告无失败。",
+      "remediation_zh": "6 文件、54 行、54 PASS、0 WARN、0 FAIL。",
+      "severity": "control",
+      "status": "passed"
+    },
+    {
+      "finding_id": "V014-FINAL-REVIEW-F10",
+      "issue_zh": "复审通过不得关闭未解决业务差异。",
+      "remediation_zh": "Q4/D/NO_GO 与 3-9-2-1 结构保持不变。",
+      "severity": "control",
+      "status": "passed"
+    },
+    {
+      "finding_id": "V014-FINAL-REVIEW-F11",
+      "issue_zh": "历史 overall review 和旧 upload 状态不得作为当前权威状态。",
+      "remediation_zh": "两份历史 evidence 仅作结构基线，动态和上传状态均非权威。",
+      "severity": "control",
+      "status": "passed"
+    },
+    {
+      "finding_id": "V014-FINAL-REVIEW-F12",
+      "issue_zh": "代码上传 readiness 不得被解释为业务 release GO。",
+      "remediation_zh": "只开放下一独立 public-safe code upload phase，业务交付、App重装和执行保持关闭。",
+      "severity": "control",
+      "status": "passed"
+    },
+    {
+      "finding_id": "V014-FINAL-REVIEW-F13",
+      "issue_zh": "S18 post-review checker 和 focused test 永久锁死旧 VERSION、HANDOFF、AGENTS 与 ASSURANCE 动态总数。",
+      "remediation_zh": "历史 profile、formula、parameter 和 evidence 永久校验；current pointer、路由、snapshot 时间和动态总数仅在 S18 review active 时校验。",
+      "severity": "high",
+      "status": "fixed"
+    },
+    {
+      "finding_id": "V014-FINAL-REVIEW-F14",
+      "issue_zh": "历史 tracked KMFA 文件仍引用本机 raw 实际文件名；第一次别名修复的治理事件还出现历史行重排和 files_changed 覆盖不足。",
+      "remediation_zh": "只在 tracked KMFA 内替换为稳定 public-safe source IDs，恢复治理 JSONL 原顺序后仅追加当前事件，并完整登记别名修复文件；raw 未写入，名称复扫与 governance-sync 均通过。",
+      "severity": "critical",
+      "status": "fixed"
+    }
+  ],
+  "review_fix_checks": {
+    "artifact_snapshot_helper_present": true,
+    "bundled_python_runtime_active": true,
+    "bundled_python_runtime_present": true,
+    "raw_alias_governance_append_only_and_complete": true,
+    "s10_checker_active_phase_routing_only": true,
+    "s14_public_artifact_snapshot_restore": true,
+    "s17_test_active_phase_routing_only": true,
+    "s18_review_active_phase_routing_only": true,
+    "tracked_raw_filename_leak_count_zero": true
+  },
+  "review_scope": "v014_current_stage1_18_final_overall_review_and_finding_fix_only",
+  "roadmap_phase_id": "FINAL-OVERALL-REVIEW",
+  "schema_version": "kmfa.v014.final_overall_review_manifest.v1",
+  "stage_id": "S01-S18",
+  "status": "completed_validated_local_only_final_overall_review_no_go_code_upload_ready",
+  "summary": {
+    "acceptance_id": "ACC-V014-FINAL-OVERALL-REVIEW",
+    "app_reinstall_performed": false,
+    "business_execution_performed": false,
+    "cross_stage_contract_count": 30,
+    "cross_stage_contract_mismatch_count": 0,
+    "current_data_quality_grade": "Q4",
+    "current_report_grade": "D",
+    "current_stage_review_count": 18,
+    "current_stage_review_pass_count": 18,
+    "current_stage_validator_pass_count": 18,
+    "decision": "NO_GO",
+    "final_overall_review_performed": true,
+    "fixed_review_finding_count": 6,
+    "full_suite_test_count": 1515,
+    "full_suite_test_pass_count": 1515,
+    "github_main_upload_ready": true,
+    "github_upload_performed": false,
+    "html_audit_fail_count": 0,
+    "html_audit_file_count": 6,
+    "html_audit_pass_count": 54,
+    "html_audit_row_count": 54,
+    "html_audit_warn_count": 0,
+    "incomplete_reconciliation_count": 1,
+    "lineage_full_check_complete": false,
+    "nonzero_delta_reconciliation_count": 9,
+    "open_final_difference_accepted_count": 3,
+    "open_review_finding_count": 0,
+    "passed_review_finding_count": 8,
+    "phase_id": "V014_FINAL_OVERALL_REVIEW",
+    "project_id": "KMFA",
+    "raw_cross_phase_snapshot_exact_match": true,
+    "raw_snapshot_exact_match": true,
+    "raw_source_file_count": 5,
+    "record_type": "v014_final_overall_review_summary",
+    "review_finding_count": 14,
+    "roadmap_phase_id": "FINAL-OVERALL-REVIEW",
+    "schema_version": "kmfa.v014.final_overall_review_summary.v1",
+    "stage_id": "S01-S18",
+    "status": "completed_validated_local_only_final_overall_review_no_go_code_upload_ready",
+    "task_id": "KMFA-V014-FINAL-OVERALL-REVIEW-20260712",
+    "tracked_raw_filename_leak_count": 0,
+    "version": "0.1.4-final-overall-review",
+    "zero_delta_reconciliation_count": 2
+  },
+  "task_id": "KMFA-V014-FINAL-OVERALL-REVIEW-20260712",
+  "taskpack_contract": {
+    "phase_count": 54,
+    "quality_failure_blocks_business_delivery": true,
+    "roadmap_read": true,
+    "source_refs": [
+      "KMFA/taskpack/v1_4/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_4.md",
+      "KMFA/taskpack/v1_4/taskpack/01_KMFA_Codex_TaskPack_v1_4_public_safe.md"
+    ],
+    "stage_count": 18,
+    "task_count": 162,
+    "taskpack_read": true
+  },
+  "validation_summary": {
+    "current_stage_validators": "PASS",
+    "final_validation_recorded": true,
+    "focused_review_tests": "PASS",
+    "full_suite": "PASS",
+    "governance_and_safety_scans": "PASS",
+    "raw_alignment": "PASS",
+    "review_findings_closed": "PASS",
+    "strict_review_validator": "PASS"
+  },
+  "version": "0.1.4-final-overall-review"
+}

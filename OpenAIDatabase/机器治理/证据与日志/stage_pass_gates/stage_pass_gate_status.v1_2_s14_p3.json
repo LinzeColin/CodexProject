@@ -1,0 +1,105 @@
+{
+  "schema_version": "memory_atlas.stage_pass_gate_status.v1_2_s14_p3",
+  "task_id": "MA-V12-S14P3",
+  "acceptance_id": "ACC-MA-V12-S14P3",
+  "phase_status": "phase_s14_p3_development_record_completed_pending_s14_review",
+  "generated_by": "s14_p3_development_record_run",
+  "no_github_main_upload": true,
+  "remote_push": false,
+  "raw_mutation": false,
+  "homepage_pollution": false,
+  "maintenance_command_count": 6,
+  "maintenance_commands": [
+    "python3 scripts/atlasctl.py run --profile owner-daily --dry-run",
+    "python3 scripts/atlasctl.py audit",
+    "pnpm --dir OpenAIDatabase/apps/memory-atlas run validate:v1.2-s14-p3",
+    "npm run build --prefix apps/memory-atlas",
+    "python3 -B -m unittest discover OpenAIDatabase/tests -q",
+    "cat OpenAIDatabase/机器治理/证据与日志/stage_pass_gates/stage_pass_gate_status.v1_2_s14_p3.json"
+  ],
+  "query_paths": [
+    "OpenAIDatabase/人类可读/09_验收标准与运行手册.md",
+    "OpenAIDatabase/机器治理/证据与日志/stage_pass_gates/stage_pass_gate_status.v1_2_s14_p3.json",
+    "OpenAIDatabase/开发记录.md"
+  ],
+  "final_audit_required_before_s14_p3_claim": true,
+  "final_audit_command": "python3 scripts/atlasctl.py audit",
+  "next_gate": "S14 Review",
+  "stage_pass_gates": [
+    {
+      "stage": "S01",
+      "status": "review_passed",
+      "validator": "validate:v1.2-s01-review"
+    },
+    {
+      "stage": "S02",
+      "status": "review_passed",
+      "validator": "validate:v1.2-s02-review"
+    },
+    {
+      "stage": "S03",
+      "status": "review_passed",
+      "validator": "validate:v1.2-s03-review"
+    },
+    {
+      "stage": "S04",
+      "status": "review_passed",
+      "validator": "validate:v1.2-s04-review"
+    },
+    {
+      "stage": "S05",
+      "status": "review_passed",
+      "validator": "validate:v1.2-s05-review"
+    },
+    {
+      "stage": "S06",
+      "status": "review_passed",
+      "validator": "validate:v1.2-s06-review"
+    },
+    {
+      "stage": "S07",
+      "status": "review_passed",
+      "validator": "validate:v1.2-s07-review"
+    },
+    {
+      "stage": "S08",
+      "status": "review_passed",
+      "validator": "validate:v1.2-s08-review"
+    },
+    {
+      "stage": "S09",
+      "status": "review_passed",
+      "validator": "validate:v1.2-s09-review"
+    },
+    {
+      "stage": "S10",
+      "status": "review_passed",
+      "validator": "validate:v1.2-s10-review"
+    },
+    {
+      "stage": "S11",
+      "status": "review_passed",
+      "validator": "validate:v1.2-s11-review"
+    },
+    {
+      "stage": "S12",
+      "status": "review_passed",
+      "validator": "validate:v1.2-s12-review"
+    },
+    {
+      "stage": "S13",
+      "status": "review_passed",
+      "validator": "validate:v1.2-s13-review"
+    },
+    {
+      "stage": "S14",
+      "status": "phase_s14_p3_completed_pending_s14_review",
+      "phase_validators": [
+        "validate:v1.2-s14-p1",
+        "validate:v1.2-s14-p2",
+        "validate:v1.2-s14-p3"
+      ],
+      "next_gate": "S14 Review"
+    }
+  ]
+}

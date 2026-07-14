@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KMFA 跨表复核质量工作台</title>
+  <style>
+    :root{--ink:#17211d;--muted:#5b6661;--line:#d7ded9;--surface:#fff;--soft:#f4f7f5;--green:#176b4d;--green-soft:#e7f3ed;--red:#9e3734;--red-soft:#faecea;--amber:#8b5a12;--amber-soft:#fff4dc;--blue:#285f88}
+    *{box-sizing:border-box;letter-spacing:0}
+    body{margin:0;background:#edf1ef;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;font-size:14px}
+    a{color:var(--blue)} button{font:inherit}
+    .appbar{background:#17231e;color:#fff;border-bottom:3px solid #5ca47e}
+    .appbar-inner{max-width:1120px;margin:auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{font-size:19px;font-weight:750} .phase{font-size:12px;color:#c9d5cf}
+    main{max-width:1120px;margin:auto;padding:22px}
+    .headline{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:18px}
+    h1{font-size:28px;line-height:1.2;margin:0 0 8px} h2{font-size:19px;margin:0} p{line-height:1.6}
+    .subtitle{margin:0;color:var(--muted);max-width:690px}
+    .badges{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:7px}
+    .badge,.state{display:inline-flex;align-items:center;min-height:26px;padding:3px 8px;border:1px solid var(--line);border-radius:4px;font-size:12px;font-weight:700;white-space:nowrap}
+    .badge.grade{background:var(--green-soft);border-color:#b8d9c7;color:var(--green)} .badge.danger,.state.blocked{background:var(--red-soft);border-color:#e5b7b3;color:var(--red)}
+    .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--surface);border:1px solid var(--line);margin-bottom:18px}
+    .metric{padding:15px;border-right:1px solid var(--line)} .metric:last-child{border-right:0} .metric strong{display:block;font-size:24px} .metric span{color:var(--muted);font-size:12px}
+    .band{background:var(--surface);border:1px solid var(--line);margin-bottom:18px}
+    .band-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line)}
+    .dimension-layout{display:grid;grid-template-columns:220px minmax(0,1fr)}
+    .dimension-nav{display:grid;align-content:start;gap:6px;padding:10px;border-right:1px solid var(--line);background:var(--soft)}
+    .dimension-button{padding:10px;text-align:left;border:1px solid transparent;border-radius:4px;background:transparent;color:var(--ink);cursor:pointer}
+    .dimension-button:hover,.dimension-button:focus-visible{border-color:#99b8a8;outline:2px solid transparent} .dimension-button.active{background:#fff;border-color:#8fb4a2;color:var(--green);font-weight:750}
+    .dimension-panel{display:none;padding:19px} .dimension-panel.active{display:block}
+    .panel-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px} .kicker{margin:0 0 4px;color:var(--muted);font-size:12px}
+    .detail-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0}
+    .detail-grid div{border-left:3px solid #8baa9a;padding:5px 10px} .detail-grid span{display:block;color:var(--muted);font-size:12px} .detail-grid strong{display:block;margin-top:5px}
+    .limit{margin:0;padding:10px 12px;border:1px solid #e3b8b4;background:var(--red-soft);color:#73302c}
+    .queue{padding:16px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+    .queue div{border:1px solid var(--line);border-radius:4px;padding:11px;background:#fafcfa} .queue strong{display:block} .queue span{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+    .footer-band{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 16px;background:#f8faf9;border-top:1px solid var(--line)}
+    #interaction-status{margin:0;color:var(--muted)} .links{display:flex;gap:13px;flex-wrap:wrap}
+    @media(max-width:760px){main{padding:14px}.headline{display:block}.badges{justify-content:flex-start;margin-top:12px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.metric:nth-child(2){border-right:0}.metric:nth-child(-n+2){border-bottom:1px solid var(--line)}.dimension-layout{display:block}.dimension-nav{grid-template-columns:repeat(2,minmax(0,1fr));border-right:0;border-bottom:1px solid var(--line)}.detail-grid,.queue{grid-template-columns:1fr}.footer-band{display:block}.links{margin-top:10px}h1{font-size:24px}}
+  </style>
+</head>
+<body data-ui-ready="false" data-active-dimension="project_consistency">
+  <header class="appbar"><div class="appbar-inner"><div class="brand">KMFA</div><div class="phase">S13-P3 · 跨表复核</div></div></header>
+  <main>
+    <section class="headline"><div><h1>跨表复核质量工作台</h1><p class="subtitle">项目、客户、金额、时间四维已完成证据充分性检查。当前缺少共享逐行绑定，结果保持不可比较。</p></div><div class="badges"><span class="badge grade">Q4 / D</span><span class="badge danger">NO_GO</span><span class="badge">内部质量复核</span></div></section>
+    <section class="metrics" aria-label="复核摘要"><div class="metric"><strong>4</strong><span>复核维度</span></div><div class="metric"><strong>0</strong><span>可比较维度</span></div><div class="metric"><strong>4</strong><span>非累加差异项</span></div><div class="metric"><strong>0%</strong><span>比较完成率</span></div></section>
+    <section class="band"><div class="band-header"><h2>四维证据检查</h2><span class="state blocked">0 项精确比较</span></div><div class="dimension-layout"><nav class="dimension-nav" aria-label="复核维度"><button type="button" data-dimension-button="project_consistency" class="dimension-button active">项目一致性</button><button type="button" data-dimension-button="customer_consistency" class="dimension-button">客户一致性</button><button type="button" data-dimension-button="amount_consistency" class="dimension-button">金额一致性</button><button type="button" data-dimension-button="time_consistency" class="dimension-button">时间一致性</button></nav><div><section data-dimension-panel="project_consistency" class="dimension-panel active">
+          <div class="panel-heading"><div><p class="kicker">复核维度 1</p><h2>项目一致性</h2></div><span class="state blocked">NOT_COMPARABLE</span></div>
+          <div class="detail-grid"><div><span>公开结构证据</span><strong>已接入</strong></div><div><span>共享行级绑定</span><strong>未证明</strong></div><div><span>精确比较</span><strong>未执行</strong></div></div>
+          <p class="limit">已进入非累加差异队列。没有逐行绑定前，不得声明一致或不一致，不得形成业务结论。</p>
+        </section><section data-dimension-panel="customer_consistency" class="dimension-panel">
+          <div class="panel-heading"><div><p class="kicker">复核维度 2</p><h2>客户一致性</h2></div><span class="state blocked">NOT_COMPARABLE</span></div>
+          <div class="detail-grid"><div><span>公开结构证据</span><strong>已接入</strong></div><div><span>共享行级绑定</span><strong>未证明</strong></div><div><span>精确比较</span><strong>未执行</strong></div></div>
+          <p class="limit">已进入非累加差异队列。没有逐行绑定前，不得声明一致或不一致，不得形成业务结论。</p>
+        </section><section data-dimension-panel="amount_consistency" class="dimension-panel">
+          <div class="panel-heading"><div><p class="kicker">复核维度 3</p><h2>金额一致性</h2></div><span class="state blocked">NOT_COMPARABLE</span></div>
+          <div class="detail-grid"><div><span>公开结构证据</span><strong>已接入</strong></div><div><span>共享行级绑定</span><strong>未证明</strong></div><div><span>精确比较</span><strong>未执行</strong></div></div>
+          <p class="limit">已进入非累加差异队列。没有逐行绑定前，不得声明一致或不一致，不得形成业务结论。</p>
+        </section><section data-dimension-panel="time_consistency" class="dimension-panel">
+          <div class="panel-heading"><div><p class="kicker">复核维度 4</p><h2>时间一致性</h2></div><span class="state blocked">NOT_COMPARABLE</span></div>
+          <div class="detail-grid"><div><span>公开结构证据</span><strong>已接入</strong></div><div><span>共享行级绑定</span><strong>未证明</strong></div><div><span>精确比较</span><strong>未执行</strong></div></div>
+          <p class="limit">已进入非累加差异队列。没有逐行绑定前，不得声明一致或不一致，不得形成业务结论。</p>
+        </section></div></div><div class="footer-band"><p id="interaction-status" aria-live="polite">已显示“项目一致性”；状态为不可比较。</p><div class="links"><a data-dependency-link="weekly" href="../../../V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT/exports/html/financial_operating_weekly_draft.html">经营周报初稿</a><a data-dependency-link="monthly" href="../../../V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT/exports/html/financial_operating_monthly_draft.html">经营月报初稿</a><a data-dependency-link="receivable" href="../../../V014_S13_P2_POST_REMEDIATION_COLLECTION_RECEIVABLE_AGING/exports/html/collection_receivable_aging_workbench.html">回款应收工作台</a></div></div></section>
+    <section class="band"><div class="band-header"><h2>非累加差异队列</h2><span class="state blocked">待补充可比证据</span></div><div class="queue"><div><strong>项目</strong><span>共享行绑定未证明</span></div><div><strong>客户</strong><span>共享行绑定未证明</span></div><div><strong>金额</strong><span>0 分容差，尚未比较</span></div><div><strong>时间</strong><span>期间与截止日未对齐</span></div></div></section>
+  </main>
+  <script>
+    const labels={"project_consistency":"项目一致性","customer_consistency":"客户一致性","amount_consistency":"金额一致性","time_consistency":"时间一致性"};
+    const buttons=[...document.querySelectorAll('[data-dimension-button]')];
+    const panels=[...document.querySelectorAll('[data-dimension-panel]')];
+    const status=document.getElementById('interaction-status');
+    function activate(dimension){buttons.forEach(button=>button.classList.toggle('active',button.dataset.dimensionButton===dimension));panels.forEach(panel=>panel.classList.toggle('active',panel.dataset.dimensionPanel===dimension));document.body.dataset.activeDimension=dimension;document.body.dataset.lastAction=`dimension:${dimension}:${Date.now()}`;status.textContent=`已切换至“${labels[dimension]}”；仍为不可比较，不形成业务结论。`;}
+    buttons.forEach(button=>button.addEventListener('click',()=>activate(button.dataset.dimensionButton)));
+    document.body.dataset.uiReady='true';
+  </script>
+</body>
+</html>

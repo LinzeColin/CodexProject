@@ -1,0 +1,104 @@
+{
+  "check_count": 24,
+  "check_fail_count": 0,
+  "check_pass_count": 24,
+  "checks": [
+    {
+      "check_id": "app_not_reinstalled",
+      "passed": true
+    },
+    {
+      "check_id": "business_not_executed",
+      "passed": true
+    },
+    {
+      "check_id": "current_difference_state",
+      "passed": true
+    },
+    {
+      "check_id": "eight_lane_bindings",
+      "passed": true
+    },
+    {
+      "check_id": "forty_lane_candidate_associations",
+      "passed": true
+    },
+    {
+      "check_id": "four_lanes",
+      "passed": true
+    },
+    {
+      "check_id": "four_structure_connected",
+      "passed": true
+    },
+    {
+      "check_id": "four_viewports",
+      "passed": true
+    },
+    {
+      "check_id": "no_browser_error",
+      "passed": true
+    },
+    {
+      "check_id": "no_decision_basis",
+      "passed": true
+    },
+    {
+      "check_id": "no_formal_report",
+      "passed": true
+    },
+    {
+      "check_id": "q4_d_no_go",
+      "passed": true
+    },
+    {
+      "check_id": "raw_cross_phase_exact",
+      "passed": true
+    },
+    {
+      "check_id": "raw_exact",
+      "passed": true
+    },
+    {
+      "check_id": "s13_p2_not_performed",
+      "passed": true
+    },
+    {
+      "check_id": "seven_sections",
+      "passed": true
+    },
+    {
+      "check_id": "seven_unique_sources",
+      "passed": true
+    },
+    {
+      "check_id": "stage12_dependency",
+      "passed": true
+    },
+    {
+      "check_id": "thirty_five_unique_candidates",
+      "passed": true
+    },
+    {
+      "check_id": "twenty_eight_section_checks",
+      "passed": true
+    },
+    {
+      "check_id": "two_cross_draft_links",
+      "passed": true
+    },
+    {
+      "check_id": "two_drafts",
+      "passed": true
+    },
+    {
+      "check_id": "upload_not_performed",
+      "passed": true
+    },
+    {
+      "check_id": "zero_raw_value_bound_lanes",
+      "passed": true
+    }
+  ],
+  "schema_version": "kmfa.v014.s13_p1_post_remediation_report_matrix.v1"
+}

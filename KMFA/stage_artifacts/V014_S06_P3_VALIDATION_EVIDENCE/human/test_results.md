@@ -1,0 +1,22 @@
+# Test Results
+
+- Generator: PASS
+- S06-P1 dependency: PASS
+- S06-P2 dependency: PASS
+- S06-P3 validator: PASS
+- Focused unit test: PASS
+- Validation evidence output unit test: PASS
+- No omission: PASS
+- No float money scan: PASS
+- Project governance validator: PASS
+- Lean governance validator: PASS
+- Governance sync validator: PASS
+- Structured JSON/JSONL/CSV parse: PASS
+- Ruby YAML parse: PASS
+- Changed-path raw/private file boundary scan: PASS
+- S06-P3 forbidden field-token scan: PASS
+- High-signal secret scan: PASS
+- Git diff check: PASS
+- Stage 6 review: NOT PERFORMED
+- GitHub upload: NOT PERFORMED
+- Raw inbox read/list/stat/hash/mutation: NOT PERFORMED

@@ -2,11 +2,11 @@
 
 ## Snapshot Metadata
 
-- source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
+- source_base_commit: `00f4187f43960a3b25fc696ae2a15951f4431763`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:bbec5b8736622a8f1e07d68e21e6d78e4c05d1ac941d8664304a25c5fa98c84e`
-- snapshot_event_time: `2026-06-26T21:56:00+10:00`
-- generator_version: `4.0.0`
+- source_snapshot_hash: `sha256:71ff588f5cf2ec841b04e1ffc399d071fe2bee694040fcf243cdec99d54ae30f`
+- snapshot_event_time: `2026-07-13T10:16:00+10:00`
+- generator_version: `4.0.1`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
 ## Current State
@@ -14,11 +14,10 @@
 - Project: `OpenAIDatabase`
 - Path: `OpenAIDatabase`
 - Product version: `0.2.0`
-- Phase/Gate: `D / S5PB-GATE-IN-PROGRESS; MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED`
-- Latest maintenance task: `TASK-OAI-D-003 / OpenAIDatabase CI evidence-schema repair`
-- Models/Formulas/Parameters total: `11 / 11 / 94`
-- Active formulas/parameters: `11 / 94`
-- Machine checked formulas/parameters: `10 / 28`
+- Phase/Gate: `SM-P0-RUN1 / ACC-OAIDB-SM-P0-R1-PASSED-LOCAL`
+- Models/Formulas/Parameters total: `12 / 12 / 99`
+- Active formulas/parameters: `12 / 99`
+- Machine checked formulas/parameters: `9 / 27`
 
 ## Assurance
 
@@ -36,10 +35,10 @@
 ## Delivery
 
 - Readiness: `FAILED`
-- Release gate: `S5PB-GATE-IN-PROGRESS; MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED`
-- Next executable task: `TASK-OAI-B-001`; `TASK-OAI-D-003` is a completed CI repair and does not change delivery readiness.
-- Pending/stale events: `9`
+- Release gate: `ACC-OAIDB-SM-P0-R1-PASSED-LOCAL`
+- Next executable task: `TASK-OAI-B-001`
+- Pending/stale events: `22`
 - Tree-bound events: `0`
-- Commit-bound events: `1`
+- Commit-bound events: `3`
 - Legacy unbound events: `6`
-- Unresolved fact IDs: `7`
+- Unresolved fact IDs: `10`

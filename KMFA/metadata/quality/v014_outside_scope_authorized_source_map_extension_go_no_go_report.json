@@ -1,0 +1,22 @@
+{
+  "app_reinstall_performed": false,
+  "business_execution_performed": false,
+  "business_value_consistency_verified": false,
+  "decision": "NO_GO",
+  "diagnostic_conclusion": "authorized_source_map_extension_input_template_prepared_no_authorized_extension_supplied",
+  "full_raw_to_processed_value_comparison_complete": false,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "github_upload_performed": false,
+  "missing_authorized_extension_record_count": 72,
+  "next_required_input": "owner_or_authorized_delegate_fills_private_authorized_source_map_extension_template_for_72_slots",
+  "phase_id": "V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION",
+  "private_authorized_extension_template_item_count": 72,
+  "project_id": "KMFA",
+  "record_type": "v014_outside_scope_authorized_source_map_extension_go_no_go",
+  "schema_version": "kmfa.v014_outside_scope_authorized_source_map_extension_go_no_go.v1",
+  "source_map_extension_written_by_this_phase": false,
+  "status": "completed_validated_local_only_outside_scope_authorized_source_map_extension_input_no_go",
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-AUTHORIZED-SOURCE-MAP-EXTENSION-20260706",
+  "valid_authorized_extension_record_count": 0,
+  "version": "0.1.4-outside-scope-authorized-source-map-extension"
+}

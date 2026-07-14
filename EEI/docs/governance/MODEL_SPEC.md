@@ -17,7 +17,7 @@ machine_summary:
 
 - model_count: 12
 - formula_count: 12
-- parameter_count: 92
+- parameter_count: 93
 
 The counts above are generated from the canonical machine registries in this directory. Legacy Markdown files are indexes and must not be edited as independent count sources.
 

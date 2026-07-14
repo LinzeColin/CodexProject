@@ -1,0 +1,58 @@
+{
+  "policy_id": "memory_atlas_codex_agent_sync_policy_v1_2_s04_p2",
+  "task_id": "MA-V12-S04P2",
+  "acceptance_id": "ACC-MA-V12-S04P2",
+  "status": "phase_s04_p2_codex_agent_sync_completed_pending_s04_p3",
+  "purpose": "Define Memory Atlas v1.2 S04 P2 Codex local sync and future-agent minimal adapter contracts without implementing GitHub backup.",
+  "sources": {
+    "codex": {
+      "source_id": "codex",
+      "sync_mode": "codex_local_sync",
+      "runtime": "scripts/sync_codex_memory_data.py",
+      "atlasctl": "scripts/atlasctl.py sync --source codex --dry-run",
+      "raw_root": "data/public_raw/codex",
+      "raw_output": "data/public_raw/codex/codex_public_raw_snapshot.{run_id}.{hash}.json",
+      "derived_summary": "data/derived/codex/codex_activity_snapshot.json",
+      "run_log_dir": "data/run_logs/sync_runs",
+      "dry_run_writes_files": false,
+      "raw_write_rule": "append-only",
+      "credential_boundary": "credentials_not_transcript",
+      "raw_content_boundary": "redacted_summary_only_no_raw_transcript_no_plaintext_secret"
+    },
+    "future-agent": {
+      "source_id": "future-agent",
+      "adapter_mode": "minimal_adapter",
+      "runtime": "scripts/sync_future_agent_data.py",
+      "atlasctl": "scripts/atlasctl.py sync --source future-agent --dry-run",
+      "raw_root": "data/public_raw/agents/{agent_id}",
+      "raw_output": "data/public_raw/agents/{agent_id}/{event_id}.json",
+      "derived_summary": "data/derived/agents/{agent_id}/agent_sync_summary.json",
+      "run_log_dir": "data/run_logs/sync_runs",
+      "dry_run_writes_files": false,
+      "apply_mode_requires_input": true,
+      "raw_write_rule": "append-only",
+      "credential_boundary": "credentials_not_transcript",
+      "raw_content_boundary": "public_transcript_or_event_summary_only"
+    }
+  },
+  "atlasctl_contract": {
+    "commands": [
+      "sync --source chatgpt --dry-run",
+      "sync --source codex --dry-run",
+      "sync --source future-agent --dry-run",
+      "build-atlas --dry-run"
+    ],
+    "unknown_source_fails_closed": true,
+    "sync_failure_must_not_generate_fake_data": true
+  },
+  "phase_boundary": {
+    "previous_gate": "S04 P1",
+    "next_gate": "S04 P3",
+    "does_not_implement_github_backup": true,
+    "does_not_push_github": true,
+    "does_not_read_or_store_credentials": true,
+    "does_not_modify_chatgpt_state": true,
+    "does_not_delete_or_overwrite_public_raw": true,
+    "no_github_main_upload": true
+  }
+}

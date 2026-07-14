@@ -1,0 +1,42 @@
+{
+  "guards": [
+    {
+      "automatic_decision_allowed": false,
+      "delegated_to_system": false,
+      "guard_id": "automatic_customer_ranking",
+      "human_authority_required": true,
+      "operation_execution_allowed": false,
+      "requirement": "客户排序与分层必须由有权人员确认",
+      "visible_label": "自动客户排名"
+    },
+    {
+      "automatic_decision_allowed": false,
+      "delegated_to_system": false,
+      "guard_id": "customer_contact",
+      "human_authority_required": true,
+      "operation_execution_allowed": false,
+      "requirement": "客户沟通与联络必须由有权人员决定并执行",
+      "visible_label": "客户联络"
+    },
+    {
+      "automatic_decision_allowed": false,
+      "delegated_to_system": false,
+      "guard_id": "collection_action",
+      "human_authority_required": true,
+      "operation_execution_allowed": false,
+      "requirement": "催收策略与行动必须由有权人员决定并执行",
+      "visible_label": "催收行动"
+    },
+    {
+      "automatic_decision_allowed": false,
+      "delegated_to_system": false,
+      "guard_id": "legal_decision",
+      "human_authority_required": true,
+      "operation_execution_allowed": false,
+      "requirement": "法律判断和处置必须由具备资格及授权的人员处理",
+      "visible_label": "法律决策"
+    }
+  ],
+  "handoff_guard_count": 4,
+  "schema_version": "kmfa.v014.s16_p3.handoff_guards.v1"
+}

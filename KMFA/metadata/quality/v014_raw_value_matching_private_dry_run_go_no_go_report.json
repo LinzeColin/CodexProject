@@ -1,0 +1,34 @@
+{
+  "app_reinstall_allowed": false,
+  "blocker_ids": [
+    "PROCESSED_PRIVATE_VALUE_TARGETS_MISSING",
+    "COMPARABLE_RAW_PROCESSED_VALUE_PAIRS_ZERO",
+    "BUSINESS_VALUE_CONSISTENCY_NOT_VERIFIED",
+    "LINEAGE_FULL_CHECK_BLOCKED_BY_VALUE_CONSISTENCY",
+    "FORMAL_REPORT_RELEASE_BLOCKED_BY_LINEAGE",
+    "GITHUB_UPLOAD_BLOCKED_BY_NO_GO",
+    "APP_REINSTALL_BLOCKED_BY_NO_GO",
+    "BUSINESS_EXECUTION_BLOCKED_BY_NO_GO"
+  ],
+  "business_execution_allowed": false,
+  "business_value_consistency_verified": false,
+  "comparable_value_pair_count": 0,
+  "decision": "NO_GO",
+  "decision_reason": "Private raw value fingerprints were generated read-only, but approved private processed value targets are not available, so raw-to-processed value consistency cannot be claimed.",
+  "formal_report_allowed": false,
+  "github_upload_allowed": false,
+  "lineage_full_check_complete": false,
+  "next_recommended_phase": "V014_PRIVATE_PROCESSED_VALUE_STAGING",
+  "phase_id": "V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN",
+  "processed_value_targets_available": false,
+  "project_id": "KMFA",
+  "record_type": "v014_raw_value_matching_private_dry_run_go_no_go_report",
+  "resolved_blocker_ids": [
+    "RAW_PRIVATE_VALUE_FINGERPRINTS_GENERATED",
+    "RAW_INBOX_READONLY_STAT_GUARD_PASSED",
+    "DRY_RUN_GAP_REPORT_GENERATED"
+  ],
+  "schema_version": "kmfa.v014_raw_value_matching_private_dry_run_go_no_go.v1",
+  "task_id": "KMFA-V014-RAW-VALUE-MATCHING-PRIVATE-DRY-RUN-20260705",
+  "version": "0.1.4"
+}

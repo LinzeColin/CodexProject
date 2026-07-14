@@ -1,0 +1,44 @@
+{
+  "blocked_check_categories": [
+    "lineage"
+  ],
+  "blocker_ids": [
+    "LINEAGE_FULL_CHECK_NOT_COMPLETE",
+    "OFFICIAL_REPORT_RELEASE_NOT_ALLOWED",
+    "S09_PENDING_RECONCILIATION_12",
+    "S18_P3_PENDING",
+    "STAGE18_REVIEW_PENDING"
+  ],
+  "business_decision_basis_allowed": false,
+  "business_execution_allowed": false,
+  "decision": "NO_GO",
+  "decision_reason": "quality gates remain intentionally blocked until lineage full check, official report release and S18-P3 are complete",
+  "delivery_allowed": false,
+  "evidence_ref": "KMFA/stage_artifacts/V014_S18_P2_FULL_REGRESSION_ACCEPTANCE/machine/go_no_go_report.json",
+  "external_connector_allowed": false,
+  "formula_id": "FORM-KMFA-V014-S18P2-FULL-REGRESSION-ACCEPTANCE-001",
+  "github_upload_allowed": false,
+  "github_upload_performed": false,
+  "metadata_target": "KMFA/metadata/quality/v014_s18_p2_go_no_go_report.json",
+  "next_required_phase": "S18-P3",
+  "official_report_release_allowed": false,
+  "passed_check_categories": [
+    "no_omission",
+    "zero_delta",
+    "schema",
+    "ui"
+  ],
+  "phase_completion_upload_allowed": false,
+  "phase_id": "S18-P2",
+  "policy_lock_version": "LOCK-KMFA-V014-S18P2-FULL-REGRESSION-ACCEPTANCE-PUBLIC-SAFE-001",
+  "policy_version": "KMFA-S18P2-FULL-REGRESSION-ACCEPTANCE-001",
+  "project_id": "KMFA",
+  "quality_not_passed_must_not_deliver": true,
+  "raw_business_data_used": false,
+  "raw_inbox_accessed": false,
+  "record_type": "v014_s18_p2_go_no_go_report",
+  "stage_id": "S18",
+  "stage_phase": "S18-P2",
+  "task_id": "S18P2T03",
+  "version": "0.1.4"
+}

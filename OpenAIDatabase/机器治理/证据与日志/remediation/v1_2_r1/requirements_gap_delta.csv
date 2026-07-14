@@ -1,0 +1,5 @@
+requirement_id,before_status,after_status,r1_evidence,remaining_gap,next_remediation_phase
+S06-AC02,PARTIAL,VERIFIED,"Three-view final browser gate finds all three behavior categories and proves all 9 rendered summaries are non-empty Chinese-readable and individually scroll-reachable","None for this criterion",R8
+S10-AC01,FAILED,VERIFIED,"Three-view final browser gate proves arrival briefing is uncovered and scroll-reachable","R2 will improve hierarchy but this criterion is now rendered and usable",R8
+S12-AC01,PARTIAL,PARTIAL,"Six commands are visible without clipping at all target viewports","Buttons still only select explanatory text; no real command execution",R3
+S14-AC02,FAILED,FAILED,"A deterministic real-browser home gate now exists and passes","Gate is not yet integrated into atlasctl final audit and full four-line audit coverage remains incomplete",R8

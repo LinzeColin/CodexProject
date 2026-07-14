@@ -1,0 +1,22 @@
+{
+  "app_reinstall_performed": false,
+  "business_execution_performed": false,
+  "business_value_consistency_verified": false,
+  "decision": "NO_GO",
+  "diagnostic_conclusion": "outside_linked_scope_targets_classified_resolution_requires_authorized_source_map_extension",
+  "full_raw_to_processed_value_comparison_complete": false,
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "github_upload_performed": false,
+  "next_required_input": "owner_or_authorized_delegate_supplies_source_map_extension_for_72_outside_linked_scope_target_slots",
+  "outside_linked_scope_target_slot_count": 72,
+  "outside_scope_authorized_source_map_required_count": 72,
+  "outside_scope_resolution_applied_count": 0,
+  "phase_id": "V014_PROCESSED_TARGET_OUTSIDE_LINKED_SCOPE_RESOLUTION",
+  "project_id": "KMFA",
+  "record_type": "v014_outside_linked_scope_resolution_go_no_go",
+  "schema_version": "kmfa.v014_outside_linked_scope_resolution_go_no_go.v1",
+  "source_map_extension_written_by_this_phase": false,
+  "status": "completed_validated_local_only_outside_linked_scope_resolution_no_go",
+  "task_id": "KMFA-V014-PROCESSED-TARGET-OUTSIDE-LINKED-SCOPE-RESOLUTION-20260706",
+  "version": "0.1.4-processed-target-outside-linked-scope-resolution"
+}

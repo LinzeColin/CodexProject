@@ -1,0 +1,266 @@
+{
+  "archive_id": "codexproject_remote_non_main_branches_20260708",
+  "branch_count": 23,
+  "branches": [
+    {
+      "already_reachable_from_main_at_archive_time": false,
+      "branch_name": "agent/bootstrap-dual-plane-loop",
+      "included_in_bundle_refs": true,
+      "remote_ref": "refs/remotes/origin/agent/bootstrap-dual-plane-loop",
+      "sha": "1e3285d2dae9db21ec41be47e905e4ac83d992d2"
+    },
+    {
+      "already_reachable_from_main_at_archive_time": false,
+      "branch_name": "backup/pfi-root-unification-pre-20260627T081546",
+      "included_in_bundle_refs": true,
+      "remote_ref": "refs/remotes/origin/backup/pfi-root-unification-pre-20260627T081546",
+      "sha": "24919a980aeecb0e22dd876e127ccb35b43a6471"
+    },
+    {
+      "already_reachable_from_main_at_archive_time": false,
+      "branch_name": "backup/serenity-runtime-20260629-192907-cst",
+      "included_in_bundle_refs": true,
+      "remote_ref": "refs/remotes/origin/backup/serenity-runtime-20260629-192907-cst",
+      "sha": "c123cdebbe8c038261ab44afb7bba4dceb0a3036"
+    },
+    {
+      "already_reachable_from_main_at_archive_time": false,
+      "branch_name": "codex/alpha-g6-phase6-owner-gate",
+      "included_in_bundle_refs": true,
+      "remote_ref": "refs/remotes/origin/codex/alpha-g6-phase6-owner-gate",
+      "sha": "b5e5281399dba8048c6fcf5033a588167dc259d3"
+    },
+    {
+      "already_reachable_from_main_at_archive_time": false,
+      "branch_name": "codex/alpha-semantic-extractors",
+      "included_in_bundle_refs": true,
+      "remote_ref": "refs/remotes/origin/codex/alpha-semantic-extractors",
+      "sha": "6cbb8930af1b1d5e6071328ed61de804bd383382"
+    },
+    {
+      "already_reachable_from_main_at_archive_time": false,
+      "branch_name": "codex/eei-a209",
+      "included_in_bundle_refs": true,
+      "remote_ref": "refs/remotes/origin/codex/eei-a209",
+      "sha": "1a92eda17625af083fe5dd9a3b2caafb0acb175c"
+    },
+    {
+      "already_reachable_from_main_at_archive_time": false,
+      "branch_name": "codex/eei-a209-a210-reliability-20260627",
+      "included_in_bundle_refs": true,
+      "remote_ref": "refs/remotes/origin/codex/eei-a209-a210-reliability-20260627",
+      "sha": "cdda172714da29d1b40ea8a94dfa52b084474447"
+    },
+    {
+      "already_reachable_from_main_at_archive_time": false,
+      "branch_name": "codex/eei-a209-browser-reuse",
+      "included_in_bundle_refs": true,
+      "remote_ref": "refs/remotes/origin/codex/eei-a209-browser-reuse",
+      "sha": "15355dccb3b08a39fc14f07fb2e3d32481f6a5de"
+    },
+    {
+      "already_reachable_from_main_at_archive_time": false,
+      "branch_name": "codex/eei-a209-diagnostic-20260630",
+      "included_in_bundle_refs": true,
+      "remote_ref": "refs/remotes/origin/codex/eei-a209-diagnostic-20260630",
+      "sha": "45df264186b5ef9193520eb14aeb64df1f247f3c"
+    },
+    {
+      "already_reachable_from_main_at_archive_time": false,
+      "branch_name": "codex/eei-release-refresh-origin",
+      "included_in_bundle_refs": true,
+      "remote_ref": "refs/remotes/origin/codex/eei-release-refresh-origin",
+      "sha": "9d3188f8959a07edcae3dbc4a71aeb663216da75"
+    },
+    {
+      "already_reachable_from_main_at_archive_time": false,
+      "branch_name": "codex/eei-semantic-extractors",
+      "included_in_bundle_refs": true,
+      "remote_ref": "refs/remotes/origin/codex/eei-semantic-extractors",
+      "sha": "02e98eae3d5c05025f797c80e26f95affbd58f2c"
+    },
+    {
+      "already_reachable_from_main_at_archive_time": false,
+      "branch_name": "codex/kmfa",
+      "included_in_bundle_refs": true,
+      "remote_ref": "refs/remotes/origin/codex/kmfa",
+      "sha": "d1806ebe8dea56753f7dcffeee42264ae1e697fc"
+    },
+    {
+      "already_reachable_from_main_at_archive_time": true,
+      "branch_name": "codex/mgmt-monthly-report-skill-20260708",
+      "included_in_bundle_refs": false,
+      "remote_ref": "refs/remotes/origin/codex/mgmt-monthly-report-skill-20260708",
+      "sha": "e7ad0b102cab44151bdfe182267b4acd50d23f1c"
+    },
+    {
+      "already_reachable_from_main_at_archive_time": false,
+      "branch_name": "codex/other8-s4pbt01-alpha-structure-20260625",
+      "included_in_bundle_refs": true,
+      "remote_ref": "refs/remotes/origin/codex/other8-s4pbt01-alpha-structure-20260625",
+      "sha": "14f236118a16fa271ba80ba0fd0a511b590fc3d3"
+    },
+    {
+      "already_reachable_from_main_at_archive_time": false,
+      "branch_name": "codex/other8-s6pat02-alpha-owner-flow-20260625",
+      "included_in_bundle_refs": true,
+      "remote_ref": "refs/remotes/origin/codex/other8-s6pat02-alpha-owner-flow-20260625",
+      "sha": "f897b829c251216559202ed4c69d1abeac697a71"
+    },
+    {
+      "already_reachable_from_main_at_archive_time": false,
+      "branch_name": "codex/pfi-big-data-simulator-qbvs-backup-20260620",
+      "included_in_bundle_refs": true,
+      "remote_ref": "refs/remotes/origin/codex/pfi-big-data-simulator-qbvs-backup-20260620",
+      "sha": "053c96a226a03b0a2249b87070f4bb90ee885a44"
+    },
+    {
+      "already_reachable_from_main_at_archive_time": false,
+      "branch_name": "codex/pfi-os-phase-0-a-backup-20260619",
+      "included_in_bundle_refs": true,
+      "remote_ref": "refs/remotes/origin/codex/pfi-os-phase-0-a-backup-20260619",
+      "sha": "3e566d9375ae8ba186048b5b3a2674429df9df7d"
+    },
+    {
+      "already_reachable_from_main_at_archive_time": false,
+      "branch_name": "codex/pfi-stage6-meta-qbvs-sync",
+      "included_in_bundle_refs": true,
+      "remote_ref": "refs/remotes/origin/codex/pfi-stage6-meta-qbvs-sync",
+      "sha": "2bcd3f72e5bf8f67f46cd80592ba05b2d9125145"
+    },
+    {
+      "already_reachable_from_main_at_archive_time": false,
+      "branch_name": "codex/review9-s5pbt01-eei-migration",
+      "included_in_bundle_refs": true,
+      "remote_ref": "refs/remotes/origin/codex/review9-s5pbt01-eei-migration",
+      "sha": "946a854c8df4b37dce2361a789ad884088d945c5"
+    },
+    {
+      "already_reachable_from_main_at_archive_time": false,
+      "branch_name": "codex/wda",
+      "included_in_bundle_refs": true,
+      "remote_ref": "refs/remotes/origin/codex/wda",
+      "sha": "bf30ca1579311e79c149a3b18852659672ee6cd0"
+    },
+    {
+      "already_reachable_from_main_at_archive_time": false,
+      "branch_name": "macdata-airM2",
+      "included_in_bundle_refs": true,
+      "remote_ref": "refs/remotes/origin/macdata-airM2",
+      "sha": "765e475a3c447ef6cac965fd6ea7596ce8fe8ae1"
+    },
+    {
+      "already_reachable_from_main_at_archive_time": false,
+      "branch_name": "macdata-proM2",
+      "included_in_bundle_refs": true,
+      "remote_ref": "refs/remotes/origin/macdata-proM2",
+      "sha": "936ba0662dc625d29f6b742c2ac6450919ffe58d"
+    },
+    {
+      "already_reachable_from_main_at_archive_time": false,
+      "branch_name": "migration/hot-handoff-20260629-legacy-mac",
+      "included_in_bundle_refs": true,
+      "remote_ref": "refs/remotes/origin/migration/hot-handoff-20260629-legacy-mac",
+      "sha": "9266a609eed3f8143f939abad29e7295e8d52f53"
+    }
+  ],
+  "bundle": {
+    "byte_size": 1161813692,
+    "filename": "codexproject_remote_non_main_branches_20260708.bundle",
+    "sha256": "ec03e395898169ff1a625732bb1cb1582c5576e0f611c1be91d7ffad78f928e6",
+    "verify_command": "git bundle verify codexproject_remote_non_main_branches_20260708.bundle"
+  },
+  "created_at_utc": "2026-07-08T09:12:57Z",
+  "delete_remote_branches_after_archive": true,
+  "main_ref_at_archive_time": "775385f88552e3d2b8257bab7646f7fa5a220df2",
+  "parts": [
+    {
+      "byte_size": 94371840,
+      "filename": "parts/codexproject_remote_non_main_branches_20260708.bundle.part-000",
+      "index": 0,
+      "sha256": "d7aa2782b2c7fd04f326550692e8cae6a430386b63464b88fbbb5e0723db8e01"
+    },
+    {
+      "byte_size": 94371840,
+      "filename": "parts/codexproject_remote_non_main_branches_20260708.bundle.part-001",
+      "index": 1,
+      "sha256": "b00954ca7bc0785397639ee286442ee869a7eb919f29c167ac959504a89b321d"
+    },
+    {
+      "byte_size": 94371840,
+      "filename": "parts/codexproject_remote_non_main_branches_20260708.bundle.part-002",
+      "index": 2,
+      "sha256": "f9ff986fa33ed752b186c25b2a7d9894714d23d992ab313a3d349ffbf8a3be9b"
+    },
+    {
+      "byte_size": 94371840,
+      "filename": "parts/codexproject_remote_non_main_branches_20260708.bundle.part-003",
+      "index": 3,
+      "sha256": "b5f2b42b227984bcbbb0504af46c5a8492be28ea0fd8966e1e1a6b50818ce360"
+    },
+    {
+      "byte_size": 94371840,
+      "filename": "parts/codexproject_remote_non_main_branches_20260708.bundle.part-004",
+      "index": 4,
+      "sha256": "1a11ea26acbd2e6aeb0dd4e1ec95b083ca2cceee01d3646aa8df1248212704fa"
+    },
+    {
+      "byte_size": 94371840,
+      "filename": "parts/codexproject_remote_non_main_branches_20260708.bundle.part-005",
+      "index": 5,
+      "sha256": "c71d73eb0dc601c3ffd81792d8c87a7b074b236291beee384fd3398519c986ea"
+    },
+    {
+      "byte_size": 94371840,
+      "filename": "parts/codexproject_remote_non_main_branches_20260708.bundle.part-006",
+      "index": 6,
+      "sha256": "1574dbbf732683dc7cd8087bcbb48e0082897cb4632ba37d2254f399906d4308"
+    },
+    {
+      "byte_size": 94371840,
+      "filename": "parts/codexproject_remote_non_main_branches_20260708.bundle.part-007",
+      "index": 7,
+      "sha256": "9a3386bcb7ba18cbec10d86d1e4abe3d439993d0aa19a9ce1510ffe55ef5edc2"
+    },
+    {
+      "byte_size": 94371840,
+      "filename": "parts/codexproject_remote_non_main_branches_20260708.bundle.part-008",
+      "index": 8,
+      "sha256": "98c9024fb8940bcef820f312b231ad827b73353674ddb713b6b68122f4fc1e6a"
+    },
+    {
+      "byte_size": 94371840,
+      "filename": "parts/codexproject_remote_non_main_branches_20260708.bundle.part-009",
+      "index": 9,
+      "sha256": "f4c35d3705b8359cc69f4d6bae166fff7995819b3a679482a53cfd2e46bacf73"
+    },
+    {
+      "byte_size": 94371840,
+      "filename": "parts/codexproject_remote_non_main_branches_20260708.bundle.part-010",
+      "index": 10,
+      "sha256": "1cdba8153251da20b1b5998043cde0b7522e5cc63ba30f0dee78ad9105d47923"
+    },
+    {
+      "byte_size": 94371840,
+      "filename": "parts/codexproject_remote_non_main_branches_20260708.bundle.part-011",
+      "index": 11,
+      "sha256": "5d985655c66592733d5b34bbdeeafd9e2c77c6f74dc5fa6bca3f2feeab032863"
+    },
+    {
+      "byte_size": 29351612,
+      "filename": "parts/codexproject_remote_non_main_branches_20260708.bundle.part-012",
+      "index": 12,
+      "sha256": "9cd9b4191b883b2fc1c3491fb3ef980894421f474eaa91d3ede4d405dead3f90"
+    }
+  ],
+  "path": "OpenAIDatabase/data/raw_archives/git-remote-branches/2026-07-08",
+  "purpose": "Preserve all non-main remote branch tips before deleting open remote branches during CodexProject cleanup.",
+  "repository": "LinzeColin/CodexProject",
+  "schema_version": "codexproject_remote_branch_archive_manifest.v1",
+  "split": {
+    "max_part_bytes": 94371840,
+    "method": "split -b 90m -a 3 -d",
+    "part_count": 13,
+    "restore_command": "cat parts/codexproject_remote_non_main_branches_20260708.bundle.part-* > codexproject_remote_non_main_branches_20260708.bundle && shasum -a 256 codexproject_remote_non_main_branches_20260708.bundle && git bundle verify codexproject_remote_non_main_branches_20260708.bundle"
+  }
+}

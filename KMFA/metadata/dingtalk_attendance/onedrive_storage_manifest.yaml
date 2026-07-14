@@ -1,0 +1,15 @@
+project_id: KMFA
+skill_id: kmfa-dingtalk-attendance-skill
+automation_name: 每日早晚钉钉考勤检查
+root: /Users/linzezhang/OneDrive/dingtalk_attendance
+month_folder_pattern: YYYYMM
+folder_depth_policy: root_then_month_only
+file_patterns:
+  raw: "{run_id}.raw.jsonl.gz"
+  management_report: "{run_id}.management.md"
+  hr_report: "{run_id}.hr.md"
+  archive_manifest: "{run_id}.manifest.json"
+  dispatch_receipt: "{run_id}.dispatch.json"
+  cleanup_audit: "{run_id}.cleanup.json"
+github_manifest_public_link_allowed: false
+github_records_local_path_ref_only: true

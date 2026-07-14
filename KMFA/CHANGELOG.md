@@ -1,4 +1,1913 @@
+## 0.1.4-one-time-github-main-upload - 2026-07-13
+
+- 建立 `V014_ONE_TIME_GITHUB_MAIN_UPLOAD` public-safe closure evidence、validator、focused tests 和治理链，目标为唯一非 force `HEAD -> refs/heads/main` 推送及远端 commit parity。
+- 合并 `origin/main` 后修复两组集成回归：v1.4 S17 public-safe 锁定不再继承后续 owner 明文授权策略；考勤 canonical prompt 与 metadata 镜像统一到项目级 worktree 和 bounded runner 边界。
+- 本次上传明确排除 raw/private 明文、压缩包、Excel、PDF、私有 CSV、数据库、银行流水、合同、工资、税务材料、凭据和 secret。
+- 代码上传不改变业务门禁：`Q4 / D / NO_GO / 3-9-2-1`、lineage full=false、delivery=false；App 重装延期到下一独立 phase。
+
+## 0.1.4-final-overall-review - 2026-07-12
+
+- 完成 v1.4 Stage 1-18 current evidence 最终整体复审：S01-S08 original 与 S09-S18 post-remediation validators 18/18 PASS。
+- bundled Python 全量回归通过；修复 S10 checker、S17 test、S18 review checker/test 的历史 active-phase 耦合，S14 generator-backed test 固定证据污染，并清理历史 tracked raw 文件名引用。
+- 14 findings=`6 fixed / 8 passed / 0 open`，cross-stage contracts mismatch=0，HTML 人类流程=`54 PASS / 0 WARN / 0 FAIL`，tracked actual raw filename hits=0。
+- raw 最终复审前后与跨 S18 review 快照一致；私有中文差异报告保留 `3/9/2/1` 未关闭状态。
+- 业务保持 `Q4 / D / NO_GO`、lineage full=false、delivery=false；仅将下一独立 public-safe GitHub main upload 标记为 ready，本轮未上传且未重装 App。
+
+## 0.1.4-s18-post-remediation-stage-review - 2026-07-12
+
+- 完成 `V014_S18_POST_REMEDIATION_STAGE_REVIEW`：复跑 S18-P1/P2/P3 focused tests=`30/30 PASS`、strict validators=`3/3 PASS`。
+- 修复 3 个 active-phase 时态耦合 findings：P2 test、P3 test、P3 checker；复审汇总为 `3 fixed / 9 passed / 0 open`。
+- 18 个跨 phase contracts 全部 PASS：P1->P2->P3->review 路由、Q4/D/NO_GO、3-9-2-1、raw、交付门禁和 completion sequence 一致。
+- P1 精度/压力、P2 五类回归/54 UI、P3 三类 connectors/4 OpMe/6 backlog 均保持通过，lineage full=false。
+- raw review 前后、跨 S18-P3 和 fresh current 快照一致；最终整体复审、upload、reinstall、真实连接器、凭据、正式报告与业务执行均未执行。
+
+## 0.1.4-s18-p3-post-remediation-integration-preparation - 2026-07-12
+
+- 完成 `V014_S18_P3_POST_REMEDIATION_INTEGRATION_PREPARATION`：锁定红圈、金蝶、WPS 三类后续只读 connector 方案，全部为 proposal-only、未授权、未连接、未调用。
+- 完成 OpMe 轻入口方案：4 个入口面仅交换公开安全状态与索引指针，不共享数据库或业务运行时。
+- 发布 6 条下一阶段 Backlog，全部未启动；交付顺序固定为 Stage 18 复审及修复、v1.4 最终整体复审及修复、一次性 GitHub main upload、App 入口重装与一致性验证。
+- raw phase 前后、跨 S18-P2 与当前快照一致；raw 业务内容未用于方案，未修改、复制或备份 raw。
+- 当前保持 `Q4 / D / NO_GO / 3-9-2-1`；Stage 18 review、最终整体复审、upload、reinstall、真实连接器、凭据处理、正式报告与业务执行均未执行。
+
+## 0.1.4-s18-p2-post-remediation-full-regression-acceptance - 2026-07-12
+
+- 完成 `V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE`：实际执行 no-omission、zero-delta、schema、lineage、UI 五类 current checks，command failure=0。
+- no-omission、zero-delta、schema、UI 为 PASS；lineage validator 为 BLOCKED_SAFE，明确 full lineage 未完成且不得交付。
+- S01-S17 current review manifest 17/17 通过身份、状态、开放 finding、引用和公开 hash 校验；S18 仅完成 P1/P2，P3 与整体复审待执行。
+- 本轮重新执行 Playwright human-flow audit：6 files / 54 rows / 54 PASS / 0 WARN / 0 FAIL；未复用旧动态状态。
+- raw phase 前后、跨 S18-P1 与当前快照一致；保持 `Q4 / D / NO_GO / 3-9-2-1`，未执行 S18-P3、Stage 18 review、GitHub upload 或 app reinstall。
+
+## 0.1.4-s18-p1-post-remediation-precision-stress - 2026-07-12
+
+- 完成 `V014_S18_P1_POST_REMEDIATION_PRECISION_STRESS`：实际执行 5 类 public-safe synthetic 精度/压力场景，acceptance=`19/19 PASS`。
+- 金额通过/拒绝=`9/9 + 9/9`；zero-delta exact PASS，1 分 mismatch 被阻断并要求进入差异队列。
+- 连续 3 次导入最终状态 hash 一致；1200 条 synthetic file metadata 首次写入 1198 条，后两次各识别 1198 条重复且新增为 0。
+- 坏文件和缺字段生成 2 类 blocking error report；实际 elapsed 使用 `perf_counter_ns` 测量并低于 1500ms 预算，旧固定 348ms 仅作结构夹具。
+- raw phase 前后、跨 Stage 17 review 与当前快照一致；保持 `Q4 / D / NO_GO / 3-9-2-1`，未执行 S18-P2/P3、Stage 18 review、GitHub upload 或 app reinstall。
+
+## 0.1.4-s17-post-remediation-stage-review - 2026-07-12
+
+- 完成 `V014_S17_POST_REMEDIATION_STAGE_REVIEW`：当前 S17-P1/P2/P3 focused tests=`30/30 PASS`，strict validators=`3/3 PASS`。
+- 修复 P3 非 canonical `finance_operator`、4 个 runbook 缺审计 action/7字段映射、P1 notification scope 过期时态、P2 test/checker 与 P3 test 的 active-phase 耦合，以及 review 证据引用断链。
+- 6 项跨 phase 合同检查全部通过；11 项 findings=`7 fixed / 4 passed / 0 open`，acceptance=`16/16 PASS`。
+- 真实通知、完整正文、正式报告、raw 复制/备份、生产恢复、外部服务、持久业务写入和业务执行均为 0。
+- raw review 前后、跨 S17-P3 与当前快照一致；保持 `Q4 / D / NO_GO / 3-9-2-1`，未执行 S18、GitHub upload 或 app reinstall。
+
+## 0.1.4-s17-p3-post-remediation-operations-sop - 2026-07-12
+
+- 完成 `V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP` 本地 phase：导入、复核、发布、回滚 4 类人工手册共 20 个步骤，全部要求前置检查、证据与回滚。
+- 财务 SOP 与岗位交接 2 项 public-safe 知识索引共 12 个检查点，只作知识和检查清单，不参与自动财务执行。
+- 在 ignored private runtime 完成 2 个无效合成候选拒绝和 1 个合成夹具备份、损坏检测、byte-exact 恢复；未复制/备份 raw，生产恢复为 0。
+- 历史 S17-P3 的 4 runbooks / 2 knowledge / 2 metadata-only drills 只作结构夹具；合成载荷、哈希与诊断未进入公开证据。
+- raw phase 前后、跨 S17-P2 与当前快照一致；保持 `Q4 / D / NO_GO / 3-9-2-1`，未执行 Stage 17 review、S18、GitHub upload、app reinstall、正式报告、差异关闭、持久业务写入或 business execution。
+
+## 0.1.4-s17-p2-post-remediation-notification - 2026-07-12
+
+- 完成 `V014_S17_P2_POST_REMEDIATION_NOTIFICATION` 本地 phase：报告生成完成、重大风险、数据源缺失三类规则与当前触发评估均为 `3/3 PASS`。
+- 当前触发证据分别绑定 2 份 D级受限报告预览、12 个 hard block 和 4 个数据源未决指标；历史 S17-P2 的三条规则/事件/dispatch 只作结构夹具。
+- 生成 3 条全中文短提醒、3 个已存在应用内链接和 3 条 append-only metadata outbox；每条包含 S17-P1 通知审计契约规定的 7 个字段。
+- 篡改门禁拒绝完整报告正文、附件、收件地址明文、外部连接器、真实投递或缺失链接；真实投递/完整正文/附件/地址/连接器=`0/0/0/0/0`。
+- raw phase 前后、跨 S17-P1 与当前快照一致；保持 `Q4 / D / NO_GO / 3-9-2-1`，未执行 S17-P3、Stage 17 review、GitHub upload、app reinstall、正式报告、差异关闭、持久业务写入或 business execution。
+
+## 0.1.4-s17-p1-post-remediation-access-security - 2026-07-12
+
+- 完成 `V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY` 本地 phase，建立管理层、财务、复核、只读四角色最小权限策略，14 项显式授权与 9 项关键拒绝动作均采用 deny-by-default。
+- 16 项授权探针得到 `8 ALLOW / 8 DENY / 0 mismatch`；未知角色与未知动作均拒绝，未创建真实用户、凭据、身份提供方或持久授权记录。
+- 15 类敏感数据全部禁止公开仓库、Git 上传和明文保存，仅允许 public-safe hash、引用或状态元数据；tracked 禁止后缀与 private runtime 路径均为 0。
+- 锁定导入、处理、报告、导出、通知五类审计事件契约及 7 个必填字段；5 项 schema 探针全部通过，真实业务审计事件、通知和完整报告正文均为 0。
+- raw phase 前后、跨 Stage 16 review 与当前快照一致；保持 `Q4 / D / NO_GO / 3-9-2-1`，未执行 S17-P2/P3、Stage 17 复审、GitHub upload、app reinstall、正式报告、差异关闭、持久业务写入或 business execution。
+
+## 0.1.4-s16-p3-post-remediation-customer-business-analysis - 2026-07-12
+
+- 完成 `V014_S16_P3_POST_REMEDIATION_CUSTOMER_BUSINESS_ANALYSIS` 本地 phase：只读接入客户价值、项目毛利、回款质量和账龄风险 4 类结构。
+- 双次探针覆盖 5 个 raw、48 个 XLSX 容器、25 可解析、23 不可解析、4,198 个工作表、3,342 个唯一候选、3,772 个结构关联和 374 个跨维候选，探针不一致为 0。
+- 锁定客户/项目/期间/来源 4 组件绑定契约、4 维客户摘要契约及 4 类风险规则；当前权威客户/项目/值绑定、客户摘要、风险事项、自动排名和公开业务值均为 0。
+- 隔离旧 S16-P3 的 7 条来源线、4 条价值信号、4 条风险信号、4 条客户摘要和 4 项交接门禁；旧 S11 的 4 条未归属项目行不作为客户事实。
+- baseline/current HTML `54/54 / 12/12 PASS`；2 视口、8 次维度交互、8 次规则交互、4 条 HTTP 与 4 次真实导航通过，console/overflow 为 0。
+- raw phase 前后、跨 S16-P2 与当前快照一致；保持 Q4 / D / NO_GO / 3-9-2-1，未执行 Stage 16 review、客户排名、客户联络、催收、法律决策、开票、付款、银行、GitHub upload、app reinstall、正式报告、差异关闭或 business execution。
+
+## 0.1.4-s16-p2-post-remediation-project-status-lifecycle - 2026-07-12
+
+- 完成 `V014_S16_P2_POST_REMEDIATION_PROJECT_STATUS_LIFECYCLE` 本地 phase：只读接入生产项目状态、开工、完工、结算、开票和回款 6 类结构。
+- 双次探针覆盖 5 个 raw、48 个 XLSX 容器、25 可解析、23 不可解析、4,198 个工作表、2,021 个唯一候选、2,277 个结构关联和 224 个跨类型候选，探针不一致为 0。
+- 锁定 6 状态、5 转换的生命周期契约，以及开工未完工、完工未结算、结算未开票、开票未回款 4 类异常规则；当前权威行/值、生命周期记录和实际异常事项均为 0。
+- 隔离旧 S16-P2 的 4 条生命周期记录、3 条异常事项和 3 项交接门禁；现场施工、安全签字和技术签字保持人工权限边界。
+- baseline/current HTML `54/54 / 14/14 PASS`；2 视口、12 次结构线交互、8 次规则交互、4 条 HTTP 与 4 次真实导航通过，console/overflow 为 0。
+- raw phase 前后、跨 S16-P1 与当前快照一致；保持 Q4 / D / NO_GO / 3-9-2-1，未执行 S16-P3、Stage 16 review、现场或签字动作、开票、催收、付款、银行、GitHub upload、app reinstall、正式报告、差异关闭或 business execution。
+
+## 0.1.4-s16-p1-post-remediation-subcontract-procurement - 2026-07-12
+
+- 完成 `V014_S16_P1_POST_REMEDIATION_SUBCONTRACT_PROCUREMENT` 本地 phase：只读接入外协合同、采购订单、付款申请、发票和项目归属 5 类结构。
+- 双次探针覆盖 5 个 raw、48 个 XLSX 容器、25 可解析、23 不可解析、4,198 个工作表、1,335 个唯一候选、1,647 个结构关联和 274 个跨类型候选，探针不一致为 0。
+- 当前权威交易行/值绑定、交易物化、项目匹配、未归集成本项目和异常候选均为 0；锁定未归集成本、重复付款、无合同付款和跨项目费用 4 类人工复核规则。
+- 隔离旧 S16-P1 的 5 条项目匹配、2 条未归集成本和 4 条异常候选；缺少权威行级归属时不得把结构候选当作业务事实。
+- baseline/current HTML `54/54 / 13/13 PASS`；2 视口、10 次结构线交互、8 次规则交互、4 条 HTTP 与 4 次真实导航通过，console/overflow 为 0。
+- raw phase 前后、跨 Stage 15 review 与当前快照一致；保持 Q4 / D / NO_GO / 3-9-2-1，未执行 S16-P2/P3、Stage 16 review、采购、付款审批、付款、银行、GitHub upload、app reinstall、正式报告、差异关闭或 business execution。
+
+## 0.1.4-s15-post-remediation-stage-review - 2026-07-11
+
+- 完成 `V014_S15_POST_REMEDIATION_STAGE_REVIEW` 本地整体复审：当前 S15-P1/P2/P3 focused tests `24/24 PASS`，strict validators `3/3 PASS`，`10 fixed / 0 open`。
+- 隔离旧 Stage 15 review 的 4 条合成绩效事实、4 条工资就绪记录和 16 项复核；当前事实行、实际异常项目、接口 payload、就绪记录和薪资数值均为 0。
+- 修复 P1 缺 P2/P3 入口、P2 缺 P3 入口、三页过期 footer 与 P1/P2/P3 移动端表格；三页形成 6 条强连通有向边。
+- v1.4 baseline `54/54 PASS`，当前页面 `16/16 + 15/15 + 14/14 PASS`；6 视口、6 次代表性交互、6 条 HTTP 与 6 次真实导航通过，console error 与横向溢出为 0。
+- raw review 前后、跨 S15-P3 与当前快照一致；保持 Q4 / D / NO_GO / 3-9-2-1，未执行 S16、工资奖金、薪资导出、最终发放、GitHub upload、app reinstall、正式报告、差异关闭或 business execution。
+
+## 0.1.4-s15-p3-post-remediation-salary-boundary - 2026-07-11
+
+- 完成 `V014_S15_P3_POST_REMEDIATION_SALARY_BOUNDARY` 本地 phase：预留 1 个 schema-only 绩效事实输出接口、6 个字段映射和 1 个未来工资系统读取草案。
+- 来源事实、接口 payload、读取就绪记录、项目/员工引用和薪资数值均为 0；未创建 live API、connector、文件导出、定时同步或外部写入。
+- 登记绩效事实质量、薪酬政策映射、最终薪酬和发放放行 4 个人工检查点，全部未执行且不可自动化；隔离旧 S15-P3 的 4 条合成就绪记录和 16 个复核引用。
+- v1.4 baseline 54/54 PASS、当前页 14/14 PASS；2 视口、12 次字段交互、4 条依赖 HTTP 与 4 次真实导航通过，console error 与横向溢出为 0。
+- raw phase 前后、跨 S15-P2 与当前快照一致；保持 Q4 / D / NO_GO / 3-9-2-1，未执行 Stage 15 review、S16、工资奖金、薪资导出、最终发放、GitHub upload、app reinstall、正式报告、差异关闭或 business execution。
+
+## 0.1.4-s15-p2-post-remediation-performance-review-list - 2026-07-11
+
+- 完成 `V014_S15_P2_POST_REMEDIATION_PERFORMANCE_REVIEW_LIST` 本地 phase：输出 1 个六字段绩效事实表结构，权威/合成项目事实行与公开业务值均为 0。
+- 输出 1 个含 6 条字段规则的异常项目判定方法和 6 项字段级复核事项；实际异常项目、项目级复核事项和绩效分数均为 0。
+- 隔离旧 S15-P2 的 4 条合成项目事实和 16 条事项，当前证据不含 project_ref、项目/人员明文、金额、比率或日期明细。
+- v1.4 baseline 54/54 PASS、当前页 14/14 PASS；2 视口、12 次事项交互、4 条依赖 HTTP 与 4 次真实导航通过，console error 与横向溢出为 0。
+- raw phase 前后、跨 S15-P1 与当前快照一致；保持 Q4 / D / NO_GO / 3-9-2-1，未执行 S15-P3、Stage 15 review、工资奖金、薪资导出、GitHub upload、app reinstall、正式报告、差异关闭或 business execution。
+
+## 0.1.4-s15-p1-post-remediation-performance-fact-fields - 2026-07-11
+
+- 完成 V014_S15_P1_POST_REMEDIATION_PERFORMANCE_FACT_FIELDS 本地 phase：定义开票金额、毛利率、结算速度、回款速度、审计偏差、客情费率 6 个必需字段。
+- 连接 6/6 项目成本与回款 public-safe 结构引用；当前权威行/值绑定、已物化绩效事实和公开业务值均为 0，六字段全部进入人工复核。
+- 只读双次探针覆盖 5 个 raw、48 个 XLSX 容器、25 可解析、23 不可解析和 4,198 个可解析工作表；六字段候选为 9/1/2/4/2/2，唯一候选 13、跨字段 3、指纹不一致 0。
+- v1.4 baseline 54/54 PASS、当前页 14/14 PASS；2 视口、12 次字段交互、4 条依赖 HTTP 与 4 次真实导航通过，console error 与横向溢出为 0。
+- 保持 Q4 / D / NO_GO / 3-9-2-1；未执行 S15-P2/P3、Stage 15 review、工资奖金、薪资导出、GitHub upload、app reinstall、正式报告、差异关闭或 business execution。
+
+## 0.1.4-s14-post-remediation-stage-review - 2026-07-11
+
+- 完成 `V014_S14_POST_REMEDIATION_STAGE_REVIEW` 本地整体复审：当前 S14-P1/P2/P3 focused tests 共 `26/26 PASS`，strict validators `3/3 PASS`，`11 fixed / 0 open`。
+- 隔离旧 pre-remediation 的 pending、静态资金/税务/政策输出和 upload-ready 语义；修复 P1/P2/P3 阶段互链、过期状态与 P1/P2 移动端表格。
+- 当前资金业务事项、开票纳税问题候选/已物化汇总、政策权威绑定/正式资格结论均为 0；3 页形成 6 条强连通有向边。
+- v1.4 基线 `54/54 PASS`；当前页面 `13/13 + 12/12 + 13/13 PASS`，6 视口、6 次代表性交互、6 条 HTTP 与 6 次真实导航通过，console error 与横向溢出为 0。
+- 5 个 raw 文件在 review 前后、跨 S14-P3 和当前快照一致；保持 `Q4 / D / NO_GO / 3-9-2-1`，未执行 S15、GitHub upload、app reinstall、正式报告、差异关闭、财务/政策动作或 business execution。
+
+## 0.1.4-s14-p3-post-remediation-policy-evidence-plan - 2026-07-11
+
+- 完成 V014_S14_P3_POST_REMEDIATION_POLICY_EVIDENCE_PLAN 本地 phase：登记科小、高新、专精特新、小巨人和研发费用 5 类 public-safe 证据目录及 23 类必需证据。
+- 只读探针覆盖 5 个 raw 文件、48 个 XLSX 容器；25 个可解析、23 个保留不可解析诊断，4,198 个可解析工作表中识别 3,830 个唯一政策词法候选，二次指纹不一致为 0。
+- 仅输出 5 个证据缺口和 5 条风险提示；权威证据绑定、证据完整目录、正式资格结论、政策评分、政策申报、补贴申请、业务事项和公开金额均为 0。
+- v1.4 基线 54/54 PASS、当前页 13/13 PASS；2 视口、10 次目录交互、4 条依赖 HTTP 与 4 次真实导航通过，console error 与横向溢出为 0。
+- 保持 Q4 / D / NO_GO / 3-9-2-1；未执行 Stage 14 review、S15、政策动作、GitHub upload、app reinstall、正式报告、差异关闭或 business execution。
+
+## 0.1.4-s14-p2-post-remediation-invoice-tax-plan - 2026-07-11
+
+- 完成 V014_S14_P2_POST_REMEDIATION_INVOICE_TAX_PLAN 本地 phase：开票计划、纳税明细、开票纳税资金汇总 3 条 public-safe 结构接入。
+- 只读探针覆盖 5 个 raw 文件、48 个 XLSX 容器；25 个可解析、23 个保留不可解析诊断，4,198 个可解析工作表中识别 612 个唯一开票/税务结构候选，二次指纹不一致为 0。
+- 待开票、已开票未回款、税率异常候选 3 类问题方法和 3 类资金汇总方法定义完成；因权威行、期间、发票、项目、客户、回款、税率与数值绑定均未证明，业务候选、已物化汇总和公开金额保持 0。
+- v1.4 基线 54/54 PASS、复审后当前页 12/12 PASS；2 视口、6 次方法交互、4 条依赖 HTTP 与 4 次真实导航通过，console error 与横向溢出为 0。
+- 保持 Q4 / D / NO_GO / 3-9-2-1；未执行 S14-P3、Stage 14 review、发票开具、纳税申报、付款/银行动作、GitHub upload、app reinstall、正式报告、差异关闭或 business execution。
+
+## 0.1.4-s14-p1-post-remediation-fund-cash-loan-plan - 2026-07-11
+
+- 完成 `V014_S14_P1_POST_REMEDIATION_FUND_CASH_LOAN_PLAN` 本地 phase：账户清单、月度现金、资金计划、贷款明细 4 条 public-safe 结构与私有候选解析链接入。
+- 只读探针覆盖 5 个 raw 文件、48 个 XLSX 容器；25 个可解析、23 个保留不可解析诊断，180 个唯一候选工作表二次指纹不一致为 0。
+- 现金压力、贷款到期、账户余额汇总 3 类方法定义完成；因权威行、期间、账户、合同与数值绑定均未证明，已证明业务事项和公开业务金额保持 0。
+- v1.4 基线 `54/54 PASS`、复审后当前页 `13/13 PASS`；2 视口、6 次方法交互、4 条依赖 HTTP 与 4 次真实导航通过，console error 与横向溢出为 0。
+- 保持 `Q4 / D / NO_GO / 3-9-2-1`；未执行 S14-P2/P3、Stage 14 review、付款审批、银行/贷款动作、GitHub upload、app reinstall、正式报告、差异关闭或 business execution。
+
+## 0.1.4-s13-post-remediation-stage-review - 2026-07-11
+
+- 完成 `V014_S13_POST_REMEDIATION_STAGE_REVIEW` 本地整体复审：当前 S13-P1/P2/P3 focused tests 与 strict validators 通过，`9 fixed / 0 open`。
+- 修复周报/月报缺少 P2/P3 入口、P2 缺少 P3 入口及 P1 过期阶段文案；4 个当前页面形成 12 条有向边并强连通。
+- 隔离旧 Stage 13 review 的 `pending=12`、4 个静态优先级/责任项、旧跨表语义和 upload-ready 状态；当前保持 `Q4 / D / NO_GO / 3-9-2-1`。
+- v1.4 基线 `54/54 PASS`；8 视口、8 次代表性交互、12 条 HTTP 和 12 次真实导航通过，console error 与横向溢出为 0。
+- 5 个 raw 文件在 review 前后、跨 S13-P3 和当前快照一致；未执行 S14、GitHub upload、app reinstall、正式报告、差异关闭、持久业务写入或 business execution。
+
+## 0.1.4-s13-p3-post-remediation-cross-table-review - 2026-07-11
+
+- 完成 `V014_S13_P3_POST_REMEDIATION_CROSS_TABLE_REVIEW` 本地 phase：项目、客户、金额、时间 4 个维度均完成证据充分性检查。
+- 由于共享逐行绑定、期间绑定和精确数值比较均未证明，comparable/exact/match/mismatch=`0/0/0/0`，not-comparable=`4`；不伪造一致或不一致结论。
+- 生成 4 个 public-safe 非累加差异项和 1 份经营报表质量报告；金额字段保持 null、容差锁为 0 分、不忽略 0.01 元，全局状态保持 `Q4 / D / NO_GO / 3-9-2-1`。
+- v1.4 基线 `54/54 PASS`、当前页 `7/7 PASS`；2 视口、4 维交互、3 条依赖 HTTP 与 3 次真实导航通过，console error 与横向溢出为 0。
+- 5 个 raw 文件在 phase 前后、跨 S13-P2 和当前快照一致；未执行 Stage 13 review、S14、GitHub upload、app reinstall、正式报告、差异关闭、持久业务写入或 business execution。
+
+## 0.1.4-s13-p2-post-remediation-collection-receivable-aging - 2026-07-11
+
+- 完成 `V014_S13_P2_POST_REMEDIATION_COLLECTION_RECEIVABLE_AGING` 本地 phase：回款表、应收账龄、客户账龄、日记账、开票计划 `5/5` public-safe 结构接入。
+- 私有只读探针区分结构、容器可解析与行级绑定：`3/5` 主题具备可解析归档容器，当前可证明行级绑定保持 `0/5`；两个 WPS 私密容器和 4 类差异只留 ignored private runtime。
+- 锁定已开票未回款、完工未结算、结算未开票、超期应收 4 类方法、复核顺序和责任角色定义；已证明业务项、可执行回款优先级、已指派责任事项均为 0。
+- v1.4 基线 `54/54 PASS`、当前页 `7/7 PASS`；2 视口、4 类问题交互、3 条阶段 HTTP 与 3 次真实导航通过，console error 与横向溢出为 0。
+- 5 个 raw 文件在 phase 前后、跨 S13-P1 和当前快照一致；未执行 S13-P3、Stage 13 review、GitHub upload、app reinstall、正式报告、持久业务写入或 business execution。
+
+## 0.1.4-s13-p1-post-remediation-financial-operating-report - 2026-07-11
+
+- 完成 `V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT` 本地 phase：经营情况、费用税金资产、现金情况、贷款明细 4 条主题均接入 public-safe 结构候选，但当前 raw 数值可证明绑定保持 `0/4`。
+- 生成经营周报/月报各 1 份内部复核初稿，均显示 `Q4 / D / NO_GO / 3-9-2-1`、数据状态与限制，不含业务金额，不形成正式报告或经营决策依据。
+- 当前结构聚合为 `7` 个唯一来源引用、`8` 个主题来源关联、`35` 个唯一结构候选和 `40` 个主题候选关联；历史 `12 pending` 与 B 级样板已隔离。
+- v1.4 基线 `54/54 PASS`、当前两页 `16/16 PASS`；`4` 视口、`28` 章节交互、`2` HTTP 与 `2` 真实双向导航通过，console error 与横向溢出为 0。
+- 5 个 raw 文件在 phase 前后、跨 Stage 12 review 和当前快照一致；未执行 S13-P2/P3、Stage 13 review、GitHub upload、app reinstall、正式报告、持久业务写入或 business execution。
+
+## 0.1.4-s12-post-remediation-stage-review - 2026-07-11
+
+- 完成 `V014_S12_POST_REMEDIATION_STAGE_REVIEW` 本地整体复审：S12-P1/P2/P3 strict validators 与 focused tests 复验通过，7 个 findings 全部修复，open=0。
+- 修复 P1 缺少 P2/P3 前向入口、P2 缺少 P3 入口和 P1/P2 过期阶段状态；当前三页形成 6 条有向边，desktop/mobile 的 6 视口、6 交互、6 HTTP 和 6 真实导航全部通过。
+- 历史 `5 manual events / 2 eligible / 8 rerun steps` 与 upload-ready 语义隔离为历史策略夹具；当前链锁定为 `6 groups / 6 previews / 6 plans / 24 planned session steps`。
+- 当前 approved/published=`0/0`，persistent invalidation/rerun/consistency=`0/0/0`，继续保持 `Q4 / D / NO_GO / 3-9-2-1`、0 条可证明项目归属和 4 个潜在槽位。
+- 5 个 raw 文件在 review 前后、跨 S12-P3 和当前快照一致；未执行 S13-P1、GitHub upload、app reinstall、正式报告、持久业务写入或 business execution。
+
+## 0.1.4-s12-p3-post-remediation-rerun-mechanism - 2026-07-11
+
+- 完成 `V014_S12_P3_POST_REMEDIATION_RERUN_MECHANISM` 本地 phase：6 个当前重跑计划覆盖 S12-P2 全部影响定义，每份包含字段映射、事实层、指标、报告引用 4 层，共 24 个计划步骤。
+- 当前批准/发布业务事件均为 0，因此真实持久缓存失效、派生重跑和一致性记录均为 0；页面仅允许 session-only 模拟，刷新后清零。
+- 5 个高风险计划必须二次确认；四层共享同一 public-safe source anchor，旧版本保留、新版本仅追加，金额容忍度为 0 分。
+- v1.4 基线 `54/54 PASS`、当前页 `12/12 PASS`；desktop/mobile 搜索、筛选、中/高风险流程、确认前阻断、重跑模拟、同源一致性、持久执行阻断、刷新清空和 4 个返回链接均通过，console error 与横向溢出为 0。
+- 5 个 raw 文件在 phase 前后、跨 S12-P2 和当前复核一致；未执行 Stage 12 review、持久业务写入、GitHub upload、app reinstall、正式报告或 business execution。
+
+## 0.1.4-s12-p2-post-remediation-impact-preview - 2026-07-11
+
+- 完成 `V014_S12_P2_POST_REMEDIATION_IMPACT_PREVIEW` 本地 phase：6 个公开安全影响定义覆盖 S12-P1 全部待办，并展示潜在项目范围、16 类指标状态和 6 类报告入口影响。
+- 5 个高风险定义必须完成 session-only 二次确认；中风险预览可直接形成会话预览通过状态，但所有批准和发布仍被 `Q4 / D / NO_GO` 阻断。
+- 4 个项目仅作为潜在影响槽位，不公开项目名、金额或归属结论；预览通过不代表业务批准，当前批准/发布业务事件均为 0。
+- v1.4 基线 `54/54 PASS`、当前页 `14/14 PASS`；桌面/移动完成搜索、风险筛选、中/高风险预览、确认前阻断、二次确认、确认后发布阻断、刷新清空和 5 个返回链接，console error 与横向溢出均为 0。
+- 5 个 raw 文件在 phase 前后、跨 S12-P1 和当前复核一致；未执行 S12-P3 重跑、Stage 12 review、持久业务写入、GitHub upload、app reinstall、正式报告或 business execution。
+
+## 0.1.4-s12-p1-post-remediation-pending-actions - 2026-07-11
+
+- 完成 `V014_S12_P1_POST_REMEDIATION_PENDING_ACTIONS` 本地 phase：以 6 个公开安全、不可相加的待处理分组覆盖当前 `Q4 / D / NO_GO / 3-9-2-1`、4 个未公开归属项目槽位和 13 行来源状态。
+- 提供字段映射、项目匹配、差异处理和备注 4 类 session-only 候选事件模板；每类均包含处理人引用、会话时间、原因、影响范围和版本，并执行 append-only 与批准后反向事件策略。
+- 可点击工作台完成搜索、类型/状态筛选、行选择、候选事件、反向事件、刷新清空和 5 个页面返回链接；v1.4 基线 `54/54 PASS`、当前页 `13/13 PASS`，桌面/移动 console error 与横向溢出均为 0。
+- 5 个 raw 文件在 phase 前后、跨 Stage 11 review 和当前复核一致；公开仓库仅含聚合状态，不含 raw 文件名、字段、金额、项目/客户明文或私有诊断。
+- 未执行 S12-P2 影响预览、S12-P3 重跑、Stage 12 review、持久业务写入、GitHub upload、app reinstall、正式报告或 business execution。
+
+## 0.1.4-s11-p3-post-remediation-project-cost-page - 2026-07-11
+
+- 完成 `V014_S11_P3_POST_REMEDIATION_PROJECT_COST_PAGE` 本地 phase：4 个公开安全项目槽位覆盖 7 个规定列，展示毛利、成本结构、回款、差异状态和下一步。
+- 修复历史 S11-P3 假绿：旧 validator 可对 `pending_reconciliation_count=12` 返回 PASS；当前页面改为 `Q4 / D / NO_GO / 3-9-2-1`，且不再公开分配项目级差异数字。
+- 项目详情绑定 6 类当前公开安全证据和 5 项全局待办；四个项目槽位的项目级归属均保持 `not_publicly_attributed / null`。
+- v1.4 人类流程基线 `54/54 PASS`，当前页 `21/21 PASS`；桌面/移动完成搜索 4 次、详情 8 次、报告章节 8 次、预览开关 4 次、键盘 2 次和 4 个链接 HTTP 复验，console error 与横向溢出均为 0。
+- 5 个 raw 文件在 phase 前后、跨 S11-P2 和当前复核均一致；未执行 Stage 11 整体复审、S12、GitHub upload、app reinstall、正式报告或 business execution。
+
+## 0.1.4-s11-p2-post-remediation-source-check-board - 2026-07-11
+
+- 完成 `V014_S11_P2_POST_REMEDIATION_SOURCE_CHECK_BOARD` 本地 phase：13 行数据源矩阵覆盖 11 个规定列，并提供搜索、五类状态筛选、逐行影响详情和会话内状态预演。
+- 修复旧 S11-P2 假绿：旧 validator 可对 `12 pending` 和 4 个“已就绪”状态返回 PASS；当前状态重算为 `0 已就绪 / 6 部分阻塞 / 1 失败不适用 / 2 已过期 / 4 人工复核`。
+- v1.4 人类流程基线 `54/54 PASS`，当前页 `21/21 PASS`；桌面/移动完成搜索 4 次、筛选 10 次、详情 26 次、状态预演 10 次、键盘 2 次和首页链接 1 次，console error 与横向溢出均为 0。
+- 状态预演只写浏览器会话控制事件，明确禁止原始层和持久业务状态写回；5 个 raw 文件在 phase 前后、跨 S11-P1 和当前复核均一致。
+- 未执行 S11-P3、Stage 11 整体复审、GitHub upload、app reinstall、正式报告发布或 business execution。
+
+## 0.1.4-s11-p1-post-remediation-home-navigation - 2026-07-11
+
+- 完成 `V014_S11_P1_POST_REMEDIATION_HOME_NAVIGATION` 本地 phase：8 个全中文业务模块均具备单页导航、独立视图、可见动作反馈和键盘切换。
+- 首页持续显示当前 `Q4 / D / NO_GO / 3-9-2-1`，只链接当前 S10 的 2 份受限报告；移除旧 12 pending、B 级和未来/历史页面链接。
+- v1.4 人类流程基线 `54/54 PASS`，当前首页 `13/13 PASS`；桌面/移动完成 16 次导航、16 次动作、4 次键盘操作和 4 次 HTTP 链接验证，console error 与横向溢出均为 0。
+- 5 个 raw 文件在 phase 前后、跨 S10 review 和当前复核均一致；未提交 raw/private、Excel、PDF、私有 CSV 或业务明细。
+- 未执行 S11-P2/P3、Stage 11 整体复审、GitHub upload、app reinstall、正式报告发布或 business execution。
+
+## 0.1.4-s10-post-remediation-stage-review - 2026-07-11
+
+- 完成 `V014_S10_POST_REMEDIATION_STAGE_REVIEW` 本地整体复审，当前 S10-P1/P2/P3 frozen semantic validation 全部通过。
+- 修复 6 个复审 finding：旧 review 假绿、旧 phase validator 与全局当前状态耦合、D 级跨格式复验缺口、Stage 级浏览器下载证据缺口、fresh raw 快照缺口和正式报告边界缺口；open finding=0。
+- 复验 2 个报告模板、11 个管理章节、2 条等级记录、2 份受限 HTML、2 份中文 CSV、4 个桌面/移动视口和 2 次逐字节下载；当前状态保持 `Q4 / D / NO_GO / 3-9-2-1`。
+- 5 个 raw 文件在 review 前后、跨 S10-P3 和当前复核均一致；未提交 raw/private、PDF、Excel 工作簿、私有 CSV 或业务明细。
+- 未执行 S11、GitHub upload、app reinstall、正式报告发布或 business execution；GitHub main 仍等待 Stage 8-18 全部完成及最终整体复审。
+
+## 0.1.4-s10-p3-post-remediation-restricted-export - 2026-07-11
+
+- 完成 `V014_S10_P3_POST_REMEDIATION_RESTRICTED_EXPORT` 本地单 phase，生成 2 份受限 HTML 预览、2 份全中文 CSV 附表和 2 个 Excel-compatible CSV 下载入口。
+- 当前动态状态只绑定最新 S10-P2 的 `Q4 / D / NO_GO / 3 final-accepted-open / 9 nonzero / 2 zero / 1 incomplete`；历史 S10-P3 只复用 HTML/CSV、Excel-compatible 和 PDF 私有策略框架，不复用旧 `12 pending` 状态。
+- 两份 HTML 首屏均显示 `D级（未放行）`、关键现金缺失、九项非零差异、一项未完成比较和使用限制；CSV 只含中文聚合状态，不含业务值或内部技术字段。
+- PDF 仅保留私有运行时策略且本 phase 未执行；未创建或提交 PDF、Excel 工作簿、private CSV、raw/private 数据或业务明细。
+- baseline browser audit `8/8 PASS`，新导出 browser audit `4/4 PASS`，桌面/移动 4 个 viewport 无横向溢出或 console error；未执行 Stage 10 review、GitHub upload、app reinstall 或 business execution。
+
+## 0.1.4-s10-p2-post-remediation-trust-grade-lock - 2026-07-11
+
+- 完成 `V014_S10_P2_POST_REMEDIATION_TRUST_GRADE_LOCK` 本地单 phase，复核 A/B/C/D 四级规则以及数据质量、差异、人工确认、时效四个驱动维度。
+- 两条当前报告记录均绑定报告记录、报告入口、模板、公式、映射、字段映射、等级政策和发布门禁版本；历史 S10-P2 只复用规则与版本框架，不复用早期动态状态。
+- 当前 `Q4` 理论上限为 `B`，但关键现金数据缺失、3 项最终接受未决、9 项非零差异、1 项未完成比较及追溯/确认不足形成每条 6 个 hard block，最终重新计算并锁定 `D / NO_GO`，未自动提级。
+- 5 个原始文件在本 phase 前后及跨 S10-P1 快照完全一致；公开证据仅含聚合规则与状态，raw 身份、哈希和诊断只写 ignored private runtime。
+- 未执行 S10-P3、Stage 10 review、正式报告、导出、GitHub upload、app reinstall 或 business execution。
+
+## 0.1.4-s10-p1-post-remediation-report-entry - 2026-07-11
+
+- 完成 `V014_S10_P1_POST_REMEDIATION_REPORT_ENTRY` 本地单 phase，按 Roadmap S10-P1 建立项目成本专题与经营总览两个管理入口，共 11 个管理可读章节。
+- 保留原 2026-07-04 S10-P1 产物作为历史结构基线，动态状态只绑定最新 Stage 9 post-remediation 的 `69 closed-or-excluded / 3 final-accepted-open / 9 nonzero / 1 incomplete`。
+- 入口显式展示继承的 `Q4 / D / NO_GO（未放行）`，但不执行 S10-P2 等级计算或覆盖；三条现金缺失保持未决且不补零，权威值与系统复算值不互相覆盖。
+- 5 个原始文件在本 phase 前后及跨 phase 快照完全一致；raw 身份、哈希和私有诊断只写 ignored private runtime。
+- 未执行 S10-P2、S10-P3、Stage 10 review、正式报告、导出、GitHub upload、app reinstall 或 business execution。
+
+## 0.1.4-s09-post-remediation-stage-review - 2026-07-10
+
+- 完成 `V014_S09_POST_REMEDIATION_STAGE_REVIEW`，复跑 S09-P1/P2/P3、原 Stage 9 review、global residual、remaining-eleven、no-float 和 no-omission 共 8 条依赖验证。
+- 复审确认九类成本完整，差旅与利息已由 8 条唯一权威成本分项覆盖；权威显示值与系统复算值互相覆盖数保持 0。
+- 十二条口径核对均具有人类可读的原因、依据、责任角色和状态；最新队列为 69 条关闭或排除、3 条最终接受未决，9 条非零差异继续保留。
+- 修复 11 个复审 finding：覆盖旧 review 状态、no-float/private/no-omission 边界、62 条 stage status 必填字段、历史基线与测试时态、phase-local upload 语义、过时 private hash 绑定及 public git-status 泄漏风险。
+- 5 个原始文件前后及跨 phase 快照一致；结论维持 `Q4 / D / NO_GO`，未推进 S10-P1、GitHub upload、app reinstall 或 business execution。
+
+## 0.1.4-remaining-eleven-residual-difference-source-trace-or-final-acceptance - 2026-07-10
+
+- 完成 `V014_REMAINING_ELEVEN_RESIDUAL_DIFFERENCE_SOURCE_TRACE_OR_FINAL_ACCEPTANCE` 本地单 phase。
+- 四个真实项目的权威 PDF 各定位到唯一成本表，差旅与利息各 4 条均获得唯一项目、唯一来源、唯一行和唯一金额列，新增物化 8 条整数分成本分项。
+- 8 条来源同时通过 PDF 表格/文本双引擎、差旅子项求和、直接支出分类求和、权威总成本和完整表格总额公式交叉验证。
+- 全局 72 条队列现为 61 条数值重放、8 条非数值排除、69 条关闭或排除、3 条现金最终差异接受；9 条非零差异未覆盖，未推导零。
+- 5 个原始文件前后快照及跨 phase 快照链完全一致；所有项目、字段、来源、金额、行列、指纹和中文最终差异报告仅存在 ignored private runtime，未做 Stage review、GitHub upload、app reinstall 或 business execution。
+
+## 0.1.4-global-residual-difference-queue-replay-or-authoritative-exclusion - 2026-07-10
+
+- 完成 `V014_GLOBAL_RESIDUAL_DIFFERENCE_QUEUE_REPLAY_OR_AUTHORITATIVE_EXCLUSION` 本地单 phase，对全局 72 条 residual difference queue 逐条分类。
+- 37 条由当前私有目标值重放，16 条由四项目整数毛利/毛利率模型重放，8 条非数值字段经授权从数值比较队列排除；共 61 条关闭或排除。
+- 8 条成本分项缺少唯一权威来源、3 条现金槽位属于最终差异接受但仍无可证明数值，共 11 条继续写入 ignored private 全中文差异报告。
+- 9 条非零差异、2 条零差异和 1 条未完成比较原样保留；未推导零、未平均、未覆盖现有差异。
+- 5 个原始文件前后逐文件快照完全一致；所有目标槽位、来源引用、指纹和值仅存在 ignored private runtime，未做 Stage review、GitHub upload、app reinstall 或 business execution。
+
+## 0.1.4-remaining-two-project-cash-collection-evidence-or-final-difference-acceptance - 2026-07-10
+
+- 完成 `V014_REMAINING_TWO_PROJECT_CASH_COLLECTION_EVIDENCE_OR_FINAL_DIFFERENCE_ACCEPTANCE` 本地单 phase。
+- 只读扫描 3 个原始 ZIP 中 19 个可访问非主账 OOXML 工作簿，形成 48 条正向收款候选；其中 4 条来源记录归并为 2 条唯一银行入账链，每条均满足项目维度、客户、唯一等额银行借方、同凭证应收贷方和借贷平衡。
+- 第三个项目形成现金闭环，新增物化 3 个私有现金目标槽位；累计已物化 37 个、剩余 3 个。12 条比较中 11 条完成，其中 2 条零差异、9 条非零差异，1 条现金比较未完成。
+- 最后一个项目在主账、银行、应收、可访问 OOXML 和 WPS/OLE 兼容层的重复核验中仍无正向收款证据，已生成 ignored private 全中文最终差异接受报告，未把缺失值写成零。
+- 5 个原始文件前后逐文件快照完全一致；私有文件名、项目、客户、金额、工作表、凭证和差异报告未进入 Git，未做 Stage review、GitHub upload、app reinstall 或 business execution。
+
+## 0.1.4-remaining-cash-source-private-trace-or-difference-acceptance - 2026-07-10
+
+- 完成 `V014_REMAINING_CASH_SOURCE_PRIVATE_TRACE_OR_DIFFERENCE_ACCEPTANCE` 本地单 phase。
+- 对 3 条未决项目成本执行应付、票据和银行链追踪：1 条后续银行结清、1 条票据非现金结算、1 条期末未付；第二个项目形成可访问账套内现金闭环。
+- 新增物化 3 个私有现金目标槽位，累计已物化 34 个、剩余 6 个；12 条比较中 10 条完成，其中 2 条零差异、8 条非零差异，2 条现金比较未完成。
+- 两个 WPS/OLE 文件的标准 Office 兼容层可解锁但均为空白，实际安全内容仍依赖专有 ticket runtime；未虚假声称已读取，也未把缺失收款证据填零。
+- 5 个原始文件前后逐文件快照完全一致；私有兼容密码、供应商、票据、金额、交易和中文差异报告仅保留在 ignored runtime，未做 Stage review、GitHub upload、app reinstall 或 business execution。
+
+## 0.1.4-cash-source-private-disambiguation-and-remaining-value-materialization - 2026-07-10
+
+- 完成 `V014_CASH_SOURCE_PRIVATE_DISAMBIGUATION_AND_REMAINING_VALUE_MATERIALIZATION` 本地单 phase。
+- 以复合项目身份、精确凭证、银行收付方向和整数分公式交叉核验 4 个项目；1 个项目形成可访问账套内唯一现金闭环，3 个项目继续未决，未把空白或未命中强填为零。
+- 新增物化 3 个私有现金目标槽位，累计已物化 31 个、剩余 9 个；12 条比较中 9 条完成，其中 2 条零差异、7 条非零差异，3 条现金比较未完成。
+- 两个外部 WPS/OLE 来源被验证为当前读取链路不可用，未虚假声称已读取内容；完整业务一致性仍未成立，决策维持 `NO_GO`。
+- 5 个原始文件前后逐文件快照完全一致；私有项目身份、文件名、金额、交易和全中文差异报告仅保留在 ignored runtime，未做 Stage review、GitHub upload、app reinstall 或 business execution。
+
+## 0.1.4-real-project-identity-private-rebinding-and-processed-value-materialization - 2026-07-10
+
+- 完成 `V014_REAL_PROJECT_IDENTITY_PRIVATE_REBINDING_AND_PROCESSED_VALUE_MATERIALIZATION` 本地单 phase。
+- 将 4 个合成项目身份替换为可验证的真实权威来源私有 overlay；4 个来源均唯一，4 个权威毛利率均可用整数基点复算。
+- 物化 32 条整数项目指标和 28 个可证明的 S09 目标槽位；完成 8 条权威/系统比较，其中 2 条零差异、6 条非零差异，未覆盖或抹平真实差异。
+- 12 个现金口径目标槽位因工作簿项目身份无法唯一绑定而保持未决；全局 72 条 residual queue 尚未重放，决策维持 `NO_GO`。
+- 5 个原始文件前后逐文件快照完全一致；私有名称、来源、金额、定位和中文差异报告仅保留在 ignored runtime，未做 Stage review、GitHub upload、app reinstall 或 business execution。
+
+## 0.1.4-authorized-agent-private-resolution-application-after-blocked-handoff - 2026-07-10
+
+- 完成 `V014_AUTHORIZED_AGENT_PRIVATE_RESOLUTION_APPLICATION_AFTER_BLOCKED_HANDOFF` 本地单 phase。
+- 在用户既有只读授权下解析 5 个原始文件，前后逐文件快照完全一致；原始目录未修改、移动、删除或覆盖。
+- 48 个 resolution 槽位中，4 个公式映射和 4 个成本分类映射已确定性解析；40 个业务值槽位因 S08 合成项目身份未绑定真实原始项目、S09 实际处理值未物化而继续保留。
+- S05 权威哈希交叉匹配命中 20 个字段目标，形成 4 个四项数值完整候选组；S09 当前选取的 4 个权威组仅 1 个在当前原始源中完整命中，不能据此强制建立项目级一一对应。
+- 已生成 ignored private 全中文差异报告；公开仓库只保留聚合计数、状态和 gate 证据。当前决策维持 `NO_GO`，未做 Stage review、GitHub upload、app reinstall 或 business execution。
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-actionability-recheck - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_ACTIONABILITY_RECHECK` 本地单 phase。
+- 基于上一 generated diagnostic response import public-safe artifacts 和 ignored private generated response rows / non-actionable queue，复核 48 条有效诊断响应是否可用于 binding 或 value comparison；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：source valid diagnostic responses=48、source non-actionable diagnostic responses=48、source private response items=48、source private non-actionable queue=48、actionability recheck items=48、actionability ready=0、actionability blockers=48、source reference or owner exclusion blockers=40、formula or non-numeric mapping blockers=8、unresolved differences=72、Go/No-Go=`NO_GO`。
+- 本 phase 不执行 authoritative binding、不绑定 raw candidate fingerprint、不做 raw-to-processed value comparison、不做 reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private actionability diagnostic、blocker queue 和 report 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
+## 0.1.4-residual-difference-raw-to-processed-comparison-fingerprint-pair-completion-blocker-threshold-recheck-after-owner-anchor-confirmation - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_THRESHOLD_RECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION` 本地单 phase。
+- 基于上一 blocker audit public-safe artifacts 和 ignored private blocker records，记录 48 个 pair-completion blocker 的第二次 observation；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：source blocker audit items=48、private blocker audit records=48、prior observation=1、current observation=2、blocked threshold met=false、pair-completion blockers=48、comparison retry ready after threshold recheck=0、unresolved differences=72、Go/No-Go=`NO_GO`。
+- 本 phase 不执行 raw-to-processed value comparison、不做 full reconciliation、不验证 business value consistency、不生成 formal report、不上传 GitHub、不重装 app、不执行业务动作。
+- private threshold diagnostic、records 和 report 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
+## 0.1.4-residual-difference-raw-to-processed-comparison-fingerprint-pair-completion-blocker-audit-after-owner-anchor-confirmation - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_AUDIT_AFTER_OWNER_ANCHOR_CONFIRMATION` 本地单 phase。
+- 基于上一 fingerprint pair completion public-safe artifacts 和 ignored private blocker records，只审计剩余 private pair-completion blockers；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：source pair completion items=72、completed pairs=24、pair-completion blockers=48、blocker audit items=48、missing raw candidate fingerprint blockers=48、missing raw candidate record ref hash blockers=48、missing processed fingerprint blockers=0、actionable private pair completion ready=0、comparison retry ready=0、unresolved differences=72、Go/No-Go=`NO_GO`。
+- 本 phase 不执行 raw-to-processed value comparison、不做 full reconciliation、不验证 business value consistency、不生成 formal report、不上传 GitHub、不重装 app、不执行业务动作。
+- private blocker audit diagnostic、records 和 report 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
+## 0.1.4-residual-difference-owner-authorized-anchor-confirmation-blocker-audit - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_AUDIT` 本地单 phase。
+- 基于上一 owner-authorized anchor difference report public-safe artifacts 和 ignored private unresolved queue，记录第一次 owner-authorized anchor confirmation blocker observation；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：source difference report items=72、source unresolved differences=72、source owner-authorized confirmations=0、owner-authorized anchor blockers=72、blocker observation count=1、blocked threshold met=false、unresolved differences=72、diagnostic tracks=24/40/8、Go/No-Go=`NO_GO`。
+- 本 phase 不执行 owner-authorized anchor confirmation、不运行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private blocker audit diagnostic、queue 和 report 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
+## 0.1.4-residual-difference-owner-authorized-anchor-confirmation-or-difference-report - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_OR_DIFFERENCE_REPORT` 本地单 phase。
+- 基于上一 owner-authorized anchor confirmation readiness public-safe artifacts 和 ignored private readiness/blocker queue，生成 private unresolved difference report；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：source readiness blockers=72、readiness ready records=0、source anchor draft items=72、owner-authorized anchor confirmations=0、difference report items=72、unresolved differences=72、missing owner-authorized anchors=72、missing processed value fingerprints=72、missing raw candidate anchors=72、diagnostic tracks=24/40/8、Go/No-Go=`NO_GO`。
+- 本 phase 不执行 owner-authorized anchor confirmation、不运行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private difference report、diagnostic、unresolved queue、ready queue 和 markdown report 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
+## 0.1.4-residual-difference-raw-candidate-alignment-after-precheck - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_ALIGNMENT_AFTER_PRECHECK` 本地单 phase。
+- 基于上一 residual-difference comparison precheck blockers 和 ignored private raw-comparison input，在授权只读 raw inbox 前提下生成 private raw candidate anchor draft。
+- 当前 aggregate 结果：source blockers=72、raw-comparison input records=72、raw numeric candidates=351453、raw unique numeric fingerprints=22453、diagnostic tracks=24/40/8、private candidate sample items=24、owner-authorized comparison anchors=0、alignment-ready records=0、Go/No-Go=`NO_GO`。
+- 本 phase 不执行 owner-authorized anchor selection、正式 raw-to-processed comparison、full reconciliation、business value consistency、GitHub upload、app reinstall 或业务动作。
+- private alignment/diagnostic/items/anchor draft/question list/raw scan runtime 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
+## 0.1.4-residual-difference-raw-to-processed-comparison-precheck - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK` 本地单 phase。
+- 基于上一 materialization replay public-safe artifacts 和 ignored private raw-comparison input，只执行 residual-difference raw-to-processed comparison readiness precheck；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：source materialized records=72、raw-comparison input records=72、comparison-ready records=0、comparison blocker records=72、missing private comparison anchors=72、open residual differences=72、closed discrepancies=0、Go/No-Go=`NO_GO`。
+- 本 phase 不执行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private precheck/diagnostic/ready records/blocker records/report 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
+## 0.1.4-residual-difference-private-resolution-materialization-replay - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_PRIVATE_RESOLUTION_MATERIALIZATION_REPLAY` 本地单 phase。
+- 基于上一 source-map correction application 的 public-safe artifacts 和 ignored private materialization input，将 72 条 private residual-difference resolution records materialize 为下一 raw-to-processed comparison gate 的 ignored private records；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：source application records=72、source blockers=0、source materialization input=72、private materialized records=72、materialization blockers=0、raw-to-processed comparison ready=true、open residual differences=72、closed discrepancies=0、Go/No-Go=`NO_GO`。
+- 本 phase 不执行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private diagnostic/result/materialized records/raw-comparison input/report 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
+## 0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-application - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_APPLICATION` 本地单 phase。
+- 基于上一 application readiness public-safe artifacts 和 ignored private ready queue，将 72 条 residual-difference private source-map correction / authoritative value resolution application records 写入 ignored runtime；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：source ready queue=72、source blockers=0、private application records applied=72、application blockers=0、private materialization input records=72、materialization replay ready=true、open residual differences=72、closed discrepancies=0、Go/No-Go=`NO_GO`。
+- 本 phase 不执行 materialization replay、不运行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private diagnostic/result/application records/resolution overlay/materialization input/report 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
+## 0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-application-readiness - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_APPLICATION_READINESS` 本地单 phase。
+- 基于上一 authorization intake public-safe artifacts 和 ignored private authorization queue，只检查 private source-map correction / authoritative value resolution application readiness；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：authorization items=72、private authorization queue=72、application ready records=72、application blockers=0、private resolution application ready=true、source-map correction application allowed next phase=true、authoritative value resolution application allowed next phase=true、open residual differences=72、closed discrepancies=0、Go/No-Go=`NO_GO`。
+- 本 phase 不应用 source-map correction、不写 authoritative value resolution、不关闭差异、不运行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private readiness diagnostic、ready queue、blocker queue 和 report 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
+# KMFA v0.1.4 Outside-Scope Candidate Review Residual Difference Source-Map Correction Authorization Intake
+
+## 0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-authorization-intake - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_AUTHORIZATION_INTAKE` 本地单 phase。
+- 基于上一 final threshold public-safe artifacts 和 ignored private final threshold queue，记录 owner current-thread authorization，生成 private source-map correction / authoritative value resolution authorization active record 和 queue；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：authorization items=72、owner authorization intaken=true、private resolution preparation allowed next phase=true、source-map correction application readiness allowed next phase=true、source-map correction blockers=72、open residual differences=72、closed discrepancies=0、Go/No-Go=`NO_GO`。
+- 本 phase 不应用 source-map correction、不写 authoritative value resolution、不关闭差异、不运行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private authorization record、queue、diagnostic 和 report 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
+# KMFA v0.1.4 Outside-Scope Candidate Review Residual Difference Source-Map Correction Blocker Final Threshold Recheck
+
+## 0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-blocker-final-threshold-recheck - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_FINAL_THRESHOLD_RECHECK` 本地单 phase。
+- 基于上一 phase public-safe source-map correction blocker threshold recheck artifacts 和 ignored private source-map correction blocker threshold queue，记录第三次 source-map correction blocker observation；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：valid diagnostic responses=72、missing-response blocker cleared=true、pending diagnostic responses=0、diagnostic response blockers=0、non-actionable diagnostic responses=72、source-map correction blockers=72、prior source-map correction blocker observation=2、current observation=3、blocked audit threshold met=true、goal status recommendation=blocked、open residual differences=72、closed discrepancies=0、source-map actionable responses=0、Go/No-Go=`NO_GO`。
+- 本 phase 不关闭任何差异、不修正 source map、不运行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private source-map correction final threshold diagnostic、queue 和 report 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
+## 0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-blocker-threshold-recheck - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_THRESHOLD_RECHECK` 本地单 phase。
+- 基于上一 phase public-safe source-map correction blocker audit artifacts 和 ignored private source-map blocker audit queue，记录 source-map correction blocker 第二次 observation；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：valid diagnostic responses=72、missing-response blocker cleared=true、pending diagnostic responses=0、diagnostic response blockers=0、non-actionable diagnostic responses=72、source-map correction blockers=72、prior source-map correction blocker observation=1、current observation=2、blocked audit threshold met=false、goal status recommendation=continue_waiting_for_source_map_correction_or_authoritative_value_resolution、open residual differences=72、closed discrepancies=0、source-map actionable responses=0、Go/No-Go=`NO_GO`。
+- 本 phase 不关闭任何差异、不修正 source map、不运行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private source-map correction threshold diagnostic、queue 和 report 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
+# KMFA v0.1.4 Outside-Scope Candidate Review Residual Difference Source-Map Correction Blocker Audit
+
+## 0.1.4-outside-scope-candidate-review-residual-difference-source-map-correction-blocker-audit - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_SOURCE_MAP_CORRECTION_BLOCKER_AUDIT` 本地单 phase。
+- 基于上一 phase public-safe response-import readiness artifacts 和 ignored private source-map blocker queue，记录 source-map correction blocker 第一次 observation；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：valid diagnostic responses=72、missing-response blocker cleared=true、pending diagnostic responses=0、diagnostic response blockers=0、non-actionable diagnostic responses=72、source-map correction blockers=72、source-map correction blocker observation=1、blocked audit threshold met=false、open residual differences=72、closed discrepancies=0、source-map actionable responses=0、Go/No-Go=`NO_GO`。
+- 本 phase 不关闭任何差异、不修正 source map、不运行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private source-map correction audit diagnostic、queue 和 report 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
+# KMFA v0.1.4 Outside-Scope Candidate Review Residual Difference Response Import Readiness Recheck
+
+## 0.1.4-outside-scope-candidate-review-residual-difference-response-import-readiness-recheck - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_RESPONSE_IMPORT_READINESS_RECHECK` 本地单 phase。
+- 基于上一 phase public-safe response-import artifacts 和 ignored private response-import outputs，复核 72 条 valid diagnostic responses 已存在，missing-response blocker 已清零；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：valid diagnostic responses=72、pending diagnostic responses=0、diagnostic response blockers=0、non-actionable diagnostic responses=72、source-map correction blockers=72、open residual differences=72、closed discrepancies=0、source-map actionable responses=0、Go/No-Go=`NO_GO`。
+- 本 phase 不关闭任何差异、不修正 source map、不运行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private readiness diagnostic 和 source-map blocker queue 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
+# KMFA v0.1.4 Outside-Scope Candidate Review Residual Difference Owner / Agent Diagnostic Response Import
+
+## 0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-response-import - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_RESPONSE_IMPORT` 本地单 phase。
+- 基于已存在的 owner-authorized discrepancy report，将 72 条 residual difference 诊断导入为 valid diagnostic responses；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：source template=72、source pending queue=72、owner-authorized report items=72、target slot match=72、valid diagnostic responses imported=72、pending diagnostic responses=0、diagnostic response blockers=0、non-actionable diagnostic responses=72、open residual differences=72、closed discrepancies=0、source-map actionable responses=0、Go/No-Go=`NO_GO`。
+- 本 phase 只清除“缺少诊断响应”的阻断；所有导入响应仍是 non-actionable discrepancy responses，未关闭任何差异、未修正 source map、未运行正式 raw-to-processed comparison、未做 full reconciliation、未验证 business value consistency、未上传 GitHub、未重装 app、未执行业务动作。
+- private response import record/items/non-actionable queue 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
+# KMFA v0.1.4 Outside-Scope Candidate Review Residual Difference Owner / Agent Diagnostic Blocker Threshold Recheck
+
+## 0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-blocker-threshold-recheck - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_BLOCKER_THRESHOLD_RECHECK` 本地单 phase。
+- 基于上一 phase public-safe blocker audit artifacts 和 ignored private blocker audit diagnostic，记录第三次 diagnostic blocker observation；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：prior diagnostic blocker observation=2、current diagnostic blocker observation=3、blocked audit threshold met=true、readiness blocker queue=72、diagnostic response ready=0、diagnostic response blockers=72、pending diagnostic responses=72、valid diagnostic responses=0、invalid diagnostic responses=0、actionable resolutions=0、open residual differences=72、closed discrepancies=0、safe auto resolution=0、Go/No-Go=`NO_GO`。
+- 本 phase 未接收有效 owner/agent 诊断响应、未关闭任何差异、未修正 source map、未运行正式 raw-to-processed comparison、未做 full reconciliation、未验证 business value consistency、未上传 GitHub、未重装 app、未执行业务动作。
+- private threshold diagnostic 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
+# KMFA v0.1.4 Outside-Scope Candidate Review Residual Difference Owner / Agent Diagnostic Blocker Audit
+
+## 0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-blocker-audit - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_BLOCKER_AUDIT` 本地单 phase。
+- 基于上一 phase public-safe diagnostic-readiness artifacts 和 ignored private readiness diagnostic / blocker queue，只做 blocker audit；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：prior diagnostic blocker observation=1、current diagnostic blocker observation=2、blocked audit threshold met=false、readiness blocker queue=72、diagnostic response ready=0、diagnostic response blockers=72、pending diagnostic responses=72、valid diagnostic responses=0、invalid diagnostic responses=0、actionable resolutions=0、open residual differences=72、closed discrepancies=0、safe auto resolution=0、Go/No-Go=`NO_GO`。
+- 本 phase 未接收有效 owner/agent 诊断响应、未关闭任何差异、未修正 source map、未运行正式 raw-to-processed comparison、未做 full reconciliation、未验证 business value consistency、未上传 GitHub、未重装 app、未执行业务动作。
+- private audit diagnostic 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
+# KMFA v0.1.4 Outside-Scope Candidate Review Residual Difference Owner / Agent Diagnostic Readiness Recheck
+
+## 0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-readiness-recheck - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_READINESS_RECHECK` 本地单 phase。
+- 基于上一 phase public-safe diagnostic-intake artifacts 和 ignored private response template / pending queue，只做 readiness recheck；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：source private response template=72、source private pending queue=72、diagnostic response ready=0、diagnostic response blockers=72、pending diagnostic responses=72、valid diagnostic responses=0、invalid diagnostic responses=0、actionable resolutions=0、open residual differences=72、closed discrepancies=0、safe auto resolution=0、owner-select track=24、authoritative-source/exclusion track=40、formula/non-numeric track=8、Go/No-Go=`NO_GO`。
+- 本 phase 未接收有效 owner/agent 诊断响应、未关闭任何差异、未修正 source map、未运行正式 raw-to-processed comparison、未做 full reconciliation、未验证 business value consistency、未上传 GitHub、未重装 app、未执行业务动作。
+- private readiness diagnostic、blocker queue 和 report 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
+# KMFA v0.1.4 Outside-Scope Candidate Review Residual Difference Owner / Agent Diagnostic Intake
+
+## 0.1.4-outside-scope-candidate-review-residual-difference-owner-or-agent-diagnostic-intake - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_OWNER_OR_AGENT_DIAGNOSTIC_INTAKE` 本地单 phase。
+- 基于上一 phase public-safe diagnostic-handoff artifacts 和 ignored private diagnostic handoff queue，只生成 owner/authorized delegate/external agent private diagnostic response template 与 pending queue；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：source private diagnostic handoff queue=72、private diagnostic response template=72、pending diagnostic responses=72、valid diagnostic responses=0、invalid diagnostic responses=0、actionable resolutions=0、open residual differences=72、closed discrepancies=0、safe auto resolution=0、owner-select track=24、authoritative-source/exclusion track=40、formula/non-numeric track=8、Go/No-Go=`NO_GO`。
+- 本 phase 未接收有效 owner/agent 诊断响应、未关闭任何差异、未修正 source map、未运行正式 raw-to-processed comparison、未做 full reconciliation、未验证 business value consistency、未上传 GitHub、未重装 app、未执行业务动作。
+- private response template、pending queue、diagnostic 和 report 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
+# KMFA v0.1.4 Outside-Scope Candidate Review Discrepancy Closure Blocker Audit
+
+## 0.1.4-outside-scope-candidate-review-discrepancy-closure-blocker-audit - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_BLOCKER_AUDIT` 本地单 phase。
+- 基于上一 phase public-safe closure readiness summary 和 ignored private closure blocker queue，只做 blocker audit 和 private residual blocker queue；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：source closure plan items=72、source closure blocked items=72、residual blocker queue=72、open closure blockers=72、closed discrepancies=0、safe auto closure=0、newly actionable closure=0、ambiguous selection required=24、authoritative source reference required=40、formula/non-numeric mapping required=8、Go/No-Go=`NO_GO`。
+- 本 phase 未关闭任何差异、未修正 source map、未运行正式 raw-to-processed comparison、未做 full reconciliation、未验证 business value consistency、未上传 GitHub、未重装 app、未执行业务动作。
+- private blocker audit diagnostic、residual blocker queue 和 residual report 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、target slot 明细或私有 fingerprint/hash。
+
+# KMFA v0.1.4 Outside-Scope Candidate Review Discrepancy Closure Readiness
+
+## 0.1.4-outside-scope-candidate-review-discrepancy-closure-readiness - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_READINESS` 本地单 phase。
+- 基于上一 phase ignored private discrepancy queue，只做闭环准备度分类和 private closure workpack；不读取、不修改 raw inbox。
+- 当前 aggregate 结果：source discrepancy queue=72、closure plan items=72、closure ready=0、closure blocked=72、safe auto closure=0、ambiguous tie blockers=24、no-context candidate blockers=40、non-numeric/calculation blockers=8、Go/No-Go=`NO_GO`。
+- 本 phase 未关闭任何差异、未选择私有候选、未修正 source map、未运行正式 raw-to-processed comparison、未做 full reconciliation、未验证 business value consistency、未上传 GitHub、未重装 app、未执行业务动作。
+- private closure readiness record/items/blocking queue/workpack 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、候选明文或私有 fingerprint/hash。
+
+# KMFA v0.1.4 Outside-Scope Candidate Review Owner-Authorized Discrepancy Report
+
+## 0.1.4-outside-scope-candidate-review-owner-authorized-discrepancy-report - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_OWNER_AUTHORIZED_DISCREPANCY_REPORT` 本地单 phase。
+- 基于用户最新授权，Codex 在不读取、不修改 raw inbox 的前提下消费既有 ignored private review/alignment diagnostics，尝试自动保守决策。
+- 当前 aggregate 结果：review items=72、safe auto resolution=0、discrepancy queue=72、ambiguous tied candidates=24、no-candidate items=40、non-numeric/calculation items=8、direct exact private match=0、Go/No-Go=`NO_GO`。
+- 本 phase 未选择私有候选、未修正 source map、未运行正式 raw-to-processed comparison、未做 full reconciliation、未验证 business value consistency、未上传 GitHub、未重装 app、未执行业务动作。
+- private discrepancy report/queue 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细、候选明文或私有 fingerprint/hash。
+
+# KMFA v0.1.4 Outside-Scope Candidate Review Intake Blocker Threshold Recheck
+
+## 0.1.4-outside-scope-candidate-review-intake-blocker-threshold-recheck - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_BLOCKER_THRESHOLD_RECHECK` 本地单 phase。
+- 基于上一 phase public-safe blocker audit summary/manifest 和 ignored private blocker audit diagnostic，只做第三次 blocker observation；72 条 delegated responses 仍全部 `keep_pending`。
+- 当前 aggregate 结果：delegated decisions=72、delegated keep-pending responses=72、selected private candidates=0、corrected source-map references=0、authoritative non-numeric/calculation mappings=0、source-map actionable responses=0、review intake blocker observation=3、blocked threshold met=true、goal status recommendation=`blocked`、source-map correction ready=false、Go/No-Go=`NO_GO`。
+- 本 phase 不读取 raw inbox、不选择候选、不修正 source map、不运行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private threshold recheck diagnostic 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细或私有 fingerprint/hash。
+
+# KMFA v0.1.4 Outside-Scope Candidate Review Intake Blocker Audit
+
+## 0.1.4-outside-scope-candidate-review-intake-blocker-audit - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_BLOCKER_AUDIT` 本地单 phase。
+- 基于上一 phase public-safe readiness summary 和 ignored private readiness diagnostic，只做第二次 blocker observation；72 条 delegated responses 仍全部 `keep_pending`。
+- 当前 aggregate 结果：delegated decisions=72、delegated keep-pending responses=72、selected private candidates=0、corrected source-map references=0、authoritative non-numeric/calculation mappings=0、source-map actionable responses=0、review intake blocker observation=2、blocked threshold met=false、source-map correction ready=false、Go/No-Go=`NO_GO`。
+- 本 phase 不读取 raw inbox、不选择候选、不修正 source map、不运行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private blocker audit diagnostic 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细或私有 fingerprint/hash。
+
+# KMFA v0.1.4 Outside-Scope Candidate Review Intake Readiness Recheck
+
+## 0.1.4-outside-scope-candidate-review-intake-readiness-recheck - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_READINESS_RECHECK` 本地单 phase。
+- 基于上一 phase public-safe intake summary 和 ignored private delegated response，只做 readiness/blocker recheck；72 条 delegated responses 仍全部 `keep_pending`。
+- 当前 aggregate 结果：delegated decisions=72、delegated keep-pending responses=72、selected private candidates=0、corrected source-map references=0、authoritative non-numeric/calculation mappings=0、source-map actionable responses=0、review intake blocker observation=1、blocked threshold met=false、source-map correction ready=false、Go/No-Go=`NO_GO`。
+- 本 phase 不读取 raw inbox、不选择候选、不修正 source map、不运行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private readiness diagnostic 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细或私有 fingerprint/hash。
+
+# KMFA v0.1.4 Outside-Scope Candidate Review Intake After Packet
+
+## 0.1.4-outside-scope-candidate-review-intake-after-packet - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_INTAKE_AFTER_PACKET` 本地单 phase。
+- 基于上一 phase ignored private review packet，记录 Codex 授权代理保守 response intake：72 条 review items 全部 `keep_pending`；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：intake response items=72、delegated keep-pending responses=72、selected private candidates=0、corrected source-map references=0、authoritative non-numeric/calculation mappings=0、source-map actionable responses=0、source-map correction ready=false、Go/No-Go=`NO_GO`。
+- 本 phase 不读取 raw inbox、不选择候选、不修正 source map、不运行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private delegated response record、items 和 diagnostic 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细或私有 fingerprint/hash。
+
+# KMFA v0.1.4 Outside-Scope Candidate Review Packet After Alignment
+
+## 0.1.4-outside-scope-candidate-review-packet-after-alignment - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_PACKET_AFTER_ALIGNMENT` 本地单 phase。
+- 基于上一 phase 的 ignored private alignment diagnostics 生成 owner/授权代理 private review packet；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source alignment items=72、review packet items=72、review groups=10、ambiguous review items=24、unmatched review items=40、non-numeric/calculation review items=8、private candidate option excerpts=240、candidate record observations=56748、candidate unique fingerprint observations=19292、owner review required=72、owner review response supplied=false、Go/No-Go=`NO_GO`。
+- 本 phase 只读取上一 phase ignored private alignment，不读取 raw inbox、不选择候选、不修正 source map、不运行正式 raw-to-processed comparison、不做 full reconciliation、不验证 business value consistency、不上传 GitHub、不重装 app、不执行业务动作。
+- private review packet、items、markdown 和 diagnostic 只保留在 ignored runtime；公开证据不包含 raw 文件名、字段、表头、sheet、row/cell、金额、明细或私有 fingerprint/hash。
+
+# KMFA v0.1.4 Outside-Scope Raw Candidate Alignment After Full Precheck
+
+## 0.1.4-outside-scope-raw-candidate-alignment-after-full-precheck - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_RAW_CANDIDATE_ALIGNMENT_AFTER_FULL_PRECHECK` 本地单 phase。
+- 基于上一 phase 的 72 条 outside-scope blocker，只读解析授权 raw inbox 并生成 ignored private alignment diagnostic；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：outside-scope blockers=72、raw numeric candidates=351453、raw unique numeric fingerprints=22453、context groups=10、ambiguous candidates=24、unmatched items=40、non-numeric/calculation items=8、owner review required=72、direct source-ref matches=0、direct processed-fingerprint matches=0、Go/No-Go=`NO_GO`。
+- 本 phase 证明 outside-scope raw candidate alignment 仍不能自动解锁 full comparison；因此 source-map correction、正式 raw-to-processed comparison、full reconciliation、business value consistency、lineage full check、formal report、GitHub upload、app reinstall 和 business execution 均保持关闭。
+- 本 phase 对 raw inbox 只读读取、列出、stat、value fingerprint、解析和抽取候选值；未写入、删除、移动、重命名、覆盖、复制、标准化或修改 raw inbox；raw 明细、文件名、字段、金额和候选记录只保留在 ignored private runtime。
+
+# KMFA v0.1.4 Full Raw-To-Processed Comparison Precheck After Full Materialization
+
+## 0.1.4-full-raw-to-processed-comparison-precheck-after-full-materialization - 2026-07-07
+
+- 完成 `V014_FULL_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_FULL_MATERIALIZATION` 本地单 phase。
+- 基于上一 phase ignored private full materialized records 和 private candidate catalog，只执行 full raw-to-processed comparison precheck；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：processed target slots=149、full materialized records=149、candidate catalog records=366、exact fingerprint matches=77、fingerprint mismatches=0、missing candidate records=72、outside-scope missing candidate records=72、unique processed-value fingerprints=84、Go/No-Go=`NO_GO`。
+- 本 phase 证明 full comparison precheck 已执行但未通过：72 条 outside-scope materialized records 缺少 raw-derived candidate records；因此 raw-to-processed comparison、full reconciliation、business value consistency、lineage full check、formal report、GitHub upload、app reinstall 和 business execution 均保持关闭。
+- 本 phase 未读取、列出、stat、fingerprint、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；private precheck、diagnostic、comparison records 和 blocker records 只保留在 ignored runtime。
+
+# KMFA v0.1.4 Full Materialization Replay After Outside-Scope Application
+
+## 0.1.4-full-materialization-replay-after-outside-scope-application - 2026-07-07
+
+- 完成 `V014_FULL_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_OUTSIDE_SCOPE_APPLICATION` 本地单 phase。
+- 基于上一 phase 生成的 ignored private full source-map input 和 private processed target staging，将 149 条 processed-value records materialize 到 ignored private runtime；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：processed target slots=149、full materialization source-map records=149、full materialized records=149、blocked records=0、linked materialized records=77、outside-scope materialized records=72、unique private value sources=84、Go/No-Go=`NO_GO`。
+- 本 phase 已完成 private full processed-value materialization replay，并使 raw-to-processed comparison ready=true；但未执行 raw-to-processed comparison、未完成 full reconciliation、未验证 business value consistency、未做 lineage full check、未发布 formal report、未上传 GitHub、未重装 app、未执行业务动作。
+- 本 phase 未读取、列出、stat、fingerprint、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；private replay、diagnostic 和 materialized records 只保留在 ignored runtime。
+
+# KMFA v0.1.4 Outside-Scope Source-Map Extension Application
+
+## 0.1.4-outside-scope-authorized-source-map-extension-application - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_APPLICATION` 本地单 phase。
+- 基于上一 phase ignored private application-ready queue，将 72 条 owner-authorized outside-scope source-map extension 写入新的 ignored private runtime；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：ready queue records=72、outside-scope source-map extension applied records=72、application blockers=0、linked source-map records preserved=77、private full materialization source-map records prepared=149、Go/No-Go=`NO_GO`。
+- 本 phase 不执行 materialization replay、不做 raw-to-processed comparison、不做 full reconciliation、不做 lineage full check、不发布 formal report、不上传 GitHub、不重装 app、不执行业务动作。
+- 本 phase 未读取、列出、stat、fingerprint、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；private application diagnostic、result、applied records、extension source-map 和 full materialization source-map 只保留在 ignored runtime。
+
+# KMFA v0.1.4 Outside-Scope Source-Map Extension Application Readiness
+
+## 0.1.4-outside-scope-authorized-source-map-extension-application-readiness - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_APPLICATION_READINESS` 本地单 phase。
+- 基于上一 phase ignored private active authorization record 和 queue，只验证 72 条 owner-authorized outside-scope source-map extension 是否可进入后续 application phase；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：private active authorization records=72、private authorization queue=72、application ready records=72、application blockers=0、source-map extension application ready=true、Go/No-Go=`NO_GO`。
+- 本 phase 不应用 source-map、不写 source-map extension、不做 materialization replay、不做 raw-to-processed comparison、不做 full reconciliation、不做 lineage full check、不发布 formal report、不上传 GitHub、不重装 app、不执行业务动作。
+- 本 phase 未读取、列出、stat、fingerprint、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；private readiness diagnostic、ready queue、blocker queue 和 report 只保留在 ignored runtime。
+
+# KMFA v0.1.4 Outside-Scope Source-Map Owner Authorization Intake
+
+## 0.1.4-outside-scope-authorized-source-map-extension-owner-authorization-intake - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_OWNER_AUTHORIZATION_INTAKE` 本地单 phase。
+- 基于用户“允许授权”的直接授权，将 72 条 outside-scope source-map extension 记录写入 ignored private active authorization record；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source template items=72、owner-authorized extension records=72、valid authorized extension records=72、missing authorized extension records=0、source-map extension application ready=true、Go/No-Go=`NO_GO`。
+- 本 phase 不应用 source-map、不做 materialization replay、不做 raw-to-processed comparison、不做 full reconciliation、不做 lineage full check、不发布 formal report、不上传 GitHub、不重装 app、不执行业务动作。
+- 本 phase 未读取、列出、stat、fingerprint、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有 active authorization record、queue、diagnostic 和 report 只保留在 ignored runtime。
+
+# KMFA v0.1.4 Outside-Scope Authorized Source-Map Extension Post-Delegation Blocker Threshold Recheck
+
+## 0.1.4-outside-scope-authorized-source-map-extension-post-delegation-blocker-threshold-recheck - 2026-07-06
+
+- 完成 `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_POST_DELEGATION_BLOCKER_THRESHOLD_RECHECK` 本地单 phase。
+- 基于上一 phase public-safe summary 和 ignored private diagnostic，只做 post-delegation blocker threshold recheck：post-delegation blocker observation count 从 2 增至 3，blocked audit threshold=true，goal status recommendation=blocked。
+- 锁定结论：delegated decision records=72、delegated keep-pending decisions=72、delegated authorization decisions=0、application allowed decisions=0、source-map extension application ready=false、Go/No-Go=NO_GO。
+- 本 phase 未读取、列出、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；未改写 prior private diagnostic；private threshold recheck diagnostic 只保留在 ignored runtime。
+- 未执行 source-map extension application、full raw-to-processed comparison、full reconciliation、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
+
+# KMFA v0.1.4 Outside-Scope Authorized Source-Map Extension Post-Delegation Blocker Audit
+
+## 0.1.4-outside-scope-authorized-source-map-extension-post-delegation-blocker-audit - 2026-07-06
+
+- 完成 `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_POST_DELEGATION_BLOCKER_AUDIT` 本地单 phase。
+- 基于上一 phase public-safe summary 和 ignored private diagnostic，只做 post-delegation blocker audit：post-delegation blocker observation count 从 1 增至 2，blocked audit threshold 仍为 false。
+- 锁定结论：delegated decision records=72、delegated keep-pending decisions=72、delegated authorization decisions=0、application allowed decisions=0、source-map extension application ready=false、Go/No-Go=NO_GO。
+- 本 phase 未读取、列出、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；未改写 prior private diagnostic；private blocker audit diagnostic 只保留在 ignored runtime。
+- 未执行 source-map extension application、full raw-to-processed comparison、full reconciliation、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
+
+# KMFA v0.1.4 Outside-Scope Authorized Source-Map Extension Delegated Decision Readiness Recheck
+
+## 0.1.4-outside-scope-authorized-source-map-extension-delegated-decision-readiness-recheck - 2026-07-06
+
+- 完成 `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_DELEGATED_DECISION_READINESS_RECHECK` 本地单 phase。
+- 基于上一 phase ignored private delegated decision record/queue 和 public-safe summary，只做 application feasibility/readiness recheck：delegated decision records=72、delegated keep-pending decisions=72、delegated authorization decisions=0、application allowed decisions=0。
+- 锁定结论：source-map extension application ready=false、post-delegation blocker observation count=1、blocked audit threshold met=false、Go/No-Go=NO_GO。
+- 本 phase 未读取、列出、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；未改写 prior private decision record/queue；private readiness diagnostic 只保留在 ignored runtime。
+- 未执行 source-map extension application、full raw-to-processed comparison、full reconciliation、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
+
+# KMFA v0.1.4 Outside-Scope Authorized Source-Map Extension Delegated Keep-Pending Decision
+
+## 0.1.4-outside-scope-authorized-source-map-extension-delegated-keep-pending-decision - 2026-07-06
+
+- 完成 `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_DELEGATED_KEEP_PENDING_DECISION` 本地单 phase。
+- 在用户授权 Codex 自主决定后，基于现有 private runtime 聚合证据记录 72 条 delegated `KEEP_PENDING` 决策；exact source-record ref matches=0、exact processed-ref matches=0，因此不生成授权 source-map extension。
+- 新增 public-safe summary、manifest、matrix、Go/No-Go、人类可读证据、validator 和 focused unit test。
+- 当前仍为 `NO_GO`：不改写原 private template、不应用 source-map、不做 raw-to-processed comparison、不做 full reconciliation、不做 GitHub upload、不重装 app、不执行业务动作。
+- 本 phase 未读取、列出、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有 delegated response、queue 和 diagnostic 只保留在 ignored runtime。
+
+# KMFA v0.1.4 Outside-Scope Authorized Source-Map Extension Resumed Readiness Recheck
+
+## 0.1.4-outside-scope-authorized-source-map-extension-resumed-readiness-recheck - 2026-07-06
+
+- 完成 `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_RESUMED_READINESS_RECHECK` 本地恢复后 readiness recheck phase。
+- 锁定结论：resumed goal-turn blocker count=1、resumed blocked audit threshold met=false、goal status recommendation=continue_waiting_for_owner_input、private extension template items=72、pending authorized extension records=72、valid authorized extension records=0、missing authorized extension records=72、source-map application ready=false、Go/No-Go=NO_GO。
+- 本 phase 不读取、不列出、不 stat、不 fingerprint、不解析、不写入、不删除、不移动、不重命名、不复制或标准化 raw inbox；不修改 private template；private resumed readiness diagnostic 保留在 git-ignored runtime，公开证据只保存 aggregate counts/status/gate。
+- 未执行 source-map extension application、full raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
+- 下一步仍只能由 owner 或授权代理填充 private authorized source-map extension template 后，再另起单一 phase 做 readiness recheck 或 application；本轮恢复后 blocker 计数为 1，未达到再次标记 blocked 的三连阈值。
+
+# KMFA v0.1.4 Outside-Scope Authorized Source-Map Extension Blocker Audit
+
+## 0.1.4-outside-scope-authorized-source-map-extension-blocker-audit - 2026-07-06
+
+- 完成 `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_BLOCKER_AUDIT` 本地 blocker audit phase。
+- 锁定结论：consecutive goal-turn blocker count=3、blocked audit threshold met=true、goal status recommendation=blocked、private extension template items=72、valid authorized extension records=0、missing authorized extension records=72、source-map ready count=0、source-map blocker count=72、source-map application ready=false、Go/No-Go=NO_GO。
+- 本 phase 不读取、不列出、不 stat、不 fingerprint、不解析、不写入、不删除、不移动、不重命名、不复制或标准化 raw inbox；不修改 private template；private blocker audit diagnostic 保留在 git-ignored runtime，公开证据只保存 aggregate counts/status/gate。
+- 未执行 source-map extension application、full raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
+- 下一步只能由 owner 或授权代理填充 private authorized source-map extension template 后，再另起单一 phase 做 readiness recheck 或 application；当前 pursuing goal 应标记为 blocked。
+
+# KMFA v0.1.4 Linked-Scope Raw-To-Processed Comparison Precheck
+
+## 0.1.4-linked-scope-raw-to-processed-comparison-precheck - 2026-07-06
+
+- 完成 `V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_PRECHECK` 本地 linked-scope private fingerprint precheck phase。
+- 基于上一轮 77 条 linked materialized records 和 private candidate catalog，只在 git-ignored private runtime 中比对 raw-derived candidate fingerprint 与 processed replay fingerprint。
+- 锁定结论：processed target slots=149、linked materialized records=77、candidate catalog records=366、precheck pairs=77、exact fingerprint matches=77、mismatches=0、missing candidates=0、invalid materialized records=0、outside linked replay scope slots=72、Go/No-Go=NO_GO。
+- 本 phase 不读取、不列出、不 stat、不 fingerprint、不解析、不写入、不删除、不移动、不重命名、不复制或标准化 raw inbox；private comparison precheck records 保留在 git-ignored runtime，公开证据只保存 aggregate counts/status/gate。
+- 未执行 full raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
+- 下一步只能单独运行 linked-scope raw-to-processed comparison dry-run phase。
+
+# KMFA v0.1.4 Linked Materialization Replay
+
+## 0.1.4-linked-materialization-replay - 2026-07-06
+
+- 完成 `V014_PROCESSED_VALUE_MATERIALIZATION_REPLAY_AFTER_LINKED_REAPPLICATION` 本地 materialization replay phase。
+- 基于上一轮 77 条 linked materialization source-map input，只在 git-ignored private runtime 物化 77 条 linked-scope records；149 个 processed target slots 中 72 个明确保持在本 phase linked replay 范围外。
+- 锁定结论：processed target slots=149、linked materialization input records=77、linked materialized records=77、blocked linked records=0、unique private value sources=12、linked-scope raw-to-processed comparison ready=true、Go/No-Go=NO_GO。
+- 本 phase 不读取、不列出、不 stat、不 fingerprint、不解析、不写入、不删除、不移动、不重命名、不复制或标准化 raw inbox；private replay/materialized records 保留在 git-ignored runtime，公开证据只保存 aggregate counts/status/gate。
+- 未执行 full materialization、raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
+- 下一步只能单独运行 linked-scope raw-to-processed comparison precheck phase。
+
+# KMFA v0.1.4 Linked Source-Map Reapplication
+
+## 0.1.4-linked-source-map-reapplication - 2026-07-06
+
+- 完成 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_LINKED_REAPPLICATION` 本地 reapplication phase。
+- 基于上一轮 15 个 linked candidate groups / 77 条 reapplication candidates，写入 77 条 private source-map records，并 staged 77 条 private materialization source-map input。
+- 锁定结论：linked reapplication applied groups=15、linked reapplication applied records=77、blocked linked records=0、source-map records applied=77、processed value materialization replay ready=true、Go/No-Go=NO_GO。
+- 本 phase 不读取、不列出、不 stat、不 fingerprint、不写入、不删除、不移动、不重命名、不复制或标准化 raw inbox；private linked reapplication result/source-map/materialization input 保留在 git-ignored runtime，公开证据只保存 aggregate counts/status/gate。
+- 未执行 processed value materialization replay、raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
+- 下一步只能单独运行 processed value materialization replay phase。
+
+# KMFA v0.1.4 Post-Resolution Readiness Recheck
+
+## 0.1.4-post-resolution-readiness-recheck - 2026-07-06
+
+- 完成 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_POST_RESOLUTION_READINESS_RECHECK` 本地 readiness recheck phase。
+- 基于上一轮 36 条 owner-exclusion resolution application，确认 unlinked blockers 已关闭；原 blockers=113、linked blockers=77、unlinked blockers=36、post-resolution open unlinked blockers=0。
+- 锁定结论：actionable group decisions=19、linked candidate groups=15、source-map reapplication candidates=77、source-map completion reapplication ready=true、source-map records applied=0、Go/No-Go=NO_GO。
+- 本 phase 不读取、不列出、不 stat、不 fingerprint、不写入、不删除、不移动、不重命名、不复制或标准化 raw inbox；private post-resolution diagnostic/candidate queue/blocker queue 保留在 git-ignored runtime，公开证据只保存 aggregate counts/status/gate。
+- 未执行 source-map reapplication、processed value materialization replay、raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
+- 下一步只能单独运行 linked source-map completion reapplication phase。
+
+# KMFA v0.1.4 Processed Value Source-map Completion Blocker Audit
+
+## 0.1.4-processed-value-source-map-completion-blocker-audit - 2026-07-06
+
+- 完成 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_BLOCKER_AUDIT` 本地 blocker audit phase。
+- 第三次复核同一授权阻断：private completion template 仍未由 owner/authorized delegate 填写，completion template items=113、pending selected actions=113、valid completion items=0。
+- 锁定结论：consecutive goal-turn blocker count=3、blocked audit threshold met=true、source-map completion reapplication ready=false、source-map records applied=0、comparable pairs=0、business value consistency verified=false、Go/No-Go=NO_GO。
+- 本 phase 不读取、不列出、不 stat、不 fingerprint、不写入、不删除、不移动、不重命名、不复制或标准化 raw inbox；private blocker audit diagnostic 保留在 git-ignored runtime，公开证据只保存 aggregate counts/status/gate。
+- 未执行 source-map reapplication、processed value materialization replay、raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
+- 下一步仍只能由 owner/authorized delegate 填写 private completion template 并提供授权 processed value source evidence；当前 pursuing goal 应标记为 blocked，等待外部授权输入后再恢复。
+
+# KMFA v0.1.4 Processed Value Source-map Completion Readiness Recheck
+
+## 0.1.4-processed-value-source-map-completion-readiness-recheck - 2026-07-06
+
+- 完成 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_READINESS_RECHECK` 本地 recheck phase。
+- 重新检查 git-ignored private completion template，确认 113 条 target slots 仍为 pending owner/authorized delegate input，valid completion items=0，source-map completion reapplication ready=false。
+- 锁定结论：completion template items=113、pending selected actions=113、valid completion items=0、source-map records applied=0、authorized processed value fingerprints=0、comparable pairs=0、Go/No-Go=NO_GO。
+- 本 phase 不读取、不列出、不 stat、不 fingerprint、不写入、不删除、不移动、不重命名、不复制或标准化 raw inbox；private recheck diagnostic 保留在 git-ignored runtime，公开证据只保存 aggregate counts/status/gate。
+- 未执行 source-map reapplication、processed value materialization replay、raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
+- 下一步仍只能由 owner/authorized delegate 填写 private completion template 并提供授权 processed value source evidence。
+
+# KMFA v0.1.4 Processed Value Source-map Completion Application
+
+## 0.1.4-processed-value-source-map-completion-application - 2026-07-06
+
+- 完成 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_APPLICATION` 本地 private-template application phase。
+- 读取上一轮 git-ignored private completion template，确认 113 条 target slots 仍为 pending owner/authorized delegate input，未发现可应用的授权 processed value source evidence。
+- 锁定结论：completion template items=113、pending selected actions=113、valid completion items=0、source-map records applied=0、authorized processed value fingerprints=0、comparable pairs=0、Go/No-Go=NO_GO。
+- 本 phase 不读取、不列出、不 stat、不 fingerprint、不写入、不删除、不移动、不重命名、不复制或标准化 raw inbox；private diagnostic 保留在 git-ignored runtime，公开证据只保存 aggregate counts/status/gate。
+- 未执行 processed value materialization replay、raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
+- 下一步仍只能由 owner/authorized delegate 填写 private completion template 并提供授权 processed value source evidence。
+
+# KMFA v0.1.4 Processed Value Source-map Completion Input Kit
+
+## 0.1.4-processed-value-source-map-completion-input-kit - 2026-07-06
+
+- 完成 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_INPUT_KIT` 本地 private-template/public-safe evidence phase。
+- 基于既有 raw/processed blocker summary、private owner worklist 和 active keep-pending record，生成 113 条 private-only completion template items，供 owner/authorized delegate 或其他 agent 补齐授权 processed value source evidence。
+- 锁定结论：source worklist items=113、active fill record items=113、active keep-pending=113、private completion template items=113、unique target slots=113、authorized processed value fingerprints=0、source-map records applied=0、comparable pairs=0、Go/No-Go=NO_GO。
+- 本 phase 不读取、不列出、不 stat、不 fingerprint、不写入、不删除、不移动、不重命名、不复制、不标准化 raw inbox；private template 保留在 git-ignored runtime，公开证据只保存 aggregate counts/status/gate。
+- 未执行 processed value materialization replay、raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
+- 下一步只能由 owner/authorized delegate 填写 private completion template 并提供授权 processed value source evidence。
+
+# KMFA v0.1.4 Raw/Processed Alignment Blocker Report
+
+## 0.1.4-raw-processed-alignment-blocker-report - 2026-07-06
+
+- 完成 `V014_RAW_PROCESSED_ALIGNMENT_BLOCKER_REPORT` 本地 public-safe 诊断包 phase。
+- 汇总既有公开 value-consistency summaries/go-no-go，生成可转发给 ChatGPT 或其他 agent 的原因诊断包；不读取 raw inbox，不读取私有诊断明细。
+- 锁定结论：raw value fingerprints=871、raw unique numeric fingerprints=330、processed target slots=149、staged processed value fingerprints=0、usable source-map=0、authorized filled/unfilled=36/113、unresolved gaps=113、active keep-pending=113、structural key intersection=0、comparable pairs=0、Go/No-Go=NO_GO。
+- 该报告说明当前是证据不足无法形成可比对 pair，不是已完成业务值差异比较；final discrepancy report 当前不触发，但若补齐授权 source-map 后多次交叉验证仍无法对齐，最终 goal closeout 必须输出 public-safe 差异报告。
+- 未执行 raw-to-processed comparison、materialization replay、lineage full check、formal report、GitHub upload、app reinstall 或 business execution；下一步仍只能由 owner/authorized delegate 提供 target-slot to processed-value source-map。
+
+# KMFA v0.1.4 Raw/Processed Comparability Diagnostic
+
+## 0.1.4-raw-processed-comparability-diagnostic - 2026-07-06
+
+- 完成 `V014_RAW_PROCESSED_COMPARABILITY_DIAGNOSTIC` 本地 public-safe/private-runtime diagnostic gate。
+- 只读核验 raw diagnostic、processed target staging、partial source-map、owner worklist 和 active keep-pending record，确认当前 raw/processed 仍无法形成可比较 value pairs。
+- 锁定结论：raw root files=5、prior raw value fingerprint records=871、raw unique numeric fingerprints=330、processed target slots=149、staged processed value fingerprints=0、existing processed source-map records=36、unresolved owner worklist items=113、active keep-pending items=113、raw/processed structural key intersection=0、comparable pairs=0、Go/No-Go=NO_GO。
+- 本 phase 对 raw root 只读 list/stat/hash，未写入、删除、移动、重命名、复制、覆盖或标准化 raw source；私有 hash 诊断只写入 git-ignored runtime。
+- 未执行 raw-to-processed comparison、business consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution；下一步只能提供 owner-authorized target-slot to processed-value source-map。
+
+# KMFA v0.1.4 Owner-Authorized Fill Application Active Consumed
+
+## 0.1.4-private-processed-value-source-map-owner-authorized-fill-application-active-consumed - 2026-07-06
+
+- 完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION` 本地 public-safe gate。
+- 基于用户在当前 Codex 线程回复“确认”的 owner/authorized delegate activation，把既有 private draft 物化为 git-ignored active owner-authorized fill record，并消费该 active record。
+- 锁定结论：active fill record items=113、keep pending items=113、source-map records applied=0、new authorized fingerprints=0、source_map_gap_resolution_complete=false、Go/No-Go=NO_GO。
+- 本 phase 不读取、不列出、不 stat、不 hash、不修改 raw inbox；不做 processed value materialization replay、raw-to-processed comparison、processed-data reconciliation，也不声称业务值一致。
+- GitHub upload、app reinstall、formal report、lineage full check 和 business execution 均未执行；下一步只能 owner/authorized delegate 提供实际 authorized processed-value sources 或继续 pending。
+
+# KMFA v0.1.4 Owner-Authorized Fill Record Draft
+
+## 0.1.4-private-processed-value-source-map-owner-authorized-fill-record-draft - 2026-07-05
+
+- 完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_RECORD_DRAFT` 本地 public-safe gate。
+- 新增 owner-authorized fill record draft generator、validator、focused unit test、private-only draft 和 `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_RECORD_DRAFT/` 证据。
+- 锁定结论：source unresolved gap items=113、private intake request items=113、draft fill items=113、draft keep pending items=113、active authorized fill record created=false、new authorized fingerprints=0。
+- 本 phase 不读取、不列出、不 stat、不 hash、不修改 raw inbox；不创建 active owner 授权记录，不做 processed value materialization replay、raw-to-processed comparison、processed-data reconciliation，也不声称业务值一致。
+- GitHub upload、app reinstall、formal report、lineage full check 和 business execution 均未执行；下一步只能 owner/授权代表激活 draft 或继续 pending。
+
+# KMFA v0.1.4 Owner-Authorized Fill Intake
+
+## 0.1.4-private-processed-value-source-map-owner-authorized-fill-intake - 2026-07-05
+
+- 完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE` 本地 public-safe gate。
+- 新增 owner-authorized fill intake generator、validator、focused unit test、private-only intake request 和 `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/` 证据。
+- 锁定结论：source unresolved gap items=113、unique private refs=101、duplicate unresolved gap items=12、existing source-map records=36、private intake request items=113、allowed intake actions=3、new authorized fingerprints=0。
+- 本 phase 不读取、不列出、不 stat、不 hash、不修改 raw inbox；不创建 owner 授权填补记录，不做 processed value materialization replay、raw-to-processed comparison、processed-data reconciliation，也不声称业务值一致。
+- GitHub upload、app reinstall、formal report、lineage full check 和 business execution 均未执行；下一步只能 owner/授权填补应用或继续 pending。
+
+# KMFA v0.1.4 Source-Map Authorized-Fill Gap Resolution
+
+## 0.1.4-private-processed-value-source-map-gap-resolution - 2026-07-05
+
+- 完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION` 本地 public-safe gate。
+- 新增 gap-resolution generator、validator、focused unit test、private-only owner worklist 和 `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/` 证据。
+- 锁定结论：previous fill request items=149、previous authorized filled=36、unresolved gap items=113、unresolved unique private refs=101、duplicate unresolved gap items=12、new authorized fingerprints=0、source_map_gap_resolution_complete=false。
+- 本 phase 不读取、不列出、不 stat、不 hash、不修改 raw inbox；不做 processed value materialization replay、raw-to-processed comparison、processed-data reconciliation，也不声称业务值一致。
+- GitHub upload、app reinstall、formal report、lineage full check 和 business execution 均未执行；下一步只能 owner/授权填充 intake。
+
+# KMFA v0.1.4 Authorized Private Processed Source-Map Fill
+
+## 0.1.4-private-processed-value-source-map-authorized-fill - 2026-07-05
+
+- 完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL` 本地 public-safe gate。
+- 新增 authorized fill generator、validator、focused unit test 和 `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL/` 证据。
+- 锁定结论：fill request items=149、unique private refs=137、authorized filled items=36、authorized unfilled items=113、source-map records written=36、source_map_authorized_fill_complete=false。
+- 本 phase 不读取、不列出、不 stat、不 hash、不修改 raw inbox；不做 processed value materialization replay、raw-to-processed comparison、processed-data reconciliation，也不声称业务值一致。
+- GitHub upload、app reinstall、formal report、lineage full check 和 business execution 均未执行。
+
+# KMFA v0.1.4 Private Processed Value Source-Map Capture
+
+## 0.1.4-private-processed-value-source-map-capture - 2026-07-05
+
+- 完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE` 本地 public-safe gate。
+- 新增 source-map capture generator、validator、focused unit test 和 `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_CAPTURE/` 证据。
+- 锁定结论：processed target slots=149、path-only private refs=149、direct value literals=0、captured processed value fingerprints=0、usable source-map records=0、authorized fill required=149。
+- 本 phase 不读取、不列出、不 stat、不 hash、不修改 raw inbox；不做 raw-to-processed comparison、不做 processed-data reconciliation、不声称业务值一致。
+- GitHub upload、app reinstall、formal report、lineage full check 和 business execution 均未执行。
+
+# KMFA v0.1.4 Private Processed Value Materialization
+
+## 0.1.4-private-processed-value-source-resolution - 2026-07-05
+
+- 完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION` 本地 public-safe gate。
+- 新增 source resolution generator、validator、focused unit test 和 `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_RESOLUTION/` 证据。
+- 锁定 required source-map schema：processed target slots=149、usable source map=0、resolved sources=0、unresolved sources=149、source_resolution_complete=false。
+- 本 phase 不读取、不列出、不 stat、不 hash、不修改 raw inbox；不做 raw-to-processed comparison、不做 processed-data reconciliation、不声称业务值一致。
+- GitHub upload、app reinstall、formal report、lineage full check 和 business execution 均未执行。
+- Product version: `0.1.4-private-processed-value-materialization`.
+- Scope: `V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION` only; consume private processed staging, attempt materialization in ignored private runtime, and keep public evidence aggregate-only.
+- Evidence: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION/`.
+- Verification: `KMFA/tools/check_v014_private_processed_value_materialization.py`; `KMFA/tests/test_v014_private_processed_value_materialization.py`.
+- blocker_state: processed_target_slot_count=149, private_processed_value_source_map_present=false, private_processed_value_source_count=0, materialized_processed_value_fingerprint_count=0, comparable_value_pair_count=0, business_value_consistency_verified=false, go_no_go=NO_GO, raw_inbox_access=false, GitHub upload=false, app_reinstall=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-private-processed-value-materialization
+version_matrix_product_version_reference: 0.1.4-private-processed-value-materialization
+
+## 0.1.4-private-processed-value-materialization - 2026-07-05
+- Completed `V014_PRIVATE_PROCESSED_VALUE_MATERIALIZATION` locally as processed value materialization gate, not as raw-to-processed comparison or business-value verification.
+- Added public-safe aggregate evidence, metadata copies, validator and focused tests.
+- Slot-level materialization diagnostics remain only under git-ignored runtime; public evidence contains aggregate counts and gate flags only.
+- Current Go/No-Go remains `NO_GO`; processed value source resolution, raw-to-processed comparison, business-value consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
+
+# KMFA v0.1.4 Private Processed Value Staging
+- Product version: `0.1.4-private-processed-value-staging`.
+- Scope: `V014_PRIVATE_PROCESSED_VALUE_STAGING` only; scan existing public-safe processed metadata, stage private processed target slots in ignored runtime, and keep public evidence aggregate-only.
+- Evidence: `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_STAGING/`.
+- Verification: `KMFA/tools/check_v014_private_processed_value_staging.py`; `KMFA/tests/test_v014_private_processed_value_staging.py`.
+- blocker_state: processed_target_slot_count=149, approved_private_processed_target_slot_count=149, private_processed_value_fingerprint_count=0, comparable_value_pair_count=0, business_value_consistency_verified=false, go_no_go=NO_GO, raw_inbox_access=false, GitHub upload=false, app_reinstall=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-private-processed-value-staging
+version_matrix_product_version_reference: 0.1.4-private-processed-value-staging
+
+## 0.1.4-private-processed-value-staging - 2026-07-05
+- Completed `V014_PRIVATE_PROCESSED_VALUE_STAGING` locally as processed target slot staging, not as processed value materialization or business-value verification.
+- Added public-safe aggregate evidence, metadata copies, validator and focused tests.
+- Private target slot details remain only under git-ignored runtime; public evidence contains aggregate counts and gate flags only.
+- Current Go/No-Go remains `NO_GO`; processed value materialization, raw-to-processed comparison, business-value consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
+
+# KMFA v0.1.4 Raw Consistency Cross-Validation Gate
+- Product version: `0.1.4-raw-consistency-cross-validation-gate`.
+- Scope: `V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE` only; consume the owner confirmation, read-only recompute the current source-container private hash profile, cross-check it against prior private diagnostics, and publish aggregate-only baseline lock evidence.
+- Evidence: `KMFA/stage_artifacts/V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE/`.
+- Verification: `KMFA/tools/check_v014_raw_consistency_cross_validation_gate.py`; `KMFA/tests/test_v014_raw_consistency_cross_validation_gate.py`.
+- blocker_state: authoritative_raw_baseline_locked=true, source_container_consistency_verified=true, business_value_consistency_verified=false, raw_alignment_complete=false, public_member_hash_backfill_allowed=false, lineage_full_check_complete=false, GitHub upload=false, app reinstall=false, formal report=false, business execution=false.
+product_version: 0.1.4-raw-consistency-cross-validation-gate
+version_matrix_product_version_reference: 0.1.4-raw-consistency-cross-validation-gate
+
+## 0.1.4-raw-consistency-cross-validation-gate - 2026-07-05
+- Completed `V014_RAW_CONSISTENCY_CROSS_VALIDATION_GATE` locally as a source-container consistency gate, not as business-value verification.
+- Added public-safe authoritative raw baseline lock evidence, metadata copies, validator and focused tests.
+- Private source hashes and member hashes remain only under git-ignored runtime; public evidence contains aggregate counts and gate flags only.
+- Current Go/No-Go remains `NO_GO`; business-value consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain blocked.
+
+# KMFA v0.1.4 Raw Source Identity Decision Application
+- Product version: `0.1.4-raw-source-identity-decision-application`.
+- Scope: `V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION` only; generate a public-safe application gate for the owner raw source identity decision state.
+- Evidence: `KMFA/stage_artifacts/V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION/`.
+- Verification: `KMFA/tools/check_v014_raw_source_identity_decision_application.py`; `KMFA/tests/test_v014_raw_source_identity_decision_application.py`.
+- blocker_state: owner_decision_intake_ready=true, owner_decision_supplied=false, decision_applied=false, raw_alignment_complete=false, public_member_hash_backfill_allowed=false, lineage_full_check_complete=false, GitHub upload=false, app reinstall=false, formal report=false, business execution=false.
+product_version: 0.1.4-raw-source-identity-decision-application
+version_matrix_product_version_reference: 0.1.4-raw-source-identity-decision-application
+
+## 0.1.4-raw-source-identity-decision-application - 2026-07-05
+- Completed `V014_RAW_SOURCE_IDENTITY_DECISION_APPLICATION` locally as a decision application gate, not as an owner authorization.
+- Added a public-safe application preview, Go/No-Go report, validator and focused tests for the no-decision blocker and a keep-pending preview path.
+- Kept current Go/No-Go as `NO_GO` because no active owner decision record has been supplied.
+- Confirmed this phase did not read, list, stat, hash, mutate, delete, move, rename, overwrite, or write files in the raw inbox; it did not perform public hash backfill, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+# KMFA v0.1.4 Owner Raw Source Identity Decision Intake
+- Product version: `0.1.4-owner-raw-source-identity-decision`.
+- Scope: `V014_OWNER_RAW_SOURCE_IDENTITY_DECISION` only; generate a public-safe owner or authorized-delegate decision intake gate, packet, templates, validator and governance records.
+- Evidence: `KMFA/stage_artifacts/V014_OWNER_RAW_SOURCE_IDENTITY_DECISION/`.
+- Verification: `KMFA/tools/check_v014_owner_raw_source_identity_decision.py`; `KMFA/tests/test_v014_owner_raw_source_identity_decision.py`.
+- blocker_state: owner_decision_intake_ready=true, owner_decision_supplied=false, raw_alignment_complete=false, public_member_hash_backfill_allowed=false, lineage_full_check_complete=false, GitHub upload=false, app reinstall=false, formal report=false, business execution=false, next_required_input=owner_decision_code_or_corrected_registered_source_package.
+product_version: 0.1.4-owner-raw-source-identity-decision
+version_matrix_product_version_reference: 0.1.4-owner-raw-source-identity-decision
+
+## 0.1.4-owner-raw-source-identity-decision - 2026-07-05
+- Completed `V014_OWNER_RAW_SOURCE_IDENTITY_DECISION` locally as a decision intake/gate, not as an owner authorization.
+- Added public-safe decision packet and templates for `confirm_current_container_as_authoritative`, `register_corrected_source_package`, and `keep_pending`.
+- Kept current Go/No-Go as `NO_GO` because no active owner decision record has been supplied.
+- Confirmed this phase did not read, list, stat, hash, mutate, delete, move, rename, overwrite, or write files in the raw inbox; it did not perform public hash backfill, lineage full check, formal report, GitHub upload, app reinstall or business execution.
+
+# KMFA v0.1.4 Raw Alignment Remediation
+- Product version: `0.1.4-raw-alignment-remediation`.
+- Scope: `V014_RAW_ALIGNMENT_REMEDIATION` only; read/list/stat/hash the configured raw inbox for local source identity diagnostics, write private hashes only to ignored runtime, and publish aggregate-only NO_GO evidence.
+- Evidence: `KMFA/stage_artifacts/V014_RAW_ALIGNMENT_REMEDIATION/`.
+- Verification: `KMFA/tools/check_v014_raw_alignment_remediation.py`; `KMFA/tests/test_v014_raw_alignment_remediation.py`.
+- blocker_state: raw_root_file_count=5, archives=3, spreadsheets=2, selected_candidates=1, business_members=9, documents=8, workbooks=1, business_shape_matches_expected_a0=true, package_hash_matches_registered=false, package_size_matches_registered=false, raw_alignment_complete=false, decision=NO_GO, next_required_phase=V014_OWNER_RAW_SOURCE_IDENTITY_DECISION.
+product_version: 0.1.4-raw-alignment-remediation
+version_matrix_product_version_reference: 0.1.4-raw-alignment-remediation
+
+## 0.1.4-raw-alignment-remediation - 2026-07-05
+- Completed `V014_RAW_ALIGNMENT_REMEDIATION` locally with public-safe evidence, private ignored diagnostic, focused unit test and validator.
+- Confirmed the local raw container has the expected public-safe A0 business shape, but registered package hash/size still mismatch, so public member hash backfill, lineage full check, official report release, GitHub upload and app reinstall remain blocked.
+- Public evidence contains only aggregate counts and gate flags; it does not commit raw file names, raw hashes, archive member names, sheet names, field/header plaintext, row/cell values, business values, raw packages, office workbooks, source documents, private tables, databases or credentials.
+- Raw inbox mutation, delete, move, rename, overwrite and generated-file write are false. GitHub upload, app reinstall, formal report and business execution are false.
+
+# KMFA v0.1.4 Stage 18 Review
+- Product version: `0.1.4-s18-stage-review`.
+- Scope: Stage 18 review only; public-safe replay of S18-P1/S18-P2/S18-P3 validators, Stage 18 review validator, focused unit test and NO_GO release gate.
+- Evidence: `KMFA/stage_artifacts/V014_S18_STAGE_REVIEW/`.
+- Verification: `KMFA/tools/check_v014_s18_stage_review.py`; `KMFA/tests/test_v014_s18_stage_review.py`.
+- Finding fixed: S18-P3 final validation summary/test_results were stale pending records and are now treated as fixed by Stage 18 review replay.
+- blocker_state: phase_results=3/3 PASS, open_findings=0, fixed_findings=1, precision_scenarios=5, regression_checks=5, stage_evidence=18, html_fail=0, connector_plans=3, read_only_connectors=3, opme_entry_surfaces=4, backlog_items=6, go_no_go=NO_GO, report_grade=D, delivery_allowed=false, raw_inbox_access=0, GitHub upload=false, lineage full check=false, app reinstall=false, production_restore=false, external/live connector=false, formal_report=false, business_execution=false.
+product_version: 0.1.4-s18-stage-review
+version_matrix_product_version_reference: 0.1.4-s18-stage-review
+
+## 0.1.4-s18p3-integration-preparation - 2026-07-05
+- Completed v0.1.4 S18-P3 integration preparation locally with S18-P2 dependency, legacy S18-P3 public-safe baseline, v1.4 roadmap/taskpack anchors, v0.1.4 S18-P3 validator, focused unit test, and public-safe evidence.
+- Locked read-only future connector plans=3 for redcircle, kingdee and wps; OpMe entry surfaces=4; next-stage backlog items=6; Go/No-Go decision=NO_GO; next_required_phase=S18_STAGE_REVIEW.
+- Confirmed all connector plans are proposal-only/read-only and no credential, live connector call, external service call, source mutation, raw payload, raw filename, field/header plaintext, business value or private artifact is committed.
+- Confirmed no Stage18 review, GitHub upload, protected source matching, lineage full check, app reinstall, production restore, formal report, OpMe deep coupling or business execution.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s18p2-full-regression-acceptance - 2026-07-05
+- Completed v0.1.4 S18-P2 full regression and acceptance locally with S18-P1 dependency, legacy S18-P2 public-safe baseline, v1.4 roadmap/taskpack anchors, v1.4 HTML human-flow audit, v0.1.4 S18-P2 validator, focused unit test, and public-safe evidence.
+- Locked check_category_count=5, stage_evidence_count=18, HTML audit files=6, rows=54, pass=54, warn=0, fail=0, Go/No-Go decision=NO_GO, maximum report grade=D, and next_required_phase=S18-P3.
+- Confirmed no-omission, zero-delta, schema, lineage, UI, stage evidence and Go/No-Go gates are recorded, while lineage full check, official report release, business decision basis and delivery remain blocked.
+- Confirmed no S18-P3, Stage 18 review, GitHub upload, raw inbox read/list/stat/hash/mutation, protected source matching, app reinstall, production restore, external connector, live connector, formal report or business execution.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s18p1-precision-stress - 2026-07-05
+- Completed v0.1.4 S18-P1 precision and stress testing locally with S17 Stage review dependency, legacy S18-P1 public-safe baseline, v1.4 roadmap/taskpack anchors, v1.4 HTML/UIUX baseline reading, v0.1.4 S18-P1 validator, focused unit test, and public-safe evidence.
+- Locked scenario_count=5, scenario_type_count=5, consecutive_import_run_count=3, unique_import_result_hash_count=1, large_batch_file_count=1200, elapsed_ms=348/500, error_report_count=2, minimum_fail_difference_cents=1, html_baseline_refs=3, and report grade=D.
+- Confirmed amount precision, zero-delta, duplicate import, bad file, missing field, import consistency and synthetic large-batch gates pass with metadata-only public evidence.
+- Confirmed no S18-P2, S18-P3, Stage 18 review, GitHub upload, raw inbox read/list/stat/hash/mutation, protected source matching, lineage full check, app reinstall, production restore, external connector, live connector, formal report or business execution.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s17-stage-review - 2026-07-05
+- Completed v0.1.4 Stage 17 overall review locally with S17-P1/S17-P2/S17-P3 validators, v0.1.4 Stage 17 review validator, focused unit test, and public-safe evidence.
+- Locked phase_results=3/3 PASS, open findings=0, fixed findings=1, roles=4, sensitive policy categories=15, audit action types=5, notification rules=3, notification dispatch logs=3, operation runbooks=4, knowledge items=2, drill logs=2, report grade=D, and release permission=blocked.
+- Fixed the review finding that operations and notification evidence must remain metadata-only/manual-only and cannot be interpreted as real notification delivery, production restore, external service call, live connector, app reinstall, formal report, business decision basis, or business execution.
+- Confirmed no S18-P1, GitHub upload, raw inbox access, protected source matching, lineage full check, full report email body, report attachment, recipient plaintext publication, production restore, external service call, live connector, app reinstall, formal report or business execution.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s17p3-operations-sop - 2026-07-05
+- Completed v0.1.4 S17-P3 operations SOP locally with S17-P2 dependency, legacy S17-P3 public-safe baseline, v1.4 taskpack/roadmap requirements, v0.1.4 S17-P3 validator, focused unit test, and public-safe evidence.
+- Locked operation runbooks=4 for import, review, publish and rollback; knowledge-index items=2 for finance SOP and handoff materials; metadata-only drill logs=2 for error handling and backup recovery.
+- Confirmed production restore=0, external service calls=0, live connector calls=0, app reinstall=0, formal report=0, business execution=0 and raw inbox access=0.
+- Confirmed no Stage 17 review, GitHub upload, S18, protected source matching, lineage full check, raw/private publication or business action.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s17p2-notification-policy - 2026-07-05
+- Completed v0.1.4 S17-P2 notification policy locally with S17-P1 dependency, legacy S17-P2 public-safe baseline, v1.4 taskpack/roadmap requirements, v0.1.4 S17-P2 validator, focused unit test, and public-safe evidence.
+- Locked notification rules=3, notification events=3, metadata dispatch logs=3 and trigger types=3 for report-ready, major-risk and missing-source reminders.
+- Confirmed real notification delivery=0, full report email body=0, report attachment=0, recipient address plaintext=0, external connector=0, formal report=0, business decision basis=0, business execution=0 and raw inbox access=0.
+- Confirmed no S17-P3, Stage 17 review, GitHub upload, protected source matching, lineage full check, app reinstall, raw/private publication or business action.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s17p1-access-security - 2026-07-05
+- Completed v0.1.4 S17-P1 access and security locally with S16 Stage review dependency, legacy S17-P1 public-safe baseline, v1.4 taskpack/roadmap requirements, v0.1.4 S17-P1 validator, focused unit test, and public-safe evidence.
+- Locked role permission coverage for management, finance, reviewer and readonly roles; sensitive public-repo policy categories=15; audit action types=5 for import, processing, report, export and notification events.
+- Confirmed notification delivery=0, full report email body=0, external connector=0, formal report=0, business decision basis=0, business execution=0 and raw inbox access=0.
+- Confirmed no S17-P2, S17-P3, Stage 17 review, GitHub upload, protected source matching, lineage full check, app reinstall, raw/private publication or business action.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s16-stage-review - 2026-07-05
+- Completed v0.1.4 Stage 16 overall review locally with S16-P1/S16-P2/S16-P3 validators, v0.1.4 Stage 16 review validator, focused unit test, and public-safe evidence.
+- Locked phase_results=3/3 PASS, open findings=0, fixed findings=1, source_lanes_total=17, project_matches=5, lifecycle_records=4, customer_summaries=4, pending_reconciliation=12, report_grade=D, and release_permission=blocked.
+- Fixed the review finding that S16-P2/S16-P3 private alignment markers are read-only aggregate observations and not public raw-source publication.
+- Confirmed no S17-P1, GitHub upload, protected source matching, lineage full check, formal report, procurement execution, payment approval, payment execution, bank operation, site/signature/invoice action, customer contact, collection, legal action, tax filing, app reinstall, or business execution.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s16p3-customer-business-analysis - 2026-07-05
+- Completed v0.1.4 S16-P3 customer business analysis locally with S16-P2 dependency, S08/S09/S13 public-safe fact manifests, v1.4 taskpack/roadmap requirements, v0.1.4 S16-P3 validator, focused unit test, and public-safe evidence.
+- Locked source_lanes=7, customer_value_dimensions=4, value_signals=4, risk_signals=4, customer_summaries=4, handoff_guards=4, pending_reconciliation=12, report_grade=D, formal_report=0, business_decision_basis=0, customer_contact=0, collection_action=0, legal_decision=0, payment_execution=0, bank_operation=0.
+- Created only an ignored private raw-alignment diagnostic while public evidence keeps aggregate counts and status only; no raw filenames, raw hashes, field/header plaintext, customer/project plaintext, business values, Excel/PDF/zip/private CSV/sqlite/db files, credentials, or raw payloads were committed.
+- Confirmed S16-P3 outputs review-queue customer business summary evidence only; it does not perform customer contact, collection, legal action, invoice issuance, payment, bank operation, formal report release, or business decision basis.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s16p2-project-status-lifecycle - 2026-07-05
+- Completed v0.1.4 S16-P2 project status lifecycle locally with S16-P1 dependency, legacy S16-P2 public-safe baseline, v1.4 taskpack/roadmap requirements, v0.1.4 S16-P2 validator, focused unit test, and public-safe evidence.
+- Locked source_lanes=6, lifecycle_records=4, exception_items=3, handoff_guards=3, completed_not_settled=1, settled_not_invoiced=1, invoiced_not_collected=1, pending_reconciliation=12, report_grade=D, site_operation=0, signature_operation=0, invoice_issuance=0, collection_action=0, formal_report=0, business_decision_basis=0.
+- Created only an ignored private raw-alignment diagnostic while public evidence keeps aggregate counts and status only; no raw filenames, raw hashes, field/header plaintext, business values, Excel/PDF/zip/private CSV/sqlite/db files, credentials, or raw payloads were committed.
+- Confirmed S16-P2 outputs review-queue and handoff-guard evidence only; it does not replace site construction, safety signature, technical signature, invoice issuance, collection, payment, bank operation, legal action, formal report release, or business decision basis.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s16p1-subcontract-procurement - 2026-07-05
+- Completed v0.1.4 S16-P1 subcontract procurement locally with Stage 15 review dependency, legacy S16-P1 public-safe baseline, v1.4 taskpack/roadmap requirements, v0.1.4 S16-P1 validator, focused unit test, and public-safe evidence.
+- Locked source_lanes=4, project_matches=5, unallocated_cost_pool=2, anomaly_candidates=4, duplicate_payment_candidates=2, cross_project_cost_candidates=2, pending_reconciliation=12, report_grade=D, procurement_execution=0, payment_approval=0, payment_execution=0, bank_operation=0, formal_report=0, business_decision_basis=0.
+- Confirmed S16-P1 outputs review-queue evidence only; it does not approve procurement, approve or execute payment, operate bank accounts, release a formal report, or create business decision basis.
+- Confirmed no raw inbox read, list, inventory, stat, hash, write, mutation, deletion, move, rename, overwrite, raw value publication, raw filename/hash publication, source header plaintext, field plaintext, private CSV, Excel, PDF, zip, local database, credentials, S16-P2, S16-P3, Stage 16 review, GitHub upload, protected source matching, lineage full check, live connector, app reinstall, OpMe, collection action, legal action, or business execution.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s15-stage-review - 2026-07-05
+- Completed v0.1.4 Stage 15 overall review locally with S15-P1/S15-P2/S15-P3 validators, legacy Stage 15 review, v0.1.4 Stage 15 review validator, focused unit test, and public-safe evidence.
+- Locked phase_results=3/3 PASS, open findings=0, fixed findings=1, field definitions=6, field bindings=6, manual review fields=4, performance fact rows=4, abnormal review items=16, fact output interface contracts=1, future salary readiness rows=4, pending review items=16, report_grade=D, salary=0, wage=0, bonus=0, payroll_export=0, final_compensation=0, final_payment=0, payment_execution=0.
+- Fixed the review finding that legacy Stage 15 upload artifacts are historical evidence only and not the current v1.4 upload gate.
+- Confirmed no raw inbox read, list, inventory, stat, hash, write, mutation, deletion, move, rename, overwrite, raw value publication, raw filename/hash publication, source header plaintext, field plaintext, private CSV, Excel, PDF, zip, local database, credentials, salary detail, payroll payload, final payment payload, S16, GitHub upload, protected source matching, lineage full check, formal report, live connector, app reinstall, OpMe or business execution.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s15p3-salary-boundary - 2026-07-05
+- Completed v0.1.4 S15-P3 salary boundary locally with S15-P2 dependency, legacy S15-P3 public-safe baseline, v1.4 taskpack/roadmap requirements, v0.1.4 S15-P3 validator, focused unit test, and public-safe evidence.
+- Locked fact_output_interface_contract_count=1, future_salary_system_readiness_row_count=4, human_approval_boundary_count=4, pending_review_item_count=16, report_grade=D, salary=0, wage=0, bonus=0, payroll_export=0, final_compensation=0, final_payment=0, payment_execution=0.
+- Confirmed S15-P3 only reserves a public-safe fact output interface contract and future salary-system readiness draft; final approval and payment release remain human-only.
+- Confirmed no raw inbox read, list, inventory, stat, hash, write, mutation, deletion, move, rename, overwrite, raw value publication, raw filename/hash publication, source header plaintext, field plaintext, private CSV, Excel, PDF, zip, local database, credentials, salary detail, payroll payload, final payment payload, live salary integration, API endpoint, connector, scheduled sync, file export, or business amount value committed.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s15p2-performance-review-list - 2026-07-05
+- Completed v0.1.4 S15-P2 performance review list locally with S15-P1 dependency, legacy S15-P2 public-safe baseline, v1.4 taskpack/roadmap requirements, v0.1.4 S15-P2 validator, focused unit test, and public-safe evidence.
+- Locked performance_fact_row_count=4, abnormal_review_item_count=16, manual_review_field_count=4, required fields invoice_amount/gross_margin_rate/settlement_speed/collection_speed/audit_variance/customer_relationship_rate, manual review fields settlement_speed/collection_speed/audit_variance/customer_relationship_rate, report_grade=D, salary=0, wage=0, bonus=0, payroll_export=0, final_compensation=0, final_payment=0.
+- Confirmed S15-P2 only creates public-safe fact rows, review items, refs, hashes, statuses, and counts; it does not create S15-P3 salary boundary, Stage 15 review, GitHub upload, protected source matching, lineage full check, formal report, salary calculation, bonus approval, payroll export, final payment, payment execution, or business execution.
+- Confirmed no raw inbox read, list, inventory, stat, hash, write, mutation, deletion, move, rename, overwrite, raw value publication, raw filename/hash publication, source header plaintext, field plaintext, private CSV, Excel, PDF, zip, local database, credentials, salary detail, payroll payload, final payment payload, or business amount value committed.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s15p1-performance-fact-fields - 2026-07-05
+- Completed v0.1.4 S15-P1 performance fact fields locally with Stage 14 review dependency, legacy S15-P1 public-safe baseline, v1.4 taskpack/roadmap requirements, v0.1.4 S15-P1 validator, focused unit test, and public-safe evidence.
+- Locked field_definition_count=6, field_binding_count=6, manual_review_field_count=4, required fields invoice_amount/gross_margin_rate/settlement_speed/collection_speed/audit_variance/customer_relationship_rate, manual review fields settlement_speed/collection_speed/audit_variance/customer_relationship_rate, report_grade=D, performance_fact_table=0, review_list=0, salary=0, bonus=0, payroll_export=0, final_payment=0.
+- Confirmed S15-P1 only creates public-safe field slots, source refs, hash refs, and manual-review markers; it does not create S15-P2 review list, S15-P3 salary boundary, Stage 15 review, GitHub upload, protected source matching, lineage full check, formal report, salary calculation, bonus approval, payroll export, final payment, payment execution, or business execution.
+- Confirmed no raw inbox read, list, inventory, stat, hash, write, mutation, deletion, move, rename, overwrite, raw value publication, raw filename/hash publication, source header plaintext, field plaintext, private CSV, Excel, PDF, zip, local database, credentials, salary detail, payroll payload, final payment payload, or business amount value committed.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s14-stage-review - 2026-07-05
+- Completed v0.1.4 Stage 14 overall review locally with S14-P1/S14-P2/S14-P3 validators, legacy Stage 14 review, v1.4 Stage 14 review validator, focused unit test, and public-safe evidence.
+- Locked phase_results=3/3 PASS, open findings=0, fixed findings=1, fund_lanes=4, invoice_tax_lanes=3, policy_directories=5, policy_gaps=5, policy_risk_tips=5, html_exports=3, pending_reconciliation=12, report_grade=D, formal_report=0, business_decision_basis=0, payment/bank/loan/tax/invoice/policy/subsidy actions=0.
+- Fixed the review finding that legacy Stage 14 upload-ready artifacts are historical evidence only and not the current v1.4 upload gate.
+- Confirmed no S15-P1, GitHub upload, protected source matching, lineage full check, formal report release, live connector, app reinstall, OpMe deep coupling, financial action, policy action, business execution, or raw inbox access.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s14p3-policy-evidence-plan - 2026-07-05
+- Completed v0.1.4 S14-P3 政策证据计划 locally with S14-P2 dependency, legacy S14-P3 validator, v1.4 S14-P3 validator, focused unit test, and public-safe evidence.
+- Locked policy_program_count=5, evidence_directory_count=5, evidence_gap_count=5, risk_tip_count=5, html_output_count=1, pending_reconciliation=12, report_grade=D, formal_policy_conclusion=0, policy_application_submission=0, subsidy_application=0, and external_connector_action=0.
+- Confirmed S14-P3 creates evidence directories, evidence gaps, and risk tips only; it does not create policy eligibility conclusions, policy filing, subsidy application, tax filing, invoice issuance, payment, bank, loan-management, formal report, business decision, or business execution instructions.
+- Confirmed no Stage 14 review, GitHub upload, protected source matching, lineage full check, formal report release, live connector, app reinstall, OpMe deep coupling, or raw inbox access.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s14p2-invoice-tax-plan - 2026-07-05
+- Completed v0.1.4 S14-P2 发票税务计划 locally with S14-P1 dependency, legacy S14-P2 validator, v1.4 S14-P2 validator, focused unit test, and public-safe evidence.
+- Locked source_lanes=3, source_count=6, field_mapping_count=30, issue_candidate_count=3, cash_summary_count=3, html_output_count=1, pending_reconciliation=12, report_grade=D, invoice_issuance=0, tax_filing=0, payment_or_bank_operation=0, and external_connector_action=0.
+- Confirmed S14-P2 creates planning candidates only and does not create tax filing, tax declaration generation, invoice issuance, invoice API, payment, bank, loan-management, policy, subsidy, formal report, business decision, or business execution instructions.
+- Confirmed no S14-P3, Stage 14 review, GitHub upload, protected source matching, lineage full check, formal report release, live connector, app reinstall, OpMe deep coupling, or raw inbox access.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s14p1-fund-cash-loan-plan - 2026-07-05
+- Completed v0.1.4 S14-P1 资金计划现金贷款 locally with Stage 13 review dependency, legacy S14-P1 validator, v1.4 S14-P1 validator, focused unit test, and public-safe evidence.
+- Locked source_lanes=4, source_count=5, field_mapping_count=25, cash_pressure_record_count=4, loan_due_alert_count=3, account_balance_summary_count=3, html_output_count=1, pending_reconciliation=12, report_grade=D, payment_operation=0, bank_operation=0, and loan_management_action=0.
+- Confirmed S14-P1 creates planning signals only and does not create payment, bank, loan-management, invoice, tax, policy, subsidy, formal report, business decision, or business execution instructions.
+- Confirmed no S14-P2, S14-P3, Stage 14 review, GitHub upload, protected source matching, lineage full check, formal report release, live connector, app reinstall, OpMe deep coupling, or raw inbox access.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s13-stage-review - 2026-07-05
+- Completed v0.1.4 Stage 13 overall review locally with S13-P1/S13-P2/S13-P3 validators, legacy Stage 13 review, v1.4 Stage 13 review validator, focused unit test, and public-safe evidence.
+- Locked phase_results=3/3 PASS, open findings=0, fixed findings=1, financial_lanes=4, collection_lanes=5, review_dimensions=4, difference_queue=4, quality_report=1, html_exports=4, pending_reconciliation=12, report_grade=D, formal_report=0, business_decision_basis=0, and difference_closure=0.
+- Fixed the review finding that legacy Stage 13 upload-ready artifacts are historical evidence only and not the current v1.4 upload gate.
+- Confirmed no S14, GitHub upload, protected source matching, lineage full check, formal report release, live connector, app reinstall, OpMe deep coupling, difference closure, business execution, or raw inbox access.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s13p3-cross-table-review - 2026-07-05
+- Completed v0.1.4 S13-P3 跨表复核 locally with S13-P1/S13-P2 dependencies, legacy S13-P3 public-safe cross-table review replay, v1.4 HTML/UIUX baseline, validator, focused unit test, and public-safe evidence.
+- Locked review_dimension_count=4, difference_queue_count=4, quality_report_count=1, html_draft_count=1, pending_reconciliation_count=12, report_grade=D, formal_report_count=0, business_decision_basis_count=0, difference_auto_resolution_count=0, and difference_closure_count=0.
+- Confirmed cross-table differences remain in a public-safe pending queue and do not become automatic correction, legal/payment/bank/invoice/tax instructions, formal reports, or business decisions.
+- Confirmed no Stage 13 review, S14, GitHub upload, protected source matching, lineage full check, formal report release, business execution, or raw inbox access.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s13p2-collection-receivable-aging - 2026-07-05
+- Completed v0.1.4 S13-P2 回款应收账龄 locally with S13-P1 dependency, legacy S13-P2 public-safe collection receivable aging replay, v1.4 HTML/UIUX baseline, validator, focused unit test, and public-safe evidence.
+- Locked source_lanes=5, source_count=5, field_mapping_count=25, issue_type_count=4, priority_item_count=4, responsibility_item_count=4, html_draft_count=1, pending_reconciliation_count=12, report_grade=D, formal_report_count=0, and business_decision_basis_count=0.
+- Confirmed priority and responsibility drafts do not constitute collection, legal, payment, bank, invoice, tax or business execution instructions.
+- Confirmed no S13-P3, Stage 13 review, GitHub upload, protected source matching, lineage full check, formal report release, business execution, or raw inbox access.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s13p1-financial-operating-report - 2026-07-05
+- Completed v0.1.4 S13-P1 财务经营报表 locally with Stage 12 review dependency, legacy S13-P1 public-safe financial operating report replay, v1.4 HTML/UIUX baseline, validator, focused unit test, and public-safe evidence.
+- Locked source_lanes=4, source_count=8, field_mapping_count=39, draft_report_count=2, html_draft_count=2, pending_reconciliation_count=12, report_grade=D, formal_report_count=0, and business_decision_basis_count=0.
+- Confirmed the weekly and monthly operating drafts visibly show data status and limitations while remaining D-grade non-formal drafts.
+- Confirmed no S13-P2, S13-P3, Stage 13 review, GitHub upload, raw matching, lineage full check, formal report release, business execution, or raw inbox access.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s12-stage-review - 2026-07-05
+- Completed v0.1.4 Stage 12 overall review locally with v0.1.4 S12-P1/S12-P2/S12-P3 validators, legacy Stage 12 review validator, v1.4 Stage 12 review validator, focused unit test, and public-safe evidence.
+- Locked phase_results S12-P1/S12-P2/S12-P3 all PASS, open findings=0, fixed findings=1, manual events=5, impact previews=5, cache invalidations=2, rerun steps=8, same-source consistency checks=2, and HTML exports=3.
+- Fixed the review finding that legacy Stage 12 upload-ready wording is not the current v1.4 upload gate.
+- Confirmed no S13, GitHub upload, protected source matching, lineage full check, formal report release, business execution, or raw inbox access.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed with findings fixed.
+
+## 0.1.4-s12p3-manual-rerun-mechanism - 2026-07-05
+- Completed v0.1.4 S12-P3 重跑机制 locally with v0.1.4 S12-P2 dependency, public-safe cache invalidation, four-layer rerun records, same-source consistency checks, validator, focused unit test, and evidence.
+- Locked source_preview_count=5, eligible_event_count=2, blocked_preview_count=3, cache_invalidation_count=2, rerun_step_count=8, same_source_consistency_check_count=2, old_version_retained_count=8, new_version_appended_count=8.
+- Confirmed only publish-allowed previews enter cache invalidation and rerun; blocked previews remain outside the rerun chain.
+- Confirmed no Stage 12 review, GitHub upload, protected source matching, lineage full check, formal report release, business execution, or raw inbox access.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed.
+
+## 0.1.4-s12p2-manual-impact-preview - 2026-07-05
+- Completed v0.1.4 S12-P2 影响预览 locally with v0.1.4 S12-P1 dependency, legacy public-safe S12-P2 impact preview replay, v1.4 human-flow baseline, validator, focused unit test, and public-safe evidence.
+- Locked impact_preview_count=5, affected_project_count=8, affected_metric_count=11, affected_report_count=5, high_risk_count=3, second_confirmation_required_count=3, blocked_publish_count=3, publish_allowed_count=2.
+- Confirmed high-risk pending previews require second confirmation and cannot publish before passing preview.
+- Confirmed no S12-P3 rerun, Stage 12 review, GitHub upload, raw matching, lineage full check, formal report release, business execution, or raw inbox access.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed.
+
+## 0.1.4-s12p1-manual-resolution-events - 2026-07-04
+- Completed v0.1.4 S12-P1 人工处理事件 locally with Stage 11 review dependency, legacy public-safe S12-P1 event replay, v1.4 human-flow baseline, validator, focused unit test, and public-safe evidence.
+- Locked manual_event_count=5, manual_action_kind_count=4, event_type_count=4, approved_event_count=1, reverse_event_count=1, html_export_count=1.
+- Confirmed approved events cannot be silently rewritten and can only be changed through appended reverse events.
+- Confirmed no S12-P2 impact preview, S12-P3 rerun, Stage 12 review, GitHub upload, raw matching, lineage full check, formal report release, business execution, or raw inbox access.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed.
+
+## 0.1.4-s11-stage-review - 2026-07-04
+- Completed v0.1.4 Stage 11 整体复审 locally with S11-P1/S11-P2/S11-P3 validators, legacy S11 review, v1.4 Stage 11 review validator, and focused unit test passing.
+- Locked phase_results S11-P1/S11-P2/S11-P3 all PASS, open findings=0, fixed findings=2, navigation modules=8, source rows=13, project rows=4, HTML exports=3, pending reconciliations=12, formal report=0, and business decision basis=0.
+- Fixed review findings: legacy Stage 11 upload-ready wording is not the current v1.4 upload gate; S11-P3 reviewed_head validation now requires a valid SHA instead of current HEAD equality.
+- Confirmed no S12, GitHub upload, raw matching, lineage full check, formal report release, business execution, or raw inbox access.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed.
+
+## 0.1.4-s11p3-project-cost-page - 2026-07-04
+- Completed v0.1.4 S11-P3 项目成本页面 locally with four public-safe project rows, seven list columns, nine cost categories, four margin records, twelve pending reconciliations, project detail/evidence/pending panels, and D-grade report preview.
+- Locked v1.4 human-flow baseline reflection for project detail clicks, report-section switching, appendix export feedback, print/save feedback, and quality gate blocking without exposing raw business data, source filenames, field/header plaintext, account numbers, business values, or private source hashes.
+- Added public-safe S11-P3 evidence, validator, and focused unit test; confirmed no Stage 11 review, GitHub upload, raw matching, lineage full check, formal report release, business execution, or raw inbox access.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed.
+
+## 0.1.4-s11p1-home-navigation - 2026-07-04
+- Completed v0.1.4 S11-P1 首页导航 locally with eight required Chinese home modules, KM mark, blue business style, clickable navigation buttons, per-module action buttons, visible feedback panel, and report-center entry.
+- Locked v1.4 human-flow baseline reflection for clickable navigation, visible feedback, and report-center entry without exposing raw business data or private source headers.
+- Added public-safe S11-P1 evidence, validator, and focused unit test; confirmed no S11-P2/S11-P3, Stage 11 review, GitHub upload, raw matching, lineage full check, formal report release, business execution, or raw inbox access.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed.
+
+## 0.1.4-s11p2-source-check-board - 2026-07-04
+- Completed v0.1.4 S11-P2 数据源检查板 locally with 13 public-safe matrix rows, 11 required columns, five allowed statuses, search feedback, status-click detail preview, status-change control events, and low-interference blue-gray styling.
+- Locked v1.4 human-flow baseline reflection for search, status change, and detail preview without exposing raw business data, source filenames, field/header plaintext, account numbers, business values, or private source hashes.
+- Added public-safe S11-P2 evidence, validator, and focused unit test; confirmed no S11-P3, Stage 11 review, GitHub upload, raw matching, lineage full check, formal report release, business execution, or raw inbox access.
+- GitHub upload remains deferred until v1.4 Stage 1-18 are complete and overall-reviewed.
+
 # Changelog
+
+## 0.1.5-s19-official-only-runtime - 2026-07-11
+
+- 修复 S19 晚报在官方报表已完成后仍串行执行 42 人 × `record/summary` 的架构问题；旧诊断最多可形成数小时等待并被 automation 错误中断为 `DWS_AUTH_REQUIRED`。
+- scheduled production collector 现在在 42/42 官方 parity 后直接生成 official-only rows；旧逐人接口只保留给显式 legacy/diagnostic collector。
+- automation prompt 禁止在 runner 自身有界 timeout/retry 内中断进程，并禁止在 healthcheck `READY` 后把运行中或后续 timeout 误报为授权失败。
+- 真实只读 DWS 验收：42/42 覆盖、parity `PASS`、command failure 0、legacy diagnostic skipped 42、总耗时 65.1 秒；未发送通知。
+
+## 0.1.4-s19-dingtalk-attendance - 2026-07-07
+
+- 新增 `S19｜每日早晚钉钉考勤检查` public-safe 自动化结构，固定每日北京时间 08:35 晨报和 18:15 晚报。
+- 新增 S19 多目标通知路由表：ignored `notification_targets.local.json` / `notification_targets_resolved.json` 保存个人和群聊目标，public `notification_targets_manifest.json` 只保存脱敏状态；张霖泽目标已从旧单通道 resolved 兼容迁移到 `dws_open_dingtalk_id_chat`。
+- 新增 S19 钉钉个人通知通道探针：按 DWS userId 单聊、openDingTalkId 单聊、DING、工作通知、群机器人顺序自动 fallback；当前 userId 单聊失败原因记录为 `chat/business_error/系统错误`，openDingTalkId 单聊已验证 `SENT`。
+- 新增 `send_latest_report.py --channel auto --targets all|personal|group`：不重新取考勤，读取最新 OneDrive manifest，用多目标 resolved 路由发送唯一“考勤通知模板”；automation JSON 输出 `notification_template_text` 和 `notification_delivery_table`，内部 `management/hr` 仅作为报告选择和 receipt 兼容字段。
+- 新增 `KMFA/tools/dingtalk_attendance/` 与 `KMFA/metadata/dingtalk_attendance/`，覆盖 DWS live-only 运行、管理报告/HR 报告模板、OneDrive 月度私有归档和三天 operational cache 清理。
+- 新增 DWS 考勤后端：递归枚举组织部门成员，逐人调用 `dws attendance record get` 和 `dws attendance summary`，遇到 transient attendance error 仅 verbose 重试一次。
+- 启用本地钉钉小群机器人通知补丁：从 ignored `private_runtime/.env.local` 读取通知配置，按 HmacSHA256 + Base64 + URL encode 加签发送 markdown；报告写入 OneDrive 后发送统一“考勤通知模板”，dispatch receipt 写真实发送状态。
+- 新增 `--send-latest-report-only`，可只重发最新 OneDrive 私有报告对应的统一考勤通知、不重新调用 DWS；2026-07-07 已验证最新晚报统一考勤通知发送成功，cleanup 随后执行。
+- 统一用户可见模板 run type 展示：内部 `morning/evening` 仅保留作 CLI、run_id 和归档文件名，钉钉通知正文、automation `notification_template_text`、management/hr 报告标题均显示 `晨报/晚报`。
+- 修复 S19 resolved-channel/latest resend 通知模板回归：抽出 `notification_template.py` 作为群通知、个人通知、正常 run 和 latest resend 的唯一正文模板；通知里新增“需要休息的人员”板块，钉钉正文不包含 run_id、北京时间或 OneDrive 报告路径，这些机器追溯字段只保留在 dispatch receipt / manifest。
+- 调整 S19 需要休息口径：休息提醒从自然月第 23 个有效考勤日开始；丁春法、李永占只从“需要休息人员”和私有 ledger `rest_required_snapshots` 中排除，其他异常、连续异常、待审批/待补卡/待核查和月累计状态仍照常统计。
+- 修复 S19 考勤异常判定：张霖泽、林全意作为已知无需考勤人员只用于豁免自身，不再作为全局隐藏名单；`recordList=[]`、缺少上下班打卡、summary 当天 `缺卡/未打卡/旷工/迟到/早退` 均进入用户可见异常名单。
+- 已完成 2026-07-07 live 验证：当前可见组织 44 人，record 成功 44 人，summary 成功 44 人；summary 当天覆盖应考勤 41 人，当天缺卡异常 2 人；钉钉通知不再发送错误的“今天一切良好”，具体员工考勤姓名仅保留在私有 OneDrive 归档。
+- OneDrive 私有归档固定为 `/Users/linzezhang/OneDrive/dingtalk_attendance/YYYYMM/`，当月目录下直接保存运行文件，不再展开深层目录。
+- 新增 `KMFA/tests/test_dingtalk_attendance.py`、`check_s19_dingtalk_attendance.py` 和 `validate_no_sensitive_git.py`，验证 S19 文件合同、配置缺失失败、报告章节边界和 tracked 文件安全扫描。
+- 未提交真实员工考勤明文、SQLite、raw API response、报告正文、机器人地址、signing key、token 或凭据材料；真实 raw JSONL gzip 和管理/HR 报告只写入私有 OneDrive；未创建 PR、issue、branch 或 worktree。
+## 0.1.4-s10-stage-review - 2026-07-04
+
+- 完成 `v0.1.4 Stage 10 整体复审`。
+- 新增 Stage 10 review evidence generator、validator、focused unit test、review report、test results、risk register、rollback plan 和 machine manifest。
+- 复跑 v0.1.4 S10-P1/S10-P2/S10-P3 validators、legacy Stage 10 review validator 和 v0.1.3 Stage 10 review validator；phase_results 全部 PASS，open findings=`0`，fixed findings=`2`。
+- 锁定 report_template_count=`2`、report_grade_record_count=`2`、report_export_record_count=`2`、HTML exports=`2`、CSV appendices=`2`、Excel-compatible CSV downloads=`2`、pending reconciliation=`12`、confirmed resolution=`0`、formal report=`0`、business decision basis=`0`、current report grade=`D`。
+- 本 review 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S11、GitHub upload、raw value matching、lineage full check、正式报告、UI runtime、live connector、app reinstall 或业务执行。
+- GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s10p3-report-export - 2026-07-04
+
+- 完成 `v0.1.4 S10-P3｜报告导出`。
+- 新增 S10-P3 v1.4 evidence generator、validator、focused unit test、report export report、test results、risk register、rollback plan 和 machine manifest。
+- 验证 v0.1.4 S10-P2 dependency、legacy public-safe S10-P3 runtime 和 v0.1.3 S10-P3 replay；锁定 report_export_record_count=`2`、html_export_count=`2`、csv_appendix_count=`2`、excel_compatible_download_count=`2`、committed_pdf_file_count=`0`、committed_excel_file_count=`0`。
+- PDF 仅保留 private-runtime-only policy；Excel 下载保留 compatible CSV，不提交 workbook；formal_report_count=`0`、business_decision_basis_count=`0`、pending_reconciliation_count=`12`、grade_distribution=`D:2`。
+- 本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 Stage 10 review、GitHub upload、raw value matching、lineage full check、正式报告、UI runtime、live connector、app reinstall 或业务执行。
+- GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s10p2-report-trust-grade - 2026-07-04
+
+- 完成 `v0.1.4 S10-P2｜报告可信等级`。
+- 新增 S10-P2 v1.4 evidence generator、validator、focused unit test、report trust grade report、test results、risk register、rollback plan 和 machine manifest。
+- 验证 v0.1.4 S10-P1 dependency、legacy public-safe S10-P2 runtime 和 v0.1.3 S10-P2 replay；锁定 report_grade_record_count=`2`、grade_distribution=`D:2`、pending_reconciliation_count=`12`、confirmed_resolution_count=`0`、source_quality_grade=`Q4`、zero_delta_passed=`false`。
+- 缺少已关闭差异、zero-delta、完整 lineage 和人工确认时，完整可信报告、正式报告和经营决策依据继续阻断；record/template/formula/mapping/field mapping/grade policy/release gate version binding count=`2`。
+- 本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S10-P3、Stage 10 review、GitHub upload、raw value matching、lineage full check、正式报告、UI runtime、live connector、app reinstall 或业务执行。
+- GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s10p1-report-templates - 2026-07-04
+
+- 完成 `v0.1.4 S10-P1｜报告模板`。
+- 新增 S10-P1 v1.4 evidence generator、validator、focused unit test、report templates report、test results、risk register、rollback plan 和 machine manifest。
+- 验证 v0.1.4 Stage 9 review dependency，并复用 legacy public-safe S10-P1 report templates；锁定 template_count=`2`、section_count=`11`、project_cost_section_count=`4`、business_overview_section_count=`7`、pending_reconciliation_count=`12`、formal_report_count=`0`、export_artifact_count=`0`。
+- 读取并绑定 v1.4 HTML/UIUX 人类流程基线，确认 audit `FAIL=0`、`PASS=54`；本 phase 只锁定模板结构，不生成 UI runtime、HTML/CSV/PDF 导出或正式报告。
+- 本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S10-P2、S10-P3、Stage 10 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、app reinstall 或业务执行。
+- GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s09-stage-review - 2026-07-04
+
+- 完成 `v0.1.4 Stage 9 整体复审`。
+- 新增 Stage 9 review evidence generator、validator、focused unit test、review report、test results、risk register、rollback plan 和 machine manifest。
+- 复跑 S09-P1/S09-P2/S09-P3 validators 与 legacy Stage 9 review validator，phase_results 全部 PASS，open findings=`0`，fixed findings=`1`；锁定 cost metrics=`6`、margin metrics=`4`、reconciliation records=`12`、domain controls=`6`、confirmed resolutions=`0`、pending resolutions=`12`。
+- 复审锁定 legacy Stage 9 upload/batch-gate artifacts 非当前 v0.1.4 gate；当前仍为 `NO_GO/Q4/D/blocked`。
+- 本 review 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S10-P1、GitHub upload、raw value matching、lineage full check、正式报告、live connector、app reinstall 或业务执行。
+- GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s09p3-scope-reconciliation - 2026-07-04
+
+- 完成 `v0.1.4 S09-P3｜口径转换与差异核对`。
+- 新增 S09-P3 evidence generator、validator、focused unit test、scope reconciliation report、test results、risk register、rollback plan 和 machine manifest。
+- 验证 v0.1.4 S09-P2 dependency，并复用 legacy public-safe S09-P3 artifacts，锁定 reconciliation records=`12`、domain controls=`6`、required reconciliation domains=`6`、required human fields=`8`、confirmed resolutions=`0`、pending resolutions=`12`。
+- 所有差异继续 pending owner/授权复核，derived metric rerun、formal report rerun、formal report release、Stage 9 review 和 GitHub upload 均保持 `false`；当前仍为 `NO_GO/Q4/D/blocked`。
+- 本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 Stage 9 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、app reinstall 或业务执行。
+- GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s09p2-margin-cash-margin - 2026-07-04
+
+- 完成 `v0.1.4 S09-P2｜毛利与现金毛利`。
+- 新增 S09-P2 evidence generator、validator、focused unit test、margin/cash margin report、test results 和 machine manifest。
+- 验证 v0.1.4 S09-P1 dependency，并复用 legacy public-safe S09-P2 artifacts，锁定 required margin metrics=`4`、project cost fact records=`4`、margin records=`4`、scope difference summary records=`12`、authority field groups=`8`、manual review queue=`3`、unresolved difference=`1`、zero-delta fail=`1`、blocked quality results=`2`。
+- 权威显示值、系统复算值和现金口径保持 hash/private-ref only，authority/system overwrite allowed=`false`，public amount values committed=`0`；当前仍为 `NO_GO/Q4/D/blocked`。
+- 本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S09-P3、Stage 9 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、app reinstall 或业务执行。
+- GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s09p1-project-cost-fact-layer - 2026-07-04
+
+- 完成 `v0.1.4 S09-P1｜项目成本事实层`。
+- 新增 S09-P1 evidence generator、validator、focused unit test、project cost fact layer report、test results、risk register、rollback plan 和 machine manifest。
+- 验证 v0.1.4 Stage 8 review dependency，并复用 legacy public-safe S09-P1 artifacts，锁定 required metrics=`6`、cost categories=`9`、fact records=`4`、unallocated pool=`9`、authority locked fields=`40`、excluded fields=`5`、business entity types=`8`、project identity profiles=`4`、manual review queue=`3`、unresolved difference=`1`、zero-delta fail=`1`、blocked quality results=`2`。
+- formal calculation/report 继续被 upstream zero-delta、source difference 和 entity matching manual review queue 阻断；当前仍为 `NO_GO/Q4/D/blocked`。
+- 本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S09-P2、S09-P3、Stage 9 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、app reinstall 或业务执行。
+- GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s08-stage-review - 2026-07-04
+
+- 完成 `v0.1.4 Stage 8 整体复审`。
+- 新增 Stage 8 review evidence generator、validator、focused unit test、review report、test results、risk register、rollback plan 和 machine manifest。
+- 复跑 S08-P1/S08-P2/S08-P3 validators 与 legacy Stage 8 review validator，phase_results 全部 PASS，open findings=`0`，fixed findings=`1`；锁定 project identity components=`8`、business entity types=`8`、relationships=`14`、lifecycle statuses=`32`、quality scenarios=`4`、quality cases=`4`、manual review queue=`3`。
+- 复审锁定 legacy Stage 8 upload artifacts 非当前 gate；本 review 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox，未执行 S09-P1、GitHub upload、raw value matching、lineage full check、正式报告、live connector、app reinstall 或业务执行。
+- GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s08p3-entity-matching-quality - 2026-07-04
+
+- 完成 `v0.1.4 S08-P3｜实体匹配质量`。
+- 新增 S08-P3 evidence generator、validator、focused unit test、public-safe manifest、entity matching quality report、risk register、rollback plan 和 test results。
+- 验证 S08-P2 dependency 与 legacy S08-P3 public-safe validator，锁定 4 类匹配质量场景、4 条 quality cases、3 条 manual review queue、1 份 entity matching quality report 和 risk summary high=2/medium=1/low=1。
+- 中高风险匹配必须进入人工复核，manual review queue `auto_merge_allowed=false`；quality report 不是正式经营报告。
+- 本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 Stage 8 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s08p2-business-entity-model - 2026-07-04
+
+- 完成 `v0.1.4 S08-P2｜业务实体模型`。
+- 新增 S08-P2 evidence generator、validator、focused unit test、public-safe manifest、business entity model report、risk register、rollback plan 和 test results。
+- 验证 S08-P1 dependency 与 legacy S08-P2 public-safe validator，锁定 8 类实体、14 条 schema-only 关系、32 条 lifecycle statuses、每类实体 4 个状态、8 个 schema entity definitions 和 7 条 required graph links。
+- entity values 保持 hash/ref only，relationship values 保持 schema-only，lifecycle values 保持 status-only。
+- 本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S08-P3、Stage 8 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s08p1-project-composite-key - 2026-07-04
+
+- 完成 `v0.1.4 S08-P1｜项目组合键`。
+- 新增 S08-P1 evidence generator、validator、focused unit test、public-safe manifest、project composite key report、risk register、rollback plan 和 test results。
+- 复用 legacy public-safe S08-P1 项目组合键能力，锁定 8 个 hash-only 组件、4 个 profiles、3 个 match results、2 条 manual review queue、1 条 strong auto match、10000 bps 权重总和和 8500/7000/5000 bps 阈值。
+- 单字段缺失不全阻断；低于 strong threshold 的候选进入人工复核队列，`auto_merge_allowed=false`。
+- 本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S08-P2、S08-P3、Stage 8 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s07-stage-review - 2026-07-04
+
+- 完成 `v0.1.4 Stage 7 整体复审`。
+- 新增 Stage 7 review evidence generator、validator、focused unit test、review report、test results、risk register、rollback plan 和 machine manifest。
+- 复跑 S07-P1/S07-P2/S07-P3 validators 与 legacy S07 validators，phase_results 全部 PASS，open findings=`0`，fixed findings=`1`；锁定 finance field candidates=`45`、WPS field mappings=`20`、Redcircle reserved templates=`4`、Redcircle rollback plans=`4`、total structural mappings=`65`、Q4/Q5/formal report allowed=`0`。
+- 修复复审 finding：v0.1.4 S07-P1/S07-P2 dependency checks 改为读取 locked manifests，避免递归触发上游整链 validator。
+- 本 review 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；未执行 S08-P1、GitHub upload、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s07p3-redcircle-postponement - 2026-07-04
+
+- 完成 `v0.1.4 S07-P3｜红圈导出后置策略`。
+- 新增 S07-P3 Redcircle postponement generator、validator、focused unit test、public-safe manifest、reserved export templates、Redcircle export source registry、connector postponement policy、future rollback plan、risk register、rollback plan 和 test results。
+- 复用既有 public-safe Redcircle postponement baseline，锁定 Redcircle export types=`4`、reserved templates=`4`、registry sources=`4`、rollback plans=`4`、connector policy=`1`、D15 automatic connector allowed=`false`、read-only/hash/rollback/manual approval controls=`4/4/4/4`、Q4/Q5/formal report allowed=`0`。
+- 本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；公开证据不包含 raw 文件名、raw hash、ZIP member name、sheet/tab labels、字段/表头明文、row/cell values、PDF/Excel source values、接口凭证或真实业务值。
+- 本轮未执行 Stage 7 review、S08-P1、GitHub upload、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s07p2-wps-file-adapter - 2026-07-04
+
+- 完成 `v0.1.4 S07-P2｜WPS 文件适配`。
+- 新增 S07-P2 WPS adapter generator、validator、focused unit test、public-safe manifest、field mapping mirror、WPS export source registry、mapping rule versions、conversion guidance、readonly field report、risk register、rollback plan 和 test results。
+- 复用既有 public-safe WPS adapter baseline，锁定 WPS export types=`4`、source registry=`4`、field mappings=`20`、hash-only mappings=`20`、conversion guidance=`4`、readonly field reports=`4`、mapping rule versions=`1`、source header fingerprints=`20`、Q4/Q5/formal report allowed=`0`。
+- 本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；公开证据不包含 raw 文件名、raw hash、ZIP member name、tab labels、字段/表头明文、row/cell values、PDF/Excel source values 或真实业务值。
+- 本轮未执行 S07-P3、Stage 7 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s07p1-finance-file-adapter - 2026-07-04
+
+- 完成 `v0.1.4 S07-P1｜财务文件适配`。
+- 新增 S07-P1 finance adapter generator、validator、focused unit test、public-safe manifest、field candidate mirror、support source registry、readonly field report、risk register、rollback plan 和 test results。
+- 复用既有 public-safe finance adapter baseline，锁定 source categories=`9`、source registry=`9`、field candidates=`45`、hash-only candidates=`45`、readonly field reports=`9`、source header fingerprints=`45`、Q4/Q5/formal report allowed=`0`。
+- 本 phase 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；公开证据不包含 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row/cell values、PDF/Excel source values 或真实业务值。
+- 本轮未执行 S07-P2、S07-P3、Stage 7 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s06-stage-review - 2026-07-04
+
+- 完成 `v0.1.4 Stage 6 整体复审`。
+- 新增 Stage 6 review evidence generator、validator、focused unit test、review report、test results、risk register、rollback plan 和 machine manifest。
+- 复跑 S06-P1/S06-P2/S06-P3 validators，phase_results 全部 PASS，open findings=`0`；锁定 queue items=`1`、blocked project statuses=`2`、metadata zero-delta/data-quality/source-difference/mismatch writes=`1/2/1/1`、Q5 allowed=`0`、report grade A allowed=`0`、NO_GO/Q4/D/blocked。
+- 本 review 未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；公开证据不包含 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row/cell values、PDF/Excel source values 或真实业务值。
+- 本轮未执行 GitHub upload、S07-P1、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s06p3-validation-evidence - 2026-07-04
+
+- 完成 `v0.1.4 S06-P3｜validation evidence output`。
+- 新增 S06-P3 evidence generator、validator、focused unit test、validation evidence report、sanitized zero-delta result、sanitized mismatch report、project validation statuses、risk register、rollback plan 和 machine manifest。
+- 基于 S06-P1/S06-P2 public-safe evidence 写入 `metadata/quality`：zero-delta records=`1`、data quality records=`2`、source difference records=`1`、mismatch rows=`1`；project status count=`2`、blocked=`2`、Q5 allowed=`0`、report grade A allowed=`0`。
+- 本轮未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；公开证据不包含 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row/cell values、PDF/Excel source values 或真实业务值。
+- 本轮未执行 Stage 6 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s06p2-difference-queue - 2026-07-04
+
+- 完成 `v0.1.4 S06-P2｜cross-source difference queue`。
+- 新增 S06-P2 evidence generator、validator、focused unit test、public-safe PDF/Excel conflict fixture、source difference queue、report grade gate、risk register、rollback plan 和 machine manifest。
+- 复用 `KMFA/tools/cross_source_difference_queue.py`，确认 PDF/Excel 同项目同字段 `1` cent 差异进入人工队列，禁止自动修正、平均、四舍五入掩盖和自动选边；差异未关闭前 `report_grade_a_allowed=false`。
+- 本轮未读取、列出、stat、hash、修改或写入 operator-designated local raw/private inbox；公开证据不包含 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row/cell values 或真实业务值。
+- 本轮未执行 S06-P3、Stage 6 review、GitHub upload、raw value matching、metadata/quality 写入、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s06p1-zero-delta-validator - 2026-07-04
+
+- 完成 `v0.1.4 S06-P1｜zero-delta validator`。
+- 新增 S06-P1 evidence generator、validator、focused unit test、public-safe pass fixture、one-cent mismatch fixture、zero-delta results、mismatch report、risk register、rollback plan 和 machine manifest。
+- 复用 `KMFA/tools/zero_delta_validator.py` 逐字段比较整数分；public-safe pass fixture 比较 `8` 个字段且 mismatch count=`0`，1 cent mismatch fixture 必须失败并生成包含 source、field、authoritative/system cents、difference cents 的 report。
+- 本轮未读取、列出、stat、hash、修改或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；公开证据不包含 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row/cell values 或真实业务值。
+- 本轮未执行 S06-P2、S06-P3、Stage 6 review、GitHub upload、raw value matching、metadata/quality 写入、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s05-stage-review - 2026-07-04
+
+- 完成 `v0.1.4 Stage 5 整体复审`。
+- 新增 Stage 5 review evidence generator、validator、focused unit test、review report、test results、risk register、rollback plan 和 machine manifest。
+- 复跑 S05-P1/S05-P2/S05-P3 validators，phase_results 全部 PASS，open findings=`0`；锁定 A0 files `9`、field candidates `45`、authority records `45`、Q5 calculation baseline locked fields `40`、Excel excluded fields `5`、formal report allowed `0`、zero-delta `0`、lineage full check `0`。
+- 本 review 未读取、列出、stat、hash、修改或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；公开证据不包含 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row/cell values 或业务值。
+- 本轮未执行 GitHub upload、S06-P1、raw value matching、zero-delta validation、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s05p3-authority-baseline-lock - 2026-07-04
+
+- 完成 `v0.1.4 S05-P3｜权威基准锁定`。
+- 新增 authority baseline lock evidence generator、validator、focused unit test、public-safe baseline manifest、public-safe authority records、risk register、rollback plan 和 machine manifest。
+- 基于 S05-P2 public-safe field candidates/contracts 与 active owner/授权降级记录，锁定 authority records `45`、PDF Q5 calculation baseline locked fields `40`、Excel excluded fields `5`、Q4 human confirmed `40`、field-level Q5 calculation baseline allowed `40`。
+- 本轮未读取、列出、stat、hash、修改或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；公开证据不包含 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row/cell values 或业务值。
+- 本轮未执行 Stage 5 review、GitHub upload、raw value matching、zero-delta validation、lineage full check、正式报告、live connector 或业务执行；full Q5 quality、formal report 和 GitHub main upload 仍为 false，GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s05p2-field-golden-baseline - 2026-07-04
+
+- 完成 `v0.1.4 S05-P2｜字段级黄金基准`。
+- 新增 field golden baseline evidence generator、validator、focused unit test、public-safe field contracts、public-safe field candidates、risk register、rollback plan 和 machine manifest。
+- 基于 S05-P1 public-safe A0 register/candidates 与 active owner/授权降级记录，锁定 field contracts `5`、field candidates `45`、PDF candidates `40`、Excel candidates `5`、PDF private-only source-anchor/hash recorded `40`、Excel owner-downgraded field candidates `5`、Q3 `45`、Q4/Q5 `0`。
+- 本轮未读取、列出、stat、hash、修改或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；公开证据不包含 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row/cell values 或业务值。
+- 本轮未执行 S05-P3、Stage 5 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s05p1-a0-file-registration - 2026-07-04
+
+- 完成 `v0.1.4 S05-P1｜A0 文件登记`。
+- 新增 A0 file registration evidence generator、validator、focused unit test、public-safe file register、public-safe candidates、risk register、rollback plan 和 machine manifest。
+- 按 S05-P1 授权只读 list/stat/read/hash `/Users/linzezhang/Downloads/KMFA_MetaData`；锁定 A0 total files `9`、PDF `8`、Excel `1`、private member hash diagnostic count `9`、Q3 machine candidates `9`、Q4/Q5 `0`、public raw hash committed `0`。
+- 真实 package/member diagnostic 仅写入 git-ignored `KMFA/.codex_private_runtime/`；公开证据不包含 raw 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row values 或业务值。
+- 本轮未修改 raw inbox，未执行 S05-P2、S05-P3、Stage 5 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s04-stage-review - 2026-07-04
+
+- 完成 `v0.1.4 Stage 4 整体复审`。
+- 新增 Stage 4 review evidence generator、validator、focused unit test、review report、test results、risk register、rollback plan 和 machine manifest。
+- 复跑 S04-P1/S04-P2/S04-P3 validators，phase_results 全部 PASS，open findings=`0`；锁定 amount cases `9`、alias dictionary rows `32`、canonical fields `6`、synthetic boundary cases `22/22`、NO_GO/Q2/D/blocked。
+- 本轮未读取、列出、hash 或修改 raw root，未执行 GitHub upload、S05、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s04p3-basic-tool-report - 2026-07-04
+
+- 完成 `v0.1.4 S04-P3｜基础工具测试`。
+- 新增 basic tool report evidence generator、validator、focused unit test、JSON/Markdown tool report、test results、risk register、rollback plan 和 machine manifest。
+- 锁定 synthetic boundary cases `22/22`、amount boundary cases `11`、date/period boundary cases `11`，覆盖金额小数/负数/万元/异常字符、中文日期/年月/空值。
+- 本轮未读取、列出、hash 或修改 raw root，未执行 Stage 4 review、GitHub upload、S05、raw value matching、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s04p2-field-standardization - 2026-07-04
+
+- 完成 `v0.1.4 S04-P2｜字段标准化`。
+- 新增 field standardization evidence generator、validator、focused unit test、review report、test results、risk register、rollback plan 和 machine manifest。
+- 锁定 canonical fields `6`、alias dictionary rows `32`、mapping records `6`、字段标准化 cases `6/6`、缺失/异常质量状态 `5`，缺失字段不得静默跳过。
+- 本轮未读取、列出、hash 或修改 raw root，未执行 S04-P3、Stage 4 review、GitHub upload、raw value matching、raw source field/header plaintext publication、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s04p1-amount-precision - 2026-07-04
+
+- 完成 `v0.1.4 S04-P1｜金额精度与基础工具`。
+- 新增 amount precision evidence generator、validator、focused unit test、review report、test results 和 machine manifest。
+- 锁定金额标准化 cases `9/9`、拒绝 cases `9/9`、forbidden-float fixture findings `3`、repository no-float scan PASS。
+- 本轮未读取 raw root，未执行 S04-P2、S04-P3、Stage 4 review、GitHub upload、raw value matching、字段映射、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s03-stage-review - 2026-07-04
+
+- 完成 `v0.1.4 Stage 3 整体复审`。
+- 新增 Stage 3 review validator、focused unit test、review report、test results 和 machine manifest。
+- 复跑 S03-P1/S03-P2/S03-P3 validators，phase_results 全部 PASS，open findings=0；锁定 public raw files `5`、matrix rows `5`、source priority records `5`、priority order `9`。
+- 本轮未进入 S04，未执行 GitHub upload、raw value matching、字段映射、lineage full check、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s03p3-source-priority - 2026-07-04
+
+- 完成 `v0.1.4 S03-P3｜源优先级`。
+- 新增 public-safe source priority generator、validator、focused unit test、协议文件和 evidence bundle。
+- 基于 S03-P2 public matrix/status events 生成 source priority records `5`、priority order `9`、same-source rerun policy event `1`、cross-source manual difference queue item `1`；处理后数据低于原始上传和授权导出，同源不一致失效缓存并请求重跑，跨源冲突进入人工队列且不自动选边。
+- 本轮未读取 raw root，未执行 Stage 3 review、GitHub upload、raw value matching、字段映射、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s03p2-source-check-matrix - 2026-07-03
+
+- 完成 `v0.1.4 S03-P2｜数据源检查矩阵`。
+- 新增 public-safe source check matrix/status event generator、validator、focused unit test、协议文件和 evidence bundle。
+- 基于 S03-P1 public register 生成 matrix rows `5`、metadata status events `5`、required dimensions `6`、allowed statuses `5`，状态均为 `人工复核`；状态变更只追加 metadata，不写 raw 层。
+- 本轮未读取 raw root，未执行 S03-P3、Stage 3 review、GitHub upload、raw value matching、字段映射、正式报告、live connector 或业务执行；GitHub main upload 继续延期到 v1.4 Stage 1-18 全部完成并整体复审后。
+
+## 0.1.4-s03p1-file-registration - 2026-07-03
+
+- 完成 `v0.1.4 S03-P1｜文件型导入登记`。
+- 新增 `KMFA/tools/v014_s03_p1_raw_file_registration.py`、`KMFA/tools/check_v014_s03_p1_file_registration.py`、`KMFA/tests/test_v014_s03_p1_file_registration.py` 和 `KMFA/stage_artifacts/V014_S03_P1_FILE_REGISTRATION/`。
+- 对 `/Users/linzezhang/Downloads/KMFA_MetaData` 执行本 phase 授权只读 list/stat/read/hash，公开登记 file_count=5、supported_file_count=5、total_size_bytes=62788056。
+- 真实 raw 文件明细和内容 hash 只写入 git-ignored `KMFA/.codex_private_runtime/`；公开仓库只保存聚合计数、类型、大小、状态和 private refs。
+- 未执行 S03-P2、S03-P3、Stage 3 review、GitHub upload、raw value matching、字段映射、正式报告或业务执行。
+
+## 0.1.4-s02-stage-review - 2026-07-03
+
+- 完成 `v0.1.4 Stage 2 整体复审`。
+- 新增 `KMFA/tools/check_v014_s02_stage_review.py`、`KMFA/tests/test_v014_s02_stage_review.py` 和 `KMFA/stage_artifacts/V014_S02_STAGE_REVIEW/`。
+- 复跑 S02-P1/S02-P2/S02-P3 validators，phase_results 全部 PASS，open findings=0。
+- 未读取、列出、盘点、修改或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未执行 S03-P1、GitHub upload、raw inventory、raw value matching、正式报告或业务执行。
+
+## 0.1.4-s02p3-quality-gate - 2026-07-03
+
+- 完成 `v0.1.4 S02-P3｜数据质量等级`。
+- 新增 `KMFA/metadata/protocol/quality_gate_lock_v1_4.json`，锁定 Q0-Q5 数据质量等级、A/B/C/D 报告可信等级、quality-to-release 门禁和 missing-evidence block 策略。
+- 新增 `KMFA/tools/check_v014_s02_p3_quality_gate.py`、`KMFA/tests/test_v014_s02_p3_quality_gate.py` 和 `KMFA/stage_artifacts/V014_S02_P3_QUALITY_GATE/`。
+- 未读取、列出、盘点、修改或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未执行 Stage 2 review、raw inventory、GitHub upload、正式报告或业务执行。
+
+## 0.1.4-s02p2-immutability-policy - 2026-07-03
+
+- 完成 `v0.1.4 S02-P2｜不可污染原则`。
+- 新增 `KMFA/metadata/protocol/immutability_policy_lock_v1_4.json`，锁定 raw manifest append-only、derived version append-only、control event no-raw-write 和 raw inbox no-read/no-list/no-mutation 边界。
+- 新增 `KMFA/tools/check_v014_s02_p2_immutability_policy.py`、`KMFA/tests/test_v014_s02_p2_immutability_policy.py` 和 `KMFA/stage_artifacts/V014_S02_P2_IMMUTABILITY_POLICY/`。
+- 未读取、列出、盘点、修改或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未执行 S02-P3、Stage 2 review、raw inventory、GitHub upload、正式报告或业务执行。
+
+## 0.1.4-s01-stage-review - 2026-07-03
+
+- 完成 `v0.1.4 Stage 1 整体复审`。
+- 新增 `KMFA/tools/check_v014_s01_stage_review.py` 与 `KMFA/tests/test_v014_s01_stage_review.py`。
+- 新增 `KMFA/stage_artifacts/V014_S01_STAGE_REVIEW/`，绑定 S01-P1/S01-P2/S01-P3 复跑结果、open findings=0、NO_GO、upload deferred 边界。
+- 未读取、列出、修改或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未执行 S02、raw inventory、GitHub upload、正式报告或业务执行。
+
+## 0.1.4-s01p3-no-omission-baseline - 2026-07-03
+
+- 完成 `S01-P3｜防遗漏基线 / no-omission baseline`。
+- 新增 v1.4 requirements overlay 和 18/54/162 roadmap registry。
+- 新增 `KMFA/tools/check_v014_s01_p3_no_omission_baseline.py` 与 focused unit test。
+- 保持 raw inbox 未读取/未列出/未修改，Stage 1 review、S02 和 GitHub upload 未执行。
+
+## 0.1.4-s01p2-public-baseline-sync - 2026-07-03
+
+- 完成 `v0.1.4 S01-P2｜项目骨架与中文入口 / public-safe taskpack baseline sync` 本地验证准备：同步 9 个 S01-P1 锁定的 v1.4 public-safe source 到 `KMFA/taskpack/v1_4/`，新增 `KMFA/metadata/baseline/source_package_v1_4.json`。
+- 新增 public-safe evidence：`KMFA/stage_artifacts/V014_S01_P2_PUBLIC_BASELINE_SYNC/`，并新增 `KMFA/tools/check_v014_s01_p2_public_baseline_sync.py`、`KMFA/tests/test_v014_s01_p2_public_baseline_sync.py`。
+- 本 phase 未读取、列出、修改或写入 raw inbox；未抽取 raw/private payload；未执行 S01-P3、Stage 1 review、GitHub upload、正式报告、live connector、OpMe 深度耦合或业务执行。
+
+## 0.1.4-s01p1-read-only-scope-lock - 2026-07-03
+
+- 完成 `v0.1.4 S01-P1｜只读检查与范围锁定` 本地验证：登记 v1.4 HUMAN_FLOW_VERIFIED 修补包 SHA256、9 个 public-safe source 条目、raw-readonly policy、Codex read-only prompt、roadmap gate 和 HTML human-flow audit 聚合结果。
+- 新增 public-safe evidence：`KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/`，并新增 `KMFA/tools/check_v014_s01_p1_read_only_scope_lock.py`、`KMFA/tests/test_v014_s01_p1_read_only_scope_lock.py`。
+- v1.4 GitHub upload 明确延期到 Stage 1-18 全部完成、整体复审通过并修复 findings 后一次性执行；本 phase 未执行 S01-P2、S01-P3、Stage 1 review 或 GitHub upload。
+- 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未抽取 raw/private payload，未公开 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、真实业务值或 credentials。
+
+## 0.1.3-stage1-10-github-upload - 2026-07-03
+
+- 完成 `v0.1.3 Stage 1-10 GitHub upload gate` 本地验证：基于最新 `origin/main` 完成 rebase，复跑 Stage 1-10 batch validator、S01-S10 stage review validators、治理 validators、安全扫描和全量 KMFA tests。
+- 新增 public-safe upload evidence：`KMFA/stage_artifacts/V013_STAGE1_10_GITHUB_UPLOAD/`，并新增 `KMFA/tools/check_v013_stage1_10_github_upload.py`、`KMFA/tests/test_v013_stage1_10_github_upload.py`。
+- 本 gate 仅允许将 Stage 1-10 reviewed public-safe stack 上传 GitHub main；仍不执行 raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector、OpMe 深度耦合或业务执行。
+- 项目仍为 `NO_GO`，`delivery_allowed=false`，2 条报告仍为 D 级，12 条 pending reconciliation 继续阻断正式报告和经营决策依据。
+
+## 0.1.3-stage1-10-batch-review - 2026-07-03
+
+- 完成 `v0.1.3 Stage 1-10 batch overall review` 本地验证：复核 S01-S10 共 10 个 v0.1.3 stage review manifest，stage_results 全部 PASS，open stage review findings=0，open batch findings=0。
+- 新增 public-safe evidence：`KMFA/stage_artifacts/V013_STAGE1_10_BATCH_REVIEW/`，并新增 `KMFA/tools/v013_stage1_10_batch_review.py`、`KMFA/tools/check_v013_stage1_10_batch_review.py`、`KMFA/tests/test_v013_stage1_10_batch_review.py`。
+- 修正 active upload policy：历史单 Stage upload-ready/upload artifacts 均非当前 v1.3 gate；GitHub main 仍未上传，下一步只能另起独立 Stage 1-10 GitHub upload gate 并复跑 validators/scans 后再 push。
+- 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未执行 raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector、OpMe deep coupling 或业务执行；项目仍为 `NO_GO`，`delivery_allowed=false`。
+
+## 0.1.3-s10-stage-review - 2026-07-03
+
+- 完成 `v0.1.3 Stage 10｜overall review` 本地验证：复跑 S10-P1/S10-P2/S10-P3 replay validators、legacy S10 validators、legacy Stage 10 review validator、v0.1.3 Stage 10 review validator 和 focused unit test。
+- 新增 public-safe evidence：`KMFA/stage_artifacts/V013_S10_STAGE_REVIEW/`，锁定 phase_results 全部 PASS、open findings=0、fixed findings=2、2 个 HTML 报告、2 个 CSV 附表、2 个 Excel-compatible CSV 下载记录、0 个 committed PDF、0 个 committed Excel workbook、0 个正式报告和 0 个经营决策依据。
+- legacy Stage 10 upload artifacts 已降级为历史证据，非当前 v1.3 active upload gate；GitHub main upload 仍为 `not_uploaded_deferred_until_stage1_10_batch`。
+- 未执行 GitHub upload、Stage 1-10 batch overall review、raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector、OpMe deep coupling 或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
+## 0.1.3-s10p3-report-export-replay - 2026-07-03
+
+- 完成 `v0.1.3 S10-P3｜report export replay` 本地验证：复用既有 S10-P3 public-safe 报告导出 artifacts，并验证 v0.1.3 S10-P2 dependency。
+- 新增 `KMFA/tools/v013_s10_p3_report_export_replay.py`、`KMFA/tools/check_v013_s10_p3_report_export_replay.py` 和 `KMFA/tests/test_v013_s10_p3_report_export_replay.py`。
+- 新增 public-safe evidence：`KMFA/stage_artifacts/V013_S10_P3_REPORT_EXPORT_REPLAY/`，锁定 2 个 HTML 报告、2 个 CSV 附表、2 个 Excel-compatible CSV 下载记录、PDF private-runtime-only policy、0 个 committed PDF、0 个 committed Excel workbook、0 个正式报告、0 个经营决策依据。
+- 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未公开 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、真实业务值、PDF/Excel 原值或 credential。
+- 未执行 Stage 10 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector 或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
+## 0.1.3-s10p2-report-grade-runtime-replay - 2026-07-03
+
+- 完成 `v0.1.3 S10-P2｜report grade runtime replay` 本地验证：复用既有 S10-P2 public-safe 报告等级 runtime artifacts，并验证 v0.1.3 S10-P1 dependency。
+- 新增 `KMFA/tools/v013_s10_p2_report_grade_runtime_replay.py`、`KMFA/tools/check_v013_s10_p2_report_grade_runtime_replay.py` 和 `KMFA/tests/test_v013_s10_p2_report_grade_runtime_replay.py`。
+- 新增 public-safe evidence：`KMFA/stage_artifacts/V013_S10_P2_REPORT_GRADE_RUNTIME_REPLAY/`，锁定 2 条报告等级记录均为 `D`、12 条 pending reconciliation、0 条 confirmed resolution、zero_delta_passed=false、完整可信报告/正式报告/经营决策依据/导出均阻断。
+- 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未公开 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、真实业务值、PDF/Excel 原值或 credential。
+- 未执行 S10-P3、Stage 10 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector 或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
+## 0.1.3-s10p1-report-templates-replay - 2026-07-03
+
+- 完成 `v0.1.3 S10-P1｜report templates replay` 本地验证：复用既有 S10-P1 public-safe 报告模板 artifacts，并验证 v0.1.3 Stage 9 review dependency。
+- 新增 `KMFA/tools/v013_s10_p1_report_templates_replay.py`、`KMFA/tools/check_v013_s10_p1_report_templates_replay.py`、`KMFA/tests/test_v013_s10_p1_report_templates_replay.py` 和 `KMFA/stage_artifacts/V013_S10_P1_REPORT_TEMPLATES_REPLAY/`。
+- 锁定 template_count=`2`、section_count=`11`、project_cost_section_count=`4`、business_overview_section_count=`7`、pending_reconciliation_count=`12`、formal_report_count=`0`、export_artifact_count=`0`；可信等级运行时、导出、正式报告和经营决策依据均继续阻断。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；不公开 raw 文件名、raw hash、字段/表头明文、sheet name、ZIP member name、row values、业务金额或业务值。
+- 未执行 S10-P2、S10-P3、Stage 10 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector 或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
+## 0.1.3-s09-stage-review - 2026-07-03
+
+- 完成 v0.1.3 Stage 9 overall review：复跑 S09-P1/S09-P2/S09-P3 replay validators 和 legacy S09 validators，确认 phase_results 全部 PASS、open findings=0、fixed findings=1、pending resolutions=12。
+- 新增 `KMFA/tools/v013_s09_stage_review.py`、`KMFA/tools/check_v013_s09_stage_review.py`、`KMFA/tests/test_v013_s09_stage_review.py` 和 `KMFA/stage_artifacts/V013_S09_STAGE_REVIEW/`。
+- GitHub main 未上传，仍延期到 Stage 1-10 batch gate；未执行 S10-P1、raw value matching、lineage full check、正式报告或业务执行。
+
+## 0.1.3-s09p3-scope-reconciliation-replay - 2026-07-03
+
+- 完成 `v0.1.3 S09-P3｜scope reconciliation replay` 本地验证：复用既有 S09-P3 public-safe 口径转换与差异核对 artifacts，并验证 v0.1.3 S09-P2 replay dependency。
+- 新增 `KMFA/tools/v013_s09_p3_scope_reconciliation_replay.py`、`KMFA/tools/check_v013_s09_p3_scope_reconciliation_replay.py`、`KMFA/tests/test_v013_s09_p3_scope_reconciliation_replay.py` 和 `KMFA/stage_artifacts/V013_S09_P3_SCOPE_RECONCILIATION_REPLAY/`。
+- 锁定 reconciliation records=`12`、domain controls=`6`、required reconciliation domains=`6`、required human fields=`8`、confirmed resolutions=`0`、pending resolutions=`12`；派生指标重跑、正式报告重跑、正式报告发布均继续阻断。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；不公开 raw 文件名、raw hash、字段/表头明文、sheet name、ZIP member name、row values、业务金额或业务值。
+- 未执行 Stage 9 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector 或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
+## 0.1.3-s09p2-margin-cash-margin-replay - 2026-07-03
+
+- 完成 `v0.1.3 S09-P2｜margin and cash margin replay` 本地验证：复用既有 S09-P2 public-safe 毛利与现金毛利 artifacts，并验证 v0.1.3 S09-P1 replay dependency。
+- 新增 `KMFA/tools/v013_s09_p2_margin_cash_margin_replay.py`、`KMFA/tools/check_v013_s09_p2_margin_cash_margin_replay.py`、`KMFA/tests/test_v013_s09_p2_margin_cash_margin_replay.py` 和 `KMFA/stage_artifacts/V013_S09_P2_MARGIN_CASH_MARGIN_REPLAY/`。
+- 锁定 required margin metrics=`4`、project cost fact records=`4`、margin records=`4`、scope difference summary records=`12`、authority field groups=`8`、manual review queue=`3`、unresolved differences=`1`、zero-delta fail count=`1`、blocked quality results=`2`；authority/system/cash value 均保持 hash/private-ref only。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；不公开 raw 文件名、raw hash、字段/表头明文、sheet name、ZIP member name、row values、业务金额或业务值。
+- 未执行 S09-P3、Stage 9 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector 或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
+## 0.1.3-s09p1-project-cost-fact-layer-replay - 2026-07-03
+
+- 完成 `v0.1.3 S09-P1｜project cost fact layer replay` 本地验证：复用既有 S09-P1 public-safe 项目成本事实层 artifacts，并验证 v0.1.3 Stage 8 review dependency。
+- 新增 `KMFA/tools/v013_s09_p1_project_cost_fact_layer_replay.py`、`KMFA/tools/check_v013_s09_p1_project_cost_fact_layer_replay.py`、`KMFA/tests/test_v013_s09_p1_project_cost_fact_layer_replay.py` 和 `KMFA/stage_artifacts/V013_S09_P1_PROJECT_COST_FACT_LAYER_REPLAY/`。
+- 锁定 required metrics=`6`、cost categories=`9`、fact records=`4`、unallocated pool=`9`、authority locked fields=`40`、excluded fields=`5`、manual review queue=`3`、unresolved differences=`1`、blocked quality results=`2`；metric/cost category value 均保持 hash/private-ref only。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；不公开 raw 文件名、raw hash、字段/表头明文、sheet name、ZIP member name、row values、业务金额或业务值。
+- 未执行 S09-P2、S09-P3、Stage 9 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector 或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
+## 0.1.3-s08-stage-review - 2026-07-03
+
+- 完成 `v0.1.3 Stage 8 overall review` 本地验证：复跑 S08-P1/S08-P2/S08-P3 replay validators，并生成 Stage 8 review evidence。
+- 新增 `KMFA/tools/v013_s08_stage_review.py`、`KMFA/tools/check_v013_s08_stage_review.py`、`KMFA/tests/test_v013_s08_stage_review.py` 和 `KMFA/stage_artifacts/V013_S08_STAGE_REVIEW/`。
+- 复审确认 phase_results=`S08-P1=PASS; S08-P2=PASS; S08-P3=PASS`，open findings=`0`，fixed findings=`1`，Q5/formal report allowed count 均为 `0`，legacy Stage 8 upload artifacts current gate=`false`。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet name、ZIP member name、row values 或业务值。
+- 未执行 S09-P1、GitHub upload、raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector 或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
+## 0.1.3-s08p3-entity-matching-quality-replay - 2026-07-03
+
+- 完成 `v0.1.3 S08-P3｜entity matching quality replay` 本地验证：验证 v0.1.3 S08-P2 dependency，并复用既有 S08-P3 public-safe 匹配质量 artifacts。
+- 新增 `KMFA/tools/v013_s08_p3_entity_matching_quality_replay.py`、`KMFA/tools/check_v013_s08_p3_entity_matching_quality_replay.py`、`KMFA/tests/test_v013_s08_p3_entity_matching_quality_replay.py` 和 `KMFA/stage_artifacts/V013_S08_P3_ENTITY_MATCHING_QUALITY_REPLAY/`。
+- 锁定 scenario_count=`4`、quality_case_count=`4`、manual_review_queue_count=`3`、entity_matching_report_count=`1`、risk_summary=`high=2; medium=1; low=1`；manual review queue 继续 `auto_merge_allowed=false`。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；不公开 raw 文件名、raw hash、字段/表头明文、sheet name、ZIP member name、row values 或业务值。
+- 未执行 Stage 8 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector 或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
+## 0.1.3-s08p2-business-entity-model-replay - 2026-07-03
+
+- 完成 `v0.1.3 S08-P2｜business entity model replay` 本地验证：复用既有 S08-P2 public-safe 业务实体模型，并验证 v0.1.3 S08-P1 replay dependency。
+- 新增 `KMFA/tools/v013_s08_p2_business_entity_model_replay.py`、`KMFA/tools/check_v013_s08_p2_business_entity_model_replay.py`、`KMFA/tests/test_v013_s08_p2_business_entity_model_replay.py` 和 `KMFA/stage_artifacts/V013_S08_P2_BUSINESS_ENTITY_MODEL_REPLAY/`。
+- 锁定 8 类 required entity types、14 条 relationships、32 条 lifecycle statuses、每类实体 4 个 lifecycle statuses；实体值保持 hash/ref only，关系保持 schema-only，生命周期保持 status-only。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；不公开 raw 文件名、raw hash、字段/表头明文、sheet name、ZIP member name、row values 或业务值。
+- 未执行 S08-P3、Stage 8 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector 或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
+## 0.1.3-s08p1-project-composite-key-replay - 2026-07-03
+
+- 完成 `v0.1.3 S08-P1｜project composite key replay` 本地验证：复用既有 S08-P1 public-safe 项目组合键能力，并验证 v0.1.3 Stage 7 review dependency。
+- 新增 `KMFA/tools/v013_s08_p1_project_composite_key_replay.py`、`KMFA/tools/check_v013_s08_p1_project_composite_key_replay.py`、`KMFA/tests/test_v013_s08_p1_project_composite_key_replay.py` 和 `KMFA/stage_artifacts/V013_S08_P1_PROJECT_COMPOSITE_KEY_REPLAY/`。
+- 本 phase 锁定 required components=`8`、profiles=`4`、matches=`3`、manual review queue=`2`、strong auto match=`1`、human review required=`2`、matching weights sum=`10000 bps`、strong threshold=`8500 bps`、human review threshold=`7000 bps`；单字段缺失不全阻断，低于强匹配阈值进入人工复核且 `auto_merge_allowed=false`。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、业务值、zip、Excel、PDF、私有 CSV、sqlite/db、credentials、银行流水、合同、薪资或税务申报材料。
+- 本轮不执行 S08-P2、S08-P3、Stage 8 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector、OpMe 深度耦合或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
+## 0.1.3-s07-stage-review - 2026-07-03
+
+- 完成 `v0.1.3 Stage 7 整体复审` 本地验证：复跑 S07-P1/S07-P2/S07-P3 replay validators、legacy S07 validators、治理 validator、raw/secret/public-safe scans，并生成 Stage 7 review evidence。
+- 新增 `KMFA/tools/v013_s07_stage_review.py`、`KMFA/tools/check_v013_s07_stage_review.py`、`KMFA/tests/test_v013_s07_stage_review.py` 和 `KMFA/stage_artifacts/V013_S07_STAGE_REVIEW/`。
+- 复审确认 phase_results=`S07-P1=PASS, S07-P2=PASS, S07-P3=PASS`，open findings=`0`，Q5 allowed count=`0`，formal report allowed count=`0`，data quality=`Q4`，report grade=`D`，release permission=`blocked`。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、业务值、zip、Excel、PDF、私有 CSV、sqlite/db、credentials、银行流水、合同、薪资或税务申报材料。
+- 本轮不执行 S08-P1、GitHub upload、raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector、OpMe 深度耦合或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
+## 0.1.3-s07p3-redcircle-postponement-replay - 2026-07-03
+
+- 完成 `v0.1.3 S07-P3｜Redcircle postponement replay` 本地验证：复用既有 S07-P3 public-safe 红圈后置策略，并验证 v0.1.3 Stage 6 review、S07-P1 replay、S07-P2 replay 与 legacy S07-P3 dependencies。
+- 新增 `KMFA/tools/v013_s07_p3_redcircle_postponement_replay.py`、`KMFA/tools/check_v013_s07_p3_redcircle_postponement_replay.py`、`KMFA/tests/test_v013_s07_p3_redcircle_postponement_replay.py` 和 `KMFA/stage_artifacts/V013_S07_P3_REDCIRCLE_POSTPONEMENT_REPLAY/`。
+- 本 phase 锁定 redcircle_export_types=`operating, contract, collection, finance`、reserved_template_count=`4`、connector_policy_count=`1`、rollback_plan_count=`4`、registry_source_count=`4`、template_contract_hash_count=`4`、source_private_ref_count=`4`、automatic_connector_allowed_count=`0`、manual_export_file_allowed_count=`4`、D15 automatic connector=`false`，data quality=`Q4`、report grade=`D`、release permission=`blocked`。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、业务值、zip、Excel、PDF、私有 CSV、sqlite/db、credentials、银行流水、合同、薪资或税务申报材料。
+- 本轮不执行 Stage 7 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、Redcircle automatic connector、OpMe 深度耦合或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
+## 0.1.3-s07p2-wps-file-adapter-replay - 2026-07-03
+
+- 完成 `v0.1.3 S07-P2｜WPS file adapter replay` 本地验证：复用既有 S07-P2 public-safe WPS 文件适配能力，并验证 v0.1.3 Stage 6 review 与 S07-P1 replay dependencies。
+- 新增 `KMFA/tools/v013_s07_p2_wps_file_adapter_replay.py`、`KMFA/tools/check_v013_s07_p2_wps_file_adapter_replay.py`、`KMFA/tests/test_v013_s07_p2_wps_file_adapter_replay.py` 和 `KMFA/stage_artifacts/V013_S07_P2_WPS_FILE_ADAPTER_REPLAY/`。
+- 本 phase 锁定 source_export_type_count=`4`、field_mapping_count=`20`、hash_only_field_mapping_count=`20`、field_report_count=`4`、conversion_guidance_count=`4`、source_header_hash_count=`20`、mapping_rule_version_count=`1`、Q4/Q5/formal report allowed count 均为 `0`，data quality=`Q4`、report grade=`D`、release permission=`blocked`。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、业务值、zip、Excel、PDF、私有 CSV、sqlite/db、credentials、银行流水、合同、薪资或税务申报材料。
+- 本轮不执行 S07-P3、Stage 7 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
+## 0.1.3-s07p1-finance-file-adapter-replay - 2026-07-03
+
+- 完成 `v0.1.3 S07-P1｜finance file adapter replay` 本地验证：复用既有 S07-P1 public-safe 财务文件适配能力，并验证 v0.1.3 Stage 6 review dependency。
+- 新增 `KMFA/tools/v013_s07_p1_finance_file_adapter_replay.py`、`KMFA/tools/check_v013_s07_p1_finance_file_adapter_replay.py`、`KMFA/tests/test_v013_s07_p1_finance_file_adapter_replay.py` 和 `KMFA/stage_artifacts/V013_S07_P1_FINANCE_FILE_ADAPTER_REPLAY/`。
+- 本 phase 锁定 source_category_count=`9`、field_candidate_count=`45`、hash_only_field_candidate_count=`45`、field_report_count=`9`、source_header_hash_count=`45`、Q4/Q5/formal report allowed count 均为 `0`，data quality=`Q4`、report grade=`D`、release permission=`blocked`。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、业务值、zip、Excel、PDF、私有 CSV、sqlite/db、credentials、银行流水、合同、薪资或税务申报材料。
+- 本轮不执行 S07-P2、S07-P3、Stage 7 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
+## 0.1.3-s06-stage-review - 2026-07-03
+
+- 完成 `v0.1.3 Stage 6 整体复审` 本地验证：复跑 S06-P1/S06-P2/S06-P3 replay validators，并生成 Stage 6 review evidence。
+- 新增 `KMFA/tools/v013_s06_stage_review.py`、`KMFA/tools/check_v013_s06_stage_review.py`、`KMFA/tests/test_v013_s06_stage_review.py` 和 `KMFA/stage_artifacts/V013_S06_STAGE_REVIEW/`。
+- 复审确认 phase_results 全部 PASS、findings_open=`0`、project_status_count=`2`、blocked_project_status_count=`2`、q5_allowed_count=`0`、report_grade_a_allowed_count=`0`、data quality=`Q4`、report grade=`D`、release permission=`blocked`。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；未执行 S07-P1、GitHub upload、raw value matching、lineage full check、正式报告或业务执行。
+- v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
+## 0.1.3-s06p3-validation-evidence-replay - 2026-07-03
+
+- 完成 `v0.1.3 S06-P3｜validation evidence replay` 本地验证：基于 S06-P1/S06-P2 public-safe synthetic evidence，生成 validation evidence stage artifacts 并追加写入 metadata/quality public-safe records。
+- 新增 `KMFA/tools/v013_s06_p3_validation_evidence_replay.py`、`KMFA/tools/check_v013_s06_p3_validation_evidence_replay.py`、`KMFA/tests/test_v013_s06_p3_validation_evidence_replay.py` 和 `KMFA/stage_artifacts/V013_S06_P3_VALIDATION_EVIDENCE_REPLAY/`。
+- 本 phase 确认 `metadata_quality_written=true`、`project_status_count=2`、`blocked_project_status_count=2`、`q5_allowed_count=0`、`report_grade_a_allowed_count=0`；差异未关闭，正式报告与业务执行仍阻断。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；metadata/quality 仅保存 hash/ref/status/evidence/gate，不新增字段明文、raw 金额值、PDF 原值或 Excel 原值。
+- 本轮不执行 Stage 6 review、GitHub upload、raw value matching、lineage full check、正式报告或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
+## 0.1.3-s06p2-difference-queue-replay - 2026-07-03
+
+- 完成 `v0.1.3 S06-P2｜cross-source difference queue replay` 本地验证：复用既有 cross-source difference queue，基于 public-safe synthetic PDF/Excel conflict fixture 生成 1 条人工差异队列。
+- 新增 `KMFA/tools/v013_s06_p2_difference_queue_replay.py`、`KMFA/tools/check_v013_s06_p2_difference_queue_replay.py`、`KMFA/tests/test_v013_s06_p2_difference_queue_replay.py` 和 `KMFA/stage_artifacts/V013_S06_P2_DIFFERENCE_QUEUE_REPLAY/`。
+- 本 phase 证明 PDF/Excel 同项目同字段 1 分差异必须进入队列；`auto_correction_allowed=false`、`averaging_allowed=false`、`rounding_mask_allowed=false`、`auto_selection_allowed=false`；未关闭差异阻断 A 级报告，`report_grade_a_allowed=false`、`maximum_report_grade=B`。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；不写 metadata/quality，不执行 S06-P3、Stage 6 review、GitHub upload、raw value matching、正式报告或业务执行。
+- v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
+## 0.1.3-s06p1-zero-delta-replay - 2026-07-03
+
+- 完成 `v0.1.3 S06-P1｜zero-delta validator replay` 本地验证：复用既有 integer-cent zero-delta validator，基于 public-safe synthetic/taskpack fixture 重放 8 次字段比较且 mismatch_count=`0`。
+- 新增 `KMFA/tools/v013_s06_p1_zero_delta_replay.py`、`KMFA/tools/check_v013_s06_p1_zero_delta_replay.py`、`KMFA/tests/test_v013_s06_p1_zero_delta_replay.py` 和 `KMFA/stage_artifacts/V013_S06_P1_ZERO_DELTA_REPLAY/`。
+- 本 phase 证明 0.01 元/1 分差异必须失败并生成 mismatch report；report 包含 source、field、authoritative value、system value 和 difference columns。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；不写 metadata/quality，不创建 S06-P2 difference queue，不执行 S06-P3、Stage 6 review、GitHub upload、raw value matching、正式报告或业务执行。
+- v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
+## 0.1.3-s05-stage-review - 2026-07-03
+
+- 完成 `v0.1.3 Stage 5 整体复审` 本地验证：复跑 S05-P1/S05-P2/S05-P3 replay validators、Stage 5 review validator 和 focused unit test。
+- 新增 `KMFA/tools/v013_s05_stage_review.py`、`KMFA/tools/check_v013_s05_stage_review.py`、`KMFA/tests/test_v013_s05_stage_review.py` 和 `KMFA/stage_artifacts/V013_S05_STAGE_REVIEW/`。
+- 复审确认 phase_results=`S05-P1=PASS, S05-P2=PASS, S05-P3=PASS`，authority records=`45`、Q5 locked fields=`40`、excluded fields=`5`，open findings=`0`，data quality=`Q2`，report grade=`D`，release permission=`blocked`。
+- 本轮不执行 S06-P1、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
+## 0.1.3-s05p3-authority-baseline-replay - 2026-07-02
+
+- 完成 `v0.1.3 S05-P3｜权威基准锁定 replay` 本地验证：重放既有 public-safe S05-P3 authority baseline lock，并验证 S05-P2 replay dependency。
+- 新增 `KMFA/tools/v013_s05_p3_authority_baseline_replay.py`、`KMFA/tools/check_v013_s05_p3_authority_baseline_replay.py`、`KMFA/tests/test_v013_s05_p3_authority_baseline_replay.py` 和 `KMFA/stage_artifacts/V013_S05_P3_AUTHORITY_BASELINE_REPLAY/`。
+- 本 phase 锁定 baseline version=`KMFA-A0-Q5-20260630-S05P3-PUBLIC-SAFE-HASH-LOCK`、content hash=`sha256:dbb55ffb4e3608e49dbcf91e97fc0f19395a8269ff7c8f4d5c3f8ca398c03670`、authority records=`45`、Q5 locked fields=`40`、excluded fields=`5`；`formal_report_allowed=false`，`stage5_review_performed=false`，`github_upload_performed=false`。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、业务值、zip、Excel、PDF、私有 CSV、sqlite/db、credentials、银行流水、合同、薪资或税务申报材料。
+- 本轮不执行 Stage 5 整体复审、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
+## 0.1.3-s05p2-field-candidate-replay - 2026-07-02
+
+- 完成 `v0.1.3 S05-P2｜字段级黄金基准候选 replay` 本地验证：重放既有 public-safe S05-P2 A0 field candidate metadata、owner/授权降级决策和 completion gate。
+- 新增 `KMFA/tools/v013_s05_p2_field_candidate_replay.py`、`KMFA/tools/check_v013_s05_p2_field_candidate_replay.py`、`KMFA/tests/test_v013_s05_p2_field_candidate_replay.py` 和 `KMFA/stage_artifacts/V013_S05_P2_FIELD_CANDIDATE_REPLAY/`。
+- 本 phase 锁定 fixture candidates=`45`、hash/source-anchor recorded=`40`、pending fields=`5`、Q4 confirmed=`0`、Q5 calculation baseline allowed=`0`；active owner/authorized decision 将 pending Excel candidate 降级为 cross-source support only，completion gate 为 ready。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、业务值、zip、Excel、PDF、私有 CSV、sqlite/db、credentials、银行流水、合同、薪资或税务申报材料。
+- 本轮不执行 S05-P3、Stage 5 整体复审、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
+## 0.1.3-s05p1-a0-file-registration - 2026-07-02
+
+- 完成 `v0.1.3 S05-P1｜A0 文件登记 replay` 本地验证：基于既有 A0 文件登记清单，锁定 9 个 public-safe A0 inventory records、8 个 PDF 类记录、1 个 Excel 类记录和 9 个 Q3 机器候选。
+- 新增 `KMFA/tools/v013_s05_p1_a0_file_registration.py`、`KMFA/tools/check_v013_s05_p1_a0_file_registration.py`、`KMFA/tests/test_v013_s05_p1_a0_file_registration.py` 和 `KMFA/stage_artifacts/V013_S05_P1_A0_FILE_REGISTRATION/`。
+- 本 phase 按明确需求只读检查本机 raw inbox 中 A0 private zip 的聚合结构：本地可打开，聚合成员计数为 9、PDF 类 8、Excel 类 1；整包 hash/size 与已登记 source package 不匹配，因此不执行 public member SHA256 回填。
+- 公开证据不包含 raw zip 文件名、raw hash、ZIP member name、sheet name、字段/表头明文、row values、业务值、zip、Excel、PDF、私有 CSV、sqlite/db、credentials、银行流水、合同、薪资或税务申报材料；真实 package/member diagnostic 仅写入 git-ignored `KMFA/.codex_private_runtime/`。
+- 本轮不执行 S05-P2、Stage 5 整体复审、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；v1.3 GitHub main 上传继续统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行。
+
+## 0.1.3-s04-stage-review - 2026-07-02
+
+- 完成 `v0.1.3 Stage 4｜整体复审` 本地验证：复跑 S04-P1 金额精度、S04-P2 字段标准化、S04-P3 基础工具测试报告 validators，并新增 Stage 4 review validator、单测和证据目录。
+- 新增 `KMFA/tools/v013_s04_stage_review.py`、`KMFA/tools/check_v013_s04_stage_review.py`、`KMFA/tests/test_v013_s04_stage_review.py` 和 `KMFA/stage_artifacts/V013_S04_STAGE_REVIEW/`。
+- 复审确认 phase_results=`S04-P1/S04-P2/S04-P3 PASS`、findings_open=0、findings_fixed=0、data quality=`Q2`、report grade=`D`、release permission=`blocked`。
+- 本轮未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；S04-P2 前序 accidental raw listing deviation 继续作为已记录且临时文件已删除的 closed deviation 保留。
+- 公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values、业务值、zip、Excel、PDF、私有 CSV、sqlite/db、credentials、银行流水、合同、薪资或税务申报材料。
+- 本轮不执行 GitHub upload、Stage 5、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；v1.3 GitHub main 上传统一延期到 Stage 1-10 全部完成、整体复审通过并修复 findings 后一次性执行；下一轮只能按独立 run 执行 `v0.1.3 S05-P1` 或用户明确指定的单一 phase。
+
+## 0.1.3-s04p3-basic-tool-report - 2026-07-02
+
+- 完成 `v0.1.3 S04-P3｜基础工具测试报告 replay` 本地验证：复用既有 `generate_tool_test_report.py` 和 synthetic public-safe boundary cases，锁定金额、日期、期间基础工具测试报告。
+- 新增 `KMFA/tools/v013_s04_p3_basic_tool_report.py`、`KMFA/tools/check_v013_s04_p3_basic_tool_report.py`、`KMFA/tests/test_v013_s04_p3_basic_tool_report.py` 和 `KMFA/stage_artifacts/V013_S04_P3_BASIC_TOOL_REPORT/`。
+- 本 phase 验证 synthetic_boundary_cases=22/22、amount_cases=11、date_period_cases=11，并生成 JSON/Markdown 工具函数测试报告。
+- 本 phase 未读取、列出、修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`，公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。
+- 固化项目级 raw data inbox 规则：`/Users/linzezhang/Downloads/KMFA_MetaData` 属于用户财务原始数据目录，Codex 不得在该目录内修改、删除、移动、重命名、覆盖或写入生成/额外文件；私有诊断和 scratch output 只能写入 `KMFA/.codex_private_runtime/` 或明确 Git 忽略的项目受控目录。
+- 继续锁定 data quality=`Q2`、report grade=`D`、release permission=`blocked`；正式报告、经营决策依据、delivery、business execution 继续阻断。
+- 本轮不执行 Stage 4 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；下一轮只能按独立 run 进入 `v0.1.3 Stage 4 整体复审` 或用户明确指定的单一 phase。
+
+## 0.1.3-s04p2-field-standardization - 2026-07-02
+
+- 完成 `v0.1.3 S04-P2｜字段标准化 replay` 本地验证：基于既有 `field_standardization.py`，使用 synthetic public-safe values 重放日期、期间、主体、项目、客户/对手方和合同编号 6 个 canonical fields。
+- 新增 `KMFA/tools/v013_s04_p2_field_standardization.py`、`KMFA/tools/check_v013_s04_p2_field_standardization.py`、`KMFA/tests/test_v013_s04_p2_field_standardization.py` 和 `KMFA/stage_artifacts/V013_S04_P2_FIELD_STANDARDIZATION/`。
+- 本 phase 验证 alias_dictionary_rows=32、standardization_cases=6/6、quality_statuses=5；缺失/异常字段进入质量状态，`field_skipped_silently=false`。
+- 本轮记录一次 accidental raw directory listing；临时输出文件已删除，未修改、删除、移动、重命名、覆盖或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`，公开证据不包含 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。
+- 继续锁定 data quality=`Q2`、report grade=`D`、release permission=`blocked`；正式报告、经营决策依据、delivery、business execution 继续阻断。
+- 本轮不执行 S04-P3、Stage 4 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；下一轮只能按独立 run 进入 `v0.1.3 S04-P3` 或用户明确指定的单一 phase。
+
+## 0.1.3-s04p1-amount-precision - 2026-07-02
+
+- 完成 `v0.1.3 S04-P1｜金额精度与 no-float replay` 本地验证：基于既有 `amount_tools.py` 和 `check_no_float_money.py`，使用 synthetic public-safe values 重放 9 个金额标准化 case、9 个异常拒绝 case、forbidden-float fixture scan 和全仓 no-float scan。
+- 新增 `KMFA/tools/v013_s04_p1_amount_precision.py`、`KMFA/tools/check_v013_s04_p1_amount_precision.py`、`KMFA/tests/test_v013_s04_p1_amount_precision.py` 和 `KMFA/stage_artifacts/V013_S04_P1_AMOUNT_PRECISION/`。
+- 本 phase 不读取或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`，不公开 raw 文件名、raw hash、字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。
+- 继续锁定 data quality=`Q2`、report grade=`D`、release permission=`blocked`；正式报告、经营决策依据、delivery、business execution 继续阻断。
+- 本轮不执行 S04-P2、S04-P3、Stage 4 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；下一轮只能按独立 run 进入 `v0.1.3 S04-P2` 或用户明确指定的单一 phase。
+
+## s11-p1-home-navigation-interaction-hardening - 2026-07-02
+
+- 修复当前工作区 S11-P1 首页运行时新增 RED 测试：HTML 首页现在包含每个导航/动作入口的图标、8 个可点击 `module-action` 按钮、public-safe 本地页面 `data-href` 目标、`module_action_panel` 交互反馈区和 `selectModule` 选择逻辑。
+- 同步重新生成 `KMFA/stage_artifacts/S11_P1_home_navigation/exports/html/kmfa_home_navigation.html`、`KMFA/metadata/reports/home_navigation_manifest.json` 和 `KMFA/stage_artifacts/S11_P1_home_navigation/machine/s11_p1_manifest.json`，content hash 已随 public-safe HTML 更新。
+- 本维护项不推进 v0.1.3 Stage 4，不执行 GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；仅清理阻断后续验证的 S11-P1 public-safe UI 测试失败。
+
+## 0.1.3-s03-stage-review - 2026-07-02
+
+- 完成 `v0.1.3 Stage 3｜整体复审` 本地验证：复跑 S03-P1 文件型导入登记、S03-P2 数据源检查矩阵、S03-P3 源优先级与差异队列入口 validators 和 Stage 3 review validator，确认三个 phase 均为 PASS，review findings open/fixed 均为 0。
+- 新增 `KMFA/tools/v013_s03_stage_review.py`、`KMFA/tools/check_v013_s03_stage_review.py`、`KMFA/tests/test_v013_s03_stage_review.py` 和 `KMFA/stage_artifacts/V013_S03_STAGE_REVIEW/`。
+- 复审锁定当前 data quality=`Q2`、report grade=`D`、release permission=`blocked`，正式报告、经营决策依据、delivery、business execution 继续阻断。
+- Stage 3 review 工具本身不直接枚举或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`；依赖 validator 链会只读复跑既有 S02 raw-readiness 检查，但不修改、删除、移动、重命名、覆盖或写入 raw 目录。
+- 公开证据不包含 raw 文件名、raw hash、ZIP member 名、sheet 名、字段/表头明文、row values、业务值、zip、Excel、PDF、私有 CSV、sqlite/db、credentials、银行流水、合同、薪资或税务申报材料。
+- 本轮不执行 GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；下一轮只能按独立 run 执行 `v0.1.3 Stage 3 GitHub upload` 或用户明确指定的单一 phase。
+
+## 0.1.3-s03p3-source-priority - 2026-07-02
+
+- 完成 `v0.1.3 S03-P3｜源优先级与差异队列入口` 本地验证：基于既有 `source_priority.py` 能力，使用合成 metadata 重放 9 级来源优先级、同源不一致失效重跑事件和跨源差异人工复核队列。
+- 新增 `KMFA/tools/v013_s03_p3_source_priority.py`、`KMFA/tools/check_v013_s03_p3_source_priority.py`、`KMFA/tests/test_v013_s03_p3_source_priority.py` 和 `KMFA/stage_artifacts/V013_S03_P3_SOURCE_PRIORITY/`。
+- 本 phase 不读取或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`，不公开 raw 文件名、raw hash、source package hash、storage ref、字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。
+- 同源不一致锁定为 metadata-only event，动作为 `invalidate_derived_cache` 和 `request_rerun`；跨源冲突进入 difference queue，`manual_review_required=true`、`auto_selection_allowed=false`、`auto_correction_allowed=false`。
+- 继续锁定 data quality=`Q2`、report grade=`D`、release permission=`blocked`；正式报告、经营决策依据、delivery、business execution 继续阻断。
+- 本轮不执行 Stage 3 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；下一轮只能按独立 run 执行 `v0.1.3 Stage 3 整体复审` 或用户明确指定的单一 phase。
+
+## 0.1.3-s03p2-source-check-matrix - 2026-07-02
+
+- 完成 `v0.1.3 S03-P2｜数据源检查矩阵` 本地验证：基于既有 `source_check_matrix.py` 能力，使用合成 metadata 重放六个矩阵维度、五个中文状态枚举和 metadata-only append 状态事件。
+- 新增 `KMFA/tools/v013_s03_p2_source_check_matrix.py`、`KMFA/tools/check_v013_s03_p2_source_check_matrix.py`、`KMFA/tests/test_v013_s03_p2_source_check_matrix.py` 和 `KMFA/stage_artifacts/V013_S03_P2_SOURCE_CHECK_MATRIX/`。
+- 本 phase 不读取或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`，不公开 raw 文件名、raw hash、source package hash、storage ref、字段/表头明文、sheet 名、ZIP member 名、row values 或业务值。
+- 状态变化锁定为 append-only metadata event，`raw_layer_write_allowed=false`、`raw_source_mutation_allowed=false`、`status_change_target_layer=metadata`。
+- 继续锁定 data quality=`Q2`、report grade=`D`、release permission=`blocked`；正式报告、经营决策依据、delivery、business execution 继续阻断。
+- 本轮不执行 S03-P3、Stage 3 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；下一轮只能按独立 run 进入 `v0.1.3 S03-P3` 或用户明确指定的单一 phase。
+
+## 0.1.3-s03p1-file-import-register - 2026-07-02
+
+- 完成 `v0.1.3 S03-P1｜文件型导入登记` 本地验证：基于既有 `file_import_register.py` 能力，使用临时合成文件重放 `zip/xlsx/xls/csv/pdf` 登记、metadata 必需字段、zip traversal 防护和 WPS/OLE 提示。
+- 新增 `KMFA/tools/v013_s03_p1_file_import_register.py`、`KMFA/tools/check_v013_s03_p1_file_import_register.py`、`KMFA/tests/test_v013_s03_p1_file_import_register.py` 和 `KMFA/stage_artifacts/V013_S03_P1_FILE_IMPORT_REGISTER/`。
+- 本 phase 不读取或写入 `/Users/linzezhang/Downloads/KMFA_MetaData`，公开证据只记录能力、状态、布尔门禁和 validator 结果，不公开 raw 文件名、raw hash、ZIP member 名、sheet 名、字段/表头明文、row values 或业务值。
+- 继续锁定 data quality=`Q2`、report grade=`D`、release permission=`blocked`；正式报告、经营决策依据、delivery、business execution 继续阻断。
+- 本轮不执行 S03-P2、S03-P3、Stage 3 review、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；下一轮只能按独立 run 进入 `v0.1.3 S03-P2` 或用户明确指定的单一 phase。
+
+## 0.1.3-s02-stage-review - 2026-07-02
+
+- 完成 `v0.1.3 Stage 2｜整体复审` 本地验证：复跑 S02-P1 raw readiness、S02-P2 raw mapping readiness、S02-P3 data quality/error gate 和 Stage 2 review validator，确认三个 phase 均为 PASS，review findings open/fixed 均为 0。
+- 新增 `KMFA/tools/v013_s02_stage_review.py`、`KMFA/tools/check_v013_s02_stage_review.py`、`KMFA/tests/test_v013_s02_stage_review.py` 和 `KMFA/stage_artifacts/V013_S02_STAGE_REVIEW/`。
+- 复审锁定当前 data quality=`Q2`、report grade=`D`、release permission=`blocked`，正式报告、经营决策依据、delivery、business execution 继续阻断。
+- `/Users/linzezhang/Downloads/KMFA_MetaData` 继续作为只读 raw/private 财务数据入口；Stage 2 review 不修改、删除、移动、重命名、覆盖或写入该目录，公开证据不包含 raw 文件名、raw hash、ZIP member 名、sheet 名、字段/表头明文、row values 或业务值。
+- 本轮不执行 GitHub upload、S03-P1、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行；下一轮只能按独立 run 进入 `v0.1.3 S03-P1` 或用户明确指定的单一 phase。
+
+## 0.1.3-s02p3-data-quality-error-gate - 2026-07-02
+
+- 完成 `v0.1.3 S02-P3｜data quality/error gate` 本地验证：基于 S02-P1 raw readiness、S02-P2 raw mapping readiness 和现有 Q0-Q5/A-D/report release gate policy，锁定当前质量等级为 `Q2`、报告等级为 `D`、release permission 为 `blocked`。
+- 新增 `KMFA/tools/v013_s02_p3_data_quality_error_gate.py`、`KMFA/tools/check_v013_s02_p3_data_quality_error_gate.py`、`KMFA/tests/test_v013_s02_p3_data_quality_error_gate.py` 和 `KMFA/stage_artifacts/V013_S02_P3_DATA_QUALITY_ERROR_GATE/`。
+- 本 phase 不读取 `/Users/linzezhang/Downloads/KMFA_MetaData`，仅消费 S02-P1/P2 public-safe manifest 和治理 policy；公开证据不包含 raw 文件名、ZIP member 名、sheet 名、字段明文、raw hash、row values 或业务值。
+- 由于 raw value matching 仍为 `blocked_authorized_mapping_required`、owner-authorized semantic mapping 缺失、row-value extraction 未执行、zero-delta 未执行、lineage full check 未执行，正式报告、经营决策依据、完整可信报告展示和 delivery 均继续阻断。
+- 本轮不执行 Stage 2 整体复审、GitHub upload、raw value matching、lineage full check、正式报告、live connector、OpMe 深度耦合或业务执行。
+
+## 0.1.3-raw-data-boundary-policy - 2026-07-02
+
+- 登记项目级 raw data inbox：`/Users/linzezhang/Downloads/KMFA_MetaData` 是用户本机 KMFA 财务原始数据目录。
+- 明确该目录对 Codex 只读；不得修改、删除、移动、重命名、覆盖或写入生成文件。
+- 新增 `KMFA/docs/governance/RAW_DATA_BOUNDARY.md`，并同步 `KMFA/AGENTS.md`、`KMFA/HANDOFF.md` 和 `KMFA/docs/governance/STATUS.md`。
+- Codex 私有 inventory、schema/header diagnostic、mapping diagnostic、scratch files 或本地报告只能写入 `KMFA/.codex_private_runtime/` 或明确 Git 忽略的项目受控目录。
+- 本次仅更新项目级治理记忆和 GitHub 备份策略，不执行 S02-P3、Stage 2 review、raw value matching、lineage full check、正式报告、外部接口或业务动作。
+
+## 0.1.3-s02p2-raw-mapping-readiness - 2026-07-02
+
+- 完成 `v0.1.3 S02-P2｜raw mapping/value matching readiness` 本地验证：只读解析 `/Users/linzezhang/Downloads/KMFA_MetaData` 的 ZIP/XLSX 容器和表结构，公开证据仅记录 raw_files=5、zip_openable=3、zip_member_count=95、workbooks_seen=48、workbooks_parseable=25、sheets_seen=4198 等聚合计数。
+- 新增 `KMFA/tools/v013_s02_p2_raw_mapping_readiness.py`、`KMFA/tools/check_v013_s02_p2_raw_mapping_readiness.py`、`KMFA/tests/test_v013_s02_p2_raw_mapping_readiness.py` 和 `KMFA/stage_artifacts/V013_S02_P2_RAW_MAPPING_READINESS/`。
+- 私有 schema/header/mapping diagnostic 只写入 `KMFA/.codex_private_runtime/v013_s02_p2_raw_mapping_readiness/`；公开仓库不包含 raw 文件名、ZIP member 名、sheet 名、field/header 明文、row values、raw hash 或业务值。
+- 本 phase 将 raw value matching 锁定为 `blocked_authorized_mapping_required`：S02-P2 只建立私有 schema/header readiness，不抽取 row value；值级对账仍需后续 owner/授权语义映射和专用 parser phase。
+- 本轮不执行 S02-P3、Stage 2 整体复审、GitHub upload、rebase、lineage full check、reconciliation closure、正式报告、live connector、OpMe 深度耦合或业务执行。
+
+## 0.1.3-s02p1-raw-readiness - 2026-07-02
+
+- 完成 `v0.1.3 S02-P1｜raw 数据只读清单与准备度` 本地验证：只读扫描 `/Users/linzezhang/Downloads/KMFA_MetaData`，确认 raw 目录存在且可读，当前公开汇总为 5 个文件、总大小 62788056 bytes、扩展名计数 `.xlsx=2` 和 `.zip=3`。
+- 新增 `KMFA/tools/v013_s02_p1_raw_readiness.py`、`KMFA/tools/check_v013_s02_p1_raw_readiness.py`、`KMFA/tests/test_v013_s02_p1_raw_readiness.py` 和 `KMFA/stage_artifacts/V013_S02_P1_RAW_READINESS/` 证据包。
+- 私有清单和本地诊断只写入 `KMFA/.codex_private_runtime/v013_s02_p1_raw_inventory/`，该目录已被 `KMFA/.gitignore` 忽略；公开证据不包含 raw 文件名、raw 文件哈希、字段明文、表头、行值或业务金额。
+- 本 phase 不执行 raw value matching；原因是 S02-P1 只做 inventory/readiness，值级对账需要后续授权 parser/mapping phase。
+- 本轮不执行 Stage 2 整体复审、GitHub upload、rebase、lineage full check、reconciliation closure、正式报告、live connector、OpMe 深度耦合或业务执行；后续 GitHub upload 统一延后到整体完成 gate。
+
+## 0.1.3-s01-stage-review - 2026-07-02
+
+- 完成 `v0.1.3 Stage 1｜整体复审` 本地验证：复跑 S01-P1 当前状态复核、S01-P2 范围冻结、S01-P3 防遗漏门禁和 Stage 1 review validator，确认三个 phase 均为 PASS。
+- 新增 `KMFA/tools/check_v013_s01_stage_review.py`、`KMFA/tests/test_v013_s01_stage_review.py` 和 `KMFA/stage_artifacts/V013_S01_STAGE_REVIEW/` 证据包，锁定 findings_open=0、findings_fixed=0、github_upload=false、delivery_allowed=false、formal_report_allowed=false、business_execution_allowed=false。
+- 继承当前 `NO_GO` blockers：0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级 report runtime 继续阻断正式报告、经营决策依据、release claim 和 delivery claim。
+- 本轮只执行 Stage 1 整体复审，不执行 GitHub upload、rebase、S02、lineage full check、reconciliation closure、正式报告、live connector、OpMe 深度耦合或业务执行。
+- `/Users/linzezhang/Downloads/KMFA_MetaData` 仍为只读 raw boundary；本轮不读取该目录内容，不修改、删除、移动或提交其中任何文件。
+
+## 0.1.3-s01p3-no-omission-gate - 2026-07-02
+
+- 完成 `v0.1.3 S01-P3｜防遗漏门禁复跑` 本地验证：复跑正式 `KMFA/tools/no_omission_check.py`，确认 requirements=20、P0=9、P1=8、stage_status_records=549、task_records=162。
+- 新增 `KMFA/tools/check_v013_s01_p3_no_omission_gate.py`、`KMFA/tests/test_v013_s01_p3_no_omission_gate.py` 和 `KMFA/stage_artifacts/V013_S01_NO_OMISSION_GATE/` 证据包，绑定旧 S01-P3 baseline、v1.2 FULL_HTML_NO_OMISSION 基线和 v0.1.3 S01-P2 范围冻结边界。
+- 继续记录外部 v0.1.3 roadmap 原路径当前不可读，未从缺失文件推断新需求；repo 内 v1.2 taskpack/roadmap 仍为可读基线。
+- 本轮只执行一个 phase，不执行 Stage 1 整体复审、GitHub upload、lineage full check、reconciliation closure、正式报告、live connector、OpMe 深度耦合或业务执行。
+- `/Users/linzezhang/Downloads/KMFA_MetaData` 仍为只读 raw boundary；本 phase 不读取该目录内容，不修改、删除、移动或提交其中任何文件。
+
+## 0.1.3-s01p2-scope-freeze - 2026-07-02
+
+- 完成 `v0.1.3 S01-P2｜范围冻结` 本地验证：锁定本修补包当前只做 public-safe scope freeze，不解决 lineage/reconciliation/report blockers。
+- 新增 `KMFA/tools/check_v013_s01_p2_scope_freeze.py`、`KMFA/tests/test_v013_s01_p2_scope_freeze.py` 和 `KMFA/stage_artifacts/V013_S01_SCOPE_FREEZE/` 证据包，继承 S01-P1 的 0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告。
+- 记录外部 v0.1.3 roadmap 原路径当前不可读，未从缺失文件推断新需求；repo 内 v1.2 taskpack/roadmap 仍为可读基线。
+- 登记本机 KMFA 财务原始数据目录 `/Users/linzezhang/Downloads/KMFA_MetaData` 为只读 raw boundary；Codex 不得修改、删除、移动或提交其中任何文件，临时处理只能进入 `KMFA/.codex_private_runtime/`。
+- 本轮只执行一个 phase，不执行 S01-P3、Stage 1 整体复审、GitHub upload、lineage full check、reconciliation closure、正式报告、live connector、OpMe 深度耦合或业务执行。
+
+## 0.1.3-s01p1-current-state-preflight - 2026-07-02
+
+- 完成 `v0.1.3 S01-P1｜当前状态复核` 本地验证：读取 S18、LINEAGE_REPORT_GATE、S09 evidence 和治理状态，锁定当前仍为 `NO_GO`。
+- 新增 `KMFA/tools/check_v013_s01_p1_preflight.py`、`KMFA/tests/test_v013_s01_p1_preflight.py` 和 `KMFA/stage_artifacts/V013_S01_PRECHECK/` 证据包，复算 0 条 actual lineage rows、12 条 pending reconciliation 和 2 条 D 级报告。
+- 本轮只执行一个 phase，不执行 S01-P2、Stage 1 整体复审、GitHub upload、lineage full check、reconciliation closure、正式报告、live connector、OpMe 深度耦合或业务执行。
+- 公开仓库未提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、credentials、银行流水、合同、薪资或税务申报材料；`NO_GO` 和 `delivery_allowed=false` 保持不变。
+
+## 0.1.3-s00p1-app-entry - 2026-07-02
+
+- 完成 `v0.1.3 S00-P1｜Downloads App Entry` 本地验证：已在 `/Users/linzezhang/Downloads/KMFA.app` 建立 KMFA app 入口，并更新 KMFA 专用 `.icns` 图标。
+- 新增 `KMFA/tools/check_v013_s00_app_entry.py`、`KMFA/tests/test_v013_s00_app_entry.py` 和 `KMFA/stage_artifacts/V013_S00_APP_ENTRY/` 证据包，锁定 app bundle、canonical worktree、public-safe 首页 HTML 和图标 hash。
+- 本轮只执行一个 phase，不执行 Stage 0 整体复审、GitHub upload、lineage full check、reconciliation closure、正式报告、live connector、OpMe 深度耦合或业务执行。
+- 公开仓库未提交 raw business data、zip、Excel workbook、PDF、private CSV、sqlite/db、字段明文、credentials、银行流水、合同、薪资或税务申报材料；`NO_GO` 和 `delivery_allowed=false` 保持不变。
 
 ## 0.1.0-post-s18-final-no-go-backup-upload - 2026-07-02
 
@@ -689,7 +2598,7 @@
 
 - 对 `S05-P2｜字段级黄金基准` 执行本地私有 hash-only 部分回填，不上传 GitHub。
 - 使用仓库外私有 CSV 回填 8 个 PDF A0 候选的 40 条字段候选 hash/source anchor；1 个 Excel 候选的 5 条字段候选继续 pending。
-- 记录审计结论：本机提供的 `销售绩效考核.zip` 整包 hash/size 与登记 source package 不匹配，但 9 个真实业务成员 hash 与 Stage2 Ring4 registry 匹配；Ring4 前序包 hash 匹配登记值。
+- 记录审计结论：本机提供的 A0 private source package 整包 hash/size 与登记 source package 不匹配，但 9 个真实业务成员 hash 与 Stage2 Ring4 registry 匹配；Ring4 前序包 hash 匹配登记值。
 - 新增 S05-P2 private backfill public-safe 证据；公开仓库仍不提交 raw PDF/Excel/zip、私有 CSV、真实字段 raw value 或 normalized value。
 - 保持 S05-P2 未完成、S05-P3 权威锁定未开始、Stage 5 复审和 GitHub upload 不允许。
 
@@ -704,9 +2613,9 @@
 ## 0.1.0-s05p1 - 2026-06-30
 
 - 完成 `S05-P1｜A0 文件登记` 的 public-safe 登记和本地验证，不上传 GitHub。
-- 新增 `KMFA/tools/a0_file_register.py` 和 `KMFA/tools/check_a0_file_registration.py`，登记 `销售绩效考核.zip` source package SHA256、8 个 PDF、1 个 Excel、legacy inventory 指纹和 Q3/Q4 状态。
+- 新增 `KMFA/tools/a0_file_register.py` 和 `KMFA/tools/check_a0_file_registration.py`，登记 A0 private source package SHA256、8 个 PDF、1 个 Excel、legacy inventory 指纹和 Q3/Q4 状态。
 - 新增 `KMFA/tests/test_a0_file_register.py`、`KMFA/metadata/baseline/a0_file_manifest.json`、`KMFA/metadata/baseline/a0_project_candidates.jsonl` 和 S05-P1 证据包。
-- 私有 `销售绩效考核.zip` 未找到，成员级 SHA256 显式记录为 pending，不用 legacy CRC/指纹冒充 SHA256。
+- 私有 A0 source package 未找到，成员级 SHA256 显式记录为 pending，不用 legacy CRC/指纹冒充 SHA256。
 - 保持字段级黄金基准、S05-P3 权威锁定、zero-delta、事实层、报告、UI 和 GitHub upload 为未完成。
 
 ## Stage 4 Review - 2026-06-29
@@ -830,3 +2739,756 @@
 - 明确 Stage 完成复审修复后再上传 GitHub，中间 Phase 不上传。
 - 明确时间只是参考，质量门禁通过可提前交付，未通过不得交付。
 - 未实现业务导入、金额工具、zero-delta 正式脚本、UI、报告或外部接口。
+# 0.1.4-s02p1-metadata-protocol - 2026-07-03
+
+- 完成 `v0.1.4 S02-P1｜metadata目录协议` 本地验证。
+- 新增 `KMFA/metadata/protocol/raw_data_roots_v1_4.json`，把 `/Users/linzezhang/Downloads/KMFA_MetaData` 锁定为 raw/private inbox，当前 phase no read/no list/no inventory/no mutation。
+- 新增 `KMFA/tools/check_v014_s02_p1_metadata_protocol.py` 与 `KMFA/tests/test_v014_s02_p1_metadata_protocol.py`，复用 `metadata_protocol_check.py` 并额外验证 S01 review dependency、raw boundary、no-upload/no-go、evidence refs 和 Git 状态。
+- 新增 `KMFA/stage_artifacts/V014_S02_P1_METADATA_PROTOCOL/` public-safe evidence。
+- 未执行 S02-P2、S02-P3、Stage 2 review、GitHub upload、raw inventory、raw value matching、正式报告、live connector、OpMe 深度耦合或业务执行。
+
+## 0.1.4-stage1-18-overall-review - 2026-07-05
+
+- 完成 `v0.1.4 Stage 1-18 整体复审` 本地 public-safe gate：新增 overall review generator、validator、focused unit test 和 `KMFA/stage_artifacts/V014_STAGE1_18_OVERALL_REVIEW/` 证据。
+- 新 validator 复跑并缓存 18 个 v0.1.4 stage review validators，确认 Stage review 18/18、Phase 54、Task 162、open findings 0。
+- 修复 `S01-P3 no-omission baseline` validator 的历史 review 记录漂移问题：implementation coverage 改为按 `SxxP1-P3` / `SxxP*Txx` 唯一 ID 计数，不把后续 review status append 误算为 roadmap phase。
+- 当前 Go/No-Go 仍为 `NO_GO`：raw alignment 未证明完整、local raw package hash/size mismatch、lineage full check 未完成、formal report release 未允许、pending reconciliation=12。
+- 未执行 GitHub upload、app reinstall、raw inbox read/mutation、lineage full check completion、formal report release、production restore、external/live connector、OpMe 深度耦合或业务执行。
+
+## 0.1.4-value-consistency-scope-gate - 2026-07-05
+
+- 完成 `V014_VALUE_CONSISTENCY_SCOPE_GATE` 本地 public-safe gate：新增 value consistency scope generator、validator、focused unit test 和 `KMFA/stage_artifacts/V014_VALUE_CONSISTENCY_SCOPE_GATE/` 证据。
+- 锁定 6 条 value consistency lanes、3 次独立交叉验证最低要求、raw inbox mutation guard 和 repeated mismatch 差异报告义务。
+- 本 phase 不抽取、不标准化、不比较、不提交 raw 或 processed business values；raw inbox 仅做 before/after stat guard，不 read/list/hash/write/delete/move/rename/overwrite/copy/normalize。
+- 当前 Go/No-Go 仍为 `NO_GO`：raw value matching、processed-data reconciliation、business value consistency、lineage full check、formal report release、GitHub upload、app reinstall 和 business execution 均未执行。
+
+## 0.1.4-raw-value-matching-private-dry-run - 2026-07-05
+
+- 完成 `V014_RAW_VALUE_MATCHING_PRIVATE_DRY_RUN` 本地 public-safe/private-runtime dry-run gate：新增 raw value matching private dry-run generator、validator、focused unit test 和证据包。
+- 在 ignored private runtime 生成 raw value fingerprint 诊断和本地 gap report；public artifacts 只保存 aggregate count、gate 状态和证据路径。
+- 当前 aggregate 结果：raw value fingerprints=871、approved private processed value targets=0、comparable value pairs=0、business value consistency=false、decision=`NO_GO`。
+- 阻断原因锁定为 processed private value targets missing；下一 phase 应建立 private processed value staging 后再比较。
+- 未修改/删除/移动/复制/覆盖 raw inbox；未提交 raw filename、raw hash、field/header/sheet/entry plaintext、business value、zip、Excel、PDF、SQLite/DB、credential 或 private diagnostic。
+- 未执行 Stage review、GitHub upload、app reinstall、formal report、lineage full check completion 或 business execution。
+## 0.1.4-private-processed-value-source-map-owner-authorized-fill-application - 2026-07-05
+
+- 完成 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION` 本地 public-safe NO_GO gate。
+- 新增 generator、validator、focused unit test 和 `KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION/` 证据。
+- 固定检查 2 个 git-ignored active fill record 候选路径，当前 `active_authorized_fill_record_found=false`、`fill_application_performed=false`、`source_map_records_applied_count=0`。
+- 记录 raw data immutable policy：本 phase 未读取、列出、fingerprint、写入、删除、移动、重命名、覆盖、标准化或复制 raw source；后续交叉验证必须与 raw source truth 一致，反复不一致时最终 goal 交付差异报告。
+- 未执行 materialization replay、raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall 或 business execution。
+
+## 0.1.4-current-state-pointer-repair - 2026-07-05
+
+- 完成 `V014_CURRENT_STATE_POINTER_REPAIR` 本地 governance repair。
+- 修正 `HANDOFF.md`、`STATUS.md`、`OWNER_STATUS.md`、`功能清单.md`、`模型参数文件.md` 的当前状态指针：最新 completed phase 统一为 `V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION`。
+- 新增 `KMFA/tools/check_v014_current_state_pointer_repair.py`、focused unit test 和 `KMFA/stage_artifacts/V014_CURRENT_STATE_POINTER_REPAIR/` public-safe evidence。
+- 当前仍为 `NO_GO`：`active_owner_or_authorized_delegate_fill_record` 缺失，materialization replay、raw-to-processed comparison、GitHub upload、app reinstall、formal report 和业务执行继续阻断。
+- 本 repair 未读取、列出、修改、删除、移动、重命名、覆盖、标准化、复制或写入 raw inbox。
+
+## 0.1.4-owner-22-group-decision-response-intake - 2026-07-06
+
+- 完成 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_OWNER_22_GROUP_DECISION_RESPONSE_INTAKE` 本地单 phase。
+- 基于上一轮私有 22 group checklist/template，按用户授权的 Codex 保守默认决策生成私有 response package：22 个 group、113 行、19 个可执行 group decision、3 个非可执行 group decision、36 个 unlinked application blockers 继续阻断。
+- 新增 public-safe summary、manifest、matrix、Go/No-Go、人类可读证据、validator 和 focused unit test。
+- 当前仍为 `NO_GO`：不应用 source-map、不写 partial authorization record、不做 materialization replay、不做 raw-to-processed comparison、不做 full reconciliation、不做 GitHub upload、不重装 app、不执行业务动作。
+- 本 phase 未读取、列出、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有响应和诊断只保留在 ignored runtime。
+
+## 0.1.4-corrected-source-or-owner-exclusion-resolution-input - 2026-07-06
+
+- 完成 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT` 本地单 phase。
+- 基于上一轮 22-group response intake 和 ignored private blocker decision queue，生成 36 项 corrected source 或 owner exclusion 私有输入模板。
+- 新增 public-safe summary、manifest、matrix、Go/No-Go、人类可读证据、validator 和 focused unit test。
+- 当前仍为 `NO_GO`：owner resolution input 尚未提供，36 个 unlinked blockers 未解决；不应用 source-map、不做 raw-to-processed comparison、不做 full reconciliation、不做 GitHub upload、不重装 app、不执行业务动作。
+- 本 phase 未读取、列出、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有输入模板和诊断只保留在 ignored runtime。
+
+## 0.1.4-corrected-source-or-owner-exclusion-resolution-application-readiness - 2026-07-06
+
+- 完成 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_APPLICATION_READINESS` 本地单 phase。
+- 基于上一轮 36 项 private input template 和 pending queue，检查 corrected source 或 owner exclusion 是否已具备应用条件。
+- 新增 public-safe summary、manifest、matrix、Go/No-Go、人类可读证据、validator 和 focused unit test。
+- 当前仍为 `NO_GO`：36 项 owner/授权输入有效数为 0，missing owner input 为 36，resolution application 不允许执行。
+- 本 phase 未读取、列出、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有 readiness diagnostic 和 blocker queue 只保留在 ignored runtime。
+
+## 0.1.4-residual-difference-owner-authorized-anchor-confirmation-readiness - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_READINESS` 本地单 phase。
+- 基于上一轮 after-alignment precheck 的 public-safe summary/manifest/matrix 和 ignored private anchor draft/blocker queue，生成 owner-authorized anchor confirmation readiness 的 public-safe summary、manifest、matrix、Go/No-Go、人类可读证据、validator 和 focused unit test。
+- 当前 aggregate 结果：source_after_alignment_blocker_count=72、source_anchor_draft_item_count=72、owner_authorized_anchor_ready_count=0、owner_authorized_anchor_blocker_count=72、missing_owner_authorized_anchor_count=72、missing_processed_value_fingerprint_count=72、missing_raw_candidate_anchor_count=72、private_candidate_sample_item_count=24、private_candidate_missing_sample_item_count=48、Go/No-Go=`NO_GO`。
+- 这不是 owner anchor 授权、formal raw-to-processed comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；下一步仍需要 owner/授权代理确认 private raw candidate anchors。
+- 本 phase 未读取、列出、stat、fingerprint、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有 readiness artifacts 只保留在 ignored runtime。
+
+## 0.1.4-corrected-source-or-owner-exclusion-resolution-input-retry - 2026-07-06
+
+- 完成 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_INPUT_RETRY` 本地单 phase。
+- 基于上一轮 36 项 readiness NO_GO 证据和既有 private no-match dry-run 证据，生成 36 项 delegated conservative owner-exclusion retry input 草案。
+- 新增 public-safe summary、manifest、matrix、Go/No-Go、人类可读证据、validator 和 focused unit test。
+- 当前仍为 `NO_GO`：retry input 已准备好供下一轮 readiness 检查，但本 phase 不执行 source-map application、raw-to-processed comparison、full reconciliation、GitHub upload、app reinstall 或业务动作。
+- 本 phase 未读取、列出、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有 retry template、queue 和 diagnostic 只保留在 ignored runtime。
+
+## 0.1.4-corrected-source-or-owner-exclusion-resolution-retry-application-readiness - 2026-07-06
+
+- 完成 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_RETRY_APPLICATION_READINESS` 本地单 phase。
+- 基于上一轮 private retry template、queue 和 diagnostic，确认 36 项 delegated owner-exclusion retry input 已具备下一 phase application readiness。
+- 新增 public-safe summary、manifest、matrix、Go/No-Go、人类可读证据、validator 和 focused unit test。
+- 当前仍为 `NO_GO`：本 phase 只允许下一 phase 执行 resolution application；本 phase 不执行 source-map application、raw-to-processed comparison、full reconciliation、GitHub upload、app reinstall 或业务动作。
+- 本 phase 未读取、列出、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有 readiness diagnostic、ready queue 和 blocker queue 只保留在 ignored runtime。
+
+## 0.1.4-corrected-source-or-owner-exclusion-resolution-application - 2026-07-06
+
+- 完成 `V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_CORRECTED_SOURCE_OR_OWNER_EXCLUSION_RESOLUTION_APPLICATION` 本地单 phase。
+- 基于上一轮 private retry application readiness queue，将 36 项 delegated owner-exclusion 决策应用到 ignored private application result。
+- 新增 public-safe summary、manifest、matrix、Go/No-Go、人类可读证据、validator 和 focused unit test。
+- 当前仍为 `NO_GO`：owner-exclusion application 已完成，但 source-map records applied 仍为 0；post-resolution readiness recheck、materialization replay、raw-to-processed comparison、full reconciliation、GitHub upload、app reinstall 和业务动作均未执行。
+- 本 phase 未读取、列出、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有 application diagnostic、result 和 applied queue 只保留在 ignored runtime。
+
+## 0.1.4-linked-scope-raw-to-processed-comparison-dry-run - 2026-07-06
+
+- 完成 `V014_LINKED_SCOPE_RAW_TO_PROCESSED_COMPARISON_DRY_RUN` 本地单 phase。
+- 基于上一轮 linked-scope precheck 的 ignored private output，执行 77 条 linked-scope private fingerprint pair dry-run comparison；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：linked_scope_dry_run_pair_count=77、exact_match_count=77、mismatch_count=0、invalid_record_count=0、processed_target_slot_outside_linked_replay_scope_count=72、Go/No-Go=`NO_GO`。
+- 这不是 full raw-to-processed comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；下一步必须先解决 72 个 outside linked replay scope target slots。
+- 本 phase 未读取、列出、stat、fingerprint、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有 dry-run、diagnostic 和 records 只保留在 ignored runtime。
+
+## 0.1.4-processed-target-outside-linked-scope-resolution - 2026-07-06
+
+- 完成 `V014_PROCESSED_TARGET_OUTSIDE_LINKED_SCOPE_RESOLUTION` 本地单 phase。
+- 基于上一轮 dry-run 的 public-safe summary、ignored private unmaterialized scope records、private processed staging 和 private source map，分类 72 个 outside linked-scope processed target slots。
+- 当前 aggregate 结果：processed_target_slot_count=149、linked_scope_resolved_target_slot_count=77、outside_linked_scope_target_slot_count=72、outside_scope_resolution_queue_record_count=72、outside_scope_authorized_source_map_required_count=72、outside_scope_auto_resolvable_count=0、outside_scope_resolution_applied_count=0、Go/No-Go=`NO_GO`。
+- 这不是 source-map extension、full raw-to-processed comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；下一步必须提供 72 个 outside linked-scope target slots 的授权 source-map extension。
+- 本 phase 未读取、列出、stat、fingerprint、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有 resolution queue、diagnostic 和 report 只保留在 ignored runtime。
+
+## 0.1.4-outside-scope-authorized-source-map-extension - 2026-07-06
+
+- 完成 `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION` 本地单 phase。
+- 基于上一轮 private outside-scope resolution queue，为 72 个 outside-scope target slots 生成 private 授权 source-map extension template 和 pending queue；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source_outside_scope_resolution_queue_count=72、private_authorized_extension_template_item_count=72、valid_authorized_extension_record_count=0、missing_authorized_extension_record_count=72、source_map_extension_applied_count=0、Go/No-Go=`NO_GO`。
+- 这不是 owner authorization、source-map extension write、full raw-to-processed comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；下一步必须由 owner 或授权代理填充 private template 后再单独 readiness recheck。
+- 本 phase 未读取、列出、stat、fingerprint、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有 template、pending queue、diagnostic 和 report 只保留在 ignored runtime。
+
+## 0.1.4-outside-scope-authorized-source-map-extension-readiness-recheck - 2026-07-06
+
+- 完成 `V014_OUTSIDE_SCOPE_AUTHORIZED_SOURCE_MAP_EXTENSION_READINESS_RECHECK` 本地单 phase。
+- 重新检查上一 phase 的 private authorized source-map extension template；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：private_authorized_extension_template_item_count=72、valid_authorized_extension_record_count=0、missing_authorized_extension_record_count=72、source_map_extension_ready_count=0、source_map_extension_blocker_count=72、source_map_extension_application_ready=false、Go/No-Go=`NO_GO`。
+- 这不是 owner authorization、source-map application、full raw-to-processed comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；下一步仍必须由 owner 或授权代理填充 private template。
+- 本 phase 未读取、列出、stat、fingerprint、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；未修改 private template；私有 readiness diagnostic、blocker queue 和 report 只保留在 ignored runtime。
+## 0.1.4-residual-difference-raw-to-processed-comparison-precheck-after-alignment - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_ALIGNMENT` 本地单 phase。
+- 基于上一轮 raw candidate alignment 的 public-safe summary/manifest/matrix 和 ignored private alignment/anchor draft，生成 after-alignment precheck 的 public-safe summary、manifest、matrix、Go/No-Go、人类可读证据、validator 和 focused unit test。
+- 当前 aggregate 结果：source_alignment_item_count=72、source_raw_candidate_anchor_draft_item_count=72、owner_authorized_comparison_anchor_count=0、alignment_authorization_anchor_required_count=72、comparison_ready_record_count=0、comparison_blocker_record_count=72、Go/No-Go=`NO_GO`。
+- 这不是 owner anchor 授权、formal raw-to-processed comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；下一步仍需要 owner/授权代理确认 private comparison anchors。
+- 本 phase 未读取、列出、stat、fingerprint、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有 after-alignment precheck artifacts 只保留在 ignored runtime。
+
+## 0.1.4-outside-scope-candidate-review-residual-difference-report - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_REPORT` 本地单 phase。
+- 基于上一 phase 的 public-safe blocker audit summary 和 ignored private residual queue，生成 private residual difference queue/report 与 public-safe summary、manifest、matrix、Go/No-Go、人类可读证据、validator 和 focused unit test。
+- 当前 aggregate 结果：source_private_residual_queue_item_count=72、residual_difference_report_item_count=72、open_residual_difference_count=72、closed_discrepancy_count=0、safe_auto_closure_count=0、newly_actionable_closure_count=0、ambiguous_selection_required_count=24、authoritative_source_reference_required_count=40、formula_or_non_numeric_mapping_required_count=8、Go/No-Go=`NO_GO`。
+- 这不是 discrepancy closure、source-map correction、formal raw-to-processed comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；下一步可准备 private diagnostic handoff 或等待 owner/授权 resolution。
+- 本 phase 未读取、列出、stat、fingerprint、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有 residual difference diagnostic、queue 和 report 只保留在 ignored runtime。
+## 0.1.4-outside-scope-candidate-review-residual-difference-diagnostic-handoff - 2026-07-07
+
+- 完成 `V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_RESIDUAL_DIFFERENCE_DIAGNOSTIC_HANDOFF` 本地单 phase。
+- 基于上一 phase public-safe residual-difference summary 和 ignored private residual queue，生成 private diagnostic handoff packet/queue/report 与 public-safe summary、manifest、matrix、Go/No-Go、人类可读证据、validator 和 focused unit test。
+- 当前 aggregate 结果：diagnostic_handoff_item_count=72、open_residual_difference_count=72、closed_discrepancy_count=0、safe_auto_resolution_count=0、ambiguous_selection_required_count=24、authoritative_source_reference_required_count=40、formula_or_non_numeric_mapping_required_count=8、Go/No-Go=`NO_GO`。
+- 这不是 discrepancy closure、source-map correction、formal raw-to-processed comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；下一步只能 owner/授权代理或外部 agent 在 private handoff 基础上给出诊断输入。
+- 本 phase 未读取、列出、stat、fingerprint、解析、复制、移动、重命名、删除、覆盖、标准化或写入 raw inbox；私有 diagnostic handoff packet、queue 和 report 只保留在 ignored runtime。
+
+## 0.1.4-residual-difference-owner-authorized-anchor-confirmation-blocker-threshold-recheck - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_THRESHOLD_RECHECK` 本地单 phase。
+- 基于上一 phase 的 public-safe owner-authorized anchor blocker audit summary 和 ignored private audit queue，记录第二次 blocker observation；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：owner_authorized_anchor_blocker_count=72、prior_owner_authorized_anchor_blocker_observation_count=1、owner_authorized_anchor_blocker_observation_count=2、owner_authorized_anchor_blocked_audit_threshold_met=false、owner_authorized_anchor_confirmation_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 owner-authorized anchor confirmation、formal raw-to-processed comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；下一步只能单独执行 final threshold recheck 或等待 owner/授权代理确认 private anchors。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 threshold diagnostic、queue 和 report 只保留在 ignored runtime。
+
+## 0.1.4-residual-difference-owner-authorized-anchor-confirmation-blocker-final-threshold-recheck - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_BLOCKER_FINAL_THRESHOLD_RECHECK` 本地单 phase。
+- 基于上一 phase 的 public-safe threshold recheck summary 和 ignored private threshold queue，记录第三次 blocker observation；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：owner_authorized_anchor_blocker_count=72、prior_owner_authorized_anchor_blocker_observation_count=2、owner_authorized_anchor_blocker_observation_count=3、owner_authorized_anchor_blocked_audit_threshold_met=true、goal_status_recommendation=blocked、owner_authorized_anchor_confirmation_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 owner-authorized anchor confirmation、formal raw-to-processed comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；下一步只能由 owner/授权代理确认 private anchors 后再单独推进。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 final threshold diagnostic、queue 和 report 只保留在 ignored runtime。
+
+## 0.1.4-residual-difference-owner-authorized-anchor-confirmation-authorization-intake - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_AUTHORIZATION_INTAKE` 本地单 phase。
+- 基于上一 phase 的 public-safe final threshold summary 和 ignored private final threshold queue，记录 owner 当前线程授权，生成 ignored private authorization active record、queue、diagnostic 和 report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：authorization_item_count=72、owner_authorization_intaken=true、owner_authorized_anchor_confirmation_preparation_allowed_next_phase=true、source_owner_authorized_anchor_blocker_count=72、owner_authorized_anchor_confirmation_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 owner-authorized anchor confirmation、formal raw-to-processed comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；下一步只能单独做 private preparation readiness。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 authorization active record、queue、diagnostic 和 report 只保留在 ignored runtime。
+
+## 0.1.4-residual-difference-owner-authorized-anchor-confirmation-authorization-readiness - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_AUTHORIZATION_READINESS` 本地单 phase。
+- 基于上一 phase 的 public-safe authorization intake summary/manifest/Go-No-Go/matrix 和 ignored private authorization active record/queue/diagnostic/report，生成 ignored private authorization readiness diagnostic/queue/report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：authorization_item_count=72、authorization_readiness_item_count=72、readiness_ready_item_count=72、readiness_blocker_item_count=0、owner_authorization_readiness_confirmed=true、owner_authorized_anchor_confirmation_preparation_ready_next_phase=true、owner_authorized_anchor_confirmation_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 owner-authorized anchor confirmation、formal raw-to-processed comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；下一步只能单独做 private owner-authorized anchor confirmation preparation。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 authorization readiness diagnostic、queue 和 report 只保留在 ignored runtime。
+- 未执行：owner-authorized anchor confirmation、formal raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+
+## 0.1.4-residual-difference-owner-authorized-anchor-confirmation-preparation - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION_PREPARATION` 本地单 phase。
+- 基于上一 phase 的 public-safe authorization readiness summary/manifest/Go-No-Go/matrix 和 ignored private readiness diagnostic/queue/report，生成 ignored private preparation diagnostic/queue/report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：authorization_readiness_item_count=72、preparation_item_count=72、preparation_ready_item_count=72、preparation_blocker_item_count=0、owner_authorized_anchor_confirmation_allowed_next_phase=true、owner_authorized_anchor_confirmation_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 owner-authorized anchor confirmation、formal raw-to-processed comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；下一步只能单独做 owner-authorized anchor confirmation。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 preparation diagnostic、queue 和 report 只保留在 ignored runtime。
+- 未执行：owner-authorized anchor confirmation、formal raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+
+## 0.1.4-residual-difference-owner-authorized-anchor-confirmation - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_OWNER_AUTHORIZED_ANCHOR_CONFIRMATION` 本地单 phase。
+- 基于上一 phase 的 public-safe preparation summary/manifest/Go-No-Go/matrix 和 ignored private preparation diagnostic/queue/report，生成 ignored private confirmation diagnostic/queue/report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：preparation_item_count=72、owner_authorized_anchor_confirmation_item_count=72、owner_authorized_anchor_confirmation_count=72、anchor_confirmation_blocker_item_count=0、raw_to_processed_value_comparison_allowed_next_phase=true、raw_to_processed_value_comparison_performed_by_this_phase=false、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 formal raw-to-processed comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；下一步只能单独做 owner-authorized anchor 后的 raw-to-processed comparison precheck。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 confirmation diagnostic、queue 和 report 只保留在 ignored runtime。
+- 未执行：formal raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+
+## 0.1.4-residual-difference-raw-to-processed-comparison-precheck-after-owner-anchor-confirmation - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_PRECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION` 本地单 phase。
+- 基于上一 phase 的 public-safe owner anchor confirmation summary/manifest/Go-No-Go/matrix 和 ignored private confirmation queue，生成 ignored private precheck diagnostic、ready queue、blocker queue、report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source_owner_authorized_anchor_confirmation_count=72、source_anchor_confirmation_blocker_item_count=0、comparison_precheck_item_count=72、comparison_precheck_ready_record_count=72、comparison_precheck_blocker_record_count=0、formal_raw_to_processed_comparison_allowed_next_phase=true、raw_to_processed_value_comparison_performed_by_this_phase=false、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 formal raw-to-processed comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；下一步只能单独做 owner anchor confirmation 后的 formal raw-to-processed comparison。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 precheck diagnostic、ready queue、blocker queue 和 report 只保留在 ignored runtime。
+- 未执行：formal raw-to-processed comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+## 2026-07-07 Latest - V014 Raw-To-Processed Comparison After Owner Anchor Confirmation
+
+- phase: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_AFTER_OWNER_ANCHOR_CONFIRMATION`
+- product_version: `0.1.4-residual-difference-raw-to-processed-comparison-after-owner-anchor-confirmation`
+- status: `completed_validated_local_only_raw_comparison_after_owner_anchor_confirmation_blocked_no_go`
+- evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_AFTER_OWNER_ANCHOR_CONFIRMATION/`
+- validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_raw_to_processed_comparison_after_owner_anchor_confirmation.py --require-private-comparison`
+- locked counts: `source_comparison_precheck_ready_record_count=72`, `source_comparison_precheck_blocker_record_count=0`, `formal_comparison_item_count=72`, `formal_comparison_exact_match_count=0`, `formal_comparison_mismatch_count=0`, `formal_comparison_blocker_count=72`, `missing_private_fingerprint_pair_count=72`, `unresolved_difference_count=72`
+- result: formal comparison was attempted, but all 72 items are blocked because complete private fingerprint pairs are missing; no raw-to-processed value consistency is claimed.
+- boundary: raw inbox access/mutation, reconciliation, business consistency, lineage full check, formal report, GitHub upload, app reinstall and business execution remain false.
+- next: `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_AFTER_OWNER_ANCHOR_CONFIRMATION`, one phase only; no Stage review or upload.
+
+## 0.1.4-residual-difference-raw-to-processed-comparison-fingerprint-pair-completion-after-owner-anchor-confirmation - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_AFTER_OWNER_ANCHOR_CONFIRMATION` 本地单 phase。
+- 基于上一 phase public-safe comparison blockers、ignored private blocker records、ignored private anchor draft 和 ignored full materialized processed records，生成 ignored private pair completion diagnostic、completion records、blocker records 和 report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source_formal_comparison_blocker_count=72、source_missing_private_fingerprint_pair_count=72、fingerprint_pair_completion_item_count=72、processed_fingerprint_available_count=72、raw_candidate_fingerprint_available_count=24、fingerprint_pair_completed_count=24、fingerprint_pair_completion_blocker_count=48、missing_raw_candidate_fingerprint_count=48、missing_processed_fingerprint_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；下一步只能单独审计 48 个缺 raw candidate fingerprint 的 blocker。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 pair completion diagnostic、records、blocker records 和 report 只保留在 ignored runtime。
+- 未执行：raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+
+## 0.1.4-residual-difference-raw-to-processed-comparison-fingerprint-pair-completion-blocker-final-threshold-recheck-after-owner-anchor-confirmation - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_RAW_TO_PROCESSED_COMPARISON_FINGERPRINT_PAIR_COMPLETION_BLOCKER_FINAL_THRESHOLD_RECHECK_AFTER_OWNER_ANCHOR_CONFIRMATION` 本地单 phase。
+- 基于上一 phase 的 public-safe threshold artifacts 和 ignored private threshold records，生成 ignored private final threshold diagnostic、records、report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source_fingerprint_pair_completion_blocker_count=48、source_fingerprint_pair_completion_blocker_observation_count=2、source_fingerprint_pair_completion_blocked_audit_threshold_met=false、prior_fingerprint_pair_completion_blocker_observation_count=2、fingerprint_pair_completion_blocker_observation_count=3、fingerprint_pair_completion_blocked_audit_threshold_met=true、goal_status_recommendation=blocked、fingerprint_pair_completion_blocker_count=48、comparison_retry_ready_after_final_threshold_recheck_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check、formal report 或 release gate；下一步必须先解决或授权 48 个 raw candidate fingerprint blocker。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 final threshold diagnostic、records 和 report 只保留在 ignored runtime。
+- 未执行：raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+
+## 0.1.4-residual-difference-raw-candidate-fingerprint-resolution-attempt-after-final-threshold - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_FINGERPRINT_RESOLUTION_ATTEMPT_AFTER_FINAL_THRESHOLD` 本地单 phase。
+- 基于上一 phase public-safe final-threshold artifacts、ignored private final threshold records、ignored residual raw candidate alignment 和 ignored outside-scope alignment，生成 ignored private resolution diagnostic、records 和 report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source_fingerprint_pair_completion_blocker_count=48、source_fingerprint_pair_completion_blocker_observation_count=3、source_fingerprint_pair_completion_blocked_audit_threshold_met=true、resolution_attempt_item_count=48、auto_resolved_raw_candidate_fingerprint_count=0、still_blocked_raw_candidate_fingerprint_count=48、residual_anchor_candidate_available_for_blockers_count=0、outside_scope_candidate_available_for_blockers_count=0、comparison_retry_ready_after_resolution_attempt_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check、formal report 或 release gate；当前 private evidence 无法自动恢复 48 个 raw candidate fingerprint blocker。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 resolution diagnostic、records 和 report 只保留在 ignored runtime。
+- 未执行：raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+
+## 0.1.4-residual-difference-raw-candidate-fingerprint-evidence-refresh-after-final-threshold - 2026-07-07
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_RAW_CANDIDATE_FINGERPRINT_EVIDENCE_REFRESH_AFTER_FINAL_THRESHOLD` 本地单 phase。
+- 在用户只读授权范围内刷新 raw inbox numeric fingerprint evidence；公开证据只保留 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source_still_blocked_raw_candidate_fingerprint_count=48、refresh_item_count=48、raw_numeric_candidate_count=351453、raw_unique_numeric_fingerprint_count=22453、deterministic_raw_candidate_fingerprint_match_count=0、still_blocked_after_raw_refresh_count=48、comparison_retry_ready_after_raw_refresh_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check、formal report 或 release gate；当前 refreshed raw evidence 仍不能把 48 个 blocker 绑定到 authoritative fingerprint pair。
+- 本 phase 只读 raw inbox；私有 raw index、diagnostic、records 和 report 只保留在 ignored runtime；未写入、删除、移动、重命名、覆盖、复制、标准化或修改 raw inbox。
+- 未执行：raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-intake-after-raw-refresh - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_INTAKE_AFTER_RAW_REFRESH` 本地单 phase。
+- 基于上一 phase 的 public-safe raw-refresh evidence 和 ignored private refresh records，生成 ignored private authorized source reference / owner exclusion / formula mapping intake queue；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source_refresh_item_count=48、still_blocked_after_raw_refresh_count=48、intake_item_count=48、source_reference_or_owner_exclusion_intake_count=40、formula_or_non_numeric_mapping_intake_count=8、active_authoritative_decision_count=0、binding_ready_after_intake_count=0、comparison_retry_ready_after_intake_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 authoritative binding application、raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；下一步只能单独做 application readiness。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 intake active record、queue、diagnostic 和 report 只保留在 ignored runtime。
+- 未执行：raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-readiness-after-raw-refresh - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_READINESS_AFTER_RAW_REFRESH` 本地单 phase。
+- 基于上一 phase 的 public-safe intake evidence 和 ignored private intake queue，生成 ignored private application readiness diagnostic、ready queue、blocker queue 和 report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source_intake_item_count=48、application_readiness_item_count=48、application_ready_item_count=0、application_blocker_item_count=48、source_reference_or_owner_exclusion_application_blocker_count=40、formula_or_non_numeric_mapping_application_blocker_count=8、active_authoritative_decision_count=0、binding_ready_after_application_readiness_count=0、comparison_retry_ready_after_application_readiness_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 authoritative binding application、raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；下一步只能单独做 application blocker audit 或取得 owner-authorized source reference/exclusion/formula mapping 后再进入应用链路。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 readiness diagnostic、ready queue、blocker queue 和 report 只保留在 ignored runtime。
+- 未执行：raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-blocker-audit-after-raw-refresh - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_BLOCKER_AUDIT_AFTER_RAW_REFRESH` 本地单 phase。
+- 基于上一 phase 的 public-safe application readiness evidence 和 ignored private blocker queue，生成 ignored private application blocker audit diagnostic、records 和 report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source_application_readiness_item_count=48、source_application_ready_item_count=0、source_application_blocker_item_count=48、application_blocker_audit_item_count=48、application_blocker_audit_ready_item_count=0、source_reference_or_owner_exclusion_audit_blocker_count=40、formula_or_non_numeric_mapping_audit_blocker_count=8、binding_ready_after_application_blocker_audit_count=0、comparison_retry_ready_after_application_blocker_audit_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 authoritative binding application、raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；下一步只能单独做 blocker threshold recheck 或取得 owner-authorized source reference/exclusion/formula mapping 后再进入应用链路。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 application blocker audit diagnostic、records 和 report 只保留在 ignored runtime。
+- 未执行：authoritative binding、raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-blocker-final-threshold-recheck-after-raw-refresh - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_BLOCKER_FINAL_THRESHOLD_RECHECK_AFTER_RAW_REFRESH` 本地单 phase。
+- 基于上一 phase 的 public-safe application blocker threshold evidence 和 ignored private threshold records，生成 ignored private application blocker final threshold diagnostic、records 和 report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source_application_blocker_threshold_recheck_item_count=48、source_application_blocker_observation_count=2、source_application_blocked_audit_threshold_met=false、source_private_application_blocker_threshold_record_count=48、prior_application_blocker_observation_count=2、application_blocker_observation_count=3、application_blocked_audit_threshold_met=true、goal_status_recommendation=blocked、application_blocker_final_threshold_recheck_item_count=48、source_reference_or_owner_exclusion_final_threshold_blocker_count=40、formula_or_non_numeric_mapping_final_threshold_blocker_count=8、binding_ready_after_final_threshold_recheck_count=0、comparison_retry_ready_after_final_threshold_recheck_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 authoritative binding application、raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；当前 strict threshold 已命中，后续必须先由 owner 或授权代理实际应用 source reference、owner exclusion、formula mapping 或 non-numeric mapping。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 final threshold diagnostic、records 和 report 只保留在 ignored runtime。
+- 未执行：authoritative binding、raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-blocker-threshold-recheck-after-raw-refresh - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_BLOCKER_THRESHOLD_RECHECK_AFTER_RAW_REFRESH` 本地单 phase。
+- 基于上一 phase 的 public-safe application blocker audit evidence 和 ignored private audit records，生成 ignored private application blocker threshold diagnostic、records 和 report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source_application_blocker_audit_item_count=48、source_application_blocker_audit_ready_item_count=0、source_private_application_blocker_audit_record_count=48、prior_application_blocker_observation_count=1、application_blocker_observation_count=2、application_blocked_audit_threshold_met=false、application_blocker_threshold_recheck_item_count=48、source_reference_or_owner_exclusion_threshold_blocker_count=40、formula_or_non_numeric_mapping_threshold_blocker_count=8、binding_ready_after_threshold_recheck_count=0、comparison_retry_ready_after_threshold_recheck_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 authoritative binding application、raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；下一步只能单独做 application blocker final threshold recheck 或取得 owner-authorized source reference/exclusion/formula mapping 后再进入应用链路。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 threshold diagnostic、records 和 report 只保留在 ignored runtime。
+- 未执行：authoritative binding、raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-resolution-attempt-after-final-threshold - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_RESOLUTION_ATTEMPT_AFTER_FINAL_THRESHOLD` 本地单 phase。
+- 基于上一 phase 的 public-safe application blocker final-threshold evidence 和 ignored private final-threshold records，生成 ignored private authorized-resolution application diagnostic、records 和 report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source_application_blocker_final_threshold_recheck_item_count=48、source_application_blocker_observation_count=3、source_application_blocked_audit_threshold_met=true、source_private_application_blocker_final_threshold_record_count=48、resolution_attempt_item_count=48、active_authoritative_resolution_application_count=0、auto_applied_authorized_resolution_count=0、still_blocked_authorized_resolution_application_count=48、source_reference_or_owner_exclusion_application_blocker_count=40、formula_or_non_numeric_mapping_application_blocker_count=8、binding_ready_after_resolution_attempt_count=0、comparison_retry_ready_after_resolution_attempt_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 authoritative binding application、raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；当前 private evidence 没有可自动应用的授权 resolution。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 resolution diagnostic、records 和 report 只保留在 ignored runtime。
+- 未执行：authoritative binding、raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-blocked-handoff-after-resolution-attempt - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_BLOCKED_HANDOFF_AFTER_RESOLUTION_ATTEMPT` 本地单 phase。
+- 基于上一 phase 的 public-safe resolution-attempt evidence 和 ignored private resolution records，生成 ignored private blocked-handoff diagnostic、records 和 owner-action packet；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source_resolution_attempt_item_count=48、source_active_authoritative_resolution_application_count=0、source_auto_applied_authorized_resolution_count=0、source_still_blocked_authorized_resolution_application_count=48、blocked_handoff_item_count=48、owner_action_item_count=48、source_reference_or_owner_exclusion_handoff_item_count=40、formula_or_non_numeric_mapping_handoff_item_count=8、binding_ready_after_blocked_handoff_count=0、comparison_retry_ready_after_blocked_handoff_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 authoritative binding application、raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；本 phase 只生成安全 blocked handoff，等待 owner 或授权代理提供可应用的 source reference、owner exclusion、formula mapping 或 non-numeric mapping。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 blocked handoff diagnostic、records 和 packet 只保留在 ignored runtime。
+- 未执行：authoritative binding、raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-diagnostic-packet-after-blocked-handoff - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_DIAGNOSTIC_PACKET_AFTER_BLOCKED_HANDOFF` 本地单 phase。
+- 基于上一 phase 的 public-safe blocked-handoff evidence 和 ignored private blocked-handoff records，生成 ignored private diagnostic packet、queue 和 report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source_blocked_handoff_item_count=48、source_owner_action_item_count=48、diagnostic_packet_item_count=48、external_agent_private_packet_item_count=48、source_reference_or_owner_exclusion_diagnostic_item_count=40、formula_or_non_numeric_mapping_diagnostic_item_count=8、safe_auto_resolution_available_count=0、binding_ready_after_diagnostic_packet_count=0、comparison_retry_ready_after_diagnostic_packet_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 authoritative binding application、raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；本 phase 只生成安全诊断包，等待 owner 或授权代理提供可应用的 source reference、owner exclusion、formula mapping 或 non-numeric mapping。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 diagnostic packet、queue 和 report 只保留在 ignored runtime。
+- 未执行：authoritative binding、raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-diagnostic-intake-after-packet - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_DIAGNOSTIC_INTAKE_AFTER_PACKET` 本地单 phase。
+- 基于上一 phase 的 public-safe diagnostic packet evidence 和 ignored private diagnostic queue，生成 ignored private owner/agent response template、pending queue、diagnostic 和 report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source_diagnostic_packet_item_count=48、source_external_agent_private_packet_item_count=48、private_response_template_item_count=48、private_pending_queue_item_count=48、source_reference_or_owner_exclusion_response_template_count=40、formula_or_non_numeric_mapping_response_template_count=8、pending_diagnostic_response_count=48、valid_diagnostic_response_count=0、actionable_resolution_count=0、binding_ready_after_intake_count=0、comparison_retry_ready_after_intake_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 owner/agent response import、authoritative binding application、raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；本 phase 只生成响应模板和待响应队列。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 response template、pending queue、diagnostic 和 report 只保留在 ignored runtime。
+- 未执行：owner/agent valid response import、authoritative binding、raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-diagnostic-readiness-recheck-after-intake - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_DIAGNOSTIC_READINESS_RECHECK_AFTER_INTAKE` 本地单 phase。
+- 基于上一 phase 的 public-safe owner/agent diagnostic intake evidence 和 ignored private response template / pending queue，生成 ignored private readiness diagnostic、blocker queue 和 report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source_private_response_template_item_count=48、source_private_pending_queue_item_count=48、source_pending_diagnostic_response_count=48、source_valid_diagnostic_response_count=0、diagnostic_response_ready_count=0、diagnostic_response_blocker_count=48、source_reference_or_owner_exclusion_readiness_blocker_count=40、formula_or_non_numeric_mapping_readiness_blocker_count=8、binding_ready_after_readiness_recheck_count=0、comparison_retry_ready_after_readiness_recheck_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 owner/agent response import、authoritative binding application、raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；本 phase 只复核 48 个 pending response 是否具备后续导入/绑定条件。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 readiness diagnostic、blocker queue 和 report 只保留在 ignored runtime。
+- 未执行：owner/agent valid response import、authoritative binding、raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-diagnostic-blocker-audit-after-readiness-recheck - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_DIAGNOSTIC_BLOCKER_AUDIT_AFTER_READINESS_RECHECK` 本地单 phase。
+- 基于上一 phase 的 public-safe readiness evidence 和 ignored private readiness blocker queue，生成 ignored private blocker audit diagnostic、audit queue 和 report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：source_private_readiness_blocker_queue_item_count=48、prior_diagnostic_blocker_observation_count=1、diagnostic_blocker_observation_count=2、diagnostic_blocked_audit_threshold_met=false、diagnostic_response_ready_count=0、diagnostic_response_blocker_count=48、private_audit_queue_item_count=48、pending_diagnostic_response_count=48、valid_diagnostic_response_count=0、actionable_resolution_count=0、source_reference_or_owner_exclusion_blocker_count=40、formula_or_non_numeric_mapping_blocker_count=8、binding_ready_after_blocker_audit_count=0、comparison_retry_ready_after_blocker_audit_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO`。
+- 这不是 owner/agent response import、authoritative binding application、raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；本 phase 只记录第二次 blocker audit 观察，阈值尚未命中。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 blocker audit diagnostic、audit queue 和 report 只保留在 ignored runtime。
+- 未执行：owner/agent valid response import、authoritative binding、raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、GitHub upload、app reinstall、business execution。
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-diagnostic-blocker-threshold-recheck-after-readiness-recheck - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_DIAGNOSTIC_BLOCKER_THRESHOLD_RECHECK_AFTER_READINESS_RECHECK` 本地单 phase。
+- 基于上一 phase 的 public-safe blocker audit evidence 和 ignored private audit diagnostic/queue，生成 ignored private blocker threshold diagnostic、records 和 report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：`source_private_audit_queue_item_count=48`、`prior_diagnostic_blocker_observation_count=2`、`diagnostic_blocker_observation_count=3`、`diagnostic_blocked_audit_threshold_met=true`、`diagnostic_response_ready_count=0`、`diagnostic_response_blocker_count=48`、`private_threshold_records_item_count=48`、`pending_diagnostic_response_count=48`、`valid_diagnostic_response_count=0`、`actionable_resolution_count=0`、`source_reference_or_owner_exclusion_blocker_count=40`、`formula_or_non_numeric_mapping_blocker_count=8`、`binding_ready_after_blocker_threshold_recheck_count=0`、`comparison_retry_ready_after_blocker_threshold_recheck_count=0`、`unresolved_difference_count=72`、Go/No-Go=`NO_GO`。
+- 这不是 owner/agent response import、authoritative binding application、raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；本 phase 只记录第三次 blocker 观察并命中 blocked threshold，等待 owner 或授权代理提供有效诊断响应。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 threshold diagnostic、records 和 report 只保留在 ignored runtime。
+- 未执行：Stage review、GitHub upload、app reinstall、owner/agent valid response import、authoritative binding、raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、business execution。
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-import-after-blocker-threshold - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_IMPORT_AFTER_BLOCKER_THRESHOLD` 本地单 phase。
+- 基于用户授权 `user_2026-07-08_allow_generate`、上一 phase 的 public-safe blocker threshold evidence、ignored private response template 和 ignored private threshold records，生成 48 条 ignored private owner/agent diagnostic response；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：`source_template_item_count=48`、`source_threshold_record_count=48`、`generated_diagnostic_response_count=48`、`valid_diagnostic_response_count=48`、`pending_diagnostic_response_count=0`、`diagnostic_response_blocker_count=0`、`non_actionable_diagnostic_response_count=48`、`actionable_resolution_count=0`、`source_reference_or_owner_exclusion_response_count=40`、`formula_or_non_numeric_mapping_response_count=8`、`binding_ready_after_generated_response_import_count=0`、`comparison_retry_ready_after_generated_response_import_count=0`、`unresolved_difference_count=72`、Go/No-Go=`NO_GO`。
+- 这不是 authoritative binding application、raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；本 phase 只解除“缺少有效 owner/agent response”的 blocker，并把 48 条响应保留为非 actionable 诊断响应。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 generated response record/items/non-actionable queue/report 只保留在 ignored runtime。
+- 未执行：Stage review、GitHub upload、app reinstall、authoritative binding、raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、business execution。
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-actionability-blocker-audit - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_ACTIONABILITY_BLOCKER_AUDIT` 本地单 phase。
+- 基于上一 phase 的 public-safe actionability recheck evidence 和 ignored private actionability blocker queue，生成 ignored private blocker audit diagnostic、audit queue 和 report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：`source_actionability_recheck_item_count=48`、`source_actionability_ready_count=0`、`source_actionability_blocker_count=48`、`source_private_actionability_blocker_queue_item_count=48`、`prior_actionability_blocker_observation_count=0`、`actionability_blocker_observation_count=1`、`actionability_blocked_audit_threshold_met=false`、`actionability_ready_count=0`、`actionability_blocker_count=48`、`private_audit_queue_item_count=48`、`valid_diagnostic_response_count=48`、`actionable_resolution_count=0`、`source_reference_or_owner_exclusion_actionability_blocker_count=40`、`formula_or_non_numeric_mapping_actionability_blocker_count=8`、`binding_ready_after_actionability_blocker_audit_count=0`、`comparison_retry_ready_after_actionability_blocker_audit_count=0`、`unresolved_difference_count=72`、Go/No-Go=`NO_GO`。
+- 这不是 authoritative binding application、raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；本 phase 只记录第一次 actionability blocker audit observation，阈值尚未命中。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 audit diagnostic、queue 和 report 只保留在 ignored runtime。
+- 未执行：Stage review、GitHub upload、app reinstall、authoritative binding、raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、business execution。
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-actionability-blocker-threshold-recheck - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_ACTIONABILITY_BLOCKER_THRESHOLD_RECHECK` 本地单 phase。
+- 基于上一 phase 的 public-safe actionability blocker audit evidence 和 ignored private audit queue，生成 ignored private threshold diagnostic、records 和 report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：`source_actionability_blocker_audit_item_count=48`、`source_actionability_blocker_count=48`、`source_private_actionability_blocker_audit_queue_item_count=48`、`prior_actionability_blocker_observation_count=1`、`actionability_blocker_observation_count=2`、`actionability_blocked_audit_threshold_met=false`、`actionability_ready_count=0`、`actionability_blocker_count=48`、`private_threshold_records_item_count=48`、`valid_diagnostic_response_count=48`、`actionable_resolution_count=0`、`source_reference_or_owner_exclusion_actionability_blocker_count=40`、`formula_or_non_numeric_mapping_actionability_blocker_count=8`、`binding_ready_after_actionability_blocker_threshold_recheck_count=0`、`comparison_retry_ready_after_actionability_blocker_threshold_recheck_count=0`、`unresolved_difference_count=72`、Go/No-Go=`NO_GO`。
+- 这不是 authoritative binding application、raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；本 phase 只记录第二次 actionability blocker observation，阈值仍未命中。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 threshold diagnostic、records 和 report 只保留在 ignored runtime。
+- 未执行：Stage review、GitHub upload、app reinstall、authoritative binding、raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、business execution。
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-actionability-blocker-final-threshold-recheck - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_ACTIONABILITY_BLOCKER_FINAL_THRESHOLD_RECHECK` 本地单 phase。
+- 基于上一 phase 的 public-safe actionability blocker threshold recheck evidence 和 ignored private threshold records，生成 ignored private final-threshold diagnostic、records 和 report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：`source_actionability_blocker_threshold_recheck_item_count=48`、`source_actionability_blocker_count=48`、`source_private_actionability_threshold_records_item_count=48`、`prior_actionability_blocker_observation_count=2`、`actionability_blocker_observation_count=3`、`actionability_blocked_audit_threshold_met=true`、`goal_status_recommendation=blocked`、`actionability_ready_count=0`、`actionability_blocker_count=48`、`private_final_threshold_records_item_count=48`、`valid_diagnostic_response_count=48`、`actionable_resolution_count=0`、`source_reference_or_owner_exclusion_actionability_blocker_count=40`、`formula_or_non_numeric_mapping_actionability_blocker_count=8`、`binding_ready_after_actionability_blocker_final_threshold_recheck_count=0`、`comparison_retry_ready_after_actionability_blocker_final_threshold_recheck_count=0`、`unresolved_difference_count=72`、Go/No-Go=`NO_GO`。
+- 这不是 authoritative binding application、raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；本 phase 只记录第三次 actionability blocker observation 并命中 blocked threshold。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 final-threshold diagnostic、records 和 report 只保留在 ignored runtime。
+- 未执行：Stage review、GitHub upload、app reinstall、authoritative binding、raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、business execution。
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-generated-diagnostic-response-blocked-handoff-after-final-threshold - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_GENERATED_DIAGNOSTIC_RESPONSE_BLOCKED_HANDOFF_AFTER_FINAL_THRESHOLD` 本地单 phase。
+- 基于上一 phase 的 public-safe actionability blocker final threshold recheck 和 ignored private final-threshold records，生成 ignored private blocked-handoff diagnostic、records、owner-action queue 和 report；公开证据只保存 aggregate counts、gate flags、manifest、matrix 和 Go/No-Go。
+- 当前 aggregate 结果：`source_actionability_blocker_final_threshold_recheck_item_count=48`、`source_actionability_blocker_count=48`、`source_private_actionability_final_threshold_records_item_count=48`、`blocked_handoff_item_count=48`、`owner_action_item_count=48`、`goal_status_recommendation=blocked`、`actionability_blocked_audit_threshold_met=true`、`actionability_ready_count=0`、`actionability_blocker_count=48`、`valid_diagnostic_response_count=48`、`actionable_resolution_count=0`、`source_reference_or_owner_exclusion_owner_action_count=40`、`formula_or_non_numeric_mapping_owner_action_count=8`、`binding_ready_after_blocked_handoff_count=0`、`comparison_retry_ready_after_blocked_handoff_count=0`、`unresolved_difference_count=72`、Go/No-Go=`NO_GO`。
+- 这不是 owner/agent action completion、authoritative binding application、raw-to-processed value comparison、processed-data reconciliation、business value consistency、lineage full check 或 formal report；本 phase 只把 final-threshold blocker 转入 owner/授权代理 action handoff。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；私有 blocked-handoff records、owner-action queue 和 report 只保留在 ignored runtime。
+- 未执行：Stage review、GitHub upload、app reinstall、owner/agent action completion、authoritative binding、raw-to-processed value comparison、processed-data reconciliation、business consistency、lineage full check、formal report、business execution。
+
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-readiness-after-blocked-handoff - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_READINESS_AFTER_BLOCKED_HANDOFF` 本地单 phase。
+- 基于上一 phase 的 public-safe blocked handoff evidence 和 ignored private owner-action queue，生成 public-safe action readiness evidence 以及 ignored private blocker records / 中文问题清单。
+- 当前 aggregate 结果：`source_blocked_handoff_item_count=48`、`source_owner_action_item_count=48`、`owner_action_ready_count=0`、`owner_action_blocker_count=48`、`actionable_owner_resolution_count=0`、`source_reference_or_owner_exclusion_owner_action_blocker_count=40`、`formula_or_non_numeric_mapping_owner_action_blocker_count=8`、`binding_ready_after_owner_action_readiness_count=0`、`comparison_retry_ready_after_owner_action_readiness_count=0`、`unresolved_difference_count=72`、Go/No-Go=`NO_GO`。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；未执行 Stage review、GitHub upload、app reinstall、authoritative binding、raw-to-processed value comparison、business execution。
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-after-blocked-handoff - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_AFTER_BLOCKED_HANDOFF` 本地单 phase。
+- 基于上一 phase 的 public-safe action readiness evidence 和 ignored private action-readiness blocker records，生成 public-safe action intake evidence 以及 ignored private intake diagnostic / blocker records / report。
+- 当前 aggregate 结果：`source_owner_action_blocker_count=48`、`source_owner_action_ready_count=0`、`source_private_action_readiness_blocker_records_item_count=48`、`owner_action_intake_ready_count=0`、`owner_action_intake_blocker_count=48`、`actionable_owner_resolution_count=0`、`source_reference_or_owner_exclusion_intake_blocker_count=40`、`formula_or_non_numeric_mapping_intake_blocker_count=8`、`binding_ready_after_owner_action_intake_count=0`、`comparison_retry_ready_after_owner_action_intake_count=0`、`unresolved_difference_count=72`、Go/No-Go=`NO_GO`。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；未执行 Stage review、GitHub upload、app reinstall、authoritative binding、raw-to-processed value comparison、business execution。
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-blocker-audit-after-blocked-handoff - 2026-07-08
+
+- Completed `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_BLOCKER_AUDIT_AFTER_BLOCKED_HANDOFF` as a local-only NO_GO phase.
+- Added public-safe action-intake blocker audit summary, manifest, matrix, Go/No-Go record, validator and focused unit test.
+- Recorded first action-intake blocker observation: 48 blockers remain, 0 ready items, threshold not met, and all binding/comparison/upload/reinstall/business gates remain closed.
+- Raw inbox was not read or mutated; private audit diagnostic/queue/report stay in ignored runtime.
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-blocker-threshold-recheck-after-blocked-handoff - 2026-07-08
+
+- Completed `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_BLOCKER_THRESHOLD_RECHECK_AFTER_BLOCKED_HANDOFF` as a local-only NO_GO phase.
+- Added public-safe action-intake blocker threshold recheck summary, manifest, matrix, Go/No-Go record, validator and focused unit test.
+- Recorded second action-intake blocker observation: 48 blockers remain, 0 ready items, threshold not met, and all binding/comparison/upload/reinstall/business gates remain closed.
+- Raw inbox was not read or mutated; private threshold diagnostic/records/report stay in ignored runtime.
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-blocker-final-threshold-recheck-after-blocked-handoff - 2026-07-08
+
+- Completed `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_BLOCKER_FINAL_THRESHOLD_RECHECK_AFTER_BLOCKED_HANDOFF` as a local-only NO_GO phase.
+- Added public-safe action-intake blocker final threshold recheck summary, manifest, matrix, Go/No-Go record, validator and focused unit test.
+- Recorded third action-intake blocker observation: 48 blockers remain, 0 ready items, threshold is met, `goal_status_recommendation=blocked`, and all binding/comparison/upload/reinstall/business gates remain closed.
+- Raw inbox was not read or mutated; private final threshold diagnostic/records/report stay in ignored runtime.
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-blocker-blocked-handoff-after-final-threshold - 2026-07-08
+
+- Completed `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_AFTER_FINAL_THRESHOLD` as a local-only NO_GO / blocked phase.
+- Added public-safe action-intake blocker blocked handoff summary, manifest, matrix, Go/No-Go record, validator and focused unit test.
+- Converted 48 final-threshold action-intake blockers into 48 blocked handoff items and 48 owner-action queue items; all binding/comparison/upload/reinstall/business gates remain closed.
+- Raw inbox was not read or mutated; private blocked handoff diagnostic/records/owner-action queue/report stay in ignored runtime.
+
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-action-intake-blocker-blocked-handoff-external-action-readiness-after-final-threshold - 2026-07-08
+
+- Completed `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_EXTERNAL_ACTION_READINESS_AFTER_FINAL_THRESHOLD` as a local-only NO_GO / blocked phase.
+- Added public-safe action-intake blocker blocked handoff external action readiness summary, manifest, matrix, Go/No-Go record, validator and focused unit test.
+- Checked 48 owner-action queue items: `external_owner_action_ready_count=0`, `external_owner_action_blocker_count=48`, source reference/owner exclusion blockers=`40`, formula/non-numeric mapping blockers=`8`.
+- Raw inbox was not read or mutated; private external action readiness diagnostic/blocker records/question list stay in ignored runtime.
+- No Stage review, GitHub upload, app reinstall, authoritative binding, raw-to-processed value comparison or business execution was performed.
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-after-external-action-readiness - 2026-07-08
+
+- Completed `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_BLOCKED_HANDOFF_AFTER_EXTERNAL_ACTION_READINESS` as a local-only NO_GO / blocked phase.
+- Added public-safe external action blocked handoff summary, manifest, matrix, Go/No-Go record, validator and focused unit test.
+- Converted 48 external-action readiness blockers into 48 blocked handoff items and 48 owner-action reminder items; all binding/comparison/upload/reinstall/business gates remain closed.
+- Raw inbox was not read or mutated; private external action blocked-handoff diagnostic/records/reminder queue/report stay in ignored runtime.
+- No Stage review, GitHub upload, app reinstall, authoritative binding, raw-to-processed value comparison or business execution was performed.
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-final-threshold-recheck-after-reminder - 2026-07-08
+
+- Completed `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_BLOCKED_HANDOFF_FINAL_THRESHOLD_RECHECK_AFTER_REMINDER` as a local-only NO_GO / blocked final-threshold phase.
+- Added public-safe external action final threshold summary, manifest, matrix, Go/No-Go record, validator and focused unit test.
+- Recorded third external-action blocker observation after reminder: 48 blockers remain, 0 ready items, threshold is met, `goal_status_recommendation=blocked`, and all binding/comparison/upload/reinstall/business gates remain closed.
+- Raw inbox was not read or mutated; private external action final-threshold diagnostic/records/report stay in ignored runtime.
+- No Stage review, GitHub upload, app reinstall, authoritative binding, raw-to-processed value comparison or business execution was performed.
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-final-threshold-blocked-handoff-after-reminder - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_FINAL_THRESHOLD_BLOCKED_HANDOFF_AFTER_REMINDER` 本地单 phase。
+- 基于上一 phase 的 public-safe external action final-threshold evidence 和 ignored private final-threshold records，生成 public-safe blocked handoff evidence 以及 ignored private blocked-handoff records / owner-action queue / report。
+- 当前 aggregate 结果：`source_external_action_final_threshold_item_count=48`、`source_private_external_action_final_threshold_records_item_count=48`、`external_action_blocked_handoff_item_count=48`、`owner_action_packet_item_count=48`、`owner_action_required_count=48`、`external_owner_action_ready_count=0`、`external_owner_action_blocker_count=48`、`source_reference_or_owner_exclusion_owner_action_count=40`、`formula_or_non_numeric_mapping_owner_action_count=8`、`binding_ready_after_final_threshold_blocked_handoff_count=0`、`comparison_retry_ready_after_final_threshold_blocked_handoff_count=0`、`unresolved_difference_count=72`、Go/No-Go=`NO_GO`。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；未执行 Stage review、GitHub upload、app reinstall、authoritative binding、raw-to-processed value comparison、business execution。
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-final-threshold-blocked-handoff-action-readiness-after-final-threshold-handoff - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_FINAL_THRESHOLD_BLOCKED_HANDOFF_ACTION_READINESS_AFTER_FINAL_THRESHOLD_HANDOFF` 本地单 phase。
+- 基于上一 phase 的 public-safe final-threshold blocked handoff evidence 和 ignored private owner-action queue，只检查 owner/授权代理 external action readiness。
+- 当前 aggregate 结果：`source_external_action_final_threshold_blocked_handoff_item_count=48`、`source_owner_action_packet_item_count=48`、`source_owner_action_required_count=48`、`source_private_owner_action_queue_item_count=48`、`external_owner_action_ready_count=0`、`external_owner_action_blocker_count=48`、`actionable_owner_resolution_count=0`、`source_reference_or_owner_exclusion_external_action_blocker_count=40`、`formula_or_non_numeric_mapping_external_action_blocker_count=8`、`binding_ready_after_external_action_readiness_count=0`、`comparison_retry_ready_after_external_action_readiness_count=0`、`unresolved_difference_count=72`、Go/No-Go=`NO_GO`。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；未执行 Stage review、GitHub upload、app reinstall、authoritative binding、raw-to-processed value comparison、business execution。
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-readiness-final-blocked-handoff-follow-up-after-final-threshold-handoff - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_READINESS_FINAL_BLOCKED_HANDOFF_FOLLOW_UP_AFTER_FINAL_THRESHOLD_HANDOFF` 本地单 phase。
+- 基于上一 phase 的 public-safe external action readiness evidence 和 ignored private readiness blocker records，生成 public-safe follow-up evidence 以及 ignored private follow-up diagnostic / queue / report。
+- 当前 aggregate 结果：`source_external_owner_action_ready_count=0`、`source_external_owner_action_blocker_count=48`、`source_private_external_action_readiness_blocker_records_item_count=48`、`external_action_follow_up_ready_count=0`、`external_action_follow_up_blocker_count=48`、`external_action_follow_up_required_count=48`、`actionable_owner_resolution_count=0`、`source_reference_or_owner_exclusion_follow_up_count=40`、`formula_or_non_numeric_mapping_follow_up_count=8`、`binding_ready_after_external_action_follow_up_count=0`、`comparison_retry_ready_after_external_action_follow_up_count=0`、`unresolved_difference_count=72`、Go/No-Go=`NO_GO`。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；未执行 Stage review、GitHub upload、app reinstall、authoritative binding、raw-to-processed value comparison、business execution。
+
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-authoritative-binding - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_AUTHORITATIVE_BINDING` 本地单 phase。
+- 基于上一 phase 的 public-safe external action follow-up evidence 和 ignored private follow-up queue，生成 public-safe authoritative-binding requirement evidence 以及 ignored private requirement diagnostic / queue / report。
+- 当前 aggregate 结果：`source_external_action_follow_up_ready_count=0`、`source_external_action_follow_up_blocker_count=48`、`source_external_action_follow_up_required_count=48`、`source_private_external_action_follow_up_queue_item_count=48`、`authoritative_binding_requirement_ready_count=0`、`authoritative_binding_requirement_blocker_count=48`、`authoritative_binding_requirement_required_count=48`、`actionable_owner_resolution_count=0`、`source_reference_or_owner_exclusion_binding_requirement_count=40`、`formula_or_non_numeric_mapping_binding_requirement_count=8`、`authoritative_binding_application_ready_count=0`、`unresolved_difference_count=72`、Go/No-Go=`NO_GO`。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；未执行 Stage review、GitHub upload、app reinstall、authoritative binding、raw-to-processed value comparison、business execution。
+
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-raw-to-processed-value-comparison - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_RAW_TO_PROCESSED_VALUE_COMPARISON` 本地单 phase。
+- 基于上一 phase 的 public-safe authoritative-binding requirement evidence 和 ignored private requirement queue，生成 public-safe raw-to-processed value comparison requirement evidence 以及 ignored private requirement diagnostic / queue / report。
+- 当前 aggregate 结果：`source_authoritative_binding_requirement_ready_count=0`、`source_authoritative_binding_requirement_blocker_count=48`、`source_authoritative_binding_requirement_required_count=48`、`source_private_authoritative_binding_requirement_queue_item_count=48`、`raw_to_processed_value_comparison_requirement_ready_count=0`、`raw_to_processed_value_comparison_requirement_blocker_count=48`、`raw_to_processed_value_comparison_requirement_required_count=48`、`actionable_owner_resolution_count=0`、`source_reference_or_owner_exclusion_comparison_requirement_count=40`、`formula_or_non_numeric_mapping_comparison_requirement_count=8`、`raw_to_processed_value_comparison_ready_count=0`、`unresolved_difference_count=72`、Go/No-Go=`NO_GO`。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；未执行 Stage review、GitHub upload、app reinstall、authoritative binding、raw-to-processed value comparison、business execution。
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-processed-data-reconciliation - 2026-07-08
+
+- 完成 `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_PROCESSED_DATA_RECONCILIATION` 本地单 phase。
+- 基于上一 phase 的 public-safe raw-to-processed value comparison requirement evidence 和 ignored private requirement queue，生成 public-safe processed-data reconciliation requirement evidence 以及 ignored private requirement diagnostic / queue / report。
+- 当前 aggregate 结果：`source_raw_to_processed_value_comparison_requirement_ready_count=0、source_raw_to_processed_value_comparison_requirement_blocker_count=48、source_raw_to_processed_value_comparison_requirement_required_count=48、source_private_raw_to_processed_value_comparison_requirement_queue_item_count=48、processed_data_reconciliation_requirement_ready_count=0、processed_data_reconciliation_requirement_blocker_count=48、processed_data_reconciliation_requirement_required_count=48、actionable_owner_resolution_count=0、source_reference_or_owner_exclusion_reconciliation_requirement_count=40、formula_or_non_numeric_mapping_reconciliation_requirement_count=8、authoritative_binding_application_ready_count=0、raw_to_processed_value_comparison_ready_count=0、processed_data_reconciliation_ready_count=0、unresolved_difference_count=72、Go/No-Go=`NO_GO``。
+- 本 phase 未读取、列出、stat、fingerprint、解析、写入、删除、移动、重命名、覆盖、复制或标准化 raw inbox；未执行 Stage review、GitHub upload、app reinstall、authoritative binding、raw-to-processed value comparison、processed-data reconciliation 或 business execution。
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-business-value-consistency - 2026-07-08
+
+- Completed `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_BUSINESS_VALUE_CONSISTENCY` as a local-only NO_GO / blocked phase.
+- Added public-safe business-value consistency requirement summary, manifest, matrix, Go/No-Go record, validator and focused unit test.
+- Converted 48 processed-data reconciliation requirement blockers into 48 private business-value consistency requirement items; all business consistency, lineage, report, upload, reinstall and execution gates remain closed.
+- Raw inbox was not read or mutated; private business-value consistency diagnostic/queue/report stay in ignored runtime.
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-lineage-full-check - 2026-07-08
+
+- Completed `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_LINEAGE_FULL_CHECK` as a local-only NO_GO / blocked phase.
+- Added public-safe lineage full check requirement summary, manifest, matrix, Go/No-Go record, validator and focused unit test.
+- Converted 48 business-value consistency requirement blockers into 48 private lineage full check requirement items; all lineage, report, upload, reinstall and execution gates remain closed.
+- Raw inbox was not read or mutated; private lineage full check diagnostic/queue/report stay in ignored runtime.
+
+
+## 0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-formal-report - 2026-07-08
+
+- Completed `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_FORMAL_REPORT` as a local-only NO_GO / blocked phase.
+- Added public-safe formal report requirement summary, manifest, matrix, Go/No-Go record, validator and focused unit test.
+- Converted 48 lineage full check requirement blockers into 48 private formal report requirement items; all formal report, upload, reinstall and execution gates remain closed.
+- Raw inbox was not read or mutated; private formal report diagnostic/queue/report stay in ignored runtime.
+
+## 2026-07-08 - v0.1.4 GitHub upload 前置 owner/授权代理动作锁定
+
+- Version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-github-upload`
+- Added `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_GITHUB_UPLOAD` public-safe evidence, validator and focused test.
+- Kept decision `NO_GO`; GitHub upload, app reinstall and business execution remain blocked.
+- Raw inbox was not read or modified; private requirement queue remains ignored.
+
+## 2026-07-08 - v0.1.4 app reinstall 前置 owner/授权代理动作锁定
+
+- Version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-app-reinstall`
+- Added `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_APP_REINSTALL` public-safe evidence, validator and focused test.
+- Kept decision `NO_GO`; GitHub upload, app reinstall and business execution remain blocked.
+- Raw inbox was not read or modified; private app reinstall requirement queue remains ignored.
+
+## 2026-07-08｜v0.1.4 owner/authorized agent external action required before business execution
+
+- Version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-required-before-business-execution`
+- Decision: `NO_GO`; 48 business execution precondition blockers remain; business execution is not allowed or performed.
+- Source: public-safe app reinstall requirement evidence plus ignored private app reinstall requirement queue only.
+- Evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_REQUIRED_BEFORE_BUSINESS_EXECUTION/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_execution_manifest.json`
+- Validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_execution.py --require-private-business-execution-requirement`
+- Focused test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_external_action_required_before_business_execution`
+
+## 2026-07-08｜v0.1.4 owner/authorized agent actionable resolution required before business execution
+
+- Version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-actionable-resolution-required-before-business-execution`
+- Decision: `NO_GO`; 48 actionable resolution blockers remain; business execution is not allowed or performed.
+- Source: public-safe business execution requirement evidence plus ignored private business execution requirement queue only.
+- Evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTIONABLE_RESOLUTION_REQUIRED_BEFORE_BUSINESS_EXECUTION/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_required_before_business_execution_manifest.json`
+- Validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_required_before_business_execution.py --require-private-actionable-resolution-requirement`
+- Focused test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_required_before_business_execution`
+
+## 2026-07-08｜v0.1.4 owner/authorized agent actionable resolution blocker audit before business execution
+
+- Version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-actionable-resolution-blocker-audit-before-business-execution`
+- Decision: `NO_GO`; 48 actionable resolution blocker audit items remain; business execution is not allowed or performed.
+- Source: public-safe actionable resolution requirement evidence plus ignored private actionable resolution requirement queue only.
+- Evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTIONABLE_RESOLUTION_BLOCKER_AUDIT_BEFORE_BUSINESS_EXECUTION/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_blocker_audit_before_business_execution_manifest.json`
+- Validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_blocker_audit_before_business_execution.py --require-private-actionable-resolution-blocker-audit`
+- Focused test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_blocker_audit_before_business_execution`
+
+## 2026-07-08｜v0.1.4 owner/authorized agent actionable resolution final blocker recheck before business execution
+
+- Version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-actionable-resolution-final-blocker-recheck-before-business-execution`
+- Decision: `NO_GO`; 48 actionable resolution final blocker recheck items remain; business execution is not allowed or performed.
+- Source: public-safe actionable resolution blocker audit evidence plus ignored private blocker audit queue only.
+- Evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_ACTIONABLE_RESOLUTION_FINAL_BLOCKER_RECHECK_BEFORE_BUSINESS_EXECUTION/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_final_blocker_recheck_before_business_execution_manifest.json`
+- Validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_final_blocker_recheck_before_business_execution.py --require-private-actionable-resolution-final-blocker-recheck`
+- Focused test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_actionable_resolution_final_blocker_recheck_before_business_execution`
+
+
+## 2026-07-08｜v0.1.4 owner/authorized agent business execution readiness gate after actionable resolution final blocker recheck
+
+- Version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-readiness-gate-after-actionable-resolution-final-blocker-recheck`
+- Decision: `NO_GO`; 48 business execution readiness gate blockers remain; business execution is not allowed or performed.
+- Source: public-safe actionable resolution final blocker recheck evidence plus ignored private final recheck queue only.
+- Evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_READINESS_GATE_AFTER_ACTIONABLE_RESOLUTION_FINAL_BLOCKER_RECHECK/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_readiness_gate_after_actionable_resolution_final_blocker_recheck_manifest.json`
+- Validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_readiness_gate_after_actionable_resolution_final_blocker_recheck.py --require-private-business-execution-readiness-gate`
+- Focused test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_readiness_gate_after_actionable_resolution_final_blocker_recheck`
+- downstream: GitHub upload, app reinstall and business execution remain closed.
+## 2026-07-08 - v0.1.4 business execution final readiness recheck after readiness gate
+
+- Version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-final-readiness-recheck-after-readiness-gate`
+- Phase: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_FINAL_READINESS_RECHECK_AFTER_READINESS_GATE`
+- Decision: `NO_GO`; 48 final readiness blockers remain, 0 business execution ready, 72 unresolved differences.
+- Evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_FINAL_READINESS_RECHECK_AFTER_READINESS_GATE/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_final_readiness_recheck_after_readiness_gate_manifest.json`
+- Validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_final_readiness_recheck_after_readiness_gate.py --require-private-business-execution-final-readiness-recheck`
+- Focused test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_final_readiness_recheck_after_readiness_gate`
+- Boundary: no raw inbox read/list/stat/fingerprint/parse/value extraction/mutation; no GitHub upload, app reinstall or business execution.
+## 2026-07-08 - v0.1.4 business execution blocked handoff after final readiness recheck
+
+- Version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-blocked-handoff-after-final-readiness-recheck`
+- Phase: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_HANDOFF_AFTER_FINAL_READINESS_RECHECK`
+- Decision: `NO_GO`; 48 blocked handoff blockers remain, 0 business execution ready, 72 unresolved differences.
+- Evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_HANDOFF_AFTER_FINAL_READINESS_RECHECK/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_handoff_after_final_readiness_recheck_manifest.json`
+- Validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_handoff_after_final_readiness_recheck.py --require-private-business-execution-blocked-handoff`
+- Focused test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_handoff_after_final_readiness_recheck`
+- Boundary: no raw inbox read/list/stat/fingerprint/parse/value extraction/mutation; no GitHub upload, app reinstall or business execution.
+
+## 2026-07-08 - v0.1.4 business execution blocked follow-up after blocked handoff
+
+- Version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-blocked-follow-up-after-blocked-handoff`
+- Phase: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_AFTER_BLOCKED_HANDOFF`
+- Decision: `NO_GO`; 48 blocked follow-up blockers remain, 0 business execution ready, 72 unresolved differences.
+- Evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_AFTER_BLOCKED_HANDOFF/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_after_blocked_handoff_manifest.json`
+- Validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_after_blocked_handoff.py --require-private-business-execution-blocked-follow-up`
+- Focused test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_after_blocked_handoff`
+- Boundary: no raw inbox read/list/stat/fingerprint/parse/value extraction/mutation; no GitHub upload, app reinstall or business execution.
+
+## 2026-07-08 - v0.1.4 business execution blocked follow-up continuation
+
+- Version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-blocked-follow-up-continuation`
+- Phase: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION`
+- Decision: `NO_GO`; 48 continuation blockers remain, 0 business execution ready, 72 unresolved differences.
+- Evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_manifest.json`
+- Validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation.py --require-private-business-execution-blocked-follow-up-continuation`
+- Focused test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation`
+- Boundary: no raw inbox read/list/stat/fingerprint/parse/value extraction/mutation; no GitHub upload, app reinstall or business execution.
+
+
+## 2026-07-08 - v0.1.4 business execution blocked follow-up continuation recheck
+
+- Version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-blocked-follow-up-continuation-recheck`
+- Phase: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK`
+- Decision: `NO_GO`; 48 continuation recheck blockers remain, 0 business execution ready, 72 unresolved differences.
+- Evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_manifest.json`
+- Validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck.py --require-private-business-execution-blocked-follow-up-continuation-recheck`
+- Focused test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck`
+- Boundary: no raw inbox read/list/stat/fingerprint/parse/value extraction/mutation; no GitHub upload, app reinstall or business execution.
+
+
+## KMFA v0.1.4 - business execution blocked follow-up continuation recheck follow-up
+- Version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-blocked-follow-up-continuation-recheck-follow-up`
+- Phase: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK_FOLLOW_UP`
+- Status: `completed_validated_local_only_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_no_go_blocked`
+- Evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK_FOLLOW_UP/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_manifest.json`
+- Validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up.py --require-private-business-execution-blocked-follow-up-continuation-recheck-follow-up`
+- Focused test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up`
+- Decision: `NO_GO`; 48 blockers remain, business execution ready count is `0`, unresolved difference count remains `72`.
+- Raw inbox, GitHub upload, app reinstall and business execution were not performed.
+
+
+## 2026-07-08｜v0.1.4 owner/authorized agent business execution blocked follow-up continuation recheck follow-up final check
+
+- Version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-blocked-follow-up-continuation-recheck-follow-up-final-check`
+- Decision: `NO_GO`; 48 final-check blockers remain, 0 business execution ready, 72 unresolved differences.
+- Source: public-safe business execution blocked follow-up continuation recheck follow-up evidence plus ignored private follow-up queue only.
+- Evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK_FOLLOW_UP_FINAL_CHECK/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_final_check_manifest.json`
+- Validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_final_check.py --require-private-business-execution-blocked-follow-up-continuation-recheck-follow-up-final-check`
+- Focused test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_final_check`
+- Boundary: no raw inbox read/list/stat/fingerprint/parse/value extraction/mutation; no GitHub upload, app reinstall or business execution.
+
+
+## 2026-07-08｜v0.1.4 owner/authorized agent business execution blocked follow-up continuation recheck follow-up final check closure
+
+- Version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-business-execution-blocked-follow-up-continuation-recheck-follow-up-final-check-closure`
+- Phase: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK_FOLLOW_UP_FINAL_CHECK_CLOSURE`
+- Decision: `NO_GO`; 48 closure blockers remain, 0 business execution ready, 72 unresolved differences.
+- Source: public-safe business execution blocked follow-up continuation recheck follow-up final-check evidence plus ignored private final-check queue only.
+- Evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_BUSINESS_EXECUTION_BLOCKED_FOLLOW_UP_CONTINUATION_RECHECK_FOLLOW_UP_FINAL_CHECK_CLOSURE/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_final_check_closure_manifest.json`
+- Validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_final_check_closure.py --require-private-business-execution-blocked-follow-up-continuation-recheck-follow-up-final-check-closure`
+- Focused test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_business_execution_blocked_follow_up_continuation_recheck_follow_up_final_check_closure`
+- Boundary: no raw inbox read/list/stat/fingerprint/parse/value extraction/mutation; no GitHub upload, app reinstall or business execution.
+
+
+## 2026-07-08｜v0.1.4 owner/authorized agent resolution intake after final-check closure
+
+- Version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-after-final-check-closure`
+- Phase: `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_AFTER_FINAL_CHECK_CLOSURE`
+- Decision: `NO_GO`; 48 intake blockers remain, 0 owner/authorized-agent resolutions completed, 72 unresolved differences.
+- Source: public-safe final-check closure evidence plus ignored private closure queue only.
+- Evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_AFTER_FINAL_CHECK_CLOSURE/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_after_final_check_closure_manifest.json`
+- Validator: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_after_final_check_closure.py --require-private-owner-or-authorized-agent-resolution-intake`
+- Focused test: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v014_residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_after_final_check_closure`
+- Boundary: no raw inbox read/list/stat/fingerprint/parse/value extraction/mutation; no GitHub upload, app reinstall or business execution.
+
+
+## 2026-07-08 - v0.1.4 resolution intake blocker audit after final-check closure
+
+- Added `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_AUDIT_AFTER_FINAL_CHECK_CLOSURE` local-only NO_GO phase.
+- Recorded first owner/authorized-agent resolution-intake blocker audit observation: 48 blockers, 0 completed resolutions, 72 unresolved differences.
+- Raw inbox was not read or mutated; GitHub upload, app reinstall and business execution remain deferred.
+- Evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_AUDIT_AFTER_FINAL_CHECK_CLOSURE/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_audit_after_final_check_closure_manifest.json`.
+
+- product_version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-audit-after-final-check-closure`
+
+
+## 2026-07-10 - v0.1.4 resolution intake blocker recheck after final-check closure
+
+- Added `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_RECHECK_AFTER_FINAL_CHECK_CLOSURE` local-only `NO_GO` phase.
+- Recorded the second owner/authorized-agent resolution-intake blocker observation: 48 blockers, 0 completed resolutions, 72 unresolved differences; the three-observation threshold is not yet met.
+- Raw inbox was not read or mutated; Stage review, GitHub upload, app reinstall and business execution remain deferred.
+- Evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_RECHECK_AFTER_FINAL_CHECK_CLOSURE/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_recheck_after_final_check_closure_manifest.json`.
+- product_version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-recheck-after-final-check-closure`
+
+
+## 2026-07-10 - v0.1.4 resolution-intake blocker final recheck after final-check closure
+
+- Added `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_FINAL_RECHECK_AFTER_FINAL_CHECK_CLOSURE` local-only `NO_GO` phase.
+- Recorded the third blocker observation: 48 blockers, 0 completed resolutions, 72 unresolved differences; blocked threshold is now met and goal recommendation remains `blocked`.
+- Raw inbox was not read or mutated; Stage review, GitHub upload, app reinstall and business execution remain deferred.
+- Evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_FINAL_RECHECK_AFTER_FINAL_CHECK_CLOSURE/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_final_recheck_after_final_check_closure_manifest.json`.
+- product_version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-final-recheck-after-final-check-closure`
+
+
+## 2026-07-10 - v0.1.4 resolution-intake blocker blocked handoff after final recheck
+
+- Added `V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_AFTER_FINAL_RECHECK` local-only `NO_GO` phase.
+- Converted the third final-recheck observation into 48 blocked-handoff records and 48 owner-resolution queue items; 72 differences remain unresolved and no resolution was completed.
+- Raw inbox was not read or mutated; Stage review, GitHub upload, app reinstall and business execution remain deferred.
+- Evidence: `KMFA/stage_artifacts/V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_RESOLUTION_INTAKE_BLOCKER_BLOCKED_HANDOFF_AFTER_FINAL_RECHECK/machine/residual_difference_authorized_source_reference_or_exclusion_application_owner_or_agent_resolution_intake_blocker_blocked_handoff_after_final_recheck_manifest.json`.
+- product_version: `0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-resolution-intake-blocker-blocked-handoff-after-final-recheck`
+## 0.1.4-s11-post-remediation-stage-review - 2026-07-11
+
+- 完成 `V014_S11_POST_REMEDIATION_STAGE_REVIEW` 本地整体复审：S11-P1/P2/P3 当前 strict validators 和 focused tests 复验通过，7 个 findings 全部修复，open=0。
+- 修复 S11-P1/P2 validators 对全局最新 `VERSION/VERSION_MATRIX/HANDOFF` 的时态耦合，新增 frozen phase regression；P3 既有 frozen semantics 继续通过。
+- 修复三页当前导航：P1→P2/P3、P2→P1/P3、P3→P1/P2 共 6 条边；desktop/mobile 6 个视口、6 次 HTTP 和 6 次真实跨页导航通过。
+- 修复首页移动视口隐藏侧栏后 `NO_GO` 不可见；顶部报告状态现始终显示 `D级（未放行） · NO_GO`。
+- 修复检查板移动端 icon-only 跨页按钮缺少可访问名称；补充中文 `aria-label` 与 `title`。
+- 项目级差异继续保持 `0 attributed / 4 unknown/null`，全局状态维持 `3/9/2/1`，等级与决策维持 `Q4 / D / NO_GO`。
+- 5 个 raw 文件在 review 前后、跨 S11-P3 和当前复核均一致；未执行 S12-P1、GitHub upload、app reinstall、正式报告或 business execution。
+## 0.1.4-s16-post-remediation-stage-review - 2026-07-12
+
+- 完成 `V014_S16_POST_REMEDIATION_STAGE_REVIEW` 本地整体复审：当前 S16-P1/P2/P3 focused tests `32/32 PASS`，strict validators `3/3 PASS`，`9 fixed / 0 open`。
+- 隔离旧 Stage 16 review 的 5 个项目匹配、4 条生命周期记录和 4 个客户摘要；当前项目匹配、生命周期记录、客户摘要、风险事项、自动排名和公开业务值均为 0。
+- 修复 P1 缺 P2/P3 入口、P2 缺 P3 入口、P3 缺 P1 入口及三页过期 footer；三页形成 6 条强连通有向边。
+- v1.4 baseline `54/54 PASS`，当前页面 `15/15 + 15/15 + 13/13 PASS`；6 视口、6 次代表性交互、6 条 HTTP 与 6 次真实导航通过，console error 与横向溢出为 0。
+- raw review 前后、跨 S16-P3 与当前快照一致；保持 Q4 / D / NO_GO / 3-9-2-1，未执行 S17、客户或现场动作、GitHub upload、app reinstall、正式报告、差异关闭、持久业务写入或 business execution。

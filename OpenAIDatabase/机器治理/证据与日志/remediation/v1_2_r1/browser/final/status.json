@@ -1,0 +1,579 @@
+{
+  "status": "PASS",
+  "gate": "memory_atlas_v1_2_home_multiviewport",
+  "targetUrl": "http://127.0.0.1:4178",
+  "outputDir": "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject/OpenAIDatabase/apps/memory-atlas/../../机器治理/证据与日志/remediation/v1_2_r1/browser/final",
+  "viewports": [
+    {
+      "name": "desktop-low-height",
+      "width": 1470,
+      "height": 661
+    },
+    {
+      "name": "desktop-standard",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "checks": [
+    "five workspace sections have no pairwise overlap",
+    "document and workspace sections have no horizontal overflow",
+    "workspace and sections remain inside the visible viewport",
+    "command palette top, detail, and final safety content are scroll-reachable",
+    "home overview first and final sections are scroll-reachable",
+    "home direct sections and key nested containers have no horizontal clipping",
+    "S06 behavior summaries are Chinese-readable and scroll-reachable",
+    "screenshots are nonblank",
+    "preview server is released after validation"
+  ],
+  "results": [
+    {
+      "status": "PASS",
+      "viewport": {
+        "name": "desktop-low-height",
+        "width": 1470,
+        "height": 661
+      },
+      "layout": {
+        "document": {
+          "clientHeight": 661,
+          "clientWidth": 1470,
+          "scrollHeight": 661,
+          "scrollWidth": 1470
+        },
+        "sections": {
+          "topbar": {
+            "x": 262,
+            "y": 14,
+            "top": 14,
+            "right": 1456,
+            "bottom": 70,
+            "left": 262,
+            "width": 1194,
+            "height": 56
+          },
+          "controls": {
+            "x": 262,
+            "y": 78,
+            "top": 78,
+            "right": 1456,
+            "bottom": 114,
+            "left": 262,
+            "width": 1194,
+            "height": 36
+          },
+          "interactionLens": {
+            "x": 262,
+            "y": 122,
+            "top": 122,
+            "right": 1456,
+            "bottom": 167,
+            "left": 262,
+            "width": 1194,
+            "height": 45
+          },
+          "commandPalette": {
+            "x": 262,
+            "y": 175,
+            "top": 175,
+            "right": 1456,
+            "bottom": 346.9,
+            "left": 262,
+            "width": 1194,
+            "height": 171.9
+          },
+          "contentGrid": {
+            "x": 262,
+            "y": 354.9,
+            "top": 354.9,
+            "right": 1456,
+            "bottom": 647,
+            "left": 262,
+            "width": 1194,
+            "height": 292.1
+          }
+        },
+        "workspace": {
+          "x": 248,
+          "y": 0,
+          "top": 0,
+          "right": 1470,
+          "bottom": 661,
+          "left": 248,
+          "width": 1222,
+          "height": 661
+        }
+      },
+      "palette": {
+        "bottomVisible": true,
+        "clientHeight": 170,
+        "detailVisible": true,
+        "maxScroll": 204,
+        "movedToBottom": 204,
+        "overflowY": "auto",
+        "scrollHeight": 374,
+        "topVisible": true
+      },
+      "criticalContent": {
+        "bottomVisible": true,
+        "clientHeight": 290,
+        "contentGridHeight": 292.140625,
+        "homeContainedBySurface": true,
+        "maxScroll": 4956,
+        "movedToBottom": 4956,
+        "movedToLastSection": 4524,
+        "overflowY": "auto",
+        "scrollHeight": 5246,
+        "surfaceContainedByGrid": true,
+        "surfaceHeight": 292.140625,
+        "topVisible": true
+      },
+      "nestedHomeContent": {
+        "inspectedChildren": 70,
+        "inspectedTargets": 27,
+        "issueCount": 0,
+        "issues": []
+      },
+      "behaviorSummaries": {
+        "cardCount": 3,
+        "cardSummaryCounts": [
+          3,
+          3,
+          3
+        ],
+        "chineseSummaryCount": 9,
+        "reachableSummaryCount": 9,
+        "summaries": [
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "该层级簇把 77 个主题簇汇总到「chatgpt / 未标注项目 / 未标注任务 / zh」下，共覆盖 104 条有证据事件。它用于按 source/project/task/language 交叉探索，不替代后续低价值循环或机会判断。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "该层级簇把 26 个主题簇汇总到「chatgpt / 未标注项目 / 未标注任务 / mixed」下，共覆盖 32 条有证据事件。它用于按 source/project/task/language 交叉探索，不替代后续低价值循环或机会判断。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "该层级簇把 19 个主题簇汇总到「chatgpt / 未标注项目 / 未标注任务 / en」下，共覆盖 24 条有证据事件。它用于按 source/project/task/language 交叉探索，不替代后续低价值循环或机会判断。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选低价值循环：经营与管理决策。依据 23 条事件和 10 条证据引用，检测到 多月多次出现，可能存在重复返工候选。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选低价值循环：项目：Memory Atlas。依据 15 条事件和 10 条证据引用，检测到 多月多次出现，可能存在重复返工候选。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选低价值循环：AI 记忆与 agent 工作流。依据 18 条事件和 10 条证据引用，检测到 多月多次出现，可能存在重复返工候选。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选机会：AI 记忆与 agent 工作流。依据低价值循环 scope_creep、18 条事件和 10 条证据引用，识别为 automation 方向。该线索只用于探索排序，不是必须执行任务。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选机会：项目：Memory Atlas。依据低价值循环 over_optimization、15 条事件和 10 条证据引用，识别为 automation 方向。该线索只用于探索排序，不是必须执行任务。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选机会：项目：Memory Atlas。依据低价值循环 repeated_rework、15 条事件和 10 条证据引用，识别为 automation 方向。该线索只用于探索排序，不是必须执行任务。"
+          }
+        ],
+        "summaryCount": 9
+      },
+      "screenshot": {
+        "path": "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject/OpenAIDatabase/机器治理/证据与日志/remediation/v1_2_r1/browser/final/home-desktop-low-height-1470x661.png",
+        "bytes": 376156
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "failedResponses": [
+        {
+          "status": 404,
+          "url": "http://127.0.0.1:4178/__memory_atlas_heartbeat"
+        }
+      ],
+      "actionableConsoleErrors": [],
+      "actionableFailedResponses": []
+    },
+    {
+      "status": "PASS",
+      "viewport": {
+        "name": "desktop-standard",
+        "width": 1440,
+        "height": 900
+      },
+      "layout": {
+        "document": {
+          "clientHeight": 900,
+          "clientWidth": 1440,
+          "scrollHeight": 900,
+          "scrollWidth": 1440
+        },
+        "sections": {
+          "topbar": {
+            "x": 262,
+            "y": 14,
+            "top": 14,
+            "right": 1426,
+            "bottom": 70,
+            "left": 262,
+            "width": 1164,
+            "height": 56
+          },
+          "controls": {
+            "x": 262,
+            "y": 78,
+            "top": 78,
+            "right": 1426,
+            "bottom": 114,
+            "left": 262,
+            "width": 1164,
+            "height": 36
+          },
+          "interactionLens": {
+            "x": 262,
+            "y": 122,
+            "top": 122,
+            "right": 1426,
+            "bottom": 167,
+            "left": 262,
+            "width": 1164,
+            "height": 45
+          },
+          "commandPalette": {
+            "x": 262,
+            "y": 175,
+            "top": 175,
+            "right": 1426,
+            "bottom": 409,
+            "left": 262,
+            "width": 1164,
+            "height": 234
+          },
+          "contentGrid": {
+            "x": 262,
+            "y": 417,
+            "top": 417,
+            "right": 1426,
+            "bottom": 886,
+            "left": 262,
+            "width": 1164,
+            "height": 469
+          }
+        },
+        "workspace": {
+          "x": 248,
+          "y": 0,
+          "top": 0,
+          "right": 1440,
+          "bottom": 900,
+          "left": 248,
+          "width": 1192,
+          "height": 900
+        }
+      },
+      "palette": {
+        "bottomVisible": true,
+        "clientHeight": 232,
+        "detailVisible": true,
+        "maxScroll": 160,
+        "movedToBottom": 160,
+        "overflowY": "auto",
+        "scrollHeight": 392,
+        "topVisible": true
+      },
+      "criticalContent": {
+        "bottomVisible": true,
+        "clientHeight": 467,
+        "contentGridHeight": 469,
+        "homeContainedBySurface": true,
+        "maxScroll": 4827,
+        "movedToBottom": 4827,
+        "movedToLastSection": 4449,
+        "overflowY": "auto",
+        "scrollHeight": 5294,
+        "surfaceContainedByGrid": true,
+        "surfaceHeight": 469,
+        "topVisible": true
+      },
+      "nestedHomeContent": {
+        "inspectedChildren": 70,
+        "inspectedTargets": 27,
+        "issueCount": 0,
+        "issues": []
+      },
+      "behaviorSummaries": {
+        "cardCount": 3,
+        "cardSummaryCounts": [
+          3,
+          3,
+          3
+        ],
+        "chineseSummaryCount": 9,
+        "reachableSummaryCount": 9,
+        "summaries": [
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "该层级簇把 77 个主题簇汇总到「chatgpt / 未标注项目 / 未标注任务 / zh」下，共覆盖 104 条有证据事件。它用于按 source/project/task/language 交叉探索，不替代后续低价值循环或机会判断。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "该层级簇把 26 个主题簇汇总到「chatgpt / 未标注项目 / 未标注任务 / mixed」下，共覆盖 32 条有证据事件。它用于按 source/project/task/language 交叉探索，不替代后续低价值循环或机会判断。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "该层级簇把 19 个主题簇汇总到「chatgpt / 未标注项目 / 未标注任务 / en」下，共覆盖 24 条有证据事件。它用于按 source/project/task/language 交叉探索，不替代后续低价值循环或机会判断。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选低价值循环：经营与管理决策。依据 23 条事件和 10 条证据引用，检测到 多月多次出现，可能存在重复返工候选。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选低价值循环：项目：Memory Atlas。依据 15 条事件和 10 条证据引用，检测到 多月多次出现，可能存在重复返工候选。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选低价值循环：AI 记忆与 agent 工作流。依据 18 条事件和 10 条证据引用，检测到 多月多次出现，可能存在重复返工候选。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选机会：AI 记忆与 agent 工作流。依据低价值循环 scope_creep、18 条事件和 10 条证据引用，识别为 automation 方向。该线索只用于探索排序，不是必须执行任务。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选机会：项目：Memory Atlas。依据低价值循环 over_optimization、15 条事件和 10 条证据引用，识别为 automation 方向。该线索只用于探索排序，不是必须执行任务。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选机会：项目：Memory Atlas。依据低价值循环 repeated_rework、15 条事件和 10 条证据引用，识别为 automation 方向。该线索只用于探索排序，不是必须执行任务。"
+          }
+        ],
+        "summaryCount": 9
+      },
+      "screenshot": {
+        "path": "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject/OpenAIDatabase/机器治理/证据与日志/remediation/v1_2_r1/browser/final/home-desktop-standard-1440x900.png",
+        "bytes": 489361
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "failedResponses": [
+        {
+          "status": 404,
+          "url": "http://127.0.0.1:4178/__memory_atlas_heartbeat"
+        }
+      ],
+      "actionableConsoleErrors": [],
+      "actionableFailedResponses": []
+    },
+    {
+      "status": "PASS",
+      "viewport": {
+        "name": "mobile",
+        "width": 390,
+        "height": 844
+      },
+      "layout": {
+        "document": {
+          "clientHeight": 844,
+          "clientWidth": 390,
+          "scrollHeight": 844,
+          "scrollWidth": 390
+        },
+        "sections": {
+          "topbar": {
+            "x": 14,
+            "y": 99,
+            "top": 99,
+            "right": 376,
+            "bottom": 266.4,
+            "left": 14,
+            "width": 362,
+            "height": 167.4
+          },
+          "controls": {
+            "x": 14,
+            "y": 274.4,
+            "top": 274.4,
+            "right": 376,
+            "bottom": 398.4,
+            "left": 14,
+            "width": 362,
+            "height": 124
+          },
+          "interactionLens": {
+            "x": 14,
+            "y": 406.4,
+            "top": 406.4,
+            "right": 376,
+            "bottom": 526.4,
+            "left": 14,
+            "width": 362,
+            "height": 120
+          },
+          "commandPalette": {
+            "x": 14,
+            "y": 534.4,
+            "top": 534.4,
+            "right": 376,
+            "bottom": 694.4,
+            "left": 14,
+            "width": 362,
+            "height": 160
+          },
+          "contentGrid": {
+            "x": 14,
+            "y": 702.4,
+            "top": 702.4,
+            "right": 376,
+            "bottom": 830,
+            "left": 14,
+            "width": 362,
+            "height": 127.6
+          }
+        },
+        "workspace": {
+          "x": 0,
+          "y": 85,
+          "top": 85,
+          "right": 390,
+          "bottom": 844,
+          "left": 0,
+          "width": 390,
+          "height": 759
+        }
+      },
+      "palette": {
+        "bottomVisible": true,
+        "clientHeight": 158,
+        "detailVisible": true,
+        "maxScroll": 748,
+        "movedToBottom": 748,
+        "overflowY": "auto",
+        "scrollHeight": 906,
+        "topVisible": true
+      },
+      "criticalContent": {
+        "bottomVisible": true,
+        "clientHeight": 126,
+        "contentGridHeight": 127.609375,
+        "homeContainedBySurface": true,
+        "maxScroll": 14871,
+        "movedToBottom": 14871,
+        "movedToLastSection": 13207,
+        "overflowY": "auto",
+        "scrollHeight": 14997,
+        "surfaceContainedByGrid": true,
+        "surfaceHeight": 127.609375,
+        "topVisible": true
+      },
+      "nestedHomeContent": {
+        "inspectedChildren": 70,
+        "inspectedTargets": 27,
+        "issueCount": 0,
+        "issues": []
+      },
+      "behaviorSummaries": {
+        "cardCount": 3,
+        "cardSummaryCounts": [
+          3,
+          3,
+          3
+        ],
+        "chineseSummaryCount": 9,
+        "reachableSummaryCount": 9,
+        "summaries": [
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "该层级簇把 77 个主题簇汇总到「chatgpt / 未标注项目 / 未标注任务 / zh」下，共覆盖 104 条有证据事件。它用于按 source/project/task/language 交叉探索，不替代后续低价值循环或机会判断。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "该层级簇把 26 个主题簇汇总到「chatgpt / 未标注项目 / 未标注任务 / mixed」下，共覆盖 32 条有证据事件。它用于按 source/project/task/language 交叉探索，不替代后续低价值循环或机会判断。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "该层级簇把 19 个主题簇汇总到「chatgpt / 未标注项目 / 未标注任务 / en」下，共覆盖 24 条有证据事件。它用于按 source/project/task/language 交叉探索，不替代后续低价值循环或机会判断。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选低价值循环：经营与管理决策。依据 23 条事件和 10 条证据引用，检测到 多月多次出现，可能存在重复返工候选。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选低价值循环：项目：Memory Atlas。依据 15 条事件和 10 条证据引用，检测到 多月多次出现，可能存在重复返工候选。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选低价值循环：AI 记忆与 agent 工作流。依据 18 条事件和 10 条证据引用，检测到 多月多次出现，可能存在重复返工候选。该结论只用于工作流复盘，不做个人状态判断，也不生成无证重大结论。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选机会：AI 记忆与 agent 工作流。依据低价值循环 scope_creep、18 条事件和 10 条证据引用，识别为 automation 方向。该线索只用于探索排序，不是必须执行任务。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选机会：项目：Memory Atlas。依据低价值循环 over_optimization、15 条事件和 10 条证据引用，识别为 automation 方向。该线索只用于探索排序，不是必须执行任务。"
+          },
+          {
+            "chinese": true,
+            "reachable": true,
+            "text": "候选机会：项目：Memory Atlas。依据低价值循环 repeated_rework、15 条事件和 10 条证据引用，识别为 automation 方向。该线索只用于探索排序，不是必须执行任务。"
+          }
+        ],
+        "summaryCount": 9
+      },
+      "screenshot": {
+        "path": "/Users/linzezhang/Documents/Codex/2026-07-05/1-airm2-2-codexproject-https-github/work/CodexProject/OpenAIDatabase/机器治理/证据与日志/remediation/v1_2_r1/browser/final/home-mobile-390x844.png",
+        "bytes": 143034
+      },
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "failedResponses": [
+        {
+          "status": 404,
+          "url": "http://127.0.0.1:4178/__memory_atlas_heartbeat"
+        }
+      ],
+      "actionableConsoleErrors": [],
+      "actionableFailedResponses": []
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "allowed_operations_performed": [
+    "list",
+    "stat",
+    "read",
+    "hash"
+  ],
+  "forbidden_operations_performed": [],
+  "private_runtime_policy": {
+    "git_ignore_required": true,
+    "phase_private_runtime": "KMFA/.codex_private_runtime/V014_S03_P1_FILE_REGISTRATION",
+    "preferred_project_runtime": "KMFA/.codex_private_runtime/",
+    "public_repo_private_runtime_commit_allowed": false
+  },
+  "project_id": "KMFA",
+  "public_commit_policy": {
+    "allowed": [
+      "schema",
+      "aggregate_counts",
+      "file_type_status",
+      "size_bytes",
+      "private_refs",
+      "status_index"
+    ],
+    "forbidden": [
+      "raw_files",
+      "raw_filenames",
+      "raw_content_hashes",
+      "directory_tree_plaintext",
+      "zip_member_names",
+      "field_or_header_plaintext",
+      "raw_or_normalized_values",
+      "credentials",
+      "unmasked_financial_detail",
+      "bank_account_full_number",
+      "customer_contract_full_text",
+      "payroll_detail"
+    ]
+  },
+  "raw_root": {
+    "access_authorized_for_phase": true,
+    "delete_performed": false,
+    "hash_performed": true,
+    "list_performed": true,
+    "move_performed": false,
+    "overwrite_performed": false,
+    "raw_root_id": "local_kmfa_metadata_raw_root",
+    "raw_root_path": "/Users/linzezhang/Downloads/KMFA_MetaData",
+    "raw_root_stat_unchanged_after_scan": true,
+    "read_only_scan_performed": true,
+    "rename_performed": false,
+    "stat_performed": true,
+    "write_performed": false
+  },
+  "schema_version": "kmfa.raw_data_roots.v1_4.s03_p1",
+  "stage_phase": "S03-P1"
+}

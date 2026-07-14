@@ -1,0 +1,18 @@
+{
+  "app_reinstall_performed": false,
+  "business_decision_basis_allowed": false,
+  "business_execution_performed": false,
+  "current_business_event_approval_allowed": false,
+  "current_business_event_publish_allowed": false,
+  "decision": "NO_GO",
+  "formal_report_allowed": false,
+  "github_upload_performed": false,
+  "persistent_cache_invalidation_allowed": false,
+  "persistent_derived_rerun_allowed": false,
+  "phase_id": "V014_S12_P3_POST_REMEDIATION_RERUN_MECHANISM",
+  "rerun_plan_generation_allowed": true,
+  "s12_p3_mechanism_validated": true,
+  "schema_version": "kmfa.v014.s12_p3.rerun_go_no_go.v1",
+  "session_only_rerun_simulation_allowed": true,
+  "stage12_review_performed": false
+}

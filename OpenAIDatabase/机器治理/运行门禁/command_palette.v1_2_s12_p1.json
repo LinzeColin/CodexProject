@@ -1,0 +1,93 @@
+{
+  "schema_version": "command_palette.v1_2_s12_p1",
+  "task_id": "MA-V12-S12P1",
+  "acceptance_id": "ACC-MA-V12-S12P1",
+  "status": "phase_s12_p1_command_palette_completed_pending_s12_p2",
+  "validator": "validate:v1.2-s12-p1",
+  "accepted_core_command_ids": [
+    "sync_chatgpt",
+    "sync_codex",
+    "generate_weekly_report",
+    "view_pending_proposals"
+  ],
+  "personalization_command_id": "generate_personalization_prompt",
+  "commands": [
+    {
+      "id": "sync_chatgpt",
+      "label_zh": "同步 ChatGPT",
+      "human_action_zh": "用户触发后先运行 ChatGPT dry-run 同步预检，后续 apply 必须走独立授权门禁。",
+      "accepted": true,
+      "user_trigger_required": true,
+      "auto_submit": false,
+      "sends_secrets": false,
+      "modifies_raw": false,
+      "applies_proposal": false,
+      "dry_run_command": "python3 scripts/atlasctl.py sync --source chatgpt --dry-run"
+    },
+    {
+      "id": "sync_codex",
+      "label_zh": "同步 Codex",
+      "human_action_zh": "用户触发后先运行 Codex dry-run 同步预检，保留 raw 和 derived 输出合同。",
+      "accepted": true,
+      "user_trigger_required": true,
+      "auto_submit": false,
+      "sends_secrets": false,
+      "modifies_raw": false,
+      "applies_proposal": false,
+      "dry_run_command": "python3 scripts/atlasctl.py sync --source codex --dry-run"
+    },
+    {
+      "id": "generate_weekly_report",
+      "label_zh": "生成本周报告",
+      "human_action_zh": "用户触发后进入 summary 视图并提示可运行 build-atlas dry-run 生成周报输入。",
+      "accepted": true,
+      "user_trigger_required": true,
+      "auto_submit": false,
+      "sends_secrets": false,
+      "modifies_raw": false,
+      "applies_proposal": false,
+      "dry_run_command": "python3 scripts/atlasctl.py build-atlas --dry-run"
+    },
+    {
+      "id": "view_pending_proposals",
+      "label_zh": "查看待授权 proposal",
+      "human_action_zh": "用户触发后进入 summary 视图查看待授权 proposal 状态，不执行 apply。",
+      "accepted": true,
+      "user_trigger_required": true,
+      "auto_submit": false,
+      "sends_secrets": false,
+      "modifies_raw": false,
+      "applies_proposal": false,
+      "dry_run_command": "python3 scripts/atlasctl.py audit --check self-iteration"
+    },
+    {
+      "id": "generate_personalization_prompt",
+      "label_zh": "生成 personalization prompt",
+      "human_action_zh": "用户触发后只生成 ChatGPT、Codex 和 other agent 可复用 prompt 的 dry-run 合同；完整 prompt 产物属于 S12 P2。",
+      "accepted": true,
+      "user_trigger_required": true,
+      "auto_submit": false,
+      "sends_secrets": false,
+      "modifies_raw": false,
+      "applies_proposal": false,
+      "personalization_targets": [
+        "chatgpt",
+        "codex",
+        "other_agent"
+      ],
+      "dry_run_command": "python3 scripts/atlasctl.py generate-personalization-prompt --dry-run"
+    }
+  ],
+  "boundaries": {
+    "no_automatic_send": true,
+    "no_github_main_upload": true,
+    "no_remote_push": true,
+    "no_raw_mutation": true,
+    "no_proposal_apply_execution": true,
+    "no_cookie_token_secret_export": true,
+    "s12_p2_personalization_prompt_completion": false,
+    "s12_p3_chatgpt_deep_explore_execution": false,
+    "chatgpt_deep_explore_deferred_to": "S12 P3"
+  },
+  "next_phase": "S12 P2"
+}

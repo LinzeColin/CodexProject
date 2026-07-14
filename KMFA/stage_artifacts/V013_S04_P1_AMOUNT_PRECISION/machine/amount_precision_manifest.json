@@ -1,0 +1,216 @@
+{
+  "amount_case_count": 9,
+  "amount_case_passed_count": 9,
+  "amount_case_results": [
+    {
+      "actual_cents": 123456,
+      "case_id": "plain_yuan_thousand_separator",
+      "expected_cents": 123456,
+      "passed": true
+    },
+    {
+      "actual_cents": 123456,
+      "case_id": "rmb_yuan_text",
+      "expected_cents": 123456,
+      "passed": true
+    },
+    {
+      "actual_cents": -123456,
+      "case_id": "negative_yuan",
+      "expected_cents": -123456,
+      "passed": true
+    },
+    {
+      "actual_cents": -123456,
+      "case_id": "parentheses_negative_yuan",
+      "expected_cents": -123456,
+      "passed": true
+    },
+    {
+      "actual_cents": 1230,
+      "case_id": "decimal_yuan",
+      "expected_cents": 1230,
+      "passed": true
+    },
+    {
+      "actual_cents": 0,
+      "case_id": "integer_zero_yuan",
+      "expected_cents": 0,
+      "passed": true
+    },
+    {
+      "actual_cents": 1234500,
+      "case_id": "ten_thousand_yuan_text",
+      "expected_cents": 1234500,
+      "passed": true
+    },
+    {
+      "actual_cents": 1234560000,
+      "case_id": "explicit_ten_thousand_yuan",
+      "expected_cents": 1234560000,
+      "passed": true
+    },
+    {
+      "actual_cents": 100,
+      "case_id": "thousand_yuan_text",
+      "expected_cents": 100,
+      "passed": true
+    }
+  ],
+  "amount_rejection_count": 9,
+  "amount_rejection_passed_count": 9,
+  "amount_rejection_results": [
+    {
+      "case_id": "float_value_rejected",
+      "error_type": "AmountNormalizationError",
+      "rejected": true
+    },
+    {
+      "case_id": "fractional_cent_text_rejected",
+      "error_type": "AmountNormalizationError",
+      "rejected": true
+    },
+    {
+      "case_id": "fractional_cent_decimal_rejected",
+      "error_type": "AmountNormalizationError",
+      "rejected": true
+    },
+    {
+      "case_id": "blank_text_rejected",
+      "error_type": "AmountNormalizationError",
+      "rejected": true
+    },
+    {
+      "case_id": "dash_text_rejected",
+      "error_type": "AmountNormalizationError",
+      "rejected": true
+    },
+    {
+      "case_id": "hash_text_rejected",
+      "error_type": "AmountNormalizationError",
+      "rejected": true
+    },
+    {
+      "case_id": "abnormal_text_rejected",
+      "error_type": "AmountNormalizationError",
+      "rejected": true
+    },
+    {
+      "case_id": "boolean_value_rejected",
+      "error_type": "AmountNormalizationError",
+      "rejected": true
+    },
+    {
+      "case_id": "conflicting_unit_rejected",
+      "error_type": "AmountNormalizationError",
+      "rejected": true
+    }
+  ],
+  "amount_tool_refs": [
+    "KMFA/tools/amount_tools.py",
+    "KMFA/tools/check_no_float_money.py",
+    "KMFA/tests/test_amount_tools.py",
+    "KMFA/stage_artifacts/S04_P1_amount_tools/human/s04_p1_completion_record.md",
+    "KMFA/stage_artifacts/S04_P1_amount_tools/human/test_results.md"
+  ],
+  "amount_tools_dependency_validated": true,
+  "branch": "codex/kmfa",
+  "business_decision_basis_allowed": false,
+  "business_execution_allowed": false,
+  "business_field_parsing_performed": false,
+  "business_value_publication_allowed": false,
+  "completed_task_ids": [
+    "S4PAT01",
+    "S4PAT02",
+    "S4PAT03"
+  ],
+  "current_data_quality_grade": "Q2",
+  "current_report_grade": "D",
+  "delivery_allowed": false,
+  "evidence_refs": [
+    "KMFA/stage_artifacts/V013_S04_P1_AMOUNT_PRECISION/machine/amount_precision_manifest.json",
+    "KMFA/stage_artifacts/V013_S04_P1_AMOUNT_PRECISION/human/amount_precision_report.md",
+    "KMFA/stage_artifacts/V013_S04_P1_AMOUNT_PRECISION/human/test_results.md",
+    "KMFA/tools/v013_s04_p1_amount_precision.py",
+    "KMFA/tools/check_v013_s04_p1_amount_precision.py",
+    "KMFA/tests/test_v013_s04_p1_amount_precision.py",
+    "KMFA/tools/amount_tools.py",
+    "KMFA/tools/check_no_float_money.py",
+    "KMFA/tests/test_amount_tools.py",
+    "KMFA/tools/check_v013_s03_stage_review.py"
+  ],
+  "field_plaintext_publication_allowed": false,
+  "formal_report_allowed": false,
+  "github_upload_performed": false,
+  "next_required_step": "Proceed to v0.1.3 S04-P2 field standardization replay as a separate run; do not perform Stage 4 review, GitHub upload, raw value matching, lineage full check, formal report release, live connector, or business execution in S04-P1.",
+  "no_float_dependency_validated": true,
+  "phase_id": "S04-P1",
+  "phase_name": "amount precision and no-float replay",
+  "phase_scope": "v013_s04_p1_amount_precision_only",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "credentials_committed": false,
+    "excel_workbook_committed": false,
+    "field_plaintext_committed": false,
+    "pdf_committed": false,
+    "private_csv_committed": false,
+    "raw_business_data_committed": false,
+    "raw_business_values_committed": false,
+    "raw_file_hashes_committed": false,
+    "raw_file_names_committed": false,
+    "sheet_names_committed": false,
+    "sqlite_or_db_committed": false,
+    "zip_committed": false,
+    "zip_member_names_committed": false
+  },
+  "raw_data_boundary": {
+    "codex_delete_allowed": false,
+    "codex_generate_inside_allowed": false,
+    "codex_modify_allowed": false,
+    "codex_move_allowed": false,
+    "codex_overwrite_allowed": false,
+    "codex_read_allowed_only_when_phase_requires": true,
+    "codex_read_performed_by_this_phase": false,
+    "codex_rename_allowed": false,
+    "github_commit_allowed": false,
+    "local_raw_data_dir": "/Users/linzezhang/Downloads/KMFA_MetaData",
+    "private_runtime_output_dir": "KMFA/.codex_private_runtime/"
+  },
+  "raw_dir_mutation_performed": false,
+  "raw_dir_read_performed": false,
+  "raw_file_bytes_committed": false,
+  "raw_file_hash_publication_allowed": false,
+  "raw_filename_publication_allowed": false,
+  "raw_layer_write_allowed": false,
+  "raw_source_mutation_allowed": false,
+  "raw_value_matching_performed": false,
+  "release_permission": "blocked",
+  "remote": "git@github.com:LinzeColin/CodexProject.git",
+  "repository_no_float_finding_count": 0,
+  "repository_no_float_findings": [],
+  "repository_no_float_scan_passed": true,
+  "reviewed_head": "7e77660868291b81e0431c7757c0b444aba2122b",
+  "row_value_publication_allowed": false,
+  "run_time": "2026-07-02T19:11:08+10:00",
+  "s03_stage_review_dependency_ref": "KMFA/stage_artifacts/V013_S03_STAGE_REVIEW/machine/stage3_review_manifest.json",
+  "s03_stage_review_dependency_validated": true,
+  "scan_fixture_forbidden_float_findings": 3,
+  "schema_version": "kmfa.v013_s04_p1_amount_precision.v1",
+  "sheet_name_publication_allowed": false,
+  "stage4_review_performed": false,
+  "stage_id": "S04",
+  "stage_name": "v0.1.3 amount precision field standardization and basic tools",
+  "status": "completed_validated_local_only_no_go_upload_deferred",
+  "task_id": "KMFA-V013-S04-P1-AMOUNT-PRECISION-20260702",
+  "validators": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/v013_s04_p1_amount_precision.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v013_s04_p1_amount_precision.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_v013_s04_p1_amount_precision -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 -m unittest KMFA.tests.test_amount_tools -q",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_no_float_money.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. python3 KMFA/tools/check_v013_s03_stage_review.py"
+  ],
+  "version": "0.1.3",
+  "worktree": "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/kmfa",
+  "zip_member_name_publication_allowed": false
+}

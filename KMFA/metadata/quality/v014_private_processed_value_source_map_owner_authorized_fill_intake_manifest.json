@@ -1,0 +1,376 @@
+{
+  "acceptance_ids": [
+    "ACC-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-INTAKE"
+  ],
+  "app_reinstall_performed": false,
+  "basis_summary": {
+    "business_value_consistency_verified": false,
+    "source_blocker_ids": [
+      "OWNER_AUTHORIZED_PRIVATE_VALUE_SOURCE_INTAKE_REQUIRED",
+      "AUTHORIZED_PROCESSED_VALUE_SOURCE_MAP_INCOMPLETE",
+      "PROCESSED_VALUE_MATERIALIZATION_REPLAY_BLOCKED",
+      "RAW_TO_PROCESSED_VALUE_COMPARISON_BLOCKED",
+      "BUSINESS_VALUE_CONSISTENCY_NOT_VERIFIED",
+      "LINEAGE_FULL_CHECK_NOT_COMPLETE",
+      "FORMAL_REPORT_BLOCKED",
+      "GITHUB_UPLOAD_DEFERRED",
+      "APP_REINSTALL_BLOCKED",
+      "BUSINESS_EXECUTION_BLOCKED"
+    ],
+    "source_decision": "NO_GO",
+    "source_duplicate_unresolved_gap_item_count": 12,
+    "source_existing_source_map_record_count": 36,
+    "source_map_gap_resolution_complete": false,
+    "source_owner_authorized_fill_intake_required": true,
+    "source_phase_id": "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION",
+    "source_private_owner_worklist_item_count": 113,
+    "source_status": "completed_validated_local_only_no_go_authorized_fill_gap_resolution_locked",
+    "source_task_id": "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-AUTHORIZED-FILL-GAP-RESOLUTION-20260705",
+    "source_unresolved_gap_item_count": 113,
+    "source_unresolved_unique_private_ref_count": 101
+  },
+  "branch": "codex/kmfa",
+  "business_execution_performed": false,
+  "dependencies": {
+    "gap_resolution_go_no_go": "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/machine/private_processed_value_source_map_gap_resolution_go_no_go_report.json",
+    "gap_resolution_manifest": "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/machine/private_processed_value_source_map_gap_resolution_manifest.json",
+    "private_gap_worklist": "private_runtime_previous_phase"
+  },
+  "evidence_refs": [
+    "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/human/private_processed_value_source_map_owner_authorized_fill_intake_report.md",
+    "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/human/owner_authorized_fill_request.md",
+    "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/human/go_no_go_record.md",
+    "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/human/test_results.md",
+    "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/human/risk_register.md",
+    "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/human/rollback_plan.md",
+    "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/machine/private_processed_value_source_map_owner_authorized_fill_intake_manifest.json",
+    "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/machine/private_processed_value_source_map_owner_authorized_fill_intake_go_no_go_report.json",
+    "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/machine/private_processed_value_source_map_owner_authorized_fill_intake_summary.json",
+    "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/machine/private_processed_value_source_map_owner_authorized_fill_packet.json",
+    "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE/machine/private_processed_value_source_map_owner_authorized_fill_intake_contract.json",
+    "KMFA/metadata/quality/v014_private_processed_value_source_map_owner_authorized_fill_intake_manifest.json",
+    "KMFA/metadata/quality/v014_private_processed_value_source_map_owner_authorized_fill_intake_go_no_go_report.json",
+    "KMFA/metadata/quality/v014_private_processed_value_source_map_owner_authorized_fill_intake_summary.json",
+    "KMFA/metadata/approvals/v014_private_processed_value_source_map_owner_authorized_fill_packet.json",
+    "KMFA/metadata/approvals/v014_private_processed_value_source_map_owner_authorized_fill_intake_contract.json"
+  ],
+  "formal_report_performed": false,
+  "generated_at": "2026-07-05T23:59:59+10:00",
+  "github_upload_performed": false,
+  "go_no_go": {
+    "active_authorized_fill_record_created": false,
+    "app_reinstall_allowed": false,
+    "blocker_ids": [
+      "OWNER_AUTHORIZED_FILL_RECORD_NOT_SUPPLIED",
+      "AUTHORIZED_PROCESSED_VALUE_SOURCE_MAP_INCOMPLETE",
+      "PROCESSED_VALUE_MATERIALIZATION_REPLAY_BLOCKED",
+      "RAW_TO_PROCESSED_VALUE_COMPARISON_BLOCKED",
+      "BUSINESS_VALUE_CONSISTENCY_NOT_VERIFIED",
+      "LINEAGE_FULL_CHECK_NOT_COMPLETE",
+      "FORMAL_REPORT_BLOCKED",
+      "GITHUB_UPLOAD_DEFERRED",
+      "APP_REINSTALL_BLOCKED",
+      "BUSINESS_EXECUTION_BLOCKED"
+    ],
+    "business_execution_allowed": false,
+    "business_value_consistency_verified": false,
+    "decision": "NO_GO",
+    "decision_reason": "Owner-authorized fill intake is ready, but no active owner-authorized fill record has been supplied.",
+    "formal_report_allowed": false,
+    "github_upload_allowed": false,
+    "lineage_full_check_complete": false,
+    "new_authorized_fingerprint_count": 0,
+    "next_recommended_phase": "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION",
+    "next_required_input": "owner_or_authorized_delegate_fill_record",
+    "owner_authorized_fill_intake_ready": true,
+    "owner_authorized_fill_record_supplied": false,
+    "phase_id": "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE",
+    "private_intake_request_item_count": 113,
+    "processed_value_materialization_replay_allowed": false,
+    "project_id": "KMFA",
+    "raw_to_processed_value_comparison_allowed": false,
+    "record_type": "v014_private_processed_value_source_map_owner_authorized_fill_intake_go_no_go_report",
+    "resolved_blocker_ids": [
+      "OWNER_AUTHORIZED_FILL_INTAKE_CONTRACT_READY",
+      "PRIVATE_INTAKE_REQUEST_PREPARED",
+      "RAW_INBOX_MUTATION_NOT_PERFORMED_BY_THIS_PHASE"
+    ],
+    "schema_version": "kmfa.v014_private_processed_value_source_map_owner_authorized_fill_intake_go_no_go.v1",
+    "source_map_gap_resolution_complete": false,
+    "source_unresolved_gap_item_count": 113,
+    "task_id": "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-INTAKE-20260705",
+    "version": "0.1.4"
+  },
+  "intake_contract": {
+    "accepted_record_type": "v014_private_processed_value_source_map_owner_authorized_fill_record",
+    "allowed_actor_roles": [
+      "owner",
+      "authorized_delegate"
+    ],
+    "allowed_intake_action_codes": [
+      "supply_authorized_processed_value_fingerprint",
+      "map_existing_metadata_hash_sibling",
+      "keep_pending"
+    ],
+    "app_reinstall_allowed_by_intake": false,
+    "basis_refs": [
+      "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/machine/private_processed_value_source_map_gap_resolution_manifest.json",
+      "KMFA/stage_artifacts/V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION/machine/private_processed_value_source_map_gap_resolution_go_no_go_report.json"
+    ],
+    "basis_summary": {
+      "business_value_consistency_verified": false,
+      "source_blocker_ids": [
+        "OWNER_AUTHORIZED_PRIVATE_VALUE_SOURCE_INTAKE_REQUIRED",
+        "AUTHORIZED_PROCESSED_VALUE_SOURCE_MAP_INCOMPLETE",
+        "PROCESSED_VALUE_MATERIALIZATION_REPLAY_BLOCKED",
+        "RAW_TO_PROCESSED_VALUE_COMPARISON_BLOCKED",
+        "BUSINESS_VALUE_CONSISTENCY_NOT_VERIFIED",
+        "LINEAGE_FULL_CHECK_NOT_COMPLETE",
+        "FORMAL_REPORT_BLOCKED",
+        "GITHUB_UPLOAD_DEFERRED",
+        "APP_REINSTALL_BLOCKED",
+        "BUSINESS_EXECUTION_BLOCKED"
+      ],
+      "source_decision": "NO_GO",
+      "source_duplicate_unresolved_gap_item_count": 12,
+      "source_existing_source_map_record_count": 36,
+      "source_map_gap_resolution_complete": false,
+      "source_owner_authorized_fill_intake_required": true,
+      "source_phase_id": "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION",
+      "source_private_owner_worklist_item_count": 113,
+      "source_status": "completed_validated_local_only_no_go_authorized_fill_gap_resolution_locked",
+      "source_task_id": "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-AUTHORIZED-FILL-GAP-RESOLUTION-20260705",
+      "source_unresolved_gap_item_count": 113,
+      "source_unresolved_unique_private_ref_count": 101
+    },
+    "business_execution_allowed_by_intake": false,
+    "business_value_allowed_in_public_repo": false,
+    "conditional_fill_item_fields": {
+      "keep_pending": [
+        "reason_pending",
+        "next_review_trigger"
+      ],
+      "map_existing_metadata_hash_sibling": [
+        "authorized_metadata_hash_sibling_ref"
+      ],
+      "supply_authorized_processed_value_fingerprint": [
+        "authorized_processed_value_fingerprint"
+      ]
+    },
+    "current_gate": "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-GATE",
+    "fill_record_status": "no_owner_authorized_fill_record_supplied",
+    "forbidden_public_metadata_categories": [
+      "raw or normalized business values",
+      "plaintext source extracts",
+      "private processed refs",
+      "local source paths",
+      "worksheet labels",
+      "archive member labels",
+      "credentials and private keys"
+    ],
+    "formal_report_allowed_by_intake": false,
+    "generated_at": "2026-07-05T23:59:59+10:00",
+    "github_upload_allowed_by_intake": false,
+    "lineage_full_check_allowed_by_intake": false,
+    "phase_id": "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE",
+    "private_processed_ref_allowed_in_public_repo": false,
+    "processed_value_materialization_allowed_by_intake": false,
+    "project_id": "KMFA",
+    "raw_or_plaintext_allowed": false,
+    "raw_to_processed_comparison_allowed_by_intake": false,
+    "readiness_status": "ready_for_owner_authorized_fill_record",
+    "record_type": "v014_private_processed_value_source_map_owner_authorized_fill_intake_contract",
+    "required_common_fields": [
+      "actor_role",
+      "actor_ref",
+      "decision_time",
+      "fill_record_scope",
+      "basis_refs",
+      "fill_items"
+    ],
+    "required_fill_item_fields": [
+      "target_slot_id",
+      "action_code",
+      "basis_note"
+    ],
+    "schema_version": "kmfa.v014_private_processed_value_source_map_owner_authorized_fill_intake_contract.v1",
+    "task_id": "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-INTAKE-20260705",
+    "version": "0.1.4"
+  },
+  "intake_packet": {
+    "allowed_actor_roles": [
+      "owner",
+      "authorized_delegate"
+    ],
+    "allowed_intake_action_codes": [
+      "supply_authorized_processed_value_fingerprint",
+      "map_existing_metadata_hash_sibling",
+      "keep_pending"
+    ],
+    "basis_summary": {
+      "business_value_consistency_verified": false,
+      "source_blocker_ids": [
+        "OWNER_AUTHORIZED_PRIVATE_VALUE_SOURCE_INTAKE_REQUIRED",
+        "AUTHORIZED_PROCESSED_VALUE_SOURCE_MAP_INCOMPLETE",
+        "PROCESSED_VALUE_MATERIALIZATION_REPLAY_BLOCKED",
+        "RAW_TO_PROCESSED_VALUE_COMPARISON_BLOCKED",
+        "BUSINESS_VALUE_CONSISTENCY_NOT_VERIFIED",
+        "LINEAGE_FULL_CHECK_NOT_COMPLETE",
+        "FORMAL_REPORT_BLOCKED",
+        "GITHUB_UPLOAD_DEFERRED",
+        "APP_REINSTALL_BLOCKED",
+        "BUSINESS_EXECUTION_BLOCKED"
+      ],
+      "source_decision": "NO_GO",
+      "source_duplicate_unresolved_gap_item_count": 12,
+      "source_existing_source_map_record_count": 36,
+      "source_map_gap_resolution_complete": false,
+      "source_owner_authorized_fill_intake_required": true,
+      "source_phase_id": "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_AUTHORIZED_FILL_GAP_RESOLUTION",
+      "source_private_owner_worklist_item_count": 113,
+      "source_status": "completed_validated_local_only_no_go_authorized_fill_gap_resolution_locked",
+      "source_task_id": "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-AUTHORIZED-FILL-GAP-RESOLUTION-20260705",
+      "source_unresolved_gap_item_count": 113,
+      "source_unresolved_unique_private_ref_count": 101
+    },
+    "blocked_follow_on_actions": {
+      "app_reinstall_allowed": false,
+      "business_execution_allowed": false,
+      "formal_report_allowed": false,
+      "github_upload_allowed": false,
+      "lineage_full_check_allowed": false,
+      "processed_value_materialization_replay_allowed": false,
+      "raw_to_processed_value_comparison_allowed": false
+    },
+    "current_gate": "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-GATE",
+    "fill_record_status": "no_owner_authorized_fill_record_supplied",
+    "generated_at": "2026-07-05T23:59:59+10:00",
+    "intake_options": [
+      {
+        "action_code": "supply_authorized_processed_value_fingerprint",
+        "meaning": "Owner supplies a non-value fingerprint for the processed value source for one or more target slots.",
+        "this_phase_unlocks_anything": false
+      },
+      {
+        "action_code": "map_existing_metadata_hash_sibling",
+        "meaning": "Owner maps a target slot to an existing authorized metadata hash sibling without exposing the private value.",
+        "this_phase_unlocks_anything": false
+      },
+      {
+        "action_code": "keep_pending",
+        "meaning": "Owner keeps one or more gaps unresolved for later review.",
+        "this_phase_unlocks_anything": false
+      }
+    ],
+    "intake_summary": {
+      "active_authorized_fill_record_created": false,
+      "allowed_actor_role_count": 2,
+      "allowed_intake_action_count": 3,
+      "business_value_consistency_verified": false,
+      "intake_status": "ready_no_active_owner_authorized_fill_record",
+      "lineage_full_check_complete": false,
+      "new_authorized_fingerprint_count": 0,
+      "owner_authorized_fill_intake_ready": true,
+      "owner_authorized_fill_record_supplied": false,
+      "private_intake_request_item_count": 113,
+      "processed_value_materialization_replay_ready": false,
+      "raw_to_processed_value_comparison_ready": false,
+      "source_duplicate_unresolved_gap_item_count": 12,
+      "source_existing_source_map_record_count": 36,
+      "source_map_gap_resolution_complete": false,
+      "source_unresolved_gap_item_count": 113,
+      "source_unresolved_unique_private_ref_count": 101
+    },
+    "owner_action_required": true,
+    "packet_status": "ready_for_owner_or_authorized_delegate_fill_record",
+    "phase_id": "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE",
+    "project_id": "KMFA",
+    "record_type": "v014_private_processed_value_source_map_owner_authorized_fill_packet",
+    "safe_response_fields": [
+      "actor_role",
+      "actor_ref",
+      "decision_time",
+      "fill_record_scope",
+      "action_code",
+      "target_slot_id",
+      "authorized_processed_value_fingerprint_or_metadata_hash_ref",
+      "basis_note"
+    ],
+    "schema_version": "kmfa.v014_private_processed_value_source_map_owner_authorized_fill_packet.v1",
+    "task_id": "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-INTAKE-20260705",
+    "version": "0.1.4"
+  },
+  "next_recommended_phase": "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_APPLICATION",
+  "next_required_input": "owner_or_authorized_delegate_fill_record",
+  "owner_authorized_fill_intake_summary": {
+    "active_authorized_fill_record_created": false,
+    "allowed_actor_role_count": 2,
+    "allowed_intake_action_count": 3,
+    "business_value_consistency_verified": false,
+    "intake_status": "ready_no_active_owner_authorized_fill_record",
+    "lineage_full_check_complete": false,
+    "new_authorized_fingerprint_count": 0,
+    "owner_authorized_fill_intake_ready": true,
+    "owner_authorized_fill_record_supplied": false,
+    "private_intake_request_item_count": 113,
+    "processed_value_materialization_replay_ready": false,
+    "raw_to_processed_value_comparison_ready": false,
+    "source_duplicate_unresolved_gap_item_count": 12,
+    "source_existing_source_map_record_count": 36,
+    "source_map_gap_resolution_complete": false,
+    "source_unresolved_gap_item_count": 113,
+    "source_unresolved_unique_private_ref_count": 101
+  },
+  "phase_id": "V014_PRIVATE_PROCESSED_VALUE_SOURCE_MAP_OWNER_AUTHORIZED_FILL_INTAKE",
+  "phase_name": "KMFA v0.1.4 private processed value source-map owner authorized fill intake",
+  "phase_scope_controls": {
+    "app_reinstall_performed": false,
+    "business_execution_performed": false,
+    "current_phase_only": true,
+    "formal_report_performed": false,
+    "github_upload_performed": false,
+    "lineage_full_check_performed": false,
+    "new_fingerprints_materialized": false,
+    "next_phase_started": false,
+    "owner_authorized_fill_intake_only": true,
+    "owner_authorized_fill_record_created": false,
+    "private_intake_request_written": true,
+    "private_worklist_consumed": true,
+    "processed_data_reconciliation_performed": false,
+    "processed_value_materialization_replay_performed": false,
+    "raw_to_processed_value_comparison_performed": false
+  },
+  "private_intake_request_ref": "private_runtime_only_not_committed",
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "business_value_committed": false,
+    "credential_or_secret_committed": false,
+    "field_header_plaintext_committed": false,
+    "private_intake_request_committed": false,
+    "private_processed_ref_committed": false,
+    "public_safe_aggregate_only": true,
+    "public_safe_intake_schema_only": true,
+    "raw_file_committed": false,
+    "raw_filename_committed": false,
+    "raw_hash_committed": false,
+    "raw_sheet_name_committed": false,
+    "row_value_committed": false
+  },
+  "raw_readonly_boundary": {
+    "raw_inbox_delete_performed_by_this_phase": false,
+    "raw_inbox_hash_or_value_fingerprint_performed_by_this_phase": false,
+    "raw_inbox_list_performed_by_this_phase": false,
+    "raw_inbox_move_performed_by_this_phase": false,
+    "raw_inbox_mutation_performed_by_this_phase": false,
+    "raw_inbox_read_performed_by_this_phase": false,
+    "raw_inbox_rename_performed_by_this_phase": false,
+    "raw_inbox_stat_performed_by_this_phase": false,
+    "raw_inbox_write_performed_by_this_phase": false
+  },
+  "record_type": "v014_private_processed_value_source_map_owner_authorized_fill_intake_manifest",
+  "schema_version": "kmfa.v014_private_processed_value_source_map_owner_authorized_fill_intake.v1",
+  "source_commit": "0ff527163329d9b6b67eb9bef99b27fe519d646d",
+  "status": "owner_authorized_fill_intake_ready_no_active_fill_record_no_go",
+  "task_id": "KMFA-V014-PRIVATE-PROCESSED-VALUE-SOURCE-MAP-OWNER-AUTHORIZED-FILL-INTAKE-20260705",
+  "version": "0.1.4"
+}

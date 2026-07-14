@@ -1,0 +1,500 @@
+{
+  "acceptance_id": "ACC-V014-S17-POST-REMEDIATION-STAGE-REVIEW",
+  "acceptance_matrix": {
+    "acceptance_id": "ACC-V014-S17-POST-REMEDIATION-STAGE-REVIEW",
+    "check_count": 16,
+    "check_fail_count": 0,
+    "check_pass_count": 16,
+    "checks": [
+      {
+        "check_id": "V014-S17-REVIEW-ACC-001",
+        "name": "phase_chain",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-REVIEW-ACC-002",
+        "name": "focused_tests",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-REVIEW-ACC-003",
+        "name": "strict_validators",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-REVIEW-ACC-004",
+        "name": "historical_quarantine",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-REVIEW-ACC-005",
+        "name": "canonical_roles",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-REVIEW-ACC-006",
+        "name": "findings_closed",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-REVIEW-ACC-007",
+        "name": "raw_exact",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-REVIEW-ACC-008",
+        "name": "quality",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-REVIEW-ACC-009",
+        "name": "no_delivery",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-REVIEW-ACC-010",
+        "name": "no_full_report",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-REVIEW-ACC-011",
+        "name": "no_restore",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-REVIEW-ACC-012",
+        "name": "no_external",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-REVIEW-ACC-013",
+        "name": "no_persistent_write",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-REVIEW-ACC-014",
+        "name": "no_business_execution",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-REVIEW-ACC-015",
+        "name": "downstream_closed",
+        "status": "PASS"
+      },
+      {
+        "check_id": "V014-S17-REVIEW-ACC-016",
+        "name": "review_performed",
+        "status": "PASS"
+      }
+    ],
+    "schema_version": "kmfa.v014.s17_post_remediation_stage_review_matrix.v1"
+  },
+  "branch": "codex/kmfa",
+  "cross_phase_contract_matrix": [
+    {
+      "check_id": "S17-REVIEW-CONTRACT-01",
+      "check_type": "notification_recipient_roles",
+      "evidence_ref": "KMFA/stage_artifacts/V014_S17_POST_REMEDIATION_STAGE_REVIEW/machine/cross_phase_contract_matrix_public_safe.jsonl",
+      "expected_count": 3,
+      "matched_count": 3,
+      "mismatch_count": 0,
+      "public_safe_aggregate_only": true,
+      "record_type": "v014_s17_post_remediation_cross_phase_contract_check",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S17-REVIEW-CONTRACT-02",
+      "check_type": "notification_outbox_audit_contract",
+      "evidence_ref": "KMFA/stage_artifacts/V014_S17_POST_REMEDIATION_STAGE_REVIEW/machine/cross_phase_contract_matrix_public_safe.jsonl",
+      "expected_count": 3,
+      "matched_count": 3,
+      "mismatch_count": 0,
+      "public_safe_aggregate_only": true,
+      "record_type": "v014_s17_post_remediation_cross_phase_contract_check",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S17-REVIEW-CONTRACT-03",
+      "check_type": "runbook_owner_roles",
+      "evidence_ref": "KMFA/stage_artifacts/V014_S17_POST_REMEDIATION_STAGE_REVIEW/machine/cross_phase_contract_matrix_public_safe.jsonl",
+      "expected_count": 4,
+      "matched_count": 4,
+      "mismatch_count": 0,
+      "public_safe_aggregate_only": true,
+      "record_type": "v014_s17_post_remediation_cross_phase_contract_check",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S17-REVIEW-CONTRACT-04",
+      "check_type": "knowledge_owner_roles",
+      "evidence_ref": "KMFA/stage_artifacts/V014_S17_POST_REMEDIATION_STAGE_REVIEW/machine/cross_phase_contract_matrix_public_safe.jsonl",
+      "expected_count": 2,
+      "matched_count": 2,
+      "mismatch_count": 0,
+      "public_safe_aggregate_only": true,
+      "record_type": "v014_s17_post_remediation_cross_phase_contract_check",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S17-REVIEW-CONTRACT-05",
+      "check_type": "runbook_audit_actions",
+      "evidence_ref": "KMFA/stage_artifacts/V014_S17_POST_REMEDIATION_STAGE_REVIEW/machine/cross_phase_contract_matrix_public_safe.jsonl",
+      "expected_count": 4,
+      "matched_count": 4,
+      "mismatch_count": 0,
+      "public_safe_aggregate_only": true,
+      "record_type": "v014_s17_post_remediation_cross_phase_contract_check",
+      "status": "PASS"
+    },
+    {
+      "check_id": "S17-REVIEW-CONTRACT-06",
+      "check_type": "notification_delivery_scope",
+      "evidence_ref": "KMFA/stage_artifacts/V014_S17_POST_REMEDIATION_STAGE_REVIEW/machine/cross_phase_contract_matrix_public_safe.jsonl",
+      "expected_count": 1,
+      "matched_count": 1,
+      "mismatch_count": 0,
+      "public_safe_aggregate_only": true,
+      "record_type": "v014_s17_post_remediation_cross_phase_contract_check",
+      "status": "PASS"
+    }
+  ],
+  "current_phase_refs": {
+    "s17_p1": "KMFA/stage_artifacts/V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY/machine/access_security_manifest.json",
+    "s17_p2": "KMFA/stage_artifacts/V014_S17_P2_POST_REMEDIATION_NOTIFICATION/machine/notification_manifest.json",
+    "s17_p3": "KMFA/stage_artifacts/V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP/machine/operations_sop_manifest.json"
+  },
+  "decision": "NO_GO",
+  "formula_id": "FORM-KMFA-V014-S17-POST-REMEDIATION-STAGE-REVIEW-001",
+  "generated_at": "2026-07-12T05:59:42+10:00",
+  "go_no_go": {
+    "app_reinstall_allowed": false,
+    "business_execution_allowed": false,
+    "decision": "NO_GO",
+    "difference_closure_allowed": false,
+    "external_connector_allowed": false,
+    "formal_report_release_allowed": false,
+    "github_upload_allowed": false,
+    "notification_delivery_allowed": false,
+    "persistent_business_write_allowed": false,
+    "phase_id": "V014_S17_POST_REMEDIATION_STAGE_REVIEW",
+    "production_restore_allowed": false,
+    "project_id": "KMFA",
+    "s18_p1_allowed_in_this_run": false,
+    "s18_p2_allowed": false,
+    "s18_p3_allowed": false,
+    "schema_version": "kmfa.v014.s17_post_remediation_stage_review_go_no_go.v1",
+    "stage17_review_validated": true,
+    "stage18_review_allowed": false,
+    "stage_id": "S17"
+  },
+  "historical_review_manifest_ref": "KMFA/stage_artifacts/V014_S17_STAGE_REVIEW/machine/stage17_review_manifest.json",
+  "historical_review_status": "review_passed_local_only_no_go_upload_deferred_until_v014_stage1_18_complete",
+  "historical_stage17_dynamic_state_is_authoritative": false,
+  "historical_stage17_review_validated": true,
+  "model_registry_key": "kmfa_v014_s17_post_remediation_stage_review",
+  "next_phase": "S18-P1",
+  "next_required_step": "下一轮只能执行 S18-P1 精度与压力测试；不得执行 S18-P2/P3、Stage 18 review、GitHub upload、app reinstall、正式报告、外部通知、客户联络、催收、法务、施工、签署、开票、支付、银行、差异关闭、持久业务写入或业务执行。",
+  "parameter_ids": [
+    "PARAM-KMFA-1804",
+    "PARAM-KMFA-1805",
+    "PARAM-KMFA-1806"
+  ],
+  "phase_id": "V014_S17_POST_REMEDIATION_STAGE_REVIEW",
+  "phase_results": {
+    "S17-P1": "PASS",
+    "S17-P2": "PASS",
+    "S17-P3": "PASS"
+  },
+  "phase_validation_results": [
+    {
+      "focused_test_count": 9,
+      "focused_test_status": "PASS",
+      "manifest_ref": "KMFA/stage_artifacts/V014_S17_P1_POST_REMEDIATION_ACCESS_SECURITY/machine/access_security_manifest.json",
+      "phase_id": "S17-P1",
+      "project_id": "KMFA",
+      "public_safe_aggregate_only": true,
+      "record_type": "v014_s17_post_remediation_phase_validation_result",
+      "stage_id": "S17",
+      "strict_validator_count": 1,
+      "strict_validator_status": "PASS"
+    },
+    {
+      "focused_test_count": 10,
+      "focused_test_status": "PASS",
+      "manifest_ref": "KMFA/stage_artifacts/V014_S17_P2_POST_REMEDIATION_NOTIFICATION/machine/notification_manifest.json",
+      "phase_id": "S17-P2",
+      "project_id": "KMFA",
+      "public_safe_aggregate_only": true,
+      "record_type": "v014_s17_post_remediation_phase_validation_result",
+      "stage_id": "S17",
+      "strict_validator_count": 1,
+      "strict_validator_status": "PASS"
+    },
+    {
+      "focused_test_count": 11,
+      "focused_test_status": "PASS",
+      "manifest_ref": "KMFA/stage_artifacts/V014_S17_P3_POST_REMEDIATION_OPERATIONS_SOP/machine/operations_sop_manifest.json",
+      "phase_id": "S17-P3",
+      "project_id": "KMFA",
+      "public_safe_aggregate_only": true,
+      "record_type": "v014_s17_post_remediation_phase_validation_result",
+      "stage_id": "S17",
+      "strict_validator_count": 1,
+      "strict_validator_status": "PASS"
+    }
+  ],
+  "project_id": "KMFA",
+  "public_repo_safety": {
+    "business_value_plaintext_committed": false,
+    "credential_or_secret_committed": false,
+    "private_hash_or_diagnostic_committed": false,
+    "private_runtime_committed": false,
+    "project_customer_or_counterparty_plaintext_committed": false,
+    "raw_business_data_committed": false,
+    "raw_file_names_committed": false,
+    "raw_schema_or_header_committed": false,
+    "synthetic_fixture_payload_committed": false,
+    "zip_excel_pdf_private_csv_database_committed": false
+  },
+  "quality_gate": {
+    "app_reinstall_allowed": false,
+    "current_data_quality_grade": "Q4",
+    "current_report_grade": "D",
+    "decision": "NO_GO",
+    "formal_report_release_allowed": false,
+    "github_upload_allowed": false,
+    "incomplete_reconciliation_count": 1,
+    "nonzero_delta_reconciliation_count": 9,
+    "one_cent_tolerance_minor_unit": 0,
+    "open_final_difference_accepted_count": 3,
+    "zero_delta_reconciliation_count": 2
+  },
+  "remote": "git@github.com:LinzeColin/CodexProject.git",
+  "repo_tracking_scan": {
+    "forbidden_suffix_policy_count": 6,
+    "scan_scope": "tracked_kmfa_paths",
+    "status": "PASS",
+    "tracked_forbidden_suffix_count": 0,
+    "tracked_path_count": 5537,
+    "tracked_private_runtime_path_count": 0
+  },
+  "review_boundaries": {
+    "app_reinstall_performed": false,
+    "business_execution_performed": false,
+    "collection_action_performed": false,
+    "construction_action_performed": false,
+    "customer_contact_performed": false,
+    "difference_closure_performed": false,
+    "external_connector_performed": false,
+    "formal_report_release_performed": false,
+    "github_upload_performed": false,
+    "invoice_action_performed": false,
+    "legal_action_performed": false,
+    "notification_delivery_performed": false,
+    "payment_or_bank_action_performed": false,
+    "persistent_business_write_performed": false,
+    "production_restore_performed": false,
+    "raw_copy_or_backup_performed": false,
+    "s17_p1_performed": true,
+    "s17_p2_performed": true,
+    "s17_p3_performed": true,
+    "s18_p1_performed": false,
+    "s18_p2_performed": false,
+    "s18_p3_performed": false,
+    "signature_action_performed": false,
+    "stage17_review_performed": true,
+    "stage18_review_performed": false
+  },
+  "review_findings": [
+    {
+      "finding_id": "V014-S17-REVIEW-F01",
+      "issue": "S17-P3 used finance_operator outside the S17-P1 canonical role set.",
+      "remediation": "Both operations and knowledge owners now use canonical finance; cross-phase role checks fail closed.",
+      "severity": "medium",
+      "status": "fixed"
+    },
+    {
+      "finding_id": "V014-S17-REVIEW-F02",
+      "issue": "S17-P3 runbooks required audit evidence without explicit S17-P1 action mappings.",
+      "remediation": "All four runbooks now reference a valid S17-P1 action and the seven required audit fields.",
+      "severity": "medium",
+      "status": "fixed"
+    },
+    {
+      "finding_id": "V014-S17-REVIEW-F03",
+      "issue": "The S17-P1 notification contract retained stale pre-S17-P2 wording.",
+      "remediation": "Delivery scope is now neutral audit-log-only no-delivery language.",
+      "severity": "low",
+      "status": "fixed"
+    },
+    {
+      "finding_id": "V014-S17-REVIEW-F04",
+      "issue": "The S17-P2 focused test permanently required P2 to remain the active VERSION_MATRIX phase.",
+      "remediation": "The test now keeps profile checks permanent and applies HANDOFF routing checks only while P2 is active.",
+      "severity": "low",
+      "status": "fixed"
+    },
+    {
+      "finding_id": "V014-S17-REVIEW-F05",
+      "issue": "The S17-P2 checker permanently required OWNER_STATUS and STATUS to retain P2 as active.",
+      "remediation": "Current-status document checks now apply only while P2 is active; immutable governance evidence remains permanent.",
+      "severity": "low",
+      "status": "fixed"
+    },
+    {
+      "finding_id": "V014-S17-REVIEW-F06",
+      "issue": "The S17-P3 focused test permanently required P3 to remain the active VERSION_MATRIX phase.",
+      "remediation": "The test now keeps profile checks permanent and applies HANDOFF routing checks only while P3 is active.",
+      "severity": "low",
+      "status": "fixed"
+    },
+    {
+      "finding_id": "V014-S17-REVIEW-F07",
+      "issue": "Stage 17 review governance records referenced nonexistent stage17_post_remediation_stage_review files.",
+      "remediation": "All review evidence references now resolve to the generated stage17_post_remediation_review manifest and report.",
+      "severity": "medium",
+      "status": "fixed"
+    },
+    {
+      "finding_id": "V014-S17-REVIEW-F08",
+      "issue": "Notification recipient roles and outbox audit fields require cross-phase verification.",
+      "remediation": "Three roles and three outbox rows exactly match the S17-P1 contracts.",
+      "severity": "control",
+      "status": "passed"
+    },
+    {
+      "finding_id": "V014-S17-REVIEW-F09",
+      "issue": "Reminder metadata could be mistaken for real delivery or a formal report.",
+      "remediation": "Real delivery full body attachment address connector and formal report counts remain zero.",
+      "severity": "control",
+      "status": "passed"
+    },
+    {
+      "finding_id": "V014-S17-REVIEW-F10",
+      "issue": "Synthetic backup recovery could be mistaken for raw or production recovery.",
+      "remediation": "Raw copy and production restore remain zero; the byte-exact drill is private synthetic-only.",
+      "severity": "control",
+      "status": "passed"
+    },
+    {
+      "finding_id": "V014-S17-REVIEW-F11",
+      "issue": "Historical Stage 17 review state could contaminate current dynamic evidence.",
+      "remediation": "Historical review is validated as a structural fixture and explicitly non-authoritative.",
+      "severity": "control",
+      "status": "passed"
+    }
+  ],
+  "review_scope": "v014_s17_current_p1_p2_p3_overall_review_only",
+  "reviewed_head": "c19df2f67ae288e741cdbce45c12c2fd689c4f17",
+  "roadmap_phase_id": "STAGE-REVIEW",
+  "schema_version": "kmfa.v014.s17_post_remediation_stage_review_manifest.v1",
+  "stage_id": "S17",
+  "status": "completed_validated_local_only_stage17_review_no_go_upload_deferred",
+  "summary": {
+    "acceptance_id": "ACC-V014-S17-POST-REMEDIATION-STAGE-REVIEW",
+    "app_reinstall_performed": false,
+    "audit_action_type_count": 5,
+    "backup_restore_drill_count": 1,
+    "business_execution_count": 0,
+    "business_execution_performed": false,
+    "canonical_role_count": 4,
+    "collection_action_performed": false,
+    "construction_action_performed": false,
+    "cross_phase_contract_mismatch_count": 0,
+    "current_data_quality_grade": "Q4",
+    "current_report_grade": "D",
+    "customer_contact_performed": false,
+    "decision": "NO_GO",
+    "difference_closure_performed": false,
+    "error_drill_scenario_count": 2,
+    "external_connector_performed": false,
+    "external_service_call_count": 0,
+    "fixed_review_finding_count": 7,
+    "formal_report_count": 0,
+    "formal_report_release_performed": false,
+    "full_report_body_count": 0,
+    "github_upload_performed": false,
+    "historical_stage17_review_validated": true,
+    "incomplete_reconciliation_count": 1,
+    "invoice_action_performed": false,
+    "knowledge_item_count": 2,
+    "knowledge_owner_role_match_count": 2,
+    "legal_action_performed": false,
+    "metadata_outbox_log_count": 3,
+    "nonzero_delta_reconciliation_count": 9,
+    "notification_delivery_performed": false,
+    "notification_delivery_scope_match_count": 1,
+    "notification_outbox_audit_contract_match_count": 3,
+    "notification_recipient_role_match_count": 3,
+    "notification_rule_count": 3,
+    "open_final_difference_accepted_count": 3,
+    "open_review_finding_count": 0,
+    "operation_runbook_count": 4,
+    "passed_review_finding_count": 4,
+    "payment_or_bank_action_performed": false,
+    "persistent_business_write_count": 0,
+    "persistent_business_write_performed": false,
+    "phase_count": 3,
+    "phase_focused_test_count": 30,
+    "phase_focused_test_pass_count": 30,
+    "phase_id": "V014_S17_POST_REMEDIATION_STAGE_REVIEW",
+    "phase_pass_count": 3,
+    "phase_results": {
+      "S17-P1": "PASS",
+      "S17-P2": "PASS",
+      "S17-P3": "PASS"
+    },
+    "phase_strict_validator_count": 3,
+    "phase_strict_validator_pass_count": 3,
+    "production_restore_count": 0,
+    "production_restore_performed": false,
+    "project_id": "KMFA",
+    "raw_copy_or_backup_count": 0,
+    "raw_copy_or_backup_performed": false,
+    "raw_cross_phase_snapshot_exact_match": true,
+    "raw_snapshot_exact_match": true,
+    "raw_source_file_count": 5,
+    "real_notification_delivery_count": 0,
+    "review_finding_count": 11,
+    "roadmap_phase_id": "STAGE-REVIEW",
+    "role_count": 4,
+    "runbook_audit_mapping_match_count": 4,
+    "runbook_owner_role_match_count": 4,
+    "s17_p1_performed": true,
+    "s17_p2_performed": true,
+    "s17_p3_performed": true,
+    "s18_p1_performed": false,
+    "s18_p2_performed": false,
+    "s18_p3_performed": false,
+    "schema_version": "kmfa.v014.s17_post_remediation_stage_review_summary.v1",
+    "signature_action_performed": false,
+    "stage17_review_performed": true,
+    "stage18_review_performed": false,
+    "stage_id": "S17",
+    "status": "completed_validated_local_only_stage17_review_no_go_upload_deferred",
+    "task_id": "KMFA-V014-S17-POST-REMEDIATION-STAGE-REVIEW-20260712",
+    "version": "0.1.4-s17-post-remediation-stage-review",
+    "zero_delta_reconciliation_count": 2
+  },
+  "task_id": "KMFA-V014-S17-POST-REMEDIATION-STAGE-REVIEW-20260712",
+  "taskpack_contract": {
+    "roadmap_read": true,
+    "source_refs": {
+      "roadmap": "KMFA/taskpack/v1_4/roadmap/02_KMFA_Codex_Development_Roadmap_18_Stages_v1_4.md",
+      "taskpack": "KMFA/taskpack/v1_4/taskpack/01_KMFA_Codex_TaskPack_v1_4_public_safe.md"
+    },
+    "stage17_three_phase_and_review_contract_locked": true,
+    "taskpack_read": true
+  },
+  "validation_summary": {
+    "cross_phase_contracts": "PASS",
+    "final_validation_recorded": true,
+    "governance_and_safety_scans": "PASS",
+    "phase_focused_tests": "PASS",
+    "phase_strict_validators": "PASS",
+    "raw_alignment": "PASS",
+    "review_strict_validator": "PASS",
+    "review_tests": "PASS"
+  },
+  "version": "0.1.4-s17-post-remediation-stage-review"
+}

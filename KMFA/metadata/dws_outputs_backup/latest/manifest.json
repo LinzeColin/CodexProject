@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "backup_type": "dws_outputs_manifest_only",
+  "source_package": "/Users/linzezhang/Library/CloudStorage/OneDrive-Personal/DWS_Outputs.zip",
+  "raw_zip_committed": false,
+  "raw_zip_commit_policy": "blocked_by_github_file_size_and_private_raw_data_boundary",
+  "source_package_size_bytes": 614372236,
+  "source_package_sha256": "3804a59a2129d4085b4c5ee77a9728abcae4ac017d32545f5e93aaf5affc48bb",
+  "source_package_file_count": 1007,
+  "dws_run": {
+    "run_id": "20260713T110117",
+    "automation_name": "每日钉钉DWS归档",
+    "run_source": "codex_automation",
+    "run_started": "2026-07-13T11:01:17+10:00",
+    "run_ended": "2026-07-13T11:02:53+10:00",
+    "success": true,
+    "downloads_temp_output_removed": true,
+    "missing_total": 102,
+    "exhausted_total": 0,
+    "mirror_archive_size_bytes": 614372236,
+    "data_archive_size_before": 731723651,
+    "data_archive_size_after": 755266665,
+    "cold_archive_root": "/Users/linzezhang/onedrive/DWS_Archive"
+  },
+  "validation": {
+    "validate_dws_output_structure": "pass",
+    "mirror_file_count": 1007,
+    "cold_storage_status": "ok"
+  },
+  "notion_sync": {
+    "status": "pending",
+    "blocks_github_manifest_backup": false
+  },
+  "updated_at": "2026-07-13T11:02:53+10:00"
+}

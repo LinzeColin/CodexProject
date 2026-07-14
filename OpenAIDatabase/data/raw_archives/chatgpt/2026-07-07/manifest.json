@@ -1,0 +1,125 @@
+{
+  "schema_version": "memory_atlas_raw_archive_manifest.v1",
+  "archive_id": "chatgpt_raw_export_2026-07-07",
+  "source": "ChatGPT official data export",
+  "visibility": "public_github_repository",
+  "repository": "LinzeColin/CodexProject",
+  "path": "OpenAIDatabase/data/raw_archives/chatgpt/2026-07-07",
+  "recorded_at_utc": "2026-07-08T04:55:00Z",
+  "user_confirmation": {
+    "confirmed_public_raw_upload": true,
+    "selected_option": "2",
+    "note": "User explicitly requested committing the complete raw July 2026 ChatGPT export to GitHub despite public repository visibility."
+  },
+  "original_file": {
+    "filename": "6c7acaff424d50d929d3779259c2c0eccd140d4afdf99ae1816dc673988dcd83-2026-07-07-04-49-46-53d01542c71941e199f8cdac3bbda0ce.zip",
+    "byte_size": 1473421021,
+    "sha256": "52f204dd8d78b76a79c6fc37e3e09987d3ab682c87098da017b894dd88c3a868",
+    "local_source_path_at_upload_time": "/Users/linzezhang/Downloads/6c7acaff424d50d929d3779259c2c0eccd140d4afdf99ae1816dc673988dcd83-2026-07-07-04-49-46-53d01542c71941e199f8cdac3bbda0ce.zip"
+  },
+  "split": {
+    "method": "split -b 90m -a 3 -d",
+    "part_prefix": "parts/chatgpt_raw_export_2026-07-07.zip.part-",
+    "part_count": 16,
+    "max_part_bytes": 94371840,
+    "restore_command": "cat parts/chatgpt_raw_export_2026-07-07.zip.part-* > 6c7acaff424d50d929d3779259c2c0eccd140d4afdf99ae1816dc673988dcd83-2026-07-07-04-49-46-53d01542c71941e199f8cdac3bbda0ce.zip && shasum -a 256 6c7acaff424d50d929d3779259c2c0eccd140d4afdf99ae1816dc673988dcd83-2026-07-07-04-49-46-53d01542c71941e199f8cdac3bbda0ce.zip"
+  },
+  "parts": [
+    {
+      "index": 0,
+      "filename": "parts/chatgpt_raw_export_2026-07-07.zip.part-000",
+      "byte_size": 94371840,
+      "sha256": "d253acdf3eae2f4d18351ccb2bb5dfcd5e8cfdb4b6d40b8282e0ed1c96a68401"
+    },
+    {
+      "index": 1,
+      "filename": "parts/chatgpt_raw_export_2026-07-07.zip.part-001",
+      "byte_size": 94371840,
+      "sha256": "f3f87b25d0c8a4bec2662cfe22007052ba958760aaa76cfb0afa760e0ed301bf"
+    },
+    {
+      "index": 2,
+      "filename": "parts/chatgpt_raw_export_2026-07-07.zip.part-002",
+      "byte_size": 94371840,
+      "sha256": "6dd3ba341e3f3efd1eaf480ca66421010b49ba77d2c0467cfd8eae8969a60ae6"
+    },
+    {
+      "index": 3,
+      "filename": "parts/chatgpt_raw_export_2026-07-07.zip.part-003",
+      "byte_size": 94371840,
+      "sha256": "3804346b81963a37710f218f125e61d3c8580ab7e368adc7f04e8dbe0189e7c3"
+    },
+    {
+      "index": 4,
+      "filename": "parts/chatgpt_raw_export_2026-07-07.zip.part-004",
+      "byte_size": 94371840,
+      "sha256": "e277270195a9ed6663153181d2ad4e8c04bf02f8ea3b6760260a723a3ab8ee8e"
+    },
+    {
+      "index": 5,
+      "filename": "parts/chatgpt_raw_export_2026-07-07.zip.part-005",
+      "byte_size": 94371840,
+      "sha256": "e8277b90a82efde055f870d785928dc54768ae1398a3c248b759e073dd2fa7f4"
+    },
+    {
+      "index": 6,
+      "filename": "parts/chatgpt_raw_export_2026-07-07.zip.part-006",
+      "byte_size": 94371840,
+      "sha256": "555c2808605fbb256b0e2cd4c808464be321b9adc7c451ee9e87a5f084f9fea8"
+    },
+    {
+      "index": 7,
+      "filename": "parts/chatgpt_raw_export_2026-07-07.zip.part-007",
+      "byte_size": 94371840,
+      "sha256": "ac0fe719b89c05b3b92209f81cefd53dbcb4b0f8db64fcbc49d0c5497b63fe63"
+    },
+    {
+      "index": 8,
+      "filename": "parts/chatgpt_raw_export_2026-07-07.zip.part-008",
+      "byte_size": 94371840,
+      "sha256": "fbe43420b69a3db8de581e58dd8b79b6cd76781c446b8c93e704eb1e68d19265"
+    },
+    {
+      "index": 9,
+      "filename": "parts/chatgpt_raw_export_2026-07-07.zip.part-009",
+      "byte_size": 94371840,
+      "sha256": "25857e14a1f2da88618382479dd1323589a94a0bc04f07b305288be1b67df784"
+    },
+    {
+      "index": 10,
+      "filename": "parts/chatgpt_raw_export_2026-07-07.zip.part-010",
+      "byte_size": 94371840,
+      "sha256": "dcebe09cc92072b1f2072c85df306f1aef81cee2723d0a4748b8c13f5e1bd8a7"
+    },
+    {
+      "index": 11,
+      "filename": "parts/chatgpt_raw_export_2026-07-07.zip.part-011",
+      "byte_size": 94371840,
+      "sha256": "1df262829b5e48f56b4886f504e8d34f77d4b02486282d3b12a016c37b0fe15e"
+    },
+    {
+      "index": 12,
+      "filename": "parts/chatgpt_raw_export_2026-07-07.zip.part-012",
+      "byte_size": 94371840,
+      "sha256": "a6b16cc80dbd0be604ab617a755d8624387242d94a40dd28bda68fb8180c96a6"
+    },
+    {
+      "index": 13,
+      "filename": "parts/chatgpt_raw_export_2026-07-07.zip.part-013",
+      "byte_size": 94371840,
+      "sha256": "4debd7b16e65648cfe96d206d341b62114a2a467b92959752b5171c0e0b2fcba"
+    },
+    {
+      "index": 14,
+      "filename": "parts/chatgpt_raw_export_2026-07-07.zip.part-014",
+      "byte_size": 94371840,
+      "sha256": "61ffcd9fc91d3c2b16bfb2a6c9a91a0594726ea845da97bea6d682ea2d3bef41"
+    },
+    {
+      "index": 15,
+      "filename": "parts/chatgpt_raw_export_2026-07-07.zip.part-015",
+      "byte_size": 57843421,
+      "sha256": "73793445f9cb50fbf1f752613a01de49d433bce1930cc168f7041fd74138a90a"
+    }
+  ]
+}

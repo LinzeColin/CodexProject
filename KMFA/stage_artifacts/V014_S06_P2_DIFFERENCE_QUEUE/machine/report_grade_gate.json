@@ -1,0 +1,14 @@
+{
+  "blocking_queue_ids": [
+    "CDQ-20260704-114000-e7b8be95d2e7"
+  ],
+  "hard_block_reason": "unresolved_critical_difference",
+  "maximum_report_grade": "B",
+  "public_safe_fixture_only": true,
+  "raw_business_data_used": false,
+  "record_type": "cross_source_difference_report_grade_gate",
+  "report_grade_a_allowed": false,
+  "schema_version": "kmfa.cross_source_difference_report_grade_gate.v1",
+  "stage_phase": "S06-P2",
+  "status": "blocked"
+}

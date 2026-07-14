@@ -1,0 +1,173 @@
+{
+  "schema_version": "memory_atlas.remediation_r4_status.v1",
+  "phase": "R4",
+  "captured_at": "2026-07-10T12:11:27Z",
+  "status": "R4_COMPLETE_LOCAL_ONLY",
+  "release_status": "FAIL_REMEDIATION_REQUIRED",
+  "base_commit": "e1a3d670d60673730d6b1b0c83c1b343403c9e69",
+  "design_commit": "8dd2e3c568b3c82917a8f60efbcb251211024f6c",
+  "implementation_commits": [
+    "8f75c0b8da334e3b2dd5d3f0a45a4dbb7abe7829",
+    "a87cfbf782506f5957a997ef022912db67fc31d3",
+    "c9910b6ed8ab01be7c14358a5dae7787164cf2cb",
+    "b86d4b4435a3b89f92de721de7f46b3b193b1996"
+  ],
+  "origin_main_at_phase_start": "bd06ee38c1b8c52bcafd68b3c3b0a752a53cae62",
+  "origin_main_at_close": "07a6e50d593c7b9c74b8f3870b614be86a87160d",
+  "proposal_api": {
+    "version": "memory_atlas_proposal_api.v1_2_r4",
+    "endpoint": "/__memory_atlas_proposal_action",
+    "bind_host": "127.0.0.1",
+    "same_origin_required": true,
+    "cors_enabled": false,
+    "shared_command_lock": true,
+    "browser_supplied_path_content_argv_env_url": false
+  },
+  "bundle_contract": {
+    "schema_version": "memory_atlas_apply_ready_proposal.v1_2_r4",
+    "directory": "data/derived/proposals/apply_ready",
+    "operation": "replace_text_full_file",
+    "max_operations": 8,
+    "max_content_bytes": 524288,
+    "supported_target_type_count": 7,
+    "fixed_validation_ids": [
+      "utf8_nonempty",
+      "json_document"
+    ],
+    "expected_sha256_required": true,
+    "existing_safe_parent_required": true,
+    "raw_private_credential_git_executable_forbidden": true
+  },
+  "authorization": {
+    "human_confirmation_required": true,
+    "review_token_ttl_seconds": 600,
+    "bundle_digest_bound": true,
+    "proposal_id_bound": true,
+    "single_use": true,
+    "rollback_separate_acknowledgement": true
+  },
+  "filesystem_safety": {
+    "source_root": "installer_shaped_application_support_copy",
+    "directory_fd_relative_operations": true,
+    "nofollow_parent_traversal": true,
+    "held_parent_fd_during_apply": true,
+    "same_directory_atomic_replace": true,
+    "parent_inode_reverified": true,
+    "pre_transaction_directory_creation": false,
+    "parent_fd_failure_cleanup": true,
+    "canonical_repo_mutation": false,
+    "raw_mutation": false
+  },
+  "transaction_recovery": {
+    "durable_snapshot": true,
+    "metadata_only": true,
+    "automatic_validation_failure_rollback": true,
+    "committed_rollback_visible_after_workspace_reopen": true,
+    "interrupted_states_recovered_on_review": [
+      "applying",
+      "applied",
+      "failed_validation"
+    ],
+    "manual_rollback_required_visible": true,
+    "post_restore_hash_verification": true
+  },
+  "browser_acceptance": {
+    "validator": "validate:v1.2-proposal-e2e",
+    "status": "PASS",
+    "proposal_count": 8,
+    "chinese_diff_section_count": 5,
+    "authorized_apply_real_file_change": true,
+    "persisted_rollback_visible_after_reopen": true,
+    "manual_rollback_exact_restore": true,
+    "validation_failure_automatic_rollback": true,
+    "raw_proposal_review_only": true,
+    "unauthorized_apply_rejected": true,
+    "remote_origin_rejected": true,
+    "extra_fields_rejected": true,
+    "hosted_static_command_or_proposal_post_count": 0,
+    "hosted_static_handoff": "http://127.0.0.1:4177",
+    "fake_workspace_opened": false,
+    "audit_metadata_only": true,
+    "screenshot_count": 6,
+    "viewports": [
+      "1470x661",
+      "1440x900",
+      "390x844"
+    ],
+    "horizontal_overflow_count": 0
+  },
+  "requirements_after_r4": {
+    "requirement_count": 58,
+    "verified": 40,
+    "partial": 11,
+    "failed": 5,
+    "not_verified": 2,
+    "promoted_to_verified": [
+      "S13-AC02",
+      "S13-AC04"
+    ],
+    "kept_verified_with_stronger_evidence": [
+      "S13-AC01",
+      "S13-AC03",
+      "S13-AC05"
+    ]
+  },
+  "regression": {
+    "python_proposal_runtime_tests": "40 passed",
+    "python_launcher_tests": "1 passed",
+    "python_sync_personalization_tests": "15 passed",
+    "typescript_lint": "PASS",
+    "production_build": "PASS_WITH_EXISTING_CHUNK_SIZE_WARNING",
+    "r3_command_workflows": "PASS_6_COMMANDS_STATIC_POST_0",
+    "home_multiviewport": "PASS_3_OF_3",
+    "stage7_visual": "PASS",
+    "galaxy_lit_pixel_samples": 67124,
+    "galaxy_points": 11828,
+    "memory_river_markers": 64,
+    "memory_river_density_bands": 48,
+    "privacy_guard_high_risk_secret_hits": 0,
+    "privacy_guard_tracked_raw_private_files": 0,
+    "preview_ports_released": true
+  },
+  "review": {
+    "independent_reviewer": "completed",
+    "high_findings_initial": 1,
+    "medium_findings_initial": 3,
+    "high_findings_final": 0,
+    "medium_findings_final": 0,
+    "resolved_findings": [
+      "parent path changes cannot redirect target writes outside the installed source copy",
+      "interrupted applying or applied transactions are recovered or surfaced for manual rollback",
+      "missing target parents remain review-only and are not created before transaction persistence",
+      "safe-read failure closes the current directory file descriptor"
+    ]
+  },
+  "evidence": {
+    "browser": "机器治理/证据与日志/remediation/v1_2_r4/browser/final/status.json",
+    "command_regression": "机器治理/证据与日志/remediation/v1_2_r4/regression/command/status.json",
+    "home_regression": "机器治理/证据与日志/remediation/v1_2_r4/regression/home/status.json",
+    "stage7_regression": "机器治理/证据与日志/remediation/v1_2_r4/regression/stage7/",
+    "requirement_delta": "机器治理/证据与日志/remediation/v1_2_r4/requirements_gap_delta.csv",
+    "human_record": "docs/remediation/memory_atlas_v1_2/R4_PROPOSAL_APPROVAL_APPLY_ROLLBACK_WORKFLOW.md"
+  },
+  "git_state_before_record_commit": {
+    "origin_main": "07a6e50d593c7b9c74b8f3870b614be86a87160d",
+    "origin_main_changed_during_phase": true,
+    "local_ahead_of_origin": 12,
+    "local_behind_origin": 12,
+    "local_branch_count": 1,
+    "local_stash_count": 0,
+    "merge_performed": false,
+    "rebase_performed": false,
+    "remote_push": false,
+    "reconciliation_action": "DEFER_TO_R8_PRESERVE_BOTH_HISTORIES"
+  },
+  "github_main_upload_allowed": false,
+  "remote_push": false,
+  "deployment": false,
+  "app_reinstall": false,
+  "proposal_apply_added_to_local_candidate": true,
+  "owner_daily_added": false,
+  "raw_mutation": false,
+  "next_phase": "R5_OWNER_DAILY_PRODUCT_ENTRY"
+}

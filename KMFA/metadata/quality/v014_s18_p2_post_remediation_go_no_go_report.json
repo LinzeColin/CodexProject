@@ -1,0 +1,33 @@
+{
+  "app_reinstall_allowed": false,
+  "blocker_ids": [
+    "LINEAGE_FULL_CHECK_NOT_COMPLETE",
+    "OPEN_RECONCILIATION_REMAINS",
+    "OFFICIAL_REPORT_RELEASE_NOT_ALLOWED",
+    "S18_P3_PENDING",
+    "STAGE18_REVIEW_PENDING"
+  ],
+  "business_decision_basis_allowed": false,
+  "business_execution_allowed": false,
+  "current_data_quality_grade": "Q4",
+  "decision": "NO_GO",
+  "delivery_allowed": false,
+  "external_connector_allowed": false,
+  "formal_report_allowed": false,
+  "github_upload_allowed": false,
+  "github_upload_allowed_in_this_run": false,
+  "incomplete_reconciliation_count": 1,
+  "maximum_report_grade": "D",
+  "next_required_phase": "S18-P3",
+  "nonzero_delta_reconciliation_count": 9,
+  "official_report_release_allowed": false,
+  "open_final_difference_accepted_count": 3,
+  "persistent_business_write_allowed": false,
+  "phase_id": "V014_S18_P2_POST_REMEDIATION_FULL_REGRESSION_ACCEPTANCE",
+  "production_restore_allowed": false,
+  "project_id": "KMFA",
+  "record_type": "v014_s18_p2_post_remediation_go_no_go_report",
+  "stage_id": "S18",
+  "task_id": "S18P2T03",
+  "zero_delta_reconciliation_count": 2
+}

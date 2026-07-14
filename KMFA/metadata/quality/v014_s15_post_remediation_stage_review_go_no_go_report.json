@@ -1,0 +1,17 @@
+{
+  "app_reinstall_allowed": false,
+  "bonus_approval_allowed": false,
+  "business_execution_allowed": false,
+  "decision": "NO_GO",
+  "final_payment_allowed": false,
+  "github_upload_allowed": false,
+  "payment_execution_allowed": false,
+  "payroll_export_allowed": false,
+  "phase_id": "V014_S15_POST_REMEDIATION_STAGE_REVIEW",
+  "project_id": "KMFA",
+  "s16_p1_allowed_in_this_run": false,
+  "salary_calculation_allowed": false,
+  "schema_version": "kmfa.v014.s15_post_remediation_review_go_no_go.v1",
+  "stage15_review_validated": true,
+  "stage_id": "S15"
+}

@@ -8,8 +8,6 @@ OpenAIDatabase 当前治理结论：实现一致性为 `PARTIAL`，方法/实证
 
 Owner 视图现在把实现一致性、参数来源、方法依据、实证验证、运行验证、交付证据和证据新鲜度分开，避免把 `MACHINE_VERIFIED` 误读为模型有效或可上线。
 
-本次维护仅修复 CI：旧 `sync_runs` 证据记录可被 evaluator 兼容读取，未来 sync 记录会写完整 task-run schema，Windows/Linux 路径输出保持一致，缺少 `openssl` 时归档步骤 fail-closed 而不是崩溃。交付状态仍是 `FAILED`，不代表 Cloudflare live 部署或生产记忆安全已通过。
-
 ## 3. 为什么重要
 
 验证系统有用且不会把私密内容错误持久化或泄漏。
@@ -41,7 +39,7 @@ OpenAIDatabase remains FAILED for delivery readiness and cannot claim safe memor
 ## 8. 九层 Assurance 状态
 
 - structural_completeness: `VERIFIED`
-- implementation_congruence: `PARTIAL` (28/94 active parameters, 10/11 active formulas)
+- implementation_congruence: `PARTIAL` (27/99 active parameters, 9/12 active formulas)
 - parameter_source_quality: `PARTIAL`
 - methodological_rationale: `UNVERIFIED`
 - empirical_validation: `UNVERIFIED`
@@ -70,40 +68,43 @@ OpenAIDatabase remains FAILED for delivery readiness and cannot claim safe memor
 
 ## 12. Model Formula Parameter Change
 
-- model_count: `11`
-- total_formulas: `11`
-- active_formulas: `11`
-- total_parameters: `94`
-- active_parameters: `94`
+- model_count: `12`
+- total_formulas: `12`
+- active_formulas: `12`
+- total_parameters: `99`
+- active_parameters: `99`
 - active_values_changed_by_this_view: `0`
 
 ## 13. Tests And Acceptance
 
 - required_commands: `validate_project_governance --all --semantic --drift-report`; `generate_governance_dashboard --write`
-- release_gate: `S5PB-GATE-IN-PROGRESS; MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED`
+- release_gate: `ACC-OAIDB-SM-P0-R1-PASSED-LOCAL`
 
 ## 14. Evidence Freshness
 
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 - tree_bound_events: `0`
-- commit_bound_events: `1`
+- commit_bound_events: `3`
 - legacy_unbound_events: `6`
-- precommit_pending_events: `2`
-- pending_or_stale_events: `9`
+- precommit_pending_events: `15`
+- pending_or_stale_events: `22`
+- freshness_counts: `pending_or_stale_events=22; legacy_unbound_events=6`
+- freshness_interpretation: `evidence_freshness=PARTIAL 是历史事件绑定完整度提示，不是当前 S3/DAILY_OPERATION 阻断`
+- current_s3_blocker: `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json 缺失`
 
 ## 15. UNKNOWN
 
-- unresolved_fact_ids: `7`
+- unresolved_fact_ids: `10`
 
 ## 16. 技术元数据
 
-- source_base_commit: `738887de4034ad42d90347d0fa0db6c0f3ed966f`
+- source_base_commit: `00f4187f43960a3b25fc696ae2a15951f4431763`
 - source_tree_hash: `6d67efb26a6ea61fd8b05706dbb3eb2f1d34ab9f`
-- source_snapshot_hash: `sha256:bbec5b8736622a8f1e07d68e21e6d78e4c05d1ac941d8664304a25c5fa98c84e`
-- snapshot_event_time: `2026-06-26T21:56:00+10:00`
-- generator_version: `4.0.0`
+- source_snapshot_hash: `sha256:71ff588f5cf2ec841b04e1ffc399d071fe2bee694040fcf243cdec99d54ae30f`
+- snapshot_event_time: `2026-07-13T10:16:00+10:00`
+- generator_version: `4.0.1`
 - version: `0.2.0`
-- phase/gate: `D / S5PB-GATE-IN-PROGRESS; MEMORY-ATLAS-CLOUDFLARE-LIVE-AUTH-REQUIRED`
+- phase/gate: `SM-P0-RUN1 / ACC-OAIDB-SM-P0-R1-PASSED-LOCAL`
 
 ## 17. Next Unique Task
 

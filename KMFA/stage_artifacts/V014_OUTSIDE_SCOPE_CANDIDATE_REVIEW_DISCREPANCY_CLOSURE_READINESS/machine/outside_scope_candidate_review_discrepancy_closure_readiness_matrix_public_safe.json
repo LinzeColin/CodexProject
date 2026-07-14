@@ -1,0 +1,51 @@
+{
+  "check_count": 9,
+  "check_fail_count": 0,
+  "check_pass_count": 9,
+  "checks": [
+    {
+      "check_code": "source_discrepancy_queue_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "all_discrepancy_items_classified_for_closure",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_safe_auto_closure_available",
+      "status": "PASS"
+    },
+    {
+      "check_code": "all_closure_items_blocked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "ambiguous_tie_bucket_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "no_context_bucket_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "non_numeric_bucket_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_gates_closed",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-07T00:00:00+10:00",
+  "phase_id": "V014_OUTSIDE_SCOPE_CANDIDATE_REVIEW_DISCREPANCY_CLOSURE_READINESS",
+  "project_id": "KMFA",
+  "record_type": "v014_outside_scope_candidate_review_discrepancy_closure_readiness_matrix_public_safe",
+  "schema_version": "kmfa.v014_outside_scope_candidate_review_discrepancy_closure_readiness_matrix_public_safe.v1",
+  "task_id": "KMFA-V014-OUTSIDE-SCOPE-CANDIDATE-REVIEW-DISCREPANCY-CLOSURE-READINESS-20260707",
+  "version": "0.1.4-outside-scope-candidate-review-discrepancy-closure-readiness"
+}

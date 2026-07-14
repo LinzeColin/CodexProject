@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kmfa.local/schemas/stage2_run_manifest.schema.json",
+  "title": "Stage-2 Run Manifest",
+  "type": "object",
+  "required": [
+    "run_id",
+    "skill_name",
+    "run_slot",
+    "target_month",
+    "stage2_run_index",
+    "source_batches",
+    "raw_hashes",
+    "database_transaction_marker",
+    "canonical_snapshot_hash",
+    "quality_grade",
+    "unresolved_exceptions",
+    "quality_gates",
+    "stage2_status"
+  ],
+  "properties": {
+    "run_id": {"type": "string", "minLength": 8},
+    "skill_name": {"const": "kmfa-dingtalk-attendance-skill"},
+    "run_slot": {"const": "evening"},
+    "target_month": {"type": "string", "pattern": "^[0-9]{6}$"},
+    "stage2_run_index": {"type": "integer", "minimum": 1, "maximum": 5},
+    "source_batches": {"type": "array", "items": {"type": "string"}},
+    "raw_hashes": {"type": "array", "items": {"type": "string", "pattern": "^sha256:"}},
+    "database_transaction_marker": {"type": "string"},
+    "canonical_snapshot_hash": {"type": "string", "pattern": "^sha256:"},
+    "quality_grade": {"enum": ["Q4", "Q5"]},
+    "unresolved_exceptions": {
+      "type": "object",
+      "required": ["P0", "P1"],
+      "properties": {
+        "P0": {"const": 0},
+        "P1": {"const": 0},
+        "P2": {"type": "integer", "minimum": 0},
+        "P3": {"type": "integer", "minimum": 0}
+      }
+    },
+    "quality_gates": {
+      "type": "object",
+      "required": [
+        "location_evidence_thresholds_passed",
+        "raw_to_derived_reconciliation_passed",
+        "database_transaction_committed",
+        "database_transaction_verified"
+      ],
+      "properties": {
+        "location_evidence_thresholds_passed": {"type": "boolean"},
+        "raw_to_derived_reconciliation_passed": {"type": "boolean"},
+        "database_transaction_committed": {"type": "boolean"},
+        "database_transaction_verified": {"type": "boolean"}
+      }
+    },
+    "stage2_status": {"enum": ["pending", "accepted", "failed"]}
+  },
+  "additionalProperties": true
+}

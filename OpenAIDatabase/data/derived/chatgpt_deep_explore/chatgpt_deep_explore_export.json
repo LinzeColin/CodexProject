@@ -1,0 +1,94 @@
+{
+  "acceptance_id": "ACC-MA-V12-S12P3",
+  "allowed_modes": [
+    "prefill_only",
+    "auto_submit"
+  ],
+  "chatgpt_base_url": "https://chatgpt.com/",
+  "contract_version": "chatgpt_deep_explore.v1_2_s12_p3",
+  "default_mode": "prefill_only",
+  "failure_explanation_zh": {
+    "auto_submit_not_enabled": "auto_submit 未开启：S12 P3 默认只允许 prefill_only，需要配置和显式确认后才可发送。",
+    "open_failed": "无法自动打开 ChatGPT，请复制机器可复制文本后手动粘贴。"
+  },
+  "generated_at": "2026-07-08T14:20:33Z",
+  "launch_url": "https://chatgpt.com/?q=%23+ChatGPT+Deep+Exploration+Payload%0A%0ATask%3A+MA-V12-S12P3%0AAcceptance%3A+ACC-MA-V12-S12P3%0AContract%3A+chatgpt_deep_explore.v1_2_s12_p3%0AMode%3A+prefill_only+by+default%3B+auto_submit+is+gated+by+explicit+config+and+confirmation.%0A%0A%23%23+%E6%9C%80%E6%96%B0%E8%AE%B0%E5%BF%86%E5%88%86%E6%9E%90%E6%8A%A5%E5%91%8A%0A%0A-+Personalization+prompt%3A+phase_s12_p2_personalization_prompt_completed_pending_s12_p3+%2F+personalization_prompt.v1_2_s12_p2%0A-+Prompt+targets%3A+chatgpt%2C+codex%2C+other_agent%0A-+Latent+signals%3A+5%0A-+Self-iteration+suggestions%3A+5%0A-+Decision+debt+candidates%3A+8%0A-+Agent+collaboration+status%3A+phase_s08_p1_collaboration_metrics_completed_pending_s08_p2%0A%0A%23%23%23+Personalization+Prompt+%E4%B8%AD%E6%96%87%E6%91%98%E8%A6%81%0A%0A%23+Personalization+Prompt+%E4%B8%AD%E6%96%87%E4%BA%BA%E7%B1%BB%E8%AF%B4%E6%98%8E%0A%0A-+task_id%3A+MA-V12-S12P2%0A-+acceptance_id%3A+ACC-MA-V12-S12P2%0A-+prompt_version%3A+personalization_prompt.v1_2_s12_p2%0A-+generated_at%3A+2026-07-08T14%3A04%3A54Z%0A-+source%3A+OpenAIDatabase+redacted+derived+context%0A-+raw_private_data_included%3A+false%0A-+plaintext_secrets_included%3A+false%0A%0A%23%23+%E7%BB%93%E8%AE%BA%0A%0AS12+P2+%E5%B7%B2%E7%94%9F%E6%88%90+ChatGPT%E3%80%81Codex%E3%80%81other+agent+%E5%8F%AF%E7%94%A8%E7%9A%84%E6%9C%80%E6%96%B0+Personalization+Prompt%E3%80%82%E7%8A%B6%E6%80%81%E4%B8%BA+%60phase_s12_p2_personalization_prompt_completed_pending_s12_p3%60%E3%80%82%0A%0A%E6%9C%AC%E6%96%87%E4%BB%B6%E6%98%AF%E4%B8%AD%E6%96%87%E4%BA%BA%E7%B1%BB%E8%AF%B4%E6%98%8E%EF%BC%9B%E6%AF%8F%E4%B8%AA%E7%9B%AE%E6%A0%87%E6%96%87%E4%BB%B6%E9%83%BD%E5%8C%85%E5%90%AB+%60%E6%9C%BA%E5%99%A8%E5%8F%AF%E5%A4%8D%E5%88%B6%E6%96%87%E6%9C%AC%60+fenced+block%EF%BC%8C%E5%8F%AF%E7%9B%B4%E6%8E%A5%E5%A4%8D%E5%88%B6%E5%88%B0%E5%AF%B9%E5%BA%94+agent+%E7%9A%84+personalization+%E6%88%96%E5%90%AF%E5%8A%A8%E4%B8%8A%E4%B8%8B%E6%96%87%E3%80%82%0A%0A%23%23+%E6%9D%A5%E6%BA%90%E6%8A%A5%E5%91%8A%0A%0A-+%60data%2Fderived%2Fpersonalization%2Fpersonalization_export.json%60%0A-+%60data%2Fderived%2Fbehavior_intelligence%2Fevents.json%60%0A-+%60data%2Fderived%2Fbehavior_intelligence%2Fclusters.json%60%0A-+%60data%2Fderived%2Fbehavior_intelligence%2Flatent_signals.json%60%0A-+%60data%2Fderived%2Fbehavior_intelligence%2Fself_iteration_suggestions.json%60%0A-+%60data%2Fderived%2Fbehavior_intelligence%2Fdecision_debt_ledger.json%60%0A-+%60data%2Fderived%2Fagent_collaboration%2Fagent_collaboration_quality_report.json%60%0A%0A%23%23+%E6%91%98%E8%A6%81%0A%0Alatest+memory%3A%0A-+OpenAIDatabase+%E6%98%AF+durable+memory+source+%2F+GitHub+%E4%B8%8A%E7%9A%84+OpenAIDatabase+%E5%BA%94%E4%BD%9C%E4%B8%BA%E4%BB%BB%E6%84%8F+agent+%E5%8F%AF%E8%AF%BB%E5%8F%96%E7%9A%84%E9%95%BF%E6%9C%9F%E8%AE%B0%E5%BF%86%E3%80%81%E7%94%BB%E5%83%8F%E3%80%81%E5%81%8F%E5%A5%BD%E5%92%8C%E5%8E%86%E5%8F%B2%E4%B8%8A%E4%B8%8B%E6%96%87%E6%95%B0%E6%8D%AE%E5%BA%93%E3%80%82+%2F+high%0A-+%E4%BB%BB%E6%84%8F+agent+personalization+%2F+%E6%89%80%E6%9C%89+agent+%E8%AE%BF%E9%97%AE%E5%90%8E%E9%83%BD%E5%BA%94%E8%83%BD%E7%94%9F%E6%88%90%E9%80%82%E9%85%8D%E7%94%A8%E6%88%B7%E7%9A%84+profile%E3%80%81preference%E3%80%81project+context%E3%80%81rules+%E5%92%8C+history+summary%E3%80%82+%2F+high%0A-+%E9%BB%98%E8%AE%A4%E4%B8%AD%E6%96%87%E8%BE%93%E5%87%BA+%2F+%E7%94%A8%E6%88%B7%E9%95%BF%E6%9C%9F%E5%81%8F%E5%A5%BD%E4%B8%AD%E6%96%87%E8%BE%93%E5%87%BA%EF%BC%9B%E4%BB%A3%E7%A0%81%E3%80%81API%E3%80%81%E5%BA%93%E5%90%8D%E3%80%81%E9%94%99%E8%AF%AF%E4%BF%A1%E6%81%AF%E5%92%8C%E4%B8%93%E4%B8%9A%E6%9C%AF%E8%AF%AD%E5%8F%AF%E4%BF%9D%E7%95%99%E8%8B%B1%E6%96%87%E3%80%82+%2F+high%0A-+%E7%9C%9F%E5%AE%9E%E6%95%B0%E6%8D%AE%E4%BC%98%E5%85%88+%2F+%E7%94%A8%E6%88%B7%E6%98%8E%E7%A1%AE%E8%A6%81%E6%B1%82%E4%BD%BF%E7%94%A8%E7%9C%9F%E5%AE%9E+Codex+%2F+ChatGPT+%2F+GitHub+%E6%95%B0%E6%8D%AE%EF%BC%8C%E4%B8%8D%E6%8E%A5%E5%8F%97+mock%E3%80%81%E4%BC%AA%E8%BF%9B%E5%BA%A6%E6%88%96%E5%8F%AA%E7%BB%99%E6%A6%82%E5%BF%B5%E6%BC%94%E7%A4%BA%E3%80%82+%2F+high%0A-+%E6%8A%A5%E5%91%8A%E9%9D%A2%E5%90%91%E4%BA%BA%E7%B1%BB+ROI+%E5%92%8C%E6%88%90%E9%95%BF+%2F+%E5%A4%84%E7%90%86%E8%AE%B0%E5%BF%86%E6%88%96%E8%A1%8C%E4%B8%BA%E6%95%B0%E6%8D%AE%E5%90%8E%EF%BC%8C%E5%BA%94%E8%BE%93%E5%87%BA%E4%BA%BA%E8%83%BD%E7%9B%B4%E6%8E%A5%E4%BD%BF%E7%94%A8%E7%9A%84%E8%AF%9D%E9%A2%98%E3%80%81%E8%A1%8C%E5%8A%A8%E3%80%81%E5%BB%BA%E8%AE%AE%E3%80%81%E6%9C%BA%E4%BC%9A%E3%80%81ROI%E3%80%81%E8%83%BD%E5%8A%9B%E6%88%90%E9%95%BF%E5%92%8C%E9%A3%8E%E9%99%A9%E6%8F%90%E9%86%92%E3%80%82+%2F+high%0A%0Abehavior%3A%0A-+%E7%BB%8F%E8%90%A5%E4%B8%8E%E7%AE%A1%E7%90%86%E5%86%B3%E7%AD%96+%2F+%E8%AF%A5%E8%A1%8C%E4%B8%BA%E7%B0%87%E5%9F%BA%E4%BA%8E+23+%E6%9D%A1%E5%B8%A6%E8%AF%81%E6%8D%AE%E5%BC%95%E7%94%A8%E7%9A%84%E4%BA%8B%E4%BB%B6%EF%BC%8C%E4%B8%BB%E8%A6%81%E5%9B%B4%E7%BB%95%E3%80%8C%E7%BB%8F%E8%90%A5%E4%B8%8E%E7%AE%A1%E7%90%86%E5%86%B3%E7%AD%96%E3%80%8D%E3%80%82%E6%9D%A5%E6%BA%90%E5%8C%85%E5%90%AB+chatgpt%EF%BC%8C%E6%97%B6%E9%97%B4%E8%A6%86%E7%9B%96+2025-11%E3%80%812025-12%E3%80%812026-01%E3%80%812026-02%EF%BC%8C%E5%B8%B8%E8%A7%81%E4%BB%BB%E5%8A%A1%E7%B1%BB%E5%9E%8B%E4%B8%BA+%E6%9C%AA%E6%A0%87%E6%B3%A8%E3%80%81design%EF%BC%8C%E8%AF%AD%E8%A8%80%E4%BB%A5+zh+%E4%B8%BA%E4%B8%BB%E3%80%82%E8%AF%A5%E6%91%98%E8%A6%81%E5%8F%AA%E6%8F%8F%E8%BF%B0%E4%BA%8B%E4%BB%B6%E8%81%9A%E5%90%88%EF%BC%8C%E4%B8%8D%E5%81%9A%E4%B8%AA%E4%BA%BA%E7%8A%B6%E6%80%81%E5%88%A4%E6%96%AD%E6%88%96%E6%97%A0%E8%AF%81%E9%87%8D%E5%A4%A7%E7%BB%93%E8%AE%BA%0A%0A%23%23+%E6%B7%B1%E5%BA%A6%E6%8E%A2%E7%B4%A2%E6%8F%90%E7%A4%BA%0A%0A%E8%AF%B7%E5%9F%BA%E4%BA%8E%E4%B8%8A%E9%9D%A2%E7%9A%84+Memory+Atlas+v1.2+%E6%9C%80%E6%96%B0%E8%AE%B0%E5%BF%86%E5%88%86%E6%9E%90%E7%BB%93%E6%9E%9C%E5%81%9A%E4%B8%80%E6%AC%A1%E6%B7%B1%E5%BA%A6%E6%8E%A2%E7%B4%A2%EF%BC%9A%0A1.+%E6%89%BE%E5%87%BA%E6%9C%80%E5%80%BC%E5%BE%97%E7%BB%A7%E7%BB%AD%E6%8E%A8%E8%BF%9B%E7%9A%84+3+%E4%B8%AA%E9%AB%98+ROI+%E8%A1%8C%E5%8A%A8%EF%BC%8C%E5%B9%B6%E8%AF%B4%E6%98%8E%E8%AF%81%E6%8D%AE%E3%80%81%E6%94%B6%E7%9B%8A%E5%92%8C%E9%A3%8E%E9%99%A9%E3%80%82%0A2.+%E6%89%BE%E5%87%BA%E6%9C%80%E5%BA%94%E8%AF%A5%E6%9A%82%E7%BC%93%E6%88%96%E9%99%8D%E6%9D%83%E7%9A%84+3+%E4%B8%AA%E4%BD%8E%E4%BB%B7%E5%80%BC%E5%BE%AA%E7%8E%AF%EF%BC%8C%E5%B9%B6%E7%BB%99%E5%87%BA%E5%81%9C%E6%AD%A2%E6%9D%A1%E4%BB%B6%E3%80%82%0A3.+%E5%88%A4%E6%96%AD%E5%93%AA%E4%BA%9B%E5%86%85%E5%AE%B9%E5%BA%94%E8%AF%A5%E8%BF%9B%E5%85%A5+ChatGPT+personalization%E3%80%81Codex+AGENTS.md+%E6%88%96+other+agent+handoff%E3%80%82%0A4.+%E8%BE%93%E5%87%BA%E4%B8%AD%E6%96%87%EF%BC%8C%E5%85%88%E7%BB%99%E7%BB%93%E8%AE%BA%EF%BC%8C%E5%86%8D%E7%BB%99%E8%AF%81%E6%8D%AE%EF%BC%8C%E4%B8%8D%E8%A6%81%E8%A6%81%E6%B1%82%E8%AF%BB%E5%8F%96+cookies%E3%80%81tokens%E3%80%81secrets+%E6%88%96%E6%9C%AA%E6%8E%88%E6%9D%83+raw+%E6%95%B0%E6%8D%AE%E3%80%82%0A%0A%23%23+Safety%0A%0A-+User+trigger+required.%0A-+prefill_only+%E9%BB%98%E8%AE%A4%E5%8F%AA%E5%A1%AB%E5%85%A5%EF%BC%8C%E4%B8%8D%E9%9D%99%E9%BB%98%E5%8F%91%E9%80%81%E3%80%82%0A-+auto_submit+%E5%BF%85%E9%A1%BB%E7%94%B1%E9%85%8D%E7%BD%AE%E5%92%8C%E6%98%BE%E5%BC%8F%E7%A1%AE%E8%AE%A4%E5%85%B1%E5%90%8C%E5%BC%80%E5%90%AF%E3%80%82%0A-+No+silent+send.%0A-+No+cookie%2Ftoken%2Fsecret+export.%0A-+No+raw+mutation.%0A-+No+proposal+apply+execution.",
+  "mode": "prefill_only",
+  "outputs": [
+    "data/derived/chatgpt_deep_explore/latest_memory_analysis_prompt.md",
+    "data/derived/chatgpt_deep_explore/chatgpt_deep_explore_export.json"
+  ],
+  "prompt_payload": {
+    "human_explanation_zh": "用户触发后，把最新记忆分析报告和深度探索提示预填入 ChatGPT。",
+    "machine_copyable_text": "# ChatGPT Deep Exploration Payload\n\nTask: MA-V12-S12P3\nAcceptance: ACC-MA-V12-S12P3\nContract: chatgpt_deep_explore.v1_2_s12_p3\nMode: prefill_only by default; auto_submit is gated by explicit config and confirmation.\n\n## 最新记忆分析报告\n\n- Personalization prompt: phase_s12_p2_personalization_prompt_completed_pending_s12_p3 / personalization_prompt.v1_2_s12_p2\n- Prompt targets: chatgpt, codex, other_agent\n- Latent signals: 5\n- Self-iteration suggestions: 5\n- Decision debt candidates: 8\n- Agent collaboration status: phase_s08_p1_collaboration_metrics_completed_pending_s08_p2\n\n### Personalization Prompt 中文摘要\n\n# Personalization Prompt 中文人类说明\n\n- task_id: MA-V12-S12P2\n- acceptance_id: ACC-MA-V12-S12P2\n- prompt_version: personalization_prompt.v1_2_s12_p2\n- generated_at: 2026-07-08T14:04:54Z\n- source: OpenAIDatabase redacted derived context\n- raw_private_data_included: false\n- plaintext_secrets_included: false\n\n## 结论\n\nS12 P2 已生成 ChatGPT、Codex、other agent 可用的最新 Personalization Prompt。状态为 `phase_s12_p2_personalization_prompt_completed_pending_s12_p3`。\n\n本文件是中文人类说明；每个目标文件都包含 `机器可复制文本` fenced block，可直接复制到对应 agent 的 personalization 或启动上下文。\n\n## 来源报告\n\n- `data/derived/personalization/personalization_export.json`\n- `data/derived/behavior_intelligence/events.json`\n- `data/derived/behavior_intelligence/clusters.json`\n- `data/derived/behavior_intelligence/latent_signals.json`\n- `data/derived/behavior_intelligence/self_iteration_suggestions.json`\n- `data/derived/behavior_intelligence/decision_debt_ledger.json`\n- `data/derived/agent_collaboration/agent_collaboration_quality_report.json`\n\n## 摘要\n\nlatest memory:\n- OpenAIDatabase 是 durable memory source / GitHub 上的 OpenAIDatabase 应作为任意 agent 可读取的长期记忆、画像、偏好和历史上下文数据库。 / high\n- 任意 agent personalization / 所有 agent 访问后都应能生成适配用户的 profile、preference、project context、rules 和 history summary。 / high\n- 默认中文输出 / 用户长期偏好中文输出；代码、API、库名、错误信息和专业术语可保留英文。 / high\n- 真实数据优先 / 用户明确要求使用真实 Codex / ChatGPT / GitHub 数据，不接受 mock、伪进度或只给概念演示。 / high\n- 报告面向人类 ROI 和成长 / 处理记忆或行为数据后，应输出人能直接使用的话题、行动、建议、机会、ROI、能力成长和风险提醒。 / high\n\nbehavior:\n- 经营与管理决策 / 该行为簇基于 23 条带证据引用的事件，主要围绕「经营与管理决策」。来源包含 chatgpt，时间覆盖 2025-11、2025-12、2026-01、2026-02，常见任务类型为 未标注、design，语言以 zh 为主。该摘要只描述事件聚合，不做个人状态判断或无证重大结论\n\n## 深度探索提示\n\n请基于上面的 Memory Atlas v1.2 最新记忆分析结果做一次深度探索：\n1. 找出最值得继续推进的 3 个高 ROI 行动，并说明证据、收益和风险。\n2. 找出最应该暂缓或降权的 3 个低价值循环，并给出停止条件。\n3. 判断哪些内容应该进入 ChatGPT personalization、Codex AGENTS.md 或 other agent handoff。\n4. 输出中文，先给结论，再给证据，不要要求读取 cookies、tokens、secrets 或未授权 raw 数据。\n\n## Safety\n\n- User trigger required.\n- prefill_only 默认只填入，不静默发送。\n- auto_submit 必须由配置和显式确认共同开启。\n- No silent send.\n- No cookie/token/secret export.\n- No raw mutation.\n- No proposal apply execution.",
+    "prompt_path": "data/derived/chatgpt_deep_explore/latest_memory_analysis_prompt.md"
+  },
+  "safety": {
+    "auto_submit_requires_explicit_config": true,
+    "no_cookie_token_secret_export": true,
+    "no_silent_send": true,
+    "proposal_apply_execution": false,
+    "raw_mutation": false,
+    "sends_to_chatgpt": false,
+    "user_trigger_required": true
+  },
+  "schema_version": "openai_database.chatgpt_deep_explore.v1_2_s12_p3",
+  "secret_sanitize_findings": [],
+  "source_report_freshness": {
+    "data/derived/agent_collaboration/agent_collaboration_quality_report.json": {
+      "acceptance_id": "ACC-MA-V12-S08P1",
+      "exists": true,
+      "generated_at": "2026-07-08T06:32:23Z",
+      "path": "data/derived/agent_collaboration/agent_collaboration_quality_report.json",
+      "status": "phase_s08_p1_collaboration_metrics_completed_pending_s08_p2",
+      "task_id": "MA-V12-S08P1"
+    },
+    "data/derived/behavior_intelligence/decision_debt_ledger.json": {
+      "acceptance_id": "ACC-MA-V12-S09P3",
+      "exists": true,
+      "generated_at": "2026-07-08T08:43:29Z",
+      "path": "data/derived/behavior_intelligence/decision_debt_ledger.json",
+      "status": "phase_s09_p3_decision_debt_completed_pending_s09_review",
+      "task_id": "MA-V12-S09P3"
+    },
+    "data/derived/behavior_intelligence/latent_signals.json": {
+      "acceptance_id": "ACC-MA-V12-S09P1",
+      "exists": true,
+      "generated_at": "2026-07-08T07:58:50Z",
+      "path": "data/derived/behavior_intelligence/latent_signals.json",
+      "status": "phase_s09_p1_latent_signals_completed_pending_s09_p2",
+      "task_id": "MA-V12-S09P1"
+    },
+    "data/derived/behavior_intelligence/self_iteration_suggestions.json": {
+      "acceptance_id": "ACC-MA-V12-S09P2",
+      "exists": true,
+      "generated_at": "2026-07-08T08:18:30Z",
+      "path": "data/derived/behavior_intelligence/self_iteration_suggestions.json",
+      "status": "phase_s09_p2_self_iteration_completed_pending_s09_p3",
+      "task_id": "MA-V12-S09P2"
+    },
+    "data/derived/personalization/personalization_export.json": {
+      "acceptance_id": "ACC-MA-V12-S12P2",
+      "exists": true,
+      "generated_at": "2026-07-08T14:04:54Z",
+      "path": "data/derived/personalization/personalization_export.json",
+      "status": "phase_s12_p2_personalization_prompt_completed_pending_s12_p3",
+      "task_id": "MA-V12-S12P2"
+    },
+    "data/derived/personalization/personalization_prompt_human_zh.md": {
+      "exists": true,
+      "path": "data/derived/personalization/personalization_prompt_human_zh.md",
+      "size_bytes": 8345
+    }
+  },
+  "source_reports": [
+    "data/derived/personalization/personalization_export.json",
+    "data/derived/personalization/personalization_prompt_human_zh.md",
+    "data/derived/behavior_intelligence/latent_signals.json",
+    "data/derived/behavior_intelligence/self_iteration_suggestions.json",
+    "data/derived/behavior_intelligence/decision_debt_ledger.json",
+    "data/derived/agent_collaboration/agent_collaboration_quality_report.json"
+  ],
+  "status": "phase_s12_p3_chatgpt_deep_explore_completed_pending_s12_review",
+  "task_id": "MA-V12-S12P3"
+}

@@ -1,0 +1,36 @@
+{
+  "business_value_consistency_verified": false,
+  "decision": "NO_GO",
+  "final_goal_closeout_difference_report_required_if_repeated": true,
+  "gap_count": 4,
+  "gaps": [
+    {
+      "affected_count": 149,
+      "gap_code": "processed_materialization_value_fingerprints_missing",
+      "public_safe_detail": "processed materialization artifact has no comparable value fingerprints"
+    },
+    {
+      "affected_count": 36,
+      "gap_code": "owner_authorized_fill_targets_unmatched_in_private_raw_index",
+      "public_safe_detail": "owner-authorized fill fingerprints were not found in the private raw numeric index"
+    },
+    {
+      "affected_count": 77,
+      "gap_code": "ambiguous_private_raw_index_matches",
+      "public_safe_detail": "some matching fingerprints are not unique in the private raw numeric index"
+    },
+    {
+      "affected_count": 12,
+      "gap_code": "full_reconciliation_target_slots_still_blocked",
+      "public_safe_detail": "full raw-to-processed reconciliation remains blocked for residual target slots"
+    }
+  ],
+  "generated_at": "2026-07-06T00:00:00+10:00",
+  "phase_id": "V014_PROCESSED_VALUE_SOURCE_MAP_COMPLETION_PRIVATE_RAW_VALUE_MATCHING_DRY_RUN",
+  "project_id": "KMFA",
+  "record_type": "v014_processed_value_source_map_completion_private_raw_value_matching_dry_run_gap_summary",
+  "repeated_cross_validation_mismatch_confirmed": false,
+  "schema_version": "kmfa.v014_private_raw_value_matching_dry_run_gap_summary.v1",
+  "task_id": "KMFA-V014-PROCESSED-VALUE-SOURCE-MAP-COMPLETION-PRIVATE-RAW-VALUE-MATCHING-DRY-RUN-20260706",
+  "version": "0.1.4-private-raw-value-matching-dry-run"
+}

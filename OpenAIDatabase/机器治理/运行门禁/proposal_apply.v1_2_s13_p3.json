@@ -1,0 +1,71 @@
+{
+  "acceptance_id": "ACC-MA-V12-S13P3",
+  "apply_contract": {
+    "approved_state": "approved_by_human",
+    "forbidden_target_fragments": [
+      "data/public_raw/",
+      "data/raw/",
+      "data/private_imports/",
+      "credentials",
+      "cookies",
+      "tokens"
+    ],
+    "human_approval_required_before_apply": true,
+    "proposal_fixtures": [
+      {
+        "apply_payload": {
+          "applied_change_zh": "S13 P3 验收样例：授权后可写入允许的 derived proposal apply 结果。",
+          "source": "s13_p3_acceptance_fixture"
+        },
+        "approval": {
+          "approved_at": "2026-07-08T08:18:30Z",
+          "approved_by": "human_owner_s13_p3_acceptance_fixture",
+          "status": "approved_by_human"
+        },
+        "current_state": "approved_by_human",
+        "human_reason_zh": "用于验证 S13 P3 授权 apply 路径；不代表真实 pending proposal 已被用户批准。",
+        "proposal_id": "sample",
+        "rollback_plan_zh": "删除或还原 data/derived/proposals/apply_results/sample_authorized_apply_result.json；raw 文件不回滚。",
+        "target_files": [
+          "data/derived/proposals/apply_results/sample_authorized_apply_result.json"
+        ],
+        "target_type": "config",
+        "validation_commands": [
+          "python3 scripts/atlasctl.py proposals --dry-run"
+        ]
+      },
+      {
+        "approval": {
+          "approved_at": null,
+          "approved_by": null,
+          "status": "not_approved"
+        },
+        "current_state": "pending_human_review",
+        "human_reason_zh": "用于验证未授权 proposal 必须 fail-closed。",
+        "proposal_id": "sample_unauthorized",
+        "rollback_plan_zh": "未授权状态不会写文件，因此 rollback 是 no-op；保留审计记录即可。",
+        "target_files": [
+          "data/derived/proposals/apply_results/unauthorized_should_not_write.json"
+        ],
+        "target_type": "config",
+        "validation_commands": [
+          "python3 scripts/atlasctl.py proposals --dry-run"
+        ]
+      }
+    ],
+    "raw_archive_is_never_apply_target": true,
+    "rollback_point_required": true,
+    "validation_after_apply_required": true
+  },
+  "schema_version": "proposal_apply.v1_2_s13_p3",
+  "scope_boundary": {
+    "does_not_apply_real_pending_proposals_without_human_approval": true,
+    "does_not_modify_raw": true,
+    "does_not_push_remote": true,
+    "does_not_upload_github_main": true,
+    "next_phase": "S13 Review"
+  },
+  "status": "phase_s13_p3_apply_rollback_completed_pending_s13_review",
+  "task_id": "MA-V12-S13P3",
+  "validator": "validate:v1.2-s13-p3"
+}

@@ -22,7 +22,11 @@ from audit_memory_atlas_visual_acceptance import (  # noqa: E402
     VisualAcceptanceError,
     audit_visual_acceptance,
 )
-from preflight_cloudflare_pages_access import PreflightError, preflight as cloudflare_preflight  # noqa: E402
+from preflight_cloudflare_pages_access import (  # noqa: E402
+    PreflightError,
+    preflight as cloudflare_preflight,
+    static_output_directory,
+)
 
 
 class AcceptanceError(RuntimeError):
@@ -317,6 +321,7 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
     galaxy_source = read_text(repo_root / "apps/memory-atlas/src/components/GalaxyScene.tsx")
     index_html = read_text(repo_root / "apps/memory-atlas/index.html")
     installer_source = read_text(repo_root / "scripts/install_memory_atlas_app.py")
+    runtime_server_source = read_text(repo_root / "scripts/memory_atlas_runtime_server.py")
     codex_sync_source = read_text(repo_root / "scripts/sync_codex_memory_data.py")
     codex_auto_update_source = read_text(repo_root / "scripts/run_codex_memory_auto_update.py")
     codex_history_export_source = read_text(repo_root / "scripts/export_codex_history_archives.py")
@@ -416,7 +421,7 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
     )
     require(
         checks,
-        "real local Codex session logs" in codex_sync_source
+        ("real local Codex session logs" in codex_sync_source or "Sync real local Codex activity" in codex_sync_source)
         and "redacted_summary_only_no_raw_transcript_no_plaintext_secret" in codex_sync_source
         and "OpenAIDatabase" in codex_sync_source
         and "--build-atlas" in codex_auto_update_source
@@ -452,7 +457,7 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         and "Zero Trust Access" in deployment_doc
         and "MEMORY_ATLAS_CLOUDFLARE_RUNBOOK.md" in deployment_doc
         and "Build output directory: apps/memory-atlas/dist" in deployment_doc
-        and load_json(repo_root / "wrangler.jsonc").get("pages_build_output_dir") == "apps/memory-atlas/dist",
+        and static_output_directory(load_json(repo_root / "wrangler.jsonc")) == "apps/memory-atlas/dist",
         "cloudflare_pages_access_ready",
         "wrangler config and deployment docs cover Pages + Access",
         "Cloudflare Pages + Access readiness docs/config missing",
@@ -504,7 +509,10 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         and "scripts/sync_codex_memory_data.py" in installer_source
         and "--build-atlas" in installer_source
         and "snapshot_generated_at" in installer_source
-        and "正在刷新最新脱敏数据快照" in installer_source
+        and (
+            "正在刷新最新脱敏数据快照" in installer_source
+            or "正在刷新最新 Memory Atlas 数据快照" in installer_source
+        )
         and "local static runtime build manifest matches current git HEAD" in read_text(repo_root / "scripts/audit_memory_atlas_acceptance.py")
         and "def remove_tree" in installer_source
         and "clean_frontend_dependencies" in installer_source
@@ -512,14 +520,14 @@ def audit_acceptance(repo_root: Path, publish_dir: Path | None = None, require_l
         and "构建缓存清理失败" in installer_source
         and "Application Support/OpenAIDatabase/MemoryAtlas" in installer_source
         and "scripts/audit_memory_atlas_release.py" in installer_source
-        and "request_shutdown" in installer_source
+        and "request_shutdown" in runtime_server_source
         and "MEMORY_ATLAS_PID_FILE" in installer_source
-        and "path.unlink()" in installer_source
-        and "release_requested" in installer_source
-        and "active_thread_count" in installer_source
-        and "allow_reuse_address = True" in installer_source
+        and "path.unlink()" in runtime_server_source
+        and "release_requested" in runtime_server_source
+        and "active_thread_count" in runtime_server_source
+        and "allow_reuse_address = True" in runtime_server_source
         and '"-m http.server"' in installer_source
-        and "last_seen_at = time.time() - max" not in installer_source,
+        and "last_seen_at = time.time() - max" not in runtime_server_source,
         "local_app_launcher_contract",
         "installer creates Downloads/Applications launchers, custom icon, an Application Support source workspace, npm/pnpm dependency fallback, runtime cache manifest/stale checks, cleanup guard, release audit gate, pid cleanup, and immediate tab-close shutdown",
         "local app launcher contract missing required pieces",

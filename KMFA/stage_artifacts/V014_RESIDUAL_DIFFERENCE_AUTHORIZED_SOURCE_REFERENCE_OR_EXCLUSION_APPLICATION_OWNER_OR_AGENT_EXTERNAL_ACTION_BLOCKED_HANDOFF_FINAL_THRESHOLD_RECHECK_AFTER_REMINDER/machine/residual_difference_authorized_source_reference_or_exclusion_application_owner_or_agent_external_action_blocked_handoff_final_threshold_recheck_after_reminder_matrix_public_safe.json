@@ -1,0 +1,63 @@
+{
+  "check_count": 12,
+  "check_fail_count": 0,
+  "check_pass_count": 12,
+  "checks": [
+    {
+      "check_code": "source_external_action_blocked_handoff_phase_loaded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_go_no_go_preserved",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_matrix_clean",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_external_action_blocked_handoff_complete",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_owner_action_reminder_complete",
+      "status": "PASS"
+    },
+    {
+      "check_code": "source_private_reminder_queue_read",
+      "status": "PASS"
+    },
+    {
+      "check_code": "third_external_action_blocker_observation_recorded",
+      "status": "PASS"
+    },
+    {
+      "check_code": "external_action_blocker_final_threshold_met",
+      "status": "PASS"
+    },
+    {
+      "check_code": "private_final_threshold_records_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "diagnostic_kind_final_threshold_counts_locked",
+      "status": "PASS"
+    },
+    {
+      "check_code": "raw_inbox_untouched",
+      "status": "PASS"
+    },
+    {
+      "check_code": "downstream_gates_closed",
+      "status": "PASS"
+    }
+  ],
+  "decision": "NO_GO",
+  "generated_at": "2026-07-08T00:00:00+10:00",
+  "phase_id": "V014_RESIDUAL_DIFFERENCE_AUTHORIZED_SOURCE_REFERENCE_OR_EXCLUSION_APPLICATION_OWNER_OR_AGENT_EXTERNAL_ACTION_BLOCKED_HANDOFF_FINAL_THRESHOLD_RECHECK_AFTER_REMINDER",
+  "project_id": "KMFA",
+  "record_type": "v014_owner_agent_external_action_final_threshold_after_reminder_matrix_public_safe",
+  "schema_version": "kmfa.v014_owner_agent_external_action_final_threshold_after_reminder_matrix.v1",
+  "task_id": "KMFA-V014-RESIDUAL-DIFFERENCE-AUTHORIZED-SOURCE-REFERENCE-OR-EXCLUSION-APPLICATION-OWNER-OR-AGENT-EXTERNAL-ACTION-BLOCKED-HANDOFF-FINAL-THRESHOLD-RECHECK-AFTER-REMINDER-20260708",
+  "version": "0.1.4-residual-difference-authorized-source-reference-or-exclusion-application-owner-or-agent-external-action-blocked-handoff-final-threshold-recheck-after-reminder"
+}

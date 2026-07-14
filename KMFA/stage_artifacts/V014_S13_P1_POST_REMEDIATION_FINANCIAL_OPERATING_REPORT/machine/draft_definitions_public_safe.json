@@ -1,0 +1,79 @@
+{
+  "drafts": [
+    {
+      "business_decision_basis_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "current_data_quality_grade": "Q4",
+      "data_status_and_limitations_visible": true,
+      "decision": "NO_GO",
+      "draft_id": "financial_operating_weekly_draft",
+      "draft_report_allowed": true,
+      "formal_report_allowed": false,
+      "html_ref": "KMFA/stage_artifacts/V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT/exports/html/financial_operating_weekly_draft.html",
+      "incomplete_reconciliation_count": 1,
+      "limitations": [
+        "本页是内部复核初稿，不是正式可信经营报告。",
+        "四类主题只有结构候选接入；当前原始数值到主题的可证明绑定为零。",
+        "差异、现金证据和跨表复核未关闭前，不得填造金额、升级报告等级或作为经营决策依据。",
+        "S13-P1 不执行回款应收账龄、跨表复核、付款、银行、贷款、开票、税务或外部动作。"
+      ],
+      "nonzero_delta_reconciliation_count": 9,
+      "open_final_difference_accepted_count": 3,
+      "raw_value_bound_lane_count": 0,
+      "report_grade_visible": "D",
+      "source_lane_count": 4,
+      "structure_connected_lane_count": 4,
+      "visible_report_name": "经营周报初稿",
+      "visible_section_titles": [
+        "经营摘要",
+        "经营情况",
+        "费用税金资产",
+        "现金情况",
+        "贷款明细",
+        "数据状态与限制",
+        "下一步复核事项"
+      ],
+      "zero_delta_reconciliation_count": 2
+    },
+    {
+      "business_decision_basis_allowed": false,
+      "contains_business_amounts": false,
+      "contains_field_plaintext": false,
+      "contains_source_identity": false,
+      "current_data_quality_grade": "Q4",
+      "data_status_and_limitations_visible": true,
+      "decision": "NO_GO",
+      "draft_id": "financial_operating_monthly_draft",
+      "draft_report_allowed": true,
+      "formal_report_allowed": false,
+      "html_ref": "KMFA/stage_artifacts/V014_S13_P1_POST_REMEDIATION_FINANCIAL_OPERATING_REPORT/exports/html/financial_operating_monthly_draft.html",
+      "incomplete_reconciliation_count": 1,
+      "limitations": [
+        "本页是内部复核初稿，不是正式可信经营报告。",
+        "四类主题只有结构候选接入；当前原始数值到主题的可证明绑定为零。",
+        "差异、现金证据和跨表复核未关闭前，不得填造金额、升级报告等级或作为经营决策依据。",
+        "S13-P1 不执行回款应收账龄、跨表复核、付款、银行、贷款、开票、税务或外部动作。"
+      ],
+      "nonzero_delta_reconciliation_count": 9,
+      "open_final_difference_accepted_count": 3,
+      "raw_value_bound_lane_count": 0,
+      "report_grade_visible": "D",
+      "source_lane_count": 4,
+      "structure_connected_lane_count": 4,
+      "visible_report_name": "经营月报初稿",
+      "visible_section_titles": [
+        "经营摘要",
+        "经营情况",
+        "费用税金资产",
+        "现金情况",
+        "贷款明细",
+        "数据状态与限制",
+        "下一步复核事项"
+      ],
+      "zero_delta_reconciliation_count": 2
+    }
+  ],
+  "schema_version": "kmfa.v014.s13_p1.drafts.v1"
+}

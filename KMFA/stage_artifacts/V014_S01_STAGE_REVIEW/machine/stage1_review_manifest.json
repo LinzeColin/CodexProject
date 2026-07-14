@@ -1,0 +1,121 @@
+{
+  "schema_version": "kmfa.v014_s01_stage_review.v1",
+  "project_id": "KMFA",
+  "version": "0.1.4",
+  "stage_id": "S01",
+  "review_id": "KMFA-V014-S01-STAGE-REVIEW-20260703",
+  "task_id": "KMFA-V014-S01-STAGE-REVIEW-20260703",
+  "status": "review_passed_local_only_no_go_upload_deferred_until_v014_stage1_18_complete",
+  "review_scope": "v014_s01_stage_review_only",
+  "stage_review_performed": true,
+  "github_upload_performed": false,
+  "github_upload_status": "not_uploaded_deferred_until_v014_stage1_18_complete_overall_review",
+  "s02_started": false,
+  "raw_inventory_performed": false,
+  "raw_value_matching_performed": false,
+  "formal_report_performed": false,
+  "business_execution_performed": false,
+  "lineage_full_check_performed": false,
+  "phase_count": 3,
+  "phase_results": {
+    "S01-P1": "PASS",
+    "S01-P2": "PASS",
+    "S01-P3": "PASS"
+  },
+  "reviewed_phase_manifests": {
+    "S01-P1": "KMFA/stage_artifacts/V014_S01_P1_READ_ONLY_SCOPE_LOCK/machine/s01_p1_read_only_scope_lock_manifest.json",
+    "S01-P2": "KMFA/stage_artifacts/V014_S01_P2_PUBLIC_BASELINE_SYNC/machine/s01_p2_public_baseline_sync_manifest.json",
+    "S01-P3": "KMFA/stage_artifacts/V014_S01_P3_NO_OMISSION_BASELINE/machine/s01_p3_no_omission_baseline_manifest.json"
+  },
+  "open_review_finding_count": 0,
+  "fixed_review_finding_count": 0,
+  "review_findings": [],
+  "release_state": {
+    "delivery_allowed": false,
+    "formal_report_allowed": false,
+    "business_decision_basis_allowed": false,
+    "business_execution_allowed": false,
+    "github_main_upload_allowed": false,
+    "current_go_no_go": "NO_GO",
+    "current_report_grade": "D",
+    "release_permission": "blocked"
+  },
+  "raw_data_boundary": {
+    "raw_inbox_path": "/Users/linzezhang/Downloads/KMFA_MetaData",
+    "raw_inbox_read_by_this_review": false,
+    "raw_inbox_listed_by_this_review": false,
+    "raw_inbox_modified_by_this_review": false,
+    "raw_inbox_deleted_by_this_review": false,
+    "raw_inbox_moved_by_this_review": false,
+    "raw_inbox_renamed_by_this_review": false,
+    "raw_inbox_overwritten_by_this_review": false,
+    "raw_inbox_written_by_this_review": false,
+    "raw_payload_extracted_from_delivery_zip": false,
+    "raw_filenames_committed": false,
+    "raw_hashes_committed": false,
+    "field_or_header_plaintext_committed": false,
+    "business_values_committed": false,
+    "zip_committed": false,
+    "excel_workbook_committed": false,
+    "pdf_committed": false,
+    "private_csv_committed": false,
+    "sqlite_or_db_committed": false,
+    "credentials_committed": false
+  },
+  "public_repo_safety": {
+    "raw_business_data_committed": false,
+    "zip_committed": false,
+    "excel_workbook_committed": false,
+    "pdf_committed": false,
+    "private_csv_committed": false,
+    "sqlite_or_db_committed": false,
+    "credentials_committed": false,
+    "raw_filenames_committed": false,
+    "raw_hashes_committed": false,
+    "field_plaintext_committed": false,
+    "normalized_business_values_committed": false
+  },
+  "v14_source_baseline": {
+    "source_package_sha256": "2d5fa2a64ae72d5a5a8810e13444529b10eca358e368bac57611283827608356",
+    "public_source_count": 9,
+    "html_human_flow_gate": {
+      "pass": 54,
+      "warn": 0,
+      "fail": 0
+    },
+    "quality_over_time_rule": "quality_gate_passed_can_finish_early_quality_gate_failed_blocks_delivery"
+  },
+  "no_omission_baseline": {
+    "legacy_requirements": 20,
+    "legacy_p0": 9,
+    "legacy_p1": 8,
+    "v14_overlay_requirements": 5,
+    "v14_overlay_p0": 3,
+    "v14_overlay_p1": 2,
+    "v14_stages": 18,
+    "v14_phases": 54,
+    "v14_tasks": 162,
+    "v14_stage_phase_task_status_records": 234
+  },
+  "review_validation_summary": {
+    "s01_p1_validator": "PASS",
+    "s01_p2_validator": "PASS",
+    "s01_p3_validator": "PASS",
+    "stage_review_validator": "PASS",
+    "governance_validator": "PASS",
+    "raw_private_scan": "PASS",
+    "secret_scan": "PASS",
+    "diff_check": "PASS"
+  },
+  "evidence_refs": [
+    "KMFA/stage_artifacts/V014_S01_STAGE_REVIEW/human/stage1_review_report.md",
+    "KMFA/stage_artifacts/V014_S01_STAGE_REVIEW/human/test_results.md",
+    "KMFA/stage_artifacts/V014_S01_STAGE_REVIEW/human/risk_register.md",
+    "KMFA/stage_artifacts/V014_S01_STAGE_REVIEW/human/rollback_plan.md",
+    "KMFA/stage_artifacts/V014_S01_STAGE_REVIEW/machine/stage1_review_manifest.json",
+    "KMFA/tools/check_v014_s01_stage_review.py",
+    "KMFA/tests/test_v014_s01_stage_review.py"
+  ],
+  "next_recommended_phase": "S02-P1",
+  "next_phase_instruction": "Start S02-P1 in a separate run only after user instruction; keep GitHub upload deferred until v1.4 Stage 1-18 complete overall review."
+}
