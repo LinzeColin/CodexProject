@@ -6733,3 +6733,28 @@ tasks:
     target_version: "0.24.0"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "ADP-MVP-READY-S3-PERSISTENT-AUTH-PREREQUISITE-FAIL-CLOSED"
+    title: "MVP Ready S3 persistent authorization prerequisite fail-closed hardening"
+    parent_task_id: "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"
+    phase: "S2PL"
+    status: "completed"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-07-10T21:50:12+10:00"
+    objective: "Require every owner-decision, controlled-run, and live-artifact prerequisite check to pass before persistent DAILY_OPERATION authorization can be recorded."
+    scope: "Persistent authorization state builder and validator, temporary-root readiness/preflight regressions, FORM-ADP-102 behavior and AST fingerprint, phase record, governance synchronization, S3 handoff, MVP page, and three-base records."
+    non_scope: "No live persistent authorization artifact, DAILY_OPERATION, SMTP send, scheduler or LaunchAgent enablement, Release, restore, CURRENT/V7 change, public schema, DB, source, ranking, or queue mutation."
+    owner: "engineering_owner"
+    risk_tier: "T2"
+    dependencies: ["S2PMT07-DAILY-OPERATION-OWNER-AUTHORIZATION-DECISION", "S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE", "S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION"]
+    required_files: ["arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_final_command_root_tools.py", "arxiv-daily-push/tests/test_governance_current_state.py", "arxiv-daily-push/docs/governance/MODEL_SPEC.md", "arxiv-daily-push/docs/governance/formula_registry.yaml", "arxiv-daily-push/docs/phase_records/PHASE_ADP_MVP_READY_S3_PERSISTENT_AUTH_PREREQUISITE_FAIL_CLOSED.md"]
+    acceptance_ids: ["ACC-S2PMT07-FINAL-REVIEW"]
+    test_commands: ["PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest discover -s arxiv-daily-push/tests -p 'test_stage2_final_gate.py' -k daily_operation_persistent_authorization -v", "PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest discover -s arxiv-daily-push/tests -p 'test_final_command_root_tools.py' -k authorization_prerequisites -v", "PYTHONPATH=arxiv-daily-push/src python3 -B -m unittest discover -s arxiv-daily-push/tests -p 'test_*.py' -q"]
+    test_results: ["TDD RED: core authorization tests produced 2 failures and 1 AttributeError; valid artifact plus empty controlled-run passed incorrectly and validator accepted PASS plus failed checks", "TDD RED: readiness and enablement preflight temporary-root tests returned exit 0 / PASS with failed controlled-run prerequisites", "TDD RED: validator returned no errors after a required prerequisite check key was deleted from a PASS state", "TDD GREEN: 9 persistent-authorization focused tests passed and exact required-check-set validation is enforced", "TDD GREEN: 2 readiness/preflight prerequisite end-to-end tests passed", "FULL: complete ADP unittest suite passed 890 tests"]
+    evidence_refs: ["arxiv-daily-push/docs/phase_records/PHASE_ADP_MVP_READY_S3_PERSISTENT_AUTH_PREREQUISITE_FAIL_CLOSED.md", "arxiv-daily-push/src/arxiv_daily_push/stage2_final_gate.py", "arxiv-daily-push/tests/test_stage2_final_gate.py", "arxiv-daily-push/tests/test_final_command_root_tools.py", "arxiv-daily-push/tests/test_governance_current_state.py"]
+    result: "pass_persistent_authorization_prerequisite_fail_closed_no_runtime_enablement"
+    risk: "A future syntactically valid authorization artifact could otherwise bypass missing or failed owner-decision and controlled-run evidence."
+    rollback: "Revert only this task's builder/validator logic, focused tests, FORM-ADP-102 fingerprint, phase record, governance rows, and owner-facing synchronization; preserve earlier local MVP preparation changes and all runtime state."
+    target_version: "0.23.1"
+    completed_version: "0.23.1"
+    unknown_task_ids: []

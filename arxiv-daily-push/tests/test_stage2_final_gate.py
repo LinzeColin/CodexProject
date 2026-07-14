@@ -247,6 +247,59 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 class Stage2FinalGateTests(unittest.TestCase):
+    def _write_daily_operation_persistent_authorization_fixture(
+        self,
+        root: Path,
+        *,
+        include_owner_decision: bool = True,
+        controlled_run: dict[str, object] | None = None,
+    ) -> None:
+        bundle_dir = root / "FINAL_ACCEPTANCE_BUNDLE"
+        bundle_dir.mkdir(parents=True)
+        template = json.loads(
+            (
+                REPO_ROOT
+                / "FINAL_ACCEPTANCE_BUNDLE/templates/daily_operation_persistent_enablement_authorization.template.json"
+            ).read_text(encoding="utf-8")
+        )
+        template.update(
+            {
+                "generated_at": "2026-07-10T10:00:00+10:00",
+                "template_only": False,
+                "explicit_persistent_daily_operation_authorization": True,
+                "authorization_text": "Owner explicitly authorizes persistent DAILY_OPERATION for this fixture.",
+            }
+        )
+        (bundle_dir / "daily_operation_persistent_enablement_authorization.json").write_text(
+            json.dumps(template, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        if include_owner_decision:
+            owner_decision = (
+                REPO_ROOT / "FINAL_ACCEPTANCE_BUNDLE/daily_operation_owner_authorization_decision.json"
+            ).read_text(encoding="utf-8")
+            (bundle_dir / "daily_operation_owner_authorization_decision.json").write_text(
+                owner_decision,
+                encoding="utf-8",
+            )
+        controlled_path = (
+            root
+            / "governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json"
+        )
+        controlled_path.parent.mkdir(parents=True)
+        controlled_payload = controlled_run
+        if controlled_payload is None:
+            controlled_payload = json.loads(
+                (
+                    REPO_ROOT
+                    / "governance/run_manifests/ADP-S2PMT07-AUTHORIZED-CONTROLLED-REAL-RUN-ACCEPTANCE-20260701.json"
+                ).read_text(encoding="utf-8")
+            )
+        controlled_path.write_text(
+            json.dumps(controlled_payload, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+
     def _write_s2plt02_second_day_dry_run_reports(self, state_dir: Path) -> Path:
         run_dir = state_dir / "runs" / "20260629"
         run_dir.mkdir(parents=True)
@@ -1309,6 +1362,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(plan["smtp_secret_values_logged"])
         capture_window_summary = plan["terminal_capture_window_audit_summary"]
         self.assertEqual(capture_window_summary["status"], "blocked")
+        self.assertEqual(capture_window_summary["state_source"], "portable_no_implicit_home_state")
         self.assertEqual(capture_window_summary["candidate_service_dates"], ["2026-06-29", "2026-06-30"])
         self.assertEqual(capture_window_summary["dry_run_service_dates"], [])
         self.assertEqual(
@@ -1317,7 +1371,7 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertEqual(capture_window_summary["nonterminal_succeeded_dry_run_count"], 0)
         self.assertEqual(capture_window_summary["dry_run_email_count"], 0)
-        self.assertEqual(capture_window_summary["real_sent_candidate_email_count"], 8)
+        self.assertEqual(capture_window_summary["real_sent_candidate_email_count"], 0)
         self.assertEqual(capture_window_summary["observed_terminal_email_count_credit"], 8)
         self.assertFalse(capture_window_summary["terminal_delivery_credit"])
         self.assertFalse(capture_window_summary["counts_toward_s2plt02_terminal_proof"])
@@ -1406,6 +1460,27 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertFalse(plan["scheduler_install_enabled"])
         self.assertFalse(plan["daily_operation_enabled"])
         self.assertFalse(plan["production_acceptance_claimed"])
+        self.assertEqual(validate_s2plt02_terminal_delivery_proof_capture_plan_state(plan), [])
+
+    def test_s2plt02_terminal_delivery_capture_plan_ignores_implicit_home_runtime_state(self) -> None:
+        with TemporaryDirectory() as tmp_dir:
+            fake_home = Path(tmp_dir) / "home"
+            fake_state_dir = fake_home / ".adp" / "arxiv-daily-push"
+            self._write_s2plt02_second_day_dry_run_reports(fake_state_dir)
+
+            with patch("arxiv_daily_push.stage2_final_gate.Path.home", return_value=fake_home):
+                plan = build_s2plt02_terminal_delivery_proof_capture_plan_state(
+                    generated_at="2026-06-30T10:41:36+10:00",
+                    repo_root=REPO_ROOT,
+                )
+
+        capture_window_summary = plan["terminal_capture_window_audit_summary"]
+        self.assertEqual(capture_window_summary["dry_run_service_dates"], [])
+        self.assertEqual(capture_window_summary["daily_run_succeeded_service_dates"], [])
+        self.assertEqual(capture_window_summary["nonterminal_succeeded_dry_run_service_dates"], [])
+        self.assertEqual(capture_window_summary["dry_run_email_count"], 0)
+        self.assertEqual(capture_window_summary["real_sent_candidate_email_count"], 0)
+        self.assertEqual(plan["current_capture_window_dry_run_email_count_rejected"], 0)
         self.assertEqual(validate_s2plt02_terminal_delivery_proof_capture_plan_state(plan), [])
 
     def test_s2plt02_terminal_delivery_capture_plan_blocks_invalid_authorization(self) -> None:
@@ -5784,13 +5859,14 @@ class Stage2FinalGateTests(unittest.TestCase):
         self.assertNotIn("blocked_candidate_inputs_present", capture_summary["runtime_capture_blockers"])
         capture_window_summary = capture_summary["terminal_capture_window_audit_summary"]
         self.assertEqual(capture_window_summary["status"], "blocked")
+        self.assertEqual(capture_window_summary["state_source"], "portable_no_implicit_home_state")
         self.assertEqual(capture_window_summary["dry_run_service_dates"], [])
         self.assertEqual(
             capture_window_summary["nonterminal_succeeded_dry_run_service_dates"],
             [],
         )
         self.assertEqual(capture_window_summary["dry_run_email_count"], 0)
-        self.assertEqual(capture_window_summary["real_sent_candidate_email_count"], 8)
+        self.assertEqual(capture_window_summary["real_sent_candidate_email_count"], 0)
         self.assertEqual(capture_window_summary["observed_terminal_email_count_credit"], 8)
         self.assertFalse(capture_window_summary["terminal_delivery_credit"])
         self.assertFalse(capture_window_summary["counts_toward_s2plt02_terminal_proof"])
@@ -7118,6 +7194,132 @@ class Stage2FinalGateTests(unittest.TestCase):
             validate_state(tampered),
         )
 
+    def test_daily_operation_persistent_authorization_blocks_when_owner_decision_is_missing(self) -> None:
+        with TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            self._write_daily_operation_persistent_authorization_fixture(
+                root,
+                include_owner_decision=False,
+            )
+
+            state = stage2_final_gate_module.build_daily_operation_persistent_enablement_authorization_state(
+                generated_at="2026-07-10T10:05:00+10:00",
+                repo_root=root,
+            )
+
+        self.assertEqual(
+            state["status"],
+            "blocked_persistent_daily_operation_authorization_prerequisites_failed",
+        )
+        self.assertIn("owner_decision_artifact_present", state["failed_checks"])
+        self.assertIn("owner_decision_artifact_valid", state["failed_checks"])
+        self.assertFalse(state["persistent_daily_operation_authorized"])
+        self.assertFalse(state["owner_daily_operation_authorization_recorded"])
+        self.assertFalse(state["daily_operation_enablement_allowed_by_this_artifact"])
+        self.assertEqual(
+            state["next_required_step"],
+            "REPAIR_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_PREREQUISITES",
+        )
+        self.assertEqual(
+            stage2_final_gate_module.validate_daily_operation_persistent_enablement_authorization_state(state),
+            [],
+        )
+
+    def test_daily_operation_persistent_authorization_blocks_valid_artifact_when_controlled_run_fails(self) -> None:
+        with TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            self._write_daily_operation_persistent_authorization_fixture(root, controlled_run={})
+
+            state = stage2_final_gate_module.build_daily_operation_persistent_enablement_authorization_state(
+                generated_at="2026-07-10T10:10:00+10:00",
+                repo_root=root,
+            )
+
+        self.assertEqual(state["persistent_authorization_artifact_validation_errors"], [])
+        self.assertEqual(
+            state["status"],
+            "blocked_persistent_daily_operation_authorization_prerequisites_failed",
+        )
+        self.assertIn("controlled_real_run_acceptance_present", state["failed_checks"])
+        self.assertIn("controlled_real_run_acceptance_passed", state["failed_checks"])
+        self.assertFalse(state["persistent_daily_operation_authorized"])
+        self.assertFalse(state["owner_daily_operation_authorization_recorded"])
+        self.assertFalse(state["daily_operation_enablement_allowed_by_this_artifact"])
+        self.assertEqual(
+            state["next_required_step"],
+            "REPAIR_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_PREREQUISITES",
+        )
+        self.assertEqual(
+            stage2_final_gate_module.validate_daily_operation_persistent_enablement_authorization_state(state),
+            [],
+        )
+
+    def test_daily_operation_persistent_authorization_validator_rejects_pass_with_failed_checks(self) -> None:
+        with TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            self._write_daily_operation_persistent_authorization_fixture(root)
+            state = stage2_final_gate_module.build_daily_operation_persistent_enablement_authorization_state(
+                generated_at="2026-07-10T10:15:00+10:00",
+                repo_root=root,
+            )
+
+        state["checks"]["controlled_real_run_all_mail_products_accounted"] = False
+        state["failed_checks"] = ["controlled_real_run_all_mail_products_accounted"]
+        state["state_hash"] = stage2_final_gate_module._stable_hash(
+            {key: value for key, value in state.items() if key != "state_hash"}
+        )
+
+        errors = stage2_final_gate_module.validate_daily_operation_persistent_enablement_authorization_state(state)
+
+        self.assertIn(
+            "daily operation persistent authorization gate persistent authorization flag must match checks",
+            errors,
+        )
+
+    def test_daily_operation_persistent_authorization_validator_rejects_missing_prerequisite_check(self) -> None:
+        with TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            self._write_daily_operation_persistent_authorization_fixture(root)
+            state = stage2_final_gate_module.build_daily_operation_persistent_enablement_authorization_state(
+                generated_at="2026-07-10T10:17:00+10:00",
+                repo_root=root,
+            )
+
+        del state["checks"]["owner_decision_artifact_present"]
+        state["state_hash"] = stage2_final_gate_module._stable_hash(
+            {key: value for key, value in state.items() if key != "state_hash"}
+        )
+
+        errors = stage2_final_gate_module.validate_daily_operation_persistent_enablement_authorization_state(state)
+
+        self.assertIn(
+            "daily operation persistent authorization gate checks must match required prerequisite set",
+            errors,
+        )
+
+    def test_daily_operation_persistent_authorization_passes_only_when_all_prerequisites_pass(self) -> None:
+        with TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            self._write_daily_operation_persistent_authorization_fixture(root)
+
+            state = stage2_final_gate_module.build_daily_operation_persistent_enablement_authorization_state(
+                generated_at="2026-07-10T10:20:00+10:00",
+                repo_root=root,
+            )
+
+        self.assertEqual(
+            state["status"],
+            "pass_persistent_daily_operation_authorization_recorded_no_runtime_enablement",
+        )
+        self.assertEqual(state["failed_checks"], [])
+        self.assertTrue(state["persistent_daily_operation_authorized"])
+        self.assertTrue(state["owner_daily_operation_authorization_recorded"])
+        self.assertTrue(state["daily_operation_enablement_allowed_by_this_artifact"])
+        self.assertEqual(
+            stage2_final_gate_module.validate_daily_operation_persistent_enablement_authorization_state(state),
+            [],
+        )
+
     def test_daily_operation_persistent_authorization_template_is_not_live_authorization(self) -> None:
         template_path = (
             REPO_ROOT
@@ -7172,6 +7374,49 @@ class Stage2FinalGateTests(unittest.TestCase):
         )
         self.assertIn(
             "persistent daily operation authorization artifact authorization_text must be explicit owner evidence",
+            errors,
+        )
+
+    def test_daily_operation_persistent_authorization_requires_current_reference_chain(self) -> None:
+        template_path = (
+            REPO_ROOT
+            / "FINAL_ACCEPTANCE_BUNDLE/templates/daily_operation_persistent_enablement_authorization.template.json"
+        )
+        payload = json.loads(template_path.read_text(encoding="utf-8"))
+        payload.update(
+            {
+                "generated_at": "2026-07-03T16:00:00+10:00",
+                "template_only": False,
+                "explicit_persistent_daily_operation_authorization": True,
+                "authorization_text": "Owner explicitly authorizes persistent DAILY_OPERATION in the current thread.",
+            }
+        )
+
+        missing_refs = dict(payload)
+        missing_refs.pop("owner_decision_ref")
+        missing_refs.pop("readiness_gate_ref")
+        missing_refs.pop("request_artifact_ref")
+        errors = stage2_final_gate_module._validate_persistent_daily_operation_authorization_artifact(missing_refs)
+
+        self.assertIn(
+            "persistent daily operation authorization artifact owner_decision_ref is invalid",
+            errors,
+        )
+        self.assertIn(
+            "persistent daily operation authorization artifact readiness_gate_ref is invalid",
+            errors,
+        )
+        self.assertIn(
+            "persistent daily operation authorization artifact request_artifact_ref is invalid",
+            errors,
+        )
+
+        wrong_ref = dict(payload)
+        wrong_ref["request_artifact_ref"] = "FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.template.json"
+        errors = stage2_final_gate_module._validate_persistent_daily_operation_authorization_artifact(wrong_ref)
+
+        self.assertIn(
+            "persistent daily operation authorization artifact request_artifact_ref is invalid",
             errors,
         )
 

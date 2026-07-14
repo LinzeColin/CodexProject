@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-07-10 21:50:12 Australia/Sydney - Persistent DAILY_OPERATION authorization prerequisite fail-closed hardening
+
+- Fixed `build_daily_operation_persistent_enablement_authorization_state` so a valid live authorization artifact cannot override failed owner-decision or controlled-run prerequisites.
+- Added `blocked_persistent_daily_operation_authorization_prerequisites_failed` and made all three authorization/enablement flags true only when every check passes.
+- Normalized missing prerequisite JSON mappings to fail-closed empty mappings instead of raising `AttributeError`, and made the validator independently reject PASS plus failed checks or a missing/extra prerequisite check key.
+- Added direct and temporary-root readiness/preflight regressions; temporary authorization fixtures stay outside the repository and failed prerequisites require exit 2.
+- Updated `MOD-ADP-100` / `FORM-ADP-102` governance without changing model IDs, parameter profiles, runtime version `0.23.0`, provisional governance version `0.23.1`, CURRENT, V7, or any production state.
+- The real `FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json` remains absent; DAILY_OPERATION, SMTP, scheduler/LaunchAgents, Release, and restore remain disabled.
+
 ## 2026-07-01 20:39:16 Australia/Sydney - S2PMT07 daily operation secret and artifact preflight repair
 
 - Added reviewed local-runner SMTP secret key-presence metadata support for production preflight without logging secret values.

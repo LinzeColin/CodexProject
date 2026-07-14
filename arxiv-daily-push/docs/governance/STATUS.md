@@ -4,27 +4,27 @@
 
 - source_base_commit: `996986b0e00b458c376c84ea037dd06f4c548ad0`
 - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
-- source_snapshot_hash: `sha256:7cb1c552a0137dff306803a77222859a5d36e282ad6b2f4898529cbf7e3727a8`
-- snapshot_event_time: `2026-07-03T13:45:55+10:00`
+- source_snapshot_hash: `sha256:a4feb125d8f5468dad112ce4168b77e0e4d03da35847d86a1f0f8f8945769810`
+- snapshot_event_time: `2026-07-10T22:24:22+10:00`
 - generator_version: `4.0.1`
-- final_commit_binding: `COMMIT_BOUND:996986b0e00b458c376c84ea037dd06f4c548ad0`
+- final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
 ## Current State
 
 - Project: `arxiv-daily-push`
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
-- Phase/Gate: `S2PL / MVP_PAGE_LATEST_HANDOFF_GATE_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT`
+- Phase/Gate: `S2PL / PERSISTENT_DAILY_OPERATION_AUTHORIZATION_PREREQUISITE_FAIL_CLOSED_NO_RUNTIME_ENABLEMENT`
 - Models/Formulas/Parameters total: `121 / 123 / 1108`
 - Active formulas/parameters: `123 / 1091`
-- Machine checked formulas/parameters: `123 / 1091`
+- Machine checked formulas/parameters: `122 / 1091`
 
 ## Assurance
 
 | Dimension | Status | Evidence |
 |---|---|---|
 | structural_completeness | `VERIFIED` | `scripts/validate_project_governance.py` |
-| implementation_congruence | `VERIFIED` | `arxiv-daily-push/docs/governance/parameter_registry.csv, arxiv-daily-push/docs/governance/formula_registry.yaml` |
+| implementation_congruence | `PARTIAL` | `arxiv-daily-push/docs/governance/parameter_registry.csv, arxiv-daily-push/docs/governance/formula_registry.yaml` |
 | parameter_source_quality | `VERIFIED` | `arxiv-daily-push/docs/governance/parameter_registry.csv` |
 | methodological_rationale | `VERIFIED` | `arxiv-daily-push/docs/governance/MODEL_SPEC.md` |
 | empirical_validation | `VERIFIED` | `arxiv-daily-push/docs/governance/delivery_tasks.yaml` |
@@ -35,7 +35,7 @@
 ## Delivery
 
 - Readiness: `BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING`
-- Release gate: `MVP_PAGE_LATEST_HANDOFF_GATE_MAINLINE_ATTESTED_NO_RUNTIME_ENABLEMENT`
+- Release gate: `PERSISTENT_DAILY_OPERATION_AUTHORIZATION_PREREQUISITE_FAIL_CLOSED_NO_RUNTIME_ENABLEMENT`
 - V7 contract: `ADP-PRODUCT-CONTRACT-V7.2`
 - V7 contract hash: `e123aa93b07ba9a33ed6629ff3446c1ab53ce67191d1c4a587eaaa26d6161c74`
 - V7 roadmap hash: `7c5f2d842d4f6b909343c953fe39b4a4aa540d168199747a9f7decdb1aad9bd1`
@@ -50,8 +50,8 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
 - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
-- Pending/stale events: `390`
-- Tree-bound events: `17`
+- Pending/stale events: `392`
+- Tree-bound events: `19`
 - Commit-bound events: `11`
 - Legacy unbound events: `334`
-- Unresolved fact IDs: `0`
+- Unresolved fact IDs: `1`
