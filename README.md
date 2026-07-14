@@ -15,7 +15,14 @@
 >
 > | 项目 | 新位置 | 状态 |
 > |---|---|---|
-> | _（尚无项目迁出，本表将随迁移波次更新）_ | | |
+> | `whkmSalary` | [LinzeColin/KMOS](https://github.com/LinzeColin/KMOS) | 已迁出，即将从本仓库移除 |
+> | `Alpha` | [LinzeColin/MetaDatabase](https://github.com/LinzeColin/MetaDatabase) | 已迁出，即将从本仓库移除 |
+> | `FIFA` | [LinzeColin/MetaDatabase](https://github.com/LinzeColin/MetaDatabase) | 已迁出，即将从本仓库移除 |
+> | `QBVS` | [LinzeColin/MetaDatabase](https://github.com/LinzeColin/MetaDatabase) | 已迁出，即将从本仓库移除 |
+> | `MetaDatabase/` | [LinzeColin/MetaDatabase](https://github.com/LinzeColin/MetaDatabase) → 改名为 `LinzeDatabase/` | 已迁出，即将从本仓库移除 |
+> | 治理框架 | [LinzeColin/Governance](https://github.com/LinzeColin/Governance) | 已迁出（本仓库暂保留副本） |
+>
+> 每一项都已通过 **git tree hash 逐字节比对**，与本仓库内容完全一致后才标记为已迁出。
 >
 > ## 数据去向
 >
