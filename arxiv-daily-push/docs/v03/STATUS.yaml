@@ -106,7 +106,29 @@ stages:
       - /pilot 页（四指标+影子对照+决策卡）
   R5:
     gate: per_source_promotion
-    status: deferred_owner_decision
+    status: shadow_running_awaiting_owner_promotion
+    completed_at: "2026-07-15"
+    owner_visible: >
+      bioRxiv 影子源三步走完机器面：启用提案一页（docs/v03/R5_启用提案_bioRxiv.md）；
+      真实 14 天影子报表（420 篇候选、14/14 天有数据、全部过弃权线、2 天会换头名、0 抓取失败）；
+      影子期零入库（结构性零干扰）；雷达页上板卡=预览→你点应用→回执，随时可撤回；
+      连续 3 次抓取失败自动停用。上板动作本身属于你（自迭代边界）。
+    evidence:
+      - data/shadow_biorxiv_report.json
+      - docs/v03/R5_启用提案_bioRxiv.md
+      - src/adp/shadow_biorxiv.py
   R6:
     gate: phone_access_via_cloudflare_mirror
-    status: deferred_optional_owner_decision
+    status: completed_live
+    completed_at: "2026-07-15"
+    owner_visible: >
+      手机可开 https://home.linzezhang.com（带钥匙链接，钥匙只在本机文件）；
+      无钥匙/无痕窗口=401 已实测；云端页=只读镜像+四档回忆评分回传队列；
+      一次云端评分→回传本机→FSRS 排程全链路已实测（同悉尼日与本机评分互斥防重）；
+      断网/云端故障本机闭环无感（run 内 push/pull 只降级）；Worker cron 每日刷新到期提醒计数。
+      降级披露：R2 周快照待你在仪表盘启用 R2（30 秒），当前落本地 30 份滚动；
+      访问钥匙用 D1 哈希方案（secret store 写入被本机权限策略拦截，已在 deploy/cloudflare/README.md 披露轮换方法）。
+    evidence:
+      - deploy/cloudflare/ (worker.js · wrangler.jsonc · schema.sql · README.md)
+      - src/adp/mirror.py
+      - config_changes 回执与 D1 events_inbox

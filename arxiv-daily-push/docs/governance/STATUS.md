@@ -4,8 +4,8 @@
 
 - source_base_commit: `97d5abf6f2f22e77c3bbf85b73a97129262c8b41`
 - source_tree_hash: `4375e46be3b7c9f712f8b21962a0a0c69da57a3f`
-- source_snapshot_hash: `sha256:708a83dd8bc8b9756be6ee55568322e34512461f34a13011193c4ff05ac53273`
-- snapshot_event_time: `2026-07-15T00:35:00+10:00`
+- source_snapshot_hash: `sha256:98b95e593826811eea06a63bc9c84ad1067449c013dc45789b42318f92a897e6`
+- snapshot_event_time: `2026-07-15T00:45:00+10:00`
 - generator_version: `4.0.1`
 - final_commit_binding: `PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION`
 
@@ -15,9 +15,9 @@
 - Path: `arxiv-daily-push`
 - Product version: `0.23.1`
 - Phase/Gate: `V03 / V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION`
-- Models/Formulas/Parameters total: `122 / 124 / 1121`
-- Active formulas/parameters: `124 / 1104`
-- Machine checked formulas/parameters: `123 / 1104`
+- Models/Formulas/Parameters total: `122 / 124 / 1122`
+- Active formulas/parameters: `124 / 1105`
+- Machine checked formulas/parameters: `123 / 1105`
 
 ## Assurance
 
@@ -50,7 +50,7 @@
 - Next governance task: `S2PMT07`
 - Parallel shadow source task: `NONE_UNTIL_PRODUCTION_BOUNDARY_REVIEW`
 - Next executable task: `S2PMT07-DAILY-OPERATION-PERSISTENT-ENABLEMENT-AUTHORIZATION`
-- Pending/stale events: `392`
+- Pending/stale events: `393`
 - Tree-bound events: `17`
 - Commit-bound events: `13`
 - Legacy unbound events: `334`

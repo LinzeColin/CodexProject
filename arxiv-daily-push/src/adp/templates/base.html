@@ -267,6 +267,13 @@ body[data-fx="techno"] .fx.fx-techno { display:block; }
   transform:rotate(16deg); opacity:0; animation:meteor 11s linear infinite; }
 @keyframes meteor { 0%,92% { opacity:0; left:-8%; top:12%; }
   93% { opacity:1; } 100% { opacity:0; left:96%; top:52%; } }
+/* 简约专注：海面顶光 + 海底暗角径向层（增补包 01 §2 移植项） */
+body[data-fx="minimal"] .fx.fx-minimal { display:block; }
+.fx-minimal .toplight { position:absolute; left:50%; top:-30vh; width:120vw; height:70vh;
+  transform:translateX(-50%);
+  background:radial-gradient(ellipse at center, rgba(163,214,235,0.20), transparent 65%); }
+.fx-minimal .vignette { position:absolute; inset:0;
+  background:radial-gradient(ellipse at 50% 115%, rgba(0,10,18,0.55), transparent 60%); }
 /* 炫技：白色流体云 */
 .fx-techno .cloud { position:absolute; width:56vw; height:24vw; border-radius:50%;
   background:radial-gradient(closest-side, rgba(255,255,255,0.65), transparent 72%);
@@ -313,6 +320,9 @@ nav.nav-mobile a.active { color:var(--ac); }
   <div class="neb blue"></div><div class="neb violet"></div><div class="neb teal"></div>
   <div class="stars"></div><div class="stars near"></div>
   <div class="meteor"></div>
+</div>
+<div class="fx fx-minimal" aria-hidden="true">
+  <div class="toplight"></div><div class="vignette"></div>
 </div>
 <div class="fx fx-techno" aria-hidden="true">
   <div class="cloud" style="top:6%; left:-10%"></div>
@@ -375,7 +385,7 @@ nav.nav-mobile a.active { color:var(--ac); }
 /* ============ 主题引擎：变量组 + 结构开关（首屏/导航/特效） ============ */
 const THEMES = {
   warm:    { nav:'sidebar', hero:'none',         fx:'none',   video:null },
-  minimal: { nav:'topbar',  hero:'video-focus',  fx:'none',
+  minimal: { nav:'topbar',  hero:'video-focus',  fx:'minimal',
              video:'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4' },
   fresh:   { nav:'topbar',  hero:'none',         fx:'none',   video:null },
   techno:  { nav:'dock',    hero:'video-techno', fx:'techno',

@@ -6781,3 +6781,5 @@ tasks:
       - "arxiv-daily-push/data/run_manifests.jsonl"
       - "arxiv-daily-push/docs/v03/04_开发记录/问题台账.md"
       - "arxiv-daily-push/data/outbox/"
+      - "arxiv-daily-push/data/shadow_biorxiv_report.json"
+      - "arxiv-daily-push/deploy/cloudflare/README.md"

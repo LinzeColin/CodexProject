@@ -1,7 +1,7 @@
 """R6 · 本机 ↔ Cloudflare 混合部署（本机为主，云端只做门面/镜像/回传队列）.
 
 - push：本地 SQLite → D1 只读镜像（单向，wrangler d1 execute --remote，复用 Owner 已授权的 wrangler 会话）
-- pull：D1 events_inbox → 本机 grade_recall（显式防重键 cloud:<id>，云评分过本机 FSRS）
+- pull：D1 events_inbox → 本机 grade_recall（按事件时间走「条目+悉尼日」防重，云评分过本机 FSRS）
 - snapshot：每周备份上传 R2（账户未启用 R2 时降级本地并如实报告）
 故障模型：云端挂 → 本机闭环无感；push/pull 失败只降级不阻塞。
 """
@@ -105,7 +105,7 @@ def push(conn: sqlite3.Connection) -> dict[str, Any]:
 
 
 def pull(conn: sqlite3.Connection) -> dict[str, Any]:
-    """消费云端回忆评分：cloud:<inbox_id> 防重键 → 本机 FSRS → 标记 applied."""
+    """消费云端回忆评分：默认「条目+悉尼日」防重（与本机评分互斥）→ FSRS → 标记 applied."""
     from .review import grade_recall
 
     proc = _wrangler(["d1", "execute", "adp-mirror", "--remote", "--yes", "--json",
@@ -127,8 +127,9 @@ def pull(conn: sqlite3.Connection) -> dict[str, Any]:
         at = datetime.fromisoformat(str(row["created_at"]).replace("Z", "+00:00"))
         if at.tzinfo is None:
             at = at.replace(tzinfo=timezone.utc)
-        outcome = grade_recall(conn, row["lesson_id"], int(row["grade"]), thresholds,
-                               at=at, idempotency_key=f"cloud:{row['id']}")
+        # 不传显式 key：走默认「条目+悉尼日」防重——云端评分与本机评分在同一天
+        # 天然互斥，重复 pull 也安全（不变量 6）；来源可由 D1 inbox 行追溯。
+        outcome = grade_recall(conn, row["lesson_id"], int(row["grade"]), thresholds, at=at)
         (skipped if outcome.get("duplicate") else applied).append(int(row["id"]))
     for inbox_id in applied + skipped:
         _wrangler(["d1", "execute", "adp-mirror", "--remote", "--yes",
