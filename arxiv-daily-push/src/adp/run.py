@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import json
 import sqlite3
 import time
 from datetime import datetime, timezone
@@ -100,6 +101,11 @@ def run_once(conn: sqlite3.Connection, *, trigger: str = "manual",
         store.backup(conn)
     except Exception as exc:
         degraded.append(f"backup_failed:{type(exc).__name__}")
+
+    # 心跳（R3-5）：launchd 看门狗读取此文件；超时会在系统页亮「失败」行
+    (config.data_dir() / "heartbeat").write_text(
+        json.dumps({"last_run": run_id, "at": store.utcnow_iso()}), encoding="utf-8"
+    )
 
     result = "弃权" if abstain_reason else ("降级" if degraded else "正常")
     entry = {

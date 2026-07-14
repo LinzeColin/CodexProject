@@ -67,7 +67,23 @@ stages:
       - /corrections 页（检索+纠错通知+差异对照）
   R3:
     gate: idempotent_mirror_and_radar_one_friday
-    status: pending
+    status: completed
+    completed_at: "2026-07-14"
+    owner_visible: >
+      新邮件模板与网页同源渲染（单文件 Jinja2、内联样式、<80KB）；
+      交付演示（零副作用改制 D-23）：无授权凭证 → BLOCKED_AUTH 失败关闭 + .eml 预览落
+      data/outbox/（等 Owner 签发凭证后同一管道即真发）；同日重发被拒并给出人话原因；
+      第一份真实周雷达（本周入选 2 篇、弃权 0 天、回忆 1 次、均分 3.0、债务 0）+
+      知识债务账本上线；迁移练习/结果记录入口在今日页（失败也记，反哺排序）；
+      launchd 定时模板生成于 deploy/launchd/（含睡眠补跑说明与心跳契约），未安装——
+      安装动作本身即 Owner 的常驻授权。
+    tasks: {R3-1_email_template: done_preview_mode, R3-2_auth_credential: done_fail_closed,
+            R3-3_weekly_radar_debts: done, R3-4_transfer_practice: done, R3-5_launchd_heartbeat: done_not_installed}
+    evidence:
+      - data/outbox/email_L-2026-07-14-2607.06008_2026-07-14.eml
+      - data/radar_week_2026-07-14.json
+      - deploy/launchd/com.linzezhang.adp.v03.daily.plist
+      - deliveries 表（BLOCKED_AUTH + duplicate 拒绝回执）
   R4:
     gate: pilot_report_one_friday
     status: pending

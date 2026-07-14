@@ -17,3 +17,4 @@ arxiv-daily-push/data/raw/
 arxiv-daily-push/data/backups/
 arxiv-daily-push/data/export/
 arxiv-daily-push/data/authorization/
+arxiv-daily-push/data/heartbeat

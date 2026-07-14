@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  R3-5 本机定时器模板 —— 生成物，未安装（scheduler_install_enabled=false，不变量 5）。
+
+  安装（需 Owner 显式执行，等同签发常驻授权）:
+    cp deploy/launchd/com.linzezhang.adp.v03.daily.plist ~/Library/LaunchAgents/
+    launchctl load ~/Library/LaunchAgents/com.linzezhang.adp.v03.daily.plist
+  卸载:
+    launchctl unload ~/Library/LaunchAgents/com.linzezhang.adp.v03.daily.plist
+
+  时区: StartCalendarInterval 用本机本地时区（Australia/Sydney，含夏令时自动跟随）；
+        06:30 触发。睡眠补跑: launchd 在唤醒后会补发错过的日历事件（合并为一次）,
+        加上 adp run 的同日幂等（第二次记「未运行」），错过/重复都安全。
+  心跳: 每次 run 写 data/heartbeat；超过 26 小时未更新即视为失败（系统页可见）。
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.linzezhang.adp.v03.daily</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/arxiv-daily-push/var/venv/bin/python</string>
+    <string>-m</string>
+    <string>adp</string>
+    <string>run</string>
+    <string>--trigger</string>
+    <string>launchd</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/arxiv-daily-push</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PYTHONPATH</key>
+    <string>/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/adp/arxiv-daily-push/src</string>
+  </dict>
+  <key>StartCalendarInterval</key>
+  <dict><key>Hour</key><integer>6</integer><key>Minute</key><integer>30</integer></dict>
+  <key>StandardOutPath</key>
+  <string>/tmp/adp.v03.daily.out</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/adp.v03.daily.err</string>
+</dict>
+</plist>
