@@ -37,10 +37,11 @@ stages:
       48 小时改制口径（诚实披露）：三个连续真实日期（07-12/07-13 为真实数据 backfill_replay、
       07-14 为 live）manifest 覆盖 48h+ 的真实数据窗口；backfill 行的执行时刻均在 07-14 晚
       （run_id 即 as-of 时间、trigger 如实标注）。另有同日幂等「未运行」行佐证重复触发安全；
-      07-15 悉尼午夜后追加一次真实 live 运行作为跨日连续性证据。
+      07-15 悉尼午夜后已追加真实 live 运行（run_id 2026-07-15T00:03:36+10:00，新讲义 83.2 分、
+      昨日回忆项按 FSRS 到期进入复习队列）——live 运行覆盖两个不同悉尼日历日。
     tasks: {R1-1: done, R1-2: done, R1-3: done_recalibrated, R1-4: done_degraded_channel,
             R1-5: done, R1-6: done, R1-7: done, R1-8: done, R1-9: done, R1-10: done,
-            R1-11: covered_48h_three_real_dates_backfill_plus_live}
+            R1-11: done_four_real_dates_two_live_days}
     degraded_features:
       - lesson_generation 走确定性模板通道（本机无 codex CLI，属 D-17 合同内降级；manifest 如实记「降级」）
     evidence:

@@ -1,7 +1,7 @@
 project_id: "arxiv-daily-push"
 as_of_event_id: "EVENT-20260714-ADP-V03-REBUILD-R0-R4-DELIVERY"
-source_snapshot_hash: "sha256:d3d567d0c081787922ed5089edc677109ee1c39fa891ffca635f6333dd37c1d4"
-source_base_commit: "996986b0e00b458c376c84ea037dd06f4c548ad0"
+source_snapshot_hash: "sha256:518dcf45c79550f537384692206bc786bc14d015e287ef47d3c661cc39ef4ec2"
+source_base_commit: "97d5abf6f2f22e77c3bbf85b73a97129262c8b41"
 source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
 snapshot_event_time: "2026-07-14T22:30:00+10:00"
 generator_version: "4.0.1"
@@ -59,8 +59,8 @@ dimensions:
   evidence_freshness:
     status: "PARTIAL"
     fact_level: "EXTRACTED"
-    tree_bound_events: 19
-    commit_bound_events: 11
+    tree_bound_events: 17
+    commit_bound_events: 13
     legacy_unbound_events: 334
     precommit_pending_events: 41
     evidence_refs:
