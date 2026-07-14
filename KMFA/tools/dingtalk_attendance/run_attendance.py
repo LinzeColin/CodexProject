@@ -625,9 +625,23 @@ def run_attendance(
             run_type=run_type,
         )
         if integrity_failure:
+            expected_count = int(collection_stats.get("realtime_reminder_expected_count") or 0)
+            coverage_count = int(collection_stats.get("realtime_reminder_coverage_count") or 0)
             raise RealtimeReminderIntegrityError(
                 "REALTIME_REMINDER_INTEGRITY_ASSERTION_FAILED",
                 integrity_failure,
+                coverage_stats={
+                    "expected_people": expected_count,
+                    "queried_people": coverage_count,
+                    "successful_people": coverage_count,
+                    "missing_people": max(expected_count - coverage_count, 0),
+                    "query_failure_count": int(
+                        collection_stats.get("realtime_reminder_query_failure_count") or 0
+                    ),
+                    "parse_failure_count": int(
+                        collection_stats.get("realtime_reminder_parse_failure_count") or 0
+                    ),
+                },
             )
     except RealtimeReminderIntegrityError as exc:
         cleanup_status.update(cleanup())
@@ -640,6 +654,8 @@ def run_attendance(
                 "notification_config_status": notification_config_status,
             },
             "integrity_error": str(exc),
+            "error_code": exc.code,
+            "coverage_stats": exc.coverage_stats,
             "collection_status": "SKIPPED_REALTIME_REMINDER_INTEGRITY_FAILED",
             "anomaly_count": None,
             "management_report_status": "NOT_GENERATED",

@@ -412,9 +412,9 @@ class OfficialParityFixtureRunner:
         if args[:4] == ["attendance", "record", "get", "--user"]:
             user_id = args[4]
             record_list = (
-                [{"checkTypeDesc": "上班", "isNormal": True}]
+                [{"checkTypeDesc": "上班", "isNormal": True}, {"checkTypeDesc": "下班", "isNormal": True}]
                 if user_id == "u-normal"
-                else [{"checkTypeDesc": "上班", "isNormal": True}, {"checkTypeDesc": "下班", "isNormal": True}]
+                else [{"checkTypeDesc": "上班", "isNormal": True}]
             )
             return {
                 "returncode": 0,
@@ -502,6 +502,20 @@ class RealtimeMorningReplayRunner(OfficialParityFixtureRunner):
         self.query_failure = query_failure
 
     def __call__(self, args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict:
+        if args[:4] == ["attendance", "record", "get", "--user"]:
+            user_id = args[4]
+            if self.query_failure and user_id == "u-normal":
+                return {
+                    "returncode": 1,
+                    "payload": {
+                        "success": False,
+                        "code": "request_timeout",
+                        "reason": "saved replay query failure",
+                        "error": {"retryable": False},
+                    },
+                }
+            if user_id == self.omit_user:
+                return {"returncode": 0, "payload": {"success": True}}
         result = super().__call__(args, timeout=timeout, verbose=verbose)
         if args[:3] != ["attendance", "report", "query-data"]:
             return result
@@ -2364,12 +2378,42 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(stats["attendance_anomaly_names"], ["异常员工"])
         self.assertNotIn("official_report_parity_status", stats)
         self.assertIsNone(realtime_reminder_integrity_failure_reason(stats, run_type="morning"))
-        self.assertFalse(any(call[:2] in (("attendance", "record"), ("attendance", "summary")) for call in runner.calls))
+        self.assertTrue(any(call[:2] == ("attendance", "record") for call in runner.calls))
+        self.assertTrue(any(call[:2] == ("attendance", "summary") for call in runner.calls))
+        self.assertFalse(any(call[:3] == ("attendance", "report", "query-data") for call in runner.calls))
+
+    def test_realtime_evening_accepts_successful_empty_punch_result_as_covered(self) -> None:
+        runner = RealtimeMorningReplayRunner()
+
+        original_call = runner.__call__
+
+        def empty_punch_runner(args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict:
+            if args[:5] == ["attendance", "record", "get", "--user", "u-normal"]:
+                runner.calls.append(tuple(args))
+                return {
+                    "returncode": 0,
+                    "payload": {
+                        "success": True,
+                        "result": {"recordList": [], "isHasSchedule": True, "isRest": False},
+                    },
+                }
+            return original_call(args, timeout=timeout, verbose=verbose)
+
+        collection = collect_realtime_reminder_attendance(
+            work_date="2026-07-13",
+            summary_datetime="2026-07-13 18:02:22",
+            run_type="evening",
+            runner=empty_punch_runner,
+        )
+
+        self.assertEqual(collection["stats"]["realtime_reminder_coverage_count"], 2)
+        self.assertEqual(collection["stats"]["realtime_reminder_query_failure_count"], 0)
+        self.assertNotIn("official_report_parity_status", collection["stats"])
 
     def test_realtime_morning_replay_fails_closed_when_current_member_is_missing(self) -> None:
         runner = RealtimeMorningReplayRunner(omit_user="u-normal")
 
-        with self.assertRaisesRegex(RealtimeReminderIntegrityError, "REALTIME_REMINDER_COVERAGE_MISMATCH"):
+        with self.assertRaisesRegex(RealtimeReminderIntegrityError, "REALTIME_REMINDER_PARSE_FAILED"):
             collect_realtime_reminder_attendance(
                 work_date="2026-07-13",
                 summary_datetime="2026-07-13 08:54:50",
@@ -2387,6 +2431,95 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 run_type="morning",
                 runner=runner,
             )
+
+    def test_realtime_reminder_fails_closed_when_punch_date_is_wrong(self) -> None:
+        runner = RealtimeMorningReplayRunner()
+        original_call = runner.__call__
+
+        def wrong_date_runner(args: list[str], *, timeout: int = 30, verbose: bool = False) -> dict:
+            result = original_call(args, timeout=timeout, verbose=verbose)
+            if args[:5] == ["attendance", "record", "get", "--user", "u-normal"]:
+                result["payload"]["result"]["recordList"][0]["userCheckTime"] = "2026-07-12 08:30:00"
+            return result
+
+        with self.assertRaisesRegex(RealtimeReminderIntegrityError, "REALTIME_REMINDER_PARSE_FAILED"):
+            collect_realtime_reminder_attendance(
+                work_date="2026-07-13",
+                summary_datetime="2026-07-13 18:02:22",
+                run_type="evening",
+                runner=wrong_date_runner,
+            )
+
+    def test_r6_failed_slot_persists_redacted_integrity_details_in_private_status(self) -> None:
+        from KMFA.tools.dingtalk_attendance.automatic_closure import R6Coordinator
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            coordinator = R6Coordinator(root)
+            result = coordinator.ensure_slot(
+                work_date="2026-07-13",
+                run_slot="evening",
+                trigger_source="automation",
+                runner=lambda: {
+                    "status": "REALTIME_REMINDER_INTEGRITY_FAILED",
+                    "notification_status": "NOT_SENT_REALTIME_REMINDER_INTEGRITY_FAILED",
+                    "integrity_error": "batch coverage mismatch",
+                    "error_code": "REALTIME_REMINDER_COVERAGE_MISMATCH",
+                    "coverage_stats": {
+                        "expected_people": 42,
+                        "queried_people": 15,
+                        "successful_people": 10,
+                        "missing_people": 32,
+                        "failed_batch_index": 3,
+                        "failed_batch_expected": 5,
+                        "failed_batch_actual": None,
+                        "query_failure_count": 0,
+                        "parse_failure_count": 0,
+                    },
+                },
+                completed_probe=lambda: None,
+            )
+            state = json.loads((root / "state.json").read_text(encoding="utf-8"))
+            private_slot = state["work_dates"]["2026-07-13"]["slots"]["evening"]
+            chinese_status = (root / "运行状态.md").read_text(encoding="utf-8")
+
+        self.assertEqual(result["status"], "FAILED")
+        self.assertEqual(private_slot["error_code"], "REALTIME_REMINDER_COVERAGE_MISMATCH")
+        self.assertEqual(private_slot["coverage_stats"]["expected_people"], 42)
+        self.assertEqual(private_slot["coverage_stats"]["failed_batch_index"], 3)
+        self.assertIn("REALTIME_REMINDER_COVERAGE_MISMATCH", chinese_status)
+        self.assertIn("期望人数 42", chinese_status)
+
+    def test_r6_prior_final_waiting_does_not_block_current_evening_reminder(self) -> None:
+        from KMFA.tools.dingtalk_attendance.automatic_closure import R6Coordinator
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            coordinator = R6Coordinator(Path(tmpdir))
+            final = coordinator.advance_final(
+                work_date="2026-07-12",
+                export_finder=lambda: None,
+                certificate_builder=lambda _: (_ for _ in ()).throw(AssertionError("no export")),
+                final_runner=lambda _: (_ for _ in ()).throw(AssertionError("no certificate")),
+                completed_probe=lambda: None,
+            )
+            evening = coordinator.ensure_slot(
+                work_date="2026-07-13",
+                run_slot="evening",
+                trigger_source="automation",
+                runner=lambda: {
+                    "status": "COMPLETED",
+                    "notification_status": "NOT_SENT_OWNER_DISABLED",
+                    "member_count": 42,
+                    "run_id": "dingtalk_attendance_evening_20260713_180222",
+                },
+                completed_probe=lambda: None,
+            )
+            state = json.loads((Path(tmpdir) / "state.json").read_text(encoding="utf-8"))
+
+        self.assertEqual(final["status"], "WAITING_OFFICIAL_REPORT")
+        self.assertEqual(evening["status"], "COMPLETED")
+        self.assertEqual(state["work_dates"]["2026-07-12"]["final"]["status"], "WAITING_OFFICIAL_REPORT")
+        self.assertEqual(state["work_dates"]["2026-07-13"]["slots"]["evening"]["status"], "COMPLETED")
 
     def test_official_collector_fails_closed_when_report_coverage_is_incomplete(self) -> None:
         runner = OfficialParityFixtureRunner(omit_user="u-normal")
@@ -2647,6 +2780,36 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
         self.assertEqual(result["status"], "REALTIME_REMINDER_INTEGRITY_FAILED")
         self.assertEqual(result["notification_status"], "NOT_SENT_REALTIME_REMINDER_INTEGRITY_FAILED")
+        self.assertEqual(result["error_code"], "REALTIME_REMINDER_INTEGRITY_ASSERTION_FAILED")
+        self.assertEqual(result["coverage_stats"]["expected_people"], 0)
+        self.assertEqual(result["coverage_stats"]["successful_people"], 0)
+
+    def test_automatic_slot_runner_preserves_integrity_details_for_coordinator(self) -> None:
+        automatic_closure = importlib.import_module("KMFA.tools.dingtalk_attendance.automatic_closure")
+        with patch.object(
+            automatic_closure,
+            "run_attendance",
+            return_value={
+                "status": "REALTIME_REMINDER_INTEGRITY_FAILED",
+                "notification_status": "NOT_SENT_REALTIME_REMINDER_INTEGRITY_FAILED",
+                "integrity_error": "REALTIME_REMINDER_QUERY_FAILED: scoped query failed",
+                "error_code": "REALTIME_REMINDER_QUERY_FAILED",
+                "coverage_stats": {
+                    "expected_people": 42,
+                    "queried_people": 42,
+                    "successful_people": 41,
+                    "missing_people": 1,
+                    "query_failure_count": 1,
+                    "parse_failure_count": 0,
+                },
+                "collection_stats": {},
+                "run_plan": {"run_id": "dingtalk_attendance_evening_20260713_180222"},
+            },
+        ):
+            result = automatic_closure._slot_runner(run_slot="evening")
+
+        self.assertEqual(result["error_code"], "REALTIME_REMINDER_QUERY_FAILED")
+        self.assertEqual(result["coverage_stats"]["missing_people"], 1)
 
     def test_run_attendance_passes_run_type_and_uses_realtime_reminder_gate(self) -> None:
         captured: dict[str, object] = {}
