@@ -10,7 +10,7 @@
 - Review evidence: `BATCH031_040_REVIEW_GATE.md`
 - Upload lock: `BATCH031_040_UPLOAD_LOCK.yaml`
 - Current upload switch: `push_allowed=true`
-- Decision: local gate passed; PR targeting `main` is authorized; merge and app evidence remain pending
+- Decision: PR #276 merged into `main`; app entries reinstalled and verified; open PRs/issues are `0`; No STAGE-041
 
 ## Goal
 
@@ -69,19 +69,40 @@ The authorized sequence is:
   preserved owner dirty paths; the regression suite verifies the governed state.
 - The independent batch review remains the source-integrity gate for this upload.
 
-## Pending Remote And App Evidence
+## Remote Merge And App Evidence
 
-- PR URL: pending GitHub creation
-- PR merge SHA: pending GitHub merge
-- post-merge open PRs: pending
-- post-merge open issues: pending
-- app entry reinstall: pending until the PR is merged
+- PR URL: `https://github.com/LinzeColin/CodexProject/pull/276`
+- PR head before merge: `8d28ab8456cec0160950c4928e6bd6a80ad84ed1`
+- PR base before merge: `87825b8429f70cc7c1bc734fcd868c554e14b4ad`
+- PR merge SHA: `565babef3a610f289fed0da38b58e550b5707e3e`
+- merged at UTC: `2026-07-14T11:43:47Z`
+- merge result: `MERGED`
+- post-merge open PRs: `0`
+- post-merge open issues: `0`
+- remote feature branch: deleted
+- app entry reinstall: passed after local fast-forward to the merge SHA
+- app diagnostic: passed for source, Downloads, and Applications bundles
+- codesign: passed for Downloads and Applications app bundles
 - app launcher root: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS/KM_IDSystem`
 - required app paths:
   - `/Users/linzezhang/Downloads/IDS Industrial Data System.app`
   - `/Applications/IDS Industrial Data System.app`
   - `/Users/linzezhang/Downloads/IDS Industrial Data System.command`
   - `/Applications/IDS Industrial Data System.command`
+- both command launchers `cd` to the launcher root and execute its
+  `scripts/run_local_services.sh`.
+
+## Final Validation After Merge
+
+- Stage005 governance regression: `155/155` passed.
+- Full IDS v0.1 discovery: `733/733` passed.
+- Events JSONL: `195` records, `0` duplicate event IDs, `0` JSON errors.
+- Owner render: `drift_count=0`, `reference_issue_count=0`.
+- Changed-only governance at merge SHA: `errors=0`, `warnings=0`.
+- GitHub: PR #276 `MERGED`; open PRs `0`; open issues `0`; remote feature
+  branch absent.
+- App: installer and diagnostic exited `0`; codesign verification passed for
+  both installed app bundles; both command launchers point to this worktree.
 
 ## Stop Conditions
 

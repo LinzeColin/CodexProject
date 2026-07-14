@@ -5,7 +5,9 @@
 - Opened the separate upload gate only after the ten-stage independent review and repairs passed; TDD RED captured the missing gate plus pending/terminal state contracts.
 - Confirmed GitHub had zero open PRs and zero open issues, the reviewed branch and `origin/main` diverged by `52/862` commits, and remote-main drift since the merge base did not touch `KM_IDSystem`.
 - Authorized one feature-branch PR targeting `main` while prohibiting direct pre-merge `HEAD:main`, owner dirty-file staging, sparse expansion, unrelated-project work, raw metadata content access, fake IDS business data, and STAGE-041.
-- PR URL, merge SHA, app reinstall, codesign, and post-merge PR/issue counts remain pending real execution and are not represented by placeholders.
+- Resolved PR #276's only content conflict by accepting `origin/main`'s `scripts/lean_governance.py`, reran the IDS full suite at `732/732`, and regenerated the one owner view required by the newer renderer to restore drift/reference `0/0`.
+- Merged PR #276 into GitHub `main` with SHA `565babef3a610f289fed0da38b58e550b5707e3e`, deleted the remote feature branch, and verified zero open PRs and zero open issues.
+- Reinstalled all four Downloads/Applications `.app` and `.command` entries from the merged tree; diagnostics and codesign passed, and both command launchers point to this `KM_IDS/KM_IDSystem` worktree.
 
 ## IDS v0.1 BATCH-031-040 Independent Review - 2026-07-14
 

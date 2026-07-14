@@ -1101,6 +1101,7 @@ REQUIRED_EVENT_IDS = (
     "EVT-IDS-V0_1-STAGE040-REVIEW-20260714-001",
     "EVT-IDS-V0_1-BATCH031-040-REVIEW-20260714-001",
     "EVT-IDS-V0_1-BATCH-031-040-UPLOAD-GATE-20260714-001",
+    "EVT-IDS-V0_1-BATCH-031-040-MAIN-MERGED-20260714-001",
 )
 
 FORBIDDEN_RUNTIME_PREFIXES = (
@@ -2443,6 +2444,44 @@ def evaluate_required_event_semantics(events: list[dict]) -> list[str]:
                 "next_gate": "IDS-V0_1-BATCH-031-040-GITHUB-MERGE",
             },
         },
+        "EVT-IDS-V0_1-BATCH-031-040-MAIN-MERGED-20260714-001": {
+            "event_type": "batch_main_merged",
+            "expected_push_allowed": "true",
+            "allow_stage_gate": True,
+            "task_id": "IDS-V0_1-BATCH-031-040-MAIN-MERGED",
+            "acceptance_ids": [
+                f"ACC-STAGE-{stage:03d}" for stage in range(31, 41)
+            ],
+            "required_changed_files": {
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_GATE.md",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/validate_stage005_governance_regression.py",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py",
+                "KM_IDSystem/docs/governance/roadmap.yaml",
+                "KM_IDSystem/docs/governance/events.jsonl",
+                "KM_IDSystem/scripts/install_app_entries.sh",
+            },
+            "required_refs": {
+                "https://github.com/LinzeColin/CodexProject/pull/276",
+                "KM_IDSystem/scripts/install_app_entries.sh",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml",
+                "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage005_governance_regression.py",
+            },
+            "required_note_assignments": {
+                "merged_sha": "565babef3a610f289fed0da38b58e550b5707e3e",
+                "post_merge_open_prs": "0",
+                "post_merge_open_issues": "0",
+                "remote_feature_branch_deleted": "true",
+                "app_reinstall_passed": "true",
+                "app_diagnostic_passed": "true",
+                "codesign_verification_passed": "true",
+                "raw_metadata_content_accessed": "false",
+                "fake_ids_business_data_used": "false",
+                "stage041_started": "false",
+                "push_allowed": "true",
+                "next_gate": "IDS-STAGE041-P1-GATE",
+            },
+        },
     }
 
     errors: list[str] = []
@@ -2632,15 +2671,27 @@ def evaluate_required_event_semantics(events: list[dict]) -> list[str]:
                 )
                 for value in _note_assignment_values(notes, field)
             ]
+            expected_governed_gate = spec.get(
+                "required_note_assignments", {}
+            ).get("next_gate")
             stage_review_batch_gate_valid = (
                 event.get("event_type")
-                in {"stage_review", "batch_review", "batch_upload_gate"}
-                and not stage_gate_tokens
+                in {
+                    "stage_review",
+                    "batch_review",
+                    "batch_upload_gate",
+                    "batch_main_merged",
+                }
+                and (
+                    not stage_gate_tokens
+                    or (
+                        spec.get("allow_stage_gate") is True
+                        and [token.upper() for token in stage_gate_tokens]
+                        == [expected_governed_gate]
+                    )
+                )
                 and not unexpected_live_values
-                and next_gate_values
-                == [
-                    spec.get("required_note_assignments", {}).get("next_gate")
-                ]
+                and next_gate_values == [expected_governed_gate]
             )
             if (
                 stage_gate_tokens or next_gate_values or unexpected_live_values

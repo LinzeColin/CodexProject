@@ -2,10 +2,11 @@
 
 ## Current Gate - 2026-07-14
 
-- Active task: `IDS-V0_1-BATCH-031-040-UPLOAD-GATE`; this run contains no STAGE-041 work.
-- Local gate state: `local_batch_upload_gate_passed_pending_github_merge`; `push_allowed=true` authorizes only the reviewed feature branch to one PR targeting `main`.
-- GitHub precheck: open PRs `0`, open issues `0`; `origin/main...HEAD` was `862 52`, and no remote-main commit in that range touched `KM_IDSystem`.
-- Required next actions: pass the full local validation, push the feature branch, create/merge the PR, reinstall app entries, verify app paths/codesign, verify open PRs/issues return to `0`, then record actual terminal evidence on `main`.
+- Completed task: `IDS-V0_1-BATCH-031-040-UPLOAD-GATE`; this run contains no STAGE-041 work.
+- Terminal state: `uploaded_to_github_main`; PR #276 merged with SHA `565babef3a610f289fed0da38b58e550b5707e3e`.
+- GitHub closure: remote feature branch deleted; open PRs `0`; open issues `0`.
+- App closure: Downloads/Applications `.app` and `.command` entries reinstalled; diagnostics and codesign passed; both command launchers point to this `KM_IDS/KM_IDSystem` worktree.
+- Next allowed gate: `IDS-STAGE041-P1-GATE`, in a separate future run only.
 - Preserve owner dirty paths (`backend/requirements.txt`, `frontend/package.json`, `scripts/run_local_services.sh`, `frontend/pnpm-workspace.yaml`) and root `.DS_Store`; do not stage or commit them.
 - `/Users/linzezhang/Downloads/IDS_MetaData` remains a path-only read-only real-data boundary. Do not read, list, hash, open, scan, copy, move, delete, modify, dump, or normalize its contents.
 

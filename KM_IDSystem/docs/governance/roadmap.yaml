@@ -2,10 +2,15 @@ schema_version: "codexproject.roadmap.v1"
 roadmap_kind: "product"
 project_id: "KM_IDSystem"
 current_stage_id: "IDS-STAGE040"
-current_phase_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
-current_task_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
-next_gate_id: "IDS-V0_1-BATCH-031-040-GITHUB-MERGE"
+current_phase_id: "IDS-V0_1-BATCH-031-040-MAIN-MERGED"
+current_task_id: "IDS-V0_1-BATCH-031-040-MAIN-MERGED"
+next_gate_id: "IDS-STAGE041-P1-GATE"
 current_transition_history:
+  batch031_040_main_merged_state:
+    current_stage_id: "IDS-STAGE040"
+    current_phase_id: "IDS-V0_1-BATCH-031-040-MAIN-MERGED"
+    current_task_id: "IDS-V0_1-BATCH-031-040-MAIN-MERGED"
+    next_gate_id: "IDS-STAGE041-P1-GATE"
   batch031_040_upload_gate_state:
     current_stage_id: "IDS-STAGE040"
     current_phase_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
@@ -10226,7 +10231,7 @@ stages:
         phase_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
         name: "BATCH-031-040 GitHub main 上传门"
         objective: "将已完成、逐 Stage 复审并通过独立批次复审的 STAGE-031..040 通过一个 PR 合并到 GitHub main，随后重装 app 入口并补录终态证据；不进入 STAGE-041。"
-        status: "passed_pending_github_merge"
+        status: "uploaded_to_github_main"
         stop_conditions:
           - "独立批次复审或任一项目级验证失败"
           - "GitHub 存在未处理的 open PR/issue 或 PR 内容冲突"
@@ -10239,7 +10244,7 @@ stages:
             task_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
             name: "执行 BATCH-031-040 PR 上传门"
             objective: "完成本地上传门、feature branch push、PR merge、app reinstall、无遗留 PR/issue 和终态证据收口。"
-            status: "passed_pending_github_merge"
+            status: "uploaded_to_github_main"
             estimated_hours: 2
             total_hours_percent: "1.25%"
             dependencies:
@@ -10264,7 +10269,7 @@ stages:
               - "git diff --check"
               - "GitHub PR/issue precheck, PR mergeability, merge and post-merge checks"
               - "KM_IDSystem/scripts/install_app_entries.sh and diagnose_app_entry.sh"
-            test_results: "TDD RED produced 3 focused failures because BATCH031_040_UPLOAD_GATE.md and pending/terminal upload states were absent. GREEN: 3/3 focused upload-gate tests, Stage005 154/154, Stage031-039 254/254, Stage040 55/55, and full IDS v0.1 discovery 732/732 passed. Events JSONL parsed 194 records with zero duplicate IDs; owner render drift/reference counts were 0/0; changed-only governance returned errors=0 and warnings=0; git diff --check passed. Direct Stage005 remains fail-closed only on the four preserved owner dirty paths. Actual PR, merge SHA, app reinstall and post-merge checks remain pending and will be recorded only after execution. No raw metadata content access, fake IDS business data, dependency install, sparse expansion, unrelated-project work, runtime output, production/database action, or STAGE-041 work ran."
+            test_results: "TDD RED produced 3 focused failures because BATCH031_040_UPLOAD_GATE.md and pending/terminal upload states were absent. GREEN: 3/3 focused upload-gate tests, Stage005 154/154, Stage031-039 254/254, Stage040 55/55, and full IDS v0.1 discovery 732/732 passed before upload. PR #276 initially exposed one root-tool merge conflict; merge-tree identified only scripts/lean_governance.py, the branch accepted the origin/main tool version, IDS full tests remained 732/732, and the resulting owner-render drift was repaired to 0/0. GitHub then reported CLEAN/MERGEABLE and merged PR #276 with SHA 565babef3a610f289fed0da38b58e550b5707e3e. The remote feature branch was deleted, open PRs/issues are 0, app reinstall/diagnostic/codesign passed, and both command launchers point to the KM_IDS/KM_IDSystem worktree. No raw metadata content access, fake IDS business data, dependency install, sparse expansion, runtime output, production/database action, or STAGE-041 work ran."
             evidence_refs:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_GATE.md"
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_REVIEW_GATE.md"
@@ -10277,13 +10282,13 @@ stages:
         phase_id: "IDS-V0_1-BATCH-031-040-MAIN-MERGED"
         name: "BATCH-031-040 GitHub main 终态证据"
         objective: "记录实际 PR、merge SHA、app 重装、GitHub/app/local 一致性及 open PR/issue 清零证据。"
-        status: "pending"
+        status: "completed"
         tasks:
           -
             task_id: "IDS-V0_1-BATCH-031-040-MAIN-MERGED"
             name: "收口 BATCH-031-040 远端与 app 证据"
             objective: "仅在真实 merge 和 app 验证完成后写入终态。"
-            status: "pending"
+            status: "completed"
             estimated_hours: 0
             total_hours_percent: "0.00%"
             dependencies:
@@ -10305,7 +10310,7 @@ stages:
               - "KM_IDSystem/scripts/diagnose_app_entry.sh"
               - "codesign --verify --deep --strict for installed app bundles"
               - "Stage005 and full IDS v0.1 regression"
-            test_results: "Pending real GitHub merge and app reinstall evidence."
+            test_results: "PR #276 merged at 2026-07-14T11:43:47Z with merge SHA 565babef3a610f289fed0da38b58e550b5707e3e. The remote feature branch was deleted; open PRs and open issues are both 0. App entries were reinstalled at the required Downloads and Applications .app/.command paths; diagnose_app_entry.sh passed, codesign --verify --deep --strict passed for both app bundles, and both command launchers resolve to /Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS/KM_IDSystem. Terminal RED/GREEN evidence passed; Stage005 ran 155/155, full IDS v0.1 discovery ran 733/733, events JSONL parsed 195 records with zero duplicate IDs, owner render drift/reference counts were 0/0, and changed-only governance returned errors=0 and warnings=0 at the merge SHA. No raw metadata content access, fake IDS business data, dependency install, runtime output, production/database action, unrelated-project development, or STAGE-041 work ran."
             evidence_refs:
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_GATE.md"
               - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"

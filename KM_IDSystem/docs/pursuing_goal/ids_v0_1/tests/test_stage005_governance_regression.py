@@ -9413,6 +9413,34 @@ next_gate_id: "IDS-STAGE041-P1-GATE"
 
         self.assertTrue(all(checks.values()), checks)
 
+    def test_batch031_040_upload_lock_records_terminal_main_merge_evidence(self):
+        upload_lock = ROOT / "docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+        upload_gate = ROOT / "docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_GATE.md"
+
+        combined = "\n".join(
+            (
+                upload_lock.read_text(encoding="utf-8"),
+                upload_gate.read_text(encoding="utf-8"),
+            )
+        )
+        required_markers = [
+            'status: "uploaded_to_github_main"',
+            "https://github.com/LinzeColin/CodexProject/pull/276",
+            "565babef3a610f289fed0da38b58e550b5707e3e",
+            "post_merge_open_prs: 0",
+            "post_merge_open_issues: 0",
+            "/Users/linzezhang/Downloads/IDS Industrial Data System.app",
+            "/Applications/IDS Industrial Data System.app",
+            "/Users/linzezhang/Downloads/IDS Industrial Data System.command",
+            "/Applications/IDS Industrial Data System.command",
+            'current_task_id: "IDS-V0_1-BATCH-031-040-MAIN-MERGED"',
+            'next_allowed_task_id: "IDS-STAGE041-P1-GATE"',
+        ]
+
+        for marker in required_markers:
+            with self.subTest(marker=marker):
+                self.assertIn(marker, combined)
+
 
 if __name__ == "__main__":
     unittest.main()

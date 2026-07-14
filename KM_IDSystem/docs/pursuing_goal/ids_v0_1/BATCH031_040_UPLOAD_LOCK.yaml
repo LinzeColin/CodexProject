@@ -1,12 +1,17 @@
 schema_version: "ids.v0_1.batch_upload_lock.v1"
 batch_id: "IDS-V0_1-BATCH-031-040"
 created_at_utc: "2026-07-03T08:32:56Z"
-updated_at_utc: "2026-07-14T11:26:17Z"
-status: "local_batch_upload_gate_passed_pending_github_merge"
+updated_at_utc: "2026-07-14T11:45:32Z"
+status: "uploaded_to_github_main"
 review_task_id: "IDS-V0_1-BATCH-031-040-REVIEW-GATE"
 review_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_REVIEW_GATE.md"
 
 transition_history:
+  batch_main_merged_state:
+    status: "uploaded_to_github_main"
+    current_task_id: "IDS-V0_1-BATCH-031-040-MAIN-MERGED"
+    next_allowed_task_id: "IDS-STAGE041-P1-GATE"
+    github_upload_allowed: true
   batch_upload_gate_state:
     status: "local_batch_upload_gate_passed_pending_github_merge"
     current_task_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
@@ -109,6 +114,21 @@ upload_gate:
   remote_main_ahead_count: 862
   local_branch_ahead_count: 52
   remote_strategy: "push feature branch, create one PR to main, merge, reinstall app entries, verify app/local/GitHub parity, then record terminal main evidence"
+  github_pr: "https://github.com/LinzeColin/CodexProject/pull/276"
+  merged_sha: "565babef3a610f289fed0da38b58e550b5707e3e"
+  merged_at_utc: "2026-07-14T11:43:47Z"
+  post_merge_open_prs: 0
+  post_merge_open_issues: 0
+  remote_feature_branch_deleted: true
+  app_reinstall_verified_at_utc: "2026-07-14T11:45:32Z"
+  app_entry_diagnostic_passed: true
+  codesign_verification_passed: true
+  app_entries:
+    downloads_app: "/Users/linzezhang/Downloads/IDS Industrial Data System.app"
+    applications_app: "/Applications/IDS Industrial Data System.app"
+    downloads_command: "/Users/linzezhang/Downloads/IDS Industrial Data System.command"
+    applications_command: "/Applications/IDS Industrial Data System.command"
+    launcher_root_dir: "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS/KM_IDSystem"
   blocked_until:
     - "STAGE-031 through STAGE-040 all completed."
     - "Every completed Stage has durable local evidence."
@@ -564,8 +584,8 @@ stage_progress:
       - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
 
 decision:
-  current_task_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
-  next_allowed_task_id: "IDS-V0_1-BATCH-031-040-GITHUB-MERGE"
+  current_task_id: "IDS-V0_1-BATCH-031-040-MAIN-MERGED"
+  next_allowed_task_id: "IDS-STAGE041-P1-GATE"
   github_upload_allowed: true
-  current_run: "The separate BATCH031-040 upload gate passed locally after confirming the independent review, zero pre-existing open PRs/issues, no KM_IDSystem changes on remote main since the merge base, preserved owner dirty paths, and the path-only raw metadata boundary. The only authorized next action is feature-branch push plus PR merge; app reinstall and terminal evidence remain pending."
-  no_upload_reason: "NONE for the reviewed batch branch; direct pre-merge HEAD:main push remains prohibited and STAGE-041 remains out of scope."
+  current_run: "PR #276 merged the reviewed BATCH031-040 into GitHub main with merge SHA 565babef3a610f289fed0da38b58e550b5707e3e. The remote feature branch was deleted, open PRs and issues are both 0, all four app/command entries were reinstalled from the merged tree, diagnostics and codesign passed, and both command launchers point to this KM_IDS/KM_IDSystem worktree. No raw metadata content access, fake IDS business data, dependency install, runtime output, unrelated-project development, or STAGE-041 work ran."
+  no_upload_reason: "NONE; BATCH031-040 upload and terminal evidence are complete. STAGE-041 remains a separate future run."
