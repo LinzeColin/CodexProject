@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>前沿雷达（每周）</h1>
+
+<div class="card">
+  <h2>本周概览 {{ radar.week_start }} ～ {{ radar.week_end }}</h2>
+  <p>入选 {{ radar.selected_count }} 篇 · 弃权 {{ radar.abstain_count }} 天 · 回忆 {{ radar.recall_count }} 次 ·
+     平均回忆成绩 {{ radar.avg_grade or '—' }} · 复习债务 <b>{{ radar.debt_count }}</b> 项</p>
+</div>
+
+<div class="card">
+  <h2>板块广度</h2>
+  <table>
+    <tr><th>板块</th><th>状态</th><th>本周信号</th></tr>
+    {% for b in radar.boards %}
+    <tr><td>{{ b.name }}</td>
+        <td>{% if b.enabled %}<span class="badge ok">在线</span>{% else %}<span class="badge">待启用提案（R5）</span>{% endif %}</td>
+        <td class="mt">{{ b.note }}</td></tr>
+    {% endfor %}
+  </table>
+</div>
+
+<div class="card">
+  <h2>本周入选与理由</h2>
+  {% if radar.selections %}
+  <table>
+    <tr><th>日期</th><th>决策</th><th>理由/原因</th></tr>
+    {% for s in radar.selections %}
+    <tr><td class="mt">{{ s.date }}</td>
+        <td>{% if s.abstain %}<span class="badge info">弃权</span>{% else %}<span class="badge ok">入选</span> {{ s.title }}{% endif %}</td>
+        <td class="mt">{{ s.reason[:160] }}</td></tr>
+    {% endfor %}
+  </table>
+  {% else %}<p class="mt">本周暂无决策记录。</p>{% endif %}
+</div>
+
+<div class="card">
+  <h2>知识债务账本</h2>
+  {% if radar.debts %}
+  <table>
+    <tr><th>类型</th><th>说明</th><th>登记时间</th></tr>
+    {% for d in radar.debts %}
+    <tr><td><span class="badge warn">{{ d.kind }}</span></td><td>{{ d.note }}</td><td class="mt">{{ d.opened_at }}</td></tr>
+    {% endfor %}
+  </table>
+  {% else %}<p class="mt">当前无未清债务。</p>{% endif %}
+</div>
+{% endblock %}

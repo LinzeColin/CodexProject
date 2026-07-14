@@ -1,0 +1,17 @@
+{% if corrections %}
+<div class="card" style="border-color:var(--warn)">
+  <h2 style="color:var(--warn)">⚠ 纠错强提醒：{{ corrections|length }} 项证据发生变化（不受手动标记豁免）</h2>
+  <table>
+    <tr><th>类型</th><th>差异对照</th><th>受影响</th><th></th></tr>
+    {% for c in corrections %}
+    <tr>
+      <td><span class="badge warn">{{ '撤稿' if c.kind == 'retraction' else '新版本' }}</span></td>
+      <td class="mt">{{ c.diff_note }}</td>
+      <td class="mt">讲义 {{ c.affected.lessons|join('、') }} 已重开；{{ c.affected.claims|length }} 条声明标记过期；
+          需重新复习后点「完成重学」关闭</td>
+      <td><button onclick="resolveCorrection({{ c.id }})">完成重学</button></td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endif %}

@@ -2,6 +2,10 @@
 
 This project follows the root `AGENTS.md` and `docs/governance/STANDARD.md`.
 
+## V0.3 重构指针（先读）
+
+当前活动开发合同是 **V0.3 重构任务包**：从 `docs/v03/CONTRACT.md` 开始，只读 `docs/v03/`（<110 KB）与被任务直接点名的源码。参数唯一真相 `config/thresholds_v0_3.yaml`；阶段状态 `docs/v03/STATUS.yaml`。三大根级人读 md 与 docs/governance 巨型登记文件已按 R0-6 冻结（`archive/README.md`），不得作为阅读输入。本文件以下的 V7.2 规则仅约束旧运行时（保持失败关闭）。
+
 ## S4 精简执行胶囊
 
 普通非来源变更先读本文件、`README.md` 和被任务直接点名的任务/证据文件。仅做文案、

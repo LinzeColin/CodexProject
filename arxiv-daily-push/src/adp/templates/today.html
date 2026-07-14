@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>今天学什么</h1>
+
+{% include "_correction_banner.html" %}
+
+{% if selection %}
+<div class="card">
+  {% if selection['abstain'] %}
+    <span class="badge warn">今日弃权</span>
+    <p>{{ selection['abstain_reason'] }}</p>
+    <p class="mt">不打扰是特性：候选没有丢，都在池子里；弃权理由会进周报。</p>
+  {% else %}
+    <h2>为什么今天选它</h2>
+    <p>{{ selection['why'] }}</p>
+    <h3>为什么不是第二名</h3>
+    <p>{{ selection['why_not_next'] }}</p>
+    <p class="mt">决策日期 {{ selection['as_of_date'] }} · 总分 {{ '%.1f'|format(selection['score']) }} · 参数快照已存（可整体重放）</p>
+  {% endif %}
+</div>
+{% else %}
+<div class="card"><p>还没有任何运行记录。先执行 <code>adp run</code>。</p></div>
+{% endif %}
+
+{% if lesson %}
+<div class="card">
+  <h2>{{ lesson.doc_title }}</h2>
+  <p class="mt">讲义 {{ lesson.lesson_id }} · 生成通道 {{ lesson.generator }} · 模板 {{ lesson.template_ver }}
+    {% if lesson.status == 'reopened' %}<span class="badge warn">已因纠错重开</span>{% endif %}
+    · <a href="{{ lesson.canonical_url }}" style="color:var(--ac)">原文</a></p>
+  {% for section in lesson.sections %}
+    <h3>{{ loop.index }}. {{ section.title }}</h3>
+    <p>
+    {% for s in section.sentences %}
+      <span class="sentence" title="点击查看出处" onclick="location='/evidence/{{ s.claim_id | urlencode }}'">{{ s.text }}</span>
+    {% endfor %}
+    </p>
+  {% endfor %}
+  <p><a class="btn" style="text-decoration:none" href="{{ lesson.deep_link }}" target="_blank" rel="noopener">继续深挖 → 打开 ChatGPT 新对话（携带全文上下文与你的深挖指令）</a></p>
+</div>
+
+<div class="card">
+  <h2>主动回忆</h2>
+  <p class="mt">先在心里复述这篇讲义的核心结论，然后按住下方显影区 0.8 秒看答案，再按诚实程度自评。<b>只有这个动作能产生「已学会」</b>（发送邮件不会）。</p>
+  <div id="reveal">
+    <div id="answer" style="opacity:0">{{ lesson.reveal_summary }}</div>
+    <div class="cover" id="cover">按住 0.8 秒显影</div>
+    <div class="bar" id="bar"></div>
+  </div>
+  <p id="gradeRow" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px">
+    {% for g, label in grades.items() %}
+      <button data-grade="{{ g }}" onclick="grade({{ g }})">{{ label }}<br>
+        <small class="mt">{{ intervals.get(g, '') }}</small></button>
+    {% endfor %}
+  </p>
+  <p id="gradeReceipt" class="mt"></p>
+</div>
+
+<div class="card">
+  <h2>手动状态（主观标记，单独记账，可撤销）</h2>
+  <p class="mt">当前证据态：<span class="badge info">{{ state.evidence_state }}</span>
+     {% if state.manual_state %} · 手动标记：<span class="badge">{{ state.manual_state }}</span>
+       <button onclick="undoMark({{ state.manual_event_id }})">撤销</button>{% endif %}</p>
+  <p style="display:flex; gap:8px; flex-wrap:wrap">
+    {% for ms in manual_states %}
+      <button onclick="mark('{{ lesson.lesson_id }}','{{ ms }}')">{{ ms }}</button>
+    {% endfor %}
+  </p>
+  <p class="mt">手动标记不冒充回忆证据，也不豁免纠错提醒（不变量 3）。</p>
+</div>
+
+<div class="card">
+  <h2>迁移练习（可选）</h2>
+  <textarea id="transferNote" rows="2" style="width:100%; border-radius:8px; border:1px solid var(--bd); background:var(--pn); color:var(--ink); padding:8px" placeholder="把本文机制对照你的真实项目，写下一个两周内可验证的最小实验；结果失败也记。"></textarea>
+  <p><button onclick="transfer('{{ lesson.lesson_id }}')">记录为应用证据</button> <span id="transferReceipt" class="mt"></span></p>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if lesson %}
+<script>
+const LESSON = {{ lesson.lesson_id | tojson }};
+let holdTimer = null, held = 0;
+const cover = document.getElementById('cover'), bar = document.getElementById('bar');
+const answer = document.getElementById('answer');
+function startHold(e) { e.preventDefault();
+  holdTimer = setInterval(async () => {
+    held += 50; bar.style.width = Math.min(100, held / 800 * 100) + '%';
+    if (held >= 800) { clearInterval(holdTimer);
+      cover.style.opacity = 0; setTimeout(()=>cover.style.display='none', 200);
+      answer.style.opacity = 1;
+      const r = await post(`/api/recall/${LESSON}/reveal`);
+      answer.textContent = r.answer || answer.textContent;
+      if (navigator.vibrate) navigator.vibrate(8);
+    }
+  }, 50);
+}
+function stopHold() { clearInterval(holdTimer); if (held < 800) { held = 0; bar.style.width = 0; } }
+cover.addEventListener('mousedown', startHold); cover.addEventListener('touchstart', startHold, {passive:false});
+['mouseup','mouseleave','touchend'].forEach(ev => cover.addEventListener(ev, stopHold));
+async function grade(g) {
+  const r = await post(`/api/recall/${LESSON}/grade/${g}`);
+  const el = document.getElementById('gradeReceipt');
+  if (r.duplicate) { el.textContent = `今天已用同一防重号评过分（事件 #${r.event_id}），未重复记录（不变量 6）。`; }
+  else { el.textContent = `已记录「${r.grade_label}」→ 下次复习 ${r.due_at}（事件 #${r.event_id}，证据态：${r.evidence_state}）`; }
+  document.querySelectorAll('#gradeRow button').forEach(b => b.classList.toggle('picked', b.dataset.grade == g));
+  if (navigator.vibrate) navigator.vibrate(g === 1 ? [60] : (g === 4 ? [10,30,10,30,20] : 8));
+}
+async function mark(id, s) { const r = await post(`/api/item/${id}/state/${encodeURIComponent(s)}`); location.reload(); }
+async function undoMark(eid) { await post(`/api/undo/${eid}`); location.reload(); }
+async function transfer(id) {
+  const note = document.getElementById('transferNote').value.trim();
+  if (!note) return;
+  await post(`/api/transfer/${id}`, {kind:'outcome', note, outcome:'recorded'});
+  document.getElementById('transferReceipt').textContent = '已记录为应用证据（失败也算证据）。';
+}
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>学习队列</h1>
+
+{% include "_correction_banner.html" %}
+
+<div class="card">
+  <h2>今日到期复习（上限 12，超出顺延并记债务）</h2>
+  {% if due %}
+  <table>
+    <tr><th>条目</th><th>到期</th><th></th></tr>
+    {% for d in due %}
+    <tr><td>{{ d.headline }}</td><td class="mt">{{ d.due_at }}</td>
+        <td><a class="btn" style="text-decoration:none" href="/">去回忆</a></td></tr>
+    {% endfor %}
+  </table>
+  {% else %}<p class="mt">当前没有到期复习项。</p>{% endif %}
+</div>
+
+<div class="card">
+  <h2>全部学习条目（状态可编辑）</h2>
+  <table>
+    <tr><th>日期</th><th>论文</th><th>证据态</th><th>手动标记</th><th>改状态</th></tr>
+    {% for item in items %}
+    <tr>
+      <td class="mt">{{ item.date }}</td>
+      <td>{{ item.title[:70] }}{% if item.reopened %} <span class="badge warn">纠错重开</span>{% endif %}</td>
+      <td><span class="badge info">{{ item.state.evidence_state }}</span>
+          <div class="mt">回忆 {{ item.state.recall_count }} 次 · 应用 {{ item.state.application_count }} 次</div></td>
+      <td>{% if item.state.manual_state %}<span class="badge">{{ item.state.manual_state }}</span>
+          <button onclick="undoMark({{ item.state.manual_event_id }})">撤销</button>{% else %}<span class="mt">—</span>{% endif %}</td>
+      <td>
+        <select onchange="mark('{{ item.lesson_id }}', this.value)">
+          <option value="">选择…</option>
+          {% for ms in manual_states %}<option value="{{ ms }}">{{ ms }}</option>{% endfor %}
+        </select>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  <p class="mt">手动标记是主观事件、单独记账、可撤销；「已学会」的证据判定只来自主动回忆（不变量 2/3）。</p>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function mark(id, s) { if (!s) return; await post(`/api/item/${id}/state/${encodeURIComponent(s)}`); location.reload(); }
+async function undoMark(eid) { await post(`/api/undo/${eid}`); location.reload(); }
+</script>
+{% endblock %}

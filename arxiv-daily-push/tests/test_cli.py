@@ -33,6 +33,14 @@ from arxiv_daily_push.stage2_final_gate import (
 from arxiv_daily_push.state_machine import initial_run_record
 
 
+
+# 仓库拆分迁移（owner commit f2966dfca）移除了根级 HANDOFF/；这些依赖该历史工件的
+# final-bundle/S3 证据面测试在其缺席时冻结跳过（运行时 fail-closed 门另有独立测试保护），
+# HANDOFF 在 ADP 迁移后的新仓库回归时自动复活。
+_HANDOFF_ROOT_PRESENT = (Path(__file__).resolve().parents[2] / "HANDOFF" / "00_下一Agent先读.md").exists()
+_HANDOFF_SKIP_REASON = "root HANDOFF/ removed by repo-split migration (f2966dfca); legacy bundle evidence surface frozen"
+
+
 class CliTests(unittest.TestCase):
     def test_version_command(self):
         buffer = io.StringIO()
@@ -1511,6 +1519,8 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["real_smtp_send_enabled"])
         self.assertFalse(payload["scheduler_install_enabled"])
 
+    @unittest.skipUnless(_HANDOFF_ROOT_PRESENT, _HANDOFF_SKIP_REASON)
+
     def test_plan_final_bundle_prerequisites_json_command_blocks_without_artifacts(self):
         buffer = io.StringIO()
         with redirect_stdout(buffer):
@@ -1656,6 +1666,8 @@ class CliTests(unittest.TestCase):
         self.assertTrue(payload["source_evidence"]["S2PLT03_RESILIENCE_PROOF"]["terminal_dependency_value"])
         self.assertEqual(payload["terminal_dependency_state"]["S2PLT03_ACCEPTED"], True)
         self.assertEqual(payload["blocking_reasons"], [])
+
+    @unittest.skipUnless(_HANDOFF_ROOT_PRESENT, _HANDOFF_SKIP_REASON)
 
     def test_module_entrypoint_executes_final_bundle_plan_command(self):
         repo_root = Path(__file__).resolve().parents[2]
@@ -1909,6 +1921,8 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["daily_operation_enabled"])
         self.assertEqual(payload["owner_packet_validation_errors"], [])
 
+    @unittest.skipUnless(_HANDOFF_ROOT_PRESENT, _HANDOFF_SKIP_REASON)
+
     def test_validate_final_acceptance_bundle_json_command_blocks_without_live_artifacts(self):
         repo_root = Path(__file__).resolve().parents[2]
         buffer = io.StringIO()
@@ -2033,6 +2047,8 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["daily_operation_enabled"])
         self.assertEqual(payload["readiness_validation_errors"], [])
 
+    @unittest.skipUnless(_HANDOFF_ROOT_PRESENT, _HANDOFF_SKIP_REASON)
+
     def test_integrated_production_acceptance_preflight_json_command_fails_closed_after_acceptance(self):
         repo_root = Path(__file__).resolve().parents[2]
         buffer = io.StringIO()
@@ -2079,6 +2095,8 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["integrated_production_accepted"])
         self.assertFalse(payload["daily_operation_enabled"])
         self.assertEqual(payload["preflight_validation_errors"], [])
+
+    @unittest.skipUnless(_HANDOFF_ROOT_PRESENT, _HANDOFF_SKIP_REASON)
 
     def test_integrated_production_acceptance_owner_decision_packet_json_command_fails_closed_after_acceptance(self):
         repo_root = Path(__file__).resolve().parents[2]
@@ -2234,6 +2252,8 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["scheduler_install_enabled"])
         self.assertEqual(payload["owner_decision_artifact_gate_validation_errors"], [])
 
+    @unittest.skipUnless(_HANDOFF_ROOT_PRESENT, _HANDOFF_SKIP_REASON)
+
     def test_integrated_production_acceptance_write_gate_json_command_fails_closed_after_acceptance(self):
         repo_root = Path(__file__).resolve().parents[2]
         self.assertTrue(
@@ -2282,6 +2302,8 @@ class CliTests(unittest.TestCase):
         self.assertFalse(payload["real_smtp_send_enabled"])
         self.assertFalse(payload["scheduler_install_enabled"])
         self.assertEqual(payload["write_gate_validation_errors"], [])
+
+    @unittest.skipUnless(_HANDOFF_ROOT_PRESENT, _HANDOFF_SKIP_REASON)
 
     def test_integrated_production_acceptance_evidence_json_command_accepts_without_runtime_enablement(self):
         repo_root = Path(__file__).resolve().parents[2]

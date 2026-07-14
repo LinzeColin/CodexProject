@@ -1,6 +1,6 @@
 # ADP 用户中心
 
-更新时间：2026-07-03 14:25:07 Australia/Sydney
+更新时间：2026-07-10 22:28:19 Australia/Sydney
 
 这里是 ADP 在 GitHub 上的唯一中文用户入口。你不需要打开本机目录、运行文件、深层治理文件或原始 JSON，也能判断邮件证据是否正常、队列里还有什么、学习闭环到了哪一步、哪些结论仍被停止门禁止。
 
@@ -34,7 +34,7 @@
 | [已生成报告与邮件预览](./已生成报告与邮件预览.md) | 看 30 条已生成报告 / 邮件预览的状态子集索引；不等于完整报告正文或真实 SMTP 发送 | 需要跳转已生成记录证据时 |
 | [邮件模板预览](./邮件模板预览.md) | 看 M1-M4 邮件在用户面前应呈现的界面版本 | 关心邮件长什么样时 |
 | [复习行动与收益](./复习行动与收益.md) | 看复习到期、行动窗口、能力资产、收益复盘和真实快照状态 | 关心学习闭环是否落地时 |
-| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 437 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
+| [功能任务测试证据追踪链](./功能任务测试证据追踪链.md) | 看功能/需求、任务、验收、代码、测试和运行证据的 439 条可点击链路 | 需要复审某项功能是否有测试和证据时 |
 | [恢复路径安全扫描](./恢复路径安全扫描.md) | 看 P0 A-001 恢复路径穿越、绝对路径、符号链接逃逸和阻断保留探针 | 复审恢复安全阻断项时 |
 | [恢复原子替换扫描](./恢复原子替换扫描.md) | 看 P0 A-002 新目标恢复、覆盖保留旧目标备份、无效覆盖保留原目标探针 | 复审恢复原子替换阻断项时 |
 | [事务发件箱与消息ID扫描](./事务发件箱与消息ID扫描.md) | 看 P0 A-003 Message-ID、outbox claim、SMTP accepted-before-commit 和 at-least-once/no-exactly-once 探针 | 复审事务发件箱与消息 ID 阻断项时 |
@@ -195,7 +195,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_mvp_pyc PYTHONPATH=
 
 - 当前 S3/MVP 安全边界复核必须检查真实 LaunchAgent 标签：`com.linzezhang.adp.daily`、`com.linzezhang.adp.health`、`com.linzezhang.adp.watchdog`。
 - 旧 `com.linze.adp.local.*` 只属于历史记录，不得作为当前 S3 safety check 或通过依据。
-- 该规则已同步到 [路线图与停止门](./路线图与停止门.md)、[MVP 准备与复审修补](./MVP准备与复审修补.md) 和 [S3 DAILY_OPERATION 下一 Agent 先读](../../HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md)。
+- 该规则已同步到 [路线图与停止门](./路线图与停止门.md)、[MVP 准备与复审修补](./MVP准备与复审修补.md) 和 S3 DAILY_OPERATION 下一 Agent 先读（HANDOFF 已随仓库拆分迁移移除，历史内容见 git 历史 f2966dfca 之前）。
 - 本轮仍只做 MVP 准备与复审修补，不授权 S3/DAILY_OPERATION，不启用 SMTP、scheduler、Release 或 production restore。
 
 ## 2026-07-02 17:17:48 Australia/Sydney - 项目根 README Stage2/S3 边界已同步
@@ -223,7 +223,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_mvp_pyc PYTHONPATH=
 
 - S3/MVP 安全边界复核的后台进程扫描只匹配 ADP runner/module/path 信号：`arxiv_daily_push`、`arxiv-daily-push`、`local_runner` 或 `CodexProject.*arxiv-daily-push`。
 - 禁止使用裸 `adp` 子串作为进程扫描匹配项，避免把普通工作树路径、shell 命令或审计文本误判为后台 DAILY_OPERATION。
-- 该规则已同步到 [路线图与停止门](./路线图与停止门.md)、[MVP 准备与复审修补](./MVP准备与复审修补.md) 和 [S3 DAILY_OPERATION 下一 Agent 先读](../../HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md)。
+- 该规则已同步到 [路线图与停止门](./路线图与停止门.md)、[MVP 准备与复审修补](./MVP准备与复审修补.md) 和 S3 DAILY_OPERATION 下一 Agent 先读（HANDOFF 已随仓库拆分迁移移除，历史内容见 git 历史 f2966dfca 之前）。
 - 这仍不授权 S3/DAILY_OPERATION；持久授权 artifact 仍缺失，继续保持 `daily_operation_enabled=false`。
 
 ## 2026-07-02 12:52:07 Australia/Sydney - MVP Run Contract README 入口同步
@@ -243,7 +243,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_mvp_pyc PYTHONPATH=
 - 历史当时的 open PR 安全边界复核使用 GitHub pulls HTML fallback：`User-Agent: codex-adp-open-pr-check`。
 - 当前 owner-facing 最小命令已改为 `tools/verify_daily_operation_enablement_preflight.py` 自动观察 GitHub open PR count；fallback 只允许作为 API 不可用时的补充审计证据。
 - 只有明确得到 `open_pr_count=0` 才能通过；`UNKNOWN`、非 0、命令失败或无法解析都必须停止并回报。
-- 该规则已同步到 [MVP 准备与复审修补](./MVP准备与复审修补.md)、[路线图与停止门](./路线图与停止门.md) 和 [S3 DAILY_OPERATION 下一 Agent 先读](../../HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md)。
+- 该规则已同步到 [MVP 准备与复审修补](./MVP准备与复审修补.md)、[路线图与停止门](./路线图与停止门.md) 和 S3 DAILY_OPERATION 下一 Agent 先读（HANDOFF 已随仓库拆分迁移移除，历史内容见 git 历史 f2966dfca 之前）。
 - 这仍不授权 S3/DAILY_OPERATION；持久授权 artifact 仍缺失，继续保持 `daily_operation_enabled=false`。
 
 ## 2026-07-02 11:11:20 Australia/Sydney - 最终验收包 JSON 字段阅读规则
@@ -268,7 +268,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPYCACHEPREFIX=/tmp/codex_adp_mvp_pyc PYTHONPATH=
 
 ## 2026-07-02 00:01:37 Australia/Sydney - S3/DAILY_OPERATION 当前交接页已补齐
 
-- 新增当前后验收交接页：[S3 DAILY_OPERATION 下一 Agent 先读](../../HANDOFF/01_S3_DAILY_OPERATION_下一Agent先读.md)。
+- 新增当前后验收交接页：S3 DAILY_OPERATION 下一 Agent 先读（HANDOFF 已随仓库拆分迁移移除，历史内容见 git 历史 f2966dfca 之前）。
 - 该页明确区分：`HANDOFF/00_下一Agent先读.md` 是 final bundle 的 no-production 输入 artifact；当前 S3/DAILY_OPERATION 状态以 `CURRENT.yaml`、`OWNER_STATUS.md`、本用户中心和新交接页为准。
 - 当前唯一阻断仍是缺少显式 owner 持久授权 artifact：`FINAL_ACCEPTANCE_BUNDLE/daily_operation_persistent_enablement_authorization.json`。缺文件时保持 `daily_operation_enabled=false`，不启用 SMTP、scheduler、Release 或 production restore。
 

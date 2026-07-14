@@ -17,6 +17,10 @@ from pathlib import Path
 from typing import Any
 
 
+SPARSE_EXTERNAL_PROJECT_STATUS = "blocked_sparse_external_projects"
+ADP_PROJECT_PATH = "arxiv-daily-push"
+
+
 def _run_command(root: Path, command: list[str], *, env: dict[str, str] | None = None) -> dict[str, Any]:
     completed = subprocess.run(
         command,
@@ -34,6 +38,29 @@ def _run_command(root: Path, command: list[str], *, env: dict[str, str] | None =
         "stdout_tail": completed.stdout.strip().splitlines()[-20:],
         "stderr_tail": completed.stderr.strip().splitlines()[-20:],
     }
+
+
+def _sparse_external_project_paths(result: dict[str, Any]) -> list[str]:
+    """Return missing non-ADP project paths when sparse checkout is the only blocker."""
+
+    error_lines = [
+        str(line)
+        for line in [*result.get("stdout_tail", []), *result.get("stderr_tail", [])]
+        if str(line).startswith("[ERROR] ")
+    ]
+    if not error_lines:
+        return []
+
+    missing_paths: list[str] = []
+    for line in error_lines:
+        marker = "Registered project path missing:"
+        if marker not in line:
+            return []
+        path = line.split(marker, 1)[1].strip().replace("\\", "/").rstrip("/")
+        if not path or path == ADP_PROJECT_PATH:
+            return []
+        missing_paths.append(path)
+    return sorted(dict.fromkeys(missing_paths))
 
 
 def _integrated_acceptance_state(root: Path) -> dict[str, bool]:
@@ -87,6 +114,9 @@ def build_validation_report(root: Path) -> dict[str, Any]:
             "root": str(root),
             "missing_paths": missing_paths,
             "command_results": [],
+            "portable_validation_status": "fail",
+            "full_monorepo_governance_status": "not_run_missing_required_paths",
+            "sparse_external_project_paths": [],
             "production_acceptance_claimed": acceptance["production_acceptance_claimed"],
             "integrated_production_accepted": acceptance["integrated_production_accepted"],
             "stage2_integrated_production_accepted": acceptance["stage2_integrated_production_accepted"],
@@ -117,13 +147,39 @@ def build_validation_report(root: Path) -> dict[str, Any]:
             env=env,
         ),
     ]
+    sparse_external_project_paths: list[str] = []
+    normalized_results: list[dict[str, Any]] = []
+    for result in command_results:
+        if (
+            result["exit_code"] != 0
+            and "scripts/validate_project_governance.py --project arxiv-daily-push" in result["command"]
+        ):
+            sparse_paths = _sparse_external_project_paths(result)
+            if sparse_paths:
+                sparse_external_project_paths = sparse_paths
+                result = {
+                    **result,
+                    "status": SPARSE_EXTERNAL_PROJECT_STATUS,
+                    "sparse_external_project_paths": sparse_paths,
+                }
+        normalized_results.append(result)
+    command_results = normalized_results
     acceptance = _integrated_acceptance_state(root)
-    status = (
-        "PASS"
-        if all(result["exit_code"] == 0 for result in command_results)
-        and not acceptance["runtime_enabled"]
-        else "FAIL"
+    portable_commands_pass = all(
+        result["exit_code"] == 0 or result["status"] == SPARSE_EXTERNAL_PROJECT_STATUS
+        for result in command_results
     )
+    portable_validation_status = (
+        "pass" if portable_commands_pass and not acceptance["runtime_enabled"] else "fail"
+    )
+    full_monorepo_governance_status = (
+        SPARSE_EXTERNAL_PROJECT_STATUS
+        if sparse_external_project_paths
+        else "pass"
+        if command_results[1]["exit_code"] == 0
+        else "fail"
+    )
+    status = "PASS" if portable_validation_status == "pass" else "FAIL"
     return {
         "status": status,
         "scope": "adp_task_pack_root_validation_no_production_side_effects",
@@ -133,6 +189,9 @@ def build_validation_report(root: Path) -> dict[str, Any]:
         "validated_paths": {label: str(path.relative_to(root)) for label, path in required_paths.items()},
         "missing_paths": [],
         "command_results": command_results,
+        "portable_validation_status": portable_validation_status,
+        "full_monorepo_governance_status": full_monorepo_governance_status,
+        "sparse_external_project_paths": sparse_external_project_paths,
         "production_acceptance_claimed": acceptance["production_acceptance_claimed"],
         "integrated_production_accepted": acceptance["integrated_production_accepted"],
         "stage2_integrated_production_accepted": acceptance["stage2_integrated_production_accepted"],

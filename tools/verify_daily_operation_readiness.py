@@ -54,6 +54,7 @@ def _build_invalid_root_report(root: Path, generated: str, missing_paths: list[s
         "next_executable_task": None,
         "authorization_artifact": AUTHORIZATION_ARTIFACT_REF,
         "authorization_artifact_exists": authorization_artifact.is_file(),
+        "authorization_artifact_validation_errors": [],
         "gate_artifact": GATE_ARTIFACT_REF,
         "persistent_daily_operation_authorized": False,
         "daily_operation_enablement_allowed_by_this_artifact": False,
@@ -132,6 +133,9 @@ def build_readiness_report(root: Path, generated_at: str | None = None) -> dict[
         "next_executable_task": gate.get("next_executable_task"),
         "authorization_artifact": gate.get("persistent_authorization_artifact_ref", AUTHORIZATION_ARTIFACT_REF),
         "authorization_artifact_exists": authorization_artifact.is_file(),
+        "authorization_artifact_validation_errors": gate.get(
+            "persistent_authorization_artifact_validation_errors", []
+        ),
         "gate_artifact": gate.get("gate_artifact_ref", GATE_ARTIFACT_REF),
         "persistent_daily_operation_authorized": gate.get("persistent_daily_operation_authorized") is True,
         "daily_operation_enablement_allowed_by_this_artifact": (

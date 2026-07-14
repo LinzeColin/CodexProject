@@ -1,0 +1,57 @@
+{
+ "week_start": "2026-07-08",
+ "week_end": "2026-07-14",
+ "selected_count": 3,
+ "abstain_count": 0,
+ "recall_count": 1,
+ "avg_grade": 3.0,
+ "debt_count": 0,
+ "debts": [],
+ "selections": [
+  {
+   "date": "2026-07-12",
+   "abstain": false,
+   "title": "A Quiet Failure in Calibrated Virtual Screening: Marginal Co",
+   "reason": "总分 72.8：用户相关 贡献 18.7 分（命中兴趣类目 ['cs.LG', 'stat.ML']；兴趣词 ['drug', 'clinical']）；知识差距 贡献 18.4 分（与已学内容词面重叠 8%，差距 92%）；相对新颖 贡献 12.7 分（与近期最相似候选的相似度 9%）"
+  },
+  {
+   "date": "2026-07-13",
+   "abstain": false,
+   "title": "Think Before You Grid-Search: Floor-First Triage for LLM Ser",
+   "reason": "总分 72.5：用户相关 贡献 22.0 分（命中兴趣类目 ['cs.AI', 'cs.DC']；兴趣词 ['llm', 'grid', 'agent']）；知识差距 贡献 16.0 分（尚无已学历史，默认高知识差距）；相对新颖 贡献 13.0 分（与近期最相似候选的相似度 7%）"
+  },
+  {
+   "date": "2026-07-14",
+   "abstain": false,
+   "title": "PolyWorkBench: Benchmarking Multilingual Long-Horizon LLM Ag",
+   "reason": "总分 67.2：用户相关 贡献 22.0 分（命中兴趣类目 ['cs.AI', 'cs.CL']；兴趣词 ['large language model', 'llm', 'manufacturing']）；知识差距 贡献 16.0 分（尚无已学历史，默认高知识差距）；相对新颖 贡献 12.1 分（与近期最相似候选的相似度 13%）"
+  }
+ ],
+ "boards": [
+  {
+   "name": "板块一 · 研究前沿 (arXiv)",
+   "enabled": true,
+   "note": "本周入选 3 篇、弃权 0 天"
+  },
+  {
+   "name": "板块二 · 顶级期刊",
+   "enabled": false,
+   "note": "走 R5 启用提案（两周影子后上板）"
+  },
+  {
+   "name": "板块三 · 中国政策法规",
+   "enabled": false,
+   "note": "维度已保留在阈值注册表扩展区"
+  },
+  {
+   "name": "板块四 · 美国科技金融",
+   "enabled": false,
+   "note": "维度已保留在阈值注册表扩展区"
+  },
+  {
+   "name": "板块五 · 跨板块总览",
+   "enabled": false,
+   "note": "多板块上线后自动聚合"
+  }
+ ]
+}

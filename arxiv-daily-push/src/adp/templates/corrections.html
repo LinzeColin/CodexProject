@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>证据与纠错</h1>
+
+{% include "_correction_banner.html" %}
+
+<div class="card">
+  <h2>声明检索（任意声明三步到原文）</h2>
+  <form method="get" action="/corrections" style="display:flex; gap:8px">
+    <input name="q" value="{{ q }}" placeholder="搜索声明关键词，如 accuracy、LLM、protein"
+           style="flex:1; min-height:44px; border-radius:8px; border:1px solid var(--bd); background:var(--pn); color:var(--ink); padding:0 12px">
+    <button class="primary" type="submit">检索</button>
+  </form>
+  {% if q %}
+  <p class="mt">「{{ q }}」命中 {{ hits|length }} 条声明：</p>
+  <table>
+    <tr><th>声明</th><th>分型</th><th>出处</th></tr>
+    {% for h in hits %}
+    <tr>
+      <td><a href="/evidence/{{ h.claim_id | urlencode }}" style="color:var(--ac)">{{ h.text[:110] }}</a></td>
+      <td><span class="badge info">{{ {'paper_fact':'论文事实','author_claim':'作者主张','inference':'推断','hypothesis':'假设','action':'行动'}.get(h.type, h.type) }}</span>
+          {% if h.status != 'active' %}<div class="mt">{{ h.status }}</div>{% endif %}</td>
+      <td class="mt">{{ h.doc_title[:50] }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h2>已处理纠错</h2>
+  {% if resolved_history %}
+  <table>
+    <tr><th>类型</th><th>差异</th><th>时间</th></tr>
+    {% for c in resolved_history %}
+    <tr><td>{{ c['kind'] }}</td><td class="mt">{{ c['diff_note'] }}</td><td class="mt">{{ c['created_at'] }}</td></tr>
+    {% endfor %}
+  </table>
+  {% else %}<p class="mt">暂无已处理纠错。</p>{% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function resolveCorrection(id) { await post(`/api/corrections/${id}/resolve`); location.reload(); }
+</script>
+{% endblock %}
