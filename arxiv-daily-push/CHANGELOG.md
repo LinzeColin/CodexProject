@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-07-15 Australia/Sydney - Remove cloud mirror key login per Owner directive
+
+- home.linzezhang.com now opens directly with no key (Owner directive); pages are publicly readable and the tradeoff plus the recommended Cloudflare Access private-mode upgrade are disclosed in deploy/cloudflare/README.md. The /grade endpoint keeps its one-entry-per-lesson-per-day cap and the local pull keeps Sydney-day dedup. Receipt recorded in config_changes; the key scheme remains recoverable from git history (a0a79743).
+
 ## 2026-07-15 Australia/Sydney - v1.1 six-theme frontend, R5 bioRxiv shadow source, R6 Cloudflare hybrid mirror
 
 - Rebuilt the six-theme frontend per the v1.1 supplement pack: per-theme design languages with structural switches (three full-bleed video heroes with JS-property-only media control, a zero-radius cosmic vitals dashboard fed by real run data, sidebar/topbar/dock navigation, effects layers, reduced-motion support); verified per theme in a browser with zero console errors.

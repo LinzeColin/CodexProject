@@ -2,10 +2,9 @@
  * ADP 云端镜像 Worker（R6）
  * - 只读镜像：今天学什么 / 队列 / 系统（D1，本机单向推送）
  * - 唯一可写：POST /grade → events_inbox（本机 `adp mirror pull` 回传并过 FSRS）
- * - 访问控制：owner key 的 sha256 哈希存于 D1 mirror_meta（明文只在本机
- *   data/authorization/cloud_owner_key.txt）；无 key 一律 401；Owner 首次带 ?key=
- *   访问后种 HttpOnly cookie。可再叠加 Cloudflare Access（见 RUNBOOK-R6）。
- *   轮换：本机重生成 key → adp mirror push 会同步新哈希。
+ * - 访问控制：无（Owner 2026-07-15 指令取消钥匙登录）。页面公开可读；
+ *   如需私有化，推荐在仪表盘叠加 Cloudflare Access（见 README R6 节）。
+ *   /grade 仍有每讲义每 UTC 日 1 条的防重上限。
  * - cron：刷新到期复习计数（失败不重试，本机心跳兜底）。
  */
 
@@ -32,48 +31,6 @@ footer{padding:10px 16px;color:#8b7a5c;font-size:11.5px}
 <main>${body}</main>
 <footer>云端为只读镜像+回传队列；主库与闭环在本机（断网时本机照常）。${extra}</footer>
 </body></html>`;
-
-async function sha256Hex(text) {
-  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
-  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('');
-}
-
-async function ownerKeyHash(env) {
-  const row = await env.DB.prepare(
-    "SELECT value FROM mirror_meta WHERE key='owner_key_sha256'").first();
-  return row ? row.value : null;
-}
-
-async function presentedKey(request) {
-  const url = new URL(request.url);
-  const key = url.searchParams.get('key');
-  if (key) return key;
-  const cookie = request.headers.get('Cookie') || '';
-  const match = cookie.match(/adpk=([A-Za-z0-9_-]+)/);
-  return match ? match[1] : null;
-}
-
-async function authorized(request, env) {
-  const expected = await ownerKeyHash(env);
-  if (!expected) return { ok: false, configured: false };
-  const key = await presentedKey(request);
-  if (!key) return { ok: false, configured: true };
-  const hash = await sha256Hex(key);
-  return { ok: hash === expected, configured: true, key };
-}
-
-function deny() {
-  return new Response(PAGE('未授权', '<div class="card"><h1>401 · 仅 Owner 可访问</h1><p>请使用带访问钥匙的专属链接打开（?key=…），钥匙在本机 data/authorization/cloud_owner_key.txt。</p></div>'),
-    { status: 401, headers: { 'content-type': 'text/html; charset=utf-8' } });
-}
-
-function withCookie(resp, key) {
-  if (key) {
-    resp.headers.append('Set-Cookie',
-      `adpk=${key}; Path=/; Max-Age=31536000; Secure; HttpOnly; SameSite=Lax`);
-  }
-  return resp;
-}
 
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
@@ -145,12 +102,6 @@ async function systemPage(env) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    const auth = await authorized(request, env);
-    if (!auth.configured) {
-      return new Response('owner key not configured: run `adp mirror push` locally first',
-        { status: 503 });
-    }
-    if (!auth.ok) return deny();
 
     if (request.method === 'POST' && url.pathname.startsWith('/grade/')) {
       const [, , lessonId, gradeRaw] = url.pathname.split('/');
@@ -169,11 +120,9 @@ export default {
       return Response.json({ queued: true, duplicate: false, id: res.meta.last_row_id });
     }
 
-    let resp;
-    if (url.pathname === '/queue') resp = new Response(await queuePage(env), { headers: { 'content-type': 'text/html; charset=utf-8' } });
-    else if (url.pathname === '/system') resp = new Response(await systemPage(env), { headers: { 'content-type': 'text/html; charset=utf-8' } });
-    else resp = new Response(await todayPage(env), { headers: { 'content-type': 'text/html; charset=utf-8' } });
-    return withCookie(resp, auth.key || null);
+    if (url.pathname === '/queue') return new Response(await queuePage(env), { headers: { 'content-type': 'text/html; charset=utf-8' } });
+    if (url.pathname === '/system') return new Response(await systemPage(env), { headers: { 'content-type': 'text/html; charset=utf-8' } });
+    return new Response(await todayPage(env), { headers: { 'content-type': 'text/html; charset=utf-8' } });
   },
 
   async scheduled(event, env) {

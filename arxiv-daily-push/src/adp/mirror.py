@@ -11,13 +11,11 @@ from __future__ import annotations
 import json
 import sqlite3
 import subprocess
-from pathlib import Path
 from typing import Any
 
 from . import config, store
 
 DEPLOY_DIR = config.PROJECT_ROOT / "deploy" / "cloudflare"
-OWNER_KEY_PATH = config.DATA_DIR / "authorization" / "cloud_owner_key.txt"
 
 
 def _wrangler(args: list[str], *, timeout: int = 180) -> subprocess.CompletedProcess:
@@ -82,14 +80,8 @@ def build_push_sql(conn: sqlite3.Connection) -> str:
     statements.append(
         "INSERT OR REPLACE INTO mirror_meta (key, value) VALUES ('pushed_at', "
         + _sql_quote(store.utcnow_iso()) + ");")
-    # 访问钥匙哈希同步（明文只在本机 data/authorization/cloud_owner_key.txt；轮换=重生成后再 push）
-    if OWNER_KEY_PATH.exists():
-        import hashlib
-
-        digest = hashlib.sha256(OWNER_KEY_PATH.read_text(encoding="utf-8").strip().encode()).hexdigest()
-        statements.append(
-            "INSERT OR REPLACE INTO mirror_meta (key, value) VALUES ('owner_key_sha256', "
-            + _sql_quote(digest) + ");")
+    # 钥匙登录已按 Owner 指令取消（2026-07-15）：清除云端遗留哈希，页面公开可读。
+    statements.append("DELETE FROM mirror_meta WHERE key='owner_key_sha256';")
     return "\n".join(statements) + "\n"
 
 

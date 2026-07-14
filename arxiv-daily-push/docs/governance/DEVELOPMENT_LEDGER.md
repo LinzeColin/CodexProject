@@ -6400,6 +6400,7 @@ None for this new project baseline.
 - Facts: V0.3 rebuild landed as `src/adp` (five-stage loop; FSRS-6 via py-fsrs 6.3.1; sentence-bound lessons; fail-closed delivery; correction propagation); parameters single-sourced in `config/thresholds_v0_3.yaml` (`MOD-ADP-122` / `FORM-ADP-124` / `PARAM-ADP-1109..1121`); run manifests cover three real dates spanning 62.1h; an 8-angle review audit produced fixes recorded in `arxiv-daily-push/docs/v03/04_开发记录/问题台账.md`.
 - Boundary: no SMTP send, no scheduler install, no Release, no restore, no DAILY_OPERATION enablement; V7.2 machine lock unchanged.
 - Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`; `arxiv-daily-push/data/run_manifests.jsonl`; `arxiv-daily-push/docs/v03/04_开发记录/CHANGELOG.md`.
+- 2026-07-15 batch 3: cloud mirror key login removed per Owner directive (open read access; tradeoff and Access upgrade disclosed; receipt in config_changes).
 - 2026-07-15 batch 2: v1.1 six-theme frontend rebuild; R5 bioRxiv shadow source (zero-ingestion, 14-day real report, Owner-only promotion); R6 Cloudflare hybrid mirror live at home.linzezhang.com (D1 one-way mirror, recall write-back, cron reminder; R2 snapshot degraded pending Owner enablement). No production-boundary change.
 - 2026-07-15 follow-up: outbox previews are dual-format (`.eml` wire format + human-readable `.html`); no gate/authorization behavior change.
 - Note: V0.3 development history lives in `docs/v03/04_开发记录/CHANGELOG.md` (one line per task); this ledger receives machine-sync rows only (R0-6 freeze).

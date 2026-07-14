@@ -16,5 +16,6 @@ INSERT OR REPLACE INTO manifests_mirror (run_id, result, trigger_kind, counts_js
 INSERT OR REPLACE INTO manifests_mirror (run_id, result, trigger_kind, counts_json, note) VALUES ('2026-07-13T07:00:00+10:00', '降级', 'backfill_replay', '{"到期复习": 0, "已交付": 0, "扫描": 351, "讲义": 1, "过门": 350, "选中": 1}', 'lesson_generation:codex_cli_not_available');
 INSERT OR REPLACE INTO manifests_mirror (run_id, result, trigger_kind, counts_json, note) VALUES ('2026-07-14T21:07:26+10:00', '降级', 'manual', '{"到期复习": 0, "已交付": 0, "扫描": 144, "讲义": 1, "过门": 304, "选中": 1}', 'lesson_generation:codex_cli_not_available');
 INSERT INTO review_mirror (item_id, due_at, stability, difficulty, evidence_state, manual_state) VALUES ('L-2026-07-14-2607.06008', '2026-07-14T11:22:54+00:00', 2.3065, 2.118103970459016, '已学会', NULL);
-INSERT OR REPLACE INTO mirror_meta (key, value) VALUES ('pushed_at', '2026-07-14T22:09:14+00:00');
-INSERT OR REPLACE INTO mirror_meta (key, value) VALUES ('owner_key_sha256', '13f8b3a8e9995eed779e38db306a858fefe6c9f7edf20fc36b1d882cc73c56aa');
+INSERT INTO review_mirror (item_id, due_at, stability, difficulty, evidence_state, manual_state) VALUES ('L-2026-07-15-2607.11459', '2026-07-14T22:20:07+00:00', 2.3065, 2.118103970459016, '已学会', NULL);
+INSERT OR REPLACE INTO mirror_meta (key, value) VALUES ('pushed_at', '2026-07-14T22:54:30+00:00');
+DELETE FROM mirror_meta WHERE key='owner_key_sha256';
