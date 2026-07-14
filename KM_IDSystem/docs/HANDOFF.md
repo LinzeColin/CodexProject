@@ -99,8 +99,11 @@ Commit/PR summaries must include:
 
 - Canonical worktree: `/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS`
 - Project scope: `KM_IDSystem/` only.
-- Current local state: `STAGE-040 · 反压策略` is `completed_reviewed_local`; the separate ten-stage batch review has not run.
-- Current task: `IDS-V0_1-STAGE040-REVIEW`; acceptance: `ACC-STAGE-040`; next separate gate: `IDS-V0_1-BATCH-031-040-REVIEW-GATE`.
+- Current local state: `STAGE-031..STAGE-040` are individually reviewed and the independent ten-stage batch review is `reviewed_ready_for_upload_no_github_upload`.
+- Current task: `IDS-V0_1-BATCH-031-040-REVIEW-GATE`; acceptance range: `ACC-STAGE-031..ACC-STAGE-040`; the only next task is `IDS-V0_1-BATCH-031-040-UPLOAD-GATE` in a separate run.
+- Batch review repaired one Critical and two Important findings by adding a strict ten-stage source/review/interface/index contract, a fail-closed checker, and a reviewed-no-upload governance/event route.
+- `check_batch031_040_review.py` rehashes the approved archive, exact ten taskpack members, ten Stage review artifacts, reruns all Stage checkers, verifies Stage036-040 interface/hash bindings, and requires every review source to match the Git index.
+- Final batch-review validation: batch tests `8/8`, Stage005 `151/151`, Stage031-039 `254/254`, Stage040 `55/55`, and full IDS v0.1 discovery `729/729`; six historical Stage038/039 compatibility assertions were repaired after the first full run exposed the new reviewed-no-upload state.
 - Exact source status: `SOURCE_VERIFIED`; the unique Stage040 member is `IDS_v0_1_Final_Chinese_Revised/stages/STAGE-040_反压策略.md` with SHA-256 `f0ef128467300d7541796f8d51caca673f838cac2552eba2e415a94a07af614d`.
 - Corrected Phase 1 defines queue/worker separation, envelope idempotency, retry/dead-letter, backpressure, lock granularity, automatic lifecycle, crash-recovery checkpoint, and cleanup allowlist interfaces. STAGE-039..044 retain dedicated runtime policy and implementation ownership.
 - A six-surface finite-state check binds batch, roadmap, entry, Phase 1, source evidence, and review evidence. Independent review repaired `1 Critical / 1 Important / 0 Minor` and ended at `0 / 0 / 0`.
@@ -112,7 +115,7 @@ Commit/PR summaries must include:
 - The Phase 4 delivery checker returns `PASS_ISOLATED_CLOSEOUT_PRODUCTION_DISABLED`; this is closeout evidence, not production readiness or whole-stage acceptance.
 - Stage040 whole-stage review repaired one Critical and two Important findings: malformed/non-JSON control metadata now returns structured fail-closed output without echoing invalid refs; active resource pauses project `暂停中` until `PAUSED`; and Stage040 explicitly records that scheduler-level starvation prevention is unproved and unimplemented.
 - The Stage040 review checker independently rehashes the approved archive, unique ZIP member, roadmap, and instructions; revalidates the Phase 1-4 chain; and requires all review sources to match the Git index before returning `PASS_REVIEWED_LOCAL_PRODUCTION_DISABLED`.
-- Batch review, upload gate, GitHub/PR/issue/merge, app reinstall, and STAGE-041 remain disabled. Only `IDS-V0_1-BATCH-031-040-REVIEW-GATE` may run next.
+- The batch review is complete locally. GitHub/PR/issue/merge, app reinstall, production runtime, raw metadata content access, and STAGE-041 remain disabled; only `IDS-V0_1-BATCH-031-040-UPLOAD-GATE` may run next.
 - Whole-stage review repaired exact contract shapes, the missing API-budget pause proof, and the false same-operation resubmission instruction; all review sources must match the Git index before `completed_reviewed_local` is valid.
 - Stage039 Phase 1 publishes `ids.retry_dead_letter.v0_1.p1`. It keeps `FAILED`, `DEAD_LETTERED`, `SUCCEEDED`, and `CANCELLED` immutable; retryable failure uses `RUNNING -> RETRY_WAIT`, exhaustion uses only `RETRY_WAIT -> DEAD_LETTERED`, and permanent failure uses `RUNNING -> FAILED`.
 - Retry reservation does not consume budget; only atomic eligible admission increments `retry_count`. Resource pauses consume no retry budget. Duplicate transition replay cannot consume twice.
@@ -145,8 +148,7 @@ Commit/PR summaries must include:
 - Safe shutdown replays reviewed isolated transport closure and records fresh-observation recovery plus P4-only rollback. There is no persistent pressure state, automatic resume, process recovery, production runtime, or production-readiness claim.
 - Final Phase 4 validation: checker `14/14` contract and `8/8` delivery checks; focused `10/10`; Stage040 `46/46`; Stage005 `149/149`; Stage031-039 `254/254`; Stage026-030 `75/75`; full IDS v0.1 discovery `710/710`; changed-only governance `0` errors / `0` warnings; `191` events with no duplicate ID; owner render drift/reference issues `0/0`.
 - STAGE-038 retains queue/worker transport; STAGE-039 retry/dead-letter; STAGE-041 locks/leases/fencing; STAGE-042 automatic resume; STAGE-043 crash recovery; STAGE-044 cleanup execution. Phase 1 executed none of these runtimes.
-- Only `IDS-V0_1-STAGE040-REVIEW` may run next, in a separate run. Do not start the batch review/upload gates before Stage040 passes that independent whole-stage review.
-- `BATCH031_040` remains locked with `push_allowed=false`; do not upload, merge, reinstall app entries, or run batch gates before all ten stages are complete and reviewed.
+- `BATCH031_040` remains locked with `push_allowed=false` after local review. Do not upload, merge, mutate issues, reinstall app entries, or start STAGE-041 outside the separate upload-gate run.
 - Current Phase 4 evidence adds `STAGE040_PHASE4_CLOSEOUT.md`, `backpressure_policy/stage040_backpressure_delivery_contract.json`, `scripts/check_backpressure_delivery.py`, and `tests/test_stage040_backpressure_delivery.py`.
 - The real metadata root `/Users/linzezhang/Downloads/IDS_MetaData` is path-only governance context. Do not read, list, hash, open, copy, move, delete, modify, dump, scan, normalize, or commit its contents.
 - Do not use fake IDS business data, fake database rows, placeholder corpus, fabricated profiles, dumps, execution logs, or evidence.

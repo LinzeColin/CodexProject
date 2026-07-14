@@ -291,7 +291,8 @@ class Stage038WorkerQueueRuntimePhase2Tests(unittest.TestCase):
         self.assertTrue(
             batch["status"] == "stage038_completed_reviewed_local"
             or batch["status"].startswith("stage039_")
-            or batch["status"].startswith("stage040_"),
+            or batch["status"].startswith("stage040_")
+            or batch["status"] == "reviewed_ready_for_upload_no_github_upload",
             batch["status"],
         )
         self.assertEqual(
@@ -325,6 +326,8 @@ class Stage038WorkerQueueRuntimePhase2Tests(unittest.TestCase):
             or roadmap["next_gate_id"].startswith("IDS-STAGE040-")
             or roadmap["next_gate_id"]
             == "IDS-V0_1-BATCH-031-040-REVIEW-GATE"
+            or roadmap["next_gate_id"]
+            == "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
         )
 
         events = [

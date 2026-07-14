@@ -1,5 +1,13 @@
 # Changelog
 
+## IDS v0.1 BATCH-031-040 Independent Review - 2026-07-14
+
+- Independently reverified the exact approved Stage031-040 taskpack members, ten whole-stage review artifacts, all Stage checkers, and the Stage036-040 state/interface/hash chain under `ACC-STAGE-031..ACC-STAGE-040`.
+- Repaired one Critical and two Important batch findings by adding a strict machine contract, fail-closed checker/tests, uniform Git-index/source binding for all ten stages, and explicit reviewed-no-upload governance/event semantics.
+- Repaired six historical Stage038/039 regression assertions so they preserve their original Stage evidence while accepting the reviewed-no-upload batch state and upload-only next gate; final full v0.1 discovery passed `729/729`.
+- Hardened malformed Stage identity handling so a shape-valid but invalid `stage_id` returns `FAIL_CLOSED` instead of raising during artifact validation.
+- Routed the only next task to the separate `IDS-V0_1-BATCH-031-040-UPLOAD-GATE` while preserving `push_allowed=false`. No GitHub/PR/issue/merge, app reinstall, production/database action, raw metadata content access, fake IDS business data, or STAGE-041 work ran.
+
 ## IDS v0.1 STAGE-040 Review - 2026-07-14
 
 - Completed the independent whole-stage review under `ACC-STAGE-040` and repaired one Critical and two Important findings: non-JSON/non-hashable control metadata could escape fail-closed handling, active pause requests were mislabeled as completed pauses, and scheduler fairness was claimed without an implemented scheduler or measured proof.

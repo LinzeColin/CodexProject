@@ -9269,14 +9269,56 @@ next_gate_id: "IDS-STAGE035-REVIEW-GATE"
         self.assertEqual(1, len(stage_event))
         self.assertEqual([], module.evaluate_required_event_semantics(stage_event))
 
-        skipped_batch_review = batch_text.replace(
+        self.assertIn("stage040_review_state:", batch_text)
+        self.assertIn(
             'next_allowed_task_id: "IDS-V0_1-BATCH-031-040-REVIEW-GATE"',
-            'next_allowed_task_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"',
+            batch_text,
         )
-        blocked = module.evaluate_phase_state(
-            skipped_batch_review, roadmap_text, require_structured=True
+
+    def test_batch031_040_reviewed_no_upload_state_and_event_are_governed(self):
+        module = self._load_module()
+        batch_text = (
+            ROOT
+            / "docs"
+            / "pursuing_goal"
+            / "ids_v0_1"
+            / "BATCH031_040_UPLOAD_LOCK.yaml"
+        ).read_text(encoding="utf-8")
+        roadmap_text = (ROOT / "docs" / "governance" / "roadmap.yaml").read_text(
+            encoding="utf-8"
         )
-        self.assertFalse(all(blocked.values()), blocked)
+
+        current_checks = module.evaluate_current_state_consistency(
+            batch_text, roadmap_text
+        )
+        self.assertTrue(all(current_checks.values()), current_checks)
+        phase_checks = module.evaluate_phase_state(
+            batch_text, roadmap_text, require_structured=True
+        )
+        self.assertTrue(all(phase_checks.values()), phase_checks)
+
+        events, parse_errors = module._parse_events(
+            ROOT / "docs" / "governance" / "events.jsonl"
+        )
+        self.assertEqual([], parse_errors)
+        review_event = [
+            event
+            for event in events
+            if event.get("event_id")
+            == "EVT-IDS-V0_1-BATCH031-040-REVIEW-20260714-001"
+        ]
+        self.assertEqual(1, len(review_event))
+        self.assertEqual([], module.evaluate_required_event_semantics(review_event))
+
+        skipped_review = batch_text.replace(
+            'review_task_id: "IDS-V0_1-BATCH-031-040-REVIEW-GATE"',
+            'review_task_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"',
+            1,
+        )
+        blocked = module.evaluate_current_state_consistency(
+            skipped_review, roadmap_text
+        )
+        self.assertFalse(blocked["batch031_040_review_consistent"], blocked)
 
 
 if __name__ == "__main__":
