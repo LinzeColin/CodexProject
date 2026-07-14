@@ -84,6 +84,9 @@ def validate_owner_controls(controls: Mapping[str, Any]) -> dict[str, Any]:
     project = _mapping(controls.get("project"))
     if project.get("production_enabled") is not False:
         errors.append("project.production_enabled must remain false until production acceptance")
+    if project.get("production_auto_enable_after_acceptance") is not False:
+        # R0-3（V0.3 复审加固）：验收后自动启用已废止；启用只能走显式 owner 授权 artifact（不变量 5）。
+        errors.append("project.production_auto_enable_after_acceptance must be false; enablement requires an explicit owner authorization artifact")
     outputs = _mapping(controls.get("outputs"))
     if outputs.get("production_acceptance_claimed") is not False:
         errors.append("outputs.production_acceptance_claimed must be false")

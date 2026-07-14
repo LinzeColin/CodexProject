@@ -10,11 +10,11 @@ import json
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 from . import config
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2  # v2: + enrichments 表、idx_versions_pubdate 表达式索引
 
 _SCHEMA = """
 CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
@@ -143,6 +143,7 @@ CREATE TABLE IF NOT EXISTS enrichments (
 
 CREATE INDEX IF NOT EXISTS idx_events_item ON learning_events(item_id, at);
 CREATE INDEX IF NOT EXISTS idx_versions_doc ON doc_versions(doc_id, version_no);
+CREATE INDEX IF NOT EXISTS idx_versions_pubdate ON doc_versions(substr(published_at, 1, 10));
 CREATE INDEX IF NOT EXISTS idx_claims_docver ON claims(doc_version_id);
 CREATE INDEX IF NOT EXISTS idx_candidates_date ON candidates(as_of_date);
 """
@@ -164,13 +165,22 @@ def connect(db_path: Path | None = None) -> sqlite3.Connection:
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA foreign_keys=ON")
+    # 复审修复：schema 版本匹配则跳过 DDL——webapp 每请求建连接，
+    # 每次跑 22 条 DDL + 一次写事务是纯开销，且与每日 run 抢写锁。
+    has_meta = conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='meta'"
+    ).fetchone()
+    if has_meta:
+        row = conn.execute("SELECT value FROM meta WHERE key='schema_version'").fetchone()
+        if row and row["value"] == str(SCHEMA_VERSION):
+            return conn
     conn.executescript(_SCHEMA)
     try:
         conn.executescript(_FTS)
     except sqlite3.OperationalError:  # FTS5 缺失时降级：检索功能不可用，闭环不阻塞
         pass
     conn.execute(
-        "INSERT OR IGNORE INTO meta (key, value) VALUES ('schema_version', ?)",
+        "INSERT OR REPLACE INTO meta (key, value) VALUES ('schema_version', ?)",
         (str(SCHEMA_VERSION),),
     )
     conn.commit()
@@ -289,6 +299,26 @@ def _content_hash(item: dict[str, Any]) -> str:
         ensure_ascii=False, sort_keys=True,
     )
     return hashlib.sha256(basis.encode("utf-8")).hexdigest()
+
+
+def record_config_change(conn: sqlite3.Connection, *, domain: str, old: dict[str, Any],
+                         new: dict[str, Any], proposal_src: str, receipt: str,
+                         replay_ref: str | None = None, at: str | None = None) -> dict[str, Any]:
+    """参数变更回执：DB 行 + 追加 data/config_changes.jsonl（复审修复：
+    回执必须活在可提交的 git 事实里，不能只存在被 gitignore 的本地库中）."""
+    at = at or utcnow_iso()
+    entry = {"domain": domain, "old": old, "new": new, "proposal_src": proposal_src,
+             "replay_ref": replay_ref, "receipt": receipt, "at": at}
+    conn.execute(
+        "INSERT INTO config_changes (domain, old_json, new_json, proposal_src, replay_ref, receipt, at) "
+        "VALUES (?, ?, ?, ?, ?, ?, ?)",
+        (domain, json.dumps(old, ensure_ascii=False), json.dumps(new, ensure_ascii=False),
+         proposal_src, replay_ref, receipt, at),
+    )
+    conn.commit()
+    with open(config.data_dir() / "config_changes.jsonl", "a", encoding="utf-8") as fh:
+        fh.write(json.dumps(entry, ensure_ascii=False, sort_keys=True) + "\n")
+    return entry
 
 
 def backup(conn: sqlite3.Connection, dest_dir: Path | None = None, keep: int = 30) -> Path:

@@ -1,3 +1,6 @@
+# ⚠ 任务包原始快照（只读存档）：本文件是交付任务包的提案原文，已被
+#   config/thresholds_v0_3.yaml（ACTIVE）取代——运行时与一切决策只读后者。
+#   两处差异：status proposed→active；abstain_threshold 55→59.6（R1-3 回放重校）。
 # ADP 阈值注册表 V0.3 —— 全系统唯一参数真相源
 # 状态: PROPOSED（Owner 已口头拍板权重，签署后生效）
 # 取代: formula_registry.yaml(533KB) / model_registry.yaml(257KB) / 模型参数文件.md(530KB) → 全部冻结入 archive/

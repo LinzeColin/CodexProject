@@ -6,61 +6,122 @@
  "sections_json": [
   {
    "title": "人话版",
-   "body": "这篇论文在做什么：Large language model (LLM) agents have shown strong performance in long-horizon tasks that require planning, tool use, and interaction with external environments.  meta: 论文《PolyWorkBench: Benchmarking Multilingual Long-Horizon LLM Agents》发表于 2026-07-07，作者 8 人，原文见 https://arxiv."
+   "sentences": [
+    {
+     "text": "这篇论文在做什么：Large language model (LLM) agents have shown strong performance in long-horizon tasks that require planning, tool use, and interaction with external environments.",
+     "claim": "arxiv:2607.06008#v2:c0"
+    },
+    {
+     "text": "论文《PolyWorkBench: Benchmarking Multilingual Long-Horizon LLM Agents》发表于 2026-07-07，作者 8 人，原文见 https://arxiv.org/abs/2607.06008v2。",
+     "claim": "__doc_meta__"
+    }
+   ],
+   "body": "这篇论文在做什么：Large language model (LLM) agents have shown strong performance in long-horizon tasks that require planning, tool use, and interaction with external environments. 论文《PolyWorkBench: Benchmarking Multilingual Long-Horizon LLM Agents》发表于 2026-07-07，作者 8 人，原文见 https://arxiv.org/abs/2607.06008v2。"
   },
   {
    "title": "领域脉络",
-   "body": "本文主类目 cs. 交叉类目 cs."
+   "sentences": [
+    {
+     "text": "本文主类目 cs.AI：人工智能——让机器完成需要智能的任务的总领域。",
+     "claim": "__doc_meta__"
+    },
+    {
+     "text": "交叉类目 cs.CL：自然语言处理——让机器理解与生成人类语言。",
+     "claim": "__doc_meta__"
+    }
+   ],
+   "body": "本文主类目 cs.AI：人工智能——让机器完成需要智能的任务的总领域。 交叉类目 cs.CL：自然语言处理——让机器理解与生成人类语言。"
   },
   {
    "title": "机制拆解",
-   "body": "In this work, we introduce PolyWorkBench, a benchmark for evaluating LLM agents on multilingual long-horizon workplace workflows.  To enable comprehensive evaluation, we propose a hybrid framework that combines structural grading, executable verification, and LLM-based semantic assessment.  This design allows us to capture both functional correctness and linguistic consistency across complex workflows. "
+   "sentences": [
+    {
+     "text": "In this work, we introduce PolyWorkBench, a benchmark for evaluating LLM agents on multilingual long-horizon workplace workflows.",
+     "claim": "arxiv:2607.06008#v2:c3"
+    },
+    {
+     "text": "To enable comprehensive evaluation, we propose a hybrid framework that combines structural grading, executable verification, and LLM-based semantic assessment.",
+     "claim": "arxiv:2607.06008#v2:c5"
+    },
+    {
+     "text": "This design allows us to capture both functional correctness and linguistic consistency across complex workflows.",
+     "claim": "arxiv:2607.06008#v2:c6"
+    }
+   ],
+   "body": "In this work, we introduce PolyWorkBench, a benchmark for evaluating LLM agents on multilingual long-horizon workplace workflows. To enable comprehensive evaluation, we propose a hybrid framework that combines structural grading, executable verification, and LLM-based semantic assessment. This design allows us to capture both functional correctness and linguistic consistency across complex workflows."
   },
   {
    "title": "证据与数字",
-   "body": "PolyWorkBench consists of 67 tasks across five domains, including commerce, knowledge work, legal analysis, localization, and manufacturing, where agents must process heterogeneous multilingual inputs, perform iterative reasoning, invoke external tools, and produce structured outputs. "
+   "sentences": [
+    {
+     "text": "PolyWorkBench consists of 67 tasks across five domains, including commerce, knowledge work, legal analysis, localization, and manufacturing, where agents must process heterogeneous multilingual inputs, perform iterative reasoning, invoke external tools, and produce structured outputs.",
+     "claim": "arxiv:2607.06008#v2:c4"
+    }
+   ],
+   "body": "PolyWorkBench consists of 67 tasks across five domains, including commerce, knowledge work, legal analysis, localization, and manufacturing, where agents must process heterogeneous multilingual inputs, perform iterative reasoning, invoke external tools, and produce structured outputs."
   },
   {
    "title": "反例与边界",
-   "body": "However, most existing benchmarks implicitly assume a monolingual setting, where the entire execution process, including reasoning, tool invocation, and output generation, is conducted within a single language. "
+   "sentences": [
+    {
+     "text": "However, most existing benchmarks implicitly assume a monolingual setting, where the entire execution process, including reasoning, tool invocation, and output generation, is conducted within a single language.",
+     "claim": "arxiv:2607.06008#v2:c1"
+    }
+   ],
+   "body": "However, most existing benchmarks implicitly assume a monolingual setting, where the entire execution process, including reasoning, tool invocation, and output generation, is conducted within a single language."
   },
   {
    "title": "跨领域连接与意外收获",
-   "body": "本文横跨 2 个类目（cs. 意外收获：However, most existing benchmarks implicitly assume a monolingual setting, where the entire execution process, including reasoning, tool invocation, and output generation, is conducted within a single language.  意外收获：Our analysis suggests that multilinguality introduces compounding effects across reasoning and execution steps, highlighting the importance of jointly modeling language variation and procedural decision-making in agent evaluation. "
+   "sentences": [
+    {
+     "text": "本文横跨 2 个类目（cs.AI, cs.CL），关注其在你兴趣板块间的迁移面。",
+     "claim": "__doc_meta__"
+    },
+    {
+     "text": "意外收获：However, most existing benchmarks implicitly assume a monolingual setting, where the entire execution process, including reasoning, tool invocation, and output generation, is conducted within a single language.",
+     "claim": "arxiv:2607.06008#v2:c1"
+    },
+    {
+     "text": "意外收获：Our analysis suggests that multilinguality introduces compounding effects across reasoning and execution steps, highlighting the importance of jointly modeling language variation and procedural decision-making in agent evaluation.",
+     "claim": "arxiv:2607.06008#v2:c8"
+    }
+   ],
+   "body": "本文横跨 2 个类目（cs.AI, cs.CL），关注其在你兴趣板块间的迁移面。 意外收获：However, most existing benchmarks implicitly assume a monolingual setting, where the entire execution process, including reasoning, tool invocation, and output generation, is conducted within a single language. 意外收获：Our analysis suggests that multilinguality introduces compounding effects across reasoning and execution steps, highlighting the importance of jointly modeling language variation and procedural decision-making in agent evaluation."
   },
   {
    "title": "可复用方法",
-   "body": "In this work, we introduce PolyWorkBench, a benchmark for evaluating LLM agents on multilingual long-horizon workplace workflows. "
+   "sentences": [
+    {
+     "text": "In this work, we introduce PolyWorkBench, a benchmark for evaluating LLM agents on multilingual long-horizon workplace workflows.",
+     "claim": "arxiv:2607.06008#v2:c3"
+    }
+   ],
+   "body": "In this work, we introduce PolyWorkBench, a benchmark for evaluating LLM agents on multilingual long-horizon workplace workflows."
   },
   {
    "title": "术语表",
-   "body": "术语 LLM——出处见声明：Large language model (LLM) agents have shown strong performance in long-horizon … 术语 PolyWorkBench——出处见声明：In this work, we introduce PolyWorkBench, a benchmark for evaluating LLM agents …"
+   "sentences": [
+    {
+     "text": "术语 LLM——出处见声明：Large language model (LLM) agents have shown strong performance in long-horizon ",
+     "claim": "arxiv:2607.06008#v2:c0"
+    },
+    {
+     "text": "术语 PolyWorkBench——出处见声明：In this work, we introduce PolyWorkBench, a benchmark for evaluating LLM agents ",
+     "claim": "arxiv:2607.06008#v2:c3"
+    }
+   ],
+   "body": "术语 LLM——出处见声明：Large language model (LLM) agents have shown strong performance in long-horizon  术语 PolyWorkBench——出处见声明：In this work, we introduce PolyWorkBench, a benchmark for evaluating LLM agents "
   }
  ],
  "claim_bindings_json": {
-  "s0.0": "arxiv:2607.06008#v2:c0",
-  "s0.1": "arxiv:2607.06008#v2:c0",
-  "s1.0": "__doc_meta__",
-  "s1.1": "__doc_meta__",
-  "s2.0": "arxiv:2607.06008#v2:c3",
-  "s2.1": "arxiv:2607.06008#v2:c3",
-  "s2.2": "arxiv:2607.06008#v2:c5",
-  "s2.3": "arxiv:2607.06008#v2:c6",
-  "s3.0": "arxiv:2607.06008#v2:c4",
-  "s3.1": "arxiv:2607.06008#v2:c4",
-  "s4.0": "arxiv:2607.06008#v2:c1",
-  "s4.1": "arxiv:2607.06008#v2:c1",
-  "s5.0": "__doc_meta__",
-  "s5.1": "arxiv:2607.06008#v2:c1",
-  "s5.2": "arxiv:2607.06008#v2:c1",
-  "s5.3": "arxiv:2607.06008#v2:c8",
-  "s6.0": "arxiv:2607.06008#v2:c3",
-  "s6.1": "arxiv:2607.06008#v2:c3",
-  "s7.0": "arxiv:2607.06008#v2:c0"
+  "schema": "structured-v2",
+  "total_sentences": 15,
+  "doc_meta_sentences": 4,
+  "dropped_unbound": 0
  },
- "template_ver": "lesson-v03-1",
+ "template_ver": "lesson-v03-2",
  "generator": "deterministic_degraded",
- "created_at": "2026-07-14T11:07:48+00:00",
+ "created_at": "2026-07-14T12:03:19+00:00",
  "status": "open",
  "reopened_reason": null,
  "archived_at": null

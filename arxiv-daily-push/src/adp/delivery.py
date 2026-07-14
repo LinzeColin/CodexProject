@@ -15,9 +15,8 @@ from email.message import EmailMessage
 from pathlib import Path
 from typing import Any
 
-from jinja2 import Environment, FileSystemLoader, select_autoescape
-
 from . import config, store
+from .render import env as _template_env
 
 AUTH_PATH_NAME = "send_authorization.json"
 REQUIRED_AUTH_FIELDS = ("issued_by", "issued_at", "expires_at", "recipient", "authorization_text", "revoked")
@@ -81,9 +80,8 @@ def render_lesson_email(conn: sqlite3.Connection, lesson_id: str) -> tuple[str, 
            JOIN documents d ON d.id = v.doc_id WHERE v.id=?""",
         (row["doc_version_id"],),
     ).fetchone()
-    env = Environment(loader=FileSystemLoader(Path(__file__).parent / "templates"),
-                      autoescape=select_autoescape(["html"]))
-    html = env.get_template("email_lesson.html").render(
+    # 复审修复：与网页共用同一 Jinja 环境（render.env），消除双环境配置漂移
+    html = _template_env.get_template("email_lesson.html").render(
         lesson_id=lesson_id, as_of_date=row["as_of_date"],
         doc_title=doc["title"], canonical_url=doc["canonical_url"],
         sections=json.loads(row["sections_json"]),

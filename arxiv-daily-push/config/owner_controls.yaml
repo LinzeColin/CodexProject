@@ -1,5 +1,6 @@
 schema_version: 1
-config_version: "owner-controls-v1"
+# v2 = R0-3 语义变更（自动启用废止 + 五封信降为模板能力）；回滚目标 v1 见 validation 段。
+config_version: "owner-controls-v2"
 last_updated: "2026-07-14"
 task_id: "S1-06-SCORING-QUEUE-LEDGER-001"
 
@@ -135,6 +136,8 @@ email:
   recipients:
     - "linzezhang35@gmail.com"
   # R0-3: 五封信仅保留为模板能力（交付-003）；默认交付形态 = 单讲义镜像（V0.3）。
+  # 下方 send_order / cross_board_waits_for 是五封信模板能力的参数，
+  # 在 single_lesson_mirror 模式下不生效，保留仅供未来显式切回模板时使用。
   split_mode: "single_lesson_mirror"
   send_order:
     - "B1"

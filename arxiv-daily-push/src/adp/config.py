@@ -14,6 +14,9 @@ DATA_DIR = PROJECT_ROOT / "data"
 
 TIMEZONE = "Australia/Sydney"
 
+# 排序策略版本域单指针：特征抽取器内部塑形常数的版本标识（改动必须换号+CHANGELOG 落行）
+FEATURE_EXTRACTOR_VER = "features-v03-2"
+
 # 8 特征权重键（顺序即展示顺序）
 FEATURE_KEYS = (
     "user_relevance",
@@ -110,6 +113,13 @@ def load_thresholds(path: Path | None = None) -> Thresholds:
     )
 
 
+def load_legacy_research_weights(path: Path | None = None) -> dict[str, float]:
+    """旧 V7 research 权重（owner_controls.yaml scoring.research）——回放对照专用，只读."""
+    raw = _load_yaml(path or OWNER_CONTROLS_PATH)
+    research = ((raw.get("scoring") or {}).get("research")) or {}
+    return {key: float(value) for key, value in research.items()}
+
+
 def data_dir() -> Path:
     override = os.environ.get("ADP_DATA_DIR")
     base = Path(override) if override else DATA_DIR
@@ -118,10 +128,11 @@ def data_dir() -> Path:
 
 
 def config_versions() -> dict[str, str]:
-    """Run manifest 契约的 config_versions 字段（四指针）."""
+    """Run manifest 契约的 config_versions 字段（版本域指针）."""
     return {
         "阈值": "thresholds-v0.3",
         "数据": "adp-sqlite-v03-schema1",
         "合同": "ADP-PRD-V0.3 (legacy lock V7.2 frozen)",
-        "模板": "lesson-v03-1",
+        "模板": "lesson-v03-2",
+        "排序策略": FEATURE_EXTRACTOR_VER,
     }

@@ -12,7 +12,7 @@ import sqlite3
 from pathlib import Path
 from typing import Any
 
-from . import config, store
+from . import config
 
 RESULTS = ("正常", "降级", "弃权", "失败", "未运行")
 

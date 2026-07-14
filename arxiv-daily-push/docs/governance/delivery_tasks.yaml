@@ -6758,3 +6758,25 @@ tasks:
     target_version: "0.23.1"
     completed_version: "0.23.1"
     unknown_task_ids: []
+
+  - task_id: "ADP-V03-REBUILD-R1"
+    title: "V0.3 rebuild: minimal learning loop with delivery-制 acceptance (R0-R4)"
+    parent_task_id: "ADP-V03-REBUILD"
+    phase: "V03"
+    status: "completed"
+    fact_level: "EXTRACTED"
+    timestamp: "2026-07-14T22:45:00+10:00"
+    objective: "Build the fetch->select->lesson->recall->review loop as a new adp package with traceable evidence at every step, governed parameters only in config/thresholds_v0_3.yaml, and zero production side effects."
+    scope: "New src/adp package (five-stage run, gates, weighted selection, sentence-bound lessons, FSRS-6 review, corrections, fail-closed delivery, web UI), thresholds registry, 48h+ three-real-date run manifests, review-audit fixes, invariant and gate/weight tests."
+    non_scope: "No SMTP send, scheduler install, Release, restore, or DAILY_OPERATION enablement; legacy V7.2 runtime stays frozen fail-closed; R5 source expansion and R6 Cloudflare deployment stay deferred owner decisions."
+    acceptance_ids:
+      - "ACC-ADP-V03-48H-LOOP"
+    test_commands:
+      - "PYTHONPATH=arxiv-daily-push/src arxiv-daily-push/var/venv/bin/python -B -m unittest discover -s arxiv-daily-push/tests -p 'test_*.py' -q"
+    test_results:
+      - "PASS: full ADP unittest suite (914 tests) green from the repository root with the project venv"
+    completed_version: "adp-v03-r0-r4-2026-07-14"
+    evidence_refs:
+      - "arxiv-daily-push/docs/v03/STATUS.yaml"
+      - "arxiv-daily-push/data/run_manifests.jsonl"
+      - "arxiv-daily-push/docs/v03/04_开发记录/问题台账.md"

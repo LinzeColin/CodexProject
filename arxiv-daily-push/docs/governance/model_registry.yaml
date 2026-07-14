@@ -6566,3 +6566,58 @@ models:
     evidence_hash: "PENDING_MAIN_COMMIT"
     last_verified_commit: "PRECOMMIT"
     verified_at: "2026-06-29T18:04:46+10:00"
+
+  -
+    model_id: "MOD-ADP-122"
+    name: "ADP V0.3 rebuild minimal learning loop"
+    purpose: "Single-user evidence-traceable learning loop (fetch -> gate -> weighted select -> sentence-bound lesson -> active recall -> FSRS-6 spaced review) with five-state run manifests, fail-closed delivery, and correction propagation; governed parameters live only in config/thresholds_v0_3.yaml."
+    owner: "arxiv-daily-push"
+    status: "active"
+    task_ids:
+      - "ADP-V03-REBUILD-R0"
+      - "ADP-V03-REBUILD-R1"
+      - "ADP-V03-REBUILD-R2"
+      - "ADP-V03-REBUILD-R3"
+      - "ADP-V03-REBUILD-R4"
+    assumption_ids:
+      - "ASM-ADP-035"
+    formula_ids:
+      - "FORM-ADP-124"
+    parameter_ids:
+      - "PARAM-ADP-1109"
+      - "PARAM-ADP-1110"
+      - "PARAM-ADP-1111"
+      - "PARAM-ADP-1112"
+      - "PARAM-ADP-1113"
+      - "PARAM-ADP-1114"
+      - "PARAM-ADP-1115"
+      - "PARAM-ADP-1116"
+      - "PARAM-ADP-1117"
+      - "PARAM-ADP-1118"
+      - "PARAM-ADP-1119"
+      - "PARAM-ADP-1120"
+      - "PARAM-ADP-1121"
+    inputs:
+      - "arXiv Atom API (official, read-only)"
+      - "arxiv-daily-push/config/thresholds_v0_3.yaml"
+      - "owner recall grades and manual marks (append-only learning events)"
+    outputs:
+      - "daily lesson artifact (arxiv-daily-push/data/lessons/)"
+      - "five-state run manifest line (arxiv-daily-push/data/run_manifests.jsonl)"
+      - "FSRS-6 review schedule and weekly radar"
+    dependencies:
+      - "fsrs==6.3.1 (py-fsrs, FSRS-6 default 21 weights)"
+      - "FastAPI + Jinja2 (local web UI, 127.0.0.1)"
+    risk_notes: "Zero production side effects: no SMTP send, scheduler install, Release, or restore without an explicit owner authorization credential (invariant 5); email delivery renders .eml previews and records BLOCKED_AUTH receipts while unauthorized."
+    code_refs:
+      - "arxiv-daily-push/src/adp/run.py"
+      - "arxiv-daily-push/src/adp/review.py"
+      - "arxiv-daily-push/src/adp/lesson.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_adp_invariants.py"
+      - "arxiv-daily-push/tests/test_adp_selection.py"
+    evidence_refs:
+      - "arxiv-daily-push/docs/v03/STATUS.yaml"
+    fact_level: "EXTRACTED"
+    last_verified_commit: "24866ec5ba0c5a54294f7d6c9bff32d24c8dacaf"
+    verified_at: "2026-07-14T22:45:00+10:00"

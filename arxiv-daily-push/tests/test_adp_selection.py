@@ -97,9 +97,24 @@ class FeatureTests(unittest.TestCase):
     def _context(self):
         return {
             "as_of": datetime(2026, 7, 14, 8, 0, tzinfo=timezone.utc),
-            "learned_tokens": set(), "seen_token_sets": [],
+            "learned_tokens": set(), "seen_docs": [],
             "due_topic_tokens": set(), "recent_selected_primary": [],
         }
+
+    def test_novelty_excludes_candidate_itself(self) -> None:
+        """防事故：候选与自己比相似度（新颖度恒为 0，14 分权重失效）."""
+        from adp.features import _tokens, score_features
+
+        candidate = _candidate()
+        meta = candidate["metadata"]["arxiv"]
+        own_tokens = _tokens(f"{candidate['title']} {meta['summary']}")
+        context = self._context()
+        context["seen_docs"] = [(candidate["doc_id"], own_tokens)]
+        features = score_features(candidate, context)
+        self.assertGreater(features["novelty_to_user"]["value"], 0.0)
+        context["seen_docs"].append(("arxiv:other", own_tokens))  # 他人同词面 → 新颖度应归零
+        features2 = score_features(candidate, context)
+        self.assertEqual(features2["novelty_to_user"]["value"], 0.0)
 
     def test_all_feature_values_in_unit_range_and_deterministic(self) -> None:
         """防事故：特征越界（>1）放大权重导致排序不可解释、不可复现."""

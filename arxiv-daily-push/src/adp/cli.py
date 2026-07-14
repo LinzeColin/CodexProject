@@ -9,7 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 
 from . import config, store
 
@@ -68,17 +68,30 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(entry, ensure_ascii=False, indent=1))
             return 0 if entry["result"] in {"正常", "降级", "弃权", "未运行"} else 2
         if args.command == "select":
+            # 复审修复：select 是只读预览（评估+解释，不落 selections 行），
+            # 否则会毒化当日 run 的幂等检查、静默跳过整个学习日。
             from .arxiv_source import candidates_for_date
             from .run import SYDNEY
-            from .selection import select_daily
+            from .selection import build_context, evaluate_candidates, explain_choice, seen_version_ids
 
             as_of = datetime.now(timezone.utc)
             day = as_of.astimezone(SYDNEY).strftime("%Y-%m-%d")
-            outcome = select_daily(conn, run_id=f"select-{as_of.isoformat(timespec='seconds')}",
-                                   as_of_date=day, candidates=candidates_for_date(conn, day),
-                                   thresholds=config.load_thresholds(), as_of=as_of)
-            outcome.pop("top", None), outcome.pop("runner", None)
-            print(json.dumps(outcome, ensure_ascii=False, indent=1, default=str))
+            thresholds = config.load_thresholds()
+            scored, rejected = evaluate_candidates(
+                candidates_for_date(conn, day), build_context(conn, as_of=as_of), thresholds,
+                gate_context={"seen_version_ids": seen_version_ids(conn),
+                              "source_health": "active"},
+            )
+            preview: dict = {"dry_run": True, "as_of_date": day,
+                             "scanned": len(scored) + len(rejected), "passed_gates": len(scored)}
+            if scored and scored[0]["score"] >= thresholds.abstain_threshold:
+                why, why_not = explain_choice(scored[0], scored[1] if len(scored) > 1 else None)
+                preview.update({"top_title": scored[0]["candidate"]["title"],
+                                "top_score": scored[0]["score"], "why": why, "why_not": why_not})
+            else:
+                preview.update({"abstain": True,
+                                "top_score": scored[0]["score"] if scored else None})
+            print(json.dumps(preview, ensure_ascii=False, indent=1))
             return 0
         if args.command == "learn":
             from .lesson import generate_lesson, validate_traceability
@@ -104,7 +117,8 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "review":
             from .review import due_items
 
-            print(json.dumps(due_items(conn), ensure_ascii=False, indent=1))
+            limit = config.load_thresholds().max_daily_reviews
+            print(json.dumps(due_items(conn, limit=limit), ensure_ascii=False, indent=1))
             return 0
         if args.command == "grade":
             from .review import grade_recall

@@ -7335,3 +7335,50 @@ formulas:
     evidence_hash: "PENDING_MAIN_COMMIT"
     last_verified_commit: "PRECOMMIT"
     verified_at: "2026-06-29T18:04:46+10:00"
+
+  -
+    formula_id: "FORM-ADP-124"
+    model_id: "MOD-ADP-122"
+    assumption_ids:
+      - "ASM-ADP-035"
+    task_ids:
+      - "ADP-V03-REBUILD-R1"
+    status: "active"
+    expression: "V0.3 selection score = sum(weight_i * feature_i for the 8 registry-governed weights, diversity capped at diversity_effective_cap_single_board while only board B1 is enabled) - attention_cost_penalty * attention_cost; a day abstains when the top score is below selection.abstain_threshold. All governed weights and thresholds are read only from arxiv-daily-push/config/thresholds_v0_3.yaml; feature-extractor shaping constants are versioned by FEATURE_EXTRACTOR_VER in arxiv-daily-push/src/adp/config.py and recorded in every selection params_json for replay."
+    variables:
+      -
+        name: "value_weights"
+        data_type: "object"
+        unit: "relative weights summing 104"
+        input_domain: "arxiv-daily-push/config/thresholds_v0_3.yaml value_weights"
+      -
+        name: "attention_cost"
+        data_type: "float"
+        unit: "0..1"
+        input_domain: "abstract length and symbol density"
+      -
+        name: "abstain_threshold"
+        data_type: "float"
+        unit: "score"
+        input_domain: "arxiv-daily-push/config/thresholds_v0_3.yaml selection.abstain_threshold"
+    constraints: "Weights, abstain threshold, attention penalty, and the single-board diversity cap may only change through the thresholds registry proposal-replay-apply-receipt path (receipts mirrored to arxiv-daily-push/data/config_changes.jsonl)."
+    missing_policy: "A missing or incomplete thresholds registry raises at load time; the daily run then records a 失败 manifest (fail-closed, invariant 9)."
+    output_range: "score in [-attention_cost_penalty, 104]; decision is one selected candidate or an abstain with reason."
+    code_refs:
+      - "arxiv-daily-push/src/adp/features.py"
+      - "arxiv-daily-push/src/adp/selection.py"
+    test_refs:
+      - "arxiv-daily-push/tests/test_adp_selection.py"
+    evidence_refs:
+      - "arxiv-daily-push/data/replay_30d.json"
+      - "arxiv-daily-push/data/run_manifests.jsonl"
+    semantic_status: "MACHINE_VERIFIED"
+    implementation_refs:
+      - "arxiv-daily-push/src/adp/features.py::score_features"
+      - "arxiv-daily-push/src/adp/features.py::attention_cost"
+      - "arxiv-daily-push/src/adp/features.py::total_score"
+      - "arxiv-daily-push/src/adp/selection.py::evaluate_candidates"
+    implementation_fingerprint: "sha256:6de933b78081134f692c699895997c749f6daa0d5248525d7565af31e782015a"
+    last_verified_commit: "24866ec5ba0c5a54294f7d6c9bff32d24c8dacaf"
+    verified_at: "2026-07-14T22:45:00+10:00"
+    evidence_hash: "sha256:6a538612bc3a479186caa6534b13d380c1d7dcf199bc9e145e0b2de0f77d62dc"

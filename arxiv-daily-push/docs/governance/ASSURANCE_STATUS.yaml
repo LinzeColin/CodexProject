@@ -1,9 +1,9 @@
 project_id: "arxiv-daily-push"
-as_of_event_id: "EVENT-20260710-ADP-MVP-READY-S3-PERSISTENT-AUTH-PREREQUISITE-VALIDATION-CLOSEOUT"
-source_snapshot_hash: "sha256:a4feb125d8f5468dad112ce4168b77e0e4d03da35847d86a1f0f8f8945769810"
+as_of_event_id: "EVENT-20260714-ADP-V03-REBUILD-R0-R4-DELIVERY"
+source_snapshot_hash: "sha256:b6e0f68316b2ee0841be9357f234382e93071cdf4dee10e6016044afd84ba329"
 source_base_commit: "996986b0e00b458c376c84ea037dd06f4c548ad0"
 source_tree_hash: "4375e46be3b7c9f712f8b21962a0a0c69da57a3f"
-snapshot_event_time: "2026-07-10T22:24:22+10:00"
+snapshot_event_time: "2026-07-14T23:30:00+10:00"
 generator_version: "4.0.1"
 final_commit_binding: "PRECOMMIT_TREE_BOUND_PENDING_CI_ATTESTATION"
 dimensions:
@@ -16,10 +16,10 @@ dimensions:
     status: "PARTIAL"
     machine_verified_means: "documented implementation values and fingerprints match extractable code/config sources only"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 1091
-    total_active_parameters: 1091
-    checked_active_formulas: 122
-    total_active_formulas: 123
+    checked_active_parameters: 1104
+    total_active_parameters: 1104
+    checked_active_formulas: 123
+    total_active_formulas: 124
     unresolved_fact_ids:
       - "FACT-arxiv-daily-push-IMPLEMENTATION-FORMULA-REVIEW"
     evidence_refs:
@@ -28,8 +28,8 @@ dimensions:
   parameter_source_quality:
     status: "VERIFIED"
     fact_level: "EXTRACTED"
-    checked_active_parameters: 1091
-    total_active_parameters: 1091
+    checked_active_parameters: 1104
+    total_active_parameters: 1104
     evidence_refs:
       - "arxiv-daily-push/docs/governance/parameter_registry.csv"
   methodological_rationale:
@@ -61,13 +61,13 @@ dimensions:
     fact_level: "EXTRACTED"
     tree_bound_events: 19
     commit_bound_events: 11
-    legacy_unbound_events: 334
+    legacy_unbound_events: 335
     precommit_pending_events: 40
     evidence_refs:
       - "arxiv-daily-push/docs/governance/development_events.jsonl"
 delivery_readiness:
   status: "BLOCKED_PERSISTENT_DAILY_OPERATION_AUTHORIZATION_MISSING"
-  release_gate: "PERSISTENT_DAILY_OPERATION_AUTHORIZATION_PREREQUISITE_FAIL_CLOSED_NO_RUNTIME_ENABLEMENT"
+  release_gate: "V03_R0_R4_DELIVERED_ZERO_PRODUCTION_SIDE_EFFECTS_AWAITING_OWNER_PILOT_DECISION"
   blocker_ids:
     - "persistent_daily_operation_authorization_missing"
   v7_contract: "ADP-PRODUCT-CONTRACT-V7.2"

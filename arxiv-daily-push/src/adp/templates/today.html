@@ -115,7 +115,6 @@ async function transfer(id) {
   await post(`/api/transfer/${id}`, {kind:'outcome', note, outcome:'recorded'});
   document.getElementById('transferReceipt').textContent = '已记录为应用证据（失败也算证据）。';
 }
-{% if state and state.evidence_state in ['未见','接触'] %}{% endif %}
 </script>
 {% endif %}
 {% endblock %}

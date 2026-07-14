@@ -5,9 +5,9 @@ Governance spec version: `1.0.0`
 
 machine_summary:
 
-- model_count: 121
-- formula_count: 123
-- parameter_count: 1108
+- model_count: 122
+- formula_count: 124
+- parameter_count: 1121
 
 Fact levels follow `docs/governance/STANDARD.md`.
 
@@ -1237,3 +1237,11 @@ Uncovered planned scenarios:
 - GitHub-rendered Markdown is the primary owner-readable surface. A shallow `arxiv-daily-push/用户中心/README.md` entry plus adjacent status pages is the required target for owner status, mail, queue, review, action, and ROI summaries.
 - Local `.adp` files, SMTP reports, run JSON, and candidate queue JSON remain valid evidence sources only. Owner pages must directly summarize sent, blocked/not sent, and queued states without requiring local absolute-path navigation.
 - This rule does not migrate PR #240 owner pages by itself and does not replay email, enable SMTP/scheduler/Release, mutate queues, change public schema/DB, change source adapters or ranking, edit CURRENT/V7 baselines, close inherited P0/P1, accept S2PLT02, enable DAILY_OPERATION, or claim integrated production acceptance.
+
+## MOD-ADP-122 ADP V0.3 rebuild minimal learning loop
+
+- Purpose: single-user evidence-traceable learning loop (fetch -> gate -> weighted select -> sentence-bound lesson -> active recall -> FSRS-6 review) with five-state run manifests and fail-closed delivery.
+- Formula: `FORM-ADP-124` (registry-weighted sum minus attention penalty; abstain below `selection.abstain_threshold`).
+- Parameters: `PARAM-ADP-1109..PARAM-ADP-1121` extracted from `arxiv-daily-push/config/thresholds_v0_3.yaml` (single parameter truth).
+- Boundary: zero production side effects without an explicit owner authorization credential (invariant 5); legacy V7.2 runtime frozen fail-closed.
+- Evidence: `arxiv-daily-push/docs/v03/STATUS.yaml`, `arxiv-daily-push/data/run_manifests.jsonl`.

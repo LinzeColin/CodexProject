@@ -10,7 +10,6 @@ import sqlite3
 from datetime import datetime, timezone
 from typing import Any, Mapping
 
-from . import store
 from .config import FEATURE_KEYS, Thresholds
 from .features import attention_cost, legacy_score, score_features, total_score
 from .gates import run_gates
@@ -40,13 +39,14 @@ def build_context(conn: sqlite3.Connection, *, as_of: datetime) -> dict[str, Any
         sections = json.loads(row["sections_json"])
         learned_tokens |= _tokens(" ".join(str(s.get("body", "")) for s in sections))
 
-    seen_token_sets: list[set[str]] = []
+    # 复审修复：带 doc_id，供 novelty 排除候选自身（自匹配曾把新颖度恒压为 0）
+    seen_docs: list[tuple[str, set[str]]] = []
     for row in conn.execute(
-        "SELECT title, metadata_json FROM doc_versions v JOIN documents d ON d.id=v.doc_id "
+        "SELECT v.doc_id, d.title, v.metadata_json FROM doc_versions v JOIN documents d ON d.id=v.doc_id "
         "ORDER BY v.retrieved_at DESC LIMIT 200"
     ):
         meta = json.loads(row["metadata_json"])
-        seen_token_sets.append(_tokens(f"{row['title']} {meta.get('summary', '')}"))
+        seen_docs.append((row["doc_id"], _tokens(f"{row['title']} {meta.get('summary', '')}")))
 
     due_topic_tokens: set[str] = set()
     now_iso = as_of.isoformat(timespec="seconds")
@@ -68,7 +68,7 @@ def build_context(conn: sqlite3.Connection, *, as_of: datetime) -> dict[str, Any
     return {
         "as_of": as_of,
         "learned_tokens": learned_tokens,
-        "seen_token_sets": seen_token_sets,
+        "seen_docs": seen_docs,
         "due_topic_tokens": due_topic_tokens,
         "recent_selected_primary": [p for p in recent_primary if p],
     }
@@ -165,11 +165,14 @@ def select_daily(conn: sqlite3.Connection, *, run_id: str, as_of_date: str,
         "run_id": run_id, "as_of_date": as_of_date,
         "scanned": len(candidates), "passed_gates": len(scored), "rejected": rejected,
     }
+    from .features import FEATURE_EXTRACTOR_VER
+
     params_json = json.dumps({
         "registry": thresholds.registry_id,
         "weights": thresholds.effective_weights(single_board=True),
         "abstain_threshold": thresholds.abstain_threshold,
         "attention_cost_penalty": thresholds.attention_cost_penalty,
+        "feature_extractor_ver": FEATURE_EXTRACTOR_VER,
     }, ensure_ascii=False)
 
     if not scored or scored[0]["score"] < thresholds.abstain_threshold:
@@ -214,27 +217,25 @@ def _source_health(conn: sqlite3.Connection) -> str:
 
 def replay_30d(conn: sqlite3.Connection, thresholds: Thresholds, *, as_of: datetime,
                days: int = 30) -> dict[str, Any]:
-    """R1-3：30 天历史回放 —— 逐日重演硬门+打分，输出新旧头名对照与弃权线重校.
+    """R1-3：30 天历史回放 —— 逐日重演硬门+打分，输出新旧头名对照与弃权线核对.
 
-    重校规则（盲点三）：弃权线随权重总和等比缩放 55 × (Σw_new / 96)，
-    并给出该线下的回放弃权天数对照，供 Owner 抽查合理性。
+    复审修复：候选窗口与生产一致（window_days=7）；上下文只构建一次（as_of 固定时
+    逐日重建是纯浪费）；弃权线只读注册表现值（55/96 的一次性重校已随回执归档，
+    不在此复算）。回放注记：dedup 门置空、上下文取当前态，属近似重演（问题台账 P-08）。
     """
     from datetime import timedelta
 
     from .arxiv_source import candidates_for_date
 
     rows: list[dict[str, Any]] = []
-    abstain_days_old_line = 0
-    abstain_days_new_line = 0
-    scale = thresholds.weight_total / 96.0
-    recalibrated = round(55 * scale, 1)
+    abstain_days_at_current_line = 0
+    context = build_context(conn, as_of=as_of)
 
     for offset in range(days, -1, -1):
         day = (as_of - timedelta(days=offset)).strftime("%Y-%m-%d")
-        candidates = candidates_for_date(conn, day, window_days=3)
+        candidates = candidates_for_date(conn, day)
         if not candidates:
             continue
-        context = build_context(conn, as_of=as_of)
         scored, _ = evaluate_candidates(
             candidates, context, thresholds,
             gate_context={"seen_version_ids": set(), "source_health": "active"},
@@ -254,21 +255,18 @@ def replay_30d(conn: sqlite3.Connection, thresholds: Thresholds, *, as_of: datet
             "same_pick": top["candidate"]["doc_id"] == by_legacy["candidate"]["doc_id"],
             "top_reason": explain_choice(top, scored[1] if len(scored) > 1 else None)[0],
         })
-        if top["score"] < 55:
-            abstain_days_old_line += 1
-        if top["score"] < recalibrated:
-            abstain_days_new_line += 1
+        if top["score"] < thresholds.abstain_threshold:
+            abstain_days_at_current_line += 1
 
     return {
         "generated_at": as_of.isoformat(timespec="seconds"),
         "days_with_data": len(rows),
         "weight_total": thresholds.weight_total,
-        "abstain_line_placeholder": 55,
-        "abstain_line_recalibrated": recalibrated,
-        "abstain_days_at_placeholder": abstain_days_old_line,
-        "abstain_days_at_recalibrated": abstain_days_new_line,
+        "abstain_line_current": thresholds.abstain_threshold,
+        "abstain_days_at_current_line": abstain_days_at_current_line,
         "agreement_rate": round(
             sum(1 for r in rows if r["same_pick"]) / len(rows), 3
         ) if rows else None,
+        "replay_caveat": "近似重演：dedup 门置空、打分上下文取当前态（P-08）",
         "rows": rows,
     }

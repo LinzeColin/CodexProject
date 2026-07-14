@@ -47,7 +47,28 @@ def run_once(conn: sqlite3.Connection, *, trigger: str = "manual",
         return write_manifest(conn, entry)
 
     thresholds = config.load_thresholds()
+    try:
+        return _run_stages(conn, run_id=run_id, trigger=trigger, as_of=as_of,
+                           as_of_date=as_of_date, fetch=fetch, fetch_days=fetch_days,
+                           thresholds=thresholds, counts=counts, degraded=degraded,
+                           started=started)
+    except Exception as exc:  # 复审修复：任何异常必须留下「失败」manifest（不变量 9）
+        entry = {
+            "run_id": run_id, "trigger": trigger, "result": "失败",
+            "side_effects_authorized": False, "counts": counts,
+            "降级项": degraded, "弃权原因": None,
+            "note": f"{type(exc).__name__}: {exc}",
+            "duration_seconds": round(time.monotonic() - started, 1),
+        }
+        try:
+            return write_manifest(conn, entry)
+        except Exception:
+            return write_manifest(None, entry)
 
+
+def _run_stages(conn: sqlite3.Connection, *, run_id: str, trigger: str, as_of: datetime,
+                as_of_date: str, fetch: bool, fetch_days: int, thresholds,
+                counts: dict[str, Any], degraded: list[str], started: float) -> dict[str, Any]:
     # 1 发现 + 2 证据（声明抽取在入库时完成；新版本触发纠错传播）
     if fetch:
         fetch_counts = fetch_window(conn, days=fetch_days, as_of=as_of)
@@ -93,8 +114,11 @@ def run_once(conn: sqlite3.Connection, *, trigger: str = "manual",
             enrichment = enrich_document(conn, top["candidate"]["doc_id"])
             degraded.extend(enrichment.get("degraded") or [])
 
-    # 5 排程
-    counts["到期复习"] = len(due_items(conn, at=as_of))
+    # 5 排程（上限读注册表 max_daily_reviews；复习保护债务只在 run 内登记一次）
+    from .review import record_review_pressure
+
+    counts["到期复习"] = len(due_items(conn, at=as_of, limit=thresholds.max_daily_reviews))
+    counts["复习超限顺延"] = record_review_pressure(conn, at=as_of, limit=thresholds.max_daily_reviews)
 
     # 备份（每日，30 份滚动——数据永不丢）
     try:
@@ -124,8 +148,6 @@ def run_once(conn: sqlite3.Connection, *, trigger: str = "manual",
 
 def _export_lesson(conn: sqlite3.Connection, lesson_id: str) -> str:
     """讲义导出为 JSON 工件（可入库 git 作为证据）."""
-    import json
-
     row = conn.execute("SELECT * FROM lessons WHERE id=?", (lesson_id,)).fetchone()
     lessons_dir = config.data_dir() / "lessons"
     lessons_dir.mkdir(parents=True, exist_ok=True)

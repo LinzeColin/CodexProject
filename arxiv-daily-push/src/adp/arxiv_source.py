@@ -59,10 +59,9 @@ def fetch_window(conn: sqlite3.Connection, *, days: int = 1, as_of: datetime | N
         )
         try:
             xml_text = fetch_atom(query)
-        except Exception as exc:  # 网络/API 失败 → 来源健康事件，降级不阻塞
+        except Exception as exc:  # 网络/API 失败 → 类目级降级，健康事件按整次抓取结算
             counts["抓取失败类目"] += 1
             degraded.append(f"arxiv_fetch_failed:{category}:{type(exc).__name__}")
-            store.record_source_health(conn, SOURCE_ID, ok=False)
             continue
         snapshot = raw_dir / f"arxiv-{category.replace('.', '_')}-{as_of.strftime('%Y%m%dT%H%M%SZ')}.xml"
         snapshot.write_text(xml_text, encoding="utf-8")
@@ -71,9 +70,7 @@ def fetch_window(conn: sqlite3.Connection, *, days: int = 1, as_of: datetime | N
         except Exception as exc:
             counts["抓取失败类目"] += 1
             degraded.append(f"arxiv_parse_failed:{category}:{type(exc).__name__}")
-            store.record_source_health(conn, SOURCE_ID, ok=False)
             continue
-        store.record_source_health(conn, SOURCE_ID, ok=True)
         counts["扫描"] += len(items)
         for item in items:
             doc_id, version_id, new_doc, new_version = store.ingest_document(conn, item)
@@ -84,22 +81,32 @@ def fetch_window(conn: sqlite3.Connection, *, days: int = 1, as_of: datetime | N
                 counts["新声明"] += store_claims(conn, extract_claims(version_id, abstract))
         if sleep_seconds:
             time.sleep(sleep_seconds)  # arXiv API 礼貌间隔（政策快照 rate_limit）
+    # 复审修复：健康事件按「整次抓取」结算一次（连续 3 天失败才停用），
+    # 而不是按类目调用累加——避免单次网络抖动就地自我停用。
+    store.record_source_health(conn, SOURCE_ID, ok=counts["抓取失败类目"] < len(FETCH_CATEGORIES))
     conn.commit()
     counts["降级项"] = degraded  # type: ignore[assignment]
     return counts
 
 
 def candidates_for_date(conn: sqlite3.Connection, as_of_date: str, *, window_days: int = 7) -> list[dict[str, Any]]:
-    """构建某日候选池：窗口内的最新版本文档（含元数据），供硬门+打分。"""
+    """构建某日候选池：窗口内的最新版本文档（含元数据），供硬门+打分。
+
+    复审修复：ISO 日期用可下推的字符串区间比较 + 表达式索引（idx_versions_pubdate），
+    最新版本经 MAX(version_no) 分组连接——语料逐日永增，全表扫描会随时间线性变慢。
+    """
+    from datetime import date, timedelta
+
+    start = (date.fromisoformat(as_of_date) - timedelta(days=window_days)).isoformat()
     rows = conn.execute(
         """SELECT v.*, d.canonical_url, d.title, d.stable_id
-           FROM doc_versions v JOIN documents d ON d.id = v.doc_id
-           WHERE v.id IN (SELECT id FROM doc_versions v2 WHERE v2.doc_id = v.doc_id
-                          ORDER BY v2.version_no DESC LIMIT 1)
-             AND date(substr(v.published_at, 1, 10)) >= date(?, ?)
-             AND date(substr(v.published_at, 1, 10)) <= date(?)
+           FROM doc_versions v
+           JOIN (SELECT doc_id, MAX(version_no) AS max_v FROM doc_versions GROUP BY doc_id) latest
+             ON latest.doc_id = v.doc_id AND latest.max_v = v.version_no
+           JOIN documents d ON d.id = v.doc_id
+           WHERE substr(v.published_at, 1, 10) >= ? AND substr(v.published_at, 1, 10) <= ?
            ORDER BY v.published_at DESC""",
-        (as_of_date, f"-{window_days} days", as_of_date),
+        (start, as_of_date),
     ).fetchall()
     out = []
     for row in rows:

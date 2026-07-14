@@ -1,17 +1,20 @@
 """8 特征打分（R1-2）—— 全部 0..1 纯函数 + 人话理由；权重只来自阈值注册表.
 
 score = Σ weight_i × value_i − attention_cost_penalty × attention_cost
-最高分 = Σ weights（v0.3 = 104）。每次打分保存特征贡献，可整体重放（不变量 10）。
+最高分 = Σ weights（v0.3 = 104）。每次打分保存特征贡献与抽取器版本，可整体重放（不变量 10）。
+
+特征内部的塑形常数（如相关度 0.55/0.45 配比、兴趣词表）属于「排序策略」版本域，
+由 FEATURE_EXTRACTOR_VER 单指针标识；任何修改必须换版本号并在 CHANGELOG 落行。
+治理参数（8 权重/弃权线/扣分系数/多样性上限）仍只读 config/thresholds_v0_3.yaml。
 """
 
 from __future__ import annotations
 
-import math
 import re
 from datetime import datetime, timezone
 from typing import Any, Mapping
 
-from .config import FEATURE_KEYS
+from .config import FEATURE_EXTRACTOR_VER, FEATURE_KEYS  # noqa: F401 (版本指针再导出)
 
 # Owner 兴趣画像（owner_controls.yaml interest_profile）到 arXiv 类目/词面的映射。
 INTEREST_CATEGORIES = {
@@ -77,11 +80,14 @@ def score_features(candidate: Mapping[str, Any], context: Mapping[str, Any]) -> 
     out["knowledge_gap"] = {"value": gap, "reason": gap_reason}
 
     # 3. novelty_to_user —— 与近期已见候选的最大 Jaccard 相似度取反
-    seen_token_sets: list[set[str]] = list(context.get("seen_token_sets") or [])
-    if not seen_token_sets:
+    #    复审修复：排除候选自身（自匹配会把新颖度恒压为 0，14 分权重失效）
+    own_doc_id = str(candidate.get("doc_id") or "")
+    seen_docs: list[tuple[str, set[str]]] = list(context.get("seen_docs") or [])
+    other_sets = [s for doc_id, s in seen_docs if doc_id != own_doc_id]
+    if not other_sets:
         novelty, novelty_reason = 0.7, "近期未见类似内容（无对照池）"
     else:
-        best = max((len(tokens & s) / max(1, len(tokens | s))) for s in seen_token_sets)
+        best = max((len(tokens & s) / max(1, len(tokens | s))) for s in other_sets)
         novelty = _clamp(1.0 - best)
         novelty_reason = f"与近期最相似候选的相似度 {best:.0%}"
     out["novelty_to_user"] = {"value": novelty, "reason": novelty_reason}
@@ -174,17 +180,27 @@ def _age_hours(published: str, as_of: datetime) -> float | None:
     return max(0.0, (as_of - stamp).total_seconds() / 3600)
 
 
-def legacy_score(features: Mapping[str, Mapping[str, Any]], attention: float) -> float:
+def legacy_score(features: Mapping[str, Mapping[str, Any]], attention: float,
+                 legacy_weights: Mapping[str, float] | None = None) -> float:
     """旧 V7 research 权重的近似映射（R1-3 新旧头名对照用，只读不参与决策）.
 
-    旧维度: relevance22 novelty16 evidence16 tech_breakthrough16 econ14 impact8 timeliness5 diversity3。
+    复审修复：权重不再硬编码——读 owner_controls.yaml scoring.research
+    （config.load_legacy_research_weights），本函数只做维度映射。
     """
+    if legacy_weights is None:
+        from .config import load_legacy_research_weights
+
+        legacy_weights = load_legacy_research_weights()
     val = {k: float(v["value"]) for k, v in features.items()}
-    tech_breakthrough = (val["knowledge_gap"] + val["novelty_to_user"]) / 2
-    econ = val["transfer_potential"]
-    impact = (val["user_relevance"] + val["transfer_potential"]) / 2
-    raw = (
-        22 * val["user_relevance"] + 16 * val["novelty_to_user"] + 16 * val["evidence_quality"]
-        + 16 * tech_breakthrough + 14 * econ + 8 * impact + 5 * val["urgency"] + 3 * val["diversity"]
-    )
+    dims = {
+        "relevance": val["user_relevance"],
+        "novelty": val["novelty_to_user"],
+        "evidence_quality": val["evidence_quality"],
+        "technical_breakthrough": (val["knowledge_gap"] + val["novelty_to_user"]) / 2,
+        "conversion_economic_value": val["transfer_potential"],
+        "impact_scale": (val["user_relevance"] + val["transfer_potential"]) / 2,
+        "timeliness_version_change": val["urgency"],
+        "diversity_coverage": val["diversity"],
+    }
+    raw = sum(float(legacy_weights.get(dim, 0)) * value for dim, value in dims.items())
     return round(raw, 3)

@@ -6,63 +6,142 @@
  "sections_json": [
   {
    "title": "人话版",
-   "body": "这篇论文在做什么：LLM serving optimization typically benchmarks many configurations and reaches for heavy profilers when latency targets are missed.  meta: 论文《Think Before You Grid-Search: Floor-First Triage for LLM Serving》发表于 2026-07-07，作者 1 人，原文见 https://arxiv."
+   "sentences": [
+    {
+     "text": "这篇论文在做什么：LLM serving optimization typically benchmarks many configurations and reaches for heavy profilers when latency targets are missed.",
+     "claim": "arxiv:2607.05876#v2:c0"
+    },
+    {
+     "text": "论文《Think Before You Grid-Search: Floor-First Triage for LLM Serving》发表于 2026-07-07，作者 1 人，原文见 https://arxiv.org/abs/2607.05876v2。",
+     "claim": "__doc_meta__"
+    }
+   ],
+   "body": "这篇论文在做什么：LLM serving optimization typically benchmarks many configurations and reaches for heavy profilers when latency targets are missed. 论文《Think Before You Grid-Search: Floor-First Triage for LLM Serving》发表于 2026-07-07，作者 1 人，原文见 https://arxiv.org/abs/2607.05876v2。"
   },
   {
    "title": "领域脉络",
-   "body": "本文主类目 cs. 交叉类目 cs."
+   "sentences": [
+    {
+     "text": "本文主类目 cs.PF：（该类目暂无脉络注解，点原文了解）。",
+     "claim": "__doc_meta__"
+    },
+    {
+     "text": "交叉类目 cs.AI：人工智能——让机器完成需要智能的任务的总领域。",
+     "claim": "__doc_meta__"
+    }
+   ],
+   "body": "本文主类目 cs.PF：（该类目暂无脉络注解，点原文了解）。 交叉类目 cs.AI：人工智能——让机器完成需要智能的任务的总领域。"
   },
   {
    "title": "机制拆解",
-   "body": "LLM serving optimization typically benchmarks many configurations and reaches for heavy profilers when latency targets are missed.  We argue for the reverse discipline: estimation is the analytical layer of profiling -- without it, optimization degenerates to grid search. "
+   "sentences": [
+    {
+     "text": "LLM serving optimization typically benchmarks many configurations and reaches for heavy profilers when latency targets are missed.",
+     "claim": "arxiv:2607.05876#v2:c0"
+    },
+    {
+     "text": "We argue for the reverse discipline: estimation is the analytical layer of profiling -- without it, optimization degenerates to grid search.",
+     "claim": "arxiv:2607.05876#v2:c1"
+    }
+   ],
+   "body": "LLM serving optimization typically benchmarks many configurations and reaches for heavy profilers when latency targets are missed. We argue for the reverse discipline: estimation is the analytical layer of profiling -- without it, optimization degenerates to grid search."
   },
   {
    "title": "证据与数字",
-   "body": "2-style 671B MoE/MLA model on 16 NVIDIA H20 GPUs, whose ridge point of ~74 FLOP/byte (vs ~590 for H100) makes it an extreme decode-oriented part.  The floors show TP16 decoding is KV-capacity-limited to ~70 concurrent 8K requests; sparse attention removes the KV-bandwidth term but not the capacity wall; an EP16+DP-attention layout accepts slightly worse same-batch weight traffic for an order-of-magnitude higher capacity wall (~644) -- while single-stream latency favors TP by 2. "
+   "sentences": [
+    {
+     "text": "As a case study we analyze a DeepSeek-V3.2-style 671B MoE/MLA model on 16 NVIDIA H20 GPUs, whose ridge point of ~74 FLOP/byte (vs ~590 for H100) makes it an extreme decode-oriented part.",
+     "claim": "arxiv:2607.05876#v2:c7"
+    },
+    {
+     "text": "The floors show TP16 decoding is KV-capacity-limited to ~70 concurrent 8K requests; sparse attention removes the KV-bandwidth term but not the capacity wall; an EP16+DP-attention layout accepts slightly worse same-batch weight traffic for an order-of-magnitude higher capacity wall (~644) -- while single-stream latency favors TP by 2.4x.",
+     "claim": "arxiv:2607.05876#v2:c8"
+    }
+   ],
+   "body": "As a case study we analyze a DeepSeek-V3.2-style 671B MoE/MLA model on 16 NVIDIA H20 GPUs, whose ridge point of ~74 FLOP/byte (vs ~590 for H100) makes it an extreme decode-oriented part. The floors show TP16 decoding is KV-capacity-limited to ~70 concurrent 8K requests; sparse attention removes the KV-bandwidth term but not the capacity wall; an EP16+DP-attention layout accepts slightly worse same-batch weight traffic for an order-of-magnitude higher capacity wall (~644) -- while single-stream latency favors TP by 2.4x."
   },
   {
    "title": "反例与边界",
-   "body": "Where a measurement lands inside this [max, sum] interval reads out overlap quality before any profiler is opened, and profilers escalate only on residuals above a stated threshold.  The floors show TP16 decoding is KV-capacity-limited to ~70 concurrent 8K requests; sparse attention removes the KV-bandwidth term but not the capacity wall; an EP16+DP-attention layout accepts slightly worse same-batch weight traffic for an order-of-magnitude higher capacity wall (~644) -- while single-stream latency favors TP by 2. "
+   "sentences": [
+    {
+     "text": "Where a measurement lands inside this [max, sum] interval reads out overlap quality before any profiler is opened, and profilers escalate only on residuals above a stated threshold.",
+     "claim": "arxiv:2607.05876#v2:c4"
+    },
+    {
+     "text": "The floors show TP16 decoding is KV-capacity-limited to ~70 concurrent 8K requests; sparse attention removes the KV-bandwidth term but not the capacity wall; an EP16+DP-attention layout accepts slightly worse same-batch weight traffic for an order-of-magnitude higher capacity wall (~644) -- while single-stream latency favors TP by 2.4x.",
+     "claim": "arxiv:2607.05876#v2:c8"
+    }
+   ],
+   "body": "Where a measurement lands inside this [max, sum] interval reads out overlap quality before any profiler is opened, and profilers escalate only on residuals above a stated threshold. The floors show TP16 decoding is KV-capacity-limited to ~70 concurrent 8K requests; sparse attention removes the KV-bandwidth term but not the capacity wall; an EP16+DP-attention layout accepts slightly worse same-batch weight traffic for an order-of-magnitude higher capacity wall (~644) -- while single-stream latency favors TP by 2.4x."
   },
   {
    "title": "跨领域连接与意外收获",
-   "body": "本文横跨 3 个类目（cs. 意外收获：The floors show TP16 decoding is KV-capacity-limited to ~70 concurrent 8K requests; sparse attention removes the KV-bandwidth term but not the capacity wall; an EP16+DP-attention layout accepts slightly worse same-batch weight traffic for an order-of-magnitude higher capacity wall (~644) -- while single-stream latency favors TP by 2.  meta: 意外收获：本文由 1 位作者合作完成，发表后 48 小时内即进入你的学习队列。"
+   "sentences": [
+    {
+     "text": "本文横跨 3 个类目（cs.PF, cs.AI, cs.DC），关注其在你兴趣板块间的迁移面。",
+     "claim": "__doc_meta__"
+    },
+    {
+     "text": "意外收获：The floors show TP16 decoding is KV-capacity-limited to ~70 concurrent 8K requests; sparse attention removes the KV-bandwidth term but not the capacity wall; an EP16+DP-attention layout accepts slightly worse same-batch weight traffic for an order-of-magnitude higher capacity wall (~644) -- while single-stream latency favors TP by 2.4x.",
+     "claim": "arxiv:2607.05876#v2:c8"
+    },
+    {
+     "text": "意外收获：本文由 1 位作者合作完成，发表后 48 小时内即进入你的学习队列。",
+     "claim": "__doc_meta__"
+    }
+   ],
+   "body": "本文横跨 3 个类目（cs.PF, cs.AI, cs.DC），关注其在你兴趣板块间的迁移面。 意外收获：The floors show TP16 decoding is KV-capacity-limited to ~70 concurrent 8K requests; sparse attention removes the KV-bandwidth term but not the capacity wall; an EP16+DP-attention layout accepts slightly worse same-batch weight traffic for an order-of-magnitude higher capacity wall (~644) -- while single-stream latency favors TP by 2.4x. 意外收获：本文由 1 位作者合作完成，发表后 48 小时内即进入你的学习队列。"
   },
   {
    "title": "可复用方法",
+   "sentences": [
+    {
+     "text": "可复用方法：将本文机制与你正在跟的项目对照，找一个能在两周内验证的最小实验。",
+     "claim": "__doc_meta__"
+    }
+   ],
    "body": "可复用方法：将本文机制与你正在跟的项目对照，找一个能在两周内验证的最小实验。"
   },
   {
    "title": "术语表",
-   "body": "术语 LLM——出处见声明：LLM serving optimization typically benchmarks many configurations and reaches fo… 术语 HBM——出处见声明：Each decode step is modeled as a five-dimensional resource vector (HBM bytes, FL… 术语 FLOPs——出处见声明：Each decode step is modeled as a five-dimensional resource vector (HBM bytes, FL… 术语 DeepSeek——出处见声明：As a case study we analyze a DeepSeek-V3. 2-style 671B MoE/MLA model on 16 NVIDIA… 术语 MoE——出处见声明：As a case study we analyze a DeepSeek-V3. 2-style 671B MoE/MLA model on 16 NVIDIA… 术语 MLA——出处见声明：As a case study we analyze a DeepSeek-V3. 2-style 671B MoE/MLA model on 16 NVIDIA…"
+   "sentences": [
+    {
+     "text": "术语 LLM——出处见声明：LLM serving optimization typically benchmarks many configurations and reaches fo",
+     "claim": "arxiv:2607.05876#v2:c0"
+    },
+    {
+     "text": "术语 HBM——出处见声明：Each decode step is modeled as a five-dimensional resource vector (HBM bytes, FL",
+     "claim": "arxiv:2607.05876#v2:c3"
+    },
+    {
+     "text": "术语 FLOPs——出处见声明：Each decode step is modeled as a five-dimensional resource vector (HBM bytes, FL",
+     "claim": "arxiv:2607.05876#v2:c3"
+    },
+    {
+     "text": "术语 DeepSeek——出处见声明：As a case study we analyze a DeepSeek-V3.2-style 671B MoE/MLA model on 16 NVIDIA",
+     "claim": "arxiv:2607.05876#v2:c7"
+    },
+    {
+     "text": "术语 MoE——出处见声明：As a case study we analyze a DeepSeek-V3.2-style 671B MoE/MLA model on 16 NVIDIA",
+     "claim": "arxiv:2607.05876#v2:c7"
+    },
+    {
+     "text": "术语 MLA——出处见声明：As a case study we analyze a DeepSeek-V3.2-style 671B MoE/MLA model on 16 NVIDIA",
+     "claim": "arxiv:2607.05876#v2:c7"
+    }
+   ],
+   "body": "术语 LLM——出处见声明：LLM serving optimization typically benchmarks many configurations and reaches fo 术语 HBM——出处见声明：Each decode step is modeled as a five-dimensional resource vector (HBM bytes, FL 术语 FLOPs——出处见声明：Each decode step is modeled as a five-dimensional resource vector (HBM bytes, FL 术语 DeepSeek——出处见声明：As a case study we analyze a DeepSeek-V3.2-style 671B MoE/MLA model on 16 NVIDIA 术语 MoE——出处见声明：As a case study we analyze a DeepSeek-V3.2-style 671B MoE/MLA model on 16 NVIDIA 术语 MLA——出处见声明：As a case study we analyze a DeepSeek-V3.2-style 671B MoE/MLA model on 16 NVIDIA"
   }
  ],
  "claim_bindings_json": {
-  "s0.0": "arxiv:2607.05876#v2:c0",
-  "s0.1": "arxiv:2607.05876#v2:c0",
-  "s1.0": "__doc_meta__",
-  "s1.1": "__doc_meta__",
-  "s2.0": "arxiv:2607.05876#v2:c0",
-  "s2.1": "arxiv:2607.05876#v2:c0",
-  "s2.2": "arxiv:2607.05876#v2:c1",
-  "s3.0": "arxiv:2607.05876#v2:c7",
-  "s3.1": "arxiv:2607.05876#v2:c7",
-  "s3.2": "arxiv:2607.05876#v2:c8",
-  "s4.0": "arxiv:2607.05876#v2:c4",
-  "s4.1": "arxiv:2607.05876#v2:c4",
-  "s4.2": "arxiv:2607.05876#v2:c8",
-  "s5.0": "__doc_meta__",
-  "s5.1": "arxiv:2607.05876#v2:c8",
-  "s5.2": "arxiv:2607.05876#v2:c8",
-  "s6.0": "__doc_meta__",
-  "s7.0": "arxiv:2607.05876#v2:c0",
-  "s7.1": "arxiv:2607.05876#v2:c7",
-  "s7.2": "arxiv:2607.05876#v2:c7",
-  "s7.3": "arxiv:2607.05876#v2:c7"
+  "schema": "structured-v2",
+  "total_sentences": 20,
+  "doc_meta_sentences": 6,
+  "dropped_unbound": 0
  },
- "template_ver": "lesson-v03-1",
+ "template_ver": "lesson-v03-2",
  "generator": "deterministic_degraded",
- "created_at": "2026-07-14T11:08:19+00:00",
+ "created_at": "2026-07-14T12:03:19+00:00",
  "status": "open",
  "reopened_reason": null,
  "archived_at": null

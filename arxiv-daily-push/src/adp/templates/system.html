@@ -47,10 +47,11 @@
 
 {% if replay %}
 <div class="card">
-  <h2>30 天回放与弃权线重校（R1-3）</h2>
+  <h2>30 天回放对照（R1-3）</h2>
   <p>覆盖 {{ replay.days_with_data }} 个有数据日 · 新旧头名一致率 {{ '%.0f%%'|format((replay.agreement_rate or 0)*100) }} ·
-     权重总和 {{ replay.weight_total }} → 弃权线由占位 {{ replay.abstain_line_placeholder }} 重校为
-     <b>{{ replay.abstain_line_recalibrated }}</b>（占位线下弃权 {{ replay.abstain_days_at_placeholder }} 天，重校线下弃权 {{ replay.abstain_days_at_recalibrated }} 天）</p>
+     现行弃权线 <b>{{ replay.abstain_line_current }}</b>（该线下回放弃权 {{ replay.abstain_days_at_current_line }} 天；
+     55→59.6 的一次性重校回执见 data/config_changes.jsonl）</p>
+  <p class="mt">{{ replay.replay_caveat }}</p>
   <table>
     <tr><th>日期</th><th>新头名（v0.3 权重）</th><th>旧头名（V7 近似）</th><th>一致</th></tr>
     {% for r in replay.rows[-10:] %}

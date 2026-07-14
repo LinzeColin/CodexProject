@@ -1,4 +1,4 @@
-"""网页应用（R1-8/R1-9）—— 今天学什么 / 学习队列 / 前沿雷达 / 系统与来源.
+"""网页应用（R1-8/R1-9）—— 今天学什么 / 学习队列 / 前沿雷达 / 证据与纠错 / 系统 / 试运行.
 
 FastAPI + Jinja2 + 原生 fetch（零构建链）；单用户绑定 127.0.0.1；
 人读页面一律由机器记录渲染并带回执（不变量 9）。
@@ -9,29 +9,30 @@ from __future__ import annotations
 import json
 import sqlite3
 from datetime import datetime, timezone
-from pathlib import Path
 from typing import Any
 from urllib.parse import quote
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse, JSONResponse
-from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from . import config, store
 from .claims import resolve_claim
+from .corrections import resolve as resolve_correction
+from .corrections import unresolved as unresolved_corrections
+from .delivery import authorization_state, weekly_radar
 from .manifest import read_manifests
+from .pilot import pilot_report, record_decision, shadow_compare
+from .render import env
 from .review import (GRADES, MANUAL_STATES, due_items, grade_recall, learning_state,
                      manual_mark, manual_undo, preview_intervals)
 
-TEMPLATES = Path(__file__).parent / "templates"
 DEEP_DIVE_INSTRUCTION = (
     "请对这篇论文做：全网遍历、深度思考、深度搜索、给我 surprise、详细专业全面深度讲解。"
     "我已在自己的学习系统里读过八段讲义并完成主动回忆，以下是论文元数据与我已学要点。"
 )
 
-env = Environment(loader=FileSystemLoader(TEMPLATES), autoescape=select_autoescape(["html"]))
-env.filters["fromjson"] = json.loads
 app = FastAPI(title="ADP 个人前沿学习系统", docs_url=None, redoc_url=None)
+_pilot_cache: dict[str, Any] = {}
 
 
 def _conn() -> sqlite3.Connection:
@@ -51,37 +52,33 @@ def _latest_lesson(conn: sqlite3.Connection) -> sqlite3.Row | None:
 
 
 def _lesson_view(conn: sqlite3.Connection, row: sqlite3.Row) -> dict[str, Any]:
+    """讲义视图：句子与绑定直接读自 sections_json（复审修复：渲染端零重切分）."""
     sections = json.loads(row["sections_json"])
-    bindings = json.loads(row["claim_bindings_json"])
     doc = conn.execute(
         """SELECT d.title, d.canonical_url, v.metadata_json FROM doc_versions v
            JOIN documents d ON d.id = v.doc_id WHERE v.id=?""",
         (row["doc_version_id"],),
     ).fetchone()
     meta = json.loads(doc["metadata_json"]) if doc else {}
-    from .claims import split_sentences  # 句级 span 用与绑定一致的切分
-
-    rendered_sections = []
-    for section_index, section in enumerate(sections):
-        sentences = []
-        import re
-
-        parts = [p.strip() for p in re.split(r"(?<=[。！？.!?])\s*", section["body"]) if p.strip()]
-        for sent_index, sentence in enumerate(parts):
-            claim_id = bindings.get(f"s{section_index}.{sent_index}", "__doc_meta__")
-            sentences.append({"text": sentence, "claim_id": claim_id})
-        rendered_sections.append({"title": section["title"], "sentences": sentences})
+    rendered_sections = [
+        {"title": section["title"],
+         "sentences": [{"text": s["text"], "claim_id": s["claim"]} for s in section.get("sentences") or []]}
+        for section in sections
+    ]
     deep_link = (
         "https://chatgpt.com/?q="
         + quote(f"{DEEP_DIVE_INSTRUCTION}\n\n论文: {doc['title'] if doc else ''}\n"
                 f"链接: {doc['canonical_url'] if doc else ''}\n摘要: {meta.get('summary', '')[:800]}")
     )
+    reveal_parts = [sections[0].get("body", "")] if sections else []
+    if len(sections) > 3:
+        reveal_parts.append(sections[3].get("body", ""))
     return {
         "lesson_id": row["id"], "as_of_date": row["as_of_date"], "generator": row["generator"],
         "template_ver": row["template_ver"], "status": row["status"],
         "doc_title": doc["title"] if doc else "", "canonical_url": doc["canonical_url"] if doc else "",
         "sections": rendered_sections, "deep_link": deep_link,
-        "reveal_summary": sections[0]["body"] if sections else "",
+        "reveal_summary": " / ".join(p[:160] for p in reveal_parts if p),
     }
 
 
@@ -89,8 +86,6 @@ def _lesson_view(conn: sqlite3.Connection, row: sqlite3.Row) -> dict[str, Any]:
 def today() -> HTMLResponse:
     conn = _conn()
     try:
-        from .corrections import unresolved
-
         thresholds = config.load_thresholds()
         selection = conn.execute("SELECT * FROM selections ORDER BY as_of_date DESC LIMIT 1").fetchone()
         lesson_row = _latest_lesson(conn)
@@ -100,7 +95,7 @@ def today() -> HTMLResponse:
         return _render(
             "today.html", page="today", selection=selection, lesson=lesson, state=state,
             intervals=intervals, grades=GRADES, manual_states=MANUAL_STATES,
-            corrections=unresolved(conn),
+            corrections=unresolved_corrections(conn),
         )
     finally:
         conn.close()
@@ -110,6 +105,7 @@ def today() -> HTMLResponse:
 def queue() -> HTMLResponse:
     conn = _conn()
     try:
+        thresholds = config.load_thresholds()
         rows = conn.execute(
             "SELECT * FROM lessons WHERE archived_at IS NULL ORDER BY as_of_date DESC LIMIT 100"
         ).fetchall()
@@ -123,22 +119,18 @@ def queue() -> HTMLResponse:
             items.append({"lesson_id": row["id"], "date": row["as_of_date"],
                           "title": doc["title"] if doc else row["id"], "state": state,
                           "reopened": row["status"] == "reopened"})
-        due = due_items(conn)
-        from .corrections import unresolved
-
+        due = due_items(conn, limit=thresholds.max_daily_reviews)
         return _render("queue.html", page="queue", items=items, due=due,
-                       manual_states=MANUAL_STATES, corrections=unresolved(conn))
+                       manual_states=MANUAL_STATES, corrections=unresolved_corrections(conn))
     finally:
         conn.close()
 
 
 @app.get("/corrections", response_class=HTMLResponse)
 def corrections_page(q: str = "") -> HTMLResponse:
-    """证据与纠错入口：声明检索（三步到原文）+ 纠错通知 + 矛盾/债务."""
+    """证据与纠错入口：声明检索（三步到原文）+ 纠错通知 + 已处理历史."""
     conn = _conn()
     try:
-        from .corrections import unresolved
-
         hits = []
         if q:
             for row in store.search(conn, "fts_claims", q, limit=20):
@@ -149,18 +141,7 @@ def corrections_page(q: str = "") -> HTMLResponse:
             "SELECT * FROM corrections WHERE resolved=1 ORDER BY created_at DESC LIMIT 10"
         ).fetchall()
         return _render("corrections.html", page="corrections", q=q, hits=hits,
-                       corrections=unresolved(conn), resolved_history=resolved_history)
-    finally:
-        conn.close()
-
-
-@app.post("/api/corrections/{correction_id}/resolve")
-def api_resolve_correction(correction_id: int) -> JSONResponse:
-    conn = _conn()
-    try:
-        from .corrections import resolve
-
-        return JSONResponse({"resolved": resolve(conn, correction_id)})
+                       corrections=unresolved_corrections(conn), resolved_history=resolved_history)
     finally:
         conn.close()
 
@@ -173,15 +154,8 @@ def system() -> HTMLResponse:
         sources = conn.execute("SELECT * FROM sources").fetchall()
         replay_path = config.data_dir() / "replay_30d.json"
         replay = json.loads(replay_path.read_text(encoding="utf-8")) if replay_path.exists() else None
-        auth_state = {
-            "side_effects_authorized": False,
-            "explanation": "无 Owner 签发的授权凭证：真实发送/常驻一律失败关闭（不变量 5）。",
-        }
-        from .delivery import authorization_state
-
-        auth_state.update(authorization_state())
         return _render("system.html", page="system", manifests=manifests, sources=sources,
-                       replay=replay, auth=auth_state, versions=config.config_versions())
+                       replay=replay, auth=authorization_state(), versions=config.config_versions())
     finally:
         conn.close()
 
@@ -190,10 +164,27 @@ def system() -> HTMLResponse:
 def radar_page() -> HTMLResponse:
     conn = _conn()
     try:
-        from .delivery import weekly_radar
+        return _render("radar.html", page="radar", radar=weekly_radar(conn))
+    finally:
+        conn.close()
 
-        radar = weekly_radar(conn)
-        return _render("radar.html", page="radar", radar=radar)
+
+@app.get("/pilot", response_class=HTMLResponse)
+def pilot_page() -> HTMLResponse:
+    conn = _conn()
+    try:
+        today_key = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        cached = _pilot_cache.get("shadow")
+        if not cached or cached["date"] != today_key:
+            shadow = shadow_compare(conn, config.load_thresholds(), days=14)
+            _pilot_cache["shadow"] = {"date": today_key, "value": shadow}
+        else:
+            shadow = cached["value"]
+        report = pilot_report(conn)
+        decisions = conn.execute(
+            "SELECT * FROM config_changes WHERE domain='pilot_decision' ORDER BY id DESC LIMIT 5"
+        ).fetchall()
+        return _render("pilot.html", page="pilot", report=report, shadow=shadow, decisions=decisions)
     finally:
         conn.close()
 
@@ -222,7 +213,7 @@ def api_reveal(lesson_id: str) -> JSONResponse:
         store.append_event(conn, item_id=lesson_id, kind="recall_reveal", payload={})
         conn.commit()
         sections = json.loads(row["sections_json"])
-        answer = " / ".join(s["body"][:160] for s in sections[:1] + sections[3:4])
+        answer = " / ".join(s.get("body", "")[:160] for s in sections[:1] + sections[3:4])
         return JSONResponse({"answer": answer})
     finally:
         conn.close()
@@ -255,24 +246,16 @@ def api_manual_state(item_id: str, state: str) -> JSONResponse:
 def api_undo(event_id: int) -> JSONResponse:
     conn = _conn()
     try:
-        ok = manual_undo(conn, event_id)
-        return JSONResponse({"undone": ok})
+        return JSONResponse({"undone": manual_undo(conn, event_id)})
     finally:
         conn.close()
 
 
-@app.get("/pilot", response_class=HTMLResponse)
-def pilot_page() -> HTMLResponse:
+@app.post("/api/corrections/{correction_id}/resolve")
+def api_resolve_correction(correction_id: int) -> JSONResponse:
     conn = _conn()
     try:
-        from .pilot import pilot_report, shadow_compare
-
-        report = pilot_report(conn)
-        shadow = shadow_compare(conn, config.load_thresholds(), days=14)
-        decisions = conn.execute(
-            "SELECT * FROM config_changes WHERE domain='pilot_decision' ORDER BY id DESC LIMIT 5"
-        ).fetchall()
-        return _render("pilot.html", page="pilot", report=report, shadow=shadow, decisions=decisions)
+        return JSONResponse({"resolved": resolve_correction(conn, correction_id)})
     finally:
         conn.close()
 
@@ -281,8 +264,6 @@ def pilot_page() -> HTMLResponse:
 def api_pilot_decision(decision: str, payload: dict[str, Any] | None = None) -> JSONResponse:
     conn = _conn()
     try:
-        from .pilot import record_decision
-
         return JSONResponse(record_decision(conn, decision, (payload or {}).get("note", "")))
     finally:
         conn.close()

@@ -6,67 +6,122 @@
  "sections_json": [
   {
    "title": "人话版",
-   "body": "这篇论文在做什么：We show this guarantee can be dangerous on imbalanced datasets.  meta: 论文《A Quiet Failure in Calibrated Virtual Screening: Marginal Conformal Prediction Under-Covers the Minority Class, and a Class-Conditional Fix Recovers It》发表于 2026-07-07，作者 2 人，原文见 https://arxiv."
+   "sentences": [
+    {
+     "text": "这篇论文在做什么：We show this guarantee can be dangerous on imbalanced datasets.",
+     "claim": "arxiv:2607.06605#v1:c1"
+    },
+    {
+     "text": "论文《A Quiet Failure in Calibrated Virtual Screening: Marginal Conformal Prediction Under-Covers the Minority Class, and a Class-Conditional Fix Recovers It》发表于 2026-07-07，作者 2 人，原文见 https://arxiv.org/abs/2607.06605v1。",
+     "claim": "__doc_meta__"
+    }
+   ],
+   "body": "这篇论文在做什么：We show this guarantee can be dangerous on imbalanced datasets. 论文《A Quiet Failure in Calibrated Virtual Screening: Marginal Conformal Prediction Under-Covers the Minority Class, and a Class-Conditional Fix Recovers It》发表于 2026-07-07，作者 2 人，原文见 https://arxiv.org/abs/2607.06605v1。"
   },
   {
    "title": "领域脉络",
-   "body": "本文主类目 cs. 交叉类目 stat."
+   "sentences": [
+    {
+     "text": "本文主类目 cs.LG：机器学习——从数据中自动学习规律的方法学。",
+     "claim": "__doc_meta__"
+    },
+    {
+     "text": "交叉类目 stat.ML：统计机器学习——机器学习的统计学基础。",
+     "claim": "__doc_meta__"
+    }
+   ],
+   "body": "本文主类目 cs.LG：机器学习——从数据中自动学习规律的方法学。 交叉类目 stat.ML：统计机器学习——机器学习的统计学基础。"
   },
   {
    "title": "机制拆解",
-   "body": "Conformal prediction is being adopted in drug discovery to put an honest number on model reliability: pick an error rate alpha, and the method returns prediction sets containing the true label with probability at least 1 - alpha.  We localize the failures to generic molecular scaffolds - plain benzene and pyridine cores occurring in both classes - propose a one-number diagnostic, and show with a cost model that abstaining on affected compounds flips a screening campaign from net-negative to net-positive utility. "
+   "sentences": [
+    {
+     "text": "Conformal prediction is being adopted in drug discovery to put an honest number on model reliability: pick an error rate alpha, and the method returns prediction sets containing the true label with probability at least 1 - alpha.",
+     "claim": "arxiv:2607.06605#v1:c0"
+    },
+    {
+     "text": "We localize the failures to generic molecular scaffolds - plain benzene and pyridine cores occurring in both classes - propose a one-number diagnostic, and show with a cost model that abstaining on affected compounds flips a screening campaign from net-negative to net-positive utility.",
+     "claim": "arxiv:2607.06605#v1:c7"
+    }
+   ],
+   "body": "Conformal prediction is being adopted in drug discovery to put an honest number on model reliability: pick an error rate alpha, and the method returns prediction sets containing the true label with probability at least 1 - alpha. We localize the failures to generic molecular scaffolds - plain benzene and pyridine cores occurring in both classes - propose a one-number diagnostic, and show with a cost model that abstaining on affected compounds flips a screening campaign from net-negative to net-positive utility."
   },
   {
    "title": "证据与数字",
-   "body": "Across four datasets, standard (marginal) conformal prediction hits its global 90% coverage target while leaving the minority class badly exposed: realized minority coverage falls to 64. 2% on clinical-trial toxicity, where the rare class is nearly abandoned.  The failure is not tied to one model: a random forest, a graph network, and a frozen chemical language model all reproduce it (p < 0. 001 in every case), with severity tracking baseline calibration on rare labels rather than architecture. "
+   "sentences": [
+    {
+     "text": "Across four datasets, standard (marginal) conformal prediction hits its global 90% coverage target while leaving the minority class badly exposed: realized minority coverage falls to 64.8% on blood-brain-barrier penetration and to 4.2% on clinical-trial toxicity, where the rare class is nearly abandoned.",
+     "claim": "arxiv:2607.06605#v1:c2"
+    },
+    {
+     "text": "The failure is not tied to one model: a random forest, a graph network, and a frozen chemical language model all reproduce it (p < 0.001 in every case), with severity tracking baseline calibration on rare labels rather than architecture.",
+     "claim": "arxiv:2607.06605#v1:c3"
+    }
+   ],
+   "body": "Across four datasets, standard (marginal) conformal prediction hits its global 90% coverage target while leaving the minority class badly exposed: realized minority coverage falls to 64.8% on blood-brain-barrier penetration and to 4.2% on clinical-trial toxicity, where the rare class is nearly abandoned. The failure is not tied to one model: a random forest, a graph network, and a frozen chemical language model all reproduce it (p < 0.001 in every case), with severity tracking baseline calibration on rare labels rather than architecture."
   },
   {
    "title": "反例与边界",
-   "body": "The failure is not tied to one model: a random forest, a graph network, and a frozen chemical language model all reproduce it (p < 0. 001 in every case), with severity tracking baseline calibration on rare labels rather than architecture.  The failure survives realistic scaffold splits and a second conformal score, while aggregate accuracy and overall coverage stay reassuringly high, which is exactly why it is easy to miss. "
+   "sentences": [
+    {
+     "text": "The failure is not tied to one model: a random forest, a graph network, and a frozen chemical language model all reproduce it (p < 0.001 in every case), with severity tracking baseline calibration on rare labels rather than architecture.",
+     "claim": "arxiv:2607.06605#v1:c3"
+    },
+    {
+     "text": "The failure survives realistic scaffold splits and a second conformal score, while aggregate accuracy and overall coverage stay reassuringly high, which is exactly why it is easy to miss.",
+     "claim": "arxiv:2607.06605#v1:c5"
+    }
+   ],
+   "body": "The failure is not tied to one model: a random forest, a graph network, and a frozen chemical language model all reproduce it (p < 0.001 in every case), with severity tracking baseline calibration on rare labels rather than architecture. The failure survives realistic scaffold splits and a second conformal score, while aggregate accuracy and overall coverage stay reassuringly high, which is exactly why it is easy to miss."
   },
   {
    "title": "跨领域连接与意外收获",
-   "body": "本文横跨 2 个类目（cs. 意外收获：Across four datasets, standard (marginal) conformal prediction hits its global 90% coverage target while leaving the minority class badly exposed: realized minority coverage falls to 64. 2% on clinical-trial toxicity, where the rare class is nearly abandoned.  意外收获：The failure is not tied to one model: a random forest, a graph network, and a frozen chemical language model all reproduce it (p < 0. 001 in every case), with severity tracking baseline calibration on rare labels rather than architecture. "
+   "sentences": [
+    {
+     "text": "本文横跨 2 个类目（cs.LG, stat.ML），关注其在你兴趣板块间的迁移面。",
+     "claim": "__doc_meta__"
+    },
+    {
+     "text": "意外收获：Across four datasets, standard (marginal) conformal prediction hits its global 90% coverage target while leaving the minority class badly exposed: realized minority coverage falls to 64.8% on blood-brain-barrier penetration and to 4.2% on clinical-trial toxicity, where the rare class is nearly abandoned.",
+     "claim": "arxiv:2607.06605#v1:c2"
+    },
+    {
+     "text": "意外收获：The failure is not tied to one model: a random forest, a graph network, and a frozen chemical language model all reproduce it (p < 0.001 in every case), with severity tracking baseline calibration on rare labels rather than architecture.",
+     "claim": "arxiv:2607.06605#v1:c3"
+    }
+   ],
+   "body": "本文横跨 2 个类目（cs.LG, stat.ML），关注其在你兴趣板块间的迁移面。 意外收获：Across four datasets, standard (marginal) conformal prediction hits its global 90% coverage target while leaving the minority class badly exposed: realized minority coverage falls to 64.8% on blood-brain-barrier penetration and to 4.2% on clinical-trial toxicity, where the rare class is nearly abandoned. 意外收获：The failure is not tied to one model: a random forest, a graph network, and a frozen chemical language model all reproduce it (p < 0.001 in every case), with severity tracking baseline calibration on rare labels rather than architecture."
   },
   {
    "title": "可复用方法",
-   "body": "Conformal prediction is being adopted in drug discovery to put an honest number on model reliability: pick an error rate alpha, and the method returns prediction sets containing the true label with probability at least 1 - alpha. "
+   "sentences": [
+    {
+     "text": "Conformal prediction is being adopted in drug discovery to put an honest number on model reliability: pick an error rate alpha, and the method returns prediction sets containing the true label with probability at least 1 - alpha.",
+     "claim": "arxiv:2607.06605#v1:c0"
+    }
+   ],
+   "body": "Conformal prediction is being adopted in drug discovery to put an honest number on model reliability: pick an error rate alpha, and the method returns prediction sets containing the true label with probability at least 1 - alpha."
   },
   {
    "title": "术语表",
+   "sentences": [
+    {
+     "text": "摘要未出现需要解释的专有术语。",
+     "claim": "__doc_meta__"
+    }
+   ],
    "body": "摘要未出现需要解释的专有术语。"
   }
  ],
  "claim_bindings_json": {
-  "s0.0": "arxiv:2607.06605#v1:c1",
-  "s0.1": "arxiv:2607.06605#v1:c1",
-  "s1.0": "__doc_meta__",
-  "s1.1": "__doc_meta__",
-  "s2.0": "arxiv:2607.06605#v1:c0",
-  "s2.1": "arxiv:2607.06605#v1:c0",
-  "s2.2": "arxiv:2607.06605#v1:c7",
-  "s3.0": "arxiv:2607.06605#v1:c2",
-  "s3.1": "arxiv:2607.06605#v1:c2",
-  "s3.2": "arxiv:2607.06605#v1:c2",
-  "s3.3": "arxiv:2607.06605#v1:c3",
-  "s3.4": "arxiv:2607.06605#v1:c3",
-  "s4.0": "arxiv:2607.06605#v1:c3",
-  "s4.1": "arxiv:2607.06605#v1:c3",
-  "s4.2": "arxiv:2607.06605#v1:c3",
-  "s4.3": "arxiv:2607.06605#v1:c5",
-  "s5.0": "__doc_meta__",
-  "s5.1": "arxiv:2607.06605#v1:c2",
-  "s5.2": "arxiv:2607.06605#v1:c2",
-  "s5.3": "arxiv:2607.06605#v1:c2",
-  "s5.4": "arxiv:2607.06605#v1:c3",
-  "s5.5": "arxiv:2607.06605#v1:c3",
-  "s6.0": "arxiv:2607.06605#v1:c0",
-  "s6.1": "arxiv:2607.06605#v1:c0",
-  "s7.0": "__doc_meta__"
+  "schema": "structured-v2",
+  "total_sentences": 15,
+  "doc_meta_sentences": 5,
+  "dropped_unbound": 0
  },
- "template_ver": "lesson-v03-1",
+ "template_ver": "lesson-v03-2",
  "generator": "deterministic_degraded",
- "created_at": "2026-07-14T11:31:44+00:00",
+ "created_at": "2026-07-14T12:03:19+00:00",
  "status": "open",
  "reopened_reason": null,
  "archived_at": null

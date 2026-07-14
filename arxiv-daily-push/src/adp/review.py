@@ -44,7 +44,9 @@ def grade_recall(conn: sqlite3.Connection, item_id: str, grade: int, thresholds:
     if grade not in GRADES:
         raise ValueError(f"grade must be 1-4, got {grade}")
     at = at or datetime.now(timezone.utc)
-    key = idempotency_key or f"{item_id}:{at.date().isoformat()}:{grade}"
+    # 复审修复：防重号不含档位——同日同条目只产生一次学习完成事件（不变量 6），
+    # 改评不追加事件也不二次推进 FSRS；纠错重开当日重评可传显式 key。
+    key = idempotency_key or f"{item_id}:{at.date().isoformat()}"
     duplicate = conn.execute(
         """SELECT id FROM learning_events WHERE kind='self_grade' AND undone_by IS NULL
            AND json_extract(payload_json, '$.idempotency_key') = ?""",
@@ -99,29 +101,52 @@ def preview_intervals(conn: sqlite3.Connection, item_id: str, thresholds: Thresh
 
 
 def due_items(conn: sqlite3.Connection, *, at: datetime | None = None, limit: int = 12) -> list[dict[str, Any]]:
-    """到期复习队列（日上限 12，超出顺延并记知识债务——业务规则·复习保护）."""
+    """到期复习队列（纯读取；上限来自阈值注册表 max_daily_reviews，由调用方传入）.
+
+    复审修复：本函数不再有任何写副作用——债务登记移到 record_review_pressure，
+    只在每日 run 执行一次（GET 页面刷新不得制造债务行）。
+    """
     at = at or datetime.now(timezone.utc)
     rows = conn.execute(
         """SELECT r.item_id, r.due_at, l.sections_json FROM review_state r
            JOIN lessons l ON l.id = r.item_id
            WHERE r.due_at <= ? ORDER BY r.due_at LIMIT ?""",
-        (at.isoformat(timespec="seconds"), limit + 50),
+        (at.isoformat(timespec="seconds"), limit),
     ).fetchall()
     items = []
-    for row in rows[:limit]:
+    for row in rows:
         sections = json.loads(row["sections_json"])
         items.append({"item_id": row["item_id"], "due_at": row["due_at"],
-                      "headline": sections[0]["body"][:120] if sections else row["item_id"]})
-    overdue_beyond_cap = max(0, len(rows) - limit)
-    if overdue_beyond_cap:
-        store.append_event(conn, item_id="__system__", kind="skip",
-                           payload={"overdue_beyond_cap": overdue_beyond_cap}, actor="system")
-        conn.execute(
-            "INSERT INTO debts (kind, ref_id, note, opened_at) VALUES ('overdue', '__review_queue__', ?, ?)",
-            (f"到期未复习超上限 {overdue_beyond_cap} 项", store.utcnow_iso()),
-        )
-        conn.commit()
+                      "headline": sections[0].get("body", "")[:120] if sections else row["item_id"]})
     return items
+
+
+def record_review_pressure(conn: sqlite3.Connection, *, at: datetime | None = None,
+                           limit: int = 12) -> int:
+    """复习保护（业务规则）：超上限项计为知识债务；每日 run 调用一次，去重更新单行."""
+    at = at or datetime.now(timezone.utc)
+    total_due = conn.execute(
+        "SELECT COUNT(*) AS n FROM review_state WHERE due_at IS NOT NULL AND due_at <= ?",
+        (at.isoformat(timespec="seconds"),),
+    ).fetchone()["n"]
+    overdue_beyond_cap = max(0, int(total_due) - limit)
+    open_row = conn.execute(
+        "SELECT id FROM debts WHERE kind='overdue' AND ref_id='__review_queue__' AND status='open'"
+    ).fetchone()
+    if overdue_beyond_cap:
+        note = f"到期未复习超上限 {overdue_beyond_cap} 项（上限 {limit}）"
+        if open_row:
+            conn.execute("UPDATE debts SET note=? WHERE id=?", (note, open_row["id"]))
+        else:
+            conn.execute(
+                "INSERT INTO debts (kind, ref_id, note, opened_at) VALUES ('overdue', '__review_queue__', ?, ?)",
+                (note, store.utcnow_iso()),
+            )
+    elif open_row:
+        conn.execute("UPDATE debts SET status='closed', closed_at=? WHERE id=?",
+                     (store.utcnow_iso(), open_row["id"]))
+    conn.commit()
+    return overdue_beyond_cap
 
 
 def manual_mark(conn: sqlite3.Connection, item_id: str, state: str) -> int:

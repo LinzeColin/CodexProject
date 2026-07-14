@@ -1,8 +1,10 @@
 # ADP 阈值注册表 V0.3 —— 全系统唯一参数真相源
 # 状态: ACTIVE（R0-2 登记；Owner 2026-07-14 goal 指令接受任务包即为拍板依据；
-#       abstain_threshold=55 为占位，R1-3 回放重校后以 config_changes 回执更新）
+#       abstain_threshold 已完成 R1-3 回放重校 55→59.6，回执见 data/config_changes.jsonl）
 # 取代: formula_registry.yaml / model_registry.yaml / 模型参数文件.md → 原地冻结（见 docs/v03/DECISIONS.md E 节）
 # 修改规则: 前端「提案→预览→应用」或每周自迭代提案；任何改动必附 30 天回放对照与回执。
+# 特征抽取器内部塑形常数属「排序策略」版本域（FEATURE_EXTRACTOR_VER，src/adp/config.py），
+# 不在本注册表 38 参数内；改动必须换版本号并在 CHANGELOG 落行。
 
 registry:
   id: thresholds-v0.3
