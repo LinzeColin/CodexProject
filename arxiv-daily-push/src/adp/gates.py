@@ -9,7 +9,8 @@ from dataclasses import dataclass
 from typing import Any, Mapping
 from urllib.parse import urlparse
 
-OFFICIAL_HOSTS = {"arxiv.org", "export.arxiv.org", "www.arxiv.org"}
+OFFICIAL_HOSTS = {"arxiv.org", "export.arxiv.org", "www.arxiv.org",
+                  "biorxiv.org", "www.biorxiv.org", "medrxiv.org", "www.medrxiv.org"}
 
 
 @dataclass(frozen=True)

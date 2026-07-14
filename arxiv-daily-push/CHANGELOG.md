@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-07-15 Australia/Sydney - v1.1 six-theme frontend, R5 bioRxiv shadow source, R6 Cloudflare hybrid mirror
+
+- Rebuilt the six-theme frontend per the v1.1 supplement pack: per-theme design languages with structural switches (three full-bleed video heroes with JS-property-only media control, a zero-radius cosmic vitals dashboard fed by real run data, sidebar/topbar/dock navigation, effects layers, reduced-motion support); verified per theme in a browser with zero console errors.
+- R5: bioRxiv shadow source using the stage-2-accepted preprint adapter — zero-ingestion shadow evaluation through the same gates/features, a real 14-day shadow report (420 candidates, 0 fetch errors), a one-page enable proposal, and an Owner-only promotion click with receipted config change and 3-failure auto-disable.
+- R6: Cloudflare hybrid mirror deployed live at home.linzezhang.com (Worker + D1 one-way mirror + recall write-back queue + daily cron); no-key/incognito access returns 401; a cloud grade round-trips into local FSRS with same-Sydney-day dedup; local loop unaffected when offline. R2 weekly snapshots degrade to local until the Owner enables R2; the owner-key uses a rotatable D1-hash scheme (secret-store write was denied by local policy — disclosed in deploy/cloudflare/README.md).
+- Production boundary unchanged: no SMTP send, no scheduler install, no Release, no restore, DAILY_OPERATION disabled.
+
 ## 2026-07-15 Australia/Sydney - Readable HTML email preview beside MIME .eml
 
 - `deliver_lesson` now writes a browser-openable `.html` preview next to the MIME `.eml` outbox artifact (the wire format reads as encoded text when opened directly, which the Owner perceived as garbled); existing previews backfilled and the Friday checklist documents the distinction. No behavior change to authorization, idempotency, or learning-state separation.

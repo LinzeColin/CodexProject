@@ -82,6 +82,69 @@ def _lesson_view(conn: sqlite3.Connection, row: sqlite3.Row) -> dict[str, Any]:
     }
 
 
+def _hero_metrics(conn: sqlite3.Connection, thresholds) -> dict[str, Any]:
+    """首屏体征数据（v1.1 前端增补包）：全部读自真实运行记录与事件库."""
+    from datetime import timedelta
+
+    from .manifest import read_manifests
+
+    latest = conn.execute(
+        "SELECT * FROM selections ORDER BY as_of_date DESC, run_id DESC LIMIT 1"
+    ).fetchone()
+    top_title = ""
+    if latest and not latest["abstain"] and latest["candidate_id"]:
+        row = conn.execute(
+            "SELECT d.title FROM candidates c JOIN documents d ON d.id=c.doc_id WHERE c.id=?",
+            (latest["candidate_id"],),
+        ).fetchone()
+        top_title = row["title"] if row else ""
+
+    # 近 7 日每日最新决策（run_id 悉尼 ISO，字典序即时间序）
+    spark = []
+    for row in conn.execute(
+        """SELECT s.as_of_date, s.score, s.abstain FROM selections s
+           JOIN (SELECT as_of_date, MAX(run_id) AS m FROM selections GROUP BY as_of_date) l
+             ON l.as_of_date = s.as_of_date AND l.m = s.run_id
+           ORDER BY s.as_of_date DESC LIMIT 7"""
+    ):
+        spark.append({"date": row["as_of_date"], "score": row["score"] or 0.0,
+                      "abstain": bool(row["abstain"])})
+    spark.reverse()
+
+    # streak：以成功 manifest（正常/降级/弃权）的连续悉尼日期计
+    ok_dates = sorted({m["run_id"][:10] for m in read_manifests(200)
+                       if m.get("result") in {"正常", "降级", "弃权"}})
+    streak = 0
+    if ok_dates:
+        from datetime import date
+
+        cursor = date.fromisoformat(ok_dates[-1])
+        dates = set(ok_dates)
+        while cursor.isoformat() in dates:
+            streak += 1
+            cursor -= timedelta(days=1)
+
+    week_ago = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat(timespec="seconds")
+    grades = [int(r["grade"]) for r in conn.execute(
+        "SELECT grade FROM learning_events WHERE kind='self_grade' AND undone_by IS NULL AND at >= ?",
+        (week_ago,),
+    ) if r["grade"]]
+    retention = round(100 * sum(1 for g in grades if g >= 3) / len(grades)) if grades else None
+    debt = conn.execute("SELECT COUNT(*) n FROM debts WHERE status='open'").fetchone()["n"]
+    manifests = read_manifests(1)
+    return {
+        "date": latest["as_of_date"] if latest else "",
+        "abstain": bool(latest["abstain"]) if latest else False,
+        "abstain_reason": (latest["abstain_reason"] or "") if latest else "",
+        "score": latest["score"] if latest else None,
+        "top_title": top_title,
+        "spark": spark, "streak": streak, "retention": retention,
+        "review_debt": int(debt),
+        "last_run_result": manifests[0]["result"] if manifests else "未运行",
+        "abstain_line": thresholds.abstain_threshold,
+    }
+
+
 @app.get("/", response_class=HTMLResponse)
 def today() -> HTMLResponse:
     conn = _conn()
@@ -98,6 +161,7 @@ def today() -> HTMLResponse:
             "today.html", page="today", selection=selection, lesson=lesson, state=state,
             intervals=intervals, grades=GRADES, manual_states=MANUAL_STATES,
             corrections=unresolved_corrections(conn),
+            hero=_hero_metrics(conn, thresholds),
         )
     finally:
         conn.close()
@@ -166,7 +230,22 @@ def system() -> HTMLResponse:
 def radar_page() -> HTMLResponse:
     conn = _conn()
     try:
-        return _render("radar.html", page="radar", radar=weekly_radar(conn))
+        from .shadow_biorxiv import is_promoted, load_report
+
+        return _render("radar.html", page="radar", radar=weekly_radar(conn),
+                       shadow=load_report(), biorxiv_promoted=is_promoted(conn))
+    finally:
+        conn.close()
+
+
+@app.post("/api/r5/promote")
+def api_r5_promote() -> JSONResponse:
+    """R5 上板/撤板——只由 Owner 在雷达页点击触发（自迭代边界：系统只能提案）."""
+    conn = _conn()
+    try:
+        from .shadow_biorxiv import promote
+
+        return JSONResponse(promote(conn))
     finally:
         conn.close()
 

@@ -1,6 +1,98 @@
 {% extends "base.html" %}
+
+{% block hero %}
+{# ============ 视频首屏（简约专注 74vh / 炫技 80vh / 森林 72vh，结构由 data-hero 开关） ============ #}
+<section class="hero hero-video">
+  <video id="heroVideo" playsinline preload="metadata"></video>
+  <div class="mask" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <div class="newbadge fr d1" data-only="techno" hidden>
+      <span class="pillw">New</span><span>今日讲义已生成 · {{ hero.date }}</span>
+    </div>
+    <div class="eyebrow fr d1">今天学什么 · {{ hero.date }}</div>
+    <h1 class="display fr d2" id="heroDisplay">
+      {% if hero.abstain %}今日<em>弃权</em>，不打扰是特性
+      {% else %}把前沿<em>学到手</em>，而不是收到
+      {% endif %}
+    </h1>
+    <p class="sub fr d2">
+      {% if hero.abstain %}{{ hero.abstain_reason }}
+      {% else %}{{ hero.top_title[:70] }} —— 总分 {{ '%.1f'|format(hero.score or 0) }}／104，读讲义约 12 分钟，句句可溯源。
+      {% endif %}
+    </p>
+    <a class="cta fr d3" href="#lesson">开始今日学习 ↓</a>
+    <div class="partners fr d3" data-only="techno" hidden>
+      <span>研究前沿</span><span>顶级期刊</span><span>中国政策</span><span>美国科技金融</span><span>跨板块</span>
+    </div>
+  </div>
+</section>
+
+{# ============ 宇宙星河：知识体征仪表盘首屏（零圆角，数据=当日真实运行） ============ #}
+<section class="hero hero-cosmic">
+  <video id="novaVideo" playsinline preload="none"
+    style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.55; z-index:0;"></video>
+  <div style="position:absolute; inset:0; z-index:1;
+    background:linear-gradient(180deg, #060913 0%, rgba(6,9,19,0.35) 40%, rgba(6,9,19,0.4) 70%, #060913 100%);"></div>
+  <div style="position:relative; z-index:2;">
+    <div class="cosmic-live">
+      <span class="dot"></span>
+      <span class="microlabel">LIVE · {{ hero.date }} · run {{ hero.last_run_result }}</span>
+    </div>
+    <div class="dash">
+      <div class="gauge">
+        <span class="microlabel">TODAY SCORE</span>
+        <svg width="132" height="132" viewBox="0 0 132 132">
+          <defs>
+            <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#89AACC"/><stop offset="100%" stop-color="#4E85BF"/>
+            </linearGradient>
+          </defs>
+          <circle cx="66" cy="66" r="54" fill="none" stroke="rgba(137,170,204,0.15)" stroke-width="8"
+            stroke-dasharray="{{ '%.2f'|format(2*3.14159*54*0.75) }} {{ '%.2f'|format(2*3.14159*54) }}"
+            transform="rotate(135 66 66)"/>
+          <circle id="gaugeArc" cx="66" cy="66" r="54" fill="none" stroke="url(#steel)" stroke-width="8"
+            stroke-dasharray="{{ '%.2f'|format(2*3.14159*54) }}"
+            stroke-dashoffset="{{ '%.2f'|format(2*3.14159*54*(1 - ((hero.score or 0)/104)*0.75)) }}"
+            transform="rotate(135 66 66)" style="filter:drop-shadow(0 0 8px rgba(137,170,204,0.35))"/>
+        </svg>
+        <span class="num" id="gaugeNum" data-value="{{ hero.score or 0 }}" data-max="104">
+          {{ '%03d'|format((hero.score or 0)|round|int) }}</span>
+        <span class="microlabel">/ 104 ABSTAIN {{ hero.abstain_line }}</span>
+      </div>
+      <div>
+        <span class="microlabel">KNOWLEDGE VITALS</span>
+        <div class="vitals" style="margin-top:10px">
+          <div><div class="microlabel">STREAK</div><div class="v">{{ hero.streak }}d</div></div>
+          <div><div class="microlabel">RETENTION</div><div class="v">{{ hero.retention if hero.retention is not none else '—' }}{% if hero.retention is not none %}%{% endif %}</div></div>
+          <div><div class="microlabel">REVIEW DEBT</div><div class="v">{{ hero.review_debt }}</div></div>
+        </div>
+        <p class="mt" style="margin-top:14px">
+          {% if hero.abstain %}今日弃权：{{ hero.abstain_reason }}{% else %}{{ hero.top_title[:56] }}{% endif %}</p>
+      </div>
+      <div>
+        <span class="microlabel">TOP SCORE · 7D（灰点=弃权）</span>
+        <svg class="sparkline" viewBox="0 0 260 84" preserveAspectRatio="none">
+          {% set pts = hero.spark %}
+          {% if pts|length > 1 %}
+          <polyline fill="none" stroke="url(#steel)" stroke-width="2"
+            points="{% for p in pts %}{{ 12 + loop.index0 * (236 / (pts|length - 1)) }},{{ 74 - (p.score or 0) / 104 * 60 }} {% endfor %}"/>
+          {% endif %}
+          {% for p in pts %}
+          <circle cx="{{ 12 + loop.index0 * (236 / ((pts|length - 1) if pts|length > 1 else 1)) }}"
+                  cy="{{ 74 - (p.score or 0) / 104 * 60 }}" r="3.2"
+                  fill="{{ '#5a627e' if p.abstain else '#89AACC' }}"/>
+          {% endfor %}
+        </svg>
+        <div class="microlabel">{{ pts[0].date if pts else '' }} → {{ pts[-1].date if pts else '' }}</div>
+      </div>
+    </div>
+    <hr class="cosmic-rule">
+  </div>
+</section>
+{% endblock %}
+
 {% block content %}
-<h1>今天学什么</h1>
+<h1 id="lesson">今天学什么</h1>
 
 {% include "_correction_banner.html" %}
 
@@ -23,11 +115,12 @@
 {% endif %}
 
 {% if lesson %}
+<div class="waterband" aria-hidden="true"></div>
 <div class="card">
   <h2>{{ lesson.doc_title }}</h2>
   <p class="mt">讲义 {{ lesson.lesson_id }} · 生成通道 {{ lesson.generator }} · 模板 {{ lesson.template_ver }}
     {% if lesson.status == 'reopened' %}<span class="badge warn">已因纠错重开</span>{% endif %}
-    · <a href="{{ lesson.canonical_url }}" style="color:var(--ac)">原文</a></p>
+    · <a href="{{ lesson.canonical_url }}">原文</a></p>
   {% for section in lesson.sections %}
     <h3>{{ loop.index }}. {{ section.title }}</h3>
     <p>
@@ -71,15 +164,44 @@
 
 <div class="card">
   <h2>迁移练习（可选）</h2>
-  <textarea id="transferNote" rows="2" style="width:100%; border-radius:8px; border:1px solid var(--bd); background:var(--pn); color:var(--ink); padding:8px" placeholder="把本文机制对照你的真实项目，写下一个两周内可验证的最小实验；结果失败也记。"></textarea>
+  <textarea id="transferNote" rows="2" style="width:100%; padding:8px" placeholder="把本文机制对照你的真实项目，写下一个两周内可验证的最小实验；结果失败也记。"></textarea>
   <p><button onclick="transfer('{{ lesson.lesson_id }}')">记录为应用证据</button> <span id="transferReceipt" class="mt"></span></p>
 </div>
 {% endif %}
 {% endblock %}
 
 {% block scripts %}
-{% if lesson %}
 <script>
+/* 炫技专属元素显隐（New 徽章 / 五板块词排）+ BlurText 分词 */
+(function () {
+  const display = document.getElementById('heroDisplay');
+  if (display && !display.dataset.split) {
+    display.dataset.split = '1';
+    const wrap = (node) => {
+      [...node.childNodes].forEach((ch) => {
+        if (ch.nodeType === 3) {
+          const frag = document.createDocumentFragment();
+          ch.textContent.split('').forEach((c) => {
+            if (c.trim() === '') { frag.appendChild(document.createTextNode(c)); return; }
+            const s = document.createElement('span');
+            s.className = 'bw'; s.textContent = c; frag.appendChild(s);
+          });
+          node.replaceChild(frag, ch);
+        } else if (ch.nodeType === 1) wrap(ch);
+      });
+    };
+    /* 中文按字分词（词间 100ms 由 applyTheme 设 delay） */
+    if (document.body.dataset.theme === 'techno') wrap(display);
+  }
+  const syncOnly = () => {
+    document.querySelectorAll('[data-only]').forEach((el) => {
+      el.hidden = document.body.dataset.theme !== el.dataset.only;
+    });
+  };
+  syncOnly();
+  new MutationObserver(syncOnly).observe(document.body, {attributes:true, attributeFilter:['data-theme']});
+})();
+{% if lesson %}
 const LESSON = {{ lesson.lesson_id | tojson }};
 let holdTimer = null, held = 0;
 const cover = document.getElementById('cover'), bar = document.getElementById('bar');
@@ -107,7 +229,7 @@ async function grade(g) {
   document.querySelectorAll('#gradeRow button').forEach(b => b.classList.toggle('picked', b.dataset.grade == g));
   if (navigator.vibrate) navigator.vibrate(g === 1 ? [60] : (g === 4 ? [10,30,10,30,20] : 8));
 }
-async function mark(id, s) { const r = await post(`/api/item/${id}/state/${encodeURIComponent(s)}`); location.reload(); }
+async function mark(id, s) { await post(`/api/item/${id}/state/${encodeURIComponent(s)}`); location.reload(); }
 async function undoMark(eid) { await post(`/api/undo/${eid}`); location.reload(); }
 async function transfer(id) {
   const note = document.getElementById('transferNote').value.trim();
@@ -115,6 +237,6 @@ async function transfer(id) {
   await post(`/api/transfer/${id}`, {kind:'outcome', note, outcome:'recorded'});
   document.getElementById('transferReceipt').textContent = '已记录为应用证据（失败也算证据）。';
 }
-</script>
 {% endif %}
+</script>
 {% endblock %}

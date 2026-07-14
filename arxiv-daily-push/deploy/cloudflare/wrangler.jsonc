@@ -1,0 +1,19 @@
+{
+  // ADP 云端镜像 Worker（R6）——本机为主，云端只做门面/镜像/回传队列
+  "name": "adp-mirror",
+  "main": "worker.js",
+  "compatibility_date": "2026-07-01",
+  "workers_dev": true,
+  "routes": [
+    { "pattern": "home.linzezhang.com", "custom_domain": true }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "adp-mirror",
+      "database_id": "d0a7fc44-6de5-4bf4-bd71-7df868a410a3"
+    }
+  ],
+  // 定时轻任务：复习提醒计数 + 镜像新鲜度检查（免费档失败不重试→本机心跳兜底）
+  "triggers": { "crons": ["30 20 * * *"] }
+}
