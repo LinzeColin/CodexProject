@@ -46,6 +46,8 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("corrections", help="检测版本/撤稿并传播纠错（run 内已自动执行）")
     p_shadow = sub.add_parser("shadow-biorxiv", help="R5：bioRxiv 影子回填与报表（零入库）")
     p_shadow.add_argument("--days", type=int, default=14)
+    p_mirror = sub.add_parser("mirror", help="R6：push=推送 D1 镜像 / pull=回传云评分 / snapshot=R2 周快照")
+    p_mirror.add_argument("action", choices=["push", "pull", "snapshot"])
 
     args = parser.parse_args(argv)
     conn = store.connect()
@@ -183,6 +185,12 @@ def main(argv: list[str] | None = None) -> int:
             summary = {k: v for k, v in report.items() if k != "rows"}
             print(json.dumps(summary, ensure_ascii=False, indent=1))
             return 0
+        if args.command == "mirror":
+            from . import mirror
+
+            outcome = getattr(mirror, args.action)(conn)
+            print(json.dumps(outcome, ensure_ascii=False, indent=1))
+            return 0 if outcome.get("ok") else 2
     finally:
         conn.close()
     return 1

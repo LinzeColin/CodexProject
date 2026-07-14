@@ -83,6 +83,19 @@ def _completed_run_for_date(conn: sqlite3.Connection, as_of_date: str) -> str | 
 def _run_stages(conn: sqlite3.Connection, *, run_id: str, trigger: str, as_of: datetime,
                 as_of_date: str, fetch: bool, fetch_days: int, thresholds,
                 counts: dict[str, Any], degraded: list[str], started: float) -> dict[str, Any]:
+    # 0 回传（R6）：先消费云端回忆评分，让复习队列在本次 run 内就是新的（离线只降级）
+    if fetch:
+        try:
+            from . import mirror as cloud_mirror
+
+            pulled = cloud_mirror.pull(conn)
+            if pulled.get("ok"):
+                counts["云端回传"] = len(pulled.get("applied") or [])
+            else:
+                degraded.append("mirror_pull_unavailable")
+        except Exception as exc:
+            degraded.append(f"mirror_pull:{type(exc).__name__}")
+
     # 1 发现 + 2 证据（声明抽取在入库时完成；新版本触发纠错传播）
     if fetch:
         fetch_counts = fetch_window(conn, days=fetch_days, as_of=as_of)
@@ -164,6 +177,17 @@ def _run_stages(conn: sqlite3.Connection, *, run_id: str, trigger: str, as_of: d
     (config.data_dir() / "heartbeat").write_text(
         json.dumps({"last_run": run_id, "at": store.utcnow_iso()}), encoding="utf-8"
     )
+
+    # 镜像推送（R6）：本机 → D1 单向；云端挂 → 本机闭环无感（只降级）
+    if fetch:
+        try:
+            from . import mirror as cloud_mirror
+
+            pushed = cloud_mirror.push(conn)
+            if not pushed.get("ok"):
+                degraded.append("mirror_push_unavailable")
+        except Exception as exc:
+            degraded.append(f"mirror_push:{type(exc).__name__}")
 
     result = "弃权" if abstain_reason else ("降级" if degraded else "正常")
     entry = {
