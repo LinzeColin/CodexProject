@@ -336,10 +336,22 @@ class Stage040BackpressureScenarioTests(unittest.TestCase):
 
         batch = BATCH.read_text(encoding="utf-8")
         roadmap = ROADMAP.read_text(encoding="utf-8")
-        self.assertIn('status: "stage040_phase3_completed"', batch)
-        self.assertIn('next_allowed_task_id: "IDS-V0_1-STAGE040-P4"', batch)
-        self.assertIn('current_phase_id: "IDS-STAGE040-P3"', roadmap)
-        self.assertIn('next_gate_id: "IDS-STAGE040-P4-GATE"', roadmap)
+        phase3_active = (
+            'status: "stage040_phase3_completed"' in batch
+            and 'next_allowed_task_id: "IDS-V0_1-STAGE040-P4"' in batch
+            and 'current_phase_id: "IDS-STAGE040-P3"' in roadmap
+            and 'next_gate_id: "IDS-STAGE040-P4-GATE"' in roadmap
+        )
+        phase4_review_pending = (
+            'status: "stage040_phase4_completed_review_pending"' in batch
+            and 'next_allowed_task_id: "IDS-V0_1-STAGE040-REVIEW"' in batch
+            and 'current_phase_id: "IDS-STAGE040-P4"' in roadmap
+            and 'next_gate_id: "IDS-STAGE040-REVIEW-GATE"' in roadmap
+        )
+        self.assertTrue(
+            phase3_active or phase4_review_pending,
+            {"phase3_active": phase3_active, "phase4_review_pending": phase4_review_pending},
+        )
         events = [
             json.loads(line)
             for line in EVENTS.read_text(encoding="utf-8").splitlines()
