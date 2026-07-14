@@ -1040,8 +1040,15 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
             summary = coordinator.acceptance_summary()
 
-        self.assertEqual(summary["natural_completed_work_days"], 1)
-        self.assertEqual(summary["natural_completed_dates"], ["2026-07-13"])
+        self.assertEqual(summary["morning"]["natural_success_count"], 2)
+        self.assertEqual(summary["morning"]["natural_success_dates"], ["2026-07-13", "2026-07-18"])
+        self.assertEqual(summary["evening"]["natural_success_count"], 2)
+        self.assertEqual(summary["evening"]["natural_success_dates"], ["2026-07-13", "2026-07-18"])
+        self.assertEqual(summary["final_reconciliation"]["pass_count"], 1)
+        self.assertEqual(summary["final_reconciliation"]["pass_dates"], ["2026-07-13"])
+        self.assertEqual(summary["delivery"]["owner_disabled_count"], 4)
+        self.assertNotIn("target_work_days", summary)
+        self.assertNotIn("natural_completed_work_days", summary)
 
     def test_r6_morning_reminder_completes_before_and_survives_final_failure(self) -> None:
         from KMFA.tools.dingtalk_attendance.automatic_closure import (
@@ -1051,6 +1058,9 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
         runtime_identity = {
             "git_commit": "a" * 40,
+            "attendance_runtime_fingerprint": "f" * 64,
+            "attendance_runtime_tree_state": "CLEAN",
+            "prompt_mirrors_match": True,
             "morning_prompt_sha256": "b" * 64,
             "evening_prompt_sha256": "c" * 64,
         }
@@ -1111,6 +1121,9 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
 
         runtime_identity = {
             "git_commit": "a" * 40,
+            "attendance_runtime_fingerprint": "f" * 64,
+            "attendance_runtime_tree_state": "CLEAN",
+            "prompt_mirrors_match": True,
             "morning_prompt_sha256": "b" * 64,
             "evening_prompt_sha256": "c" * 64,
         }
@@ -1164,7 +1177,19 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertEqual(result["reminder"]["notification_status"], "NOT_SENT_OWNER_DISABLED")
         self.assertEqual(result["final"]["work_date"], "2026-07-12")
         self.assertEqual(result["final"]["status"], "WAITING_OFFICIAL_REPORT")
-        self.assertEqual(result["status"], "REMINDER_COMPLETED_FINAL_WAITING")
+        self.assertEqual(result["status"], "COMPLETED")
+        self.assertEqual(result["result_message"], "提醒成功，事后核验等待")
+        self.assertEqual(
+            result["follow_up"],
+            {
+                "kind": "OFFICIAL_FINAL_RECONCILIATION",
+                "status": "WAITING_OFFICIAL_REPORT",
+                "work_date": "2026-07-12",
+                "blocks_reminder": False,
+            },
+        )
+        self.assertEqual(result["acceptance"]["morning"]["natural_success_count"], 1)
+        self.assertEqual(result["acceptance"]["final_reconciliation"]["waiting_dates"], ["2026-07-12"])
 
     def test_r6_manual_artifact_recovery_keeps_original_source_and_is_not_natural(self) -> None:
         from KMFA.tools.dingtalk_attendance.automatic_closure import R6Coordinator
@@ -1250,7 +1275,7 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
         self.assertNotEqual(after_runtime, baseline)
         self.assertNotEqual(after_prompt, baseline)
 
-    def test_r6_unrelated_commit_preserves_state_but_attendance_fingerprint_change_resets(self) -> None:
+    def test_r6_runtime_change_preserves_facts_and_revalidates_affected_components(self) -> None:
         from KMFA.tools.dingtalk_attendance.automatic_closure import R6Coordinator
 
         first_identity = {
@@ -1303,13 +1328,15 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                     "actual_workday": True,
                 },
             )
-            self.assertEqual(first.acceptance_summary()["natural_completed_work_days"], 1)
+            self.assertEqual(first.acceptance_summary()["morning"]["natural_success_count"], 1)
+            self.assertEqual(first.acceptance_summary()["evening"]["natural_success_count"], 1)
 
             unrelated_commit_identity = {**first_identity, "git_commit": "d" * 40}
             preserved = R6Coordinator(root, runtime_identity=unrelated_commit_identity)
             self.assertIn("2026-07-15", preserved.state["work_dates"])
             self.assertEqual(preserved.state["runtime_identity"], unrelated_commit_identity)
-            self.assertEqual(preserved.acceptance_summary()["natural_completed_work_days"], 1)
+            self.assertEqual(preserved.acceptance_summary()["morning"]["natural_success_count"], 1)
+            self.assertEqual(preserved.acceptance_summary()["evening"]["natural_success_count"], 1)
 
             changed_fingerprint_identity = {
                 **unrelated_commit_identity,
@@ -1317,9 +1344,111 @@ class DingTalkAttendanceContractTests(unittest.TestCase):
                 "evening_prompt_sha256": "9" * 64,
             }
             reset = R6Coordinator(root, runtime_identity=changed_fingerprint_identity)
-            self.assertEqual(reset.acceptance_summary()["natural_completed_work_days"], 0)
+            self.assertEqual(reset.acceptance_summary()["morning"]["natural_success_count"], 1)
+            self.assertEqual(reset.acceptance_summary()["evening"]["natural_success_count"], 1)
             self.assertEqual(reset.state["runtime_identity"], changed_fingerprint_identity)
-            self.assertEqual(reset.state["work_dates"], {})
+            self.assertIn("2026-07-15", reset.state["work_dates"])
+            self.assertEqual(
+                reset.state["runtime_transitions"][-1]["revalidation_scope"],
+                "CHANGED_COMPONENTS_ONLY",
+            )
+
+    def test_r6_saved_20260714_morning_replay_is_permanent_and_waiting_final_is_nonblocking(self) -> None:
+        from KMFA.tools.dingtalk_attendance.automatic_closure import R6Coordinator
+
+        old_identity = {
+            "git_commit": "9" * 40,
+            "attendance_runtime_fingerprint": "8" * 64,
+            "attendance_runtime_tree_state": "CLEAN",
+            "prompt_mirrors_match": True,
+            "morning_prompt_sha256": "3" * 64,
+            "evening_prompt_sha256": "4" * 64,
+        }
+        new_identity = {
+            **old_identity,
+            "git_commit": "a" * 40,
+            "attendance_runtime_fingerprint": "7" * 64,
+        }
+        task_evidence = {
+            "verified": True,
+            "task_id": "saved-20260714-morning-task",
+            "thread_source": "automation",
+            "automation_id": "kmfa",
+            "triggered_at": "2026-07-14T00:46:39.769Z",
+            "prompt_sha256": old_identity["morning_prompt_sha256"],
+        }
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            root.mkdir(parents=True, exist_ok=True)
+            (root / "state.json").write_text(
+                json.dumps(
+                    {
+                        "schema_version": 3,
+                        "runtime_identity": old_identity,
+                        "work_dates": {
+                            "2026-07-12": {
+                                "slots": {},
+                                "official_export": {"status": "WAITING_OFFICIAL_REPORT"},
+                                "final": {
+                                    "status": "WAITING_OFFICIAL_REPORT",
+                                    "trigger_source": "automation",
+                                    "task_evidence": task_evidence,
+                                    "runtime_identity": old_identity,
+                                },
+                            },
+                            "2026-07-14": {
+                                "slots": {
+                                    "morning": {
+                                        "status": "COMPLETED",
+                                        "trigger_source": "automation",
+                                        "task_evidence": task_evidence,
+                                        "runtime_identity": old_identity,
+                                        "notification_status": "NOT_SENT_OWNER_DISABLED",
+                                        "member_count": 42,
+                                        "run_id": "dingtalk_attendance_morning_20260714_084749",
+                                    }
+                                }
+                            },
+                        },
+                        "events": [],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            coordinator = R6Coordinator(root, runtime_identity=new_identity)
+            replay = coordinator.ensure_slot(
+                work_date="2026-07-14",
+                run_slot="morning",
+                trigger_source="manual",
+                runner=lambda: (_ for _ in ()).throw(AssertionError("saved reminder must not rerun")),
+                completed_probe=lambda: {
+                    "member_count": 42,
+                    "run_id": "dingtalk_attendance_morning_20260714_084749",
+                    "realtime_integrity_status": "PASS",
+                    "realtime_expected_count": 42,
+                    "realtime_coverage_count": 42,
+                    "query_failure_count": 0,
+                    "parse_failure_count": 0,
+                    "command_failure_count": 0,
+                    "archive_generated": True,
+                },
+            )
+            summary = coordinator.acceptance_summary()
+            state = json.loads((root / "state.json").read_text(encoding="utf-8"))
+            status_text = (root / "运行状态.md").read_text(encoding="utf-8")
+
+        saved = state["work_dates"]["2026-07-14"]["slots"]["morning"]
+        self.assertEqual(replay["status"], "IDEMPOTENT_SKIP")
+        self.assertEqual(saved["realtime_integrity_status"], "PASS")
+        self.assertEqual(saved["realtime_expected_count"], 42)
+        self.assertEqual(saved["realtime_coverage_count"], 42)
+        self.assertTrue(saved["archive_generated"])
+        self.assertEqual(summary["morning"]["natural_success_dates"], ["2026-07-14"])
+        self.assertEqual(summary["final_reconciliation"]["waiting_dates"], ["2026-07-12"])
+        self.assertIn("晨间自然成功：1", status_text)
+        self.assertIn("事后核验等待：2026-07-12", status_text)
+        self.assertNotIn("0 / 5", status_text)
 
     def test_r6_task_evidence_requires_real_automation_session_metadata(self) -> None:
         from KMFA.tools.dingtalk_attendance.automatic_closure import read_automation_task_evidence

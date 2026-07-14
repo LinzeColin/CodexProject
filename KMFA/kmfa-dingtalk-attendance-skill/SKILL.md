@@ -48,7 +48,7 @@ Before acting, read:
 - Attendance delivery is owner-disabled. Production and resend entries must return `NOT_SENT_OWNER_DISABLED` without resolving targets or invoking a sender.
 - Automation name: `每日早晚钉钉考勤检查`.
 - Business-date timezone: `Asia/Shanghai`; this is not a scheduler timezone field.
-- Morning run: 10:35. Evening run: fixed local wall-clock 20:00.
+- Actual local automation plan (documentation readback only): morning 10:45 and evening 20:00. This line does not authorize or perform a scheduler change.
 - DWS backend is live-only; no sample employees or fixture attendance records are allowed as production data.
 - Known no-record people: `张霖泽`, `林全意`; only their own missing records are exempted.
 - Rest reminder rule: `REST_REQUIRED_THRESHOLD_DAYS = 23`.
@@ -80,7 +80,7 @@ When the user says "raw/original data is in `KMFA/metadata`", treat tracked `KMF
 
 Existing local Codex automation ids:
 
-- Morning: `kmfa`, daily 10:35 Beijing time.
+- Morning: `kmfa`, actual local wall-clock plan 10:45 (documented only; scheduler unchanged by this work).
 - Evening: `kmfa-3`, daily at the owner's fixed local wall-clock 20:00; never UTC-offset convert this scheduler time.
 
 Both automation prompts must invoke this skill by name:

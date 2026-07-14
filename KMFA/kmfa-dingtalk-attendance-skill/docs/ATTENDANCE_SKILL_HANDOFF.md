@@ -1,8 +1,8 @@
 # KMFA 钉钉考勤 skill 交接
 
-roadmap_progress: R6 / implementation and natural acceptance
+roadmap_progress: R6 / independent runtime status tracking
 
-status: AUTO_CLOSURE_IMPLEMENTED_AWAITING_NATURAL_RUNS
+status: COORDINATOR_RESULT_SEPARATION_IMPLEMENTED
 
 r2_close_commit: b5b06437dfb15bfb0e302c4e735fe2978ddcd579
 
@@ -29,13 +29,15 @@ current_availability: NO_SEND_RUNTIME_VERIFIED_NOT_PRODUCTION_ACCEPTED
 - 离线真实冻结原件回归：48×49 表格与既有冻结标准精确一致；同日还原为 44 人、48 个必需字段、2,112 格、零真实差异。
 - 两行合并表头按“二级非空优先，否则一级”解析，最终严格等于 49 个 `OFFICIAL_COLUMNS`；分组标题不进入正式字段名。
 - 未来人数从当天唯一非空 UserId 动态取得，48 个必需字段名固定，比较格数为 `N×48`。两份历史冻结报告仍以 44 人/天完成 4,224 格零差异回归。
-- 自然计数绑定真实 Codex automation task evidence、实际 commit、两个 prompt 指纹、automation ID 与触发时间；artifact 恢复保留原始来源，版本变化自动清零。
-- 唯一修正完成后连续 5 个实际工作日自然无发送验收重新从 `0/5` 开始。
+- 自然成功记录绑定真实 Codex automation task evidence、实际 commit、两个 prompt 指纹、automation ID 与触发时间；artifact 恢复保留原始来源。
+- 不再使用统一自然天数上线门槛；晨间成功、晚间成功、事后核验和发送状态分别统计。attendance runtime 变化只重验受影响项目，既有事实记录不全局清零。
+- 实际本机 automation 计划为晨间 10:45、晚间 20:00；本轮只记录 readback 事实，未修改 scheduler、timezone 或 automation。
+- 2026-07-14 晨间自然运行按已保存证据永久记录为成功：42/42、实时完整性 PASS、查询/解析/命令失败均为 0、归档已生成。2026-07-12 final 的 `WAITING_OFFICIAL_REPORT` 是独立待办，不改变 reminder 成功；总结果为正常完成并显示“提醒成功，事后核验等待”。
 - 发送继续硬关闭：`NOT_SENT_OWNER_DISABLED`，消息数与目标调用数必须为 0。
 - 2026-07-13 evening 暴露的根因已按私有 session 控制证据修复：temporary reminder 不再要求每人存在 official `query-data` 报表行，改为考勤组逐人实时 `record get + summary`；成功空打卡仍计完整覆盖，查询/漏查/日期/解析失败继续 fail closed。
 - 私有 R6 state 与中文《运行状态》现保留 `integrity_error`、错误代码和脱敏覆盖统计；历史失败当时未持久化的第三批实际返回人数不可恢复，未作猜测。
 
-next_action: existing morning/evening natural automations accumulate five qualifying workdays; fail closed on the first unresolved real breakpoint
+next_action: continue independent morning, evening, final reconciliation, and delivery status recording; fail closed only for the affected chain on an unresolved real breakpoint
 
 ## R4.1–R4.3 独立官方原件对账
 

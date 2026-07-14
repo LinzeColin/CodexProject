@@ -301,20 +301,25 @@ class R6Coordinator:
         previous_identity = self.state.get("runtime_identity") or {}
         previous_fingerprint = str(previous_identity.get("attendance_runtime_fingerprint") or "")
         current_fingerprint = str(self.runtime_identity.get("attendance_runtime_fingerprint") or "")
-        should_reset = bool(
+        runtime_changed = bool(
             runtime_identity is not None
             and previous_identity
             and previous_fingerprint != current_fingerprint
         )
-        if should_reset:
-            self.state = {
-                "schema_version": 3,
-                "runtime_identity": self.runtime_identity,
-                "work_dates": {},
-                "events": [],
-            }
-        else:
-            self.state["runtime_identity"] = self.runtime_identity
+        self.state["schema_version"] = 4
+        self.state["runtime_identity"] = self.runtime_identity
+        self.state["validation_policy"] = "AFFECTED_COMPONENTS_ONLY_NO_GLOBAL_RESET"
+        self.state.setdefault("runtime_transitions", [])
+        if runtime_changed:
+            self.state["runtime_transitions"].append(
+                {
+                    "previous_attendance_runtime_fingerprint": previous_fingerprint,
+                    "current_attendance_runtime_fingerprint": current_fingerprint,
+                    "revalidation_scope": "CHANGED_COMPONENTS_ONLY",
+                    "recorded_at": datetime.now().astimezone().isoformat(timespec="seconds"),
+                }
+            )
+            self.state["runtime_transitions"] = self.state["runtime_transitions"][-50:]
         self._write()
 
     def ensure_slot(
@@ -332,7 +337,18 @@ class R6Coordinator:
         day = self._day(work_date)
         existing = day["slots"].get(run_slot)
         if isinstance(existing, Mapping) and existing.get("status") in COMPLETE_STATUSES:
-            return {"status": "IDEMPOTENT_SKIP", "work_date": work_date, "run_slot": run_slot}
+            recovered = completed_probe()
+            if isinstance(recovered, Mapping):
+                existing_record = dict(existing)
+                existing_record.update(self._aggregate(recovered))
+                day["slots"][run_slot] = existing_record
+                self._write()
+            return {
+                "status": "IDEMPOTENT_SKIP",
+                "work_date": work_date,
+                "run_slot": run_slot,
+                **self._aggregate(day["slots"][run_slot]),
+            }
 
         current_evidence = self._normalize_task_evidence(task_evidence, trigger_source=trigger_source)
         recovered = completed_probe()
@@ -540,37 +556,68 @@ class R6Coordinator:
         return {"status": "FAILED", "work_date": work_date, "error_type": error_type}
 
     def acceptance_summary(self) -> dict[str, Any]:
-        completed: list[str] = []
-        used_task_ids: set[str] = set()
+        natural_success_dates: dict[str, list[str]] = {"morning": [], "evening": []}
+        final_pass_dates: list[str] = []
+        final_waiting_dates: list[str] = []
+        final_failed_dates: list[str] = []
+        delivery_status_counts: dict[str, int] = {}
         for work_date, day in sorted(self.state["work_dates"].items()):
             slots = day.get("slots", {})
             final = day.get("final", {})
-            if not isinstance(slots, Mapping) or not isinstance(final, Mapping):
+            if isinstance(slots, Mapping):
+                for slot in ("morning", "evening"):
+                    record = slots.get(slot)
+                    if not isinstance(record, Mapping):
+                        continue
+                    if record.get("status") in COMPLETE_STATUSES and self._is_natural_record(
+                        record, run_slot=slot
+                    ):
+                        natural_success_dates[slot].append(work_date)
+                        notification_status = str(record.get("notification_status") or "UNKNOWN")
+                        delivery_status_counts[notification_status] = (
+                            delivery_status_counts.get(notification_status, 0) + 1
+                        )
+            if not isinstance(final, Mapping):
                 continue
-            slots_are_natural = all(
-                isinstance(slots.get(slot), Mapping)
-                and slots[slot].get("status") in COMPLETE_STATUSES
-                and self._is_natural_record(slots[slot], run_slot=slot)
-                for slot in ("morning", "evening")
-            )
-            task_ids = {
-                str((slots[slot].get("task_evidence") or {}).get("task_id") or "")
-                for slot in ("morning", "evening")
-                if isinstance(slots.get(slot), Mapping)
-            }
-            if slots_are_natural and task_ids and not (task_ids & used_task_ids) and (
-                final.get("status") in {"OFFICIAL_FINAL_RECONCILIATION_PASS", "RECOVERED_COMPLETE"}
+            final_status = str(final.get("status") or "")
+            if final_status == "WAITING_OFFICIAL_REPORT":
+                final_waiting_dates.append(work_date)
+            elif final_status in {"FAILED", "INTERRUPTED", "OFFICIAL_FINAL_RECONCILIATION_BLOCKED"}:
+                final_failed_dates.append(work_date)
+            elif (
+                final_status in {"OFFICIAL_FINAL_RECONCILIATION_PASS", "RECOVERED_COMPLETE"}
                 and self._is_natural_record(final, run_slot="morning")
                 and int(final.get("differing_required_cells", 0)) == 0
                 and final.get("monthly_written") is True
                 and final.get("actual_workday") is True
             ):
-                completed.append(work_date)
-                used_task_ids.update(task_ids)
+                final_pass_dates.append(work_date)
+                notification_status = str(final.get("notification_status") or "UNKNOWN")
+                delivery_status_counts[notification_status] = delivery_status_counts.get(notification_status, 0) + 1
         return {
-            "natural_completed_work_days": len(completed),
-            "natural_completed_dates": completed,
-            "target_work_days": 5,
+            "morning": {
+                "natural_success_count": len(natural_success_dates["morning"]),
+                "natural_success_dates": natural_success_dates["morning"],
+            },
+            "evening": {
+                "natural_success_count": len(natural_success_dates["evening"]),
+                "natural_success_dates": natural_success_dates["evening"],
+            },
+            "final_reconciliation": {
+                "pass_count": len(final_pass_dates),
+                "pass_dates": final_pass_dates,
+                "waiting_count": len(final_waiting_dates),
+                "waiting_dates": final_waiting_dates,
+                "failed_count": len(final_failed_dates),
+                "failed_dates": final_failed_dates,
+            },
+            "delivery": {
+                "status_counts": dict(sorted(delivery_status_counts.items())),
+                "owner_disabled_count": delivery_status_counts.get(DELIVERY_DISABLED_STATUS, 0),
+                "sent_count": delivery_status_counts.get("SENT", 0),
+                "failed_count": delivery_status_counts.get("FAILED", 0),
+            },
+            "runtime_revalidation_policy": "AFFECTED_COMPONENTS_ONLY_NO_GLOBAL_RESET",
         }
 
     def _day(self, work_date: str) -> dict[str, Any]:
@@ -581,9 +628,9 @@ class R6Coordinator:
         try:
             payload = json.loads(self.state_path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
-            return {"schema_version": 2, "runtime_identity": {}, "work_dates": {}, "events": []}
+            return {"schema_version": 4, "runtime_identity": {}, "work_dates": {}, "events": []}
         if not isinstance(payload, dict) or not isinstance(payload.get("work_dates"), dict):
-            return {"schema_version": 2, "runtime_identity": {}, "work_dates": {}, "events": []}
+            return {"schema_version": 4, "runtime_identity": {}, "work_dates": {}, "events": []}
         payload.setdefault("events", [])
         payload.setdefault("runtime_identity", {})
         return payload
@@ -632,20 +679,19 @@ class R6Coordinator:
     def _is_natural_record(self, record: Mapping[str, Any], *, run_slot: str) -> bool:
         evidence = record.get("task_evidence") or {}
         record_identity = record.get("runtime_identity") or {}
-        current_fingerprint = str(self.runtime_identity.get("attendance_runtime_fingerprint") or "")
+        record_fingerprint = str(record_identity.get("attendance_runtime_fingerprint") or "")
+        record_prompt_sha256 = str(record_identity.get(f"{run_slot}_prompt_sha256") or "")
         return bool(
-            current_fingerprint
+            record_fingerprint
             and isinstance(record_identity, Mapping)
-            and record_identity.get("attendance_runtime_fingerprint") == current_fingerprint
             and record_identity.get("attendance_runtime_tree_state") == "CLEAN"
-            and self.runtime_identity.get("attendance_runtime_tree_state") == "CLEAN"
             and record_identity.get("prompt_mirrors_match") is True
-            and self.runtime_identity.get("prompt_mirrors_match", True) is True
             and isinstance(evidence, Mapping)
             and evidence.get("verified") is True
             and evidence.get("thread_source") == "automation"
             and evidence.get("automation_id") == AUTOMATION_IDS[run_slot]
-            and evidence.get("prompt_sha256") == self.runtime_identity.get(f"{run_slot}_prompt_sha256")
+            and record_prompt_sha256
+            and evidence.get("prompt_sha256") == record_prompt_sha256
             and evidence.get("task_id")
             and evidence.get("triggered_at")
         )
@@ -681,6 +727,13 @@ class R6Coordinator:
             "run_id",
             "integrity_error",
             "error_code",
+            "realtime_integrity_status",
+            "realtime_expected_count",
+            "realtime_coverage_count",
+            "query_failure_count",
+            "parse_failure_count",
+            "command_failure_count",
+            "archive_generated",
         )
         aggregate = {key: result[key] for key in allowed if key in result}
         coverage = result.get("coverage_stats")
@@ -715,9 +768,27 @@ class R6Coordinator:
             "",
             f"- 当前 Git commit：{self.runtime_identity.get('git_commit') or 'UNKNOWN'}",
             f"- Attendance runtime fingerprint：{self.runtime_identity.get('attendance_runtime_fingerprint') or 'UNKNOWN'}",
-            f"- 自然运行已完成工作日：{summary['natural_completed_work_days']} / {summary['target_work_days']}",
-            f"- 已完成日期：{', '.join(summary['natural_completed_dates']) or '无'}",
-            "- 发送状态：硬关闭",
+            "- 本机计划：晨间 10:45；晚间 20:00（仅记录实际计划，未修改 scheduler）",
+            "- 晨间自然成功：{count}（{dates}）".format(
+                count=summary["morning"]["natural_success_count"],
+                dates=", ".join(summary["morning"]["natural_success_dates"]) or "无",
+            ),
+            "- 晚间自然成功：{count}（{dates}）".format(
+                count=summary["evening"]["natural_success_count"],
+                dates=", ".join(summary["evening"]["natural_success_dates"]) or "无",
+            ),
+            "- 事后核验通过：{count}（{dates}）".format(
+                count=summary["final_reconciliation"]["pass_count"],
+                dates=", ".join(summary["final_reconciliation"]["pass_dates"]) or "无",
+            ),
+            "- 事后核验等待：{dates}".format(
+                dates=", ".join(summary["final_reconciliation"]["waiting_dates"]) or "无",
+            ),
+            "- 发送状态：owner disabled {disabled}；sent {sent}；failed {failed}".format(
+                disabled=summary["delivery"]["owner_disabled_count"],
+                sent=summary["delivery"]["sent_count"],
+                failed=summary["delivery"]["failed_count"],
+            ),
             "",
             "| 工作日期 | 晨间 | 晚间 | 官方最终核对 | 月累计单写 |",
             "|---|---|---|---|---|",
@@ -1065,7 +1136,18 @@ def _completed_reminder_probe(*, work_date: str, run_slot: str, archive_root: Pa
             and realtime_reminder_integrity_failure_reason(stats, run_type=run_slot) is None
             and receipt.get("notification_status") == DELIVERY_DISABLED_STATUS
         ):
-            return {"member_count": int(stats.get("member_count") or 0), "run_id": run_id}
+            return {
+                "notification_status": DELIVERY_DISABLED_STATUS,
+                "member_count": int(stats.get("member_count") or 0),
+                "run_id": run_id,
+                "realtime_integrity_status": stats.get("realtime_reminder_integrity_status"),
+                "realtime_expected_count": int(stats.get("realtime_reminder_expected_count") or 0),
+                "realtime_coverage_count": int(stats.get("realtime_reminder_coverage_count") or 0),
+                "query_failure_count": int(stats.get("realtime_reminder_query_failure_count") or 0),
+                "parse_failure_count": int(stats.get("realtime_reminder_parse_failure_count") or 0),
+                "command_failure_count": int(stats.get("command_failure_count") or 0),
+                "archive_generated": True,
+            }
     return None
 
 
@@ -1112,11 +1194,23 @@ def _completed_final_probe(*, work_date: str, archive_root: Path) -> dict[str, A
 def _slot_runner(*, run_slot: str) -> dict[str, Any]:
     result = run_attendance(run_type=run_slot, timezone=TIMEZONE, allow_dws_commands=True)
     stats = result.get("collection_stats") or {}
+    archive_status = result.get("onedrive_archive_status") or {}
     return {
         "status": result.get("status"),
         "notification_status": result.get("notification_status"),
         "member_count": int(stats.get("member_count") or 0),
         "run_id": str((result.get("run_plan") or {}).get("run_id") or ""),
+        "realtime_integrity_status": stats.get("realtime_reminder_integrity_status"),
+        "realtime_expected_count": int(stats.get("realtime_reminder_expected_count") or 0),
+        "realtime_coverage_count": int(stats.get("realtime_reminder_coverage_count") or 0),
+        "query_failure_count": int(stats.get("realtime_reminder_query_failure_count") or 0),
+        "parse_failure_count": int(stats.get("realtime_reminder_parse_failure_count") or 0),
+        "command_failure_count": int(stats.get("command_failure_count") or 0),
+        "archive_generated": bool(
+            isinstance(archive_status, Mapping)
+            and archive_status.get("status") == "WRITTEN"
+            and archive_status.get("archive_manifest")
+        ),
         **{
             key: result[key]
             for key in ("integrity_error", "error_code", "coverage_stats")
@@ -1235,6 +1329,15 @@ def run_automatic_cycle(
             results["final"] = {"status": "NO_PENDING_FINAL_RECONCILIATION"}
     results["acceptance"] = coordinator.acceptance_summary()
     results["status"] = _cycle_status(results)
+    results["result_message"] = _cycle_result_message(results)
+    final_result = results.get("final")
+    if isinstance(final_result, Mapping) and final_result.get("status") == "WAITING_OFFICIAL_REPORT":
+        results["follow_up"] = {
+            "kind": "OFFICIAL_FINAL_RECONCILIATION",
+            "status": "WAITING_OFFICIAL_REPORT",
+            "work_date": final_result.get("work_date"),
+            "blocks_reminder": False,
+        }
     return results
 
 
@@ -1254,12 +1357,31 @@ def _cycle_status(results: Mapping[str, Any]) -> str:
     if reminder_completed and final_status in {"FAILED", "INTERRUPTED"}:
         return "REMINDER_COMPLETED_FINAL_FAILED"
     if reminder_completed and final_status == "WAITING_OFFICIAL_REPORT":
-        return "REMINDER_COMPLETED_FINAL_WAITING"
+        return "COMPLETED"
     if reminder is None and final_status in {"FAILED", "INTERRUPTED"}:
         return "FINAL_FAILED"
     if reminder is None and final_status == "WAITING_OFFICIAL_REPORT":
         return "FINAL_WAITING"
     return "COMPLETED"
+
+
+def _cycle_result_message(results: Mapping[str, Any]) -> str:
+    reminder = results.get("reminder") if isinstance(results.get("reminder"), Mapping) else None
+    final = results.get("final") if isinstance(results.get("final"), Mapping) else None
+    reminder_status = reminder.get("status") if reminder else None
+    final_status = final.get("status") if final else None
+    reminder_completed = reminder_status in COMPLETE_STATUSES or reminder_status == "IDEMPOTENT_SKIP"
+    if reminder_completed and final_status == "WAITING_OFFICIAL_REPORT":
+        return "提醒成功，事后核验等待"
+    if reminder_completed and final_status in {"FAILED", "INTERRUPTED"}:
+        return "提醒成功，事后核验失败"
+    if reminder_status in {"FAILED", "INTERRUPTED"}:
+        return "提醒失败"
+    if reminder_completed:
+        return "提醒成功"
+    if final_status == "WAITING_OFFICIAL_REPORT":
+        return "事后核验等待"
+    return "运行完成"
 
 
 def main(argv: list[str] | None = None) -> int:
