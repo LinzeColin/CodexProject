@@ -1,5 +1,15 @@
 # OWNER_STATUS
 
+## IDS v0.1 Staged Delivery Overlay
+
+- Current task: `IDS-V0_1-STAGE036-REVIEW`
+- Acceptance: `ACC-STAGE-036` locally reviewed after remediation.
+- State: `completed_reviewed_local`; next gate `IDS-STAGE037-P1-GATE`.
+- Upload/app state: `push_allowed=false`; no GitHub upload or app reinstall in this review.
+- Runtime truth: PostgreSQL, row profiling, migration apply, constraint validation, rollback, backup, restore, and recovery smoke were `NOT_EXECUTED`.
+- Data truth: `/Users/linzezhang/Downloads/IDS_MetaData` remained path-only; fake IDS data and fabricated evidence remain forbidden.
+- Evidence: `KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_STAGE_REVIEW.md`.
+
 ## 1. 当前结论
 
 KM_IDSystem 当前治理结论：实现一致性为 `VERIFIED`，方法/实证为 `UNVERIFIED` / `UNVERIFIED`，交付状态为 `UNVERIFIED`；这不是生产上线声明。

@@ -1,0 +1,120 @@
+{
+  "schema_version": "ids.stage031.schema_migration_safety.index.v1",
+  "stage": "STAGE-031",
+  "task_id": "IDS-V0_1-STAGE031-P2",
+  "acceptance_id": "ACC-STAGE-031",
+  "source_schema_change": {
+    "migration_id": "ids_stage030_001_control_plane",
+    "schema_sql_ref": "../postgresql_control_plane/001_control_plane_schema.sql",
+    "schema_index_ref": "../postgresql_control_plane/control_plane_schema_index.json",
+    "change_type": "control_plane_schema_contract",
+    "phase2_policy": "static_contract_validation_only"
+  },
+  "dry_run_guard": {
+    "required": true,
+    "requires_on_error_stop": true,
+    "requires_single_transaction": true,
+    "evidence_kind": "future_dry_run_ref",
+    "runtime_execution_allowed": false
+  },
+  "backup_checkpoint_guard": {
+    "required": true,
+    "checkpoint_ref_type": "future_pre_apply_control_plane_backup_ref",
+    "restore_ref_required": true,
+    "runtime_backup_allowed": false
+  },
+  "validation_guard": {
+    "required": true,
+    "required_checks": [
+      "schema_up_down_markers",
+      "payload_size_constraint",
+      "no_raw_content_constraint",
+      "connection_pool_constraint",
+      "fact_level_constraint",
+      "index_state_constraint"
+    ]
+  },
+  "rollback_guard": {
+    "required": true,
+    "requires_down_migration": true,
+    "requires_on_error_stop": true,
+    "requires_single_transaction": true,
+    "runtime_rollback_allowed": false
+  },
+  "recovery_smoke_guard": {
+    "required": true,
+    "required_refs": [
+      "recovery_checkpoint_ref",
+      "rollback_sql_ref"
+    ],
+    "runtime_smoke_allowed": false
+  },
+  "audit_guard": {
+    "required": true,
+    "required_refs": [
+      "ids_schema_migrations",
+      "ids_audit_events"
+    ],
+    "fact_level_required": "VERIFIED"
+  },
+  "owner_stop_gate": {
+    "destructive_auto_approval_allowed": false,
+    "destructive_owner_confirmation_required": true,
+    "unknown_recovery_risk_blocks_apply": true
+  },
+  "connection_pool_guard": {
+    "max_pool_size": 10,
+    "statement_timeout_ms": 30000,
+    "lock_timeout_ms": 5000,
+    "idle_timeout_ms": 60000
+  },
+  "database_size_guard": {
+    "max_control_plane_payload_bytes": 1048576,
+    "max_single_scalar_text_bytes": 65536,
+    "stores_raw_files": false,
+    "stores_raw_database_rows": false,
+    "stores_large_index_blobs": false
+  },
+  "storage_quality_guard": {
+    "blocked_payloads": [
+      "NO_RAW_DB_CONTENT",
+      "500GB raw files",
+      "raw database rows",
+      "production document bodies",
+      "archive bodies",
+      "OCR full text",
+      "large vector payloads",
+      "report binaries",
+      "secrets"
+    ],
+    "forbidden": [
+      "fake IDS business data",
+      "fake database rows",
+      "fake source documents",
+      "placeholder corpus",
+      "fabricated evidence",
+      "plaintext secrets"
+    ]
+  },
+  "raw_metadata_boundary": {
+    "path": "/Users/linzezhang/Downloads/IDS_MetaData",
+    "path_only": true,
+    "content_access_allowed": false,
+    "recursive_listing_allowed": false,
+    "hashing_allowed": false,
+    "copy_allowed": false,
+    "modify_allowed": false,
+    "dump_allowed": false
+  },
+  "runtime_policy": {
+    "connect_to_postgres": false,
+    "execute_migration": false,
+    "create_database": false,
+    "write_runtime_outputs": false,
+    "read_raw_metadata": false,
+    "install_dependencies": false,
+    "start_services": false,
+    "github_upload": false,
+    "app_reinstall": false
+  }
+}

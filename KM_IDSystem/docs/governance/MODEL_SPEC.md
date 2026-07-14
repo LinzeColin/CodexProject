@@ -3,9 +3,12 @@
 Project: `KM_IDSystem`
 Governance spec version: `1.0.0`
 
-- model_count: 7
-- formula_count: 7
-- parameter_count: 49
+- model_count: 9
+- formula_count: 9
+- parameter_count: 64
+- active_model_count: 7
+- active_formula_count: 7
+- active_parameter_count: 49
 
 ## Canonical Sources
 
@@ -17,6 +20,18 @@ Governance spec version: `1.0.0`
 ## Model Overview
 
 KM_IDSystem has active deterministic industrial rule models for dynamic kiln analysis, fault diagnosis, gear repair, machining advice, generic consulting, risk-level mapping, and an LLM provider router with offline fallback.
+
+`MOD-008`, `FORM-008`, and `PARAM-050` through `PARAM-055` are planned,
+non-production Stage039 control-policy registrations. They are included in the
+total registry counts but excluded from the active counts until production
+calibration and activation evidence exists.
+
+`MOD-009`, `FORM-009`, and `PARAM-056` through `PARAM-064` are planned,
+non-production Stage040 backpressure-policy registrations. They evaluate only
+bounded control metadata and an actual project-filesystem free-space signal;
+they do not activate a queue, worker, retry scheduler, persistent state, or
+production admission path. Their proposed thresholds require production
+calibration under `TASK-OPME-B-001` before activation.
 
 Technology stack components such as FastAPI, React, SQLite, ECharts, and PDF generation are architecture/output components, not models.
 

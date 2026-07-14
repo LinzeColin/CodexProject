@@ -41,6 +41,29 @@ class Stage004LegacyNameScanTests(unittest.TestCase):
         self.assertNotIn("ProductMetaDatabase", matched)
         self.assertNotIn("FinanceMetaDatabase", matched)
 
+    def test_stage039_checker_allows_only_governance_identifiers(self):
+        module = self._load_module()
+        checker_path = (
+            "KM_IDSystem/scripts/check_retry_dead_letter_stage_review.py"
+        )
+
+        self.assertEqual(
+            "allowed_legacy_context",
+            module.classify_hit(
+                checker_path,
+                'task_id = "TASK-OPME-B-001"',
+                "legacy_opme_word",
+            ),
+        )
+        self.assertEqual(
+            "active_display_debt",
+            module.classify_hit(
+                checker_path,
+                'display_name = "OpMe"',
+                "legacy_opme_word",
+            ),
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

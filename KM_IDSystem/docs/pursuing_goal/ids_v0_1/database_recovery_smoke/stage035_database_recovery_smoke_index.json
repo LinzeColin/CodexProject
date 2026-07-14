@@ -1,0 +1,409 @@
+{
+  "schema_version": "ids.stage035.database_recovery_smoke.index.v1",
+  "stage": "STAGE-035",
+  "phase": "Phase 2",
+  "task_id": "IDS-V0_1-STAGE035-P2",
+  "acceptance_id": "ACC-STAGE-035",
+  "local_code": "D06-S006",
+  "domain": "D06 · PostgreSQL 控制面",
+  "entrance": "IDS 系统运营入口",
+  "database_recovery_smoke_contract_id": "ids_stage035_database_recovery_smoke_static_preflight",
+  "contract_state": "STATIC_RECOVERY_PREFLIGHT_CONTRACT_VALID",
+  "source_refs": {
+    "phase1_scope_ref": "../STAGE035_PHASE1_SCOPE_BOUNDARY.md",
+    "stage030_control_plane_schema_ref": "../postgresql_control_plane/001_control_plane_schema.sql",
+    "stage030_control_plane_index_ref": "../postgresql_control_plane/control_plane_schema_index.json",
+    "stage030_control_plane_checker_ref": "../../../../scripts/check_postgresql_control_plane.py",
+    "stage031_migration_safety_index_ref": "../schema_migration_safety/stage031_migration_safety_index.json",
+    "stage031_migration_safety_checker_ref": "../../../../scripts/check_schema_migration_safety.py",
+    "stage032_connection_pool_index_ref": "../database_connection_pool/stage032_connection_pool_index.json",
+    "stage032_connection_pool_checker_ref": "../../../../scripts/check_database_connection_pool.py",
+    "stage033_database_size_guard_index_ref": "../database_size_guard/stage033_database_size_guard_index.json",
+    "stage033_database_size_guard_checker_ref": "../../../../scripts/check_database_size_guard.py",
+    "stage034_data_retention_table_index_ref": "../data_retention_table/stage034_data_retention_table_index.json",
+    "stage034_data_retention_table_checker_ref": "../../../../scripts/check_data_retention_table.py",
+    "raw_data_boundary_ref": "../IDS_METADATA_RAW_DATA_BOUNDARY.md",
+    "phase2_checker_ref": "../../../../scripts/check_database_recovery_smoke.py"
+  },
+  "dependency_contract": {
+    "stage030_schema_version": "ids.stage030.postgresql_control_plane.index.v1",
+    "stage031_schema_version": "ids.stage031.schema_migration_safety.index.v1",
+    "stage032_schema_version": "ids.stage032.database_connection_pool.index.v1",
+    "stage033_schema_version": "ids.stage033.database_size_guard.index.v1",
+    "stage034_schema_version": "ids.stage034.data_retention_table.index.v1",
+    "stage030_migration_id": "ids_stage030_001_control_plane",
+    "stage032_connection_pool_contract_id": "ids_stage032_connection_pool_static_baseline",
+    "stage033_database_size_guard_contract_id": "ids_stage033_database_size_guard_static_slice",
+    "stage034_data_retention_table_contract_id": "ids_stage034_data_retention_table_static_slice",
+    "required_control_plane_tables": [
+      "ids_metadata_sources",
+      "ids_jobs",
+      "ids_documents",
+      "ids_chunks",
+      "ids_evidence_records",
+      "ids_audit_events",
+      "ids_index_versions",
+      "ids_schema_migrations"
+    ]
+  },
+  "metadata_dump_contract": {
+    "owner_authorized_real_dump_required": true,
+    "owner_authorized_real_dump_available": false,
+    "metadata_dump_ref_recorded": false,
+    "dump_content_access_allowed": false,
+    "dump_bytes_committed": false,
+    "dump_path_committed": false,
+    "dump_checksum_computed_in_current_run": false,
+    "fabricated_dump_allowed": false,
+    "fake_rows_allowed": false,
+    "placeholder_corpus_allowed": false,
+    "execution_state": "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_METADATA_DUMP",
+    "identity_requirements": [
+      "owner_approval_ref",
+      "metadata_dump_id",
+      "bounded_content_scope",
+      "source_database_ref",
+      "source_schema_version",
+      "migration_head",
+      "dump_format",
+      "postgres_tool_version",
+      "created_at",
+      "checksum_evidence_ref"
+    ]
+  },
+  "restore_target_contract": {
+    "isolated_non_production_target_required": true,
+    "distinct_from_source_required": true,
+    "production_target_allowed": false,
+    "source_database_mutation_allowed": false,
+    "source_database_migration_allowed": false,
+    "source_database_deletion_allowed": false,
+    "target_creation_allowed_in_current_run": false,
+    "credential_ref_policy": "environment_managed_distinct_restore_target_ref_required",
+    "credential_bearing_config_in_git_allowed": false,
+    "automatic_target_cleanup_allowed": false,
+    "target_cleanup_owner_stop_gate_required": true
+  },
+  "schema_migration_compatibility": {
+    "mode": "reuse_stage030_control_plane_schema_no_new_schema_change",
+    "new_schema_file_created": false,
+    "new_migration_file_created": false,
+    "connection_config_created": false,
+    "migration_executed": false,
+    "backup_executed": false,
+    "restore_executed": false,
+    "schema_diff_executed": false,
+    "dry_run_required_before_future_restore": true,
+    "rollback_required": true,
+    "backup_checkpoint_required": true,
+    "recovery_smoke_required": true,
+    "destructive_migration_allowed": false,
+    "required_validation_checks": [
+      "schema_up_down_markers",
+      "payload_size_constraint",
+      "no_raw_content_constraint",
+      "connection_pool_constraint",
+      "fact_level_constraint",
+      "index_state_constraint"
+    ]
+  },
+  "connection_pool_guard": {
+    "stage032_guard_authoritative": true,
+    "aggregate_max_pool_size": 10,
+    "max_overflow": 0,
+    "backpressure_required": true,
+    "statement_timeout_ms": 30000,
+    "lock_timeout_ms": 5000,
+    "idle_timeout_ms": 60000,
+    "instantiate_connection_pool_allowed_in_current_run": false,
+    "plaintext_dsn_allowed": false,
+    "credential_echo_allowed": false
+  },
+  "database_size_guard": {
+    "stage033_guard_authoritative": true,
+    "raw_large_ocr_payloads_blocked": true,
+    "unbounded_derived_artifacts_blocked": true,
+    "restore_does_not_override_size_guard": true,
+    "runtime_size_query_allowed": false,
+    "vacuum_allowed": false,
+    "reindex_allowed": false
+  },
+  "quality_constraint_guard": {
+    "required_tables_exact": true,
+    "schema_migration_ledger_required": true,
+    "constraint_validation_required": true,
+    "index_validation_required": true,
+    "bounded_real_metadata_count_comparison_required": true,
+    "source_non_interference_required": true,
+    "no_raw_payload_proof_required": true,
+    "chinese_failure_reason_required": true,
+    "runtime_validation_allowed_in_current_run": false
+  },
+  "storage_boundary": {
+    "stores_control_plane_metadata": true,
+    "stores_status_and_state": true,
+    "stores_path_only_refs": true,
+    "stores_audit_and_evidence_refs": true,
+    "stores_migration_and_retention_state": true,
+    "stores_hot_index_metadata": true,
+    "stores_raw_files": false,
+    "stores_raw_database_rows": false,
+    "stores_document_bodies": false,
+    "stores_ocr_full_text": false,
+    "stores_archive_bodies": false,
+    "stores_vector_payloads": false,
+    "stores_report_binaries": false,
+    "stores_raw_log_bodies": false,
+    "stores_unbounded_derived_artifacts": false
+  },
+  "restore_preflight_contract": {
+    "required": true,
+    "required_checks": [
+      "owner_authorized_real_dump",
+      "dump_identity_complete",
+      "checksum_evidence_valid",
+      "dump_format_compatible",
+      "postgres_tool_version_compatible",
+      "schema_version_compatible",
+      "migration_head_compatible",
+      "bounded_storage_scope",
+      "secret_ref_present_without_echo",
+      "isolated_target_identity",
+      "target_capacity_guard"
+    ],
+    "owner_authorized_real_dump_check_currently_passed": false,
+    "execution_ready": false,
+    "execution_state": "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_METADATA_DUMP"
+  },
+  "restore_validation_contract": {
+    "required": true,
+    "required_checks": [
+      "schema_version",
+      "migration_ledger",
+      "required_control_plane_tables",
+      "constraints",
+      "indexes",
+      "bounded_real_metadata_counts",
+      "audit_and_evidence_refs",
+      "health_and_readiness",
+      "no_raw_payloads",
+      "source_non_interference"
+    ],
+    "same_owner_approved_real_dump_evidence_required": true,
+    "fabricated_count_comparison_allowed": false,
+    "fake_row_fixture_allowed": false,
+    "runtime_validation_allowed_in_current_run": false
+  },
+  "rollback_contract": {
+    "fail_closed_required": true,
+    "stop_further_writes_required": true,
+    "isolated_target_quarantine_required": true,
+    "source_preservation_required": true,
+    "rollback_plan_ref_required": true,
+    "post_rollback_verification_required": true,
+    "automatic_target_deletion_allowed": false,
+    "target_cleanup_owner_stop_gate_required": true,
+    "runtime_rollback_allowed_in_current_run": false
+  },
+  "audit_contract": {
+    "event_ref_required": true,
+    "evidence_ref_required": true,
+    "fact_level_required": true,
+    "actor_role_required": true,
+    "state_transition_required": true,
+    "chinese_owner_reason_required": true,
+    "runtime_audit_write_allowed_in_current_run": false
+  },
+  "raw_metadata_boundary": {
+    "path": "/Users/linzezhang/Downloads/IDS_MetaData",
+    "path_only": true,
+    "content_access_allowed": false,
+    "recursive_listing_allowed": false,
+    "hashing_allowed": false,
+    "copy_allowed": false,
+    "modify_allowed": false,
+    "delete_allowed": false,
+    "dump_allowed": false,
+    "scan_allowed": false,
+    "normalize_allowed": false
+  },
+  "real_data_only_guard": {
+    "policy": "Future recovery evidence must use an owner-authorized real metadata dump; current execution remains blocked without one.",
+    "forbidden": [
+      "fake IDS business data",
+      "fake database rows",
+      "fabricated metadata dump",
+      "fake source documents",
+      "placeholder corpus",
+      "fabricated evidence",
+      "plaintext secrets"
+    ]
+  },
+  "phase4_delivery_contract": {
+    "schema_version": "ids.stage035.database_recovery_smoke.delivery_contract.v1",
+    "schema_diff": {
+      "mode": "static_recovery_contract_diff_not_executed",
+      "live_schema_diff_result": "NOT_EXECUTED",
+      "new_schema_file_created": false,
+      "new_migration_file_created": false
+    },
+    "migration_output": {
+      "mode": "static_recovery_migration_output_not_executed",
+      "live_migration_result": "NOT_EXECUTED",
+      "dry_run_required_before_future_restore": true,
+      "rollback_required": true,
+      "backup_checkpoint_required": true,
+      "destructive_migration_allowed": false
+    },
+    "recovery_test_log": {
+      "mode": "static_recovery_test_log_expected_block",
+      "expected_valid_result": "PASS_WITH_EXPECTED_BLOCK",
+      "live_restore_result": "NOT_EXECUTED",
+      "live_healthcheck_result": "NOT_EXECUTED",
+      "execution_ready": false,
+      "execution_state": "BLOCKED_PENDING_OWNER_AUTHORIZED_REAL_METADATA_DUMP"
+    },
+    "destructive_migration_confirmation": {
+      "required": true,
+      "destructive_allowed_by_default": false,
+      "current_contract_value": false,
+      "manual_owner_confirmation_required": true,
+      "owner_message_zh": "任何破坏性 migration 或 restore 必须单独人工确认；当前默认阻断，本阶段没有授权或执行破坏性动作。"
+    },
+    "rollback_steps": [
+      {
+        "step_id": "stop_on_invalid_contract",
+        "required": true,
+        "stop_all_database_actions": true,
+        "owner_message_zh": "若静态合同、场景或 delivery check 任一失败，保持 BLOCKED 并停止所有后续数据库动作。"
+      },
+      {
+        "step_id": "revert_review_scope_only",
+        "required": true,
+        "database_content_rollback_allowed": false,
+        "owner_message_zh": "仅回滚 STAGE-035 Phase 4/review 的 checker、合同、文档、测试和治理记录，不回滚或修改任何数据库内容。"
+      },
+      {
+        "step_id": "preserve_source_database",
+        "required": true,
+        "source_database_mutation_allowed": false,
+        "owner_message_zh": "保持 isolated restore target 与 source database 分离；不得 migration、mutation、truncate、delete 或 overwrite source。"
+      },
+      {
+        "step_id": "quarantine_failed_target",
+        "required": true,
+        "failed_target_quarantine_required": true,
+        "owner_message_zh": "若未来授权 restore 失败，立即停止写入、隔离目标、保存脱敏错误证据，并按 STAGE-031 rollback contract 执行单独 owner 授权的恢复流程。"
+      },
+      {
+        "step_id": "owner_gate_target_cleanup",
+        "required": true,
+        "target_cleanup_owner_stop_gate_required": true,
+        "owner_message_zh": "目标清理或删除不是自动动作，必须遵守 STAGE-034 owner stop gate。"
+      }
+    ],
+    "backup_restore_steps": [
+      {
+        "step_id": "owner_authorized_real_dump",
+        "required": true,
+        "owner_authorized_real_dump_required": true,
+        "owner_message_zh": "未来 run 必须先取得 owner 授权真实 metadata dump identity、bounded scope、checksum evidence 和 approval ref。"
+      },
+      {
+        "step_id": "isolated_target_compatibility",
+        "required": true,
+        "isolated_non_production_target_required": true,
+        "owner_message_zh": "在隔离非生产目标上记录 PostgreSQL tool version、source schema version、migration head 和目标容量检查。"
+      },
+      {
+        "step_id": "dry_run_backup_rollback",
+        "required": true,
+        "dry_run_and_backup_required": true,
+        "owner_message_zh": "任何 migration/restore 前必须完成 dry-run、backup checkpoint 和 rollback plan 验证。"
+      },
+      {
+        "step_id": "managed_secret_ref",
+        "required": true,
+        "plaintext_credential_allowed": false,
+        "owner_message_zh": "凭证只能通过环境管理的 secret ref 提供，不得写入 Git、命令输出或审计正文。"
+      },
+      {
+        "step_id": "isolated_restore_validation",
+        "required": true,
+        "source_database_overwrite_allowed": false,
+        "owner_message_zh": "仅在单独授权 run 中执行 restore，并验证 schema、migration ledger、required tables、constraints、indexes、bounded real metadata counts、health/readiness 和 no-raw-payload。"
+      },
+      {
+        "step_id": "checkpoint_recovery",
+        "required": true,
+        "source_database_preservation_required": true,
+        "owner_message_zh": "失败时隔离目标并从批准 checkpoint 恢复；source database 必须保持不变。"
+      }
+    ],
+    "known_limits": [
+      {
+        "limit_id": "no_owner_authorized_real_dump",
+        "acknowledged": true,
+        "owner_message_zh": "没有 owner 授权真实 metadata dump，因此未验证真实 dump format、checksum、row counts 或业务值。"
+      },
+      {
+        "limit_id": "no_live_postgresql_execution",
+        "acknowledged": true,
+        "owner_message_zh": "未连接 PostgreSQL，未执行 migration dry-run/apply/rollback、backup、restore、schema diff、healthcheck 或 recovery smoke。"
+      },
+      {
+        "limit_id": "static_pass_is_not_readiness",
+        "acknowledged": true,
+        "owner_message_zh": "PASS_WITH_EXPECTED_BLOCK 只证明静态合同正确阻断恢复路径，不代表数据库已恢复、可运行或 production-ready。"
+      },
+      {
+        "limit_id": "no_runtime_artifacts_created",
+        "acknowledged": true,
+        "owner_message_zh": "没有创建 DSN、credential config、restore target、database、runtime output、report、manifest、audit log 或 recovery log file。"
+      },
+      {
+        "limit_id": "raw_metadata_path_only",
+        "acknowledged": true,
+        "owner_message_zh": "原始 metadata 根只记录 path-only 地址，未读取、列出、hash、复制、dump、扫描或派生内容。"
+      },
+      {
+        "limit_id": "stage_review_and_batch_upload_blocked",
+        "acknowledged": true,
+        "owner_message_zh": "STAGE-035 尚未完成独立 stage review；BATCH031_040 upload 和 app reinstall 继续阻断。"
+      }
+    ],
+    "chinese_owner_feedback": "STAGE-035 Phase 4 已形成可执行、可测试、可回滚的静态数据库恢复工程合同交付证据。本阶段未执行真实恢复；无 owner 授权真实 metadata dump，恢复状态继续阻断。下一步只能进入独立 STAGE-035 review，不是 GitHub upload、app reinstall 或 STAGE-036。"
+  },
+  "runtime_policy": {
+    "read_metadata_dump": false,
+    "hash_metadata_dump": false,
+    "copy_metadata_dump": false,
+    "connect_to_postgres": false,
+    "create_restore_target": false,
+    "create_database": false,
+    "create_schema": false,
+    "create_connection_config": false,
+    "execute_pg_dump": false,
+    "execute_pg_restore": false,
+    "execute_psql": false,
+    "execute_migration": false,
+    "execute_backup": false,
+    "execute_restore": false,
+    "execute_schema_diff": false,
+    "execute_healthcheck": false,
+    "execute_constraint_checks": false,
+    "execute_index_checks": false,
+    "execute_row_count_checks": false,
+    "execute_cleanup": false,
+    "write_runtime_outputs": false,
+    "read_raw_metadata": false,
+    "write_raw_metadata": false,
+    "install_dependencies": false,
+    "start_services": false,
+    "github_upload": false,
+    "app_reinstall": false
+  },
+  "next_gate": "IDS-STAGE035-P3-GATE",
+  "github_upload_allowed": false,
+  "app_reinstall_allowed": false
+}

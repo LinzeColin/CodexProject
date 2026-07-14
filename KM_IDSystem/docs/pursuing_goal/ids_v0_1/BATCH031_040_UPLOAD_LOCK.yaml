@@ -1,0 +1,571 @@
+schema_version: "ids.v0_1.batch_upload_lock.v1"
+batch_id: "IDS-V0_1-BATCH-031-040"
+created_at_utc: "2026-07-03T08:32:56Z"
+updated_at_utc: "2026-07-14T11:26:17Z"
+status: "local_batch_upload_gate_passed_pending_github_merge"
+review_task_id: "IDS-V0_1-BATCH-031-040-REVIEW-GATE"
+review_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_REVIEW_GATE.md"
+
+transition_history:
+  batch_upload_gate_state:
+    status: "local_batch_upload_gate_passed_pending_github_merge"
+    current_task_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
+    next_allowed_task_id: "IDS-V0_1-BATCH-031-040-GITHUB-MERGE"
+    github_upload_allowed: true
+  batch_review_state:
+    status: "reviewed_ready_for_upload_no_github_upload"
+    current_task_id: "IDS-V0_1-BATCH-031-040-REVIEW-GATE"
+    next_allowed_task_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
+    github_upload_allowed: false
+  stage040_review_state:
+    status: "stage040_completed_reviewed_local"
+    current_task_id: "IDS-V0_1-STAGE040-REVIEW"
+    next_allowed_task_id: "IDS-V0_1-BATCH-031-040-REVIEW-GATE"
+  stage040_phase4_state:
+    status: "stage040_phase4_completed_review_pending"
+    current_task_id: "IDS-V0_1-STAGE040-P4"
+    next_gate: "IDS-STAGE040-REVIEW-GATE"
+    next_allowed_task_id: "IDS-V0_1-STAGE040-REVIEW"
+  stage040_phase3_state:
+    status: "stage040_phase3_completed"
+    current_task_id: "IDS-V0_1-STAGE040-P3"
+    next_allowed_task_id: "IDS-V0_1-STAGE040-P4"
+  stage040_phase2_state:
+    status: "stage040_phase2_completed"
+    current_task_id: "IDS-V0_1-STAGE040-P2"
+    next_allowed_task_id: "IDS-V0_1-STAGE040-P3"
+  stage040_phase1_state:
+    status: "stage040_phase1_completed"
+    current_task_id: "IDS-V0_1-STAGE040-P1"
+    next_allowed_task_id: "IDS-V0_1-STAGE040-P2"
+  stage040_entry_state:
+    status: "stage039_completed_reviewed_local"
+    current_task_id: "IDS-V0_1-STAGE039-REVIEW"
+    next_allowed_task_id: "IDS-V0_1-STAGE040-P1"
+  stage039_phase4_state:
+    status: "stage039_phase4_completed_review_pending"
+    current_task_id: "IDS-V0_1-STAGE039-P4"
+    next_allowed_task_id: "IDS-V0_1-STAGE039-REVIEW"
+  stage039_phase3_state:
+    status: "stage039_phase3_completed"
+    current_task_id: "IDS-V0_1-STAGE039-P3"
+    next_allowed_task_id: "IDS-V0_1-STAGE039-P4"
+  stage039_phase2_state:
+    status: "stage039_phase2_completed"
+    current_task_id: "IDS-V0_1-STAGE039-P2"
+    next_allowed_task_id: "IDS-V0_1-STAGE039-P3"
+  stage039_phase1_state:
+    status: "stage039_phase1_completed"
+    current_task_id: "IDS-V0_1-STAGE039-P1"
+    next_allowed_task_id: "IDS-V0_1-STAGE039-P2"
+  stage039_entry_state:
+    status: "stage038_completed_reviewed_local"
+    current_task_id: "IDS-V0_1-STAGE038-REVIEW"
+    next_allowed_task_id: "IDS-V0_1-STAGE039-P1"
+  stage038_source_reverified_state:
+    status: "stage038_phase1_source_reverified"
+    current_task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
+    next_allowed_task_id: "IDS-V0_1-STAGE038-P2"
+  stage038_source_limited_state:
+    status: "stage038_phase1_in_progress"
+    current_task_id: "IDS-V0_1-STAGE038-P1"
+    next_allowed_task_id: "IDS-V0_1-STAGE038-P1-SOURCE-REVERIFY"
+  previous_state:
+    status: "stage037_completed_reviewed_local"
+    current_task_id: "IDS-V0_1-STAGE037-REVIEW"
+    next_allowed_task_id: "IDS-V0_1-STAGE038-P1"
+
+repository:
+  owner_repo: "LinzeColin/CodexProject"
+  worktree_path: "/Users/linzezhang/Documents/Codex/main_worktree/CodexProject/KM_IDS"
+  target_project_path: "KM_IDSystem"
+  local_branch: "codex/ids-v0-1-stages-001-010"
+  upstream_policy: "do_not_push_until_batch_complete_reviewed_and_repaired"
+
+scope:
+  version: "v0.1"
+  stage_range: "STAGE-031..STAGE-040"
+  acceptance_range: "ACC-STAGE-031..ACC-STAGE-040"
+  source_index: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/V0_1_STAGE_EXECUTION_INDEX.csv"
+  previous_batch_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH021_030_UPLOAD_LOCK.yaml"
+
+data_boundary:
+  ids_metadata_raw_root: "/Users/linzezhang/Downloads/IDS_MetaData"
+  boundary_record: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+  raw_root_policy: "read-only; do not modify, delete, move, scan, dump, hash, or copy raw database content"
+  real_data_only_policy: "All IDS runtime corpus, database-backed content, analytics inputs, reports, indexes, manifests, and committed examples must use real user-approved data; fake business data and fabricated evidence are forbidden."
+  local_existence_check: "IDS_METADATA_ROOT_EXISTS"
+
+upload_gate:
+  push_allowed: true
+  review_gate: "BATCH031_040_REVIEW_GATE"
+  gate_task_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
+  gate_evidence_ref: "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_GATE.md"
+  precheck_open_prs: 0
+  precheck_open_issues: 0
+  remote_main_precheck_sha: "87825b8429f70cc7c1bc734fcd868c554e14b4ad"
+  local_reviewed_head_sha: "ac07280b03c12a4940491cb595f8a3c6b9d9acc6"
+  merge_base_sha: "387f2bdd1e4cb06d3fced781417f057f854c2901"
+  remote_main_ahead_count: 862
+  local_branch_ahead_count: 52
+  remote_strategy: "push feature branch, create one PR to main, merge, reinstall app entries, verify app/local/GitHub parity, then record terminal main evidence"
+  blocked_until:
+    - "STAGE-031 through STAGE-040 all completed."
+    - "Every completed Stage has durable local evidence."
+    - "Tenth-stage review gate completes and repairs findings."
+    - "Separate batch upload gate runs after review; no single-stage GitHub upload gate."
+    - "App entries are reinstalled only after the whole ten-stage batch is uploaded to GitHub main."
+  github_target: "main"
+  next_batch_review_gate: "IDS-V0_1-BATCH-031-040-REVIEW-GATE"
+  next_batch_upload_gate: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
+
+stage_progress:
+  STAGE-031:
+    status: "completed_reviewed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    review_status: "passed"
+    next_stage: "STAGE-032"
+    next_gate: "IDS-STAGE032-P1-GATE"
+    current_task_id: "IDS-V0_1-STAGE031-REVIEW"
+    acceptance_id: "ACC-STAGE-031"
+    acceptance_status: "reviewed_local_passed"
+    evidence_refs:
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_ENTRY_CONTRACT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_PHASE1_SCOPE_BOUNDARY.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_PHASE2_SCHEMA_MIGRATION_SAFETY_SLICE.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_PHASE3_SCENARIO_VALIDATION.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_PHASE4_CLOSEOUT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_STAGE_REVIEW.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/schema_migration_safety/stage031_migration_safety_index.json"
+      - "KM_IDSystem/scripts/check_schema_migration_safety.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage031_schema_migration_safety.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+  STAGE-032:
+    status: "completed_reviewed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    review_status: "passed"
+    next_stage: "STAGE-033"
+    next_gate: "IDS-STAGE033-P1-GATE"
+    current_task_id: "IDS-V0_1-STAGE032-REVIEW"
+    acceptance_id: "ACC-STAGE-032"
+    acceptance_status: "reviewed_local_passed"
+    evidence_refs:
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_ENTRY_CONTRACT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_PHASE1_SCOPE_BOUNDARY.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_PHASE2_CONNECTION_POOL_SLICE.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_PHASE3_SCENARIO_VALIDATION.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_PHASE4_CLOSEOUT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_STAGE_REVIEW.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_connection_pool/stage032_connection_pool_index.json"
+      - "KM_IDSystem/scripts/check_database_connection_pool.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage032_database_connection_pool.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+  STAGE-033:
+    status: "completed_reviewed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    review_status: "passed"
+    next_stage: "STAGE-034"
+    next_gate: "IDS-STAGE034-P1-GATE"
+    current_task_id: "IDS-V0_1-STAGE033-REVIEW"
+    acceptance_id: "ACC-STAGE-033"
+    acceptance_status: "reviewed_local_passed"
+    evidence_refs:
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_ENTRY_CONTRACT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_PHASE1_SCOPE_BOUNDARY.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_PHASE2_DATABASE_SIZE_GUARD_SLICE.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_PHASE3_SCENARIO_VALIDATION.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_PHASE4_CLOSEOUT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_STAGE_REVIEW.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_size_guard/stage033_database_size_guard_index.json"
+      - "KM_IDSystem/scripts/check_database_size_guard.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage033_database_size_guard.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+  STAGE-034:
+    status: "completed_reviewed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    review_status: "passed"
+    next_stage: "STAGE-035"
+    next_gate: "IDS-STAGE035-P1-GATE"
+    current_task_id: "IDS-V0_1-STAGE034-REVIEW"
+    acceptance_id: "ACC-STAGE-034"
+    acceptance_status: "reviewed_local_passed"
+    evidence_refs:
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE034_ENTRY_CONTRACT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE034_PHASE1_SCOPE_BOUNDARY.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE034_PHASE2_DATA_RETENTION_TABLE_SLICE.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE034_PHASE3_SCENARIO_VALIDATION.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE034_PHASE4_CLOSEOUT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE034_STAGE_REVIEW.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/data_retention_table/stage034_data_retention_table_index.json"
+      - "KM_IDSystem/scripts/check_data_retention_table.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage034_data_retention_table.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+  STAGE-035:
+    status: "completed_reviewed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    review_status: "passed"
+    next_stage: "STAGE-036"
+    next_gate: "IDS-STAGE036-P1-GATE"
+    current_task_id: "IDS-V0_1-STAGE035-REVIEW"
+    acceptance_id: "ACC-STAGE-035"
+    acceptance_status: "reviewed_local_passed"
+    evidence_refs:
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE035_ENTRY_CONTRACT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE035_PHASE1_SCOPE_BOUNDARY.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE035_PHASE2_DATABASE_RECOVERY_SMOKE_SLICE.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE035_PHASE3_SCENARIO_VALIDATION.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE035_PHASE4_CLOSEOUT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE035_STAGE_REVIEW.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_recovery_smoke/stage035_database_recovery_smoke_index.json"
+      - "KM_IDSystem/scripts/check_database_recovery_smoke.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage035_database_recovery_smoke.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+  STAGE-036:
+    status: "completed_reviewed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    review_status: "passed"
+    next_stage: "STAGE-037"
+    next_gate: "IDS-STAGE037-P1-GATE"
+    current_task_id: "IDS-V0_1-STAGE036-REVIEW"
+    acceptance_id: "ACC-STAGE-036"
+    acceptance_status: "reviewed_local_passed"
+    evidence_refs:
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_ENTRY_CONTRACT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_PHASE1_SCOPE_BOUNDARY.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_PHASE2_DATABASE_QUALITY_CONSTRAINTS_SLICE.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_PHASE3_SCENARIO_VALIDATION.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_PHASE4_CLOSEOUT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_STAGE_REVIEW.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_quality_constraints/stage036_database_quality_constraints_index.json"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_quality_constraints/002_database_quality_constraints.sql"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/database_quality_constraints/stage036_quality_profile_queries.json"
+      - "KM_IDSystem/scripts/run_stage036_migration_section.py"
+      - "KM_IDSystem/scripts/check_database_quality_constraints.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage036_database_quality_constraints.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+  STAGE-037:
+    status: "completed_reviewed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    review_status: "passed"
+    next_stage: "STAGE-038"
+    next_gate: "IDS-STAGE038-P1-GATE"
+    current_task_id: "IDS-V0_1-STAGE037-REVIEW"
+    acceptance_id: "ACC-STAGE-037"
+    acceptance_status: "reviewed_local_passed"
+    evidence_refs:
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_ENTRY_CONTRACT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE1_SCOPE_BOUNDARY.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE2_JOB_STATE_MODEL_SLICE.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE3_ADVERSARIAL_SCENARIOS.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_PHASE4_CLOSEOUT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_STAGE_REVIEW.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/job_state_model/stage037_job_state_model_index.json"
+      - "KM_IDSystem/scripts/check_job_state_model.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage037_job_state_model.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+  STAGE-038:
+    status: "completed_reviewed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    review_status: "passed"
+    next_stage: "STAGE-039"
+    next_gate: "IDS-STAGE039-P1-GATE"
+    current_task_id: "IDS-V0_1-STAGE038-REVIEW"
+    acceptance_id: "ACC-STAGE-038"
+    acceptance_status: "reviewed_local_passed"
+    source_verification_status: "SOURCE_VERIFIED"
+    source_reverification_gate_status: "passed"
+    phase2_entry_authorized: true
+    source_archive_path: "/Users/linzezhang/Downloads/IDS_Taskpack_v0_1_only_中文修订版.zip"
+    source_archive_sha256: "55b782e338610aab6361b7945bb5e290ba60038a06cc765c7c2da801734db6d3"
+    source_member: "IDS_v0_1_Final_Chinese_Revised/stages/STAGE-038_Worker队列基线.md"
+    source_member_match_count: 1
+    source_member_integrity: "OK"
+    source_member_sha256: "613acde3cc8f9b8fdc267eb1b0f3076fbce6e858a0d00c3840a2bd730faa7634"
+    roadmap_sha256: "a193fd2c44c51d634bf7887a1a6baf7e5199d9a8535e4211e35e97588e2e21a6"
+    instructions_sha256: "ce456e06136d5ecc56cd7c9dc926abb5894817dda87bf7667588bf85211794f8"
+    reconciliation_status: "passed"
+    source_reverification_required_before_phase2: false
+    independent_review_status: "passed"
+    evidence_refs:
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_ENTRY_CONTRACT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE1_WORKER_QUEUE_SCOPE_BOUNDARY.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE1_SOURCE_REVERIFICATION.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE1_SOURCE_REVERIFICATION_REVIEW.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE2_ASYNC_WORKER_QUEUE_SLICE.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE3_WORKER_QUEUE_SCENARIOS.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_PHASE4_CLOSEOUT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_STAGE_REVIEW.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_baseline_index.json"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_scenarios.json"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/worker_queue_baseline/stage038_worker_queue_delivery_contract.json"
+      - "KM_IDSystem/scripts/check_worker_queue_baseline.py"
+      - "KM_IDSystem/scripts/check_worker_queue_scenarios.py"
+      - "KM_IDSystem/scripts/check_worker_queue_delivery.py"
+      - "KM_IDSystem/scripts/check_worker_queue_stage_review.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_baseline.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_runtime.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_scenarios.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_delivery.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_review.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+  STAGE-039:
+    status: "completed_reviewed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    review_status: "passed"
+    next_stage: "STAGE-040"
+    next_gate: "IDS-STAGE040-P1-GATE"
+    current_task_id: "IDS-V0_1-STAGE039-REVIEW"
+    acceptance_id: "ACC-STAGE-039"
+    acceptance_status: "reviewed_local_passed"
+    source_verification_status: "SOURCE_VERIFIED"
+    phase2_entry_authorized: true
+    phase3_entry_authorized: true
+    phase4_entry_authorized: true
+    source_archive_path: "/Users/linzezhang/Downloads/IDS_Taskpack_v0_1_only_中文修订版.zip"
+    source_archive_sha256: "55b782e338610aab6361b7945bb5e290ba60038a06cc765c7c2da801734db6d3"
+    source_member: "IDS_v0_1_Final_Chinese_Revised/stages/STAGE-039_重试与死信策略.md"
+    source_member_match_count: 1
+    source_member_integrity: "OK"
+    source_member_sha256: "504caf72a6aeab67a650b4b096e728f03269f6ca8798f6e8a5c51210c8ddd7d9"
+    roadmap_sha256: "a193fd2c44c51d634bf7887a1a6baf7e5199d9a8535e4211e35e97588e2e21a6"
+    instructions_sha256: "ce456e06136d5ecc56cd7c9dc926abb5894817dda87bf7667588bf85211794f8"
+    retry_policy_contract_id: "ids.retry_dead_letter.v0_1.p2"
+    policy_version: "ids.retry_policy.v0_1.stage039.p2"
+    phase2_contract_state: "PHASE2_ISOLATED_SLICE_ENABLED_PRODUCTION_DISABLED"
+    phase3_contract_state: "PHASE3_SCENARIOS_ENABLED_PRODUCTION_DISABLED"
+    contract_state: "STAGE_REVIEW_COMPLETED_PRODUCTION_DISABLED"
+    numeric_policy_values_assigned: true
+    max_retries: 2
+    backoff_schedule_seconds:
+      - 5
+      - 30
+    jitter_policy: "DETERMINISTIC_BOUNDED_HASH_JITTER_V1"
+    isolated_slice_valid: true
+    scenario_contract_id: "ids.retry_dead_letter.v0_1.p3.scenarios"
+    scenario_validation_valid: true
+    scenario_count: 10
+    passed_scenario_count: 10
+    delivery_contract_schema: "ids.stage039.retry_dead_letter.phase4.delivery.v1"
+    delivery_contract_valid: true
+    delivery_result: "PASS_ISOLATED_CLOSEOUT_PRODUCTION_DISABLED"
+    stage_review_status: "completed_reviewed_local"
+    required_job_type_count: 8
+    required_job_state_count: 11
+    required_transition_count: 21
+    automatic_retry_eligible_safe_error_code_count: 2
+    successful_automatic_recovery_case_count: 0
+    whole_stage_review_performed: true
+    independent_review_status: "passed"
+    actual_worker_exception_performed: true
+    actual_disk_observation_performed: true
+    process_termination_performed: false
+    physical_drive_removal_performed: false
+    disk_allocation_performed: false
+    external_api_call_performed: false
+    cleanup_runtime_performed: false
+    protected_ref_delete_performed: false
+    production_runtime_activation_performed: false
+    persistent_queue_write_performed: false
+    database_connection_performed: false
+    raw_metadata_content_accessed: false
+    fake_ids_business_data_used: false
+    evidence_refs:
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_ENTRY_CONTRACT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE1_RETRY_DEAD_LETTER_SCOPE_BOUNDARY.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_policy_contract.json"
+      - "KM_IDSystem/scripts/check_retry_dead_letter_policy.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_policy.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE2_RETRY_DEAD_LETTER_SLICE.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_runtime_contract.json"
+      - "KM_IDSystem/scripts/check_retry_dead_letter_runtime.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE3_SCENARIO_VALIDATION.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_scenarios.json"
+      - "KM_IDSystem/scripts/check_retry_dead_letter_scenarios.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_scenarios.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_PHASE4_CLOSEOUT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/retry_dead_letter/stage039_retry_dead_letter_delivery_contract.json"
+      - "KM_IDSystem/scripts/check_retry_dead_letter_delivery.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_delivery.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_STAGE_REVIEW.md"
+      - "KM_IDSystem/scripts/check_retry_dead_letter_stage_review.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_review.py"
+      - "KM_IDSystem/docs/governance/MODEL_SPEC.md"
+      - "KM_IDSystem/docs/governance/project.yaml"
+      - "KM_IDSystem/docs/governance/model_registry.yaml"
+      - "KM_IDSystem/docs/governance/formula_registry.yaml"
+      - "KM_IDSystem/docs/governance/parameter_registry.csv"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+  STAGE-040:
+    status: "completed_reviewed_local"
+    completed_phases:
+      - "Phase 1"
+      - "Phase 2"
+      - "Phase 3"
+      - "Phase 4"
+    review_status: "passed"
+    next_phase: "batch_review_gate"
+    next_gate: "IDS-V0_1-BATCH-031-040-REVIEW-GATE"
+    current_task_id: "IDS-V0_1-STAGE040-REVIEW"
+    acceptance_id: "ACC-STAGE-040"
+    acceptance_status: "reviewed_local_passed"
+    source_verification_status: "SOURCE_VERIFIED"
+    phase2_entry_authorized: true
+    phase3_entry_authorized: true
+    phase4_entry_authorized: true
+    source_archive_path: "/Users/linzezhang/Downloads/IDS_Taskpack_v0_1_only_中文修订版.zip"
+    source_archive_sha256: "55b782e338610aab6361b7945bb5e290ba60038a06cc765c7c2da801734db6d3"
+    source_member: "IDS_v0_1_Final_Chinese_Revised/stages/STAGE-040_反压策略.md"
+    source_member_match_count: 1
+    source_member_integrity: "OK"
+    source_member_sha256: "f0ef128467300d7541796f8d51caca673f838cac2552eba2e415a94a07af614d"
+    roadmap_sha256: "a193fd2c44c51d634bf7887a1a6baf7e5199d9a8535e4211e35e97588e2e21a6"
+    instructions_sha256: "ce456e06136d5ecc56cd7c9dc926abb5894817dda87bf7667588bf85211794f8"
+    backpressure_policy_contract_id: "ids.backpressure_policy.v0_1.stage040.p2"
+    policy_version: "ids.backpressure_policy.v0_1.stage040.p2"
+    phase2_contract_state: "PHASE2_ISOLATED_DECISION_SLICE_ENABLED_PRODUCTION_DISABLED"
+    contract_state: "REVIEWED_LOCAL_PRODUCTION_DISABLED"
+    parameter_fact_level: "PROPOSED"
+    production_calibrated: false
+    production_calibration_task_id: "TASK-OPME-B-001"
+    numeric_policy_values_assigned: true
+    queue_soft_pressure_threshold: 2
+    queue_hard_capacity_threshold: 4
+    disk_free_bytes_threshold: 1073741824
+    disk_reserve_bytes: 536870912
+    external_api_budget_window_seconds: 60
+    queue_low_watermark: 1
+    observation_ttl_seconds: 30
+    per_job_type_concurrency_limit: 1
+    admission_rate_limit_per_window: 4
+    isolated_slice_valid: true
+    scenario_contract_id: "ids.backpressure_policy.v0_1.stage040.p3.scenarios"
+    scenario_validation_valid: true
+    scenario_count: 8
+    passed_scenario_count: 8
+    delivery_contract_schema: "ids.stage040.backpressure.phase4.delivery.v1"
+    delivery_contract_valid: true
+    delivery_result: "PASS_ISOLATED_CLOSEOUT_PRODUCTION_DISABLED"
+    stage_review_schema: "ids.stage040.backpressure.stage_review.v1"
+    stage_review_status: "completed_reviewed_local"
+    stage_review_result: "PASS_REVIEWED_LOCAL_PRODUCTION_DISABLED"
+    review_finding_count: 3
+    review_critical_finding_count: 1
+    review_important_finding_count: 2
+    review_minor_finding_count: 0
+    review_findings_repaired: true
+    required_job_type_count: 8
+    required_job_state_count: 11
+    required_terminal_state_count: 4
+    required_transition_count: 21
+    required_pressure_signal_count: 7
+    failure_retry_log_attempt_count: 3
+    failure_retry_log_retry_count: 2
+    automatic_recovery_eligible_case_count: 0
+    successful_automatic_recovery_case_count: 0
+    actual_isolated_worker_exception_performed: true
+    actual_project_disk_observation_performed: true
+    stage038_isolated_worker_exception_replayed: true
+    reviewed_control_lock_proof_replayed: true
+    reviewed_failure_retry_log_replayed: true
+    reviewed_transport_shutdown_replayed: true
+    backpressure_decision_runtime_performed: true
+    process_termination_performed: false
+    physical_drive_removal_performed: false
+    disk_allocation_performed: false
+    external_api_call_performed: false
+    protected_ref_delete_performed: false
+    production_lock_runtime_performed: false
+    crash_recovery_runtime_performed: false
+    production_runtime_activation_performed: false
+    queue_runtime_performed: false
+    worker_runtime_performed: false
+    retry_scheduler_performed: false
+    lock_runtime_performed: false
+    automatic_resume_performed: false
+    cleanup_runtime_performed: false
+    whole_stage_review_performed: true
+    batch_review_performed: false
+    database_connection_performed: false
+    raw_metadata_content_accessed: false
+    fake_ids_business_data_used: false
+    evidence_refs:
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_ENTRY_CONTRACT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE1_BACKPRESSURE_SCOPE_BOUNDARY.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_policy_contract.json"
+      - "KM_IDSystem/scripts/check_backpressure_policy.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_policy.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE2_BACKPRESSURE_DECISION_SLICE.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_runtime_contract.json"
+      - "KM_IDSystem/scripts/check_backpressure_runtime.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_runtime.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE3_SCENARIO_VALIDATION.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_scenarios.json"
+      - "KM_IDSystem/scripts/check_backpressure_scenarios.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_scenarios.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_PHASE4_CLOSEOUT.md"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/backpressure_policy/stage040_backpressure_delivery_contract.json"
+      - "KM_IDSystem/scripts/check_backpressure_delivery.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_delivery.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_STAGE_REVIEW.md"
+      - "KM_IDSystem/scripts/check_backpressure_stage_review.py"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_review.py"
+      - "KM_IDSystem/docs/governance/MODEL_SPEC.md"
+      - "KM_IDSystem/docs/governance/project.yaml"
+      - "KM_IDSystem/docs/governance/model_registry.yaml"
+      - "KM_IDSystem/docs/governance/formula_registry.yaml"
+      - "KM_IDSystem/docs/governance/parameter_registry.csv"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+      - "KM_IDSystem/docs/pursuing_goal/ids_v0_1/IDS_METADATA_RAW_DATA_BOUNDARY.md"
+
+decision:
+  current_task_id: "IDS-V0_1-BATCH-031-040-UPLOAD-GATE"
+  next_allowed_task_id: "IDS-V0_1-BATCH-031-040-GITHUB-MERGE"
+  github_upload_allowed: true
+  current_run: "The separate BATCH031-040 upload gate passed locally after confirming the independent review, zero pre-existing open PRs/issues, no KM_IDSystem changes on remote main since the merge base, preserved owner dirty paths, and the path-only raw metadata boundary. The only authorized next action is feature-branch push plus PR merge; app reinstall and terminal evidence remain pending."
+  no_upload_reason: "NONE for the reviewed batch branch; direct pre-merge HEAD:main push remains prohibited and STAGE-041 remains out of scope."

@@ -1,0 +1,282 @@
+{
+  "schema_version": "ids.v0_1.batch031_040.review_contract.v1",
+  "batch_id": "IDS-V0_1-BATCH-031-040",
+  "task_id": "IDS-V0_1-BATCH-031-040-REVIEW-GATE",
+  "stage_range": "STAGE-031..STAGE-040",
+  "acceptance_range": "ACC-STAGE-031..ACC-STAGE-040",
+  "source_bindings": {
+    "taskpack_archive": {
+      "path": "/Users/linzezhang/Downloads/IDS_Taskpack_v0_1_only_中文修订版.zip",
+      "sha256": "55b782e338610aab6361b7945bb5e290ba60038a06cc765c7c2da801734db6d3"
+    },
+    "roadmap": {
+      "path": "/Users/linzezhang/Downloads/IDS_Codex开发Roadmap_v0_1_only_中文修订版.txt",
+      "sha256": "a193fd2c44c51d634bf7887a1a6baf7e5199d9a8535e4211e35e97588e2e21a6"
+    },
+    "instructions": {
+      "path": "/Users/linzezhang/Downloads/IDS_Codex使用说明_v0_1_only_中文修订版.txt",
+      "sha256": "ce456e06136d5ecc56cd7c9dc926abb5894817dda87bf7667588bf85211794f8"
+    },
+    "metadata_path_only_boundary": {
+      "path": "/Users/linzezhang/Downloads/IDS_MetaData",
+      "content_access_allowed": false
+    }
+  },
+  "stage_reviews": [
+    {
+      "stage_id": "STAGE-031",
+      "acceptance_id": "ACC-STAGE-031",
+      "status": "completed_reviewed_local",
+      "review_status": "passed",
+      "review_task_id": "IDS-V0_1-STAGE031-REVIEW",
+      "source_member": "IDS_v0_1_Final_Chinese_Revised/stages/STAGE-031_Schema迁移安全.md",
+      "source_member_sha256": "17a91f01a284d4046a0a17f17f02a5be60b2c351b82a91c87c9c75106800be88",
+      "review_artifact_ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE031_STAGE_REVIEW.md",
+      "review_artifact_sha256": "6030bdc7534e8e57c60c981928c392a680241cb61e0bdd362d54d3d8a561f558",
+      "checker_ref": "KM_IDSystem/scripts/check_schema_migration_safety.py",
+      "test_refs": [
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage031_schema_migration_safety.py"
+      ]
+    },
+    {
+      "stage_id": "STAGE-032",
+      "acceptance_id": "ACC-STAGE-032",
+      "status": "completed_reviewed_local",
+      "review_status": "passed",
+      "review_task_id": "IDS-V0_1-STAGE032-REVIEW",
+      "source_member": "IDS_v0_1_Final_Chinese_Revised/stages/STAGE-032_数据库连接与连接池基线.md",
+      "source_member_sha256": "a780cbf5eaf4b565dc0f0e7da1c503275bfa4e066d3409f8a258f13f09a0035a",
+      "review_artifact_ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE032_STAGE_REVIEW.md",
+      "review_artifact_sha256": "5a7181580397560ab9743cda30f1fcbb12d99183ec7fb54e7d57ae4e2d461a4e",
+      "checker_ref": "KM_IDSystem/scripts/check_database_connection_pool.py",
+      "test_refs": [
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage032_database_connection_pool.py"
+      ]
+    },
+    {
+      "stage_id": "STAGE-033",
+      "acceptance_id": "ACC-STAGE-033",
+      "status": "completed_reviewed_local",
+      "review_status": "passed",
+      "review_task_id": "IDS-V0_1-STAGE033-REVIEW",
+      "source_member": "IDS_v0_1_Final_Chinese_Revised/stages/STAGE-033_数据库体积护栏.md",
+      "source_member_sha256": "454efae78a2a493bce9af351384a0d0d634c197f32d0936d8466382d6b67f777",
+      "review_artifact_ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE033_STAGE_REVIEW.md",
+      "review_artifact_sha256": "5e6fe12b66c660485fbdbe61152879e8a02455efd64981c34939f77ba00797a0",
+      "checker_ref": "KM_IDSystem/scripts/check_database_size_guard.py",
+      "test_refs": [
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage033_database_size_guard.py"
+      ]
+    },
+    {
+      "stage_id": "STAGE-034",
+      "acceptance_id": "ACC-STAGE-034",
+      "status": "completed_reviewed_local",
+      "review_status": "passed",
+      "review_task_id": "IDS-V0_1-STAGE034-REVIEW",
+      "source_member": "IDS_v0_1_Final_Chinese_Revised/stages/STAGE-034_数据保留表.md",
+      "source_member_sha256": "af3196bb6ce76bbf22888abbb8c178b3deb0570e6cd2e19235853bac649b818d",
+      "review_artifact_ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE034_STAGE_REVIEW.md",
+      "review_artifact_sha256": "2dd48282459cb776010ebe08d22bbc293c2163a7e60f472c4625fdd9f40947bd",
+      "checker_ref": "KM_IDSystem/scripts/check_data_retention_table.py",
+      "test_refs": [
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage034_data_retention_table.py"
+      ]
+    },
+    {
+      "stage_id": "STAGE-035",
+      "acceptance_id": "ACC-STAGE-035",
+      "status": "completed_reviewed_local",
+      "review_status": "passed",
+      "review_task_id": "IDS-V0_1-STAGE035-REVIEW",
+      "source_member": "IDS_v0_1_Final_Chinese_Revised/stages/STAGE-035_数据库恢复冒烟测试.md",
+      "source_member_sha256": "2bb4847b6514e63d8f8e07be5c890e05b5d0875cd206ccf9e82b21a6ebccca62",
+      "review_artifact_ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE035_STAGE_REVIEW.md",
+      "review_artifact_sha256": "4ad6201cdd25cc91bb2e885dd987e1784f17bd868521e991fbe425f68221aac9",
+      "checker_ref": "KM_IDSystem/scripts/check_database_recovery_smoke.py",
+      "test_refs": [
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage035_database_recovery_smoke.py"
+      ]
+    },
+    {
+      "stage_id": "STAGE-036",
+      "acceptance_id": "ACC-STAGE-036",
+      "status": "completed_reviewed_local",
+      "review_status": "passed",
+      "review_task_id": "IDS-V0_1-STAGE036-REVIEW",
+      "source_member": "IDS_v0_1_Final_Chinese_Revised/stages/STAGE-036_数据库质量约束.md",
+      "source_member_sha256": "13037f63e370759fcf0411a062a4b74086fa9ce1ab1410ed443c4ba171450a7b",
+      "review_artifact_ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE036_STAGE_REVIEW.md",
+      "review_artifact_sha256": "f286a75418ee65df7caae89e4d1966391508f30c7b53ff61be2645a3ffb6ddde",
+      "checker_ref": "KM_IDSystem/scripts/check_database_quality_constraints.py",
+      "test_refs": [
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage036_database_quality_constraints.py"
+      ]
+    },
+    {
+      "stage_id": "STAGE-037",
+      "acceptance_id": "ACC-STAGE-037",
+      "status": "completed_reviewed_local",
+      "review_status": "passed",
+      "review_task_id": "IDS-V0_1-STAGE037-REVIEW",
+      "source_member": "IDS_v0_1_Final_Chinese_Revised/stages/STAGE-037_任务状态模型.md",
+      "source_member_sha256": "ab1296ab690e445f2ae915ff508d68e9fac40c888cd9ce851bfcc0cf5ce77dc2",
+      "review_artifact_ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE037_STAGE_REVIEW.md",
+      "review_artifact_sha256": "73ed6ff41263294d92f0b26bcf02473d71fec5d1ff4cf9ae514d1847c157540c",
+      "checker_ref": "KM_IDSystem/scripts/check_job_state_model.py",
+      "test_refs": [
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage037_job_state_model.py"
+      ]
+    },
+    {
+      "stage_id": "STAGE-038",
+      "acceptance_id": "ACC-STAGE-038",
+      "status": "completed_reviewed_local",
+      "review_status": "passed",
+      "review_task_id": "IDS-V0_1-STAGE038-REVIEW",
+      "source_member": "IDS_v0_1_Final_Chinese_Revised/stages/STAGE-038_Worker队列基线.md",
+      "source_member_sha256": "613acde3cc8f9b8fdc267eb1b0f3076fbce6e858a0d00c3840a2bd730faa7634",
+      "review_artifact_ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE038_STAGE_REVIEW.md",
+      "review_artifact_sha256": "5bb4cb3382f97ded9228d278c4cfb34fc5f0a65b8858263ed0c9bbd6c035eb04",
+      "checker_ref": "KM_IDSystem/scripts/check_worker_queue_stage_review.py",
+      "test_refs": [
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_baseline.py",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_runtime.py",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_scenarios.py",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_delivery.py",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage038_worker_queue_review.py"
+      ]
+    },
+    {
+      "stage_id": "STAGE-039",
+      "acceptance_id": "ACC-STAGE-039",
+      "status": "completed_reviewed_local",
+      "review_status": "passed",
+      "review_task_id": "IDS-V0_1-STAGE039-REVIEW",
+      "source_member": "IDS_v0_1_Final_Chinese_Revised/stages/STAGE-039_重试与死信策略.md",
+      "source_member_sha256": "504caf72a6aeab67a650b4b096e728f03269f6ca8798f6e8a5c51210c8ddd7d9",
+      "review_artifact_ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE039_STAGE_REVIEW.md",
+      "review_artifact_sha256": "32e621db9d7d4ad87ff4f6788e1de22d7ada9c0f57ce756a76a9608a864c4b9b",
+      "checker_ref": "KM_IDSystem/scripts/check_retry_dead_letter_stage_review.py",
+      "test_refs": [
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_policy.py",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_runtime.py",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_scenarios.py",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_delivery.py",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage039_retry_dead_letter_review.py"
+      ]
+    },
+    {
+      "stage_id": "STAGE-040",
+      "acceptance_id": "ACC-STAGE-040",
+      "status": "completed_reviewed_local",
+      "review_status": "passed",
+      "review_task_id": "IDS-V0_1-STAGE040-REVIEW",
+      "source_member": "IDS_v0_1_Final_Chinese_Revised/stages/STAGE-040_反压策略.md",
+      "source_member_sha256": "f0ef128467300d7541796f8d51caca673f838cac2552eba2e415a94a07af614d",
+      "review_artifact_ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/STAGE040_STAGE_REVIEW.md",
+      "review_artifact_sha256": "ea1a6dacacc862d66de60883dd10ee2dbf23d3adc72efbf9586ba2ccf6c223f0",
+      "checker_ref": "KM_IDSystem/scripts/check_backpressure_stage_review.py",
+      "test_refs": [
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_policy.py",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_runtime.py",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_scenarios.py",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_delivery.py",
+        "KM_IDSystem/docs/pursuing_goal/ids_v0_1/tests/test_stage040_backpressure_review.py"
+      ]
+    }
+  ],
+  "cross_stage_contract": {
+    "state_registry_owner": "STAGE-037",
+    "state_model_version": "ids.job_state.v1",
+    "job_types": [
+      "IMPORT",
+      "ARCHIVE",
+      "PARSE",
+      "OCR",
+      "CHUNK",
+      "EMBED",
+      "INDEX",
+      "REPORT"
+    ],
+    "job_states": [
+      "CREATED",
+      "QUEUED",
+      "CLAIMED",
+      "RUNNING",
+      "PAUSE_REQUESTED",
+      "PAUSED",
+      "RETRY_WAIT",
+      "SUCCEEDED",
+      "FAILED",
+      "DEAD_LETTERED",
+      "CANCELLED"
+    ],
+    "terminal_states": [
+      "SUCCEEDED",
+      "FAILED",
+      "DEAD_LETTERED",
+      "CANCELLED"
+    ],
+    "allowed_transition_count": 21,
+    "runtime_ownership": {
+      "queue_and_worker_transport": "STAGE-038",
+      "retry_and_dead_letter_policy": "STAGE-039",
+      "backpressure_decision_policy": "STAGE-040",
+      "lock_lease_and_fencing_runtime": "STAGE-041",
+      "automatic_resume_runtime": "STAGE-042",
+      "crash_recovery_runtime": "STAGE-043",
+      "cleanup_execution_runtime": "STAGE-044"
+    },
+    "production_runtime_allowed": false
+  },
+  "governance_gate": {
+    "review_status": "reviewed_ready_for_upload_no_github_upload",
+    "reviewed_stage_count": 10,
+    "next_gate": "IDS-V0_1-BATCH-031-040-UPLOAD-GATE",
+    "push_allowed": false,
+    "github_upload_allowed": false,
+    "app_reinstall_allowed": false,
+    "stage041_started": false,
+    "single_stage_upload_gate_allowed": false
+  },
+  "findings": [
+    {
+      "finding_id": "BATCH031-040-REVIEW-F1",
+      "severity": "Critical",
+      "status": "repaired",
+      "summary": "No machine-checkable ten-stage review gate bound all approved sources, reviewed artifacts, cross-stage interfaces, and Git-index state before upload eligibility.",
+      "repair_ref": "KM_IDSystem/scripts/check_batch031_040_review.py"
+    },
+    {
+      "finding_id": "BATCH031-040-REVIEW-F2",
+      "severity": "Important",
+      "status": "repaired",
+      "summary": "STAGE-031 through STAGE-037 lacked one uniform batch-level Git-index and source-member integrity layer comparable to later review checkers.",
+      "repair_ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/batch_review/stage031_040_batch_review_contract.json"
+    },
+    {
+      "finding_id": "BATCH031-040-REVIEW-F3",
+      "severity": "Important",
+      "status": "repaired",
+      "summary": "The reviewed-no-upload batch transition, event semantics, and separate upload-gate route did not yet exist for BATCH-031-040.",
+      "repair_ref": "KM_IDSystem/docs/pursuing_goal/ids_v0_1/BATCH031_040_UPLOAD_LOCK.yaml"
+    }
+  ],
+  "truth_contract": {
+    "taskpack_source_read_performed": true,
+    "ids_business_source_read_performed": false,
+    "raw_metadata_content_accessed": false,
+    "fake_ids_business_data_used": false,
+    "production_runtime_activation_performed": false,
+    "database_connection_performed": false,
+    "schema_change_performed": false,
+    "runtime_output_written": false,
+    "github_upload_performed": false,
+    "pull_request_performed": false,
+    "merge_performed": false,
+    "issue_mutation_performed": false,
+    "app_reinstall_performed": false,
+    "stage041_started": false
+  }
+}

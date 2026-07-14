@@ -1,0 +1,242 @@
+{
+  "schema_version": "ids.stage034.data_retention_table.index.v1",
+  "stage": "STAGE-034",
+  "phase": "Phase 2",
+  "task_id": "IDS-V0_1-STAGE034-P2",
+  "acceptance_id": "ACC-STAGE-034",
+  "local_code": "D06-S005",
+  "domain": "D06 · PostgreSQL 控制面",
+  "entrance": "IDS 系统运营入口",
+  "data_retention_table_contract_id": "ids_stage034_data_retention_table_static_slice",
+  "source_refs": {
+    "phase1_scope_ref": "../STAGE034_PHASE1_SCOPE_BOUNDARY.md",
+    "stage030_control_plane_schema_ref": "../postgresql_control_plane/001_control_plane_schema.sql",
+    "stage030_control_plane_index_ref": "../postgresql_control_plane/control_plane_schema_index.json",
+    "stage031_migration_safety_index_ref": "../schema_migration_safety/stage031_migration_safety_index.json",
+    "stage031_migration_safety_checker_ref": "../../../../scripts/check_schema_migration_safety.py",
+    "stage032_connection_pool_index_ref": "../database_connection_pool/stage032_connection_pool_index.json",
+    "stage032_connection_pool_checker_ref": "../../../../scripts/check_database_connection_pool.py",
+    "stage033_database_size_guard_index_ref": "../database_size_guard/stage033_database_size_guard_index.json",
+    "stage033_database_size_guard_checker_ref": "../../../../scripts/check_database_size_guard.py",
+    "raw_data_boundary_ref": "../IDS_METADATA_RAW_DATA_BOUNDARY.md",
+    "phase2_checker_ref": "../../../../scripts/check_data_retention_table.py"
+  },
+  "schema_change_plan": {
+    "mode": "static_data_retention_table_contract_only",
+    "future_migration_id": "ids_stage034_data_retention_table_static_policy",
+    "sql_file_created": false,
+    "migration_executed": false,
+    "connection_config_created": false,
+    "recovery_smoke_executed": false,
+    "live_schema_diff_executed": false,
+    "tracked_constraints": [
+      "retention_subject_class_enum",
+      "ttl_policy_required",
+      "owner_hold_policy_required",
+      "cleanup_dry_run_required",
+      "deletion_stop_gate_required",
+      "audit_evidence_ref_required",
+      "rollback_restore_ref_required",
+      "no_raw_payload_storage",
+      "real_data_only"
+    ]
+  },
+  "retention_subjects": {
+    "temporary_file": {
+      "owner_label_zh": "临时文件",
+      "ttl_policy": "ttl_required_with_expiration_reason",
+      "owner_hold_policy": "manual_or_compliance_hold_blocks_cleanup",
+      "cleanup_mode": "dry_run_only",
+      "deletion_gate": "owner_stop_gate_required",
+      "audit_evidence_required": true,
+      "rollback_restore_required": true,
+      "rebuildable": true,
+      "stores_raw_content": false
+    },
+    "cache": {
+      "owner_label_zh": "缓存",
+      "ttl_policy": "ttl_required_with_rebuild_reason",
+      "owner_hold_policy": "owner_hold_blocks_eviction",
+      "cleanup_mode": "dry_run_only",
+      "deletion_gate": "owner_stop_gate_required",
+      "audit_evidence_required": true,
+      "rollback_restore_required": true,
+      "rebuildable": true,
+      "stores_raw_content": false
+    },
+    "old_index": {
+      "owner_label_zh": "旧索引",
+      "ttl_policy": "keep_until_rebuild_or_owner_expiry",
+      "owner_hold_policy": "owner_rebuild_decision_required",
+      "cleanup_mode": "dry_run_only",
+      "deletion_gate": "owner_stop_gate_required",
+      "audit_evidence_required": true,
+      "rollback_restore_required": true,
+      "rebuildable": true,
+      "stores_raw_content": false
+    },
+    "log": {
+      "owner_label_zh": "日志",
+      "ttl_policy": "retention_window_with_redaction_policy",
+      "owner_hold_policy": "audit_or_owner_hold_blocks_compaction",
+      "cleanup_mode": "dry_run_only",
+      "deletion_gate": "owner_stop_gate_required",
+      "audit_evidence_required": true,
+      "rollback_restore_required": true,
+      "rebuildable": false,
+      "stores_raw_content": false
+    },
+    "report_snapshot": {
+      "owner_label_zh": "报告快照",
+      "ttl_policy": "keep_until_owner_expiry_or_regeneration_available",
+      "owner_hold_policy": "owner_hold_blocks_snapshot_pruning",
+      "cleanup_mode": "dry_run_only",
+      "deletion_gate": "owner_stop_gate_required",
+      "audit_evidence_required": true,
+      "rollback_restore_required": true,
+      "rebuildable": true,
+      "stores_raw_content": false
+    }
+  },
+  "guardrails": {
+    "retention_subject_class_guard": {
+      "allowed_subject_classes": [
+        "temporary_file",
+        "cache",
+        "old_index",
+        "log",
+        "report_snapshot"
+      ],
+      "unknown_subject_allowed": false,
+      "raw_payload_subject_allowed": false,
+      "owner_summary": "数据保留表只覆盖临时文件、缓存、旧索引、日志和报告快照"
+    },
+    "ttl_policy_guard": {
+      "ttl_required": true,
+      "keep_until_required": true,
+      "expiration_reason_required": true,
+      "warning_window_required": true,
+      "runtime_expiry_scan_allowed": false,
+      "owner_summary": "每一类保留对象都必须有 TTL、keep-until 和中文到期原因"
+    },
+    "owner_hold_guard": {
+      "manual_hold_allowed": true,
+      "compliance_hold_allowed": true,
+      "owner_hold_blocks_cleanup": true,
+      "owner_reason_required": true,
+      "runtime_hold_update_allowed": false,
+      "owner_summary": "人工 hold 或合规 hold 必须阻断清理、删除、压缩、驱逐或裁剪"
+    },
+    "cleanup_dry_run_guard": {
+      "cleanup_default_mode": "dry_run_only",
+      "owner_impact_report_required": true,
+      "no_delete_proof_required": true,
+      "auto_delete_allowed": false,
+      "runtime_cleanup_allowed": false,
+      "owner_summary": "清理默认只能 dry-run，必须先给出影响说明和不删除证明"
+    },
+    "deletion_stop_gate_guard": {
+      "owner_stop_gate_required": true,
+      "destructive_action_allowed_by_default": false,
+      "retention_deletion_allowed": false,
+      "log_compaction_allowed": false,
+      "cache_eviction_allowed": false,
+      "old_index_rebuild_allowed": false,
+      "report_snapshot_pruning_allowed": false,
+      "owner_summary": "删除、压缩、驱逐、重建或报告快照裁剪都必须由后续 owner stop gate 单独授权"
+    },
+    "audit_evidence_guard": {
+      "audit_evidence_ref_required": true,
+      "event_ref_required": true,
+      "fact_level_required": true,
+      "chinese_owner_reason_required": true,
+      "runtime_audit_write_allowed": false,
+      "owner_summary": "每个保留状态变化必须能追溯到 event、evidence、fact level 和中文原因"
+    },
+    "rollback_restore_guard": {
+      "rollback_restore_ref_required": true,
+      "requires_stage031_migration_safety_ref": true,
+      "requires_backup_restore_plan": true,
+      "requires_post_cleanup_verification": true,
+      "runtime_rollback_allowed": false,
+      "runtime_restore_allowed": false,
+      "owner_summary": "未来清理或删除前必须具备 rollback/restore 和清理后验证证据"
+    },
+    "postgres_storage_scope_guard": {
+      "stores_control_plane_metadata": true,
+      "stores_state_refs": true,
+      "stores_audit_refs": true,
+      "stores_evidence_refs": true,
+      "stores_retention_policy_metadata": true,
+      "stores_raw_files": false,
+      "stores_raw_database_rows": false,
+      "stores_document_bodies": false,
+      "stores_ocr_full_text": false,
+      "stores_vector_payloads": false,
+      "stores_report_binaries": false,
+      "stores_raw_log_bodies": false,
+      "stores_unbounded_derived_artifacts": false,
+      "owner_summary": "PostgreSQL 只存有界保留策略 metadata 和 refs，不存 raw payload"
+    },
+    "database_size_guard_dependency": {
+      "stage033_database_size_guard_ref": "../database_size_guard/stage033_database_size_guard_index.json",
+      "blocked_raw_large_ocr_payloads": true,
+      "retention_table_does_not_override_size_guard": true,
+      "runtime_size_query_allowed": false
+    },
+    "connection_pool_budget_guard": {
+      "stage032_connection_pool_ref": "../database_connection_pool/stage032_connection_pool_index.json",
+      "aggregate_max_pool_size": 10,
+      "max_overflow": 0,
+      "backpressure_required": true,
+      "retention_table_does_not_increase_pool": true
+    },
+    "raw_metadata_boundary": {
+      "path": "/Users/linzezhang/Downloads/IDS_MetaData",
+      "path_only": true,
+      "content_access_allowed": false,
+      "recursive_listing_allowed": false,
+      "hashing_allowed": false,
+      "copy_allowed": false,
+      "modify_allowed": false,
+      "delete_allowed": false,
+      "dump_allowed": false,
+      "scan_allowed": false,
+      "normalize_allowed": false
+    },
+    "real_data_only_guard": {
+      "policy": "All IDS runtime corpus, database-backed content, analytics inputs, reports, indexes, manifests, and committed examples must use real user-approved data only.",
+      "forbidden": [
+        "fake IDS business data",
+        "fake database rows",
+        "fake source documents",
+        "placeholder corpus",
+        "fabricated evidence",
+        "plaintext secrets"
+      ]
+    }
+  },
+  "runtime_policy": {
+    "connect_to_postgres": false,
+    "execute_migration": false,
+    "create_database": false,
+    "create_schema": false,
+    "create_connection_config": false,
+    "execute_cleanup": false,
+    "execute_deletion": false,
+    "execute_retention_scan": false,
+    "execute_log_compaction": false,
+    "execute_cache_eviction": false,
+    "execute_index_rebuild": false,
+    "execute_report_snapshot_pruning": false,
+    "execute_backup": false,
+    "execute_restore": false,
+    "write_runtime_outputs": false,
+    "read_raw_metadata": false,
+    "write_raw_metadata": false,
+    "install_dependencies": false,
+    "start_services": false,
+    "github_upload": false,
+    "app_reinstall": false
+  }
+}
